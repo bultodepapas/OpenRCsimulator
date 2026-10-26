@@ -7,10 +7,16 @@ const RB := preload("res://physics/rigid_body.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const Wheels := preload("res://physics/ground_wheels.gd")
 const SURFACE_TYPES := ["runway", "rotorpad", "mown", "rough"]
+## Authored material identities select existing recordings. This table is an
+## audio choice, not a friction/roughness model or an inference from land usage.
+const MATERIAL_ROLL_FAMILIES := {
+	"maintained_turf": "grass", "mown_grass": "grass", "long_grass": "grass",
+	"dry_pavement": "hard", "asphalt": "hard", "concrete": "hard", "gravel": "gravel",
+}
 
 
 ## Returns point forces and velocities from the accepted state only; it does not change or advance simulation state.
-static func snapshot_contacts(session: Node, field: Dictionary) -> Array[Dictionary]:
+static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictionary]:
 	var contacts_out: Array[Dictionary] = []
 	if session == null or not session.has_method("current_landing_gear"):
 		return contacts_out
@@ -47,6 +53,8 @@ static func snapshot_contacts(session: Node, field: Dictionary) -> Array[Diction
 	var base_velocity := M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2])
 	var body_rate := state.slice(RB.RATE, RB.RATE + 3)
 	var reference_load: float = maxf(1.0, float(sim.mass) * float(sim.gravity) / float(gear_contacts.size()))
+	var environment := session.get("environment") as RefCounted
+	var time_s: float = sim.time()
 	for index: int in range(gear_contacts.size()):
 		var contact: Dictionary = gear_contacts[index]
 		if not contact.has("position"):
@@ -82,6 +90,7 @@ static func snapshot_contacts(session: Node, field: Dictionary) -> Array[Diction
 		var rolling_speed: float = maxf(absf(float(frame.get("long_speed", 0.0))), absf(rim_speed))
 		var position_ned: PackedFloat64Array = frame.get("position", PackedFloat64Array([state[0], state[1], state[2]]))
 		var identity: String = str(contact.get("name", "gear_%d" % index))
+		var audio_surface := surface_observation(environment, position_ned, point_velocity, time_s)
 		contacts_out.append({
 			id = identity,
 			position = Frames.ned_to_render(Array(position_ned)),
@@ -94,14 +103,44 @@ static func snapshot_contacts(session: Node, field: Dictionary) -> Array[Diction
 			approach_speed_mps = approach_speed,
 			rolling_speed_mps = rolling_speed,
 			rim_speed_mps = rim_speed,
-			surface = surface_name(field, position_ned[0], position_ned[1]),
+			surface = audio_surface.surface,
+			material_id = audio_surface.material_id,
+			material_resolved = audio_surface.material_resolved,
+			surface_audio_fallback = audio_surface.surface_audio_fallback,
+			surface_region_id = audio_surface.region_id,
 			grounded = normal_force > 0.0,
 			roll_enabled = true,
 		})
 	return contacts_out
 
 
-## Field rectangles share GroundSurfaces' runway/rotorpad/mown/rough precedence.
+## Read the same solid-support provider used by the accepted session. Unsupported
+## or unresolved material uses the existing hard-roll layer as an explicit
+## audio fallback; field usage never fabricates a material. Water is not solid bed.
+static func surface_observation(environment: RefCounted, position_ned: PackedFloat64Array,
+		velocity_ned: PackedFloat64Array, time_s: float) -> Dictionary:
+	var result := {surface = "hard", material_id = "unspecified", material_resolved = false,
+		surface_audio_fallback = true, region_id = ""}
+	if environment == null or not environment.has_method("sample_support"):
+		return result
+	var sampled: Variant = environment.call("sample_support", position_ned, velocity_ned, time_s)
+	if not sampled is Dictionary or typeof(sampled.get("ok")) != TYPE_BOOL or not sampled.ok:
+		return result
+	if typeof(sampled.get("material_id")) != TYPE_STRING \
+		or typeof(sampled.get("material_resolved")) != TYPE_BOOL \
+		or typeof(sampled.get("region_id")) != TYPE_STRING:
+		return result
+	result.material_id = sampled.material_id
+	result.material_resolved = sampled.material_resolved
+	result.region_id = sampled.region_id
+	if sampled.material_resolved and MATERIAL_ROLL_FAMILIES.has(sampled.material_id):
+		result.surface = MATERIAL_ROLL_FAMILIES[sampled.material_id]
+		result.surface_audio_fallback = false
+	return result
+
+
+## Historical usage-only helper for unmigrated presentation callers. Fixed-wing
+## snapshots above use authored material from Environment, never this alias map.
 static func surface_name(field: Dictionary, north: float, east: float) -> String:
 	for surface_type: String in SURFACE_TYPES:
 		for area: Dictionary in field.get("surfaces", []):

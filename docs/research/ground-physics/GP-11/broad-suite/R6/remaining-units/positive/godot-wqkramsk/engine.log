@@ -1,0 +1,84 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok advanced HX-700 admitted
+ok mechanical adapter configures neutral
+ok independent oracle bytes match the reviewed snapshot
+ok oracle pins the same immutable Blender source
+ok source pose [0.0, 0.0, 0.0, 0.0, 0.0] closes
+ok source pose [0.0, 0.0, 0.0, 0.0, 1.5707963267949] closes
+ok source pose [0.0, 0.0, 0.0, 0.0, 3.14159265358979] closes
+ok source pose [0.0, 0.0, 0.0, 0.0, 4.71238898038469] closes
+ok source pose [10.0, 0.0, 0.0, 0.0, 0.0] closes
+ok source pose [10.0, 0.0, 0.0, 0.0, 1.5707963267949] closes
+ok source pose [10.0, 0.0, 0.0, 0.0, 3.14159265358979] closes
+ok source pose [10.0, 0.0, 0.0, 0.0, 4.71238898038469] closes
+ok source pose [-10.0, 0.0, 0.0, 0.0, 0.0] closes
+ok source pose [-10.0, 0.0, 0.0, 0.0, 1.5707963267949] closes
+ok source pose [-10.0, 0.0, 0.0, 0.0, 3.14159265358979] closes
+ok source pose [-10.0, 0.0, 0.0, 0.0, 4.71238898038469] closes
+ok source pose [0.0, 8.0, 0.0, 0.0, 0.0] closes
+ok source pose [0.0, 8.0, 0.0, 0.0, 1.5707963267949] closes
+ok source pose [0.0, 8.0, 0.0, 0.0, 3.14159265358979] closes
+ok source pose [0.0, 8.0, 0.0, 0.0, 4.71238898038469] closes
+ok source pose [0.0, -8.0, 0.0, 0.0, 0.0] closes
+ok source pose [0.0, -8.0, 0.0, 0.0, 1.5707963267949] closes
+ok source pose [0.0, -8.0, 0.0, 0.0, 3.14159265358979] closes
+ok source pose [0.0, -8.0, 0.0, 0.0, 4.71238898038469] closes
+ok source pose [0.0, 0.0, 8.0, 0.0, 0.0] closes
+ok source pose [0.0, 0.0, 8.0, 0.0, 1.5707963267949] closes
+ok source pose [0.0, 0.0, 8.0, 0.0, 3.14159265358979] closes
+ok source pose [0.0, 0.0, 8.0, 0.0, 4.71238898038469] closes
+ok source pose [0.0, 0.0, -8.0, 0.0, 0.0] closes
+ok source pose [0.0, 0.0, -8.0, 0.0, 1.5707963267949] closes
+ok source pose [0.0, 0.0, -8.0, 0.0, 3.14159265358979] closes
+ok source pose [0.0, 0.0, -8.0, 0.0, 4.71238898038469] closes
+ok source pose [0.0, 0.0, 0.0, 15.0, 0.0] closes
+ok source pose [0.0, 0.0, 0.0, 15.0, 1.5707963267949] closes
+ok source pose [0.0, 0.0, 0.0, 15.0, 3.14159265358979] closes
+ok source pose [0.0, 0.0, 0.0, 15.0, 4.71238898038469] closes
+ok source pose [0.0, 0.0, 0.0, -15.0, 0.0] closes
+ok source pose [0.0, 0.0, 0.0, -15.0, 1.5707963267949] closes
+ok source pose [0.0, 0.0, 0.0, -15.0, 3.14159265358979] closes
+ok source pose [0.0, 0.0, 0.0, -15.0, 4.71238898038469] closes
+ok source pose [8.0, 6.0, 6.0, 10.0, 0.0] closes
+ok source pose [8.0, 6.0, 6.0, 10.0, 1.5707963267949] closes
+ok source pose [8.0, 6.0, 6.0, 10.0, 3.14159265358979] closes
+ok source pose [8.0, 6.0, 6.0, 10.0, 4.71238898038469] closes
+ok source pose [-8.0, -6.0, 6.0, -10.0, 0.0] closes
+ok source pose [-8.0, -6.0, 6.0, -10.0, 1.5707963267949] closes
+ok source pose [-8.0, -6.0, 6.0, -10.0, 3.14159265358979] closes
+ok source pose [-8.0, -6.0, 6.0, -10.0, 4.71238898038469] closes
+ok all 44 independent source poses match positions within 2 micrometres
+ok all driven frames and 18 ball-link terminals match source orientation within 0.00002
+ORACLE max_position_m=0.00000040343363 max_basis=0.00001233368039 max_rod_residual_m=0.00000012514895
+ok dense combined sweep keeps all nine rods rigid and servos continuous
+ok full travel and combined cyclic ring limits close over 972 poses
+ok 1000 mixed poses close throughout the full accumulated phase range
+ok failed admission preserves the previous configuration
+ok missing driven binding rejects without disabling the accepted rig
+ok invalid static binding rejects before dereferencing it
+ok reconfiguring an articulated rig restores authored neutral frames
+ok configured binding map is independent of its caller
+ok tail collective retains its signed source pitch -15
+ok tail collective retains its signed source pitch 15
+ok rendered rods follow both terminal positions without stretching meshes
+ok all four head sockets follow a half-turn of the rotor
+ok the six fixed servo-link sockets do not inherit rotor spin
+ok all 18 sockets stay aligned without flips through two full rotor turns
+ok rendered rod centreline ends preserve their authored ball clearances throughout rotation
+TERMINALS maximum_step_deg=2.46195854836061 main_step_deg=0.5 poses=1441
+RENDERED_RODS maximum_axis_or_end_offset_error_m=0.00000148823767
+ok revisiting an azimuth restores identical socket frames without accumulated twist
+ok bad inputs reject atomically
+ok bad inputs reject atomically
+ok bad inputs reject atomically
+ok bad inputs reject atomically
+ok unreachable +100 mm rod cannot be hidden by source trigonometric clamps
+ok second independent instance initializes
+ok instances share no movable nodes
+ok outer swash and tail slider do not spin with shafts
+ok fixed cases stay fixed; collective raises swash and pitches both blades
+ok repeated 30 Hz reads do not accumulate servo or blade motion
+ok repeated 60 Hz reads do not accumulate servo or blade motion
+ok repeated 144 Hz reads do not accumulate servo or blade motion
+78 checks, 0 failed; dense sweep max residual 0.000000133 m

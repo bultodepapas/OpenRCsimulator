@@ -1,0 +1,29 @@
+{
+  "format": "openrc-GP11-broad-source-bindings v1",
+  "base_commit": "b85ce1047a3e7798ab22b330675fc0c9e4bce912",
+  "manifests": [
+    {
+      "path": "docs/research/ground-physics/GP-10/evidence/manifest.json",
+      "sha256": "d315d5c7a318f94fcc2eb7c90c6159d9ca77c52c9a8ea05f19957db12ea69048",
+      "bytes": 18957
+    },
+    {
+      "path": "docs/research/ground-physics/GP-11/evidence/manifest.json",
+      "sha256": "ab00ae724adf25bb87cd7372c5cef7f8b877e56278dc29a67fb2ac76ae0d1964",
+      "bytes": 37288
+    }
+  ],
+  "overlay_order": [
+    "GP10 candidate_source_snapshots (9)",
+    "GP11 selected_source_snapshots (36)",
+    "R1/source two math3d wrapper corrections",
+    "R2/source isolated original18-path register/doc",
+    "R3/R4 generated import/source pin snapshots",
+    "R5 canonical bus resource LF",
+    "R6 population manifest import byte/hash records",
+    "R7 canonical LF F4U authoring inputs",
+    "R8 canonical LF synthetic candidate JSONs"
+  ],
+  "current_main_source_excluded": true,
+  "app_assets_checkout_excluded": true
+}

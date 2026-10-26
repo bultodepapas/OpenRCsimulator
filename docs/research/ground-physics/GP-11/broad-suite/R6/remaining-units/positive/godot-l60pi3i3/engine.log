@@ -1,0 +1,7 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+KNOWN LIMITATION archived 1280x720 scale 1.5: hint overlaps Pilot flight; hint=[P: (172.5, 487.4), S: (935.0, 67.6)] overlay=[P: (12.0, 468.0), S: (257.0, 240.0)]
+KNOWN LIMITATION archived 1280x720 scale 1.5: hint overlaps Pilot transmitter; hint=[P: (172.5, 487.4), S: (935.0, 67.6)] overlay=[P: (1072.0, 420.0), S: (196.0, 288.0)]
+KNOWN LIMITATION regular 1280x720 scale 1.5: hint overlaps Pilot flight; hint=[P: (172.5, 487.4), S: (935.0, 67.6)] overlay=[P: (12.0, 468.0), S: (257.0, 240.0)]
+KNOWN LIMITATION regular 1280x720 scale 1.5: hint overlaps Pilot transmitter; hint=[P: (172.5, 487.4), S: (935.0, 67.6)] overlay=[P: (1072.0, 420.0), S: (196.0, 288.0)]
+first-flight/report layout: 198 checks, 0 failed

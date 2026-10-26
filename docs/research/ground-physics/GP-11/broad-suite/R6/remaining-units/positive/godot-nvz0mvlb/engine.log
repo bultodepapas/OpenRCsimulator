@@ -1,0 +1,35 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+jensen-das-ugly-stik-60 weather=openrc-weather v1 idle max speed=0.00000000000007
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+jensen-das-ugly-stik-60 weather=openrc-weather v2 idle max speed=0.00122407202049
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+stik-glow-61fx-2t weather=openrc-weather v1 idle max speed=0.00000000000002
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+stik-glow-61fx-2t weather=openrc-weather v2 idle max speed=0.00153886946326
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+stik-glow-55ax-2t weather=openrc-weather v1 idle max speed=0.00000000000003
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+stik-glow-55ax-2t weather=openrc-weather v2 idle max speed=0.00154035424217
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+stik-glow-fs64v-4t weather=openrc-weather v1 idle max speed=0.00000000000006
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+stik-glow-fs64v-4t weather=openrc-weather v2 idle max speed=0.00156985880527
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+gp-extra-300s-60 weather=openrc-weather v1 idle max speed=0.00000000000007
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+gp-extra-300s-60 weather=openrc-weather v2 idle max speed=0.00152814012885
+p51d-mustang-120 weather=openrc-weather v1 idle max speed=0.00000010936033
+p51d-mustang-120 weather=openrc-weather v2 idle max speed=0.00089854928561
+f4u-corsair-250 weather=openrc-weather v1 idle max speed=0.00000010853874
+f4u-corsair-250 weather=openrc-weather v2 idle max speed=0.00106996535936
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+sebart-avanti-s-a200-p100rx weather=openrc-weather v1 idle max speed=0.00000274494233
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+sebart-avanti-s-a200-p100rx weather=openrc-weather v2 idle max speed=0.00046071466796
+turbo-lumber-evolution weather=openrc-weather v1 idle max speed=0.00000000000002
+turbo-lumber-evolution weather=openrc-weather v2 idle max speed=0.00223350312196
+Runway fleet: 132 checks, 0 failed

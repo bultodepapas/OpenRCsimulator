@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8d1a591f-9a1a-48c3-9397-d02312bf6dea",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_heli_inflow.gd",
+    "--",
+    "--oracle=C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/helicopter/reference/oracle.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "started_utc": "2026-10-26T02:26:13.914434+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R1\\positive\\godot-o6t9miqi\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R1\\positive\\godot-o6t9miqi\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.297,
+  "log_bytes": 111,
+  "log_sha256": "3c066067c96017036051cde8dfc47472510577e4dde7af7fd249ce16c68e8316"
+}

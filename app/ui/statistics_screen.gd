@@ -40,6 +40,9 @@ var _pilot_reset_button: Button
 var _aircraft_delete_button: Button
 var _pilot_delete_button: Button
 var _history: Array = []
+var _rendered_history: Array = []
+var _rendered_history_context: Dictionary = {}
+var _expanded_history_ids: Dictionary = {}
 var _stats: Dictionary = {}
 var _aircraft_ids: Array[String] = [""]
 var _aircraft_names: Array[String] = ["All aircraft"]
@@ -48,6 +51,7 @@ var _period := "session"
 var _history_page := 0
 var _more_open := false
 var _history_open := false
+var _history_rendered := false
 var _refreshing := false
 var _active_dialog: ConfirmationDialog
 
@@ -468,10 +472,28 @@ func _add_detail(parent: VBoxContainer, caption: String, value: String) -> void:
 func _render_history() -> void:
 	if _history_rows == null:
 		return
-	for child: Node in _history_rows.get_children():
-		child.queue_free()
 	var page_count := maxi(1, ceili(float(_history.size()) / float(HISTORY_PAGE_SIZE)))
 	_history_page = clampi(_history_page, 0, page_count - 1)
+	var render_context := {
+		"aircraft_id": _selected_aircraft,
+		"aircraft_name": _selected_aircraft_name(),
+		"period": _period,
+		"page": _history_page,
+		"unit_system": _unit_system,
+		"locale": TranslationServer.get_locale(),
+	}
+	if _history_rendered and _rendered_history == _history and _rendered_history_context == render_context:
+		return
+	var focus_owner: Control = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	var restore_history_focus: bool = focus_owner != null and _history_rows.is_ancestor_of(focus_owner)
+	var focused_record_id: String = _history_record_id_for_control(focus_owner) if restore_history_focus else ""
+	_capture_expanded_history_ids()
+	_prune_expanded_history_ids()
+	if restore_history_focus:
+		focus_owner.release_focus()
+	for child: Node in _history_rows.get_children():
+		_history_rows.remove_child(child)
+		child.queue_free()
 	var start := _history_page * HISTORY_PAGE_SIZE
 	var finish := mini(_history.size(), start + HISTORY_PAGE_SIZE)
 	if _history.is_empty():
@@ -480,14 +502,93 @@ func _render_history() -> void:
 		for index in range(start, finish):
 			var record: Variant = _history[index]
 			if record is Dictionary:
-				_history_rows.add_child(_history_row(record, index))
+				var row := _history_row(record, index)
+				_history_rows.add_child(row)
+				var record_id := _history_record_id(record)
+				if _expanded_history_ids.has(record_id):
+					var toggle := row.get_child(0) as Button
+					var detail := row.get_child(1) as Control
+					toggle.set_pressed_no_signal(true)
+					detail.visible = true
+					toggle.text = "⌄ " + toggle.text
 	_history_page_label.text = tr("Page %d of %d · %d records") % [_history_page + 1, page_count, _history.size()]
 	_previous_page.disabled = _history_page <= 0
 	_next_page.disabled = _history_page >= page_count - 1
+	_rendered_history = _history.duplicate(true)
+	_rendered_history_context = render_context
+	_history_rendered = true
+	if restore_history_focus:
+		var focus_target := _history_toggle_for_id(focused_record_id)
+		if focus_target != null:
+			focus_target.grab_focus()
+		else:
+			_history_button.grab_focus()
+
+
+func _capture_expanded_history_ids() -> void:
+	for child: Node in _history_rows.get_children():
+		if not child is VBoxContainer or child.get_child_count() < 2:
+			continue
+		var row := child as VBoxContainer
+		var toggle := row.get_child(0) as Button
+		var detail := row.get_child(1) as Control
+		var record_id := str(row.get_meta("statistics_history_id", ""))
+		if record_id.is_empty():
+			continue
+		if toggle.button_pressed or detail.visible:
+			_expanded_history_ids[record_id] = true
+		else:
+			_expanded_history_ids.erase(record_id)
+
+
+func _prune_expanded_history_ids() -> void:
+	var available_ids: Dictionary = {}
+	for record: Variant in _history:
+		if record is Dictionary:
+			var record_id := _history_record_id(record)
+			if not record_id.is_empty():
+				available_ids[record_id] = true
+	for record_id: Variant in _expanded_history_ids.keys():
+		if not available_ids.has(record_id):
+			_expanded_history_ids.erase(record_id)
+
+
+func _history_record_id(record: Dictionary) -> String:
+	var record_id := str(record.get("id", "")).strip_edges()
+	if not record_id.is_empty():
+		return record_id
+	var sequence: Variant = record.get("seq", null)
+	if typeof(sequence) == TYPE_INT:
+		return "sequence:%d" % int(sequence)
+	var flight_id := str(record.get("flight_id", "")).strip_edges()
+	var record_kind := str(record.get("kind", "")).strip_edges()
+	if flight_id.is_empty() or record_kind.is_empty():
+		return ""
+	return "%s:flight:%s" % [record_kind, flight_id]
+
+
+func _history_record_id_for_control(control: Control) -> String:
+	var current: Node = control
+	while current != null and current != _history_rows:
+		if current is Control and current.has_meta("statistics_history_id"):
+			return str(current.get_meta("statistics_history_id", ""))
+		current = current.get_parent()
+	return ""
+
+
+func _history_toggle_for_id(record_id: String) -> Button:
+	if record_id.is_empty():
+		return null
+	for child: Node in _history_rows.get_children():
+		if str(child.get_meta("statistics_history_id", "")) == record_id and child.get_child_count() > 0:
+			return child.get_child(0) as Button
+	return null
 
 
 func _history_row(record: Dictionary, index: int) -> VBoxContainer:
 	var row := VBoxContainer.new()
+	var record_id := _history_record_id(record)
+	row.set_meta("statistics_history_id", record_id)
 	row.add_theme_constant_override("separation", 4)
 	var record_kind := str(record.get("kind", ""))
 	if record_kind.is_empty():
@@ -506,6 +607,7 @@ func _history_row(record: Dictionary, index: int) -> VBoxContainer:
 		title_parts.append(_duration(_number(record.get("airborne_seconds", NAN))))
 	title_parts.append(outcome)
 	var toggle := Widgets.button(" · ".join(title_parts), "QuietButton", "HistoryRow%d" % index)
+	toggle.set_meta("statistics_history_id", record_id)
 	toggle.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	toggle.toggle_mode = true
 	row.add_child(toggle)
@@ -548,6 +650,11 @@ func _history_row(record: Dictionary, index: int) -> VBoxContainer:
 	toggle.toggled.connect(func(open: bool) -> void:
 		detail.visible = open
 		toggle.text = ("⌄ " if open else "› ") + " · ".join(title_parts)
+		if not record_id.is_empty():
+			if open:
+				_expanded_history_ids[record_id] = true
+			else:
+				_expanded_history_ids.erase(record_id)
 	)
 	return row
 

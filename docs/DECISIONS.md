@@ -1121,6 +1121,23 @@ empty-hook bytes and successful result keys compatible. This migrates the prepar
 runway route; airborne/reload/restore migration remains separate. [Contract and
 original failure/current evidence](research/ground-physics/GP-14/README.md#accepted-runway-reset-publication-gp-14d).
 
+### 2026-10-26 — Admit the aircraft's pilot magnifier to show-effect detail (FW-RGB-13)
+
+Select VFX birth detail from the main camera and the aircraft's active magnifier, with independent hysteresis and a larger-span tie-break. Reuse the magnifier's selected-aircraft ownership through cached weak links; update detached effect render layers only on binding/visibility changes. Use the visible inset distance for show effects while retaining main-view spill distance and shared scene caps. This prevents a tiny/offscreen main aircraft from disabling useful inset effects without adding a global camera registry, duplicate particle simulation or physics coupling. Clear links/layers on hide, switch, reconfiguration and destruction. [Contract](AIRCRAFT-LIGHTING.md#scene-grants-and-projected-effects), [checks and native evidence](research/night-flight-lighting/implementation.md#fw-rgb-13-aircraft-specific-magnifier-vfx-2026-10-26).
+
+
+### 2026-10-26 — Consume physical commit receipts across aircraft starts and reload (GP-14e)
+
+Begin the existing Session start transaction before trim/model staging and reuse
+the generic commit hook for runway, airborne, hand launch, fallback and reload.
+Refusal restores original protected kernel/model and declared owner context without
+resetting/evaluating the old model or closing its recorder. Reload must consume an
+explicit commit receipt: quiet rejection earns no generation, while an accepted
+observer fault stays final, paused/nonready and credited once. Preserve intentional
+successful airborne fallback and initial invalid parking as separate outcomes.
+Restore/configuration publication remains a later migration. [Contract and original
+failure/current evidence](research/ground-physics/GP-14/README.md#common-start-and-reload-transactions-gp-14e).
+
 ### 2026-10-26 — Share aircraft module admission with Workshop (AS-07/14-R1)
 
 Run the existing module classifier after v2 structural validation and before physical

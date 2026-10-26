@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b0a61025-a295-483a-b9a0-e56cd71c607c",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-reset-followup/regressions/test_flight_statistics_lifecycle.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T16:18:26.884531+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-reset-followup\\checks\\statistics-lifecycle-draft\\godot-m1_8fx1v\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-reset-followup\\checks\\statistics-lifecycle-draft\\godot-m1_8fx1v\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 14.047,
+  "log_bytes": 660,
+  "log_sha256": "2c74ec0a0de13ef978b9d5253db79d7f902c24a8c1d4e7715635f6b9c0e4a5e9"
+}

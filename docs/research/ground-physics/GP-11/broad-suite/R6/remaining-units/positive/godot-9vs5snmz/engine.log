@@ -1,0 +1,21 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+info main_left: k 560 N/m, c 18.6 N·s/m, onset 8.7 mm
+info main_right: k 560 N/m, c 18.6 N·s/m, onset 8.7 mm
+info nose: k 440 N/m, c 16.5 N·s/m, onset 9.9 mm
+ok   onsets are 50 % of the static compressions: Σ k·δ_onset = 0.50·m·g  0.500000 m·g
+ok   touchdown at 2 m/s sink: force 1 nm into contact ≤ 1e-5 N (the E1 law jumped by c·v = 37.2 N)  9.080387715190466e-06 N
+ok   the ramp joins the gear's damping continuously and with zero slope (C¹) at its end  step 0, relative slope 0.00010000000181455766
+ok   every wheel at or beyond its onset: loads equal the E1 law byte for byte (2000 states)  2000/2000
+ok   settled on its wheels, 0.8 × each rest compression is still beyond its onset (smallest ratio ≥ 1)  1.587; rest [17.3, 17.3, 20.1] mm
+info sink 0.5 m/s: E1b peak 53.2 N, largest tick-to-tick force step 13.7 N, rebound e 0.312; E1 50.4 N, 20.1 N, e 0.278
+ok   sink 0.5 m/s: no energy gain in a tick (≤ 1e-6 J)  -5.900866089980639e-06 J
+ok   sink 0.5 m/s: 240 vs 480 Hz within the budget 0.0002 and below the E1 law's  E1b 5.958109511425454e-06, E1 0.00015688844586325256
+info sink 1.0 m/s: E1b peak 76.8 N, largest tick-to-tick force step 34.2 N, rebound e 0.304; E1 72.7 N, 39.3 N, e 0.278
+ok   sink 1.0 m/s: no energy gain in a tick (≤ 1e-6 J)  -6.486325359489342e-06 J
+ok   sink 1.0 m/s: 240 vs 480 Hz within the budget 0.0002 and below the E1 law's  E1b 2.924682096935166e-05, E1 0.00022654636125590648
+info sink 2.0 m/s: E1b peak 131.1 N, largest tick-to-tick force step 94.5 N, rebound e 0.322; E1 128.1 N, 112.6 N, e 0.313
+ok   sink 2.0 m/s: no energy gain in a tick (≤ 1e-6 J)  -6.9361284662505795e-06 J
+ok   sink 2.0 m/s: 240 vs 480 Hz within the budget 0.0002 and below the E1 law's  E1b 4.928267003323494e-05, E1 0.0005474474152101436
+ok   restitution 0.25–0.5 at every sink (wire gear on rubber tyres, estimated)  [0.31198103737773, 0.30368973881969, 0.32235464340818]
+12 checks, 0 failed

@@ -1,0 +1,44 @@
+{
+  "format": "openrc-baseline-training-widget-isolation v1",
+  "utc": "2026-10-26T14:06:01.961948+00:00",
+  "baseline_report": "tmp\\gp11-full-suite-checks\\R6\\baseline-ui\\training-widgets\\godot-defpaqen\\report.json",
+  "candidate_report": "tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-vuyurx1_\\report.json",
+  "test_dependencies": [
+    {
+      "path": "app/tests/test_training_widgets.gd",
+      "baseline_sha256": "f6bae78a1a7e57b0ed53cc12cce2d01fba6e51aed69114fe4877d2eda2e216ed",
+      "candidate_sha256": "f6bae78a1a7e57b0ed53cc12cce2d01fba6e51aed69114fe4877d2eda2e216ed",
+      "byte_equal": true
+    },
+    {
+      "path": "app/render/overlays/overlay_manager.gd",
+      "baseline_sha256": "bb8d0e10936679dc015052c36db1c72639b0b9b55d9196920fd994616749eb3b",
+      "candidate_sha256": "bb8d0e10936679dc015052c36db1c72639b0b9b55d9196920fd994616749eb3b",
+      "byte_equal": true
+    },
+    {
+      "path": "app/render/overlays/overlay_settings.gd",
+      "baseline_sha256": "0e366d1d94fe5d0810705b6e59607485d590a3c84dc86591c8d8f0ad4a1590e2",
+      "candidate_sha256": "0e366d1d94fe5d0810705b6e59607485d590a3c84dc86591c8d8f0ad4a1590e2",
+      "byte_equal": true
+    },
+    {
+      "path": "app/ui/overlays_dialog.gd",
+      "baseline_sha256": "996491219f2ce28bff9dd49002a5d0715ffc4ebb6ec15cd2c7de4cc78901d24e",
+      "candidate_sha256": "996491219f2ce28bff9dd49002a5d0715ffc4ebb6ec15cd2c7de4cc78901d24e",
+      "byte_equal": true
+    }
+  ],
+  "same_results": [
+    "FAIL training widgets: training is opt-in and exactly three instruments",
+    "FAIL training widgets: training fits at 1080p: smallfalse",
+    "FAIL training widgets: training fits at 1080p: normalfalse",
+    "FAIL training widgets: training fits at 1080p: normaltrue",
+    "FAIL training widgets: training fits at 1080p: largefalse",
+    "FAIL training widgets: training fits at 1080p: largetrue",
+    "FAIL training widgets: all six Spanish navigation/training switches fit the 1080p page",
+    "training widgets checks=59 failures=7"
+  ],
+  "failure_messages_byte_equal": true,
+  "attribution": "Inherited GP10 training widget defaults/layout failure:59checks7fail in baseline and GP11 candidate, including1080p/Spanish controls. No UI changes made; no1080p qualification claim."
+}

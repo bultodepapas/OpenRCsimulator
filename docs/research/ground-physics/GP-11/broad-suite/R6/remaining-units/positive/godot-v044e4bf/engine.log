@@ -1,0 +1,70 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   parse v0.1.0-rc7
+ok   build metadata is dropped
+ok   rejects ""
+ok   rejects "1.2"
+ok   rejects "v1.2.3.4"
+ok   rejects "1.2.3-"
+ok   rejects "abc"
+ok   rejects "1.2.3-rc_1"
+ok   rejects "1.2.x"
+ok   rejects "+1.2.3"
+ok   rejects "1.-2.3"
+ok   rejects "v99999999999999999999.0.0"
+ok   rejects "1.0000000000000000000.0"
+ok   every pair of 21 versions orders as listed
+ok   v prefix and metadata never order
+ok   fixture: the real list of 2026-10-12, seven prereleases
+ok   rc6 is offered rc7, the release page and the three ZIPs
+ok   a release build (0.1.0) is never offered a prerelease
+ok   garbage instead of a list offers nothing
+ok   drafts and unparsable tags are skipped; a prerelease build sees the newest prerelease
+ok   a release build sees only releases
+ok   notice for rc6: rc7, version text without v, the release page
+ok   a CI build after the rc6 tag is still rc6
+ok   no notice for the same or a newer build
+ok   no notice without a running version or a cached release
+ok   a hidden version stays hidden
+ok   a newer version shows again; an untrusted page URL falls back to the releases page
+ok   a page URL with whitespace falls back too
+ok   a capital V tag shows without it
+ok   a cached prerelease is never offered to a release build
+ok   the tag's own identifiers count as prerelease
+ok   state_for: the same build keeps its cache
+ok   state_for: another build starts fresh, keeping only the hidden tag
+ok   no file: defaults
+ok   save
+ok   round trip
+ok   garbage: defaults
+ok   another format: defaults
+ok   wrong types fall back one by one
+ok   never checked: due
+ok   just checked: not due
+ok   a day later: due
+ok   clock set back: due
+ok   headers name the API version, build and OS, no ETag
+ok   a cached ETag is sent back; an unknown version is said so
+ok   etag_of
+ok   parse_response: an array, else null
+ok   parse_response: an oversized body is refused
+ok   launch 1: one request, 200 ok
+ok   launch 1: the request names the API version, our build and OS, without an ETag
+ok   launch 1: rc7 offered once
+ok   launch 1: cache written
+ok   launch 2 (+1 h): no request, the cached notice shows at once
+ok   launch 3 (+25 h): one more request with the ETag, 304
+ok   launch 3: date moved, latest kept, notice shown
+ok   hide: remembered
+ok   launch 4: hidden rc7 is not offered
+ok   launch 5 (rc8 published): 200, rc8 offered
+ok   launch 5: the new ETag is cached
+ok   launch 6 (rc8 and rc7 gone): the cached rc8 shows at once, then the fresh answer withdraws it
+ok   launch 7 (running rc8, cache from rc6): fresh request without ETag, no notice
+ok   http 403: recorded, the next check waits a day, no notice
+ok   an hour after a 403: no request
+update check: transport error 13
+ok   silent server: transport error 13 (timeout) after about 2 s, frames kept running, retry next launch
+update check: transport error 13
+ok   offline: transport error reported, no notice, next launch checks again
+all update check checks passed

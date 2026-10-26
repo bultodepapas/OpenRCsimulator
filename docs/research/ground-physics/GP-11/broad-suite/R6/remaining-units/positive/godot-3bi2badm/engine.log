@@ -1,0 +1,26 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+PASS bounded generator target returns only available frames
+PASS bounded generator tops up to target without exceeding free frames
+PASS large target is capped at one render block
+PASS invalid generator capacity is silent
+PASS steady two-stroke voice emits audible finite PCM
+PASS exhaust pulse repeats once per revolution at 6000 RPM
+PASS render caps oversized frame requests
+PASS load and fuel flow increase engine level at fixed RPM
+PASS stalled engine is silent
+PASS empty tank is silent
+PASS paused voice emits silence and freezes its crank phase
+PASS resume fades from silence without a chirp
+PASS rapid RPM/load change creates a bounded transient
+PASS signed engine-braking clutch slip and torque drive the mechanical layer
+PASS clutch layer is absent without slip telemetry
+PASS 45,000 RPM clutch harmonics stay finite and below the peak ceiling
+PASS tire skid is grounded by contact plus tire slip
+PASS airborne wheel slip does not synthesize tire skid
+PASS malformed non-finite telemetry cannot escape the limiter
+PASS factory creates isolated generator playback
+PASS player refill stays within the configured generator ring
+PASS stopped engine flushes the running generator state
+PASS writes four-second stereo WAV preview
+NITRO_AUDIO_CHECKS=23 FAILURES=0

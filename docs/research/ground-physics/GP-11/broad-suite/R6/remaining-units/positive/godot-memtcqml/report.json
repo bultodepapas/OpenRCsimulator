@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a2f46f29-fe60-4fef-9bdf-4ffb50cb2360",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_economy_checkpoint.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "started_utc": "2026-10-26T13:06:08.565940+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-memtcqml\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-memtcqml\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.984,
+  "log_bytes": 209,
+  "log_sha256": "bac4a7af679aa24606a1539cfa9e906d8d32e2c3e204e1155da47b8c4a35de3c"
+}

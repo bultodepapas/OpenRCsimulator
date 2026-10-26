@@ -1,0 +1,86 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   load bench profile []
+ok   profile accepts synthetic quantities 
+ok   validation leaves source untouched 
+ok   reject non-object 
+ok   reject missing format 
+ok   reject missing version 
+ok   reject missing id 
+ok   reject missing description 
+ok   reject missing parameters 
+ok   reject unknown top-level field 
+ok   reject future version 
+ok   reject boolean version 
+ok   reject unknown parameter 
+ok   reject missing parameter 
+ok   reject invalid mass true 
+ok   reject invalid mass 1.2 
+ok   reject invalid mass <null> 
+ok   reject invalid mass nan 
+ok   reject invalid mass inf 
+ok   reject invalid mass -inf 
+ok   reject invalid mass 0.0 
+ok   reject invalid mass -1.0 
+ok   reject missing quantity value 
+ok   reject missing quantity unit 
+ok   reject missing quantity kind 
+ok   reject missing quantity source 
+ok   reject malformed quantity { "unit": "g" } 
+ok   reject malformed quantity { "kind": "verified" } 
+ok   reject malformed quantity { "source": "  " } 
+ok   reject malformed quantity { "extra": "ignored?" } 
+ok   reject negative sprung_mass_kg 
+ok   reject negative unsprung_mass_kg 
+ok   reject negative suspension_stiffness_n_per_m 
+ok   reject negative suspension_damping_n_s_per_m 
+ok   reject negative tire_stiffness_n_per_m 
+ok   reject negative gravity_m_per_s2 
+ok   reject negative suspension_rest_length_m 
+ok   reject negative tire_radius_m 
+ok   zero damping and zero gravity are explicit supported cases 
+ok   reject statically collapsed tire 
+ok   reject statically inverted suspension 
+ok   missing file fails closed 
+ok   static tire supports both masses 
+ok   static suspension supports sprung mass 
+ok   equilibrium accelerations vanish 
+ok   equilibrium remains at rest 
+ok   road translation preserves static geometry 
+ok   damper removes relative-motion energy 
+ok   separated tire cannot pull on road 
+ok   unstrained airborne masses fall together 
+ok   airborne free fall matches analytic polynomial 
+ok   kernel never mutates input state 
+ok   road sampled at both substeps' RK stage times 
+ok   substeps preserve nonautonomous stage time 
+ok   same-build repeated trajectory is byte-identical 
+ok   moving road preserves equivalent trajectory 
+ok   independent matrix-exponential fixture exists 
+ok   fixture/profile agree: sprung_mass_kg 
+ok   fixture/profile agree: unsprung_mass_kg 
+ok   fixture/profile agree: suspension_stiffness_n_per_m 
+ok   fixture/profile agree: suspension_damping_n_s_per_m 
+ok   fixture/profile agree: tire_stiffness_n_per_m 
+ok   fixture/profile agree: gravity_m_per_s2 
+ok   fixture/profile agree: suspension_rest_length_m 
+ok   fixture/profile agree: tire_radius_m 
+ok   damped matches independent oracle [0.00001141907457, 0.00000057449821, 0.00000003125006, 0.00000000180372]
+ok   damped position accuracy [0.00000005487566, 0.000000003539, 0.00000000023586, 0.00000000001515]
+ok   damped smooth fourth-order convergence [19.8766060527856, 18.3839058698616, 17.3253794965854]
+ok   undamped matches independent oracle [0.00034379500669, 0.0000184829425, 0.00000104853911, 0.00000006242588]
+ok   undamped position accuracy [0.00000407711823, 0.00000025355347, 0.00000001553982, 0.00000000095869]
+ok   undamped smooth fourth-order convergence [18.6006641876896, 17.6273277863563, 16.7965459606041]
+ok   undamped contact conserves perturbation energy at 1920 Hz relative=6.010609341454274e-08
+ok   damped release does not gain energy max gain=0
+ok   moving road work closes local energy balance 
+ok   drop separates and reacquires contact at 240 Hz 
+ok   drop event energy gain <= 1 mJ at 240 Hz 1.8864413380281775e-05
+ok   drop separates and reacquires contact at 480 Hz 
+ok   drop event energy gain <= 1 mJ at 480 Hz 0
+ok   drop separates and reacquires contact at 960 Hz 
+ok   drop event energy gain <= 1 mJ at 960 Hz 1.9380568815119403e-05
+ok   drop separates and reacquires contact at 1920 Hz 
+ok   drop event energy gain <= 1 mJ at 1920 Hz 0
+ok   drop endpoint refines without claiming fourth order at contact 0.00001155579909 0.00000026631165 0.00000012531809
+RCV-04a: 83 checks, 0 failed

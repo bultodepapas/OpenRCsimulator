@@ -12,6 +12,8 @@ const ViewportColor := preload("res://render/viewport_color.gd")
 
 ## Render layer the aircraft's meshes join; other code uses 1 << 19 for crash debris (render/crash/wreck.gd).
 const LAYER := 1 << 18
+const CAMERA_META := "_openrc_magnifier_camera_ref"
+const VFX_ROOT_META := "_openrc_lighting_vfx_world_root_ref"
 const MODES: Array[String] = ["off", "auto", "on"]
 ## Inset side as a share of the viewport height, and the aircraft span as a share of the inset.
 const SIZE_SHARE := 0.22
@@ -34,6 +36,10 @@ var _container: SubViewportContainer
 var _frame: Panel
 var _auto_shown := false
 var _tagged: Node = null
+var _tagged_model_layer_active := false
+var _camera_ref: WeakRef
+var _tagged_vfx_root_ref: WeakRef
+var _tagged_vfx_layer_active := false
 
 
 func _ready() -> void:
@@ -62,17 +68,45 @@ func _ready() -> void:
 	camera.cull_mask = LAYER
 	_viewport.add_child(camera)
 	camera.current = true
+	_camera_ref = weakref(camera)
 	_set_visible(false)
+
+
+func _exit_tree() -> void:
+	_clear_actor_link(_tagged)
+	_update_vfx_layer(false)
+	if _tagged_model_layer_active:
+		untag(_tagged)
+		_tagged_model_layer_active = false
 
 
 ## Puts every mesh under `root` on the magnifier's layer too; the main camera still sees all layers.
 static func tag(root: Node) -> void:
-	if root == null:
+	if not is_instance_valid(root):
 		return
 	if root is VisualInstance3D:
 		(root as VisualInstance3D).layers |= LAYER
 	for child in root.get_children():
 		tag(child)
+
+
+static func untag(root: Node) -> void:
+	if not is_instance_valid(root):
+		return
+	if root is VisualInstance3D:
+		(root as VisualInstance3D).layers &= ~LAYER
+	for child in root.get_children():
+		untag(child)
+
+
+static func camera_for_actor(root: Node) -> Camera3D:
+	if not is_instance_valid(root) or not root.has_meta(CAMERA_META):
+		return null
+	var link: Variant = root.get_meta(CAMERA_META)
+	if not link is WeakRef:
+		return null
+	var candidate: Variant = link.get_ref()
+	return candidate as Camera3D if is_instance_valid(candidate) and candidate is Camera3D else null
 
 
 ## Whether the inset shows for an aircraft spanning `share` of the main view's height (auto keeps its last answer
@@ -89,15 +123,31 @@ func wants(share: float, active: bool) -> bool:
 ## once per model); active: the pilot view is flying an intact aircraft. Call after the rig placed the main camera.
 ## The inset camera stands on the pilot's line of sight, framing the span at FILL of the inset height.
 func update(main_camera: Camera3D, target: Vector3, span: float, root: Node, active: bool) -> void:
-	if root != _tagged:
-		tag(root)
-		_tagged = root
+	var root_is_valid := is_instance_valid(root)
+	var tagged_is_valid := is_instance_valid(_tagged)
+	if root_is_valid != tagged_is_valid or (root_is_valid and root != _tagged):
+		_clear_actor_link(_tagged)
+		_update_vfx_layer(false)
+		if _tagged_model_layer_active:
+			untag(_tagged)
+		_tagged_model_layer_active = false
+		_tagged = root if root_is_valid else null
 	var eye := main_camera.global_position
 	var distance := maxf(eye.distance_to(target), 0.1)
 	var share := PilotCamera.projected_px(span, distance, main_camera.fov, 1.0)
 	_set_visible(wants(share, active))
+	if not is_instance_valid(camera):
+		_set_visible(false)
 	if not shown:
+		_clear_actor_link(_tagged)
+		_update_vfx_layer(false)
+		if _tagged_model_layer_active:
+			untag(_tagged)
+			_tagged_model_layer_active = false
 		return
+	if is_instance_valid(_tagged) and not _tagged_model_layer_active:
+		tag(_tagged)
+		_tagged_model_layer_active = true
 	var height := float(main_camera.get_viewport().get_visible_rect().size.y) if main_camera.is_inside_tree() else 1080.0
 	var side := roundf(height * SIZE_SHARE)
 	var width := float(main_camera.get_viewport().get_visible_rect().size.x) if main_camera.is_inside_tree() else 1920.0
@@ -112,10 +162,54 @@ func update(main_camera: Camera3D, target: Vector3, span: float, root: Node, act
 	# Only the aircraft is drawn: a depth range of a few spans around it.
 	camera.near = maxf(0.05, frame - 2.0 * span)
 	camera.far = frame + 2.0 * span
+	_publish_camera_link(_tagged)
+	_update_vfx_layer(true)
+
+
+func _publish_camera_link(actor: Node) -> void:
+	if not is_instance_valid(actor) or not is_instance_valid(_camera_ref):
+		return
+	if not actor.has_meta(CAMERA_META) or actor.get_meta(CAMERA_META) != _camera_ref:
+		actor.set_meta(CAMERA_META, _camera_ref)
+
+
+func _clear_actor_link(actor: Node) -> void:
+	if is_instance_valid(actor) and actor.has_meta(CAMERA_META) \
+			and actor.get_meta(CAMERA_META) == _camera_ref:
+		actor.remove_meta(CAMERA_META)
+
+
+func _update_vfx_layer(enabled: bool) -> void:
+	var next_root: Node = null
+	if is_instance_valid(_tagged) and _tagged.has_meta(VFX_ROOT_META):
+		var link: Variant = _tagged.get_meta(VFX_ROOT_META)
+		if link is WeakRef:
+			next_root = link.get_ref() as Node
+	var previous_root: Node = _tagged_vfx_root_ref.get_ref() as Node if is_instance_valid(_tagged_vfx_root_ref) else null
+	if next_root != previous_root:
+		if _tagged_vfx_layer_active:
+			_set_render_layer(previous_root, false)
+		_tagged_vfx_root_ref = weakref(next_root) if is_instance_valid(next_root) else null
+		_tagged_vfx_layer_active = false
+	if is_instance_valid(next_root) and _tagged_vfx_layer_active != enabled:
+		_set_render_layer(next_root, enabled)
+		_tagged_vfx_layer_active = enabled
+
+
+func _set_render_layer(node: Node, enabled: bool) -> void:
+	if not is_instance_valid(node):
+		return
+	if node is VisualInstance3D:
+		if enabled:
+			(node as VisualInstance3D).layers |= LAYER
+		else:
+			(node as VisualInstance3D).layers &= ~LAYER
+	for child in node.get_children():
+		_set_render_layer(child, enabled)
 
 
 func _set_visible(on: bool) -> void:
 	shown = on
 	visible = on
-	if _viewport != null:
+	if is_instance_valid(_viewport):
 		_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if on else SubViewport.UPDATE_DISABLED

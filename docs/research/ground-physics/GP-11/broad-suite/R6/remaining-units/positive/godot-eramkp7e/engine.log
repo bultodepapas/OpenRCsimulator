@@ -1,0 +1,35 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   session preset and field load for render telemetry
+ok   two independent visual source instances build
+ok   two rotor visual adapters attach
+ok   hover reset seeds accepted-tick render telemetry
+ok   cached envelope flags match Flight.evaluate under rotated wind and body rates
+ok   strict advance-ratio equality boundary matches Flight.evaluate
+ok   startup envelope metadata matches flight at 0.03 nominal RPM
+ok   startup envelope metadata matches flight at 0.06 nominal RPM
+ok   startup envelope metadata matches flight at 0.09 nominal RPM
+ok   zero-RPM presentation keeps the advance-ratio warning false like Flight.evaluate
+ok   strict small-flap boundary behavior matches Flight.evaluate
+ok   variable RPM integrates the fixed-tick trapezoid exactly  main 45.000000000000 / 45.000000000000; tail 209.700000000000 / 209.700000000000
+ok   30 Hz rendering reads phase without accumulating wall-clock rotation
+ok   60 Hz rendering reads phase without accumulating wall-clock rotation
+ok   144 Hz rendering reads phase without accumulating wall-clock rotation
+ok   capture and live presentation agree at the same accepted tick
+ok   rotor telemetry interpolates with body and shaft phase
+ok   captured rotor pose uses the accepted endpoint phase
+ok   RPM falling to zero retains the integrated spin history
+ok   paused rendering leaves rotor phase fixed
+ok   zero-drive crossfade returns to authored main blades
+ok   ordinary reset rebases presentation phase to neutral
+ok   first tick after reset starts from the new accepted RPM
+ok   compatible checkpoint restores after render-only phase advances
+ok   checkpoint restore rebases display phase and seeds saved shaft speed
+ok   accepted flight advances to nonzero authoritative rotor phase
+ok   nonzero rotor phase restores from checkpoint
+ok   renderer retains saved phase instead of resetting it
+ok   rotor instances own their fade materials and disc meshes
+ok   updating one aircraft leaves the other rotor pose unchanged
+ok   rotor presentation does not mutate source blade materials
+ok   legacy delta-time API continues accumulating phase
+32 checks, 0 failed

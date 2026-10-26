@@ -1,0 +1,10 @@
+{
+  "format": "openrc-frozen-units-launch v1",
+  "session_id": 98346,
+  "status": "running",
+  "complete": false,
+  "command": "OPENRC_TEST_PART=units app/test.sh",
+  "source_before": "../source-before.json",
+  "app_source_before": "../app-source-before.json",
+  "scope": "R6 frozen GP11 runtime with disclosed import/check-out metadata repairs. No later GP12 work."
+}

@@ -1,0 +1,19 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   oracle: small local wing AND tail angles including deflection → loads identical to the linear model (500 states)  
+ok   tip stall: 9 m/s, α 7°, rolling 3 rad/s → the right tip is past the stall (loads differ)  
+ok   every α and β: finite coefficients  
+ok   continuous: largest change per 0.1° < 0.05  0.0213
+ok   lift peaks at CL_max 1.10 inside the blend  1.0999 at 12.7°
+ok   negative lift bottoms at CL_min -0.80  -0.8000
+ok   stall starts outside the ±8° oracle region  +12.1° / −10.9°
+ok   α 90°: flat-plate drag CD0 + CD90, ~no lift, strong nose-down moment  { &"CL": 0.0, &"CD": 1.2434, &"CY": 0.0, &"Cl": 0.0, &"Cm": -0.7508, &"Cn": 0.0 }
+ok   tail first (α 180°): pitch equilibrium is unstable (Cm grows with α)  -0.0423 → -0.0278
+ok   knife edge (β 90°): weathervane and side force still there  { &"CL": 0.1068, &"CD": 0.04463692638362, &"CY": -0.4889, &"Cl": -0.0545, &"Cm": -0.0278, &"Cn": 0.07421288623703 }
+ok   refused: CL_max 0.6 would stall inside the oracle region  ["aero.envelope: the stall blend would start at +5.7° / -11.0°, inside the ±8° linear-oracle region (raise CL_max / CL_min or narrow the blend)"]
+ok   refused: no envelope  
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   full envelope: flown stall within 5% of 1-g CL_max speed 9.50  9.55 m/s
+ok   linear oracle: holds altitude below 90% of physical CL_max speed (unphysical)  6.89 m/s
+ok   tail slide at −8 m/s: 3 s of flight stay finite  [-3.63482446792983, 1.43863510701181, -16.5255071259569, 24.1725795013228, 0.78488475970899, 1.36018877949303, 0.83418070686629, -0.10420106425606, -0.49642712892666, -0.21643657769795, -0.08612350916626, 0.70344116064786, 0.13302928453525]
+15 checks, 0 failed

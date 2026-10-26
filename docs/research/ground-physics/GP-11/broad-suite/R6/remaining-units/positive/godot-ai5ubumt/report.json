@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3c38fc0a-d43f-44ae-a15e-dbf1b1f052fd",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_time_of_day_render_update.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "started_utc": "2026-10-26T14:03:10.335693+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-ai5ubumt\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-ai5ubumt\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.844,
+  "log_bytes": 5087,
+  "log_sha256": "1d398e306fdbbfe24616c170f28fd48860ee8dd8cde9be4a4cc6f98663d0dd20"
+}

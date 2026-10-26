@@ -1,0 +1,134 @@
+{
+  "format": "openrc-ground-audio-material-evidence-v1",
+  "date": "2026-10-26",
+  "passing_production_checks": 91,
+  "scope": "Selected material adapter, focused test and provider/data bytes; not every loaded application source or a physical/audio/performance qualification.",
+  "files": [
+    {
+      "path": "checks/baseline/report.json",
+      "sha256": "54bf6150df38f460db5071bb0115ea040a964b2cb155da50304a92a4142fb2c2",
+      "bytes": 1243,
+      "origin": "tmp/gp19-material-audio/checks/baseline/baseline-h83iumpv/report.json"
+    },
+    {
+      "path": "checks/baseline/engine.log",
+      "sha256": "d3bb9c40128eca2c9c7d00e0522e79a461acc7ecaabf48cd40b9f40e36ee9ca0",
+      "bytes": 208,
+      "origin": "tmp/gp19-material-audio/checks/baseline/baseline-h83iumpv/engine.log"
+    },
+    {
+      "path": "checks/draft/report.json",
+      "sha256": "c5c27288bd663cd5f3a77bdb372ec6c9630a710bd9a359a3d69d435c7ac0ecd3",
+      "bytes": 1722,
+      "origin": "tmp/gp19-material-audio/checks/draft/draft-e2mlfvdi/report.json"
+    },
+    {
+      "path": "checks/draft/engine.log",
+      "sha256": "0113d86d144f8018547b365e731be2c5542e9b8b21f6c16eb0dba157ad5d1aad",
+      "bytes": 690,
+      "origin": "tmp/gp19-material-audio/checks/draft/draft-e2mlfvdi/engine.log"
+    },
+    {
+      "path": "checks/draft-corrected/report.json",
+      "sha256": "f596399f70c9704eb012ec3d17b14c5e26bfb5c823d25f8a22897c16a386c924",
+      "bytes": 1271,
+      "origin": "tmp/gp19-material-audio/checks/draft-corrected/draft-obll6f4h/report.json"
+    },
+    {
+      "path": "checks/draft-corrected/engine.log",
+      "sha256": "734e0ac6731f5f1ca08b0c97fb6a75e417df973f2c79c202c0d3899f63d1ff21",
+      "bytes": 267,
+      "origin": "tmp/gp19-material-audio/checks/draft-corrected/draft-obll6f4h/engine.log"
+    },
+    {
+      "path": "checks/draft-corrected-02/report.json",
+      "sha256": "28802c70c7d9b3b58598e1141496c0b4b1cda5d651860da67247cf834131f79e",
+      "bytes": 1239,
+      "origin": "tmp/gp19-material-audio/checks/draft-corrected-02/draft-xq7o1juf/report.json"
+    },
+    {
+      "path": "checks/draft-corrected-02/engine.log",
+      "sha256": "73658fdc088d7150fd0a1481e384ddd11d1128b35f121d8c749a447693037e7e",
+      "bytes": 211,
+      "origin": "tmp/gp19-material-audio/checks/draft-corrected-02/draft-xq7o1juf/engine.log"
+    },
+    {
+      "path": "checks/main-materials/report.json",
+      "sha256": "e42e3ae642affac143aed5532def803e05fb22e2e8fe7c8f71d881d807b70a1b",
+      "bytes": 1213,
+      "origin": "tmp/gp19-material-audio/checks/main-materials/materials-t4rmilgj/report.json"
+    },
+    {
+      "path": "checks/main-materials/engine.log",
+      "sha256": "73658fdc088d7150fd0a1481e384ddd11d1128b35f121d8c749a447693037e7e",
+      "bytes": 211,
+      "origin": "tmp/gp19-material-audio/checks/main-materials/materials-t4rmilgj/engine.log"
+    },
+    {
+      "path": "checks/main-ground/report.json",
+      "sha256": "ea48334bc28b40100888bf802ee29ad9e2e8b431893c2108f742b51304bb343d",
+      "bytes": 1178,
+      "origin": "tmp/gp19-material-audio/checks/main-ground/ground-miqvrgy_/report.json"
+    },
+    {
+      "path": "checks/main-ground/engine.log",
+      "sha256": "aeac2c46f18c68b178084d11b10c2b7520c8db978874271ea54bb762eadde57a",
+      "bytes": 2375,
+      "origin": "tmp/gp19-material-audio/checks/main-ground/ground-miqvrgy_/engine.log"
+    },
+    {
+      "path": "checks/main-adapter/report.json",
+      "sha256": "f370dbd45ccc51d501ee33d435af812035fb43c06554fe7de6bb823a3be8feb5",
+      "bytes": 1191,
+      "origin": "tmp/gp19-material-audio/checks/main-adapter/adapter-fn0er16e/report.json"
+    },
+    {
+      "path": "checks/main-adapter/engine.log",
+      "sha256": "0f67687c4654a77f2e0957de2e5aa7178a5714db94143dd1cb719cac94e2789f",
+      "bytes": 219,
+      "origin": "tmp/gp19-material-audio/checks/main-adapter/adapter-fn0er16e/engine.log"
+    },
+    {
+      "path": "baseline/ground_audio_model.before.gd.txt",
+      "sha256": "6b918917c7417ac9cd9a0e6d3531232142bbdd2ca8f78d736e27ca0b369c78f3",
+      "bytes": 6519,
+      "origin": "tmp/gp19-material-audio/ground_audio_model.before.gd.txt"
+    },
+    {
+      "path": "baseline/baseline.gd",
+      "sha256": "9f5ccc3cd5b31ec4a12467ebdc2caa052ba410fdada692f1197c4b251e57284a",
+      "bytes": 971,
+      "origin": "tmp/gp19-material-audio/baseline.gd"
+    },
+    {
+      "path": "current/app/audio/ground_audio_model.gd",
+      "sha256": "8b4a2de11d84ce2417c1269c6cfada6c5f6028393e9489d500660933b3975065",
+      "bytes": 8674,
+      "origin": "app/audio/ground_audio_model.gd"
+    },
+    {
+      "path": "current/app/tests/test_ground_audio_materials.gd",
+      "sha256": "e788d9f7759f4dc7e800373a5c537821cd6e6e71c976523b6f209072193eeb61",
+      "bytes": 4359,
+      "origin": "app/tests/test_ground_audio_materials.gd"
+    },
+    {
+      "path": "current/app/physics/ground_support.gd",
+      "sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+      "bytes": 7317,
+      "origin": "app/physics/ground_support.gd"
+    },
+    {
+      "path": "current/app/sim/environment.gd",
+      "sha256": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42",
+      "bytes": 8159,
+      "origin": "app/sim/environment.gd"
+    },
+    {
+      "path": "current/app/data/ground/surface_friction.json",
+      "sha256": "0cb448d2e735c724069053dfe03870a4c46a075511d1ccdeb9ddd72920782a92",
+      "bytes": 5037,
+      "origin": "app/data/ground/surface_friction.json"
+    }
+  ]
+}

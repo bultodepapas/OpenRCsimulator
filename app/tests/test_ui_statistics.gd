@@ -9,6 +9,7 @@ const UiTheme := preload("res://ui/ui_theme.gd")
 
 
 class FakeStatisticsService extends RefCounted:
+	signal changed
 	var revision := 7
 	var note := ""
 	var writable := true
@@ -23,6 +24,7 @@ class FakeStatisticsService extends RefCounted:
 		for index in 52:
 			var record_kind := "flight" if index < 50 else ("crash" if index == 50 else "restart")
 			var record := {
+				"id": "ledger-%03d" % index,
 				"flight_id": "flight-%03d" % index,
 				"kind": record_kind,
 				"aircraft_id": "trainer-a",
@@ -117,6 +119,7 @@ func _initialize() -> void:
 	UiTheme.text_scale = 1.0
 	await _run()
 	print("%d checks, %d failed" % [_checks, _failures])
+	print("statistics UI history refresh checks complete")
 	quit(1 if _failures > 0 else 0)
 
 
@@ -384,6 +387,194 @@ func _run() -> void:
 	stacked_screen.call("_request_back")
 	_check("Back pops the statistics layer and restores opener focus", stack.size() == 0 and focus_anchor.has_focus())
 	await process_frame
+	await _test_history_refresh()
+
+
+func _test_history_refresh() -> void:
+	# Set the real window after initialization; headless startup otherwise replaces
+	# the size assigned in _initialize with its 64x64 default.
+	root.size = Vector2i(1920, 1080)
+	var service := FakeStatisticsService.new()
+	var screen: CanvasLayer = StatisticsScreen.new()
+	screen.configure(service, "")
+	root.add_child(screen)
+	var scroll := screen.find_child("StatisticsScroll", true, false) as ScrollContainer
+	if scroll == null:
+		_check("history refresh fixture has a scroll container", false)
+		screen.queue_free()
+		await process_frame
+		return
+	await _settle_ui()
+	_check("history refresh uses the full 1080p screen and its normal scroll layout",
+		root.size == Vector2i(1920, 1080) and screen.is_ancestor_of(scroll)
+		and Rect2(Vector2.ZERO, Vector2(root.size)).encloses(scroll.get_global_rect()))
+	screen.call("_on_history_toggled", true)
+	await _settle_ui()
+	var legacy_flight_id: String = str(screen.call("_history_record_id", {"kind": "flight", "flight_id": "shared-flight"}))
+	var legacy_crash_id: String = str(screen.call("_history_record_id", {"kind": "crash", "flight_id": "shared-flight"}))
+	_check("legacy records sharing a flight ID remain kind-distinct",
+		not legacy_flight_id.is_empty() and not legacy_crash_id.is_empty() and legacy_flight_id != legacy_crash_id
+		and str(screen.call("_history_record_id", {"flight_id": "shared-flight"})).is_empty())
+	var original_toggle := _find_history_toggle(screen, "ledger-049")
+	if original_toggle == null:
+		_check("history refresh fixture contains a stable scrolled record", false)
+		screen.queue_free()
+		await process_frame
+		return
+	original_toggle.button_pressed = true
+	original_toggle.toggled.emit(true)
+	original_toggle.grab_focus()
+	await _settle_ui()
+	var unchanged_scroll := scroll.scroll_vertical
+	var initial_scroll_detail := _scroll_visibility_detail(scroll, original_toggle)
+	_check("history refresh fixture focuses a visible row after scrolling",
+		unchanged_scroll > 0 and _control_fully_visible_in_scroll(scroll, original_toggle), initial_scroll_detail)
+	service.changed.emit() # Same revision and records, as after a successful writer completion.
+	await _settle_ui()
+	var unchanged_toggle := _find_history_toggle(screen, "ledger-049")
+	_check("unchanged changed signal keeps the expanded focused row instance",
+		is_instance_valid(original_toggle) and unchanged_toggle == original_toggle
+		and original_toggle.has_focus() and _history_toggle_expanded(original_toggle))
+	_check("unchanged changed signal preserves the scrolled position",
+		scroll.scroll_vertical == unchanged_scroll and _control_fully_visible_in_scroll(scroll, original_toggle),
+		"before=%d after=%d %s" % [unchanged_scroll, scroll.scroll_vertical, _scroll_visibility_detail(scroll, original_toggle)])
+
+	var reorder_source := _find_history_toggle(screen, "ledger-000")
+	if reorder_source != null:
+		reorder_source.button_pressed = true
+		reorder_source.toggled.emit(true)
+		reorder_source.grab_focus()
+	await _settle_ui()
+
+	var history: Array = service.values.history.duplicate(true)
+	history.insert(0, {"id": "ledger-new", "kind": "flight", "aircraft_id": "trainer-a",
+		"aircraft_name": "Trainer A", "utc": "2026-10-26T10:00:00Z", "outcome": "completed",
+		"airborne_seconds": 95.0, "start_kind": "takeoff"})
+	service.values.history = history
+	service.revision += 1
+	service.changed.emit()
+	await _settle_ui()
+	var reordered_toggle := _find_history_toggle(screen, "ledger-000")
+	_check("reordered history restores expansion and focus by ledger ID",
+		reordered_toggle != null and reordered_toggle != original_toggle
+		and reordered_toggle.has_focus() and _history_toggle_expanded(reordered_toggle))
+	_check("reordered focused history row remains visible after layout settles",
+		reordered_toggle != null and _control_fully_visible_in_scroll(scroll, reordered_toggle),
+		_scroll_visibility_detail(scroll, reordered_toggle))
+
+	history = service.values.history.duplicate(true)
+	for index in range(history.size()):
+		if str(history[index].get("id", "")) == "ledger-000":
+			history.remove_at(index)
+			break
+	service.values.history = history
+	service.revision += 1
+	service.changed.emit()
+	await process_frame
+	_check("removed focused history record falls back to the history control",
+		_find_history_toggle(screen, "ledger-000") == null and screen._history_button.has_focus())
+
+	var offpage_toggle := _find_history_toggle(screen, "ledger-049")
+	if offpage_toggle == null:
+		_check("off-page focus fixture has a last row on page one", false)
+		screen.queue_free()
+		await process_frame
+		return
+	offpage_toggle.button_pressed = true
+	offpage_toggle.toggled.emit(true)
+	offpage_toggle.grab_focus()
+	history = service.values.history.duplicate(true)
+	history.insert(0, {"id": "ledger-newer-1", "kind": "restart", "reason": "manual_restart"})
+	history.insert(0, {"id": "ledger-newer-2", "kind": "restart", "reason": "manual_restart"})
+	service.values.history = history
+	service.revision += 1
+	service.changed.emit()
+	await process_frame
+	_check("off-page focused history record falls back to the history control",
+		_find_history_toggle(screen, "ledger-049") == null and screen._history_button.has_focus())
+	screen.call("_set_history_page", 1)
+	var returned_toggle := _find_history_toggle(screen, "ledger-049")
+	_check("off-page expansion remains keyed to its ledger ID",
+		returned_toggle != null and _history_toggle_expanded(returned_toggle))
+
+	screen.call("_set_history_page", 0)
+	var filter_toggle := _find_history_toggle(screen, "ledger-new")
+	if filter_toggle != null:
+		filter_toggle.button_pressed = true
+		filter_toggle.toggled.emit(true)
+	screen.call("_on_aircraft_selected", 1)
+	var filtered_toggle := _find_history_toggle(screen, "ledger-new")
+	_check("aircraft filter context rebuilds rows even when history values match",
+		filter_toggle != null and filtered_toggle != null and filtered_toggle != filter_toggle
+		and _history_toggle_expanded(filtered_toggle))
+	screen.configure(service, "trainer-a", "imperial")
+	var imperial_toggle := _find_history_toggle(screen, "ledger-new")
+	_check("unit context rebuilds rows without discarding expansion state",
+		imperial_toggle != null and imperial_toggle != filtered_toggle and _history_toggle_expanded(imperial_toggle))
+	var locale_toggle := imperial_toggle
+	TranslationServer.set_locale("es")
+	service.changed.emit()
+	await process_frame
+	var translated_toggle := _find_history_toggle(screen, "ledger-new")
+	_check("locale context rebuilds translated history rows",
+		translated_toggle != null and translated_toggle != locale_toggle and _history_toggle_expanded(translated_toggle))
+	TranslationServer.set_locale("en")
+	screen._period_picker.grab_focus()
+	history = service.values.history.duplicate(true)
+	for index in range(history.size()):
+		if str(history[index].get("id", "")) == "ledger-new":
+			history[index].outcome = "in_progress"
+			break
+	service.values.history = history
+	service.revision += 1
+	service.changed.emit()
+	await process_frame
+	_check("changed history refresh does not steal focus from a filter",
+		screen._period_picker.has_focus())
+	screen.queue_free()
+	await process_frame
+
+
+func _find_history_toggle(screen: CanvasLayer, record_id: String) -> Button:
+	for row: Node in screen._history_rows.get_children():
+		if str(row.get_meta("statistics_history_id", "")) == record_id and row.get_child_count() > 0:
+			return row.get_child(0) as Button
+	return null
+
+
+func _history_toggle_expanded(toggle: Button) -> bool:
+	if not is_instance_valid(toggle):
+		return false
+	var row := toggle.get_parent()
+	return row != null and row.get_child_count() > 1 and (row.get_child(1) as Control).visible
+
+
+func _settle_ui(frames: int = 5) -> void:
+	for _frame in frames:
+		await process_frame
+
+
+func _control_fully_visible_in_scroll(scroll: ScrollContainer, control: Control) -> bool:
+	if scroll == null or not is_instance_valid(control):
+		return false
+	var scroll_rect: Rect2 = scroll.get_global_rect()
+	var control_rect: Rect2 = control.get_global_rect()
+	return control_rect.position.y >= scroll_rect.position.y - 1.0 \
+		and control_rect.end.y <= scroll_rect.end.y + 1.0
+
+
+func _scroll_visibility_detail(scroll: ScrollContainer, control: Control) -> String:
+	if scroll == null or not is_instance_valid(control):
+		return "scroll or control invalid"
+	var bar := scroll.get_v_scroll_bar()
+	var ancestors := PackedStringArray()
+	var current: Node = scroll
+	while current != null:
+		if current is Control:
+			ancestors.append("%s=%s" % [current.name, (current as Control).get_global_rect()])
+		current = current.get_parent()
+	return "scroll=%d max=%.1f page=%.1f row=%s ancestors=%s" % [
+		scroll.scroll_vertical, bar.max_value, bar.page, control.get_global_rect(), " | ".join(ancestors)]
 
 
 func _all_text(node: Node) -> String:

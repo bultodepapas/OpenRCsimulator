@@ -1,0 +1,20 @@
+{
+  "format": "openrc-frozen-integration-launch v1",
+  "status": "failed",
+  "complete": true,
+  "session_id": 73243,
+  "utc": "2026-10-26T14:37:08.317844+00:00",
+  "command": "OPENRC_TEST_PART=integration bash harness-no-repeat-parse.sh",
+  "source_before": "../source-before.json",
+  "app_source_before": "../app-source-before.json",
+  "harness_sha256": "db2f18e760af8b58c94c021bd869c6b4845fd963454cb30a56e1052454ee4d27",
+  "harness_changes": "Only HERE path adjustment and reuse of already-passed1374-script parse; original offline guards and integration tail unchanged.",
+  "user_profile": "integration/user-appdata + integration/user-localappdata",
+  "scope": "Frozen GP11 cohort and disclosed metadata repairs; later GP12/Electric/Step work excluded.",
+  "exit_code": 1,
+  "stop": "F4U-05 generated presentation input hashes stale because three authoring JSON files checked out CRLF",
+  "attribution": "f4u-attribution.json",
+  "source_unchanged": true,
+  "selected_source_paths_verified": 162,
+  "app_source_dependency_paths_verified": 4034
+}

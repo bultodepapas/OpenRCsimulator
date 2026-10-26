@@ -1,0 +1,50 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   recorded loop fixture has the existing 64-frame PCM wrap guard
+ok   controller configures a spatial player on the live environment bus
+ok   configure positions the player quietly without starting at the origin
+ok   player uses bounded local spatial settings and leaves engine Doppler off
+ok   calm wind keeps the fabric loop silent
+ok   strong wind starts the loop only after placing it at the sock — playing=true pos=(-17.0, 4.0, 11.0)
+ok   strong-wind fabric stays within its quiet bounded gain — linear=0.2200
+ok   loose fabric is slightly louder than full inflation — loose=0.2200 taut=0.1936
+ok   shared soundscape gain scales the fabric level directly — full=0.1936 at 0.4 mix=0.0774
+ok   zero shared gain mutes the stream and suspends it on native audio drivers — driver=Dummy paused=false playing=true volume=-80.0 dB
+ok   resume unsuspends the same loop
+ok   invalid source positions fall back to the configured anchor
+ok   rebind stops playback and moves the player to the rebuilt bus
+ok   the first positioned update after rebind restarts playback
+ok   reset stops the player and clears its level
+ok   an active update after reset can start the loop again
+ok   stop leaves the stream silent for bus teardown
+ok   test player releases its temporary environment bus — expected=1 actual=1
+ok   recorded wind manifest describes all three loops
+ok   wind_low.wav matches its manifest hash and imports as mono 22.05 kHz PCM16 — hash=true pcm=true rate=22050 bytes=837900 expected=837900
+ok   wind_low.wav retains its recorded long-form loop duration — actual=19.000 s expected=19.000 s
+ok   wind_low.wav passes the production 64-frame loop guard — loop_end=418950 frames=418950 bytes=838028
+ok   wind_high.wav matches its manifest hash and imports as mono 22.05 kHz PCM16 — hash=true pcm=true rate=22050 bytes=793800 expected=793800
+ok   wind_high.wav retains its recorded long-form loop duration — actual=18.000 s expected=18.000 s
+ok   wind_high.wav passes the production 64-frame loop guard — loop_end=396900 frames=396900 bytes=793928
+ok   windsock_fabric.wav matches its manifest hash and imports as mono 22.05 kHz PCM16 — hash=true pcm=true rate=22050 bytes=926100 expected=926100
+ok   windsock_fabric.wav retains its recorded long-form loop duration — actual=21.000 s expected=21.000 s
+ok   windsock_fabric.wav passes the production 64-frame loop guard — loop_end=463050 frames=463050 bytes=926228
+ok   recorded manifest PCM total matches loaded source bytes — loaded=2557800 manifest=2557800
+ok   default field loads for recorded-audio integration — []
+ok   default field has exactly one windsock cue — count=1
+ok   default soundscape creates one fabric player on its environment bus outside the 14-voice pool — fabric=true nodes=1 voices=14 bus=OpenRC Environment 32111592965 environment=OpenRC Environment 32111592965
+ok   fabric configure anchors quietly before playback, away from origin-pop behavior — expected=(-12.0, 3.6, 6.0) actual=(-12.0, 3.6, 6.0)
+ok   Soundscape uses the recorded, guarded wind_low.wav stream — source=true integrated=true
+ok   Soundscape uses the recorded, guarded wind_high.wav stream — source=true integrated=true
+ok   Soundscape uses the recorded, guarded windsock_fabric.wav stream — source=true integrated=true
+ok   recorded wind loops and fabric share the environment route
+ok   integrated fabric stays silent in calm wind
+ok   integrated fabric source follows the current snapshot at bounded strong-wind gain — position=(73.0, 8.0, -42.0) expected=(73.0, 8.0, -42.0) level=0.2021
+ok   integrated fabric fades to silence when the actual wind calms
+ok   integrated recorded fabric gain agrees at 30, 60 and 144 updates per second — gains=[0.20208588659694, 0.20208588659694, 0.20208588659694] spread=0.000000
+ok   detaching stops fabric and releases its environment bus — bus=-1 count=1 expected=1
+ok   reattaching rebuilds and rebinds the same fabric player — bus=OpenRC Environment 32111592965
+ok   reattached soundscape restarts fabric from the positioned snapshot
+ok   integrated soundscape frees its buses after fabric stops — expected=1 actual=1
+ok   a field without a windsock creates no fabric source
+ok   field without a windsock releases all soundscape buses
+47 checks, 0 failed

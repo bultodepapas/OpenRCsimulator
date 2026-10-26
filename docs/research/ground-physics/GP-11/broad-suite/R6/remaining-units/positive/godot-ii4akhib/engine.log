@@ -1,0 +1,61 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/jensen_ugly_stik_60.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/jensen_ugly_stik_60.orfl (260 ticks)
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/jensen_ugly_stik_60.orfl
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/jensen_ugly_stik_60.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/jensen_ugly_stik_60.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/jensen_ugly_stik_60.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/gp_extra_300s_60.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/gp_extra_300s_60.orfl (260 ticks)
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/gp_extra_300s_60.orfl
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/gp_extra_300s_60.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/gp_extra_300s_60.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/gp_extra_300s_60.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/p51d_mustang_120.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/p51d_mustang_120.orfl (260 ticks)
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/p51d_mustang_120.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/p51d_mustang_120.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/p51d_mustang_120.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/p51d_mustang_120.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/sebart_avanti_s_a200.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/sebart_avanti_s_a200.orfl (260 ticks)
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/sebart_avanti_s_a200.orfl
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/sebart_avanti_s_a200.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/sebart_avanti_s_a200.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/sebart_avanti_s_a200.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/turbo_lumber_evolution.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/turbo_lumber_evolution.orfl (260 ticks)
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/turbo_lumber_evolution.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/turbo_lumber_evolution.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/turbo_lumber_evolution.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/turbo_lumber_evolution.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/stik_glow_61fx_2t.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/stik_glow_61fx_2t.orfl (260 ticks)
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/stik_glow_61fx_2t.orfl
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/stik_glow_61fx_2t.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/stik_glow_61fx_2t.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634/stik_glow_61fx_2t.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+FL-04 flight logs: 3247 checks, 0 failures; C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/flight-log-2387634

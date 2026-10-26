@@ -1,0 +1,22 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   turbulent airplane weather fixture saves
+ok   helicopter Home summary hides unsupported turbulence
+ok   helicopter selection keeps the saved airplane turbulence
+ok   returning to an airplane shows the turbulence again
+ok   helicopter starts from its own default pad start
+ok   airplane keeps the in-the-air start chosen before browsing
+ok   helicopter keeps its hover start
+ok   browsing alone saves no start change
+ok   a landscape without a runway shows the in-the-air start
+ok   returning to the club field restores the runway start
+ok   a language switch on a runway-less field keeps the runway preference
+ok   aircraft selection keeps the Home note
+ok   electric aircraft shows the ideal battery choice
+ok   flight starts with the chosen battery mode
+ok   End flight keeps the battery choice
+ok   glow aircraft shows the remembered fuel fill
+ok   Fly saved the battery and fuel choices
+ok   an application restart restores the fuel fill
+ok   an application restart restores the battery mode
+UI preserved choices: 0 failed

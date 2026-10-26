@@ -1,0 +1,331 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   bundled birds.json validates
+ok   rejects a wrong format
+ok   rejects a span in feet
+ok   rejects a quantity without a source
+ok   rejects an unknown evidence kind
+ok   rejects an implausible span
+ok   rejects a burst period that does not divide 1024 s
+ok   rejects a fork deeper than the tail
+ok   rejects an unknown tail shape
+ok   rejects an unknown activity period
+ok   rejects a sun window that closes before it opens
+ok   rejects a departure without a mode
+ok   rejects a departure that never ends
+ok   rejects a departure faster than any bird
+ok   rejects more birds in a group than the budget allows
+ok   rejects an unknown species in a flock
+ok   rejects too many birds
+ok   rejects a non-boolean instance flag
+ok   rejects a circuit that does not close
+ok   rejects a circuit that ends higher than it starts
+ok   rejects a period that cannot divide 1024 s
+ok   rejects a segment with both speed and duration
+ok   rejects an impossible speed hidden in a duration
+ok   rejects a non-numeric duration
+ok   rejects a climb rate no bird has
+ok   rejects a repeated flock id
+ok   rejects a non-object root
+ok   vulture_kettle has measured limits in this test
+ok   vulture_kettle track 0: period divides 1024 s
+ok   vulture_kettle track 0: repeats every 1024 s
+ok   vulture_kettle track 0: exact bounds hold every sampled position and are tight (within 0.1 m)
+ok   vulture_kettle track 0: continuous and tangent at every joint (sampled on both sides)
+ok   vulture_kettle track 0: speed in the measured range [8.0, 14.5]
+ok   vulture_kettle track 0: bank in the measured range [16.0, 35.0]
+ok   vulture_kettle track 0: bank exact inside arcs and rolled smoothly across joints (max 1.39 of 2.5 deg per 0.05 s)
+ok   vulture_kettle track 0: thermal circling radius, period and climb measured
+ok   vulture_kettle track 1: period divides 1024 s
+ok   vulture_kettle track 1: repeats every 1024 s
+ok   vulture_kettle track 1: exact bounds hold every sampled position and are tight (within 0.1 m)
+ok   vulture_kettle track 1: continuous and tangent at every joint (sampled on both sides)
+ok   vulture_kettle track 1: speed in the measured range [8.0, 14.5]
+ok   vulture_kettle track 1: bank in the measured range [16.0, 35.0]
+ok   vulture_kettle track 1: bank exact inside arcs and rolled smoothly across joints (max 1.76 of 2.5 deg per 0.05 s)
+ok   vulture_kettle track 1: thermal circling radius, period and climb measured
+ok   vulture_kettle track 2: period divides 1024 s
+ok   vulture_kettle track 2: repeats every 1024 s
+ok   vulture_kettle track 2: exact bounds hold every sampled position and are tight (within 0.1 m)
+ok   vulture_kettle track 2: continuous and tangent at every joint (sampled on both sides)
+ok   vulture_kettle track 2: speed in the measured range [8.0, 14.5]
+ok   vulture_kettle track 2: bank in the measured range [16.0, 35.0]
+ok   vulture_kettle track 2: bank exact inside arcs and rolled smoothly across joints (max 2.10 of 2.5 deg per 0.05 s)
+ok   vulture_kettle track 2: thermal circling radius, period and climb measured
+ok   stork_kettle has measured limits in this test
+ok   stork_kettle track 0: period divides 1024 s
+ok   stork_kettle track 0: repeats every 1024 s
+ok   stork_kettle track 0: exact bounds hold every sampled position and are tight (within 0.1 m)
+ok   stork_kettle track 0: continuous and tangent at every joint (sampled on both sides)
+ok   stork_kettle track 0: speed in the measured range [8.0, 15.5]
+ok   stork_kettle track 0: bank in the measured range [19.0, 30.0]
+ok   stork_kettle track 0: bank exact inside arcs and rolled smoothly across joints (max 1.30 of 2.5 deg per 0.05 s)
+ok   stork_kettle track 0: thermal circling radius, period and climb measured
+ok   stork_kettle track 1: period divides 1024 s
+ok   stork_kettle track 1: repeats every 1024 s
+ok   stork_kettle track 1: exact bounds hold every sampled position and are tight (within 0.1 m)
+ok   stork_kettle track 1: continuous and tangent at every joint (sampled on both sides)
+ok   stork_kettle track 1: speed in the measured range [8.0, 15.5]
+ok   stork_kettle track 1: bank in the measured range [19.0, 30.0]
+ok   stork_kettle track 1: bank exact inside arcs and rolled smoothly across joints (max 1.44 of 2.5 deg per 0.05 s)
+ok   stork_kettle track 1: thermal circling radius, period and climb measured
+ok   stork_kettle track 2: period divides 1024 s
+ok   stork_kettle track 2: repeats every 1024 s
+ok   stork_kettle track 2: exact bounds hold every sampled position and are tight (within 0.1 m)
+ok   stork_kettle track 2: continuous and tangent at every joint (sampled on both sides)
+ok   stork_kettle track 2: speed in the measured range [8.0, 15.5]
+ok   stork_kettle track 2: bank in the measured range [19.0, 30.0]
+ok   stork_kettle track 2: bank exact inside arcs and rolled smoothly across joints (max 1.63 of 2.5 deg per 0.05 s)
+ok   stork_kettle track 2: thermal circling radius, period and climb measured
+ok   kite_quartering has measured limits in this test
+ok   kite_quartering track 0: period divides 1024 s
+ok   kite_quartering track 0: repeats every 1024 s
+ok   kite_quartering track 0: exact bounds hold every sampled position and are tight (within 0.1 m)
+ok   kite_quartering track 0: continuous and tangent at every joint (sampled on both sides)
+ok   kite_quartering track 0: speed in the measured range [5.5, 9.0]
+ok   kite_quartering track 0: bank in the measured range [0.0, 27.0]
+ok   kite_quartering track 0: bank exact inside arcs and rolled smoothly across joints (max 1.44 of 2.5 deg per 0.05 s)
+ok   kite_quartering track 0: thermal circling radius, period and climb measured
+ok   swallow_coursing has measured limits in this test
+ok   swallow_coursing track 0: period divides 1024 s
+ok   swallow_coursing track 0: repeats every 1024 s
+ok   swallow_coursing track 0: exact bounds hold every sampled position and are tight (within 0.1 m)
+ok   swallow_coursing track 0: continuous and tangent at every joint (sampled on both sides)
+ok   swallow_coursing track 0: speed in the measured range [6.0, 12.5]
+ok   swallow_coursing track 0: bank in the measured range [0.0, 60.0]
+ok   swallow_coursing track 0: bank exact inside arcs and rolled smoothly across joints (max 7.81 of 10.0 deg per 0.05 s)
+ok   swift_party has measured limits in this test
+ok   swift_party track 0: period divides 1024 s
+ok   swift_party track 0: repeats every 1024 s
+ok   swift_party track 0: exact bounds hold every sampled position and are tight (within 0.1 m)
+ok   swift_party track 0: continuous and tangent at every joint (sampled on both sides)
+ok   swift_party track 0: speed in the measured range [7.0, 12.5]
+ok   swift_party track 0: bank in the measured range [0.0, 60.0]
+ok   swift_party track 0: bank exact inside arcs and rolled smoothly across joints (max 6.03 of 10.0 deg per 0.05 s)
+ok   vulture_kettle bird 0: height 93.9..150.6 m within [85.0, 160.0] m
+ok   vulture_kettle bird 0: never within 30 m of the pilot, on its circuit or leaving
+ok   vulture_kettle bird 0: stays outside the flight box, on its circuit or leaving
+ok   vulture_kettle bird 0: offset and hash exact in a half float
+ok   vulture_kettle bird 1: height 97.8..154.5 m within [85.0, 160.0] m
+ok   vulture_kettle bird 1: never within 30 m of the pilot, on its circuit or leaving
+ok   vulture_kettle bird 1: stays outside the flight box, on its circuit or leaving
+ok   vulture_kettle bird 1: offset and hash exact in a half float
+ok   vulture_kettle bird 2: height 96.4..153.1 m within [85.0, 160.0] m
+ok   vulture_kettle bird 2: never within 30 m of the pilot, on its circuit or leaving
+ok   vulture_kettle bird 2: stays outside the flight box, on its circuit or leaving
+ok   vulture_kettle bird 2: offset and hash exact in a half float
+ok   vulture_kettle bird 3: height 98.8..155.5 m within [85.0, 160.0] m
+ok   vulture_kettle bird 3: never within 30 m of the pilot, on its circuit or leaving
+ok   vulture_kettle bird 3: stays outside the flight box, on its circuit or leaving
+ok   vulture_kettle bird 3: offset and hash exact in a half float
+ok   vulture_kettle bird 4: height 92.8..149.5 m within [85.0, 160.0] m
+ok   vulture_kettle bird 4: never within 30 m of the pilot, on its circuit or leaving
+ok   vulture_kettle bird 4: stays outside the flight box, on its circuit or leaving
+ok   vulture_kettle bird 4: offset and hash exact in a half float
+ok   vulture_kettle bird 5: height 97.1..153.7 m within [85.0, 160.0] m
+ok   vulture_kettle bird 5: never within 30 m of the pilot, on its circuit or leaving
+ok   vulture_kettle bird 5: stays outside the flight box, on its circuit or leaving
+ok   vulture_kettle bird 5: offset and hash exact in a half float
+ok   vulture_kettle bird 6: height 91.2..147.9 m within [85.0, 160.0] m
+ok   vulture_kettle bird 6: never within 30 m of the pilot, on its circuit or leaving
+ok   vulture_kettle bird 6: stays outside the flight box, on its circuit or leaving
+ok   vulture_kettle bird 6: offset and hash exact in a half float
+ok   vulture_kettle bird 7: height 97.4..154.1 m within [85.0, 160.0] m
+ok   vulture_kettle bird 7: never within 30 m of the pilot, on its circuit or leaving
+ok   vulture_kettle bird 7: stays outside the flight box, on its circuit or leaving
+ok   vulture_kettle bird 7: offset and hash exact in a half float
+ok   vulture_kettle bird 8: height 91.8..148.5 m within [85.0, 160.0] m
+ok   vulture_kettle bird 8: never within 30 m of the pilot, on its circuit or leaving
+ok   vulture_kettle bird 8: stays outside the flight box, on its circuit or leaving
+ok   vulture_kettle bird 8: offset and hash exact in a half float
+ok   stork_kettle bird 9: height 103.6..171.7 m within [90.0, 180.0] m
+ok   stork_kettle bird 9: never within 30 m of the pilot, on its circuit or leaving
+ok   stork_kettle bird 9: stays outside the flight box, on its circuit or leaving
+ok   stork_kettle bird 9: offset and hash exact in a half float
+ok   stork_kettle bird 10: height 97.1..165.2 m within [90.0, 180.0] m
+ok   stork_kettle bird 10: never within 30 m of the pilot, on its circuit or leaving
+ok   stork_kettle bird 10: stays outside the flight box, on its circuit or leaving
+ok   stork_kettle bird 10: offset and hash exact in a half float
+ok   stork_kettle bird 11: height 97.8..165.9 m within [90.0, 180.0] m
+ok   stork_kettle bird 11: never within 30 m of the pilot, on its circuit or leaving
+ok   stork_kettle bird 11: stays outside the flight box, on its circuit or leaving
+ok   stork_kettle bird 11: offset and hash exact in a half float
+ok   stork_kettle bird 12: height 100.8..168.9 m within [90.0, 180.0] m
+ok   stork_kettle bird 12: never within 30 m of the pilot, on its circuit or leaving
+ok   stork_kettle bird 12: stays outside the flight box, on its circuit or leaving
+ok   stork_kettle bird 12: offset and hash exact in a half float
+ok   stork_kettle bird 13: height 102.5..170.6 m within [90.0, 180.0] m
+ok   stork_kettle bird 13: never within 30 m of the pilot, on its circuit or leaving
+ok   stork_kettle bird 13: stays outside the flight box, on its circuit or leaving
+ok   stork_kettle bird 13: offset and hash exact in a half float
+ok   stork_kettle bird 14: height 97.8..165.9 m within [90.0, 180.0] m
+ok   stork_kettle bird 14: never within 30 m of the pilot, on its circuit or leaving
+ok   stork_kettle bird 14: stays outside the flight box, on its circuit or leaving
+ok   stork_kettle bird 14: offset and hash exact in a half float
+ok   kite_quartering bird 15: height 34.0..52.8 m within [33.0, 70.0] m
+ok   kite_quartering bird 15: never within 30 m of the pilot, on its circuit or leaving
+ok   kite_quartering bird 15: stays outside the flight box, on its circuit or leaving
+ok   kite_quartering bird 15: offset and hash exact in a half float
+ok   kite_quartering bird 16: height 34.6..53.4 m within [33.0, 70.0] m
+ok   kite_quartering bird 16: never within 30 m of the pilot, on its circuit or leaving
+ok   kite_quartering bird 16: stays outside the flight box, on its circuit or leaving
+ok   kite_quartering bird 16: offset and hash exact in a half float
+ok   swallow_coursing bird 0: height 0.3..3.1 m within [0.25, 4.1] m
+ok   swallow_coursing bird 0: never within 30 m of the pilot, on its circuit or leaving
+ok   swallow_coursing bird 0: 30 m or more from the runway centreline, short of the hedge
+ok   swallow_coursing bird 0: offset and hash exact in a half float
+ok   swallow_coursing bird 1: height 0.3..3.1 m within [0.25, 4.1] m
+ok   swallow_coursing bird 1: never within 30 m of the pilot, on its circuit or leaving
+ok   swallow_coursing bird 1: 30 m or more from the runway centreline, short of the hedge
+ok   swallow_coursing bird 1: offset and hash exact in a half float
+ok   swallow_coursing bird 2: height 0.3..3.1 m within [0.25, 4.1] m
+ok   swallow_coursing bird 2: never within 30 m of the pilot, on its circuit or leaving
+ok   swallow_coursing bird 2: 30 m or more from the runway centreline, short of the hedge
+ok   swallow_coursing bird 2: offset and hash exact in a half float
+ok   swallow_coursing bird 3: height 0.3..3.1 m within [0.25, 4.1] m
+ok   swallow_coursing bird 3: never within 30 m of the pilot, on its circuit or leaving
+ok   swallow_coursing bird 3: 30 m or more from the runway centreline, short of the hedge
+ok   swallow_coursing bird 3: offset and hash exact in a half float
+ok   swallow_coursing bird 4: height 0.3..3.1 m within [0.25, 4.1] m
+ok   swallow_coursing bird 4: never within 30 m of the pilot, on its circuit or leaving
+ok   swallow_coursing bird 4: 30 m or more from the runway centreline, short of the hedge
+ok   swallow_coursing bird 4: offset and hash exact in a half float
+ok   swallow_coursing bird 5: height 0.3..3.1 m within [0.25, 4.1] m
+ok   swallow_coursing bird 5: never within 30 m of the pilot, on its circuit or leaving
+ok   swallow_coursing bird 5: 30 m or more from the runway centreline, short of the hedge
+ok   swallow_coursing bird 5: offset and hash exact in a half float
+ok   swallow_coursing bird 6: height 0.3..3.1 m within [0.25, 4.1] m
+ok   swallow_coursing bird 6: never within 30 m of the pilot, on its circuit or leaving
+ok   swallow_coursing bird 6: 30 m or more from the runway centreline, short of the hedge
+ok   swallow_coursing bird 6: offset and hash exact in a half float
+ok   swallow_coursing bird 7: height 0.3..3.1 m within [0.25, 4.1] m
+ok   swallow_coursing bird 7: never within 30 m of the pilot, on its circuit or leaving
+ok   swallow_coursing bird 7: 30 m or more from the runway centreline, short of the hedge
+ok   swallow_coursing bird 7: offset and hash exact in a half float
+ok   swallow_coursing bird 8: height 0.3..3.1 m within [0.25, 4.1] m
+ok   swallow_coursing bird 8: never within 30 m of the pilot, on its circuit or leaving
+ok   swallow_coursing bird 8: 30 m or more from the runway centreline, short of the hedge
+ok   swallow_coursing bird 8: offset and hash exact in a half float
+ok   swallow_coursing bird 9: height 0.3..3.1 m within [0.25, 4.1] m
+ok   swallow_coursing bird 9: never within 30 m of the pilot, on its circuit or leaving
+ok   swallow_coursing bird 9: 30 m or more from the runway centreline, short of the hedge
+ok   swallow_coursing bird 9: offset and hash exact in a half float
+ok   swift_party bird 10: height 24.7..28.7 m within [19.0, 40.0] m
+ok   swift_party bird 10: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 10: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 10: offset and hash exact in a half float
+ok   swift_party bird 11: height 19.8..23.8 m within [19.0, 40.0] m
+ok   swift_party bird 11: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 11: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 11: offset and hash exact in a half float
+ok   swift_party bird 12: height 20.4..24.3 m within [19.0, 40.0] m
+ok   swift_party bird 12: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 12: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 12: offset and hash exact in a half float
+ok   swift_party bird 13: height 22.6..26.5 m within [19.0, 40.0] m
+ok   swift_party bird 13: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 13: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 13: offset and hash exact in a half float
+ok   swift_party bird 14: height 23.9..27.8 m within [19.0, 40.0] m
+ok   swift_party bird 14: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 14: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 14: offset and hash exact in a half float
+ok   swift_party bird 15: height 20.4..24.3 m within [19.0, 40.0] m
+ok   swift_party bird 15: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 15: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 15: offset and hash exact in a half float
+ok   swift_party bird 16: height 19.5..23.4 m within [19.0, 40.0] m
+ok   swift_party bird 16: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 16: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 16: offset and hash exact in a half float
+ok   swift_party bird 17: height 19.6..23.6 m within [19.0, 40.0] m
+ok   swift_party bird 17: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 17: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 17: offset and hash exact in a half float
+ok   swift_party bird 18: height 20.4..24.3 m within [19.0, 40.0] m
+ok   swift_party bird 18: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 18: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 18: offset and hash exact in a half float
+ok   swift_party bird 19: height 21.3..25.3 m within [19.0, 40.0] m
+ok   swift_party bird 19: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 19: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 19: offset and hash exact in a half float
+ok   swift_party bird 20: height 21.5..25.5 m within [19.0, 40.0] m
+ok   swift_party bird 20: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 20: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 20: offset and hash exact in a half float
+ok   swift_party bird 21: height 21.2..25.2 m within [19.0, 40.0] m
+ok   swift_party bird 21: never within 30 m of the pilot, on its circuit or leaving
+ok   swift_party bird 21: stays outside the flight box, on its circuit or leaving
+ok   swift_party bird 21: offset and hash exact in a half float
+ok   griffon_vulture silhouette spans 2.60 m
+ok   griffon_vulture: the shader's wing rig moves exactly the wing; hand and tail weights where they belong
+ok   griffon_vulture silhouette is left-right symmetric
+ok   white_stork silhouette spans 1.91 m
+ok   white_stork: the shader's wing rig moves exactly the wing; hand and tail weights where they belong
+ok   white_stork silhouette is left-right symmetric
+ok   red_kite silhouette spans 1.66 m
+ok   red_kite: the shader's wing rig moves exactly the wing; hand and tail weights where they belong
+ok   red_kite silhouette is left-right symmetric
+ok   soaring: every species shares one topology (35 triangles)
+ok   soaring: indexed mesh, every corner keeps each species' shape, rig weights and shade (69 vertices for 105 corners)
+ok   barn_swallow silhouette spans 0.32 m
+ok   barn_swallow: the shader's wing rig moves exactly the wing; hand and tail weights where they belong
+ok   barn_swallow silhouette is left-right symmetric
+ok   common_swift silhouette spans 0.40 m
+ok   common_swift: the shader's wing rig moves exactly the wing; hand and tail weights where they belong
+ok   common_swift silhouette is left-right symmetric
+ok   small: every species shares one topology (21 triangles)
+ok   small: indexed mesh, every corner keeps each species' shape, rig weights and shade (25 vertices for 63 corners)
+ok   night snapshot (sky clamp 0.05 deg, sun -89.8 deg): no species out
+ok   dawn snapshot (sky clamp 0.05 deg, sun -6.0 deg): no species out
+ok   noon: vultures, storks, kites and swallows out; no swifts
+ok   evening (sun 4.8 deg, afternoon): swifts and swallows out; no vultures
+ok   morning at the same sun (4.9 deg): no evening swifts
+ok   overcast noon: no thermals, so no vultures or storks; kites and swallows still out
+ok   low scene detail halves each species' share
+ok   low scene detail draws about half the birds at noon (13 of 27)
+ok   drawn birds stay within 1000 primitives all day, transitions included (worst 805 at sun 17.3 deg, morning, clouds 0.00)
+ok   a flying bird starts leaving at the nearest half-second
+ok   leaving and turning back is continuous (largest step 0.0022 of the way per 0.1 s)
+ok   after turning back it is fully home
+ok   transitions started on any fraction of a second ease in (no pop), also at the clock wrap
+ok   clouds coming over: soarers start leaving from their circuits, none vanishes at once
+ok   after the longest departure the leavers are away and cost nothing
+ok   noon to evening in one step snaps (no transitions) within 1000 primitives (476)
+ok   flowing time: the birds follow the flow state's sun (swifts gone at 40 deg)
+ok   transitions settle to flying or away, so nothing replays when the clock wraps
+ok   the saved Birds levels mirror the director's
+ok   a new or old display.cfg means Normal birds
+ok   Few saves and loads back
+ok   an unknown Birds level is refused
+ok   density per level and tier: off 0, few half, normal the tier, many full
+ok   choosing the current level changes nothing
+ok   an unknown level falls back to Normal
+ok   Off applies at once: every bird starts leaving (none vanishes)
+ok   …and once they have left, nothing is drawn
+ok   Many brings the noon birds back (27 of 27)
+ok   with the clock standing still (Home, pause) a change settles at once
+ok   built while Off: the layer exists but draws nothing
+ok   Few at High draws about half the noon birds (13 of 27)
+ok   builds the Birds node
+ok   Birds_soaring: shadow casting off
+ok   Birds_soaring: float32 shader tables within 5 cm of the float64 tracks over 0-2048 s
+ok   Birds_soaring: the shader's smoothed lateral acceleration matches the float64 reference (0.00005 m/s2)
+ok   Birds_soaring: colour, gait, departure and rig uniforms hold each species' data
+ok   Birds_small: shadow casting off
+ok   Birds_small: float32 shader tables within 5 cm of the float64 tracks over 0-2048 s
+ok   Birds_small: the shader's smoothed lateral acceleration matches the float64 reference (0.00002 m/s2)
+ok   Birds_small: colour, gait, departure and rig uniforms hold each species' data
+ok   one MultiMesh per group ["Birds_soaring", "Birds_small"]
+ok   noon within the scenery_Birds budget (1000 primitives, 2 draws)
+ok   every bird stays inside its culling box on its circuit and on its way out (no pop-out)
+ok   build is deterministic (instances, meshes, culling boxes and every shader table, byte for byte)
+WARNING: birds: res://data/scenery/birds/missing.json not built: missing res://data/scenery/birds/missing.json
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] build (res://scenery/birds.gd:40)
+       [1] _test_scene (res://tests/test_birds.gd:647)
+       [2] _initialize (res://tests/test_birds.gd:74)
+ok   invalid data builds nothing
+all 322 bird checks passed

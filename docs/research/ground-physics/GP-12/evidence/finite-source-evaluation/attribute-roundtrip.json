@@ -1,0 +1,32 @@
+{
+  "format": "openrc-git-attributes-roundtrip v1",
+  "complete": true,
+  "ok": true,
+  "created_utc": "2026-10-26T16:40:07.848900+00:00",
+  "fixture": "tmp/gp12-finite-battery-checks/attribute-roundtrip-f05153db188443a38d388d3b2b01e2c5",
+  "fixture_commit": "17f524e6009babe887c77e88971947fef43b5f0b",
+  "core_autocrlf": "true",
+  "fresh_clone": true,
+  "clone_no_hardlinks": true,
+  "root_meta_only_info_attribute": "/.gitattributes -text (source and clone; preserve exact config bytes; no evidence-path overrides)",
+  "actual_repository_staged_or_committed": false,
+  "artifacts_compared": 25,
+  "sha256_mismatches": [],
+  "root_gitattributes_sha256": "9ba2969316d3fa14579e53da3d0060cd9d86a4ff8c6ec4fbb394eab2cf1781a4",
+  "evidence_manifest_sha256": "33b06d7a3915e26ff9a28404eccaa86637d7b98e985e953e5db982a1ae69ce63",
+  "cloned_checked_summaries": [
+    {
+      "collection": "checks",
+      "exit_code": 0,
+      "stdout": "3 invocations: 3 passed, 0 failed or invalid.\n",
+      "stderr": ""
+    },
+    {
+      "collection": "before-checks",
+      "exit_code": 0,
+      "stdout": "1 invocations: 1 passed, 0 failed or invalid.\n",
+      "stderr": ""
+    }
+  ],
+  "exclusion": "This receipt was written after verification and is excluded from its own snapshot/manifest."
+}

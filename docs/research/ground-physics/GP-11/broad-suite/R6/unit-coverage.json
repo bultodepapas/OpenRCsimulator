@@ -1,0 +1,150 @@
+{
+  "format": "openrc-complete-unit-coverage v1",
+  "utc": "2026-10-26T14:34:38.997403+00:00",
+  "total_test_scripts": 751,
+  "initial_scripts": 22,
+  "remaining_scripts": 729,
+  "passed": 734,
+  "failed": 17,
+  "all_test_scripts_run_exactly_once": true,
+  "initial_results": [
+    {
+      "test": "test_aircraft_data.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-1x9w9l53\\report.json"
+    },
+    {
+      "test": "test_aero.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-3k74itsl\\report.json"
+    },
+    {
+      "test": "test_accident_report.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-4w62a8r7\\report.json"
+    },
+    {
+      "test": "test_aero_continuity.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-7g9ocms1\\report.json"
+    },
+    {
+      "test": "test_aircraft_ground_stage.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-7uys66od\\report.json"
+    },
+    {
+      "test": "test_aircraft_contract.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-81r7m6f4\\report.json"
+    },
+    {
+      "test": "test_aircraft_ground_profile.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-8aovmbf0\\report.json"
+    },
+    {
+      "test": "test_aircraft_light_control.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-95xtrq4f\\report.json"
+    },
+    {
+      "test": "test_aircraft_ground_dynamics.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-aw64ooxa\\report.json"
+    },
+    {
+      "test": "test_accident_integration.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-bm4aps8y\\report.json"
+    },
+    {
+      "test": "test_air_data.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-f9ev8enz\\report.json"
+    },
+    {
+      "test": "test_aircraft_contact_session.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-fg5r62_1\\report.json"
+    },
+    {
+      "test": "test_advanced_graphics_settings.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-hm3ndzli\\report.json"
+    },
+    {
+      "test": "test_aircraft_liveries.gd",
+      "ok": false,
+      "report": "units\\positive\\godot-hq3nzkd_\\report.json"
+    },
+    {
+      "test": "test_aircraft_ground_impulse.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-i1tj92dw\\report.json"
+    },
+    {
+      "test": "test_aero_flow.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-nfxaxj80\\report.json"
+    },
+    {
+      "test": "test_accident_settlement.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-q6a43s7_\\report.json"
+    },
+    {
+      "test": "test_aircraft_customization.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-r79y_n8t\\report.json"
+    },
+    {
+      "test": "test_aircraft_catalog.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-rw2h5xx3\\report.json"
+    },
+    {
+      "test": "test_air_density.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-sqw_tl5b\\report.json"
+    },
+    {
+      "test": "test_aircraft_contact_contract.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-tso0dw54\\report.json"
+    },
+    {
+      "test": "test_aircraft_contact_events.gd",
+      "ok": true,
+      "report": "units\\positive\\godot-xus11a22\\report.json"
+    }
+  ],
+  "remaining_status": "remaining-units/status.tsv",
+  "failed_tests": [
+    "test_aircraft_liveries.gd",
+    "test_companions_airspace.gd",
+    "test_companions_lifecycle.gd",
+    "test_companions_manager.gd",
+    "test_companions_observation.gd",
+    "test_companions_presentation.gd",
+    "test_companions_profiles.gd",
+    "test_companions_record.gd",
+    "test_companions_shell.gd",
+    "test_lake_geometry_bake.gd",
+    "test_player_widget_settings.gd",
+    "test_training_widgets.gd",
+    "test_ui_aircraft_flow.gd",
+    "test_ui_help.gd",
+    "test_ui_home.gd",
+    "test_ui_language.gd",
+    "test_workshop_smoke_controls.gd"
+  ],
+  "source_unchanged": true,
+  "selected_source_paths_verified": 162,
+  "app_source_dependency_paths_verified": 4034,
+  "known_physical_pending_flags_preserved": [
+    "test_rudder_authority.gd --allow-known-stik-rudder-sideslip",
+    "test_yaw_damping.gd --allow-known-r02-yaw-alpha11"
+  ],
+  "one_command_full_suite_pass": false
+}

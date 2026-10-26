@@ -1,0 +1,38 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+PASS: strictly below threshold reports no declared exceedance
+PASS: overlapping intervals require inspection
+PASS: equality remains inspect rather than claiming exceedance
+PASS: strict exceedance returns only repair candidate
+PASS: declared replacement action remains a candidate
+PASS: decimal accumulation at the declared threshold stays inspect within the roundoff band
+PASS: one-ULP exceedance stays inspect
+PASS: exceedance beyond the numerical band remains a declared candidate
+PASS: unique cause intervals sum against one declared component capacity
+PASS: authored capacity keeps estimated quantity gameplay-labeled with provenance
+PASS: cause input order does not change resolution
+PASS: replace candidate outranks repair candidate across channels
+PASS: resolver exposes candidates only, with no price or salvage fields
+PASS: unknown or unpriced capacity is represented by no channel and stays inspect
+PASS: empty affected component also remains inspect
+PASS: partially declared channel is rejected instead of guessed
+PASS: duplicate cause/component rows reject double allocation
+PASS: duplicate channels within one event/component reject
+PASS: conflicting repeated component/channel capacities reject
+PASS: one event may map to two separately authored components
+PASS: unsupported channel is rejected
+PASS: mismatched unit is rejected
+PASS: negative quantity is rejected
+PASS: reversed quantity interval is rejected
+PASS: nonfinite interval endpoint is rejected
+PASS: unverified physical evidence claim needs a reference
+PASS: closed top-level schema rejects unknown keys
+PASS: qualified labels produce only a candidate claim
+PASS: qualification and production billing remain disabled
+PASS: software-only mechanical scenario crosses its declared interval
+PASS: software-only thermal scenario below its declared interval adds no fire outcome
+PASS: resolver leaves caller input unchanged
+PASS: finite contributions whose sum exceeds the bound reject
+PASS: component bound is enforced
+PASS: cause/component row bound is enforced
+ComponentResolver: 35 checks, 0 failed

@@ -1,0 +1,10 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   generated grain resource is present
+ok   grain dimensions and RGB8 format are preserved
+ok   grain contains the complete procedural mip chain
+ok   every grain pixel and mip byte equals fresh procedural generation
+ok   runtime texture retains the baked pixels and mip chain
+ok   repeated requests reuse the existing texture
+ok   wood material uses the checked texture and anisotropic mip filtering
+7 Stik grain checks, 0 failed

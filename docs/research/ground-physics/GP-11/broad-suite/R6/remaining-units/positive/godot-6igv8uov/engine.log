@@ -1,0 +1,29 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   daylight enables birds and crows while suppressing owls and crickets
+ok   warm night enables owls, dogs and crickets, but not birds or crows
+ok   cold night temperature gates crickets off
+ok   strong wind suppresses wildlife activity
+ok   20-minute day run emits birds, crows and dogs but no owls — { "bird": 98, "crow": 23, "dog": 10 }
+ok   20-minute night run emits owls and dogs but no birds or crows — { "owl": 21, "dog": 4 }
+ok   forest calls require at least one perch; dogs remain independent — { "dog": 11 }
+ok   same seed reproduces the complete event sequence — events=131
+ok   different seed changes the event sequence — same=131 different=134
+ok   event mix never occupies more than two logical wildlife voices — day=1 night=1
+ok   day events have valid species, variant, slot, perch, pitch and serial fields
+ok   night events have valid species, variant, slot, perch, pitch and serial fields
+ok   day calls do not immediately repeat a species variant
+ok   night calls do not immediately repeat a species variant
+ok   no-perch run contains only well-formed independent dog calls
+ok   pause returns no wildlife events
+ok   pause freezes RNG, timers, voices, gap and pending reply — serial=4
+ok   pause also preserves event serial and last event
+ok   two occupied slots block a third simultaneous wildlife call — active=2 event={  }
+ok   answering call moves to a different perch — { &"species": "bird", &"variant": 1, &"slot": 0, &"perch": 3, &"pitch": 1.0047150850296, &"level": 0.97970247268677, &"answering": true, &"serial": 1 }
+ok   disturbance keeps forest calls quiet through the six-second fright window — fright=0.100
+ok   eligible bird calls resume after the quiet window expires — fright=0.000000 event={ &"species": "bird", &"variant": 1, &"slot": 0, &"perch": 3, &"pitch": 1.03299760818481, &"level": 0.8732442855835, &"answering": false, &"serial": 1 }
+ok   long delta schedules at most one call and does not catch up in a burst — first=crow second={  } gap=3.34
+ok   reset clears all logical voice tails and pending reply
+ok   reset clears fright and restarts the inter-event gap
+ok   wildlife variation leaves the global RNG untouched — expected=[906324239, 295789656, 2725774471, 68738009, 3558238588, 3447924954, 2647842921, 1127531711] observed=[906324239, 295789656, 2725774471, 68738009, 3558238588, 3447924954, 2647842921, 1127531711]
+26 checks, 0 failed

@@ -1,0 +1,23 @@
+{
+  "format": "openrc-remaining-unit-collection v1",
+  "basis": "docs/tools/shared.md remaining-unit checked-runner loop",
+  "original_harness_sha256": "3dee7f2f28c37cab0d7f54ae55cd3f79e96ab0fd42361230eba6c0253453334d",
+  "retained_script_sha256": "08740020d783c62343d13964e0b64271afc12be1bb1c04fdaa3b5d99842d930a",
+  "selection": "test filenames lexically after test_aircraft_liveries.gd",
+  "expected_remaining_scripts": 729,
+  "earlier_unit_scripts": 22,
+  "total_unit_scripts": 751,
+  "original_timeouts_and_pending_flags_unchanged": true,
+  "continue_after_failure": true,
+  "status": "failed",
+  "complete": true,
+  "session_id": 79498,
+  "started_utc": "2026-10-26T12:57:21.319932+00:00",
+  "exit_code": 1,
+  "scripts_completed": 729,
+  "scripts_passed": 713,
+  "scripts_failed": 16,
+  "source_unchanged": true,
+  "selected_source_paths_verified": 162,
+  "app_source_dependency_paths_verified": 4034
+}

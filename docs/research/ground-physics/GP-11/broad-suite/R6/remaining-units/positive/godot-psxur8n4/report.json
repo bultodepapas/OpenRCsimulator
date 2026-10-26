@@ -1,0 +1,259 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "774d99ec-200b-4bd5-a327-7b78319c6db7",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_lifecycle.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "started_utc": "2026-10-26T12:55:43.389017+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-psxur8n4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-psxur8n4\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 51,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 11,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 17,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 23,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 29,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 35,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 41,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 47,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 53,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 59,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 65,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 71,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 77,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 83,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 89,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 95,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 101,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 107,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 113,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 119,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 11.312,
+  "log_bytes": 35254,
+  "log_sha256": "37c6260feabc01008c4699fcb9db0dabc3f17f3789971a38957784460f1efbf0"
+}

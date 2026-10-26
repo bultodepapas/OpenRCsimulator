@@ -1,0 +1,69 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   existing settings constructor accepts optional availability
+ok   settings card fits the 1280x720 viewport
+ok   settings screen keeps the Apply default focus
+ok   pause settings retain their current-flight notice semantics
+ok   availability button opens the details screen by keyboard
+ok   details screen focuses its Back button
+ok   expanded details card fits the 1280x720 viewport
+ok   unsupported catastrophe is omitted from the default eligible list
+ok   supported electric source-loss label is shown
+ok   Escape from details returns to settings without cancelling
+ok   Back restores focus to the availability button
+ok   radio-loss label appears only when catastrophe is enabled
+ok   ten supported rows appear in the bounded scroll area
+ok   long eligible lists can scroll vertically
+ok   scroll list accepts keyboard focus
+ok   End reaches the final available event from the top
+ok   End makes the last event visible in the scroll viewport
+ok   Page Down scrolls the focused list
+ok   Home returns the list to its first event
+ok   expanded ten-row details still fit the 1280x720 viewport
+ok   Back from scrolled details preserves the settings draft
+ok   legacy constructor with blank availability reports unavailable
+ok   first Escape returns from details without cancelling
+ok   second Escape cancels from settings
+ok   Spanish pause settings card fits the 1280x720 viewport
+ok   Spanish source-loss exclusion reason is shown
+ok   unsupported propulsion has no source-loss event label
+ok   Spanish event labels are translated
+ok   Spanish list scrolling hint is translated
+ok   Spanish expanded details card fits the 1280x720 viewport
+ok   Home availability check covers every catalog airplane
+ok   jensen-das-ugly-stik-60 Home selection has validated model data
+ok   jensen-das-ugly-stik-60 Home passes model-specific availability into settings
+ok   jensen-das-ugly-stik-60 Home explains unavailable source-loss behavior
+ok   stik-glow-61fx-2t Home selection has validated model data
+ok   stik-glow-61fx-2t Home passes model-specific availability into settings
+ok   stik-glow-61fx-2t Home shows its supported source-loss event
+ok   stik-glow-61fx-2t Home hides the other propulsion family event
+ok   stik-glow-55ax-2t Home selection has validated model data
+ok   stik-glow-55ax-2t Home passes model-specific availability into settings
+ok   stik-glow-55ax-2t Home shows its supported source-loss event
+ok   stik-glow-55ax-2t Home hides the other propulsion family event
+ok   stik-glow-fs64v-4t Home selection has validated model data
+ok   stik-glow-fs64v-4t Home passes model-specific availability into settings
+ok   stik-glow-fs64v-4t Home shows its supported source-loss event
+ok   stik-glow-fs64v-4t Home hides the other propulsion family event
+ok   gp-extra-300s-60 Home selection has validated model data
+ok   gp-extra-300s-60 Home passes model-specific availability into settings
+ok   gp-extra-300s-60 Home shows its supported source-loss event
+ok   gp-extra-300s-60 Home hides the other propulsion family event
+ok   p51d-mustang-120 Home selection has validated model data
+ok   p51d-mustang-120 Home passes model-specific availability into settings
+ok   p51d-mustang-120 Home explains unavailable source-loss behavior
+ok   f4u-corsair-250 Home selection has validated model data
+ok   f4u-corsair-250 Home passes model-specific availability into settings
+ok   f4u-corsair-250 Home explains unavailable source-loss behavior
+ok   sebart-avanti-s-a200-p100rx Home selection has validated model data
+ok   sebart-avanti-s-a200-p100rx Home passes model-specific availability into settings
+ok   sebart-avanti-s-a200-p100rx Home explains unavailable source-loss behavior
+ok   turbo-lumber-evolution Home selection has validated model data
+ok   turbo-lumber-evolution Home passes model-specific availability into settings
+ok   turbo-lumber-evolution Home shows its supported source-loss event
+ok   turbo-lumber-evolution Home hides the other propulsion family event
+ok   Pause source-loss check uses an aircraft different from current Home selection
+ok   Pause reads source-loss availability from the accepted session model
+ok   Pause detail shows the accepted aircraft's source-loss event
+Failure availability UI: 66 checks, 0 failed

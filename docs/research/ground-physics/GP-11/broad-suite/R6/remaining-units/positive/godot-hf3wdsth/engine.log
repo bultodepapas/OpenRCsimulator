@@ -1,0 +1,114 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   load strict support profile []
+ok   data validation preserves source 
+ok   custom experiment identity survives validation 
+ok   reject empty identity 
+ok   reject non-object profile 
+ok   reject missing format 
+ok   reject missing version 
+ok   reject missing id 
+ok   reject missing description 
+ok   reject missing parameters 
+ok   reject future version 
+ok   reject unknown top-level field 
+ok   reject unknown parameter 
+ok   reject missing parameter sprung_mass_kg 
+ok   reject nonfinite sprung_mass_kg 
+ok   reject missing parameter unsprung_mass_kg 
+ok   reject nonfinite unsprung_mass_kg 
+ok   reject missing parameter suspension_stiffness_n_per_m 
+ok   reject nonfinite suspension_stiffness_n_per_m 
+ok   reject missing parameter suspension_damping_n_s_per_m 
+ok   reject nonfinite suspension_damping_n_s_per_m 
+ok   reject missing parameter tire_stiffness_n_per_m 
+ok   reject nonfinite tire_stiffness_n_per_m 
+ok   reject missing parameter gravity_m_per_s2 
+ok   reject nonfinite gravity_m_per_s2 
+ok   reject missing parameter suspension_rest_length_m 
+ok   reject nonfinite suspension_rest_length_m 
+ok   reject missing parameter tire_radius_m 
+ok   reject nonfinite tire_radius_m 
+ok   reject missing parameter roll_inertia_kg_m2 
+ok   reject nonfinite roll_inertia_kg_m2 
+ok   reject missing parameter pitch_inertia_kg_m2 
+ok   reject nonfinite pitch_inertia_kg_m2 
+ok   reject missing parameter front_axle_x_m 
+ok   reject nonfinite front_axle_x_m 
+ok   reject missing parameter rear_axle_x_m 
+ok   reject nonfinite rear_axle_x_m 
+ok   reject missing parameter half_track_m 
+ok   reject nonfinite half_track_m 
+ok   reject malformed mass true 
+ok   reject malformed mass 4.8 
+ok   reject malformed mass <null> 
+ok   reject malformed mass inf 
+ok   reject malformed mass 0.0 
+ok   reject malformed mass -1.0 
+ok   reject malformed quantity { "unit": "g" } 
+ok   reject malformed quantity { "kind": "proven" } 
+ok   reject malformed quantity { "source": " " } 
+ok   reject malformed quantity { "extra": 1 } 
+ok   reject degenerate support roll_inertia_kg_m2 
+ok   reject degenerate support pitch_inertia_kg_m2 
+ok   reject degenerate support half_track_m 
+ok   reject degenerate support front_axle_x_m 
+ok   reject degenerate support rear_axle_x_m 
+ok   reject CG outside axle interval 
+ok   reject static collapse tire_stiffness_n_per_m 
+ok   reject static collapse suspension_stiffness_n_per_m 
+ok   zero gravity and damping accepted explicitly 
+ok   corner ordering and handedness 
+ok   malformed JSON is refused 
+ok   missing profile is refused 
+ok   four-contact equilibrium exists []
+ok   static force and moment balance 0.00000000000019
+ok   four tires support disjoint body and hub masses once 
+ok   equilibrium remains at rest for two seconds 
+ok   forward CG changes front axle load by lever-arm law 
+ok   forward CG gives symmetric left/right loading 
+ok   inclined support equilibrium 
+ok   refuse all-contact equilibrium that needs tensile ground 
+ok   zero-g planar equilibrium exists without preload 
+ok   zero-g neutral load and acceleration vanish 
+ok   zero-g saddle cannot be an unstrained neutral pose 
+ok   equilibrium rejects invalid road shape 
+ok   symmetric four-corner motion reduces to the verified quarter car 0.0
+ok   symmetric heave creates no roll or pitch 
+ok   independent 14-state reference exists 
+ok   independent reference agrees with input parameters 
+ok   damped all reference times sampled at 240 Hz 
+ok   damped all reference times sampled at 480 Hz 
+ok   damped all reference times sampled at 960 Hz 
+ok   damped all reference times sampled at 1920 Hz 
+ok   damped independent response accuracy [0.00001496422985, 0.00000073671035, 0.00000003946337, 0.00000000225612]
+ok   damped displacement/angle accuracy [0.00000007679754, 0.00000000509334, 0.00000000033703, 0.00000000002158]
+ok   damped smooth fourth-order refinement [20.3122296993393, 18.6682088816298, 17.4916633739908]
+ok   undamped all reference times sampled at 240 Hz 
+ok   undamped all reference times sampled at 480 Hz 
+ok   undamped all reference times sampled at 960 Hz 
+ok   undamped all reference times sampled at 1920 Hz 
+ok   undamped independent response accuracy [0.00047327805979, 0.00002553200957, 0.00000145148984, 0.0000000859582]
+ok   undamped displacement/angle accuracy [0.00000555901751, 0.00000034721581, 0.00000002132343, 0.00000000131685]
+ok   undamped smooth fourth-order refinement [18.536655271321, 17.590208950068, 16.8859965611288]
+ok   internal forces cancel in total vertical momentum 
+ok   four moving supports close energy/work balance 0.00000000343467
+ok   moving road trajectory respects a constant-velocity change of frame 
+ok   input state immutable and same-build replay exact 
+ok   front-left lift raises left side and nose 
+ok   left/right wheel excitation is a mirror image 
+ok   coupled undamped perturbation energy conserved 1.4610967251941146e-07
+ok   drop separates/recontacts and stays finite at 240 Hz 
+ok   drop per-tick energy gain <= 4 mJ at 240 Hz 0
+ok   drop accumulated energy/work residual <= 0.5 percent at 240 Hz 9.25014876031535e-05
+ok   drop separates/recontacts and stays finite at 480 Hz 
+ok   drop per-tick energy gain <= 4 mJ at 480 Hz 0
+ok   drop accumulated energy/work residual <= 0.5 percent at 480 Hz 2.205118617188989e-05
+ok   drop separates/recontacts and stays finite at 960 Hz 
+ok   drop per-tick energy gain <= 4 mJ at 960 Hz 0
+ok   drop accumulated energy/work residual <= 0.5 percent at 960 Hz 1.62242600810355e-05
+ok   drop separates/recontacts and stays finite at 1920 Hz 
+ok   drop per-tick energy gain <= 4 mJ at 1920 Hz 0
+ok   drop accumulated energy/work residual <= 0.5 percent at 1920 Hz 1.4315785294059568e-06
+ok   drop endpoint refines, without smooth-order claim 0.00000060536395 0.00000011846607
+RCV-04b: 111 checks, 0 failed

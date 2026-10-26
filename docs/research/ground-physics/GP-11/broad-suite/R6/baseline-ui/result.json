@@ -1,0 +1,19 @@
+{
+  "format": "openrc-baseline-ui-isolation v1",
+  "utc": "2026-10-26T12:58:52.670114+00:00",
+  "candidate_report": "tmp\\gp11-full-suite-checks\\R6\\units\\positive\\godot-hq3nzkd_\\report.json",
+  "baseline_report": "tmp\\gp11-full-suite-checks\\R6\\baseline-ui\\test-with-authoring\\godot-5r6u7w9y\\report.json",
+  "baseline_app": "app",
+  "baseline_source": "read-only GP10 app copied; original remains untouched",
+  "all_baseline_gd_byte_identical_after_test": 1354,
+  "baseline_physics_sim_failure_files_verified": 138,
+  "same_ui_failure_messages": [
+    "FAIL large-text paint remains reachable: es (1280, 720) 200% ([P: (24.0, 151.0), S: (494.0, 216.0)] in [P: (24.0, 151.0), S: (500.0, 107.0)])",
+    "Aircraft liveries: 179 checks, 1 failures"
+  ],
+  "failure_messages_byte_equal": true,
+  "observed_result": "179checks,1failure in both candidate and GP10 baseline",
+  "attribution": "inherited UI failure; not introduced by frozen GP11 kernel/profile/steering changes",
+  "qualification": "headless software regression only;720p fixture does not qualify product1080p behavior",
+  "setup_prefix_failure": "test/godot-r705zsh0/report.json lacked authoring metadata; retained separately and superseded by test-with-authoring receipt, not evidence of UI regression"
+}

@@ -1,0 +1,25 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok    Ugly Stik loader model is valid
+ok    50% throttle level trim solves  trimmed
+ok    search stays above reference and within bound  V 20.59707 m/s
+ok    selected throttle reached within 1e-7  throttle 0.4999999995
+ok    solution remains on attached branch  alpha 1.604 deg
+ok    trim residual remains small  residual 5.5820568030720796e-15
+ok    result retains Trim fields and request metadata
+ok    independent six-axis dynamics residual is below 1e-8  max |acceleration/rate derivative| 4.496403249731884e-15
+ok    fixed-surface level rollout remains near equilibrium for 5 s  altitude drift 0.00000 m, speed drift 0.00000 m/s, max rate 2.613881930929272e-16 rad/s
+ok    rejects throttle above one
+ok    rejects nonfinite throttle
+ok    rejects nonpositive reference speed
+ok    rejects maximum speed below reference
+ok    rejects maximum speed above hard bound
+ok    rejects nonfinite gravity
+ok    rejects nonfinite density
+ok    rejects missing trim throws
+ok    rejects an empty model
+ok    fails explicitly if reference trim already exceeds target throttle  reference-speed trim already requires more than the requested throttle
+ok    rejects a trim above the attached-flow alpha limit  level trim exceeds the attached-flow angle limit at 15.00 m/s
+ok    propagates unavailable slow-speed trim failure  level trim failed at 5.00 m/s: singular or nonfinite Jacobian (no trim near this condition)
+ok    fails when maximum speed cannot reach requested throttle  requested throttle was not bracketed by the maximum speed 20.00 m/s
+22 checks, 0 failed

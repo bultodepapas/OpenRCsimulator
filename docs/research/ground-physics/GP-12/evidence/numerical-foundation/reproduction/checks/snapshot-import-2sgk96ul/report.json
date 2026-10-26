@@ -1,0 +1,37 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b758e87d-c8a0-4bff-97a0-6a9362f54f93",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-foundation-restored-isolated\\app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T16:50:09.775135+00:00",
+  "label": "snapshot-import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-foundation-restored-isolated\\checks\\snapshot-import-2sgk96ul\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-foundation-restored-isolated\\checks\\snapshot-import-2sgk96ul\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.844,
+  "log_bytes": 4887,
+  "log_sha256": "5126159b99181d41f0c23465164784e208a44947057edc387610567b0594d16b"
+}

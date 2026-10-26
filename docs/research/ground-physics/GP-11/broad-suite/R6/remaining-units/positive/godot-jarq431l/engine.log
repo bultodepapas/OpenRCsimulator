@@ -1,0 +1,252 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   route: no user arguments -> Home
+ok   route: --trace -> direct flight
+ok   route: --quick-flight -> direct flight
+ok   airplane selection preserves the current flight scene
+ok   research helicopter selects the dedicated flight script
+ok   direct CLI selector finds a helicopter catalog ID
+ok   airplane Home keeps the existing stick labels
+ok   Home switches the legend to cyclic, yaw and collective
+ok   research helicopter Home offers Fly from the pad
+ok   helicopter Home explains startup sequence
+ok   explicit practice hover remains selectable
+ok   Workshop and Natural Random stay available with the rotorcraft; failure practice stays airplane-only
+ok   Home shown, no flight scene, no simulation
+ok   Home backdrop: our airplane, its camera current
+ok   Home EN/ES en text 100%: header and fixed controls fit (3440, 1440)
+ok   Home Flight avoids a scrollbar at 100% in en / (3440, 1440)
+ok   Home EN/ES en text 100%: header and fixed controls fit (960, 540)
+ok   Home page 0 fits the bounded rail at 100% / en
+ok   Home's shortest-height Flight body remains scrollable at 100% / en
+ok   Home page 1 fits the bounded rail at 100% / en
+ok   Home page 2 fits the bounded rail at 100% / en
+ok   Home page 3 fits the bounded rail at 100% / en
+ok   Home EN/ES en text 100%: header and fixed controls fit (1024, 576)
+ok   Home EN/ES en text 100%: header and fixed controls fit (1024, 768)
+ok   Home Flight avoids a scrollbar at 100% in en / (1024, 768)
+ok   Home EN/ES en text 100%: header and fixed controls fit (1280, 800)
+ok   Home Flight avoids a scrollbar at 100% in en / (1280, 800)
+ok   Home EN/ES en text 100%: header and fixed controls fit (1366, 768)
+ok   Home Flight avoids a scrollbar at 100% in en / (1366, 768)
+ok   Home EN/ES en text 100%: header and fixed controls fit (1920, 1200)
+ok   Home Flight avoids a scrollbar at 100% in en / (1920, 1200)
+ok   Home EN/ES en text 100%: header and fixed controls fit (2560, 1080)
+ok   Home Flight avoids a scrollbar at 100% in en / (2560, 1080)
+ok   Home EN/ES en text 100%: header and fixed controls fit (2580, 1080)
+ok   Home Flight avoids a scrollbar at 100% in en / (2580, 1080)
+ok   Home EN/ES en text 100%: header and fixed controls fit (1920, 1080)
+ok   Home Flight avoids a scrollbar at 100% in en / (1920, 1080)
+ok   Home EN/ES en text 100%: header and fixed controls fit (1920, 1200)
+ok   Home Flight avoids a scrollbar at 100% in en / (1920, 1200)
+ok   Home rail shrinks after wide-to-compact resize at 100% / en
+ok   Home EN/ES es text 100%: header and fixed controls fit (3440, 1440)
+ok   Home Flight avoids a scrollbar at 100% in es / (3440, 1440)
+ok   Home EN/ES es text 100%: header and fixed controls fit (960, 540)
+ok   Home page 0 fits the bounded rail at 100% / es
+ok   Home's shortest-height Flight body remains scrollable at 100% / es
+ok   Home page 1 fits the bounded rail at 100% / es
+ok   Home page 2 fits the bounded rail at 100% / es
+ok   Home page 3 fits the bounded rail at 100% / es
+ok   Home EN/ES es text 100%: header and fixed controls fit (1024, 576)
+ok   Home EN/ES es text 100%: header and fixed controls fit (1024, 768)
+FAIL Home Flight avoids a scrollbar at 100% in es / (1024, 768) body=[P: (24.0, 235.0), S: (287.0, 309.0)] page=[P: (24.0, 235.0), S: (281.0, 335.0)]
+ok   Home EN/ES es text 100%: header and fixed controls fit (1280, 800)
+ok   Home Flight avoids a scrollbar at 100% in es / (1280, 800)
+ok   Home EN/ES es text 100%: header and fixed controls fit (1366, 768)
+FAIL Home Flight avoids a scrollbar at 100% in es / (1366, 768) body=[P: (24.0, 235.0), S: (304.0, 309.0)] page=[P: (24.0, 235.0), S: (298.0, 320.0)]
+ok   Home EN/ES es text 100%: header and fixed controls fit (1920, 1200)
+ok   Home Flight avoids a scrollbar at 100% in es / (1920, 1200)
+ok   Home EN/ES es text 100%: header and fixed controls fit (2560, 1080)
+ok   Home Flight avoids a scrollbar at 100% in es / (2560, 1080)
+ok   Home EN/ES es text 100%: header and fixed controls fit (2580, 1080)
+ok   Home Flight avoids a scrollbar at 100% in es / (2580, 1080)
+ok   Home EN/ES es text 100%: header and fixed controls fit (1920, 1080)
+ok   Home Flight avoids a scrollbar at 100% in es / (1920, 1080)
+ok   Home EN/ES es text 100%: header and fixed controls fit (1920, 1200)
+ok   Home Flight avoids a scrollbar at 100% in es / (1920, 1200)
+ok   Home rail shrinks after wide-to-compact resize at 100% / es
+ok   Home EN/ES en text 200%: header and fixed controls fit (3440, 1440)
+ok   Home EN/ES en text 200%: header and fixed controls fit (960, 540)
+ok   Home page 0 fits the bounded rail at 200% / en
+ok   Home's shortest-height Flight body remains scrollable at 200% / en
+ok   Home page 1 fits the bounded rail at 200% / en
+ok   Home page 2 fits the bounded rail at 200% / en
+ok   Home page 3 fits the bounded rail at 200% / en
+ok   Home EN/ES en text 200%: header and fixed controls fit (1024, 576)
+ok   Home EN/ES en text 200%: header and fixed controls fit (1024, 768)
+ok   Home EN/ES en text 200%: header and fixed controls fit (1280, 800)
+ok   Home EN/ES en text 200%: header and fixed controls fit (1366, 768)
+ok   Home EN/ES en text 200%: header and fixed controls fit (1920, 1200)
+ok   Home EN/ES en text 200%: header and fixed controls fit (2560, 1080)
+ok   Home EN/ES en text 200%: header and fixed controls fit (2580, 1080)
+ok   Home EN/ES en text 200%: header and fixed controls fit (1920, 1080)
+ok   Home EN/ES en text 200%: header and fixed controls fit (1920, 1200)
+ok   Home rail shrinks after wide-to-compact resize at 200% / en
+ok   Home EN/ES es text 200%: header and fixed controls fit (3440, 1440)
+ok   Home EN/ES es text 200%: header and fixed controls fit (960, 540)
+ok   Home page 0 fits the bounded rail at 200% / es
+ok   Home's shortest-height Flight body remains scrollable at 200% / es
+ok   Home page 1 fits the bounded rail at 200% / es
+ok   Home page 2 fits the bounded rail at 200% / es
+ok   Home page 3 fits the bounded rail at 200% / es
+ok   Home EN/ES es text 200%: header and fixed controls fit (1024, 576)
+ok   Home EN/ES es text 200%: header and fixed controls fit (1024, 768)
+ok   Home EN/ES es text 200%: header and fixed controls fit (1280, 800)
+ok   Home EN/ES es text 200%: header and fixed controls fit (1366, 768)
+ok   Home EN/ES es text 200%: header and fixed controls fit (1920, 1200)
+ok   Home EN/ES es text 200%: header and fixed controls fit (2560, 1080)
+ok   Home EN/ES es text 200%: header and fixed controls fit (2580, 1080)
+ok   Home EN/ES es text 200%: header and fixed controls fit (1920, 1080)
+ok   Home EN/ES es text 200%: header and fixed controls fit (1920, 1200)
+ok   Home rail shrinks after wide-to-compact resize at 200% / es
+ok   same-density resizes reuse Home gradients and font overrides
+ok   Home uses a transparent bounded rail without a full-width footer
+ok   navigation keeps five destinations, with Workshop routed as an action
+ok   Fly is full width in the pinned primary action strip
+ok   aircraft arrows stay in the compact Flight destination
+ok   Aircraft destination lists every catalog entry with proper-name capability text
+ok   catalog rows show a model and capability while keeping detail in the tooltip
+ok   selected catalog row has a persistent accent and pressed state
+ok   garage selector and entry are integrated into the Home column
+ok   Practice distinguishes random setups from next-flight failure practice
+ok   flight details disclosure starts collapsed with a right caret
+ok   flight details disclosure expands and points down
+ok   flight details disclosure collapses and points right
+ok   Language and Settings stay in the top-right header
+ok   Controls, Help and Quit stay directly accessible in the quiet bottom row
+ok   Help, Controls and Settings fit in the initial Home viewport
+FAIL Default Flight page fits without scrolling 
+ok   Language and Controls keep their full labels
+ok   header and quiet utility buttons preserve full labels
+ok   contrast: Fly normal text 6.81:1 >= 4.5
+ok   contrast: Fly hover text 6.55:1 >= 4.5
+ok   contrast: Fly pressed text 10.11:1 >= 4.5
+ok   contrast: Quit normal text 16.87:1 >= 4.5
+ok   contrast: Quit hover text 10.79:1 >= 4.5
+ok   contrast: Quit pressed text 15.06:1 >= 4.5
+ok   Fly uses an inset focus outline inside fluorescent glass
+ok   contrast: focus outline on panel 12.32:1 >= 3
+ok   contrast: every Home label >= 4.5:1 on its surface (worst 9.34, "SIMULATOR")
+ok   smallest text is 24.0 px tall (>= 17 at 1280x720)
+ok   Spanish Language and Controls labels fit without clipping
+ok   initial focus on Fly
+ok   focus outline visible (keyboard focus)
+ok   Down -> Controls
+ok   Right -> Help
+ok   Right -> Quit
+ok   Up -> Fly
+ok   Up from Fly -> start choice
+ok   Down from start choice -> Fly
+ok   Down from Fly -> Controls
+ok   keyboard opens section 0 without launching
+ok   keyboard opens section 1 without launching
+ok   keyboard opens section 2 without launching
+ok   keyboard opens section 3 without launching
+FAIL Practice preserves the compact rail in en 
+ok   Garage preserves the compact rail and visible action in en
+FAIL Practice preserves the compact rail in es 
+ok   Garage preserves the compact rail and visible action in es
+FAIL flight page fits jensen-das-ugly-stik-60 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available jensen-das-ugly-stik-60 / en
+FAIL flight page fits stik-glow-61fx-2t / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available stik-glow-61fx-2t / en
+FAIL flight page fits stik-glow-55ax-2t / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available stik-glow-55ax-2t / en
+FAIL flight page fits stik-glow-fs64v-4t / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available stik-glow-fs64v-4t / en
+FAIL flight page fits gp-extra-300s-60 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available gp-extra-300s-60 / en
+FAIL flight page fits p51d-mustang-120 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available p51d-mustang-120 / en
+FAIL flight page fits f4u-corsair-250 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available f4u-corsair-250 / en
+FAIL flight page fits sebart-avanti-s-a200-p100rx / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available sebart-avanti-s-a200-p100rx / en
+FAIL flight page fits turbo-lumber-evolution / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available turbo-lumber-evolution / en
+FAIL flight page fits xcell-60-research / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available xcell-60-research / en
+FAIL flight page fits jensen-das-ugly-stik-60 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available jensen-das-ugly-stik-60 / es
+FAIL flight page fits stik-glow-61fx-2t / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available stik-glow-61fx-2t / es
+FAIL flight page fits stik-glow-55ax-2t / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available stik-glow-55ax-2t / es
+FAIL flight page fits stik-glow-fs64v-4t / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available stik-glow-fs64v-4t / es
+FAIL flight page fits gp-extra-300s-60 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available gp-extra-300s-60 / es
+FAIL flight page fits p51d-mustang-120 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available p51d-mustang-120 / es
+FAIL flight page fits f4u-corsair-250 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available f4u-corsair-250 / es
+FAIL flight page fits sebart-avanti-s-a200-p100rx / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available sebart-avanti-s-a200-p100rx / es
+FAIL flight page fits turbo-lumber-evolution / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available turbo-lumber-evolution / es
+FAIL flight page fits xcell-60-research / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true
+ok   full controller identity stays available xcell-60-research / es
+FAIL conditions remain bounded day / en 
+FAIL conditions remain bounded dawn / en 
+FAIL conditions remain bounded golden_hour / en 
+FAIL conditions remain bounded sunset / en 
+FAIL conditions remain bounded blue_hour / en 
+FAIL conditions remain bounded evening / en 
+FAIL conditions remain bounded moonrise / en 
+FAIL conditions remain bounded night / en 
+FAIL conditions remain bounded night_dark / en 
+FAIL conditions remain bounded day / es 
+FAIL conditions remain bounded dawn / es 
+FAIL conditions remain bounded golden_hour / es 
+FAIL conditions remain bounded sunset / es 
+FAIL conditions remain bounded blue_hour / es 
+FAIL conditions remain bounded evening / es 
+FAIL conditions remain bounded moonrise / es 
+FAIL conditions remain bounded night / es 
+FAIL conditions remain bounded night_dark / es 
+ok   200% header actions stay inside the viewport / en
+ok   200% header actions stay inside the viewport / es
+ok   opening the catalog reveals the current aircraft
+ok   catalog navigation enters on the selected aircraft
+ok   catalog request immediately selects and focuses its row
+ok   asynchronous aircraft selection keeps its row focused and revealed
+ok   navigating did not start a flight
+ok   Garage replaces the pinned FLY action with Open RC car garage
+ok   Garage keyboard navigation enters on the vehicle choice
+ok   Garage keyboard navigation reaches Open garage
+ok   keyboard Open garage emits the car route without emitting Fly
+ok   Quit requests closing the app
+ok   Settings exposes its source control for focus restoration
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Enter on Fly starts the flight
+ok   double Enter -> exactly one flight session
+ok   Home and its backdrop freed after Fly
+ok   the flight's camera is the one in use
+ok   Fly saves the selected default runway start
+ok   fresh Home flight uses gentle turbulent wind
+ok   fresh Home flight keeps evening lighting and camera diagnostics off
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+ok   direct --aircraft=xcell-60-research creates the dedicated helicopter main
+ok   direct helicopter night arguments reach the validated world startup
+ok   helicopter night setter applies options to the live world
+ok   helicopter night setter rejects an unknown profile without changing it
+ok   direct helicopter route completes setup and starts on the pad
+ok   saved fixed-wing weather fixture starts with turbulence
+ok   test settings fixture saves
+ok   Home loads the saved turbulent weather before vehicle selection
+ok   helicopter preview finishes asynchronously
+ok   helicopter selection shows only steady wind/gusts and keeps the saved airplane turbulence
+ok   Home selects the HX-700 visual and keeps Fly enabled
+ok   helicopter weather summary explains its turbulence and altitude-varying atmosphere limits
+ok   reopened Weather editor starts from the supported helicopter selection
+ok   Weather Apply keeps unsupported turbulence out of the helicopter summary and the saved airplane turbulence intact
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+ok   Home Fly starts on the configured pad on helicopter_main.gd
+ok   Home helicopter startup validates and applies its saved night options
+ok   first-flight hint accepts the rotorcraft session and shows collective
+ok   pause menu hides airplane Workshop, time-of-day and absent overlays
+ok   Continue resumes the same helicopter session
+ok   Restart returns the helicopter to the pad with motor disarmed
+ok   End flight returns to Home with the research helicopter selected
+43 failed

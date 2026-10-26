@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "68d6d36c-392e-498f-97ea-fa96de6c62ac",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_aircraft_catalog.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "started_utc": "2026-10-26T11:45:16.216038+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R2-units\\positive\\godot-dr650ytn\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R2-units\\positive\\godot-dr650ytn\\report.json",
+  "timeout_seconds": 600.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": false,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 56,
+      "message": "Aircraft model contract: [\"SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb.import\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:57)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 62,
+      "message": "Invalid access to property or key 'root' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: _initialize (res://tests/test_aircraft_catalog.gd:92)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _initialize (res://tests/test_aircraft_catalog.gd:92)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "timeout",
+  "detail": "",
+  "exit_code": 124,
+  "ok": false,
+  "elapsed_seconds": 600.313,
+  "log_bytes": 5651,
+  "log_sha256": "b1fc56dfc5231873e09f0a74f70ad4d999a0300aa7c8ef8fc8d918f962ba4aed"
+}

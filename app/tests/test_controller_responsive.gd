@@ -131,6 +131,7 @@ func _run() -> void:
 			setup.select_section(section)
 			await _settle()
 			_check_layout(section, "live scale %d%%" % roundi(scale * 100.0))
+	await _check_focus_during_reflow()
 	ScreenTheme.text_scale = 1.0
 	TranslationServer.set_locale("en")
 	var axis_row_labels: Array = setup._axis_channel_labels.values()
@@ -139,3 +140,35 @@ func _run() -> void:
 		_check("axis row label is released with its owning setup", not is_instance_valid(label))
 	print("Controller responsive layout: %d/%d checks passed" % [checks - failures, checks])
 	quit(0 if failures == 0 else 1)
+
+
+func _check_focus_during_reflow() -> void:
+	for locale: String in ["en", "es"]:
+		TranslationServer.set_locale(locale)
+		for target_kind: String in ["axis", "navigation", "action"]:
+			ScreenTheme.text_scale = 1.0
+			root.size = Vector2i(1920, 1080)
+			setup._screen.theme = ScreenTheme.build()
+			await _settle()
+			setup.select_section("buttons" if target_kind == "action" else "axes")
+			var target: Control = setup._axis_controls.throttle.expo.get_line_edit()
+			if target_kind == "navigation": target = setup._section_buttons.axes
+			if target_kind == "action": target = setup.find_child("Remap_camera_zoom_out", true, false)
+			target.grab_focus()
+			await _settle()
+			for pixels: Vector2i in [Vector2i(1000, 1080), Vector2i(1920, 1080), Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160), Vector2i(1920, 1080)]:
+				root.size = pixels
+				await _settle()
+				_check_reflow_focus(target, "%s/%s/%s" % [locale, target_kind, pixels])
+			for scale: float in [2.0, 1.0]:
+				ScreenTheme.text_scale = scale
+				setup._screen.theme = ScreenTheme.build()
+				await _settle()
+				_check_reflow_focus(target, "%s/%s/scale %s" % [locale, target_kind, scale])
+
+
+func _check_reflow_focus(target: Control, tag: String) -> void:
+	_check(tag + " retains the focused control without reselecting the page", target.has_focus())
+	var scroll := setup.find_child("ControllerSetupScroll", true, false) as ScrollContainer
+	if scroll.is_ancestor_of(target):
+		_check(tag + " keeps the focused input visible after layout", scroll.get_global_rect().grow(1).encloses(target.get_global_rect()))

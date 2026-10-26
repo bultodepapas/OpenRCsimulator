@@ -1,0 +1,28 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   builder returns the established aircraft keys and helicopter handles  ["root", "propeller", "main_rotor_mount", "main_rotor_tilt", "main_rotor_pivot", "main_rotor_rest", "tail_rotor", "tail_rotor_pivot", "tail_rotor_rest", "hinges", "gear", "has_propeller", "skids", "main_rotor_axis_body", "tail_rotor_axis_body", "main_rotor_axis_visual", "tail_rotor_axis_visual", "main_rotor_radius_authored_m", "main_rotor_radius_runtime_m", "main_rotor_radius_scale", "tail_rotor_radius_authored_m", "tail_rotor_radius_runtime_m", "tail_rotor_radius_scale", "cg_model_m", "main_visual_spin_sign", "tail_visual_spin_sign", "source_root"]
+ok   runtime frame maps glTF axes into right/up/back model coordinates
+ok   supplied visual remains an explicitly unpaired HX-700/X-Cell surrogate
+ok   authored main and tail hubs land at the measured positions  main (0.0, 0.345, 0.0); tail (0.0, 0.197, 0.942)
+ok   rotor profiles load from hash-bound static coverage data
+ok   source main rotor profile is measured in its authored frame  0.79136735200882
+ok   source tail rotor profile is independently measured  0.14743222296238
+ok   main visual adapter radius is X-Cell reference without scaling the airframe
+ok   tail radius remains authored until runtime data explicitly aligns it
+ok   main rotor radius alignment is explicit and does not compound
+ok   cached rotor-local profiles inherit selected runtime data radii
+ok   four physical skid support points are CG-relative and ordered
+ok   rotor visual attaches both rotor-specific blur adapters
+ok   visual and X-Cell shaft axes oppose and map positive speeds with explicit negative signs
+ok   rotor state forwards flap angles and collective in radians
+ok   cyclic flap aligns the visual shaft to MainRotor's exact first-harmonic normal  observed (-0.099826, 0.987778, 0.119704); expected (-0.099826, 0.987778, 0.119704)
+ok   rotor blur uses blade-passing thresholds at low and high RPM
+ok   each rotor blur keeps independent measured blade count and disc mesh
+ok   stopped main rotor shows only authored blades
+ok   mid-RPM main rotor crossfades authored blades into the measured disc
+ok   high-RPM main rotor keeps the analytic disc and suppresses strobing blades
+ok   full-speed main disc has measured coverage geometry and readable opacity  surfaces 1; max measured alpha 0.435; material alpha 1.000
+ok   tail rotor crossfades at its own blade-passing rate
+ok   geared high-speed tail rotor suppresses authored blades and shows its disc
+ok   invalid visual telemetry is clamped to finite neutral values
+25 checks, 0 failed

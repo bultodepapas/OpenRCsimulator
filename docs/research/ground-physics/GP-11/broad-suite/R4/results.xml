@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="8" failures="1" errors="0" skipped="0" time="8.328000"><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_inflow.gd [godot-1l8vppmi]" time="0.281000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-1l8vppmi/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_tail_rotor.gd [godot-7007euhq]" time="0.297000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-7007euhq/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_main_rotor.gd [godot-8kild23u]" time="0.281000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-8kild23u/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_aerodynamic_stage.gd [godot-8zay_wsp]" time="1.594000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-8zay_wsp/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_dynamic_inflow.gd [godot-ez9d9wuv]" time="0.297000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-ez9d9wuv/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="resource import [godot-lj3to89g]" time="5.063000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-lj3to89g/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_airframe.gd [godot-rvp8fi6n]" time="0.297000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-rvp8fi6n/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tools/audio/make_bus_layout.gd [godot-veyj9gmo]" time="0.218000"><failure type="process_exit" message="Inspect the child exit status and final engine output.">Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-veyj9gmo/report.json and engine.log</failure></testcase></testsuite>

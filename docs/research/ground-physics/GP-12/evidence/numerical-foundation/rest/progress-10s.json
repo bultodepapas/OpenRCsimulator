@@ -1,0 +1,8 @@
+{
+	"maximum_drift_j": 1.3309602309163893e-09,
+	"maximum_positive_tick_j": 1.7621459846850485e-12,
+	"maximum_tick_numerical_sum_j": 3.250452812668506e-14,
+	"numerical_sum_j": 4.564368847315449e-12,
+	"tick": 2400,
+	"time_s": 10.0
+}

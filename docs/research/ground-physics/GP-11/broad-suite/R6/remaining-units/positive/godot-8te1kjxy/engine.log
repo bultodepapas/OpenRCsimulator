@@ -1,0 +1,22 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   every geared catalog airplane was dropped  9
+ok   jensen-das-ugly-stik-60 all_wheels reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 70.8/120 mm main_right 70.8/120 mm nose 71.3/120 mm (worst 59 %)
+ok   jensen-das-ugly-stik-60 mains_nose_high reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 85.9/120 mm main_right 85.6/120 mm nose 29.5/120 mm (worst 72 %)
+ok   stik-glow-61fx-2t all_wheels reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 85.7/120 mm main_right 85.7/120 mm nose 88.4/120 mm (worst 74 %)
+ok   stik-glow-61fx-2t mains_nose_high reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 101.5/120 mm main_right 101.3/120 mm nose 46.5/120 mm (worst 85 %)
+ok   stik-glow-55ax-2t all_wheels reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 80.1/120 mm main_right 80.1/120 mm nose 83.2/120 mm (worst 69 %)
+ok   stik-glow-55ax-2t mains_nose_high reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 95.4/120 mm main_right 95.2/120 mm nose 42.3/120 mm (worst 80 %)
+ok   stik-glow-fs64v-4t all_wheels reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 77.6/120 mm main_right 77.6/120 mm nose 79.1/120 mm (worst 66 %)
+ok   stik-glow-fs64v-4t mains_nose_high reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 92.9/120 mm main_right 92.8/120 mm nose 37.6/120 mm (worst 77 %)
+ok   gp-extra-300s-60 mains_level reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 92.8/100 mm main_right 92.8/100 mm tail 52.3/80 mm (worst 93 %)
+ok   gp-extra-300s-60 three_point reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 88.8/100 mm main_right 88.8/100 mm tail 72.2/80 mm (worst 90 %)
+ok   p51d-mustang-120 mains_level reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 92.6/120 mm main_right 92.6/120 mm tail 59.3/105 mm (worst 77 %)
+ok   p51d-mustang-120 three_point reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 84.6/120 mm main_right 84.6/120 mm tail 96.1/105 mm (worst 92 %)
+ok   f4u-corsair-250 mains_level reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 92.5/100 mm main_right 92.5/100 mm tail 66.5/110 mm (worst 93 %)
+ok   f4u-corsair-250 three_point reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 85.4/100 mm main_right 85.4/100 mm tail 102.3/110 mm (worst 93 %)
+ok   sebart-avanti-s-a200-p100rx all_wheels reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 87.6/105 mm main_right 87.6/105 mm nose 78.5/85 mm (worst 92 %)
+ok   sebart-avanti-s-a200-p100rx mains_nose_high reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 96.2/105 mm main_right 96.2/105 mm nose 22.2/85 mm (worst 92 %)
+ok   turbo-lumber-evolution mains_level reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 94.7/100 mm main_right 94.7/100 mm tail 31.6/100 mm (worst 95 %)
+ok   turbo-lumber-evolution three_point reserve drop (2.56 m/s, lift 2/3 W): finite, every leg within its travel  main_left 88.4/100 mm main_right 88.4/100 mm tail 74.3/100 mm (worst 88 %)
+GP-06c gear reserve energy: 19 checks, 0 failed

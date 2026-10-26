@@ -1,0 +1,3 @@
+# Captured receipts, driver sources and manifests bind their exact recorded bytes.
+* -text whitespace=cr-at-eol
+*.log -whitespace

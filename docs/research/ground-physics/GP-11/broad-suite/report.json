@@ -1,0 +1,208 @@
+{
+  "format": "openrc-GP11-broad-regression-composite v1",
+  "completed_utc": "2026-10-26T15:54:56.954357+00:00",
+  "complete": true,
+  "overall_status": "failed",
+  "one_command_app_test_pass": false,
+  "scope": {
+    "base_commit": "b85ce1047a3e7798ab22b330675fc0c9e4bce912",
+    "overlay": "GP10 final9 source snapshots + GP11 canonical36 snapshots + R1 two math-wrapper corrections + original18-path parameter register fix; disclosed isolated import/source-pin/EOL repairs only",
+    "runtime_worktree": "tmp/gp11-full-suite",
+    "legacy_session": "GP10 FlightSession retained; no GP12 session/step/traction-row/electric/source/admission overlay",
+    "current_main_register_separate": "main-intended-hull-register/report.json"
+  },
+  "parse": {
+    "scripts": 1374,
+    "passed": 1374,
+    "failed": 0,
+    "receipt": "R2-parse/result.json",
+    "reuse": "all scripts and authored app dependencies unchanged through later composite parts; outside-app canonical LF-only fixtures preserve JSON semantics"
+  },
+  "units": {
+    "scripts": 751,
+    "passed": 734,
+    "failed": 17,
+    "coverage_receipt": "R6/unit-coverage.json",
+    "attribution_index": "R6/failure-attribution-index.json",
+    "baseline_replay_scope": "No GP11-specific numeric/kernel failure was observed in this frozen unit cohort. Nine non-companion failed scripts and the companion-profile gate were independently replayed; seven other companion failures share refused admission and were not independently replayed.",
+    "pending_physical_gates": [
+      "test_rudder_authority.gd --allow-known-stik-rudder-sideslip",
+      "test_yaw_damping.gd --allow-known-r02-yaw-alpha11"
+    ]
+  },
+  "offline_integration": {
+    "status": "passed_composite_after_disclosed_checkout_metadata_repairs",
+    "parts": [
+      "R6/integration/result.json",
+      "R7/result.json",
+      "R8/result.json"
+    ],
+    "original_stops_retained": true,
+    "last_continuation_exit_code": 0,
+    "last_checked_positive_invocations": 19,
+    "last_expected_failure_invocations": 7,
+    "limits": "Retained original commands in exact continuation segments; not an uninterrupted app/test.sh pass."
+  },
+  "source_identity": {
+    "final_selected_source_paths": 170,
+    "final_selected_receipt": "R8/source-after.json",
+    "app_source_dependency_files": 4034,
+    "app_source_after": "R8/app-source-after.json",
+    "all_tracked_inputs_unchanged_during_each_verified_phase": true,
+    "generated_python_caches_excluded": 6,
+    "engine_version": "4.8.beta1.official.4d10419ca",
+    "console_engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f"
+  },
+  "repairs": [
+    {
+      "receipt": "R1/source-before.json",
+      "kind": "two math3d wrapper corrections in dormant helper paths"
+    },
+    {
+      "receipt": "R2/parameter-register.json",
+      "kind": "18 original ground quantity consumers; isolated register regenerated from frozen schema"
+    },
+    {
+      "receipt": "R3/parse-reuse.json",
+      "kind": "3 generated model manifest import/source SHA pins only"
+    },
+    {
+      "receipt": "R4/pin-propagation.json",
+      "kind": "3 Workshop descriptors + customization registry SHA pins only"
+    },
+    {
+      "receipt": "R5/eol-normalization.json",
+      "kind": "default_bus_layout.tres canonical Git LF; UID/settings unchanged"
+    },
+    {
+      "receipt": "R6/population-normalization.json",
+      "kind": "13 population import metadata byte/SHA records only; geometry/textures unchanged"
+    },
+    {
+      "receipt": "R7/normalization.json",
+      "kind": "3 outside-app F4U authoring JSONs canonical Git LF only; geometry outputs unchanged"
+    },
+    {
+      "receipt": "R8/normalization.json",
+      "kind": "5 outside-app synthetic candidate JSONs canonical Git LF only; coefficients unchanged, none regenerated"
+    }
+  ],
+  "phases": [
+    {
+      "path": "original-result.json",
+      "sha256": "a43f4d0ca6a9b0f4ffe9671ed841bf0db39a62f2e1b3a1cda3bdb259d241701b",
+      "status": "failed",
+      "exit_code": 1,
+      "stop": "cold import exceeded existing180second runner timeout before offline/parse/units"
+    },
+    {
+      "path": "R1/result.json",
+      "sha256": "5dff4494c0ba511785281a7c543a9cd1b30d5130f3070637a5371284e0bc4d26",
+      "status": "failed",
+      "exit_code": 1,
+      "stop": "offline parameter_register.py classifier lacks new ground normal quantity consumers; before full parse and unit phase"
+    },
+    {
+      "path": "R2/result.json",
+      "sha256": "9ebbe44637bad33e803729a15452f259e107401652e0e3d03daa0de40b9de99e",
+      "status": "failed",
+      "exit_code": 1,
+      "stop": "AS-07/09 build_models.py --check stale generated imported model manifests; before all-script parse and units"
+    },
+    {
+      "path": "R2-units/result.json",
+      "sha256": "761d0abfa7e1596e7e17f86845bcf8a32cc830b1edc3179e007907e111fc8827",
+      "status": "failed",
+      "exit_code": 124,
+      "stop": "test_aircraft_catalog.gd inherited import-pin contract rejection; missing root dictionary raises script error and test remains alive until existing600s timeout"
+    },
+    {
+      "path": "R2-parse/result.json",
+      "sha256": "63522db2759a9991a3e201fe12438dae48faa1e0c5d1c3d4c7b1921b4a3ce941",
+      "status": "passed",
+      "exit_code": 0,
+      "stop": null
+    },
+    {
+      "path": "R3/result.json",
+      "sha256": "da671fb9b2035caf7a5361bd0272f33e3fc1d49845b5d66a13fb25475e9e993b",
+      "status": "failed",
+      "exit_code": 1,
+      "stop": "AE-01 generated Workshop descriptors stale after approved model import pins; before units/integration"
+    },
+    {
+      "path": "R4/result.json",
+      "sha256": "47ada9dff3277949f79d01891a6ef3eb77a7f814ba192f66e1b16688127638a4",
+      "status": "failed",
+      "exit_code": 1,
+      "stop": "AUD12 default_bus_layout.tres freshness check compares checkoutCRLF to nativeLF serialization; settings identical afterUID/EOL normalization"
+    },
+    {
+      "path": "R5/result.json",
+      "sha256": "795265719185e5160dede3e1b5fa1a00b1714584c3ae3b4478c8c3b6c0d30207",
+      "status": "failed",
+      "exit_code": 1,
+      "stop": "SC-HUM-07 test_outfits.py runtime manifest records stale after native import added defaults and EOL conversion; before units"
+    },
+    {
+      "path": "R6/units/result.json",
+      "sha256": "c38d3fa079402cf4c41280f0de329d3f300302904337a5bd897671cc15cc2848",
+      "status": "failed",
+      "exit_code": 1,
+      "stop": "test_aircraft_liveries.gd"
+    },
+    {
+      "path": "R6/remaining-units/result.json",
+      "sha256": "fc2520c6fd5d2533afc1528a2060ba82c2718879a4c9aa95615392312fa7d4b6",
+      "status": "failed",
+      "exit_code": 1,
+      "stop": null
+    },
+    {
+      "path": "R6/integration/result.json",
+      "sha256": "08c12a1dc8647cd4d359f599828e5fab8c9752572b0c67a950bf8079696bf135",
+      "status": "failed",
+      "exit_code": 1,
+      "stop": "F4U-05 generated presentation input hashes stale because three authoring JSON files checked out CRLF"
+    },
+    {
+      "path": "R7/result.json",
+      "sha256": "a0499ad66454a2024d792a0c66d11e0068df2838e94365bb6d2ea9c4424f2ac5",
+      "status": "failed",
+      "exit_code": 1,
+      "stop": "D8b synthetic-polar candidate freshness check; first stale candidate steep.json"
+    },
+    {
+      "path": "R8/result.json",
+      "sha256": "a0524eac6ff4f2a550b5ce4e3eeef2feb7763bfdb8f24d499c198694635b89da",
+      "status": "passed_continuation",
+      "exit_code": 0,
+      "stop": null
+    }
+  ],
+  "main_register": {
+    "receipt": "main-intended-hull-register/report.json",
+    "rows": 240,
+    "prior_rows_preserved": 235,
+    "files": [
+      {
+        "path": "research/aircraft-standardization/parameter_register.py",
+        "sha256": "c3434bd060f3b17d84c574c8670497002d18ec4c818b9cdcea6e999ec855192e",
+        "bytes": 16430
+      },
+      {
+        "path": "docs/research/aircraft-standardization/AS-01/parameters.md",
+        "sha256": "d6f499b50de82c04c1db8831ce6fc4ef602de82b125c2f64c0ee87149515399f",
+        "bytes": 45984
+      }
+    ],
+    "check_exit_code": 0,
+    "scope": "Current main only, separate from frozen suite."
+  },
+  "validation_limits": [
+    "Headless software verification only; no physical, rendered native or CPU/GPU performance qualification.",
+    "The17unit failures remain failures; nine non-companion failed scripts and companion-profile gates were independently reproduced, seven downstream companion suites were not independently replayed.",
+    "Two original experimental physical gates remain pending under their existing explicit flags.",
+    "No physics parameters or flight goldens were re-recorded. No actual-repository staging or commits."
+  ]
+}

@@ -1,0 +1,36 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   clean source clone prepares
+ok   main rotor assembly splits into two named blade groups  ["Pala_Principal_A", "Pala_Principal_B"]
+ok   tail rotor assembly splits into two named blade groups  ["Pala_Cola_A", "Pala_Cola_B"]
+ok   legacy rotor duplicates are hidden and excluded from bounds  legacy=4
+ok   live rotor visual attaches after clone preparation
+ok   fixture has the actual named main and tail blades
+ok   impact starts from the supplied body pose
+ok   rotating main-disc contact receives local C2 presentation grade
+ok   rotor floor retains the shared propeller audio/effect alias
+ok   main pivot hub uses impact pose with live local transform
+ok   tail pivot hub also uses impact pose, not post-step globals
+ok   C2 main-rotor hit releases one authored blade only  1
+ok   main blade inherits signed tangential motion at impact  speed=69.55 direction_dot=1.0000
+ok   released blade preserves its live animated transform at impact  Pala_Principal_A
+ok   main rotor inherited spin energy stays within declared shaft budget  main blade share=529.891 used=392.294
+ok   detached main blade point speed stays capped
+ok   rotor bodies stay inside the bounded wreck pool
+ok   gear receives no main or tail rotor point velocity
+ok   canopy receives no main or tail rotor point velocity
+ok   mixed airframe and blade debris receives no rotor-only velocity
+ok   reset returns the animated blade to its configure-time source hierarchy
+ok   tail-disc contact starts and releases one named tail blade
+ok   tail-disc contact does not release main blades
+ok   tail blade kinetic share stays within the declared tail-shaft budget  tail blade share=26.480 used=26.480
+ok   C3 skid hit stays local and starts without rotor releases
+ok   skid bodies inherit aircraft velocity without rotor spin
+ok   C3 canopy hit does not release or inherit velocity from either rotor
+ok   canopy linear velocity equals aircraft point velocity
+ok   C2 nose contact maps to one local carenado panel
+ok   nose C2 damage leaves rotor blades and gear attached
+ok   low non-rotor impact leaves all authored sections attached
+ok   severe C4 impact can release all bounded named debris groups
+ok   reset leaves no active debris bodies
+HELI-33 visual: 33 checks, 0 failed

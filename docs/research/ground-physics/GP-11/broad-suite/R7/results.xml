@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="3" failures="1" errors="0" skipped="0" time="21.516000"><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/flight-robustness/d8b-r2/make_candidates.gd [godot-0ml8g61y]" time="1.188000"><failure type="process_exit" message="Inspect the child exit status and final engine output.">Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-0ml8g61y/report.json and engine.log</failure></testcase><testcase classname="OpenRC.GodotCommand" name="res://aircraft/verify_f4u.gd [godot-fk1svy_r]" time="14.375000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-fk1svy_r/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="resource import [godot-gteo3dd9]" time="5.953000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-gteo3dd9/report.json and engine.log</system-out></testcase></testsuite>

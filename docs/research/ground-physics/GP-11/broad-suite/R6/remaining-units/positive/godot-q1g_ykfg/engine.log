@@ -1,0 +1,60 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+     Stik wingtip brush in a low pass: eps 0.007 J/kg, abrasion 0.236 J/kg -> C0
+ok   Stik wingtip brush in a low pass grades C0
+     Stik firm belly touch: eps 0.877 J/kg, abrasion 8.100 J/kg -> C1
+ok   Stik firm belly touch grades C1
+     Stik wingtip, cartwheel entry: eps 2.730 J/kg, abrasion 2.240 J/kg -> C2
+ok   Stik wingtip, cartwheel entry grades C2
+     Stik vertical nose-in 15 m/s: eps 87.750 J/kg, abrasion 0.000 J/kg -> C3
+ok   Stik vertical nose-in 15 m/s grades C3
+     Stik vertical nose-in 30 m/s: eps 351.000 J/kg, abrasion 0.000 J/kg -> C4
+ok   Stik vertical nose-in 30 m/s grades C4
+     P-51 belly landing: eps 0.451 J/kg, abrasion 12.925 J/kg -> C1
+ok   P-51 belly landing grades C1
+     P-51 vertical nose-in 15 m/s: eps 87.750 J/kg, abrasion 0.000 J/kg -> C3
+ok   P-51 vertical nose-in 15 m/s grades C3
+     Avanti wingtip on landing: eps 0.034 J/kg, abrasion 1.155 J/kg -> C1
+ok   Avanti wingtip on landing grades C1
+ok   P-51 belly landing is a scrape from abrasion, not a normal-channel break
+ok   same nose-in speed gives the same specific energy for Stik and P-51
+ok   same nose-in speed gives the same class for Stik and P-51
+ok   absolute struck-point energy still scales with mass
+ok   a wingtip at the same normal speed grades lower than a nose-in
+ok   Avanti 45 deg dive at 20 m/s: nose contact alone grades C2
+ok   Avanti 45 deg dive at 20 m/s: slapdown raises it to C3
+ok   slapdown energy is the CG normal energy left after the first contact
+ok   Stik wingtip-first hit at 10 m/s sink cartwheels into C3
+ok   a wingtip brush stays C0 with its slapdown
+ok   a contact at the CG leaves no slapdown
+ok   a point faster than the CG (rotation) leaves no slapdown
+ok   severity follows the worse of contact and slapdown
+ok   NaN CG normal velocity is rejected
+ok   separating CG disables the slapdown
+ok   sliding alone never grades above C1
+ok   no normal impulse means no friction work
+ok   friction work is bounded by the point's tangential energy
+ok   durability 2 halves the specific energy
+ok   durability does not change the struck-point joules
+ok   supplied effective mass is reported with its basis
+ok   missing effective mass falls back to whole mass and says so
+ok   effective mass above the aircraft mass is rejected
+ok   NaN effective mass is rejected
+ok   zero durability is rejected
+ok   infinite durability is rejected
+ok   cut 0.5 J/kg separates C0 and C1
+ok   cut 2.5 J/kg separates C1 and C2
+ok   cut 25.0 J/kg separates C2 and C3
+ok   cut 150.0 J/kg separates C3 and C4
+ok   point at the CG engages the whole mass
+ok   level wingtip matches 1/(1/m + y^2/Ixx)
+ok   vertical nose-in on the spinner axis engages the whole mass
+ok   normal length does not matter
+ok   singular inertia is rejected
+ok   zero normal is rejected
+ok   zero mass is rejected
+ok   parity world builds
+ok   parity contact found
+ok   offset contact engages less than the whole mass
+ok   shared helper equals the scenery effective mass
+49 checks, 0 failed

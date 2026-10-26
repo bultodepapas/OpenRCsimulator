@@ -1,0 +1,27 @@
+{
+  "format": "openrc-frozen-full-suite-launch v1",
+  "utc": "2026-10-26T02:23:26.817312+00:00",
+  "status": "failed",
+  "attempt": "original-canonical-gp11",
+  "worktree": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "base_commit": "b85ce1047a3e7798ab22b330675fc0c9e4bce912",
+  "source_before": "source-before.json",
+  "suite_script_sha256": "3dee7f2f28c37cab0d7f54ae55cd3f79e96ab0fd42361230eba6c0253453334d",
+  "git_bash": "C:/Program Files/Git/bin/bash.exe",
+  "command": "app/test.sh",
+  "environment": {
+    "OPENRC_CHECK_OUT": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\positive",
+    "OPENRC_EXPECTED_CHECK_OUT": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\expected",
+    "APPDATA": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\user-appdata",
+    "LOCALAPPDATA": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\user-localappdata"
+  },
+  "log": "full-suite.log",
+  "known_independent_guard_failure": "transcendentals.log",
+  "no_main_or_canonical_writes": true,
+  "complete": true,
+  "exit_code": 1,
+  "stop": "cold import exceeded existing180second runner timeout before offline/parse/units",
+  "import_report": "positive/godot-oc16nbko/report.json",
+  "source_unchanged": true,
+  "guard_independent_failed": true
+}

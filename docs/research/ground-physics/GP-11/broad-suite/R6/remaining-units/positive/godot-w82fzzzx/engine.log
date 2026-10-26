@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   default field fixture loads
+ok   staged build returns a field
+ok   sync and staged node structure, transforms, and mesh arrays match
+ok   sync and staged metadata match apart from build timing
+ok   staged field reports synchronous work time separately from yields
+ok   field checkpoints run in order through final landscape attachment
+ok   false checkpoint cancels after a ground surface and returns null
+ok   cancelled detached field nodes and resources are disposed
+8 field staged build checks, 0 failed

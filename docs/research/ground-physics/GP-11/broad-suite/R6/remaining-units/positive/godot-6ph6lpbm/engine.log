@@ -1,0 +1,23 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   default field loads
+ok   threshold: west end + 3 m, runway centre line, heading east  { &"ok": true, &"north": 15.0, &"east": -47.0, &"heading": 1.5707963267949, &"message": "" }
+ok   west-bound threshold: east end − 3 m, heading west
+ok   a field without a runway has no threshold
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Stik session on the field
+ok   runway start solves and resets
+ok   every wheel starts stuck, engine idling at closed throttle
+ok   anchors hold the idle thrust: Σ horizontal = 0 within 1e-9 N  thrust 2.6019 N, ground north 0.0008563870525307299 N, east -2.600075 N
+ok   solve converged (residual < 1e-11 in 6 iterations) and is the session's start
+ok   each wheel leans past its anchor by ≈ T/Σk = 2.452 mm (within 5 %)  2.4072–2.5713 mm
+ok   nose load 11.1394 N matches the world side-view moment balance 11.1413 N within 0.5 %
+ok   terrain-projected ground support balances weight and vertical thrust within 1e-9 N  support 28.327030277 N, expected 28.327030277 N
+ok   after 1 s: |v| < 1e-6 m/s  max 6.68136759824702e-14 m/s
+ok   after 1 s: ΣN = m·g + the idle thrust's downward component 0.0970 N within 0.1 %  28.32232 N vs 28.32703 N
+ok   after 1 s: attitude within 0.1° of the solve  0°
+ok   10 s at idle: |v| and |ω| < 1e-6 throughout, moved < 1 µm, anchors unchanged  v 6.68136759824702e-14, ω 7.242691781309534e-14, 0 m
+ok   west-bound runway start solves
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   missing stiction data is refused and keeps its normal flying start
+18 checks, 0 failed

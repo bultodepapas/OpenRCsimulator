@@ -1,0 +1,251 @@
+{
+  "format": "openrc-baseline-home-help-isolation v1",
+  "utc": "2026-10-26T14:15:23.946051+00:00",
+  "cases": [
+    {
+      "test": "test_ui_home.gd",
+      "baseline_report": "tmp\\gp11-full-suite-checks\\R6\\baseline-ui\\ui-home\\godot-qn671_qk\\report.json",
+      "candidate_report": "tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-jarq431l\\report.json",
+      "failure_messages_byte_equal": true,
+      "baseline_messages": [
+        "FAIL Home Flight avoids a scrollbar at 100% in es / (1024, 768) body=[P: (24.0, 235.0), S: (287.0, 309.0)] page=[P: (24.0, 235.0), S: (281.0, 335.0)]",
+        "FAIL Home Flight avoids a scrollbar at 100% in es / (1366, 768) body=[P: (24.0, 235.0), S: (304.0, 309.0)] page=[P: (24.0, 235.0), S: (298.0, 320.0)]",
+        "FAIL Default Flight page fits without scrolling ",
+        "FAIL Practice preserves the compact rail in en ",
+        "FAIL Practice preserves the compact rail in es ",
+        "FAIL flight page fits jensen-das-ugly-stik-60 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-61fx-2t / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-55ax-2t / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-fs64v-4t / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits gp-extra-300s-60 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits p51d-mustang-120 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits f4u-corsair-250 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits sebart-avanti-s-a200-p100rx / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits turbo-lumber-evolution / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits xcell-60-research / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits jensen-das-ugly-stik-60 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-61fx-2t / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-55ax-2t / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-fs64v-4t / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits gp-extra-300s-60 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits p51d-mustang-120 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits f4u-corsair-250 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits sebart-avanti-s-a200-p100rx / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits turbo-lumber-evolution / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits xcell-60-research / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL conditions remain bounded day / en ",
+        "FAIL conditions remain bounded dawn / en ",
+        "FAIL conditions remain bounded golden_hour / en ",
+        "FAIL conditions remain bounded sunset / en ",
+        "FAIL conditions remain bounded blue_hour / en ",
+        "FAIL conditions remain bounded evening / en ",
+        "FAIL conditions remain bounded moonrise / en ",
+        "FAIL conditions remain bounded night / en ",
+        "FAIL conditions remain bounded night_dark / en ",
+        "FAIL conditions remain bounded day / es ",
+        "FAIL conditions remain bounded dawn / es ",
+        "FAIL conditions remain bounded golden_hour / es ",
+        "FAIL conditions remain bounded sunset / es ",
+        "FAIL conditions remain bounded blue_hour / es ",
+        "FAIL conditions remain bounded evening / es ",
+        "FAIL conditions remain bounded moonrise / es ",
+        "FAIL conditions remain bounded night / es ",
+        "FAIL conditions remain bounded night_dark / es ",
+        "43 failed"
+      ],
+      "candidate_messages": [
+        "FAIL Home Flight avoids a scrollbar at 100% in es / (1024, 768) body=[P: (24.0, 235.0), S: (287.0, 309.0)] page=[P: (24.0, 235.0), S: (281.0, 335.0)]",
+        "FAIL Home Flight avoids a scrollbar at 100% in es / (1366, 768) body=[P: (24.0, 235.0), S: (304.0, 309.0)] page=[P: (24.0, 235.0), S: (298.0, 320.0)]",
+        "FAIL Default Flight page fits without scrolling ",
+        "FAIL Practice preserves the compact rail in en ",
+        "FAIL Practice preserves the compact rail in es ",
+        "FAIL flight page fits jensen-das-ugly-stik-60 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-61fx-2t / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-55ax-2t / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-fs64v-4t / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits gp-extra-300s-60 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits p51d-mustang-120 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits f4u-corsair-250 / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits sebart-avanti-s-a200-p100rx / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits turbo-lumber-evolution / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits xcell-60-research / en without scrolling rail=(304.0, 598.0) body=(304.0, 291.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits jensen-das-ugly-stik-60 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-61fx-2t / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-55ax-2t / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits stik-glow-fs64v-4t / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits gp-extra-300s-60 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits p51d-mustang-120 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits f4u-corsair-250 / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits sebart-avanti-s-a200-p100rx / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits turbo-lumber-evolution / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL flight page fits xcell-60-research / es without scrolling rail=(304.0, 598.0) body=(304.0, 261.0) content=(298.0, 335.0) bar=true",
+        "FAIL conditions remain bounded day / en ",
+        "FAIL conditions remain bounded dawn / en ",
+        "FAIL conditions remain bounded golden_hour / en ",
+        "FAIL conditions remain bounded sunset / en ",
+        "FAIL conditions remain bounded blue_hour / en ",
+        "FAIL conditions remain bounded evening / en ",
+        "FAIL conditions remain bounded moonrise / en ",
+        "FAIL conditions remain bounded night / en ",
+        "FAIL conditions remain bounded night_dark / en ",
+        "FAIL conditions remain bounded day / es ",
+        "FAIL conditions remain bounded dawn / es ",
+        "FAIL conditions remain bounded golden_hour / es ",
+        "FAIL conditions remain bounded sunset / es ",
+        "FAIL conditions remain bounded blue_hour / es ",
+        "FAIL conditions remain bounded evening / es ",
+        "FAIL conditions remain bounded moonrise / es ",
+        "FAIL conditions remain bounded night / es ",
+        "FAIL conditions remain bounded night_dark / es ",
+        "43 failed"
+      ],
+      "dependencies": [
+        {
+          "path": "app/tests/test_ui_home.gd",
+          "baseline_sha256": "f4c965287deae7de3cf9631fbda9c13bfaccd6fa317723a64452799a445413e8",
+          "candidate_sha256": "f4c965287deae7de3cf9631fbda9c13bfaccd6fa317723a64452799a445413e8",
+          "byte_equal": true
+        },
+        {
+          "path": "app/app_root.gd",
+          "baseline_sha256": "bcd198962dd16304b15c758accc5a376cd9f0cb3bc6525dcdaae6f271cc1b383",
+          "candidate_sha256": "bcd198962dd16304b15c758accc5a376cd9f0cb3bc6525dcdaae6f271cc1b383",
+          "byte_equal": true
+        },
+        {
+          "path": "app/ui/home.gd",
+          "baseline_sha256": "609685fd2ec23aecc7eace3ff1bf29af15441b3380df6d760e486ee34985a1a5",
+          "candidate_sha256": "609685fd2ec23aecc7eace3ff1bf29af15441b3380df6d760e486ee34985a1a5",
+          "byte_equal": true
+        },
+        {
+          "path": "app/ui/ui_theme.gd",
+          "baseline_sha256": "efa116b321de175b9c3221720d32a85135f720edee0d99a733075c0452a150f4",
+          "candidate_sha256": "efa116b321de175b9c3221720d32a85135f720edee0d99a733075c0452a150f4",
+          "byte_equal": true
+        },
+        {
+          "path": "app/app_state/preferences.gd",
+          "baseline_sha256": "4103ef09b67864e6313a0445e22378893286b115e2a75b32f39a93a393870a07",
+          "candidate_sha256": "4103ef09b67864e6313a0445e22378893286b115e2a75b32f39a93a393870a07",
+          "byte_equal": true
+        },
+        {
+          "path": "app/app_state/aircraft_catalog.gd",
+          "baseline_sha256": "89f56f2a769a2cd1eff8b2f7f0215c9b6a9e1a7d954556b60b5331ce00544f7c",
+          "candidate_sha256": "89f56f2a769a2cd1eff8b2f7f0215c9b6a9e1a7d954556b60b5331ce00544f7c",
+          "byte_equal": true
+        },
+        {
+          "path": "app/physics/wind_config.gd",
+          "baseline_sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5",
+          "candidate_sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5",
+          "byte_equal": true
+        },
+        {
+          "path": "app/tests/ui_driver.gd",
+          "baseline_sha256": "8d250337b7aa647679ad106b97a68df22a46398b7e4de7800875b0f97c944ba2",
+          "candidate_sha256": "8d250337b7aa647679ad106b97a68df22a46398b7e4de7800875b0f97c944ba2",
+          "byte_equal": true
+        },
+        {
+          "path": "app/render/world/conditions.gd",
+          "baseline_sha256": "0d8ffaad1fb51d6dada4e5fa4f9eec971d9c79fd750a7d3fb469bac63bf89451",
+          "candidate_sha256": "0d8ffaad1fb51d6dada4e5fa4f9eec971d9c79fd750a7d3fb469bac63bf89451",
+          "byte_equal": true
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "baseline_sha256": "9fec024814d484ea0620e2d2d811170b0e69261ab6b44125dbefadf9291ec2d3",
+          "candidate_sha256": "9fec024814d484ea0620e2d2d811170b0e69261ab6b44125dbefadf9291ec2d3",
+          "byte_equal": true
+        }
+      ],
+      "baseline_reason": "process_exit",
+      "candidate_reason": "process_exit",
+      "baseline_message_count": 44,
+      "candidate_message_count": 44,
+      "baseline_failed_assertions": 43,
+      "candidate_failed_assertions": 43
+    },
+    {
+      "test": "test_ui_help.gd",
+      "baseline_report": "tmp\\gp11-full-suite-checks\\R6\\baseline-ui\\ui-help\\godot-6zt2yg_d\\report.json",
+      "candidate_report": "tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-422axulw\\report.json",
+      "failure_messages_byte_equal": true,
+      "baseline_messages": [
+        "FAIL Home: Help reachable by keyboard Language",
+        "FAIL Enter opens Help, focus on Close Language",
+        "SCRIPT ERROR: Cannot call method 'find_children' on a null value.",
+        "SCRIPT ERROR: Cannot call method 'find_children' on a null value.",
+        "FAIL Help shows every key of the shared table (48) []",
+        "SCRIPT ERROR: Invalid access to property or key 'about_label' on a base object of type 'Nil'."
+      ],
+      "candidate_messages": [
+        "FAIL Home: Help reachable by keyboard Language",
+        "FAIL Enter opens Help, focus on Close Language",
+        "SCRIPT ERROR: Cannot call method 'find_children' on a null value.",
+        "SCRIPT ERROR: Cannot call method 'find_children' on a null value.",
+        "FAIL Help shows every key of the shared table (48) []",
+        "SCRIPT ERROR: Invalid access to property or key 'about_label' on a base object of type 'Nil'."
+      ],
+      "dependencies": [
+        {
+          "path": "app/tests/test_ui_help.gd",
+          "baseline_sha256": "7a7f3cced55000f4204195d1191e342dd2b6d7487d1ed6e3ca22546570536fac",
+          "candidate_sha256": "7a7f3cced55000f4204195d1191e342dd2b6d7487d1ed6e3ca22546570536fac",
+          "byte_equal": true
+        },
+        {
+          "path": "app/tests/ui_driver.gd",
+          "baseline_sha256": "8d250337b7aa647679ad106b97a68df22a46398b7e4de7800875b0f97c944ba2",
+          "candidate_sha256": "8d250337b7aa647679ad106b97a68df22a46398b7e4de7800875b0f97c944ba2",
+          "byte_equal": true
+        },
+        {
+          "path": "app/ui/key_labels.gd",
+          "baseline_sha256": "e351ab06c42cbfb4e965ad9b3e6e63764c8d4f62d3a89f8f8371360b146eb20e",
+          "candidate_sha256": "e351ab06c42cbfb4e965ad9b3e6e63764c8d4f62d3a89f8f8371360b146eb20e",
+          "byte_equal": true
+        },
+        {
+          "path": "app/ui/key_cap.gd",
+          "baseline_sha256": "d9276be77f30a30271e8085fcce7187f073809ff1e6141f4ac326052e9071aaf",
+          "candidate_sha256": "d9276be77f30a30271e8085fcce7187f073809ff1e6141f4ac326052e9071aaf",
+          "byte_equal": true
+        },
+        {
+          "path": "app/ui/controls_reference.gd",
+          "baseline_sha256": "bb9f03e4c9435770d3d931be7df042c8911647c557fa6538e213766d567dd4d4",
+          "candidate_sha256": "bb9f03e4c9435770d3d931be7df042c8911647c557fa6538e213766d567dd4d4",
+          "byte_equal": true
+        },
+        {
+          "path": "app/ui/help_screen.gd",
+          "baseline_sha256": "c9bbc5626471147fca9e9446e0c707145cc8d0a87eafe6a17dc4f9c41ab6e2b8",
+          "candidate_sha256": "c9bbc5626471147fca9e9446e0c707145cc8d0a87eafe6a17dc4f9c41ab6e2b8",
+          "byte_equal": true
+        },
+        {
+          "path": "app/app_state/preferences.gd",
+          "baseline_sha256": "4103ef09b67864e6313a0445e22378893286b115e2a75b32f39a93a393870a07",
+          "candidate_sha256": "4103ef09b67864e6313a0445e22378893286b115e2a75b32f39a93a393870a07",
+          "byte_equal": true
+        },
+        {
+          "path": "app/app_state/aircraft_catalog.gd",
+          "baseline_sha256": "89f56f2a769a2cd1eff8b2f7f0215c9b6a9e1a7d954556b60b5331ce00544f7c",
+          "candidate_sha256": "89f56f2a769a2cd1eff8b2f7f0215c9b6a9e1a7d954556b60b5331ce00544f7c",
+          "byte_equal": true
+        }
+      ],
+      "baseline_reason": "timeout",
+      "candidate_reason": "timeout",
+      "baseline_message_count": 6,
+      "candidate_message_count": 6,
+      "baseline_failed_assertions": 3,
+      "candidate_failed_assertions": 3
+    }
+  ],
+  "attribution": "Existing GP10 baseline reproduces Home layout assertions and Help keyboard-focus/null-node timeout with byte-equal failure messages. No UI edits made."
+}

@@ -1,0 +1,19 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   Cancel button requests cancellation exactly once
+ok   lower screen enters the stack
+ok   Screen exists before the wrapper is attached
+ok   loading surface is accepted as a blocking screen
+ok   loading wrapper is the top screen
+ok   screen layer is modal and does not start an entrance tween
+ok   opaque backdrop fills the viewport and stops mouse input
+ok   ScreenStack suspends the lower screen
+ok   summary is caller supplied and stage text is shown
+ok   covered mouse input cannot activate the lower screen
+ok   Escape requests cancellation exactly once
+ok   cancelling disables Cancel and replaces the truthful stage
+ok   button cannot emit another request after cancellation starts
+ok   static labels track the current translation
+ok   Spanish dynamic summary stays as supplied
+ok   panel and actions fit 1080p at 200 percent text
+all flight loading surface checks passed

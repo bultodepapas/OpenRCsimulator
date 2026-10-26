@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "50938773-7688-4abe-9369-3b7d31574189",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_world_sky.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "started_utc": "2026-10-26T14:30:10.882750+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-7t15z24y\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-7t15z24y\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 3,
+      "message": "Unknown time of day 'teatime' (dawn, sunrise, morning, noon, afternoon, golden_hour, sunset, blue_hour, night, night_dark, moonrise, moonrise_golden); using the fixed sun",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] resolve (res://render/world/conditions.gd:136)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 8,
+      "message": "Bad --time '25h' (HH:MM); using the fixed sun",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] resolve (res://render/world/conditions.gd:131)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.484,
+  "log_bytes": 786,
+  "log_sha256": "301cbcef2d3d74b6819890a7a24d1fc52895f942b476f4e8c9ef6d540f371594"
+}

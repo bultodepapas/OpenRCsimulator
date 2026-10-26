@@ -1,0 +1,62 @@
+{
+  "format": "openrc-ground-fixture-checkout-v1",
+  "ok": true,
+  "scope": "Disposable fixture-only repository, not a full application export or build.",
+  "core_autocrlf": true,
+  "fixtures": 6,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "original_sha256": "9ba2969316d3fa14579e53da3d0060cd9d86a4ff8c6ec4fbb394eab2cf1781a4",
+      "cloned_sha256": "810b69890fed1826bd0325e8de477e7889f933a724e1650802dbf700b3544a3d",
+      "raw_bytes_equal": false,
+      "comparison": "normalized text plus git check-attr semantics"
+    },
+    {
+      "path": "app/tests/fixtures/ground_contact_default_outputs.bin",
+      "original_sha256": "85df6ec77ea772eb55a5d1b9942e4d828ea78fae25fd833b93d6a6af1ece5133",
+      "cloned_sha256": "85df6ec77ea772eb55a5d1b9942e4d828ea78fae25fd833b93d6a6af1ece5133",
+      "raw_bytes_equal": true,
+      "comparison": "exact binary bytes"
+    },
+    {
+      "path": "app/tests/fixtures/ground_contact_rest_nonzero.bin",
+      "original_sha256": "92f54f5b19bc9cc23826747070ca924587825d53b5fee690afcd21adca237a98",
+      "cloned_sha256": "92f54f5b19bc9cc23826747070ca924587825d53b5fee690afcd21adca237a98",
+      "raw_bytes_equal": true,
+      "comparison": "exact binary bytes"
+    },
+    {
+      "path": "app/tests/fixtures/ground_contact_rest_proposal.bin",
+      "original_sha256": "3c75d979b6bd7d7b10dc534be2142312e4881548b7a11f2f34dfd61e4fbe9539",
+      "cloned_sha256": "3c75d979b6bd7d7b10dc534be2142312e4881548b7a11f2f34dfd61e4fbe9539",
+      "raw_bytes_equal": true,
+      "comparison": "exact binary bytes"
+    },
+    {
+      "path": "app/tests/fixtures/ground_contact_rest_range.bin",
+      "original_sha256": "caa37119b408baabb46aa40fe5d76ab036cc0dfdcb42a5d2f093d8941f0657f5",
+      "cloned_sha256": "caa37119b408baabb46aa40fe5d76ab036cc0dfdcb42a5d2f093d8941f0657f5",
+      "raw_bytes_equal": true,
+      "comparison": "exact binary bytes"
+    },
+    {
+      "path": "app/tests/fixtures/ground_contact_rest_slip.bin",
+      "original_sha256": "23471f7af97ea5c032a54e17c2e0cdc877fe55eaf13cef17609cc19ff4c5e449",
+      "cloned_sha256": "23471f7af97ea5c032a54e17c2e0cdc877fe55eaf13cef17609cc19ff4c5e449",
+      "raw_bytes_equal": true,
+      "comparison": "exact binary bytes"
+    },
+    {
+      "path": "app/tests/fixtures/ground_contact_rest_work.bin",
+      "original_sha256": "cb529ae633cd76e5a2a52e1975d33da4a653344ae85b2c0f67b9fcec9b1122c4",
+      "cloned_sha256": "cb529ae633cd76e5a2a52e1975d33da4a653344ae85b2c0f67b9fcec9b1122c4",
+      "raw_bytes_equal": true,
+      "comparison": "exact binary bytes"
+    }
+  ],
+  "attributes": "app/tests/fixtures/ground_contact_default_outputs.bin: text: unset\napp/tests/fixtures/ground_contact_rest_nonzero.bin: text: unset\napp/tests/fixtures/ground_contact_rest_proposal.bin: text: unset\napp/tests/fixtures/ground_contact_rest_range.bin: text: unset\napp/tests/fixtures/ground_contact_rest_slip.bin: text: unset\napp/tests/fixtures/ground_contact_rest_work.bin: text: unset\n",
+  "scratch": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-production-target\\fixture-checkout-5h02tj26",
+  "actual_repository_staged_or_committed": false,
+  "superseded_attempt": "First attempt incorrectly required raw .gitattributes text equality under autocrlf=true and stopped at its EOL difference; no binary transport result was claimed for that attempt."
+}

@@ -1,0 +1,71 @@
+{
+ "format": "openrc-f4u-wing-fold v1",
+ "source": {
+  "file": "F4U_Corsair_R59.blend",
+  "sha256": "94edd59b44f578b5a1f7c1fe4004c736dff47a63e2866e4b8a04532851cf4dc3",
+  "blender": "5.2.2 LTS",
+  "script": "research/f4u-corsair/F4U-17/extract_wing_fold.py"
+ },
+ "frame": "R59 root frame [x_aft, y_right, z_up], metres, full size",
+ "max_angle_deg": 112.0,
+ "sides": {
+  "left": {
+   "pivot": [
+    -2.3769173622131348,
+    -2.5200002193450928,
+    1.7850781679153442
+   ],
+   "axis": [
+    0.9766444563865662,
+    0.0,
+    0.21486178040504456
+   ],
+   "light": [
+    -2.3723740577697754,
+    -5.90000057220459,
+    2.3673923015594482
+   ],
+   "carried_objects": 842,
+   "sign": -1,
+   "lock_release_fraction": 0.12,
+   "travel_fraction": 0.82,
+   "driver_expression": "-1*m*pi/180*min(1,max(0,(q-0.12)/0.82))",
+   "check_folded_light_error_m": 0.0,
+   "check_folded_basis_error": 0.0,
+   "light_folded": [
+    -2.8780441284179688,
+    -0.7274326682090759,
+    4.665891647338867
+   ]
+  },
+  "right": {
+   "pivot": [
+    -2.3769173622131348,
+    2.5200002193450928,
+    1.7850781679153442
+   ],
+   "axis": [
+    0.9766444563865662,
+    0.0,
+    0.21486178040504456
+   ],
+   "light": [
+    -2.3723740577697754,
+    5.90000057220459,
+    2.3673923015594482
+   ],
+   "carried_objects": 781,
+   "sign": 1,
+   "lock_release_fraction": 0.12,
+   "travel_fraction": 0.82,
+   "driver_expression": "1*m*pi/180*min(1,max(0,(q-0.12)/0.82))",
+   "check_folded_light_error_m": 6.336060650786549e-07,
+   "check_folded_basis_error": 1.1920928955078125e-07,
+   "light_folded": [
+    -2.8780441284179688,
+    0.7274326682090759,
+    4.665891647338867
+   ]
+  }
+ }
+}

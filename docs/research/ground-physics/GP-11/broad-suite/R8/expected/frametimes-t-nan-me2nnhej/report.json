@@ -1,0 +1,53 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8f1ea393-f2ad-4062-9e91-4b51e89c480a",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--",
+    "--frametimes=nul",
+    "--t=nan"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "started_utc": "2026-10-26T15:42:57.361196+00:00",
+  "label": "frametimes-t-nan",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R8\\expected\\frametimes-t-nan-me2nnhej\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R8\\expected\\frametimes-t-nan-me2nnhej\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "--t requires a finite number"
+  ],
+  "process_exit": 31,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "--t requires a finite number",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _prepare_flight (res://main.gd:502)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 31,
+  "ok": false,
+  "elapsed_seconds": 10.531,
+  "log_bytes": 396,
+  "log_sha256": "ae0ea3cdab2d2ca2f9ba42ed0ef38343ebb77b2fe3633965e27e908c6d31414d"
+}

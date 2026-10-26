@@ -1,0 +1,27 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok only pavilion and pit shelter slabs become support surfaces
+ok rotated pavilion slab center reports its 0.15 m top
+ok rotated pavilion bounds include the slab corner
+ok rotated pavilion bound rejects points just beyond its width
+ok rotated pit shelter slab includes its 28.6 by 5.6 m edge
+ok rotated pit shelter bound rejects points just beyond its length
+ok points outside every support surface return the field datum
+ok collision world builds with a person on the pavilion slab
+ok person_standing capsule center includes the slab height
+ok person_standing capsule bottom rests on the pavilion top
+ok person_sitting capsule center includes the slab height
+ok person_sitting capsule bottom rests on the pavilion top
+ok person_pilot capsule center includes the slab height
+ok person_pilot capsule bottom rests on the pavilion top
+ok support-adjusted world identity is stable on repeat build
+ok support slabs add no duplicate flight collider
+ok collision world builds for the same person at field datum
+ok person capsule remains grounded outside supported footprints
+ok support-adjusted person geometry changes checkpoint identity
+ok a support-adjusted person adds only its existing capsule proxy
+ok pit shelter and visitor collision world builds
+ok pit shelter capsule rests on the 0.10 m slab
+ok pit shelter support metadata adds no floor collider
+ok pit shelter support adds only the existing person capsule
+landscape collision support: 0 failures

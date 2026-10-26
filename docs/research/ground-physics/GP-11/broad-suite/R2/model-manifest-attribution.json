@@ -1,0 +1,113 @@
+{
+  "utc": "2026-10-26T11:42:52.216792+00:00",
+  "r2_manifest_diffs": [
+    {
+      "path": "app\\data\\aircraft_models\\sebart-avanti-s-a200-p100rx.json",
+      "only_line_endings": false,
+      "json_diffs": [
+        {
+          "path": "/dependencies/6/sha256",
+          "old": "d12085cf4c5bd627147019bbfde4c278b08882fe3a25e0cc2b3d3c34d9e8dca5",
+          "new": "129656a31199c912571b0e4ed61084c718f1faca96aee7a36621dec29b28a56e"
+        }
+      ]
+    },
+    {
+      "path": "app\\data\\aircraft_models\\turbo-lumber-evolution.json",
+      "only_line_endings": false,
+      "json_diffs": [
+        {
+          "path": "/dependencies/6/sha256",
+          "old": "d0c94eea920a9193e349ec5eccdf3ef65f98cbfc74cd5da5e9a52c28752c83b6",
+          "new": "a25822325cc792e13f94f20348af900084df347a5bc04f87a7e98e1cc7bef5f1"
+        }
+      ]
+    },
+    {
+      "path": "app\\data\\aircraft_models\\f4u-corsair-250.json",
+      "only_line_endings": false,
+      "json_diffs": [
+        {
+          "path": "/dependencies/6/sha256",
+          "old": "9a951afd2de50da7a1f8cc643fd869942aac16377f154257afd2fc35b094aa3b",
+          "new": "8d8d349d06e9e8ca114e7b1bf4411fac1c3fa3d1ce39e739c33a0a3ad70f01a2"
+        },
+        {
+          "path": "/liveries/0/import_sha256",
+          "old": "9a951afd2de50da7a1f8cc643fd869942aac16377f154257afd2fc35b094aa3b",
+          "new": "8d8d349d06e9e8ca114e7b1bf4411fac1c3fa3d1ce39e739c33a0a3ad70f01a2"
+        },
+        {
+          "path": "/liveries/1/import_sha256",
+          "old": "d8ec22d309ee38c7ec06b77aaa05029d818b91d672f77841e1e8e00eeed38b19",
+          "new": "69d88aca09742bd55bba6ebc9696d6070848cbbca537f5621f0f63ef42ed3712"
+        },
+        {
+          "path": "/liveries/2/import_sha256",
+          "old": "1e90948d8282ff43b1aaf83cf416c23c975fae401d3653879f7533fcf530b83e",
+          "new": "8fdfa3374bec72b78538df57416179e576b3740dac7fad6e31ccb6e3d79148bd"
+        },
+        {
+          "path": "/liveries/3/import_sha256",
+          "old": "4ff52aca07705e3225f55dda66358cda3843cc350086ac8d16836ca49df36a96",
+          "new": "aa7f2ae106047ee56cae538a08704977a27e1bcd07867ff130512f443ec93b0b"
+        },
+        {
+          "path": "/liveries/4/import_sha256",
+          "old": "68f133d81744ff7faaa8e9aae99f6f76381fd973d6b2b054d6b9d181419f5d5c",
+          "new": "8247cd9f8f53286eb58d2e8c60affedaaf84967e5d11231804af833fa23b22e2"
+        },
+        {
+          "path": "/liveries/5/import_sha256",
+          "old": "c019c2145cebf7147d04d6fe2cf6495040cef66c76bcb126786992aeacf5cd2b",
+          "new": "46de122273c3407f646b910a0c80c0edda26fcb6953fae59286b7710c3ff518c"
+        },
+        {
+          "path": "/liveries/6/import_sha256",
+          "old": "e9024d205793c1ee7850db53f1c03c44d10479050491f4bb6fd9b1befb2d58fd",
+          "new": "bac8152b77e21edd7a523720e4a28fc5a5866450d44dec62bc070f01cb4186ca"
+        },
+        {
+          "path": "/liveries/7/import_sha256",
+          "old": "2ac2447f68703c5abe5a211282fb7e9044c77a24aa37faa887cad6b62351b8f7",
+          "new": "3d7bf527e8042949d4e10e25630fe41b8ae16f12c916df405bb5bc4b3d43bcd2"
+        },
+        {
+          "path": "/liveries/8/import_sha256",
+          "old": "52a40a80c489163949607c91af1a74e56cd7dd6c4749ed5a79ae87669265f46f",
+          "new": "2790091d471df5025ea5fb3705529f976a31f889e2d819efb94adb97d8e9bfa3"
+        },
+        {
+          "path": "/liveries/9/import_sha256",
+          "old": "7315c234b623756958d1363c4a8f186451286446ae42d86178069c6f489b6a7f",
+          "new": "fc8ec0fcd447945634ce01ea1dcbffe4b4915f3a772cecd91605a0336971572a"
+        },
+        {
+          "path": "/liveries/10/import_sha256",
+          "old": "8ad0318113be3206e747ffabbc57da2961ff00fd201bdb685a901419d2b5fcd9",
+          "new": "342acede22620191b2e08cc0605b5783bc2d005d52c15f7b183497eff8b8509f"
+        },
+        {
+          "path": "/liveries/11/import_sha256",
+          "old": "0caf050ebc9b95c683aefd7280dd6b3074b703d7f53076aa18db662a3589f779",
+          "new": "6a302886240ac379318ae4d2a33246eeb0881bca1422ba5a69e33def8a6b00b2"
+        },
+        {
+          "path": "/liveries/12/import_sha256",
+          "old": "3add2833555c0f4f401e328c18b6ff39080b66706a6898f7fb787e77f92d2c6f",
+          "new": "c7fa42aada7a68d20bfacb7bf7f4c9b9fc829e05cc7e768c12adad4b0e4cd2b0"
+        }
+      ]
+    }
+  ],
+  "gp10_readonly_baseline": {
+    "command": [
+      "python",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85\\research\\aircraft-standardization\\build_models.py",
+      "--check"
+    ],
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "stale generated aircraft model manifests:\n  app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json\n  app/data/aircraft_models/turbo-lumber-evolution.json\n  app/data/aircraft_models/f4u-corsair-250.json\nrun: python research/aircraft-standardization/build_models.py\n"
+  }
+}

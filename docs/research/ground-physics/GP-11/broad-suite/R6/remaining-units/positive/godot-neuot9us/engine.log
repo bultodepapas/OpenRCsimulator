@@ -1,0 +1,15 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   retirement regression uses the Dummy driver
+ok   fixture includes a pending semantic fade
+ok   actual commit reaches final quit once after an unmuted cue
+ok   actual quit seam sees cleared players and expired playback refs
+ok   shutdown cancels every pending fade
+ok   declared audible tail keeps playback until its wall deadline
+ok   tail and mixer retirement finish with simulation time stopped
+ok   no playback closes synchronously without a permanent drain delay
+ok   silent committed quit also coalesces duplicate requests
+Menu audio shutdown incomplete: 1 playback(s) retained after 252337 usec
+ok   retained playback produces a finite timeout report before quit
+ok   timeout fixture releases its deliberate strong observer
+Quit audio retirement: 11 checks, 0 failed

@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-04-R1 dynamic inflow: 240 checks, 0 failed
+DYNAMIC_QUALIFICATION=[{"fixture":"hover_target_step","known_seam_refined_peak_error_mps":0.00000199654892085732,"raw_peak_error_mps":0.00552203634030835},{"fixture":"C_increasing","known_seam_refined_peak_error_mps":0.000000136527718908042,"raw_peak_error_mps":0.000194617379269957},{"fixture":"C_decreasing","known_seam_refined_peak_error_mps":0.00000015784688667253,"raw_peak_error_mps":0.000200262391818917},{"fixture":"M_increasing","known_seam_refined_peak_error_mps":0.000108233512220224,"raw_peak_error_mps":0.00979315979599704},{"fixture":"M_decreasing","known_seam_refined_peak_error_mps":0.000376269988705324,"raw_peak_error_mps":0.0115563480526628},{"fixture":"feedback_flow_ramp","known_seam_refined_peak_error_mps":0.000000217608251418255,"raw_peak_error_mps":0.000000217608251418255}]

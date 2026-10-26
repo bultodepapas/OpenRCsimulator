@@ -1,0 +1,136 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   car_sedan maps to a population vehicle source
+ok   car_hatch maps to a population vehicle source
+ok   car_suv maps to a population vehicle source
+ok   car_sport maps to a population vehicle source
+ok   four legacy vehicle IDs use the three reviewed body styles
+ok   person_standing maps to a population person source
+ok   person_sitting maps to a population person source
+ok   person_pilot maps to a population person source
+ok   person_working maps to a population person source
+ok   sedan GLB imports as a PackedScene
+ok   sedan is baked geometry without a skeleton or animation player
+ok   sedan has no attached runtime scripts or processing callbacks
+ok   sedan contains visible mesh geometry
+ok   sedan stays within its source triangle cap (25686 <= 30000)
+ok   sedan retains usable textured surfaces and UVs
+ok   sedan retains unit-length imported normals on every surface
+ok   hatch GLB imports as a PackedScene
+ok   hatch is baked geometry without a skeleton or animation player
+ok   hatch has no attached runtime scripts or processing callbacks
+ok   hatch contains visible mesh geometry
+ok   hatch stays within its source triangle cap (24470 <= 30000)
+ok   hatch retains usable textured surfaces and UVs
+ok   hatch retains unit-length imported normals on every surface
+ok   crossover GLB imports as a PackedScene
+ok   crossover is baked geometry without a skeleton or animation player
+ok   crossover has no attached runtime scripts or processing callbacks
+ok   crossover contains visible mesh geometry
+ok   crossover stays within its source triangle cap (25359 <= 30000)
+ok   crossover retains usable textured surfaces and UVs
+ok   crossover retains unit-length imported normals on every surface
+ok   standing/casual_shirt outfit variant is shipped
+ok   standing/casual_shirt GLB imports as a PackedScene
+ok   standing/casual_shirt is baked geometry without a skeleton or animation player
+ok   standing/casual_shirt has no attached runtime scripts or processing callbacks
+ok   standing/casual_shirt contains visible mesh geometry
+ok   standing/casual_shirt stays within its source triangle cap (7679 <= 8000)
+ok   standing/casual_shirt retains usable textured surfaces and UVs
+ok   standing/casual_shirt retains unit-length imported normals on every surface
+ok   standing/woman_tee outfit variant is shipped
+ok   standing/woman_tee GLB imports as a PackedScene
+ok   standing/woman_tee is baked geometry without a skeleton or animation player
+ok   standing/woman_tee has no attached runtime scripts or processing callbacks
+ok   standing/woman_tee contains visible mesh geometry
+ok   standing/woman_tee stays within its source triangle cap (7149 <= 8000)
+ok   standing/woman_tee retains usable textured surfaces and UVs
+ok   standing/woman_tee retains unit-length imported normals on every surface
+ok   standing/casual_jacket outfit variant is shipped
+ok   standing/casual_jacket GLB imports as a PackedScene
+ok   standing/casual_jacket is baked geometry without a skeleton or animation player
+ok   standing/casual_jacket has no attached runtime scripts or processing callbacks
+ok   standing/casual_jacket contains visible mesh geometry
+ok   standing/casual_jacket stays within its source triangle cap (7396 <= 8000)
+ok   standing/casual_jacket retains usable textured surfaces and UVs
+ok   standing/casual_jacket retains unit-length imported normals on every surface
+ok   standing/mechanic_overalls outfit variant is shipped
+ok   standing/mechanic_overalls GLB imports as a PackedScene
+ok   standing/mechanic_overalls is baked geometry without a skeleton or animation player
+ok   standing/mechanic_overalls has no attached runtime scripts or processing callbacks
+ok   standing/mechanic_overalls contains visible mesh geometry
+ok   standing/mechanic_overalls stays within its source triangle cap (7317 <= 8000)
+ok   standing/mechanic_overalls retains usable textured surfaces and UVs
+ok   standing/mechanic_overalls retains unit-length imported normals on every surface
+ok   sitting/woman_tee outfit variant is shipped
+ok   sitting/woman_tee GLB imports as a PackedScene
+ok   sitting/woman_tee is baked geometry without a skeleton or animation player
+ok   sitting/woman_tee has no attached runtime scripts or processing callbacks
+ok   sitting/woman_tee contains visible mesh geometry
+ok   sitting/woman_tee stays within its source triangle cap (7147 <= 8000)
+ok   sitting/woman_tee retains usable textured surfaces and UVs
+ok   sitting/woman_tee retains unit-length imported normals on every surface
+ok   sitting/veteran_cap outfit variant is shipped
+ok   sitting/veteran_cap GLB imports as a PackedScene
+ok   sitting/veteran_cap is baked geometry without a skeleton or animation player
+ok   sitting/veteran_cap has no attached runtime scripts or processing callbacks
+ok   sitting/veteran_cap contains visible mesh geometry
+ok   sitting/veteran_cap stays within its source triangle cap (7801 <= 8000)
+ok   sitting/veteran_cap retains usable textured surfaces and UVs
+ok   sitting/veteran_cap retains unit-length imported normals on every surface
+ok   pilot/pilot_polo outfit variant is shipped
+ok   pilot/pilot_polo GLB imports as a PackedScene
+ok   pilot/pilot_polo is baked geometry without a skeleton or animation player
+ok   pilot/pilot_polo has no attached runtime scripts or processing callbacks
+ok   pilot/pilot_polo contains visible mesh geometry
+ok   pilot/pilot_polo stays within its source triangle cap (8280 <= 9200)
+ok   pilot/pilot_polo retains usable textured surfaces and UVs
+ok   pilot/pilot_polo retains unit-length imported normals on every surface
+ok   pilot/veteran_cap outfit variant is shipped
+ok   pilot/veteran_cap GLB imports as a PackedScene
+ok   pilot/veteran_cap is baked geometry without a skeleton or animation player
+ok   pilot/veteran_cap has no attached runtime scripts or processing callbacks
+ok   pilot/veteran_cap contains visible mesh geometry
+ok   pilot/veteran_cap stays within its source triangle cap (9039 <= 9200)
+ok   pilot/veteran_cap retains usable textured surfaces and UVs
+ok   pilot/veteran_cap retains unit-length imported normals on every surface
+ok   working/mechanic_overalls outfit variant is shipped
+ok   working/mechanic_overalls GLB imports as a PackedScene
+ok   working/mechanic_overalls is baked geometry without a skeleton or animation player
+ok   working/mechanic_overalls has no attached runtime scripts or processing callbacks
+ok   working/mechanic_overalls contains visible mesh geometry
+ok   working/mechanic_overalls stays within its source triangle cap (7318 <= 8000)
+ok   working/mechanic_overalls retains usable textured surfaces and UVs
+ok   working/mechanic_overalls retains unit-length imported normals on every surface
+ok   working/casual_shirt outfit variant is shipped
+ok   working/casual_shirt GLB imports as a PackedScene
+ok   working/casual_shirt is baked geometry without a skeleton or animation player
+ok   working/casual_shirt has no attached runtime scripts or processing callbacks
+ok   working/casual_shirt contains visible mesh geometry
+ok   working/casual_shirt stays within its source triangle cap (7681 <= 8000)
+ok   working/casual_shirt retains usable textured surfaces and UVs
+ok   working/casual_shirt retains unit-length imported normals on every surface
+ok   working/woman_tee outfit variant is shipped
+ok   working/woman_tee GLB imports as a PackedScene
+ok   working/woman_tee is baked geometry without a skeleton or animation player
+ok   working/woman_tee has no attached runtime scripts or processing callbacks
+ok   working/woman_tee contains visible mesh geometry
+ok   working/woman_tee stays within its source triangle cap (7148 <= 8000)
+ok   working/woman_tee retains usable textured surfaces and UVs
+ok   working/woman_tee retains unit-length imported normals on every surface
+ok   standing/casual_shirt resolves shared shader textures
+ok   standing/woman_tee resolves shared shader textures
+ok   standing/casual_jacket resolves shared shader textures
+ok   standing/mechanic_overalls resolves shared shader textures
+ok   sitting/woman_tee resolves shared shader textures
+ok   sitting/veteran_cap resolves shared shader textures
+ok   pilot/pilot_polo resolves shared shader textures
+ok   pilot/veteran_cap resolves shared shader textures
+ok   working/mechanic_overalls resolves shared shader textures
+ok   working/casual_shirt resolves shared shader textures
+ok   working/woman_tee resolves shared shader textures
+ok   standing, sitting, and pilot reuse at least one PBR texture resource
+ok   default population layout validates
+ok   source layout contributes 11 cars and 13 people
+skip production population readback; asset is not staged yet: res://assets/scenery/population/standing.glb
+all population asset checks passed

@@ -469,26 +469,51 @@ static func _sample(evaluate: Callable, state: PackedFloat64Array, at: float) ->
 
 
 static func _resolution_stats(settings: Dictionary) -> Dictionary:
-	if settings.maximum_assembly_resolution_j<0.0: return {}
+	if settings.maximum_assembly_resolution_j<0.0:return {}
 	return {maximum_assembly_resolution_j=settings.maximum_assembly_resolution_j,ceiling_scope="per_impulse_qp_not_tick",
-		accepted_at_resolution=0,maximum_derived_gamma_j=0.0,derived_gamma_sum_j=0.0,
-		objective_gap_upper_sum_j=0.0}
+		accepted_at_resolution=0,accepted_slip_roundoff=0,accepted_work_roundoff=0,maximum_derived_gamma_j=0.0,derived_gamma_sum_j=0.0,
+		objective_gap_upper_sum_j=0.0,slip_work_equivalent_sum_j=0.0,work_consistency_sum_j=0.0,combined_contact_uncertainty_sum_j=0.0}
 
 
-static func _record_resolution(stats: Dictionary,applied: Dictionary) -> bool:
-	if stats.is_empty() or not applied.qp.has("assembly_resolution"): return true
-	var proof: Dictionary = applied.qp.assembly_resolution
-	if not proof.get("ok",false) or not _number(proof.get("assembly_objective_resolution_j")) \
-		or not _number(proof.get("true_objective_gap_upper_j")) \
-		or proof.true_objective_gap_upper_j<0.0 \
-		or proof.true_objective_gap_upper_j>proof.assembly_objective_resolution_j \
-		or proof.assembly_objective_resolution_j>stats.maximum_assembly_resolution_j:
-		return false
-	stats.accepted_at_resolution+=1
-	stats.maximum_derived_gamma_j=maxf(stats.maximum_derived_gamma_j,proof.assembly_objective_resolution_j)
-	stats.derived_gamma_sum_j=Impulse.AR._add(stats.derived_gamma_sum_j,proof.assembly_objective_resolution_j)
-	stats.objective_gap_upper_sum_j=Impulse.AR._add(stats.objective_gap_upper_sum_j,proof.true_objective_gap_upper_j)
-	return _number(stats.derived_gamma_sum_j) and _number(stats.objective_gap_upper_sum_j)
+static func _record_resolution(stats:Dictionary,applied:Dictionary)->bool:
+	if stats.is_empty():return true
+	var gamma:=0.0
+	var gap:=0.0
+	var slip:=0.0
+	var work:=0.0
+	if applied.qp.has("assembly_resolution"):
+		var proof:Dictionary=applied.qp.assembly_resolution
+		if not proof.get("ok",false) or not _number(proof.get("assembly_objective_resolution_j")) \
+			or not _number(proof.get("true_objective_gap_upper_j")) or proof.true_objective_gap_upper_j<0.0 \
+			or proof.true_objective_gap_upper_j>proof.assembly_objective_resolution_j:return false
+		gamma=proof.assembly_objective_resolution_j
+		gap=proof.true_objective_gap_upper_j
+		stats.accepted_at_resolution+=1
+	if applied.has("slip_roundoff"):
+		var proof:Dictionary=applied.slip_roundoff
+		if not proof.get("ok",false) or not _number(proof.get("work_equivalent_bound_j")) \
+			or proof.work_equivalent_bound_j<0.0 \
+			or proof.certified_impulse_sha256!=Impulse.AR.impulse_digest(applied.impulse):return false
+		slip=proof.work_equivalent_bound_j
+		stats.accepted_slip_roundoff+=1
+	if applied.has("work_roundoff"):
+		var proof:Dictionary=applied.work_roundoff
+		if not proof.get("ok",false) or not _number(proof.get("work_equivalent_bound_j")) \
+			or proof.work_equivalent_bound_j<0.0 or not _number(proof.get("actual_relative_work_upper_j")) \
+			or proof.actual_relative_work_upper_j>0.0 \
+			or proof.certified_impulse_sha256!=Impulse.AR.impulse_digest(applied.impulse):return false
+		work=proof.work_equivalent_bound_j
+		stats.accepted_work_roundoff+=1
+	var combined:=Impulse.AR._add(Impulse.AR._add(gamma,slip),work)
+	if not is_finite(combined) or combined>stats.maximum_assembly_resolution_j:return false
+	stats.maximum_derived_gamma_j=maxf(stats.maximum_derived_gamma_j,gamma)
+	stats.derived_gamma_sum_j=Impulse.AR._add(stats.derived_gamma_sum_j,gamma)
+	stats.objective_gap_upper_sum_j=Impulse.AR._add(stats.objective_gap_upper_sum_j,gap)
+	stats.slip_work_equivalent_sum_j=Impulse.AR._add(stats.slip_work_equivalent_sum_j,slip)
+	stats.work_consistency_sum_j=Impulse.AR._add(stats.work_consistency_sum_j,work)
+	stats.combined_contact_uncertainty_sum_j=Impulse.AR._add(stats.combined_contact_uncertainty_sum_j,combined)
+	return _number(stats.derived_gamma_sum_j) and _number(stats.objective_gap_upper_sum_j) \
+		and _number(stats.slip_work_equivalent_sum_j) and _number(stats.work_consistency_sum_j) and _number(stats.combined_contact_uncertainty_sum_j)
 
 
 static func _same_binding(a: Dictionary, b: Dictionary) -> bool:

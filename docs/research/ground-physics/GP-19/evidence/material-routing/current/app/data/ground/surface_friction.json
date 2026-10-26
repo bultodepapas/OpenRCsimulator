@@ -1,0 +1,94 @@
+{
+  "format": "openrc-surfaces v1",
+  "description": "E3a: field surfaces runway, rotorpad, mown and rough scale tyre forces in physics/ground_contact.gd. Rotorpad friction is an estimated mown-like value; its reserved 0.5 rolling factor selects zero-relief terrain for helicopter support and is not a rolling-resistance measurement. GP-07c: airframe_friction is the kinetic friction coefficient of an airframe point (not a tyre) sliding on the surface, used by soft hull contacts (physics/hull_contact.gd) and the crash presentation's slide table.",
+  "surfaces": {
+    "runway": {
+      "material_id": "maintained_turf",
+      "material_source": "Existing v1 grass_rwy coefficient provenance below; the default runway is turf, not asphalt. Identity only, no new material measurement.",
+      "friction_factor": {
+        "value": 0.8,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "FlightGear fgdata Materials/default/global.xml, material grass_rwy: friction-factor 0.8 (branch next, read 2026-10-06; asphalt is 1.0)"
+      },
+      "rolling_factor": {
+        "value": 2.5,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "FlightGear grass_rwy rolling-friction 0.05 over the 0.02 of dry asphalt (Docs/README.materials default), the way FlightGear scales JSBSim's rolling friction. Stik: 0.04 x 2.5 = 0.10, so 2.8 N of rolling resistance against 2.6 N of idle thrust"
+      },
+      "airframe_friction": {
+        "value": 0.4,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "GP-07c: airframe (film, painted wood, nylon) kinetic sliding friction on the mown grass strip. Proxy: smooth steel tubes dragged over a short natural-grass pitch, 0.45 +/- 0.01 (Linthorne & Cooper 2013), and a golf ball sliding on a green, 0.25-0.40 (Penner 2002); 0.40 within the 0.35-0.50 band. No film-on-grass measurement exists; docs/research/ground-physics/GP-07/README.md"
+      }
+    },
+    "rotorpad": {
+      "material_id": "mown_grass",
+      "material_source": "Existing HELI-20a mown-like ground estimate below; no pad material measurement. Identity does not change the reserved v1 relief selector.",
+      "friction_factor": {
+        "value": 0.7,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "HELI-20a mown-like ground-contact factor reused as an explicit simulator estimate; no rotorpad surface measurement is available."
+      },
+      "rolling_factor": {
+        "value": 0.5,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Reserved rotorpad terrain selector in GroundTerrain: a flat, zero-relief support patch; not a rolling-resistance measurement."
+      },
+      "airframe_friction": {
+        "value": 0.45,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "GP-07c: the helicopter pad is treated as mown grass for airframe sliding (no pad measurement); docs/research/ground-physics/GP-07/README.md"
+      }
+    },
+    "mown": {
+      "material_id": "mown_grass",
+      "material_source": "Existing v1 Grass/Airport/Greenspace coefficient provenance below; identity only.",
+      "friction_factor": {
+        "value": 0.7,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "FlightGear fgdata Materials/default/global-summer.xml, material Grass/Airport/Greenspace: friction-factor 0.7"
+      },
+      "rolling_factor": {
+        "value": 5.0,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "FlightGear Grass rolling-friction 0.1 over asphalt's 0.02. Stik: C_rr 0.20"
+      },
+      "airframe_friction": {
+        "value": 0.45,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "GP-07c: airframe kinetic sliding friction on mown field grass, longer and less even than the strip. Same proxy rig as the runway; its authors put the effective value near 0.6 on uneven grass; 0.45 within the 0.40-0.60 band; docs/research/ground-physics/GP-07/README.md"
+      }
+    },
+    "rough": {
+      "material_id": "long_grass",
+      "material_source": "Existing v1 uncut grass effective-material estimate below; no new soil or grass measurement.",
+      "friction_factor": {
+        "value": 0.7,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "FlightGear fgdata global-summer.xml, material Grassland/CropGrass: friction-factor 0.7"
+      },
+      "rolling_factor": {
+        "value": 7.5,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "FlightGear Grassland keeps rolling-friction 0.1 (5x) for full-size tyres but is bumpier (0.3 vs 0.1); a 76 mm RC wheel sinks into uncut grass, so 1.5x more (Stik: C_rr 0.30). Guess, not measured"
+      },
+      "airframe_friction": {
+        "value": 0.55,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "GP-07c: airframe sliding through uncut grass. No direct data: 0.45 plus stem drag, guessed within 0.45-0.8; docs/research/ground-physics/GP-07/README.md"
+      }
+    }
+  }
+}

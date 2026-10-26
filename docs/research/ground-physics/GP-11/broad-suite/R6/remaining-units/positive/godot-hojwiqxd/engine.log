@@ -1,0 +1,27 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   synthetic v3 smoke bindings pass the strict profile contract
+ok   fixture has a pair of authored show outlets
+ok   v2 fixture passes strict profile validation
+ok   density and emission rate are separate visible controls
+ok   motion controls expose the independent v2 coefficients
+ok   palette mode and phase offset controls are present
+ok   Godot picker, editable hex, Apply and Cancel are present
+ok   density edit leaves emission rate unchanged
+ok   emission rate edit leaves density unchanged
+ok   smooth palette and bounded phase offset remain independent profile settings
+ok   compatible authored emitter can be selected for a one-time copy
+ok   copy changes the target settings once and preserves both outlet IDs
+ok   copied emitters remain independent after the one-time copy
+ok   picker changes stay pending until Apply and block validity
+ok   Cancel restores the selected color without changing the profile
+ok   Apply commits the unusual alpha color as one edit
+ok   strict validation refuses rates above the v2 limit
+FAIL v1 fixture validates through the explicit legacy reader 
+FAIL legacy profile migration fixture is available ["Presentation profile has missing or unsupported fields."]
+ok   smoke controls stay inside the scrollable Workshop panel at 1280x720
+ok   advanced motion and copy controls remain scroll-reachable at 1280x720
+ok   smoke controls stay inside the scrollable Workshop panel at 1920x1080
+ok   advanced motion and copy controls remain scroll-reachable at 1920x1080
+ok   v2 density and copy controls have Spanish labels
+Workshop smoke controls: 24 checks, 2 failures

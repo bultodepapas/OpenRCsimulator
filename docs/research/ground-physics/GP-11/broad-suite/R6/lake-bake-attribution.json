@@ -1,0 +1,40 @@
+{
+  "format": "openrc-baseline-lake-bake-isolation v1",
+  "utc": "2026-10-26T13:31:18.063979+00:00",
+  "baseline_report": "tmp\\gp11-full-suite-checks\\R6\\baseline-ui\\lake-bake\\godot-cfi4oi66\\report.json",
+  "candidate_report": "tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-4n63hq_r\\report.json",
+  "identical_test_and_bake_source_inputs": [
+    {
+      "path": "app/tests/test_lake_geometry_bake.gd",
+      "sha256": "c93630f2c46e73b16ce6221ae841fdcc4a3c3376a40ef6aba89db64583034249"
+    },
+    {
+      "path": "app/render/lake/lake_terrain.gd",
+      "sha256": "ef23575c0439b3cc505945d70e3da2b1a4bc76386da635709d9b677cb9a60dd1"
+    },
+    {
+      "path": "app/render/lake/generated_geometry_stamp.gd",
+      "sha256": "9ce96c2ccc94c6d15fc35435551c7a0280878fe359a69ce7370b389559ce163e"
+    },
+    {
+      "path": "app/physics/ground_terrain.gd",
+      "sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26"
+    },
+    {
+      "path": "app/physics/lake_surface.gd",
+      "sha256": "8c3f51ce336ca7ad674cc77ec8af8d697aa254f77ac9ae28e814ed860ba68152"
+    },
+    {
+      "path": "app/physics/math3d.gd",
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb"
+    }
+  ],
+  "same_results": [
+    "FAIL bake source hashes match LF-normalized sources and the generated stamp",
+    "ok   one fresh procedural basin build matches every baked array exactly",
+    "ok   one fresh procedural water build matches every baked array exactly",
+    "18 lake geometry bake checks, 1 failed"
+  ],
+  "failure_messages_byte_equal": true,
+  "attribution": "Inherited GP10 source stamp freshness failure. Both baseline and GP11 candidate freshly regenerate basin/water arrays byte-exactly equal to packaged geometry; source provenance stamp is stale. No regeneration or stamp edits made."
+}

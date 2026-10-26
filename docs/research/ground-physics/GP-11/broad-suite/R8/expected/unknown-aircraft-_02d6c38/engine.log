@@ -1,0 +1,9 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ERROR: aircraft 'no-such-aircraft' refused: not in the catalog (jensen-das-ugly-stik-60, stik-glow-61fx-2t, stik-glow-55ax-2t, stik-glow-fs64v-4t, gp-extra-300s-60, p51d-mustang-120, f4u-corsair-250, sebart-avanti-s-a200-p100rx, turbo-lumber-evolution, xcell-60-research)
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _prepare_flight (res://main.gd:534)
+       [1] _ready (res://main.gd:356)
+       [2] start_flight (res://app_root.gd:949)
+       [3] _ready (res://app_root.gd:269)

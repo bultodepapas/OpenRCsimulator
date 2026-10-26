@@ -1,0 +1,72 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "375c3dfa-6595-440c-a9a7-6d2780743301",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_world_moon_config.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "started_utc": "2026-10-26T14:29:50.583887+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-000rkg9s\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-000rkg9s\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 3,
+      "message": "Bad --moon 'phase:gibbous' (real, off or phase:<new|waxing_crescent|first_quarter|waxing_gibbous|full|waning_gibbous|last_quarter|waning_crescent>); keeping off",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _apply_moon (res://environment/moon_config.gd:143)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 9,
+      "message": "Bad --moon-size 'huge' (real, large); keeping large",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _apply (res://environment/moon_config.gd:150)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 15,
+      "message": "Ignoring invalid saved moon config: moon halo must be one of auto, off",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] resolve (res://environment/moon_config.gd:76)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.266,
+  "log_bytes": 1233,
+  "log_sha256": "94e15aa19c4b54fa8a5b6769b9a11383930e998f7d3ba2b43e1614c41e8d79a6"
+}

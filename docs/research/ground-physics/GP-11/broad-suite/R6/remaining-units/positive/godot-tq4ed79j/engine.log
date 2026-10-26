@@ -1,0 +1,48 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   defaults validate
+ok   an empty dictionary means the defaults
+ok   rejects { &"camera_view": "cockpit" }
+ok   rejects { &"camera_fov": 51 }
+ok   rejects { &"camera_fov": "50" }
+ok   rejects { &"camera_auto_zoom": 1 }
+ok   rejects { &"camera_zoom_law": "fisheye" }
+ok   rejects { &"camera_horizon_bias": "on" }
+ok   rejects { &"camera_overhead_smoothing": 0 }
+ok   rejects { &"camera_magnifier": "big" }
+ok   rejects { &"camera_chase_distance": 3.0 }
+ok   rejects { &"camera_sensitivity": -1.0 }
+ok   rejects { &"camera_invert_y": "yes" }
+ok   an integer multiplier is accepted (1 = 100 %)
+ok   no file: camera defaults
+ok   a camera draft saves
+ok   round trip keeps every camera value
+ok   stored under [camera]
+ok   one bad camera value falls back alone
+ok   other display settings survive a bad camera value
+ok   a file from before CAM-17 keeps the camera defaults
+ok   start: first view, auto-zoom, chase distance, FOV and orbit controls
+ok   start: pilot aids stay off by default
+ok   pilot aids apply live
+ok   a live FOV change keeps the pilot's own view and Z state
+ok   a live auto-zoom change applies
+ok   and turning it off in Settings turns it off
+ok   pilot view shows the 45° setting
+ok   a new FOV setting is reached smoothly (no jump on the first frame)
+ok   auto-zoom never widens past the setting
+ok   far airplane: the law narrows below the setting
+ok   Backspace keeps the setting (it resets zoom, not the FOV)
+ok   invert flips the vertical drag
+ok   sensitivity scales the turn
+ok   a dolly eases: the first frame covers a fraction of the move
+ok   and covers 98 % of it within 0.3 s
+ok   easing across ±180° turns the short way
+ok   Camera page shows every option at its default
+ok   pilot view aids: Both turns on the horizon tilt and overhead smoothing
+ok   pilot view aids: the horizon alone
+ok   auto zoom Off keeps the chosen law
+ok   a law turns auto zoom on with it
+ok   the default FOV is labelled as the default
+ok   choosing 35° previews it live (no display trial)
+ok   Keep stores the camera choices
+all 45 camera settings checks passed

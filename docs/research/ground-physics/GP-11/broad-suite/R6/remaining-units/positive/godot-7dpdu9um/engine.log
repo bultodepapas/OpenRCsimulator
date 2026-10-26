@@ -1,0 +1,39 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   keyboard flight is running
+ok   calibration card is shown during the wizard
+ok   Esc cancels the wizard and opens Pause with the result
+ok   calibration card hides with the wizard
+ok   Continue after a cancelled wizard flies again
+ok   the final Enter opens Pause instead of leaving a frozen flight
+ok   Pause reports the calibration result
+ok   Continue with another hold keeps Pause and explains it
+ok   Continue flies once the other hold is gone
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite-checks/user-appdata/Godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-26T14-17-07-14109270.orfl
+ok   flight-log label is shown while flying
+ok   flight-log label hides with the overlays under Pause
+ok   flight-log label returns with the overlays
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite-checks/user-appdata/Godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-26T14-17-07-14109270.orfl (25 ticks)
+ok   Restart with a failed trace save asks before resetting
+ok   Discard then restarts the flight
+ok   embedded focus change while the OS window keeps focus does not pause
+ok   OS window focus-out opens Pause
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+ok   helicopter flight starts
+ok   helicopter exposes the shared restart request
+ok   helicopter R restarts through the shell
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+ok   pad flight starts ready
+ok   ready controller: no recovery action
+failsafe: Controller lost. Select a controller or keyboard in Controls.
+ok   lost controller: Controller settings is visible without opening a group
+ok   lost controller: focus is on the recovery action
+ok   recovery action opens Controller settings
+ok   closing Controller settings returns to Pause
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+ok   trial with a controller is never frozen without a menu
+UI recovery dead ends: 0 failed

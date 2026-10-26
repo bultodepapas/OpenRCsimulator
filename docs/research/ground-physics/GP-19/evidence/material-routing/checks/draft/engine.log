@@ -1,0 +1,10 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+SCRIPT ERROR: Invalid call. Nonexistent 'float' constructor.
+   at: snapshot_contacts (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-material-audio/ground_audio_model.gd:57)
+   GDScript backtrace (most recent call first):
+       [0] snapshot_contacts (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-material-audio/ground_audio_model.gd:57)
+       [1] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-material-audio/test_materials.gd:67)
+FAIL actual contact snapshot contains wheels
+Ground audio materials: 23 checks, 1 failed

@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+Engine mesh probes: intake walls m=[0.00640947818756, 0.00582179021835, 0.00588700914383, 0.00630424833298] depths m=[0.03966980743408, 0.02106708145142, 0.01778074645996, -1.0, 0.02401888084412]; head relief m=0.0071; outlet walls m=[0.00419447565079, 0.00418193531036, 0.00420112705231, 0.00420236682892] depth m=-1.0000
+Visual linkage sweep: 71 poses; max built endpoint gap=0.000000087 m; max built rod length error=0.000000119 m
+953 checks, 0 failed

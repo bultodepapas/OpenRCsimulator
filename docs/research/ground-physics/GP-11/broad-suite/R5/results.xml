@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="10" failures="0" errors="0" skipped="0" time="14.487000"><testcase classname="OpenRC.GodotCommand" name="resource import [godot-706vjsfm]" time="7.141000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-706vjsfm/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_dynamic_inflow.gd [godot-7amven_k]" time="0.422000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-7amven_k/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_aerodynamic_stage.gd [godot-9uzcwjgz]" time="2.579000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-9uzcwjgz/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/battery/bat-06/law_probe.gd [godot-gxzoag1p]" time="0.672000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-gxzoag1p/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_inflow.gd [godot-j61eak4a]" time="0.313000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-j61eak4a/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tools/audio/make_bus_layout.gd [godot-kxhq5jsv]" time="0.484000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-kxhq5jsv/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_airframe.gd [godot-l9v1cgzr]" time="0.438000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-l9v1cgzr/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_tail_rotor.gd [godot-n1sz_b00]" time="0.328000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-n1sz_b00/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/aero/d11g/derive_rate_derivatives.gd [godot-tuw4i5ar]" time="1.672000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-tuw4i5ar/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_main_rotor.gd [godot-yvj6e7lc]" time="0.438000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-yvj6e7lc/report.json and engine.log</system-out></testcase></testsuite>

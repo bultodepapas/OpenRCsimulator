@@ -1,0 +1,33 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   inherit stays lazy
+ok   Festival keeps optional effects optional
+ok   explicit profile configures one existing NightKit
+ok   bounded effects and two actual spill lights allocate
+ok   sequence burst uses a bounded 32 point pool per tip
+ok   actual exposure reaches the strip cap unchanged
+ok   nonfinite clock is ignored safely
+ok   paused clock holds the sequence burst
+ok   backward clock resets sprite phase and transient pools
+ok   reconfigure cycle 0 reuses one kit and one VFX root
+ok   reconfigure cycle 1 reuses one kit and one VFX root
+ok   reconfigure cycle 2 reuses one kit and one VFX root
+ok   dispose releases spill and scene VFX resources but preserves aircraft
+ok   dispose restores source strip overrides
+ok   disabled strip zones allocate no spill
+ok   missing optional strip geometry reports diagnostics
+ok   missing required=false anchor skips with a warning
+ok   missing required anchor fails configuration cleanly
+ok   unsupported orientation capability suppresses strips and spill
+ok   gear update exposes the disabled landing group before profile reconciliation
+ok   same-frame profile reconciliation keeps disabled landing lamps and beams dark
+ok   canonical landing zone brightness controls both paired beams
+ok   reused OFF kit opens profile-enabled lamps
+ok   animated lamp samples the selected pattern and disables its legacy flash
+ok   steady classic strobe preserves its legacy flash
+ok   known imported lenses follow their zone enabled and brightness values
+ok   unknown imported material reports group-only zone control
+ok   disabling every navigation zone disables unmapped imported emissions
+ok   disabled selection shuts off private imported emission
+ok   disabled dispose restores emission without mutating source
+lighting rig: 30 checks, 0 failed

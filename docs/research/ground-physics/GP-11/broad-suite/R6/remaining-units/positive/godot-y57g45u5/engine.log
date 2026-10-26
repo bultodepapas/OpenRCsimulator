@@ -1,0 +1,38 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   a direct flight starts in the pilot view
+ok   C: chase
+ok   chase camera is a few metres from the airplane
+ok   Shift+C: back to pilot
+ok   4: fly-by
+ok   5: orbit
+ok   right-button drag turns the orbit
+ok   a plain mouse move does not turn it
+ok   wheel up moves the orbit in
+ok   Backspace resets the orbit
+ok   2: chase
+ok   = brings the chase closer
+ok   − moves it back
+ok   1 then Z: pilot view, auto-zoom off
+ok   Z again: on
+ok   the historical close-up switch still works
+ok   simulation untouched by camera input
+ok   restart: chase settled next to the airplane
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   --view=chase starts in chase
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   --inspect still starts in the close-up
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   _pose_of: CG velocity in render axes (east 12, down 2)
+ok   crash aftermath: the orbit looks at the director's focus point
+ok   crash aftermath: the orbit leaves the pilot aim alone
+ok   crash aftermath: the pilot view keeps the director's aim
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+ok   helicopter: starts in the pilot view with its own zoom
+ok   helicopter Shift+C: back to the close-up
+ok   helicopter =: zoom in from its own zoom
+ok   helicopter Backspace: back to its own zoom, not the airplane's
+ok   helicopter wheel: a half notch zooms half a step
+ok   helicopter restart: the chase forgets its history
+camera route: 30 checks, 0 failed

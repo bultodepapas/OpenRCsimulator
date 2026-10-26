@@ -1,0 +1,48 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   known propeller replacement has a proven individual estimate
+ok   quote scope and required unit atom are explicit
+ok   candidate catalog maps the opaque candidate ID to its component unit
+ok   dossier provenance is retained with no live fit or availability claim
+ok   group replacement expands only the affected quantity
+ok   each default candidate maps back to the source component and unit index
+ok   partial assessment can retain a known subset estimate
+ok   partial assessment never claims a complete replacement quote
+ok   unknown unit valuation remains a feasible unknown-cost candidate
+ok   unknown unit price is not treated as zero or proven complete
+ok   overlapping package coverage selects one non-overlapping exact cover
+ok   selected candidates cover every replacement atom exactly once
+ok   a cheaper full bundle is selected once across multiple components
+ok   authored bundle compatibility is explicitly identified in the catalog
+ok   replacement unit expansion is bounded before search
+ok   bounded optimizer search does not claim a completed quote
+ok   total loss is refused because this adapter cannot compare salvage
+ok   calculator validation runs before optimizer for malformed assessment
+ok   unsafe package cost is rejected before optimizer input cloning
+ok   valid StringName-keyed dictionary literals are accepted
+ok   unknown package-candidate keys are rejected
+ok   empty package candidate IDs are rejected before copying
+ok   empty package provenance is rejected before copying
+ok   empty package coverage is rejected before copying
+ok   cyclic extra fields are rejected without recursive cloning
+ok   cyclic coverage values are rejected without recursive cloning
+ok   tie resolution and catalog ordering are deterministic under input reordering
+ok   calculator and optimizer leave caller-owned dossier, assessment, and packages unchanged
+ok   no replacement decisions are reported quietly without claiming a broader repair total
+ok   selected package snapshot records sorted exact coverage and price once
+ok   valid package cover remains verifiable after JSON round trip
+ok   inconsistent selected archive rejected: sum
+ok   inconsistent selected archive rejected: missing_unit
+ok   inconsistent selected archive rejected: overlap
+ok   inconsistent selected archive rejected: foreign_unit
+ok   inconsistent selected archive rejected: foreign_candidate
+ok   inconsistent selected archive rejected: fractional_cost
+ok   inconsistent selected archive rejected: missing_rows
+ok   inconsistent selected archive rejected: unknown_optimum
+ok   inconsistent selected archive rejected: unfinished_optimum
+ok   unresolved selection remains null through archive: unknown
+ok   completed unknown cover cannot claim infeasible
+ok   completed unknown cover cannot claim cost_out_of_range
+ok   unresolved selection remains null through archive: limited
+ok   legacy view-only comparison is still readable
+CR-31e replacement quote: 45 checks, 0 failures

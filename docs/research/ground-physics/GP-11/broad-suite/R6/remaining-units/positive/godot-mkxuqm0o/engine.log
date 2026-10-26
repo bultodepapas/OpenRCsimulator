@@ -1,0 +1,19 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   the Stik declares aero.surfaces.wing_body_cl_beta
+ok   loader accepts the module, its absence and an explicit zero  [][][]
+ok   absent and zero wing-body term give byte-identical local loads (400 states)
+ok   the module changes only the rolling moment
+ok   local roll couple equals ½ρ·S·b·Clβ_WB·u·v·(1 − sideslip weight)  worst 8.881784197001252e-16
+ok   local/oracle wing-body increment ratio equals cos(alpha)cos(beta)sin(beta)/beta  worst 5.551115123125783e-16
+ok   oracle and local wing-body increments agree within 1.2 % for |alpha| <= 8 deg, |beta| <= 2 deg  worst 0.01070
+ok   without the module the local Clβ is under 20 % of the oracle's (fin only)  0.156
+ok   with the module the local Clβ keeps over 80 % of the oracle's at α 0–8°  0.818
+ok   the couple is zero at zero flow and broadside  0.0 0.0
+ok   the couple vanishes continuously (quadratically) as the flow speed tends to zero  last 5.764592929774253e-19
+ok   the fade keeps the full couple at b1 and none past b2  0.0 0.0
+ok   the faded couple is continuous through b1..b2 (largest step over 2000 samples < 0.2 % of its b1 value)  0.0035358167208126012 of 3.636803626230469
+ok   loader rejects a value outside -0.3..0.1
+ok   loader rejects a wrong unit
+ok   loader rejects Clb that is not fin + wing-body
+D10-R5 wing-body roll: 16 checks, 0 failed

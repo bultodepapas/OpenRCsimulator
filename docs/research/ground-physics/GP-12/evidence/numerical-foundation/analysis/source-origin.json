@@ -1,0 +1,250 @@
+{
+  "commit": "984403b2adecb694f163139a9c8ff5026322314a",
+  "records": [
+    {
+      "path": "app/physics/aero.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/aircraft_contract.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/aircraft_ground_accuracy.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/aircraft_ground_dynamics.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/aircraft_ground_impulse.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/aircraft_ground_profile.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/aircraft_ground_stage.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/aircraft_ground_step.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/aircraft_ground_traction.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/battery/battery_data.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/battery/esc_supervisor.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/battery/pack_ecm.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/contact_assembly_resolution.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/control_actuators.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/control_surfaces.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/effective_mass.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/electric_motor.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/electric_supply.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/event_bracket.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/event_step.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/fixed_datum_body.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/flaps.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/fuel_properties.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/generalized_coordinates.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/glow/carburetor.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/glow/four_stroke.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/glow/fuel_feed.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/glow/fuel_mass.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/glow/installation.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/glow/operating_point.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/glow/profile.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/glow/propeller.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/glow/source.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/glow/two_stroke.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/ground_contact.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/ground_effect.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/ground_support.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/ground_terrain.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/ground_traction.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/ground_wheels.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/hull_contact.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/integrator.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/intended_hull_support.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/lake_surface.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/liquid_fuel.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/mass_inventory.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/math3d.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/normal_compliance.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/normal_contact_admission.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/physics/physical_identity.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/propulsion.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/rigid_body.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/rotor_coupling.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/turbine.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/wheel_geometry.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/wheel_profiles.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/physics/wing_polar.gd",
+      "matches_committed_bytes": true
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "matches_committed_bytes": false
+    },
+    {
+      "path": "app/tests/test_aircraft_ground_stage.gd",
+      "matches_committed_bytes": true
+    }
+  ],
+  "all_app_sources_recoverable_from_commit": false
+}

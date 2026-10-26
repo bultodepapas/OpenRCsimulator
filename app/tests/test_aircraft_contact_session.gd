@@ -15,6 +15,21 @@ func check(label: String, condition: bool) -> void:
 		failures += 1
 		printerr("FAIL ", label)
 
+class RejectReloadSession extends "res://sim/flight_session.gd":
+	var reject_next_reload := false
+	var _reject_load_once := false
+	func _commit_aircraft(prepared: Dictionary) -> void:
+		super._commit_aircraft(prepared)
+		if reject_next_reload:
+			reject_next_reload = false
+			_reject_load_once = true
+	func _wheel_evaluate(s: PackedFloat64Array, x: PackedFloat64Array, t: float) -> Dictionary:
+		if _reject_load_once:
+			_reject_load_once = false
+			return {}
+		return super._wheel_evaluate(s, x, t)
+
+
 func _initialize() -> void:
 	_initial_checkpoint()
 	_hull_lifecycle()
@@ -231,7 +246,7 @@ func _rejected_projection() -> void:
 	s.free()
 
 func _failed_reload() -> void:
-	var s := Session.new()
+	var s := RejectReloadSession.new()
 	s.soft_hull_contacts = true
 	s.setup()
 	var body: PackedFloat64Array = s.sim.state.duplicate()
@@ -241,8 +256,8 @@ func _failed_reload() -> void:
 	s._check_prop_strike()
 	var before := var_to_bytes(s.contact_events())
 	var before_body: PackedByteArray = s.sim.state.to_byte_array()
-	# Fail after preparation commits a valid aircraft, during its new-flight reset.
-	s.resetting.connect(func() -> void: s.sim.mass = 0.0, CONNECT_ONE_SHOT)
+	# Refuse the staged candidate evaluator before any physical commit/publication.
+	s.reject_next_reload = true
 	var reason: String = s.reload()
 	check("failed reload restores previous accepted body", reason.begins_with("reload failed;")
 		and s.sim.fault_reason.is_empty() and s.sim.state.to_byte_array() == before_body)

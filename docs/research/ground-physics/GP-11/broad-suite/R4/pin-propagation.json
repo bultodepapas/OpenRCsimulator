@@ -1,0 +1,122 @@
+{
+  "format": "openrc-transitive-pin-propagation v1",
+  "utc": "2026-10-26T12:24:48.053809+00:00",
+  "checks": [
+    {
+      "command": [
+        "python",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite\\research\\aircraft-editor\\build_descriptors.py"
+      ],
+      "exit_code": 0,
+      "stdout": "Generated 9 Workshop descriptors.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite\\research\\aircraft-editor\\build_descriptors.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "9 Workshop descriptors are current.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite\\research\\aircraft-standardization\\build_customization.py"
+      ],
+      "exit_code": 0,
+      "stdout": "generated customization bindings (6 visual families)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite\\research\\aircraft-standardization\\build_customization.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "customization bindings current (6 visual families)\n",
+      "stderr": ""
+    }
+  ],
+  "changed_files": [
+    {
+      "path": "app/data/aircraft_customization.json",
+      "before_sha256": "1bbcf85829ff1e34d2c238e6ca7b6b82ebc6186f6bb69d892a65ec967e16edbc",
+      "after_sha256": "ba3b51c0704efab76ec0d118af6eb136f7317186de5b48d5dde9923f4f545e61"
+    },
+    {
+      "path": "app/data/workshop/f4u-corsair-250.json",
+      "before_sha256": "c6d2dd9d27768de361937e63eb3b521a33c04442e318e8087c4e72cee16a0bda",
+      "after_sha256": "c354fff952dc445b1e6e817f8f5892c115d0ae5be442ecf55565ab75a0117521"
+    },
+    {
+      "path": "app/data/workshop/sebart-avanti-s-a200-p100rx.json",
+      "before_sha256": "4bafe0a1663cf19cf7e74d6ed030940ef591ca1490907a0b7120fe882787bc37",
+      "after_sha256": "865ad61aef2d7fd64d1d12d64835c6b42aa02b2a7bd9ec6fd7045324f05d910e"
+    },
+    {
+      "path": "app/data/workshop/turbo-lumber-evolution.json",
+      "before_sha256": "7ac57f52bff3f175dd04d7cad7ab7c92212313f121f16c2408b78028125a4762",
+      "after_sha256": "c2cd661043b3da31c2ddbd37dfb5872e28e3d2018ee78147ecc5e5ba754454b6"
+    }
+  ],
+  "changed_json_leaves": [
+    {
+      "path": "app/data/workshop/f4u-corsair-250.json/presentation/model_manifest_sha256",
+      "before": "444f2841fc3c13bea183ec7085cb2563a1b9bc7a2eefdfda79dd5cc6260f5fc5",
+      "after": "4a64652f22a2d2fe5a613c6aba0e79307fb02e2e53033a1e93366a49ab9bb753"
+    },
+    {
+      "path": "app/data/workshop/sebart-avanti-s-a200-p100rx.json/presentation/model_manifest_sha256",
+      "before": "81e87a8c463fc28369885f782ab9a19dc19223337ef50d2b99a8f05cbf75e54d",
+      "after": "4f49947c2c5d588f8f98895e0d72bf51ca7f4eee8cb79478f981defcb5e7393f"
+    },
+    {
+      "path": "app/data/workshop/turbo-lumber-evolution.json/presentation/model_manifest_sha256",
+      "before": "5ea663ac036b56aa4d561f3c375717fffbb53d65e1ce1ce3ad525507225a2569",
+      "after": "0b99af3f2134489b2a2e05558b2c56c9e54108958a585ebea5534400b616f19c"
+    },
+    {
+      "path": "app/data/aircraft_customization.json/families/0/model_manifest_sha256",
+      "before": "444f2841fc3c13bea183ec7085cb2563a1b9bc7a2eefdfda79dd5cc6260f5fc5",
+      "after": "4a64652f22a2d2fe5a613c6aba0e79307fb02e2e53033a1e93366a49ab9bb753"
+    },
+    {
+      "path": "app/data/aircraft_customization.json/families/0/slots_sha256",
+      "before": "462dba9b410f56e90555aec7c10aca4c6218f6405ba8cafded953442ecfc345e",
+      "after": "a4b1de37cb3b036d3f50bbc865421284bda7870cb3e703fdc7d01d840e56a413"
+    },
+    {
+      "path": "app/data/aircraft_customization.json/families/4/model_manifest_sha256",
+      "before": "81e87a8c463fc28369885f782ab9a19dc19223337ef50d2b99a8f05cbf75e54d",
+      "after": "4f49947c2c5d588f8f98895e0d72bf51ca7f4eee8cb79478f981defcb5e7393f"
+    },
+    {
+      "path": "app/data/aircraft_customization.json/families/4/slots_sha256",
+      "before": "5bc3d52f59190937f7a769ce2ba1d9f0f88fa7ac25b20883172669ceed0522ff",
+      "after": "25c178decc1cb1d79872fc08f6f31d2c4a2cfbdcdc5d9a76f94d01c653e11a1a"
+    },
+    {
+      "path": "app/data/aircraft_customization.json/families/5/model_manifest_sha256",
+      "before": "5ea663ac036b56aa4d561f3c375717fffbb53d65e1ce1ce3ad525507225a2569",
+      "after": "0b99af3f2134489b2a2e05558b2c56c9e54108958a585ebea5534400b616f19c"
+    },
+    {
+      "path": "app/data/aircraft_customization.json/families/5/slots_sha256",
+      "before": "e50ba3fb239399524a1944d5112570d275ec4c59a12c7836b75481a3454ceec4",
+      "after": "ed1196bf940d0c3f0cf606a1691132da33270ea00549ff48d68affd671cb95db"
+    }
+  ],
+  "all_changes_sha256_strings_only": true,
+  "physical_quantities_and_all_other_json_values_unchanged": true,
+  "all_gd_scripts_unchanged": true,
+  "all_other_app_source_dependency_files_unchanged": true,
+  "app_file_count": 4034,
+  "parse_reuse": "../R2-parse/result.json",
+  "previous_model_pin_overlay": "../R3/parse-reuse.json",
+  "main_files_modified": false,
+  "flight_goldens_rerecorded": false
+}

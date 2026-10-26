@@ -1,0 +1,7 @@
+8 invocations: 7 passed, 1 failed or invalid.
+
+C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tools/audio/make_bus_layout.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-veyj9gmo/report.json and engine.log

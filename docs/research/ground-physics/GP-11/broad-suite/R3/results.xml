@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="7" failures="0" errors="0" skipped="0" time="8.765000"><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_tail_rotor.gd [godot-k2m5ahxg]" time="0.328000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-k2m5ahxg/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_inflow.gd [godot-l8o_k53o]" time="0.297000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-l8o_k53o/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_main_rotor.gd [godot-t1596v91]" time="0.297000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-t1596v91/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="resource import [godot-va43upjw]" time="5.078000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-va43upjw/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_aerodynamic_stage.gd [godot-wzt06dar]" time="2.156000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-wzt06dar/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_dynamic_inflow.gd [godot-xfbpa62n]" time="0.297000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-xfbpa62n/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_airframe.gd [godot-xu20m_vm]" time="0.312000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-xu20m_vm/report.json and engine.log</system-out></testcase></testsuite>

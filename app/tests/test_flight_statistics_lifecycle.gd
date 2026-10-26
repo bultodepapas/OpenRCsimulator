@@ -12,10 +12,25 @@ func check(label: String, condition: bool) -> void:
 		printerr("FAIL ", label)
 
 
+class RejectReloadSession extends "res://sim/flight_session.gd":
+	var reject_next_reload := false
+	var _reject_load_once := false
+	func _commit_aircraft(prepared: Dictionary) -> void:
+		super._commit_aircraft(prepared)
+		if reject_next_reload:
+			reject_next_reload = false
+			_reject_load_once = true
+	func _wheel_evaluate(s: PackedFloat64Array, x: PackedFloat64Array, t: float) -> Dictionary:
+		if _reject_load_once:
+			_reject_load_once = false
+			return {}
+		return super._wheel_evaluate(s, x, t)
+
+
 func _initialize() -> void:
 	var service: Node = load("res://statistics/service.gd").new()
 	check("in-memory service opens without player files", service.setup("", false))
-	var player: Node = Session.new()
+	var player: Node = RejectReloadSession.new()
 	var reference: Node = Session.new()
 	player.input_enabled = false
 	reference.input_enabled = false
@@ -44,7 +59,7 @@ func _initialize() -> void:
 	check("resume attaches exactly once", player.sim.stepped.get_connections().size() == before_count)
 	check("suspension creates no restart", int(service.query().restarts) == 0)
 	var generation: int = player.statistics_generation
-	player.resetting.connect(func() -> void: player.sim.mass = 0.0, CONNECT_ONE_SHOT)
+	player.reject_next_reload = true # Refuse before physical commit/publication.
 	var failed_reload: String = player.reload()
 	check("failed reload rolled back", failed_reload.begins_with("reload failed;"))
 	check("failed reload does not publish success", player.statistics_generation == generation)

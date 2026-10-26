@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   derived free slope = lift_slope/(1 − dε/dα) = 3.2228, τ = control_effectiveness·(1 − dε/dα) = 0.6375
+ok   no rates, α −2…6°, elevator ±0.05 rad: bounded-wake tail lift matches independent calculation  worst relative 3.5067580193855702e-15
+ok   no rates: tail pitching moment includes the independently calculated lift and drag arms  worst relative 4.440892098500626e-16
+ok   α 8°: local drag 4.35 N closer to the oracle's 4.17 N than the former law's 4.63 N
+ok   α 10°: local drag 5.28 N closer to the oracle's 5.16 N than the former law's 5.70 N
+ok   the tail's pitch-rate moment grows by 1/(1 − dε/dα) = 1.8416 within 5 % (lift part exact; tail drag and lift tilt add the rest)  ratio 1.83542
+ok   elevator τ 0.637 within 0.45–0.75 and within 20 % of thin-airfoil flap theory for the Stik's elevator (0.545)
+ok   α 14° (wing partly stalled): the tail's angle 9.98° = α − atan2(k_ε·U,V) + i_free (9.98°), above the linear-downwash 8.29° (stall break)
+8 checks, 0 failed

@@ -1,0 +1,39 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok  interactive launch animates
+ok  headless launch bypasses intro
+ok  technical route bypass: --quick-flight
+ok  technical route bypass: --input-report
+ok  technical route bypass: --trace=tmp/check.csv
+ok  technical route bypass: --vehicle=mt8-bisonte
+ok  saved Spanish and reduced motion respected
+ok  intro never rewrites preferences
+ok  malformed values use defaults
+ok  missing preferences use defaults
+ok  intro fills viewport (1920, 1080)
+ok  intro fills viewport (3840, 2160)
+ok  intro fills viewport (1280, 720)
+ok  review/reduced motion frame remains still
+ok  presentation nodes released
+ok  startup waits for its presentation boundary before creating a worker
+ok  startup owns close requests while its loader is pending
+ok  skip cannot commit an unfinished worker
+ok  collected dedicated load preserves skip and fade handoff
+ok  AppRoot handoff sees original quit policy
+ok  handoff app is held before fade: presentation free
+ok  raw startup free respects prior mode or accepted quit: presentation free
+ok  handoff app is held before fade: fade free
+ok  raw startup free respects prior mode or accepted quit: fade free
+ok  handoff app is held before fade: changed mode
+ok  raw startup free respects prior mode or accepted quit: changed mode
+ok  handoff app is held before fade: accepted quit
+ok  raw startup free respects prior mode or accepted quit: accepted quit
+ok  paused close yields while live startup worker drains
+ok  duplicate startup close commits once after worker disposal
+ok  departing startup restores quit policy
+ok  raw startup free leaves its active worker root owned
+ok  abandoned startup worker drains and frees without a join on main
+ok  thread-start failure retains the startup error state
+ok  failed startup remains closable
+ok  null loaded scene fails without attempting handoff
+Brand startup: 0 failed

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8195e9a0-5235-4495-b37e-1f220fc3c4d1",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_contact_assembly_resolution.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T16:37:56.581426+00:00",
+  "label": "contact_assembly_resolution",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-production-target\\main-checks\\contact_assembly_resolution\\contact_assembly_resolution-hnf052ad\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-production-target\\main-checks\\contact_assembly_resolution\\contact_assembly_resolution-hnf052ad\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.188,
+  "log_bytes": 643,
+  "log_sha256": "9e55e3e557183d19141dcb10ec12c270ef642f97a978245e030525d37a160e88"
+}

@@ -1,0 +1,116 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   verified bindings available
+ok   fixture selects no more than three show outlets and one source outlet
+ok   preview accepted the registered four-emitter profile
+ok   all four authored show/source emitters share 768 particles
+ok   preview reports resolved per-emitter puffs/s and budget limiting
+ok   stationary and idle by default
+ok   pass choice clears clock and selects a readable side view
+ok   pass moves only the parent pose and resolves each authored mount once
+ok   30 FPS reaches exact midpoint tick and pose
+ok   30 FPS preserves the same midpoint mounts
+ok   30 FPS reaches the six-second pass endpoint and stops emission
+ok   30 FPS ages eight-second residuals through the plume tail
+ok   30 FPS completion cannot advance while paused
+ok   60 FPS reaches exact midpoint tick and pose
+ok   60 FPS preserves the same midpoint mounts
+ok   60 FPS reaches the six-second pass endpoint and stops emission
+ok   60 FPS ages eight-second residuals through the plume tail
+ok   60 FPS completion cannot advance while paused
+ok   144 FPS reaches exact midpoint tick and pose
+ok   144 FPS preserves the same midpoint mounts
+ok   144 FPS reaches the six-second pass endpoint and stops emission
+ok   144 FPS ages eight-second residuals through the plume tail
+ok   144 FPS completion cannot advance while paused
+ok   Play after completion explicitly starts a fresh pass
+ok   pause freezes clock and model
+ok   invalid deltas cannot poison the playhead
+ok   long draw interval is bounded without catch-up
+ok   hidden preview pauses rendering and playhead
+ok   Original comparison is stationary and pauses the draft
+ok   Original cannot accidentally start smoke
+ok   Draft restores the paused pass pose
+ok   scale change resets pose and residual history 0.1
+ok   pass bounds fit scale 0.1 / front / tick 0
+ok   pass bounds fit scale 0.1 / front / tick 720
+ok   pass bounds fit scale 0.1 / front / tick 1440
+ok   pass bounds fit scale 0.1 / side / tick 0
+ok   pass bounds fit scale 0.1 / side / tick 720
+ok   pass bounds fit scale 0.1 / side / tick 1440
+ok   pass bounds fit scale 0.1 / top / tick 0
+ok   pass bounds fit scale 0.1 / top / tick 720
+ok   pass bounds fit scale 0.1 / top / tick 1440
+ok   scale change resets pose and residual history 0.3
+ok   pass bounds fit scale 0.3 / front / tick 0
+ok   pass bounds fit scale 0.3 / front / tick 720
+ok   pass bounds fit scale 0.3 / front / tick 1440
+ok   pass bounds fit scale 0.3 / side / tick 0
+ok   pass bounds fit scale 0.3 / side / tick 720
+ok   pass bounds fit scale 0.3 / side / tick 1440
+ok   pass bounds fit scale 0.3 / top / tick 0
+ok   pass bounds fit scale 0.3 / top / tick 720
+ok   pass bounds fit scale 0.3 / top / tick 1440
+ok   scale change resets pose and residual history 0.5
+ok   pass bounds fit scale 0.5 / front / tick 0
+ok   pass bounds fit scale 0.5 / front / tick 720
+ok   pass bounds fit scale 0.5 / front / tick 1440
+ok   pass bounds fit scale 0.5 / side / tick 0
+ok   pass bounds fit scale 0.5 / side / tick 720
+ok   pass bounds fit scale 0.5 / side / tick 1440
+ok   pass bounds fit scale 0.5 / top / tick 0
+ok   pass bounds fit scale 0.5 / top / tick 720
+ok   pass bounds fit scale 0.5 / top / tick 1440
+ok   scale change resets pose and residual history 1.0
+ok   pass bounds fit scale 1.0 / front / tick 0
+ok   pass bounds fit scale 1.0 / front / tick 720
+ok   pass bounds fit scale 1.0 / front / tick 1440
+ok   pass bounds fit scale 1.0 / side / tick 0
+ok   pass bounds fit scale 1.0 / side / tick 720
+ok   pass bounds fit scale 1.0 / side / tick 1440
+ok   pass bounds fit scale 1.0 / top / tick 0
+ok   pass bounds fit scale 1.0 / top / tick 720
+ok   pass bounds fit scale 1.0 / top / tick 1440
+ok   scale change resets pose and residual history 2.0
+ok   pass bounds fit scale 2.0 / front / tick 0
+ok   pass bounds fit scale 2.0 / front / tick 720
+ok   pass bounds fit scale 2.0 / front / tick 1440
+ok   pass bounds fit scale 2.0 / side / tick 0
+ok   pass bounds fit scale 2.0 / side / tick 720
+ok   pass bounds fit scale 2.0 / side / tick 1440
+ok   pass bounds fit scale 2.0 / top / tick 0
+ok   pass bounds fit scale 2.0 / top / tick 720
+ok   pass bounds fit scale 2.0 / top / tick 1440
+ok   scale change resets pose and residual history 2.3
+ok   pass bounds fit scale 2.3 / front / tick 0
+ok   pass bounds fit scale 2.3 / front / tick 720
+ok   pass bounds fit scale 2.3 / front / tick 1440
+ok   pass bounds fit scale 2.3 / side / tick 0
+ok   pass bounds fit scale 2.3 / side / tick 720
+ok   pass bounds fit scale 2.3 / side / tick 1440
+ok   pass bounds fit scale 2.3 / top / tick 0
+ok   pass bounds fit scale 2.3 / top / tick 720
+ok   pass bounds fit scale 2.3 / top / tick 1440
+ok   scale change resets pose and residual history 5.0
+ok   pass bounds fit scale 5.0 / front / tick 0
+ok   pass bounds fit scale 5.0 / front / tick 720
+ok   pass bounds fit scale 5.0 / front / tick 1440
+ok   pass bounds fit scale 5.0 / side / tick 0
+ok   pass bounds fit scale 5.0 / side / tick 720
+ok   pass bounds fit scale 5.0 / side / tick 1440
+ok   pass bounds fit scale 5.0 / top / tick 0
+ok   pass bounds fit scale 5.0 / top / tick 720
+ok   pass bounds fit scale 5.0 / top / tick 1440
+ok   stationary selection clears history and recenters model
+ok   Stop emission leaves the preview running and tells the renderer to cancel new births
+ok   stopped residuals keep aging on the isolated preview clock
+ok   pause freezes stopped residuals without resuming emission
+ok   resume keeps Stop emission active
+ok   Restart clears stopped state, playhead and residual history
+ok   explicit plume fit includes the complete bounded stationary envelope
+ok   plume fit keeps the bounded illustrative-pass envelope visible
+ok   unknown motion mode is ignored
+ok   preview motion never changes the profile or creates flight state
+ok   twenty mode/play/reset cycles keep four pools, fixed budget and empty history
+ok   removing smoke restores normal centered inspection
+Workshop smoke preview: 113 checks, 0 failures

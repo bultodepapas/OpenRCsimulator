@@ -3,8 +3,10 @@
 extends RefCounted
 
 const Propulsion := preload("res://physics/propulsion.gd")
+const Battery := preload("res://physics/aircraft_ground_battery.gd")
 const M := preload("res://physics/math3d.gd")
 const LAW := "fixed-voltage-electric-common-rotor-torque-split-v1"
+const DYNAMIC_LAW := "finite-battery-electric-common-rotor-torque-split-v1"
 
 
 ## propeller_loads_o is the complete existing propeller wrench at THIS stage,
@@ -37,6 +39,40 @@ static func electric_fixed_voltage(prop: Dictionary, rpm: float, duty: float, en
 	var map_rpm := maxf(0.0, rpm)
 	var point := Propulsion.electric_source_state(map_rpm, duty, prop, enabled)
 	if not point.get("ok", false): return _failure("existing electric source rejected this stage: " + str(point.get("message", "invalid")))
+	return _split(prop, rpm, propeller_loads_o, point)
+
+
+## Uses the SAME existing pack algebra and the SAME torque split as fixed bus.
+## Battery state/event ownership is external; this adapter never clamps charge,
+## integrates RPM or consumes the old net shaft_torque_nm (which includes loss).
+static func electric_dynamic(prop: Dictionary, rpm: float, duty: float, enabled: bool,
+		propeller_loads_o: PackedFloat64Array, block: PackedFloat64Array,
+		ambient_k: float, cooling_speed_mps: float, connected_left_limit := false,
+		trial_extension := false) -> Dictionary:
+	if not Propulsion.has_dynamic_battery(prop) or not Propulsion.has_rotor_dynamics(prop) \
+		or typeof(prop.get("rotor_inertia")) not in [TYPE_FLOAT, TYPE_INT] \
+		or not is_finite(float(prop.rotor_inertia)) or prop.rotor_inertia <= 0.0 \
+		or not _shape(propeller_loads_o, 6) or not _shape(prop.get("offset"), 3):
+		return _failure("finite dynamic source and finite reference-datum wrench required")
+	var point := Battery.evaluate(prop, rpm, duty, enabled, block, ambient_k, cooling_speed_mps,
+		connected_left_limit, trial_extension)
+	if not point.ok: return _failure("existing finite source rejected this stage: " + str(point.get("reason", "invalid")))
+	var result := _split(prop, rpm, propeller_loads_o, point)
+	if result.ok:
+		result.law = DYNAMIC_LAW
+		result.source_kind = "electric_" + str(prop.battery.kind)
+		result.battery_rates = point.rates.duplicate()
+		result.battery_point = point
+		result.trial_extension_only = point.trial_extension_only
+	return result
+
+
+static func _split(prop: Dictionary, rpm: float, propeller_loads_o: PackedFloat64Array,
+		point: Dictionary) -> Dictionary:
+	var axis := Propulsion.axis(prop)
+	if not _shape(axis, 3) or absf(M.dot(axis, axis) - 1.0) > 1e-9:
+		return _failure("invalid installed shaft axis")
+	var map_rpm := maxf(0.0, rpm)
 	# Arithmetic matches ElectricMotor's SI conversion, without its isolated rest
 	# friction clamp. Explicit static capacity remains available with drive off.
 	var kt: float = 60.0 / TAU / float(prop.motor.kv_rpm_per_volt)

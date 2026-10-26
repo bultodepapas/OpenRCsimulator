@@ -1,0 +1,97 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL fleet can be rebuilt after refused nonzero start  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL max_ticks=1 is accepted  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+FAIL max_ticks=1 closes on tick one  { &"active": false, &"complete": false, &"error": "", &"directory": "" }
+FAIL minimum-limit capture has initial and final rows  
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL three companions fit the fixed four-stream capture cap  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+FAIL four-stream manifest fixes roster and stream limit  
+FAIL all three companions share each accepted player tick  
+FAIL all four streams close at one common tick  {  }
+FAIL four-stream capture preserves existing per-session ORFL files  
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL capture starts only after explicit request  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+FAIL capture status is active  { &"active": false, &"complete": false, &"error": "", &"directory": "" }
+FAIL default capture duration uses the 28,800-tick bound  
+FAIL manifest exists at capture start  
+FAIL manifest format and initial incomplete state  {  }
+FAIL manifest starts at global tick zero and declares 240 Hz  {  }
+FAIL manifest records each stream's companion profile identity  {  }
+FAIL manifest source hashes match the selected source files  {  }
+FAIL manifest declares fixed stream, file, and row limits  {  }
+FAIL manifest labels replay scope without fleet restore or decisions  {  }
+FAIL recording status is detached  
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _run_recorded_parity_and_replay (res://tests/test_companions_record.gd:273)
+   GDScript backtrace (most recent call first):
+       [0] _run_recorded_parity_and_replay (res://tests/test_companions_record.gd:273)
+       [1] _run (res://tests/test_companions_record.gd:65)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL remove capture starts  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+FAIL remove_now closes a complete common capture before clearing agents  { &"active": false, &"complete": false, &"error": "", &"directory": "" }
+FAIL remove summary includes the last accepted tick  
+FAIL fleet rebuilds after remove  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL reset capture starts  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+FAIL session reset closes previous capture before time returns to zero  { &"active": false, &"complete": false, &"error": "", &"directory": "" }
+FAIL reset summary preserves only old-flight rows  
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL refused-reconfigure capture starts  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+FAIL refused manager reconfiguration preserves the active capture and roster  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile", "field: supplied normalized geometry differs from the pinned Club field source"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL preserved capture can still finish completely  { &"active": false, &"complete": false, &"error": "", &"directory": "" }
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL reconfiguration capture starts  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+FAIL manager reconfiguration closes old capture after valid candidate setup  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } } { &"active": false, &"complete": false, &"error": "", &"directory": "" }
+FAIL reconfiguration summary keeps the initial row  
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL world-mutation capture starts  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+FAIL world mutation closes the capture as incomplete  { &"active": false, &"complete": false, &"error": "", &"directory": "" } {  }
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL writer-failure capture starts  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+SCRIPT ERROR: Invalid access to property or key '_logs' on a base object of type 'Nil'.
+   at: _run_writer_failure (res://tests/test_companions_record.gd:447)
+   GDScript backtrace (most recent call first):
+       [0] _run_writer_failure (res://tests/test_companions_record.gd:447)
+       [1] _run (res://tests/test_companions_record.gd:70)
+       [2] _run_world_mutation_incomplete (res://tests/test_companions_record.gd:434)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL crash capture starts  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+FAIL crash at the accepted boundary closes incomplete  { &"active": false, &"complete": false, &"error": "", &"directory": "" } {  }
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL fault capture starts  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+FAIL fault without an accepted step defers closure and marks incomplete  { &"active": false, &"complete": false, &"error": "", &"directory": "" } {  }
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL tree-exit capture starts  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+FAIL manager tree exit closes a complete capture before freeing children  { &"active": false, &"complete": false, &"error": "", &"directory": "" }
+FAIL tree-exit summary contains final common tick  
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL one-aircraft fleet configures at tick zero  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL detached manager capture starts  { &"ok": false, &"errors": ["Enable companions before starting a fleet capture."] }
+SCRIPT ERROR: Invalid call. Nonexistent function 'status' in base 'Nil'.
+   at: _run_detached_manager_free (res://tests/test_companions_record.gd:542)
+   GDScript backtrace (most recent call first):
+       [0] _run_detached_manager_free (res://tests/test_companions_record.gd:542)
+       [1] _run (res://tests/test_companions_record.gd:74)
+       [2] _run_deferred_fault (res://tests/test_companions_record.gd:486)
+{
+	"capture_root": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/afc02-companions-record-4154614",
+	"checks": 136,
+	"failures": 57,
+	"format": "openrc-companion-record-test v1",
+	"measurements": []
+}
+companions record: 136 checks, 57 failed

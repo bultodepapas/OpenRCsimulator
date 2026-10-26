@@ -1,0 +1,43 @@
+{
+  "format": "openrc-baseline-companion-gate-isolation v1",
+  "utc": "2026-10-26T13:00:14.377692+00:00",
+  "baseline_report": "tmp\\gp11-full-suite-checks\\R6\\baseline-ui\\companions-profiles\\godot-4f1lkft8\\report.json",
+  "candidate_report": "tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-thruah4e\\report.json",
+  "identical_inputs_and_loader": [
+    {
+      "path": "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "sha256": "f715c20c14e6449a24b62d9710ec07557a1eb4afd3cd0a31f25f2d32a88ff007"
+    },
+    {
+      "path": "app/data/ai/companions/fields/club-default.json",
+      "sha256": "6c057483667fc50565f5fba2ba317cde2d1709c56cbc2719ecc82adf58477fbc"
+    },
+    {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77"
+    },
+    {
+      "path": "app/ai/companions/profile_loader.gd",
+      "sha256": "49d1db17207c3952b28870401ecbd93285d2853960e4c22cc62fd93c64bc2402"
+    },
+    {
+      "path": "app/tests/test_companions_profiles.gd",
+      "sha256": "31b3b9f70705807c4d46ee3b5ae824689e0c09a1e900e0ee9d95eac49cc8acea"
+    }
+  ],
+  "baseline_failures": [
+    "FAIL companion qualification pins the current physics/sim/failures identity  pinned 5df257b3, current 1da35823: physics changed since the last qualification; run python3 tools/companions/rebind.py",
+    "FAIL current Stik and Club profiles validate  [\"aircraft_data.sha256: current aircraft data does not match this profile\", \"aircraft_identity.sha256: accepted session data does not match this profile\", \"solver.sha256: current normalized physics and simulation sources do not match this profile; run python3 tools/companions/rebind.py\"]"
+  ],
+  "candidate_failures": [
+    "FAIL companion qualification pins the current physics/sim/failures identity  pinned 5df257b3, current 02c59620: physics changed since the last qualification; run python3 tools/companions/rebind.py",
+    "FAIL current Stik and Club profiles validate  [\"aircraft_data.sha256: current aircraft data does not match this profile\", \"aircraft_identity.sha256: accepted session data does not match this profile\", \"solver.sha256: current normalized physics and simulation sources do not match this profile; run python3 tools/companions/rebind.py\"]"
+  ],
+  "same_profile_validation_failure": true,
+  "baseline_normalized_solver_prefix": "1da35823",
+  "candidate_normalized_solver_prefix": "02c59620",
+  "pinned_qualification_prefix": "5df257b3",
+  "attribution": "Both GP10 baseline and GP11 candidate already fail aircraft input and normalized solver qualification pins. GP11 legitimately has a different current solver identity; no rebinding or qualification claims were made. Other companion failures share these refused admission gates but were not independently replayed on baseline.",
+  "source_modified": false,
+  "no_rebind_performed": true
+}

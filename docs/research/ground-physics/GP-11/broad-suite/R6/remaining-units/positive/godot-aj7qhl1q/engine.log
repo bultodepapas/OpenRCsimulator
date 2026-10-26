@@ -1,0 +1,12 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   21:9 keeps the rail at the left inset
+ok   32:9 moves the rail into the centred span
+ok   32:9 keeps the header actions inside the span
+ok   Flight page needs no caption above FLY
+ok   Aircraft page names the aircraft FLY launches
+ok   Practice page names the aircraft FLY launches
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   32:9 Pause sidebar sits inside the centred span
+ok   opaque panels make the sidebar fade start opaque
+UI home span: 0 failed

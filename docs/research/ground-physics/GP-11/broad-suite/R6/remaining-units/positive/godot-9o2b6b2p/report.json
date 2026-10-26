@@ -1,0 +1,83 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f8fc55a8-94a7-4d8a-8780-b7ec1946bbc9",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_landscape_runtime.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "started_utc": "2026-10-26T13:31:30.907671+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-9o2b6b2p\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-9o2b6b2p\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 4
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 9,
+      "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 30,
+      "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 64,
+      "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 85,
+      "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 10.407,
+  "log_bytes": 6117,
+  "log_sha256": "e3e17f9e00bd8844fb6cd621d2857ea7910022aafdf62a666991593b0f3667e8"
+}

@@ -1,0 +1,39 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+PASS: central impact uses inverse translational mass only
+PASS: normal restitution loss matches central analytic value
+PASS: quantities retain units and isolated-estimate provenance
+PASS: off-center normal impulse includes r-cross-n rotational inverse mass
+PASS: same-speed glancing contact estimates less normal loss than head-on
+PASS: contact velocity includes translation plus omega-cross-arm
+PASS: separating motion adds no rebound or slapdown energy
+PASS: tangential velocity is reported without invented frictional loss
+PASS: simultaneous allocations are sorted and independent of sample order
+PASS: allocation partitions are nonnegative and stay within supplied total budget
+PASS: per-contact allocations never exceed candidate source energy
+PASS: budget above candidates cannot create energy
+PASS: duplicate contact IDs are rejected before allocation
+PASS: an episode cannot combine contacts from different accepted ticks
+PASS: negative accepted budget is rejected
+PASS: nonfinite accepted budget is rejected
+PASS: caller partitions preserve unassigned energy and never normalize
+PASS: caller partition order does not change sorted allocations
+PASS: decimal partition accumulation uses stable target order
+PASS: negative partition fraction is rejected
+PASS: partition sum above one is rejected
+PASS: duplicate partition target is rejected
+PASS: nonfinite partition source energy is rejected
+PASS: negative mass is rejected
+PASS: nonfinite mass is rejected
+PASS: inconsistent inverse mass is rejected
+PASS: singular inverse inertia is rejected
+PASS: nonfinite inverse inertia is rejected
+PASS: indefinite inverse inertia is rejected before it can produce negative energy
+PASS: unnormalized contact normal is rejected
+PASS: nonfinite linear velocity is rejected
+PASS: active restitution above one is rejected
+PASS: negative restitution is rejected
+PASS: missing input provenance is rejected
+PASS: speculative trial states are rejected
+PASS: malformed packed vectors are rejected
+36 checks, 0 failed

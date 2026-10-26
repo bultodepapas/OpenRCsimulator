@@ -1,0 +1,126 @@
+{
+  "format": "openrc-byte-manifest v1",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 130,
+      "sha256": "32938eca2520df4bd1a3b4f788ce59028acb06d1e875ad9dacc788a3da619fcc"
+    },
+    {
+      "path": "before-checks/fixed-before-capture/engine.log",
+      "bytes": 483,
+      "sha256": "66de86eac72991ace2dd90ee3f8d9239874dba399e7f379d9b091ad9f16de519"
+    },
+    {
+      "path": "before-checks/fixed-before-capture/report.json",
+      "bytes": 1227,
+      "sha256": "067fcbbcf4091399f62890259e0c075de49570afd8cd79b14298d1abdad7f3e5"
+    },
+    {
+      "path": "checks/test_aircraft_ground_battery/engine.log",
+      "bytes": 342,
+      "sha256": "d26a97e0eae4e43ffd7f098456aa908feefe3853296fada40e8cbb335b61081f"
+    },
+    {
+      "path": "checks/test_aircraft_ground_battery/report.json",
+      "bytes": 1206,
+      "sha256": "d988320c7381be41587ab929b390ba8682ff7f34075ac2b220e046336422835c"
+    },
+    {
+      "path": "checks/test_aircraft_ground_electric/engine.log",
+      "bytes": 7165,
+      "sha256": "dbddc9bb0a1a441d50b6fc658cc5e11748885cdc536d07a295c48b6340ed5b1a"
+    },
+    {
+      "path": "checks/test_aircraft_ground_electric/report.json",
+      "bytes": 1206,
+      "sha256": "a97c614d73ba94cdf31ed49f42555ad1507958b657a3ddde8acfe11d5658eacb"
+    },
+    {
+      "path": "checks/test_aircraft_ground_source/engine.log",
+      "bytes": 118,
+      "sha256": "d1581bd18ad1a76c7cb1f31c2db5fd31877921d6c59c13f017322381bcfefdf5"
+    },
+    {
+      "path": "checks/test_aircraft_ground_source/report.json",
+      "bytes": 1193,
+      "sha256": "118256654a70f47de3cc2655067618b65714964f17b963dcdceeeeb57015c756"
+    },
+    {
+      "path": "drivers/capture_fixed_before.gd",
+      "bytes": 758,
+      "sha256": "21449f75a48c3f53a65246b75c3382303f650a990e728b23f45349b1daa986e9"
+    },
+    {
+      "path": "implementation.patch",
+      "bytes": 37058,
+      "sha256": "bf0e5a8ca3dd99079e30b5e78d70eda2d5bf1edb41706a823dacefc666fca509"
+    },
+    {
+      "path": "main-source-after.json",
+      "bytes": 39142,
+      "sha256": "cfa71f09e7f4f1817a12b23f952feaf74bab624bea1f63ea430060102d6cfa69"
+    },
+    {
+      "path": "main-source-before.json",
+      "bytes": 39142,
+      "sha256": "18959b7cab3dc9baeccfe3c87c588c71282e264a7633decbd2ba83c56f57a402"
+    },
+    {
+      "path": "origins.json",
+      "bytes": 4121,
+      "sha256": "fcabff2c37596e39f438b3773e639b46671ab8f39ee2d52f86871637696d7b22"
+    },
+    {
+      "path": "promotion-before.json",
+      "bytes": 391,
+      "sha256": "80989b730f5e1e5b9bdd6cf305864be43bd695c74885b4f4da91e67fb15c5a96"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7635,
+      "sha256": "f287604cefd159d935104b9139cf996ad442cd6dcd1f13c2ad7a2126ba2f64d9"
+    },
+    {
+      "path": "report.json",
+      "bytes": 2188,
+      "sha256": "5cc503d2ddbc59afca01a3021ae67e7a648a008234f1d70eee8f55c901483085"
+    },
+    {
+      "path": "source/app/physics/aircraft_ground_battery.gd",
+      "bytes": 5727,
+      "sha256": "928dd024a55b13987e4fd7aaf1e007be45b8815694c33842db9c9244738b2fbd"
+    },
+    {
+      "path": "source/app/physics/aircraft_ground_electric.gd",
+      "bytes": 14271,
+      "sha256": "33361dc677a3369d80d60df99241da58b8a597bcfe9a6ae2730cb921084c6870"
+    },
+    {
+      "path": "source/app/physics/aircraft_ground_source.gd",
+      "bytes": 6701,
+      "sha256": "7f0a95021be7405eaaed7314e1861e463fbf14bfb677f2b62acd06b2019dce0e"
+    },
+    {
+      "path": "source/app/tests/test_aircraft_ground_battery.gd",
+      "bytes": 16248,
+      "sha256": "bb44c5c757a45a1b61ded2d7269e7ea32ab1abe7f482eda51c06d377c9c51487"
+    },
+    {
+      "path": "source-before/app/physics/aircraft_ground_electric.gd",
+      "bytes": 10983,
+      "sha256": "c2469baef28ee9bd635b2dfbd021cf065719c66918befbf2df07151be3086901"
+    },
+    {
+      "path": "source-before/app/physics/aircraft_ground_source.gd",
+      "bytes": 4710,
+      "sha256": "5288f2c768e9efe25cb237c374c793a91fc1007c49c8da6f1227f2e78478f55f"
+    }
+  ],
+  "count": 23,
+  "bytes": 202145,
+  "excludes": [
+    "manifest.json (self)",
+    "attribute-roundtrip.json (post-verification receipt)"
+  ]
+}

@@ -1,0 +1,20 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+PASS private preferences save
+PASS selection feedback updates before building
+PASS one world built for a selection burst
+PASS obsolete world released
+PASS latest preset retained in UI, world policy and saved preferences
+PASS aircraft and current camera preserved
+PASS Home remembers the selected Corsair livery
+PASS Home world rebuild succeeds with selected paint
+PASS Home world rebuild preserves the selected livery
+PASS replaced painted Home scene is released
+PASS original aircraft selection restored after livery check
+PASS later keyboard selection builds normally
+PASS landscape replacement cancels stale lighting build
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+PASS departure cancels pending Home build
+PASS new Home accepts a fresh lighting request
+PASS Home scene is released at app teardown
+Home rebuild: 16 checks, 0 failed

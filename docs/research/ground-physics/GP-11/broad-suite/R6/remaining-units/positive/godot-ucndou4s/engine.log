@@ -1,0 +1,29 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   burst updates card immediately and preserves old preview
+ok   pending preview is explicit and does not disable Fly
+ok   only the final burst reaches resource preparation
+ok   latest preview is applied
+ok   ready hides pending label
+ok   late success cannot replace newer aircraft
+ok   late failure cannot overwrite ready state
+ok   failure preserves last valid image and exposes error
+ok   failure text translates live
+ok   loading text translates live
+ok   retry after failure can succeed
+ok   cached selection remains synchronous
+ok   invalid catalog ID cannot change intent
+ok   detached Home cannot apply a completion
+ok   restored Home requests current intent again
+ok   cached reversal supersedes pending resource
+ok   new selection is pending before immediate Fly
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   immediate Fly uses latest model and physics exactly once
+ok   successful Fly frees Home and invalidates callbacks
+ok   failed Fly restores latest selection and usable Home
+ok   rollback replaces Home and invalidates old callbacks
+ok   restored preview matches card without stale loading state
+ok   preview restoration preserves launch failure message
+ok   null flight factory leaves Home attached and usable
+ok   null flight error stays visible without detaching HomeScene
+Preview requests: 25 checks, 0 failed

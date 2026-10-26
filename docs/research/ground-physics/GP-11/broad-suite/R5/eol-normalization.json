@@ -1,0 +1,18 @@
+{
+  "format": "openrc-isolated-checkout-eol-normalization v1",
+  "utc": "2026-10-26T12:32:09.196886+00:00",
+  "path": "app/default_bus_layout.tres",
+  "before_sha256": "8194e00426eb8deac6fd565f59d1e6fb9050ece5c5b6d517a83becab02b58287",
+  "after_sha256": "80781a25438fbc8c6bdc55fb914b31ed613c70f7e1816b9287abf7002c215c9a",
+  "canonical_source": "git show frozenHEAD:app/default_bus_layout.tres",
+  "before_crlf_lines": 10,
+  "after_crlf_lines": 0,
+  "byte_equal_after_CRLF_to_LF_only": true,
+  "uid_and_every_setting_unchanged": true,
+  "all_gd_scripts_and_other_app_sources_identical": true,
+  "app_source_dependency_files_checked": 4034,
+  "parse_reuse": "../R2-parse/result.json",
+  "parse_reuse_basis": "No GDScript or asset semantics changed. The sole additional resource normalization replaces CRLF with LF and preserves its UID and every setting; the native bus generator check passes. The original 1,374-script parse is retained separately.",
+  "main_files_modified": false,
+  "flight_goldens_rerecorded": false
+}

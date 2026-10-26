@@ -1,0 +1,36 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   isolated test preferences save
+ok   disabled preparation creates no owner or speculative worker
+ok   Home starts on the intended runway choice
+ok   first checkpoint opens the loading screen synchronously
+ok   Home selections are locked during loading
+ok   early cancel returns to the same usable Home without a candidate
+ok   scene worker starts after feedback without instantiating flight
+ok   busy cancellation keeps its loading surface until the worker drains
+ok   cancelled scene job joins and cannot populate the retained cache
+ok   rejected candidate reports failure and restores Home
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   effects checkpoint has a held real session
+ok   candidate cancellation freezes ticks and frees candidate/session
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   quit test reaches loading with a held candidate
+ok   quit commits after cancellation restores Home and clears loading
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   duplicate Fly creates one candidate and completes startup
+ok   unavailable worker records the existing synchronous fallback
+ok   successful flight is valid and uses Home's selected start
+ok   ready state removes the loading screen and hold
+ok   successful loading retains phase and timing evidence
+ok   successful scene preparation shares the broker's two-resource bound
+ok   AppRoot.free leaves the active scene job owned by the tree
+ok   abandoned scene job joins, drops its result and frees itself
+ok   Fly adopts pending Home scene before selected-resource admission
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   adopted scene and selected GLB complete without a second scene worker
+ok   Natural Random waits for preparation before synchronous briefing setup
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Natural Random opens after the scene drains without a competing Fly
+ok   muted idle Quit waits for pending preparation even with SceneTree paused
+ok   paused idle Quit commits only after preparation drains
+Flight loading: 28 checks, 0 failed

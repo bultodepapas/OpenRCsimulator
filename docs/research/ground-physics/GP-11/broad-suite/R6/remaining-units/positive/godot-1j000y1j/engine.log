@@ -1,0 +1,13 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   short title uses preferred size at scale 1.0
+ok   long title fits to the readable body minimum at scale 1.0
+ok   overflow stays inside allocated column
+ok   layout converges without resize feedback
+ok   native fitting chooses an intermediate size
+ok   short title uses preferred size at scale 2.0
+ok   long title fits to the readable body minimum at scale 2.0
+ok   overflow stays inside allocated column
+ok   layout converges without resize feedback
+ok   native fitting chooses an intermediate size
+UI title fit: 0 failures

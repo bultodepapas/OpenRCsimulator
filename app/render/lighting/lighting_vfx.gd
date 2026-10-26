@@ -6,6 +6,7 @@ const RGB_LAMP_SHADER := preload("res://render/lighting/rgb_lamp.gdshader")
 const Patterns := preload("res://render/lighting/lighting_patterns.gd")
 const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
 const SceneBudget := preload("res://render/lighting/lighting_scene_budget.gd")
+const Magnifier := preload("res://render/camera/magnifier.gd")
 const MAX_EFFECTS := 2
 const SPARK_POOL_CAPACITY := 32
 const SPARKS_PER_EVENT := 20
@@ -66,6 +67,13 @@ var _lod_tier := LOD_NEAR
 var _lod_birth_density := 1.0
 var _lod_projected_span_px := 0.0
 var _aircraft_in_view := true
+var _main_projection: Dictionary = {}
+var _inset_projection: Dictionary = {}
+var _main_lod_camera_id := 0
+var _main_lod_tier := LOD_NEAR
+var _inset_lod_camera_id := 0
+var _inset_lod_tier := LOD_NEAR
+var _inset_view_distance_m := -1.0
 
 
 func configure(aircraft_root: Node3D, kit: Node3D, profile: Dictionary) -> Dictionary:
@@ -107,6 +115,8 @@ func configure(aircraft_root: Node3D, kit: Node3D, profile: Dictionary) -> Dicti
 		_create_world_root()
 		for entry: Dictionary in entries:
 			_create_effect_pool(entry.effect, entry.anchor)
+	if is_instance_valid(_world_root):
+		_root.set_meta(Magnifier.VFX_ROOT_META, weakref(_world_root))
 	if _root.is_inside_tree():
 		_scene_budget = SceneBudget.for_world(_root.get_world_3d())
 		if _scene_budget != null:
@@ -148,7 +158,8 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 	_update_projected_lod()
 	_spill_fade = 1.0 - _smoothstep(SPILL_FULL_DISTANCE_M, SPILL_OFF_DISTANCE_M, distance)
 	if LightingPolicy.quality == "low": _spill_fade = 0.0
-	_distance_fade = 1.0 - _smoothstep(VFX_FULL_DISTANCE_M, VFX_OFF_DISTANCE_M, distance)
+	var vfx_distance := minf(distance, _inset_view_distance_m) if _inset_view_distance_m >= 0.0 else distance
+	_distance_fade = 1.0 - _smoothstep(VFX_FULL_DISTANCE_M, VFX_OFF_DISTANCE_M, vfx_distance)
 	var maneuver := _number_or(telemetry.get("maneuver", 0.0), 0.0, 0.0, 1.0)
 	var maneuver_high := maneuver >= MANEUVER_TRIGGER
 	var maneuver_rising := maneuver_high and not _last_maneuver
@@ -211,6 +222,7 @@ func reset() -> void:
 
 
 func dispose() -> void:
+	_clear_world_root_link()
 	if _scene_budget != null:
 		_scene_budget.unregister_owner(self)
 	_scene_budget = null
@@ -244,6 +256,23 @@ func dispose() -> void:
 	_lod_birth_density = 1.0
 	_lod_projected_span_px = 0.0
 	_aircraft_in_view = true
+	_main_projection.clear()
+	_inset_projection.clear()
+	_main_lod_camera_id = 0
+	_main_lod_tier = LOD_NEAR
+	_inset_lod_camera_id = 0
+	_inset_lod_tier = LOD_NEAR
+	_inset_view_distance_m = -1.0
+
+
+func _clear_world_root_link() -> void:
+	if not is_instance_valid(_root) or not _root.has_meta(Magnifier.VFX_ROOT_META):
+		return
+	var link: Variant = _root.get_meta(Magnifier.VFX_ROOT_META)
+	if link is WeakRef:
+		var linked_root: Variant = link.get_ref()
+		if not is_instance_valid(linked_root) or linked_root == _world_root:
+			_root.remove_meta(Magnifier.VFX_ROOT_META)
 
 
 func budget_info() -> Dictionary:
@@ -679,6 +708,25 @@ func _active_camera() -> Camera3D:
 	return viewport.get_camera_3d() if viewport != null else null
 
 
+func _active_inset_camera() -> Camera3D:
+	if not is_instance_valid(_root) or not _root.is_inside_tree():
+		return null
+	var camera := Magnifier.camera_for_actor(_root)
+	if camera == null or not camera.is_inside_tree() or not camera.current:
+		return null
+	var viewport := camera.get_viewport()
+	if not viewport is SubViewport or viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED:
+		return null
+	var actor_world := _root.get_world_3d()
+	if actor_world == null or camera.get_world_3d() != actor_world:
+		return null
+	if is_instance_valid(_world_root) and _world_root.get_world_3d() != actor_world:
+		return null
+	if (camera.cull_mask & Magnifier.LAYER) == 0:
+		return null
+	return camera
+
+
 func _camera_basis() -> Basis:
 	var camera := _active_camera()
 	return camera.global_transform.basis.orthonormalized() if camera != null else Basis.IDENTITY
@@ -708,35 +756,49 @@ func _cache_aircraft_bounds() -> void:
 
 
 func _measure_projected_view() -> Dictionary:
-	if not _has_aircraft_bounds or not is_instance_valid(_root):
-		return {"ok": false}
-	var camera := _active_camera()
-	if camera == null:
-		return {"ok": false}
+	return _measure_projected_view_for_camera(_active_camera(), _main_projection)
+
+
+func _measure_projected_view_for_camera(camera: Camera3D, result: Dictionary) -> Dictionary:
+	result.clear()
+	if not _has_aircraft_bounds or not is_instance_valid(_root) or not is_instance_valid(camera):
+		result["ok"] = false
+		return result
 	var viewport := camera.get_viewport()
 	if viewport == null:
-		return {"ok": false}
+		result["ok"] = false
+		return result
 	var viewport_size := viewport.get_visible_rect().size
 	if not is_finite(viewport_size.x) or not is_finite(viewport_size.y) \
 			or viewport_size.x < 1.0 or viewport_size.y < 1.0:
-		return {"ok": false}
+		result["ok"] = false
+		return result
 	var world_bounds: AABB = _root.global_transform * _aircraft_bounds_local
 	if not world_bounds.is_finite():
-		return {"ok": false}
+		result["ok"] = false
+		return result
 	var camera_inverse := camera.global_transform.affine_inverse()
 	var center_camera := camera_inverse * world_bounds.get_center()
 	var center_depth := -center_camera.z
 	var radius := world_bounds.size.length() * 0.5
 	if not is_finite(center_depth) or not is_finite(radius) or radius <= 0.0:
-		return {"ok": false}
+		result["ok"] = false
+		return result
 	var camera_id := camera.get_instance_id()
 	if center_depth + radius < camera.near or center_depth - radius > camera.far:
-		return {"ok": true, "camera_id": camera_id, "span_px": 0.0, "visible": false}
+		result["ok"] = true
+		result["camera_id"] = camera_id
+		result["span_px"] = 0.0
+		result["visible"] = false
+		return result
 	# Bounds touching the near plane conservatively occupy the view. This avoids
 	# unstable divisions while zooming through the aircraft or orbiting inside it.
 	if center_depth - radius <= camera.near:
-		return {"ok": true, "camera_id": camera_id,
-			"span_px": maxf(viewport_size.x, viewport_size.y), "visible": true}
+		result["ok"] = true
+		result["camera_id"] = camera_id
+		result["span_px"] = maxf(viewport_size.x, viewport_size.y)
+		result["visible"] = true
+		return result
 
 	var projection: Projection = camera.get_camera_projection()
 	var minimum := Vector2(INF, INF)
@@ -751,48 +813,138 @@ func _measure_projected_view() -> Dictionary:
 				var camera_point := camera_inverse * corner
 				var depth := -camera_point.z
 				if not is_finite(depth) or depth < camera.near:
-					return {"ok": true, "camera_id": camera_id,
-						"span_px": maxf(viewport_size.x, viewport_size.y), "visible": true}
+					result["ok"] = true
+					result["camera_id"] = camera_id
+					result["span_px"] = maxf(viewport_size.x, viewport_size.y)
+					result["visible"] = true
+					return result
 				var clip: Vector4 = projection * Vector4(camera_point.x, camera_point.y, camera_point.z, 1.0)
 				if not is_finite(clip.x) or not is_finite(clip.y) or not is_finite(clip.w) or clip.w <= 0.000001:
-					return {"ok": false}
+					result["ok"] = false
+					return result
 				var ndc := Vector2(clip.x / clip.w, clip.y / clip.w)
 				var screen := Vector2((ndc.x * 0.5 + 0.5) * viewport_size.x,
 					(0.5 - ndc.y * 0.5) * viewport_size.y)
 				if not is_finite(screen.x) or not is_finite(screen.y):
-					return {"ok": false}
+					result["ok"] = false
+					return result
 				minimum.x = minf(minimum.x, screen.x)
 				minimum.y = minf(minimum.y, screen.y)
 				maximum.x = maxf(maximum.x, screen.x)
 				maximum.y = maxf(maximum.y, screen.y)
 	var span_px := maxf(maximum.x - minimum.x, maximum.y - minimum.y)
 	if not is_finite(span_px):
-		return {"ok": false}
+		result["ok"] = false
+		return result
 	var visible := maximum.x >= 0.0 and minimum.x <= viewport_size.x \
 		and maximum.y >= 0.0 and minimum.y <= viewport_size.y
-	return {"ok": true, "camera_id": camera_id, "span_px": maxf(0.0, span_px), "visible": visible}
+	result["ok"] = true
+	result["camera_id"] = camera_id
+	result["span_px"] = maxf(0.0, span_px)
+	result["visible"] = visible
+	return result
 
 
 func _update_projected_lod() -> void:
-	var measured := _measure_projected_view()
-	if not bool(measured.get("ok", false)):
-		# Editor previews and headless fixtures without a camera keep the previous near behavior.
-		_lod_camera_id = 0
-		_lod_tier = LOD_NEAR
-		_lod_birth_density = 1.0
-		_lod_projected_span_px = 0.0
-		_aircraft_in_view = true
+	_inset_view_distance_m = -1.0
+	var main_camera := _active_camera()
+	var inset_camera := _active_inset_camera()
+	var main_measurement := _measure_projected_view_for_camera(main_camera, _main_projection)
+	if inset_camera == null:
+		_inset_lod_camera_id = 0
+		_inset_lod_tier = LOD_NEAR
+		if not bool(main_measurement.get("ok", false)):
+			# Editor previews and headless fixtures without a camera keep the previous near behavior.
+			_reset_projected_lod_fallback()
+			_main_lod_camera_id = 0
+			_main_lod_tier = LOD_NEAR
+			return
+		var span_px := maxf(0.0, float(main_measurement.get("span_px", 0.0)))
+		var camera_id := int(main_measurement.get("camera_id", 0))
+		if not is_finite(span_px) or camera_id == 0:
+			_reset_projected_lod_fallback()
+			_main_lod_camera_id = 0
+			_main_lod_tier = LOD_NEAR
+			return
+		_apply_projected_view(span_px, bool(main_measurement.get("visible", false)), camera_id)
+		_main_lod_camera_id = camera_id
+		_main_lod_tier = _lod_tier
 		return
-	var span_px := maxf(0.0, float(measured.get("span_px", 0.0)))
-	var camera_id := int(measured.get("camera_id", 0))
-	if not is_finite(span_px) or camera_id == 0:
-		_lod_camera_id = 0
-		_lod_tier = LOD_NEAR
-		_lod_birth_density = 1.0
-		_lod_projected_span_px = 0.0
-		_aircraft_in_view = true
+
+	var inset_measurement := _measure_projected_view_for_camera(inset_camera, _inset_projection)
+	var main_ok := bool(main_measurement.get("ok", false))
+	var inset_ok := bool(inset_measurement.get("ok", false))
+	var main_tier := LOD_NEAR
+	var inset_tier := LOD_NEAR
+	var main_span := 0.0
+	var inset_span := 0.0
+	var main_visible := false
+	var inset_visible := false
+	if main_ok:
+		main_span = maxf(0.0, float(main_measurement.get("span_px", 0.0)))
+		main_visible = bool(main_measurement.get("visible", false))
+		main_tier = _advance_view_lod_history(main_span, int(main_measurement.get("camera_id", 0)), false)
+	else:
+		_main_lod_camera_id = 0
+		_main_lod_tier = LOD_NEAR
+	if inset_ok:
+		inset_span = maxf(0.0, float(inset_measurement.get("span_px", 0.0)))
+		inset_visible = bool(inset_measurement.get("visible", false))
+		inset_tier = _advance_view_lod_history(inset_span, int(inset_measurement.get("camera_id", 0)), true)
+	else:
+		_inset_lod_camera_id = 0
+		_inset_lod_tier = LOD_NEAR
+
+	if inset_visible:
+		var world_bounds: AABB = _root.global_transform * _aircraft_bounds_local
+		var inset_distance := inset_camera.global_position.distance_to(world_bounds.get_center())
+		if is_finite(inset_distance):
+			_inset_view_distance_m = maxf(0.0, inset_distance)
+	var choose_inset := inset_ok and not main_ok
+	if inset_visible and not main_visible:
+		choose_inset = true
+	elif inset_visible and main_visible:
+		var inset_density := _density_for_lod_tier(inset_tier)
+		var main_density := _density_for_lod_tier(main_tier)
+		choose_inset = inset_density > main_density \
+			or (is_equal_approx(inset_density, main_density) and inset_span > main_span)
+	if not main_ok and not inset_ok:
+		_reset_projected_lod_fallback()
 		return
-	_apply_projected_view(span_px, bool(measured.get("visible", false)), camera_id)
+	var selected: Dictionary = _inset_projection if choose_inset else _main_projection
+	_lod_camera_id = int(selected.get("camera_id", 0))
+	_lod_tier = inset_tier if choose_inset else main_tier
+	_lod_projected_span_px = inset_span if choose_inset else main_span
+	_aircraft_in_view = inset_visible if choose_inset else main_visible
+	_lod_birth_density = _density_for_lod_tier(_lod_tier) if _aircraft_in_view else 0.0
+
+
+func _reset_projected_lod_fallback() -> void:
+	_lod_camera_id = 0
+	_lod_tier = LOD_NEAR
+	_lod_birth_density = 1.0
+	_lod_projected_span_px = 0.0
+	_aircraft_in_view = true
+
+
+func _advance_view_lod_history(span_px: float, camera_id: int, inset: bool) -> String:
+	if not is_finite(span_px) or span_px < 0.0 or camera_id == 0:
+		if inset:
+			_inset_lod_camera_id = 0
+			_inset_lod_tier = LOD_NEAR
+			return _inset_lod_tier
+		_main_lod_camera_id = 0
+		_main_lod_tier = LOD_NEAR
+		return _main_lod_tier
+	if inset:
+		_inset_lod_tier = _tier_for_projected_span(span_px) if camera_id != _inset_lod_camera_id \
+			else _tier_with_hysteresis(_inset_lod_tier, span_px)
+		_inset_lod_camera_id = camera_id
+		return _inset_lod_tier
+	_main_lod_tier = _tier_for_projected_span(span_px) if camera_id != _main_lod_camera_id \
+		else _tier_with_hysteresis(_main_lod_tier, span_px)
+	_main_lod_camera_id = camera_id
+	return _main_lod_tier
 
 
 func _apply_projected_view(span_px: float, visible: bool, camera_id: int) -> void:

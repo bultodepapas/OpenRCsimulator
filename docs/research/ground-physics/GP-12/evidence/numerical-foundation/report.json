@@ -1,0 +1,1236 @@
+{
+  "format": "openrc-ground-numerical-foundation-retention-v1",
+  "captured_utc": "2026-10-26T16:47:36.134295+00:00",
+  "main_commit_at_retention": "41a252e7b0022b4a6ced77a63b781c3cdbef8528",
+  "run_commit": "984403b2adecb694f163139a9c8ff5026322314a",
+  "status": "numerical foundation; branch/drop/full workload performance remain open",
+  "main_checked_cohort": {
+    "scripts": 9,
+    "checks": 1550,
+    "failed": 0,
+    "path": "main-checks",
+    "rejected_marker_attempt": "rejected-checks/accuracy-wrong-marker"
+  },
+  "original_rest": {
+    "receipt": {
+      "path": "tmp/gp12-local-reuse/rest-checks/full-rest-general-work-local-witness-3th8qya1/report.json",
+      "sha256": "6ef3af57ba73689598301a269b2217ecd3d97bd51894354038b14e7cbda69cce",
+      "bytes": 1372
+    },
+    "complete": true,
+    "ok": false,
+    "checks": 15,
+    "failed": 1,
+    "accepted_ticks": 2400,
+    "duration_s": 10,
+    "runtime_refusals": 0,
+    "elapsed_seconds": 1741.875,
+    "failed_observable": "normal-only moment omits tangent/rolling reactions; original receipt is retained unchanged"
+  },
+  "corrected_observable": {
+    "qualification": "postprocess complete frozen tape with independent accepted-state full-reaction audit; no unchanged integration rerun",
+    "physical_force_scale": "1e-6*m*g",
+    "physical_moment_scale": "1e-6*m*g*0.9m",
+    "original_passing_checks": 14,
+    "replacement_total_reaction_gate_passed": true,
+    "derived_corrected_fixture_checks": 15,
+    "derived_corrected_fixture_failed": 0,
+    "not_an_original_runner_receipt": true,
+    "six_second": {
+      "accepted_substeps": 16,
+      "actual_angular_momentum_change": [
+        -1.5045964474325046e-10,
+        5.995204332975845e-15,
+        2.4668329878796413e-09
+      ],
+      "actual_linear_momentum_change": [
+        -7.866155978830367e-16,
+        -8.488210187287708e-11,
+        -2.0932758004427744e-12
+      ],
+      "actual_work_audit_count": 32,
+      "angular_momentum_closure": 6.933081871471868e-16,
+      "dt": 0.004166666666666667,
+      "energy_residual_j": 5.710701448748342e-14,
+      "integrated_external_angular_impulse": [
+        -1.5045895150265717e-10,
+        6.00001548011625e-15,
+        2.4668329794787462e-09
+      ],
+      "integrated_external_linear_impulse": [
+        -7.866156101933494e-16,
+        -8.488210187287674e-11,
+        -2.0934957471278418e-12
+      ],
+      "internal_shaft_source_nm": 0.0,
+      "linear_momentum_closure": 2.1994668506737908e-16,
+      "maximum_actual_work_point_j": 0.0,
+      "maximum_actual_work_upper_j": 0.0,
+      "normal_force_average_ned": [
+        -8.333979007816086e-21,
+        4.458612418371236e-25,
+        -210.87963321494877
+      ],
+      "normal_moment_average_ned": [
+        -5.3353238990136395e-08,
+        -0.010753983831882695,
+        -1.424095878778662e-22
+      ],
+      "numerical_allowance": {
+        "accepted_at_resolution": 32,
+        "accepted_slip_roundoff": 2,
+        "accepted_work_roundoff": 0,
+        "ceiling_scope": "per_impulse_qp_not_tick",
+        "combined_contact_uncertainty_sum_j": 1.9145547202828905e-15,
+        "derived_gamma_sum_j": 1.9144500118774264e-15,
+        "maximum_assembly_resolution_j": 3.1250000000000003e-13,
+        "maximum_derived_gamma_j": 6.017780127289807e-17,
+        "objective_gap_upper_sum_j": 6.958993565343471e-17,
+        "slip_work_equivalent_sum_j": 1.0470840546082601e-19,
+        "work_consistency_sum_j": 0.0
+      },
+      "positive_actual_work_point_count": 0,
+      "positive_actual_work_upper_count": 0,
+      "prescribed_carrier_work_j": 0.0,
+      "qp_count": 32,
+      "tangent_force_average_ned": [
+        -1.8878773811242483e-13,
+        -2.0371704449490418e-08,
+        -1.0731671983590515e-23
+      ],
+      "tangent_loss_j": 9.178293723215355e-12,
+      "tangent_moment_average_ned": [
+        1.724309062949867e-08,
+        0.010753983833322699,
+        5.920399150748992e-07
+      ],
+      "tick": 1440,
+      "time_s": 6.0,
+      "total_force_residual_n": 2.0377899478134624e-08,
+      "total_moment_residual_nm": 5.931401216058433e-07
+    },
+    "ten_second": {
+      "accepted_substeps": 16,
+      "actual_angular_momentum_change": [
+        3.732658626631746e-11,
+        2.5892482602429823e-13,
+        2.3117465441924168e-09
+      ],
+      "actual_linear_momentum_change": [
+        -6.207269168176437e-14,
+        1.2207668901158575e-10,
+        -1.7593008606440091e-12
+      ],
+      "actual_work_audit_count": 32,
+      "angular_momentum_closure": 1.6373268935800382e-15,
+      "dt": 0.004166666666666667,
+      "energy_residual_j": 3.3251181989196787e-13,
+      "integrated_external_angular_impulse": [
+        3.7324950853546686e-11,
+        2.588789913774564e-13,
+        2.3117464796663696e-09
+      ],
+      "integrated_external_linear_impulse": [
+        -6.207269185200055e-14,
+        1.2207668901158658e-10,
+        -1.7595406613205947e-12
+      ],
+      "internal_shaft_source_nm": 0.0,
+      "linear_momentum_closure": 2.3980067658562935e-16,
+      "maximum_actual_work_point_j": 0.0,
+      "maximum_actual_work_upper_j": 0.0,
+      "normal_force_average_ned": [
+        -7.517764114512026e-22,
+        8.657950251715523e-25,
+        -210.87963321486862
+      ],
+      "normal_moment_average_ned": [
+        -8.557977971977432e-08,
+        -0.010131532380348503,
+        -1.3169596551979986e-21
+      ],
+      "numerical_allowance": {
+        "accepted_at_resolution": 32,
+        "accepted_slip_roundoff": 2,
+        "accepted_work_roundoff": 0,
+        "ceiling_scope": "per_impulse_qp_not_tick",
+        "combined_contact_uncertainty_sum_j": 1.913865669310976e-15,
+        "derived_gamma_sum_j": 1.9137727899367383e-15,
+        "maximum_assembly_resolution_j": 3.1250000000000003e-13,
+        "maximum_derived_gamma_j": 5.98109156152965e-17,
+        "objective_gap_upper_sum_j": 2.0318184822453883e-16,
+        "slip_work_equivalent_sum_j": 9.287937423400844e-20,
+        "work_consistency_sum_j": 0.0
+      },
+      "positive_actual_work_point_count": 0,
+      "positive_actual_work_upper_count": 0,
+      "prescribed_carrier_work_j": 0.0,
+      "qp_count": 32,
+      "tangent_force_average_ned": [
+        -1.4897446043728354e-11,
+        2.929840536278078e-08,
+        8.808152864550486e-24
+      ],
+      "tangent_loss_j": 8.146545226857299e-12,
+      "tangent_moment_average_ned": [
+        9.453776792462552e-08,
+        0.010131532442479461,
+        5.548191551199301e-07
+      ],
+      "tick": 2400,
+      "time_s": 10.0,
+      "total_force_residual_n": 2.9301452308307817e-08,
+      "total_moment_residual_nm": 5.548914707408339e-07
+    }
+  },
+  "full_rest_metrics": {
+    "maximum_drift_j": 1.3309602309163893e-09,
+    "maximum_positive_tick_j": 1.7621459846850485e-12,
+    "maximum_tick_numerical_sum_j": 3.250452812668506e-14,
+    "numerical_sum_j": 4.564368847315449e-12,
+    "tick": 2400,
+    "time_s": 10.0
+  },
+  "source_run_recovery": [
+    {
+      "path": "app/physics/aero.gd",
+      "retained": "source-run/app/physics/aero.gd",
+      "sha256": "a325cac3af731970a667eef4d76c1208a222aa187802e088bf911fc1365f160b",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/aircraft_contract.gd",
+      "retained": "source-run/app/physics/aircraft_contract.gd",
+      "sha256": "54f939d65be82a992f6f745c2dced94e446fd4c59760ef2820fb73ec466ce074",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "retained": "source-run/app/physics/aircraft_data.gd",
+      "sha256": "4f57ee94329a090933b71c218e8e6f8dd5fbce040760fd215474dd60db54ea1a",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/aircraft_ground_accuracy.gd",
+      "retained": "source-run/app/physics/aircraft_ground_accuracy.gd",
+      "sha256": "e03c3e5a292e9582340fa73612769a8e5fa9f53a0e400acbdd4642bb35b394fa",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/aircraft_ground_dynamics.gd",
+      "retained": "source-run/app/physics/aircraft_ground_dynamics.gd",
+      "sha256": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/aircraft_ground_impulse.gd",
+      "retained": "source-run/app/physics/aircraft_ground_impulse.gd",
+      "sha256": "ed2db610d1e8570069040b362dd751a089d539a1a00101041b2680c0f52f5f03",
+      "recovery": "Git LF restored to captured CRLF"
+    },
+    {
+      "path": "app/physics/aircraft_ground_profile.gd",
+      "retained": "source-run/app/physics/aircraft_ground_profile.gd",
+      "sha256": "74bf7e19489666e05e6533e8ea5ef97a43b9ceb52ff8de3e33d55ac68a13d9ba",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/aircraft_ground_stage.gd",
+      "retained": "source-run/app/physics/aircraft_ground_stage.gd",
+      "sha256": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/aircraft_ground_step.gd",
+      "retained": "source-run/app/physics/aircraft_ground_step.gd",
+      "sha256": "17d6e88c5fccccd909c5e5bad179cba37bbb68aa85127ddf76081b91fa9b2a88",
+      "recovery": "Git LF restored to captured CRLF"
+    },
+    {
+      "path": "app/physics/aircraft_ground_traction.gd",
+      "retained": "source-run/app/physics/aircraft_ground_traction.gd",
+      "sha256": "86987e1e3b036fca2c4b3dd7368308399a38fe14695adaffa0935b9863bc1b9c",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/battery/battery_data.gd",
+      "retained": "source-run/app/physics/battery/battery_data.gd",
+      "sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/battery/esc_supervisor.gd",
+      "retained": "source-run/app/physics/battery/esc_supervisor.gd",
+      "sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/battery/pack_ecm.gd",
+      "retained": "source-run/app/physics/battery/pack_ecm.gd",
+      "sha256": "5fc20700f028d214e8e97caade261c910cdc8ee560e983cb57074077ae44ddda",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/contact_assembly_resolution.gd",
+      "retained": "source-run/app/physics/contact_assembly_resolution.gd",
+      "sha256": "92e23b6df1ad433dc0c8b08526713764b18f0828dbe35074a3faaec8a270316a",
+      "recovery": "Git LF restored to captured CRLF"
+    },
+    {
+      "path": "app/physics/control_actuators.gd",
+      "retained": "source-run/app/physics/control_actuators.gd",
+      "sha256": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/control_surfaces.gd",
+      "retained": "source-run/app/physics/control_surfaces.gd",
+      "sha256": "5e159ee1ebb98112e7399ef4f9ba68b30a7ea9cb5055989fbab55332c6a5edb3",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/effective_mass.gd",
+      "retained": "source-run/app/physics/effective_mass.gd",
+      "sha256": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/electric_motor.gd",
+      "retained": "source-run/app/physics/electric_motor.gd",
+      "sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/electric_supply.gd",
+      "retained": "source-run/app/physics/electric_supply.gd",
+      "sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/event_bracket.gd",
+      "retained": "source-run/app/physics/event_bracket.gd",
+      "sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/event_step.gd",
+      "retained": "source-run/app/physics/event_step.gd",
+      "sha256": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/fixed_datum_body.gd",
+      "retained": "source-run/app/physics/fixed_datum_body.gd",
+      "sha256": "a218c99f2d7079ae6788c98cf5dda24de6e3a6910fb35ab27b5c69d3f76e4293",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/flaps.gd",
+      "retained": "source-run/app/physics/flaps.gd",
+      "sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/fuel_properties.gd",
+      "retained": "source-run/app/physics/fuel_properties.gd",
+      "sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/generalized_coordinates.gd",
+      "retained": "source-run/app/physics/generalized_coordinates.gd",
+      "sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/glow/carburetor.gd",
+      "retained": "source-run/app/physics/glow/carburetor.gd",
+      "sha256": "d3fe00763772ca36a9b86e240c7dfb0de6b239350b0930d6000651534956fd7c",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/glow/four_stroke.gd",
+      "retained": "source-run/app/physics/glow/four_stroke.gd",
+      "sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/glow/fuel_feed.gd",
+      "retained": "source-run/app/physics/glow/fuel_feed.gd",
+      "sha256": "343cbfa7b1f651ac60635ac873e122a3fd99524e634e7712b57ef90e3b04b6f4",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/glow/fuel_mass.gd",
+      "retained": "source-run/app/physics/glow/fuel_mass.gd",
+      "sha256": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/glow/installation.gd",
+      "retained": "source-run/app/physics/glow/installation.gd",
+      "sha256": "0b1531329e804be0fa4bd78629e6d1c254c35453006065428621cfbaa91c74bc",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/glow/operating_point.gd",
+      "retained": "source-run/app/physics/glow/operating_point.gd",
+      "sha256": "107fe300480853bb7c7007cfaa9eee82938feb02335cc5b68bc5aef31351933d",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/glow/profile.gd",
+      "retained": "source-run/app/physics/glow/profile.gd",
+      "sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/glow/propeller.gd",
+      "retained": "source-run/app/physics/glow/propeller.gd",
+      "sha256": "fd6785d513962daa30ca5994f126ddfbf94e21466394b8482737e3d7428799a1",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/glow/source.gd",
+      "retained": "source-run/app/physics/glow/source.gd",
+      "sha256": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/glow/two_stroke.gd",
+      "retained": "source-run/app/physics/glow/two_stroke.gd",
+      "sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/ground_contact.gd",
+      "retained": "source-run/app/physics/ground_contact.gd",
+      "sha256": "cdc2dcec718a9490c0a5c3de1e55ce165bba144eca9fe10845552d9d4dec8aa4",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/ground_effect.gd",
+      "retained": "source-run/app/physics/ground_effect.gd",
+      "sha256": "32c10e2b1c7b60fec2bfba124f373b3af9fee7b33258abd3a0567ba5debe7a98",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/ground_support.gd",
+      "retained": "source-run/app/physics/ground_support.gd",
+      "sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/ground_terrain.gd",
+      "retained": "source-run/app/physics/ground_terrain.gd",
+      "sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/ground_traction.gd",
+      "retained": "source-run/app/physics/ground_traction.gd",
+      "sha256": "1e4ab42e03dc960dbc78b3b26060c4829b9836040b15ab96df20100f79cbbf6d",
+      "recovery": "Git LF restored to captured CRLF"
+    },
+    {
+      "path": "app/physics/ground_wheels.gd",
+      "retained": "source-run/app/physics/ground_wheels.gd",
+      "sha256": "a91217bd580700b5b130f057902248f8ed1da3650632c9653fa3c9a4f37600da",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/hull_contact.gd",
+      "retained": "source-run/app/physics/hull_contact.gd",
+      "sha256": "aa9cd474975d8e529dea14fef46baa0c6208ca78652ba28e8203773a04024e92",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/integrator.gd",
+      "retained": "source-run/app/physics/integrator.gd",
+      "sha256": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/intended_hull_support.gd",
+      "retained": "source-run/app/physics/intended_hull_support.gd",
+      "sha256": "ae9ece8ea78f96265046f702abe2d178c28b907d79207c098e45930ad242a61f",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/lake_surface.gd",
+      "retained": "source-run/app/physics/lake_surface.gd",
+      "sha256": "8c3f51ce336ca7ad674cc77ec8af8d697aa254f77ac9ae28e814ed860ba68152",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/liquid_fuel.gd",
+      "retained": "source-run/app/physics/liquid_fuel.gd",
+      "sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/mass_inventory.gd",
+      "retained": "source-run/app/physics/mass_inventory.gd",
+      "sha256": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/math3d.gd",
+      "retained": "source-run/app/physics/math3d.gd",
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/normal_compliance.gd",
+      "retained": "source-run/app/physics/normal_compliance.gd",
+      "sha256": "f25ab43bb9ffe6f120fe4480fc5173a7ccf1b2cb4d0cba7c93d7f0574da8708b",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/normal_contact_admission.gd",
+      "retained": "source-run/app/physics/normal_contact_admission.gd",
+      "sha256": "da30e0f08c2cbee2c484b7107297770f20349255980e7d64ae56bc0997f308cc",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/physical_identity.gd",
+      "retained": "source-run/app/physics/physical_identity.gd",
+      "sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/propulsion.gd",
+      "retained": "source-run/app/physics/propulsion.gd",
+      "sha256": "732f4189efa068ff9e4469ac1c1d2f580ccd152d839005b321380a34afb92eed",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/rigid_body.gd",
+      "retained": "source-run/app/physics/rigid_body.gd",
+      "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/rotor_coupling.gd",
+      "retained": "source-run/app/physics/rotor_coupling.gd",
+      "sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/turbine.gd",
+      "retained": "source-run/app/physics/turbine.gd",
+      "sha256": "a7577b8d2ddfe7daec69cf2992e8c566688f5b6c89cf6461c5b462abeb1ca702",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/wheel_geometry.gd",
+      "retained": "source-run/app/physics/wheel_geometry.gd",
+      "sha256": "a92fda4198916ac89573aca1e58c879288c8b249146fac8de04713573fdba2f9",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/wheel_profiles.gd",
+      "retained": "source-run/app/physics/wheel_profiles.gd",
+      "sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/physics/wing_polar.gd",
+      "retained": "source-run/app/physics/wing_polar.gd",
+      "sha256": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "retained": "source-run/app/sim/simulation.gd",
+      "sha256": "b1b481b2cd278d997347959b8e6529d58aa23adf5494ca419f01a38d45f54042",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "retained": "source-run/app/sim/vehicle_model.gd",
+      "sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "app/tests/test_aircraft_ground_stage.gd",
+      "retained": "source-run/app/tests/test_aircraft_ground_stage.gd",
+      "sha256": "75d30d115978c2146f46dd5db66df15303ba90605524469c9ba55667f420083a",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "tmp/gp12-local-reuse/capture_impulse.gd",
+      "retained": "source-run/tmp/gp12-local-reuse/capture_impulse.gd",
+      "sha256": "932a619fa6f5ca4f187a3445a66bfaa3b93d3991c76eb798a3e1e7b5754c7e80",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "tmp/gp12-local-reuse/capture_step.gd",
+      "retained": "source-run/tmp/gp12-local-reuse/capture_step.gd",
+      "sha256": "aa399bd7bfa10b3b8bf9c765aac04bdd1025a62894f59bda8943031e67f04017",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "tmp/gp12-local-reuse/live_composition.gd",
+      "retained": "source-run/tmp/gp12-local-reuse/live_composition.gd",
+      "sha256": "33f300bf1fb7eede2960f8540b515b0fb2b7b97ac6973032af1c36c2fdd09f36",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "tmp/gp12-local-reuse/live_rest.gd",
+      "retained": "source-run/tmp/gp12-local-reuse/live_rest.gd",
+      "sha256": "b162faaf2e5face8f019c277f5b0499640cad6a9f5f981e8ae367bcd3a91a3ea",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "tmp/gp12-local-reuse/resolution.gd",
+      "retained": "source-run/tmp/gp12-local-reuse/resolution.gd",
+      "sha256": "2244e9aeb3af91bf755c7945b43acb06a5db8592c4c8cc68e4b3c306c080fc3d",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "tmp/gp12-local-reuse/screened_resolution.gd",
+      "retained": "source-run/tmp/gp12-local-reuse/screened_resolution.gd",
+      "sha256": "ffc09047ee27055c7a790ea6d33ba780b70e4a491dad4f8519377aef24b894ec",
+      "recovery": "unchanged working source"
+    },
+    {
+      "path": "tmp/gp12-local-reuse/traction.gd",
+      "retained": "source-run/tmp/gp12-local-reuse/traction.gd",
+      "sha256": "77393b81f6d6676aea5f679a48dd7b408996cf509fb6945e70b3ebc9d662ada1",
+      "recovery": "unchanged working source"
+    }
+  ],
+  "retained_files": [
+    {
+      "original": "app/data/aircraft/p51d_mustang_120.json",
+      "retained": "source-run/app/data/aircraft/p51d_mustang_120.json",
+      "sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+      "bytes": 112806
+    },
+    {
+      "original": "app/data/fuels/openrc-fuel-registry.json",
+      "retained": "source-run/app/data/fuels/openrc-fuel-registry.json",
+      "sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1",
+      "bytes": 5563
+    },
+    {
+      "original": "app/data/glow/profile_contract.json",
+      "retained": "source-run/app/data/glow/profile_contract.json",
+      "sha256": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+      "bytes": 5102
+    },
+    {
+      "original": "app/data/ground/wheel_profiles.json",
+      "retained": "source-run/app/data/ground/wheel_profiles.json",
+      "sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "bytes": 36426
+    },
+    {
+      "original": "app/data/schema/aircraft-contract-v2.json",
+      "retained": "source-run/app/data/schema/aircraft-contract-v2.json",
+      "sha256": "0de90c832a3e875cd162d6f7bf38241b6f11337edb5794bf22ce3afc2fb4a737",
+      "bytes": 46245
+    },
+    {
+      "original": "app/project.godot",
+      "retained": "source-run/app/project.godot",
+      "sha256": "d52e410972e450a570cc90fd7ad464134fb1b09a803ddda55c48833714cfbe5f",
+      "bytes": 3310
+    },
+    {
+      "original": "tmp/gp12-local-reuse/composition.gd",
+      "retained": "source-run/tmp/gp12-local-reuse/composition.gd",
+      "sha256": "e4373d2e365472591a895b395ec30d4b53a252a4ac04d524313945364a4ec052",
+      "bytes": 24869
+    },
+    {
+      "original": "tmp/gp12-local-reuse/screened_step.gd",
+      "retained": "source-run/tmp/gp12-local-reuse/screened_step.gd",
+      "sha256": "1b676416328a0188bae7a054d2df457b306ae1ae507074bfceff89bdc45f56b8",
+      "bytes": 36481
+    },
+    {
+      "original": "tmp/gp12-local-reuse/screened_impulse.gd",
+      "retained": "source-run/tmp/gp12-local-reuse/screened_impulse.gd",
+      "sha256": "e3f0b601089a4ad7c0917cde50831b651c76f0bafc21d322beb86f915600175d",
+      "bytes": 28620
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/review.gd",
+      "retained": "source-run/tmp/gp12-reaction-trace/review.gd",
+      "sha256": "3923e1470b5e043f86716333c99deac5eaaa2f4e83f281a28b104f570545d9c6",
+      "bytes": 5588
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/step.gd",
+      "retained": "source-run/tmp/gp12-reaction-trace/step.gd",
+      "sha256": "165e207669e2deb6d5c3be5beb18b7a9fdd59e9a8948cc71dc5e82c13fb3c951",
+      "bytes": 37963
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/impulse.gd",
+      "retained": "source-run/tmp/gp12-reaction-trace/impulse.gd",
+      "sha256": "5f2e5abc6e1de87178e149f31b421d79ef46ba8b9d18518d81175a8f2630e669",
+      "bytes": 28912
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/frame.gd",
+      "retained": "source-run/tmp/gp12-reaction-trace/frame.gd",
+      "sha256": "be8e3fa533c4740e655671a8ca001571c4b9a3e262f597cde1f278cfe16338cb",
+      "bytes": 749
+    },
+    {
+      "original": "tmp/gp12-local-reuse/checkpoint-6s.bin",
+      "retained": "rest/checkpoint-6s.bin",
+      "sha256": "d6a190715ede37bb670e0cc8c760a86c4a0005a5b079f701f4a80ffdb9ce5e7d",
+      "bytes": 992
+    },
+    {
+      "original": "tmp/gp12-local-reuse/checkpoint-10s.bin",
+      "retained": "rest/checkpoint-10s.bin",
+      "sha256": "5ca3a1ce82d01b1467a175cfe0b529ee7027ebc00b29b7adf9369388e52ed028",
+      "bytes": 992
+    },
+    {
+      "original": "tmp/gp12-local-reuse/progress-6s.json",
+      "retained": "rest/progress-6s.json",
+      "sha256": "49a7580f2dae8ecf62707b861fce919d9fedebd5714c8a66c1422b758a46dae7",
+      "bytes": 229
+    },
+    {
+      "original": "tmp/gp12-local-reuse/progress-10s.json",
+      "retained": "rest/progress-10s.json",
+      "sha256": "c38486e3de578cb603603f517c3116336ce465da36ac247699393221cbab5495",
+      "bytes": 229
+    },
+    {
+      "original": "tmp/gp12-local-reuse/rest-checks/full-rest-general-work-local-witness-3th8qya1/report.json",
+      "retained": "rest/original-15-1/report.json",
+      "sha256": "6ef3af57ba73689598301a269b2217ecd3d97bd51894354038b14e7cbda69cce",
+      "bytes": 1372
+    },
+    {
+      "original": "tmp/gp12-local-reuse/rest-checks/full-rest-general-work-local-witness-3th8qya1/engine.log",
+      "retained": "rest/original-15-1/engine.log",
+      "sha256": "4f1b0b42c2716762074f41c6bc147d3cf6bb01e4a05d084adfd9520614fdc53c",
+      "bytes": 1521
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/trace-6s.bin",
+      "retained": "reaction/trace-6s.bin",
+      "sha256": "d471b877a83c5113bafd6223734af1db6308597ed43de0c0f2cabab77bc50ab4",
+      "bytes": 185204
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/trace-6s.json",
+      "retained": "reaction/trace-6s.json",
+      "sha256": "ad3dafdfd44d7fa8e4dcd0a07f90cca3f18b729b9c237bb0bb8e14fa9b777465",
+      "bytes": 2118
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/checks/full-reaction-six-seconds-pqi95enh/report.json",
+      "retained": "reaction/check-6s/report.json",
+      "sha256": "28ba04a33b44550cc54397de5fd9a83d4c29d85c452d1b7cb94fc63b908ce459",
+      "bytes": 1291
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/checks/full-reaction-six-seconds-pqi95enh/engine.log",
+      "retained": "reaction/check-6s/engine.log",
+      "sha256": "14f13c05c94b0bbfdb2b7ef6883e39dbdaee3b2ce04d48b83d8ce4aab5b058b9",
+      "bytes": 2040
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/trace-10s.bin",
+      "retained": "reaction/trace-10s.bin",
+      "sha256": "1e69685d7346f2296f9b15bb00f1b0c55a9917391ca69c968e34fe096292e297",
+      "bytes": 185204
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/trace-10s.json",
+      "retained": "reaction/trace-10s.json",
+      "sha256": "e6c5761cfac7d4c23d8e9b6a21e72e5cc0971a4015113f5c06508c90c74c34de",
+      "bytes": 2114
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/checks/full-reaction-ten-seconds-ogpl9wb3/report.json",
+      "retained": "reaction/check-10s/report.json",
+      "sha256": "f97b00f60f388be43d2e4758368393a2033ac76736506c3b5f10872888b11afc",
+      "bytes": 1318
+    },
+    {
+      "original": "tmp/gp12-reaction-trace/checks/full-reaction-ten-seconds-ogpl9wb3/engine.log",
+      "retained": "reaction/check-10s/engine.log",
+      "sha256": "d756948603d78a243dcb934f127ea89592bde01899a7eb9071880cc05472e589",
+      "bytes": 2036
+    },
+    {
+      "original": "tmp/gp12-local-reuse/live-identities.json",
+      "retained": "analysis/live-identities.json",
+      "sha256": "fc16dbd475c7ea48c799a2dc656c26786e8984b3fc8e229b33604c4aabf52f9a",
+      "bytes": 13718
+    },
+    {
+      "original": "tmp/gp12-local-reuse/foundation-report.json",
+      "retained": "analysis/foundation-report.json",
+      "sha256": "2eb88600091735ea0b8d8e9cbc450971fb272ab4a94b12f48c726496d8ca8306",
+      "bytes": 16053
+    },
+    {
+      "original": "tmp/gp12-local-reuse/review.md",
+      "retained": "analysis/review.md",
+      "sha256": "79040f8f851a75db63d1a63ebee230841140d4572dde8b93edaa0bcd336f008c",
+      "bytes": 4330
+    },
+    {
+      "original": "tmp/gp12-local-reuse/foundation-README.md",
+      "retained": "analysis/foundation-README.md",
+      "sha256": "1b1e2626d69dbb963bd2a23a00b123a7352361504670c6ef3cada2247ef814e7",
+      "bytes": 3416
+    },
+    {
+      "original": "tmp/gp12-local-reuse/branch-localization-design.md",
+      "retained": "analysis/branch-localization-design.md",
+      "sha256": "dd038eb47c7c4f6ee7dc84a744eff2c52dd356f8499cead41f7099cebe044ba4",
+      "bytes": 5548
+    },
+    {
+      "original": "tmp/gp12-tick-profile/result.json",
+      "retained": "profile/before-local-reuse/result.json",
+      "sha256": "74150e9d59cd536c2d5c78cca0d5801ea36e8fb9015d3454785e1ea5878107ef",
+      "bytes": 1219
+    },
+    {
+      "original": "tmp/gp12-tick-profile/manifest.json",
+      "retained": "profile/before-local-reuse/manifest.json",
+      "sha256": "d25edf88c12adff834ebbe691d9542be11fce5440f1607f2e8ef74d05e996ffc",
+      "bytes": 1649
+    },
+    {
+      "original": "tmp/gp12-tick-profile/composition.gd",
+      "retained": "profile/before-local-reuse/source/composition.gd",
+      "sha256": "5fff827af83b1f7d9393f57054709f9d7ced70031915b6f4153910781310e9a2",
+      "bytes": 24897
+    },
+    {
+      "original": "tmp/gp12-tick-profile/metrics.gd",
+      "retained": "profile/before-local-reuse/source/metrics.gd",
+      "sha256": "7d23210fc5821d90f226581b72f755f96cd3363e9a9a06eeac52c37af4d7af3a",
+      "bytes": 293
+    },
+    {
+      "original": "tmp/gp12-tick-profile/profile.gd",
+      "retained": "profile/before-local-reuse/source/profile.gd",
+      "sha256": "201beaab7bf9bd4826a7d60f9a2733c1ea31a9a9bccea628d9d4b5c7a9d976ea",
+      "bytes": 1676
+    },
+    {
+      "original": "tmp/gp12-tick-profile/resolution.gd",
+      "retained": "profile/before-local-reuse/source/resolution.gd",
+      "sha256": "5fb17a40de72c4ddd25f18afdd6e5c7be2c101438119f083c50449133cac43c9",
+      "bytes": 30535
+    },
+    {
+      "original": "tmp/gp12-tick-profile/screened_impulse.gd",
+      "retained": "profile/before-local-reuse/source/screened_impulse.gd",
+      "sha256": "5c35db4152d7135a8f2aae2fb249d928d28c1022b34560e06f5936a3699be481",
+      "bytes": 28025
+    },
+    {
+      "original": "tmp/gp12-tick-profile/screened_resolution.gd",
+      "retained": "profile/before-local-reuse/source/screened_resolution.gd",
+      "sha256": "54ad4d7a27a800f7a5826122901bb94afb5bc86b9dad0df614c1bb6b01c0ef22",
+      "bytes": 4249
+    },
+    {
+      "original": "tmp/gp12-tick-profile/screened_step.gd",
+      "retained": "profile/before-local-reuse/source/screened_step.gd",
+      "sha256": "0a685a4eb45be7aaef4064913ce26e57dfa485cfb023aafb5d0cd51135f9f481",
+      "bytes": 37474
+    },
+    {
+      "original": "tmp/gp12-tick-profile/stage.gd",
+      "retained": "profile/before-local-reuse/source/stage.gd",
+      "sha256": "5a75a4073c8beafd016b652cbb391f2942db7e8c45f77e4f184fa0dfe59e65b6",
+      "bytes": 16735
+    },
+    {
+      "original": "tmp/gp12-tick-profile/stage_fixture.gd",
+      "retained": "profile/before-local-reuse/source/stage_fixture.gd",
+      "sha256": "1be96231793293e2bdaca69d4b12504d1e6b31a3c634a0282c164afe6171f10d",
+      "bytes": 25836
+    },
+    {
+      "original": "tmp/gp12-tick-profile/traction.gd",
+      "retained": "profile/before-local-reuse/source/traction.gd",
+      "sha256": "6e4c4f4dab6570051b9fb17b96e6fdb9299cb410f3b4c99c662af72721c6c941",
+      "bytes": 31643
+    },
+    {
+      "original": "tmp/gp12-tick-profile/checks/one-exact-accepted-tick-plsm28n4/report.json",
+      "retained": "profile/before-local-reuse/check/report.json",
+      "sha256": "50fc5215a1736de0ab40d9ef6484a1a5b038a587a599e5fac8fd9a031d941945",
+      "bytes": 1272
+    },
+    {
+      "original": "tmp/gp12-tick-profile/checks/one-exact-accepted-tick-plsm28n4/engine.log",
+      "retained": "profile/before-local-reuse/check/engine.log",
+      "sha256": "de3886c61eaf62b75cd4fb272103ecf9521bf9c3d174bb64c28c37b6722b11ef",
+      "bytes": 1206
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/result.json",
+      "retained": "profile/after-local-reuse/result.json",
+      "sha256": "7ca84e40f90f2c256373af9db0071c3e59fdb82ffb6ae6db0477faf558d4bc87",
+      "bytes": 1074
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/manifest.json",
+      "retained": "profile/after-local-reuse/manifest.json",
+      "sha256": "da45d0d794c0813e0583b94af64000853fb5efd02f43eb4be2dee37a0965d01a",
+      "bytes": 1709
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/composition.gd",
+      "retained": "profile/after-local-reuse/source/composition.gd",
+      "sha256": "ce99f614f67c42ceecf030c0675c3280167ad9bc0c65004d7ae72c67a5060b90",
+      "bytes": 24903
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/metrics.gd",
+      "retained": "profile/after-local-reuse/source/metrics.gd",
+      "sha256": "7d23210fc5821d90f226581b72f755f96cd3363e9a9a06eeac52c37af4d7af3a",
+      "bytes": 293
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/profile.gd",
+      "retained": "profile/after-local-reuse/source/profile.gd",
+      "sha256": "f74155556ee7da4fe82316e64aa0b89b84b55d27354a2f3f9f4098d2ebccadcf",
+      "bytes": 1700
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/resolution.gd",
+      "retained": "profile/after-local-reuse/source/resolution.gd",
+      "sha256": "c577d620d821d1e0ff015cda3a135b207a6ad4b996737d8e8ef04bc09ef5380e",
+      "bytes": 41421
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/screened_impulse.gd",
+      "retained": "profile/after-local-reuse/source/screened_impulse.gd",
+      "sha256": "04127ded66f1f07cb3926dbbf296016a0d9e3339b81dfd0f46ce65e630e3dbbd",
+      "bytes": 29371
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/screened_resolution.gd",
+      "retained": "profile/after-local-reuse/source/screened_resolution.gd",
+      "sha256": "8dae1ef3384f2b9db38cffd5df600ea1c7678164bc6ed013c508b4548fa5b3f3",
+      "bytes": 6364
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/screened_step.gd",
+      "retained": "profile/after-local-reuse/source/screened_step.gd",
+      "sha256": "72215e5bd792b443a65fb8526062cce5d23fd68cdcccda21ae35937e696da51e",
+      "bytes": 38185
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/stage.gd",
+      "retained": "profile/after-local-reuse/source/stage.gd",
+      "sha256": "7f9a88dadbb7d009714fef8f184b1c825381779cc1c965dcddc9a99c8acff644",
+      "bytes": 16741
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/stage_fixture.gd",
+      "retained": "profile/after-local-reuse/source/stage_fixture.gd",
+      "sha256": "f2871fa9fd21fb04bab41ff9d17e0b17600f13b4d15028610b20c26e5b4dc5cd",
+      "bytes": 25842
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/traction.gd",
+      "retained": "profile/after-local-reuse/source/traction.gd",
+      "sha256": "e81f5d363d7b874d96238b351692991f40fb568959624f82b810c735b34c6d08",
+      "bytes": 31649
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/checks/same-tick-local-witness-f86l0gef/report.json",
+      "retained": "profile/after-local-reuse/check/report.json",
+      "sha256": "74a2d78eba9a652bf3e25fd5a80fde16afc22d31bb1bd18002fb7be2f4e87d60",
+      "bytes": 1290
+    },
+    {
+      "original": "tmp/gp12-tick-profile-local/checks/same-tick-local-witness-f86l0gef/engine.log",
+      "retained": "profile/after-local-reuse/check/engine.log",
+      "sha256": "3eb3dd628e79e28a526ec3e6efd07746035b69c6d4d894df5b3ba86fec16fedd",
+      "bytes": 1077
+    },
+    {
+      "original": "tmp/gp12-production-target/app/physics/aircraft_ground_impulse.gd",
+      "retained": "production-target/app/physics/aircraft_ground_impulse.gd",
+      "sha256": "76c279a9fb58ffcbf5f69861cc2e817dd4bd8300c052504495e76a28c2211f69",
+      "bytes": 28638
+    },
+    {
+      "original": "tmp/gp12-production-target/app/physics/aircraft_ground_step.gd",
+      "retained": "production-target/app/physics/aircraft_ground_step.gd",
+      "sha256": "d2132788978a9a6581ee5611498a450534d80aea5b5ba5ac9b1e5275f4a251fa",
+      "bytes": 36450
+    },
+    {
+      "original": "tmp/gp12-production-target/app/physics/contact_assembly_resolution.gd",
+      "retained": "production-target/app/physics/contact_assembly_resolution.gd",
+      "sha256": "3cb14049fee9f7976fdac0b88b1129c2aca20c686b53e15fc188a44856d53f45",
+      "bytes": 39934
+    },
+    {
+      "original": "tmp/gp12-production-target/app/physics/contact_assembly_strategy.gd",
+      "retained": "production-target/app/physics/contact_assembly_strategy.gd",
+      "sha256": "ec89cd594e810188092647165961ddaf2b6da854e2c3ce05ed03badfb24123fb",
+      "bytes": 3596
+    },
+    {
+      "original": "tmp/gp12-production-target/app/physics/ground_traction.gd",
+      "retained": "production-target/app/physics/ground_traction.gd",
+      "sha256": "77393b81f6d6676aea5f679a48dd7b408996cf509fb6945e70b3ebc9d662ada1",
+      "bytes": 29931
+    },
+    {
+      "original": "tmp/gp12-production-target/app/tests/test_contact_assembly_resolution.gd",
+      "retained": "production-target/app/tests/test_contact_assembly_resolution.gd",
+      "sha256": "69f3566eb0437cb866381f37e3600d323194d69fbf319bb9345f2ffd0556f02d",
+      "bytes": 12283
+    },
+    {
+      "original": "tmp/gp12-production-target/app/tests/test_contact_assembly_strategy.gd",
+      "retained": "production-target/app/tests/test_contact_assembly_strategy.gd",
+      "sha256": "6a403a127fa4270481d04a62e1b91b327cf77be41b7a770e0c23c942a4827021",
+      "bytes": 3117
+    },
+    {
+      "original": "tmp/gp12-production-target/app/tests/test_contact_slip_consistency.gd",
+      "retained": "production-target/app/tests/test_contact_slip_consistency.gd",
+      "sha256": "95fcd5b51fa1418350e5a020735a30f8435ea87f7bb892f823cc38c8941f2b80",
+      "bytes": 5774
+    },
+    {
+      "original": "tmp/gp12-production-target/app/tests/test_contact_work_consistency.gd",
+      "retained": "production-target/app/tests/test_contact_work_consistency.gd",
+      "sha256": "7fb49c45a9c5bc35adbb910790eb48a7f4a734a7239ed4526acd8cdc2db20d69",
+      "bytes": 6844
+    },
+    {
+      "original": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_default_outputs.bin",
+      "retained": "production-target/app/tests/fixtures/ground_contact_default_outputs.bin",
+      "sha256": "85df6ec77ea772eb55a5d1b9942e4d828ea78fae25fd833b93d6a6af1ece5133",
+      "bytes": 53128
+    },
+    {
+      "original": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_nonzero.bin",
+      "retained": "production-target/app/tests/fixtures/ground_contact_rest_nonzero.bin",
+      "sha256": "92f54f5b19bc9cc23826747070ca924587825d53b5fee690afcd21adca237a98",
+      "bytes": 5488
+    },
+    {
+      "original": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_proposal.bin",
+      "retained": "production-target/app/tests/fixtures/ground_contact_rest_proposal.bin",
+      "sha256": "3c75d979b6bd7d7b10dc534be2142312e4881548b7a11f2f34dfd61e4fbe9539",
+      "bytes": 5784
+    },
+    {
+      "original": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_range.bin",
+      "retained": "production-target/app/tests/fixtures/ground_contact_rest_range.bin",
+      "sha256": "caa37119b408baabb46aa40fe5d76ab036cc0dfdcb42a5d2f093d8941f0657f5",
+      "bytes": 5760
+    },
+    {
+      "original": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_slip.bin",
+      "retained": "production-target/app/tests/fixtures/ground_contact_rest_slip.bin",
+      "sha256": "23471f7af97ea5c032a54e17c2e0cdc877fe55eaf13cef17609cc19ff4c5e449",
+      "bytes": 8876
+    },
+    {
+      "original": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_work.bin",
+      "retained": "production-target/app/tests/fixtures/ground_contact_rest_work.bin",
+      "sha256": "cb529ae633cd76e5a2a52e1975d33da4a653344ae85b2c0f67b9fcec9b1122c4",
+      "bytes": 11432
+    },
+    {
+      "original": "tmp/gp12-production-target/manifest.json",
+      "retained": "production-target/manifest.json",
+      "sha256": "36b6917ce63a1dcff74a02de9f1dbc6cb1b98ba61d8035b46f37833a4d776345",
+      "bytes": 12642
+    },
+    {
+      "original": "tmp/gp12-production-target/review.patch",
+      "retained": "production-target/review.patch",
+      "sha256": "682c45bfd1e5015751fbe8d47805cb0ce685660c4d56e8a4e683bfcc02e4e79c",
+      "bytes": 70899
+    },
+    {
+      "original": "tmp/gp12-production-target/fixture-checkout.json",
+      "retained": "production-target/fixture-checkout.json",
+      "sha256": "75f2beb17cabb1904f396a6cd7a6b7dea3f1a46a3fa77f24a36456bb968cd7ba",
+      "bytes": 3392
+    },
+    {
+      "original": "tmp/gp12-production-target/README.md",
+      "retained": "production-target/README.md",
+      "sha256": "76a3662062efabecb52d004fa03028776d8c529b2b259b11334950cfa5a3a0d5",
+      "bytes": 2061
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/aircraft_ground_accuracy/aircraft_ground_accuracy-z51y2i02/report.json",
+      "retained": "rejected-checks/accuracy-wrong-marker/report.json",
+      "sha256": "f54dc3fa479b6380d7ce0aeccc75ab5bd1be8f1a234769435a6b909270ccbb24",
+      "bytes": 1325
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/aircraft_ground_accuracy/aircraft_ground_accuracy-z51y2i02/engine.log",
+      "retained": "rejected-checks/accuracy-wrong-marker/engine.log",
+      "sha256": "29609f9a44da1a1ec1fb3a6d5dca20afd3e5068a369506f3751a810096942573",
+      "bytes": 119
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/aircraft_ground_accuracy-corrected/accuracy-ib20sj44/report.json",
+      "retained": "main-checks/aircraft_ground_accuracy-corrected/report.json",
+      "sha256": "d629d120de808e1f14bb28b7c478f00d0c2e3065a03f8f8ca80d5dc6ee193d20",
+      "bytes": 1267
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/aircraft_ground_accuracy-corrected/accuracy-ib20sj44/engine.log",
+      "retained": "main-checks/aircraft_ground_accuracy-corrected/engine.log",
+      "sha256": "29609f9a44da1a1ec1fb3a6d5dca20afd3e5068a369506f3751a810096942573",
+      "bytes": 119
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/aircraft_ground_electric/aircraft_ground_electric-gxwq04kz/report.json",
+      "retained": "main-checks/aircraft_ground_electric/report.json",
+      "sha256": "211f657e840b8442ea74e10b0cce054c977e2e258dbc697f6ab134942e3e5fe4",
+      "bytes": 1287
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/aircraft_ground_electric/aircraft_ground_electric-gxwq04kz/engine.log",
+      "retained": "main-checks/aircraft_ground_electric/engine.log",
+      "sha256": "dbddc9bb0a1a441d50b6fc658cc5e11748885cdc536d07a295c48b6340ed5b1a",
+      "bytes": 7165
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/aircraft_ground_impulse/aircraft_ground_impulse-0cu_xmfd/report.json",
+      "retained": "main-checks/aircraft_ground_impulse/report.json",
+      "sha256": "9d8b4a2091f991bdf1b63d4d43b690973f1826df5be99974a1ed0372bd18a45e",
+      "bytes": 1279
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/aircraft_ground_impulse/aircraft_ground_impulse-0cu_xmfd/engine.log",
+      "retained": "main-checks/aircraft_ground_impulse/engine.log",
+      "sha256": "d1811c203c52d585943ca3747fcf66ff04452c5ef8fd506ef95c76504a7ef2d6",
+      "bytes": 119
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/aircraft_ground_step/aircraft_ground_step-9oy2s_ln/report.json",
+      "retained": "main-checks/aircraft_ground_step/report.json",
+      "sha256": "031729069555e75a10cccae84a987713f607a0aef98f4d7c5373f0a844741615",
+      "bytes": 1261
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/aircraft_ground_step/aircraft_ground_step-9oy2s_ln/engine.log",
+      "retained": "main-checks/aircraft_ground_step/engine.log",
+      "sha256": "2141d120ae5766d70ac6f424ba091ffcb6208f4e55bb34013379e8e5fb950248",
+      "bytes": 116
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/contact_assembly_resolution/contact_assembly_resolution-hnf052ad/report.json",
+      "retained": "main-checks/contact_assembly_resolution/report.json",
+      "sha256": "7a1b678c1f44bca3c63583dd26329cce54c5e0347eb11423ba1b179ba1d5817a",
+      "bytes": 1303
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/contact_assembly_resolution/contact_assembly_resolution-hnf052ad/engine.log",
+      "retained": "main-checks/contact_assembly_resolution/engine.log",
+      "sha256": "9e55e3e557183d19141dcb10ec12c270ef642f97a978245e030525d37a160e88",
+      "bytes": 643
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/contact_assembly_strategy/contact_assembly_strategy-_2eqyti1/report.json",
+      "retained": "main-checks/contact_assembly_strategy/report.json",
+      "sha256": "eebfb42df15c816f758256711d1a29463d70589fddf12b7d281cd913eca37d5f",
+      "bytes": 1291
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/contact_assembly_strategy/contact_assembly_strategy-_2eqyti1/engine.log",
+      "retained": "main-checks/contact_assembly_strategy/engine.log",
+      "sha256": "dc24819e166a16a92a7c37ee430f335d9482c76298065479059dde1c41b08fb8",
+      "bytes": 471
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/contact_slip_consistency/contact_slip_consistency-7t3bs00t/report.json",
+      "retained": "main-checks/contact_slip_consistency/report.json",
+      "sha256": "f42ef5b8fe7d7d86fccb67265bd224df5f5010db66625bb6c02b6ed434fc00e8",
+      "bytes": 1286
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/contact_slip_consistency/contact_slip_consistency-7t3bs00t/engine.log",
+      "retained": "main-checks/contact_slip_consistency/engine.log",
+      "sha256": "8f12e97c3e0793c614b8a816a6d5edbad0e06cc92e33cf21ad3cfcd37583cc84",
+      "bytes": 1396
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/contact_work_consistency/contact_work_consistency-05luo5ks/report.json",
+      "retained": "main-checks/contact_work_consistency/report.json",
+      "sha256": "e8a36e67a3238e127e413659cab9b02af97ed00752496011cada334c4c270434",
+      "bytes": 1285
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/contact_work_consistency/contact_work_consistency-05luo5ks/engine.log",
+      "retained": "main-checks/contact_work_consistency/engine.log",
+      "sha256": "c8006427f1ebd993841f260e2a25a498df400ada5e98f84e366a4310c392986f",
+      "bytes": 995
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/ground_traction/ground_traction-0wxa6gna/report.json",
+      "retained": "main-checks/ground_traction/report.json",
+      "sha256": "26dd0883a6290e085707fea705ceff024ab91bb9a78180d70a9be262d9cd2488",
+      "bytes": 1231
+    },
+    {
+      "original": "tmp/gp12-production-target/main-checks/ground_traction/ground_traction-0wxa6gna/engine.log",
+      "retained": "main-checks/ground_traction/engine.log",
+      "sha256": "1a7bb1b88e67ccd42a0f8e00666fdad5f6531e7962c5f57e101c72ecebd9351c",
+      "bytes": 110
+    },
+    {
+      "original": ".gitattributes",
+      "retained": "production-target/gitattributes-snapshot.txt",
+      "sha256": "9ba2969316d3fa14579e53da3d0060cd9d86a4ff8c6ec4fbb394eab2cf1781a4",
+      "bytes": 13956
+    },
+    {
+      "original": "tmp/gp12-production-target/source-origin.json",
+      "retained": "analysis/source-origin.json",
+      "sha256": "c94600fac24f2f64133928a7419875cbd1236bc14d55fee72999f74f7428eeae",
+      "bytes": 6478
+    }
+  ],
+  "open_gates": [
+    "uniform-grid gentle/hard drops still refuse raw work accuracy",
+    "branch localization prototype not runtime implemented",
+    "loaded braking/lift full tape and240/480/960 still pending",
+    "~0.7s per tick diagnostic workload is unqualified performance"
+  ],
+  "limitations": [
+    "Original checked rest remains15/1; corrected15/0 is independent postprocessing, not rewritten receipt.",
+    "Actual work audited for32 accepted impulses at6s and10s, not claimed individually audited for all74411 epsilon publications.",
+    "Only selected material checked receipts retained; exploratory ignored-directory history not copied.",
+    "Profile times are nested wall diagnostics with concurrent load; no performance qualification.",
+    "Source snapshot is exact original bytes; relocation necessarily changes absolute import strings and must be recorded."
+  ],
+  "reproduction": {
+    "mode": "isolated physics snapshot,6s reaction",
+    "checks": 45,
+    "failed": 0,
+    "complete_trace_bytes_equal": true,
+    "trace_sha256": "d471b877a83c5113bafd6223734af1db6308597ed43de0c0f2cabab77bc50ab4",
+    "scope": "Absolute import relocation and UI/editor omissions declared; captured physics settings preserved.",
+    "receipts": "reproduction/checks",
+    "rejected_initial_missing_ui_import": "reproduction/rejected/missing-ui-import"
+  },
+  "transport": "transport.json"
+}

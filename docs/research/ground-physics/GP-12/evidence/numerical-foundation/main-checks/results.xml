@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="9" failures="0" errors="0" skipped="0" time="62.566000"><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_accuracy.gd [aircraft_ground_accuracy-corrected]" time="3.360000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: aircraft_ground_accuracy-corrected/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_electric.gd [aircraft_ground_electric]" time="48.843000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: aircraft_ground_electric/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_impulse.gd [aircraft_ground_impulse]" time="0.735000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: aircraft_ground_impulse/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_step.gd [aircraft_ground_step]" time="4.219000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: aircraft_ground_step/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_contact_assembly_resolution.gd [contact_assembly_resolution]" time="2.188000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: contact_assembly_resolution/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_contact_assembly_strategy.gd [contact_assembly_strategy]" time="0.985000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: contact_assembly_strategy/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_contact_slip_consistency.gd [contact_slip_consistency]" time="0.797000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: contact_slip_consistency/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_contact_work_consistency.gd [contact_work_consistency]" time="0.704000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: contact_work_consistency/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_ground_traction.gd [ground_traction]" time="0.735000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: ground_traction/report.json and engine.log</system-out></testcase></testsuite>

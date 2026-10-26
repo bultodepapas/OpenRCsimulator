@@ -1,0 +1,34 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+WARNING: Tree wind is disabled for landscapelab_quercus: a shared multi-part bend frame is not qualified
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:507)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:437)
+       [2] _test_tree_wind_transform_guard (res://tests/test_imported_tree_rendering.gd:384)
+       [3] _initialize (res://tests/test_imported_tree_rendering.gd:49)
+WARNING: Tree wind is disabled for landscapelab_quercus because a placement transform is unsupported (part is not upright around local Y)
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:507)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:467)
+       [2] build (res://scenery/imported_vegetation.gd:179)
+       [3] _test_tree_wind_transform_guard (res://tests/test_imported_tree_rendering.gd:397)
+       [4] _initialize (res://tests/test_imported_tree_rendering.gd:49)
+WARNING: ImportedVegetation option tree_cell_size_m must be 0, 64, 128, or 256; using legacy batching
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] _warn_option_once (res://scenery/imported_vegetation.gd:405)
+       [1] _tree_cell_size_from_options (res://scenery/imported_vegetation.gd:393)
+       [2] build (res://scenery/imported_vegetation.gd:159)
+       [3] _test_invalid_cell_option_falls_back (res://tests/test_imported_tree_rendering.gd:869)
+       [4] _initialize (res://tests/test_imported_tree_rendering.gd:50)
+WARNING: ImportedVegetation option tree_wind must be a boolean; ignoring it
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] _warn_option_once (res://scenery/imported_vegetation.gd:405)
+       [1] _tree_wind_from_options (res://scenery/imported_vegetation.gd:360)
+       [2] build (res://scenery/imported_vegetation.gd:161)
+       [3] _test_invalid_cell_option_falls_back (res://tests/test_imported_tree_rendering.gd:871)
+       [4] _initialize (res://tests/test_imported_tree_rendering.gd:50)
+imported tree rendering tests passed

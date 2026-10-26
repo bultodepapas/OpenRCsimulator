@@ -1,0 +1,31 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   initial servo state primes without events
+ok   unchanged accepted position stays quiet
+ok   accepted servo and gear movement emit one start each
+ok   servo speed uses accepted angle delta and tick rate
+ok   same tick never fabricates another movement event
+ok   accepted direction changes are reversals
+ok   stationary accepted state emits stop once
+ok   stopped channels do not retrigger on later ticks
+ok   gear request alone does not play
+ok   gear starts only after extension changes
+ok   moving to the endpoint is not yet a lock event
+ok   accepted arrival at requested down endpoint emits lock
+ok   endpoint lock predicate follows requested direction
+ok   already-down launch does not invent lock audio
+ok   pause primes changed presentation state without an event
+ok   resume does not replay paused or stale movement
+ok   tick rewind primes silently
+ok   negative tick is rejected without state change
+ok   duplicate servo IDs count once
+ok   missing tick produces no motion sample
+ok   one degree/second correction remains audible at 1 ticks/sample
+ok   sub-floor settling stays silent at 1 ticks/sample
+ok   one degree/second correction remains audible at 2 ticks/sample
+ok   sub-floor settling stays silent at 2 ticks/sample
+ok   one degree/second correction remains audible at 4 ticks/sample
+ok   sub-floor settling stays silent at 4 ticks/sample
+ok   one degree/second correction remains audible at 8 ticks/sample
+ok   sub-floor settling stays silent at 8 ticks/sample
+28 checks, 0 failed

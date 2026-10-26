@@ -1,0 +1,16 @@
+{
+  "format": "openrc-frozen-units-launch v1",
+  "session_id": 98346,
+  "status": "failed",
+  "complete": true,
+  "command": "OPENRC_TEST_PART=units app/test.sh",
+  "source_before": "../source-before.json",
+  "app_source_before": "../app-source-before.json",
+  "scope": "R6 frozen GP11 runtime with disclosed import/check-out metadata repairs. No later GP12 work.",
+  "exit_code": 1,
+  "stop": "test_aircraft_liveries.gd",
+  "observed_failure": "Spanish1280x720 at200% text:paint row494x216 in500x107 view;179checks1failure",
+  "source_unchanged": true,
+  "source_paths_verified": 162,
+  "app_source_dependencies_verified": 4034
+}

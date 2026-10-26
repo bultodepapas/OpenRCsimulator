@@ -1,0 +1,24 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   damper covers half the distance in one half-life
+ok   damper with no half-life snaps
+ok   damper: same value at 1 s for 30/60/144 fps
+ok   damper: 4 half-lives leave 1/16
+ok   spring: same position at 1.5 s for 30/60/144 fps
+ok   spring: same velocity at 1.5 s for 30/60/144 fps
+ok   spring: critically damped step never overshoots
+ok   spring: settles on the goal
+ok   spring with no half-life snaps and stops
+ok   angle damper goes through 180°, not through 0°
+ok   zoom factor 1 keeps the FOV
+ok   zoom factor 0.5 halves tan(fov/2): 50° → 26.25°
+ok   ln(tan) round trip
+ok   50° vertical is ≈ 79.3° horizontal at 16:9
+ok   horizontal ↔ vertical round trip
+ok   north heading is 0
+ok   east heading is +90°
+ok   heading ↔ direction round trip every 15°
+ok   horizontal direction of a vertical vector is undefined
+ok   look basis: forward points at the target
+ok   look basis straight up/down: finite, orthonormal, aimed
+all 21 camera math checks passed

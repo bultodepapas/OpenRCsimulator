@@ -1,0 +1,498 @@
+{
+  "scope": "Exact recorded source except declared absolute-import relocation; no physical arithmetic change.",
+  "engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "files": [
+    {
+      "path": "app/project.godot",
+      "recorded_sha256": "d52e410972e450a570cc90fd7ad464134fb1b09a803ddda55c48833714cfbe5f",
+      "restored_sha256": "d52e410972e450a570cc90fd7ad464134fb1b09a803ddda55c48833714cfbe5f",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/data/aircraft/p51d_mustang_120.json",
+      "recorded_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+      "restored_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/data/fuels/openrc-fuel-registry.json",
+      "recorded_sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1",
+      "restored_sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/data/glow/profile_contract.json",
+      "recorded_sha256": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+      "restored_sha256": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/data/ground/wheel_profiles.json",
+      "recorded_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "restored_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/data/schema/aircraft-contract-v2.json",
+      "recorded_sha256": "0de90c832a3e875cd162d6f7bf38241b6f11337edb5794bf22ce3afc2fb4a737",
+      "restored_sha256": "0de90c832a3e875cd162d6f7bf38241b6f11337edb5794bf22ce3afc2fb4a737",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/aero.gd",
+      "recorded_sha256": "a325cac3af731970a667eef4d76c1208a222aa187802e088bf911fc1365f160b",
+      "restored_sha256": "a325cac3af731970a667eef4d76c1208a222aa187802e088bf911fc1365f160b",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/aircraft_contract.gd",
+      "recorded_sha256": "54f939d65be82a992f6f745c2dced94e446fd4c59760ef2820fb73ec466ce074",
+      "restored_sha256": "54f939d65be82a992f6f745c2dced94e446fd4c59760ef2820fb73ec466ce074",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "recorded_sha256": "4f57ee94329a090933b71c218e8e6f8dd5fbce040760fd215474dd60db54ea1a",
+      "restored_sha256": "4f57ee94329a090933b71c218e8e6f8dd5fbce040760fd215474dd60db54ea1a",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/aircraft_ground_accuracy.gd",
+      "recorded_sha256": "e03c3e5a292e9582340fa73612769a8e5fa9f53a0e400acbdd4642bb35b394fa",
+      "restored_sha256": "e03c3e5a292e9582340fa73612769a8e5fa9f53a0e400acbdd4642bb35b394fa",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/aircraft_ground_dynamics.gd",
+      "recorded_sha256": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d",
+      "restored_sha256": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/aircraft_ground_impulse.gd",
+      "recorded_sha256": "ed2db610d1e8570069040b362dd751a089d539a1a00101041b2680c0f52f5f03",
+      "restored_sha256": "ed2db610d1e8570069040b362dd751a089d539a1a00101041b2680c0f52f5f03",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/aircraft_ground_profile.gd",
+      "recorded_sha256": "74bf7e19489666e05e6533e8ea5ef97a43b9ceb52ff8de3e33d55ac68a13d9ba",
+      "restored_sha256": "74bf7e19489666e05e6533e8ea5ef97a43b9ceb52ff8de3e33d55ac68a13d9ba",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/aircraft_ground_stage.gd",
+      "recorded_sha256": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056",
+      "restored_sha256": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/aircraft_ground_step.gd",
+      "recorded_sha256": "17d6e88c5fccccd909c5e5bad179cba37bbb68aa85127ddf76081b91fa9b2a88",
+      "restored_sha256": "17d6e88c5fccccd909c5e5bad179cba37bbb68aa85127ddf76081b91fa9b2a88",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/aircraft_ground_traction.gd",
+      "recorded_sha256": "86987e1e3b036fca2c4b3dd7368308399a38fe14695adaffa0935b9863bc1b9c",
+      "restored_sha256": "86987e1e3b036fca2c4b3dd7368308399a38fe14695adaffa0935b9863bc1b9c",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/contact_assembly_resolution.gd",
+      "recorded_sha256": "92e23b6df1ad433dc0c8b08526713764b18f0828dbe35074a3faaec8a270316a",
+      "restored_sha256": "92e23b6df1ad433dc0c8b08526713764b18f0828dbe35074a3faaec8a270316a",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/control_actuators.gd",
+      "recorded_sha256": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988",
+      "restored_sha256": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/control_surfaces.gd",
+      "recorded_sha256": "5e159ee1ebb98112e7399ef4f9ba68b30a7ea9cb5055989fbab55332c6a5edb3",
+      "restored_sha256": "5e159ee1ebb98112e7399ef4f9ba68b30a7ea9cb5055989fbab55332c6a5edb3",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/effective_mass.gd",
+      "recorded_sha256": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+      "restored_sha256": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/electric_motor.gd",
+      "recorded_sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "restored_sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/electric_supply.gd",
+      "recorded_sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "restored_sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/event_bracket.gd",
+      "recorded_sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+      "restored_sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/event_step.gd",
+      "recorded_sha256": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+      "restored_sha256": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/fixed_datum_body.gd",
+      "recorded_sha256": "a218c99f2d7079ae6788c98cf5dda24de6e3a6910fb35ab27b5c69d3f76e4293",
+      "restored_sha256": "a218c99f2d7079ae6788c98cf5dda24de6e3a6910fb35ab27b5c69d3f76e4293",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/flaps.gd",
+      "recorded_sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+      "restored_sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/fuel_properties.gd",
+      "recorded_sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4",
+      "restored_sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/generalized_coordinates.gd",
+      "recorded_sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8",
+      "restored_sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/ground_contact.gd",
+      "recorded_sha256": "cdc2dcec718a9490c0a5c3de1e55ce165bba144eca9fe10845552d9d4dec8aa4",
+      "restored_sha256": "cdc2dcec718a9490c0a5c3de1e55ce165bba144eca9fe10845552d9d4dec8aa4",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/ground_effect.gd",
+      "recorded_sha256": "32c10e2b1c7b60fec2bfba124f373b3af9fee7b33258abd3a0567ba5debe7a98",
+      "restored_sha256": "32c10e2b1c7b60fec2bfba124f373b3af9fee7b33258abd3a0567ba5debe7a98",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/ground_support.gd",
+      "recorded_sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+      "restored_sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/ground_terrain.gd",
+      "recorded_sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26",
+      "restored_sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/ground_traction.gd",
+      "recorded_sha256": "1e4ab42e03dc960dbc78b3b26060c4829b9836040b15ab96df20100f79cbbf6d",
+      "restored_sha256": "1e4ab42e03dc960dbc78b3b26060c4829b9836040b15ab96df20100f79cbbf6d",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/ground_wheels.gd",
+      "recorded_sha256": "a91217bd580700b5b130f057902248f8ed1da3650632c9653fa3c9a4f37600da",
+      "restored_sha256": "a91217bd580700b5b130f057902248f8ed1da3650632c9653fa3c9a4f37600da",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/hull_contact.gd",
+      "recorded_sha256": "aa9cd474975d8e529dea14fef46baa0c6208ca78652ba28e8203773a04024e92",
+      "restored_sha256": "aa9cd474975d8e529dea14fef46baa0c6208ca78652ba28e8203773a04024e92",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/integrator.gd",
+      "recorded_sha256": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+      "restored_sha256": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/intended_hull_support.gd",
+      "recorded_sha256": "ae9ece8ea78f96265046f702abe2d178c28b907d79207c098e45930ad242a61f",
+      "restored_sha256": "ae9ece8ea78f96265046f702abe2d178c28b907d79207c098e45930ad242a61f",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/lake_surface.gd",
+      "recorded_sha256": "8c3f51ce336ca7ad674cc77ec8af8d697aa254f77ac9ae28e814ed860ba68152",
+      "restored_sha256": "8c3f51ce336ca7ad674cc77ec8af8d697aa254f77ac9ae28e814ed860ba68152",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/liquid_fuel.gd",
+      "recorded_sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+      "restored_sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/mass_inventory.gd",
+      "recorded_sha256": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+      "restored_sha256": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/math3d.gd",
+      "recorded_sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+      "restored_sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/normal_compliance.gd",
+      "recorded_sha256": "f25ab43bb9ffe6f120fe4480fc5173a7ccf1b2cb4d0cba7c93d7f0574da8708b",
+      "restored_sha256": "f25ab43bb9ffe6f120fe4480fc5173a7ccf1b2cb4d0cba7c93d7f0574da8708b",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/normal_contact_admission.gd",
+      "recorded_sha256": "da30e0f08c2cbee2c484b7107297770f20349255980e7d64ae56bc0997f308cc",
+      "restored_sha256": "da30e0f08c2cbee2c484b7107297770f20349255980e7d64ae56bc0997f308cc",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/physical_identity.gd",
+      "recorded_sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8",
+      "restored_sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/propulsion.gd",
+      "recorded_sha256": "732f4189efa068ff9e4469ac1c1d2f580ccd152d839005b321380a34afb92eed",
+      "restored_sha256": "732f4189efa068ff9e4469ac1c1d2f580ccd152d839005b321380a34afb92eed",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/rigid_body.gd",
+      "recorded_sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+      "restored_sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/rotor_coupling.gd",
+      "recorded_sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+      "restored_sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/turbine.gd",
+      "recorded_sha256": "a7577b8d2ddfe7daec69cf2992e8c566688f5b6c89cf6461c5b462abeb1ca702",
+      "restored_sha256": "a7577b8d2ddfe7daec69cf2992e8c566688f5b6c89cf6461c5b462abeb1ca702",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/wheel_geometry.gd",
+      "recorded_sha256": "a92fda4198916ac89573aca1e58c879288c8b249146fac8de04713573fdba2f9",
+      "restored_sha256": "a92fda4198916ac89573aca1e58c879288c8b249146fac8de04713573fdba2f9",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/wheel_profiles.gd",
+      "recorded_sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+      "restored_sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/wing_polar.gd",
+      "recorded_sha256": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+      "restored_sha256": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/battery/battery_data.gd",
+      "recorded_sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+      "restored_sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/battery/esc_supervisor.gd",
+      "recorded_sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+      "restored_sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/battery/pack_ecm.gd",
+      "recorded_sha256": "5fc20700f028d214e8e97caade261c910cdc8ee560e983cb57074077ae44ddda",
+      "restored_sha256": "5fc20700f028d214e8e97caade261c910cdc8ee560e983cb57074077ae44ddda",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/glow/carburetor.gd",
+      "recorded_sha256": "d3fe00763772ca36a9b86e240c7dfb0de6b239350b0930d6000651534956fd7c",
+      "restored_sha256": "d3fe00763772ca36a9b86e240c7dfb0de6b239350b0930d6000651534956fd7c",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/glow/four_stroke.gd",
+      "recorded_sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+      "restored_sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/glow/fuel_feed.gd",
+      "recorded_sha256": "343cbfa7b1f651ac60635ac873e122a3fd99524e634e7712b57ef90e3b04b6f4",
+      "restored_sha256": "343cbfa7b1f651ac60635ac873e122a3fd99524e634e7712b57ef90e3b04b6f4",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/glow/fuel_mass.gd",
+      "recorded_sha256": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+      "restored_sha256": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/glow/installation.gd",
+      "recorded_sha256": "0b1531329e804be0fa4bd78629e6d1c254c35453006065428621cfbaa91c74bc",
+      "restored_sha256": "0b1531329e804be0fa4bd78629e6d1c254c35453006065428621cfbaa91c74bc",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/glow/operating_point.gd",
+      "recorded_sha256": "107fe300480853bb7c7007cfaa9eee82938feb02335cc5b68bc5aef31351933d",
+      "restored_sha256": "107fe300480853bb7c7007cfaa9eee82938feb02335cc5b68bc5aef31351933d",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/glow/profile.gd",
+      "recorded_sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+      "restored_sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/glow/propeller.gd",
+      "recorded_sha256": "fd6785d513962daa30ca5994f126ddfbf94e21466394b8482737e3d7428799a1",
+      "restored_sha256": "fd6785d513962daa30ca5994f126ddfbf94e21466394b8482737e3d7428799a1",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/glow/source.gd",
+      "recorded_sha256": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+      "restored_sha256": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/physics/glow/two_stroke.gd",
+      "recorded_sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+      "restored_sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "recorded_sha256": "b1b481b2cd278d997347959b8e6529d58aa23adf5494ca419f01a38d45f54042",
+      "restored_sha256": "b1b481b2cd278d997347959b8e6529d58aa23adf5494ca419f01a38d45f54042",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "recorded_sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2",
+      "restored_sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "app/tests/test_aircraft_ground_stage.gd",
+      "recorded_sha256": "75d30d115978c2146f46dd5db66df15303ba90605524469c9ba55667f420083a",
+      "restored_sha256": "75d30d115978c2146f46dd5db66df15303ba90605524469c9ba55667f420083a",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "tmp/gp12-local-reuse/capture_impulse.gd",
+      "recorded_sha256": "932a619fa6f5ca4f187a3445a66bfaa3b93d3991c76eb798a3e1e7b5754c7e80",
+      "restored_sha256": "0080f940b0ca0a065b17e06a1455160851ec9fa580594844e485e843e96a1b31",
+      "absolute_imports_relocated": true
+    },
+    {
+      "path": "tmp/gp12-local-reuse/capture_step.gd",
+      "recorded_sha256": "aa399bd7bfa10b3b8bf9c765aac04bdd1025a62894f59bda8943031e67f04017",
+      "restored_sha256": "b89962d28551dfc72a5d0ef170eadb46eeb607176011b166be0d33ece8fc0d75",
+      "absolute_imports_relocated": true
+    },
+    {
+      "path": "tmp/gp12-local-reuse/composition.gd",
+      "recorded_sha256": "e4373d2e365472591a895b395ec30d4b53a252a4ac04d524313945364a4ec052",
+      "restored_sha256": "1519dc45a410ef7e186fa2f5595d017364489dc67b7ab37276c208e4af301efa",
+      "absolute_imports_relocated": true
+    },
+    {
+      "path": "tmp/gp12-local-reuse/live_composition.gd",
+      "recorded_sha256": "33f300bf1fb7eede2960f8540b515b0fb2b7b97ac6973032af1c36c2fdd09f36",
+      "restored_sha256": "25f2c515075083c20d770b384b61b06c46cd1fa6c2637106fec865fc35aec220",
+      "absolute_imports_relocated": true
+    },
+    {
+      "path": "tmp/gp12-local-reuse/live_rest.gd",
+      "recorded_sha256": "b162faaf2e5face8f019c277f5b0499640cad6a9f5f981e8ae367bcd3a91a3ea",
+      "restored_sha256": "b77a99464da30ae50efda6569ea042a079565dd7528d6a49ba0225bf8bce5419",
+      "absolute_imports_relocated": true
+    },
+    {
+      "path": "tmp/gp12-local-reuse/resolution.gd",
+      "recorded_sha256": "2244e9aeb3af91bf755c7945b43acb06a5db8592c4c8cc68e4b3c306c080fc3d",
+      "restored_sha256": "0e4c7581d61c185174f6b488b3b0ab801b879299ad4dc9acc0834707b83d828a",
+      "absolute_imports_relocated": true
+    },
+    {
+      "path": "tmp/gp12-local-reuse/screened_impulse.gd",
+      "recorded_sha256": "e3f0b601089a4ad7c0917cde50831b651c76f0bafc21d322beb86f915600175d",
+      "restored_sha256": "555358f420b7d55666a80bae1058ccdd2eb48153b5eaf430a39559a75c46ab03",
+      "absolute_imports_relocated": true
+    },
+    {
+      "path": "tmp/gp12-local-reuse/screened_resolution.gd",
+      "recorded_sha256": "ffc09047ee27055c7a790ea6d33ba780b70e4a491dad4f8519377aef24b894ec",
+      "restored_sha256": "673a13f3796622f5426bf1f24342c47a20e403169e6e26d2e3d18f41c301156a",
+      "absolute_imports_relocated": true
+    },
+    {
+      "path": "tmp/gp12-local-reuse/screened_step.gd",
+      "recorded_sha256": "1b676416328a0188bae7a054d2df457b306ae1ae507074bfceff89bdc45f56b8",
+      "restored_sha256": "0a9d446b08f220e54abdd27f654167ad002d207a676dd11ad442ceba804d8a7c",
+      "absolute_imports_relocated": true
+    },
+    {
+      "path": "tmp/gp12-local-reuse/traction.gd",
+      "recorded_sha256": "77393b81f6d6676aea5f679a48dd7b408996cf509fb6945e70b3ebc9d662ada1",
+      "restored_sha256": "77393b81f6d6676aea5f679a48dd7b408996cf509fb6945e70b3ebc9d662ada1",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "tmp/gp12-reaction-trace/frame.gd",
+      "recorded_sha256": "be8e3fa533c4740e655671a8ca001571c4b9a3e262f597cde1f278cfe16338cb",
+      "restored_sha256": "be8e3fa533c4740e655671a8ca001571c4b9a3e262f597cde1f278cfe16338cb",
+      "absolute_imports_relocated": false
+    },
+    {
+      "path": "tmp/gp12-reaction-trace/impulse.gd",
+      "recorded_sha256": "5f2e5abc6e1de87178e149f31b421d79ef46ba8b9d18518d81175a8f2630e669",
+      "restored_sha256": "da49a5b7be6311600ba5c6caebf3f9b41fa64a5ebe68449b492e1092d74fca51",
+      "absolute_imports_relocated": true
+    },
+    {
+      "path": "tmp/gp12-reaction-trace/review.gd",
+      "recorded_sha256": "3923e1470b5e043f86716333c99deac5eaaa2f4e83f281a28b104f570545d9c6",
+      "restored_sha256": "f7ffbd8663382cc96de02d0088364a06e92823ba71cf49a1a90c0675a1808139",
+      "absolute_imports_relocated": true
+    },
+    {
+      "path": "tmp/gp12-reaction-trace/step.gd",
+      "recorded_sha256": "165e207669e2deb6d5c3be5beb18b7a9fdd59e9a8948cc71dc5e82c13fb3c951",
+      "restored_sha256": "e4c58305501119818d7d07070f6c8bf973830f1494c5a1f536124b689d0db72c",
+      "absolute_imports_relocated": true
+    }
+  ],
+  "project_isolation": {
+    "scope": "UI/translation/editor assets omitted; captured physics section retained byte-for-byte.",
+    "original_sha256": "d52e410972e450a570cc90fd7ad464134fb1b09a803ddda55c48833714cfbe5f",
+    "isolated_sha256": "60e634754d253abb660b12e67d86f7acf8d0ce99ce0acf5e10b989f99912cad7",
+    "physics_section_sha256": "69f35c3f9f36ecaf7ebea9f92075c41559c52c89df45ff97d16f4806f149894e"
+  }
+}

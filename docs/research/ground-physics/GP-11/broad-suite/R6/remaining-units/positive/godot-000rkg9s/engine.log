@@ -1,0 +1,20 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+WARNING: Bad --moon 'phase:gibbous' (real, off or phase:<new|waxing_crescent|first_quarter|waxing_gibbous|full|waning_gibbous|last_quarter|waning_crescent>); keeping off
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] _apply_moon (res://environment/moon_config.gd:143)
+       [1] resolve (res://environment/moon_config.gd:90)
+       [2] _initialize (res://tests/test_world_moon_config.gd:55)
+WARNING: Bad --moon-size 'huge' (real, large); keeping large
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] _apply (res://environment/moon_config.gd:150)
+       [1] resolve (res://environment/moon_config.gd:92)
+       [2] _initialize (res://tests/test_world_moon_config.gd:55)
+WARNING: Ignoring invalid saved moon config: moon halo must be one of auto, off
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] resolve (res://environment/moon_config.gd:76)
+       [1] _initialize (res://tests/test_world_moon_config.gd:60)
+53 checks, 0 failed

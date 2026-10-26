@@ -83,6 +83,8 @@ The integration baseline consists of four preserved Stik/P-51 air/ground tapes c
 
 The [retained initial integration cohort](evidence/README.md) pins 36 changed source snapshots, the original baseline tapes and all selected checked-runner receipts. It passed **3,469 checks across 21 suites**, plus four native comparisons: all numerical fields are byte-identical across **1,484 samples** on the legacy paths, with changed candidate solver identity reported explicitly. A fresh Git clone with `autocrlf=true` preserved every retained artifact's bytes. This is a frozen cohort: later normal-admission, complete-step and wheel/material-row changes need their own receipts and are not covered by that replay claim.
 
+The [broader frozen-cohort regression](broad-suite/README.md) is **FAILED overall**: all 1,374 scripts parsed, and all 751 unit scripts ran with 734 passed and 17 failed. Failure attributions and original stopped attempts are retained. The original offline/integration gates completed as a disclosed composite after isolated checkout/import metadata repairs; this is not an uninterrupted full-suite pass. Later GP-12 and current-main changes are excluded from that runtime cohort.
+
 Each new module is parsed before promotion and checked with the pinned Godot 4.8-beta1 console runner, including engine diagnostics that can accompany process exit zero. Tests exercise the real float64 kernel, independent energy/momentum calculations and explicit negative cases. Full fleet landing/taxi comparisons, measured suspension and strength data, rendered wheel/gear behavior, audio listening and 1080p target-host performance remain open. Command wall times are not physics budgets.
 
 ## Engineering references

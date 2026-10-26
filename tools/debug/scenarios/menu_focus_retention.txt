@@ -1,0 +1,49 @@
+# UI-15-JETI-05: cross-menu audit, using an isolated launch profile and unsaved drafts.
+eval expr="app.set_meta('menu_audit_size',tree.root.size)"
+eval expr="tree.root.set_size(Vector2i(1920,1080))"
+wait frames=5
+open screen=workshop
+press text=PageLighting
+select text=LightingPreset index=6
+press text=CustomizeLightingZones
+press text=LightingMoreEffects
+select text=EffectKind_vfx_tip_left index=1
+eval expr="screens.top().find_child('LightingPaletteHex0',true,false).grab_focus()"
+wait frames=5
+eval expr="app.set_meta('menu_audit_scroll',screens.top().find_child('WorkshopScroll',true,false).scroll_vertical)"
+eval expr="app.set_meta('menu_audit_color',screens.top().find_child('LightingPaletteHex0',true,false).text)"
+eval expr="screens.top().find_child('LightingPaletteHex0',true,false).set_text('#123456')"
+eval expr="screens.top().find_child('LightingPaletteHex0',true,false).text_changed.emit('#123456')"
+wait frames=5
+assert expr="screens.top().find_child('LightingPaletteHex0',true,false).has_focus() and screens.top().find_child('LightingPaletteHex0',true,false).text == app.get_meta('menu_audit_color') and screens.top().find_child('WorkshopScroll',true,false).scroll_vertical == app.get_meta('menu_audit_scroll')" message="rejected palette edit keeps focus, accepted value and scroll"
+eval expr="screens.top().get('_page_nodes').lighting.cancel_pending_edit()"
+eval expr="screens.top().find_child('LightingPaletteHex0',true,false).set_text('#BAD')"
+eval expr="screens.top().find_child('LightingPaletteHex0',true,false).text_changed.emit('#BAD')"
+eval expr="screens.top().find_child('EffectIntensity_vfx_tip_left',true,false).get_line_edit().grab_focus()"
+wait frames=5
+eval expr="app.set_meta('menu_audit_scroll',screens.top().find_child('WorkshopScroll',true,false).scroll_vertical)"
+eval expr="app.set_meta('menu_audit_intensity',screens.top().find_child('EffectIntensity_vfx_tip_left',true,false).value)"
+eval expr="screens.top().find_child('EffectIntensity_vfx_tip_left',true,false).set_value(0.8)"
+wait frames=5
+assert expr="screens.top().find_child('EffectIntensity_vfx_tip_left',true,false).get_line_edit().has_focus() and screens.top().find_child('EffectIntensity_vfx_tip_left',true,false).value == app.get_meta('menu_audit_intensity') and screens.top().find_child('WorkshopScroll',true,false).scroll_vertical == app.get_meta('menu_audit_scroll')" message="rejected effect edit keeps focus, accepted value and scroll"
+eval expr="screens.top().get('_page_nodes').lighting.cancel_pending_edit()"
+close
+press text="Discard changes"
+open screen=controls
+wait frames=5
+eval expr="screens.top().select_section('axes')"
+eval expr="screens.top()._axis_controls.throttle.expo.get_line_edit().grab_focus()"
+wait frames=5
+eval expr="tree.root.set_size(Vector2i(1000,1080))"
+wait frames=5
+assert expr="screens.top()._axis_controls.throttle.expo.get_line_edit().has_focus() and screens.top().find_child('ControllerSetupScroll',true,false).get_global_rect().grow(1).encloses(screens.top()._axis_controls.throttle.expo.get_line_edit().get_global_rect())" message="axis input survives compact layout with focus and visibility"
+eval expr="tree.root.set_size(Vector2i(1920,1080))"
+wait frames=5
+assert expr="screens.top()._axis_controls.throttle.expo.get_line_edit().has_focus()" message="axis input survives returning to table layout"
+press text=Cancel
+assert expr="screens.is_top('home')" message="draft checks return to Home"
+eval expr="tree.root.set_size(app.get_meta('menu_audit_size'))"
+eval expr="app.remove_meta('menu_audit_size')"
+eval expr="app.remove_meta('menu_audit_scroll')"
+eval expr="app.remove_meta('menu_audit_color')"
+eval expr="app.remove_meta('menu_audit_intensity')"

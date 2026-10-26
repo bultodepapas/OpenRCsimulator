@@ -1,0 +1,84 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok selected profile is flyable at requested power
+ok neutral keyboard holds altitude for ten seconds
+ok trim remains fixed during equilibrium flight
+ok power increase still produces natural climb
+ok no automatic elevator compensation after throttle change
+ok restart restores solved speed and power
+ok quarter power with neutral keyboard descends
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok reload retains selected half-power equilibrium
+ok metadata names selected profile
+HALF_POWER_START {"elevator_up_deg":1.36469660636311,"reload_message":"aircraft reloaded: trimmed at 21 m/s, throttle 50 %","speed_mps":20.5970697696607,"throttle":0.49999999945364}
+ok changed launch atmosphere accepted
+ok density change re-solves selected power and retains altitude
+ok new atmosphere holds equilibrium
+ok jensen-das-ugly-stik-60 offers the 50 % start
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok jensen-das-ugly-stik-60 starts level at 50 % throttle
+ok jensen-das-ugly-stik-60 holds height hands-off for ten seconds (0.000 m)
+ok jensen-das-ugly-stik-60 flies faster at 50 % than at its slow start
+ok jensen-das-ugly-stik-60 climbs at full throttle (65.1 m in 12 s)
+ok jensen-das-ugly-stik-60 descends at quarter throttle (-27.9 m in 8 s)
+ok stik-glow-61fx-2t offers the 50 % start
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik-glow-61fx-2t starts level at 50 % throttle
+ok stik-glow-61fx-2t holds height hands-off for ten seconds (0.555 m)
+ok stik-glow-61fx-2t flies faster at 50 % than at its slow start
+ok stik-glow-61fx-2t climbs at full throttle (97.9 m in 12 s)
+ok stik-glow-61fx-2t descends at quarter throttle (-36.0 m in 8 s)
+ok stik-glow-55ax-2t offers the 50 % start
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik-glow-55ax-2t starts level at 50 % throttle
+ok stik-glow-55ax-2t holds height hands-off for ten seconds (0.435 m)
+ok stik-glow-55ax-2t flies faster at 50 % than at its slow start
+ok stik-glow-55ax-2t climbs at full throttle (101.7 m in 12 s)
+ok stik-glow-55ax-2t descends at quarter throttle (-35.3 m in 8 s)
+ok stik-glow-fs64v-4t offers the 50 % start
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik-glow-fs64v-4t starts level at 50 % throttle
+ok stik-glow-fs64v-4t holds height hands-off for ten seconds (0.169 m)
+ok stik-glow-fs64v-4t flies faster at 50 % than at its slow start
+ok stik-glow-fs64v-4t climbs at full throttle (69.7 m in 12 s)
+ok stik-glow-fs64v-4t descends at quarter throttle (-32.2 m in 8 s)
+ok gp-extra-300s-60 offers the 50 % start
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok gp-extra-300s-60 starts level at 50 % throttle
+ok gp-extra-300s-60 holds height hands-off for ten seconds (0.174 m)
+ok gp-extra-300s-60 flies faster at 50 % than at its slow start
+ok gp-extra-300s-60 climbs at full throttle (67.5 m in 12 s)
+ok gp-extra-300s-60 descends at quarter throttle (-19.7 m in 8 s)
+ok p51d-mustang-120 offers the 50 % start
+ok p51d-mustang-120 starts level at 50 % throttle
+ok p51d-mustang-120 holds height hands-off for ten seconds (0.124 m)
+ok p51d-mustang-120 flies faster at 50 % than at its slow start
+ok p51d-mustang-120 climbs at full throttle (30.6 m in 12 s)
+ok p51d-mustang-120 descends at quarter throttle (-4.0 m in 8 s)
+ok f4u-corsair-250 offers the 50 % start
+ok f4u-corsair-250 starts level at 50 % throttle
+ok f4u-corsair-250 holds height hands-off for ten seconds (0.096 m)
+ok f4u-corsair-250 flies faster at 50 % than at its slow start
+ok f4u-corsair-250 climbs at full throttle (51.4 m in 12 s)
+ok f4u-corsair-250 descends at quarter throttle (-9.6 m in 8 s)
+ok sebart-avanti-s-a200-p100rx offers the 50 % start
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok sebart-avanti-s-a200-p100rx starts level at 50 % throttle
+ok sebart-avanti-s-a200-p100rx holds height hands-off for ten seconds (0.710 m)
+ok sebart-avanti-s-a200-p100rx flies faster at 50 % than at its slow start
+ok sebart-avanti-s-a200-p100rx climbs at full throttle (119.3 m in 12 s)
+ok sebart-avanti-s-a200-p100rx descends at quarter throttle (-22.5 m in 8 s)
+ok turbo-lumber-evolution offers the 50 % start
+ok turbo-lumber-evolution starts level at 50 % throttle
+ok turbo-lumber-evolution holds height hands-off for ten seconds (0.000 m)
+ok turbo-lumber-evolution flies faster at 50 % than at its slow start
+ok turbo-lumber-evolution climbs at full throttle (50.2 m in 12 s)
+ok turbo-lumber-evolution descends at quarter throttle (-17.6 m in 8 s)
+HALF_POWER_FLEET [{"drift_10_s_m":0.0,"elevator_up_deg":1.36,"id":"jensen-das-ugly-stik-60","slow_start_mps":15.0,"speed_mps":20.6},{"drift_10_s_m":0.555,"elevator_up_deg":0.89,"id":"stik-glow-61fx-2t","slow_start_mps":20.0,"speed_mps":30.54},{"drift_10_s_m":0.435,"elevator_up_deg":0.93,"id":"stik-glow-55ax-2t","slow_start_mps":20.0,"speed_mps":29.36},{"drift_10_s_m":0.169,"elevator_up_deg":1.15,"id":"stik-glow-fs64v-4t","slow_start_mps":20.0,"speed_mps":22.93},{"drift_10_s_m":0.174,"elevator_up_deg":0.64,"id":"gp-extra-300s-60","slow_start_mps":22.0,"speed_mps":32.46},{"drift_10_s_m":0.124,"elevator_up_deg":0.43,"id":"p51d-mustang-120","slow_start_mps":25.0,"speed_mps":46.02},{"drift_10_s_m":0.096,"elevator_up_deg":-1.65,"id":"f4u-corsair-250","slow_start_mps":23.0,"speed_mps":49.34},{"drift_10_s_m":0.71,"elevator_up_deg":0.81,"id":"sebart-avanti-s-a200-p100rx","slow_start_mps":29.0,"speed_mps":55.99},{"drift_10_s_m":0.0,"elevator_up_deg":-0.55,"id":"turbo-lumber-evolution","slow_start_mps":13.1,"speed_mps":16.18}]
+aircraft data invalid: /: missing required field 'frames'
+ok a rotorcraft (xcell-60-research) cannot silently fall back
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok selecting profile after setup refits before reset
+HALF_POWER_CHECKS 68 failures=0

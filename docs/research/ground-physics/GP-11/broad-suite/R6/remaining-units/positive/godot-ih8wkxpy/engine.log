@@ -1,0 +1,23 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   blades are visible before the strike, stubs hidden
+PROP STRIKE at 9255 rpm, 2.1 m/s: engine stopped
+ok   the nose-over strikes the propeller in production
+ok   the broken blades disappear and the stubs stay on the hub
+ok   the blur keeps the broken blades hidden at 9000 rpm
+ok   the blur keeps the broken blades hidden at 0 rpm
+ok   blade fragments fly
+ok   the flight goes on with the engine stopped
+ok   the crash aftermath stays idle
+ok   particle budget still holds  700
+CRASH at 20.0 m/s (sink 12.0 m/s, airframe contact (hull point 1), point speed 20.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Nose-over or ground loop on the ground at 0.8 m/s, pitch -12°, bank -21° (low airspeed, after a prop strike)
+ok   a later crash starts the aftermath  airframe contact (hull point 1), point speed 20.0 m/s at detected tick
+ok   the crash report remembers the broken propeller  ["low airspeed", "after a prop strike"]
+ok   the wreck does not throw the broken propeller again
+ok   the wreck shows the same stubs
+ok   wreck mass stays conserved  2.8787 vs 2.8787
+ok   restart restores the propeller and clears the strike
+ok   restart unbreaks the wreck twin's propeller
+16 checks, 0 failed

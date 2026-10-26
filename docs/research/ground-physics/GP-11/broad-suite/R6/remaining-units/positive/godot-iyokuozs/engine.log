@@ -1,0 +1,45 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   real source provides a stable editable component
+ok   measured recipe compiles through the existing aircraft loader
+ok   component delta changes actual total mass
+ok   compilation leaves exact input data unchanged
+ok   mass extension has a distinct evaluator identity
+ok   empty extension preserves legacy normalized recipe and compiler
+ok   measured masses refuse unqualified virtual scale
+ok   measured masses refuse unqualified virtual weight_multiplier
+ok   measured masses refuse unqualified virtual tank_capacity_multiplier
+ok   recipe cannot smuggle station edits
+ok   nonfinite measured mass is rejected before compilation
+ok   nested integer and float masses freeze the same exact identity
+ok   independent component edits have stable canonical order
+ok   trial freezes the measured evaluator without changing the legacy identity
+ok   measurement trial has a real field fixture
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   measured candidate qualifies the actual airborne session
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   measured candidate qualifies the actual runway session
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   measured candidate completes a bounded fixed-tick software flight
+ok   direct integer-mass save reads back its new revision successfully
+ok   integer-mass update cannot silently return the previous revision
+ok   direct Store calls reject unknown component IDs without publishing
+ok   direct Store calls reject unqualified mixed measured recipes
+ok   save pins the measured compiler
+ok   immutable record round trips measured recipe
+ok   portable import preserves measured identity under a new UUID
+ok   import rejects unknown component IDs before publishing a library record
+ok   same evaluator can publish a new measured revision
+ok   new legacy records still use compiler-2
+ok   adding a new evaluator requires Save a copy and leaves old revision intact
+ok   bounded reports retain measured compiler identity
+ok   measurement dialog initially focuses Cancel
+ok   applying measurements creates one history entry and detached new draft
+ok   original named record retains exact legacy recipe
+ok   measurement Undo restores the complete prior physical recipe
+ok   measurement Redo restores the full measured payload
+ok   stale measurement review cannot overwrite later draft edits
+ok   Back consumes the measurement modal before the draft loss guard
+ok   explicit new-build action also preserves an already measured saved record
+ok   actual Workshop trial payload freezes measured evaluator with detached ancestry
+Workshop mass recipe: 39 checks, 0 failures

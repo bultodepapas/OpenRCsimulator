@@ -1,0 +1,56 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   UI Input records the selected menu device
+ok   custom Accept reaches native ui_accept
+ok   custom Back reaches native ui_cancel
+ok   custom navigation reaches native ui_up
+ok   all native joypad GUI events belong to the one selected device
+ok   keyboard ui_accept events survive device selection
+ok   custom keyboard Accept reaches native ui_accept
+ok   clearing UI ownership removes every joypad GUI event
+ok   clearing UI ownership removes the injected remap key
+ok   keyboard ui_accept remains after isolation
+ok   setup opens with the controller section at the top of the page
+ok   new setup opens with a valid Mode 2 draft
+ok   preset choices retain full tooltip labels
+ok   radio calibration is an explicit public action
+ok   calibration button emits only the explicit calibration request
+ok   empty device/profile choices carry the real -1 ID
+ok   current_profile returns an isolated draft copy
+ok   axis, deadzone, expo and inversion edit a valid draft
+ok   Mode 1 preset updates channel mapping
+ok   trigger help names flight axes without the removed arming step
+ok   unknown joystick exposes an explicit kind choice and starts unconfigured
+ok   choosing Gamepad creates a Mode 2 draft without applying it
+ok   choosing Radio creates a custom absolute-throttle draft
+ok   changing profile kind never starts radio calibration
+ok   unknown joystick is disabled for menu navigation
+ok   ambiguous controller identity stays disabled for menu navigation
+ok   radio devices are excluded from menu navigation choices
+ok   device picker edits stay drafts until Save
+ok   the only confirmation action is Save
+ok   Cancel closes without writing or applying either controller
+ok   failed combined Save leaves the draft open
+ok   one Save submits the edited profile and both previously unapplied controllers
+ok   successful Save closes settings once
+ok   Auto renders the actual button binding as text and a packaged glyph
+ok   manual Xbox family changes the icon and readable label for the current remapped button
+ok   manual glyph selection leaves semantic actions and the remapped physical button unchanged
+ok   Cancel does not persist a draft glyph-family choice
+ok   Save persists the chosen PlayStation prompt family
+ok   saving presentation preference leaves semantic bindings intact
+ok   unknown device has no menu ownership before a saved profile matches
+ok   explicit Gamepad choice remains a draft and does not enable the menu device
+ok   a saved, validated and identity-matched Gamepad profile enables the unknown menu pad
+ok   radio-kind profiles and radio-purpose devices never gain menu navigation
+ok   Home exposes Controller settings with a source control
+ok   Home displays explicit controller state
+ok   Pause exposes Controller settings with a source control
+ok   helicopter setup displays the automatic arm and hold buttons
+ok   helicopter setup does not promise fixed-wing equipment
+ok   saving untouched helicopter defaults succeeds
+ok   saving does not freeze automatic assignments or disable airplane equipment
+ok   helicopter remap capture preserves unrelated automatic defaults
+ok   edited helicopter profile saves
+ok   saved helicopter remap and Clear reload
+all controller setup checks passed

@@ -1,0 +1,223 @@
+# Keep hashed glow profiles, schemas and flight evidence byte-stable across checkouts.
+# Audio bus generation compares Godot's LF serialization after removing the root UID.
+/app/default_bus_layout.tres text eol=lf
+# The population manifest pins Godot's generated people import descriptors byte-for-byte.
+/app/assets/scenery/population/people/**/*.import text eol=lf
+# AUD-15 recording recipes compare generated metadata byte-for-byte on Windows and Linux.
+/app/assets/audio/powertrains/*.json text eol=lf
+/app/assets/audio/powertrains/LICENSE.txt text eol=lf
+/app/assets/audio/landing_gear/*.json text eol=lf
+/app/assets/audio/landing_gear/LICENSE.txt text eol=lf
+# Grass placement is compared byte-for-byte with its LF generator output.
+/app/data/fields/grass.json text eol=lf
+# Baked hill settlements bind the exact visual ridge profile bytes.
+/app/data/fields/mountains.json text eol=lf
+# Downloaded vegetation and generated tree-color buffers carry exact file hashes.
+# Preserve upstream text bytes as well as binary geometry across native/WSL checkouts.
+/app/assets/landscape/vegetation/models/** -text
+/app/assets/landscape/vegetation/LICENSE.txt -text whitespace=-blank-at-eol,cr-at-eol
+/app/assets/landscape/vegetation/catalog.json text eol=lf
+/assets/landscape/vegetation/source/*.txt -text
+/assets/landscape/vegetation/source/License_Standard.txt whitespace=-blank-at-eol,cr-at-eol
+/assets/landscape/vegetation/source/polyhaven_pine_sapling_small/*.gltf -text
+# Quaternius source hashes pin the original glTF bytes, independent of core.autocrlf.
+/assets/landscape/trees/source/*.gltf -text
+# Native tree evidence includes hashed raw reports and exact fixture snapshots.
+/docs/research/visual-quality-implementation/L6a-R1/** -text whitespace=cr-at-eol
+# Raw engine output and unified-diff context retain meaningful source whitespace.
+/docs/research/visual-quality-implementation/L6a-R1/**/*.log -whitespace
+/docs/research/visual-quality-implementation/L6a-R1/*.patch -whitespace
+# Bark-mip evidence and downloaded oak derivatives bind exact file hashes.
+/docs/research/visual-quality-implementation/L6b-R2/** -text whitespace=cr-at-eol
+/docs/research/visual-quality-implementation/L6b-R2/**/*.log -whitespace
+/assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/** -text whitespace=cr-at-eol
+/assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/LICENSE_OAK.txt whitespace=-blank-at-eof,cr-at-eol
+# Poly Haven understory receipts are pinned with their downloaded CRLF bytes.
+/assets/landscape/vegetation/source/realistic_understory_2026/** -text whitespace=cr-at-eol
+/app/assets/landscape/vegetation/LICENSE_OAK.txt -text whitespace=-blank-at-eof,cr-at-eol
+/tools/landscape/vegetation/convert_oak.py -text whitespace=cr-at-eol
+# Maple conversion receipts and upstream files are bound by exact SHA-256 bytes.
+/assets/landscape/vegetation/source/lolipop_maple_2026/** -text
+/assets/landscape/vegetation/derived/lolipop_maple_2026/** -text
+/app/assets/landscape/vegetation/LICENSE_MAPLE.txt -text whitespace=cr-at-eol
+/assets/landscape/vegetation/source/lolipop_maple_2026/LICENSE_MAPLE.txt whitespace=cr-at-eol
+/tools/landscape/vegetation/convert_maple.py -text
+/assets/landscape/vegetation/source/lolipop_grass_2026/** -text
+/assets/landscape/vegetation/derived/lolipop_grass_2026/** -text
+/assets/landscape/vegetation/source/dasy_forest_2026/** -text
+/assets/landscape/vegetation/derived/dasy_forest_2026/** -text
+/tools/landscape/vegetation/convert_grass_pack.py -text
+/tools/landscape/vegetation/convert_forest_shrub.py -text
+/app/assets/landscape/vegetation/LICENSE_GRASS.txt -text
+/app/assets/landscape/vegetation/LICENSE_FOREST.txt -text
+# New vegetation license notices are hash-bound catalog inputs.
+/app/assets/landscape/vegetation/LICENSE_LANDSCAPELAB.txt -text whitespace=cr-at-eol
+/app/assets/landscape/vegetation/LICENSE_UNDERSTORY.txt -text whitespace=cr-at-eol
+# License snapshots retain the exact reviewed notice and upstream whitespace.
+/docs/research/visual-quality-implementation/L6a-R1/mature-oak/**/LICENSE_OAK.txt whitespace=-blank-at-eof,cr-at-eol
+/docs/research/visual-quality-implementation/L6b-R2/source/quaternius-standard/LICENSE.txt whitespace=-blank-at-eol,cr-at-eol
+# Retain the exact native grass capture, profile and trace receipts.
+/docs/research/visual-quality-implementation/grass-quality/evidence/raw/** -text whitespace=cr-at-eol
+/docs/research/visual-quality-implementation/grass-quality/evidence/pack-2026-10-18/** -text whitespace=cr-at-eol
+# Workshop descriptors bind exact aircraft bytes on every platform.
+/app/data/aircraft/*.json text eol=crlf
+/app/data/aircraft/battery/*.json text eol=crlf
+# Pack records hash exact generated cell bytes; checkout conversion cannot change them.
+/app/data/batteries/**/*.json text eol=lf
+/app/data/rotorcraft/*.json text eol=crlf
+/app/data/workshop/*.json text eol=lf
+/app/data/ground/wheel_profiles.json text eol=lf
+/app/data/glow/*_candidate.json text eol=lf
+/app/data/glow/profile_contract.json text eol=lf
+/app/data/glow/*.schema.json text eol=lf
+/research/glow-engines/flight-240.json text eol=lf
+/research/glow-engines/flight-480.json text eol=lf
+/research/glow-engines/flight-960.json text eol=lf
+
+# These generated glow installation and aircraft records intentionally retain CRLF.
+/app/data/glow/stik_55ax_2t.json text eol=crlf
+/app/data/glow/stik_55ax_2t_apc_13x6.json text eol=crlf
+/app/data/glow/stik_fs64v_4t.json text eol=crlf
+/app/data/glow/stik_fs64v_4t_apc_13x6.json text eol=crlf
+/app/data/aircraft/stik_glow_55ax_2t.json text eol=crlf
+/app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json text eol=crlf
+/app/data/aircraft/stik_glow_fs64v_4t.json text eol=crlf
+/app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json text eol=crlf
+/app/data/glow/stik_61fx_2t.json text eol=crlf
+/app/data/glow/extra_61fx_2t.json text eol=crlf
+/app/data/aircraft/stik_glow_61fx_2t.json text eol=crlf
+
+# Fuel replay and export receipts preserve the bytes used by their recorded hashes.
+/research/fuel-systems/FUEL-12/** -text whitespace=cr-at-eol
+/docs/research/fuel-systems/FUEL-12/evidence/** -text whitespace=cr-at-eol
+
+# Model manifests are exact-byte Workshop dependencies. Source-script hashes normalize text to LF.
+/app/data/aircraft_models/*.json text eol=lf
+
+# HX-700 source and runtime rotor profiles share the manifest's exact SHA-256.
+/assets/aircraft/hx-700/rotor_profiles.json text eol=lf
+/app/assets/aircraft/hx-700/rotor_profiles.json text eol=lf
+
+# RCV bench identity and generated independent oracle are byte-stable.
+/research/rc-monster-truck/suspension_bench.json text eol=lf
+/research/rc-monster-truck/support_bench.json text eol=lf
+/research/rc-monster-truck/fixtures/*.json text eol=lf
+
+# Author deliveries retain reviewed bytes and original whitespace; do not reformat them.
+/assets/source-deliveries/** -text -whitespace
+/assets/source-deliveries/README.md text !whitespace
+# Historical Timber text uses CRLF checkouts and LF Git blobs; preserve both identities.
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.py text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.json text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.md text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.txt text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.step text eol=crlf
+# RCV-14a pins the author's delivery bytes, including the supplied visual rig.
+/docs/research/rc-monster-truck/RCV-14a/intake.json text eol=lf
+
+# Timber r2 is an immutable author delivery; manifests hash its original bytes.
+/app/assets/aircraft/turbo-lumber-evolution/LICENSE.txt -text
+/assets/aircraft/turbo-lumber-evolution/source-manifest.json text eol=lf
+/assets/aircraft/turbo-lumber-evolution/mesh-measurements.json text eol=lf
+/assets/aircraft/turbo-lumber-evolution/geometry.json text eol=lf
+# TT-20's generator compares exact output bytes on native Windows and Linux.
+/app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd text eol=lf
+/app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/PROVENANCE.json text eol=lf
+# Native visual evidence retains its recorded file hashes across checkouts.
+/docs/research/timber-integration/TT-20/*.csv -text
+/docs/research/timber-integration/TT-20/checks/*.log -text whitespace=cr-at-eol
+
+# Authorized Bisonte runtime bundle preserves the exact reviewed author bytes.
+/app/vehicles/ground/mt8_rig.gd -text
+/app/assets/vehicles/mt8-bisonte/mt8_spec.json -text
+/app/assets/vehicles/mt8-bisonte/SOURCE.txt text eol=lf
+/assets/vehicles/mt8-bisonte/source-manifest.json text eol=lf
+/app/data/vehicles/ground/*.json text eol=lf
+/app/data/ground_vehicle/*.json text eol=lf
+
+# AV-31 preserves the supplied Blender master bytes and hash-bound collision metadata.
+/assets/aircraft/avanti-s-a200/source/** -text
+/assets/aircraft/avanti-s-a200/blender-geometry.json text eol=lf
+/assets/aircraft/avanti-s-a200/source-manifest.json text eol=lf
+
+# HELI-25c construction profiles are admitted by exact byte hashes.
+/assets/aircraft/hx-700/articulated/*.json text eol=lf
+/app/assets/aircraft/hx-700/articulated/*.json text eol=lf
+# HELI-26a also admits the independent motion oracle by its exact byte hash.
+/research/helicopter/reference/hx700_motion_oracle.json text eol=lf
+
+# RCV-35: supplied MONSTER CAR 2 Blender delivery is an immutable byte source.
+/app/assets/vehicles/monster-car-2/*.json -text
+/app/assets/vehicles/monster-car-2/SOURCE.txt text eol=lf
+/assets/vehicles/monster-car-2/*.json -text
+/assets/vehicles/monster-car-2/SOURCE.txt text eol=lf
+/research/rc-monster-truck/monster-car-2/visual_bake.py text eol=lf
+/app/data/economy/*.json text eol=lf
+/app/data/economy/**/*.json text eol=lf
+/research/crash-economics/*.json text eol=lf
+/tools/hooks/* text eol=lf
+
+# Native Windows/Linux receipts must bind identical compiler source bytes.
+/research/rc-monster-truck/native/src/*.cpp text eol=lf
+/research/rc-monster-truck/native/src/*.hpp text eol=lf
+
+# Native Windows release evidence retains exact captured bytes for verification hashes.
+/docs/research/release-readiness/PT1-v0.1.2/windows-source/*.csv -text
+/docs/research/release-readiness/PT1-v0.1.2/windows-source/*.log -text
+
+# R11 captured replay and AVL receipts bind exact artifact bytes on every platform.
+/docs/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/stable-20261016/** -text whitespace=cr-at-eol
+/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/avl-reference-20261016/** -text whitespace=cr-at-eol
+/research/physics-audit-2026-10-14/remediation/r02-circulation-candidate/nonlinear-feasibility-20261016/** -text whitespace=cr-at-eol
+/docs/research/p51-realism/P51-22/stable-20261016/** -text whitespace=cr-at-eol
+/docs/research/visual-quality-implementation/L6c/tree-completion/** -text whitespace=cr-at-eol
+/docs/research/visual-quality-implementation/L8b/2026-10-18/** -text whitespace=cr-at-eol
+/docs/research/visual-quality-implementation/grass-quality/evidence/raw/audit-2026-10-18/** -text whitespace=cr-at-eol
+
+# JETI supplier attachments and dated receipts retain their recorded byte hashes.
+/docs/research/radio-input/D6-JETI-00/** -text -whitespace
+/docs/research/radio-input/D6-JETI-01/** -text whitespace=cr-at-eol
+/docs/research/radio-input/D6-JETI-01/**/*.log -whitespace
+
+# AFC-02 qualification binds these exact source bytes on every platform.
+/app/data/fields/default.json text eol=crlf
+/app/ai/companions/pilot.gd text eol=lf
+/app/ai/companions/circuit_controller.gd text eol=lf
+/app/data/ai/companions/**/*.json text eol=lf
+# AFC receipts bind captured reports, samples and native engine logs byte-for-byte.
+/docs/research/ai-companions/**/*.json -text
+/docs/research/ai-companions/**/*.csv -text
+/docs/research/ai-companions/**/*.log -text -whitespace
+/docs/research/ai-companions/**/sources/** -text
+# Frozen AFC differential inputs retain their exact tested source bytes.
+/research/ai-companions/performance/reachable_clear_baseline.gd -text
+/research/ai-companions/performance/reachable_clear_candidate.gd -text
+/research/ai-companions/performance/callback_pre_promotion_test_clear_fast_path.gd -text
+
+# GDU-03 receipts retain the exact bytes used by cross-engine comparisons.
+/docs/research/engine-upgrade/GDU-03/**/*.json -text
+/docs/research/engine-upgrade/GDU-03/**/*.csv -text
+/docs/research/engine-upgrade/GDU-03/**/*.log -text -whitespace
+
+# SC-HUM-07 source manifests bind the original LF outfit-spec bytes.
+/tools/scenery/population/outfits/*.json text eol=lf
+
+# L7's deterministic visual horizon generator emits exact LF JSON bytes.
+/app/data/fields/horizon.json text eol=lf
+
+# EX-14h's exact JSON serializer emits LF; preserve its generated fit bytes.
+/research/extra-300/ex14/wing_polar_fit.json text eol=lf
+
+# GP-08/09/10/14 replay and checked-runner receipts bind exact raw bytes.
+/docs/research/ground-physics/GP-08/evidence/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-09/checks/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-10/checks/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-10/evidence/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-14/checks/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-08/evidence/**/*.log -whitespace
+/docs/research/ground-physics/GP-09/checks/**/*.log -whitespace
+/docs/research/ground-physics/GP-10/checks/**/*.log -whitespace
+/docs/research/ground-physics/GP-10/evidence/**/*.log -whitespace
+/docs/research/ground-physics/GP-14/checks/**/*.log -whitespace
+# Exact contact solver regression captures must survive checkout unchanged.
+/app/tests/fixtures/ground_contact_*.bin -text

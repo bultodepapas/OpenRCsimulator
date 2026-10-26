@@ -1,0 +1,20 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   switches and check boxes have themed icons
+ok   sliders show the shared focus outline
+ok   scrollbars use the theme accent
+ok   Natural Random errors use the error style
+ok   Settings starts on its first category
+ok   clean Settings explains preview, Keep and Close
+ok   a pending change is named as unsaved
+ok   Conditions Apply is the primary action
+ok   default weather opens on its stock preset
+ok   the wind intro is not repeated on other tabs
+ok   the wind intro is shown on the Wind page
+ok   Conditions errors use the error style
+ok   the wind page fits at 1080p without scrolling
+ok   Conditions has a visible numeric field
+ok   Escape in an editing field keeps the dialog open
+ok   the next Escape cancels the dialog
+ok   Help names the sticks and a separate recording/developer section
+UI modal consistency: 0 failed

@@ -1,0 +1,21 @@
+== import resource dependencies
+== F4U Corsair identity, generated data and model contract (F4U-03/05/07/11/12: manifest, rig, physics, costing, imported scene)
+assets/aircraft/f4u-corsair-250/source-manifest.json matches the g2.2 delivery
+model-geometry.json and f4u_corsair_geometry.gd are up to date
+current
+prop_calibration.json is up to date
+Corsair crash geometry current (9 additional probes)
+f4u_corsair_250.json and derivation.md are up to date
+Corsair costing entry current
+PASS F4U-12 113 checks
+== C7-R1: trace completion, finite samples and failure exits
+...................
+----------------------------------------------------------------------
+Ran 19 tests in 487.740s
+
+OK
+== D8b-R2: synthetic polar fixtures, FASER-analog and post-stall-v2 candidates (D8b-R2d) and explicit experimental flight route
+Godot check failed: process_exit (process exit 1); report: C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite-checks\R7\positive\godot-0ml8g61y\report.json
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+stale or missing synthetic polar candidate: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/flight-robustness/d8b-r2/candidates/steep.json

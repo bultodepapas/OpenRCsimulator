@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 6.86 ms, p95 8.27 ms, p99 8.32 ms over 218 frames (complete=true) → C:/Users/bulto/AppData/Local/Temp/tmp.Gjx3hbtAHl.json

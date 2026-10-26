@@ -1,0 +1,83 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   stock aircraft fixture parses
+ok   stock baseline compiles
+ok   10% default-policy recipe compiles
+ok   10% reports wingspan scaled from the compiled stock span
+ok   10% scales wing area by squared size
+ok   10% applies the documented dry s² and liquid s³ mass laws
+ok   10% scales the derived wheel radius
+ok   500% default-policy recipe compiles
+ok   500% reports wingspan scaled from the compiled stock span
+ok   500% scales wing area by squared size
+ok   500% applies the documented dry s² and liquid s³ mass laws
+ok   500% scales the derived wheel radius
+ok   invalid scale 0.0999 is rejected by shared validation and compile
+ok   invalid scale 5.0001 is rejected by shared validation and compile
+ok   invalid scale nan is rejected by shared validation and compile
+ok   invalid scale true is rejected by shared validation and compile
+ok   legacy 225% geometric request is inside the parameter contract
+ok   legacy 225% geometric request still fails full aircraft validation
+ok   10% endpoint saves as a variant
+ok   10% endpoint reloads with exact recipe scale
+ok   10% loaded variant preserves the compiled physical projection
+ok   10% loaded variant retains its scaled wheel radius
+ok   10% stored variant freezes into the compiled physical projection
+ok   10% stored trial keeps scaled wheel radius
+aircraft data warning: inertia: Jyy = 0.0000 kg·m2 is 2.08× the scaled UltraStick25e value
+ok   10% authentic stored trial data passes session start qualification
+ok   10% endpoint exports to a portable bundle
+ok   10% portable endpoint decodes with exact scale
+ok   10% portable endpoint freezes into the compiled physical projection
+ok   10% portable trial preserves scaled wheel radius
+ok   10% bundle freeze exactly matches saved-trial data and identity
+ok   500% endpoint saves as a variant
+ok   500% endpoint reloads with exact recipe scale
+ok   500% loaded variant preserves the compiled physical projection
+ok   500% loaded variant retains its scaled wheel radius
+ok   500% stored variant freezes into the compiled physical projection
+ok   500% stored trial keeps scaled wheel radius
+ok   500% authentic stored trial data passes session start qualification
+ok   500% endpoint exports to a portable bundle
+ok   500% portable endpoint decodes with exact scale
+ok   500% portable endpoint freezes into the compiled physical projection
+ok   500% portable trial preserves scaled wheel radius
+ok   500% bundle freeze exactly matches saved-trial data and identity
+ok   Workshop displays selector, step controls and actual-size readout
+ok   legacy size selector presets remain available
+ok   named Tiny size shortcut exists
+ok   Tiny shortcut selects its named multiplier
+ok   Tiny shortcut leaves every other recipe setting unchanged
+ok   named Mini size shortcut exists
+ok   Mini shortcut selects its named multiplier
+ok   Mini shortcut leaves every other recipe setting unchanged
+ok   named Original size shortcut exists
+ok   Original shortcut selects its named multiplier
+ok   Original shortcut leaves every other recipe setting unchanged
+ok   named Large size shortcut exists
+ok   Large shortcut selects its named multiplier
+ok   Large shortcut leaves every other recipe setting unchanged
+ok   named Giant size shortcut exists
+ok   Giant shortcut selects its named multiplier
+ok   Giant shortcut leaves every other recipe setting unchanged
+ok   size readout reports the current percentage and accepted wingspan
+ok   Larger steps up by ten percent
+ok   one size click creates one Undo entry
+ok   Undo restores the exact preceding size
+ok   Redo reapplies the exact size step
+ok   opposite size steps restore the starting size
+ok   selecting current size is a no-op for history
+ok   Tiny lands exactly on the shared lower endpoint
+ok   smaller step disables at the lower endpoint
+ok   lower endpoint actions are no-op for history
+ok   Giant lands exactly on the shared upper endpoint
+ok   larger step disables at the upper endpoint
+ok   upper endpoint actions are no-op for history
+ok   selector preserves an exact loaded intermediate scale
+ok   legacy option values coexist with the loaded intermediate
+ok   size edit preserves invalid numeric text and blocking state
+ok   invalid numeric draft shows proposed size rather than claiming acceptance
+ok   unsupported aircraft disables size selector, steps and shortcuts
+ok   unsupported size actions cannot change recipe or history
+ok   size tests leave the source aircraft unchanged
+Workshop sizes: 79 checks, 0 failures

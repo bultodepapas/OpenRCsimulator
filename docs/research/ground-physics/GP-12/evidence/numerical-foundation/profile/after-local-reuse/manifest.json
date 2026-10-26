@@ -1,0 +1,45 @@
+{
+  "note": "Timing wrappers only; nested inclusive wall times. No production edits.",
+  "sources": [
+    {
+      "path": "tmp/gp12-tick-profile-local/composition.gd",
+      "sha256": "ce99f614f67c42ceecf030c0675c3280167ad9bc0c65004d7ae72c67a5060b90"
+    },
+    {
+      "path": "tmp/gp12-tick-profile-local/metrics.gd",
+      "sha256": "7d23210fc5821d90f226581b72f755f96cd3363e9a9a06eeac52c37af4d7af3a"
+    },
+    {
+      "path": "tmp/gp12-tick-profile-local/profile.gd",
+      "sha256": "af39ab4c3a97c31d57264424163ab6ebb75ef238a5d662e7d548c4ec04774203"
+    },
+    {
+      "path": "tmp/gp12-tick-profile-local/resolution.gd",
+      "sha256": "c577d620d821d1e0ff015cda3a135b207a6ad4b996737d8e8ef04bc09ef5380e"
+    },
+    {
+      "path": "tmp/gp12-tick-profile-local/screened_impulse.gd",
+      "sha256": "04127ded66f1f07cb3926dbbf296016a0d9e3339b81dfd0f46ce65e630e3dbbd"
+    },
+    {
+      "path": "tmp/gp12-tick-profile-local/screened_resolution.gd",
+      "sha256": "8dae1ef3384f2b9db38cffd5df600ea1c7678164bc6ed013c508b4548fa5b3f3"
+    },
+    {
+      "path": "tmp/gp12-tick-profile-local/screened_step.gd",
+      "sha256": "72215e5bd792b443a65fb8526062cce5d23fd68cdcccda21ae35937e696da51e"
+    },
+    {
+      "path": "tmp/gp12-tick-profile-local/stage.gd",
+      "sha256": "7f9a88dadbb7d009714fef8f184b1c825381779cc1c965dcddc9a99c8acff644"
+    },
+    {
+      "path": "tmp/gp12-tick-profile-local/stage_fixture.gd",
+      "sha256": "f2871fa9fd21fb04bab41ff9d17e0b17600f13b4d15028610b20c26e5b4dc5cd"
+    },
+    {
+      "path": "tmp/gp12-tick-profile-local/traction.gd",
+      "sha256": "e81f5d363d7b874d96238b351692991f40fb568959624f82b810c735b34c6d08"
+    }
+  ]
+}

@@ -219,3 +219,8 @@
 /docs/research/ground-physics/GP-10/checks/**/*.log -whitespace
 /docs/research/ground-physics/GP-10/evidence/**/*.log -whitespace
 /docs/research/ground-physics/GP-14/checks/**/*.log -whitespace
+# Exact contact solver regression captures must survive checkout unchanged.
+/app/tests/fixtures/ground_contact_*.bin -text
+# Frozen numerical contact evidence binds original source and receipt bytes.
+/docs/research/ground-physics/GP-12/evidence/numerical-foundation/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-12/evidence/numerical-foundation/**/*.log -whitespace

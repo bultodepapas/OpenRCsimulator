@@ -1,0 +1,148 @@
+== import resource dependencies
+== D8b-R2: synthetic polar fixtures, FASER-analog and post-stall-v2 candidates (D8b-R2d) and explicit experimental flight route
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+3 synthetic polar candidates verified; NONE selected for production
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+whole-aircraft reference peak 1.107 at 13.1 deg (candidate's own peak 1.085 at 13.5 deg)
+| Whole-aircraft α (°) | FASER retention | Candidate retention |
+| --- | --- | --- |
+| 15.1 | 0.952 | 0.952 |
+| 17.1 | 0.936 | 0.937 |
+| 19.1 | 0.916 | 0.914 |
+| 21.1 | 0.886 | 0.888 |
+| 24.1 | 0.894 | 0.894 |
+| 26.1 | 0.912 | 0.913 |
+| 28.1 | 0.936 | 0.936 |
+faser-analog candidate verified; NOT selected for production
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+fitted knots (fraction of the strip peak) at [18.0, 24.0, 30.0, 36.0] deg: [1.0, 0.82, 0.82, 0.82] after 49 evaluations
+J 4.232: RMS retention error 0.0367, RMS Clp error 0.1654; whole-aircraft CLmax 1.080 at 18.0 deg
+post-stall v2 candidate verified; NOT selected for production
+== EX-14h: the Extra's post-stall wing polar fit is not stale (research/extra-300/ex14/fit_wing_polar.gd --check)
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+knots [18.0, 24.0, 30.0, 36.0] deg: [1.0, 0.86, 0.86, 0.82]; 49 evaluations
+J 10.397: RMS retention error 0.0593, RMS Clp error 0.2548; whole-aircraft CLmax 1.002 at 14.0 deg; verified
+...
+----------------------------------------------------------------------
+Ran 3 tests in 107.126s
+
+OK
+== M5-W01d: weather CLI, explicit v4 clocks/velocity fields and reader negative controls
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 136.184s
+
+OK
+== M5-W04a: seeded turbulence trace oracle and complete-state FPS independence
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 145.973s
+
+OK
+== M5-ATM: independent atmosphere, EAS and environment replay checks
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 193.696s
+
+OK
+== M5-ATM-4 / VAL-AUD-R09: complete v11 standard-column CLI traces and endpoint/k1 ISA reader
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 68.252s
+
+OK
+== TOD-09a: independent Gregorian clock fixtures stay current
+184 independent calendar cases verified
+== TOD-05/07: selected time, visual context and unchanged flight physics
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 482.826s
+
+OK
+== G2a/G2b: coupled shaft launch, model identity and complete-state FPS independence
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 198.099s
+
+OK
+== app: headless --trace starts in trimmed level flight (all five catalog aircraft)
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.003 m, speed 21.9990 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.001 m, speed 24.9996 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.010 m, speed 28.9965 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 13.0982 m/s; exact aircraft input bytes verified
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 29.999 m, speed 13.0974 m/s; exact aircraft input bytes verified
+== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)
+sebart_avanti_s_a200.json and derivation.md are up to date
+== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)
+validated expected CLI failure (exit 1): aircraft 'no-such-aircraft' refused: not in the catalog (
+refused
+== NITRO-02: both finite-fuel glow catalog routes emit complete versioned traces
+glow_2t: 1 / 2 families passed, 721 accepted trace rows
+glow_4t: 2 / 2 families passed, 721 accepted trace rows
+== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)
+frame-time report: 218 frames, p50 6.86 <= p95 8.27 <= p99 8.32 ms
+== VQ-01b: scripted logger disables input and identifies its route
+scripted route, raw samples and disabled input verified
+== VQ-01b: invalid logger options and output write failures fail the process
+test_additional_unexpected_engine_error_is_rejected (__main__.ExpectedFailureContractTests.test_additional_unexpected_engine_error_is_rejected) ... ok
+test_one_matching_engine_error_is_accepted (__main__.ExpectedFailureContractTests.test_one_matching_engine_error_is_accepted) ... ok
+test_unexpected_diagnostic_is_rejected (__main__.ExpectedFailureContractTests.test_unexpected_diagnostic_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK
+validated expected CLI failure (exit 31): --t must be greater than 0 and at most 300 seconds
+validated expected CLI failure (exit 31): --t requires a finite number
+validated expected CLI failure (exit 31): --warmup must be between 0 and 3600 seconds
+validated expected CLI failure (exit 31): --frametimes cannot be combined with --trace or --capture
+validated expected CLI failure (exit 31): --frametimes cannot be combined with --trace or --capture
+validated expected CLI failure (exit 1): Cannot write frame-time report '
+== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering
+ticks=480 frames=60 throttle=0.5326 state_sha256=26560b7e126c505c146ba125288a6f2d3afab94b721ef332ea7464830067c96a
+ticks=480 frames=120 throttle=0.5326 state_sha256=26560b7e126c505c146ba125288a6f2d3afab94b721ef332ea7464830067c96a
+ticks=480 frames=288 throttle=0.5326 state_sha256=26560b7e126c505c146ba125288a6f2d3afab94b721ef332ea7464830067c96a
+identical
+== TT-08: Timber coupled electric flight is identical at 30/60/144 fps
+ticks=480 frames=60 throttle=0.6169 state_sha256=b26d013c52a8d3adb30f26f514287bbd0ecdf9949fee179d96314ccfb72f64ee
+ticks=480 frames=120 throttle=0.6169 state_sha256=b26d013c52a8d3adb30f26f514287bbd0ecdf9949fee179d96314ccfb72f64ee
+ticks=480 frames=288 throttle=0.6169 state_sha256=b26d013c52a8d3adb30f26f514287bbd0ecdf9949fee179d96314ccfb72f64ee
+identical Timber complete checkpoints
+== E0b5: experimental wash transport at 30/60/144 fps
+30 fps: hash=9825e72f90a9ae5f22e3312a28e17987c1b1bd0912e377e61269797529877e84 ticks=480 frames=60
+60 fps: hash=9825e72f90a9ae5f22e3312a28e17987c1b1bd0912e377e61269797529877e84 ticks=480 frames=120
+144 fps: hash=9825e72f90a9ae5f22e3312a28e17987c1b1bd0912e377e61269797529877e84 ticks=480 frames=288
+E0b5: identical body/wash/aux/load/input hashes at 30/60/144 fps
+== E0b6p: distributed swirl at 30/60/144 fps
+30 fps: hash=621d17a920b3486316425c34f81481e5c76fa9de429750a75d45354021bbfa27 ticks=480 frames=60
+60 fps: hash=621d17a920b3486316425c34f81481e5c76fa9de429750a75d45354021bbfa27 ticks=480 frames=120
+144 fps: hash=621d17a920b3486316425c34f81481e5c76fa9de429750a75d45354021bbfa27 ticks=480 frames=288
+E0b6p: identical body/aux/load/input with swirl hashes at 30/60/144 fps
+== E5a: generated Extra taildragger contacts, P-51 review and session refinement
+{
+  "checks.gd": {
+    "checks": 21,
+    "failures": 0,
+    "exit_code": 0
+  },
+  "session.gd": {
+    "checks": 116,
+    "failures": 0,
+    "exit_code": 0
+  }
+}
+== E5b: tail-up pitch threshold, rigid tail lift and synthetic resistance patches
+{
+  "full": {
+    "checks": 125,
+    "failures": 0,
+    "exit_code": 0,
+    "scope": "full",
+    "expected_failure": null
+  }
+}

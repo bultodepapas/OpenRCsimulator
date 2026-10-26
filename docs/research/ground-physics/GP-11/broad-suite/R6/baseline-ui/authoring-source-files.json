@@ -1,0 +1,78 @@
+{
+  "source": "read-only GP10 baseline",
+  "files": [
+    {
+      "path": "assets/aircraft/avanti-s-a200/blender-geometry.json",
+      "sha256": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d"
+    },
+    {
+      "path": "assets/aircraft/avanti-s-a200/source-manifest.json",
+      "sha256": "643997608d4b788f694999e90615c24f27e71ba3410dacde2fd934f29f99884f"
+    },
+    {
+      "path": "assets/aircraft/extra-300s-60/appearance.json",
+      "sha256": "b0a74c80baa99036ff70c92d392ca685dbafe0a84a0059568813b2327e765228"
+    },
+    {
+      "path": "assets/aircraft/extra-300s-60/geometry.json",
+      "sha256": "bccba2f8b2e95b303140ff73683974c9679b8c65bb5938dddcf4b54c5eeea810"
+    },
+    {
+      "path": "assets/aircraft/f4u-corsair-250/gear-samples.json",
+      "sha256": "1f1621ba9a3709c0f86c3a7efc68b697498382b6b5ac4cae168ef69f4226ecd0"
+    },
+    {
+      "path": "assets/aircraft/f4u-corsair-250/mechanisms-r59.json",
+      "sha256": "b3dec2a59cf7e2d1c840c18c827e146c0e662c39a6c8ca938f6e124af35e5fe3"
+    },
+    {
+      "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
+      "sha256": "571eeedd5ca8337a072f1c194955444f356b3dcc7247b166fe5dafa8b594a713"
+    },
+    {
+      "path": "assets/aircraft/f4u-corsair-250/source-manifest.json",
+      "sha256": "21c4974078921ed8e2c95ddfda846d1483f075cb60d28eab5b63c74f1740594b"
+    },
+    {
+      "path": "assets/aircraft/f4u-corsair-250/wing-fold-r59.json",
+      "sha256": "d83664ce6473f19979d89ef492f042c922e7d1265e919d53c4a63e0e65a7b71e"
+    },
+    {
+      "path": "assets/aircraft/model-bindings.json",
+      "sha256": "4adfc711d13bbbbb002d5a5e6e4d323475d61768faeabb548e0b7fee335e1d59"
+    },
+    {
+      "path": "assets/aircraft/p51d-mustang-120/appearance.json",
+      "sha256": "3dc0c503f9d93ce59165173244a3486ced11b624c01d86aaed05366d980b3da6"
+    },
+    {
+      "path": "assets/aircraft/p51d-mustang-120/geometry.json",
+      "sha256": "f0523f9b97c318e9211fbaa1087e9c49debb662f13591f5019a4593cd2b7e290"
+    },
+    {
+      "path": "assets/aircraft/p51d-mustang-120/source.json",
+      "sha256": "6f72856b27ef875a1ce0c572180c7fdb9a2d08789e25beb05d8eb92d17d803b0"
+    },
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/geometry.json",
+      "sha256": "ba392cfc37a3a8b8489c781bd15d35f96b68091a5a128ac3818f20723683af58"
+    },
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/manual.json",
+      "sha256": "118f98a8fc4628e140c24504c80ca40cf5ee247dc7ab770dacebd2bdf8a1e795"
+    },
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json",
+      "sha256": "ae585078344abbfbe1405b9e1777243c120e299516fde663c538c231f4e74063"
+    },
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/source-manifest.json",
+      "sha256": "f9d8510474a39ede0df7e77a61c91e9283bc255b09afb7543af536851bbd1a74"
+    },
+    {
+      "path": "assets/aircraft/ugly-stik-60/geometry.json",
+      "sha256": "7b1fe453d594866a24756000a318f4ba0258eb072b7b98dae5a4d2491b09bd31"
+    }
+  ],
+  "reason": "complete authoring source identity checks needed by existing model-registry UI test"
+}

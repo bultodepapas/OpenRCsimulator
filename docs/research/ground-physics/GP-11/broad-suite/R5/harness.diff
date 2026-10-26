@@ -1,0 +1,22 @@
+--- frozen/app/test.sh
++++ R3/harness-no-repeat-parse.sh
+@@ -1,7 +1,7 @@
+ #!/usr/bin/env bash
+ # Headless checks (no display needed). Fails if any script fails to parse or any test fails.
+ set -euo pipefail
+-HERE="$(cd "$(dirname "$0")" && pwd)"
++HERE="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app"
+ # Full local verification remains the default. CI runs every partition as a required job.
+ TEST_PART="${OPENRC_TEST_PART:-all}"
+ UNIT_SHARDS="${OPENRC_UNIT_SHARDS:-1}"
+@@ -249,10 +249,6 @@
+   if grep -nE '^\s*[^/#[:space:]].*\bTIME\b' "$HERE/$f"; then echo "TIME used in $f (use the sim_clock global uniform)"; exit 1; fi
+ done
+ 
+-echo "== parse check: every script"
+-(cd "$HERE" && find . -name '*.gd' -not -path './.godot/*' -not -path './captures/*' | sort) | while read -r f; do
+-  run --check-only --script "res://${f#./}" > /dev/null || { echo "parse error in $f"; exit 1; }
+-done
+ 
+ fi # offline generators, references and complete parse checks
+ 

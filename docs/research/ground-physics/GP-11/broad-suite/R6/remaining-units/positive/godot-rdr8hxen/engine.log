@@ -1,0 +1,33 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok    Turbo Lumber pack fixture loads
+ok    default pack, zero inflow retains its root status
+ok    default pack, zero inflow has finite RPM and small equilibrium residual
+ok    default pack, forward inflow retains its root status
+ok    default pack, forward inflow has finite RPM and small equilibrium residual
+ok    default pack, thin air retains its root status
+ok    default pack, thin air has finite RPM and small equilibrium residual
+ok    changed initial pack SOC retains its root status
+ok    changed initial pack SOC has finite RPM and small equilibrium residual
+ok    zero-duty pack retains its root status
+ok    invalid pack SOC retains its root status
+ok    invalid ESC mapping retains its root status
+ok    invalid duty retains its root status
+ok    prepared full pack source succeeds
+ok    prepared full pack source matches the public result byte-for-byte
+ok    first source call stores a rested pack block
+ok    compact pack source preserves every field the equilibrium root consumes
+ok    compact pack source omits telemetry-only voltage and source fields
+ok    a second context prepares the changed pack independently
+ok    A/B contexts and repeated inputs do not contaminate the first pack result
+ok    prepared pack failure retains the public status and message
+ok    prepared full, compact, and repeated A/B calls leave every input prop unchanged
+ok    fused torque probe matches independent residual/tolerance arithmetic for [5600.0, 0.55, 5.0, 1.225]
+ok    fused torque probe matches independent residual/tolerance arithmetic for [5601.0, 0.55, 5.0, 1.225]
+ok    fused torque probe matches independent residual/tolerance arithmetic for [5601.0, 0.56, 5.0, 1.225]
+ok    fused torque probe matches independent residual/tolerance arithmetic for [5601.0, 0.56, 6.0, 1.225]
+ok    fused torque probe matches independent residual/tolerance arithmetic for [5601.0, 0.56, 6.0, 1.1]
+ok    later probes leave a returned pair and the source model unchanged
+ok    a changed pack produces its independent fused residual/tolerance
+ok    invalid source retains both nonfinite fused values
+Electric equilibrium preparation: 30 checks, 0 failed

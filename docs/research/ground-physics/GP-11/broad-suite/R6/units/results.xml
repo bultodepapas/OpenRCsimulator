@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="23" failures="1" errors="0" skipped="0" time="229.998000"><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_data.gd [godot-1x9w9l53]" time="2.734000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-1x9w9l53/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aero.gd [godot-3k74itsl]" time="1.609000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-3k74itsl/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_accident_report.gd [godot-4w62a8r7]" time="1.985000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-4w62a8r7/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aero_continuity.gd [godot-7g9ocms1]" time="1.796000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-7g9ocms1/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_stage.gd [godot-7uys66od]" time="2.156000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-7uys66od/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_contract.gd [godot-81r7m6f4]" time="13.391000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-81r7m6f4/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_profile.gd [godot-8aovmbf0]" time="1.781000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-8aovmbf0/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_light_control.gd [godot-95xtrq4f]" time="38.032000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-95xtrq4f/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_dynamics.gd [godot-aw64ooxa]" time="6.328000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-aw64ooxa/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_accident_integration.gd [godot-bm4aps8y]" time="29.422000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-bm4aps8y/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_air_data.gd [godot-f9ev8enz]" time="0.454000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-f9ev8enz/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_contact_session.gd [godot-fg5r62_1]" time="4.485000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-fg5r62_1/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_advanced_graphics_settings.gd [godot-hm3ndzli]" time="16.328000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-hm3ndzli/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_liveries.gd [godot-hq3nzkd_]" time="42.656000"><failure type="process_exit" message="Inspect the child exit status and final engine output.">Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-hq3nzkd_/report.json and engine.log</failure></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_impulse.gd [godot-i1tj92dw]" time="0.406000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-i1tj92dw/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="resource import [godot-k9djwn07]" time="6.578000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-k9djwn07/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aero_flow.gd [godot-nfxaxj80]" time="20.343000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-nfxaxj80/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_accident_settlement.gd [godot-q6a43s7_]" time="0.312000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-q6a43s7_/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_customization.gd [godot-r79y_n8t]" time="7.531000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-r79y_n8t/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_catalog.gd [godot-rw2h5xx3]" time="27.562000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-rw2h5xx3/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_air_density.gd [godot-sqw_tl5b]" time="0.391000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-sqw_tl5b/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_contact_contract.gd [godot-tso0dw54]" time="2.281000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-tso0dw54/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_contact_events.gd [godot-xus11a22]" time="1.437000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-xus11a22/report.json and engine.log</system-out></testcase></testsuite>

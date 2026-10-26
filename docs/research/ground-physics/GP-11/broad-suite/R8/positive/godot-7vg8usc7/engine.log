@@ -1,0 +1,13 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+whole-aircraft reference peak 1.107 at 13.1 deg (candidate's own peak 1.085 at 13.5 deg)
+| Whole-aircraft α (°) | FASER retention | Candidate retention |
+| --- | --- | --- |
+| 15.1 | 0.952 | 0.952 |
+| 17.1 | 0.936 | 0.937 |
+| 19.1 | 0.916 | 0.914 |
+| 21.1 | 0.886 | 0.888 |
+| 24.1 | 0.894 | 0.894 |
+| 26.1 | 0.912 | 0.913 |
+| 28.1 | 0.936 | 0.936 |
+faser-analog candidate verified; NOT selected for production

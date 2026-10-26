@@ -6,6 +6,7 @@ const RC := preload("res://physics/rotor_coupling.gd")
 const GC := preload("res://physics/generalized_coordinates.gd")
 const QP := preload("res://physics/ground_traction.gd")
 const AR := preload("res://physics/contact_assembly_resolution.gd")
+const Strategy := preload("res://physics/contact_assembly_strategy.gd")
 const M := preload("res://physics/math3d.gd")
 const LAW := "fixed-center-cm-common-rotor-ground-impulse-v1"
 const MAX_ROTORS := 64
@@ -65,19 +66,20 @@ static func apply(stage: Dictionary, mass_kg: float, velocity_cm_body: PackedFlo
 	var qp := {ok = true, converged = true, method = "empty_rows", impulse = PackedFloat64Array(),
 		group_impulses = [], post_slip = PackedFloat64Array(), dissipation = 0.0}
 	var assembly := {}
+	var local_evidence:Dictionary={}
+	var full_mass := PackedFloat64Array()
+	var responses := PackedFloat64Array()
 	if rows > 0:
 		if maximum_assembly_resolution_j >= 0.0:
-			var full_mass := PackedFloat64Array()
 			full_mass.resize(n*n)
 			for i in 3: full_mass[i*n+i] = mass_kg
 			for i in n-3:
 				for j in n-3: full_mass[(3+i)*n+3+j] = stage.matrix[i*(n-3)+j]
-			var responses := PackedFloat64Array()
 			for response: PackedFloat64Array in response_columns: responses.append_array(response)
-			qp = AR.solve(mobility,free_slip,limits,groups,full_mass,jacobian,z,prescribed_slip_bias,
-				responses,maximum_assembly_resolution_j,iteration_budget)
+			qp = Strategy._solve_local(mobility,free_slip,limits,groups,full_mass,jacobian,z,prescribed_slip_bias,
+				responses,maximum_assembly_resolution_j,iteration_budget,local_evidence)
 			if qp.get("certificate_kind", "") == AR.LAW:
-				assembly = AR.bounds(mobility,free_slip,full_mass,jacobian,z,prescribed_slip_bias,responses)
+				assembly = AR._memo_bounds(local_evidence,mobility,free_slip,full_mass,jacobian,z,prescribed_slip_bias,responses)
 		else:
 			qp = QP.solve(mobility, free_slip, limits, groups, iteration_budget)
 		if not qp.ok: return {ok = false, status = "traction_nonconverged", reason = qp.get("reason", "traction rejected"), qp = qp}
@@ -136,10 +138,44 @@ static func apply(stage: Dictionary, mass_kg: float, velocity_cm_body: PackedFlo
 		var scale := maxf(1.0e-12, maxf(row_magnitude, maxf(response_magnitude, absf(qp.post_slip[row]))))
 		slip_residual = maxf(slip_residual, absf(value - qp.post_slip[row]) / scale)
 		if not is_finite(row_magnitude) or not is_finite(response_magnitude): slip_residual = INF
+	var slip_roundoff:Dictionary={}
+	var numerical_slip_valid:=false
+	if is_finite(slip_residual) and slip_residual>RESIDUAL_RELATIVE_TOLERANCE and maximum_assembly_resolution_j>=0.0:
+		var proof:=AR._slip_local(local_evidence,mobility,free_slip,full_mass,jacobian,z,prescribed_slip_bias,
+			responses,qp.impulse,generalized_impulse,delta,qp.post_slip)
+		if proof.get("ok",false):
+			var objective_uncertainty:=0.0
+			if qp.has("assembly_resolution"):objective_uncertainty=qp.assembly_resolution.assembly_objective_resolution_j
+			var combined_uncertainty:=AR._add(objective_uncertainty,proof.work_equivalent_bound_j)
+			if is_finite(combined_uncertainty) and combined_uncertainty<=maximum_assembly_resolution_j:
+				proof.legacy_relative_residual=slip_residual
+				proof.legacy_relative_tolerance=RESIDUAL_RELATIVE_TOLERANCE
+				proof.qp_objective_uncertainty_j=objective_uncertainty
+				proof.combined_contact_uncertainty_j=combined_uncertainty
+				proof.owner_per_qp_ceiling_j=maximum_assembly_resolution_j
+				slip_roundoff=proof
+				numerical_slip_valid=true
+	var work_roundoff:Dictionary={}
+	var numerical_work_valid:=false
+	if is_finite(closure) and absf(closure)>RESIDUAL_RELATIVE_TOLERANCE*work_scale and maximum_assembly_resolution_j>=0.0:
+		var proof:=AR._work_local(local_evidence,mobility,free_slip,full_mass,jacobian,z,prescribed_slip_bias,responses,
+			qp.impulse,generalized_impulse,delta,qp.post_slip,stage.affine_momentum,qp.objective,incremental_change,closure)
+		if proof.get("ok",false):
+			var objective_uncertainty:=0.0
+			if qp.has("assembly_resolution"):objective_uncertainty=qp.assembly_resolution.assembly_objective_resolution_j
+			var slip_uncertainty:=0.0
+			if not slip_roundoff.is_empty():slip_uncertainty=slip_roundoff.work_equivalent_bound_j
+			var combined:=AR._add(AR._add(objective_uncertainty,slip_uncertainty),proof.work_equivalent_bound_j)
+			if is_finite(combined) and combined<=maximum_assembly_resolution_j:
+				proof.legacy_work_target_j=RESIDUAL_RELATIVE_TOLERANCE*work_scale
+				proof.combined_contact_uncertainty_j=combined
+				proof.owner_per_qp_ceiling_j=maximum_assembly_resolution_j
+				work_roundoff=proof
+				numerical_work_valid=true
 	if not _finite(PackedFloat64Array([before, after, affine_work, bias_work, incremental_change, closure, totals_residual, mass_residual, slip_residual])) \
-		or absf(closure) > RESIDUAL_RELATIVE_TOLERANCE * work_scale \
+		or (absf(closure) > RESIDUAL_RELATIVE_TOLERANCE * work_scale and not numerical_work_valid) \
 		or absf(totals_residual) > RESIDUAL_RELATIVE_TOLERANCE * totals_scale \
-		or mass_residual > RESIDUAL_RELATIVE_TOLERANCE or slip_residual > RESIDUAL_RELATIVE_TOLERANCE:
+		or mass_residual > RESIDUAL_RELATIVE_TOLERANCE or (slip_residual > RESIDUAL_RELATIVE_TOLERANCE and not numerical_slip_valid):
 		return _failure("generalized impulse, slip or energy closure could not be certified", "nonconverged")
 	var result := {ok = true, status = "converged", law = LAW, fixed_centers = true, frozen_pose = true,
 		velocity_cm_body = next.slice(0, 3), omega = next.slice(3, 6), spin = next.slice(6),
@@ -153,6 +189,8 @@ static func apply(stage: Dictionary, mass_kg: float, velocity_cm_body: PackedFlo
 		mass_solve_relative_residual = mass_residual, slip_relative_residual = slip_residual,
 		factor_rebuilt = true, work_frame = "prescribed_support_and_carrier_balance_not_visual_steering_motor_credit"}
 	if not capture_receipt.is_empty(): result.capture = capture_receipt
+	if not slip_roundoff.is_empty():result.slip_roundoff=slip_roundoff
+	if not work_roundoff.is_empty():result.work_roundoff=work_roundoff
 	return result
 
 
@@ -331,6 +369,8 @@ static func _recertify(base: Dictionary, mobility: PackedFloat64Array, bias: Pac
 	result.feasibility_roundoff_correction = correction
 	if result.has("maximum_objective_increase_scaled"):
 		result.maximum_objective_increase_scaled = maxf(result.maximum_objective_increase_scaled, (objective - base.objective) / base.objective_scale)
+	if not resolution.is_empty() and resolution.certified_impulse_sha256!=AR.impulse_digest(result.impulse):
+		return _failure("capture final impulse differs from recertified bytes", "nonconverged")
 	return result
 
 

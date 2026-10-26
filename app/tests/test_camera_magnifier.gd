@@ -84,6 +84,11 @@ func _inset_camera() -> void:
 	root.add_child(inset)
 	await process_frame
 	var model := MeshInstance3D.new()
+	var detached_vfx_root := Node3D.new()
+	root.add_child(detached_vfx_root)
+	var detached_effect := MeshInstance3D.new()
+	detached_vfx_root.add_child(detached_effect)
+	model.set_meta(Magnifier.VFX_ROOT_META, weakref(detached_vfx_root))
 	inset.mode = "on"
 	var target := Vector3(30, 40, -200)
 	var span := 1.5
@@ -102,12 +107,42 @@ func _inset_camera() -> void:
 	inset.update(main_camera, close, span, model, true)
 	_check("a close aircraft is framed from the pilot's eye with a wider FOV", cam.global_position.distance_to(main_camera.position) < 1e-4 and cam.fov > Magnifier.INSET_FOV_DEG)
 	_check("the passed model was tagged", (model.layers & Magnifier.LAYER) != 0)
+	_check("the active actor resolves its inset through a weak camera link", Magnifier.camera_for_actor(model) == cam)
+	_check("detached VFX meshes join the inset layer for the tagged actor", (detached_effect.layers & Magnifier.LAYER) != 0)
 	inset.mode = "off"
 	inset.update(main_camera, target, span, model, true)
-	_check("off: hidden and not rendering", not inset.shown and not inset.visible and inset._viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	_check("off: hidden, not rendering, and no longer linked for projection",
+		not inset.shown and not inset.visible and inset._viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED
+			and Magnifier.camera_for_actor(model) == null and (model.layers & Magnifier.LAYER) == 0
+			and (detached_effect.layers & Magnifier.LAYER) == 0)
+	inset.mode = "on"
+	inset.update(main_camera, target, span, model, true)
+	var second_model := MeshInstance3D.new()
+	var second_vfx_root := Node3D.new()
+	root.add_child(second_vfx_root)
+	var second_effect := MeshInstance3D.new()
+	second_vfx_root.add_child(second_effect)
+	second_model.set_meta(Magnifier.VFX_ROOT_META, weakref(second_vfx_root))
+	inset.update(main_camera, target, span, second_model, true)
+	_check("switching aircraft clears the previous camera link and model layer", Magnifier.camera_for_actor(model) == null
+		and (model.layers & Magnifier.LAYER) == 0)
+	_check("detached VFX layers follow only the currently tagged aircraft", (detached_effect.layers & Magnifier.LAYER) == 0
+		and (second_effect.layers & Magnifier.LAYER) != 0)
+	_check("the newly tagged aircraft gets the weak inset camera link", Magnifier.camera_for_actor(second_model) == cam)
+	var freed_camera := inset.camera
+	freed_camera.free()
+	_check("a freed inset camera is ignored through its weak link", Magnifier.camera_for_actor(second_model) == null)
+	inset.update(main_camera, target, span, second_model, true)
+	_check("the next update after camera destruction hides and clears inset state safely",
+		not inset.shown and not inset.visible and inset._viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED
+			and Magnifier.camera_for_actor(second_model) == null and (second_model.layers & Magnifier.LAYER) == 0
+			and (second_effect.layers & Magnifier.LAYER) == 0)
+	inset.free()
+	second_model.free()
+	detached_vfx_root.free()
+	second_vfx_root.free()
+	main_camera.free()
 	model.free()
-	inset.queue_free()
-	main_camera.queue_free()
 	await process_frame
 
 

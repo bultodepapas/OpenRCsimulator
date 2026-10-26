@@ -1,0 +1,54 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   default field loads  []
+ok   surface table loads  []
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   the field installs on the session
+ok   the Stik visual model builds
+ok   the drawn airframe sinks at most 12 mm before a hull point or wheel touches  worst 9.5 mm along body-down [-0.94570797805088, -0.13749971000305, 0.2945]; regenerate with derive_stik_hull.py
+ok   every hull point is a drawn point (no phantom fin, no buried tip)  farthest 0.06 mm
+ok   the tail skid and the exposed engine are hull points
+ok   the airframe friction table builds from the field  []
+ok   the field has a runway strip
+ok   runway strip friction is the table's
+ok   beyond every rectangle the ground is rough
+ok   without a table the law keeps its default
+ok   uncut grass drags more than the strip
+ok   the session's prepared hull carries the field's airframe table
+ok   a sliding tip on the runway strip feels μ 0.40  ratio 0.400000000000
+ok   a sliding tip on the rough grass feels μ 0.55  ratio 0.550000000000
+ok   a synthetic airframe table builds  []
+ok   the right tip over the mown band feels its own surface's μ, not the CG's strip  1 touching, ratio 0.470000, expected 0.47
+ok   the left tip over the pad band feels its own surface's μ, not the CG's strip  1 touching, ratio 0.520000, expected 0.52
+ok   linear friction never decays faster than FRICTION_RATE_MAX on the point's mass
+ok   the rate bound is RK4-safe at 240 Hz (λ·dt ≤ 0.5)
+ok   a lightly loaded resting tip creeps less than with the fixed E3d1 band  0.083 m/s
+ok   sliding points share the friction rate bound on the whole mass  worst 61.8 s⁻¹ (inverted nose-down, 6 mm)
+ok   contact damping and friction stay inside RK4's stable rate (λ·dt ≤ 2.5) in every tested pose  worst λ·dt 0.98 (inverted nose-down, 20 mm)
+ok   crash slide friction on runway equals the physics table
+ok   crash slide friction on mown equals the physics table
+ok   crash slide friction on rough equals the physics table
+ok   the grass aliases slide like the mown field
+ok   the runway strip is turf for impact transfer and rebound
+ok   the airframe table stays out of the legacy configuration
+ok   soft contacts hash the airframe table
+ok   the soft law names the field friction and the rate bound
+ok   an over-rotated Stik scrapes its tail skid first  tail_end
+ok   a tail-skid scrape is not a crash  crashed at tick -1
+ok   the first touch is the tail skid point  probe_tail_skid
+PROP STRIKE at 5159 rpm, 0.7 m/s: engine stopped
+ok   an inverted 1 cm drop is not a crash  crashed at tick -1
+ok   it rests on the fin and both wing tips  ["fin_top", "right_wing_tip", "left_wing_tip", "engine"]
+ok   it settles (speed < 2 cm/s, rate < 0.05 rad/s after 3 s)  speed 0.0000 m/s, rate 0.0000 rad/s
+ok   the drawn fin top is at the ground (within the contact's sag)  2.3 mm
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/gp07-soft-log-5710469.orfl
+ok   a soft-contact log starts on the field
+ok   the logged flight scrapes the strip
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/gp07-soft-log-5710469.orfl (120 ticks)
+ok   the log stops
+ok   the soft log is accepted
+ok   the header carries the airframe table
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   exact replay of a soft-contact field log prepares
+ok   the soft-contact field log replays exactly  120 rows
+46 checks, 0 failed

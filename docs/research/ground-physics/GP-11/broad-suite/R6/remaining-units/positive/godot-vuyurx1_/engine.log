@@ -1,0 +1,10 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+FAIL training widgets: training is opt-in and exactly three instruments
+FAIL training widgets: training fits at 1080p: smallfalse
+FAIL training widgets: training fits at 1080p: normalfalse
+FAIL training widgets: training fits at 1080p: normaltrue
+FAIL training widgets: training fits at 1080p: largefalse
+FAIL training widgets: training fits at 1080p: largetrue
+FAIL training widgets: all six Spanish navigation/training switches fit the 1080p page
+training widgets checks=59 failures=7

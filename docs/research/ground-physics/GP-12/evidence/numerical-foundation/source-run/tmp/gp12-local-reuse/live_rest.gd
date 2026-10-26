@@ -1,0 +1,10 @@
+extends "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-local-reuse/live_composition.gd"
+const CandidateStep:=preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-local-reuse/capture_step.gd")
+func _new_sim(initial:PackedFloat64Array)->Node:
+	var sim:=super._new_sim(initial)
+	sim.model.step_policy=func(s,t,h,f,k1):return CandidateStep.advance(s,t,h,f,k1,_snapshot,_certificate,_options(),_error_gate)
+	return sim
+func _diagnose(sim:Node)->void:
+	if sim.fault_reason.is_empty():return
+	var attempted:=CandidateStep.advance(_combined(sim),sim.time(),sim.dt(),_derivative,PackedFloat64Array(),_snapshot,_certificate,_options(),_error_gate)
+	print("NONZERO_REST_FAILURE ",attempted)
