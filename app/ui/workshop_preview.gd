@@ -169,7 +169,7 @@ func set_aircraft(id: String, scale: float = 1.0) -> void:
 		return
 	if id == _base_aircraft_id() and is_instance_valid(_airplane_root):
 		if not is_equal_approx(previous_scale, _requested_scale): reset_playback()
-		_refresh_model_presentation()
+		_refresh_model_presentation(false)
 		return
 	reset_playback()
 	_dispose_lighting_rig()
@@ -197,8 +197,8 @@ func set_aircraft(id: String, scale: float = 1.0) -> void:
 	if _model_bounds.size.length_squared() <= 0.0001:
 		_model_bounds = AABB(Vector3(-0.5, -0.5, -0.5), Vector3.ONE)
 	_rebuild_grid()
-	_refresh_model_presentation()
 	_configure_smoke()
+	_refresh_model_presentation()
 
 
 ## Change only the presentation mode. This never writes to the Workshop recipe or its history.
@@ -312,7 +312,7 @@ func _fit_model_scale() -> float:
 	return _visible_model_scale()
 
 
-func _refresh_model_presentation() -> void:
+func _refresh_model_presentation(apply_customization: bool = true) -> void:
 	if _view_mode == "compare" and _comparison_original and _playing:
 		toggle_playback()
 	_apply_preview_pose()
@@ -322,7 +322,8 @@ func _refresh_model_presentation() -> void:
 		var model_scale := _visible_model_scale()
 		_airplane_root.scale = Vector3.ONE * model_scale
 		_airplane_root.position = -_model_bounds.get_center() * model_scale
-		Customization.apply(_airplane, {} if _view_mode == "compare" and _comparison_original else _profile)
+		if apply_customization:
+			Customization.apply(_airplane, {} if _view_mode == "compare" and _comparison_original else _profile)
 	if is_instance_valid(_grid):
 		_grid.position.y = -_model_bounds.get_center().y * _fit_model_scale() - _model_bounds.size.y * 0.5 * _fit_model_scale() - 0.06
 		_grid.position.x = 0.0
@@ -1146,13 +1147,31 @@ func _on_camera_menu_action(action: int) -> void:
 
 func set_presentation(profile: Dictionary) -> void:
 	if _profile == profile: return
+	var appearance_changed: bool = _profile.get("paint", []) != profile.get("paint", []) \
+		or _profile.get("markings", []) != profile.get("markings", []) \
+		or _profile.get("binding", {}) != profile.get("binding", {})
+	# Lighting skins compose the painted finish, so paint changes also invalidate them.
+	var lighting_changed: bool = appearance_changed or _profile.get("lighting", {}) != profile.get("lighting", {})
+	var smoke_changed := false
+	for key: String in ["smoke", "version", "binding", "visual_seed", "schedule_policy"]:
+		if _profile.get(key) != profile.get(key):
+			smoke_changed = true
+			break
 	_profile = profile.duplicate(true)
 	var lighting_value: Variant = _profile.get("lighting", LightingProfile.defaults())
 	_lighting_profile = lighting_value.duplicate(true) if lighting_value is Dictionary else LightingProfile.defaults()
-	if not _airplane.is_empty():
+	if smoke_changed:
+		_configure_smoke()
+	else:
+		# Keep the existing edit-reset behavior without replacing unchanged configuration.
+		reset_playback()
+	if appearance_changed and not _airplane.is_empty():
+		if is_instance_valid(_lighting_rig):
+			_lighting_rig.dispose()
 		Customization.apply(_airplane, {} if _view_mode == "compare" and _comparison_original else _profile)
+	if lighting_changed:
 		_configure_lighting()
-	_configure_smoke()
+	_refresh_model_presentation(false)
 	_sync_playback_controls()
 	_request_redraw()
 
@@ -1207,6 +1226,12 @@ func _build_playback() -> void:
 
 func _configure_smoke() -> void:
 	if not is_instance_valid(_stage) or _airplane.is_empty(): return
+	# Dispose before reset: resetting a pool that is about to be discarded creates
+	# an entire extra generation of GPU emitters for no visible result.
+	if is_instance_valid(_smoke):
+		_stage.remove_child(_smoke)
+		_smoke.queue_free()
+		_smoke = null
 	reset_playback()
 	_stop_emission_button.disabled = _emission_stopped
 	_fit_plume_button.button_pressed = _fit_plume
@@ -1216,14 +1241,9 @@ func _configure_smoke() -> void:
 		if entry.enabled and source_slots.any(func(slot: Dictionary) -> bool: return slot.id == entry.slot): _source_preview_label.visible = true
 	_layout_initialized = false
 	_apply_preview_layout()
-	if is_instance_valid(_smoke):
-		_stage.remove_child(_smoke)
-		_smoke.queue_free()
-		_smoke = null
 	if _profile.get("smoke", []).is_empty():
 		_sync_playback_controls()
 		_sync_rate_feedback()
-		_refresh_model_presentation()
 		return
 	var described := Customization.describe(_requested_id)
 	if not described.get("ok", false):
@@ -1236,7 +1256,6 @@ func _configure_smoke() -> void:
 		_smoke = null
 	_sync_playback_controls()
 	_sync_rate_feedback()
-	_refresh_model_presentation()
 	# Preview intentionally remains still until the user requests playback.
 
 

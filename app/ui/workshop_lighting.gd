@@ -25,6 +25,7 @@ var _bindings: Dictionary = {}
 var _presentation: Dictionary = {}
 var _profile: Dictionary = {}
 var _syncing := false
+var _configuration_reusable := false
 var _preset: OptionButton
 var _enabled: CheckButton
 var _brightness: HSlider
@@ -390,11 +391,18 @@ func _build_effect_controls() -> void:
 
 
 func configure(bindings: Dictionary, presentation: Dictionary) -> void:
+	var raw: Variant = presentation.get("lighting", Profile.defaults())
+	# The owner explicitly restores pending editor buffers after configure resets them.
+	# Keep that reset authoritative; reuse only an already accepted, unchanged view.
+	var reuse_controls: bool = _configuration_reusable and not has_pending_edit() and _bindings == bindings \
+		and _presentation.get("lighting", Profile.defaults()) == raw and _profile == raw
+	_presentation = presentation.duplicate(true)
+	if reuse_controls:
+		_emit_validity()
+		return
 	var saved_zone := _selected_zone_id
 	_capability_report = {}
 	_bindings = bindings.duplicate(true)
-	_presentation = presentation.duplicate(true)
-	var raw: Variant = _presentation.get("lighting", Profile.defaults())
 	_profile = raw.duplicate(true) if raw is Dictionary else Profile.defaults()
 	var checked: Dictionary = Profile.validate(_profile)
 	if bool(checked.get("ok", false)):
@@ -414,6 +422,7 @@ func configure(bindings: Dictionary, presentation: Dictionary) -> void:
 	_sync_summary()
 	_refresh_capability_feedback()
 	_syncing = false
+	_configuration_reusable = bool(checked.get("ok", false))
 	_emit_validity()
 
 

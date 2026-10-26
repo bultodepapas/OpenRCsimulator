@@ -3,6 +3,7 @@ extends SceneTree
 const Preview := preload("res://ui/workshop_preview.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const Presentation := preload("res://workshop/presentation.gd")
+const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
 
 var checks := 0
 var failures := 0
@@ -67,6 +68,7 @@ func _run() -> void:
 	_check("preview reports resolved per-emitter puffs/s and budget limiting",
 		is_instance_valid(rate_feedback) and rate_feedback.visible and rate_feedback.text.contains("puffs/s")
 		and rate_feedback.text.contains("budget limited") == bool(initial_budget.get("saturated", false)))
+	await _check_edit_refresh(preview, profile)
 	var original_model: Transform3D = preview._airplane_root.transform
 	var original_slots := Customization.smoke_transforms(preview._airplane)
 	_check("stationary and idle by default", preview._rig.position == Vector3.ZERO and not preview.is_processing())
@@ -225,6 +227,99 @@ func _run() -> void:
 	preview.free()
 	await process_frame
 	_finish()
+
+
+func _check_edit_refresh(preview: Control, original: Dictionary) -> void:
+	var candidate := original.duplicate(true)
+	candidate.lighting = LightingProfile.preset("neon_rgb")
+	preview.set_presentation(candidate)
+	await process_frame
+	var allocations := [0]
+	var count_pool := func(node: Node) -> void:
+		if node is GPUParticles3D:
+			allocations[0] += 1
+	node_added.connect(count_pool)
+	for change: String in ["audio", "smoke", "lighting", "seed"]:
+		preview.toggle_playback()
+		preview.set_process(false)
+		preview._process(0.1)
+		preview.stop_emission()
+		var previous_smoke_id: int = preview._smoke.get_instance_id()
+		var previous_vfx_id: int = preview._lighting_rig.get("_vfx").get_instance_id()
+		allocations[0] = 0
+		match change:
+			"audio": candidate.mechanical_audio.servo_type = "high_torque"
+			"smoke": candidate.smoke[0].density = 0.8
+			"lighting": candidate.lighting.brightness = 0.8
+			"seed": candidate.visual_seed += 1
+		preview.set_presentation(candidate)
+		_check("%s edit creates only one replacement pool per emitter (created=%d expected=4)" % [change, allocations[0]], allocations[0] == 4)
+		print("edit_pool_allocations %s=%d" % [change, allocations[0]])
+		_check("%s edit retains explicit playback reset and bounded smoke" % change,
+			not preview._playing and not preview.is_processing() and preview._playhead_tick == 0
+			and not preview._emission_stopped and preview._smoke.get("_history").is_empty()
+			and preview._smoke.budget_info().capacity == 768 and preview._profile == candidate)
+		if change in ["audio", "lighting"]:
+			_check("%s edit reuses the unchanged smoke configuration" % change,
+				preview._smoke.get_instance_id() == previous_smoke_id)
+		else:
+			_check("%s edit refreshes its smoke settings" % change,
+				preview._smoke.get("_profile").smoke[0].density == candidate.smoke[0].density
+				and preview._smoke.get("_profile").visual_seed == candidate.visual_seed)
+		_check("%s edit refreshes lighting resources only for a lighting change" % change,
+			(preview._lighting_rig.get("_vfx").get_instance_id() != previous_vfx_id) == (change == "lighting"))
+		await process_frame
+	node_added.disconnect(count_pool)
+	var bindings: Dictionary = preview._airplane.customization_bindings
+	var paint_slot: String = bindings.lighting_layout.skins[0].paint_slot_id
+	var paint_color := Color("#123456FF")
+	candidate.paint = [{"slot": paint_slot, "color": "#123456FF", "pattern": "solid", "accent": "none"}]
+	candidate.markings = [{"slot": bindings.marking_slots[0].id, "text": "RC42", "color": "#FFFFFFFF"}]
+	var previous_smoke_id: int = preview._smoke.get_instance_id()
+	var previous_vfx_id: int = preview._lighting_rig.get("_vfx").get_instance_id()
+	preview.set_presentation(candidate)
+	_check("paint edits refresh tinted lighting skins while retaining smoke configuration",
+		preview._lighting_rig.get("_vfx").get_instance_id() != previous_vfx_id
+		and preview._smoke.get_instance_id() == previous_smoke_id
+		and _skin_has_color(preview, paint_color))
+	preview.set_view_mode("compare")
+	preview.set_comparison_original(true)
+	_check("Original removes draft markings with the authored finish", preview._airplane.get("_customization_marking_nodes").is_empty())
+	preview.set_comparison_original(false)
+	_check("Draft restores painted skins and registration", _skin_has_color(preview, paint_color)
+		and not preview._airplane.get("_customization_marking_nodes").is_empty())
+	preview.set_view_mode("inspect")
+	previous_vfx_id = preview._lighting_rig.get("_vfx").get_instance_id()
+	var marking_id: int = preview._airplane.get("_customization_marking_nodes")[0].get_instance_id()
+	preview.toggle_playback()
+	preview.set_process(false)
+	preview._process(0.1)
+	preview.set_aircraft("jensen-das-ugly-stik-60", 1.25)
+	_check("scale resets playback while retaining painted skins, registration and lighting resources",
+		not preview._playing and preview._playhead_tick == 0 and _skin_has_color(preview, paint_color)
+		and preview._airplane_root.scale.is_equal_approx(Vector3.ONE * 1.25)
+		and preview._lighting_rig.get("_vfx").get_instance_id() == previous_vfx_id
+		and preview._airplane.get("_customization_marking_nodes")[0].get_instance_id() == marking_id)
+	candidate.paint = []
+	candidate.markings = []
+	preview.set_presentation(candidate)
+	_check("removing paint restores the authored skin color and clears registration",
+		not _skin_has_color(preview, paint_color) and preview._airplane.get("_customization_marking_nodes").is_empty())
+	preview.set_aircraft("jensen-das-ugly-stik-60", 1.0)
+	preview.set_presentation(original)
+	await process_frame
+
+
+func _skin_has_color(preview: Control, expected: Color) -> bool:
+	var skins: RefCounted = preview._lighting_rig.get("_skins")
+	if skins == null:
+		return false
+	for binding: Dictionary in skins.get("_bindings"):
+		var material: StandardMaterial3D = binding.material
+		if material.albedo_color.is_equal_approx(expected) \
+			and binding.mesh.get_active_material(binding.surface) == material:
+			return true
+	return false
 
 
 func _mounts_shifted(preview: Control, original: Dictionary, shift: Vector3) -> bool:

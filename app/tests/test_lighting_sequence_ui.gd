@@ -3,6 +3,14 @@ extends SceneTree
 const SequenceEditor := preload("res://ui/workshop_lighting_sequence.gd")
 const Profile := preload("res://render/lighting/lighting_profile.gd")
 
+class AvailabilityProbe extends SequenceEditor:
+	var refresh_count := 0
+
+	func _update_control_states() -> void:
+		refresh_count += 1
+		super._update_control_states()
+
+
 var _checks := 0
 var _failures := 0
 var _profiles: Array[Dictionary] = []
@@ -148,12 +156,34 @@ func _run() -> void:
 	_check("restoring pending text does not emit a lighting profile", _profiles.size() == recovery_emit_count)
 	editor.cancel_pending_edit()
 
+	_test_external_pending_reuse()
 	_test_effect_and_lock_gates(editor)
 	_check("pending signal reports dirty and applied transitions", _pending_events.has(true) and _pending_events.has(false))
 	editor.free()
 	await process_frame
 	print("FW-RGB-09 sequence UI: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
+
+
+func _test_external_pending_reuse() -> void:
+	var probe := AvailabilityProbe.new()
+	root.add_child(probe)
+	probe.configure(Profile.preset("festival"))
+	var add_color: Button = probe.get("_add_color")
+	_check("configure initializes sequence availability without an external pending transition", not add_color.disabled)
+	var before := probe.refresh_count
+	probe.set_external_pending(false)
+	_check("unchanged external pending state does not rescan sequence controls", probe.refresh_count == before)
+	probe.set_external_pending(true)
+	_check("external pending transition refreshes and disables cue editing once",
+		probe.refresh_count == before + 1 and add_color.disabled)
+	for _event in 10:
+		probe.set_external_pending(true)
+	_check("repeated pending slider events do not rescan hidden sequence controls", probe.refresh_count == before + 1)
+	probe.set_external_pending(false)
+	_check("clearing external pending refreshes and enables cue editing once",
+		probe.refresh_count == before + 2 and not add_color.disabled)
+	probe.free()
 
 
 func _test_effect_and_lock_gates(editor: VBoxContainer) -> void:

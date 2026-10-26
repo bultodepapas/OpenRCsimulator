@@ -340,6 +340,8 @@ func cancel_pending_edit() -> bool:
 
 
 func set_external_pending(value: bool) -> void:
+	if _external_pending == value:
+		return
 	_external_pending = value
 	_update_control_states()
 
