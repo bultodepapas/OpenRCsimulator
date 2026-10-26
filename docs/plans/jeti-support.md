@@ -2,6 +2,21 @@
 
 Status: input/UI software delivered on 2026-10-19; physical device mapping and hardware/package qualification remain open. [Implementation and verification](../research/radio-input/D6-JETI-01/README.md) covers D6-JETI-01…03 and UI-15-JETI-01…02. [D6-JETI-00](../research/radio-input/D6-JETI-00/README.md) preserves the JETI email, PDF, USB descriptors, controller profile and findings. Jakub Uhlík reports successful basic flight with a DC-16II and identifies switch naming/default assignments as the main problem. This is an external observation with incomplete build/firmware metadata, not full compatibility certification.
 
+## Feedback update — 2026-10-26
+
+[Latest external test](../research/radio-input/D6-JETI-00/feedback-2026-10-26.md): Jakub confirms JETI recognition, an empty initial assignment list, successful button assignment, working flight controls and the transmitter stick preview. The remaining reported defect is scrolling to the top after every assignment. Numeric button labels are confirmed behavior, not a newly reported failure. The reply follows the v0.1.6 invitation but does not explicitly identify the tested binary. Full hardware qualification stays open.
+
+Next work, in order:
+
+| ID / priority | Work | Acceptance evidence |
+| --- | --- | --- |
+| UI-15-JETI-04 / P0 | Reproduce post-remap scroll reset with the debug bridge at 1920×1080, starting near the bottom of the action list. Inspect capture completion, action/AUX updates, focus following and layout changes. | Record source/build identity, selected section/filter, focus owner and scroll offset before capture and after layout settles. Separate accepted, rejected and cancelled capture. The email alone does not identify the root cause. |
+| UI-15-JETI-04-R1 / P0 | Preserve the edited row and focus on capture completion. Prefer updating existing controls; if layout rebuilds, restore a stable row anchor and clamped offset after layout. Keep intentional section navigation resets. | Assign at least five successive lower-list actions without returning to the top. Check Clear, conflicts, Escape/cancel, AUX position capture, keyboard/gamepad navigation and Save/Cancel. A focused regression must fail before the fix and pass afterward. |
+| UI-15-JETI-04-R2 / P1 | Qualify the fix in EN/ES and large text, then an exported Windows package. | 1080p first, 1440p/4K next, 720p fallback last. Preserve profile persistence, selected-device capture and switch/arming safety. Run focused setup/input regressions and required whole-app checks after integration. Use existing debug/capture tools; retain temporary images outside tracked source. |
+| F4-JETI-01 / P1 follow-up | Prepare a small retest checklist for the corrected build: successive assignments, Save/restart, sticks/buttons in flight and focus/reconnect safety. | Request exact build, OS, DC-16II firmware and stick mode at the next authorized contact. Record this report as limited external success; do not mark all JETI models/platforms qualified. |
+
+Physical naming remains behind F1-JETI-01 mapping evidence. Do not replace working numeric labels with guessed Sa–Sj names or change physics to address this UI report. This update plans the repair; no runtime fix or external message is included.
+
 ## Ownership and scope
 
 This is a subtrack of [controller support](controller-support.md), under the [existing ownership registry](../README.md#tracks-plans-and-step-ids). Input owns D6-JETI-* (identity, profiles and switches), F1-JETI-* (diagnostics), F4-JETI-* (hardware qualification) and F6-JETI-* (optional latency). UI owns UI-15-JETI-* (setup, labels and selection). DT/PT own exported-package acceptance; aircraft, HELI and RCV retain their activity semantics.
