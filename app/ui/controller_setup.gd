@@ -103,7 +103,7 @@ var _draft_context_key := ""
 var _calibration_origins: Dictionary = {} # draft context -> connection that supplied its ranges
 var _base_actions: Dictionary = {}
 var _action_bindings: Dictionary = {}
-var action_capabilities: Dictionary = ControllerActions.SUPPORTED_AUX.duplicate()
+var action_capabilities: Dictionary = ControllerActions.AIRPLANE_CAPABILITIES.duplicate()
 var _axis_controls: Dictionary = {}
 var _aux_controls: Dictionary = {}
 var _clear_action_buttons: Dictionary = {}
@@ -149,7 +149,7 @@ func _init() -> void:
 ## The owner injects shared objects before adding this CanvasLayer to the tree.
 ## Controller choices and profile edits stay draft until one Save operation succeeds.
 func configure(controller_registry: Object, store: Object, flight_device_id := -1, ui_device_id := -1,
-		capabilities: Dictionary = ControllerActions.SUPPORTED_AUX) -> void:
+		capabilities: Dictionary = ControllerActions.AIRPLANE_CAPABILITIES) -> void:
 	action_capabilities = capabilities.duplicate()
 	registry = controller_registry
 	profile_store = store
@@ -2087,6 +2087,8 @@ func _update_action_controls() -> void:
 		var capture_button: Button = action_grid.get_child(child_index + 2)
 		var clear_button: Button = _clear_action_buttons[action_id]
 		label_control.text = tr(str(definition.label))
+		if action_id == "rates_toggle":
+			label_control.tooltip_text = tr("Airplane dual rates: press the left stick (L3) on a gamepad, or remap Dual rates below for a joystick. Each press alternates normal and high rates. Existing assignments take priority. Radio profiles use the transmitter's rates.")
 		var binding: Dictionary = _action_bindings.get(action_id, {})
 		var prompt: Dictionary = ControllerPrompts.prompt(binding, family, device, _draft_profile)
 		var fallback_text := ControllerActions.binding_text(binding)

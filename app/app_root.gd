@@ -179,6 +179,7 @@ var has_home := false
 var controllers: Node
 var _controller_action_edges: Dictionary = {}
 var _controller_restart_edges: Dictionary = {}
+var _controller_rate_edges: Dictionary = {}
 ## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
 var _keyboard_reader: Callable
 var _settings_note: String = ""
@@ -1451,10 +1452,10 @@ func _realign_open_popups() -> void:
 func open_controls(from: Control = null) -> void:
 	if controllers == null or not (screens.is_top("home") or screens.is_top("pause") or screens.is_top("settings")):
 		return
-	_clear_controller_actions()
+	_clear_controller_actions(false)
 	var setup := ControllerSetup.new()
 	setup.save_and_apply = controllers.save_settings_from_setup
-	var capabilities: Dictionary = ControllerActions.SUPPORTED_AUX
+	var capabilities: Dictionary = ControllerActions.AIRPLANE_CAPABILITIES
 	if flight != null and flight.has_method("controller_capabilities"):
 		capabilities = flight.controller_capabilities()
 	elif home != null and Catalog.is_rotorcraft(home.aircraft_id):
@@ -1533,9 +1534,10 @@ func _controller_ui_changed(id: int) -> void:
 	_update_controller_button_prompts()
 
 
-func _clear_controller_actions() -> void:
+func _clear_controller_actions(clear_rate_edges := true) -> void:
 	_controller_action_edges.clear()
 	_controller_restart_edges.clear()
+	if clear_rate_edges: _controller_rate_edges.clear()
 	_release_controller_holds()
 
 
@@ -1578,9 +1580,9 @@ func _input(event: InputEvent) -> void:
 	if ground_vehicle != null: return # ground sampler and garage own their distinct control scheme
 	if event is not InputEventJoypadButton and event is not InputEventJoypadMotion and event is not InputEventKey: return
 	if event is InputEventKey and event.echo: return
-	if _route_controller_restart(event):
-		get_viewport().set_input_as_handled()
-		return
+	# Both observers need releases, including opposite directions of a shared axis.
+	var restart_handled := _route_controller_restart(event)
+	var rates_handled := _route_controller_rates(event)
 	var in_menu := screens.top() != null
 	var calibrating: bool = flight != null and flight.session != null and flight.session.calibration != null
 	var accident_menu: bool = not in_menu and flight != null and flight.has_method("accident_menu_active") and flight.accident_menu_active()
@@ -1599,6 +1601,10 @@ func _input(event: InputEvent) -> void:
 		for active: PackedStringArray in _controller_action_edges.values():
 			if active.has("throttle_cut"): held = true
 		flight.session.set_controller_cut(held)
+	# Edge observers consume presses only after ordinary holds have seen the release.
+	if restart_handled or rates_handled:
+		get_viewport().set_input_as_handled()
+		return
 	for action: String in actions:
 		if previous.has(action): continue
 		# A held Back/Accept button cannot become an aircraft command when a menu closes.
@@ -1621,6 +1627,25 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			if calibrating and flight.session.calibration == null: open_pause.call_deferred()
 			return
+
+
+## Observe rate controls even while another device owns menus. Held buttons/axes must
+## return OFF before selecting a new rate after closing a menu or calibration.
+func _route_controller_rates(event: InputEvent) -> bool:
+	var id: int = controllers.registry.selected_device_id("flight")
+	if id < 0: return false
+	var source := ControllerActions.event_source(event)
+	if source.is_empty(): return false
+	var previous: PackedStringArray = _controller_rate_edges.get(source, PackedStringArray())
+	var binding: Dictionary = _controller_bindings(id, true).get("rates_toggle", {"type": "unbound"})
+	var actions := ControllerActions.resolve_event(event, {"rates_toggle": binding}, id, "flight", previous)
+	if actions.is_empty(): _controller_rate_edges.erase(source)
+	else: _controller_rate_edges[source] = actions
+	if actions.is_empty() or flight == null or flight.session == null: return false
+	if screens.top() != null or flight.session.calibration != null: return false
+	if flight.has_method("accident_menu_active") and flight.accident_menu_active(): return false
+	if previous.is_empty(): flight.controller_action("rates_toggle")
+	return true
 
 
 ## Restart belongs to the flight device even when a separate pad navigates the crash report.

@@ -121,6 +121,7 @@ func _initialize() -> void:
 	_sport(session, stik_session, timber_session)
 	_rate_switch(session, timber_session)
 	_rate_switch(session, timber_session, "sport")
+	_rate_switch(session, timber_session, "sport", "joystick")
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -154,7 +155,7 @@ func _sport(avanti: Node, stik: Node, timber: Node) -> void:
 
 ## D6e-R2: the in-flight rate switch. It toggles only where a profile exists, reports the effective state, and a
 ## flight log that crosses a switch records it as an event and still replays exactly (inputs are post-rates).
-func _rate_switch(avanti: Node, timber: Node, high_profile := "full") -> void:
+func _rate_switch(avanti: Node, timber: Node, high_profile := "full", device_kind := "keyboard") -> void:
 	var seen: Array = []
 	avanti.rate_profile_changed.connect(func(active: bool) -> void: seen.append(active))
 	avanti.rate_profile = "full"
@@ -176,6 +177,9 @@ func _rate_switch(avanti: Node, timber: Node, high_profile := "full") -> void:
 	DirAccess.make_dir_recursive_absolute(directory)
 	var path := directory.path_join("switch.orfl")
 	flight.rate_profile = high_profile
+	if device_kind == "joystick":
+		var profile := preload("res://input/controller_profile.gd").defaults("joystick", "radio_custom")
+		flight.radio.connect_device(7, {"name": "Recorded joystick", "known": false}, profile)
 	var logger := FlightLog.new(flight)
 	_check("switch log starts", logger.start(path) == OK)
 	var first_tick: int = flight.sim.tick
@@ -200,6 +204,7 @@ func _rate_switch(avanti: Node, timber: Node, high_profile := "full") -> void:
 	_check("the same stick flies %.4f before and %.4f after the switch" % [pitch_before, pitch_after],
 		(pitch_after == pitch_before and roll_after < roll_before) if high_profile == "sport" else pitch_after < pitch_before - 0.1)
 	_check("switch log stops", logger.stop() == OK)
+	print("Rate recording (%s / %s): %s" % [device_kind, high_profile, path])
 	var read: Dictionary = Reader.inspect(path)
 	_check("switch log is complete", read.ok and read.get("complete", false))
 	if not read.ok:

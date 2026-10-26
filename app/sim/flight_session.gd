@@ -3234,10 +3234,15 @@ func _flight_ready() -> bool:
 	return _has_valid_start() and not _weather_pending_reset and not _shaft_pending_reset and sim.fault_reason.is_empty()
 
 
-## D6e: true while the aircraft's normal rate profile shapes the sticks (see rate_profile).
+## Radios supply transmitter-shaped commands. Calibrated joysticks use simulator rates.
+func rate_profile_available() -> bool:
+	return aircraft.get("ok", false) and aircraft.model.controls.has("rates") and not external_driver_enabled \
+		and not (radio.connected and radio.profile.get("kind", "radio") == "radio")
+
+
+## D6e: true while the aircraft's normal or sport profile shapes the sticks.
 func rates_active() -> bool:
-	return rate_profile in ["normal", "sport"] and aircraft.get("ok", false) and aircraft.model.controls.has("rates") \
-		and not (radio.connected and not radio.is_gamepad())
+	return rate_profile in ["normal", "sport"] and rate_profile_available()
 
 
 ## Effective shaping profile, also used by the HUD and recorder. External drivers provide post-rate commands.
@@ -3256,8 +3261,7 @@ func rate_profile_label() -> String:
 ## has no controls.rates or a radio is connected (it keeps its own rates). Only the input layer changes: the next tick
 ## samples the new shaping, and flight logs record post-rate inputs, so a replay reproduces the switch exactly.
 func toggle_rate_profile() -> bool:
-	if not aircraft.get("ok", false) or not aircraft.model.controls.has("rates") \
-			or (radio.connected and not radio.is_gamepad()):
+	if not rate_profile_available():
 		return false
 	if rate_profile == "normal":
 		rate_profile = _high_rate_profile
@@ -3293,10 +3297,12 @@ func flown_commands() -> Dictionary:
 	var c := commands.duplicate()
 	if rates_active() and not external_driver_enabled:
 		var profile: Dictionary = aircraft.model.controls.rates.normal
-		c = Commands.shape_sticks(c, profile, not radio.connected)
+		# Gamepad conditioning has already applied expo. Joysticks supply calibrated linear axes.
+		var with_expo := not (radio.connected and radio.is_gamepad())
+		c = Commands.shape_sticks(c, profile, with_expo)
 		if rate_profile == "sport":
 			# Preserve the centre response and device expo; only the roll travel limit changes.
-			c.roll = Commands.expo(commands.roll, profile.aileron_expo if not radio.connected else 0.0)
+			c.roll = Commands.expo(commands.roll, profile.aileron_expo if with_expo else 0.0)
 		# Short gamepad sticks may have aircraft-specific normal pitch/yaw travel.
 		# This is a fixed device setting; trim and physical radio travel remain independent.
 		if radio.connected and radio.is_gamepad():

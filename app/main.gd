@@ -1472,6 +1472,7 @@ func controller_capabilities() -> Dictionary:
 		"gear": session != null and session.gear_is_retractable(),
 		"smoke": _supports_show_smoke(),
 		"flaps": session != null and session.flaps_available(),
+		"rates": session != null and session.aircraft.get("ok", false) and session.aircraft.model.controls.has("rates") and not session.external_driver_enabled,
 	}
 
 
@@ -1522,7 +1523,7 @@ func controller_action(action: String) -> bool:
 		"rates_toggle":
 			if session.toggle_rate_profile():
 				_note = tr(session.rate_profile_label())
-			elif session.radio.connected and not session.radio.is_gamepad():
+			elif session.radio.connected and session.radio.profile.get("kind", "radio") == "radio":
 				_note = tr("The radio sets its own rates.")
 			else:
 				_note = tr("This aircraft has no rate profile.")
@@ -1974,6 +1975,7 @@ func _overlay_snapshot() -> Dictionary:
 			gear = session.gear_state().get("status", "unavailable"),
 			smoke = "on" if _smoke_requested_for_presentation() else "off",
 			flaps = session.flap_state(),
+			rates = session.rate_profile_label(),
 		}
 	return snap
 

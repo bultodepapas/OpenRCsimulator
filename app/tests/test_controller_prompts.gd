@@ -40,6 +40,8 @@ func _initialize() -> void:
 	_check("Nintendo uses B at the south position", switch_bottom.text == "B" and switch_bottom.texture_path.ends_with("nintendo/face_bottom.svg"))
 	_check("generic face prompt stays positional and readable", generic_bottom.text == "Bottom face button" and generic_bottom.texture_path.ends_with("generic/button.svg"))
 	_check("rendering prompt does not mutate binding", bottom == bottom_before)
+	var joystick_prompt := Prompts.prompt(bottom, "xbox", {"name": "Generic USB joystick"}, {"kind": "joystick"})
+	_check("joystick uses observed button numbers even with a saved gamepad glyph family", joystick_prompt.text == "Button 0" and joystick_prompt.texture_path == "")
 
 	var remapped := {"type": "button", "button": JOY_BUTTON_X}
 	var remapped_prompt := Prompts.prompt(remapped, "playstation", {})

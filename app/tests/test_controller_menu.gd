@@ -87,6 +87,13 @@ func _run() -> void:
 	check("other controller cannot change camera", app.flight._rig.view == old_view)
 	await button(JOY_BUTTON_Y)
 	check("selected controller changes camera", app.flight._rig.view != old_view)
+	check("gamepad flight starts with sport rates", session.effective_rate_profile() == "sport")
+	await button(JOY_BUTTON_LEFT_STICK, 14)
+	check("another controller cannot switch rates", session.effective_rate_profile() == "sport")
+	await button(JOY_BUTTON_LEFT_STICK)
+	check("native L3 event selects normal without opening calibration", session.effective_rate_profile() == "normal" and session.calibration == null and app.screens.top() == null)
+	await button(JOY_BUTTON_LEFT_STICK)
+	check("second L3 press restores sport rates", session.effective_rate_profile() == "sport")
 	# CR-32: the accident card is a menu context even though it is outside ScreenStack.
 	var accident: Node = app.flight._accident_report
 	accident.show_assessment({complete = false, outcome = "inspection", currency = "USD",
@@ -141,6 +148,7 @@ func _run() -> void:
 	await button(JOY_BUTTON_A)
 	check("Controls is reachable from Pause", app.screens.is_top("controls"))
 	setup = app.screens.top()
+	check("setup shows the same automatic dual-rate binding as flight", setup._action_bindings.rates_toggle.get("button", -1) == JOY_BUTTON_LEFT_STICK and session.effective_rate_profile() == "sport")
 	check("gamepad cannot enter radio calibration", not setup.calibrate_button.visible)
 	setup.flight_device_picker.grab_focus()
 	await button(JOY_BUTTON_A)

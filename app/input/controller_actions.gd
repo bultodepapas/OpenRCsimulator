@@ -9,19 +9,20 @@ const OPTIONAL_ACTION_IDS: PackedStringArray = [
 	"restart_flight",
 ]
 const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear"]
-## Product defaults on standardized gamepads, scoped to implemented aircraft equipment.
+## Product defaults on standardized gamepads, scoped to implemented vehicle capabilities.
 ## Profile/setup validation reserves equipment candidates; flight passes its actual capabilities.
 const AUTOMATIC_BUTTONS := {
 	"gear_toggle": {"channel": "gear", "button": JOY_BUTTON_B},
 	"smoke_toggle": {"channel": "smoke", "button": JOY_BUTTON_RIGHT_SHOULDER},
 	"flaps_cycle": {"channel": "flaps", "button": JOY_BUTTON_A},
 	"restart_flight": {"channel": "", "button": JOY_BUTTON_BACK},
+	"rates_toggle": {"channel": "rates", "button": JOY_BUTTON_LEFT_STICK},
 	"helicopter_arm": {"channel": "helicopter", "button": JOY_BUTTON_A},
 	"helicopter_hold": {"channel": "helicopter", "button": JOY_BUTTON_B},
 	"helicopter_mode": {"channel": "helicopter", "button": JOY_BUTTON_RIGHT_SHOULDER},
 	"helicopter_trainer": {"channel": "helicopter", "button": JOY_BUTTON_LEFT_STICK},
 }
-const SUPPORTED_AUX := {"gear": true, "smoke": true, "flaps": true}
+const AIRPLANE_CAPABILITIES := {"gear": true, "smoke": true, "flaps": true, "rates": true}
 const HELICOPTER_CAPABILITIES := {"helicopter": true}
 static var _definition_cache: Dictionary = {}
 
@@ -141,7 +142,7 @@ static func validate(bindings: Dictionary) -> Dictionary:
 
 ## Resolve saved overrides against the current defaults. Only inherited flight-only defaults
 ## that alias a configured auxiliary control are silenced; explicit actions and recovery paths stay.
-static func effective_bindings(profile: Dictionary, capabilities: Dictionary = SUPPORTED_AUX) -> Dictionary:
+static func effective_bindings(profile: Dictionary, capabilities: Dictionary = AIRPLANE_CAPABILITIES) -> Dictionary:
 	var bindings := default_bindings()
 	var explicit_actions: Variant = _dict_value(profile, "actions", {})
 	var explicit_ids: Dictionary = {}
@@ -203,7 +204,7 @@ static func _add_automatic_buttons(profile: Dictionary, bindings: Dictionary, ex
 
 ## Validate the whole calibrated profile's semantic bindings and reserved AUX sources.
 ## `bindings` in the result is the merged action map suitable for the input router.
-static func validate_profile_bindings(profile: Dictionary, capabilities: Dictionary = SUPPORTED_AUX) -> Dictionary:
+static func validate_profile_bindings(profile: Dictionary, capabilities: Dictionary = AIRPLANE_CAPABILITIES) -> Dictionary:
 	var errors: Array[String] = []
 	var issues: Array[Dictionary] = []
 	var actions_value: Variant = _dict_value(profile, "actions", {})
