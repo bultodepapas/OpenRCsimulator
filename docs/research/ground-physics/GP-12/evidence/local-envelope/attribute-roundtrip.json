@@ -1,0 +1,38 @@
+{
+  "format": "openrc-git-attributes-roundtrip v1",
+  "complete": true,
+  "ok": true,
+  "created_utc": "2026-10-26T17:02:16.715024+00:00",
+  "fixture": "tmp/gp11-local-envelope/attribute-roundtrip-48ec84c93c9f4fc88d8f06e252fe9799",
+  "fixture_commit": "86998176dc39268c681cbb66530afd16c5354b10",
+  "core_autocrlf": "true",
+  "fresh_clone": true,
+  "clone_no_hardlinks": true,
+  "root_meta_only_info_attribute": "/.gitattributes -text (source and clone; preserve exact config bytes; no evidence-path overrides)",
+  "actual_repository_staged_or_committed": false,
+  "artifacts_compared": 41,
+  "sha256_mismatches": [],
+  "root_gitattributes_sha256": "f35a346399eed029944d8283f96777413ebea422ed78ef5d8c4cdfbc45db9bb2",
+  "evidence_manifest_sha256": "3e2f9a6cbf56715a5fa2580aa130e53dd41c95a12f441b4b63e2a499a234ea48",
+  "cloned_checked_summaries": [
+    {
+      "collection": "main-checks",
+      "exit_code": 0,
+      "stdout": "3 invocations: 3 passed, 0 failed or invalid.\n",
+      "stderr": ""
+    },
+    {
+      "collection": "draft-checks",
+      "exit_code": 0,
+      "stdout": "3 invocations: 3 passed, 0 failed or invalid.\n",
+      "stderr": ""
+    },
+    {
+      "collection": "review-checks",
+      "exit_code": 0,
+      "stdout": "2 invocations: 2 passed, 0 failed or invalid.\n",
+      "stderr": ""
+    }
+  ],
+  "exclusion": "This receipt was written after verification and is excluded from its own snapshot/manifest."
+}
