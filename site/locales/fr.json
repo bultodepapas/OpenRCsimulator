@@ -225,7 +225,8 @@
     "worldDetail2": "Les effets d’impact, débris et dégâts visuels persistent jusqu’au redémarrage.",
     "worldDetail3": "L’eau ne simule pas la flottabilité ; la rupture structurelle des avions en vol n’est pas implémentée.",
     "worldLink": "Monde et décor ↗",
-    "worldTitle": "Un terrain à voir et à entendre"
+    "worldTitle": "Un terrain à voir et à entendre",
+    "gameLanguages": "Dans le code source actuel, l’interface du simulateur est disponible en neuf langues : <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. La version v0.1.8 à télécharger est disponible en anglais et en espagnol."
   },
   "labels": {
     "navigation": "Navigation principale",

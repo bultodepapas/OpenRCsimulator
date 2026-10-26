@@ -225,7 +225,8 @@
     "worldDetail2": "Aufpralleffekte, Trümmer, Spuren und sichtbare Schäden bleiben bis zum Neustart bestehen.",
     "worldDetail3": "Wasser simuliert keinen Auftrieb; strukturelles Versagen eines Flugzeugs im Flug ist nicht implementiert.",
     "worldLink": "Welt und Szenerie ↗",
-    "worldTitle": "Ein Flugplatz zum Sehen und Hören"
+    "worldTitle": "Ein Flugplatz zum Sehen und Hören",
+    "gameLanguages": "Die aktuelle Quellcodeversion bietet die Simulatoroberfläche in neun Sprachen: <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. Der Download v0.1.8 bietet Englisch und Spanisch."
   },
   "labels": {
     "navigation": "Hauptnavigation",

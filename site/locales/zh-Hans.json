@@ -225,7 +225,8 @@
     "worldDetail2": "碰撞效果、碎片和视觉损伤会持续保留，直到重新启动。",
     "worldDetail3": "水体不模拟浮力；飞行中飞机结构破坏尚未实现。",
     "worldLink": "世界与场景 ↗",
-    "worldTitle": "看得见、听得到的飞行场"
+    "worldTitle": "看得见、听得到的飞行场",
+    "gameLanguages": "当前源代码中的模拟器界面提供九种语言：<bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>。可下载的 v0.1.8 版本提供英语和西班牙语。"
   },
   "labels": {
     "navigation": "主导航",

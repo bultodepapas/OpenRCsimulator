@@ -225,7 +225,8 @@
     "worldDetail2": "衝突エフェクト、破片、視覚的な損傷は再起動まで残ります。",
     "worldDetail3": "水上の浮力はシミュレーションしません。飛行中の機体構造破壊は未実装です。",
     "worldLink": "世界と風景 ↗",
-    "worldTitle": "見て、音を聞いて楽しめる飛行場"
+    "worldTitle": "見て、音を聞いて楽しめる飛行場",
+    "gameLanguages": "現在のソースコードでは、シミュレーターの画面を次の9言語で利用できます：<bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>。ダウンロード版 v0.1.8 は英語とスペイン語に対応しています。"
   },
   "labels": {
     "navigation": "メインナビゲーション",

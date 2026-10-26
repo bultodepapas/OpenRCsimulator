@@ -80,6 +80,7 @@ html[dir=rtl] .inspector-details { left:auto; right:var(--pad); }
 html[dir=rtl] .inspector-details button { border-left:0; border-right:1px solid #56645f; }
 html[dir=rtl] .inspector-details button[aria-pressed=true] { border-right-color:var(--lime); }
 html[dir=rtl] .model-inspector model-viewer { direction:ltr; }
+.game-languages { max-width: 850px; margin-top: 28px; font-size: 14px; line-height: 1.7; color: #d8dfd1; }
 @media(max-width:1050px) { html[dir=rtl] .download-intro { right:59%; } }
 @media(max-width:700px) {
   html[dir=rtl] .hero-copy { left:var(--pad); right:var(--pad); }

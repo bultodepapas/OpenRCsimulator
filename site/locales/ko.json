@@ -225,7 +225,8 @@
     "worldDetail2": "충돌 효과, 파편, 시각적 손상은 다시 시작할 때까지 유지됩니다.",
     "worldDetail3": "물의 부력은 시뮬레이션하지 않습니다. 비행 중 기체 구조 파손은 구현되지 않았습니다.",
     "worldLink": "세계와 풍경 ↗",
-    "worldTitle": "보고 들을 수 있는 비행장"
+    "worldTitle": "보고 들을 수 있는 비행장",
+    "gameLanguages": "현재 소스 코드의 시뮬레이터 인터페이스는 다음 9개 언어를 지원합니다: <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. 다운로드할 수 있는 v0.1.8 버전은 영어와 스페인어를 지원합니다."
   },
   "labels": {
     "navigation": "주 탐색 메뉴",
