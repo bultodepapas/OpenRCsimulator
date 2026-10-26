@@ -1522,7 +1522,7 @@ func _effective_factor_value(key: String) -> float:
 	return float(_recipe.get(key, 1.0))
 
 
-func _set_factor_value(key: String, requested_value: float) -> void:
+func _set_factor_value(key: String, requested_value: float) -> bool:
 	var bounds := _factor_bounds(key)
 	var value := clampf(requested_value, bounds.x, bounds.y)
 	var next: Dictionary = _recipe.duplicate(true)
@@ -1540,7 +1540,7 @@ func _set_factor_value(key: String, requested_value: float) -> void:
 	else:
 		next[key] = value
 	if next == _recipe:
-		return
+		return false
 	if not _slider_gesture:
 		_capture_undo()
 		_slider_gesture = _slider_dragging
@@ -1556,6 +1556,7 @@ func _set_factor_value(key: String, requested_value: float) -> void:
 			_pending_numbers.erase(inherited_key)
 			_sync_factor_control(inherited_key)
 	_compile_recipe()
+	return true
 
 
 func _sync_factor_control(key: String) -> void:
@@ -2505,9 +2506,9 @@ func _commit_number(key: String) -> void:
 	if not _pending_numbers.has(key) or _invalid_fields.has(key): return
 	var value := str(_pending_numbers[key]).to_float()
 	_pending_numbers.erase(key)
-	if _effective_factor_value(key) != value:
-		_set_factor_value(key, value)
+	if _set_factor_value(key, value):
 		return
+	_sync_factor_control(key)
 	_refresh_issues()
 	_sync_save_button()
 	_trial_button.disabled = not _edit_valid()

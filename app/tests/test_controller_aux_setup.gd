@@ -149,6 +149,7 @@ func _test_validation_feedback(setup) -> void:
 	setup._set_draft_profile(invalid_profile)
 	setup._save_profile()
 	_check("Save explains when an AUX mapping overlaps a flight axis", setup.status_label.text.contains("aux.smoke is invalid or overlaps a flight axis"))
+	_check("AUX overlap marks the auxiliary source and the reserved flight axis", setup._aux_controls.smoke.axis.get_line_edit().has_theme_stylebox_override("normal") and setup._axis_controls.roll.axis.get_line_edit().has_theme_stylebox_override("normal"))
 
 	var conflicting_profile: Dictionary = setup.current_profile()
 	conflicting_profile["aux"] = {
@@ -161,6 +162,22 @@ func _test_validation_feedback(setup) -> void:
 	event.pressed = true
 	setup._capture_binding(event)
 	_check("Remap explains when an action conflicts with an AUX input", setup.status_label.text.contains("Action camera_previous conflicts with aux.smoke"))
+
+	var endpoints := ControllerProfile.defaults()
+	endpoints.aux = {"smoke": {"type": "axis", "axis": 9, "off": 0.0, "on": 0.1, "invert": false}}
+	setup._set_draft_profile(endpoints)
+	setup._save_profile(false)
+	_check("insufficient AUX travel marks both endpoints", setup._aux_controls.smoke.off.get_line_edit().has_theme_stylebox_override("normal") and setup._aux_controls.smoke.on.get_line_edit().has_theme_stylebox_override("normal"))
+	setup._aux_controls.smoke.on.value = 1.0
+	_check("fixing AUX travel clears the endpoint errors", not setup._aux_controls.smoke.off.get_line_edit().has_theme_stylebox_override("normal") and not setup._aux_controls.smoke.on.get_line_edit().has_theme_stylebox_override("normal"))
+
+	var switches := ControllerProfile.defaults()
+	switches.aux = {"smoke": {"type": "switch", "buttons": [30, 31], "invert": false}, "flaps": {"type": "switch", "buttons": [32, 33], "invert": false}}
+	setup._set_draft_profile(switches)
+	setup._aux_controls.flaps.switch_button_spins[0].value = 30.0
+	_check("rejected switch edit keeps the accepted groups and highlights their conflict", setup.current_profile().aux == switches.aux and setup._aux_controls.flaps.switch_button_spins[0].get_line_edit().has_theme_stylebox_override("normal") and setup._aux_controls.smoke.switch_button_spins[0].get_line_edit().has_theme_stylebox_override("normal"))
+	setup._aux_controls.flaps.switch_button_spins[0].value = 34.0
+	_check("a valid switch edit clears rejected-attempt markers", setup.current_profile().aux.flaps.buttons[0] == 34 and not setup._aux_controls.flaps.switch_button_spins[0].get_line_edit().has_theme_stylebox_override("normal"))
 
 
 func _check(label: String, condition: bool) -> void:

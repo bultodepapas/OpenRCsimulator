@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "research/aero"))
+from aileron_effectiveness import derive_effectiveness  # noqa: E402
 IDENTITY_DIR = ROOT / "research/aircraft-standardization"
 if str(IDENTITY_DIR) not in sys.path:
     sys.path.insert(0, str(IDENTITY_DIR))
@@ -162,8 +164,8 @@ def derive(inputs=None):
         Cnda_right=-v("adverse_yaw_factor")*clref*clda,Cnda_left=v("adverse_yaw_factor")*clref*clda,Cndr=-cydr*lv/b)
     coefficients={name:q(val,"1" if name in ["CL0","CD0","CL_minD","k_induced","Cm0"] else "1/rad",source=SOURCE+": Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives; see derivation.md") for name,val in values.items()}
     # The local strip adapter's uniform effectiveness reproduces the integrated roll derivative.
-    effectiveness=abs(clda)*8/cla
-    surfaces={"wing_aileron_effectiveness":q(effectiveness,"1"),"wing_section_cm_ac":eq("wing_section_moment","1"),
+    effectiveness=derive_effectiveness(s, b, cla, ah*sh/s, clda)
+    surfaces={"wing_aileron_effectiveness":q(effectiveness,"1",source=SOURCE+": D11-R1 research/aero/aileron_effectiveness.py; match Clda_right through calibrated section slope and induced-flow map; model consistency, not flight calibration"),"wing_section_cm_ac":eq("wing_section_moment","1"),
         "attached_limit":eq("attached_limit","deg"),"tail_local_limit":eq("tail_local_limit","deg"),"tail_stall_end":eq("tail_stall_end","deg"),
         "tail_CD0":eq("tail_CD0","1"),"tail_k":eq("tail_k","1"),"tail_CD90":q(1.11+0.018*ar,"1"),
         "horizontal":dict(area=g["tail"]["area"],position=q([xh,0,zh],"m"),lift_slope=q(ah,"1/rad"),control_effectiveness=q(ceh,"1"),incidence=q(ih,"rad"),downwash_gradient=q(deps,"1")),

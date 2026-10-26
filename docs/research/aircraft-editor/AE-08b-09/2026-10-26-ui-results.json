@@ -894,5 +894,308 @@
       "A debug-script log query used CLI flag syntax instead of key=value; final rendered script completed with logs level=error.",
       "All selected raw images remain ignored; no image added to version control."
     ]
+  },
+  "critical_operation_audit": {
+    "step": "AE-09d",
+    "date": "2026-10-26",
+    "scope": "Critical Workshop operation audit; existing behavior and lifecycle only",
+    "engine": "4.8.beta1.official.4d10419ca",
+    "reviewers": [
+      {
+        "agent": "luna_preview_lifecycle",
+        "disposition": "Accepted: dispose smoke before reset; clear failed model state and size badge."
+      },
+      {
+        "agent": "luna_history_state",
+        "disposition": "Accepted: single compilation and completed no-op refresh; preserve master override reset and canonical inherited display. Undo semantics unchanged."
+      },
+      {
+        "agent": "luna_customization_events",
+        "disposition": "Accepted: one final validity event per configure/restore; individual user events retained."
+      },
+      {
+        "agent": "luna_lighting_critic",
+        "disposition": "No lighting edit in this pass; draft-buffer/Undo behavior requires separate semantic decision."
+      },
+      {
+        "agent": "luna_library_io",
+        "disposition": "No cache edit: bounded duplicate reads identified, no measured bottleneck; freshness/memory tradeoff remains."
+      },
+      {
+        "agent": "luna_evidence_critic",
+        "disposition": "Nearby numeric-value loss caught and reproduced; corrected. Separate unsuppressed failure witness resolves diagnostic masking concern."
+      }
+    ],
+    "all_six_initial_reports_received_before_implementation": true,
+    "final_sources": [
+      {
+        "path": "app/ui/workshop.gd",
+        "sha256": "ca55db3a66f3e575b75145ca50a8aba474a74b4166d9a769783a39b34e95e4cc"
+      },
+      {
+        "path": "app/ui/workshop_customization.gd",
+        "sha256": "92bdfd075227cbf549db7e07e96c52143b199f40b736bd42de7398e775d1b05d"
+      },
+      {
+        "path": "app/ui/workshop_preview.gd",
+        "sha256": "5a9bf2c43354551e2e4c56f990883e7d36a74e8fef4f5218fdaac01867c35c03"
+      },
+      {
+        "path": "app/tests/test_workshop_ui.gd",
+        "sha256": "456a94ef7dbeba8e0e9f77027599c300fc93ca3ca9a742a5e50bb5d35d58eb2a"
+      },
+      {
+        "path": "app/tests/test_workshop_customization.gd",
+        "sha256": "9c644ed27d552e84111331c07c4b7d6f3ccc9ce8ca38732a66029288bd390549"
+      },
+      {
+        "path": "app/tests/test_workshop_smoke_preview.gd",
+        "sha256": "bfec9c446d26b650f02bf38215719262038abc2d9bffa7d13f3653ef4fb9e8a0"
+      },
+      {
+        "path": "tools/debug/scenarios/workshop_numeric_commits.txt",
+        "sha256": "824bc4532b0843b0a6c6da4dd086c1d1a591567c7ae32467af937dbddf02245b"
+      }
+    ],
+    "baseline_sources": [
+      {
+        "path": "tmp/workshop-inquisition-20261026/baseline-source/workshop.gd",
+        "sha256": "2354cbd0fb154fe48810813cc3b63fdad838a68a79a66f7c5eedbc9cbc978c13"
+      },
+      {
+        "path": "tmp/workshop-inquisition-20261026/baseline-source/workshop_customization.gd",
+        "sha256": "26c3ff4e3a4715577b2b6b6c7b58d586a2f2e1020296c8d620fa046a78e60b0e"
+      },
+      {
+        "path": "tmp/workshop-inquisition-20261026/baseline-source/workshop_lighting.gd",
+        "sha256": "e6fcfa63e80fa6da9d37be482cece8cee336d4e8adf0de2d39259447ebf7c747"
+      },
+      {
+        "path": "tmp/workshop-inquisition-20261026/baseline-source/workshop_lighting_sequence.gd",
+        "sha256": "3016c8cbcadaad1f089cadc59b01c151f8c05ccfb3965f2ac5486e882902b44e"
+      },
+      {
+        "path": "tmp/workshop-inquisition-20261026/baseline-source/workshop_preview.gd",
+        "sha256": "76e1a70d9b1cb228c3a6b9abf1264f997277e1c686833ee5fc309874e00d292c"
+      }
+    ],
+    "source_snapshot": "tmp/workshop-ui-20261026/snapshot/app",
+    "metrics": {
+      "changed_numeric_compiler_calls": {
+        "before": 2,
+        "after": 1
+      },
+      "equivalent_spelling_compiler_calls": {
+        "before": 1,
+        "after": 0
+      },
+      "appearance_configure_validity_events": {
+        "before": [
+          true,
+          false,
+          true
+        ],
+        "after": [
+          true
+        ]
+      },
+      "smoke_configure_validity_events": {
+        "before": [
+          false,
+          false
+        ],
+        "after": [
+          false
+        ]
+      },
+      "discarded_renderer_pool_allocations_on_aircraft_swap": {
+        "before": 4,
+        "after": 0
+      },
+      "four_emitter_particle_capacity": 768,
+      "failed_build_followed_by_play": {
+        "before": "Trying to cast a freed object",
+        "after": "No model/smoke, disabled playback, hidden size badge; valid retry restores effects"
+      }
+    },
+    "measurement_scope": "Deterministic compile/signal/allocation counts, not latency/FPS or target-GPU qualification.",
+    "baseline_reports": [
+      {
+        "path": "tmp/workshop-inquisition-20261026/baseline-tests/customization-3m1ha2im/report.json",
+        "process_exit": 1,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": false
+      },
+      {
+        "path": "tmp/workshop-inquisition-20261026/baseline-tests/lifecycle-_qgmu8kf/report.json",
+        "process_exit": 1,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "ok": false
+      },
+      {
+        "path": "tmp/workshop-inquisition-20261026/baseline-tests/numeric-inheritance-fy9pamr3/report.json",
+        "process_exit": 1,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": false
+      },
+      {
+        "path": "tmp/workshop-inquisition-20261026/baseline-tests/numeric-ko3_3fat/report.json",
+        "process_exit": 1,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": false
+      },
+      {
+        "path": "tmp/workshop-inquisition-20261026/baseline-tests/numeric-nearby-6wg9v__e/report.json",
+        "process_exit": 1,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": false
+      }
+    ],
+    "unsuppressed_failure_witness": {
+      "report": "tmp/workshop-inquisition-20261026/final-tests/unsuppressed-lifecycle-witness-8ob90uhw/report.json",
+      "process_exit": 0,
+      "checks": 143,
+      "assertion_failures": 0,
+      "expected_error_count": 1,
+      "unexpected_error_count": 0,
+      "expected_error": "render/airplane.gd: unknown aircraft 'workshop-test-missing-aircraft'",
+      "wrapper_ok": false,
+      "interpretation": "Expected-error witness, not a clean checked-run pass."
+    },
+    "general_smoke": {
+      "log": "tmp/workshop-inquisition-20261026/smoke-regression.log",
+      "steps": 38,
+      "ok": false,
+      "failed": [
+        "scenario controller_field_errors"
+      ],
+      "failure_detail": "Concurrent controller scenario failed at Expression call to load(); later changed by its owner. Workshop scenarios passed.",
+      "random_steps": 30,
+      "seed": 26102613,
+      "soak_cycles": 2,
+      "growing_counters": 0,
+      "exit_leaks": 0,
+      "scope": "Run preceded the final inherited-display normalization; not claimed as an all-green final release gate."
+    },
+    "compiler_warning_attempt": {
+      "complete": false,
+      "reason": "Language-server startup exceeded 90 seconds during asset reimport in the isolated snapshot. No warning-count result claimed. Changed GDScript parsed and executed in focused suites."
+    },
+    "limitations": [
+      "Full app/test.sh not run.",
+      "Concurrent controller and aircraft tracks remain outside this isolated validation.",
+      "No target-GPU performance claim."
+    ],
+    "development_failures": [
+      "Retained expected baseline failures for compiler counts, validity notifications, stale preview lifetime, nearby numeric value and master inheritance.",
+      "Initial rendered scripts appended numeric text or allowed the bridge to coerce numeric spelling; quoted replacement input is used by the retained scenario.",
+      "Initial rendered Accept raced Home focus; explicit signal invocation is used for deterministic routing."
+    ],
+    "focused_tests": [
+      {
+        "suite": "test_workshop_ui_accepted",
+        "report": "tmp/workshop-inquisition-20261026/final-tests/test_workshop_ui_accepted-c_evf1hg/report.json",
+        "log_sha256": "e08cb9de2225bd678ac817428f88c94ed5b20118749274c76fbdd5926424011d",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      },
+      {
+        "suite": "test_workshop_customization",
+        "report": "tmp/workshop-inquisition-20261026/final-tests/test_workshop_customization-1p7nz164/report.json",
+        "log_sha256": "432624b179141ac53533c972245215c8256e3ac8e26e96905b88c34cbfdcf31c",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      },
+      {
+        "suite": "test_workshop_smoke_preview",
+        "report": "tmp/workshop-inquisition-20261026/final-tests/test_workshop_smoke_preview-z41ksdh_/report.json",
+        "log_sha256": "814bb3f928628f2e1599c8a1f5eab123fa1c765dfe3f42dd9ad1b5154c4f1339",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      },
+      {
+        "suite": "test_workshop_recovery_ui",
+        "report": "tmp/workshop-inquisition-20261026/final-tests/test_workshop_recovery_ui-ac_j7lgd/report.json",
+        "log_sha256": "23f8f4b0401eb07b6e2160397675a8d476295531e345091f2e52c8d1bbff4e89",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      },
+      {
+        "suite": "test_workshop_preview",
+        "report": "tmp/workshop-inquisition-20261026/final-tests/test_workshop_preview-ya_kkom_/report.json",
+        "log_sha256": "65769ea9142715454633b257910535efabe9929269fa5b5ff8e9d9936d3e487c",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      },
+      {
+        "suite": "test_workshop_smoke_controls",
+        "report": "tmp/workshop-inquisition-20261026/final-tests/test_workshop_smoke_controls-rnwv10o8/report.json",
+        "log_sha256": "6632e0cc4c74853aaca863404d0508e61069405eed065833e8acf097b564b3ca",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      },
+      {
+        "suite": "test_workshop_lighting_capabilities",
+        "report": "tmp/workshop-inquisition-20261026/final-tests/test_workshop_lighting_capabilities-j_1kth0s/report.json",
+        "log_sha256": "96369fd14580c5c628ad66572afa0c18a3413ed4d186e20025e9185242f79b4a",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      }
+    ],
+    "focused_test_count": 7,
+    "focused_test_scope": "Seven focused suites passed. Numeric UI was rerun after the final inherited-display normalization; other suites cover unchanged customization and preview implementations.",
+    "rendered_numeric_scenario": {
+      "path": "tools/debug/scenarios/workshop_numeric_commits.txt",
+      "log": "tmp/workshop-inquisition-20261026/rendered-numeric-accepted.log",
+      "passed": true,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "source_scope": "Bool-return commit implementation before the final no-op display sync; the final display sync is covered by the accepted focused UI suite."
+    }
   }
 }

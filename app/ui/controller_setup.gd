@@ -2441,6 +2441,7 @@ func _register_validation_field(path: String, section: String, control: Control,
 	_validation_fields[path] = {"section": section, "control": control, "labels": labels, "caption": caption}
 	for label: Label in labels:
 		_validation_label_captions[label] = caption
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 
 func _validate_candidate(candidate: Dictionary) -> Dictionary:

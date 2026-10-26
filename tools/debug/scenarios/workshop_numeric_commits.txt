@@ -1,0 +1,20 @@
+# AE-09d: numeric commit optimization preserves exact values and master inheritance.
+press text=Workshop mode=signal
+wait until="screens.is_top('workshop')" timeout_s=60
+call node=AppRoot/Workshop method=_set_page args=["setup"]
+eval expr="screens.top().get('_factor_inputs').power_multiplier.clear()"
+type text="1.237" into="Power MultiplierEntry" submit=true
+assert expr="screens.top().get_recipe().power_multiplier == 1.237" message="numeric edit commits exactly"
+eval expr="screens.top().get('_factor_inputs').power_multiplier.clear()"
+type text="1.2370" into="Power MultiplierEntry" submit=true
+assert expr="screens.top().get('_pending_numbers').is_empty() and not screens.top().save_button.disabled" message="equivalent spelling clears pending state"
+eval expr="screens.top().get('_factor_inputs').power_multiplier.clear()"
+type text="1.237001" into="Power MultiplierEntry" submit=true
+assert expr="screens.top().get_recipe().power_multiplier == 1.237001" message="nearby valid decimal is preserved"
+eval expr="screens.top().get('_factor_sliders').control_multiplier_aileron.set_value(1.3)"
+eval expr="screens.top().get('_factor_inputs').control_multiplier.clear()"
+type text="1.0000" into="Control MultiplierEntry" submit=true
+assert expr="not screens.top().get_recipe().has('control_multiplier_aileron')" message="re-entering master value still clears overrides"
+press text=CloseWorkshop mode=signal
+press text="Discard changes" mode=signal
+wait until="screens.is_top('home')" timeout_s=30

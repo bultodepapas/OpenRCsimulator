@@ -28,6 +28,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "research/aero"))
+from aileron_effectiveness import derive_effectiveness  # noqa: E402
 sys.path.insert(0, str(ROOT / "research" / "fuel-systems"))
 import fuel_registry  # noqa: E402
 KEROSENE_BLEND = "kerosene_5pct_turbine_oil"
@@ -602,21 +604,8 @@ e_osw = note("drag", "Oswald e", v("aero.oswald_e"), src("aero.oswald_e")[1])
 k_ind = 1 / (math.pi * e_osw * AR)
 
 
-def station_centres(span, root, tip, n=3):
-    h = span / 2
-    slope = (tip - root) / h
-    area = lambda y: root * y + slope * y * y / 2
-    mom = lambda y: root * y * y / 2 + slope * y ** 3 / 3
-    out, y0 = [], 0.0
-    for k in range(n):
-        y1 = h if k == n - 1 else (-root + math.sqrt(root * root + 2 * slope * area(h) * (k + 1) / n)) / slope
-        out.append((mom(y1) - mom(y0)) / (area(y1) - area(y0)))
-        y0 = y1
-    return out
-
-
-sum_y = sum(station_centres(b, cr_eq, ct_eq))
-wing_ail_eff = abs(Clda) * 6 * b / (CLa * sum_y)
+# D11-R1: match the authored roll derivative through the current induced-flow map.
+wing_ail_eff = derive_effectiveness(S, b, CLa, slope_h * Sh / S, Clda, (cr_eq, ct_eq))
 
 # --- Turbine -------------------------------------------------------------------------------------------------------
 T = IN["turbine"]
@@ -1070,7 +1059,7 @@ data = {
         "conventions": stik["aero"]["conventions"],
         "coefficients": coefficients,
         "surfaces": {
-            "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("|Clda_right| 2n b / (CLa sum(y)) over the loader's equal-area tapered strips")),
+            "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("D11-R1: research/aero/aileron_effectiveness.py; Clda_right matched through the calibrated section slope and induced-flow map (six equal-area strips); model consistency, not flight calibration")),
             "attached_limit": same("attached_limit"),
             "tail_local_limit": same("tail_local_limit"),
             "tail_stall_end": same("tail_stall_end"),

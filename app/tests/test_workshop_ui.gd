@@ -712,6 +712,27 @@ func _guarded_journey(editor: Node, store_root: String) -> void:
 	_check("numeric entry commits an exact intermediate value", is_equal_approx(editor.get_recipe().weight_multiplier, 0.731)
 		and not editor.save_button.disabled)
 
+	# Re-entering the master value must retain its established override-reset semantics.
+	var surface_entry: LineEdit = editor.get("_factor_inputs")["control_multiplier_aileron"]
+	surface_entry.text = "1.3"
+	surface_entry.text_changed.emit(surface_entry.text)
+	surface_entry.text_submitted.emit(surface_entry.text)
+	var master_entry: LineEdit = editor.get("_factor_inputs")["control_multiplier"]
+	editor.set("compile_count", 0)
+	master_entry.text = "1.0000"
+	master_entry.text_changed.emit(master_entry.text)
+	master_entry.text_submitted.emit(master_entry.text)
+	_check("re-entering master value still clears individual overrides with one compilation",
+		not editor.get_recipe().has("control_multiplier_aileron") and int(editor.get("compile_count")) == 1)
+	editor.set("compile_count", 0)
+	surface_entry.text = "1.000001"
+	surface_entry.text_changed.emit(surface_entry.text)
+	surface_entry.text_submitted.emit(surface_entry.text)
+	_check("inherited value normalization refreshes readiness without compilation",
+		int(editor.get("compile_count")) == 0 and editor.get("_pending_numbers").is_empty()
+		and surface_entry.text == String.num(1.0, 4)
+		and not editor.save_button.disabled and not (_find(editor, "TestFly") as Button).disabled)
+
 	# Save and continue is explicit, single-shot and marks exactly the saved payload clean.
 	editor.request_navigation("Back to Home", proceed, cancel)
 	guard = editor.get("_guard_dialog")

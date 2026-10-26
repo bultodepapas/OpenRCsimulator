@@ -293,6 +293,17 @@ func _test_mapping_error_recovery() -> void:
 	TranslationServer.set_locale("es")
 	await process_frame
 	_check("language changes refresh inline feedback", setup._axis_channel_labels.roll.text.contains("Elige entradas distintas"))
+	for viewport_size: Vector2i in [Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160), Vector2i(1280, 720)]:
+		root.size = viewport_size
+		setup._save_profile(false)
+		for frame in 4:
+			await process_frame
+		var page_rect: Rect2 = scroll.get_global_rect()
+		var owner_rect: Rect2 = (root.gui_get_focus_owner() as Control).get_global_rect()
+		_check("error focus remains visible at %s (viewport %s, editor %s)" % [viewport_size, page_rect, owner_rect], page_rect.encloses(owner_rect))
+		for label: Label in setup._validation_fields["roll.axis"].labels:
+			if label.is_visible_in_tree():
+				_check("inline error stays within page width at %s" % viewport_size, label.get_global_rect().position.x >= page_rect.position.x - 1.0 and label.get_global_rect().end.x <= page_rect.end.x + 1.0)
 	TranslationServer.set_locale("en")
 	setup._set_draft_profile(original)
 	setup.free()
