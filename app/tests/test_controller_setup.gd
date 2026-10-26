@@ -76,6 +76,7 @@ func _initialize() -> void:
 	InputMap.load_from_project_settings()
 	await _test_input_map()
 	await _test_setup_draft_and_single_save()
+	await _test_profile_name_error_lifecycle()
 	await _test_glyph_family_save_and_cancel()
 	await _test_unknown_saved_gamepad_menu_gate()
 	await _test_entry_signals()
@@ -176,6 +177,39 @@ func _test_setup_draft_and_single_save() -> void:
 		return store.save_profile(candidate)
 	_check("one Save submits the edited profile and both previously unapplied controllers", setup._save_profile() and requested_roles == [[5, 5]] and store.saved_count == 1 and registry.selections == {"flight": 5, "ui": 5})
 	_check("successful Save closes settings once", close_count[0] == 1)
+	setup.free()
+	await process_frame
+
+
+func _test_profile_name_error_lifecycle() -> void:
+	var store := FakeStore.new()
+	var valid_profile := ControllerProfile.defaults("gamepad", "mode1")
+	valid_profile["name"] = "Saved profile"
+	store.profiles.append(valid_profile)
+	var setup := ControllerSetup.new()
+	setup.configure(FakeRegistry.new(), store)
+	root.add_child(setup)
+	await process_frame
+	await process_frame
+	setup.profile_name_edit.text = "   "
+	setup.select_section("axes")
+	_check("blank profile name rejects Save before storage", not setup._save_profile(false) and store.saved_count == 0)
+	_check("blank name returns to a visible focused field", setup.profile_name_edit.is_visible_in_tree() and setup.profile_name_edit.has_focus())
+	_check("blank name has a field highlight and explanatory message", setup.profile_name_edit.has_theme_stylebox_override("normal") and setup.status_label.text.contains("Enter a profile name"))
+	var typed := InputEventKey.new()
+	typed.keycode = KEY_X
+	typed.physical_keycode = KEY_X
+	typed.unicode = 120
+	typed.pressed = true
+	root.push_input(typed)
+	await process_frame
+	_check("typing clears both error style overrides", setup.profile_name_edit.text.contains("x") and not setup.profile_name_edit.has_theme_stylebox_override("normal") and not setup.profile_name_edit.has_theme_stylebox_override("focus"))
+	setup.profile_name_edit.text = ""
+	setup._save_profile(false)
+	_check("loading a saved profile succeeds", setup.load_selected_profile(str(valid_profile.profile_id)))
+	_check("loaded valid name does not retain the previous field error", setup.profile_name_edit.text == "Saved profile" and not setup.profile_name_edit.has_theme_stylebox_override("normal") and not setup.profile_name_edit.has_theme_stylebox_override("focus"))
+	store.save_succeeds = true
+	_check("loaded valid profile still saves normally", setup._save_profile(false) and store.saved_count == 1)
 	setup.free()
 	await process_frame
 

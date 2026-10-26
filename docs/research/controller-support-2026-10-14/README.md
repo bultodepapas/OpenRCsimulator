@@ -200,6 +200,24 @@ The [native reproduction](pause-recovery-native.json) first disables the verifie
 
 [Regression checks](pause-recovery-checks-windows.json) include 22 dedicated pause-recovery assertions plus existing input conditioning, RC input, menu, pause, integration, persistence, profile, Save and setup-safety suites. The dedicated suite exercises neutral drift, no-motion startup/restart, held controls, absolute triggers, focus recovery, unverified sources, unsupported axes, radios and invalid samples. This is not a USB/Bluetooth or full-device qualification. Some full-scene test shutdowns report ObjectDB instances; this correction is not a resource-leak audit.
 
+## UI-15-GP-01: preflight radio calibration (GitHub #5)
+
+2026-10-26. Home's Controls hid calibration behind `flight != null`; the action handler also required a flight. The initial Home regression failed before correction. A separate setup screen now reuses `RcCalibration` without starting a session or writing a profile. **Use calibration** merges captured AETR ranges and eligible AUX into the existing draft; normal **Save** retains transactional persistence and device selection. The in-flight wizard remains unchanged. [Player workflow](../../FIRST-LAUNCH.md#controller-settings-current-source).
+
+The capture pins the connection ID and generation. Disconnect, replacement, invalid raw samples, focus loss and suspension discard it. Completed drafts, including duplicates, retain the generation check until saved. Identity, names, actions, presentation and channel shaping survive calibration; AUX consumed by a new flight axis is removed with a visible warning. The 5% idle gate and fresh low-throttle evidence remain unchanged.
+
+Linux software evidence with Godot `4.8.beta1.official.4d10419ca`:
+
+- Final `test_controller_preflight_calibration.gd`: **66 checks, 0 failed**. Includes `[-0.6,+0.6]` normal/reversed throttle, full travel after calibration, fresh arming evidence, explicit Radio selection for unknown joysticks, cancellation, malformed samples, generation reuse, duplicate provenance and failed Save. The AUX-overlap fixture intentionally emits its existing warning.
+- Fourteen related suites passed during integration: preflight calibration, setup, setup safety, sections, transactional Save, profile hardening, controller menus, flight integration, persistence, AUX setup, RC calibration, RC input, RC rearming and recovery dead ends. The final focused suite covers the subsequent duplicate and channel-preservation refinements.
+- `debugctl.py smoke`: **34 steps passed**, no failed scenarios, no growing soak counters and no leaked objects at exit. Includes [the preflight scenario](../../../tools/debug/scenarios/controller_preflight_calibration.txt).
+- Engine resource validation loaded **1,438 scripts** and **1,530 total resources**, with no failed loads, using the Godot skill's `check_project` with scene instantiation disabled. Static lint retained its pre-existing 173 findings; no new findings.
+- Debug-bridge layout inspection at a 1920×1080 headless viewport kept the EN/ES card and error state within the viewport. This is layout evidence, not rendered visual or GPU qualification. No screenshots are retained.
+- Final resource import and `test_ui_language.gd` passed after adding the Spanish calibration messages; the catalog check found no untranslated entries.
+- `app/test.sh` did not complete: it reported `stale runtime economics artifact: app/data/economy/catalog.json` in the unrelated CR-29 gate. This change does not claim a complete repository-suite pass.
+
+Focused sources were reviewed independently and the final generation/merge checks had no remaining finding. No physical Interlink was available; USB mapping, real endpoints and native-device acceptance remain open. Local diagnostic artifacts are under `tmp/issue5-checks/`, `tmp/issue5-regressions/` and `tmp/issue5-work/`; the tests and debug scenario are the retained reproduction instructions.
+
 ## Current upstream findings
 
 1. **Use the existing desktop backend.** Godot uses SDL 3 for Windows, Linux and macOS controller input from 4.5. Specialized HOTAS/pedals/wheels have less coverage. The pinned engine vendors SDL 3.2.28. Keep SDL device mapping separate from OpenRC command assignment. [Godot controller guide](https://docs.godotengine.org/en/4.7/tutorials/inputs/controllers_gamepads_joysticks.html), [pinned third-party manifest](https://github.com/godotengine/godot/blob/4.7.2-stable/thirdparty/README.md#sdl).

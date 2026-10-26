@@ -1,0 +1,20 @@
+# Home calibration opens for a selected radio without saving a profile or starting flight.
+open screen=controls
+eval expr="controllers.set_process(false)"
+eval expr="controllers.registry.update_devices([{'id':15,'name':'Synthetic limited radio','guid':'issue5-debug','kind':'radio','known':false}])"
+select text=Keyboard index=1
+assert expr="screens.top().calibrate_button.visible" message="Home offers radio calibration"
+press text="Calibrate selected radio"
+assert expr="screens.is_top('radio_calibration') and flight == null" message="standalone wizard"
+key name=Enter hold_s=0
+wait frames=3
+key name=Enter hold_s=0
+wait frames=3
+assert expr="screens.top()._wizard.step == 1 and screens.top()._error_label.visible" message="no sweep cannot advance"
+key name=Escape
+assert expr="screens.is_top('controls')" message="Cancel restores Controls"
+assert expr="controllers.store.load_all().profiles.is_empty()" message="calibration did not write a profile"
+eval expr="controllers.set_process(true)"
+eval expr="controllers.refresh()"
+close
+assert expr="screens.is_top('home') and flight == null" message="returned Home without a flight"

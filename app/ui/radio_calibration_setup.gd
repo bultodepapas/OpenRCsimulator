@@ -20,6 +20,7 @@ var _wizard: RefCounted
 var _surface: Control
 var _prompt: Label
 var _step_label: Label
+var _device_label: Label
 var _error_label: Label
 var _axes_label: Label
 var _finished: bool = false
@@ -41,6 +42,8 @@ func _init() -> void:
 	column.add_theme_constant_override("separation", 16)
 	card.add_child(column)
 	column.add_child(Widgets.label("Radio calibration", "TitleLabel"))
+	_device_label = Widgets.label("", "SecondaryLabel", true, false)
+	column.add_child(_device_label)
 	_step_label = Widgets.label("", "SectionLabel", true, false)
 	column.add_child(_step_label)
 	_prompt = Widgets.label("", "", true, false)
@@ -68,6 +71,7 @@ func configure(registry: Object, device_id: int, profile: Dictionary) -> bool:
 	if profile.get("kind", "") != "radio" or not connection_is_current():
 		return false
 	_wizard = Calibration.new(profile)
+	_device_label.text = str(registry.device_for_id(device_id).get("display_name", registry.device_for_id(device_id).get("name", "")))
 	_refresh()
 	return true
 

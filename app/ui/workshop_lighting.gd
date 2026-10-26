@@ -2,7 +2,7 @@ extends VBoxContainer
 ## Progressive lighting editor. The Workshop owns validation and shared history.
 
 const Profile := preload("res://render/lighting/lighting_profile.gd")
-const UiTheme := preload("res://ui/ui_theme.gd")
+const Widgets := preload("res://ui/widgets.gd")
 const Presentation := preload("res://workshop/presentation.gd")
 const Sequence := preload("res://workshop/lighting_sequence.gd")
 const SequenceEditor := preload("res://ui/workshop_lighting_sequence.gd")
@@ -212,6 +212,7 @@ func _build_zone_controls() -> void:
 	_zone_section.add_child(_orientation_lock)
 	_orientation_hint = Label.new()
 	_orientation_hint.name = "LightingOrientationHint"
+	_orientation_hint.theme_type_variation = "SecondaryLabel"
 	_orientation_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_zone_section.add_child(_orientation_hint)
 	var zone_label := Label.new()
@@ -283,6 +284,7 @@ func _build_zone_controls() -> void:
 	_zone_section.add_child(pattern_row)
 	_pattern_hint = Label.new()
 	_pattern_hint.name = "LightingPatternHint"
+	_pattern_hint.theme_type_variation = "SecondaryLabel"
 	_pattern_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_zone_section.add_child(_pattern_hint)
 	var period_row := HBoxContainer.new()
@@ -298,10 +300,12 @@ func _build_zone_controls() -> void:
 	_period.suffix = tr(" s")
 	_period.tooltip_text = tr("Shorter cycles run faster; this is the duration of one full cycle.")
 	_period.custom_minimum_size.x = 112
+	_period.get_line_edit().expand_to_text_length = true
 	_period.value_changed.connect(_on_period_changed)
 	period_row.add_child(_period)
 	_zone_section.add_child(period_row)
 	_period_readout = Label.new()
+	_period_readout.theme_type_variation = "SecondaryLabel"
 	_period_readout.text = tr("Cycle duration applies to animated patterns.")
 	_period_readout.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_zone_section.add_child(_period_readout)
@@ -329,14 +333,16 @@ func _build_zone_controls() -> void:
 	_reactive_gain.min_value = 0.0
 	_reactive_gain.max_value = 1.0
 	_reactive_gain.step = 0.05
+	_reactive_gain.get_line_edit().expand_to_text_length = true
 	_reactive_gain.value_changed.connect(_on_reactive_gain_changed)
 	reactive_gain_row.add_child(_reactive_gain)
 	_zone_section.add_child(reactive_gain_row)
 	_reactive_hint = Label.new()
+	_reactive_hint.theme_type_variation = "SecondaryLabel"
 	_reactive_hint.text = tr("Telemetry reactions use accepted values when available; otherwise the zone stays steady.")
 	_reactive_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_zone_section.add_child(_reactive_hint)
-	var zone_actions := HBoxContainer.new()
+	var zone_actions := HFlowContainer.new()
 	_zone_reset = Button.new()
 	_zone_reset.name = "ResetLightingZone"
 	_zone_reset.text = tr("Reset zone")
@@ -348,6 +354,7 @@ func _build_zone_controls() -> void:
 	zone_actions.add_child(_zone_cancel)
 	_zone_apply = Button.new()
 	_zone_apply.name = "ApplyLightingZone"
+	_zone_apply.theme_type_variation = "CompactPrimaryButton"
 	_zone_apply.text = tr("Apply zone")
 	_zone_apply.pressed.connect(_apply_zone)
 	zone_actions.add_child(_zone_apply)
@@ -369,12 +376,13 @@ func _build_effect_controls() -> void:
 	_effects_controls = VBoxContainer.new()
 	_effects_controls.add_theme_constant_override("separation", 7)
 	_effects_section.add_child(_effects_controls)
-	var actions := HBoxContainer.new()
+	var actions := HFlowContainer.new()
 	_effects_cancel = Button.new()
 	_effects_cancel.text = tr("Cancel")
 	_effects_cancel.pressed.connect(_cancel_effects)
 	actions.add_child(_effects_cancel)
 	_effects_apply = Button.new()
+	_effects_apply.theme_type_variation = "CompactPrimaryButton"
 	_effects_apply.text = tr("Apply effects")
 	_effects_apply.pressed.connect(_apply_effects)
 	actions.add_child(_effects_apply)
@@ -755,6 +763,7 @@ func _add_palette_row(index: int, raw_color: String) -> void:
 	var row := HBoxContainer.new()
 	row.name = "LightingPaletteColor%d" % index
 	var picker := ColorPickerButton.new()
+	Widgets.fit_color_picker_popup(picker)
 	picker.name = "LightingPalettePicker%d" % index
 	picker.custom_minimum_size = Vector2(42, 32)
 	picker.edit_alpha = false
@@ -768,7 +777,6 @@ func _add_palette_row(index: int, raw_color: String) -> void:
 	hex.max_length = 16
 	hex.text = raw_color.to_upper()
 	hex.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hex.add_theme_font_size_override("font_size", UiTheme._font_size(13))
 	hex.text_changed.connect(func(value: String) -> void: _on_zone_hex_changed(value, index))
 	hex.text_submitted.connect(func(_value: String) -> void: hex.release_focus())
 	row.add_child(hex)
@@ -865,6 +873,7 @@ func _add_palette_color() -> void:
 	var palette: Array = pattern.get("palette", []).duplicate()
 	if palette.size() >= 8:
 		return
+	var restore_focus := _add_color_button.has_focus()
 	palette.append(palette.back() if not palette.is_empty() else "#FFFFFF")
 	pattern.palette = palette
 	_zone_draft.pattern = pattern
@@ -872,6 +881,8 @@ func _add_palette_color() -> void:
 	_rebuild_palette_rows()
 	_syncing = false
 	_refresh_zone_pending()
+	if restore_focus:
+		_zone_hex_fields.back().grab_focus()
 
 
 func _remove_palette_color(index: int) -> void:
@@ -881,6 +892,8 @@ func _remove_palette_color(index: int) -> void:
 	var palette: Array = pattern.get("palette", []).duplicate()
 	if palette.size() <= 1 or index < 0 or index >= palette.size():
 		return
+	var focused := get_viewport().gui_get_focus_owner()
+	var restore_focus := focused != null and _palette_list.is_ancestor_of(focused)
 	palette.remove_at(index)
 	pattern.palette = palette
 	_zone_draft.pattern = pattern
@@ -888,6 +901,8 @@ func _remove_palette_color(index: int) -> void:
 	_rebuild_palette_rows()
 	_syncing = false
 	_refresh_zone_pending()
+	if restore_focus:
+		_zone_hex_fields[mini(index, _zone_hex_fields.size() - 1)].grab_focus()
 
 
 func _rebuild_palette_rows() -> void:
@@ -1159,6 +1174,8 @@ func _rebuild_effect_controls() -> void:
 			continue
 		var entry: Dictionary = entry_value
 		var anchor := str(entry.get("anchor_id", ""))
+		if _effects_controls.get_child_count() > 0:
+			_effects_controls.add_child(HSeparator.new())
 		var row := VBoxContainer.new()
 		var toggle := CheckButton.new()
 		toggle.text = tr("%s effect") % tr(_effect_anchor_label(anchor))
@@ -1196,6 +1213,7 @@ func _rebuild_effect_controls() -> void:
 		intensity.min_value = 0.0
 		intensity.max_value = 1.0
 		intensity.step = 0.05
+		intensity.get_line_edit().expand_to_text_length = true
 		intensity.value = float(entry.get("intensity", 0.0))
 		intensity.value_changed.connect(func(value: float) -> void: _set_effect_value(anchor, "intensity", value))
 		intensity_row.add_child(intensity)
@@ -1211,6 +1229,7 @@ func _rebuild_effect_controls() -> void:
 		lifetime.max_value = 2.0
 		lifetime.step = 0.05
 		lifetime.suffix = tr(" s")
+		lifetime.get_line_edit().expand_to_text_length = true
 		lifetime.value = float(entry.get("lifetime_ticks", 96)) / 240.0
 		lifetime.value_changed.connect(func(value: float) -> void:
 			_set_effect_value(anchor, "lifetime_ticks", clampi(roundi(value * 240.0), 12, 480))
@@ -1220,7 +1239,7 @@ func _rebuild_effect_controls() -> void:
 		_effects_controls.add_child(row)
 		_effects_controls_by_anchor[anchor] = {"enabled": toggle, "kind": kind_selector, "intensity": intensity, "lifetime": lifetime, "availability": availability}
 	var has_effects := not _effects_draft.is_empty()
-	_effects_controls.visible = has_effects
+	_effects_controls.visible = true
 	_effects_apply.disabled = not _effects_pending or not has_effects
 	_effects_cancel.disabled = not _effects_pending
 	if not has_effects:

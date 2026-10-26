@@ -43,6 +43,24 @@ static func button(text: String, variation := "", node_name := "") -> Button:
 	return control
 
 
+## Keep the native picker's controls inside the viewport, including enlarged text.
+static func fit_color_picker_popup(button: ColorPickerButton) -> void:
+	button.picker_created.connect(func() -> void:
+		var popup := button.get_popup()
+		popup.about_to_popup.connect(_fit_color_picker_popup.bind(button))
+		popup.size_changed.connect(_fit_color_picker_popup.bind(button))
+	)
+
+
+static func _fit_color_picker_popup(button: ColorPickerButton) -> void:
+	var popup := button.get_popup()
+	var natural := popup.get_contents_minimum_size()
+	var available := button.get_viewport_rect().size - Vector2(32, 32)
+	var fit := minf(1.0, minf(available.x / maxf(natural.x, 1.0), available.y / maxf(natural.y, 1.0)))
+	if not is_equal_approx(popup.content_scale_factor, fit):
+		popup.content_scale_factor = maxf(0.1, fit)
+
+
 static func gap(height: int) -> Control:
 	var control := Control.new()
 	control.custom_minimum_size.y = height

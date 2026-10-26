@@ -1,0 +1,25 @@
+# AE-09d: rebuilding palette rows must retain keyboard focus on a usable color field.
+press text=Workshop
+wait until="screens.is_top('workshop')" timeout_s=60
+call node=AppRoot/Workshop method=_set_page args=["lighting"]
+select text=LightingPreset index=3
+press text=CustomizeLightingZones
+select text=LightingZone index=6
+press text=AddLightingColor
+assert expr="screens.top().get_viewport().gui_get_focus_owner().name == 'LightingPaletteHex1'" message="new zone color receives focus"
+press text=RemoveLightingColor0
+assert expr="screens.top().get_viewport().gui_get_focus_owner().name == 'LightingPaletteHex0'" message="removing a zone color retains focus"
+press text=CustomizeLightingZones
+select text=LightingPreset index=5
+press text=LightingSequenceToggle
+press text=AddLightingSequenceColor
+assert expr="screens.top().get_viewport().gui_get_focus_owner().name.begins_with('SequencePaletteHex')" message="new sequence color receives focus"
+press text=SequencePaletteRemove0
+assert expr="screens.top().get_viewport().gui_get_focus_owner().name == 'SequencePaletteHex0'" message="removing a sequence color retains focus"
+press text=CancelLightingCue
+call node=AppRoot/Workshop method=_set_page args=["smoke"]
+press text=SmokeColorPicker
+key name=Escape
+press text=CloseWorkshop
+press text="Discard changes"
+assert expr="screens.is_top('home')" message="palette editing returns safely to Home"
