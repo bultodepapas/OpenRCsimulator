@@ -111,12 +111,14 @@ func _test_capture(tag: String) -> void:
 	# parse_input_event consumes window pixels; the GUI uses the scaled canvas.
 	wheel.position = root.get_final_transform() * scroll.get_global_rect().get_center()
 	wheel.global_position = wheel.position
+	var wheel_before := scroll.scroll_vertical
 	Input.parse_input_event(wheel)
 	Input.flush_buffered_events()
 	_check(tag + " wheel cancels pending follow", not setup._mapping_focus_layout_pending)
-	scroll.scroll_vertical = 0
+	var wheel_after := scroll.scroll_vertical
+	_check(tag + " wheel scrolls the list", wheel_after < wheel_before)
 	await _settle()
-	_check(tag + " manual scroll wins over pending layout", scroll.scroll_vertical == 0)
+	_check(tag + " manual scroll wins over pending layout", scroll.scroll_vertical == wheel_after)
 	# A rejected duplicate and Escape both keep the edited row and prior binding.
 	var target := setup.find_child("Remap_rates_toggle", true, false) as Button
 	var before := await _position_target(scroll, target)
