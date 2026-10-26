@@ -1,0 +1,4 @@
+> wait until="screens.is_top('home')" timeout_s=120
+{"frame": 1780, "value": true}
+> assert expr="tree.root.size == Vector2i(1920, 1080)" message="native 1080p viewport"
+{"value": true}

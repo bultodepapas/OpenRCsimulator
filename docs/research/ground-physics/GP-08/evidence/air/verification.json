@@ -1,0 +1,60 @@
+{
+	"checks": 3247,
+	"failures": 0,
+	"measurements": [
+		{
+			"aircraft": "res://data/aircraft/jensen_ugly_stik_60.json",
+			"baseline_usec": 167436,
+			"bytes": 232932,
+			"observer_usec": 12096,
+			"peak_buffer_rows": 199,
+			"recorded_usec": 175305,
+			"ticks": 260
+		},
+		{
+			"aircraft": "res://data/aircraft/gp_extra_300s_60.json",
+			"baseline_usec": 605954,
+			"bytes": 324744,
+			"observer_usec": 24416,
+			"peak_buffer_rows": 199,
+			"recorded_usec": 595852,
+			"ticks": 260
+		},
+		{
+			"aircraft": "res://data/aircraft/p51d_mustang_120.json",
+			"baseline_usec": 483189,
+			"bytes": 270012,
+			"observer_usec": 26588,
+			"peak_buffer_rows": 199,
+			"recorded_usec": 504695,
+			"ticks": 260
+		},
+		{
+			"aircraft": "res://data/aircraft/sebart_avanti_s_a200.json",
+			"baseline_usec": 316292,
+			"bytes": 269040,
+			"observer_usec": 27397,
+			"peak_buffer_rows": 199,
+			"recorded_usec": 356644,
+			"ticks": 260
+		},
+		{
+			"aircraft": "res://data/aircraft/turbo_lumber_evolution.json",
+			"baseline_usec": 284030,
+			"bytes": 235160,
+			"observer_usec": 11251,
+			"peak_buffer_rows": 199,
+			"recorded_usec": 235993,
+			"ticks": 260
+		},
+		{
+			"aircraft": "res://data/aircraft/stik_glow_61fx_2t.json",
+			"baseline_usec": 557265,
+			"bytes": 304280,
+			"observer_usec": 26073,
+			"peak_buffer_rows": 199,
+			"recorded_usec": 640030,
+			"ticks": 260
+		}
+	]
+}

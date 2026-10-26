@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9d5d483d-36b4-4cfa-b6fa-4cc97977f8df",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_wind_world_consumers.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T22:48:48.746472+00:00",
+  "label": "test_wind_world_consumers",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-r1\\checks\\test_wind_world_consumers-1ua0brir\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-r1\\checks\\test_wind_world_consumers-1ua0brir\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.125,
+  "log_bytes": 114,
+  "log_sha256": "e244ab8dcf39bc27b1ddb135c874d34bb05a3a2d520253575a43566c417f9251"
+}

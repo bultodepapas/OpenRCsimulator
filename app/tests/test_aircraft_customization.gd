@@ -37,7 +37,7 @@ func _test_fleet_bindings_and_mounts() -> void:
 			str(airplane.get("visual_family", "")), str(airplane.get("model_manifest_sha256", "")))
 		_check(id + " bindings validate", checked.get("ok", false), str(checked.get("errors", [])))
 		_check(id + " binds the v3 presentation source closure",
-			int(bindings.get("version", 0)) == 3 and int(bindings.get("source_proof_version", 0)) == 2
+			int(bindings.get("version", 0)) == 3 and int(bindings.get("source_proof_version", 0)) == 3
 			and str(bindings.get("presentation_engine_version", "")) == PresentationSources.ENGINE_VERSION_PIN
 			and bindings.get("presentation_sources", []) == PresentationSources.current_records())
 		_check(id + " exposes body, wing and tail paint", _slot_ids(bindings.get("paint_slots", [])) == ["body", "tail", "wing"]

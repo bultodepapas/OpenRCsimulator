@@ -67,6 +67,8 @@ func _pool_state(fx: Node, wreck: Node) -> Array:
 		state.append([p.get_instance_id(), p.transform, p.visible, p.emitting, p.seed, p.mesh.get_rid(), p.speed_scale])
 	for mark: MeshInstance3D in fx.marks:
 		state.append([mark.visible, mark.transform, mark.material_override.get_instance_id()])
+	for decal: Decal in fx.mark_decals:
+		state.append([decal.visible, decal.transform, decal.modulate])
 	for body: RigidBody3D in wreck._bodies:
 		state.append([body.get_instance_id(), body.transform, body.freeze, body.visible, body.collision_layer, body.collision_mask])
 	return state

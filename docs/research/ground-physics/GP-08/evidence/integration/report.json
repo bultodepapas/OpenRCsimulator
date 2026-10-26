@@ -1,0 +1,304 @@
+{
+  "format": "openrc-gp08-integrated-checks v1",
+  "retained_utc": "2026-10-25T23:27:09.1532469Z",
+  "source_commit": "9f12c79e1490c4c72895d450910d9c916743d7b9",
+  "source_sampling": "Runtime/test SHA256 sampled after final selected checks. Receipts span several batches and do not carry per-run source hashes; this is not an atomic full-suite snapshot.",
+  "status": "ok",
+  "scripts": 15,
+  "checks": 841,
+  "failed_checks": 0,
+  "failed_or_invalid_invocations": 0,
+  "selection": "Latest complete successful checked-runner receipt per unique script across tmp/gp-integrated-checks and tmp/gp-integrated-final; no earlier failed receipts substituted.",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "runtime_source_hashes": [
+    {
+      "path": "app/physics/wheel_coupling.gd",
+      "sha256": "2cea4e934cbbd6d54a0c2526891070b063f1fead9f97b418099656d5ae26351c"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "4030bf8cc1e9c4733cd6c8d4ebd526e3e7975c55083010d18fa8c9618f0d9516"
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "sha256": "33f1ab53a3f587acf330032f43c0ed44a515565fe8202d4e77e35ba6495f8f55"
+    },
+    {
+      "path": "app/statistics/detector.gd",
+      "sha256": "43d47f18a36442b3bd5697672568f4cbf0a4b03cfe5916c3069e730e05d3f799"
+    },
+    {
+      "path": "app/statistics/fixed_wing_adapter.gd",
+      "sha256": "732f1389ee20e6602319788f4aa617f62024a694e28a01d5e802417a2285366c"
+    },
+    {
+      "path": "app/statistics/rules.gd",
+      "sha256": "b52bb07a5cd4993233e69994359062b29b6f983e7b28a30b1c6a596af908bb0e"
+    },
+    {
+      "path": "app/statistics/service.gd",
+      "sha256": "9f06d78c81dce1ad826f4dbfea5859362503141ddb65b0ae8e7dd819a8303b48"
+    }
+  ],
+  "test_source_hashes": [
+    {
+      "path": "app/tests/test_ground_accidents.gd",
+      "sha256": "75e8ac58a42051a1b926e47289be02592e39291841c9a99e47fcd39f3aa6125e"
+    },
+    {
+      "path": "app/tests/test_ground_accident_session.gd",
+      "sha256": "b5c5a5f0e6b4eff96a200516d586b59669fb27505a9941b7e806f5e15bdeb33c"
+    },
+    {
+      "path": "app/tests/test_wheel_coupling.gd",
+      "sha256": "c29f6a81beb6beec9711780d008f0ee784c67ba0fbba57d1d8154d2ef98497ad"
+    },
+    {
+      "path": "app/tests/test_flight_statistics_detector.gd",
+      "sha256": "7594528c505f5cdf82b4db7b00c8c0aceceeb3bcca50a63b7a386ca169f85adf"
+    },
+    {
+      "path": "app/tests/test_flight_statistics_lifecycle.gd",
+      "sha256": "6dac231906a2073d7e5af44ea091a4d783aedf7ec39567ecd490848a13e58a03"
+    },
+    {
+      "path": "app/tests/test_flight_statistics_resets.gd",
+      "sha256": "89fa7994f0a98703b83559a236cf56a62ef68433ca3f6c39fde5ba061a813742"
+    },
+    {
+      "path": "app/tests/test_flight_statistics_store.gd",
+      "sha256": "60e01bce85787821020d10ae05787c946a47fa7690c7315065a9a0852c832be2"
+    },
+    {
+      "path": "app/tests/test_flight_statistics_writer.gd",
+      "sha256": "a3e9c935513ebe2118ea3e328d0fe60723f6623ed5a79a9a359b5734851b0295"
+    },
+    {
+      "path": "app/tests/test_aircraft_contact_session.gd",
+      "sha256": "a250667865f785b71e385888f13086a8565686097ec47227d281565a47b834bf"
+    },
+    {
+      "path": "app/tests/test_ground_contact.gd",
+      "sha256": "723fb68d4c0682420d012773207d4ef4e16bda48e035ddf281f8c98c4884c022"
+    },
+    {
+      "path": "app/tests/test_soft_contacts.gd",
+      "sha256": "bf8fb6ccb7b1b3b4379e3a59a03eb222bab2815761165a0483a521d611eb5bb1"
+    },
+    {
+      "path": "app/tests/test_retractable_gear_ground.gd",
+      "sha256": "08e6f5f17095c757ccdf28458681e39fdca36a82836ae791533623a4a356e061"
+    },
+    {
+      "path": "app/tests/test_checkpoint.gd",
+      "sha256": "8192c74885e176a0f204d272cc7ea582e3063b122da27c761e5fdb393757c508"
+    },
+    {
+      "path": "app/tests/test_checkpoint_integrity.gd",
+      "sha256": "cfc900ab607dbf05e875224603a877a0854926be951c803a2b89aae62b8e9bc0"
+    },
+    {
+      "path": "app/tests/test_wheel_session.gd",
+      "sha256": "852f9430301a57e63532b0f0316165c834606773c56350e7c6221c398309540f"
+    }
+  ],
+  "dirty_app_paths": [
+    " M app/audio/mechanical_audio.gd",
+    " M app/physics/aero.gd",
+    " M app/sim/flight_session.gd",
+    " M app/sim/vehicle_model.gd",
+    " M app/statistics/detector.gd",
+    " M app/statistics/fixed_wing_adapter.gd",
+    " M app/statistics/rules.gd",
+    " M app/statistics/service.gd",
+    " M app/tests/test_mechanical_audio.gd",
+    " M app/tests/test_mechanical_integration.gd",
+    "?? app/physics/wheel_coupling.gd",
+    "?? app/physics/wind_aircraft_flow.gd",
+    "?? app/physics/wind_aircraft_flow.gd.uid",
+    "?? app/tests/test_ground_accident_session.gd",
+    "?? app/tests/test_ground_accidents.gd",
+    "?? app/tests/test_mechanical_integration.gd.uid",
+    "?? app/tests/test_spatial_wind_aerodynamics.gd",
+    "?? app/tests/test_spatial_wind_aerodynamics.gd.uid",
+    "?? app/tests/test_wheel_coupling.gd",
+    "?? app/tests/test_wind_aircraft_flow.gd",
+    "?? app/tests/test_wind_aircraft_flow.gd.uid"
+  ],
+  "unrelated_dirty_disclosure": "Main tree also contains concurrent aero/wind and mechanical audio changes, with their test changes. These checks do not qualify those tracks or establish a clean-tree result.",
+  "candidate_replay_report": "../candidate/report.json",
+  "candidate_replay_scope": "Earlier isolated candidate based on cb2924b3676b72ee49497c92fe742b0b1dcd2d9c. Its retained numeric replay evidence does not establish equality of later main statistics/service changes.",
+  "runtime_paths_changed_since_candidate_replay": [
+    "app/statistics/detector.gd",
+    "app/statistics/service.gd"
+  ],
+  "receipts": [
+    {
+      "script": "app/tests/test_ground_accidents.gd",
+      "checks": 55,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:22:54.457974-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-final/ground-accidents-__s3el5x",
+      "report": "test_ground_accidents/report.json",
+      "log": "test_ground_accidents/engine.log",
+      "capture_id": "0cd8116a-660e-473c-b11c-c439d84e85f7",
+      "engine_log_sha256": "27805b86f5073a54509bd144f1f5ce8e4276c523a1a011abf295b6a9e55ffa7e"
+    },
+    {
+      "script": "app/tests/test_ground_accident_session.gd",
+      "checks": 29,
+      "failures": 0,
+      "started_utc": "2026-10-25T23:26:07.4829680+00:00",
+      "source_receipt_directory": "tmp/gp-integrated-final/ground-accident-session-accepted-exemption-fewffa1z",
+      "report": "test_ground_accident_session/report.json",
+      "log": "test_ground_accident_session/engine.log",
+      "capture_id": "a13ca7b6-9d07-465b-96fd-9f117e211da3",
+      "engine_log_sha256": "76fb77ad6d978d49c69ff73cdeaf2d625a0659e17d772b318bf103a8b4c2a5fb"
+    },
+    {
+      "script": "app/tests/test_wheel_coupling.gd",
+      "checks": 84,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:18:37.772714-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-checks/test_wheel_coupling-my3f3fos",
+      "report": "test_wheel_coupling/report.json",
+      "log": "test_wheel_coupling/engine.log",
+      "capture_id": "5672a544-7312-4f41-945a-096bf7c88543",
+      "engine_log_sha256": "4273aae8335d10150e5962a27247e438ebeb8cc917c40ffe2e04b8f78f67b004"
+    },
+    {
+      "script": "app/tests/test_flight_statistics_detector.gd",
+      "checks": 67,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:22:55.08848-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-final/flight-statistics-detector-_j4tt7pf",
+      "report": "test_flight_statistics_detector/report.json",
+      "log": "test_flight_statistics_detector/engine.log",
+      "capture_id": "97e6e9c6-d4d5-4716-bfe5-6fca0637f0ec",
+      "engine_log_sha256": "ce88cdf82303c3b81c5218fb8e4fa4218eef5482442d18104d18283d0850479e"
+    },
+    {
+      "script": "app/tests/test_flight_statistics_lifecycle.gd",
+      "checks": 51,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:22:54.457974-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-final/flight-statistics-lifecycle-snapshot-yla4wwd9",
+      "report": "test_flight_statistics_lifecycle/report.json",
+      "log": "test_flight_statistics_lifecycle/engine.log",
+      "capture_id": "db39aa55-e99b-4b4c-970b-58dfd4c8a9d6",
+      "engine_log_sha256": "8c9eb1845f23c89ec3c955a4a0d7e9a42a8f300db392469f1ad7b7ea0dd80668"
+    },
+    {
+      "script": "app/tests/test_flight_statistics_resets.gd",
+      "checks": 48,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:18:39.897832-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-checks/test_flight_statistics_resets-e1s4mebx",
+      "report": "test_flight_statistics_resets/report.json",
+      "log": "test_flight_statistics_resets/engine.log",
+      "capture_id": "ea1198c9-a3a5-44d7-91e9-bd5bdcdab151",
+      "engine_log_sha256": "0242ae7ac143d4ee6f9816fba66d58a44ae3fbd0e8724437587840cf4e1925cd"
+    },
+    {
+      "script": "app/tests/test_flight_statistics_store.gd",
+      "checks": 49,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:18:40.390484-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-checks/test_flight_statistics_store-gf96lqck",
+      "report": "test_flight_statistics_store/report.json",
+      "log": "test_flight_statistics_store/engine.log",
+      "capture_id": "08f677e6-2047-4e55-9e6f-bede920e6933",
+      "engine_log_sha256": "ea9e157a43ffce574abfb371062af0bf18ebafd0c727972f03f3ca180f943d16"
+    },
+    {
+      "script": "app/tests/test_flight_statistics_writer.gd",
+      "checks": 18,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:18:41.124022-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-checks/test_flight_statistics_writer-f748rm1z",
+      "report": "test_flight_statistics_writer/report.json",
+      "log": "test_flight_statistics_writer/engine.log",
+      "capture_id": "1b00f7e3-4272-4525-8b35-d4fd0f949c7f",
+      "engine_log_sha256": "08de208c1f07262d853ae1b6e1f129bcc057a5678a015ae5c51a62e7de4b6284"
+    },
+    {
+      "script": "app/tests/test_aircraft_contact_session.gd",
+      "checks": 63,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:18:38.901101-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-checks/test_aircraft_contact_session-rnfp76ae",
+      "report": "test_aircraft_contact_session/report.json",
+      "log": "test_aircraft_contact_session/engine.log",
+      "capture_id": "fe19ef30-94ed-4541-ab7b-2f76de4aa65b",
+      "engine_log_sha256": "f18274ce58a1526c61ccbaebcdcefe878fa3f241bb9ae63ad987e5f44e28c540"
+    },
+    {
+      "script": "app/tests/test_ground_contact.gd",
+      "checks": 23,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:18:42.407687-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-checks/test_ground_contact-t6i2h0z1",
+      "report": "test_ground_contact/report.json",
+      "log": "test_ground_contact/engine.log",
+      "capture_id": "e6f46404-4f09-49c5-84cb-af4f176a2fc9",
+      "engine_log_sha256": "84eebb6c80358582a59ad9099fbf3d6733e33cb59208f46c2448ef1773fafab0"
+    },
+    {
+      "script": "app/tests/test_soft_contacts.gd",
+      "checks": 36,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:18:46.599459-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-checks/test_soft_contacts-nhj72x9s",
+      "report": "test_soft_contacts/report.json",
+      "log": "test_soft_contacts/engine.log",
+      "capture_id": "a1416356-81fd-4245-85dd-9ab96c1d2a5e",
+      "engine_log_sha256": "7e054637e87c4ac007e07edc2be987b5982f7bb7c19f6fa3b006564dda3d68ff"
+    },
+    {
+      "script": "app/tests/test_retractable_gear_ground.gd",
+      "checks": 26,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:18:56.902283-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-checks/test_retractable_gear_ground-ctbvf662",
+      "report": "test_retractable_gear_ground/report.json",
+      "log": "test_retractable_gear_ground/engine.log",
+      "capture_id": "6bf690d0-e8e8-448e-8d49-6a8e4c8e58ae",
+      "engine_log_sha256": "499afa9183ace1f222dcfb7e40e16e19b7f21f0da0cb8c8b345419985f20347c"
+    },
+    {
+      "script": "app/tests/test_checkpoint.gd",
+      "checks": 92,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:19:11.880233-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-checks/test_checkpoint-uhl8am76",
+      "report": "test_checkpoint/report.json",
+      "log": "test_checkpoint/engine.log",
+      "capture_id": "c65ce3d7-904f-4ae2-b52c-756cc227689b",
+      "engine_log_sha256": "0b64dcef240dd23baaf316656fb2c5a9da2481329e7e06e5432f60ce44b9724e"
+    },
+    {
+      "script": "app/tests/test_checkpoint_integrity.gd",
+      "checks": 149,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:19:19.937577-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-checks/test_checkpoint_integrity-_ic18l_g",
+      "report": "test_checkpoint_integrity/report.json",
+      "log": "test_checkpoint_integrity/engine.log",
+      "capture_id": "4e69ac83-31ee-4690-8732-9ff81dc0b65f",
+      "engine_log_sha256": "31c337e2aded57641bcbe65f0a829437c00eb9592bc9d1e2c6d21ba497aa65e6"
+    },
+    {
+      "script": "app/tests/test_wheel_session.gd",
+      "checks": 51,
+      "failures": 0,
+      "started_utc": "2026-10-25T18:19:20.556753-05:00",
+      "source_receipt_directory": "tmp/gp-integrated-checks/test_wheel_session-agvulhxl",
+      "report": "test_wheel_session/report.json",
+      "log": "test_wheel_session/engine.log",
+      "capture_id": "836837d5-f755-468c-87be-ea834cd6bbdb",
+      "engine_log_sha256": "452099ca2865e9e00c312d446b0d6747fd4a8068c465ba30b5e6a1ed911daebf"
+    }
+  ],
+  "limits": "Selected headless software regression checks only; no full suite, physical validation, target-host performance, rendered app or 1080p qualification."
+}

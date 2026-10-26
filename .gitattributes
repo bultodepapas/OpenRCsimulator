@@ -203,3 +203,15 @@
 
 # EX-14h's exact JSON serializer emits LF; preserve its generated fit bytes.
 /research/extra-300/ex14/wing_polar_fit.json text eol=lf
+
+# GP-08/09/10/14 replay and checked-runner receipts bind exact raw bytes.
+/docs/research/ground-physics/GP-08/evidence/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-09/checks/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-10/checks/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-10/evidence/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-14/checks/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-08/evidence/**/*.log -whitespace
+/docs/research/ground-physics/GP-09/checks/**/*.log -whitespace
+/docs/research/ground-physics/GP-10/checks/**/*.log -whitespace
+/docs/research/ground-physics/GP-10/evidence/**/*.log -whitespace
+/docs/research/ground-physics/GP-14/checks/**/*.log -whitespace

@@ -1,0 +1,476 @@
+{
+  "format": "openrc-gp-evidence-checkout v1",
+  "status": "ok",
+  "files_verified": 116,
+  "excluded_self_receipt": "docs/research/ground-physics/GP-08/evidence/integration/checkout.json",
+  "core_autocrlf": "true",
+  "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-evidence-checkout-214d427796df4e688aaea3763790e247\\source",
+  "clone": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-evidence-checkout-214d427796df4e688aaea3763790e247\\clone",
+  "attributes_sha256": "dd1f48a96d1e4b935620913313a2a9a12e14355d7367b2ea5a83296f09d02316",
+  "files": [
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/manifest.json",
+      "sha256": "38f77f3936ce69c3a929fbafe2ee0a2182fc03ffaf5362326683cc9400ca435b"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-air-exact-comparison.json",
+      "sha256": "d0a954d79bb7242ae325ec794303c25d71d7d660d60ea161bae8369d84bb7232"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-ground-exact-comparison.json",
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/README.md",
+      "sha256": "b7596ec90230c9d3c7ac4aa2a1e6fbc2d9847c5471eb2711e5e29849ee09158f"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/record_ground.gd",
+      "sha256": "414a6dbd0e5851e786038a34d4664863df7e9816977aea0703549eb1348d62cf"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/source-identity.json",
+      "sha256": "43898cc4c4cc83435656da0517e3760b13db1df08d0d208bba2f69744b1fb418"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-air-exact-comparison.json",
+      "sha256": "d0a954d79bb7242ae325ec794303c25d71d7d660d60ea161bae8369d84bb7232"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-ground-exact-comparison.json",
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/air/jensen_ugly_stik_60.orfl",
+      "sha256": "7a91342a0469db5780a47389fe2d4962ff615f502b2e93edca3e2301fc5a7f8b"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/air/p51d_mustang_120.orfl",
+      "sha256": "0b8d5db677baa3a68b4a231c6165980085a4f403875ea34109b5903cbf5e82e0"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/air/verification.json",
+      "sha256": "1c1331078f3a71e63e9e274a3e4865264b56ff0f176e94117c23984dcc930f05"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/check_numeric_preservation.gd",
+      "sha256": "4262a34dbc0ccddcfcb7486681040066793f3fd6846fc7dfb7e72306227b6e0a"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/p51-air-comparison.json",
+      "sha256": "d0a954d79bb7242ae325ec794303c25d71d7d660d60ea161bae8369d84bb7232"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/p51-air-numeric-preservation.json",
+      "sha256": "5d11722a9e4b07a2f099d6b4feefe6b80db8a57b7b8cbcb62f8d50c2fce23385"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/p51-ground-comparison.json",
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/p51-ground-numeric-preservation.json",
+      "sha256": "0359f2f7e3f25eaeb832761d45e3e2adc34c7386515217253c426f0b2778969e"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/README.md",
+      "sha256": "5569ddda9e3bf493e5640cf70307c5facb5261462f1c17ba80cbb306a6d06766"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/report.json",
+      "sha256": "226ab35583ae10b506ae962e2d632fd218b1068c932a08794a6583763005bd8a"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/source-identity-after.json",
+      "sha256": "1abce191b147a27e0a1a1557777f6c20017690a78584c3c1161883251a354aff"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/source-identity-before.json",
+      "sha256": "bb93744dced56b8929bfe724c8c0854578e708cab625acd1e9d3dc5f0d8111de"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/stik-air-comparison.json",
+      "sha256": "d0a954d79bb7242ae325ec794303c25d71d7d660d60ea161bae8369d84bb7232"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/stik-air-numeric-preservation.json",
+      "sha256": "4e38d21f9c249114bde713382f98d6a9558148438b744237d337f703898a74c4"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/stik-ground-comparison.json",
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/stik-ground-numeric-preservation.json",
+      "sha256": "989f774187d8ccb293e4800600d6de6a8ece1cdc8aab7ab44e10384352efa0da"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/checks/results.xml",
+      "sha256": "4d12593ef024c85bbfb733b73ca0ac61aad9d554ff1b9c84f8ffd6ab779bdc94"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/checks/p51-air-numeric-preservation-l604uv6k/engine.log",
+      "sha256": "525f33c30ba0bfaf13a022a77ad8dd3491d2768dc41669a3edd5839959aed555"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/checks/p51-air-numeric-preservation-l604uv6k/report.json",
+      "sha256": "d0f048c6d70ec6403ee9c7cf17c7e182edfada0d69e9f926db04e0018f053343"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/checks/p51-ground-numeric-preservation-u8v99pt_/engine.log",
+      "sha256": "41ac937913c56a7e4689b66a617b4b49de57ec0a9620a56b617c2ea1619735b0"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/checks/p51-ground-numeric-preservation-u8v99pt_/report.json",
+      "sha256": "d06c81d54d40d71add2cd326b88e0087ec5993fb72daafcc058110e151eb8447"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/checks/stik-air-numeric-preservation-s0ceq6ma/engine.log",
+      "sha256": "6090e5ed71895e532052cba84b8920815f0099a43f84e6938eb60f16026ae62d"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/checks/stik-air-numeric-preservation-s0ceq6ma/report.json",
+      "sha256": "5897e03de03bd3f4e97954812cea6b99605914056b2c435762f9039b5a36ed13"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/checks/stik-ground-numeric-preservation-lg2gmzea/engine.log",
+      "sha256": "2e9d6efc6591ac18f44c7021f916a3a32a39fe15648a002b4fee06d7aee5e36d"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/checks/stik-ground-numeric-preservation-lg2gmzea/report.json",
+      "sha256": "f61ec928bc8e86122c7f2c9e76b7c03f1ba05a6619750467a0abbdf35412276f"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/p51-air/flight.csv",
+      "sha256": "78279f458ae9b477809a259c167c7b2d3b49a4c2ce7aedb182eada93d01fb748"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/p51-air/godot.log",
+      "sha256": "fb495e9a5d81d2e1428819ad5cad8b451479a89803e1265f5733bbb03b26726a"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/p51-air/replay.json",
+      "sha256": "86265339e6eae37fdf8f86eef471a2bfb452396b5a13a8b62f2016308cb2e16c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/p51-ground/flight.csv",
+      "sha256": "a699523ab3a118cfbb8fcfe356468e4ed82905497db266d656f6a58196d46a6c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/p51-ground/godot.log",
+      "sha256": "3a32f0d0b3bf4f8bc5296f33793e78176398446b43877473491a25384ba5b3fb"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/p51-ground/replay.json",
+      "sha256": "cbab7b640e1791da5c41adb87427da428028b5258d042a70d5eb9800e45ce406"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/stik-air/flight.csv",
+      "sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/stik-air/godot.log",
+      "sha256": "31ff278bc6a7c63fd26af14b7997888d909280b40bab3907f17ba6800d80a16f"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/stik-air/replay.json",
+      "sha256": "9e6ba507a44c51076ca37cb166f6d68305af8d882d9a3fddf08f7a8c6753c654"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/stik-ground/flight.csv",
+      "sha256": "ba6d8dffc5e698c41833e5d52b8912197997ccbc00640e1309bd4effb4f74a63"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/stik-ground/godot.log",
+      "sha256": "e1416ff46d4e04c1ba729ff974330e0769d88efed4b593c808a73351970b78cb"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/candidate/stik-ground/replay.json",
+      "sha256": "8879eae535d48cdaf23dcdfa57282813382c3b3c7fdb3ca584ec4c729e02a4ee"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/checks/results.xml",
+      "sha256": "9a2e2b89eb30939b7f084fe06026ed6188fc9bac374421b679743f5bd9f08448"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/checks/flight-log-baseline-w3blmead/engine.log",
+      "sha256": "0407cb476fe0e21ce11c640906bdc36f7bc4f9e5fa58ae94a042fd6f24d76973"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/checks/flight-log-baseline-w3blmead/report.json",
+      "sha256": "f1477242b3444188afe793cd632cbe99d5beb701ab65c5b4fe2525b4c50e7bcf"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/checks/ground-record-baseline-9wvi2mto/engine.log",
+      "sha256": "c9e9edd69d1854cccfd2b54f9bcfa3d0d35ea435a0a7d0dd97949de12ac3c6e6"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/checks/ground-record-baseline-9wvi2mto/report.json",
+      "sha256": "63257a2bf2fa36a298c3688783f317a8a4796b9d29ed84553832a79f4db858ad"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/ground/jensen_ugly_stik_60-ground.orfl",
+      "sha256": "41c8aed6d090cfc6a1945c8db263928c15b5b25e3a4baad9a3daa4ee02c7eed2"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/ground/p51d_mustang_120-ground.orfl",
+      "sha256": "48f09d885dca2e6add5b80876cda3659df6dac8473893436483094ee8382242a"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/ground/scenario.json",
+      "sha256": "af697772443ff275ce5a3f2ba5f5dc51f63c50314894c273aa9c48026eefc9e2"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/README.md",
+      "sha256": "ff832561af5fd8e84eb2d9f6635ce143c8520aeb884e05995859cd44fe745e70"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/report.json",
+      "sha256": "e80189ce4495a791bf8d1f664ac598b829c8147680f1ab025a724e3c95c463d5"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/results.xml",
+      "sha256": "b1da657a08cc4f679560947520062829e686d112db3bbe97e175ec48de48ccbe"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_aircraft_contact_session/engine.log",
+      "sha256": "f18274ce58a1526c61ccbaebcdcefe878fa3f241bb9ae63ad987e5f44e28c540"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_aircraft_contact_session/report.json",
+      "sha256": "c883a6ec160ebcf86686f8d86e4e3ca0ee4b6350acaf026208cdccd53b54d689"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_checkpoint/engine.log",
+      "sha256": "0b64dcef240dd23baaf316656fb2c5a9da2481329e7e06e5432f60ce44b9724e"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_checkpoint/report.json",
+      "sha256": "db78fdfbb80b079e9f3ea719398d5658f7db2ce1cccbfbf25a56f27422b47a01"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_checkpoint_integrity/engine.log",
+      "sha256": "31c337e2aded57641bcbe65f0a829437c00eb9592bc9d1e2c6d21ba497aa65e6"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_checkpoint_integrity/report.json",
+      "sha256": "9c2ec1f6d11244e2245220e8eb39a11e2b29bb72fc0bea30b2530a7a08de3478"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_flight_statistics_detector/engine.log",
+      "sha256": "ce88cdf82303c3b81c5218fb8e4fa4218eef5482442d18104d18283d0850479e"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_flight_statistics_detector/report.json",
+      "sha256": "be43fa26dd45113e02e2eb713a1b215b8db304e5fd639852440efdb8fe42f81f"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_flight_statistics_lifecycle/engine.log",
+      "sha256": "8c9eb1845f23c89ec3c955a4a0d7e9a42a8f300db392469f1ad7b7ea0dd80668"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_flight_statistics_lifecycle/report.json",
+      "sha256": "fdf0a3f51b02a621a09ed242f528730a27de558d71e5a2934155ca099ad5e965"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_flight_statistics_resets/engine.log",
+      "sha256": "0242ae7ac143d4ee6f9816fba66d58a44ae3fbd0e8724437587840cf4e1925cd"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_flight_statistics_resets/report.json",
+      "sha256": "0341e4bb33876db1dc1e32fb73d111adc1c49babaf61f9c765b9168d7d8e3cc7"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_flight_statistics_store/engine.log",
+      "sha256": "ea9e157a43ffce574abfb371062af0bf18ebafd0c727972f03f3ca180f943d16"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_flight_statistics_store/report.json",
+      "sha256": "8468c579e81cc362c03319547d0e1837d01943b29241b25c252e80bd6b1c9390"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_flight_statistics_writer/engine.log",
+      "sha256": "08de208c1f07262d853ae1b6e1f129bcc057a5678a015ae5c51a62e7de4b6284"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_flight_statistics_writer/report.json",
+      "sha256": "616901d87a6f55403d24b97d961fa7bacd25a44d8c6f1a6616c1476a8fff64f9"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_ground_accidents/engine.log",
+      "sha256": "27805b86f5073a54509bd144f1f5ce8e4276c523a1a011abf295b6a9e55ffa7e"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_ground_accidents/report.json",
+      "sha256": "3e273b306d335cb0bce576ad4e3e4eb5a2ea6069ca751f2e8e3366ea7235f7d3"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_ground_accident_session/engine.log",
+      "sha256": "76fb77ad6d978d49c69ff73cdeaf2d625a0659e17d772b318bf103a8b4c2a5fb"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_ground_accident_session/report.json",
+      "sha256": "05c8111ea5a1f4d3336258a584ce9d7fd471d1b1d0cef243f048be828842542b"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_ground_contact/engine.log",
+      "sha256": "84eebb6c80358582a59ad9099fbf3d6733e33cb59208f46c2448ef1773fafab0"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_ground_contact/report.json",
+      "sha256": "0ce1b093e9f7430228ac75e728bfde6d8d0b1aeeba9cc6dfade3a6ee553189e1"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_retractable_gear_ground/engine.log",
+      "sha256": "499afa9183ace1f222dcfb7e40e16e19b7f21f0da0cb8c8b345419985f20347c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_retractable_gear_ground/report.json",
+      "sha256": "e9fb4052849f697ba096b4e807442ee8639e62518c2adde74f0a606285f108a2"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_soft_contacts/engine.log",
+      "sha256": "7e054637e87c4ac007e07edc2be987b5982f7bb7c19f6fa3b006564dda3d68ff"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_soft_contacts/report.json",
+      "sha256": "196e8deca063c13410b7dc71e37a21e3acd5a78bc17fa1503383a00967f745ee"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_wheel_coupling/engine.log",
+      "sha256": "4273aae8335d10150e5962a27247e438ebeb8cc917c40ffe2e04b8f78f67b004"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_wheel_coupling/report.json",
+      "sha256": "5120596db601eb9a1e164ff823dc6684832edf64666481348470e9f5afdb61f7"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_wheel_session/engine.log",
+      "sha256": "452099ca2865e9e00c312d446b0d6747fd4a8068c465ba30b5e6a1ed911daebf"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/integration/test_wheel_session/report.json",
+      "sha256": "7cdad5773eadcabbabff27f248d70e3fc0c4ab6a0ccce2f0942cc0fad3a9fb0e"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-air-export/export.json",
+      "sha256": "ff876cd67a4e20e8891e56467f15bfef49055bec2b135134137ba00cd4bbec30"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-air-export/flight.csv",
+      "sha256": "78279f458ae9b477809a259c167c7b2d3b49a4c2ce7aedb182eada93d01fb748"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-air-export/godot.log",
+      "sha256": "441647acff0e4b714924da01e381332b5d0b42ef1981f65915edb82a6528b031"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-air-replay/flight.csv",
+      "sha256": "78279f458ae9b477809a259c167c7b2d3b49a4c2ce7aedb182eada93d01fb748"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-air-replay/godot.log",
+      "sha256": "f121df9f9ebbd22f5c99eb7b404bad61969d4bb8c6762e9f63427de101bb39d7"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-air-replay/replay.json",
+      "sha256": "cc0822f9f6de3e9ac3d3fe964c85343dce735239bddf21b31635fe9f2015f612"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-ground-export/export.json",
+      "sha256": "acf3a4b4ef8ae75d2ccd0a8b988b5e9b973a0a042935f9659a4b41be9f838ee0"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-ground-export/flight.csv",
+      "sha256": "a699523ab3a118cfbb8fcfe356468e4ed82905497db266d656f6a58196d46a6c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-ground-export/godot.log",
+      "sha256": "b556a8019086ea2c9087c3a666d6b8ef7e4fade8352a21085aa2e1a2332c2d5c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-ground-replay/flight.csv",
+      "sha256": "a699523ab3a118cfbb8fcfe356468e4ed82905497db266d656f6a58196d46a6c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-ground-replay/godot.log",
+      "sha256": "4e9343af567eb14344503ae1f9bda17ee188ba42fdabb852a4294473c244a8b5"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/p51-ground-replay/replay.json",
+      "sha256": "f67461bcfb548316a820e6d03032d59ed1c16e92863b20aa39a47c913893d1dd"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-air-export/export.json",
+      "sha256": "6db0662d1c2d294b41ace07ca27f8f6719d207be5b4a5f48b3c9a607b0eb6e8f"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-air-export/flight.csv",
+      "sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-air-export/godot.log",
+      "sha256": "441647acff0e4b714924da01e381332b5d0b42ef1981f65915edb82a6528b031"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-air-replay/flight.csv",
+      "sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-air-replay/godot.log",
+      "sha256": "b1b6799a1e36ed495cb5cbee6006a2d1fb37d2bae741e286b8929dae060a8868"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-air-replay/replay.json",
+      "sha256": "40f575de192682c5f19192546154b5efdef6785b73da3e2b4468f61dd0ef6351"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-ground-export/export.json",
+      "sha256": "8ca0eeb91a40a3282d43a6759d1efa89cdd08ee186f68bb9d6ba8b57888d6227"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-ground-export/flight.csv",
+      "sha256": "ba6d8dffc5e698c41833e5d52b8912197997ccbc00640e1309bd4effb4f74a63"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-ground-export/godot.log",
+      "sha256": "b556a8019086ea2c9087c3a666d6b8ef7e4fade8352a21085aa2e1a2332c2d5c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-ground-replay/flight.csv",
+      "sha256": "ba6d8dffc5e698c41833e5d52b8912197997ccbc00640e1309bd4effb4f74a63"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-ground-replay/godot.log",
+      "sha256": "834d8428e2753d3160a9eb52267f3e04db95bced4f1832063f016c3bb99f1ba9"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-08/evidence/stik-ground-replay/replay.json",
+      "sha256": "e4069afe509a0ddf16f7ff6f759067f032c9ef567eac8ea7d6702613babdd03c"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-09/checks/wheel-coupling/engine.log",
+      "sha256": "4273aae8335d10150e5962a27247e438ebeb8cc917c40ffe2e04b8f78f67b004"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-09/checks/wheel-coupling/report.json",
+      "sha256": "89fcb50b4a708b0b883529ec2b4fd538b0e9b8e5fa3bbdcaf4805899b428899d"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-14/checks/existing-detector-67/engine.log",
+      "sha256": "ce88cdf82303c3b81c5218fb8e4fa4218eef5482442d18104d18283d0850479e"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-14/checks/existing-detector-67/report.json",
+      "sha256": "5ea1746439109d8f083eba6cf4bee9846db36c92bd7d55880c6d93271016b811"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-14/checks/pure-accidents-47/engine.log",
+      "sha256": "a44fe5a8f85931f8a701f4414a39f4caa7c90ac7fb933a8dc192187519b9d966"
+    },
+    {
+      "path": "docs/research/ground-physics/GP-14/checks/pure-accidents-47/report.json",
+      "sha256": "e2ca3d4afe360f8ee7b003835826a3ed5ca5e3f8cfd19c7708a2cca6c60cbf5e"
+    }
+  ]
+}

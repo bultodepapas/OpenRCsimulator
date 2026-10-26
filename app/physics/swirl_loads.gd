@@ -25,7 +25,8 @@ const ROOT_TOLERANCE: float = 1.0e-14
 ## Distributed swirl effect only, added to the existing smooth-profile axial centroid load.
 ## wake is Slipstream.wake(...); fade is Slipstream.reverse_weight(...), both computed by the caller.
 static func correction(state: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary,
-		wake: Dictionary, fade: float, rho: float, downwash_cl: float = NAN) -> PackedFloat64Array:
+		wake: Dictionary, fade: float, rho: float, downwash_cl: float = NAN,
+		sampler := Callable(), source_velocity := PackedFloat64Array()) -> PackedFloat64Array:
 	var result: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	if fade == 0.0 or float(wake.get("swirl", 0.0)) == 0.0:
 		return result
@@ -38,6 +39,10 @@ static func correction(state: PackedFloat64Array, air: Dictionary, d: Dictionary
 	if surfaces.horizontal.has("free_slope"):
 		wing_cl = Aero.wing_wake_velocity(state, air, d, model) if is_nan(downwash_cl) else downwash_cl
 	var v: PackedFloat64Array = air.v_air
+	var source: PackedFloat64Array = v if source_velocity.is_empty() else source_velocity
+	if not Aero._spatial_finite(source, 3):
+		result.fill(NAN)
+		return result
 	var rates: PackedFloat64Array = state.slice(RB.RATE, RB.RATE + 3)
 	var axis: PackedFloat64Array = Propulsion.axis(prop)
 	var wash: PackedFloat64Array = PackedFloat64Array([
@@ -45,7 +50,7 @@ static func correction(state: PackedFloat64Array, air: Dictionary, d: Dictionary
 	])
 	for piece: Dictionary in ss.pieces:
 		var local: PackedFloat64Array = _piece_correction(v, rates, d, model, piece, axis, wash, wake,
-			float(ss.edge_fraction), rho, wing_cl)
+			float(ss.edge_fraction), rho, wing_cl, sampler, source)
 		for component in 6:
 			result[component] += local[component]
 	for component in 6:
@@ -55,7 +60,8 @@ static func correction(state: PackedFloat64Array, air: Dictionary, d: Dictionary
 
 static func _piece_correction(v: PackedFloat64Array, rates: PackedFloat64Array, d: Dictionary, model: Dictionary,
 		piece: Dictionary, axis: PackedFloat64Array, wash: PackedFloat64Array, wake: Dictionary,
-		edge: float, rho: float, wing_cl: float) -> PackedFloat64Array:
+		edge: float, rho: float, wing_cl: float, sampler := Callable(),
+		source_velocity := PackedFloat64Array()) -> PackedFloat64Array:
 	var result: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var profile: PackedFloat64Array = piece.profile
 	var profile_area: float = 0.0
@@ -75,11 +81,12 @@ static func _piece_correction(v: PackedFloat64Array, rates: PackedFloat64Array, 
 	var centre_0: float = hub[0] + ax_le_0 * shaft_scale
 	var centre_1: float = hub[1] + ax_le_1 * shaft_scale
 	var centre_2: float = hub[2] + ax_le_2 * shaft_scale
-	var speed: float = M.sqrt_(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+	var source: PackedFloat64Array = v if source_velocity.is_empty() else source_velocity
+	var speed: float = M.sqrt_(source[0] * source[0] + source[1] * source[1] + source[2] * source[2])
 	if speed > 1.0e-6 and float(wake.vs) > 1.0e-6:
 		var lean: float = minf(speed / (float(wake.u) + float(wake.w)), 1.0) * distance / speed
-		centre_1 -= v[1] * lean
-		centre_2 += v[2] * lean * float(model.propulsion.slipstream.vertical_drift)
+		centre_1 -= source[1] * lean
+		centre_2 += source[2] * lean * float(model.propulsion.slipstream.vertical_drift)
 	var rel_0: float = root[0] - centre_0
 	var rel_1: float = root[1] - centre_1
 	var rel_2: float = root[2] - centre_2
@@ -165,7 +172,7 @@ static func _piece_correction(v: PackedFloat64Array, rates: PackedFloat64Array, 
 				tail_pos_1, tail_pos_2, arm_base_0, arm_base_1, arm_base_2,
 				horizontal, vertical, has_downwash, control_angle, incidence, downwash_product,
 				elevator_tau_control, free_incidence, lift_slope,
-				tail_limit, tail_span, tail_cd0, tail_k, tail_cd90, rho)
+				tail_limit, tail_span, tail_cd0, tail_k, tail_cd90, rho, sampler)
 			for component in 6:
 				result[component] += piece_delta[component]
 	return result
@@ -182,7 +189,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		horizontal: bool, vertical: bool, has_downwash: bool, control_angle: float,
 		incidence: float, downwash_product: float, elevator_tau_control: float,
 		free_incidence: float, lift_slope: float, tail_limit: float, tail_span: float,
-		tail_cd0: float, tail_k: float, tail_cd90: float, rho: float) -> PackedFloat64Array:
+		tail_cd0: float, tail_k: float, tail_cd90: float, rho: float, sampler := Callable()) -> PackedFloat64Array:
 	var result: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var middle: float = 0.5 * (lo + hi)
 	var half: float = 0.5 * (hi - lo)
@@ -207,6 +214,24 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		var rate_arm_0: float = q * arm_2 - r * arm_1
 		var rate_arm_1: float = r * arm_0 - p * arm_2
 		var rate_arm_2: float = p * arm_1 - q * arm_0
+		# W05c-R2: sample once at this force node and share the ambient flow between both tail-law passes.
+		var local_v0 := v0
+		var local_v1 := v1
+		var local_v2 := v2
+		if sampler.is_valid():
+			var delta: Variant = sampler.call(PackedFloat64Array([arm_0, arm_1, arm_2]))
+			if not delta is PackedFloat64Array or not Aero._spatial_finite(delta, 3):
+				result.fill(NAN)
+				return result
+			if delta[0] != 0.0:
+				local_v0 += delta[0]
+			if delta[1] != 0.0:
+				local_v1 += delta[1]
+			if delta[2] != 0.0:
+				local_v2 += delta[2]
+			if not is_finite(local_v0) or not is_finite(local_v1) or not is_finite(local_v2):
+				result.fill(NAN)
+				return result
 		var radial_body_0: float = -(point_0 - centre_0)
 		var radial_body_1: float = point_1 - centre_1
 		var radial_body_2: float = -(point_2 - centre_2)
@@ -223,9 +248,9 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 
 		# The arm and rate cross are common to the axial-only and axial-plus-swirl loads.
 		# Keep the original vector addition grouping while evaluating each tail law directly in scalars.
-		var axial_flow_0: float = (v0 + wash_0) + rate_arm_0
-		var axial_flow_1: float = (v1 + wash_1) + rate_arm_1
-		var axial_flow_2: float = (v2 + wash_2) + rate_arm_2
+		var axial_flow_0: float = (local_v0 + wash_0) + rate_arm_0
+		var axial_flow_1: float = (local_v1 + wash_1) + rate_arm_1
+		var axial_flow_2: float = (local_v2 + wash_2) + rate_arm_2
 		var axial_normal: float = axial_flow_1 if vertical else axial_flow_2
 		var axial_effective: float
 		if has_downwash:
@@ -273,9 +298,9 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		var swirl_extra_0: float = wash_0 - swirl_0
 		var swirl_extra_1: float = wash_1 - swirl_1
 		var swirl_extra_2: float = wash_2 - swirl_2
-		var swirl_flow_0: float = (v0 + swirl_extra_0) + rate_arm_0
-		var swirl_flow_1: float = (v1 + swirl_extra_1) + rate_arm_1
-		var swirl_flow_2: float = (v2 + swirl_extra_2) + rate_arm_2
+		var swirl_flow_0: float = (local_v0 + swirl_extra_0) + rate_arm_0
+		var swirl_flow_1: float = (local_v1 + swirl_extra_1) + rate_arm_1
+		var swirl_flow_2: float = (local_v2 + swirl_extra_2) + rate_arm_2
 		var swirl_normal: float = swirl_flow_1 if vertical else swirl_flow_2
 		var swirl_effective: float
 		if has_downwash:

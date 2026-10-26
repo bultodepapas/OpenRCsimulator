@@ -41,7 +41,7 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `aero.coefficients.Cnb` | 1/rad | ≥-100, >0, ≤100 | Aero._global_loads / local-oracle calibration: normalized force or moment derivative |
 | `aero.coefficients.Cnda_left` | 1/rad | ≥-100, ≤100 | Aero._global_loads / local-oracle calibration: normalized force or moment derivative |
 | `aero.coefficients.Cnda_right` | 1/rad | ≥-100, ≤100 | Aero._global_loads / local-oracle calibration: normalized force or moment derivative |
-| `aero.coefficients.Cndr` | 1/rad | ≥-100, ≤100, <0 | Aero._global_loads / local-oracle calibration: normalized force or moment derivative |
+| `aero.coefficients.Cndr` | 1/rad | <0 OR ≥-100, ≤100 | Aero._global_loads / local-oracle calibration: normalized force or moment derivative |
 | `aero.coefficients.Cnp` | 1/rad | ≥-100, ≤100 | Aero._global_loads / local-oracle calibration: normalized force or moment derivative |
 | `aero.coefficients.Cnr` | 1/rad | ≥-100, ≤100, <0 | Aero._global_loads / local-oracle calibration: normalized force or moment derivative |
 | `aero.coefficients.k_induced` | 1 | ≥-100, >0, ≤100 | Aero._global_loads / local-oracle calibration: normalized force or moment derivative |
@@ -70,8 +70,11 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `aero.surfaces.tail_k` | 1 | ≥0, ≤2 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.tail_local_limit` | deg | ≥9, ≤30 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.tail_stall_end` | deg | ≥10, ≤60 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
+| `aero.surfaces.tailless.elevon_chord_fraction` | 1 | ≥0.05, ≤0.6 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
+| `aero.surfaces.tailless.elevon_coverage` | 1 | length 3…3, each(≥0, ≤1) | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
+| `aero.surfaces.tailless.station_x` | m | length 3…3, each(≥-2, ≤2) | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.vertical.area` | m2 | ≥0.001, ≤1 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
-| `aero.surfaces.vertical.control_effectiveness` | 1 | ≥0.01, ≤1.5 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
+| `aero.surfaces.vertical.control_effectiveness` | 1 | ≥0, ≤1.5 OR ≥0.01 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.vertical.incidence` | rad | ≥-0.2, ≤0.2 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.vertical.lift_slope` | 1/rad | ≥0.1, ≤6.3 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.vertical.position` | m | length 3…3, each(≥-2, ≤2) | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
@@ -95,6 +98,7 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `controls.max_throw.aileron` | deg | ≥1, ≤60 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
 | `controls.max_throw.aileron_down` | deg | ≥1, ≤60 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
 | `controls.max_throw.elevator` | deg | ≥1, ≤60 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
+| `controls.max_throw.elevon` | deg | ≥1, ≤60 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
 | `controls.max_throw.rudder` | deg | ≥1, ≤60 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
 | `controls.rates.normal.aileron` | 1 | ≥0.05, ≤1 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
 | `controls.rates.normal.aileron_expo` | 1 | ≥0, ≤0.9 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
@@ -104,6 +108,9 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `controls.rates.normal.rudder_expo` | 1 | ≥0, ≤0.9 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
 | `controls.servo_full_throw_time` | s | ≥0.01, ≤2 | AircraftData._controls → Commands surface mapping, session servo integration, rendering |
 | `crash_hull` | m | length 4…unbounded, each(length 3…3, each(≥-3, ≤3)) | AircraftData._hull_body → hull_crossing / ImpactSnapshot / FlightSession crash |
+| `crash_tolerance.crash_depth` | m | ≥0.08, ≤0.3 | AircraftData._crash_tolerance → HullContact.prepare terminal thresholds / crash director durability |
+| `crash_tolerance.presentation_durability` | 1 | ≥1, ≤10 | AircraftData._crash_tolerance → HullContact.prepare terminal thresholds / crash director durability |
+| `crash_tolerance.terminal_specific_energy` | J/kg | ≥2.5, ≤50 | AircraftData._crash_tolerance → HullContact.prepare terminal thresholds / crash director durability |
 | `flaps.aerodynamic_gain` | 1 | ≥0, ≤1 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.effective_angle_limit_deg` | deg | ≥5, ≤30 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.elevator_mix_per_flap_fraction` | 1 | ≥0, ≤0.5 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
@@ -224,4 +231,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 210 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 217 distinct quantity paths. Shared paths retain branch-dependent ranges.

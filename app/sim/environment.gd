@@ -8,6 +8,7 @@ extends RefCounted
 
 const WeatherField := preload("res://physics/wind_field.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
+const GroundSupport := preload("res://physics/ground_support.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const Course := preload("res://physics/ground_vehicle/course.gd")
 const AirfieldCourse := preload("res://physics/ground_vehicle/airfield_course.gd")
@@ -19,6 +20,8 @@ var weather: WeatherField = WeatherField.new()
 var turbulence: Callable
 ## The field's flat surface table (physics/ground_surfaces.gd); empty = dry pavement everywhere at height 0.
 var surfaces: PackedFloat64Array = PackedFloat64Array()
+## Detached observational registry. Legacy force/checkpoint arrays remain authoritative.
+var _ground_support: Dictionary = {}
 ## Normalized lake (physics/lake_surface.gd); empty = no water.
 var lake: Dictionary = {}
 ## Ground-vehicle course sampler (north, east) -> Dictionary with height, normal, surface, walls and wet zone;
@@ -38,9 +41,53 @@ func wind(time_s: float) -> PackedFloat64Array:
 	return out
 
 
+## Position-aware wind contract. The weather provider keeps its uniform legacy law here;
+## owner-sampled turbulence is added once and malformed samples fail closed.
+func wind_world(position_ned: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+	if not _valid_ned_vector(position_ned) or not is_finite(time_s) or time_s < 0.0:
+		return _invalid_world_wind()
+	var out: PackedFloat64Array = weather.sample_world(position_ned, time_s)
+	if not _valid_ned_vector(out):
+		return _invalid_world_wind()
+	if not turbulence.is_valid():
+		return out
+	var noise_value: Variant = turbulence.call(time_s)
+	if typeof(noise_value) != TYPE_PACKED_FLOAT64_ARRAY:
+		return _invalid_world_wind()
+	if noise_value.is_empty():
+		return out
+	if not _valid_ned_vector(noise_value):
+		return _invalid_world_wind()
+	for axis: int in 3:
+		var combined: float = out[axis] + float(noise_value[axis])
+		if not is_finite(combined):
+			return _invalid_world_wind()
+		out[axis] = combined
+	return out
+
+
 ## Atmosphere at `down_m` (NED down of the datum): {ok, rho_kgm3, engine_charge_ratio, ...} per the weather law.
 func air(down_m: float = 0.0) -> Dictionary:
 	return weather.atmosphere(down_m)
+
+
+## Atmosphere at a world NED position, preserving the provider's validated result shape.
+func air_world(position_ned: PackedFloat64Array) -> Dictionary:
+	if not _valid_ned_vector(position_ned):
+		return _air_world_failure("world position must contain three finite NED coordinates")
+	var out: Dictionary = weather.atmosphere(position_ned[2])
+	if typeof(out.get("ok", null)) != TYPE_BOOL:
+		return _air_world_failure("weather atmosphere result is malformed")
+	if not bool(out.ok):
+		return out
+	for key: String in [
+		"pressure_pa", "temperature_k", "vapor_pressure_pa", "rho_kgm3",
+		"dry_air_density_kgm3", "sigma", "engine_charge_ratio", "density_altitude_m",
+	]:
+		var value: Variant = out.get(key, null)
+		if (typeof(value) != TYPE_FLOAT and typeof(value) != TYPE_INT) or not is_finite(float(value)):
+			return _air_world_failure("weather atmosphere result has invalid %s" % key)
+	return out
 
 
 func air_density(down_m: float = 0.0) -> float:
@@ -63,6 +110,29 @@ func ground(north: float, east: float) -> PackedFloat64Array:
 
 func ground_max_height() -> float:
 	return Terrain.max_height_validated(surfaces)
+
+
+## Install provenance for the current legacy table at a field boundary. Geometry
+## cannot be changed through this method: all current consumers retain one law.
+func install_ground_registry(regions: Array) -> bool:
+	var candidate := GroundSupport.prepare_legacy(surfaces, regions)
+	if not candidate.ok:
+		return false
+	_ground_support = candidate
+	return true
+
+
+## GP-10 detached solid-support query, shared by future contact/audio observers.
+## Raw replay arrays have no material provenance: changed tables invalidate names.
+## A vehicle road is not silently replaced by the flat field under that road.
+func sample_support(position_ned: PackedFloat64Array, velocity_ned: PackedFloat64Array,
+		time_s: float) -> Dictionary:
+	if road.is_valid():
+		return {ok = false, status = "unsupported_geometry", format = GroundSupport.FORMAT,
+			reason = "road support requires its own geometry adapter"}
+	if _ground_support.is_empty() or _ground_support.get("surfaces") != surfaces:
+		_ground_support = GroundSupport.prepare_legacy(surfaces)
+	return GroundSupport.sample(_ground_support, position_ned, velocity_ned, time_s, lake)
 
 
 ## Lake terrain sample at a point, or {} without a lake.
@@ -98,3 +168,20 @@ func identity() -> Dictionary:
 		course = road.is_valid(),
 		gravity = gravity,
 	}
+
+
+func _valid_ned_vector(value: PackedFloat64Array) -> bool:
+	if value.size() != 3:
+		return false
+	for component: float in value:
+		if not is_finite(component):
+			return false
+	return true
+
+
+static func _invalid_world_wind() -> PackedFloat64Array:
+	return PackedFloat64Array([NAN, NAN, NAN])
+
+
+static func _air_world_failure(message: String) -> Dictionary:
+	return {ok = false, errors = PackedStringArray([message])}

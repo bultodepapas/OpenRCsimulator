@@ -330,6 +330,7 @@ static func _build_ground_surface(context: _BuildContext, surface: Dictionary) -
 		return
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.name = surface.id
+	mesh_instance.layers |= Ground.MARK_RECEIVER_LAYER
 	var plane: PlaneMesh = PlaneMesh.new()
 	plane.size = Vector2(surface.length_east_west, surface.width_north_south)
 	if surface.type == "rough":

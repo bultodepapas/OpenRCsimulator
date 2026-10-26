@@ -9,7 +9,6 @@ const PresentationSources := preload("res://render/presentation_sources.gd")
 const RotorcraftModel := preload("res://aircraft/hx700_model.gd")
 const MODEL_MARKER := "res://data/aircraft_models/package_proofs.json"
 const PRESENTATION_MARKER := "res://data/aircraft_customization_package.json"
-const PRESENTATION_FORMAT := "openrc-aircraft-presentation-package v2"
 
 
 func _get_name() -> String:
@@ -27,6 +26,7 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 	var model_sources: Dictionary = {}
 	var manifests_by_family: Dictionary = {}
 	var presentation_families: Dictionary = {}
+	var presentation_proof_version := 0
 	for family: String in Catalog.airplane_visual_families():
 		var result: Dictionary = registry.describe(family)
 		if not result.get("ok", false):
@@ -56,8 +56,13 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 			_fail_export("Cannot export an invalid presentation companion for " + family + ": " + str(companion.get("errors", [])))
 			return
 		var bindings: Dictionary = companion.get("bindings", {})
+		var proof_version := int(bindings.get("source_proof_version", 1))
+		if presentation_proof_version != 0 and presentation_proof_version != proof_version:
+			_fail_export("Cannot export presentation companions with mixed source proof versions")
+			return
+		presentation_proof_version = proof_version
 		var source_check: Dictionary = PresentationSources.validate(
-			bindings.get("presentation_sources"), bindings.get("presentation_engine_version"), int(bindings.get("source_proof_version", 1)))
+			bindings.get("presentation_sources"), bindings.get("presentation_engine_version"), proof_version)
 		if not source_check.get("ok", false):
 			_fail_export("Cannot export an invalid presentation source pin for " + family + ": " + str(source_check.get("errors", [])))
 			return
@@ -76,19 +81,20 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 		add_file(proof, bytes, false)
 		model_files[source] = proof
 	add_file(MODEL_MARKER, (JSON.stringify({format = "openrc-aircraft-model-package v1", files = model_files}, "\t", true) + "\n").to_utf8_buffer(), false)
-	var presentation_files := _collect_presentation_proofs(presentation_families)
+	var presentation_files := _collect_presentation_proofs(presentation_families, presentation_proof_version)
 	if not bool(presentation_files.get("ok", false)):
 		_fail_export("Cannot export presentation proofs: " + str(presentation_files.get("error", "invalid closed source set")))
 		return
-	var presentation_marker := {"format": PRESENTATION_FORMAT, "files": presentation_files.files}
+	var presentation_marker := {"format": PresentationSources.package_format_for_version(presentation_proof_version), "files": presentation_files.files}
 	add_file(PRESENTATION_MARKER, (JSON.stringify(presentation_marker, "\t", true) + "\n").to_utf8_buffer(), false)
 
 
-func _collect_presentation_proofs(family_sources: Dictionary) -> Dictionary:
-	if family_sources.size() != PresentationSources.paths_for_version(2).size():
+func _collect_presentation_proofs(family_sources: Dictionary, version: int) -> Dictionary:
+	var paths: Array = PresentationSources.paths_for_version(version)
+	if paths.is_empty() or family_sources.size() != paths.size():
 		return {"ok": false, "error": "validated companions do not cover the exact versioned presentation sources"}
 	var files := {}
-	for source_path: String in PresentationSources.paths_for_version(2):
+	for source_path: String in paths:
 		if not family_sources.has(source_path):
 			return {"ok": false, "error": "validated companions omit " + source_path}
 		var bytes: PackedByteArray = FileAccess.get_file_as_bytes(source_path)

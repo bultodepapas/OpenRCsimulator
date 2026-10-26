@@ -1,0 +1,26 @@
+{
+	"complete": true,
+	"contact_darkened_samples": 198,
+	"engine": {
+		"build": "official",
+		"hash": "4d10419cacd6d3009976e8f9fd3abd970fd58018",
+		"hex": 264192,
+		"major": 4,
+		"minor": 8,
+		"patch": 0,
+		"status": "beta1",
+		"string": "4.8-beta1 (official)",
+		"timestamp": 0
+	},
+	"offscreen_shadow": {
+		"contact": 0.196078434586525,
+		"mapped": 0.196078434586525,
+		"unshadowed": 0.603921592235565
+	},
+	"passed": true,
+	"renderer": "forward_plus",
+	"viewport": [
+		1920,
+		1080
+	]
+}

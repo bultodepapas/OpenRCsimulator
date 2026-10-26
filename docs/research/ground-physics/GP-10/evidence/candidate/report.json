@@ -1,0 +1,206 @@
+{
+  "format": "openrc-gp10-candidate-preservation v1",
+  "source_commit": "b85ce1047a3e7798ab22b330675fc0c9e4bce912",
+  "source_identity_before": "source-identity-before.json",
+  "source_identity_after": "source-identity-after.json",
+  "all_runtime_and_config_hashes_unchanged": true,
+  "modified_runtime_hashes": [
+    {
+      "path": "app/physics/ground_contact.gd",
+      "sha256": "cdc2dcec718a9490c0a5c3de1e55ce165bba144eca9fe10845552d9d4dec8aa4"
+    },
+    {
+      "path": "app/physics/ground_support.gd",
+      "sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e"
+    },
+    {
+      "path": "app/physics/ground_surfaces.gd",
+      "sha256": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e"
+    },
+    {
+      "path": "app/physics/ground_terrain.gd",
+      "sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26"
+    },
+    {
+      "path": "app/physics/ground_wheels.gd",
+      "sha256": "a91217bd580700b5b130f057902248f8ed1da3650632c9653fa3c9a4f37600da"
+    },
+    {
+      "path": "app/physics/hull_contact.gd",
+      "sha256": "cb9d0397554cc100a6b04ff0034abf827d9d55d1f27e3bea5e7ced87e3036b2a"
+    },
+    {
+      "path": "app/sim/environment.gd",
+      "sha256": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "9fec024814d484ea0620e2d2d811170b0e69261ab6b44125dbefadf9291ec2d3"
+    }
+  ],
+  "config_hashes": [
+    {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "baseline_sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77",
+      "candidate_sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77",
+      "source_bytes_equal": true
+    },
+    {
+      "path": "app/data/aircraft/p51d_mustang_120.json",
+      "baseline_sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d",
+      "candidate_sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d",
+      "source_bytes_equal": true
+    },
+    {
+      "path": "app/data/fields/default.json",
+      "baseline_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "candidate_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "source_bytes_equal": true
+    },
+    {
+      "path": "app/data/ground/surface_friction.json",
+      "baseline_sha256": "2180bcf45c82e5db45f4ecf060dbb9e4ef48c43efb2d86e13b9eecbd7e18f793",
+      "candidate_sha256": "0cb448d2e735c724069053dfe03870a4c46a075511d1ccdeb9ddd72920782a92",
+      "source_bytes_equal": false
+    },
+    {
+      "path": "app/data/ground/wheel_profiles.json",
+      "baseline_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "candidate_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "source_bytes_equal": true
+    }
+  ],
+  "surface_coefficient_quantities_equal_baseline": true,
+  "surface_source_change": "GP10 explicit material identity/provenance fields only; original quantity values/units/kinds/sources unchanged",
+  "engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "native_checker": "check_numeric_preservation.gd",
+  "native_checker_sha256": "4262a34dbc0ccddcfcb7486681040066793f3fd6846fc7dfb7e72306227b6e0a",
+  "cases": [
+    {
+      "case": "stik-air",
+      "replay_report": "stik-air/replay.json",
+      "csv": "stik-air/flight.csv",
+      "native_log": "stik-air/godot.log",
+      "csv_comparison": "stik-air-comparison.json",
+      "numeric_preservation_report": "stik-air-numeric-preservation.json",
+      "rows": 261,
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver_sha256": "a47d31c6aa5cb73bf94feb4deb4130396a0a5d27863bc45cc4e2791dd45cc18d",
+      "current_solver_sha256": "588f3d32eca3221ee756ed2197c5765d4a992a3165268e738b2ed03501bd20f9",
+      "native_numeric_bytes_equal": true,
+      "native_fields_checked": [
+        "state",
+        "loads",
+        "inputs",
+        "aux",
+        "continuous",
+        "modes",
+        "air",
+        "mass"
+      ],
+      "first_divergence": null,
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77"
+      },
+      "baseline_tape_sha256": "faf0ae33953770d19af9338bbfb6517cc51131f4d08a7d9a01b886cbe497d921"
+    },
+    {
+      "case": "p51-air",
+      "replay_report": "p51-air/replay.json",
+      "csv": "p51-air/flight.csv",
+      "native_log": "p51-air/godot.log",
+      "csv_comparison": "p51-air-comparison.json",
+      "numeric_preservation_report": "p51-air-numeric-preservation.json",
+      "rows": 261,
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver_sha256": "a47d31c6aa5cb73bf94feb4deb4130396a0a5d27863bc45cc4e2791dd45cc18d",
+      "current_solver_sha256": "588f3d32eca3221ee756ed2197c5765d4a992a3165268e738b2ed03501bd20f9",
+      "native_numeric_bytes_equal": true,
+      "native_fields_checked": [
+        "state",
+        "loads",
+        "inputs",
+        "aux",
+        "continuous",
+        "modes",
+        "air",
+        "mass"
+      ],
+      "first_divergence": null,
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+      },
+      "baseline_tape_sha256": "982b8d78e01afdfed5f25c6882b744d264bd55db8c851de7ea01fb1d019aa920"
+    },
+    {
+      "case": "stik-ground",
+      "replay_report": "stik-ground/replay.json",
+      "csv": "stik-ground/flight.csv",
+      "native_log": "stik-ground/godot.log",
+      "csv_comparison": "stik-ground-comparison.json",
+      "numeric_preservation_report": "stik-ground-numeric-preservation.json",
+      "rows": 481,
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver_sha256": "a47d31c6aa5cb73bf94feb4deb4130396a0a5d27863bc45cc4e2791dd45cc18d",
+      "current_solver_sha256": "588f3d32eca3221ee756ed2197c5765d4a992a3165268e738b2ed03501bd20f9",
+      "native_numeric_bytes_equal": true,
+      "native_fields_checked": [
+        "state",
+        "loads",
+        "inputs",
+        "aux",
+        "continuous",
+        "modes",
+        "air",
+        "mass"
+      ],
+      "first_divergence": null,
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77"
+      },
+      "baseline_tape_sha256": "edb7de1035af8eea3e122dc3fb9b177171f85d62cbf0b8c17b1722aff7e636dd"
+    },
+    {
+      "case": "p51-ground",
+      "replay_report": "p51-ground/replay.json",
+      "csv": "p51-ground/flight.csv",
+      "native_log": "p51-ground/godot.log",
+      "csv_comparison": "p51-ground-comparison.json",
+      "numeric_preservation_report": "p51-ground-numeric-preservation.json",
+      "rows": 481,
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver_sha256": "a47d31c6aa5cb73bf94feb4deb4130396a0a5d27863bc45cc4e2791dd45cc18d",
+      "current_solver_sha256": "588f3d32eca3221ee756ed2197c5765d4a992a3165268e738b2ed03501bd20f9",
+      "native_numeric_bytes_equal": true,
+      "native_fields_checked": [
+        "state",
+        "loads",
+        "inputs",
+        "aux",
+        "continuous",
+        "modes",
+        "air",
+        "mass"
+      ],
+      "first_divergence": null,
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+      },
+      "baseline_tape_sha256": "15d0c007218f4b3b454163dd62416863396423e426f26d42e587ca7bcaa0f4b3"
+    }
+  ],
+  "method": "Official candidate replay of frozen baseline body/internal state/input/intervention tape and identical aircraft source JSON; existing CLI.disagreement compares all native numeric arrays byte-for-byte at every sample.",
+  "limits": "Isolated GP10 candidate with baseline b85 source plus the listed GP changes, excluding concurrent main wind edits. Four bounded unchanged scenarios do not qualify all new geometry/material behavior, physical realism, performance or rendering."
+}

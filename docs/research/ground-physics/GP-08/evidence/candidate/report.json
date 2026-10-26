@@ -1,0 +1,198 @@
+{
+  "format": "openrc-gp08-candidate-preservation v1",
+  "status": "ok",
+  "complete": true,
+  "source_commit": "cb2924b3676b72ee49497c92fe742b0b1dcd2d9c",
+  "source_identity_before": "source-identity-before.json",
+  "source_identity_after": "source-identity-after.json",
+  "modified_runtime_unchanged_during_runs": true,
+  "modified_runtime_hashes": [
+    {
+      "path": "app/physics/wheel_coupling.gd",
+      "sha256": "2cea4e934cbbd6d54a0c2526891070b063f1fead9f97b418099656d5ae26351c"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "4030bf8cc1e9c4733cd6c8d4ebd526e3e7975c55083010d18fa8c9618f0d9516"
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "sha256": "33f1ab53a3f587acf330032f43c0ed44a515565fe8202d4e77e35ba6495f8f55"
+    },
+    {
+      "path": "app/statistics/detector.gd",
+      "sha256": "e57bd5bc99bb49ce34aebc50c118711b80f8840b75701df0ea7101751b54db09"
+    },
+    {
+      "path": "app/statistics/fixed_wing_adapter.gd",
+      "sha256": "732f1389ee20e6602319788f4aa617f62024a694e28a01d5e802417a2285366c"
+    },
+    {
+      "path": "app/statistics/rules.gd",
+      "sha256": "b52bb07a5cd4993233e69994359062b29b6f983e7b28a30b1c6a596af908bb0e"
+    },
+    {
+      "path": "app/statistics/service.gd",
+      "sha256": "9674092be1a0a57aa5ff6bca560b5818882484bb9fa5faf2263c71834d1a9dc3"
+    }
+  ],
+  "aircraft_source_hashes": [
+    {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77"
+    },
+    {
+      "path": "app/data/aircraft/p51d_mustang_120.json",
+      "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+    }
+  ],
+  "engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "native_checker": "check_numeric_preservation.gd",
+  "native_checker_sha256": "4262a34dbc0ccddcfcb7486681040066793f3fd6846fc7dfb7e72306227b6e0a",
+  "checked_reports": [
+    "checks/p51-air-numeric-preservation-l604uv6k/report.json",
+    "checks/p51-ground-numeric-preservation-u8v99pt_/report.json",
+    "checks/stik-air-numeric-preservation-s0ceq6ma/report.json",
+    "checks/stik-ground-numeric-preservation-lg2gmzea/report.json"
+  ],
+  "cases": [
+    {
+      "case": "stik-air",
+      "baseline_orfl": "../air/jensen_ugly_stik_60.orfl",
+      "baseline_orfl_sha256": "7a91342a0469db5780a47389fe2d4962ff615f502b2e93edca3e2301fc5a7f8b",
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77"
+      },
+      "replay_report": "stik-air/replay.json",
+      "csv": "stik-air/flight.csv",
+      "native_log": "stik-air/godot.log",
+      "csv_comparison": "stik-air-comparison.json",
+      "numeric_preservation_report": "stik-air-numeric-preservation.json",
+      "mode": "candidate",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "rows": 261,
+      "csv_first_divergence": null,
+      "native_numeric_byte_equal": true,
+      "native_rows_checked": 261,
+      "fields_checked": [
+        "state",
+        "loads",
+        "inputs",
+        "aux",
+        "continuous",
+        "modes",
+        "air",
+        "mass"
+      ],
+      "baseline_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "current_solver_sha256": "1a667bd1f63393d8e5b082adc934149c85e57fb12254efff72c4943f8fee605f"
+    },
+    {
+      "case": "p51-air",
+      "baseline_orfl": "../air/p51d_mustang_120.orfl",
+      "baseline_orfl_sha256": "0b8d5db677baa3a68b4a231c6165980085a4f403875ea34109b5903cbf5e82e0",
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+      },
+      "replay_report": "p51-air/replay.json",
+      "csv": "p51-air/flight.csv",
+      "native_log": "p51-air/godot.log",
+      "csv_comparison": "p51-air-comparison.json",
+      "numeric_preservation_report": "p51-air-numeric-preservation.json",
+      "mode": "candidate",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "rows": 261,
+      "csv_first_divergence": null,
+      "native_numeric_byte_equal": true,
+      "native_rows_checked": 261,
+      "fields_checked": [
+        "state",
+        "loads",
+        "inputs",
+        "aux",
+        "continuous",
+        "modes",
+        "air",
+        "mass"
+      ],
+      "baseline_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "current_solver_sha256": "1a667bd1f63393d8e5b082adc934149c85e57fb12254efff72c4943f8fee605f"
+    },
+    {
+      "case": "stik-ground",
+      "baseline_orfl": "../ground/jensen_ugly_stik_60-ground.orfl",
+      "baseline_orfl_sha256": "41c8aed6d090cfc6a1945c8db263928c15b5b25e3a4baad9a3daa4ee02c7eed2",
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77"
+      },
+      "replay_report": "stik-ground/replay.json",
+      "csv": "stik-ground/flight.csv",
+      "native_log": "stik-ground/godot.log",
+      "csv_comparison": "stik-ground-comparison.json",
+      "numeric_preservation_report": "stik-ground-numeric-preservation.json",
+      "mode": "candidate",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "rows": 481,
+      "csv_first_divergence": null,
+      "native_numeric_byte_equal": true,
+      "native_rows_checked": 481,
+      "fields_checked": [
+        "state",
+        "loads",
+        "inputs",
+        "aux",
+        "continuous",
+        "modes",
+        "air",
+        "mass"
+      ],
+      "baseline_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "current_solver_sha256": "1a667bd1f63393d8e5b082adc934149c85e57fb12254efff72c4943f8fee605f"
+    },
+    {
+      "case": "p51-ground",
+      "baseline_orfl": "../ground/p51d_mustang_120-ground.orfl",
+      "baseline_orfl_sha256": "48f09d885dca2e6add5b80876cda3659df6dac8473893436483094ee8382242a",
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+      },
+      "replay_report": "p51-ground/replay.json",
+      "csv": "p51-ground/flight.csv",
+      "native_log": "p51-ground/godot.log",
+      "csv_comparison": "p51-ground-comparison.json",
+      "numeric_preservation_report": "p51-ground-numeric-preservation.json",
+      "mode": "candidate",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "rows": 481,
+      "csv_first_divergence": null,
+      "native_numeric_byte_equal": true,
+      "native_rows_checked": 481,
+      "fields_checked": [
+        "state",
+        "loads",
+        "inputs",
+        "aux",
+        "continuous",
+        "modes",
+        "air",
+        "mass"
+      ],
+      "baseline_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "current_solver_sha256": "1a667bd1f63393d8e5b082adc934149c85e57fb12254efff72c4943f8fee605f"
+    }
+  ],
+  "method": "Official explicit candidate replay with original aircraft source JSON, frozen initial state and exact input/intervention tape; official CSV compare plus existing CLI.disagreement native numeric byte comparison at every sample.",
+  "limits": "Changed-source candidate experiment; preserves numerical samples for four bounded tapes only. Not historical exact replay certification, physical validation, performance measurement, renderer qualification or acceptance of new accident classifications."
+}

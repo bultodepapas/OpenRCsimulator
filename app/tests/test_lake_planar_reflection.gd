@@ -1,4 +1,7 @@
 extends SceneTree
+const MARK_LAYER := preload("res://render/ground.gd").MARK_RECEIVER_LAYER
+const BASIN_BASE := 9 | MARK_LAYER
+const BASIN_ACTIVE := 12 | MARK_LAYER
 
 const LakePlanarReflection := preload("res://render/lake/lake_planar_reflection.gd")
 const LakeReflection := preload("res://render/lake/lake_reflection.gd")
@@ -33,7 +36,7 @@ func _run() -> void:
 	basin.name = "Basin"
 	basin.mesh = BoxMesh.new()
 	# LakeReflection's static-layer pass adds layer 8 before the adapter is attached.
-	basin.layers = 9
+	basin.layers = BASIN_BASE
 	lake.add_child(basin)
 	var water := MeshInstance3D.new()
 	water.name = "Water"
@@ -68,7 +71,7 @@ func _run() -> void:
 	_check("reflector uses half resolution and a finite far plane",
 		is_equal_approx(planar.resolution_scale, 0.5) and is_equal_approx(planar.far, 21000.0))
 	_check("reflector surface shares the lake water material", planar.get_surface_override_material(0) == water_material)
-	_check("configuration preserves main-view and cubemap basin layers", basin.layers == 9)
+	_check("configuration preserves main-view and cubemap basin layers", basin.layers == BASIN_BASE)
 	_check("configuration leaves water and probe masks intact", water.layers == 2 and probe.reflection_mask == 2)
 
 	# A missing main camera is a normal inactive state; it must not allocate a viewport.
@@ -80,7 +83,7 @@ func _run() -> void:
 		"planar", false, Vector2i.ZERO)
 
 	var first_camera := _make_camera("FirstCamera", planar.global_position + Vector3(0.0, 20.0, 26.0), planar.global_position)
-	first_camera.cull_mask = 1 | 2 | 4 | 8 | 16
+	first_camera.cull_mask = 1048575
 	var first_source_environment := _make_source_environment(
 		Color(0.31, 0.42, 0.53), Color(0.23, 0.34, 0.45), 2.4)
 	first_camera.environment = first_source_environment
@@ -99,7 +102,7 @@ func _run() -> void:
 	_check("visible reflection enables water radiance and disables probe override",
 		water_material.get_shader_parameter("planar_reflection_enabled") == true and probe.reflection_mask == 0)
 	_check("active reflection excludes basin from planar capture but preserves static cubemap capture",
-		basin.layers == 12 and (basin.layers & 1) == 0 and (basin.layers & 8) != 0)
+		basin.layers == BASIN_ACTIVE and (basin.layers & 1) == 0 and (basin.layers & 8) != 0)
 	_check("initialized reflection texture is attached to water", water_material.get_shader_parameter("reflection_texture") != null)
 	_check("reflection target uses floating-point HDR", planar.reflect_viewport.use_hdr_2d)
 	_check("reflection target starts at half the main viewport size",
@@ -107,7 +110,8 @@ func _run() -> void:
 	_check_lake_description("active helper reports planar capture size", field,
 		"planar", true, _expected_reflection_size(root.size))
 	_check("reflection cull mask excludes water, basin, and static-only layers while retaining scene layers",
-		planar.reflect_camera.cull_mask == first_camera.cull_mask & ~(2 | 4 | 8))
+		planar.reflect_camera.cull_mask == first_camera.cull_mask & ~(2 | 4 | 8 | MARK_LAYER))
+	_check("decal receiver bit cannot leak basin into the reflection", (basin.layers & MARK_LAYER) != 0 and (basin.layers & planar.reflect_camera.cull_mask) == 0)
 	var first_capture_environment := planar.reflect_camera.environment
 	_check("reflection environment is a separate linear exposure-one clone",
 		first_capture_environment != first_source_environment
@@ -136,7 +140,7 @@ func _run() -> void:
 	_check("water beyond the main camera far plane stops the unused capture",
 		water_material.get_shader_parameter("planar_reflection_enabled") != true
 		and planar.reflect_viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED
-		and probe.reflection_mask == 2 and basin.layers == 9)
+		and probe.reflection_mask == 2 and basin.layers == BASIN_BASE)
 	water.custom_aabb = water.mesh.get_aabb().grow(20.0)
 	planar.call("_process", 0.0)
 	_check("custom shader bounds crossing the far plane keep capture eligible",
@@ -205,7 +209,7 @@ func _run() -> void:
 			- float(root.size.x) / float(root.size.y)) < 0.001
 		and is_equal_approx(planar.reflect_camera.fov, second_camera.fov))
 	_check("switched camera keeps reflection culling and camera state synchronized",
-		planar.reflect_camera.cull_mask == second_camera.cull_mask & ~(2 | 4 | 8)
+		planar.reflect_camera.cull_mask == second_camera.cull_mask & ~(2 | 4 | 8 | MARK_LAYER)
 		and planar.reflect_camera.environment != second_source_environment
 		and planar.reflect_camera.environment != first_capture_environment
 		and planar.reflect_camera.attributes == null)
@@ -237,7 +241,7 @@ func _run() -> void:
 	_check("camera exactly at the water clearance threshold disables reflection",
 		water_material.get_shader_parameter("planar_reflection_enabled") != true
 		and probe.reflection_mask == 2
-		and basin.layers == 9
+		and basin.layers == BASIN_BASE
 		and planar.reflect_viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
 	second_camera.global_position.y = water.global_position.y + 0.05
 	second_camera.look_at(planar.global_position, Vector3.UP)
@@ -287,21 +291,21 @@ func _run() -> void:
 		_check("detached world releases water binding and restores fallback %d" % cycle,
 			water_material.get_shader_parameter("reflection_texture") == null
 			and water_material.get_shader_parameter("planar_reflection_enabled") != true
-			and probe.reflection_mask == 2 and basin.layers == 9)
+			and probe.reflection_mask == 2 and basin.layers == BASIN_BASE)
 		root.add_child(field)
 		planar.call("_process", 0.0)
 		_check("restored world reuses viewport and rebinds live reflection %d" % cycle,
 			planar.reflect_viewport == retained_viewport
 			and water_material.get_shader_parameter("reflection_texture") == retained_viewport.get_texture()
 			and water_material.get_shader_parameter("planar_reflection_enabled") == true
-			and probe.reflection_mask == 0 and basin.layers == 12)
+			and probe.reflection_mask == 0 and basin.layers == BASIN_ACTIVE)
 	planar.queue_free()
 	await process_frame
 	_check("exit disables planar shader and restores probe mask",
 		water_material.get_shader_parameter("planar_reflection_enabled") != true and probe.reflection_mask == 2)
 	_check("exit clears the reflection texture before viewport teardown",
 		water_material.get_shader_parameter("reflection_texture") == null)
-	_check("exit restores basin layers", basin.layers == 9)
+	_check("exit restores basin layers", basin.layers == BASIN_BASE)
 	_check_lake_description("removed helper reports probe fallback", field, "probe", false, Vector2i.ZERO)
 	field.queue_free()
 	await process_frame
@@ -545,7 +549,7 @@ func _test_effective_eye_water_gate(planar: LakePlanarReflection, camera: Camera
 	planar.call("_process", 0.0)
 	_check("effective eye below water disables reflection even when camera node origin is above",
 		water_material.get_shader_parameter("planar_reflection_enabled") != true
-		and probe.reflection_mask == 2 and basin.layers == 9
+		and probe.reflection_mask == 2 and basin.layers == BASIN_BASE
 		and planar.reflect_viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
 
 	# Restore the camera state expected by the following gate/lifecycle checks.

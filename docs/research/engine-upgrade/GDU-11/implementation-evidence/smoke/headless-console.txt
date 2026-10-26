@@ -1,0 +1,303 @@
+== crawl from Home
+# route home, screens ['home']
+pause           unavailable here
+settings        ok          11 controls (2 disabled) 
+controls        ok          11 controls (0 disabled) 
+help            ok           1 controls (0 disabled) 
+weather         ok          16 controls (0 disabled) 
+time_of_day     unavailable here
+overlays        unavailable here
+failures        ok           7 controls (0 disabled) 
+companions      ok           8 controls (0 disabled) 
+natural_random  ok           4 controls (0 disabled) 
+workshop        ok          29 controls (2 disabled) 
+# 0 screen failures, 0 errors, 0 warnings
+== Home before scenario birds_setting
+== scenario birds_setting
+> open screen=settings
+{"opened": "settings", "screens": ["home", "settings"], "focus": "AppRoot/Settings/@Control@2246/@CenterContainer@2248/@PanelContainer@2249/@VBoxContainer@2250/@GridContainer@2253/DisplayCategory"}
+> press text=GraphicsCategory
+{"pressed": "AppRoot/Settings/@Control@2246/@CenterContainer@2248/@PanelContainer@2249/@VBoxContainer@2250/@GridContainer@2253/GraphicsCategory", "mode": "accept", "screens": ["home", "settings"], "focus": "AppRoot/Settings/@Control@2246/@CenterContainer@2248/@PanelContainer@2249/@VBoxContainer@2250/@GridContainer@2253/GraphicsCategory"}
+> select text=Birds item="Off"
+{"selected": 0, "item": "Off", "screens": ["home", "settings"], "focus": "AppRoot/Settings/@Control@2246/@CenterContainer@2248/@PanelContainer@2249/@VBoxContainer@2250/@GridContainer@2253/GraphicsCategory"}
+> wait until="get_node('/root/AppRoot/HomeScene/Field/Scenery/Birds').get_meta('bird_groups')[1].multimesh.visible_instance_count == 0" timeout_s=10
+{"frame": 210, "value": true}
+> press text="Revert"
+{"pressed": "AppRoot/Settings/@Control@2246/@CenterContainer@2248/@PanelContainer@2249/@VBoxContainer@2250/@HBoxContainer@2492/Revert", "mode": "accept", "screens": ["home", "settings"], "focus": "AppRoot/Settings/@Control@2246/@CenterContainer@2248/@PanelContainer@2249/@VBoxContainer@2250/@HBoxContainer@2252/Close"}
+> wait until="get_node('/root/AppRoot/HomeScene/Field/Scenery/Birds').get_meta('bird_groups')[1].multimesh.visible_instance_count > 0" timeout_s=10
+{"frame": 223, "value": true}
+> close
+{"closed": "settings", "screens": ["home"], "focus": ""}
+> assert expr="screens.is_top('home')" message="settings closed"
+{"value": true}
+== Home before scenario corsair_gallery
+== scenario corsair_gallery
+> call node=AppRoot method=set_aircraft args=["f4u-corsair-250"]
+null
+> call node=AppRoot method=set_livery args=["midnight"]
+null
+> wait until="not home_scene.preview_pending" timeout_s=30
+{"frame": 671, "value": true}
+> press text=Aircraft
+{"pressed": "AppRoot/Home/HomeRail/HomeContentScroll/HomePages/HomeNavigation/NavAircraft", "mode": "accept", "screens": ["home"], "focus": "AppRoot/Home/HomeRail/HomeContentScroll/HomePages/HomeNavigation/NavAircraft"}
+> eval expr="home_scene.set_meta('gallery_generation', home_scene._preview_generation)"
+null
+> press text="Choose paint"
+{"pressed": "AppRoot/Home/HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftPaint/LiveryChoice", "mode": "accept", "screens": ["home", "liveries"], "focus": "AppRoot/LiveryPicker/Modal/@CenterContainer@2533/@PanelContainer@2534/@VBoxContainer@2535/@ScrollContainer@2541/@GridContainer@2542/Skin_midnight"}
+> wait frames=20
+{"screens": ["home", "liveries"], "focus": "AppRoot/LiveryPicker/Modal/@CenterContainer@2533/@PanelContainer@2534/@VBoxContainer@2535/@ScrollContainer@2541/@GridContainer@2542/Skin_midnight"}
+> assert expr="app.screens.top()._screen.theme == home.theme"
+{"value": true}
+> key name=Right
+{"action": "tap", "screens": ["home", "liveries"], "focus": "AppRoot/LiveryPicker/Modal/@CenterContainer@2533/@PanelContainer@2534/@VBoxContainer@2535/@ScrollContainer@2541/@GridContainer@2542/Skin_three_tone"}
+> key name=Down
+{"action": "tap", "screens": ["home", "liveries"], "focus": "AppRoot/LiveryPicker/Modal/@CenterContainer@2533/@PanelContainer@2534/@VBoxContainer@2535/@ScrollContainer@2541/@GridContainer@2542/Skin_blueangels"}
+> assert expr="home_scene._preview_generation == home_scene.get_meta('gallery_generation')"
+{"value": true}
+> assert expr="home.livery_id == '' and home_scene.airplane.livery == 'midnight'"
+{"value": true}
+> close
+{"closed": "liveries", "screens": ["home"], "focus": "AppRoot/Home/HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftPaint/LiveryChoice"}
+> assert expr="home.livery_button.has_focus()"
+{"value": true}
+> press text="Choose paint"
+{"pressed": "AppRoot/Home/HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftPaint/LiveryChoice", "mode": "accept", "screens": ["home", "liveries"], "focus": "AppRoot/LiveryPicker/Modal/@CenterContainer@2599/@PanelContainer@2600/@VBoxContainer@2601/@ScrollContainer@2607/@GridContainer@2608/Skin_midnight"}
+> press text="Carbon 12"
+{"pressed": "AppRoot/LiveryPicker/Modal/@CenterContainer@2599/@PanelContainer@2600/@VBoxContainer@2601/@ScrollContainer@2607/@GridContainer@2608/Skin_carbon", "mode": "accept", "screens": ["home"], "focus": "AppRoot/Home/HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftPaint/LiveryChoice"}
+> wait until="not home_scene.preview_pending" timeout_s=30
+{"frame": 1182, "value": true}
+> assert expr="home.livery_id == 'carbon' and home_scene.airplane.livery == 'carbon'"
+{"value": true}
+> eval expr="home_scene.set_meta('gallery_generation', home_scene._preview_generation)"
+null
+> press text="Choose paint"
+{"pressed": "AppRoot/Home/HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftPaint/LiveryChoice", "mode": "accept", "screens": ["home", "liveries"], "focus": "AppRoot/LiveryPicker/Modal/@CenterContainer@2669/@PanelContainer@2670/@VBoxContainer@2671/@ScrollContainer@2677/@GridContainer@2678/Skin_carbon"}
+> press text="Carbon 12"
+{"pressed": "AppRoot/LiveryPicker/Modal/@CenterContainer@2669/@PanelContainer@2670/@VBoxContainer@2671/@ScrollContainer@2677/@GridContainer@2678/Skin_carbon", "mode": "accept", "screens": ["home"], "focus": "AppRoot/Home/HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftPaint/LiveryChoice"}
+> assert expr="not home_scene.preview_pending"
+{"value": true}
+> assert expr="home_scene._preview_generation == home_scene.get_meta('gallery_generation')"
+{"value": true}
+> call node=AppRoot method=set_aircraft args=["jensen-das-ugly-stik-60"]
+null
+> wait until="not home_scene.preview_pending" timeout_s=30
+{"frame": 1220, "value": true}
+== Home before scenario corsair_paint
+== scenario corsair_paint
+> eval expr="tree.root.set_size(Vector2i(1920,1080))"
+null
+> assert expr="tree.root.size == Vector2i(1920,1080)"
+{"value": true}
+> call node=AppRoot method=set_aircraft args=["f4u-corsair-250"]
+null
+> call node=AppRoot method=set_livery args=["midnight"]
+null
+> press text=Aircraft
+{"pressed": "AppRoot/Home/HomeRail/HomeNavigation/NavAircraft", "mode": "accept", "screens": ["home"], "focus": "AppRoot/Home/HomeRail/HomeNavigation/NavAircraft"}
+> wait until="not home_scene.preview_pending" timeout_s=30
+{"frame": 1252, "value": true}
+> assert expr="home.livery_button.is_visible_in_tree()"
+{"value": true}
+> assert expr="home.livery_button.get_global_rect().end.y <= home._scroll.get_global_rect().position.y + 0.5"
+{"value": true}
+> press text="Choose paint"
+{"pressed": "AppRoot/Home/HomeRail/AircraftPaint/LiveryChoice", "mode": "accept", "screens": ["home", "liveries"], "focus": "AppRoot/LiveryPicker/Modal/@CenterContainer@2744/@PanelContainer@2745/@VBoxContainer@2746/@ScrollContainer@2752/@GridContainer@2753/Skin_midnight"}
+> press text="Coastal Three Tone"
+{"pressed": "AppRoot/LiveryPicker/Modal/@CenterContainer@2744/@PanelContainer@2745/@VBoxContainer@2746/@ScrollContainer@2752/@GridContainer@2753/Skin_three_tone", "mode": "accept", "screens": ["home"], "focus": "AppRoot/Home/HomeRail/AircraftPaint/LiveryChoice"}
+> wait until="not home_scene.preview_pending" timeout_s=30
+{"frame": 1578, "value": true}
+> assert expr="home.livery_id == 'three_tone' and home_scene.airplane.livery == 'three_tone'"
+{"value": true}
+> fly aircraft=f4u-corsair-250 start=runway
+{"aircraft": "f4u-corsair-250", "tick": 0, "time_s": 0.0, "paused": false, "fault": "", "pause_reason": "", "holds": [], "crashed": false, "radio_connected": false, "commands": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}, "raw": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}, "position_ned_m": [14.999938589838534, -46.996253476336115, -0.40818967918542504], "height_m": 0.40818967918542504, "velocity_body_mps": [0.0, 0.0, 0.0], "speed_mps": 0.0, "attitude_deg": {"roll": -0.10133818139982387, "pitch": 15.190841738829091, "heading": 89.99187746900863}, "rates_body_degps": [0.0, 0.0, 0.0]}
+> assert expr="flight.livery == 'three_tone' and flight._airplane.livery == 'three_tone'"
+{"value": true}
+> home
+{"route": "home", "screens": ["home"]}
+> wait until="not home_scene.preview_pending" timeout_s=30
+{"frame": 1590, "value": true}
+> assert expr="home.livery_id == 'three_tone' and home_scene.airplane.livery == 'three_tone'"
+{"value": true}
+> call node=AppRoot method=set_livery args=["midnight"]
+null
+> call node=AppRoot method=set_aircraft args=["jensen-das-ugly-stik-60"]
+null
+> wait until="not home_scene.preview_pending" timeout_s=30
+{"frame": 1609, "value": true}
+== Home before scenario fly_restart_home
+== scenario fly_restart_home
+> fly start=airborne
+{"aircraft": "jensen-das-ugly-stik-60", "tick": 0, "time_s": 0.0, "paused": false, "fault": "", "pause_reason": "", "holds": [], "crashed": false, "radio_connected": false, "commands": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.49999999945363965}, "raw": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}, "position_ned_m": [60.0, -40.0, -30.0], "height_m": 30.0, "velocity_body_mps": [18.911469410807438, -0.004434088297719588, 0.5631292067547399], "speed_mps": 18.919852257365665, "attitude_deg": {"roll": 0.0, "pitch": 1.603603062926097, "heading": 89.99999999999999}, "rates_body_degps": [0.0, 0.0, 0.0]}
+> wait until="flight.session.sim.tick > 120" timeout_s=120
+{"frame": 1683, "value": true}
+> restart
+{"restarted": true, "screens": [], "focus": ""}
+> wait until="flight.session.sim.tick > 60" timeout_s=120
+{"frame": 1723, "value": true}
+> home
+{"route": "home", "screens": ["home"]}
+> assert expr="flight == null and screens.is_top('home')" message="back at Home"
+{"value": true}
+== Home before scenario helicopter_arm
+== scenario helicopter_arm
+> fly aircraft=xcell-60-research
+{"aircraft": "xcell-60-research", "tick": 0, "time_s": 0.0, "paused": false, "fault": "", "pause_reason": "", "holds": [], "crashed": false, "radio_connected": false, "commands": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.16666666666666663}, "raw": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}, "position_ned_m": [6.0, 0.0, -0.10778963675], "height_m": 0.10778963675, "velocity_body_mps": [0.0, 0.0, 0.0], "speed_mps": 0.0, "attitude_deg": {"roll": 0.0, "pitch": 0.0, "heading": 89.99999999999999}, "rates_body_degps": [0.0, 0.0, 0.0]}
+> call node=AppRoot method=open_pause
+null
+> assert expr="screens.is_top('pause') and flight.session.sim.paused" message="helicopter launch review"
+{"value": true}
+> press text="Continue"
+{"pressed": "AppRoot/PauseMenu/Screen/@PanelContainer@4807/PauseScroll/@VBoxContainer@4811/Continue", "mode": "accept", "screens": [], "focus": ""}
+> control name=helicopter_arm
+{"action": "helicopter_arm", "screens": [], "focus": ""}
+> assert expr="flight.session.power.armed" message="helicopter armed after launch review"
+{"value": true}
+> sticks throttle=0.6 for_s=0.5
+{"sticks": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.6}, "until_tick": 175, "warning": ""}
+> wait until="flight.session.sim.tick > 240" timeout_s=120
+{"frame": 1886, "value": true}
+> sticks release=true
+{"released": true}
+> home
+{"route": "home", "screens": ["home"]}
+> assert expr="flight == null" message="helicopter flight ended"
+{"value": true}
+== Home before scenario settings_revert
+== scenario settings_revert
+> open screen=settings
+{"opened": "settings", "screens": ["home", "settings"], "focus": "AppRoot/Settings/@Control@5012/@CenterContainer@5014/@PanelContainer@5015/@VBoxContainer@5016/@GridContainer@5019/DisplayCategory"}
+> select text=WindowResolution item="1920 × 1080"
+{"selected": 4, "item": "1920 × 1080", "screens": ["home", "settings"], "focus": "AppRoot/Settings/@Control@5012/@CenterContainer@5014/@PanelContainer@5015/@VBoxContainer@5016/@GridContainer@5019/DisplayCategory"}
+> press text="Revert"
+{"pressed": "AppRoot/Settings/@Control@5012/@CenterContainer@5014/@PanelContainer@5015/@VBoxContainer@5016/@HBoxContainer@5258/Revert", "mode": "accept", "screens": ["home", "settings"], "focus": "AppRoot/Settings/@Control@5012/@CenterContainer@5014/@PanelContainer@5015/@VBoxContainer@5016/@HBoxContainer@5018/Close"}
+> close
+{"closed": "settings", "screens": ["home"], "focus": "AppRoot/Home/HomeRail/PrimaryActions/Fly"}
+> assert expr="screens.is_top('home')" message="settings closed"
+{"value": true}
+== Home before scenario truck_drive
+== scenario truck_drive
+> call node=AppRoot method=start_ground_vehicle args=["mt8-bisonte"]
+null
+> wait until="ground_vehicle != null and ground_vehicle.session != null and ground_vehicle.session.prepared" timeout_s=200
+{"frame": 1965, "value": true}
+> press text="drive"
+{"pressed": "AppRoot/GroundVehicleActivity/@CanvasLayer@5340/@Control@5341/@PanelContainer@5351/@VBoxContainer@5352/@VBoxContainer@5353/@Button@5375", "mode": "accept", "screens": [], "focus": ""}
+> drive throttle=0.6 steering=0.3 for_s=1
+{"controls": {"throttle": 0.6, "steering": 0.3, "brake": 0.0, "reverse": false, "source": "debug_bridge", "armed": true}, "until_tick": 248}
+> wait until="ground_vehicle.scripted_controls.is_null()" timeout_s=300
+{"frame": 2123, "value": true}
+> assert expr="ground_vehicle.session.tick > 200" message="the truck simulated"
+{"value": true}
+> press text="Garage"
+{"pressed": "AppRoot/GroundVehicleActivity/@CanvasLayer@5340/@Control@5341/@MarginContainer@5342/@HBoxContainer@5343/@Button@5345", "mode": "accept", "screens": [], "focus": "AppRoot/GroundVehicleActivity/@CanvasLayer@5340/@Control@5341/@PanelContainer@5351/@VBoxContainer@5352/@VBoxContainer@5353/@Button@5375"}
+> press text="Return to Home"
+{"pressed": "AppRoot/GroundVehicleActivity/@CanvasLayer@5340/@Control@5341/@PanelContainer@5351/@VBoxContainer@5352/@ScrollContainer@5356/@VBoxContainer@5357/@Button@5434", "mode": "accept", "screens": ["home"], "focus": "AppRoot/Home/HomeRail/PrimaryActions/Fly"}
+> wait until="ground_vehicle == null" timeout_s=60
+{"frame": 2148, "value": true}
+== Home before scenario widget_presets
+== scenario widget_presets
+> fly aircraft=jensen-das-ugly-stik-60 start=airborne
+{"aircraft": "jensen-das-ugly-stik-60", "tick": 0, "time_s": 0.0, "paused": false, "fault": "", "pause_reason": "", "holds": [], "crashed": false, "radio_connected": false, "commands": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.49999999945363965}, "raw": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}, "position_ned_m": [60.0, -40.0, -30.0], "height_m": 30.0, "velocity_body_mps": [18.911469410807438, -0.004434088297719588, 0.5631292067547399], "speed_mps": 18.919852257365665, "attitude_deg": {"roll": 0.0, "pitch": 1.603603062926097, "heading": 89.99999999999999}, "rates_body_degps": [0.0, 0.0, 0.0]}
+> eval expr="open_pause()"
+null
+> open screen=overlays
+{"opened": "overlays", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/@BoxContainer@6397/Preset"}
+> select text=Preset index=5
+{"selected": 5, "item": "All instruments", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/@BoxContainer@6397/Preset"}
+> select text=OverlaysTabs index=3
+{"selected": 3, "item": "Appearance", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/@BoxContainer@6397/Preset"}
+> select text=WidgetSize index=2
+{"selected": 2, "item": "Large", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/@BoxContainer@6397/Preset"}
+> press text=CompactInstruments
+{"pressed": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysScroll/OverlaysPages/AppearancePage/CompactInstruments", "mode": "accept", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysScroll/OverlaysPages/AppearancePage/CompactInstruments"}
+> press text=CompactInstruments
+{"pressed": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysScroll/OverlaysPages/AppearancePage/CompactInstruments", "mode": "accept", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysScroll/OverlaysPages/AppearancePage/CompactInstruments"}
+> select text=WidgetSize index=1
+{"selected": 1, "item": "Normal", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysScroll/OverlaysPages/AppearancePage/CompactInstruments"}
+> select text=Preset index=6
+{"selected": 6, "item": "Classic cockpit", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysScroll/OverlaysPages/AppearancePage/CompactInstruments"}
+> assert expr="not flight._overlays.frames.attitude.is_processing_input()" message="idle classic widget does not listen globally"
+{"value": true}
+> select text=Preset index=7
+{"selected": 7, "item": "RC navigation", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysScroll/OverlaysPages/AppearancePage/CompactInstruments"}
+> assert expr="not flight._overlays.frames.pilot_radar.is_processing_input()" message="idle navigation widget does not listen globally"
+{"value": true}
+> select text=Preset index=8
+{"selected": 8, "item": "Training", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysScroll/OverlaysPages/AppearancePage/CompactInstruments"}
+> select text=OverlaysTabs index=2
+{"selected": 2, "item": "Flight tools", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysTabs"}
+> mouse action=move text=Glide
+{"action": "move", "at": [1178.0, 786.5], "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysTabs"}
+> wait seconds=1
+{"frame": 2437}
+> assert expr="not flight._overlays.frames.glide.is_processing_input()" message="idle training widget does not listen globally"
+{"value": true}
+> mouse action=move x=30 y=30
+{"action": "move", "at": [30.0, 30.0], "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysTabs"}
+> select text=Preset index=2
+{"selected": 2, "item": "Full", "screens": ["pause", "overlays"], "focus": "AppRoot/OverlaysDialog/Modal/@CenterContainer@6394/OverlaysPanel/@VBoxContainer@6395/OverlaysTabs"}
+> close
+{"closed": "overlays", "screens": ["pause"], "focus": ""}
+> assert expr="not flight._overlays.visible" message="overlay preview hidden under pause menu"
+{"value": true}
+> home
+{"route": "home", "screens": ["home"]}
+> assert expr="flight == null and screens.is_top('home')" message="widget scenario returned Home"
+{"value": true}
+== Home before scenario workshop_discard_keyboard
+== scenario workshop_discard_keyboard
+> press text="Workshop"
+{"pressed": "AppRoot/Home/HomeRail/HomeNavigation/Workshop", "mode": "accept", "screens": ["home", "workshop"], "focus": "AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@6702/@BoxContainer@6705/OpenLibrary"}
+> set_value text="Control MultiplierSlider" value=0.749
+{"path": "AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@6702/WorkshopColumns/WorkshopScroll/@VBoxContainer@6752/@VBoxContainer@6755/RecipeCard/CardContent/Control Multiplier/Control MultiplierSlider", "type": "HSlider", "text": "Control MultiplierSlider", "focused": false, "rect": [1350, 1381, 514, 24], "value": 0.75, "min": 0.5, "max": 1.5, "screens": ["home", "workshop"], "focus": "AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@6702/@BoxContainer@6705/OpenLibrary"}
+> press text="Back to Home"
+{"pressed": "AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@6702/@BoxContainer@6703/CloseWorkshop", "mode": "accept", "screens": ["home", "workshop"], "focus": "AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@6702/@BoxContainer@6703/CloseWorkshop"}
+> press text="Discard changes"
+{"pressed": "AppRoot/Workshop/UnsavedBuildDialog/@HBoxContainer@7401/@Button@7407", "mode": "accept", "screens": ["home"], "focus": "AppRoot/Home/HomeRail/HomeNavigation/Workshop"}
+> wait frames=3
+{"screens": ["home"], "focus": "AppRoot/Home/HomeRail/HomeNavigation/Workshop"}
+> assert expr="screens.is_top('home')" message="back at Home after discarding"
+{"value": true}
+== Home before fly
+== fly
+== crawl from the pause menu
+# route flight, screens []
+pause           ok           7 controls (0 disabled) 
+settings        unavailable here
+controls        unavailable here
+help            unavailable here
+weather         unavailable here
+time_of_day     unavailable here
+overlays        unavailable here
+failures        unavailable here
+companions      unavailable here
+natural_random  unavailable here
+workshop        unavailable here
+# from the pause menu, screens ['pause']
+settings        ok          11 controls (2 disabled) 
+controls        ok          11 controls (0 disabled) 
+help            ok           1 controls (0 disabled) 
+weather         unavailable here
+time_of_day     ok          10 controls (1 disabled) 
+overlays        ok          12 controls (0 disabled) 
+failures        ok           7 controls (0 disabled) 
+companions      ok           9 controls (0 disabled) 
+natural_random  unavailable here
+workshop        ok          45 controls (4 disabled) 
+# 0 screen failures, 0 errors, 0 warnings
+== back to Home
+== monkey seed 20261024
+slow after press text="FLY": 4955 ms
+slow after press text="Extra 300S\nExperimental": 674 ms, 196 ms
+slow after press text="Controls": 159 ms, 181 ms
+slow after press text="Ventage Jet\nExperimental": 77 ms
+slow after press text="Settings": 74 ms, 67 ms
+{"seed": 20261024, "steps": 142, "refused": 8, "failure": null, "visited": ["flight:.", "home:.", "home:AppRoot/ControllerSetup", "home:AppRoot/Help", "home:AppRoot/Home", "home:AppRoot/Settings"], "route": "flight", "trail": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\debug-bridge\\monkey-20261024.txt"}
+== back to Home
+== soak fly/Home x3
+warm-up   nodes     810  orphans     0  resources   1196  static    856.1 MiB  rss       ? MiB
+baseline  nodes     810  orphans     0  resources   1196  static    856.1 MiB  rss       ? MiB
+cycle 1   nodes     810  orphans     0  resources   1196  static    856.1 MiB  rss       ? MiB
+cycle 2   nodes     810  orphans     0  resources   1196  static    856.1 MiB  rss       ? MiB
+# 0 growing counters, 0 errors: baseline + 2 compared cycles (after 1 warm-up)
+{"ok": true, "failed": [], "steps": 26, "hitches": 52, "leaked_objects_at_exit": 0, "out": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\debug-bridge\\20261025-171828-47870"}

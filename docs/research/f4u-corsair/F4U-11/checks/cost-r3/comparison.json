@@ -1,0 +1,546 @@
+{
+  "format": "openrc-price-changes v1",
+  "currency": "USD",
+  "before_as_of": "2026-10-25",
+  "after_as_of": "2026-10-25",
+  "summary": {
+    "before_offers": 127,
+    "after_offers": 130,
+    "changed_offers": 9,
+    "unchanged_offers": 121,
+    "change_counts": {
+      "added": 3,
+      "allocation_changed": 3,
+      "terms_changed": 3
+    }
+  },
+  "limits": [
+    "Offline comparison of recorded observations; no live stock or fit check.",
+    "Delta requires matching recorded product, package, seller and commercial terms; it is not a complete repair or an inflation measure.",
+    "Availability remains dated seller text; a comparable price does not mean a purchasable offer.",
+    "Aircraft uses identify references, not automatic installation or a new accident charge.",
+    "No catalog, dossier, inventory, incident or historical bill is changed."
+  ],
+  "changes": [
+    {
+      "offer_id": "f4u_carf_790650_20261025",
+      "change": "terms_changed",
+      "changed_fields": [
+        "source_url",
+        "uses"
+      ],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "Changed source_url"
+      ],
+      "before": {
+        "brand": "CARF-Models",
+        "sku": "790650",
+        "product": "Corsair pneumatic valve cylinder plumbing set",
+        "currency": "USD",
+        "package_description": "one pneumatic system set",
+        "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+        "observed_on": "2026-10-25",
+        "availability_at_observation": "Add to Cart shown; stock quantity and delivery not stated",
+        "amount_minor": 47900,
+        "price_kind": "manufacturer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      },
+      "after": {
+        "brand": "CARF-Models",
+        "sku": "790650",
+        "product": "Corsair pneumatic valve cylinder plumbing set",
+        "currency": "USD",
+        "package_description": "one pneumatic system set",
+        "source_url": "https://carf-models.com/en/products/pneumatik-set-corsair",
+        "observed_on": "2026-10-25",
+        "availability_at_observation": "Add to Cart shown; stock quantity and delivery not stated",
+        "amount_minor": 47900,
+        "price_kind": "manufacturer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": [
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "retract_air",
+            "role": "unit_price",
+            "installed_quantity": 1,
+            "quantity_per_component_unit": 1
+          }
+        ]
+      }
+    },
+    {
+      "offer_id": "f4u_carf_790751_20261025",
+      "change": "terms_changed",
+      "changed_fields": [
+        "source_url"
+      ],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "Changed source_url"
+      ],
+      "before": {
+        "brand": "CARF-Models",
+        "sku": "790751",
+        "product": "Corsair three-blade propeller hub",
+        "currency": "USD",
+        "package_description": "one three-blade hub",
+        "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+        "observed_on": "2026-10-25",
+        "availability_at_observation": "Add to Cart shown; stock quantity and delivery not stated",
+        "amount_minor": 21390,
+        "price_kind": "manufacturer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      },
+      "after": {
+        "brand": "CARF-Models",
+        "sku": "790751",
+        "product": "Corsair three-blade propeller hub",
+        "currency": "USD",
+        "package_description": "one three-blade hub",
+        "source_url": "https://carf-models.com/en/products/corsair-scale-propeller-complete-set/parent/301",
+        "observed_on": "2026-10-25",
+        "availability_at_observation": "Add to Cart shown; stock quantity and delivery not stated",
+        "amount_minor": 21390,
+        "price_kind": "manufacturer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      }
+    },
+    {
+      "offer_id": "f4u_carf_790752_20261025",
+      "change": "terms_changed",
+      "changed_fields": [
+        "source_url"
+      ],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "Changed source_url"
+      ],
+      "before": {
+        "brand": "CARF-Models",
+        "sku": "790752",
+        "product": "Corsair scale propeller spinner",
+        "currency": "USD",
+        "package_description": "one spinner dome",
+        "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+        "observed_on": "2026-10-25",
+        "availability_at_observation": "Add to Cart shown; stock quantity and delivery not stated",
+        "amount_minor": 6070,
+        "price_kind": "manufacturer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      },
+      "after": {
+        "brand": "CARF-Models",
+        "sku": "790752",
+        "product": "Corsair scale propeller spinner",
+        "currency": "USD",
+        "package_description": "one spinner dome",
+        "source_url": "https://carf-models.com/en/products/corsair-scale-propeller-complete-set/parent/301",
+        "observed_on": "2026-10-25",
+        "availability_at_observation": "Add to Cart shown; stock quantity and delivery not stated",
+        "amount_minor": 6070,
+        "price_kind": "manufacturer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      }
+    },
+    {
+      "offer_id": "f4u_carf_795000_20261025",
+      "change": "added",
+      "changed_fields": [],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "No paired observation; missing prices are not zero"
+      ],
+      "before": null,
+      "after": {
+        "brand": "CARF-Models",
+        "sku": "795000",
+        "product": "F4U-1D Corsair Navy Blue Folding Wings ARF",
+        "currency": "USD",
+        "package_description": "one folding-wing Navy Blue ARF kit",
+        "source_url": "https://carf-models.com/en/products/f4u-1d-corsair-navy-blue-folding-wings-arf",
+        "observed_on": "2026-10-25",
+        "availability_at_observation": "Add to Cart shown; stock quantity and delivery not stated",
+        "amount_minor": 517000,
+        "price_kind": "manufacturer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      }
+    },
+    {
+      "offer_id": "f4u_carf_953250_20261025",
+      "change": "allocation_changed",
+      "changed_fields": [
+        "uses"
+      ],
+      "same_offer_price_comparable": true,
+      "price_delta_minor": 0,
+      "comparison_limits": [],
+      "before": {
+        "brand": "Moki",
+        "sku": "953250",
+        "product": "Moki S250 five-cylinder radial engine",
+        "currency": "USD",
+        "package_description": "one standard engine; not electric starter",
+        "source_url": "https://carf-models.com/en/products/moki-s250",
+        "observed_on": "2026-10-25",
+        "availability_at_observation": "Add to Cart shown; stock quantity and delivery not stated",
+        "amount_minor": 461000,
+        "price_kind": "manufacturer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      },
+      "after": {
+        "brand": "Moki",
+        "sku": "953250",
+        "product": "Moki S250 five-cylinder radial engine",
+        "currency": "USD",
+        "package_description": "one standard engine; not electric starter",
+        "source_url": "https://carf-models.com/en/products/moki-s250",
+        "observed_on": "2026-10-25",
+        "availability_at_observation": "Add to Cart shown; stock quantity and delivery not stated",
+        "amount_minor": 461000,
+        "price_kind": "manufacturer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": [
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "engine_moki_s250",
+            "role": "unit_price",
+            "installed_quantity": 1,
+            "quantity_per_component_unit": 1
+          }
+        ]
+      }
+    },
+    {
+      "offer_id": "f4u_hitec_hs311_horizon_20261025",
+      "change": "added",
+      "changed_fields": [],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "No paired observation; missing prices are not zero"
+      ],
+      "before": null,
+      "after": {
+        "brand": "Hitec RCD",
+        "sku": "HRC31311S",
+        "product": "HS-311 standard analog sport servo",
+        "currency": "USD",
+        "package_description": "one servo",
+        "source_url": "https://www.horizonhobby.com/product/hs-311-standard-analog-sport-servo/HRC31311S.html",
+        "observed_on": "2026-10-25",
+        "availability_at_observation": "In Stock displayed at observation",
+        "amount_minor": 1699,
+        "price_kind": "live_retailer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": [
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "throttle_choke_servos",
+            "role": "unit_price",
+            "installed_quantity": 2,
+            "quantity_per_component_unit": 1
+          }
+        ]
+      }
+    },
+    {
+      "offer_id": "f4u_savox_sa1230sgp_servocity_20261025",
+      "change": "added",
+      "changed_fields": [],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "No paired observation; missing prices are not zero"
+      ],
+      "before": null,
+      "after": {
+        "brand": "Savox",
+        "sku": "SA1230SGP",
+        "product": "SA-1230SG+ coreless steel-gear servo",
+        "currency": "USD",
+        "package_description": "one servo",
+        "source_url": "https://www.servocity.com/sa1230sg-coreless-digital-servo/",
+        "observed_on": "2026-10-25",
+        "availability_at_observation": "Quantity control shown; explicit stock status not displayed",
+        "amount_minor": 10339,
+        "price_kind": "live_retailer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": [
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "aileron_servo_left",
+            "role": "unit_price",
+            "installed_quantity": 1,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "aileron_servo_right",
+            "role": "unit_price",
+            "installed_quantity": 1,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "elevator_servos",
+            "role": "unit_price",
+            "installed_quantity": 2,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "flap_servos_left",
+            "role": "unit_price",
+            "installed_quantity": 2,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "flap_servos_right",
+            "role": "unit_price",
+            "installed_quantity": 2,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "rudder_servo",
+            "role": "unit_price",
+            "installed_quantity": 1,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "tail_steering_servo",
+            "role": "unit_price",
+            "installed_quantity": 1,
+            "quantity_per_component_unit": 1
+          }
+        ]
+      }
+    },
+    {
+      "offer_id": "savox-sa1230sgp",
+      "change": "allocation_changed",
+      "changed_fields": [
+        "uses"
+      ],
+      "same_offer_price_comparable": true,
+      "price_delta_minor": 0,
+      "comparison_limits": [],
+      "before": {
+        "brand": "Savox",
+        "sku": "SA1230SGP",
+        "product": "SA-1230SG+ coreless steel-gear servo",
+        "currency": "USD",
+        "package_description": "1 servo",
+        "source_url": "https://www.servocity.com/sa1230sg-coreless-digital-servo/",
+        "observed_on": "2026-10-15",
+        "availability_at_observation": "ServoCity page shows a quantity control; explicit stock status is not displayed",
+        "amount_minor": 10339,
+        "price_kind": "live_retailer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": [
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "aileron_servo_left",
+            "role": "unit_price",
+            "installed_quantity": 1,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "aileron_servo_right",
+            "role": "unit_price",
+            "installed_quantity": 1,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "elevator_servos",
+            "role": "unit_price",
+            "installed_quantity": 2,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "flap_servos_left",
+            "role": "unit_price",
+            "installed_quantity": 2,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "flap_servos_right",
+            "role": "unit_price",
+            "installed_quantity": 2,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "rudder_servo",
+            "role": "unit_price",
+            "installed_quantity": 1,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "tail_steering_servo",
+            "role": "unit_price",
+            "installed_quantity": 1,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "p51d-mustang-120",
+            "component_id": "flight_control_servos",
+            "role": "unit_price",
+            "installed_quantity": 7,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "sebart-avanti-s-a200-p100rx",
+            "component_id": "servos_ds8911_class",
+            "role": "unit_price",
+            "installed_quantity": 3,
+            "quantity_per_component_unit": 1
+          }
+        ]
+      },
+      "after": {
+        "brand": "Savox",
+        "sku": "SA1230SGP",
+        "product": "SA-1230SG+ coreless steel-gear servo",
+        "currency": "USD",
+        "package_description": "1 servo",
+        "source_url": "https://www.servocity.com/sa1230sg-coreless-digital-servo/",
+        "observed_on": "2026-10-15",
+        "availability_at_observation": "ServoCity page shows a quantity control; explicit stock status is not displayed",
+        "amount_minor": 10339,
+        "price_kind": "live_retailer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": [
+          {
+            "aircraft_id": "p51d-mustang-120",
+            "component_id": "flight_control_servos",
+            "role": "unit_price",
+            "installed_quantity": 7,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "sebart-avanti-s-a200-p100rx",
+            "component_id": "servos_ds8911_class",
+            "role": "unit_price",
+            "installed_quantity": 3,
+            "quantity_per_component_unit": 1
+          }
+        ]
+      }
+    },
+    {
+      "offer_id": "stik_servos_hitec_hs311_four",
+      "change": "allocation_changed",
+      "changed_fields": [
+        "uses"
+      ],
+      "same_offer_price_comparable": true,
+      "price_delta_minor": 0,
+      "comparison_limits": [],
+      "before": {
+        "brand": "Hitec RCD",
+        "sku": "HRC31311S",
+        "product": "HS-311 standard analog sport servo",
+        "currency": "USD",
+        "package_description": "one listed item or set; see source notes for included components",
+        "source_url": "https://www.towerhobbies.com/product/hs-311-standard-analog-sport-servo/HRC31311S.html",
+        "observed_on": "2026-10-15",
+        "availability_at_observation": "In stock",
+        "amount_minor": 1699,
+        "price_kind": "unit_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": [
+          {
+            "aircraft_id": "f4u-corsair-250",
+            "component_id": "throttle_choke_servos",
+            "role": "unit_price",
+            "installed_quantity": 2,
+            "quantity_per_component_unit": 1
+          },
+          {
+            "aircraft_id": "p51d-mustang-120",
+            "component_id": "throttle_choke_servos",
+            "role": "unit_price",
+            "installed_quantity": 2,
+            "quantity_per_component_unit": 1
+          }
+        ]
+      },
+      "after": {
+        "brand": "Hitec RCD",
+        "sku": "HRC31311S",
+        "product": "HS-311 standard analog sport servo",
+        "currency": "USD",
+        "package_description": "one listed item or set; see source notes for included components",
+        "source_url": "https://www.towerhobbies.com/product/hs-311-standard-analog-sport-servo/HRC31311S.html",
+        "observed_on": "2026-10-15",
+        "availability_at_observation": "In stock",
+        "amount_minor": 1699,
+        "price_kind": "unit_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": [
+          {
+            "aircraft_id": "p51d-mustang-120",
+            "component_id": "throttle_choke_servos",
+            "role": "unit_price",
+            "installed_quantity": 2,
+            "quantity_per_component_unit": 1
+          }
+        ]
+      }
+    }
+  ],
+  "snapshot_sha256": {
+    "before": "2a20e6b18216dd688f8fd6a0a9e5bfb7fe607229a7ba54e9bb6c7f1ec46d4265",
+    "after": "2a764b21383a1b79d18f7458413719b33952c0294ac93eb8d5603b55e1c6e879"
+  }
+}

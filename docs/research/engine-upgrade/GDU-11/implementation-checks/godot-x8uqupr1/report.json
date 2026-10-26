@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f7e0c688-accd-4259-965e-a26f43d8ef97",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tools/graphics/contact_shadow_probe.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-experiments/gdu11-implementation/contact/oracle-short"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T21:41:47.057304+00:00",
+  "label": "godot",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\checks\\godot-x8uqupr1\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\checks\\godot-x8uqupr1\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.687,
+  "log_bytes": 1068,
+  "log_sha256": "8ca03b5da152a3e2e45bec2ca00205e0e2e2e30012d52ddc690ed89b27d1b631"
+}

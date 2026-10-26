@@ -105,6 +105,11 @@ var _trace_discard_button: Button
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
 var user_args: PackedStringArray = OS.get_cmdline_user_args()
 var preferences_path := Preferences.DEFAULT_PATH
+## UI-FS: tests/headless routes are memory-only unless they explicitly supply an isolated store.
+var statistics_path := ""
+var statistics_service: Node
+var _statistics_discard_exit := false
+var _statistics_save_dialog: ConfirmationDialog
 ## Test seam; both routes always use the same file, including after Home → Fly.
 var field_path: String = FieldLoader.DEFAULT_PATH
 var landscape_id: String = Landscapes.DEFAULT_ID
@@ -303,6 +308,12 @@ func _ready() -> void:
 	TranslationServer.set_locale(preferences.language)
 	if preferences.get("lighting_invalid", false):
 		_settings_note = tr("Invalid saved time-of-day settings; using legacy daylight.")
+	statistics_service = load("res://statistics/service.gd").new()
+	statistics_service.name = "FlightStatistics"
+	add_child(statistics_service)
+	var persistent_statistics: bool = not statistics_path.is_empty() or \
+		(DisplayServer.get_name() != "headless" and preferences_path == Preferences.DEFAULT_PATH)
+	statistics_service.setup(statistics_path if not statistics_path.is_empty() else "user://flight_statistics", persistent_statistics)
 	show_home()
 	_start_update_check()
 
@@ -442,6 +453,7 @@ func show_home() -> void:
 	if not home_scene.field_errors.is_empty():
 		return
 	var home := Home.new()
+	home.statistics_service = statistics_service
 	home.ground_vehicle_id = selected_ground_vehicle_id
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
@@ -472,6 +484,7 @@ func show_home() -> void:
 	home.help_requested.connect(open_help)
 	home.controls_requested.connect(open_controls)
 	home.settings_requested.connect(open_settings)
+	home.statistics_requested.connect(open_statistics)
 	home.weather_requested.connect(open_weather)
 	home.time_requested.connect(set_time_of_day)
 	home.failures_requested.connect(open_failures_settings)
@@ -1006,6 +1019,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		last_random_scenario = flight.flight_scenario.duplicate(true)
 	if flight.session != null:
 		screens.set_session(flight.session)
+		_attach_statistics(flight)
 		flight.pause_requested.connect(open_pause)
 		if flight.has_signal("restart_requested"):
 			flight.restart_requested.connect(_request_flight_restart)
@@ -1825,6 +1839,9 @@ func open_pause() -> void:
 	pause_menu.time_of_day_button.visible = not helicopter_route
 	pause_menu.time_of_day_button.text = tr("Sky and lighting")
 	pause_menu.overlays_requested.connect(open_overlays)
+	pause_menu.statistics_requested.connect(open_statistics)
+	pause_menu.statistics_button.visible = statistics_service != null and not trial_pause \
+		and session.has_signal("statistics_lifecycle")
 	pause_menu.overlays_button.visible = flight.get("_overlays") != null
 	pause_menu.end_requested.connect(end_flight)
 	pause_menu.quit_requested.connect(quit_app)
@@ -1941,6 +1958,8 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	var previous_sky_transport: Dictionary = Atmosphere.cloud_transport_checkpoint()
 	var previous_world_context: Dictionary = World.presentation_context()
 	if previous != null:
+		if statistics_service != null:
+			statistics_service.suspend_activity()
 		remove_child(previous)
 	if home_scene != null and home_scene.is_inside_tree():
 		remove_child(home_scene)
@@ -1963,7 +1982,9 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		candidate.sky_config = previous.sky_config.duplicate(true)
 	candidate.overlays_enabled = true
 	candidate.overlay_settings = preferences.get("hud", Preferences.DEFAULTS.hud).duplicate(true)
-	candidate.camera_preferences = DisplayPreferences.CameraSettings.normalized(display_preferences.config)
+	# Direct technical launches can open Workshop without the Home display-preference service.
+	var camera_config: Dictionary = display_preferences.config if display_preferences != null else {}
+	candidate.camera_preferences = DisplayPreferences.CameraSettings.normalized(camera_config)
 	add_child(candidate)
 	if not candidate.startup_error.is_empty():
 		var reason: String = candidate.startup_error
@@ -1973,6 +1994,8 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		candidate.queue_free()
 		if previous != null:
 			add_child(previous)
+			if statistics_service != null:
+				statistics_service.resume_activity()
 			previous._camera.make_current()
 			World.restore_presentation_context(previous_world_context)
 			previous.restore_sky_presentation(previous_sky_transport)
@@ -2028,6 +2051,8 @@ func _commit_return_to_workshop() -> void:
 	_keyboard_reader = _workshop_previous_keyboard
 	if flight != null:
 		add_child(flight)
+		if statistics_service != null:
+			statistics_service.resume_activity()
 		flight._camera.make_current()
 		World.restore_presentation_context(_workshop_previous_world_context)
 		flight.restore_sky_presentation(_workshop_previous_sky_transport)
@@ -2046,6 +2071,8 @@ func _commit_return_to_workshop() -> void:
 
 
 func _exit_tree() -> void:
+	if is_instance_valid(statistics_service):
+		statistics_service.close()
 	if is_instance_valid(_home_flight_preparation):
 		_home_flight_preparation.shutdown()
 	_loading_cancelled = true
@@ -2084,6 +2111,74 @@ func open_overlays(from: Control = null) -> void:
 		# left-hand overlays are not drawn over its buttons.
 		pause_menu.visible = false
 		flight.get("_overlays").preview(true)
+
+
+func _attach_statistics(scene: Node) -> void:
+	if statistics_service == null or scene == null or scene.session == null \
+			or not scene.session.has_signal("statistics_lifecycle") or not scene.workshop_trial.is_empty():
+		return
+	var id: String = str(scene.aircraft_id)
+	var metadata: Dictionary = {field_id = landscape_id,
+		config_hash = str(scene.session.aircraft.get("input_identity", {}).get("sha256", "")),
+		scenario = scene.flight_scenario.duplicate(true),
+		failure_config = preferences.get("failure_config", {}).duplicate(true)}
+	statistics_service.begin_activity(scene.session, id, str(Catalog.entry(id).get("name", id)), metadata)
+	if scene.get("_overlays") != null:
+		scene._overlays.statistics_service = statistics_service
+		scene._overlays.statistics_aircraft_id = id
+
+
+func open_statistics(from: Control = null, aircraft_id: String = "") -> void:
+	if statistics_service == null or not (screens.is_top("home") or screens.is_top("pause")):
+		return
+	var screen: CanvasLayer = load("res://ui/statistics_screen.gd").new()
+	screen.configure(statistics_service, aircraft_id, str(preferences.get("hud", {}).get("units", "auto")))
+	screen.back_requested.connect(func() -> void:
+		if screens.is_top("statistics"): screens.pop())
+	if not screens.push("statistics", screen, from):
+		screen.free()
+
+
+func _statistics_save_failed(retry: Callable) -> void:
+	if is_instance_valid(_statistics_save_dialog):
+		_statistics_save_dialog.queue_free()
+	_statistics_save_dialog = ConfirmationDialog.new()
+	var dialog := _statistics_save_dialog
+	dialog.exclusive = true
+	dialog.theme = UiTheme.build()
+	dialog.dialog_autowrap = true
+	# The trace exit guard has released its holds before this independent decision.
+	var held_session: Node = flight.get("session") if is_instance_valid(flight) else null
+	var resume_after := false
+	if is_instance_valid(held_session):
+		resume_after = not held_session.sim.paused and held_session.holds.is_empty()
+		held_session.hold("statistics_save")
+	var release_hold := func() -> void:
+		if is_instance_valid(held_session):
+			held_session.release("statistics_save")
+			if resume_after and held_session.holds.is_empty(): held_session.resume()
+	_statistics_save_dialog.title = tr("Flight statistics could not be saved")
+	_statistics_save_dialog.dialog_text = tr("The current flight has unsaved statistics. Retry saving, cancel, or leave without the unsaved changes.")
+	_statistics_save_dialog.ok_button_text = tr("Retry")
+	_statistics_save_dialog.add_button(tr("Leave without saving"), true, "discard")
+	add_child(_statistics_save_dialog)
+	_statistics_save_dialog.confirmed.connect(func() -> void:
+		dialog.queue_free()
+		await get_tree().process_frame # release the old exclusive window before Retry can open another
+		release_hold.call()
+		retry.call())
+	_statistics_save_dialog.custom_action.connect(func(action: StringName) -> void:
+		if action == &"discard":
+			_statistics_discard_exit = true
+			dialog.queue_free()
+			await get_tree().process_frame
+			release_hold.call()
+			retry.call())
+	_statistics_save_dialog.canceled.connect(func() -> void:
+		release_hold.call()
+		dialog.queue_free())
+	_statistics_save_dialog.popup_centered_clamped(Vector2i(560, 240), 0.9)
+	_statistics_save_dialog.get_cancel_button().grab_focus()
 
 
 func close_overlays() -> void:
@@ -2654,7 +2749,8 @@ func change_aircraft() -> void:
 
 
 func _commit_change_aircraft() -> void:
-	_commit_end_flight()
+	if not _commit_end_flight(Callable(self, "_commit_change_aircraft")):
+		return
 	if home != null:
 		home.open_aircraft_catalog.call_deferred() # after Home's own initial focus on Fly
 
@@ -2685,7 +2781,11 @@ func end_flight() -> void:
 	_begin_exit_request("end_flight", [_flight_recorder(flight)], Callable(self, "_commit_end_flight"))
 
 
-func _commit_end_flight() -> void:
+func _commit_end_flight(retry: Callable = Callable()) -> bool:
+	if statistics_service != null and not statistics_service.end_activity("abandoned", _statistics_discard_exit):
+		_statistics_save_failed(retry if retry.is_valid() else Callable(self, "_commit_end_flight"))
+		return false
+	_statistics_discard_exit = false
 	_menu_feedback(&"exit")
 	var last_failure_status: Dictionary = {}
 	var session: Node = flight.get("session")
@@ -2704,6 +2804,7 @@ func _commit_end_flight() -> void:
 	show_home()
 	if home != null and not last_failure_status.is_empty():
 		home.set_failure_debrief(last_failure_status)
+	return true
 
 
 func quit_app() -> void:
@@ -2719,6 +2820,10 @@ func quit_app() -> void:
 func _commit_app_quit() -> void:
 	if _quit_audio_pending or _home_preparation_quit_pending:
 		return
+	if statistics_service != null and not statistics_service.finish(_statistics_discard_exit):
+		_statistics_save_failed(Callable(self, "_commit_app_quit"))
+		return
+	_statistics_discard_exit = false
 	_home_preparation_quit_pending = true
 	await shutdown_home_flight_preparation()
 	if not is_inside_tree():

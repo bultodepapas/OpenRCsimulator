@@ -9,6 +9,8 @@ const Spec := preload("res://spec.gd")
 const Scripted := preload("res://sim/scripted.gd")
 const Frames := preload("res://render/frames.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const AircraftLightingRig := preload("res://render/lighting/aircraft_lighting_rig_3d.gd")
+const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
 const GroundGear := preload("res://render/ground_gear.gd")
 const TimberVisualMotion := preload("res://aircraft/timber_visual_motion.gd")
 const PropellerBlur := preload("res://render/propeller_blur.gd")
@@ -288,6 +290,8 @@ var _shadow: MeshInstance3D
 const SHADOW_MODES := ["sun", "vertical", "off"]
 var _shadow_mode := "sun"
 var _night_kit: Node3D # FW-35c: lazy presentation kit; state belongs to this flight.
+var _rgb_lighting: Node3D
+var _lighting_reacts_to_airspeed := false
 var _aircraft_lights := World.AircraftLightState.new()
 var _aircraft_lights_hud_dirty := true
 var _extent := Vector2(1.5, 1.3) # airplane span and length (m), measured from the built model
@@ -1131,6 +1135,20 @@ func _process(delta: float) -> void:
 	if not _scripted and _visual_pose.is_empty() and session.crash.is_empty() and sim.tick > 0:
 		smoke_clock_s = maxf(0.0, sim.time() - sim.dt() + Engine.get_physics_interpolation_fraction() * sim.dt())
 	_update_smoke(smoke_clock_s)
+	# Lighting uses the same displayed pose clock, independent of whether smoke is installed.
+	var lighting_clock_s: float = sim.time() if frozen else smoke_clock_s
+	if is_instance_valid(_rgb_lighting):
+		var lighting_airspeed := float(session.air_data(sim.state, sim.time()).get("V", 0.0)) if _lighting_reacts_to_airspeed else 0.0
+		_rgb_lighting.advance(lighting_clock_s, {
+			"throttle": session.propulsion_throttle(),
+			"speed_mps": (_last_render_pose.get("vel", Vector3.ZERO) as Vector3).length(),
+			"airspeed": lighting_airspeed,
+			"roll_rate": sim.state[RB.RATE], "pitch_rate": sim.state[RB.RATE + 1],
+			"maneuver": clampf(sqrt(pow(sim.state[RB.RATE], 2.0) + pow(sim.state[RB.RATE + 1], 2.0) + pow(sim.state[RB.RATE + 2], 2.0)) / TAU, 0.0, 1.0),
+			"exposure": World.Exposure.last,
+			"distance_m": _camera.global_position.distance_to(_airplane.root.global_position) if is_instance_valid(_camera) else 0.0,
+			"effects_allowed": not sim.paused and session.crash.is_empty() and sim.fault_reason.is_empty(),
+		})
 	_advance_people_after_crash(dt)
 	if _crash_director != null:
 		_crash_director.update(dt)
@@ -1868,6 +1886,8 @@ func set_aircraft_lights(mode: String) -> bool:
 
 
 func _aircraft_lights_text() -> String:
+	if workshop_trial.get("presentation_profile", {}).get("lighting", {}).get("selection", "inherit") == "disabled":
+		return tr("Night lights: disabled by build")
 	var text := tr("Night lights: " + _aircraft_lights.active_mode)
 	return text + " · " + tr("Night lights: auto") if _aircraft_lights.selection == "auto" else text
 
@@ -1881,8 +1901,13 @@ func _update_aircraft_lights(clock_s: float = -1.0) -> void:
 	if _aircraft_lights.update(World.aircraft_local_seconds(lighting_config, clock_s),
 			1.0 if elevation < World.NIGHT_KIT_BELOW_SUN_DEG else 0.0):
 		_aircraft_lights_hud_dirty = true
+	if is_instance_valid(_rgb_lighting):
+		_rgb_lighting.set_mode(_aircraft_lights.active_mode, _aircraft_lights.gain)
+		return
 	if not is_instance_valid(_night_kit) and _aircraft_lights.active_mode != "off":
 		_night_kit = World.AircraftLights.attach(_airplane.root)
+		if is_instance_valid(_night_kit):
+			Magnifier.tag(_night_kit)
 	if is_instance_valid(_night_kit) and str(_night_kit.get_meta("mode", "")) != _aircraft_lights.active_mode:
 		World.AircraftLights.set_mode(_night_kit, _aircraft_lights.active_mode)
 	World.AircraftLights.set_emission_mode(World.AircraftLights.prepare_emission(_airplane.root),
@@ -2471,6 +2496,8 @@ func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
 
 
 func _exit_tree() -> void:
+	if is_instance_valid(_rgb_lighting):
+		_rgb_lighting.dispose()
 	CameraRig.hold_cursor(false) # never leave the menus with a held cursor (CAM-29)
 	# A cancelled staged build can stop before attaching these owners to the scene.
 	if not _airplane.is_empty() and is_instance_valid(_airplane.get("root")) and _airplane.root.get_parent() == null:
@@ -2498,6 +2525,8 @@ func _on_resetting() -> void:
 		session.hold("companions-reset")
 		call_deferred("_restart_companions")
 	_aircraft_lights.reset()
+	if is_instance_valid(_rgb_lighting):
+		_rgb_lighting.reset()
 	_aircraft_lights_hud_dirty = true
 	World.flow_to(0.0)
 	_update_aircraft_lights(0.0)
@@ -2703,10 +2732,23 @@ func _build_world() -> bool:
 	add_child(_airplane.root)
 	_extent = Shadow.model_extent(_airplane.root) * float(workshop_trial.get("scale", 1.0))
 	_shadow = Shadow.create(self)
-	# Staged startup binds once after applying the validated propeller diameter below.
-	# Direct/capture routes retain their historical construction order.
+	# Bind the aircraft silhouette before fitting luminous geometry.
 	if not startup_checkpoint.is_valid():
 		Shadow.bind_model(_shadow, _airplane.root)
+	# Legacy profiles keep the established lazy kit and imported-material behavior.
+	var lighting_profile: Dictionary = workshop_trial.get("presentation_profile", {}).get("lighting", LightingProfile.defaults())
+	if lighting_profile.get("selection", "inherit") != "inherit":
+		for zone: Dictionary in lighting_profile.get("zones", []):
+			_lighting_reacts_to_airspeed = _lighting_reacts_to_airspeed or zone.get("reactive", {}).get("source", "none") == "airspeed"
+		_rgb_lighting = AircraftLightingRig.new()
+		_rgb_lighting.name = "AircraftLightingRig"
+		add_child(_rgb_lighting)
+		var lighting_result: Dictionary = _rgb_lighting.configure(_airplane.root, lighting_profile)
+		if not bool(lighting_result.get("ok", false)):
+			startup_error = "; ".join(PackedStringArray(lighting_result.get("errors", [])))
+			return false
+		for luminous: VisualInstance3D in _rgb_lighting.luminous_nodes():
+			luminous.layers |= Magnifier.LAYER
 	_update_aircraft_lights(0.0) # after the extent is measured; fixed TOD and field-world clocks share the policy
 	_camera = PilotCamera.create(self, field.pilot)
 	_storm_fx = Lightning.new()

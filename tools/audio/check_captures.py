@@ -4,10 +4,76 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
+import string
 import wave
 from pathlib import Path
 
 import numpy as np
+
+
+def finite_positive(value: object) -> bool:
+    try:
+        number = float(value)
+    except (TypeError, ValueError, OverflowError):
+        return False
+    return math.isfinite(number) and number > 0.0
+
+
+def is_sha256(value: object) -> bool:
+    return isinstance(value, str) and len(value) == 64 and all(char in string.hexdigits for char in value)
+
+
+def check_bookkeeping(report: dict, recorded_frames: int, failures: list[str]) -> dict | None:
+    bookkeeping = report.get('capture_bookkeeping')
+    if not isinstance(bookkeeping, dict):
+        failures.append('capture frame bookkeeping is missing')
+        return None
+    names = ('pushed_frames', 'recorded_frames', 'flushed_frames', 'truncated_frames',
+             'overflow_discarded_frames', 'unaccounted_pushed_frames')
+    if any(not isinstance(bookkeeping.get(name), int) or bookkeeping[name] < 0 for name in names):
+        failures.append('capture frame bookkeeping contains invalid counts')
+        return bookkeeping
+    if not isinstance(bookkeeping.get('buffer_length_frames'), int) or bookkeeping['buffer_length_frames'] <= 0:
+        failures.append('capture ring-buffer length is missing or invalid')
+    if bookkeeping['recorded_frames'] != recorded_frames:
+        failures.append('capture bookkeeping recorded-frame count differs from WAV')
+    if bookkeeping['overflow_discarded_frames'] != report.get('discarded_frames'):
+        failures.append('capture bookkeeping overflow count differs from report')
+    if bookkeeping['truncated_frames'] != 0:
+        failures.append('capture exceeded the staged PCM memory bound')
+    final = bookkeeping.get('final')
+    if not isinstance(final, dict) or not isinstance(final.get('available_frames_after_flush'), int):
+        failures.append('capture final buffer count is missing')
+        return bookkeeping
+    pending = final['available_frames_after_flush']
+    if pending < 0 or pending != 0:
+        failures.append('capture buffer was not empty after final drain')
+    if (not isinstance(final.get('available_frames_before_flush'), int)
+            or not isinstance(final.get('flushed_frames'), int)
+            or final['available_frames_before_flush'] != final['flushed_frames']
+            or final['flushed_frames'] != bookkeeping['flushed_frames']):
+        failures.append('capture final flush count differs from remaining buffer count')
+    expected_unaccounted = (bookkeeping['pushed_frames'] - bookkeeping['recorded_frames']
+                            - bookkeeping['flushed_frames'] - bookkeeping['truncated_frames'] - pending)
+    if bookkeeping['unaccounted_pushed_frames'] != expected_unaccounted or expected_unaccounted != 0:
+        failures.append('capture pushed/recorded/flushed frame counts do not balance')
+    initial = bookkeeping.get('initial')
+    if not isinstance(initial, dict):
+        failures.append('capture initial counters are missing')
+        return bookkeeping
+    if (not isinstance(initial.get('pushed_frames'), int)
+            or not isinstance(final.get('pushed_frames'), int)
+            or final['pushed_frames'] - initial['pushed_frames'] != bookkeeping['pushed_frames']):
+        failures.append('capture pushed-frame endpoints do not match their delta')
+    if (not isinstance(initial.get('discarded_frames'), int)
+            or not isinstance(final.get('discarded_frames'), int)
+            or final['discarded_frames'] - initial['discarded_frames']
+            != bookkeeping['overflow_discarded_frames']):
+        failures.append('capture overflow endpoints do not match their delta')
+    if not report.get('capture_effect_removed', False):
+        failures.append('capture effect was not removed after recording')
+    return bookkeeping
 
 
 def analyze(prefix: Path) -> dict:
@@ -21,6 +87,22 @@ def analyze(prefix: Path) -> dict:
     failures = []
     if report['discarded_frames'] != 0:
         failures.append('mixer capture dropped frames')
+    wall = report.get('capture_wall_seconds')
+    if not finite_positive(wall):
+        failures.append('capture wall time is missing, non-finite, or non-positive')
+        wall_error = None
+    else:
+        wall_error = abs(len(pcm) / rate - float(wall))
+    if wall_error is not None and wall_error > .12:
+        failures.append('native PCM duration differs from capture wall time by over 120 ms')
+    check_bookkeeping(report, len(pcm), failures)
+    if not is_sha256(report.get('probe_sha256')):
+        failures.append('capture probe source hash is missing or invalid')
+    if report.get('finite_samples') is not True:
+        failures.append('capture contains non-finite samples')
+    timing_sample_count = report.get('soundscape_timing_sample_count')
+    if not isinstance(timing_sample_count, int) or timing_sample_count <= 0:
+        failures.append('soundscape timing sample set is empty')
     if report['peak_dbfs'] > -0.9:
         failures.append('capture crossed the -1 dBFS ceiling tolerance')
     if np.any(np.abs(pcm.astype(np.int32)) >= 32767):
@@ -54,8 +136,14 @@ def analyze(prefix: Path) -> dict:
         failures.append('adapter update p95 exceeded 0.5 ms budget')
     result = {
         'capture': prefix.name, 'sha256_wav': hashlib.sha256(path.read_bytes()).hexdigest(),
+        'checker_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'driver': report['driver'], 'display': report['display'], 'fps': report['requested_fps'],
         'aircraft': report['aircraft'], 'seconds': len(pcm) / rate,
+        'capture_wall_seconds': float(wall) if finite_positive(wall) else None,
+        'capture_wall_error_seconds': wall_error,
+        'probe_sha256': report.get('probe_sha256'),
+        'capture_bookkeeping': report.get('capture_bookkeeping'),
+        'timing_sample_count': timing_sample_count,
         'peak_dbfs': report['peak_dbfs'], 'rms_dbfs': report['rms_dbfs'],
         'pause_peak_linear': None if wildlife_review else pause_peak, 'dropped_frames': report['discarded_frames'],
         'review_kind': 'wildlife' if wildlife_review else 'transitions',

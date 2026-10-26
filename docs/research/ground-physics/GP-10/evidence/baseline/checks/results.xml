@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="2" failures="0" errors="0" skipped="0" time="10.125000"><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp10-baseline-b85ce104-20261025/record_air.gd [record-air-bo6ij9qk]" time="5.375000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: record-air-bo6ij9qk/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp10-baseline-b85ce104-20261025/record_ground.gd [record-ground-h2i89pg7]" time="4.750000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: record-ground-h2i89pg7/report.json and engine.log</system-out></testcase></testsuite>

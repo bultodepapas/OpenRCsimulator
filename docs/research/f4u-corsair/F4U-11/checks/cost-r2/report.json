@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1f2569a2-b5d6-49fa-8405-5da51ea51d32",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_accident_report.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T21:03:01.991910+00:00",
+  "label": "f4u-cost-report",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\f4u-cost-report-_i1gsd2z\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\f4u-cost-report-_i1gsd2z\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.39,
+  "log_bytes": 111,
+  "log_sha256": "a9ca807ff3d06a8ec2f6358a8fc1599ed33885efaec015d36d6881698b48c01f"
+}

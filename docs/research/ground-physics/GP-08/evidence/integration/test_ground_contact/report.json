@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e6f46404-4f09-49c5-84cb-af4f176a2fc9",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ground_contact.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T23:18:42.407687+00:00",
+  "label": "test_ground_contact",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-integrated-checks\\test_ground_contact-t6i2h0z1\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-integrated-checks\\test_ground_contact-t6i2h0z1\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    ", 0 fail"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.0,
+  "log_bytes": 2623,
+  "log_sha256": "84eebb6c80358582a59ad9099fbf3d6733e33cb59208f46c2448ef1773fafab0"
+}

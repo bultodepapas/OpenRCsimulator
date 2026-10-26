@@ -91,7 +91,7 @@ func _test_strict_rejections(bytes: PackedByteArray, payload: Dictionary) -> voi
 	unsafe_descriptor.workshop_descriptor.presentation.scale_root = "res://scripts/run_me.gd"
 	_check("unsafe descriptor resource paths refuse", not Bundle.decode(_encode(unsafe_descriptor)).get("ok", false))
 	var future_profile: Dictionary = _copy_bundle_payload(bytes)
-	future_profile.presentation_profile.version = 3
+	future_profile.presentation_profile.version = Profile.VERSION + 1
 	future_profile.presentation_profile.future_resource = "res://scripts/run_me.gd"
 	var future_bytes: PackedByteArray = _encode(future_profile)
 	var future_decoded: Dictionary = Bundle.decode(future_bytes)

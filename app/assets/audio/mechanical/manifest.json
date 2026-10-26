@@ -1,0 +1,932 @@
+{
+  "assets": [
+    {
+      "channels": 1,
+      "duration_s": 0.46,
+      "edit": {
+        "crossfade_s": 0.1,
+        "eq": "Light low-frequency cleanup and gentle rolloff above 18 kHz",
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 1.0,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.055
+      },
+      "file": "servo_standard_loop.wav",
+      "fit_limitations": "Recorded Futaba S3003 travel phrase; repeated only during movement, not a continuous aircraft recording.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "loop",
+      "loop": true,
+      "metrics": {
+        "interior_step_p99": 0.1599169921875,
+        "loop_crossfade_s": 0.1,
+        "loop_crossfade_samples": 4410,
+        "loop_phase_offset_samples": 1700,
+        "peak": 0.288818359375,
+        "rms": 0.054998241871291154,
+        "seam_step": 0.0,
+        "source_samples_before_loop_edit": 24696
+      },
+      "playback_pitch_reference": 1.0,
+      "role": "standard servo movement bed",
+      "sample_count": 20286,
+      "sample_rate_hz": 44100,
+      "sha256": "16fdfa5a7628e7025a7678ec1da14530e03f8310682b2b37a798da1d25ce2150",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "s3003_180",
+          "source_end_s": 0.6,
+          "source_end_sample_exclusive": 26460,
+          "source_segment_samples": 24696,
+          "source_start_s": 0.04,
+          "source_start_sample": 1764
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.19,
+      "edit": {
+        "eq": "Light low-frequency cleanup and gentle rolloff above 18 kHz",
+        "fade_in_s": 0.003,
+        "fade_out_s": 0.02,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 1.0,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.05
+      },
+      "file": "servo_standard_start.wav",
+      "fit_limitations": "Source-derived onset; direction is not identified by the recording metadata.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.23540222167968694,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.485198974609375,
+        "rms": 0.049998399784326075,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 8379
+      },
+      "playback_pitch_reference": 1.0,
+      "role": "standard servo movement onset",
+      "sample_count": 8379,
+      "sample_rate_hz": 44100,
+      "sha256": "35b632770a1e9291e24a2777c9e7688f03c9c03e38ff7a9eb630db0ab50f10cb",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "s3003_90",
+          "source_end_s": 0.19,
+          "source_end_sample_exclusive": 8379,
+          "source_segment_samples": 8379,
+          "source_start_s": 0.0,
+          "source_start_sample": 0
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.22,
+      "edit": {
+        "eq": "Light low-frequency cleanup and gentle rolloff above 18 kHz",
+        "fade_in_s": 0.003,
+        "fade_out_s": 0.02,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 1.0,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.05
+      },
+      "file": "servo_standard_start_02.wav",
+      "fit_limitations": "Source-derived onset variation; direction is not identified by the recording metadata.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.142974853515625,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.245697021484375,
+        "rms": 0.04999851240160659,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 9702
+      },
+      "playback_pitch_reference": 1.0,
+      "role": "standard servo movement onset variation 2",
+      "sample_count": 9702,
+      "sample_rate_hz": 44100,
+      "sha256": "0e1ddef96d894947e8a37052bd9eccfb220d3ec8c7857f2e153f0bce5c664ea3",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "s3003_180",
+          "source_end_s": 0.22,
+          "source_end_sample_exclusive": 9702,
+          "source_segment_samples": 9702,
+          "source_start_s": 0.0,
+          "source_start_sample": 0
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.17979591836734693,
+      "edit": {
+        "eq": "Light low-frequency cleanup and gentle rolloff above 18 kHz",
+        "fade_in_s": 0.003,
+        "fade_out_s": 0.03,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 1.0,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.045
+      },
+      "file": "servo_standard_stop.wav",
+      "fit_limitations": "Source-derived motion tail; no isolated lock click is claimed.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.2547775268554683,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.5018310546875,
+        "rms": 0.04499865185177509,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 7929
+      },
+      "playback_pitch_reference": 1.0,
+      "role": "standard servo movement deceleration/tail",
+      "sample_count": 7929,
+      "sample_rate_hz": 44100,
+      "sha256": "c60a065826c4d5326d34cb01273358d6ab13a472b61205368e90699fb1b8dc03",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "s3003_90",
+          "source_end_s": 0.4597916667,
+          "source_end_sample_exclusive": 20277,
+          "source_segment_samples": 7929,
+          "source_start_s": 0.28,
+          "source_start_sample": 12348
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.1708843537414966,
+      "edit": {
+        "eq": "Light low-frequency cleanup and gentle rolloff above 18 kHz",
+        "fade_in_s": 0.003,
+        "fade_out_s": 0.03,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.68,
+        "playback_pitch_reference": 1.0,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.05
+      },
+      "file": "servo_standard_stop_02.wav",
+      "fit_limitations": "S3003 movement tail includes a strong waveform transient near 0.62 s; it has not been audibly verified.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.23494812011718735,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.459808349609375,
+        "rms": 0.0499984628613852,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 7536
+      },
+      "playback_pitch_reference": 1.0,
+      "role": "standard servo movement stop variation 2",
+      "sample_count": 7536,
+      "sample_rate_hz": 44100,
+      "sha256": "7d4a150414ce929fd8dfc496a8305ba28d757ddd3902beb86641a8e4a3b0ff15",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "s3003_180",
+          "source_end_s": 0.690875,
+          "source_end_sample_exclusive": 30468,
+          "source_segment_samples": 7536,
+          "source_start_s": 0.52,
+          "source_start_sample": 22932
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.56,
+      "edit": {
+        "crossfade_s": 0.12,
+        "eq": "Gentle 2 dB broad upper-shelf cut above 5.5 kHz; natural-pitch source file",
+        "high_shelf_db": -2.0,
+        "high_shelf_hz": 5500,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 0.82,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.055
+      },
+      "file": "servo_high_torque_loop.wav",
+      "fit_limitations": "Recorded T2M TS-315 large-servo movement; used for high_torque role, but torque/load are not measured.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "loop",
+      "loop": true,
+      "metrics": {
+        "interior_step_p99": 0.19904113769531262,
+        "loop_crossfade_s": 0.12,
+        "loop_crossfade_samples": 5292,
+        "loop_phase_offset_samples": 2259,
+        "peak": 0.260772705078125,
+        "rms": 0.054998242488079795,
+        "seam_step": 0.0,
+        "source_samples_before_loop_edit": 29988
+      },
+      "playback_pitch_reference": 0.82,
+      "role": "high_torque simulation-role servo movement bed",
+      "sample_count": 24696,
+      "sample_rate_hz": 44100,
+      "sha256": "c43bf536615d436f0b2838b1dbf457ad8bb108aeb4511d0b0d7656226a4a3ab4",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "ts315_180",
+          "source_end_s": 0.7,
+          "source_end_sample_exclusive": 30870,
+          "source_segment_samples": 29988,
+          "source_start_s": 0.02,
+          "source_start_sample": 882
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.18,
+      "edit": {
+        "eq": "Gentle 2 dB broad upper-shelf cut above 5.5 kHz; natural-pitch source file",
+        "fade_in_s": 0.003,
+        "fade_out_s": 0.02,
+        "high_shelf_db": -2.0,
+        "high_shelf_hz": 5500,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 0.82,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.055
+      },
+      "file": "servo_high_torque_start.wav",
+      "fit_limitations": "Recorded T2M TS-315 onset used for high_torque role; torque/load are not measured.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.2132214355468753,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.266326904296875,
+        "rms": 0.0549984310922194,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 7938
+      },
+      "playback_pitch_reference": 0.82,
+      "role": "large-servo movement onset",
+      "sample_count": 7938,
+      "sample_rate_hz": 44100,
+      "sha256": "4217518c1c2c1b00d2bcc865261ee0374769df38d1cdd91049fd25c69dd1a915",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "ts315_90",
+          "source_end_s": 0.18,
+          "source_end_sample_exclusive": 7938,
+          "source_segment_samples": 7938,
+          "source_start_s": 0.0,
+          "source_start_sample": 0
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.22,
+      "edit": {
+        "eq": "Gentle 2 dB broad upper-shelf cut above 5.5 kHz; natural-pitch source file",
+        "fade_in_s": 0.003,
+        "fade_out_s": 0.02,
+        "high_shelf_db": -2.0,
+        "high_shelf_hz": 5500,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 0.82,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.055
+      },
+      "file": "servo_high_torque_start_02.wav",
+      "fit_limitations": "Recorded T2M TS-315 onset variation used for high_torque role; torque/load are not measured.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.20892333984375,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.304962158203125,
+        "rms": 0.05499820949683077,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 9702
+      },
+      "playback_pitch_reference": 0.82,
+      "role": "large-servo movement onset variation 2",
+      "sample_count": 9702,
+      "sample_rate_hz": 44100,
+      "sha256": "062333848ea446f15719a5204e441bff9c07f5de141d5ac623a776cf3e387459",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "ts315_180",
+          "source_end_s": 0.22,
+          "source_end_sample_exclusive": 9702,
+          "source_segment_samples": 9702,
+          "source_start_s": 0.0,
+          "source_start_sample": 0
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.12784580498866213,
+      "edit": {
+        "eq": "Gentle 2 dB broad upper-shelf cut above 5.5 kHz; natural-pitch source file",
+        "fade_in_s": 0.003,
+        "fade_out_s": 0.025,
+        "high_shelf_db": -2.0,
+        "high_shelf_hz": 5500,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 0.82,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.05
+      },
+      "file": "servo_high_torque_stop.wav",
+      "fit_limitations": "Recorded T2M TS-315 motion tail; no measured lock or torque-loaded stop is claimed.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.193389892578125,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.303466796875,
+        "rms": 0.04999865481829785,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 5638
+      },
+      "playback_pitch_reference": 0.82,
+      "role": "large-servo movement deceleration/tail",
+      "sample_count": 5638,
+      "sample_rate_hz": 44100,
+      "sha256": "c6d153c97f5244be87f8c150ced1645fd1c272c8efe095880616b62a64f93906",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "ts315_90",
+          "source_end_s": 0.4278541667,
+          "source_end_sample_exclusive": 18868,
+          "source_segment_samples": 5638,
+          "source_start_s": 0.3,
+          "source_start_sample": 13230
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.18448979591836734,
+      "edit": {
+        "eq": "Gentle 2 dB broad upper-shelf cut above 5.5 kHz; natural-pitch source file",
+        "fade_in_s": 0.003,
+        "fade_out_s": 0.03,
+        "high_shelf_db": -2.0,
+        "high_shelf_hz": 5500,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 0.82,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.05
+      },
+      "file": "servo_high_torque_stop_02.wav",
+      "fit_limitations": "Recorded T2M TS-315 motion tail; no measured lock or torque-loaded stop is claimed.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.20196533203124978,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.25726318359375,
+        "rms": 0.04999857417338924,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 8136
+      },
+      "playback_pitch_reference": 0.82,
+      "role": "large-servo movement stop variation 2",
+      "sample_count": 8136,
+      "sample_rate_hz": 44100,
+      "sha256": "05607378b416595058fc2cd54f6cce18ec8edd679ea138d6065a9e7e9be8cd79",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "ts315_180",
+          "source_end_s": 0.7644791667,
+          "source_end_sample_exclusive": 33714,
+          "source_segment_samples": 8136,
+          "source_start_s": 0.58,
+          "source_start_sample": 25578
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.83,
+      "edit": {
+        "crossfade_s": 0.12,
+        "eq": "Gentle 2 dB broad upper-shelf cut above 5.5 kHz; natural-pitch source file",
+        "high_shelf_db": -2.0,
+        "high_shelf_hz": 5500,
+        "highpass_hz": 120,
+        "join_crossfade_s": 0.07,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 0.82,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.052
+      },
+      "file": "retract_electric_loop.wav",
+      "fit_limitations": "Two source-derived movements from a named large RC servo form a repeating travel proxy. Not an electric retract recording or measured actuator tone.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "loop",
+      "loop": true,
+      "metrics": {
+        "interior_step_p99": 0.18649200439453106,
+        "loop_crossfade_s": 0.12,
+        "loop_crossfade_samples": 5292,
+        "loop_phase_offset_samples": 1275,
+        "peak": 0.267364501953125,
+        "rms": 0.05199839265075072,
+        "seam_step": 0.0,
+        "source_samples_before_loop_edit": 41895
+      },
+      "playback_pitch_reference": 0.82,
+      "role": "electric retract travel sound bed proxy",
+      "sample_count": 36603,
+      "sample_rate_hz": 44100,
+      "sha256": "ea1c5db96d6831d0637b8d80c6ff5f57f5c38ef6dff75422d6800b08f38364ed",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "ts315_90",
+          "source_end_s": 0.39,
+          "source_end_sample_exclusive": 17199,
+          "source_segment_samples": 15876,
+          "source_start_s": 0.03,
+          "source_start_sample": 1323
+        },
+        {
+          "decoded_rate_hz": 44100,
+          "source": "ts315_180",
+          "source_end_s": 0.71,
+          "source_end_sample_exclusive": 31311,
+          "source_segment_samples": 29106,
+          "source_start_s": 0.05,
+          "source_start_sample": 2205
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.2,
+      "edit": {
+        "eq": "Gentle 2 dB broad upper-shelf cut above 5.5 kHz; natural-pitch source file",
+        "fade_in_s": 0.003,
+        "fade_out_s": 0.02,
+        "high_shelf_db": -2.0,
+        "high_shelf_hz": 5500,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 0.82,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.05
+      },
+      "file": "retract_electric_start.wav",
+      "fit_limitations": "T2M TS-315 servo onset used as an authored electric-retract start proxy; not recorded on an electric retract.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.19197509765624998,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.280364990234375,
+        "rms": 0.04999844620753566,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 8820
+      },
+      "playback_pitch_reference": 0.82,
+      "role": "electric retract movement onset proxy",
+      "sample_count": 8820,
+      "sample_rate_hz": 44100,
+      "sha256": "715c4dcf387c44bbbcdd643ab51dfe284f643592c3776e11f5e99961fc4adbb4",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "ts315_180",
+          "source_end_s": 0.2,
+          "source_end_sample_exclusive": 8820,
+          "source_segment_samples": 8820,
+          "source_start_s": 0.0,
+          "source_start_sample": 0
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.1708843537414966,
+      "edit": {
+        "eq": "Light low-frequency cleanup and gentle rolloff above 18 kHz",
+        "fade_in_s": 0.003,
+        "fade_out_s": 0.03,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.68,
+        "playback_pitch_reference": 1.0,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.05
+      },
+      "file": "retract_electric_lock.wav",
+      "fit_limitations": "RC servo stop transient, authored endpoint cue, not measured retract lock.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.23494812011718735,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.459808349609375,
+        "rms": 0.0499984628613852,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 7536
+      },
+      "playback_pitch_reference": 1.0,
+      "role": "electric retract endpoint cue proxy",
+      "sample_count": 7536,
+      "sample_rate_hz": 44100,
+      "sha256": "7d4a150414ce929fd8dfc496a8305ba28d757ddd3902beb86641a8e4a3b0ff15",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "s3003_180",
+          "source_end_s": 0.690875,
+          "source_end_sample_exclusive": 30468,
+          "source_segment_samples": 7536,
+          "source_start_s": 0.52,
+          "source_start_sample": 22932
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.78,
+      "edit": {
+        "crossfade_s": 0.22,
+        "eq": "Low-frequency cleanup and rolloff above 9.5 kHz",
+        "highpass_hz": 90,
+        "lowpass_hz": 9500,
+        "peak_cap": 0.48,
+        "playback_pitch_reference": 1.0,
+        "sample_rate_hz": 22050,
+        "target_rms": 0.03
+      },
+      "file": "retract_pneumatic_loop.wav",
+      "fit_limitations": "Stable compressor pressure-release segment used as non-RC steady-air texture; not a retract-cylinder recording.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "loop",
+      "loop": true,
+      "metrics": {
+        "interior_step_p99": 0.11068908691406243,
+        "loop_crossfade_s": 0.22,
+        "loop_crossfade_samples": 4851,
+        "loop_phase_offset_samples": 1291,
+        "peak": 0.131439208984375,
+        "rms": 0.02999897385630403,
+        "seam_step": 6.103515625e-05,
+        "source_samples_before_loop_edit": 22050
+      },
+      "playback_pitch_reference": 1.0,
+      "role": "pneumatic continuous-air travel texture proxy",
+      "sample_count": 17199,
+      "sample_rate_hz": 22050,
+      "sha256": "70e8a0a2cb0b9556109d8887cbde52a5f64c203c0fd7121eebb470365bec5e79",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 22050,
+          "source": "compressor_valve",
+          "source_end_s": 24.1,
+          "source_end_sample_exclusive": 531405,
+          "source_segment_samples": 22050,
+          "source_start_s": 23.1,
+          "source_start_sample": 509355
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.56,
+      "edit": {
+        "eq": "Low-frequency cleanup and rolloff above 9.5 kHz",
+        "fade_in_s": 0.004,
+        "fade_out_s": 0.035,
+        "highpass_hz": 90,
+        "lowpass_hz": 9500,
+        "peak_cap": 0.62,
+        "playback_pitch_reference": 1.0,
+        "sample_rate_hz": 22050,
+        "target_rms": 0.06
+      },
+      "file": "retract_pneumatic_hiss.wav",
+      "fit_limitations": "Pneumatic nail-gun line-disconnect air burst used as non-RC hiss proxy; not a retract-cylinder recording.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.24654052734374954,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.40618896484375,
+        "rms": 0.0599982928301162,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 12348
+      },
+      "playback_pitch_reference": 1.0,
+      "role": "pneumatic retract air-hiss proxy",
+      "sample_count": 12348,
+      "sample_rate_hz": 22050,
+      "sha256": "1275b0542922bb828e168b3d3d98c492ca5132dbb0260813b3b3e226bd5a008f",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 22050,
+          "source": "air_disconnect",
+          "source_end_s": 0.76,
+          "source_end_sample_exclusive": 16758,
+          "source_segment_samples": 12348,
+          "source_start_s": 0.2,
+          "source_start_sample": 4410
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.66,
+      "edit": {
+        "eq": "Low-frequency cleanup and rolloff above 9.5 kHz",
+        "fade_in_s": 0.004,
+        "fade_out_s": 0.035,
+        "highpass_hz": 90,
+        "lowpass_hz": 9500,
+        "peak_cap": 0.5,
+        "playback_pitch_reference": 1.0,
+        "sample_rate_hz": 22050,
+        "target_rms": 0.042
+      },
+      "file": "retract_pneumatic_valve.wav",
+      "fit_limitations": "Pressure-release onset from a small garage compressor valve; non-RC proxy, not a retract spool-valve recording.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.21345184326171868,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.322967529296875,
+        "rms": 0.04199854538161917,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 14553
+      },
+      "playback_pitch_reference": 1.0,
+      "role": "pneumatic retract valve-actuation texture proxy",
+      "sample_count": 14553,
+      "sample_rate_hz": 22050,
+      "sha256": "370cfe8ee8eeac7c22f2ac85d44a9c3c89f455bbe3377439f058350c5bc2ebde",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 22050,
+          "source": "compressor_valve",
+          "source_end_s": 15.7,
+          "source_end_sample_exclusive": 346185,
+          "source_segment_samples": 14553,
+          "source_start_s": 15.04,
+          "source_start_sample": 331632
+        }
+      ]
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.1708843537414966,
+      "edit": {
+        "eq": "Light low-frequency cleanup and gentle rolloff above 18 kHz",
+        "fade_in_s": 0.003,
+        "fade_out_s": 0.03,
+        "highpass_hz": 120,
+        "lowpass_hz": 18000,
+        "peak_cap": 0.68,
+        "playback_pitch_reference": 1.0,
+        "sample_rate_hz": 44100,
+        "target_rms": 0.05
+      },
+      "file": "retract_pneumatic_lock.wav",
+      "fit_limitations": "RC servo stop transient, authored endpoint cue, not measured retract lock.",
+      "format": "signed 16-bit PCM little-endian",
+      "kind": "oneshot",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.23494812011718735,
+        "loop_crossfade_s": 0.0,
+        "loop_crossfade_samples": 0,
+        "loop_phase_offset_samples": 0,
+        "peak": 0.459808349609375,
+        "rms": 0.0499984628613852,
+        "seam_step": null,
+        "source_samples_before_loop_edit": 7536
+      },
+      "playback_pitch_reference": 1.0,
+      "role": "pneumatic retract endpoint cue proxy",
+      "sample_count": 7536,
+      "sample_rate_hz": 44100,
+      "sha256": "7d4a150414ce929fd8dfc496a8305ba28d757ddd3902beb86641a8e4a3b0ff15",
+      "source_segments": [
+        {
+          "decoded_rate_hz": 44100,
+          "source": "s3003_180",
+          "source_end_s": 0.690875,
+          "source_end_sample_exclusive": 30468,
+          "source_segment_samples": 7536,
+          "source_start_s": 0.52,
+          "source_start_sample": 22932
+        }
+      ]
+    }
+  ],
+  "decoded_pcm_bytes": 429074,
+  "dependencies": {
+    "miniaudio": "1.71",
+    "numpy": "2.4.6"
+  },
+  "format": "openrc-mechanical-audio-v1",
+  "generator": "tools/audio/import_mechanical.py",
+  "listening_status": "No direct audition was performed during analysis or editing; human listening acceptance remains required.",
+  "playback_contract": {
+    "guard_frames_embedded_in_wav": 0,
+    "guard_note": "Runtime must provide the repository 64-frame repeated-endpoint wrap guard.",
+    "loop_guard_frames_required": 64,
+    "profiles": {
+      "servo_high_torque": {
+        "reference_pitch": 0.82,
+        "source_note": "Natural-pitch TS-315 source; runtime pitch is an authored profile choice, not a measured hardware frequency."
+      },
+      "servo_standard": {
+        "reference_pitch": 1.0
+      }
+    }
+  },
+  "sources": {
+    "air_disconnect": {
+      "author": "reg7783",
+      "file": "release_air_pffft_hq_preview.mp3",
+      "file_bytes": 48005,
+      "fit": "Pneumatic nail-gun air-line disconnect, used only as a non-RC release-hiss proxy; not a retract cylinder recording.",
+      "format": "Freesound HQ MP3 preview; page metadata says original stereo 44.1 kHz / 16-bit WAV, 1.906 s",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://freesound.org/people/reg7783/sounds/131302/",
+      "retrieved": "2026-10-25",
+      "sha": "56ba199e5b6e90bc2d671b41af1e150f91e2db635315a6026299f1c2d0c9d5c6",
+      "sha256": "56ba199e5b6e90bc2d671b41af1e150f91e2db635315a6026299f1c2d0c9d5c6",
+      "source_file": "research/audio/AUD-16/recordings/release_air_pffft_hq_preview.mp3",
+      "title": "release_air_pffft.wav"
+    },
+    "compressor_valve": {
+      "author": "j_soundeffects",
+      "file": "garage_air_compressor_releasing_pressure_hq_preview.mp3",
+      "file_bytes": 600672,
+      "fit": "Small garage compressor pressure-release valve/escaping air, used as a non-RC valve proxy. Its automatic closing pop is not used as a retract lock.",
+      "format": "Freesound HQ MP3 preview; page metadata says original stereo 48 kHz / 16-bit WAV, 25.792 s",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "page": "https://freesound.org/people/j_soundeffects/sounds/847748/",
+      "retrieved": "2026-10-25",
+      "sha": "130c6497038ed3b1d04607c88e69a9c114b2e65b241035fbe48a1dd3efacda58",
+      "sha256": "130c6497038ed3b1d04607c88e69a9c114b2e65b241035fbe48a1dd3efacda58",
+      "source_file": "research/audio/AUD-16/recordings/garage_air_compressor_releasing_pressure_hq_preview.mp3",
+      "title": "Garage air compressor releasing pressure HQ preview"
+    },
+    "s3003_180": {
+      "author": "Joseph Sardin",
+      "download": "https://lasonotheque.org/UPLOAD/bwf-fr/2911.wav",
+      "file": "futaba_s3003_180_cc0_original.wav",
+      "file_bytes": 102246,
+      "fit": "Named standard Futaba RC servo movement; source page does not specify load or aircraft installation.",
+      "format": "Original mono 48 kHz / 24-bit WAV; source page identifies model and movement angle",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "model": "Futaba S3003",
+      "page": "https://lasonotheque.org/servomoteur-1-180-1-s2911.html",
+      "recording": "Joseph Sardin; SoundDevices MixPre-3 and Neumann KM184; studio recording",
+      "retrieved": "2026-10-25",
+      "sha": "e7f48be365dfa28191824396fecec4245d91d06b45d82ede939ff7fff91cd366",
+      "sha256": "e7f48be365dfa28191824396fecec4245d91d06b45d82ede939ff7fff91cd366",
+      "source_file": "research/audio/AUD-16/recordings/futaba_s3003_180_cc0_original.wav",
+      "title": "Futaba S3003, 180 degree movement"
+    },
+    "s3003_90": {
+      "author": "Joseph Sardin",
+      "download": "https://lasonotheque.org/UPLOAD/bwf-fr/2910.wav",
+      "file": "futaba_s3003_90_cc0_original.wav",
+      "file_bytes": 68866,
+      "fit": "Named standard Futaba RC servo movement; source page does not specify load or aircraft installation.",
+      "format": "Original mono 48 kHz / 24-bit WAV; source page identifies model and movement angle",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "model": "Futaba S3003",
+      "page": "https://lasonotheque.org/servomoteur-1-90-2-s2910.html",
+      "recording": "Joseph Sardin; SoundDevices MixPre-3 and Neumann KM184; studio recording",
+      "retrieved": "2026-10-25",
+      "sha": "0bae7f973d0aae87bf01ad252878950b8b36ab17da60aff53c55c7dbe51d1a4a",
+      "sha256": "0bae7f973d0aae87bf01ad252878950b8b36ab17da60aff53c55c7dbe51d1a4a",
+      "source_file": "research/audio/AUD-16/recordings/futaba_s3003_90_cc0_original.wav",
+      "title": "Futaba S3003, 90 degree movement"
+    },
+    "ts315_180": {
+      "author": "Joseph Sardin",
+      "download": "https://lasonotheque.org/UPLOAD/bwf-fr/2921.wav",
+      "file": "t2m_ts315_180_cc0_original.wav",
+      "file_bytes": 112844,
+      "fit": "Named large RC servo used for high_torque simulation role. No torque rating or loaded high-torque sound is established.",
+      "format": "Original mono 48 kHz / 24-bit WAV; source page calls it a large servo and identifies movement angle",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "model": "T2M TS-315",
+      "page": "https://lasonotheque.org/servomoteur-2-180-1-s2921.html",
+      "recording": "Joseph Sardin; SoundDevices MixPre-3 and Neumann KM184; studio recording",
+      "retrieved": "2026-10-25",
+      "sha": "6e6af155055bd46effaaef02e058c2bbdac5bf52c02475476bedd4668eeb2282",
+      "sha256": "6e6af155055bd46effaaef02e058c2bbdac5bf52c02475476bedd4668eeb2282",
+      "source_file": "research/audio/AUD-16/recordings/t2m_ts315_180_cc0_original.wav",
+      "title": "T2M TS-315, large servo, 180 degree movement"
+    },
+    "ts315_90": {
+      "author": "Joseph Sardin",
+      "download": "https://lasonotheque.org/UPLOAD/bwf-fr/2920.wav",
+      "file": "t2m_ts315_90_cc0_original.wav",
+      "file_bytes": 64266,
+      "fit": "Named large RC servo used for high_torque simulation role. No torque rating or loaded high-torque sound is established.",
+      "format": "Original mono 48 kHz / 24-bit WAV; source page calls it a large servo and identifies movement angle",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "model": "T2M TS-315",
+      "page": "https://lasonotheque.org/servomoteur-2-90-2-s2920.html",
+      "recording": "Joseph Sardin; SoundDevices MixPre-3 and Neumann KM184; studio recording",
+      "retrieved": "2026-10-25",
+      "sha": "4939980e094faf197aa675c57d1c6536c2aa18708fdda63979dedb6f61f9de51",
+      "sha256": "4939980e094faf197aa675c57d1c6536c2aa18708fdda63979dedb6f61f9de51",
+      "source_file": "research/audio/AUD-16/recordings/t2m_ts315_90_cc0_original.wav",
+      "title": "T2M TS-315, large servo, 90 degree movement"
+    }
+  }
+}

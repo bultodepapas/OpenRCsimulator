@@ -1,0 +1,80 @@
+{
+  "format": "openrc-gdu11-contact-aa-v1",
+  "complete": true,
+  "scope": "Static pavilion AA isolation; contact Short, thickness 0.01, blur0. Pixel changes include intended shadows and are not an artifact score. No default contact adoption.",
+  "comparisons": [
+    {
+      "aa": "msaa4",
+      "actual_aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "msaa4",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "actual_msaa": 2,
+      "darkened_pixels_over_2": 101368,
+      "maximum_darkening": 134,
+      "off_sha256": "10bf9bbdb546b8baf4f5f237e057963910f8191e46b79d281132e31cf3032191",
+      "on_sha256": "d079278f10928ddd9ba0df81f44619134e6df9b9de8b950942b744bf13fbd3fb",
+      "quality_accepted": false
+    },
+    {
+      "aa": "none",
+      "actual_aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "none",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "actual_msaa": 0,
+      "darkened_pixels_over_2": 91157,
+      "maximum_darkening": 134,
+      "off_sha256": "9a04df385af95621bda43c9635c5eeb6c15c729b576a6fe59452cd664cdff2da",
+      "on_sha256": "00baa1ff9e7bc91bf75fc3857f7a48a90119035dd1295b375b2de20f2f122a4f",
+      "quality_accepted": false
+    },
+    {
+      "aa": "taa",
+      "actual_aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "taa",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": true
+      },
+      "actual_msaa": 0,
+      "darkened_pixels_over_2": 120485,
+      "maximum_darkening": 119,
+      "off_sha256": "d79ca2f99c849e898010665ba36592b48388d504896efb94bd3ec4a615459da9",
+      "on_sha256": "009a8d14fb6f7fb9d232905b6978855d1e0a176ae62c833b9ad8b1bdc14ab3b9",
+      "quality_accepted": false
+    },
+    {
+      "aa": "fsr2_native",
+      "actual_aa": {
+        "fsr_sharpness": 2.0,
+        "requested": "fsr2_native",
+        "scaling_3d_mode": 2,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "actual_msaa": 0,
+      "darkened_pixels_over_2": 122322,
+      "maximum_darkening": 143,
+      "off_sha256": "edbf5892656d14f7e7a0439dc9f4094575999ab3cc47d951e2f079c0721caf6e",
+      "on_sha256": "2d0e6c3f9eab1265597eff21f46d4f51eae4ebd5652c962d938399446fd01147",
+      "quality_accepted": false
+    }
+  ],
+  "existing_default_control": {
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  },
+  "capture_tool_sha256": "4a03a7ef19bbefe3e22cef3ebf87c7f957c118a5dbec5b08c830538bbc128fed"
+}

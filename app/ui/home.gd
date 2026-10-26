@@ -45,6 +45,12 @@ signal help_requested(from: Control)
 signal controls_requested(from: Control)
 ## The player asked to open Settings (the owner restores focus to `from` when it closes).
 signal settings_requested(from: Control)
+signal statistics_requested(from: Control, aircraft_id: String)
+var statistics_service: Node
+var statistics_button: Button
+var aircraft_statistics_button: Button
+var _statistics_aircraft_summary: Label
+var _statistics_pilot_summary: Label
 ## The player chose another aircraft (a catalog ID); the owner remembers it and calls set_aircraft().
 signal aircraft_requested(id: String)
 ## Open the direct paint gallery; browsing does not request another 3D model.
@@ -480,6 +486,13 @@ func _init() -> void:
 	catalog_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	catalog_intro.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	aircraft_page.add_child(catalog_intro)
+	_statistics_aircraft_summary = _label("", "SecondaryLabel")
+	_statistics_aircraft_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	aircraft_page.add_child(_statistics_aircraft_summary)
+	aircraft_statistics_button = _button("Aircraft statistics", "QuietButton")
+	aircraft_statistics_button.name = "AircraftStatistics"
+	aircraft_statistics_button.pressed.connect(func() -> void: statistics_requested.emit(aircraft_statistics_button, aircraft_id))
+	aircraft_page.add_child(aircraft_statistics_button)
 	# F4U-20-R1: keep paint reachable when the catalog scrolls to the selected aircraft.
 	# Its own row stays below navigation; short windows/large text keep it in scrollable content.
 	_livery_row = VBoxContainer.new()
@@ -549,6 +562,10 @@ func _init() -> void:
 	practice_intro.name = "PracticeSummary"
 	practice_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	practice_page.add_child(practice_intro)
+	_statistics_pilot_summary = _label("", "SecondaryLabel")
+	_statistics_pilot_summary.name = "PilotStatisticsSummary"
+	_statistics_pilot_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	practice_page.add_child(_statistics_pilot_summary)
 	var practice_row := VBoxContainer.new()
 	practice_row.name = "PracticeActions"
 	practice_row.add_theme_constant_override("separation", 6)
@@ -647,6 +664,13 @@ func _init() -> void:
 	quit_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	utility_row.add_child(quit_button)
+	statistics_button = _button("Statistics · Pilot total", "QuietButton")
+	statistics_button.name = "Statistics"
+	statistics_button.custom_minimum_size.y = 34
+	statistics_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	statistics_button.pressed.connect(func() -> void: statistics_requested.emit(statistics_button, ""))
+	_left_layout.add_child(statistics_button)
+	_refresh_statistics_summary()
 	for utility_button: Button in [language_button, settings_button, controls_button, help_button, quit_button]:
 		utility_button.clip_text = false
 		utility_button.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
@@ -1066,7 +1090,35 @@ func _process(_delta: float) -> void:
 
 ## Shows `id` on the card and enables Fly only for an aircraft that can fly. Unknown IDs fall back to the default
 ## (a stale preference must never leave Home without a valid airplane).
+func _refresh_statistics_summary(selected: String = "") -> void:
+	if statistics_service == null or not is_instance_valid(_statistics_aircraft_summary):
+		return
+	var selected_id := selected if not selected.is_empty() else aircraft_id
+	var supported := str(Catalog.entry(selected_id).get("vehicle", "fixed_wing")) != "rotorcraft"
+	var own: Dictionary = statistics_service.query(selected_id, "lifetime")
+	var all: Dictionary = statistics_service.query("", "lifetime")
+	_statistics_aircraft_summary.text = tr("Lifetime · %s airborne · %d completed · %d crashes") % [
+		_statistics_time(float(own.get("airborne_seconds", 0.0))), int(own.get("completed", 0)), int(own.get("crashes", 0))]
+	if not supported:
+		_statistics_aircraft_summary.text = tr("Flight statistics are not available for this activity.")
+	elif not bool(own.get("available", true)):
+		_statistics_aircraft_summary.text = tr("Statistics unavailable")
+	if is_instance_valid(aircraft_statistics_button):
+		aircraft_statistics_button.disabled = not supported
+	if is_instance_valid(_statistics_pilot_summary):
+		_statistics_pilot_summary.text = tr("Pilot total · %s airborne · %d completed · best streak %d") % [
+			_statistics_time(float(all.get("airborne_seconds", 0.0))), int(all.get("completed", 0)), int(all.get("best_streak", 0))]
+		if not bool(all.get("available", true)):
+			_statistics_pilot_summary.text = tr("Statistics unavailable")
+
+
+func _statistics_time(seconds: float) -> String:
+	var minutes: int = maxi(0, int(seconds / 60.0))
+	return tr("%d h %02d min") % [minutes / 60, minutes % 60]
+
+
 func set_aircraft(id: String) -> void:
+	_refresh_statistics_summary(id)
 	var focused_catalog_index := -1
 	for index in _catalog_buttons.size():
 		if _catalog_buttons[index].has_focus():
@@ -1353,6 +1405,7 @@ func reject_start(message: String) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		_refresh_statistics_summary()
 		set_landscape(landscape_id)
 		_show_start_choice(start_choice) # re-render the translated label; never re-record the remembered choice
 		_update_texts()

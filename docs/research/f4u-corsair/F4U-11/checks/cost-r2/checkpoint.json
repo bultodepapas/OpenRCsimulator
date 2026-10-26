@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6ee7bb68-6714-4b33-b358-fbb8aab0bf98",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_economy_checkpoint.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T21:02:34.674174+00:00",
+  "label": "f4u-cost-checkpoint-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\f4u-cost-checkpoint-final-bd3xluke\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\f4u-cost-checkpoint-final-bd3xluke\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.016,
+  "log_bytes": 209,
+  "log_sha256": "bac4a7af679aa24606a1539cfa9e906d8d32e2c3e204e1155da47b8c4a35de3c"
+}

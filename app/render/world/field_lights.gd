@@ -16,7 +16,7 @@ const FORMAT_V1 := "openrc-field-lights v1"
 const FORMAT_V2 := "openrc-field-lights v2"
 const FORMAT := FORMAT_V2
 const MAX_FLOODS := 4
-const MAX_SPOTS := 7 # reserve one Compatibility spot for an aircraft landing light.
+const MAX_SPOTS := 6 # reserve two Compatibility spots for aircraft with paired landing lamps.
 const QUANTITY_KEYS: Array[String] = ["value", "unit", "kind", "source"]
 const KINDS: Array[String] = ["measured", "borrowed", "estimated", "derived", "manual", "calculated"]
 const FLOOD_UNITS := {north = "m", east = "m", height = "m", aim_north = "m", aim_east = "m", aim_height = "m",

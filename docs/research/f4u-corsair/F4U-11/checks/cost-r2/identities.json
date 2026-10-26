@@ -1,0 +1,49 @@
+{
+  "step": "F4U-11-R2",
+  "date": "2026-10-25",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "python_tests": 64,
+  "godot_checks": {
+    "inspection": 79,
+    "checkpoint": 65,
+    "catalog": 90,
+    "report": 119,
+    "integration": 78
+  },
+  "negative_control": "Disposable incident.gd and test copies, old self-reference overwrite restored: 79 checks, exactly 2 expected failures; current source retained unchanged.",
+  "source_sha256": {
+    "app/economy/incident.gd": "c2a0008b046faaa5783371f9bf2734b867fb9788c8642fb2b89cb83f8cc2255a",
+    "app/economy/checkpoint.gd": "a4af86ce8396dde04f378727304bacd0c5365bfb3288b673d681cab7c29c9d7f",
+    "app/tests/test_economy_inspection.gd": "780ba32d4af0949435ea8b785f920ad1b8780a11ef64729ce2c0e9d6339ba0e0",
+    "app/data/economy/catalog.json": "4dd91fea8338b2154d4f08f1c1ce83cb411f96a06168d362c8b93d86a3e1b10b",
+    "app/data/aircraft/f4u_corsair_250.json": "e27ba35766bad2e32f7c10b0d3e80d49331af2c557957a85959dca47ebad3d43",
+    "research/f4u-corsair/F4U-11/costing_entry.py": "bab1fde38eba546acd8a4b0d5b375a4d2adc710a2de2dfd19c604126f23eaed1",
+    "research/crash-economics/price-research-fleet.json": "75ecf349736e4ee5e2655c14224e8b937ad045a476bed3ba7f24f57f8ab67032",
+    "research/crash-economics/aircraft-costing.json": "3df78dbd24d8ed715aea9ba66ac7c3c6b8c0d6f1b8a14ec2ab1ffcd4ddda288f",
+    "research/crash-economics/catalog.json": "25aac8ecd9055ff8e53591c739c7ff56c003a772d9c0faf473b0f261cd07a893",
+    "research/crash-economics/worked-examples.json": "38e779f68c7429e5a2fda0c7a088790f02a816ccdf323aac438972bbba1815f4",
+    "research/crash-economics/test_runtime_data.py": "1189841a9088514424645b29e13f30efa3a4a6bbba86902c58e35a1acd15975a",
+    "research/crash-economics/test_audit_prices.py": "0d129dbea9094a1485935a08caefa4f2210b4dd7aab1ebeb412798cda1d80201"
+  },
+  "evidence_sha256": {
+    "catalog.json": "c59241dbefab64d673f23758b325a214f131f309f6a3c80fa815628e3bf1a1f9",
+    "catalog.log": "e3f71708a90e5b0fb7e27fac357cd441825b0cde44b976feff832864b885830e",
+    "checkpoint.json": "201ca6b8cd49d8a98d02b7602c544daa9eee41cb32ea1ef1e299db6f30fa2769",
+    "checkpoint.log": "bac4a7af679aa24606a1539cfa9e906d8d32e2c3e204e1155da47b8c4a35de3c",
+    "generators.log": "33a87c0df9160a7594d4e9d6dbad2c13b09a3a79798dc2766ba28a8da05d69bd",
+    "inspection.json": "610edc7aeeb1e43703c7822668bf85c270d9a3fe46b93c0a8d5bb49fe080d1a6",
+    "inspection.log": "310b7ceba6b7744df2af9854b82ea3fe5e5797d32f78cfbb46b68e4e3e432279",
+    "integration.json": "ece76a14d152a00cac3d94b60abce2e43daa91aacfe0db4a95ebeccb90879d2c",
+    "integration.log": "8879f828062e0d6e8a5ea679b13eaf1a95577f3a887a2418893d66450182ef37",
+    "negative-control.json": "a0200a3e878e9bd860a9506cce91ca6b485cf2034d38c05494c1348f73663e55",
+    "negative-control.log": "134bfdf4ab53f2eb51e5e85d3fe2101f08fa7fcbe04ded2a266fcc9da346b5ee",
+    "python-tests.log": "6e71913d77aff94ddacc0a7e4733903714deec2a9ae2da0d690f104283bb7522",
+    "report.json": "0de59c35dec47f860362bab38a2982ec148cbb7467db8d381905d29f843d37a4",
+    "report.log": "a9ca807ff3d06a8ec2f6358a8fc1599ed33885efaec015d36d6881698b48c01f"
+  },
+  "limits": [
+    "Headless software evidence; no physical damage calibration",
+    "No full app/test.sh run or rendered visual qualification",
+    "Economic sources only; physics law and aircraft data unchanged by F4U-11-R2"
+  ]
+}

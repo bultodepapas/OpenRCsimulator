@@ -1,0 +1,309 @@
+{
+  "format": "openrc-gdu11-ao-comparison-v1",
+  "comparisons": {
+    "standard-on": [
+      {
+        "image": "aircraftground.png",
+        "changed_pixels": 0,
+        "minimum_rgb_delta": 0,
+        "maximum_rgb_delta": 0,
+        "brightened_over_2": 0,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "flightline.png",
+        "changed_pixels": 0,
+        "minimum_rgb_delta": 0,
+        "maximum_rgb_delta": 0,
+        "brightened_over_2": 0,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "lake.png",
+        "changed_pixels": 786,
+        "minimum_rgb_delta": -1,
+        "maximum_rgb_delta": 1,
+        "brightened_over_2": 0,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "pavilion.png",
+        "changed_pixels": 0,
+        "minimum_rgb_delta": 0,
+        "maximum_rgb_delta": 0,
+        "brightened_over_2": 0,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "pilot.png",
+        "changed_pixels": 2,
+        "minimum_rgb_delta": 0,
+        "maximum_rgb_delta": 1,
+        "brightened_over_2": 0,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "windsock.png",
+        "changed_pixels": 0,
+        "minimum_rgb_delta": 0,
+        "maximum_rgb_delta": 0,
+        "brightened_over_2": 0,
+        "darkened_over_2": 0
+      }
+    ],
+    "standard-repeat": [
+      {
+        "image": "aircraftground.png",
+        "changed_pixels": 0,
+        "minimum_rgb_delta": 0,
+        "maximum_rgb_delta": 0,
+        "brightened_over_2": 0,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "flightline.png",
+        "changed_pixels": 28,
+        "minimum_rgb_delta": -1,
+        "maximum_rgb_delta": 4,
+        "brightened_over_2": 7,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "lake.png",
+        "changed_pixels": 945,
+        "minimum_rgb_delta": -1,
+        "maximum_rgb_delta": 1,
+        "brightened_over_2": 0,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "pavilion.png",
+        "changed_pixels": 0,
+        "minimum_rgb_delta": 0,
+        "maximum_rgb_delta": 0,
+        "brightened_over_2": 0,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "pilot.png",
+        "changed_pixels": 0,
+        "minimum_rgb_delta": 0,
+        "maximum_rgb_delta": 0,
+        "brightened_over_2": 0,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "windsock.png",
+        "changed_pixels": 0,
+        "minimum_rgb_delta": 0,
+        "maximum_rgb_delta": 0,
+        "brightened_over_2": 0,
+        "darkened_over_2": 0
+      }
+    ],
+    "high-on": [
+      {
+        "image": "aircraftground.png",
+        "changed_pixels": 40311,
+        "minimum_rgb_delta": -1,
+        "maximum_rgb_delta": 4,
+        "brightened_over_2": 218,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "flightline.png",
+        "changed_pixels": 151883,
+        "minimum_rgb_delta": -1,
+        "maximum_rgb_delta": 6,
+        "brightened_over_2": 691,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "lake.png",
+        "changed_pixels": 6166,
+        "minimum_rgb_delta": -1,
+        "maximum_rgb_delta": 3,
+        "brightened_over_2": 2,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "pavilion.png",
+        "changed_pixels": 253756,
+        "minimum_rgb_delta": -1,
+        "maximum_rgb_delta": 11,
+        "brightened_over_2": 13038,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "pilot.png",
+        "changed_pixels": 25873,
+        "minimum_rgb_delta": -1,
+        "maximum_rgb_delta": 3,
+        "brightened_over_2": 1,
+        "darkened_over_2": 0
+      },
+      {
+        "image": "windsock.png",
+        "changed_pixels": 117010,
+        "minimum_rgb_delta": -1,
+        "maximum_rgb_delta": 15,
+        "brightened_over_2": 4526,
+        "darkened_over_2": 0
+      }
+    ]
+  },
+  "captures": {
+    "standard-off": {
+      "aircraftground.png": "8572618d4f930b8c4c7b2ef61784cd1d42e1b488e75afd2ba6dce8da39b46a67",
+      "flightline.png": "409a451a18a2b0d4ba48edf6cf6f02ad20f10805ebb90202210bb0ec2de8b13f",
+      "lake.png": "a7e4d5539fc4aad8bd3f28d0957043f199dcdb52af6ff7836f9adf814865a90e",
+      "pavilion.png": "773cb1c944f19e40a8e0385ba71009cbcaed187f9c69e417a53293c09e2153c5",
+      "pilot.png": "814b00292fcb1ccbda2d93995536da50b3d72541365e71aeab7ab10fad8bf00e",
+      "report.json": "26ce3f6dce3772e6aaba3f332547ed8cf67501a6091182446ff8438a464b9c60",
+      "windsock.png": "da51aeb555e8ec7c6ce2e790e4b26ce5b419a2e0f93c0ba88952e5e4196dd246"
+    },
+    "standard-on": {
+      "aircraftground.png": "8572618d4f930b8c4c7b2ef61784cd1d42e1b488e75afd2ba6dce8da39b46a67",
+      "flightline.png": "409a451a18a2b0d4ba48edf6cf6f02ad20f10805ebb90202210bb0ec2de8b13f",
+      "lake.png": "197ac387d1b9df01069f610562fda450a630a0ba21620aad5068e26c84b10a9d",
+      "pavilion.png": "773cb1c944f19e40a8e0385ba71009cbcaed187f9c69e417a53293c09e2153c5",
+      "pilot.png": "7b5b36016bc2e471f8c3d856d61fd1ba23123dadba41c4aeea119ae186bf8129",
+      "report.json": "918c8ec9e2e6845d279a61de98e953e0a1fe1af4da7adb5c3351b2b50031db38",
+      "windsock.png": "da51aeb555e8ec7c6ce2e790e4b26ce5b419a2e0f93c0ba88952e5e4196dd246"
+    },
+    "standard-repeat": {
+      "aircraftground.png": "8572618d4f930b8c4c7b2ef61784cd1d42e1b488e75afd2ba6dce8da39b46a67",
+      "flightline.png": "c56357bb634f77338af1617cacc01b1748826f7641446f38f040994a7faa6c12",
+      "lake.png": "2e3076e1c1da8202b928ad958cdcfd076327cc609cbd3934de972bb8f09e0785",
+      "pavilion.png": "773cb1c944f19e40a8e0385ba71009cbcaed187f9c69e417a53293c09e2153c5",
+      "pilot.png": "814b00292fcb1ccbda2d93995536da50b3d72541365e71aeab7ab10fad8bf00e",
+      "report.json": "463cce28cde85df920b52d9b5f6fdb78f2b529f135a20ef3a1139af0b2588f41",
+      "windsock.png": "da51aeb555e8ec7c6ce2e790e4b26ce5b419a2e0f93c0ba88952e5e4196dd246"
+    },
+    "high-off": {
+      "aircraftground.png": "601f389b303524ed773aad56c2feec7962763fd7e97198e7e1c878d063d3f3ec",
+      "flightline.png": "52aca984b95e751495645c218cf65ad84a43d9ddcb98c7c4c99cf9787ca2bc24",
+      "lake.png": "a74076f0d5c56c8bcaa5cf8df8b68c81395da0609746c33fa4fdcf4e80996f40",
+      "pavilion.png": "6c76da0666286ff926bd64d64104efc1ffe5755cf01ce76fc7ff3067fd3d829c",
+      "pilot.png": "bf7214b3a50cb3baf2b85f8c27549773624f1ba1fbd8412f1e796024caaa8be3",
+      "report.json": "9ba5880cb282005e4b082ea440b6ecf067062adb2aa7838629d1f4f30bea8668",
+      "windsock.png": "a04a74dca8b890c71e36a0b72bf7226eb795f34f8fab114b15b81c0aaff8334c"
+    },
+    "high-on": {
+      "aircraftground.png": "c2420ebe6f54092c6926de26656cd708b3de0b25ef2bf40dc77a0fcef2f0cb8e",
+      "flightline.png": "ba9fdadef254020f9bb578319f98d49940203f49044e82a6c85b0ed51c5db70d",
+      "lake.png": "49fd1f8ec45743efddf0e6ea34a98bbbc46bf2043a7c1d94c2d0bcb26b2734b0",
+      "pavilion.png": "10bf9bbdb546b8baf4f5f237e057963910f8191e46b79d281132e31cf3032191",
+      "pilot.png": "f4006500ad3bd9634981dcb10b8a55f09776ef244eaba0ff13bcb8b2a46e4c3f",
+      "report.json": "5efdacbfccd6e6b8835cd4a30aeac07a2373d4c06ce0a3c09ed9c0e314c0b00c",
+      "windsock.png": "9adce696ad0e8c23abfebd7bcc7ea71fbf6e694951fd2b0c410186a92f9da6c7"
+    }
+  },
+  "timings": [
+    {
+      "run": "timing-1920-0-off",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "ao": false,
+      "contact": false,
+      "samples": 2015,
+      "gpu_median_ms": 2.1949999332428,
+      "gpu_p95_ms": 2.39000010490417,
+      "report_sha256": "e03a147951d96fba4decbded217c39805e114c5c285a73cdb44a9c60780ff370"
+    },
+    {
+      "run": "timing-1920-1-on",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "ao": true,
+      "contact": false,
+      "samples": 2041,
+      "gpu_median_ms": 2.19799995422363,
+      "gpu_p95_ms": 2.23000001907349,
+      "report_sha256": "efc8a3f85625fbecf6a15ba389662fd609a9ba3e74ad468e7e219f0946d7f813"
+    },
+    {
+      "run": "timing-1920-2-on",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "ao": true,
+      "contact": false,
+      "samples": 2060,
+      "gpu_median_ms": 2.17300009727478,
+      "gpu_p95_ms": 2.22099995613098,
+      "report_sha256": "77487533fba9167be47b8023e7f7e0661ac1ed4d4dab5dcb84570e91f34437a0"
+    },
+    {
+      "run": "timing-1920-3-off",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "ao": false,
+      "contact": false,
+      "samples": 1974,
+      "gpu_median_ms": 2.24600005149841,
+      "gpu_p95_ms": 2.51399993896484,
+      "report_sha256": "3f019d2bbb2e6db88693de4303b9670cbb3c0bb05f6f66a882837b48eeb00464"
+    },
+    {
+      "run": "timing-2560-0-off",
+      "viewport": [
+        2560,
+        1440
+      ],
+      "ao": false,
+      "contact": false,
+      "samples": 1402,
+      "gpu_median_ms": 3.375,
+      "gpu_p95_ms": 3.48200011253357,
+      "report_sha256": "8461b38f36d638fcef3c0b110c53c089758c7ab6f1329a968c87397e7b04dcad"
+    },
+    {
+      "run": "timing-2560-1-on",
+      "viewport": [
+        2560,
+        1440
+      ],
+      "ao": true,
+      "contact": false,
+      "samples": 1380,
+      "gpu_median_ms": 3.40599989891052,
+      "gpu_p95_ms": 3.73300004005432,
+      "report_sha256": "0828a42272ab529918424da035fd3b857fb71fc90cb836b253c04dc613053442"
+    },
+    {
+      "run": "timing-2560-2-on",
+      "viewport": [
+        2560,
+        1440
+      ],
+      "ao": true,
+      "contact": false,
+      "samples": 1384,
+      "gpu_median_ms": 3.38700008392334,
+      "gpu_p95_ms": 3.68300008773804,
+      "report_sha256": "8c083dac20532a02dc6cfccf4c49d50c0efa5d5f3e1027f667fcb61a0d8c8faa"
+    },
+    {
+      "run": "timing-2560-3-off",
+      "viewport": [
+        2560,
+        1440
+      ],
+      "ao": false,
+      "contact": false,
+      "samples": 1377,
+      "gpu_median_ms": 3.40599989891052,
+      "gpu_p95_ms": 3.75399994850159,
+      "report_sha256": "8200043ec851faf10387ff936c349c39a3e76cdb0b2247a9cd3f501f24da777a"
+    }
+  ],
+  "complete": true
+}

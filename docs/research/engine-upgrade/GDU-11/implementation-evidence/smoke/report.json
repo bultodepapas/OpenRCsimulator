@@ -1,0 +1,95 @@
+{
+  "format": "openrc-gdu11-smoke-v1",
+  "date": "2026-10-25",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "app": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\ao\\pair\\on\\app",
+  "source_manifest": {
+    "path": "docs\\research\\engine-upgrade\\GDU-11\\implementation-evidence\\ao-source-manifest.json",
+    "sha256": "1b3bc0178071f4e125866f14e4a483eae31442e0f9aa8857c0f42d0e274314a0",
+    "checked_files": 5011,
+    "mismatches": []
+  },
+  "scope": "Frozen accepted feature integration; not the concurrently edited working tree, a full app suite, a performance comparison, or physical validation.",
+  "headless": {
+    "ok": true,
+    "failed": [],
+    "steps": 26,
+    "hitches": 52,
+    "leaked_objects_at_exit": 0,
+    "out": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\debug-bridge\\20261025-171828-47870"
+  },
+  "native_helicopter": {
+    "exit_codes": {
+      "scenario": 0,
+      "stop": 0,
+      "setup": 0
+    },
+    "display": "Windows",
+    "viewport": [
+      1920,
+      1080
+    ],
+    "renderer": "gl_compatibility",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "session": "20261025-172033-47870",
+    "exit": {
+      "stopped": true,
+      "pid": 53688,
+      "crash": null,
+      "leaked_objects": 0
+    }
+  },
+  "harness_unit_tests": {
+    "command": "python -m unittest discover -s tools/debug -p test_debugctl.py",
+    "exit_code": 0,
+    "tests_run": 24,
+    "passed": 23,
+    "skipped": 1,
+    "skip_reason": "Linux /proc zombie-process test on Windows"
+  },
+  "tool_source_sha256": {
+    "tools/debug/debugctl.py": "ea2803c486432a14b0902e9766acc8f1bd7db90613a00bff4321864221adde38",
+    "tools/debug/test_debugctl.py": "474ab344773417059f81b3bc30588d00bc60b1fa89f6ce29cd86796fe7ed106d",
+    "tools/debug/scenarios/birds_setting.txt": "5d7d54690fe1c03c30b59eabfc4fe71b18e0ab2755c86da27bb2f773a5dd49fc",
+    "tools/debug/scenarios/corsair_gallery.txt": "1b5484dd0b09a6a615224bfec4dc8da4ec82fc59417123fbc6721630c9f28414",
+    "tools/debug/scenarios/corsair_paint.txt": "92bf439e5afe30f809d94a9f75dca54b135d8fe8daf7cbe38d145095c5db02e6",
+    "tools/debug/scenarios/fly_restart_home.txt": "c744ea516bce6fcf37f60aea7431c3a3f6026bae4a343b9f9bedfc7b69059f35",
+    "tools/debug/scenarios/helicopter_arm.txt": "2fff7c0303394a343dbdd476953ee22caa00b386667deb086572a5cfea35263b",
+    "tools/debug/scenarios/settings_revert.txt": "3d029dcd017f499a943bf0a0e99c3b798d4c4ed478088d81744ecc9cf449e6e4",
+    "tools/debug/scenarios/truck_drive.txt": "e1c59fac86e68d18dfef047080e4e1d9067512383f49e4bb8a0e4cd08b4f78af",
+    "tools/debug/scenarios/widget_presets.txt": "758466bd8427db36c9cdd9fd2eecd3fc3cb0468e80ecde1edd8c80f3a8752294",
+    "tools/debug/scenarios/workshop_discard_keyboard.txt": "2910e308c2f6c4ec5f9ebf02a8d54e2aa3506c68f564519bcd5a492db85d3a19"
+  },
+  "retained_logs": {
+    "headless-console.txt": {
+      "sha256": "ce9b73e63a725b30238aa155935b8cc6d0f04fae541cde4874f651f1505bdb6e",
+      "original_path": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\contact-aa\\frozen-smoke-fixed-console.txt"
+    },
+    "headless-stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_path": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\contact-aa\\frozen-smoke-fixed-stderr.txt"
+    },
+    "headless-engine.log": {
+      "sha256": "a0af0a547054f08a08cd3003ebf4e245b9263cb25678b8f66439d2af03860dfd",
+      "original_path": "tmp\\debug-bridge\\20261025-171828-47870\\engine.log"
+    },
+    "native-helicopter-setup.txt": {
+      "sha256": "814c42a54d399b713ee8dd4c9a96898db3b51896eb0b4d592acd51d9746197fb",
+      "original_path": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\contact-aa\\native-helicopter-setup.txt"
+    },
+    "native-helicopter-console.txt": {
+      "sha256": "523ae7c0d7456f179cbfe9461929e848241724ba02ba806b66e4b5f6d3bd9cc1",
+      "original_path": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\contact-aa\\native-helicopter-console.txt"
+    },
+    "native-helicopter-exit.json": {
+      "sha256": "f233c6368b9e43be2a2ff21691232801a90964cc379f90eca89cd2b0ba00019f",
+      "original_path": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\contact-aa\\native-helicopter-exit.json"
+    },
+    "native-engine.log": {
+      "sha256": "67de729a99b7b950fa8763e8cea912b83f7f2aecc23e627b2a669ef917652ba1",
+      "original_path": "tmp\\debug-bridge\\20261025-172033-47870\\engine.log"
+    }
+  },
+  "prior_attempts": "The live-tree attempt failed startup during unrelated concurrent statistics edits; the earlier frozen attempt has no complete verdict. Neither is counted as a passing regression.",
+  "remaining": "Headless hitch observations are not native flight performance evidence. Other source tracks require their own integration checks."
+}

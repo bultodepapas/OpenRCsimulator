@@ -4,7 +4,7 @@ extends RefCounted
 ## carry resource paths, executable scripts, or mount coordinates.
 
 const FORMAT: String = "openrc-aircraft-presentation"
-const VERSION: int = 2
+const VERSION: int = 4
 const LEGACY_VERSION: int = 1
 const IDENTITY_FORMAT: String = "openrc-aircraft-presentation-identity"
 const IDENTITY_VERSION: int = 1
@@ -15,7 +15,7 @@ const SCHEDULE_POLICY: String = "ticks-240-v1"
 const PRESENTATION_ENGINE_VERSION: String = "4.8.0"
 const MAX_PROFILE_BYTES: int = 65536
 const MAX_PROFILE_DEPTH: int = 12
-const MAX_PROFILE_NODES: int = 4096
+const MAX_PROFILE_NODES: int = 8192
 const MAX_PAINT_SLOTS: int = 32
 const MAX_MARKING_SLOTS: int = 16
 const MAX_SMOKE_SLOTS: int = 4
@@ -46,6 +46,8 @@ const BINDINGS_V2_KEYS: PackedStringArray = [
 ]
 const PresentationSources := preload("res://render/presentation_sources.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
+const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
+const MechanicalProfile := preload("res://audio/mechanical_profile.gd")
 const PRESENTATION_SOURCE_PATHS: PackedStringArray = [
 	"res://render/aircraft_customization.gd",
 	"res://render/presentation_sources.gd",
@@ -86,7 +88,7 @@ static func defaults(bindings: Dictionary = {}, version: int = VERSION) -> Dicti
 		var checked_bindings: Dictionary = _validate_bindings(bindings)
 		if bool(checked_bindings.get("ok", false)):
 			pins = checked_bindings["pins"].duplicate(true)
-	return {
+	var profile: Dictionary = {
 		"format": FORMAT,
 		"version": version,
 		"binding": pins,
@@ -96,6 +98,11 @@ static func defaults(bindings: Dictionary = {}, version: int = VERSION) -> Dicti
 		"visual_seed": 0,
 		"schedule_policy": SCHEDULE_POLICY,
 	}
+	if version >= 3:
+		profile["lighting"] = LightingProfile.defaults()
+	if version >= 4:
+		profile["mechanical_audio"] = MechanicalProfile.defaults()
+	return profile
 
 
 ## Validate and canonicalize a profile. With no companion, registered selections remain
@@ -125,11 +132,16 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 	var source: Dictionary = value
 	if source.is_empty():
 		source = defaults(bindings, LEGACY_VERSION)
-	if not _has_exact_keys(source, PROFILE_KEYS):
+	var expected_profile_keys := PROFILE_KEYS.duplicate()
+	if _integer_number(source.get("version")) and int(source.version) >= 3:
+		expected_profile_keys.append("lighting")
+	if _integer_number(source.get("version")) and int(source.version) >= 4:
+		expected_profile_keys.append("mechanical_audio")
+	if not _has_exact_keys(source, expected_profile_keys):
 		errors.append("Presentation profile has missing or unsupported fields.")
 		return _result(false, errors, {}, false)
 	if source["format"] != FORMAT or not _integer_number(source["version"]) \
-			or int(source["version"]) not in [LEGACY_VERSION, VERSION]:
+			or int(source["version"]) not in [LEGACY_VERSION, 2, 3, VERSION]:
 		errors.append("Presentation profile format or version is unsupported.")
 		return _result(false, errors, {}, false)
 	if source["schedule_policy"] != SCHEDULE_POLICY:
@@ -253,6 +265,18 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 		"visual_seed": int(source["visual_seed"]),
 		"schedule_policy": SCHEDULE_POLICY,
 	}
+	if int(source.version) >= 3:
+		var lighting_result: Dictionary = LightingProfile.validate(source.lighting)
+		if not bool(lighting_result.get("ok", false)):
+			errors.append_array(lighting_result.get("errors", PackedStringArray()))
+			return _result(false, errors, {}, false)
+		canonical["lighting"] = lighting_result.profile
+	if int(source.version) >= 4:
+		var mechanical_result: Dictionary = MechanicalProfile.validate(source.mechanical_audio)
+		if not mechanical_result.ok:
+			errors.append_array(mechanical_result.errors)
+			return _result(false, errors, {}, false)
+		canonical["mechanical_audio"] = mechanical_result.profile
 	var canonical_bytes: PackedByteArray = _canonical_json(canonical).to_utf8_buffer()
 	if canonical_bytes.size() > MAX_PROFILE_BYTES:
 		errors.append("Canonical presentation profile exceeds the %d-byte limit." % MAX_PROFILE_BYTES)
@@ -435,7 +459,7 @@ static func migrate_v1(profile: Variant, old_bindings: Dictionary, new_bindings:
 			or old_bindings.get("model_manifest_sha256") != new_bindings.get("model_manifest_sha256"):
 		return {"ok": false, "errors": ["Migration cannot change aircraft family or physical model identity."]}
 	var proposed: Dictionary = old.profile.duplicate(true)
-	proposed.version = VERSION
+	proposed.version = 2
 	proposed.binding = target.pins.duplicate(true)
 	var changes: Array = []
 	for entry: Dictionary in proposed.smoke:
@@ -459,7 +483,7 @@ static func migrate_v1(profile: Variant, old_bindings: Dictionary, new_bindings:
 	if not checked.get("ok", false):
 		return checked
 	return {"ok": true, "errors": [], "profile": checked.profile, "report": {
-		"from_version": LEGACY_VERSION, "to_version": VERSION,
+		"from_version": LEGACY_VERSION, "to_version": 2,
 		"old_binding": old.profile.binding.duplicate(true), "new_binding": checked.profile.binding.duplicate(true),
 		"outlets": changes, "requires_review": true,
 		"empty_smoke_policy": "explicitly_disabled", "legacy_amount_policy": "preserved_history_v2_uses_density_and_rate",
@@ -470,10 +494,10 @@ static func migrate_v1(profile: Variant, old_bindings: Dictionary, new_bindings:
 static func _validate_smoke_entry(value: Variant, context: Dictionary, available: bool) -> Dictionary:
 	var errors := PackedStringArray()
 	var version: int = int(context.get("profile_version", LEGACY_VERSION))
-	if version not in [LEGACY_VERSION, VERSION] or typeof(value) != TYPE_DICTIONARY:
+	if version not in [LEGACY_VERSION, 2, 3, VERSION] or typeof(value) != TYPE_DICTIONARY:
 		return {"ok": false, "errors": ["Smoke profile version or object is unsupported."]}
 	var expected := SMOKE_ENTRY_KEYS.duplicate()
-	if version == VERSION:
+	if version >= 2:
 		for key: String in smoke_v2_defaults():
 			if value.has(key):
 				expected.append(key)
@@ -548,7 +572,7 @@ static func _validate_smoke_entry(value: Variant, context: Dictionary, available
 		"palette": palette,
 		"step_s": step_s,
 	}
-	if version == VERSION:
+	if version >= 2:
 		for key: String in SMOKE_V2_BOUNDS:
 			var bounds: Array = SMOKE_V2_BOUNDS[key]
 			normalized[key] = _bounded_number(value.get(key, bounds[2]), float(bounds[0]), float(bounds[1]), key, errors)
@@ -616,7 +640,7 @@ static func _validate_bindings(value: Variant) -> Dictionary:
 		if binding_version == 3:
 			proof_version = int(checked.source_proof_version) if _integer_number(checked.get("source_proof_version")) else 0
 		var source_paths: Array = PresentationSources.paths_for_version(proof_version)
-		if binding_version == 3 and (not _integer_number(checked.get("source_proof_version")) or proof_version != 2):
+		if binding_version == 3 and (not _integer_number(checked.get("source_proof_version")) or proof_version not in [2, 3]):
 			errors.append("Customization source proof version is unsupported.")
 		if checked["presentation_engine_version"] != PRESENTATION_ENGINE_VERSION:
 			errors.append("Customization presentation engine version is unsupported.")
@@ -935,6 +959,10 @@ static func _pins_are_empty(value: Dictionary) -> bool:
 
 
 static func _has_entries(profile: Dictionary) -> bool:
+	if profile.has("mechanical_audio") and (not profile.mechanical_audio is Dictionary or profile.mechanical_audio != MechanicalProfile.defaults()):
+		return true
+	if typeof(profile.get("lighting")) == TYPE_DICTIONARY and profile.lighting.get("selection", "inherit") != "inherit":
+		return true
 	for key: String in ["paint", "markings", "smoke"]:
 		if typeof(profile.get(key, null)) == TYPE_ARRAY and not (profile[key] as Array).is_empty():
 			return true

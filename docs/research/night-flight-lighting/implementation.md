@@ -1,0 +1,91 @@
+# FW-RGB implementation and qualification
+
+2026-10-25. The user approved implementation after the [masterplan](../../night-flight-lighting-masterplan.md). This record covers the integrated RGB renderer, profile and Workshop implementation. It does not close pilot gate FW-N or establish hardware performance.
+
+## Boundaries and decisions
+
+- Extend the existing `AircraftLights`/`NightKit`; retain `AircraftLightState` AUTO/ALL/NAV/OFF, 17:30 local-time behavior and session reset policy. Historical profiles use the old lazy path.
+- Presentation envelope v3 adds a required data-only `lighting` field. Explicit v1/v2 readers retain their schemas and identities. The existing v1 smoke migration still produces a reviewable v2 proposal; lighting editing then extends it to v3.
+- The concurrently introduced v4 envelope retains lighting and adds mechanical audio. Lighting edits preserve v4 and its audio payload; they never downgrade it to v3.
+- Keep companion schema v3 because this slice adds no authored mount fields. Advance its independent `source_proof_version` to 3 to pin the new rendering closure. A future authored lighting binding schema remains a separate versioned extension, not a fabricated registry.
+- Reuse the immutable variant store, bundle format, trial freeze, shared Workshop history and atomic recovery transactions. Recovery adds an optional strictly bounded lighting editor buffer; historical snapshots remain readable.
+- Separate the visual identity from compiled flight identity. Lighting never changes the solver state, propulsion, battery drain or recorded controls.
+- Derive kit geometry through the established fitter and honor existing root `light_anchors`, `light_groups`, imported lens bindings and articulated gear gates. Profile data carries no paths, transforms or executable code.
+- Use per-instance pattern phase and exposure. Phase derives from displayed simulation time; Workshop owns an independent 240 Hz preview clock. No shader uses engine `TIME`.
+- Keep the existing sky, moon, atmosphere, runway and scene exposure. Do not enable compulsory bloom or change global tonemapping for RGB.
+- Field spot validation reserves two of Compatibility's eight per-mesh slots for paired aircraft landing lights. The accepted default field uses five spots. Decorative RGB spill uses the separate OmniLight budget.
+- Airspeed response uses a presentation scale of 0–40 m/s; this is not an aircraft limit. Roll/pitch reactions consume accepted body rates; no render-side flight model is added.
+- Pausing freezes the displayed pattern phase and inhibits new show-effect events. Faults and crashes also inhibit new events; reset clears transient pools and resumes the existing AUTO policy.
+- Apply brightness and animated envelopes after the emitter's exposure cap, so dark-adapted worlds do not flatten breathing/chase modulation. Lamp `source_color` values are decoded only once. True airspeed uses m/s and the documented 40 m/s visual response scale.
+- Reconcile profile visibility after dynamic gear updates, including paired landing lamps/beams, and retain unsupported equipment groups. Known imported `light_red`/`light_green` lenses follow their semantic navigation zones; unmapped emissive materials retain group controls with an explicit warning.
+
+## Implemented data contract
+
+`app/render/lighting/lighting_profile.gd` owns the closed `openrc-aircraft-lighting` v1 payload and presets. The envelope accepts `inherit`, `preset`, `custom` and `disabled`; explicit disabled is never interpreted as a missing profile. The thirteen initial semantic zone IDs match existing kit nodes. Effect anchors are `vfx_tip_left` and `vfx_tip_right`, resolved from the existing fitted tips.
+
+Limits include 32 zones, eight colors per pattern, 32 sequence cues, a 60-second sequence, 24 KiB lighting payload, 6,144 lighting JSON nodes, and two enabled effect anchors. Numeric booleans, nonfinite values, unknown keys, duplicate IDs, invalid colors, unsupported versions and invalid cue references are rejected before rendering. The outer profile is bounded at 64 KiB and 8,192 nodes.
+
+Presets are Classic RC, Night Radian, Neon RGB, Night Aerobatics, Festival / Fireworks and Custom. Night Radian is an inspired lighting treatment, not a new aircraft or an assertion that solid imported foam is translucent. Selecting a preset materializes its values; it is not a mutable name-only reference.
+
+Workshop exposes presets first, then zone enable/brightness, palette colors, pattern/cycle, telemetry response, and optional spark/trail/burst kind, intensity and lifetime. Invalid or unapplied advanced values block Save/Test fly. Shared Undo/Redo and draft recovery retain accepted profiles and pending color text. Navigation lock protects color/pattern editing; it is not an attitude-responsive renderer. Custom exposes all thirteen semantic zones, subject to the aircraft's supported groups and fitted equipment.
+
+The preview owns its environment, exposure and clock. Its night setting uses exposure 8.0 with ambient/key/fill energies 0.025/0.025/0.015; daytime settings are unchanged. This calibration is a Workshop inspection view, not a replacement for the world's night exposure. Ground geometry receives the bounded real light spill. No global shader exposure or time value is changed by preview playback.
+
+Per rig, decorative spill is capped at two shadowless OmniLights and fades out from 20 to 40 m. Show effects permit two anchors, each with at most 32 spark instances or 63 ribbon segments, fading from 60 to 120 m. Pattern materials are owned by the instance; emission does not stand in for real illumination. These are enforced allocation limits, not measured frame-time promises.
+
+## Qualification record
+
+Pinned engine: `4.8.beta1.official.4d10419ca`. Primary visual target: 1920×1080. Checked runner logs are retained under ignored `tmp/godot-checks/`; no generated screenshots are committed.
+
+| Check | Result |
+| --- | --- |
+| Lighting profile validator, including JSON round trips and numeric rejection | 64 checks, 0 failed |
+| Presentation legacy/current validation and identity | 85 checks, 0 failed |
+| Pattern evaluator, including airspeed units | 18 checks, 0 failed |
+| Lighting save/load, bundle round trip, recovery and rejected-save preservation | 10 checks, 0 failed |
+| Existing Workshop store / bundle / draft recovery / profile transfer | 141 / 28 / 102 / 22 checks, 0 failed |
+| Workshop lighting editor, shared sequence Undo/Redo/pending/recovery, additive v1/v2 migration and v4 audio preservation | 0 failures |
+| Pure cue editing / standalone sequence editor | 25 / 33 checks, 0 failed |
+| Workshop preview / existing smoke preview / customization integration | 0 failures / 113 checks, 0 failed / 0 failures |
+| Aircraft customization / smoke bindings / legacy fitted kit / P-51 dynamic mounts | 159 / 28 / 36 / 13 checks, 0 failed |
+| Customization generator reproducibility | 13 tests, passed |
+| Presentation source closure | 203 checks, 0 failed |
+| Renderer capabilities, gear gates, lamp patterns and imported emissions | 30 checks, 0 failed |
+| Real RGB flight controls, paused cue suppression and reset | 11 checks, 0 failed |
+| Shared aircraft light controls, including helicopter | 173 checks, 0 failed |
+| Workshop shell trial / return, including missing Home display preferences | 0 failures |
+| Native Compatibility 1920×1080 | Inspected Workshop and full-moon flight; save/restart/load/Test fly, L and Restart passed; clean exit, 0 leaked objects |
+| Forward+, higher-resolution matrix and GPU budgets | Unqualified |
+| Pilot orientation and night flight acceptance | Open, FW-N |
+
+### Native evidence and limits
+
+Native runs used Windows, Godot `4.8.beta1.official.4d10419ca`, Compatibility/OpenGL 3.3 and an NVIDIA RTX 3090 (driver 617.42), at 1920×1080. They establish functional integration and a visual inspection on this machine, not a frame-time budget or low-end qualification. The final run recorded no engine/script errors; the log retained the existing aircraft-data warning and construction/catch-up hitch events.
+
+- `tmp/debug-bridge/20261025-173300-49957/`: night-preview exposure calibration; clean exit.
+- `tmp/debug-bridge/20261025-174003-54749/`: Festival preview inspection. This run found the direct-route Test fly null display-preference bug, subsequently fixed and covered by `test_workshop_integration.gd`.
+- `tmp/debug-bridge/20261025-180145-50975/`: final-source Save/Test fly and saved build used by the next process. The separate `--time-of-day=20:00` SDR snapshot retained exposure 0.6 and was too dark for night visual acceptance. No global environment change is included in FW-RGB to mask that existing path's limitation.
+- `tmp/debug-bridge/20261025-180417-47870/`: loaded the same saved Festival revision after process restart, using `--time_of_day=night` (Home's **Night, full moon** route). Inspected pilot, chase, close-up and underside orbit views; existing sky, moon, field lights and shape remained visible. Shots 005/006 compare a breathing interval under the same adapted exposure (about 49,131); shot 007 samples the 8.1-second Festival cue with both spark pools. These three shots use a frozen presentation pose and explicitly supplied visual clocks for repeatable effect inspection, not a live-flight performance measurement. Normal pause and cue behavior is separately covered by the real-flight test. L selected NAV; Restart restored AUTO. Exit reported no crash and zero leaked objects.
+
+The full-moon capture also exposes a bright lake-reflection artifact outside the lighting rig. That scenery issue and the SDR fixed-time route remain visual qualification limits. Captures/logs stay in ignored `tmp/`; no images are added to Git. Reproduce the supported night scene with Home's night preset or the existing `--time_of_day=night` argument, rather than interpreting the similarly named SDR snapshot flag as equivalent.
+
+### FW-RGB-09 sequence authoring
+
+`app/workshop/lighting_sequence.gd` supplies clone-then-validate cue edits; `app/ui/workshop_lighting_sequence.gd` supplies the expandable Workshop editor. Users can add, duplicate, move and remove cues, edit duration/cycle/palette, and choose enabled zone/effect targets. Structural edits and Apply cue enter the existing shared presentation history. Pending fields block Save/Test fly and navigation; Cancel restores accepted state. A bounded optional `sequence` buffer extends the existing recovery object without changing its version or rejecting historical four-field lighting buffers. No renderer, accepted lighting schema or simulation source was changed for this package.
+
+The 32-cue/60-second caps remain authoritative in `LightingProfile`. Cue targets become Sequence zones; zones losing their final cue return to steady lighting. At least one cue must retain a zone target, including when other cues are effect-only. Navigation targets require releasing the existing orientation lock. Editor timing is quantized to the existing 240 Hz clock. Playback uses Restart preview and Play preview; no scrubbing or second clock is introduced.
+
+Additional native receipts (same pinned engine/GPU/1080p setup):
+
+- `tmp/debug-bridge/20261025-190807-47870/`: duplicate/reorder, invalid-duration Save/Test fly guard, accepted 2.5-second duration, Undo to 4 seconds / Redo to 2.5 seconds, saved five-cue revision and preview playback. Shot 002 shows the cue list/actions; shot 003 shows palette/targets and saved status. Clean exit, zero leaked objects.
+- `tmp/debug-bridge/20261025-191014-47870/`: separate process, same isolated profile; loaded that revision and verified five cues and 600 ticks in the first cue. Final component labels and 200% text scale inspected at 1920×1080 (shots 001/002); restored 100% and Test fly loaded the custom rig. Clean exit, zero leaked objects, no engine/script errors.
+
+The earlier `20261025-190653-47870` launch encountered a transient concurrent physics signature edit in `slipstream.gd`/`swirl_loads.gd`. It was stopped; it is not acceptance evidence. The subsequent app parse and the two runs above passed after that external edit settled. No physics files were edited by this package. Native receipts establish UI behavior, not hardware performance or pilot acceptance.
+
+## Remaining masterplan work
+
+Automatic fitted strips are the baseline. Authored internal foam shells/emission masks, arbitrary creator-authored paths and portable binding authoring need their own asset/schema implementation and acceptance. They are not inferred from opaque model surfaces. Workshop cue-list authoring is implemented. Timeline scrubbing and arbitrary keyframe tracks remain outside this package. Hardware-tier preferences, scene-wide budgets across companion aircraft, and a broad native renderer/resolution matrix remain acceptance work. The existing night scenery is reused; no new moon/sky renderer is claimed.
+
+The next creator-layout package should extend the existing customization source/generator/companion chain, project validated mounts into the existing `light_anchors` metadata, and compose optional strip paths through the existing fitter. Preserve builder-owned anchors and reject duplicate ownership. The companion hash currently participates in `slots_sha256`; its migration policy must be explicit before new layout fields ship. This is a design handoff, not implemented metadata.
+
+The plausible foam candidate's [source manifest](../../../assets/aircraft/turbo-lumber-evolution/source-manifest.json) still limits use to internal evaluation with D1/TT-17 packaging clearance pending. FW-RGB-07 therefore has no approved distributable skin asset in this audit. Resolve asset eligibility and the explicit raw-asset proof inventory before adding masks; the RGB renderer does not infer translucency from opaque imported skins.

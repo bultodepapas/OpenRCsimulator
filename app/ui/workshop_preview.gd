@@ -1,13 +1,18 @@
 extends Control
 
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const AircraftLights := preload("res://render/world/aircraft_lights.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const ProfileSmoke := preload("res://render/smoke/profile_smoke.gd")
+const LightingRig := preload("res://render/lighting/aircraft_lighting_rig_3d.gd")
+const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const Parameters := preload("res://workshop/parameters.gd")
 
 const BACKGROUND := Color("#263a40")
 const AMBIENT := Color("#c5d3cb")
+const NIGHT_BACKGROUND := Color("#080f1b")
+const NIGHT_AMBIENT := Color("#526274")
 const GRID_COLOR := Color(0.54, 0.67, 0.68, 0.52)
 const GRID_SPACING := 0.5
 const MIN_MODEL_SCALE := Parameters.MIN_SCALE
@@ -28,24 +33,35 @@ var _viewport_container: SubViewportContainer
 var _viewport: SubViewport
 var _stage: Node3D
 var _rig: Node3D
+var _lighting_rig: Node3D
 var _camera: Camera3D
+var _preview_environment: Environment
+var _preview_key_light: DirectionalLight3D
+var _preview_fill_light: DirectionalLight3D
+var _preview_ground: MeshInstance3D
 var _grid: MeshInstance3D
 var _grid_fit_scale := -1.0
 var _airplane_root: Node3D
 var _model_bounds := AABB()
 var _airplane: Dictionary = {}
 var _profile: Dictionary = {}
+var _lighting_profile: Dictionary = {}
+var _preview_night := false
+var _daynight_button: Button
+var _lighting_is_original_view := false
 var _smoke: Node3D
 var _playing := false
 var _playhead_tick := 0
 var _playhead_seconds := 0.0
 var _play_button: Button
+var _restart_button: Button
 var _stop_emission_button: Button
 var _fit_plume_button: Button
 var _time_label: Label
 var _rate_feedback: Label
 var _source_preview_label: Label
 var _playback_controls: Array[Control] = []
+var _smoke_only_controls: Array[Control] = []
 var _preview_wind := Vector3(0.0, 0.0, 1.5)
 var _motion_mode := "stationary"
 var _emission_stopped := false
@@ -90,6 +106,7 @@ var _layout_width := -1.0
 
 
 func _init() -> void:
+	_lighting_profile = LightingProfile.defaults()
 	name = "WorkshopPreview"
 	custom_minimum_size = Vector2(380, 250)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -152,6 +169,7 @@ func set_aircraft(id: String, scale: float = 1.0) -> void:
 		_refresh_model_presentation()
 		return
 	reset_playback()
+	_dispose_lighting_rig()
 	if is_instance_valid(_airplane_root):
 		_rig.remove_child(_airplane_root)
 		_airplane_root.queue_free()
@@ -306,12 +324,82 @@ func _refresh_model_presentation() -> void:
 		_grid.position.y = -_model_bounds.get_center().y * _fit_model_scale() - _model_bounds.size.y * 0.5 * _fit_model_scale() - 0.06
 		_grid.position.x = 0.0
 		_grid.position.z = 0.0
+	if is_instance_valid(_preview_ground) and is_instance_valid(_grid):
+		_preview_ground.position.y = _grid.position.y - 0.012
 	if is_instance_valid(_smoke): _smoke.visible = not (_view_mode == "compare" and _comparison_original)
+	var original_lighting_view := _view_mode == "compare" and _comparison_original
+	if not is_instance_valid(_lighting_rig) or _lighting_is_original_view != original_lighting_view:
+		_lighting_is_original_view = original_lighting_view
+		_configure_lighting()
 	_update_scale_badge()
 	_sync_toolbar()
 	if is_instance_valid(_play_button):
 		_play_button.disabled = _view_mode == "compare" and _comparison_original
+	if is_instance_valid(_restart_button):
+		_restart_button.disabled = _view_mode == "compare" and _comparison_original
 	_refresh_camera()
+
+
+func _configure_lighting() -> void:
+	if not is_instance_valid(_airplane_root) or not is_instance_valid(_stage):
+		return
+	if not is_instance_valid(_lighting_rig):
+		_lighting_rig = LightingRig.new()
+		_lighting_rig.name = "PreviewAircraftLighting"
+		_stage.add_child(_lighting_rig)
+	var selected: Dictionary = LightingProfile.defaults() if _lighting_is_original_view else _lighting_profile.duplicate(true)
+	if _preview_night and str(selected.get("selection", "inherit")) == "inherit":
+		# Sample the original fitted kit rather than substituting a different preset.
+		# Its local shader adapter keeps the preview independent of the flight clock/exposure.
+		_lighting_rig.dispose()
+		selected = _inherited_preview_lighting()
+	var configured: Dictionary = _lighting_rig.configure(_airplane_root, selected)
+	var suppress_inherited_day := str(selected.get("selection", "inherit")) == "inherit"
+	if suppress_inherited_day:
+		var original_kit := _airplane_root.get_node_or_null("NightKit") as Node3D
+		if is_instance_valid(original_kit):
+			AircraftLights.set_mode(original_kit, "off")
+		AircraftLights.set_emission_mode(AircraftLights.prepare_emission(_airplane_root), "off", 0.0)
+	elif not bool(configured.get("ok", false)):
+		_lighting_rig.set_mode("off", 0.0)
+	elif str(selected.get("selection", "inherit")) != "disabled":
+		_lighting_rig.set_mode("all", 1.0)
+	_advance_lighting()
+
+
+func _inherited_preview_lighting() -> Dictionary:
+	var source_kit := AircraftLights.attach(_airplane_root)
+	var selected := LightingProfile.preset("custom")
+	selected.brightness = 1.0
+	for zone: Dictionary in selected.zones:
+		var source_node := source_kit.get_node_or_null(str(zone.id)) as MeshInstance3D
+		zone.enabled = source_node != null
+		if source_node == null:
+			continue
+		var material := source_node.get_active_material(0) as ShaderMaterial
+		var color: Color = material.get_shader_parameter("light_color") if material != null else Color.WHITE
+		zone.brightness = 1.0
+		zone.reactive = {"source": "none", "gain": 0.0}
+		zone.pattern.id = "steady"
+		zone.pattern.palette = ["#" + color.to_html(false).to_upper()]
+	return selected
+
+
+func _advance_lighting(effects_allowed: bool = false) -> void:
+	if not is_instance_valid(_lighting_rig) or not is_instance_valid(_preview_environment):
+		return
+	_lighting_rig.advance(float(_playhead_tick) / 240.0, {
+		"exposure": _preview_environment.tonemap_exposure,
+		"effects_allowed": effects_allowed,
+	})
+
+
+func _dispose_lighting_rig() -> void:
+	if not is_instance_valid(_lighting_rig):
+		return
+	_lighting_rig.dispose()
+	_lighting_rig.queue_free()
+	_lighting_rig = null
 
 
 func _refresh_camera() -> void:
@@ -457,35 +545,48 @@ func _build_world() -> void:
 	_stage = Node3D.new()
 	_stage.name = "StillStage"
 	_viewport.add_child(_stage)
-	var environment := Environment.new()
-	environment.background_mode = Environment.BG_COLOR
-	environment.background_color = BACKGROUND
-	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	environment.ambient_light_color = AMBIENT
-	environment.ambient_light_energy = 0.62
-	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	_preview_environment = Environment.new()
+	_preview_environment.background_mode = Environment.BG_COLOR
+	_preview_environment.background_color = BACKGROUND
+	_preview_environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	_preview_environment.ambient_light_color = AMBIENT
+	_preview_environment.ambient_light_energy = 0.62
+	_preview_environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	_preview_environment.tonemap_exposure = 0.65
 	var world_environment := WorldEnvironment.new()
 	world_environment.name = "PreviewEnvironment"
-	world_environment.environment = environment
+	world_environment.environment = _preview_environment
 	_stage.add_child(world_environment)
+	var ground_mesh := PlaneMesh.new()
+	ground_mesh.size = Vector2(30.0, 30.0)
+	_preview_ground = MeshInstance3D.new()
+	_preview_ground.name = "PreviewGroundReceiver"
+	_preview_ground.mesh = ground_mesh
+	var ground_material := StandardMaterial3D.new()
+	ground_material.albedo_color = Color(0.19, 0.22, 0.23)
+	ground_material.roughness = 1.0
+	_preview_ground.material_override = ground_material
+	_preview_ground.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_preview_ground.position.y = -1.0
+	_stage.add_child(_preview_ground)
 
 	_rig = Node3D.new()
 	_rig.name = "AircraftDatumPivot"
 	_stage.add_child(_rig)
 
-	var key_light := DirectionalLight3D.new()
-	key_light.name = "PreviewKeyLight"
-	key_light.rotation_degrees = Vector3(-36.0, -28.0, 0.0)
-	key_light.light_energy = 1.25
-	key_light.shadow_enabled = false
-	_stage.add_child(key_light)
+	_preview_key_light = DirectionalLight3D.new()
+	_preview_key_light.name = "PreviewKeyLight"
+	_preview_key_light.rotation_degrees = Vector3(-36.0, -28.0, 0.0)
+	_preview_key_light.light_energy = 1.25
+	_preview_key_light.shadow_enabled = false
+	_stage.add_child(_preview_key_light)
 
-	var fill_light := DirectionalLight3D.new()
-	fill_light.name = "PreviewFillLight"
-	fill_light.rotation_degrees = Vector3(18.0, 150.0, 0.0)
-	fill_light.light_energy = 0.45
-	fill_light.shadow_enabled = false
-	_stage.add_child(fill_light)
+	_preview_fill_light = DirectionalLight3D.new()
+	_preview_fill_light.name = "PreviewFillLight"
+	_preview_fill_light.rotation_degrees = Vector3(18.0, 150.0, 0.0)
+	_preview_fill_light.light_energy = 0.45
+	_preview_fill_light.shadow_enabled = false
+	_stage.add_child(_preview_fill_light)
 
 	_camera = Camera3D.new()
 	_camera.name = "PreviewCamera"
@@ -495,6 +596,36 @@ func _build_world() -> void:
 	_camera.position = Vector3(0.0, 0.0, 6.0)
 	_camera.current = true
 	_stage.add_child(_camera)
+	_apply_preview_environment()
+
+
+## Day/night is a local preview snapshot; it never writes process-wide shader globals or trial conditions.
+func set_preview_night(enabled: bool) -> void:
+	if _preview_night == enabled:
+		return
+	_preview_night = enabled
+	_apply_preview_environment()
+	if _lighting_is_original_view or str(_lighting_profile.get("selection", "inherit")) == "inherit":
+		_configure_lighting()
+	_advance_lighting()
+	_request_redraw()
+
+
+func _apply_preview_environment() -> void:
+	if not is_instance_valid(_preview_environment):
+		return
+	_preview_environment.background_color = NIGHT_BACKGROUND if _preview_night else BACKGROUND
+	_preview_environment.ambient_light_color = NIGHT_AMBIENT if _preview_night else AMBIENT
+	_preview_environment.ambient_light_energy = 0.025 if _preview_night else 0.62
+	_preview_environment.tonemap_exposure = 8.0 if _preview_night else 0.65
+	if is_instance_valid(_preview_key_light):
+		_preview_key_light.light_energy = 0.025 if _preview_night else 1.25
+	if is_instance_valid(_preview_fill_light):
+		_preview_fill_light.light_energy = 0.015 if _preview_night else 0.45
+	if is_instance_valid(_daynight_button):
+		_daynight_button.set_pressed_no_signal(_preview_night)
+		_daynight_button.text = tr("Night")
+		_daynight_button.tooltip_text = tr("Show the local day preview.") if _preview_night else tr("Show the local night preview.")
 
 
 func _build_toolbar() -> void:
@@ -536,6 +667,11 @@ func _build_toolbar() -> void:
 	_reset_button = _make_button("Reset", "Reset the camera to its default fit.", "ResetView")
 	_reset_button.pressed.connect(reset_view)
 	_mode_row.add_child(_reset_button)
+	_daynight_button = _make_button("Night", "Switch only this isolated preview between day and night.", "PreviewDayNight")
+	_daynight_button.toggle_mode = true
+	_daynight_button.toggled.connect(set_preview_night)
+	_mode_row.add_child(_daynight_button)
+	_apply_preview_environment()
 
 	_camera_panel = PanelContainer.new()
 	_camera_panel.name = "CameraControls"
@@ -586,6 +722,7 @@ func _build_toolbar() -> void:
 	_camera_menu_button.pressed.connect(_show_camera_menu)
 	_camera_menu_button.visible = false
 	_mode_row.add_child(_camera_menu_button)
+	_mode_row.move_child(_camera_menu_button, 0)
 	_camera_menu = PopupMenu.new()
 	_camera_menu.name = "CameraControlsMenu"
 	_camera_menu.add_item(tr("Front"), CameraMenuAction.FRONT)
@@ -982,19 +1119,23 @@ func _on_camera_menu_action(action: int) -> void:
 func set_presentation(profile: Dictionary) -> void:
 	if _profile == profile: return
 	_profile = profile.duplicate(true)
+	var lighting_value: Variant = _profile.get("lighting", LightingProfile.defaults())
+	_lighting_profile = lighting_value.duplicate(true) if lighting_value is Dictionary else LightingProfile.defaults()
 	if not _airplane.is_empty():
 		Customization.apply(_airplane, {} if _view_mode == "compare" and _comparison_original else _profile)
+		_configure_lighting()
 	_configure_smoke()
+	_sync_playback_controls()
 	_request_redraw()
 
 
 func _build_playback() -> void:
-	_play_button = _make_button("Play smoke", "Play the visual smoke preview.", "PreviewPlay")
+	_play_button = _make_button("Play preview", "Play the isolated Workshop lighting and smoke preview.", "PreviewPlay")
 	_play_button.pressed.connect(toggle_playback)
+	_restart_button = _make_button("Restart preview", "Restart the isolated preview playhead.", "PreviewSmokeReset")
+	_restart_button.pressed.connect(reset_playback)
 	_stop_emission_button = _make_button("Stop emission", "Stop new smoke births. Existing puffs keep fading while the preview runs.", "PreviewStopEmission")
 	_stop_emission_button.pressed.connect(stop_emission)
-	var reset := _make_button("Restart smoke", "Clear puffs and restart the preview clock.", "PreviewSmokeReset")
-	reset.pressed.connect(reset_playback)
 	_fit_plume_button = _make_button("Fit plume", "Fit the complete bounded smoke plume and aircraft in the preview.", "PreviewFitPlume")
 	_fit_plume_button.toggle_mode = true
 	_fit_plume_button.toggled.connect(set_fit_plume)
@@ -1015,10 +1156,12 @@ func _build_playback() -> void:
 	_motion_selector.tooltip_text = tr("Six-second visual pass; residual smoke fades before pause. No flight simulation. Changing motion clears the puffs.")
 	_motion_selector.item_selected.connect(func(index: int) -> void:
 		set_motion_mode("stationary" if index == 0 else "pass"))
-	for control: Control in [_play_button, _stop_emission_button, reset, _fit_plume_button, _time_label, wind, _motion_selector]:
+	for control: Control in [_play_button, _restart_button, _time_label, _stop_emission_button, _fit_plume_button, wind, _motion_selector]:
 		_playback_controls.append(control)
 		_mode_row.add_child(control)
 		control.visible = false
+	for control: Control in [_stop_emission_button, _fit_plume_button, wind, _motion_selector]:
+		_smoke_only_controls.append(control)
 	_source_preview_label = Label.new()
 	_source_preview_label.text = tr("Illustrative running engine")
 	_source_preview_label.add_theme_font_size_override("font_size", UiTheme._font_size(14))
@@ -1030,13 +1173,13 @@ func _build_playback() -> void:
 	_rate_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_rate_feedback.visible = false
 	_playback_controls.append(_rate_feedback)
+	_smoke_only_controls.append(_rate_feedback)
 	_mode_row.add_child(_rate_feedback)
 
 
 func _configure_smoke() -> void:
 	if not is_instance_valid(_stage) or _airplane.is_empty(): return
 	reset_playback()
-	for control in _playback_controls: control.visible = not _profile.get("smoke", []).is_empty()
 	_stop_emission_button.disabled = _emission_stopped
 	_fit_plume_button.button_pressed = _fit_plume
 	_source_preview_label.visible = false
@@ -1050,6 +1193,7 @@ func _configure_smoke() -> void:
 		_smoke.queue_free()
 		_smoke = null
 	if _profile.get("smoke", []).is_empty():
+		_sync_playback_controls()
 		_sync_rate_feedback()
 		_refresh_model_presentation()
 		return
@@ -1062,29 +1206,53 @@ func _configure_smoke() -> void:
 	if not _smoke.configure(_profile, described.bindings):
 		_smoke.queue_free()
 		_smoke = null
+	_sync_playback_controls()
 	_sync_rate_feedback()
 	_refresh_model_presentation()
 	# Preview intentionally remains still until the user requests playback.
 
 
+func _sync_playback_controls() -> void:
+	var has_smoke: bool = not _profile.get("smoke", []).is_empty()
+	var has_lighting: bool = str(_lighting_profile.get("selection", "inherit")) in ["preset", "custom"] \
+		and (not _lighting_profile.get("zones", []).is_empty() or not _lighting_profile.get("effects", []).is_empty())
+	var show_playback: bool = has_smoke or has_lighting
+	_play_button.visible = show_playback
+	_restart_button.visible = show_playback
+	_time_label.visible = show_playback
+	for control: Control in _smoke_only_controls:
+		control.visible = has_smoke
+	var play_label := "Play preview" if has_lighting else "Play smoke"
+	var pause_label := "Pause preview" if has_lighting else "Pause smoke"
+	_play_button.text = tr(pause_label if _playing else play_label)
+	_restart_button.text = tr("Restart preview" if has_lighting else "Restart smoke")
+	_play_button.disabled = _view_mode == "compare" and _comparison_original
+	_restart_button.disabled = _view_mode == "compare" and _comparison_original
+	_source_preview_label.visible = has_smoke and _source_preview_label.visible
+
+
 func toggle_playback() -> void:
-	if not is_instance_valid(_smoke): return
+	if not is_instance_valid(_smoke) and not is_instance_valid(_lighting_rig): return
 	if not _playing and _view_mode == "compare" and _comparison_original: return
 	if not _playing and _pass_visible() and _playhead_tick >= _pass_tail_end_tick():
 		reset_playback()
 	_playing = not _playing
 	set_process(_playing)
-	_play_button.text = tr("Pause smoke" if _playing else "Play smoke")
 	if _playing:
-		_smoke.play()
-		if _emission_stopped: _smoke.stop()
-		if _playhead_tick == 0:
+		if is_instance_valid(_smoke):
+			_smoke.play()
+			if _emission_stopped: _smoke.stop()
+		if is_instance_valid(_smoke) and _playhead_tick == 0:
 			_smoke.advance(0.0, _preview_pose(0), _preview_wind,
 				1.0, _preview_source_sample())
-		_sync_rate_feedback()
+		_advance_lighting(true)
+		_sync_playback_controls()
+		if is_instance_valid(_smoke): _sync_rate_feedback()
 		_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	else:
-		_smoke.pause()
+		if is_instance_valid(_smoke): _smoke.pause()
+		_advance_lighting(false)
+		_sync_playback_controls()
 		_request_redraw()
 
 
@@ -1102,6 +1270,9 @@ func reset_playback() -> void:
 		_stop_emission_button.text = tr("Stop emission")
 	if is_instance_valid(_time_label): _time_label.text = "0.0 s"
 	if is_instance_valid(_smoke): _smoke.reset()
+	if is_instance_valid(_lighting_rig): _lighting_rig.reset()
+	_advance_lighting()
+	_sync_playback_controls()
 	_request_redraw()
 
 
@@ -1127,10 +1298,12 @@ func set_fit_plume(enabled: bool) -> void:
 
 func _exit_tree() -> void:
 	if _playing: toggle_playback()
+	if is_instance_valid(_lighting_rig):
+		_lighting_rig.dispose()
 
 
 func _process(delta: float) -> void:
-	if not _playing or not is_instance_valid(_smoke) or not is_visible_in_tree(): return
+	if not _playing or not is_visible_in_tree(): return
 	if _view_mode == "compare" and _comparison_original: return
 	if not is_finite(delta) or delta <= 0.0: return
 	_playhead_seconds += minf(delta, 0.1)
@@ -1140,9 +1313,11 @@ func _process(delta: float) -> void:
 	var dt := float(next - _playhead_tick) / 240.0
 	_playhead_tick = next
 	_apply_preview_pose()
-	_smoke.advance(dt, _preview_pose(_playhead_tick),
-		_preview_wind, 1.0, _preview_source_sample())
-	_sync_rate_feedback()
+	if is_instance_valid(_smoke):
+		_smoke.advance(dt, _preview_pose(_playhead_tick),
+			_preview_wind, 1.0, _preview_source_sample())
+		_sync_rate_feedback()
+	_advance_lighting(_playing)
 	if _fit_plume: _refresh_camera()
 	_time_label.text = "%.1f s" % (float(_playhead_tick) / 240.0)
 	if _pass_visible() and _playhead_tick >= PASS_TICKS:

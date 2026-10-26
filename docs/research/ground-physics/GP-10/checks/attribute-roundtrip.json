@@ -1,0 +1,45 @@
+{
+  "format": "openrc-gp10-attribute-roundtrip v1",
+  "checked_utc": "2026-10-26T00:21:22.507401+00:00",
+  "source_head": "f88e966f755bfc5dc2a195a0b5596fc12c096039",
+  "git_version": "git version 2.52.0.windows.1",
+  "fixture_commit": "7eaa656afe1164af8911e635e3839143a218c318",
+  "disposable_directory": "tmp/gp10-attribute-roundtrip-e6902ba6d6f74abd9052358563ba277c",
+  "method": "copy current attributes/raw evidence; Git init, autocrlf=true, local fixture commit; fresh --no-hardlinks clone with autocrlf=true; SHA-256 every artifact; summarize all three check collections",
+  "fixture_autocrlf": "true",
+  "clone_autocrlf": "true",
+  "artifact_count": 131,
+  "artifact_bytes": 5980719,
+  "source_manifest_sha256": "b31b6b37e756489724144ff1c7af0d131841e1033e7b8fc380d2d4527a108300",
+  "clone_manifest_sha256": "b31b6b37e756489724144ff1c7af0d131841e1033e7b8fc380d2d4527a108300",
+  "source_attributes_sha256": "d3526de88b2b33a2545b48f0128e7a4a836729f5f149ec8d5010a2cb765b635f",
+  "clone_attributes_sha256": "d3526de88b2b33a2545b48f0128e7a4a836729f5f149ec8d5010a2cb765b635f",
+  "source_stable_during_check": true,
+  "mismatches": [],
+  "summaries": [
+    {
+      "collection": "docs/research/ground-physics/GP-10/checks",
+      "exit_code": 0,
+      "stdout": "19 invocations: 19 passed, 0 failed or invalid.",
+      "stderr": "",
+      "invocations": 19
+    },
+    {
+      "collection": "docs/research/ground-physics/GP-10/evidence/baseline/checks",
+      "exit_code": 0,
+      "stdout": "2 invocations: 2 passed, 0 failed or invalid.",
+      "stderr": "",
+      "invocations": 2
+    },
+    {
+      "collection": "docs/research/ground-physics/GP-10/evidence/candidate/checks",
+      "exit_code": 0,
+      "stdout": "4 invocations: 4 passed, 0 failed or invalid.",
+      "stderr": "",
+      "invocations": 4
+    }
+  ],
+  "receipt_created_after_input_snapshot": true,
+  "scope": "GP-10/checks and GP-10/evidence raw bytes only; this does not rerun Godot or qualify current runtime behavior; the real workspace was neither staged nor committed",
+  "ok": true
+}

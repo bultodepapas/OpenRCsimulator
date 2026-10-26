@@ -1,0 +1,204 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   reference and candidate scripts load
+ok   field and lake definitions load
+ok   field fixture contains a runway
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   jensen-das-ugly-stik-60 receives field and lake context  field=true lake=true
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   jensen-das-ugly-stik-60 receives field and lake context  field=true lake=true
+ok   Stik initial simulation state is byte-identical
+ok   Stik stage has live inputs and aux
+ok   Stik airborne over field result dictionary is byte-identical
+ok   Stik airborne over field caller arrays and maps stay unchanged
+ok   Stik airborne over field remains an accepted stage
+ok   Stik compressed gear on field result dictionary is byte-identical
+ok   Stik compressed gear on field caller arrays and maps stay unchanged
+ok   Stik compressed gear on field remains an accepted stage
+ok   Stik ground evaluation with lake context result dictionary is byte-identical
+ok   Stik ground evaluation with lake context caller arrays and maps stay unchanged
+ok   Stik ground evaluation with lake context remains an accepted stage
+ok   Stik contact with soft hull disabled result dictionary is byte-identical
+ok   Stik contact with soft hull disabled caller arrays and maps stay unchanged
+ok   Stik contact with soft hull disabled remains an accepted stage
+ok   Stik reference and candidate wheel layouts match
+ok   Stik valid wheel speeds result dictionary is byte-identical
+ok   Stik valid wheel speeds caller arrays and maps stay unchanged
+ok   Stik valid wheel speeds remains an accepted stage
+ok   Stik short wheel state is rejected result dictionary is byte-identical
+ok   Stik short wheel state is rejected caller arrays and maps stay unchanged
+ok   Stik short wheel state is rejected preserves fail-closed result
+ok   Stik non-finite wheel speed is rejected result dictionary is byte-identical
+ok   Stik non-finite wheel speed is rejected caller arrays and maps stay unchanged
+ok   Stik non-finite wheel speed is rejected preserves fail-closed result
+ok   Stik after live wheel-profile edit result dictionary is byte-identical
+ok   Stik after live wheel-profile edit caller arrays and maps stay unchanged
+ok   Stik after live wheel-profile edit remains an accepted stage
+ok   Stik profile restore and reset state are byte-identical
+ok   Stik after reset result dictionary is byte-identical
+ok   Stik after reset caller arrays and maps stay unchanged
+ok   Stik after reset remains an accepted stage
+ok   p51d-mustang-120 receives field and lake context  field=true lake=true
+ok   p51d-mustang-120 receives field and lake context  field=true lake=true
+ok   P-51 initial simulation state is byte-identical
+ok   P-51 stage has live inputs and aux
+ok   P-51 airborne over field result dictionary is byte-identical
+ok   P-51 airborne over field caller arrays and maps stay unchanged
+ok   P-51 airborne over field remains an accepted stage
+ok   P-51 compressed gear on field result dictionary is byte-identical
+ok   P-51 compressed gear on field caller arrays and maps stay unchanged
+ok   P-51 compressed gear on field remains an accepted stage
+ok   P-51 ground evaluation with lake context result dictionary is byte-identical
+ok   P-51 ground evaluation with lake context caller arrays and maps stay unchanged
+ok   P-51 ground evaluation with lake context remains an accepted stage
+ok   P-51 contact with soft hull disabled result dictionary is byte-identical
+ok   P-51 contact with soft hull disabled caller arrays and maps stay unchanged
+ok   P-51 contact with soft hull disabled remains an accepted stage
+ok   P-51 reference and candidate wheel layouts match
+ok   P-51 valid wheel speeds result dictionary is byte-identical
+ok   P-51 valid wheel speeds caller arrays and maps stay unchanged
+ok   P-51 valid wheel speeds remains an accepted stage
+ok   P-51 supplied liquid mass properties are valid and match
+ok   P-51 supplied liquid properties result dictionary is byte-identical
+ok   P-51 supplied liquid properties caller arrays and maps stay unchanged
+ok   P-51 supplied liquid properties remains an accepted stage
+ok   P-51 short wheel state is rejected result dictionary is byte-identical
+ok   P-51 short wheel state is rejected caller arrays and maps stay unchanged
+ok   P-51 short wheel state is rejected preserves fail-closed result
+ok   P-51 non-finite wheel speed is rejected result dictionary is byte-identical
+ok   P-51 non-finite wheel speed is rejected caller arrays and maps stay unchanged
+ok   P-51 non-finite wheel speed is rejected preserves fail-closed result
+ok   P-51 gear extension 0.0 result dictionary is byte-identical
+ok   P-51 gear extension 0.0 caller arrays and maps stay unchanged
+ok   P-51 gear extension 0.0 remains an accepted stage
+ok   P-51 gear extension 0.5 result dictionary is byte-identical
+ok   P-51 gear extension 0.5 caller arrays and maps stay unchanged
+ok   P-51 gear extension 0.5 remains an accepted stage
+ok   P-51 gear extension 1.0 result dictionary is byte-identical
+ok   P-51 gear extension 1.0 caller arrays and maps stay unchanged
+ok   P-51 gear extension 1.0 remains an accepted stage
+ok   P-51 after live wheel-profile edit result dictionary is byte-identical
+ok   P-51 after live wheel-profile edit caller arrays and maps stay unchanged
+ok   P-51 after live wheel-profile edit remains an accepted stage
+ok   P-51 profile restore and reset state are byte-identical
+ok   P-51 after reset result dictionary is byte-identical
+ok   P-51 after reset caller arrays and maps stay unchanged
+ok   P-51 after reset remains an accepted stage
+ok   turbo-lumber-evolution receives field and lake context  field=true lake=true
+ok   turbo-lumber-evolution receives field and lake context  field=true lake=true
+ok   Lumber initial simulation state is byte-identical
+ok   Lumber stage has live inputs and aux
+ok   Lumber airborne over field result dictionary is byte-identical
+ok   Lumber airborne over field caller arrays and maps stay unchanged
+ok   Lumber airborne over field remains an accepted stage
+ok   Lumber compressed gear on field result dictionary is byte-identical
+ok   Lumber compressed gear on field caller arrays and maps stay unchanged
+ok   Lumber compressed gear on field remains an accepted stage
+ok   Lumber ground evaluation with lake context result dictionary is byte-identical
+ok   Lumber ground evaluation with lake context caller arrays and maps stay unchanged
+ok   Lumber ground evaluation with lake context remains an accepted stage
+ok   Lumber contact with soft hull disabled result dictionary is byte-identical
+ok   Lumber contact with soft hull disabled caller arrays and maps stay unchanged
+ok   Lumber contact with soft hull disabled remains an accepted stage
+ok   Lumber reference and candidate wheel layouts match
+ok   Lumber valid wheel speeds result dictionary is byte-identical
+ok   Lumber valid wheel speeds caller arrays and maps stay unchanged
+ok   Lumber valid wheel speeds remains an accepted stage
+ok   Lumber short wheel state is rejected result dictionary is byte-identical
+ok   Lumber short wheel state is rejected caller arrays and maps stay unchanged
+ok   Lumber short wheel state is rejected preserves fail-closed result
+ok   Lumber non-finite wheel speed is rejected result dictionary is byte-identical
+ok   Lumber non-finite wheel speed is rejected caller arrays and maps stay unchanged
+ok   Lumber non-finite wheel speed is rejected preserves fail-closed result
+ok   Lumber after live wheel-profile edit result dictionary is byte-identical
+ok   Lumber after live wheel-profile edit caller arrays and maps stay unchanged
+ok   Lumber after live wheel-profile edit remains an accepted stage
+ok   Lumber profile restore and reset state are byte-identical
+ok   Lumber after reset result dictionary is byte-identical
+ok   Lumber after reset caller arrays and maps stay unchanged
+ok   Lumber after reset remains an accepted stage
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-61fx-2t receives field and lake context  field=true lake=true
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-61fx-2t receives field and lake context  field=true lake=true
+ok   Glow Stik initial simulation state is byte-identical
+ok   Glow Stik stage has live inputs and aux
+ok   Glow Stik airborne over field result dictionary is byte-identical
+ok   Glow Stik airborne over field caller arrays and maps stay unchanged
+ok   Glow Stik airborne over field remains an accepted stage
+ok   Glow Stik compressed gear on field result dictionary is byte-identical
+ok   Glow Stik compressed gear on field caller arrays and maps stay unchanged
+ok   Glow Stik compressed gear on field remains an accepted stage
+ok   Glow Stik ground evaluation with lake context result dictionary is byte-identical
+ok   Glow Stik ground evaluation with lake context caller arrays and maps stay unchanged
+ok   Glow Stik ground evaluation with lake context remains an accepted stage
+ok   Glow Stik contact with soft hull disabled result dictionary is byte-identical
+ok   Glow Stik contact with soft hull disabled caller arrays and maps stay unchanged
+ok   Glow Stik contact with soft hull disabled remains an accepted stage
+ok   Glow Stik reference and candidate wheel layouts match
+ok   Glow Stik valid wheel speeds result dictionary is byte-identical
+ok   Glow Stik valid wheel speeds caller arrays and maps stay unchanged
+ok   Glow Stik valid wheel speeds remains an accepted stage
+ok   Glow Stik short wheel state is rejected result dictionary is byte-identical
+ok   Glow Stik short wheel state is rejected caller arrays and maps stay unchanged
+ok   Glow Stik short wheel state is rejected preserves fail-closed result
+ok   Glow Stik non-finite wheel speed is rejected result dictionary is byte-identical
+ok   Glow Stik non-finite wheel speed is rejected caller arrays and maps stay unchanged
+ok   Glow Stik non-finite wheel speed is rejected preserves fail-closed result
+ok   Glow Stik after live wheel-profile edit result dictionary is byte-identical
+ok   Glow Stik after live wheel-profile edit caller arrays and maps stay unchanged
+ok   Glow Stik after live wheel-profile edit remains an accepted stage
+ok   Glow Stik profile restore and reset state are byte-identical
+ok   Glow Stik after reset result dictionary is byte-identical
+ok   Glow Stik after reset caller arrays and maps stay unchanged
+ok   Glow Stik after reset remains an accepted stage
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   sebart-avanti-s-a200-p100rx receives field and lake context  field=true lake=true
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   sebart-avanti-s-a200-p100rx receives field and lake context  field=true lake=true
+ok   Avanti initial simulation state is byte-identical
+ok   Avanti stage has live inputs and aux
+ok   Avanti airborne over field result dictionary is byte-identical
+ok   Avanti airborne over field caller arrays and maps stay unchanged
+ok   Avanti airborne over field remains an accepted stage
+ok   Avanti compressed gear on field result dictionary is byte-identical
+ok   Avanti compressed gear on field caller arrays and maps stay unchanged
+ok   Avanti compressed gear on field remains an accepted stage
+ok   Avanti ground evaluation with lake context result dictionary is byte-identical
+ok   Avanti ground evaluation with lake context caller arrays and maps stay unchanged
+ok   Avanti ground evaluation with lake context remains an accepted stage
+ok   Avanti contact with soft hull disabled result dictionary is byte-identical
+ok   Avanti contact with soft hull disabled caller arrays and maps stay unchanged
+ok   Avanti contact with soft hull disabled remains an accepted stage
+ok   Avanti reference and candidate wheel layouts match
+ok   Avanti valid wheel speeds result dictionary is byte-identical
+ok   Avanti valid wheel speeds caller arrays and maps stay unchanged
+ok   Avanti valid wheel speeds remains an accepted stage
+ok   Avanti supplied liquid mass properties are valid and match
+ok   Avanti supplied liquid properties result dictionary is byte-identical
+ok   Avanti supplied liquid properties caller arrays and maps stay unchanged
+ok   Avanti supplied liquid properties remains an accepted stage
+ok   Avanti short wheel state is rejected result dictionary is byte-identical
+ok   Avanti short wheel state is rejected caller arrays and maps stay unchanged
+ok   Avanti short wheel state is rejected preserves fail-closed result
+ok   Avanti non-finite wheel speed is rejected result dictionary is byte-identical
+ok   Avanti non-finite wheel speed is rejected caller arrays and maps stay unchanged
+ok   Avanti non-finite wheel speed is rejected preserves fail-closed result
+ok   Avanti gear extension 0.0 result dictionary is byte-identical
+ok   Avanti gear extension 0.0 caller arrays and maps stay unchanged
+ok   Avanti gear extension 0.0 remains an accepted stage
+ok   Avanti gear extension 0.5 result dictionary is byte-identical
+ok   Avanti gear extension 0.5 caller arrays and maps stay unchanged
+ok   Avanti gear extension 0.5 remains an accepted stage
+ok   Avanti gear extension 1.0 result dictionary is byte-identical
+ok   Avanti gear extension 1.0 caller arrays and maps stay unchanged
+ok   Avanti gear extension 1.0 remains an accepted stage
+ok   Avanti after live wheel-profile edit result dictionary is byte-identical
+ok   Avanti after live wheel-profile edit caller arrays and maps stay unchanged
+ok   Avanti after live wheel-profile edit remains an accepted stage
+ok   Avanti profile restore and reset state are byte-identical
+ok   Avanti after reset result dictionary is byte-identical
+ok   Avanti after reset caller arrays and maps stay unchanged
+ok   Avanti after reset remains an accepted stage
+ok   catalog cases exercise a rotating-wheel layout
+195 ground-stage checks, 0 failed

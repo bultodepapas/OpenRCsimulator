@@ -1,0 +1,20 @@
+# Isolated debug profile: verify counted flights, menu holds and retained session totals.
+assert expr="screens.is_top('home')" message="scenario starts at Home"
+assert expr="app.statistics_service.reset_counters('session')" message="start an independent statistics session"
+fly aircraft=jensen-das-ugly-stik-60 start=airborne
+wait until="flight.session.sim.tick >= 300" timeout_s=120
+open screen=pause
+press text="Session options"
+press text="Statistics"
+assert expr="screens.is_top('statistics') and app.statistics_service.query().started == 1" message="Pause opens the counted flight"
+key name=R
+assert expr="screens.is_top('statistics') and app.statistics_service.query().restarts == 0" message="statistics modal blocks flight restart input"
+close
+press text="Restart flight"
+wait until="flight.session.sim.tick >= 300" timeout_s=120
+home
+assert expr="app.statistics_service.query().started == 2 and app.statistics_service.query().restarts == 1" message="one restart and two flights survive Home"
+assert expr="app.statistics_service.query().partial == 0" message="committed reset does not create a coverage gap"
+press text="Statistics · Pilot total"
+assert expr="screens.is_top('statistics')" message="Home statistics remains available"
+close

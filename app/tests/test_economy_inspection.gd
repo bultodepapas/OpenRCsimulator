@@ -213,13 +213,28 @@ func _test_corsair_damage() -> void:
 		check("Corsair strike retains one replacement, self-reference=%s" % self_reference,
 			ledger._assessment.components.propeller == {disposition = "replace", quantity = 1})
 		check("Corsair strike inspects engine without automatically purchasing it",
-			ledger._assessment.components.engine_moki_s250.disposition == "inspect" and ledger.report.total_minor == null)
+			ledger._assessment.components.engine_moki_s250.disposition == "inspect" and ledger.report.total_minor == null and ledger.report.known_subtotal_minor == 0)
 		var saved := ledger.checkpoint(10, bindings)
 		check("Corsair propeller evidence restores without downgrade", ledger.prepare_restore(saved, 10, bindings).get("ok", false))
 		var before := ledger.report.duplicate(true)
 		ledger.observe({tick = 10, events = [strike]}, bindings, false)
 		ledger.evaluate_pending()
 		check("Corsair repeated strike never rebills", ledger.report == before)
+	# F4U-11-R3: newly priced packages require explicit replacement; the included
+	# ignition has no second charge and unresolved external switch keeps the bill open.
+	var package_ledger := Incident.new()
+	package_ledger.begin("f4u-corsair-250", "")
+	package_ledger._last_tick = 20
+	package_ledger._queue_assessment(20)
+	var packages := receipt(package_ledger, "explicit-package-replacement")
+	packages.full_inspection = false
+	packages.total_loss = false
+	packages.components = {"engine_moki_s250": row("replace", 1), "ignition_module": row("replace", 1), "retract_air": row("replace", 1)}
+	check("Corsair explicit engine and air replacements accept scoped receipt", package_ledger.apply_inspection(packages).get("ok", false))
+	check("Corsair package subtotal counts engine once plus air system", package_ledger.report.get("known_subtotal_minor") == 508900)
+	check("Corsair included ignition cannot invent price for unresolved switch", package_ledger.report.get("total_minor") == null and not package_ledger.report.get("complete", true))
+	var package_report := package_ledger.report.duplicate(true)
+	check("Corsair repeated package receipt never rebills", package_ledger.apply_inspection(packages).get("duplicate", false) and package_ledger.report == package_report)
 
 
 func row(disposition: String, quantity: int) -> Dictionary:

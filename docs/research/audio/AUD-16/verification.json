@@ -1,0 +1,2415 @@
+{
+  "format": "openrc-mechanical-verification-v1",
+  "date": "2026-10-25",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "runtime_sha256_at_documentation": {
+    "mechanical_audio.gd": "c8cc20d93a74e799e67648700ea3f84f80befa36637eff420003c7d9bd2d949a",
+    "mechanical_motion.gd": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f",
+    "mechanical_profile.gd": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb",
+    "flight_audio.gd": "4d1a871ee0ad06474a8074e6a87891afedc327aec07cdf85598df38d5f0e8ec0"
+  },
+  "focused_checks": 191,
+  "tests": {
+    "res://tests/test_workshop_presentation.gd": {
+      "started_utc": "2026-10-25T22:37:21.196067+00:00",
+      "ok": true,
+      "elapsed_seconds": 1.032,
+      "log_sha256": "d6e8557cc6675abc86a42bda95a96f9e135af72bc54c1b32e43e62651a4f9380",
+      "verdict": "Workshop presentation: 85 checks, 0 failed"
+    },
+    "res://tests/test_workshop_profile_transfer.gd": {
+      "started_utc": "2026-10-25T22:37:22.711341+00:00",
+      "ok": true,
+      "elapsed_seconds": 3.203,
+      "log_sha256": "6359fb10fb8bd92ee88527124bbc1233de340654f05d145cb641e2dc6e7ff640",
+      "verdict": "Workshop profile transfer: 22 checks, 0 failures"
+    },
+    "res://tests/test_workshop_store.gd": {
+      "started_utc": "2026-10-25T22:37:26.112824+00:00",
+      "ok": true,
+      "elapsed_seconds": 4.875,
+      "log_sha256": "4d956e33b1a3a7f7fd5ea60291d712707181977afccc32a6d8c8e708bbc5f93e",
+      "verdict": "141 checks, 0 failed"
+    },
+    "res://tests/test_workshop_bundle.gd": {
+      "started_utc": "2026-10-25T22:37:31.154678+00:00",
+      "ok": true,
+      "elapsed_seconds": 4.125,
+      "log_sha256": "52206693108025901f8e8c139e1eeece3a995925f1327492dbf5c9383ab79b70",
+      "verdict": "Workshop bundle: 28 checks, 0 failed"
+    },
+    "res://tests/test_workshop_trial.gd": {
+      "started_utc": "2026-10-25T22:37:35.459417+00:00",
+      "ok": true,
+      "elapsed_seconds": 6.828,
+      "log_sha256": "82491baa0188453b8143bc1c10591d0a886093562c2d91d0c04d5e8de4c9ad62",
+      "verdict": "Workshop trial: 44 checks, 0 failed"
+    },
+    "res://tests/test_workshop_drafts.gd": {
+      "started_utc": "2026-10-25T22:37:42.451481+00:00",
+      "ok": true,
+      "elapsed_seconds": 15.657,
+      "log_sha256": "cd1ae97c76bc449c9601e9a851e06e1c05fffd5dedae3b54202ced11d78a8d0e",
+      "verdict": "100 checks, 0 failed"
+    },
+    "res://tests/test_workshop_ui.gd": {
+      "started_utc": "2026-10-25T22:37:58.295238+00:00",
+      "ok": true,
+      "elapsed_seconds": 20.984,
+      "log_sha256": "efbf5823190ecf66458d47ca284f06219ba07470b14f922294b0250a3ba08435",
+      "verdict": "Workshop UI: 0 failed"
+    },
+    "res://tests/test_soundscape.gd": {
+      "started_utc": "2026-10-25T22:38:19.440199+00:00",
+      "ok": true,
+      "elapsed_seconds": 1.093,
+      "log_sha256": "02ba7f8250b0159dec5d61bb0394ee51fb81a69a336a3fe124e580b96a5cbfc9",
+      "verdict": "168 checks, 0 failed"
+    },
+    "res://tests/test_powertrain_audio.gd": {
+      "started_utc": "2026-10-25T22:38:20.688064+00:00",
+      "ok": true,
+      "elapsed_seconds": 7.515,
+      "log_sha256": "a99aeeefbab5f2610b323dbd7e331f94185ddac16a7fb3e4af91111b949a613d",
+      "verdict": "AUD-15 powertrain checks: 45, failed: 0"
+    },
+    "res://tests/test_ground_audio.gd": {
+      "started_utc": "2026-10-25T22:40:00.432092+00:00",
+      "ok": true,
+      "elapsed_seconds": 4.265,
+      "log_sha256": "aeac2c46f18c68b178084d11b10c2b7520c8db978874271ea54bb762eadde57a",
+      "verdict": "33 checks, 0 failed"
+    },
+    "res://tests/test_mechanical_audio.gd": {
+      "started_utc": "2026-10-26T00:16:34.860262+00:00",
+      "ok": true,
+      "complete": true,
+      "elapsed_seconds": 1.281,
+      "log_sha256": "18ec2045adfc21cf98b636bd122b204dfd6436132e4d41d0ef2e8a4e2c0a82ed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "report_sha256": "f078400130e7a743ceecc9c5ad9e327acd2a68402145c1ae8f85d0e884282807",
+      "diagnostics": [],
+      "verdict": "103 checks, 0 failed"
+    },
+    "res://tests/test_mechanical_motion.gd": {
+      "started_utc": "2026-10-26T00:07:24.025973+00:00",
+      "ok": true,
+      "complete": true,
+      "elapsed_seconds": 1.203,
+      "log_sha256": "da5750846adb70e8e4b867fbd68e94f5d616bd6bcbc3fe9b90dd89712db2b4c8",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "report_sha256": "9e4ca6a50d8617416acea465b343a19cf737b42d8d4e05e6d7ee09b4a311ee4d",
+      "diagnostics": [],
+      "verdict": "36 checks, 0 failed"
+    },
+    "res://tests/test_mechanical_configuration.gd": {
+      "started_utc": "2026-10-26T00:09:02.832249+00:00",
+      "ok": true,
+      "complete": true,
+      "elapsed_seconds": 0.656,
+      "log_sha256": "95e3e626f29599bf51ef5b2d8b0d7f0b517dc151a108597e99771e127a8365ed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "report_sha256": "d00a970632f06adafe4cdec452516540b1ca8760af10d0f53596892d8aecf3dc",
+      "diagnostics": [],
+      "verdict": "24 checks, 0 failed"
+    },
+    "res://tests/test_mechanical_integration.gd": {
+      "started_utc": "2026-10-26T00:22:36.278263+00:00",
+      "ok": true,
+      "complete": true,
+      "elapsed_seconds": 13.859,
+      "log_sha256": "36d654849eaa1a691dd560d1eacbbb6b64de41a5665ea61d22da2163fec34952",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "report_sha256": "8a6200ac920d11d4c68317e6c805dcfe9317f4fe8fad950471d1fe390f309bb3",
+      "diagnostics": [],
+      "verdict": "28 checks, 0 failed"
+    }
+  },
+  "native_runs": [
+    {
+      "capture": "servo-audio-native-02",
+      "report_sha256": "15959ea0aad3d4ccbee4890a859609ac4ebd928d15d682f5e6eeeb7d009a7d40",
+      "godot": "4.8-beta1 (official)",
+      "driver": "WASAPI",
+      "mix_rate_hz": 48000.0,
+      "requested_fps": 60,
+      "captured_seconds": 49.2906666666667,
+      "scripted_wall_seconds": 49.294163,
+      "discarded_frames": 0,
+      "total_peak_dbfs": -25.1392169828596,
+      "update_p95_usec": 217,
+      "update_max_usec": 395,
+      "asset_manifest_sha256": "090b89275850c39b4fe86baecb653ccff7dfb320d2af56eecfae26cdc542ea5f",
+      "quality_checks": {
+        "actual_driver_matches_required": true,
+        "all_stage_wavs_saved": true,
+        "bus_count_restored": true,
+        "finite_signal": true,
+        "no_capture_discards": true,
+        "no_clipping": true,
+        "peak_below_dbfs": -0.9,
+        "real_assets_loaded": true,
+        "signal_present": true,
+        "voice_pool_bounded": true,
+        "wav_failures": []
+      },
+      "signal_checks": {
+        "format": "openrc-mechanical-signal-checks-v1",
+        "passed": true,
+        "report_sha256": "15959ea0aad3d4ccbee4890a859609ac4ebd928d15d682f5e6eeeb7d009a7d40",
+        "measurements": {
+          "standard_electric": {
+            "idle": {
+              "rms_dbfs": -240.0,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.51662792938862
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -47.04442945812243
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.81989087830309
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.488187089344244
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.69799066862454,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -105.17800240342724,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.7517180747837
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.66542667640339
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.234278490786636,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.060983195942782,
+            "large_minus_small_db": 3.4721984712661893
+          },
+          "standard_pneumatic": {
+            "idle": {
+              "rms_dbfs": -120.86278201294435,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.546632881372275
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -47.28182544297163
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.79528082151661
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -45.24924967678089
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.42203367678249,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -105.45193227679212,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.649967412048255
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.6357446938796
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.10187215711925,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 5.9793347312423535,
+            "large_minus_small_db": 3.264807438400645
+          },
+          "high_torque_electric": {
+            "idle": {
+              "rms_dbfs": -121.36583319605832,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.46431486988095
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.905898344575405
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.617686302122145
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.55316425630467
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.334983928969336,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -105.10914729775239,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.694207884430185
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.66989849318507
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -48.92085758997601,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 5.940549214936219,
+            "large_minus_small_db": 3.558416525305546
+          },
+          "high_torque_pneumatic": {
+            "idle": {
+              "rms_dbfs": -97.11100583249873,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.586371124713295
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -47.01402863871891
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.715258870786556
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -45.130827787437994
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.2993273146591,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -106.28683280872241,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.77239707385904
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.68108335212875
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -48.94360655283143,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.02229207514312,
+            "large_minus_small_db": 3.5723424859943833
+          }
+        },
+        "failures": [],
+        "scope": "Native signal, silence, masks and pool bounds; no perceptual click, repetition or realism certification."
+      }
+    },
+    {
+      "capture": "servo-audio-native-final",
+      "report_sha256": "59521aa885e368b230b25f0de0da7379fd61937ffef11e347d26f9bd501ee395",
+      "godot": "4.8-beta1 (official)",
+      "driver": "WASAPI",
+      "mix_rate_hz": 48000.0,
+      "requested_fps": 60,
+      "captured_seconds": 47.904,
+      "scripted_wall_seconds": 49.446567,
+      "discarded_frames": 0,
+      "total_peak_dbfs": -24.1947249996044,
+      "update_p95_usec": 331,
+      "update_max_usec": 7452,
+      "runtime_sha256": {
+        "mechanical_audio.gd": "99ace852619b26dcaefc1475a21b341c11ab2996142eb0f7f16c512274aad6f1",
+        "mechanical_motion.gd": "fd33eb08f8d19175d9c0072debddf48dd8d515b5f10daa9caee468a6734a6a8e"
+      },
+      "asset_manifest_sha256": "090b89275850c39b4fe86baecb653ccff7dfb320d2af56eecfae26cdc542ea5f",
+      "quality_checks": {
+        "actual_driver_matches_required": true,
+        "all_stage_wavs_saved": true,
+        "bus_count_restored": true,
+        "finite_signal": true,
+        "no_capture_discards": true,
+        "no_clipping": true,
+        "peak_below_dbfs": -0.9,
+        "real_assets_loaded": true,
+        "signal_present": true,
+        "voice_pool_bounded": true,
+        "wav_failures": []
+      },
+      "signal_checks": {
+        "format": "openrc-mechanical-signal-checks-v1",
+        "passed": false,
+        "report_sha256": "59521aa885e368b230b25f0de0da7379fd61937ffef11e347d26f9bd501ee395",
+        "measurements": {
+          "standard_electric": {
+            "idle": {
+              "rms_dbfs": -240.0,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.601595614023786
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -47.4445645594143
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.99033901270791
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.20692469745133
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.40634568173876,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -104.3149310947669,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.69876106381194
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.87379994888764
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.00270771702025,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.014042654475425,
+            "large_minus_small_db": 3.157031054609483
+          },
+          "standard_pneumatic": {
+            "idle": {
+              "rms_dbfs": -119.57959724034754,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.44859813734958
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.57897497998376
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.77189596819371
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -44.98329335783787
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.69126214333377,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -104.21411068270855,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.634456636453336
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.73221265649386
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.27717485851288,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.111992428499441,
+            "large_minus_small_db": 3.8696231573658153
+          },
+          "high_torque_electric": {
+            "idle": {
+              "rms_dbfs": -119.71563898417854,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.336955486592466
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -47.85938565003071
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.62669152384419
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.431349479253726
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.41094911196221,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -103.8116648002491,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.63822714744303
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.7789219084957
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -48.85429235082414,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 5.8929503742273255,
+            "large_minus_small_db": 2.477569836561756
+          },
+          "high_torque_pneumatic": {
+            "idle": {
+              "rms_dbfs": -118.71268876208384,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.425478925770975
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.313691688499404
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.619390479426166
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -44.26799330547263
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.39156972770059,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -103.93118745890989,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.68986999051642
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.774368367941165
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -48.977322226334614,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.090446742745627,
+            "large_minus_small_db": 4.111787237271571
+          }
+        },
+        "failures": [
+          "Capture timing/drop gate failed"
+        ],
+        "scope": "Native signal, silence, masks and pool bounds; no perceptual click, repetition or realism certification."
+      }
+    },
+    {
+      "capture": "servo-opt-native-baseline",
+      "report_sha256": "516027ff087a1ea9c960fe9727a84ac09a9d99de12be5183f658959419c83414",
+      "signal_checks": {
+        "format": "openrc-mechanical-signal-checks-v1",
+        "passed": true,
+        "report_sha256": "516027ff087a1ea9c960fe9727a84ac09a9d99de12be5183f658959419c83414",
+        "measurements": {
+          "standard_electric": {
+            "idle": {
+              "rms_dbfs": -240.0,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.425056228642255
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.97097168593836
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.92494075091357
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.55057925240424
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.55726944945722,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -105.36774276233673,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.7403831825733
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.70117917709718
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.12709838752818,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.021474978792391,
+            "large_minus_small_db": 3.454084542703896
+          },
+          "standard_pneumatic": {
+            "idle": {
+              "rms_dbfs": -123.24256451211328,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.45515688969596
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.68058576388664
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.58299831262723
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -45.03871535823711
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.603778436508556,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -106.54226279110384,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.670885500748604
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.67530830018866
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.15240373018959,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.071416914770012,
+            "large_minus_small_db": 3.7745711258093166
+          },
+          "high_torque_electric": {
+            "idle": {
+              "rms_dbfs": -119.6817888921644,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.508465212382916
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.337052094381335
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.275644548214494
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.412378730163674
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.28575221710679,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -105.07734803241972,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.74032293976572
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.73542418470191
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.03239929277764,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 5.909160468601478,
+            "large_minus_small_db": 4.171413118001581
+          },
+          "high_torque_pneumatic": {
+            "idle": {
+              "rms_dbfs": -119.01232099585827,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.62255873244033
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.95466572865087
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.67983298122322
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -45.54969227801827
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.32554201686585,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -104.61568640711471,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.747203532948866
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.7194482901202
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -48.94944296061499,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.040060397511361,
+            "large_minus_small_db": 3.667893003789459
+          }
+        },
+        "failures": [],
+        "scope": "Native signal, silence, masks and pool bounds; no perceptual click, repetition or realism certification."
+      },
+      "checked_runner": null,
+      "driver": "WASAPI",
+      "mix_rate_hz": 48000.0,
+      "requested_fps": 60,
+      "captured_seconds": 49.376,
+      "scripted_wall_seconds": 49.330642,
+      "discarded_frames": 0,
+      "total_peak_dbfs": -24.7418824920439,
+      "update_p95_usec": 380,
+      "update_max_usec": 3702,
+      "runtime_sha256": {
+        "mechanical_audio.gd": "8a316aaa67650f988400d6677a6c61e0139e3204ae3b0b0b32a086d49965d4d9",
+        "mechanical_motion.gd": "fd33eb08f8d19175d9c0072debddf48dd8d515b5f10daa9caee468a6734a6a8e"
+      },
+      "asset_manifest_sha256": "090b89275850c39b4fe86baecb653ccff7dfb320d2af56eecfae26cdc542ea5f",
+      "quality_checks": {
+        "actual_driver_matches_required": true,
+        "all_stage_wavs_saved": true,
+        "bus_count_restored": true,
+        "finite_signal": true,
+        "no_capture_discards": true,
+        "no_clipping": true,
+        "peak_below_dbfs": -0.9,
+        "real_assets_loaded": true,
+        "signal_present": true,
+        "voice_pool_bounded": true,
+        "wav_failures": []
+      },
+      "note": "Pre-optimization legacy probe/checker; current required bookkeeping fields were not yet implemented."
+    },
+    {
+      "capture": "servo-opt-native-final",
+      "report_sha256": "f4c3cd028c5302d5508c7ad7ff282e3da557f734c65d0fce879ec1f386b8975f",
+      "signal_checks": {
+        "format": "openrc-mechanical-signal-checks-v1",
+        "passed": true,
+        "report_sha256": "f4c3cd028c5302d5508c7ad7ff282e3da557f734c65d0fce879ec1f386b8975f",
+        "checker_sha256": "278e65aaffa81c178ef167818582748c0fc3dc2dad925f37ea57611eee779ab9",
+        "capture_wall_seconds": 49.586119,
+        "stage_wav_seconds": 49.61066666666668,
+        "probe_sha256": "b25816770712d250b0b0d8f38e7e4a10e48116a466ec45c0d7cfb2d88caa38b8",
+        "capture_bookkeeping": {
+          "buffer_length_frames": 65536,
+          "final": {
+            "available_frames_after_flush": 0,
+            "available_frames_before_flush": 0,
+            "discarded_frames": 0,
+            "flushed_frames": 0,
+            "pushed_frames": 2383360
+          },
+          "flushed_frames": 2048,
+          "initial": {
+            "available_frames": 0,
+            "discarded_frames": 0,
+            "pushed_frames": 0
+          },
+          "overflow_discarded_frames": 0,
+          "pushed_frames": 2383360,
+          "recorded_frames": 2381312,
+          "staged_capture_memory_limit_seconds": 60.0,
+          "truncated_frames": 0,
+          "unaccounted_pushed_frames": 0
+        },
+        "measurements": {
+          "standard_electric": {
+            "idle": {
+              "rms_dbfs": -240.0,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.640527124976266
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.57621069081077
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.981314008869234
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.19669396223455
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.78528782014364,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -129.2201341884004,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.78452133902741
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.726564354463264
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.30413580654411,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 5.924229828804755,
+            "large_minus_small_db": 4.064316434165498
+          },
+          "standard_pneumatic": {
+            "idle": {
+              "rms_dbfs": -118.92458175278323,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.51999068927806
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.729220823579496
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.966078546122766
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -44.23944985084253
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.758825863993906,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -103.95318418163852,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.74328243198309
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.750981445992664
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.326292195477414,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.017176572688385,
+            "large_minus_small_db": 3.7907698656985644
+          },
+          "high_torque_electric": {
+            "idle": {
+              "rms_dbfs": -93.87878582863601,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.50144508811619
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.257218255775896
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.71108977564678
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.23523506931528
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.56320375181265,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -104.15643701744536,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.80242250707691
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.833425865404315
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.08488507136799,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.005743609121225,
+            "large_minus_small_db": 4.244226832340296
+          },
+          "high_torque_pneumatic": {
+            "idle": {
+              "rms_dbfs": -116.6200925390005,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.6103108791079
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.29434083997337
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.79328922004109
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -44.27326826446336
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.594417160564504,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -103.00421742980822,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.82457112123941
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.81988616834175
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.07995845238811,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.010228664793466,
+            "large_minus_small_db": 4.315970039134527
+          }
+        },
+        "failures": [],
+        "scope": "Native signal, silence, masks and pool bounds; no perceptual click, repetition or realism certification."
+      },
+      "checked_runner": {
+        "started_utc": "2026-10-26T00:18:59.624998+00:00",
+        "ok": true,
+        "complete": true,
+        "elapsed_seconds": 50.937,
+        "log_sha256": "a1a912590e2d800a80b074d1b5609562a85e6b9f7700602485c2c375da1857a7",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed",
+        "report_sha256": "3edd6e992cc214cfec2ce6ffcedd7ad30e18127fe20028374823378d584a82f1",
+        "diagnostics": []
+      },
+      "driver": "WASAPI",
+      "mix_rate_hz": 48000.0,
+      "requested_fps": 60,
+      "captured_seconds": 49.6106666666667,
+      "scripted_wall_seconds": 49.586119,
+      "capture_wall_seconds": 49.586119,
+      "discarded_frames": 0,
+      "total_peak_dbfs": -24.237916429738,
+      "update_p95_usec": 191,
+      "update_max_usec": 515,
+      "runtime_sha256": {
+        "mechanical_audio.gd": "c8cc20d93a74e799e67648700ea3f84f80befa36637eff420003c7d9bd2d949a",
+        "mechanical_motion.gd": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f"
+      },
+      "probe_sha256": "b25816770712d250b0b0d8f38e7e4a10e48116a466ec45c0d7cfb2d88caa38b8",
+      "asset_manifest_sha256": "090b89275850c39b4fe86baecb653ccff7dfb320d2af56eecfae26cdc542ea5f",
+      "quality_checks": {
+        "actual_driver_matches_required": true,
+        "all_stage_wavs_saved": true,
+        "bus_count_restored": true,
+        "capture_bookkeeping_balanced": true,
+        "capture_effect_removed": true,
+        "finite_signal": true,
+        "no_capture_discards": true,
+        "no_clipping": true,
+        "peak_below_dbfs": -0.9,
+        "real_assets_loaded": true,
+        "signal_present": true,
+        "staged_capture_memory_bounded": true,
+        "voice_pool_bounded": true,
+        "wav_failures": []
+      },
+      "capture_bookkeeping": {
+        "buffer_length_frames": 65536,
+        "final": {
+          "available_frames_after_flush": 0,
+          "available_frames_before_flush": 0,
+          "discarded_frames": 0,
+          "flushed_frames": 0,
+          "pushed_frames": 2383360
+        },
+        "flushed_frames": 2048,
+        "initial": {
+          "available_frames": 0,
+          "discarded_frames": 0,
+          "pushed_frames": 0
+        },
+        "overflow_discarded_frames": 0,
+        "pushed_frames": 2383360,
+        "recorded_frames": 2381312,
+        "staged_capture_memory_limit_seconds": 60.0,
+        "truncated_frames": 0,
+        "unaccounted_pushed_frames": 0
+      },
+      "note": "Signal checker passed but checked runner rejected an invalid pre-initialization capture query; not accepted."
+    },
+    {
+      "capture": "servo-opt-native-corrected",
+      "report_sha256": "989f119f2c0d78c840852a39206fa92c4816e16c0588e934fa35a0b8e033c684",
+      "signal_checks": {
+        "format": "openrc-mechanical-signal-checks-v1",
+        "passed": true,
+        "report_sha256": "989f119f2c0d78c840852a39206fa92c4816e16c0588e934fa35a0b8e033c684",
+        "checker_sha256": "278e65aaffa81c178ef167818582748c0fc3dc2dad925f37ea57611eee779ab9",
+        "capture_wall_seconds": 49.584306,
+        "stage_wav_seconds": 49.60000000000001,
+        "probe_sha256": "a1ea9782c579a4a385063c89d3abd13a619df5ec54f2e6cd0cade4236d657942",
+        "capture_bookkeeping": {
+          "buffer_length_frames": 65536,
+          "final": {
+            "available_frames_after_flush": 0,
+            "available_frames_before_flush": 0,
+            "discarded_frames": 0,
+            "flushed_frames": 0,
+            "pushed_frames": 2382848
+          },
+          "flushed_frames": 2048,
+          "initial": {
+            "available_frames": 0,
+            "discarded_frames": 0,
+            "pushed_frames": 0
+          },
+          "overflow_discarded_frames": 0,
+          "pushed_frames": 2382848,
+          "recorded_frames": 2380800,
+          "staged_capture_memory_limit_seconds": 60.0,
+          "truncated_frames": 0,
+          "unaccounted_pushed_frames": 0
+        },
+        "measurements": {
+          "standard_electric": {
+            "idle": {
+              "rms_dbfs": -240.0,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.58080949371488
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.46308742812974
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -49.04704499754555
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.193531760343646
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.78966499488749,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -104.14022694020348,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.834041015813725
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.79876363903966
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.301771956138964,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.001502071115709,
+            "large_minus_small_db": 4.117722065585141
+          },
+          "standard_pneumatic": {
+            "idle": {
+              "rms_dbfs": -121.00066485780069,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.58317468173723
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.50325122552668
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.908357506227446
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -44.19532371850369
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.67326779377611,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -103.99416774564686,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.709732801775175
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.728641004678124
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.22653032345919,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 5.882671461544049,
+            "large_minus_small_db": 4.079923456210551
+          },
+          "high_torque_electric": {
+            "idle": {
+              "rms_dbfs": -119.3341678295723,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.64551793044947
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.3949203844019
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.75615273123419
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.220101959964396
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.74247002045698,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -103.11110021645844,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.85588904299709
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.844713688366404
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.106340348159705,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.035811401734691,
+            "large_minus_small_db": 4.2505975460475725
+          },
+          "high_torque_pneumatic": {
+            "idle": {
+              "rms_dbfs": -119.3205535713418,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.613839839095135
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.295102770079524
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.755262287568975
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -44.278187837304046
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.61031811474707,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -103.96062077592026,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.81291692163585
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.821500559479986
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.136260798129754,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.074981675393879,
+            "large_minus_small_db": 4.3187370690156115
+          }
+        },
+        "failures": [],
+        "scope": "Native signal, silence, masks and pool bounds; no perceptual click, repetition or realism certification."
+      },
+      "checked_runner": {
+        "started_utc": "2026-10-26T00:18:59.624998+00:00",
+        "ok": true,
+        "complete": true,
+        "elapsed_seconds": 50.937,
+        "log_sha256": "a1a912590e2d800a80b074d1b5609562a85e6b9f7700602485c2c375da1857a7",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed",
+        "report_sha256": "3edd6e992cc214cfec2ce6ffcedd7ad30e18127fe20028374823378d584a82f1",
+        "diagnostics": []
+      },
+      "driver": "WASAPI",
+      "mix_rate_hz": 48000.0,
+      "requested_fps": 60,
+      "captured_seconds": 49.6,
+      "scripted_wall_seconds": 49.584306,
+      "capture_wall_seconds": 49.584306,
+      "discarded_frames": 0,
+      "total_peak_dbfs": -25.1253156911724,
+      "update_p95_usec": 181,
+      "update_max_usec": 421,
+      "runtime_sha256": {
+        "mechanical_audio.gd": "c8cc20d93a74e799e67648700ea3f84f80befa36637eff420003c7d9bd2d949a",
+        "mechanical_motion.gd": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f"
+      },
+      "probe_sha256": "a1ea9782c579a4a385063c89d3abd13a619df5ec54f2e6cd0cade4236d657942",
+      "asset_manifest_sha256": "090b89275850c39b4fe86baecb653ccff7dfb320d2af56eecfae26cdc542ea5f",
+      "quality_checks": {
+        "actual_driver_matches_required": true,
+        "all_stage_wavs_saved": true,
+        "bus_count_restored": true,
+        "capture_bookkeeping_balanced": true,
+        "capture_effect_removed": true,
+        "finite_signal": true,
+        "no_capture_discards": true,
+        "no_clipping": true,
+        "peak_below_dbfs": -0.9,
+        "real_assets_loaded": true,
+        "signal_present": true,
+        "staged_capture_memory_bounded": true,
+        "voice_pool_bounded": true,
+        "wav_failures": []
+      },
+      "capture_bookkeeping": {
+        "buffer_length_frames": 65536,
+        "final": {
+          "available_frames_after_flush": 0,
+          "available_frames_before_flush": 0,
+          "discarded_frames": 0,
+          "flushed_frames": 0,
+          "pushed_frames": 2382848
+        },
+        "flushed_frames": 2048,
+        "initial": {
+          "available_frames": 0,
+          "discarded_frames": 0,
+          "pushed_frames": 0
+        },
+        "overflow_discarded_frames": 0,
+        "pushed_frames": 2382848,
+        "recorded_frames": 2380800,
+        "staged_capture_memory_limit_seconds": 60.0,
+        "truncated_frames": 0,
+        "unaccounted_pushed_frames": 0
+      },
+      "note": "Corrected native probe; current strict timing/accounting checks."
+    }
+  ],
+  "live_runs": [
+    {
+      "capture": "servo-electric-live-final",
+      "report_sha256": "395bd316617b632168d08c6dcad3ad0bdb76d38a84f73463e15b719704a0cefe",
+      "aircraft": "turbo-lumber-evolution",
+      "driver": "WASAPI",
+      "mix_rate": 48000,
+      "captured_seconds": 18.7413333333333,
+      "discarded_frames": 0,
+      "peak_dbfs": -25.512557960167,
+      "mechanical_update_p95_us": 325,
+      "mechanical_update_max_us": 28639,
+      "soundscape_update_p95_us": 1670,
+      "soundscape_update_max_us": 74703,
+      "distance_min_m": 5.77276611328125,
+      "distance_max_m": 113.749893188477,
+      "events": [
+        {
+          "paused": false,
+          "rpm": 4396.8102092345,
+          "stage": 0,
+          "tick": 2,
+          "wall_s": 0.005594
+        },
+        {
+          "paused": false,
+          "rpm": 4396.35493511179,
+          "stage": 1,
+          "tick": 970,
+          "wall_s": 4.003169
+        },
+        {
+          "paused": false,
+          "rpm": 9654.5023000882,
+          "stage": 2,
+          "tick": 1690,
+          "wall_s": 7.005701
+        },
+        {
+          "paused": true,
+          "rpm": 1352.12899562238,
+          "stage": 3,
+          "tick": 2400,
+          "wall_s": 10.01832
+        },
+        {
+          "paused": false,
+          "rpm": 1352.12899562238,
+          "stage": 4,
+          "tick": 2400,
+          "wall_s": 11.018388
+        },
+        {
+          "paused": false,
+          "rpm": 313.018699387391,
+          "stage": 5,
+          "tick": 2799,
+          "wall_s": 13.066885
+        },
+        {
+          "paused": false,
+          "rpm": 4396.81034533142,
+          "stage": 6,
+          "tick": 0,
+          "wall_s": 15.032937
+        }
+      ],
+      "audio_sources_sha256": {
+        "adapter": "4d1a871ee0ad06474a8074e6a87891afedc327aec07cdf85598df38d5f0e8ec0",
+        "mechanical": "99ace852619b26dcaefc1475a21b341c11ab2996142eb0f7f16c512274aad6f1",
+        "mechanical_motion": "55053aac0e03b0c647a958cc4cb53dbfae41beff5ed545568ee00c5258c51a4d",
+        "mixer": "d6317efefad40e422b122478118e35a9238f4b683e8faf3330688db5513c6615",
+        "model": "b90e7ea7b1c0829da33eb6255bc53814ca2733675a8f7ae91bf5c3d0d637d7d3",
+        "wildlife": "e2ea89d0019da4b224d08bc4c352704fe1d6471fb1443756b28f32c2adcf78a4"
+      },
+      "requested_capture_seconds": 20,
+      "signal_checks": {
+        "capture": "servo-electric-live-final",
+        "sha256_wav": "c4f64d3fa1eccfec1de1c37bd9b7670152ea1bbbc921b585568ccfa9c2f6dd6a",
+        "driver": "WASAPI",
+        "display": "headless",
+        "fps": 60,
+        "aircraft": "turbo-lumber-evolution",
+        "seconds": 18.741333333333333,
+        "peak_dbfs": -25.512557960167,
+        "rms_dbfs": -46.6760434770836,
+        "pause_peak_linear": 0.000335693359375,
+        "dropped_frames": 0,
+        "review_kind": "transitions",
+        "wildlife_event_count": 1,
+        "adapter_p95_us": 1670,
+        "adapter_max_us": 74703,
+        "stereo_difference_rms": 0.00016758960335879188,
+        "max_adjacent_sample_step": 0.010467529296875,
+        "passed": false,
+        "failures": [
+          "pause did not reach silence",
+          "camera change did not reach close aircraft view",
+          "adapter update p95 exceeded 0.5 ms budget"
+        ]
+      },
+      "accepted_engine_mask_range": [
+        0.249291975018231,
+        0.9999999999998
+      ]
+    },
+    {
+      "capture": "servo-gasoline-live-final",
+      "report_sha256": "4200fee8784e2d006908a9b41c6e85ccb186363f8f7e6cd13217dc256487127a",
+      "aircraft": "p51d-mustang-120",
+      "driver": "WASAPI",
+      "mix_rate": 48000,
+      "captured_seconds": 20.0213333333333,
+      "discarded_frames": 0,
+      "peak_dbfs": -21.585574094195,
+      "mechanical_update_p95_us": 296,
+      "mechanical_update_max_us": 1131,
+      "soundscape_update_p95_us": 1017,
+      "soundscape_update_max_us": 6312,
+      "distance_min_m": 10.4753551483154,
+      "distance_max_m": 328.329711914063,
+      "events": [
+        {
+          "paused": false,
+          "rpm": 3362.96672568045,
+          "stage": 0,
+          "tick": 3,
+          "wall_s": 0.008624
+        },
+        {
+          "paused": false,
+          "rpm": 3352.07315632045,
+          "stage": 1,
+          "tick": 968,
+          "wall_s": 4.00436
+        },
+        {
+          "paused": false,
+          "rpm": 5880.49830173414,
+          "stage": 2,
+          "tick": 1688,
+          "wall_s": 7.001463
+        },
+        {
+          "paused": true,
+          "rpm": 4109.88925833237,
+          "stage": 3,
+          "tick": 2412,
+          "wall_s": 10.015569
+        },
+        {
+          "paused": false,
+          "rpm": 4109.88925833237,
+          "stage": 4,
+          "tick": 2412,
+          "wall_s": 11.004428
+        },
+        {
+          "paused": false,
+          "rpm": 2927.98200490431,
+          "stage": 5,
+          "tick": 2888,
+          "wall_s": 13.000556
+        },
+        {
+          "paused": false,
+          "rpm": 3362.96672568115,
+          "stage": 6,
+          "tick": 0,
+          "wall_s": 15.00392
+        }
+      ],
+      "audio_sources_sha256": {
+        "adapter": "4d1a871ee0ad06474a8074e6a87891afedc327aec07cdf85598df38d5f0e8ec0",
+        "mechanical": "99ace852619b26dcaefc1475a21b341c11ab2996142eb0f7f16c512274aad6f1",
+        "mechanical_motion": "55053aac0e03b0c647a958cc4cb53dbfae41beff5ed545568ee00c5258c51a4d",
+        "mixer": "d6317efefad40e422b122478118e35a9238f4b683e8faf3330688db5513c6615",
+        "model": "b90e7ea7b1c0829da33eb6255bc53814ca2733675a8f7ae91bf5c3d0d637d7d3",
+        "wildlife": "e2ea89d0019da4b224d08bc4c352704fe1d6471fb1443756b28f32c2adcf78a4"
+      },
+      "requested_capture_seconds": 20,
+      "signal_checks": {
+        "capture": "servo-gasoline-live-final",
+        "sha256_wav": "8a6088e749acd5498b04a3d3c9b6212e12dd1503e313afb4598a495001f82441",
+        "driver": "WASAPI",
+        "display": "headless",
+        "fps": 60,
+        "aircraft": "p51d-mustang-120",
+        "seconds": 20.021333333333335,
+        "peak_dbfs": -21.585574094195,
+        "rms_dbfs": -40.0911815085037,
+        "pause_peak_linear": 0.0,
+        "dropped_frames": 0,
+        "review_kind": "transitions",
+        "wildlife_event_count": 3,
+        "adapter_p95_us": 1017,
+        "adapter_max_us": 6312,
+        "stereo_difference_rms": 0.00029944212200105945,
+        "max_adjacent_sample_step": 0.018310546875,
+        "passed": false,
+        "failures": [
+          "camera change did not reach close aircraft view",
+          "adapter update p95 exceeded 0.5 ms budget"
+        ]
+      },
+      "accepted_engine_mask_range": [
+        0.100000000027541,
+        0.687149863050874
+      ]
+    },
+    {
+      "capture": "servo-opt-gasoline-live",
+      "report_sha256": "077e8c891fe553a3c8d31536ccd4b1c489e18ecb0d6678d41332409c2d8637cd",
+      "checked_runner": {
+        "started_utc": "2026-10-26T00:20:40.357237+00:00",
+        "ok": true,
+        "complete": true,
+        "elapsed_seconds": 29.375,
+        "log_sha256": "010f8c8506de872d1112822f954cc565774565e8188ac4b434b472edec9ba26a",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed",
+        "report_sha256": "ced040490825d784bc6cf479ebcdad060bcd0f598abe044af3d9c45e50e7a887",
+        "diagnostics": []
+      },
+      "signal_checks": {
+        "capture": "servo-opt-gasoline-live",
+        "sha256_wav": "6846fa6a92271157507228bb73ea95860dddce8c59bf27ed0aee27b6aa017bfe",
+        "checker_sha256": "13100cb439c7ebab3c339fe7cb80c029f56717084d281cad272361444f458b6d",
+        "driver": "WASAPI",
+        "display": "headless",
+        "fps": 60,
+        "aircraft": "p51d-mustang-120",
+        "seconds": 20.0,
+        "capture_wall_seconds": 20.013005,
+        "capture_wall_error_seconds": 0.013004999999999711,
+        "probe_sha256": "9df38b034c6a13b4748d72e496c8dbcf0056e1d6aa83023f501771f11bbc3e66",
+        "capture_bookkeeping": {
+          "buffer_length_frames": 65536,
+          "final": {
+            "available_frames_after_flush": 0,
+            "available_frames_before_flush": 0,
+            "discarded_frames": 0,
+            "flushed_frames": 0,
+            "pushed_frames": 960000
+          },
+          "flushed_frames": 0,
+          "initial": {
+            "available_frames": 0,
+            "discarded_frames": 0,
+            "pushed_frames": 0
+          },
+          "overflow_discarded_frames": 0,
+          "pushed_frames": 960000,
+          "recorded_frames": 960000,
+          "truncated_frames": 0,
+          "unaccounted_pushed_frames": 0
+        },
+        "timing_sample_count": 1132,
+        "peak_dbfs": -21.3560313907075,
+        "rms_dbfs": -40.1029138976803,
+        "pause_peak_linear": 0.0,
+        "dropped_frames": 0,
+        "review_kind": "transitions",
+        "wildlife_event_count": 1,
+        "adapter_p95_us": 886,
+        "adapter_max_us": 1978,
+        "stereo_difference_rms": 0.00031551447100194055,
+        "max_adjacent_sample_step": 0.018218994140625,
+        "passed": false,
+        "failures": [
+          "camera change did not reach close aircraft view",
+          "adapter update p95 exceeded 0.5 ms budget"
+        ]
+      },
+      "aircraft": "p51d-mustang-120",
+      "driver": "WASAPI",
+      "mix_rate": 48000,
+      "captured_seconds": 20.0,
+      "capture_wall_seconds": 20.013005,
+      "discarded_frames": 0,
+      "peak_dbfs": -21.3560313907075,
+      "mechanical_update_p95_us": 198,
+      "mechanical_update_max_us": 394,
+      "soundscape_update_p95_us": 886,
+      "soundscape_update_max_us": 1978,
+      "distance_min_m": 10.4750118255615,
+      "distance_max_m": 328.014770507813,
+      "events": [
+        {
+          "paused": false,
+          "rpm": 3362.96672567998,
+          "stage": 0,
+          "tick": 4,
+          "wall_s": 0.011344
+        },
+        {
+          "paused": false,
+          "rpm": 3351.47033825088,
+          "stage": 1,
+          "tick": 966,
+          "wall_s": 4.003592
+        },
+        {
+          "paused": false,
+          "rpm": 5882.51247851291,
+          "stage": 2,
+          "tick": 1688,
+          "wall_s": 7.007163
+        },
+        {
+          "paused": true,
+          "rpm": 4118.7260113682,
+          "stage": 3,
+          "tick": 2408,
+          "wall_s": 10.006692
+        },
+        {
+          "paused": false,
+          "rpm": 4118.7260113682,
+          "stage": 4,
+          "tick": 2408,
+          "wall_s": 11.013401
+        },
+        {
+          "paused": false,
+          "rpm": 2935.48765710991,
+          "stage": 5,
+          "tick": 2884,
+          "wall_s": 13.006131
+        },
+        {
+          "paused": false,
+          "rpm": 3362.96672568115,
+          "stage": 6,
+          "tick": 0,
+          "wall_s": 15.006218
+        }
+      ],
+      "audio_sources_sha256": {
+        "adapter": "4d1a871ee0ad06474a8074e6a87891afedc327aec07cdf85598df38d5f0e8ec0",
+        "mechanical": "c8cc20d93a74e799e67648700ea3f84f80befa36637eff420003c7d9bd2d949a",
+        "mechanical_motion": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f",
+        "mixer": "d6317efefad40e422b122478118e35a9238f4b683e8faf3330688db5513c6615",
+        "model": "b90e7ea7b1c0829da33eb6255bc53814ca2733675a8f7ae91bf5c3d0d637d7d3",
+        "wildlife": "e2ea89d0019da4b224d08bc4c352704fe1d6471fb1443756b28f32c2adcf78a4"
+      },
+      "probe_sha256": "9df38b034c6a13b4748d72e496c8dbcf0056e1d6aa83023f501771f11bbc3e66",
+      "capture_bookkeeping": {
+        "buffer_length_frames": 65536,
+        "final": {
+          "available_frames_after_flush": 0,
+          "available_frames_before_flush": 0,
+          "discarded_frames": 0,
+          "flushed_frames": 0,
+          "pushed_frames": 960000
+        },
+        "flushed_frames": 0,
+        "initial": {
+          "available_frames": 0,
+          "discarded_frames": 0,
+          "pushed_frames": 0
+        },
+        "overflow_discarded_frames": 0,
+        "pushed_frames": 960000,
+        "recorded_frames": 960000,
+        "truncated_frames": 0,
+        "unaccounted_pushed_frames": 0
+      },
+      "finite_samples": true,
+      "note": "Timing/accounting/pause/throttle tape pass; the fixed 4 m camera and 500 us total-adapter gates still fail."
+    },
+    {
+      "capture": "servo-opt-electric-live",
+      "report_sha256": "9dffe6013bf7b6e9377b0a46763ed2e6da51d52db985373b7c710fb92577e23f",
+      "checked_runner": {
+        "started_utc": "2026-10-26T00:21:24.538403+00:00",
+        "ok": true,
+        "complete": true,
+        "elapsed_seconds": 28.703,
+        "log_sha256": "c9ac0855de38997905adf5c83bf7ccc57dade0242b9362d501f93737bfbd5568",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed",
+        "report_sha256": "9c77fd758d0a94dedd4e9ce602de57ccb3e1f15ac05258d8221eeb8cd4650434",
+        "diagnostics": []
+      },
+      "signal_checks": {
+        "capture": "servo-opt-electric-live",
+        "sha256_wav": "3efe5dff2801fe1b8a7f86836a8d548ec4ae6fc5a68a7297637521b62823ad4a",
+        "checker_sha256": "13100cb439c7ebab3c339fe7cb80c029f56717084d281cad272361444f458b6d",
+        "driver": "WASAPI",
+        "display": "headless",
+        "fps": 60,
+        "aircraft": "turbo-lumber-evolution",
+        "seconds": 20.010666666666665,
+        "capture_wall_seconds": 20.007377,
+        "capture_wall_error_seconds": 0.0032896666666637486,
+        "probe_sha256": "9df38b034c6a13b4748d72e496c8dbcf0056e1d6aa83023f501771f11bbc3e66",
+        "capture_bookkeeping": {
+          "buffer_length_frames": 65536,
+          "final": {
+            "available_frames_after_flush": 0,
+            "available_frames_before_flush": 0,
+            "discarded_frames": 0,
+            "flushed_frames": 0,
+            "pushed_frames": 960512
+          },
+          "flushed_frames": 0,
+          "initial": {
+            "available_frames": 0,
+            "discarded_frames": 0,
+            "pushed_frames": 0
+          },
+          "overflow_discarded_frames": 0,
+          "pushed_frames": 960512,
+          "recorded_frames": 960512,
+          "truncated_frames": 0,
+          "unaccounted_pushed_frames": 0
+        },
+        "timing_sample_count": 1141,
+        "peak_dbfs": -25.6998568638797,
+        "rms_dbfs": -46.4356969191979,
+        "pause_peak_linear": 0.0,
+        "dropped_frames": 0,
+        "review_kind": "transitions",
+        "wildlife_event_count": 2,
+        "adapter_p95_us": 583,
+        "adapter_max_us": 2068,
+        "stereo_difference_rms": 0.0003485584094716627,
+        "max_adjacent_sample_step": 0.01019287109375,
+        "passed": false,
+        "failures": [
+          "camera change did not reach close aircraft view",
+          "adapter update p95 exceeded 0.5 ms budget"
+        ]
+      },
+      "aircraft": "turbo-lumber-evolution",
+      "driver": "WASAPI",
+      "mix_rate": 48000,
+      "captured_seconds": 20.0106666666667,
+      "capture_wall_seconds": 20.007377,
+      "discarded_frames": 0,
+      "peak_dbfs": -25.6998568638797,
+      "mechanical_update_p95_us": 122,
+      "mechanical_update_max_us": 381,
+      "soundscape_update_p95_us": 583,
+      "soundscape_update_max_us": 2068,
+      "distance_min_m": 5.77061605453491,
+      "distance_max_m": 113.826606750488,
+      "events": [
+        {
+          "paused": false,
+          "rpm": 4396.80981506872,
+          "stage": 0,
+          "tick": 4,
+          "wall_s": 0.008861
+        },
+        {
+          "paused": false,
+          "rpm": 4396.44300442684,
+          "stage": 1,
+          "tick": 972,
+          "wall_s": 4.008079
+        },
+        {
+          "paused": false,
+          "rpm": 9654.48760366003,
+          "stage": 2,
+          "tick": 1692,
+          "wall_s": 7.007862
+        },
+        {
+          "paused": true,
+          "rpm": 1313.08073792847,
+          "stage": 3,
+          "tick": 2412,
+          "wall_s": 10.007921
+        },
+        {
+          "paused": false,
+          "rpm": 1313.08073792847,
+          "stage": 4,
+          "tick": 2412,
+          "wall_s": 11.002771
+        },
+        {
+          "paused": false,
+          "rpm": 93.625721720766,
+          "stage": 5,
+          "tick": 2892,
+          "wall_s": 13.007605
+        },
+        {
+          "paused": false,
+          "rpm": 4396.81034533142,
+          "stage": 6,
+          "tick": 0,
+          "wall_s": 15.00849
+        }
+      ],
+      "audio_sources_sha256": {
+        "adapter": "4d1a871ee0ad06474a8074e6a87891afedc327aec07cdf85598df38d5f0e8ec0",
+        "mechanical": "c8cc20d93a74e799e67648700ea3f84f80befa36637eff420003c7d9bd2d949a",
+        "mechanical_motion": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f",
+        "mixer": "d6317efefad40e422b122478118e35a9238f4b683e8faf3330688db5513c6615",
+        "model": "b90e7ea7b1c0829da33eb6255bc53814ca2733675a8f7ae91bf5c3d0d637d7d3",
+        "wildlife": "e2ea89d0019da4b224d08bc4c352704fe1d6471fb1443756b28f32c2adcf78a4"
+      },
+      "probe_sha256": "9df38b034c6a13b4748d72e496c8dbcf0056e1d6aa83023f501771f11bbc3e66",
+      "capture_bookkeeping": {
+        "buffer_length_frames": 65536,
+        "final": {
+          "available_frames_after_flush": 0,
+          "available_frames_before_flush": 0,
+          "discarded_frames": 0,
+          "flushed_frames": 0,
+          "pushed_frames": 960512
+        },
+        "flushed_frames": 0,
+        "initial": {
+          "available_frames": 0,
+          "discarded_frames": 0,
+          "pushed_frames": 0
+        },
+        "overflow_discarded_frames": 0,
+        "pushed_frames": 960512,
+        "recorded_frames": 960512,
+        "truncated_frames": 0,
+        "unaccounted_pushed_frames": 0
+      },
+      "finite_samples": true,
+      "note": "Timing/accounting/pause/throttle tape pass; the fixed 4 m camera and 500 us total-adapter gates still fail."
+    }
+  ],
+  "sources": {
+    "manifest_sha256": "090b89275850c39b4fe86baecb653ccff7dfb320d2af56eecfae26cdc542ea5f",
+    "clips": 17,
+    "decoded_pcm_bytes": 429074,
+    "importer_check": "passed",
+    "dependencies": {
+      "numpy": "2.4.6",
+      "miniaudio": "1.71"
+    }
+  },
+  "export": {
+    "preset": "Windows",
+    "empty_project_mount": "passed",
+    "audio_resources": 60,
+    "mechanical_resources": 17,
+    "license_notices_checked": true
+  },
+  "rendered_workshop": {
+    "resolution": [
+      1920,
+      1080
+    ],
+    "scenery": "off",
+    "checks": [
+      "two profiles",
+      "servo level",
+      "fixed-gear retract selection disabled",
+      "undo",
+      "redo",
+      "save",
+      "Test fly received high_torque/0.65/electric",
+      "actual control movement in chase view",
+      "pause silences mechanics",
+      "clean shutdown with zero leaked objects"
+    ],
+    "capture_location": "temporary debug-bridge run 20261025-175141-47870; no images committed"
+  },
+  "limits": [
+    "No human audition or speaker/SPL calibration.",
+    "Larger-servo source has no verified torque/load rating; retract textures are explicit non-RC proxies.",
+    "Native runs have both passing and failing PCM timing evidence; whole-flight performance is unqualified.",
+    "Shared lighting/physics work changed during this session; unrelated edits were preserved.",
+    "Temporary WAVs and full logs remain under tmp; commands reproduce captures rather than promise identical wall timing."
+  ],
+  "optimization_followup": {
+    "scope": "Mechanical presentation observer/controller only. No root edits to physics, aircraft data or recordings. Other sessions changed the shared checkout and ran Godot; timings are bounded host observations, not hardware deadline qualification.",
+    "bugs": [
+      {
+        "issue": "Servo onset could steal a pending gear lock after the outgoing one-shot finished.",
+        "before": {
+          "started_utc": "2026-10-26T00:08:43.204106+00:00",
+          "ok": false,
+          "complete": true,
+          "elapsed_seconds": 1.281,
+          "log_sha256": "eb7e100f8d3abd8e46e7a5f1093e5168adc85d1572a185bde76f21c808230926",
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "reason": "process_exit",
+          "report_sha256": "97cab40c6e8fad6e01a2f05a80a4ab9ef504760d71f02f59d451b82060b66020",
+          "diagnostics": []
+        },
+        "after": {
+          "started_utc": "2026-10-26T00:08:53.877070+00:00",
+          "ok": true,
+          "complete": true,
+          "elapsed_seconds": 1.282,
+          "log_sha256": "c1af9d1b9bd83ca49f586db7f709a3914fbf4b27c7ba564cea852ec8954772a7",
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "reason": "passed",
+          "report_sha256": "83dd32e55b27c0100f72c5c6bb86ef44a632e31cd03b01119a19898d545c7ade",
+          "diagnostics": []
+        }
+      },
+      {
+        "issue": "Paused/distant movement loops retained mixer voices after the scene fade was silent.",
+        "before": {
+          "started_utc": "2026-10-26T00:16:22.824339+00:00",
+          "ok": false,
+          "complete": true,
+          "elapsed_seconds": 1.266,
+          "log_sha256": "2b993a79ef677467d7df522b0ba8c53aef9ec4d2f7b28fe066962944e15f2ed8",
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "reason": "process_exit",
+          "report_sha256": "a966e8572bdc01a051bf33373c17c57ce4287a6ed8a72cea5d68cb51d706389d",
+          "diagnostics": []
+        },
+        "after": {
+          "started_utc": "2026-10-26T00:16:34.860262+00:00",
+          "ok": true,
+          "complete": true,
+          "elapsed_seconds": 1.281,
+          "log_sha256": "18ec2045adfc21cf98b636bd122b204dfd6436132e4d41d0ef2e8a4e2c0a82ed",
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "reason": "passed",
+          "report_sha256": "f078400130e7a743ceecc9c5ad9e327acd2a68402145c1ae8f85d0e884282807",
+          "diagnostics": []
+        }
+      }
+    ],
+    "benchmarks": [
+      {
+        "label": "baseline",
+        "report_sha256": "c2d9f18953afbb38c361920bb02d80a3164392bbe9585afe725448322559dc19",
+        "godot": "4.8-beta1 (official)",
+        "driver": "Dummy",
+        "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+        "source_sha256": {
+          "app/audio/mechanical_audio.gd": "8a316aaa67650f988400d6677a6c61e0139e3204ae3b0b0b32a086d49965d4d9",
+          "app/audio/mechanical_motion.gd": "fd33eb08f8d19175d9c0072debddf48dd8d515b5f10daa9caee468a6734a6a8e",
+          "tools/audio/mechanical_benchmark.gd": "b824786872ae103fac580a7187ed6abde14acc9e4a38b18622cea395a823feb4"
+        },
+        "iterations_per_scenario": 10000,
+        "warmup_calls_per_scenario": 1000,
+        "quality_checks": {
+          "driver_is_dummy": true,
+          "installed_assets_loaded": true,
+          "scene_bus_count_restored": true,
+          "voice_pools_within_runtime_limits": true
+        },
+        "results": [
+          {
+            "active_motion_voices_after_measurement": 0,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1562,
+            "godot_object_count_before_measurement": 1562,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 2836,
+            "mean_usec_per_update": 141.9001,
+            "median_usec_per_update": 118.0,
+            "min_usec_per_update": 91,
+            "motion_voice_count_after_measurement": 0,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "quiet_idle",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 204,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 0,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 0,
+              "event": 2,
+              "motion": 0,
+              "playing_events": 0
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 5,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 3679,
+            "mean_usec_per_update": 262.2874,
+            "median_usec_per_update": 240.5,
+            "min_usec_per_update": 146,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "nearby_moving_4_servos_plus_gear",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 385,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 2,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 5,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 2
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 0,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 3406,
+            "mean_usec_per_update": 131.0609,
+            "median_usec_per_update": 116.0,
+            "min_usec_per_update": 70,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "paused",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 186,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 0,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 0,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 0
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 0,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 1206,
+            "mean_usec_per_update": 24.4952,
+            "median_usec_per_update": 22.0,
+            "min_usec_per_update": 18,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "distant",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 29,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 0,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 0,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 0
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 5,
+            "delta_s": 0.0,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 4643,
+            "mean_usec_per_update": 176.6138,
+            "median_usec_per_update": 148.0,
+            "min_usec_per_update": 93,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "repeated_accepted_tick",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 285,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 2,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 5,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 2
+            },
+            "warmup_calls": 1000
+          }
+        ]
+      },
+      {
+        "label": "optimized",
+        "report_sha256": "4e57382e41bd7abe4664a1d036a4643d5925443ce2b8c0ffe17d4d4f4dc7b6d6",
+        "godot": "4.8-beta1 (official)",
+        "driver": "Dummy",
+        "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+        "source_sha256": {
+          "app/audio/mechanical_audio.gd": "70d20eddac7e2564c57d4ccd612c5e2699c39bb413aa0eab3466ff20d6c425d3",
+          "app/audio/mechanical_motion.gd": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f",
+          "tools/audio/mechanical_benchmark.gd": "b824786872ae103fac580a7187ed6abde14acc9e4a38b18622cea395a823feb4"
+        },
+        "iterations_per_scenario": 10000,
+        "warmup_calls_per_scenario": 1000,
+        "quality_checks": {
+          "driver_is_dummy": true,
+          "installed_assets_loaded": true,
+          "scene_bus_count_restored": true,
+          "voice_pools_within_runtime_limits": true
+        },
+        "results": [
+          {
+            "active_motion_voices_after_measurement": 0,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1562,
+            "godot_object_count_before_measurement": 1562,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 10792,
+            "mean_usec_per_update": 82.8933,
+            "median_usec_per_update": 71.0,
+            "min_usec_per_update": 40,
+            "motion_voice_count_after_measurement": 0,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "quiet_idle",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 99,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 0,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 0,
+              "event": 2,
+              "motion": 0,
+              "playing_events": 0
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 5,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 6676,
+            "mean_usec_per_update": 222.3049,
+            "median_usec_per_update": 199.0,
+            "min_usec_per_update": 115,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "nearby_moving_4_servos_plus_gear",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 267,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 2,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 5,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 2
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 0,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 5016,
+            "mean_usec_per_update": 94.2252,
+            "median_usec_per_update": 72.0,
+            "min_usec_per_update": 41,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "paused",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 109,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 0,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 0,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 0
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 0,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 1519,
+            "mean_usec_per_update": 16.6246,
+            "median_usec_per_update": 15.0,
+            "min_usec_per_update": 12,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "distant",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 20,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 0,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 0,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 0
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 5,
+            "delta_s": 0.0,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 14648,
+            "mean_usec_per_update": 178.6336,
+            "median_usec_per_update": 107.0,
+            "min_usec_per_update": 86,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "repeated_accepted_tick",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 269,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 2,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 5,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 2
+            },
+            "warmup_calls": 1000
+          }
+        ]
+      },
+      {
+        "label": "final",
+        "report_sha256": "f25b3861b5646f4966df0487c9fe45ad56ba683aa16208fa8c6fbd597654fbb4",
+        "godot": "4.8-beta1 (official)",
+        "driver": "Dummy",
+        "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+        "source_sha256": {
+          "app/audio/mechanical_audio.gd": "c8cc20d93a74e799e67648700ea3f84f80befa36637eff420003c7d9bd2d949a",
+          "app/audio/mechanical_motion.gd": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f",
+          "tools/audio/mechanical_benchmark.gd": "b824786872ae103fac580a7187ed6abde14acc9e4a38b18622cea395a823feb4"
+        },
+        "iterations_per_scenario": 10000,
+        "warmup_calls_per_scenario": 1000,
+        "quality_checks": {
+          "driver_is_dummy": true,
+          "installed_assets_loaded": true,
+          "scene_bus_count_restored": true,
+          "voice_pools_within_runtime_limits": true
+        },
+        "results": [
+          {
+            "active_motion_voices_after_measurement": 0,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1562,
+            "godot_object_count_before_measurement": 1562,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 207,
+            "mean_usec_per_update": 60.4961,
+            "median_usec_per_update": 49.0,
+            "min_usec_per_update": 40,
+            "motion_voice_count_after_measurement": 0,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "quiet_idle",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 87,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 0,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 0,
+              "event": 2,
+              "motion": 0,
+              "playing_events": 0
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 5,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 557,
+            "mean_usec_per_update": 181.9108,
+            "median_usec_per_update": 196.0,
+            "min_usec_per_update": 112,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "nearby_moving_4_servos_plus_gear",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 245,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 2,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 5,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 2
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 0,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 363,
+            "mean_usec_per_update": 68.1091,
+            "median_usec_per_update": 73.0,
+            "min_usec_per_update": 40,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "paused",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 93,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 0,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 0,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 0
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 0,
+            "delta_s": 0.0166666666666667,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 128,
+            "mean_usec_per_update": 14.7042,
+            "median_usec_per_update": 16.0,
+            "min_usec_per_update": 8,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "distant",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 20,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 0,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 0,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 0
+            },
+            "warmup_calls": 1000
+          },
+          {
+            "active_motion_voices_after_measurement": 5,
+            "delta_s": 0.0,
+            "event_voice_count_after_measurement": 2,
+            "event_voice_growth_during_measurement": 0,
+            "godot_object_count_after_measurement": 1584,
+            "godot_object_count_before_measurement": 1584,
+            "godot_object_count_delta": 0,
+            "iterations": 10000,
+            "max_usec_per_update": 291,
+            "mean_usec_per_update": 92.7633,
+            "median_usec_per_update": 82.0,
+            "min_usec_per_update": 61,
+            "motion_voice_count_after_measurement": 5,
+            "motion_voice_growth_during_measurement": 0,
+            "name": "repeated_accepted_tick",
+            "normalized_per_call": true,
+            "p95_usec_per_update": 140,
+            "per_call_allocation_counter_available": false,
+            "playing_event_voices_after_measurement": 2,
+            "snapshot_generation_timed": false,
+            "voice_counts_after_warmup": {
+              "active_motion": 5,
+              "event": 2,
+              "motion": 5,
+              "playing_events": 2
+            },
+            "warmup_calls": 1000
+          }
+        ]
+      }
+    ],
+    "capture_checker_regressions": {
+      "command": "python tools/audio/test_capture_checks.py",
+      "tests": 6,
+      "passed": true,
+      "source_sha256": "b4f77c21cc393b8d32a760800860409a87dc5c9e1dfe7bf5ab459f9234f15f9f"
+    },
+    "parity_before_final_voice_retirement_change": {
+      "report_sha256": "856600d23c5beef76cf8f550548c97dd4ba5af627df8da156c575695b7e1ce48",
+      "status": "pass",
+      "passed_pairs": 9,
+      "ticks_per_pair_run": 1200
+    },
+    "current_runtime_sha256": {
+      "mechanical_audio.gd": "c8cc20d93a74e799e67648700ea3f84f80befa36637eff420003c7d9bd2d949a",
+      "mechanical_motion.gd": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f",
+      "mechanical_profile.gd": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb",
+      "flight_audio.gd": "4d1a871ee0ad06474a8074e6a87891afedc327aec07cdf85598df38d5f0e8ec0"
+    }
+  }
+}

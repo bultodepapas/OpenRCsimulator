@@ -36,7 +36,7 @@ func _initialize() -> void:
 				count += 1
 	okay = okay and count == 33
 	var new_count: int = 0
-	for folder: String in ["powertrains", "landing_gear"]:
+	for folder: String in ["powertrains", "landing_gear", "mechanical"]:
 		var base: String = "res://assets/audio/" + folder + "/"
 		var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(base + "manifest.json"))
 		okay = okay and manifest is Dictionary and not FileAccess.get_file_as_string(base + "LICENSE.txt").is_empty()
@@ -51,7 +51,9 @@ func _initialize() -> void:
 				new_count += 1
 	var banks: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/audio/powertrains/BANKS.json"))
 	okay = okay and banks is Dictionary and banks.has_all(["gasoline", "electric", "turbine", "rotor"])
-	okay = okay and new_count == 10 # six engine loops plus three rolling loops and one impact
-	print("Exported audio: %d original/ambience + %d powertrain/gear sources and notices: %s" %
+	var mechanical_license := FileAccess.get_file_as_string("res://assets/audio/mechanical/LICENSE.txt")
+	okay = okay and mechanical_license.contains("CC-BY-4.0") and mechanical_license.contains("j_soundeffects")
+	okay = okay and new_count == 27 # six engine loops, four contact clips, seventeen actuator cues
+	print("Exported audio: %d original/ambience + %d powertrain/contact/mechanical sources and notices: %s" %
 		[count, new_count, "PASS" if okay else "FAIL"])
 	quit(0 if okay else 1)

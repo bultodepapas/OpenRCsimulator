@@ -1,0 +1,22 @@
+{
+  "observed_on": "2026-10-25",
+  "url": "https://www.heilemann-sternmotoren.de/en/shopcategory-moki-propeller-sep/3-blade-propeller-for-moki-s250-and-s250-7-info",
+  "html_sha256": "6db07bb69d26e0f865b2839261cca11c0754a6f6e5639cb8c2b5769c309e2861",
+  "selectors": [
+    {
+      "select": "<select name=\"customProductData[115][37]\" class=\"vm-chzn-select\">",
+      "options": [
+        "29x18 black painted No additional charge",
+        "30x16 black painted +15,59 \u20ac",
+        "30x18 black painted +15,59 \u20ac"
+      ]
+    },
+    {
+      "select": "<select name=\"customProductData[115][41]\" class=\"vm-chzn-select\">",
+      "options": [
+        "undrilled No additional charge",
+        "bored +15,00 \u20ac"
+      ]
+    }
+  ]
+}

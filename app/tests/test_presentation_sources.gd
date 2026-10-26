@@ -2,7 +2,6 @@ extends SceneTree
 
 const PresentationSources := preload("res://render/presentation_sources.gd")
 const PACKAGE_PROOF_PATH := "res://data/aircraft_customization_package.json"
-const PACKAGE_PROOF_FORMAT := "openrc-aircraft-presentation-package v2"
 const TEMP_ROOT := "user://presentation-source-tests"
 
 var _checks := 0
@@ -15,7 +14,7 @@ func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
 	var case_name := _argument_value(args, "--case=")
 	if not case_name.is_empty():
-		_run_case(case_name, _argument_value(args, "--pack="))
+		_run_case(case_name, _argument_value(args, "--pack="), int(_argument_value(args, "--proof-version=")))
 		print("Presentation source proof child: %s, %d failures" % [case_name, _failures])
 		quit(1 if _failures > 0 else 0)
 		return
@@ -38,6 +37,10 @@ func _run_parent() -> void:
 	_run_child("missing_proof", missing_proof_pack)
 	var missing_marker_pack := _build_pack(temp_dir, "missing_marker", "missing_marker")
 	_run_child("missing_marker", missing_marker_pack)
+	var legacy_v1_pack := _build_pack(temp_dir, "legacy_v1", "", 1)
+	_run_child("legacy_v1", legacy_v1_pack, 1)
+	var legacy_v2_pack := _build_pack(temp_dir, "legacy_v2", "", 2)
+	_run_child("legacy_v2", legacy_v2_pack, 2)
 	_cleanup()
 	print("Presentation source proofs: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -45,32 +48,39 @@ func _run_parent() -> void:
 
 func _test_development_records() -> void:
 	var records := PresentationSources.current_records()
-	_check("the v2 closed source set has ten ordered records", records.size() == PresentationSources.SOURCE_PATHS_V2.size() and records.size() == 10, str(records))
+	var record_paths: Array[String] = []
+	for record: Dictionary in records:
+		record_paths.append(str(record.get("path", "")))
+	_check("the v3 closed source set has twenty-three ordered records", records.size() == PresentationSources.SOURCE_PATHS_V3.size()
+		and records.size() == 23 and record_paths == PresentationSources.SOURCE_PATHS_V3, str(record_paths))
 	var legacy_records := PresentationSources.current_records(1)
 	_check("v1 seven-path source reader remains available", legacy_records.size() == 7
 		and PresentationSources.validate(legacy_records, PresentationSources.ENGINE_VERSION_PIN, 1).get("ok", false))
-	_check("proof version cannot silently select another inventory", not PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, 1).get("ok", true))
-	_check("unknown proof versions reject", not PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, 3).get("ok", true))
-	var valid: Dictionary = PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, 2)
+	var v2_records := PresentationSources.current_records(2)
+	_check("v2 ten-path source reader remains available", v2_records.size() == 10
+		and PresentationSources.validate(v2_records, PresentationSources.ENGINE_VERSION_PIN, 2).get("ok", false))
+	_check("proof version cannot silently select another inventory", not PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, 2).get("ok", true))
+	_check("unknown proof versions reject", not PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, 4).get("ok", true))
+	var valid: Dictionary = PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, 3)
 	_check("current LF-normalized source pins validate in development", bool(valid.get("ok", false)), str(valid))
 	var stale := records.duplicate(true)
 	var stale_hash := str(stale[0].sha256)
 	stale[0].sha256 = ("0" if stale_hash.substr(0, 1) != "0" else "1") + stale_hash.substr(1)
-	var rejected: Dictionary = PresentationSources.validate(stale, PresentationSources.ENGINE_VERSION_PIN, 2)
+	var rejected: Dictionary = PresentationSources.validate(stale, PresentationSources.ENGINE_VERSION_PIN, 3)
 	_check("stale source hash is refused", not bool(rejected.get("ok", true)) and _has_code(rejected, "PRESENTATION_SOURCE_HASH_MISMATCH"), str(rejected))
-	rejected = PresentationSources.validate(records, "4.7.3", 2)
+	rejected = PresentationSources.validate(records, "4.7.3", 3)
 	_check("changed presentation engine pin is refused", not bool(rejected.get("ok", true)), str(rejected))
 	var wrong_order := records.duplicate(true)
 	wrong_order[0].path = "res://render/not-registered.gd"
-	rejected = PresentationSources.validate(wrong_order, PresentationSources.ENGINE_VERSION_PIN, 2)
+	rejected = PresentationSources.validate(wrong_order, PresentationSources.ENGINE_VERSION_PIN, 3)
 	_check("unregistered presentation source is refused", not bool(rejected.get("ok", true)), str(rejected))
 	var extra_record := records.duplicate(true)
 	extra_record.append(records[0].duplicate(true))
-	rejected = PresentationSources.validate(extra_record, PresentationSources.ENGINE_VERSION_PIN, 2)
+	rejected = PresentationSources.validate(extra_record, PresentationSources.ENGINE_VERSION_PIN, 3)
 	_check("extra presentation sources are refused", not bool(rejected.get("ok", true)), str(rejected))
 
 
-func _build_pack(temp_dir: String, case_name: String, fault: String) -> String:
+func _build_pack(temp_dir: String, case_name: String, fault: String, proof_version: int = 3) -> String:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(temp_dir))
 	var pack_path := temp_dir.path_join(case_name + ".pck")
 	var packer := PCKPacker.new()
@@ -84,8 +94,9 @@ func _build_pack(temp_dir: String, case_name: String, fault: String) -> String:
 	if error != OK:
 		return ""
 	var files: Dictionary = {}
-	for index in PresentationSources.SOURCE_PATHS_V2.size():
-		var source_path := str(PresentationSources.SOURCE_PATHS_V2[index])
+	var source_paths: Array = PresentationSources.paths_for_version(proof_version)
+	for index in source_paths.size():
+		var source_path := str(source_paths[index])
 		var proof_path: String = PresentationSources.expected_proof_path(source_path)
 		var absolute_source := ProjectSettings.globalize_path(source_path)
 		var proof_source := absolute_source
@@ -100,9 +111,9 @@ func _build_pack(temp_dir: String, case_name: String, fault: String) -> String:
 	if fault == "extra_source":
 		files["res://render/unregistered.gd"] = "res://data/aircraft_customization_proofs/unregistered.bin"
 	elif fault == "wrong_destination":
-		files[str(PresentationSources.SOURCE_PATHS_V2[0])] = "res://data/aircraft_customization_proofs/wrong.bin"
+		files[str(source_paths[0])] = "res://data/aircraft_customization_proofs/wrong.bin"
 	if fault != "missing_marker":
-		var marker_text := JSON.stringify({"format": PACKAGE_PROOF_FORMAT, "files": files}, "\t", true) + "\n"
+		var marker_text := JSON.stringify({"format": PresentationSources.package_format_for_version(proof_version), "files": files}, "\t", true) + "\n"
 		var marker_source := _write_source(temp_dir, case_name + "-marker", marker_text.to_utf8_buffer())
 		error = packer.add_file(PACKAGE_PROOF_PATH, marker_source)
 		_check("PCKPacker adds proof marker: " + case_name, error == OK, error_string(error))
@@ -117,7 +128,7 @@ func _build_pack(temp_dir: String, case_name: String, fault: String) -> String:
 	return absolute_pack_path
 
 
-func _run_child(case_name: String, pack_path: String) -> void:
+func _run_child(case_name: String, pack_path: String, proof_version: int = 3) -> void:
 	var output: Array = []
 	var child_log_path := _created_dir.path_join("child-%s.log" % case_name)
 	_created_files.append(child_log_path)
@@ -132,6 +143,7 @@ func _run_child(case_name: String, pack_path: String) -> void:
 		"--",
 		"--case=" + case_name,
 		"--pack=" + pack_path,
+		"--proof-version=" + str(proof_version),
 	])
 	var exit_code := OS.execute(OS.get_executable_path(), command, output, true)
 	var detail := "\n".join(output)
@@ -142,14 +154,14 @@ func _run_child(case_name: String, pack_path: String) -> void:
 	_check("isolated PCK presentation proof case runs: " + case_name, exit_code == 0, detail)
 
 
-func _run_case(case_name: String, pack_path: String) -> void:
+func _run_case(case_name: String, pack_path: String, proof_version: int) -> void:
 	if pack_path.is_empty() or not ProjectSettings.load_resource_pack(pack_path, true):
 		_check("test PCKPacker overlay mounts: " + case_name, false, pack_path)
 		return
 	_check("export sentinel exists in overlay: " + case_name, FileAccess.file_exists("res://project.binary"))
-	var records := PresentationSources.current_records()
-	var result: Dictionary = PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, 2)
-	if case_name == "valid":
+	var records := PresentationSources.current_records(proof_version)
+	var result: Dictionary = PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, proof_version)
+	if case_name in ["valid", "legacy_v1", "legacy_v2"]:
 		_check("source proof validator accepts PCK authoring bytes", bool(result.get("ok", false)), str(result))
 	elif case_name == "bad_proof":
 		_check("source proof validator rejects changed PCK authoring bytes", not bool(result.get("ok", true)) and _has_code(result, "PRESENTATION_SOURCE_HASH_MISMATCH"), str(result))

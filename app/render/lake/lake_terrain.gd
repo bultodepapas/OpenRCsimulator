@@ -62,6 +62,7 @@ static func build(lake: Dictionary, ground_material: ShaderMaterial, surfaces: P
 	basin_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, _basin_arrays)
 	var basin := MeshInstance3D.new()
 	basin.name = "Basin"
+	basin.layers |= preload("res://render/ground.gd").MARK_RECEIVER_LAYER
 	basin.mesh = basin_mesh
 	var basin_material := ShaderMaterial.new()
 	basin_material.shader = BANK_SHADER

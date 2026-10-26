@@ -80,6 +80,7 @@ func configure(next_context: PresentationContext, audio_enabled: bool = true) ->
 	wreck.secondary_impact.connect(_secondary)
 	effects = Effects.new()
 	add_child(effects)
+	effects.ground_sampler = _sample_mark_ground
 	effects.prepare()
 	effects.set_debris_colors(airframe_colors(context.model_bindings.root))
 	audio = CrashAudio.new()
@@ -706,6 +707,10 @@ func _touch_feedback() -> void:
 			if _audio_enabled:
 				audio.touch(point, clampf(slide / 15.0, 0.05, 0.6), true, surface)
 			_touch_marks[contact.index] = now
+
+func _sample_mark_ground(point: Vector3) -> PackedFloat64Array:
+	return GroundTerrain.sample(-point.z, point.x, context.session.ground_surfaces, context.session._lake)
+
 
 static func surface_at(field: Dictionary, north: float, east: float) -> String:
 	for kind: String in ["runway","rotorpad","mown","rough"]:

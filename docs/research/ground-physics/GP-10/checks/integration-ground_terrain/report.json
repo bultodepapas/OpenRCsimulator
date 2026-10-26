@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ef69ca20-3295-42a5-a42f-1678b9a84290",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ground_terrain.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85",
+  "started_utc": "2026-10-26T00:12:26.431865+00:00",
+  "label": "ground_terrain",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85\\tmp\\gp10-integration-checks\\ground_terrain-ufuseqch\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85\\tmp\\gp10-integration-checks\\ground_terrain-ufuseqch\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    ", 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.422,
+  "log_bytes": 3178,
+  "log_sha256": "cb85724e7e2504c44542468152a8da4a69d03c1e8a7984ab08d0089a4cc49639"
+}

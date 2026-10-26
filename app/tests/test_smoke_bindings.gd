@@ -14,7 +14,7 @@ func _initialize() -> void:
 	var third := _slot("second_engine", "engine_b", "exit")
 	var slots: Array = [first, second, third]
 	var bindings := _bindings(slots)
-	for malformed_version: Variant in [[], {}, true, "2", 0, 3]:
+	for malformed_version: Variant in [[], {}, true, "2", 0, 4]:
 		var invalid_binding := bindings.duplicate(true)
 		invalid_binding.source_proof_version = malformed_version
 		invalid_binding.slots_sha256 = Profile.bindings_sha256(invalid_binding)

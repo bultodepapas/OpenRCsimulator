@@ -1,0 +1,27 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   authored lake definition loads
+ok   empty lake context has no collision
+ok   invalid lake definition fails closed
+ok   flight outside the bounded bank keeps the no-event result
+ok   path inside lake bounds but outside the irregular bank polygon remains clear
+ok   high-speed airborne hull path stays above water and bank without a false event
+ok   rotating probe whose conservative radius stays above the bank remains clear
+ok   high-speed hull sweep enters water
+ok   water event carries shared wave surface and sim-clock time
+ok   water event reports local water depth and contact kinematics
+ok   simultaneous hull and gear water contact deterministically favors hull
+ok   undeformed gear bottom independently reports water contact
+ok   grazing point on the water plane remains a deterministic contact
+ok   soft low-speed bank touch remains a ground contact
+ok   terminal bank mode reports a dry-bank hull strike
+ok   gear traversing dry bank does not become a terminal water event
+ok   rotating wing probe sweeps through water
+ok   rotating wing event preserves point angular velocity
+ok   optional propeller disc is a swept water probe
+ok   HullContact lake context keeps outside-bank loads bit-identical
+ok   HullContact lake context keeps outside-bank terminal result identical
+ok   HullContact lake context keeps outside-bank contacts identical
+ok   HullContact soft load, contact, and crash thresholds use basin bed
+ok   prop depth is measured from the moving lake surface, avoiding false wet prop strikes
+all lake collision checks passed

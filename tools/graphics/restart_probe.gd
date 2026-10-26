@@ -26,6 +26,7 @@ func _run() -> void:
 	if stage not in [0, 1, 2] or output.is_empty() or DisplayServer.get_name() == "headless":
 		quit(2)
 		return
+	root.size = Vector2i(1920, 1080)
 	var prefs_path := output.path_join("isolated.cfg")
 	if stage == 0:
 		var prefs := Preferences.DEFAULTS.duplicate(true)
@@ -55,6 +56,9 @@ func _run() -> void:
 	var report := {"stage": stage, "pid": OS.get_process_id(), "ok": ok,
 		"graphics": Profile.describe(), "home": app.home != null,
 		"executable": OS.get_executable_path(), "editor_binary": OS.has_feature("editor"),
+		"viewport": [root.size.x, root.size.y],
+		"contact_shadows_setting": ProjectSettings.get_setting(Profile.CONTACT_SHADOW_SETTING, false),
+		"multi_bounce_occlusion_configured": ProjectSettings.get_setting("rendering/lights_and_shadows/multi_bounce_occlusion/enabled", false),
 		"preferences_unchanged": FileAccess.get_file_as_string(prefs_path) == before}
 	if ok and stage < 2:
 		# Follow the actual menu signal through preview rollback and the Home-only gate.

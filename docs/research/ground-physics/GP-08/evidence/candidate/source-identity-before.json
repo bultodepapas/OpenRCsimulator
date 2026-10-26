@@ -1,0 +1,57 @@
+{
+  "utc": "2026-10-25T23:16:50.1452725Z",
+  "source_commit": "cb2924b3676b72ee49497c92fe742b0b1dcd2d9c",
+  "source_worktree": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-implementation-20261025",
+  "source_status": [
+    " M app/sim/flight_session.gd",
+    " M app/sim/vehicle_model.gd",
+    " M app/statistics/detector.gd",
+    " M app/statistics/fixed_wing_adapter.gd",
+    " M app/statistics/rules.gd",
+    " M app/statistics/service.gd",
+    "?? app/physics/wheel_coupling.gd"
+  ],
+  "modified_runtime_hashes": [
+    {
+      "path": "app/physics/wheel_coupling.gd",
+      "sha256": "2cea4e934cbbd6d54a0c2526891070b063f1fead9f97b418099656d5ae26351c"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "4030bf8cc1e9c4733cd6c8d4ebd526e3e7975c55083010d18fa8c9618f0d9516"
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "sha256": "33f1ab53a3f587acf330032f43c0ed44a515565fe8202d4e77e35ba6495f8f55"
+    },
+    {
+      "path": "app/statistics/detector.gd",
+      "sha256": "e57bd5bc99bb49ce34aebc50c118711b80f8840b75701df0ea7101751b54db09"
+    },
+    {
+      "path": "app/statistics/fixed_wing_adapter.gd",
+      "sha256": "732f1389ee20e6602319788f4aa617f62024a694e28a01d5e802417a2285366c"
+    },
+    {
+      "path": "app/statistics/rules.gd",
+      "sha256": "b52bb07a5cd4993233e69994359062b29b6f983e7b28a30b1c6a596af908bb0e"
+    },
+    {
+      "path": "app/statistics/service.gd",
+      "sha256": "9674092be1a0a57aa5ff6bca560b5818882484bb9fa5faf2263c71834d1a9dc3"
+    }
+  ],
+  "aircraft_source_hashes": [
+    {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77"
+    },
+    {
+      "path": "app/data/aircraft/p51d_mustang_120.json",
+      "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+    }
+  ],
+  "engine": "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+  "engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "purpose": "GP-09/GP-14 current candidate; same frozen aircraft configuration and input tape"
+}

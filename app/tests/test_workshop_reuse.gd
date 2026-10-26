@@ -74,6 +74,10 @@ func run() -> void:
 	search.text_changed.emit(search.text)
 	check("search matches saved name", editor.get("_variant_selector").item_count == 2)
 	select_build(editor, id)
+	for query: String in ["airshow reusable", "reusble blue", "reusable blu"]:
+		search.text = query
+		search.text_changed.emit(query)
+		check("approximate search preserves favorite selection and draft: " + query, editor.get("_selected_variant_id") == id and editor.get("_variant_selector").item_count == 2 and editor.get_recipe() == recipe_before)
 	editor.call("_review_profile_transfer")
 	var dialog: ConfirmationDialog = editor.get("_transfer_dialog")
 	var description: String = editor.get("_transfer_text").text

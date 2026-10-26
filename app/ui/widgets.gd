@@ -16,6 +16,23 @@ static func label(text: String, variation: String, wrap := false, translate := t
 	return control
 
 
+## GDU-11f: one-line headings may fit within theme bounds, never engine defaults.
+## Call when the containing screen receives its theme/scale update.
+static func fit_title(control: Label, minimum_size: int, maximum_size := -1) -> void:
+	var maximum := maximum_size if maximum_size > 0 else control.get_theme_font_size("font_size")
+	var minimum := clampi(minimum_size, 1, maximum)
+	control.minimum_font_size = minimum
+	control.maximum_font_size = maximum
+	control.resize_font_to_fit = true
+	control.autowrap_mode = TextServer.AUTOWRAP_OFF
+	control.max_lines_visible = 1
+	control.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	control.clip_text = true
+	# A VBox otherwise allocates only the minimum font's height, shrinking even short titles.
+	var style := control.get_theme_stylebox("normal")
+	control.custom_minimum_size.y = ceilf(control.get_theme_font("font").get_height(maximum)) + style.get_minimum_size().y
+
+
 static func button(text: String, variation := "", node_name := "") -> Button:
 	var control := Button.new()
 	control.text = text

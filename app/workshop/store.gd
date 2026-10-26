@@ -1010,6 +1010,8 @@ static func _presentation_is_empty(profile: Dictionary) -> bool:
 	return profile.get("paint", []) is Array and (profile.get("paint", []) as Array).is_empty() \
 		and profile.get("markings", []) is Array and (profile.get("markings", []) as Array).is_empty() \
 		and profile.get("smoke", []) is Array and (profile.get("smoke", []) as Array).is_empty() \
+		and profile.get("lighting", {}).get("selection", "inherit") == "inherit" \
+		and profile.get("mechanical_audio", PresentationProfile.MechanicalProfile.defaults()) == PresentationProfile.MechanicalProfile.defaults() \
 		and profile.get("visual_seed", 0) == 0
 
 

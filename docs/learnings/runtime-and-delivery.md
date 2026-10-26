@@ -91,3 +91,7 @@
 - **Artifact inspection and native acceptance answer different questions.** A universal Mach-O and an ad-hoc signature flag prove package structure, not native launch, signing trust, fullscreen, DPI, radio or sustained performance. Record actual renderer, backing pixels, OS floor and executable identity on each target. Process-loop percentiles are not display-presentation latency. [DT-00](../research/desktop-delivery-investigations/DT-00/README.md), [DT-00-R2](../research/desktop-delivery-investigations/DT-00-R2/README.md).
 
 - **Build names do not identify all release inputs.** `git describe --dirty` ignores new untracked files, and different prereleases may share a numeric Windows version. Inventory build inputs and verify the tested artifact's bytes and actual replacement during upgrades; promote those bytes without rebuilding. [DT-00-R1](../research/desktop-delivery-investigations/DT-00-R1/README.md).
+
+## Bound native title fitting with explicit theme tokens
+
+Godot 4.8 Control theme lookup still prioritizes the control variation when a base type is passed. Looking up a Label body minimum from a CardTitle label therefore returned the title size and silently made both fitting bounds equal. Pass the intended scaled body/title tokens explicitly, and reserve the preferred line height so a container does not force every short title to the minimum. Verify the rendered size at normal and enlarged UI scale, including an intermediate fit and overlong ellipsis. [GDU-11f](../research/engine-upgrade/GDU-11/implementation.md#gdu-11f--bounded-title-fitting).

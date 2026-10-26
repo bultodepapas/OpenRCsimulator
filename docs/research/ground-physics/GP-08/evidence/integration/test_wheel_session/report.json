@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "836837d5-f755-468c-87be-ea834cd6bbdb",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_wheel_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T23:19:20.556753+00:00",
+  "label": "test_wheel_session",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-integrated-checks\\test_wheel_session-agvulhxl\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-integrated-checks\\test_wheel_session-agvulhxl\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    ", 0 fail"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.625,
+  "log_bytes": 584,
+  "log_sha256": "452099ca2865e9e00c312d446b0d6747fd4a8068c465ba30b5e6a1ed911daebf"
+}

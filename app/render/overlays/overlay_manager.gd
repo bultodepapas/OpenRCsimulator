@@ -22,8 +22,9 @@ const ClassicInstrument := preload("res://render/overlays/classic_instrument.gd"
 const NavigationInstrument := preload("res://render/overlays/navigation_instrument.gd")
 const NavigationData := preload("res://render/overlays/navigation_data.gd")
 const TrainingInstrument := preload("res://render/overlays/training_instrument.gd")
+const SessionStatistics := preload("res://render/overlays/session_statistics.gd")
 const FlightMetrics := preload("res://render/overlays/flight_metrics.gd")
-const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 0.82), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1), pilot_radar = Vector2(0, 1), wind_track = Vector2(1, 1), cruise_efficiency = Vector2(1, 0), maneuver = Vector2(0, 1), glide = Vector2(1, 1), flight_summary = Vector2(1, 0)}
+const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 0.82), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1), pilot_radar = Vector2(0, 1), wind_track = Vector2(1, 1), cruise_efficiency = Vector2(1, 0), maneuver = Vector2(0, 1), glide = Vector2(1, 1), flight_summary = Vector2(1, 0), session_stats = Vector2(1.0, 0.30)}
 const FUEL_RESERVE_WARNING_STREAM: AudioStream = preload("res://assets/ui/audio/reject.ogg")
 
 ## Emitted after any change the player makes (X, key, dialog); the owner saves it to the preferences.
@@ -42,6 +43,9 @@ const PREVIEW_LAYER := 11
 
 var settings: Dictionary = Settings.DEFAULTS.duplicate(true)
 var language := "en"
+## Injected by app_root/main. The widget is read-only and does not own or start statistics collection.
+var statistics_service: Object
+var statistics_aircraft_id := ""
 var root: Control
 var frames := {}
 ## The legacy diagnostic texts, written by main.gd exactly as before (input panel, HUD lines, performance line).
@@ -130,7 +134,9 @@ func _build() -> void:
 	_place(BatteryPanel.new(), Control.PRESET_CENTER_RIGHT) # docked by _dock_battery()
 	for id: String in PLAYER_POSITIONS:
 		var widget: Control
-		if id in Settings.NAVIGATION_IDS:
+		if id == "session_stats":
+			widget = SessionStatistics.new()
+		elif id in Settings.NAVIGATION_IDS:
 			widget = NavigationInstrument.new(id)
 		elif id in Settings.TRAINING_IDS:
 			widget = TrainingInstrument.new(id)
@@ -186,7 +192,7 @@ func set_layout_locked(on: bool) -> void:
 
 
 func set_widget_option(key: String, value: Variant) -> void:
-	if key not in ["widget_size", "widget_opacity", "widget_compact"]:
+	if key not in ["widget_size", "widget_opacity", "widget_compact", "session_stats_scope"]:
 		return
 	var next := settings.duplicate(true)
 	next[key] = value
@@ -277,6 +283,7 @@ func apply(value: Variant, announce := true) -> void:
 	var layout_changed := first or ["positions", "widget_size", "widget_compact"].any(
 		func(key: String) -> bool: return previous.get(key) != settings.get(key))
 	var lock_changed: bool = first or previous.get("layout_locked", false) != settings.get("layout_locked", false)
+	var statistics_scope_changed: bool = first or previous.get("session_stats_scope", "all") != settings.get("session_stats_scope", "all")
 	if first or previous.radio_model != settings.radio_model:
 		frames.transmitter.set_radio_model(settings.radio_model)
 	if visibility_changed:
@@ -298,7 +305,7 @@ func apply(value: Variant, announce := true) -> void:
 				frames[id].set_appearance(str(settings.get("widget_size", "normal")), float(settings.get("widget_opacity", 0.94)), bool(settings.get("widget_compact", false)))
 	if layout_changed or visibility_changed: _layout_player_widgets()
 	if visibility_changed: _dock_battery()
-	if visibility_changed or previous.units != settings.units or previous.stick_mode != settings.stick_mode:
+	if visibility_changed or previous.units != settings.units or previous.stick_mode != settings.stick_mode or statistics_scope_changed:
 		_since_text = INF # changed readings/newly opened instruments refresh at once
 	if announce:
 		settings_changed.emit(settings.duplicate(true))
@@ -416,15 +423,36 @@ func refresh_numbers(snap: Dictionary) -> void:
 	if visible:
 		for id: String in PLAYER_POSITIONS:
 			if frames[id].visible:
-				if id in Settings.NAVIGATION_IDS:
+				if id == "session_stats":
+					continue # queried below at the same bounded 10 Hz refresh as the other instruments
+				elif id in Settings.NAVIGATION_IDS:
 					frames[id].refresh_navigation(_last_telemetry, system, _battery_reading, cruise)
 				elif id in Settings.TRAINING_IDS:
 					frames[id].refresh_training(_last_telemetry, system, peak_airspeed, metrics)
 				else:
 					frames[id].refresh(_last_telemetry, system, peak_airspeed, _battery_reading, mass_sample, snap.get("trims", {}), float(snap.get("rpm", NAN)))
+		if frames.session_stats.visible:
+			var scope := str(settings.get("session_stats_scope", "all"))
+			var aircraft_id := statistics_aircraft_id if scope == "aircraft" else ""
+			var summary := _statistics_summary(aircraft_id, "session")
+			frames.session_stats.refresh_statistics(summary, tr("This aircraft") if scope == "aircraft" else tr("All aircraft"))
 	frames.warnings.visible = not _warning_codes.is_empty() and is_overlay_visible("warnings")
 	if visible and frames.warnings.visible:
 		frames.warnings.refresh(_warning_codes)
+
+
+func _statistics_summary(aircraft_id: String, period: String) -> Dictionary:
+	if statistics_service == null:
+		return {}
+	if statistics_service.has_method("summary"):
+		var summarized: Variant = statistics_service.call("summary", aircraft_id, period)
+		if summarized is Dictionary:
+			return summarized
+	if statistics_service.has_method("query"):
+		var queried: Variant = statistics_service.call("query", aircraft_id, period)
+		if queried is Dictionary:
+			return queried
+	return {}
 
 
 ## BAT-14/15: samples the pack (battery: electrical_state() or {}), shows O9 and the developer truth, and replaces a

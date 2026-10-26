@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="4" failures="0" errors="0" skipped="0" time="19.594000"><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp10-candidate-replays-final/check_numeric_preservation.gd [p51-air-numeric-preservation-5x8_znub]" time="4.813000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: p51-air-numeric-preservation-5x8_znub/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp10-candidate-replays-final/check_numeric_preservation.gd [p51-ground-numeric-preservation-k6hdg1ts]" time="5.640000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: p51-ground-numeric-preservation-k6hdg1ts/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp10-candidate-replays-final/check_numeric_preservation.gd [stik-air-numeric-preservation-28ikxjhp]" time="4.250000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: stik-air-numeric-preservation-28ikxjhp/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp10-candidate-replays-final/check_numeric_preservation.gd [stik-ground-numeric-preservation-0wqnk5h0]" time="4.891000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: stik-ground-numeric-preservation-0wqnk5h0/report.json and engine.log</system-out></testcase></testsuite>

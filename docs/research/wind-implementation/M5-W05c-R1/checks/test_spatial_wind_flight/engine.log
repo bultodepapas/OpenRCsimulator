@@ -1,0 +1,140 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok res://data/aircraft/jensen_ugly_stik_60.json prepares
+ok res://data/aircraft/jensen_ugly_stik_60.json accepts legacy turbulence
+ok res://data/aircraft/jensen_ugly_stik_60.json air data uses supplied body position and adds turbulence once
+ok res://data/aircraft/jensen_ugly_stik_60.json endpoint observer uses accepted position
+ok res://data/aircraft/jensen_ugly_stik_60.json malformed state yields invalid wind
+ok res://data/aircraft/jensen_ugly_stik_60.json spatial and matched uniform body-datum stage agree
+ok res://data/aircraft/jensen_ugly_stik_60.json reordered observer queries leave all kernel state unchanged
+ok res://data/aircraft/jensen_ugly_stik_60.json real RK step succeeds
+ok res://data/aircraft/jensen_ugly_stik_60.json actual stage times reach provider
+ok res://data/aircraft/jensen_ugly_stik_60.json every sampled stage uses its own position/time
+ok res://data/aircraft/jensen_ugly_stik_60.json midpoint position differs from committed endpoint
+ok res://data/aircraft/jensen_ugly_stik_60.json bad spatial sample rolls back body/aux/continuous/RNG/inputs
+ok res://data/aircraft/jensen_ugly_stik_60.json bad spatial sample pauses without publishing
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok res://data/aircraft/stik_glow_61fx_2t.json prepares
+ok res://data/aircraft/stik_glow_61fx_2t.json accepts legacy turbulence
+ok res://data/aircraft/stik_glow_61fx_2t.json air data uses supplied body position and adds turbulence once
+ok res://data/aircraft/stik_glow_61fx_2t.json endpoint observer uses accepted position
+ok res://data/aircraft/stik_glow_61fx_2t.json malformed state yields invalid wind
+ok res://data/aircraft/stik_glow_61fx_2t.json spatial and matched uniform body-datum stage agree
+ok res://data/aircraft/stik_glow_61fx_2t.json reordered observer queries leave all kernel state unchanged
+ok res://data/aircraft/stik_glow_61fx_2t.json real RK step succeeds
+ok res://data/aircraft/stik_glow_61fx_2t.json actual stage times reach provider
+ok res://data/aircraft/stik_glow_61fx_2t.json every sampled stage uses its own position/time
+ok res://data/aircraft/stik_glow_61fx_2t.json midpoint position differs from committed endpoint
+ok res://data/aircraft/stik_glow_61fx_2t.json bad spatial sample rolls back body/aux/continuous/RNG/inputs
+ok res://data/aircraft/stik_glow_61fx_2t.json bad spatial sample pauses without publishing
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok res://data/aircraft/stik_glow_55ax_2t.json prepares
+ok res://data/aircraft/stik_glow_55ax_2t.json accepts legacy turbulence
+ok res://data/aircraft/stik_glow_55ax_2t.json air data uses supplied body position and adds turbulence once
+ok res://data/aircraft/stik_glow_55ax_2t.json endpoint observer uses accepted position
+ok res://data/aircraft/stik_glow_55ax_2t.json malformed state yields invalid wind
+ok res://data/aircraft/stik_glow_55ax_2t.json spatial and matched uniform body-datum stage agree
+ok res://data/aircraft/stik_glow_55ax_2t.json reordered observer queries leave all kernel state unchanged
+ok res://data/aircraft/stik_glow_55ax_2t.json real RK step succeeds
+ok res://data/aircraft/stik_glow_55ax_2t.json actual stage times reach provider
+ok res://data/aircraft/stik_glow_55ax_2t.json every sampled stage uses its own position/time
+ok res://data/aircraft/stik_glow_55ax_2t.json midpoint position differs from committed endpoint
+ok res://data/aircraft/stik_glow_55ax_2t.json bad spatial sample rolls back body/aux/continuous/RNG/inputs
+ok res://data/aircraft/stik_glow_55ax_2t.json bad spatial sample pauses without publishing
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok res://data/aircraft/stik_glow_fs64v_4t.json prepares
+ok res://data/aircraft/stik_glow_fs64v_4t.json accepts legacy turbulence
+ok res://data/aircraft/stik_glow_fs64v_4t.json air data uses supplied body position and adds turbulence once
+ok res://data/aircraft/stik_glow_fs64v_4t.json endpoint observer uses accepted position
+ok res://data/aircraft/stik_glow_fs64v_4t.json malformed state yields invalid wind
+ok res://data/aircraft/stik_glow_fs64v_4t.json spatial and matched uniform body-datum stage agree
+ok res://data/aircraft/stik_glow_fs64v_4t.json reordered observer queries leave all kernel state unchanged
+ok res://data/aircraft/stik_glow_fs64v_4t.json real RK step succeeds
+ok res://data/aircraft/stik_glow_fs64v_4t.json actual stage times reach provider
+ok res://data/aircraft/stik_glow_fs64v_4t.json every sampled stage uses its own position/time
+ok res://data/aircraft/stik_glow_fs64v_4t.json midpoint position differs from committed endpoint
+ok res://data/aircraft/stik_glow_fs64v_4t.json bad spatial sample rolls back body/aux/continuous/RNG/inputs
+ok res://data/aircraft/stik_glow_fs64v_4t.json bad spatial sample pauses without publishing
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok res://data/aircraft/gp_extra_300s_60.json prepares
+ok res://data/aircraft/gp_extra_300s_60.json accepts legacy turbulence
+ok res://data/aircraft/gp_extra_300s_60.json air data uses supplied body position and adds turbulence once
+ok res://data/aircraft/gp_extra_300s_60.json endpoint observer uses accepted position
+ok res://data/aircraft/gp_extra_300s_60.json malformed state yields invalid wind
+ok res://data/aircraft/gp_extra_300s_60.json spatial and matched uniform body-datum stage agree
+ok res://data/aircraft/gp_extra_300s_60.json reordered observer queries leave all kernel state unchanged
+ok res://data/aircraft/gp_extra_300s_60.json real RK step succeeds
+ok res://data/aircraft/gp_extra_300s_60.json actual stage times reach provider
+ok res://data/aircraft/gp_extra_300s_60.json every sampled stage uses its own position/time
+ok res://data/aircraft/gp_extra_300s_60.json midpoint position differs from committed endpoint
+ok res://data/aircraft/gp_extra_300s_60.json bad spatial sample rolls back body/aux/continuous/RNG/inputs
+ok res://data/aircraft/gp_extra_300s_60.json bad spatial sample pauses without publishing
+ok res://data/aircraft/p51d_mustang_120.json prepares
+ok res://data/aircraft/p51d_mustang_120.json accepts legacy turbulence
+ok res://data/aircraft/p51d_mustang_120.json air data uses supplied body position and adds turbulence once
+ok res://data/aircraft/p51d_mustang_120.json endpoint observer uses accepted position
+ok res://data/aircraft/p51d_mustang_120.json malformed state yields invalid wind
+ok res://data/aircraft/p51d_mustang_120.json spatial and matched uniform body-datum stage agree
+ok res://data/aircraft/p51d_mustang_120.json reordered observer queries leave all kernel state unchanged
+ok res://data/aircraft/p51d_mustang_120.json real RK step succeeds
+ok res://data/aircraft/p51d_mustang_120.json actual stage times reach provider
+ok res://data/aircraft/p51d_mustang_120.json every sampled stage uses its own position/time
+ok res://data/aircraft/p51d_mustang_120.json midpoint position differs from committed endpoint
+ok res://data/aircraft/p51d_mustang_120.json bad spatial sample rolls back body/aux/continuous/RNG/inputs
+ok res://data/aircraft/p51d_mustang_120.json bad spatial sample pauses without publishing
+ok res://data/aircraft/f4u_corsair_250.json prepares
+ok res://data/aircraft/f4u_corsair_250.json accepts legacy turbulence
+ok res://data/aircraft/f4u_corsair_250.json air data uses supplied body position and adds turbulence once
+ok res://data/aircraft/f4u_corsair_250.json endpoint observer uses accepted position
+ok res://data/aircraft/f4u_corsair_250.json malformed state yields invalid wind
+ok res://data/aircraft/f4u_corsair_250.json spatial and matched uniform body-datum stage agree
+ok res://data/aircraft/f4u_corsair_250.json reordered observer queries leave all kernel state unchanged
+ok res://data/aircraft/f4u_corsair_250.json real RK step succeeds
+ok res://data/aircraft/f4u_corsair_250.json actual stage times reach provider
+ok res://data/aircraft/f4u_corsair_250.json every sampled stage uses its own position/time
+ok res://data/aircraft/f4u_corsair_250.json midpoint position differs from committed endpoint
+ok res://data/aircraft/f4u_corsair_250.json bad spatial sample rolls back body/aux/continuous/RNG/inputs
+ok res://data/aircraft/f4u_corsair_250.json bad spatial sample pauses without publishing
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok res://data/aircraft/sebart_avanti_s_a200.json prepares
+ok res://data/aircraft/sebart_avanti_s_a200.json accepts legacy turbulence
+ok res://data/aircraft/sebart_avanti_s_a200.json air data uses supplied body position and adds turbulence once
+ok res://data/aircraft/sebart_avanti_s_a200.json endpoint observer uses accepted position
+ok res://data/aircraft/sebart_avanti_s_a200.json malformed state yields invalid wind
+ok res://data/aircraft/sebart_avanti_s_a200.json spatial and matched uniform body-datum stage agree
+ok res://data/aircraft/sebart_avanti_s_a200.json reordered observer queries leave all kernel state unchanged
+ok res://data/aircraft/sebart_avanti_s_a200.json real RK step succeeds
+ok res://data/aircraft/sebart_avanti_s_a200.json actual stage times reach provider
+ok res://data/aircraft/sebart_avanti_s_a200.json every sampled stage uses its own position/time
+ok res://data/aircraft/sebart_avanti_s_a200.json midpoint position differs from committed endpoint
+ok res://data/aircraft/sebart_avanti_s_a200.json bad spatial sample rolls back body/aux/continuous/RNG/inputs
+ok res://data/aircraft/sebart_avanti_s_a200.json bad spatial sample pauses without publishing
+ok res://data/aircraft/turbo_lumber_evolution.json prepares
+ok res://data/aircraft/turbo_lumber_evolution.json accepts legacy turbulence
+ok res://data/aircraft/turbo_lumber_evolution.json air data uses supplied body position and adds turbulence once
+ok res://data/aircraft/turbo_lumber_evolution.json endpoint observer uses accepted position
+ok res://data/aircraft/turbo_lumber_evolution.json malformed state yields invalid wind
+ok res://data/aircraft/turbo_lumber_evolution.json spatial and matched uniform body-datum stage agree
+ok res://data/aircraft/turbo_lumber_evolution.json reordered observer queries leave all kernel state unchanged
+ok res://data/aircraft/turbo_lumber_evolution.json real RK step succeeds
+ok res://data/aircraft/turbo_lumber_evolution.json actual stage times reach provider
+ok res://data/aircraft/turbo_lumber_evolution.json every sampled stage uses its own position/time
+ok res://data/aircraft/turbo_lumber_evolution.json midpoint position differs from committed endpoint
+ok res://data/aircraft/turbo_lumber_evolution.json bad spatial sample rolls back body/aux/continuous/RNG/inputs
+ok res://data/aircraft/turbo_lumber_evolution.json bad spatial sample pauses without publishing
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json prepares
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json accepts legacy turbulence
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json air data uses supplied body position and adds turbulence once
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json endpoint observer uses accepted position
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json malformed state yields invalid wind
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json spatial and matched uniform body-datum stage agree
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json reordered observer queries leave all kernel state unchanged
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json real RK step succeeds
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json actual stage times reach provider
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json every sampled stage uses its own position/time
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json midpoint position differs from committed endpoint
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json bad spatial sample rolls back body/aux/continuous/RNG/inputs
+ok res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json bad spatial sample pauses without publishing
+M5-W05b-R1 aircraft spatial contract: 130 checks, 0 failures; 10 configurations

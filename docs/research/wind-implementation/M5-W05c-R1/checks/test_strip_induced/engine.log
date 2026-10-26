@@ -1,0 +1,44 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   elliptic AR 50: CLα 6.0260 reaches Prandtl's lifting line 6.0415 within 0.5 %
+ok   elliptic AR 5: CLα 4.0920 matches the independent Weissinger 4.0920
+ok   AR 5 rectangular, 3 strips per side: CLα 4.3171, Clp -0.4814 match the independent Weissinger 4.3171, -0.4814
+ok   AR 5 rectangular, 5 strips per side: CLα 4.1699, Clp -0.4494 match the independent Weissinger 4.1699, -0.4494
+ok   AR 5 rectangular, 8 strips per side: CLα 4.0789, Clp -0.4274 match the independent Weissinger 4.0789, -0.4274
+ok   jensen-das-ugly-stik-60: local wing + tail CLα = aero.CLa 4.5800 (a0 6.082/rad)
+ok   jensen-das-ugly-stik-60: local CL at α 0 = aero.CL0 0.1068  0.106800000
+ok   jensen-das-ugly-stik-60: section slope a0 6.08 within 0.75–1.10 × 2π
+ok   jensen-das-ugly-stik-60: the map is mirror-symmetric
+ok   stik-glow-61fx-2t: local wing + tail CLα = aero.CLa 4.5800 (a0 6.082/rad)
+ok   stik-glow-61fx-2t: local CL at α 0 = aero.CL0 0.1068  0.106800000
+ok   stik-glow-61fx-2t: section slope a0 6.08 within 0.75–1.10 × 2π
+ok   stik-glow-61fx-2t: the map is mirror-symmetric
+ok   stik-glow-55ax-2t: local wing + tail CLα = aero.CLa 4.5800 (a0 6.082/rad)
+ok   stik-glow-55ax-2t: local CL at α 0 = aero.CL0 0.1068  0.106800000
+ok   stik-glow-55ax-2t: section slope a0 6.08 within 0.75–1.10 × 2π
+ok   stik-glow-55ax-2t: the map is mirror-symmetric
+ok   stik-glow-fs64v-4t: local wing + tail CLα = aero.CLa 4.5800 (a0 6.082/rad)
+ok   stik-glow-fs64v-4t: local CL at α 0 = aero.CL0 0.1068  0.106800000
+ok   stik-glow-fs64v-4t: section slope a0 6.08 within 0.75–1.10 × 2π
+ok   stik-glow-fs64v-4t: the map is mirror-symmetric
+ok   gp-extra-300s-60: local wing + tail CLα = aero.CLa 4.4506 (a0 5.406/rad)
+ok   gp-extra-300s-60: local CL at α 0 = aero.CL0 -0.0059  -0.005905000
+ok   gp-extra-300s-60: section slope a0 5.41 within 0.75–1.10 × 2π
+ok   gp-extra-300s-60: the map is mirror-symmetric
+ok   p51d-mustang-120: local wing + tail CLα = aero.CLa 4.3377 (a0 5.140/rad)
+ok   p51d-mustang-120: local CL at α 0 = aero.CL0 0.0971  0.097097000
+ok   p51d-mustang-120: section slope a0 5.14 within 0.75–1.10 × 2π
+ok   p51d-mustang-120: the map is mirror-symmetric
+ok   f4u-corsair-250: local wing + tail CLα = aero.CLa 4.0560 (a0 4.731/rad)
+ok   f4u-corsair-250: local CL at α 0 = aero.CL0 0.2001  0.200053000
+ok   f4u-corsair-250: section slope a0 4.73 within 0.75–1.10 × 2π
+ok   f4u-corsair-250: the map is mirror-symmetric
+ok   sebart-avanti-s-a200-p100rx: local wing + tail CLα = aero.CLa 4.6286 (a0 5.581/rad)
+ok   sebart-avanti-s-a200-p100rx: local CL at α 0 = aero.CL0 0.0000  0.000000000
+ok   sebart-avanti-s-a200-p100rx: section slope a0 5.58 within 0.75–1.10 × 2π
+ok   sebart-avanti-s-a200-p100rx: the map is mirror-symmetric
+ok   turbo-lumber-evolution: local wing + tail CLα = aero.CLa 4.8170 (a0 5.435/rad)
+ok   turbo-lumber-evolution: local CL at α 0 = aero.CL0 0.2823  0.282309898
+ok   turbo-lumber-evolution: section slope a0 5.43 within 0.75–1.10 × 2π
+ok   turbo-lumber-evolution: the map is mirror-symmetric
+41 checks, 0 failed

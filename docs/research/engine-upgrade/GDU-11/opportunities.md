@@ -6,6 +6,8 @@ Repository inspection: HEAD `72fafe9591b9a0ae0f9b9e3c737ec1ab6d556712`, with con
 
 Standard uses Compatibility; the existing optional High profile uses Forward+ and already enables SSAO, four shadow cascades, an 8192 shadow atlas and PCSS. See [High implementation](../../../../app/render/high_graphics_profile.gd) and [current qualification limits](../../../../tools/graphics/README.md). [Maple coverage preservation](README.md) is already implemented and measured; the following items distinguish additional opt-in work from improvements inherited through the engine upgrade.
 
+Implementation status and acceptance evidence are now maintained in [the incremental implementation record](implementation.md). The proposals below retain the research-time baseline.
+
 ## Recommended next experiments
 
 Order reflects concrete product gaps, existing integration points and bounded verification, not measured speedups. All visual acceptance starts at actual 1920×1080, then higher resolutions; 720p cannot qualify the primary target.

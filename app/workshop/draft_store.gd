@@ -9,6 +9,7 @@ const StrictJSON := preload("res://workshop/strict_json.gd")
 const Dependencies := preload("res://workshop/dependencies.gd")
 const Descriptor := preload("res://workshop/descriptor.gd")
 const Presentation := preload("res://workshop/presentation.gd")
+const LightingSequence := preload("res://workshop/lighting_sequence.gd")
 const Compiler := preload("res://workshop/compiler.gd")
 
 const FORMAT: String = "openrc-aircraft-workshop-recovery"
@@ -25,7 +26,7 @@ const MAX_EDITOR_NODES: int = 256
 const SNAPSHOT_KEYS: PackedStringArray = ["format", "version", "bundle_sha256", "bundle_base64", "editor"]
 const EDITOR_KEYS: PackedStringArray = ["page", "name", "numeric_buffers", "presentation_buffers"]
 const EDITOR_OPTIONAL_KEYS: PackedStringArray = ["camera"]
-const PAGES: PackedStringArray = ["appearance", "smoke", "setup", "compare"]
+const PAGES: PackedStringArray = ["appearance", "smoke", "lighting", "audio", "setup", "compare"]
 const NUMERIC_BUFFER_KEYS: PackedStringArray = [
 	"scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier",
 ]
@@ -249,7 +250,7 @@ static func validate_editor_state(value: Variant) -> Dictionary:
 	if not bool(presentations_result.get("ok", false)):
 		return presentations_result
 	var presentations: Dictionary = presentations_result["value"]
-	if not _exact_keys(presentations, PRESENTATION_PAGES):
+	if not _exact_keys_optional(presentations, PRESENTATION_PAGES, PackedStringArray(["lighting"])):
 		return _failure("Workshop presentation recovery pages are missing or unsupported.")
 	var checked_presentations: Dictionary = {}
 	for page: String in PRESENTATION_PAGES:
@@ -257,6 +258,21 @@ static func validate_editor_state(value: Variant) -> Dictionary:
 		if not bool(checked.get("ok", false)):
 			return checked
 		checked_presentations[page] = checked["value"]
+	if presentations.has("lighting"):
+		var lighting: Variant = presentations.lighting
+		if typeof(lighting) != TYPE_DICTIONARY or not _exact_keys_optional(lighting, PackedStringArray(["zone", "zones_open", "effects_open", "color_text"]), PackedStringArray(["sequence"])):
+			return _failure("Lighting editor recovery has missing or unsupported fields.")
+		if typeof(lighting.zone) != TYPE_STRING or (not str(lighting.zone).is_empty() and not Presentation.LightingProfile.ZONE_IDS.has(str(lighting.zone))) \
+				or typeof(lighting.zones_open) != TYPE_BOOL or typeof(lighting.effects_open) != TYPE_BOOL:
+			return _failure("Lighting editor recovery selection is malformed.")
+		if typeof(lighting.color_text) != TYPE_ARRAY or lighting.color_text.size() > 8:
+			return _failure("Lighting editor recovery palette exceeds eight entries.")
+		for text_value: Variant in lighting.color_text:
+			if typeof(text_value) != TYPE_STRING or not _bounded_text(str(text_value), 16):
+				return _failure("Lighting editor recovery color text is malformed.")
+		if lighting.has("sequence") and not LightingSequence.validate_editor_state(lighting.sequence).ok:
+			return _failure("Lighting sequence recovery has malformed or unsupported fields.")
+		checked_presentations["lighting"] = lighting.duplicate(true)
 	var normalized: Dictionary = {
 		"page": str(editor["page"]),
 		"name": str(editor["name"]),

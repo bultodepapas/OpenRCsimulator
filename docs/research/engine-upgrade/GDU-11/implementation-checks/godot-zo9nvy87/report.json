@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9862ec7e-3dd4-42c3-80c3-2c3ccb6df2a8",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tools/graphics/test_shadow_energy.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-experiments/gdu11-implementation/ao/energy"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T21:54:55.210192+00:00",
+  "label": "godot",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\final-checks\\godot-zo9nvy87\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\final-checks\\godot-zo9nvy87\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.438,
+  "log_bytes": 1218,
+  "log_sha256": "34f9278c4a6d5a23c5bd5c92bbaaebd73f8687609d4946f342c8c137c5b9b9e5"
+}

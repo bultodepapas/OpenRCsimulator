@@ -1,0 +1,31 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   a steady wind builds []
+ok   without a turbulence callback the wind is the weather sample byte for byte 
+ok   an empty turbulence sample adds nothing, keeping the exact bytes 
+ok   a turbulence sample is added axis by axis 
+ok   air queries delegate to the weather law 
+ok   without a surface table the terrain is flat at height zero 
+ok   without a lake or course those queries are empty 
+ok   identity summarizes the installed providers 
+ok   a uniform wind through the contract is Galilean for the air data 
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Stik flies 
+ok   the session's weather, surfaces and lake are views of its environment 
+ok   the session installed its turbulence sample 
+ok   a steady wind installs through the session  
+ok   wind_at is the environment's wind 
+ok   air density and the atmosphere query answer through the environment 
+ok   default field loads 
+ok   installing the field changes the environment's surface identity 
+ok   the terrain query is the surface table's sample 
+ok   a windy tick steps 
+ok   helicopter prepares 
+ok   the helicopter's weather and surfaces are views of its environment 
+ok   wind_at and air_density answer through the environment 
+ok   a helicopter tick steps 
+ok   truck prepares 
+ok   the course sampler is the environment's road and gravity is the model's 
+ok   the course query answers like the installed road and is deterministic 
+ok   the truck's identity reports a course and no weather turbulence 
+27 checks, 0 failed

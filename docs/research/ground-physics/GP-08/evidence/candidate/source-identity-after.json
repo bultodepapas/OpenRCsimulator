@@ -1,0 +1,35 @@
+{
+  "utc": "2026-10-25T23:18:10.8704875Z",
+  "source_commit": "cb2924b3676b72ee49497c92fe742b0b1dcd2d9c",
+  "modified_runtime_hashes": [
+    {
+      "path": "app/physics/wheel_coupling.gd",
+      "sha256": "2cea4e934cbbd6d54a0c2526891070b063f1fead9f97b418099656d5ae26351c"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "4030bf8cc1e9c4733cd6c8d4ebd526e3e7975c55083010d18fa8c9618f0d9516"
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "sha256": "33f1ab53a3f587acf330032f43c0ed44a515565fe8202d4e77e35ba6495f8f55"
+    },
+    {
+      "path": "app/statistics/detector.gd",
+      "sha256": "e57bd5bc99bb49ce34aebc50c118711b80f8840b75701df0ea7101751b54db09"
+    },
+    {
+      "path": "app/statistics/fixed_wing_adapter.gd",
+      "sha256": "732f1389ee20e6602319788f4aa617f62024a694e28a01d5e802417a2285366c"
+    },
+    {
+      "path": "app/statistics/rules.gd",
+      "sha256": "b52bb07a5cd4993233e69994359062b29b6f983e7b28a30b1c6a596af908bb0e"
+    },
+    {
+      "path": "app/statistics/service.gd",
+      "sha256": "9674092be1a0a57aa5ff6bca560b5818882484bb9fa5faf2263c71834d1a9dc3"
+    }
+  ],
+  "modified_runtime_unchanged_during_runs": true
+}

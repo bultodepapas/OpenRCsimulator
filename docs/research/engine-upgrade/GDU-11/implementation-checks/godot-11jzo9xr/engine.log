@@ -1,0 +1,54 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok native pool respects eight-per-receiver limit
+ok second owner cannot exceed the world's decal budget
+ok ninth mark uses a visible fallback without dropping primary
+ok sixteen marks keep exactly one representation per slot
+ok fallback aligns to sampled slope
+ok native image is actual 1080p
+ok mark 0 visibly reaches the shared sloped receiver
+ok mark 1 visibly reaches the shared sloped receiver
+ok mark 2 visibly reaches the shared sloped receiver
+ok mark 3 visibly reaches the shared sloped receiver
+ok mark 4 visibly reaches the shared sloped receiver
+ok mark 5 visibly reaches the shared sloped receiver
+ok mark 6 visibly reaches the shared sloped receiver
+ok mark 7 visibly reaches the shared sloped receiver
+ok mark 8 visibly reaches the shared sloped receiver
+ok mark 9 visibly reaches the shared sloped receiver
+ok mark 10 visibly reaches the shared sloped receiver
+ok mark 11 visibly reaches the shared sloped receiver
+ok mark 12 visibly reaches the shared sloped receiver
+ok mark 13 visibly reaches the shared sloped receiver
+ok mark 14 visibly reaches the shared sloped receiver
+ok mark 15 visibly reaches the shared sloped receiver
+ok decal cannot project onto aircraft or wreck layers
+ok unmarked geometry rejects projected mark 0
+ok unmarked geometry rejects projected mark 1
+ok unmarked geometry rejects projected mark 2
+ok unmarked geometry rejects projected mark 3
+ok unmarked geometry rejects projected mark 4
+ok unmarked geometry rejects projected mark 5
+ok unmarked geometry rejects projected mark 6
+ok unmarked geometry rejects projected mark 7
+ok camera motion retains mark 0
+ok camera motion retains mark 1
+ok camera motion retains mark 2
+ok camera motion retains mark 3
+ok camera motion retains mark 4
+ok camera motion retains mark 5
+ok camera motion retains mark 6
+ok camera motion retains mark 7
+ok camera motion retains mark 8
+ok camera motion retains mark 9
+ok camera motion retains mark 10
+ok camera motion retains mark 11
+ok camera motion retains mark 12
+ok camera motion retains mark 13
+ok camera motion retains mark 14
+ok camera motion retains mark 15
+ok recycling preserves primary and total cap
+ok invalid terrain sample safely uses the finite plane fallback
+ok reset clears both representations
+Ground marks: 0 failures

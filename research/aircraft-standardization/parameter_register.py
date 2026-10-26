@@ -61,6 +61,7 @@ def consumer(path: str) -> str:
         ("aero.ground_effect.", "AircraftData._ground_effect → GroundEffect.factors / Aero strip induced angle, induced drag and tail downwash near the ground"),
         ("controls.", "AircraftData._controls → Commands surface mapping, session servo integration, rendering"),
         ("crash_hull", "AircraftData._hull_body → hull_crossing / ImpactSnapshot / FlightSession crash"),
+        ("crash_tolerance.", "AircraftData._crash_tolerance → HullContact.prepare terminal thresholds / crash director durability"),
         ("landing_gear.", "AircraftData._landing_gear → ground_contact, ground_start, session anchors/travel crash"),
         ("propulsion.propeller.slipstream.", "AircraftData._slipstream → Slipstream.loads / SwirlLoads module / session wake state"),
         ("propulsion.engine.shaft.", "AircraftData._shaft → Propulsion shaft torque/RPM balance / session integrator"),

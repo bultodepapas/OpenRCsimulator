@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="2" failures="0" errors="0" skipped="0" time="19.672000"><testcase classname="OpenRC.GodotCommand" name="res://tests/test_flight_log.gd [flight-log-baseline-w3blmead]" time="15.016000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: flight-log-baseline-w3blmead/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-implementation-20261025/tmp/gp08-baseline/record_ground.gd [ground-record-baseline-9wvi2mto]" time="4.656000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: ground-record-baseline-9wvi2mto/report.json and engine.log</system-out></testcase></testsuite>

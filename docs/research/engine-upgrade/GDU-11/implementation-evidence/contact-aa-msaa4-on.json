@@ -1,0 +1,109 @@
+{
+	"aa": {
+		"fsr_sharpness": 0.200000002980232,
+		"requested": "msaa4",
+		"scaling_3d_mode": 0,
+		"scaling_3d_scale": 1.0,
+		"texture_mipmap_bias": 0.0,
+		"use_taa": false
+	},
+	"arguments": {
+		"aa": "msaa4",
+		"aircraft": "default",
+		"contact_shadows": "on",
+		"hour": -1.0,
+		"out": "D:/OpenRCsimulator-experiments/gdu11-implementation/contact-aa/msaa4-on",
+		"seconds": 0.0,
+		"view": "pavilion",
+		"width": 1920
+	},
+	"cases": [
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				-8.0,
+				-13.0,
+				-2.5
+			],
+			"counters": {
+				"draw_calls": 183,
+				"primitives": 326388
+			},
+			"id": "pavilion",
+			"image": "D:/OpenRCsimulator-experiments/gdu11-implementation/contact-aa/msaa4-on/pavilion.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				-22.0,
+				0.0,
+				-1.5
+			]
+		}
+	],
+	"engine": {
+		"build": "official",
+		"hash": "4d10419cacd6d3009976e8f9fd3abd970fd58018",
+		"hex": 264192,
+		"major": 4,
+		"minor": 8,
+		"patch": 0,
+		"status": "beta1",
+		"string": "4.8-beta1 (official)",
+		"timestamp": 0
+	},
+	"environment": {
+		"contact_shadow_length": 0,
+		"contact_shadow_sun_allowed": true,
+		"contact_shadow_sun_blur": 0.0,
+		"contact_shadow_surface_thickness": 0.01,
+		"contact_shadows": true,
+		"fog_density": 0.000170086961588822,
+		"fog_enabled": true,
+		"glow_enabled": false,
+		"multi_bounce_occlusion_startup": true,
+		"reflected_light_source": 2,
+		"ssao_detail": 0.5,
+		"ssao_enabled": true,
+		"ssao_intensity": 1.20000004768372,
+		"ssao_light_affect": 0.0,
+		"ssao_power": 1.29999995231628,
+		"ssao_radius": 0.800000011920929,
+		"tonemap_exposure": 0.600000023841858,
+		"tonemap_mode": 3
+	},
+	"format": "openrc-graphics-capture v1",
+	"gpu": {
+		"api": "1.4.351",
+		"name": "NVIDIA GeForce RTX 3090"
+	},
+	"lighting": {
+		"engine_shadows": true,
+		"hour": -1.0,
+		"snapshot": {},
+		"sun_azimuth_deg": 225.0,
+		"sun_direction_render": [
+			-0.5,
+			0.70710676908493,
+			0.5
+		],
+		"sun_elevation_deg": 45.0,
+		"sun_energy": 1.0,
+		"sun_shadow_enabled": true
+	},
+	"msaa_3d": 2,
+	"offscreen": true,
+	"performance_claim": false,
+	"profile": {
+		"active": "high_experimental",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "forward_plus",
+		"requested": "high"
+	},
+	"renderer": "forward_plus",
+	"viewport": [
+		1920,
+		1080
+	]
+}

@@ -1,0 +1,280 @@
+{
+  "format": "openrc-gdu11-implementation-evidence-v1",
+  "raw_root": "D:\\OpenRCsimulator-experiments\\gdu11-implementation",
+  "scope": "Selected passing regression invocations; rejected contact variants are retained separately and default adoption remains open. No full-suite or hardware qualification claim.",
+  "checks": [
+    {
+      "label": "ao",
+      "kind": "godot-5s52ww85",
+      "receipt": "implementation-checks/godot-5s52ww85",
+      "started_utc": "2026-10-25T21:51:46.992145+00:00",
+      "report_sha256": "edc2851acb46ffa302d9df656748ce9806b8e3aa877515e384f6d22ee70589ec"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-6wjsmo59",
+      "receipt": "implementation-checks/godot-6wjsmo59",
+      "started_utc": "2026-10-25T21:48:41.624120+00:00",
+      "report_sha256": "67cf3aff9e6038cd895dee54cd16bda34b1d7bfd185dbde2a2f6a28e8f91ff6a"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-8cudbmm0",
+      "receipt": "implementation-checks/godot-8cudbmm0",
+      "started_utc": "2026-10-25T21:52:09.682835+00:00",
+      "report_sha256": "7640a650e55691901f58f26b08f2bd84559b20a009bc252c40a5a639ea0459f7"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-91cix58e",
+      "receipt": "implementation-checks/godot-91cix58e",
+      "started_utc": "2026-10-25T21:49:26.922296+00:00",
+      "report_sha256": "69424cba9ee080d78646463e2dc4e3c08b9b26fc885ece8931fe1c91d90ab267"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-9razuxqo",
+      "receipt": "implementation-checks/godot-9razuxqo",
+      "started_utc": "2026-10-25T21:53:17.680840+00:00",
+      "report_sha256": "209ca7875de456504883eeda24e14e2887cbdb7f3ede97cfbbbf35778f5cbb73"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-au61mwx0",
+      "receipt": "implementation-checks/godot-au61mwx0",
+      "started_utc": "2026-10-25T21:49:10.616695+00:00",
+      "report_sha256": "a8f619e741e001608ac83f05ac4a18585b3dedd51c7302ccbe08c67960a97930"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-bj3ir6h2",
+      "receipt": "implementation-checks/godot-bj3ir6h2",
+      "started_utc": "2026-10-25T21:48:56.906867+00:00",
+      "report_sha256": "30433056b6c6b919fdaf8c7d3bf3cf4c9f2fa5af6feb22a2e004b81819b3c567"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-g8s1cula",
+      "receipt": "implementation-checks/godot-g8s1cula",
+      "started_utc": "2026-10-25T21:51:24.305052+00:00",
+      "report_sha256": "99333532c7e554365d02313a08d7de63fce15ff1948aad53affd45dae8c2e201"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-laz2hkn8",
+      "receipt": "implementation-checks/godot-laz2hkn8",
+      "started_utc": "2026-10-25T21:48:13.360637+00:00",
+      "report_sha256": "81ffbc629c15443d526ad2d5ba8be3f4812414cafcfe33c30051f6fe15611200"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-n6871he_",
+      "receipt": "implementation-checks/godot-n6871he_",
+      "started_utc": "2026-10-25T21:50:17.943532+00:00",
+      "report_sha256": "51e5dc3ee8111e79da3c7a0af7563d64322bdc6603302146addc4e21ce4fd9a9"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-t3jro2mp",
+      "receipt": "implementation-checks/godot-t3jro2mp",
+      "started_utc": "2026-10-25T21:47:52.602629+00:00",
+      "report_sha256": "7365743e9edd378ad08bcef707799920c269feeab825236835692e5d72322c32"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-vs6kld6a",
+      "receipt": "implementation-checks/godot-vs6kld6a",
+      "started_utc": "2026-10-25T21:53:39.989505+00:00",
+      "report_sha256": "3a05884998fde031b0a5ce2d437ec83319dc80457e516c0d8ff2b54e145d84e9"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-wkolwmxk",
+      "receipt": "implementation-checks/godot-wkolwmxk",
+      "started_utc": "2026-10-25T21:51:02.398138+00:00",
+      "report_sha256": "b5384a5344ab520fca33ed44a7f1651bd8c12c39483727ee3f41429cc706a4a1"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-x4z7b1ba",
+      "receipt": "implementation-checks/godot-x4z7b1ba",
+      "started_utc": "2026-10-25T21:52:55.064375+00:00",
+      "report_sha256": "6546079343adb05b1a0f102b6b30dc6de83d1e50812a1fbc41e8137bfe54f0d8"
+    },
+    {
+      "label": "ao",
+      "kind": "godot-yz53zhxs",
+      "receipt": "implementation-checks/godot-yz53zhxs",
+      "started_utc": "2026-10-25T21:52:32.411920+00:00",
+      "report_sha256": "8fd1c73f2329cf1d297b990d71ba0db84bb1da89b68823e8fcfec903a90bc950"
+    },
+    {
+      "label": "contact_shadow_probe",
+      "kind": "native",
+      "receipt": "implementation-checks/godot-x8uqupr1",
+      "started_utc": "2026-10-25T21:41:47.057304+00:00",
+      "report_sha256": "3137cc0b9a1b810661e571c74024d428946b9a8fc4a7014c581a1538b95f26af"
+    },
+    {
+      "label": "restart_probe",
+      "kind": "native",
+      "receipt": "implementation-checks/godot-wybd7bnm",
+      "started_utc": "2026-10-25T21:44:55.425306+00:00",
+      "report_sha256": "71a8e6883335fe60f6c2eb7834bd9b176a20a2f6ad2ef1315e341929d05c3ea1"
+    },
+    {
+      "label": "test_crash_effects",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-l4vmh5dl",
+      "started_utc": "2026-10-25T21:20:31.268102+00:00",
+      "report_sha256": "8117d78da4e75e787619e041e984628764432dfb22655cb036e00f031dbe1e47"
+    },
+    {
+      "label": "test_crash_energy",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-nnzmiyr0",
+      "started_utc": "2026-10-25T21:23:32.898597+00:00",
+      "report_sha256": "7792d4145ada06741f904ad91f532bd6852a1f250ab243489d6624f62a1f0ed1"
+    },
+    {
+      "label": "test_crash_integration",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-5exc12ub",
+      "started_utc": "2026-10-25T21:23:00.497625+00:00",
+      "report_sha256": "ce38dab5762e40e5a06a58e41fbc08f0ea66ab6ec26cf41c4ae22a5b5db1efab"
+    },
+    {
+      "label": "test_crash_integration",
+      "kind": "native",
+      "receipt": "implementation-checks/godot-s2054ffm",
+      "started_utc": "2026-10-25T21:24:19.337194+00:00",
+      "report_sha256": "3e0f6df44ff6c7f0a52a7873cb61a447cdd2e7b1139eae4efc2428ecd620d0fd"
+    },
+    {
+      "label": "test_crash_warmup",
+      "kind": "native",
+      "receipt": "implementation-checks/godot-yip6l_ta",
+      "started_utc": "2026-10-25T21:22:21.556145+00:00",
+      "report_sha256": "7fd22175e3e0cc42da1261b63e720a47566243d0a48724c2bd592f89136791ba"
+    },
+    {
+      "label": "test_ground_marks",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-td3fos5x",
+      "started_utc": "2026-10-25T21:55:41.449186+00:00",
+      "report_sha256": "49070bdd477ad66e884490d1017f6388a9d5097665a992741c6f64703a302a94"
+    },
+    {
+      "label": "test_ground_marks",
+      "kind": "native",
+      "receipt": "implementation-checks/godot-11jzo9xr",
+      "started_utc": "2026-10-25T21:55:43.683295+00:00",
+      "report_sha256": "b960a905f8a0c9bca5021bcdd4b2ec6e8baae7881a02e213eb62fce85929f3af"
+    },
+    {
+      "label": "test_high_graphics_profile",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-p64nj5e0",
+      "started_utc": "2026-10-25T21:42:51.609853+00:00",
+      "report_sha256": "fc122793a9ce6a3ecd6302bdb4764067683c3b5582d0c4fe694220c9ef78181d"
+    },
+    {
+      "label": "test_high_graphics_profile",
+      "kind": "native",
+      "receipt": "implementation-checks/godot-astya6jm",
+      "started_utc": "2026-10-25T21:54:49.775422+00:00",
+      "report_sha256": "2aa6fcdc07c7f38d7b3c813b006db0ff9a5bbb301e2264ebbcbafa04b89a8fed"
+    },
+    {
+      "label": "test_high_graphics_restart",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-joeek9ne",
+      "started_utc": "2026-10-25T21:42:52.822150+00:00",
+      "report_sha256": "9be9c2392bc59b5a19af4daf835e653389269cfd783623608e8762f21a403017"
+    },
+    {
+      "label": "test_lake_planar_reflection",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-2zdnjct4",
+      "started_utc": "2026-10-25T21:55:42.574183+00:00",
+      "report_sha256": "f292b086f0bc8728b401f6c7475c9e7e22f6671911c8e1fb39aefc4ce3abdd43"
+    },
+    {
+      "label": "test_shadow_energy",
+      "kind": "native",
+      "receipt": "implementation-checks/godot-zo9nvy87",
+      "started_utc": "2026-10-25T21:54:55.210192+00:00",
+      "report_sha256": "253027799899c039249e70f78f56cffa0cb364aaac04c9dd673549e891642433"
+    },
+    {
+      "label": "test_ui_scale",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-_ctge2i1",
+      "started_utc": "2026-10-25T21:42:50.717245+00:00",
+      "report_sha256": "2a0e10b931395bbf63fea775df53282f22b8dbf611e3dff5a139e0e6046d03ad"
+    },
+    {
+      "label": "test_ui_title_fit",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-93hbgqkn",
+      "started_utc": "2026-10-25T21:42:49.916495+00:00",
+      "report_sha256": "7ee129efc175ce3afbf5daa645a0502dc5009b47bc770cdeb858b43e6c4f75b3"
+    },
+    {
+      "label": "test_workshop_reuse",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-s13lety_",
+      "started_utc": "2026-10-25T21:03:52.890848+00:00",
+      "report_sha256": "170f5fe58d171542e7b9854bd5f8ce2d70a546ed80e9b4226d44953f5e675cb1"
+    },
+    {
+      "label": "test_workshop_search",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-vcn42n_3",
+      "started_utc": "2026-10-25T21:42:49.579379+00:00",
+      "report_sha256": "ee91aad81a0f0bd4e4abae5c0dd919920d1a485c00090125ce15bb9745db6660"
+    },
+    {
+      "label": "test_workshop_ui",
+      "kind": "headless",
+      "receipt": "implementation-checks/godot-_lk31dnx",
+      "started_utc": "2026-10-25T21:18:01.523516+00:00",
+      "report_sha256": "c769a5a6aa29e2098a4815f7bbb541b6fa59ad9feff880f8c2079bebd155791f"
+    }
+  ],
+  "current_source_sha256": {
+    "app/project.godot": "d52e410972e450a570cc90fd7ad464134fb1b09a803ddda55c48833714cfbe5f",
+    "app/workshop/library_search.gd": "cec429e1f8122e45ec773a934d02d69b62d31f820cc0215d263d35836f4b1350",
+    "app/ui/workshop.gd": "7d0bcbd9e0116522bd472bda9f55713abec1d3563f55d00f9d2c91570cec7e5a",
+    "app/ui/widgets.gd": "23eebe25fb88ea0d22e5d89b10691b64fbdf18802bbc4b04db0d01b3e4288f23",
+    "app/render/high_graphics_profile.gd": "c65966056c567601ea0b109d33d1aee6f778996add16893fbd31616b575ea43a",
+    "app/render/ground.gd": "1c12729c8ff2b187de5f8d0df9e75498c11e46adbdd5396f6298bdc126bbd6ac",
+    "app/render/field.gd": "6923ec52e5ed4b60ae0644e35adb1521be46198ad840cb5c8898a18b03e0113a",
+    "app/render/lake/lake_terrain.gd": "ef23575c0439b3cc505945d70e3da2b1a4bc76386da635709d9b677cb9a60dd1",
+    "app/render/lake/lake_planar_reflection.gd": "07e7f58ade4a29e97ab9c7febb431489f6eab3257894dfa816109598da540665",
+    "app/render/crash/effects.gd": "18361424775749cb2ad6904d3a57499860e4400523cb11230271ed92657f0e0c",
+    "app/render/crash/director.gd": "7519305fb9b478f28021cd336be299acf6d18305edc99a38e22b70818aff4fbe",
+    "app/render/crash/shader_warmup.gd": "2c351b96131e45a69a6e3752a551670f9db174f15062858a12e40f14133d6697",
+    "tools/graphics/capture.gd": "731c5bcdca9246107b9d3c7c2cc68129d1ef4223bbb9fdc13efea575e6c13b72",
+    "tools/graphics/contact_shadow_probe.gd": "e4de819380729729e947d9d6b1c567f924cb02cb9bf04553bdff21451eb3327e",
+    "tools/graphics/restart_probe.gd": "11be763c59c5fa149b4d23855ed5527a4b9dbcf57e7ffa1f1c18949581b811d8",
+    "app/tests/test_crash_effects.gd": "080d7fcb06344c2732b61b799f96fd975988d6e9a3bd1a9897a685e095fcbcd4",
+    "app/tests/test_crash_energy.gd": "2964593da0a64c3608d532efaea02c7688ad225518cea1bf5d7f2cbd2df69f8e",
+    "app/tests/test_crash_integration.gd": "2616ab8286d94879f4866b58bc3ce132376743f63eb2b840fe71dbfd13b90864",
+    "app/tests/test_crash_warmup.gd": "6611a9a9e5b7dd332e3f560b02ba6f1f3a26e18a3b8afa664ceb9f2718d71853",
+    "app/tests/test_ground_marks.gd": "8db6cef06b7ab5904a5321959cb8ab1cc45034c92d7e099f6ce46114605dd1bf",
+    "app/tests/test_high_graphics_profile.gd": "6b87ed56ecac94f29e35a5444e6f869c83a8ebb052ae100d707c38c533e98ece",
+    "app/tests/test_high_graphics_restart.gd": "d63059d6c3c64de21abe6e866c2a77d4622013588e8db2cf031fda4f5163dbe4",
+    "app/tests/test_lake_planar_reflection.gd": "0c914eab266e6fdc026fbd7f5fef8ea21f07c50d761109d987f7329b359a68c7",
+    "app/tests/test_ui_scale.gd": "65f4ecaf3db657b1b0741fbee60ada100515200ff1b93cb58704570f3c4e22b2",
+    "app/tests/test_ui_title_fit.gd": "f46b20ec0d9590b7a9ed3522b529dc3aa4f84ec90217d6a40660306d92c7a526",
+    "app/tests/test_workshop_reuse.gd": "516c139d2c23cf797c2704e3948b36f72865b8ee6390a1709b6807477ab62f71",
+    "app/tests/test_workshop_search.gd": "3b7489f91aca52e922182f472fdd60e0fd79177611c6c0c0eb1fd509506976d0",
+    "app/tests/test_workshop_ui.gd": "7df8376c7b84fe1376e9fef31a2a2d5f18f2c588756063aa660ba8e1a0e67a52"
+  },
+  "ui_png_sha256": {
+    "shot-21768-001.png": "8bc89602c20a8b076bf85320f7bcf07517862231b33e8ed134f59c9cad8aa420",
+    "shot-21768-003.png": "5943404e2a4c38e84cbd2bd7865bc2b000c8d0c788c3d24cec8ed996699f1234",
+    "shot-21768-006.png": "65cd622289752abe1ac74def4dd1b11db55a7c0a0c02a24e3d76e4c7f09a2b09"
+  }
+}

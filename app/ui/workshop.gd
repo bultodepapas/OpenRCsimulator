@@ -10,11 +10,13 @@ const Parameters := preload("res://workshop/parameters.gd")
 const Store := preload("res://workshop/store.gd")
 const Bundle := preload("res://workshop/bundle.gd")
 const LibraryPreferences := preload("res://workshop/library_preferences.gd")
+const LibrarySearch := preload("res://workshop/library_search.gd")
 const ProfileTransfer := preload("res://workshop/profile_transfer.gd")
 const Presentation := preload("res://workshop/presentation.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const CustomizationPanel := preload("res://ui/workshop_customization.gd")
-const PAGE_IDS := ["appearance", "smoke", "setup", "compare"]
+const LightingPanel := preload("res://ui/workshop_lighting.gd")
+const PAGE_IDS := ["appearance", "lighting", "smoke", "audio", "setup", "compare"]
 const WorkshopPreview := preload("res://ui/workshop_preview.gd")
 const Thumbnail := preload("res://ui/workshop_thumbnail.gd")
 
@@ -67,6 +69,12 @@ var _presentation_bindings: Dictionary = {}
 var _presentation_errors := PackedStringArray()
 var _presentation_buffers: Dictionary = {}
 var _customization_panels: Array = []
+var _servo_type: OptionButton
+var _servo_level: HSlider
+var _servo_level_label: Label
+var _servo_level_dragging := false
+var _retract_type: OptionButton
+var _audio_note: Label
 var _trial_conditions_label: Label
 var trial_conditions := "":
 	set(value):
@@ -368,7 +376,7 @@ func _build_ui() -> void:
 	_library_button.pressed.connect(_open_library)
 	_identity_line.add_child(_library_button)
 	var group := ButtonGroup.new()
-	for spec: Array in [["appearance", "Appearance"], ["smoke", "Smoke"], ["setup", "Flight setup"], ["compare", "Compare"]]:
+	for spec: Array in [["appearance", "Appearance"], ["lighting", "Lighting"], ["smoke", "Smoke"], ["audio", "Mechanical audio"], ["setup", "Flight setup"], ["compare", "Compare"]]:
 		var tab := _button(spec[1], "", "Page" + str(spec[0]).capitalize())
 		tab.toggle_mode = true
 		tab.button_group = group
@@ -381,7 +389,7 @@ func _build_ui() -> void:
 	_page_selector.fit_to_longest_item = false
 	_page_selector.clip_text = true
 	_page_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for page_title: String in ["Appearance", "Smoke", "Flight setup", "Compare"]: _page_selector.add_item(page_title)
+	for page_title: String in ["Appearance", "Lighting", "Smoke", "Mechanical audio", "Flight setup", "Compare"]: _page_selector.add_item(tr(page_title))
 	_page_selector.select(PAGE_IDS.find(_active_page))
 	_page_selector.item_selected.connect(func(index: int) -> void: _set_page(PAGE_IDS[index]))
 	_identity_line.add_child(_page_selector)
@@ -424,16 +432,33 @@ func _build_ui() -> void:
 	inspector_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspector_body.add_theme_constant_override("separation", 16)
 	_inspector.add_child(inspector_body)
-	for kind: String in ["appearance", "smoke"]:
-		var panel := CustomizationPanel.new()
-		panel.page_kind = kind
-		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		panel.profile_changed.connect(set_presentation)
-		panel.validity_changed.connect(_presentation_validity_changed)
-		panel.visible = false
-		inspector_body.add_child(panel)
-		_page_nodes[kind] = panel
-		_customization_panels.append(panel)
+	var appearance_panel := CustomizationPanel.new()
+	appearance_panel.page_kind = "appearance"
+	appearance_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	appearance_panel.profile_changed.connect(set_presentation.bind("appearance"))
+	appearance_panel.validity_changed.connect(_presentation_validity_changed)
+	appearance_panel.visible = false
+	inspector_body.add_child(appearance_panel)
+	_page_nodes["appearance"] = appearance_panel
+	_customization_panels.append(appearance_panel)
+	var lighting_panel := LightingPanel.new()
+	lighting_panel.name = "WorkshopLighting"
+	lighting_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lighting_panel.profile_changed.connect(set_presentation.bind("lighting"))
+	lighting_panel.validity_changed.connect(_presentation_validity_changed)
+	lighting_panel.visible = false
+	inspector_body.add_child(lighting_panel)
+	_page_nodes["lighting"] = lighting_panel
+	var smoke_panel := CustomizationPanel.new()
+	smoke_panel.page_kind = "smoke"
+	smoke_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	smoke_panel.profile_changed.connect(set_presentation.bind("smoke"))
+	smoke_panel.validity_changed.connect(_presentation_validity_changed)
+	smoke_panel.visible = false
+	inspector_body.add_child(smoke_panel)
+	_page_nodes["smoke"] = smoke_panel
+	_customization_panels.append(smoke_panel)
+	_build_audio_panel(inspector_body)
 	var setup := VBoxContainer.new()
 	setup.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	setup.add_theme_constant_override("separation", 16)
@@ -517,6 +542,8 @@ func _build_ui() -> void:
 
 func _resize_layout() -> void:
 	if not is_inside_tree(): return
+	Widgets.fit_title(find_child("WorkshopTitle", true, false) as Label, UiTheme._font_size(UiTheme.SIZE.body))
+	Widgets.fit_title(_build_identity, UiTheme._font_size(UiTheme.SIZE.small), UiTheme._font_size(UiTheme.SIZE.card_title))
 	var available := _screen.size - Vector2(48, 36)
 	_layout_panel.custom_minimum_size = Vector2(maxf(0, available.x), maxf(0, available.y))
 	var enlarged := preload("res://ui/ui_theme.gd").text_scale > 1.25
@@ -957,29 +984,33 @@ func _refresh_variants(reload := true) -> void:
 			_library_summaries.append({id = variant.get("id", ""), name = variant.get("name", ""), base_id = variant.get("base_id", ""), revision = variant.get("revision", 0)})
 	var known_ids: Array[String] = []
 	for variant: Dictionary in _library_summaries: known_ids.append(str(variant.id))
-	var query := _build_search.text.strip_edges().to_lower()
+	var titles := PackedStringArray()
+	var rows: Array[Dictionary] = []
 	for variant: Dictionary in _library_summaries:
 		var variant_id := str(variant.get("id", ""))
 		if variant_id == "":
 			continue
 		var source_name := str(Catalog.entry(str(variant.get("base_id", ""))).get("name", tr("Unavailable aircraft")))
 		if _favorites_only.button_pressed and variant_id not in _favorites: continue
-		if not query.is_empty() and not (str(variant.get("name", "")) + " " + source_name).to_lower().contains(query): continue
 		var current := tr("Current") + " · " if variant_id == _saved_variant_id else ""
 		if variant_id in _favorites: current = tr("Favorite") + " · " + current
-		_variant_selector.add_item(current + str(variant.get("name", variant_id)) + " · " + source_name + " · " + tr("revision %d") % int(variant.get("revision", 0)))
-		_variant_selector.set_item_metadata(_variant_selector.item_count - 1, variant_id)
+		titles.append(str(variant.get("name", "")) + " " + source_name)
+		rows.append({id = variant_id, missing = false, title = current + str(variant.get("name", variant_id)) + " · " + source_name + " · " + tr("revision %d") % int(variant.get("revision", 0))})
 	var missing_count := 0
 	for favorite_id: String in _favorites:
 		if favorite_id in known_ids: continue
 		missing_count += 1
 		if not _favorites_only.button_pressed: continue
 		var missing_title := tr("Unavailable favorite %d") % missing_count
-		if not query.is_empty() and not missing_title.to_lower().contains(query): continue
-		_variant_selector.add_item(missing_title)
-		_variant_selector.set_item_metadata(_variant_selector.item_count - 1, favorite_id)
-		_variant_selector.set_item_tooltip(_variant_selector.item_count - 1, tr("Restore this saved build or remove its favorite."))
-		_unavailable_favorite_ids.append(favorite_id)
+		titles.append(missing_title)
+		rows.append({id = favorite_id, missing = true, title = missing_title})
+	for row_index in LibrarySearch.matching_indices(_build_search.text, titles):
+		var row: Dictionary = rows[row_index]
+		_variant_selector.add_item(row.title)
+		_variant_selector.set_item_metadata(_variant_selector.item_count - 1, row.id)
+		if row.missing:
+			_variant_selector.set_item_tooltip(_variant_selector.item_count - 1, tr("Restore this saved build or remove its favorite."))
+			_unavailable_favorite_ids.append(row.id)
 	_favorites_hint.visible = missing_count > 0
 	_variant_selector.select(0)
 	_selected_variant_id = ""
@@ -1447,6 +1478,12 @@ func _apply_preset(preset_id: String) -> void:
 func _reset_recipe() -> void:
 	if _base.is_empty():
 		return
+	if _active_page == "audio":
+		_set_mechanical_audio(Presentation.MechanicalProfile.defaults())
+		return
+	if _active_page == "lighting":
+		_page_nodes.lighting.reset_lighting()
+		return
 	if _active_page in ["appearance", "smoke"]:
 		var next := _presentation.duplicate(true)
 		if _active_page == "appearance":
@@ -1764,7 +1801,7 @@ func _request_trial() -> void:
 
 func _request_close() -> void:
 	if dismiss_modal_for_exit(): return
-	if _active_page in ["appearance", "smoke"] and _page_nodes[_active_page].cancel_pending_edit(): return
+	if _active_page in ["appearance", "smoke", "lighting"] and _page_nodes[_active_page].cancel_pending_edit(): return
 	var focused := get_viewport().gui_get_focus_owner()
 	for key: String in _factor_inputs:
 		if focused == _factor_inputs[key] and (_pending_numbers.has(key) or _invalid_fields.has(key)):
@@ -2051,6 +2088,13 @@ func _load_selected_variant() -> void:
 
 func _set_page(page: String) -> void:
 	if not _page_nodes.has(page): return
+	if _active_page != page and _active_page == "lighting" and _page_nodes.lighting.has_pending_edit():
+		set_note("Apply or cancel the lighting edit before leaving this page.")
+		var pending: Control = _page_nodes.lighting.pending_control()
+		if pending != null:
+			pending.grab_focus()
+			_body_scroll.ensure_control_visible(pending)
+		return
 	_active_page = page
 	_page_selector.select(PAGE_IDS.find(page))
 	_compact_view = false
@@ -2480,7 +2524,7 @@ func _import_bundle_file(path: String) -> void:
 	set_note("Aircraft build imported as a new local copy.")
 
 
-func set_presentation(profile: Dictionary) -> void:
+func set_presentation(profile: Dictionary, source_page: String = "") -> void:
 	var checked := Presentation.validate(profile, _presentation_bindings)
 	if not checked.ok:
 		set_note("; ".join(PackedStringArray(checked.errors)))
@@ -2489,7 +2533,7 @@ func set_presentation(profile: Dictionary) -> void:
 	_capture_undo()
 	_presentation = checked.profile.duplicate(true)
 	_presentation_errors.clear()
-	_sync_presentation()
+	_sync_presentation(source_page)
 	_refresh_issues()
 	_sync_save_button()
 	_refresh_comparison()
@@ -2504,9 +2548,105 @@ func _resolve_presentation() -> void:
 	_sync_presentation()
 
 
-func _sync_presentation() -> void:
+func _sync_presentation(source_page: String = "") -> void:
+	var pending_states: Dictionary = {}
+	for page: String in _presentation_buffers:
+		if page == source_page or not _page_nodes.has(page):
+			continue
+		if page != "lighting" or _page_nodes[page].has_pending_edit():
+			pending_states[page] = _page_nodes[page].get_editor_state()
 	for panel in _customization_panels: panel.configure(_presentation_bindings, _presentation)
+	if _page_nodes.has("lighting"):
+		_page_nodes["lighting"].configure(_presentation_bindings, _presentation)
+	_sync_audio_panel()
 	if is_instance_valid(_preview): _preview.set_presentation(_presentation)
+	for page: String in pending_states:
+		if _page_nodes[page].restore_editor_state(pending_states[page]):
+			continue
+		_presentation_buffers[page] = true
+		set_note("A pending presentation field could not be restored. Review or cancel it before saving.")
+
+
+func _build_audio_panel(parent: VBoxContainer) -> void:
+	var panel := VBoxContainer.new()
+	panel.add_theme_constant_override("separation", 12)
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.visible = false
+	parent.add_child(panel)
+	_page_nodes.audio = panel
+	panel.add_child(_label("Mechanical audio", "SectionLabel"))
+	panel.add_child(_label("Quiet onboard mechanisms follow actual surface and gear movement. Listen nearby with the engine off during Test fly.", "SecondaryLabel", true))
+	panel.add_child(_label("Servo type"))
+	_servo_type = OptionButton.new()
+	_servo_type.name = "ServoSoundType"
+	_servo_type.add_item(tr("Standard Servo"))
+	_servo_type.add_item(tr("High-Torque Servo"))
+	_servo_type.item_selected.connect(func(index: int) -> void:
+		var config := Presentation.MechanicalProfile.resolve(_presentation)
+		config.servo_type = Presentation.MechanicalProfile.SERVO_TYPES[index]
+		_set_mechanical_audio(config))
+	panel.add_child(_servo_type)
+	_servo_level_label = _label("Servo sound level")
+	panel.add_child(_servo_level_label)
+	_servo_level = HSlider.new()
+	_servo_level.name = "ServoSoundLevel"
+	_servo_level.min_value = 0
+	_servo_level.max_value = 100
+	_servo_level.step = 5
+	_servo_level.value_changed.connect(func(value: float) -> void:
+		_servo_level_label.text = tr("Servo sound level") + " · %d%%" % int(value)
+		if not _servo_level_dragging: _commit_servo_level())
+	_servo_level.drag_started.connect(func() -> void: _servo_level_dragging = true)
+	_servo_level.drag_ended.connect(func(_changed: bool) -> void:
+		_servo_level_dragging = false
+		_commit_servo_level())
+	panel.add_child(_servo_level)
+	panel.add_child(_label("Retract type"))
+	_retract_type = OptionButton.new()
+	_retract_type.name = "RetractSoundType"
+	_retract_type.add_item(tr("Mechanical / electric"))
+	_retract_type.add_item(tr("Pneumatic"))
+	_retract_type.item_selected.connect(func(index: int) -> void:
+		var config := Presentation.MechanicalProfile.resolve(_presentation)
+		config.retract_type = Presentation.MechanicalProfile.RETRACT_TYPES[index]
+		_set_mechanical_audio(config))
+	panel.add_child(_retract_type)
+	_audio_note = _label("", "SecondaryLabel", true)
+	panel.add_child(_audio_note)
+
+
+func _commit_servo_level() -> void:
+	var config := Presentation.MechanicalProfile.resolve(_presentation)
+	config.servo_level = _servo_level.value / 100.0
+	_set_mechanical_audio(config)
+
+
+func _set_mechanical_audio(config: Dictionary) -> void:
+	var next := _presentation.duplicate(true)
+	# Legacy smoke has a different interpretation; only an empty legacy profile can
+	# be promoted here. The existing explicit smoke migration owns customized v1.
+	if int(next.get("version", 1)) == 1 and not next.get("smoke", []).is_empty():
+		return
+	if not next.has("lighting"): next["lighting"] = Presentation.LightingProfile.defaults()
+	next.version = Presentation.VERSION
+	next["mechanical_audio"] = config.duplicate(true)
+	set_presentation(next)
+
+
+func _sync_audio_panel() -> void:
+	if not is_instance_valid(_servo_type): return
+	var config := Presentation.MechanicalProfile.resolve(_presentation)
+	_servo_type.select(Presentation.MechanicalProfile.SERVO_TYPES.find(config.servo_type))
+	_servo_level.set_value_no_signal(float(config.servo_level) * 100.0)
+	_servo_level_label.text = tr("Servo sound level") + " · %d%%" % int(_servo_level.value)
+	_retract_type.select(Presentation.MechanicalProfile.RETRACT_TYPES.find(config.retract_type))
+	var legacy: bool = int(_presentation.get("version", 1)) == 1 and not _presentation.get("smoke", []).is_empty()
+	_servo_type.disabled = legacy
+	_servo_level.editable = not legacy
+	var retractable := str(_base.get("capabilities", {}).get("gear", "")).begins_with("retractable_")
+	_retract_type.disabled = legacy or not retractable
+	_audio_note.text = tr("Migrate this build's legacy smoke profile before editing mechanical audio.") if legacy else (
+		tr("Retract sounds are available on aircraft with retractable landing gear.") if not retractable else tr("Sound selection does not change the aircraft's installed physics."))
 
 
 func _history_snapshot() -> Dictionary:
@@ -2547,7 +2687,7 @@ func _start_recovery() -> void:
 
 func _recovery_editor_state() -> Dictionary:
 	var buffers := {}
-	for page: String in ["appearance", "smoke"]:
+	for page: String in ["appearance", "smoke", "lighting"]:
 		buffers[page] = _page_nodes[page].get_editor_state()
 	return {"page": _active_page, "name": _variant_name.text, "numeric_buffers": _pending_numbers.duplicate(true),
 		"presentation_buffers": buffers, "camera": _preview.get_view_state()}
@@ -2690,13 +2830,22 @@ func _apply_recovered_draft() -> void:
 	var described := Customization.describe(str(payload.base_id))
 	if not described.get("ok", false): return
 	for page: String in state.presentation_buffers:
-		var probe := CustomizationPanel.new()
-		probe.page_kind = page
-		probe.visible = false
-		add_child(probe)
-		probe.configure(described.bindings, payload.presentation_profile)
-		var restorable := probe.restore_editor_state(state.presentation_buffers[page])
-		probe.free()
+		var restorable := false
+		if page == "lighting":
+			var lighting_probe := LightingPanel.new()
+			lighting_probe.visible = false
+			add_child(lighting_probe)
+			lighting_probe.configure(described.bindings, payload.presentation_profile)
+			restorable = lighting_probe.restore_editor_state(state.presentation_buffers[page])
+			lighting_probe.free()
+		else:
+			var probe := CustomizationPanel.new()
+			probe.page_kind = page
+			probe.visible = false
+			add_child(probe)
+			probe.configure(described.bindings, payload.presentation_profile)
+			restorable = probe.restore_editor_state(state.presentation_buffers[page])
+			probe.free()
 		if not restorable:
 			set_note("A recovered text field is unavailable. The stored draft remains unchanged.")
 			_trial_button.disabled = not _edit_valid()

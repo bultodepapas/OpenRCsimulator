@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2c7de977-7f13-4325-968c-ed29c542e38f",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_hull_support_normal.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T00:02:59.729546+00:00",
+  "label": "production-focused",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-hull-checks\\production-focused-bufl0mb2\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-hull-checks\\production-focused-bufl0mb2\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "70 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.39,
+  "log_bytes": 210,
+  "log_sha256": "b17258bc094fc209063e5b7bcec312a206748f2d002e12ac500b70350eb8fa7a"
+}

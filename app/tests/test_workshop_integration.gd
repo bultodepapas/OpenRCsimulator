@@ -160,8 +160,14 @@ func _run() -> void:
 		check("failed candidate startup preserves old recorder", original.recorder != null and original.session.sim.tick == checkpoint.tick)
 		check("failed candidate startup preserves adapted exposure", is_equal_approx(original._env.tonemap_exposure, retained_exposure) and is_equal_approx(Exposure.last, retained_exposure))
 		payload.recipe.scale = 0.5
+		# Direct CLI flight routes expose Workshop without constructing this Home service.
+		var retained_display_preferences: Variant = host.display_preferences
+		host.display_preferences = null
 		host._start_workshop_trial(payload)
+		host.display_preferences = retained_display_preferences
 		check("50% trial from Pause starts independently", host.flight != original and not original.is_inside_tree())
+		check("trial starts without the Home display-preference service", host.flight != original
+			and host.flight.startup_error.is_empty())
 		if host.flight != original:
 			host.open_pause()
 			check("trial can choose its own sky", host.flight.apply_sky_config(SkyConfig.for_preset("clear")).ok)

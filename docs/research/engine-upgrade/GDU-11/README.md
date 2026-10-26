@@ -43,6 +43,8 @@ Raw PNGs and full frozen copies stay outside Git at `D:/OpenRCsimulator-experime
 
 ## Other 4.8 candidates reviewed
 
+Current UI, crash-mark and High-effect implementation status is in [the incremental implementation record](implementation.md); the candidate review below is the original research rationale.
+
 The [expanded opportunity review](opportunities.md) adds UI search/text fitting, High contact shadows/multi-bounce AO, automatic input/loading/model benefits, and explicit exclusions. It records current integration points, exact pinned APIs and verification needed before adoption.
 
 The [official beta1 announcement](https://godotengine.org/article/dev-snapshot-godot-4-8-beta-1/) was checked against pinned source and existing runtime contracts:

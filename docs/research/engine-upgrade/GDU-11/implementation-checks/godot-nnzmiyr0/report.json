@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b2f867a3-a2f9-40d6-a072-05b48e8dffa9",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_crash_energy.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T21:23:32.898597+00:00",
+  "label": "godot",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\checks\\godot-nnzmiyr0\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\checks\\godot-nnzmiyr0\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.344,
+  "log_bytes": 17729,
+  "log_sha256": "31b49fee7c90bd8219ed0d3a19183d09a68c1e32ce512aa0333627b73900d01e"
+}

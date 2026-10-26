@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7ddc3d4e-32a8-44b0-a0a1-d862043dc8a5",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_economy_catalog.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T21:03:01.983236+00:00",
+  "label": "f4u-cost-catalog",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\f4u-cost-catalog-qnwy0b4n\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\f4u-cost-catalog-qnwy0b4n\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.031,
+  "log_bytes": 93,
+  "log_sha256": "e3f71708a90e5b0fb7e27fac357cd441825b0cde44b976feff832864b885830e"
+}

@@ -424,10 +424,12 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	var ambient: Dictionary=_environment(owner,body)
 	if not ambient.get("ok",false): return {ok=false}
 	var density: float=ambient.rho_kgm3
-	# The state velocity is at the fixed initial wet-CG datum. Apply the same
-	# hub lever arm used by the external thrust moment to local inflow. Wind is
-	# locally uniform here; this is not a disk-resolved crossflow/wake model.
-	var hub_air: PackedFloat64Array=Propulsion.hub_air_velocity(body,air.v_air,prop.offset)
+	# Without an explicit stage field, transform datum velocity through the same hub lever arm
+	# used by the external thrust moment. The experimental point field is already complete at the
+	# hub, including its single rigid-body rotation term. Neither route resolves disk crossflow/wake.
+	var propulsion_air: Dictionary=Propulsion.stage_air_velocity(body,air,prop)
+	if not propulsion_air.get("ok",false): return {ok=false}
+	var hub_air: PackedFloat64Array=propulsion_air.velocity_body
 	var local_cooling: float=M.norm(hub_air)
 	var rpm: float=maxf(0.0,values[0])
 	# Mean propwash contributes local cooling at idle; installation coefficient remains estimated.

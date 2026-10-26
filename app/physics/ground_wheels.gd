@@ -40,7 +40,10 @@ static func frame(s: PackedFloat64Array, c: Dictionary, steer: float, surfaces: 
 		s[2] + a[6] * r[0] + a[7] * r[1] + a[8] * r[2]])
 	var terrain := Terrain.sample_validated(p[0], p[1], surfaces, lake) if surfaces_validated else Terrain.sample(p[0], p[1], surfaces, lake)
 	var norm := M.sqrt_(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2])
-	var normal := M.v3(-terrain[1] / norm, -terrain[2] / norm, -1.0 / norm)
+	var normal := Terrain.normal_from_up_slopes(terrain[1], terrain[2])
+	if normal.is_empty():
+		# Preserve fail-closed propagation to the stage validity guard.
+		normal = PackedFloat64Array([NAN, NAN, NAN])
 	var compression := (p[2] + terrain[0]) / norm
 	var vx := s[3] + s[11] * r[2] - s[12] * r[1]
 	var vy := s[4] + s[12] * r[0] - s[10] * r[2]

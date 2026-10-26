@@ -95,7 +95,7 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, at: f
 			return {}
 		rpm = owner._coupled_rpm(base)
 		loads = response.loads
-		derivative = Wash.derivative(response.air.v_air, rpm, prop, owner.air_density(body),
+		derivative = Wash.stage_derivative(body, response.air, rpm, prop, owner.air_density(body),
 			base.slice(0, owner._rotor_index())) if owner._rotor_index() > 0 else PackedFloat64Array()
 		derivative.append(response.rpm_rate)
 		derivative.append_array(response.wheel_derivative)

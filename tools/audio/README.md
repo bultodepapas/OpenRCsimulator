@@ -1,5 +1,34 @@
 # Soundscape tools
 
+## Servo and retract mechanisms
+
+AUD-16 uses licensed recorded RC servo movements and recorded air textures. See the [implementation and limitations](../../docs/servo-retract-audio-implementation.md) and [source/attribution ledger](../../docs/audio-asset-sources.md). Reproduce offline from retained originals with the pinned recording dependencies:
+
+```sh
+python -m pip install -r tools/audio/requirements-recordings.txt
+python tools/audio/import_mechanical.py --check
+godot --headless --path app --audio-driver Dummy --script res://tests/test_mechanical_motion.gd
+godot --headless --path app --audio-driver Dummy --script res://tests/test_mechanical_configuration.gd
+godot --headless --path app --audio-driver Dummy --script res://tests/test_mechanical_audio.gd
+godot --headless --path app --audio-driver Dummy --script res://tests/test_mechanical_integration.gd
+godot --display-driver headless --audio-driver WASAPI --max-fps 60 --path app --script /absolute/repo/tools/audio/mechanical_probe.gd -- --fps=60 --out=/absolute/new/output/mechanical
+python tools/audio/check_mechanical_capture.py /absolute/new/output/mechanical --out=/absolute/output/mechanical-checks.json
+```
+
+Use the checked runner around each Godot command, as described below. The mechanical probe requires a new output directory, rejects Dummy, and saves native WAVs plus `report.json` for all four combinations of the two servo and two retract settings. Its stimuli cover slow/small and fast/large travel, simultaneous surfaces, retract reversal/interruption/endpoint, distance, masks, pause/reset/rewind/detach/reconfiguration. It drives the audio contract directly: it does not simulate a whole flight or establish perceptual realism. Runs at 30, 60 or 144 requested FPS are supported. Run native benches sequentially.
+
+For controller CPU comparisons, `mechanical_benchmark.gd` requires Dummy and times only `update_sound`, excluding snapshot setup and diagnostics. It measures idle, simultaneous four-servo/retract movement, pause, distant sources and repeated accepted ticks after warmup. Reports include source hashes, median/p95/max, voice counts and Godot object-count growth. This is a script microbenchmark, not a native mixer deadline, allocation profiler or rendered frame-time qualification. Use the same binary, iteration counts and quiet host for before/after comparisons.
+
+```sh
+godot --headless --path app --audio-driver Dummy --script /absolute/repo/tools/audio/mechanical_benchmark.gd -- --out=/absolute/new/benchmark.json --iterations=10000 --warmup=1000
+```
+
+After deliberately rebuilding the bank, run editor import, then `python tools/audio/import_mechanical.py --fix-import-settings`, then **editor import again**. This last step is necessary to rebuild imported samples as PCM after replacing Godot's default QOA settings. `--check` validates source/output hashes and sidecars; `test_mechanical_audio.gd` validates the loaded resource format.
+
+For the production flight adapter, add `--mechanical-review` to `gameplay_probe.gd`. It adds small pitch/yaw corrections and captures accepted RPM, mechanical voice/culling/masking diagnostics every 0.1 s, and separate mechanical update timing. The regular throttle, pause, camera and reset sequence remains in force. The general capture checker retains its older 4 m close-view and 0.5 ms total-adapter gates; record failures honestly when testing a different aircraft/camera combination.
+
+Both native probes identify their source hash and count captured, flushed and overflowed frames. Checkers require finite positive `capture_wall_seconds`, PCM within 120 ms of that duration, and balanced capture counters; older artifacts missing these fields cannot pass the current checks. Mechanical capture bulk-appends PCM during timed stages and defers waveform analysis/encoding until capture has stopped, with a 60-second retained-PCM limit. Gameplay rejects nonfinite captured samples and safely reports short captures as incomplete. Run the checker regressions with `python tools/audio/test_capture_checks.py`.
+
 ## Menu feedback
 
 UI-28 uses downloaded CC0 wood and soft impacts. [Source mapping and interaction contract](../../assets/ui-audio/README.md) own the bank. `menu_probe.gd` records the native mixer at 35%, 100% and mute, then exercises the actual committed-Quit tail at time scales 1, 0 and 16 with a test quit callback. It also inserts 100 ms of completed main-thread work immediately before one Quit to detect frame-delta contamination. It requires a new output directory and rejects Dummy. The WAV order is listed in the report's `cues` array. It checks sequence output, mute and headroom; logical cue acceptance does not establish individual cue audibility. Quit captures stop at the production quit seam and require one callback, locked input, elapsed wall time within −20/+120 ms of the requested delay and at least 15 ms of trailing digital silence. These qualify mixer timing, not hardware output latency or speaker preference. `--quit-only` skips the three cue sequences.
@@ -46,7 +75,7 @@ The Movie Maker bench (`bench.sh`, usage in its header) adds a `crash` scenario 
 
 For longer wildlife listening, add `--wildlife-review --duration=130`; this holds neutral controls in the real trimmed flight and keeps the pilot camera. Add `--time-of-day=23:00` for owls/crickets. The optional harness-only `--resume-focus` explicitly resumes focus-loss pauses only when no fault, crash or session hold exists; it never changes production focus behavior. Reports record these resumes and final physics tick/paused state. The checker rejects a wildlife review that did not sustain the flight. No species is forced for a listening review.
 
-Export verification uses `godot --headless --editor --path app --export-pack Windows /absolute/output/audio.pck`, then runs `check_pack.gd` with that PCK as the sole user argument from an empty project. It checks 33 original/ambience WAVs plus six powertrain loops and four landing-gear clips, PCM format and sample count, manifests, bank definitions and MIT/CC0 notices. This is resource-pack qualification, not a full installer/release smoke test.
+Export verification uses `godot --headless --editor --path app --export-pack Windows /absolute/output/audio.pck`, then runs `check_pack.gd` with that PCK as the sole user argument from an empty project. It checks 33 original/ambience WAVs plus six powertrain loops, four contact clips and 17 mechanical cues, PCM format and sample count, manifests, bank definitions and MIT/CC0/CC BY notices. This is resource-pack qualification, not a full installer/release smoke test.
 
 AUD-14 adds real wind/fabric recordings. Source downloads and hashes are in `research/audio/AUD-14/recordings/environment/`; exact pinned editing dependencies are separate from the synthetic generators. The importer decodes the retained MP3 previews, trims, crossfades, filters and normalizes them into long mono PCM loops. Versioned `.wav.import` files keep `compress/mode=0`; Godot's QOA default cannot use the PCM wrap guard. Reproduction and focused checks:
 

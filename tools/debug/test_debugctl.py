@@ -13,6 +13,7 @@ import socket
 import sys
 import threading
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -316,6 +317,81 @@ class DebugctlTests(unittest.TestCase):
         status, _, err = self.run_cli("stop")
         self.assertEqual(status, 2)
         self.assertIn("OPENRC_DEBUG_BRIDGE", err)
+
+    def test_smoke_recovers_after_failed_scenario_and_skips_when_home_is_unavailable(self) -> None:
+        scenarios = Path(self.tmp.name) / "scenarios"
+        scenarios.mkdir()
+        for name in ("a_broken", "b_next"):
+            (scenarios / f"{name}.txt").write_text("# fixture\n")
+        for recovery_available in (True, False):
+            with self.subTest(recovery_available=recovery_available):
+                state = {"home": True, "ran": []}
+
+                def fake_launch(_args):
+                    print(json.dumps({"port": self.bridge.port, "out": self.tmp.name}))
+                    return 0
+
+                def fake_stop(_args):
+                    print(json.dumps({"crash": None, "leaked_objects": 0}))
+                    return 0
+
+                def reset(_args=None):
+                    if not state["home"] and not recovery_available:
+                        return 1
+                    state["home"] = True
+                    return 0
+
+                def scenario(args):
+                    self.assertTrue(state["home"], "scenario inherited a failed flight")
+                    name = Path(args[0]).stem
+                    state["ran"].append(name)
+                    if name == "a_broken":
+                        state["home"] = False
+                        raise debugctl.Refused("intentional failed flight")
+                    return 0
+
+                output = io.StringIO()
+                with patch.multiple(debugctl, SCENARIOS=scenarios, launch=fake_launch, stop=fake_stop,
+                                    home_reset=reset, run_script=scenario, crawl=lambda _: 0,
+                                    run_lines=lambda _: 0, monkey=lambda _: 0, soak=lambda _: 0,
+                                    result_of=lambda _: {"hitch_total": 0}), contextlib.redirect_stdout(output):
+                    status = debugctl.smoke([])
+                report = json.loads(output.getvalue().strip().splitlines()[-1])
+                self.assertEqual(status, 1)  # Recovery must never hide the original failure.
+                self.assertFalse(report["ok"])
+                self.assertIn("scenario a_broken", report["failed"])
+                if recovery_available:
+                    self.assertEqual(state["ran"], ["a_broken", "b_next"])
+                    self.assertEqual(report["failed"], ["scenario a_broken"])
+                else:
+                    self.assertEqual(state["ran"], ["a_broken"])
+                    self.assertIn("Home before scenario b_next", report["failed"])
+
+    def test_home_reset_discards_only_workshop_guard_in_current_language(self) -> None:
+        for guard in ("UnsavedBuildDialog", "StatisticsResetDialog"):
+            with self.subTest(guard=guard):
+                state = {"route": "home", "screens": ["home", "workshop"]}
+                calls = []
+                window = {"scope": f"AppRoot/Workshop/{guard}", "window": {"type": "ConfirmationDialog"}}
+
+                def result(command, args=None):
+                    calls.append((command, args))
+                    if command == "state": return state
+                    if command == "ui": return window
+                    if command == "eval": return "Descartar cambios"
+                    if command in ("press", "close"):
+                        state["screens"] = ["home"]
+                        window.clear()
+                    return {}
+
+                with patch.object(debugctl, "result_of", side_effect=result):
+                    self.assertEqual(debugctl.home_reset(), 0)
+                if guard == "UnsavedBuildDialog":
+                    self.assertIn(("press", {"text": "Descartar cambios"}), calls)
+                    self.assertFalse(any(command == "close" for command, _ in calls))
+                else:
+                    self.assertFalse(any(command == "press" for command, _ in calls))
+                    self.assertIn(("close", {}), calls)
 
     def test_an_unreaped_exited_child_is_not_alive(self) -> None:
         if not Path("/proc/self/stat").exists():

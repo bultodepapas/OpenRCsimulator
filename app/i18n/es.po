@@ -15,6 +15,142 @@ msgstr ""
 msgid "development build"
 msgstr "versión de desarrollo"
 
+# FW-RGB: Workshop programmable aircraft lighting.
+msgid "Lighting"
+msgstr "Iluminación"
+
+msgid "Classic RC"
+msgstr "RC clásico"
+
+msgid "Night Radian"
+msgstr "Night Radian"
+
+msgid "Neon RGB"
+msgstr "Neón RGB"
+
+msgid "Night Aerobatics"
+msgstr "Acrobacia nocturna"
+
+msgid "Festival / Fireworks"
+msgstr "Festival / Fuegos artificiales"
+
+msgid "Use aircraft default"
+msgstr "Usar iluminación del avión"
+
+msgid "Lighting enabled"
+msgstr "Iluminación activada"
+
+msgid "Lighting off"
+msgstr "Iluminación apagada"
+
+msgid "Night lights: disabled by build"
+msgstr "Luces nocturnas: desactivadas en este modelo"
+
+msgid "Brightness"
+msgstr "Brillo"
+
+msgid "Customize zones"
+msgstr "Personalizar zonas"
+
+msgid "More effects"
+msgstr "Más efectos"
+
+msgid "Reset lighting"
+msgstr "Restablecer iluminación"
+
+msgid "Zone enabled"
+msgstr "Zona activada"
+
+msgid "Apply zone"
+msgstr "Aplicar zona"
+
+msgid "Reset zone"
+msgstr "Restablecer zona"
+
+msgid "Apply effects"
+msgstr "Aplicar efectos"
+
+msgid "Cycle duration applies to animated patterns."
+msgstr "La duración del ciclo se aplica a los patrones animados."
+
+msgid "Cycle: %.2f seconds"
+msgstr "Ciclo: %.2f segundos"
+
+msgid "Enter a six-digit hex color such as #20DFFF."
+msgstr "Introduce un color hexadecimal de seis dígitos, como #20DFFF."
+
+msgid "Choose a lighting style for this build. Preview time of day is temporary and does not change trial conditions."
+msgstr "Elige un estilo de iluminación para este modelo. La hora de la vista previa es temporal y no cambia las condiciones de prueba."
+
+msgid "Aircraft equipment"
+msgstr "Equipamiento del avión"
+
+msgid "%d zones available"
+msgstr "%d zonas disponibles"
+
+msgid "Zone changes applied to the draft."
+msgstr "Cambios de la zona aplicados al borrador."
+
+msgid "Effect changes applied to the draft."
+msgstr "Cambios de los efectos aplicados al borrador."
+
+msgid "Pattern"
+msgstr "Patrón"
+
+msgid "Intensity"
+msgstr "Intensidad"
+
+msgid "Colors"
+msgstr "Colores"
+
+msgid "Add color"
+msgstr "Añadir color"
+
+msgid "Cycle"
+msgstr "Ciclo"
+
+msgid "Hex color"
+msgstr "Color hexadecimal"
+
+msgid "Port navigation"
+msgstr "Navegación izquierda"
+
+msgid "Starboard navigation"
+msgstr "Navegación derecha"
+
+msgid "Tail light"
+msgstr "Luz de cola"
+
+msgid "Port strobe"
+msgstr "Estroboscópica izquierda"
+
+msgid "Starboard strobe"
+msgstr "Estroboscópica derecha"
+
+msgid "Dorsal spine"
+msgstr "Luz dorsal"
+
+msgid "Ventral bars"
+msgstr "Luces inferiores"
+
+msgid "Port wing strip"
+msgstr "Tira del ala izquierda"
+
+msgid "Starboard wing strip"
+msgstr "Tira del ala derecha"
+
+msgid "Port upper strip"
+msgstr "Tira superior izquierda"
+
+msgid "Starboard upper strip"
+msgstr "Tira superior derecha"
+
+msgid "Belly strip"
+msgstr "Tira del fuselaje inferior"
+
+msgid "Landing lamp"
+msgstr "Luz de aterrizaje"
+
 msgid "NEXT FLIGHT"
 msgstr "PRÓXIMO VUELO"
 
@@ -1249,8 +1385,128 @@ msgstr "Velocidad vertical"
 msgid "Distance"
 msgstr "Distancia"
 
-msgid "Flight time"
-msgstr "Tiempo de vuelo"
+msgid "Elapsed simulation time"
+msgstr "Tiempo transcurrido de simulación"
+
+msgid "Elapsed sim time"
+msgstr "Tiempo simulado"
+
+msgid "Statistics unavailable"
+msgstr "Estadísticas no disponibles"
+
+msgid "Session airborne time"
+msgstr "Tiempo en el aire de la sesión"
+
+msgid "Started (UTC)"
+msgstr "Inicio (UTC)"
+
+msgid "Ended (UTC)"
+msgstr "Fin (UTC)"
+
+msgid "Ended"
+msgstr "Finalizado"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Kind"
+msgstr "Clase"
+
+msgid "Outcome"
+msgstr "Resultado"
+
+msgid "Reason"
+msgstr "Motivo"
+
+msgid "Tick: %d"
+msgstr "Tick: %d"
+
+msgid "First contact tick: %d"
+msgstr "Tick del primer contacto: %d"
+
+msgid "Start kind: %s"
+msgstr "Tipo de inicio: %s"
+
+msgid "Type: %s"
+msgstr "Tipo: %s"
+
+msgid "Kind: %s"
+msgstr "Clase: %s"
+
+msgid "Outcome: %s"
+msgstr "Resultado: %s"
+
+msgid "Reason: %s"
+msgstr "Motivo: %s"
+
+msgid "More events omitted: %d"
+msgstr "Eventos adicionales omitidos: %d"
+
+msgid "Uncontrolled stop"
+msgstr "Detención sin control"
+
+msgid "Record %d"
+msgstr "Registro %d"
+
+msgid "Ground crash"
+msgstr "Choque en tierra"
+
+msgid "Flight crash"
+msgstr "Choque en vuelo"
+
+msgid "Crash"
+msgstr "Choque"
+
+msgid "Crash context"
+msgstr "Contexto del choque"
+
+msgid "On ground"
+msgstr "En tierra"
+
+msgid "In flight"
+msgstr "En vuelo"
+
+msgid "Restart"
+msgstr "Reinicio"
+
+msgid "Restart: %s"
+msgstr "Reinicio: %s"
+
+msgid "Restart reason"
+msgstr "Motivo del reinicio"
+
+msgid "Flight statistics are not available for this activity."
+msgstr "Las estadísticas de vuelo no están disponibles para esta actividad."
+
+msgid "Flight started"
+msgstr "Vuelo iniciado"
+
+msgid "Landing event"
+msgstr "Evento de aterrizaje"
+
+msgid "Flight ended"
+msgstr "Vuelo finalizado"
+
+msgid "Full stop"
+msgstr "Aterrizaje completo"
+
+msgid "Touch-and-go"
+msgstr "Toque y despegue"
+
+msgid "Successful"
+msgstr "Correcto"
+
+msgid "Stable support"
+msgstr "Apoyo estable"
+
+msgid "Ended before resolution"
+msgstr "Finalizado antes de la resolución"
+
+msgid "Airborne start"
+msgstr "Inicio en el aire"
+
+msgid "Takeoff"
+msgstr "Despegue"
 
 msgid "Fuel"
 msgstr "Combustible"
@@ -6153,3 +6409,442 @@ msgstr "Ambas"
 
 msgid "Keep the horizon in view: the view tilts down so the ground shows under a high airplane. Smooth overhead passes: the picture turns gradually instead of flipping when the airplane passes overhead."
 msgstr "Mantener el horizonte a la vista: la vista se inclina para que el suelo se vea bajo un avión alto. Suavizar las pasadas sobre la cabeza: la imagen gira poco a poco en lugar de voltearse cuando el avión pasa sobre la cabeza."
+
+# UI-FS-05/06: pilot statistics, scoped history and safe counter management.
+
+msgid "Statistics"
+msgstr "Estadísticas"
+
+msgid "Aircraft scope"
+msgstr "Ámbito de aeronave"
+
+msgid "Statistics period"
+msgstr "Período de estadísticas"
+
+msgid "All aircraft"
+msgstr "Todas las aeronaves"
+
+msgid "This session"
+msgstr "Esta sesión"
+
+msgid "Lifetime history"
+msgstr "Historial completo"
+
+msgid "Since counter reset"
+msgstr "Desde el reinicio de contadores"
+
+msgid "Airborne time"
+msgstr "Tiempo en el aire"
+
+msgid "Completed flights"
+msgstr "Vuelos completados"
+
+msgid "Successful landings"
+msgstr "Aterrizajes exitosos"
+
+msgid "Landing outcomes"
+msgstr "Resultados de aterrizaje"
+
+msgid "More statistics"
+msgstr "Más estadísticas"
+
+msgid "Fewer statistics"
+msgstr "Menos estadísticas"
+
+msgid "Flight history"
+msgstr "Historial de vuelos"
+
+msgid "Manage counters"
+msgstr "Gestionar contadores"
+
+msgid "Reset session counters…"
+msgstr "Reiniciar contadores de la sesión…"
+
+msgid "Reset this aircraft's counters…"
+msgstr "Reiniciar los contadores de esta aeronave…"
+
+msgid "Reset pilot counters…"
+msgstr "Reiniciar contadores del piloto…"
+
+msgid "Manage history"
+msgstr "Gestionar historial"
+
+msgid "Delete this aircraft's history…"
+msgstr "Eliminar el historial de esta aeronave…"
+
+msgid "Delete all pilot history…"
+msgstr "Eliminar todo el historial del piloto…"
+
+msgid "Local pilot"
+msgstr "Piloto local"
+
+msgid "Lifetime history remains available after counter resets."
+msgstr "El historial completo sigue disponible después de reiniciar los contadores."
+
+msgid "stops"
+msgstr "paradas completas"
+
+msgid "touch-and-go"
+msgstr "toques y despegues"
+
+#, python-format
+msgid "Touchdown success: %d / %d resolved touchdowns · %d%%"
+msgstr "Aterrizajes exitosos: %d de %d contactos resueltos · %d%%"
+
+msgid "Touchdown success: no resolved touchdowns yet"
+msgstr "Aún no hay contactos de aterrizaje resueltos"
+
+#, python-format
+msgid "Flights brought to a clean stop: %d / %d ended flights"
+msgstr "Vuelos con parada completa: %d de %d vuelos finalizados"
+
+#, python-format
+msgid "Flights brought to a clean stop: %d · ended-flight total unavailable"
+msgstr "Vuelos con parada completa: %d · total de vuelos finalizados no disponible"
+
+msgid "Tracking begins with your next flight."
+msgstr "El seguimiento comienza con tu próximo vuelo."
+
+#, python-format
+msgid "Completed in a row: %d · best %d · crash-free airborne time: %s · best %s"
+msgstr "Vuelos completados seguidos: %d · mejor racha %d · tiempo en el aire sin choques: %s · mejor %s"
+
+msgid "Flights started"
+msgstr "Vuelos iniciados"
+
+msgid "Average airborne duration"
+msgstr "Duración media en el aire"
+
+#, python-format
+msgid "Average duration includes %d closed flights"
+msgstr "La duración media incluye %d vuelos finalizados"
+
+msgid "Maximum valid airspeed (TAS)"
+msgstr "Velocidad aerodinámica máxima válida (TAS)"
+
+msgid "Maximum horizontal groundspeed"
+msgstr "Velocidad máxima sobre el suelo"
+
+msgid "Full-stop landings"
+msgstr "Aterrizajes con parada completa"
+
+msgid "Touch-and-go landings"
+msgstr "Aterrizajes de toque y despegue"
+
+msgid "Failed touchdown episodes"
+msgstr "Contactos de aterrizaje fallidos"
+
+msgid "Unknown touchdown episodes"
+msgstr "Contactos de aterrizaje desconocidos"
+
+msgid "Active flights"
+msgstr "Vuelos activos"
+
+msgid "Partial records"
+msgstr "Registros parciales"
+
+msgid "Touchdown success counts resolved surface contacts; the clean-stop fraction includes the end of each flight."
+msgstr "El éxito de aterrizaje cuenta los contactos resueltos con la superficie; la proporción de parada completa incluye el resultado final de cada vuelo."
+
+msgid "No flight records in this view."
+msgstr "No hay registros de vuelo en esta vista."
+
+#, python-format
+msgid "Page %d of %d · %d records"
+msgstr "Página %d de %d · %d registros"
+
+#, python-format
+msgid "Flight %d"
+msgstr "Vuelo %d"
+
+#, python-format
+msgid "Takeoffs %d · Full stops %d · Touch-and-go %d"
+msgstr "Despegues %d · Paradas completas %d · Toques y despegues %d"
+
+msgid "Coverage"
+msgstr "Cobertura"
+
+msgid "Scenario"
+msgstr "Escenario"
+
+msgid "Events"
+msgstr "Eventos"
+
+msgid "Counters and history management are available while no flight is active."
+msgstr "La gestión de contadores e historial está disponible cuando no hay vuelos activos."
+
+msgid "End the active flight before changing counters or history."
+msgstr "Termina el vuelo activo antes de cambiar los contadores o el historial."
+
+msgid "Some records are partial."
+msgstr "Algunos registros son parciales."
+
+#, python-format
+msgid "Partial records: %d"
+msgstr "Registros parciales: %d"
+
+msgid "A flight is in progress."
+msgstr "Hay un vuelo en curso."
+
+#, python-format
+msgid "Flights in progress: %d"
+msgstr "Vuelos en curso: %d"
+
+msgid "<1 min"
+msgstr "<1 min"
+
+#, python-format
+msgid "%d h %02d min"
+msgstr "%d h %02d min"
+
+#, python-format
+msgid "%d min"
+msgstr "%d min"
+
+msgid "Session statistics"
+msgstr "Estadísticas de la sesión"
+
+msgid "Started"
+msgstr "Iniciados"
+
+msgid "Completed"
+msgstr "Completados"
+
+msgid "Landings"
+msgstr "Aterrizajes"
+
+msgid "Statistics widget scope"
+msgstr "Ámbito del widget de estadísticas"
+
+msgid "This session's successful landings, crashes and restarts. Choose All aircraft or This aircraft. The service keeps recording when the widget is hidden."
+msgstr "Aterrizajes exitosos, choques y reinicios de esta sesión. Elige todas las aeronaves o esta aeronave. El registro continúa aunque ocultes el widget."
+
+msgid "All aircraft combined"
+msgstr "Todas las aeronaves"
+
+#, python-format
+msgid "Remove %d records for %s (%s), covering %s, with %s airborne time."
+msgstr "Eliminar %d registros de %s (%s), entre %s, con %s de tiempo en el aire."
+
+msgid "flight"
+msgstr "vuelo"
+
+msgid "flights"
+msgstr "vuelos"
+
+msgid "crash"
+msgstr "choque"
+
+msgid "crashes"
+msgstr "choques"
+
+msgid "restart"
+msgstr "reinicio"
+
+msgid "restarts"
+msgstr "reinicios"
+
+msgid "other record"
+msgstr "otro registro"
+
+msgid "other records"
+msgstr "otros registros"
+
+msgid "coverage gap"
+msgstr "brecha de cobertura"
+
+msgid "coverage gaps"
+msgstr "brechas de cobertura"
+
+msgid "This cannot be undone. Preferences, aircraft, Workshop builds, controller profiles and flight recordings stay in place."
+msgstr "Esta acción no se puede deshacer. Se conservan las preferencias, aeronaves, modelos del Taller, perfiles de control y grabaciones de vuelo."
+
+msgid "Delete flight history?"
+msgstr "¿Eliminar el historial de vuelos?"
+
+msgid "Delete history"
+msgstr "Eliminar historial"
+
+msgid "I understand this history removal cannot be undone."
+msgstr "Entiendo que no se puede deshacer la eliminación de este historial."
+
+msgid "Reset counters?"
+msgstr "¿Reiniciar los contadores?"
+
+msgid "Reset counters"
+msgstr "Reiniciar contadores"
+
+msgid "This session, all aircraft"
+msgstr "Esta sesión, todas las aeronaves"
+
+msgid "Reset counters for %s? This starts a new counter window; saved flight history stays available."
+msgstr "¿Reiniciar los contadores de %s? Esto inicia un nuevo período de conteo; el historial de vuelos guardado seguirá disponible."
+
+#, python-format
+msgid "Flights %d · Completed %d · Crashes %d · Restarts %d · Airborne %s"
+msgstr "Vuelos %d · Completados %d · Choques %d · Reinicios %d · Tiempo en el aire %s"
+
+msgid "Counters and history cannot be changed right now."
+msgstr "Ahora no se pueden cambiar los contadores ni el historial."
+
+msgid "Statistics changed. Review the updated preview and confirm again."
+msgstr "Las estadísticas cambiaron. Revisa la vista previa actualizada y confirma de nuevo."
+
+msgid "Confirm that you want to remove the history shown above."
+msgstr "Confirma que quieres eliminar el historial mostrado arriba."
+
+msgid "The change could not be saved. Your statistics are still available."
+msgstr "No se pudo guardar el cambio. Tus estadísticas siguen disponibles."
+
+msgid "tracked history"
+msgstr "historial registrado"
+
+# Home and flight-state summaries owned by the product shell.
+msgid "Statistics · Pilot total"
+msgstr "Estadísticas · Total del piloto"
+
+msgid "Aircraft statistics"
+msgstr "Estadísticas de aeronave"
+
+#, python-format
+msgid "Lifetime · %s airborne · %d completed · %d crashes"
+msgstr "Historial · %s en el aire · %d completados · %d choques"
+
+#, python-format
+msgid "Pilot total · %s airborne · %d completed · best streak %d"
+msgstr "Total del piloto · %s en el aire · %d completados · mejor racha %d"
+
+msgid "Flight statistics could not be saved"
+msgstr "No se pudieron guardar las estadísticas del vuelo"
+
+msgid "The current flight has unsaved statistics. Retry saving, cancel, or leave without the unsaved changes."
+msgstr "El vuelo actual tiene estadísticas sin guardar. Intenta guardarlas de nuevo, cancela o sal sin guardar esos cambios."
+
+msgid "Leave without saving"
+msgstr "Salir sin guardar"
+
+msgid "Interrupted flight recovered. Only saved airborne time is included."
+msgstr "Se recuperó un vuelo interrumpido. Solo se incluye el tiempo en el aire guardado."
+
+msgid "Checkpoint experiment: flight statistics are not recorded until Restart."
+msgstr "Experimento de punto de control: las estadísticas del vuelo no se registran hasta reiniciar."
+
+
+#: ui/workshop.gd
+msgid "Mechanical audio"
+msgstr "Audio mecánico"
+
+
+#: ui/workshop.gd
+msgid "Servo type"
+msgstr "Tipo de servo"
+
+
+#: ui/workshop.gd
+msgid "Standard Servo"
+msgstr "Servo estándar"
+
+
+#: ui/workshop.gd
+msgid "High-Torque Servo"
+msgstr "Servo de alto par"
+
+
+#: ui/workshop.gd
+msgid "Servo sound level"
+msgstr "Volumen de los servos"
+
+
+#: ui/workshop.gd
+msgid "Retract type"
+msgstr "Tipo de tren retráctil"
+
+
+#: ui/workshop.gd
+msgid "Mechanical / electric"
+msgstr "Mecánico / eléctrico"
+
+
+#: ui/workshop.gd
+msgid "Pneumatic"
+msgstr "Neumático"
+
+
+#: ui/workshop.gd
+msgid "Quiet onboard mechanisms follow actual surface and gear movement. Listen nearby with the engine off during Test fly."
+msgstr "Los mecanismos a bordo siguen el movimiento real de las superficies y del tren. Escúchalos de cerca con el motor apagado durante el vuelo de prueba."
+
+
+#: ui/workshop.gd
+msgid "Migrate this build's legacy smoke profile before editing mechanical audio."
+msgstr "Actualiza el perfil de humo anterior de este modelo antes de editar el audio mecánico."
+
+
+#: ui/workshop.gd
+msgid "Retract sounds are available on aircraft with retractable landing gear."
+msgstr "Los sonidos del tren retráctil están disponibles en aviones con ese tipo de tren."
+
+
+#: ui/workshop.gd
+msgid "Sound selection does not change the aircraft's installed physics."
+msgstr "La selección de sonido no cambia la física del avión."
+
+#: ui/workshop_lighting.gd
+msgid "Lock navigation colors and patterns"
+msgstr "Bloquear colores y patrones de navegación"
+
+#: ui/workshop_lighting.gd
+msgid "Zone brightness"
+msgstr "Brillo de la zona"
+
+#: ui/workshop_lighting.gd
+msgid "Per-zone multiplier, independent of overall brightness."
+msgstr "Multiplicador de la zona, independiente del brillo general."
+
+#: ui/workshop_lighting.gd
+msgid "Response source"
+msgstr "Fuente de respuesta"
+
+#: ui/workshop_lighting.gd
+msgid "Response strength"
+msgstr "Intensidad de respuesta"
+
+#: ui/workshop_lighting.gd
+msgid "Telemetry reactions use accepted values when available; otherwise the zone stays steady."
+msgstr "Las respuestas usan valores disponibles de telemetría; de lo contrario, la zona mantiene su patrón base."
+
+#: ui/workshop_lighting.gd
+msgid "Sequence follows the saved cue list for this zone."
+msgstr "La secuencia sigue la lista de pasos guardada para esta zona."
+
+#: ui/workshop_lighting.gd
+msgid "Sequence is available only when this profile has saved cues for the selected zone."
+msgstr "La secuencia solo está disponible si el perfil tiene pasos guardados para esta zona."
+
+#: ui/workshop_lighting.gd
+msgid "Orientation lock preserves the saved navigation cue colors and patterns. Turn it off to edit them."
+msgstr "El bloqueo conserva los colores y patrones de navegación guardados. Desactívalo para editarlos."
+
+#: ui/workshop_lighting.gd
+msgid "Unlock orientation cues to change their color or pattern."
+msgstr "Desbloquea las luces de orientación para cambiar su color o patrón."
+
+#: ui/workshop_lighting.gd
+msgid "Navigation colors and patterns are available when orientation lock is off."
+msgstr "Puedes editar los colores y patrones de navegación al desactivar el bloqueo."
+
+#: ui/workshop_lighting.gd
+msgid "Disabling an effect also removes that effect from saved sequence cues."
+msgstr "Desactivar un efecto también lo quita de los pasos guardados de la secuencia."
+
+#: ui/workshop_lighting.gd
+msgid "Effect"
+msgstr "Efecto"
+
+#: ui/workshop_lighting.gd
+msgid "Lifetime"
+msgstr "Duración"
+
+#: ui/workshop_lighting.gd
+msgid "%d configured zones · %d enabled"
+msgstr "%d zonas configuradas · %d activas"

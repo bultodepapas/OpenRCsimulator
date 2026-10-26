@@ -107,7 +107,8 @@ func _preferences() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	_check("no file: default overlays", Preferences.load_from(PREFS).hud == Settings.DEFAULTS)
 	var p := Preferences.load_from(PREFS)
-	p.hud = { preset = "custom", visible = ["flight", "telemetry"], units = "si", stick_mode = 1, radio_model = "radiolink_t16d" }
+	p.hud = { preset = "custom", visible = ["flight", "telemetry"], units = "si", stick_mode = 1,
+		radio_model = "radiolink_t16d", session_stats_scope = "aircraft" }
 	_check("save", Preferences.save_to(PREFS, p) == OK)
 	_check("custom overlays and radio appearance round-trip", Preferences.load_from(PREFS).hud == p.hud)
 	var cfg := ConfigFile.new()
@@ -461,7 +462,9 @@ func _dialog() -> void:
 	_check("Use training layout selects the preset and its switches", manager.settings.preset == "training"
 		and manager.settings.visible == Settings.PRESETS.training
 		and dialog.preset_picker.selected == Settings.PRESET_ORDER.find("training")
-		and Settings.TRAINING_IDS.all(func(id: String) -> bool: return dialog.switches[id].button_pressed))
+		and Settings.TRAINING_IDS.filter(func(id: String) -> bool: return id != "session_stats").all(
+			func(id: String) -> bool: return dialog.switches[id].button_pressed)
+		and not dialog.switches.session_stats.button_pressed)
 	manager.set_preset("pilot")
 	manager.frames.wind.close_button.pressed.emit()
 	_check("external close synchronizes the dialog", not dialog.switches.wind.button_pressed and dialog.preset_picker.selected == Settings.PRESET_ORDER.size())

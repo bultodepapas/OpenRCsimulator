@@ -1,0 +1,19 @@
+AUD-16 mechanical sound bank source and license notice.
+
+Futaba S3003 and T2M TS-315 servo recordings by Joseph Sardin, LaSonotheque, are CC0 1.0. Their source pages explicitly allow commercial use, editing and redistribution.
+https://creativecommons.org/publicdomain/zero/1.0/
+The T2M TS-315 is described by its source page as a large servo; no torque value or loaded high-torque acoustic result is claimed.
+
+Freesound release_air_pffft.wav by reg7783 is CC0 1.0. Retained file is the HQ MP3 preview, not login-gated original WAV.
+https://freesound.org/people/reg7783/sounds/131302/
+Source is a pneumatic nail-gun air-line disconnect; it is used only as a non-RC hiss proxy.
+
+Garage air compressor releasing pressure by j_soundeffects is CC-BY-4.0. Retained file is the HQ MP3 preview, not login-gated original WAV.
+https://creativecommons.org/licenses/by/4.0/
+https://freesound.org/people/j_soundeffects/sounds/847748/
+Attribution: j_soundeffects, Garage air compressor releasing pressure, Freesound. This non-RC compressor valve is used as an air/valve proxy; its automatic closing pop is not used as a retract lock.
+
+OpenRC Simulator edits: mono conversion, resampling, trimming, filtering/EQ, level changes, fades and loop crossfades. Source URLs and exact edits for each derivative are in the accompanying manifest.json.
+
+Servo recordings used as retract start/end cues remain servo recordings and do not establish measured retract motor, spool-valve, cylinder or lock sounds.
+No direct audition was performed; boundaries were selected from source metadata and waveform/spectral analysis. Human listening acceptance remains required.

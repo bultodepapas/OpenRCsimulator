@@ -195,9 +195,12 @@ static func _loads_with_lake(s: PackedFloat64Array, gear: Dictionary, steer: flo
 		if terrain.size() != 3 or not is_finite(terrain[0]) or not is_finite(terrain[1]) or not is_finite(terrain[2]):
 			return PackedFloat64Array([NAN])
 		var norm := M.sqrt_(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2])
-		var up_n := -terrain[1] / norm
-		var up_e := -terrain[2] / norm
-		var up_d := -1.0 / norm
+		var normal := Terrain.normal_from_up_slopes(terrain[1], terrain[2])
+		if normal.is_empty():
+			return PackedFloat64Array([NAN])
+		var up_n: float = normal[0]
+		var up_e: float = normal[1]
+		var up_d: float = normal[2]
 		var up_body := M.v3(
 			north[0] * up_n + east[0] * up_e + down[0] * up_d,
 			north[1] * up_n + east[1] * up_e + down[1] * up_d,

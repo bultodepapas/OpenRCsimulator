@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a98f6689-559a-4ee9-8ed0-e39b7f1a4e9b",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ground_stage_queries.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85",
+  "started_utc": "2026-10-26T00:12:55.939168+00:00",
+  "label": "ground_stage_queries",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85\\tmp\\gp10-integration-checks\\ground_stage_queries-1jr3sst6\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85\\tmp\\gp10-integration-checks\\ground_stage_queries-1jr3sst6\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    ", 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.656,
+  "log_bytes": 14498,
+  "log_sha256": "91d4073150b754a21e64273c331354f77d899f9dc93bd37c30e51da44e9ba518"
+}

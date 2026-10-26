@@ -36,6 +36,8 @@ Home also offers two separate experimental activities, each with its own control
 
 **Esc** opens Pause; losing window focus also pauses. Continue resumes explicitly. Pause can restart, return to Home or quit. The direct CLI route has no Home to return to.
 
+Current source records local fixed-wing flight statistics. Open **Home → Statistics · Pilot total**, **Aircraft → Aircraft statistics**, or **Pause → Statistics** for session/lifetime history and independent counter windows. The optional **Session statistics** flight overlay shows landings, crashes and restarts. Counter resets preserve history; history deletion is a separate confirmed action. See [Flight statistics](FLIGHT-STATISTICS.md) for counting rules, recovery and current limits.
+
 | Key | Action |
 | --- | --- |
 | ← / → | Aileron / roll |

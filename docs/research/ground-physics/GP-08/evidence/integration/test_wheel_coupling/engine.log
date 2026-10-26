@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+GP-09 legacy source instantaneous power residual: 1.5 W
+GP-09 arbitrary-axis oracle maxima: power_fd_W=0.00000000025962 momentum_Nm=0.0 brake_power_W=0.00000000000001
+GP-09 kernel braking=false rate_Hz=120 energy_heat_error_J=0.00000000000405 world_momentum_error_Nms=0.00000000009463
+GP-09 kernel braking=false rate_Hz=240 energy_heat_error_J=0.00000000000025 world_momentum_error_Nms=0.00000000000593
+GP-09 kernel braking=false rate_Hz=480 energy_heat_error_J=0.00000000000007 world_momentum_error_Nms=0.00000000000037
+GP-09 kernel braking=true rate_Hz=120 energy_heat_error_J=0.00000000000501 world_momentum_error_Nms=0.00000000006309
+GP-09 kernel braking=true rate_Hz=240 energy_heat_error_J=0.00000000000031 world_momentum_error_Nms=0.00000000000394
+GP-09 kernel braking=true rate_Hz=480 energy_heat_error_J=0.00000000000002 world_momentum_error_Nms=0.00000000000024
+84 checks, 0 failed

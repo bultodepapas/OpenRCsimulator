@@ -63,19 +63,31 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 	if (rpm < Propulsion.STOPPED_RPM and transported_dv.is_empty()) or prop.get("slipstream", {}).is_empty():
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var v: PackedFloat64Array = air.v_air
+	var source := source_air(air)
+	if not Aero._spatial_finite(source, 3):
+		return _invalid_loads()
+	var sampler_value: Variant = air.get("ambient_delta_body_at", Callable())
+	if not sampler_value is Callable or (air.has("ambient_delta_body_at") and not sampler_value.is_valid()):
+		return _invalid_loads()
+	var sampler: Callable = sampler_value
 	var smooth: bool = prop.slipstream.has("edge_fraction")
-	var fade: float = reverse_weight(v, rpm, prop) if smooth else 1.0
+	var fade: float = reverse_weight(source, rpm, prop) if smooth else 1.0
 	# A stopped source leaves a decaying axial wake. Reverse flow still removes its tail occupancy.
 	if not transported_dv.is_empty() and rpm < Propulsion.STOPPED_RPM:
-		fade = 1.0 if v[0] >= 0.0 else 0.0
+		fade = 1.0 if source[0] >= 0.0 else 0.0
 	if fade == 0.0:
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-	var tq := stage_thrust_torque if stage_thrust_torque.size() >= 2 else Propulsion.thrust_torque(v, rpm, prop, rho)
-	var w := wake(v, tq[0], tq[1], prop, rho)
+	var tq := stage_thrust_torque
+	if tq.size() < 2:
+		if air.has("propulsion_air_body"):
+			var point := Propulsion.stage_air_velocity(state, air, prop)
+			if not point.ok:
+				return _invalid_loads()
+			tq = Propulsion.thrust_torque(point.velocity_body, rpm, prop, rho)
+		else:
+			tq = Propulsion.thrust_torque(v, rpm, prop, rho)
+	var w := wake(source, tq[0], tq[1], prop, rho)
 	var ss: Dictionary = prop.slipstream
-	var v0: float = v[0]
-	var v1: float = v[1]
-	var v2: float = v[2]
 	var p: float = state[RB.RATE]
 	var q: float = state[RB.RATE + 1]
 	var r: float = state[RB.RATE + 2]
@@ -84,7 +96,7 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 	var wash_0: float = ax[0] * dv
 	var wash_1: float = ax[1] * dv
 	var wash_2: float = ax[2] * dv
-	var speed := M.sqrt_(v0 * v0 + v1 * v1 + v2 * v2)
+	var speed := M.sqrt_(source[0] * source[0] + source[1] * source[1] + source[2] * source[2])
 	# Piece-independent immersion terms.
 	var hub: PackedFloat64Array = ss.hub
 	var ax_le_0: float = -ax[0]
@@ -121,7 +133,7 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 	var segmented: bool = ss.has("propeller_sidewash")
 	var crossflow := PackedFloat64Array([0.0, 0.0, 0.0])
 	if segmented:
-		crossflow = sidewash(v, rpm, prop, w, ax, rho, float(ss.propeller_sidewash))
+		crossflow = sidewash(source, rpm, prop, w, ax, rho, float(ss.propeller_sidewash))
 	for piece_index in ss.pieces.size():
 		var piece: Dictionary = ss.pieces[piece_index]
 		if not transported_dv.is_empty():
@@ -137,8 +149,8 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 		var centre_2: float = hub[2] + ax_le_2 * shaft_scale
 		if drifts:
 			var lean: float = lean_ratio * dist / speed
-			centre_1 -= v1 * lean
-			centre_2 += v2 * lean * vertical_drift
+			centre_1 -= source[1] * lean
+			centre_2 += source[2] * lean * vertical_drift
 		var e: PackedFloat64Array = piece.span_dir
 		var rel_0: float = root[0] - centre_0
 		var rel_1: float = root[1] - centre_1
@@ -174,7 +186,7 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 				var segment_loads := _segmented_increment(piece, surfaces[piece.surface], a, b, c0, slope, along, d2,
 					PackedFloat64Array([centre_0, centre_1, centre_2]), ax, core, swirl_strength,
 					PackedFloat64Array([wash_0 + crossflow[0], wash_1 + crossflow[1], wash_2 + crossflow[2]]), state, v, d, model,
-					rho, wing_cl, swirl_subdivisions)
+					rho, wing_cl, swirl_subdivisions, sampler)
 				o0 += segment_loads[0]
 				o1 += segment_loads[1]
 				o2 += segment_loads[2]
@@ -226,10 +238,15 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 		var rate_arm_1: float = r * arm_0 - p * arm_2
 		var rate_arm_2: float = p * arm_1 - q * arm_0
 		var arm := M.v3(arm_0, arm_1, arm_2)
-		var free := Aero._tail_surface_from_flow(M.v3((v0+0.0)+rate_arm_0, (v1+0.0)+rate_arm_1, (v2+0.0)+rate_arm_2),
+		var local_v := v
+		if sampler.is_valid():
+			local_v = _point_air(v, sampler, arm)
+			if not Aero._spatial_finite(local_v, 3):
+				return _invalid_loads()
+		var free := Aero._tail_surface_from_flow(M.v3((local_v[0]+0.0)+rate_arm_0, (local_v[1]+0.0)+rate_arm_1, (local_v[2]+0.0)+rate_arm_2),
 			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
-		var washed := Aero._tail_surface_from_flow(M.v3((v0+(wash_0-swirl_0))+rate_arm_0,
-			(v1+(wash_1-swirl_1))+rate_arm_1, (v2+(wash_2-swirl_2))+rate_arm_2),
+		var washed := Aero._tail_surface_from_flow(M.v3((local_v[0]+(wash_0-swirl_0))+rate_arm_0,
+			(local_v[1]+(wash_1-swirl_1))+rate_arm_1, (local_v[2]+(wash_2-swirl_2))+rate_arm_2),
 			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
 		o0 += washed[0] - free[0]
 		o1 += washed[1] - free[1]
@@ -240,11 +257,45 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 	if smooth:
 		var result: PackedFloat64Array = PackedFloat64Array([o0*fade, o1*fade, o2*fade, o3*fade, o4*fade, o5*fade])
 		if w.swirl != 0.0:
-			var correction: PackedFloat64Array = SwirlLoads.correction(state, air, d, model, w, fade, rho, wing_cl)
+			var correction: PackedFloat64Array = SwirlLoads.correction(state, air, d, model, w, fade, rho, wing_cl, sampler, source)
 			for component: int in 6:
 				result[component] += correction[component]
 		return result
 	return PackedFloat64Array([o0, o1, o2, o3, o4, o5])
+
+
+## W05c-R2 source closure: ambient at the hub, retaining the existing datum-flow convention.
+## This delta excludes omega×r. Powered-device inflow is independently supplied as complete point velocity.
+static func source_air(air: Dictionary) -> PackedFloat64Array:
+	var base: Variant = air.get("v_air")
+	if not base is PackedFloat64Array or not Aero._spatial_finite(base, 3):
+		return PackedFloat64Array([NAN, NAN, NAN])
+	if not air.has("wake_source_delta_body"):
+		return base
+	var delta: Variant = air.wake_source_delta_body
+	if not delta is PackedFloat64Array or not Aero._spatial_finite(delta, 3):
+		return PackedFloat64Array([NAN, NAN, NAN])
+	var out: PackedFloat64Array = base.duplicate()
+	for axis in 3:
+		if delta[axis] != 0.0:
+			out[axis] += delta[axis]
+	return out
+
+
+## Sampler returns ONLY ambient relative-flow deltas at the aerodynamic arm. Rotation is still added by the tail law.
+static func _point_air(v: PackedFloat64Array, sampler: Callable, arm: PackedFloat64Array) -> PackedFloat64Array:
+	var delta: Variant = sampler.call(arm.duplicate())
+	if not delta is PackedFloat64Array or not Aero._spatial_finite(delta, 3):
+		return PackedFloat64Array([NAN, NAN, NAN])
+	var out := v.duplicate()
+	for axis in 3:
+		if delta[axis] != 0.0:
+			out[axis] += delta[axis]
+	return out
+
+
+static func _invalid_loads() -> PackedFloat64Array:
+	return PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN])
 
 
 ## Wake state: { u (axial airspeed), w (disc induced velocity), dv (velocity increment at the tail), rs (radius),
@@ -449,7 +500,7 @@ static func sidewash(v: PackedFloat64Array, rpm: float, prop: Dictionary, w: Dic
 static func _segmented_increment(piece: Dictionary, tail: Dictionary, a: float, b: float, c0: float, slope: float,
 		along: float, d2: float, centre: PackedFloat64Array, ax: PackedFloat64Array, core: float, swirl: float,
 		wash: PackedFloat64Array, state: PackedFloat64Array, v: PackedFloat64Array, d: Dictionary, model: Dictionary,
-		rho: float, wing_cl: float, subdivisions: int = 1) -> PackedFloat64Array:
+		rho: float, wing_cl: float, subdivisions: int = 1, sampler := Callable()) -> PackedFloat64Array:
 	var cuts: Array[float] = [a, b]
 	if core * core > d2:
 		var core_half := M.sqrt_(core * core - d2)
@@ -530,9 +581,14 @@ static func _segmented_increment(piece: Dictionary, tail: Dictionary, a: float, 
 		var rate_1: float = r * arm_0 - p * arm_2
 		var rate_2: float = p * arm_1 - q * arm_0
 		var area: float = float(piece.area) * segment_area / full
-		_add_tail_load(out, law, 1.0, v[0] + (wash[0] - s0) + rate_0, v[1] + (wash[1] - s1) + rate_1, v[2] + (wash[2] - s2) + rate_2,
+		var local_v := v
+		if sampler.is_valid():
+			local_v = _point_air(v, sampler, M.v3(arm_0, arm_1, arm_2))
+			if not Aero._spatial_finite(local_v, 3):
+				return _invalid_loads()
+		_add_tail_load(out, law, 1.0, local_v[0] + (wash[0] - s0) + rate_0, local_v[1] + (wash[1] - s1) + rate_1, local_v[2] + (wash[2] - s2) + rate_2,
 			arm_0, arm_1, arm_2, area)
-		_add_tail_load(out, law, -1.0, v[0] + rate_0, v[1] + rate_1, v[2] + rate_2, arm_0, arm_1, arm_2, area)
+		_add_tail_load(out, law, -1.0, local_v[0] + rate_0, local_v[1] + rate_1, local_v[2] + rate_2, arm_0, arm_1, arm_2, area)
 	return out
 
 

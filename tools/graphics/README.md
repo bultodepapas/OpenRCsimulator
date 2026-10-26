@@ -12,10 +12,14 @@ marker or automatic restart is saved. Restart is unavailable during a flight or
 Workshop session. If the engine falls back, Settings reports Standard.
 
 High enables short-range SSAO, four blended directional-shadow cascades in an
-8192-pixel atlas, solar-angle PCSS, and sky reflections during flowing time of day.
+8192-pixel atlas, solar-angle PCSS, multi-bounce ambient occlusion, and sky reflections during flowing time of day.
 The existing exposure, haze, aircraft, scenery population and simulation are
 retained. High defaults to native rendering; FSR2 is now an explicit optional
-choice (below). It does not enable motion blur, SSR, GI or volumetric fog.
+choice (below). It does not enable motion blur, SSR, full GI or volumetric fog.
+Multi-bounce occlusion is a Forward+ startup setting in `project.godot`; Compatibility
+and Mobile ignore it. Bare technical Forward+ launches also inherit it. Changing
+the setting from an already-running script cannot activate its shader variant.
+[Paired evidence and limits](../../docs/research/engine-upgrade/GDU-11/implementation.md#gdu-11h--forward-multi-bounce-occlusion).
 The atlas and screen-space buffers cost additional GPU memory. Only the recorded
 Windows/NVIDIA host has been exercised; macOS, Linux and other GPUs remain open.
 
@@ -124,16 +128,37 @@ Inspect all three `stage-N.json` receipts and child logs, not only the parent ex
 The probe appends its own script/log arguments after checking production arguments;
 it verifies the editor-binary path, not packaged or macOS application relaunch.
 
-`capture.gd` uses production builders in a fixed 4× MSAA SubViewport. Run with a
+`capture.gd` uses production builders in an exact-size SubViewport, defaulting to 4× MSAA. Run with a
 native renderer and `-- --out=<new directory> --aircraft=p51d-mustang-120`.
-`--width=1280|1920`, `--hour=<0..24)` and `--view=all|aircraftground|pilot|pavilion|lake|flightline|windsock`
+`--width=1280|1920|2560`, `--hour=<0..24)` and `--view=all|aircraftground|pilot|pavilion|lake|flightline|windsock`
 select static comparisons. The `pavilion` case includes the clubhouse and pit area.
+`--aa=msaa4|none|taa|fsr2_native` isolates antialiasing without changing player
+preferences. TAA and FSR2 require native High; unsupported requests fail instead
+of silently capturing a fallback. FSR2 Native uses the production reconstruction
+adapter at full resolution with sharpening off. Reports record the actual MSAA,
+TAA, scaling, sharpness and mip-bias values. Stills allow 90 drawn settling frames;
+this is not a convergence or motion-quality guarantee. Compare contact on/off
+within each AA mode before attributing a change to either effect.
 `--seconds=<duration>` requires one view and measures after 10 s warmup without
 image readback. These offscreen static timings do not qualify flight performance.
 Use the existing native flight collector separately, without concurrent tests,
 exports or captures. `restart_probe.gd` requires an editor binary; release templates
 ignore its `--script` route. It is not a packaged-release probe. Packaged restart
 must be exercised through the actual menu.
+
+GDU-11 contact shadows are available only as an explicit High experiment with
+`OPENRC_CONTACT_SHADOWS=on`. Unset/invalid values keep them off. Beta1 produces
+visible wall artifacts with the current Native AA path; default adoption failed
+the [paired visual gate](../../docs/research/engine-upgrade/GDU-11/implementation.md#gdu-11g--high-contact-shadow-experiment).
+
+For GDU-11 contact-shadow comparisons, `capture.gd --contact-shadows=off|on`
+overrides only that runtime setting after High configuration; the default `profile`
+uses production behavior. Overrides require native High. Reports retain the actual
+contact-shadow setting, sun permission and startup multi-bounce setting.
+`contact_shadow_probe.gd --out=<new absolute directory>` requires native High and
+checks actual 1080p contact contribution, preservation of an offscreen caster's
+ordinary shadow, and unchanged unoccluded sunlight. Its PNGs and JSON verdict are
+fixture evidence, not flight performance or broad screen-edge acceptance.
 
 `flow_probe.gd` diagnoses moving moon/stars and twilight at a fixed 60 Hz clock,
 20× world time, 1920×1080 and 4× MSAA. Run with an editor binary and a native
