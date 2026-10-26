@@ -7,8 +7,11 @@ const Carb := preload("res://physics/glow/carburetor.gd")
 
 ## Steady source at a transmitter throttle: the barrel at its settled opening, the charge per cycle from the
 ## carburettor's flow restriction at this speed (NITRO-06).
-static func source(prop: Dictionary, rpm: float, throttle: float, dry_density: float,
-		prepared: Source.PreparedEvaluator = null) -> Dictionary:
+static func source(prop: Dictionary, rpm: float, throttle: float, dry_density: float) -> Dictionary:
+	return _source(prop, rpm, throttle, dry_density, null)
+
+static func _source(prop: Dictionary, rpm: float, throttle: float, dry_density: float,
+		prepared: Source.PreparedEvaluator) -> Dictionary:
 	var install: Dictionary = prop.glow
 	var opening: float = Carb.opening(throttle, float(install.throttle_idle_offset), float(install.throttle_travel_exponent))
 	var admission: float = Carb.admission(opening, rpm, Source.breathing(install.profile, rpm),
@@ -20,9 +23,12 @@ static func source(prop: Dictionary, rpm: float, throttle: float, dry_density: f
 	return Source.evaluate(install.profile, rpm, admission,
 		install.profile.operation.nominal_mixture, dry_density)
 
-static func residual(prop: Dictionary, rpm: float, throttle: float, u: float, rho: float, dry_density: float,
-		engine_evaluator: Source.PreparedEvaluator = null, propeller_evaluator: Prop.PreparedEvaluator = null) -> float:
-	var engine: Dictionary = source(prop,rpm,throttle,dry_density,engine_evaluator)
+static func residual(prop: Dictionary, rpm: float, throttle: float, u: float, rho: float, dry_density: float) -> float:
+	return _residual(prop,rpm,throttle,u,rho,dry_density,null,null)
+
+static func _residual(prop: Dictionary, rpm: float, throttle: float, u: float, rho: float, dry_density: float,
+		engine_evaluator: Source.PreparedEvaluator, propeller_evaluator: Prop.PreparedEvaluator) -> float:
+	var engine: Dictionary = _source(prop,rpm,throttle,dry_density,engine_evaluator)
 	var load: Dictionary = Prop.evaluate_prepared(propeller_evaluator,rpm,u,rho) if propeller_evaluator != null else Prop.evaluate(rpm,u,rho,prop.glow.propeller)
 	return engine.shaft_torque_nm-load.torque_nm if engine.ok and load.ok else NAN
 
@@ -49,10 +55,10 @@ static func solve(prop: Dictionary, throttle: float, u: float, rho: float, dry_d
 			if table[i]>minimum and table[i]<maximum: nodes.append(table[i])
 	nodes.sort()
 	var lo: float = minimum
-	var flo: float = residual(prop,lo,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator)
+	var flo: float = _residual(prop,lo,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator)
 	for hi: float in nodes:
 		if hi<=lo: continue
-		var fhi: float = residual(prop,hi,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator)
+		var fhi: float = _residual(prop,hi,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator)
 		if not is_finite(flo) or not is_finite(fhi): return {ok=false, roots=roots}
 		if flo>0.0 and fhi<=0.0:
 			var left: float=lo
@@ -62,12 +68,12 @@ static func solve(prop: Dictionary, throttle: float, u: float, rho: float, dry_d
 				# The remaining bisections would repeat this same sample and leave both endpoints
 				# unchanged once their midpoint rounds to an endpoint. Keep the final root expression.
 				if mid == left or mid == right: break
-				var fm: float=residual(prop,mid,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator)
+				var fm: float=_residual(prop,mid,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator)
 				if not is_finite(fm): return {ok=false,roots=roots}
 				if fm>0.0: left=mid
 				else: right=mid
 			var root: float=(left+right)*0.5
-			if absf(residual(prop,root,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator))>1e-10: return {ok=false,roots=roots}
+			if absf(_residual(prop,root,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator))>1e-10: return {ok=false,roots=roots}
 			roots.append(root)
 		lo=hi
 		flo=fhi
