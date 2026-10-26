@@ -198,6 +198,7 @@ func _run() -> void:
 		and int(saved_effect.lifetime_ticks) == 180,
 		"effect=%s" % saved_effect)
 
+	_test_configuration_reuse(bindings)
 	_test_recovery_state(lighting)
 	_test_sequence_integration(editor, lighting)
 	await _test_migration(bindings, 1, true)
@@ -240,6 +241,68 @@ func _effect(profile: Dictionary, anchor_id: String) -> Dictionary:
 		if entry is Dictionary and str(entry.get("anchor_id", "")) == anchor_id:
 			return entry
 	return {}
+
+
+func _test_configuration_reuse(bindings: Dictionary) -> void:
+	var panel := LightingPanel.new()
+	root.add_child(panel)
+	var initial := Presentation.defaults(bindings)
+	initial.lighting = LightingProfile.preset("festival")
+	panel.configure(bindings, initial)
+	var selector: OptionButton = panel.get("_zone_selector")
+	var strip_index := _metadata_index(selector, "strip_left")
+	selector.select(strip_index)
+	panel.call("_on_zone_selected", strip_index)
+	var zone_hex: LineEdit = panel.get("_zone_hex_fields")[0]
+	var effect_kind: OptionButton = panel.get("_effects_controls_by_anchor").vfx_tip_left.kind
+	var sequence: Control = panel.get("_sequence_editor")
+	var cue_hex: LineEdit = sequence.get("_color_fields")[0]
+	var capability := {"state": "original", "zones": [], "effects": []}
+	panel.set_capability_report(capability)
+	var unrelated := initial.duplicate(true)
+	unrelated.mechanical_audio.servo_level = 0.35
+	panel.configure(bindings, unrelated)
+	_check("unrelated presentation changes reuse all lighting editor rows",
+		panel.get("_zone_hex_fields")[0] == zone_hex
+		and panel.get("_effects_controls_by_anchor").vfx_tip_left.kind == effect_kind
+		and sequence.get("_color_fields")[0] == cue_hex)
+	_check("reused lighting controls keep the full incoming presentation snapshot",
+		panel.get("_presentation") == unrelated)
+	_check("unrelated presentation changes preserve current preview capability feedback",
+		panel.get("_capability_report") == capability)
+	var repeated_hex: LineEdit = panel.get("_zone_hex_fields")[0]
+	panel.configure(bindings, unrelated)
+	_check("identical accepted configure keeps lighting row identity",
+		panel.get("_zone_hex_fields")[0] == repeated_hex)
+	var changed := unrelated.duplicate(true)
+	changed.lighting.brightness = 0.6
+	panel.configure(bindings, changed)
+	_check("changed lighting still rebuilds and synchronizes its controls",
+		panel.get("_zone_hex_fields")[0] != repeated_hex
+		and is_equal_approx(float(panel.get("_brightness").value), 0.6))
+	var invalid_hex: LineEdit = panel.get("_zone_hex_fields")[0]
+	invalid_hex.text = "#BAD"
+	invalid_hex.text_changed.emit(invalid_hex.text)
+	_check("fixture has pending invalid zone text before configure", panel.has_pending_edit())
+	panel.configure(bindings, changed)
+	_check("configure still discards pending zone text for identical accepted inputs",
+		not panel.has_pending_edit() and panel.get("_zone_hex_fields")[0] != invalid_hex
+		and panel.get("_zone_hex_fields")[0].text != "#BAD")
+	var pending_state: Dictionary = panel.get_editor_state()
+	pending_state.sequence.duration_text = "unfinished"
+	_check("fixture restores pending cue text", panel.restore_editor_state(pending_state) and panel.has_pending_edit())
+	panel.configure(bindings, changed)
+	_check("configure still discards pending cue text for identical accepted inputs",
+		not panel.has_pending_edit() and panel.get_editor_state().sequence.duration_text != "unfinished")
+	var committed_profiles: Array[Dictionary] = []
+	panel.profile_changed.connect(func(profile: Dictionary) -> void: committed_profiles.append(profile.duplicate(true)))
+	panel.call("_on_enabled_toggled", false)
+	_check("a lighting edit after reuse retains unrelated accepted presentation values",
+		committed_profiles.size() == 1 and is_equal_approx(float(committed_profiles[0].mechanical_audio.servo_level), 0.35))
+	panel.configure(bindings, changed)
+	_check("configure also restores accepted state after a detached panel proposal",
+		panel.get("_profile") == changed.lighting and panel.get("_enabled").button_pressed)
+	panel.free()
 
 
 func _test_recovery_state(panel: Control) -> void:
@@ -285,8 +348,24 @@ func _test_sequence_integration(editor: Node, panel: Control) -> void:
 	_check("pending sequence holds Workshop navigation", editor.get("_active_page") == "lighting")
 	var recovery: Dictionary = editor.call("_recovery_editor_state")
 	_check("Workshop recovery carries raw cue timing", recovery.presentation_buffers.lighting.sequence.duration_text == "unfinished")
+	var unrelated: Dictionary = accepted.duplicate(true)
+	var bindings: Dictionary = editor.get("_presentation_bindings")
+	unrelated.paint = [{"slot": bindings.paint_slots[0].id, "color": "#123456FF", "pattern": "solid", "accent": "none"}]
+	editor.set_presentation(unrelated)
+	_check("owner synchronization restores pending cue text after an unrelated appearance edit",
+		panel.has_pending_edit() and panel.get_editor_state().sequence.duration_text == "unfinished"
+		and editor.get_presentation().paint == unrelated.paint)
 	panel.cancel_pending_edit()
-	_check("cancel discards only pending cue edits", not panel.has_pending_edit() and editor.get_presentation() == accepted)
+	_check("cancel discards only pending cue edits", not panel.has_pending_edit() and editor.get_presentation().paint == unrelated.paint)
+	editor.call("_undo")
+	_check("Undo of an unrelated appearance edit keeps accepted lighting and clears no extra state",
+		not panel.has_pending_edit() and editor.get_presentation() == accepted
+		and panel.get("_presentation") == accepted)
+	editor.call("_redo")
+	_check("Redo refreshes the lighting panel's full presentation snapshot without changing lighting",
+		not panel.has_pending_edit() and panel.get("_presentation") == editor.get_presentation()
+		and editor.get_presentation().paint == unrelated.paint)
+	editor.call("_undo")
 
 
 func _test_migration(bindings: Dictionary, version: int, include_smoke: bool) -> void:
