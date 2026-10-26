@@ -6,6 +6,7 @@
 | --- | --- |
 | GP-08a frozen air/ground reference and candidate preservation | [Baseline](research/ground-physics/GP-08/evidence/README.md), [candidate replay](research/ground-physics/GP-08/evidence/candidate/README.md): four Stik/P-51 cases, 1,484 byte-equal sample rows, complete explicit candidate replays. Full scenario/fleet inventory and target-host budgets remain open. |
 | GP-09a fixed-axis coupled wheel/body foundation | [Implementation and 84 checks](research/ground-physics/GP-09/README.md). Actual legacy code reproduces the +1.5 W counterexample; the coupled reference conserves momentum and energy, including internal airborne braking, at 120/240/480 Hz. The stock wheel law is unchanged. Moving steering/retract axes, locked-inertia inventory and joint dynamic-shaft integration must pass before fleet migration. |
+| GP-10a/b typed support query and bank-normal correction | [Contract and evidence](research/ground-physics/GP-10/README.md). Adds detached geometry/material observations and an explicit relief-profile adapter; corrects the hull's positive-down lake-slope normal. No-lake force laws retain their prior arithmetic. Round-wheel closest points, whole-hull relief migration and live explicit-profile rollout remain open. |
 | GP-14a survivable gear-up accidents | [Implementation and integration](research/ground-physics/GP-14/README.md). Accepted hull contact with installed gear short of its down endpoint records a nonterminal accident through the existing statistics detector, deduplicates scrape/bounce/escalation and keeps physics running. Rules v2 preserves historical v1 coverage. The full ten-event bus, general accident archive and component-damage mechanics remain open. |
 
 The source audit and model comparisons below describe their dated baseline unless explicitly amended. These changes do **not** yet implement calibrated rebound, progressive suspension stops or persistent broken-gear dynamics. Existing compliant bounce remains in service; GP-11 and GP-16/17 remain required for the user's heavy-aircraft/hard-landing requirement. No golden flight was re-recorded.
@@ -853,7 +854,7 @@ GP-14's survivable accident path must not wait for a complete structural solver.
 
 ### 12.2 P0 — core correctness and lifecycle
 
-Execution status: GP-08a, GP-09a and GP-14a in the opening ledger are implemented subsets. The table describes each **full step**, not work claimed complete by those subsets. Continue GP-10 and the moving-axis/inventory/shaft portion of GP-09 before migrating GP-11 suspension and GP-12 traction. Do not enable the fixed-axis reference as a drop-in replacement for moving production gear.
+Execution status: GP-08a, GP-09a, GP-10a/b and GP-14a in the opening ledger are implemented subsets. The table describes each **full step**, not work claimed complete by those subsets. Complete GP-10's wheel geometry and whole-consumer migration and GP-09's moving-axis/inventory/shaft work before migrating GP-11 suspension and GP-12 traction. Do not enable the fixed-axis reference as a drop-in replacement for moving production gear.
 
 | Step / priority | Existing foundation and gap | Change and exact integration | Physical justification / implementation | Dependency, risk and acceptance gate |
 | --- | --- | --- | --- | --- |

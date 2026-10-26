@@ -11,6 +11,7 @@ const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const Slipstream := preload("res://physics/slipstream.gd")
+const WindFlow := preload("res://physics/wind_aircraft_flow.gd")
 
 
 ## Angular momentum of the spinning propeller/crankshaft, in body axes (clockwise from behind is +x; along the
@@ -86,25 +87,39 @@ static func _components_from_air(state: PackedFloat64Array, model: Dictionary, d
 		rho: float, air: Dictionary, downwash_cl: float, transported_dv: PackedFloat64Array,
 		ground_up := NAN, stage_propulsion_loads := PackedFloat64Array(),
 		stage_thrust_torque := PackedFloat64Array()) -> Dictionary:
-	var aero_loads := Aero.loads(state, air, d, model, rho, downwash_cl, ground_up)
+	var aero_loads: PackedFloat64Array
+	if air.has("spatial_air_law"):
+		if not WindFlow.matches_stage(air, state, rho):
+			return _invalid_components(air, "invalid or stale spatial stage air")
+		var spatial := Aero.ambient_spatial_loads(state, air, d, model, rho, air.aero_station_delta_body,
+			downwash_cl, ground_up)
+		if not spatial.ok:
+			return _invalid_components(air, str(spatial.errors))
+		aero_loads = spatial.loads
+	else:
+		for key: String in ["aero_station_delta_body", "ambient_delta_body_at", "wake_source_delta_body", "propulsion_air_body"]:
+			if air.has(key):
+				return _invalid_components(air, "spatial ambient fields require the complete stage contract")
+		aero_loads = Aero.loads(state, air, d, model, rho, downwash_cl, ground_up)
 	var washed: bool = not model.propulsion.get("slipstream", {}).is_empty()
 	var wake_thrust_torque: PackedFloat64Array = stage_thrust_torque
 	# Powered-device loads use their local inflow point: turbine intake and glow/electric propeller hub.
 	# The stage-reuse route already evaluated that same point; other legacy routes retain their convention.
 	var propulsion_loads: PackedFloat64Array = stage_propulsion_loads
 	if propulsion_loads.is_empty():
-		var prop_air: PackedFloat64Array = air.v_air
-		if Turbine.is_turbine(model.propulsion):
-			prop_air = Turbine.local_intake_velocity(air.v_air, state.slice(RB.RATE, RB.RATE + 3), model.propulsion)
-		elif Propulsion.is_glow(model.propulsion) or Propulsion.is_electric(model.propulsion):
-			prop_air = Propulsion.hub_air_velocity(state, air.v_air, model.propulsion.offset)
-		if washed and Propulsion.is_glow(model.propulsion):
+		var point := Propulsion.stage_air_velocity(state, air, model.propulsion)
+		if not point.ok:
+			return _invalid_components(air, point.message)
+		var prop_air: PackedFloat64Array = point.velocity_body
+		if washed and (Propulsion.is_glow(model.propulsion) or air.has("propulsion_air_body")):
 			# EX-14c: one hub evaluation feeds the shaft loads and the wake, exactly as the Glow stage route does.
 			wake_thrust_torque = Propulsion.thrust_torque(prop_air, rpm, model.propulsion, rho).slice(0, 2)
 			propulsion_loads = Propulsion.loads_from_thrust_torque(prop_air, rpm, model.propulsion, rho,
 				wake_thrust_torque[0], wake_thrust_torque[1])
 		else:
 			propulsion_loads = Propulsion.loads(prop_air, rpm, model.propulsion, rho)
+	elif washed and air.has("spatial_air_law") and not Aero._spatial_finite(wake_thrust_torque, 2):
+		return _invalid_components(air, "spatial stage propulsion loads require matching thrust/torque")
 	var total := aero_loads.duplicate()
 	for i in 6:
 		total[i] += propulsion_loads[i]
@@ -119,3 +134,9 @@ static func _components_from_air(state: PackedFloat64Array, model: Dictionary, d
 		propulsion_loads = propulsion_loads,
 		loads = total,
 	}
+
+
+static func _invalid_components(air: Dictionary, message: String) -> Dictionary:
+	var invalid := PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN])
+	return {air = air, aero_loads = invalid.duplicate(), propulsion_loads = invalid.duplicate(),
+		loads = invalid, error = message}

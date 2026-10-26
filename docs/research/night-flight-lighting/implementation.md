@@ -43,8 +43,9 @@ Pinned engine: `4.8.beta1.official.4d10419ca`. Primary visual target: 1920×1080
 | Presentation legacy/current validation and identity | 85 checks, 0 failed |
 | Pattern evaluator, including airspeed units | 18 checks, 0 failed |
 | Lighting save/load, bundle round trip, recovery and rejected-save preservation | 10 checks, 0 failed |
-| Existing Workshop store / bundle / draft recovery / profile transfer | 141 / 28 / 100 / 22 checks, 0 failed |
-| Workshop lighting editor, additive v1/v2 migration and v4 audio preservation | 0 failures |
+| Existing Workshop store / bundle / draft recovery / profile transfer | 141 / 28 / 102 / 22 checks, 0 failed |
+| Workshop lighting editor, shared sequence Undo/Redo/pending/recovery, additive v1/v2 migration and v4 audio preservation | 0 failures |
+| Pure cue editing / standalone sequence editor | 25 / 33 checks, 0 failed |
 | Workshop preview / existing smoke preview / customization integration | 0 failures / 113 checks, 0 failed / 0 failures |
 | Aircraft customization / smoke bindings / legacy fitted kit / P-51 dynamic mounts | 159 / 28 / 36 / 13 checks, 0 failed |
 | Customization generator reproducibility | 13 tests, passed |
@@ -68,6 +69,23 @@ Native runs used Windows, Godot `4.8.beta1.official.4d10419ca`, Compatibility/Op
 
 The full-moon capture also exposes a bright lake-reflection artifact outside the lighting rig. That scenery issue and the SDR fixed-time route remain visual qualification limits. Captures/logs stay in ignored `tmp/`; no images are added to Git. Reproduce the supported night scene with Home's night preset or the existing `--time_of_day=night` argument, rather than interpreting the similarly named SDR snapshot flag as equivalent.
 
+### FW-RGB-09 sequence authoring
+
+`app/workshop/lighting_sequence.gd` supplies clone-then-validate cue edits; `app/ui/workshop_lighting_sequence.gd` supplies the expandable Workshop editor. Users can add, duplicate, move and remove cues, edit duration/cycle/palette, and choose enabled zone/effect targets. Structural edits and Apply cue enter the existing shared presentation history. Pending fields block Save/Test fly and navigation; Cancel restores accepted state. A bounded optional `sequence` buffer extends the existing recovery object without changing its version or rejecting historical four-field lighting buffers. No renderer, accepted lighting schema or simulation source was changed for this package.
+
+The 32-cue/60-second caps remain authoritative in `LightingProfile`. Cue targets become Sequence zones; zones losing their final cue return to steady lighting. At least one cue must retain a zone target, including when other cues are effect-only. Navigation targets require releasing the existing orientation lock. Editor timing is quantized to the existing 240 Hz clock. Playback uses Restart preview and Play preview; no scrubbing or second clock is introduced.
+
+Additional native receipts (same pinned engine/GPU/1080p setup):
+
+- `tmp/debug-bridge/20261025-190807-47870/`: duplicate/reorder, invalid-duration Save/Test fly guard, accepted 2.5-second duration, Undo to 4 seconds / Redo to 2.5 seconds, saved five-cue revision and preview playback. Shot 002 shows the cue list/actions; shot 003 shows palette/targets and saved status. Clean exit, zero leaked objects.
+- `tmp/debug-bridge/20261025-191014-47870/`: separate process, same isolated profile; loaded that revision and verified five cues and 600 ticks in the first cue. Final component labels and 200% text scale inspected at 1920×1080 (shots 001/002); restored 100% and Test fly loaded the custom rig. Clean exit, zero leaked objects, no engine/script errors.
+
+The earlier `20261025-190653-47870` launch encountered a transient concurrent physics signature edit in `slipstream.gd`/`swirl_loads.gd`. It was stopped; it is not acceptance evidence. The subsequent app parse and the two runs above passed after that external edit settled. No physics files were edited by this package. Native receipts establish UI behavior, not hardware performance or pilot acceptance.
+
 ## Remaining masterplan work
 
-Automatic fitted strips are the baseline. Authored internal foam shells/emission masks, arbitrary creator-authored paths and portable binding authoring need their own asset/schema implementation and acceptance. They are not inferred from opaque model surfaces. Sequence playback and validation are implemented; editing cue lists is currently data-only, with Workshop allowing Sequence on zones that already have saved cues. A visual cue timeline remains future work. Hardware-tier preferences, scene-wide budgets across companion aircraft, and a broad native renderer/resolution matrix remain acceptance work. The existing night scenery is reused; no new moon/sky renderer is claimed.
+Automatic fitted strips are the baseline. Authored internal foam shells/emission masks, arbitrary creator-authored paths and portable binding authoring need their own asset/schema implementation and acceptance. They are not inferred from opaque model surfaces. Workshop cue-list authoring is implemented. Timeline scrubbing and arbitrary keyframe tracks remain outside this package. Hardware-tier preferences, scene-wide budgets across companion aircraft, and a broad native renderer/resolution matrix remain acceptance work. The existing night scenery is reused; no new moon/sky renderer is claimed.
+
+The next creator-layout package should extend the existing customization source/generator/companion chain, project validated mounts into the existing `light_anchors` metadata, and compose optional strip paths through the existing fitter. Preserve builder-owned anchors and reject duplicate ownership. The companion hash currently participates in `slots_sha256`; its migration policy must be explicit before new layout fields ship. This is a design handoff, not implemented metadata.
+
+The plausible foam candidate's [source manifest](../../../assets/aircraft/turbo-lumber-evolution/source-manifest.json) still limits use to internal evaluation with D1/TT-17 packaging clearance pending. FW-RGB-07 therefore has no approved distributable skin asset in this audit. Resolve asset eligibility and the explicit raw-asset proof inventory before adding masks; the RGB renderer does not infer translucency from opaque imported skins.

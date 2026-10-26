@@ -22,7 +22,9 @@ Use Workshop → Lighting → preset, then expand zones or effects for advanced 
 
 For the existing moonlit world and night exposure, select **Night, full moon** on Home. The CLI equivalent is `--time_of_day=night`. The separate `--time-of-day=HH:MM` SDR snapshot path is not equivalent and remains outside this visual qualification.
 
-Zone edits include palette, brightness, cycle duration and telemetry response. Optional effects expose spark, trail or burst, intensity and lifetime. Apply or cancel an advanced edit before saving or flying. Navigation lock protects the saved navigation colors and patterns from editing. Sequence playback uses saved cues; a visual cue-list editor is not yet implemented.
+Zone edits include palette, brightness, cycle duration and telemetry response. Optional effects expose spark, trail or burst, intensity and lifetime. Apply or cancel an advanced edit before saving or flying. Navigation lock protects the saved navigation colors and patterns from editing. Expand **Edit sequence** to add, duplicate, reorder or remove cues. Each cue has a duration, pattern cycle, palette, enabled zone targets and optional enabled effect anchors. Apply cue accepts the edit into the shared draft; Save creates the durable build revision. Use the existing preview playback control to play from the beginning. There is no timeline scrubbing.
+
+Sequences contain at most 32 cues and last at most 60 seconds before looping. Navigation targets require unlocking navigation colors and patterns. Targeted zones switch to Sequence; removing their last cue returns them to steady lighting. Undo restores the prior accepted profile. Unfinished timing/color text blocks Save/Test fly and survives draft recovery without becoming accepted lighting.
 
 Colored strip emission and lamp sprites make the emitters visible. Short-range, shadowless OmniLights provide actual decorative spill; the existing landing SpotLight(s) illuminate the approach surface. Emission alone does not illuminate nearby objects. Opaque imported skins are not made translucent: internal foam illumination requires authored masks/shells and remains separate work.
 

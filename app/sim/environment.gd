@@ -8,6 +8,7 @@ extends RefCounted
 
 const WeatherField := preload("res://physics/wind_field.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
+const GroundSupport := preload("res://physics/ground_support.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const Course := preload("res://physics/ground_vehicle/course.gd")
 const AirfieldCourse := preload("res://physics/ground_vehicle/airfield_course.gd")
@@ -19,6 +20,8 @@ var weather: WeatherField = WeatherField.new()
 var turbulence: Callable
 ## The field's flat surface table (physics/ground_surfaces.gd); empty = dry pavement everywhere at height 0.
 var surfaces: PackedFloat64Array = PackedFloat64Array()
+## Detached observational registry. Legacy force/checkpoint arrays remain authoritative.
+var _ground_support: Dictionary = {}
 ## Normalized lake (physics/lake_surface.gd); empty = no water.
 var lake: Dictionary = {}
 ## Ground-vehicle course sampler (north, east) -> Dictionary with height, normal, surface, walls and wet zone;
@@ -107,6 +110,29 @@ func ground(north: float, east: float) -> PackedFloat64Array:
 
 func ground_max_height() -> float:
 	return Terrain.max_height_validated(surfaces)
+
+
+## Install provenance for the current legacy table at a field boundary. Geometry
+## cannot be changed through this method: all current consumers retain one law.
+func install_ground_registry(regions: Array) -> bool:
+	var candidate := GroundSupport.prepare_legacy(surfaces, regions)
+	if not candidate.ok:
+		return false
+	_ground_support = candidate
+	return true
+
+
+## GP-10 detached solid-support query, shared by future contact/audio observers.
+## Raw replay arrays have no material provenance: changed tables invalidate names.
+## A vehicle road is not silently replaced by the flat field under that road.
+func sample_support(position_ned: PackedFloat64Array, velocity_ned: PackedFloat64Array,
+		time_s: float) -> Dictionary:
+	if road.is_valid():
+		return {ok = false, status = "unsupported_geometry", format = GroundSupport.FORMAT,
+			reason = "road support requires its own geometry adapter"}
+	if _ground_support.is_empty() or _ground_support.get("surfaces") != surfaces:
+		_ground_support = GroundSupport.prepare_legacy(surfaces)
+	return GroundSupport.sample(_ground_support, position_ned, velocity_ned, time_s, lake)
 
 
 ## Lake terrain sample at a point, or {} without a lake.

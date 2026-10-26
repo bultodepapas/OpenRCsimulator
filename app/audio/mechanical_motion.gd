@@ -36,60 +36,44 @@ static func observe(previous: Dictionary, snapshot: Dictionary) -> Dictionary:
 
 	var old_channels: Dictionary = previous.get("channels", {})
 	var next_channels: Dictionary = {}
-	var channel_motion: Array[Dictionary] = []
 	var events: Array[Dictionary] = []
+	# Normalize once, then complete each new row in place. State and output share
+	# these read-only rows; no dictionary from the prior snapshot is modified.
+	var angular_floor: float = SERVO_SPEED_FLOOR_DEG_S * float(tick_delta) / rate
 	for row: Dictionary in channel_rows:
 		var identity: String = str(row.id)
 		var old: Dictionary = old_channels.get(identity, {})
-		var measured: Dictionary
 		var event_kind: String = ""
 		if old.is_empty():
-			measured = _stationary(float(row.value))
+			_set_stationary(row)
 		else:
 			# A rate floor is independent of render sampling frequency. A fixed angular
 			# epsilon per frame made the same slow correction disappear at high FPS.
-			var angular_floor: float = SERVO_SPEED_FLOOR_DEG_S * float(tick_delta) / rate
-			measured = measure_delta(float(old.value), float(row.value), tick_delta, rate, angular_floor)
-			var transition: Dictionary = transition_for(old, measured, false)
-			event_kind = str(transition.get("event", ""))
+			_measure_row(row, float(old.value), tick_delta, rate, angular_floor)
+			event_kind = _transition_kind(old, row, false)
 		if not event_kind.is_empty():
 			events.append(_event("servo", event_kind, identity, row.position, row.position_valid,
-				float(measured.speed_per_s), int(measured.direction)))
-		var motion: Dictionary = _motion_record(row, measured)
-		channel_motion.append(motion)
-		next_channels[identity] = {value = float(row.value), moving = bool(measured.moving),
-			direction = int(measured.direction), position = row.position,
-			position_valid = bool(row.position_valid)}
+				float(row.speed_per_s), int(row.direction)))
+		next_channels[identity] = row
 
 	var old_gear: Dictionary = previous.get("gear", {})
-	var gear_motion: Dictionary = {}
-	var next_gear: Dictionary = {}
 	if not gear_row.is_empty():
-		var measured_gear: Dictionary
 		var gear_event: String = ""
 		if old_gear.is_empty():
-			measured_gear = _stationary(float(gear_row.value))
+			_set_stationary(gear_row)
 		else:
-			measured_gear = measure_delta(float(old_gear.value), float(gear_row.value),
+			_measure_row(gear_row, float(old_gear.value),
 				tick_delta, rate, EXTENSION_EPSILON)
 			var endpoint_locked: bool = is_locked_endpoint(float(gear_row.value), bool(gear_row.target_down))
-			var transition: Dictionary = transition_for(old_gear, measured_gear, endpoint_locked)
-			gear_event = str(transition.get("event", ""))
+			gear_event = _transition_kind(old_gear, gear_row, endpoint_locked)
 		if not gear_event.is_empty():
 			events.append(_event("gear", gear_event, "gear", gear_row.position,
-				bool(gear_row.position_valid), float(measured_gear.speed_per_s),
-				int(measured_gear.direction)))
-		gear_motion = _motion_record(gear_row, measured_gear)
-		gear_motion["target_down"] = bool(gear_row.target_down)
-		gear_motion["status"] = str(gear_row.status)
-		next_gear = {value = float(gear_row.value), moving = bool(measured_gear.moving),
-			direction = int(measured_gear.direction), target_down = bool(gear_row.target_down),
-			position = gear_row.position, position_valid = bool(gear_row.position_valid),
-			status = str(gear_row.status)}
+				bool(gear_row.position_valid), float(gear_row.speed_per_s),
+				int(gear_row.direction)))
 
-	var state: Dictionary = {tick = tick, channels = next_channels, gear = next_gear,
-		channels_motion = channel_motion, gear_motion = gear_motion}
-	return {state = state, channels = channel_motion, gear = gear_motion, events = events,
+	var state: Dictionary = {tick = tick, channels = next_channels, gear = gear_row,
+		channels_motion = channel_rows, gear_motion = gear_row}
+	return {state = state, channels = channel_rows, gear = gear_row, events = events,
 		valid = true, primed = false, tick_advanced = true}
 
 
@@ -111,19 +95,24 @@ static func measure_delta(previous_value: float, current_value: float, tick_delt
 ## the caller declares a lock only for an observed arrival at a qualified endpoint.
 static func transition_for(previous_state: Dictionary, measured: Dictionary,
 		endpoint_locked: bool = false) -> Dictionary:
+	return {event = _transition_kind(previous_state, measured, endpoint_locked)}
+
+
+static func _transition_kind(previous_state: Dictionary, measured: Dictionary,
+		endpoint_locked: bool) -> String:
 	var was_moving: bool = bool(previous_state.get("moving", false))
 	var moving: bool = bool(measured.get("moving", false))
 	var previous_direction: int = int(previous_state.get("direction", 0))
 	var direction: int = int(measured.get("direction", 0))
 	if moving:
 		if was_moving and direction != previous_direction:
-			return {event = "reverse"}
+			return "reverse"
 		if not was_moving:
-			return {event = "start"}
-		return {event = ""}
+			return "start"
+		return ""
 	if was_moving:
-		return {event = "lock" if endpoint_locked else "stop"}
-	return {event = ""}
+		return "lock" if endpoint_locked else "stop"
+	return ""
 
 
 static func is_locked_endpoint(extension: float, target_down: bool) -> bool:
@@ -139,76 +128,43 @@ static func finite_vector(value: Variant) -> bool:
 
 static func _prime_state(tick: int, channel_rows: Array[Dictionary], gear_row: Dictionary) -> Dictionary:
 	var channels: Dictionary = {}
-	var motion: Array[Dictionary] = []
 	for row: Dictionary in channel_rows:
-		var stationary: Dictionary = _stationary(float(row.value))
-		channels[str(row.id)] = {value = float(row.value), moving = false, direction = 0,
-			position = row.position, position_valid = bool(row.position_valid)}
-		motion.append(_motion_record(row, stationary))
-	var gear_state: Dictionary = {}
-	var gear_motion: Dictionary = {}
+		_set_stationary(row)
+		channels[str(row.id)] = row
 	if not gear_row.is_empty():
-		gear_state = {value = float(gear_row.value), moving = false, direction = 0,
-			target_down = bool(gear_row.target_down), position = gear_row.position,
-			position_valid = bool(gear_row.position_valid), status = str(gear_row.status)}
-		gear_motion = _motion_record(gear_row, _stationary(float(gear_row.value)))
-		gear_motion["target_down"] = bool(gear_row.target_down)
-		gear_motion["status"] = str(gear_row.status)
-	return {tick = tick, channels = channels, gear = gear_state,
-		channels_motion = motion, gear_motion = gear_motion}
+		_set_stationary(gear_row)
+	return {tick = tick, channels = channels, gear = gear_row,
+		channels_motion = channel_rows, gear_motion = gear_row}
 
 
 static func _refresh_state(previous: Dictionary, channel_rows: Array[Dictionary], gear_row: Dictionary) -> Dictionary:
-	var state: Dictionary = previous.duplicate()
-	var old_channels: Dictionary = state.get("channels", {})
+	var old_channels: Dictionary = previous.get("channels", {})
 	var next_channels: Dictionary = {}
-	var old_motion: Dictionary = {}
-	for motion: Dictionary in state.get("channels_motion", []):
-		old_motion[str(motion.id)] = motion
-	var current_rows: Dictionary = {}
 	for row: Dictionary in channel_rows:
-		current_rows[str(row.id)] = row
 		var old: Dictionary = old_channels.get(str(row.id), {})
-		if old.is_empty():
-			old = {value = row.value, moving = false, direction = 0,
-				position = row.position, position_valid = row.position_valid}
-		else:
-			old = old.duplicate()
-			old["position"] = row.position
-			old["position_valid"] = row.position_valid
-		next_channels[str(row.id)] = old
-	var next_motion: Array[Dictionary] = []	
-	for id: String in current_rows:
-		var row: Dictionary = current_rows[id]
-		var motion: Dictionary = old_motion.get(id, _motion_record(row, _stationary(float(row.value)))).duplicate()
-		motion["position"] = row.position
-		motion["position_valid"] = row.position_valid
-		next_motion.append(motion)
-	state["channels"] = next_channels
-	state["channels_motion"] = next_motion
+		_refresh_motion(row, old)
+		next_channels[str(row.id)] = row
 	if not gear_row.is_empty():
-		var old_gear: Dictionary = state.get("gear", {})
-		if old_gear.is_empty():
-			old_gear = {value = gear_row.value, moving = false, direction = 0,
-				target_down = gear_row.target_down, position = gear_row.position,
-				position_valid = gear_row.position_valid, status = gear_row.status}
-		else:
-			old_gear = old_gear.duplicate()
-			old_gear["position"] = gear_row.position
-			old_gear["position_valid"] = gear_row.position_valid
-			old_gear["target_down"] = gear_row.target_down
-			old_gear["status"] = gear_row.status
-		state["gear"] = old_gear
-		var old_gear_motion: Dictionary = state.get("gear_motion", _motion_record(gear_row, _stationary(float(gear_row.value)))).duplicate()
-		old_gear_motion["position"] = gear_row.position
-		old_gear_motion["position_valid"] = gear_row.position_valid
-		old_gear_motion["target_down"] = gear_row.target_down
-		old_gear_motion["status"] = gear_row.status
-		state["gear_motion"] = old_gear_motion
+		_refresh_motion(gear_row, previous.get("gear", {}))
+	return {tick = previous.tick, channels = next_channels, gear = gear_row,
+		channels_motion = channel_rows, gear_motion = gear_row}
+
+
+static func _refresh_motion(row: Dictionary, old: Dictionary) -> void:
+	if old.is_empty():
+		_set_stationary(row)
+		return
+	# Camera/source transforms can change between accepted ticks. Keep the last
+	# accepted travel while refreshing spatial data and the gear's target/status.
+	row["value"] = old.value
+	row["delta"] = old.delta
+	row["speed_per_s"] = old.speed_per_s
+	row["moving"] = old.moving
+	row["direction"] = old.direction
+	if old.has("load"):
+		row["load"] = old.load
 	else:
-		state["gear"] = {}
-		state["gear_motion"] = {}
-	return state
+		row.erase("load")
 
 
 static func _read_channels(value: Variant) -> Array[Dictionary]:
@@ -252,19 +208,19 @@ static func _read_gear(value: Variant) -> Dictionary:
 		target_down = str(target_value).to_lower() in ["down", "extend", "extending"]
 	var position_value: Variant = value.get("position", Vector3.ZERO)
 	var position_valid: bool = finite_vector(position_value)
-	return {value = clampf(float(extension_value), 0.0, 1.0), target_down = target_down,
+	return {id = "gear", value = clampf(float(extension_value), 0.0, 1.0), target_down = target_down,
 		position = position_value if position_valid else Vector3.ZERO, position_valid = position_valid,
 		status = str(value.get("status", ""))}
 
 
-static func _motion_record(row: Dictionary, measured: Dictionary) -> Dictionary:
-	var result: Dictionary = {id = str(row.get("id", "gear")), value = float(row.get("value", 0.0)),
-		delta = float(measured.get("delta", 0.0)), speed_per_s = float(measured.get("speed_per_s", 0.0)),
-		direction = int(measured.get("direction", 0)), moving = bool(measured.get("moving", false)),
-		position = row.get("position", Vector3.ZERO), position_valid = bool(row.get("position_valid", false))}
-	if row.has("load"):
-		result["load"] = float(row.load)
-	return result
+static func _measure_row(row: Dictionary, previous_value: float, tick_delta: int,
+		tick_rate_hz: float, epsilon: float) -> void:
+	var travel: float = float(row.value) - previous_value
+	var moving: bool = absf(travel) > epsilon
+	row["delta"] = travel
+	row["speed_per_s"] = absf(travel) * tick_rate_hz / float(tick_delta)
+	row["direction"] = int(signf(travel)) if moving else 0
+	row["moving"] = moving
 
 
 static func _event(system: String, event_kind: String, identity: String, position: Vector3,
@@ -273,8 +229,11 @@ static func _event(system: String, event_kind: String, identity: String, positio
 		position_valid = position_valid, speed_per_s = speed, direction = direction}
 
 
-static func _stationary(value: float) -> Dictionary:
-	return {moving = false, delta = 0.0, speed_per_s = 0.0, direction = 0, valid = is_finite(value)}
+static func _set_stationary(row: Dictionary) -> void:
+	row["moving"] = false
+	row["delta"] = 0.0
+	row["speed_per_s"] = 0.0
+	row["direction"] = 0
 
 
 static func _tick_rate(value: Variant) -> float:

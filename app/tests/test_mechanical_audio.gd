@@ -213,6 +213,7 @@ func _exercise_audio_profile(audio: Node, config: Dictionary) -> void:
 	_check("reset and tick rewind prime silently", int(audio.call("diagnostics").get("events_played", 0)) == pause_events)
 	if config.servo_type == "standard" and config.retract_type == "electric":
 		await _test_stale_tick_and_missing_voice_fade(audio)
+		_test_scene_fade_retires_voices(audio)
 		_test_event_source_follows_accepted_anchor(audio)
 
 
@@ -238,6 +239,33 @@ func _test_stale_tick_and_missing_voice_fade(audio: Node) -> void:
 		int(faded.get("active_motion_voices", 0)) == 0)
 	_check("stopped or culled voice slots remain bounded and reusable",
 		int(faded.get("motion_voice_count", 0)) <= 6)
+
+
+func _test_scene_fade_retires_voices(audio: Node) -> void:
+	for reason: String in ["pause", "distance"]:
+		audio.call("reset")
+		audio.call("update_sound", _snapshot(800, 0.0, 0.0, false), 1.0 / 60.0)
+		audio.call("update_sound", _snapshot(801, 12.0, 0.5, true), 1.0 / 60.0)
+		var faded_snapshot: Dictionary = _snapshot(802, 12.5, 0.55, true)
+		if reason == "pause":
+			faded_snapshot.paused = true
+		else:
+			faded_snapshot.listener = Vector3(100.0, 0.0, 0.0)
+		audio.call("update_sound", faded_snapshot, 0.1)
+		_check("completed %s fade releases actual mixer voices" % reason, _playing_motion_count(audio) == 0)
+		audio.call("update_sound", _snapshot(803, 12.5, 0.55, true), 0.1)
+		audio.call("update_sound", _snapshot(804, 13.0, 0.6, true), 0.1)
+		_check("retired %s voices restart on fresh accepted travel" % reason, _playing_motion_count(audio) > 0)
+
+
+func _playing_motion_count(audio: Node) -> int:
+	var slots: Dictionary = audio.get("_motion_players")
+	var count: int = 0
+	for slot: Dictionary in slots.values():
+		var player: AudioStreamPlayer3D = slot.get("player") as AudioStreamPlayer3D
+		if player != null and player.playing:
+			count += 1
+	return count
 
 
 func _test_event_source_follows_accepted_anchor(audio: Node) -> void:
@@ -361,6 +389,26 @@ func _test_retract_event_interruptions_and_priority(audio: Node) -> void:
 	await _advance_same_snapshot(audio, pause_snapshot, 6)
 	_check("pause clears pending reversals before fading the old cue",
 		int(audio.call("diagnostics").events_played) == cues_before_pause and _pending_event_count(audio) == 0)
+
+	audio.call("reset")
+	audio.call("update_sound", _snapshot(700, 0.0, 0.0, false), 0.001)
+	audio.call("update_sound", _snapshot(701, 10.0, 0.5, true), 0.001)
+	audio.call("update_sound", _snapshot(702, 10.0, 1.0, true), 0.001)
+	audio.call("update_sound", _snapshot(703, 10.0, 1.0, true), 0.001)
+	var pending: Array = audio.get("_pending_events")
+	var players: Array = audio.get("_event_players")
+	var reserved_lock: int = -1
+	for index: int in pending.size():
+		if str(pending[index].get("role", "")) == "gear_lock":
+			reserved_lock = index
+	_check("saturated event pool reserves a queued endpoint lock", reserved_lock >= 0)
+	if reserved_lock >= 0:
+		# Model the outgoing one-shot reaching its end between render updates.
+		# Its reserved lock must survive the next simultaneous servo onset burst.
+		(players[reserved_lock] as AudioStreamPlayer3D).stop()
+		audio.call("update_sound", _snapshot(704, 11.0, 1.0, true), 0.001)
+		_check("finished outgoing cue cannot let a servo steal its pending gear lock",
+			_playing_event_roles(audio).has("gear_lock"), str(_playing_event_roles(audio)))
 
 
 func _playing_event_roles(audio: Node) -> Array[String]:

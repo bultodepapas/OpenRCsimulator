@@ -23,6 +23,9 @@ const PACK_TRIM_AMBIENT_K: float = 288.15
 const STOPPED_RPM := 1.0
 ## EL1d-R1: electric propeller laws sample rigid-point velocity at the hub.
 const ELECTRIC_INFLOW_LAW := "electric-propeller-local-hub-inflow-v1"
+## Experimental stage Air key: complete local hub/intake relative velocity in body FRD.
+## It already includes omega × r and must not pass through a second point-velocity transform.
+const STAGE_PROPULSION_AIR_KEY := "propulsion_air_body"
 ## Beyond the table, coefficients extrapolate linearly but never below these floors (windmilling).
 const CT_FLOOR := -0.1
 const CP_FLOOR := 0.0
@@ -575,6 +578,43 @@ static func hub_air_velocity(body: PackedFloat64Array, datum_air: PackedFloat64A
 	var q: float=body[RB.RATE+1]
 	var r: float=body[RB.RATE+2]
 	return PackedFloat64Array([datum_air[0]+q*z-r*y,datum_air[1]+r*x-p*z,datum_air[2]+p*y-q*x])
+
+
+## Resolve one stage's propulsion inflow. The explicit experimental field is a complete local velocity at the hub/intake:
+## datum air-relative velocity + omega × r + the sampler's ambient spatial delta, in body FRD. It is used as-is, even
+## when the sampled field is uniform; never add rotation to it again or toggle its use by gradient magnitude.
+## With no explicit field, preserve the existing Dynamics fallback exactly: turbine intake, glow/electric hub, or datum.
+static func stage_air_velocity(state: PackedFloat64Array, air: Dictionary, prop: Dictionary) -> Dictionary:
+	if air.has(STAGE_PROPULSION_AIR_KEY):
+		var explicit_value: Variant = air[STAGE_PROPULSION_AIR_KEY]
+		if typeof(explicit_value) != TYPE_PACKED_FLOAT64_ARRAY or explicit_value.size() != 3:
+			return {ok = false, message = STAGE_PROPULSION_AIR_KEY + " must be a three-component PackedFloat64Array"}
+		var explicit_air: PackedFloat64Array = explicit_value
+		for component: float in explicit_air:
+			if not is_finite(component):
+				return {ok = false, message = STAGE_PROPULSION_AIR_KEY + " must contain finite components"}
+		return {ok = true, velocity_body = explicit_air.duplicate()}
+
+	var datum_value: Variant = air.get("v_air", null)
+	if typeof(datum_value) != TYPE_PACKED_FLOAT64_ARRAY or datum_value.size() != 3:
+		return {ok = false, message = "stage Air.v_air must be a three-component PackedFloat64Array"}
+	var datum_air: PackedFloat64Array = datum_value
+	for component: float in datum_air:
+		if not is_finite(component):
+			return {ok = false, message = "stage Air.v_air must contain finite components"}
+	var velocity: PackedFloat64Array = datum_air
+	if Turbine.is_turbine(prop):
+		if state.size() < RB.RATE + 3:
+			return {ok = false, message = "turbine stage inflow needs body rates"}
+		velocity = Turbine.local_intake_velocity(datum_air, state.slice(RB.RATE, RB.RATE + 3), prop)
+	elif is_glow(prop) or is_electric(prop):
+		if state.size() < RB.RATE + 3:
+			return {ok = false, message = "propeller stage inflow needs body rates"}
+		velocity = hub_air_velocity(state, datum_air, prop.offset)
+	for component: float in velocity:
+		if not is_finite(component):
+			return {ok = false, message = "stage propulsion inflow is nonfinite"}
+	return {ok = true, velocity_body = velocity}
 
 ## Propeller normal force and P-factor moment at a disc angle of attack (McCormick's blade-element result as used by
 ## Selig 2010, AIAA 2010-7938; Ribner NACA TR 819 agrees within ~20 %). With the crossflow v_c (air-relative body

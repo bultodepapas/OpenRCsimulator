@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4ce01ff2-da03-41f9-a4f3-370141bcf810",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_checkpoint_integrity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85",
+  "started_utc": "2026-10-26T00:13:34.079593+00:00",
+  "label": "checkpoint_integrity",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85\\tmp\\gp10-integration-checks\\checkpoint_integrity-s2cxiuyq\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85\\tmp\\gp10-integration-checks\\checkpoint_integrity-s2cxiuyq\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    ", 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.421,
+  "log_bytes": 122,
+  "log_sha256": "31c337e2aded57641bcbe65f0a829437c00eb9592bc9d1e2c6d21ba497aa65e6"
+}

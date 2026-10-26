@@ -14,6 +14,8 @@ The actual viewport `AudioListener3D`, when present, supplies listening position
 
 `mechanical_motion.gd` observes accepted deltas and transitions. `mechanical_audio.gd` owns bounded spatial players, recording playback and envelopes. `mechanical_profile.gd` validates the closed presentation configuration. Missing recording resources fail silent rather than substituting generated buzzing.
 
+The observer builds one fresh normalized record per actuator and shares it between that result's state and motion views. Consumers must treat returned records as read-only. Neither input snapshots nor earlier observer states are mutated. Repeated accepted ticks refresh source positions and gear request metadata while preserving accepted travel and speed.
+
 ## Configuration and Workshop
 
 Workshop → **Mechanical audio** exposes exactly two servo profiles, **Standard Servo** and **High-Torque Servo**, servo level from 0–100%, and mechanical/electric or pneumatic retract sound. Retract selection is unavailable for fixed-gear aircraft. Existing game volume remains the overall volume control.
@@ -46,15 +48,17 @@ Spatial players feed the existing scene aggregate bus, outside the engine-only b
 
 There are at most six pooled movement voices and two transient voices. Only moving audible channels start a loop. Gear locks take priority over gear onset, then servo onset and servo tails. Same-source reversals and interruptions fade the old transient over 20 ms before replacement; a canceled gear movement clears pending cues. Under simultaneous corrections, lower-priority transient cues may be dropped while movement beds remain active. This avoids multiplying every surface's start click.
 
+A finished outgoing sample still reserves its slot for a pending cue. This fixes a reproduced race where a new servo onset could erase a queued gear lock between render updates. Movement voices stop when the pause/distance scene fade reaches silence, instead of consuming mixer voices until their separate release envelope settles. Stopped movement/event voices skip redundant player updates; attenuation envelopes share frame coefficients, and event positioning reuses normalized motion records instead of copying every actuator again.
+
 ## Verification
 
-Signal checks and deterministic state tests do not establish listening acceptance or physical sound calibration. Verification uses the pinned Windows Godot binary, Dummy for state tests and WASAPI for actual mixer captures. Results are summarized here; [verification evidence](research/audio/AUD-16/verification.json) retains measurements, source identities and failures, and [physics parity](research/audio/AUD-16/physics-parity.json) retains the final paired checkpoints. The four focused suites total **177 passing checks**.
+Signal checks and deterministic state tests do not establish listening acceptance or physical sound calibration. Verification uses the pinned Windows Godot binary, Dummy for state tests and WASAPI for actual mixer captures. Results are summarized here; [verification evidence](research/audio/AUD-16/verification.json) retains measurements, source identities and failures, and [physics parity](research/audio/AUD-16/physics-parity.json) retains the paired checkpoints. The four focused suites total **191 passing checks**.
 
 | Check | Result |
 | --- | --- |
-| Motion observer | 28 checks passed: actual deltas, speed, reversal, endpoint, pause, rewind, and slow corrections at 30–240 Hz observation cadence |
+| Motion observer | 36 checks passed: actual deltas, speed, reversal, endpoint, pause, rewind, slow corrections at 30–240 Hz, snapshot ownership, repeated-tick position refresh and source replacement |
 | Closed profile and migration | 24 checks passed: two types, finite level, v1–v3 identity, v4 JSON round trip, transfer |
-| Recording/controller lifecycle | 97 checks passed: all four profile combinations, PCM assets, pooling, persistent loop playback, interrupted cues, priority, pending-cue cancellation on pause, culling and missing-resource fallback |
+| Recording/controller lifecycle | 103 checks passed: all four profile combinations, PCM assets, pooling, persistent loop playback, interrupted cues, priority, pending-cue cancellation on pause, reserved lock surviving sample completion, retiring/restarting silent mixer voices, culling and missing-resource fallback |
 | Real-scene integration | 28 checks passed: frozen Workshop profile, P-51 accepted surface/flap/retract movement, gasoline/electric RPM masks and disabled sources, listener fallback, reset and cleanup |
 | Existing regressions | Workshop presentation 85, transfer 22, store 141, bundle 28, trial 44, drafts 100, soundscape 168, powertrain 45 and ground audio 33 checks passed; Workshop UI suite also passed |
 | Physics parity | Nine fixed-wing aircraft: 1,200 paired ticks each, identical full checkpoints with audio on/off, including pause and reset. Rotorcraft explicitly excluded |
@@ -63,9 +67,27 @@ Signal checks and deterministic state tests do not establish listening acceptanc
 
 The four-combination native bench has both passing and failing timing evidence. An earlier run captured about 49.3 s at 48 kHz with zero discarded frames and no clipping; controller update p95 was 217 microseconds (maximum 395), and peak was −25.14 dBFS. The later run captured only 47.904 s against 49.447 s of scripted wall time, despite reporting zero buffer discards. Its signal checker correctly fails the 120 ms timing bound. Do not treat zero capture discards alone as proof of uninterrupted native output. Both runs stayed within six movement/two event voices, reached digital silence in settled idle/pause/mute/far intervals, and restored bus count. Half-amplitude masking measured about 6 dB reduction; full travel exceeded small corrections. These are shared-host controller measurements, not audio-thread deadlines or whole-game frame-time qualification. A subsequent review found and fixed pending cues starting during a pause fade; the final controller regression explicitly awaits and verifies that sequence.
 
-An initial 20 s actual gasoline flight capture had zero discarded frames, silent pause, and a −21.53 dBFS peak. The older gameplay checker did **not** pass: total adapter p95 was 722 microseconds against its 500 microsecond gate, and the P-51 chase camera stayed at least 10.48 m away against that checker's fixed 4 m bound. These results prompted the distant-source observation shortcut and separate mechanical timing instrumentation. Later gasoline/electric captures measured mechanical p95 of 296/325 microseconds and total adapter p95 of 1,017/1,670 microseconds. The electric run captured 18.741 s of a 20 s schedule; wall-indexed pause checking also failed. Whole-flight timing, native continuity and performance acceptance remain open. The native checker now compares PCM duration to wall time when supplied by the gameplay probe.
+An initial 20 s actual gasoline flight capture had zero discarded frames, silent pause, and a −21.53 dBFS peak. The older gameplay checker did **not** pass: total adapter p95 was 722 microseconds against its 500 microsecond gate, and the P-51 chase camera stayed at least 10.48 m away against that checker's fixed 4 m bound. These results prompted the distant-source observation shortcut and separate mechanical timing instrumentation. Later gasoline/electric captures measured mechanical p95 of 296/325 microseconds and total adapter p95 of 1,017/1,670 microseconds. The electric run captured 18.741 s of a 20 s schedule; wall-indexed pause checking also failed. Whole-flight timing, native continuity and performance acceptance remain open. The native checkers now require finite positive wall time, source hashes and balanced pushed/recorded/flushed frame accounting. Missing timing can no longer bypass validation. Six Python fixture regressions cover valid reports, missing/nonfinite/nonpositive time, counter imbalance and invalid PCM flags. Mechanical capture now bulk-appends frames and defers per-sample analysis/encoding until capture has stopped, bounded to 60 seconds of retained PCM.
 
 An initial Home render encountered an unrelated vegetation texture allocation/load failure. The inspected 1080p flight/Workshop used `--scenery=off`. Shared lighting edits temporarily caused parse/provenance failures during later full-scene checks; independent mechanical tests continued without altering those files.
+
+### Optimization follow-up
+
+The fixed Dummy benchmark uses 1,000 warmup calls and 10,000 measured calls per scenario, prebuilt snapshots, the installed recordings, and the same pinned engine. Timings cover `MechanicalAudio.update_sound()` only. Recorded before/after measurements are in microseconds per call:
+
+| Scenario | Median before → after | p95 before → after |
+| --- | ---: | ---: |
+| Idle | 118 → 49 | 204 → 87 |
+| Four moving servos plus retract | 240.5 → 196 | 385 → 245 |
+| Paused | 116 → 73 | 186 → 93 |
+| Distant | 22 → 16 | 29 → 20 |
+| Repeated accepted tick | 148 → 82 | 285 → 140 |
+
+All measured loops had zero Godot object-count growth and zero voice-pool growth, using at most five movement/two transient voices for these fixtures. Object counts do not measure temporary dictionary allocations. These are bounded host observations, not native mixer or rendered performance acceptance; other sessions were active on this shared machine. The lock-reservation and silent-voice regressions were each observed failing before their fixes and passing afterwards.
+
+The corrected native follow-up passed the checked runner and current signal checker: **49.600 s PCM / 49.584306 s wall**, no overflow/truncation/unaccounted frames, −25.13 dBFS peak, controller p95 **181 microseconds** (maximum 421). It recorded 2,380,800 frames and explicitly flushed 2,048 inter-stage frames; all 2,382,848 pushed frames balance. All four profile combinations passed settled-silence, movement contrast and masking checks. The preceding follow-up passed signal/accounting but was rejected by the checked runner for querying an unattached capture effect's uninitialized buffer; that harness error was fixed and the rejected result remains in the evidence.
+
+The follow-up live P-51 and electric Timber captures also had balanced frames, zero overflows, silent pauses and complete throttle/camera/reset sequences. Their PCM/wall durations were 20.000/20.013005 s and 20.010667/20.007377 s. Mechanical p95 was **198/122 microseconds**; whole-adapter p95 was **886/583 microseconds**. Both still fail the general checker's 500-microsecond whole-adapter budget and fixed 4 m camera gate. These results qualify the measured mechanical behavior and improved capture continuity for these runs; they do not close whole-flight performance or listening acceptance.
 
 ## Files and reproduction
 
@@ -73,7 +95,7 @@ An initial Home render encountered an unrelated vegetation texture allocation/lo
 - Configuration: `app/workshop/presentation.gd`, `profile_transfer.gd`, `store.gd`, `bundle.gd`, `trial.gd`, `draft_store.gd`, and `app/ui/workshop.gd`.
 - Recordings: `app/assets/audio/mechanical/`, retained permitted sources under `research/audio/AUD-16/recordings/`, and `tools/audio/import_mechanical.py`.
 - Export: `app/export_presets.cfg` includes mechanical provenance and license notices alongside imported audio.
-- Verification: `app/tests/test_mechanical_*.gd`, `tools/audio/mechanical_probe.gd`, and mechanical telemetry in the existing gameplay/parity probes. `tools/audio/check_pack.gd` checks the actuator bank in exported resources.
+- Verification: `app/tests/test_mechanical_*.gd`, `tools/audio/mechanical_probe.gd`, `tools/audio/mechanical_benchmark.gd`, and mechanical telemetry in the existing gameplay/parity probes. `tools/audio/check_pack.gd` checks the actuator bank in exported resources.
 
 Use the [audio tool guide](../tools/audio/README.md) and [checked Godot runner](tools/shared.md#one-godot-script). Do not regenerate flight goldens: this change introduces no intentional flight-physics change.
 

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d04df282-2657-452d-8b1f-5c550342052e",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_lake_surface.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85",
+  "started_utc": "2026-10-26T00:13:09.493584+00:00",
+  "label": "lake_surface",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85\\tmp\\gp10-integration-checks\\lake_surface-9akpqc57\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85\\tmp\\gp10-integration-checks\\lake_surface-9akpqc57\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "all lake surface checks passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.437,
+  "log_bytes": 2909,
+  "log_sha256": "a47b6b0a8552e9e8cb229b5e0d5ecac538da1d72956064c50b37275a73fde645"
+}

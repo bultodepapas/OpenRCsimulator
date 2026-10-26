@@ -7,6 +7,7 @@
 extends RefCounted
 
 const AircraftData := preload("res://physics/aircraft_data.gd")
+const GroundSupport := preload("res://physics/ground_support.gd")
 
 const FORMAT := "openrc-surfaces v1"
 const DEFAULT_PATH := "res://data/ground/surface_friction.json"
@@ -51,6 +52,15 @@ static func validate(raw: Dictionary) -> Dictionary:
 		var af = AircraftData._q(errors, "surfaces.%s.airframe_friction" % type, node.get("airframe_friction"), "1", 0.05, 1.2)
 		if ff != null and rf != null and af != null:
 			table[type] = { friction_factor = float(ff), rolling_factor = float(rf), airframe_friction = float(af) }
+			# Optional identity only; historical v1 tables remain accepted. No material
+			# is guessed from a runway label or a numeric friction multiplier.
+			if node.has("material_id"):
+				var material: Variant = node.material_id
+				if typeof(material) != TYPE_STRING or str(material).strip_edges().is_empty() or str(material).length() > 128 \
+					or typeof(node.get("material_source")) != TYPE_STRING or str(node.material_source).strip_edges().is_empty():
+					errors.append("surfaces.%s: material identity needs a bounded ID and source" % type)
+				else:
+					table[type].material_id = material
 	if table.has("rotorpad") and float(table.rotorpad.rolling_factor) != 0.5:
 		errors.append("surfaces.rotorpad.rolling_factor: must remain 0.5; this reserved value selects zero-relief rotorpad terrain")
 	for type in surfaces:
@@ -66,6 +76,7 @@ static func validate(raw: Dictionary) -> Dictionary:
 static func build(table: Dictionary, field: Dictionary) -> Dictionary:
 	var errors := PackedStringArray()
 	var rects := PackedFloat64Array()
+	var regions: Array[Dictionary] = []
 	var fields_surfaces: Array = field.get("surfaces", [])
 	for type in TYPES:
 		for s in fields_surfaces:
@@ -76,11 +87,25 @@ static func build(table: Dictionary, field: Dictionary) -> Dictionary:
 			rects.append_array(PackedFloat64Array([float(s.center_north) - half_n, float(s.center_north) + half_n,
 				float(s.center_east) - half_e, float(s.center_east) + half_e,
 				table[type].friction_factor, table[type].rolling_factor]))
+			regions.append({region_id = _region_id_for_surface(str(s.get("id", "row_%d" % regions.size()))),
+				usage_id = type, material_id = str(table[type].get("material_id", "unspecified"))})
 	for s in fields_surfaces:
 		if not (str(s.get("type", "")) in TYPES):
 			errors.append("field surface '%s': type '%s' has no friction data" % [s.get("id", "?"), s.get("type", "")])
 	rects.append_array(PackedFloat64Array([-INF, INF, -INF, INF, table[OUTSIDE].friction_factor, table[OUTSIDE].rolling_factor]))
-	return { ok = errors.is_empty(), errors = errors, rects = rects if errors.is_empty() else PackedFloat64Array() }
+	regions.append({region_id = "__outside__", usage_id = OUTSIDE,
+		material_id = str(table[OUTSIDE].get("material_id", "unspecified"))})
+	var support := GroundSupport.prepare_legacy(rects, regions)
+	if not support.ok:
+		errors.append("ground support registry: " + str(support.reason))
+	return { ok = errors.is_empty(), errors = errors, rects = rects if errors.is_empty() else PackedFloat64Array(),
+		regions = regions if errors.is_empty() else [] }
+
+
+## Keep historical field IDs accepted even when their observational namespace
+## would exceed the registry bound. The two prefixes cannot alias one another.
+static func _region_id_for_surface(authored_id: String) -> String:
+	return "field:" + authored_id if authored_id.length() <= 122 else "field_sha256:" + authored_id.sha256_text()
 
 
 ## GP-07c: flat lookup table of airframe sliding friction for physics/hull_contact.gd: the field's rectangles in the

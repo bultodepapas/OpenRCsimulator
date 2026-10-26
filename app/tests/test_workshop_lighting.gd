@@ -199,6 +199,7 @@ func _run() -> void:
 		"effect=%s" % saved_effect)
 
 	_test_recovery_state(lighting)
+	_test_sequence_integration(editor, lighting)
 	await _test_migration(bindings, 1, true)
 	await _test_migration(bindings, 2, false)
 	await _test_migration(bindings, 4, false)
@@ -243,11 +244,15 @@ func _effect(profile: Dictionary, anchor_id: String) -> Dictionary:
 
 func _test_recovery_state(panel: Control) -> void:
 	var state: Dictionary = panel.call("get_editor_state")
-	_check("lighting recovery state uses the bounded four-field contract",
-		state.keys().size() == 4 and state.has("zone") and state.has("zones_open")
-		and state.has("effects_open") and state.color_text is Array and state.color_text.size() <= 8)
+	_check("lighting recovery includes bounded sequence editor state",
+		state.keys().size() == 5 and state.has("zone") and state.has("zones_open")
+		and state.has("effects_open") and state.color_text is Array and state.color_text.size() <= 8
+		and preload("res://workshop/lighting_sequence.gd").validate_editor_state(state.sequence).ok)
 	var restored := state.duplicate(true)
 	_check("valid lighting editor state restores", panel.call("restore_editor_state", restored))
+	var historical := state.duplicate(true)
+	historical.erase("sequence")
+	_check("historical lighting recovery without sequence state restores", panel.call("restore_editor_state", historical))
 	var malformed := state.duplicate(true)
 	malformed["unexpected"] = true
 	_check("lighting recovery rejects unknown editor-state fields", not panel.call("restore_editor_state", malformed))
@@ -256,6 +261,32 @@ func _test_recovery_state(panel: Control) -> void:
 	for _index in 8:
 		malformed.color_text.append("#FFFFFF")
 	_check("lighting recovery rejects more than eight raw color fields", not panel.call("restore_editor_state", malformed))
+
+
+func _test_sequence_integration(editor: Node, panel: Control) -> void:
+	var before: Dictionary = editor.get_presentation()
+	var sequence: Control = panel.get("_sequence_editor")
+	var added := preload("res://workshop/lighting_sequence.gd").add_cue(before.lighting)
+	_check("sequence integration has an editable profile", added.ok)
+	if not added.ok: return
+	sequence.profile_changed.emit(added.profile)
+	var accepted: Dictionary = editor.get_presentation()
+	_check("sequence changes enter shared Workshop presentation", accepted.lighting.sequence.size() == before.lighting.sequence.size() + 1)
+	editor.call("_undo")
+	_check("sequence addition participates in shared Undo", editor.get_presentation() == before)
+	editor.call("_redo")
+	_check("shared Redo restores sequence addition", editor.get_presentation() == accepted)
+	var state: Dictionary = panel.get_editor_state()
+	state.sequence = preload("res://workshop/lighting_sequence.gd").editor_state(accepted.lighting, added.selected_id)
+	state.sequence.duration_text = "unfinished"
+	_check("unfinished cue timing restores as pending", panel.restore_editor_state(state) and panel.has_pending_edit())
+	_check("unfinished cue timing blocks Save and Test fly", editor.save_button.disabled and editor.get("_trial_button").disabled)
+	editor.call("_set_page", "appearance")
+	_check("pending sequence holds Workshop navigation", editor.get("_active_page") == "lighting")
+	var recovery: Dictionary = editor.call("_recovery_editor_state")
+	_check("Workshop recovery carries raw cue timing", recovery.presentation_buffers.lighting.sequence.duration_text == "unfinished")
+	panel.cancel_pending_edit()
+	_check("cancel discards only pending cue edits", not panel.has_pending_edit() and editor.get_presentation() == accepted)
 
 
 func _test_migration(bindings: Dictionary, version: int, include_smoke: bool) -> void:

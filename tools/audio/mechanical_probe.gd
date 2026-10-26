@@ -10,6 +10,7 @@ const RETRACT_TYPES: Array[String] = ["electric", "pneumatic"]
 const DEFAULT_FPS: int = 60
 const RMS_FLOOR: float = 1e-12
 const CLIP_LIMIT_DBFS: float = -0.9
+const MAX_STAGED_CAPTURE_SECONDS: float = 60.0
 
 var _output_dir: String = ""
 var _expected_driver: String = "WASAPI"
@@ -28,6 +29,7 @@ var _stage_frames: int = 0
 var _stage_discarded: int = 0
 var _invalid_sample: bool = false
 var _stage_results: Array[Dictionary] = []
+var _wav_jobs: Array[Dictionary] = []
 var _asset_receipts: Array[Dictionary] = []
 var _update_times_usec: Array[int] = []
 var _overall_update_times_usec: Array[int] = []
@@ -36,6 +38,19 @@ var _overall_sum_squares: float = 0.0
 var _overall_frames: int = 0
 var _overall_discarded: int = 0
 var _overall_invalid_sample: bool = false
+var _capture_initial_pushed_frames: int = 0
+var _capture_initial_discarded_frames: int = 0
+var _capture_initial_available_frames: int = 0
+var _capture_buffer_length_frames: int = 0
+var _capture_flushed_frames: int = 0
+var _capture_final_cleanup_flushed_frames: int = 0
+var _capture_truncated_frames: int = 0
+var _capture_pending_at_final_cleanup: int = 0
+var _capture_available_after_final_flush: int = 0
+var _capture_final_pushed_frames: int = 0
+var _capture_final_discarded_frames: int = 0
+var _capture_memory_limit_exceeded: bool = false
+var _capture_effect_removed: bool = false
 var _wav_failures: Array[String] = []
 var _bus_count_start: int = 0
 
@@ -58,6 +73,11 @@ func _parse_args() -> void:
 
 
 func _run() -> void:
+	var probe_sha256: String = _probe_sha256()
+	if probe_sha256.is_empty():
+		printerr("Could not hash mechanical_probe.gd")
+		quit(1)
+		return
 	if not _valid_output_directory():
 		quit(2)
 		return
@@ -110,6 +130,11 @@ func _run() -> void:
 		return
 	_capture = AudioEffectCapture.new()
 	_capture.buffer_length = 1.0
+	_capture_initial_pushed_frames = _capture.get_pushed_frames()
+	_capture_initial_discarded_frames = _capture.get_discarded_frames()
+	# A new effect has no frames; get_frames_available() is invalid until its
+	# mixer buffer initializes after attachment.
+	_capture_initial_available_frames = 0
 	AudioServer.add_bus_effect(_capture_bus_index, _capture)
 	await process_frame
 
@@ -124,21 +149,13 @@ func _run() -> void:
 				_audio.call("reset")
 				var result: Dictionary = await _run_stage(servo_type, retract_type, config, stage_spec)
 				_stage_results.append(result)
-				if not result.get("wav_saved", false):
+				if not result.get("wav_queued", false):
 					_wav_failures.append(str(result.get("wav_path", "stage WAV")))
-				if int(result.get("discarded_frames", 0)) > 0:
-					_overall_discarded += int(result.discarded_frames)
 
 	var final_diagnostics: Dictionary = _audio.call("diagnostics")
-	var captured_seconds: float = float(_overall_frames) / maxf(float(AudioServer.get_mix_rate()), 1.0)
 	var wall_seconds: float = 0.0
 	for stage: Dictionary in _stage_results:
 		wall_seconds += float(stage.get("wall_seconds", 0.0))
-	var total_peak_dbfs: float = linear_to_db(maxf(_overall_peak, RMS_FLOOR))
-	var total_rms_dbfs: float = _rms_dbfs(_overall_sum_squares, _overall_frames)
-	var no_clipping: bool = total_peak_dbfs < CLIP_LIMIT_DBFS
-	var finite_signal: bool = not _overall_invalid_sample and _overall_frames > 0
-	var signal_present: bool = _overall_peak > RMS_FLOOR
 	var pooling_bounded: bool = int(final_diagnostics.get("motion_voice_count", 0)) <= 6 \
 		and int(final_diagnostics.get("event_voice_count", 0)) <= 2
 	for stage: Dictionary in _stage_results:
@@ -147,6 +164,27 @@ func _run() -> void:
 			and not bool(stage.get("timed_out", false))
 	_cleanup()
 	await create_timer(0.1).timeout
+	_capture_pending_at_final_cleanup = _capture.get_frames_available() if _capture != null else 0
+	if _capture_pending_at_final_cleanup > 0:
+		var final_buffer: PackedVector2Array = _capture.get_buffer(_capture_pending_at_final_cleanup)
+		_capture_final_cleanup_flushed_frames = final_buffer.size()
+		_capture_flushed_frames += _capture_final_cleanup_flushed_frames
+	_capture_available_after_final_flush = _capture.get_frames_available() if _capture != null else 0
+	_capture_final_pushed_frames = _capture.get_pushed_frames() if _capture != null else _capture_initial_pushed_frames
+	_capture_final_discarded_frames = _capture.get_discarded_frames() if _capture != null else _capture_initial_discarded_frames
+	_capture_buffer_length_frames = _capture.get_buffer_length_frames() if _capture != null else 0
+	_overall_discarded = maxi(0, _capture_final_discarded_frames - _capture_initial_discarded_frames)
+	_write_queued_wavs()
+	var captured_seconds: float = float(_overall_frames) / maxf(float(AudioServer.get_mix_rate()), 1.0)
+	var total_peak_dbfs: float = linear_to_db(maxf(_overall_peak, RMS_FLOOR))
+	var total_rms_dbfs: float = _rms_dbfs(_overall_sum_squares, _overall_frames)
+	var no_clipping: bool = total_peak_dbfs < CLIP_LIMIT_DBFS
+	var finite_signal: bool = not _overall_invalid_sample and _overall_frames > 0
+	var signal_present: bool = _overall_peak > RMS_FLOOR
+	var capture_pushed_frames: int = maxi(0, _capture_final_pushed_frames - _capture_initial_pushed_frames)
+	var capture_bookkeeping_balance: int = capture_pushed_frames - _overall_frames \
+		- _capture_flushed_frames - _capture_truncated_frames - _capture_available_after_final_flush
+	var capture_bookkeeping_balanced: bool = capture_bookkeeping_balance == 0
 	var bus_count_after_cleanup: int = AudioServer.bus_count
 	var report: Dictionary = {
 		"format": "openrc-mechanical-audio-staged-probe-v1",
@@ -159,9 +197,30 @@ func _run() -> void:
 		"mix_rate_hz": AudioServer.get_mix_rate(),
 		"capture_bus": "Master",
 		"capture_after_master_effects": true,
+		"capture_effect_removed": _capture_effect_removed,
+		"probe_sha256": probe_sha256,
 		"captured_frames": _overall_frames,
 		"captured_seconds": captured_seconds,
+		"capture_wall_seconds": wall_seconds,
 		"scripted_wall_seconds": wall_seconds,
+		"capture_bookkeeping": {
+			"buffer_length_frames": _capture_buffer_length_frames,
+			"initial": {"pushed_frames": _capture_initial_pushed_frames,
+				"discarded_frames": _capture_initial_discarded_frames,
+				"available_frames": _capture_initial_available_frames},
+			"final": {"pushed_frames": _capture_final_pushed_frames,
+				"discarded_frames": _capture_final_discarded_frames,
+				"available_frames_before_flush": _capture_pending_at_final_cleanup,
+				"flushed_frames": _capture_final_cleanup_flushed_frames,
+				"available_frames_after_flush": _capture_available_after_final_flush},
+			"pushed_frames": capture_pushed_frames,
+			"recorded_frames": _overall_frames,
+			"flushed_frames": _capture_flushed_frames,
+			"truncated_frames": _capture_truncated_frames,
+			"overflow_discarded_frames": _overall_discarded,
+			"unaccounted_pushed_frames": capture_bookkeeping_balance,
+			"staged_capture_memory_limit_seconds": MAX_STAGED_CAPTURE_SECONDS,
+		},
 		"total_rms_dbfs": total_rms_dbfs,
 		"total_peak_dbfs": total_peak_dbfs,
 		"discarded_frames": _overall_discarded,
@@ -190,7 +249,10 @@ func _run() -> void:
 			"peak_below_dbfs": CLIP_LIMIT_DBFS,
 			"no_clipping": no_clipping,
 			"no_capture_discards": _overall_discarded == 0,
+			"capture_bookkeeping_balanced": capture_bookkeeping_balanced,
+			"staged_capture_memory_bounded": not _capture_memory_limit_exceeded,
 			"bus_count_restored": bus_count_after_cleanup == _bus_count_start,
+			"capture_effect_removed": _capture_effect_removed,
 			"voice_pool_bounded": pooling_bounded,
 			"all_stage_wavs_saved": _wav_failures.is_empty(),
 			"wav_failures": _wav_failures,
@@ -203,7 +265,8 @@ func _run() -> void:
 	print(JSON.stringify(report))
 	var passed: bool = actual_driver.to_upper() == _expected_driver.to_upper() \
 		and _wav_failures.is_empty() and finite_signal and signal_present and no_clipping \
-		and _overall_discarded == 0 and pooling_bounded and bus_count_after_cleanup == _bus_count_start \
+		and _overall_discarded == 0 and capture_bookkeeping_balanced and not _capture_memory_limit_exceeded \
+		and _capture_effect_removed and pooling_bounded and bus_count_after_cleanup == _bus_count_start \
 		and report_file != null
 	quit(0 if passed else 1)
 
@@ -238,9 +301,6 @@ func _run_stage(servo_type: String, retract_type: String, config: Dictionary,
 		"mode": str(stage_spec.mode),
 		"scripted_engine_mask": float(stage_spec.engine_mask),
 		"capture_bus": "Master",
-		"frames": 0,
-		"sum_squares": 0.0,
-		"peak": 0.0,
 		"discarded_frames": 0,
 		"update_times_usec": [],
 		"max_motion_voice_count": 0,
@@ -260,8 +320,11 @@ func _run_stage(servo_type: String, retract_type: String, config: Dictionary,
 	_stage_discarded = 0
 	_update_times_usec = []
 	_invalid_sample = false
+	var flushed_before_stage: int = 0
 	if _capture.get_frames_available() > 0:
-		_capture.get_buffer(_capture.get_frames_available())
+		var pending_at_stage_start: int = _capture.get_frames_available()
+		flushed_before_stage = _capture.get_buffer(pending_at_stage_start).size()
+		_capture_flushed_frames += flushed_before_stage
 	var discarded_before: int = _capture.get_discarded_frames()
 	var lifecycle_reset_done: bool = false
 	var lifecycle_detached: bool = false
@@ -315,14 +378,15 @@ func _run_stage(servo_type: String, retract_type: String, config: Dictionary,
 			int(diagnostics.get("active_motion_voices", 0)))
 		record["max_playing_event_voices"] = maxi(int(record.max_playing_event_voices),
 			int(diagnostics.get("playing_event_voices", 0)))
-		_drain_capture(record)
+		_drain_capture()
 	var discarded_after: int = _capture.get_discarded_frames()
 	_stage_discarded += maxi(0, discarded_after - discarded_before)
 	var wav_path: String = profile_dir.path_join(stage_name + ".wav")
-	var wav_error: Error = _save_wav(wav_path, _stage_samples)
 	var diag_end: Dictionary = _audio.call("diagnostics")
 	var times: Array[int] = _update_times_usec.duplicate()
 	times.sort()
+	_stage_frames = _stage_samples.size()
+	_overall_frames += _stage_frames
 	var result: Dictionary = {
 		"name": stage_name,
 		"profile": profile_name,
@@ -330,10 +394,11 @@ func _run_stage(servo_type: String, retract_type: String, config: Dictionary,
 		"scripted_engine_mask": float(stage_spec.engine_mask),
 		"wall_seconds": elapsed,
 		"mix_rate_hz": AudioServer.get_mix_rate(),
+		"flushed_frames_before_stage": flushed_before_stage,
 		"frames": _stage_frames,
 		"captured_seconds": float(_stage_frames) / maxf(float(AudioServer.get_mix_rate()), 1.0),
-		"rms_dbfs": _rms_dbfs(_stage_sum_squares, _stage_frames),
-		"peak_dbfs": linear_to_db(maxf(_stage_peak, RMS_FLOOR)),
+		"rms_dbfs": -240.0,
+		"peak_dbfs": -240.0,
 		"discarded_frames": _stage_discarded,
 		"update_count": times.size(),
 		"update_p50_usec": _percentile_usec(times, 0.50),
@@ -351,9 +416,12 @@ func _run_stage(servo_type: String, retract_type: String, config: Dictionary,
 		"lifecycle_reset_ran": lifecycle_reset_done,
 		"lifecycle_detach_reattach_ran": lifecycle_configured,
 		"wav_path": wav_path,
-		"wav_saved": wav_error == OK,
+		"wav_saved": false,
+		"wav_queued": true,
 		"timed_out": bool(record.get("timed_out", false)),
 	}
+	_wav_jobs.append({"stage_index": _stage_results.size(), "path": wav_path,
+		"samples": _stage_samples, "mix_rate_hz": AudioServer.get_mix_rate()})
 	return result
 
 
@@ -472,45 +540,75 @@ func _profile_matrix() -> Array[Dictionary]:
 	return result
 
 
-func _drain_capture(record: Dictionary = {}) -> void:
+func _drain_capture() -> void:
 	var available: int = _capture.get_frames_available()
 	if available <= 0:
 		return
 	var samples: PackedVector2Array = _capture.get_buffer(available)
-	for sample: Vector2 in samples:
-		var clean: Vector2 = sample
-		if not is_finite(clean.x) or not is_finite(clean.y):
-			_invalid_sample = true
-			_overall_invalid_sample = true
-			clean = Vector2.ZERO
-		_stage_samples.append(clean)
-		_stage_frames += 1
-		var squared: float = clean.length_squared()
-		_stage_sum_squares += squared
-		_stage_peak = maxf(_stage_peak, maxf(absf(clean.x), absf(clean.y)))
-		_overall_sum_squares += squared
-		_overall_peak = maxf(_overall_peak, maxf(absf(clean.x), absf(clean.y)))
-		_overall_frames += 1
-	if not record.is_empty():
-		record["frames"] = _stage_frames
-		record["sum_squares"] = _stage_sum_squares
-		record["peak"] = _stage_peak
-
-
-func _save_wav(path: String, samples: PackedVector2Array) -> Error:
 	if samples.is_empty():
-		return ERR_FILE_CORRUPT
+		return
+	var maximum_frames: int = int(float(AudioServer.get_mix_rate()) * MAX_STAGED_CAPTURE_SECONDS)
+	var retained_so_far: int = _overall_frames + _stage_samples.size()
+	var accepted_frames: int = mini(samples.size(), maxi(0, maximum_frames - retained_so_far))
+	if accepted_frames < samples.size():
+		_capture_memory_limit_exceeded = true
+		_capture_truncated_frames += samples.size() - accepted_frames
+		samples.resize(accepted_frames)
+	if not samples.is_empty():
+		_stage_samples.append_array(samples)
+
+
+func _save_wav(path: String, samples: PackedVector2Array, mix_rate: int) -> Dictionary:
+	if samples.is_empty():
+		return {"error": ERR_FILE_CORRUPT, "sum_squares": 0.0, "peak": 0.0,
+			"invalid_sample": false, "frames": 0}
 	var wav := AudioStreamWAV.new()
-	wav.mix_rate = AudioServer.get_mix_rate()
+	wav.mix_rate = mix_rate
 	wav.stereo = true
 	wav.format = AudioStreamWAV.FORMAT_16_BITS
 	var data := PackedByteArray()
 	data.resize(samples.size() * 4)
+	var sum_squares: float = 0.0
+	var peak: float = 0.0
+	var invalid_sample: bool = false
 	for index: int in samples.size():
-		data.encode_s16(index * 4, clampi(roundi(samples[index].x * 32767.0), -32768, 32767))
-		data.encode_s16(index * 4 + 2, clampi(roundi(samples[index].y * 32767.0), -32768, 32767))
+		var sample: Vector2 = samples[index]
+		if not is_finite(sample.x) or not is_finite(sample.y):
+			invalid_sample = true
+			sample = Vector2.ZERO
+		data.encode_s16(index * 4, clampi(roundi(sample.x * 32767.0), -32768, 32767))
+		data.encode_s16(index * 4 + 2, clampi(roundi(sample.y * 32767.0), -32768, 32767))
+		sum_squares += sample.length_squared()
+		peak = maxf(peak, maxf(absf(sample.x), absf(sample.y)))
 	wav.data = data
-	return wav.save_to_wav(path)
+	return {"error": wav.save_to_wav(path), "sum_squares": sum_squares,
+		"peak": peak, "invalid_sample": invalid_sample, "frames": samples.size()}
+
+
+func _write_queued_wavs() -> void:
+	for job: Dictionary in _wav_jobs:
+		var samples: PackedVector2Array = job.samples
+		var save_result: Dictionary = _save_wav(str(job.path), samples, int(job.mix_rate_hz))
+		var stage_index: int = int(job.stage_index)
+		if stage_index < 0 or stage_index >= _stage_results.size():
+			_wav_failures.append(str(job.path))
+			continue
+		_stage_sum_squares = float(save_result.sum_squares)
+		_stage_peak = float(save_result.peak)
+		_invalid_sample = bool(save_result.invalid_sample)
+		_overall_sum_squares += _stage_sum_squares
+		_overall_peak = maxf(_overall_peak, _stage_peak)
+		_overall_invalid_sample = _overall_invalid_sample or _invalid_sample
+		var stage_result: Dictionary = _stage_results[stage_index]
+		stage_result["rms_dbfs"] = _rms_dbfs(_stage_sum_squares, int(save_result.frames))
+		stage_result["peak_dbfs"] = linear_to_db(maxf(_stage_peak, RMS_FLOOR))
+		stage_result["invalid_sample"] = _invalid_sample
+		stage_result["wav_saved"] = int(save_result.error) == OK
+		stage_result.erase("wav_queued")
+		_stage_results[stage_index] = stage_result
+		if int(save_result.error) != OK:
+			_wav_failures.append(str(job.path))
+	_wav_jobs.clear()
 
 
 func _rms_dbfs(sum_squares: float, frames: int) -> float:
@@ -541,6 +639,11 @@ func _sha256_resource(path: String) -> String:
 	if context.start(HashingContext.HASH_SHA256) != OK or context.update(FileAccess.get_file_as_bytes(path)) != OK:
 		return ""
 	return context.finish().hex_encode()
+
+
+func _probe_sha256() -> String:
+	var repo_root: String = ProjectSettings.globalize_path("res://").path_join("..").simplify_path()
+	return FileAccess.get_sha256(repo_root.path_join("tools/audio/mechanical_probe.gd"))
 
 
 func _valid_output_directory() -> bool:
@@ -576,7 +679,8 @@ func _valid_output_directory() -> bool:
 func _write_early_report(driver: String) -> void:
 	var report: Dictionary = {"format": "openrc-mechanical-audio-staged-probe-v1",
 		"scope": "Staged presentation signal probe; no live FlightAudio integration or listening claim.",
-		"driver": driver, "asset_receipts": _asset_receipts, "quality_checks": {"required_assets_loaded": false}}
+		"driver": driver, "probe_sha256": _probe_sha256(), "asset_receipts": _asset_receipts,
+		"quality_checks": {"required_assets_loaded": false}}
 	var file := FileAccess.open(_output_dir.path_join("report.json"), FileAccess.WRITE)
 	if file != null:
 		file.store_string(JSON.stringify(report, "\t"))
@@ -586,9 +690,12 @@ func _write_early_report(driver: String) -> void:
 
 func _cleanup() -> void:
 	if _capture != null and _capture_bus_index >= 0:
-		var last_index: int = AudioServer.get_bus_effect_count(_capture_bus_index) - 1
-		if last_index >= 0 and AudioServer.get_bus_effect(_capture_bus_index, last_index) == _capture:
-			AudioServer.remove_bus_effect(_capture_bus_index, last_index)
+		var effect_count: int = AudioServer.get_bus_effect_count(_capture_bus_index)
+		for effect_index: int in range(effect_count - 1, -1, -1):
+			if AudioServer.get_bus_effect(_capture_bus_index, effect_index) == _capture:
+				AudioServer.remove_bus_effect(_capture_bus_index, effect_index)
+				_capture_effect_removed = true
+				break
 	if is_instance_valid(_audio):
 		if is_instance_valid(_audio.get_parent()):
 			_audio.get_parent().remove_child(_audio)

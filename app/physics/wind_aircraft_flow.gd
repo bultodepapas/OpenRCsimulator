@@ -9,6 +9,92 @@ const Air := preload("res://physics/air_data.gd")
 const Simulation := preload("res://sim/simulation.gd")
 
 const LAW := "m5-w05c-r1-fixed-datum-station-relative-flow-v1"
+const STAGE_AIR_LAW := "m5-w05c-r2-point-air-v1"
+
+
+## One immutable stage's query context. Only the provider reference is shared; queries must be pure.
+## Extra wash stations use their actual aerodynamic force arms, not the neutral coverage geometry.
+class StagePointSampler:
+	extends RefCounted
+	var body := PackedFloat64Array()
+	var reference_wind := PackedFloat64Array()
+	var environment: Object
+	var time_s := 0.0
+
+	func delta_at(arm: PackedFloat64Array) -> PackedFloat64Array:
+		if not _finite3(arm) or not is_instance_valid(environment):
+			return PackedFloat64Array([NAN, NAN, NAN])
+		var q := body.slice(RB.ATT, RB.ATT + 4)
+		var position := M.add(body.slice(RB.POS, RB.POS + 3), M.q_rotate(q, arm))
+		if not _finite3(position):
+			return PackedFloat64Array([NAN, NAN, NAN])
+		var wind: Variant = environment.call("wind_world", position, time_s)
+		if not _finite3(wind):
+			return PackedFloat64Array([NAN, NAN, NAN])
+		if wind[0] == reference_wind[0] and wind[1] == reference_wind[1] and wind[2] == reference_wind[2]:
+			return PackedFloat64Array([0.0, 0.0, 0.0])
+		var delta := M.q_rotate(M.q_conj(q), M.sub(reference_wind, wind))
+		return delta if _finite3(delta) else PackedFloat64Array([NAN, NAN, NAN])
+
+	static func _finite3(value: Variant) -> bool:
+		if not value is PackedFloat64Array or value.size() != 3:
+			return false
+		for component: float in value:
+			if not is_finite(component):
+				return false
+		return true
+
+
+## Experimental stage-local Air contract, not a persisted scenario. Always selects physical point inflow,
+## including in uniform air; do not toggle the law when the instantaneous gradient happens to be zero.
+## No caller may reuse this result for another body stage, density, model or time.
+static func stage_air(s: PackedFloat64Array, model: Dictionary, environment: Object, time_s: float,
+		rho := Air.RHO_SEA_LEVEL) -> Dictionary:
+	if not is_finite(rho) or rho <= 0.0:
+		return {ok = false, errors = PackedStringArray(["invalid stage density"]), air = {}}
+	var flow := sample(s, model, environment, time_s)
+	if not flow.ok:
+		return {ok = false, errors = flow.errors, air = {}}
+	if flow.propulsion_index < 0:
+		return {ok = false, errors = PackedStringArray(["powered stage needs a supported hub or intake"]), air = {}}
+	var air := Air.compute(s, flow.reference_wind_ned, rho)
+	if not is_finite(air.V) or not is_finite(air.qbar):
+		return {ok = false, errors = PackedStringArray(["nonfinite stage air data"]), air = {}}
+	var point_sampler := StagePointSampler.new()
+	point_sampler.body = s.duplicate()
+	point_sampler.reference_wind = flow.reference_wind_ned.duplicate()
+	point_sampler.environment = environment
+	point_sampler.time_s = time_s
+	air.spatial_air_law = STAGE_AIR_LAW
+	air.spatial_state = s.duplicate()
+	air.spatial_time_s = time_s
+	air.spatial_rho = rho
+	air.aero_station_delta_body = flow.delta_body.slice(0, 3 * (flow.wing_count + 2))
+	# A method Callable stores an object ID; retain the RefCounted target explicitly for the stage's lifetime.
+	air.spatial_sampler = point_sampler
+	air.ambient_delta_body_at = point_sampler.delta_at
+	if flow.propulsion_index >= 0:
+		var start: int = 3 * flow.propulsion_index
+		air.propulsion_air_body = flow.relative_body.slice(start, start + 3)
+		# Preserve the wake closure's datum-flow convention; rotation belongs only to powered-device inflow.
+		air.wake_source_delta_body = flow.delta_body.slice(start, start + 3)
+	return {ok = true, errors = PackedStringArray(), air = air, flow = flow}
+
+
+## Receipt check for the load entrypoint. A stage context is ephemeral, never a checkpoint or cross-stage cache.
+static func matches_stage(air: Dictionary, s: PackedFloat64Array, rho: float) -> bool:
+	var state: Variant = air.get("spatial_state")
+	var deltas: Variant = air.get("aero_station_delta_body")
+	var sampler: Variant = air.get("ambient_delta_body_at")
+	var time: Variant = air.get("spatial_time_s")
+	var density: Variant = air.get("spatial_rho")
+	return air.get("spatial_air_law", "") == STAGE_AIR_LAW \
+		and state is PackedFloat64Array and state.to_byte_array() == s.to_byte_array() \
+		and deltas is PackedFloat64Array and Aero._spatial_finite(deltas, 3 * (Aero.WING_STATIONS_PER_SIDE * 2 + 2)) \
+		and sampler is Callable and sampler.is_valid() \
+		and typeof(time) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(time)) and float(time) >= 0.0 \
+		and typeof(density) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(density)) and float(density) == rho \
+		and _finite3(air.get("propulsion_air_body")) and _finite3(air.get("wake_source_delta_body"))
 
 
 ## Build immutable station arms in body FRD from the authored datum O.

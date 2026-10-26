@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "20d473ec-40bd-474f-bdad-7039d31d1bba",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ground_support_query.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T00:16:34.179807+00:00",
+  "label": "ground_support_query",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-main-final\\checks\\ground_support_query-niwgdar9\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-main-final\\checks\\ground_support_query-niwgdar9\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "114 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.797,
+  "log_bytes": 397,
+  "log_sha256": "242e851c249199410f7cb9bf76cc7b9a6b1802c5f68024ba73f7b25b296ff183"
+}

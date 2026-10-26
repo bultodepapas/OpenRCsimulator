@@ -52,6 +52,16 @@ func _initialize() -> void:
 	var lighting_checked := DraftStore.validate_editor_state(lighting_editor)
 	_check("lighting recovery retains incomplete color text without applying it", lighting_checked.get("ok", false)
 		and lighting_checked.editor.presentation_buffers.lighting.color_text == ["#12"], str(lighting_checked.get("errors", [])))
+	var sequence_state := preload("res://workshop/lighting_sequence.gd").editor_state(DraftStore.Presentation.LightingProfile.preset("festival"), "")
+	sequence_state.duration_text = "unfinished"
+	sequence_state.color_text = ["#12"]
+	lighting_editor.presentation_buffers.lighting["sequence"] = sequence_state
+	lighting_checked = DraftStore.validate_editor_state(lighting_editor)
+	_check("sequence recovery retains bounded unfinished timing and palette", lighting_checked.get("ok", false)
+		and lighting_checked.editor.presentation_buffers.lighting.sequence == sequence_state, str(lighting_checked.get("errors", [])))
+	lighting_editor.presentation_buffers.lighting.sequence["script"] = "res://unsafe.gd"
+	_check("sequence recovery rejects unknown fields", not DraftStore.validate_editor_state(lighting_editor).get("ok", false))
+	lighting_editor.presentation_buffers.lighting.erase("sequence")
 	lighting_editor.presentation_buffers.lighting.zone = "res://unsafe.gd"
 	_check("lighting recovery rejects nonsemantic zone paths", not DraftStore.validate_editor_state(lighting_editor).get("ok", false))
 	_test_save_read_and_discard(build, editor, variant)

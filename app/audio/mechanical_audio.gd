@@ -17,6 +17,7 @@ const PAUSE_FADE_S: float = 0.08
 const STALE_TICK_LIMIT_S: float = 0.2
 const EVENT_RELEASE_S: float = 0.02
 const SERVO_PROFILE_PITCH: Dictionary = {"standard": 1.0, "high_torque": 0.82}
+const DEFAULT_VARIATION: Dictionary = {pitch = 1.0, phase = 0.0}
 
 var _owner: Node
 var _soundscape: Node
@@ -24,6 +25,11 @@ var _bus: StringName = &"Master"
 var _config: Dictionary = {servo_type = "standard", servo_level = 1.0, retract_type = "electric"}
 var _motion_state: Dictionary = {}
 var _motion_players: Dictionary = {}
+var _motion_targets: Dictionary = {}
+var _source_cache: Dictionary = {}
+var _attack_alpha: float = 0.0
+var _release_alpha: float = 0.0
+var _pitch_alpha: float = 0.0
 var _event_players: Array[AudioStreamPlayer3D] = []
 var _event_roles: Array[String] = []
 var _event_source_ids: Array[String] = []
@@ -201,7 +207,8 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		_scene_gain = maxf(0.0, _scene_gain - dt / PAUSE_FADE_S)
 		# A queued reversal must not start while the old cue fades into pause.
 		for index: int in _pending_events.size():
-			_pending_events[index] = {}
+			if not _pending_events[index].is_empty():
+				_pending_events[index] = {}
 	else:
 		_scene_gain = minf(1.0, _scene_gain + dt / PAUSE_FADE_S)
 	var source_positions: Dictionary = _source_positions(result)
@@ -209,7 +216,10 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		and bool(result.get("tick_advanced", false)) and listener_valid
 	if can_play_events:
 		_process_events(result.get("events", []), source_positions, listener, servo_level)
-	var targets: Dictionary = {}
+	_motion_targets.clear()
+	_attack_alpha = 1.0 - exp(-dt / 0.035) if dt > 0.0 else 0.0
+	_release_alpha = 1.0 - exp(-dt / 0.085) if dt > 0.0 else 0.0
+	_pitch_alpha = 1.0 - exp(-dt / 0.04) if dt > 0.0 else 1.0
 	var active: int = 0
 	var far_culled: bool = false
 	for motion_value: Variant in result.get("channels", []):
@@ -220,7 +230,7 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		if id.is_empty():
 			continue
 		var key: String = "servo:" + id
-		targets[key] = true
+		_motion_targets[key] = true
 		var source: Variant = motion.get("position", Vector3.ZERO)
 		var source_valid: bool = bool(motion.get("position_valid", false)) and Motion.finite_vector(source)
 		var distance: float = source.distance_to(listener) if source_valid and listener_valid else INF
@@ -238,12 +248,12 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 			player = _ensure_motion_player(key, _servo_loop)
 		if player != null:
 			_apply_motion_voice(key, id, player, source if source_valid else Vector3.ZERO,
-				target_gain, target_pitch, dt)
+				target_gain, target_pitch)
 			if target_gain > 0.001 and float(_motion_players.get(key, {}).get("gain", 0.0)) > 0.001:
 				active += 1
 	var gear_motion: Dictionary = result.get("gear", {})
 	if not gear_motion.is_empty():
-		targets["gear"] = true
+		_motion_targets["gear"] = true
 		var gear_source: Variant = gear_motion.get("position", Vector3.ZERO)
 		var gear_source_valid: bool = bool(gear_motion.get("position_valid", false)) and Motion.finite_vector(gear_source)
 		var gear_distance: float = gear_source.distance_to(listener) if gear_source_valid and listener_valid else INF
@@ -261,18 +271,18 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 			gear_player = _ensure_motion_player("gear", _gear_loop)
 		if gear_player != null:
 			_apply_motion_voice("gear", "gear", gear_player,
-				gear_source if gear_source_valid else Vector3.ZERO, gear_target, gear_pitch, dt)
+				gear_source if gear_source_valid else Vector3.ZERO, gear_target, gear_pitch)
 			if gear_target > 0.001 and float(_motion_players.get("gear", {}).get("gain", 0.0)) > 0.001:
 				active += 1
-	for key_value: Variant in _motion_players.keys():
+	for key_value: Variant in _motion_players:
 		var key: String = str(key_value)
-		if targets.has(key):
+		if _motion_targets.has(key):
 			continue
 		var slot: Dictionary = _motion_players.get(key, {})
 		var player: AudioStreamPlayer3D = slot.get("player") as AudioStreamPlayer3D
 		if player != null:
 			_apply_motion_voice(key, key.trim_prefix("servo:") if key.begins_with("servo:") else "gear",
-				player, player.global_position, 0.0, float(slot.get("pitch", 1.0)), dt)
+				player, player.global_position, 0.0, float(slot.get("pitch", 1.0)))
 	if far_culled:
 		_far_culled_motion_updates += 1
 	_update_event_voices(source_positions, listener, listener_valid, dt)
@@ -304,6 +314,8 @@ func _all_sources_distant(snapshot: Dictionary) -> bool:
 
 func reset() -> void:
 	_motion_state.clear()
+	_motion_targets.clear()
+	_source_cache.clear()
 	_scene_gain = 1.0
 	_engine_mask = 1.0
 	_stale_tick_s = 0.0
@@ -489,19 +501,20 @@ func _setup_player(player: AudioStreamPlayer3D) -> void:
 
 
 func _apply_motion_voice(key: String, source_id: String, player: AudioStreamPlayer3D,
-		position: Vector3, target_gain: float, target_pitch: float, dt: float) -> void:
+		position: Vector3, target_gain: float, target_pitch: float) -> void:
 	var slot: Dictionary = _motion_players.get(key, {})
 	if slot.is_empty():
 		return
-	player.global_position = position
 	var current_gain: float = float(slot.get("gain", 0.0))
-	var time_constant: float = 0.035 if target_gain > current_gain else 0.085
-	var alpha: float = 1.0 - exp(-dt / time_constant) if dt > 0.0 else 0.0
+	# Retained pool slots cost no transform/mixer updates once their release ends.
+	if target_gain <= 0.0001 and current_gain <= 0.0002 and not player.playing:
+		return
+	player.global_position = position
+	var alpha: float = _attack_alpha if target_gain > current_gain else _release_alpha
 	current_gain = lerpf(current_gain, clampf(target_gain, 0.0, 1.0), alpha)
-	var variation: Dictionary = _gesture_variations.get(source_id, {pitch = 1.0, phase = 0.0})
+	var variation: Dictionary = _gesture_variations.get(source_id, DEFAULT_VARIATION)
 	var varied_pitch: float = target_pitch * float(variation.get("pitch", 1.0))
-	var pitch: float = lerpf(float(slot.get("pitch", 1.0)), varied_pitch,
-		1.0 - exp(-dt / 0.04)) if dt > 0.0 else varied_pitch
+	var pitch: float = lerpf(float(slot.get("pitch", 1.0)), varied_pitch, _pitch_alpha)
 	slot["gain"] = current_gain
 	slot["pitch"] = pitch
 	player.volume_db = linear_to_db(maxf(current_gain * _scene_gain, 0.00001))
@@ -510,7 +523,7 @@ func _apply_motion_voice(key: String, source_id: String, player: AudioStreamPlay
 		var length: float = maxf(player.stream.get_length(), 0.001)
 		slot["offset"] = length * clampf(float(variation.get("phase", 0.0)), 0.0, 0.999)
 		player.play(float(slot.get("offset", 0.0)))
-	elif current_gain <= 0.0002 and target_gain <= 0.0001 and player.playing:
+	elif (current_gain <= 0.0002 or _scene_gain <= 0.001) and target_gain <= 0.0001 and player.playing:
 		_stop_motion_player(key)
 
 
@@ -522,7 +535,7 @@ func _process_events(events: Array, source_positions: Dictionary, listener: Vect
 		var event: Dictionary = event_value
 		var source_id: String = str(event.get("id", "gear"))
 		var source: Dictionary = source_positions.get(source_id, {})
-		if source.is_empty() or not bool(source.get("valid", false)):
+		if source.is_empty() or not bool(source.get("position_valid", false)):
 			continue
 		var position: Vector3 = source.get("position", Vector3.ZERO)
 		var distance_gain: float = _distance_gain(position.distance_to(listener))
@@ -578,7 +591,9 @@ func _play_event(role: String, source_id: String, position: Vector3, listener: V
 			break
 	if chosen < 0:
 		for index: int in range(_event_players.size()):
-			if not _event_players[index].playing:
+			# A finished outgoing cue can still have a higher-priority replacement
+			# reserved for this slot. Dispatch it before admitting another source.
+			if not _event_players[index].playing and _pending_events[index].is_empty():
 				chosen = index
 				break
 	if chosen < 0:
@@ -636,6 +651,8 @@ func _begin_event(index: int, cue: Dictionary, effective_gain: float) -> void:
 func _update_event_voices(source_positions: Dictionary, listener: Vector3, listener_valid: bool, dt: float) -> void:
 	for index: int in range(_event_players.size()):
 		var player: AudioStreamPlayer3D = _event_players[index]
+		if _event_roles[index].is_empty() and _pending_events[index].is_empty() and not player.playing:
+			continue
 		if _event_releasing[index]:
 			_event_envelopes[index] = maxf(0.0, _event_envelopes[index] - dt / EVENT_RELEASE_S)
 			if _event_envelopes[index] <= 0.0:
@@ -645,7 +662,7 @@ func _update_event_voices(source_positions: Dictionary, listener: Vector3, liste
 			var cue: Dictionary = _pending_events[index]
 			var pending_source: Dictionary = source_positions.get(str(cue.source), {})
 			_pending_events[index] = {}
-			if listener_valid and bool(pending_source.get("valid", false)) and _scene_gain > 0.001:
+			if listener_valid and bool(pending_source.get("position_valid", false)) and _scene_gain > 0.001:
 				cue.position = pending_source.position
 				var pending_gain: float = float(cue.gain) * _engine_mask * _scene_gain * _distance_gain(cue.position.distance_to(listener))
 				if pending_gain > 0.0001:
@@ -654,10 +671,11 @@ func _update_event_voices(source_positions: Dictionary, listener: Vector3, liste
 			_event_roles[index] = ""
 			_event_source_ids[index] = ""
 			_event_base_gains[index] = 0.0
+			_event_releasing[index] = false
 			player.volume_db = -80.0
 			continue
 		var source: Dictionary = source_positions.get(_event_source_ids[index], {})
-		if not listener_valid or source.is_empty() or not bool(source.get("valid", false)):
+		if not listener_valid or source.is_empty() or not bool(source.get("position_valid", false)):
 			player.volume_db = -80.0
 			player.stop()
 			_event_roles[index] = ""
@@ -680,17 +698,17 @@ func _update_event_voices(source_positions: Dictionary, listener: Vector3, liste
 
 func _fade_motion(delta: float, immediate: bool) -> void:
 	_scene_gain = 0.0 if immediate else maxf(0.0, _scene_gain - clampf(delta, 0.0, 0.1) / PAUSE_FADE_S)
-	for key_value: Variant in _motion_players.keys():
+	var alpha: float = 1.0 - exp(-clampf(delta, 0.0, 0.1) / PAUSE_FADE_S)
+	for key_value: Variant in _motion_players:
 		var key: String = str(key_value)
 		var slot: Dictionary = _motion_players.get(key, {})
 		var player: AudioStreamPlayer3D = slot.get("player") as AudioStreamPlayer3D
-		if player == null:
+		if player == null or (not player.playing and float(slot.get("gain", 0.0)) <= 0.0002):
 			continue
-		var gain: float = 0.0 if immediate else lerpf(float(slot.get("gain", 0.0)), 0.0,
-			1.0 - exp(-clampf(delta, 0.0, 0.1) / PAUSE_FADE_S))
+		var gain: float = 0.0 if immediate else lerpf(float(slot.get("gain", 0.0)), 0.0, alpha)
 		slot["gain"] = gain
 		player.volume_db = linear_to_db(maxf(gain * _scene_gain, 0.00001))
-		if immediate or gain <= 0.0002:
+		if immediate or _scene_gain <= 0.001 or gain <= 0.0002:
 			_stop_motion_player(key)
 	if immediate or _scene_gain <= 0.001:
 		_stop_event_voices()
@@ -709,8 +727,9 @@ func _stop_motion_player(key: String) -> void:
 
 func _stop_event_voices() -> void:
 	for player: AudioStreamPlayer3D in _event_players:
-		player.volume_db = -80.0
-		player.stop()
+		if player.playing:
+			player.volume_db = -80.0
+			player.stop()
 	_clear_event_metadata()
 
 
@@ -721,7 +740,8 @@ func _clear_event_metadata() -> void:
 	_event_envelopes.fill(1.0)
 	_event_releasing.fill(false)
 	for index: int in _pending_events.size():
-		_pending_events[index] = {}
+		if not _pending_events[index].is_empty():
+			_pending_events[index] = {}
 
 
 func _dispose_players() -> void:
@@ -751,7 +771,9 @@ func _dispose_players() -> void:
 
 
 func _source_positions(result: Dictionary) -> Dictionary:
-	var positions: Dictionary = {}
+	# Observer rows already contain validated positions. Reuse them for events
+	# instead of allocating a second record for every actuator on every frame.
+	_source_cache.clear()
 	for motion_value: Variant in result.get("channels", []):
 		if not motion_value is Dictionary:
 			continue
@@ -759,15 +781,11 @@ func _source_positions(result: Dictionary) -> Dictionary:
 		var identity: String = str(motion.get("id", ""))
 		if identity.is_empty():
 			continue
-		var position: Variant = motion.get("position", Vector3.ZERO)
-		positions[identity] = {position = position if Motion.finite_vector(position) else Vector3.ZERO,
-			valid = bool(motion.get("position_valid", false)) and Motion.finite_vector(position)}
+		_source_cache[identity] = motion
 	var gear: Dictionary = result.get("gear", {})
 	if not gear.is_empty():
-		var gear_position: Variant = gear.get("position", Vector3.ZERO)
-		positions["gear"] = {position = gear_position if Motion.finite_vector(gear_position) else Vector3.ZERO,
-			valid = bool(gear.get("position_valid", false)) and Motion.finite_vector(gear_position)}
-	return positions
+		_source_cache["gear"] = gear
+	return _source_cache
 
 
 func _advance_gesture(identity: String) -> void:

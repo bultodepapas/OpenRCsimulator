@@ -617,7 +617,7 @@ Evaluate Reduced flashes and Show VFX Off, grayscale and common color-vision sim
 
 ## 12. Ordered implementation packages
 
-Each package is independently reviewable. This document authorizes a plan only; all entries below remain pending implementation. “Proof” describes required future evidence, not results from this mission.
+Each package is independently reviewable. Implementation was subsequently authorized. The table retains the full acceptance scope; it is not a claim that every gate is closed. The [implementation record](research/night-flight-lighting/implementation.md) owns completed checks and remaining qualification. Core profile validation, rig lifecycle, patterns, spill, Workshop editing, persistence, reactions and bounded VFX are implemented; authored mounts/skins and broad performance/pilot acceptance remain open.
 
 | ID | Work and dependencies | Proof / exit condition |
 | --- | --- | --- |
@@ -641,7 +641,7 @@ Each package is independently reviewable. This document authorizes a plan only; 
 
 Critical path: 00→01→02→03→04→05→06→08→09→12→13→14→15→16. Internal skin (07) and reactive/VFX work (10–11) follow stable bindings/clocks and may proceed independently with separate file ownership. Deliver Classic/Neon and save/load before Festival complexity. Do not block a useful baseline on a custom particle renderer or a new aircraft asset.
 
-First implementation slice should stop after FW-RGB-03: schema fixtures plus a facade preserving current appearance. Next, deliver one animated strip on the existing kit with preview isolation. This reduces integration risk while retaining the final visual ambition.
+The initial schema/rig and animated-strip slices are implemented. Continue in independently checked packages: extend the existing creator fitting contract, then qualify authored skin treatments on an eligible asset and whole-scene performance. Do not treat delivered code as closure of the capture, hardware or pilot gates.
 
 ## 13. Risks, decisions requiring evidence and handoff
 

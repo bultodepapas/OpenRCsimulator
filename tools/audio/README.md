@@ -17,9 +17,17 @@ python tools/audio/check_mechanical_capture.py /absolute/new/output/mechanical -
 
 Use the checked runner around each Godot command, as described below. The mechanical probe requires a new output directory, rejects Dummy, and saves native WAVs plus `report.json` for all four combinations of the two servo and two retract settings. Its stimuli cover slow/small and fast/large travel, simultaneous surfaces, retract reversal/interruption/endpoint, distance, masks, pause/reset/rewind/detach/reconfiguration. It drives the audio contract directly: it does not simulate a whole flight or establish perceptual realism. Runs at 30, 60 or 144 requested FPS are supported. Run native benches sequentially.
 
+For controller CPU comparisons, `mechanical_benchmark.gd` requires Dummy and times only `update_sound`, excluding snapshot setup and diagnostics. It measures idle, simultaneous four-servo/retract movement, pause, distant sources and repeated accepted ticks after warmup. Reports include source hashes, median/p95/max, voice counts and Godot object-count growth. This is a script microbenchmark, not a native mixer deadline, allocation profiler or rendered frame-time qualification. Use the same binary, iteration counts and quiet host for before/after comparisons.
+
+```sh
+godot --headless --path app --audio-driver Dummy --script /absolute/repo/tools/audio/mechanical_benchmark.gd -- --out=/absolute/new/benchmark.json --iterations=10000 --warmup=1000
+```
+
 After deliberately rebuilding the bank, run editor import, then `python tools/audio/import_mechanical.py --fix-import-settings`, then **editor import again**. This last step is necessary to rebuild imported samples as PCM after replacing Godot's default QOA settings. `--check` validates source/output hashes and sidecars; `test_mechanical_audio.gd` validates the loaded resource format.
 
 For the production flight adapter, add `--mechanical-review` to `gameplay_probe.gd`. It adds small pitch/yaw corrections and captures accepted RPM, mechanical voice/culling/masking diagnostics every 0.1 s, and separate mechanical update timing. The regular throttle, pause, camera and reset sequence remains in force. The general capture checker retains its older 4 m close-view and 0.5 ms total-adapter gates; record failures honestly when testing a different aircraft/camera combination.
+
+Both native probes identify their source hash and count captured, flushed and overflowed frames. Checkers require finite positive `capture_wall_seconds`, PCM within 120 ms of that duration, and balanced capture counters; older artifacts missing these fields cannot pass the current checks. Mechanical capture bulk-appends PCM during timed stages and defers waveform analysis/encoding until capture has stopped, with a 60-second retained-PCM limit. Gameplay rejects nonfinite captured samples and safely reports short captures as incomplete. Run the checker regressions with `python tools/audio/test_capture_checks.py`.
 
 ## Menu feedback
 

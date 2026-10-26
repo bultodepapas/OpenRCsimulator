@@ -196,7 +196,8 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 static func _segmented_increment(piece: Dictionary, tail: Dictionary, a: float, b: float, c0: float, slope: float,
 		along: float, d2: float, centre: PackedFloat64Array, ax: PackedFloat64Array, core: float, swirl: float,
 		wash: PackedFloat64Array, state: PackedFloat64Array, v: PackedFloat64Array, d: Dictionary, model: Dictionary,
-		rho: float, wing_cl: float, subdivisions: int = 1) -> PackedFloat64Array:
+		rho: float, wing_cl: float, subdivisions: int = 1, _sampler: Callable = Callable()) -> PackedFloat64Array:
+	# Signature-only compatibility: this frozen oracle evaluates uniform ambient flow.
 	var cuts: Array[float] = [a, b]
 	if core * core > d2:
 		var core_half := M.sqrt_(core * core - d2)

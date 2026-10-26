@@ -1,0 +1,122 @@
+{
+  "format": "openrc-gp10-baseline v1",
+  "source_commit": "b85ce1047a3e7798ab22b330675fc0c9e4bce912",
+  "source_identity_before": "source-identity-before.json",
+  "source_identity_after": "source-identity-after.json",
+  "source_status_during_capture": "clean",
+  "all_runtime_and_config_hashes_unchanged": true,
+  "focused_air_checks": 1082,
+  "focused_air_failures": 0,
+  "scope": "Stik and P51 only; two short air tapes plus two short ground tapes, same GP08 controls/driver",
+  "checked_reports": [
+    "checks/record-air-bo6ij9qk/report.json",
+    "checks/record-ground-h2i89pg7/report.json"
+  ],
+  "drivers": [
+    {
+      "path": "record_air.gd",
+      "sha256": "3b06307f339b18ea13b009c5a6f19743dc46dd5c914bb43c1cc66a103d30d468",
+      "source_helper": "app/tests/test_flight_log.gd at pinned commit"
+    },
+    {
+      "path": "record_ground.gd",
+      "sha256": "414a6dbd0e5851e786038a34d4664863df7e9816977aea0703549eb1348d62cf",
+      "source_helper": "docs/research/ground-physics/GP-08/evidence/record_ground.gd at pinned commit"
+    }
+  ],
+  "cases": [
+    {
+      "case": "stik-air",
+      "orfl": "air/jensen_ugly_stik_60.orfl",
+      "orfl_sha256": "faf0ae33953770d19af9338bbfb6517cc51131f4d08a7d9a01b886cbe497d921",
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77"
+      },
+      "rows": 261,
+      "first_tick": 0,
+      "final_tick": 260,
+      "dt_s": 0.004166666666666667,
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "current_solver_sha256": "a47d31c6aa5cb73bf94feb4deb4130396a0a5d27863bc45cc4e2791dd45cc18d",
+      "export_report": "stik-air-export/export.json",
+      "export_csv": "stik-air-export/flight.csv",
+      "exact_report": "stik-air-replay/replay.json",
+      "exact_csv": "stik-air-replay/flight.csv",
+      "csv_comparison": "stik-air-exact-comparison.json",
+      "first_divergence": null
+    },
+    {
+      "case": "p51-air",
+      "orfl": "air/p51d_mustang_120.orfl",
+      "orfl_sha256": "982b8d78e01afdfed5f25c6882b744d264bd55db8c851de7ea01fb1d019aa920",
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+      },
+      "rows": 261,
+      "first_tick": 0,
+      "final_tick": 260,
+      "dt_s": 0.004166666666666667,
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "current_solver_sha256": "a47d31c6aa5cb73bf94feb4deb4130396a0a5d27863bc45cc4e2791dd45cc18d",
+      "export_report": "p51-air-export/export.json",
+      "export_csv": "p51-air-export/flight.csv",
+      "exact_report": "p51-air-replay/replay.json",
+      "exact_csv": "p51-air-replay/flight.csv",
+      "csv_comparison": "p51-air-exact-comparison.json",
+      "first_divergence": null
+    },
+    {
+      "case": "stik-ground",
+      "orfl": "ground/jensen_ugly_stik_60-ground.orfl",
+      "orfl_sha256": "edb7de1035af8eea3e122dc3fb9b177171f85d62cbf0b8c17b1722aff7e636dd",
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77"
+      },
+      "rows": 481,
+      "first_tick": 0,
+      "final_tick": 480,
+      "dt_s": 0.004166666666666667,
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "current_solver_sha256": "a47d31c6aa5cb73bf94feb4deb4130396a0a5d27863bc45cc4e2791dd45cc18d",
+      "export_report": "stik-ground-export/export.json",
+      "export_csv": "stik-ground-export/flight.csv",
+      "exact_report": "stik-ground-replay/replay.json",
+      "exact_csv": "stik-ground-replay/flight.csv",
+      "csv_comparison": "stik-ground-exact-comparison.json",
+      "first_divergence": null
+    },
+    {
+      "case": "p51-ground",
+      "orfl": "ground/p51d_mustang_120-ground.orfl",
+      "orfl_sha256": "15d0c007218f4b3b454163dd62416863396423e426f26d42e587ca7bcaa0f4b3",
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+      },
+      "rows": 481,
+      "first_tick": 0,
+      "final_tick": 480,
+      "dt_s": 0.004166666666666667,
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "current_solver_sha256": "a47d31c6aa5cb73bf94feb4deb4130396a0a5d27863bc45cc4e2791dd45cc18d",
+      "export_report": "p51-ground-export/export.json",
+      "export_csv": "p51-ground-export/flight.csv",
+      "exact_report": "p51-ground-replay/replay.json",
+      "exact_csv": "p51-ground-replay/flight.csv",
+      "csv_comparison": "p51-ground-exact-comparison.json",
+      "first_divergence": null
+    }
+  ],
+  "limits": "Software replay preservation on captured source/engine/platform. No full fleet suite, other baseline unit suites, rendered app, benchmark or physical validation."
+}

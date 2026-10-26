@@ -11,6 +11,10 @@ const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const EffectiveMass := preload("res://physics/effective_mass.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
+const Terrain := preload("res://physics/ground_terrain.gd")
+
+## GP-10b: append only for lake-enabled session identities; the no-lake law() stays unchanged.
+const LAKE_NORMAL_LAW := "positive-down-bank-gradient-normal-v2"
 
 ## Contact natural frequency against each point's smallest effective mass: ω·dt = 0.25 at 240 Hz, so no point is
 ## stiffer than this for RK4 in any attitude. A belly carrying the whole airplane sags g/ω² ≈ 2.7 mm.
@@ -682,8 +686,8 @@ static func _lake_normal(terrain: Dictionary) -> PackedFloat64Array:
 	var slope_east: float = float(terrain.get("slope_east", NAN))
 	if not is_finite(slope_north) or not is_finite(slope_east):
 		return PackedFloat64Array()
-	var length: float = M.sqrt_(1.0 + slope_north * slope_north + slope_east * slope_east)
-	return PackedFloat64Array([-slope_north / length, -slope_east / length, -1.0 / length])
+	# LakeSurface slopes differentiate NED down; the shared normal helper takes height-up slopes.
+	return Terrain.normal_from_up_slopes(-slope_north, -slope_east)
 
 
 static func _polygon_bounds(polygon: PackedFloat64Array) -> PackedFloat64Array:

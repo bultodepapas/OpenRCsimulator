@@ -4,6 +4,8 @@ extends VBoxContainer
 const Profile := preload("res://render/lighting/lighting_profile.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const Presentation := preload("res://workshop/presentation.gd")
+const Sequence := preload("res://workshop/lighting_sequence.gd")
+const SequenceEditor := preload("res://ui/workshop_lighting_sequence.gd")
 
 signal profile_changed(profile: Dictionary)
 signal validity_changed(page: String, pending: bool)
@@ -18,6 +20,7 @@ const ZONE_LABELS := {
 	"landing_lamp": "Landing lamp",
 }
 
+var _sequence_editor: VBoxContainer
 var _bindings: Dictionary = {}
 var _presentation: Dictionary = {}
 var _profile: Dictionary = {}
@@ -153,6 +156,11 @@ func _build_ui() -> void:
 	_effects_section.add_theme_constant_override("separation", 8)
 	add_child(_effects_section)
 	_build_effect_controls()
+	_sequence_editor = SequenceEditor.new()
+	_sequence_editor.name = "LightingSequenceEditor"
+	add_child(_sequence_editor)
+	_sequence_editor.profile_changed.connect(_commit_lighting)
+	_sequence_editor.pending_changed.connect(func(_pending: bool) -> void: _emit_validity())
 	var reset := Button.new()
 	reset.name = "ResetLighting"
 	reset.text = tr("Reset lighting")
@@ -350,6 +358,7 @@ func configure(bindings: Dictionary, presentation: Dictionary) -> void:
 	_rebuild_zone_selector(saved_zone)
 	_sync_zone_editor()
 	_rebuild_effect_controls()
+	_sequence_editor.configure(_profile)
 	_sync_summary()
 	_syncing = false
 	_emit_validity()
@@ -361,12 +370,13 @@ func get_editor_state() -> Dictionary:
 		"zones_open": _zone_section.visible,
 		"effects_open": _effects_section.visible,
 		"color_text": _zone_hex_fields.map(func(field: LineEdit) -> String: return field.text),
+		"sequence": _sequence_editor.get_editor_state(),
 	}
 
 
 func restore_editor_state(state: Dictionary) -> bool:
 	var keys := ["zone", "zones_open", "effects_open", "color_text"]
-	if state.size() != keys.size():
+	if state.size() != keys.size() + (1 if state.has("sequence") else 0):
 		return false
 	for key: String in keys:
 		if not state.has(key):
@@ -382,6 +392,10 @@ func restore_editor_state(state: Dictionary) -> bool:
 	for color_text: Variant in state.color_text:
 		if typeof(color_text) != TYPE_STRING or str(color_text).length() > 16:
 			return false
+	if state.has("sequence") and not Sequence.validate_editor_state(state.sequence).ok:
+		return false
+	if state.has("sequence") and not _sequence_editor.restore_editor_state(state.sequence):
+		return false
 	_selected_zone_id = str(state.zone)
 	_zone_section.visible = bool(state.zones_open)
 	_zone_button.button_pressed = _zone_section.visible
@@ -402,10 +416,16 @@ func restore_editor_state(state: Dictionary) -> bool:
 
 
 func has_pending_edit() -> bool:
-	return _brightness_pending or _zone_pending or _effects_pending or _zone_text_pending
+	return _brightness_pending or _zone_pending or _effects_pending or _zone_text_pending or _sequence_pending()
+
+
+func _sequence_pending() -> bool:
+	return is_instance_valid(_sequence_editor) and _sequence_editor.has_pending_edit()
 
 
 func pending_control() -> Control:
+	if _sequence_pending():
+		return _sequence_editor.pending_control()
 	if _zone_text_invalid and not _zone_hex_fields.is_empty():
 		for field: LineEdit in _zone_hex_fields:
 			if not _valid_hex(field.text):
@@ -418,6 +438,7 @@ func pending_control() -> Control:
 func cancel_pending_edit() -> bool:
 	if not has_pending_edit():
 		return false
+	_sequence_editor.cancel_pending_edit()
 	_brightness_timer.stop()
 	_brightness_pending = false
 	_zone_draft.clear()
@@ -530,7 +551,7 @@ func _on_orientation_lock_toggled(value: bool) -> void:
 func _on_brightness_changed(value: float) -> void:
 	if _syncing or not _enabled.button_pressed:
 		return
-	if _zone_pending or _zone_text_pending or _effects_pending:
+	if _zone_pending or _zone_text_pending or _effects_pending or _sequence_pending():
 		_syncing = true
 		_brightness.set_value_no_signal(float(_profile.get("brightness", 1.0)))
 		_brightness_value.text = "%d%%" % roundi(float(_profile.get("brightness", 1.0)) * 100.0)
@@ -737,7 +758,7 @@ func _set_palette_controls_disabled(disabled: bool) -> void:
 func _set_palette_color(index: int, color_text: String) -> void:
 	if _syncing:
 		return
-	if _brightness_pending or _effects_pending:
+	if _brightness_pending or _effects_pending or _sequence_pending():
 		_syncing = true
 		_sync_zone_editor()
 		_syncing = false
@@ -763,7 +784,7 @@ func _set_palette_color(index: int, color_text: String) -> void:
 func _on_zone_hex_changed(value: String, index: int) -> void:
 	if _syncing:
 		return
-	if _brightness_pending or _effects_pending:
+	if _brightness_pending or _effects_pending or _sequence_pending():
 		_syncing = true
 		_sync_zone_editor()
 		_syncing = false
@@ -792,7 +813,7 @@ func _has_invalid_zone_text() -> bool:
 
 
 func _add_palette_color() -> void:
-	if _zone_text_invalid or _brightness_pending or _effects_pending:
+	if _zone_text_invalid or _brightness_pending or _effects_pending or _sequence_pending():
 		return
 	var pattern: Dictionary = _zone_draft.get("pattern", {}).duplicate(true)
 	var palette: Array = pattern.get("palette", []).duplicate()
@@ -808,7 +829,7 @@ func _add_palette_color() -> void:
 
 
 func _remove_palette_color(index: int) -> void:
-	if _zone_text_invalid or _brightness_pending or _effects_pending:
+	if _zone_text_invalid or _brightness_pending or _effects_pending or _sequence_pending():
 		return
 	var pattern: Dictionary = _zone_draft.get("pattern", {}).duplicate(true)
 	var palette: Array = pattern.get("palette", []).duplicate()
@@ -835,7 +856,7 @@ func _rebuild_palette_rows() -> void:
 func _on_pattern_selected(index: int) -> void:
 	if _syncing:
 		return
-	if _brightness_pending or _effects_pending:
+	if _brightness_pending or _effects_pending or _sequence_pending():
 		_syncing = true
 		_sync_zone_editor()
 		_syncing = false
@@ -855,7 +876,7 @@ func _on_pattern_selected(index: int) -> void:
 func _on_period_changed(value: float) -> void:
 	if _syncing or _zone_draft.is_empty():
 		return
-	if _brightness_pending or _effects_pending:
+	if _brightness_pending or _effects_pending or _sequence_pending():
 		_syncing = true
 		_sync_zone_editor()
 		_syncing = false
@@ -871,7 +892,7 @@ func _on_period_changed(value: float) -> void:
 func _update_zone_draft(key: String, value: Variant) -> void:
 	if _syncing or _zone_draft.is_empty():
 		return
-	if _brightness_pending or _effects_pending:
+	if _brightness_pending or _effects_pending or _sequence_pending():
 		_syncing = true
 		_sync_zone_editor()
 		_syncing = false
@@ -889,7 +910,7 @@ func _on_zone_brightness_changed(value: float) -> void:
 func _on_reactive_source_selected(index: int) -> void:
 	if _syncing or _zone_draft.is_empty():
 		return
-	if _brightness_pending or _effects_pending:
+	if _brightness_pending or _effects_pending or _sequence_pending():
 		_syncing = true
 		_sync_zone_editor()
 		_syncing = false
@@ -909,7 +930,7 @@ func _on_reactive_source_selected(index: int) -> void:
 func _on_reactive_gain_changed(value: float) -> void:
 	if _syncing or _zone_draft.is_empty():
 		return
-	if _brightness_pending or _effects_pending:
+	if _brightness_pending or _effects_pending or _sequence_pending():
 		_syncing = true
 		_sync_zone_editor()
 		_syncing = false
@@ -941,7 +962,7 @@ func _refresh_zone_pending() -> void:
 
 
 func _apply_zone() -> void:
-	if not _zone_pending or _zone_text_invalid or _brightness_pending or _effects_pending:
+	if not _zone_pending or _zone_text_invalid or _brightness_pending or _effects_pending or _sequence_pending():
 		return
 	var next := _profile.duplicate(true)
 	var zones: Array = next.get("zones", []).duplicate(true)
@@ -1044,7 +1065,7 @@ func _reset_selected_zone() -> void:
 
 
 func _apply_effects() -> void:
-	if not _effects_pending or _brightness_pending or _zone_pending or _zone_text_pending:
+	if not _effects_pending or _brightness_pending or _zone_pending or _zone_text_pending or _sequence_pending():
 		return
 	var next := _profile.duplicate(true)
 	next.effects = _effects_draft.duplicate(true)
@@ -1168,7 +1189,7 @@ func _effect_anchor_label(anchor_id: String) -> String:
 func _set_effect_value(anchor_id: String, key: String, value: Variant) -> void:
 	if _syncing:
 		return
-	if _brightness_pending or _zone_pending or _zone_text_pending:
+	if _brightness_pending or _zone_pending or _zone_text_pending or _sequence_pending():
 		_syncing = true
 		_rebuild_effect_controls()
 		_syncing = false
@@ -1252,6 +1273,8 @@ func _sync_summary() -> void:
 
 
 func _emit_validity() -> void:
+	if is_instance_valid(_sequence_editor):
+		_sequence_editor.set_external_pending(_brightness_pending or _zone_pending or _effects_pending or _zone_text_pending)
 	validity_changed.emit("lighting", has_pending_edit())
 
 

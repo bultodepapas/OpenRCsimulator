@@ -3,6 +3,8 @@
   "description": "E3a: field surfaces runway, rotorpad, mown and rough scale tyre forces in physics/ground_contact.gd. Rotorpad friction is an estimated mown-like value; its reserved 0.5 rolling factor selects zero-relief terrain for helicopter support and is not a rolling-resistance measurement. GP-07c: airframe_friction is the kinetic friction coefficient of an airframe point (not a tyre) sliding on the surface, used by soft hull contacts (physics/hull_contact.gd) and the crash presentation's slide table.",
   "surfaces": {
     "runway": {
+      "material_id": "maintained_turf",
+      "material_source": "Existing v1 grass_rwy coefficient provenance below; the default runway is turf, not asphalt. Identity only, no new material measurement.",
       "friction_factor": {
         "value": 0.8,
         "unit": "1",
@@ -23,6 +25,8 @@
       }
     },
     "rotorpad": {
+      "material_id": "mown_grass",
+      "material_source": "Existing HELI-20a mown-like ground estimate below; no pad material measurement. Identity does not change the reserved v1 relief selector.",
       "friction_factor": {
         "value": 0.7,
         "unit": "1",
@@ -43,6 +47,8 @@
       }
     },
     "mown": {
+      "material_id": "mown_grass",
+      "material_source": "Existing v1 Grass/Airport/Greenspace coefficient provenance below; identity only.",
       "friction_factor": {
         "value": 0.7,
         "unit": "1",
@@ -63,6 +69,8 @@
       }
     },
     "rough": {
+      "material_id": "long_grass",
+      "material_source": "Existing v1 uncut grass effective-material estimate below; no new soil or grass measurement.",
       "friction_factor": {
         "value": 0.7,
         "unit": "1",

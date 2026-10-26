@@ -1,0 +1,55 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   authored lake definition loads
+ok   lake id and stable identity are present
+ok   authored irregular shoreline is about 90 by 60 metres at N110 E125
+ok   profile includes a shallow shelf and five-metre deep basin
+ok   normalized identity is repeatable
+ok   identity changes with physical definition
+ok   missing file is refused
+ok   refused: unknown format
+ok   refused: non-finite or out-of-range water level
+ok   refused: self-crossing shoreline
+ok   refused: undersized bed profile
+ok   refused: non-monotonic basin profile
+ok   refused: unbounded wave amplitude
+ok   refused: summed component amplitude exceeds bound
+ok   invalid normalized data fails closed
+ok   malformed normalized profile fails closed
+ok   deep basin sample stays bounded inside lake
+ok   sample exposes blend, signed distances, and depth-only slope
+ok   shore-only distance matches terrain sign without a terrain sample
+ok   shore-only distance rejects non-finite and malformed geometry
+ok   shore-only query does not require a bed profile or wave state
+ok   deep floor is five metres under the mean waterline
+ok   terrain slopes are finite float64 values
+ok   bank is a covered, shallower terrain region
+ok   outside bounded bank is untouched
+ok   bank and submerged bed meet continuously at the shoreline
+ok   bank height joins the unchanged field datum
+ok   non-finite terrain query fails closed
+ok   water mean datum is shared with the renderer
+ok   water outside the shoreline has no surface sample
+ok   zero wave matches shared mean-down surface
+ok   bounded wave repeats on the supplied simulation period
+ok   wave displacement stays within authored amplitude
+ok   water-down displacement mirrors positive-up render waves
+ok   shoreline wave fades to the shared mean
+ok   unbounded wave parameters fail closed
+ok   authored renderer components are bounded to two
+ok   high-speed body probe finds earliest water crossing
+ok   high-speed wingtip probe finds earliest water crossing
+ok   high-speed gear probe finds earliest water crossing
+ok   a grazing horizontal flight above the waterline does not collide
+ok   a high-speed chord above the entire water and bank envelope misses cleanly
+ok   airborne rejection still refuses wave data beyond validated bounds
+ok   a probe that only grazes the water plane reports contact
+ok   a path outside the bank polygon remains clear
+ok   the dry bank reports its own terminal material
+ok   exact contact at the highest bank edge is not rejected by the vertical envelope
+ok   a tangent bank-vertex touch remains a terminal ground event
+ok   a tangent shoreline touch is classified as water
+ok   unordered sweep time is rejected
+ok   malformed probe point is rejected
+ok   already-submerged probe reports immediate water contact
+all lake surface checks passed

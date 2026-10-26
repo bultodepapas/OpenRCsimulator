@@ -1,0 +1,516 @@
+{
+  "format": "openrc-gp10-evidence v1",
+  "source_commit": "b85ce1047a3e7798ab22b330675fc0c9e4bce912",
+  "retained_utc": "2026-10-26T00:18:23.1328792Z",
+  "baseline_manifest": "baseline/manifest.json",
+  "candidate_report": "candidate/report.json",
+  "baseline_files": 45,
+  "candidate_files": 42,
+  "original_artifact_files": 87,
+  "original_artifact_bytes": 5476284.0,
+  "baseline_solver_sha256": "a47d31c6aa5cb73bf94feb4deb4130396a0a5d27863bc45cc4e2791dd45cc18d",
+  "candidate_solver_sha256": "588f3d32eca3221ee756ed2197c5765d4a992a3165268e738b2ed03501bd20f9",
+  "native_samples_checked": 1484.0,
+  "artifacts": [
+    {
+      "path": "baseline/manifest.json",
+      "sha256": "b0308484a696bd91bec1c7a8390b8b900c3b7ed95f731d96225d77c7c5c75480",
+      "bytes": 5058
+    },
+    {
+      "path": "baseline/source-identity-before.json",
+      "sha256": "39a0d53bdba07260a49fd7d9d6f03a2824605abd4e007752ef389599d4fabff0",
+      "bytes": 21630
+    },
+    {
+      "path": "baseline/source-identity-after.json",
+      "sha256": "96818a1922a398e63e59fd1c4c13c55db1592a319fb693ba59ea504332f9c376",
+      "bytes": 21356
+    },
+    {
+      "path": "baseline/record_air.gd",
+      "sha256": "3b06307f339b18ea13b009c5a6f19743dc46dd5c914bb43c1cc66a103d30d468",
+      "bytes": 628
+    },
+    {
+      "path": "baseline/record_ground.gd",
+      "sha256": "414a6dbd0e5851e786038a34d4664863df7e9816977aea0703549eb1348d62cf",
+      "bytes": 3224
+    },
+    {
+      "path": "baseline/test-inventory.md",
+      "sha256": "2158e569fb273e8b05a217b372ae62ee6fd4089796b3c6960492c1f4d2abacf4",
+      "bytes": 3214
+    },
+    {
+      "path": "baseline/ground/scenario.json",
+      "sha256": "6e620f29005d4eb60df904e6fb2e07544560f51843a2b820d2a953fe330e2aef",
+      "bytes": 13106
+    },
+    {
+      "path": "baseline/air/verification.json",
+      "sha256": "97ee14ea754c03b01391a85ea4f920f613ef723c2de128fd7fdf1c969fe46ecf",
+      "bytes": 492
+    },
+    {
+      "path": "baseline/air/jensen_ugly_stik_60.orfl",
+      "sha256": "faf0ae33953770d19af9338bbfb6517cc51131f4d08a7d9a01b886cbe497d921",
+      "bytes": 232932
+    },
+    {
+      "path": "baseline/air/p51d_mustang_120.orfl",
+      "sha256": "982b8d78e01afdfed5f25c6882b744d264bd55db8c851de7ea01fb1d019aa920",
+      "bytes": 270012
+    },
+    {
+      "path": "baseline/ground/jensen_ugly_stik_60-ground.orfl",
+      "sha256": "edb7de1035af8eea3e122dc3fb9b177171f85d62cbf0b8c17b1722aff7e636dd",
+      "bytes": 406336
+    },
+    {
+      "path": "baseline/ground/p51d_mustang_120-ground.orfl",
+      "sha256": "15d0c007218f4b3b454163dd62416863396423e426f26d42e587ca7bcaa0f4b3",
+      "bytes": 459212
+    },
+    {
+      "path": "baseline/checks/results.xml",
+      "sha256": "c963a9cd46884a531e25904278d299e3e4f86ec63cb21274a47a90141819909d",
+      "bytes": 860
+    },
+    {
+      "path": "baseline/checks/record-air-bo6ij9qk/report.json",
+      "sha256": "2edb4cb7ff599916221b845338d49b8105e39a0fb97b8b4f76b872cd7ec8fdde",
+      "bytes": 1366
+    },
+    {
+      "path": "baseline/checks/record-air-bo6ij9qk/engine.log",
+      "sha256": "24cfedaecd815ee41a02439d7613d855175f4883316684e9737cad304ab8e38d",
+      "bytes": 1995
+    },
+    {
+      "path": "baseline/checks/record-ground-h2i89pg7/report.json",
+      "sha256": "70c868df6396484fb58475cd35c3f0720e95fdda03b6ef02f2a380719bb46caa",
+      "bytes": 1382
+    },
+    {
+      "path": "baseline/checks/record-ground-h2i89pg7/engine.log",
+      "sha256": "9f2e61e48c6ce58849fafed63582cebae4dbd083cb1b8aa62ed857194b4fbb76",
+      "bytes": 729
+    },
+    {
+      "path": "baseline/stik-air-exact-comparison.json",
+      "sha256": "d0a954d79bb7242ae325ec794303c25d71d7d660d60ea161bae8369d84bb7232",
+      "bytes": 1467
+    },
+    {
+      "path": "baseline/stik-air-export/flight.csv",
+      "sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041",
+      "bytes": 177618
+    },
+    {
+      "path": "baseline/stik-air-export/export.json",
+      "sha256": "1af754de5229448d105e3716b06e25d0ddc32a81aeb657614dc037046e03e010",
+      "bytes": 5705
+    },
+    {
+      "path": "baseline/stik-air-export/godot.log",
+      "sha256": "441647acff0e4b714924da01e381332b5d0b42ef1981f65915edb82a6528b031",
+      "bytes": 111
+    },
+    {
+      "path": "baseline/stik-air-replay/flight.csv",
+      "sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041",
+      "bytes": 177618
+    },
+    {
+      "path": "baseline/stik-air-replay/replay.json",
+      "sha256": "05bcee4931f833768460dba02b86846e4ec76c54ac9a7dcfdbfa9f0a0292e0ee",
+      "bytes": 5980
+    },
+    {
+      "path": "baseline/stik-air-replay/godot.log",
+      "sha256": "b1b6799a1e36ed495cb5cbee6006a2d1fb37d2bae741e286b8929dae060a8868",
+      "bytes": 204
+    },
+    {
+      "path": "baseline/p51-air-exact-comparison.json",
+      "sha256": "d0a954d79bb7242ae325ec794303c25d71d7d660d60ea161bae8369d84bb7232",
+      "bytes": 1467
+    },
+    {
+      "path": "baseline/p51-air-export/flight.csv",
+      "sha256": "78279f458ae9b477809a259c167c7b2d3b49a4c2ce7aedb182eada93d01fb748",
+      "bytes": 207200
+    },
+    {
+      "path": "baseline/p51-air-export/export.json",
+      "sha256": "a7c71d470119aea3470aff0add0d6ca501c650784740fd7ad232f742ed3879b0",
+      "bytes": 7157
+    },
+    {
+      "path": "baseline/p51-air-export/godot.log",
+      "sha256": "441647acff0e4b714924da01e381332b5d0b42ef1981f65915edb82a6528b031",
+      "bytes": 111
+    },
+    {
+      "path": "baseline/p51-air-replay/flight.csv",
+      "sha256": "78279f458ae9b477809a259c167c7b2d3b49a4c2ce7aedb182eada93d01fb748",
+      "bytes": 207200
+    },
+    {
+      "path": "baseline/p51-air-replay/replay.json",
+      "sha256": "928b1448a839f68adf19b890984042fdcf2d5c0adca0b18e3da2721067da8861",
+      "bytes": 7432
+    },
+    {
+      "path": "baseline/p51-air-replay/godot.log",
+      "sha256": "f121df9f9ebbd22f5c99eb7b404bad61969d4bb8c6762e9f63427de101bb39d7",
+      "bytes": 110
+    },
+    {
+      "path": "baseline/stik-ground-exact-comparison.json",
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c",
+      "bytes": 1437
+    },
+    {
+      "path": "baseline/stik-ground-export/flight.csv",
+      "sha256": "ba6d8dffc5e698c41833e5d52b8912197997ccbc00640e1309bd4effb4f74a63",
+      "bytes": 368002
+    },
+    {
+      "path": "baseline/stik-ground-export/export.json",
+      "sha256": "b0aa4c6bae99ea8354c3e1735b5f3d0abd5d3addfbee6338c797601286ad20a7",
+      "bytes": 6197
+    },
+    {
+      "path": "baseline/stik-ground-export/godot.log",
+      "sha256": "b556a8019086ea2c9087c3a666d6b8ef7e4fade8352a21085aa2e1a2332c2d5c",
+      "bytes": 111
+    },
+    {
+      "path": "baseline/stik-ground-replay/flight.csv",
+      "sha256": "ba6d8dffc5e698c41833e5d52b8912197997ccbc00640e1309bd4effb4f74a63",
+      "bytes": 368002
+    },
+    {
+      "path": "baseline/stik-ground-replay/replay.json",
+      "sha256": "de1fbb8e174d2330cd2b7daed205c80b1871e1942ff3dcd8f5b39b4a4ac28e61",
+      "bytes": 6472
+    },
+    {
+      "path": "baseline/stik-ground-replay/godot.log",
+      "sha256": "834d8428e2753d3160a9eb52267f3e04db95bced4f1832063f016c3bb99f1ba9",
+      "bytes": 204
+    },
+    {
+      "path": "baseline/p51-ground-exact-comparison.json",
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c",
+      "bytes": 1437
+    },
+    {
+      "path": "baseline/p51-ground-export/flight.csv",
+      "sha256": "a699523ab3a118cfbb8fcfe356468e4ed82905497db266d656f6a58196d46a6c",
+      "bytes": 410093
+    },
+    {
+      "path": "baseline/p51-ground-export/export.json",
+      "sha256": "26cfda71799b96d1ea339f9b4d026f6dbb0e735bb08d78e2942a1f07620a6389",
+      "bytes": 7608
+    },
+    {
+      "path": "baseline/p51-ground-export/godot.log",
+      "sha256": "b556a8019086ea2c9087c3a666d6b8ef7e4fade8352a21085aa2e1a2332c2d5c",
+      "bytes": 111
+    },
+    {
+      "path": "baseline/p51-ground-replay/flight.csv",
+      "sha256": "a699523ab3a118cfbb8fcfe356468e4ed82905497db266d656f6a58196d46a6c",
+      "bytes": 410093
+    },
+    {
+      "path": "baseline/p51-ground-replay/replay.json",
+      "sha256": "7e14fbd56b4fea15b92b1201788d5cfd24ef634d043c79bff73f3b7723668184",
+      "bytes": 7883
+    },
+    {
+      "path": "baseline/p51-ground-replay/godot.log",
+      "sha256": "4e9343af567eb14344503ae1f9bda17ee188ba42fdabb852a4294473c244a8b5",
+      "bytes": 110
+    },
+    {
+      "path": "candidate/check_numeric_preservation.gd",
+      "sha256": "4262a34dbc0ccddcfcb7486681040066793f3fd6846fc7dfb7e72306227b6e0a",
+      "bytes": 3625
+    },
+    {
+      "path": "candidate/p51-air-comparison.json",
+      "sha256": "d0a954d79bb7242ae325ec794303c25d71d7d660d60ea161bae8369d84bb7232",
+      "bytes": 1467
+    },
+    {
+      "path": "candidate/p51-air-numeric-preservation.json",
+      "sha256": "b989e5250ac829dfa02487e622f5a7bcfe1e43a48d2c0ab32d2a4a1f42120a0b",
+      "bytes": 1100
+    },
+    {
+      "path": "candidate/p51-ground-comparison.json",
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c",
+      "bytes": 1437
+    },
+    {
+      "path": "candidate/p51-ground-numeric-preservation.json",
+      "sha256": "78ce38684ace6f1d656f6d46111c6993582e8563fd9bf9b57ba4683f08e0ee99",
+      "bytes": 1100
+    },
+    {
+      "path": "candidate/report.json",
+      "sha256": "b7c4ffc109ecd7a1f565f67c9c0248652399bf0cde4c936eb0f939919b7b4deb",
+      "bytes": 8472
+    },
+    {
+      "path": "candidate/source-identity-after.json",
+      "sha256": "a8c1f6e10678b2992d8f7eb785d2e818fcd922b127394a0eac3ced948718b67f",
+      "bytes": 21479
+    },
+    {
+      "path": "candidate/source-identity-before.json",
+      "sha256": "dc60a1f084ce70873e35da2d9bb888469a4bb5a5f6b40bf76389c41af7107693",
+      "bytes": 24292
+    },
+    {
+      "path": "candidate/stik-air-comparison.json",
+      "sha256": "d0a954d79bb7242ae325ec794303c25d71d7d660d60ea161bae8369d84bb7232",
+      "bytes": 1467
+    },
+    {
+      "path": "candidate/stik-air-numeric-preservation.json",
+      "sha256": "31dfc0803aac709249546b67dda2a777b2dde79cab609d5269caedf0bbd60fe6",
+      "bytes": 1100
+    },
+    {
+      "path": "candidate/stik-ground-comparison.json",
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c",
+      "bytes": 1437
+    },
+    {
+      "path": "candidate/stik-ground-numeric-preservation.json",
+      "sha256": "8b862924048666bc020c7dbef00389d4d070c7aa83bde9dab40839ccb2828b2b",
+      "bytes": 1100
+    },
+    {
+      "path": "candidate/checks/results.xml",
+      "sha256": "a0ea8ebff4258e2e35fa10e2f942f95ec4f9339d6c9e01a4c90f259ace89b366",
+      "bytes": 1749
+    },
+    {
+      "path": "candidate/checks/p51-air-numeric-preservation-5x8_znub/engine.log",
+      "sha256": "525f33c30ba0bfaf13a022a77ad8dd3491d2768dc41669a3edd5839959aed555",
+      "bytes": 125
+    },
+    {
+      "path": "candidate/checks/p51-air-numeric-preservation-5x8_znub/report.json",
+      "sha256": "44355a4b561aa22321e74f1a08d9e0214cb8ddb5204df1c0a2bf47f1e9770f27",
+      "bytes": 1705
+    },
+    {
+      "path": "candidate/checks/p51-ground-numeric-preservation-k6hdg1ts/engine.log",
+      "sha256": "41ac937913c56a7e4689b66a617b4b49de57ec0a9620a56b617c2ea1619735b0",
+      "bytes": 125
+    },
+    {
+      "path": "candidate/checks/p51-ground-numeric-preservation-k6hdg1ts/report.json",
+      "sha256": "a1f437f09f545627156dce03351a4012c005cb1e8951c079e3ec9e33c76db026",
+      "bytes": 1726
+    },
+    {
+      "path": "candidate/checks/stik-air-numeric-preservation-28ikxjhp/engine.log",
+      "sha256": "6090e5ed71895e532052cba84b8920815f0099a43f84e6938eb60f16026ae62d",
+      "bytes": 219
+    },
+    {
+      "path": "candidate/checks/stik-air-numeric-preservation-28ikxjhp/report.json",
+      "sha256": "5c24c7489503ae8c3941e4dfbd0d74278d63f10d2facdafed8298a9fbbef3595",
+      "bytes": 1714
+    },
+    {
+      "path": "candidate/checks/stik-ground-numeric-preservation-0wqnk5h0/engine.log",
+      "sha256": "2e9d6efc6591ac18f44c7021f916a3a32a39fe15648a002b4fee06d7aee5e36d",
+      "bytes": 219
+    },
+    {
+      "path": "candidate/checks/stik-ground-numeric-preservation-0wqnk5h0/report.json",
+      "sha256": "6c22995afe0c672fcb16b31c32d903d40370330469cf0d71e2ace1387bec7bcd",
+      "bytes": 1737
+    },
+    {
+      "path": "candidate/p51-air/flight.csv",
+      "sha256": "78279f458ae9b477809a259c167c7b2d3b49a4c2ce7aedb182eada93d01fb748",
+      "bytes": 207200
+    },
+    {
+      "path": "candidate/p51-air/godot.log",
+      "sha256": "fb495e9a5d81d2e1428819ad5cad8b451479a89803e1265f5733bbb03b26726a",
+      "bytes": 114
+    },
+    {
+      "path": "candidate/p51-air/replay.json",
+      "sha256": "cf9790ee053f4526f8726f508664d877cf836be9982fc7e749aaec049651aa3e",
+      "bytes": 7641
+    },
+    {
+      "path": "candidate/p51-ground/flight.csv",
+      "sha256": "a699523ab3a118cfbb8fcfe356468e4ed82905497db266d656f6a58196d46a6c",
+      "bytes": 410093
+    },
+    {
+      "path": "candidate/p51-ground/godot.log",
+      "sha256": "3a32f0d0b3bf4f8bc5296f33793e78176398446b43877473491a25384ba5b3fb",
+      "bytes": 114
+    },
+    {
+      "path": "candidate/p51-ground/replay.json",
+      "sha256": "3c9e4aa9df282aef68ccc9931f7235b96d869ad9636a3739d85c6c062b9903eb",
+      "bytes": 8092
+    },
+    {
+      "path": "candidate/stik-air/flight.csv",
+      "sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041",
+      "bytes": 177618
+    },
+    {
+      "path": "candidate/stik-air/godot.log",
+      "sha256": "31ff278bc6a7c63fd26af14b7997888d909280b40bab3907f17ba6800d80a16f",
+      "bytes": 208
+    },
+    {
+      "path": "candidate/stik-air/replay.json",
+      "sha256": "06a330c8ee9e6c80e42f5340aec64481ffff6fbeba33c9355a623180ee0ef753",
+      "bytes": 6192
+    },
+    {
+      "path": "candidate/stik-ground/flight.csv",
+      "sha256": "ba6d8dffc5e698c41833e5d52b8912197997ccbc00640e1309bd4effb4f74a63",
+      "bytes": 368002
+    },
+    {
+      "path": "candidate/stik-ground/godot.log",
+      "sha256": "e1416ff46d4e04c1ba729ff974330e0769d88efed4b593c808a73351970b78cb",
+      "bytes": 208
+    },
+    {
+      "path": "candidate/stik-ground/replay.json",
+      "sha256": "b4b7bdf54b3a6c6a6200ce81e63fdfe2316144db6b785f07d95ff91e8ae3a3db",
+      "bytes": 6684
+    },
+    {
+      "path": "candidate/source/app/physics/ground_contact.gd",
+      "source_path": "app/physics/ground_contact.gd",
+      "sha256": "cdc2dcec718a9490c0a5c3de1e55ce165bba144eca9fe10845552d9d4dec8aa4",
+      "bytes": 26458
+    },
+    {
+      "path": "candidate/source/app/physics/ground_support.gd",
+      "source_path": "app/physics/ground_support.gd",
+      "sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+      "bytes": 7317
+    },
+    {
+      "path": "candidate/source/app/physics/ground_surfaces.gd",
+      "source_path": "app/physics/ground_surfaces.gd",
+      "sha256": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e",
+      "bytes": 8094
+    },
+    {
+      "path": "candidate/source/app/physics/ground_terrain.gd",
+      "source_path": "app/physics/ground_terrain.gd",
+      "sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26",
+      "bytes": 13651
+    },
+    {
+      "path": "candidate/source/app/physics/ground_wheels.gd",
+      "source_path": "app/physics/ground_wheels.gd",
+      "sha256": "a91217bd580700b5b130f057902248f8ed1da3650632c9653fa3c9a4f37600da",
+      "bytes": 12329
+    },
+    {
+      "path": "candidate/source/app/physics/hull_contact.gd",
+      "source_path": "app/physics/hull_contact.gd",
+      "sha256": "cb9d0397554cc100a6b04ff0034abf827d9d55d1f27e3bea5e7ced87e3036b2a",
+      "bytes": 41010
+    },
+    {
+      "path": "candidate/source/app/sim/environment.gd",
+      "source_path": "app/sim/environment.gd",
+      "sha256": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42",
+      "bytes": 8159
+    },
+    {
+      "path": "candidate/source/app/sim/flight_session.gd",
+      "source_path": "app/sim/flight_session.gd",
+      "sha256": "9fec024814d484ea0620e2d2d811170b0e69261ab6b44125dbefadf9291ec2d3",
+      "bytes": 253996
+    },
+    {
+      "path": "candidate/source/app/data/ground/surface_friction.json",
+      "source_path": "app/data/ground/surface_friction.json",
+      "sha256": "0cb448d2e735c724069053dfe03870a4c46a075511d1ccdeb9ddd72920782a92",
+      "bytes": 5037
+    }
+  ],
+  "candidate_source_snapshots": [
+    {
+      "path": "candidate/source/app/physics/ground_contact.gd",
+      "source_path": "app/physics/ground_contact.gd",
+      "sha256": "cdc2dcec718a9490c0a5c3de1e55ce165bba144eca9fe10845552d9d4dec8aa4",
+      "bytes": 26458
+    },
+    {
+      "path": "candidate/source/app/physics/ground_support.gd",
+      "source_path": "app/physics/ground_support.gd",
+      "sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+      "bytes": 7317
+    },
+    {
+      "path": "candidate/source/app/physics/ground_surfaces.gd",
+      "source_path": "app/physics/ground_surfaces.gd",
+      "sha256": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e",
+      "bytes": 8094
+    },
+    {
+      "path": "candidate/source/app/physics/ground_terrain.gd",
+      "source_path": "app/physics/ground_terrain.gd",
+      "sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26",
+      "bytes": 13651
+    },
+    {
+      "path": "candidate/source/app/physics/ground_wheels.gd",
+      "source_path": "app/physics/ground_wheels.gd",
+      "sha256": "a91217bd580700b5b130f057902248f8ed1da3650632c9653fa3c9a4f37600da",
+      "bytes": 12329
+    },
+    {
+      "path": "candidate/source/app/physics/hull_contact.gd",
+      "source_path": "app/physics/hull_contact.gd",
+      "sha256": "cb9d0397554cc100a6b04ff0034abf827d9d55d1f27e3bea5e7ced87e3036b2a",
+      "bytes": 41010
+    },
+    {
+      "path": "candidate/source/app/sim/environment.gd",
+      "source_path": "app/sim/environment.gd",
+      "sha256": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42",
+      "bytes": 8159
+    },
+    {
+      "path": "candidate/source/app/sim/flight_session.gd",
+      "source_path": "app/sim/flight_session.gd",
+      "sha256": "9fec024814d484ea0620e2d2d811170b0e69261ab6b44125dbefadf9291ec2d3",
+      "bytes": 253996
+    },
+    {
+      "path": "candidate/source/app/data/ground/surface_friction.json",
+      "source_path": "app/data/ground/surface_friction.json",
+      "sha256": "0cb448d2e735c724069053dfe03870a4c46a075511d1ccdeb9ddd72920782a92",
+      "bytes": 5037
+    }
+  ]
+}

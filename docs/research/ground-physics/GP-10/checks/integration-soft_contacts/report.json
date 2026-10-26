@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ff1b6a43-84e0-444a-93ca-ead796f2303c",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_soft_contacts.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85",
+  "started_utc": "2026-10-26T00:13:10.135832+00:00",
+  "label": "soft_contacts",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85\\tmp\\gp10-integration-checks\\soft_contacts-c1gawed2\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp10-candidate-b85\\tmp\\gp10-integration-checks\\soft_contacts-c1gawed2\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    ", 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 15.735,
+  "log_bytes": 2722,
+  "log_sha256": "7e054637e87c4ac007e07edc2be987b5982f7bb7c19f6fa3b006564dda3d68ff"
+}

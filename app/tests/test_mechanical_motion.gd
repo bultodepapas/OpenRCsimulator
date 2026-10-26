@@ -16,6 +16,7 @@ func _run() -> void:
 	_test_pause_and_rewind_prime()
 	_test_invalid_and_duplicate_inputs()
 	_test_slow_motion_sampling()
+	_test_snapshot_ownership_and_refresh()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -106,6 +107,41 @@ func _test_slow_motion_sampling() -> void:
 		var settled: Dictionary = Motion.observe(initial, _snapshot(ticks_per_sample, elapsed_s * 0.1, 0.0, false, false))
 		_check("sub-floor settling stays silent at %d ticks/sample" % ticks_per_sample,
 			not settled.channels[0].moving and settled.events.is_empty())
+
+
+func _test_snapshot_ownership_and_refresh() -> void:
+	var input: Dictionary = _snapshot(1, 0.0, 0.0, false)
+	var original_input: Dictionary = input.duplicate(true)
+	var first: Dictionary = Motion.observe({}, input)
+	var saved_state: Dictionary = first.state.duplicate(true)
+	var moving: Dictionary = Motion.observe(first.state, _snapshot(2, 5.0, 0.5, true))
+	_check("observation preserves caller input and the preceding state",
+		input == original_input and first.state == saved_state)
+	var saved_moving: Dictionary = moving.duplicate(true)
+	var repeated_input: Dictionary = _snapshot(2, 99.0, 0.9, false)
+	repeated_input.channels[0].position = Vector3(9.0, 2.0, 3.0)
+	repeated_input.gear.position = Vector3(4.0, 5.0, 6.0)
+	var repeated: Dictionary = Motion.observe(moving.state, repeated_input)
+	_check("same tick refresh preserves accepted servo travel and speed",
+		repeated.channels[0].value == 5.0 and repeated.channels[0].delta == 5.0
+		and repeated.channels[0].speed_per_s == moving.channels[0].speed_per_s)
+	_check("same tick refresh follows current source positions",
+		repeated.channels[0].position == repeated_input.channels[0].position
+		and repeated.gear.position == repeated_input.gear.position)
+	_check("same tick gear refresh preserves extension but updates request metadata",
+		repeated.gear.value == 0.5 and not repeated.gear.target_down and repeated.events.is_empty())
+	_check("spatial refresh leaves previously returned motion intact", moving == saved_moving)
+	var next: Dictionary = Motion.observe(repeated.state, _snapshot(3, 6.0, 0.6, true))
+	_check("next accepted tick measures from accepted travel, never repeated-frame input",
+		next.channels[0].delta == 1.0 and is_equal_approx(next.gear.delta, 0.1))
+	var removed: Dictionary = Motion.observe(next.state,
+		{tick = 3, channels = [{id = "new_servo", angle_deg = 7.0}], gear = {available = false}})
+	_check("same tick source replacement removes stale rows and primes the new actuator",
+		removed.channels.size() == 1 and removed.channels[0].id == "new_servo"
+		and not removed.channels[0].moving and removed.gear.is_empty())
+	var paused: Dictionary = Motion.observe(next.state, _snapshot(3, 8.0, 0.8, true, true, true))
+	_check("pause creates stationary state without altering the preceding moving sample",
+		not paused.channels[0].moving and next.channels[0].moving and next.channels[0].value == 6.0)
 
 
 func _snapshot(tick: int, roll_angle: float, extension: float, target_down: bool,

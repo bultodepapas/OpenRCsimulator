@@ -14,6 +14,7 @@ The pre-implementation plan is consolidated into [GP-05](GP-05/README.md). The p
 
 - [GP-08 audit and sources](GP-08/sources.md): dated 2026-10-25 research for the [advanced ground/flight masterplan](../../advanced-ground-flight-physics-masterplan.md), GP-08…23. Following implementation authorization, [frozen baseline](GP-08/evidence/README.md) and [candidate comparisons](GP-08/evidence/candidate/README.md) retain four exact air/ground cases. Full fleet/drop/performance qualification remains open.
 - [GP-09a](GP-09/README.md): fixed-axis relative-wheel/body coupling foundation, actual legacy power-balance counterexample and independent energy/momentum tests. Stock flight law and moving-axis/shaft migration remain unchanged/open.
+- [GP-10a/b](GP-10/README.md): typed solid-support observations and material provenance, independent relief-profile adapter, and corrected hull normals on lake banks. Round-wheel geometry, complete hull relief migration and live explicit profiles remain open.
 - [GP-14a](GP-14/README.md): accepted survivable gear-up accidents, scrape/bounce deduplication, terminal escalation, rules-version coverage and real session/persistence checks. Full shared event vocabulary and physical component failure remain open.
 
 The delivered GP records are software and numerical checks. No independent physical RC rollout, drop or taxi calibration was available.
