@@ -11,6 +11,7 @@ var duration_s := 4.0
 var fps := 60
 var tick_records: Array[Dictionary] = []
 var frame_records: Array[Dictionary] = []
+var record_tick_evidence := true # Real-time frame measurements avoid allocating a second full tick log.
 var _gear_keys: Array[String] = ["left", "right", "nose", "tail"]
 var _post_report_restart := false
 
@@ -160,6 +161,8 @@ func _commands_at(t: float) -> Dictionary:
 
 func _on_sim_stepped(tick: int, time_s: float, state: PackedFloat64Array, _loads: PackedFloat64Array,
 		inputs: PackedFloat64Array, aux: PackedFloat64Array) -> void:
+	if not record_tick_evidence:
+		return
 	var commands: Dictionary = main.session.commands
 	tick_records.append({
 		tick = tick,

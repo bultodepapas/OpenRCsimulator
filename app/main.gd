@@ -4,6 +4,8 @@ extends Node3D
 var external_controller_selection := false
 ## External capture owners set this before tree entry when they must finish their own artifact cleanup.
 var frametimes_auto_quit := true
+## Override the inferred frame-time route when an external owner supplies pilot commands.
+var frametimes_route: String = ""
 # The game shell: world, airplane rendering, camera, panel, keys, captures and headless traces.
 # The flight itself (aircraft data, trim, commands, simulation) lives in sim/flight_session.gd.
 
@@ -3044,7 +3046,8 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		ticks = int(sample_ticks[sample_ticks.size() - 1] - sample_ticks[0]) if sample_ticks.size() > 1 else 0,
 	}
 	var run_args: Dictionary = _user_args()
-	var route_name: String = "scripted-fixed" if _frametimes_scripted_fixed else "live-input"
+	var route_name: String = frametimes_route if not frametimes_route.is_empty() else \
+		("scripted-fixed" if _frametimes_scripted_fixed else "live-input")
 	# Endpoint evidence is read once after sampling; no new per-tick observer.
 	# Pacing alone cannot qualify a fleet whose sessions stopped or lost clock sync.
 	var companion_evidence := {enabled = companion_config.enabled, roster = []}

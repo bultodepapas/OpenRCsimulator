@@ -67,6 +67,51 @@ AVI frame counts and the manifest's expected lead/cleanup counts rather than ass
 encoded frame belongs to the requested flight interval. Unmodified AVI is the source; an optional
 MP4 review copy must retain its own identity and must not be used for source-pixel comparisons.
 
+### Real-time lighting measurements
+
+The same `capture_flight.gd` accepts `--frametimes=<new absolute JSON path>` to run a native
+director-controlled flight through Main's existing `FrameSamples` and `FrameDiagnostics` collectors.
+It uses the built-in `lighting-pass` or `lighting-pilot` shot, requires a lighting preset, and also
+accepts `--lighting-preset=off` as an explicitly disabled presentation profile. `--lighting-quality`
+selects `low`, `standard` (default), or `high` without saving user preferences. Warmup defaults to
+10 seconds and collection to 60 seconds; `--warmup` and `--t` use the existing collector bounds.
+
+Run `prepare_runtime.ps1` after changing root application files such as `main.gd`: those files
+are copies, while the runtime's directories are junctions. For reproducible comparisons, prepare
+from an isolated source snapshot and retain its identities. Use a fresh output/profile for each run:
+
+```powershell
+$RgbRun = Join-Path $PWD 'tmp/rgb-performance-festival-new'
+$env:APPDATA = Join-Path $RgbRun 'profile'
+python tools/godot/run_checked.py --label rgb-performance-festival --warnings-as-errors --timeout 180 -- .tools/Godot_v4.8-beta1_win64_console.exe --path tmp/trailer/runtime/app --audio-driver Dummy --rendering-method gl_compatibility --fullscreen --disable-vsync --max-fps 0 --script "$PWD/tools/trailer/capture_flight.gd" -- "--out-dir=$RgbRun" "--frametimes=$RgbRun/frametimes.json" --lighting-preset=festival --lighting-quality=standard --time_of_day=night --shot=lighting-pass --warmup=10 --t=60
+```
+
+This mode performs no image readback or movie encoding, and disables the director's full tick/frame
+record arrays. Main retains its normal per-frame timing, GPU and resource metrics; the harness
+samples RGB budgets at most once per wall second. These are **instrumented** measurements; retain
+the diagnostic observer cost. The frame report uses `route=director-flight`, since ordinary manual
+input is disabled while the director supplies commands. The companion manifest pins the frame
+report and Workshop physical/presentation identities. Its `seconds` includes the harness loop and
+warmup; use the frame report's `actual_sample_s` for the measurement interval. The two output paths
+must differ. `complete` records successful collection and continuous flight, not hardware acceptance.
+
+Native 1920×1080 is checked at runtime. Pauses, faults, crashes, backward ticks or more than 250 ms
+without tick progress reject the run, including during warmup. Normal repeated ticks between 240 Hz
+simulation steps are allowed at uncapped render rates. Movie Maker is rejected through
+`Engine.get_write_movie_path()`. **Also verify the checked runner's full command contains no
+`--fixed-fps`: Godot removes processed engine flags from `OS.get_cmdline_args()`, so the script
+cannot certify their absence.** [Godot OS API](https://docs.godotengine.org/en/stable/classes/class_os.html#class-os-method-get-cmdline-args),
+[Engine movie path](https://docs.godotengine.org/en/stable/classes/class_engine.html#class-engine-method-get-write-movie-path).
+
+Reduce each report with the existing [frame diagnosis tool](../../research/performance/README.md#cpu-gpu-and-memory-diagnosis),
+using its exact checked engine log path. Compare OFF, Classic and Festival with the same aircraft,
+source snapshot, camera, quality, world, resolution and command program; retain at least three
+repeats per case and alternate their order. Run without competing Godot/Blender jobs or other
+heavy workloads; discard a run if another task starts. A short smoke test, a valid reducer result,
+or one full run cannot establish tier budgets, fleet worst cases or pilot readability. The manifest
+leaves qualification explicitly unverified until the command, contention and acceptance evidence
+are reviewed. The director's common inputs/physical identity do not constitute an exact ORFL replay.
+
 `capture_formation.gd` renders 420 PNGs using the production Stik models, field, smoke and propeller
 blur. Four render actors follow authored paths. Its manifest records camera framing and separation.
 It deliberately has no simulation session and is always labeled as a cinematic formation in the edit.

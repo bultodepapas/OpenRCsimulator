@@ -1,0 +1,240 @@
+{
+  "format": "openrc-gp14-intended-hull-evidence v1",
+  "packaged_utc": "2026-10-26T14:34:37.307663+00:00",
+  "scope": "selected optional authoring and accepted flat-solid observation evidence; no stock role or new force/state",
+  "current_observer_passing_checks": 2037,
+  "loaded_source_count": 7,
+  "input_identity_mismatches_retained": 11,
+  "absent_description_byte_checks_passed": 32,
+  "unavailable_pipeline_source_snapshots": [],
+  "files": [
+    {
+      "path": "observer/receipt.json",
+      "copied_from": "tmp/gp14-hull-observer-checks/integration-receipt.json",
+      "sha256": "4b5368003f615459c5aa09624ed0965a59d80ceabbf839a9c0e464fd3d1375d2"
+    },
+    {
+      "path": "observer/receipt.md",
+      "copied_from": "tmp/gp14-hull-observer-checks/receipt.md",
+      "sha256": "10f2fefcdbdcb1d79700e3574072553b9dbc1b5426d500f49de4bf14a4a8d13c"
+    },
+    {
+      "path": "observer/checks/focused/report.json",
+      "copied_from": "tmp/gp14-hull-observer-checks/final-loaded-source/godot-rec82pvk/report.json",
+      "sha256": "e4633ebb5a8dada9a9a8f8674fa74808476a7e1f91665b0bfcaca22bb9be5844"
+    },
+    {
+      "path": "observer/checks/focused/engine.log",
+      "copied_from": "tmp/gp14-hull-observer-checks/final-loaded-source/godot-rec82pvk/engine.log",
+      "sha256": "698b068ec578520388785a82eae638bb7c6109b9718367c190ceda9f16121125"
+    },
+    {
+      "path": "observer/checks/resource_pipeline/report.json",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-resource/godot-2_cr2yqp/report.json",
+      "sha256": "2d9230820c3c0b54dfed692026a6dce1e4d35bec456cbea6310d245a231aaee4"
+    },
+    {
+      "path": "observer/checks/resource_pipeline/engine.log",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-resource/godot-2_cr2yqp/engine.log",
+      "sha256": "4942b8e7fa33f072edadd6b98a47ae780cbf7dd0b99074e54ad08cd81ecce034"
+    },
+    {
+      "path": "observer/checks/contact_contract/report.json",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-contact/godot-l3382kcl/report.json",
+      "sha256": "f3de035baf237a32c526f63546ceb937cf57a9caf7eee535432be84123121ad0"
+    },
+    {
+      "path": "observer/checks/contact_contract/engine.log",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-contact/godot-l3382kcl/engine.log",
+      "sha256": "905ea846aef507c4af5fbda04faf8ebd76ba49be6ef3b1c40a37d5e84247e421"
+    },
+    {
+      "path": "observer/checks/fleet_statistics/report.json",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-statistics/godot-levvcpkq/report.json",
+      "sha256": "12a0839a3055aafd05012a487165322e64ad7d46b808b7a3aa9c4d404051729d"
+    },
+    {
+      "path": "observer/checks/fleet_statistics/engine.log",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-statistics/godot-levvcpkq/engine.log",
+      "sha256": "f0ed75c61239086b51118f3f2751ccf0b395df2cd3653c28606ee2cab7de806b"
+    },
+    {
+      "path": "observer/checks/checkpoint_integrity/report.json",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-checkpoint/godot-2z4zipws/report.json",
+      "sha256": "a0df0ec0cc717c8a635bc157127b6abcb7f6aca2417d35777b46912bb98e0da8"
+    },
+    {
+      "path": "observer/checks/checkpoint_integrity/engine.log",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-checkpoint/godot-2z4zipws/engine.log",
+      "sha256": "31c337e2aded57641bcbe65f0a829437c00eb9592bc9d1e2c6d21ba497aa65e6"
+    },
+    {
+      "path": "observer/checks/statistics_lifecycle/report.json",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-lifecycle/godot-6cdy3eal/report.json",
+      "sha256": "89a5bd4ae0d1f22beafcc9aff83dc18c458693a2fc1a4ba40247b449f685730e"
+    },
+    {
+      "path": "observer/checks/statistics_lifecycle/engine.log",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-lifecycle/godot-6cdy3eal/engine.log",
+      "sha256": "8c9eb1845f23c89ec3c955a4a0d7e9a42a8f300db392469f1ad7b7ea0dd80668"
+    },
+    {
+      "path": "observer/checks/live_accident_sessions/report.json",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-accident-session/godot-bqlxwhfl/report.json",
+      "sha256": "c973500c264e0eacba253398ac297f925466b9d1c9b38d39dc20890b1642d58a"
+    },
+    {
+      "path": "observer/checks/live_accident_sessions/engine.log",
+      "copied_from": "tmp/gp14-hull-observer-checks/regressions-accident-session/godot-bqlxwhfl/engine.log",
+      "sha256": "0bc1858073b97d4a4e6a0c6e1c6d7fa28fe3c7ec3f17f9eaf4a51d5d38b9cc83"
+    },
+    {
+      "path": "loaded-source/app/physics/aircraft_contact_contract.gd",
+      "copied_from": "tmp/gp14-hull-observer-checks/selected-source/app/physics/aircraft_contact_contract.gd",
+      "sha256": "853dd541e179b393f36abb08501ff3431a1c6ecf35ac8eac7254325516e52b12"
+    },
+    {
+      "path": "loaded-source/app/physics/aircraft_data.gd",
+      "copied_from": "tmp/gp14-hull-observer-checks/selected-source/app/physics/aircraft_data.gd",
+      "sha256": "4f57ee94329a090933b71c218e8e6f8dd5fbce040760fd215474dd60db54ea1a"
+    },
+    {
+      "path": "loaded-source/app/physics/intended_hull_support.gd",
+      "copied_from": "tmp/gp14-hull-observer-checks/selected-source/app/physics/intended_hull_support.gd",
+      "sha256": "ae9ece8ea78f96265046f702abe2d178c28b907d79207c098e45930ad242a61f"
+    },
+    {
+      "path": "loaded-source/app/sim/flight_session.gd",
+      "copied_from": "tmp/gp14-hull-observer-checks/selected-source/app/sim/flight_session.gd",
+      "sha256": "08765ae4f72e3bab00e9dc2bc94ed315122f03ea30a6e98e903297426d398f62"
+    },
+    {
+      "path": "loaded-source/app/statistics/fixed_wing_adapter.gd",
+      "copied_from": "tmp/gp14-hull-observer-checks/selected-source/app/statistics/fixed_wing_adapter.gd",
+      "sha256": "5ea8de929aebbca752f37243b6f73e915945a1d21de584b43b35eeef165c2366"
+    },
+    {
+      "path": "loaded-source/app/statistics/profiles.gd",
+      "copied_from": "tmp/gp14-hull-observer-checks/selected-source/app/statistics/profiles.gd",
+      "sha256": "f34856af99d353154c93b893473b60b0252f6ff778db0962fe650f441be8694a"
+    },
+    {
+      "path": "loaded-source/app/tests/test_intended_hull_support_session.gd",
+      "copied_from": "tmp/gp14-hull-observer-checks/selected-source/app/tests/test_intended_hull_support_session.gd",
+      "sha256": "6086a0f37c557c2297a1e93aed05f0ccf25926d01b4930d571bff134ab5ff133"
+    },
+    {
+      "path": "original-baseline/absence-baseline.json",
+      "copied_from": "tmp/gp14-observer-drafts/absence-baseline.json",
+      "sha256": "e9ef74c0951f92b2e8130959a9a147664ffac1d082ddbba472c62296e826938c"
+    },
+    {
+      "path": "original-baseline/changed-input-run/report.json",
+      "copied_from": "tmp/gp14-hull-observer-checks/retained-original-baseline-mismatch/godot-n__8h06o/report.json",
+      "sha256": "ee59a1b24bc8f130959beb5bc9a798102b74ab66772d4cd1fda09781cd050999"
+    },
+    {
+      "path": "original-baseline/changed-input-run/engine.log",
+      "copied_from": "tmp/gp14-hull-observer-checks/retained-original-baseline-mismatch/godot-n__8h06o/engine.log",
+      "sha256": "4d39684dd124663b586b8db2db37f23236e6c48c6c351cb218fe379cee6089ec"
+    },
+    {
+      "path": "original-baseline/capture/report.json",
+      "copied_from": "tmp/gp14-hull-observer-checks/absence-baseline/godot-q_tvw4je/report.json",
+      "sha256": "515b18229409996939e6c2169f90f6787e3f5a8989f35e6902753df71a742efb"
+    },
+    {
+      "path": "original-baseline/capture/engine.log",
+      "copied_from": "tmp/gp14-hull-observer-checks/absence-baseline/godot-q_tvw4je/engine.log",
+      "sha256": "5b1b1208b04a1cd002b48f5d11585c09708ec02bddb8e909ea3667dddac58af7"
+    },
+    {
+      "path": "pipeline/receipt.md",
+      "copied_from": "tmp/gp14-hull-role-checks/pipeline-receipt.md",
+      "sha256": "15e605b35f49567bd4838072d96a9f30a7e55d314e47b8d4a4cd52698a254470"
+    },
+    {
+      "path": "pipeline/schema-v2-agreement.json",
+      "copied_from": "tmp/gp14-hull-role-checks/schema-v2-final.json",
+      "sha256": "7198b8898cc0bb22331b0df3ce049af28cf101ad28ef7cb4e3e19f70b38ef0be"
+    },
+    {
+      "path": "pipeline/initial-174/report.json",
+      "copied_from": "tmp/gp14-hull-role-checks/final-main/godot-7n14_mb4/report.json",
+      "sha256": "c8df710aa7d2cc74f7596b5c278873db382ecdc67c0e65037f4b0fa188bdc21c"
+    },
+    {
+      "path": "pipeline/initial-174/engine.log",
+      "copied_from": "tmp/gp14-hull-role-checks/final-main/godot-7n14_mb4/engine.log",
+      "sha256": "4942b8e7fa33f072edadd6b98a47ae780cbf7dd0b99074e54ad08cd81ecce034"
+    },
+    {
+      "path": "pipeline/initial-174/test_intended_hull_support.gd",
+      "copied_from": "tmp/gp14-hull-role-drafts/test_pipeline.gd",
+      "sha256": "2dcaac9e0fb60cb7ceb70a57e87be43c52fa68d33a15bb3f692386d70a450cc9"
+    },
+    {
+      "path": "pipeline/report-matched-source/app/data/schema/openrc-aircraft-v1.schema.json",
+      "copied_from": "app/data/schema/openrc-aircraft-v1.schema.json",
+      "sha256": "1eed5f0b2895de10aeaee842b7cd47c4c34a0455f0036bb763519a3c9e4a5d86"
+    },
+    {
+      "path": "pipeline/report-matched-source/app/data/schema/openrc-aircraft-v2.schema.json",
+      "copied_from": "app/data/schema/openrc-aircraft-v2.schema.json",
+      "sha256": "c340b34cf215f51713e9352cc5e29e54e3d5b01a953a56b9a0bf932f2bb6526e"
+    },
+    {
+      "path": "pipeline/report-matched-source/app/data/schema/aircraft-contract-v2.json",
+      "copied_from": "app/data/schema/aircraft-contract-v2.json",
+      "sha256": "0de90c832a3e875cd162d6f7bf38241b6f11337edb5794bf22ce3afc2fb4a737"
+    },
+    {
+      "path": "pipeline/report-matched-source/app/physics/aircraft_contract.gd",
+      "copied_from": "app/physics/aircraft_contract.gd",
+      "sha256": "54f939d65be82a992f6f745c2dced94e446fd4c59760ef2820fb73ec466ce074"
+    },
+    {
+      "path": "pipeline/report-matched-source/app/physics/aircraft_data.gd",
+      "copied_from": "app/physics/aircraft_data.gd",
+      "sha256": "4f57ee94329a090933b71c218e8e6f8dd5fbce040760fd215474dd60db54ea1a"
+    },
+    {
+      "path": "pipeline/report-matched-source/research/aircraft-data/schema/loader_probe.gd",
+      "copied_from": "research/aircraft-data/schema/loader_probe.gd",
+      "sha256": "0d634fed41ddf61a3d40f2aab43978dbbe1d8b5786821c791c8b0bad5bffdaea"
+    },
+    {
+      "path": "pipeline/report-matched-source/research/aircraft-standardization/test_schema_v2.py",
+      "copied_from": "research/aircraft-standardization/test_schema_v2.py",
+      "sha256": "fd034207388ab3c5695682a62a69c115beea2fac51fc497117d949146a50f8cd"
+    },
+    {
+      "path": "pipeline/report-matched-source/research/aircraft-standardization/fixtures/legacy-stik-v1.json",
+      "copied_from": "research/aircraft-standardization/fixtures/legacy-stik-v1.json",
+      "sha256": "fcf07a988155d937d365c65c659d8ef1d4693320f48ac7085414b87e1fdb7eb4"
+    },
+    {
+      "path": "supporting-source-at-packaging/app/data/schema/aircraft-modules-v1.json",
+      "copied_from": "app/data/schema/aircraft-modules-v1.json",
+      "sha256": "8100a8922eca754b1f5d55e48aa80f6fe3615b9b0faf476ff86e10b538f0657a"
+    },
+    {
+      "path": "supporting-source-at-packaging/research/aircraft-standardization/build_schema.py",
+      "copied_from": "research/aircraft-standardization/build_schema.py",
+      "sha256": "7488fa1215246aebba1d2b4f923424801767a58dcf6b2133498ca29b3da56544"
+    },
+    {
+      "path": "supporting-source-at-packaging/app/tests/test_intended_hull_support.gd",
+      "copied_from": "app/tests/test_intended_hull_support.gd",
+      "sha256": "7733f5270d719ef02b72ed804662ce080eb589d8eee82a87ad4daf7ddf1951d2"
+    }
+  ],
+  "notes": [
+    "Reports/logs copied verbatim; their absolute original paths are historical run identity.",
+    "Seven loaded-source files match the hashes emitted by the actual focused-test Script objects.",
+    "Supporting-source-at-packaging is separate from receipt-pinned or actual loaded sources.",
+    "The initial pipeline174 test predates observer profile eligibility and is not claimed to pass against later observer code.",
+    "Eleven stock input byte identities changed externally; original baseline retained without rewrite, no same-input baseline claim.",
+    "No native audio, rendered acceptance, hardware performance or physical calibration claim."
+  ]
+}

@@ -1,0 +1,114 @@
+{
+	"res://data/aircraft/f4u_corsair_250.json": {
+		"input_identity": "e27ba35766bad2e32f7c10b0d3e80d49331af2c557957a85959dca47ebad3d43",
+		"modes": {
+			"false": "f7e07ee795ca8188c59c2603778055d9901a14d644230b4dbb6399c04d77be11",
+			"true": "43bde10293c219aab3d60fc35f42054ff9614a1b001f33283e0eb21715f9e445"
+		}
+	},
+	"res://data/aircraft/gp_extra_300s_60.json": {
+		"input_identity": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f",
+		"modes": {
+			"false": "1315c5e7ff6c1478bff2d4bc55ba011023fd82366c1fcddead8856bbc5b98cc1",
+			"true": "ca6ca2af94e736bd5727a9f00014942d75d0690a4ad2dfe04cce680490c82f2f"
+		}
+	},
+	"res://data/aircraft/jensen_ugly_stik_60.json": {
+		"input_identity": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77",
+		"modes": {
+			"false": "e6fead62152779c7e1528b4165f969ebb52435a76215c1a807851a778933fe5b",
+			"true": "4653f28aab048057a845e9670ad04b1e37ec3f3aa52f535bf736063711121ef0"
+		}
+	},
+	"res://data/aircraft/p51d_mustang_120.json": {
+		"input_identity": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d",
+		"modes": {
+			"false": "ff28e96d30e44fdcf706a74c123a032c5be6a3869df20f2e11e57faca98f0540",
+			"true": "6cba3afb7b30a051ae1686f88ee7ebdf10f44db94e635bc63e7584e93b91dd21"
+		}
+	},
+	"res://data/aircraft/sebart_avanti_s_a200.json": {
+		"input_identity": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea",
+		"modes": {
+			"false": "f7dcfc661f1be05550f7749a9af22a176296672e21b091e5ffa7205c8685b9ce",
+			"true": "9f65b3567513907d5435846161b80001d5c315979c2fbd077542c5977337800b"
+		}
+	},
+	"res://data/aircraft/skywalker_x8.json": {
+		"input_identity": "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830",
+		"modes": {
+			"false": "12b385bfe78948f56eee0751e8c056ca7401a9585c825d2097a406914bb78fbf",
+			"true": "210378aa0adb64f0fe62701211be157f66b9c73106f10aec359a876bb92f0301"
+		}
+	},
+	"res://data/aircraft/stik_glow_55ax_2t.json": {
+		"input_identity": "742a19d5411c01f81d9fa4c5627803bfde059c3d4ed1082fe82e089dbf55397a",
+		"modes": {
+			"false": "a12085f029ea4ab1e784e638bea5abb5500a65851649b160831dbf978bf42ecc",
+			"true": "87c0f5be2768e61077b7a368efb05855fd598378d532e69b8be303b86f542e1d"
+		}
+	},
+	"res://data/aircraft/stik_glow_55ax_2t_apc_13x6.json": {
+		"input_identity": "1537bfcd00b52690c87c921eca0ad5d744b70e9225951993dfd390238f9a8c03",
+		"modes": {
+			"false": "a3af175c23e17fe4ce0f2cf13df2e61197d021c6ff89790be4e0032f4d2ae57b",
+			"true": "48f41f5864a033fc1337c210457c1d7a13d290ff0ef6dfd63b392ba3b0d06806"
+		}
+	},
+	"res://data/aircraft/stik_glow_61fx_2t.json": {
+		"input_identity": "ff43a548cbf8b080a720ab3f912bf6aef0cb9f1c52410c0b022f797294cb5be1",
+		"modes": {
+			"false": "8905770fd642380ddfaff5ee357b40b1d4d709359e2d3e8d74dc0a5d6dab8add",
+			"true": "e111ebd5c129b82833e1997148a4de37d633413b2d52ab7b92e08d04bf415363"
+		}
+	},
+	"res://data/aircraft/stik_glow_fs64v_4t.json": {
+		"input_identity": "942cca1364cacf61c9a5c0d066ef9bfc99dc9be9c86b0c30cefec19eb3c9c182",
+		"modes": {
+			"false": "79cee609c2c1342748088f1dd040b1d673e6d2cfb3c233130a7ea4819a90bd54",
+			"true": "59e1aad4b7d85dd049bfd8eaefa7e1ac60e4cb092beade67d2324f903a49e959"
+		}
+	},
+	"res://data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": {
+		"input_identity": "bd2b66db059c19b07446e57bd11b94bca44f301059b8ac4228a9ab7ab462e232",
+		"modes": {
+			"false": "8560a67bc100a7a93553bcef1636d6f8e2ab7eac9fe0dab6d01fa5073e9d0e4e",
+			"true": "66b8aa0f09412c21b00897f03df1156f63ed1bc4904bee43ccacc0901163ccb0"
+		}
+	},
+	"res://data/aircraft/synthetic_stik_electric_4s.json": {
+		"input_identity": "87a182fb8aa68a15d07dd0b20785e8d9ff21f0f30813a17b57533cf53ae24b01",
+		"modes": {
+			"false": "f8fe2d1c78032048b98fb0d366e92c5893f428732153048fcf76d40a9804426a",
+			"true": "30a32618b20ee5174d2b62514e00f8053b9d7a7cd14620124dc269cf95e2313b"
+		}
+	},
+	"res://data/aircraft/synthetic_stik_electric_4s_battery.json": {
+		"input_identity": "d6efdbba275c3a04755d591ce37ae11a3d1e461fe31de4927fb105cab8f9a0a1",
+		"modes": {
+			"false": "5a47346468f34048af0b289b9cf0ee288bb1d4ba6efc6b3933b7c604492d709b",
+			"true": "7a8b4a8830c6baf77c457cf069382814cd8d8859b109dec9b2df45d9c46d6742"
+		}
+	},
+	"res://data/aircraft/synthetic_stik_electric_6s.json": {
+		"input_identity": "4683006bbebeacb1977bff8ac3448ef0b1af995db567df147c9606004785c858",
+		"modes": {
+			"false": "801d50121d31fadad2290764d82f51f52ce230088a7f7f4209b45500c9201c13",
+			"true": "f897ab1ac3e57af6f759730b07f3dc2207a10267f67bcf0b115e316e8476e608"
+		}
+	},
+	"res://data/aircraft/synthetic_stik_electric_6s_battery.json": {
+		"input_identity": "0ceb94706dff1414f75bddb58ead3e361c9d316314b699751b93f3b9a8cdb635",
+		"modes": {
+			"false": "8769d0349dd982ed20ca5bfacdc4c33408b339caff225230861fcf7f31691a73",
+			"true": "6a50dff873d38ebe70d8a0f1cc8caefb079323091f5988caf0f1a0326e132cfa"
+		}
+	},
+	"res://data/aircraft/turbo_lumber_evolution.json": {
+		"input_identity": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf",
+		"modes": {
+			"false": "10fdc988f2f86003cb88f5a142fe566f31e73c2e76b263c7176370d99b65e2fb",
+			"true": "26709e86ff105678df2a883e48970cea2d43ca86fff98a1474e32b3da4a66759"
+		}
+	}
+}
