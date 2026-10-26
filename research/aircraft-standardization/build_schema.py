@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import math
 from pathlib import Path
 
 
@@ -172,6 +173,8 @@ def add_ground_profile(schema: dict):
     support = obj({"contact_id": identifier, "support_type": {"const": "wheel"},
                    "hub_le": quantity("m", vector), "axle_le": quantity("1", vector),
                    "width_model": {"const": "zero_width"}, "normal_profile_id": identifier})
+    support["properties"].update({"steering_profile_id": identifier, "steering_axis_le": quantity("1", vector)})
+    support["dependentRequired"] = {"steering_profile_id": ["steering_axis_le"], "steering_axis_le": ["steering_profile_id"]}
     legacy = obj({"format": {"const": "openrc-aircraft-ground v1"}, "law": {"const": "legacy_wheels_v1"}})
     coupled = obj({
         "format": {"const": "openrc-aircraft-ground v1"}, "law": {"const": "coupled_thin_ring_compliance_v1"},
@@ -196,6 +199,17 @@ def add_ground_profile(schema: dict):
             "transverse_inertia": quantity("kg·m2", {"type": "number", "minimum": 1e-15, "maximum": 1e6}),
         })},
     })
+    # Per-field authoring constraints. The response invariant and resource/ID
+    # references are checked by AircraftGroundProfile/ControlActuators at load.
+    steering = {"format": {"const": "openrc-prescribed-angle-actuator v1"}, "id": identifier}
+    for name, (unit, low, high) in {
+        "angle_limit": ("rad", 1e-9, math.pi), "signed_full_scale_angle": ("rad", -math.pi, math.pi),
+        "lag_time": ("s", 1e-6, 1e6), "max_rate": ("rad/s", 1e-9, 1e12),
+        "max_acceleration": ("rad/s^2", 1e-9, 1e15),
+    }.items():
+        steering[name] = quantity(unit, {"type": "number", "minimum": low, "maximum": high})
+    coupled["properties"]["steering_profiles"] = {"type": "array", "minItems": 1, "maxItems": 16,
+                                                "items": obj({"id": identifier, "parameters": obj(steering)})}
     schema["properties"]["ground"] = {"oneOf": [legacy, coupled]}
     schema.setdefault("allOf", []).append({
         "if": {"required": ["ground"], "properties": {"ground": {"required": ["law"], "properties": {"law": {"const": "coupled_thin_ring_compliance_v1"}}}}},

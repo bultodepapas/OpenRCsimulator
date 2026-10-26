@@ -9,6 +9,7 @@ const WheelGeometry := preload("res://physics/wheel_geometry.gd")
 const M := preload("res://physics/math3d.gd")
 const RotorSystem := preload("res://physics/rotor_coupling.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const Actuators := preload("res://physics/control_actuators.gd")
 const FORMAT := "openrc-aircraft-ground v1"
 const LEGACY_LAW := "legacy_wheels_v1"
 const COUPLED_LAW := "coupled_thin_ring_compliance_v1"
@@ -36,6 +37,7 @@ static func resolve(raw: Dictionary, model: Dictionary) -> Dictionary:
 	var required := ["format", "law", "capabilities", "wheel_profile_ref", "normal_profiles", "supports"]
 	var allowed := required.duplicate()
 	allowed.append("rotor_partition")
+	allowed.append("steering_profiles")
 	if not raw.has_all(required): errors.append("ground: missing required fields")
 	for key: Variant in raw:
 		if key not in allowed: errors.append("ground: unsupported field " + str(key))
@@ -88,6 +90,10 @@ static func resolve(raw: Dictionary, model: Dictionary) -> Dictionary:
 			errors.append_array(prepared.errors)
 		else:
 			normals[id_value] = prepared
+	var steering := {}
+	if raw.has("steering_profiles"):
+		steering = _steering_profiles(raw.steering_profiles, errors)
+	var used_steering := {}
 	var normalized: Array[Dictionary] = []
 	var support_order: Array[String] = []
 	var seen := {}
@@ -98,7 +104,10 @@ static func resolve(raw: Dictionary, model: Dictionary) -> Dictionary:
 		if typeof(value) != TYPE_DICTIONARY:
 			errors.append("ground.supports: each support must be an object")
 			continue
-		_check_keys(value, ["contact_id", "support_type", "hub_le", "axle_le", "width_model", "normal_profile_id"], "ground.supports", errors)
+		var support_keys := ["contact_id", "support_type", "hub_le", "axle_le", "width_model", "normal_profile_id"]
+		if value.has("steering_profile_id") or value.has("steering_axis_le"):
+			support_keys.append_array(["steering_profile_id", "steering_axis_le"])
+		_check_keys(value, support_keys, "ground.supports", errors)
 		var id_value: Variant = value.get("contact_id")
 		if typeof(id_value) != TYPE_STRING or not by_id.has(id_value) or seen.has(id_value):
 			errors.append("ground.supports: missing/duplicate/unknown contact ID")
@@ -119,6 +128,21 @@ static func resolve(raw: Dictionary, model: Dictionary) -> Dictionary:
 			errors.append("ground.supports.%s: normal profile reference is unknown" % id_value)
 			continue
 		used_normals[normal_id] = true
+		var linkage := {}
+		if value.has("steering_profile_id") or value.has("steering_axis_le"):
+			var steering_id: Variant = value.get("steering_profile_id")
+			var hinge := _vector_quantity(value.get("steering_axis_le"), "1", "ground steering hinge", errors)
+			if typeof(steering_id) != TYPE_STRING or not steering.has(steering_id):
+				errors.append("ground.supports.%s: steering profile reference is unknown" % id_value)
+			elif hinge.size() == 3:
+				var length := M.norm(hinge)
+				if not is_finite(length) or absf(length - 1.0) > 0.000001:
+					errors.append("ground.supports.%s: steering hinge must be a unit direction" % id_value)
+				else:
+					hinge = M.scale(hinge, 1.0 / length)
+					linkage = {steering_profile_id = steering_id, steering = steering[steering_id],
+						steering_axis_body = PackedFloat64Array([-hinge[0], hinge[1], -hinge[2]])}
+					used_steering[steering_id] = true
 		if hub.size() != 3 or axle.size() != 3: continue
 		var body := PackedFloat64Array([cg[0] - hub[0], hub[1] - cg[1], cg[2] - hub[2]])
 		for coordinate: float in body:
@@ -129,8 +153,11 @@ static func resolve(raw: Dictionary, model: Dictionary) -> Dictionary:
 			legacy_name = str(contacts[by_id[id_value]].get("name", "")), support_type = "wheel",
 			hub_body = body, axle_body = PackedFloat64Array([-axle[0], axle[1], -axle[2]]),
 			width_model = "zero_width", normal_profile_id = normal_id, normal = normals[normal_id]})
+		if not linkage.is_empty(): normalized.back().merge(linkage)
 	for id: String in normals:
 		if not used_normals.has(id): errors.append("ground.normal_profiles.%s is unused" % id)
+	for id: String in steering:
+		if not used_steering.has(id): errors.append("ground.steering_profiles.%s is unused" % id)
 	if seen.size() != contacts.size(): errors.append("ground.supports: installed contacts are unbound")
 	if not errors.is_empty(): return _errors(errors)
 	var partition := {}
@@ -145,11 +172,42 @@ static func resolve(raw: Dictionary, model: Dictionary) -> Dictionary:
 		status = "authoring_valid_launch_unavailable", identity = identity,
 		wheel_profile_identity = applied.identity.duplicate(true), normal_profiles = normals,
 		support_order = support_order, supports = normalized}
+	if raw.has("steering_profiles"): profile.steering_profiles = steering
 	if not partition.is_empty():
 		profile.rotor_system = partition.system
 		profile.rotor_order = partition.rotor_order
 		profile.rotor_partition = partition.raw
 	return {ok = true, errors = errors, model = selected_model, profile = profile, launch_available = false}
+
+
+## Optional fixed-hub linkage resources. Actual rudder-servo output is the only
+## normalized input to this v1 linkage; signed_full_scale_angle owns linkage sign
+## and throw. No rate/acceleration or steering axes are inferred from legacy gear.
+static func _steering_profiles(value: Variant, errors: PackedStringArray) -> Dictionary:
+	var result := {}
+	if typeof(value) != TYPE_ARRAY or value.is_empty() or value.size() > MAX_SUPPORTS:
+		errors.append("ground.steering_profiles must contain 1..%d resource records" % MAX_SUPPORTS)
+		return result
+	for record: Variant in value:
+		if typeof(record) != TYPE_DICTIONARY:
+			errors.append("ground.steering_profiles: each resource must be an object")
+			continue
+		_check_keys(record, ["id", "parameters"], "ground.steering_profiles", errors)
+		var id_value: Variant = record.get("id")
+		if typeof(id_value) != TYPE_STRING or not _identifier(id_value) or result.has(id_value):
+			errors.append("ground.steering_profiles: invalid or duplicate resource ID")
+			continue
+		if typeof(record.get("parameters")) != TYPE_DICTIONARY:
+			errors.append("ground.steering_profiles: parameters must be an object")
+			continue
+		var prepared := Actuators.prepare_prescribed_angle(record.parameters)
+		if not prepared.ok:
+			errors.append_array(prepared.errors)
+		elif record.parameters.id != id_value:
+			errors.append("ground.steering_profiles: resource ID must match actuator ID")
+		else:
+			result[id_value] = prepared
+	return result
 
 
 ## The coarse existing inventory cannot resolve individual wheel/gear tensor

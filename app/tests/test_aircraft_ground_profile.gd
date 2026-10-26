@@ -2,6 +2,7 @@ extends SceneTree
 
 const Data := preload("res://physics/aircraft_data.gd")
 const Profile := preload("res://physics/aircraft_ground_profile.gd")
+const Actuators := preload("res://physics/control_actuators.gd")
 const Wheels := preload("res://physics/wheel_profiles.gd")
 const Compliance := preload("res://physics/normal_compliance.gd")
 const Contract := preload("res://physics/aircraft_contract.gd")
@@ -35,6 +36,7 @@ func _initialize() -> void:
 	_test_rejections()
 	_test_classifier_and_launch_boundary()
 	_test_rotor_partition()
+	_test_steering()
 	print("Aircraft ground profile: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
 
@@ -221,6 +223,88 @@ func _reject(label: String, mutate: Callable) -> void:
 	mutate.call(raw)
 	var result := Profile.resolve(raw, _model)
 	_check(label, not result.ok and result.model.is_empty() and not result.launch_available, str(result.get("errors", [])))
+
+
+func _steering_fixture() -> Dictionary:
+	var ground := _ground.duplicate(true)
+	var parameters := {format = Actuators.PRESCRIBED_ANGLE_FORMAT, id = "nose_linkage"}
+	var values := {angle_limit = 0.5, signed_full_scale_angle = -0.4, lag_time = 0.25,
+		max_rate = 4.0, max_acceleration = 32.0}
+	for key: String in values: parameters[key] = _q(values[key], Actuators.PRESCRIBED_ANGLE_SPECS[key][0])
+	ground.steering_profiles = [{id = "nose_linkage", parameters = parameters}]
+	ground.supports[0].steering_profile_id = "nose_linkage"
+	ground.supports[0].steering_axis_le = _q([0.0, 0.6, 0.8], "1")
+	return ground
+
+
+func _test_steering() -> void:
+	var ground := _steering_fixture()
+	var before := var_to_bytes([ground, _model])
+	var resolved := Profile.resolve(ground, _model)
+	_check("explicit prescribed linkage resolves but does not authorize launch", resolved.ok and not resolved.launch_available, str(resolved.errors))
+	if not resolved.ok: return
+	var support: Dictionary = resolved.profile.supports[0]
+	_check("steering axis converts once without translating hinge from hub", support.steering_axis_body == PackedFloat64Array([-0.0, 0.6, -0.8])
+		and support.hub_body == Profile.resolve(_ground, _model).profile.supports[0].hub_body)
+	_check("signed linkage and compiled response retain their sole owner", support.steering.identity == resolved.profile.steering_profiles.nose_linkage.identity
+		and support.steering.values.signed_full_scale_angle == -0.4)
+	_check("unsteered supports get no invented motion parameters", not resolved.profile.supports[1].has("steering")
+		and not Profile.resolve(_ground, _model).profile.has("steering_profiles"))
+	var response := Actuators.prescribed_angle_response(support.steering, PackedFloat64Array([0.1, 0.2]), 0.7)
+	var motion := Actuators.fixed_axis_motion(support.axle_body, support.steering_axis_body, 0.1, 0.2, response.acceleration_radps2)
+	_check("authored linkage directly supplies carrier kinematics", response.ok and motion.ok)
+	_check("authoring does not mutate source or legacy hardware", before == var_to_bytes([ground, _model])
+		and var_to_bytes(resolved.model) == var_to_bytes(Profile.resolve(_ground, _model).model))
+	_check("steering resources affect ground identity", resolved.profile.identity != Profile.resolve(_ground, _model).profile.identity)
+	var authored := _raw.duplicate(true)
+	authored.ground = ground
+	_check("steering passes closed runtime structural contract", Contract.validate(authored).is_empty(), str(Contract.validate(authored)))
+	var changed := ground.duplicate(true)
+	changed.supports.reverse()
+	var reverse := Profile.resolve(changed, _model)
+	_check("support reordering preserves linkage by contact ID", reverse.ok and reverse.profile.supports.back().steering.identity == support.steering.identity
+		and reverse.profile.supports.back().contact_id == ground.supports[0].contact_id)
+	changed = ground.duplicate(true)
+	changed.supports[1].steering_profile_id = "nose_linkage"
+	changed.supports[1].steering_axis_le = _q([0.0, 0.0, 1.0], "1")
+	_check("multiple supports may share a resource with distinct installed axes", Profile.resolve(changed, _model).ok)
+	var mutations := [
+		func(g: Dictionary) -> void: g.steering_profiles = [],
+		func(g: Dictionary) -> void: g.steering_profiles = {},
+		func(g: Dictionary) -> void: g.steering_profiles[0] = 1,
+		func(g: Dictionary) -> void: g.steering_profiles.append(g.steering_profiles[0].duplicate(true)),
+		func(g: Dictionary) -> void: g.steering_profiles[0].id = "other_resource",
+		func(g: Dictionary) -> void: g.steering_profiles[0].parameters.id = "other_resource",
+		func(g: Dictionary) -> void: g.steering_profiles[0].parameters = [],
+		func(g: Dictionary) -> void: g.steering_profiles[0].parameters.max_rate.value = 3.0,
+		func(g: Dictionary) -> void: g.steering_profiles[0].parameters.max_acceleration.value = 31.0,
+		func(g: Dictionary) -> void: g.steering_profiles[0].parameters.signed_full_scale_angle.value = 0.6,
+		func(g: Dictionary) -> void: g.steering_profiles[0].parameters.lag_time.value = NAN,
+		func(g: Dictionary) -> void: g.steering_profiles[0].parameters.lag_time.unit = "rad",
+		func(g: Dictionary) -> void: g.steering_profiles[0].parameters.lag_time.source = "",
+		func(g: Dictionary) -> void: g.steering_profiles[0].parameters.unknown = 1,
+		func(g: Dictionary) -> void: g.supports[0].erase("steering_axis_le"),
+		func(g: Dictionary) -> void: g.supports[0].erase("steering_profile_id"),
+		func(g: Dictionary) -> void: g.supports[0].steering_profile_id = "unknown_linkage",
+		func(g: Dictionary) -> void: g.supports[0].steering_axis_le.value = [0, 0, 0],
+		func(g: Dictionary) -> void: g.supports[0].steering_axis_le.value = [0, 2, 0],
+		func(g: Dictionary) -> void: g.supports[0].steering_axis_le.value = [0, NAN, 0],
+		func(g: Dictionary) -> void: g.supports[0].steering_axis_le.unit = "m",
+		func(g: Dictionary) -> void: g.supports[0].steering_axis_le.source = " ",
+		func(g: Dictionary) -> void:
+			g.supports[0].erase("steering_profile_id")
+			g.supports[0].erase("steering_axis_le"),
+	]
+	for index in mutations.size():
+		changed = ground.duplicate(true)
+		mutations[index].call(changed)
+		_check("invalid/partial/unbound steering rejects %d" % index, not Profile.resolve(changed, _model).ok)
+	resolved.profile.steering_profiles.nose_linkage.values.lag_time = 999.0
+	support.steering_axis_body[2] = 1.0
+	_check("linkage output detaches from authored data and future resolution", before == var_to_bytes([ground, _model])
+		and Profile.resolve(ground, _model).profile.steering_profiles.nose_linkage.values.lag_time == 0.25)
+	if OS.get_cmdline_user_args().has("--emit-steering-fixture"):
+		print("GROUND_STEERING_FIXTURE=" + JSON.stringify(authored))
 
 
 func _test_rejections() -> void:

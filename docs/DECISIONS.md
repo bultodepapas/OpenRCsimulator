@@ -1061,3 +1061,7 @@ Use cumulative host-local distance for creator strip patterns while retaining fi
 ### 2026-10-25 — Report the lighting that the preview can actually provide (FW-RGB-12)
 
 Derive Workshop support feedback from live rig bindings and effect anchors. Keep availability separate from enabled settings, temporary visibility and flight validation. Report missing equipment without rewriting or disabling saved choices; preserve pending edits and make Original comparison explicit. Reuse the existing preview lifecycle instead of adding a second aircraft-capability registry. [Operating contract](AIRCRAFT-LIGHTING.md#programmable-rgb-builds-fw-rgb), [focused and native evidence](research/night-flight-lighting/implementation.md#fw-rgb-12-aircraft-support-feedback).
+
+### 2026-10-25 — Filter unresolved LED segments in each camera's shader footprint (FW-RGB-13)
+
+Integrate linear-light palette coverage from continuous path derivatives, preserving resolved interiors and incomplete palette-cycle weights. Saturate footprints beyond a complete path to its periodic mean. Reuse existing strip geometry and phase ownership without a CPU camera-distance threshold or new profile field. Keep spatial fixture evidence separate from temporal/upscaler, inset and whole-scene performance acceptance. [Three-renderer 1080p evidence and limitations](research/night-flight-lighting/implementation.md#fw-rgb-13-segmented-strip-filtering).

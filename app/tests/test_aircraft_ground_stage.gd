@@ -2,6 +2,7 @@
 ## records. No generated data changes, aircraft calibration or launch claim.
 extends SceneTree
 const Stage := preload("res://physics/aircraft_ground_stage.gd")
+const Actuators := preload("res://physics/control_actuators.gd")
 const Data := preload("res://physics/aircraft_data.gd")
 const Profile := preload("res://physics/aircraft_ground_profile.gd")
 const Wheels := preload("res://physics/wheel_profiles.gd")
@@ -22,6 +23,7 @@ var prepared: Dictionary
 var provider: Dictionary
 var motion: Array
 var live: Dictionary
+var authored_profile: Dictionary
 
 func check(label: String, ok: bool, detail := "") -> void:
 	checks += 1
@@ -35,6 +37,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 	_bindings()
+	_steering()
 	_composition()
 	_holds_and_airborne()
 	_refusals()
@@ -74,6 +77,7 @@ func _fixture() -> void:
 		normal_profiles = [{id = "synthetic_normal", parameters = parameters}], supports = supports,
 		rotor_partition = {format = Profile.PARTITION_FORMAT, partition_id = "test_stage_aggregate", reference_pose_id = "test_fixed_hubs",
 			kind = "estimated", source = "Explicit test-only aggregate; not a physical ownership/calibration claim", center_model = "fixed_hubs", rotors = records}}
+	authored_profile = authored.duplicate(true)
 	var resolved := Profile.resolve(authored, derived.model)
 	check("closed P51 authoring profile resolves without launch admission", resolved.ok and not resolved.launch_available, str(resolved.get("errors", [])))
 	if not resolved.ok: return
@@ -131,6 +135,82 @@ func _bindings() -> void:
 	again.rotor_system.axial[0] = 999.0
 	again.normal.supports[0].hub_body[0] = 999.0
 	check("prepared outputs cannot mutate source records", before == var_to_bytes([profile, model]))
+
+func _steering() -> void:
+	var neutral := Stage.motion(prepared, PackedFloat64Array(), 0.8)
+	check("no authored steering preserves fixed motion rows", neutral.ok and var_to_bytes(neutral.rows) == var_to_bytes(motion)
+		and neutral.derivative.is_empty() and prepared.steering_state_size == 0)
+	check("fixed motion accepts no invented state", not Stage.motion_state_valid(prepared, PackedFloat64Array([0.0, 0.0])))
+	check("fixed motion has no extra substep demand", Stage.motion_substeps(prepared, 1.0 / 120.0).substeps == 1)
+	var authored := authored_profile.duplicate(true)
+	var parameters := {format = Actuators.PRESCRIBED_ANGLE_FORMAT, id = "test_linkage"}
+	var values := {angle_limit = 0.5, signed_full_scale_angle = -0.4, lag_time = 0.2, max_rate = 5.0, max_acceleration = 51.0}
+	for key: String in values: parameters[key] = _q(values[key], Actuators.PRESCRIBED_ANGLE_SPECS[key][0])
+	authored.steering_profiles = [{id = "test_linkage", parameters = parameters}]
+	for index in [0, 2]:
+		authored.supports[index].steering_profile_id = "test_linkage"
+		authored.supports[index].steering_axis_le = _q([0.0, 0.6, 0.8], "1")
+	authored.supports.reverse()
+	var resolved := Profile.resolve(authored, model)
+	check("authored two-contact linkage resolves", resolved.ok, str(resolved))
+	if not resolved.ok: return
+	var steered := Stage.prepare(resolved.profile, resolved.model)
+	check("stage compiles explicit steering bindings", steered.ok, str(steered))
+	if not steered.ok: return
+	check("shared resource has distinct continuous contact states in hardware order", steered.steering_state_size == 4
+		and steered.steering_bindings[0].contact_index == 0 and steered.steering_bindings[0].state_index == 0
+		and steered.steering_bindings[1].contact_index == 2 and steered.steering_bindings[1].state_index == 2)
+	var state := PackedFloat64Array([0.15, 0.3, -0.1, -0.2])
+	var before := var_to_bytes([steered, state, resolved])
+	var result := Stage.motion(steered, state, 0.6)
+	check("bounded steering state supplies stage motion", result.ok and Stage.motion_state_valid(steered, state), str(result))
+	if not result.ok: return
+	check("motion leaves caller and accepted state detached", before == var_to_bytes([steered, state, resolved]))
+	check("unsteered contact remains byte-identical", var_to_bytes(result.rows[1]) == var_to_bytes(motion[1]))
+	check("shared linkage state slots remain distinct", result.rows[0].axle_body != result.rows[2].axle_body)
+	for index in 2:
+		var wheel := 0 if index == 0 else 2
+		var offset := 2 * index
+		var hinge := M.v3(0.0, 0.6, -0.8)
+		var response := Actuators.prescribed_angle_response(steered.steering_bindings[index].steering, state.slice(offset, offset + 2), 0.6)
+		var expected_axis := M.q_rotate(M.q_from_axis_angle(hinge, state[offset]), motion[wheel].axle_body)
+		check("wheel axis agrees with independent quaternion rotation", _near(result.rows[wheel].axle_body, expected_axis))
+		check("carrier angular speed and acceleration retain full hinge vector", _near(result.rows[wheel].carrier_rate_body, M.scale(hinge, state[offset + 1]))
+			and _near(result.rows[wheel].carrier_accel_body, M.scale(hinge, response.acceleration_radps2)))
+		check("continuous derivative preserves angle and rate state ownership", result.derivative.slice(offset, offset + 2) == response.derivative)
+	var body := _body()
+	var evaluated := Stage.evaluate(steered, body, PackedFloat64Array([1.0, 2.0, 0.5]), 1400.0, result.rows,
+		provider, 0.7, live, 9.81, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), M.v3(0.0, 0.0, 0.0), 0.0)
+	check("authored steering reaches common shaft/wheel normal stage", evaluated.ok, str(evaluated))
+	if evaluated.ok:
+		check("common stage sees full prescribed carrier velocity", _near(evaluated.rotor.stage.carrier_rates.slice(3, 6), result.rows[0].carrier_rate_body))
+	var admission := Stage.motion_substeps(steered, 0.41, 16)
+	check("steering admission composes minimum count without weakening lag", admission.ok and admission.substeps == 3
+		and admission.scope == "steering_invariant_only")
+	check("unaffordable steering envelope rejects", not Stage.motion_substeps(steered, 4.0, 16).ok)
+	check("zero time rejects", not Stage.motion_substeps(steered, 0.0).ok)
+	check("invalid actual servo rejects", not Stage.motion(steered, state, NAN).ok and not Stage.motion(steered, state, 1.01).ok)
+	check("invalid latent travel rejects before stage", not Stage.motion(steered, PackedFloat64Array([0.4, 1.0, 0.0, 0.0]), 0.0).ok)
+	for kind: String in ["axis", "missing_binding", "stale_value", "stale_resource", "unused_resource"]:
+		var changed: Dictionary = resolved.profile.duplicate(true)
+		match kind:
+			"axis": changed.supports[0].steering_axis_body = M.v3(0.0, 0.0, 0.0)
+			"missing_binding": changed.supports[0].erase("steering_profile_id")
+			"stale_value": changed.supports[0].steering.values.lag_time = 0.3
+			"stale_resource": changed.steering_profiles.test_linkage.identity = "stale"
+			"unused_resource": changed.steering_profiles.other = changed.steering_profiles.test_linkage.duplicate(true)
+		check("unbound/stale steering rejects at prepare: " + kind, not Stage.prepare(changed, resolved.model).ok)
+	for kind: String in ["state_size", "slot", "contact", "axis"]:
+		var changed := steered.duplicate(true)
+		match kind:
+			"state_size": changed.steering_state_size = 2
+			"slot": changed.steering_bindings[1].state_index = 0
+			"contact": changed.steering_bindings[1].contact_index = 0
+			"axis": changed.steering_bindings[0].axis_body = M.v3(0.0, 0.0, 0.0)
+		check("mutated steering layout refuses state and stage: " + kind, not Stage.motion_state_valid(changed, state) and not Stage.motion(changed, state, 0.0).ok)
+	result.rows[0].hub_body[0] += 10.0
+	check("returned motion cannot alias prepared geometry", before == var_to_bytes([steered, state, resolved]))
+
 
 func _composition() -> void:
 	var rows := motion.duplicate(true)

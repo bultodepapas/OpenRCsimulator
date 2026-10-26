@@ -1643,7 +1643,9 @@ func _update_weather_text() -> void:
 	if spatial:
 		var profile: Dictionary = weather_config.spatial_wind.profile
 		weather_brief = tr("Spatial wind") + " · %.1f m/s" % float(profile.reference_speed_mps)
-		parts.append(WeatherSettings.summary(weather_config))
+		parts.append(tr("Reference: %.1f m/s FROM %03.0f° at %.0f m AGL") % [
+			float(profile.reference_speed_mps), float(profile.reference_from_deg), float(profile.reference_height_agl_m),
+		])
 	weather_button.text = "%s\n%s" % [tr("Conditions"), weather_brief]
 	var time_brief := tr("Evening") if time_of_day == "evening" else tr(Conditions.HOME_LABELS[time_of_day])
 	if compact and time_of_day == "night": time_brief = tr("Full moon")

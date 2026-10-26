@@ -1164,7 +1164,8 @@
         "wheel_profile_ref",
         "normal_profiles",
         "supports",
-        "rotor_partition"
+        "rotor_partition",
+        "steering_profiles"
       ],
       "when": {
         "path": "/ground/law",
@@ -1251,7 +1252,9 @@
         "hub_le",
         "axle_le",
         "width_model",
-        "normal_profile_id"
+        "normal_profile_id",
+        "steering_profile_id",
+        "steering_axis_le"
       ]
     },
     {
@@ -1284,6 +1287,38 @@
       "allowed": [
         "rotor_id",
         "transverse_inertia"
+      ]
+    },
+    {
+      "path": "/ground/steering_profiles/*",
+      "required": [
+        "id",
+        "parameters"
+      ],
+      "allowed": [
+        "id",
+        "parameters"
+      ]
+    },
+    {
+      "path": "/ground/steering_profiles/*/parameters",
+      "required": [
+        "format",
+        "id",
+        "angle_limit",
+        "signed_full_scale_angle",
+        "lag_time",
+        "max_rate",
+        "max_acceleration"
+      ],
+      "allowed": [
+        "format",
+        "id",
+        "angle_limit",
+        "signed_full_scale_angle",
+        "lag_time",
+        "max_rate",
+        "max_acceleration"
       ]
     }
   ],
@@ -1358,7 +1393,13 @@
     "/ground/normal_profiles/*/parameters/stop_damping",
     "/ground/supports/*/hub_le",
     "/ground/supports/*/axle_le",
-    "/ground/rotor_partition/rotors/*/transverse_inertia"
+    "/ground/rotor_partition/rotors/*/transverse_inertia",
+    "/ground/steering_profiles/*/parameters/angle_limit",
+    "/ground/steering_profiles/*/parameters/signed_full_scale_angle",
+    "/ground/steering_profiles/*/parameters/lag_time",
+    "/ground/steering_profiles/*/parameters/max_rate",
+    "/ground/steering_profiles/*/parameters/max_acceleration",
+    "/ground/supports/*/steering_axis_le"
   ],
   "array_rules": [
     {
@@ -1399,6 +1440,10 @@
     },
     {
       "path": "/ground/rotor_partition/rotors",
+      "min_items": 1
+    },
+    {
+      "path": "/ground/steering_profiles",
       "min_items": 1
     }
   ],
@@ -1557,6 +1602,18 @@
     },
     {
       "path": "/ground/rotor_partition/rotors/*/rotor_id",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/steering_profiles/*/id",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/steering_profiles/*/parameters/id",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/supports/*/steering_profile_id",
       "nonempty": true
     }
   ],
@@ -1805,6 +1862,10 @@
     {
       "path": "/ground/rotor_partition/center_model",
       "value": "fixed_hubs"
+    },
+    {
+      "path": "/ground/steering_profiles/*/parameters/format",
+      "value": "openrc-prescribed-angle-actuator v1"
     }
   ]
 }

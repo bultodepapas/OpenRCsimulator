@@ -10,6 +10,7 @@ const Datum := preload("res://physics/fixed_datum_body.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const M := preload("res://physics/math3d.gd")
 const Inventory := preload("res://physics/mass_inventory.gd")
+const Actuators := preload("res://physics/control_actuators.gd")
 const LAW := "fixed-hub-normal-common-wheel-shaft-stage-v1"
 
 
@@ -32,10 +33,112 @@ static func prepare(profile: Dictionary, model: Dictionary) -> Dictionary:
 		return _failure("compiled rotor partition differs from its source/model binding", "stale_partition")
 	var radii := PackedFloat64Array()
 	for support: Dictionary in normal.supports: radii.append(support.radius_m)
+	var steering := _prepare_steering(profile, normal.supports)
+	if not steering.ok: return steering
 	return {ok = true, law = LAW, launch_available = false,
 		identity = (LAW + ":" + normal.identity + ":" + rebound.system.identity).sha256_text(),
 		profile_identity = str(profile.identity), normal = normal, rotor_system = rebound.system,
-		rotor_order = rebound.rotor_order.duplicate(), radii_m = radii}
+		rotor_order = rebound.rotor_order.duplicate(), radii_m = radii,
+		steering_bindings = steering.bindings, steering_state_size = 2 * steering.bindings.size()}
+
+
+## State slots are installed contacts in HARDWARE order, not resource order.
+## Sharing response parameters does not share a mechanical angle/rate state.
+## A linkage rotates about its fixed hub. Other kinematic laws still pass their
+## explicit motion rows to evaluate(); they are not inferred by this adapter.
+static func _prepare_steering(profile: Dictionary, supports: Array) -> Dictionary:
+	var by_id := {}
+	for support: Dictionary in profile.supports: by_id[support.contact_id] = support
+	var bindings: Array = []
+	var used := {}
+	for support: Dictionary in supports:
+		var authored: Dictionary = by_id[support.contact_id]
+		if not authored.has("steering") and not authored.has("steering_axis_body") and not authored.has("steering_profile_id"):
+			continue
+		var id: Variant = authored.get("steering_profile_id")
+		var resources: Variant = profile.get("steering_profiles")
+		var installed: Variant = authored.get("steering")
+		if typeof(id) != TYPE_STRING or not resources is Dictionary or not resources.get(id) is Dictionary \
+			or not installed is Dictionary or not installed.get("provenance") is Dictionary \
+			or not _finite_shape(authored.get("steering_axis_body"), 3) \
+			or absf(M.norm(authored.steering_axis_body) - 1.0) > 1e-6:
+			return _failure("incomplete authored steering binding", "invalid_steering")
+		var compiled := Actuators.prepare_prescribed_angle(installed.provenance)
+		if not compiled.ok or installed.provenance.get("id") != id \
+			or var_to_bytes(compiled) != var_to_bytes(installed) or var_to_bytes(compiled) != var_to_bytes(resources[id]):
+			return _failure("steering differs from its authored response resource", "stale_steering")
+		used[id] = true
+		bindings.append({contact_id = support.contact_id, contact_index = int(support.contact_index),
+			state_index = 2 * bindings.size(), steering = compiled,
+			axis_body = authored.steering_axis_body.duplicate()})
+	if profile.has("steering_profiles"):
+		if not profile.steering_profiles is Dictionary or profile.steering_profiles.size() != used.size():
+			return _failure("unused or missing steering resources", "invalid_steering")
+	return {ok = true, bindings = bindings}
+
+
+static func motion_state_valid(prepared: Dictionary, state: PackedFloat64Array) -> bool:
+	if not _motion_shape(prepared) or not _finite_shape(state, int(prepared.steering_state_size)): return false
+	for binding: Dictionary in prepared.steering_bindings:
+		if not Actuators.prescribed_angle_state_valid(binding.steering, state.slice(binding.state_index, binding.state_index + 2)): return false
+	return true
+
+
+## Produce pure stage motion from continuous accepted/stage linkage coordinates.
+## actual_rudder is the accepted upstream normalized servo held for this tick.
+## No call changes states or resets linkage rates at a target boundary.
+static func motion(prepared: Dictionary, state: PackedFloat64Array, actual_rudder: float) -> Dictionary:
+	if not motion_state_valid(prepared, state) or not is_finite(actual_rudder) or absf(actual_rudder) > 1.0:
+		return _failure("invalid steering state or actual rudder servo", "invalid_steering")
+	var rows: Array = []
+	var derivative := PackedFloat64Array()
+	derivative.resize(state.size())
+	for support: Dictionary in prepared.normal.supports:
+		rows.append({contact_id = support.contact_id, hub_body = support.hub_body.duplicate(), axle_body = support.axle_body.duplicate(),
+			carrier_rate_body = M.v3(0.0, 0.0, 0.0), carrier_accel_body = M.v3(0.0, 0.0, 0.0)})
+	for binding: Dictionary in prepared.steering_bindings:
+		var response := Actuators.prescribed_angle_response(binding.steering, state.slice(binding.state_index, binding.state_index + 2), actual_rudder)
+		if not response.ok: return _failure("steering response refused stage", "invalid_steering", response)
+		var row: Dictionary = rows[binding.contact_index]
+		var kinematics := Actuators.fixed_axis_motion(row.axle_body, binding.axis_body, response.angle_rad, response.rate_radps, response.acceleration_radps2)
+		if not kinematics.ok: return _failure("steering carrier kinematics refused stage", "invalid_steering", kinematics)
+		row.axle_body = kinematics.axis_body
+		row.carrier_rate_body = kinematics.carrier_rate_body
+		row.carrier_accel_body = kinematics.carrier_accel_body
+		derivative[binding.state_index] = response.derivative[0]
+		derivative[binding.state_index + 1] = response.derivative[1]
+	return {ok = true, rows = rows, derivative = derivative}
+
+
+## Only steering's invariant bound. The single step-policy owner must compose
+## contact/source/geometry admission; this count alone is not a tick certificate.
+static func motion_substeps(prepared: Dictionary, dt: float, budget := 16) -> Dictionary:
+	if not _motion_shape(prepared) or not is_finite(dt) or dt <= 0.0 or budget < 1 or budget > 4096:
+		return _failure("invalid steering step or budget", "invalid_steering")
+	var count := 1
+	for binding: Dictionary in prepared.steering_bindings:
+		var admission := Actuators.prescribed_angle_substeps(binding.steering, dt, budget)
+		if not admission.ok: return _failure("steering integration budget exceeded", "steering_budget", admission)
+		count = maxi(count, int(admission.substeps))
+	return {ok = true, substeps = count, scope = "steering_invariant_only"}
+
+
+static func _motion_shape(prepared: Dictionary) -> bool:
+	if not _prepared_shape(prepared) or not prepared.get("steering_bindings") is Array \
+		or typeof(prepared.get("steering_state_size")) != TYPE_INT \
+		or prepared.steering_state_size != 2 * prepared.steering_bindings.size() \
+		or prepared.steering_bindings.size() > prepared.normal.supports.size(): return false
+	var previous := -1
+	for index in prepared.steering_bindings.size():
+		var binding: Variant = prepared.steering_bindings[index]
+		if not binding is Dictionary or typeof(binding.get("contact_index")) != TYPE_INT \
+			or binding.contact_index <= previous or binding.contact_index >= prepared.normal.supports.size() \
+			or typeof(binding.get("state_index")) != TYPE_INT or binding.state_index != 2 * index \
+			or binding.get("contact_id") != prepared.normal.supports[binding.contact_index].get("contact_id") \
+			or not binding.get("steering") is Dictionary or not _finite_shape(binding.get("axis_body"), 3) \
+			or absf(M.norm(binding.axis_body) - 1.0) > 1e-6: return false
+		previous = binding.contact_index
+	return true
 
 
 ## Use an unchanged successful prepare result. Wheel inputs are HARDWARE-order

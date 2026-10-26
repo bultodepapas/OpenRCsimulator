@@ -41,6 +41,35 @@ vec3 palette_at(float t, int count) {
 	return mix(palette_color(i, count), palette_color((i + 1) % count, count), f);
 }
 
+// Integral of one palette entry's coverage along a repeating finite strip.
+// A partial last palette cycle matters when segments is not a multiple of count.
+float segment_coverage(float x, float segments, float count, float index) {
+	float periods = floor(x / segments);
+	float local = x - periods * segments;
+	float per_period = floor(segments / count) + clamp(mod(segments, count) - index, 0.0, 1.0);
+	return periods * per_period + floor(local / count) + clamp(mod(local, count) - index, 0.0, 1.0);
+}
+
+vec3 filtered_segments(float spatial, float footprint, float segments, int count) {
+	float width = min(footprint * segments, segments);
+	float centre = spatial * segments;
+	// Resolved segment interiors need no palette integration.
+	if (width < 0.001 || floor(centre - width * 0.5) == floor(centre + width * 0.5)) {
+		return palette_color(int(floor(centre)) % count, count);
+	}
+	float begin = centre - width * 0.5;
+	float end = centre + width * 0.5;
+	vec3 color = vec3(0.0);
+	for (int i = 0; i < 8; i++) {
+		if (i < count) {
+			float coverage = (segment_coverage(end, segments, float(count), float(i))
+				- segment_coverage(begin, segments, float(count), float(i))) / width;
+			color += palette_color(i, count) * clamp(coverage, 0.0, 1.0);
+		}
+	}
+	return color;
+}
+
 void vertex() {
 	// Keep the source-frame projection before VERTEX becomes view-space for the width correction.
 	float projected = dot(VERTEX, axis_dir);
@@ -58,6 +87,9 @@ void vertex() {
 }
 
 void fragment() {
+	// Derive from the continuous coordinate before fract/reverse or pattern branches.
+	// Every camera (including orthographic previews and insets) supplies its own footprint.
+	float path_footprint = fwidth(arc_u);
 	int pattern_id = int(pattern_settings.x + 0.5);
 	int count = clamp(int(pattern_settings.y + 0.5), 1, 8);
 	float floor_level = clamp(pattern_settings.z, 0.0, 1.0);
@@ -88,9 +120,7 @@ void fragment() {
 		result = palette_at(spatial + phase, count);
 	} else if (pattern_id == 6) {
 		float segment_count = clamp(pattern_extras.x, 1.0, 256.0);
-		float segment_pos = fract(spatial) * segment_count;
-		int segment = int(floor(segment_pos));
-		result = palette_color(segment % count, count);
+		result = filtered_segments(spatial, path_footprint, segment_count, count);
 		envelope = floor_level + (1.0 - floor_level) * duty;
 	}
 	float cap = max(display_cap, 0.0) / max(local_exposure, 0.001);

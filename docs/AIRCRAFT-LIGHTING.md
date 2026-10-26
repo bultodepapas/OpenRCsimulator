@@ -91,6 +91,8 @@ These coordinates illustrate the schema; measure the actual aircraft before usin
 
 Authored strip patterns follow cumulative centerline distance in the host's local frame, from the first point to the last. Unequal segments receive proportional pattern space; bends and paths returning along an axis do not restart or fold the animation. Pattern `reverse` reverses travel along that same path. Host transforms move the strip while preserving its LED station colors; nonuniform scale stretches their world spacing. Legacy automatically fitted strips retain their existing axis-based pattern placement.
 
+Segmented RGB strips filter their linear-light palette over the current camera's pixel footprint. Nearby segment interiors keep their original color; unresolved segments blend in proportion to their coverage, including incomplete palette cycles. Footprints covering the whole path converge to its weighted mean. This applies to authored and fitted RGB strips without changing saved patterns or sequence time. It reduces spatial color aliasing; it does not establish temporal-upscaler stability, aircraft orientation readability, or scene-wide performance. [Native filtering evidence](research/night-flight-lighting/implementation.md#fw-rgb-13-segmented-strip-filtering).
+
 | Field | Contract |
 | --- | --- |
 | `anchors` | At most nine unique IDs: `nav_left`, `nav_right`, `nav_tail`, `strobe_left`, `strobe_right`, `strobe_dorsal`, `strobe_ventral`, `landing`, `landing_right`. Every row has exactly the four example fields. |

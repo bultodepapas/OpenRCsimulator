@@ -171,6 +171,8 @@ The allocator operates at the **scene/view level**, accounting for field lights,
 
 ### 5.5 LOD, culling and camera consistency
 
+**Implemented slice (FW-RGB-13):** segmented RGB strips now integrate palette coverage over a per-fragment projected footprint, preserving resolved interiors and blending subpixel segments in linear light. Orthographic/perspective and three desktop renderer fixtures pass at 1080p. This supplies spatial filtering within the existing shader; the scene/view LOD policy, inset/temporal acceptance and whole-scene performance gates below remain open. [Evidence and limits](research/night-flight-lighting/implementation.md#fw-rgb-13-segmented-strip-filtering).
+
 Use projected aircraft span in the actual viewport, with hysteresis: initial near >180 px, medium 60–180 px, far 12–60 px, tiny <12 px. These are proposed thresholds to tune at 1080p. Use projection matrices and viewport dimensions, not camera distance alone; orthographic preview, pilot zoom and inset differ.
 
 Near draws segments, authored skin masks and bounded particles. Medium merges subpixel LEDs and reduces particle births. Far retains stable nav/endpoints, top/bottom cues and low-frequency color flow. Tiny retains a capped orientation beacon representation without pretending attitude is always discernible. Minimum source sizes must be qualified at 1080p and scale according to the camera/readability policy; do not turn every distant diode into a 4 px disc.

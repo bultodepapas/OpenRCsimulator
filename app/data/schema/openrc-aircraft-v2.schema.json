@@ -3064,7 +3064,39 @@
                     "not": {
                       "pattern": "\\s"
                     }
+                  },
+                  "steering_profile_id": {
+                    "type": "string",
+                    "maxLength": 80,
+                    "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+                    "not": {
+                      "pattern": "\\s"
+                    }
+                  },
+                  "steering_axis_le": {
+                    "$ref": "#/$defs/evidence",
+                    "properties": {
+                      "unit": {
+                        "const": "1"
+                      },
+                      "value": {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": {
+                          "type": "number"
+                        }
+                      }
+                    }
                   }
+                },
+                "dependentRequired": {
+                  "steering_profile_id": [
+                    "steering_axis_le"
+                  ],
+                  "steering_axis_le": [
+                    "steering_profile_id"
+                  ]
                 },
                 "additionalProperties": false
               }
@@ -3146,6 +3178,120 @@
                 }
               },
               "additionalProperties": false
+            },
+            "steering_profiles": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 16,
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "parameters"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "maxLength": 80,
+                    "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+                    "not": {
+                      "pattern": "\\s"
+                    }
+                  },
+                  "parameters": {
+                    "type": "object",
+                    "required": [
+                      "format",
+                      "id",
+                      "angle_limit",
+                      "signed_full_scale_angle",
+                      "lag_time",
+                      "max_rate",
+                      "max_acceleration"
+                    ],
+                    "properties": {
+                      "format": {
+                        "const": "openrc-prescribed-angle-actuator v1"
+                      },
+                      "id": {
+                        "type": "string",
+                        "maxLength": 80,
+                        "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+                        "not": {
+                          "pattern": "\\s"
+                        }
+                      },
+                      "angle_limit": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "rad"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 3.141592653589793
+                          }
+                        }
+                      },
+                      "signed_full_scale_angle": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "rad"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": -3.141592653589793,
+                            "maximum": 3.141592653589793
+                          }
+                        }
+                      },
+                      "lag_time": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "s"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 1e-06,
+                            "maximum": 1000000.0
+                          }
+                        }
+                      },
+                      "max_rate": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "rad/s"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 1000000000000.0
+                          }
+                        }
+                      },
+                      "max_acceleration": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "rad/s^2"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 1000000000000000.0
+                          }
+                        }
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "additionalProperties": false
+              }
             }
           },
           "additionalProperties": false

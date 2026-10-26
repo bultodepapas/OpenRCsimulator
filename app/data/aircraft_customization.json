@@ -366,7 +366,7 @@
         },
         {
           "path": "res://render/lighting/rgb_strip.gdshader",
-          "sha256": "9c62d8a736dc6b7f5e637e3f190f57370dd1d64ae227e2e79f1479d1ab08746a"
+          "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -429,7 +429,7 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "9a8315c8c8720ca7a0b9f70ecb59d6e5016242b0e69dab182796d32e8079cb49"
+      "slots_sha256": "c6afc89886f17777cf9d64340f87595aea6c7affffe969f7e7cc2b73ae5aa01f"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -701,7 +701,7 @@
         },
         {
           "path": "res://render/lighting/rgb_strip.gdshader",
-          "sha256": "9c62d8a736dc6b7f5e637e3f190f57370dd1d64ae227e2e79f1479d1ab08746a"
+          "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -764,7 +764,7 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "82d0b550adb02ad68d916d1a366d01a8cf4bc0d7096186358138f88d6cef888a"
+      "slots_sha256": "b64fdf3864ac40946c9daa3dbdf3193351f5e9507ad5db8712217044477999cb"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1150,7 +1150,7 @@
         },
         {
           "path": "res://render/lighting/rgb_strip.gdshader",
-          "sha256": "9c62d8a736dc6b7f5e637e3f190f57370dd1d64ae227e2e79f1479d1ab08746a"
+          "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -1213,7 +1213,7 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "ea603a94091d65649dc6b0993355502abe92444bd521454a62cd8e98a83ce82c"
+      "slots_sha256": "1f21a29170acb8e8860457c38802ef586b24271c8c9404381a3b3eb2a5c37c1d"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1524,7 +1524,7 @@
         },
         {
           "path": "res://render/lighting/rgb_strip.gdshader",
-          "sha256": "9c62d8a736dc6b7f5e637e3f190f57370dd1d64ae227e2e79f1479d1ab08746a"
+          "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -1587,7 +1587,7 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "3a55bf1d7f4543c577149fa2ec9f0ec5a1f7b3255599c6392ad3e3bea34051ca"
+      "slots_sha256": "d6bef92ca761ada0abbb3ff76fb821fc230a240a221cd42c7216719066fdd1d7"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1795,7 +1795,7 @@
         },
         {
           "path": "res://render/lighting/rgb_strip.gdshader",
-          "sha256": "9c62d8a736dc6b7f5e637e3f190f57370dd1d64ae227e2e79f1479d1ab08746a"
+          "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -1858,7 +1858,7 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "162a817bf8b53361305882197b3ab937a2ec2bf4e50548dab95c0bcc3918bcaf"
+      "slots_sha256": "92ff4e08aebe444f80093ea7a76c8f0b8e9417623d3bf66852d651f48f5d4b8c"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -2116,7 +2116,7 @@
         },
         {
           "path": "res://render/lighting/rgb_strip.gdshader",
-          "sha256": "9c62d8a736dc6b7f5e637e3f190f57370dd1d64ae227e2e79f1479d1ab08746a"
+          "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -2179,7 +2179,7 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "5ca90106ff890fce0588b92df93b636332241026e06de192564449201ee1c630"
+      "slots_sha256": "34bc55ef2591f0228873f5eb6477fe52e2ea9dee2b555e3d78b47d94f3ebc907"
     }
   ]
 }
