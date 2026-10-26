@@ -1,6 +1,6 @@
 # OpenRC project website
 
-WEB-01…07 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
+WEB-01…08 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
 
 ## Design
 
@@ -44,7 +44,7 @@ WEB-04 makes the jet the initial catalogue selection and adds direct inspector e
 
 WEB-05 keeps the same composition while reducing work: preload the two opening fonts, show the hero poster immediately, cache scroll geometry between layout changes, and defer distant editorial rendering with `content-visibility: auto`. Intrinsic section sizes are estimates until first rendering; the browser then remembers measured sizes. The turntable schedules one animation callback per frame at its existing 125 ms interval, updates only angle UI per frame, cancels obsolete image loads, retries failed selections, and retains a two-sheet LRU cache. Language and theme changes avoid identical HTML/image assignments. Rebuild the black Savox display copy with `python site/prepare_assets.py --brands-only`.
 
-HTML references styles/scripts with a shared release query (`?v=official-brand-20261024`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
+HTML references styles/scripts with a shared release query (`?v=web08-seo-20261026`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
 
 WEB-07 official identity, 2026-10-24: the header, hero, footer and README now use derivatives of the refined vector master based on the supplied official SVG. The favicon uses its RC contours, and Open Graph/Twitter metadata uses a 1200×630 PNG. [Source and regeneration](BRANDS.md#openrc-identity). The aircraft opening, navigation, translations and downloads retain their behavior. Local Chrome review covers 1920×1080, 390×844 and 320×740, both languages/themes, reduced motion, image loading and horizontal overflow. This is presentation verification, not a simulator release.
 
@@ -54,7 +54,19 @@ The unpublished v0.1.2 draft refresh keeps download, first-launch and checksum l
 
 The subsequent P51-22 update labels the Mustang's powered takeoff and loop acceptance as pending in both languages. Local and public aircraft-selection checks show the warning without horizontal overflow. Public HTML/main.js hashes match the local files; the browser reports no warnings or errors. Deployment `2e1475092c4a7a608fb30a63826c98cfda6622dd` passed [Pages](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38926987899). Download links still target v0.1.1.
 
-Publish with `python site/publish.py --message "WEB-step: change; proof: completed checks"` after browser verification, replacing the message with the actual change and checks. It requires Git identity and an authenticated `gh` with repository admin access; it refuses to replace a different existing Pages source. Only HTML, CSS, JS, favicon, `.nojekyll` and licensed assets are copied into a temporary checkout. No force push or changes to the working branch/index.
+Publish with `python site/publish.py --message "WEB-step: change; proof: completed checks"` after browser verification, replacing the message with the actual change and checks. It requires Git identity and an authenticated `gh` with repository admin access; it refuses to replace a different existing Pages source. Only HTML, sitemap XML, CSS, JS, favicon, `.nojekyll` and licensed assets are copied into a temporary checkout. No force push or changes to the working branch/index.
+
+## Search metadata (WEB-08)
+
+`index.html` owns the Spanish title, description, canonical URL, social preview and `SoftwareApplication` JSON-LD. `main.js` preserves those defaults and synchronizes the English title, descriptions and structured data when the visitor changes language. Keep metadata aligned with visible copy and the early-alpha status. Do not add fabricated ratings or claim eligibility for rich results: Google's [software-app guidance](https://developers.google.com/search/docs/appearance/structured-data/software-app) requires review/rating evidence that this site does not have.
+
+`sitemap.xml` lists the single canonical page and ships through `publish.py`. Add only independently accessible, indexable pages; section fragments and local-storage language choices are not separate pages. The English translation currently shares the Spanish URL, so it has no separate `hreflang` entry. Separate translated URLs would be required for [localized-page annotations](https://developers.google.com/search/docs/specialty/international/localized-versions).
+
+The [sitemap](https://bultodepapas.github.io/OpenRCsimulator/sitemap.xml) is linked from the page and can be submitted in Google Search Console for the project URL-prefix property. Submission and search-index coverage have not been verified. A project-level `robots.txt` would not control crawling: robots rules must live at the host root, `https://bultodepapas.github.io/robots.txt`, outside this deployment. That root returned 404 on 2026-10-26. See Google's [sitemap instructions](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap) and [robots.txt placement rules](https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt).
+
+WEB-08 local verification, 2026-10-26: Chromium checks passed at 1920×1080, 390×844 and 320×740, switching Spanish → English → Spanish and reloading the saved English preference. Titles, descriptions and JSON-LD stay consistent; no empty translations, broken loaded images, broken section links, horizontal overflow, page exceptions or HTTP errors were found. Spanish content, metadata, downloads and the sitemap link remain in static HTML without JavaScript. Asset references, sitemap XML, JSON-LD, JavaScript and publisher syntax passed. These checks do not establish search rankings or indexing.
+
+Published WEB-08 deployment: `1ed14df22f1553cdb1b617475e9fcf10eb73807a`; GitHub Pages reports `built`. The same browser checks passed on the public URL. Public HTML, `main.js` and `sitemap.xml` return HTTP 200 and match local bytes. A fresh `gh-pages` clone resolves static asset references and includes the sitemap and `.nojekyll`, without simulator files.
 
 ## WEB-01 verification — 2026-10-15
 
