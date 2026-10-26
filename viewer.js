@@ -18,19 +18,17 @@
   degrees.setAttribute('aria-live','off');
 
   function localize() {
-    const english = document.documentElement.lang === 'en';
-    const caption = reduced.matches ? (english ? 'Next view' : 'Avanzar') : playing ? (english ? 'Pause' : 'Pausar') : (english ? 'Rotate' : 'Girar');
+    const caption = reduced.matches ? siteText.nextView : playing ? siteText.pause : siteText.rotate;
     toggle.innerHTML = `<span>${caption}</span><span aria-hidden="true">${reduced.matches ? '→' : playing ? 'Ⅱ' : '↻'}</span>`;
     toggle.removeAttribute('aria-pressed');
-    canvas.setAttribute('aria-label',`${modelName} — ${english ? '360 degree studio view' : 'vista de estudio de 360 grados'}`);
-    document.querySelector('#viewer-hint').textContent = failed ? (english ? 'Static model view. The 360° view could not load.' : 'Vista estática del modelo. No se pudo cargar la vista 360°.') : (english ? 'Drag to explore · Use the slider to change the angle.' : 'Arrastra para explorar · Usa el control para cambiar de ángulo.');
+    canvas.setAttribute('aria-label',`${modelName} — ${siteText.studio360}`);
+    document.querySelector('#viewer-hint').textContent = failed ? siteText.viewerFailed : siteText.viewerHint;
     updateFrameUI();
   }
 
   function updateFrameUI() {
-    const english = document.documentElement.lang === 'en';
     slider.value = String(frame);
-    slider.setAttribute('aria-valuetext',`${Math.round(frame * 360 / (metadata?.frame_count || 36))} ${english ? 'degrees' : 'grados'}`);
+    slider.setAttribute('aria-valuetext',`${Math.round(frame * 360 / (metadata?.frame_count || 36))} ${siteText.degrees}`);
     degrees.value = `${String(Math.round(frame * 360 / (metadata?.frame_count || 36))).padStart(3,'0')}°`;
   }
 
