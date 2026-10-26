@@ -1,6 +1,6 @@
 {
   "step": "AE-01-R1",
-  "runtime_tree": "f986bc64a8ec5ccb9a599d8562e0fa8230589841",
+  "runtime_tree": "eee81e041d0e4aa775c9543a25be7b03f1372bd6",
   "workshop_matrix_tree": "44fa2c04dd5f130f0f20b443d743f9fe1435ac5c",
   "checks": [
     {
@@ -2016,7 +2016,228 @@
         "log_bytes": 22026,
         "log_sha256": "455c216ef5f1a654a54c339071626870032aeaec8dd053ee8b474baa512d4442"
       }
+    },
+    {
+      "collection": "main-preview-reuse",
+      "log_key": "main-preview-reuse/test_lighting_sequence_ui.gd-c1ixvyiw",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "bc3836a2-f5d6-4e51-87bc-8f3756836592",
+        "command": [
+          "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/.tools/Godot_v4.8-beta1_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_lighting_sequence_ui.gd"
+        ],
+        "cwd": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026",
+        "started_utc": "2026-10-26T13:07:08.433560+00:00",
+        "label": "test_lighting_sequence_ui.gd",
+        "log": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/pr1-evidence/main-preview-reuse/test_lighting_sequence_ui.gd-c1ixvyiw/engine.log",
+        "report": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/pr1-evidence/main-preview-reuse/test_lighting_sequence_ui.gd-c1ixvyiw/report.json",
+        "timeout_seconds": 300.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 fail"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.443616,
+        "log_bytes": 2282,
+        "log_sha256": "4e7ae5a96fdfb424f6a41c8f75fffd55cbeaa2ed9a9951126eb02b789b66a0f8"
+      }
+    },
+    {
+      "collection": "main-preview-reuse",
+      "log_key": "main-preview-reuse/test_workshop_lighting.gd-fo0topkm",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ec4c02e3-becd-4d3d-a1b6-a3e31adb0c81",
+        "command": [
+          "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/.tools/Godot_v4.8-beta1_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_lighting.gd"
+        ],
+        "cwd": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026",
+        "started_utc": "2026-10-26T13:07:08.930862+00:00",
+        "label": "test_workshop_lighting.gd",
+        "log": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/pr1-evidence/main-preview-reuse/test_workshop_lighting.gd-fo0topkm/engine.log",
+        "report": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/pr1-evidence/main-preview-reuse/test_workshop_lighting.gd-fo0topkm/report.json",
+        "timeout_seconds": 300.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 fail"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 6.805979,
+        "log_bytes": 3770,
+        "log_sha256": "ad89b77bd7f197121fd1b3e86e5461c7eb955c3a0835138b3c75502741e2a4cd"
+      }
+    },
+    {
+      "collection": "main-preview-reuse",
+      "log_key": "main-preview-reuse/test_workshop_recovery_ui.gd-i_0eh_ue",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "bf8f461e-808e-4fd7-ba68-c3daed8f64d6",
+        "command": [
+          "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/.tools/Godot_v4.8-beta1_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_recovery_ui.gd"
+        ],
+        "cwd": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026",
+        "started_utc": "2026-10-26T13:07:57.093151+00:00",
+        "label": "test_workshop_recovery_ui.gd",
+        "log": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/pr1-evidence/main-preview-reuse/test_workshop_recovery_ui.gd-i_0eh_ue/engine.log",
+        "report": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/pr1-evidence/main-preview-reuse/test_workshop_recovery_ui.gd-i_0eh_ue/report.json",
+        "timeout_seconds": 300.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 fail"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 32.910523,
+        "log_bytes": 3867,
+        "log_sha256": "23f8f4b0401eb07b6e2160397675a8d476295531e345091f2e52c8d1bbff4e89"
+      }
+    },
+    {
+      "collection": "main-preview-reuse",
+      "log_key": "main-preview-reuse/test_workshop_smoke_preview.gd-0r2oo8_c",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "d3b1314a-1050-49ab-80b4-dfdddbf4e11d",
+        "command": [
+          "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/.tools/Godot_v4.8-beta1_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_smoke_preview.gd"
+        ],
+        "cwd": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026",
+        "started_utc": "2026-10-26T13:07:15.799965+00:00",
+        "label": "test_workshop_smoke_preview.gd",
+        "log": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/pr1-evidence/main-preview-reuse/test_workshop_smoke_preview.gd-0r2oo8_c/engine.log",
+        "report": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/pr1-evidence/main-preview-reuse/test_workshop_smoke_preview.gd-0r2oo8_c/report.json",
+        "timeout_seconds": 300.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 fail"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 14.130108,
+        "log_bytes": 7632,
+        "log_sha256": "5b10278422168d945ba81175bc654b1b595c540f282f7249dcf32bab767e0ccb"
+      }
+    },
+    {
+      "collection": "main-preview-reuse",
+      "log_key": "main-preview-reuse/test_workshop_ui.gd-o8d49xb0",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "09863f30-6446-4c57-9b51-99dbe2174b0a",
+        "command": [
+          "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/.tools/Godot_v4.8-beta1_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_ui.gd"
+        ],
+        "cwd": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026",
+        "started_utc": "2026-10-26T13:07:29.973948+00:00",
+        "label": "test_workshop_ui.gd",
+        "log": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/pr1-evidence/main-preview-reuse/test_workshop_ui.gd-o8d49xb0/engine.log",
+        "report": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/pr1-evidence/main-preview-reuse/test_workshop_ui.gd-o8d49xb0/report.json",
+        "timeout_seconds": 300.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 fail"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 27.063781,
+        "log_bytes": 8157,
+        "log_sha256": "b70c77d579a3ae341060274daf36b36b5e173af5e9a7b5e3804ad3083413adbc"
+      }
     }
   ],
-  "scope": "Scoped software checks. Full-suite attempt failed its 180-second import timeout; separate import completed. No full-suite or physical-validation claim."
+  "scope": "Scoped software checks. Full-suite attempt failed its 180-second import timeout; separate import completed. No full-suite or physical-validation claim.",
+  "last_main": "6abeaed74e15b94ed96960e402d4e8f280047a29"
 }
