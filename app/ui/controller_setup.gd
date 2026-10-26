@@ -1238,6 +1238,7 @@ func _switch_draft_profile(profile: Dictionary, context_key: String) -> void:
 
 
 func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
+	_clear_field_errors()
 	var previous_profile_id := str(_draft_profile.get("profile_id", ""))
 	_draft_profile = profile.duplicate(true)
 	if not context_key.is_empty():
