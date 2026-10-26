@@ -1,0 +1,69 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6dd6c045-b1af-47f4-b996-ff7d83443b78",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/parse.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T20:25:15.960943+00:00",
+  "label": "reviewed-draft-parse",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\reviewed-draft-parse-4c8kp_3s\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\reviewed-draft-parse-4c8kp_3s\\report.json",
+  "timeout_seconds": 45.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Capacity draft parsed:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 3,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Identifier \"integrated\" not declared in the current scope.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:219)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/parse.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/parse.gd\" with error \"Compilation failed\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)",
+        "Capacity draft parsed: openrc-interval-contact-capacity v1 fixed-hub-wheel-material-impulse-rows-v1 fixed-hub-predicted-actual-capacity-budget-halfkicks-order1-v1"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.766,
+  "log_bytes": 800,
+  "log_sha256": "5951103a7e712dac22a3b9c494db90de6a13d42647be9c3b0af02f1f5dd510d8"
+}

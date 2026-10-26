@@ -1,0 +1,97 @@
+# format: openrc-trace v17
+# metadata_schema: openrc-flight-meta v9
+# scenario: trimmed level flight (engine running) across view at 29.0 m/s (D5: six-axis trim, calm air)
+# selected_start_choice: airborne
+# launch_choice: airborne
+# launch_kind: trimmed_airborne
+# launch_field_id: 
+# launch_trim_throttle: reference
+# launch_state: [60.0,-40.0,-30.0,28.910404468881435,0.0,2.2778308641513223,0.7065604183166055,-0.02779164025860101,0.027791640258601015,0.7065604183166054,0.0,0.0,0.0]
+# launch_aux: [93100.6563029685,0.0,0.10019560256456884,0.0]
+# launch_ground_anchors: []
+# launch_engine_running: true
+# launch_error: 
+# aircraft: sebart-avanti-s-a200-p100rx (fixture://fixed-brake)
+# aircraft_input_format: openrc-aircraft v2
+# aircraft_input_sha256: unavailable: in-memory input
+# aircraft_input_hash_convention: sha256 of exact aircraft input file bytes
+# aircraft_semantic_sha256: d41b22e93507bbd96a60b3b6dcff5b916488570e47d803a6f7d29c158e83c751
+# aircraft_semantic_hash_convention: sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes
+# configuration: virtual-balanced-reference-v2-empty-main-tank
+# aero_model: section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle
+# wing_polar_model: tabulated-wing-v1 (experimental finite-wing strip reference)
+# ground_effect_model: none
+# propulsion_model: turbine-rpm-governor-rk4-v1
+# propwash_model: none
+# continuous_layout: turbine shaft rpm; RK4 coupled; prescribed fuel mass; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail; base propulsion/wheels; usable fuel kg; source latch 0/1
+# propulsion_features: {"propeller_normal_force":false,"propeller_pfactor":false,"rotor_gyroscopic_coupling":true,"turbine_ram_flow":true,"turbine_ram_jet":true}
+# engine_rpm_semantics: turbine spool rpm
+# state_layout: ["north_m","east_m","down_m","u_mps","v_mps","w_mps","qw","qx","qy","qz","p_radps","q_radps","r_radps"]
+# aux_layout: ["engine_rpm","srv_roll","srv_pitch","srv_yaw"]
+# recording_start_tick: 2
+# recording_start_aux: [93100.6563029685,0.0,0.10019560256456884,0.0]
+# recording_start_engine_running: true
+# ground: 3 profiled spring-damper gear contacts on flat 0 m dry-pavement fixture; per-contact wheel radius and inertia, steering, continuous relative wheel spin; brakes off (no brake command exposed)
+# created_utc: 2026-10-26T21:38:16
+# engine: Godot 4.8-beta1 (official)
+# dt_s: 0.004166666666666667
+# mass_kg: 11.438578
+# inertia_kgm2: Jxx Jyy Jzz Jxy Jxz Jyz = 0.68671410846778 2.21717542742535 2.81122182096694 0.0 -0.02635223515557 0.0
+# gravity_mps2: 9.80665
+# frames: world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]
+# loads: Fx..Mz: body-axis loads excluding gravity; k1 at previous body/turbine RPM and current sampled servos; gyro only
+# state_timing: body, continuous turbine RPM and mirrored aux at tick k; servos advance before RK4; turbine RPM/thrust/gyro evaluated at each stage
+# mass_contact_law: fixed-datum-live-mass-contact-linear-fuel-v1
+# mass_reference: mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum
+# wheel_state_model: relative-wheel-rim-speed-rk4-v1
+# wheel_rolling_law: wheel-positive-terrain-excess-v2
+# wheel_state_layout: [{"contact":"main_left","index":1,"unit":"m/s rim speed"},{"contact":"main_right","index":2,"unit":"m/s rim speed"},{"contact":"nose","index":3,"unit":"m/s rim speed"}]
+# wheel_profile_status: applied
+# wheel_profile_sha256: 02401877282919f6aef1f9830f4270de83741cad8d133b89b4c1031c39c5bb06
+# wheel_profile_input_sha256: cbc0317ac3895f738497335df646def955207c773723460b99bd0eb91986397b
+# wheel_profile_hash_convention: profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes
+# recording_start_continuous: [93100.6563029685,0.0,0.0,0.0,2.576340919761658,1.0]
+# launch_continuous: [93100.6563029685,0.0,0.0,0.0,2.5763565,1.0]
+# wheel_brakes: [{"availability":"available","contact":"main_left","max_torque_nm":0.2},{"availability":"available","contact":"main_right","max_torque_nm":0.2},{"availability":"available","contact":"nose","max_torque_nm":0.2}]
+# turbine_integrator: rk4
+# liquid_fuel_model: single-store-finite-liquid-fixed-datum-v1
+# liquid_fuel_schema: openrc-liquid-fuel v1
+# fuel_mass_policy: finite single store; co-moving efflux; fixed authored reference datum
+# fuel_consumption_law: turbine_map_v1
+# fuel_store_id: main_tank
+# fuel_capacity_kg: 2.59256
+# fuel_unusable_kg: 0.0162035
+# fuel_state_index: 4
+# fuel_start_fill_known: true
+# fuel_start_fill: 1.0
+# fuel_cutoff_law: combustion-thrust-off; rotor existing deceleration schedule to zero; estimated
+# fixed_brake_input_law: fixed-gear-shared-wheel-brake-input-v1
+# wheel_brake_input_index: 4
+# input_layout: ["roll","pitch","yaw","throttle","wheel_brake","flaps"]
+# flap_base_metadata_schema: openrc-flight-meta v6
+# flap_law: controls.flaps.hinged_trailing_edge.v1
+# flap_trace_schema: openrc-flap-trace v1
+# flap_aux_index: 14
+# flap_input_index: 5
+# flap_max_angle_deg: 50.0
+# recording_start_flap: 0.0
+# runway_start_status: not_attempted
+# runway_fallback: none
+# aero_loads_law: section-plane-source-weighted-wake-velocity-v2
+# wake_state_unit: m/s (equal-area mean of section Vp*CL)
+# turbine_loads_law: turbine-capture-vector-signed-axial-local-intake-v3
+# mass_trace_schema: openrc-mass-sample v1
+# fixed_brake_base_trace_format: openrc-trace v15
+# flap_base_trace_format: openrc-trace v3
+# mass_base_trace_format: openrc-trace v12
+# mass_sample_timing: accepted mass_properties sample for this row tick/time
+# liquid_fuel_trace_schema: openrc-liquid-fuel-trace v1
+# fuel_registry_sha256: cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1
+# fuel_blend: kerosene_5pct_turbine_oil
+# fuel_family: kerosene
+# fuel_density_kg_m3: 810.175
+# fuel_reserve_fraction: 0.10625
+# fuel_reserve_basis: estimated reserve
+# fuel_reserve_estimated: true
+tick,t_s,north_m,east_m,down_m,alt_m,u_mps,v_mps,w_mps,speed_mps,qw,qx,qy,qz,yaw_deg,pitch_deg,roll_deg,p_radps,q_radps,r_radps,Fx_N,Fy_N,Fz_N,Mx_Nm,My_Nm,Mz_Nm,cmd_roll,cmd_pitch,cmd_yaw,cmd_throttle,engine_rpm,srv_roll,srv_pitch,srv_yaw,cmd_wheel_brake,cmd_flaps,flap_fraction,flap_deg,fuel_remaining_kg,fuel_usable_kg,fuel_fill_fraction,fuel_reserve_fraction,fuel_source_latch,mass_kg,cg_body_x_m,cg_body_y_m,cg_body_z_m
+2,0.008333333,60.000000000,-39.758333333,-30.000000000,30.000000000,28.910404473,-0.000000000,2.277830817,29.000000000,0.706560418,-0.027791640,0.027791640,0.706560418,90.000000000,4.504988450,0.000000000,0.000000000,0.000000020,0.000000000,9.809305368,0.000000000,-124.500458166,0.000000000,0.000005390,-0.000000000,0.000000000,0.100195603,0.000000000,0.090711067,93100.656302969,0.000000000,0.100195603,0.000000000,0.700000000,0.000000000,0.000000000,0.000000000,2.592544420,2.576340920,0.999993990,0.106250000,1.000000000,12.734842420,0.007671550,0.000000000,0.003586024

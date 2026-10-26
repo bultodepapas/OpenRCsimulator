@@ -1,0 +1,298 @@
+{
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 49,
+      "sha256": "5c293bc4a8762da239e872f399f00ec843850aaa6fc9192ef734866aef22219b"
+    },
+    {
+      "path": "before/app/physics/hull_contact.gd",
+      "bytes": 42832,
+      "sha256": "5100ce2dfa65138c1036ece22df0f387fad89149b755e0b4321d9daf2244b3d4"
+    },
+    {
+      "path": "before/app/sim/flight_session.gd",
+      "bytes": 283825,
+      "sha256": "2ef72af8e0814bf44520a22741dce7a68a93ebdc611847b98c321460f0160c93"
+    },
+    {
+      "path": "before/app/tests/test_hull_friction_observation.gd",
+      "bytes": 4183,
+      "sha256": "3542ef73bc52ceb3f362754af1fc621d863bc9ec2abf8320fee3a5c9b55b2297"
+    },
+    {
+      "path": "before/app/tests/test_hull_scrape_session.gd",
+      "bytes": 13085,
+      "sha256": "96c7b2626481e6bd0f21cba2fbe3e360bf274fe570c1c56ddee1cd491f062a4d"
+    },
+    {
+      "path": "checks/before/godot-4vsiv2t7/engine.log",
+      "bytes": 1094,
+      "sha256": "ae85536dc434755fab4ec6211525a8e4bc05e45c1413526d808ddde437fbcde9"
+    },
+    {
+      "path": "checks/before/godot-4vsiv2t7/report.json",
+      "bytes": 1233,
+      "sha256": "8db9e9193fc591c8436e673a1d1c5e809a509531944547b341f8fa0b86ae702a"
+    },
+    {
+      "path": "checks/metrics-01/godot-9imd18fy/engine.log",
+      "bytes": 115,
+      "sha256": "b32452bc81c7a8f73f5383cd0fb56a8cb7097c5cebd447694fcf6ce520291b96"
+    },
+    {
+      "path": "checks/metrics-01/godot-9imd18fy/report.json",
+      "bytes": 1250,
+      "sha256": "1d6da2b6285f7941c4669cddd1e610b8ec7ff776eb64ebc01ca07ba15fafc225"
+    },
+    {
+      "path": "checks/parse-01/godot-hf1fqc1p/engine.log",
+      "bytes": 109,
+      "sha256": "073e1e58d37893a581b7734f2d78540ecd324c81a38d69c814e95b03cc9a3edf"
+    },
+    {
+      "path": "checks/parse-01/godot-hf1fqc1p/report.json",
+      "bytes": 1216,
+      "sha256": "03792935b1876e6a2f7c36d1118310d1eab0cbff33fb7627d42880b7253a3b23"
+    },
+    {
+      "path": "checks/session-01/godot-h58a8dqm/engine.log",
+      "bytes": 810,
+      "sha256": "05d95a7428807c71e980fa926f5f936199aa3642691701169107800527406ae6"
+    },
+    {
+      "path": "checks/session-01/godot-h58a8dqm/report.json",
+      "bytes": 1246,
+      "sha256": "9d777d943d4467cd781c3f2d6c8e3d14cdda1f5a87897cede988f2d4e450f256"
+    },
+    {
+      "path": "development/baseline.gd",
+      "bytes": 2538,
+      "sha256": "c42b23132239cfe4b678766f8421eedb89da5d2782b1b91b7bea23ba3d66b7a2"
+    },
+    {
+      "path": "development/draft/director.gd",
+      "bytes": 43138,
+      "sha256": "74a5871fa5f535e1f686947a1fe19ea4aa9c348c76385a78318a2aeda64f10b3"
+    },
+    {
+      "path": "development/draft/flight_session.gd",
+      "bytes": 283866,
+      "sha256": "7dc7c17c551ec8d44550055b436e9c1cffc1206b84831152f33d65810d4cbb38"
+    },
+    {
+      "path": "development/draft/hull_contact.gd",
+      "bytes": 44158,
+      "sha256": "04490fc097e8a35f32ec2881ea8263cc4c094bea6bcae80ef31073066b7066a2"
+    },
+    {
+      "path": "development/draft/main.gd",
+      "bytes": 171381,
+      "sha256": "6b91c37ebb0db6174955d88ba2d2d783ff34a8bb0c43c86e12e7d355bae72d6a"
+    },
+    {
+      "path": "development/draft/parse.gd",
+      "bytes": 385,
+      "sha256": "7ec68c63127624e667805af9ee45dc2a0726b2de42ca0a6ccd5e54ea0c045c34"
+    },
+    {
+      "path": "development/draft/presentation_context.gd",
+      "bytes": 1634,
+      "sha256": "c860bea45f755b0c01849ad3162f49f5bb8a2364f4a0e7d7b37b2c8c2ed10f25"
+    },
+    {
+      "path": "development/draft/test_hull_friction_observation.gd",
+      "bytes": 9748,
+      "sha256": "315735f5005c5c65e0ff550711a1ea841429029ce0cf771608fef3744a594174"
+    },
+    {
+      "path": "development/draft/test_hull_scrape_session.gd",
+      "bytes": 16199,
+      "sha256": "f43da2277f6a8059947a988fa40732557017c4d1552a0b36e1f15051fc598afe"
+    },
+    {
+      "path": "development/promote_root.py",
+      "bytes": 828,
+      "sha256": "341bf31edf00647d377fa014a9dc9771666e3c213e53888174119d5dcd5d7692"
+    },
+    {
+      "path": "development/promotion/manifest.json",
+      "bytes": 1567,
+      "sha256": "9d57dcb1a5272a52dbb168d4316e4e29141b99671a1cc039888b5733185b7755"
+    },
+    {
+      "path": "development/promotion/review.patch",
+      "bytes": 17337,
+      "sha256": "b106a2e2755a77716e5152db796d299be479d0324029e8ef22488f0fe0e6a191"
+    },
+    {
+      "path": "development/root-promotion.json",
+      "bytes": 1744,
+      "sha256": "90ebdd717bf4dc40f947fbb83677c2143e26f93adab175c708c34ff273540dbd"
+    },
+    {
+      "path": "production/metrics-a3lxuyxf/engine.log",
+      "bytes": 115,
+      "sha256": "b32452bc81c7a8f73f5383cd0fb56a8cb7097c5cebd447694fcf6ce520291b96"
+    },
+    {
+      "path": "production/metrics-a3lxuyxf/report.json",
+      "bytes": 1197,
+      "sha256": "0c48b83fcdd71be33a9300bf18b7d3ae4be2c10af0d7d79f5f8027719dcdcc35"
+    },
+    {
+      "path": "production/session-tc233fce/engine.log",
+      "bytes": 810,
+      "sha256": "05d95a7428807c71e980fa926f5f936199aa3642691701169107800527406ae6"
+    },
+    {
+      "path": "production/session-tc233fce/report.json",
+      "bytes": 1192,
+      "sha256": "6793b1f946d484d72f500d98c8fa2489afbe8d60a646770549c173c84576d3ee"
+    },
+    {
+      "path": "production/soft-__bn8qxh/engine.log",
+      "bytes": 2722,
+      "sha256": "7e054637e87c4ac007e07edc2be987b5982f7bb7c19f6fa3b006564dda3d68ff"
+    },
+    {
+      "path": "production/soft-__bn8qxh/report.json",
+      "bytes": 1157,
+      "sha256": "24f87ef3399f61e7961c02a4c7b5b6691a7fef71fd8df98304d1f3834b179d45"
+    },
+    {
+      "path": "production/water-t9v72hz6/engine.log",
+      "bytes": 1790,
+      "sha256": "9719730c9f57d02e9e1bc78f4ab2fde1d8fce981bd06a12e71fe2ade399afa1d"
+    },
+    {
+      "path": "production/water-t9v72hz6/report.json",
+      "bytes": 1159,
+      "sha256": "2261f162a91f5cc53be2ffbfded6597db966507ba3263c2fee9bba506c5fe1e1"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3627,
+      "sha256": "ef12c6c73d1fea0833990316b347b8531037c540b0520cb639003a9d48cbffbd"
+    },
+    {
+      "path": "report.json",
+      "bytes": 436,
+      "sha256": "2d3092dd959dec39053c926b5332ca6c1aa7e670272a9a3e6c80f5551e3b6898"
+    },
+    {
+      "path": "review/checks/collector-independent-28-11yx8o1s/engine.log",
+      "bytes": 125,
+      "sha256": "75f44f3357110944db5cf3e020d3c8820f66d3cbebf2751ce85d786c51410145"
+    },
+    {
+      "path": "review/checks/collector-independent-28-11yx8o1s/report.json",
+      "bytes": 1282,
+      "sha256": "51005ea264d1a879ea73819cd07181ede59bae91ef50d666bf16dba62dad3a82"
+    },
+    {
+      "path": "review/checks/collector-independent-_9frzug8/engine.log",
+      "bytes": 125,
+      "sha256": "75f44f3357110944db5cf3e020d3c8820f66d3cbebf2751ce85d786c51410145"
+    },
+    {
+      "path": "review/checks/collector-independent-_9frzug8/report.json",
+      "bytes": 1354,
+      "sha256": "ad897005ad8d093f682a32ef7181d516e4638b04867ede0332cb2160480e3c52"
+    },
+    {
+      "path": "review/checks/session-independent-112xoag7/engine.log",
+      "bytes": 371,
+      "sha256": "0f2add59ddc86ca5c1e589dd3326991e02f81b16165a353025e62822743cc589"
+    },
+    {
+      "path": "review/checks/session-independent-112xoag7/report.json",
+      "bytes": 1264,
+      "sha256": "17f811c1f6b14161c612b74d3f9204e53fe86f101b2760d6855d5b12c39a2ddb"
+    },
+    {
+      "path": "review/flight_session.gd.patch",
+      "bytes": 2358,
+      "sha256": "658680a68eacc5cb18fc717489bc51d83c4bd029fdf826bcc5b7f4c84beff116"
+    },
+    {
+      "path": "review/hull_contact.gd.patch",
+      "bytes": 4049,
+      "sha256": "e5eeef6c47b55ac7eef9d3d290b6058c2206bb30070d273a14c97e884d0bd13f"
+    },
+    {
+      "path": "review/probe.gd",
+      "bytes": 2638,
+      "sha256": "29dd79c0c35eba6369fcf68fb0b1f1743f43c59286bb3b3c1387e21620683117"
+    },
+    {
+      "path": "review/report.json",
+      "bytes": 2743,
+      "sha256": "55ae15db9a7db342762a0f1d97817006a0ba46d694bb59a105967776768bc9e1"
+    },
+    {
+      "path": "review/review.md",
+      "bytes": 4329,
+      "sha256": "abbe30ea7ddef1536ebed088a69dd3842919203741a32621829e5a5a1924a7fc"
+    },
+    {
+      "path": "review/session_probe.gd",
+      "bytes": 1963,
+      "sha256": "2cb3a2fb10706fb6132cb83d7ad0516c3cce3a0da11804de9c7d09d4a95e7c30"
+    },
+    {
+      "path": "review/source-identities.json",
+      "bytes": 569,
+      "sha256": "0c1a00d46ca65668d8a09a8b2d8e9f46710425f3b0a4e488ecd286c59b16e077"
+    },
+    {
+      "path": "source/app/main.gd",
+      "bytes": 171261,
+      "sha256": "a6137c9ca9dbc5317e26bde0fb290ca3ad2d14c9cb285e5c2e2aec5951e279b2"
+    },
+    {
+      "path": "source/app/physics/hull_contact.gd",
+      "bytes": 44158,
+      "sha256": "04490fc097e8a35f32ec2881ea8263cc4c094bea6bcae80ef31073066b7066a2"
+    },
+    {
+      "path": "source/app/render/crash/crash_audio.gd",
+      "bytes": 20356,
+      "sha256": "6a3c5855a3ed3d550a57904fb199f782761fb382e0d53f3901e4c295ea188978"
+    },
+    {
+      "path": "source/app/render/crash/director.gd",
+      "bytes": 43101,
+      "sha256": "1ba07bd91a5e51c90dadf27d2707c86b08c4d71f442e5ea200a7120d84f8e763"
+    },
+    {
+      "path": "source/app/sim/flight_session.gd",
+      "bytes": 283824,
+      "sha256": "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864"
+    },
+    {
+      "path": "source/app/tests/test_hull_friction_observation.gd",
+      "bytes": 9706,
+      "sha256": "40b22bafeee2cda92974e7f47b102b56063c42832e65e1346700f64b7f562231"
+    },
+    {
+      "path": "source/app/tests/test_hull_scrape_session.gd",
+      "bytes": 15987,
+      "sha256": "e64ca8b2354ead2a2d8bd0aa6ebae3ac27c7a20afd75b52345e767faa6d789c7"
+    },
+    {
+      "path": "source/app/tests/test_soft_contacts.gd",
+      "bytes": 12803,
+      "sha256": "bf8fb6ccb7b1b3b4379e3a59a03eb222bab2815761165a0483a521d611eb5bb1"
+    },
+    {
+      "path": "source/app/tests/test_water_director.gd",
+      "bytes": 9512,
+      "sha256": "3dbd7661a9dac008e0c9f66eef40c8f319f4e4dc4b92a3a1023f7ed6ac907d58"
+    }
+  ],
+  "excludes": [
+    "manifest.json",
+    "transport.json"
+  ]
+}

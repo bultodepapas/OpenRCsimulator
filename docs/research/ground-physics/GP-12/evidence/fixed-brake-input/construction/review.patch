@@ -1,0 +1,1096 @@
+--- a/app/main.gd
++++ b/app/main.gd
+@@ -1112,7 +1112,7 @@
+ 	if _frame_times.size() > Hud.FRAMES:
+ 		_frame_times.remove_at(0)
+ 	var sim: Node = session.sim
+-	if _wheel_brake_key_held and (sim.paused or not session.crash.is_empty() or not session.gear_is_retractable()
++	if _wheel_brake_key_held and (sim.paused or not session.crash.is_empty() or not session.wheel_brake_available()
+ 		or not Input.is_physical_key_pressed(KEY_B)):
+ 		_clear_wheel_brake()
+ 	if _smoke_assignment != null and (not session.radio.connected or session.radio.device_id != _smoke_assignment.device_id):
+@@ -1816,7 +1816,7 @@
+ 				controller_action("rates_toggle")
+ 				get_viewport().set_input_as_handled()
+ 			KEY_B:
+-				if not session.sim.paused and session.gear_is_retractable() and session.set_wheel_brake(1.0):
++				if not session.sim.paused and session.wheel_brake_available() and session.set_wheel_brake(1.0):
+ 					_wheel_brake_key_held = true
+ 					get_viewport().set_input_as_handled()
+ 			KEY_BRACKETLEFT, KEY_BRACKETRIGHT:
+--- a/app/sim/flight_session.gd
++++ b/app/sim/flight_session.gd
+@@ -1007,6 +1007,7 @@
+ const GEAR_AUX_SIZE := 2 # extension, accepted down target; before optional turbulence
+ var _flap_requested := 0.0
+ var _gear_requested_down := false
++const FIXED_BRAKE_INPUT_LAW := "fixed-gear-shared-wheel-brake-input-v1"
+ var _wheel_brake_demand := 0.0
+ var _gear_request_inhibited := false
+ var _gear_cache_fraction := -1.0
+@@ -2633,8 +2634,8 @@
+ 	if normalized_packet.has("brake"):
+ 		if not _external_number_is_in_range(normalized_packet.brake, 0.0, 1.0):
+ 			errors.append("brake must be a finite number in [0, 1]")
+-		elif not gear_is_retractable():
+-			errors.append("brake is unsupported without retractable landing gear")
++		elif float(normalized_packet.brake) > 0.0 and not wheel_brake_available():
++			errors.append("brake is unsupported without explicitly available wheel brake hardware")
+ 	if not errors.is_empty():
+ 		return {ok = false, errors = errors}
+ 	var staged: Dictionary = {}
+@@ -3538,6 +3539,7 @@
+ 	var values := PackedFloat64Array([f.roll, f.pitch, f.yaw, 0.0 if not throttle_holds.is_empty() else f.throttle])
+ 	if gear_is_retractable():
+ 		values.append(1.0 if _gear_requested_down else 0.0)
++	if wheel_brake_input_index() >= 0:
+ 		values.append(_wheel_brake_demand)
+ 	if flaps_available(): values.append(_flap_requested)
+ 	return values
+@@ -3548,11 +3550,11 @@
+ 
+ 
+ func _input_count() -> int:
+-	return 4 + (2 if gear_is_retractable() else 0) + (1 if flaps_available() else 0)
++	return 4 + (1 if gear_is_retractable() else 0) + (1 if wheel_brake_input_index() >= 0 else 0) + (1 if flaps_available() else 0)
+ 
+ 
+ func flap_input_index() -> int:
+-	return (6 if gear_is_retractable() else 4) if flaps_available() else -1
++	return (_input_count() - 1) if flaps_available() else -1
+ 
+ 
+ func flap_aux_index() -> int:
+@@ -3630,13 +3632,54 @@
+ 	return set_gear_down(not _gear_requested_down)
+ 
+ 
++## Shared demand is admitted only for explicitly installed, provenance-bearing brake hardware.
++## Retraction and brake hardware are independent capabilities; the old retractable input layout stays fixed.
++func wheel_brake_available() -> bool:
++	if typeof(aircraft.get("ok")) != TYPE_BOOL or not aircraft.ok or not aircraft.get("model") is Dictionary:
++		return false
++	var profile: Variant = aircraft.model.get("wheel_profile")
++	var gear: Variant = aircraft.model.get("landing_gear")
++	if not profile is Dictionary or typeof(profile.get("status")) != TYPE_STRING or profile.status != "applied" \
++			or not gear is Dictionary or not gear.get("contacts") is Array \
++			or gear.contacts.is_empty() or gear.contacts.size() > 16:
++		return false
++	var available := false
++	for candidate: Variant in gear.contacts:
++		if not candidate is Dictionary: return false
++		var contact: Dictionary = candidate
++		var source: Variant = contact.get("wheel_provenance")
++		var torque: Variant = contact.get("brake_torque")
++		if typeof(contact.get("brake_availability")) != TYPE_STRING \
++				or contact.brake_availability not in ["none", "unspecified", "available"] \
++				or not source is Dictionary or typeof(source.get("brake_availability")) != TYPE_STRING \
++				or source.brake_availability != contact.brake_availability or not source.get("brake_torque") is Dictionary \
++				or typeof(torque) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(torque)) or float(torque) < 0.0:
++			return false
++		var quantity: Dictionary = source.brake_torque
++		if typeof(quantity.get("value")) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(quantity.value)) \
++				or float(quantity.value) != float(torque) or typeof(quantity.get("unit")) != TYPE_STRING or quantity.unit != "N·m" \
++				or typeof(quantity.get("kind")) != TYPE_STRING or quantity.kind not in ["manual", "measured", "borrowed", "estimated", "derived"] \
++				or typeof(quantity.get("source")) != TYPE_STRING or quantity.source.strip_edges().is_empty():
++			return false
++		if contact.brake_availability == "available":
++			if float(torque) <= 0.0: return false
++			available = true
++		elif float(torque) != 0.0:
++			return false
++	return available
++
++
++func wheel_brake_input_index() -> int:
++	return 5 if gear_is_retractable() else 4 if wheel_brake_available() else -1
++
++
+ func set_wheel_brake(amount: float) -> bool:
+ 	if not RetractableGear.valid_fraction(amount):
+ 		return false
+ 	if amount == 0.0:
+ 		_wheel_brake_demand = 0.0 # releases clear even while a menu/focus hold is active
+ 		return true
+-	if not gear_is_retractable() or not physics_enabled or not input_enabled or not _flight_ready() \
++	if not wheel_brake_available() or not physics_enabled or not input_enabled or not _flight_ready() \
+ 			or sim.paused or not holds.is_empty() or not crash.is_empty():
+ 		return false
+ 	_wheel_brake_demand = amount
+@@ -3845,7 +3888,8 @@
+ 		return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
+ 	var gear: Dictionary = current_landing_gear(aux)
+ 	var steer: float = aux[AUX_SERVO + 2]
+-	var brake: float = sim.inputs[5] if retractable else 0.0
++	var brake_index: int = wheel_brake_input_index()
++	var brake: float = sim.inputs[brake_index] if brake_index >= 0 else 0.0
+ 	var anchors: PackedFloat64Array = aux.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
+ 	var hull: PackedFloat64Array = PackedFloat64Array()
+ 	if soft_hull_contacts:
+@@ -4459,6 +4503,9 @@
+ 		return PackedFloat64Array([NAN]) # configure→reset boundary cannot advance an old layout/RNG
+ 	if gear_is_retractable() and (not _gear_aux_valid(aux) or inputs.size() != _input_count() \
+ 			or inputs[4] not in [0.0, 1.0] or not RetractableGear.valid_fraction(inputs[5])):
++		return PackedFloat64Array([NAN])
++	if not gear_is_retractable() and wheel_brake_input_index() >= 0 and (inputs.size() != _input_count() \
++			or not RetractableGear.valid_fraction(inputs[wheel_brake_input_index()])):
+ 		return PackedFloat64Array([NAN])
+ 	if flaps_available() and (not _flap_aux_valid(aux) or inputs.size() != _input_count() \
+ 			or not RetractableGear.valid_fraction(inputs[flap_input_index()])):
+@@ -4905,6 +4952,10 @@
+ 		metadata.recording_start_gear = JSON.stringify(Array(sim.aux.slice(gear_aux_index(), gear_aux_index() + GEAR_AUX_SIZE)), "", true, true)
+ 		metadata.input_layout = JSON.stringify(["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake"])
+ 		metadata.ground = "retractable tricycle; downlock point contacts; rudder nose steering; main wheel brakes; weight-on-wheels retraction interlock"
++	if not gear_is_retractable() and wheel_brake_available():
++		metadata.fixed_brake_input_law = FIXED_BRAKE_INPUT_LAW
++		metadata.wheel_brake_input_index = wheel_brake_input_index()
++		metadata.input_layout = JSON.stringify(["roll", "pitch", "yaw", "throttle", "wheel_brake"])
+ 	if flaps_available():
+ 		metadata.flap_base_metadata_schema = metadata.metadata_schema
+ 		metadata.metadata_schema = "openrc-flight-meta v9"
+@@ -4916,6 +4967,7 @@
+ 		metadata.recording_start_flap = sim.aux[flap_aux_index()]
+ 		var layout: Array = ["roll", "pitch", "yaw", "throttle"]
+ 		if gear_is_retractable(): layout.append_array(["gear_down", "wheel_brake"])
++		elif wheel_brake_available(): layout.append("wheel_brake")
+ 		layout.append("flaps")
+ 		metadata.input_layout = JSON.stringify(layout)
+ 	metadata.runway_start_status = str(runway_start_outcome.get("status", "not_attempted"))
+@@ -4951,6 +5003,9 @@
+ 		return {}
+ 	if gear_is_retractable() and (not _gear_aux_valid(sim.aux) or sim.inputs.size() != _input_count() \
+ 			or sim.inputs[4] not in [0.0, 1.0] or not RetractableGear.valid_fraction(sim.inputs[5])):
++		return {}
++	if not gear_is_retractable() and wheel_brake_input_index() >= 0 and (sim.inputs.size() != _input_count() \
++			or not RetractableGear.valid_fraction(sim.inputs[wheel_brake_input_index()])):
+ 		return {}
+ 	if flaps_available() and (not _flap_aux_valid(sim.aux) or sim.inputs.size() != _input_count() \
+ 			or not RetractableGear.valid_fraction(sim.inputs[flap_input_index()])):
+@@ -4975,6 +5030,9 @@
+ 	if gear_is_retractable():
+ 		boundary.gear_law = RetractableGear.LAW
+ 		boundary.gear_aux_index = gear_aux_index()
++	if not gear_is_retractable() and wheel_brake_available():
++		boundary.fixed_brake_input_law = FIXED_BRAKE_INPUT_LAW
++		boundary.wheel_brake_input_index = wheel_brake_input_index()
+ 	if flaps_available():
+ 		boundary.flap_law = Flaps.LAW
+ 		boundary.flap_aux_index = flap_aux_index()
+@@ -5065,6 +5123,8 @@
+ 		parts.append(Turbine.LOADS_LAW)
+ 	if gear_is_retractable():
+ 		parts.append(RetractableGear.LAW + "; inputs=6; aux=extension,accepted_down_target; airborne_up,runway_down")
++	if not gear_is_retractable() and wheel_brake_available():
++		parts.append(FIXED_BRAKE_INPUT_LAW + "; input=4; shared wheel brake demand")
+ 	if flaps_available():
+ 		parts.append(Flaps.LAW + "; appended normalized demand and sampled actuator; restart_up")
+ 	if wheel_count() > 0:
+@@ -5228,6 +5288,14 @@
+ 			return false
+ 	elif candidate.has("gear_law") or candidate.has("gear_aux_index"):
+ 		return false
++	if not gear_is_retractable() and wheel_brake_available():
++		if typeof(candidate.get("fixed_brake_input_law")) != TYPE_STRING or candidate.fixed_brake_input_law != FIXED_BRAKE_INPUT_LAW \
++				or typeof(candidate.get("wheel_brake_input_index")) != TYPE_INT or candidate.wheel_brake_input_index != 4 \
++				or not snapshot.get("inputs") is PackedFloat64Array or snapshot.inputs.size() != _input_count() \
++				or not RetractableGear.valid_fraction(snapshot.inputs[4]):
++			return false
++	elif candidate.has("fixed_brake_input_law") or candidate.has("wheel_brake_input_index"):
++		return false
+ 	if flaps_available():
+ 		if candidate.get("flap_law") != Flaps.LAW or candidate.get("flap_aux_index") != flap_aux_index() \
+ 				or candidate.get("flap_input_index") != flap_input_index() \
+@@ -5371,9 +5439,9 @@
+ 		resetting.emit()
+ 		if gear_is_retractable():
+ 			_gear_requested_down = snapshot.inputs[4] == 1.0
+-			_wheel_brake_demand = snapshot.inputs[5]
+ 			_gear_cache_fraction = -1.0
+ 			_gear_request_inhibited = false
++		_wheel_brake_demand = snapshot.inputs[wheel_brake_input_index()] if wheel_brake_input_index() >= 0 else 0.0
+ 		_flap_requested = snapshot.inputs[flap_input_index()] if flaps_available() else 0.0
+ 		fuel_start_fill = restored_fuel_fill
+ 		_fuel_start_fill_known = restored_fuel_fill_known
+--- a/app/sim/trace.gd
++++ b/app/sim/trace.gd
+@@ -128,6 +128,8 @@
+ var _glow_last_opportunities: int = -1
+ var _glow_last_fires: int = -1
+ var _glow_wheel_count: int = 0 # GP-06a: rim speeds appended after the glow slots
++const FIXED_BRAKE_INPUT_LAW := "fixed-gear-shared-wheel-brake-input-v1"
++var _fixed_brake: bool = false
+ var _gear: bool = false
+ var _gear_aux_index: int = -1
+ var _gear_meta: Dictionary = {}
+@@ -189,6 +191,7 @@
+ 	_glow_last_opportunities = -1
+ 	_glow_last_fires = -1
+ 	_glow_wheel_count = 0
++	_fixed_brake = false
+ 	_gear = false
+ 	_gear_aux_index = -1
+ 	_gear_meta = {}
+@@ -216,6 +219,8 @@
+ 
+ 
+ func _prepare_weather() -> void:
++	_prepare_fixed_brake_metadata()
++	if _invalid_weather: return
+ 	_prepare_shaft_metadata()
+ 	if _invalid_weather:
+ 		return
+@@ -447,9 +452,38 @@
+ 	_columns.append_array(GEAR_COLUMNS)
+ 
+ 
++func _prepare_fixed_brake_metadata() -> void:
++	if not meta.has("fixed_brake_input_law") and not meta.has("wheel_brake_input_index"):
++		return
++	var raw: Variant = meta.get("input_layout")
++	var parser := JSON.new()
++	if typeof(raw) != TYPE_STRING or raw.length() > 256 or parser.parse(raw) != OK:
++		_invalid_weather = true
++		return
++	var layout: Variant = parser.data
++	var expected := ["roll", "pitch", "yaw", "throttle", "wheel_brake"]
++	if _has_flap_metadata_claim(): expected.append("flaps")
++	if typeof(meta.get("fixed_brake_input_law")) != TYPE_STRING or meta.fixed_brake_input_law != FIXED_BRAKE_INPUT_LAW \
++			or typeof(meta.get("wheel_brake_input_index")) != TYPE_INT or meta.wheel_brake_input_index != 4 \
++			or not layout is Array or layout.size() != expected.size():
++		_invalid_weather = true
++		return
++	for key: String in ["gear_law", "gear_aux_index", "gear_trace_schema", "recording_start_gear"]:
++		if meta.has(key):
++			_invalid_weather = true
++			return
++	for index: int in expected.size():
++		if typeof(layout[index]) != TYPE_STRING or layout[index] != expected[index]:
++			_invalid_weather = true
++			return
++	_fixed_brake = true
++	_columns.append("cmd_wheel_brake")
++
++
+ func _has_gear_metadata_claim() -> bool:
+ 	if meta.has("gear_law") or meta.has("gear_aux_index") or meta.has("gear_trace_schema") or meta.has("recording_start_gear"):
+ 		return true
++	if _fixed_brake: return false
+ 	if not meta.has("input_layout"):
+ 		return false
+ 	var raw_layout: Variant = meta.get("input_layout")
+@@ -472,7 +506,7 @@
+ 
+ 
+ func _expected_input_count() -> int:
+-	return 4 + (2 if _gear else 0) + (1 if _flaps else 0)
++	return 4 + (2 if _gear else 1 if _fixed_brake else 0) + (1 if _flaps else 0)
+ 
+ 
+ func _gear_sample(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array,
+@@ -522,10 +556,12 @@
+ 	var raw_layout: Variant = meta.get("input_layout")
+ 	var layout: Variant = JSON.parse_string(raw_layout) if typeof(raw_layout) == TYPE_STRING else null
+ 	var has_gear_claim: bool = _has_gear_metadata_claim()
+-	var expected_input_index: int = 6 if has_gear_claim else 4
++	var expected_input_index: int = 6 if has_gear_claim else 5 if _fixed_brake else 4
+ 	var expected_layout: Array[String] = FLAP_BASE_INPUT_LAYOUT.duplicate()
+ 	if has_gear_claim:
+ 		expected_layout.append_array(GEAR_INPUT_LAYOUT.slice(4, 6))
++	elif _fixed_brake:
++		expected_layout.append("wheel_brake")
+ 	expected_layout.append("flaps")
+ 	if schema != "openrc-flight-meta v9" or typeof(flap_law) != TYPE_STRING or flap_law.is_empty() \
+ 			or flap_law != FLAP_LAW or trace_schema != FLAP_TRACE_SCHEMA or typeof(aux_index) != TYPE_INT or int(aux_index) < 4 \
+@@ -615,7 +651,8 @@
+ 		var layout: Variant = JSON.parse_string(str(meta.get("wheel_state_layout", "null")))
+ 		var launch: Variant = JSON.parse_string(str(meta.get("launch_continuous", "null")))
+ 		var brakes: Variant = JSON.parse_string(str(meta.get("wheel_brakes", "null")))
+-		if not gear_claim or (meta.get("metadata_schema") != "openrc-flight-meta v8" \
++		if (not gear_claim and not _fixed_brake) or (meta.get("metadata_schema") != "openrc-flight-meta v8" \
++				and not (_fixed_brake and meta.get("metadata_schema") == "openrc-flight-meta v6") \
+ 				and not (flap_claim and meta.get("metadata_schema") == "openrc-flight-meta v9")) \
+ 				or meta.get("wheel_state_model") != "relative-wheel-rim-speed-rk4-v1" \
+ 				or meta.get("wheel_profile_status") != "applied" \
+@@ -1072,7 +1109,7 @@
+ 		_prepare_weather()
+ 	if _invalid_weather:
+ 		return
+-	if inputs.size() != _expected_input_count():
++	if inputs.size() != _expected_input_count() or (_fixed_brake and (not is_finite(inputs[4]) or inputs[4] < 0.0 or inputs[4] > 1.0)):
+ 		_invalid_weather = true
+ 		return
+ 	var mass_row := PackedFloat64Array()
+@@ -1198,9 +1235,11 @@
+ 		s[RB.RATE], s[RB.RATE + 1], s[RB.RATE + 2],
+ 	]))
+ 	_rows.append_array(loads)
+-	_rows.append_array(inputs.slice(0, 4) if _gear or _flaps else inputs)
++	_rows.append_array(inputs.slice(0, 4) if _gear or _flaps or _fixed_brake else inputs)
+ 	for i in 4: # [engine_rpm, srv_roll, srv_pitch, srv_yaw]; missing entries record as 0
+ 		_rows.append(aux[i] if aux.size() > i else 0.0)
++	if _fixed_brake:
++		_rows.append(inputs[4])
+ 	if _electric:
+ 		_rows.append_array(electric_row)
+ 	if _glow:
+@@ -1580,8 +1619,12 @@
+ 	var spatial_base_format: String = trace_format
+ 	if _weather != null and _weather.is_spatial():
+ 		trace_format = "openrc-trace v16"
++	var fixed_brake_base_trace_format: String = trace_format
++	if _fixed_brake: trace_format = "openrc-trace v17"
+ 	lines.append("# format: %s" % trace_format)
+ 	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine or _glow else (_flap_meta if _flaps else meta)).duplicate(true)
++	if _fixed_brake:
++		written_meta.fixed_brake_base_trace_format = fixed_brake_base_trace_format
+ 	if _weather != null and _weather.is_spatial():
+ 		written_meta.spatial_base_trace_format = spatial_base_format
+ 	if _flaps:
+--- /dev/null
++++ b/app/tests/fixed_brake_trace_contract.py
+@@ -0,0 +1,82 @@
++"""Focused v17 role/shape inspector; deliberately performs no force-law validation.
++
++Existing physical trace validators must continue refusing v17 until their
++equations include the shared brake. This helper never projects away braking.
++"""
++import csv
++import json
++import math
++from pathlib import Path
++
++LAW = 'fixed-gear-shared-wheel-brake-input-v1'
++BASES = {f'openrc-trace v{i}' for i in range(3, 17)} - {'openrc-trace v10'}
++
++
++def inspect(path):
++    metadata, lines = {}, []
++    for line in Path(path).read_text(encoding='utf-8').splitlines():
++        if line.startswith('# '):
++            key, sep, value = line[2:].partition(': ')
++            if not sep or key in metadata:
++                raise ValueError('malformed/duplicate metadata')
++            metadata[key] = value
++        elif line.startswith('#'):
++            raise ValueError('malformed comment')
++        elif line:
++            lines.append(line)
++    if metadata.get('format') != 'openrc-trace v17':
++        raise ValueError('expected explicit fixed-brake v17')
++    if (metadata.get('fixed_brake_input_law') != LAW
++            or metadata.get('fixed_brake_base_trace_format') not in BASES
++            or metadata.get('wheel_brake_input_index') != '4'):
++        raise ValueError('invalid fixed-brake identity/base/index')
++    if any(key in metadata for key in ('gear_law', 'gear_aux_index', 'gear_trace_schema', 'recording_start_gear')):
++        raise ValueError('mixed fixed/retractable roles')
++    expected = ['roll', 'pitch', 'yaw', 'throttle', 'wheel_brake']
++    flap_claim = any(k.startswith('flap_') or k == 'recording_start_flap' for k in metadata)
++    if flap_claim:
++        expected.append('flaps')
++        if metadata.get('flap_input_index') != '5':
++            raise ValueError('fixed brake flap input must be 5')
++    try:
++        if len(metadata['input_layout']) > 256:
++            raise ValueError('oversized role layout')
++        layout = json.loads(metadata['input_layout'])
++    except (KeyError, ValueError) as error:
++        raise ValueError('invalid named input layout') from error
++    if layout != expected or any(type(value) is not str for value in layout):
++        raise ValueError('ambiguous named input roles')
++    base = metadata['fixed_brake_base_trace_format']
++    if base == 'openrc-trace v16' and metadata.get('spatial_base_trace_format') not in BASES - {'openrc-trace v16'}:
++        raise ValueError('unsupported spatial base')
++    if base in ('openrc-trace v14', 'openrc-trace v15'):
++        if metadata.get('mass_base_trace_format') not in BASES - {'openrc-trace v14', 'openrc-trace v15', 'openrc-trace v16'}:
++            raise ValueError('unsupported mass base')
++    reader = csv.DictReader(lines)
++    columns = reader.fieldnames or []
++    if (not columns or len(columns) != len(set(columns)) or columns.count('cmd_wheel_brake') != 1
++            or any(key in columns for key in ('cmd_gear_down', 'gear_extension', 'gear_target_down'))):
++        raise ValueError('missing/duplicate/mixed brake columns')
++    if ('cmd_flaps' in columns) != flap_claim:
++        raise ValueError('flap claim/column mismatch')
++    rows = list(reader)
++    if not rows:
++        raise ValueError('empty trace')
++    previous = None
++    for row in rows:
++        if None in row or any(value is None for value in row.values()):
++            raise ValueError('malformed row width')
++        try:
++            values = {key: float(value) for key, value in row.items()}
++        except (ValueError, TypeError) as error:
++            raise ValueError('nonnumeric sample') from error
++        if not all(math.isfinite(value) for value in values.values()):
++            raise ValueError('nonfinite sample')
++        if not 0 <= values['cmd_wheel_brake'] <= 1:
++            raise ValueError('brake fraction out of range')
++        tick = values.get('tick')
++        if tick is None or tick < 0 or tick != math.floor(tick) or (previous is not None and tick != previous + 1):
++            raise ValueError('noncontiguous accepted ticks')
++        previous = tick
++    return dict(format='openrc-trace v17', base_format=base, input_names=layout,
++                columns=columns, rows=len(rows), physics_validation_available=False)
+--- /dev/null
++++ b/app/tests/fixtures/fixed_brake_legacy_outputs.json
+@@ -0,0 +1,33 @@
++{
++	"baseline_session_sha256": "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864",
++	"baseline_trace_sha256": "1c529262fb33b7db3137f9cba064be0e32a6d9c7620ae224cc06500a5a05a62e",
++	"engine": "4.8-beta1 (official)",
++	"outputs": {
++		"gp-extra-300s-60": {
++			"after_three_ticks": "4facb677ac7483bbe2cca3bd7c60b152f5bd627f7987d10ef6de92b57c1b15de",
++			"checkpoint": "d9bd9b7df316718db5379f30a82d900a1cd4e4f48c35ddd844f766ed72593926",
++			"metadata": "d4c4ddc942beb7cf41533fc3c68dfccac6d0e7595d20e875be92d2829148d049",
++			"trace_csv": "7d10b41377ccd39e753e96e809369b85fcc3f0ecb01ebb97e4ba81a5d1fae688"
++		},
++		"jensen-das-ugly-stik-60": {
++			"after_three_ticks": "294f07e2367b4b66c525583678f87eff122017ce7881bcc99af6dcee172990d8",
++			"checkpoint": "1c0414cee7e272e71ad55631aceca38c9751bb7b619578cb6ad70dc2ac3da645",
++			"metadata": "cbe30f6482b8eb7eff3d081af8ffbc3dff720ac3a870caa64837732cc2c41db7",
++			"trace_csv": "e9ed39fe5338f9ea9dc37f647d30350339802137821507fa5f78de33dfa9f48c"
++		},
++		"p51d-mustang-120": {
++			"after_three_ticks": "0ff5dff321786a8bbe40d3c43103637de8310cd1777f90ea80080b2f1c09508b",
++			"checkpoint": "caf6d96b831d1bf26b47685bee3591bb922c260d1f58ff3368e46eb137c23dea",
++			"metadata": "fe1cfcaba461a114d87ce9fe45ef446402e7242c8c8ebd0500078a71ad8389ca",
++			"trace_csv": "e90370101385192575255b6fc510a139f2d0e2b86f9ef9cae9981a12fb9be748"
++		},
++		"sebart-avanti-s-a200-p100rx": {
++			"after_three_ticks": "258f3b9ea4668e7d4da432a86bc714f443c14303a9eb756236c2f8ff3b777203",
++			"checkpoint": "56dbcf8a87fd1b8caed5e2487d5ff0c7090dca54abd69c43396224492070998c",
++			"metadata": "0a6054143348b751c2852b6eb4175937bb1e5067a8d8c7dd2cb4ac9cc9f1dc48",
++			"trace_csv": "1769ccce449a0c18bd4c41af7401f43cec92717fddd0fe1e12e6d4cf5e7c4764"
++		}
++	},
++	"physics_hz": 240,
++	"presentation_timestamp": "created_utc replaced by fixed-brake-legacy-fixture-time only"
++}
+--- /dev/null
++++ b/app/tests/fixtures/fixed_brake_main_input.gd
+@@ -0,0 +1,8 @@
++extends "res://main.gd"
++
++func _ready() -> void:
++	set_process(false)
++	set_physics_process(false)
++
++func _exit_tree() -> void:
++	pass
+--- /dev/null
++++ b/app/tests/fixtures/fixed_brake_trace_flaps.csv
+@@ -0,0 +1,97 @@
++# format: openrc-trace v17
++# metadata_schema: openrc-flight-meta v9
++# scenario: trimmed level flight (engine running) across view at 29.0 m/s (D5: six-axis trim, calm air)
++# selected_start_choice: airborne
++# launch_choice: airborne
++# launch_kind: trimmed_airborne
++# launch_field_id: 
++# launch_trim_throttle: reference
++# launch_state: [60.0,-40.0,-30.0,28.910404468881435,0.0,2.2778308641513223,0.7065604183166055,-0.02779164025860101,0.027791640258601015,0.7065604183166054,0.0,0.0,0.0]
++# launch_aux: [93100.6563029685,0.0,0.10019560256456884,0.0]
++# launch_ground_anchors: []
++# launch_engine_running: true
++# launch_error: 
++# aircraft: sebart-avanti-s-a200-p100rx (fixture://fixed-brake)
++# aircraft_input_format: openrc-aircraft v2
++# aircraft_input_sha256: unavailable: in-memory input
++# aircraft_input_hash_convention: sha256 of exact aircraft input file bytes
++# aircraft_semantic_sha256: d41b22e93507bbd96a60b3b6dcff5b916488570e47d803a6f7d29c158e83c751
++# aircraft_semantic_hash_convention: sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes
++# configuration: virtual-balanced-reference-v2-empty-main-tank
++# aero_model: section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle
++# wing_polar_model: tabulated-wing-v1 (experimental finite-wing strip reference)
++# ground_effect_model: none
++# propulsion_model: turbine-rpm-governor-rk4-v1
++# propwash_model: none
++# continuous_layout: turbine shaft rpm; RK4 coupled; prescribed fuel mass; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail; base propulsion/wheels; usable fuel kg; source latch 0/1
++# propulsion_features: {"propeller_normal_force":false,"propeller_pfactor":false,"rotor_gyroscopic_coupling":true,"turbine_ram_flow":true,"turbine_ram_jet":true}
++# engine_rpm_semantics: turbine spool rpm
++# state_layout: ["north_m","east_m","down_m","u_mps","v_mps","w_mps","qw","qx","qy","qz","p_radps","q_radps","r_radps"]
++# aux_layout: ["engine_rpm","srv_roll","srv_pitch","srv_yaw"]
++# recording_start_tick: 2
++# recording_start_aux: [93100.6563029685,0.0,0.10019560256456884,0.0]
++# recording_start_engine_running: true
++# ground: 3 profiled spring-damper gear contacts on flat 0 m dry-pavement fixture; per-contact wheel radius and inertia, steering, continuous relative wheel spin; brakes off (no brake command exposed)
++# created_utc: 2026-10-26T21:28:44
++# engine: Godot 4.8-beta1 (official)
++# dt_s: 0.004166666666666667
++# mass_kg: 11.438578
++# inertia_kgm2: Jxx Jyy Jzz Jxy Jxz Jyz = 0.68671410846778 2.21717542742535 2.81122182096694 0.0 -0.02635223515557 0.0
++# gravity_mps2: 9.80665
++# frames: world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]
++# loads: Fx..Mz: body-axis loads excluding gravity; k1 at previous body/turbine RPM and current sampled servos; gyro only
++# state_timing: body, continuous turbine RPM and mirrored aux at tick k; servos advance before RK4; turbine RPM/thrust/gyro evaluated at each stage
++# mass_contact_law: fixed-datum-live-mass-contact-linear-fuel-v1
++# mass_reference: mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum
++# wheel_state_model: relative-wheel-rim-speed-rk4-v1
++# wheel_rolling_law: wheel-positive-terrain-excess-v2
++# wheel_state_layout: [{"contact":"main_left","index":1,"unit":"m/s rim speed"},{"contact":"main_right","index":2,"unit":"m/s rim speed"},{"contact":"nose","index":3,"unit":"m/s rim speed"}]
++# wheel_profile_status: applied
++# wheel_profile_sha256: 02401877282919f6aef1f9830f4270de83741cad8d133b89b4c1031c39c5bb06
++# wheel_profile_input_sha256: cbc0317ac3895f738497335df646def955207c773723460b99bd0eb91986397b
++# wheel_profile_hash_convention: profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes
++# recording_start_continuous: [93100.6563029685,0.0,0.0,0.0,2.576340919761658,1.0]
++# launch_continuous: [93100.6563029685,0.0,0.0,0.0,2.5763565,1.0]
++# wheel_brakes: [{"availability":"available","contact":"main_left","max_torque_nm":0.2},{"availability":"available","contact":"main_right","max_torque_nm":0.2},{"availability":"available","contact":"nose","max_torque_nm":0.2}]
++# turbine_integrator: rk4
++# liquid_fuel_model: single-store-finite-liquid-fixed-datum-v1
++# liquid_fuel_schema: openrc-liquid-fuel v1
++# fuel_mass_policy: finite single store; co-moving efflux; fixed authored reference datum
++# fuel_consumption_law: turbine_map_v1
++# fuel_store_id: main_tank
++# fuel_capacity_kg: 2.59256
++# fuel_unusable_kg: 0.0162035
++# fuel_state_index: 4
++# fuel_start_fill_known: true
++# fuel_start_fill: 1.0
++# fuel_cutoff_law: combustion-thrust-off; rotor existing deceleration schedule to zero; estimated
++# fixed_brake_input_law: fixed-gear-shared-wheel-brake-input-v1
++# wheel_brake_input_index: 4
++# input_layout: ["roll","pitch","yaw","throttle","wheel_brake","flaps"]
++# flap_base_metadata_schema: openrc-flight-meta v6
++# flap_law: controls.flaps.hinged_trailing_edge.v1
++# flap_trace_schema: openrc-flap-trace v1
++# flap_aux_index: 14
++# flap_input_index: 5
++# flap_max_angle_deg: 50.0
++# recording_start_flap: 0.0
++# runway_start_status: not_attempted
++# runway_fallback: none
++# aero_loads_law: section-plane-source-weighted-wake-velocity-v2
++# wake_state_unit: m/s (equal-area mean of section Vp*CL)
++# turbine_loads_law: turbine-capture-vector-signed-axial-local-intake-v3
++# mass_trace_schema: openrc-mass-sample v1
++# fixed_brake_base_trace_format: openrc-trace v15
++# flap_base_trace_format: openrc-trace v3
++# mass_base_trace_format: openrc-trace v12
++# mass_sample_timing: accepted mass_properties sample for this row tick/time
++# liquid_fuel_trace_schema: openrc-liquid-fuel-trace v1
++# fuel_registry_sha256: cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1
++# fuel_blend: kerosene_5pct_turbine_oil
++# fuel_family: kerosene
++# fuel_density_kg_m3: 810.175
++# fuel_reserve_fraction: 0.10625
++# fuel_reserve_basis: estimated reserve
++# fuel_reserve_estimated: true
++tick,t_s,north_m,east_m,down_m,alt_m,u_mps,v_mps,w_mps,speed_mps,qw,qx,qy,qz,yaw_deg,pitch_deg,roll_deg,p_radps,q_radps,r_radps,Fx_N,Fy_N,Fz_N,Mx_Nm,My_Nm,Mz_Nm,cmd_roll,cmd_pitch,cmd_yaw,cmd_throttle,engine_rpm,srv_roll,srv_pitch,srv_yaw,cmd_wheel_brake,cmd_flaps,flap_fraction,flap_deg,fuel_remaining_kg,fuel_usable_kg,fuel_fill_fraction,fuel_reserve_fraction,fuel_source_latch,mass_kg,cg_body_x_m,cg_body_y_m,cg_body_z_m
++2,0.008333333,60.000000000,-39.758333333,-30.000000000,30.000000000,28.910404473,-0.000000000,2.277830817,29.000000000,0.706560418,-0.027791640,0.027791640,0.706560418,90.000000000,4.504988450,0.000000000,0.000000000,0.000000020,0.000000000,9.809305368,0.000000000,-124.500458166,0.000000000,0.000005390,-0.000000000,0.000000000,0.100195603,0.000000000,0.090711067,93100.656302969,0.000000000,0.100195603,0.000000000,0.700000000,0.000000000,0.000000000,0.000000000,2.592544420,2.576340920,0.999993990,0.106250000,1.000000000,12.734842420,0.007671550,0.000000000,0.003586024
+--- /dev/null
++++ b/app/tests/fixtures/fixed_brake_trace_stik.csv
+@@ -0,0 +1,66 @@
++# format: openrc-trace v17
++# metadata_schema: openrc-flight-meta v6
++# scenario: trimmed level flight (engine running) across view at 15.0 m/s (D5: six-axis trim, calm air)
++# selected_start_choice: airborne
++# launch_choice: airborne
++# launch_kind: trimmed_airborne
++# launch_field_id: 
++# launch_trim_throttle: reference
++# launch_state: [60.0,-40.0,-30.0,14.959760772465627,-0.03171751409814058,1.097520674018512,0.7066327926155301,-0.02588622027985514,0.025886220279855144,0.70663279261553,0.0,0.0,0.0]
++# launch_aux: [5159.1071759800525,0.02103925927458998,0.13842444673697182,0.01891865980414328]
++# launch_ground_anchors: []
++# launch_engine_running: true
++# launch_error: 
++# aircraft: jensen-das-ugly-stik-60 (fixture://fixed-brake)
++# aircraft_input_format: openrc-aircraft v2
++# aircraft_input_sha256: unavailable: in-memory input
++# aircraft_input_hash_convention: sha256 of exact aircraft input file bytes
++# aircraft_semantic_sha256: 74389583464ad23d8031f27386317cd5496996cb2c966ae1ece707dbf48b3a29
++# aircraft_semantic_hash_convention: sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes
++# configuration: virtual-balanced-reference-v2-empty-tank
++# aero_model: section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle
++# wing_polar_model: legacy attached-to-flat-plate blend
++# ground_effect_model: image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)
++# propulsion_model: propeller-rpm-lag-v1
++# propwash_model: none
++# continuous_layout: wheel rim speeds in m/s, landing-gear contact order, appended continuous tail
++# propulsion_features: {"propeller_normal_force":false,"propeller_pfactor":false,"rotor_gyroscopic_coupling":true,"turbine_ram_flow":false,"turbine_ram_jet":false}
++# engine_rpm_semantics: propeller shaft rpm
++# state_layout: ["north_m","east_m","down_m","u_mps","v_mps","w_mps","qw","qx","qy","qz","p_radps","q_radps","r_radps"]
++# aux_layout: ["engine_rpm","srv_roll","srv_pitch","srv_yaw"]
++# recording_start_tick: 2
++# recording_start_aux: [5159.1071759800525,0.02103925927458998,0.13842444673697182,0.01891865980414328]
++# recording_start_engine_running: true
++# ground: 3 profiled spring-damper gear contacts on flat 0 m dry-pavement fixture; per-contact wheel radius and inertia, steering, continuous relative wheel spin; brakes off (no brake command exposed)
++# created_utc: 2026-10-26T21:28:44
++# engine: Godot 4.8-beta1 (official)
++# dt_s: 0.00416666666667
++# mass_kg: 2.8786621383898
++# inertia_kgm2: Jxx Jyy Jzz Jxy Jxz Jyz = 0.11573524791512 0.3692385127982 0.46611754023941 -0.00954 0.00736510279719 0.00054849887236
++# gravity_mps2: 9.80665
++# frames: world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]
++# loads: Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)
++# state_timing: state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)
++# wheel_state_model: relative-wheel-rim-speed-rk4-v1
++# wheel_rolling_law: wheel-positive-terrain-excess-v2
++# wheel_state_layout: [{"contact":"main_left","index":0,"unit":"m/s rim speed"},{"contact":"main_right","index":1,"unit":"m/s rim speed"},{"contact":"nose","index":2,"unit":"m/s rim speed"}]
++# wheel_profile_status: applied
++# wheel_profile_sha256: b0cdf46b3679d19ac8b080bec65d1ddb5767af835671f9b5848e6c9a67c3b729
++# wheel_profile_input_sha256: 47d0e825fc2586c055a7a0706e751f0fbeead98a67a6373df6063f5125e72043
++# wheel_profile_hash_convention: profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes
++# recording_start_continuous: [0.0,0.0,0.0]
++# launch_continuous: [0.0,0.0,0.0]
++# wheel_brakes: [{"availability":"available","contact":"main_left","max_torque_nm":0.2},{"availability":"available","contact":"main_right","max_torque_nm":0.2},{"availability":"available","contact":"nose","max_torque_nm":0.2}]
++# fixed_brake_input_law: fixed-gear-shared-wheel-brake-input-v1
++# wheel_brake_input_index: 4
++# input_layout: ["roll","pitch","yaw","throttle","wheel_brake"]
++# runway_start_status: not_attempted
++# runway_fallback: none
++# aero_loads_law: section-plane-source-weighted-wake-velocity-v2
++# wake_state_unit: m/s (equal-area mean of section Vp*CL)
++# mass_trace_schema: openrc-mass-sample v1
++# fixed_brake_base_trace_format: openrc-trace v14
++# mass_base_trace_format: openrc-trace v3
++# mass_sample_timing: accepted mass_properties sample for this row tick/time
++tick,t_s,north_m,east_m,down_m,alt_m,u_mps,v_mps,w_mps,speed_mps,qw,qx,qy,qz,yaw_deg,pitch_deg,roll_deg,p_radps,q_radps,r_radps,Fx_N,Fy_N,Fz_N,Mx_Nm,My_Nm,Mz_Nm,cmd_roll,cmd_pitch,cmd_yaw,cmd_throttle,engine_rpm,srv_roll,srv_pitch,srv_yaw,cmd_wheel_brake,mass_kg,cg_body_x_m,cg_body_y_m,cg_body_z_m
++2,0.008333333,60.000264313,-39.875000279,-30.000000000,30.000000000,14.959760772,-0.031717514,1.097520674,15.000000000,0.706632793,-0.025886220,0.025886220,0.706632793,90.000000000,4.195979160,0.000000000,-0.000000000,-0.000000000,0.000000000,2.065540872,0.000000000,-28.154364688,-0.000000000,0.000000000,-0.000000000,0.021039259,0.138424447,0.018918660,0.282561645,5159.107175980,0.021039259,0.138424447,0.018918660,0.700000000,2.878662138,0.000000000,0.000000000,0.000000000
+--- /dev/null
++++ b/app/tests/test_fixed_brake_trace_contract.py
+@@ -0,0 +1,72 @@
++import tempfile
++import unittest
++from pathlib import Path
++from fixed_brake_trace_contract import inspect
++
++ROOT = Path(__file__).resolve().parent / 'fixtures'
++
++
++class FixedBrakeTraceRoles(unittest.TestCase):
++    def setUp(self):
++        self.temporary = tempfile.TemporaryDirectory()
++        self.path = Path(self.temporary.name) / 'hostile.csv'
++        self.text = (ROOT / 'fixed_brake_trace_stik.csv').read_text(encoding='utf-8')
++
++    def tearDown(self):
++        self.temporary.cleanup()
++
++    def reject(self, old, new):
++        self.assertIn(old, self.text)
++        self.path.write_text(self.text.replace(old, new), encoding='utf-8')
++        with self.assertRaises(ValueError):
++            inspect(self.path)
++
++    def test_actual_stik_and_fixed_flap_owner_outputs(self):
++        for suffix, width in [('stik', 5), ('flaps', 6)]:
++            result = inspect(ROOT / f'fixed_brake_trace_{suffix}.csv')
++            self.assertEqual(len(result['input_names']), width)
++            self.assertFalse(result['physics_validation_available'])
++            self.assertEqual(result['rows'], 1)
++
++    def test_unknown_base(self):
++        self.reject('# fixed_brake_base_trace_format: openrc-trace v14', '# fixed_brake_base_trace_format: openrc-trace v999')
++
++    def test_gear_base(self):
++        self.reject('# fixed_brake_base_trace_format: openrc-trace v14', '# fixed_brake_base_trace_format: openrc-trace v10')
++
++    def test_wrong_index(self):
++        self.reject('# wheel_brake_input_index: 4', '# wheel_brake_input_index: 5')
++
++    def test_fractional_index(self):
++        self.reject('# wheel_brake_input_index: 4', '# wheel_brake_input_index: 4.0')
++
++    def test_mixed_gear_claim(self):
++        self.reject('# format: openrc-trace v17', '# format: openrc-trace v17\n# gear_law: retractable-point-gear-v1')
++
++    def test_ambiguous_role(self):
++        self.reject('"wheel_brake"]', '"flaps"]')
++
++    def test_duplicate_role(self):
++        self.reject('"wheel_brake"]', '"wheel_brake", "wheel_brake"]')
++
++    def test_missing_identity(self):
++        self.reject('fixed-gear-shared-wheel-brake-input-v1', 'unknown')
++
++    def test_duplicate_metadata(self):
++        self.reject('# format: openrc-trace v17', '# format: openrc-trace v17\n# format: openrc-trace v17')
++
++    def test_brake_column_missing(self):
++        self.reject('cmd_wheel_brake', 'cmd_auxiliary')
++
++    def test_invalid_sample(self):
++        for value in ('nan', 'inf', '-0.1', '1.1'):
++            with self.subTest(value=value):
++                self.path.write_text(self.text.replace('0.700000000', value), encoding='utf-8')
++                with self.assertRaises(ValueError): inspect(self.path)
++
++    def test_old_version_cannot_hide_new_role(self):
++        self.reject('# format: openrc-trace v17', '# format: openrc-trace v14')
++
++
++if __name__ == '__main__':
++    unittest.main()
+--- /dev/null
++++ b/app/tests/test_fixed_gear_brake_input.gd
+@@ -0,0 +1,369 @@
++extends SceneTree
++
++const Flight := preload("res://sim/flight_session.gd")
++const Trace := preload("res://sim/trace.gd")
++const Data := preload("res://physics/aircraft_data.gd")
++const Wheels := preload("res://physics/wheel_profiles.gd")
++const Log := preload("res://sim/flight_log.gd")
++const Reader := preload("res://tools/flight_log_cli.gd")
++const Catalog := preload("res://app_state/aircraft_catalog.gd")
++const RB := preload("res://physics/rigid_body.gd")
++const Ground := preload("res://physics/ground_contact.gd")
++const MainInput := preload("res://tests/fixtures/fixed_brake_main_input.gd")
++var checks := 0
++var failures := 0
++var cleanup: Array[String] = []
++
++func digest(value: Variant) -> String:
++	var hash := HashingContext.new()
++	hash.start(HashingContext.HASH_SHA256)
++	hash.update(var_to_bytes(value))
++	return hash.finish().hex_encode()
++
++func legacy_metadata(f: Node) -> Dictionary:
++	var metadata: Dictionary = f.trace_meta()
++	metadata.created_utc = "fixed-brake-legacy-fixture-time"
++	return metadata
++
++func check(label: String, condition: bool, detail := "") -> void:
++	checks += 1
++	if not condition:
++		failures += 1
++		printerr("FAIL ", label, " ", detail)
++
++func _initialize() -> void:
++	call_deferred("run_all")
++
++func run_all() -> void:
++	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://../tmp/gp12-fixed-brake-session"))
++	legacy()
++	hardware_boundary()
++	for flaps: bool in [false, true]:
++		for brakes: bool in [false, true]:
++			candidate(flaps, brakes)
++	for path: String in cleanup:
++		DirAccess.remove_absolute(path)
++	print("Fixed brake candidate: %d checks, %d failed" % [checks, failures])
++	quit(1 if failures else 0)
++
++func hardware_boundary() -> void:
++	var data := fixture(false, true)
++	if not data.ok: return
++	var boundary := Flight.new()
++	boundary.aircraft = data.duplicate(true)
++	check("validated synthetic hardware is explicitly admitted", boundary.wheel_brake_available())
++	for field: String in ["status", "availability", "source_availability", "provenance_value", "unit", "kind", "source"]:
++		for wrong: Variant in [null, true, 1, [], {}, StringName("available")]:
++			boundary.aircraft = data.duplicate(true)
++			var contact: Dictionary = boundary.aircraft.model.landing_gear.contacts[0]
++			match field:
++				"status": boundary.aircraft.model.wheel_profile.status = wrong
++				"availability": contact.brake_availability = wrong
++				"source_availability": contact.wheel_provenance.brake_availability = wrong
++				"provenance_value": contact.wheel_provenance.brake_torque.value = wrong
++				"unit": contact.wheel_provenance.brake_torque.unit = wrong
++				"kind": contact.wheel_provenance.brake_torque.kind = wrong
++				"source": contact.wheel_provenance.brake_torque.source = wrong
++			check("malformed hardware primitive fails closed " + field, not boundary.wheel_brake_available())
++	for wrong: Variant in [null, true, [], 1, "applied"]:
++		boundary.aircraft = data.duplicate(true)
++		boundary.aircraft.model.wheel_profile = wrong
++		check("malformed profile container fails closed", not boundary.wheel_brake_available())
++		boundary.aircraft = data.duplicate(true)
++		boundary.aircraft.model.landing_gear = wrong
++		check("malformed gear container fails closed", not boundary.wheel_brake_available())
++		boundary.aircraft = data.duplicate(true)
++		boundary.aircraft.model.landing_gear.contacts = wrong
++		check("malformed contacts container fails closed", not boundary.wheel_brake_available())
++		boundary.aircraft = data.duplicate(true)
++		boundary.aircraft.model.landing_gear.contacts[0] = wrong
++		check("malformed contact fails closed", not boundary.wheel_brake_available())
++	boundary.aircraft = data.duplicate(true)
++	boundary.aircraft.model.landing_gear.contacts[0].brake_torque = 1.0
++	boundary.aircraft.model.landing_gear.contacts[0].wheel_provenance.brake_torque.value = true
++	check("bool provenance never equals numeric one", not boundary.wheel_brake_available())
++	boundary.aircraft = data.duplicate(true)
++	boundary.aircraft.model.wheel_profile.status = "legacy_fallback"
++	check("positive torque alone cannot create hardware capability", not boundary.wheel_brake_available())
++	boundary.free()
++
++func fixture(flaps: bool, brakes: bool) -> Dictionary:
++	var source_path := "res://data/aircraft/sebart_avanti_s_a200.json" if flaps else "res://data/aircraft/jensen_ugly_stik_60.json"
++	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(source_path))
++	if flaps:
++		raw.capabilities.gear = "fixed_tricycle"
++		raw.landing_gear.erase("retraction")
++		for contact: Dictionary in raw.landing_gear.contacts:
++			contact.erase("retraction_path")
++	var validated := Data.validate_and_derive(raw)
++	check("authored fixed fixture validates", validated.ok, str(validated.get("errors")))
++	if not validated.ok: return validated
++	var authored_file := FileAccess.open("res://../tmp/gp12-fixed-brake-session/authored-fixed-%s.json" % flaps, FileAccess.WRITE)
++	authored_file.store_string(JSON.stringify(raw, "\t"))
++	authored_file.close()
++	var table: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Wheels.DEFAULT_PATH))
++	var profile: Dictionary = table.profiles[raw.id].duplicate(true)
++	for name: String in profile.contacts:
++		var contact: Dictionary = profile.contacts[name]
++		# Synthetic test hardware, deliberately not a manufacturer/stock claim.
++		contact.brake_availability = "available" if brakes else "none"
++		contact.brake_torque = {value = 0.2 if brakes else 0.0, unit = "N·m", kind = "estimated",
++			source = "GP12 detached software fixture only; synthetic shared-brake hardware, no stock aircraft claim"}
++	var path := ProjectSettings.globalize_path("res://../tmp/gp12-fixed-brake-session/profile-%s-%s.json" % [flaps, brakes])
++	var file := FileAccess.open(path, FileAccess.WRITE)
++	file.store_string(JSON.stringify({format = Wheels.FORMAT, profiles = {raw.id: profile}}))
++	file.close()
++	var applied := Wheels.apply_to_model(validated.model, path)
++	check("synthetic provenance profile admitted by sole hardware owner", applied.ok, str(applied.get("errors")))
++	if applied.ok:
++		validated.model = applied.model
++		validated.wheel_profile_identity = applied.identity
++	return validated
++
++func step(f: Node, count: int) -> void:
++	for i: int in count:
++		f.sim.inputs = f._inputs()
++		f.sim.step()
++
++func record(trace: RefCounted, f: Node) -> void:
++	trace.meta.mass_trace_schema = "openrc-mass-sample v1"
++	trace.record(f.sim.tick, f.sim.time(), f.sim.state, f.sim.last_loads, f.sim.inputs,
++		f.sim.aux, f.sim.continuous, f.mass_properties())
++
++func candidate(flaps: bool, brakes: bool) -> void:
++	var data := fixture(flaps, brakes)
++	if not data.ok: return
++	var f := Flight.new()
++	f.setup("fixture://fixed-brake", "", data)
++	check("fixture launches through existing owner", f.is_flyable() and f.physics_enabled, str(f.runway_start_outcome))
++	if not f.is_flyable():
++		f.free()
++		return
++	var width: int = 4 + int(flaps) + int(brakes)
++	check("fixed hardware independent of retraction", not f.gear_is_retractable() and f.wheel_brake_available() == brakes)
++	check("conditional input slot and width", f.sim.inputs.size() == width and f.wheel_brake_input_index() == (4 if brakes else -1))
++	check("flap input follows only installed commands", f.flap_input_index() == (width - 1 if flaps else -1))
++	check("positive shared command matches hardware", f.set_wheel_brake(0.7) == brakes)
++	step(f, 2)
++	if brakes: check("accepted demand reaches fixed input", f.sim.inputs[4] == 0.7)
++	var cp := f.checkpoint()
++	check("checkpoint available", not cp.is_empty())
++	check("conditional checkpoint identity only on new layout", cp.has("fixed_brake_input_law") == brakes
++		and cp.has("wheel_brake_input_index") == brakes)
++	var meta := f.trace_meta()
++	check("conditional metadata identity and named roles", meta.has("fixed_brake_input_law") == brakes
++		and Reader.input_names({inputs = width}, meta).ok)
++	var trace := Trace.new()
++	trace.meta = meta
++	record(trace, f)
++	check("Trace accepts supported owner shape and retains old unsupported refusal", trace.row_count() == (0 if flaps and not brakes else 1), str(trace.columns()))
++	if flaps and not brakes:
++		check("historically unsupported fixed turbine-wheel Trace stays refused", trace.row_count() == 0)
++	check("Trace brake column exists only with hardware", trace.columns().has("cmd_wheel_brake") == brakes)
++	check("Trace never invents gear extension", not trace.columns().has("gear_extension"))
++	var csv := trace.to_csv()
++	check("only fixed brake selects v17 with underlying identity", csv.begins_with("# format: openrc-trace v17\n") == brakes
++		and csv.contains("# fixed_brake_base_trace_format: ") == brakes)
++	if brakes:
++		var output := FileAccess.open("res://../tmp/gp12-fixed-brake-session/trace-%s.csv" % flaps, FileAccess.WRITE)
++		output.store_string(csv)
++		output.close()
++	if brakes and trace.row_count(): check("Trace records actual shared input", trace.value(0, "cmd_wheel_brake") == 0.7)
++	step(f, 5)
++	var expected := var_to_bytes(f.sim.checkpoint())
++	check("checkpoint restores accepted brake state", f.restore_checkpoint(cp))
++	f.sim.set_paused(false)
++	step(f, 5)
++	check("candidate checkpoint continuation is byte exact", expected == var_to_bytes(f.sim.checkpoint()))
++	var before := var_to_bytes(f.checkpoint())
++	if brakes:
++		for field: String in ["fixed_brake_input_law", "wheel_brake_input_index", "fraction"]:
++			var bad := cp.duplicate(true)
++			if field == "fraction": bad.simulation.inputs[4] = NAN
++			else: bad[field] = "wrong"
++			check("malformed brake checkpoint refuses atomically " + field, not f.restore_checkpoint(bad)
++				and before == var_to_bytes(f.checkpoint()))
++		for key: String in ["fixed_brake_input_law", "wheel_brake_input_index", "gear_law", "input_layout"]:
++			var hostile := Trace.new()
++			hostile.meta = meta.duplicate(true)
++			hostile.meta[key] = "bad"
++			record(hostile, f)
++			check("Trace rejects inconsistent role identity " + key, hostile.row_count() == 0)
++		var oversized := Trace.new()
++		oversized.meta = meta.duplicate(true)
++		oversized.meta.input_layout = " ".repeat(257) + str(meta.input_layout)
++		record(oversized, f)
++		check("Trace bounds role JSON before parsing", oversized.row_count() == 0)
++	check("zero releases clear without hardware/while paused", f.set_wheel_brake(0.0))
++	f.sim.set_paused(true)
++	check("paused positive command refused", not f.set_wheel_brake(1.0))
++	check("paused release remains legal", f.set_wheel_brake(0.0))
++	f.sim.set_paused(false)
++	f.input_enabled = true
++	if brakes:
++		main_input(f)
++	for bad: float in [-0.1, 1.1, NAN, INF]: check("invalid demand refused", not f.set_wheel_brake(bad))
++	if brakes: check("nonzero demand staged before reset", f.set_wheel_brake(0.6) and f._inputs()[4] == 0.6)
++	f.reset()
++	check("existing reset clears brake demand", f._inputs().size() == width and (not brakes or f._inputs()[4] == 0.0))
++	if brakes:
++		check("reload starts with zero demand", f.set_wheel_brake(0.5) and not f.reload().is_empty() and f._inputs()[4] == 0.0)
++		grounded_braking(f)
++	# External packet admission and rejected packet preservation use the existing owner.
++	f.external_driver_enabled = true
++	var packet := {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0, brake = 0.4}
++	check("external brake hardware validation", f.prepare_external_tick(packet).ok == brakes)
++	if not brakes:
++		packet.brake = 0.0
++		check("external zero release needs no brake hardware", f.prepare_external_tick(packet).ok and f.step_external_tick())
++		check("external release preserves unbraked layout", f.sim.inputs.size() == width and f._wheel_brake_demand == 0.0)
++	if brakes:
++		check("external packet commits exactly one normal tick", f.step_external_tick() and f.sim.inputs[4] == 0.4)
++		var tick: int = f.sim.tick
++		packet.brake = 1.1
++		check("external invalid packet cannot advance", not f.prepare_external_tick(packet).ok and not f.step_external_tick() and f.sim.tick == tick)
++		packet.brake = 0.3
++		check("valid external packet can be staged before refusal", f.prepare_external_tick(packet).ok)
++		packet.brake = NAN
++		check("malformed replacement preserves prior staged packet", not f.prepare_external_tick(packet).ok
++			and f.step_external_tick() and f.sim.inputs[4] == 0.3)
++		log_roundtrip(f, data)
++		rejected_tick(f)
++		hardware_loss(f, flaps)
++	f.free()
++
++func hardware_loss(f: Node, flaps: bool) -> void:
++	f.external_driver_enabled = false
++	f.input_enabled = true
++	f.sim.set_paused(false)
++	check("brake demand is positive before hardware replacement", f.set_wheel_brake(0.8))
++	f._frozen_aircraft = fixture(flaps, false)
++	f.reload()
++	check("accepted valid unbraked replacement removes capability and demand", f.is_flyable()
++		and not f.wheel_brake_available() and f._wheel_brake_demand == 0.0 and f.sim.inputs.size() == 4 + int(flaps))
++	f.external_driver_enabled = true
++	var packet := {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0, brake = 0.0}
++	check("external release after real hardware replacement is admitted", f.prepare_external_tick(packet).ok and f.step_external_tick())
++	var before := digest(f.commands)
++	packet.roll = 2.0
++	check("mixed invalid packet cannot partially apply release or controls", not f.prepare_external_tick(packet).ok
++		and not f.step_external_tick() and before == digest(f.commands))
++
++func rejected_tick(f: Node) -> void:
++	var saved: Dictionary = f.checkpoint()
++	var stage: Callable = f.sim.model.stage
++	var generation: int = f.statistics_generation
++	f.sim.model.stage = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _time: float) -> Dictionary: return {}
++	f.sim.step()
++	var retained := true
++	for key: String in ["state", "aux", "continuous", "inputs", "modes", "tick", "last_loads"]:
++		retained = retained and var_to_bytes(f.sim.get(key)) == var_to_bytes(saved.simulation[key])
++	check("rejected fixed-layout RK tick retains complete accepted physical frame", retained and not f.sim.fault_reason.is_empty())
++	check("rejected fixed-layout tick creates no flight generation", generation == f.statistics_generation)
++	f.sim.model.stage = stage
++	check("fixed-layout restore recovers after rejected RK tick", f.restore_checkpoint(saved))
++
++func grounded_braking(f: Node) -> void:
++	var body: PackedFloat64Array = f.sim.state.duplicate()
++	# Deliberate frozen loaded state; this is a force-routing oracle, not a trimmed runway launch claim.
++	for i: int in 3:
++		body[RB.RATE + i] = 0.0
++		body[RB.VEL + i] = 0.0
++	for i: int in 4: body[RB.ATT + i] = 1.0 if i == 0 else 0.0
++	var lowest := -INF
++	for contact: Dictionary in f.aircraft.model.landing_gear.contacts: lowest = maxf(lowest, contact.position[2])
++	body[RB.POS + 2] = 0.005 - lowest
++	body[RB.VEL] = 5.0
++	var continuous: PackedFloat64Array = f.sim.continuous.duplicate()
++	# Ground receives the rotating tail without the separate finite-fuel inventory slots.
++	continuous.resize(f.wheel_index() + f.wheel_count())
++	for i: int in f.wheel_count(): continuous[f.wheel_index() + i] = 5.0
++	f.sim.inputs[4] = 0.0
++	var free: Dictionary = f._ground_evaluation(body, f.sim.aux, continuous, {}, f.mass_properties())
++	f.sim.inputs[4] = 1.0
++	var braking: Dictionary = f._ground_evaluation(body, f.sim.aux, continuous, {}, f.mass_properties())
++	check("existing ground law remains finite and loaded", free.ok and braking.ok and free.loads.size() == 6)
++	var reduction := false
++	if free.derivative.size() == f.wheel_count() and braking.derivative.size() == f.wheel_count():
++		for i: int in f.wheel_count(): reduction = reduction or braking.derivative[i] < free.derivative[i]
++	check("new input reaches existing finite-torque rim response", reduction)
++	var anchors: PackedFloat64Array = f.sim.aux.slice(f.AUX_ANCHORS, f.AUX_ANCHORS + f.anchor_count() * Ground.ANCHOR_STRIDE)
++	var direct := Ground.evaluate(body, f.current_landing_gear(f.sim.aux), f.sim.aux[f.AUX_SERVO + 2], f.ground_surfaces,
++		anchors, continuous.slice(f.wheel_index()), 1.0, false, f.lake_context())
++	check("exact existing rim derivative, including body reaction law", braking.ok and direct.derivative == braking.derivative)
++	f.sim.inputs[4] = 0.0
++
++func main_input(f: Node) -> void:
++	var main := MainInput.new()
++	main.session = f
++	root.add_child(main)
++	var key := InputEventKey.new()
++	key.physical_keycode = KEY_B
++	key.pressed = true
++	main._unhandled_input(key)
++	check("real Main B path admits fixed hardware", main._wheel_brake_key_held and f._inputs()[4] == 1.0)
++	f.sim.set_paused(true)
++	key.pressed = false
++	main._input(key)
++	check("Main key release clears while paused", not main._wheel_brake_key_held and f._inputs()[4] == 0.0)
++	f.sim.set_paused(false)
++	key.pressed = true
++	main._unhandled_input(key)
++	main._notification(MainInput.NOTIFICATION_APPLICATION_FOCUS_OUT)
++	check("Main focus loss clears shared brake", not main._wheel_brake_key_held and f._inputs()[4] == 0.0)
++	main.session = null
++	main.free()
++
++func log_roundtrip(f: Node, data: Dictionary) -> void:
++	var path := ProjectSettings.globalize_path("res://../tmp/gp12-fixed-brake-session/candidate-%d.orfl" % Time.get_ticks_usec())
++	cleanup.append(path)
++	var log := Log.new(f)
++	check("existing ORFL starts new layout", log.start(path) == OK)
++	step(f, 4)
++	check("existing ORFL completes new layout", log.stop() == OK)
++	var inspected := Reader.inspect(path)
++	check("named-input ORFL reader accepts fixed brake", inspected.ok and inspected.complete)
++	if not inspected.ok: return
++	var replay := Flight.new()
++	replay.input_enabled = false
++	replay.setup("fixture://fixed-brake", "", data)
++	check("new layout ORFL checkpoint restores candidate owner", replay.restore_checkpoint(inspected.header.checkpoint))
++	var stream := FileAccess.open(path, FileAccess.READ)
++	stream.seek(8)
++	Log.read_packet(stream)
++	var first := true
++	var exact := true
++	var observer := Log.new(replay)
++	while stream.get_position() < stream.get_length():
++		var packet := Log.read_packet(stream)
++		if not packet.ok:
++			exact = false
++			break
++		if packet.value.kind == "footer": break
++		for row: Dictionary in packet.value.rows:
++			if first:
++				first = false
++				continue
++			replay.sim.inputs = row.inputs.duplicate()
++			replay.sim.step()
++			if not Reader.disagreement(row, observer._sample({})).is_empty(): exact = false
++	check("every candidate ORFL row exact against source-pinned draft owner", exact)
++	replay.free()
++	stream.close()
++
++func legacy() -> void:
++	var frozen: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/fixed_brake_legacy_outputs.json"))
++	for id: String in frozen.outputs:
++		var expected: Dictionary = frozen.outputs[id]
++		var f := Flight.new()
++		f.setup(Catalog.entry(id).data)
++		check("frozen legacy checkpoint/metadata exact " + id,
++			Engine.get_version_info().string == frozen.engine and Engine.physics_ticks_per_second == frozen.physics_hz
++			and digest(f.checkpoint()) == expected.checkpoint and digest(legacy_metadata(f)) == expected.metadata)
++		var trace := Trace.new()
++		trace.meta = legacy_metadata(f)
++		record(trace, f)
++		check("frozen legacy CSV exact " + id, trace.row_count() == 1 and trace.to_csv().sha256_text() == expected.trace_csv)
++		step(f, 3)
++		check("frozen legacy continuation exact " + id, digest(f.sim.checkpoint()) == expected.after_three_ticks)
++		f.free()

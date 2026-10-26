@@ -1,0 +1,47 @@
+--- app/sim/flight_session.gd
++++ tmp\gp19-hull-lake\draft\flight_session.gd
+@@ -611,7 +611,7 @@
+ const GroundTerrain := preload("res://physics/ground_terrain.gd")
+ const GroundEffect := preload("res://physics/ground_effect.gd")
+ const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
+-const HullContact := preload("res://physics/hull_contact.gd")
++const HullContact := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-lake/draft/hull_contact.gd")
+ const IntendedHullSupport := preload("res://physics/intended_hull_support.gd")
+ const ContactContract := preload("res://physics/aircraft_contact_contract.gd")
+ const ContactEvents := preload("res://sim/aircraft_contact_events.gd")
+@@ -2087,19 +2087,16 @@
+ 	if not soft_hull_contacts or _hull_contact.is_empty():
+ 		result.reason = "soft_hull_unavailable"
+ 		return result
+-	if not _lake.is_empty():
+-		result.reason = "flat_solid_scope_lake_unavailable"
+-		return result
+ 	if _contact_tick < 0 or _contact_tick != sim.tick:
+ 		result.reason = "no_current_accepted_hull_tick"
+ 		return result
+ 	# State/layout/field binding changes invalidate even at the same clock value.
+ 	# The owner-supplied accepted state is observed once; render only drains audio.
+ 	var key := var_to_bytes([sim.tick, statistics_generation, sim.state, sim.continuous,
+-		_hull_contact, _contact_bindings, environment.surfaces, environment._ground_support])
++		_hull_contact, _contact_bindings, _lake, environment.surfaces, environment._ground_support])
+ 	if key == _hull_scrape_cache_key:
+ 		return _hull_scrape_cache.duplicate(true)
+-	var diagnostics: Array = []
++	var diagnostics := {}
+ 	if finite_fuel_is_active():
+ 		var properties := mass_properties()
+ 		var sampled := HullContact.loads_at_properties(sim.state, _hull_contact, properties, diagnostics)
+@@ -2108,9 +2105,12 @@
+ 			return result
+ 	else:
+ 		HullContact.loads(sim.state, _hull_contact, [], diagnostics)
++	if not diagnostics.available:
++		result.reason = str(diagnostics.reason)
++		return result
+ 	var probes: Array = _contact_bindings.get("hull_probes", [])
+ 	var rows: Array = []
+-	for diagnostic: Dictionary in diagnostics:
++	for diagnostic: Dictionary in diagnostics.rows:
+ 		var index: int = diagnostic.index
+ 		if index < 0 or index >= probes.size():
+ 			result.reason = "hull_binding_unavailable"

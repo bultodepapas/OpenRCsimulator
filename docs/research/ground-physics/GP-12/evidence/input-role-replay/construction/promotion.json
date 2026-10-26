@@ -1,0 +1,9 @@
+{
+  "format": "openrc-input-roles-promotion v1",
+  "before_sha256": "312754377f145d9ffa78f73b3f5fb96b6548967636a273a7bcf8437acbdf093b",
+  "files": {
+    "app/tools/flight_log_cli.gd": "63910193d1db8e2dc46961b9536b548e35c307e81e63ce338333b029b46442c7",
+    "app/tests/test_flight_log_inputs.gd": "03d430f3ded9e1c55ae089831e485bf322aedc49b272862e54a0112b4e53191a",
+    "app/tests/fixtures/flight_log_input_columns.json": "bd2329a6ea1b01990459dbc7b8067ef000ff590fb22d08affefb3a42f713ba8f"
+  }
+}

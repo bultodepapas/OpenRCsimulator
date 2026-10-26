@@ -1,0 +1,271 @@
+--- a/app/physics/hull_contact.gd
++++ b/app/physics/hull_contact.gd
+@@ -187,6 +187,9 @@
+ 		diagnostics_out: Variant = null) -> Dictionary:
+ 	if diagnostics_out is Array:
+ 		diagnostics_out.clear()
++	elif diagnostics_out is Dictionary:
++		diagnostics_out.clear()
++		diagnostics_out.merge({available = true, reason = "", rows = []})
+ 	var valid: Dictionary = EffectiveMass.validate_properties(properties)
+ 	if not bool(valid.get("ok", false)):
+ 		return {ok = false, loads = PackedFloat64Array(), reason = str(valid.get("reason", "invalid_mass_properties"))}
+@@ -258,6 +261,12 @@
+ 			var terrain: Dictionary = _lake_sample(geometry, point_ned)
+ 			lake_samples.append({point_ned = point_ned, terrain = terrain})
+ 			if bool(terrain.get("covered", false)):
++				# Qualification uses this exact force owner's sample, even when no
++				# point needs coefficients and the dynamic path returns early.
++				if diagnostics_out is Dictionary:
++					diagnostics_out.available = false
++					diagnostics_out.reason = "covered_lake_branch_unqualified"
++					diagnostics_out.rows.clear()
+ 				var ground_down: float = float(terrain.get("ground_down_m", NAN))
+ 				if not is_finite(ground_down):
+ 					return {ok = false, loads = PackedFloat64Array(), reason = "invalid_lake_terrain"}
+@@ -293,12 +302,18 @@
+ 	return {ok = true, loads = loads(s, prepared, lake_samples, diagnostics_out), reason = ""}
+ 
+ 
++## Optional diagnostics accept the historical Array or a structured collector
++## {available, reason, rows}. Covered lake branches invalidate the entire structured
++## batch. This qualification reuses force samples; it never classifies terrain again.
+ ## Body loads [Fx, Fy, Fz, Mx, My, Mz] from every touching hull point, or EMPTY when none touches (callers add
+ ## nothing, so flight away from the ground is bit-identical).
+ static func loads(s: PackedFloat64Array, prepared: Dictionary,
+ 		lake_samples: Array[Dictionary] = [], diagnostics_out: Variant = null) -> PackedFloat64Array:
+ 	if diagnostics_out is Array:
+ 		diagnostics_out.clear()
++	elif diagnostics_out is Dictionary:
++		diagnostics_out.clear()
++		diagnostics_out.merge({available = true, reason = "", rows = []})
+ 	if prepared.is_empty() or -s[RB.POS + 2] > float(prepared.reach):
+ 		return PackedFloat64Array()
+ 	var hull: PackedFloat64Array = prepared.points
+@@ -320,6 +335,12 @@
+ 	var touching := 0
+ 	for i in range(0, hull.size(), 3):
+ 		if not lake.is_empty() and bool(samples[i / 3].terrain.get("covered", false)):
++			# Certify the whole diagnostic batch BEFORE any force row can publish.
++			# Default loads still use this same sample and arithmetic unchanged.
++			if diagnostics_out is Dictionary:
++				diagnostics_out.available = false
++				diagnostics_out.reason = "covered_lake_branch_unqualified"
++				diagnostics_out.rows.clear()
+ 			if _lake_compression(samples[i / 3].point_ned, samples[i / 3].terrain) > 0.0:
+ 				touching += 1
+ 		elif s[RB.POS + 2] + down[0] * hull[i] + down[1] * hull[i + 1] + down[2] * hull[i + 2] > 0.0:
+@@ -374,11 +395,14 @@
+ 		out[5] += rx * fy - ry * fx
+ 		# GP-19 optional endpoint diagnostics use the SAME computed force/velocity.
+ 		# No allocation on ordinary RK loads; no interval-work or heat claim.
+-		if diagnostics_out is Array and lake.is_empty():
+-			diagnostics_out.append({index = point, point_ned = _point_ned(s, body_point),
++		if (diagnostics_out is Array and lake.is_empty()) \
++			or (diagnostics_out is Dictionary and diagnostics_out.available):
++			var row := {index = point, point_ned = _point_ned(s, body_point),
+ 				normal_force_n = f_up, tangent_force_ned_n = PackedFloat64Array([f_n, f_e, 0.0]),
+ 				relative_tangent_velocity_ned_mps = PackedFloat64Array([vn, ve, 0.0]),
+-				friction_power_w = -(f_n * vn + f_e * ve)})
++				friction_power_w = -(f_n * vn + f_e * ve)}
++			if diagnostics_out is Array: diagnostics_out.append(row)
++			else: diagnostics_out.rows.append(row)
+ 		touched = true
+ 	return out if touched else PackedFloat64Array()
+ 
+--- a/app/sim/flight_session.gd
++++ b/app/sim/flight_session.gd
+@@ -2087,19 +2087,16 @@
+ 	if not soft_hull_contacts or _hull_contact.is_empty():
+ 		result.reason = "soft_hull_unavailable"
+ 		return result
+-	if not _lake.is_empty():
+-		result.reason = "flat_solid_scope_lake_unavailable"
+-		return result
+ 	if _contact_tick < 0 or _contact_tick != sim.tick:
+ 		result.reason = "no_current_accepted_hull_tick"
+ 		return result
+ 	# State/layout/field binding changes invalidate even at the same clock value.
+ 	# The owner-supplied accepted state is observed once; render only drains audio.
+ 	var key := var_to_bytes([sim.tick, statistics_generation, sim.state, sim.continuous,
+-		_hull_contact, _contact_bindings, environment.surfaces, environment._ground_support])
++		_hull_contact, _contact_bindings, _lake, environment.surfaces, environment._ground_support])
+ 	if key == _hull_scrape_cache_key:
+ 		return _hull_scrape_cache.duplicate(true)
+-	var diagnostics: Array = []
++	var diagnostics := {}
+ 	if finite_fuel_is_active():
+ 		var properties := mass_properties()
+ 		var sampled := HullContact.loads_at_properties(sim.state, _hull_contact, properties, diagnostics)
+@@ -2108,9 +2105,12 @@
+ 			return result
+ 	else:
+ 		HullContact.loads(sim.state, _hull_contact, [], diagnostics)
++	if not diagnostics.available:
++		result.reason = str(diagnostics.reason)
++		return result
+ 	var probes: Array = _contact_bindings.get("hull_probes", [])
+ 	var rows: Array = []
+-	for diagnostic: Dictionary in diagnostics:
++	for diagnostic: Dictionary in diagnostics.rows:
+ 		var index: int = diagnostic.index
+ 		if index < 0 or index >= probes.size():
+ 			result.reason = "hull_binding_unavailable"
+--- a/app/tests/test_hull_friction_observation.gd
++++ b/app/tests/test_hull_friction_observation.gd
+@@ -3,6 +3,7 @@
+ const H = preload("res://physics/hull_contact.gd")
+ const REFERENCE := "res://tests/fixtures/hull_friction_reference.bin"
+ const REFERENCE_SHA256 := "66f4a8e91c6b5161db938ac3a3deadbed9993829703fcffdd00755937e082811"
++const Lake = preload("res://data/lake_loader.gd")
+ const RB = preload("res://physics/rigid_body.gd")
+ const M = preload("res://physics/math3d.gd")
+ var checks := 0
+@@ -66,5 +67,76 @@
+ 	props.inverse=RB.inertia_inverse(props.inertia)
+ 	var lighter := H.loads_at_properties(state,geometry,props,rows)
+ 	check("live mass sampling changes the same-law contact response",lighter.ok and rows.size()>0 and var_to_bytes(lighter)==var_to_bytes(reference.dynamic[1]) and lighter.loads[2]!=full_force[2])
++	_structured_lake_scope()
+ 	print("Hull scrape metrics: %d checks, %d failed"%[checks,failed])
+ 	quit(1 if failed else 0)
++
++
++func _structured_lake_scope() -> void:
++	var loaded := Lake.load_from()
++	check("actual normalized lake fixture loads",loaded.ok)
++	if not loaded.ok:return
++	var lake: Dictionary=loaded.lake
++	var inertia:=PackedFloat64Array([1.,1.,1.,0.,0.,0.])
++	var hull:=M.v3(0,0,0)
++	var prepared:=H.prepare(hull,1.,inertia,lake)
++	var geometry:=H.prepare_geometry(hull,lake)
++	var props:Dictionary={ok=true,mass_kg=1.,cg_body_m=M.v3(.1,-.04,.02),inertia=inertia,inverse=RB.inertia_inverse(inertia)}
++	var state:=RB.make_state(M.v3(0,0,.002),M.v3(10,0,0),M.q_identity(),M.v3(0,0,0))
++	var collector:Dictionary={old=true}
++	var result:=H.loads(state,prepared,[],collector)
++	check("configured lake outside actual samples yields closed dry collector",collector.size()==3 and collector.available and collector.reason=="" and collector.rows.size()==1)
++	check("dry structured observation leaves default load bytes unchanged",var_to_bytes(result)==var_to_bytes(H.loads(state,prepared)) and collector.rows[0].friction_power_w>0.)
++	var legacy:Array=[{old=true}]
++	H.loads(state,prepared,[],legacy)
++	check("historical Array lake behavior remains empty",legacy.is_empty())
++	var live:=H.loads_at_properties(state,geometry,props,collector)
++	check("live mass outside lake returns dry scope and same force bytes",live.ok and collector.available and collector.rows.size()==1 and var_to_bytes(live)==var_to_bytes(H.loads_at_properties(state,geometry,props)))
++	# Use the actual authored center and provider result for water/bed coverage.
++	state[RB.POS]=lake.origin_north_m;state[RB.POS+1]=lake.origin_east_m
++	var center:Dictionary=H._lake_sample(prepared,state.slice(RB.POS,RB.POS+3))
++	check("fixture center is actual covered bed",center.covered and center.region=="bed")
++	state[RB.POS+2]=float(center.ground_down_m)+.002
++	result=H.loads(state,prepared,[],collector)
++	check("loaded covered lake branch rejects whole structured batch",not collector.available and collector.reason=="covered_lake_branch_unqualified" and collector.rows.is_empty() and not result.is_empty())
++	check("covered diagnostic cannot change lake forces",var_to_bytes(result)==var_to_bytes(H.loads(state,prepared)))
++	live=H.loads_at_properties(state,geometry,props,collector)
++	check("live downstream loads preserves covered rejection",live.ok and not collector.available and collector.rows.is_empty() and var_to_bytes(live)==var_to_bytes(H.loads_at_properties(state,geometry,props)))
++	state[RB.POS+2]=.002
++	live=H.loads_at_properties(state,geometry,props,collector)
++	check("covered no-active live return retains unavailable rather than dry success",live.ok and live.loads.is_empty() and not collector.available and collector.reason=="covered_lake_branch_unqualified" and collector.rows.is_empty())
++	# An explicit authored boundary pair spans only4cm; classify solely with the
++	# same HullContact provider, never a copied bank/rectangle test.
++	var bank:PackedFloat64Array=lake.bank_ne_m
++	var edge:=0
++	for i in range(0,bank.size(),2):
++		if bank[i]>bank[edge]:edge=i
++	state[RB.POS]=bank[edge];state[RB.POS+1]=bank[edge+1];state[RB.POS+2]=.002
++	for order in [1.,-1.]:
++		var pair:=PackedFloat64Array([.02*order,0.,0.,-.02*order,0.,0.])
++		var mixed:=H.prepare(pair,1.,inertia,lake)
++		var covered:=0
++		for i in range(0,pair.size(),3):
++			if H._lake_sample(mixed,H._point_ned(state,pair.slice(i,i+3))).covered:covered+=1
++		check("authored boundary fixture really spans dry and covered samples",covered==1)
++		result=H.loads(state,mixed,[],collector)
++		check("mixed order rejects all rows and leaves constant force exact",not collector.available and collector.rows.is_empty() and collector.reason=="covered_lake_branch_unqualified" and var_to_bytes(result)==var_to_bytes(H.loads(state,mixed)))
++		live=H.loads_at_properties(state,H.prepare_geometry(pair,lake),props,collector)
++		check("mixed live reinitialization cannot erase unavailable scope",live.ok and not collector.available and collector.rows.is_empty() and collector.reason=="covered_lake_branch_unqualified" and var_to_bytes(live)==var_to_bytes(H.loads_at_properties(state,H.prepare_geometry(pair,lake),props)))
++	# Covered bank proper, using an authored shoreline/bank radial midpoint.
++	state[RB.POS]=.5*(lake.shoreline_ne_m[0]+bank[0]);state[RB.POS+1]=.5*(lake.shoreline_ne_m[1]+bank[1])
++	var terrain:Dictionary=H._lake_sample(prepared,state.slice(RB.POS,RB.POS+3))
++	check("authored midpoint is actual bank scope",terrain.covered and terrain.region=="bank")
++	state[RB.POS+2]=terrain.ground_down_m+.002
++	H.loads(state,prepared,[],collector)
++	check("actual bank force scope stays explicitly unavailable",not collector.available and collector.rows.is_empty())
++	state[RB.POS+2]=-100.
++	H.loads(state,prepared,[],collector)
++	check("height-clear fast path is available empty without geography claim",collector.available and collector.rows.is_empty() and collector.reason=="")
++	# Reusing the scratch output cannot retain old failure or old rows.
++	state[RB.POS]=0.;state[RB.POS+1]=0.;state[RB.POS+2]=.002;state[RB.VEL+2]=-1.
++	H.loads(state,prepared,[],collector)
++	check("dry opening overlap has available zero-load observation",collector.available and collector.rows.is_empty())
++	state[RB.VEL+2]=0.;state[RB.VEL]=0.
++	H.loads(state,prepared,[],collector)
++	check("dry stationary loaded row has exactly zero power",collector.available and collector.rows.size()==1 and collector.rows[0].friction_power_w==0.)
+--- a/app/tests/test_hull_scrape_session.gd
++++ b/app/tests/test_hull_scrape_session.gd
+@@ -9,6 +9,7 @@
+ const Field = preload("res://data/field_loader.gd")
+ const Lake = preload("res://data/lake_loader.gd")
+ const Impact = preload("res://physics/impact_snapshot.gd")
++const DefaultMain = preload("res://main.tscn")
+ const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
+ const GLOW := "res://data/aircraft/stik_glow_61fx_2t.json"
+ var checks := 0
+@@ -161,13 +162,17 @@
+ 		fuel_exact=fuel_exact and accepted==var_to_bytes(fuel.checkpoint()) and accepted==var_to_bytes(fuel_reference.checkpoint())
+ 	check("finite-fuel accepted-tick observer on/off preserves all checkpoint bytes",fuel_exact and fuel.sim.fault_reason.is_empty())
+ 	fuel.free();fuel_reference.free()
+-	# Lake is deliberately outside the qualified exact flat-force observation domain.
++	# Only authoritative covered lake branches are outside the qualified flat scope.
+ 	var lake_flight:=session()
+ 	var loaded_lake:=Lake.load_from()
+ 	check("lake fixture loads",loaded_lake.ok)
+ 	if loaded_lake.ok:
+ 		check("lake context installs on accepted tick0",lake_flight.set_lake_context(loaded_lake.lake))
+-		check("lake observation refuses without guessed power/material",not lake_flight.hull_scrape_observation().available and lake_flight.hull_scrape_observation().reason=="flat_solid_scope_lake_unavailable")
++		check("height-clear configured lake is available empty",lake_flight.hull_scrape_observation().available and lake_flight.hull_scrape_observation().contacts.is_empty())
++		var covered:=body(lake_flight)
++		covered[RB.POS]=loaded_lake.lake.origin_north_m;covered[RB.POS+1]=loaded_lake.lake.origin_east_m
++		check("accepted body fixture is under actual lake coverage",lake_flight.sim.reset(covered))
++		check("actual covered observation refuses without partial dry rows",not lake_flight.hull_scrape_observation().available and lake_flight.hull_scrape_observation().reason=="covered_lake_branch_unqualified" and lake_flight.hull_scrape_observation().contacts.is_empty())
+ 		var water_director:=director(lake_flight)
+ 		await process_frame
+ 		# Cancellation fixture injects an old queued grain/tag, without playback on
+@@ -198,6 +203,40 @@
+ 	check("pre-setup reconnect/disconnect never dereferences null Simulation",cold.sim==null and count(cold.resetting,cold_director.get_instance_id())==0)
+ 	cleanup(cold_director);cold.free()
+ 	check("pre-setup lifecycle frees the same bounded bus/pool",AudioServer.bus_count==before_cold)
++	await _default_field_control()
+ 	print("Hull scrape Session: %d checks, %d failed"%[checks,failed])
+ 	print("Hull scrape Session complete")
+ 	quit(1 if failed else 0)
++
++
++func _default_field_control() -> void:
++	var main:Node=DefaultMain.instantiate()
++	main.aircraft_id="jensen-das-ugly-stik-60";main.landscape_id="club_field"
++	root.add_child(main)
++	main.set_process(false);main.session.set_physics_process(false);main.session.sim.set_physics_process(false)
++	main.session.input_enabled=false;main.session.engine_running=false
++	await process_frame
++	var f:Node=main.session
++	check("actual default Main installs valid soft hull plus configured lake",f.is_flyable() and f.soft_hull_contacts and not f.lake_context().is_empty())
++	check("actual default dry banked brush reset accepted",f.sim.reset(body(f)))
++	var hull:PackedFloat64Array=f.aircraft.model.crash_hull
++	var all_dry:=true
++	for i in range(0,hull.size(),3):all_dry=all_dry and not H._lake_sample(f._hull_contact,H._point_ned(f.sim.state,hull.slice(i,i+3))).get("covered",false)
++	check("same authoritative default-field samples are all outside coverage",all_dry)
++	var loads:=H.loads(f.sim.state,f._hull_contact)
++	check("same default-field force owner reports loaded sliding friction",not loads.is_empty() and loads[0]<0.)
++	var before:=var_to_bytes(f.checkpoint())
++	var packet:Dictionary=f.hull_scrape_observation()
++	check("default-field dry source exposes unchanged closed9/7 packet",packet.available and packet.size()==9 and not packet.contacts.is_empty() and packet.contacts.all(func(row):return row.size()==7 and row.friction_power_w>=0.))
++	check("default-field source observation leaves entire checkpoint exact",before==var_to_bytes(f.checkpoint()))
++	f.sim.set_paused(false);f.sim.step();f.sim.step()
++	check("actual default-field dry brush queues before any render",main._crash_director.audio.hull_scrape_diagnostics().queued>0)
++	var state:PackedFloat64Array=body(f);state[RB.POS+2]-=10.
++	check("default-field high-clear reset admitted",f.sim.reset(state))
++	packet=f.hull_scrape_observation()
++	check("default-field airborne observation is valid and silent",packet.available and packet.contacts.is_empty() and main._crash_director.audio.hull_scrape_diagnostics().queued==0)
++	var tick:int=f.sim.tick
++	f.sim.mass=-1.;f.sim.step()
++	check("default-field rejected physics cannot append accepted audio",f.sim.tick==tick and main._crash_director.audio.hull_scrape_diagnostics().queued==0)
++	root.remove_child(main);main.free()
++	await process_frame

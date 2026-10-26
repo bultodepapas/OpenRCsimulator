@@ -120,6 +120,8 @@ python tools/audio/check_fleet_sequence.py --out-dir tmp/audio-aud15/fleet --ana
 godot --display-driver headless --audio-driver WASAPI --max-fps 60 --path app --script /absolute/repo/tools/audio/contact_mix_probe.gd -- --out=/absolute/output/mix.json
 ```
 
+The wrapper resolves a nonempty, unique live catalog instead of requiring a historical fleet count. Repeated `--aircraft` selections qualify only the requested captures. The report distinguishes `all_requested_*` success from `covers_active_catalog` and legacy `all_*` full-catalog flags; a successful subset cannot establish complete fleet coverage.
+
 Run native captures sequentially on a quiet host. The fleet wrapper accepts repeated `--aircraft=<catalog ID>` arguments for targeted reruns. Phase boundaries use accepted simulation ticks; PCM and event timestamps use elapsed wall time. Session epochs preserve the tick history across explicitly marked fixture resets. Compare sample duration, capture discards, accepted simulation ticks and observed contact events. `--wall-timeout=360 --timeout=420` bounds stalled sessions and the containing Godot process.
 
 For a continuous fixed-wing lifecycle, use `--continuous-straight`. It reuses the research FT-card-v5 pilot laws for runway takeoff, climb, a straight approach, touchdown on terrain ahead, and rollout. It does not return to the departure runway. `--continuous-helicopter` uses the existing HELI-20 X-Cell spool/hover/land/coast/disarm law. Neither mode resets the session after capture begins. A completed phase schedule alone is insufficient: contact, route health, source identity, native PCM timing and signal gates remain separate.
@@ -132,3 +134,64 @@ python tools/audio/check_fleet_sequence.py --aircraft=xcell-60-research --contin
 The optional `--post-landing-soak` adds accepted simulation time after a settled rollout to test a longer session. The older `--continuous` option retains the experimental Stik circuit pilot; its current failed-route evidence does not qualify a full flight. Live capture stores whole PCM buffers and frame counters; concatenation, finite-sample checks and waveform measurements run after the capture interval. Reports retain the capture-clock lag series and glow worker status. Fixed-wing identity records both input and semantic data hashes; rotorcraft uses its existing exact-input, model-law, lifecycle-law, weather and pad contract.
 
 `contact_mix_probe.gd` separately measures engine, ground and their sum at an 8 m listening distance. It stages off/idle/full-power rolling, 2 m/s taxiing, stationary contact, touchdown, airborne release and pause/resume for the six installed engine families. The helicopter uses skid impacts without wheel roll. For the closest-distance headroom check, append `--distance=3 --exhaust-angle=30 --full-rpm-ratio=1 --full-load=1`; the default full-power fixture uses 91% rated RPM and 88% load. Reports include the actual driver, capture durations/discards, pre-master peak and glow-generator underruns. These detached snapshots qualify presentation behavior only; source fidelity and successful live flights require separate evidence.
+
+
+## Accepted hull-friction review
+
+The opt-in `gameplay_probe.gd --hull-scrape-review` runs the actual Main/Session/
+Director route using declared initial-condition resets followed by existing
+physics. The primary fixture uses the default club field; its configured lake
+is preserved, and the force owner's authoritative samples must qualify dry
+contact. `--landscape=green_paradise` provides the existing no-lake control.
+Only the Jensen Stik and Stik .61FX fixture IDs are currently declared. These
+fixtures are not pilot-achieved landings, complete flights or acoustic calibration.
+
+```sh
+godot --display-driver headless --audio-driver WASAPI --path app --script /absolute/repo/tools/audio/gameplay_probe.gd -- --hull-scrape-review --aircraft=jensen-das-ugly-stik-60 --fps=60 --duration=12 --out=/absolute/new/hull/review
+python tools/audio/check_captures.py /absolute/new/hull/review --out=/absolute/new/hull/checks.json
+```
+
+Use a fresh absolute output prefix and a released quiet host. Requested frame
+caps of 30/60/144 are supported; they are not measured frame guarantees. This mode
+captures the existing **CrashFX bus after its local limiter**, sent to Master;
+it excludes Soundscape and does not measure the combined Master mix. Default,
+wildlife and mechanical review capture targets/tapes remain unchanged.
+
+The report retains selected source/asset/aircraft/field/lake hashes before and
+after capture, explicit fixture epochs, accepted-step versus pause/fixture
+boundary observations, loaded hull IDs and instantaneous tangent power, queue
+and native tagged-player state, callback timing, phase/frame PCM intervals and
+complete native capture counters. There is no force reconstruction or heat/work
+integral. Geometric zero-load overlap, airborne/pause/reset silence, loaded
+brush observations and exclusive actual terminal handoff are separate factual
+gates. A phase name, an emission counter or completion of the schedule alone
+proves neither physical contact nor audible PCM grains. The checker separately
+requires measured nonzero CrashFX PCM and actual native tagged-player state in
+the loaded brush interval; it does not identify a waveform grain or replace
+human listening. It rejects premature crash/fault, unsupported observations,
+source changes, missing phase data, queue loss, nonfinite PCM and unbalanced
+captured/flushed/discarded frames. Historical camera 4 m and adapter 0.5 ms gates
+remain for their original gameplay tape; this different bus/fixture reports
+its timings without claiming a new hardware budget.
+
+The existing generic scrape sample retains its original synthesis provenance;
+no asset or calibration is added. Cue expiry uses 0.25 accepted simulation
+seconds, not a wall-clock latency limit. The new mode does not qualify target
+1080p rendering, combined headroom, all aircraft, real airframe compliance or
+material acoustic efficiency. Run checker regressions with
+`python tools/audio/test_capture_checks.py` before changing the contract.
+
+
+The hull checker binds complete contiguous accepted/render index partitions to
+phase descriptors, matching epochs/generations and monotone wall/frame clocks.
+It refuses reassigned, reordered, duplicated or unowned samples. One observed
+Session lifecycle boundary is explicit: `Session.reset()` calls the existing
+commit owner, whose reset notification precedes Simulation's committed tick0;
+after that call returns, the public wrapper advances `statistics_generation`.
+The trace therefore permits only one leading phase5 old-generation
+`accepted_step` at tick0, immediately followed by the new-generation post-return
+`fixture_boundary` at tick0. Prior/new generations must match neighboring phase
+descriptors, and further old rows fail. These records are neither renumbered nor
+treated as arbitrary mixed generations. This is physical commit before separate
+bookkeeping, not a trial or nested preparatory step; no runtime ordering changes
+are made by the probe/checker.

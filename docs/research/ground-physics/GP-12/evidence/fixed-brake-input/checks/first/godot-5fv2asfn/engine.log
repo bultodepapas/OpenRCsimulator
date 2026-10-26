@@ -1,0 +1,41 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL legacy Trace columns and rows exact jensen-das-ugly-stik-60 
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FAIL legacy Trace columns and rows exact gp-extra-300s-60 
+FAIL legacy Trace columns and rows exact p51d-mustang-120 
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+FAIL legacy Trace columns and rows exact sebart-avanti-s-a200-p100rx 
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+SCRIPT ERROR: Invalid access to property or key 'trim' on a base object of type 'Node (flight_session.gd)'.
+   at: candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)
+   GDScript backtrace (most recent call first):
+       [0] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)
+       [1] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:27)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+SCRIPT ERROR: Invalid access to property or key 'trim' on a base object of type 'Node (flight_session.gd)'.
+   at: candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)
+   GDScript backtrace (most recent call first):
+       [0] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)
+       [1] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:27)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+SCRIPT ERROR: Invalid access to property or key 'trim' on a base object of type 'Node (flight_session.gd)'.
+   at: candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)
+   GDScript backtrace (most recent call first):
+       [0] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)
+       [1] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:27)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+SCRIPT ERROR: Invalid access to property or key 'trim' on a base object of type 'Node (flight_session.gd)'.
+   at: candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)
+   GDScript backtrace (most recent call first):
+       [0] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)
+       [1] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:27)
+Fixed brake candidate: 20 checks, 4 failed
+WARNING: 8 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2609)

@@ -1,0 +1,21 @@
+# Independent dry-hull collector review
+
+No reproduced blocker in the two reviewed runtime drafts. The structured collector allows actual flat-force rows outside configured lake coverage while refusing the entire diagnostic batch when the exact existing force branch samples covered terrain. Force equations, terrain query sites and historical Array behavior remain unchanged.
+
+Reviewed source identities are in `source-identities.json`; normalized diffs are retained here. Hull draft SHA256 `04490fc097e8a35f32ec2881ea8263cc4c094bea6bcae80ef31073066b7066a2`; Session draft `7dc7c17c551ec8d44550055b436e9c1cffc1206b84831152f33d65810d4cbb38`. These are draft hashes, not a claim about later promotion. Main app was not edited.
+
+## Independent checks
+
+`probe.gd`:28 strict passing checks compare full constant and live-mass force results byte-for-byte against current main, including outside-only, covered-but-not-loaded, mixed flat/covered points in both hull orders, and high-clearance early returns. Covered batches are atomically empty/unavailable with `covered_lake_branch_unqualified`. The dynamic no-active early return preserves that reason; when active points lead through `loads`, its collector reset is followed by the same covered-sample prepass, restoring the unavailable status before rows can append. Historical Array lake collectors remain empty. The first runner invocation mistakenly required32 checks although engine28/0; its failed missing-marker receipt is retained separately. The corrected28 receipt is clean.
+
+`session_probe.gd`:15 strict passing checks use actual Stik and half-tank Glow Sessions, actual field plus configured lake, and accepted wingtip reset outside coverage. They verify available loaded dry rows, exact physical checkpoints before/after observation, detached cached output, same-clock `_lake.id` mutation invalidation, and same-clock fuel change affecting actual force/cache. These are additional software checks, not a native listening or physical calibration result.
+
+## Contract findings
+
+- Qualification uses only terrain samples already obtained by the force owner. The structured collector adds status writes to existing covered branches and row publication to the existing positive-load flat branch. It adds no lake query or alternate force calculation. The prepass invalidates the batch before any flat row can publish, independent of point order.
+- High-clearance/no-force paths may return available empty rows without classifying lake coverage: they do not claim a dry contact or emit a cue. Dynamic coverage samples actually reached by the force path remain unavailable even if no point needs coefficients. A geometric overlap whose clipped normal force is nonpositive publishes no friction row. Instantaneous power remains the actual negative tangent-force/velocity dot product, not depth or speed alone.
+- `loads_at_properties` continues to validate/use current mass, CG and inertia and returns failure separately. Callers must honor its returned `ok`; a freshly initialized collector is not a substitute for the load-result validity check. Session does check `sampled.ok` before consulting structured diagnostics.
+- Session removes the overly broad configured-lake refusal, adds `_lake` to the exact cache key and forwards the covered reason. The key already includes accepted state, continuous fuel state, prepared hull/bindings and environment source identities. Cached results are deeply detached; unavailable results do not replace a prior cache entry, and a distinct current key prevents replay of that old entry. An `_lake` mutation only invalidates observation caching; it does not silently rebuild the physical prepared hull. Supported configuration changes still belong to the existing Session setter/reset owner.
+- Material decoration still uses the existing per-row environment query after the actual force diagnostic. No covered/mixed batch reaches it. Normal-force/power units and downstream closed packet schema are unchanged.
+
+This supports the proposed narrow default-field diagnostic fix and its focused regression tests. It does not qualify covered banks/water scrape audio, interval work, calibrated material acoustics, latency, native playback or performance. Source reconciliation with the producer's final manifest remains required before promotion.

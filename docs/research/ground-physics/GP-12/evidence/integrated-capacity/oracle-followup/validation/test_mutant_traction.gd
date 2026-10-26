@@ -1,0 +1,324 @@
+## Installed P51 hardware with the existing explicitly synthetic contact fixture.
+extends "res://tests/test_aircraft_ground_unloaded.gd"
+const DraftTraction := preload(
+	"C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test-oracle-followup/validation/mutant_traction.gd"
+)
+const DraftStep := preload(
+	"res://physics/aircraft_ground_step.gd"
+)
+const Capacity := preload(
+	"res://physics/contact_capacity.gd"
+)
+var capacity_context: Dictionary
+var evidence_dir := ""
+const OWNER := "installed-P51-synthetic-fixed-plane-no-source-capacity-owner-v1"
+
+
+const LEGACY_ROWS_PATH := "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test-oracle-followup/production/app/tests/fixtures/ground_contact_capacity_legacy_rows.bin"
+const LEGACY_ROWS_SHA256 := "d5f96330e89f1ac55a1c6df474a35cd6925008064a1c9c6b2f45e22c4bd6eba9"
+const LEGACY_STEPS_PATH := "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test-oracle-followup/production/app/tests/fixtures/ground_contact_capacity_legacy_steps.bin"
+const LEGACY_STEPS_SHA256 := "ffc52cf1a57e4a7a07e4d57851238acc3961dd7409ceade70dcd4a879237de18"
+const LEGACY_INPUT_SHA256 := {
+	"ground_unloaded_gentle.bin": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408",
+	"ground_unloaded_hard.bin": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b"
+}
+const LEGACY_LAWS := ["fixed-hub-rk4-normal-endpoint-impulse-lie-v1", "fixed-hub-half-impulse-rk4-normal-half-impulse-v1"]
+
+
+func _frozen_oracle(path: String, expected_sha256: String) -> Variant:
+	var bytes := FileAccess.get_file_as_bytes(path)
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(bytes)
+	var intact := not bytes.is_empty() and hash.finish().hex_encode() == expected_sha256
+	check("immutable prepromotion oracle bytes " + path, intact)
+	return bytes_to_var(bytes) if intact else null
+
+
+static func _oracle_floats(value: Variant, count: int) -> bool:
+	if typeof(value) != TYPE_PACKED_FLOAT64_ARRAY or value.size() != count:
+		return false
+	for component: float in value:
+		if not is_finite(component): return false
+	return true
+
+
+static func _row_oracle_valid(value: Variant) -> bool:
+	if typeof(value) != TYPE_DICTIONARY or value.size() != 5 \
+		or not value.has_all(["format", "law", "prepared", "cg_body_m", "cases"]): return false
+	if typeof(value.format) != TYPE_STRING or value.format != "openrc-frozen-traction-legacy-rows v1" \
+		or typeof(value.law) != TYPE_STRING or value.law != "fixed-hub-wheel-material-impulse-rows-v1" \
+		or typeof(value.prepared) != TYPE_DICTIONARY or not _oracle_floats(value.cg_body_m, 3) \
+		or typeof(value.cases) != TYPE_ARRAY or value.cases.size() != 16: return false
+	var seen := {}
+	for row: Variant in value.cases:
+		if typeof(row) != TYPE_DICTIONARY or row.size() != 5 \
+			or not row.has_all(["id", "state", "ground", "brake", "expected_bytes"]): return false
+		if typeof(row.id) != TYPE_STRING or row.id.is_empty() or seen.has(row.id) \
+			or not _oracle_floats(row.state, RB.SIZE) or typeof(row.ground) != TYPE_DICTIONARY \
+			or not _oracle_floats(row.brake, 3) or typeof(row.expected_bytes) != TYPE_PACKED_BYTE_ARRAY \
+			or row.expected_bytes.is_empty() or row.expected_bytes.size() > 1048576: return false
+		seen[row.id] = true
+	return true
+
+
+static func _step_oracle_valid(value: Variant) -> bool:
+	if typeof(value) != TYPE_ARRAY or value.size() != 4: return false
+	var seen := {}
+	for row: Variant in value:
+		if typeof(row) != TYPE_DICTIONARY or row.size() != 5 \
+			or not row.has_all(["fixture", "law", "original_result", "draft_result", "equal"]): return false
+		if typeof(row.fixture) != TYPE_STRING or not LEGACY_INPUT_SHA256.has(row.fixture) \
+			or typeof(row.law) != TYPE_STRING or row.law not in LEGACY_LAWS \
+			or typeof(row.original_result) != TYPE_DICTIONARY or typeof(row.draft_result) != TYPE_DICTIONARY \
+			or typeof(row.equal) != TYPE_BOOL or not row.equal: return false
+		var key: String = row.fixture + ":" + row.law
+		if seen.has(key) or typeof(row.original_result.get("ok")) != TYPE_BOOL \
+			or typeof(row.original_result.get("status")) != TYPE_STRING \
+			or var_to_bytes(row.original_result) != var_to_bytes(row.draft_result): return false
+		if row.original_result.ok:
+			var receipt: Variant = row.original_result.get("integration_receipt")
+			var state: Variant = row.original_result.get("state")
+			if typeof(receipt) != TYPE_DICTIONARY or typeof(receipt.get("law")) != TYPE_STRING \
+				or receipt.law != row.law or typeof(state) != TYPE_PACKED_FLOAT64_ARRAY \
+				or state.size() < RB.SIZE or state.size() > 256 or not _oracle_floats(state, state.size()): return false
+		elif typeof(row.original_result.get("law")) != TYPE_STRING or row.original_result.law != row.law \
+			or typeof(row.original_result.get("reason")) != TYPE_STRING: return false
+		seen[key] = true
+	return true
+
+
+func _row_oracle_negative_controls(oracle: Dictionary) -> void:
+	for value: Variant in [null, false, [], {}]:
+		check("malformed row oracle root refuses", not _row_oracle_valid(value))
+	for kind: String in ["format", "case", "duplicate", "state", "brake", "bytes", "extra"]:
+		var bad := oracle.duplicate(true)
+		match kind:
+			"format": bad.format = []
+			"case": bad.cases[0] = false
+			"duplicate": bad.cases[1].id = bad.cases[0].id
+			"state": bad.cases[0].state = PackedFloat64Array([0.0])
+			"brake": bad.cases[0].brake = []
+			"bytes": bad.cases[0].expected_bytes = PackedByteArray()
+			"extra": bad.cases[0].unexpected = true
+		check("malformed row oracle record refuses " + kind, not _row_oracle_valid(bad))
+
+
+func _step_oracle_negative_controls(oracle: Array) -> void:
+	for value: Variant in [null, false, {}, []]:
+		check("malformed step oracle root refuses", not _step_oracle_valid(value))
+	for kind: String in ["record", "fixture", "law", "duplicate", "result", "provenance", "outcome_law", "extra"]:
+		var bad := oracle.duplicate(true)
+		match kind:
+			"record": bad[0] = false
+			"fixture": bad[0].fixture = "unknown.bin"
+			"law": bad[0].law = []
+			"duplicate": bad[1] = bad[0].duplicate(true)
+			"result": bad[0].original_result = []
+			"provenance": bad[0].equal = false
+			"outcome_law":
+				for key: String in ["original_result", "draft_result"]:
+					if bad[0][key].ok: bad[0][key].integration_receipt.law = "conflicting-law"
+					else: bad[0][key].law = "conflicting-law"
+			"extra": bad[0].unexpected = true
+		check("malformed step oracle record refuses " + kind, not _step_oracle_valid(bad))
+
+func _capacity_sample(state: PackedFloat64Array, at: float) -> Dictionary:
+	var point := _sample_policy(state, at)
+	if not point.ok:
+		return point
+	var brake := .7 if at >= brake_start else 0.0
+	var built := DraftTraction.capacity_packet(
+		capacity_context,
+		state.slice(0, RB.SIZE),
+		live.cg_body_m,
+		at,
+		PackedFloat64Array([brake, brake, 0.0])
+	)
+	if not built.ok:
+		return built
+	point.interval_capacity = built.packet
+	return point
+
+
+func _capacity_certificate(
+	state: PackedFloat64Array, at: float, h: float, point: Dictionary
+) -> Dictionary:
+	var result := _certificate(state, at, h, point)
+	result.capacity_identity = capacity_context.identity
+	if (at < brake_start and at + h >= brake_start) or lift_ratio != 0.0:
+		result.ok = false
+	return result
+
+
+func _initialize() -> void:
+	for argument: String in OS.get_cmdline_user_args():
+		if argument.begins_with("--evidence-dir="):
+			evidence_dir = argument.trim_prefix("--evidence-dir=")
+	_fixture()
+	_prepare_composition()
+	_prepare_quality()
+	_bind()
+	_context()
+	_legacy_rows()
+	_legacy_steps()
+	_real_steps()
+	print("Traction capacity producer: ", checks, " checks, ", failed, " failed")
+	quit(1 if failed else 0)
+
+
+func _context() -> void:
+	capacity_context = DraftTraction.prepare_capacity(
+		traction, prepared.normal, provider, motion, OWNER
+	)
+	check(
+		"installed fixed plane capacity context prepares",
+		capacity_context.ok,
+		str(capacity_context)
+	)
+	if not capacity_context.ok:
+		return
+	var body := _initial(-.1, 3.0, .2, 0.0).slice(0, RB.SIZE)
+	var pin := var_to_bytes([body, live, capacity_context])
+	var result := DraftTraction.capacity_packet(
+		capacity_context, body, live.cg_body_m, 0.0, PackedFloat64Array([0.0, 0.0, 0.0])
+	)
+	check("current zero-demand full capacity packet builds", result.ok, str(result))
+	check(
+		"capacity builder leaves physical/source data unchanged",
+		pin == var_to_bytes([body, live, capacity_context])
+	)
+	if result.ok:
+		check(
+			"normal and independent rows have fixed full topology",
+			(
+				result.packet.row_ids.size() == 11
+				and result.packet.groups.size() == 8
+				and result.packet.normal_first.size() == 11
+			)
+		)
+		var detached: Dictionary = result.packet.duplicate(true)
+		detached.jacobian[0] += 2.0
+		var again := DraftTraction.capacity_packet(
+			capacity_context, body, live.cg_body_m, 0.0, PackedFloat64Array([0.0, 0.0, 0.0])
+		)
+		check(
+			"mutating returned packet cannot change prepared source",
+			again.ok and var_to_bytes(again.packet) == var_to_bytes(result.packet)
+		)
+	for kind: String in ["motion", "material", "provider", "owner"]:
+		var bad := capacity_context.duplicate(true)
+		match kind:
+			"motion":
+				bad.motion[0].hub_body[0] += 1.0
+			"material":
+				bad.traction.materials.dry_pavement.values.longitudinal_friction = .123
+			"provider":
+				bad.provider.geometry_law = []
+			"owner":
+				bad.owner_identity = []
+		check(
+			"captured lifetime mutation refuses " + kind,
+			not (
+				DraftTraction
+				. capacity_packet(
+					bad, body, live.cg_body_m, 0.0, PackedFloat64Array([0.0, 0.0, 0.0])
+				)
+				. ok
+			)
+		)
+	var forged := capacity_context.duplicate(true)
+	forged.motion[0].hub_body[0] += 1.0
+	var copy := forged.duplicate(true)
+	copy.erase("seal")
+	forged.seal = JSON.stringify(copy, "", true, true).sha256_text()
+	check(
+		"re-sealing invalid source cannot forge original fixed mechanics",
+		not (
+			DraftTraction
+			. capacity_packet(
+				forged, body, live.cg_body_m, 0.0, PackedFloat64Array([0.0, 0.0, 0.0])
+			)
+			. ok
+		)
+	)
+
+
+func _legacy_rows() -> void:
+	var oracle: Variant = _frozen_oracle(LEGACY_ROWS_PATH, LEGACY_ROWS_SHA256)
+	check("prepromotion row oracle shape", _row_oracle_valid(oracle))
+	if not _row_oracle_valid(oracle): return
+	_row_oracle_negative_controls(oracle)
+	for row: Dictionary in oracle.cases:
+		var pin := var_to_bytes([oracle.prepared, oracle.cg_body_m, row])
+		var current := DraftTraction.evaluate(oracle.prepared, row.state, oracle.cg_body_m, row.ground, row.brake)
+		check("prepromotion row bytes unchanged " + row.id, var_to_bytes(current) == row.expected_bytes)
+		check("frozen row inputs remain read-only " + row.id, pin == var_to_bytes([oracle.prepared, oracle.cg_body_m, row]))
+
+
+func _legacy_steps() -> void:
+	var oracle: Variant = _frozen_oracle(LEGACY_STEPS_PATH, LEGACY_STEPS_SHA256)
+	check("prepromotion four-law/fixture outcomes shape", _step_oracle_valid(oracle))
+	if not _step_oracle_valid(oracle): return
+	_step_oracle_negative_controls(oracle)
+	for row: Dictionary in oracle:
+		selected_law = row.law
+		_prepare_quality()
+		var input_path: String = "res://tests/fixtures/" + row.fixture
+		var intact: bool = FileAccess.get_sha256(input_path) == LEGACY_INPUT_SHA256[row.fixture]
+		check("legacy input fixture identity " + row.fixture, intact)
+		if not intact: continue
+		var raw := _read(row.fixture)
+		var options: Dictionary = raw.options.duplicate(true)
+		options.operator_law = row.law
+		var current := DraftStep.advance(raw.state, raw.time_s, raw.dt, _derivative, PackedFloat64Array(),
+			_sample_policy, _certificate, options, _gate, _policy)
+		check("prepromotion complete outcome unchanged " + row.law + row.fixture,
+			var_to_bytes(row.original_result) == var_to_bytes(current))
+
+
+func _real_steps() -> void:
+	selected_law = DraftStep.INTEGRATED_CAPACITY_LAW
+	_prepare_quality()
+	for name: String in ["ground_unloaded_gentle.bin", "ground_unloaded_hard.bin"]:
+		var raw := _read(name)
+		var options: Dictionary = raw.options.duplicate(true)
+		options.operator_law = selected_law
+		var result := DraftStep.advance(
+			raw.state,
+			raw.time_s,
+			raw.dt,
+			_derivative,
+			PackedFloat64Array(),
+			_capacity_sample,
+			_capacity_certificate,
+			options,
+			_gate,
+			_policy
+		)
+		check("real producer feeds actual coupled raw gate " + name, result.ok, str(result))
+		if result.ok:
+			check(
+				"same physical quality admits explicit new operator",
+				result.integration_receipt.error_control.normalized_error <= 1.0
+			)
+			check(
+				"predictor direct cost is bounded and includes rejected trials",
+				(
+					result.integration_receipt.capacity_computation.total.predictor_rhs_calls <= 124
+					and result.integration_receipt.capacity_computation.discarded.attempts > 0
+				)
+			)
+		_retain("new-" + name, result)
+
+
+func _retain(name: String, value: Variant) -> void:
+	if evidence_dir.is_empty():
+		return
+	DirAccess.make_dir_recursive_absolute(evidence_dir)
+	var output := FileAccess.open(evidence_dir.path_join(name), FileAccess.WRITE)
+	if output == null:
+		check("explicit evidence output opens", false)
+		return
+	output.store_buffer(var_to_bytes(value))
+	output.close()

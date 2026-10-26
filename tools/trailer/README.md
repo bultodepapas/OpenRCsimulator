@@ -70,11 +70,24 @@ RGB frame records expose it as `smoke_effects` (the older `smoke` field describe
 The real-time mode also accepts this explicit stock-smoke workload and samples its production
 status/allocation once per second beside the RGB counters. Compare OFF/Classic/Festival with
 the **same** smoke option; the option changes presentation identity, not physical identity.
-This route cannot exercise companions: normal companion admission excludes Workshop trials,
-and normal flights have no configurable RGB input. Companion CLI options are rejected rather
-than silently ignored. A full companion/field/smoke qualification remains separate from these
-single-aircraft runs; do not bypass companion source pins or treat cinematic formation actors
-as qualified AI flights.
+The default `--lighting-flight=workshop` route freezes the same detached trial used by Workshop;
+companion options remain unavailable there. For the normal stock-aircraft workload, use
+`--lighting-flight=normal --lighting-preset=festival --lighting-smoke=stock` and optionally
+`--companions=3 --companions-seed=1`. Normal mode admits the six immutable choices (including
+OFF), requires a preset, and rejects custom profile files. Both routes default smoke to `off`.
+The harness starts ordinary Main, preserves its companion admission, then installs the approved
+render rig through the existing API. Main owns its clock, mode, magnifier tags, resets and disposal.
+Tick/time/float64 state/aux are checked around installation; this instantaneous guard does not
+replace matched-flight physics evidence.
+
+The manifest records the route, applied lighting profile hash, smoke profile/status and actual
+companion counts/source identity. Missing/faulted/crashed companions invalidate the requested
+workload at startup, every observed frame and completion. Stock smoke must resolve to a live
+production renderer; unsupported aircraft fail explicitly. `--companions-record` remains refused;
+use the dedicated companion recorder separately. A current qualification mismatch fails through
+Main's ordinary admission and leaves an incomplete manifest. Never re-pin accepted profiles to
+make a lighting measurement run. A full companion/field/smoke qualification still requires valid
+companion source acceptance and its own uncontended timing evidence.
 
 For a custom Workshop lighting draft, `--lighting-profile=<absolute.json>` accepts one bounded
 data-only `openrc-aircraft-lighting` v1 profile (at most `LightingProfile.MAX_PROFILE_BYTES`).
@@ -87,6 +100,13 @@ preset-only. For a moving two-roll trail check, use the existing Extra director 
 Aerobatics trail fixture with `--trail-profile-out=<new absolute path>`; see
 [`test_lighting_capture_profile.gd`](test_lighting_capture_profile.gd). The capture refuses an
 input profile path that aliases its output `manifest.json`.
+
+For full-airframe roll inspection, use that same Extra director with
+`--shot=extra-roll-inspection --seconds=6`. It preserves the flight commands and moves the
+camera rail 1.7 times farther away; the original `extra-roll` trailer framing is unchanged.
+Each record includes `camera.inspection_framing` and the existing projected mesh-AABB bounds.
+Those conservative bounds support a framing check; they are not measured lit-pixel coverage,
+wing span or pilot readability. Keep source clips and inspect the complete motion as well.
 
 Each RGB frame records the actual rig allocation counters and world exposure. Pilot captures also record the visible
 inset's dimensions, camera and AA mode. The main view uses 4× MSAA; the production inset uses 2×.

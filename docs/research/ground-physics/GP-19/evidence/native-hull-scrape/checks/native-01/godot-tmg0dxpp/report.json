@@ -1,0 +1,50 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c0c86123-722f-4bbd-86be-a16602133a09",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--display-driver",
+    "headless",
+    "--audio-driver",
+    "WASAPI",
+    "--max-fps",
+    "60",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-native/draft/gameplay_probe.gd",
+    "--",
+    "--hull-scrape-review",
+    "--aircraft=jensen-das-ugly-stik-60",
+    "--fps=60",
+    "--duration=12",
+    "--resume-focus",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-native/native-01/review"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T20:41:51.968692+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-native\\checks\\native-01\\godot-tmg0dxpp\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-native\\checks\\native-01\\godot-tmg0dxpp\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "openrc-hull-scrape-native-review-v1"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 21.531,
+  "log_bytes": 891554,
+  "log_sha256": "485605cfb7cd9d46dc989e1eed7b4fc67a04dca0acc9213559cb7979dd2f1dd0"
+}

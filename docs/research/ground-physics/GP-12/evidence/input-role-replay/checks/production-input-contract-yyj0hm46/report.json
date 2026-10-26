@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9a9b250c-1e07-4681-8e66-c0b1ceb44438",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_flight_log_inputs.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T20:52:36.407198+00:00",
+  "label": "production-input-contract",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp20-brake-input\\production-checks\\production-input-contract-yyj0hm46\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp20-brake-input\\production-checks\\production-input-contract-yyj0hm46\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "GP-12 flight-log inputs: 232 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.563,
+  "log_bytes": 3469,
+  "log_sha256": "16daadc4d87fbfa4223499215aab021cae6951d8ac33d91cc30e359447725a0a"
+}

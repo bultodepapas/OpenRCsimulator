@@ -1,0 +1,75 @@
+--- app/physics/hull_contact.gd
++++ tmp\gp19-hull-lake\draft\hull_contact.gd
+@@ -187,6 +187,9 @@
+ 		diagnostics_out: Variant = null) -> Dictionary:
+ 	if diagnostics_out is Array:
+ 		diagnostics_out.clear()
++	elif diagnostics_out is Dictionary:
++		diagnostics_out.clear()
++		diagnostics_out.merge({available = true, reason = "", rows = []})
+ 	var valid: Dictionary = EffectiveMass.validate_properties(properties)
+ 	if not bool(valid.get("ok", false)):
+ 		return {ok = false, loads = PackedFloat64Array(), reason = str(valid.get("reason", "invalid_mass_properties"))}
+@@ -258,6 +261,12 @@
+ 			var terrain: Dictionary = _lake_sample(geometry, point_ned)
+ 			lake_samples.append({point_ned = point_ned, terrain = terrain})
+ 			if bool(terrain.get("covered", false)):
++				# Qualification uses this exact force owner's sample, even when no
++				# point needs coefficients and the dynamic path returns early.
++				if diagnostics_out is Dictionary:
++					diagnostics_out.available = false
++					diagnostics_out.reason = "covered_lake_branch_unqualified"
++					diagnostics_out.rows.clear()
+ 				var ground_down: float = float(terrain.get("ground_down_m", NAN))
+ 				if not is_finite(ground_down):
+ 					return {ok = false, loads = PackedFloat64Array(), reason = "invalid_lake_terrain"}
+@@ -293,12 +302,18 @@
+ 	return {ok = true, loads = loads(s, prepared, lake_samples, diagnostics_out), reason = ""}
+ 
+ 
++## Optional diagnostics accept the historical Array or a structured collector
++## {available, reason, rows}. Covered lake branches invalidate the entire structured
++## batch. This qualification reuses force samples; it never classifies terrain again.
+ ## Body loads [Fx, Fy, Fz, Mx, My, Mz] from every touching hull point, or EMPTY when none touches (callers add
+ ## nothing, so flight away from the ground is bit-identical).
+ static func loads(s: PackedFloat64Array, prepared: Dictionary,
+ 		lake_samples: Array[Dictionary] = [], diagnostics_out: Variant = null) -> PackedFloat64Array:
+ 	if diagnostics_out is Array:
+ 		diagnostics_out.clear()
++	elif diagnostics_out is Dictionary:
++		diagnostics_out.clear()
++		diagnostics_out.merge({available = true, reason = "", rows = []})
+ 	if prepared.is_empty() or -s[RB.POS + 2] > float(prepared.reach):
+ 		return PackedFloat64Array()
+ 	var hull: PackedFloat64Array = prepared.points
+@@ -320,6 +335,12 @@
+ 	var touching := 0
+ 	for i in range(0, hull.size(), 3):
+ 		if not lake.is_empty() and bool(samples[i / 3].terrain.get("covered", false)):
++			# Certify the whole diagnostic batch BEFORE any force row can publish.
++			# Default loads still use this same sample and arithmetic unchanged.
++			if diagnostics_out is Dictionary:
++				diagnostics_out.available = false
++				diagnostics_out.reason = "covered_lake_branch_unqualified"
++				diagnostics_out.rows.clear()
+ 			if _lake_compression(samples[i / 3].point_ned, samples[i / 3].terrain) > 0.0:
+ 				touching += 1
+ 		elif s[RB.POS + 2] + down[0] * hull[i] + down[1] * hull[i + 1] + down[2] * hull[i + 2] > 0.0:
+@@ -374,11 +395,14 @@
+ 		out[5] += rx * fy - ry * fx
+ 		# GP-19 optional endpoint diagnostics use the SAME computed force/velocity.
+ 		# No allocation on ordinary RK loads; no interval-work or heat claim.
+-		if diagnostics_out is Array and lake.is_empty():
+-			diagnostics_out.append({index = point, point_ned = _point_ned(s, body_point),
++		if (diagnostics_out is Array and lake.is_empty()) \
++			or (diagnostics_out is Dictionary and diagnostics_out.available):
++			var row := {index = point, point_ned = _point_ned(s, body_point),
+ 				normal_force_n = f_up, tangent_force_ned_n = PackedFloat64Array([f_n, f_e, 0.0]),
+ 				relative_tangent_velocity_ned_mps = PackedFloat64Array([vn, ve, 0.0]),
+-				friction_power_w = -(f_n * vn + f_e * ve)})
++				friction_power_w = -(f_n * vn + f_e * ve)}
++			if diagnostics_out is Array: diagnostics_out.append(row)
++			else: diagnostics_out.rows.append(row)
+ 		touched = true
+ 	return out if touched else PackedFloat64Array()
+ 

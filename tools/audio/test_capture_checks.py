@@ -291,5 +291,258 @@ class FleetCatalogScopeTests(unittest.TestCase):
             self.assertTrue(summary["all_live_contact_sequences_complete_without_route_failure"])
 
 
+class HullCaptureCheckTests(unittest.TestCase):
+    """Synthetic checker fixtures exercise logic, never masquerade as native PCM."""
+
+    def setUp(self) -> None:
+        self.tempdir = tempfile.TemporaryDirectory(prefix="openrc-hull-check-")
+        self.addCleanup(self.tempdir.cleanup)
+        self.prefix = Path(self.tempdir.name) / "hull"
+        self.rate = 48000
+        self.pcm = np.zeros((12 * self.rate, 2), dtype="<i2")
+        self.pcm[int(2.04 * self.rate):int(3.95 * self.rate)] = 1000
+        self.pcm[int(7.04 * self.rate):int(11.95 * self.rate)] = 2000
+        boundaries = (0, 1, 2, 4, 5, 6, 7, 12)
+        sources = {path: "a" * 64 for path in check_captures.HULL_SOURCES}
+        sources["probe"] = "c" * 64
+        aircraft = "jensen-das-ugly-stik-60"
+        source = check_captures.HULL_AIRCRAFT[aircraft]
+        sources[source] = "d" * 64
+        sources["res://landscapes/green_paradise/landscape.gd"] = "e" * 64
+        sources["res://landscapes/green_paradise/field.json"] = "f" * 64
+        phases, accepted, rendered = [], [], []
+        for i, name in enumerate(check_captures.HULL_PHASES):
+            phase = {"index": i, "name": name, "start_wall_s": boundaries[i],
+                     "end_wall_s": boundaries[i+1], "start_frame": boundaries[i]*self.rate,
+                     "end_frame": boundaries[i+1]*self.rate, "reset_accepted": True,
+                     "emitted_before": int(i > 2), "emitted_after": int(i >= 2),
+                     "epoch": (1, 2, 3, 3, 3, 4, 5)[i], "start_tick": 0, "generation": 3 if i < 5 else 4,
+                     "start_accepted_index": i, "end_accepted_index": i+1,
+                     "start_render_index": i, "end_render_index": i+1}
+            phases.append(phase)
+            accepted.append({"epoch": phase["epoch"], "phase": i, "tick": 1, "generation": phase["generation"],
+                             "geometric_contacts": int(i in (1, 2)), "loaded_contacts": int(i == 2),
+                             "friction_power_w": 28.8 if i == 2 else 0.0,
+                             "contact_ids": ["probe_wing_tip"] if i == 2 else [], "queued": 0,
+                             "emitted": int(i >= 2), "tagged_voices": int(i == 2), "render_index": i,
+                             "paused": i in (3, 6), "terminal": i == 6, "available": True,
+                             "cancellation_pending": False, "wall_s": boundaries[i]+.1,
+                             "sim_time_s": 1/240, "reason": "", "clock_origin": "accepted_step"})
+            rendered.append({"wall_s": boundaries[i]+.5, "phase": i, "tick": 1,
+                             "generation": phase["generation"], "render_index": i+1, "paused": i in (3, 6),
+                             "terminal": i == 6, "primary_played": i == 6, "max_voices": 8,
+                             "active_voices": 1 if i == 2 else (3 if i == 6 else 0),
+                             "active_tagged_voices": int(i == 2), "fault_reason": "",
+                             "diagnostics": {"queued": 0, "emitted": int(i >= 2), "overflow": 0,
+                                             "stale": 0, "invalid": 0, "tagged_voices": int(i == 2)}})
+        self.report = {"format": "openrc-audio-gameplay-v1", "arguments": {"hull-scrape-review": True},
+                       "driver": "WASAPI", "display": "headless", "requested_fps": 60,
+                       "aircraft": aircraft, "frames": len(self.pcm), "mix_rate": self.rate,
+                       "captured_seconds": 12., "capture_wall_seconds": 12., "capture_effect_removed": True,
+                       "capture_bookkeeping": frame_bookkeeping(len(self.pcm)), "probe_sha256": "c" * 64,
+                       "finite_samples": True, "peak_dbfs": -20., "rms_dbfs": -30., "discarded_frames": 0,
+                       "soundscape_update_p95_us": 600, "soundscape_update_max_us": 1200,
+                       "soundscape_timing_sample_count": 20, "distance_min_m": 10., "distance_max_m": 30.,
+                       "events": [], "hull_scrape_review": {
+                           "format": "openrc-hull-scrape-native-review-v1",
+                           "capture_bus_role": "crash_fx_after_local_limiter", "capture_bus_send": "Master",
+                           "landscape_id": "green_paradise", "field_source": "res://landscapes/green_paradise/field.json",
+                           "lake_enabled": False, "lake_identity": "",
+                           "master_capture": False, "power_sampling": "accepted_endpoint_instantaneous_power",
+                           "cue_age_clock": "accepted_simulation_time", "cue_max_age_s": .25,
+                           "law_identity": "fixture-current-law", "failures": [], "truncated": False,
+                           "source_before": sources, "source_after": sources.copy(),
+                           "source_files_unchanged": True, "aircraft_source": source,
+                           "phases": phases, "accepted": accepted, "render": rendered}}
+
+    def analyze(self) -> dict:
+        write_wave(self.prefix.with_suffix(".wav"), self.pcm, self.rate)
+        self.prefix.with_suffix(".json").write_text(json.dumps(self.report))
+        return check_captures.analyze(self.prefix)
+
+    def test_hull_valid_fixture_keeps_pcm_and_source_facts_separate(self) -> None:
+        result = self.analyze()
+        self.assertTrue(result["passed"], result["failures"])
+        self.assertEqual(result["review_kind"], "hull_scrape")
+        self.assertGreater(result["hull_scrape"]["phase_pcm"]["brush"]["peak_linear"], 0)
+        self.assertEqual(result["hull_scrape"]["scope"], "CrashFX bus only, no Master/combined mix or acoustic calibration")
+
+    def test_hull_default_field_uses_actual_dry_scope_with_configured_lake(self) -> None:
+        review = self.report["hull_scrape_review"]
+        sources = review["source_before"]
+        sources.pop("res://landscapes/green_paradise/landscape.gd")
+        sources.pop("res://landscapes/green_paradise/field.json")
+        sources["res://landscapes/club_field/landscape.gd"] = "e" * 64
+        sources["res://data/fields/default.json"] = "f" * 64
+        sources.update({path: "b" * 64 for path in check_captures.HULL_LAKE_SOURCES})
+        review.update(landscape_id="club_field", field_source="res://data/fields/default.json",
+                      lake_enabled=True, lake_identity="1" * 64, source_after=sources.copy())
+        result = self.analyze()
+        self.assertTrue(result["passed"], result["failures"])
+
+    def test_hull_early_terminal_is_not_relabelled_success(self) -> None:
+        self.report["hull_scrape_review"]["accepted"][2]["terminal"] = True
+        self.assertIn("hull fixture terminated before its declared terminal phase", self.analyze()["failures"])
+
+    def test_hull_reordered_or_reassigned_samples_refuse(self) -> None:
+        review = self.report["hull_scrape_review"]
+        review["accepted"][0], review["accepted"][1] = review["accepted"][1], review["accepted"][0]
+        self.assertIn("hull accepted sample is reassigned to another phase/epoch/generation", self.analyze()["failures"])
+
+    def test_hull_epoch_and_generation_are_bound_to_phase(self) -> None:
+        self.report["hull_scrape_review"]["accepted"][2]["epoch"] += 1
+        self.assertIn("hull accepted sample is reassigned to another phase/epoch/generation", self.analyze()["failures"])
+
+    def test_hull_render_generation_and_frame_order_are_bound(self) -> None:
+        self.report["hull_scrape_review"]["render"][1]["generation"] += 1
+        self.assertIn("hull render sample is reassigned to another phase/generation", self.analyze()["failures"])
+
+    def test_hull_partial_or_overlapping_partitions_refuse(self) -> None:
+        review = self.report["hull_scrape_review"]
+        for field, value in (("start_accepted_index", 1), ("end_accepted_index", 2),
+                             ("start_render_index", True), ("end_render_index", 2)):
+            with self.subTest(field=field):
+                prior = review["phases"][0][field]
+                review["phases"][0][field] = value
+                self.assertIn("hull trace phase index partitions are invalid or incomplete", self.analyze()["failures"])
+                review["phases"][0][field] = prior
+
+    def test_hull_wall_and_render_chronology_refuse_reordering(self) -> None:
+        row = self.report["hull_scrape_review"]["accepted"][2]
+        row["wall_s"] = .5
+        self.assertIn("hull accepted wall/render clocks are reordered or outside their phase", self.analyze()["failures"])
+
+    def test_hull_render_clock_cannot_be_relabelled(self) -> None:
+        self.report["hull_scrape_review"]["render"][2]["render_index"] = 1
+        self.assertIn("hull render wall/frame clocks are reordered or outside their phase", self.analyze()["failures"])
+
+    def test_hull_only_true_leading_reset_publication_row_is_allowed(self) -> None:
+        review = self.report["hull_scrape_review"]
+        phase = review["phases"][5]
+        phase["fixture"] = "existing public Session.reset; new physical generation"
+        new_row = copy.deepcopy(review["accepted"][5])
+        new_row.update(tick=0, sim_time_s=0., clock_origin="fixture_boundary", render_index=5)
+        old_row = copy.deepcopy(new_row)
+        old_row.update(generation=review["phases"][4]["generation"], clock_origin="accepted_step")
+        review["accepted"][5:6] = [old_row, new_row]
+        phase["end_accepted_index"] += 1
+        review["phases"][6]["start_accepted_index"] += 1
+        review["phases"][6]["end_accepted_index"] += 1
+        result = self.analyze()
+        self.assertTrue(result["passed"], result["failures"])
+        # This is a narrow exception: a repeated old row after the committed
+        # generation, or an old row without the exact post-return boundary, fails.
+        new_row["generation"] = old_row["generation"]
+        self.assertIn("hull reset publication generation transition is invalid", self.analyze()["failures"])
+
+    def test_hull_unknown_mixed_generation_is_rejected(self) -> None:
+        self.report["hull_scrape_review"]["accepted"][2]["generation"] -= 1
+        self.assertIn("hull reset publication generation transition is invalid", self.analyze()["failures"])
+
+    def test_hull_trailing_unowned_samples_are_rejected(self) -> None:
+        self.report["hull_scrape_review"]["accepted"].append(copy.deepcopy(self.report["hull_scrape_review"]["accepted"][-1]))
+        self.assertIn("hull trace phase index partitions are invalid or incomplete", self.analyze()["failures"])
+
+    def test_hull_duplicated_clock_is_rejected_inside_valid_partition(self) -> None:
+        review = self.report["hull_scrape_review"]
+        row = copy.deepcopy(review["accepted"][2])
+        review["accepted"].insert(3, row)
+        review["phases"][2]["end_accepted_index"] += 1
+        for phase in review["phases"][3:]:
+            phase["start_accepted_index"] += 1
+            phase["end_accepted_index"] += 1
+        self.assertIn("hull accepted clock was duplicated", self.analyze()["failures"])
+
+    def test_hull_same_phase_old_generation_after_new_boundary_refuses(self) -> None:
+        review = self.report["hull_scrape_review"]
+        phase = review["phases"][5]
+        phase["fixture"] = "existing public Session.reset; new physical generation"
+        boundary = copy.deepcopy(review["accepted"][5])
+        boundary.update(tick=0, sim_time_s=0., clock_origin="fixture_boundary", render_index=5)
+        prior = copy.deepcopy(boundary)
+        prior.update(generation=review["phases"][4]["generation"], clock_origin="accepted_step")
+        review["accepted"][5:6] = [prior, boundary, copy.deepcopy(prior)]
+        phase["end_accepted_index"] += 2
+        review["phases"][6]["start_accepted_index"] += 2
+        review["phases"][6]["end_accepted_index"] += 2
+        self.assertIn("hull accepted sample is reassigned to another phase/epoch/generation", self.analyze()["failures"])
+
+    def test_hull_emission_counter_does_not_prove_pcm(self) -> None:
+        self.pcm[2*self.rate:4*self.rate] = 0
+        result = self.analyze()
+        self.assertFalse(result["passed"])
+        self.assertIn("brush has no independent nonzero CrashFX PCM interval", result["failures"])
+
+    def test_hull_pcm_does_not_prove_loaded_source(self) -> None:
+        row = self.report["hull_scrape_review"]["accepted"][2]
+        row.update(loaded_contacts=0, contact_ids=[], friction_power_w=0.)
+        result = self.analyze()
+        self.assertIn("brush phase lacks actual loaded source and native tagged playback facts", result["failures"])
+
+    def test_hull_opening_label_does_not_prove_geometric_overlap(self) -> None:
+        self.report["hull_scrape_review"]["accepted"][1]["geometric_contacts"] = 0
+        result = self.analyze()
+        self.assertIn("opening overlap did not demonstrate zero clamped friction without grains", result["failures"])
+
+    def test_hull_opening_loaded_grains_are_rejected(self) -> None:
+        self.report["hull_scrape_review"]["accepted"][1].update(loaded_contacts=1, contact_ids=["probe"], friction_power_w=1., queued=1)
+        self.assertFalse(self.analyze()["passed"])
+
+    def test_hull_pause_pcm_must_be_measured_silent(self) -> None:
+        self.pcm[4*self.rate:5*self.rate] = 500
+        self.assertIn("pause CrashFX PCM did not reach silence", self.analyze()["failures"])
+
+    def test_hull_wrong_bus_or_master_role_is_not_accepted(self) -> None:
+        self.report["hull_scrape_review"]["capture_bus_role"] = "soundscape"
+        self.assertIn("hull PCM must identify the separate CrashFX bus and exclude Master capture", self.analyze()["failures"])
+
+    def test_hull_driver_and_source_stability_are_required(self) -> None:
+        self.report["driver"] = "Dummy"
+        self.report["hull_scrape_review"]["source_after"]["probe"] = "b" * 64
+        result = self.analyze()
+        self.assertIn("hull review requires an actual native audio driver", result["failures"])
+        self.assertIn("hull source/asset/aircraft identity is incomplete or changed during capture", result["failures"])
+
+    def test_hull_material_or_work_claim_cannot_replace_sampling_contract(self) -> None:
+        self.report["hull_scrape_review"]["power_sampling"] = "integrated_heat"
+        self.assertIn("hull power sampling or accepted-simulation cue-age contract is invalid", self.analyze()["failures"])
+
+    def test_hull_terminal_live_tags_are_rejected(self) -> None:
+        self.report["hull_scrape_review"]["render"][6]["diagnostics"]["tagged_voices"] = 1
+        self.assertIn("actual terminal handoff did not exclusively cancel living-hull scrape", self.analyze()["failures"])
+
+    def test_hull_malformed_facts_fail_without_exception(self) -> None:
+        for value in (None, True, 1, "bad", []):
+            with self.subTest(value=value):
+                original = self.report["hull_scrape_review"]["accepted"][0]
+                self.report["hull_scrape_review"]["accepted"][0] = value
+                self.assertFalse(self.analyze()["passed"])
+                self.report["hull_scrape_review"]["accepted"][0] = original
+
+    def test_hull_boolean_or_nonfinite_count_is_not_a_factual_clock(self) -> None:
+        self.report["hull_scrape_review"]["accepted"][0]["tick"] = True
+        self.assertFalse(self.analyze()["passed"])
+
+    def test_hull_phase_names_without_samples_are_insufficient(self) -> None:
+        self.report["hull_scrape_review"]["accepted"] = []
+        self.assertIn("hull phase or accepted/render sample inventory is invalid", self.analyze()["failures"])
+
+    def test_hull_notifications_cannot_masquerade_as_physics_steps(self) -> None:
+        for row in self.report["hull_scrape_review"]["accepted"]:
+            row["clock_origin"] = "pause_notification"
+        self.assertIn("hull review has no actual accepted physics advancement", self.analyze()["failures"])
+
+    def test_hull_frame_bookkeeping_remains_mandatory(self) -> None:
+        self.report["capture_bookkeeping"]["unaccounted_pushed_frames"] = 1
+        self.assertIn("capture pushed/recorded/flushed frame counts do not balance", self.analyze()["failures"])
+
+    def test_legacy_adapter_budget_gate_remains_unchanged(self) -> None:
+        original = copy.deepcopy(CaptureCheckTests.live_report)
+        original["soundscape_update_p95_us"] = 600
+        self.prefix.with_suffix(".json").write_text(json.dumps(original))
+        write_wave(self.prefix.with_suffix(".wav"), np.full((LIVE_FRAMES, 2), 3000, dtype="<i2"))
+        self.assertIn("adapter update p95 exceeded 0.5 ms budget", check_captures.analyze(self.prefix)["failures"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

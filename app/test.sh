@@ -432,6 +432,9 @@ if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "X8 model contract failed
 echo "== C7-R1: trace completion, finite samples and failure exits"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_trace_acceptance.py"
 
+echo "== GP-12: fixed-gear brake trace roles and version boundaries"
+python3 "$HERE/tests/test_fixed_brake_trace_contract.py"
+
 echo "== D8b-R2: synthetic polar fixtures, FASER-analog and post-stall-v2 candidates (D8b-R2d) and explicit experimental flight route"
 run --script "$HERE/../research/flight-robustness/d8b-r2/make_candidates.gd" -- --check
 run --script "$HERE/../research/flight-robustness/d8b-r2/analog/make_analog.gd" -- --check

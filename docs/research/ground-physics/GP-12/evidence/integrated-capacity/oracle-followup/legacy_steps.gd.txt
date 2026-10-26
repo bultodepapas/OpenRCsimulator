@@ -1,0 +1,21 @@
+func _legacy_steps() -> void:
+	var oracle: Variant = _frozen_oracle(LEGACY_STEPS_PATH, LEGACY_STEPS_SHA256)
+	check("prepromotion four-law/fixture outcomes shape", _step_oracle_valid(oracle))
+	if not _step_oracle_valid(oracle): return
+	_step_oracle_negative_controls(oracle)
+	for row: Dictionary in oracle:
+		selected_law = row.law
+		_prepare_quality()
+		var input_path: String = "res://tests/fixtures/" + row.fixture
+		var intact: bool = FileAccess.get_sha256(input_path) == LEGACY_INPUT_SHA256[row.fixture]
+		check("legacy input fixture identity " + row.fixture, intact)
+		if not intact: continue
+		var raw := _read(row.fixture)
+		var options: Dictionary = raw.options.duplicate(true)
+		options.operator_law = row.law
+		var current := DraftStep.advance(raw.state, raw.time_s, raw.dt, _derivative, PackedFloat64Array(),
+			_sample_policy, _certificate, options, _gate, _policy)
+		check("prepromotion complete outcome unchanged " + row.law + row.fixture,
+			var_to_bytes(row.original_result) == var_to_bytes(current))
+
+

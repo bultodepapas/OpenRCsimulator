@@ -1,0 +1,22 @@
+{
+  "format": "openrc-hull-dry-branch-promotion-v1",
+  "base_sha256": {
+    "app/physics/hull_contact.gd": "5100ce2dfa65138c1036ece22df0f387fad89149b755e0b4321d9daf2244b3d4",
+    "app/sim/flight_session.gd": "2ef72af8e0814bf44520a22741dce7a68a93ebdc611847b98c321460f0160c93",
+    "app/tests/test_hull_friction_observation.gd": "3542ef73bc52ceb3f362754af1fc621d863bc9ec2abf8320fee3a5c9b55b2297",
+    "app/tests/test_hull_scrape_session.gd": "96c7b2626481e6bd0f21cba2fbe3e360bf274fe570c1c56ddee1cd491f062a4d"
+  },
+  "payload_sha256": {
+    "app/physics/hull_contact.gd": "04490fc097e8a35f32ec2881ea8263cc4c094bea6bcae80ef31073066b7066a2",
+    "app/sim/flight_session.gd": "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864",
+    "app/tests/test_hull_friction_observation.gd": "40b22bafeee2cda92974e7f47b102b56063c42832e65e1346700f64b7f562231",
+    "app/tests/test_hull_scrape_session.gd": "e64ca8b2354ead2a2d8bd0aa6ebae3ac27c7a20afd75b52345e767faa6d789c7"
+  },
+  "draft_sha256": {
+    "app/physics/hull_contact.gd": "04490fc097e8a35f32ec2881ea8263cc4c094bea6bcae80ef31073066b7066a2",
+    "app/sim/flight_session.gd": "7dc7c17c551ec8d44550055b436e9c1cffc1206b84831152f33d65810d4cbb38",
+    "app/tests/test_hull_friction_observation.gd": "315735f5005c5c65e0ff550711a1ea841429029ce0cf771608fef3744a594174",
+    "app/tests/test_hull_scrape_session.gd": "f43da2277f6a8059947a988fa40732557017c4d1552a0b36e1f15051fc598afe"
+  },
+  "runtime_scope": "two runtime owners plus two existing focused tests only; test-only preload shims excluded"
+}

@@ -19,14 +19,16 @@ var _roll_brake_started := false
 var _minimum_altitude_m := INF
 var _maximum_altitude_m := -INF
 var _inside_frame_count := 0
+var _inspection_camera := false
 
 
 func configure(flight_main: Node, shot_name: String, shot_duration_s: float, output_fps: int) -> void:
 	main = flight_main
 	duration_s = shot_duration_s
 	fps = output_fps
-	if shot_name != "extra-roll":
-		push_error("extra_rolls_director only supports the extra-roll shot")
+	_inspection_camera = shot_name == "extra-roll-inspection"
+	if shot_name not in ["extra-roll", "extra-roll-inspection"]:
+		push_error("extra_rolls_director requires extra-roll or extra-roll-inspection")
 	process_physics_priority = -2 # Stage commands before FlightSession's physics tick.
 	process_priority = 10 # Place the camera after Main updates the real rendered aircraft.
 	main.session.input_enabled = false
@@ -100,6 +102,7 @@ func record_presented_frame(frame_index: int, preroll_frames: int) -> void:
 			shaft_rpm = float(sim.aux[0]) if sim.aux.size() > 0 else 0.0,
 		},
 		camera = {
+			inspection_framing = _inspection_camera,
 			position_m = _v3(camera.global_position),
 			quaternion_xyzw = _quat(camera.global_basis.get_rotation_quaternion()),
 			fov_deg = float(camera.fov),
@@ -189,6 +192,12 @@ func _place_camera() -> void:
 	var distance := lerpf(4.25, 3.75, elapsed)
 	var height := lerpf(1.55, 1.25, elapsed)
 	var lateral := 0.85 * sin(elapsed * PI)
+	if _inspection_camera:
+		# Keep the original trailer rail intact. The inspection rail leaves room
+		# for the complete airframe during both rolls at native 1920x1080.
+		distance *= 1.7
+		height *= 1.7
+		lateral *= 1.7
 	main._camera.global_position = center - forward * distance + right * lateral + Vector3.UP * height
 	main._camera.look_at(center + forward * 0.45 + Vector3.UP * 0.2, Vector3.UP)
 	main._camera.fov = 37.0

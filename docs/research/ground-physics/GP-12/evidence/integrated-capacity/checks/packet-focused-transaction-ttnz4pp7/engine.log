@@ -1,0 +1,144 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] _new_advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:36)
+       [5] _dimensions (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:48)
+       [6] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] _new_advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:36)
+       [5] _refinement (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:106)
+       [6] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] <anonymous lambda> (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:117)
+       [5] step (res://sim/simulation.gd:388)
+       [6] _kernel (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:119)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] <anonymous lambda> (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:117)
+       [5] step (res://sim/simulation.gd:388)
+       [6] _kernel (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:119)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] <anonymous lambda> (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:117)
+       [5] step (res://sim/simulation.gd:388)
+       [6] _kernel (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:119)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] <anonymous lambda> (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:117)
+       [5] step (res://sim/simulation.gd:388)
+       [6] _kernel (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:119)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] <anonymous lambda> (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:117)
+       [5] step (res://sim/simulation.gd:388)
+       [6] _kernel (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:119)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] <anonymous lambda> (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:117)
+       [5] step (res://sim/simulation.gd:388)
+       [6] _kernel (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:122)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] <anonymous lambda> (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:117)
+       [5] step (res://sim/simulation.gd:388)
+       [6] _kernel (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:122)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] <anonymous lambda> (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:117)
+       [5] step (res://sim/simulation.gd:388)
+       [6] _kernel (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:122)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] <anonymous lambda> (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:117)
+       [5] step (res://sim/simulation.gd:388)
+       [6] _kernel (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:125)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] <anonymous lambda> (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:117)
+       [5] step (res://sim/simulation.gd:388)
+       [6] _kernel (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:125)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+SCRIPT ERROR: Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.
+   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+   GDScript backtrace (most recent call first):
+       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)
+       [1] _attempt_two_sided (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:489)
+       [2] _attempt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:148)
+       [3] advance (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:87)
+       [4] <anonymous lambda> (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:117)
+       [5] step (res://sim/simulation.gd:388)
+       [6] _kernel (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:125)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd:40)
+Contact capacity packet: 74 checks, 0 failed

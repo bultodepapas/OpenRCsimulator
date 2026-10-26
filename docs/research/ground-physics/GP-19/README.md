@@ -14,6 +14,18 @@ GP-19d adds accepted-endpoint hull scraping through the existing flat-solid forc
 
 The [scrape unloading correction](evidence/scrape-unloading/README.md) removes the finite gain floor as friction power approaches zero. The maximum gain and existing assets/pool remain unchanged. Seventy-two focused production checks pass; the new limiting-response tests reproduce two failures with the earlier envelope. This presentation change has no acoustic calibration or listening claim.
 
+The [default-field dry-contact correction](evidence/dry-lake-scrape/README.md) qualifies observations through HullContact's actual sampled force branches. A lake elsewhere in the field no longer suppresses dry scraping; covered or mixed lake batches remain explicitly unavailable. Five hundred and two production checks and 43 independent checks cover unchanged forces/checkpoints, live mass, cache invalidation and actual Main wiring. This corrects the original cohort's blanket lake refusal; it does not add lake-contact acoustics.
+
 A [native Turbo Lumber capture](evidence/native-continuous-timber/README.md) now completes takeoff, touchdown and straight-ahead terrain rollout in one production flight. WASAPI PCM clocks, zero capture discards/clipping and all 44 selected before/after source hashes pass; estimated Master true peak is -22.5047 dBTP. This single current-physics route does not activate the advanced operator or establish isolated hull-scrape audibility, human listening, whole-fleet coverage or 1080p performance. The capture wrapper follows the live catalog and distinguishes requested-aircraft success from complete catalog coverage.
 
-GP-19 remains open for advanced accepted wheel/slip/interval-work observations, suspension and damage layers, native output, listening, combined budgets and whole-flight performance. No new recording or acoustic calibration is claimed.
+The [native hull-scrape cohort](evidence/native-hull-scrape/README.md) verifies the
+current default-field Stik route through Main, Session and Director. A 12.0107-second
+WASAPI CrashFX capture has no lost frames: loaded brush and terminal intervals have
+measured PCM, while guarded airborne, opening-overlap, pause and reset intervals are
+silent. The installed probe passes 18 actual-scene checks and its checker passes 41
+Python tests. These are explicit reset fixtures, one aircraft and a separate bus;
+they do not establish continuous full-flight, combined Master or listening acceptance.
+
+GP-19 remains open for advanced accepted wheel/slip/interval-work observations,
+suspension and damage layers, broader native coverage, listening, combined budgets
+and whole-flight performance. No acoustic calibration is claimed.

@@ -4,6 +4,17 @@ Current fixed-wing workflow, checked 2026-10-19. Owner: physics/simulation, FL-0
 Records fixed-wing flights for handling investigations. The existing **T** CSV trace,
 helicopter recorder and truck recorder retain their own contracts.
 
+CSV export validates declared input roles, and replay checks those roles against the
+restored aircraft. Historical logs without named layouts retain their original
+4/5/6/7-channel interpretation. A malformed or conflicting declaration is refused
+before export; matching channel counts alone cannot authorize replay. The versioned
+fixed-brake branch now connects to Session/Main for explicitly admitted brake
+hardware, with its own law/index metadata and optional flap channel. Legacy fixed
+and retractable roles remain unchanged. [Reader guard](research/ground-physics/GP-12/evidence/input-role-replay/README.md)
+and [control integration](research/ground-physics/GP-12/evidence/fixed-brake-input/README.md)
+have separate source identities. Legacy Trace v17 carries the added role; its generic
+inspector does not establish physical validation, and older physics validators refuse it.
+
 ## Quick start
 
 1. Launch the simulator normally and fly any fixed-wing aircraft.

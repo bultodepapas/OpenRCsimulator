@@ -1,8 +1,22 @@
 ## Bounded fixed-hub contact operator. Default: RK4 normal/free flow followed by one
 ## simultaneous mobility-metric tangent/brake/rolling impulse. Overall order ONE.
 ## Owner supplies a whole-piece certificate; local modal admission is not one.
+## INTEGRATED_CAPACITY_LAW is an explicit order-one numerical alternative.
+## Its evaluator supplies a separate current-pose interval_capacity packet;
+## physical normal forces, potential and instantaneous rows remain untouched.
+## Its trusted whole-piece certificate additionally binds capacity_identity.
+## That owner excludes source/material/held-command transitions and pins the
+## operator, capacity/guard and solver versions before reset/checkpoint use.
+## An explicit {ok:false,status:"capacity_envelope_rejected",reason:String}
+## owner refusal may refine. Malformed data/mutation is fatal, never refinement.
+## predictor_rhs_budget bounds direct predictor calls (default124); receipts
+## distinguish shared setup, discarded trials and the final accepted attempt.
+## This domain initially refuses nonempty capture mappings; existing laws keep
+## their original capture contract. No stock selection or CPU claim is implied.
 extends RefCounted
 
+const Capacity:=preload("res://physics/contact_capacity.gd")
+const INTEGRATED_CAPACITY_LAW:="fixed-hub-predicted-actual-capacity-budget-halfkicks-order1-v1"
 const RK := preload("res://physics/integrator.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const RC := preload("res://physics/rotor_coupling.gd")
@@ -53,66 +67,169 @@ const MAX_STATE_SIZE := 256
 ## support-potential decrease (no gravity/clamp), before piece-energy admission.
 ## Otherwise RK heat is unchanged. Opted-in receipts explicitly record every
 ## piece method/loss/residual; an absent policy preserves legacy receipt bytes.
-static func advance(initial: PackedFloat64Array, time_s: float, dt: float,
-		derivative: Callable, first: PackedFloat64Array, evaluate: Callable,
-		certificate: Callable, options: Dictionary = {}, error_gate: Callable = Callable(),
-		normal_loss_policy: Callable = Callable(),mass_proof:RefCounted=null) -> Dictionary:
+
+
+
+
+static func advance(
+	initial: PackedFloat64Array,
+	time_s: float,
+	dt: float,
+	derivative: Callable,
+	first: PackedFloat64Array,
+	evaluate: Callable,
+	certificate: Callable,
+	options: Dictionary = {},
+	error_gate: Callable = Callable(),
+	normal_loss_policy: Callable = Callable(),
+	mass_proof: RefCounted = null
+) -> Dictionary:
 	var settings := _settings(options)
-	if not settings.ok: return _operator_failure(settings,options)
-	if not _state(initial) or not is_finite(time_s) or time_s < 0.0 or not is_finite(dt) \
-		or dt <= 0.0 or dt > 1.0 or not is_finite(time_s + dt) or time_s + dt <= time_s \
-		or not derivative.is_valid() or not evaluate.is_valid() or not certificate.is_valid() \
-		or (not first.is_empty() and (first.size() != initial.size() or not _finite(first))):
-		return _operator_failure(_failure("invalid bounded state, time or callbacks"),settings)
-	if not normal_loss_policy.is_null() and (not normal_loss_policy.is_valid() or normal_loss_policy.get_argument_count()!=4):
-		return _operator_failure(_failure("normal loss policy requires exactly four arguments", "invalid_normal_loss_policy"),settings)
-	var policy_pin:Dictionary={}
+	if not settings.ok:
+		return _operator_failure(settings, options)
+	if (
+		not _state(initial)
+		or not is_finite(time_s)
+		or time_s < 0.0
+		or not is_finite(dt)
+		or dt <= 0.0
+		or dt > 1.0
+		or not is_finite(time_s + dt)
+		or time_s + dt <= time_s
+		or not derivative.is_valid()
+		or not evaluate.is_valid()
+		or not certificate.is_valid()
+		or (not first.is_empty() and (first.size() != initial.size() or not _finite(first)))
+	):
+		return _operator_failure(_failure("invalid bounded state, time or callbacks"), settings)
+	if (
+		not normal_loss_policy.is_null()
+		and (not normal_loss_policy.is_valid() or normal_loss_policy.get_argument_count() != 4)
+	):
+		return _operator_failure(
+			_failure(
+				"normal loss policy requires exactly four arguments", "invalid_normal_loss_policy"
+			),
+			settings
+		)
+	var policy_pin: Dictionary = {}
+	var runtime: Dictionary = {}
+	if settings.operator_law == INTEGRATED_CAPACITY_LAW:
+		if (
+			derivative.get_argument_count() != 2
+			or evaluate.get_argument_count() != 2
+			or certificate.get_argument_count() != 4
+		):
+			return _operator_failure(
+				_failure(
+					"capacity callbacks require RHS/evaluator2 and certificate4 arguments",
+					"invalid_capacity_callback"
+				),
+				settings
+			)
+		runtime = _capacity_runtime(derivative, evaluate, settings)
+		settings._capacity_work = runtime.work
+		derivative = runtime.actual_derivative
+		evaluate = runtime.actual_evaluate
 	var start := _sample(evaluate, initial, time_s)
-	if not start.ok: return _operator_failure(start,settings)
-	if not _domain(initial, start): return _operator_failure(_failure("initial reverse rotor state is unsupported", "unsupported_reverse"),settings)
+	if not runtime.is_empty():
+		runtime.work.setup = _work_counts(runtime.work)
+	if not start.ok:
+		return _operator_failure(start, settings)
+	if not _domain(initial, start):
+		return _operator_failure(
+			_failure("initial reverse rotor state is unsupported", "unsupported_reverse"), settings
+		)
 	var count := 1
 	var coarse := {}
 	var had_admissible := false
 	var gate_identity := ""
 	for attempt in 5:
-		if count > settings.max_substeps: break
-		var trial := _attempt(initial, time_s, dt, derivative, first, evaluate, certificate, start, count, settings,normal_loss_policy,policy_pin,mass_proof)
-		if settings.operator_law!=LAW and not trial.ok: trial.law=settings.operator_law
+		if count > settings.max_substeps:
+			break
+		var trial := _attempt(
+			initial,
+			time_s,
+			dt,
+			derivative,
+			first,
+			evaluate,
+			certificate,
+			start,
+			count,
+			settings,
+			normal_loss_policy,
+			policy_pin,
+			mass_proof,
+			runtime
+		)
+		if settings.operator_law != LAW and not trial.ok:
+			trial.law = settings.operator_law
 		if trial.ok:
 			had_admissible = true
-			if not error_gate.is_valid(): return trial
+			if not error_gate.is_valid():
+				return _finish_capacity_work(trial, runtime)
 			if not coarse.is_empty():
 				var judged := _error_control(error_gate, coarse, trial, dt)
-				if not judged.ok: return _operator_failure(judged,settings)
+				if not judged.ok:
+					return _operator_failure(judged, settings)
 				if not gate_identity.is_empty() and gate_identity != judged.identity:
-					return _operator_failure(_failure("error gate identity changed between complete-path pairs", "invalid_error_gate"),settings)
+					return _operator_failure(
+						_failure(
+							"error gate identity changed between complete-path pairs",
+							"invalid_error_gate"
+						),
+						settings
+					)
 				gate_identity = judged.identity
 				if judged.admitted:
 					trial.integration_receipt.error_control = {
 						method = "complete_first_order_split_n_2n_no_Richardson",
-						coarse_substeps = coarse.integration_receipt.accepted_substeps, fine_substeps = count,
-						identity = judged.identity, normalized_error = judged.normalized_error}
-					return trial
+						coarse_substeps = coarse.integration_receipt.accepted_substeps,
+						fine_substeps = count,
+						identity = judged.identity,
+						normalized_error = judged.normalized_error
+					}
+					return _finish_capacity_work(trial, runtime)
 			coarse = trial
 		else:
-			if trial.status != "refine": return trial
+			if trial.status != "refine":
+				return trial
 			# The next candidate must be compared to its actual n/2 predecessor,
 			# never a nonadjacent or physically unadmitted abandoned trajectory.
 			coarse = {}
 		count *= 2
 	if error_gate.is_valid() and had_admissible:
-		return _operator_failure(_failure("complete split n/2n accuracy needs a finer path beyond the budget", "error_control_exhausted"),settings)
-	return _operator_failure(_failure("whole-piece certificate or work accuracy exceeds the 16-piece budget", "admission_exhausted"),settings)
+		return _operator_failure(
+			_failure(
+				"complete split n/2n accuracy needs a finer path beyond the budget",
+				"error_control_exhausted"
+			),
+			settings
+		)
+	return _operator_failure(
+		_failure(
+			"whole-piece certificate or work accuracy exceeds the 16-piece budget",
+			"admission_exhausted"
+		),
+		settings
+	)
 
-
-
-static func _operator_failure(result: Dictionary,options: Dictionary) -> Dictionary:
-	var selected:Variant=options.get("operator_law",LAW)
-	if not result.get("ok",false) and typeof(selected)==TYPE_STRING and selected==TWO_SIDED_LAW:
-		result.law=TWO_SIDED_LAW
+static func _operator_failure(result: Dictionary, options: Dictionary) -> Dictionary:
+	var selected: Variant = options.get("operator_law", LAW)
+	if (
+		not result.get("ok", false)
+		and typeof(selected) == TYPE_STRING
+		and selected in [TWO_SIDED_LAW, INTEGRATED_CAPACITY_LAW]
+	):
+		result.law = selected
+	if not result.get("ok", false) and options.has("_capacity_work"):
+		result.capacity_computation = {
+			total = _work_counts(options._capacity_work),
+			setup = options._capacity_work.get("setup", {}),
+			scope = "failed_attempt_work_no_physical_receipt"
+		}
 	return result
-
-
 static func _error_control(gate: Callable, coarse: Dictionary, fine: Dictionary, dt: float) -> Dictionary:
 	var a: PackedFloat64Array = coarse.state.duplicate()
 	var b: PackedFloat64Array = fine.state.duplicate()
@@ -134,9 +251,9 @@ static func _error_control(gate: Callable, coarse: Dictionary, fine: Dictionary,
 
 static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
 		first: PackedFloat64Array, evaluate: Callable, certificate: Callable,
-		start: Dictionary, count: int, settings: Dictionary,normal_loss_policy:Callable=Callable(),policy_pin:Dictionary={},mass_proof:RefCounted=null) -> Dictionary:
-	if settings.operator_law==TWO_SIDED_LAW:
-		return _operator_failure(_attempt_two_sided(initial,time_s,dt,derivative,first,evaluate,certificate,start,count,settings,normal_loss_policy,policy_pin,mass_proof),settings)
+		start: Dictionary, count: int, settings: Dictionary,normal_loss_policy:Callable=Callable(),policy_pin:Dictionary={},mass_proof:RefCounted=null,runtime:Dictionary={}) -> Dictionary:
+	if settings.operator_law in [TWO_SIDED_LAW,INTEGRATED_CAPACITY_LAW]:
+		return _operator_failure(_attempt_two_sided(initial,time_s,dt,derivative,first,evaluate,certificate,start,count,settings,normal_loss_policy,policy_pin,mass_proof,runtime),settings)
 	var state := initial.duplicate()
 	var sample := start
 	var h := dt / count
@@ -291,9 +408,35 @@ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, deri
 	return result
 
 
-static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
-		_first: PackedFloat64Array, evaluate: Callable, certificate: Callable,
-		start: Dictionary, count: int, settings: Dictionary,normal_loss_policy:Callable=Callable(),policy_pin:Dictionary={},mass_proof:RefCounted=null) -> Dictionary:
+
+
+
+
+static func _attempt_two_sided(
+	initial: PackedFloat64Array,
+	time_s: float,
+	dt: float,
+	derivative: Callable,
+	_first: PackedFloat64Array,
+	evaluate: Callable,
+	certificate: Callable,
+	start: Dictionary,
+	count: int,
+	settings: Dictionary,
+	normal_loss_policy: Callable = Callable(),
+	policy_pin: Dictionary = {},
+	mass_proof: RefCounted = null,
+	runtime: Dictionary = {}
+) -> Dictionary:
+	var integrated: bool = settings.operator_law == INTEGRATED_CAPACITY_LAW
+	if integrated and runtime.is_empty():
+		return _failure("integrated capacity requires bounded advance context")
+	var work_before: Dictionary = _work_counts(runtime.work) if integrated else {}
+	if integrated:
+		runtime.work.attempts += 1
+		runtime.work.actual_domain_pending = false
+		runtime.work.predictor_domain_pending = false
+	var cap_integrals: Array = []
 	var state := initial.duplicate()
 	var sample := start
 	var h := dt / count
@@ -303,7 +446,7 @@ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: f
 	var peak_times := PackedFloat64Array()
 	peak_times.resize(peaks.size())
 	peak_times.fill(time_s)
-	var loss_pieces:Array=[]
+	var loss_pieces: Array = []
 	var normal_loss := 0.0
 	var external_work := 0.0
 	var tangent_loss := 0.0
@@ -320,30 +463,100 @@ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: f
 	for piece in count:
 		var at := time_s + piece * h
 		var before_energy := _energy(state, sample)
-		var pre := _half_impulse(state, sample, at, 0.5 * h, evaluate, start, settings,mass_proof)
-		if not pre.ok: return pre
+		var predicted: Dictionary = {}
+		var pre_limits := PackedFloat64Array()
+		if integrated:
+			runtime.work.pieces_attempted += 1
+			predicted = _predict_capacity(
+				state, at, h, start, runtime, settings.predictor_rhs_budget
+			)
+			if not predicted.ok:
+				return predicted
+			var computed := Capacity.limits(sample.interval_capacity, predicted.mean, 0.5 * h)
+			if not computed.ok:
+				return computed
+			pre_limits = computed.limits
+		var pre := _half_impulse(
+			state,
+			sample,
+			at,
+			0.5 * h,
+			evaluate,
+			start,
+			settings,
+			mass_proof,
+			sample.interval_capacity if integrated else {},
+			pre_limits,
+			runtime.work if integrated else {}
+		)
+		if not pre.ok:
+			if integrated and _capacity_fatal(runtime.work):
+				return _failure(
+					"fatal capacity callback or packet refusal", "invalid_capacity_callback"
+				)
+			if integrated and runtime.work.actual_domain_pending:
+				return _failure("actual prekick left bounded owner envelope", "refine")
+			return pre
 		var kicked: PackedFloat64Array = pre.state
 		var kicked_sample: Dictionary = pre.sample
-		var certified: Variant = certificate.call(kicked.duplicate(), at, h, kicked_sample.duplicate(true))
-		if not certified is Dictionary or typeof(certified.get("ok")) != TYPE_BOOL \
-			or typeof(certified.get("admitted")) != TYPE_BOOL or typeof(certified.get("identity")) != TYPE_STRING \
-			or certified.identity.is_empty() or certified.identity.length() > 256:
+		var certified: Variant = certificate.call(
+			kicked.duplicate(), at, h, kicked_sample.duplicate(true)
+		)
+		if (
+			not certified is Dictionary
+			or typeof(certified.get("ok")) != TYPE_BOOL
+			or typeof(certified.get("admitted")) != TYPE_BOOL
+			or typeof(certified.get("identity")) != TYPE_STRING
+			or certified.identity.is_empty()
+			or certified.identity.length() > 256
+		):
 			return _failure("malformed whole-piece certificate")
-		if not certified.ok: return _failure("whole-piece certificate is unsupported", "unsupported_certificate")
-		if not certified.admitted: return _failure("whole-piece refinement required", "refine")
-		if not certificate_ids.has(certified.identity): certificate_ids.append(certified.identity)
-		var loss_policy:=_loss_policy(normal_loss_policy,kicked,at,h,kicked_sample,policy_pin)
-		if not loss_policy.ok:return loss_policy
-		if loss_policy.eligible and not _loss_same_potential(sample,kicked_sample):return _failure("prekick changed support potential or identity","invalid_normal_loss_policy")
+		if (
+			integrated
+			and (
+				typeof(certified.get("capacity_identity")) != TYPE_STRING
+				or certified.capacity_identity != start.interval_capacity.binding_identity
+			)
+		):
+			return _failure(
+				"whole-piece owner did not bind capacity source", "unsupported_certificate"
+			)
+		if not certified.ok:
+			return _failure("whole-piece certificate is unsupported", "unsupported_certificate")
+		if not certified.admitted:
+			return _failure("whole-piece refinement required", "refine")
+		if not certificate_ids.has(certified.identity):
+			certificate_ids.append(certified.identity)
+		var loss_policy := _loss_policy(
+			normal_loss_policy, kicked, at, h, kicked_sample, policy_pin
+		)
+		if not loss_policy.ok:
+			return loss_policy
+		if loss_policy.eligible and not _loss_same_potential(sample, kicked_sample):
+			return _failure(
+				"prekick changed support potential or identity", "invalid_normal_loss_policy"
+			)
 		# The preimpulse changes body/spin velocities. Caller k1 is stale even on
 		# piece0; recompute both force snapshot and derivative after the halfkick.
-		var quadrature: Array = [PackedFloat64Array([kicked_sample.normal_dissipation_w, kicked_sample.external_power_w])]
-		var zero_samples:={count=0}
+		var quadrature: Array = [
+			PackedFloat64Array([kicked_sample.normal_dissipation_w, kicked_sample.external_power_w])
+		]
+		var normal_quad: Array = [kicked_sample.normal_load_n.duplicate()] if integrated else []
+		var zero_samples := {count = 0}
 		if loss_policy.eligible:
-			if not _loss_zero_sample(kicked_sample,kicked_sample):return _failure("eligible initial normal sample is loaded or malformed","invalid_normal_loss_policy")
-			zero_samples.count=1
+			if not _loss_zero_sample(kicked_sample, kicked_sample):
+				return _failure(
+					"eligible initial normal sample is loaded or malformed",
+					"invalid_normal_loss_policy"
+				)
+			zero_samples.count = 1
 		var tracker := {ok = true, reason = ""}
 		var tracked := func(values: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
+			if integrated and not tracker.ok:
+				return _zeros(initial.size())
+			if integrated and _capacity_fatal(runtime.work):
+				tracker.ok = false
+				return _zeros(initial.size())
 			if not _state(values):
 				tracker.ok = false
 				tracker.reason = "invalid algebraic stage state"
@@ -354,58 +567,194 @@ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: f
 				tracker.reason = "stage snapshot refused or changed fixed binding"
 				return _zeros(initial.size())
 			if loss_policy.eligible:
-				if not _loss_zero_sample(kicked_sample,point):
-					tracker.ok=false;tracker.reason="qualified RK normal sample is loaded or binding changed";return _zeros(initial.size())
-				zero_samples.count+=1
-			quadrature.append(PackedFloat64Array([point.normal_dissipation_w, point.external_power_w]))
+				if not _loss_zero_sample(kicked_sample, point):
+					tracker.ok = false
+					tracker.reason = "qualified RK normal sample is loaded or binding changed"
+					return _zeros(initial.size())
+				zero_samples.count += 1
+			quadrature.append(
+				PackedFloat64Array([point.normal_dissipation_w, point.external_power_w])
+			)
+			if integrated:
+				normal_quad.append(point.normal_load_n.duplicate())
 			var raw: Variant = derivative.call(values.duplicate(), stage_t)
-			if typeof(raw) != TYPE_PACKED_FLOAT64_ARRAY or raw.size() != initial.size() or not _finite(raw):
+			if (
+				typeof(raw) != TYPE_PACKED_FLOAT64_ARRAY
+				or raw.size() != initial.size()
+				or not _finite(raw)
+			):
 				tracker.ok = false
 				tracker.reason = "malformed continuous derivative"
 				return _zeros(initial.size())
 			return raw
 		var first: Variant = derivative.call(kicked.duplicate(), at)
-		if typeof(first) != TYPE_PACKED_FLOAT64_ARRAY or first.size() != initial.size() or not _finite(first):
+		if (
+			typeof(first) != TYPE_PACKED_FLOAT64_ARRAY
+			or first.size() != initial.size()
+			or not _finite(first)
+		):
 			return _failure("malformed recomputed preimpulse k1")
 		var candidate := RK.rk4_step_at(kicked, at, h, tracked, first)
 		if not tracker.ok or quadrature.size() != 4 or not _state(candidate):
+			if integrated and _capacity_fatal(runtime.work):
+				return _failure(
+					"fatal capacity callback or packet refusal", "invalid_capacity_callback"
+				)
+			if integrated and runtime.work.actual_domain_pending:
+				return _failure("actual RK left bounded owner envelope", "refine")
 			return _failure("normal/free RK interval failed: " + str(tracker.reason))
+		if integrated and runtime.work.callback_failure:
+			return _failure("capacity callback mutated its input", "invalid_capacity_callback")
 		var after_flow := _sample(evaluate, candidate, at + h)
-		if not after_flow.ok or not _same_binding(start, after_flow): return _failure("controlled endpoint snapshot refused")
-		var post := _half_impulse(candidate, after_flow, at + h, 0.5 * h, evaluate, start, settings,mass_proof)
-		if not post.ok: return post
+		if not after_flow.ok or not _same_binding(start, after_flow):
+			if integrated and _capacity_fatal(runtime.work):
+				return _failure(
+					"fatal capacity callback or packet refusal", "invalid_capacity_callback"
+				)
+			if integrated and runtime.work.actual_domain_pending:
+				return _failure("actual endpoint left bounded owner envelope", "refine")
+			return _failure("controlled endpoint snapshot refused")
+		var actual: Dictionary = {}
+		var reserved: Dictionary = {}
+		if integrated:
+			actual = Capacity.normal_mean(normal_quad, start.contact_ids.size())
+			if not actual.ok:
+				return actual
+			var computed := Capacity.limits(after_flow.interval_capacity, actual.mean, 0.5 * h)
+			if not computed.ok:
+				return computed
+			reserved = Capacity.reserve(
+				pre.applied,
+				sample.interval_capacity,
+				pre_limits,
+				after_flow.interval_capacity,
+				computed.limits
+			)
+			if not reserved.ok:
+				return _failure(
+					(
+						"actual capacity reservation: "
+						+ str(reserved.get("reason", reserved.get("status")))
+					),
+					"refine" if reserved.get("status") == "refine" else "invalid_capacity_budget"
+				)
+		var post := _half_impulse(
+			candidate,
+			after_flow,
+			at + h,
+			0.5 * h,
+			evaluate,
+			start,
+			settings,
+			mass_proof,
+			after_flow.interval_capacity if integrated else {},
+			reserved.limits if integrated else PackedFloat64Array(),
+			runtime.work if integrated else {}
+		)
+		if not post.ok:
+			if integrated and _capacity_fatal(runtime.work):
+				return _failure(
+					"fatal capacity callback or packet refusal", "invalid_capacity_callback"
+				)
+			if integrated and runtime.work.actual_domain_pending:
+				return _failure("actual postkick left bounded owner envelope", "refine")
+			return post
+		if integrated:
+			var integrals := Capacity.normal_integrals(predicted.mean, actual.mean, h)
+			if not integrals.ok:
+				return integrals
+			var ip: PackedFloat64Array = integrals.predicted
+			var ia: PackedFloat64Array = integrals.actual
+			cap_integrals.append(
+				{
+					time_s = at,
+					duration_s = h,
+					predicted_normal_integral_ns = ip,
+					actual_normal_integral_ns = ia,
+					predicted_minus_actual_ns = integrals.difference,
+					unreserved_nominal_normal_capacity_area_ns = integrals.nominal,
+					budget_groups = reserved.compact,
+					budget_reservation = reserved.summary
+				}
+			)
 		var next: PackedFloat64Array = post.state
 		var accepted: Dictionary = post.sample
-		var piece_normal: float = h / 6.0 * (quadrature[0][0] + 2 * quadrature[1][0] + 2 * quadrature[2][0] + quadrature[3][0])
+		var piece_normal: float = (
+			h
+			/ 6.0
+			* (quadrature[0][0] + 2 * quadrature[1][0] + 2 * quadrature[2][0] + quadrature[3][0])
+		)
 		if loss_policy.eligible:
-			if not _loss_zero_sample(kicked_sample,after_flow) or not _loss_same_potential(after_flow,accepted):return _failure("qualified endpoint/potential binding changed","invalid_normal_loss_policy")
-			piece_normal=kicked_sample.normal_support_potential_j-after_flow.normal_support_potential_j
-			if not is_finite(piece_normal) or piece_normal<0.0:return _failure("qualified support potential increased; no heat clamp","invalid_normal_loss_policy")
-		var piece_work: float = h / 6.0 * (quadrature[0][1] + 2 * quadrature[1][1] + 2 * quadrature[2][1] + quadrature[3][1])
+			if (
+				not _loss_zero_sample(kicked_sample, after_flow)
+				or not _loss_same_potential(after_flow, accepted)
+			):
+				return _failure(
+					"qualified endpoint/potential binding changed", "invalid_normal_loss_policy"
+				)
+			piece_normal = (
+				kicked_sample.normal_support_potential_j - after_flow.normal_support_potential_j
+			)
+			if not is_finite(piece_normal) or piece_normal < 0.0:
+				return _failure(
+					"qualified support potential increased; no heat clamp",
+					"invalid_normal_loss_policy"
+				)
+		var piece_work: float = (
+			h
+			/ 6.0
+			* (quadrature[0][1] + 2 * quadrature[1][1] + 2 * quadrature[2][1] + quadrature[3][1])
+		)
 		var after_energy := _energy(next, accepted)
 		var loss: float = pre.loss + post.loss
 		var work: float = pre.work + post.work
 		var residual: float = after_energy - before_energy + piece_normal + loss - piece_work - work
-		var scale: float = maxf(absf(before_energy), maxf(absf(after_energy), absf(piece_work) + absf(work)))
-		if not _finite(PackedFloat64Array([residual, before_energy, after_energy, piece_normal, piece_work])):
+		var scale: float = maxf(
+			absf(before_energy), maxf(absf(after_energy), absf(piece_work) + absf(work))
+		)
+		if not _finite(
+			PackedFloat64Array([residual, before_energy, after_energy, piece_normal, piece_work])
+		):
 			return _failure("normal/contact work overflow")
-		if absf(residual) > settings.energy_absolute_tolerance_j + settings.energy_relative_tolerance * scale:
+		if (
+			absf(residual)
+			> settings.energy_absolute_tolerance_j + settings.energy_relative_tolerance * scale
+		):
 			return _failure("normal/contact work accuracy requires refinement", "refine")
 		if normal_loss_policy.is_valid():
-			var entry:={method="unloaded_support_potential_difference_v1" if loss_policy.eligible else "RK4_normal_power_v1",normal_dissipation_j=piece_normal,energy_residual_j=residual}
+			var entry := {
+				method =
+				(
+					"unloaded_support_potential_difference_v1"
+					if loss_policy.eligible
+					else "RK4_normal_power_v1"
+				),
+				normal_dissipation_j = piece_normal,
+				energy_residual_j = residual
+			}
 			if loss_policy.eligible:
-				entry.merge({start_support_potential_j=kicked_sample.normal_support_potential_j,end_support_potential_j=after_flow.normal_support_potential_j,support_identity=kicked_sample.normal_support_identity,zero_force_rk_samples=zero_samples.count})
+				entry.merge(
+					{
+						start_support_potential_j = kicked_sample.normal_support_potential_j,
+						end_support_potential_j = after_flow.normal_support_potential_j,
+						support_identity = kicked_sample.normal_support_identity,
+						zero_force_rk_samples = zero_samples.count
+					}
+				)
 			loss_pieces.append(entry)
 		largest_piece_residual = maxf(largest_piece_residual, absf(residual))
 		normal_loss += piece_normal
 		external_work += piece_work
 		tangent_loss += loss
 		prescribed_work += work
-		pre_loss+=pre.loss
-		post_loss+=post.loss
-		pre_work+=pre.work
-		post_work+=post.work
-		if not _record_resolution(resolution_stats,pre.applied) or not _record_resolution(resolution_stats,post.applied):
+		pre_loss += pre.loss
+		post_loss += post.loss
+		pre_work += pre.work
+		post_work += post.work
+		if (
+			not _record_resolution(resolution_stats, pre.applied)
+			or not _record_resolution(resolution_stats, post.applied)
+		):
 			return _failure("assembly resolution diagnostic overflow")
 		impulse_absolute_sum += pre.impulse_absolute_sum + post.impulse_absolute_sum
 		state = next
@@ -417,57 +766,185 @@ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: f
 				peaks[i] = accepted.normal_load_n[i]
 				peak_times[i] = at + h
 	var final_energy := _energy(state, sample)
-	if not _finite(PackedFloat64Array([initial_energy, final_energy, normal_loss, external_work, tangent_loss, prescribed_work, impulse_absolute_sum])):
+	if not _finite(
+		PackedFloat64Array(
+			[
+				initial_energy,
+				final_energy,
+				normal_loss,
+				external_work,
+				tangent_loss,
+				prescribed_work,
+				impulse_absolute_sum
+			]
+		)
+	):
 		return _failure("accepted work accumulation overflow")
-	var result := {ok = true, status = "accepted", state = state, events = [], integration_receipt = {
-		format = RECEIPT_FORMAT, law = TWO_SIDED_LAW, contact_operator_order = 1, accepted_substeps = count,
-		contact_ids = start.contact_ids.duplicate(), normal_sample_times_s = times, normal_samples_n = normal_samples,
-		normal_sampling_method = "accepted_substep_start_and_end_states_not_interval_maximum",
-		sampled_peak_normal_n = peaks, sampled_peak_times_s = peak_times,
-		quadrature_method = "RK4_algebraic_stage_weights_not_damage_samples", certificate_identities = certificate_ids,
-		normal_dissipation_j = normal_loss, external_work_j = external_work, tangent_dissipation_j = tangent_loss,
-		prescribed_contact_work_j = prescribed_work, absolute_impulse_sum = impulse_absolute_sum,
-		initial_mechanical_energy_j = initial_energy, final_mechanical_energy_j = final_energy,
-		energy_balance_residual_j = final_energy - initial_energy + normal_loss + tangent_loss - external_work - prescribed_work,
-		maximum_piece_energy_residual_j = largest_piece_residual,
-		pre_contact_dissipation_j=pre_loss,post_contact_dissipation_j=post_loss,
-		pre_prescribed_contact_work_j=pre_work,post_prescribed_contact_work_j=post_work,
-		split_method="two_sided_half_impulses_recomputed_k1_order1"}}
+	var result := {
+		ok = true,
+		status = "accepted",
+		state = state,
+		events = [],
+		integration_receipt =
+		{
+			format = RECEIPT_FORMAT,
+			law = settings.operator_law,
+			contact_operator_order = 1,
+			accepted_substeps = count,
+			contact_ids = start.contact_ids.duplicate(),
+			normal_sample_times_s = times,
+			normal_samples_n = normal_samples,
+			normal_sampling_method = "accepted_substep_start_and_end_states_not_interval_maximum",
+			sampled_peak_normal_n = peaks,
+			sampled_peak_times_s = peak_times,
+			quadrature_method = "RK4_algebraic_stage_weights_not_damage_samples",
+			certificate_identities = certificate_ids,
+			normal_dissipation_j = normal_loss,
+			external_work_j = external_work,
+			tangent_dissipation_j = tangent_loss,
+			prescribed_contact_work_j = prescribed_work,
+			absolute_impulse_sum = impulse_absolute_sum,
+			initial_mechanical_energy_j = initial_energy,
+			final_mechanical_energy_j = final_energy,
+			energy_balance_residual_j =
+			(
+				final_energy
+				- initial_energy
+				+ normal_loss
+				+ tangent_loss
+				- external_work
+				- prescribed_work
+			),
+			maximum_piece_energy_residual_j = largest_piece_residual,
+			pre_contact_dissipation_j = pre_loss,
+			post_contact_dissipation_j = post_loss,
+			pre_prescribed_contact_work_j = pre_work,
+			post_prescribed_contact_work_j = post_work,
+			split_method =
+			(
+				"predicted_actual_integrated_capacity_order1"
+				if integrated
+				else "two_sided_half_impulses_recomputed_k1_order1"
+			)
+		}
+	}
 	if normal_loss_policy.is_valid():
-		result.integration_receipt.quadrature_method="RK4_external_work_piecewise_normal_loss_v1"
-		result.integration_receipt.normal_loss_policy={format="openrc-normal-loss-policy-receipt v1",identity=policy_pin.identity,pieces=loss_pieces}
-	if not resolution_stats.is_empty(): result.integration_receipt.assembly_resolution=resolution_stats
+		result.integration_receipt.quadrature_method = "RK4_external_work_piecewise_normal_loss_v1"
+		result.integration_receipt.normal_loss_policy = {
+			format = "openrc-normal-loss-policy-receipt v1",
+			identity = policy_pin.identity,
+			pieces = loss_pieces
+		}
+	if integrated:
+		result.integration_receipt.interval_capacity = {
+			format = Capacity.FORMAT,
+			law = Capacity.LAW,
+			binding_identity = start.interval_capacity.binding_identity,
+			row_ids = start.interval_capacity.row_ids.duplicate(),
+			group_ids = start.interval_capacity.group_ids.duplicate(),
+			groups = Capacity.receipt_groups(start.interval_capacity),
+			row_contact_indices = start.interval_capacity.row_contact_indices.duplicate(),
+			group_columns = PackedStringArray(Capacity.COLUMNS),
+			pieces = cap_integrals
+		}
+		result.integration_receipt.capacity_computation = {
+			accepted = _work_difference(_work_counts(runtime.work), work_before),
+			accepted_pieces = count
+		}
+	if not resolution_stats.is_empty():
+		result.integration_receipt.assembly_resolution = resolution_stats
 	return result
 
-
-static func _half_impulse(state: PackedFloat64Array, sample: Dictionary, at: float, half_h: float,
-		evaluate: Callable, start: Dictionary, settings: Dictionary,mass_proof:RefCounted=null) -> Dictionary:
-	var velocity_cm := M.add(state.slice(RB.VEL, RB.VEL + 3), M.cross(state.slice(RB.RATE, RB.RATE + 3), sample.cg_body_m))
-	var limits: PackedFloat64Array = sample.limit_rates.duplicate()
-	for i in limits.size():
-		limits[i] *= half_h
-		if sample.limit_rates[i] > 0.0 and limits[i] == 0.0: return _failure("half impulse scaling underflow")
-	var applied := Impulse.apply(sample.rotor_stage, sample.mass_kg, velocity_cm, sample.jacobian, sample.slip_bias,
-		limits, sample.groups, settings.qp_iterations, sample.get("capture",{}), settings.maximum_assembly_resolution_j,mass_proof)
-	if not applied.ok: return _failure("half contact impulse refused: " + str(applied.get("reason", "invalid")), "traction_rejected")
+static func _half_impulse(
+	state: PackedFloat64Array,
+	sample: Dictionary,
+	at: float,
+	half_h: float,
+	evaluate: Callable,
+	start: Dictionary,
+	settings: Dictionary,
+	mass_proof: RefCounted = null,
+	capacity: Dictionary = {},
+	explicit_limits: PackedFloat64Array = PackedFloat64Array(),
+	work: Dictionary = {}
+) -> Dictionary:
+	var velocity_cm := M.add(
+		state.slice(RB.VEL, RB.VEL + 3),
+		M.cross(state.slice(RB.RATE, RB.RATE + 3), sample.cg_body_m)
+	)
+	var limits: PackedFloat64Array
+	var jacobian: PackedFloat64Array = sample.jacobian
+	var bias: PackedFloat64Array = sample.slip_bias
+	var groups: Array = sample.groups
+	if capacity.is_empty():
+		limits = sample.limit_rates.duplicate()
+		for i in limits.size():
+			limits[i] *= half_h
+			if sample.limit_rates[i] > 0.0 and limits[i] == 0.0:
+				return _failure("half impulse scaling underflow")
+	else:
+		if not sample.get("capture", {}).is_empty():
+			return _failure("integrated packet capture is not yet qualified", "unsupported_capture")
+		if explicit_limits.size() != capacity.bias.size() or not _finite(explicit_limits):
+			return _failure("invalid explicit capacity limits")
+		for value: float in explicit_limits:
+			if value < 0.0:
+				return _failure("negative reserved capacity")
+		limits = explicit_limits.duplicate()
+		jacobian = capacity.jacobian
+		bias = capacity.bias
+		groups = capacity.groups
+		work.qp_calls += 1
+	var applied := Impulse.apply(
+		sample.rotor_stage,
+		sample.mass_kg,
+		velocity_cm,
+		jacobian,
+		bias,
+		limits,
+		groups,
+		settings.qp_iterations,
+		sample.get("capture", {}),
+		settings.maximum_assembly_resolution_j,
+		mass_proof
+	)
+	if not applied.ok:
+		return _failure(
+			"half contact impulse refused: " + str(applied.get("reason", "invalid")),
+			"traction_rejected"
+		)
 	var next := state.duplicate()
 	if not limits.is_empty():
-		var datum_velocity := M.sub(applied.velocity_cm_body, M.cross(applied.omega, sample.cg_body_m))
+		var datum_velocity := M.sub(
+			applied.velocity_cm_body, M.cross(applied.omega, sample.cg_body_m)
+		)
 		for axis in 3:
 			next[RB.VEL + axis] = datum_velocity[axis]
 			next[RB.RATE + axis] = applied.omega[axis]
-		for i in applied.spin.size(): next[sample.rotor_state_indices[i]] = applied.spin[i] / sample.sigma_per_state[i]
-	if not _state(next) or not _domain(next, sample): return _failure("unsupported reverse motion after halfkick", "unsupported_reverse")
+		for i in applied.spin.size():
+			next[sample.rotor_state_indices[i]] = applied.spin[i] / sample.sigma_per_state[i]
+	if not _state(next) or not _domain(next, sample):
+		return _failure("unsupported reverse motion after halfkick", "unsupported_reverse")
 	var after := _sample(evaluate, next, at)
-	if not after.ok or not _same_binding(start, after): return _failure("post-halfkick snapshot refused")
-	if absf(after.potential_j - sample.potential_j) > 1e-12 * maxf(1.0, maxf(absf(after.potential_j), absf(sample.potential_j))):
+	if not after.ok or not _same_binding(start, after):
+		return _failure("post-halfkick snapshot refused")
+	if (
+		absf(after.potential_j - sample.potential_j)
+		> 1e-12 * maxf(1.0, maxf(absf(after.potential_j), absf(sample.potential_j)))
+	):
 		return _failure("velocity halfkick changed recoverable potential")
 	var magnitude := 0.0
-	for impulse: float in applied.impulse: magnitude += absf(impulse)
-	return {ok = true, state = next, sample = after, loss = applied.dissipated_energy,
-		work = applied.total_prescribed_work, impulse_absolute_sum = magnitude, applied=applied}
-
-
+	for impulse: float in applied.impulse:
+		magnitude += absf(impulse)
+	return {
+		ok = true,
+		state = next,
+		sample = after,
+		loss = applied.dissipated_energy,
+		work = applied.total_prescribed_work,
+		impulse_absolute_sum = magnitude,
+		applied = applied
+	}
 static func _sample(evaluate: Callable, state: PackedFloat64Array, at: float) -> Dictionary:
 	var raw: Variant = evaluate.call(state.duplicate(), at)
 	if not raw is Dictionary or typeof(raw.get("ok")) != TYPE_BOOL or not raw.ok or raw.get("format", "") != SAMPLE_FORMAT:
@@ -606,26 +1083,69 @@ static func _domain(state: PackedFloat64Array, sample: Dictionary) -> bool:
 	return true
 
 
+
+
+
+
 static func _settings(options: Dictionary) -> Dictionary:
-	var out := {ok = true, max_substeps = MAX_SUBSTEPS, qp_iterations = 1024,
-		energy_absolute_tolerance_j = 1e-7, energy_relative_tolerance = 1e-7,
-		operator_law=LAW,maximum_assembly_resolution_j=-1.0}
+	var out := {
+		ok = true,
+		max_substeps = MAX_SUBSTEPS,
+		qp_iterations = 1024,
+		energy_absolute_tolerance_j = 1e-7,
+		energy_relative_tolerance = 1e-7,
+		operator_law = LAW,
+		maximum_assembly_resolution_j = -1.0
+	}
 	for key: Variant in options:
-		if key not in ["max_substeps", "qp_iterations", "energy_absolute_tolerance_j", "energy_relative_tolerance", "operator_law", "maximum_assembly_resolution_j"]:
+		if (
+			(
+				key
+				not in [
+					"max_substeps",
+					"qp_iterations",
+					"energy_absolute_tolerance_j",
+					"energy_relative_tolerance",
+					"operator_law",
+					"maximum_assembly_resolution_j"
+				]
+			)
+			and not (
+				key == "predictor_rhs_budget"
+				and typeof(options.get("operator_law")) == TYPE_STRING
+				and options.get("operator_law") == INTEGRATED_CAPACITY_LAW
+			)
+		):
 			return _failure("unsupported step option")
 		out[key] = options[key]
-	if typeof(out.max_substeps) != TYPE_INT or out.max_substeps not in [1, 2, 4, 8, 16] \
-		or typeof(out.qp_iterations) != TYPE_INT or out.qp_iterations < 1 or out.qp_iterations > 1024:
+	if (
+		typeof(out.max_substeps) != TYPE_INT
+		or out.max_substeps not in [1, 2, 4, 8, 16]
+		or typeof(out.qp_iterations) != TYPE_INT
+		or out.qp_iterations < 1
+		or out.qp_iterations > 1024
+	):
 		return _failure("invalid refinement/traction budget")
-	if typeof(out.operator_law)!=TYPE_STRING or out.operator_law not in [LAW,TWO_SIDED_LAW] \
-		or not _number(out.maximum_assembly_resolution_j) \
-		or (out.maximum_assembly_resolution_j<0.0 and out.maximum_assembly_resolution_j!=-1.0):
+	if (
+		typeof(out.operator_law) != TYPE_STRING
+		or out.operator_law not in [LAW, TWO_SIDED_LAW, INTEGRATED_CAPACITY_LAW]
+		or not _number(out.maximum_assembly_resolution_j)
+		or (out.maximum_assembly_resolution_j < 0.0 and out.maximum_assembly_resolution_j != -1.0)
+	):
 		return _failure("invalid operator or assembly resolution ceiling")
 	for key: String in ["energy_absolute_tolerance_j", "energy_relative_tolerance"]:
-		if not _number(out[key]) or out[key] < 0 or out[key] > 1e-2: return _failure("invalid work accuracy tolerance")
+		if not _number(out[key]) or out[key] < 0 or out[key] > 1e-2:
+			return _failure("invalid work accuracy tolerance")
+	if out.operator_law == INTEGRATED_CAPACITY_LAW:
+		if not out.has("predictor_rhs_budget"):
+			out.predictor_rhs_budget = 124
+		if (
+			typeof(out.predictor_rhs_budget) != TYPE_INT
+			or out.predictor_rhs_budget < 0
+			or out.predictor_rhs_budget > 124
+		):
+			return _failure("invalid bounded predictor allowance")
 	return out
-
-
 static func _state(s: PackedFloat64Array) -> bool:
 	if s.size() < RB.SIZE or s.size() > MAX_STATE_SIZE or not _finite(s): return false
 	var norm := 0.0
@@ -659,6 +1179,8 @@ static func _failure(reason: String, status := "invalid") -> Dictionary:
 
 ## Trusted owner authority, like derivative/certificate. Receipt data cannot
 ## activate this policy. Captured source/config binding is the OWNER's duty.
+
+
 static func _loss_policy(policy:Callable,state:PackedFloat64Array,at:float,h:float,sample:Dictionary,pin:Dictionary)->Dictionary:
 	if policy.is_null():return {ok=true,eligible=false,identity=""}
 	if not policy.is_valid() or policy.get_argument_count()!=4:return _failure("normal loss policy requires exactly four arguments","invalid_normal_loss_policy")
@@ -692,3 +1214,209 @@ static func _loss_zero_sample(a:Dictionary,b:Dictionary)->bool:
 	for load:float in b.normal_load_n:
 		if load!=0.0:return false
 	return true
+
+
+const WORK_KEYS := [
+	"attempts",
+	"pieces_attempted",
+	"predictor_rhs_calls",
+	"predictor_snapshot_calls",
+	"actual_rhs_calls",
+	"actual_snapshot_calls",
+	"qp_calls",
+	"predictor_domain_refusals",
+	"actual_domain_refusals"
+]
+
+
+static func _capacity_runtime(
+	derivative: Callable, evaluate: Callable, settings: Dictionary
+) -> Dictionary:
+	var work := {
+		callback_failure = false,
+		fatal_capacity_failure = false,
+		predictor_domain_pending = false,
+		actual_domain_pending = false,
+		predictor_rhs_budget = settings.predictor_rhs_budget
+	}
+	for key: String in WORK_KEYS:
+		work[key] = 0
+	var pin := {}
+	return {
+		work = work,
+		actual_derivative = _counted_rhs(derivative, work, "actual_rhs_calls"),
+		predictor_derivative = _counted_rhs(derivative, work, "predictor_rhs_calls"),
+		actual_evaluate = _capacity_evaluator(evaluate, work, "actual_snapshot_calls", pin),
+		predictor_evaluate = _capacity_evaluator(evaluate, work, "predictor_snapshot_calls", pin)
+	}
+
+
+static func _counted_rhs(derivative: Callable, work: Dictionary, key: String) -> Callable:
+	return func(state: PackedFloat64Array, at: float) -> Variant:
+		work[key] += 1
+		var values := state.duplicate()
+		var seal := var_to_bytes(values)
+		var result: Variant = derivative.call(values, at)
+		if var_to_bytes(values) != seal:
+			work.callback_failure = true
+			return _zeros(state.size())
+		if (
+			typeof(result) != TYPE_PACKED_FLOAT64_ARRAY
+			or result.size() != state.size()
+			or not _finite(result)
+		):
+			work.fatal_capacity_failure = true
+			return _zeros(state.size())
+		return result
+
+
+static func _capacity_evaluator(
+	evaluate: Callable, work: Dictionary, key: String, pin: Dictionary
+) -> Callable:
+	return func(state: PackedFloat64Array, at: float) -> Variant:
+		work[key] += 1
+		var values := state.duplicate()
+		var seal := var_to_bytes(values)
+		var result: Variant = evaluate.call(values, at)
+		if var_to_bytes(values) != seal:
+			work.callback_failure = true
+			work.fatal_capacity_failure = true
+			return {ok = false}
+		if (
+			typeof(result) == TYPE_DICTIONARY
+			and typeof(result.get("ok")) == TYPE_BOOL
+			and not result.ok
+			and typeof(result.get("status")) == TYPE_STRING
+			and result.status == "capacity_envelope_rejected"
+			and Capacity._text(result.get("reason"))
+		):
+			if key == "predictor_snapshot_calls":
+				work.predictor_domain_pending = true
+				work.predictor_domain_refusals += 1
+			else:
+				work.actual_domain_pending = true
+				work.actual_domain_refusals += 1
+			return result
+		if (
+			typeof(result) != TYPE_DICTIONARY
+			or typeof(result.get("rotor_state_indices")) != TYPE_PACKED_INT64_ARRAY
+			or typeof(result.get("contact_ids")) != TYPE_PACKED_STRING_ARRAY
+		):
+			work.fatal_capacity_failure = true
+			return {ok = false}
+		var valid := Capacity.validate(
+			result.get("interval_capacity"),
+			state,
+			at,
+			result.rotor_state_indices.size(),
+			result.contact_ids
+		)
+		if not valid.ok:
+			work.fatal_capacity_failure = true
+			return valid
+		var packet: Dictionary = result.interval_capacity
+		if pin.is_empty():
+			pin.packet = packet.duplicate(true)
+		elif not Capacity.same_binding(pin.packet, packet):
+			work.fatal_capacity_failure = true
+			return {ok = false}
+		return result
+
+
+static func _predict_capacity(
+	initial: PackedFloat64Array,
+	at: float,
+	h: float,
+	start: Dictionary,
+	runtime: Dictionary,
+	budget: int
+) -> Dictionary:
+	if runtime.work.predictor_rhs_calls + 4 > budget:
+		return _failure("bounded predictor RHS allowance exhausted", "computation_exhausted")
+	var sample := _sample(runtime.predictor_evaluate, initial, at)
+	if _capacity_fatal(runtime.work):
+		return _failure("fatal capacity predictor input", "invalid_capacity_callback")
+	if not sample.ok or not _same_binding(start, sample):
+		return _failure(
+			"capacity predictor start unsupported",
+			"refine" if runtime.work.predictor_domain_pending else "invalid_capacity_predictor"
+		)
+	var normals: Array = [sample.normal_load_n.duplicate()]
+	var tracker := {ok = true}
+	var tracked := func(state: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+		if not tracker.ok:
+			return _zeros(initial.size())
+		if not _state(state):
+			tracker.ok = false
+			return _zeros(initial.size())
+		var point := _sample(runtime.predictor_evaluate, state, time_s)
+		if not point.ok or not _same_binding(start, point):
+			tracker.ok = false
+			return _zeros(initial.size())
+		normals.append(point.normal_load_n.duplicate())
+		var raw: Variant = runtime.predictor_derivative.call(state.duplicate(), time_s)
+		if _capacity_fatal(runtime.work):
+			tracker.ok = false
+			return _zeros(initial.size())
+		if (
+			typeof(raw) != TYPE_PACKED_FLOAT64_ARRAY
+			or raw.size() != initial.size()
+			or not _finite(raw)
+		):
+			tracker.ok = false
+			return _zeros(initial.size())
+		return raw
+	var first: Variant = runtime.predictor_derivative.call(initial.duplicate(), at)
+	if _capacity_fatal(runtime.work):
+		return _failure("fatal initial predictor derivative", "invalid_capacity_callback")
+	if (
+		typeof(first) != TYPE_PACKED_FLOAT64_ARRAY
+		or first.size() != initial.size()
+		or not _finite(first)
+	):
+		return _failure("invalid predictor derivative")
+	var predicted := RK.rk4_step_at(initial, at, h, tracked, first)
+	if _capacity_fatal(runtime.work):
+		return _failure("capacity predictor mutated callback input", "invalid_capacity_callback")
+	if not tracker.ok or not _state(predicted):
+		return _failure(
+			"capacity predictor callback/domain refused",
+			"refine" if runtime.work.predictor_domain_pending else "invalid_capacity_predictor"
+		)
+	return Capacity.normal_mean(normals, start.contact_ids.size())
+
+
+static func _work_counts(work: Dictionary) -> Dictionary:
+	var out := {}
+	for key: String in WORK_KEYS:
+		out[key] = work[key]
+	return out
+
+
+static func _work_difference(total: Dictionary, accepted: Dictionary) -> Dictionary:
+	var out := {}
+	for key: String in WORK_KEYS:
+		out[key] = total[key] - accepted[key]
+	return out
+
+
+static func _finish_capacity_work(result: Dictionary, runtime: Dictionary) -> Dictionary:
+	if runtime.is_empty():
+		return result
+	var accepted: Dictionary = result.integration_receipt.capacity_computation.accepted
+	var total := _work_counts(runtime.work)
+	result.integration_receipt.capacity_computation = {
+		scope = "direct_callbacks_not_owner_internal_cost",
+		predictor_rhs_budget = runtime.work.predictor_rhs_budget,
+		total = total,
+		accepted = accepted,
+		setup = runtime.work.get("setup", {}),
+		discarded =
+		_work_difference(_work_difference(total, accepted), runtime.work.get("setup", {})),
+		accepted_pieces = result.integration_receipt.accepted_substeps
+	}
+	return result
+
+
+static func _capacity_fatal(work: Dictionary) -> bool:
+	return work.callback_failure or work.fatal_capacity_failure

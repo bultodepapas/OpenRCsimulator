@@ -1,0 +1,70 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f56d7ea2-7abc-49c2-9954-ca4478963c16",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test-oracle-followup/validation/test_traction_capacity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:20:09.186059+00:00",
+  "label": "repaired-test",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\test-oracle-followup\\checks\\repaired-test-veby057c\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\test-oracle-followup\\checks\\repaired-test-veby057c\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Traction capacity producer:"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 3,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Attempt to open script 'C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test-oracle-followup/validation/test_traction_capacity.gd' resulted in error 'File not found'.",
+      "context": [
+        "   at: load_source_code (modules/gdscript/gdscript.cpp:1160)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed loading resource: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test-oracle-followup/validation/test_traction_capacity.gd.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Can't load script: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test-oracle-followup/validation/test_traction_capacity.gd",
+      "context": [
+        "   at: start (main/main.cpp:4396)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "Traction capacity producer:"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.312,
+  "log_bytes": 701,
+  "log_sha256": "77fe78e47c1156f0f6ad1852770ce9670e56c08a3dc69cd3dbc9377b91def2d1"
+}

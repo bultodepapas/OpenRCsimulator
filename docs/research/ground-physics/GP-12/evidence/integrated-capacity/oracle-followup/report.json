@@ -1,0 +1,128 @@
+{
+  "format": "openrc-traction-capacity-test-oracle-followup-v1",
+  "sealed_utc": "2026-10-26T21:26:15.753362+00:00",
+  "promotion_manifest_sha256": "c95ff94a5ada6233b1feb343e3e280e3618d33a6f4de9c18b593d79782311978",
+  "payload": [
+    {
+      "target": "app/tests/test_traction_capacity.gd",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/production/app/tests/test_traction_capacity.gd",
+      "sha256": "d28b5a0d751544d8f11af163cea53d390165d92b91aff9436dca0b5b9e53a256",
+      "bytes": 13160
+    },
+    {
+      "target": "app/tests/fixtures/ground_contact_capacity_legacy_rows.bin",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/production/app/tests/fixtures/ground_contact_capacity_legacy_rows.bin",
+      "sha256": "d5f96330e89f1ac55a1c6df474a35cd6925008064a1c9c6b2f45e22c4bd6eba9",
+      "bytes": 121452
+    },
+    {
+      "target": "app/tests/fixtures/ground_contact_capacity_legacy_steps.bin",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/production/app/tests/fixtures/ground_contact_capacity_legacy_steps.bin",
+      "sha256": "ffc52cf1a57e4a7a07e4d57851238acc3961dd7409ceade70dcd4a879237de18",
+      "bytes": 38160
+    }
+  ],
+  "main_test_still_prehash": true,
+  "validation_is_only_fixture_path_transform": true,
+  "prepromotion_frozen_scripts": 70,
+  "prepromotion_assets": 10,
+  "prepromotion_mismatches": [],
+  "step_original_outcomes": [
+    {
+      "fixture": "ground_unloaded_gentle.bin",
+      "law": "fixed-hub-rk4-normal-endpoint-impulse-lie-v1",
+      "ok": true,
+      "reason": "",
+      "receipt_present": true,
+      "state_present": true,
+      "status": "accepted"
+    },
+    {
+      "fixture": "ground_unloaded_hard.bin",
+      "law": "fixed-hub-rk4-normal-endpoint-impulse-lie-v1",
+      "ok": false,
+      "reason": "complete split n/2n accuracy needs a finer path beyond the budget",
+      "receipt_present": false,
+      "state_present": false,
+      "status": "error_control_exhausted"
+    },
+    {
+      "fixture": "ground_unloaded_gentle.bin",
+      "law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+      "ok": true,
+      "reason": "",
+      "receipt_present": true,
+      "state_present": true,
+      "status": "accepted"
+    },
+    {
+      "fixture": "ground_unloaded_hard.bin",
+      "law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+      "ok": false,
+      "reason": "complete split n/2n accuracy needs a finer path beyond the budget",
+      "receipt_present": false,
+      "state_present": false,
+      "status": "error_control_exhausted"
+    }
+  ],
+  "row_oracle_cases": 16,
+  "checks": [
+    {
+      "label": "original-row-capture",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/original-row-capture-m0pprs_q/report.json",
+      "sha256": "4f5ae44e2cc09ad0f85926a4610c531b792eb813f284ebab5a3c89964a54a785",
+      "log_sha256": "4aaa07d2c8989ecacf660f3bf1a3b40d2071e72fed6c07c8936c28b45138ee17",
+      "purpose": "passing verification",
+      "assertions": 35
+    },
+    {
+      "label": "repaired-test-typed",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/repaired-test-typed-4ch4gs44/report.json",
+      "sha256": "13a9bde9075de22f352db3ef0107d956306aed6942a3c4c8349ebd29d383a6db",
+      "log_sha256": "df466d5b0b0611e6ac20f5ca3eca5c623ab2b0eb5d9f31f5029f207c0d9e4d2e",
+      "purpose": "passing verification",
+      "assertions": 103
+    },
+    {
+      "label": "original-step-outcomes",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/original-step-outcomes-tzmi57ck/report.json",
+      "sha256": "a1ce7d61ff68adb6308debdb39f24c86081dfecbd3cb2af6db63e18d0b618b9d",
+      "log_sha256": "236516f8e71c46e952641eb694416aced941ba3ac8829d64eee9c0b03f476a9b",
+      "purpose": "passing verification",
+      "assertions": 0
+    },
+    {
+      "label": "mutant-row-rate",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/mutant-row-rate-zzynmz4w/report.json",
+      "sha256": "9d9c0a0b0139477d0e8f13a570fb6caab578c66d8136c17bad17f0dfe9a39e9e",
+      "log_sha256": "ee20b71984d8a82755c1d57d13807b3762eb298a580a16ab80c4c333cbc9712b",
+      "purpose": "intentional regression detection",
+      "expected_failed_assertions": 12
+    },
+    {
+      "label": "mutant-step-receipt",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/mutant-step-receipt-44pvtu4y/report.json",
+      "sha256": "67b44c1bf8ba689e291b73010748b911bd6ac0e091ce62c8e0056b8f838747d3",
+      "log_sha256": "aa79ffccc833e0b64260307dd29c4195e0b68d46583c412d697663cea9023ef2",
+      "purpose": "intentional regression detection",
+      "expected_failed_assertions": 2
+    },
+    {
+      "label": "mutant-step-refusal",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/mutant-step-refusal-c5vhtowr/report.json",
+      "sha256": "f502c9ed2cc986dbb3a8ea6c241d3a0f465c74e1453521a67af106e9d702a9f6",
+      "log_sha256": "8bed825d27d194ed30238e0aa9c3790de5169c8ce332fdf85332d0b5c7c40fc3",
+      "purpose": "intentional regression detection",
+      "expected_failed_assertions": 2
+    }
+  ],
+  "production_source_edits": [],
+  "runtime_arithmetic_edits": [],
+  "fullsuite_or_physical_or_timing_claim": false,
+  "attributes": "Existing ground_contact_*.bin -text covers both exact fixtures; no change needed.",
+  "rejected_development_receipts": [
+    "checks/repaired-test-veby057c/report.json",
+    "checks/repaired-test-ready-ngd32nk3/report.json"
+  ],
+  "root_promotion_helper_executed": false
+}

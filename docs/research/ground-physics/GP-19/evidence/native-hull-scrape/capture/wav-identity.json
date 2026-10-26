@@ -1,0 +1,10 @@
+{
+  "path": "tmp/gp19-hull-native/native-01/review.wav",
+  "sha256": "60b7a61f210a081da2fca0b3426c25d22209722f411e3382cae73e63b341fe77",
+  "bytes": 2306092,
+  "channels": 2,
+  "sample_width_bytes": 2,
+  "rate_hz": 48000,
+  "frames": 576512,
+  "compression": "NONE"
+}

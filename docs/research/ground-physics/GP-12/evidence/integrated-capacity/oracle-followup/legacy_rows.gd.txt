@@ -1,0 +1,12 @@
+func _legacy_rows() -> void:
+	var oracle: Variant = _frozen_oracle(LEGACY_ROWS_PATH, LEGACY_ROWS_SHA256)
+	check("prepromotion row oracle shape", _row_oracle_valid(oracle))
+	if not _row_oracle_valid(oracle): return
+	_row_oracle_negative_controls(oracle)
+	for row: Dictionary in oracle.cases:
+		var pin := var_to_bytes([oracle.prepared, oracle.cg_body_m, row])
+		var current := DraftTraction.evaluate(oracle.prepared, row.state, oracle.cg_body_m, row.ground, row.brake)
+		check("prepromotion row bytes unchanged " + row.id, var_to_bytes(current) == row.expected_bytes)
+		check("frozen row inputs remain read-only " + row.id, pin == var_to_bytes([oracle.prepared, oracle.cg_body_m, row]))
+
+

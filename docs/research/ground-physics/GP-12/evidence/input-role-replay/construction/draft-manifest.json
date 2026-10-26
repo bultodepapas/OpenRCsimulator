@@ -1,0 +1,6 @@
+{
+  "source": "app\\tools\\flight_log_cli.gd",
+  "before_sha256": "312754377f145d9ffa78f73b3f5fb96b6548967636a273a7bcf8437acbdf093b",
+  "draft_sha256": "63910193d1db8e2dc46961b9536b548e35c307e81e63ce338333b029b46442c7",
+  "scope": "GP-12 input-role export/replay contract; no runtime fixed-brake activation"
+}

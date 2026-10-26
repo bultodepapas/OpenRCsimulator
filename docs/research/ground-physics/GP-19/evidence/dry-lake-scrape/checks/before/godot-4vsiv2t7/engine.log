@@ -1,0 +1,8 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL dry default-field packet should be available
+FAIL dry loaded source should expose friction rows
+FAIL accepted dry default brush should queue before render
+DEFAULT_HULL_DEFECT { &"packet": { &"schema": "openrc-hull-friction-observation", &"version": 1, &"tick": 0, &"generation": 2, &"law_identity": "soft-hull-spring-friction-v2 omega=60.0 zeta=0.7 onset_m=0.004 mu=field-airframe-friction(default 0.4) friction_rate_max=120.0-shared slip_reg_min_mps=0.01 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground", &"available": false, &"sampling": "accepted_endpoint_instantaneous_power", &"contacts": [], &"reason": "flat_solid_scope_lake_unavailable" }, &"force": [-0.35749037950494, -0.41780070277802, -0.4979154885241, -0.41814968475235, -0.06376684874641, 0.35372734484369], &"all_authoritative_samples_dry": true, &"accepted_mode": true }
+Default-field dry hull defect: 7 checks, 3 failed

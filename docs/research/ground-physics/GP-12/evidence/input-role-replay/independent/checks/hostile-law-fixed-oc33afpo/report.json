@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e176a499-a9d1-4af2-96f5-813e05731a13",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T20:51:23.347732+00:00",
+  "label": "hostile-law-fixed",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp20-brake-input\\review\\checks\\hostile-law-fixed-oc33afpo\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp20-brake-input\\review\\checks\\hostile-law-fixed-oc33afpo\\report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Hostile CLI law probe complete: 16 calls returned, 48 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.703,
+  "log_bytes": 144,
+  "log_sha256": "03cf878fdafae67accabbfbb2703df931700e151842706c4be2e30d0b28eef61"
+}

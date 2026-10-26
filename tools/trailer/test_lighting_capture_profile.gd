@@ -90,6 +90,22 @@ func _run() -> void:
 	for option: String in ["companions", "companions-seed", "companions-record"]:
 		_check("capture refuses unsupported companion option " + option,
 			not Capture.validate_lighting_profile_options({"lighting-preset": "festival", option: "3"}).ok)
+	for preset: String in ["off", "classic_rc", "night_radian", "neon_rgb", "night_aerobatics", "festival"]:
+		_check("normal flight admits immutable preset " + preset,
+			Capture.validate_lighting_profile_options({"lighting-flight": "normal", "lighting-preset": preset, "companions": "3"}).ok)
+	_check("normal flight refuses custom profile files", not Capture.validate_lighting_profile_options({"lighting-flight": "normal", "lighting-profile": valid_path}).ok)
+	_check("normal flight requires explicit preset", not Capture.validate_lighting_profile_options({"lighting-flight": "normal"}).ok)
+	_check("normal workload refuses companion recording overhead", not Capture.validate_lighting_profile_options({"lighting-flight": "normal", "lighting-preset": "festival", "companions-record": "capture"}).ok)
+	for preset: String in ["custom", "unknown", ""]:
+		_check("normal flight refuses unsupported preset " + preset,
+			not Capture.validate_lighting_profile_options({"lighting-flight": "normal", "lighting-preset": preset}).ok)
+	for bare: String in ["--lighting-flight", "--lighting-workload-audit", "--lighting-smoke"]:
+		var parsed := Capture._parse_options(PackedStringArray([bare, "--lighting-preset=festival", "--frametimes=a.json"]))
+		_check("bare enum option cannot silently fall back: " + bare, not Capture.validate_lighting_profile_options(parsed).ok)
+	_check("default Workshop still rejects bare companion option", not Capture.validate_lighting_profile_options(Capture._parse_options(PackedStringArray(["--companions", "--lighting-preset=festival"]))).ok)
+	_check("profile evidence hash retains float64 distinctions", Capture._sha256_json({"brightness": 1.000000001}) != Capture._sha256_json({"brightness": 1.000000002}))
+	_check("profile evidence hash ignores dictionary insertion order", Capture._sha256_json({"a": 1, "b": 2}) == Capture._sha256_json({"b": 2, "a": 1}))
+	_check("stock-selected disabled smoke is a valid OFF state", not Capture._smoke_evidence_active({"mode": "stock", "disabled": true, "requested": false}))
 	var manifest_path := _temp_dir.path_join("manifest.json")
 	_check("profile input cannot collide with the output manifest",
 		Capture.lighting_profile_collides_with_manifest(manifest_path, _temp_dir))

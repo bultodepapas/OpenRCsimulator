@@ -1112,7 +1112,7 @@ func _process(delta: float) -> void:
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times.remove_at(0)
 	var sim: Node = session.sim
-	if _wheel_brake_key_held and (sim.paused or not session.crash.is_empty() or not session.gear_is_retractable()
+	if _wheel_brake_key_held and (sim.paused or not session.crash.is_empty() or not session.wheel_brake_available()
 		or not Input.is_physical_key_pressed(KEY_B)):
 		_clear_wheel_brake()
 	if _smoke_assignment != null and (not session.radio.connected or session.radio.device_id != _smoke_assignment.device_id):
@@ -1816,7 +1816,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				controller_action("rates_toggle")
 				get_viewport().set_input_as_handled()
 			KEY_B:
-				if not session.sim.paused and session.gear_is_retractable() and session.set_wheel_brake(1.0):
+				if not session.sim.paused and session.wheel_brake_available() and session.set_wheel_brake(1.0):
 					_wheel_brake_key_held = true
 					get_viewport().set_input_as_handled()
 			KEY_BRACKETLEFT, KEY_BRACKETRIGHT:

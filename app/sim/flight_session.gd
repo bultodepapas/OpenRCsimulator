@@ -1007,6 +1007,7 @@ const AUX_ANCHORS := 4
 const GEAR_AUX_SIZE := 2 # extension, accepted down target; before optional turbulence
 var _flap_requested := 0.0
 var _gear_requested_down := false
+const FIXED_BRAKE_INPUT_LAW := "fixed-gear-shared-wheel-brake-input-v1"
 var _wheel_brake_demand := 0.0
 var _gear_request_inhibited := false
 var _gear_cache_fraction := -1.0
@@ -2633,8 +2634,8 @@ func prepare_external_tick(packet: Dictionary) -> Dictionary:
 	if normalized_packet.has("brake"):
 		if not _external_number_is_in_range(normalized_packet.brake, 0.0, 1.0):
 			errors.append("brake must be a finite number in [0, 1]")
-		elif not gear_is_retractable():
-			errors.append("brake is unsupported without retractable landing gear")
+		elif float(normalized_packet.brake) > 0.0 and not wheel_brake_available():
+			errors.append("brake is unsupported without explicitly available wheel brake hardware")
 	if not errors.is_empty():
 		return {ok = false, errors = errors}
 	var staged: Dictionary = {}
@@ -3538,6 +3539,7 @@ func _inputs() -> PackedFloat64Array:
 	var values := PackedFloat64Array([f.roll, f.pitch, f.yaw, 0.0 if not throttle_holds.is_empty() else f.throttle])
 	if gear_is_retractable():
 		values.append(1.0 if _gear_requested_down else 0.0)
+	if wheel_brake_input_index() >= 0:
 		values.append(_wheel_brake_demand)
 	if flaps_available(): values.append(_flap_requested)
 	return values
@@ -3548,11 +3550,11 @@ func flaps_available() -> bool:
 
 
 func _input_count() -> int:
-	return 4 + (2 if gear_is_retractable() else 0) + (1 if flaps_available() else 0)
+	return 4 + (1 if gear_is_retractable() else 0) + (1 if wheel_brake_input_index() >= 0 else 0) + (1 if flaps_available() else 0)
 
 
 func flap_input_index() -> int:
-	return (6 if gear_is_retractable() else 4) if flaps_available() else -1
+	return (_input_count() - 1) if flaps_available() else -1
 
 
 func flap_aux_index() -> int:
@@ -3630,13 +3632,54 @@ func toggle_gear() -> bool:
 	return set_gear_down(not _gear_requested_down)
 
 
+## Shared demand is admitted only for explicitly installed, provenance-bearing brake hardware.
+## Retraction and brake hardware are independent capabilities; the old retractable input layout stays fixed.
+func wheel_brake_available() -> bool:
+	if typeof(aircraft.get("ok")) != TYPE_BOOL or not aircraft.ok or not aircraft.get("model") is Dictionary:
+		return false
+	var profile: Variant = aircraft.model.get("wheel_profile")
+	var gear: Variant = aircraft.model.get("landing_gear")
+	if not profile is Dictionary or typeof(profile.get("status")) != TYPE_STRING or profile.status != "applied" \
+			or not gear is Dictionary or not gear.get("contacts") is Array \
+			or gear.contacts.is_empty() or gear.contacts.size() > 16:
+		return false
+	var available := false
+	for candidate: Variant in gear.contacts:
+		if not candidate is Dictionary: return false
+		var contact: Dictionary = candidate
+		var source: Variant = contact.get("wheel_provenance")
+		var torque: Variant = contact.get("brake_torque")
+		if typeof(contact.get("brake_availability")) != TYPE_STRING \
+				or contact.brake_availability not in ["none", "unspecified", "available"] \
+				or not source is Dictionary or typeof(source.get("brake_availability")) != TYPE_STRING \
+				or source.brake_availability != contact.brake_availability or not source.get("brake_torque") is Dictionary \
+				or typeof(torque) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(torque)) or float(torque) < 0.0:
+			return false
+		var quantity: Dictionary = source.brake_torque
+		if typeof(quantity.get("value")) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(quantity.value)) \
+				or float(quantity.value) != float(torque) or typeof(quantity.get("unit")) != TYPE_STRING or quantity.unit != "N·m" \
+				or typeof(quantity.get("kind")) != TYPE_STRING or quantity.kind not in ["manual", "measured", "borrowed", "estimated", "derived"] \
+				or typeof(quantity.get("source")) != TYPE_STRING or quantity.source.strip_edges().is_empty():
+			return false
+		if contact.brake_availability == "available":
+			if float(torque) <= 0.0: return false
+			available = true
+		elif float(torque) != 0.0:
+			return false
+	return available
+
+
+func wheel_brake_input_index() -> int:
+	return 5 if gear_is_retractable() else 4 if wheel_brake_available() else -1
+
+
 func set_wheel_brake(amount: float) -> bool:
 	if not RetractableGear.valid_fraction(amount):
 		return false
 	if amount == 0.0:
 		_wheel_brake_demand = 0.0 # releases clear even while a menu/focus hold is active
 		return true
-	if not gear_is_retractable() or not physics_enabled or not input_enabled or not _flight_ready() \
+	if not wheel_brake_available() or not physics_enabled or not input_enabled or not _flight_ready() \
 			or sim.paused or not holds.is_empty() or not crash.is_empty():
 		return false
 	_wheel_brake_demand = amount
@@ -3845,7 +3888,8 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 		return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 	var gear: Dictionary = current_landing_gear(aux)
 	var steer: float = aux[AUX_SERVO + 2]
-	var brake: float = sim.inputs[5] if retractable else 0.0
+	var brake_index: int = wheel_brake_input_index()
+	var brake: float = sim.inputs[brake_index] if brake_index >= 0 else 0.0
 	var anchors: PackedFloat64Array = aux.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
 	var hull: PackedFloat64Array = PackedFloat64Array()
 	if soft_hull_contacts:
@@ -4460,6 +4504,9 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 	if gear_is_retractable() and (not _gear_aux_valid(aux) or inputs.size() != _input_count() \
 			or inputs[4] not in [0.0, 1.0] or not RetractableGear.valid_fraction(inputs[5])):
 		return PackedFloat64Array([NAN])
+	if not gear_is_retractable() and wheel_brake_input_index() >= 0 and (inputs.size() != _input_count() \
+			or not RetractableGear.valid_fraction(inputs[wheel_brake_input_index()])):
+		return PackedFloat64Array([NAN])
 	if flaps_available() and (not _flap_aux_valid(aux) or inputs.size() != _input_count() \
 			or not RetractableGear.valid_fraction(inputs[flap_input_index()])):
 		return PackedFloat64Array([NAN])
@@ -4905,6 +4952,10 @@ func trace_meta() -> Dictionary:
 		metadata.recording_start_gear = JSON.stringify(Array(sim.aux.slice(gear_aux_index(), gear_aux_index() + GEAR_AUX_SIZE)), "", true, true)
 		metadata.input_layout = JSON.stringify(["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake"])
 		metadata.ground = "retractable tricycle; downlock point contacts; rudder nose steering; main wheel brakes; weight-on-wheels retraction interlock"
+	if not gear_is_retractable() and wheel_brake_available():
+		metadata.fixed_brake_input_law = FIXED_BRAKE_INPUT_LAW
+		metadata.wheel_brake_input_index = wheel_brake_input_index()
+		metadata.input_layout = JSON.stringify(["roll", "pitch", "yaw", "throttle", "wheel_brake"])
 	if flaps_available():
 		metadata.flap_base_metadata_schema = metadata.metadata_schema
 		metadata.metadata_schema = "openrc-flight-meta v9"
@@ -4916,6 +4967,7 @@ func trace_meta() -> Dictionary:
 		metadata.recording_start_flap = sim.aux[flap_aux_index()]
 		var layout: Array = ["roll", "pitch", "yaw", "throttle"]
 		if gear_is_retractable(): layout.append_array(["gear_down", "wheel_brake"])
+		elif wheel_brake_available(): layout.append("wheel_brake")
 		layout.append("flaps")
 		metadata.input_layout = JSON.stringify(layout)
 	metadata.runway_start_status = str(runway_start_outcome.get("status", "not_attempted"))
@@ -4952,6 +5004,9 @@ func checkpoint() -> Dictionary:
 	if gear_is_retractable() and (not _gear_aux_valid(sim.aux) or sim.inputs.size() != _input_count() \
 			or sim.inputs[4] not in [0.0, 1.0] or not RetractableGear.valid_fraction(sim.inputs[5])):
 		return {}
+	if not gear_is_retractable() and wheel_brake_input_index() >= 0 and (sim.inputs.size() != _input_count() \
+			or not RetractableGear.valid_fraction(sim.inputs[wheel_brake_input_index()])):
+		return {}
 	if flaps_available() and (not _flap_aux_valid(sim.aux) or sim.inputs.size() != _input_count() \
 			or not RetractableGear.valid_fraction(sim.inputs[flap_input_index()])):
 		return {}
@@ -4975,6 +5030,9 @@ func checkpoint() -> Dictionary:
 	if gear_is_retractable():
 		boundary.gear_law = RetractableGear.LAW
 		boundary.gear_aux_index = gear_aux_index()
+	if not gear_is_retractable() and wheel_brake_available():
+		boundary.fixed_brake_input_law = FIXED_BRAKE_INPUT_LAW
+		boundary.wheel_brake_input_index = wheel_brake_input_index()
 	if flaps_available():
 		boundary.flap_law = Flaps.LAW
 		boundary.flap_aux_index = flap_aux_index()
@@ -5065,6 +5123,8 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(Turbine.LOADS_LAW)
 	if gear_is_retractable():
 		parts.append(RetractableGear.LAW + "; inputs=6; aux=extension,accepted_down_target; airborne_up,runway_down")
+	if not gear_is_retractable() and wheel_brake_available():
+		parts.append(FIXED_BRAKE_INPUT_LAW + "; input=4; shared wheel brake demand")
 	if flaps_available():
 		parts.append(Flaps.LAW + "; appended normalized demand and sampled actuator; restart_up")
 	if wheel_count() > 0:
@@ -5228,6 +5288,14 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 			return false
 	elif candidate.has("gear_law") or candidate.has("gear_aux_index"):
 		return false
+	if not gear_is_retractable() and wheel_brake_available():
+		if typeof(candidate.get("fixed_brake_input_law")) != TYPE_STRING or candidate.fixed_brake_input_law != FIXED_BRAKE_INPUT_LAW \
+				or typeof(candidate.get("wheel_brake_input_index")) != TYPE_INT or candidate.wheel_brake_input_index != 4 \
+				or not snapshot.get("inputs") is PackedFloat64Array or snapshot.inputs.size() != _input_count() \
+				or not RetractableGear.valid_fraction(snapshot.inputs[4]):
+			return false
+	elif candidate.has("fixed_brake_input_law") or candidate.has("wheel_brake_input_index"):
+		return false
 	if flaps_available():
 		if candidate.get("flap_law") != Flaps.LAW or candidate.get("flap_aux_index") != flap_aux_index() \
 				or candidate.get("flap_input_index") != flap_input_index() \
@@ -5371,9 +5439,9 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 		resetting.emit()
 		if gear_is_retractable():
 			_gear_requested_down = snapshot.inputs[4] == 1.0
-			_wheel_brake_demand = snapshot.inputs[5]
 			_gear_cache_fraction = -1.0
 			_gear_request_inhibited = false
+		_wheel_brake_demand = snapshot.inputs[wheel_brake_input_index()] if wheel_brake_input_index() >= 0 else 0.0
 		_flap_requested = snapshot.inputs[flap_input_index()] if flaps_available() else 0.0
 		fuel_start_fill = restored_fuel_fill
 		_fuel_start_fill_known = restored_fuel_fill_known

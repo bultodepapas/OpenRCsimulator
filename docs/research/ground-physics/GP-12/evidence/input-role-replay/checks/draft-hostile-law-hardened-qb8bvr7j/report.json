@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ed28e8df-b58f-4667-8628-7247b1e77365",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/test_flight_log_inputs_production.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T20:50:30.047930+00:00",
+  "label": "hostile-law-hardened",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp20-brake-input\\reader\\checks\\hostile-law-hardened-qb8bvr7j\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp20-brake-input\\reader\\checks\\hostile-law-hardened-qb8bvr7j\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "GP-12 flight-log inputs: 232 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.203,
+  "log_bytes": 3469,
+  "log_sha256": "01c8789fdf7fdf11cc7ba1b5bb65f78fd3ef4b41f9ad3543029643c42fdee902"
+}

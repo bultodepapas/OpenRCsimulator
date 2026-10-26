@@ -12,8 +12,11 @@ const Trial := preload("res://workshop/trial.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
+const Magnifier := preload("res://render/camera/magnifier.gd")
 const Exposure := preload("res://render/world/exposure.gd")
 const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
+const AircraftLightingRig := preload("res://render/lighting/aircraft_lighting_rig_3d.gd")
+const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
 const FrameSamples := preload("res://render/frame_samples.gd")
 const ViewportColor := preload("res://render/viewport_color.gd")
 const StockSmoke := preload("res://render/smoke/stock_profile.gd")
@@ -66,6 +69,12 @@ var _lighting_profile_input_path := ""
 var _lighting_profile_input_sha256 := ""
 var _lighting_profile_data: Dictionary = {}
 var _lighting_smoke_preset := ""
+var _lighting_smoke_profile_sha256 := ""
+var _lighting_smoke_evidence_start: Dictionary = {}
+var _lighting_flight := "workshop"
+var _normal_requested_companions := -1
+var _lighting_profile_applied := false
+var _normal_physics_attach_guard: Dictionary = {"checked": false, "passed": false, "reason": "not run"}
 var _workload_audit: RefCounted
 var _workload_audit_usec := 0
 
@@ -79,6 +88,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_options = _parse_options(OS.get_cmdline_user_args())
+	_lighting_flight = str(_options.get("lighting-flight", "workshop"))
 	_realtime = _options.has("frametimes")
 	var lighting_options := validate_lighting_profile_options(_options)
 	if not bool(lighting_options.get("ok", false)):
@@ -151,22 +161,25 @@ func _run() -> void:
 	_main.name = "Main"
 	_main.interactive_start = true
 	_main.aircraft_id = str(_options.get("aircraft", "jensen-das-ugly-stik-60"))
-	# Build the same validated, detached presentation snapshot used by Workshop trials.
-	# Preset and data-only profile capture options never save a variant or change physics.
+	# Workshop remains the default frozen-trial route. The normal route owns a preset
+	# only in this renderer harness and leaves Main's workshop_trial empty.
 	if _options.has("lighting-preset") or _options.has("lighting-profile"):
 		var lighting: Dictionary = _lighting_profile_data.duplicate(true) if _options.has("lighting-profile") \
 			else Presentation.LightingProfile.preset(str(_options["lighting-preset"]))
 		if _options.has("lighting-preset") and str(_options["lighting-preset"]) == "off":
 			lighting = Presentation.LightingProfile.defaults()
 			lighting.selection = "disabled"
-		var prepared := freeze_lighting_trial(_main.aircraft_id, lighting, str(_options.get("lighting-smoke", "off")))
-		if not prepared.get("ok", false):
-			push_error("Lighting capture trial refused: " + str(prepared.get("errors", [])))
-			_main.free()
-			quit(2)
-			return
-		_main.workshop_trial = prepared.trial
-		_lighting_smoke_preset = str(prepared.smoke_preset)
+		_lighting_profile_data = lighting.duplicate(true)
+		if _lighting_flight == "workshop":
+			var prepared := freeze_lighting_trial(_main.aircraft_id, lighting, _effective_lighting_smoke_mode())
+			if not prepared.get("ok", false):
+				push_error("Lighting capture trial refused: " + str(prepared.get("errors", [])))
+				_main.free()
+				quit(2)
+				return
+			_main.workshop_trial = prepared.trial
+			_lighting_smoke_preset = str(prepared.smoke_preset)
+			_lighting_smoke_profile_sha256 = str(prepared.get("smoke_profile_sha256", ""))
 	_main.start_choice = str(_options.get("start", "airborne"))
 	if _shot == "lighting-pilot":
 		_main.camera_preferences = CameraSettings.normalized({
@@ -184,6 +197,10 @@ func _run() -> void:
 		"--failures=0",
 		"--failure-seed=0",
 	])
+	if _lighting_flight == "normal":
+		if _effective_lighting_smoke_mode() == "off":
+			_main.user_args.append("--smoke=off")
+		_main.user_args.append_array(_normal_companion_args(OS.get_cmdline_user_args()))
 	if _options.has("alt"):
 		_main.user_args.append("--alt=" + str(_options.alt))
 	if _options.has("sky"):
@@ -210,21 +227,40 @@ func _run() -> void:
 	if _main._accident_report != null:
 		_main._accident_report.visible = false
 		_report_layer_hidden_before_impact = true
+	if not bool(_main.startup_complete):
+		await _main.startup_finished
 	await process_frame
 	await RenderingServer.frame_post_draw
 	if not _main.startup_error.is_empty() or _main.session == null or not _main.session.is_flyable():
 		_failure = str(_main.startup_error)
 		if _failure.is_empty() and _main.session != null:
 			_failure = str(_main.session.start_error)
-		push_error("Production flight startup failed: " + _failure)
-		_write_manifest(false)
-		quit(1)
+		await _abort_live_capture("Production flight startup failed: " + _failure, 1)
 		return
+	if _lighting_flight == "normal":
+		var normal_flight: Dictionary = _validate_normal_flight()
+		if not bool(normal_flight.get("ok", false)):
+			await _abort_live_capture(str(normal_flight.get("error", "Normal flight was refused.")), 1)
+			return
+		_normal_requested_companions = int(_main.companion_config.count) if bool(_main.companion_config.enabled) else 0
+		var companion_admission: Dictionary = _validate_companion_admission("startup")
+		if not bool(companion_admission.get("ok", false)):
+			await _abort_live_capture(str(companion_admission.get("error", "Companions were not fully admitted.")), 1)
+			return
+		var smoke_setup: Dictionary = _verify_normal_smoke()
+		if not bool(smoke_setup.get("ok", false)):
+			await _abort_live_capture(str(smoke_setup.get("error", "Normal-flight smoke setup was refused.")), 1)
+			return
+		var lighting_setup: Dictionary = _install_normal_lighting()
+		if not bool(lighting_setup.get("ok", false)):
+			await _abort_live_capture(str(lighting_setup.get("error", "Normal-flight lighting setup was refused.")), 1)
+			return
+	else:
+		_lighting_profile_applied = is_instance_valid(_main._rgb_lighting) \
+			and str(_main._rgb_lighting.budget_info().get("selection", "inherit")) != "inherit"
+		_lighting_smoke_evidence_start = _main._smoke_evidence().duplicate(true)
 	if _main._accident_report == null:
-		_failure = "Crash capture requires the native accident report CanvasLayer."
-		push_error(_failure)
-		_write_manifest(false)
-		quit(1)
+		await _abort_live_capture("Crash capture requires the native accident report CanvasLayer.", 1)
 		return
 	if not _report_layer_hidden_before_impact:
 		_main._accident_report.visible = false
@@ -241,16 +277,11 @@ func _run() -> void:
 	if _options.has("director-script"):
 		director_path = str(_options["director-script"])
 		if not director_path.is_absolute_path():
-			_failure = "--director-script must be an absolute path"
-			_write_manifest(false)
-			quit(2)
+			await _abort_live_capture("--director-script must be an absolute path", 2)
 			return
 	var director_script: Script = load(director_path) as Script
 	if director_script == null:
-		_failure = "Could not load external flight director at " + director_path
-		push_error(_failure)
-		_write_manifest(false)
-		quit(1)
+		await _abort_live_capture("Could not load external flight director at " + director_path, 1)
 		return
 	_director = director_script.new()
 	if _realtime:
@@ -267,9 +298,213 @@ func _run() -> void:
 		await _capture_crash_report()
 	else:
 		await _capture_frames(int(round(_seconds * _fps)), 0)
+	if _lighting_flight == "normal" and _failure.is_empty():
+		var final_admission: Dictionary = _validate_companion_admission("capture completion")
+		if not bool(final_admission.get("ok", false)):
+			_failure = str(final_admission.get("error", "Companion workload was lost during capture."))
+			push_error(_failure)
 	_write_manifest(_failure.is_empty())
-	# Let production exit hooks dispose lighting, audio and scene-owned resources.
-	# The director must stop first because its process callback reads the live scene.
+	await _teardown_live_scene()
+	quit(1 if not _failure.is_empty() else 0)
+
+
+func _effective_lighting_smoke_mode() -> String:
+	if _options.has("lighting-smoke"):
+		return str(_options["lighting-smoke"])
+	return "off"
+
+
+func _normal_companion_args(arguments: PackedStringArray) -> PackedStringArray:
+	var forwarded := PackedStringArray()
+	for arg: String in arguments:
+		if arg in ["--companions", "--companions-seed"] \
+				or arg.begins_with("--companions=") or arg.begins_with("--companions-seed="):
+			forwarded.append(arg)
+	return forwarded
+
+
+func _validate_normal_flight() -> Dictionary:
+	if not _main.workshop_trial.is_empty() or not _main.session.workshop_identity.is_empty() \
+			or not _main.session.workshop_presentation_identity.is_empty():
+		return {"ok": false, "error": "Normal lighting capture unexpectedly entered a Workshop trial."}
+	if not _main.session.physics_enabled or not _main.session.is_flyable() \
+			or _main.session.sim.paused or not _main.session.holds.is_empty():
+		return {"ok": false, "error": "Normal lighting capture requires a live, unpaused physics flight."}
+	return {"ok": true}
+
+
+func _validate_companion_admission(stage: String) -> Dictionary:
+	if _main == null or not is_instance_valid(_main) or _main.session == null:
+		return {"ok": false, "error": "Companion admission cannot be observed during %s." % stage}
+	var config: Dictionary = _main.companion_config
+	var requested := _normal_requested_companions if _normal_requested_companions >= 0 else (int(config.get("count", 0)) if bool(config.get("enabled", false)) else 0)
+	var status: Dictionary = _main.companion_status()
+	var active := int(status.get("active", 0))
+	var airborne := int(status.get("airborne", 0))
+	var faulted := int(status.get("faulted", 0))
+	var crashed := int(status.get("crashed", 0))
+	var status_requested := int(status.get("requested", 0))
+	var admission_error := str(status.get("error", ""))
+	if active != requested or status_requested != requested \
+			or (requested > 0 and (airborne != requested or faulted > 0 or crashed > 0)) \
+			or not admission_error.is_empty():
+		return {"ok": false, "error": "Companions were not fully admitted at %s: requested %d, active %d, airborne %d, faulted %d, crashed %d; %s" % [
+			stage, requested, active, airborne, faulted, crashed,
+			admission_error if not admission_error.is_empty() else "status counts did not match"]}
+	return {"ok": true, "status": status}
+
+
+func _verify_normal_smoke() -> Dictionary:
+	var bindings: Dictionary = _main._airplane.get("customization_bindings", {})
+	var propulsion: Dictionary = _main.session.aircraft.model.propulsion
+	var stock_profile: Dictionary = StockSmoke.for_aircraft(bindings, propulsion)
+	if not stock_profile.is_empty():
+		_lighting_smoke_preset = StockSmoke.preset_id(bindings, propulsion)
+		_lighting_smoke_profile_sha256 = _sha256_json(stock_profile)
+	var evidence: Dictionary = _main._smoke_evidence()
+	if _effective_lighting_smoke_mode() == "off":
+		if is_instance_valid(_main._profile_smoke) or is_instance_valid(_main._smoke) or _smoke_evidence_active(evidence):
+			return {"ok": false, "error": "Normal lighting-smoke=off left a smoke renderer active."}
+		_lighting_smoke_evidence_start = evidence.duplicate(true)
+		return {"ok": true, "evidence": evidence}
+	if stock_profile.is_empty() or not _main._stock_smoke_profile:
+		return {"ok": false, "error": "The selected stock aircraft has no supported production stock-smoke profile."}
+	if not is_instance_valid(_main._profile_smoke) or str(evidence.get("mode", "")) != "stock" \
+			or str(evidence.get("preset", "")) != _lighting_smoke_preset or bool(evidence.get("disabled", false)):
+		return {"ok": false, "error": "Production stock-smoke selection did not create the requested live renderer."}
+	_lighting_smoke_evidence_start = evidence.duplicate(true)
+	return {"ok": true, "evidence": evidence}
+
+
+static func _smoke_evidence_active(evidence: Dictionary) -> bool:
+	var mode := str(evidence.get("mode", "none"))
+	if mode in ["stock", "profile"]:
+		return not bool(evidence.get("disabled", false)) and bool(evidence.get("requested", true))
+	return mode == "legacy" and bool(evidence.get("active", false))
+
+
+func _install_normal_lighting() -> Dictionary:
+	if _lighting_profile_data.is_empty():
+		return {"ok": false, "error": "Normal lighting capture has no validated preset profile."}
+	if is_instance_valid(_main._rgb_lighting):
+		return {"ok": false, "error": "Normal inherited flight already owns an RGB lighting rig; refusing duplicate installation."}
+	var aircraft_root: Node3D = _main._airplane.get("root") as Node3D
+	if not is_instance_valid(aircraft_root):
+		return {"ok": false, "error": "Normal flight has no live stock aircraft render root."}
+	var simulation: Node = _main.session.sim
+	var tick_before := int(simulation.tick)
+	var time_before := float(simulation.time())
+	var state_before: PackedFloat64Array = simulation.state.duplicate()
+	var aux_before: PackedFloat64Array = simulation.aux.duplicate()
+	var rig: Node3D = AircraftLightingRig.new()
+	rig.name = "AircraftLightingRig"
+	_main.add_child(rig)
+	_main._lighting_reacts_to_airspeed = false
+	for zone: Dictionary in _lighting_profile_data.get("zones", []):
+		_main._lighting_reacts_to_airspeed = _main._lighting_reacts_to_airspeed \
+			or str(zone.get("reactive", {}).get("source", "none")) == "airspeed"
+	var configured: Dictionary = rig.configure(aircraft_root, _lighting_profile_data)
+	if not bool(configured.get("ok", false)):
+		rig.queue_free()
+		return {"ok": false, "error": "Normal RGB renderer refused the approved preset: " + "; ".join(PackedStringArray(configured.get("errors", [])))}
+	_main._rgb_lighting = rig
+	for luminous: VisualInstance3D in rig.luminous_nodes():
+		luminous.layers |= Magnifier.LAYER
+	_main._update_aircraft_lights(time_before)
+	_lighting_profile_applied = true
+	var tick_after := int(simulation.tick)
+	var time_after := float(simulation.time())
+	var state_after: PackedFloat64Array = simulation.state.duplicate()
+	var aux_after: PackedFloat64Array = simulation.aux.duplicate()
+	var state_unchanged := _packed_float64_equal(state_before, state_after)
+	var aux_unchanged := _packed_float64_equal(aux_before, aux_after)
+	_normal_physics_attach_guard = {
+		checked = true,
+		tick_before = tick_before,
+		tick_after = tick_after,
+		tick_unchanged = tick_before == tick_after,
+		time_before_s = time_before,
+		time_after_s = time_after,
+		time_unchanged = time_before == time_after,
+		state_unchanged = state_unchanged,
+		aux_unchanged = aux_unchanged,
+		passed = tick_before == tick_after and time_before == time_after and state_unchanged and aux_unchanged,
+	}
+	if not bool(_normal_physics_attach_guard.passed):
+		return {"ok": false, "error": "Renderer-only RGB installation changed simulation tick, time, state, or auxiliary state."}
+	return {"ok": true, "warnings": configured.get("warnings", []), "budget": rig.budget_info()}
+
+
+func _presentation_identity(profile: Dictionary) -> Dictionary:
+	if profile.is_empty():
+		return {}
+	var identity := _profile_identity(profile)
+	identity.source = "profile-file" if not _lighting_profile_input_sha256.is_empty() else "preset"
+	identity.input_sha256 = _lighting_profile_input_sha256
+	identity.applied = _lighting_profile_applied
+	return identity
+
+
+static func _profile_identity(profile: Dictionary) -> Dictionary:
+	return {
+		"format": str(profile.get("format", "")),
+		"version": int(profile.get("version", 0)),
+		"selection": str(profile.get("selection", "")),
+		"preset_id": str(profile.get("preset_id", "")),
+		"preset_revision": int(profile.get("preset_revision", 0)),
+		"canonical_sha256": _sha256_json(profile),
+	}
+
+
+static func _sha256_json(value: Variant) -> String:
+	var hashing := HashingContext.new()
+	if hashing.start(HashingContext.HASH_SHA256) != OK:
+		return ""
+	if hashing.update(JSON.stringify(value, "", true, true).to_utf8_buffer()) != OK:
+		return ""
+	return hashing.finish().hex_encode()
+
+
+static func _packed_float64_equal(left: PackedFloat64Array, right: PackedFloat64Array) -> bool:
+	if left.size() != right.size():
+		return false
+	for index: int in left.size():
+		if left[index] != right[index]:
+			return false
+	return true
+
+
+func _normal_companion_evidence() -> Dictionary:
+	if _main == null or not is_instance_valid(_main):
+		return {}
+	var status: Dictionary = _main.companion_status()
+	var config: Dictionary = _main.companion_config.duplicate(true)
+	var requested := _normal_requested_companions if _normal_requested_companions >= 0 else (int(config.get("count", 0)) if bool(config.get("enabled", false)) else 0)
+	var active := int(status.get("active", 0))
+	var admission_error := str(status.get("error", ""))
+	return {
+		"configured": config,
+		"requested": requested,
+		"admitted": active == requested and int(status.get("requested", 0)) == requested \
+			and (requested == 0 or int(status.get("airborne", 0)) == requested) \
+			and int(status.get("faulted", 0)) == 0 and int(status.get("crashed", 0)) == 0 \
+			and admission_error.is_empty(),
+		"source_identity": status.get("profile_identity", {}).duplicate(true),
+		"status": status,
+	}
+
+
+func _abort_live_capture(message: String, exit_code: int) -> void:
+	_failure = message
+	push_error(_failure)
+	_write_manifest(false)
+	await _teardown_live_scene()
+	quit(exit_code)
+
+
+func _teardown_live_scene() -> void:
+	# Main's exit hooks own renderer/audio disposal. Stop the director first because
+	# its process callback reads the still-live scene.
 	if is_instance_valid(_director):
 		_director.free()
 	if is_instance_valid(_main):
@@ -279,7 +514,6 @@ func _run() -> void:
 		_failure = teardown_error if _failure.is_empty() else _failure + "\n" + teardown_error
 		push_error(teardown_error)
 		_mark_manifest_incomplete(teardown_error)
-	quit(1 if not _failure.is_empty() else 0)
 
 
 ## Main's exit hooks stop audio; the driver must mix before main-thread playback cleanup.
@@ -419,6 +653,10 @@ func _measure_realtime() -> void:
 			_failure = "Real-time lighting measurement requires an actual 1920x1080 viewport."
 		elif _performance_elapsed_s > _seconds + 10.0:
 			_failure = "Frame-time collector did not complete within its bounded wall-time window."
+		if _failure.is_empty() and _lighting_flight == "normal":
+			var admission := _validate_companion_admission("presented frame")
+			if not admission.ok:
+				_failure = str(admission.error)
 		if not _failure.is_empty():
 			push_error(_failure)
 			if _main._frametimes_active:
@@ -547,6 +785,10 @@ func _director_frame_record_count() -> int:
 
 
 func _ensure_lighting_frame_evidence(frame_index: int, record_count_before: int) -> bool:
+	if _lighting_flight == "normal":
+		var admission := _validate_companion_admission("presented frame")
+		if not admission.ok:
+			return _lighting_capture_failure(str(admission.error))
 	if record_count_before < 0:
 		return _lighting_capture_failure("Lighting capture director has no readable frame_records array.")
 	var records: Variant = _director.get("frame_records")
@@ -660,11 +902,22 @@ func _write_manifest(ok: bool) -> void:
 		world_conditions = WorldConditions.resolve(),
 		field_world_lighting = bool(_main._field_world_lighting) if _main != null else false,
 		lighting_config = _main.lighting_config.duplicate(true) if _main != null else {},
+		lighting_flight = _lighting_flight,
 		lighting_preset = str(_options.get("lighting-preset", "profile-file" if _options.has("lighting-profile") else "inherit")),
 		lighting_profile_input_path = _lighting_profile_input_path,
 		lighting_profile_input_sha256 = _lighting_profile_input_sha256,
+		lighting_profile_identity = _presentation_identity(_lighting_profile_data),
+		lighting_profile_runtime = _main._rgb_lighting.budget_info() \
+			if _main != null and is_instance_valid(_main._rgb_lighting) else {},
+		lighting_attach_physics_guard = _normal_physics_attach_guard.duplicate(true),
 		lighting_smoke = {"requested": str(_options.get("lighting-smoke", "off")),
-			"preset": _lighting_smoke_preset, "at_report": _main._smoke_evidence() if _main != null else {}},
+			"effective": _effective_lighting_smoke_mode(),
+			"request_was_explicit": _options.has("lighting-smoke"),
+			"preset": _lighting_smoke_preset,
+			"profile_sha256": _lighting_smoke_profile_sha256,
+			"at_start": _lighting_smoke_evidence_start.duplicate(true),
+			"at_report": _main._smoke_evidence() if _main != null else {}},
+		flight_companions = _normal_companion_evidence(),
 		capture_script_sha256 = FileAccess.get_sha256(get_script().resource_path),
 		director_script_sha256 = FileAccess.get_sha256(_director.get_script().resource_path) if is_instance_valid(_director) else "",
 		main_source_sha256 = FileAccess.get_sha256("res://main.gd"),
@@ -708,7 +961,7 @@ func _write_manifest(ok: bool) -> void:
 	print("FLIGHT_CAPTURE_MANIFEST ", _out_dir.path_join("manifest.json"))
 
 
-func _parse_options(arguments: PackedStringArray) -> Dictionary:
+static func _parse_options(arguments: PackedStringArray) -> Dictionary:
 	var options := {}
 	for arg: String in arguments:
 		if not arg.begins_with("--"):
@@ -716,19 +969,35 @@ func _parse_options(arguments: PackedStringArray) -> Dictionary:
 		var pair := arg.trim_prefix("--").split("=", true, 1)
 		if pair.size() == 2:
 			options[pair[0]] = pair[1]
+		else:
+			options[pair[0]] = true
 	return options
 
 
 static func validate_lighting_profile_options(options: Dictionary) -> Dictionary:
+	var lighting_flight := str(options.get("lighting-flight", "workshop"))
+	if lighting_flight not in ["workshop", "normal"]:
+		return {"ok": false, "error": "--lighting-flight must be workshop or normal."}
 	if str(options.get("lighting-workload-audit", "off")) not in ["off", "on"]:
 		return {"ok": false, "error": "--lighting-workload-audit must be off or on."}
 	if options.has("lighting-workload-audit") and not options.has("frametimes"):
 		return {"ok": false, "error": "--lighting-workload-audit requires the real-time --frametimes route."}
 	if options.has("landscape") and (typeof(options.landscape) != TYPE_STRING or not Landscapes.has(options.landscape)):
 		return {"ok": false, "error": "--landscape must name a registered landscape: " + ", ".join(Landscapes.ids())}
-	for companion_option: String in ["companions", "companions-seed", "companions-record"]:
-		if options.has(companion_option):
-			return {"ok": false, "error": "This capture route does not admit flight companions; a supplied companion option cannot be ignored as a full-scene workload."}
+	if lighting_flight == "workshop":
+		for companion_option: String in ["companions", "companions-seed", "companions-record"]:
+			if options.has(companion_option):
+				return {"ok": false, "error": "This capture route does not admit flight companions; a supplied companion option cannot be ignored as a full-scene workload."}
+	else:
+		if options.has("companions-record"):
+			return {"ok": false, "error": "Companion recording is not supported by the lighting workload route; use the dedicated companion recorder separately."}
+		if options.has("lighting-profile"):
+			return {"ok": false, "error": "--lighting-flight=normal accepts validated presets only; --lighting-profile requires the Workshop trial route."}
+		if not options.has("lighting-preset"):
+			return {"ok": false, "error": "--lighting-flight=normal requires --lighting-preset=<id>."}
+		var preset_id := str(options.get("lighting-preset", ""))
+		if preset_id != "off" and (preset_id == "custom" or LightingProfile.preset(preset_id).is_empty()):
+			return {"ok": false, "error": "Normal lighting flight requires an approved immutable preset id or off."}
 	if str(options.get("lighting-smoke", "off")) not in ["off", "stock"]:
 		return {"ok": false, "error": "--lighting-smoke must be off or stock."}
 	if options.has("lighting-smoke") and not options.has("lighting-preset") and not options.has("lighting-profile"):
@@ -758,7 +1027,7 @@ static func freeze_lighting_trial(aircraft_id: String, lighting: Dictionary, smo
 	if not bool(frozen.get("ok", false)):
 		return frozen
 	if smoke_mode == "off":
-		return {"ok": true, "trial": frozen, "smoke_preset": ""}
+		return {"ok": true, "trial": frozen, "smoke_preset": "", "smoke_profile_sha256": ""}
 	var propulsion: Dictionary = frozen.data.model.propulsion
 	var stock := StockSmoke.for_aircraft(described.bindings, propulsion)
 	if stock.is_empty() or stock.get("smoke", []).is_empty():
@@ -771,7 +1040,8 @@ static func freeze_lighting_trial(aircraft_id: String, lighting: Dictionary, smo
 		return with_smoke
 	if with_smoke.identity != frozen.identity or with_smoke.data != frozen.data:
 		return {"ok": false, "errors": ["Adding stock smoke changed the physical trial; capture refused."]}
-	return {"ok": true, "trial": with_smoke, "smoke_preset": StockSmoke.preset_id(described.bindings, propulsion)}
+	return {"ok": true, "trial": with_smoke, "smoke_preset": StockSmoke.preset_id(described.bindings, propulsion),
+		"smoke_profile_sha256": _sha256_json(stock)}
 
 
 static func read_lighting_profile_file(path: String) -> Dictionary:

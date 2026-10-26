@@ -1,0 +1,32 @@
+{
+	"baseline_session_sha256": "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864",
+	"baseline_trace_sha256": "1c529262fb33b7db3137f9cba064be0e32a6d9c7620ae224cc06500a5a05a62e",
+	"engine": "4.8-beta1 (official)",
+	"outputs": {
+		"gp-extra-300s-60": {
+			"after_three_ticks": "4facb677ac7483bbe2cca3bd7c60b152f5bd627f7987d10ef6de92b57c1b15de",
+			"checkpoint": "d9bd9b7df316718db5379f30a82d900a1cd4e4f48c35ddd844f766ed72593926",
+			"metadata": "22a77fa5f73b68d424830d680ccf560279508bb93c591bc387016deec6ce9abf",
+			"trace_csv": "59ea71e6bb7d9ecdeae0dd1f7fb140658ba150625844515d72a3bc9887929876"
+		},
+		"jensen-das-ugly-stik-60": {
+			"after_three_ticks": "294f07e2367b4b66c525583678f87eff122017ce7881bcc99af6dcee172990d8",
+			"checkpoint": "1c0414cee7e272e71ad55631aceca38c9751bb7b619578cb6ad70dc2ac3da645",
+			"metadata": "05db5d196ea04aa51747acda3f44dd2812e13c1e716fa6a4947fbbf0928c5741",
+			"trace_csv": "e91d3375a6cd9a4c99d4ec4575043892d1f4d89e120acfa5e02da7f641bbb359"
+		},
+		"p51d-mustang-120": {
+			"after_three_ticks": "0ff5dff321786a8bbe40d3c43103637de8310cd1777f90ea80080b2f1c09508b",
+			"checkpoint": "caf6d96b831d1bf26b47685bee3591bb922c260d1f58ff3368e46eb137c23dea",
+			"metadata": "5a6aac14502e966598b947d32faa74bb95e504237e26c908b400d667fdd48e2b",
+			"trace_csv": "e885d2e94bcb03f66eb2219733ae93a0e934242eb444ab931841ce3876b78b90"
+		},
+		"sebart-avanti-s-a200-p100rx": {
+			"after_three_ticks": "258f3b9ea4668e7d4da432a86bc714f443c14303a9eb756236c2f8ff3b777203",
+			"checkpoint": "56dbcf8a87fd1b8caed5e2487d5ff0c7090dca54abd69c43396224492070998c",
+			"metadata": "84041009f57e626e8874f2196a9d7ad96c51d75e2005c6b863bc597b6bc77f1d",
+			"trace_csv": "dd8eb5ea56bf75f4d64d0ec896fb419fe28fa006d5a273ad5da944c78909700d"
+		}
+	},
+	"physics_hz": 240
+}

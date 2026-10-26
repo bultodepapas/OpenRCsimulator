@@ -1,0 +1,31 @@
+{
+  "format": "openrc-traction-capacity-legacy-oracle-promotion-v1",
+  "main_test_prehash": "b0fbad5997d871e29561fee4add200baa2182d1f73c73c1e0718f48f90ed14fd",
+  "payload": [
+    {
+      "target": "app/tests/test_traction_capacity.gd",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/production/app/tests/test_traction_capacity.gd",
+      "sha256": "d28b5a0d751544d8f11af163cea53d390165d92b91aff9436dca0b5b9e53a256",
+      "bytes": 13160
+    },
+    {
+      "target": "app/tests/fixtures/ground_contact_capacity_legacy_rows.bin",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/production/app/tests/fixtures/ground_contact_capacity_legacy_rows.bin",
+      "sha256": "d5f96330e89f1ac55a1c6df474a35cd6925008064a1c9c6b2f45e22c4bd6eba9",
+      "bytes": 121452
+    },
+    {
+      "target": "app/tests/fixtures/ground_contact_capacity_legacy_steps.bin",
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/production/app/tests/fixtures/ground_contact_capacity_legacy_steps.bin",
+      "sha256": "ffc52cf1a57e4a7a07e4d57851238acc3961dd7409ceade70dcd4a879237de18",
+      "bytes": 38160
+    }
+  ],
+  "validation_transform": "Only two fixture res paths retargeted; runtime imports remain installed implementations.",
+  "fixture_attributes": "Both basenames match existing /app/tests/fixtures/ground_contact_*.bin -text; no attribute edit needed.",
+  "mutations": {
+    "traction": "Only the legacy row force-rate result multiplied by1.01; no expected data changed.",
+    "step": "Only reported absolute_impulse_sum offset by0.125; catches two accepted gentle outcomes.",
+    "step_refusal": "Only actual failure reason text suffixed; catches two refused hard outcomes. No expected data changed."
+  }
+}
