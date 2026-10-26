@@ -1,4 +1,4 @@
-# UI-01d: English by default (whatever the OS locale), Spanish available, the choice remembered in a versioned
+# UI-01d: English by default (whatever the OS locale), Spanish and Simplified Chinese available, the choice remembered in a versioned
 # settings file that automation never reads or writes. Settings files here are test-only paths under user://.
 # Run: godot --headless --path . --script res://tests/test_ui_language.gd
 extends SceneTree
@@ -26,6 +26,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	await process_frame # Autoloads install bundled fonts before screens enter the tree.
 	_preferences_file()
 	_catalog()
 	await _default_and_switch()
@@ -78,14 +79,44 @@ func _preferences_file() -> void:
 
 
 func _catalog() -> void:
-	var es: Translation = load("res://i18n/es.po")
-	var empty := PackedStringArray()
-	for m in es.get_message_list():
-		if es.get_message(m) == "":
-			empty.append(m)
-	_check("Spanish catalog: %d texts, none untranslated" % es.get_message_count(), es.get_message_count() >= 10 and empty.is_empty(), str(empty))
-	for code in Preferences.LANGUAGES:
+	var source: Translation = load("res://i18n/es.po")
+	var chinese_font: Font = load("res://assets/fonts/NotoSansCJKsc-Regular.otf")
+	var placeholder := RegEx.new()
+	placeholder.compile("%[-+0-9.#]*[sdfxXocgeE]|%%")
+	for code: String in Preferences.LANGUAGES:
 		_check("language %s has a catalog or is the source" % code, code == "en" or code in TranslationServer.get_loaded_locales())
+		if code == "en":
+			continue
+		var catalog: Translation = load("res://i18n/%s.po" % code)
+		var missing := PackedStringArray()
+		var invalid_formats := PackedStringArray()
+		var missing_glyphs := {}
+		for message: String in source.get_message_list():
+			var translated: String = catalog.get_message(message)
+			if translated.is_empty():
+				missing.append(message)
+			# Test the Chinese addition; existing Spanish catalog is maintained separately.
+			if code != "zh_Hans":
+				continue
+			var before: Array[String] = []
+			var after: Array[String] = []
+			for token: RegExMatch in placeholder.search_all(message):
+				before.append(token.get_string())
+			for token: RegExMatch in placeholder.search_all(translated):
+				after.append(token.get_string())
+			if before != after:
+				invalid_formats.append(message)
+			for character: String in translated:
+				var point: int = character.unicode_at(0)
+				if point >= 0x3400 and point <= 0x9fff and not chinese_font.has_char(point):
+					missing_glyphs[character] = true
+		_check("%s catalog covers all %d source messages" % [code, source.get_message_count()],
+			catalog.get_message_count() == source.get_message_count() and missing.is_empty(), str(missing))
+		_check("%s format arguments remain ordered and intact" % code, invalid_formats.is_empty(), str(invalid_formats))
+		_check("%s Chinese glyphs are bundled" % code, missing_glyphs.is_empty(), str(missing_glyphs.keys()))
+	_check("global font includes the bundled Chinese fallback", chinese_font in ThemeDB.fallback_font.fallbacks)
+	_check("script-qualified Chinese locale remains Chinese", Preferences.Languages.supported_locale("zh_Hans_CN") == "zh_Hans")
+	_check("traditional Chinese is not mislabeled as simplified", Preferences.Languages.supported_locale("zh_Hant_TW") == "en")
 
 
 func _default_and_switch() -> void:
@@ -134,6 +165,18 @@ func _default_and_switch() -> void:
 	root.add_child(again)
 	await ui.settle()
 	_check("next start remembers Spanish", TranslationServer.get_locale() == "es" and again.home.language_button.text == "Idioma: Español")
+	again.home.language_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("third option switches to Chinese immediately", TranslationServer.get_locale() == "zh_Hans"
+		and again.home.language_button.text == "语言：简体中文"
+		and again.home.fly_button.atr(again.home.fly_button.text) == "开始飞行")
+	_check("Chinese choice saved", Preferences.load_from(PREFS).language == "zh_Hans")
+	await ui.close_app(again)
+	again = _app(PackedStringArray())
+	root.add_child(again)
+	await ui.settle()
+	_check("next start remembers Chinese", TranslationServer.get_locale() == "zh_Hans"
+		and again.home.language_button.text == "语言：简体中文")
 	again.home.language_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("and cycles back to English", TranslationServer.get_locale() == "en" and Preferences.load_from(PREFS).language == "en")

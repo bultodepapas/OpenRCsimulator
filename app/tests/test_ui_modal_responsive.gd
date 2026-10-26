@@ -11,7 +11,7 @@ func settle() -> void:
 func run() -> void:
 	vp = SubViewport.new()
 	root.add_child(vp)
-	for lang in ["en", "es"]:
+	for lang in ["en", "es", "zh_Hans"]:
 		TranslationServer.set_locale(lang)
 		for scale in [1.0, 2.0]:
 			ThemeSpec.text_scale = scale

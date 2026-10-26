@@ -177,6 +177,24 @@ func _run() -> void:
 		"locale=%s, close=%s, status=%s, mode=%s" % [TranslationServer.get_locale(), settings._close_button.text,
 		settings._status.text, settings._window_picker.get_item_text(0)])
 
+	_check("Settings offers Chinese as its third language", settings._language_picker.item_count == 3
+		and settings._language_picker.get_item_text(2) == "简体中文"
+		and settings._language_picker.get_item_metadata(2) == "zh_Hans")
+	settings._language_picker.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_DOWN)
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("Chinese selection refreshes open Settings and persists", TranslationServer.get_locale() == "zh_Hans"
+		and Preferences.load_from(PREFS).language == "zh_Hans" and settings._close_button.text == "关闭"
+		and app.home.language_button.text == "语言：简体中文")
+	# Return to Spanish for the existing nested-screen and pause checks.
+	settings._language_picker.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_UP)
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+
 	# Controls and Help are nested on the same stack; Esc returns to Settings after either route.
 	var controls_button: Button = settings.find_child("Controls", true, false) as Button
 	controls_button.grab_focus()

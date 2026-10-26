@@ -59,7 +59,7 @@ func _run() -> void:
 	for scale: float in [1.0, 2.0]:
 		ScreenTheme.text_scale = scale
 		screen.theme = ScreenTheme.build()
-		for locale: String in ["en", "es"]:
+		for locale: String in ["en", "es", "zh_Hans"]:
 			TranslationServer.set_locale(locale)
 			for size: Vector2i in viewport_sizes:
 				viewport.size = size
