@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "cbf49881-f2fc-486a-9e25-52d548c92246",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-stage-r4/candidate/app",
+    "--script",
+    "res://tests/test_spatial_wind_aerodynamics.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:28:30.115715+00:00",
+  "label": "candidate-test_spatial_wind_aerodynamics",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\candidate-test_spatial_wind_aerodynamics-nw4xfzuk\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\candidate-test_spatial_wind_aerodynamics-nw4xfzuk\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.609,
+  "log_bytes": 121,
+  "log_sha256": "d7756ea7a44eca6f511c613ca844c9135c89943aa108be7d191ea72f84c2ff18"
+}

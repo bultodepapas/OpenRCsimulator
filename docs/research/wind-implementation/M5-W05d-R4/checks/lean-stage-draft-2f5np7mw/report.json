@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a4e38121-acce-42f1-86a7-b95e7454432d",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-stage-r4/candidate/app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-stage-r4/test_spatial_stage_lean.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:24:53.942383+00:00",
+  "label": "lean-stage-draft",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\lean-stage-draft-2f5np7mw\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\lean-stage-draft-2f5np7mw\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.453,
+  "log_bytes": 114,
+  "log_sha256": "0dde83deb86319dbe378a62eefea758694fc9e4d6ac71753e842d0af10b7823a"
+}

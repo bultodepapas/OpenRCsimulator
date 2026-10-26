@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "cc2fe90c-9ccd-4b0c-90d3-7668af265845",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-stage-r4/baseline/app",
+    "--script",
+    "res://tests/test_tailless_spatial_session.gd",
+    "--",
+    "--out-dir=C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-stage-r4/baseline-logs"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:19:42.127569+00:00",
+  "label": "baseline-x8-spatial",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\baseline-x8-spatial-3h2tz71u\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\baseline-x8-spatial-3h2tz71u\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 15.954,
+  "log_bytes": 1264,
+  "log_sha256": "2f8faae582db2651e282518a0196bfbc6a4cc6ae29df45d21626a2d990b2c1cf"
+}

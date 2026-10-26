@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "97cd70a7-20c2-4ce8-90fd-ec3c6c7305f0",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-stage-r4/baseline/app",
+    "--script",
+    "res://tests/test_flight_log.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-stage-r4/baseline-logs"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:19:15.801879+00:00",
+  "label": "baseline-flight-logs",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\baseline-flight-logs-eo_o_d6w\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\baseline-flight-logs-eo_o_d6w\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 20.313,
+  "log_bytes": 6056,
+  "log_sha256": "c08f7a363e2ed6d9c0d3bb4bd683e5f2d5e2933fd542573c7f5f55cb6fbc1101"
+}

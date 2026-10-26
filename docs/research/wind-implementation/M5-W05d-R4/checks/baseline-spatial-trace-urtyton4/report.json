@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "36242af1-b76a-436a-b987-e1a94fda7cb4",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-stage-r4/baseline/app",
+    "--script",
+    "res://tests/test_spatial_weather_trace.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-stage-r4/baseline-logs/jensen_spatial.orfl"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:19:36.317499+00:00",
+  "label": "baseline-spatial-trace",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\baseline-spatial-trace-urtyton4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\baseline-spatial-trace-urtyton4\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.609,
+  "log_bytes": 604,
+  "log_sha256": "f341fb418dd587dfc053c0217de179423d6d5732d96b40bfd7a791b4a200b8af"
+}
