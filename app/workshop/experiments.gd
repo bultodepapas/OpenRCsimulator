@@ -30,6 +30,7 @@ const FLOAT32_RANGE: float = 4294967296.0
 const UINT32_MASK: int = 0xFFFFFFFF
 const PHYSICAL_KEYS: PackedStringArray = [
 	"scale", "mass_policy", "weight_multiplier", "power_multiplier", "control_multiplier",
+	"control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder",
 	"tank_capacity_multiplier",
 ]
 const SWEEP_COMMON_KEYS: PackedStringArray = ["format", "version", "mode", "recipe", "axes"]
@@ -499,7 +500,9 @@ static func _static_report_from_compiled(compiled: Dictionary, recipe: Dictionar
 		if summary.has(key):
 			static_metrics[key] = summary[key]
 	for key: String in ["mass_kg", "wing_area_m2", "wing_span_m", "wing_loading_kg_m2", "fuel_capacity_l",
-		"scale", "mass_policy", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
+		"scale", "mass_policy", "weight_multiplier", "power_multiplier", "control_multiplier",
+		"control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder",
+		"tank_capacity_multiplier"]:
 		if summary.has(key):
 			build_summary[key] = summary[key]
 	var unavailable_reason: String = ""
@@ -563,7 +566,8 @@ static func _physical_recipe(value: Variant) -> Dictionary:
 		return {"ok": false, "errors": checked.get("errors", PackedStringArray())}
 	var physical: Dictionary = {}
 	for key: String in PHYSICAL_KEYS:
-		physical[key] = checked.values[key]
+		if checked.values.has(key):
+			physical[key] = checked.values[key]
 	if checked.values.has("mass_edits"): physical["mass_edits"] = checked.values.mass_edits.duplicate(true)
 	return {"ok": true, "errors": PackedStringArray(), "recipe": physical}
 

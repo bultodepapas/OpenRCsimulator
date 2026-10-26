@@ -1,0 +1,119 @@
+{
+  "step": "AE-01-R1",
+  "runtime_tree": "f986bc64a8ec5ccb9a599d8562e0fa8230589841",
+  "rendered_tree": "44fa2c04dd5f130f0f20b443d743f9fe1435ac5c",
+  "baseline_runtime": "5d2d02f8677211f92ebe3dcea3741cf7480fe51f",
+  "limits": "One intermittent headless shutdown warning was not reproduced; no general lifecycle/performance qualification. Screenshots retained locally only.",
+  "runs": [
+    {
+      "label": "rendered-1080",
+      "stop": {
+        "stopped": true,
+        "pid": 1995968,
+        "crash": null,
+        "leaked_objects": 0
+      },
+      "flow": "> assert expr='app.get_node(\"Workshop\").get(\"_advanced_controls_box\").visible' message=\"advanced controls visible\"\n{\"value\": true}\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get_compiled().data.model.controls.throw_deg.aileron, 24.0)' message=\"aileron compiles to 24 degrees\"\n{\"value\": true}\n> eval expr='app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier.set_value(1.1)'\nnull\n> assert expr='not app.get_node(\"Workshop\").get_recipe().has(\"control_multiplier_aileron\")' message=\"master clears override\"\n{\"value\": true}\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier_aileron.value, 1.1)' message=\"surface inherits master\"\n{\"value\": true}\n> press text=Undo\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@180/WorkshopColumns/InspectorColumn/WorkshopHistory/UndoRecipe\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@180/WorkshopColumns/InspectorColumn/WorkshopHistory/UndoRecipe\"}\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get_recipe().get(\"control_multiplier_aileron\", 0), 1.2)' message=\"undo restores override\"\n{\"value\": true}\n> press text=Compare\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@180/@BoxContainer@183/PageCompare\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@180/@BoxContainer@183/PageCompare\"}\n> assert expr='app.get_node(\"Workshop\").get(\"_active_page\") == \"compare\"' message=\"comparison opens\"\n{\"value\": true}\n> logs\n{\"records\": [{\"level\": \"info\", \"text\": \"debug bridge: listening on 127.0.0.1:47870 (pid 1995968)\", \"seq\": 1, \"time_ms\": 11015, \"frame\": 445}, {\"level\": \"event\", \"text\": \"route: home\", \"detail\": {\"from\": null, \"to\": \"home\"}, \"seq\": 2, \"time_ms\": 14497, \"frame\": 446}, {\"level\": \"event\", \"text\": \"screens: home\", \"detail\": {\"from\": null, \"to\": \"home\"}, \"seq\": 3, \"time_ms\": 14497, \"frame\": 446}, {\"level\": \"event\", \"text\": \"screens: home,workshop\", \"detail\": {\"from\": \"home\", \"to\": \"home,workshop\"}, \"seq\": 4, \"time_ms\": 22476, \"frame\": 448}], \"last_seq\": 4, \"dropped\": 0}\n"
+    },
+    {
+      "label": "headless-1080-first",
+      "stop": {
+        "stopped": true,
+        "pid": 2007758,
+        "crash": null,
+        "leaked_objects": 4
+      },
+      "flow": "> press text=Workshop\n{\"pressed\": \"AppRoot/Home/HomeRail/HomeContentScroll/HomePages/HomeNavigation/Workshop\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/OpenLibrary\"}\n> wait until=\"screens.is_top('workshop')\" timeout_s=60\n{\"frame\": 6488, \"value\": true}\n> call node=AppRoot/Workshop method=_set_page args=[\"setup\"]\nnull\n> press text=\"Advanced control surface setup\"\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopScroll/@VBoxContainer@226/@VBoxContainer@258/ControlSettings/CardContent/AdvancedControlThrows\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopScroll/@VBoxContainer@226/@VBoxContainer@258/ControlSettings/CardContent/AdvancedControlThrows\"}\n> assert expr='app.get_node(\"Workshop\").get(\"_advanced_controls_box\").visible' message=\"advanced controls visible\"\n{\"value\": true}\n> eval expr='app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier_aileron.set_value(1.2)'\nnull\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get_compiled().summary.control_multiplier_aileron, 1.2)' message=\"individual aileron travel compiles\"\n{\"value\": true}\n> eval expr='app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier.set_value(1.1)'\nnull\n> assert expr='not app.get_node(\"Workshop\").get_recipe().has(\"control_multiplier_aileron\")' message=\"master clears override\"\n{\"value\": true}\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier_aileron.value, 1.1)' message=\"surface inherits master\"\n{\"value\": true}\n> press text=Undo\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopHistory/UndoRecipe\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopHistory/UndoRecipe\"}\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get_recipe().get(\"control_multiplier_aileron\", 0), 1.2)' message=\"undo restores override\"\n{\"value\": true}\n> call node=AppRoot/Workshop method=_set_page args=[\"compare\"]\nnull\n> assert expr='app.get_node(\"Workshop\").get(\"_active_page\") == \"compare\"' message=\"comparison opens with optional values\"\n{\"value\": true}\n> press text=CloseWorkshop\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/CloseWorkshop\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/CloseWorkshop\"}\n> press text=\"Discard changes\"\n{\"pressed\": \"AppRoot/Workshop/UnsavedBuildDialog/@HBoxContainer@1115/@Button@1121\", \"mode\": \"accept\", \"screens\": [\"home\"], \"focus\": \"AppRoot/Home/HomeRail/HomeContentScroll/HomePages/HomeNavigation/Workshop\"}\n> assert expr=\"screens.is_top('home')\" message=\"surface editing returns safely to Home\"\n{\"value\": true}\n"
+    },
+    {
+      "label": "main-baseline-dirty-close",
+      "stop": {
+        "stopped": true,
+        "pid": 2013856,
+        "crash": null,
+        "leaked_objects": 0
+      },
+      "flow": "> press text=Workshop\n{\"pressed\": \"AppRoot/Home/HomeRail/HomeContentScroll/HomePages/HomeNavigation/Workshop\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/OpenLibrary\"}\n> wait until=\"screens.is_top('workshop')\" timeout_s=60\n{\"frame\": 5, \"value\": true}\n> eval expr='app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier.set_value(1.1)'\nnull\n> press text=CloseWorkshop\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/CloseWorkshop\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/CloseWorkshop\"}\n> press text=\"Discard changes\"\n{\"pressed\": \"AppRoot/Workshop/UnsavedBuildDialog/@HBoxContainer@1078/@Button@1084\", \"mode\": \"accept\", \"screens\": [\"home\"], \"focus\": \"AppRoot/Home/HomeRail/HomeContentScroll/HomePages/HomeNavigation/Workshop\"}\n> assert expr=\"screens.is_top('home')\" message=\"baseline returns Home\"\n{\"value\": true}\n",
+      "launch": {
+        "ok": true,
+        "port": 47890,
+        "launcher_pid": 2013856,
+        "out": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/debug-bridge/20261026-130230-47890",
+        "profile": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/debug-bridge/20261026-130230-47890/profile",
+        "attempt": 1,
+        "pid": 2013856,
+        "use": "OPENRC_DEBUG_BRIDGE=47890 python3 tools/debug/debugctl.py <command>",
+        "godot": "4.8-beta1 (official)",
+        "frame": 0,
+        "fps": 1.0,
+        "display": "headless",
+        "log_seq": 4,
+        "log_counts": {
+          "info": 4
+        },
+        "route": "unknown",
+        "out_dir": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/debug-bridge/20261026-130230-47890"
+      }
+    },
+    {
+      "label": "headless-verbose-repeat",
+      "stop": {
+        "stopped": true,
+        "pid": 2015095,
+        "crash": null,
+        "leaked_objects": 0
+      },
+      "flow": "> press text=Workshop\n{\"pressed\": \"AppRoot/Home/HomeRail/HomeContentScroll/HomePages/HomeNavigation/Workshop\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/OpenLibrary\"}\n> wait until=\"screens.is_top('workshop')\" timeout_s=60\n{\"frame\": 6, \"value\": true}\n> call node=AppRoot/Workshop method=_set_page args=[\"setup\"]\nnull\n> press text=\"Advanced control surface setup\"\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopScroll/@VBoxContainer@226/@VBoxContainer@258/ControlSettings/CardContent/AdvancedControlThrows\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopScroll/@VBoxContainer@226/@VBoxContainer@258/ControlSettings/CardContent/AdvancedControlThrows\"}\n> assert expr='app.get_node(\"Workshop\").get(\"_advanced_controls_box\").visible' message=\"advanced controls visible\"\n{\"value\": true}\n> eval expr='app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier_aileron.set_value(1.2)'\nnull\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get_compiled().summary.control_multiplier_aileron, 1.2)' message=\"individual aileron travel compiles\"\n{\"value\": true}\n> eval expr='app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier.set_value(1.1)'\nnull\n> assert expr='not app.get_node(\"Workshop\").get_recipe().has(\"control_multiplier_aileron\")' message=\"master clears override\"\n{\"value\": true}\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier_aileron.value, 1.1)' message=\"surface inherits master\"\n{\"value\": true}\n> press text=Undo\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopHistory/UndoRecipe\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopHistory/UndoRecipe\"}\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get_recipe().get(\"control_multiplier_aileron\", 0), 1.2)' message=\"undo restores override\"\n{\"value\": true}\n> call node=AppRoot/Workshop method=_set_page args=[\"compare\"]\nnull\n> assert expr='app.get_node(\"Workshop\").get(\"_active_page\") == \"compare\"' message=\"comparison opens with optional values\"\n{\"value\": true}\n> press text=CloseWorkshop\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/CloseWorkshop\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/CloseWorkshop\"}\n> press text=\"Discard changes\"\n{\"pressed\": \"AppRoot/Workshop/UnsavedBuildDialog/@HBoxContainer@1115/@Button@1121\", \"mode\": \"accept\", \"screens\": [\"home\"], \"focus\": \"AppRoot/Home/HomeRail/HomeContentScroll/HomePages/HomeNavigation/Workshop\"}\n> assert expr=\"screens.is_top('home')\" message=\"surface editing returns safely to Home\"\n{\"value\": true}\n",
+      "launch": {
+        "ok": true,
+        "port": 47890,
+        "launcher_pid": 2015095,
+        "out": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/debug-bridge/20261026-130329-47890",
+        "profile": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/debug-bridge/20261026-130329-47890/profile",
+        "attempt": 1,
+        "pid": 2015095,
+        "use": "OPENRC_DEBUG_BRIDGE=47890 python3 tools/debug/debugctl.py <command>",
+        "godot": "4.8-beta1 (official)",
+        "frame": 0,
+        "fps": 1.0,
+        "display": "headless",
+        "log_seq": 9,
+        "log_counts": {
+          "info": 9
+        },
+        "route": "unknown",
+        "out_dir": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/debug-bridge/20261026-130329-47890"
+      }
+    },
+    {
+      "label": "headless-1080-verbose-repeat",
+      "stop": {
+        "stopped": true,
+        "pid": 2016689,
+        "crash": null,
+        "leaked_objects": 0
+      },
+      "flow": "> press text=Workshop\n{\"pressed\": \"AppRoot/Home/HomeRail/HomeContentScroll/HomePages/HomeNavigation/Workshop\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/OpenLibrary\"}\n> wait until=\"screens.is_top('workshop')\" timeout_s=60\n{\"frame\": 6, \"value\": true}\n> call node=AppRoot/Workshop method=_set_page args=[\"setup\"]\nnull\n> press text=\"Advanced control surface setup\"\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopScroll/@VBoxContainer@226/@VBoxContainer@258/ControlSettings/CardContent/AdvancedControlThrows\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopScroll/@VBoxContainer@226/@VBoxContainer@258/ControlSettings/CardContent/AdvancedControlThrows\"}\n> assert expr='app.get_node(\"Workshop\").get(\"_advanced_controls_box\").visible' message=\"advanced controls visible\"\n{\"value\": true}\n> eval expr='app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier_aileron.set_value(1.2)'\nnull\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get_compiled().summary.control_multiplier_aileron, 1.2)' message=\"individual aileron travel compiles\"\n{\"value\": true}\n> eval expr='app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier.set_value(1.1)'\nnull\n> assert expr='not app.get_node(\"Workshop\").get_recipe().has(\"control_multiplier_aileron\")' message=\"master clears override\"\n{\"value\": true}\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get(\"_factor_sliders\").control_multiplier_aileron.value, 1.1)' message=\"surface inherits master\"\n{\"value\": true}\n> press text=Undo\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopHistory/UndoRecipe\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/WorkshopColumns/InspectorColumn/WorkshopHistory/UndoRecipe\"}\n> assert expr='is_equal_approx(app.get_node(\"Workshop\").get_recipe().get(\"control_multiplier_aileron\", 0), 1.2)' message=\"undo restores override\"\n{\"value\": true}\n> call node=AppRoot/Workshop method=_set_page args=[\"compare\"]\nnull\n> assert expr='app.get_node(\"Workshop\").get(\"_active_page\") == \"compare\"' message=\"comparison opens with optional values\"\n{\"value\": true}\n> press text=CloseWorkshop\n{\"pressed\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/CloseWorkshop\", \"mode\": \"accept\", \"screens\": [\"home\", \"workshop\"], \"focus\": \"AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/@VBoxContainer@177/@BoxContainer@178/CloseWorkshop\"}\n> press text=\"Discard changes\"\n{\"pressed\": \"AppRoot/Workshop/UnsavedBuildDialog/@HBoxContainer@1115/@Button@1121\", \"mode\": \"accept\", \"screens\": [\"home\"], \"focus\": \"AppRoot/Home/HomeRail/HomeContentScroll/HomePages/HomeNavigation/Workshop\"}\n> assert expr=\"screens.is_top('home')\" message=\"surface editing returns safely to Home\"\n{\"value\": true}\n",
+      "launch": {
+        "ok": true,
+        "port": 47890,
+        "launcher_pid": 2016689,
+        "out": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/debug-bridge/20261026-130444-47890",
+        "profile": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/debug-bridge/20261026-130444-47890/profile",
+        "attempt": 1,
+        "pid": 2016689,
+        "use": "OPENRC_DEBUG_BRIDGE=47890 python3 tools/debug/debugctl.py <command>",
+        "godot": "4.8-beta1 (official)",
+        "frame": 0,
+        "fps": 1.0,
+        "display": "headless",
+        "log_seq": 9,
+        "log_counts": {
+          "info": 9
+        },
+        "route": "unknown",
+        "out_dir": "/home/bulto/OpenRCsimulator/tmp/pr-review-4-20261026/tmp/debug-bridge/20261026-130444-47890"
+      }
+    }
+  ]
+}
