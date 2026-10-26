@@ -77,6 +77,7 @@ func _initialize() -> void:
 	await _test_input_map()
 	await _test_setup_draft_and_single_save()
 	await _test_profile_name_error_lifecycle()
+	await _test_mapping_error_recovery()
 	await _test_glyph_family_save_and_cancel()
 	await _test_unknown_saved_gamepad_menu_gate()
 	await _test_entry_signals()
@@ -210,6 +211,90 @@ func _test_profile_name_error_lifecycle() -> void:
 	_check("loaded valid name does not retain the previous field error", setup.profile_name_edit.text == "Saved profile" and not setup.profile_name_edit.has_theme_stylebox_override("normal") and not setup.profile_name_edit.has_theme_stylebox_override("focus"))
 	store.save_succeeds = true
 	_check("loaded valid profile still saves normally", setup._save_profile(false) and store.saved_count == 1)
+	setup.free()
+	await process_frame
+
+
+func _test_mapping_error_recovery() -> void:
+	root.size = Vector2i(1920, 1080)
+	var store := FakeStore.new()
+	store.save_succeeds = true
+	var setup := ControllerSetup.new()
+	setup.configure(FakeRegistry.new(), store, 5, -1)
+	root.add_child(setup)
+	await process_frame
+	await process_frame
+	var original := ControllerProfile.defaults("gamepad", "mode2")
+	setup._set_draft_profile(original)
+	var roll: SpinBox = setup._axis_controls.roll.axis
+	var pitch: SpinBox = setup._axis_controls.pitch.axis
+	var prior_style := StyleBoxFlat.new()
+	prior_style.bg_color = Color(0.1, 0.2, 0.3)
+	pitch.get_line_edit().add_theme_stylebox_override("normal", prior_style)
+	pitch.value = roll.value
+	setup.profile_name_edit.text = ""
+	setup.select_section("buttons")
+	_check("multiple invalid fields block Save before storage", not setup._save_profile(false) and store.saved_count == 0)
+	_check("Save focuses the first field and marks both conflicting axes", setup.profile_name_edit.has_focus() and roll.get_line_edit().has_theme_stylebox_override("normal") and pitch.get_line_edit().get_theme_stylebox("normal") != prior_style)
+	_check("axis rows explain both participants", setup._axis_channel_labels.roll.text.contains("Roll, Pitch") and setup._axis_channel_labels.pitch.text.contains("Roll, Pitch"))
+	setup.profile_name_edit.text = "Repaired name"
+	setup.profile_name_edit.text_changed.emit(setup.profile_name_edit.text)
+	_check("fixing the name preserves unrelated axis errors", not setup.profile_name_edit.has_theme_stylebox_override("normal") and roll.get_line_edit().has_theme_stylebox_override("normal") and not setup.status_label.text.contains("Enter a profile name"))
+	_check("editing does not steal focus", setup.profile_name_edit.has_focus())
+	pitch.value = float(original.pitch.axis)
+	_check("correcting a conflict clears both sides and the obsolete message", not roll.get_line_edit().has_theme_stylebox_override("normal") and pitch.get_line_edit().get_theme_stylebox("normal") == prior_style and setup.status_label.text.is_empty())
+	_check("corrected draft saves once", setup._save_profile(false) and store.saved_count == 1)
+
+	var conflict := original.duplicate(true)
+	var back_button := setup.find_child("Remap_back", true, false) as Button
+	var pause_button := setup.find_child("Remap_pause", true, false) as Button
+	var back_style := back_button.get_theme_stylebox("normal")
+	var pause_style := pause_button.get_theme_stylebox("normal")
+	conflict.actions = {"pause": {"type": "button", "button": JOY_BUTTON_B}}
+	setup._set_draft_profile(conflict)
+	setup.action_filter.select(3)
+	setup._on_action_filter_selected(3)
+	setup.select_section("axes")
+	_check("action collision still blocks saving", not setup._save_profile(false) and store.saved_count == 1)
+	await process_frame
+	await process_frame
+	_check("hidden conflicting actions are exposed without starting capture", setup._selected_section == "buttons" and setup.action_filter.selected == 0 and back_button.is_visible_in_tree() and not setup._is_capture_active())
+	_check("both conflicting actions are highlighted and one is focused", back_button.has_theme_stylebox_override("normal") and pause_button.has_theme_stylebox_override("normal") and (back_button.has_focus() or pause_button.has_focus()))
+	var scroll := setup.find_child("ControllerSetupScroll", true, false) as ScrollContainer
+	_check("focused error is inside the scroll viewport", scroll.get_global_rect().encloses((root.gui_get_focus_owner() as Control).get_global_rect()))
+	setup._set_status("Storage disconnected", true)
+	setup.profile_name_edit.text_changed.emit(setup.profile_name_edit.text)
+	_check("revalidation cannot erase a newer external error", setup.status_label.text.contains("Storage disconnected"))
+	setup._set_draft_profile(original)
+	_check("profile replacement restores action styles", back_button.get_theme_stylebox("normal") == back_style and pause_button.get_theme_stylebox("normal") == pause_style)
+
+	var with_aux := original.duplicate(true)
+	with_aux.aux = {"smoke": {"type": "button", "button": 15, "mode": "level"}}
+	setup._set_draft_profile(with_aux)
+	var previous := setup.current_profile()
+	var remap := setup.find_child("Remap_camera_previous", true, false) as Button
+	var remap_style := remap.get_theme_stylebox("normal")
+	setup._start_capture("camera_previous", remap)
+	var event := InputEventJoypadButton.new()
+	event.device = 5
+	event.button_index = 15
+	event.pressed = true
+	setup._capture_binding(event)
+	_check("rejected action/AUX remap leaves the accepted draft intact", setup.current_profile() == previous and not setup._is_capture_active() and setup.status_label.text.contains("Binding was not changed"))
+	_check("rejected remap highlights the attempted action and conflicting AUX", remap.has_theme_stylebox_override("normal") and setup._aux_controls.smoke.button.get_line_edit().has_theme_stylebox_override("normal"))
+	setup._start_capture("camera_previous", remap)
+	event.button_index = 16
+	setup._capture_binding(event)
+	_check("successful remap clears rejected-attempt feedback", remap.get_theme_stylebox("normal") == remap_style and not setup._aux_controls.smoke.button.get_line_edit().has_theme_stylebox_override("normal") and setup.current_profile().actions.camera_previous.button == 16)
+
+	setup._set_draft_profile(original)
+	pitch.value = roll.value
+	setup._save_profile(false)
+	TranslationServer.set_locale("es")
+	await process_frame
+	_check("language changes refresh inline feedback", setup._axis_channel_labels.roll.text.contains("Elige entradas distintas"))
+	TranslationServer.set_locale("en")
+	setup._set_draft_profile(original)
 	setup.free()
 	await process_frame
 

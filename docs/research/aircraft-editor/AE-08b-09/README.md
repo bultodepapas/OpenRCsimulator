@@ -101,3 +101,22 @@ Accepted edits still reset playback and residual smoke. Changes to smoke version
 Nine focused suites pass, including the new allocation, skin/registration, control-identity, pending-reset and layout regressions. The general debug-bridge smoke pass completes 34 steps, a 30-action seeded walk and two fly/Home soak cycles, with no failures, growing counters or exit leaks. Compilation reports zero errors and ten existing name/shadowing warnings; three new draft-test warnings were removed. Raw artifacts remain in ignored `tmp/workshop-operation-20261026/`; hashes and results are appended to the [result record](2026-10-26-ui-results.json). Baseline assertion failures are retained as reproduction evidence. Initial draft parse errors, a profile-migration assertion and a debug-script log-command syntax error were corrected; these runs are not counted as successful validation.
 
 Validation used the pinned Godot 4.8 beta 1, an isolated source snapshot, headless correctness tests and Xvfb/llvmpipe captures. Concurrent work on the host and software rendering exclude latency/FPS or target-GPU qualification. The smoke pass records loading hitches; it is a functional regression result. No simulation, aircraft-data or new product capability changed.
+
+### AE-09d critical follow-up — 2026-10-26
+
+Six independent Luna Max reviewers inspected preview lifetime, numeric/history state, customization signals, lighting state, library I/O and evidence quality. All six reports were received before selecting changes. Follow-up review caught an approximate-equality shortcut that dropped nearby valid decimals; an exact-value regression now covers `1.237` → `1.237001`, as well as equivalent spelling `1.2370`.
+
+| Reproduction | Before | After |
+| --- | --- | --- |
+| Changed numeric commit | 2 compiler calls | 1 |
+| Equivalent numeric spelling | 1 compiler call | 0; pending state refreshed |
+| Appearance configure with pending inscription | Validity events `[true, false, true]` | `[true]`; raw text retained |
+| Clean smoke configure | Validity events `[false, false]` | `[false]` |
+| Replace a playing four-emitter aircraft | 4 pools allocated under the discarded renderer | 0 |
+| Failed model build followed by Play | Freed-object script error | Empty model/effect state; playback disabled; valid retry succeeds |
+
+Panel synchronization emits its completed validity state once; ordinary user text events still notify individually. Aircraft replacement disposes old smoke before resetting playback. A failed build clears stale model references and hides the size badge; retry retains the presentation. Closing an actively playing preview is covered. These changes preserve the existing controls and simulation behavior.
+
+The review also identified bounded library/favorites reads and draft-buffer behavior during Undo as follow-up candidates. Neither was changed: library caching needs measured I/O and freshness/memory evidence, while changing Undo's accepted-snapshot semantics needs a separate behavior decision.
+
+Reproductions and final evidence are recorded in the [result record](2026-10-26-ui-results.json), with raw artifacts in ignored `tmp/workshop-inquisition-20261026/`. The failed-build suite suppresses the deliberate unknown-ID rejection only during that call; a separate run with diagnostics enabled records exactly that expected error, 143 passing assertions and no additional error. This witness is retained as an expected-error run, not a clean checked-run pass. No frame-time or FPS improvement is claimed from these deterministic operation counts.

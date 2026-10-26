@@ -7,7 +7,8 @@ var failures := 0
 
 func _initialize() -> void:
 	var defaults := ControllerActions.default_bindings()
-	_check("default semantic actions have recovery and no overlapping conflicts", ControllerActions.validate(defaults).ok)
+	var default_report := ControllerActions.validate(defaults)
+	_check("default semantic actions have recovery and no overlapping conflicts", default_report.ok and default_report.issues.is_empty())
 	var other_pad := _button_event(2, JOY_BUTTON_A, true)
 	var selected_pad := _button_event(7, JOY_BUTTON_A, true)
 	var release := _button_event(7, JOY_BUTTON_A, false)
@@ -29,7 +30,20 @@ func _initialize() -> void:
 	_check("keyboard release produces no semantic action", ControllerActions.resolve_event(key, key_bindings, -1, "menu").is_empty())
 	var conflict := defaults.duplicate(true)
 	conflict["pause"] = conflict["back"].duplicate(true)
-	_check("duplicate back/pause recovery binding is rejected", not ControllerActions.validate(conflict).ok)
+	var conflict_report := ControllerActions.validate(conflict)
+	_check("duplicate back/pause recovery binding is rejected", not conflict_report.ok)
+	_check("action conflict identifies both remap rows", _has_issue(conflict_report, "binding_conflict", ["actions.back", "actions.pause"]))
+	_check("action conflict keeps its established error text", conflict_report.errors == ["Binding conflict: back and pause"])
+	var missing_recovery := defaults.duplicate(true)
+	missing_recovery["back"] = {"type": "unbound"}
+	var recovery_report := ControllerActions.validate(missing_recovery)
+	_check("missing recovery has a field diagnostic", _has_issue(recovery_report, "recovery_binding_missing", ["actions.back"]))
+	var malformed := defaults.duplicate(true)
+	malformed["mystery_action"] = {"type": "button", "button": JOY_BUTTON_A}
+	malformed["accept"] = {"type": "button", "button": JOY_BUTTON_MAX}
+	var malformed_report := ControllerActions.validate(malformed)
+	_check("unknown action has a field diagnostic", _has_issue(malformed_report, "action_unknown", ["actions.mystery_action"]))
+	_check("malformed binding has a field diagnostic", _has_issue(malformed_report, "binding_invalid", ["actions.accept"]))
 	var invalid_range := defaults.duplicate(true)
 	invalid_range["accept"] = {"type": "button", "button": JOY_BUTTON_MAX}
 	_check("the sentinel button index is rejected", not ControllerActions.validate(invalid_range).ok)
@@ -60,6 +74,13 @@ func _check(label: String, condition: bool) -> void:
 	else:
 		failures += 1
 		printerr("FAIL ", label)
+
+
+func _has_issue(report: Dictionary, code: String, expected_paths: Array[String]) -> bool:
+	for issue in report.get("issues", []):
+		if issue.get("code") == code and issue.get("paths", []) == expected_paths:
+			return true
+	return false
 
 
 func _button_event(device_id: int, button: JoyButton, pressed: bool) -> InputEventJoypadButton:

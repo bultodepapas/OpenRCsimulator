@@ -15,12 +15,20 @@ func _check(label: String, condition: bool, detail: String = "") -> void:
 		printerr("FAIL ", label, " ", detail)
 
 
+func _has_issue(report: Dictionary, code: String, expected_paths: Array[String]) -> bool:
+	for issue in report.get("issues", []):
+		if issue.get("code") == code and issue.get("paths", []) == expected_paths:
+			return true
+	return false
+
+
 func _initialize() -> void:
 	var mode2 := Profile.defaults()
 	var mode1 := Profile.defaults("gamepad", "mode1")
 	var trigger := Profile.defaults("gamepad", "trigger_absolute")
 	var radio := Profile.defaults("radio", "custom")
-	_check("default Mode 2 is complete V2", Profile.validate(mode2).ok)
+	var valid_report := Profile.validate(mode2)
+	_check("default Mode 2 is complete V2", valid_report.ok and valid_report.issues.is_empty())
 	_check("Mode 2 axes", [mode2.roll.axis, mode2.pitch.axis, mode2.yaw.axis, mode2.throttle.axis] == [2, 3, 0, 1])
 	_check("Mode 1 axes", [mode1.roll.axis, mode1.pitch.axis, mode1.yaw.axis, mode1.throttle.axis] == [2, 1, 0, 3])
 	_check("trigger preset is absolute and gamepad kind", trigger.kind == "gamepad" and trigger.throttle_mode == "trigger_absolute" and trigger.throttle.range_kind == "absolute" and trigger.throttle.axis == 5)
@@ -36,19 +44,35 @@ func _initialize() -> void:
 	_check("invalid UUID rejected", not Profile.validate(invalid).ok)
 	invalid = mode2.duplicate(true)
 	invalid.name = "   "
-	_check("blank name rejected", not Profile.validate(invalid).ok)
+	var name_report := Profile.validate(invalid)
+	_check("blank name rejected with compatible error", not name_report.ok and name_report.errors == ["name must contain 1 to 80 characters"])
+	_check("blank name has a field diagnostic", _has_issue(name_report, "name_invalid", ["name"]))
 	invalid = mode2.duplicate(true)
 	invalid.pitch.axis = invalid.roll.axis
-	_check("duplicate source axis rejected", not Profile.validate(invalid).ok)
+	var axis_report := Profile.validate(invalid)
+	_check("duplicate source axis rejected", not axis_report.ok)
+	_check("two-channel axis conflict identifies both fields", _has_issue(axis_report, "axis_conflict", ["roll.axis", "pitch.axis"]))
+	invalid = mode2.duplicate(true)
+	invalid.pitch.axis = invalid.roll.axis
+	invalid.yaw.axis = invalid.roll.axis
+	var triple_axis_report := Profile.validate(invalid)
+	_check("three-channel axis conflict includes every participant", \
+		_has_issue(triple_axis_report, "axis_conflict", ["roll.axis", "pitch.axis", "yaw.axis"]))
 	invalid = mode2.duplicate(true)
 	invalid.yaw = null
-	_check("missing required channel rejected", not Profile.validate(invalid).ok)
+	var channel_report := Profile.validate(invalid)
+	_check("missing required channel rejected", not channel_report.ok)
+	_check("missing required channel has a field diagnostic", _has_issue(channel_report, "channel_invalid", ["yaw"]))
 	invalid = mode2.duplicate(true)
 	invalid.roll.deadzone = 1.0
-	_check("deadzone at one rejected", not Profile.validate(invalid).ok)
+	var deadzone_report := Profile.validate(invalid)
+	_check("deadzone at one rejected", not deadzone_report.ok)
+	_check("invalid deadzone has a field diagnostic", _has_issue(deadzone_report, "deadzone_invalid", ["roll.deadzone"]))
 	invalid = mode2.duplicate(true)
 	invalid.pitch.expo = -0.01
-	_check("negative expo rejected", not Profile.validate(invalid).ok)
+	var expo_report := Profile.validate(invalid)
+	_check("negative expo rejected", not expo_report.ok)
+	_check("invalid expo has a field diagnostic", _has_issue(expo_report, "expo_invalid", ["pitch.expo"]))
 	invalid = mode2.duplicate(true)
 	invalid.throttle_rate = INF
 	_check("non-finite rate rejected", not Profile.validate(invalid).ok)
@@ -63,7 +87,9 @@ func _initialize() -> void:
 	_check("nested non-finite extension rejected", not Profile.validate(invalid).ok)
 	invalid = mode2.duplicate(true)
 	invalid.roll.axis = 1.5
-	_check("non-integer axis rejected", not Profile.validate(invalid).ok)
+	var bad_axis_report := Profile.validate(invalid)
+	_check("non-integer axis rejected", not bad_axis_report.ok)
+	_check("invalid axis has a field diagnostic", _has_issue(bad_axis_report, "axis_invalid", ["roll.axis"]))
 	invalid = mode2.duplicate(true)
 	invalid.actions = []
 	_check("wrong actions container rejected", not Profile.validate(invalid).ok)
@@ -83,13 +109,48 @@ func _initialize() -> void:
 	_check("action overrides are checked against merged defaults", not Profile.validate(partial_actions).ok)
 	invalid = mode2.duplicate(true)
 	invalid.actions = {"mystery_action": {"type": "button", "button": 1}}
-	_check("unknown semantic action rejected", not Profile.validate(invalid).ok)
+	var unknown_action_report := Profile.validate(invalid)
+	_check("unknown semantic action rejected", not unknown_action_report.ok)
+	_check("unknown semantic action has a propagated diagnostic", _has_issue(unknown_action_report, "action_unknown", ["actions.mystery_action"]))
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"pause": {"type": "axis", "axis": 0, "sign": 1, "threshold": NAN}}
+	var malformed_action_report := Profile.validate(invalid)
+	_check("malformed action binding has a field diagnostic", _has_issue(malformed_action_report, "binding_invalid", ["actions.pause"]))
+	_check("malformed nested value points to its metadata field", _has_issue(malformed_action_report, "profile_invalid", ["actions.pause.threshold"]))
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"back": {"type": "button", "button": 7}, "pause": {"type": "button", "button": 7}}
+	var action_conflict_report := Profile.validate(invalid)
+	_check("action conflict identifies both remap rows", _has_issue(action_conflict_report, "binding_conflict", ["actions.back", "actions.pause"]))
 	invalid = mode2.duplicate(true)
 	invalid.throttle_mode = "radio_absolute"
 	_check("gamepad cannot use radio throttle mode", not Profile.validate(invalid).ok)
 	invalid = mode2.duplicate(true)
 	invalid.aux = {"smoke": {"type": "axis", "axis": mode2.roll.axis, "invert": false, "off": -1.0, "on": 1.0}}
-	_check("AUX cannot overlap a flight axis", not Profile.validate(invalid).ok)
+	var aux_overlap_report := Profile.validate(invalid)
+	_check("AUX cannot overlap a flight axis", not aux_overlap_report.ok)
+	_check("AUX overlap identifies the AUX and flight axis", _has_issue(aux_overlap_report, "aux_invalid", ["aux.smoke.axis", "roll.axis"]))
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"camera_previous": {"type": "axis", "axis": mode2.roll.axis, "sign": 1}}
+	var flight_action_report := Profile.validate(invalid)
+	_check("flight action cannot reuse a primary axis", _has_issue(flight_action_report, "action_flight_axis_conflict", ["actions.camera_previous", "roll.axis"]))
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"camera_previous": {"type": "button", "button": 8}}
+	invalid.aux = {"smoke": {"type": "button", "button": 8, "mode": "level"}}
+	var action_aux_report := Profile.validate(invalid)
+	_check("action and AUX physical conflict identifies both editors", _has_issue(action_aux_report, "action_aux_source_conflict", ["actions.camera_previous", "aux.smoke.button"]))
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"smoke_toggle": {"type": "button", "button": 9}}
+	invalid.aux = {"smoke": {"type": "button", "button": 8, "mode": "level"}}
+	var semantic_aux_report := Profile.validate(invalid)
+	_check("semantic action and AUX conflict is reported across distinct sources", \
+		_has_issue(semantic_aux_report, "action_aux_conflict", ["actions.smoke_toggle", "aux.smoke.button"]))
+	invalid = mode2.duplicate(true)
+	invalid.aux = {
+		"smoke": {"type": "button", "button": 8, "mode": "level"},
+		"gear": {"type": "button", "button": 8, "mode": "toggle_edge"},
+	}
+	var aux_conflict_report := Profile.validate(invalid)
+	_check("AUX conflict identifies both fields", _has_issue(aux_conflict_report, "aux_conflict", ["aux.smoke.button", "aux.gear.button"]))
 	_check("valid distinct smoke AUX remains accepted", SmokeAux.valid_binding({"type": "axis", "axis": 9, "invert": false, "off": -1.0, "on": 1.0}, [0, 1, 2, 3]))
 
 	var channel: Dictionary = mode2.roll

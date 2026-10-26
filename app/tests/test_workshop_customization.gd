@@ -7,6 +7,7 @@ const Trial := preload("res://workshop/trial.gd")
 const Store := preload("res://workshop/store.gd")
 const Bundle := preload("res://workshop/bundle.gd")
 const Launch := preload("res://workshop/launch.gd")
+const CustomizationPanel := preload("res://ui/workshop_customization.gd")
 var failures := 0
 func _initialize() -> void: run.call_deferred()
 func check(label: String, passed: bool) -> void:
@@ -19,6 +20,60 @@ func run() -> void:
 	await process_frame
 	var bindings: Dictionary = Customization.describe(Catalog.DEFAULT_ID).bindings
 	var stock := editor.get_presentation()
+	var appearance_probe := CustomizationPanel.new()
+	appearance_probe.page_kind = "appearance"
+	root.add_child(appearance_probe)
+	await process_frame
+	appearance_probe.configure(bindings, stock)
+	var appearance_events := {"events": []}
+	appearance_probe.validity_changed.connect(func(_page: String, pending: bool) -> void: appearance_events.events.append(pending))
+	var probe_inscription: LineEdit = appearance_probe.get("_marking_text")
+	probe_inscription.text = "PENDING"
+	probe_inscription.text_changed.emit(probe_inscription.text)
+	check("appearance text edits notify validity", appearance_events.events == [true])
+	appearance_events.events.clear()
+	appearance_probe.configure(bindings, stock)
+	check("appearance configure emits one true event and preserves pending inscription",
+		appearance_events.events == [true] and probe_inscription.text == "PENDING")
+	print("appearance_configure_events=", appearance_events.events)
+	var appearance_state: Dictionary = appearance_probe.get_editor_state()
+	appearance_events.events.clear()
+	check("appearance editor-state restore emits one final true event",
+		appearance_probe.restore_editor_state(appearance_state) and appearance_events.events == [true] and probe_inscription.text == "PENDING")
+	var smoke_probe := CustomizationPanel.new()
+	smoke_probe.page_kind = "smoke"
+	root.add_child(smoke_probe)
+	await process_frame
+	smoke_probe.configure(bindings, stock)
+	var probe_emitter: OptionButton = smoke_probe.get("_slot")
+	if probe_emitter.item_count > 0:
+		probe_emitter.select(0)
+		smoke_probe.sync_fields()
+	var smoke_events := {"events": []}
+	smoke_probe.validity_changed.connect(func(_page: String, pending: bool) -> void: smoke_events.events.append(pending))
+	smoke_probe.configure(bindings, stock)
+	check("smoke configure emits one final event", smoke_events.events.size() == 1)
+	print("smoke_configure_events=", smoke_events.events)
+	var probe_color: LineEdit = smoke_probe.get("_custom_color")
+	probe_color.text = "#BAD"
+	probe_color.text_changed.emit(probe_color.text)
+	check("smoke text edits notify validity", smoke_events.events == [false, true])
+	smoke_events.events.clear()
+	smoke_probe.configure(bindings, stock)
+	check("smoke configure emits one true event and preserves pending color",
+		smoke_events.events == [true] and probe_color.text == "#BAD")
+	var smoke_state: Dictionary = smoke_probe.get_editor_state()
+	smoke_events.events.clear()
+	check("smoke editor-state restore emits one final true event",
+		smoke_probe.restore_editor_state(smoke_state) and smoke_events.events == [true] and probe_color.text == "#BAD")
+	smoke_events.events.clear()
+	probe_color.text = "#BA"
+	probe_color.text_changed.emit(probe_color.text)
+	probe_color.text = "#BAD"
+	probe_color.text_changed.emit(probe_color.text)
+	check("ordinary smoke text changes each notify validity", smoke_events.events == [true, true])
+	appearance_probe.free()
+	smoke_probe.free()
 	var stock_page: Node = editor.get("_page_nodes").appearance
 	check("unpainted material is shown as Stock without a fabricated flat color", stock_page.get("_custom_color").text.is_empty() and stock_page.get("_color").get_item_text(stock_page.get("_color").selected) == "Stock")
 	var profile := stock.duplicate(true)

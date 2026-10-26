@@ -7472,3 +7472,39 @@ msgstr "El control del tren coincide con un eje de vuelo recién calibrado; reas
 
 msgid "Existing smoke control overlaps a newly calibrated AETR axis; smoke was disabled and needs reassignment."
 msgstr "El control de humo coincide con un eje de vuelo recién calibrado; se ha desactivado y necesita reasignarse."
+
+msgid "Choose separate inputs for %s."
+msgstr "Elige entradas distintas para %s."
+
+msgid "Use either the action or the extra channel: %s."
+msgstr "Usa la acción o el canal adicional: %s."
+
+msgid "Choose a source axis from 0 to 9."
+msgstr "Elige un eje de origen entre 0 y 9."
+
+msgid "Calibrate this channel or restore a preset."
+msgstr "Calibra este canal o restaura un ajuste predefinido."
+
+msgid "Set the deadzone between 0 and 0.95."
+msgstr "Ajusta la zona muerta entre 0 y 0,95."
+
+msgid "Set expo between 0 and 1."
+msgstr "Ajusta el exponencial entre 0 y 1."
+
+msgid "Assign an input so you can return or pause."
+msgstr "Asigna una entrada para poder volver o pausar."
+
+msgid "Remap this action to a valid input."
+msgstr "Reasigna esta acción a una entrada válida."
+
+msgid "Check this input and its endpoints; keep it separate from the flight axes."
+msgstr "Revisa esta entrada y sus extremos; usa un eje distinto de los ejes de vuelo."
+
+msgid "Check this setting or restore a preset."
+msgstr "Revisa este ajuste o restaura uno predefinido."
+
+msgid "Assignment not applied: %s"
+msgstr "Asignación no aplicada: %s"
+
+msgid "Binding was not changed: %s"
+msgstr "La asignación no se ha cambiado: %s"

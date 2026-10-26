@@ -129,6 +129,15 @@ var _clean_radio_actions_button: Button
 var _clean_radio_actions_help_label: Label
 var _prompt_texture_cache: Dictionary = {}
 var _error_field_controls: Array[Control] = []
+var _validation_fields: Dictionary = {}
+var _validation_label_captions: Dictionary = {}
+var _error_field_styles: Dictionary = {}
+var _validation_active := false
+var _validation_status := ""
+var _status_is_error := false
+var _rejected_issues: Array = []
+var _rejected_message := ""
+var _rejected_errors: Array = []
 
 
 func _init() -> void:
@@ -157,12 +166,14 @@ func request_close() -> void:
 	if _is_capture_active():
 		_cancel_capture()
 		return
+	_reset_validation()
 	close_requested.emit()
 
 
 func _cancel_edits() -> void:
 	if _is_capture_active():
 		_capture_done()
+	_reset_validation()
 	close_requested.emit()
 
 
@@ -196,6 +207,7 @@ func apply_calibration_draft(calibration: Dictionary, device_id: int, generation
 	if not warning.is_empty():
 		message += " " + tr(warning)
 	_set_status(message, false)
+	_draft_validation_changed()
 	return true
 
 
@@ -356,15 +368,17 @@ func _build() -> void:
 	profile_name_edit.name = "ProfileName"
 	profile_name_edit.max_length = 80
 	profile_name_edit.placeholder_text = TranslationServer.translate("Profile name")
-	profile_name_edit.text_changed.connect(func(_t: String) -> void: _clear_field_errors())
+	profile_name_edit.text_changed.connect(func(_t: String) -> void: _draft_validation_changed())
 	_add_field(profile_row, "Saved profile", profile_picker)
-	_add_field(profile_row, "Name", profile_name_edit)
+	var name_label := _add_field(profile_row, "Name", profile_name_edit)
+	_register_validation_field("name", "profile", profile_name_edit, [name_label], "Name")
 	glyph_family_picker = _option("Controller prompts")
 	glyph_family_picker.item_selected.connect(_on_glyph_family_selected)
 	_add_field(profile_row, "Controller prompts", glyph_family_picker)
 	profile_kind_picker = _option("Profile type")
 	profile_kind_picker.item_selected.connect(_on_profile_kind_selected)
 	_profile_kind_label = _add_field(profile_row, "Profile type", profile_kind_picker)
+	_register_validation_field("kind", "profile", profile_kind_picker, [_profile_kind_label], "Profile type")
 	preset_picker = _option("Gamepad preset")
 	preset_picker.item_selected.connect(_on_preset_selected)
 	_preset_label = _add_field(profile_row, "Gamepad preset", preset_picker)
@@ -379,6 +393,7 @@ func _build() -> void:
 	joystick_enabled.text = "Use this custom mapping for flight"
 	joystick_enabled.toggled.connect(_on_joystick_enabled)
 	_joystick_label = _add_field(profile_row, "Unknown joystick", joystick_enabled)
+	_register_validation_field("configured", "profile", joystick_enabled, [_joystick_label], "Unknown joystick")
 
 	var profile_actions := HFlowContainer.new()
 	profile_actions.add_theme_constant_override("separation", 8)
@@ -388,6 +403,7 @@ func _build() -> void:
 	_preset_reset_button = reset_button
 	reset_button.pressed.connect(_restore_selected_preset)
 	profile_actions.add_child(reset_button)
+	_register_validation_field("preset", "profile", reset_button, [_preset_label], "Gamepad preset")
 	var duplicate_button := _button("Duplicate profile")
 	duplicate_button.pressed.connect(_duplicate_profile)
 	profile_actions.add_child(duplicate_button)
@@ -428,8 +444,11 @@ func _build() -> void:
 		channel_block.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		channel_block.add_theme_constant_override("separation", 4)
 		_axis_compact_grid.add_child(channel_block)
-		channel_block.add_child(_label(str(CHANNEL_LABELS[channel]), "SectionLabel"))
+		var compact_label := _label(str(CHANNEL_LABELS[channel]), "SectionLabel", true)
+		channel_block.add_child(compact_label)
 		var row_label := _label(str(CHANNEL_LABELS[channel]), "SecondaryLabel")
+		row_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		row_label.custom_minimum_size.x = 120.0
 		row_label.name = "AxisTableChannel_%s" % channel
 		_axis_channel_labels[channel] = row_label
 		axis_grid.add_child(row_label)
@@ -454,6 +473,8 @@ func _build() -> void:
 		_add_control_field(channel_fields, "Expo", expo_spin)
 		_add_control_field(channel_fields, "Direction", invert)
 		_axis_controls[channel] = {"axis": axis_spin, "deadzone": deadzone_spin, "expo": expo_spin, "invert": invert}
+		for key: String in ["axis", "deadzone", "expo", "invert"]:
+			_register_validation_field(channel + "." + key, "axes", _axis_controls[channel][key], [row_label, compact_label], str(CHANNEL_LABELS[channel]))
 		axis_spin.value_changed.connect(_on_axis_changed.bind(channel, "axis"))
 		deadzone_spin.value_changed.connect(_on_axis_changed.bind(channel, "deadzone"))
 		expo_spin.value_changed.connect(_on_axis_changed.bind(channel, "expo"))
@@ -630,6 +651,10 @@ func _build() -> void:
 			"switch_position_rows": switch_position_rows,
 			"preview": aux_preview,
 		}
+		for key: String in ["type", "axis", "off", "on", "invert", "button", "button_mode", "switch_count", "switch_label", "switch_invert"]:
+			_register_validation_field("aux." + aux_name + "." + key, "aux", _aux_controls[aux_name][key], [aux_label], str(AUX_CHANNEL_LABELS[aux_name]))
+		for position_index in 3:
+			_register_validation_field("aux." + aux_name + ".buttons.%d" % position_index, "aux", switch_button_spins[position_index], [aux_label], str(AUX_CHANNEL_LABELS[aux_name]))
 		type_picker.item_selected.connect(_on_aux_type_selected.bind(aux_name))
 		axis_spin.value_changed.connect(_on_aux_axis_changed.bind(aux_name))
 		off_spin.value_changed.connect(_on_aux_endpoint_changed.bind(aux_name, "off"))
@@ -738,6 +763,7 @@ func _build() -> void:
 		change_button.name = "Remap_%s" % action_id
 		change_button.pressed.connect(_start_capture.bind(action_id, change_button))
 		action_grid.add_child(change_button)
+		_register_validation_field("actions." + action_id, "buttons", change_button, [action_label], str(definition.label))
 
 	shell.add_child(HSeparator.new())
 	status_label = _label("", "SecondaryLabel", true)
@@ -906,6 +932,7 @@ func _on_action_filter_selected(_index: int) -> void:
 		_cancel_capture()
 	_update_action_controls()
 	(_section_body.get_parent() as ScrollContainer).scroll_vertical = 0
+	_refresh_validation_feedback()
 
 
 func _action_category(definition: Dictionary) -> int:
@@ -988,6 +1015,7 @@ func _notification(what: int) -> void:
 	_update_aux_controls()
 	_update_action_controls()
 	profile_name_edit.placeholder_text = TranslationServer.translate("Profile name")
+	_refresh_validation_feedback()
 
 
 func close_button_focus() -> void:
@@ -1274,7 +1302,7 @@ func _switch_draft_profile(profile: Dictionary, context_key: String) -> void:
 
 
 func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
-	_clear_field_errors()
+	_reset_validation()
 	var previous_profile_id := str(_draft_profile.get("profile_id", ""))
 	_draft_profile = profile.duplicate(true)
 	if not context_key.is_empty():
@@ -1895,7 +1923,7 @@ func _commit_aux_binding(aux_name: String, binding: Dictionary, report_status :=
 		var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile, action_capabilities)
 		if not bool(validation.get("ok", false)):
 			_update_aux_controls()
-			_set_status(tr("Switch mapping was not changed: %s") % "; ".join(validation.get("errors", [])), true)
+			_show_rejected_validation(validation, "Switch mapping was not changed: %s")
 			return false
 	_draft_profile = candidate_profile
 	_action_bindings = ControllerActions.effective_bindings(_draft_profile, action_capabilities)
@@ -1904,6 +1932,7 @@ func _commit_aux_binding(aux_name: String, binding: Dictionary, report_status :=
 	_update_aux_preview()
 	if report_status:
 		_set_status(tr("Auxiliary input updated. Save the profile to keep it."), false)
+	_draft_validation_changed()
 	return true
 
 
@@ -1994,6 +2023,7 @@ func _on_axis_changed(value: float, channel_name: String, property: String) -> v
 	channel[property] = int(value) if property == "axis" else value
 	_draft_profile[channel_name] = channel
 	_update_preview()
+	_draft_validation_changed()
 
 
 func _on_axis_invert(pressed: bool, channel_name: String) -> void:
@@ -2003,11 +2033,13 @@ func _on_axis_invert(pressed: bool, channel_name: String) -> void:
 	channel["invert"] = pressed
 	_draft_profile[channel_name] = channel
 	_update_preview()
+	_draft_validation_changed()
 
 
 func _on_joystick_enabled(enabled: bool) -> void:
 	if str(_draft_profile.get("kind", "")) == "joystick":
 		_draft_profile["configured"] = enabled
+		_draft_validation_changed()
 
 
 func _update_preview() -> void:
@@ -2085,6 +2117,7 @@ func _update_action_controls() -> void:
 	# regardless of the Cancel button's relative width in the current language.
 	if is_inside_tree() and last_change_button != null:
 		last_change_button.focus_neighbor_bottom = last_change_button.get_path_to(save_button)
+	_repaint_validation_feedback()
 
 
 func _update_glyph_family_picker() -> void:
@@ -2117,6 +2150,7 @@ func _on_glyph_family_selected(index: int) -> void:
 	_draft_profile["presentation"] = presentation
 	_update_action_controls()
 	_set_status(tr("Controller prompt family changed. Save the profile to keep it."), false)
+	_refresh_validation_feedback()
 
 
 func _get_prompt_texture(texture_path: String) -> Texture2D:
@@ -2173,15 +2207,17 @@ func _capture_binding(event: InputEvent) -> void:
 	var candidate_profile := _draft_profile.duplicate(true)
 	candidate_profile["actions"] = candidate
 	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile, action_capabilities)
-	if not bool(validation.get("ok", false)):
-		var errors: Array = validation.get("errors", [])
-		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
-	else:
+	var accepted := bool(validation.get("ok", false))
+	if accepted:
 		_base_actions = candidate
 		_draft_profile["actions"] = _base_actions.duplicate(true)
 		_action_bindings = validation.get("bindings", ControllerActions.effective_bindings(_draft_profile, action_capabilities))
-		_set_status(tr("Binding updated. Save the profile to keep it."), false)
 	_capture_done()
+	if accepted:
+		_set_status(tr("Binding updated. Save the profile to keep it."), false)
+		_draft_validation_changed()
+	else:
+		_show_rejected_validation(validation, "Binding was not changed: %s")
 	get_viewport().set_input_as_handled()
 
 
@@ -2199,6 +2235,7 @@ func _capture_aux_button(button_index: int) -> void:
 	_capture_done()
 	if committed:
 		_set_status(tr("Button %d captured for this switch position. Save the profile to keep it.") % button_index, false)
+		_draft_validation_changed()
 	get_viewport().set_input_as_handled()
 
 
@@ -2211,14 +2248,14 @@ func _clear_action_binding(action_id: String) -> void:
 	candidate_profile["actions"] = candidate
 	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile, action_capabilities)
 	if not bool(validation.get("ok", false)):
-		var errors: Array = validation.get("errors", [])
-		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
+		_show_rejected_validation(validation, "Binding was not changed: %s")
 		return
 	_base_actions = candidate
 	_draft_profile["actions"] = _base_actions.duplicate(true)
 	_action_bindings = validation.get("bindings", ControllerActions.effective_bindings(_draft_profile, action_capabilities))
 	_update_action_controls()
 	_set_status(tr("Action cleared. Save the profile to keep it."), false)
+	_draft_validation_changed()
 
 
 func _cancel_capture() -> void:
@@ -2236,28 +2273,9 @@ func _capture_done() -> void:
 	_update_aux_controls()
 
 
-func _save_profile(close_on_success := true) -> bool:
-	_clear_field_errors()
-	if _is_capture_active():
-		_set_status(tr("Finish or cancel remapping before saving."), true)
-		return false
-	if _draft_profile.is_empty() or profile_store == null:
-		_set_status(tr("There is no controller profile to save."), true)
-		return false
-	var calibration_origin: Dictionary = _calibration_origins.get(_draft_context_key, {})
-	if not calibration_origin.is_empty() and (_draft_flight_device_id != int(calibration_origin.id) \
-		or not _calibration_connection_matches(int(calibration_origin.id), int(calibration_origin.generation))):
-		_set_status(tr("The radio connection changed. Calibrate again before saving these settings."), true)
-		return false
+func _profile_candidate() -> Dictionary:
 	var candidate := _draft_profile.duplicate(true)
-	var profile_name := profile_name_edit.text.strip_edges()
-	if profile_name.is_empty():
-		_mark_field_error(profile_name_edit)
-		select_section("profile")
-		profile_name_edit.grab_focus()
-		_set_status(tr("Enter a profile name before saving."), true)
-		return false
-	candidate["name"] = profile_name
+	candidate["name"] = profile_name_edit.text.strip_edges()
 	var selected_device := _device_for_id(_draft_flight_device_id)
 	if not selected_device.is_empty():
 		var association: Dictionary = candidate.get("association", {}).duplicate(true)
@@ -2280,15 +2298,27 @@ func _save_profile(close_on_success := true) -> bool:
 	for action_id: Variant in _action_bindings:
 		if not inherited_actions.has(action_id) or _action_bindings[action_id] != inherited_actions[action_id]:
 			candidate.actions[str(action_id)] = _action_bindings[action_id].duplicate(true)
-	var actions_validation: Dictionary = ControllerActions.validate_profile_bindings(candidate, action_capabilities)
-	if not bool(actions_validation.get("ok", false)):
-		var errors: Array = actions_validation.get("errors", [])
-		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
+	return candidate
+
+
+func _save_profile(close_on_success := true) -> bool:
+	_reset_validation()
+	if _is_capture_active():
+		_set_status(tr("Finish or cancel remapping before saving."), true)
 		return false
-	var validation: Dictionary = ControllerProfile.validate(candidate)
-	if not bool(validation.get("ok", false)):
-		var errors: Array = validation.get("errors", [])
-		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
+	if _draft_profile.is_empty() or profile_store == null:
+		_set_status(tr("There is no controller profile to save."), true)
+		return false
+	var calibration_origin: Dictionary = _calibration_origins.get(_draft_context_key, {})
+	if not calibration_origin.is_empty() and (_draft_flight_device_id != int(calibration_origin.id) \
+		or not _calibration_connection_matches(int(calibration_origin.id), int(calibration_origin.generation))):
+		_set_status(tr("The radio connection changed. Calibrate again before saving these settings."), true)
+		return false
+	var candidate := _profile_candidate()
+	var validation := _validate_candidate(candidate)
+	if not bool(validation.ok):
+		_validation_active = true
+		_show_validation(validation, true)
 		return false
 	var result: Dictionary
 	if save_and_apply.is_valid():
@@ -2306,6 +2336,7 @@ func _save_profile(close_on_success := true) -> bool:
 	profile_saved.emit(saved.duplicate(true))
 	if close_on_success:
 		close_requested.emit()
+	_reset_validation()
 	return true
 
 
@@ -2394,6 +2425,7 @@ func _registry_selected(role: String) -> int:
 
 
 func _set_status(text: String, is_error: bool) -> void:
+	_status_is_error = is_error and not text.is_empty()
 	if status_label == null:
 		return
 	status_label.tooltip_text = text
@@ -2405,27 +2437,228 @@ func _set_status(text: String, is_error: bool) -> void:
 		status_label.text = tr("Problem: %s") % text
 
 
+func _register_validation_field(path: String, section: String, control: Control, labels: Array, caption: String) -> void:
+	_validation_fields[path] = {"section": section, "control": control, "labels": labels, "caption": caption}
+	for label: Label in labels:
+		_validation_label_captions[label] = caption
+
+
+func _validate_candidate(candidate: Dictionary) -> Dictionary:
+	var actions := ControllerActions.validate_profile_bindings(candidate, action_capabilities)
+	var profile := ControllerProfile.validate(candidate)
+	var issues: Array = []
+	var seen: Dictionary = {}
+	for report: Dictionary in [profile, actions]:
+		for issue: Dictionary in report.get("issues", []):
+			var key: String = str(issue.code) + str(issue.paths)
+			if not seen.has(key):
+				seen[key] = true
+				issues.append(issue)
+	return {"ok": bool(actions.ok) and bool(profile.ok), "issues": issues,
+		"errors": actions.errors if not bool(actions.ok) else profile.errors}
+
+
+func _reset_validation() -> void:
+	_clear_field_errors()
+	_validation_active = false
+	_rejected_issues.clear()
+	_rejected_message = ""
+	_rejected_errors.clear()
+	if status_label != null and status_label.text == _validation_status:
+		_set_status("", false)
+	_validation_status = ""
+
+
+func _draft_validation_changed() -> void:
+	if not _rejected_issues.is_empty():
+		_rejected_issues.clear()
+		_rejected_message = ""
+		_rejected_errors.clear()
+		_clear_field_errors()
+		if status_label.text == _validation_status:
+			_set_status("", false)
+	_refresh_validation_feedback()
+
+
+func _refresh_validation_feedback() -> void:
+	if not _rejected_issues.is_empty():
+		_render_validation_fields(_rejected_issues, false, true)
+		if status_label.text == _validation_status:
+			_set_status(tr(_rejected_message) % "; ".join(_rejected_errors), true)
+			_validation_status = status_label.text
+	elif _validation_active and not _draft_profile.is_empty():
+		_show_validation(_validate_candidate(_profile_candidate()), false)
+
+
+func _repaint_validation_feedback() -> void:
+	if not _rejected_issues.is_empty():
+		_render_validation_fields(_rejected_issues, false, true)
+	elif _validation_active and not _draft_profile.is_empty():
+		_render_validation_fields(_validate_candidate(_profile_candidate()).issues, false)
+
+
+func _show_validation(report: Dictionary, focus_error: bool) -> void:
+	_render_validation_fields(report.get("issues", []), focus_error)
+	# An unrelated storage/disconnection error owns the footer until explicitly retried.
+	if not focus_error and status_label.text != _validation_status and _status_is_error:
+		return
+	if bool(report.ok):
+		if status_label.text == _validation_status:
+			_set_status("", false)
+	else:
+		var errors: Array = report.get("errors", [])
+		var text := tr("Profile cannot be saved: %s") % "; ".join(errors)
+		if profile_name_edit.text.strip_edges().is_empty():
+			text = tr("Enter a profile name before saving.")
+		_set_status(text, true)
+	_validation_status = status_label.text
+
+
+func _show_rejected_validation(report: Dictionary, message: String) -> void:
+	_rejected_issues = report.get("issues", []).duplicate(true)
+	_rejected_message = message
+	_rejected_errors = report.get("errors", []).duplicate()
+	_render_validation_fields(_rejected_issues, false, true)
+	_set_status(tr(message) % "; ".join(report.get("errors", [])), true)
+	_validation_status = status_label.text
+
+
+func _validation_field_keys(path: String) -> Array[String]:
+	var parts := path.split(".")
+	if parts.size() == 3 and parts[0] == "aux" and parts[2] == "invert":
+		var aux: Variant = _draft_profile.get("aux", {})
+		if aux is Dictionary and aux.get(parts[1], {}) is Dictionary and aux.get(parts[1], {}).get("type", "") == "switch":
+			return ["aux." + parts[1] + ".switch_invert"]
+	if _validation_fields.has(path):
+		return [path]
+	if parts[0] == "aux" and parts.size() >= 2 and _aux_controls.has(parts[1]):
+		var base := "aux." + parts[1] + "."
+		var member := parts[2] if parts.size() > 2 else "type"
+		if member == "mode":
+			return [base + "button_mode"]
+		if member == "label":
+			return [base + "switch_label"]
+		if member == "buttons":
+			var binding: Dictionary = _draft_profile.get("aux", {}).get(parts[1], {})
+			var buttons: Array = binding.get("buttons", [])
+			var keys: Array[String] = []
+			for index: int in _switch_row_indices(buttons.size()):
+				keys.append(base + "buttons.%d" % index)
+			return keys
+		return [base + "type"]
+	if parts[0] in CHANNELS or path == "throttle_mode":
+		# Calibration ranges have no direct editor. The row explains the repair route.
+		return [parts[0] + ".axis"] if parts[0] in CHANNELS else ["throttle.axis"]
+	return []
+
+
+func _validation_message(issue: Dictionary) -> String:
+	var names: Array[String] = []
+	for path: String in issue.get("paths", []):
+		for key: String in _validation_field_keys(path):
+			var caption: String = tr(str(_validation_fields[key].caption))
+			if not names.has(caption):
+				names.append(caption)
+	match str(issue.get("code", "")):
+		"name_invalid": return tr("Enter a profile name before saving.")
+		"axis_conflict", "binding_conflict", "aux_conflict", "action_flight_axis_conflict", "action_aux_source_conflict":
+			return tr("Choose separate inputs for %s.") % ", ".join(names)
+		"action_aux_conflict": return tr("Use either the action or the extra channel: %s.") % ", ".join(names)
+		"axis_invalid": return tr("Choose a source axis from 0 to 9.")
+		"range_invalid", "channel_invalid": return tr("Calibrate this channel or restore a preset.")
+		"deadzone_invalid": return tr("Set the deadzone between 0 and 0.95.")
+		"expo_invalid": return tr("Set expo between 0 and 1.")
+		"recovery_binding_missing": return tr("Assign an input so you can return or pause.")
+		"binding_invalid", "action_unknown": return tr("Remap this action to a valid input.")
+		"aux_invalid": return tr("Check this input and its endpoints; keep it separate from the flight axes.")
+	return tr("Check this setting or restore a preset.")
+
+
+func _render_validation_fields(issues: Array, focus_error: bool, rejected := false) -> void:
+	_clear_field_errors()
+	var messages: Dictionary = {}
+	for issue: Dictionary in issues:
+		var explanation := _validation_message(issue)
+		if rejected:
+			explanation = tr("Assignment not applied: %s") % explanation
+		for path: String in issue.get("paths", []):
+			for key: String in _validation_field_keys(path):
+				if not messages.has(key):
+					messages[key] = []
+				if not messages[key].has(explanation):
+					messages[key].append(explanation)
+	if focus_error:
+		for key: String in _validation_fields:
+			if messages.has(key) and _focus_validation_field(key):
+				break
+	var label_messages: Dictionary = {}
+	for key: String in messages:
+		var entry: Dictionary = _validation_fields[key]
+		var control: Control = entry.control
+		_mark_field_error(control.get_line_edit() if control is SpinBox else control)
+		for label: Label in entry.labels:
+			if not label_messages.has(label):
+				label_messages[label] = []
+			for message: String in messages[key]:
+				if not label_messages[label].has(message):
+					label_messages[label].append(message)
+	for label: Label in label_messages:
+		label.text = tr(str(_validation_label_captions[label])) + "\n" + tr("Problem: %s") % "\n".join(label_messages[label])
+
+
+func _focus_validation_field(key: String) -> bool:
+	var entry: Dictionary = _validation_fields[key]
+	select_section(str(entry.section))
+	var control: Control = entry.control
+	if entry.section == "buttons" and not control.is_visible_in_tree():
+		action_filter.select(0)
+		_update_action_controls()
+	if control is SpinBox:
+		control = control.get_line_edit()
+	if not control.is_visible_in_tree() or (control is BaseButton and control.disabled) or (control is LineEdit and not control.editable):
+		return false
+	_initial_focus_wait_frames = 0
+	control.grab_focus()
+	(_section_body.get_parent() as ScrollContainer).ensure_control_visible.call_deferred(control)
+	return true
+
+
 func _mark_field_error(control: Control) -> void:
 	if not is_instance_valid(control) or control in _error_field_controls:
 		return
 	_error_field_controls.append(control)
-	var style := StyleBoxFlat.new()
-	style.border_color = ScreenTheme.ERROR
-	for side: int in [SIDE_LEFT, SIDE_RIGHT, SIDE_TOP, SIDE_BOTTOM]:
-		style.set_border_width(side, 2)
-	style.set_corner_radius_all(4)
-	style.bg_color = Color(ScreenTheme.ERROR.r, ScreenTheme.ERROR.g, ScreenTheme.ERROR.b, 0.08)
-	control.add_theme_stylebox_override("normal", style)
-	if control is LineEdit:
-		control.add_theme_stylebox_override("focus", style)
+	var saved_styles: Dictionary = {}
+	var style_names: Array[String] = ["normal", "focus"]
+	if control is BaseButton:
+		style_names.append_array(["hover", "pressed", "hover_pressed"])
+	for style_name: String in style_names:
+		var original := control.get_theme_stylebox(style_name)
+		saved_styles[style_name] = original if control.has_theme_stylebox_override(style_name) else null
+		var style: StyleBoxFlat = original.duplicate() as StyleBoxFlat
+		if style == null:
+			style = StyleBoxFlat.new()
+			style.bg_color = Color.TRANSPARENT
+		style.border_color = ScreenTheme.ERROR
+		for side: int in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+			style.set_border_width(side, maxi(2, style.get_border_width(side)))
+		control.add_theme_stylebox_override(style_name, style)
+	_error_field_styles[control] = saved_styles
 
 
 func _clear_field_errors() -> void:
 	for control: Control in _error_field_controls:
 		if is_instance_valid(control):
-			control.remove_theme_stylebox_override("normal")
-			control.remove_theme_stylebox_override("focus")
+			for style_name: String in _error_field_styles.get(control, {}):
+				var original: StyleBox = _error_field_styles[control][style_name]
+				if original != null:
+					control.add_theme_stylebox_override(style_name, original)
+				else:
+					control.remove_theme_stylebox_override(style_name)
 	_error_field_controls.clear()
+	_error_field_styles.clear()
+	for label: Label in _validation_label_captions:
+		if is_instance_valid(label):
+			label.text = tr(str(_validation_label_captions[label]))
 
 
 static func _section_label(text: String) -> Label:
