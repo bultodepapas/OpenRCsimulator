@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e0390df6-73d8-4226-93f8-37592926ea2e",
+  "command": [
+    "/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/home/bulto/OpenRCsimulator/research/aircraft-standardization/preflight.gd",
+    "--",
+    "/home/bulto/OpenRCsimulator/tmp/aircraft-contract-20261026/preflight-repair/lifetime.json"
+  ],
+  "cwd": "/home/bulto/OpenRCsimulator",
+  "started_utc": "2026-10-26T16:30:16.501770+00:00",
+  "label": "godot",
+  "log": "/home/bulto/OpenRCsimulator/tmp/aircraft-contract-20261026/preflight-repair/lifetime-check/godot-0dnvh04p/engine.log",
+  "report": "/home/bulto/OpenRCsimulator/tmp/aircraft-contract-20261026/preflight-repair/lifetime-check/godot-0dnvh04p/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 13.959913,
+  "log_bytes": 473,
+  "log_sha256": "8a9c989f5d14be4d1d6f431f84c8db41448ddc8f99e9b15ef154f9f32e8c413e"
+}

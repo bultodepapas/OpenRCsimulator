@@ -1,0 +1,22 @@
+{
+  "commands": [
+    "python3 research/aircraft-data/schema/check.py",
+    "python3 research/aircraft-data/schema/test_contract.py"
+  ],
+  "exit_code": 0,
+  "schema_sources_checked": 16,
+  "schema_loader_cases": 2070,
+  "valid_controls": 142,
+  "runtime_only_cases": 23,
+  "unittest_count": 5,
+  "elapsed_test_seconds": 62.948,
+  "source_sha256": {
+    "research/aircraft-data/schema/check.py": "037686afa68c52c43d106e3713f543bc20f9e2630d773f523f103b86f7814107",
+    "research/aircraft-data/schema/test_contract.py": "5f52ae1d8fec836306feaba1dd11cd6fc27743a057227edfd333b54f0b7f6227",
+    "research/aircraft-data/schema/cases.py": "8410deb4f9c77d257ad473ea4333b47d78dc3c52c80bbd5ba37de1ef5769e6a4",
+    "research/aircraft-data/schema/boundary_cases.py": "4980bc38d8ca1a074677c47e49cdb272b0598e0b6a600ba37599d19afca50100",
+    "app/physics/aircraft_contract.gd": "379746e005fa50a9f488552c4e34f531578a84c616ee35313e5aa85170315278",
+    "app/physics/aircraft_data.gd": "189e1178c1c939804528e1036e2f67299f5b8c51af3d35ee002f48f0e574fa2b",
+    "app/data/schema/openrc-aircraft-v2.schema.json": "eec58e4b1ffdfbad298782a63ddb2e436a9167c38e2b4158b5a66a0f9ab3c922"
+  }
+}

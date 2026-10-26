@@ -21,19 +21,19 @@ ERROR = re.compile(r"^(?:SCRIPT |SHADER )?ERROR:|^FAIL\b", re.MULTILINE)
 def fingerprint() -> dict[str, str]:
     # Conservative inventory: include nested evaluators, all accepted data/profile
     # dependencies and catalog/fixture code, not only the top-level aircraft files.
-    paths = {path for area in ["physics", "sim", "input", "failures", "app_state", "scenery", "data"]
+    paths = {path for area in ["physics", "sim", "input", "failures", "app_state", "scenery", "render", "data"]
              for path in (APP / area).rglob("*")
              if path.is_file() and path.suffix in {".gd", ".json"}}
     paths.update(ROOT / "research/aircraft-standardization" / name
-                 for name in ["fleet_probe.gd", "contact_probe.gd", "conformance.py"])
-    paths.add(APP / "project.godot")
+                 for name in ["fleet_probe.gd", "contact_probe.gd", "preflight.gd", "conformance.py"])
+    paths.update([APP / "project.godot", APP / "spec.gd"])
     return {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted(paths)}
 
 
-def fleet_complete(report: dict) -> bool:
+def fleet_complete(report: object) -> bool:
     """A matching prefix or a self-declared green report cannot establish parity."""
-    if (report.get("format") != "openrc-as-fleet-probe v2"
+    if (not isinstance(report, dict) or report.get("format") != "openrc-as-fleet-probe v2"
             or report.get("ok") is not True or report.get("complete") is not True
             or report.get("ticks_per_case") != 240 or report.get("replay_start_tick") != 120):
         return False
@@ -46,8 +46,10 @@ def fleet_complete(report: dict) -> bool:
             return False
         if (row.get("ok") is not True or row.get("complete") is not True
                 or row.get("replay_exact") is not True or row.get("completed_ticks") != 240
-                or row.get("replay_ticks") != 120 or not row.get("id") or not row.get("data_path")
-                or row.get("battery_mode") not in {"ideal", "pack"}
+                or row.get("replay_ticks") != 120
+                or not isinstance(row.get("id"), str) or not row["id"]
+                or not isinstance(row.get("data_path"), str) or not row["data_path"]
+                or row.get("battery_mode") not in ("ideal", "pack")
                 or not isinstance(row.get("soft_hull"), bool)):
             return False
         identity = (row["id"], row["battery_mode"], row["soft_hull"])
@@ -113,6 +115,7 @@ def main() -> int:
 
     ok = run("import", engine("--import"), 300)
     python_checks = [
+        ("conformance-python", "research/aircraft-standardization/test_conformance.py", []),
         ("schema", "research/aircraft-standardization/build_schema.py", ["--check"]),
         ("physical-identity-sources", "research/aircraft-standardization/test_physical_identity_sources.py", []),
         ("parameters", "research/aircraft-standardization/parameter_register.py", ["--check"]),

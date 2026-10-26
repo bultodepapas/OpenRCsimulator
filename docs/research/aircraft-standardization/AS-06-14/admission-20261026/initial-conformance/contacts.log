@@ -1,0 +1,20 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 15.0 m/s (sink 0.6 m/s, airframe contact (hull point 12), point speed 15.0 m/s at detected tick) - [R] restart
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 8.8 m/s (sink 9.5 m/s, airframe contact (hull point 26), point speed 8.8 m/s at detected tick) - [R] restart
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 2400.0 m/s (sink 0.0 m/s, lamp impact (lamp:contact-parity:pole), normal speed 2397.9 m/s) - [R] restart
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 480.0 m/s (sink 480.0 m/s, water impact (lake:near_runway:water), normal speed 479.9 m/s) - [R] restart
+AS contact legacy_brush PASS
+AS contact soft_brush PASS
+AS contact nose_impact PASS
+AS contact belly_slide PASS
+AS contact scenery_impulse PASS
+AS contact scenery_terminal PASS
+AS contact water PASS

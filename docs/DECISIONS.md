@@ -1120,3 +1120,18 @@ generation retained. Allow legitimate post-commit presentation holds. Keep ordin
 empty-hook bytes and successful result keys compatible. This migrates the prepared
 runway route; airborne/reload/restore migration remains separate. [Contract and
 original failure/current evidence](research/ground-physics/GP-14/README.md#accepted-runway-reset-publication-gp-14d).
+
+### 2026-10-26 — Share aircraft module admission with Workshop (AS-07/14-R1)
+
+Run the existing module classifier after v2 structural validation and before physical
+relations/derivation. Remove duplicated capability/layout/energy/gear-presence
+selection from the loader contract. Keep fuel bindings, tailless restrictions,
+contact topology, inertia, wake and numerical feasibility in their owning validators:
+a classified combination alone does not establish a flyable or realistic aircraft.
+
+Consume classification only as validation, preserving authored bytes, normalized
+model fields, calculation order and checkpoint layouts. This closes inconsistent
+flap-module admission without retuning current aircraft. Discover every catalog
+battery mode in equivalence checks and require complete per-tick replay; preserve
+historical reports under their original probe version. [Contract](AIRCRAFT_CONTRACT.md)
+and [verification](research/aircraft-standardization/AS-06-14/README.md#shared-flight-admission-as-0714-r1-2026-10-26).

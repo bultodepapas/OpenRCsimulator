@@ -1,0 +1,20 @@
+{
+  "format": "openrc-as-contact-repair-comparison v1",
+  "baseline_report": "tmp/aircraft-contract-20261026/baseline/contacts-fixed.json",
+  "candidate_report": "tmp/aircraft-contract-20261026/contact-repair/contacts-candidate.json",
+  "same_corrected_harness_sha256": "25e6d45615076051a7650e9d38e455f6add061e0e6f5afaf29f4ae5cc101a3ea",
+  "source_drift_during_runs": false,
+  "baseline_complete_cases": true,
+  "candidate_complete_cases": true,
+  "exact_report_match": true,
+  "baseline_sha256": "20c925787510791ca792dd05e35004a7917fb30b1979613522c172904ec96b28",
+  "candidate_sha256": "20c925787510791ca792dd05e35004a7917fb30b1979613522c172904ec96b28",
+  "runtime_differences": [
+    {
+      "path": "app/physics/aircraft_contract.gd",
+      "baseline_sha256": "8392922e6b626f6518513208f7d56d41a7ea8f48d2f0d7563f095ecf79bc554a",
+      "candidate_sha256": "379746e005fa50a9f488552c4e34f531578a84c616ee35313e5aa85170315278"
+    }
+  ],
+  "baseline_revision_for_restored_file": "8f60b3964e767c5727524c06c24597843372d051"
+}

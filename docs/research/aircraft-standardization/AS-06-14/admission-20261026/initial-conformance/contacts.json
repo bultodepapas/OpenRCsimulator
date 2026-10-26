@@ -1,0 +1,64 @@
+{
+	"cases": [
+		{
+			"fixture": "legacy_brush",
+			"ok": true,
+			"response": "",
+			"tick": 5,
+			"trajectory_sha256": "79853c21e3cf667d9f952830a47cbaf80a30e9eab9f92c2bf34226e54223883b",
+			"trigger": "hull_contact"
+		},
+		{
+			"fixture": "soft_brush",
+			"ok": true,
+			"response": "",
+			"tick": 72,
+			"trajectory_sha256": "232f13861f98cb2da11826f18b0a69bf14315c48bf1322fd56ab75b88879d3b7",
+			"trigger": ""
+		},
+		{
+			"fixture": "nose_impact",
+			"ok": true,
+			"response": "",
+			"tick": 1,
+			"trajectory_sha256": "60b8786c9c746a9de14557dc4067b8b36c9fa1f9d3c143b9833c2ca89324d24b",
+			"trigger": "hull_contact"
+		},
+		{
+			"fixture": "belly_slide",
+			"ok": true,
+			"response": "",
+			"tick": 1440,
+			"trajectory_sha256": "34013151362480e8854ba5b61356e8d6122a7d1366fe437afb9bb86dac392d70",
+			"trigger": ""
+		},
+		{
+			"fixture": "scenery_impulse",
+			"ok": true,
+			"response": "dissipative_impulse",
+			"tick": 8,
+			"trajectory_sha256": "ba4c25d8ce13fb1ca7b8ced79e89d67723e6b7ffee255abe73dcf9ffdd3d990a",
+			"trigger": ""
+		},
+		{
+			"fixture": "scenery_terminal",
+			"ok": true,
+			"response": "terminal",
+			"tick": 1,
+			"trajectory_sha256": "0666f157cb8530d8a638c1dfb92663466e90f51bfb365b5138468a42a2b9fbd7",
+			"trigger": "scenery"
+		},
+		{
+			"fixture": "water",
+			"ok": true,
+			"response": "",
+			"tick": 1,
+			"trajectory_sha256": "0885f35f1995093051c2f4cc4f45594f087acabd96bfa9ec76d6c734aab6bc55",
+			"trigger": "water"
+		}
+	],
+	"format": "openrc-as-contact-probe v1",
+	"godot": "4.8-beta1 (official)",
+	"hz": 240,
+	"ok": true
+}

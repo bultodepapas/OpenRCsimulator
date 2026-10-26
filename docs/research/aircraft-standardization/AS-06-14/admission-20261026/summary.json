@@ -1,0 +1,103 @@
+{
+  "format": "openrc-as-admission-verification v1",
+  "runtime_baseline": "8f60b3964e767c5727524c06c24597843372d051",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "scope": "Shared v2 admission; unchanged current aircraft behavior in the retained fixtures.",
+  "checks": {
+    "whole_app_syntax": {
+      "scripts": 1464,
+      "passed": true,
+      "report": "syntax.json"
+    },
+    "production_aircraft_contract": {
+      "checks": 4023,
+      "failed": 0
+    },
+    "runtime_module_classifier": {
+      "checks": 87,
+      "failed": 0
+    },
+    "classifier_python_gdscript_parity": {
+      "tests": 7,
+      "failed": 0
+    },
+    "conformance_evidence_unit_tests": {
+      "tests": 4,
+      "failed": 0
+    },
+    "schema_loader_agreement": {
+      "cases": 2070,
+      "valid_controls": 142,
+      "runtime_only": 23,
+      "tests": 5,
+      "passed": true,
+      "report": "schema-summary.json"
+    },
+    "fleet": {
+      "cases": 24,
+      "ticks_each": 240,
+      "replay_ticks_each": 120,
+      "complete": true,
+      "exact": true
+    },
+    "maneuvers_and_cutoff": {
+      "cases": 32,
+      "ticks_each": 960,
+      "complete": true,
+      "faults": 0,
+      "exact": true
+    },
+    "contacts": {
+      "cases": 7,
+      "exact": true
+    },
+    "final_model_preflight": {
+      "aircraft": 10,
+      "passed": true,
+      "engine_errors": 0,
+      "report": "preflight.json"
+    },
+    "render_control_contract": {
+      "checks": 403,
+      "failed": 0,
+      "engine_errors": 0
+    },
+    "initial_conformance": {
+      "commands": 57,
+      "passed": 55,
+      "failed": [
+        "descriptor-checkout",
+        "preflight"
+      ],
+      "preflight_superseded_by": "preflight.json"
+    }
+  },
+  "open_gates": [
+    {
+      "gate": "full app/test.sh",
+      "reason": "Existing stale generated research/crash-economics/worked-examples.json; no relevant source/data differences from baseline.",
+      "evidence": "full-suite.log"
+    },
+    {
+      "gate": "fresh checkout",
+      "reason": "Existing F4U LF physical bytes conflict with required CRLF checkout and exact-source descriptor binding. No source-byte migration performed.",
+      "evidence": "checkout-blocker.json"
+    }
+  ],
+  "additional_units": "Aircraft-focused units passed; the broad unit partition was intentionally interrupted after those checks, and is not counted as a full-suite pass.",
+  "limits": [
+    "Exact parity is limited to these fixtures, engine and platform.",
+    "No physical/pilot, rendering-performance or package qualification.",
+    "Final source-inventory expansion and preflight fixes were checked separately after the initial conformance run."
+  ],
+  "changed_code_sha256": {
+    "app/physics/aircraft_contract.gd": "379746e005fa50a9f488552c4e34f531578a84c616ee35313e5aa85170315278",
+    "app/tests/test_aircraft_contract.gd": "d01d61e21b90afc132661b78583054f8077a98fd5c002928a02ce6e3da13bee0",
+    "app/test.sh": "f539952ba9ffbf5b540f328557cb53def3c4c3a5154a2d05b2569583a2a7d669",
+    "research/aircraft-standardization/conformance.py": "a7eaaa6b127f16df5c1c52d1a7407ea096366ff377fae7d924f6e80810f553d4",
+    "research/aircraft-standardization/fleet_probe.gd": "f54e9ba3597b5dc76673ef8dbdf53507bea89a65caeb74824743617561e78c28",
+    "research/aircraft-standardization/contact_probe.gd": "25e6d45615076051a7650e9d38e455f6add061e0e6f5afaf29f4ae5cc101a3ea",
+    "research/aircraft-standardization/preflight.gd": "6e0a17057b6091004fba37a31f6c2320e82b35b4e242a4205d65cd9cc1b2cb5a",
+    "research/aircraft-standardization/test_conformance.py": "6386a5609c67edcc645b74b21e4cda15ed86c480d567f9039f23e9d116f55e8c"
+  }
+}

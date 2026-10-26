@@ -24,6 +24,17 @@ class ConformanceEvidenceTests(unittest.TestCase):
     def test_complete_report_is_accepted(self):
         self.assertTrue(conformance.fleet_complete(complete_report()))
 
+    def test_wrong_root_and_identity_types_are_rejected(self):
+        for root in [None, [], "report", 17, True]:
+            with self.subTest(root=root):
+                self.assertFalse(conformance.fleet_complete(root))
+        for field in ["id", "data_path", "battery_mode"]:
+            for value in [None, [], {"invalid": "identity"}, 17, True]:
+                with self.subTest(field=field, value=value):
+                    report = complete_report()
+                    report["cases"][0][field] = value
+                    self.assertFalse(conformance.fleet_complete(report))
+
     def test_prefix_and_malformed_reports_are_rejected(self):
         report = complete_report()
         for key, value in [("complete", False), ("ok", False), ("expected_cases", 2),
@@ -50,9 +61,11 @@ class ConformanceEvidenceTests(unittest.TestCase):
             paths = ["app/physics/battery/pack_ecm.gd", "app/sim/ground_vehicle/session.gd",
                      "app/app_state/aircraft_catalog.gd", "app/failures/runtime.gd",
                      "app/data/aircraft/battery/specimen.json", "app/data/battery/packs/specimen.json",
-                     "app/data/wheels/specimen.json", "app/project.godot",
+                     "app/data/wheels/specimen.json", "app/project.godot", "app/spec.gd",
+                     "app/render/treeline.gd", "app/render/lighting/lighting_policy.gd",
                      "research/aircraft-standardization/fleet_probe.gd",
                      "research/aircraft-standardization/contact_probe.gd",
+                     "research/aircraft-standardization/preflight.gd",
                      "research/aircraft-standardization/conformance.py"]
             for name in paths:
                 path = root / name

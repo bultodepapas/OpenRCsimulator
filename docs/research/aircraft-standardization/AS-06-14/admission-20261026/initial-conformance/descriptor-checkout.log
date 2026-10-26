@@ -1,0 +1,14 @@
+F.......
+======================================================================
+FAIL: test_fresh_checkouts_keep_exact_bindings (__main__.CheckoutBindings.test_fresh_checkouts_keep_exact_bindings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/OpenRCsimulator/research/aircraft-editor/test_descriptor_checkout.py", line 51, in test_fresh_checkouts_keep_exact_bindings
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : stale generated descriptor: app/data/workshop/f4u-corsair-250.json
+
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.166s
+
+FAILED (failures=1)
