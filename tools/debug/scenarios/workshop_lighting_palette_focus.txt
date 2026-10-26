@@ -17,6 +17,9 @@ assert expr="screens.top().get_viewport().gui_get_focus_owner().name.begins_with
 press text=SequencePaletteRemove0
 assert expr="screens.top().get_viewport().gui_get_focus_owner().name == 'SequencePaletteHex0'" message="removing a sequence color retains focus"
 press text=CancelLightingCue
+call node=AppRoot/Workshop method=_set_page args=["smoke"]
+press text=SmokeColorPicker
+key name=Escape
 press text=CloseWorkshop
 press text="Discard changes"
 assert expr="screens.is_top('home')" message="palette editing returns safely to Home"

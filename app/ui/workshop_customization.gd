@@ -1,6 +1,7 @@
 extends VBoxContainer
 ## Capability-driven inspector. Emits complete proposals; its owner validates and records one shared history.
 const Profile := preload("res://workshop/presentation.gd")
+const Widgets := preload("res://ui/widgets.gd")
 signal profile_changed(profile: Dictionary)
 signal validity_changed(page: String, pending: bool)
 const COLORS := {"White":"#FFFFFFFF", "Red":"#E54646FF", "Blue":"#327DE8FF", "Gold":"#F0B739FF", "Green":"#40B982FF", "Purple":"#A871D8FF", "Black":"#20252BFF"}
@@ -95,6 +96,7 @@ func _ready() -> void:
 	custom.add_child(_custom_color)
 	if page_kind == "smoke":
 		_picker = ColorPickerButton.new()
+		Widgets.fit_color_picker_popup(_picker)
 		_picker.name = "SmokeColorPicker"
 		_picker.tooltip_text = tr("Choose any sRGB color and alpha, then Apply color to keep it.")
 		_picker.edit_alpha = true

@@ -2,6 +2,7 @@ extends VBoxContainer
 ## Progressive lighting editor. The Workshop owns validation and shared history.
 
 const Profile := preload("res://render/lighting/lighting_profile.gd")
+const Widgets := preload("res://ui/widgets.gd")
 const Presentation := preload("res://workshop/presentation.gd")
 const Sequence := preload("res://workshop/lighting_sequence.gd")
 const SequenceEditor := preload("res://ui/workshop_lighting_sequence.gd")
@@ -762,6 +763,7 @@ func _add_palette_row(index: int, raw_color: String) -> void:
 	var row := HBoxContainer.new()
 	row.name = "LightingPaletteColor%d" % index
 	var picker := ColorPickerButton.new()
+	Widgets.fit_color_picker_popup(picker)
 	picker.name = "LightingPalettePicker%d" % index
 	picker.custom_minimum_size = Vector2(42, 32)
 	picker.edit_alpha = false
