@@ -1,0 +1,46 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   qualified source aircraft loads with exact input identity  []
+ok   pinned Club field loads  []
+ok   companion qualification pins the current physics/sim/failures identity
+ok   current Stik and Club profiles validate  []
+ok   only the evidenced circuits activity is qualified
+ok   stall, approach, cruise, and entry speeds remain explicitly unknown
+ok   field profile records the current 80 m north-side circuit
+ok   identity carries accepted aircraft, field, controller, and profile hashes
+ok   solver qualification pins strict UTF-8/LF identity separately from FlightLog raw identity
+ok   unknown aircraft profile versions fail closed
+ok   unsupported activities fail closed
+ok   an unqualified stall-speed claim fails closed
+ok   controller source drift fails closed
+ok   missing/malformed/wrong circuit dependency refuses
+ok   missing/malformed/wrong circuit dependency refuses
+ok   missing/malformed/wrong circuit dependency refuses
+ok   missing/malformed/wrong circuit dependency refuses
+ok   missing/malformed/wrong circuit dependency refuses
+ok   legacy unbound controller profile refuses
+ok   actual pilot inheritance is source bound
+ok   physics and simulation source drift fails closed
+ok   unknown solver normalization fails closed
+ok   LF and CRLF checkouts produce the same canonical qualification identity
+ok   empty solver source sets fail closed
+ok   missing solver source bytes fail closed
+ok   code drift changes the canonical hash and is refused against the pinned source set
+ok   an unqualified engine version fails closed
+ok   runtime engine identity includes the qualified prerelease and revision
+ok   engine identity rejects changed status
+ok   engine identity rejects changed build
+ok   engine identity rejects changed hash
+ok   engine identity rejects changed patch
+ok   changed physics rates cannot reuse the 240 Hz pilot qualification
+ok   accepted aircraft data identity drift fails closed
+ok   unexpected input identity fields fail closed
+ok   unknown field profile versions fail closed
+ok   field route geometry drift fails closed
+ok   non-finite dimensional values fail closed
+ok   unproven static route clearance cannot be claimed
+ok   observations outside their qualification gate fail closed
+ok   custom geometry with the same field id is refused
+ok   unknown aircraft IDs are refused without fallback
+ok   returned profile dictionaries are detached from later loads
+AFC-02 companion profile validation: 43 checks, 0 failed

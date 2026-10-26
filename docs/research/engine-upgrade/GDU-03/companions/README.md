@@ -11,6 +11,8 @@ The [final-core follow-up](final-core/README.md) renews admission on source comm
 minimum-normal constant corrections. The original round below used `1f7daf66…`.
 
 The [2026-10-26 aileron follow-up](../../../ai-companions/AFC-02/aileron-2026-10-26/README.md) renews the same narrow scope on corrected Stik data and current source. The dated results below remain historical.
+The [controller dual-rate follow-up](../../../controller-support-2026-10-14/README.md#airplane-dual-rates-across-controllers-2026-10-26-d6-gp-06-r4--d6e-r6) reruns the current-source circuit matrix and production-manager gates after joystick rate eligibility changes.
+
 
 ## Actual flight qualification
 

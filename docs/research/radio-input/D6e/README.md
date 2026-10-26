@@ -59,3 +59,12 @@ launch, full ↔ normal after `--rates=full`. Explicit `--rates=normal` keeps th
 legacy normal/full pair. HUD, help and recording metadata name the actual profile;
 post-rate replay inputs retain their existing meaning. [Investigation, comparisons
 and checks](../../aero-consistency/D11-R1/README.md) are the authoritative evidence.
+
+
+## D6e-R6: controller integration (2026-10-26)
+
+Standard gamepads inherit left-stick press for the existing dual-rate action when
+available; configured joysticks now use aircraft rates/expo rather than the radio
+bypass. Radio profiles retain transmitter shaping. Binding precedence, menu/axis
+edge handling, guide feedback and software checks are recorded under
+[D6-GP-06-R4](../../controller-support-2026-10-14/README.md#airplane-dual-rates-across-controllers-2026-10-26-d6-gp-06-r4--d6e-r6).
