@@ -68,6 +68,12 @@ func _run() -> void:
 	_check("preview reports resolved per-emitter puffs/s and budget limiting",
 		is_instance_valid(rate_feedback) and rate_feedback.visible and rate_feedback.text.contains("puffs/s")
 		and rate_feedback.text.contains("budget limited") == bool(initial_budget.get("saturated", false)))
+	for frame in 4:
+		await process_frame
+	_check("smoke rate feedback keeps readable width without consuming the aircraft image",
+		rate_feedback.size.x >= 200.0 and rate_feedback.size.y < 120.0
+		and preview._viewport_container.size.y >= 320.0)
+	print("smoke_feedback_rect %s image_height=%.1f" % [rate_feedback.size, preview._viewport_container.size.y])
 	await _check_edit_refresh(preview, profile)
 	var original_model: Transform3D = preview._airplane_root.transform
 	var original_slots := Customization.smoke_transforms(preview._airplane)

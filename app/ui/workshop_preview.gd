@@ -1217,6 +1217,10 @@ func _build_playback() -> void:
 	_rate_feedback = Label.new()
 	_rate_feedback.name = "SmokeResolvedRates"
 	_rate_feedback.add_theme_font_size_override("font_size", UiTheme._font_size(12))
+	# A wrapping Label otherwise reports almost no minimum width to HFlowContainer,
+	# which can turn the toolbar into a column of single characters.
+	_rate_feedback.custom_minimum_size.x = 280.0
+	_rate_feedback.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_rate_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_rate_feedback.visible = false
 	_playback_controls.append(_rate_feedback)
