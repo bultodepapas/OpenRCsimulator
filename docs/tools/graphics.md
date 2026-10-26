@@ -88,6 +88,8 @@ Layout data generators (`tools/{grass,trees,scenery,terrain,world}/…py --check
 - **Result:** `openrc-frame-diagnosis` JSON. Headless runs report "no viewport rendering timings".
 - **Gotchas:** llvmpipe timings do not qualify any GPU. [Options and limits](../../research/performance/README.md#cpu-gpu-and-memory-diagnosis). Process RAM and disk: [tools/godot](../../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4).
 
+For OFF/Classic/Festival aircraft-lighting comparisons, the existing [flight harness's real-time mode](../../tools/trailer/README.md#real-time-lighting-measurements) supplies bounded controls and profile identities to this collector. Its Movie Maker mode remains a separate visual-evidence route.
+
 ## Experimental High profile (Forward+)
 
 - **Command:** `python3 tools/graphics/launch.py --profile high [--dry-run]`

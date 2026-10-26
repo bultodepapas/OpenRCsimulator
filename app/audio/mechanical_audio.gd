@@ -7,6 +7,9 @@ const SoundscapeScript := preload("res://audio/soundscape.gd")
 const ASSET_PATH: String = "res://assets/audio/mechanical/"
 const MAX_MOTION_VOICES: int = 6
 const MAX_EVENT_VOICES: int = 2
+const MAX_ACCEPTED_EVENTS: int = 64
+const ACCEPTED_OBSERVATION_LAW := "accepted-tick-mechanical-transitions-v1"
+const MAX_ACCEPTED_RATE_HZ: float = 10000.0 # Bounded observation domain, not an engine or aircraft tuning value.
 const MAX_DISTANCE_M: float = 60.0
 const DISTANCE_FADE_START_M: float = 39.0
 const SERVO_REFERENCE_RATE_DEG_S: float = 180.0
@@ -59,6 +62,116 @@ var _far_culled_events: int = 0
 var _far_culled_motion_updates: int = 0
 var _stale_tick_resets: int = 0
 var _reset_count: int = 0
+## GP-19: optional production tick capture. Motion remains the only classifier;
+## _motion_state is its render/playback view, never a second tick history.
+var _accepted_tick_observation := false
+var _accepted_motion_state: Dictionary = {}
+var _accepted_events: Array[Dictionary] = []
+var _accepted_rate_hz := 0.0
+var _accepted_primed := true
+var _accepted_unrendered := false
+var _accepted_stale_tick := -1
+var _accepted_tick_samples := 0
+var _accepted_events_observed := 0
+var _accepted_events_drained := 0
+var _accepted_events_discarded := 0
+var _accepted_events_overflowed := 0
+var _accepted_discontinuities := 0
+
+
+## Direct presentation benches retain update_sound's legacy sampling by default.
+## Production enables this and supplies every accepted simulation endpoint.
+func set_accepted_tick_observation(enabled: bool) -> void:
+	if enabled == _accepted_tick_observation: return
+	_accepted_tick_observation = enabled
+	reset()
+
+
+## Read-only accepted angle/fraction observation, without player/mixer operations.
+## Spatial positions are refreshed by the render snapshot when the batch drains.
+## Duplicate ticks cannot change history; gaps/rate changes/rewinds prime silently.
+func observe_accepted(snapshot: Dictionary) -> bool:
+	if not _accepted_tick_observation: return false
+	var tick_value: Variant = snapshot.get("tick")
+	var rate_value: Variant = snapshot.get("tick_rate")
+	if not _integer_tick(tick_value) or int(tick_value) > 9007199254740991 \
+		or typeof(rate_value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(rate_value)) \
+		or float(rate_value) < 1.0 or float(rate_value) > MAX_ACCEPTED_RATE_HZ \
+		or typeof(snapshot.get("paused")) != TYPE_BOOL:
+		_clear_accepted_observation()
+		_accepted_discontinuities += 1
+		return false
+	var tick: int = tick_value
+	var previous_tick: int = int(_accepted_motion_state.get("tick", -1))
+	# A pause notification may share the accepted tick: discard queued history
+	# even when pause and resume both occur between rendered frames.
+	if not _accepted_motion_state.is_empty() and tick == previous_tick and not snapshot.paused \
+		and float(rate_value) == _accepted_rate_hz: return true
+	if not _accepted_motion_state.is_empty() and ((tick != previous_tick and tick != previous_tick + 1) or float(rate_value) != _accepted_rate_hz):
+		_clear_accepted_observation()
+		_accepted_discontinuities += 1
+	if snapshot.paused: _discard_accepted_events()
+	var observed := Motion.observe(_accepted_motion_state, snapshot)
+	if not bool(observed.get("valid", false)):
+		_clear_accepted_observation()
+		_accepted_discontinuities += 1
+		return false
+	_accepted_motion_state = observed.state
+	_accepted_rate_hz = float(rate_value)
+	_accepted_primed = bool(observed.primed)
+	_accepted_unrendered = _accepted_unrendered or bool(observed.tick_advanced)
+	_accepted_stale_tick = -1
+	if tick != previous_tick: _accepted_tick_samples += 1
+	for event: Dictionary in observed.events:
+		_accepted_events_observed += 1
+		if _accepted_events.size() == MAX_ACCEPTED_EVENTS:
+			_accepted_events.pop_front()
+			_accepted_events_overflowed += 1
+			_accepted_events_discarded += 1
+		var detached := event.duplicate(true)
+		detached.accepted_tick = tick
+		_accepted_events.append(detached)
+	return true
+
+
+func _discard_accepted_events() -> void:
+	_accepted_events_discarded += _accepted_events.size()
+	_accepted_events.clear()
+	_accepted_unrendered = false
+
+
+func _clear_accepted_observation() -> void:
+	_discard_accepted_events()
+	_accepted_motion_state.clear()
+	_accepted_rate_hz = 0.0
+	_accepted_primed = true
+	_accepted_stale_tick = -1
+
+
+## Refresh source/listener presentation from the current render frame while
+## retaining the last accepted travel and every retained transition in order.
+func _accepted_result(snapshot: Dictionary) -> Dictionary:
+	var tick: int = int(snapshot.get("tick", -1))
+	if _accepted_motion_state.is_empty() or tick != int(_accepted_motion_state.get("tick", -1)):
+		_clear_accepted_observation()
+		return {valid = false}
+	if bool(snapshot.get("paused", false)):
+		_discard_accepted_events()
+		var primed := Motion.observe({}, snapshot)
+		_accepted_motion_state = primed.state
+		_accepted_primed = true
+		return primed
+	if _accepted_stale_tick == tick:
+		_discard_accepted_events()
+		return Motion.observe({}, snapshot)
+	var result := Motion.observe(_accepted_motion_state, snapshot)
+	result.events = _accepted_events.duplicate(true)
+	result.primed = _accepted_primed
+	result.tick_advanced = _accepted_unrendered
+	_accepted_events_drained += _accepted_events.size()
+	_accepted_events.clear()
+	_accepted_unrendered = false
+	return result
 
 
 ## Configure with a scene owner, an existing scene-local bus, and a validated profile.
@@ -157,6 +270,7 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	var paused: bool = bool(snapshot.get("paused", false))
 	var incoming_tick: int = int(snapshot.get("tick", -1)) if _integer_tick(snapshot.get("tick", null)) else -1
 	if incoming_tick < 0:
+		if _accepted_tick_observation: _clear_accepted_observation()
 		_motion_state.clear()
 		_stale_tick_s = 0.0
 		_fade_motion(dt, true)
@@ -166,6 +280,7 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	# Beyond audible range, retain no travel history to replay on return. This avoids
 	# building the observer's channel/event dictionaries for distant aircraft.
 	if not paused and _all_sources_distant(snapshot):
+		if _accepted_tick_observation: _discard_accepted_events()
 		_motion_state.clear()
 		_stale_tick_s = 0.0
 		_engine_mask = _unit(snapshot.get("engine_mask", 1.0), 1.0)
@@ -182,12 +297,13 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	elif incoming_tick == int(_motion_state.get("tick", -1)):
 		_stale_tick_s += dt
 		if _stale_tick_s >= STALE_TICK_LIMIT_S:
+			if _accepted_tick_observation: _accepted_stale_tick = incoming_tick
 			_motion_state.clear()
 			_stale_tick_s = 0.0
 			_stale_tick_resets += 1
 	else:
 		_stale_tick_s = 0.0
-	var result: Dictionary = Motion.observe(_motion_state, snapshot)
+	var result: Dictionary = _accepted_result(snapshot) if _accepted_tick_observation else Motion.observe(_motion_state, snapshot)
 	if not bool(result.get("valid", false)):
 		_motion_state.clear()
 		_stale_tick_s = 0.0
@@ -313,6 +429,7 @@ func _all_sources_distant(snapshot: Dictionary) -> bool:
 
 
 func reset() -> void:
+	_clear_accepted_observation()
 	_motion_state.clear()
 	_motion_targets.clear()
 	_source_cache.clear()
@@ -352,6 +469,12 @@ func diagnostics() -> Dictionary:
 		if player.playing:
 			playing_events += 1
 	return {motion_voice_count = _motion_players.size(), motion_voice_limit = MAX_MOTION_VOICES,
+		accepted_tick_observation = _accepted_tick_observation, accepted_tick_samples = _accepted_tick_samples,
+		accepted_observation_law = ACCEPTED_OBSERVATION_LAW if _accepted_tick_observation else "",
+		accepted_events_observed = _accepted_events_observed, accepted_events_drained = _accepted_events_drained,
+		accepted_pending_event_count = _accepted_events.size(), accepted_event_limit = MAX_ACCEPTED_EVENTS,
+		accepted_events_discarded = _accepted_events_discarded, accepted_events_overflowed = _accepted_events_overflowed,
+		accepted_discontinuities = _accepted_discontinuities,
 		event_voice_count = _event_players.size(), event_voice_limit = MAX_EVENT_VOICES,
 		active_motion_voices = active, playing_event_voices = playing_events,
 		pending_event_count = pending_count,

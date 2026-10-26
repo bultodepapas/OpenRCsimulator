@@ -1,5 +1,6 @@
 ## Live production-flight frame capture for trailer source shots.
 ## Run outside the app scene: Godot --path app --fixed-fps 60 --script <absolute path> -- --out-dir=<absolute path>.
+## For real-time --frametimes measurements, omit --fixed-fps and Movie Maker; see README.md.
 ## This driver instantiates the real main scene and never changes app/ sources or physics.
 extends SceneTree
 
@@ -170,6 +171,9 @@ func _run() -> void:
 		]))
 	root.add_child(_main)
 	if _realtime:
+		# Exclude a connected radio before the first awaited frame, not only when the director attaches.
+		if _main.session != null:
+			_main.session.input_enabled = false
 		LightingPolicy.apply({"aircraft_lighting_quality": str(_options.get("lighting-quality", "standard")),
 			"aircraft_lighting_reduced_flashes": false, "aircraft_lighting_show_vfx": true})
 	# Hide only the presentation CanvasLayer before the real flight input starts; the incident ledger remains live.
@@ -490,7 +494,7 @@ func _write_manifest(ok: bool) -> void:
 	var impact_movie_frame := lead_frames + _impact_preroll_frames if _impact_preroll_frames >= 0 else -1
 	var clip_start_frame := maxi(0, impact_movie_frame - CRASH_CLIP_APPROACH_FRAMES) if impact_movie_frame >= 0 else -1
 	var manifest := {
-		format = "openrc-trailer-flight-capture v1",
+		format = "openrc-lighting-performance-capture v1" if _realtime else "openrc-trailer-flight-capture v1",
 		measurement_mode = "realtime-director-flight" if _realtime else "offline-movie",
 		complete = ok and _failure.is_empty(),
 		shot = _shot,

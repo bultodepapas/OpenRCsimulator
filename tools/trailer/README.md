@@ -75,6 +75,8 @@ It uses the built-in `lighting-pass` or `lighting-pilot` shot, requires a lighti
 accepts `--lighting-preset=off` as an explicitly disabled presentation profile. `--lighting-quality`
 selects `low`, `standard` (default), or `high` without saving user preferences. Warmup defaults to
 10 seconds and collection to 60 seconds; `--warmup` and `--t` use the existing collector bounds.
+The FW-RGB-13 acceptance protocol requires an explicit **30-second warmup** and at least
+60 measured seconds; the shorter default is useful for workload checks only.
 
 Run `prepare_runtime.ps1` after changing root application files such as `main.gd`: those files
 are copies, while the runtime's directories are junctions. For reproducible comparisons, prepare
@@ -83,7 +85,7 @@ from an isolated source snapshot and retain its identities. Use a fresh output/p
 ```powershell
 $RgbRun = Join-Path $PWD 'tmp/rgb-performance-festival-new'
 $env:APPDATA = Join-Path $RgbRun 'profile'
-python tools/godot/run_checked.py --label rgb-performance-festival --warnings-as-errors --timeout 180 -- .tools/Godot_v4.8-beta1_win64_console.exe --path tmp/trailer/runtime/app --audio-driver Dummy --rendering-method gl_compatibility --fullscreen --disable-vsync --max-fps 0 --script "$PWD/tools/trailer/capture_flight.gd" -- "--out-dir=$RgbRun" "--frametimes=$RgbRun/frametimes.json" --lighting-preset=festival --lighting-quality=standard --time_of_day=night --shot=lighting-pass --warmup=10 --t=60
+python tools/godot/run_checked.py --label rgb-performance-festival --warnings-as-errors --timeout 180 -- .tools/Godot_v4.8-beta1_win64_console.exe --path tmp/trailer/runtime/app --audio-driver Dummy --rendering-method gl_compatibility --fullscreen --disable-vsync --max-fps 0 --script "$PWD/tools/trailer/capture_flight.gd" -- "--out-dir=$RgbRun" "--frametimes=$RgbRun/frametimes.json" --lighting-preset=festival --lighting-quality=standard --time_of_day=night --shot=lighting-pass --warmup=30 --t=60
 ```
 
 This mode performs no image readback or movie encoding, and disables the director's full tick/frame
