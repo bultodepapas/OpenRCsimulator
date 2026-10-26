@@ -1,0 +1,267 @@
+{
+  "format": "ft-card-v5",
+  "aircraft": "stik-glow-fs64v-4t",
+  "name": "Ugly Stick · FS-64V",
+  "data_sha256": "a7d72a7fc1c3cbaee935eea7213882745a36206fd85d2b8fd340067eb11a6e73",
+  "mass_kg": 2.62554338477575,
+  "wing_area_m2": 0.464515,
+  "span_m": 1.524,
+  "start_speed_mps": 20.0,
+  "stall_speed_estimate_mps": 9.07027964280284,
+  "stall_start_alpha_deg": 12.1283959903325,
+  "engine": "4.8-beta1 (official)",
+  "results": {
+    "trim_sweep": {
+      "valid": true,
+      "metrics": {
+        "points": 18,
+        "slowest_trim_mps": 10.0,
+        "first_untrimmable_mps": 28.0,
+        "cruise_throttle_at_start_speed": 0.368
+      },
+      "notes": [],
+      "table": [
+        {
+          "case": "x0.50",
+          "speed_mps": 10.0,
+          "throttle": 0.068,
+          "stick_pitch": 0.379,
+          "alpha_deg": 10.3,
+          "rpm": 4549
+        },
+        {
+          "case": "x0.55",
+          "speed_mps": 11.0,
+          "throttle": 0.085,
+          "stick_pitch": 0.292,
+          "alpha_deg": 8.03,
+          "rpm": 4904
+        },
+        {
+          "case": "x0.60",
+          "speed_mps": 12.0,
+          "throttle": 0.107,
+          "stick_pitch": 0.238,
+          "alpha_deg": 6.55,
+          "rpm": 5284
+        },
+        {
+          "case": "x0.65",
+          "speed_mps": 13.0,
+          "throttle": 0.132,
+          "stick_pitch": 0.198,
+          "alpha_deg": 5.39,
+          "rpm": 5680
+        },
+        {
+          "case": "x0.70",
+          "speed_mps": 14.0,
+          "throttle": 0.16,
+          "stick_pitch": 0.167,
+          "alpha_deg": 4.46,
+          "rpm": 6089
+        },
+        {
+          "case": "x0.75",
+          "speed_mps": 15.0,
+          "throttle": 0.189,
+          "stick_pitch": 0.143,
+          "alpha_deg": 3.72,
+          "rpm": 6505
+        },
+        {
+          "case": "x0.80",
+          "speed_mps": 16.0,
+          "throttle": 0.221,
+          "stick_pitch": 0.124,
+          "alpha_deg": 3.11,
+          "rpm": 6927
+        },
+        {
+          "case": "x0.85",
+          "speed_mps": 17.0,
+          "throttle": 0.253,
+          "stick_pitch": 0.109,
+          "alpha_deg": 2.6,
+          "rpm": 7353
+        },
+        {
+          "case": "x0.90",
+          "speed_mps": 18.0,
+          "throttle": 0.286,
+          "stick_pitch": 0.096,
+          "alpha_deg": 2.18,
+          "rpm": 7781
+        },
+        {
+          "case": "x0.95",
+          "speed_mps": 19.0,
+          "throttle": 0.324,
+          "stick_pitch": 0.086,
+          "alpha_deg": 1.82,
+          "rpm": 8212
+        },
+        {
+          "case": "x1.00",
+          "speed_mps": 20.0,
+          "throttle": 0.368,
+          "stick_pitch": 0.077,
+          "alpha_deg": 1.51,
+          "rpm": 8644
+        },
+        {
+          "case": "x1.05",
+          "speed_mps": 21.0,
+          "throttle": 0.412,
+          "stick_pitch": 0.069,
+          "alpha_deg": 1.25,
+          "rpm": 9077
+        },
+        {
+          "case": "x1.10",
+          "speed_mps": 22.0,
+          "throttle": 0.458,
+          "stick_pitch": 0.063,
+          "alpha_deg": 1.02,
+          "rpm": 9511
+        },
+        {
+          "case": "x1.15",
+          "speed_mps": 23.0,
+          "throttle": 0.503,
+          "stick_pitch": 0.057,
+          "alpha_deg": 0.82,
+          "rpm": 9946
+        },
+        {
+          "case": "x1.20",
+          "speed_mps": 24.0,
+          "throttle": 0.549,
+          "stick_pitch": 0.052,
+          "alpha_deg": 0.65,
+          "rpm": 10381
+        },
+        {
+          "case": "x1.25",
+          "speed_mps": 25.0,
+          "throttle": 0.6,
+          "stick_pitch": 0.048,
+          "alpha_deg": 0.49,
+          "rpm": 10816
+        },
+        {
+          "case": "x1.30",
+          "speed_mps": 26.0,
+          "throttle": 0.683,
+          "stick_pitch": 0.044,
+          "alpha_deg": 0.35,
+          "rpm": 11252
+        },
+        {
+          "case": "x1.35",
+          "speed_mps": 27.0,
+          "throttle": 0.845,
+          "stick_pitch": 0.041,
+          "alpha_deg": 0.23,
+          "rpm": 11688
+        }
+      ],
+      "wall_s": 6.361
+    },
+    "stall_power_off": {
+      "valid": true,
+      "metrics": {
+        "stall_speed_mps": 9.3,
+        "stall_alpha_deg": 18.4,
+        "wing_drop": "left",
+        "bank_in_first_second_deg": -87.5,
+        "max_bank_in_recovery_deg": 87.5,
+        "altitude_lost_m": 32.6,
+        "recovery_time_s": 3.33,
+        "break_kind": "wing drop or sink",
+        "deceleration_before_break_mps2": 0.25,
+        "ratio_to_cl_max_estimate": 1.026
+      },
+      "notes": [],
+      "wall_s": 17.278
+    },
+    "vmax": {
+      "valid": true,
+      "metrics": {
+        "max_level_speed_mps": 27.61,
+        "max_level_speed_kmh": 99.4,
+        "rpm_at_max": 11955,
+        "time_plus_5_mps_s": 1.78,
+        "time_plus_10_mps_s": null,
+        "time_to_90_percent_s": 3.24,
+        "initial_acceleration_mps2": 2.81,
+        "height_error_end_m": 0.04,
+        "height_error_run_m": 0.22
+      },
+      "notes": [],
+      "wall_s": 16.001
+    },
+    "roll_rate": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "1.3Vs_right",
+          "speed_mps": 12.09,
+          "direction": "right",
+          "max_roll_rate_dps": 174.6,
+          "time_to_360_s": 3.23,
+          "height_change_m": -31.6,
+          "max_sideslip_deg": 14.5
+        },
+        {
+          "case": "1.3Vs_left",
+          "speed_mps": 12.09,
+          "direction": "left",
+          "max_roll_rate_dps": 137.4,
+          "time_to_360_s": 3.85,
+          "height_change_m": -46.3,
+          "max_sideslip_deg": 16.4
+        },
+        {
+          "case": "start_right",
+          "speed_mps": 20.0,
+          "direction": "right",
+          "max_roll_rate_dps": 189.9,
+          "time_to_360_s": 2.28,
+          "height_change_m": -17.2,
+          "max_sideslip_deg": 10.2
+        },
+        {
+          "case": "start_left",
+          "speed_mps": 20.0,
+          "direction": "left",
+          "max_roll_rate_dps": 176.5,
+          "time_to_360_s": 2.4,
+          "height_change_m": -19.5,
+          "max_sideslip_deg": 11.1
+        },
+        {
+          "case": "0.8Vmax_right",
+          "speed_mps": 22.09,
+          "direction": "right",
+          "max_roll_rate_dps": 200.9,
+          "time_to_360_s": 2.1,
+          "height_change_m": -14.5,
+          "max_sideslip_deg": 9.7
+        },
+        {
+          "case": "0.8Vmax_left",
+          "speed_mps": 22.09,
+          "direction": "left",
+          "max_roll_rate_dps": 188.7,
+          "time_to_360_s": 2.18,
+          "height_change_m": -15.9,
+          "max_sideslip_deg": 10.5
+        }
+      ],
+      "wall_s": 37.84
+    }
+  }
+}

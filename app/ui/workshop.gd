@@ -92,6 +92,8 @@ var trial_start_choice := "airborne"
 var _baseline: Dictionary = {}
 var _library_dialog: AcceptDialog
 var _library_note: Label
+var _library_empty: Label
+var _library_draft_identity: Label
 var _bundle_dialog: FileDialog
 var _export_button: Button
 var _favorite_button: Button
@@ -132,6 +134,7 @@ var _page_selector: OptionButton
 var _action_notes: VBoxContainer
 var _name_body: VBoxContainer
 var _name_error: Label
+var _name_context: Label
 var _review_button: Button
 var _page_nodes: Dictionary = {}
 var _active_page := "setup"
@@ -157,6 +160,8 @@ var _interaction_focus: NodePath
 var _interaction_scroll := 0
 var _name_before := ""
 var _name_as_copy := false
+var _name_return_to_library := false
+var _name_return_focus: Control
 
 ## Public handles for UI integration and focused Workshop checks.
 var variant_name_input: LineEdit:
@@ -293,6 +298,7 @@ func reject_start(message: String = "The trial could not start.") -> void:
 func set_note(message: String) -> void:
 	if is_instance_valid(_library_note):
 		_library_note.text = tr(message)
+		_library_note.tooltip_text = _library_note.text
 		_library_note.visible = not message.is_empty()
 	if is_instance_valid(_status_label):
 		_status_label.text = tr(message) if message != "" else ""
@@ -336,6 +342,7 @@ func save_variant_copy() -> void:
 	_save_variant()
 	if _saved_variant_id == "":
 		_saved_variant_id = original_id
+		_refresh_identity()
 
 
 func set_aircraft(id: String, discard_changes := false) -> void:
@@ -637,6 +644,7 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_build_search.name = "BuildSearch"
 	_build_search.placeholder_text = tr("Search saved builds")
 	_build_search.max_length = 128
+	_build_search.clear_button_enabled = true
 	_build_search.text_changed.connect(func(_value: String) -> void: _refresh_variants(false))
 	content.add_child(_build_search)
 	_favorites_only = CheckButton.new()
@@ -654,6 +662,9 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_variant_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_variant_selector.item_selected.connect(_on_variant_selected)
 	content.add_child(_variant_selector)
+	_library_empty = _label("", "SecondaryLabel", true)
+	_library_empty.name = "SavedBuildEmptyState"
+	content.add_child(_library_empty)
 	_thumbnail_image = TextureRect.new()
 	_thumbnail_image.name = "SavedBuildThumbnail"
 	_thumbnail_image.custom_minimum_size.y = 144
@@ -710,6 +721,9 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	content.add_child(delete_actions)
 	var draft_actions: VBoxContainer = _section(parent, "CurrentDraftActions", "Current draft")
 	draft_actions.add_child(_label("These actions use the build currently open in the editor.", "SecondaryLabel", true))
+	_library_draft_identity = _label("", "SecondaryLabel", true)
+	_library_draft_identity.name = "LibraryDraftIdentity"
+	draft_actions.add_child(_library_draft_identity)
 
 	_variant_name = LineEdit.new()
 	_variant_name.name = "VariantName"
@@ -953,6 +967,8 @@ func _factor_bounds(key: String) -> Vector2:
 func _build_delete_dialog() -> void:
 	_delete_dialog = ConfirmationDialog.new()
 	_delete_dialog.title = tr("Delete saved build?")
+	_delete_dialog.ok_button_text = tr("Delete")
+	_delete_dialog.get_ok_button().theme_type_variation = "DestructiveButton"
 	_delete_dialog.exclusive = true
 	_delete_dialog.theme = _screen.theme
 	_delete_dialog.dialog_autowrap = true
@@ -1100,6 +1116,10 @@ func _refresh_variants(reload := true) -> void:
 			_variant_selector.set_item_tooltip(_variant_selector.item_count - 1, tr("Restore this saved build or remove its favorite."))
 			_unavailable_favorite_ids.append(row.id)
 	_favorites_hint.visible = missing_count > 0
+	var no_results := _variant_selector.item_count == 1
+	_variant_selector.disabled = no_results
+	_library_empty.visible = no_results
+	_library_empty.text = tr("No saved builds match these filters. Clear the search or turn off Favorites only.") if not _build_search.text.is_empty() or _favorites_only.button_pressed else tr("No saved builds yet. Save the current build to add it here.")
 	_variant_selector.select(0)
 	_selected_variant_id = ""
 	for index in range(1, _variant_selector.item_count):
@@ -1319,6 +1339,7 @@ func _save_variant() -> bool:
 	_saved_compiler_version = str(variant.get("compiler_version", ""))
 	var saved_dependencies: Variant = variant.get("dependencies", {})
 	_variant_dependencies = saved_dependencies.duplicate(true) if saved_dependencies is Dictionary else {}
+	_variant_name.text = str(variant.get("name", display_name))
 	set_note(tr("Saved build: %s") % str(variant.get("name", display_name)))
 	_refresh_variants()
 	_select_variant(str(variant.get("id", "")))
@@ -1389,6 +1410,9 @@ func _select_variant(id: String) -> void:
 
 
 func _on_variant_name_changed(_text: String) -> void:
+	if is_instance_valid(_name_dialog) and _name_dialog.visible:
+		_name_error.text = ""
+		_name_error.hide()
 	_refresh_identity()
 
 
@@ -2128,6 +2152,15 @@ func _build_library() -> void:
 	_library_dialog.confirmed.connect(_close_library)
 	_library_dialog.canceled.connect(_close_library)
 	add_child(_library_dialog)
+	var layout := VBoxContainer.new()
+	layout.add_theme_constant_override("separation", 12)
+	_library_dialog.add_child(layout)
+	_library_note = _label("", "SecondaryLabel", true)
+	_library_note.name = "LibraryFeedback"
+	_library_note.max_lines_visible = 3
+	_library_note.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_library_note.visible = false
+	layout.add_child(_library_note)
 	var body := VBoxContainer.new()
 	body.add_theme_constant_override("separation", 16)
 	var scroll := ScrollContainer.new()
@@ -2135,7 +2168,8 @@ func _build_library() -> void:
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
 	scroll.custom_minimum_size = Vector2(300, 100)
-	_library_dialog.add_child(scroll)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	layout.add_child(scroll)
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(body)
 	var stock: VBoxContainer = _section(body, "StockAircraft", "Stock aircraft")
@@ -2153,16 +2187,14 @@ func _build_library() -> void:
 	open_stock.pressed.connect(func() -> void:
 		var target := str(_base_selector.get_item_metadata(_base_selector.selected))
 		_close_library()
-		request_navigation("Open another aircraft", _replace_aircraft.bind(target)))
+		request_navigation(tr("Open another aircraft") + " · " + str(Catalog.entry(target).get("name", target)), _replace_aircraft.bind(target), _return_to_library.bind(_base_selector)))
 	stock.add_child(open_stock)
 	_aircraft_summary_label = _label("", "SecondaryLabel", true)
 	_aircraft_status_label = _label("", "SecondaryLabel", true)
 	stock.add_child(_aircraft_summary_label)
 	stock.add_child(_aircraft_status_label)
 	_build_variants_panel(body)
-	_library_note = _label("", "SecondaryLabel", true)
-	_library_note.visible = false
-	body.add_child(_library_note)
+	body.move_child(body.get_node("SavedVariantsCard"), 0)
 	_bundle_dialog = FileDialog.new()
 	_bundle_dialog.name = "WorkshopBundleFile"
 	_bundle_dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -2211,27 +2243,42 @@ func _build_name_dialog() -> void:
 	_name_dialog.exclusive = true
 	_name_dialog.dialog_hide_on_ok = false
 	_name_dialog.ok_button_text = tr("Save build")
+	_name_dialog.get_ok_button().theme_type_variation = "CompactPrimaryButton"
+	_name_dialog.register_text_enter(_variant_name)
 	_name_dialog.confirmed.connect(func() -> void:
 		var succeeded := false
 		if _name_as_copy:
 			var previous := _saved_variant_id
 			_saved_variant_id = ""
 			succeeded = _save_variant()
-			if not succeeded: _saved_variant_id = previous
+			if not succeeded:
+				_saved_variant_id = previous
+				_refresh_identity()
 		else:
 			succeeded = _save_variant()
 		if succeeded:
 			_name_dialog.hide()
 			_trial_button.disabled = not _edit_valid()
+			_save_button.grab_focus()
 		else:
-			_name_error.text = _status_label.text)
+			_name_error.text = _status_label.text
+			_name_error.show()
+			_variant_name.grab_focus())
 	_name_dialog.canceled.connect(func() -> void:
+		_name_dialog.hide()
 		_variant_name.text = _name_before
 		_refresh_identity()
 		_trial_button.disabled = not _edit_valid()
-		if _save_button.is_visible_in_tree(): _save_button.grab_focus())
+		if _name_return_to_library:
+			_return_to_library(_name_return_focus)
+		elif _save_button.is_visible_in_tree():
+			_save_button.grab_focus())
 	add_child(_name_dialog)
 	_name_body = VBoxContainer.new()
+	_name_body.add_theme_constant_override("separation", 12)
+	_name_context = _label("", "SecondaryLabel", true)
+	_name_context.name = "SaveBuildContext"
+	_name_body.add_child(_name_context)
 	_name_body.add_child(_label("Build name", "SecondaryLabel"))
 	_name_error = _label("", "ErrorLabel", true)
 	_name_body.add_child(_name_error)
@@ -2239,14 +2286,21 @@ func _build_name_dialog() -> void:
 	# The name field is created with library controls; saving a new draft can show it here.
 
 
-func _open_library() -> void:
+func _open_library(preserve_context := false) -> void:
 	_library_note.text = ""
+	_library_note.hide()
 	_refresh_variants()
-	_select_base(_base_id)
+	if not preserve_context: _select_base(_base_id)
+	_on_base_selected(_base_selector.selected)
 	_trial_button.disabled = true
 	_library_dialog.popup_centered_clamped(Vector2i(880, 780), 0.9)
 	_refresh_thumbnail()
-	_base_selector.grab_focus()
+	_build_search.grab_focus()
+
+
+func _return_to_library(focus: Control = null) -> void:
+	_open_library(true)
+	if is_instance_valid(focus) and focus.is_visible_in_tree(): focus.grab_focus()
 
 
 func _close_library() -> void:
@@ -2275,16 +2329,27 @@ func _request_copy() -> void:
 
 func _show_name_dialog(as_copy: bool) -> void:
 	if not _edit_valid(): return
+	_name_return_to_library = _library_dialog.visible
+	_name_return_focus = _library_dialog.gui_get_focus_owner() if _name_return_to_library else null
 	_close_library()
 	_name_as_copy = as_copy
 	_name_before = _variant_name.text
 	_variant_name.reparent(_name_body)
-	_name_body.move_child(_variant_name, 1)
+	_name_body.move_child(_variant_name, 2)
 	_name_error.text = ""
+	_name_error.hide()
 	_variant_name.visible = true
 	_name_dialog.title = tr("Save a copy") if as_copy else tr("Save build")
-	_name_dialog.popup_centered_clamped(Vector2i(560, 180), 0.9)
+	_name_dialog.ok_button_text = _name_dialog.title
+	if _saved_variant_id.is_empty():
+		_name_context.text = tr("Creates a saved build in your local library.")
+	elif as_copy:
+		_name_context.text = tr("Creates a separate saved build. The original stays unchanged.")
+	else:
+		_name_context.text = tr("Saves the current edits and name as a new revision of this build.")
+	_name_dialog.popup_centered_clamped(Vector2i(680, 260), 0.9)
 	_variant_name.grab_focus()
+	_variant_name.select_all()
 
 
 
@@ -2304,8 +2369,13 @@ func _replace_aircraft(id: String) -> void:
 func _load_selected_variant() -> void:
 	if _selected_variant_id.is_empty(): return
 	var target := _selected_variant_id
+	var target_name := ""
+	for summary: Dictionary in _library_summaries:
+		if str(summary.id) == target:
+			target_name = str(summary.name)
+			break
 	_close_library()
-	request_navigation("Open saved build", _load_variant_snapshot.bind(target))
+	request_navigation(tr("Open saved build") + " · " + target_name, _load_variant_snapshot.bind(target), _return_to_library.bind(_variant_selector))
 
 
 func _set_page(page: String) -> void:
@@ -2366,6 +2436,8 @@ func _refresh_identity() -> void:
 	var revision := " · " + tr("revision %d") % _saved_variant_revision if _saved_variant_revision > 0 else ""
 	_build_identity.text = "%s · %s%s · %s" % [display_name, tr(str(Catalog.entry(_base_id).get("name", _base_id))), revision, state]
 	_build_identity.tooltip_text = _build_identity.text
+	if is_instance_valid(_library_draft_identity):
+		_library_draft_identity.text = _build_identity.text
 	_schedule_recovery()
 
 
@@ -2398,6 +2470,7 @@ func request_navigation(destination: String, proceed: Callable, cancel: Callable
 	_guard_dialog.dialog_hide_on_ok = false
 	_guard_dialog.ok_button_text = tr("Save and continue")
 	_guard_dialog.cancel_button_text = tr("Cancel")
+	_guard_dialog.get_ok_button().theme_type_variation = "CompactPrimaryButton"
 	var discard := _guard_dialog.add_button(tr("Discard changes"), false, "discard")
 	var host: Node = dialog_host if dialog_host != null else self
 	var popup_width := mini(1100, int(host.get_viewport().get_visible_rect().size.x * 0.9))
@@ -2433,6 +2506,7 @@ func request_navigation(destination: String, proceed: Callable, cancel: Callable
 	_guard_name.text = _variant_name.text
 	body.add_child(_label("Build name", "SecondaryLabel"))
 	body.add_child(_guard_name)
+	_guard_dialog.register_text_enter(_guard_name)
 	_guard_error = _label("", "ErrorLabel", true)
 	body.add_child(_guard_error)
 	_guard_dialog.get_ok_button().disabled = not _edit_valid()
@@ -2453,10 +2527,13 @@ func _navigation_save() -> void:
 		_guard_error.text = tr("Name this build before saving.")
 		_guard_name.grab_focus()
 		return
+	var previous_name := _variant_name.text
 	_variant_name.text = name_value
 	if _save_variant():
 		_navigation_finish()
 	else:
+		_variant_name.text = previous_name
+		_refresh_identity()
 		_guard_error.text = _status_label.text
 
 

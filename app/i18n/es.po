@@ -7514,3 +7514,18 @@ msgstr "Recorridos: deportivos"
 
 msgid "Dual rates: normal / high"
 msgstr "Doble recorrido: normal / alto"
+
+msgid "No saved builds match these filters. Clear the search or turn off Favorites only."
+msgstr "Ninguna variante guardada coincide con estos filtros. Borra la búsqueda o desactiva Solo favoritos."
+
+msgid "No saved builds yet. Save the current build to add it here."
+msgstr "Todavía no hay variantes guardadas. Guarda la variante actual para añadirla aquí."
+
+msgid "Creates a separate saved build. The original stays unchanged."
+msgstr "Crea una copia guardada independiente. El original se conserva sin cambios."
+
+msgid "Saves the current edits and name as a new revision of this build."
+msgstr "Guarda los cambios y el nombre como una nueva revisión de esta variante."
+
+msgid "Creates a saved build in your local library."
+msgstr "Guarda esta variante en tu biblioteca local."

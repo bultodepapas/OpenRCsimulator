@@ -1,0 +1,32 @@
+Godot check failed: process_exit (process exit 1); report: /home/bulto/OpenRCsimulator/tmp/godot-checks/godot-2ljwf3fp/report.json
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   jensen-das-ugly-stik-60 loads
+FAIL jensen-das-ugly-stik-60 alpha 0: roll-control local 0.110185 / oracle 0.164600 within 5 %
+FAIL jensen-das-ugly-stik-60 alpha 4: roll-control local 0.110092 / oracle 0.164600 within 5 %
+ok   stik-glow-61fx-2t loads
+FAIL stik-glow-61fx-2t alpha 0: roll-control local 0.110185 / oracle 0.164600 within 5 %
+FAIL stik-glow-61fx-2t alpha 4: roll-control local 0.110092 / oracle 0.164600 within 5 %
+ok   stik-glow-55ax-2t loads
+FAIL stik-glow-55ax-2t alpha 0: roll-control local 0.110185 / oracle 0.164600 within 5 %
+FAIL stik-glow-55ax-2t alpha 4: roll-control local 0.110092 / oracle 0.164600 within 5 %
+ok   stik-glow-fs64v-4t loads
+FAIL stik-glow-fs64v-4t alpha 0: roll-control local 0.110185 / oracle 0.164600 within 5 %
+FAIL stik-glow-fs64v-4t alpha 4: roll-control local 0.110092 / oracle 0.164600 within 5 %
+ok   gp-extra-300s-60 loads
+FAIL gp-extra-300s-60 alpha 0: roll-control local 0.247203 / oracle 0.339532 within 5 %
+FAIL gp-extra-300s-60 alpha 4: roll-control local 0.247340 / oracle 0.339532 within 5 %
+ok   p51d-mustang-120 loads
+FAIL p51d-mustang-120 alpha 0: roll-control local 0.147507 / oracle 0.197424 within 5 %
+FAIL p51d-mustang-120 alpha 4: roll-control local 0.147665 / oracle 0.197424 within 5 %
+ok   f4u-corsair-250 loads
+FAIL f4u-corsair-250 alpha 0: roll-control local 0.132705 / oracle 0.181744 within 5 %
+FAIL f4u-corsair-250 alpha 4: roll-control local 0.132870 / oracle 0.181744 within 5 %
+ok   sebart-avanti-s-a200-p100rx loads
+FAIL sebart-avanti-s-a200-p100rx alpha 0: roll-control local 0.207883 / oracle 0.286672 within 5 %
+FAIL sebart-avanti-s-a200-p100rx alpha 4: roll-control local 0.208088 / oracle 0.286672 within 5 %
+ok   turbo-lumber-evolution loads
+FAIL turbo-lumber-evolution alpha 0: roll-control local 0.193387 / oracle 0.266694 within 5 %
+FAIL turbo-lumber-evolution alpha 4: roll-control local 0.193319 / oracle 0.266694 within 5 %
+ok   skywalker-x8 loads
+28 checks, 18 failed

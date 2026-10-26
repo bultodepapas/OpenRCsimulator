@@ -1,0 +1,9 @@
+Godot check failed: process_exit (process exit 1); report: /home/bulto/OpenRCsimulator/tmp/godot-checks/godot-5ebmbs9_/report.json
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL golden roll_15 replays (600 ticks): worst error: position 2.1711909814713 m, velocity 0.7774816197137362 m/s, attitude 0.12352593471589086, rate 0.6248857397581529 rad/s; auxiliary/discrete mismatch
+FAIL golden pull_throttle replays (720 ticks): worst error: position 0.3510797410763189 m, velocity 0.045174336605206755 m/s, attitude 0.006133318453492076, rate 0.0120242775077498 rad/s; auxiliary/discrete mismatch
+FAIL golden rudder_doublet replays (720 ticks): worst error: position 0.17600842782901793 m, velocity 0.10040804807899928 m/s, attitude 0.008387475312984227, rate 0.03563284398449962 rad/s; auxiliary/discrete mismatch
+ok   golden glide_15 replays (1200 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 8.673617379884035e-18, rate 3.344299557222418e-18 rad/s; auxiliary/discrete ok
+4 golden flights, 3 failed

@@ -55,13 +55,13 @@
     },
     "observed": {
       "min_agl": {
-        "value": 34.310642,
+        "value": 34.310643,
         "unit": "m",
         "kind": "measured",
         "source": "Minimum local terrain clearance across the six companion pilot matrix scenarios."
       },
       "max_agl": {
-        "value": 75.005967,
+        "value": 75.00597,
         "unit": "m",
         "kind": "measured",
         "source": "Maximum local terrain clearance across the six companion pilot matrix scenarios."
@@ -79,19 +79,19 @@
         "source": "Maximum TAS across the six companion pilot matrix scenarios."
       },
       "max_radial_error": {
-        "value": 4.047819,
+        "value": 4.047822,
         "unit": "m",
         "kind": "measured",
         "source": "Maximum absolute radial error across the six companion pilot matrix scenarios."
       },
       "min_player_separation": {
-        "value": 122.307209,
+        "value": 122.30721,
         "unit": "m",
         "kind": "measured",
         "source": "Minimum player-to-companion center separation across the six companion pilot matrix scenarios."
       },
       "min_pair_separation": {
-        "value": 121.744244,
+        "value": 121.744242,
         "unit": "m",
         "kind": "measured",
         "source": "Minimum companion-to-companion center separation in the tested multi-aircraft scenarios."

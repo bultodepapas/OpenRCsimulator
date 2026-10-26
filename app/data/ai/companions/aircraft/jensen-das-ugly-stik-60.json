@@ -5,7 +5,7 @@
   "aircraft_data": {
     "path": "res://data/aircraft/jensen_ugly_stik_60.json",
     "format": "openrc-aircraft v2",
-    "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+    "sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06"
   },
   "controller": {
     "path": "res://ai/companions/pilot.gd",
@@ -15,7 +15,7 @@
     }
   },
   "solver": {
-    "sha256": "5df257b35154f1f2908431acfbc0dd60d837c083dddd55026a1627fab646aaae",
+    "sha256": "7226f4752b848db1f2d19c9e91a8e1458a45ef3d300a5f8d251c5a2fe0a43d22",
     "normalization": "utf8-lf"
   },
   "engine_version": "4.8.beta1.official.4d10419ca",

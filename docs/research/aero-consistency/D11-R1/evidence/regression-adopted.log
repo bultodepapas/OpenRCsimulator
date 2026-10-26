@@ -1,0 +1,67 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   jensen-das-ugly-stik-60 loads
+ok   jensen-das-ugly-stik-60 alpha 0 side 0: roll-control local 0.164600 / oracle 0.164600 within 1 %
+ok   jensen-das-ugly-stik-60 alpha 0 side 1: roll-control local 0.082300 / oracle 0.082300 within 1 %
+ok   jensen-das-ugly-stik-60 alpha 0 side 2: roll-control local 0.082300 / oracle 0.082300 within 1 %
+ok   jensen-das-ugly-stik-60 alpha 4 side 0: roll-control local 0.164461 / oracle 0.164600 within 1 %
+ok   jensen-das-ugly-stik-60 alpha 4 side 1: roll-control local 0.082230 / oracle 0.082300 within 1 %
+ok   jensen-das-ugly-stik-60 alpha 4 side 2: roll-control local 0.082230 / oracle 0.082300 within 1 %
+ok   stik-glow-61fx-2t loads
+ok   stik-glow-61fx-2t alpha 0 side 0: roll-control local 0.164600 / oracle 0.164600 within 1 %
+ok   stik-glow-61fx-2t alpha 0 side 1: roll-control local 0.082300 / oracle 0.082300 within 1 %
+ok   stik-glow-61fx-2t alpha 0 side 2: roll-control local 0.082300 / oracle 0.082300 within 1 %
+ok   stik-glow-61fx-2t alpha 4 side 0: roll-control local 0.164461 / oracle 0.164600 within 1 %
+ok   stik-glow-61fx-2t alpha 4 side 1: roll-control local 0.082230 / oracle 0.082300 within 1 %
+ok   stik-glow-61fx-2t alpha 4 side 2: roll-control local 0.082230 / oracle 0.082300 within 1 %
+ok   stik-glow-55ax-2t loads
+ok   stik-glow-55ax-2t alpha 0 side 0: roll-control local 0.164600 / oracle 0.164600 within 1 %
+ok   stik-glow-55ax-2t alpha 0 side 1: roll-control local 0.082300 / oracle 0.082300 within 1 %
+ok   stik-glow-55ax-2t alpha 0 side 2: roll-control local 0.082300 / oracle 0.082300 within 1 %
+ok   stik-glow-55ax-2t alpha 4 side 0: roll-control local 0.164461 / oracle 0.164600 within 1 %
+ok   stik-glow-55ax-2t alpha 4 side 1: roll-control local 0.082230 / oracle 0.082300 within 1 %
+ok   stik-glow-55ax-2t alpha 4 side 2: roll-control local 0.082230 / oracle 0.082300 within 1 %
+ok   stik-glow-fs64v-4t loads
+ok   stik-glow-fs64v-4t alpha 0 side 0: roll-control local 0.164600 / oracle 0.164600 within 1 %
+ok   stik-glow-fs64v-4t alpha 0 side 1: roll-control local 0.082300 / oracle 0.082300 within 1 %
+ok   stik-glow-fs64v-4t alpha 0 side 2: roll-control local 0.082300 / oracle 0.082300 within 1 %
+ok   stik-glow-fs64v-4t alpha 4 side 0: roll-control local 0.164461 / oracle 0.164600 within 1 %
+ok   stik-glow-fs64v-4t alpha 4 side 1: roll-control local 0.082230 / oracle 0.082300 within 1 %
+ok   stik-glow-fs64v-4t alpha 4 side 2: roll-control local 0.082230 / oracle 0.082300 within 1 %
+ok   gp-extra-300s-60 loads
+ok   gp-extra-300s-60 alpha 0 side 0: roll-control local 0.339532 / oracle 0.339532 within 1 %
+ok   gp-extra-300s-60 alpha 0 side 1: roll-control local 0.169766 / oracle 0.169766 within 1 %
+ok   gp-extra-300s-60 alpha 0 side 2: roll-control local 0.169766 / oracle 0.169766 within 1 %
+ok   gp-extra-300s-60 alpha 4 side 0: roll-control local 0.339721 / oracle 0.339532 within 1 %
+ok   gp-extra-300s-60 alpha 4 side 1: roll-control local 0.169861 / oracle 0.169766 within 1 %
+ok   gp-extra-300s-60 alpha 4 side 2: roll-control local 0.169861 / oracle 0.169766 within 1 %
+ok   p51d-mustang-120 loads
+ok   p51d-mustang-120 alpha 0 side 0: roll-control local 0.197425 / oracle 0.197424 within 1 %
+ok   p51d-mustang-120 alpha 0 side 1: roll-control local 0.098712 / oracle 0.098712 within 1 %
+ok   p51d-mustang-120 alpha 0 side 2: roll-control local 0.098712 / oracle 0.098712 within 1 %
+ok   p51d-mustang-120 alpha 4 side 0: roll-control local 0.197636 / oracle 0.197424 within 1 %
+ok   p51d-mustang-120 alpha 4 side 1: roll-control local 0.098818 / oracle 0.098712 within 1 %
+ok   p51d-mustang-120 alpha 4 side 2: roll-control local 0.098818 / oracle 0.098712 within 1 %
+ok   f4u-corsair-250 loads
+ok   f4u-corsair-250 alpha 0 side 0: roll-control local 0.181744 / oracle 0.181744 within 1 %
+ok   f4u-corsair-250 alpha 0 side 1: roll-control local 0.090872 / oracle 0.090872 within 1 %
+ok   f4u-corsair-250 alpha 0 side 2: roll-control local 0.090872 / oracle 0.090872 within 1 %
+ok   f4u-corsair-250 alpha 4 side 0: roll-control local 0.181971 / oracle 0.181744 within 1 %
+ok   f4u-corsair-250 alpha 4 side 1: roll-control local 0.090985 / oracle 0.090872 within 1 %
+ok   f4u-corsair-250 alpha 4 side 2: roll-control local 0.090985 / oracle 0.090872 within 1 %
+ok   sebart-avanti-s-a200-p100rx loads
+ok   sebart-avanti-s-a200-p100rx alpha 0 side 0: roll-control local 0.286671 / oracle 0.286672 within 1 %
+ok   sebart-avanti-s-a200-p100rx alpha 0 side 1: roll-control local 0.143335 / oracle 0.143336 within 1 %
+ok   sebart-avanti-s-a200-p100rx alpha 0 side 2: roll-control local 0.143335 / oracle 0.143336 within 1 %
+ok   sebart-avanti-s-a200-p100rx alpha 4 side 0: roll-control local 0.286955 / oracle 0.286672 within 1 %
+ok   sebart-avanti-s-a200-p100rx alpha 4 side 1: roll-control local 0.143477 / oracle 0.143336 within 1 %
+ok   sebart-avanti-s-a200-p100rx alpha 4 side 2: roll-control local 0.143477 / oracle 0.143336 within 1 %
+ok   turbo-lumber-evolution loads
+ok   turbo-lumber-evolution alpha 0 side 0: roll-control local 0.266694 / oracle 0.266694 within 1 %
+ok   turbo-lumber-evolution alpha 0 side 1: roll-control local 0.133347 / oracle 0.133347 within 1 %
+ok   turbo-lumber-evolution alpha 0 side 2: roll-control local 0.133347 / oracle 0.133347 within 1 %
+ok   turbo-lumber-evolution alpha 4 side 0: roll-control local 0.266600 / oracle 0.266694 within 1 %
+ok   turbo-lumber-evolution alpha 4 side 1: roll-control local 0.133300 / oracle 0.133347 within 1 %
+ok   turbo-lumber-evolution alpha 4 side 2: roll-control local 0.133300 / oracle 0.133347 within 1 %
+ok   skywalker-x8 loads
+64 checks, 0 failed

@@ -642,6 +642,9 @@ func _guarded_journey(editor: Node, store_root: String) -> void:
 	guard.canceled.emit()
 	_check("cancelled source replacement retains the outgoing draft", editor.get("_base_id") == previous_id
 		and editor.get_recipe().power_multiplier == 1.1)
+	_check("cancelled source replacement returns to its library candidate", editor.get("_library_dialog").visible
+		and selector.selected == other)
+	editor.call("_close_library")
 
 	# Invalid typed values are never silently clamped, saved or launched.
 	editor.call("_show_name_dialog", false)
