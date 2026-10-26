@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "61faf0a3-5266-4b3c-827d-edd82c564b65",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_lighting_flight.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T02:27:32.589071+00:00",
+  "label": "final-observer-test_lighting_flight",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\checks\\final-observer-test_lighting_flight-zjec9qou\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\checks\\final-observer-test_lighting_flight-zjec9qou\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.547,
+  "log_bytes": 204,
+  "log_sha256": "9af8abc43ec8d86856f19273c20c491b36ee497528625e392af01ee583d83aa2"
+}

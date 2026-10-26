@@ -1,0 +1,194 @@
+{
+  "format": "openrc-selected-source-overlay v1",
+  "utc": "2026-10-26T01:55:08.131738+00:00",
+  "main_head": "241eaf0b559b6ce96b38ff8b9c471e293828f8f1",
+  "base_worktree": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-implementation",
+  "files": [
+    {
+      "path": "app/physics/aircraft_ground_profile.gd",
+      "sha256": "74bf7e19489666e05e6533e8ea5ef97a43b9ceb52ff8de3e33d55ac68a13d9ba",
+      "bytes": 18518
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "sha256": "1e7fba8dd7746dfd84eb313602780e64ba2cadd6fb418bea9ba180ab71c1b06d",
+      "bytes": 142490
+    },
+    {
+      "path": "app/physics/aircraft_modules.gd",
+      "sha256": "64aff87407f2ecf5353d88a058977aabfc7babc5e1872ab1c59ccab7a39f5a66",
+      "bytes": 19699
+    },
+    {
+      "path": "app/physics/wheel_profiles.gd",
+      "sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+      "bytes": 13919
+    },
+    {
+      "path": "app/physics/normal_compliance.gd",
+      "sha256": "2898caad833db9ea4376ff9835c2199fa0de6aa076514468852b8fecc1df5361",
+      "bytes": 7918
+    },
+    {
+      "path": "app/physics/wheel_geometry.gd",
+      "sha256": "a92fda4198916ac89573aca1e58c879288c8b249146fac8de04713573fdba2f9",
+      "bytes": 16230
+    },
+    {
+      "path": "app/physics/rotor_coupling.gd",
+      "sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+      "bytes": 27336
+    },
+    {
+      "path": "app/physics/wheel_coupling.gd",
+      "sha256": "da6e39d0109f56963194e4609a7d3d4f8c40cb2db1db4058c5b1aca59c9e9e0f",
+      "bytes": 8910
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "sha256": "0c6849497e7777bd10336712371d8045390374bff5ff61aa901dad273410631d",
+      "bytes": 50371
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2",
+      "bytes": 12046
+    },
+    {
+      "path": "app/tests/test_aircraft_ground_profile.gd",
+      "sha256": "1f6692ba4a4a983e08b5aa05ca3d80edf240bf678cea74200e0d1727219aa7fd",
+      "bytes": 25087
+    },
+    {
+      "path": "app/tests/test_normal_compliance.gd",
+      "sha256": "812ca83edef4ee354cfb7c11e87ef6ed4474e89510da546ff501d6fb5a486863",
+      "bytes": 11946
+    },
+    {
+      "path": "app/tests/test_wheel_geometry.gd",
+      "sha256": "15daae572ea87e58eca30c91f2c6b3a39d91128230f58bd3ce0dcb3e9c5cbb68",
+      "bytes": 16001
+    },
+    {
+      "path": "app/tests/test_rotor_system.gd",
+      "sha256": "428a50006d1985e859814540115c117bf48ba66302db9de817c9fb45cd72a8dd",
+      "bytes": 21176
+    },
+    {
+      "path": "app/tests/test_wheel_coupling_transport.gd",
+      "sha256": "427c49ea6ea8d772997057b702996deae3e4d7ff2be5a596b53cc82a48c15dee",
+      "bytes": 20629
+    },
+    {
+      "path": "app/tests/test_endpoint_transition.gd",
+      "sha256": "125ddcc482ccbdbace842f3af1a590c37835c814d9920e73e935da98c5c675b7",
+      "bytes": 20482
+    },
+    {
+      "path": "app/data/schema/aircraft-modules-v1.json",
+      "sha256": "d40d7781ae3c694e6bf42374fe219f5f7ec0b40f836725f13332ad5832f4e4cd",
+      "bytes": 15974
+    },
+    {
+      "path": "app/data/schema/aircraft-contract-v2.json",
+      "sha256": "185362bae28a44fadc1b676037bb8d4b9040e36c8c2097fdfe547a21c635ed1a",
+      "bytes": 40476
+    },
+    {
+      "path": "app/data/schema/openrc-aircraft-v2.schema.json",
+      "sha256": "23b85ee017b03af47802c9bda0cfb8cd2326d0263af78b1601deaf79ad320570",
+      "bytes": 192775
+    },
+    {
+      "path": "research/aircraft-standardization/modules.py",
+      "sha256": "df351179b0d0ab0a70bb400d4d735b36771a1e7fda2ac8dd556b2a84ae7e1777",
+      "bytes": 17907
+    },
+    {
+      "path": "research/aircraft-standardization/build_schema.py",
+      "sha256": "7c82d0dca2593022fd5ad3aacaf94ebd6b5ca5c15482dc6dafbe6de8a3ccf1b3",
+      "bytes": 38702
+    },
+    {
+      "path": "app/physics/fixed_datum_body.gd",
+      "sha256": "a218c99f2d7079ae6788c98cf5dda24de6e3a6910fb35ab27b5c69d3f76e4293",
+      "bytes": 5547
+    },
+    {
+      "path": "app/physics/gear_damage.gd",
+      "sha256": "8aa2cc1e966967ef191dfdad1d597253cecabefb741a3234158b081c258e5900",
+      "bytes": 14685
+    },
+    {
+      "path": "app/physics/aircraft_ground_dynamics.gd",
+      "sha256": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d",
+      "bytes": 17442
+    },
+    {
+      "path": "app/physics/aircraft_ground_stage.gd",
+      "sha256": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056",
+      "bytes": 15439
+    },
+    {
+      "path": "app/physics/ground_traction.gd",
+      "sha256": "927f46170d177e28f26ec71d145623f627f31ec054a38117d7a324c7c97a1951",
+      "bytes": 16536
+    },
+    {
+      "path": "app/physics/aircraft_ground_impulse.gd",
+      "sha256": "23d4fd0162f096705a89a73cf63095db9c5d99f1828c394ae1a9f92d06ee7783",
+      "bytes": 12453
+    },
+    {
+      "path": "app/physics/control_actuators.gd",
+      "sha256": "318b7a56261b60a2e491fb1a2d5cccbb0d5990fc70938b1c2c2d934746bb3c9a",
+      "bytes": 10496
+    },
+    {
+      "path": "app/tests/test_fixed_datum_coupled.gd",
+      "sha256": "e0961b83a198b8f09c88e06b0862f944d37a262f43d263132208a302bda392d8",
+      "bytes": 15291
+    },
+    {
+      "path": "app/tests/test_gear_damage.gd",
+      "sha256": "47b8c856446c88b33bd3bb9ca585facc62d3525a29497ce9825d5864e6701669",
+      "bytes": 19864
+    },
+    {
+      "path": "app/tests/test_aircraft_ground_dynamics.gd",
+      "sha256": "0ff3ed197bb07f77153f49f9261004b1856bed911933ecfa92a975081dccd67e",
+      "bytes": 28680
+    },
+    {
+      "path": "app/tests/test_aircraft_ground_stage.gd",
+      "sha256": "75d30d115978c2146f46dd5db66df15303ba90605524469c9ba55667f420083a",
+      "bytes": 25417
+    },
+    {
+      "path": "app/tests/test_ground_traction.gd",
+      "sha256": "4d6d2d3afc785e02bbeba6673e80492d128d2652c85420cb6acd5fa23f6e2e93",
+      "bytes": 17169
+    },
+    {
+      "path": "app/tests/test_aircraft_ground_impulse.gd",
+      "sha256": "898c5818117d0efd8585cb0cb9015219d0fd880f314d3a482e5259f99ca4d62a",
+      "bytes": 15130
+    },
+    {
+      "path": "app/tests/test_prescribed_steering.gd",
+      "sha256": "02bde26f19edfd0a2bf949e6b66bd8f0f8d78e4a618e9442b6c3235850220963",
+      "bytes": 23722
+    },
+    {
+      "path": "app/tests/test_integration_receipt.gd",
+      "sha256": "18997421be06f7a4633ac9f7ec2f11b6509ea2a20023f1bb71dbde14d2837f99",
+      "bytes": 6593
+    }
+  ],
+  "excluded": [
+    "main FlightSession retained isolated GP10 source",
+    "GP08 admission WIP",
+    "GP14 runtime step WIP",
+    "unrelated main source changes"
+  ]
+}

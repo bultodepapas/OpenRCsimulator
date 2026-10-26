@@ -60,6 +60,7 @@ const ScenarioConfig = preload("res://scenarios/scenario_config.gd")
 const NaturalRandomScreen = preload("res://ui/natural_random_screen.gd")
 const HELICOPTER_MAIN_SCRIPT := "res://helicopter_main.gd"
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const AircraftLightingPolicy := preload("res://render/lighting/lighting_policy.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
@@ -1349,6 +1350,7 @@ static func apply_master_volume(level: float) -> void:
 
 
 func _apply_presentation(config: Dictionary) -> void:
+	AircraftLightingPolicy.apply(config)
 	if is_instance_valid(menu_audio):
 		menu_audio.set_volume(float(config.get("menu_volume", DisplayPreferences.DEFAULTS.menu_volume)))
 	apply_master_volume(float(config.get("master_volume", DisplayPreferences.DEFAULTS.master_volume)))

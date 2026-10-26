@@ -1,0 +1,50 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c991715b-df1f-4bfe-97a5-5d282b4ab088",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ui_weather_sliders.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:42:43.733111+00:00",
+  "label": "test_ui_weather_sliders",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-203918\\checks\\test_ui_weather_sliders-janshrji\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-203918\\checks\\test_ui_weather_sliders-janshrji\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 8,
+      "message": "Aircraft customization bindings: [\"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:104)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 9.094,
+  "log_bytes": 3125,
+  "log_sha256": "b0e6a59b8ce848d840f0c6bc4e5bdf163fa449b12a6093b098c2fc4858828674"
+}

@@ -35,7 +35,7 @@ class CustomizationGeneratorTests(unittest.TestCase):
         v3 = generator.PRESENTATION_SOURCE_PATHS_V3
         self.assertEqual(len(legacy), 7)
         self.assertEqual(len(v2), 10)
-        self.assertEqual(len(v3), 23)
+        self.assertEqual(len(v3), 26)
         self.assertEqual(tuple(sorted(v3)), v3)
         self.assertTrue(set(legacy).issubset(v2))
         self.assertTrue(set(v2).issubset(v3))
@@ -75,6 +75,43 @@ class CustomizationGeneratorTests(unittest.TestCase):
         slots_v1 = generator.validate_source(source_v1, {"historical-fixture"})
         self.assertEqual(slots_v1["historical-fixture"]["lighting_layout"], generator.empty_lighting_layout())
 
+    def test_skin_bindings_reference_stable_albedo_targets(self) -> None:
+        slots = generator.validate_source(self.source, self.families)
+        layout = slots["jensen-das-ugly-stik-60"]["lighting_layout"]
+        self.assertEqual(layout["version"], 2)
+        self.assertEqual(layout["skins"], [
+            {
+                "zone_id": "strip_left",
+                "paint_slot_id": "wing",
+                "target_ids": ["wing_left_0_skin", "wing_left_1_skin", "wing_left_2_skin"],
+                "mask_profile_id": "jensen_stik_film_bays_v1",
+            },
+            {
+                "zone_id": "strip_right",
+                "paint_slot_id": "wing",
+                "target_ids": ["wing_right_0_skin", "wing_right_1_skin", "wing_right_2_skin"],
+                "mask_profile_id": "jensen_stik_film_bays_v1",
+            },
+        ])
+
+        invalid_source = copy.deepcopy(self.source)
+        stik = next(item for item in invalid_source["families"] if item["visual_family"] == "jensen-das-ugly-stik-60")
+        stik["lighting_layout"]["skins"][0]["target_ids"][0] = "unregistered_surface"
+        with self.assertRaises(generator.CustomizationError):
+            generator.validate_source(invalid_source, self.families)
+
+        invalid_source = copy.deepcopy(self.source)
+        stik = next(item for item in invalid_source["families"] if item["visual_family"] == "jensen-das-ugly-stik-60")
+        stik["lighting_layout"]["skins"][0]["mask_profile_id"] = "res://textures/arbitrary.png"
+        with self.assertRaises(generator.CustomizationError):
+            generator.validate_source(invalid_source, self.families)
+
+        invalid_source = copy.deepcopy(self.source)
+        stik = next(item for item in invalid_source["families"] if item["visual_family"] == "jensen-das-ugly-stik-60")
+        stik["lighting_layout"]["skins"][1]["target_ids"][0] = stik["lighting_layout"]["skins"][0]["target_ids"][0]
+        with self.assertRaises(generator.CustomizationError):
+            generator.validate_source(invalid_source, self.families)
+
     def test_generated_registry_is_current(self) -> None:
         self.assertEqual(generator.generate(self.root, True), 0)
 
@@ -86,7 +123,28 @@ class CustomizationGeneratorTests(unittest.TestCase):
             family = companion["visual_family"]
             self.assertEqual(companion["version"], 4)
             self.assertEqual(companion["source_proof_version"], 3)
-            self.assertEqual(companion["lighting_layout"], generator.empty_lighting_layout())
+            if family == "jensen-das-ugly-stik-60":
+                self.assertEqual(companion["lighting_layout"], {
+                    "version": 2,
+                    "anchors": [],
+                    "strips": [],
+                    "skins": [
+                        {
+                            "zone_id": "strip_left",
+                            "paint_slot_id": "wing",
+                            "target_ids": ["wing_left_0_skin", "wing_left_1_skin", "wing_left_2_skin"],
+                            "mask_profile_id": "jensen_stik_film_bays_v1",
+                        },
+                        {
+                            "zone_id": "strip_right",
+                            "paint_slot_id": "wing",
+                            "target_ids": ["wing_right_0_skin", "wing_right_1_skin", "wing_right_2_skin"],
+                            "mask_profile_id": "jensen_stik_film_bays_v1",
+                        },
+                    ],
+                })
+            else:
+                self.assertEqual(companion["lighting_layout"], generator.empty_lighting_layout())
             self.assertEqual(companion["presentation_engine_version"], generator.PRESENTATION_ENGINE_VERSION)
             self.assertEqual([item["path"] for item in companion["presentation_sources"]],
                              list(generator.PRESENTATION_SOURCE_PATHS))

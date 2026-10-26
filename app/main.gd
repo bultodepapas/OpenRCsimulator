@@ -212,6 +212,13 @@ func _render_wind(time_s: float) -> Vector3:
 	if _scripted or session == null:
 		return Vector3.ZERO
 	return Frames.ned_to_render(Array(session.wind_at(time_s)))
+
+
+## Read-only datum observation; presentation does not need aerodynamic station receipts.
+func _observer_air(state: PackedFloat64Array, sample_time_s: float) -> Dictionary:
+	return Air.compute(state, session.wind_at(sample_time_s, state), session.air_density(state))
+
+
 var interactive_start: bool = false
 ## UI-34c: optional presentation-only checkpoints. Direct/capture/trace routes stay synchronous.
 var startup_checkpoint := Callable()
@@ -1136,8 +1143,9 @@ func _process(delta: float) -> void:
 	# Lighting uses the same displayed pose clock, independent of whether smoke is installed.
 	var lighting_clock_s: float = sim.time() if frozen else smoke_clock_s
 	if is_instance_valid(_rgb_lighting):
-		var lighting_airspeed := float(session.air_data(sim.state, sim.time()).get("V", 0.0)) if _lighting_reacts_to_airspeed else 0.0
+		var lighting_airspeed := float(_observer_air(sim.state, sim.time()).get("V", 0.0)) if _lighting_reacts_to_airspeed else 0.0
 		_rgb_lighting.advance(lighting_clock_s, {
+			"lighting_priority": 100, # Preserve the player's decorative grant before companion shows.
 			"throttle": session.propulsion_throttle(),
 			"speed_mps": (_last_render_pose.get("vel", Vector3.ZERO) as Vector3).length(),
 			"airspeed": lighting_airspeed,
@@ -1187,7 +1195,7 @@ func _update_smoke(presentation_time_s: float = -1.0) -> void:
 	var request: float = session.radio.smoke_amount() if session.radio.connected else (1.0 if _smoke_key_on else 0.0)
 	var wash := Vector3.ZERO
 	if prop.has("slipstream"):
-		var air: Dictionary = session.air_data(sim.state, clock_s)
+		var air: Dictionary = _observer_air(sim.state, clock_s)
 		var rho: float = session.air_density()
 		var output: PackedFloat64Array = Propulsion.thrust_torque(air.v_air, sim.aux[0], prop, rho)
 		var flow: Dictionary = Slipstream.wake(air.v_air, output[0], output[1], prop, rho)
@@ -1278,7 +1286,7 @@ func _update_hud(telemetry_visible: bool = true, performance_visible: bool = tru
 		lines.append("synthetic inspection" if not _visual_pose.is_empty() else ("scripted circle" if _scripted else "no flight data"))
 	else:
 		var s: PackedFloat64Array = session.sim.state
-		var air: Dictionary = session.air_data(s)
+		var air: Dictionary = _observer_air(s, session.sim.time())
 		lines.append(Hud.flight_line(air.V, -s[RB.POS + 2], rad_to_deg(air.alpha), session.sim.inputs[3]))
 		var gear: Dictionary = session.gear_state()
 		if bool(gear.get("available", false)):
@@ -3310,7 +3318,7 @@ func _profile_smoke_wash(prop: Dictionary, accepted_state: PackedFloat64Array,
 	if not prop.has("slipstream") or not accepted_running or accepted_state.size() < RB.SIZE \
 			or not is_finite(accepted_rpm) or not is_finite(accepted_time_s):
 		return Vector3.ZERO
-	var air: Dictionary = session.air_data(accepted_state, accepted_time_s)
+	var air: Dictionary = _observer_air(accepted_state, accepted_time_s)
 	var rho: float = session.air_density(accepted_state)
 	var output: PackedFloat64Array = Propulsion.thrust_torque(air.v_air, accepted_rpm, prop, rho)
 	var flow: Dictionary = Slipstream.wake(air.v_air, output[0], output[1], prop, rho)

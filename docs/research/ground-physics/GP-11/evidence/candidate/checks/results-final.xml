@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="25" failures="0" errors="0" skipped="0" time="80.499000"><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_dynamics.gd [aircraft_ground_dynamics-plx4u8ke]" time="10.188000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: aircraft_ground_dynamics-plx4u8ke/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_impulse.gd [aircraft_ground_impulse-fd9jphsi]" time="0.563000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: aircraft_ground_impulse-fd9jphsi/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_profile.gd [aircraft_ground_profile-qv952wc6]" time="2.469000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: aircraft_ground_profile-qv952wc6/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_stage.gd [aircraft_ground_stage-ky7h26au]" time="2.781000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: aircraft_ground_stage-ky7h26au/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_checkpoint.gd [checkpoint-2pblapie]" time="8.750000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: checkpoint-2pblapie/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_checkpoint_integrity.gd [checkpoint_integrity-td_if0fk]" time="0.422000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: checkpoint_integrity-td_if0fk/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_endpoint_transition.gd [endpoint_transition-dgp7uneg]" time="0.609000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: endpoint_transition-dgp7uneg/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_fixed_datum_coupled.gd [fixed_datum_coupled-44udvmvu]" time="1.610000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: fixed_datum_coupled-44udvmvu/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_gear_damage.gd [gear_damage-takp3g2b]" time="0.516000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: gear_damage-takp3g2b/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_ground_traction.gd [ground_traction-y341d0c8]" time="0.625000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: ground_traction-y341d0c8/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_integration_receipt.gd [integration_receipt-db9mygrv]" time="1.359000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: integration_receipt-db9mygrv/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_normal_compliance.gd [normal_compliance-ythb_iuc]" time="6.172000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: normal_compliance-ythb_iuc/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/docs/research/ground-physics/GP-10/evidence/candidate/check_numeric_preservation.gd [p51-air-native-mw0maw97]" time="4.125000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: p51-air-native-mw0maw97/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/docs/research/ground-physics/GP-10/evidence/candidate/check_numeric_preservation.gd [p51-ground-native-e2ix_mfw]" time="4.968000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: p51-ground-native-e2ix_mfw/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_prescribed_steering.gd [prescribed_steering-_mgaav7g]" time="5.750000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: prescribed_steering-_mgaav7g/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_rotor_system.gd [rotor_system-g0sc5dgn]" time="0.422000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: rotor_system-g0sc5dgn/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_sf_event_protocol.gd [sf_event_protocol-_gyfvi36]" time="4.859000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: sf_event_protocol-_gyfvi36/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_sf_event_refinement.gd [sf_event_refinement-r3775nkn]" time="6.234000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: sf_event_refinement-r3775nkn/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_sf_ground_vehicle_kernel.gd [sf_ground_vehicle_kernel-i6wz9ijs]" time="5.218000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: sf_ground_vehicle_kernel-i6wz9ijs/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_sf_vehicle_model.gd [sf_vehicle_model-44r04atc]" time="0.313000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: sf_vehicle_model-44r04atc/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_simulation.gd [simulation-7fxkup32]" time="1.062000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: simulation-7fxkup32/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/docs/research/ground-physics/GP-10/evidence/candidate/check_numeric_preservation.gd [stik-air-native-c27lgoam]" time="3.656000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: stik-air-native-c27lgoam/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/docs/research/ground-physics/GP-10/evidence/candidate/check_numeric_preservation.gd [stik-ground-native-9vu0wh7d]" time="4.125000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: stik-ground-native-9vu0wh7d/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_wheel_coupling_transport.gd [wheel_coupling_transport-0l2_liaq]" time="2.078000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: wheel_coupling_transport-0l2_liaq/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_wheel_geometry.gd [wheel_geometry-sfxo0vr5]" time="1.625000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: wheel_geometry-sfxo0vr5/report.json and engine.log</system-out></testcase></testsuite>

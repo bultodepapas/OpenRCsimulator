@@ -1065,3 +1065,11 @@ Derive Workshop support feedback from live rig bindings and effect anchors. Keep
 ### 2026-10-25 — Filter unresolved LED segments in each camera's shader footprint (FW-RGB-13)
 
 Integrate linear-light palette coverage from continuous path derivatives, preserving resolved interiors and incomplete palette-cycle weights. Saturate footprints beyond a complete path to its periodic mean. Reuse existing strip geometry and phase ownership without a CPU camera-distance threshold or new profile field. Keep spatial fixture evidence separate from temporal/upscaler, inset and whole-scene performance acceptance. [Three-renderer 1080p evidence and limitations](research/night-flight-lighting/implementation.md#fw-rgb-13-segmented-strip-filtering).
+
+### 2026-10-25 — Couple every wheel and shaft before migrating ground handling (GP-09/11/12/20)
+
+Reserve explicit intrinsic rotor tensors from the existing locked aircraft inertia through an estimated aggregate partition; preserve original mass, CG and reference inertia. Use one common angular solve, transfer the external datum wrench to live CG once and use final alpha in the fixed-datum translation law. Normal springs/dampers own support; the compact full-mobility impulse problem owns bounded tire, brake and rolling impulses. Prescribed fixed-hub steering has continuous angle/rate state and accounted carrier work. Retain stock behavior until source events, integration admission and state layout are qualified; parsing advanced resources alone cannot select a solver. [Executable contracts, independent checks and limits](research/ground-physics/GP-11/README.md).
+
+### 2026-10-25 — Keep accepted damage evidence separate from integrator trials (GP-16/17)
+
+Transport a bounded detached integration receipt from the model's step policy to its endpoint owner. The kernel validates transport and atomic publication; the vehicle owns the receipt's physical meaning. Do not infer an entire-tick peak from an endpoint, use discarded RK trials as impacts or mix a peak load with potential energy at another state. Released support potential, persistent component state and a nonterminal failure event must commit together. [Reproduced within-tick overload and transaction contract](research/ground-physics/GP-16/README.md).

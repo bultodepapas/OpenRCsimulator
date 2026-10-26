@@ -42,6 +42,27 @@ This is necessary because the coarse stock inventory cannot support a defensible
 
 Authoring validity currently remains distinct from launch admission. Coupled modules return normalized data but cannot silently fly using the legacy contact law. The Workshop classifier replaces the old point-contact law assertion and disables unqualified similarity transformations. Full Workshop editing, compiler source-aware versions and launch admission remain subsequent implementation gates.
 
+Optional `steering_profiles` author provenance-bearing `openrc-prescribed-angle-actuator v1` resources. A steered support must supply both `steering_profile_id` and a unit `steering_axis_le`; its hinge passes through the fixed authored hub. Resource and actuator IDs must match. Unused/dangling resources, missing paired fields and a response outside its declared limits reject. Absence means a fixed axle; old steering throws do not silently synthesize new response parameters. The authoring suite passes 123 checks and the generated offline schema passes 13 additional structural cases; cross-field response bounds remain runtime checks.
+
+## Prescribed steering and assembled stage
+
+[ControlActuators](../../../../app/physics/control_actuators.gd) adds the explicit law `bounded-critical-prescribed-angle-v1`. The existing sampled servo functions retain their arithmetic. New linkage state is angle `theta` and angular rate `v`; actual upstream rudder servo output selects the signed target `u`:
+
+```text
+theta_dot = v
+v_dot = (u - theta - 2*tau*v)/tau^2
+z = theta + tau*v
+theta_dot = (z-theta)/tau; z_dot = (u-z)/tau
+```
+
+For `theta,z,u` within travel `[-A,A]`, the state rectangle is invariant. Hence `|v|<=2A/tau` and `|v_dot|<=4A/tau^2`; authored maximum rate/acceleration must cover these bounds. RK4 stage and endpoint invariance requires `h/tau<=1`. A target change preserves angle and rate; acceleration can jump finitely. No per-tick angle reset, rate reset or velocity impulse is introduced. Full carrier velocity and acceleration remain `hinge_axis*v` and `hinge_axis*v_dot`, including a hinge parallel to the wheel axle. This ideal prescribed mechanism has no separately modeled servo inertia, power limit or backlash; the common rotor solve reports its signed actuator work.
+
+The steering suite passes 273 checks, including analytic response, invariant limits, reversals, independent work derivatives and actual-kernel 120/240/480 Hz runs. Energy/work errors are respectively `1.85e-8`, `1.15e-9`, `7.15e-11 J`; these are synthetic conservation checks, not hardware response measurements.
+
+[AircraftGroundStage](../../../../app/physics/aircraft_ground_stage.gd) binds the normal supports, explicit aggregate rotor partition and optional linkage state once. `motion` maps continuous angle/rate pairs to the existing five-field motion rows in hardware contact order. Shared response resources retain independent installed-contact states. `motion_state_valid` and `motion_substeps` provide the linkage part of model validation/admission; contact and source bounds still belong to the single step owner.
+
+`evaluate` sums external and normal datum wrenches once, shifts the total moment to live CG once, solves all wheel/shaft angular accelerations together and passes final alpha to the fixed-datum derivative. The complete external shaft couple must already be in the external aircraft wrench and is also supplied to the shaft local row; internal drive torque goes only into that local row. Passing an old net shaft torque would count propeller drag twice. Its 145 checks include installed P-51/fuel properties, independent tensor/work assembly, raw RK quaternions, authored steering and actual-kernel drops. It does not install a second integrator, choose contact timesteps or authorize stock launch.
+
 ## Damage and transaction dependencies
 
 [GearDamage](../../../../app/physics/gear_damage.gd) supplies an explicit experimental attached-component normal-capacity law. [VehicleModel](../../../../app/sim/vehicle_model.gd) supplies a fixed-layout accepted-endpoint transaction and clock-aware state validation. Failure state, released support potential and events must commit together; a later rejected projection must publish none of them. Unknown strength remains an inspection requirement, not an invented fracture threshold. The physical failed support law and its geometry still belong to the aircraft adapter.
@@ -59,6 +80,8 @@ These modules do not themselves choose a timestep, advance a second aircraft sta
 ## Verification boundaries
 
 The integration baseline consists of four preserved Stik/P-51 air/ground tapes captured after GP-10. Exact baseline replays were complete with unchanged solver fingerprints. Candidate comparisons hold aircraft bytes and command tapes fixed; changed solver fingerprints are reported as candidate experiments. No golden flight is rewritten.
+
+The [retained initial integration cohort](evidence/README.md) pins 36 changed source snapshots, the original baseline tapes and all selected checked-runner receipts. It passed **3,469 checks across 21 suites**, plus four native comparisons: all numerical fields are byte-identical across **1,484 samples** on the legacy paths, with changed candidate solver identity reported explicitly. A fresh Git clone with `autocrlf=true` preserved every retained artifact's bytes. This is a frozen cohort: later normal-admission, complete-step and wheel/material-row changes need their own receipts and are not covered by that replay claim.
 
 Each new module is parsed before promotion and checked with the pinned Godot 4.8-beta1 console runner, including engine diagnostics that can accompany process exit zero. Tests exercise the real float64 kernel, independent energy/momentum calculations and explicit negative cases. Full fleet landing/taxi comparisons, measured suspension and strength data, rendered wheel/gear behavior, audio listening and 1080p target-host performance remain open. Command wall times are not physics budgets.
 

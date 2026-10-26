@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "401ba498-b92e-49df-83f0-fe450304d7f8",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_checkpoint_integrity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:56:21.856549+00:00",
+  "label": "test_checkpoint_integrity",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-205314\\checks\\test_checkpoint_integrity-1iqtlkm0\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-205314\\checks\\test_checkpoint_integrity-1iqtlkm0\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.297,
+  "log_bytes": 122,
+  "log_sha256": "31c337e2aded57641bcbe65f0a829437c00eb9592bc9d1e2c6d21ba497aa65e6"
+}

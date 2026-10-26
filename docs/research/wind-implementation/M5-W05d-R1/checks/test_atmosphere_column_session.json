@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "89aa0661-c57b-417b-8edc-85ab98ce5208",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_atmosphere_column_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:55:17.297044+00:00",
+  "label": "test_atmosphere_column_session",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-205314\\checks\\test_atmosphere_column_session-2k1ewcl3\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-205314\\checks\\test_atmosphere_column_session-2k1ewcl3\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 11.203,
+  "log_bytes": 1578,
+  "log_sha256": "067bc61af4787f4de2bf5e5801d2e5bcac8c1bcd8f24f414b38731d1b1a01f19"
+}

@@ -1,0 +1,13 @@
+{
+  "format": "openrc-ground-next-baseline v1",
+  "source_before": "source-before.json",
+  "source_after": "source-after.json",
+  "source_unchanged": true,
+  "exact_replays": [
+    "p51-air-exact/replay.json",
+    "p51-ground-exact/replay.json",
+    "stik-air-exact/replay.json",
+    "stik-ground-exact/replay.json"
+  ],
+  "scope": "Stik/P51 air and short ground inputs, after GP10 and before GP09b/10c/11/16; physical calibration not established"
+}

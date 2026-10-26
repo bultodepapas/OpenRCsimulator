@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c570da17-1bb0-4821-aceb-1d8743d2f86a",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/gp-next-implementation/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_aircraft_ground_profile.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:55:38.958061+00:00",
+  "label": "aircraft_ground_profile",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\aircraft_ground_profile-qv952wc6\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\aircraft_ground_profile-qv952wc6\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.469,
+  "log_bytes": 119,
+  "log_sha256": "9fee9358b25be19acfaac9066eb8057c44e512a48623db7ab6af71eb44dd7b2b"
+}

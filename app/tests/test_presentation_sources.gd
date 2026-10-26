@@ -52,7 +52,7 @@ func _test_development_records() -> void:
 	for record: Dictionary in records:
 		record_paths.append(str(record.get("path", "")))
 	_check("the v3 closed source set has twenty-three ordered records", records.size() == PresentationSources.SOURCE_PATHS_V3.size()
-		and records.size() == 23 and record_paths == PresentationSources.SOURCE_PATHS_V3, str(record_paths))
+		and records.size() == 26 and record_paths == PresentationSources.SOURCE_PATHS_V3, str(record_paths))
 	var legacy_records := PresentationSources.current_records(1)
 	_check("v1 seven-path source reader remains available", legacy_records.size() == 7
 		and PresentationSources.validate(legacy_records, PresentationSources.ENGINE_VERSION_PIN, 1).get("ok", false))

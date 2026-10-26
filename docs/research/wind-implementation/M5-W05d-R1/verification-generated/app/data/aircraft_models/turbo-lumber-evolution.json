@@ -1,0 +1,256 @@
+{
+  "schema": "openrc-aircraft-model",
+  "version": 2,
+  "family_id": "turbo-lumber-evolution",
+  "builder": {
+    "script": "res://aircraft/imported_model.gd",
+    "adapter": "imported_glb"
+  },
+  "surface_method": "apply_surfaces",
+  "datum": {
+    "model_z_le": 0.0,
+    "model_y_thrust": 0.0
+  },
+  "coordinates": {
+    "units": "m",
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "root_node": "airplane",
+  "source_registry": {
+    "path": "assets/aircraft/model-bindings.json",
+    "sha256": "345cb32177915fd869aaa227576661b9cb9477ee6691b79217361080f24b897e",
+    "hash_mode": "lf_text"
+  },
+  "geometry": {
+    "script": "res://aircraft/timber_geometry.gd",
+    "source": {
+      "path": "assets/aircraft/turbo-lumber-evolution/geometry.json",
+      "sha256": "ba392cfc37a3a8b8489c781bd15d35f96b68091a5a128ac3818f20723683af58",
+      "hash_mode": "lf_text"
+    },
+    "revision": "r2-d75ae605aa3a",
+    "datum_source": {
+      "model_z_le": {
+        "value": 0.0
+      },
+      "model_y_thrust": {
+        "value": 0.0
+      }
+    }
+  },
+  "asset": {
+    "kind": "imported_glb",
+    "identity": "eflite_turbo_timber_evolution",
+    "revision": "r2-d75ae605aa3a",
+    "path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
+    "sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722"
+  },
+  "bindings": {
+    "controls": {
+      "aileron_left": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_left",
+            "node": "aileron_left_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.aileron_left_hinge"
+          }
+        ]
+      },
+      "aileron_right": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_right",
+            "node": "aileron_right_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.aileron_right_hinge"
+          }
+        ]
+      },
+      "elevator": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevator",
+            "node": "elevator_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.elevator_hinge"
+          }
+        ]
+      },
+      "rudder": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "rudder",
+            "node": "rudder_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.rudder_hinge"
+          }
+        ]
+      },
+      "flap_left": {
+        "visual_only": true,
+        "hinges": [
+          {
+            "key": "flap_left",
+            "node": "flap_left_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.flap_left_hinge"
+          }
+        ]
+      },
+      "flap_right": {
+        "visual_only": true,
+        "hinges": [
+          {
+            "key": "flap_right",
+            "node": "flap_right_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.flap_right_hinge"
+          }
+        ]
+      }
+    },
+    "rotor": {
+      "present": true,
+      "node": "propeller",
+      "spin_node": "propeller_spin",
+      "authored_diameter_m": 0.28064,
+      "source": "geometry_articulation",
+      "geometry_ref": "articulations.propeller_spin"
+    },
+    "gear": {
+      "keys": {
+        "left": "left",
+        "right": "right",
+        "tail": "tail",
+        "steering": "steering"
+      }
+    },
+    "crash": {
+      "provider": "gltf_extras",
+      "metadata_script": "",
+      "asset_node": ""
+    }
+  },
+  "authoring_sources": [
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/geometry.json",
+      "sha256": "ba392cfc37a3a8b8489c781bd15d35f96b68091a5a128ac3818f20723683af58",
+      "hash_mode": "lf_text",
+      "role": "geometry"
+    },
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/source-manifest.json",
+      "sha256": "f9d8510474a39ede0df7e77a61c91e9283bc255b09afb7543af536851bbd1a74",
+      "hash_mode": "lf_text",
+      "role": "asset_identity"
+    },
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json",
+      "sha256": "ae585078344abbfbe1405b9e1777243c120e299516fde663c538c231f4e74063",
+      "hash_mode": "lf_text",
+      "role": "mesh_measurements"
+    },
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/manual.json",
+      "sha256": "7018fc436d98686a18daa8712b649eb22f216c26b1f97f9a2278e84adddb219d",
+      "hash_mode": "lf_text",
+      "role": "manual_metadata"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "res://aircraft/imported_model.gd",
+      "sha256": "76889f694b7fae6fc75394d1af2feff5c6492c7a2075c4a89e6463d54a3ac18c",
+      "hash_mode": "lf_text",
+      "role": "builder"
+    },
+    {
+      "path": "res://aircraft/imported_model_contract.gd",
+      "sha256": "f209b87b1e4a8b8de5e6b501fab57f5fb4e578a9fd24044b43810ce8cb585d23",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/model_manifest.gd",
+      "sha256": "7390e3d6a808fa96fd990c54deabb0151ff13a2d1b0f7b229368485cd3d68f7d",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/retractable_model.gd",
+      "sha256": "ba6cbf65c686fd244ffe4ce1c3debe9fe0e1a22b7bf32cf5d3ddf99e356cea83",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/timber_geometry.gd",
+      "sha256": "9779239e822912963fe18c70d09b3cc111e44ef4821be07db94fa51e18838b73",
+      "hash_mode": "lf_text",
+      "role": "generated_geometry"
+    },
+    {
+      "path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
+      "sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+      "hash_mode": "raw",
+      "role": "imported_asset"
+    },
+    {
+      "path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb.import",
+      "sha256": "a25822325cc792e13f94f20348af900084df347a5bc04f87a7e98e1cc7bef5f1",
+      "hash_mode": "lf_text",
+      "role": "resource_dependency"
+    }
+  ],
+  "construction": {
+    "version": 1,
+    "hinge_axis": "+X",
+    "rotor": {
+      "frame_node": "thrust_frame",
+      "geometry_ref": "thrust",
+      "axis": "+X"
+    },
+    "gear": [
+      {
+        "role": "steering",
+        "node": "tailwheel_steer",
+        "geometry_ref": "articulations.tailwheel_steer",
+        "wrapper": "tail_steering"
+      },
+      {
+        "role": "left",
+        "node": "wheel_left_axle",
+        "geometry_ref": "articulations.wheel_left_axle",
+        "wrapper": "wheel_left_spin"
+      },
+      {
+        "role": "right",
+        "node": "wheel_right_axle",
+        "geometry_ref": "articulations.wheel_right_axle",
+        "wrapper": "wheel_right_spin"
+      },
+      {
+        "role": "tail",
+        "node": "tailwheel_axle",
+        "geometry_ref": "articulations.tailwheel_axle",
+        "wrapper": "wheel_tail_spin"
+      }
+    ],
+    "material_grow": [
+      {
+        "node": "cowl",
+        "materials": [
+          "black",
+          "red"
+        ],
+        "amount_m": 0.0008
+      }
+    ]
+  }
+}

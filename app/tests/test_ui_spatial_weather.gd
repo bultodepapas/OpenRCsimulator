@@ -25,6 +25,7 @@ func _run() -> void:
 	root.size = Vector2i(1920, 1080)
 	await _check_preset_contracts()
 	await _check_legacy_and_apply()
+	await _check_gust_projection()
 	await _check_thermal_preset()
 	await _check_v2_horizon_minimum()
 	await _check_stored_spatial_and_disable()
@@ -127,6 +128,10 @@ func _check_legacy_and_apply() -> void:
 	_check("v5 preset selected from the main picker activates its separate spatial controls",
 		dialog.spatial_controls.spatial_enabled() and not dialog.field_inputs["speed_mps"].editable
 		and not dialog.turbulence_inputs["north_rms_mps"].editable)
+	var nested_index := _preset_index(dialog.spatial_controls.preset_picker, "Light breeze · 2.5 m/s FROM 090°")
+	_check("main v5 picker selection selects the matching nested spatial preset",
+		dialog.spatial_controls._selected_preset_id == "spatial-light-breeze-v1"
+		and nested_index > 0 and dialog.spatial_controls.preset_picker.selected == nested_index)
 	dialog.queue_free()
 	await ui.settle()
 
@@ -169,6 +174,39 @@ func _check_legacy_and_apply() -> void:
 	await ui.settle()
 
 
+func _check_gust_projection() -> void:
+	var realistic: Dictionary = WeatherConfig.preset("spatial-realistic-v1")
+	var expected_spatial: Dictionary = SpatialConfig.resolve(realistic.get("spatial_wind", {})).config
+	var dialog: CanvasLayer = WeatherDialog.new(realistic) as CanvasLayer
+	root.add_child(dialog)
+	await ui.settle()
+	var controls = dialog.spatial_controls
+	_check("derived first gust intensity displays a readable two-decimal value",
+		controls._field_inputs["gust_intensity_mps"].text == "0.28", controls._field_inputs["gust_intensity_mps"].text)
+	var untouched: Dictionary = controls.read_draft()
+	_check("untouched derived gust display preserves the authored agenda exactly",
+		untouched.ok and untouched.spatial_wind == expected_spatial
+		and untouched.spatial_wind.gusts.events[0].amplitude_ned_mps
+			== expected_spatial.gusts.events[0].amplitude_ned_mps)
+	controls._field_inputs["gust_intensity_mps"].text = "0.5"
+	var edited: Dictionary = controls.read_draft()
+	var validated_edit: Dictionary = SpatialConfig.resolve(edited.get("spatial_wind", {}))
+	var events: Array = validated_edit.get("config", {}).get("gusts", {}).get("events", [])
+	var magnitude := 0.0
+	if not events.is_empty():
+		var amplitude: Array = events[0].get("amplitude_ned_mps", [])
+		if amplitude.size() == 3:
+			magnitude = sqrt(float(amplitude[0]) * float(amplitude[0]) + float(amplitude[1]) * float(amplitude[1]))
+	_check("editing derived gust intensity replaces the agenda with one valid event",
+		edited.ok and validated_edit.get("ok", false) and events.size() == 1
+		and absf(magnitude - 0.5) <= 1.0e-12
+		and float(events[0].get("start_s", -1.0)) == 6.0
+		and float(events[0].get("duration_s", -1.0)) == 4.0,
+		"edited=%s resolved=%s" % [str(edited.errors), str(validated_edit.errors)])
+	dialog.queue_free()
+	await ui.settle()
+
+
 func _check_thermal_preset() -> void:
 	var source: Dictionary = WeatherConfig.defaults()
 	var dialog: CanvasLayer = WeatherDialog.new(source) as CanvasLayer
@@ -182,6 +220,7 @@ func _check_thermal_preset() -> void:
 	_check("thermal preset stays v2 and the editor preserves its cell block", thermal_result.ok
 		and thermal_result.spatial_wind.format == SpatialConfig.FORMAT_V2
 		and thermal_result.spatial_wind.thermal_field.cells.size() == 1)
+	var thermal_source: Dictionary = thermal_result.spatial_wind.duplicate(true)
 	var thermal_before: Dictionary = thermal_result.spatial_wind.thermal_field.duplicate(true)
 	dialog.spatial_controls._field_inputs["reference_speed_mps"].text = "2.0"
 	var thermal_after_edit: Dictionary = dialog.spatial_controls.read_draft()
@@ -196,6 +235,26 @@ func _check_thermal_preset() -> void:
 		"applied=%s error=%s" % [str(_applied_config), dialog.error_label.text])
 	dialog.queue_free()
 	await ui.settle()
+
+	var weather_json_source: Dictionary = WeatherConfig.spatial_defaults()
+	weather_json_source.spatial_wind = thermal_source
+	var parsed_weather: Variant = JSON.parse_string(JSON.stringify(weather_json_source, "", true, true))
+	var validated_weather: Dictionary = WeatherConfig.validate(parsed_weather)
+	_check("thermal v2 survives JSON restoration and weather validation", validated_weather.ok,
+		str(validated_weather.get("errors", PackedStringArray())))
+	if validated_weather.ok:
+		var reopened: CanvasLayer = WeatherDialog.new(validated_weather.config) as CanvasLayer
+		root.add_child(reopened)
+		await ui.settle()
+		var reopened_thermal_index := _preset_index(reopened.spatial_controls.preset_picker,
+			"Thermal soaring training · finite kinematic cell")
+		_check("validated JSON thermal reopens with both preset pickers matched",
+			reopened.spatial_controls._selected_preset_id == "spatial-thermal-soaring-v2"
+			and reopened_thermal_index > 0 and reopened.spatial_controls.preset_picker.selected == reopened_thermal_index
+			and reopened.preset_picker.get_item_text(reopened.preset_picker.selected)
+				== "Thermal soaring training · finite kinematic cell")
+		reopened.queue_free()
+		await ui.settle()
 
 
 func _check_v2_horizon_minimum() -> void:

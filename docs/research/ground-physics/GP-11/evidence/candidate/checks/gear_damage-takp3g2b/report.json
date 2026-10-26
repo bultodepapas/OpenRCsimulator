@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "da548d5c-b9d6-430c-acc8-ba052df7338d",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/gp-next-implementation/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_gear_damage.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:55:46.525680+00:00",
+  "label": "gear_damage",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\gear_damage-takp3g2b\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\gear_damage-takp3g2b\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.516,
+  "log_bytes": 112,
+  "log_sha256": "a907696c9a4f083e2c38c215fec4f550b9c1e80e9cb9ef3fe647266b27c8e8d4"
+}

@@ -1,0 +1,502 @@
+{
+	"candidate_manifest_sha256": "7ae3ff0b3c03c0e68ba5e5c5e37139b4e36a4f68923ac4f899d4481671ba990c",
+	"fixtures": [
+		{
+			"format": "openrc-spatial-wind v1",
+			"id": "seed8-8modes-calm-mean",
+			"mode_count": 8,
+			"samples": [
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "edec11182ecbbebfd64e44fb49eaa4bf76bd243ee725b1bf"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "c4d56842fff8b73fce25adbff411a53fe08d3e77940963bf"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "632795c65f589d3f244c8776fb5ba53f928439675ba4ce3f"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "50b42dd69722003d5458d03ccb59e53cfa95f657e13af33b"
+				},
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "4b182165f6bebe3f609e22186a959ebfcee1a77ba5d09c3f"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "f9bd8f619b2d99bff5d2623bc981afbf31dbc2fd9799b2bf"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "fe09ef60a441a73fd8bba27494a05cbf1cafd42d63c6763f"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "541ada543837103d20d7229a0395e5bc878e7c6d0efd0a3c"
+				},
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "020fd272bd06ae3f491164d0083f8c3f370db604b4ceb4bf"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "b0a3e261c454aebf68ce9a2b46b4b7bff83d7c62888dbebf"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "9de66c5aa1c8c4bf93d6bde05587d8bf6a639b7d47c3b1bf"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "cfcb7a54160b14bd1beb1284d201e03cacae7172e41df43b"
+				}
+			],
+			"spatial_hash": "91dc04b4b38b4b6385d450d49cd480b7f2b18335e0170ec841bfd958871ec5a1",
+			"thermal_hash": ""
+		},
+		{
+			"format": "openrc-spatial-wind v1",
+			"id": "seed73423-24modes-layer-gust",
+			"mode_count": 24,
+			"samples": [
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "e539caea7e0eb3bf6d1401c5521a0840d25442fc9e42aebf"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "9cde6c7c0b18c4bf91a304d434e50c408ccbc7d6d9a378bf"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "437cf7646ed5cb3faa1e22bbf54e0e403894840c2038b03f"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "4839a474c12b083df7013748a6be963e208c3db75805de3b"
+				},
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "e637b56e82a3c5bf4f08376de98e09405b84e3cfeb4eafbf"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "d7c7bae0206bd6bf6ff70f68fd790e4033ca32339282d03f"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "24fd861e50c7d1bfebd952eeb6bf1040a0a1ac58a124873f"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "824dfe828e3442bd25363eaaa6be963e886c68bbbd090d3c"
+				},
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "3575e438f82ac1bfa47da899598508409c8bfa7702f2623f"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "4386dda5d578be3f23ed74d49cdb0d40e47fb1eb3363963f"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "e1350c027920c0bf68f6927925e70f40e87549bdb9c7b5bf"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "c7bc9453008623bdb6c9804ba6be963e0cf218098893023c"
+				}
+			],
+			"spatial_hash": "901627a5bb902ad2fb15e625cda0610d106c8ea2a5d9e30719dd99580b37b867",
+			"thermal_hash": ""
+		},
+		{
+			"format": "openrc-spatial-wind v1",
+			"id": "seed20261025-64modes-upper-shear",
+			"mode_count": 64,
+			"samples": [
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "c40fdba187770b405dce411e6a7b13c0a170a93aeac6b3bf"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "46d666adbbce0e406796239ffd9414c0c885910f68788fbf"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "bc49f541bbb211405cff1232ec7e18c067454fa143d2c13f"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "5cbe44ae4d3c9a3e791953f06a68a1be1073540da5b9d8bb"
+				},
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "ee7ace006f4d0d40362a6f6ca0e213c0ca18b2c1a8dfcb3f"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "7ec20927a66d1140950314f4c74016c008099ddfc6079fbf"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "68bbf5e676621140e4b61e2663bf18c0d8441bf132ae893f"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "3b1b1fc74d3c9a3ef2b4edf56a68a1be8949e0f08602da3b"
+				},
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "475edd98e47c0b409f5a3b83049c11c06a2a03d5dfa0b23f"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "d2907c940d3f0f408fc705c369a714c0b4c5ae8b819cb63f"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "f5633e0dcdd11040b978abc08d4a17c0fea6aa9a4ac1d13f"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "5b7d36ae4d3c9a3e9697a3e86a68a1be67e8e6998fdaeabb"
+				}
+			],
+			"spatial_hash": "b73cc785d4c02adc1ce556aab0653b5c2f493d17efcfab587265e3d298e5fc93",
+			"thermal_hash": ""
+		},
+		{
+			"format": "openrc-spatial-wind v2",
+			"id": "seed88217-24modes-thermal-v2",
+			"mode_count": 24,
+			"samples": [
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "515acec1bb3803c0611bafef3d0cf3bf80fadc49a7998a3f"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "e12189a210e706c077c85cfc1929f7bf7f4f6e1e6cca65bf"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "9cfe5842c8fb09c06747cf1bc157f6bf4efa5fa6562ca13f"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 0.25,
+					"wind_bytes_hex": "e26d4be3203193be4c8a2a1a004b80bef896aa3e7d1be9bb"
+				},
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "76f8b04b65fd02c0270514d92b6ff2bf791d57eb92d1663f"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "f8be0451586f06c0ac44d0e4dff3f4bf8fa357b91df18dbf"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "dbfe4e24451609c0f06bfa5be5d1f8bf34cf203ab7ee9cbf"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 2.75,
+					"wind_bytes_hex": "639938e0203193be6c550618004b80be91af5d009069ea3b"
+				},
+				{
+					"position_ned_m": [
+						0.0,
+						0.0,
+						-10.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "fe89fb1e8a1404c0ff50f72ccc61f1bf79f055e6b4578e3f"
+				},
+				{
+					"position_ned_m": [
+						1.5,
+						-2.0,
+						-27.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "1a49e97d65b507c0bd048bd06cb0f3bf2e0b0693c465b9bf"
+				},
+				{
+					"position_ned_m": [
+						42.0,
+						-15.0,
+						-65.0
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "c2f31d1657840ac09c7a5ac2e25cf6bf8912cd64317fb13f"
+				},
+				{
+					"position_ned_m": [
+						-125.0,
+						80.0,
+						-0.0001
+					],
+					"time_s": 17.5,
+					"wind_bytes_hex": "bd0de61a213193be005aacd4ff4a80becd4dc6aff1d0d6bb"
+				}
+			],
+			"spatial_hash": "d38f04a915665468d98b2d85c8aa7d5876e2684391131822949fb10bd8f6e898",
+			"thermal_hash": "9f94940e57e08fe6417fcf51b780424c5992575720264b0c49efc976f49414aa"
+		}
+	],
+	"format": "openrc-spatial-mode-grid-before-opt v1",
+	"positions_ned_m": [
+		[
+			0.0,
+			0.0,
+			-10.0
+		],
+		[
+			1.5,
+			-2.0,
+			-27.0
+		],
+		[
+			42.0,
+			-15.0,
+			-65.0
+		],
+		[
+			-125.0,
+			80.0,
+			-0.0001
+		]
+	],
+	"purpose": "Exact sample-byte parity fixture captured from the frozen pre-packed-mode candidate.",
+	"times_s": [
+		0.25,
+		2.75,
+		17.5
+	]
+}

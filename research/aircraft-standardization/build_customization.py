@@ -41,7 +41,10 @@ PRESENTATION_SOURCE_PATHS_V3 = (
     "res://render/aircraft_customization.gd",
     "res://render/lighting/aircraft_lighting_rig_3d.gd",
     "res://render/lighting/lighting_patterns.gd",
+    "res://render/lighting/lighting_policy.gd",
     "res://render/lighting/lighting_profile.gd",
+    "res://render/lighting/lighting_scene_budget.gd",
+    "res://render/lighting/lighting_skins.gd",
     "res://render/lighting/lighting_vfx.gd",
     "res://render/lighting/rgb_lamp.gdshader",
     "res://render/lighting/rgb_strip.gdshader",
@@ -87,6 +90,12 @@ LIGHT_ANCHOR_LIMIT = 9
 LIGHT_STRIP_LIMIT = 5
 LIGHT_STRIP_POINT_LIMIT = 32
 LIGHT_STRIP_WIDTH_BOUNDS_M = (0.001, 0.05)
+LIGHT_SKIN_ZONE_IDS = LIGHT_STRIP_IDS
+LIGHT_SKIN_MASK_PROFILES_BY_FAMILY = {
+    "jensen-das-ugly-stik-60": {"jensen_stik_film_bays_v1"},
+}
+LIGHT_SKIN_LIMIT = 5
+LIGHT_SKIN_TARGET_TOTAL_LIMIT = 12
 
 
 class CustomizationError(ValueError):
@@ -166,17 +175,26 @@ def _lighting_node_path(value: Any, label: str) -> str:
     return path
 
 
-def validate_lighting_layout(layout: Any, label: str) -> dict[str, Any]:
-    _closed(layout, {"version", "anchors", "strips"}, label)
-    version = layout["version"]
+def validate_lighting_layout(
+    layout: Any,
+    label: str,
+    paint_slots: list[dict[str, Any]] | None = None,
+    family_id: str = "",
+) -> dict[str, Any]:
+    if not isinstance(layout, dict):
+        raise CustomizationError(f"{label} must be an object")
+    version = layout.get("version")
     if isinstance(version, bool) or not isinstance(version, (int, float)):
         raise CustomizationError(f"{label}.version is unsupported")
     try:
         numeric_version = float(version)
     except OverflowError as exc:
         raise CustomizationError(f"{label}.version is unsupported") from exc
-    if not math.isfinite(numeric_version) or numeric_version != 1.0:
+    if not math.isfinite(numeric_version) or numeric_version not in (1.0, 2.0):
         raise CustomizationError(f"{label}.version is unsupported")
+    version_number = int(numeric_version)
+    layout_keys = {"version", "anchors", "strips"} | ({"skins"} if version_number == 2 else set())
+    _closed(layout, layout_keys, label)
     anchors, strips = layout["anchors"], layout["strips"]
     if not isinstance(anchors, list) or len(anchors) > LIGHT_ANCHOR_LIMIT:
         raise CustomizationError(f"{label}.anchors must be an array of at most {LIGHT_ANCHOR_LIMIT} entries")
@@ -256,11 +274,73 @@ def validate_lighting_layout(layout: Any, label: str) -> dict[str, Any]:
             "width_m": width,
         })
 
-    return {
-        "version": 1,
+    validated_skins: list[dict[str, Any]] = []
+    skin_ids: set[str] = set()
+    used_target_ids: set[str] = set()
+    skin_target_count = 0
+    raw_skins = layout["skins"] if version_number == 2 else []
+    if not isinstance(raw_skins, list) or len(raw_skins) > LIGHT_SKIN_LIMIT:
+        raise CustomizationError(f"{label}.skins must be an array of at most {LIGHT_SKIN_LIMIT} entries")
+    paint_targets_by_slot: dict[str, dict[str, dict[str, Any]]] = {}
+    for slot in paint_slots or []:
+        if not isinstance(slot, dict) or not isinstance(slot.get("id"), str):
+            continue
+        paint_targets_by_slot[str(slot["id"])] = {
+            str(target["target_id"]): target
+            for target in slot.get("targets", [])
+            if isinstance(target, dict) and isinstance(target.get("target_id"), str)
+        }
+    for index, skin in enumerate(raw_skins):
+        skin_label = f"{label}.skins[{index}]"
+        _closed(skin, {"zone_id", "paint_slot_id", "target_ids", "mask_profile_id"}, skin_label)
+        zone_id = skin["zone_id"]
+        if not isinstance(zone_id, str) or zone_id not in LIGHT_SKIN_ZONE_IDS:
+            raise CustomizationError(f"{skin_label}.zone_id is unsupported")
+        if zone_id in skin_ids:
+            raise CustomizationError(f"{skin_label}.zone_id is duplicated")
+        skin_ids.add(zone_id)
+        paint_slot_id = _text(skin["paint_slot_id"], SLOT_ID_RE, f"{skin_label}.paint_slot_id")
+        slot_targets = paint_targets_by_slot.get(paint_slot_id)
+        if slot_targets is None:
+            raise CustomizationError(f"{skin_label}.paint_slot_id does not resolve to an authored paint slot")
+        target_ids = skin["target_ids"]
+        if not isinstance(target_ids, list) or not target_ids or len(target_ids) > LIGHT_SKIN_TARGET_TOTAL_LIMIT:
+            raise CustomizationError(f"{skin_label}.target_ids must contain 1 to {LIGHT_SKIN_TARGET_TOTAL_LIMIT} entries")
+        normalized_target_ids: list[str] = []
+        for target_index, target_value in enumerate(target_ids):
+            target_label = f"{skin_label}.target_ids[{target_index}]"
+            target_id = _text(target_value, SLOT_ID_RE, target_label)
+            if target_id in used_target_ids:
+                raise CustomizationError(f"{target_label} duplicates a skin surface target")
+            target = slot_targets.get(target_id)
+            if target is None:
+                raise CustomizationError(f"{target_label} does not resolve inside paint slot {paint_slot_id!r}")
+            if target.get("kind") != "standard_albedo":
+                raise CustomizationError(f"{target_label} must resolve to a standard_albedo paint target")
+            used_target_ids.add(target_id)
+            normalized_target_ids.append(target_id)
+            skin_target_count += 1
+            if skin_target_count > LIGHT_SKIN_TARGET_TOTAL_LIMIT:
+                raise CustomizationError(f"{label}.skins may reference at most {LIGHT_SKIN_TARGET_TOTAL_LIMIT} targets total")
+        mask_profile_id = skin["mask_profile_id"]
+        registered_masks = LIGHT_SKIN_MASK_PROFILES_BY_FAMILY.get(family_id, set())
+        if not isinstance(mask_profile_id, str) or mask_profile_id not in registered_masks:
+            raise CustomizationError(f"{skin_label}.mask_profile_id is not registered for {family_id!r}")
+        validated_skins.append({
+            "zone_id": zone_id,
+            "paint_slot_id": paint_slot_id,
+            "target_ids": normalized_target_ids,
+            "mask_profile_id": mask_profile_id,
+        })
+
+    result = {
+        "version": version_number,
         "anchors": sorted(validated_anchors, key=lambda value: value["id"]),
         "strips": sorted(validated_strips, key=lambda value: value["id"]),
     }
+    if version_number == 2:
+        result["skins"] = sorted(validated_skins, key=lambda value: value["zone_id"])
+    return result
 
 
 def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[str, Any]]:
@@ -285,6 +365,7 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
         paint_slots: list[dict[str, Any]] = []
         paint_ids: set[str] = set()
         seen_targets: set[tuple[str, int]] = set()
+        paint_target_ids: set[str] = set()
         for slot_index, slot in enumerate(family["paint_slots"]):
             slot_label = f"{label}.paint_slots[{slot_index}]"
             _closed(slot, {"id", "label", "targets"}, slot_label)
@@ -302,6 +383,8 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
                     raise CustomizationError(f"{target_label} must be an object")
                 kind = target.get("kind")
                 expected = {"node_path", "surface", "kind"} | ({"parameter"} if kind == "shader_color" else set())
+                if "target_id" in target:
+                    expected.add("target_id")
                 _closed(target, expected, target_label)
                 node_path = _text(target["node_path"], NODE_PATH_RE, f"{target_label}.node_path")
                 if type(target["surface"]) is not int or target["surface"] < 0 or target["surface"] > 64:
@@ -310,6 +393,11 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
                     raise CustomizationError(f"{target_label}.kind is unsupported")
                 if kind == "shader_color":
                     _text(target["parameter"], PARAM_RE, f"{target_label}.parameter")
+                if "target_id" in target:
+                    target_id = _text(target["target_id"], SLOT_ID_RE, f"{target_label}.target_id")
+                    if target_id in paint_target_ids:
+                        raise CustomizationError(f"{target_label}.target_id is duplicated")
+                    paint_target_ids.add(target_id)
                 target_key = (node_path, target["surface"])
                 if target_key in seen_targets:
                     raise CustomizationError(f"{target_label} duplicates a paint target")
@@ -444,7 +532,7 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
             "paint_slots": sorted(paint_slots, key=lambda value: value["id"]),
             "marking_slots": sorted(marking_slots, key=lambda value: value["id"]),
             "smoke_slots": sorted(smoke_slots, key=lambda value: value["id"]),
-            "lighting_layout": validate_lighting_layout(family["lighting_layout"], f"{label}.lighting_layout")
+            "lighting_layout": validate_lighting_layout(family["lighting_layout"], f"{label}.lighting_layout", paint_slots, family_id)
             if source["version"] == 3 else empty_lighting_layout(),
         }
     if set(families) != expected_families:

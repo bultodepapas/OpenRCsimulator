@@ -1,0 +1,9 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+GP11 plane oracle: gap_rate_error_mps=0.0000000000256 virtual_work_error_W=0.0 normal_balance_W=0.0
+GP11 curved oracle gap_rate_error_mps=0.00000000001175
+GP11 kernel sag=true rate_Hz=240 energy_heat_error_J=0.0 H_impulse_error_Nms=0.0 damper_heat_J=0.0
+GP11 kernel sag=false rate_Hz=120 energy_heat_error_J=0.00252741824653 H_impulse_error_Nms=0.00000010732116 damper_heat_J=0.91542366465182
+GP11 kernel sag=false rate_Hz=240 energy_heat_error_J=0.00011215761548 H_impulse_error_Nms=0.00000003471674 damper_heat_J=0.91278640084504
+GP11 kernel sag=false rate_Hz=480 energy_heat_error_J=0.00004460490788 H_impulse_error_Nms=0.00000000160923 damper_heat_J=0.91285281314414
+Aircraft ground dynamics: 146 checks, 0 failed

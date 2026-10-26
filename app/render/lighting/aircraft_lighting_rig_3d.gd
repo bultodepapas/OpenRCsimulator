@@ -5,7 +5,9 @@ class_name AircraftLightingRig3D
 const Profile := preload("res://render/lighting/lighting_profile.gd")
 const AircraftLights := preload("res://render/world/aircraft_lights.gd")
 const Patterns := preload("res://render/lighting/lighting_patterns.gd")
+const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
 const LightingVfx := preload("res://render/lighting/lighting_vfx.gd")
+const LightingSkins := preload("res://render/lighting/lighting_skins.gd")
 const RGB_STRIP_SHADER := preload("res://render/lighting/rgb_strip.gdshader")
 const RGB_LAMP_SHADER := preload("res://render/lighting/rgb_lamp.gdshader")
 
@@ -40,6 +42,8 @@ var _last_seconds := -1.0
 var _last_frame_writes := 0
 var _last_mode_writes := 0
 var _vfx: RefCounted
+var _skins: RefCounted
+var _last_exposure := 1.0
 var _emission_bindings: Dictionary = {}
 var _previous_emission_mode := "all"
 var _previous_emission_gain := 1.0
@@ -48,6 +52,7 @@ var _warnings: Array[String] = []
 
 ## Validates and stages one accepted profile. Inherit is deliberately lazy and does not attach a NightKit.
 func configure(aircraft_root: Node3D, raw_profile: Dictionary) -> Dictionary:
+	LightingPolicy.register()
 	if aircraft_root == null or not is_instance_valid(aircraft_root):
 		return {"ok": false, "errors": ["aircraft root is unavailable"], "warnings": []}
 	var checked: Dictionary = Profile.validate(raw_profile)
@@ -106,6 +111,12 @@ func configure(aircraft_root: Node3D, raw_profile: Dictionary) -> Dictionary:
 	_emission_bindings = AircraftLights.prepare_emission(root)
 	_capture_emission_baseline(requested_mode)
 	_apply_profile_materials()
+	_warnings.append_array(aircraft_root.get_meta("lighting_skin_warnings", []))
+	var skin_bindings: Variant = aircraft_root.get_meta("lighting_skin_bindings", [])
+	if skin_bindings is Array and not skin_bindings.is_empty():
+		_skins = LightingSkins.new()
+		var skin_result: Dictionary = _skins.configure(root, _profile)
+		_warnings.append_array(skin_result.get("warnings", []))
 
 	_vfx = LightingVfx.new()
 	var vfx_result: Dictionary = _vfx.configure(root, kit, _profile)
@@ -149,7 +160,7 @@ func set_mode(mode: String, gain := 1.0) -> void:
 			var light := node as Light3D
 			if is_instance_valid(light):
 				var light_zone: Dictionary = binding.get("zone", {})
-				light.light_color = Patterns.sample(light_zone.get("pattern", {}), 0.0, 0.5, _profile.get("sequence", []), str(binding.get("zone_id", "")))
+				light.light_color = LightingPolicy.sample(light_zone.get("pattern", {}), 0.0, 0.5, _profile.get("sequence", []), str(binding.get("zone_id", "")))
 				light.light_energy = float(binding.get("base_energy", 0.0)) * _zone_gain(str(binding.get("zone_id", ""))) if show_binding else 0.0
 			continue
 		var material: ShaderMaterial = binding.get("material")
@@ -164,6 +175,7 @@ func set_mode(mode: String, gain := 1.0) -> void:
 	_last_frame_writes = previous_frame_writes
 	if _vfx != null:
 		_vfx.set_mode(_mode, _gain)
+	_advance_skins(maxf(_last_seconds, 0.0), {"exposure": _last_exposure})
 
 
 ## Advances all visual clocks from the already displayed pose; no simulation object is read here.
@@ -176,6 +188,7 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 	if _last_seconds >= 0.0 and seconds < _last_seconds:
 		reset()
 	var exposure := _number_or(telemetry.get("exposure", 1.0), 1.0, 0.0001, 1000000.0)
+	_last_exposure = exposure
 	for binding: Dictionary in _materials:
 		var bound_node: Node3D = binding.get("node")
 		if not is_instance_valid(bound_node):
@@ -185,8 +198,8 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 			if not is_instance_valid(light):
 				continue
 			var spot_zone: Dictionary = binding.get("zone", {})
-			light.light_color = Patterns.sample(spot_zone.get("pattern", {}), seconds, 0.5, _profile.get("sequence", []), str(binding.get("zone_id", "")))
-			var spot_reaction := Patterns.reactive_multiplier(spot_zone.get("reactive", {}), telemetry)
+			light.light_color = LightingPolicy.sample(spot_zone.get("pattern", {}), seconds, 0.5, _profile.get("sequence", []), str(binding.get("zone_id", "")))
+			var spot_reaction := LightingPolicy.reaction(spot_zone.get("reactive", {}), telemetry)
 			var spot_group := str(binding.get("group", ""))
 			var spot_show := bool(binding.get("enabled", false)) and spot_group in _supported_light_groups() \
 				and (_mode == "all" or (_mode == "nav" and spot_group in ["navigation", "strobe"])) \
@@ -204,11 +217,11 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 			var steady_zone_id := str(binding.get("zone_id", ""))
 			var steady_pattern: Dictionary = steady_zone.get("pattern", {})
 			if not steady_pattern.is_empty():
-				var steady_color := Patterns.sample(steady_pattern, seconds, 0.5, _profile.get("sequence", []), steady_zone_id)
+				var steady_color := LightingPolicy.sample(steady_pattern, seconds, 0.5, _profile.get("sequence", []), steady_zone_id)
 				_set_param(material, binding, "light_color", steady_color)
 				if str(steady_pattern.get("id", "steady")) != "steady":
 					_set_param(material, binding, "flash", Vector4(1.0, 0.0, 0.0, 0.0))
-			var steady_reaction := Patterns.reactive_multiplier(steady_zone.get("reactive", {}), telemetry)
+			var steady_reaction := LightingPolicy.reaction(steady_zone.get("reactive", {}), telemetry)
 			if not bool(steady_reaction.get("available", true)):
 				var steady_source := str((steady_zone.get("reactive", {}) as Dictionary).get("source", "none"))
 				var steady_warning := "reactive source '%s' is unavailable; base pattern remains active" % steady_source
@@ -222,14 +235,14 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 			continue
 		var zone_id := str(binding.get("zone_id", ""))
 		var zone: Dictionary = binding.get("zone", {})
-		var resolved := Patterns.resolve(binding.get("pattern", {}), seconds, _profile.get("sequence", []), zone_id)
+		var resolved := LightingPolicy.resolve(binding.get("pattern", {}), seconds, _profile.get("sequence", []), zone_id)
 		var active_pattern: Dictionary = resolved.get("pattern", {})
 		var signature := JSON.stringify(active_pattern)
 		if signature != str(binding.get("pattern_signature", "")):
 			_apply_pattern_uniforms(material, binding, active_pattern, signature)
 		_set_param(material, binding, "pattern_phase", float(resolved.get("phase", 0.0)))
 		_set_param(material, binding, "local_exposure", exposure)
-		var reaction := Patterns.reactive_multiplier(zone.get("reactive", {}), telemetry)
+		var reaction := LightingPolicy.reaction(zone.get("reactive", {}), telemetry)
 		if not bool(reaction.get("available", true)):
 			var reactive: Dictionary = zone.get("reactive", {})
 			var source := str(reactive.get("source", "none"))
@@ -239,9 +252,16 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 		var scale := _zone_gain(zone_id) * float(reaction.get("multiplier", 1.0))
 		_set_param(material, binding, "effect_gain", scale)
 	_apply_profile_emission(seconds, telemetry)
+	_advance_skins(seconds, telemetry)
 	if _vfx != null:
 		_vfx.advance(seconds, telemetry)
 	_last_seconds = seconds
+
+
+func _advance_skins(seconds: float, telemetry: Dictionary) -> void:
+	if _skins == null: return
+	var skin_mode := _mode if is_instance_valid(kit) and kit.visible and "orientation" in _supported_light_groups() else "off"
+	_skins.advance(seconds, telemetry, skin_mode, _gain)
 
 
 func reset() -> void:
@@ -266,6 +286,10 @@ func reset() -> void:
 
 ## Restores only resources and overrides owned by this facade; it never frees the aircraft root or kit.
 func dispose() -> void:
+	if _skins != null:
+		_skins.dispose()
+		_skins = null
+	_last_exposure = 1.0
 	_restore_materials()
 	if _vfx != null:
 		_vfx.dispose()
@@ -298,6 +322,7 @@ func budget_info() -> Dictionary:
 		"spill_lights_allocated": 0,
 	}
 	return {
+		"skins": _skins.budget_info() if _skins != null else {"targets": 0},
 		"active": _active,
 		"selection": str(_profile.get("selection", "inherit")),
 		"zones_requested": _zones.size(),
@@ -683,8 +708,8 @@ func _apply_profile_emission(seconds: float, telemetry: Dictionary) -> void:
 		if not zone_id.is_empty() and _zones.has(zone_id):
 			var zone: Dictionary = _zones[zone_id]
 			var pattern: Dictionary = zone.get("pattern", {})
-			material.emission = Patterns.sample(pattern, seconds, 0.5, _profile.get("sequence", []), zone_id)
-			var reaction := Patterns.reactive_multiplier(zone.get("reactive", {}), telemetry)
+			material.emission = LightingPolicy.sample(pattern, seconds, 0.5, _profile.get("sequence", []), zone_id)
+			var reaction := LightingPolicy.reaction(zone.get("reactive", {}), telemetry)
 			var enabled := bool(zone.get("enabled", true)) and _profile_group_on(group)
 			material.emission_enabled = enabled
 			material.emission_energy_multiplier = float(binding.get("energy", 0.0)) * _zone_gain(zone_id) * float(reaction.get("multiplier", 1.0)) if enabled else 0.0
@@ -778,7 +803,7 @@ func _profile_color(zone: Dictionary, source: ShaderMaterial) -> Color:
 	var original := _color(_shader_value(source, "light_color", Color.WHITE), Color.WHITE)
 	var pattern: Variant = zone.get("pattern", {})
 	if pattern is Dictionary and not pattern.is_empty():
-		return Patterns.sample(pattern, 0.0, 0.5, _profile.get("sequence", []), str(zone.get("id", "")))
+		return LightingPolicy.sample(pattern, 0.0, 0.5, _profile.get("sequence", []), str(zone.get("id", "")))
 	return original
 
 

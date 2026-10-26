@@ -1,0 +1,26 @@
+{
+  "resolution": [
+    1920,
+    1080
+  ],
+  "renderer": "OpenGL Compatibility / NVIDIA GeForce RTX 3090",
+  "software_interaction_only": true,
+  "performance_qualification": false,
+  "initial_review": "tmp/debug-bridge/20261025-205329-47870",
+  "fix_recheck": "tmp/debug-bridge/20261025-210222-47870",
+  "checks": [
+    "realistic main and nested preset selections match",
+    "derived gust displays 0.28; exact untouched data preserved by unit test",
+    "advanced fields scroll; Apply and Cancel remain available",
+    "English and Spanish Home reference summary",
+    "Spanish thermal main and nested preset selections match",
+    "Cancel preserves applied weather",
+    "Jensen runway startup; tick 1535 to 2015 with two paused 240-tick steps",
+    "owned sessions stopped with crash null and zero leaked objects"
+  ],
+  "limits": [
+    "startup at zero throttle is not airborne gust-response evidence",
+    "Spanish tab bar uses horizontal scrolling",
+    "captures intentionally retained only under ignored tmp; no images added to evidence"
+  ]
+}

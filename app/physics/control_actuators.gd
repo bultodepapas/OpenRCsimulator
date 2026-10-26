@@ -138,8 +138,8 @@ static func fixed_axis_motion(reference_axis: PackedFloat64Array, hinge_axis: Pa
 		return _angle_failure("fixed-axis motion requires finite state and unit reference/hinge axes")
 	var reference := M.scale(reference_axis, 1.0 / M.norm(reference_axis))
 	var hinge := M.scale(hinge_axis, 1.0 / M.norm(hinge_axis))
-	var cosine := cos(angle_rad)
-	var sine := sin(angle_rad)
+	var cosine := M.cos_(angle_rad)
+	var sine := M.sin_(angle_rad)
 	var axis := M.add(M.add(M.scale(reference, cosine), M.scale(M.cross(hinge, reference), sine)),
 		M.scale(hinge, M.dot(hinge, reference) * (1.0 - cosine)))
 	var rate := M.scale(hinge, rate_radps)

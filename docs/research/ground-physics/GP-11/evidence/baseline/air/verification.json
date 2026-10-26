@@ -1,0 +1,24 @@
+{
+	"checks": 1082,
+	"failures": 0,
+	"measurements": [
+		{
+			"aircraft": "res://data/aircraft/jensen_ugly_stik_60.json",
+			"baseline_usec": 176411,
+			"bytes": 232932,
+			"observer_usec": 13035,
+			"peak_buffer_rows": 199,
+			"recorded_usec": 189717,
+			"ticks": 260
+		},
+		{
+			"aircraft": "res://data/aircraft/p51d_mustang_120.json",
+			"baseline_usec": 694719,
+			"bytes": 270012,
+			"observer_usec": 40846,
+			"peak_buffer_rows": 199,
+			"recorded_usec": 755303,
+			"ticks": 260
+		}
+	]
+}

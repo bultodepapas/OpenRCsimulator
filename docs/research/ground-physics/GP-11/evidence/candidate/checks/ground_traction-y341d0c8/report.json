@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d3b2b6a2-b903-41f0-8424-a7536c6fcf8f",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/gp-next-implementation/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ground_traction.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:55:49.284530+00:00",
+  "label": "ground_traction",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\ground_traction-y341d0c8\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\ground_traction-y341d0c8\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.625,
+  "log_bytes": 110,
+  "log_sha256": "6ffae27c3a9b95a6e7595cef3949a0e0fa759fefd7e46371de43fa59740bb303"
+}

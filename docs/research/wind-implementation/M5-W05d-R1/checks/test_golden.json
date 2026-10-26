@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "09797ccb-94b5-49a0-b170-ce1afdf2b1c3",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_golden.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:57:56.414340+00:00",
+  "label": "test_golden",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-205314\\checks\\test_golden-1tf8bcq2\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-205314\\checks\\test_golden-1tf8bcq2\\report.json",
+  "timeout_seconds": 600.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.812,
+  "log_bytes": 1070,
+  "log_sha256": "19cbc5d8b74aca746c81dd146b8afbbfe29ee9e8f3aeedb6caddbe98a3e79f98"
+}

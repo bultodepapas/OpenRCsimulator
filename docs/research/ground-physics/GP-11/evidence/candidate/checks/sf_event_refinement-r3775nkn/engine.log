@@ -1,0 +1,76 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   event_step 240 Hz: every tick accepted 
+ok   event_step 240 Hz: exactly one rotor stop [{ &"tick": 13, &"type": "rotor_stop", &"time_s": 0.05343050239926 }]
+ok   event_step 240 Hz: the shaft rests at exactly zero after the stop 
+     event_step 240 Hz: stop-time error 5.46e-10 s, roll-rate error -1.02e-9 rad/s, beyond-boundary stages 6
+ok   event_step 240 Hz: the shared locator evaluates the continuation beyond the boundary 
+ok   event_step 480 Hz: every tick accepted 
+ok   event_step 480 Hz: exactly one rotor stop [{ &"tick": 26, &"type": "rotor_stop", &"time_s": 0.05343050188749 }]
+ok   event_step 480 Hz: the shaft rests at exactly zero after the stop 
+     event_step 480 Hz: stop-time error 3.41e-11 s, roll-rate error -6.40e-11 rad/s, beyond-boundary stages 6
+ok   event_step 480 Hz: the shared locator evaluates the continuation beyond the boundary 
+ok   event_step 960 Hz: every tick accepted 
+ok   event_step 960 Hz: exactly one rotor stop [{ &"tick": 52, &"type": "rotor_stop", &"time_s": 0.05343050185552 }]
+ok   event_step 960 Hz: the shaft rests at exactly zero after the stop 
+     event_step 960 Hz: stop-time error 2.15e-12 s, roll-rate error -4.03e-12 rad/s, beyond-boundary stages 8
+ok   event_step 960 Hz: the shared locator evaluates the continuation beyond the boundary 
+ok   adapter 240 Hz: every tick accepted 
+ok   adapter 240 Hz: exactly one rotor stop [{ &"tick": 13, &"type": "rotor_stop", &"time_s": 0.05343050238268 }]
+ok   adapter 240 Hz: the shaft rests at exactly zero after the stop 
+     adapter 240 Hz: stop-time error 5.29e-10 s, roll-rate error -9.93e-10 rad/s, beyond-boundary stages 0
+ok   adapter 240 Hz: no stage beyond the boundary is evaluated 
+ok   adapter 480 Hz: every tick accepted 
+ok   adapter 480 Hz: exactly one rotor stop [{ &"tick": 26, &"type": "rotor_stop", &"time_s": 0.05343050188705 }]
+ok   adapter 480 Hz: the shaft rests at exactly zero after the stop 
+     adapter 480 Hz: stop-time error 3.37e-11 s, roll-rate error -6.37e-11 rad/s, beyond-boundary stages 0
+ok   adapter 480 Hz: no stage beyond the boundary is evaluated 
+ok   adapter 960 Hz: every tick accepted 
+ok   adapter 960 Hz: exactly one rotor stop [{ &"tick": 52, &"type": "rotor_stop", &"time_s": 0.0534305018553 }]
+ok   adapter 960 Hz: the shaft rests at exactly zero after the stop 
+     adapter 960 Hz: stop-time error 1.93e-12 s, roll-rate error -4.03e-12 rad/s, beyond-boundary stages 0
+ok   adapter 960 Hz: no stage beyond the boundary is evaluated 
+ok   event_step: stop time within 2e-9 s of the analytic root at 240 Hz 5.46e-10
+ok   event_step: roll rate within 4e-9 rad/s of the analytic integral at 240 Hz 1.02e-9
+ok   event_step 240→480 Hz: fourth-order refinement (error ratios 16.0, 16.0 ≥ 12) 
+ok   event_step 480→960 Hz: fourth-order refinement (error ratios 15.9, 15.9 ≥ 12) 
+ok   adapter: stop time within 2e-9 s of the analytic root at 240 Hz 5.29e-10
+ok   adapter: roll rate within 4e-9 rad/s of the analytic integral at 240 Hz 9.93e-10
+ok   adapter 240→480 Hz: fourth-order refinement (error ratios 15.7, 15.6 ≥ 12) 
+ok   adapter 480→960 Hz: fourth-order refinement (error ratios 17.4, 15.8 ≥ 12) 
+ok   the two locators agree on the stop within 1e-10 s at every rate 1.66e-11
+ok   a law refusing the far side cannot sit behind the shared locator: the stop tick faults step rejected: RK joint stage evaluation is nonfinite or malformed
+ok   the faulted tick rolled back to a positive shaft speed 
+ok   event_step: one stop and no chatter while held at rest for 0.9 s 1
+ok   event_step: checkpoint restores 
+ok   event_step: replay from the checkpoint reproduces the bytes and the event 
+ok   event_step: restart from rest without an event, Ω(0.1 s) within 1e-7 of the analytic 6.883388 -4.75e-8
+ok   adapter: one stop and no chatter while held at rest for 0.9 s 1
+ok   adapter: checkpoint restores 
+ok   adapter: replay from the checkpoint reproduces the bytes and the event 
+ok   adapter: restart from rest without an event, Ω(0.1 s) within 1e-7 of the analytic 6.883388 -4.75e-8
+ok   joint substep selector receives each tick's current k1 context observed [{ &"sequence": 1, &"stage_calls": 1, &"time_s": 0.0, &"position_x": 0.0, &"continuous_value": 1.0, &"context_time_s": 0.0, &"context_position_x": 0.0, &"context_continuous_value": 1.0 }, { &"sequence": 9, &"stage_calls": 9, &"time_s": 0.00416666666667, &"position_x": 0.0, &"continuous_value": 1.00416666666667, &"context_time_s": 0.00416666666667, &"context_position_x": 0.0, &"context_continuous_value": 1.00416666666667 }]
+ok   two joint-selected substeps advance through the normal RK4 path stage calls=16; selector calls=2; fault ''
+ok   the second tick's k1 context reflects its updated boundary state [{ &"sequence": 1, &"stage_calls": 1, &"time_s": 0.0, &"position_x": 0.0, &"continuous_value": 1.0, &"context_time_s": 0.0, &"context_position_x": 0.0, &"context_continuous_value": 1.0 }, { &"sequence": 9, &"stage_calls": 9, &"time_s": 0.00416666666667, &"position_x": 0.0, &"continuous_value": 1.00416666666667, &"context_time_s": 0.00416666666667, &"context_position_x": 0.0, &"context_continuous_value": 1.00416666666667 }]
+ok   legacy three-argument substeps callback still selects one tick's resolution calls=1; continuous=[0.00416666666667]; fault ''
+ok   a policy tick asking for 2 contact substeps is refused, not integrated over the full dt step rejected: the step policy owns the tick and cannot honour 2 contact substeps
+ok   the refused tick rolled back 
+ok   the policy model resets 
+ok   one substep under a policy is accepted 
+ok   joint substep count above one is refused under a whole-tick step policy step rejected: the step policy owns the tick and cannot honour 2 contact substeps
+ok   joint policy model resets after the refused tick 
+ok   one joint-selected substep remains valid under a whole-tick policy 
+ok   joint substep requests above the cap fail closed without clipping requested 17; cap 16; fault 'step rejected: substep count is not an integer within 1..16'
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-61fx-2t runs a step policy with 1 derived gear substep(s); the kernel allows 1 
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-55ax-2t runs a step policy with 1 derived gear substep(s); the kernel allows 1 
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-fs64v-4t runs a step policy with 1 derived gear substep(s); the kernel allows 1 
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   gp-extra-300s-60 runs a step policy with 1 derived gear substep(s); the kernel allows 1 
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   the catalog inventory found the policy airplanes (glow Stiks) 4
+60 checks, 0 failed

@@ -1,0 +1,18 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   legacy zero-wind no-callback result retains pre-seam bytes
+ok   legacy uniform-wind no-callback result retains pre-seam bytes
+ok   linear field candidate Air solves eastbound runway
+ok   candidate Air is sampled at changing eastbound poses
+ok   candidate solver records stage-air sampling eastbound
+ok   linear world wind matches each sampled candidate position eastbound
+ok   stage Air samples its aerodynamic and propulsion stations eastbound
+ok   linear field candidate Air solves westbound runway
+ok   candidate Air is sampled at changing westbound poses
+ok   candidate solver records stage-air sampling westbound
+ok   linear world wind matches each sampled candidate position westbound
+ok   stage Air samples its aerodynamic and propulsion stations westbound
+ok   bad candidate query refuses instead of using uniform wind
+ok   missing Air.v_air refuses without publishing a state  candidate_air_at_state rejected engine-off residual: air.v_air must contain three finite body-frame components
+ok   nonfinite Air.qbar refuses without publishing a state  candidate_air_at_state rejected engine-off residual: air.qbar must be finite and nonnegative
+M5-W05c-R2 spatial runway start: 15 checks, 0 failed

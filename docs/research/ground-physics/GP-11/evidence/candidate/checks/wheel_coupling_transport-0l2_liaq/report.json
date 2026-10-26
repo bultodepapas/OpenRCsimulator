@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6a83822d-21c1-495a-ab19-7de9cc626f5f",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/gp-next-implementation/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_wheel_coupling_transport.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:55:46.605333+00:00",
+  "label": "wheel_coupling_transport",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\wheel_coupling_transport-0l2_liaq\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\wheel_coupling_transport-0l2_liaq\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.078,
+  "log_bytes": 659,
+  "log_sha256": "a61a0ccb5e4fdd4109b14d8e798d92374182f1b91f0fd095c2199d4bb0c0c770"
+}

@@ -153,6 +153,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	header.add_child(title)
 	column.add_child(header)
 	subtitle_label = _label(LEGACY_WIND_SUBTITLE, "SecondaryLabel", true)
+	subtitle_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 
 	var preset_row: HBoxContainer = HBoxContainer.new()
 	preset_row.add_theme_constant_override("separation", 12)

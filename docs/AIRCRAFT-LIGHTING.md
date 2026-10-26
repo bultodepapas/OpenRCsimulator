@@ -38,6 +38,14 @@ RGB shader bindings are limited to the existing nine lamp meshes and five strips
 
 Initial semantic zones are `nav_left`, `nav_right`, `nav_tail`, `strobe_left`, `strobe_right`, `strobe_dorsal`, `strobe_ventral`, `strip_left`, `strip_right`, `strip_top_left`, `strip_top_right`, `strip_belly`, and `landing_lamp`. Wingtip show anchors are `vfx_tip_left` and `vfx_tip_right`. Aircraft equipment declarations and geometry determine availability; choosing a preset does not manufacture an unsupported lamp or a valid internal volume.
 
+## Global lighting preferences
+
+Settings → **Lighting** applies to every aircraft and Workshop preview. **Low** retains LEDs and landing lights while hiding decorative spill and show effects. **Standard** emits half the High particle count and samples show trails at 15 Hz; **High** retains the bounded 32-particle tip pools and 30 Hz trail sampling. These are workload controls, not hardware frame-rate guarantees.
+
+**Aircraft show effects** immediately clears visible show transients when disabled. Reenabling waits for a new cue or maneuver event. **Reduce aircraft flashes** makes aircraft strobes steady, replaces animated RGB/cue colors with their base color, preserves static segment palettes, suppresses reactive brightness and disables show effects. It does not rewrite saved aircraft profiles or alter unrelated field strobes. Turning it off resumes the displayed-pose pattern clock.
+
+The existing reversible Settings Keep/Revert/Close flow persists optional schema-1 keys in `display.cfg [aircraft_lighting]`: `quality` (`low`, `standard`, `high`; default `standard`), `reduced_flashes` (default false), and `show_vfx` (default true). Old files receive defaults, invalid individual lighting values fall back independently with a diagnostic, and future-version files remain read-only. Previewing these preferences changes presentation only.
+
 ## Shared selection interface
 
 [`aircraft_light_state.gd`](../app/render/world/aircraft_light_state.gd) is a persistent, flight-owned `RefCounted`. It owns timing and precedence; adapters own luminous nodes and rendering.

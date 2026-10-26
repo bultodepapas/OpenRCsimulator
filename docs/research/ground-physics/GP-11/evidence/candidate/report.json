@@ -1,0 +1,381 @@
+{
+  "format": "openrc-ground-next-final-cohort v1",
+  "utc": "2026-10-26T02:00:03.492923+00:00",
+  "source_before": "source-before.json",
+  "source_after": "source-after.json",
+  "selected_overlay": "overlay.json",
+  "source_unchanged": true,
+  "frozen_source_file_count": 151,
+  "five_baseline_input_bytes_unchanged": true,
+  "baseline_tapes_unchanged": true,
+  "checked_invocations": [
+    {
+      "label": "aircraft_ground_dynamics",
+      "report": "checks/aircraft_ground_dynamics-plx4u8ke/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 146,
+      "log_sha256": "7877bf12216120a6af38df2864a228e2244588cd7f07083c60eb48c417d7e613"
+    },
+    {
+      "label": "aircraft_ground_impulse",
+      "report": "checks/aircraft_ground_impulse-fd9jphsi/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 94,
+      "log_sha256": "0108ca6f0b1f9915f499f83c397428604b3631e36794bb6d280e92f288036426"
+    },
+    {
+      "label": "aircraft_ground_profile",
+      "report": "checks/aircraft_ground_profile-qv952wc6/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 123,
+      "log_sha256": "9fee9358b25be19acfaac9066eb8057c44e512a48623db7ab6af71eb44dd7b2b"
+    },
+    {
+      "label": "aircraft_ground_stage",
+      "report": "checks/aircraft_ground_stage-ky7h26au/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 145,
+      "log_sha256": "029b3fffbaf4fba75f87cfd536a68bde0740b891686527d546c33820420b7159"
+    },
+    {
+      "label": "checkpoint",
+      "report": "checks/checkpoint-2pblapie/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 92,
+      "log_sha256": "0b64dcef240dd23baaf316656fb2c5a9da2481329e7e06e5432f60ce44b9724e"
+    },
+    {
+      "label": "checkpoint_integrity",
+      "report": "checks/checkpoint_integrity-td_if0fk/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 149,
+      "log_sha256": "31c337e2aded57641bcbe65f0a829437c00eb9592bc9d1e2c6d21ba497aa65e6"
+    },
+    {
+      "label": "endpoint_transition",
+      "report": "checks/endpoint_transition-dgp7uneg/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 274,
+      "log_sha256": "aa63d3d6bcf1059df73f8bc6bd80b346e5e377433b3493ad9629cad3e8a5b3e0"
+    },
+    {
+      "label": "fixed_datum_coupled",
+      "report": "checks/fixed_datum_coupled-44udvmvu/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 925,
+      "log_sha256": "6138de0357ce10490ed97e70d3cee569bd14a81674a2d9be0493fd8507ed8338"
+    },
+    {
+      "label": "gear_damage",
+      "report": "checks/gear_damage-takp3g2b/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 113,
+      "log_sha256": "a907696c9a4f083e2c38c215fec4f550b9c1e80e9cb9ef3fe647266b27c8e8d4"
+    },
+    {
+      "label": "ground_traction",
+      "report": "checks/ground_traction-y341d0c8/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 370,
+      "log_sha256": "6ffae27c3a9b95a6e7595cef3949a0e0fa759fefd7e46371de43fa59740bb303"
+    },
+    {
+      "label": "integration_receipt",
+      "report": "checks/integration_receipt-db9mygrv/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 36,
+      "log_sha256": "b1f1adeac10a17a57219c3983d07ec9cf9d1c20616e8b31ba7dcaa9235b6a334"
+    },
+    {
+      "label": "normal_compliance",
+      "report": "checks/normal_compliance-ythb_iuc/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 88,
+      "log_sha256": "799a87ec4d91a6be358873f25b5205ca538fa49e2d905d941c2d05d400b64751"
+    },
+    {
+      "label": "p51-air-native",
+      "report": "checks/p51-air-native-mw0maw97/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": null,
+      "log_sha256": "525f33c30ba0bfaf13a022a77ad8dd3491d2768dc41669a3edd5839959aed555"
+    },
+    {
+      "label": "p51-ground-native",
+      "report": "checks/p51-ground-native-e2ix_mfw/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": null,
+      "log_sha256": "41ac937913c56a7e4689b66a617b4b49de57ec0a9620a56b617c2ea1619735b0"
+    },
+    {
+      "label": "prescribed_steering",
+      "report": "checks/prescribed_steering-_mgaav7g/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 273,
+      "log_sha256": "81534dc602a51d26b73db37a054e7ae05c7d24904315e3932eb1ece9c2cb8c5b"
+    },
+    {
+      "label": "rotor_system",
+      "report": "checks/rotor_system-g0sc5dgn/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 60,
+      "log_sha256": "02fb23f615a7bf8b49bdebea7ce7084fd3b8d88ca7fb2a4fe6f9bc1fe748f406"
+    },
+    {
+      "label": "sf_event_protocol",
+      "report": "checks/sf_event_protocol-_gyfvi36/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 46,
+      "log_sha256": "47053603fd4ca5f0b0bfa94d6490e1c4ec31cdc61478a57f59a482dd95ac3504"
+    },
+    {
+      "label": "sf_event_refinement",
+      "report": "checks/sf_event_refinement-r3775nkn/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 60,
+      "log_sha256": "e04d8ec969be9c56e47477149673b2a1bd31bd618f22e5aa4708fbb450edc821"
+    },
+    {
+      "label": "sf_ground_vehicle_kernel",
+      "report": "checks/sf_ground_vehicle_kernel-i6wz9ijs/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 23,
+      "log_sha256": "1c8995c3ed7e8ffe77209a31d9b6f1b9b5c58a6619432404bdd52981e35697b9"
+    },
+    {
+      "label": "sf_vehicle_model",
+      "report": "checks/sf_vehicle_model-44r04atc/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 36,
+      "log_sha256": "1a6e0f7d261bde2724246c53c8ac48dcfbc69fb2904f3c8a635fc4d5da15091b"
+    },
+    {
+      "label": "simulation",
+      "report": "checks/simulation-7fxkup32/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 11,
+      "log_sha256": "68891fa75ca677db4394d85e448f58ba790b42bfd0f3acbb762475587a74b7fa"
+    },
+    {
+      "label": "stik-air-native",
+      "report": "checks/stik-air-native-c27lgoam/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": null,
+      "log_sha256": "6090e5ed71895e532052cba84b8920815f0099a43f84e6938eb60f16026ae62d"
+    },
+    {
+      "label": "stik-ground-native",
+      "report": "checks/stik-ground-native-9vu0wh7d/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": null,
+      "log_sha256": "2e9d6efc6591ac18f44c7021f916a3a32a39fe15648a002b4fee06d7aee5e36d"
+    },
+    {
+      "label": "wheel_coupling_transport",
+      "report": "checks/wheel_coupling_transport-0l2_liaq/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 124,
+      "log_sha256": "a61a0ccb5e4fdd4109b14d8e798d92374182f1b91f0fd095c2199d4bb0c0c770"
+    },
+    {
+      "label": "wheel_geometry",
+      "report": "checks/wheel_geometry-sfxo0vr5/report.json",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 281,
+      "log_sha256": "be92b289fdc64f466de83088496a0b169a47f02418e5275dbaebfb52e9eb5b95"
+    }
+  ],
+  "checks_total": 3469,
+  "checked_invocations_count": 25,
+  "all_checks_ok": true,
+  "cases": [
+    {
+      "case": "stik-air",
+      "replay_report": "stik-air/replay.json",
+      "native_report": "stik-air-native.json",
+      "csv_comparison": "stik-air-comparison.json",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver": "588f3d32eca3221ee756ed2197c5765d4a992a3165268e738b2ed03501bd20f9",
+      "candidate_solver": "7c065cef2b9182b0b87e147823028de867465de23dc64691448d17da621e3e6b",
+      "native_rows": 261,
+      "native_complete": true,
+      "native_status": "ok",
+      "native_solver_changed": true,
+      "csv_comparison_status": "ok",
+      "csv_first_divergence": null
+    },
+    {
+      "case": "p51-air",
+      "replay_report": "p51-air/replay.json",
+      "native_report": "p51-air-native.json",
+      "csv_comparison": "p51-air-comparison.json",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver": "588f3d32eca3221ee756ed2197c5765d4a992a3165268e738b2ed03501bd20f9",
+      "candidate_solver": "7c065cef2b9182b0b87e147823028de867465de23dc64691448d17da621e3e6b",
+      "native_rows": 261,
+      "native_complete": true,
+      "native_status": "ok",
+      "native_solver_changed": true,
+      "csv_comparison_status": "ok",
+      "csv_first_divergence": null
+    },
+    {
+      "case": "stik-ground",
+      "replay_report": "stik-ground/replay.json",
+      "native_report": "stik-ground-native.json",
+      "csv_comparison": "stik-ground-comparison.json",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver": "588f3d32eca3221ee756ed2197c5765d4a992a3165268e738b2ed03501bd20f9",
+      "candidate_solver": "7c065cef2b9182b0b87e147823028de867465de23dc64691448d17da621e3e6b",
+      "native_rows": 481,
+      "native_complete": true,
+      "native_status": "ok",
+      "native_solver_changed": true,
+      "csv_comparison_status": "ok",
+      "csv_first_divergence": null
+    },
+    {
+      "case": "p51-ground",
+      "replay_report": "p51-ground/replay.json",
+      "native_report": "p51-ground-native.json",
+      "csv_comparison": "p51-ground-comparison.json",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver": "588f3d32eca3221ee756ed2197c5765d4a992a3165268e738b2ed03501bd20f9",
+      "candidate_solver": "7c065cef2b9182b0b87e147823028de867465de23dc64691448d17da621e3e6b",
+      "native_rows": 481,
+      "native_complete": true,
+      "native_status": "ok",
+      "native_solver_changed": true,
+      "csv_comparison_status": "ok",
+      "csv_first_divergence": null
+    }
+  ],
+  "native_rows_total": 1484,
+  "native_comparator": {
+    "path": "docs/research/ground-physics/GP-10/evidence/candidate/check_numeric_preservation.gd",
+    "sha256": "4262a34dbc0ccddcfcb7486681040066793f3fd6846fc7dfb7e72306227b6e0a"
+  },
+  "scope": "frozen pure-core cohort; GP10 FlightSession preserved; new normal/steering/impulse modules not enabled in stock sessions; excludes admission and runtime step WIP; software preservation is not physical calibration or complete roadmap qualification",
+  "unit_suites_count": 21,
+  "native_comparison_invocations_count": 4,
+  "isolated_flight_session_matches_baseline": true,
+  "candidate_solver_sha256": "7c065cef2b9182b0b87e147823028de867465de23dc64691448d17da621e3e6b",
+  "engine": {
+    "version": "4.8.beta1.official.4d10419ca",
+    "console_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f"
+  },
+  "checked_summary_final": "checks/results-final.xml",
+  "earlier_partial_summary": {
+    "path": "checks/results.xml",
+    "invocations": 23,
+    "reason": "Captured before the final two requested vehicle-model regressions; final summary covers25."
+  }
+}

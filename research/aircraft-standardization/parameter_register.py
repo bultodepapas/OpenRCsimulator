@@ -32,6 +32,48 @@ def consumer(path: str) -> str:
     if path in reference_only:
         return reference_only[path]
 
+    # Keep this finite: an added ground quantity still needs its consumer reviewed.
+    normal_fields = {
+        "stiffness", "compression_damping", "rebound_damping", "damping_onset",
+        "stroke", "stop_stiffness", "stop_scale", "stop_exponent", "stop_damping",
+    }
+    normal_prefix = "ground.normal_profiles[].parameters."
+    if path.startswith(normal_prefix) and path.removeprefix(normal_prefix) in normal_fields:
+        return ("AircraftGroundProfile.resolve → NormalCompliance.prepare/evaluate/bounds; "
+                "AircraftGroundDynamics._normal_contact: authored spring/stop potential, unilateral normal load and damping loss; "
+                "coupled law only, no legacy contact retuning or launch admission")
+    ground_consumers = {
+        "ground.rotor_partition.rotors[].transverse_inertia":
+            "AircraftGroundProfile._rotor_partition → RotorCoupling.prepare_system/evaluate_system: "
+            "intrinsic rotor tensor reserved once from the reference locked inertia; estimated aggregate partition, not a measured part split",
+        "ground.supports[].hub_le":
+            "AircraftGroundProfile.resolve converts LE to fixed body datum once → AircraftGroundDynamics.evaluate: "
+            "fixed ring hub, contact arm and point velocity; moving hubs unsupported",
+        "ground.supports[].axle_le":
+            "AircraftGroundProfile.resolve validates/converts the reference axle → AircraftGroundStage.motion / "
+            "WheelGeometry.heightfield and RotorCoupling: ring plane and relative-spin axis",
+        "ground.supports[].steering_axis_le":
+            "AircraftGroundProfile.resolve validates/converts the fixed hub hinge → AircraftGroundStage.motion / "
+            "ControlActuators.fixed_axis_motion: Rodrigues axle pose and full carrier angular velocity/acceleration",
+        "ground.steering_profiles[].parameters.angle_limit":
+            "AircraftGroundProfile._steering_profiles → ControlActuators.prepare_prescribed_angle/prescribed_angle_state_valid: "
+            "bounded angle/latent-angle domain; no angle clamp or stop impulse",
+        "ground.steering_profiles[].parameters.signed_full_scale_angle":
+            "AircraftGroundProfile._steering_profiles → ControlActuators.prescribed_angle_response / AircraftGroundStage.motion: "
+            "signed linkage target from accepted actual rudder servo, not raw pilot demand",
+        "ground.steering_profiles[].parameters.lag_time":
+            "AircraftGroundProfile._steering_profiles → ControlActuators.prescribed_angle_response/prescribed_angle_substeps: "
+            "critical response repeated-pole time and RK4 step bound; not legacy servo full-throw time",
+        "ground.steering_profiles[].parameters.max_rate":
+            "AircraftGroundProfile._steering_profiles → ControlActuators.prepare_prescribed_angle: "
+            "certifies the declared kinematic rate envelope against angle/lag; no velocity clipping or torque-limit claim",
+        "ground.steering_profiles[].parameters.max_acceleration":
+            "AircraftGroundProfile._steering_profiles → ControlActuators.prepare_prescribed_angle: "
+            "certifies the declared kinematic acceleration envelope against angle/lag; no acceleration clamp or motor power model",
+    }
+    if path in ground_consumers:
+        return ground_consumers[path]
+
     if path.startswith("controls.keyboard."):
         return "AircraftData._controls → Commands.keyboard_pitch; keyboard normal-profile virtual stick only, before expo/rates; no aerodynamic or servo change"
     if path.startswith("controls.gamepad."):

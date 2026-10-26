@@ -1,0 +1,116 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1a2fb322-7000-4dac-94f7-4c9af90c866b",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ui_weather.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:42:26.942743+00:00",
+  "label": "test_ui_weather",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-203918\\checks\\test_ui_weather-uq95y921\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-203918\\checks\\test_ui_weather-uq95y921\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 30,
+  "complete": true,
+  "counts": {
+    "error": 7,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 26,
+      "message": "Aircraft customization bindings: [\"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:104)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 56,
+      "message": "Aircraft customization bindings: [\"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:104)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 74,
+      "message": "Aircraft customization bindings: [\"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:104)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 92,
+      "message": "Aircraft customization bindings: [\"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:104)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 107,
+      "message": "Aircraft customization bindings: [\"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:104)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 116,
+      "message": "Aircraft customization bindings: [\"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:104)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 127,
+      "message": "Aircraft customization bindings: [\"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:104)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 30,
+  "ok": false,
+  "elapsed_seconds": 16.672,
+  "log_bytes": 11352,
+  "log_sha256": "c8c17f1a33f0d34c7f01ca50b49d96ab5ff1e5f17a8822d169ed1df3f90191f8"
+}

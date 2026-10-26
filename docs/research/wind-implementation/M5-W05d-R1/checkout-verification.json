@@ -1,0 +1,16 @@
+{
+  "scope": "Fresh evidence-only Git clones with root and local attributes; no shared index edits; not full-app clone qualification",
+  "local_attributes_sha256": "7f8fb6efedf887dd5d568db08cfe28c1a76d304babae1f85cc930afbc4f85954",
+  "clones": [
+    {
+      "core.autocrlf": "true",
+      "files": 249,
+      "all_bytes_equal": true
+    },
+    {
+      "core.autocrlf": "false",
+      "files": 249,
+      "all_bytes_equal": true
+    }
+  ]
+}

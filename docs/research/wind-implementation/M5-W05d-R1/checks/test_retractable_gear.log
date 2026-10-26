@@ -1,0 +1,12 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+WARNING: `NaN` ("Not a Number") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.
+   at: _stringify (core/io/json.cpp:86)
+   GDScript backtrace (most recent call first):
+       [0] _validate_legacy (res://physics/aircraft_data.gd:525)
+       [1] _validate_with_domain (res://physics/aircraft_data.gd:217)
+       [2] validate_and_derive (res://physics/aircraft_data.gd:150)
+       [3] contracts (res://tests/test_retractable_gear.gd:75)
+       [4] _initialize (res://tests/test_retractable_gear.gd:191)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+AV-09 retractable gear: 77 checks, 0 failed

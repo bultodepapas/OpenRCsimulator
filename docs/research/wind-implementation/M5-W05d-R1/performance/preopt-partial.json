@@ -1,0 +1,997 @@
+{
+  "format": "openrc-spatial-wind-full-session-bench partial v1",
+  "status": "incomplete; not admission evidence",
+  "matrix_complete": false,
+  "planned_scenarios": 12,
+  "complete_scenarios": 7,
+  "candidate_baseline_revision": "ac6fb953508bad76b2f12f9690a03ea5b20c014a",
+  "candidate_manifest_sha256": "7ae3ff0b3c03c0e68ba5e5c5e37139b4e36a4f68923ac4f899d4481671ba990c",
+  "godot_version": "4.8.beta1.official.4d10419ca",
+  "tick_hz": 240,
+  "timed_batches_per_complete_case": 3,
+  "warmup_ticks_per_batch": 240,
+  "timed_ticks_per_batch": 480,
+  "runner_timeout_seconds": 120.0,
+  "runner_elapsed_seconds": 120.484,
+  "runner_reason": "timeout",
+  "run_checked_report": "tmp/godot-checks/wind-spatial-full-session-z7wutxhp/report.json",
+  "run_checked_log": "tmp/godot-checks/wind-spatial-full-session-z7wutxhp/engine.log",
+  "progress_directory": "tmp/wind-spatial-admission/provider-session-benchmark.json.progress-2548042",
+  "notes": "Seven scenarios have complete timing, state, reset, and query-count evidence. Extra 64 has two partial timed batches only. Four Turbo cases were not started. Do not use this file to claim matrix completion or mode admission.",
+  "aircraft": [
+    {
+      "id": "jensen-das-ugly-stik-60",
+      "name": "Jensen Ugly Stick",
+      "stage_wash_consumers": {
+        "actual_full_simulation_step_used": true,
+        "continuous_state_size": 3,
+        "fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+        "lagged_wash_transport_enabled": false,
+        "lagged_wash_transport_piece_count": 0,
+        "provider_queries_per_wind_flow_sample": 10,
+        "quasi_static_slipstream_piece_count": 0,
+        "simulation_split_load_route": true,
+        "simulation_stage_callback": true,
+        "stage_air_probe_contract_valid": true,
+        "stage_point_sampler_valid": false,
+        "wind_flow_station_count": 9
+      },
+      "complete_case_count": 4,
+      "cases": [
+        {
+          "accepted_timed_ticks": 1440,
+          "accepted_warmup_ticks": 720,
+          "aircraft_status": "flyable",
+          "case_id": "legacy-v4-steady",
+          "final_state_sha256_per_batch": [
+            "b6e00f11e3ef85fb90edb9a667a601b17b2ddf6bc7017c634fe7cf9a550718b0",
+            "b6e00f11e3ef85fb90edb9a667a601b17b2ddf6bc7017c634fe7cf9a550718b0",
+            "b6e00f11e3ef85fb90edb9a667a601b17b2ddf6bc7017c634fe7cf9a550718b0"
+          ],
+          "final_states_repeatable": true,
+          "max_batch_mean_us_per_tick": 647.8458333333333,
+          "median_us_per_tick": 602.44375,
+          "min_batch_mean_us_per_tick": 589.3333333333334,
+          "mode_count": 0,
+          "p95_batch_mean_us_per_tick": 647.8458333333333,
+          "queries_per_accepted_tick_untimed": 6,
+          "reset_checks_expected": 8,
+          "reset_checks_passed": 8,
+          "samples_us_per_tick": [
+            647.8458333333333,
+            602.44375,
+            589.3333333333334
+          ],
+          "setup_start_state": [
+            60.0,
+            -40.0,
+            -30.0,
+            17.9517196156611,
+            -0.03171751409813969,
+            1.3170252995378897,
+            0.7066327926155301,
+            -0.02588622027985514,
+            0.025886220279855144,
+            0.70663279261553,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stage_wash_consumers": {
+            "actual_full_simulation_step_used": true,
+            "continuous_state_size": 3,
+            "fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+            "lagged_wash_transport_enabled": false,
+            "lagged_wash_transport_piece_count": 0,
+            "provider_queries_per_wind_flow_sample": 10,
+            "quasi_static_slipstream_piece_count": 0,
+            "simulation_split_load_route": true,
+            "simulation_stage_callback": true,
+            "stage_air_probe_contract_valid": true,
+            "stage_point_sampler_valid": false,
+            "wind_flow_station_count": 9
+          },
+          "timed_ticks_per_batch": 480,
+          "warmup_ticks_per_batch": 240,
+          "weather_configuration": {
+            "atmosphere_mode": "reference",
+            "field_elevation_m": 0.0,
+            "format": "openrc-weather v4",
+            "from_deg": 270.0,
+            "gust_delay_s": 2.0,
+            "gust_duration_s": 4.0,
+            "gust_mps": 0.0,
+            "gust_period_s": 12.0,
+            "gust_up_mps": 0.0,
+            "qnh_hpa": 1013.25,
+            "relative_humidity_pct": 0.0,
+            "speed_mps": 3.0,
+            "temperature_c": 15.0,
+            "turbulence_rms_mps": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "turbulence_seed": 20261009,
+            "turbulence_tau_s": 2.0
+          },
+          "weather_format": "openrc-weather v4",
+          "weather_receipt": {},
+          "ratio_to_legacy_v4": 1.0,
+          "increase_pct_vs_legacy_v4": 0.0,
+          "tick_budget_fraction": 0.1445865
+        },
+        {
+          "accepted_timed_ticks": 1440,
+          "accepted_warmup_ticks": 720,
+          "aircraft_status": "flyable",
+          "case_id": "spatial-v5-modes-8",
+          "final_state_sha256_per_batch": [
+            "bbd03c6588b272ed29e0eba00605023144866831ea90c979801c7651f22cbda7",
+            "bbd03c6588b272ed29e0eba00605023144866831ea90c979801c7651f22cbda7",
+            "bbd03c6588b272ed29e0eba00605023144866831ea90c979801c7651f22cbda7"
+          ],
+          "final_states_repeatable": true,
+          "max_batch_mean_us_per_tick": 3337.8166666666666,
+          "median_us_per_tick": 3204.8645833333335,
+          "min_batch_mean_us_per_tick": 3111.66875,
+          "mode_count": 8,
+          "p95_batch_mean_us_per_tick": 3337.8166666666666,
+          "queries_per_accepted_tick_untimed": 60,
+          "reset_checks_expected": 8,
+          "reset_checks_passed": 8,
+          "samples_us_per_tick": [
+            3204.8645833333335,
+            3111.66875,
+            3337.8166666666666
+          ],
+          "setup_start_state": [
+            60.0,
+            -40.0,
+            -30.0,
+            18.4489873847875,
+            0.03384728306230214,
+            1.6002438917464539,
+            0.7066327926155301,
+            -0.02588622027985514,
+            0.025886220279855144,
+            0.70663279261553,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stage_wash_consumers": {
+            "actual_full_simulation_step_used": true,
+            "continuous_state_size": 3,
+            "fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+            "lagged_wash_transport_enabled": false,
+            "lagged_wash_transport_piece_count": 0,
+            "provider_queries_per_wind_flow_sample": 10,
+            "quasi_static_slipstream_piece_count": 0,
+            "simulation_split_load_route": true,
+            "simulation_stage_callback": true,
+            "stage_air_probe_contract_valid": true,
+            "stage_point_sampler_valid": true,
+            "wind_flow_station_count": 9
+          },
+          "timed_ticks_per_batch": 480,
+          "warmup_ticks_per_batch": 240,
+          "weather_configuration": {
+            "atmosphere_mode": "reference",
+            "field_elevation_m": 0.0,
+            "format": "openrc-weather v5",
+            "from_deg": 0.0,
+            "gust_delay_s": 2.0,
+            "gust_duration_s": 4.0,
+            "gust_mps": 0.0,
+            "gust_period_s": 12.0,
+            "gust_up_mps": 0.0,
+            "qnh_hpa": 1013.25,
+            "relative_humidity_pct": 0.0,
+            "spatial_wind": {
+              "datum": {
+                "ground_down_m": 0.0,
+                "law": "flat-site-ground-plane-v1"
+              },
+              "domain": {
+                "ground_extension_m": 0.25,
+                "ground_transition_height_m": 3.0,
+                "half_extent_east_m": 10000.0,
+                "half_extent_north_m": 10000.0,
+                "max_height_agl_m": 200.0,
+                "time_horizon_s": 86400.0
+              },
+              "format": "openrc-spatial-wind v1",
+              "frame": "NED",
+              "gusts": {
+                "events": [],
+                "law": "resolved-degree6-c2-bell-uniform-v1"
+              },
+              "identity": {
+                "epoch_offset_s": 0.0,
+                "seed_algorithm": "xorshift32-v1",
+                "seed_u32": 20261025,
+                "world_epoch_id_u32": 451
+              },
+              "profile": {
+                "displacement_height_m": 0.0,
+                "free_air_join_height_m": 20.0,
+                "free_air_wind_ned_mps": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "law": "neutral-log-flat-site-c1-wall-v1",
+                "layers": [],
+                "reference_from_deg": 270.0,
+                "reference_height_agl_m": 10.0,
+                "reference_speed_mps": 3.0,
+                "roughness_length_m": 0.03,
+                "surface_layer_top_agl_m": 80.0,
+                "wall_join_height_agl_m": 0.3
+              },
+              "turbulence": {
+                "coherence_time_s": 4.0,
+                "law": "finite-equal-variance-log-wavelength-vector-potential-frozen-reference-advection-flat-wall-v1",
+                "max_wavelength_m": 50.0,
+                "min_wavelength_m": 5.0,
+                "mode_count": 8,
+                "rms_mps": 0.3
+              }
+            },
+            "speed_mps": 0.0,
+            "temperature_c": 15.0,
+            "turbulence_rms_mps": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "turbulence_seed": 20261009,
+            "turbulence_tau_s": 2.0
+          },
+          "weather_format": "openrc-weather v5",
+          "weather_receipt": {
+            "aerodynamic_law": "matched-unwashed-full-angle-section-delta-v1",
+            "clock": "simulation-seconds-plus-immutable-epoch-offset; reset-reuses-epoch-v1",
+            "content_sha256": "68891562c58960bcc1a87b14bad8113f1bd02cf72a84c595fe267ea455390649",
+            "field": {
+              "epoch_offset_s": 0.0,
+              "seed_algorithm": "xorshift32-v1",
+              "seed_u32": 20261025,
+              "world_epoch_id_u32": 451
+            },
+            "format": "openrc-spatial-weather-receipt v1",
+            "point_air_law": "m5-w05c-r2-point-air-v1"
+          },
+          "ratio_to_legacy_v4": 5.319773976131935,
+          "increase_pct_vs_legacy_v4": 431.9773976131935,
+          "tick_budget_fraction": 0.7691675
+        },
+        {
+          "accepted_timed_ticks": 1440,
+          "accepted_warmup_ticks": 720,
+          "aircraft_status": "flyable",
+          "case_id": "spatial-v5-modes-24",
+          "final_state_sha256_per_batch": [
+            "9fe7a5cb7de3c174411e7dc2d115f882aab09d494d79cd80b80600fb2c915856",
+            "9fe7a5cb7de3c174411e7dc2d115f882aab09d494d79cd80b80600fb2c915856",
+            "9fe7a5cb7de3c174411e7dc2d115f882aab09d494d79cd80b80600fb2c915856"
+          ],
+          "final_states_repeatable": true,
+          "max_batch_mean_us_per_tick": 5042.816666666667,
+          "median_us_per_tick": 4788.6375,
+          "min_batch_mean_us_per_tick": 4403.283333333334,
+          "mode_count": 24,
+          "p95_batch_mean_us_per_tick": 5042.816666666667,
+          "queries_per_accepted_tick_untimed": 60,
+          "reset_checks_expected": 8,
+          "reset_checks_passed": 8,
+          "samples_us_per_tick": [
+            4788.6375,
+            5042.816666666667,
+            4403.283333333334
+          ],
+          "setup_start_state": [
+            60.0,
+            -40.0,
+            -30.0,
+            18.710856298160444,
+            0.1866304445831525,
+            1.3955174749710983,
+            0.7066327926155301,
+            -0.02588622027985514,
+            0.025886220279855144,
+            0.70663279261553,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stage_wash_consumers": {
+            "actual_full_simulation_step_used": true,
+            "continuous_state_size": 3,
+            "fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+            "lagged_wash_transport_enabled": false,
+            "lagged_wash_transport_piece_count": 0,
+            "provider_queries_per_wind_flow_sample": 10,
+            "quasi_static_slipstream_piece_count": 0,
+            "simulation_split_load_route": true,
+            "simulation_stage_callback": true,
+            "stage_air_probe_contract_valid": true,
+            "stage_point_sampler_valid": true,
+            "wind_flow_station_count": 9
+          },
+          "timed_ticks_per_batch": 480,
+          "warmup_ticks_per_batch": 240,
+          "weather_configuration": {
+            "atmosphere_mode": "reference",
+            "field_elevation_m": 0.0,
+            "format": "openrc-weather v5",
+            "from_deg": 0.0,
+            "gust_delay_s": 2.0,
+            "gust_duration_s": 4.0,
+            "gust_mps": 0.0,
+            "gust_period_s": 12.0,
+            "gust_up_mps": 0.0,
+            "qnh_hpa": 1013.25,
+            "relative_humidity_pct": 0.0,
+            "spatial_wind": {
+              "datum": {
+                "ground_down_m": 0.0,
+                "law": "flat-site-ground-plane-v1"
+              },
+              "domain": {
+                "ground_extension_m": 0.25,
+                "ground_transition_height_m": 3.0,
+                "half_extent_east_m": 10000.0,
+                "half_extent_north_m": 10000.0,
+                "max_height_agl_m": 200.0,
+                "time_horizon_s": 86400.0
+              },
+              "format": "openrc-spatial-wind v1",
+              "frame": "NED",
+              "gusts": {
+                "events": [],
+                "law": "resolved-degree6-c2-bell-uniform-v1"
+              },
+              "identity": {
+                "epoch_offset_s": 0.0,
+                "seed_algorithm": "xorshift32-v1",
+                "seed_u32": 20261025,
+                "world_epoch_id_u32": 451
+              },
+              "profile": {
+                "displacement_height_m": 0.0,
+                "free_air_join_height_m": 20.0,
+                "free_air_wind_ned_mps": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "law": "neutral-log-flat-site-c1-wall-v1",
+                "layers": [],
+                "reference_from_deg": 270.0,
+                "reference_height_agl_m": 10.0,
+                "reference_speed_mps": 3.0,
+                "roughness_length_m": 0.03,
+                "surface_layer_top_agl_m": 80.0,
+                "wall_join_height_agl_m": 0.3
+              },
+              "turbulence": {
+                "coherence_time_s": 4.0,
+                "law": "finite-equal-variance-log-wavelength-vector-potential-frozen-reference-advection-flat-wall-v1",
+                "max_wavelength_m": 50.0,
+                "min_wavelength_m": 5.0,
+                "mode_count": 24,
+                "rms_mps": 0.3
+              }
+            },
+            "speed_mps": 0.0,
+            "temperature_c": 15.0,
+            "turbulence_rms_mps": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "turbulence_seed": 20261009,
+            "turbulence_tau_s": 2.0
+          },
+          "weather_format": "openrc-weather v5",
+          "weather_receipt": {
+            "aerodynamic_law": "matched-unwashed-full-angle-section-delta-v1",
+            "clock": "simulation-seconds-plus-immutable-epoch-offset; reset-reuses-epoch-v1",
+            "content_sha256": "de96d1090ee7b69483fa4ce17decf679427d1902ba8ead8dfa68286522bc1fe0",
+            "field": {
+              "epoch_offset_s": 0.0,
+              "seed_algorithm": "xorshift32-v1",
+              "seed_u32": 20261025,
+              "world_epoch_id_u32": 451
+            },
+            "format": "openrc-spatial-weather-receipt v1",
+            "point_air_law": "m5-w05c-r2-point-air-v1"
+          },
+          "ratio_to_legacy_v4": 7.948688155533192,
+          "increase_pct_vs_legacy_v4": 694.8688155533192,
+          "tick_budget_fraction": 1.1492729999999998
+        },
+        {
+          "accepted_timed_ticks": 1440,
+          "accepted_warmup_ticks": 720,
+          "aircraft_status": "flyable",
+          "case_id": "spatial-v5-modes-64",
+          "final_state_sha256_per_batch": [
+            "6b7ee105140f808d1407cfc1698bf81f3ad0b2d49fd3d14c90745725658640cf",
+            "6b7ee105140f808d1407cfc1698bf81f3ad0b2d49fd3d14c90745725658640cf",
+            "6b7ee105140f808d1407cfc1698bf81f3ad0b2d49fd3d14c90745725658640cf"
+          ],
+          "final_states_repeatable": true,
+          "max_batch_mean_us_per_tick": 7694.297916666666,
+          "median_us_per_tick": 7534.71875,
+          "min_batch_mean_us_per_tick": 7483.585416666667,
+          "mode_count": 64,
+          "p95_batch_mean_us_per_tick": 7694.297916666666,
+          "queries_per_accepted_tick_untimed": 60,
+          "reset_checks_expected": 8,
+          "reset_checks_passed": 8,
+          "samples_us_per_tick": [
+            7694.297916666666,
+            7534.71875,
+            7483.585416666667
+          ],
+          "setup_start_state": [
+            60.0,
+            -40.0,
+            -30.0,
+            18.36646251592302,
+            -0.3212129082229632,
+            1.2171543986686255,
+            0.7066327926155301,
+            -0.02588622027985514,
+            0.025886220279855144,
+            0.70663279261553,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stage_wash_consumers": {
+            "actual_full_simulation_step_used": true,
+            "continuous_state_size": 3,
+            "fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+            "lagged_wash_transport_enabled": false,
+            "lagged_wash_transport_piece_count": 0,
+            "provider_queries_per_wind_flow_sample": 10,
+            "quasi_static_slipstream_piece_count": 0,
+            "simulation_split_load_route": true,
+            "simulation_stage_callback": true,
+            "stage_air_probe_contract_valid": true,
+            "stage_point_sampler_valid": true,
+            "wind_flow_station_count": 9
+          },
+          "timed_ticks_per_batch": 480,
+          "warmup_ticks_per_batch": 240,
+          "weather_configuration": {
+            "atmosphere_mode": "reference",
+            "field_elevation_m": 0.0,
+            "format": "openrc-weather v5",
+            "from_deg": 0.0,
+            "gust_delay_s": 2.0,
+            "gust_duration_s": 4.0,
+            "gust_mps": 0.0,
+            "gust_period_s": 12.0,
+            "gust_up_mps": 0.0,
+            "qnh_hpa": 1013.25,
+            "relative_humidity_pct": 0.0,
+            "spatial_wind": {
+              "datum": {
+                "ground_down_m": 0.0,
+                "law": "flat-site-ground-plane-v1"
+              },
+              "domain": {
+                "ground_extension_m": 0.25,
+                "ground_transition_height_m": 3.0,
+                "half_extent_east_m": 10000.0,
+                "half_extent_north_m": 10000.0,
+                "max_height_agl_m": 200.0,
+                "time_horizon_s": 86400.0
+              },
+              "format": "openrc-spatial-wind v1",
+              "frame": "NED",
+              "gusts": {
+                "events": [],
+                "law": "resolved-degree6-c2-bell-uniform-v1"
+              },
+              "identity": {
+                "epoch_offset_s": 0.0,
+                "seed_algorithm": "xorshift32-v1",
+                "seed_u32": 20261025,
+                "world_epoch_id_u32": 451
+              },
+              "profile": {
+                "displacement_height_m": 0.0,
+                "free_air_join_height_m": 20.0,
+                "free_air_wind_ned_mps": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "law": "neutral-log-flat-site-c1-wall-v1",
+                "layers": [],
+                "reference_from_deg": 270.0,
+                "reference_height_agl_m": 10.0,
+                "reference_speed_mps": 3.0,
+                "roughness_length_m": 0.03,
+                "surface_layer_top_agl_m": 80.0,
+                "wall_join_height_agl_m": 0.3
+              },
+              "turbulence": {
+                "coherence_time_s": 4.0,
+                "law": "finite-equal-variance-log-wavelength-vector-potential-frozen-reference-advection-flat-wall-v1",
+                "max_wavelength_m": 50.0,
+                "min_wavelength_m": 5.0,
+                "mode_count": 64,
+                "rms_mps": 0.3
+              }
+            },
+            "speed_mps": 0.0,
+            "temperature_c": 15.0,
+            "turbulence_rms_mps": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "turbulence_seed": 20261009,
+            "turbulence_tau_s": 2.0
+          },
+          "weather_format": "openrc-weather v5",
+          "weather_receipt": {
+            "aerodynamic_law": "matched-unwashed-full-angle-section-delta-v1",
+            "clock": "simulation-seconds-plus-immutable-epoch-offset; reset-reuses-epoch-v1",
+            "content_sha256": "ea21b251e8447345eea57691349f1b1b4835b91be628e7400c6b671a399056a0",
+            "field": {
+              "epoch_offset_s": 0.0,
+              "seed_algorithm": "xorshift32-v1",
+              "seed_u32": 20261025,
+              "world_epoch_id_u32": 451
+            },
+            "format": "openrc-spatial-weather-receipt v1",
+            "point_air_law": "m5-w05c-r2-point-air-v1"
+          },
+          "ratio_to_legacy_v4": 12.506924920376383,
+          "increase_pct_vs_legacy_v4": 1150.6924920376382,
+          "tick_budget_fraction": 1.8083325
+        }
+      ]
+    },
+    {
+      "id": "gp-extra-300s-60",
+      "name": "GP Extra 300S",
+      "stage_wash_consumers": {
+        "actual_full_simulation_step_used": true,
+        "continuous_state_size": 22,
+        "fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+        "lagged_wash_transport_enabled": false,
+        "lagged_wash_transport_piece_count": 0,
+        "provider_queries_per_wind_flow_sample": 10,
+        "quasi_static_slipstream_piece_count": 4,
+        "simulation_split_load_route": false,
+        "simulation_stage_callback": true,
+        "stage_air_probe_contract_valid": true,
+        "stage_point_sampler_valid": false,
+        "wind_flow_station_count": 9
+      },
+      "complete_case_count": 3,
+      "cases": [
+        {
+          "accepted_timed_ticks": 1440,
+          "accepted_warmup_ticks": 720,
+          "aircraft_status": "experimental",
+          "case_id": "legacy-v4-steady",
+          "final_state_sha256_per_batch": [
+            "eb6f7caafa25b51df653298cee9a8c8dad2836827253153402c5133ec60af36f",
+            "eb6f7caafa25b51df653298cee9a8c8dad2836827253153402c5133ec60af36f",
+            "eb6f7caafa25b51df653298cee9a8c8dad2836827253153402c5133ec60af36f"
+          ],
+          "final_states_repeatable": true,
+          "max_batch_mean_us_per_tick": 2075.4645833333334,
+          "median_us_per_tick": 2062.4333333333334,
+          "min_batch_mean_us_per_tick": 2038.1166666666666,
+          "mode_count": 0,
+          "p95_batch_mean_us_per_tick": 2075.4645833333334,
+          "queries_per_accepted_tick_untimed": 7,
+          "reset_checks_expected": 8,
+          "reset_checks_passed": 8,
+          "samples_us_per_tick": [
+            2038.1166666666666,
+            2075.4645833333334,
+            2062.4333333333334
+          ],
+          "setup_start_state": [
+            60.0,
+            -40.0,
+            -30.0,
+            24.948243938224802,
+            0.27434113037455876,
+            1.581011638168151,
+            0.7067527934447568,
+            -0.022371610537308257,
+            0.02237161053730826,
+            0.7067527934447567,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stage_wash_consumers": {
+            "actual_full_simulation_step_used": true,
+            "continuous_state_size": 22,
+            "fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+            "lagged_wash_transport_enabled": false,
+            "lagged_wash_transport_piece_count": 0,
+            "provider_queries_per_wind_flow_sample": 10,
+            "quasi_static_slipstream_piece_count": 4,
+            "simulation_split_load_route": false,
+            "simulation_stage_callback": true,
+            "stage_air_probe_contract_valid": true,
+            "stage_point_sampler_valid": false,
+            "wind_flow_station_count": 9
+          },
+          "timed_ticks_per_batch": 480,
+          "warmup_ticks_per_batch": 240,
+          "weather_configuration": {
+            "atmosphere_mode": "reference",
+            "field_elevation_m": 0.0,
+            "format": "openrc-weather v4",
+            "from_deg": 270.0,
+            "gust_delay_s": 2.0,
+            "gust_duration_s": 4.0,
+            "gust_mps": 0.0,
+            "gust_period_s": 12.0,
+            "gust_up_mps": 0.0,
+            "qnh_hpa": 1013.25,
+            "relative_humidity_pct": 0.0,
+            "speed_mps": 3.0,
+            "temperature_c": 15.0,
+            "turbulence_rms_mps": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "turbulence_seed": 20261009,
+            "turbulence_tau_s": 2.0
+          },
+          "weather_format": "openrc-weather v4",
+          "weather_receipt": {},
+          "ratio_to_legacy_v4": 1.0,
+          "increase_pct_vs_legacy_v4": 0.0,
+          "tick_budget_fraction": 0.494984
+        },
+        {
+          "accepted_timed_ticks": 1440,
+          "accepted_warmup_ticks": 720,
+          "aircraft_status": "experimental",
+          "case_id": "spatial-v5-modes-8",
+          "final_state_sha256_per_batch": [
+            "b49a9d2fb148b0262b66cda25ab3c998c8151bdb940899a286d8e2f53841c186",
+            "b49a9d2fb148b0262b66cda25ab3c998c8151bdb940899a286d8e2f53841c186",
+            "b49a9d2fb148b0262b66cda25ab3c998c8151bdb940899a286d8e2f53841c186"
+          ],
+          "final_states_repeatable": true,
+          "max_batch_mean_us_per_tick": 9516.39375,
+          "median_us_per_tick": 6172.0125,
+          "min_batch_mean_us_per_tick": 6072.033333333334,
+          "mode_count": 8,
+          "p95_batch_mean_us_per_tick": 9516.39375,
+          "queries_per_accepted_tick_untimed": 98,
+          "reset_checks_expected": 8,
+          "reset_checks_passed": 8,
+          "samples_us_per_tick": [
+            6072.033333333334,
+            6172.0125,
+            9516.39375
+          ],
+          "setup_start_state": [
+            60.0,
+            -40.0,
+            -30.0,
+            25.44830413029034,
+            0.3399059275350006,
+            1.8592701681289174,
+            0.7067527934447568,
+            -0.022371610537308257,
+            0.02237161053730826,
+            0.7067527934447567,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stage_wash_consumers": {
+            "actual_full_simulation_step_used": true,
+            "continuous_state_size": 22,
+            "fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+            "lagged_wash_transport_enabled": false,
+            "lagged_wash_transport_piece_count": 0,
+            "provider_queries_per_wind_flow_sample": 10,
+            "quasi_static_slipstream_piece_count": 4,
+            "simulation_split_load_route": false,
+            "simulation_stage_callback": true,
+            "stage_air_probe_contract_valid": true,
+            "stage_point_sampler_valid": true,
+            "wind_flow_station_count": 9
+          },
+          "timed_ticks_per_batch": 480,
+          "warmup_ticks_per_batch": 240,
+          "weather_configuration": {
+            "atmosphere_mode": "reference",
+            "field_elevation_m": 0.0,
+            "format": "openrc-weather v5",
+            "from_deg": 0.0,
+            "gust_delay_s": 2.0,
+            "gust_duration_s": 4.0,
+            "gust_mps": 0.0,
+            "gust_period_s": 12.0,
+            "gust_up_mps": 0.0,
+            "qnh_hpa": 1013.25,
+            "relative_humidity_pct": 0.0,
+            "spatial_wind": {
+              "datum": {
+                "ground_down_m": 0.0,
+                "law": "flat-site-ground-plane-v1"
+              },
+              "domain": {
+                "ground_extension_m": 0.25,
+                "ground_transition_height_m": 3.0,
+                "half_extent_east_m": 10000.0,
+                "half_extent_north_m": 10000.0,
+                "max_height_agl_m": 200.0,
+                "time_horizon_s": 86400.0
+              },
+              "format": "openrc-spatial-wind v1",
+              "frame": "NED",
+              "gusts": {
+                "events": [],
+                "law": "resolved-degree6-c2-bell-uniform-v1"
+              },
+              "identity": {
+                "epoch_offset_s": 0.0,
+                "seed_algorithm": "xorshift32-v1",
+                "seed_u32": 20261025,
+                "world_epoch_id_u32": 451
+              },
+              "profile": {
+                "displacement_height_m": 0.0,
+                "free_air_join_height_m": 20.0,
+                "free_air_wind_ned_mps": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "law": "neutral-log-flat-site-c1-wall-v1",
+                "layers": [],
+                "reference_from_deg": 270.0,
+                "reference_height_agl_m": 10.0,
+                "reference_speed_mps": 3.0,
+                "roughness_length_m": 0.03,
+                "surface_layer_top_agl_m": 80.0,
+                "wall_join_height_agl_m": 0.3
+              },
+              "turbulence": {
+                "coherence_time_s": 4.0,
+                "law": "finite-equal-variance-log-wavelength-vector-potential-frozen-reference-advection-flat-wall-v1",
+                "max_wavelength_m": 50.0,
+                "min_wavelength_m": 5.0,
+                "mode_count": 8,
+                "rms_mps": 0.3
+              }
+            },
+            "speed_mps": 0.0,
+            "temperature_c": 15.0,
+            "turbulence_rms_mps": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "turbulence_seed": 20261009,
+            "turbulence_tau_s": 2.0
+          },
+          "weather_format": "openrc-weather v5",
+          "weather_receipt": {
+            "aerodynamic_law": "matched-unwashed-full-angle-section-delta-v1",
+            "clock": "simulation-seconds-plus-immutable-epoch-offset; reset-reuses-epoch-v1",
+            "content_sha256": "68891562c58960bcc1a87b14bad8113f1bd02cf72a84c595fe267ea455390649",
+            "field": {
+              "epoch_offset_s": 0.0,
+              "seed_algorithm": "xorshift32-v1",
+              "seed_u32": 20261025,
+              "world_epoch_id_u32": 451
+            },
+            "format": "openrc-spatial-weather-receipt v1",
+            "point_air_law": "m5-w05c-r2-point-air-v1"
+          },
+          "ratio_to_legacy_v4": 2.9925876391964183,
+          "increase_pct_vs_legacy_v4": 199.25876391964184,
+          "tick_budget_fraction": 1.481283
+        },
+        {
+          "accepted_timed_ticks": 1440,
+          "accepted_warmup_ticks": 720,
+          "aircraft_status": "experimental",
+          "case_id": "spatial-v5-modes-24",
+          "final_state_sha256_per_batch": [
+            "acaa0cf49ad7b8851fe84477111d24e65fba9a7c07915ec548dc92fa08d3368a",
+            "acaa0cf49ad7b8851fe84477111d24e65fba9a7c07915ec548dc92fa08d3368a",
+            "acaa0cf49ad7b8851fe84477111d24e65fba9a7c07915ec548dc92fa08d3368a"
+          ],
+          "final_states_repeatable": true,
+          "max_batch_mean_us_per_tick": 12349.379166666668,
+          "median_us_per_tick": 11821.820833333333,
+          "min_batch_mean_us_per_tick": 11495.79375,
+          "mode_count": 24,
+          "p95_batch_mean_us_per_tick": 12349.379166666668,
+          "queries_per_accepted_tick_untimed": 98,
+          "reset_checks_expected": 8,
+          "reset_checks_passed": 8,
+          "samples_us_per_tick": [
+            12349.379166666668,
+            11821.820833333333,
+            11495.79375
+          ],
+          "setup_start_state": [
+            60.0,
+            -40.0,
+            -30.0,
+            25.708123787346565,
+            0.4926890890558505,
+            1.6519492108573737,
+            0.7067527934447568,
+            -0.022371610537308257,
+            0.02237161053730826,
+            0.7067527934447567,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stage_wash_consumers": {
+            "actual_full_simulation_step_used": true,
+            "continuous_state_size": 22,
+            "fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+            "lagged_wash_transport_enabled": false,
+            "lagged_wash_transport_piece_count": 0,
+            "provider_queries_per_wind_flow_sample": 10,
+            "quasi_static_slipstream_piece_count": 4,
+            "simulation_split_load_route": false,
+            "simulation_stage_callback": true,
+            "stage_air_probe_contract_valid": true,
+            "stage_point_sampler_valid": true,
+            "wind_flow_station_count": 9
+          },
+          "timed_ticks_per_batch": 480,
+          "warmup_ticks_per_batch": 240,
+          "weather_configuration": {
+            "atmosphere_mode": "reference",
+            "field_elevation_m": 0.0,
+            "format": "openrc-weather v5",
+            "from_deg": 0.0,
+            "gust_delay_s": 2.0,
+            "gust_duration_s": 4.0,
+            "gust_mps": 0.0,
+            "gust_period_s": 12.0,
+            "gust_up_mps": 0.0,
+            "qnh_hpa": 1013.25,
+            "relative_humidity_pct": 0.0,
+            "spatial_wind": {
+              "datum": {
+                "ground_down_m": 0.0,
+                "law": "flat-site-ground-plane-v1"
+              },
+              "domain": {
+                "ground_extension_m": 0.25,
+                "ground_transition_height_m": 3.0,
+                "half_extent_east_m": 10000.0,
+                "half_extent_north_m": 10000.0,
+                "max_height_agl_m": 200.0,
+                "time_horizon_s": 86400.0
+              },
+              "format": "openrc-spatial-wind v1",
+              "frame": "NED",
+              "gusts": {
+                "events": [],
+                "law": "resolved-degree6-c2-bell-uniform-v1"
+              },
+              "identity": {
+                "epoch_offset_s": 0.0,
+                "seed_algorithm": "xorshift32-v1",
+                "seed_u32": 20261025,
+                "world_epoch_id_u32": 451
+              },
+              "profile": {
+                "displacement_height_m": 0.0,
+                "free_air_join_height_m": 20.0,
+                "free_air_wind_ned_mps": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "law": "neutral-log-flat-site-c1-wall-v1",
+                "layers": [],
+                "reference_from_deg": 270.0,
+                "reference_height_agl_m": 10.0,
+                "reference_speed_mps": 3.0,
+                "roughness_length_m": 0.03,
+                "surface_layer_top_agl_m": 80.0,
+                "wall_join_height_agl_m": 0.3
+              },
+              "turbulence": {
+                "coherence_time_s": 4.0,
+                "law": "finite-equal-variance-log-wavelength-vector-potential-frozen-reference-advection-flat-wall-v1",
+                "max_wavelength_m": 50.0,
+                "min_wavelength_m": 5.0,
+                "mode_count": 24,
+                "rms_mps": 0.3
+              }
+            },
+            "speed_mps": 0.0,
+            "temperature_c": 15.0,
+            "turbulence_rms_mps": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "turbulence_seed": 20261009,
+            "turbulence_tau_s": 2.0
+          },
+          "weather_format": "openrc-weather v5",
+          "weather_receipt": {
+            "aerodynamic_law": "matched-unwashed-full-angle-section-delta-v1",
+            "clock": "simulation-seconds-plus-immutable-epoch-offset; reset-reuses-epoch-v1",
+            "content_sha256": "de96d1090ee7b69483fa4ce17decf679427d1902ba8ead8dfa68286522bc1fe0",
+            "field": {
+              "epoch_offset_s": 0.0,
+              "seed_algorithm": "xorshift32-v1",
+              "seed_u32": 20261025,
+              "world_epoch_id_u32": 451
+            },
+            "format": "openrc-spatial-weather-receipt v1",
+            "point_air_law": "m5-w05c-r2-point-air-v1"
+          },
+          "ratio_to_legacy_v4": 5.731977195222472,
+          "increase_pct_vs_legacy_v4": 473.19771952224716,
+          "tick_budget_fraction": 2.8372369999999996
+        }
+      ]
+    }
+  ],
+  "incomplete_cases": [
+    {
+      "aircraft_id": "gp-extra-300s-60",
+      "case_id": "spatial-v5-modes-64",
+      "status": "incomplete",
+      "mode_count": 64,
+      "completed_timed_batches": 2,
+      "accepted_timed_ticks": 960,
+      "accepted_warmup_ticks": 720,
+      "batch_mean_us_per_tick": [
+        19790.65625,
+        19559.508333333335
+      ],
+      "partial_median_us_per_tick": 19675.082291666666,
+      "last_partial_batch_min_us_per_tick": 19559.508333333335,
+      "query_count_per_tick": null,
+      "query_count_status": "not measured; scenario never reached the untimed diagnostic tick",
+      "final_batch_hashes": [
+        "149d3cd9e300cc952b069be7876c2560d61f10adb351fdf91bc99418a7be4402",
+        "149d3cd9e300cc952b069be7876c2560d61f10adb351fdf91bc99418a7be4402"
+      ],
+      "validation": "The two recorded timed batches passed their per-batch accepted-tick and finite-state checks. The 120 s runner timeout interrupted batch 2, so the third timed batch, final repeatability gate, final reset, and query-count diagnostic did not complete.",
+      "partial_ratio_to_legacy_v4": 9.539742193687069,
+      "partial_tick_budget_fraction": 4.722019749999999
+    }
+  ],
+  "not_completed_cases": [
+    "gp-extra-300s-60 / spatial-v5-modes-64 third timed batch",
+    "turbo-lumber-evolution / legacy-v4-steady",
+    "turbo-lumber-evolution / spatial-v5-modes-8",
+    "turbo-lumber-evolution / spatial-v5-modes-24",
+    "turbo-lumber-evolution / spatial-v5-modes-64"
+  ],
+  "comparison": "v4 steady 3 m/s from 270 deg versus v5 spatial neutral mean matched at 10 m AGL with 0.3 m/s nominal turbulence RMS and 8, 24, or 64 modes; no thermal cells or session OU turbulence.",
+  "timing_method": "Sequential full FlightSession Simulation.step timing at 240 Hz; three batches per complete scenario, each with 240 warmup and 480 timed ticks. Geometry/setup, resets, query-count diagnostics, validation, and progress JSON writes were outside timed intervals.",
+  "host_os": "Windows"
+}

@@ -6978,3 +6978,27 @@ msgstr "El campo térmico requiere un horizonte de tiempo de al menos 120 s."
 
 msgid "Reference: %.1f m/s FROM %03.0f° at %.0f m AGL"
 msgstr "Referencia: %.1f m/s DESDE %03.0f° a %.0f m AGL"
+
+msgid "Aircraft lights"
+msgstr "Luces del avión"
+
+msgid "Aircraft lighting"
+msgstr "Iluminación del avión"
+
+msgid "Aircraft show effects"
+msgstr "Efectos de exhibición del avión"
+
+msgid "Reduce aircraft flashes"
+msgstr "Reducir destellos del avión"
+
+msgid "Restore lighting defaults"
+msgstr "Restablecer iluminación"
+
+msgid "Low keeps aircraft LEDs and landing lights. Standard adds nearby spill and fewer show particles. High uses the full bounded show effects."
+msgstr "Baja conserva los LED y las luces de aterrizaje. Estándar añade iluminación cercana y menos partículas de exhibición. Alta utiliza todos los efectos dentro de sus límites."
+
+msgid "Keep aircraft lights steady and disable show effects. Saved aircraft colors and sequences are preserved."
+msgstr "Mantiene las luces del avión estables y desactiva los efectos de exhibición. Se conservan los colores y las secuencias guardados."
+
+msgid "These preferences apply to every aircraft and Workshop preview. Customize individual colors and sequences in Workshop."
+msgstr "Estas preferencias se aplican a todos los aviones y a la vista previa del Taller. Personaliza los colores y las secuencias de cada avión en el Taller."

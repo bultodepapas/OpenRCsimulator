@@ -21,31 +21,37 @@
           "label": "Wing",
           "targets": [
             {
+              "target_id": "wing_left_0_skin",
               "node_path": "wing_frame_left/wing_left_0",
               "surface": 0,
               "kind": "standard_albedo"
             },
             {
+              "target_id": "wing_left_1_skin",
               "node_path": "wing_frame_left/wing_left_1",
               "surface": 0,
               "kind": "standard_albedo"
             },
             {
+              "target_id": "wing_left_2_skin",
               "node_path": "wing_frame_left/wing_left_2",
               "surface": 0,
               "kind": "standard_albedo"
             },
             {
+              "target_id": "wing_right_0_skin",
               "node_path": "wing_frame_right/wing_right_0",
               "surface": 0,
               "kind": "standard_albedo"
             },
             {
+              "target_id": "wing_right_1_skin",
               "node_path": "wing_frame_right/wing_right_1",
               "surface": 0,
               "kind": "standard_albedo"
             },
             {
+              "target_id": "wing_right_2_skin",
               "node_path": "wing_frame_right/wing_right_2",
               "surface": 0,
               "kind": "standard_albedo"
@@ -346,9 +352,23 @@
         }
       ],
       "lighting_layout": {
-        "version": 1,
+        "version": 2,
         "anchors": [],
-        "strips": []
+        "strips": [],
+        "skins": [
+          {
+            "zone_id": "strip_left",
+            "paint_slot_id": "wing",
+            "target_ids": ["wing_left_0_skin", "wing_left_1_skin", "wing_left_2_skin"],
+            "mask_profile_id": "jensen_stik_film_bays_v1"
+          },
+          {
+            "zone_id": "strip_right",
+            "paint_slot_id": "wing",
+            "target_ids": ["wing_right_0_skin", "wing_right_1_skin", "wing_right_2_skin"],
+            "mask_profile_id": "jensen_stik_film_bays_v1"
+          }
+        ]
       }
     },
     {

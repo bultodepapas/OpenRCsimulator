@@ -1,0 +1,67 @@
+{
+  "cause": "stale generated presentation registry present in baseline ac6fb953; LF-normalized source hashes verified",
+  "baseline_and_candidate_registry_identical_before": true,
+  "mismatches": [
+    {
+      "path": "res://render/aircraft_customization.gd",
+      "pinned": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5",
+      "current_lf_sha256": "7721e9795084d935fa8a9065f69c607f052bad443a602800f6662abc55677fd2"
+    },
+    {
+      "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
+      "pinned": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696",
+      "current_lf_sha256": "19ee90891e1b2ba4c2e88cc79cc03365e60f3915599815257966435851b0e80e"
+    },
+    {
+      "path": "res://render/world/aircraft_lights.gd",
+      "pinned": "885cf1e45f784253e1001176331eb54aa794fe8b53563f96f6056e551a31d07e",
+      "current_lf_sha256": "9a08c0978c12ce3cbf8d4c3f4eca98a4f477c55c060a2d262b2720c546329726"
+    },
+    {
+      "path": "res://workshop/presentation.gd",
+      "pinned": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b",
+      "current_lf_sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
+    }
+  ],
+  "generator": "research/aircraft-standardization/build_customization.py",
+  "before_sha256": "1bbcf85829ff1e34d2c238e6ca7b6b82ebc6186f6bb69d892a65ec967e16edbc",
+  "after_sha256": "91d975852cb962c348483971f381dfcb9abcb386820cab3376de1c50775065c7",
+  "other_generated_changes": "all six family binding versions 3 to 4; added version1 empty lighting_layout anchors and strips, as defined by baseline generator",
+  "existing_non_pin_non_version_values_unchanged": true,
+  "solver_sources_unchanged": true,
+  "generated_overlays": {
+    "app/data/aircraft_customization.json": {
+      "before_sha256": "1bbcf85829ff1e34d2c238e6ca7b6b82ebc6186f6bb69d892a65ec967e16edbc",
+      "after_sha256": "91d975852cb962c348483971f381dfcb9abcb386820cab3376de1c50775065c7"
+    },
+    "app/data/aircraft_models/f4u-corsair-250.json": {
+      "before_sha256": "444f2841fc3c13bea183ec7085cb2563a1b9bc7a2eefdfda79dd5cc6260f5fc5",
+      "after_sha256": "4a64652f22a2d2fe5a613c6aba0e79307fb02e2e53033a1e93366a49ab9bb753"
+    },
+    "app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json": {
+      "before_sha256": "81e87a8c463fc28369885f782ab9a19dc19223337ef50d2b99a8f05cbf75e54d",
+      "after_sha256": "4f49947c2c5d588f8f98895e0d72bf51ca7f4eee8cb79478f981defcb5e7393f"
+    },
+    "app/data/aircraft_models/turbo-lumber-evolution.json": {
+      "before_sha256": "5ea663ac036b56aa4d561f3c375717fffbb53d65e1ce1ce3ad525507225a2569",
+      "after_sha256": "0b99af3f2134489b2a2e05558b2c56c9e54108958a585ebea5534400b616f19c"
+    },
+    "app/data/workshop/f4u-corsair-250.json": {
+      "before_sha256": "c6d2dd9d27768de361937e63eb3b521a33c04442e318e8087c4e72cee16a0bda",
+      "after_sha256": "c354fff952dc445b1e6e817f8f5892c115d0ae5be442ecf55565ab75a0117521"
+    },
+    "app/data/workshop/sebart-avanti-s-a200-p100rx.json": {
+      "before_sha256": "4bafe0a1663cf19cf7e74d6ed030940ef591ca1490907a0b7120fe882787bc37",
+      "after_sha256": "865ad61aef2d7fd64d1d12d64835c6b42aa02b2a7bd9ec6fd7045324f05d910e"
+    },
+    "app/data/workshop/turbo-lumber-evolution.json": {
+      "before_sha256": "7ac57f52bff3f175dd04d7cad7ab7c92212313f121f16c2408b78028125a4762",
+      "after_sha256": "c2cd661043b3da31c2ddbd37dfb5872e28e3d2018ee78147ecc5e5ba754454b6"
+    }
+  },
+  "generator_sequence": [
+    "build_models.py",
+    "build_customization.py",
+    "build_descriptors.py"
+  ]
+}

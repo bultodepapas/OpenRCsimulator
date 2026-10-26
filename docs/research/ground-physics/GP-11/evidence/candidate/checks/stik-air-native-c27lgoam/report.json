@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a47fc2f7-7fd0-4ef7-9373-3cb545516481",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/gp-next-implementation/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ground-physics/GP-10/evidence/candidate/check_numeric_preservation.gd",
+    "--",
+    "--log=C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-next-baseline/air/jensen_ugly_stik_60.orfl",
+    "--candidate=C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-next-implementation/app/data/aircraft/jensen_ugly_stik_60.json",
+    "--report=C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-next-final-candidate/stik-air-native.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:57:21.791756+00:00",
+  "label": "stik-air-native",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\stik-air-native-c27lgoam\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\stik-air-native-c27lgoam\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "complete=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.656,
+  "log_bytes": 219,
+  "log_sha256": "6090e5ed71895e532052cba84b8920815f0099a43f84e6938eb60f16026ae62d"
+}

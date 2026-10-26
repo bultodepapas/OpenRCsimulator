@@ -9,6 +9,7 @@ const Controls := preload("res://aircraft/ugly_stik_controls.gd")
 const UglyStik := preload("res://aircraft/ugly_stik_model.gd")
 const HX700 := preload("res://aircraft/hx700_model.gd")
 const AircraftCustomization := preload("res://render/aircraft_customization.gd")
+const LightingSkins := preload("res://render/lighting/lighting_skins.gd")
 const TimberVisualLighting := preload("res://aircraft/timber_visual_lighting.gd")
 const TimberVisualDetails := preload("res://aircraft/timber_visual_details.gd")
 
@@ -107,6 +108,9 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	airplane.customization_slots_sha256 = str(customization.slots_sha256)
 	if customization.bindings.has("lighting_layout"):
 		airplane.root.set_meta("lighting_layout", customization.bindings.lighting_layout.duplicate(true))
+	var lighting_skins := LightingSkins.project_bindings(airplane.root, customization.bindings)
+	airplane.root.set_meta("lighting_skin_bindings", lighting_skins.bindings)
+	airplane.root.set_meta("lighting_skin_warnings", lighting_skins.warnings)
 	var propulsion: Dictionary = model.get("propulsion", {})
 	airplane.physical_propulsion_id = str(propulsion.get("id", ""))
 	# AircraftData's validated v2 contract defaults an omitted historical kind to glow_prop;

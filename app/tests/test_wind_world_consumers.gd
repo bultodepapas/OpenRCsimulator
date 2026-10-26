@@ -6,6 +6,28 @@ const Plant := preload("res://physics/multirotor/plant.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const M := preload("res://physics/math3d.gd")
 const FieldBuilder := preload("res://render/field.gd")
+const Main := preload("res://main.gd")
+
+class DatumObserverSession extends Node:
+	var wind_queries := 0
+	var density_queries := 0
+	var stage_receipts := 0
+	var position := PackedFloat64Array()
+	var sampled_time := -1.0
+
+	func wind_at(time_s: float, state: PackedFloat64Array) -> PackedFloat64Array:
+		wind_queries += 1
+		position = state.slice(RB.POS, RB.POS + 3)
+		sampled_time = time_s
+		return PackedFloat64Array([1.0 + 0.01 * position[0], -2.0 + 0.01 * position[1], 0.25 * time_s])
+
+	func air_density(state: PackedFloat64Array) -> float:
+		density_queries += 1
+		return 1.1 - state[RB.POS + 2] * 0.001
+
+	func air_data(_state: PackedFloat64Array, _time_s: float) -> Dictionary:
+		stage_receipts += 1
+		return {}
 
 class PositionWeather extends "res://physics/wind_field.gd":
 	var sampled_positions: Array[PackedFloat64Array] = []
@@ -40,6 +62,7 @@ func _run() -> void:
 	_helicopter_uses_candidate_and_endpoint_positions()
 	_multirotor_uses_stage_body_position()
 	_local_visual_cue()
+	_datum_observers_do_not_build_station_receipts()
 	print("world wind consumers: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -120,6 +143,26 @@ func _local_visual_cue() -> void:
 	field.set_meta("wind_world_sampler", Callable())
 	_check("legacy visual route retains exact uniform fallback", FieldBuilder._cue_wind(field, cue, 3.5, [1.25, -3.5, 0.0]) == [1.25, -3.5, 0.0])
 	field.free()
+
+
+func _datum_observers_do_not_build_station_receipts() -> void:
+	var main := Main.new()
+	var session := DatumObserverSession.new()
+	main.session = session
+	var body := RB.make_state(M.v3(100.0, -200.0, -30.0), M.v3(6.0, 2.0, 3.0),
+		M.q_identity(), M.v3(0.2, 0.3, 0.4))
+	var before := body.to_byte_array()
+	var air: Dictionary = main._observer_air(body, 4.0)
+	_check("presentation observation queries datum wind and density once without a stage receipt",
+		session.wind_queries == 1 and session.density_queries == 1 and session.stage_receipts == 0)
+	_check("presentation observation uses its explicit body position and sample time",
+		session.position == PackedFloat64Array([100.0, -200.0, -30.0]) and session.sampled_time == 4.0)
+	_check("presentation air data retains physical airspeed and density-dependent dynamic pressure",
+		air.v_air == PackedFloat64Array([4.0, 6.0, 2.0])
+		and absf(air.V - sqrt(56.0)) < 1.0e-12 and absf(air.qbar - 31.64) < 1.0e-12)
+	_check("presentation observation does not modify the supplied body", body.to_byte_array() == before)
+	main.free()
+	session.free()
 
 
 func _multirotor_uses_stage_body_position() -> void:

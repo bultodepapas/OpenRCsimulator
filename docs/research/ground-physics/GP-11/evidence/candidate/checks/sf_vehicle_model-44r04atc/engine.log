@@ -1,0 +1,39 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   default model is valid 
+ok   input_size 0 is rejected 
+ok   input_size 5 is accepted: the kernel no longer hard-codes 4 or 6 
+ok   aux_size below -1 is rejected 
+ok   post_tick and post_tick_joint together are rejected 
+ok   one post-tick filter is accepted 
+ok   no loads, stage or block route is rejected 
+ok   a joint stage route satisfies the evaluator requirement 
+ok   null is rejected 
+ok   a plain RefCounted is rejected 
+ok   set_model accepts a valid model 
+ok   set_model refuses an invalid model and keeps the current one 
+ok   set_model refuses a non-model object 
+ok   kernel exposes no compatibility properties 
+ok   reset accepts five inputs 
+ok   zero-load model falls at g·t after one second w 9.806650000000 expected 9.806650000000
+ok   forward speed is unchanged in free fall 
+ok   checkpoint with five inputs restores 
+ok   model with declared aux layout installs 
+ok   reset refuses aux that disagrees with the declared layout reset rejected: auxiliary, mode or continuous state disagrees with the vehicle model's declared layout
+ok   reset accepts aux matching the declared layout 
+ok   checkpoint is produced 
+ok   restore refuses a checkpoint that disagrees with the declared layout 
+ok   undeclared size keeps the H8 rule: arrays fix the layout 
+ok   declared continuous size without a continuous array is refused at reset 
+ok   joint model installs before its live layout is known 
+ok   empty joint layout is refused before a zero-load fallback (-1) 
+ok   empty joint layout is refused before a zero-load fallback (0) 
+ok   joint evaluator with a continuous block resets 
+ok   supported joint evaluator applies its force at all four RK stages 
+ok   body-only model resets before callback mutation 
+ok   restore refuses an unusable active evaluator (false) 
+ok   invalid evaluator faults without advancing the body (false) 
+ok   body-only model resets before callback mutation 
+ok   restore refuses an unusable active evaluator (true) 
+ok   invalid evaluator faults without advancing the body (true) 
+36 checks, 0 failed

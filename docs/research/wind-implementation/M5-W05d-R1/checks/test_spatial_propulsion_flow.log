@@ -1,0 +1,32 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   P-51 shaft fixture loads  []
+ok   legacy shaft fallback resolves
+ok   legacy RPM shaft path retains its datum inflow convention  got [12.0, -1.0, 0.5] expected [12.0, -1.0, 0.5]
+ok   explicit hub field resolves
+ok   shaft inflow uses explicit complete hub flow without adding omega again  got [29.0, -4.0, 2.0] expected [29.0, -4.0, 2.0]
+ok   prop torque consumes the explicit point's projected axial inflow
+ok   explicit stage flow changes the sampled shaft load from the legacy datum  explicit=3.89408389202079 legacy=7.5985103187837
+ok   sampled shaft derivative follows the selected point inflow  explicit=3024.47257262536 legacy=1227.43591383064
+ok   Avanti turbine fixture loads  []
+ok   turbine intake fallback resolves
+ok   legacy turbine intake retains its existing omega-cross-r conversion  got [18.0059814, -0.91592065, 0.19233394] expected [18.0059814, -0.91592065, 0.19233394]
+ok   turbine explicit intake flow resolves
+ok   turbine receives complete sampled intake flow without a second rotation term  got [22.0, -2.0, 1.0] expected [22.0, -2.0, 1.0]
+ok   Stik Glow fixture loads  []
+ok   Glow fixture initial lifecycle state is valid  [6000.0, 0.299922, 390.0, 0.75, 0.4153303770496, 0.00020017060203, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.15, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+ok   Glow stage adapter obtains a complete sampler receipt  []
+ok   Glow point evaluates with complete spatial stage flow
+ok   Glow hub load/cooling sees sampler point flow once  got [13.2265372196945, -1.31308110738048, 0.815609098431] expected [13.2265372196945, -1.31308110738048, 0.815609098431]
+ok   spatial field changes the sampled Glow hub flow
+ok   Glow propeller load uses explicit point axial speed  got=0.13725846507236 expected=0.13725846507236
+ok   Glow point still evaluates without the optional stage field
+ok   Glow absent-field path preserves its historic hub conversion  got [13.499696442237, -1.41063797257423, 0.8546318445085] expected [13.499696442237, -1.41063797257423, 0.8546318445085]
+ok   finite-liquid P-51 fixture admits
+ok   finite-liquid adapter obtains a complete WindAircraftFlow receipt
+ok   finite-liquid test field modifies local propulsion inflow  point=[24.8236901648781, 0.07437975486317, 1.85436848411715] datum=[24.9318079148781, 0.07437975486317, 1.84375208411716]
+ok   finite-liquid Dynamics accepts receipt-backed propulsion flow
+ok   finite-liquid coupled response accepts sampler-backed stage air
+ok   finite-liquid adapter evaluates its powered stage with sampler flow   response=
+ok   finite-liquid shaft response changes with explicit hub inflow  explicit=-17.6455737722705 legacy=-0.00000000000197
+spatial propulsion flow: 29 checks, 0 failed

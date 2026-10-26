@@ -13,6 +13,8 @@ render_mode unshaded, blend_add, depth_draw_never, cull_disabled, fog_disabled, 
 
 global uniform float sim_clock;
 global uniform float world_exposure; // the eye's current adaptation (render/world/exposure.gd)
+global uniform bool aircraft_reduced_flashes;
+uniform bool aircraft_emitter = false;
 
 uniform vec3 light_color : source_color = vec3(1.0);
 uniform float radiance = 2.0;
@@ -31,7 +33,7 @@ void vertex() {
 	VERTEX = center + vec3(VERTEX.xy * size, 0.0);
 	NORMAL = vec3(0.0, 0.0, 1.0);
 	gain = (size_m * size_m) / (size * size);
-	if (flash.w > 0.5) {
+	if (flash.w > 0.5 && !(aircraft_emitter && aircraft_reduced_flashes)) {
 		float t = mod(sim_clock, flash.x);
 		gain *= (t < flash.y || (flash.z > 0.0 && t >= flash.z && t < flash.z + flash.y)) ? 1.0 : 0.0;
 	}

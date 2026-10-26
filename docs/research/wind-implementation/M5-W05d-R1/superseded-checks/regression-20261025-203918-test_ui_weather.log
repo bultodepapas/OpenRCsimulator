@@ -1,0 +1,141 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   fresh defaults include the gentle practice config
+ok   nested defaults are detached between loads
+ok   old schema-1 file without weather remains readable
+ok   invalid saved weather falls back to gentle practice
+ok   saving an invalid weather object is rejected
+ok   valid weather saves and reloads
+ok   future schema reads valid weather but becomes read-only
+ok   future schema settings are never overwritten
+ok   night defaults select the club profile, automatic activation and no campfire
+ok   legacy two-key night options migrate to automatic activation
+ok   activation is preserved independently when the legacy master-off profile is selected
+ok   field profile, activation and campfire preference save independently
+ok   preference save rejects an unknown field-lighting value
+ok   preference save requires a boolean campfire value
+ok   preference save rejects an unknown field-activation value
+ok   legacy two-key night preferences load with automatic activation
+ok   invalid saved night values independently recover to strict defaults
+ok   direct arguments default to club lighting with the campfire off
+ok   direct arguments accept the profile, activation and campfire choices
+ok   direct arguments reject unknown field profiles
+ok   direct arguments reject non-enum campfire values
+ok   direct arguments reject unknown field activation
+ok   precision fixture valid
+ERROR: Aircraft customization bindings: ["presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:104)
+       [1] show_aircraft (res://ui/home_scene.gd:138)
+       [2] _init (res://ui/home_scene.gd:98)
+       [3] show_home (res://app_root.gd:449)
+       [4] _ready (res://app_root.gd:317)
+ok   Home presents a weather button next to Fly
+ok   Home initially focuses Fly
+ok   Weather remains reachable in the Home keyboard cycle
+ok   radio axis cannot move Home focus
+ok   Enter opens a modal draft
+ok   Home conditions expose profile, activation and separate campfire choices
+ok   weather dialog panel fits the 1280×720 base layout
+ok   all six requested weather fields are available
+ok   speed_mps field round-trips the complete float64
+ok   from_deg field round-trips the complete float64
+ok   gust_mps field round-trips the complete float64
+ok   gust_up_mps field round-trips the complete float64
+ok   gust_duration_s field round-trips the complete float64
+ok   gust_period_s field round-trips the complete float64
+ok   gust delay stays hidden from the form
+ok   radio axis cannot move modal focus
+ok   Esc cancels and returns focus to Weather
+ok   cancel leaves the original persisted config untouched
+ok   cancel also discards night-option drafts
+ok   reopen begins from the committed precision values
+ok   out-of-range edit displays an error and stays in the draft
+ok   invalid draft does not change the committed config
+ERROR: Aircraft customization bindings: ["presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:104)
+       [1] show_aircraft (res://ui/home_scene.gd:138)
+       [2] _init (res://ui/home_scene.gd:98)
+       [3] _rebuild_home_scene (res://app_root.gd:2625)
+       [4] _flush_home_scene_rebuild (res://app_root.gd:2614)
+ok   Apply preserves every unedited value and hidden gust delay
+ok   Apply saves the independent airfield and campfire selections
+ok   Apply returns focus and closes the modal
+ok   preset fills the draft without changing saved preferences
+ok   Apply commits the chosen preset
+ok   Spanish localizes Home and the modal preset list
+ok   Spanish localizes the compact night profile and campfire choices
+FAIL Spanish modal has no untranslated focusable or instructional text ["Viento uniforme y rachas periódicas con turbulencia opcional con semilla.", "Viento espacial personalizado", "Activar viento espacial", "Ajustes espaciales avanzados"]
+ok   future-schema UI fixture saves
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ERROR: Aircraft customization bindings: ["presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:104)
+       [1] show_aircraft (res://ui/home_scene.gd:138)
+       [2] _init (res://ui/home_scene.gd:98)
+       [3] show_home (res://app_root.gd:449)
+       [4] _ready (res://app_root.gd:317)
+       [5] _app (res://tests/test_ui_weather.gd:371)
+       [6] _future_schema_apply (res://tests/test_ui_weather.gd:318)
+       [7] _run (res://tests/test_ui_weather.gd:33)
+       [8] _draft_dialog (res://tests/test_ui_weather.gd:271)
+       [9] _close (res://tests/test_ui_weather.gd:377)
+       [10] close_app (res://tests/ui_driver.gd:103)
+ok   future schema Apply takes effect for this session
+ok   future schema save failure is visible on Home
+ok   future schema Apply leaves the original file byte-for-byte unchanged
+ok   non-calm Home-to-Fly fixture saves
+ERROR: Aircraft customization bindings: ["presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:104)
+       [1] show_aircraft (res://ui/home_scene.gd:138)
+       [2] _init (res://ui/home_scene.gd:98)
+       [3] show_home (res://app_root.gd:449)
+       [4] _ready (res://app_root.gd:317)
+       [5] _app (res://tests/test_ui_weather.gd:371)
+       [6] _home_to_flight (res://tests/test_ui_weather.gd:286)
+       [7] _run (res://tests/test_ui_weather.gd:34)
+       [8] _future_schema_apply (res://tests/test_ui_weather.gd:335)
+       [9] _close (res://tests/test_ui_weather.gd:377)
+       [10] close_app (res://tests/ui_driver.gd:103)
+ok   Home backdrop receives the saved field and campfire choices
+ERROR: Aircraft customization bindings: ["presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:104)
+       [1] _build_world (res://main.gd:2702)
+       [2] _prepare_flight (res://main.gd:619)
+       [3] _ready (res://main.gd:356)
+       [4] start_flight (res://app_root.gd:949)
+       [5] _on_fly (res://ui/home.gd:1707)
+ERROR: Aircraft customization bindings: ["presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:104)
+       [1] show_aircraft (res://ui/home_scene.gd:138)
+       [2] _init (res://ui/home_scene.gd:98)
+       [3] _rebuild_home_scene (res://app_root.gd:2625)
+       [4] start_flight (res://app_root.gd:980)
+       [5] _on_fly (res://ui/home.gd:1707)
+FAIL mild non-calm Home flight starts Home:<Control#950865496565>
+ok   prepare different saved night settings for direct CLI override
+ERROR: Aircraft customization bindings: ["presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd", "presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:104)
+       [1] _build_world (res://main.gd:2702)
+       [2] _prepare_flight (res://main.gd:619)
+       [3] _ready (res://main.gd:356)
+       [4] start_flight (res://app_root.gd:949)
+       [5] _ready (res://app_root.gd:269)
+       [6] _direct_route_is_calm (res://tests/test_ui_weather.gd:350)
+       [7] _run (res://tests/test_ui_weather.gd:35)
+       [8] _home_to_flight (res://tests/test_ui_weather.gd:294)
+       [9] _close (res://tests/test_ui_weather.gd:377)
+       [10] close_app (res://tests/ui_driver.gd:103)
+Aircraft model failed its manifest and scene binding checks: jensen-das-ugly-stik-60

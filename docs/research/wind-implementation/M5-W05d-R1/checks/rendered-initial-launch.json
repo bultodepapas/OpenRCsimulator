@@ -1,0 +1,14 @@
+{
+  "port": 47870,
+  "launcher_pid": 28356,
+  "out": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\debug-bridge\\20261025-205329-47870",
+  "profile": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\spatial-ui-render-profile",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\candidate\\app",
+    "--resolution",
+    "1920x1080"
+  ],
+  "attempt": 1
+}

@@ -1,0 +1,73 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   fresh defaults include the gentle practice config
+ok   nested defaults are detached between loads
+ok   old schema-1 file without weather remains readable
+ok   invalid saved weather falls back to gentle practice
+ok   saving an invalid weather object is rejected
+ok   valid weather saves and reloads
+ok   future schema reads valid weather but becomes read-only
+ok   future schema settings are never overwritten
+ok   night defaults select the club profile, automatic activation and no campfire
+ok   legacy two-key night options migrate to automatic activation
+ok   activation is preserved independently when the legacy master-off profile is selected
+ok   field profile, activation and campfire preference save independently
+ok   preference save rejects an unknown field-lighting value
+ok   preference save requires a boolean campfire value
+ok   preference save rejects an unknown field-activation value
+ok   legacy two-key night preferences load with automatic activation
+ok   invalid saved night values independently recover to strict defaults
+ok   direct arguments default to club lighting with the campfire off
+ok   direct arguments accept the profile, activation and campfire choices
+ok   direct arguments reject unknown field profiles
+ok   direct arguments reject non-enum campfire values
+ok   direct arguments reject unknown field activation
+ok   precision fixture valid
+ok   Home presents a weather button next to Fly
+ok   Home initially focuses Fly
+ok   Weather remains reachable in the Home keyboard cycle
+ok   radio axis cannot move Home focus
+ok   Enter opens a modal draft
+ok   Home conditions expose profile, activation and separate campfire choices
+ok   weather dialog panel fits the 1280×720 base layout
+ok   all six requested weather fields are available
+ok   speed_mps field round-trips the complete float64
+ok   from_deg field round-trips the complete float64
+ok   gust_mps field round-trips the complete float64
+ok   gust_up_mps field round-trips the complete float64
+ok   gust_duration_s field round-trips the complete float64
+ok   gust_period_s field round-trips the complete float64
+ok   gust delay stays hidden from the form
+ok   radio axis cannot move modal focus
+ok   Esc cancels and returns focus to Weather
+ok   cancel leaves the original persisted config untouched
+ok   cancel also discards night-option drafts
+ok   reopen begins from the committed precision values
+ok   out-of-range edit displays an error and stays in the draft
+ok   invalid draft does not change the committed config
+ok   Apply preserves every unedited value and hidden gust delay
+ok   Apply saves the independent airfield and campfire selections
+ok   Apply returns focus and closes the modal
+ok   preset fills the draft without changing saved preferences
+ok   Apply commits the chosen preset
+ok   Spanish localizes Home and the modal preset list
+ok   Spanish localizes the compact night profile and campfire choices
+FAIL Spanish modal has no untranslated focusable or instructional text ["Viento uniforme y rachas periódicas con turbulencia opcional con semilla.", "Viento espacial personalizado", "Activar viento espacial", "Ajustes espaciales avanzados"]
+ok   future-schema UI fixture saves
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future schema Apply takes effect for this session
+ok   future schema save failure is visible on Home
+ok   future schema Apply leaves the original file byte-for-byte unchanged
+ok   non-calm Home-to-Fly fixture saves
+ok   Home backdrop receives the saved field and campfire choices
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   successful Fly passes the chosen config to main before adding the flight
+ok   Home to Fly passes the same saved night options
+ok   session received the same weather configuration
+ok   successful Fly remembers the weather and night options
+ok   prepare different saved night settings for direct CLI override
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   direct route keeps the calm default
+ok   direct CLI options override and ignore different saved night preferences
+ok   direct route leaves stored non-calm preference bytes alone
+1 UI weather checks failed

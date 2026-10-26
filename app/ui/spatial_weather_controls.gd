@@ -92,11 +92,13 @@ func _init(initial_spatial: Variant = null, enabled: bool = false) -> void:
 	preset_picker.name = "SpatialPreset"
 	preset_picker.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	preset_picker.custom_minimum_size.x = 360.0
+	preset_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	preset_picker.item_selected.connect(_on_preset_selected)
 	add_child(preset_picker)
 
 	enable_check = CheckBox.new()
 	enable_check.name = "EnableSpatialWind"
+	enable_check.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	enable_check.toggled.connect(_on_enabled_toggled)
 	add_child(enable_check)
 
@@ -121,6 +123,7 @@ func _init(initial_spatial: Variant = null, enabled: bool = false) -> void:
 
 	advanced_check = CheckBox.new()
 	advanced_check.name = "SpatialAdvancedSettings"
+	advanced_check.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	advanced_check.toggled.connect(_on_advanced_toggled)
 	add_child(advanced_check)
 	advanced_grid = _make_grid("SpatialAdvancedFields")
@@ -171,7 +174,7 @@ func set_source(raw_spatial: Variant, enabled: bool, preset_id := "") -> void:
 	_set_field_text("gust_duration_s", event_view.duration_s)
 	_selected_preset_id = preset_id if not preset_id.is_empty() else (_matching_preset(_source_spatial) if enabled else "")
 	_status_message = ""
-	_select_preset_id(preset_id)
+	_select_preset_id(_selected_preset_id)
 	_setting_fields = false
 	_apply_visibility()
 	_refresh_texts()
@@ -296,8 +299,17 @@ func _select_preset_id(preset_id: String) -> void:
 
 
 func _matching_preset(spatial: Dictionary) -> String:
+	var checked_spatial: Dictionary = SpatialConfig.resolve(spatial)
+	if not checked_spatial.get("ok", false):
+		return ""
+	var source_hash: String = str(checked_spatial.get("content_hash", ""))
+	if source_hash.is_empty():
+		return ""
 	for entry: Dictionary in SpatialPresets.entries():
-		if bool(entry.available) and entry.get("spatial_wind", {}) == spatial:
+		if not bool(entry.available):
+			continue
+		var checked_preset: Dictionary = SpatialConfig.resolve(entry.get("spatial_wind", {}))
+		if checked_preset.get("ok", false) and str(checked_preset.get("content_hash", "")) == source_hash:
 			return str(entry.id)
 	return ""
 
@@ -449,6 +461,8 @@ func _add_field(grid: GridContainer, key: String) -> void:
 
 func _set_field_text(key: String, raw_value: Variant) -> void:
 	var text := str(int(raw_value)) if bool(FIELDS[key].get("integer", false)) else _format_number(float(raw_value))
+	if key == "gust_intensity_mps":
+		text = _format_derived_gust_intensity(float(raw_value))
 	var edit: LineEdit = _field_inputs[key]
 	edit.text = text
 	_initial_text[key] = text
@@ -599,6 +613,17 @@ func _failure(message: String) -> Dictionary:
 	_status_message = message
 	_refresh_texts()
 	return {"ok": false, "enabled": true, "spatial_wind": {}, "errors": PackedStringArray([message])}
+
+
+static func _format_derived_gust_intensity(value: float) -> String:
+	if value == 0.0:
+		return "0"
+	var text := String.num(value, 2)
+	while text.contains(".") and text.ends_with("0"):
+		text = text.left(-1)
+	if text.ends_with("."):
+		text = text.left(-1)
+	return _format_number(value) if text.to_float() == 0.0 else text
 
 
 func _label(text: String, variation: String, should_wrap := false, translate := false) -> Label:

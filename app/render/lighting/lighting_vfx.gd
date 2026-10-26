@@ -4,6 +4,8 @@ extends RefCounted
 
 const RGB_LAMP_SHADER := preload("res://render/lighting/rgb_lamp.gdshader")
 const Patterns := preload("res://render/lighting/lighting_patterns.gd")
+const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
+const SceneBudget := preload("res://render/lighting/lighting_scene_budget.gd")
 const MAX_EFFECTS := 2
 const SPARK_POOL_CAPACITY := 32
 const SPARKS_PER_EVENT := 20
@@ -22,8 +24,20 @@ const SPILL_FULL_DISTANCE_M := 20.0
 const SPILL_OFF_DISTANCE_M := 40.0
 const VFX_FULL_DISTANCE_M := 60.0
 const VFX_OFF_DISTANCE_M := 120.0
+const EFFECT_BOUNDS_PADDING_M := 0.01
+const LOD_NEAR_ENTER_PX := 198.0
+const LOD_NEAR_EXIT_PX := 162.0
+const LOD_MEDIUM_ENTER_PX := 66.0
+const LOD_MEDIUM_EXIT_PX := 54.0
+const LOD_FAR_ENTER_PX := 13.2
+const LOD_FAR_EXIT_PX := 10.8
+const LOD_NEAR := "near"
+const LOD_MEDIUM := "medium"
+const LOD_FAR := "far"
+const LOD_TINY := "tiny"
 const TIP_ANCHORS := {"vfx_tip_left": "nav_left", "vfx_tip_right": "nav_right"}
 const GOLD := Color("#FFD17A")
+const EFFECT_QUAD_LOCAL_AABB := AABB(Vector3(-0.5, -0.5, 0.0), Vector3(1.0, 1.0, 0.0))
 
 var _root: Node3D
 var _kit: Node3D
@@ -41,6 +55,17 @@ var _last_cue_key := ""
 var _event_serial := 0
 var _spill_fade := 1.0
 var _distance_fade := 1.0
+var _scene_budget: RefCounted
+var _scene_grant := {"spill_lights": 0, "vfx_anchors": 0}
+var _budget_distance := 1000000.0
+var _budget_priority := 0
+var _aircraft_bounds_local := AABB()
+var _has_aircraft_bounds := false
+var _lod_camera_id := 0
+var _lod_tier := LOD_NEAR
+var _lod_birth_density := 1.0
+var _lod_projected_span_px := 0.0
+var _aircraft_in_view := true
 
 
 func configure(aircraft_root: Node3D, kit: Node3D, profile: Dictionary) -> Dictionary:
@@ -50,6 +75,7 @@ func configure(aircraft_root: Node3D, kit: Node3D, profile: Dictionary) -> Dicti
 	_root = aircraft_root
 	_kit = kit
 	_profile = profile.duplicate(true)
+	_cache_aircraft_bounds()
 	var entries: Array = []
 	var errors: Array[String] = []
 	var effects: Variant = profile.get("effects", [])
@@ -81,6 +107,12 @@ func configure(aircraft_root: Node3D, kit: Node3D, profile: Dictionary) -> Dicti
 		_create_world_root()
 		for entry: Dictionary in entries:
 			_create_effect_pool(entry.effect, entry.anchor)
+	if _root.is_inside_tree():
+		_scene_budget = SceneBudget.for_world(_root.get_world_3d())
+		if _scene_budget != null:
+			var identity := "aircraft:" + str(_root.get_path()).sha256_text().substr(0, 32)
+			if not _scene_budget.register_owner(self, identity):
+				_warnings.append("scene lighting budget unavailable; decorative effects remain hidden")
 	return {"ok": true, "errors": [], "warnings": _warnings.duplicate()}
 
 
@@ -93,13 +125,14 @@ func set_mode(mode: String, gain := 1.0) -> void:
 	for binding: Dictionary in _spills:
 		var spill: OmniLight3D = binding.get("light")
 		if is_instance_valid(spill):
-			spill.visible = show_all and _spill_fade > 0.0 and bool(spill.get_meta("gate_open", true))
+			binding["wants_visible"] = show_all and LightingPolicy.quality != "low" and _spill_fade > 0.0 and bool(spill.get_meta("gate_open", true))
 	for pool: Dictionary in _effects:
 		var instance: MultiMeshInstance3D = pool.get("instance")
 		if is_instance_valid(instance):
-			instance.visible = show_all
+			pool["wants_visible"] = show_all and LightingPolicy.effects_allowed()
 	if not show_all:
 		_clear_transients()
+	_refresh_scene_budget()
 
 
 func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
@@ -110,7 +143,11 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 		reset()
 	var exposure := _number_or(telemetry.get("exposure", 1.0), 1.0, 0.0001, 1000000.0)
 	var distance := _number_or(telemetry.get("distance_m", 0.0), 0.0, 0.0, 1000000.0)
+	_budget_distance = distance
+	_budget_priority = clampi(int(telemetry.get("lighting_priority", 0)), -1000, 1000)
+	_update_projected_lod()
 	_spill_fade = 1.0 - _smoothstep(SPILL_FULL_DISTANCE_M, SPILL_OFF_DISTANCE_M, distance)
+	if LightingPolicy.quality == "low": _spill_fade = 0.0
 	_distance_fade = 1.0 - _smoothstep(VFX_FULL_DISTANCE_M, VFX_OFF_DISTANCE_M, distance)
 	var maneuver := _number_or(telemetry.get("maneuver", 0.0), 0.0, 0.0, 1.0)
 	var maneuver_high := maneuver >= MANEUVER_TRIGGER
@@ -118,7 +155,11 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 	_last_maneuver = maneuver_high
 	var effects_allowed := bool(telemetry.get("effects_allowed", false))
 	var show_all := _mode == "all" and _gain > 0.0 and _kit.visible
-	var active := show_all and effects_allowed
+	var active := show_all and effects_allowed and LightingPolicy.effects_allowed()
+	if not LightingPolicy.effects_allowed(): _clear_transients()
+	for pool: Dictionary in _effects:
+		var instance: MultiMeshInstance3D = pool.get("instance")
+		if is_instance_valid(instance): pool["wants_visible"] = show_all and LightingPolicy.effects_allowed()
 	var cue_state := _sequence_state(seconds)
 	var cue := cue_state.get("cue", {}) as Dictionary
 	var cue_key := "%d:%d" % [int(cue_state.get("sequence_cycle", 0)), int(cue_state.get("cue_index", -1))]
@@ -139,7 +180,8 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 		elif active and _distance_fade > 0.0 and maneuver_rising and kind in ["spark", "burst"]:
 			_trigger_sparks(pool, seconds, seconds, false, _distance_fade)
 		if kind == "trail":
-			var trail_active := active and _distance_fade > 0.0 and (cue_active or maneuver >= TRAIL_MANEUVER_THRESHOLD)
+			var trail_active := active and _lod_birth_density > 0.0 and _distance_fade > 0.0 \
+				and (cue_active or maneuver >= TRAIL_MANEUVER_THRESHOLD)
 			if trail_active:
 				pool["trail_until"] = seconds + float(pool.get("lifetime_s", 0.6))
 				_sample_trail(pool, seconds, anchor.global_position)
@@ -147,6 +189,7 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 		else:
 			_update_sparks(pool, seconds, exposure, _distance_fade)
 	_update_spills(seconds, telemetry, exposure)
+	_refresh_scene_budget()
 	_last_seconds = seconds
 
 
@@ -167,9 +210,15 @@ func reset() -> void:
 			var instance: MultiMeshInstance3D = pool.instance
 			if is_instance_valid(instance) and instance.multimesh != null:
 				instance.multimesh.visible_instance_count = 0
+				_set_live_effect_bounds(instance, instance.multimesh, AABB(), false)
+	_refresh_scene_budget()
 
 
 func dispose() -> void:
+	if _scene_budget != null:
+		_scene_budget.unregister_owner(self)
+	_scene_budget = null
+	_scene_grant = {"spill_lights": 0, "vfx_anchors": 0}
 	for binding: Dictionary in _spills:
 		var spill: OmniLight3D = binding.get("light")
 		if is_instance_valid(spill):
@@ -192,6 +241,13 @@ func dispose() -> void:
 	_event_serial = 0
 	_spill_fade = 1.0
 	_distance_fade = 1.0
+	_aircraft_bounds_local = AABB()
+	_has_aircraft_bounds = false
+	_lod_camera_id = 0
+	_lod_tier = LOD_NEAR
+	_lod_birth_density = 1.0
+	_lod_projected_span_px = 0.0
+	_aircraft_in_view = true
 
 
 func budget_info() -> Dictionary:
@@ -210,8 +266,51 @@ func budget_info() -> Dictionary:
 		"spark_limit": MAX_EFFECTS * SPARK_POOL_CAPACITY,
 		"trail_sample_limit": MAX_EFFECTS * MAX_TRAIL_SAMPLES,
 		"spill_light_limit": SPILL_LIMIT,
+		"projected_vfx_tier": _lod_tier,
+		"projected_aircraft_span_px": _lod_projected_span_px,
+		"projected_vfx_birth_density": _lod_birth_density,
+		"projected_aircraft_in_view": _aircraft_in_view,
 		"warnings": _warnings.duplicate(),
+		"scene_grant": _scene_grant.duplicate(),
+		"scene_budget": _scene_budget.receipt() if _scene_budget != null else {},
 	}
+
+
+## The shared World3D coordinator revokes all old grants before enabling new owners.
+func apply_scene_budget(grant: Dictionary) -> void:
+	_scene_grant = grant.duplicate()
+	var spill_left := int(grant.get("spill_lights", 0))
+	for binding: Dictionary in _spills:
+		var light: OmniLight3D = binding.get("light")
+		if not is_instance_valid(light): continue
+		light.visible = bool(binding.get("wants_visible", false)) and spill_left > 0
+		if light.visible: spill_left -= 1
+	var effects_left := int(grant.get("vfx_anchors", 0))
+	for pool: Dictionary in _effects:
+		var instance: MultiMeshInstance3D = pool.get("instance")
+		if not is_instance_valid(instance): continue
+		var wants := bool(pool.get("wants_visible", false)) and instance.multimesh.visible_instance_count > 0
+		instance.visible = wants and effects_left > 0
+		if instance.visible: effects_left -= 1
+
+
+func _refresh_scene_budget() -> void:
+	var spill_count := 0
+	for binding: Dictionary in _spills:
+		if bool(binding.get("wants_visible", false)): spill_count += 1
+	var effects_count := 0
+	for pool: Dictionary in _effects:
+		var instance: MultiMeshInstance3D = pool.get("instance")
+		if bool(pool.get("wants_visible", false)) and is_instance_valid(instance) and instance.multimesh.visible_instance_count > 0:
+			effects_count += 1
+	if _scene_budget == null:
+		apply_scene_budget({"spill_lights": 0, "vfx_anchors": 0})
+		return
+	_scene_budget.set_quality(LightingPolicy.quality)
+	var grant: Dictionary = _scene_budget.submit(self, {"priority": _budget_priority, "distance_m": _budget_distance,
+		"spill_lights": spill_count, "vfx_anchors": effects_count})
+	# A numerically unchanged grant still needs to apply new per-pool eligibility.
+	apply_scene_budget(grant)
 
 
 func warnings() -> Array[String]:
@@ -309,7 +408,7 @@ func _create_spill_lights(profile: Dictionary) -> void:
 			_warnings.append("spill anchor '%s' is unavailable; local spill was skipped" % anchor_name)
 			continue
 		var pattern: Dictionary = zone.get("pattern", {})
-		var color := Patterns.sample(pattern, 0.0, 0.5, profile.get("sequence", []), zone_id)
+		var color := LightingPolicy.sample(pattern, 0.0, 0.5, profile.get("sequence", []), zone_id)
 		var zone_brightness := clampf(_number_or(zone.get("brightness", 1.0), 1.0, 0.0, 2.0), 0.0, 2.0)
 		var light := OmniLight3D.new()
 		light.name = "strip_spill_%s" % side
@@ -338,7 +437,8 @@ func _trigger_sparks(pool: Dictionary, birth_seconds: float, current_seconds: fl
 	if birth_seconds - float(pool.get("last_event_time", -INF)) < SPARK_COOLDOWN_S:
 		return
 	var base_count := BURST_SPARKS_PER_EVENT if burst else SPARKS_PER_EVENT
-	var count := clampi(roundi(float(base_count) * distance_fade), 0, SPARK_POOL_CAPACITY)
+	var count := clampi(roundi(float(base_count) * distance_fade * LightingPolicy.effect_density()
+		* _lod_birth_density), 0, SPARK_POOL_CAPACITY)
 	if count <= 0:
 		return
 	pool["last_event_time"] = birth_seconds
@@ -378,6 +478,8 @@ func _update_sparks(pool: Dictionary, seconds: float, exposure: float, distance_
 	var particles: Array = pool.get("particles", [])
 	var multi := instance.multimesh
 	var live_count := 0
+	var live_bounds := AABB()
+	var has_live_bounds := false
 	var camera_basis := _camera_basis()
 	for index in SPARK_POOL_CAPACITY:
 		if index >= particles.size():
@@ -393,16 +495,26 @@ func _update_sparks(pool: Dictionary, seconds: float, exposure: float, distance_
 		var fade := clampf(1.0 - age / life, 0.0, 1.0) * float(pool.get("intensity", 0.5)) * _gain * distance_fade
 		var size := float(particle.get("size", 0.025)) * (0.7 + 0.3 * fade)
 		var basis := Basis(camera_basis.x * size, camera_basis.y * size, camera_basis.z * size)
-		multi.set_instance_transform(index, _local_transform(Transform3D(basis, point)))
+		var local_transform := _local_transform(Transform3D(basis, point))
+		if not local_transform.is_finite():
+			continue
+		var particle_bounds := local_transform * EFFECT_QUAD_LOCAL_AABB
+		if not particle_bounds.is_finite():
+			continue
+		multi.set_instance_transform(index, local_transform)
+		live_bounds = particle_bounds if not has_live_bounds else live_bounds.merge(particle_bounds)
+		has_live_bounds = true
 		var color: Color = particle.get("color", GOLD)
 		multi.set_instance_color(index, Color(color.r, color.g, color.b, fade))
 		live_count = index + 1
 	multi.visible_instance_count = live_count
+	_set_live_effect_bounds(instance, multi, live_bounds, has_live_bounds)
 
 
 func _sample_trail(pool: Dictionary, seconds: float, point: Vector3) -> void:
 	var last_sample_time := float(pool.get("last_sample_time", -INF))
-	if seconds - last_sample_time < TRAIL_SAMPLE_INTERVAL:
+	var sample_interval := TRAIL_SAMPLE_INTERVAL / maxf(LightingPolicy.effect_density() * _lod_birth_density, 0.01)
+	if seconds - last_sample_time < sample_interval:
 		return
 	var samples: Array = pool.get("samples", [])
 	if not samples.is_empty():
@@ -433,6 +545,8 @@ func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_f
 	var multi := instance.multimesh
 	var camera_position := _camera_position()
 	var segments := 0
+	var live_bounds := AABB()
+	var has_live_bounds := false
 	for index in MAX_TRAIL_SEGMENTS:
 		if index + 1 >= samples.size():
 			break
@@ -456,10 +570,19 @@ func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_f
 		var fade := clampf(1.0 - maxf(0.0, seconds - float(after.get("time", seconds))) / life, 0.0, 1.0)
 		fade *= float(pool.get("intensity", 0.5)) * _gain * distance_fade
 		var basis := Basis(tangent * length, side * 0.035, normal)
-		multi.set_instance_transform(segments, _local_transform(Transform3D(basis, midpoint)))
+		var local_transform := _local_transform(Transform3D(basis, midpoint))
+		if not local_transform.is_finite():
+			continue
+		var segment_bounds := local_transform * EFFECT_QUAD_LOCAL_AABB
+		if not segment_bounds.is_finite():
+			continue
+		multi.set_instance_transform(segments, local_transform)
+		live_bounds = segment_bounds if not has_live_bounds else live_bounds.merge(segment_bounds)
+		has_live_bounds = true
 		multi.set_instance_color(segments, Color(GOLD.r, GOLD.g, GOLD.b, fade))
 		segments += 1
 	multi.visible_instance_count = segments
+	_set_live_effect_bounds(instance, multi, live_bounds, has_live_bounds)
 
 
 func _update_spills(seconds: float, telemetry: Dictionary, exposure: float) -> void:
@@ -467,19 +590,15 @@ func _update_spills(seconds: float, telemetry: Dictionary, exposure: float) -> v
 		var light: OmniLight3D = binding.get("light")
 		if not is_instance_valid(light):
 			continue
-		if is_instance_valid(_kit) and _kit.visible:
-			light.visible = _mode == "all" and _gain > 0.0 and _spill_fade > 0.0
-		else:
-			light.visible = false
 		var zone: Dictionary = binding.get("zone", {})
 		var zone_id := str(binding.get("zone_id", ""))
 		var pattern: Dictionary = zone.get("pattern", {})
-		light.light_color = Patterns.sample(pattern, seconds, 0.5, _profile.get("sequence", []), zone_id)
-		var reaction := Patterns.reactive_multiplier(zone.get("reactive", {}), telemetry)
+		light.light_color = LightingPolicy.sample(pattern, seconds, 0.5, _profile.get("sequence", []), zone_id)
+		var reaction := LightingPolicy.reaction(zone.get("reactive", {}), telemetry)
 		var modulation := float(binding.get("base_energy", SPILL_ENERGY)) / SPILL_ENERGY * _gain * _spill_fade * float(reaction.get("multiplier", 1.0))
 		# Preserve user brightness and telemetry response after adapting to night exposure.
 		light.light_energy = minf(SPILL_ENERGY, SPILL_MAX_EXPOSED_ENERGY / maxf(exposure, 0.0001)) * modulation
-		light.visible = _mode == "all" and _gain > 0.0 and _spill_fade > 0.0 and _kit.visible and bool(light.get_meta("gate_open", true))
+		binding["wants_visible"] = _mode == "all" and _gain > 0.0 and _spill_fade > 0.0 and _kit.visible and bool(light.get_meta("gate_open", true))
 
 
 func _sequence_state(seconds: float) -> Dictionary:
@@ -498,22 +617,193 @@ func _set_exposure(material: ShaderMaterial, pool: Dictionary, exposure: float) 
 	pool["last_exposure"] = exposure
 
 
+func _active_camera() -> Camera3D:
+	if not is_instance_valid(_world_root):
+		return null
+	var viewport := _world_root.get_viewport()
+	return viewport.get_camera_3d() if viewport != null else null
+
+
 func _camera_basis() -> Basis:
-	if is_instance_valid(_world_root):
-		var viewport := _world_root.get_viewport()
-		var camera := viewport.get_camera_3d() if viewport != null else null
-		if camera != null:
-			return camera.global_transform.basis.orthonormalized()
-	return Basis.IDENTITY
+	var camera := _active_camera()
+	return camera.global_transform.basis.orthonormalized() if camera != null else Basis.IDENTITY
 
 
 func _camera_position() -> Vector3:
-	if is_instance_valid(_world_root):
-		var viewport := _world_root.get_viewport()
-		var camera := viewport.get_camera_3d() if viewport != null else null
-		if camera != null:
-			return camera.global_position
-	return Vector3.ZERO
+	var camera := _active_camera()
+	return camera.global_position if camera != null else Vector3.ZERO
+
+
+func _cache_aircraft_bounds() -> void:
+	_aircraft_bounds_local = AABB()
+	_has_aircraft_bounds = false
+	if not is_instance_valid(_kit):
+		return
+	var layout: Variant = _kit.get_meta("geometry_layout", {})
+	if not layout is Dictionary:
+		return
+	var raw_bounds: Variant = layout.get("bounds")
+	if typeof(raw_bounds) != TYPE_AABB:
+		return
+	var bounds: AABB = raw_bounds
+	if not bounds.is_finite() or bounds.size.x <= 0.0 or bounds.size.y <= 0.0 or bounds.size.z <= 0.0:
+		return
+	_aircraft_bounds_local = bounds
+	_has_aircraft_bounds = true
+
+
+func _measure_projected_view() -> Dictionary:
+	if not _has_aircraft_bounds or not is_instance_valid(_root):
+		return {"ok": false}
+	var camera := _active_camera()
+	if camera == null:
+		return {"ok": false}
+	var viewport := camera.get_viewport()
+	if viewport == null:
+		return {"ok": false}
+	var viewport_size := viewport.get_visible_rect().size
+	if not is_finite(viewport_size.x) or not is_finite(viewport_size.y) \
+			or viewport_size.x < 1.0 or viewport_size.y < 1.0:
+		return {"ok": false}
+	var world_bounds: AABB = _root.global_transform * _aircraft_bounds_local
+	if not world_bounds.is_finite():
+		return {"ok": false}
+	var camera_inverse := camera.global_transform.affine_inverse()
+	var center_camera := camera_inverse * world_bounds.get_center()
+	var center_depth := -center_camera.z
+	var radius := world_bounds.size.length() * 0.5
+	if not is_finite(center_depth) or not is_finite(radius) or radius <= 0.0:
+		return {"ok": false}
+	var camera_id := camera.get_instance_id()
+	if center_depth + radius < camera.near or center_depth - radius > camera.far:
+		return {"ok": true, "camera_id": camera_id, "span_px": 0.0, "visible": false}
+	# Bounds touching the near plane conservatively occupy the view. This avoids
+	# unstable divisions while zooming through the aircraft or orbiting inside it.
+	if center_depth - radius <= camera.near:
+		return {"ok": true, "camera_id": camera_id,
+			"span_px": maxf(viewport_size.x, viewport_size.y), "visible": true}
+
+	var projection: Projection = camera.get_camera_projection()
+	var minimum := Vector2(INF, INF)
+	var maximum := Vector2(-INF, -INF)
+	for x_index in 2:
+		for y_index in 2:
+			for z_index in 2:
+				var corner := world_bounds.position + Vector3(
+					world_bounds.size.x if x_index > 0 else 0.0,
+					world_bounds.size.y if y_index > 0 else 0.0,
+					world_bounds.size.z if z_index > 0 else 0.0)
+				var camera_point := camera_inverse * corner
+				var depth := -camera_point.z
+				if not is_finite(depth) or depth < camera.near:
+					return {"ok": true, "camera_id": camera_id,
+						"span_px": maxf(viewport_size.x, viewport_size.y), "visible": true}
+				var clip: Vector4 = projection * Vector4(camera_point.x, camera_point.y, camera_point.z, 1.0)
+				if not is_finite(clip.x) or not is_finite(clip.y) or not is_finite(clip.w) or clip.w <= 0.000001:
+					return {"ok": false}
+				var ndc := Vector2(clip.x / clip.w, clip.y / clip.w)
+				var screen := Vector2((ndc.x * 0.5 + 0.5) * viewport_size.x,
+					(0.5 - ndc.y * 0.5) * viewport_size.y)
+				if not is_finite(screen.x) or not is_finite(screen.y):
+					return {"ok": false}
+				minimum.x = minf(minimum.x, screen.x)
+				minimum.y = minf(minimum.y, screen.y)
+				maximum.x = maxf(maximum.x, screen.x)
+				maximum.y = maxf(maximum.y, screen.y)
+	var span_px := maxf(maximum.x - minimum.x, maximum.y - minimum.y)
+	if not is_finite(span_px):
+		return {"ok": false}
+	var visible := maximum.x >= 0.0 and minimum.x <= viewport_size.x \
+		and maximum.y >= 0.0 and minimum.y <= viewport_size.y
+	return {"ok": true, "camera_id": camera_id, "span_px": maxf(0.0, span_px), "visible": visible}
+
+
+func _update_projected_lod() -> void:
+	var measured := _measure_projected_view()
+	if not bool(measured.get("ok", false)):
+		# Editor previews and headless fixtures without a camera keep the previous near behavior.
+		_lod_camera_id = 0
+		_lod_tier = LOD_NEAR
+		_lod_birth_density = 1.0
+		_lod_projected_span_px = 0.0
+		_aircraft_in_view = true
+		return
+	var span_px := maxf(0.0, float(measured.get("span_px", 0.0)))
+	var camera_id := int(measured.get("camera_id", 0))
+	if not is_finite(span_px) or camera_id == 0:
+		_lod_camera_id = 0
+		_lod_tier = LOD_NEAR
+		_lod_birth_density = 1.0
+		_lod_projected_span_px = 0.0
+		_aircraft_in_view = true
+		return
+	_apply_projected_view(span_px, bool(measured.get("visible", false)), camera_id)
+
+
+func _apply_projected_view(span_px: float, visible: bool, camera_id: int) -> void:
+	if not is_finite(span_px) or span_px < 0.0 or camera_id == 0:
+		_lod_camera_id = 0
+		_lod_tier = LOD_NEAR
+		_lod_birth_density = 1.0
+		_lod_projected_span_px = 0.0
+		_aircraft_in_view = true
+		return
+	if camera_id != _lod_camera_id:
+		_lod_tier = _tier_for_projected_span(span_px)
+	else:
+		_lod_tier = _tier_with_hysteresis(_lod_tier, span_px)
+	_lod_camera_id = camera_id
+	_lod_projected_span_px = span_px
+	_aircraft_in_view = visible
+	_lod_birth_density = _density_for_lod_tier(_lod_tier) if _aircraft_in_view else 0.0
+
+
+func _tier_for_projected_span(span_px: float) -> String:
+	if span_px > 180.0:
+		return LOD_NEAR
+	if span_px >= 60.0:
+		return LOD_MEDIUM
+	if span_px >= 12.0:
+		return LOD_FAR
+	return LOD_TINY
+
+
+func _tier_with_hysteresis(current: String, span_px: float) -> String:
+	match current:
+		LOD_NEAR:
+			return LOD_MEDIUM if span_px < LOD_NEAR_EXIT_PX else LOD_NEAR
+		LOD_MEDIUM:
+			if span_px > LOD_NEAR_ENTER_PX:
+				return LOD_NEAR
+			if span_px < LOD_MEDIUM_EXIT_PX:
+				return LOD_FAR
+			return LOD_MEDIUM
+		LOD_FAR:
+			if span_px > LOD_MEDIUM_ENTER_PX:
+				return LOD_MEDIUM
+			if span_px < LOD_FAR_EXIT_PX:
+				return LOD_TINY
+			return LOD_FAR
+		LOD_TINY:
+			return LOD_FAR if span_px > LOD_FAR_ENTER_PX else LOD_TINY
+	return LOD_NEAR
+
+
+func _density_for_lod_tier(tier: String) -> float:
+	match tier:
+		LOD_NEAR: return 1.0
+		LOD_MEDIUM: return 0.5
+		LOD_FAR: return 0.25
+		LOD_TINY: return 0.0
+	return 1.0
+
+
+func _set_live_effect_bounds(instance: MultiMeshInstance3D, multi: MultiMesh, bounds: AABB, has_bounds: bool) -> void:
+	var live_bounds := bounds.grow(EFFECT_BOUNDS_PADDING_M) if has_bounds and bounds.is_finite() else AABB()
+	if not live_bounds.is_finite():
+		live_bounds = AABB()
+	multi.custom_aabb = live_bounds
+	instance.custom_aabb = live_bounds
 
 
 func _local_transform(world_transform: Transform3D) -> Transform3D:
@@ -531,6 +821,7 @@ func _clear_transients() -> void:
 		var instance: MultiMeshInstance3D = pool.get("instance")
 		if is_instance_valid(instance) and instance.multimesh != null:
 			instance.multimesh.visible_instance_count = 0
+			_set_live_effect_bounds(instance, instance.multimesh, AABB(), false)
 
 
 func _safe_axis(axis: Vector3, fallback: Vector3) -> Vector3:

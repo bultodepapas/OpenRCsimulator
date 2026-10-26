@@ -6,6 +6,7 @@
 extends RefCounted
 
 const WRAP_S := 1024.0
+const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
 
 ## The last values sent to the GPU (Godot's global_shader_parameter_get/_get_list are editor-only: outside the editor
 ## they print an engine error and return null, so tests and captures read these instead).
@@ -16,6 +17,7 @@ static var _registered := false
 
 ## Registers the global uniforms (once, before any material that uses them compiles).
 static func register() -> void:
+	LightingPolicy.register()
 	if _registered:
 		return
 	RenderingServer.global_shader_parameter_add(&"sim_clock", RenderingServer.GLOBAL_VAR_TYPE_FLOAT, 0.0)

@@ -11,7 +11,7 @@ const PilotCamera := preload("res://render/pilot_camera.gd")
 ## CAM-06b/28 pilot-view aid combinations offered by one picker.
 const CAMERA_AIDS: Array[String] = ["off", "horizon", "overhead", "both"]
 ## Settings pages, in tab order. CAM-17 added Camera.
-const CATEGORIES: Array[String] = ["Display", "Interface", "Sound", "Graphics", "Camera"]
+const CATEGORIES: Array[String] = ["Display", "Interface", "Sound", "Graphics", "Camera", "Lighting"]
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
@@ -58,6 +58,9 @@ var _fsr2_sharpness_value: Label
 var _fsr2_sharpness_dragging := false
 var _scene_detail_picker: OptionButton
 var _birds_picker: OptionButton
+var _lighting_quality_picker: OptionButton
+var _lighting_vfx_toggle: CheckButton
+var _lighting_flashes_toggle: CheckButton
 var _camera_view_picker: OptionButton
 var _camera_fov_picker: OptionButton
 var _camera_chase_picker: OptionButton
@@ -191,6 +194,7 @@ func _build() -> void:
 	var graphics_page := _pages[3]
 	graphics_page.add_theme_constant_override("separation", 10)
 	var camera_page := _pages[4]
+	var lighting_page := _pages[5]
 
 	_window_picker = OptionButton.new()
 	_window_picker.name = "WindowMode"
@@ -252,6 +256,23 @@ func _build() -> void:
 	_add_row(graphics_page, "Birds", _birds_picker)
 	_birds_picker.tooltip_text = tr("Vultures and storks in thermals, kites, swallows and evening swifts, by time of day and weather. Changes apply at once: birds fly away or arrive. Normal follows Scene detail; Many keeps full flocks at every level.")
 	_graphics_info = _label("", "SecondaryLabel", true)
+	_lighting_quality_picker = OptionButton.new()
+	_lighting_quality_picker.name = "AircraftLightingQuality"
+	for level: String in ["low", "standard", "high"]:
+		_lighting_quality_picker.add_item(_choice_caption("aircraft_lighting_quality", level))
+		_lighting_quality_picker.set_item_metadata(_lighting_quality_picker.item_count - 1, level)
+	_lighting_quality_picker.item_selected.connect(func(index: int) -> void:
+		_draft.aircraft_lighting_quality = str(_lighting_quality_picker.get_item_metadata(index))
+		_on_presentation_option_changed())
+	_add_row(lighting_page, "Aircraft lighting", _lighting_quality_picker)
+	_lighting_quality_picker.tooltip_text = tr("Low keeps aircraft LEDs and landing lights. Standard adds nearby spill and fewer show particles. High uses the full bounded show effects.")
+	_lighting_vfx_toggle = CheckButton.new()
+	_lighting_vfx_toggle.name = "AircraftLightingShowVfx"
+	_lighting_vfx_toggle.theme_type_variation = "SettingsToggle"
+	_lighting_vfx_toggle.toggled.connect(func(enabled: bool) -> void:
+		_draft.aircraft_lighting_show_vfx = enabled
+		_on_presentation_option_changed())
+	_add_row(lighting_page, "Aircraft show effects", _lighting_vfx_toggle)
 	graphics_page.add_child(_graphics_info)
 	var defaults_button := _button("Restore graphics defaults", "QuietButton", "GraphicsDefaults")
 	defaults_button.pressed.connect(_restore_graphics_defaults)
@@ -322,6 +343,22 @@ func _build() -> void:
 	_motion_toggle.tooltip_text = tr("Reduce interface motion")
 	_motion_toggle.toggled.connect(_motion_toggled)
 	_add_row(interface_page, "Reduce interface motion", _motion_toggle)
+	_lighting_flashes_toggle = CheckButton.new()
+	_lighting_flashes_toggle.name = "AircraftLightingReducedFlashes"
+	_lighting_flashes_toggle.theme_type_variation = "SettingsToggle"
+	_lighting_flashes_toggle.toggled.connect(func(enabled: bool) -> void:
+		_draft.aircraft_lighting_reduced_flashes = enabled
+		_on_presentation_option_changed())
+	_add_row(lighting_page, "Reduce aircraft flashes", _lighting_flashes_toggle)
+	_lighting_flashes_toggle.tooltip_text = tr("Keep aircraft lights steady and disable show effects. Saved aircraft colors and sequences are preserved.")
+	lighting_page.add_child(_label("These preferences apply to every aircraft and Workshop preview. Customize individual colors and sequences in Workshop.", "SecondaryLabel", true))
+	var lighting_defaults := _button("Restore lighting defaults", "QuietButton", "AircraftLightingDefaults")
+	lighting_defaults.pressed.connect(func() -> void:
+		for key: String in ["aircraft_lighting_quality", "aircraft_lighting_show_vfx", "aircraft_lighting_reduced_flashes"]:
+			_draft[key] = DisplayPreferences.DEFAULTS[key]
+		_sync_controls()
+		_on_presentation_option_changed())
+	lighting_page.add_child(lighting_defaults)
 
 	_language_picker = OptionButton.new()
 	_language_picker.name = "Language"
@@ -536,6 +573,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 				return tr("Automatic (%s)") % tr(str(SceneDetail.detected().level).capitalize())
 			return tr(str(value).capitalize())
 		"birds": return {off = tr("Off"), few = tr("Few"), normal = tr("Normal"), many = tr("Many")}.get(value, str(value))
+		"aircraft_lighting_quality": return {low = tr("Low"), standard = tr("Standard"), high = tr("High")}.get(value, str(value))
 		"camera_magnifier": return {off = tr("Off"), auto = tr("Automatic"), on = tr("On")}.get(value, str(value))
 		"camera_aids": return {off = tr("Off"), horizon = tr("Keep the horizon in view"), overhead = tr("Smooth overhead passes"),
 			both = tr("Both")}.get(value, str(value))
@@ -725,6 +763,9 @@ func _sync_controls() -> void:
 	_sync_reconstruction_controls()
 	_select_metadata(_scene_detail_picker, _draft.scene_detail)
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
+	_select_metadata(_lighting_quality_picker, _draft.get("aircraft_lighting_quality", "standard"))
+	_lighting_vfx_toggle.set_pressed_no_signal(bool(_draft.get("aircraft_lighting_show_vfx", true)))
+	_lighting_flashes_toggle.set_pressed_no_signal(bool(_draft.get("aircraft_lighting_reduced_flashes", false)))
 	_select_metadata(_camera_view_picker, _draft.get("camera_view", CameraSettings.DEFAULTS.camera_view))
 	_select_metadata(_camera_fov_picker, _draft.get("camera_fov", CameraSettings.DEFAULTS.camera_fov))
 	_select_metadata(_camera_chase_picker, _draft.get("camera_chase_distance", CameraSettings.DEFAULTS.camera_chase_distance))
@@ -918,6 +959,7 @@ func _refresh_translated_text() -> void:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
 	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_scene_detail_picker, "scene_detail"],
+			[_lighting_quality_picker, "aircraft_lighting_quality"],
 			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_zoom_picker, "camera_zoom"], [_camera_magnifier_picker, "camera_magnifier"], [_camera_aids_picker, "camera_aids"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
@@ -928,6 +970,10 @@ func _refresh_translated_text() -> void:
 		_opaque_toggle.tooltip_text = tr("Use opaque panels")
 	if _motion_toggle != null:
 		_motion_toggle.tooltip_text = tr("Reduce interface motion")
+	if _lighting_quality_picker != null:
+		_lighting_quality_picker.tooltip_text = tr("Low keeps aircraft LEDs and landing lights. Standard adds nearby spill and fewer show particles. High uses the full bounded show effects.")
+	if _lighting_flashes_toggle != null:
+		_lighting_flashes_toggle.tooltip_text = tr("Keep aircraft lights steady and disable show effects. Saved aircraft colors and sequences are preserved.")
 	if _status != null:
 		_refresh_status_text()
 	_refresh_volume_text()

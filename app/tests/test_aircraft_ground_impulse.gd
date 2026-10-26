@@ -5,8 +5,11 @@ const RC := preload("res://physics/rotor_coupling.gd")
 const M := preload("res://physics/math3d.gd")
 const GC := preload("res://physics/generalized_coordinates.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const Sim := preload("res://sim/simulation.gd")
+const Model := preload("res://sim/vehicle_model.gd")
 var _checks := 0
 var _failures := 0
+var _capture_fixture_spin := .1
 
 
 func _check(label: String, condition: bool, detail := "") -> void:
@@ -23,12 +26,27 @@ func _initialize() -> void:
 	_coupled_network()
 	_capacity()
 	_validation_and_zero_rows()
+	_default_sentinel()
+	_capture_scalar()
+	_capture_network()
+	_capture_rejections()
+	_capture_checkpoint()
 	print("Aircraft ground impulse: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
 
 
 func _p(values: Array) -> PackedFloat64Array:
 	return PackedFloat64Array(values)
+
+
+func _default_sentinel() -> void:
+	var stage := _stage(_p([30]), _zeros(3))
+	var row := A.internal_brake(0, 1)
+	var out := A.apply(stage, 2, _zeros(3), row.row, _p([0]), _p([1]), [PackedInt32Array([0])])
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(var_to_bytes(out))
+	_check("empty capture option preserves frozen default output bytes", hash.finish().hex_encode() == "ac7e297c879541e68a81e48e3357cdc4f3ff5df6ddbaeae018c7d4abf6073b16")
 
 
 func _zeros(n: int) -> PackedFloat64Array:
@@ -260,4 +278,148 @@ func _validation_and_zero_rows() -> void:
 	_check("rotor dimensions have a bounded admission limit", not A.apply(oversized_stage, 2, cm, _zeros(0), _zeros(0), _zeros(0), []).ok)
 	_check("zero-row fast path still validates the stage inventory", not A.apply(held, 2, cm, _zeros(0), _zeros(0), _zeros(0), []).ok)
 	_check("129 rows rejected before allocating contact mobility", not A.apply(stage, 2, cm, _zeros(129 * 7), _zeros(129), _zeros(129), []).ok)
+
+
+func _capture_scalar() -> void:
+	var polished_count := 0
+	var negative_roundoff_count := 0
+	var row := A.internal_brake(0, 1)
+	for spin: float in [.1, .2, .3, 1, 2, 3, 7, 11, 13, 17, 30, 100, 1e-8]:
+		var stage := _stage(_p([spin]), _zeros(3))
+		var raw := A.apply(stage, 2, _zeros(3), row.row, _p([0]), _p([2]), [PackedInt32Array([0])])
+		var input_bytes := var_to_bytes([stage, row])
+		var out := A.apply(stage, 2, _zeros(3), row.row, _p([0]), _p([2]), [PackedInt32Array([0])],
+			1024, {rotor_index = 0, impulse_row = 0})
+		_verify("finite scalar capture " + str(spin), stage, _zeros(3), 2, out)
+		_check("captured sigma is EXACT zero with analytic impulse/body reaction", out.get("ok", false) and out.spin[0] == 0.0
+			and out.delta_spin[0] == -spin and absf(out.impulse[0] + .0099 * spin) < 1e-12
+			and absf(out.omega[1] + .01 * spin) < 1e-12)
+		_check("capture leaves caller stage and row unchanged", input_bytes == var_to_bytes([stage, row]))
+		if out.get("ok", false) and out.capture.polished:
+			polished_count += 1
+			_check("polish refreshes QP impulse/work/post and certificates", out.qp.impulse == out.impulse
+				and out.qp.group_impulses[0][0] == out.impulse[0] and out.qp.method.contains("finite_capture")
+				and out.qp.kkt_residual_scaled <= out.qp.kkt_tolerance_scaled and out.qp.feasibility_residual <= 1e-12
+				and absf(out.qp.dissipation - out.dissipated_energy) < 1e-20
+				and absf(out.qp.linear_work + out.qp.mobility_work + out.qp.dissipation) < 1e-14)
+		if raw.get("ok", false) and raw.spin[0] < 0:
+			negative_roundoff_count += 1
+			_capture_fixture_spin = spin
+	_check("independent scalar fixtures exercise actual roundoff polishing", polished_count > 0)
+	_check("fixture reproduces negative-roundoff shaft-domain failure", negative_roundoff_count > 0)
+	for values: Array in [[1.0, .005], [1.0, 0.0], [1000.0, 1.0]]:
+		var stage := _stage(_p([values[0]]), _zeros(3))
+		var moving := A.apply(stage, 2, _zeros(3), row.row, _p([0]), _p([values[1]]), [PackedInt32Array([0])])
+		var selected := A.apply(stage, 2, _zeros(3), row.row, _p([0]), _p([values[1]]), [PackedInt32Array([0])], 1024, {rotor_index = 0, impulse_row = 0})
+		_check("exhausted/zero friction preserves positive motion byte-exactly", selected.ok and not selected.capture.polished and selected.spin.to_byte_array() == moving.spin.to_byte_array()
+			and selected.impulse.to_byte_array() == moving.impulse.to_byte_array() and selected.omega.to_byte_array() == moving.omega.to_byte_array())
+	for values: Array in [[-1.0, .005], [-1e-30, 0.0], [-1000.0, 1.0]]:
+		var stage := _stage(_p([values[0]]), _zeros(3))
+		var out := A.apply(stage, 2, _zeros(3), row.row, _p([0]), _p([values[1]]), [PackedInt32Array([0])], 1024, {rotor_index = 0, impulse_row = 0})
+		_check("real reverse breakaway cannot be clamped into static capture", not out.ok and out.status == "unsupported_reverse" and not out.has("spin") and not out.has("impulse"))
+	var tiny := _stage(_p([-1e-12]), _zeros(3))
+	var small := A.apply(tiny, 2, _zeros(3), row.row, _p([0]), _p([1e-14]), [PackedInt32Array([0])], 1024, {rotor_index = 0, impulse_row = 0})
+	_check("finite small-budget capture uses relative scale, no absolute speed clamp", small.ok and small.spin[0] == 0.0 and absf(small.impulse[0]) <= 1e-14, str(small))
+	var rest := _stage(_p([0]), _zeros(3))
+	var zero := A.apply(rest, 2, _zeros(3), row.row, _p([0]), _p([0]), [PackedInt32Array([0])], 1024, {rotor_index = 0, impulse_row = 0})
+	_check("exact rest with zero authority invents no friction impulse", zero.ok and zero.spin[0] == 0.0 and zero.impulse[0] == 0 and not zero.capture.polished)
+
+
+func _capture_network() -> void:
+	# Dense coupled three-wheel + shaft Gram problem with a selected interior
+	# shaft row. Other impulse rows remain fixed while all coordinates respond.
+	var stage := _stage(_p([.3, 4, -3, 7]), _zeros(12), _p([.2, -.1, .3]))
+	var rows := [A.point_tangent(_p([.3, -.2, .2]), _p([0, 0, .1]), _p([0, -1, 0]), 1, _p([1, 0, 0]), 4),
+		A.point_tangent(_p([.3, -.2, .2]), _p([0, 0, .1]), _p([0, -1, 0]), 1, _p([0, 1, 0]), 4),
+		A.internal_brake(2, 4), A.external_rolling(_p([1, 0, 0]), 3, 4), A.internal_brake(0, 4)]
+	var jac := PackedFloat64Array()
+	for row: Dictionary in rows: jac.append_array(row.row)
+	var limits := _p([.03, .02, .002, .001, 1.0])
+	var groups := [PackedInt32Array([0, 1]), PackedInt32Array([2]), PackedInt32Array([3]), PackedInt32Array([4])]
+	var raw := A.apply(stage, 3, _p([2, -.4, .1]), jac, _zeros(5), limits, groups)
+	var out := A.apply(stage, 3, _p([2, -.4, .1]), jac, _zeros(5), limits, groups, 1024, {rotor_index = 0, impulse_row = 4})
+	var exhausted := A.apply(stage, 3, _p([2, -.4, .1]), jac, _zeros(5), limits, groups, 1, {rotor_index = 0, impulse_row = 4})
+	_check("capture cannot override an exhausted global QP iteration budget", not exhausted.ok and not exhausted.has("impulse") and not exhausted.has("spin"))
+	_verify("dense coupled finite shaft capture", stage, _p([2, -.4, .1]), 3, out)
+	_check("dense capture preserves every wheel and exact shaft constraint", out.get("ok", false) and out.spin[0] == 0.0 and out.spin.size() == 4, str(out))
+	if out.get("ok", false):
+		_check("dense fixture exercises constrained free-coordinate polish", out.capture.polished)
+		for i in 4:
+			_check("polish changes only selected finite impulse row", out.impulse[i] == raw.impulse[i])
+		var before_h := _momentum(stage, stage.velocity.slice(0, 3), stage.velocity.slice(3))
+		var after_h := _momentum(stage, out.omega, out.spin)
+		var q := M.q_from_euler(.4, -.3, .7)
+		var origin_arm := _p([10, -3, 2])
+		var before_world := M.add(M.q_rotate(q, before_h), M.cross(origin_arm, M.q_rotate(q, M.scale(_p([2, -.4, .1]), 3))))
+		var after_world := M.add(M.q_rotate(q, after_h), M.cross(origin_arm, M.q_rotate(q, M.scale(out.velocity_cm_body, 3))))
+		var external_world := M.add(M.q_rotate(q, out.generalized_impulse.slice(3, 6)), M.cross(origin_arm, M.q_rotate(q, out.generalized_impulse.slice(0, 3))))
+		_check("all world angular momentum about an offset origin reconciles", M.norm(M.sub(M.sub(after_world, before_world), external_world)) < 1e-11)
+		for i in 4:
+			var axis: PackedFloat64Array = stage.axes.slice(3 * i, 3 * i + 3)
+			var canonical_change: float = stage.axial[i] * (M.dot(axis, out.delta_omega) + out.delta_spin[i])
+			_check("all wheel/shaft canonical momenta reconcile", absf(canonical_change - out.generalized_impulse[6 + i]) < 1e-12)
+		_check("dense capture is deterministic with current KKT diagnostics", var_to_bytes(out) == var_to_bytes(A.apply(stage, 3, _p([2, -.4, .1]), jac, _zeros(5), limits, groups, 1024, {rotor_index = 0, impulse_row = 4})))
+
+
+func _capture_rejections() -> void:
+	var stage := _stage(_p([.1]), _zeros(3))
+	var row := A.internal_brake(0, 1)
+	for mapping: Dictionary in [{rotor_index = 0}, {rotor_index = true, impulse_row = 0}, {rotor_index = 1, impulse_row = 0},
+		{rotor_index = 0, impulse_row = 1}, {rotor_index = 0, impulse_row = 0, tolerance = 1.0}]:
+		_check("malformed capture mapping rejects", not A.apply(stage, 2, _zeros(3), row.row, _p([0]), _p([1]), [PackedInt32Array([0])], 1024, mapping).ok)
+	for key: String in ["body_force", "other_rate", "scaled", "negative", "bias", "disk"]:
+		var jac: PackedFloat64Array = row.row.duplicate()
+		var bias := _p([0])
+		var limits := _p([1])
+		var groups := [PackedInt32Array([0])]
+		match key:
+			"body_force": jac[0] = 1.0
+			"other_rate": jac[3] = 1.0
+			"scaled": jac[6] = 2.0
+			"negative": jac[6] = -1.0
+			"bias": bias[0] = .1
+			"disk":
+				jac.append_array(row.row)
+				bias.append(0)
+				limits.append(1)
+				groups = [PackedInt32Array([0, 1])]
+		var out := A.apply(stage, 2, _zeros(3), jac, bias, limits, groups, 1024, {rotor_index = 0, impulse_row = 0})
+		_check("capture cannot masquerade as body-force clamp or noncanonical row: " + key, not out.ok and out.status == "invalid_capture" and not out.has("impulse"))
+
+
+func _capture_checkpoint() -> void:
+	var sim := Sim.new()
+	sim.mass = 2.0
+	sim.gravity = 0
+	sim.aux = PackedFloat64Array()
+	sim.continuous = _p([_capture_fixture_spin])
+	var model := Model.new()
+	model.aux_size = 0
+	model.modes_size = 0
+	model.continuous_size = 1
+	model.state_layout_identity = "finite-capture-nonnegative-shaft-fixture-v1"
+	model.stage = func(_body, _values, _t): return {loads = _zeros(6), derivative = _zeros(1), rotor_momentum = _zeros(3)}
+	model.state_validator = func(frame, _context): return frame.continuous[0] >= 0.0
+	model.step_policy = func(s, _t, _h, _f, _k1):
+		var stage := _stage(_p([s[13]]), _zeros(3), s.slice(RB.RATE, RB.RATE + 3))
+		var row := A.internal_brake(0, 1)
+		var out := A.apply(stage, 2, s.slice(RB.VEL, RB.VEL + 3), row.row, _p([0]), _p([2]), [PackedInt32Array([0])],
+			1024, {rotor_index = 0, impulse_row = 0})
+		if not out.ok: return out
+		var next: PackedFloat64Array = s.duplicate()
+		for i in 3: next[RB.RATE + i] = out.omega[i]
+		next[13] = out.spin[0]
+		return {state = next, events = []}
+	_check("strict nonnegative shaft kernel model installs", sim.set_model(model))
+	_check("finite friction checkpoint fixture resets", sim.reset(RB.make_state(_zeros(3), _zeros(3), M.q_identity(), _zeros(3))))
+	sim.step()
+	_check("rounded-negative capture admits exact-zero kernel endpoint", sim.tick == 1 and sim.fault_reason.is_empty() and sim.continuous[0] == 0.0, sim.fault_reason)
+	var checkpoint: Dictionary = sim.checkpoint()
+	_check("exact nonnegative capture exports valid v2 checkpoint", checkpoint.get("format", "") == Sim.ENDPOINT_CHECKPOINT_FORMAT and checkpoint.continuous[0] == 0.0)
+	sim.step()
+	var expected := var_to_bytes(sim.checkpoint())
+	_check("finite-capture checkpoint restores", sim.restore_checkpoint(checkpoint))
+	sim.step()
+	_check("exact-zero captured continuation replays byte-exactly", expected == var_to_bytes(sim.checkpoint()) and sim.tick == 2)
+	sim.free()
 

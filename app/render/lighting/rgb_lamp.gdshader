@@ -4,6 +4,7 @@ shader_type spatial;
 render_mode unshaded, blend_add, cull_disabled, depth_draw_never, fog_disabled, shadows_disabled, skip_vertex_transform;
 
 #include "res://render/world/engine_srgb.gdshaderinc"
+global uniform bool aircraft_reduced_flashes;
 
 uniform vec3 light_color : source_color = vec3(1.0);
 uniform float radiance = 2.0;
@@ -34,7 +35,7 @@ void vertex() {
 		float size = max(size_m, min_px * metres_per_pixel);
 		VERTEX = centre + vec3(VERTEX.xy * size, 0.0);
 		gain = (size_m * size_m) / (size * size);
-		if (flash.w > 0.5 && flash.x > 0.0) {
+		if (flash.w > 0.5 && flash.x > 0.0 && !aircraft_reduced_flashes) {
 			float t = mod(max(local_clock, 0.0), flash.x);
 			bool on = t < flash.y || (flash.z > 0.0 && t >= flash.z && t < flash.z + flash.y);
 			gain *= on ? 1.0 : 0.0;

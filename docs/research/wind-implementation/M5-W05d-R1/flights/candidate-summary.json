@@ -1,0 +1,68 @@
+[
+  {
+    "aircraft": "gp_extra_300s_60",
+    "rows": 261,
+    "columns": 89,
+    "all_csv_values_identical": true,
+    "first_divergence": null,
+    "complete": true,
+    "solver_changed": true,
+    "baseline_solver_sha256": "8e955fb0770148a3f077ee7109a4a908e454ce616d5cef9ea52818ddba7b96f9",
+    "candidate_solver_sha256": "cba4552d2749e19ace9483de73a6114adb7beb15ce7e70922b05a2a02fe27904"
+  },
+  {
+    "aircraft": "jensen_ugly_stik_60",
+    "rows": 261,
+    "columns": 62,
+    "all_csv_values_identical": true,
+    "first_divergence": null,
+    "complete": true,
+    "solver_changed": true,
+    "baseline_solver_sha256": "8e955fb0770148a3f077ee7109a4a908e454ce616d5cef9ea52818ddba7b96f9",
+    "candidate_solver_sha256": "cba4552d2749e19ace9483de73a6114adb7beb15ce7e70922b05a2a02fe27904"
+  },
+  {
+    "aircraft": "p51d_mustang_120",
+    "rows": 261,
+    "columns": 71,
+    "all_csv_values_identical": true,
+    "first_divergence": null,
+    "complete": true,
+    "solver_changed": true,
+    "baseline_solver_sha256": "8e955fb0770148a3f077ee7109a4a908e454ce616d5cef9ea52818ddba7b96f9",
+    "candidate_solver_sha256": "cba4552d2749e19ace9483de73a6114adb7beb15ce7e70922b05a2a02fe27904"
+  },
+  {
+    "aircraft": "sebart_avanti_s_a200",
+    "rows": 261,
+    "columns": 71,
+    "all_csv_values_identical": true,
+    "first_divergence": null,
+    "complete": true,
+    "solver_changed": true,
+    "baseline_solver_sha256": "8e955fb0770148a3f077ee7109a4a908e454ce616d5cef9ea52818ddba7b96f9",
+    "candidate_solver_sha256": "cba4552d2749e19ace9483de73a6114adb7beb15ce7e70922b05a2a02fe27904"
+  },
+  {
+    "aircraft": "stik_glow_61fx_2t",
+    "rows": 261,
+    "columns": 81,
+    "all_csv_values_identical": true,
+    "first_divergence": null,
+    "complete": true,
+    "solver_changed": true,
+    "baseline_solver_sha256": "8e955fb0770148a3f077ee7109a4a908e454ce616d5cef9ea52818ddba7b96f9",
+    "candidate_solver_sha256": "cba4552d2749e19ace9483de73a6114adb7beb15ce7e70922b05a2a02fe27904"
+  },
+  {
+    "aircraft": "turbo_lumber_evolution",
+    "rows": 261,
+    "columns": 63,
+    "all_csv_values_identical": true,
+    "first_divergence": null,
+    "complete": true,
+    "solver_changed": true,
+    "baseline_solver_sha256": "8e955fb0770148a3f077ee7109a4a908e454ce616d5cef9ea52818ddba7b96f9",
+    "candidate_solver_sha256": "cba4552d2749e19ace9483de73a6114adb7beb15ce7e70922b05a2a02fe27904"
+  }
+]

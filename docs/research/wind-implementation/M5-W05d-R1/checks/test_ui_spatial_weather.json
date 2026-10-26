@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b02c5bb8-0928-4ec2-a53b-57ca57f64e4a",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-spatial-admission/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ui_spatial_weather.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T02:01:38.742811+00:00",
+  "label": "final-ui-spatial-fixed",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\checks\\final-ui-spatial-fixed-_8s9hdb2\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\checks\\final-ui-spatial-fixed-_8s9hdb2\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.703,
+  "log_bytes": 113,
+  "log_sha256": "b2270f39afc2e397110e1bfc7e2f782e7fa38314d131b0b3fea87be369335f5c"
+}

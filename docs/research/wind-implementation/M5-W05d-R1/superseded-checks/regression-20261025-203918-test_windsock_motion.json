@@ -1,0 +1,50 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1f286c7a-7728-4f9b-9460-abc66e7db308",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_windsock_motion.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:42:13.180673+00:00",
+  "label": "test_windsock_motion",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-203918\\checks\\test_windsock_motion-nmvfgfwq\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-spatial-admission\\regression-20261025-203918\\checks\\test_windsock_motion-nmvfgfwq\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 30,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 33,
+      "message": "Aircraft customization bindings: [\"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/aircraft_customization.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/lighting/aircraft_lighting_rig_3d.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd\", \"presentation dependency validation failed: SHA-256 mismatch for presentation source res://workshop/presentation.gd\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:104)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 30,
+  "ok": false,
+  "elapsed_seconds": 6.86,
+  "log_bytes": 2853,
+  "log_sha256": "f4f944dbc68a44d1e0db4a30650e6215212cc639629ed8eb55ec997d9227bc10"
+}

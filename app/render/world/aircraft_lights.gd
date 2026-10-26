@@ -15,6 +15,7 @@
 extends RefCounted
 
 const SPRITE_SHADER := preload("res://render/world/light_sprite.gdshader")
+const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
 const STRIP_SHADER := preload("res://render/world/led_strip.gdshader")
 const Exposure := preload("res://render/world/exposure.gd")
 
@@ -151,6 +152,10 @@ static func _layout_path(value: Variant) -> bool:
 static func resolve_authored_layout(root: Node3D) -> Dictionary:
 	var result := {"anchors": {}, "strips": {}, "warnings": PackedStringArray()}
 	var raw: Variant = root.get_meta("lighting_layout", empty_authored_layout())
+	# Companion admission owns v2 skin validation. The geometric fitter consumes
+	# only its unchanged anchor/strip contract; skin materials have a separate owner.
+	if raw is Dictionary and raw.get("version") == 2 and _layout_keys(raw, ["version", "anchors", "strips", "skins"]) and raw.skins is Array:
+		raw = {"version": 1, "anchors": raw.anchors, "strips": raw.strips}
 	var checked := validate_authored_layout(raw)
 	if not checked.ok:
 		result.warnings.append_array(checked.errors)
@@ -720,8 +725,10 @@ static func tip(points: PackedVector3Array, half: float, side: float) -> Diction
 static func sprite(name: String, color: Color, position: Vector3, size_m: float, radiance := LED_RADIANCE,
 		flash := Vector4(1.0, 0.0, 0.0, 0.0), min_px := NAV_MIN_PX, display_cap := NAV_DISPLAY_CAP) -> MeshInstance3D:
 	Exposure.register() # before the shader compiles
+	LightingPolicy.register()
 	var material := ShaderMaterial.new()
 	material.shader = SPRITE_SHADER
+	material.set_shader_parameter("aircraft_emitter", true)
 	material.set_shader_parameter("light_color", color)
 	material.set_shader_parameter("radiance", radiance)
 	material.set_shader_parameter("size_m", size_m)

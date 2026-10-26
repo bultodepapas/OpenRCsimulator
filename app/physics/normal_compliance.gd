@@ -3,6 +3,7 @@
 extends RefCounted
 
 const Quantities := preload("res://physics/wheel_profiles.gd")
+const M := preload("res://physics/math3d.gd")
 const FORMAT := "openrc-normal-compliance v1"
 const LAW := "unilateral-asymmetric-damping-progressive-stop-v1"
 const SPECS := {
@@ -58,12 +59,12 @@ static func evaluate(prepared: Dictionary, compression_m: float, rate_mps: float
 	var p: Dictionary = prepared.values
 	var excess: float = maxf(0.0, compression_m - p.stroke)
 	var y: float = excess / p.stop_scale
-	var stop_force: float = p.stop_stiffness * p.stop_scale * pow(y, p.stop_exponent)
+	var stop_force: float = p.stop_stiffness * p.stop_scale * M.pow_(y, p.stop_exponent)
 	var stop_energy: float = p.stop_stiffness * p.stop_scale * p.stop_scale \
-		* pow(y, p.stop_exponent + 1.0) / (p.stop_exponent + 1.0)
+		* M.pow_(y, p.stop_exponent + 1.0) / (p.stop_exponent + 1.0)
 	var tangent: float = p.stiffness
 	if excess > 0.0:
-		tangent += p.stop_exponent * p.stop_stiffness * pow(y, p.stop_exponent - 1.0)
+		tangent += p.stop_exponent * p.stop_stiffness * M.pow_(y, p.stop_exponent - 1.0)
 	var elastic: float = p.stiffness * compression_m + stop_force
 	var potential: float = 0.5 * p.stiffness * compression_m * compression_m + stop_energy
 	var c0: float = p.compression_damping if rate_mps >= 0.0 else p.rebound_damping
@@ -99,7 +100,7 @@ static func bounds(prepared: Dictionary, maximum_compression_m: float, maximum_s
 	var y: float = maxf(0.0, maximum_compression_m - p.stroke) / p.stop_scale
 	var tangent: float = p.stiffness
 	if maximum_compression_m > p.stroke:
-		tangent += p.stop_exponent * p.stop_stiffness * pow(y, p.stop_exponent - 1.0)
+		tangent += p.stop_exponent * p.stop_stiffness * M.pow_(y, p.stop_exponent - 1.0)
 	var c0: float = maxf(p.compression_damping, p.rebound_damping)
 	var dc: float = 2.0 * c0 / p.damping_onset if p.damping_onset > 0.0 else 0.0
 	if maximum_compression_m > p.stroke:
@@ -126,7 +127,7 @@ static func scalar_substeps(prepared: Dictionary, maximum_compression_m: float,
 		return envelope
 	if not envelope.continuous_onset:
 		return _failure("zero-onset damping needs event-aware integration; no smooth scalar bound")
-	var frequency: float = sqrt(envelope.position_derivative_bound_npm / effective_mass_kg)
+	var frequency: float = M.sqrt_(envelope.position_derivative_bound_npm / effective_mass_kg)
 	var rate: float = envelope.rate_derivative_bound_nsm / effective_mass_kg
 	var count: float = maxf(1.0, maxf(dt * frequency / 0.1, dt * rate / 0.25))
 	if not is_finite(count) or count > budget:

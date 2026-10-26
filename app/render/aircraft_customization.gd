@@ -15,6 +15,12 @@ const NODE_PATH_RE := "^[A-Za-z0-9_]+(/[A-Za-z0-9_]+)*$"
 const PARAM_RE := "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
 const PAINT_KINDS := ["standard_albedo", "shader_color"]
 const SMOKE_ROLES := ["wing_tip_left", "wing_tip_right", "tail", "tailpipe", "exhaust"]
+const SKIN_ZONE_IDS := ["strip_left", "strip_right", "strip_top_left", "strip_top_right", "strip_belly"]
+const SKIN_MASK_PROFILES_BY_FAMILY := {
+	"jensen-das-ugly-stik-60": ["jensen_stik_film_bays_v1"],
+}
+const MAX_AUTHORED_SKINS := 5
+const MAX_AUTHORED_SKIN_TARGETS := 12
 const MARKING_TEXT_ALPHABET := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 -ÁÉÍÓÚÜÑáéíóúüñ"
 const MARKING_FONT_SIZE := 64
 const MARKING_MIN_WIDTH_M := 0.01
@@ -123,7 +129,8 @@ static func validate_bindings(bindings: Dictionary, expected_family := "", expec
 	if not errors.is_empty():
 		return {"ok": false, "errors": errors}
 	if binding_version == 4:
-		var lighting_check := AircraftLights.validate_authored_layout(bindings.lighting_layout)
+		var lighting_check := _validate_authored_lighting_layout(bindings.lighting_layout, bindings.paint_slots,
+			str(bindings.visual_family))
 		if not lighting_check.ok:
 			return lighting_check
 	var base := bindings.duplicate(true)
@@ -633,8 +640,91 @@ static func _target_key(target: Dictionary) -> String:
 	return str(target.node_path) + "#" + str(target.surface)
 
 
+static func _validate_authored_lighting_layout(raw: Variant, paint_slots: Array, family_id: String) -> Dictionary:
+	if not (raw is Dictionary):
+		return _failure("lighting layout must be an object")
+	var version: Variant = raw.get("version")
+	if not _integer_value(version) or int(version) not in [1, 2]:
+		return _failure("lighting layout version is unsupported")
+	var layout_version := int(version)
+	var expected_keys := ["version", "anchors", "strips"]
+	if layout_version == 2:
+		expected_keys.append("skins")
+	if not _exact_keys(raw, expected_keys):
+		return _failure("lighting layout fields are missing or unsupported")
+	# Anchor/strip rules remain owned by AircraftLights. Pass it the v1 projection so
+	# a v2 skin extension does not change the established point/strip contract.
+	var base_layout := {"version": 1, "anchors": raw.anchors, "strips": raw.strips}
+	var checked := AircraftLights.validate_authored_layout(base_layout)
+	if not checked.ok:
+		return checked
+	if layout_version == 1:
+		return {"ok": true, "errors": PackedStringArray()}
+	return _validate_authored_skin_bindings(raw.skins, paint_slots, family_id)
+
+
+static func _validate_authored_skin_bindings(raw_skins: Variant, paint_slots: Array, family_id: String) -> Dictionary:
+	var errors := PackedStringArray()
+	if not (raw_skins is Array) or raw_skins.size() > MAX_AUTHORED_SKINS:
+		return _failure("lighting skins must be an array of at most %d entries" % MAX_AUTHORED_SKINS)
+	var paint_targets_by_slot := {}
+	for slot: Dictionary in paint_slots:
+		var targets_by_id := {}
+		for target: Dictionary in slot.get("targets", []):
+			if target.has("target_id"):
+				targets_by_id[str(target.target_id)] = target
+		paint_targets_by_slot[str(slot.id)] = targets_by_id
+	var allowed_masks: Array = SKIN_MASK_PROFILES_BY_FAMILY.get(family_id, [])
+	var seen_zones := {}
+	var used_target_ids := {}
+	var target_count := 0
+	for skin: Variant in raw_skins:
+		if not _exact_keys(skin, ["zone_id", "paint_slot_id", "target_ids", "mask_profile_id"]):
+			errors.append("lighting skin row has unknown or missing keys")
+			continue
+		var zone_id: Variant = skin.get("zone_id")
+		if typeof(zone_id) != TYPE_STRING or not SKIN_ZONE_IDS.has(str(zone_id)) or seen_zones.has(str(zone_id)):
+			errors.append("lighting skin zone id is unsupported or duplicated")
+			continue
+		seen_zones[str(zone_id)] = true
+		var paint_slot_id: Variant = skin.get("paint_slot_id")
+		if typeof(paint_slot_id) != TYPE_STRING or not _matches(SLOT_ID_RE, str(paint_slot_id)) \
+				or not paint_targets_by_slot.has(str(paint_slot_id)):
+			errors.append("lighting skin paint slot is malformed or missing")
+			continue
+		var target_ids: Variant = skin.get("target_ids")
+		if not (target_ids is Array) or target_ids.is_empty() or target_ids.size() > MAX_AUTHORED_SKIN_TARGETS:
+			errors.append("lighting skin targets must contain 1 to %d ids" % MAX_AUTHORED_SKIN_TARGETS)
+			continue
+		var slot_targets: Dictionary = paint_targets_by_slot[str(paint_slot_id)]
+		for target_id_value: Variant in target_ids:
+			if typeof(target_id_value) != TYPE_STRING or not _matches(SLOT_ID_RE, str(target_id_value)):
+				errors.append("lighting skin target id is malformed")
+				continue
+			var target_id := str(target_id_value)
+			if used_target_ids.has(target_id):
+				errors.append("lighting skin target is duplicated")
+				continue
+			if not slot_targets.has(target_id):
+				errors.append("lighting skin target does not resolve inside its paint slot")
+				continue
+			var target: Dictionary = slot_targets[target_id]
+			if str(target.get("kind", "")) != "standard_albedo":
+				errors.append("lighting skin target must be a standard_albedo paint surface")
+				continue
+			used_target_ids[target_id] = true
+			target_count += 1
+			if target_count > MAX_AUTHORED_SKIN_TARGETS:
+				errors.append("lighting skins may reference at most %d targets total" % MAX_AUTHORED_SKIN_TARGETS)
+		var mask_profile_id: Variant = skin.get("mask_profile_id")
+		if typeof(mask_profile_id) != TYPE_STRING or not allowed_masks.has(str(mask_profile_id)):
+			errors.append("lighting skin mask profile is not registered for this aircraft")
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
 static func _validate_slot_group(slots: Array, group: String, errors: PackedStringArray) -> bool:
 	var seen := {}
+	var seen_paint_target_ids := {}
 	var previous := ""
 	for slot: Variant in slots:
 		if not (slot is Dictionary):
@@ -681,6 +771,7 @@ static func _validate_slot_group(slots: Array, group: String, errors: PackedStri
 				var kind := str(target.get("kind", ""))
 				var expected := ["node_path", "surface", "kind"]
 				if kind == "shader_color": expected.append("parameter")
+				if target.has("target_id"): expected.append("target_id")
 				if not _exact_keys(target, expected) or kind not in PAINT_KINDS:
 					errors.append("paint target keys or kind are invalid")
 					continue
@@ -689,6 +780,12 @@ static func _validate_slot_group(slots: Array, group: String, errors: PackedStri
 					errors.append("paint target path or surface is invalid")
 				if kind == "shader_color" and not _matches(PARAM_RE, str(target.get("parameter", ""))):
 					errors.append("paint shader color parameter is malformed")
+				if target.has("target_id"):
+					var target_id := str(target.get("target_id", ""))
+					if not _matches(SLOT_ID_RE, target_id) or seen_paint_target_ids.has(target_id):
+						errors.append("paint target id is malformed or duplicated")
+					else:
+						seen_paint_target_ids[target_id] = true
 		elif group == "marking":
 			if not _integer_value(slot.get("max_chars")) or int(slot.max_chars) < 1 or int(slot.max_chars) > 12:
 				errors.append("marking max_chars must be an integer in [1, 12]")

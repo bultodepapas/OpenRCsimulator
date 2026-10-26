@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2a954974-acaa-44f2-851b-eac83c9b039b",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/gp-next-implementation/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ground-physics/GP-10/evidence/candidate/check_numeric_preservation.gd",
+    "--",
+    "--log=C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-next-baseline/ground/p51d_mustang_120-ground.orfl",
+    "--candidate=C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-next-implementation/app/data/aircraft/p51d_mustang_120.json",
+    "--report=C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-next-final-candidate/p51-ground-native.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T01:57:21.845621+00:00",
+  "label": "p51-ground-native",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\p51-ground-native-e2ix_mfw\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-next-final-candidate\\checks\\p51-ground-native-e2ix_mfw\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "complete=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.968,
+  "log_bytes": 125,
+  "log_sha256": "41ac937913c56a7e4689b66a617b4b49de57ec0a9620a56b617c2ea1619735b0"
+}

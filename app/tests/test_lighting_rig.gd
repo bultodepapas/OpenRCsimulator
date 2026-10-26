@@ -2,6 +2,7 @@ extends SceneTree
 
 const Rig := preload("res://render/lighting/aircraft_lighting_rig_3d.gd")
 const Profile := preload("res://render/lighting/lighting_profile.gd")
+const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
 const AircraftLights := preload("res://render/world/aircraft_lights.gd")
 const RGB_STRIP_SHADER := preload("res://render/lighting/rgb_strip.gdshader")
 
@@ -14,6 +15,8 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	# This fixture qualifies the full per-rig capacity; Standard deliberately emits fewer particles.
+	LightingPolicy.apply({"aircraft_lighting_quality": "high"})
 	var stage := Node3D.new()
 	stage.name = "LightingRigTestStage"
 	root.add_child(stage)

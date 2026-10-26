@@ -3,11 +3,17 @@
 extends "res://tests/test_aircraft_ground_dynamics.gd"
 const Admission := preload("res://physics/normal_contact_admission.gd")
 const GC := preload("res://physics/generalized_coordinates.gd")
+const Ring := preload("res://physics/wheel_geometry.gd")
+const Liquid := preload("res://physics/liquid_fuel.gd")
 
 func _initialize() -> void:
 	_analytic()
 	_coupled_and_units()
 	_invalid()
+	_plane_orientations()
+	_plane_hessians()
+	_practical_plane()
+	_plane_invalid_and_sweep()
 	_fixture()
 	if _failures == 0: _integration()
 	print("Normal contact admission: %d checks, %d failed" % [_checks, _failures])
@@ -139,6 +145,165 @@ func _invalid() -> void:
 		var before := var_to_bytes([matrix, k, c])
 		var result := Admission.admit(matrix, k, c, dt, budget)
 		_check("invalid/numerically unrepresentable admission rejects: " + kind, not result.ok and not result.has("substeps") and before == var_to_bytes([matrix, k, c]))
+
+func _plane_row(hub: PackedFloat64Array, radius := 0.05, k := 100.0, c := 2.0, load_bound := 20.0, kappa := 0.1) -> Dictionary:
+	return {hub_body = hub, radius_m = radius, kbar = k, cbar = c, normal_load_bound_n = load_bound, kappa_min = kappa}
+
+func _add_intrinsic(tensor: PackedFloat64Array, a: PackedFloat64Array, j: float, k: float) -> void:
+	var d := j - k
+	for axis in 3: tensor[axis] += k + d * a[axis] * a[axis]
+	tensor[3] += d * a[0] * a[1]
+	tensor[4] += d * a[0] * a[2]
+	tensor[5] += d * a[1] * a[2]
+
+func _plane_orientations() -> void:
+	var axial := PackedFloat64Array([0.03, 0.04, 0.05])
+	var transverse := PackedFloat64Array([0.02, 0.03, 0.04])
+	var reference := PackedFloat64Array()
+	reference.append_array(M.v3(0.6, 0.8, 0.0))
+	reference.append_array(M.scale(M.v3(1.0, 2.0, 3.0), 1.0 / sqrt(14.0)))
+	reference.append_array(M.v3(-2.0 / 3.0, 1.0 / 3.0, 2.0 / 3.0))
+	var locked := PackedFloat64Array([1.0, 1.5, 2.0, 0.0, 0.0, 0.0])
+	for i in 3: _add_intrinsic(locked, reference.slice(3 * i, 3 * i + 3), axial[i], transverse[i])
+	var system := Rotor.prepare_system(locked, axial, transverse, reference,
+		{partition_id = "plane-envelope", reference_pose_id = "nonaxisaligned", kind = "estimated", source = "Synthetic independent envelope oracle"})
+	var zero9 := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var n := M.scale(M.v3(0.2, -0.3, -1.0), 1.0 / sqrt(1.13))
+	for trial in 9:
+		var angle: float = 0.12 * trial
+		var q := M.q_from_euler(0.2 + angle, -0.3 + 0.2 * angle, 0.15 - angle)
+		var cg := M.v3(0.01 * trial, -0.005 * trial, 0.002 * trial)
+		var axes := PackedFloat64Array()
+		for i in 3:
+			var rotation := M.q_from_axis_angle(M.v3(0.3, 0.2, 0.4), angle * (i + 1))
+			axes.append_array(M.q_rotate(rotation, reference.slice(3 * i, 3 * i + 3)))
+		var rotor := Rotor.evaluate_system(system, locked, M.v3(0.3, -0.2, 0.1), PackedFloat64Array([2.0, -3.0, 4.0]), axes,
+			zero9, zero9, M.v3(0.0, 0.0, 0.0), zero9, PackedFloat64Array([0.0, 0.0, 0.0]))
+		_check("nonaxisaligned live common matrix prepares", rotor.ok)
+		if not rotor.ok: continue
+		var rows: Array = []
+		var contacts: Array = []
+		for i in 3:
+			var hub := M.v3(0.2 - 0.15 * i, 0.1 * i, 0.05)
+			var axle := M.q_rotate(q, axes.slice(3 * i, 3 * i + 3))
+			var geometry := Ring.plane(M.q_rotate(q, hub), axle, 0.05, M.v3(0.0, 0.0, 0.0), n)
+			_check("independent exact plane normal branch exists", geometry.ok)
+			if not geometry.ok: continue
+			var normal_body := M.q_rotate(M.q_conj(q), n)
+			var arm := M.add(hub, M.q_rotate(M.q_conj(q), geometry.hub_arm_ned))
+			rows.append(_row(normal_body, arm, PackedFloat64Array([0.0, 0.0, 0.0])))
+			var projection: float = sqrt(maxf(0.0, 1.0 - pow(M.dot(axle, n), 2)))
+			contacts.append(_plane_row(hub, 0.05, 100.0 + i * 20.0, 2.0, 20.0, minf(0.5, 0.9 * projection)))
+		if rows.size() != 3: continue
+		var local := Admission.mobility(2.0, cg, rotor.stage, rows)
+		var bound := Admission.plane_envelope(2.0, cg, rotor.stage, contacts, 0.001)
+		_check("orientation-independent envelope admits qualified sample", local.ok and bound.ok, str(bound))
+		if not local.ok or not bound.ok: continue
+		var independent := _dense_w(2.0, local.jacobian, rotor.stage.matrix, 3, 9)
+		_check("exact oriented normal W matches dense full mass inverse", _near(local.matrix, independent))
+		var trace := 0.0
+		for i in 3:
+			_check("global bound dominates oriented free normal diagonal", bound.mobility_diagonal_bounds[i] >= independent[3 * i + i])
+			trace += contacts[i].kbar * independent[3 * i + i]
+		_check("material trace bound dominates exact coupled weighted trace", bound.material_eigenvalue_bound_per_s2 >= trace)
+		_check("carrier lower bound does not exceed independently known eigenvalue", bound.carrier_lower_bound_kgm2 > 0.0 and bound.carrier_lower_bound_kgm2 <= 1.0)
+		_check("plane result cannot claim a complete RHS or geometry certificate", not bound.full_rhs_certificate and not bound.whole_piece_certificate and bound.conditional_envelope)
+
+func _ring_gap(q: PackedFloat64Array, hub: PackedFloat64Array, radius: float) -> float:
+	var n := M.v3(0.0, 0.0, -1.0)
+	var axle := M.q_rotate(q, M.v3(0.0, 0.0, 1.0))
+	var z := M.dot(axle, n)
+	return M.dot(n, M.q_rotate(q, hub)) - radius * sqrt(maxf(0.0, 1.0 - z * z))
+
+func _plane_hessians() -> void:
+	var rotor := _system()
+	var hub := M.v3(0.2, -0.1, 0.3)
+	for angle: float in [0.0002, 0.005, 0.05, 0.5, 1.2]:
+		var kappa_min := 0.9 * sin(angle)
+		var result := Admission.plane_envelope(2.0, M.v3(0.0, 0.0, 0.0), rotor.stage, [_plane_row(hub, 0.05, 0.0, 0.0, 1.0, kappa_min)], 1.0e-6)
+		_check("protected near-boundary kappa is numerically supported", result.ok)
+		if not result.ok: continue
+		var q := M.q_from_axis_angle(M.v3(0.0, 1.0, 0.0), angle)
+		var epsilon := minf(1.0e-4, sin(angle) * 0.005)
+		for axis: PackedFloat64Array in [M.v3(1.0, 0.0, 0.0), M.v3(0.0, 1.0, 0.0), M.scale(M.v3(0.6, -0.7, 0.3), 1.0 / sqrt(0.94))]:
+			var plus := M.q_mul(q, M.q_from_axis_angle(axis, epsilon))
+			var minus := M.q_mul(q, M.q_from_axis_angle(axis, -epsilon))
+			var second: float = (_ring_gap(plus, hub, 0.05) - 2.0 * _ring_gap(q, hub, 0.05) + _ring_gap(minus, hub, 0.05)) / (epsilon * epsilon)
+			_check("analytic curvature bound dominates independent ring-gap second difference", absf(second) <= result.gap_hessian_bounds_m[0] * 1.001)
+
+func _practical_plane() -> void:
+	var loaded := Data.load_file("res://data/aircraft/p51d_mustang_120.json")
+	_check("practical envelope uses installed closed-shaft resource", loaded.ok)
+	if not loaded.ok: return
+	var applied := Hardware.apply_to_model(loaded.model)
+	var p: Dictionary = applied.model
+	var fuel: Dictionary = p.propulsion.liquid_fuel
+	var live := Liquid.properties(fuel, {str(fuel.tank_id): 0.5 * (fuel.capacity_kg + fuel.unusable_kg)})
+	var axial := PackedFloat64Array([p.propulsion.rotor_inertia])
+	var transverse := PackedFloat64Array([0.5 * p.propulsion.rotor_inertia])
+	var axes: PackedFloat64Array = p.propulsion.axis.duplicate()
+	for contact: Dictionary in p.landing_gear.contacts:
+		axial.append(contact.wheel_inertia)
+		transverse.append(0.5 * contact.wheel_inertia)
+		axes.append_array(M.v3(0.0, -1.0, 0.0))
+	var system := Rotor.prepare_system(p.inertia, axial, transverse, axes,
+		{partition_id = "practical-plane", reference_pose_id = "test_hubs", kind = "estimated", source = "Explicit synthetic transverse reservation on installed P51"})
+	var zero12 := PackedFloat64Array()
+	zero12.resize(12)
+	var rotor := Rotor.evaluate_system(system, live.inertia, M.v3(0.0, 0.0, 0.0), PackedFloat64Array([0.0, 0.0, 0.0, 0.0]), axes,
+		zero12, zero12, M.v3(0.0, 0.0, 0.0), zero12, PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
+	_check("live P51 body remainder prepares at partial fuel", live.ok and rotor.ok)
+	if not rotor.ok: return
+	for speed: float in [0.5, 1.0, 2.0]:
+		var contacts: Array = []
+		var locations := [M.v3(-0.2, -0.35, 0.0), M.v3(-0.2, 0.35, 0.0), M.v3(0.6, 0.0, 0.0)]
+		for i in 3:
+			var radius: float = p.landing_gear.contacts[i].wheel_radius
+			locations[i][2] = 0.2 - radius
+			# Same explicit fixture as the retained design probe: k1500,c20,
+			# onset.002m, Xmax.02m; derivative envelope uses dc/dx<=20000.
+			contacts.append(_plane_row(locations[i], radius, 1500.0 + 20000.0 * speed, 20.0, 30.0 + 20.0 * speed, 0.5))
+		var result := Admission.plane_envelope(live.mass_kg, live.cg_body_m, rotor.stage, contacts, 1.0 / 240.0)
+		var expected: int = 3 if speed == 0.5 else 4 if speed == 1.0 else 6
+		_check("practical retained plane fixture preserves3/4/6 request", result.ok and result.substeps == expected, str(result))
+
+func _plane_invalid_and_sweep() -> void:
+	var stage: Dictionary = _system().stage
+	var contact := _plane_row(M.v3(0.2, 0.1, 0.3))
+	for kind: String in ["mass", "cg", "missing", "extra", "hub", "radius", "kappa", "kappa_high", "k", "c", "load", "nan", "stage", "overflow"]:
+		var mass: Variant = 2.0
+		var cg := M.v3(0.0, 0.0, 0.0)
+		var rows := [contact.duplicate(true)]
+		var s := stage.duplicate(true)
+		match kind:
+			"mass": mass = true
+			"cg": cg[0] = 1.0e7
+			"missing": rows[0].erase("kbar")
+			"extra": rows[0].extra = 1
+			"hub": rows[0].hub_body[0] = INF
+			"radius": rows[0].radius_m = 0.0
+			"kappa": rows[0].kappa_min = 0.00001
+			"kappa_high": rows[0].kappa_min = 1.1
+			"k": rows[0].kbar = -1.0
+			"c": rows[0].cbar = -1.0
+			"load": rows[0].normal_load_bound_n = -1.0
+			"nan": rows[0].kbar = NAN
+			"stage": s.carrier[0] *= 2.0
+			"overflow": rows[0].kbar = 1.0e308
+		var before := var_to_bytes([mass, cg, s, rows])
+		var bad := Admission.plane_envelope(mass, cg, s, rows, 1.0 / 240.0)
+		_check("unsupported/malformed plane envelope refuses: " + kind, not bad.ok and not bad.has("substeps") and before == var_to_bytes([mass, cg, s, rows]))
+	var huge := contact.duplicate(true)
+	huge.kbar = 1.0e12
+	var budget := Admission.plane_envelope(2.0, M.v3(0.0, 0.0, 0.0), stage, [huge], 1.0 / 240.0)
+	_check("plane budget rejection preserves declared coefficients", not budget.ok and budget.status == "budget_exceeded" and not budget.has("substeps") and huge.kbar == 1.0e12)
+	var yes := Admission.swept_clearance(0.1, 1.0, 0.01)
+	var no := Admission.swept_clearance(0.01, 1.0, 0.01)
+	var maybe := Admission.swept_clearance(-0.01, 0.0, 0.01)
+	_check("analytic swept separation includes strict positive roundoff margin", yes.ok and yes.proved_separated and yes.swept_gap_lower_bound_m <= 0.09)
+	_check("swept boundary or initial penetration cannot manufacture separation", no.ok and not no.proved_separated and maybe.ok and not maybe.proved_separated)
+	_check("swept proof exposes whole-interval speed assumption", yes.whole_interval_speed_bound_assumed and not yes.full_rhs_certificate)
+	_check("negative/nonfinite swept bounds refuse", not Admission.swept_clearance(0.1, -1.0, 0.01).ok and not Admission.swept_clearance(0.1, 1.0, INF).ok)
 
 func _normal_rows(body: PackedFloat64Array, contact: Dictionary, stage: Dictionary) -> Dictionary:
 	var q := M.q_normalized(body.slice(RB.ATT, RB.ATT + 4))

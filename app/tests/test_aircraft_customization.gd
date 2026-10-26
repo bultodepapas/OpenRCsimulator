@@ -19,6 +19,7 @@ var _failures := 0
 
 func _initialize() -> void:
 	_test_fleet_bindings_and_mounts()
+	_test_skin_binding_contract()
 	_test_material_isolation_and_reset("jensen-das-ugly-stik-60")
 	_test_material_isolation_and_reset("gp-extra-300s-60")
 	_test_invalid_profile_is_atomic()
@@ -88,6 +89,44 @@ func _test_fleet_bindings_and_mounts() -> void:
 				_check(id + " physical exhaust direction is preserved",
 					(actual.basis * Vector3.FORWARD).normalized().dot(expected_direction) > 0.999)
 		airplane.root.free()
+
+
+func _test_skin_binding_contract() -> void:
+	var target_ids := [
+		"wing_left_0_skin", "wing_left_1_skin", "wing_left_2_skin",
+		"wing_right_0_skin", "wing_right_1_skin", "wing_right_2_skin",
+	]
+	var wing_targets: Array = []
+	for target_id: String in target_ids:
+		wing_targets.append({"target_id": target_id, "kind": "standard_albedo"})
+	var paint_slots := [{"id": "wing", "targets": wing_targets}]
+	var skins := [
+		{"zone_id": "strip_left", "paint_slot_id": "wing",
+			"target_ids": ["wing_left_0_skin", "wing_left_1_skin", "wing_left_2_skin"],
+			"mask_profile_id": "jensen_stik_film_bays_v1"},
+		{"zone_id": "strip_right", "paint_slot_id": "wing",
+			"target_ids": ["wing_right_0_skin", "wing_right_1_skin", "wing_right_2_skin"],
+			"mask_profile_id": "jensen_stik_film_bays_v1"},
+	]
+	var layout := {"version": 2, "anchors": [], "strips": [], "skins": skins}
+	var checked: Dictionary = Customization._validate_authored_lighting_layout(layout, paint_slots,
+		"jensen-das-ugly-stik-60")
+	_check("version 2 skin bindings resolve through wing paint targets", checked.get("ok", false), str(checked.get("errors", [])))
+	var bad_target := layout.duplicate(true)
+	bad_target.skins[0].target_ids[0] = "missing_surface"
+	checked = Customization._validate_authored_lighting_layout(bad_target, paint_slots,
+		"jensen-das-ugly-stik-60")
+	_check("skin binding rejects unknown paint target ids", not checked.get("ok", false))
+	var bad_mask := layout.duplicate(true)
+	bad_mask.skins[0].mask_profile_id = "res://textures/arbitrary.png"
+	checked = Customization._validate_authored_lighting_layout(bad_mask, paint_slots,
+		"jensen-das-ugly-stik-60")
+	_check("skin binding rejects unregistered resource paths", not checked.get("ok", false))
+	var duplicate_target := layout.duplicate(true)
+	duplicate_target.skins[1].target_ids[0] = duplicate_target.skins[0].target_ids[0]
+	checked = Customization._validate_authored_lighting_layout(duplicate_target, paint_slots,
+		"jensen-das-ugly-stik-60")
+	_check("skin binding rejects duplicate surface use", not checked.get("ok", false))
 
 
 func _test_material_isolation_and_reset(id: String) -> void:

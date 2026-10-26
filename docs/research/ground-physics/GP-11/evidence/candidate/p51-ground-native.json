@@ -1,0 +1,29 @@
+{
+	"aircraft_identity": {
+		"format": "openrc-aircraft v2",
+		"sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+	},
+	"baseline_sha256": "0bf156205663cf98a25481e1665e5df78e42d9efe1184cfdd4002b489cde0062",
+	"baseline_solver_sha256": "588f3d32eca3221ee756ed2197c5765d4a992a3165268e738b2ed03501bd20f9",
+	"complete": true,
+	"current_solver_sha256": "7c065cef2b9182b0b87e147823028de867465de23dc64691448d17da621e3e6b",
+	"engine": "4.8-beta1 (official)",
+	"error": "",
+	"expected_rows": 481,
+	"fields_checked": [
+		"state",
+		"loads",
+		"inputs",
+		"aux",
+		"continuous",
+		"modes",
+		"air",
+		"mass"
+	],
+	"format": "openrc-gp08-candidate-numeric-preservation v1",
+	"method": "Existing CLI.prepare_replay explicit candidate; identical frozen aircraft configuration and post-conditioning input/intervention tape; existing CLI.disagreement compares every native numeric array byte, including the initial sample. Changed-source experiment, not a historical exact replay certificate.",
+	"mode": "candidate_preservation",
+	"rows_checked": 481,
+	"solver_changed": true,
+	"status": "ok"
+}
