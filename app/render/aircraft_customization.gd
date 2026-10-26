@@ -129,7 +129,7 @@ static func validate_bindings(bindings: Dictionary, expected_family := "", expec
 	if not errors.is_empty():
 		return {"ok": false, "errors": errors}
 	if binding_version == 4:
-		var lighting_check := _validate_authored_lighting_layout(bindings.lighting_layout, bindings.paint_slots,
+		var lighting_check := validate_authored_lighting_layout(bindings.lighting_layout, bindings.paint_slots,
 			str(bindings.visual_family))
 		if not lighting_check.ok:
 			return lighting_check
@@ -640,7 +640,7 @@ static func _target_key(target: Dictionary) -> String:
 	return str(target.node_path) + "#" + str(target.surface)
 
 
-static func _validate_authored_lighting_layout(raw: Variant, paint_slots: Array, family_id: String) -> Dictionary:
+static func validate_authored_lighting_layout(raw: Variant, paint_slots: Array, family_id: String) -> Dictionary:
 	if not (raw is Dictionary):
 		return _failure("lighting layout must be an object")
 	var version: Variant = raw.get("version")

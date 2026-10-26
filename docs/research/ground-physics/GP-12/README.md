@@ -60,6 +60,22 @@ The supplied propeller wrench is already in the aircraft external loads once. Su
 
 The source suite passes 162 checks; existing electric-motor checks (1,057) and 25,001 propulsion scalar comparisons pass. This bridge supplies terms; it does not itself activate a source policy or authorize launch.
 
+## Fixed-voltage aircraft stage
+
+[AircraftGroundElectric](../../../../app/physics/aircraft_ground_electric.gd) now assembles the existing fixed-voltage aircraft force and continuous-state owners with the common contact stage. It retains the established `[transported wash..., shaft RPM, wheel rim speeds...]` ordering. One stage-local propeller evaluation feeds the existing aerodynamic/slipstream load path and the local shaft couple. Motor electromagnetic drive enters the internal shaft equation; finite bearing friction is appended to the simultaneous wheel impulse problem. The adapter does not add the old isolated shaft reaction or old ground forces again.
+
+For fixed carriers and constant mass, its nonconservative mechanical power is:
+
+```text
+P = F_external · v_O + M_external,O · omega
+    + (a_shaft · couple_propeller) * sigma_shaft
+    + torque_electromagnetic * sigma_shaft
+```
+
+The first wrench already includes the complete propeller wrench once. The additional terms account for relative shaft motion. Conservative energy includes gravity at the fixed reference CM and the normal spring/stop potential; bearing, tire and brake losses belong to the subsequent impulse receipt. Electrical copper loss remains in the existing source ledger. The adapter accepts an explicitly marked negative algebraic RPM extension without authorizing negative accepted RPM.
+
+The 128-check stage suite uses the repository's synthetic fixed-voltage Stik aircraft with explicitly synthetic compliant contact geometry and aggregate rotor partition. It compares the reused propeller/aerodynamic/wash calls, checks the common final-alpha body derivative, independently calculates `z^T M z_dot` for energy closure, and applies simultaneous wheel/bearing impulses. This is stage composition evidence, not a complete powered trajectory, calibrated conversion, stock activation or performance claim. Fixed wheel axes, fixed gear and constant mass are enforced; other aircraft remain with their existing owner until their full integration is qualified.
+
 ## Remaining integration gates
 
-Complete the finite static-shaft capture policy, assemble aircraft force/source/state adapters, qualify actual field geometry and supported source events, and bind damage to accepted failure states. Preserve the existing session, event, Workshop and audio owners. The broad suite also identified direct transcendental calls in the new compliance/steering modules; these now route through the existing `Math3D` wrappers. The original frozen evidence remains unchanged; subsequent combined-source receipts must include those corrections. No new fleet coefficient calibration, native audio listening or 1080p performance claim is established by these software checks.
+Complete the finite static-shaft capture step composition and powered trajectories, integrate the session state adapters, qualify actual field geometry and supported source events, and bind damage to accepted failure states. Preserve the existing session, event, Workshop and audio owners. The broad suite also identified direct transcendental calls in the new compliance/steering modules; these now route through the existing `Math3D` wrappers. The original frozen evidence remains unchanged; subsequent combined-source receipts must include those corrections. No new fleet coefficient calibration, native audio listening or 1080p performance claim is established by these software checks.
