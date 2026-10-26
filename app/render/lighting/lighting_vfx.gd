@@ -206,11 +206,7 @@ func reset() -> void:
 		pool["trail_until"] = -INF
 		pool["samples"] = []
 		pool["particles"] = []
-		if pool.get("instance") is MultiMeshInstance3D:
-			var instance: MultiMeshInstance3D = pool.instance
-			if is_instance_valid(instance) and instance.multimesh != null:
-				instance.multimesh.visible_instance_count = 0
-				_set_live_effect_bounds(instance, instance.multimesh, AABB(), false)
+		_clear_pool_visuals(pool)
 	_refresh_scene_budget()
 
 
@@ -251,17 +247,47 @@ func dispose() -> void:
 
 
 func budget_info() -> Dictionary:
-	var sparks := 0
-	var trails := 0
+	var spark_particles := 0
+	var trail_samples := 0
+	var spark_gpu_capacity := 0
+	var trail_gpu_capacity := 0
+	var gpu_anchors := 0
+	var gpu_instance_writes := 0
 	for pool: Dictionary in _effects:
-		if str(pool.get("kind", "")) == "trail":
-			trails += MAX_TRAIL_SAMPLES
+		var kind := str(pool.get("kind", ""))
+		var particle_state: Variant = pool.get("particles", [])
+		var sample_state: Variant = pool.get("samples", [])
+		if kind == "trail":
+			if sample_state is Array:
+				trail_samples += sample_state.size()
 		else:
-			sparks += SPARK_POOL_CAPACITY
+			if particle_state is Array:
+				spark_particles += particle_state.size()
+		gpu_instance_writes += int(pool.get("gpu_instance_writes", 0))
+		var instance: MultiMeshInstance3D = pool.get("instance")
+		if not is_instance_valid(instance) or instance.multimesh == null:
+			continue
+		var allocated_instances := instance.multimesh.instance_count
+		if allocated_instances <= 0:
+			continue
+		gpu_anchors += 1
+		if kind == "trail":
+			trail_gpu_capacity += allocated_instances
+		else:
+			spark_gpu_capacity += allocated_instances
 	return {
-		"effects_allocated": _effects.size(),
-		"sparks_allocated": sparks,
-		"trails_allocated": trails,
+		"effects_allocated": _effects.size(), # CPU effect-pool records, independent of GPU grants.
+		"effects_cpu_allocated": _effects.size(),
+		"effects_gpu_allocated": gpu_anchors,
+		"sparks_allocated": spark_gpu_capacity,
+		"trails_allocated": trail_gpu_capacity,
+		"sparks_cpu_live": spark_particles,
+		"trails_cpu_live": trail_samples,
+		"sparks_gpu_instance_capacity": spark_gpu_capacity,
+		"trails_gpu_instance_capacity": trail_gpu_capacity,
+		"gpu_anchors_allocated": gpu_anchors,
+		"gpu_instance_capacity_allocated": spark_gpu_capacity + trail_gpu_capacity,
+		"gpu_instance_writes": gpu_instance_writes,
 		"spill_lights_allocated": _spills.size(),
 		"spark_limit": MAX_EFFECTS * SPARK_POOL_CAPACITY,
 		"trail_sample_limit": MAX_EFFECTS * MAX_TRAIL_SAMPLES,
@@ -285,13 +311,33 @@ func apply_scene_budget(grant: Dictionary) -> void:
 		if not is_instance_valid(light): continue
 		light.visible = bool(binding.get("wants_visible", false)) and spill_left > 0
 		if light.visible: spill_left -= 1
-	var effects_left := int(grant.get("vfx_anchors", 0))
+	var desired_pool_ids: Dictionary = {}
+	var effects_left := mini(MAX_EFFECTS, maxi(0, int(grant.get("vfx_anchors", 0))))
+	for pool: Dictionary in _effects:
+		if effects_left <= 0:
+			break
+		if bool(pool.get("wants_visible", false)) and int(pool.get("live_visual_count", 0)) > 0:
+			desired_pool_ids[int(pool.get("pool_id", -1))] = true
+			effects_left -= 1
+
+	# Drop every revoked buffer before allocating any newly granted buffer on this rig.
 	for pool: Dictionary in _effects:
 		var instance: MultiMeshInstance3D = pool.get("instance")
-		if not is_instance_valid(instance): continue
-		var wants := bool(pool.get("wants_visible", false)) and instance.multimesh.visible_instance_count > 0
-		instance.visible = wants and effects_left > 0
-		if instance.visible: effects_left -= 1
+		if not is_instance_valid(instance) or instance.multimesh == null:
+			continue
+		if not desired_pool_ids.has(int(pool.get("pool_id", -1))):
+			_release_effect_buffer(instance)
+
+	# Grant callbacks allocate capacity only. The next advance repopulates it from CPU state.
+	for pool: Dictionary in _effects:
+		var instance: MultiMeshInstance3D = pool.get("instance")
+		if not is_instance_valid(instance) or instance.multimesh == null:
+			continue
+		var desired := desired_pool_ids.has(int(pool.get("pool_id", -1)))
+		if desired and instance.multimesh.instance_count == 0:
+			_allocate_effect_buffer(instance, pool)
+		instance.visible = desired and bool(pool.get("wants_visible", false)) \
+			and instance.multimesh.instance_count > 0 and instance.multimesh.visible_instance_count > 0
 
 
 func _refresh_scene_budget() -> void:
@@ -300,8 +346,7 @@ func _refresh_scene_budget() -> void:
 		if bool(binding.get("wants_visible", false)): spill_count += 1
 	var effects_count := 0
 	for pool: Dictionary in _effects:
-		var instance: MultiMeshInstance3D = pool.get("instance")
-		if bool(pool.get("wants_visible", false)) and is_instance_valid(instance) and instance.multimesh.visible_instance_count > 0:
+		if bool(pool.get("wants_visible", false)) and int(pool.get("live_visual_count", 0)) > 0:
 			effects_count += 1
 	if _scene_budget == null:
 		apply_scene_budget({"spill_lights": 0, "vfx_anchors": 0})
@@ -335,13 +380,12 @@ func _create_world_root() -> void:
 
 func _create_effect_pool(effect: Dictionary, anchor: Node3D) -> void:
 	var kind := str(effect.get("kind", "spark"))
-	var count := MAX_TRAIL_SEGMENTS if kind == "trail" else SPARK_POOL_CAPACITY
 	var quad := QuadMesh.new()
 	quad.size = Vector2.ONE
 	var multi := MultiMesh.new()
 	multi.transform_format = MultiMesh.TRANSFORM_3D
 	multi.use_colors = true
-	multi.instance_count = count
+	multi.instance_count = 0
 	multi.visible_instance_count = 0
 	multi.mesh = quad
 	var material := ShaderMaterial.new()
@@ -358,6 +402,7 @@ func _create_effect_pool(effect: Dictionary, anchor: Node3D) -> void:
 	_world_root.add_child(instance)
 	var lifetime := float(maxi(12, int(effect.get("lifetime_ticks", 96)))) / 240.0
 	_effects.append({
+		"pool_id": _effects.size(),
 		"anchor_id": str(effect.get("anchor_id", "")),
 		"anchor": anchor,
 		"kind": kind,
@@ -370,6 +415,11 @@ func _create_effect_pool(effect: Dictionary, anchor: Node3D) -> void:
 		"trail_until": -INF,
 		"samples": [],
 		"particles": [],
+		"visual_transforms": [],
+		"visual_colors": [],
+		"visual_bounds": AABB(),
+		"live_visual_count": 0,
+		"gpu_instance_writes": 0,
 		"instance": instance,
 		"material": material,
 	})
@@ -470,29 +520,30 @@ func _trigger_sparks(pool: Dictionary, birth_seconds: float, current_seconds: fl
 
 
 func _update_sparks(pool: Dictionary, seconds: float, exposure: float, distance_fade: float) -> void:
-	var instance: MultiMeshInstance3D = pool.get("instance")
-	if not is_instance_valid(instance) or instance.multimesh == null:
-		return
 	var material: ShaderMaterial = pool.get("material")
 	_set_exposure(material, pool, exposure)
 	var particles: Array = pool.get("particles", [])
-	var multi := instance.multimesh
-	var live_count := 0
+	var retained_particles: Array = []
+	var transforms: Array[Transform3D] = []
+	var colors: Array[Color] = []
 	var live_bounds := AABB()
 	var has_live_bounds := false
 	var camera_basis := _camera_basis()
-	for index in SPARK_POOL_CAPACITY:
-		if index >= particles.size():
-			break
-		var particle: Dictionary = particles[index]
+	for particle_value: Variant in particles:
+		if not particle_value is Dictionary:
+			continue
+		var particle: Dictionary = particle_value
 		var age := maxf(0.0, seconds - float(particle.get("start", seconds)))
 		var life := maxf(0.001, float(particle.get("life", 0.5)))
 		if age >= life:
 			continue
+		retained_particles.append(particle)
 		var origin: Vector3 = particle.get("origin", Vector3.ZERO)
 		var velocity: Vector3 = particle.get("velocity", Vector3.ZERO)
 		var point := origin + velocity * age + Vector3.DOWN * (0.5 * 1.4 * age * age)
 		var fade := clampf(1.0 - age / life, 0.0, 1.0) * float(pool.get("intensity", 0.5)) * _gain * distance_fade
+		if fade <= 0.0:
+			continue
 		var size := float(particle.get("size", 0.025)) * (0.7 + 0.3 * fade)
 		var basis := Basis(camera_basis.x * size, camera_basis.y * size, camera_basis.z * size)
 		var local_transform := _local_transform(Transform3D(basis, point))
@@ -501,14 +552,17 @@ func _update_sparks(pool: Dictionary, seconds: float, exposure: float, distance_
 		var particle_bounds := local_transform * EFFECT_QUAD_LOCAL_AABB
 		if not particle_bounds.is_finite():
 			continue
-		multi.set_instance_transform(index, local_transform)
+		transforms.append(local_transform)
 		live_bounds = particle_bounds if not has_live_bounds else live_bounds.merge(particle_bounds)
 		has_live_bounds = true
 		var color: Color = particle.get("color", GOLD)
-		multi.set_instance_color(index, Color(color.r, color.g, color.b, fade))
-		live_count = index + 1
-	multi.visible_instance_count = live_count
-	_set_live_effect_bounds(instance, multi, live_bounds, has_live_bounds)
+		colors.append(Color(color.r, color.g, color.b, fade))
+	pool["particles"] = retained_particles
+	pool["visual_transforms"] = transforms
+	pool["visual_colors"] = colors
+	pool["visual_bounds"] = live_bounds if has_live_bounds else AABB()
+	pool["live_visual_count"] = transforms.size()
+	_write_pool_visuals(pool)
 
 
 func _sample_trail(pool: Dictionary, seconds: float, point: Vector3) -> void:
@@ -532,9 +586,6 @@ func _sample_trail(pool: Dictionary, seconds: float, point: Vector3) -> void:
 
 
 func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_fade: float) -> void:
-	var instance: MultiMeshInstance3D = pool.get("instance")
-	if not is_instance_valid(instance) or instance.multimesh == null:
-		return
 	var material: ShaderMaterial = pool.get("material")
 	_set_exposure(material, pool, exposure)
 	var samples: Array = pool.get("samples", [])
@@ -542,9 +593,9 @@ func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_f
 	while not samples.is_empty() and seconds - float(samples[0].get("time", seconds)) > life:
 		samples.pop_front()
 	pool["samples"] = samples
-	var multi := instance.multimesh
 	var camera_position := _camera_position()
-	var segments := 0
+	var transforms: Array[Transform3D] = []
+	var colors: Array[Color] = []
 	var live_bounds := AABB()
 	var has_live_bounds := false
 	for index in MAX_TRAIL_SEGMENTS:
@@ -569,6 +620,8 @@ func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_f
 		var normal := tangent.cross(side).normalized()
 		var fade := clampf(1.0 - maxf(0.0, seconds - float(after.get("time", seconds))) / life, 0.0, 1.0)
 		fade *= float(pool.get("intensity", 0.5)) * _gain * distance_fade
+		if fade <= 0.0:
+			continue
 		var basis := Basis(tangent * length, side * 0.035, normal)
 		var local_transform := _local_transform(Transform3D(basis, midpoint))
 		if not local_transform.is_finite():
@@ -576,13 +629,15 @@ func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_f
 		var segment_bounds := local_transform * EFFECT_QUAD_LOCAL_AABB
 		if not segment_bounds.is_finite():
 			continue
-		multi.set_instance_transform(segments, local_transform)
+		transforms.append(local_transform)
 		live_bounds = segment_bounds if not has_live_bounds else live_bounds.merge(segment_bounds)
 		has_live_bounds = true
-		multi.set_instance_color(segments, Color(GOLD.r, GOLD.g, GOLD.b, fade))
-		segments += 1
-	multi.visible_instance_count = segments
-	_set_live_effect_bounds(instance, multi, live_bounds, has_live_bounds)
+		colors.append(Color(GOLD.r, GOLD.g, GOLD.b, fade))
+	pool["visual_transforms"] = transforms
+	pool["visual_colors"] = colors
+	pool["visual_bounds"] = live_bounds if has_live_bounds else AABB()
+	pool["live_visual_count"] = transforms.size()
+	_write_pool_visuals(pool)
 
 
 func _update_spills(seconds: float, telemetry: Dictionary, exposure: float) -> void:
@@ -818,10 +873,54 @@ func _clear_transients() -> void:
 		pool["samples"] = []
 		pool["last_sample_time"] = -INF
 		pool["trail_until"] = -INF
-		var instance: MultiMeshInstance3D = pool.get("instance")
-		if is_instance_valid(instance) and instance.multimesh != null:
-			instance.multimesh.visible_instance_count = 0
-			_set_live_effect_bounds(instance, instance.multimesh, AABB(), false)
+		_clear_pool_visuals(pool)
+
+
+func _clear_pool_visuals(pool: Dictionary) -> void:
+	pool["visual_transforms"] = []
+	pool["visual_colors"] = []
+	pool["visual_bounds"] = AABB()
+	pool["live_visual_count"] = 0
+
+
+func _write_pool_visuals(pool: Dictionary) -> void:
+	var instance: MultiMeshInstance3D = pool.get("instance")
+	if not is_instance_valid(instance) or instance.multimesh == null:
+		return
+	var multi := instance.multimesh
+	if multi.instance_count <= 0:
+		return
+	var transforms: Array = pool.get("visual_transforms", [])
+	var colors: Array = pool.get("visual_colors", [])
+	var write_count := mini(multi.instance_count, mini(transforms.size(), colors.size()))
+	for index in write_count:
+		multi.set_instance_transform(index, transforms[index])
+		multi.set_instance_color(index, colors[index])
+		pool["gpu_instance_writes"] = int(pool.get("gpu_instance_writes", 0)) + 2
+	multi.visible_instance_count = write_count
+	var bounds: AABB = pool.get("visual_bounds", AABB())
+	_set_live_effect_bounds(instance, multi, bounds, write_count > 0)
+
+
+func _allocate_effect_buffer(instance: MultiMeshInstance3D, pool: Dictionary) -> void:
+	var multi := instance.multimesh
+	if multi == null or multi.instance_count > 0:
+		return
+	instance.visible = false
+	multi.visible_instance_count = 0
+	_set_live_effect_bounds(instance, multi, AABB(), false)
+	multi.instance_count = MAX_TRAIL_SEGMENTS if str(pool.get("kind", "")) == "trail" else SPARK_POOL_CAPACITY
+
+
+func _release_effect_buffer(instance: MultiMeshInstance3D) -> void:
+	var multi := instance.multimesh
+	if multi == null:
+		instance.visible = false
+		return
+	instance.visible = false
+	multi.visible_instance_count = 0
+	multi.instance_count = 0
+	_set_live_effect_bounds(instance, multi, AABB(), false)
 
 
 func _safe_axis(axis: Vector3, fallback: Vector3) -> Vector3:

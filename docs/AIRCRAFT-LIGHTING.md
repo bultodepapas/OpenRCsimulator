@@ -28,7 +28,7 @@ Zone edits include palette, brightness, cycle duration and telemetry response. O
 
 Sequences contain at most 32 cues and last at most 60 seconds before looping. Navigation targets require unlocking navigation colors and patterns. Targeted zones switch to Sequence; removing their last cue returns them to steady lighting. Undo restores the prior accepted profile. Unfinished timing/color text blocks Save/Test fly and survives draft recovery without becoming accepted lighting.
 
-Colored strip emission and lamp sprites make the emitters visible. Short-range, shadowless OmniLights provide actual decorative spill; the existing landing SpotLight(s) illuminate the approach surface. Emission alone does not illuminate nearby objects. Opaque imported skins are not made translucent: internal foam illumination requires authored masks/shells and remains separate work.
+Colored strip emission and lamp sprites make the emitters visible. Short-range, shadowless OmniLights provide actual decorative spill; the existing landing SpotLight(s) illuminate the approach surface. Emission alone does not illuminate nearby objects. The authored Ugly Stik covering supports bounded rib/spar-masked emission. Opaque imported skins are not made translucent: foam transmission requires a suitable authored asset and remains separate work.
 
 `AircraftLightingRig3D` receives the aircraft root and a validated lighting dictionary. Its `configure`, `set_mode`, `advance`, `reset`, `dispose` and `budget_info` methods remain on the rendering side. `advance` consumes displayed simulation time plus detached telemetry; preview uses its own accepted clock. Materials and VFX resources belong to the instance. Imported assets and shared resources are never rewritten.
 
@@ -79,7 +79,7 @@ A different aircraft adapter should own one shared light-state instance, sample 
 
 ## Creator-authored layouts (FW-RGB-04)
 
-The authoritative authoring source is `assets/aircraft/customization-bindings.json` v3. Each family supplies `lighting_layout`; `research/aircraft-standardization/build_customization.py` generates companion v4. Historical source v1/v2 and companion v1–v3 remain readable. The independent presentation source-proof version stays 3 because the implementation extends files already in its closed inventory. Never hand-edit `app/data/aircraft_customization.json`.
+The authoritative authoring source is `assets/aircraft/customization-bindings.json` v3. Each family supplies `lighting_layout`; `research/aircraft-standardization/build_customization.py` generates companion v4. Historical source v1/v2 and companion v1–v3 remain readable. The independent presentation source-proof version stays 3; its ordered inventory includes the lighting policy, scene budget and skin helpers. Never hand-edit `app/data/aircraft_customization.json`.
 
 The layout is creator data, separate from player lighting choices:
 
@@ -95,7 +95,7 @@ The layout is creator data, separate from player lighting choices:
 }
 ```
 
-These coordinates illustrate the schema; measure the actual aircraft before using them. The shipped six families currently use `{ "version": 1, "anchors": [], "strips": [] }`, preserving their existing fits and builder-owned mounts. This package enables authoring; it does not claim a new manual placement art pass across the fleet.
+These coordinates illustrate the schema; measure the actual aircraft before using them. Shipped point/strip declarations retain empty arrays, preserving existing fits and builder-owned mounts. Ugly Stik additionally uses the v2 skin binding below. This does not claim a new manual placement art pass across the fleet.
 
 Authored strip patterns follow cumulative centerline distance in the host's local frame, from the first point to the last. Unequal segments receive proportional pattern space; bends and paths returning along an axis do not restart or fold the animation. Pattern `reverse` reverses travel along that same path. Host transforms move the strip while preserving its LED station colors; nonuniform scale stretches their world spacing. Legacy automatically fitted strips retain their existing axis-based pattern placement.
 
@@ -123,6 +123,32 @@ Creator checklist:
 3. Keep omitted zones empty for automatic fitting. Check `light_groups` before expecting a fixture to illuminate.
 4. Regenerate through `build_customization.py`, run its `--check` and Python tests, then the pinned `test_lighting_layout.gd` and existing kit/mount tests.
 5. Inspect 1080p day/night, upper/lower views, manual light modes and gear gates. Check warnings and confirm fresh builds and cached Home previews agree.
+
+### Authored covering illumination
+
+Nested `lighting_layout` v2 adds a `skins` array to the unchanged v1 anchor/strip fields. Each row binds one strip zone to stable `target_id` values declared in a paint slot; it cannot load a shader, texture path or script from a saved profile. For example, the Ugly Stik left wing binds its three existing surface-0 covering meshes:
+
+```json
+{
+  "version": 2,
+  "anchors": [],
+  "strips": [],
+  "skins": [{
+    "zone_id": "strip_left",
+    "paint_slot_id": "wing",
+    "target_ids": ["wing_left_0_skin", "wing_left_1_skin", "wing_left_2_skin"],
+    "mask_profile_id": "jensen_stik_film_bays_v1"
+  }]
+}
+```
+
+The closed contract permits at most five skin rows and twelve unique target surfaces. The registered mask is restricted to the Stik visual family and derives from its existing project-authored rib/spar and UV recipes. Model dependencies already pin those recipes; the presentation inventory pins the compositor. The separately sourced engine is not part of this treatment. This is a thin-film visual approximation, not measured optical transmission or foam illumination.
+
+`Airplane.build` resolves the validated paint targets into instance-only `lighting_skin_bindings`. `LightingSkins` duplicates supported `StandardMaterial3D` surfaces and composes a 512×512 mipmapped emission map with the current albedo texture/color. Ribs, spars and painted dark areas retain contrast. It keeps depth testing and opaque surface rendering; it does not enable transparency or illuminate other geometry. A strip zone's palette, brightness and reaction drive its associated skin; there is no independent per-pixel LED simulation inside the covering.
+
+Only ALL with an enabled strip zone emits. NAV/OFF, hidden or unsupported orientation equipment, zero gain and disabled profiles suppress emission. Energy is capped relative to the supplied exposure; Reduced flashes uses the same stable policy as other aircraft emitters. Unsupported materials, pre-existing authored emission, mesh-wide overrides, unsupported UV transforms and missing targets remain unchanged with diagnostics. Disposal restores only overrides still owned by the helper, preserving later edits by another renderer component.
+
+The mask is immutable and shared; composed textures are instance-owned, reused within that instance and cleared on disposal. `budget_info().skins` distinguishes target count, composed texture bytes and material writes. These counters do not establish total VRAM or staging-time qualification. Validate creators' day/night and upper/lower views, preserved paint/markings, two-instance independence and restoration after preview rebuilds before accepting a new mask.
 
 ### Updating saved builds
 

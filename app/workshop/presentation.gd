@@ -72,7 +72,7 @@ const SMOKE_SOURCE_SLOT_KEYS: PackedStringArray = [
 	"source_kind", "source_anchor_ref", "physical_source_ref", "physical_source_kind_ref",
 ]
 const PAINT_TARGET_KEYS: PackedStringArray = ["node_path", "surface", "kind"]
-const PAINT_TARGET_OPTIONAL_KEYS: PackedStringArray = ["parameter"]
+const PAINT_TARGET_OPTIONAL_KEYS: PackedStringArray = ["parameter", "target_id"]
 const MARKING_TARGET_KEYS: PackedStringArray = ["node_path", "position_m", "direction", "up", "width_m", "height_m"]
 const PAINT_PATTERNS: PackedStringArray = ["solid"]
 const SMOKE_SHAPES: PackedStringArray = ["ribbon", "cloud", "fan"]
@@ -667,15 +667,17 @@ static func _validate_bindings(value: Variant) -> Dictionary:
 			errors.append("Customization %s exceeds its 64-slot limit." % slot_key)
 	if not errors.is_empty():
 		return {"ok": false, "errors": errors}
-	if binding_version == 4:
-		var lighting_check := Customization.AircraftLights.validate_authored_layout(checked.lighting_layout)
-		if not lighting_check.ok:
-			return lighting_check
 	var paint_slots: Dictionary = _slot_map(checked["paint_slots"], PAINT_SLOT_KEYS, PAINT_SLOT_OPTIONAL_KEYS, "paint_slots", errors)
 	var marking_slots: Dictionary = _slot_map(checked["marking_slots"], MARKING_SLOT_KEYS, [], "marking_slots", errors)
 	var smoke_slots: Dictionary = _slot_map(checked["smoke_slots"], SMOKE_SLOT_KEYS, [], "smoke_slots", errors, binding_version)
 	if not errors.is_empty():
 		return {"ok": false, "errors": errors}
+	if binding_version == 4:
+		# Resolve skin IDs only after the paint descriptor shapes have been checked.
+		var lighting_check := Customization.validate_authored_lighting_layout(
+			checked.lighting_layout, checked.paint_slots, str(checked.visual_family))
+		if not lighting_check.ok:
+			return lighting_check
 	if bindings_sha256(checked) != checked["slots_sha256"]:
 		errors.append("Customization slot contract hash does not match its authored bindings.")
 		return {"ok": false, "errors": errors}
@@ -692,6 +694,7 @@ static func _validate_bindings(value: Variant) -> Dictionary:
 static func _slot_map(value: Array, required_keys: PackedStringArray, optional_keys: PackedStringArray,
 		field: String, errors: PackedStringArray, binding_version: int = 2) -> Dictionary:
 	var result: Dictionary = {}
+	var paint_target_ids: Dictionary = {}
 	if field == "smoke_slots" and binding_version >= 3 and value.size() > MAX_AUTHORED_SMOKE_SLOTS:
 		errors.append("Customization supports at most eight authored smoke outlets.")
 		return result
@@ -747,6 +750,14 @@ static func _slot_map(value: Array, required_keys: PackedStringArray, optional_k
 				return result
 			if slot.has("accent_targets") and not _validate_paint_targets(slot["accent_targets"], errors):
 				return result
+			for targets_key: String in ["targets", "accent_targets"]:
+				for target: Dictionary in slot.get(targets_key, []):
+					if not target.has("target_id"): continue
+					var target_id := str(target.target_id)
+					if paint_target_ids.has(target_id):
+						errors.append("Paint target IDs must be unique across the aircraft.")
+						return result
+					paint_target_ids[target_id] = true
 		elif field == "marking_slots":
 			if not _integer_number(slot.get("max_chars", null)) or int(slot["max_chars"]) < 1 or int(slot["max_chars"]) > MAX_TEXT_LENGTH:
 				errors.append("Customization marking max_chars must be an integer from 1 through %d." % MAX_TEXT_LENGTH)
@@ -797,7 +808,7 @@ static func _validate_paint_targets(value: Variant, errors: PackedStringArray) -
 			errors.append("Paint target has missing or unsupported fields.")
 			return false
 		var target: Dictionary = target_value
-		var expected_count: int = PAINT_TARGET_KEYS.size() + (1 if target.has("parameter") else 0)
+		var expected_count: int = PAINT_TARGET_KEYS.size() + (1 if target.has("parameter") else 0) + (1 if target.has("target_id") else 0)
 		if target.size() != expected_count or not target.has_all(PAINT_TARGET_KEYS):
 			errors.append("Paint target has missing or unsupported fields.")
 			return false
@@ -809,6 +820,9 @@ static func _validate_paint_targets(value: Variant, errors: PackedStringArray) -
 		if not _safe_node_path(target["node_path"]) or not _integer_number(target["surface"]) \
 				or int(target["surface"]) < 0 or target["kind"] not in ["standard_albedo", "shader_color"]:
 			errors.append("Paint target path, surface, or material kind is invalid.")
+			return false
+		if target.has("target_id") and (typeof(target.target_id) != TYPE_STRING or not _valid_slot_id(str(target.target_id))):
+			errors.append("Paint target ID is invalid.")
 			return false
 		if (target["kind"] == "shader_color") != target.has("parameter"):
 			errors.append("Shader paint targets require a parameter; standard albedo targets forbid one.")

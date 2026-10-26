@@ -9,6 +9,7 @@ var _failures: int = 0
 
 
 func _initialize() -> void:
+	_test_authored_skin_bindings()
 	var bindings: Dictionary = _bindings_fixture()
 	var defaults: Dictionary = Profile.defaults(bindings)
 	var checked: Dictionary = Profile.validate(defaults, bindings)
@@ -282,6 +283,32 @@ func _test_v2_contract(bindings: Dictionary) -> void:
 	stale.model_manifest_sha256 = "b".repeat(64)
 	stale.slots_sha256 = Profile.bindings_sha256(stale)
 	_check("migration refuses physical model substitution", not Profile.migrate_v1(checked.profile, bindings, stale).get("ok", false))
+
+
+func _test_authored_skin_bindings() -> void:
+	var registry: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft_customization.json"))
+	var bindings: Dictionary = {}
+	for family: Dictionary in registry.get("families", []):
+		if family.get("visual_family") == "jensen-das-ugly-stik-60": bindings = family
+	var checked := Profile.validate(Profile.defaults(bindings), bindings)
+	_check("actual authored skin companion is admitted by Workshop", checked.get("ok", false), str(checked.get("errors", [])))
+	if bindings.is_empty(): return
+	var profile := Profile.defaults(bindings)
+	profile.lighting = Profile.LightingProfile.preset("night_radian")
+	_check("RGB profile round trips with authored skin companion", Profile.validate(
+		JSON.parse_string(JSON.stringify(profile)), JSON.parse_string(JSON.stringify(bindings))).get("ok", false))
+	for mutation: String in ["unknown_mask", "missing_target", "duplicate_target_id", "invalid_target_id", "malformed_paint"]:
+		var invalid := bindings.duplicate(true)
+		match mutation:
+			"unknown_mask": invalid.lighting_layout.skins[0].mask_profile_id = "res://untrusted.png"
+			"missing_target": invalid.lighting_layout.skins[0].target_ids[0] = "missing_skin"
+			"duplicate_target_id":
+				invalid.paint_slots[0].targets[0]["target_id"] = invalid.lighting_layout.skins[0].target_ids[0]
+			"invalid_target_id": invalid.paint_slots[0].targets[0]["target_id"] = "../skin"
+			"malformed_paint": invalid.paint_slots[0] = false
+		invalid.slots_sha256 = Profile.bindings_sha256(invalid)
+		var rejected := Profile.validate(Profile.defaults(invalid), invalid)
+		_check("Workshop rejects skin companion " + mutation, not rejected.get("ok", false), str(rejected.get("errors", [])))
 
 
 func _bindings_fixture() -> Dictionary:

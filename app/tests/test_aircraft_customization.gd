@@ -109,22 +109,22 @@ func _test_skin_binding_contract() -> void:
 			"mask_profile_id": "jensen_stik_film_bays_v1"},
 	]
 	var layout := {"version": 2, "anchors": [], "strips": [], "skins": skins}
-	var checked: Dictionary = Customization._validate_authored_lighting_layout(layout, paint_slots,
+	var checked: Dictionary = Customization.validate_authored_lighting_layout(layout, paint_slots,
 		"jensen-das-ugly-stik-60")
 	_check("version 2 skin bindings resolve through wing paint targets", checked.get("ok", false), str(checked.get("errors", [])))
 	var bad_target := layout.duplicate(true)
 	bad_target.skins[0].target_ids[0] = "missing_surface"
-	checked = Customization._validate_authored_lighting_layout(bad_target, paint_slots,
+	checked = Customization.validate_authored_lighting_layout(bad_target, paint_slots,
 		"jensen-das-ugly-stik-60")
 	_check("skin binding rejects unknown paint target ids", not checked.get("ok", false))
 	var bad_mask := layout.duplicate(true)
 	bad_mask.skins[0].mask_profile_id = "res://textures/arbitrary.png"
-	checked = Customization._validate_authored_lighting_layout(bad_mask, paint_slots,
+	checked = Customization.validate_authored_lighting_layout(bad_mask, paint_slots,
 		"jensen-das-ugly-stik-60")
 	_check("skin binding rejects unregistered resource paths", not checked.get("ok", false))
 	var duplicate_target := layout.duplicate(true)
 	duplicate_target.skins[1].target_ids[0] = duplicate_target.skins[0].target_ids[0]
-	checked = Customization._validate_authored_lighting_layout(duplicate_target, paint_slots,
+	checked = Customization.validate_authored_lighting_layout(duplicate_target, paint_slots,
 		"jensen-das-ugly-stik-60")
 	_check("skin binding rejects duplicate surface use", not checked.get("ok", false))
 

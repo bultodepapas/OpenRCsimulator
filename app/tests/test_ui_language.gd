@@ -116,6 +116,12 @@ func _default_and_switch() -> void:
 	for source in spanish_catalog.get_message_list():
 		spanish_values[spanish_catalog.get_message(source)] = true
 	spanish_values[companion_summary] = true # Dynamic text was checked against its Spanish template above.
+	var aircraft_history := "Historial · 0 h 00 min en el aire · 0 completados · 0 choques"
+	var pilot_history := "Total del piloto · 0 h 00 min en el aire · 0 completados · mejor racha 0"
+	_check("Home empty history summaries translate", home._statistics_aircraft_summary.text == aircraft_history
+		and home._statistics_pilot_summary.text == pilot_history)
+	spanish_values[aircraft_history] = true
+	spanish_values[pilot_history] = true
 	for c in home.find_children("*", "", true, false):
 		if (c is Label or c is Button) and c.can_auto_translate() and c.text != "" \
 			and c.atr(c.text) == c.text and not spanish_values.has(c.text):
