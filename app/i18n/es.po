@@ -7430,3 +7430,18 @@ msgstr "Calibración no válida. El borrador no ha cambiado."
 
 msgid "Calibration is in the draft. Save controller settings to apply it; Cancel discards it."
 msgstr "La calibración está en el borrador. Guarda los ajustes del mando para aplicarla; Cancelar la descarta."
+
+msgid "no stick moved enough (need a full sweep); try again"
+msgstr "Ninguna palanca recorrió suficiente distancia; muévela de extremo a extremo y vuelve a intentarlo."
+
+msgid "the stick did not return to centre before Enter (or moved only one way); try again"
+msgstr "La palanca no volvió al centro antes de pulsar Intro o solo se movió hacia un lado; vuelve a intentarlo."
+
+msgid "Existing flaps control overlaps a newly calibrated AETR axis; reassign that auxiliary channel."
+msgstr "El control de flaps coincide con un eje de vuelo recién calibrado; reasigna ese canal auxiliar."
+
+msgid "Existing gear control overlaps a newly calibrated AETR axis; reassign that auxiliary channel."
+msgstr "El control del tren coincide con un eje de vuelo recién calibrado; reasigna ese canal auxiliar."
+
+msgid "Existing smoke control overlaps a newly calibrated AETR axis; smoke was disabled and needs reassignment."
+msgstr "El control de humo coincide con un eje de vuelo recién calibrado; se ha desactivado y necesita reasignarse."

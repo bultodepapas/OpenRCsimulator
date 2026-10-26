@@ -2,6 +2,7 @@ extends VBoxContainer
 ## Bounded cue editor. Its owner validates and records the emitted lighting profile.
 
 const Profile := preload("res://render/lighting/lighting_profile.gd")
+const Widgets := preload("res://ui/widgets.gd")
 const Sequence := preload("res://workshop/lighting_sequence.gd")
 
 signal profile_changed(lighting: Dictionary)
@@ -642,6 +643,7 @@ func _add_palette_row(index: int, color_text: String) -> void:
 	row.add_theme_constant_override("h_separation", 6)
 	row.add_theme_constant_override("v_separation", 4)
 	var picker := ColorPickerButton.new()
+	Widgets.fit_color_picker_popup(picker)
 	picker.name = "SequencePalettePicker%d" % index
 	picker.custom_minimum_size = Vector2(42, 32)
 	picker.edit_alpha = false

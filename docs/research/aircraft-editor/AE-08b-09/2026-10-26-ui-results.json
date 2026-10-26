@@ -336,5 +336,240 @@
     "No target-GPU performance qualification",
     "No physical controller or formative user acceptance",
     "Hidden compact preview geometry excluded from inspection claims"
-  ]
+  ],
+  "final_visual_review": {
+    "date": "2026-10-26",
+    "shared_head_at_record": "428133f6ad849d11a8bde38688fee8c8132b39ee",
+    "source_sha256": {
+      "ui/workshop_lighting.gd": "e6dd4fc8c401d02e528c0c0b999bcec07ef94ba94b6f4dddc904ae832e6c1ad2",
+      "ui/workshop_lighting_sequence.gd": "a794e4e34c3affac1b495b304fbba967fc5d8095cd03361fb5715d64b84b3444",
+      "ui/workshop_customization.gd": "26c3ff4e3a4715577b2b6b6c7b58d586a2f2e1020296c8d620fa046a78e60b0e",
+      "ui/widgets.gd": "27b214c7e40f5ca6ec31a525bbd390dd12b66c7834634728a7836a4f4eb9c99a",
+      "ui/ui_theme.gd": "eed344c09bef90507a9ea2059802f7e50930050c78a10af656356b03e5ae4e39"
+    },
+    "suites": [
+      {
+        "suite": "lighting_sequence_ui",
+        "passed": true,
+        "complete": true,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "1d44e03d3e3e2c8ec123dabba6a72d464ac28284a516d0034fb5fcab82ba3f76"
+      },
+      {
+        "suite": "ui_scale",
+        "passed": true,
+        "complete": true,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "79d4c1d7bd8e413610b30f05aabb8710b64ac3ad57756dcbcbcdc7f4fcf517d0"
+      },
+      {
+        "suite": "workshop_customization",
+        "passed": true,
+        "complete": true,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "ee35df8a4d4e24d121060c3189f7bfb55909db6f4ad2efacb720207521ccf182"
+      },
+      {
+        "suite": "workshop_lighting",
+        "passed": true,
+        "complete": true,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "92912e2303d10dd6a5151b2212ad97567e510dde5841dc8e2702e902b791216f"
+      },
+      {
+        "suite": "workshop_smoke_controls",
+        "passed": true,
+        "complete": true,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "6632e0cc4c74853aaca863404d0508e61069405eed065833e8acf097b564b3ca"
+      },
+      {
+        "suite": "workshop_ui",
+        "passed": true,
+        "complete": true,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "fac67bd15fdf6d87317d90a78489181bffc772490ca38b8f0f2a7db0589ec32b"
+      }
+    ],
+    "debug_scenario": {
+      "path": "tools/debug/scenarios/workshop_lighting_palette_focus.txt",
+      "passed": true,
+      "script_sha256": "cc953fb320d2abf1075688339494ad61afdc36b219b075c2010751a2c69f2e3b",
+      "log_sha256": "4a85a3ba9c2fdd72dcddfb5ff11242f8b5fd1b200cc02df50b106771773e83db"
+    },
+    "captures": [
+      {
+        "case": "appearance-after",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "74b327917788c6b69475a911a2a0d30efba4be9046957a89dae0e1c40b432d4f"
+      },
+      {
+        "case": "audio-after",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "a68ab58ba2539c12b031b0c82ce5eaddfaeac8b8794a6dd3505d2b800a452ab4"
+      },
+      {
+        "case": "smoke-after",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "acd76f272194e55e11c98e76108e99ae08dd837f89f69e81ab689db5db091950"
+      },
+      {
+        "case": "setup-menu-after",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "539f228a53c9e09e3fc8280c7583f0c58d6935f8cdf6774c8544bc293d58f961"
+      },
+      {
+        "case": "compare-after",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "ced7d1a442192c13e30d26926580f3a004de1f726cfa6198a14d4e7e971d7be8"
+      },
+      {
+        "case": "library-after",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "d5d8fba1f3df87a76ecb6269a6dc33bd8d2394ca119f1a6d5a64a960987f1ff5"
+      },
+      {
+        "case": "lighting-night-after",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "cde64823f5af8fb6c05a4a396af664c165e99e5cf631136f40e04eedc7460fae"
+      },
+      {
+        "case": "zones-after",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "0c2324269647f1998513f2f0eb721cee9ce55ab7c508257e385b98edaa61b0ba"
+      },
+      {
+        "case": "sequence-after",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "75c7df5e2839c468ab0173659116924005c9ded2020dacaaea54e390d2009df4"
+      },
+      {
+        "case": "effects-after",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "f9857386ad92222caf479bd457c7848fef97ad32370d263e6dc899d258a38e62"
+      },
+      {
+        "case": "effects-empty-final",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "cce25a3050733bb7235f967a3d82d00ebd05555d613fa467e0abd49517b98c04"
+      },
+      {
+        "case": "color-picker-fit-1080",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "d74fd0795ad090e54bb8abd97a09fa413f030158cc7932c799a3aeed8e4a3502"
+      },
+      {
+        "case": "color-picker-fit-1080-200",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "sha256": "64dd7f3c845e390ec6214e76d75991a7f535b312f5993dc7ab5371a4ca385de7"
+      },
+      {
+        "case": "color-picker-native-720-200",
+        "pixels": [
+          1280,
+          720
+        ],
+        "sha256": "5d80fa469fabc3f45a69a73e3f20b9ab281e01122444a1455deb81e340f4deb5"
+      }
+    ],
+    "popup_bounds": {
+      "1080p_es_200": {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "popup": [
+          468,
+          1048
+        ]
+      },
+      "native_720p_es_200": {
+        "viewport": [
+          1280,
+          720
+        ],
+        "popup": [
+          313,
+          688
+        ]
+      }
+    },
+    "session_exits": {
+      "rendered-1080": {
+        "crash": null,
+        "leaked_objects": 0
+      },
+      "rendered-720": {
+        "crash": null,
+        "leaked_objects": 0
+      },
+      "headless-final": {
+        "crash": null,
+        "leaked_objects": 0
+      }
+    },
+    "local_artifacts": "tmp/workshop-ui-20261026/final-review",
+    "limitations": [
+      "Headless 64x64 geometry is not a supported product viewport.",
+      "The resized Xvfb 720p capture retained a 1920x1080 logical viewport and is excluded; native 720p was launched separately.",
+      "No full app/test.sh, GPU performance or physical-controller qualification."
+    ]
+  }
 }
