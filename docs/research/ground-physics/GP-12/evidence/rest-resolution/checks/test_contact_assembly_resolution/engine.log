@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ASSEMBLY_PROOF {"assembly_objective_resolution_j":5.98078702310756e-17,"capacities_unchanged":true,"certificate_contract":"assembled-objective-epsilon-optimality","gradient_uncertainty_gap_j":3.2296872735852305e-29,"law":"verified-contact-assembly-objective-resolution-v1","ok":true,"original_dual_gap_j":1.6235698644378183e-20,"strict_kkt_claim":false,"true_objective_gap_upper_j":1.6235698676675174e-20} corr=0.00000000000002
+GP-12 assembly resolution: 53 checks, 0 failed

@@ -1,0 +1,271 @@
+{
+  "format": "openrc-gp12-rest-resolution-evidence-v1",
+  "captured_utc": "2026-10-26T13:13:47.613981+00:00",
+  "packaging_commit": "eed518c86f0fda8a6d9f03b9b797cd15a88b7ca6",
+  "scope": "Selected main-tree numerical regression and accuracy checks. Source captured at packaging; no full repository dependency freeze, physical validation or stock activation claim.",
+  "checks": {
+    "test_contact_assembly_resolution": {
+      "checks": 53,
+      "files": [
+        {
+          "source": "tmp/gp12-rest-fix/main-checks/contact-assembly-resolution-1gipcz6l/report.json",
+          "retained": "checks/test_contact_assembly_resolution/report.json",
+          "sha256": "26a90ba94f84608d299ebb63f826232de2a2777c9c7b4371e8eb014d2fc85555",
+          "bytes": 1296
+        },
+        {
+          "source": "tmp/gp12-rest-fix/main-checks/contact-assembly-resolution-1gipcz6l/engine.log",
+          "retained": "checks/test_contact_assembly_resolution/engine.log",
+          "sha256": "363e736222e38c603fc6e27c70f33187232b1a98f657b10c199d55ddc47723e9",
+          "bytes": 549
+        }
+      ]
+    },
+    "test_aircraft_ground_electric": {
+      "checks": 196,
+      "files": [
+        {
+          "source": "tmp/gp12-rest-fix/main-checks/ground-electric-_slu6puj/report.json",
+          "retained": "checks/test_aircraft_ground_electric/report.json",
+          "sha256": "3f529b8f47dd65d2e803b78d0d0d8aa13b5cc8814a1de4088b6d9f9e55f08a2d",
+          "bytes": 1258
+        },
+        {
+          "source": "tmp/gp12-rest-fix/main-checks/ground-electric-_slu6puj/engine.log",
+          "retained": "checks/test_aircraft_ground_electric/engine.log",
+          "sha256": "dbddc9bb0a1a441d50b6fc658cc5e11748885cdc536d07a295c48b6340ed5b1a",
+          "bytes": 7165
+        }
+      ]
+    },
+    "test_aircraft_ground_impulse": {
+      "checks": 314,
+      "files": [
+        {
+          "source": "tmp/gp12-rest-fix/main-checks/ground-impulse-fio5zz42/report.json",
+          "retained": "checks/test_aircraft_ground_impulse/report.json",
+          "sha256": "cfe992a6b46448195b41e9edf841c4c5923dad187639522d97b08d33ca1681b8",
+          "bytes": 1253
+        },
+        {
+          "source": "tmp/gp12-rest-fix/main-checks/ground-impulse-fio5zz42/engine.log",
+          "retained": "checks/test_aircraft_ground_impulse/engine.log",
+          "sha256": "d1811c203c52d585943ca3747fcf66ff04452c5ef8fd506ef95c76504a7ef2d6",
+          "bytes": 119
+        }
+      ]
+    },
+    "test_aircraft_ground_step": {
+      "checks": 127,
+      "files": [
+        {
+          "source": "tmp/gp12-rest-fix/main-checks/ground-step-sh6jot8l/report.json",
+          "retained": "checks/test_aircraft_ground_step/report.json",
+          "sha256": "c441cb95d467956952e188f6f7e5d1b0cf1faebea1ac2be400a07ad0b6c86904",
+          "bytes": 1237
+        },
+        {
+          "source": "tmp/gp12-rest-fix/main-checks/ground-step-sh6jot8l/engine.log",
+          "retained": "checks/test_aircraft_ground_step/engine.log",
+          "sha256": "7e3e859c3655b5f47e71d94a45c902db7444ee6ae15b0157987bfb28bc0eb84e",
+          "bytes": 116
+        }
+      ]
+    },
+    "test_ground_traction": {
+      "checks": 659,
+      "files": [
+        {
+          "source": "tmp/gp12-rest-fix/main-checks/ground-traction-fy9iuko8/report.json",
+          "retained": "checks/test_ground_traction/report.json",
+          "sha256": "a1adf629b06172d8607dad309da22b59dd953c6cf31c1af95428e3703e134100",
+          "bytes": 1239
+        },
+        {
+          "source": "tmp/gp12-rest-fix/main-checks/ground-traction-fy9iuko8/engine.log",
+          "retained": "checks/test_ground_traction/engine.log",
+          "sha256": "1a7bb1b88e67ccd42a0f8e00666fdad5f6531e7962c5f57e101c72ecebd9351c",
+          "bytes": 110
+        }
+      ]
+    },
+    "test_aircraft_ground_accuracy": {
+      "checks": 84,
+      "files": [
+        {
+          "source": "tmp/gp12-accuracy-checks/final-main-wrapper/godot-jd8gxp75/report.json",
+          "retained": "checks/test_aircraft_ground_accuracy/report.json",
+          "sha256": "5180285912a81639fa8e976765751293349be136430ffd338bfb70994ce84ee8",
+          "bytes": 1129
+        },
+        {
+          "source": "tmp/gp12-accuracy-checks/final-main-wrapper/godot-jd8gxp75/engine.log",
+          "retained": "checks/test_aircraft_ground_accuracy/engine.log",
+          "sha256": "29609f9a44da1a1ec1fb3a6d5dca20afd3e5068a369506f3751a810096942573",
+          "bytes": 119
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "source": "app/physics/contact_assembly_resolution.gd",
+      "retained": "source/app/physics/contact_assembly_resolution.gd",
+      "sha256": "92e23b6df1ad433dc0c8b08526713764b18f0828dbe35074a3faaec8a270316a",
+      "bytes": 18396
+    },
+    {
+      "source": "app/physics/ground_traction.gd",
+      "retained": "source/app/physics/ground_traction.gd",
+      "sha256": "1e4ab42e03dc960dbc78b3b26060c4829b9836040b15ab96df20100f79cbbf6d",
+      "bytes": 26386
+    },
+    {
+      "source": "app/physics/aircraft_ground_impulse.gd",
+      "retained": "source/app/physics/aircraft_ground_impulse.gd",
+      "sha256": "ed2db610d1e8570069040b362dd751a089d539a1a00101041b2680c0f52f5f03",
+      "bytes": 25869
+    },
+    {
+      "source": "docs/research/ground-physics/GP-12/evidence/traction-acceleration/source/app/physics/aircraft_ground_step.gd",
+      "retained": "source/app/physics/aircraft_ground_step.gd",
+      "sha256": "171a1ef0d53a442fed2b7e852572f4dbc7a6bc0ac0b197379037cd2ff35653a1",
+      "bytes": 21237
+    },
+    {
+      "source": "app/physics/aircraft_ground_electric.gd",
+      "retained": "source/app/physics/aircraft_ground_electric.gd",
+      "sha256": "c2469baef28ee9bd635b2dfbd021cf065719c66918befbf2df07151be3086901",
+      "bytes": 10983
+    },
+    {
+      "source": "app/physics/aircraft_ground_accuracy.gd",
+      "retained": "source/app/physics/aircraft_ground_accuracy.gd",
+      "sha256": "e03c3e5a292e9582340fa73612769a8e5fa9f53a0e400acbdd4642bb35b394fa",
+      "bytes": 25288
+    },
+    {
+      "source": "app/physics/math3d.gd",
+      "retained": "source/app/physics/math3d.gd",
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+      "bytes": 5514
+    },
+    {
+      "source": "app/physics/generalized_coordinates.gd",
+      "retained": "source/app/physics/generalized_coordinates.gd",
+      "sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8",
+      "bytes": 9692
+    },
+    {
+      "source": "app/physics/rotor_coupling.gd",
+      "retained": "source/app/physics/rotor_coupling.gd",
+      "sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+      "bytes": 27336
+    },
+    {
+      "source": "app/tests/test_contact_assembly_resolution.gd",
+      "retained": "source/app/tests/test_contact_assembly_resolution.gd",
+      "sha256": "69f3566eb0437cb866381f37e3600d323194d69fbf319bb9345f2ffd0556f02d",
+      "bytes": 12283
+    },
+    {
+      "source": "app/tests/test_aircraft_ground_electric.gd",
+      "retained": "source/app/tests/test_aircraft_ground_electric.gd",
+      "sha256": "e3fdf22dc768040e6cda7435f54dff15583fa7866620a3b01b4ea539d94ea5d0",
+      "bytes": 40146
+    },
+    {
+      "source": "app/tests/test_aircraft_ground_impulse.gd",
+      "retained": "source/app/tests/test_aircraft_ground_impulse.gd",
+      "sha256": "28da3821e40be71d18859af68b63b305dd3b1f225a0b18606bcf0ddcdc3b5ce2",
+      "bytes": 25660
+    },
+    {
+      "source": "docs/research/ground-physics/GP-12/evidence/traction-acceleration/source/app/tests/test_aircraft_ground_step.gd",
+      "retained": "source/app/tests/test_aircraft_ground_step.gd",
+      "sha256": "c88b9a85a1cb3067480300fdd3df61ee9749988dce8db319a9abc8781d9b1183",
+      "bytes": 35337
+    },
+    {
+      "source": "app/tests/test_ground_traction.gd",
+      "retained": "source/app/tests/test_ground_traction.gd",
+      "sha256": "5f15862471ecffd3aafab10231a2149427db71d94d67caf4d4a7998384c7b56b",
+      "bytes": 23515
+    },
+    {
+      "source": "app/tests/test_aircraft_ground_accuracy.gd",
+      "retained": "source/app/tests/test_aircraft_ground_accuracy.gd",
+      "sha256": "7f9f054a0ec622930e2af3e22407e228dbe418fd73801ac02f84038a00c2bafb",
+      "bytes": 16688
+    },
+    {
+      "source": "app/tests/fixtures/ground_traction_braking.bin",
+      "retained": "source/app/tests/fixtures/ground_traction_braking.bin",
+      "sha256": "459f0d36c8f721b394aa11c0daa9fc6c5b6c2b1fee2f715e5a182a2894a47bb8",
+      "bytes": 4824
+    },
+    {
+      "source": "app/tests/fixtures/ground_traction_rest_lie64.bin",
+      "retained": "source/app/tests/fixtures/ground_traction_rest_lie64.bin",
+      "sha256": "e2e5f6efe5fa35f548b85b1b513d1309865993addd2d39eec66d8860c90923ff",
+      "bytes": 4080
+    },
+    {
+      "source": "app/tests/fixtures/ground_traction_rest_symmetric128.bin",
+      "retained": "source/app/tests/fixtures/ground_traction_rest_symmetric128.bin",
+      "sha256": "db0178343f512240b4f637edb531c9816785baea7eb526b2fdc00b2132513627",
+      "bytes": 4080
+    },
+    {
+      "source": "app/tests/fixtures/ground_traction_rest_symmetric16.bin",
+      "retained": "source/app/tests/fixtures/ground_traction_rest_symmetric16.bin",
+      "sha256": "f059b5c95141b40dec67a345de643ed2dd1a879b3fd2e5a1095513076c5d155e",
+      "bytes": 4272
+    }
+  ],
+  "analysis": [
+    {
+      "source": "tmp/gp12-rest-fix/review.md",
+      "retained": "draft-analysis/review.md",
+      "sha256": "d864b1fbb078340e7acf04bccc6431eabf9f53b88477dbbaab5a5ce6862d69f5",
+      "bytes": 7500
+    },
+    {
+      "source": "tmp/gp12-rest-fix/report.json",
+      "retained": "draft-analysis/report.json",
+      "sha256": "055f60d994ea02f2545cf91478a76d342ae2b327c6279403b47e2e24458f6755",
+      "bytes": 7935
+    },
+    {
+      "source": "tmp/gp12-rest-fix/proof.bin",
+      "retained": "draft-analysis/proof.bin",
+      "sha256": "ad16aeac988d462ed221060b10f81563e67d290a36cd536569f01b6d96ba2ff9",
+      "bytes": 1412
+    },
+    {
+      "source": "tmp/gp12-rest-fix/proof.json",
+      "retained": "draft-analysis/proof.json",
+      "sha256": "07f0b20a55be21985a233381da80c195c127f66092cc2974b447b57d2dd7e82f",
+      "bytes": 2969
+    }
+  ],
+  "total_checks": 1433,
+  "engine": {
+    "version": "4.8.beta1.official.4d10419ca",
+    "sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f"
+  },
+  "packaging_corrections": [
+    {
+      "path": "app/physics/aircraft_ground_step.gd",
+      "packaging_observed_newer_sha256": "17d6e88c5fccccd909c5e5bad179cba37bbb68aa85127ddf76081b91fa9b2a88",
+      "receipt_matched_sha256": "171a1ef0d53a442fed2b7e852572f4dbc7a6bc0ac0b197379037cd2ff35653a1",
+      "reason": "Concurrent Step167 promotion raced packaging. Restore retained Step127 source/test associated with genuine127-check receipt; neither report nor prior cohort modified."
+    },
+    {
+      "path": "app/tests/test_aircraft_ground_step.gd",
+      "packaging_observed_newer_sha256": "ffc0abce7db26f2e026fab9a1cd27d5d07db8048e27dab915a6ce68bda59d2b7",
+      "receipt_matched_sha256": "c88b9a85a1cb3067480300fdd3df61ee9749988dce8db319a9abc8781d9b1183",
+      "reason": "Concurrent Step167 promotion raced packaging. Restore retained Step127 source/test associated with genuine127-check receipt; neither report nor prior cohort modified."
+    }
+  ]
+}

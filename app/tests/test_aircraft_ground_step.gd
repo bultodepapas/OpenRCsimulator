@@ -49,6 +49,7 @@ func _initialize() -> void:
 		_error_gate_rejections()
 		_capture_passthrough()
 		_capture_bindings()
+		_two_sided()
 	print("Aircraft ground step: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed else 0)
 
@@ -525,6 +526,164 @@ func _error_gate_rejections() -> void:
 func _fixture_angular_momentum(s: PackedFloat64Array) -> PackedFloat64Array:
 	# Independent locked-tensor plus axial cross terms, in the frozen body frame.
 	return M.add(s.slice(RB.RATE, RB.RATE + 3), M.scale(_p([0, -1, 0]), .02 * s[13] * TAU / 60.0 + .01 * s[14] / RADIUS))
+
+
+func _two_sided() -> void:
+	_gravity=0.0
+	_grip=.6
+	_rolling=0.0
+	_brake=0.0
+	var options := {operator_law=Step.TWO_SIDED_LAW}
+	var initial := _initial(-.06,_p([3,0,0]))
+	var first := _derivative(initial,0.0)
+	first.fill(1e50) # valid but stale: the pre-kick MUST replace every k1 channel.
+	var before := var_to_bytes([initial,first,options])
+	var seen_rates := []
+	var seen_certificate := []
+	var derivative := func(s,t):
+		if t==0.0: seen_rates.append(s[RB.VEL])
+		return _derivative(s,t)
+	var certificate := func(s,t,h,p):
+		if t==0.0: seen_certificate.append(s[RB.VEL])
+		return _certificate(s,t,h,p)
+	var h:=.004
+	var out := Step.advance(initial,0.0,h,derivative,first,_evaluate,certificate,options)
+	_check("two-sided actual coupled operator accepts one qualified piece",out.ok and out.integration_receipt.accepted_substeps==1,str(out))
+	if out.ok:
+		var r:Dictionary=out.integration_receipt
+		_check("two-sided receipt has a distinct first-order law",r.law==Step.TWO_SIDED_LAW and r.contact_operator_order==1
+			and r.split_method.contains("order1") and r.normal_sampling_method.contains("not_interval_maximum"))
+		_check("free interval certificate sees post-first-kick velocity",not seen_certificate.is_empty() and seen_certificate[0]<initial[RB.VEL])
+		_check("continuous k1 sees post-first-kick velocity",not seen_rates.is_empty() and seen_rates[0]<initial[RB.VEL])
+		# Normal force is vertical in world space. During the free interval,
+		# horizontal CM velocity is constant at its first-kick value; the second
+		# kick cannot alter position. This oracle catches stale initial k1.
+		var x0:=RADIUS+initial[2]
+		var expected_x:float=initial[0]+(initial[RB.VEL]-_grip*STIFFNESS*x0*(h*.5)/MASS)*h
+		_check("independent horizontal position oracle includes first kick",absf(out.state[0]-expected_x)<1e-11,str([out.state[0],expected_x]))
+		_check("both endpoint impulses have separate positive passive losses",r.pre_contact_dissipation_j>0.0 and r.post_contact_dissipation_j>0.0
+			and absf(r.tangent_dissipation_j-r.pre_contact_dissipation_j-r.post_contact_dissipation_j)<1e-14)
+		# Independent RK4 oscillator amplification: |P(i theta)|^2-1
+		# = -theta^6/72 + theta^8/576. The friction halves close exactly;
+		# this known conservative RK defect is not missing contact heat.
+		var theta2:=STIFFNESS/MASS*h*h
+		var theta6:=theta2*theta2*theta2
+		var exact_rk_defect:=.5*STIFFNESS*x0*x0*(-theta6/72.0+theta6*theta2/576.0)
+		_check("both prescribed works sum once and residual matches analytic RK4 defect",absf(r.prescribed_contact_work_j-r.pre_prescribed_contact_work_j-r.post_prescribed_contact_work_j)<1e-14
+			and absf(r.energy_balance_residual_j-exact_rk_defect)<1e-12,str([r.energy_balance_residual_j,exact_rk_defect]))
+		_check("boundary samples remain distinct from interval extrema",r.normal_samples_n.size()==2 and r.normal_sample_times_s.size()==2
+			and r.quadrature_method=="RK4_algebraic_stage_weights_not_damage_samples")
+	_check("two-sided inputs and supplied stale k1 are detached",before==var_to_bytes([initial,first,options]))
+	var repeated:=Step.advance(initial,0.0,h,_derivative,PackedFloat64Array(),_evaluate,_certificate,options)
+	_check("ignored stale first derivative cannot change complete deterministic output",out.ok and var_to_bytes(out)==var_to_bytes(repeated))
+	var ordinary:=_advance(initial,0.0,h)
+	var explicit_default:=_advance(initial,0.0,h,{operator_law=Step.LAW,maximum_assembly_resolution_j=-1.0})
+	_check("explicit defaults preserve complete default receipt bytes",ordinary.ok and var_to_bytes(ordinary)==var_to_bytes(explicit_default)
+		and not ordinary.integration_receipt.has("assembly_resolution"))
+	var zero_ceiling:=Step.advance(initial,0.0,h,_derivative,PackedFloat64Array(),_evaluate,_certificate,
+		{operator_law=Step.TWO_SIDED_LAW,maximum_assembly_resolution_j=0.0})
+	_check("explicit zero ceiling cannot loosen an ordinary strict optimum",zero_ceiling.ok
+		and zero_ceiling.integration_receipt.assembly_resolution.accepted_at_resolution==0)
+	for bad:Dictionary in [{operator_law="unknown"},{operator_law=3},{maximum_assembly_resolution_j=-.5},
+		{maximum_assembly_resolution_j=INF},{maximum_assembly_resolution_j=NAN},{maximum_assembly_resolution_j=true}]:
+		var refused:=_advance(initial,0.0,h,bad)
+		_check("invalid operator/resolution options refuse without partial publication",not refused.ok and not refused.has("state") and not refused.has("integration_receipt"))
+	var selected_failures:Array=[]
+	selected_failures.append(_advance(initial,0.0,.2,options))
+	selected_failures.append(_advance(initial,0.0,h,{operator_law=Step.TWO_SIDED_LAW,maximum_assembly_resolution_j=-.5}))
+	selected_failures.append(Step.advance(initial,0.0,h,Callable(),PackedFloat64Array(),_evaluate,_certificate,options))
+	selected_failures.append(Step.advance(initial,0.0,h,_derivative,PackedFloat64Array(),
+		func(_s,_t):return {ok=false},_certificate,options))
+	selected_failures.append(Step.advance(initial,0.0,h,_derivative,PackedFloat64Array(),_evaluate,_certificate,options,
+		func(_a,_b,_ar,_br,_h):return {ok=true,admitted=false,identity="too-strict-selected-path",normalized_error=2.0}))
+	for refusal:Dictionary in selected_failures:
+		_check("all selected-operator failure seams retain requested law",not refusal.ok and refusal.law==Step.TWO_SIDED_LAW
+			and not refusal.has("state") and not refusal.has("integration_receipt"),str(refusal))
+	# Finite shaft capture is exercised on BOTH halves: pre-kick captures the
+	# initial spin; a smooth internal drive during RK creates a small new spin
+	# that the post-kick captures with its own finite capacity and loss.
+	_shaft_capture_selected=true
+	_shaft_friction_rate=100.0
+	_shaft_drive_torque=.01
+	var airborne:=_initial(-.8,_zeros(3))
+	airborne[13]=.1
+	var captured:=Step.advance(airborne,0.0,h,_derivative,PackedFloat64Array(),_evaluate,_certificate,options)
+	_check("two-sided finite shaft capture reaches exact zero",captured.ok and captured.state[13]==0.0,str(captured))
+	if captured.ok:
+		_check("both capture halves retain positive physical loss",captured.integration_receipt.pre_contact_dissipation_j>0.0
+			and captured.integration_receipt.post_contact_dissipation_j>0.0)
+		_check("drive work and both capture losses close independently",absf(captured.integration_receipt.energy_balance_residual_j)<1e-12
+			and captured.integration_receipt.external_work_j>0.0)
+	var captured_sim:=_simulation(airborne,Callable(),true)
+	captured_sim.model.step_policy=func(s,t,dt,f,k1):return Step.advance(s,t,dt,f,k1,_evaluate,_certificate,options)
+	captured_sim.step()
+	_check("actual kernel accepts selected two-sided capture",captured_sim.tick==1 and captured_sim.fault_reason.is_empty()
+		and captured_sim.continuous[0]==0.0,captured_sim.fault_reason)
+	var captured_checkpoint:Dictionary=captured_sim.checkpoint()
+	captured_sim.step()
+	var captured_expected:=var_to_bytes(captured_sim.checkpoint())
+	_check("two-sided captured checkpoint restores",captured_sim.restore_checkpoint(captured_checkpoint))
+	captured_sim.step()
+	_check("two-sided captured continuation is byte identical",captured_expected==var_to_bytes(captured_sim.checkpoint())
+		and captured_sim.tick==2,captured_sim.fault_reason)
+	captured_sim.free()
+	_shaft_capture_selected=false
+	_shaft_friction_rate=0.0
+	_shaft_drive_torque=0.0
+	# The first halfkick may be computed in a trial, but an interval refusal
+	# must roll back all kernel body/spin/work state and publish no events.
+	var sim:=_simulation(initial)
+	var frame:=var_to_bytes([sim.state,sim.previous,sim.continuous,sim.aux,sim.modes])
+	var publications:=[0]
+	sim.stepped.connect(func(_a,_b,_c,_d,_e,_f):publications[0]+=1)
+	sim.model.step_policy=func(s,t,dt,f,k1):return Step.advance(s,t,dt,f,k1,_evaluate,
+		func(_s,_t,_h,_p):return {ok=true,admitted=false,identity="post-kick-interval-refusal"},options)
+	sim.step()
+	_check("post-first-kick interval refusal is atomic in actual kernel",sim.tick==0 and not sim.fault_reason.is_empty()
+		and publications[0]==0 and frame==var_to_bytes([sim.state,sim.previous,sim.continuous,sim.aux,sim.modes]))
+	sim.free()
+	_gravity=9.80665
+	_rolling=.02
+	_resolution_passthrough()
+
+
+func _resolution_passthrough() -> void:
+	# Manufactured zero-ODE/frozen-pose mechanics ONLY, to isolate passthrough
+	# of the exact retained physical Gram/slip operands. This is not a flight or
+	# normal-support model. The invariant ODE has an exact whole-interval proof.
+	var file:=FileAccess.open("res://tests/fixtures/ground_traction_rest_symmetric16.bin",FileAccess.READ)
+	var raw:Dictionary=bytes_to_var(file.get_buffer(file.get_length()))
+	file.close()
+	var initial:=RB.make_state(_zeros(3),raw.velocity_cm_body,M.q_identity(),raw.stage.velocity.slice(0,3))
+	initial.append_array(raw.stage.velocity.slice(3))
+	var dt:=1.0/240.0
+	for law:String in [Step.LAW,Step.TWO_SIDED_LAW]:
+		var evaluate:=func(s,_t):
+			var stage:Dictionary=raw.stage.duplicate(true)
+			stage.velocity=s.slice(RB.RATE,RB.RATE+3)
+			stage.velocity.append_array(s.slice(RB.SIZE))
+			var limits:PackedFloat64Array=raw.limits.duplicate()
+			for i in limits.size(): limits[i]*=(2.0 if law==Step.TWO_SIDED_LAW else 1.0)/dt
+			return {ok=true,format=Step.SAMPLE_FORMAT,fixed_hubs=true,static_ground=true,source_policy="none",
+				mass_kg=raw.mass_kg,cg_body_m=_zeros(3),rotor_stage=stage,
+				rotor_state_indices=PackedInt64Array([13,14,15,16]),sigma_per_state=_p([1,1,1,1]),
+				nonnegative_rotors=PackedInt64Array(),jacobian=raw.jacobian,slip_bias=raw.prescribed_slip_bias,
+				limit_rates=limits,groups=raw.groups,contact_ids=PackedStringArray(),normal_load_n=PackedFloat64Array(),
+				potential_j=0.0,normal_dissipation_w=0.0,external_power_w=0.0}
+		var derivative:=func(s,_t):return _zeros(s.size())
+		var invariant:=func(s,_t,h,_p):return {ok=s==initial and h>0.0 and h<=dt,
+			admitted=s==initial and h>0.0 and h<=dt,identity="manufactured-zero-ODE-exact-invariant-v1"}
+		var strict:=Step.advance(initial,0.0,dt,derivative,PackedFloat64Array(),evaluate,invariant,{operator_law=law})
+		_check("exact unresolved assembly preserves default strict refusal: "+law,not strict.ok)
+		var qualified:=Step.advance(initial,0.0,dt,derivative,PackedFloat64Array(),evaluate,invariant,
+			{operator_law=law,maximum_assembly_resolution_j=1e-12})
+		_check("owner ceiling reaches every selected impulse: "+law,qualified.ok,str(qualified))
+		if qualified.ok:
+			var proof:Dictionary=qualified.integration_receipt.assembly_resolution
+			_check("only accepted numerical-resolution proofs are accumulated: "+law,
+				proof.accepted_at_resolution==(2 if law==Step.TWO_SIDED_LAW else 1)
+				and proof.maximum_derived_gamma_j>0.0 and proof.derived_gamma_sum_j<=2e-12
+				and qualified.integration_receipt.tangent_dissipation_j==0.0)
 
 
 func _capture_passthrough() -> void:
