@@ -380,13 +380,13 @@ static func _is_vertical_dominant_face_normal(normal: Vector3) -> bool:
 
 
 ## A ribbon mesh through `line` for render/world/led_strip.gdshader (vertices on the line, NORMAL across, UV.x side).
-static func strip(name: String, line: PackedVector3Array, color := STRIP_COLOR, face := Vector3.DOWN) -> MeshInstance3D:
+static func strip(name: String, line: PackedVector3Array, color := STRIP_COLOR, face := Vector3.DOWN, authored_across := false) -> MeshInstance3D:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for i in line.size() - 1:
 		var a := line[i]
 		var b := line[i + 1]
-		var across := (b - a).cross(Vector3.UP).normalized()
+		var across := (b - a).cross(face if authored_across else Vector3.UP).normalized()
 		for corner: Array in [[a, -1.0], [b, -1.0], [b, 1.0], [a, -1.0], [b, 1.0], [a, 1.0]]:
 			st.set_normal(across)
 			st.set_uv(Vector2(corner[1], 0.0))
@@ -405,6 +405,23 @@ static func strip(name: String, line: PackedVector3Array, color := STRIP_COLOR, 
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mi.extra_cull_margin = 4.0 # the ribbon widens with distance
 	return mi
+
+
+static func _fitted_or_authored_strip(root: Node3D, id: String, fallback: PackedVector3Array, face: Vector3, authored: Dictionary) -> MeshInstance3D:
+	var color := TOP_STRIP_COLOR if id.begins_with("strip_top_") else STRIP_COLOR
+	if not authored.has(id):
+		return strip(id, fallback, color, face) if fallback.size() >= 2 else null
+	var row: Dictionary = authored[id]
+	var line := PackedVector3Array()
+	for point: Array in row.points_m: line.append(_layout_v3(point))
+	var mesh := strip(id, line, color, _layout_v3(row.face), true)
+	var material := mesh.mesh.surface_get_material(0) as ShaderMaterial
+	material.set_shader_parameter("width_m", float(row.width_m))
+	mesh.set_meta("follow", NodePath(row.node_path))
+	mesh.set_meta("follow_transform", true)
+	var host := root.get_node_or_null(NodePath(row.node_path)) as Node3D
+	mesh.transform = _root_local(host, root)
+	return mesh
 
 
 ## FW-35b: the belly line in the symmetry plane (x = 0). Each station's plane z = const cuts the triangles into
@@ -637,7 +654,10 @@ static func update_dynamic(kit: Node3D, root: Node3D, gear_extension: float) -> 
 		if light.has_meta("follow"):
 			var target := root.get_node_or_null(light.get_meta("follow")) as Node3D
 			if target != null:
-				light.position = _root_local(target, root) * Vector3(light.get_meta("follow_offset", Vector3.ZERO))
+				if bool(light.get_meta("follow_transform", false)):
+					light.transform = _root_local(target, root)
+				else:
+					light.position = _root_local(target, root) * Vector3(light.get_meta("follow_offset", Vector3.ZERO))
 		if light.has_meta("gear_gated"):
 			var open := is_finite(gear_extension) and gear_extension >= 1.0
 			if bool(light.get_meta("gate_open", true)) != open:
@@ -716,6 +736,8 @@ static func prepare_layout(root: Node3D) -> Dictionary:
 	var geometry := _geometry_arrays(root)
 	var points: PackedVector3Array = geometry.points
 	var half := span_half(points)
+	if points.is_empty() or not is_finite(half) or half <= 0.00001:
+		return {"valid": false, "bounds": all}
 	var tris: PackedVector3Array = geometry.triangles
 	var skins := wing_skin_lines(tris, half)
 	var left := tip(points, half, -1.0)
@@ -737,13 +759,21 @@ static func attach(root: Node3D, prepared_layout: Dictionary = {}) -> Node3D:
 	kit.name = "NightKit"
 	var layout := prepare_layout(root) if prepared_layout.is_empty() else prepared_layout
 	kit.set_meta("geometry_layout", layout)
+	if not bool(layout.get("valid", true)):
+		kit.set_meta("layout_warnings", PackedStringArray(["Aircraft geometry has no usable span; lighting fitting was skipped"]))
+		root.add_child(kit)
+		bind_groups(kit, {}, [])
+		return kit
 	var all: AABB = layout.bounds
 	var lines: Dictionary = layout.skins.lower
 	var left: Dictionary = layout.left
 	var right: Dictionary = layout.right
 	# P51-V13 (optional): a model may publish "light_anchors" (model-local positions of its own lenses, an optional node to
 	# follow, a gear gate for a lamp that only works with the gear down and locked); absent keeps the bounds-derived kit.
-	var anchors: Dictionary = root.get_meta("light_anchors", {}) if root.has_meta("light_anchors") else {}
+	var authored := resolve_authored_layout(root)
+	kit.set_meta("layout_warnings", authored.warnings)
+	var anchors: Dictionary = (root.get_meta("light_anchors", {}) as Dictionary).duplicate(true)
+	anchors.merge(authored.anchors)
 	kit.add_child(_anchored(sprite("nav_left", Color(1.0, 0.06, 0.04), _anchor_position(anchors, "nav_left", left.centre), NAV_SIZE_M), anchors, "nav_left"))
 	kit.add_child(_anchored(sprite("nav_right", Color(0.08, 1.0, 0.25), _anchor_position(anchors, "nav_right", right.centre), NAV_SIZE_M), anchors, "nav_right"))
 	kit.add_child(_anchored(sprite("nav_tail", Color(1.0, 1.0, 1.0), _anchor_position(anchors, "nav_tail", Vector3(0.0, all.position.y + all.size.y * 0.6, all.end.z + 0.01)), NAV_SIZE_M), anchors, "nav_tail"))
@@ -757,14 +787,14 @@ static func attach(root: Node3D, prepared_layout: Dictionary = {}) -> Node3D:
 	var top_lines: Dictionary = layout.skins.upper
 	for key: String in ["left", "right"]:
 		var line: PackedVector3Array = lines[key]
-		if line.size() >= 2:
-			kit.add_child(strip("strip_" + key, line))
+		var lower_strip := _fitted_or_authored_strip(root, "strip_" + key, line, Vector3.DOWN, authored.strips)
+		if lower_strip != null: kit.add_child(lower_strip)
 		var top_line: PackedVector3Array = top_lines[key]
-		if top_line.size() >= 2:
-			kit.add_child(strip("strip_top_" + key, top_line, TOP_STRIP_COLOR, Vector3.UP))
+		var upper_strip := _fitted_or_authored_strip(root, "strip_top_" + key, top_line, Vector3.UP, authored.strips)
+		if upper_strip != null: kit.add_child(upper_strip)
 	var belly: PackedVector3Array = layout.belly
-	if belly.size() >= 2:
-		kit.add_child(strip("strip_belly", belly))
+	var belly_strip := _fitted_or_authored_strip(root, "strip_belly", belly, Vector3.DOWN, authored.strips)
+	if belly_strip != null: kit.add_child(belly_strip)
 	var landing := SpotLight3D.new()
 	landing.name = "landing_light"
 	# In the left wing's leading edge, below the skin: the beam clears the propeller disc it used to light up.
@@ -793,7 +823,7 @@ static func attach(root: Node3D, prepared_layout: Dictionary = {}) -> Node3D:
 		kit.add_child(companion)
 		kit.add_child(_anchored(sprite("landing_lamp_right", Color("#fff4e0"), companion.position, NAV_SIZE_M), anchors, "landing_right"))
 	_mark_hosts(root, kit)
-	if not anchors.is_empty():
+	if not anchors.is_empty() or not authored.strips.is_empty():
 		kit.set_meta("dynamic", true) # update_dynamic() has following or gated lights to serve
 	root.add_child(kit)
 	var bindings := {navigation = [], strobe = [], landing = [], orientation = []}
@@ -826,7 +856,7 @@ static func _mark_hosts(root: Node3D, kit: Node3D) -> void:
 	for item in kit.get_children():
 		var anchor: Vector3 = (item as Node3D).position
 		if item is MeshInstance3D and not ((item as MeshInstance3D).mesh is QuadMesh):
-			anchor = (item as MeshInstance3D).get_aabb().get_center() # a strip: the middle of its line
+			anchor = (item as Node3D).transform * (item as MeshInstance3D).get_aabb().get_center() # a strip: the middle of its line
 		var best: Dictionary = {}
 		for host: Dictionary in hosts:
 			if (host.box as AABB).has_point(anchor) and (best.is_empty() or (host.box as AABB).get_volume() < (best.box as AABB).get_volume()):

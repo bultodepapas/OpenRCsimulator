@@ -1,6 +1,7 @@
 ## Authored visual customization bindings. Materials are copied per mesh instance; physics and shared model resources stay immutable.
 extends RefCounted
 
+const AircraftLights := preload("res://render/world/aircraft_lights.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const ModelRegistry := preload("res://aircraft/model_registry.gd")
 const PresentationSources := preload("res://render/presentation_sources.gd")
@@ -77,12 +78,14 @@ static func validate_bindings(bindings: Dictionary, expected_family := "", expec
 	var expected_keys := ["format", "version", "visual_family", "model_manifest_sha256", "paint_slots", "marking_slots", "smoke_slots", "slots_sha256"]
 	if binding_version >= 2:
 		expected_keys.append_array(["presentation_engine_version", "presentation_sources"])
-	if binding_version == 3:
+	if binding_version >= 3:
 		expected_keys.append("source_proof_version")
+	if binding_version == 4:
+		expected_keys.append("lighting_layout")
 	if not _exact_keys(bindings, expected_keys):
 		errors.append("customization companion has unknown or missing keys")
 		return {"ok": false, "errors": errors}
-	if bindings.get("format") != COMPANION_FORMAT or binding_version not in [1, 2, 3]:
+	if bindings.get("format") != COMPANION_FORMAT or binding_version not in [1, 2, 3, 4]:
 		errors.append("customization companion format or version is unsupported")
 	if not _matches("^[a-z0-9]+(-[a-z0-9]+)*$", str(bindings.get("visual_family", ""))):
 		errors.append("customization companion visual family is malformed")
@@ -103,7 +106,7 @@ static func validate_bindings(bindings: Dictionary, expected_family := "", expec
 		pass
 	if not _validate_slot_group(bindings.marking_slots, "marking", errors):
 		pass
-	if binding_version == 3:
+	if binding_version >= 3:
 		if bindings.smoke_slots.size() > 8:
 			errors.append("customization supports at most eight authored smoke outlets")
 		var seen_smoke := {}
@@ -119,6 +122,10 @@ static func validate_bindings(bindings: Dictionary, expected_family := "", expec
 		pass
 	if not errors.is_empty():
 		return {"ok": false, "errors": errors}
+	if binding_version == 4:
+		var lighting_check := AircraftLights.validate_authored_layout(bindings.lighting_layout)
+		if not lighting_check.ok:
+			return lighting_check
 	var base := bindings.duplicate(true)
 	base.erase("slots_sha256")
 	var actual := _sha256(_canonical_json(base))
@@ -126,7 +133,7 @@ static func validate_bindings(bindings: Dictionary, expected_family := "", expec
 		errors.append("customization companion slot hash does not match its contents")
 	if binding_version >= 2:
 		var proof_version := 1
-		if binding_version == 3:
+		if binding_version >= 3:
 			if not _integer_value(bindings.get("source_proof_version")) or int(bindings.source_proof_version) not in [2, 3]:
 				errors.append("customization source proof version is unsupported")
 			proof_version = int(bindings.source_proof_version) if _integer_value(bindings.get("source_proof_version")) else 0
