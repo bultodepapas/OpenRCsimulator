@@ -1076,3 +1076,7 @@ Reserve explicit intrinsic rotor tensors from the existing locked aircraft inert
 ### 2026-10-25 — Keep accepted damage evidence separate from integrator trials (GP-16/17)
 
 Transport a bounded detached integration receipt from the model's step policy to its endpoint owner. The kernel validates transport and atomic publication; the vehicle owns the receipt's physical meaning. Do not infer an entire-tick peak from an endpoint, use discarded RK trials as impacts or mix a peak load with potential energy at another state. Released support potential, persistent component state and a nonterminal failure event must commit together. [Reproduced within-tick overload and transaction contract](research/ground-physics/GP-16/README.md).
+
+### 2026-10-26 — Integrate independent surface travel while retaining the flight baseline (AE-01-R1)
+
+Preserve PR #1’s ancestry and research, and integrate optional per-surface Workshop travel with global inheritance and normalized persistence. Defer its aerodynamic laws, stock tuning and replacement goldens: local forces, wake and ground-effect paths disagree, and the submitted reference flights do not reproduce the submitted runtime. Keep the existing solver and authoring pipelines unchanged. Revisit physical activation only with one explicit candidate, exact baseline replay and independent aircraft evidence. [Disposition and requirements](research/flight-mechanics-stall-hover-knife-edge-2026-10-18.md#integration-disposition-2026-10-26).

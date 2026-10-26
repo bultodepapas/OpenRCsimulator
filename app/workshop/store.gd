@@ -23,6 +23,9 @@ const RECIPE_KEYS: PackedStringArray = [
 	"weight_multiplier",
 	"power_multiplier",
 	"control_multiplier",
+	"control_multiplier_aileron",
+	"control_multiplier_elevator",
+	"control_multiplier_rudder",
 	"tank_capacity_multiplier",
 	"mass_edits",
 	"size_model",
@@ -356,7 +359,9 @@ static func _save_variant(
 	var stored_recipe: Dictionary = recipe.duplicate(true)
 	# JSON parses every number as float. Hash the representation that will be
 	# read back, while retaining optional metadata and historical recipe ranges.
-	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier",
+		"control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder",
+		"tank_capacity_multiplier"]:
 		if stored_recipe.has(key):
 			stored_recipe[key] = float(stored_recipe[key])
 	if stored_recipe.has("mass_edits"):
@@ -942,6 +947,17 @@ static func _validate_recipe(value: Variant) -> Dictionary:
 	for key: String in ["weight_multiplier", "power_multiplier", "control_multiplier"]:
 		if recipe.has(key) and not _positive_number(recipe[key]):
 			errors.append("Recipe %s must be a finite positive number." % key)
+	for surface: String in WorkshopParameters.CONTROL_SURFACES:
+		var key := "control_multiplier_" + surface
+		if not recipe.has(key):
+			continue
+		var candidate: Variant = recipe[key]
+		if typeof(candidate) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(candidate)):
+			errors.append("Recipe %s must be a finite number." % key)
+		elif float(candidate) < WorkshopParameters.MIN_CONTROL_MULTIPLIER \
+				or float(candidate) > WorkshopParameters.MAX_CONTROL_MULTIPLIER:
+			errors.append("Recipe %s must be between %.2f and %.2f." % [key,
+				WorkshopParameters.MIN_CONTROL_MULTIPLIER, WorkshopParameters.MAX_CONTROL_MULTIPLIER])
 	if recipe.has("tank_capacity_multiplier"):
 		var tank_capacity_multiplier: Variant = recipe["tank_capacity_multiplier"]
 		if typeof(tank_capacity_multiplier) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(tank_capacity_multiplier)):

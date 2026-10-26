@@ -29,6 +29,7 @@ const EDITOR_OPTIONAL_KEYS: PackedStringArray = ["camera"]
 const PAGES: PackedStringArray = ["appearance", "smoke", "lighting", "audio", "setup", "compare"]
 const NUMERIC_BUFFER_KEYS: PackedStringArray = [
 	"scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier",
+	"control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder",
 ]
 const PRESENTATION_PAGES: PackedStringArray = ["appearance", "smoke"]
 const PRESENTATION_BUFFER_KEYS: PackedStringArray = [

@@ -12,6 +12,7 @@ const MIN_POWER_MULTIPLIER := 0.5
 const MAX_POWER_MULTIPLIER := 2.0
 const MIN_CONTROL_MULTIPLIER := 0.5
 const MAX_CONTROL_MULTIPLIER := 1.5
+const CONTROL_SURFACES := ["aileron", "elevator", "rudder"]
 const MIN_TANK_CAPACITY_MULTIPLIER := 0.5
 const MAX_TANK_CAPACITY_MULTIPLIER := 2.0
 const MASS_POLICIES := ["constant_wing_loading", "geometric"]
@@ -19,6 +20,7 @@ const DEFINITIONS_FORMAT := "openrc-aircraft-workshop-parameter-definitions"
 const DEFINITIONS_VERSION := 1
 const ALLOWED_KEYS := [
 	"scale", "mass_policy", "weight_multiplier", "power_multiplier", "control_multiplier",
+	"control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder",
 	"tank_capacity_multiplier", "id", "name",
 	"mass_edits",
 	"size_model",
@@ -69,7 +71,29 @@ static func definitions(capabilities: Dictionary = {}) -> Dictionary:
 			"key": "control_multiplier", "label": "Control travel multiplier", "capability": "controls",
 			"minimum": MIN_CONTROL_MULTIPLIER, "maximum": MAX_CONTROL_MULTIPLIER, "default": 1.0,
 			"unit": "ratio", "kind": "number", "step": 0.05,
-			"operation": "Conventional physical surface travel multiplier.",
+			"group": "control_surfaces", "inherited": false,
+			"operation": "Fallback travel multiplier for conventional physical surfaces.",
+		},
+		{
+			"key": "control_multiplier_aileron", "label": "Aileron travel multiplier", "capability": "control_aileron",
+			"minimum": MIN_CONTROL_MULTIPLIER, "maximum": MAX_CONTROL_MULTIPLIER, "default": null,
+			"unit": "ratio", "kind": "number", "step": 0.05, "group": "control_surfaces",
+			"inherited": true, "inherit_key": "control_multiplier",
+			"operation": "Optional aileron travel override; absent values inherit the global control multiplier.",
+		},
+		{
+			"key": "control_multiplier_elevator", "label": "Elevator travel multiplier", "capability": "control_elevator",
+			"minimum": MIN_CONTROL_MULTIPLIER, "maximum": MAX_CONTROL_MULTIPLIER, "default": null,
+			"unit": "ratio", "kind": "number", "step": 0.05, "group": "control_surfaces",
+			"inherited": true, "inherit_key": "control_multiplier",
+			"operation": "Optional elevator travel override; absent values inherit the global control multiplier.",
+		},
+		{
+			"key": "control_multiplier_rudder", "label": "Rudder travel multiplier", "capability": "control_rudder",
+			"minimum": MIN_CONTROL_MULTIPLIER, "maximum": MAX_CONTROL_MULTIPLIER, "default": null,
+			"unit": "ratio", "kind": "number", "step": 0.05, "group": "control_surfaces",
+			"inherited": true, "inherit_key": "control_multiplier",
+			"operation": "Optional rudder travel override; absent values inherit the global control multiplier.",
 		},
 		{
 			"key": "tank_capacity_multiplier", "label": "Tank capacity multiplier", "capability": "tank_capacity",
@@ -99,7 +123,10 @@ static func validate(recipe: Dictionary) -> Dictionary:
 	for key: Variant in recipe.keys():
 		if key not in ALLOWED_KEYS:
 			errors.append("recipe.%s: unknown key" % str(key))
-	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
+	var numeric_keys := ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]
+	for surface: String in CONTROL_SURFACES:
+		numeric_keys.append("control_multiplier_" + surface)
+	for key: String in numeric_keys:
 		if not recipe.has(key):
 			continue
 		var candidate: Variant = recipe[key]
@@ -118,6 +145,8 @@ static func validate(recipe: Dictionary) -> Dictionary:
 		"control_multiplier": [MIN_CONTROL_MULTIPLIER, MAX_CONTROL_MULTIPLIER],
 		"tank_capacity_multiplier": [MIN_TANK_CAPACITY_MULTIPLIER, MAX_TANK_CAPACITY_MULTIPLIER],
 	}
+	for surface: String in CONTROL_SURFACES:
+		bounds["control_multiplier_" + surface] = [MIN_CONTROL_MULTIPLIER, MAX_CONTROL_MULTIPLIER]
 	for key: String in bounds:
 		if not recipe.has(key) or typeof(recipe[key]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(recipe[key])):
 			continue
