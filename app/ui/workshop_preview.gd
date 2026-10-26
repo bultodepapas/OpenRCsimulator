@@ -21,8 +21,8 @@ const MIN_MODEL_SCALE := Parameters.MIN_SCALE
 const MAX_MODEL_SCALE := Parameters.MAX_SCALE
 const MIN_ZOOM := 0.5
 const MAX_ZOOM := 4.0
-const DEFAULT_YAW_DEG := 180.0
-const DEFAULT_PITCH_DEG := 10.0
+const DEFAULT_YAW_DEG := 165.0
+const DEFAULT_PITCH_DEG := 15.0
 const PITCH_LIMIT_DEG := 88.0
 const FIT_FILL := 0.89
 const SAFE_FILL := 0.93
@@ -675,7 +675,7 @@ func _build_toolbar() -> void:
 	_inspect_button.toggle_mode = true
 	_inspect_button.pressed.connect(set_view_mode.bind("inspect"))
 	_mode_row.add_child(_inspect_button)
-	_compare_button = _make_button("Compare", "Compare original and draft at the same world scale.", "CompareMode")
+	_compare_button = _make_button("Compare size", "Compare original and draft at the same world scale.", "CompareMode")
 	_compare_button.toggle_mode = true
 	_compare_button.pressed.connect(set_view_mode.bind("compare"))
 	_mode_row.add_child(_compare_button)

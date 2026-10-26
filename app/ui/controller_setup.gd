@@ -100,6 +100,7 @@ var _devices: Array[Dictionary] = []
 var _draft_profile: Dictionary = {}
 var _drafts_by_context: Dictionary = {}
 var _draft_context_key := ""
+var _calibration_origins: Dictionary = {} # draft context -> connection that supplied its ranges
 var _base_actions: Dictionary = {}
 var _action_bindings: Dictionary = {}
 var action_capabilities: Dictionary = ControllerActions.SUPPORTED_AUX.duplicate()
@@ -167,6 +168,39 @@ func _cancel_edits() -> void:
 
 func current_profile() -> Dictionary:
 	return _draft_profile.duplicate(true)
+
+
+## A preflight wizard never saves or changes selection. Keep edits outside its four channels intact.
+func apply_calibration_draft(calibration: Dictionary, device_id: int, generation: int, warning: String = "") -> bool:
+	if _draft_flight_device_id != device_id or _draft_profile.get("kind", "") != "radio" \
+		or not _calibration_connection_matches(device_id, generation):
+		_set_status(tr("The radio connection changed. Calibrate again before saving these settings."), true)
+		return false
+	var calibrated: Dictionary = ControllerProfile.upgrade_legacy(calibration)
+	if calibrated.is_empty() or calibrated.get("kind", "") != "radio":
+		_set_status(tr("Invalid calibration. The draft is unchanged."), true)
+		return false
+	for channel: String in CHANNELS:
+		_draft_profile[channel] = calibrated[channel].duplicate(true)
+	# The wizard retains valid AUX and reports bindings consumed by newly assigned flight axes.
+	_draft_profile["aux"] = calibrated.get("aux", {}).duplicate(true)
+	_calibration_origins[_draft_context_key] = {"id": device_id, "generation": generation}
+	_update_axis_controls()
+	_update_aux_controls()
+	_update_preview()
+	_remember_current_draft()
+	draft_changed.emit()
+	var message: String = tr("Calibration is in the draft. Save controller settings to apply it; Cancel discards it.")
+	if not warning.is_empty():
+		message += " " + tr(warning)
+	_set_status(message, false)
+	return true
+
+
+func _calibration_connection_matches(device_id: int, generation: int) -> bool:
+	return registry != null and generation > 0 \
+		and bool(registry.device_for_id(device_id).get("connected", false)) \
+		and int(registry.connection_generation(device_id)) == generation
 
 
 func load_selected_profile(profile_or_id: Variant) -> bool:
@@ -2204,6 +2238,11 @@ func _save_profile(close_on_success := true) -> bool:
 		return false
 	if _draft_profile.is_empty() or profile_store == null:
 		_set_status(tr("There is no controller profile to save."), true)
+		return false
+	var calibration_origin: Dictionary = _calibration_origins.get(_draft_context_key, {})
+	if not calibration_origin.is_empty() and (_draft_flight_device_id != int(calibration_origin.id) \
+		or not _calibration_connection_matches(int(calibration_origin.id), int(calibration_origin.generation))):
+		_set_status(tr("The radio connection changed. Calibrate again before saving these settings."), true)
 		return false
 	var candidate := _draft_profile.duplicate(true)
 	var profile_name := profile_name_edit.text.strip_edges()

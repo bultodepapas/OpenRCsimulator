@@ -3,6 +3,7 @@ extends SceneTree
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Compiler := preload("res://workshop/compiler.gd")
+const Presentation := preload("res://workshop/presentation.gd")
 const Descriptor := preload("res://workshop/descriptor.gd")
 const Store := preload("res://workshop/store.gd")
 const Workshop := preload("res://ui/workshop.gd")
@@ -180,6 +181,41 @@ func _run() -> void:
 	(_find(workshop, "ResetRecipe") as Button).pressed.emit()
 	await _ui.settle()
 	_check("Reset returns every value to compiler defaults", workshop.get_recipe() == Compiler.defaults())
+
+	# A read-only comparison must not offer a destructive reset or hide existing edits.
+	workshop.set_recipe({"control_multiplier": 1.2})
+	workshop.call("_set_page", "compare")
+	var compared_recipe: Dictionary = workshop.get_recipe()
+	workshop.call("_reset_recipe")
+	_check("Compare cannot reset flight setup", workshop.get_recipe() == compared_recipe
+		and not (_find(workshop, "ResetRecipe") as Button).is_visible_in_tree())
+	_check("Compare reports control travel changes", _comparison_text(workshop).contains("Control travel multiplier"))
+	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
+	var presentation: Dictionary = Presentation.defaults(workshop.get("_presentation_bindings"))
+	presentation.lighting.selection = "disabled"
+	workshop.set_presentation(presentation)
+	_check("Compare reports a lighting-only edit", _comparison_text(workshop).contains("Lighting")
+		and not _comparison_text(workshop).contains("No changes from the original."))
+	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
+	presentation = Presentation.defaults(workshop.get("_presentation_bindings"))
+	presentation.mechanical_audio.servo_level = 0.5
+	workshop.set_presentation(presentation)
+	_check("Compare reports an audio-only edit", _comparison_text(workshop).contains("Servo sound level")
+		and _comparison_text(workshop).contains("50%")
+		and not _comparison_text(workshop).contains("No changes from the original."))
+	workshop.call("_set_page", "setup")
+	await _ui.settle()
+	var setup_tab: Button = _find(workshop, "PageSetup")
+	setup_tab.grab_focus()
+	await _ui.tap(KEY_TAB)
+	_check("Tab from the active page reaches its first setting", _ui.focus_name() == "StartingPreset", _ui.focus_name())
+	var history: Control = _find(workshop, "WorkshopHistory")
+	var scroll: ScrollContainer = workshop.get("_body_scroll")
+	scroll.scroll_vertical = 10000
+	await _ui.settle()
+	_check("history remains reachable after scrolling", history.is_visible_in_tree()
+		and Rect2(Vector2.ZERO, Vector2(root.size)).encloses(history.get_global_rect()))
+	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
 
 	# History belongs to this source and handles a slider drag as one edit.
 	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
@@ -527,3 +563,10 @@ func _guarded_journey(editor: Node, store_root: String) -> void:
 		and Store.load_variant(saved_id, store_root).variant.revision == saved_revision + 2)
 	editor.call("_close_library")
 	await _ui.settle()
+
+
+func _comparison_text(editor: Node) -> String:
+	var text := ""
+	for cell: Node in editor.get("_comparison_grid").get_children():
+		if cell is Label: text += cell.text + "\n"
+	return text

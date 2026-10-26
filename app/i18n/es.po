@@ -7024,3 +7024,367 @@ msgstr "Mantiene las luces del avión estables y desactiva los efectos de exhibi
 
 msgid "These preferences apply to every aircraft and Workshop preview. Customize individual colors and sequences in Workshop."
 msgstr "Estas preferencias se aplican a todos los aviones y a la vista previa del Taller. Personaliza los colores y las secuencias de cada avión en el Taller."
+
+# AE-09e: Workshop inspector hierarchy and lighting/sequence interface.
+msgid "Smoke preset"
+msgstr "Preajuste de humo"
+
+msgid "Paint region"
+msgstr "Zona de pintura"
+
+msgid "Smoke emitter"
+msgstr "Emisor de humo"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Advanced smoke settings"
+msgstr "Ajustes avanzados de humo"
+
+msgid "Registration panel"
+msgstr "Panel de matrícula"
+
+msgid "Registration text"
+msgstr "Texto de matrícula"
+
+msgid "Lighting style"
+msgstr "Estilo de iluminación"
+
+msgid "Detailed lighting"
+msgstr "Iluminación en detalle"
+
+msgid "Lighting zone"
+msgstr "Zona de iluminación"
+
+msgid "Sequence cues"
+msgstr "Pasos de la secuencia"
+
+msgid "Selected cue"
+msgstr "Paso seleccionado"
+
+msgid "Timing and pattern"
+msgstr "Duración y patrón"
+
+msgid "View aircraft support"
+msgstr "Ver compatibilidad del avión"
+
+msgid " s"
+msgstr " s"
+
+msgid "Shorter cycles run faster; this is the duration of one full cycle."
+msgstr "Los ciclos más cortos son más rápidos; este valor indica la duración de un ciclo completo."
+
+msgid "Optional effects follow available registered anchors. Preview bursts start only when playback is requested."
+msgstr "Los efectos opcionales usan los puntos de montaje disponibles. Las ráfagas de la vista previa solo empiezan al reproducirla."
+
+msgid "Hide zone controls"
+msgstr "Ocultar controles de zonas"
+
+msgid "Hide effects"
+msgstr "Ocultar efectos"
+
+msgid "Apply or cancel the current lighting edit first."
+msgstr "Aplica o cancela primero los cambios de iluminación pendientes."
+
+msgid "Apply or cancel the advanced edit before changing overall brightness."
+msgstr "Aplica o cancela los cambios avanzados antes de cambiar el brillo general."
+
+msgid "Apply or cancel the current lighting edit before changing panels."
+msgstr "Aplica o cancela los cambios de iluminación antes de cambiar de panel."
+
+msgid "Choose a supported preset to see its registered lighting zones."
+msgstr "Elige un preajuste compatible para ver sus zonas de iluminación."
+
+msgid "Choose palette color %d"
+msgstr "Elegir color %d de la paleta"
+
+msgid "Remove this palette color"
+msgstr "Quitar este color de la paleta"
+
+msgid "Correct the remaining color fields before applying this zone."
+msgstr "Corrige los campos de color pendientes antes de aplicar esta zona."
+
+msgid "This profile has no saved sequence cue for the selected zone."
+msgstr "Este perfil no tiene ningún paso guardado para la zona seleccionada."
+
+msgid "This zone is no longer in the selected lighting profile."
+msgstr "Esta zona ya no forma parte del perfil de iluminación seleccionado."
+
+msgid "Apply or cancel the current edits before resetting this zone."
+msgstr "Aplica o cancela los cambios pendientes antes de restablecer esta zona."
+
+msgid "This inherited profile has no editable zone default. Choose a preset first."
+msgstr "Este perfil heredado no tiene valores de zona editables. Elige primero un preajuste."
+
+msgid "The selected preset has no default for this zone."
+msgstr "El preajuste seleccionado no tiene valores predeterminados para esta zona."
+
+msgid "Zone reset to its preset default."
+msgstr "Zona restablecida a los valores del preajuste."
+
+msgid "%s effect"
+msgstr "Efecto: %s"
+
+msgid "This preset has no registered show effects."
+msgstr "Este preajuste no tiene efectos de exhibición registrados."
+
+msgid "Created a v3 lighting profile with %d migrated smoke outlet(s). Review their settings; the saved revision is unchanged."
+msgstr "Se creó un perfil de iluminación v3 con %d salidas de humo migradas. Revisa sus ajustes; la revisión guardada no cambió."
+
+msgid "No lighting overrides"
+msgstr "Sin cambios de iluminación"
+
+msgid "Lighting disabled"
+msgstr "Iluminación desactivada"
+
+msgid " · %d effects enabled"
+msgstr " · %d efectos activados"
+
+msgid "%s · %s"
+msgstr "%s · %s"
+
+msgid "%d of %d enabled zones available on this aircraft."
+msgstr "%d de %d zonas activadas disponibles en este avión."
+
+msgid "%d of %d enabled effects available."
+msgstr "%d de %d efectos activados disponibles."
+
+msgid "Availability follows applied settings. Daylight, gear position and playback can hide supported lights or effects. Unavailable choices remain saved."
+msgstr "La disponibilidad refleja los ajustes aplicados. La luz del día, la posición del tren y la reproducción pueden ocultar luces o efectos compatibles. Las opciones no disponibles se conservan guardadas."
+
+msgid "Using the aircraft's standard lighting equipment."
+msgstr "Se usa la iluminación estándar del avión."
+
+msgid "Lighting is disabled for this build."
+msgstr "La iluminación está desactivada en este modelo."
+
+msgid "Showing original aircraft lighting. Select Draft to check your lighting choices."
+msgstr "Se muestra la iluminación original del avión. Selecciona Borrador para revisar tus ajustes."
+
+msgid "Lighting availability cannot be checked in this preview."
+msgstr "No se puede comprobar la disponibilidad de iluminación en esta vista previa."
+
+msgid "%s (unavailable)"
+msgstr "%s (no disponible)"
+
+msgid "Available"
+msgstr "Disponible"
+
+msgid "Unavailable: this aircraft does not support this light group."
+msgstr "No disponible: este avión no admite este grupo de luces."
+
+msgid "Unavailable: no effect attachment is fitted."
+msgstr "No disponible: no hay un punto de montaje para este efecto."
+
+msgid "Unavailable: no compatible light fitting."
+msgstr "No disponible: no hay una luz compatible instalada."
+
+msgid "Off in applied settings · %s"
+msgstr "Desactivado en los ajustes aplicados · %s"
+
+msgid "The lighting profile could not be applied."
+msgstr "No se pudo aplicar el perfil de iluminación."
+
+msgid "Edit sequence"
+msgstr "Editar secuencia"
+
+msgid "Cues play in order. Use Restart preview, then Play preview to review their timing."
+msgstr "Los pasos se reproducen en orden. Usa Reiniciar vista previa y luego Reproducir vista previa para revisar su duración."
+
+msgid "Cue targets use the Sequence pattern. Zones left without cues return to steady lighting; Undo restores the prior profile."
+msgstr "Las zonas de cada paso usan el patrón Secuencia. Las zonas sin pasos vuelven a la iluminación fija; Deshacer restaura el perfil anterior."
+
+msgid "Add cue"
+msgstr "Añadir paso"
+
+msgid "Duplicate cue"
+msgstr "Duplicar paso"
+
+msgid "Move earlier"
+msgstr "Mover antes"
+
+msgid "Move later"
+msgstr "Mover después"
+
+msgid "Remove cue"
+msgstr "Quitar paso"
+
+msgid "Cue duration (seconds)"
+msgstr "Duración del paso (segundos)"
+
+msgid "Seconds, up to 60"
+msgstr "Segundos, hasta 60"
+
+msgid "Pattern cycle (seconds)"
+msgstr "Ciclo del patrón (segundos)"
+
+msgid "0.25 to 60 seconds"
+msgstr "De 0.25 a 60 segundos"
+
+msgid "RGB palette"
+msgstr "Paleta RGB"
+
+msgid "Target zones"
+msgstr "Zonas de destino"
+
+msgid "Enabled effects"
+msgstr "Efectos activados"
+
+msgid "Apply cue"
+msgstr "Aplicar paso"
+
+msgid "Lighting sequence profile is invalid."
+msgstr "El perfil de la secuencia de iluminación no es válido."
+
+msgid "Apply or cancel this cue before changing sequence sections."
+msgstr "Aplica o cancela este paso antes de cambiar de sección."
+
+msgid "Hide sequence"
+msgstr "Ocultar secuencia"
+
+msgid "Apply or cancel the current cue before selecting another cue."
+msgstr "Aplica o cancela el paso actual antes de seleccionar otro."
+
+msgid "Correct this cue before applying it."
+msgstr "Corrige este paso antes de aplicarlo."
+
+msgid "This cue change is not available."
+msgstr "Este cambio de paso no está disponible."
+
+msgid "The cue change did not produce a valid lighting profile."
+msgstr "El cambio de paso no generó un perfil de iluminación válido."
+
+msgid "Cue %d · %s s · %s s"
+msgstr "Paso %d · %s s · %s s"
+
+msgid "No cues yet. Add a cue to create a sequence for this lighting profile."
+msgstr "Aún no hay pasos. Añade uno para crear una secuencia para este perfil de iluminación."
+
+msgid "Cue %d starts at %s s; duration %s s. Total sequence: %s s."
+msgstr "El paso %d empieza en %s s y dura %s s. Secuencia completa: %s s."
+
+msgid "Total sequence: %s s."
+msgstr "Secuencia completa: %s s."
+
+msgid "Remove"
+msgstr "Quitar"
+
+msgid "Orientation lock preserves this navigation target."
+msgstr "El bloqueo de orientación conserva esta zona de navegación."
+
+msgid "This effect anchor must be installed and enabled in Lighting effects."
+msgstr "Este punto de montaje debe estar instalado y activado en los efectos de iluminación."
+
+msgid "Steady"
+msgstr "Fijo"
+
+msgid "Breath"
+msgstr "Respiración"
+
+msgid "Wave"
+msgstr "Onda"
+
+msgid "Rainbow"
+msgstr "Arcoíris"
+
+msgid "Segments"
+msgstr "Segmentos"
+
+msgid "Sequence"
+msgstr "Secuencia"
+
+msgid "None"
+msgstr "Ninguno"
+
+msgid "Roll Rate"
+msgstr "Velocidad de alabeo"
+
+msgid "Pitch Rate"
+msgstr "Velocidad de cabeceo"
+
+msgid "Spark"
+msgstr "Chispa"
+
+msgid "Trail"
+msgstr "Estela"
+
+msgid "Adjust the airframe, then review the changes before a trial."
+msgstr "Ajusta el avión y revisa los cambios antes de probarlo en vuelo."
+
+msgid "Trial conditions"
+msgstr "Condiciones de prueba"
+
+msgid "Aircraft size"
+msgstr "Tamaño del avión"
+
+msgid "Mass and balance"
+msgstr "Masa y equilibrio"
+
+msgid "Power and fuel"
+msgstr "Potencia y combustible"
+
+msgid "Control surfaces"
+msgstr "Superficies de control"
+
+msgid "Aircraft support"
+msgstr "Ajustes compatibles"
+
+msgid "Review this draft against the stock aircraft."
+msgstr "Compara este borrador con el avión original."
+
+msgid "Selected saved build"
+msgstr "Variante guardada seleccionada"
+
+msgid "Current draft"
+msgstr "Borrador actual"
+
+msgid "These actions use the build currently open in the editor."
+msgstr "Estas acciones afectan a la variante abierta en el editor."
+
+msgid "Build files"
+msgstr "Archivos de variantes"
+
+msgid "Enter a multiplier; 1 keeps the original value."
+msgstr "Introduce un multiplicador; 1 mantiene el valor original."
+
+msgid "Changed"
+msgstr "Modificado"
+
+msgid "Unchanged"
+msgstr "Sin cambios"
+
+msgid "Sound only"
+msgstr "Solo sonido"
+
+msgid "Servos"
+msgstr "Servos"
+
+msgid "Retractable landing gear"
+msgstr "Tren de aterrizaje retráctil"
+
+msgid "Compare size"
+msgstr "Comparar tamaño"
+
+msgid "Play preview"
+msgstr "Reproducir vista previa"
+
+msgid "Restart preview"
+msgstr "Reiniciar vista previa"
+
+msgid "Pause preview"
+msgstr "Pausar vista previa"
+
+msgid "Play the isolated Workshop lighting and smoke preview."
+msgstr "Reproduce la vista previa de luces y humo del taller."
+
+msgid "Restart the isolated preview playhead."
+msgstr "Reinicia la reproducción de la vista previa."
+
+msgid "Exhaust smoke pump"
+msgstr "Bomba de humo del escape"
+
+msgid "Choose a preset or enable an emitter, then adjust its color and shape."
+msgstr "Elige un preajuste o activa un emisor y ajusta su color y forma."
+
+msgid "This saved smoke profile uses older settings. Editing updates the draft; the saved build stays unchanged."
+msgstr "Este perfil de humo usa ajustes antiguos. La edición actualiza el borrador; la variante guardada se conserva."
