@@ -6,6 +6,10 @@ extends SceneTree
 # Native 1920x1080 captures (PowerShell, output under ignored tmp/):
 # $capture = Join-Path (Resolve-Path .\tmp).Path ("lighting-aircraft-" + [guid]::NewGuid())
 # python tools/godot/run_checked.py --timeout 240 -- .tools/Godot_v4.8-beta1_win64_console.exe --path app --script res://tests/test_lighting_aircraft_visuals.gd -- "--capture-lighting-aircraft=$capture"
+# Optional seven-family × six-preset visual inspection (42 frames and manifest):
+# $capture = Join-Path (Resolve-Path .\tmp).Path ("lighting-fleet-" + [guid]::NewGuid())
+# python tools/godot/run_checked.py --timeout 900 -- .tools/Godot_v4.8-beta1_win64_console.exe --path app --script res://tests/test_lighting_aircraft_visuals.gd -- "--capture-lighting-fleet=$capture"
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const WorkshopPreview := preload("res://ui/workshop_preview.gd")
 const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
 const Presentation := preload("res://workshop/presentation.gd")
@@ -18,6 +22,7 @@ const CAPTURE_SIZE := Vector2i(1920, 1080)
 var _checks := 0
 var _failures := 0
 var _capture_directory := ""
+var _fleet_capture_directory := ""
 
 
 func _initialize() -> void:
@@ -27,6 +32,7 @@ func _initialize() -> void:
 func _run() -> void:
 	ShaderClock.register()
 	_capture_directory = _capture_directory_from_args()
+	_fleet_capture_directory = _capture_directory_from_args("--capture-lighting-fleet=")
 	root.size = CAPTURE_SIZE
 	var preview := WorkshopPreview.new()
 	preview.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -143,6 +149,8 @@ func _run() -> void:
 
 	if not _capture_directory.is_empty():
 		await _capture_native(preview, base_presentation, surface_records)
+	if not _fleet_capture_directory.is_empty():
+		await _capture_fleet(preview)
 	await _finish(preview)
 
 
