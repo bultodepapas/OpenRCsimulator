@@ -10,6 +10,8 @@ The [final-core follow-up](final-core/README.md) renews admission on source comm
 `be068e5a3…` with canonical solver `5df257b3…`, after the invalid-start and shared
 minimum-normal constant corrections. The original round below used `1f7daf66…`.
 
+The [2026-10-26 aileron follow-up](../../../ai-companions/AFC-02/aileron-2026-10-26/README.md) renews the same narrow scope on corrected Stik data and current source. The dated results below remain historical.
+
 ## Actual flight qualification
 
 Both checked matrices pass **148 checks, zero failures, zero engine errors and

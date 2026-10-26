@@ -1,0 +1,51 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   default Club field normalizes  []
+ok   qualified Stik model loads  []
+ok   ground surface table normalizes  []
+ok   default bounded lake terrain normalizes  []
+ok   physics surface rectangles build from the normalized field  []
+ok   accepted aircraft and field profile pair loads  []
+ok   complete default scenery normalizes  []
+ok   default field lights normalize  []
+ok   complete field scenery and lights build a collision world  []
+ok   production world supplies box and capsule proxy templates
+ok   real default field, lake, aircraft and full scenery pass launch clearance  []
+ok   report bounds terrain and worst allowed lake wave height
+ok   actual normalized proxy geometry is fingerprinted separately from world identity
+ok   launch report records one nominal corridor
+ok   all three qualified altitude slots pass the default static world  []
+ok   slot reports preserve 20 m vertical spacing and separate bands
+ok   an explicitly empty collision world remains an allowed disabled-collision fixture
+ok   zero companion slots are refused
+ok   an obstacle on the nominal 35 m circuit is refused  ["Companion airspace: Circuit slot 0 is obstructed by circle-35m."]
+ok   a low object below the route's vertical corridor remains available  []
+ok   exact per-slot height checks leave the inter-slot gap available  []
+ok   vertical tangency with the clearance band counts as contact  ["Companion airspace: Circuit slot 0 is obstructed by vertical-tangent."]
+ok   radial tangency with the annular corridor counts as contact  ["Companion airspace: Circuit slot 0 is obstructed by radial-tangent."]
+ok   a valid capsule proxy on the route is refused  ["Companion airspace: Circuit slot 0 is obstructed by capsule-on-route."]
+ok   a small object inside the circuit's center hole remains available  []
+ok   an AABB enclosing the full circle is conservatively refused  ["Companion airspace: Circuit slot 0 is obstructed by aabb-enclosing-whole-circle."]
+ok   the thin diagonal lies between one-degree centerline samples
+ok   the analytic corridor still catches a thin diagonal between angle samples  ["Companion airspace: Circuit slot 0 is obstructed by thin-diagonal-between-samples."]
+ok   pilot-station disc exclusion is refused even with collision disabled
+ok   a person remains protected at any overflight altitude  ["Companion airspace: Circuit overflies a protected person/shelter footprint: person-overflight"]
+ok   shelter_roof is protected from overflight at every height  ["Companion airspace: Circuit overflies a protected person/shelter footprint: shelter_roof-overflight"]
+ok   pavilion_roof is protected from overflight at every height  ["Companion airspace: Circuit overflies a protected person/shelter footprint: pavilion_roof-overflight"]
+ok   unknown proxy shapes fail closed  ["Companion airspace: Unsupported collision shape: unknown-shape"]
+ok   inverted cached AABBs fail closed  ["Companion airspace: Collision bounds do not enclose their shape: inverted-bounds"]
+ok   cached AABBs must enclose reconstructed proxy bounds  ["Companion airspace: Collision bounds do not enclose their shape: undersized-bounds"]
+ok   non-finite cached geometry fails closed  ["Companion airspace: Invalid collision geometry: nan-bounds"]
+ok   degenerate capsule dimensions fail closed  ["Companion airspace: Invalid capsule dimensions: zero-radius"]
+ok   collision proxies require a nonempty response class  ["Companion airspace: Collision proxy lacks a valid response_class."]
+ok   a malformed nonempty world header is refused  ["Companion airspace: Collision inventory is invalid or exceeds the launch budget."]
+ok   proxy inventories above the explicit 10,000-proxy budget fail closed  ["Companion airspace: Collision inventory is invalid or exceeds the launch budget."]
+ok   non-finite profile geometry rejects before collision checks  ["Companion airspace: Circuit quantity \'radius\' is invalid."]
+ok   non-finite pilot coordinates reject before collision checks  ["Companion airspace: Pilot station coordinates are invalid."]
+ok   malformed terrain surface tables reject before geometry checks  ["Companion airspace: Terrain surface table is invalid."]
+ok   lake geometry identity corruption rejects before geometry checks  ["Companion airspace: Lake geometry or identity is invalid."]
+ok   non-finite aircraft contact geometry rejects before corridor checks  ["Companion airspace: Aircraft contact geometry is invalid: hull coordinates must be finite"]
+ok   geometry mutation preserves the caller-supplied collision identity
+ok   report geometry fingerprint changes when normalized bounds change under the same identity  original=a220c56f2c8b8290ad4684f4de5a3fb8dc995b008aaf472d3883fd044623f0a5 changed=e80f60a47359289eb76bed1920420f27e51cf68db70884d23f96898b568a380b
+ok   independent 720-angle oracle found no sampled corridor contact that escaped refusal  sampled=720 escaped=0 height=35.000
+AFC-02 static airspace validation: 48 checks, 0 failed

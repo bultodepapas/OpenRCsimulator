@@ -1,0 +1,35 @@
+# AE-09d: save, update, copy, cancel a load and reopen exact saved values.
+press text=Workshop mode=signal
+wait until="screens.is_top('workshop')" timeout_s=60
+call node=AppRoot/Workshop method=_set_page args=["setup"]
+set_value text="Power MultiplierSlider" value=1.05
+press text=SaveVariant mode=signal
+type text="Workshop document flow A" into=VariantName
+key name=Enter
+assert expr="not screens.top().get('_name_dialog').visible and screens.top().get('_saved_variant_revision') == 1" message="Enter creates the first saved revision"
+eval expr="app.set_meta('document_flow_source',screens.top().get('_saved_variant_id'))"
+set_value text="Power MultiplierSlider" value=1.10
+press text=SaveVariant mode=signal
+assert expr="screens.top().get('_saved_variant_id') == app.get_meta('document_flow_source') and screens.top().get('_saved_variant_revision') == 2" message="Save updates the current build"
+press text=OpenLibrary mode=signal
+press text=CopyVariant mode=signal
+eval expr="screens.top().get('_variant_name').clear()"
+type text="Workshop document flow B" into=VariantName
+key name=Enter
+assert expr="screens.top().get('_saved_variant_id') != app.get_meta('document_flow_source') and screens.top().get('_saved_variant_revision') == 1" message="Save a copy creates a separate build"
+eval expr="app.set_meta('document_flow_copy',screens.top().get('_saved_variant_id'))"
+set_value text="Power MultiplierSlider" value=1.25
+press text=OpenLibrary mode=signal
+eval expr="screens.top()._select_variant(app.get_meta('document_flow_source'))"
+call node=AppRoot/Workshop method=_sync_variant_actions
+press text=LoadVariant mode=signal
+assert expr="is_instance_valid(screens.top().get('_guard_dialog'))" message="Load protects unsaved edits"
+press text=Cancel mode=signal
+assert expr="screens.top().get('_library_dialog').visible and screens.top().get('_selected_variant_id') == app.get_meta('document_flow_source')" message="Cancel returns to the selected saved build"
+assert expr="screens.top().get('_saved_variant_id') == app.get_meta('document_flow_copy') and is_equal_approx(screens.top().get_recipe().power_multiplier,1.25)" message="Cancel preserves the current draft"
+press text=LoadVariant mode=signal
+press text="Discard changes" mode=signal
+assert expr="screens.top().get('_saved_variant_id') == app.get_meta('document_flow_source') and screens.top().get('_saved_variant_revision') == 2 and is_equal_approx(screens.top().get_recipe().power_multiplier,1.10)" message="Load restores the selected saved revision"
+assert expr="not screens.top().get('_library_dialog').visible and not screens.top().has_unsaved_changes()" message="Loaded build returns clean to the editor"
+press text=CloseWorkshop mode=signal
+wait until="screens.is_top('home')" timeout_s=30

@@ -1,0 +1,56 @@
+[
+  {
+    "aircraft": "stik",
+    "profile": "normal",
+    "rows": 841,
+    "peak_roll_dps": 122.98818498227126,
+    "integrated_body_roll_deg": 284.71568004903895,
+    "max_sideslip_deg": 8.140874282603376,
+    "height_loss_m": 21.317372272904556
+  },
+  {
+    "aircraft": "stik",
+    "profile": "sport",
+    "rows": 841,
+    "peak_roll_dps": 216.60521875999345,
+    "integrated_body_roll_deg": 514.1399865031074,
+    "max_sideslip_deg": 10.358229407429805,
+    "height_loss_m": 25.540469238853884
+  },
+  {
+    "aircraft": "corsair",
+    "profile": "normal",
+    "rows": 721,
+    "peak_roll_dps": 99.8853174424142,
+    "integrated_body_roll_deg": 165.0615030943278,
+    "max_sideslip_deg": 10.775405592799375,
+    "height_loss_m": 6.525686508408647
+  },
+  {
+    "aircraft": "corsair",
+    "profile": "sport",
+    "rows": 721,
+    "peak_roll_dps": 119.98992368136388,
+    "integrated_body_roll_deg": 217.4971976992418,
+    "max_sideslip_deg": 11.164733504594011,
+    "height_loss_m": 8.3434413846622
+  },
+  {
+    "aircraft": "jet",
+    "profile": "normal",
+    "rows": 721,
+    "peak_roll_dps": 351.7743873653967,
+    "integrated_body_roll_deg": 801.6827523233791,
+    "max_sideslip_deg": 2.6073731383518317,
+    "height_loss_m": 23.31271605926008
+  },
+  {
+    "aircraft": "jet",
+    "profile": "sport",
+    "rows": 721,
+    "peak_roll_dps": 945.7043347560204,
+    "integrated_body_roll_deg": 2140.285533498782,
+    "max_sideslip_deg": 2.735072256108496,
+    "height_loss_m": 27.770925711406946
+  }
+]

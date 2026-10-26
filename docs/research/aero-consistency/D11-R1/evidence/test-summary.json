@@ -1,0 +1,271 @@
+[
+  {
+    "name": "test_aero.log",
+    "failed": false,
+    "checks": [
+      "23 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_aero_continuity.log",
+    "failed": false,
+    "checks": [
+      "R02 continuity: 64 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_aero_flow.log",
+    "failed": false,
+    "checks": [
+      "H4 local flow: 22500 byte-exact comparisons, 0 failed (legacy frozen weight plus independently evaluated R02 rate guard)",
+      "H12 local loads: 22501 comparisons in attached planar forward domain, 22500 samples verified attached, 0 failed"
+    ]
+  },
+  {
+    "name": "test_aileron_regimes.log",
+    "failed": false,
+    "checks": [
+      "28 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_avanti_gamepad-final.log",
+    "failed": false,
+    "checks": [
+      "AV-17-R2 gamepad contract and input shaping: 29 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_avanti_gamepad_flight-final.log",
+    "failed": false,
+    "checks": [
+      "AV-17-R2 gamepad flight: 22 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_avanti_handling.log",
+    "failed": false,
+    "checks": [
+      "47 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_avanti_keyboard-final.log",
+    "failed": false,
+    "checks": [
+      "AV-17-R1 keyboard and dive recovery: 39 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_companions_airspace-renewed.log",
+    "failed": false,
+    "checks": [
+      "AFC-02 static airspace validation: 48 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_companions_manager-renewed.log",
+    "failed": false,
+    "checks": [
+      "companions manager: 53 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_companions_pilot-renewed.log",
+    "failed": false,
+    "checks": [
+      "companion pilot: 24 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_companions_profiles-renewed.log",
+    "failed": false,
+    "checks": [
+      "AFC-02 companion profile validation: 43 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_companions_profiles.log",
+    "failed": true,
+    "checks": [
+      "Godot check failed: process_exit (process exit 1); report: /home/bulto/OpenRCsimulator/tmp/godot-checks/godot-vv1klqng/report.json"
+    ]
+  },
+  {
+    "name": "test_companions_record-renewed.log",
+    "failed": false,
+    "checks": [
+      "companions record: 156 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_control_actuators.log",
+    "failed": false,
+    "checks": [
+      "Control actuator kernel and isolated surface fixtures: 47 checks, 0 failures"
+    ]
+  },
+  {
+    "name": "test_controller_extended_actions-final.log",
+    "failed": false,
+    "checks": []
+  },
+  {
+    "name": "test_controller_flight_actions-final.log",
+    "failed": false,
+    "checks": [
+      "controller flight actions: 32 checks, 0 failures"
+    ]
+  },
+  {
+    "name": "test_controls.log",
+    "failed": false,
+    "checks": [
+      "17 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_controls_reference-final.log",
+    "failed": false,
+    "checks": []
+  },
+  {
+    "name": "test_damping_regimes.log",
+    "failed": false,
+    "checks": [
+      "20 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_e2e_input-final.log",
+    "failed": false,
+    "checks": []
+  },
+  {
+    "name": "test_envelope.log",
+    "failed": false,
+    "checks": [
+      "15 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_extra_handling.log",
+    "failed": false,
+    "checks": [
+      "13 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_extra_post_stall.log",
+    "failed": false,
+    "checks": [
+      "EX-14h Extra post-stall polar: 7 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_flight_log-final.log",
+    "failed": false,
+    "checks": [
+      "FL-04 flight logs: 3247 checks, 0 failures; /home/bulto/OpenRCsimulator/app/../tmp/flight-log-7224720"
+    ]
+  },
+  {
+    "name": "test_golden-final.log",
+    "failed": false,
+    "checks": [
+      "4 golden flights, 0 failed"
+    ]
+  },
+  {
+    "name": "test_golden.log",
+    "failed": false,
+    "checks": [
+      "4 golden flights, 0 failed"
+    ]
+  },
+  {
+    "name": "test_overlay_manager-final.log",
+    "failed": false,
+    "checks": [
+      "overlay manager: 198 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_p51_handling.log",
+    "failed": false,
+    "checks": [
+      "19 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_physical_envelope.log",
+    "failed": false,
+    "checks": []
+  },
+  {
+    "name": "test_rates-final.log",
+    "failed": false,
+    "checks": [
+      "71 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_rates.log",
+    "failed": false,
+    "checks": [
+      "41 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_regime_consistency.log",
+    "failed": false,
+    "checks": [
+      "100 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_spin.log",
+    "failed": false,
+    "checks": [
+      "8 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_strip_induced.log",
+    "failed": false,
+    "checks": [
+      "45 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_timber_handling.log",
+    "failed": false,
+    "checks": [
+      "TT-09 Timber handling: 36 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_trim_throttle-final.log",
+    "failed": false,
+    "checks": []
+  },
+  {
+    "name": "test_ui_help-final.log",
+    "failed": true,
+    "checks": [
+      "Godot check failed: timeout (process exit -9); report: /home/bulto/OpenRCsimulator/tmp/godot-checks/godot-ievhcxrh/report.json"
+    ]
+  },
+  {
+    "name": "test_ui_help-retry.log",
+    "failed": true,
+    "checks": [
+      "Godot check failed: timeout (process exit -9); report: /home/bulto/OpenRCsimulator/tmp/godot-checks/godot-tucops8k/report.json"
+    ]
+  },
+  {
+    "name": "test_ui_language-final.log",
+    "failed": false,
+    "checks": []
+  }
+]
