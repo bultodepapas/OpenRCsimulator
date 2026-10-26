@@ -351,11 +351,214 @@ func _material_matches_snapshot(material: StandardMaterial3D, snapshot: Dictiona
 		and is_equal_approx(material.emission_energy_multiplier, float(snapshot.get("emission_energy", NAN)))
 
 
-func _capture_directory_from_args() -> String:
-	for argument: String in OS.get_cmdline_user_args():
-		if not argument.begins_with("--capture-lighting-aircraft="):
+func _fleet_representatives() -> Array[Dictionary]:
+	var families: PackedStringArray = Catalog.airplane_visual_families()
+	_check("aircraft catalog exposes seven supported airplane visual families", families.size() == 7,
+		str(families))
+	var representatives_by_family: Dictionary = {}
+	for aircraft_id: String in Catalog.ids():
+		if Catalog.is_rotorcraft(aircraft_id):
 			continue
-		var raw_path := argument.trim_prefix("--capture-lighting-aircraft=").strip_edges()
+		var entry: Dictionary = Catalog.entry(aircraft_id)
+		var family := str(entry.get("visual_family", ""))
+		if family.is_empty() or representatives_by_family.has(family):
+			continue
+		representatives_by_family[family] = {"aircraft_id": aircraft_id, "catalog_entry": entry}
+	var result: Array[Dictionary] = []
+	for family: String in families:
+		var representative: Dictionary = representatives_by_family.get(family, {})
+		_check("catalog has an airplane representative for %s" % family, not representative.is_empty())
+		if representative.is_empty():
+			continue
+		representative["visual_family"] = family
+		result.append(representative)
+	return result
+
+
+func _capture_fleet(preview: Control) -> void:
+	if DisplayServer.get_name() == "headless":
+		_check("native fleet capture has a display session", false)
+		return
+	root.size = CAPTURE_SIZE
+	DisplayServer.window_set_size(CAPTURE_SIZE)
+	await _settle(3)
+	var container := preview.get("_viewport_container") as SubViewportContainer
+	var viewport := preview.get("_viewport") as SubViewport
+	if not is_instance_valid(container) or not is_instance_valid(viewport):
+		_check("WorkshopPreview exposes its real SubViewport for fleet capture", false)
+		return
+	container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	await _settle(2)
+	container.stretch = false
+	viewport.size = CAPTURE_SIZE
+	_check("fleet capture uses exact 1920x1080 root and aircraft viewports",
+		root.size == CAPTURE_SIZE and viewport.size == CAPTURE_SIZE,
+		"root=%s subviewport=%s" % [root.size, viewport.size])
+
+	var representatives := _fleet_representatives()
+	var family_ids: Array[String] = []
+	for family: String in Catalog.airplane_visual_families():
+		family_ids.append(family)
+	var renderer_identity := {
+		"method": RenderingServer.get_current_rendering_method(),
+		"driver": RenderingServer.get_current_rendering_driver_name(),
+		"adapter": RenderingServer.get_video_adapter_name(),
+		"api": RenderingServer.get_video_adapter_api_version(),
+		"engine": Engine.get_version_info(),
+	}
+	var captures: Array[Dictionary] = []
+	var preview_exposure := 8.0
+	var fixture_clock := {"tick": 1925, "frequency_hz": 240, "seconds": 1925.0 / 240.0}
+	var preview_environment := preview.get("_preview_environment") as Environment
+	if not is_instance_valid(preview_environment):
+		_check("WorkshopPreview exposes its local environment for fleet capture", false)
+		return
+	preview.call("set_preview_night", true)
+	preview_environment.tonemap_exposure = preview_exposure
+
+	for representative: Dictionary in representatives:
+		var aircraft_id := str(representative.get("aircraft_id", ""))
+		var family := str(representative.get("visual_family", ""))
+		var catalog_entry: Dictionary = representative.get("catalog_entry", {})
+		preview.call("set_aircraft", aircraft_id, 1.0)
+		await _settle(5)
+		var root_node := preview.get("_airplane_root") as Node3D
+		var airplane_value: Variant = preview.get("_airplane")
+		var airplane: Dictionary = airplane_value if airplane_value is Dictionary else {}
+		_check("fleet preview builds catalog aircraft %s" % aircraft_id,
+			is_instance_valid(root_node) and not airplane.is_empty()
+			and str(airplane.get("aircraft_id", "")) == aircraft_id
+			and str(airplane.get("visual_family", "")) == family
+			and str(root_node.get_meta("aircraft_id", "")) == aircraft_id,
+			"family=%s build_keys=%s" % [family, str(airplane.keys())])
+		if not is_instance_valid(root_node) or airplane.is_empty():
+			continue
+
+		var bindings_value: Variant = airplane.get("customization_bindings", {})
+		var bindings: Dictionary = bindings_value if bindings_value is Dictionary else {}
+		var base_presentation := Presentation.defaults(bindings)
+		var model_manifest_value: Variant = airplane.get("model_manifest", {})
+		var model_manifest: Dictionary = model_manifest_value if model_manifest_value is Dictionary else {}
+		var builder_value: Variant = model_manifest.get("builder", {})
+		var builder: Dictionary = builder_value if builder_value is Dictionary else {}
+		var source_identities := {
+			"catalog_script": "res://app_state/aircraft_catalog.gd",
+			"catalog_data": str(catalog_entry.get("data", "")),
+			"visual_family": family,
+			"model_manifest": "res://data/aircraft_models/%s.json" % family,
+			"model_manifest_sha256": str(airplane.get("model_manifest_sha256", "")),
+			"model_manifest_dependencies": model_manifest.get("dependencies", []),
+			"builder_script": str(builder.get("script", "")),
+			"customization_slots_sha256": str(airplane.get("customization_slots_sha256", "")),
+			"presentation_sources": bindings.get("presentation_sources", []),
+		}
+		_check("fleet presentation uses the model's validated customization bindings for %s" % aircraft_id,
+			str(bindings.get("visual_family", "")) == family
+			and not str(source_identities.model_manifest_sha256).is_empty()
+			and not str(source_identities.customization_slots_sha256).is_empty(), str(source_identities))
+
+		preview.call("reset_view")
+		preview.call("orbit_by", 32.0, -24.0)
+		var fixed_view := preview.call("get_view_state") as Dictionary
+		for preset_id: String in LightingProfile.PRESET_IDS:
+			var profile := LightingProfile.preset(preset_id)
+			if profile.is_empty():
+				_check("fleet preset %s loads" % preset_id, false)
+				continue
+			preview.call("set_presentation", _with_lighting(base_presentation, profile))
+			preview.call("reset_playback")
+			preview.call("restore_view_state", fixed_view)
+			preview.call("set_preview_night", true)
+			preview_environment.tonemap_exposure = preview_exposure
+			_set_fixture_clock(preview)
+			await _settle_capture()
+
+			var capability: Dictionary = preview.call("get_lighting_capability_report")
+			var rig_budget: Dictionary = _lighting_rig_budget(preview)
+			var image_name := "%s__%s.png" % [aircraft_id, preset_id]
+			var capture_path := _fleet_capture_directory.path_join(image_name)
+			var saved := await _save_capture(viewport, capture_path)
+			var same_view: bool = preview.call("get_view_state") == fixed_view
+			var at_fixture_clock: bool = int(preview.get("_playhead_tick")) == 1925 \
+				and is_equal_approx(float(preview.get("_playhead_seconds")), 1925.0 / 240.0) \
+				and not bool(preview.get("_playing"))
+			_check("fleet frame %s / %s holds preview clock, local exposure and camera" % [aircraft_id, preset_id],
+				same_view and at_fixture_clock and is_equal_approx(preview_environment.tonemap_exposure, preview_exposure),
+			"view=%s tick=%s exposure=%s" % [same_view, preview.get("_playhead_tick"), preview_environment.tonemap_exposure])
+			captures.append({
+				"aircraft_id": aircraft_id,
+				"visual_family": family,
+				"preset_id": preset_id,
+				"preset_revision": int(profile.get("preset_revision", 0)),
+				"file": image_name,
+				"saved": saved,
+				"dimensions": {"width": CAPTURE_SIZE.x, "height": CAPTURE_SIZE.y},
+				"renderer": renderer_identity,
+				"preview_exposure": preview_exposure,
+				"exposure_context": "WorkshopPreview local night preview; not real-flight exposure",
+				"fixture_clock": fixture_clock,
+				"camera": fixed_view,
+				"capability_report": capability,
+				"rig_budget": rig_budget,
+				"source_identities": source_identities,
+			})
+
+	var expected_capture_count := representatives.size() * LightingProfile.PRESET_IDS.size()
+	_check("fleet preset capture covers all seven airplane families and six presets",
+		families_match(family_ids, representatives) and captures.size() == expected_capture_count
+		and expected_capture_count == 42,
+		"families=%s representatives=%d captures=%d expected=%d" % [family_ids, representatives.size(), captures.size(), expected_capture_count])
+	var manifest := {
+		"format": "openrc-lighting-fleet-capture",
+		"version": 1,
+		"scope": "visual preset inspection; no RGB support claim is made for unsupported aircraft",
+		"representative_rule": "first non-rotorcraft catalog ID in each Catalog.airplane_visual_families() family",
+		"aircraft_visual_families": family_ids,
+		"preset_ids": LightingProfile.PRESET_IDS,
+		"capture_dimensions": {"width": CAPTURE_SIZE.x, "height": CAPTURE_SIZE.y},
+		"renderer": renderer_identity,
+		"preview_exposure": preview_exposure,
+		"exposure_context": "WorkshopPreview local night preview; not real-flight exposure",
+		"fixture_clock": fixture_clock,
+		"captures": captures,
+	}
+	var manifest_path := _fleet_capture_directory.path_join("manifest.json")
+	var manifest_file := FileAccess.open(manifest_path, FileAccess.WRITE)
+	if manifest_file == null:
+		_check("fleet capture writes its JSON manifest", false,
+			"%s (%s)" % [manifest_path, error_string(FileAccess.get_open_error())])
+	else:
+		manifest_file.store_string(JSON.stringify(manifest, "  ", true, true))
+		manifest_file.flush()
+		manifest_file.close()
+		_check("fleet capture writes its JSON manifest", FileAccess.file_exists(manifest_path), manifest_path)
+
+
+func families_match(families: Array[String], representatives: Array[Dictionary]) -> bool:
+	if families.size() != 7 or representatives.size() != families.size():
+		return false
+	var seen: Dictionary = {}
+	for representative: Dictionary in representatives:
+		var family := str(representative.get("visual_family", ""))
+		if not families.has(family) or seen.has(family):
+			return false
+		seen[family] = true
+	return seen.size() == families.size()
+
+
+func _lighting_rig_budget(preview: Control) -> Dictionary:
+	var rig := preview.get("_lighting_rig") as Node3D
+	if not is_instance_valid(rig):
+		return {}
+	var budget: Variant = rig.call("budget_info")
+	return budget if budget is Dictionary else {}
+
+
+func _capture_directory_from_args(argument_prefix := "--capture-lighting-aircraft=") -> String:
+	for argument: String in OS.get_cmdline_user_args():
+		if not argument.begins_with(argument_prefix):
+			continue
+		var raw_path := argument.trim_prefix(argument_prefix).strip_edges()
 		var normalized := raw_path.replace("\\", "/").simplify_path()
 		var repository := ProjectSettings.globalize_path("res://..").replace("\\", "/").trim_suffix("/").to_lower()
 		var ignored_tmp := repository.path_join("tmp")
