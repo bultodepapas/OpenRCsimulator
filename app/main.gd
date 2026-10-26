@@ -2,6 +2,8 @@ extends Node3D
 
 ## Set by the interactive shell before the session enters the tree.
 var external_controller_selection := false
+## External capture owners set this before tree entry when they must finish their own artifact cleanup.
+var frametimes_auto_quit := true
 # The game shell: world, airplane rendering, camera, panel, keys, captures and headless traces.
 # The flight itself (aircraft data, trim, commands, simulation) lives in sim/flight_session.gd.
 
@@ -226,6 +228,7 @@ var startup_checkpoint := Callable()
 var startup_cancel_requested := Callable()
 var startup_complete := false
 signal startup_finished
+signal frame_time_report_written(exit_code: int)
 ## UI-06d: Home injects the saved diagnostic choice; technical launches retain their explicit marker flag.
 var latency_marker_enabled: bool = false
 ## Flight overlays instead of the legacy text labels: Home sets it with the saved settings; the direct route uses
@@ -3123,11 +3126,13 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 	_frametimes_active = false
 	var frame_stats: Dictionary = report.frame_ms
 	print("frame times: p50 %.2f ms, p95 %.2f ms, p99 %.2f ms over %d frames (complete=%s) → %s" % [frame_stats.p50, frame_stats.p95, frame_stats.p99, report.frames, str(report.complete), _frametimes_path])
+	var final_exit_code := exit_code
 	if not write_result.ok:
 		push_error("Cannot write frame-time report '%s': %s" % [_frametimes_path, error_string(int(write_result.error))])
-		get_tree().quit(1)
-		return
-	get_tree().quit(exit_code)
+		final_exit_code = 1
+	frame_time_report_written.emit(final_exit_code)
+	if frametimes_auto_quit:
+		get_tree().quit(final_exit_code)
 
 
 ## Actual rendered state, not just the requested CLI flags. Shared with the UI transition fixture.
