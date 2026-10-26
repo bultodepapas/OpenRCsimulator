@@ -1,0 +1,11 @@
+................
+----------------------------------------------------------------------
+Ran 16 tests in 5.995s
+
+OK
+Wrote /tmp/flight log commands 6mkam0cb/candidate replay/flight.csv
+Wrote /tmp/flight log commands 6mkam0cb/candidate replay/replay.json
+Wrote /tmp/flight log commands bahb8kbj/export result with spaces/flight.csv
+Wrote /tmp/flight log commands bahb8kbj/export result with spaces/export.json
+Wrote /tmp/flight log commands m6idt21u/recovered export/flight.csv
+Wrote /tmp/flight log commands m6idt21u/recovered export/export.json
