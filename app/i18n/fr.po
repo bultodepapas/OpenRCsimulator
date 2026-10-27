@@ -33,6 +33,81 @@ msgstr "Fête / Feux d’artifice"
 msgid "Use aircraft default"
 msgstr "Utiliser l’éclairage par défaut de l’avion"
 
+msgid "Use stock lighting in a new draft"
+msgstr "Utiliser l’éclairage standard dans un nouveau brouillon"
+
+msgid "Create updated draft"
+msgstr "Créer le brouillon mis à jour"
+
+msgid "Stored presentation profile is invalid."
+msgstr "Le profil de présentation enregistré est invalide."
+
+msgid "A supported stored presentation profile is required."
+msgstr "Un profil de présentation enregistré et pris en charge est requis."
+
+msgid "Current presentation bindings are unavailable or malformed."
+msgstr "Les liaisons de présentation actuelles sont indisponibles ou mal formées."
+
+msgid "Current presentation bindings are invalid."
+msgstr "Les liaisons de présentation actuelles sont invalides."
+
+msgid ""
+"Create a new draft with this aircraft's standard lighting. Compatible saved colors, markings, "
+"smoke and sound settings stay in the draft. If appearance bindings changed, review the preview because "
+"matching IDs do not prove their old placement. The original saved revision stays unchanged. Physical "
+"settings stay unchanged."
+msgstr ""
+"Créez un nouveau brouillon avec l’éclairage standard de cet avion. Les réglages enregistrés "
+"compatibles pour les couleurs, les marquages, la fumée et le son sont conservés dans le brouillon. Si "
+"les liaisons d’apparence ont changé, vérifiez l’aperçu : des identifiants identiques ne garantissent "
+"pas que leur position d’origine ait été conservée. La version enregistrée d’origine reste inchangée. "
+"Les réglages physiques restent inchangés."
+
+msgid "Stock-lighting draft created. Inspect it, then save as a new build. The original is unchanged."
+msgstr "Brouillon avec l’éclairage standard créé. Examinez-le, puis enregistrez-le comme nouvelle configuration de l’avion. L’original reste inchangé."
+
+msgid "A newer presentation profile cannot be converted to stock lighting."
+msgstr "Un profil de présentation plus récent ne peut pas être converti en éclairage standard."
+
+msgid "A newer lighting profile cannot be converted to stock lighting."
+msgstr "Un profil d’éclairage plus récent ne peut pas être converti en éclairage standard."
+
+msgid "Stock lighting drafts require a supported v3 or v4 profile; historical profiles already use stock lighting."
+msgstr "Les brouillons avec l’éclairage standard nécessitent un profil v3 ou v4 pris en charge ; les profils historiques utilisent déjà l’éclairage standard."
+
+msgid "Saved lighting settings cannot be replaced safely."
+msgstr "Les réglages d’éclairage enregistrés ne peuvent pas être remplacés en toute sécurité."
+
+msgid "Saved lighting already uses the aircraft's stock equipment."
+msgstr "L’éclairage enregistré utilise déjà l’équipement d’origine de cet avion."
+
+msgid "An unbound default has no previous aircraft identity to update."
+msgstr "Un réglage par défaut non associé n’a pas d’identité d’avion antérieure à mettre à jour."
+
+msgid "Stock lighting cannot change the aircraft visual family."
+msgstr "L’éclairage standard ne peut pas modifier la famille visuelle de l’avion."
+
+msgid "Stock lighting cannot change the physical model manifest."
+msgstr "L’éclairage standard ne peut pas modifier la définition du modèle physique de l’avion."
+
+msgid "Other saved appearance settings cannot be validated against the current companion."
+msgstr "Les autres réglages d’apparence enregistrés ne peuvent pas être validés avec les données actuelles de personnalisation de l’avion."
+
+msgid "The stock-lighting draft does not validate against the current companion."
+msgstr "Le brouillon avec l’éclairage standard n’est pas valide au regard des données actuelles de personnalisation de l’avion."
+
+msgid "Creating a stock-lighting draft would change other appearance settings; no proposal was created."
+msgstr "Créer un brouillon avec l’éclairage standard modifierait d’autres réglages d’apparence ; aucune proposition n’a été créée."
+
+msgid "Stock lighting cannot be applied while other appearance settings are unavailable."
+msgstr "L’éclairage standard ne peut pas être appliqué tant que d’autres réglages d’apparence sont indisponibles."
+
+msgid "The stock-lighting proposal changed. Review it again."
+msgstr "La proposition d’éclairage standard a changé. Examinez-la à nouveau."
+
+msgid "The draft changed. Review the appearance update again."
+msgstr "Le brouillon a changé. Examinez à nouveau la mise à jour de l’apparence."
+
 msgid "Lighting enabled"
 msgstr "Éclairage activé"
 

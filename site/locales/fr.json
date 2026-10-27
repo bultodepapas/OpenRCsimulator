@@ -4,15 +4,15 @@
     "description": "Téléchargez OpenRC Simulator, un simulateur de vol RC gratuit et open source pour Windows, Linux et macOS. Découvrez l’aéromodélisme dans un simulateur de bureau en alpha précoce."
   },
   "translations": {
-    "actualModel": "RENDU DU MODÈLE RÉEL",
+    "actualModel": "RENDUS DU MODÈLE DU PROJET",
     "aeroBody": "Solveur personnalisé à six degrés de liberté, intégration RK4 à 240 Hz et état en float64. Charges locales sur les ailes et l’empennage, trim, décrochages, vrilles et dynamique des gouvernes.",
     "aeroDetail1": "Downwash, amortissement en tangage et souffle de l’hélice lorsqu’ils sont configurés.",
     "aeroDetail2": "Effet de sol optionnel pour l’aile et l’empennage, déclaré pour le Stik.",
-    "aeroDetail3": "Session dédiée au corps, au rotor, à l’inflow et aux commandes de l’hélicoptère.",
+    "aeroDetail3": "Session dédiée à l’hélicoptère pour le fuselage, le rotor, le flux induit et les commandes.",
     "aeroTitle": "Aérodynamique et dynamique de vol",
     "airBody": "Vent uniforme, rafales répétées et turbulence à graine fixe. Altitude, température, pression QNH et humidité configurables pour l’atmosphère physique.",
-    "airDetail1": "Aube, jour, crépuscule, nuit et soirée évolutive ; date, heure et lieu modifiables.",
-    "airDetail2": "Nuages, pluie et éclairs sont des effets visuels, sans forces de tempête spatiales.",
+    "airDetail1": "Aube, jour, crépuscule, nuit et passage progressif vers le soir ; la date, l’heure et le lieu sont modifiables.",
+    "airDetail2": "Les nuages, la pluie et les éclairs sont des effets visuels ; ils ne créent pas de forces de tempête variables dans l’espace.",
     "airDetail3": "Éclairage du terrain, étoiles, clair de lune et équipement de nuit de l’hélicoptère.",
     "airLink": "Atmosphère ↗",
     "airTitle": "Air, lumière et conditions de vol",
@@ -47,7 +47,7 @@
     "communityHeading": "La prochaine amélioration<br>pourrait venir de vous.",
     "communityKicker": "UN PROJET OUVERT. UN EFFORT COLLECTIF.",
     "communityThanks": "Aloft Hobbies a partagé le projet sur son forum et proposé son savoir-faire et ses retours.",
-    "contractLink": "Contrat avion ↗",
+    "contractLink": "Contrat de données des avions ↗",
     "contribute": "Contribuer sur GitHub",
     "controlBody": "Émetteur USB, manette et clavier, avec calibration, armement et failsafe. Rates et expo propres à chaque avion pour le clavier et la manette ; les radios conservent leurs propres réglages.",
     "controlDetail1": "Caméras pilote, poursuite, orbite et gros plan, avec zoom manuel ou automatique.",
@@ -108,10 +108,10 @@
     "gear": "Train d’atterrissage",
     "gemfanScope": "Noms des hélices et représentations 3D simplifiées ; intégration en attente.",
     "glowLink": "Moteurs glow et limites ↗",
-    "groundBody": "Rotation indépendante des roues, suspension, direction, résistance au roulement et glissement des pneus. L’herbe entretenue et le terrain accidenté ont des profils de surface différents.",
+    "groundBody": "Rotation indépendante de chaque roue, suspensions, direction, résistance au roulement et glissement des pneus. L’herbe entretenue et le terrain accidenté ont des profils de surface différents.",
     "groundDetail1": "Départs expérimentaux depuis la piste pour le Stik et le Turbo Lumber.",
     "groundDetail2": "Contacts sur patins et démarrage sur aire pour l’hélicoptère.",
-    "groundDetail3": "Proxys de collision du décor, épaves, traces et effets ; la calibration physique reste en attente.",
+    "groundDetail3": "Modèles de collision simplifiés pour le décor, épaves, traces et effets ; la calibration physique reste à faire.",
     "groundLink": "Modèle de contact au sol ↗",
     "groundTitle": "Le vol commence aussi au sol",
     "hangarHeading": "Chaque avion.<br>Un caractère différent.",
@@ -132,7 +132,7 @@
     "inspectHelp": "Faites glisser pour tourner · Faites défiler ou pincez pour zoomer · Touches fléchées pour pivoter",
     "inspectKicker": "LE HANGAR / STUDIO 3D",
     "inspectNote": "MODÈLE DU PROJET · VISUALISATION, PAS UN VOL",
-    "inspectSub": "Orbite librement, changez de vue et découvrez les détails.",
+    "inspectSub": "Faites tourner librement le modèle, changez de vue et découvrez ses détails.",
     "inventoryHeading": "Bien plus<br>qu’une piste.",
     "inventoryIntro": "Modèles, décors, sons et instruments. Ressources originales et librement accessibles, avec leurs sources et licences.",
     "inventoryKicker": "05 / L’UNIVERS OPENRC",
@@ -143,7 +143,7 @@
     "jetStudyHeading": "Ventage Jet.<br>De près.",
     "jetStudyIntro": "Verrière, aile et empennage. Trois vues du modèle à explorer en 3D.",
     "jetStudyKicker": "VENTAGE JET / REGARD DE PLUS PRÈS",
-    "jetStudyNote": "MODÈLE RÉEL · RENDU STUDIO",
+    "jetStudyNote": "MODÈLE DU PROJET · RENDU STUDIO",
     "jetTail": "Empennage",
     "jetWing": "Aile",
     "kontronikScope": "Produits de propulsion recréés et nom ; intégration en attente.",
@@ -202,7 +202,7 @@
     "spinHint": "Faites glisser pour explorer · Utilisez le curseur pour changer l’angle.",
     "spinPlay": "Faire pivoter",
     "stikVariants": "ÉGALEMENT POUR LE STIK : MAX-61FX · MAX-55AX · FS-64V. Trois installations glow expérimentales à deux et quatre temps.",
-    "studio": "ÉTUDE D’AVION / OPENRC",
+    "studio": "PRÉSENTATION DE L’AVION / OPENRC",
     "supportCopy": "OpenAI soutient ce projet avec un abonnement ChatGPT Pro. Ce soutien nous donne plus de temps pour étudier, construire et faire connaître OpenRC auprès de la communauté de l’aéromodélisme.",
     "supportHeading": "Merci de soutenir<br>ce que nous construisons au grand jour.",
     "supportKicker": "LE SOUTIEN DERRIÈRE LE PROJET",
@@ -225,7 +225,8 @@
     "worldDetail2": "Les effets d’impact, débris et dégâts visuels persistent jusqu’au redémarrage.",
     "worldDetail3": "L’eau ne simule pas la flottabilité ; la rupture structurelle des avions en vol n’est pas implémentée.",
     "worldLink": "Monde et décor ↗",
-    "worldTitle": "Un terrain à voir et à entendre"
+    "worldTitle": "Un terrain à voir et à entendre",
+    "gameLanguages": "Dans le code source actuel, l’interface du simulateur est disponible en neuf langues : <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. La version v0.1.8 à télécharger est disponible en anglais et en espagnol."
   },
   "labels": {
     "navigation": "Navigation principale",
@@ -327,6 +328,6 @@
     "wingAlt": "Aile du Ventage Jet et raccord au fuselage",
     "tailAlt": "Dérive et stabilisateurs du Ventage Jet",
     "earlyAlpha": "ALPHA PRÉCOCE",
-    "modelStudy": "ÉTUDE D’AVION / OPENRC"
+    "modelStudy": "PRÉSENTATION DE L’AVION / OPENRC"
   }
 }

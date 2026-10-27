@@ -4,22 +4,22 @@
     "description": "Windows、Linux、macOS向けの無料オープンソースRC飛行シミュレーター、OpenRC Simulatorをダウンロード。模型航空の世界を、開発初期のアルファ版デスクトップシミュレーターで体験しましょう。"
   },
   "translations": {
-    "actualModel": "実際のモデルのレンダリング画像",
+    "actualModel": "プロジェクトで使用しているモデルのレンダリング画像",
     "aeroBody": "RK4積分を240 Hzで実行する独自の6自由度ソルバーとfloat64状態。局所的な主翼・尾翼荷重、トリム、失速、スピン、操縦翼面の動きを再現します。",
     "aeroDetail1": "設定に応じて、ダウンウォッシュ、ピッチ減衰、プロペラ後流を再現。",
     "aeroDetail2": "オプションの主翼・尾翼地面効果。Stikでは明示的に設定されています。",
-    "aeroDetail3": "ヘリコプター専用の胴体、ローター、流入気流、操縦系統セッション。",
+    "aeroDetail3": "ヘリコプター専用セッションで、胴体、ローター、ローターへの流入気流、操縦系統を扱います。",
     "aeroTitle": "空気力学と飛行力学",
-    "airBody": "一様風、反復する突風、シード指定可能な乱流。標高、気温、QNH気圧、湿度を設定して実際の大気を再現します。",
-    "airDetail1": "夜明け、昼、夕暮れ、夜、夕方の移り変わり。日付、時刻、場所を編集できます。",
-    "airDetail2": "雲、雨、雷は視覚表現です。空間的な嵐の力は加わりません。",
+    "airBody": "一様風、反復する突風、シード指定可能な乱流。標高、気温、QNH気圧、湿度を設定して物理的な大気条件を調整できます。",
+    "airDetail1": "夜明け、昼、夕暮れ、夜、そして移りゆく夕景。日付、時刻、場所を編集できます。",
+    "airDetail2": "雲、雨、雷は視覚効果です。場所によって変化する嵐の力は加わりません。",
     "airDetail3": "飛行場の照明、星、月明かり、ヘリコプター用ナイトキット。",
     "airLink": "大気 ↗",
     "airTitle": "空気、光、飛行条件",
     "aircraftDetails": "モデルを見る",
     "alliesCopy": "実在する製品。<br>シミュレーターに広がる新しい可能性。",
     "alliesLink": "パートナーを見る ↗",
-    "alongside": "飛行を支えるメーカー",
+    "alongside": "飛行を共にするメーカー",
     "architectureLink": "シミュレーターのアーキテクチャ ↗",
     "assetAudio": "サウンドスケープ",
     "assetAudioSub": "エンジン、風、木々、野生生物",
@@ -47,7 +47,7 @@
     "communityHeading": "次の改善は<br>あなたから始まるかもしれません。",
     "communityKicker": "オープンなプロジェクト。みんなで取り組む。",
     "communityThanks": "Aloft Hobbiesがフォーラムでこのプロジェクトを紹介し、知識とフィードバックを提供してくれました。",
-    "contractLink": "航空機データ規約 ↗",
+    "contractLink": "航空機データ契約 ↗",
     "contribute": "GitHubで貢献する",
     "controlBody": "USB送信機、ゲームパッド、キーボードに対応し、キャリブレーション、アーム、フェイルセーフを備えています。キーボードとゲームパッドでは機体ごとのレートとエクスポを設定でき、送信機はそれぞれの設定を保持します。",
     "controlDetail1": "パイロット視点、追尾、周回、クローズアップの各カメラ。ズームは手動または自動です。",
@@ -111,7 +111,7 @@
     "groundBody": "各車輪の回転、サスペンション、操舵、転がり抵抗、タイヤの滑りを個別に計算します。整備された芝地と荒れた地面では路面特性が異なります。",
     "groundDetail1": "StikとTurbo Lumberでは、実験的に滑走路から始動できます。",
     "groundDetail2": "ヘリコプターはスキッド接地と地上パッドからの始動に対応。",
-    "groundDetail3": "風景の衝突プロキシ、残骸、痕跡、エフェクト。物理的な較正は未完了です。",
+    "groundDetail3": "景観用の簡易衝突モデル、残骸、痕跡、エフェクト。物理的な較正は未完了です。",
     "groundLink": "地面との接触モデル ↗",
     "groundTitle": "飛行は地上から始まる",
     "hangarHeading": "機体ごとに<br>違う個性。",
@@ -143,7 +143,7 @@
     "jetStudyHeading": "Ventage Jet。<br>間近で見る。",
     "jetStudyIntro": "キャノピー、主翼、尾翼。3つのビューでモデルを3D探索できます。",
     "jetStudyKicker": "VENTAGE JET / クローズアップ",
-    "jetStudyNote": "実際のモデル · スタジオレンダー",
+    "jetStudyNote": "プロジェクトのモデル · スタジオレンダー",
     "jetTail": "尾翼",
     "jetWing": "主翼",
     "kontronikScope": "推進製品と名称を再現。統合は未完了。",
@@ -202,7 +202,7 @@
     "spinHint": "ドラッグで探索 · スライダーで角度を変更",
     "spinPlay": "回転",
     "stikVariants": "Stikの別仕様：MAX-61FX · MAX-55AX · FS-64V。実験段階の2ストロークおよび4ストロークのグローエンジン搭載機が3種類あります。",
-    "studio": "航空機スタディ / OPENRC",
+    "studio": "航空機展示 / OPENRC",
     "supportCopy": "OpenAIはChatGPT Proサブスクリプションを通じてこのプロジェクトを支援しています。その支援により、模型航空コミュニティに向けてOpenRCを調査、開発、共有する余裕が生まれます。",
     "supportHeading": "オープンに開発する私たちへの<br>ご支援に感謝します。",
     "supportKicker": "プロジェクトを支える支援",
@@ -225,7 +225,8 @@
     "worldDetail2": "衝突エフェクト、破片、視覚的な損傷は再起動まで残ります。",
     "worldDetail3": "水上の浮力はシミュレーションしません。飛行中の機体構造破壊は未実装です。",
     "worldLink": "世界と風景 ↗",
-    "worldTitle": "見て、音を聞いて楽しめる飛行場"
+    "worldTitle": "見て、音を聞いて楽しめる飛行場",
+    "gameLanguages": "現在のソースコードでは、シミュレーターの画面を次の9言語で利用できます：<bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>。ダウンロード版 v0.1.8 は英語とスペイン語に対応しています。"
   },
   "labels": {
     "navigation": "メインナビゲーション",
@@ -327,6 +328,6 @@
     "wingAlt": "Ventage Jetの主翼と胴体の接合部",
     "tailAlt": "Ventage Jetの垂直尾翼と水平尾翼",
     "earlyAlpha": "開発初期のアルファ版",
-    "modelStudy": "航空機スタディ / OPENRC"
+    "modelStudy": "航空機展示 / OPENRC"
   }
 }

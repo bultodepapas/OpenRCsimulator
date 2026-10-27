@@ -31,7 +31,82 @@ msgid "Festival / Fireworks"
 msgstr "Fest / Feuerwerk"
 
 msgid "Use aircraft default"
-msgstr "Flugzeugstandard verwenden"
+msgstr "Standardbeleuchtung des Flugzeugs verwenden"
+
+msgid "Use stock lighting in a new draft"
+msgstr "Standardbeleuchtung in einem neuen Entwurf verwenden"
+
+msgid "Create updated draft"
+msgstr "Aktualisierten Entwurf erstellen"
+
+msgid "Stored presentation profile is invalid."
+msgstr "Das gespeicherte Darstellungsprofil ist ungültig."
+
+msgid "A supported stored presentation profile is required."
+msgstr "Ein unterstütztes gespeichertes Darstellungsprofil ist erforderlich."
+
+msgid "Current presentation bindings are unavailable or malformed."
+msgstr "Die aktuellen Darstellungszuordnungen sind nicht verfügbar oder fehlerhaft."
+
+msgid "Current presentation bindings are invalid."
+msgstr "Die aktuellen Darstellungszuordnungen sind ungültig."
+
+msgid ""
+"Create a new draft with this aircraft's standard lighting. Compatible saved colors, markings, "
+"smoke and sound settings stay in the draft. If appearance bindings changed, review the preview because "
+"matching IDs do not prove their old placement. The original saved revision stays unchanged. Physical "
+"settings stay unchanged."
+msgstr ""
+"Erstelle einen neuen Entwurf mit der Standardbeleuchtung dieses Flugzeugs. Kompatible gespeicherte "
+"Einstellungen für Farben, Markierungen, Rauch und Sound bleiben im Entwurf erhalten. Wenn sich "
+"Darstellungszuordnungen geändert haben, prüfe die Vorschau: Übereinstimmende IDs beweisen nicht, dass "
+"die ursprüngliche Position erhalten blieb. Die gespeicherte Originalversion bleibt unverändert. "
+"Physische Einstellungen bleiben unverändert."
+
+msgid "Stock-lighting draft created. Inspect it, then save as a new build. The original is unchanged."
+msgstr "Entwurf mit Standardbeleuchtung erstellt. Prüfe ihn und speichere ihn dann als neue Modellkonfiguration. Das Original bleibt unverändert."
+
+msgid "A newer presentation profile cannot be converted to stock lighting."
+msgstr "Ein neueres Darstellungsprofil kann nicht in Standardbeleuchtung umgewandelt werden."
+
+msgid "A newer lighting profile cannot be converted to stock lighting."
+msgstr "Ein neueres Beleuchtungsprofil kann nicht in Standardbeleuchtung umgewandelt werden."
+
+msgid "Stock lighting drafts require a supported v3 or v4 profile; historical profiles already use stock lighting."
+msgstr "Entwürfe mit Standardbeleuchtung erfordern ein unterstütztes Profil der Version 3 oder 4; historische Profile verwenden bereits die Standardbeleuchtung."
+
+msgid "Saved lighting settings cannot be replaced safely."
+msgstr "Gespeicherte Beleuchtungseinstellungen können nicht sicher ersetzt werden."
+
+msgid "Saved lighting already uses the aircraft's stock equipment."
+msgstr "Die gespeicherten Beleuchtungseinstellungen verwenden bereits die Standardausstattung des Flugzeugs."
+
+msgid "An unbound default has no previous aircraft identity to update."
+msgstr "Eine nicht zugeordnete Voreinstellung hat keine frühere Flugzeugidentität, die aktualisiert werden könnte."
+
+msgid "Stock lighting cannot change the aircraft visual family."
+msgstr "Die Standardbeleuchtung kann die visuelle Flugzeugfamilie nicht ändern."
+
+msgid "Stock lighting cannot change the physical model manifest."
+msgstr "Die Standardbeleuchtung kann das physische Modellmanifest des Flugzeugs nicht ändern."
+
+msgid "Other saved appearance settings cannot be validated against the current companion."
+msgstr "Die übrigen gespeicherten Darstellungseinstellungen können nicht anhand der aktuellen Anpassungsdaten des Flugzeugs geprüft werden."
+
+msgid "The stock-lighting draft does not validate against the current companion."
+msgstr "Der Entwurf mit Standardbeleuchtung ist gemäß den aktuellen Anpassungsdaten des Flugzeugs ungültig."
+
+msgid "Creating a stock-lighting draft would change other appearance settings; no proposal was created."
+msgstr "Ein Entwurf mit Standardbeleuchtung würde andere Darstellungseinstellungen ändern; es wurde kein Vorschlag erstellt."
+
+msgid "Stock lighting cannot be applied while other appearance settings are unavailable."
+msgstr "Die Standardbeleuchtung kann nicht angewendet werden, solange andere Darstellungseinstellungen nicht verfügbar sind."
+
+msgid "The stock-lighting proposal changed. Review it again."
+msgstr "Der Vorschlag für die Standardbeleuchtung hat sich geändert. Prüfe ihn erneut."
+
+msgid "The draft changed. Review the appearance update again."
+msgstr "Der Entwurf hat sich geändert. Prüfe die Aktualisierung der Darstellung erneut."
 
 msgid "Lighting enabled"
 msgstr "Beleuchtung aktiviert"

@@ -4,11 +4,11 @@
     "description": "下载 OpenRC Simulator，这款免费开源的遥控飞行模拟器支持 Windows、Linux 和 macOS。在早期 Alpha 阶段的桌面模拟器中探索模型航空。"
   },
   "translations": {
-    "actualModel": "实际模型渲染图",
+    "actualModel": "项目实际使用的模型渲染图",
     "aeroBody": "自研六自由度求解器，以 240 Hz 的频率进行 RK4 积分，状态使用 float64。模拟局部机翼和尾翼载荷、配平、失速、尾旋及操纵面动力学。",
     "aeroDetail1": "按配置模拟下洗、俯仰阻尼和螺旋桨滑流。",
     "aeroDetail2": "可选的机翼与尾翼地面效应；Stik 已声明启用。",
-    "aeroDetail3": "直升机使用专用的机身、旋翼、入流和控制会话。",
+    "aeroDetail3": "直升机专用会话，包含机身、旋翼、入流和控制系统。",
     "aeroTitle": "空气动力学与飞行动力学",
     "airBody": "均匀风、重复阵风和带固定随机种子的湍流。可配置海拔、温度、QNH 气压和湿度，以设定物理大气条件。",
     "airDetail1": "黎明、白昼、黄昏、夜晚和渐入的傍晚；日期、时间和地点均可编辑。",
@@ -47,7 +47,7 @@
     "communityHeading": "下一项改进<br>也许就从你开始。",
     "communityKicker": "开放项目，共同建设。",
     "communityThanks": "Aloft Hobbies 在其论坛分享了本项目，并提供了知识与反馈。",
-    "contractLink": "飞机数据规范 ↗",
+    "contractLink": "飞机数据契约 ↗",
     "contribute": "在 GitHub 上参与贡献",
     "controlBody": "支持 USB 发射机、游戏手柄和键盘，并提供校准、油门解锁和失联保护。键盘和游戏手柄可使用飞机专属的舵量和指数曲线；遥控设备保留各自设置。",
     "controlDetail1": "飞行员视角、追踪视角、环绕视角和特写视角，并支持手动或自动变焦。",
@@ -111,7 +111,7 @@
     "groundBody": "每个机轮均可独立旋转，并模拟悬架、转向、滚动阻力和轮胎侧滑。维护良好的草地与崎岖地面的表面特性各不相同。",
     "groundDetail1": "为 Stik 和 Turbo Lumber 提供实验性的跑道起飞。",
     "groundDetail2": "直升机采用滑橇接触地面，并可在停机坪上启动。",
-    "groundDetail3": "场景碰撞代理、残骸、痕迹和效果；物理校准仍未完成。",
+    "groundDetail3": "场景用的简化碰撞模型、残骸、痕迹和效果；物理校准仍未完成。",
     "groundLink": "地面接触模型 ↗",
     "groundTitle": "飞行也从地面开始",
     "hangarHeading": "每架飞机。<br>各有不同个性。",
@@ -143,7 +143,7 @@
     "jetStudyHeading": "Ventage Jet。<br>近距离观察。",
     "jetStudyIntro": "座舱罩、机翼和尾翼。通过三个视图，以 3D 探索模型。",
     "jetStudyKicker": "VENTAGE JET / 近距离观察",
-    "jetStudyNote": "实际模型 · 工作室渲染图",
+    "jetStudyNote": "项目模型 · 工作室渲染图",
     "jetTail": "尾翼",
     "jetWing": "机翼",
     "kontronikScope": "已重现其推进产品并使用其名称；尚待集成。",
@@ -225,7 +225,8 @@
     "worldDetail2": "碰撞效果、碎片和视觉损伤会持续保留，直到重新启动。",
     "worldDetail3": "水体不模拟浮力；飞行中飞机结构破坏尚未实现。",
     "worldLink": "世界与场景 ↗",
-    "worldTitle": "看得见、听得到的飞行场"
+    "worldTitle": "看得见、听得到的飞行场",
+    "gameLanguages": "当前源代码中的模拟器界面提供九种语言：<bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>。可下载的 v0.1.8 版本提供英语和西班牙语。"
   },
   "labels": {
     "navigation": "主导航",

@@ -4,15 +4,15 @@
     "description": "Baixe o OpenRC Simulator, um simulador RC de voo gratuito e de código aberto para Windows, Linux e macOS. Explore o aeromodelismo em um simulador para desktop em alfa inicial."
   },
   "translations": {
-    "actualModel": "RENDERS DO MODELO DO SIMULADOR",
+    "actualModel": "RENDERS DO MODELO DO PROJETO",
     "aeroBody": "Solver próprio de seis graus de liberdade, com integração RK4 a 240 Hz e estado float64. Cargas locais nas asas e na cauda, compensação, estóis, parafusos e dinâmica das superfícies de controle.",
     "aeroDetail1": "Downwash, amortecimento de arfagem e esteira da hélice quando configurados.",
     "aeroDetail2": "Efeito solo opcional nas asas e na cauda, declarado para o Stik.",
-    "aeroDetail3": "Sessão própria de fuselagem, rotor, fluxo induzido e controles para o helicóptero.",
+    "aeroDetail3": "Sessão própria do helicóptero para fuselagem, rotor, fluxo induzido e controles.",
     "aeroTitle": "Aerodinâmica e dinâmica de voo",
-    "airBody": "Vento uniforme, rajadas repetitivas e turbulência com semente definida. Elevação do campo, temperatura, pressão QNH e umidade configuráveis para a atmosfera física.",
-    "airDetail1": "Amanhecer, dia, crepúsculo, noite e entardecer; data, hora e localização editáveis.",
-    "airDetail2": "Nuvens, chuva e raios são efeitos visuais, sem forças de tempestade no espaço.",
+    "airBody": "Vento uniforme, rajadas repetidas e turbulência com semente aleatória definida. Elevação, temperatura, pressão QNH e umidade configuráveis para a atmosfera física.",
+    "airDetail1": "Amanhecer, dia, crepúsculo, noite e transição gradual para o entardecer; data, hora e localização editáveis.",
+    "airDetail2": "Nuvens, chuva e raios são efeitos visuais; não simulam forças de tempestade que variam no espaço.",
     "airDetail3": "Luzes do campo, estrelas, luar e kit noturno do helicóptero.",
     "airLink": "Atmosfera ↗",
     "airTitle": "Ar, luz e condições de voo",
@@ -47,7 +47,7 @@
     "communityHeading": "A próxima melhoria<br>pode começar com você.",
     "communityKicker": "UM PROJETO ABERTO. UM ESFORÇO COLETIVO.",
     "communityThanks": "Aloft Hobbies compartilhou o projeto em seu fórum e ofereceu conhecimento e comentários.",
-    "contractLink": "Contrato de aeronaves ↗",
+    "contractLink": "Contrato de dados de aeronaves ↗",
     "contribute": "Contribua no GitHub",
     "controlBody": "Transmissor USB, gamepad e teclado, com calibração, armamento do acelerador e proteção contra falhas. Ajustes de rate e expo específicos de cada aeronave para teclado e gamepad; os rádios mantêm suas próprias configurações.",
     "controlDetail1": "Câmeras do piloto, de perseguição, orbital e de perto, com zoom manual ou automático.",
@@ -76,7 +76,7 @@
     "downloadIntro": "Baixe, extraia o ZIP e inicie.<br>Não é preciso instalar o Godot.",
     "downloadKicker": "02 / SUA PRÓXIMA DECOLAGEM",
     "downloadNote": "Versão estável do software v0.1.8. Os arquivos ZIP não têm instalador nem assinatura do arquivo; o app para macOS tem assinatura ad hoc, mas não é notarizado.<br>Os modelos de aeronaves e veículos terrestres continuam experimentais e precisam de medições independentes e avaliação de pilotos.",
-    "droneNote": "EM PESQUISA: corrida FPV. Ainda não há drone voável nem modo de corrida disponível.",
+    "droneNote": "EM PESQUISA: corrida FPV. Um drone pilotável e um modo de corrida ainda não estão disponíveis.",
     "electricLink": "Propulsão elétrica ↗",
     "evidenceBody": "O contrato openrc-aircraft v2 exige unidades, tipo de evidência e fonte. Configurações inválidas não podem voar. Geometria e dados físicos são gerados novamente a partir de suas fontes.",
     "evidenceDetail1": "F10 registra voos de asa fixa; F11 marca manobras. A exportação CSV e as comparações usam a mesma sequência de comandos.",
@@ -108,10 +108,10 @@
     "gear": "Trem de pouso",
     "gemfanScope": "Nomes das hélices e representações 3D simplificadas; integração pendente.",
     "glowLink": "Motores glow e limites ↗",
-    "groundBody": "Rotação individual das rodas, suspensão, direção, resistência ao rolamento e derrapagem dos pneus. Grama aparada e terreno irregular têm perfis de superfície diferentes.",
+    "groundBody": "Rotação independente de cada roda, suspensão, direção, resistência ao rolamento e derrapagem dos pneus. Grama aparada e terreno irregular têm perfis de superfície diferentes.",
     "groundDetail1": "Decolagens experimentais na pista para o Stik e o Turbo Lumber.",
     "groundDetail2": "Contatos dos esquis e partida na plataforma do helicóptero.",
-    "groundDetail3": "Proxies de colisão do cenário, destroços, marcas e efeitos; a calibração física continua em aberto.",
+    "groundDetail3": "Modelos simplificados de colisão do cenário, destroços, marcas e efeitos; a calibração física continua em aberto.",
     "groundLink": "Modelo de contato com o solo ↗",
     "groundTitle": "O voo também começa no chão",
     "hangarHeading": "Cada aeronave.<br>Um jeito próprio de voar.",
@@ -143,7 +143,7 @@
     "jetStudyHeading": "Ventage Jet.<br>De perto.",
     "jetStudyIntro": "Canopi, asa e empenagem. Três vistas do modelo para explorar em 3D.",
     "jetStudyKicker": "VENTAGE JET / EM DETALHES",
-    "jetStudyNote": "MODELO REAL · RENDER DE ESTÚDIO",
+    "jetStudyNote": "MODELO DO PROJETO · RENDER DE ESTÚDIO",
     "jetTail": "Empenagem",
     "jetWing": "Asa",
     "kontronikScope": "Produtos de propulsão e nome recriados; integração pendente.",
@@ -202,7 +202,7 @@
     "spinHint": "Arraste para explorar · Use o controle deslizante para mudar o ângulo.",
     "spinPlay": "Girar",
     "stikVariants": "TAMBÉM NO STIK: MAX-61FX · MAX-55AX · FS-64V. Três instalações experimentais com motores glow de dois e quatro tempos.",
-    "studio": "ESTUDO DE AERONAVE / OPENRC",
+    "studio": "APRESENTAÇÃO DE AERONAVES / OPENRC",
     "supportCopy": "A OpenAI apoia este projeto com uma assinatura ChatGPT Pro. Esse apoio nos dá mais espaço para pesquisar, desenvolver e compartilhar o OpenRC com a comunidade de aeromodelismo.",
     "supportHeading": "Agradecemos por apoiar<br>o que construímos abertamente.",
     "supportKicker": "O APOIO POR TRÁS DO PROJETO",
@@ -225,7 +225,8 @@
     "worldDetail2": "Efeitos de impacto, destroços, marcas e danos visuais permanecem até reiniciar.",
     "worldDetail3": "A água não simula flutuabilidade; a ruptura estrutural da aeronave durante o voo não está implementada.",
     "worldLink": "Mundo e cenário ↗",
-    "worldTitle": "Um campo que você pode ver e ouvir"
+    "worldTitle": "Um campo que você pode ver e ouvir",
+    "gameLanguages": "A versão atual do código oferece nove idiomas para a interface do simulador: <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. A versão v0.1.8 disponível para download oferece inglês e espanhol."
   },
   "labels": {
     "navigation": "Navegação principal",
@@ -327,6 +328,6 @@
     "wingAlt": "Asa do Ventage Jet e junção com a fuselagem",
     "tailAlt": "Deriva e estabilizadores do Ventage Jet",
     "earlyAlpha": "ALFA INICIAL",
-    "modelStudy": "ESTUDO DE AERONAVE / OPENRC"
+    "modelStudy": "APRESENTAÇÃO DE AERONAVES / OPENRC"
   }
 }
