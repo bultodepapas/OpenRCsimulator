@@ -105,7 +105,8 @@ static func unconfigured() -> Dictionary:
 static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dictionary:
 	if typeof(value) != TYPE_DICTIONARY:
 		return {}
-	if value.get("schema_version") == SCHEMA_VERSION:
+	var schema_version: Variant = value.get("schema_version")
+	if typeof(schema_version) == TYPE_INT and schema_version == SCHEMA_VERSION:
 		# Runtime callers sometimes construct nested bindings with GDScript's
 		# `key = value` shorthand, which creates StringName keys. Normalize those
 		# keys at the API boundary while keeping validate() strict for raw V2 data.
@@ -118,8 +119,7 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 		if aux_value is Dictionary:
 			for aux_id in ["smoke", "flaps", "gear"]:
 				var aux_binding: Variant = aux_value.get(aux_id, {})
-				if aux_binding is Dictionary and aux_binding.get("type", "") == "switch" \
-						and not SmokeAux.valid_binding(aux_binding):
+				if _string_field(aux_binding, "type") == "switch" and not SmokeAux.valid_binding(aux_binding):
 					return {}
 		var current: Dictionary = SmokeAux.sanitize_profile(normalized.value, false)
 		return current if validate(current).ok else {}
@@ -140,6 +140,10 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 	var result := defaults(kind, preset)
 	if result.is_empty():
 		return {}
+	var deadzone: Variant = legacy.get("deadzone", DEFAULT_DEADZONE)
+	var expo: Variant = legacy.get("expo", DEFAULT_EXPO)
+	if kind == "gamepad" and (not _is_number(deadzone) or not _is_number(expo)):
+		return {}
 	for channel_name in ["roll", "pitch", "yaw", "throttle"]:
 		var old_channel: Variant = legacy.get(channel_name)
 		if typeof(old_channel) != TYPE_DICTIONARY:
@@ -147,8 +151,8 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 		var copied: Dictionary = old_channel.duplicate(true)
 		if kind == "gamepad":
 			copied["range_kind"] = "absolute" if channel_name == "throttle" and throttle_mode == "trigger_absolute" else "centered"
-			copied["deadzone"] = float(legacy.get("deadzone", DEFAULT_DEADZONE))
-			copied["expo"] = float(legacy.get("expo", DEFAULT_EXPO))
+			copied["deadzone"] = float(deadzone)
+			copied["expo"] = float(expo)
 		elif channel_name == "throttle":
 			copied["range_kind"] = "absolute"
 		else:
@@ -289,6 +293,10 @@ static func validate(value: Variant) -> Dictionary:
 		if kind_value == "joystick" and mode_value == "trigger_absolute":
 			var error: String = "trigger_absolute is reserved for gamepad profiles"
 			_append_validation_issue(errors, issues, "profile_invalid", ["throttle_mode"], error)
+	# Later comparisons use typed copies: `==` between unlike Variant types raises a script
+	# error, which would abort validation after the type error above was recorded.
+	var kind := _string_field(value, "kind")
+	var throttle_mode := _string_field(value, "throttle_mode")
 	for numeric_field in ["throttle_rate", "idle_threshold", "rumble_intensity"]:
 		if value.has(numeric_field) and not _is_number(value[numeric_field]):
 			var error: String = numeric_field + " must be finite"
@@ -352,6 +360,7 @@ static func validate(value: Variant) -> Dictionary:
 			var error: String = channel_name + " must be a Dictionary"
 			_append_validation_issue(errors, issues, "channel_invalid", [str(channel_name)], error)
 			continue
+		var range_kind := _string_field(channel, "range_kind")
 		if typeof(channel.get("axis")) != TYPE_INT or int(channel.get("axis", -1)) < 0 or int(channel.get("axis", 99)) >= AXIS_COUNT:
 			var error: String = channel_name + ".axis must be an integer from 0 to 9"
 			_append_validation_issue(errors, issues, "axis_invalid", ["%s.axis" % channel_name], error)

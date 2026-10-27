@@ -237,6 +237,7 @@ func _test_completed_deletion_reopens_normally(schema: Script, store_script: Scr
 	var store: RefCounted = store_script.new()
 	_check("completed-deletion fixture opens", store.open(root_uri), store.note)
 	_check("completed-deletion fixture writes", store.commit(_fixture_with_aircraft_records(schema, store.data)), store.note)
+	var pre_delete: Dictionary = store.data.duplicate(true)
 	_stop_stage = "after_deletion_fence_publish"
 	store.interruption_hook = Callable(self, "_interrupt_at")
 	_check("completed-deletion fixture is interrupted after its fence", not store.delete_history("stock:a"), store.note)
@@ -269,6 +270,15 @@ func _test_completed_deletion_reopens_normally(schema: Script, store_script: Scr
 	_check("deleted aircraft stays hidden behind the completed fence", reducer.query(damaged.data, "stock:a", "lifetime").started == 0
 		and reducer.query(damaged.data, "stock:b", "lifetime").started == 2)
 	damaged.close()
+	# A stale pre-fence copy reappearing with a higher generation is never promoted; it is repaired forward.
+	var stale: Dictionary = pre_delete.duplicate(true)
+	stale.generation = 1000
+	_check("stale pre-fence slot fixture is written", _write_bytes(root_path.path_join(newest), _encode_snapshot(schema, stale)))
+	var repaired: RefCounted = store_script.new()
+	_check("stale pre-fence slot opens behind the completed fence", repaired.open(root_uri) and int(repaired.data.generation) == older_generation, repaired.note)
+	_check("stale pre-fence slot does not resurrect deleted history", reducer.query(repaired.data, "stock:a", "lifetime").started == 0)
+	_check("stale pre-fence slot is replaced behind the fence", _both_slots_satisfy_fence(repaired, root_uri))
+	repaired.close()
 
 
 func _fixture_data(schema: Script, source: Dictionary, with_records: bool) -> Dictionary:

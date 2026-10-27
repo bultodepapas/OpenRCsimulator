@@ -13,9 +13,31 @@ const CALIBRATION_PATH := "user://controller_audit_calibration.cfg"
 const CALIBRATION_LEGACY_PATH := "user://controller_audit_calibration_legacy.cfg"
 const WATCHDOG_PATH := "user://controller_audit_watchdog.cfg"
 const WATCHDOG_LEGACY_PATH := "user://controller_audit_watchdog_legacy.cfg"
+const MALFORMED_PATH := "user://controller_audit_malformed.cfg"
+const MALFORMED_LEGACY_PATH := "user://controller_audit_malformed_legacy.cfg"
 
 var checks := 0
 var failures := 0
+
+
+## Counts engine and script errors, so a malformed field proves rejection rather than an aborted call.
+class ErrorCounter extends Logger:
+	var _mutex := Mutex.new()
+	var _count := 0
+
+	func _log_error(_function: String, _file: String, _line: int, _code: String, _rationale: String,
+			_editor_notify: bool, error_type: int, _script_backtrace: Array[ScriptBacktrace]) -> void:
+		if error_type == ERROR_TYPE_WARNING:
+			return
+		_mutex.lock()
+		_count += 1
+		_mutex.unlock()
+
+	func count() -> int:
+		_mutex.lock()
+		var value := _count
+		_mutex.unlock()
+		return value
 
 
 class FakeSession extends Node:
@@ -66,6 +88,24 @@ func _clean(path: String) -> void:
 			DirAccess.remove_absolute(absolute)
 
 
+func _with_field(source: Dictionary, path: String, replacement: Variant) -> Dictionary:
+	var result := source.duplicate(true)
+	var parts := path.split(".")
+	var target: Dictionary = result
+	for index in parts.size() - 1:
+		target = target[parts[index]]
+	target[parts[parts.size() - 1]] = replacement
+	return result
+
+
+func _issue_paths(result: Dictionary) -> Array[String]:
+	var paths: Array[String] = []
+	for issue: Dictionary in result.get("issues", []):
+		for path: Variant in issue.get("paths", []):
+			paths.append(str(path))
+	return paths
+
+
 func _service(storage_path: String, legacy_path: String, devices: Array) -> Service:
 	var service := Service.new()
 	service.store = Store.new(storage_path, legacy_path)
@@ -79,7 +119,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	for path in [RECOVERY_PATH, CORRUPT_PATH, CORRUPT_LEGACY_PATH, CALIBRATION_PATH, CALIBRATION_LEGACY_PATH, WATCHDOG_PATH, WATCHDOG_LEGACY_PATH]:
+	for path in [RECOVERY_PATH, CORRUPT_PATH, CORRUPT_LEGACY_PATH, CALIBRATION_PATH, CALIBRATION_LEGACY_PATH, WATCHDOG_PATH, WATCHDOG_LEGACY_PATH, MALFORMED_PATH, MALFORMED_LEGACY_PATH]:
 		_clean(path)
 
 	var invalid_serial: Dictionary = Profile.defaults()
@@ -91,6 +131,73 @@ func _run() -> void:
 	var valid_string_ids: Dictionary = Profile.defaults()
 	valid_string_ids.association = {"vendor_id": "4617", "product_id": "20308"}
 	check("profile accepts bounded decimal USB identities", Profile.validate(valid_string_ids).ok)
+
+	# Untrusted fields of another Variant type are rejected, never compared: in Godot
+	# `1 == "centered"` raises a script error that aborts validation with an empty result.
+	var engine_errors := ErrorCounter.new()
+	OS.add_logger(engine_errors)
+	var gamepad_profile: Dictionary = Profile.defaults()
+	for shape: Array in [
+		["integer range_kind", gamepad_profile, "roll.range_kind", 1],
+		["array range_kind", gamepad_profile, "roll.range_kind", []],
+		["float stick_rate throttle range_kind", gamepad_profile, "throttle.range_kind", 1.0],
+		["integer trigger throttle range_kind", Profile.defaults("gamepad", "trigger_absolute"), "throttle.range_kind", 1],
+		["boolean radio throttle range_kind", Profile.defaults("radio", "radio_custom"), "throttle.range_kind", true],
+		["integer kind", gamepad_profile, "kind", 0],
+		["dictionary radio kind", Profile.defaults("radio", "radio_custom"), "kind", {}],
+		["integer throttle_mode", gamepad_profile, "throttle_mode", 7],
+	]:
+		var errors_before := engine_errors.count()
+		var result: Variant = Profile.validate(_with_field(shape[1], shape[2], shape[3]))
+		var finished: bool = result is Dictionary and result.has("ok") and result.has("issues")
+		check("validate rejects %s without a script error" % shape[0], finished and not bool(result.ok) and engine_errors.count() == errors_before, str(result))
+		check("validate reports %s at %s" % [shape[0], shape[2]], finished and _issue_paths(result).has(shape[2]))
+	check("well-formed V2 and legacy gamepad profiles still upgrade", not Profile.upgrade_legacy(gamepad_profile).is_empty() and not Profile.upgrade_legacy(RcInput.GAMEPAD_PROFILE).is_empty())
+	for shape: Array in [
+		["string schema_version", gamepad_profile, "schema_version", "2"],
+		["boolean schema_version", gamepad_profile, "schema_version", true],
+		["integer AUX type", gamepad_profile, "aux", {"flaps": {"type": 3}}],
+		["array AUX type", gamepad_profile, "aux", {"gear": {"type": [], "buttons": [4, 5]}}],
+		["null legacy deadzone", RcInput.GAMEPAD_PROFILE, "deadzone", null],
+		["dictionary legacy expo", RcInput.GAMEPAD_PROFILE, "expo", {}],
+	]:
+		var errors_before := engine_errors.count()
+		var upgraded: Dictionary = Profile.upgrade_legacy(_with_field(shape[1], shape[2], shape[3]))
+		check("upgrade_legacy rejects %s without a script error" % shape[0], upgraded.is_empty() and engine_errors.count() == errors_before)
+
+	# One malformed member rejects the whole stored file (store contract), without aborting.
+	for shape: Array in [
+		["integer range_kind", "roll.range_kind", 1],
+		["integer kind", "kind", 0],
+		["integer throttle_mode", "throttle_mode", 7],
+		["string schema_version", "schema_version", "2"],
+		["integer AUX type", "aux", {"smoke": {"type": 3}}],
+	]:
+		_clean(MALFORMED_PATH)
+		var stored := ConfigFile.new()
+		stored.set_value(Store.STORAGE_SECTION, "schema_version", Profile.SCHEMA_VERSION)
+		stored.set_value(Store.STORAGE_SECTION, "profiles", [Profile.defaults(), _with_field(Profile.defaults(), shape[1], shape[2])])
+		check("malformed %s store fixture writes" % shape[0], stored.save(MALFORMED_PATH) == OK)
+		var malformed_store := Store.new(MALFORMED_PATH, MALFORMED_LEGACY_PATH)
+		var errors_before := engine_errors.count()
+		var loaded: Dictionary = malformed_store.load_all()
+		var stored_bytes: PackedByteArray = FileAccess.get_file_as_bytes(MALFORMED_PATH)
+		var overwrite: Dictionary = malformed_store.save_profile(Profile.defaults())
+		check("store rejects a file with a malformed %s member" % shape[0], loaded.has("ok") and not bool(loaded.ok) and loaded.get("profiles", [null]).is_empty() and not loaded.get("errors", []).is_empty(), str(loaded))
+		check("store keeps a file with a malformed %s member" % shape[0], overwrite.has("ok") and not bool(overwrite.ok) and FileAccess.get_file_as_bytes(MALFORMED_PATH) == stored_bytes)
+		check("store reads a malformed %s member without a script error" % shape[0], engine_errors.count() == errors_before)
+	# A known gamepad would otherwise get the built-in Mode 2 default; a rejected store blocks it.
+	var malformed_cfg := ConfigFile.new()
+	malformed_cfg.set_value(Store.STORAGE_SECTION, "schema_version", Profile.SCHEMA_VERSION)
+	malformed_cfg.set_value(Store.STORAGE_SECTION, "profiles", [_with_field(Profile.defaults(), "roll.range_kind", 1)])
+	check("malformed service store fixture writes", malformed_cfg.save(MALFORMED_PATH) == OK)
+	var malformed_errors_before := engine_errors.count()
+	var malformed_devices := [{"id": 41, "name": "Xbox audit pad", "raw_name": "Xbox audit pad", "guid": "malformed-pad", "kind": "gamepad", "known": true, "vendor_id": 1118, "product_id": 2835}]
+	var malformed_service := _service(MALFORMED_PATH, MALFORMED_LEGACY_PATH, malformed_devices)
+	check("rejected store blocks the built-in gamepad default", malformed_service.profile_for_device(41).is_empty() and engine_errors.count() == malformed_errors_before)
+	malformed_service.free()
+	OS.remove_logger(engine_errors)
+	_clean(MALFORMED_PATH)
 
 	# A corrupt rollback copy beside a missing primary is recovery evidence, not an empty store.
 	var unsupported_backup := ConfigFile.new()
@@ -213,7 +320,7 @@ func _run() -> void:
 	watchdog_service.free()
 	watchdog_session.free()
 
-	for path in [RECOVERY_PATH, CORRUPT_PATH, CORRUPT_LEGACY_PATH, CALIBRATION_PATH, CALIBRATION_LEGACY_PATH, WATCHDOG_PATH, WATCHDOG_LEGACY_PATH]:
+	for path in [RECOVERY_PATH, CORRUPT_PATH, CORRUPT_LEGACY_PATH, CALIBRATION_PATH, CALIBRATION_LEGACY_PATH, WATCHDOG_PATH, WATCHDOG_LEGACY_PATH, MALFORMED_PATH, MALFORMED_LEGACY_PATH]:
 		_clean(path)
 	print("Controller profile hardening: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
