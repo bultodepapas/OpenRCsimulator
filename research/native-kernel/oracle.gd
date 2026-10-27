@@ -629,7 +629,22 @@ func _aero_inputs(context: Dictionary, surfaces: PackedFloat64Array) -> Dictiona
 	var speed: float = _rng.randf_range(0.0, 45.0)
 	var mode := _rng.randf()
 	var direction: PackedFloat64Array
-	if mode < 0.55:
+	if mode < 0.45:
+		# Attached cruise/climb/approach: the oracle (blend 0) and blended (0 < blend < 1) domain.
+		var alpha := _rng.randf_range(-0.1, 0.13)
+		var beta := _rng.randf_range(-0.08, 0.08)
+		speed = _rng.randf_range(6.0, 35.0)
+		for k in 3:
+			s[RB.VEL + k] = speed * [cos(alpha) * cos(beta), sin(beta), sin(alpha) * cos(beta)][k]
+			s[RB.RATE + k] = _rng.randf_range(-0.4, 0.4)
+		var small := {elevator = _rng.randf_range(-0.12, 0.12), aileron_right = _rng.randf_range(-0.1, 0.1),
+			aileron_left = _rng.randf_range(-0.1, 0.1), rudder = _rng.randf_range(-0.12, 0.12)}
+		var lag: float = NAN if _rng.randf() < 0.4 else speed * _rng.randf_range(0.1, 0.7)
+		var gu: float = terrain_up if near and _rng.randf() < 0.85 else NAN
+		var still := M.v3(0.0, 0.0, 0.0) if _rng.randf() < 0.5 else M.v3(_rng.randf_range(-1.0, 1.0), _rng.randf_range(-1.0, 1.0), 0.0)
+		return {s = s, wind = still, rho = 1.225 if _rng.randf() < 0.5 else _rng.randf_range(0.9, 1.3), d = small,
+			downwash = lag, ground_up = gu}
+	if mode < 0.65:
 		var alpha := _rng.randf_range(-0.6, 0.6)
 		var beta := _rng.randf_range(-0.6, 0.6)
 		direction = M.v3(cos(alpha) * cos(beta), sin(beta), sin(alpha) * cos(beta))

@@ -104,6 +104,16 @@ def key(finding: dict) -> str:
     return f"{finding['file']}|{finding['code']}|{message}"
 
 
+def finding(relative: str, item: dict) -> dict:
+    """One language-server diagnostic. Godot 4.8 sends the warning code in `code`; 4.7 prefixed the message."""
+    text = item.get("message", "")
+    prefix = re.match(r"\(([A-Z_]+)\)", text)
+    code = item.get("code") if isinstance(item.get("code"), str) and item.get("code") else (prefix.group(1) if prefix else "ERROR")
+    return {"file": relative, "line": item["range"]["start"]["line"] + 1,
+            "severity": SEVERITY.get(item.get("severity"), str(item.get("severity"))),
+            "code": code, "message": text[prefix.end():].lstrip(" :").strip() if prefix else text}
+
+
 def collect(app: Path, files: list[str], port: int, timeout: float, log: Path) -> list[dict]:
     godot = os.environ.get("OPENRC_GODOT") or subprocess.run([str(REPO / "app" / "get-godot.sh")], check=True,
                                                             capture_output=True, text=True).stdout.strip()
@@ -130,13 +140,7 @@ def collect(app: Path, files: list[str], port: int, timeout: float, log: Path) -
                                  "message": "the language server sent no diagnostics within 30 s"})
                 continue
             lsp.send({"method": "textDocument/didClose", "params": {"textDocument": {"uri": uri}}})
-            for item in diagnostics:
-                text = item.get("message", "")
-                code = re.match(r"\(([A-Z_]+)\)", text)
-                findings.append({"file": relative, "line": item["range"]["start"]["line"] + 1,
-                                 "severity": SEVERITY.get(item.get("severity"), str(item.get("severity"))),
-                                 "code": code.group(1) if code else "ERROR",
-                                 "message": text[code.end():].lstrip(" :").strip() if code else text})
+            findings.extend(finding(relative, item) for item in diagnostics)
             if index % 200 == 0:
                 print(f"# {index}/{len(files)} scripts", file=sys.stderr, flush=True)
     finally:

@@ -248,15 +248,22 @@ func _wheel_phase() -> void:
 		observers.append(observer)
 	var largest := 0.0
 	var moved := 0.0
-	for i: int in 480:
+	var settled := {}
+	var drift := 0.0
+	for i: int in 720:
 		session.sim.step()
 		if (i + 1) % 4 == 0:
 			observers[1]._process(1.0 / 60.0)
 			for key: String in ["left", "right", "nose"]:
 				var a: float = float(observers[0].get("_angles")[key])
 				var b: float = float(observers[1].get("_angles")[key])
-				largest = maxf(largest, absf(angle_difference(a, b)))
+				var difference := angle_difference(a, b)
+				largest = maxf(largest, absf(difference))
 				moved = maxf(moved, absf(a))
-	check("the per-frame wheel phase follows the per-tick phase within 1 mrad", moved > 0.5 and largest < 0.001,
-		"moved %.4f rad, largest difference %.6f rad" % [moved, largest])
+				# After the touchdown spin-up, the endpoint trapezoid keeps a constant phase offset.
+				if i + 1 == 360: settled[key] = difference
+				elif i + 1 > 360: drift = maxf(drift, absf(angle_difference(float(settled[key]), difference)))
+	check("the per-frame wheel phase follows the per-tick phase (offset < 0.1 rad from spin-up, no drift)",
+		moved > 0.5 and largest < 0.1 and drift < 0.001,
+		"moved %.4f rad, largest difference %.6f rad, drift %.6f rad" % [moved, largest, drift])
 	session.free()

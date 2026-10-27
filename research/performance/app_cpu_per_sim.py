@@ -13,6 +13,7 @@ With OPENRC_DETACH_PRESENTATION=1 it disconnects the presentation observers from
 Simulation.stepped after the flight starts (windsock/people, ground gear, profile smoke,
 flight audio, crash director, statistics), keeping the session commit and the recorder;
 it refuses if the connections differ from that expected set.
+OPENRC_PRESENTATION_CADENCE=<0..4> reaches the app unchanged (VQ-01c-R1) and is echoed in the result.
 Research-only; see research/performance/README.md#whole-app-tick-cpu-vq-01c."""
 import json, os, subprocess, sys, time
 
@@ -91,6 +92,7 @@ def main():
                           "realtime": round(sim_s / (w1 - w0), 4), "sim_step_usec": round(perf["sim_step_usec"], 1),
                           "fps": perf["fps"], "max_fps": max_fps, "time_scale": time_scale,
                           "presentation_detached": os.environ.get("OPENRC_DETACH_PRESENTATION") == "1", "app_dir": app_dir or "app", "height_m": [round(s0["height_m"], 1), round(s1["height_m"], 1)],
+                          "presentation_cadence": os.environ.get("OPENRC_PRESENTATION_CADENCE", ""),
                           "crashed": s1["crashed"], "tick": [s0["tick"], s1["tick"]]}))
     finally:
         ctl(port, "stop")
