@@ -332,15 +332,18 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary,
 	var lake: Dictionary = prepared.get("lake", {})
 	var surfaces: PackedFloat64Array = prepared.get("surfaces", PackedFloat64Array())
 	var samples: Array[Dictionary] = lake_samples
-	if not lake.is_empty() and samples.size() != hull.size() / 3:
+	var lake_sampled: bool = not lake.is_empty()
+	if lake_sampled and samples.size() != hull.size() / 3:
+		# LU-25-R4: a hull wholly outside the bank bounds samples {covered = false} at every point.
+		lake_sampled = not _hull_clear_of_lake(s, prepared)
 		samples = []
-		for i in range(0, hull.size(), 3):
+		for i in range(0, hull.size() if lake_sampled else 0, 3):
 			var point_ned: PackedFloat64Array = _point_ned(s, hull.slice(i, i + 3))
 			samples.append({point_ned = point_ned, terrain = _lake_sample(prepared, point_ned)})
 	# GP-07c: how many points touch, for the friction regularization's shared rate bound.
 	var touching := 0
 	for i in range(0, hull.size(), 3):
-		if not lake.is_empty() and bool(samples[i / 3].terrain.get("covered", false)):
+		if lake_sampled and bool(samples[i / 3].terrain.get("covered", false)):
 			# Certify the whole diagnostic batch BEFORE any force row can publish.
 			# Default loads still use this same sample and arithmetic unchanged.
 			if diagnostics_out is Dictionary:
@@ -353,7 +356,7 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary,
 			touching += 1
 	for i in range(0, hull.size(), 3):
 		var body_point: PackedFloat64Array = hull.slice(i, i + 3)
-		if not lake.is_empty():
+		if lake_sampled:
 			var point_ned: PackedFloat64Array = samples[i / 3].point_ned
 			var terrain: Dictionary = samples[i / 3].terrain
 			if bool(terrain.get("covered", false)):
@@ -428,10 +431,11 @@ static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 	var down_before: PackedFloat64Array = _down_row(previous)
 	var q_before := RB._att(previous)
 	var worst := none.duplicate()
+	var lake: Dictionary = prepared.get("lake", {})
+	var lake_sampled: bool = not lake.is_empty() and not _hull_clear_of_lake(s, prepared)
 	for i in range(0, hull.size(), 3):
 		var r := hull.slice(i, i + 3)
-		var lake: Dictionary = prepared.get("lake", {})
-		if not lake.is_empty():
+		if lake_sampled:
 			var point_now: PackedFloat64Array = _point_ned(s, r)
 			var terrain_now: Dictionary = _lake_sample(prepared, point_now)
 			if bool(terrain_now.get("covered", false)):
@@ -724,6 +728,22 @@ static func _lake_contact_record(previous: PackedFloat64Array, s: PackedFloat64A
 
 static func _point_ned(s: PackedFloat64Array, body_point: PackedFloat64Array) -> PackedFloat64Array:
 	return M.add(RB._slice3(s, RB.POS), M.q_rotate(RB._att(s), body_point))
+
+
+## True when every hull point is outside the bank bounds that `_lake_sample` rejects with
+## {covered = false}. A stage quaternion is not exactly unit: q_rotate lengthens a body
+## vector by at most 1 + 4|q|², and the 1 mm slack covers rounding at field-scale positions.
+## A nonfinite state compares false and keeps per-point sampling.
+static func _hull_clear_of_lake(s: PackedFloat64Array, prepared: Dictionary) -> bool:
+	var bounds_value: Variant = prepared.get("lake_bounds_ne_m", PackedFloat64Array())
+	if typeof(bounds_value) != TYPE_PACKED_FLOAT64_ARRAY or bounds_value.size() != 4:
+		return false
+	var bounds: PackedFloat64Array = bounds_value
+	var qq: float = s[RB.ATT] * s[RB.ATT] + s[RB.ATT + 1] * s[RB.ATT + 1] \
+		+ s[RB.ATT + 2] * s[RB.ATT + 2] + s[RB.ATT + 3] * s[RB.ATT + 3]
+	var radius: float = float(prepared.reach) * (1.0 + 4.0 * qq) + 0.001
+	return s[RB.POS] + radius < bounds[0] or s[RB.POS] - radius > bounds[1] \
+		or s[RB.POS + 1] + radius < bounds[2] or s[RB.POS + 1] - radius > bounds[3]
 
 
 static func _lake_sample(prepared: Dictionary, point_ned: PackedFloat64Array) -> Dictionary:
