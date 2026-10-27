@@ -1,6 +1,6 @@
-# Turbo Lumber Evolution (Timber): source and integration guide
+# Turbo Lumber Evolution: source and integration guide
 
-Checked 2026-10-20. The catalog airplane `turbo-lumber-evolution` uses the author's r2 glTF model and generated experimental flight data. Airborne and qualified runway starts are supported; fixed wheels, flaps up and assists off are the current configuration. The finite battery is the default; [BAT](../../../docs/plans/battery-realism.md) owns energy behavior and mode selection. [First launch](../../../docs/FIRST-LAUNCH.md) owns player controls; the [Timber plan](../../../docs/TIMBER-INTEGRATION-PLAN.md) owns remaining TT work and acceptance.
+Checked 2026-10-20. The catalog airplane `turbo-lumber-evolution` uses the author's r2 glTF model and generated experimental flight data. Airborne and qualified runway starts are supported; fixed wheels, flaps up and assists off are the current configuration. The finite battery is the default; [BAT](../../../docs/plans/battery-realism.md) owns energy behavior and mode selection. [First launch](../../../docs/FIRST-LAUNCH.md) owns player controls; the [Turbo Lumber Evolution plan](../../../docs/TIMBER-INTEGRATION-PLAN.md) owns remaining TT work and acceptance.
 
 ## Origin, terms and identity
 
@@ -60,7 +60,7 @@ R2 meshes/pivots carry `openrc_section` tags, consumed directly by the crash sys
 
 ## Visual presentation
 
-The catalog builder applies the Timber-only [finish/detail layer](../../../app/aircraft/timber_visual_details.gd) and [factory lamp anchors](../../../app/aircraft/timber_visual_lighting.gd). Per-instance materials use free CC0 foam and rubber maps. Added construction and fracture details follow their existing parts and carry `crash_no_bounds`; they do not enlarge crash shapes or create damage sections. The raw `timber_model.gd` facade remains available for source metrology.
+The catalog builder applies the Turbo Lumber Evolution-specific [finish/detail layer](../../../app/aircraft/timber_visual_details.gd) and [factory lamp anchors](../../../app/aircraft/timber_visual_lighting.gd). Per-instance materials use free CC0 foam and rubber maps. Added construction and fracture details follow their existing parts and carry `crash_no_bounds`; they do not enlarge crash shapes or create damage sections. The raw `timber_model.gd` facade remains available for source metrology.
 
 [TimberVisualMotion](../../../app/aircraft/timber_visual_motion.gd) reads the existing session contact state after the shared wheel observer. Main legs hinge, cable/spring details follow their lower attachments, and the axle retains the existing compression height. Visual hinge motion is bounded to 6°; this is a presentation limit, not a qualified mechanical travel range. Wheel spin, tail steering, contact forces, friction, collision thresholds and damage decisions remain owned by their existing systems. Small tire-dust cues require loaded, slipping contact on loose surfaces and stop during pause or crash.
 

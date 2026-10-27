@@ -228,14 +228,14 @@ func _test_fixed_reference_rebase(stik: Dictionary, p51: Dictionary) -> void:
 			and p51_result.raw.propulsion.propeller.slipstream == p51.propulsion.propeller.slipstream,
 			str(p51_result.get("errors", [])))
 	var avanti := _read("res://data/aircraft/sebart_avanti_s_a200.json")
-	_check("Avanti turbine source loaded", not avanti.is_empty())
+	_check("Vantage Jet turbine source loaded", not avanti.is_empty())
 	if not avanti.is_empty():
-		_check_rebased_point(avanti, ["propulsion", "thrust_line_offset"], "finite-fuel Avanti turbine thrust point")
-		_check_rebased_point(avanti, ["propulsion", "intake_offset"], "finite-fuel Avanti turbine intake")
+		_check_rebased_point(avanti, ["propulsion", "thrust_line_offset"], "finite-fuel Vantage Jet turbine thrust point")
+		_check_rebased_point(avanti, ["propulsion", "intake_offset"], "finite-fuel Vantage Jet turbine intake")
 	var timber := _read("res://data/aircraft/turbo_lumber_evolution.json")
-	_check("Timber electric source loaded", not timber.is_empty())
+	_check("Lumber electric source loaded", not timber.is_empty())
 	if not timber.is_empty():
-		_check_rebased_point(timber, ["propulsion", "propeller", "thrust_line_offset"], "electric Timber propeller")
+		_check_rebased_point(timber, ["propulsion", "propeller", "thrust_line_offset"], "electric Lumber propeller")
 
 
 func _check_rebased_point(base: Dictionary, path: Array, label: String) -> void:

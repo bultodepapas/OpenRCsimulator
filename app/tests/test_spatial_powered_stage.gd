@@ -88,7 +88,7 @@ func _run() -> void:
 	for mode: String in ["ideal", "pack"]:
 		_check("X8 " + mode + " is covered by powered point flow",
 			not _model_for(configs, "skywalker-x8", mode).is_empty())
-	_check("finite Timber pack configuration is present",
+	_check("finite Lumber pack configuration is present",
 		not _model_for(configs, "turbo-lumber-evolution", "pack").is_empty())
 	_check_stage_air_fleet(configs)
 	_check_uniform_load_parity(configs)

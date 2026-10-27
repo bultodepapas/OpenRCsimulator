@@ -1,4 +1,4 @@
-# EL1a verification only. Every motor/prop number below is synthetic, not Timber calibration.
+# EL1a verification only. Every motor/prop number below is synthetic, not Lumber calibration.
 extends SceneTree
 
 const Electric: Script = preload("res://physics/electric_motor.gd")

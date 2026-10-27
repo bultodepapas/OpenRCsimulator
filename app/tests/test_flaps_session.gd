@@ -52,7 +52,7 @@ func _initialize() -> void:
 func _check_avanti_actuator() -> void:
 	var flight: Node = Flight.new()
 	flight.setup(Catalog.entry(AVANTI).data)
-	_check("Avanti is flyable with the declared flap module", flight.is_flyable() and flight.flaps_available())
+	_check("Vantage Jet is flyable with the declared flap module", flight.is_flyable() and flight.flaps_available())
 	_check("flap input and AUX follow retractable gear slots",
 		flight.flap_input_index() == 6 and flight.flap_aux_index() == flight.gear_aux_index() + 2
 		and flight.sim.inputs.size() == 7)

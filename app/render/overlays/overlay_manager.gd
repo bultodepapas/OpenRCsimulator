@@ -24,7 +24,7 @@ const NavigationData := preload("res://render/overlays/navigation_data.gd")
 const TrainingInstrument := preload("res://render/overlays/training_instrument.gd")
 const SessionStatistics := preload("res://render/overlays/session_statistics.gd")
 const FlightMetrics := preload("res://render/overlays/flight_metrics.gd")
-const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 0.82), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1), pilot_radar = Vector2(0, 1), wind_track = Vector2(1, 1), cruise_efficiency = Vector2(1, 0), maneuver = Vector2(0, 1), glide = Vector2(1, 1), flight_summary = Vector2(1, 0), session_stats = Vector2(1.0, 0.30)}
+const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 0.82), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1), pilot_radar = Vector2(0, 1), wind_track = Vector2(1, 1), cruise_efficiency = Vector2(1, 0), maneuver = Vector2(0, 1), glide = Vector2(1, 1), flight_summary = Vector2(1, 0), session_stats = Vector2(0.2, 0.2)}
 const FUEL_RESERVE_WARNING_STREAM: AudioStream = preload("res://assets/ui/audio/reject.ogg")
 
 ## Emitted after any change the player makes (X, key, dialog); the owner saves it to the preferences.

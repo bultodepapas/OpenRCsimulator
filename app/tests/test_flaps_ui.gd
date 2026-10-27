@@ -34,14 +34,14 @@ func _run() -> void:
 			break
 		await process_frame
 	var session: Variant = main.get("session")
-	_check("production Avanti scene starts with a flap-capable session", session != null and session.flaps_available())
+	_check("production Vantage Jet scene starts with a flap-capable session", session != null and session.flaps_available())
 	if session == null or not session.flaps_available():
 		await _finish(main)
 		return
 	session.set_physics_process(false)
 	session.sim.set_physics_process(false)
 	main.set_process(false)
-	_check("controller capability follows the available Avanti", bool(main.controller_capabilities().flaps))
+	_check("controller capability follows the available Vantage Jet", bool(main.controller_capabilities().flaps))
 	_check("new flight starts with flaps retracted", _requested(session) == 0.0 and _actual(session) == 0.0)
 
 	await _tap_key(KEY_F)

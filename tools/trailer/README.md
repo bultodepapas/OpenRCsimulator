@@ -29,7 +29,7 @@ have their own measured offsets.
 `capture_flight.gd --director-script=<absolute.gd>` selects a shot-specific command/camera driver.
 The capture manifest retains that path, resolved world conditions and native lighting settings.
 `extra_rolls_director.gd` supplies normal pilot commands for the six-second roll sequence and
-records aircraft attitude, inputs and framing. `timber_dusk_director.gd` changes only the camera
+records aircraft attitude, inputs and framing. `lumber_dusk_director.gd` changes only the camera
 for a closer front-quarter sunset view. Its accepted take uses native field lighting with
 `--time=21:51` (the world's reference location/date, not the computer's local timezone).
 Use `--movie-only` with Movie Maker and inspect extracted AVI frames; optional viewport PNGs

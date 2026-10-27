@@ -291,7 +291,7 @@ static func surface_degrees(rotations: Dictionary) -> Dictionary:
 
 
 ## Optional visual gear state from simulation; angles in radians around model axes. Each aircraft has its own wheels
-## (Stik: left, right, nose; Extra, P-51 and Timber: left, right, tail; Avanti: none yet). Positive wheel rotation is
+## (Stik: left, right, nose; Extra, P-51 and Lumber: left, right, tail; Vantage Jet: none yet). Positive wheel rotation is
 ## around +X; positive steering is around +Y.
 static func apply_gear(airplane: Dictionary, wheel_angles: Dictionary, steering_rad: float) -> void:
 	var gear: Dictionary = airplane.get("gear", {})

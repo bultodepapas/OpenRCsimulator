@@ -5,7 +5,7 @@
 # (1.2× the velocity), in which the gear "may not fail". Rigid body on the production gear law (Ground.loads, no
 # aerodynamics or propulsion), CG gravity g/3, zero horizontal speed, 960 Hz RK4. Two attitudes per topology
 # (§23.479/§23.481): tricycle all wheels together and mains-only nose-high (10°); taildragger mains-only level fuselage
-# and three-point. Before GP-06c the Extra, P-51 tail, Avanti and Timber collapsed already in the 7 ft/s limit drop.
+# and three-point. Before GP-06c the Extra, P-51 tail, Vantage Jet and Lumber collapsed already in the 7 ft/s limit drop.
 # research/ground-physics/gp06/reserve_drop.gd writes the same drops as a JSON report.
 # Run: godot --headless --path . --script res://tests/test_gear_reserve_energy.gd
 extends SceneTree

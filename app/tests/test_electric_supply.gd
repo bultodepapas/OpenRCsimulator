@@ -1,4 +1,4 @@
-# EL2a synthetic battery algebra checks. Values here are hand fixtures, not Timber calibration.
+# EL2a synthetic battery algebra checks. Values here are hand fixtures, not Lumber calibration.
 extends SceneTree
 
 const Supply: Script = preload("res://physics/electric_supply.gd")

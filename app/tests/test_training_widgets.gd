@@ -21,7 +21,7 @@ func _initialize() -> void:
 	var glide: Control = manager.frames.glide
 	var summary: Control = manager.frames.flight_summary
 	manager.refresh_numbers(_snapshot(0.0))
-	_check("training is opt-in and exactly three instruments", Settings.DEFAULTS.preset == "pilot" and manager.settings.visible.size() == 4 and Settings.TRAINING_IDS.all(func(id: String) -> bool: return manager.frames[id].visible))
+	_check("training is opt-in and exactly three instruments", Settings.DEFAULTS.preset == "pilot" and manager.settings.visible.size() == 4 and Settings.TRAINING_IDS.filter(func(id: String) -> bool: return id != "session_stats").all(func(id: String) -> bool: return manager.frames[id].visible) and not manager.frames.session_stats.visible)
 	_check("signed body load has explicit g units", maneuver.value_label.text == "+1.0" and maneuver.unit_label.text == "g")
 	_check("maneuver shows bank and alpha", maneuver.subtitle.text.contains("Bank +10°") and maneuver.subtitle.text.contains("AoA +4.0°"))
 	_check("glide distinguishes ground ratio and sink", glide.value_label.text == "-2.0" and glide.unit_label.text == "m/s" and glide.left_value.text == "10.0 : 1")
@@ -140,7 +140,7 @@ func _initialize() -> void:
 	dialog.tab_bar.current_tab = 2
 	await process_frame
 	await process_frame
-	_check("all six Spanish navigation/training switches fit the 1080p page", (Settings.NAVIGATION_IDS + Settings.TRAINING_IDS).all(func(id: String) -> bool: return dialog._scroll.get_global_rect().encloses(dialog.switches[id].get_global_rect())))
+	_check("all seven Spanish navigation/training switches fit the 1080p page", (Settings.NAVIGATION_IDS + Settings.TRAINING_IDS).all(func(id: String) -> bool: return dialog._scroll.get_global_rect().encloses(dialog.switches[id].get_global_rect())))
 	root.size = Vector2i(1280, 720)
 	await process_frame
 	await process_frame

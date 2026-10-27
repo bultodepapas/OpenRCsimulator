@@ -4,7 +4,7 @@ extends SceneTree
 
 const Sound := preload("res://render/engine_sound.gd")
 const FlightAudio := preload("res://audio/flight_audio.gd")
-# Counts are FlightAudio helper outputs; Avanti's 2 is the fallback for its turbine path.
+# Counts are FlightAudio helper outputs; Vantage Jet's 2 is the fallback for its turbine path.
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const EXPECTED_AIRCRAFT_BLADE_COUNTS := {
 	"jensen-das-ugly-stik-60": 2,
@@ -96,7 +96,7 @@ func _initialize() -> void:
 		var expected_blades: int = int(EXPECTED_AIRCRAFT_BLADE_COUNTS[aircraft_id])
 		var check_label := "FlightAudio helper returns %d for %s" % [expected_blades, aircraft_id]
 		if aircraft_id == "sebart-avanti-s-a200-p100rx":
-			check_label = "Avanti turbine audio helper returns fallback blade count %d" % expected_blades
+			check_label = "Vantage Jet turbine audio helper returns fallback blade count %d" % expected_blades
 		_check(check_label, FlightAudio.propeller_blade_count(aircraft_id) == expected_blades,
 			"actual=%d" % FlightAudio.propeller_blade_count(aircraft_id))
 	var audio_adapter: Node = FlightAudio.new()

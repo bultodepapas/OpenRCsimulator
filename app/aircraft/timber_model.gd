@@ -1,11 +1,11 @@
-# Timber inspector compatibility facade. Construction and poses use the shared Blender adapter.
+# Lumber inspector compatibility facade. Construction and poses use the shared Blender adapter.
 extends RefCounted
 
 const TimberGeometry := preload("res://aircraft/timber_geometry.gd")
 const SCENE := preload("res://assets/aircraft/turbo-lumber-evolution/timber.glb")
 const ImportedModel := preload("res://aircraft/imported_model.gd")
 const VISUAL_REVISION := "r2-d75ae605aa3a"
-# Public inspector keys retained for Timber metrology and clearance tools.
+# Public inspector keys retained for Lumber metrology and clearance tools.
 const HINGE_NODES := {aileron_left = "aileron_left_hinge", aileron_right = "aileron_right_hinge", elevator = "elevator_hinge",
 	rudder = "rudder_hinge", flap_left = "flap_left_hinge", flap_right = "flap_right_hinge"}
 
@@ -14,10 +14,10 @@ static func build() -> Dictionary:
 	var registry: Script = load("res://aircraft/model_registry.gd")
 	var result: Dictionary = registry.describe("turbo-lumber-evolution")
 	if not result.ok:
-		push_warning("Timber model manifest: " + str(result.errors))
+		push_warning("Lumber model manifest: " + str(result.errors))
 		return {}
 	var model := ImportedModel.build(result.manifest)
-	# Older Timber metrology tools retain the generated constant by identity.
+	# Older Lumber metrology tools retain the generated constant by identity.
 	# Dynamic Script.get() in the common loader returns an equivalent dictionary snapshot.
 	if not model.is_empty(): model.data = TimberGeometry.DATA
 	return model

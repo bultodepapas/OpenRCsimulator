@@ -53,7 +53,7 @@ func _test_soft_impulse_trace_and_checkpoint() -> void:
 	recorder.detach()
 	session.reset()
 	_check("reset clears transient nonfatal contact state but keeps world identity",
-		session.last_scenery_event() == null and session.collision_world().identity == world.identity)
+		session.start_error.is_empty() and session.last_scenery_event() == null and session.collision_world().identity == world.identity)
 	session.free()
 
 
@@ -73,7 +73,7 @@ func _test_terminal_toi_and_reset() -> void:
 		and impact.detected_state[RB.POS] < 5.0 and impact.normal_ned.size() == 3)
 	session.reset()
 	_check("reset clears terminal event and keeps the installed world",
-		session.crash.is_empty() and session.last_scenery_event() == null
+		session.start_error.is_empty() and session.crash.is_empty() and session.last_scenery_event() == null
 		and session.collision_world().identity == CollisionWorld.build(
 			{pilot = {north = 0.0, east = 0.0, down = 0.0}, objects = []}, {groups = []},
 			{fixtures = [{id = "lamp", type = "flood", north = 5.0, east = 0.0, height = 8.0}]}).world.identity)
@@ -113,8 +113,14 @@ func _new_session(world: Dictionary) -> Node:
 	aircraft.model.crash_hull = PackedFloat64Array([0.0, 0.0, 0.0])
 	session.aircraft = aircraft
 	session.sim.continuous = PackedFloat64Array()
-	session.sim.model.block_loads = Callable()
-	session.sim.model.block_derivative = Callable()
+	# Body-only fixture, but a transactional session reset re-stages the aircraft's continuous wheel slots;
+	# zero block evaluators keep that reset candidate valid instead of refused and rolled back.
+	session.sim.model.block_loads = func(_body: PackedFloat64Array, _extra: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	session.sim.model.block_derivative = func(_body: PackedFloat64Array, extra: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+		var rates := PackedFloat64Array()
+		rates.resize(extra.size())
+		return rates
 	session.sim.model.stage = Callable()
 	session.sim.model.stage_rotor_momentum = Callable()
 	session.sim.model.block_aux = Callable()

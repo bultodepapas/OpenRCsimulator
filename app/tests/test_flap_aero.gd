@@ -52,7 +52,7 @@ func _wing_cl(alpha_deg: float, flap_deg: float) -> float:
 
 func _initialize() -> void:
 	var loaded := AD.load_file(PATH)
-	_check("authored Avanti source validates", loaded.ok, str(loaded.errors))
+	_check("authored Vantage Jet source validates", loaded.ok, str(loaded.errors))
 	if not loaded.ok:
 		quit(1)
 		return

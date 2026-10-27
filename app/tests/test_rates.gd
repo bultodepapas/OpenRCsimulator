@@ -2,7 +2,7 @@
 # profile loaded from the aircraft data, and the session: "full" (the default of every FlightSession, so scripted
 # maneuvers and goldens are untouched) flies the maximum throws; "normal" shapes the keyboard sticks by the manual's
 # travel fractions and expo, adds the trims in maximum-throw units afterwards, and aircraft without controls.rates
-# (the Timber) are unaffected under either name. The Stik flies the Durafly Ugly Stik V2 low/high
+# (the Lumber) are unaffected under either name. The Stik flies the Durafly Ugly Stik V2 low/high
 # ratios (D6e-S).
 # Run: godot --headless --path . --script res://tests/test_rates.gd
 extends SceneTree
@@ -46,10 +46,10 @@ func _initialize() -> void:
 
 	# Data: the generated aircraft declare the manuals' normal rates; the Stik borrows an Ugly Stik manual's ratios.
 	var avanti: Dictionary = AD.load_file(Catalog.entry("sebart-avanti-s-a200-p100rx").data)
-	_check("Avanti data loads with controls.rates.normal", avanti.ok and avanti.model.controls.has("rates"), str(avanti.get("errors", [])))
+	_check("Vantage Jet data loads with controls.rates.normal", avanti.ok and avanti.model.controls.has("rates"), str(avanti.get("errors", [])))
 	if avanti.ok and avanti.model.controls.has("rates"):
 		var n: Dictionary = avanti.model.controls.rates.normal
-		_check("Avanti normal mode: elevator 50 % travel, 40 % expo (manual p. 4)", n.elevator == 0.5 and n.elevator_expo == 0.4, str(n))
+		_check("Vantage Jet normal mode: elevator 50 % travel, 40 % expo (manual p. 4)", n.elevator == 0.5 and n.elevator_expo == 0.4, str(n))
 	for id in ["gp-extra-300s-60", "p51d-mustang-120"]:
 		var data: Dictionary = AD.load_file(Catalog.entry(id).data)
 		_check("%s declares controls.rates.normal with travel below 1" % id, data.ok and data.model.controls.has("rates")
@@ -70,7 +70,7 @@ func _initialize() -> void:
 		_check("%s inherits the Stik's rates" % id, glow.ok and glow.model.controls.has("rates")
 			and stik.ok and glow.model.controls.rates.normal == stik.model.controls.rates.normal)
 	var timber: Dictionary = AD.load_file(Catalog.entry("turbo-lumber-evolution").data)
-	_check("Timber declares no rates", timber.ok and not timber.model.controls.has("rates"))
+	_check("Lumber declares no rates", timber.ok and not timber.model.controls.has("rates"))
 	# Loader rejects an incomplete profile.
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry("sebart-avanti-s-a200-p100rx").data))
 	raw.controls.rates.normal.erase("rudder_expo")
@@ -89,7 +89,7 @@ func _initialize() -> void:
 	var full: Dictionary = session.flown_commands()
 	_check("full: a full pull is the trim plus one (clamped)", full.pitch == clampf(1.0 + session.trims.pitch, -1.0, 1.0), str(full))
 	session.rate_profile = "normal"
-	_check("normal: active on the keyboard with the Avanti's profile", session.rates_active())
+	_check("normal: active on the keyboard with the Vantage Jet's profile", session.rates_active())
 	var normal: Dictionary = session.flown_commands()
 	_check("normal: a full pull is half the throw plus the trim", absf(normal.pitch - clampf(0.5 + session.trims.pitch, -1.0, 1.0)) < 1e-12, str(normal))
 	session.commands = { roll = 0.0, pitch = 0.5, yaw = 0.0, throttle = session.start.throttle }
@@ -113,10 +113,10 @@ func _initialize() -> void:
 	timber_session.input_enabled = false
 	timber_session.rate_profile = "normal"
 	if not timber_session.is_flyable():
-		_check("Timber under 'normal': no profile, so the maximum throws", false, "Timber data does not load")
+		_check("Lumber under 'normal': no profile, so the maximum throws", false, "Lumber data does not load")
 	else:
 		timber_session.commands = { roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = timber_session.start.throttle }
-		_check("Timber under 'normal': no profile, so the maximum throws", not timber_session.rates_active()
+		_check("Lumber under 'normal': no profile, so the maximum throws", not timber_session.rates_active()
 			and timber_session.flown_commands().pitch == clampf(1.0 + timber_session.trims.pitch, -1.0, 1.0))
 	_sport(session, stik_session, timber_session)
 	_rate_switch(session, timber_session)

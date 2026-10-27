@@ -60,7 +60,7 @@ func _initialize() -> void:
 	for mode: String in ["ideal", "pack"]:
 		_check("X8 " + mode + " is covered by uniform parity",
 			not _model_for(configs, "skywalker-x8", mode).is_empty())
-	_check("finite Timber battery-pack model is normalized",
+	_check("finite Lumber battery-pack model is normalized",
 		not _model_for(configs, BATTERY_AIRCRAFT, "pack").is_empty())
 	for config: Dictionary in configs:
 		_check_uniform_case("%s/%s uniform bytes" % [config.id, config.mode], config.model,

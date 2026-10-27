@@ -75,9 +75,9 @@ func _preferences_cases() -> void:
 
 	_check("runway preference is valid for the Stik", _write_preferences(PREFS, 1, "en", STIK, RUNWAY) == OK
 		and Preferences.load_from(PREFS).start_choice == RUNWAY)
-	_check("runway preference is valid for qualified Timber", _write_preferences(PREFS, 1, "en", TIMBER, RUNWAY) == OK
+	_check("runway preference is valid for qualified Lumber", _write_preferences(PREFS, 1, "en", TIMBER, RUNWAY) == OK
 		and Preferences.load_from(PREFS).aircraft == TIMBER and Preferences.load_from(PREFS).start_choice == RUNWAY)
-	_check("runway preference is valid for qualified Avanti", _write_preferences(PREFS, 1, "en", AVANTI, RUNWAY) == OK
+	_check("runway preference is valid for qualified Vantage Jet", _write_preferences(PREFS, 1, "en", AVANTI, RUNWAY) == OK
 		and Preferences.load_from(PREFS).aircraft == AVANTI and Preferences.load_from(PREFS).start_choice == RUNWAY)
 	for id in Catalog.airplane_flyable_ids():
 		# X8-07: an airplane without landing gear defaults to the hand launch.
@@ -467,20 +467,20 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 		and home.get("start_choice") == RUNWAY and not home.get("start_button").disabled)
 	app.call("set_aircraft", TIMBER)
 	await ui.settle()
-	_check("qualified Timber enables the runway selector", home.get("aircraft_id") == TIMBER
+	_check("qualified Lumber enables the runway selector", home.get("aircraft_id") == TIMBER
 		and home.get("start_choice") == RUNWAY and not home.get("start_button").disabled)
 	home.get("start_button").grab_focus()
 	await ui.tap(KEY_ENTER)
-	_check("Timber offers airborne as the secondary choice", home.get("start_choice") == AIRBORNE)
+	_check("Lumber offers airborne as the secondary choice", home.get("start_choice") == AIRBORNE)
 	await ui.tap(KEY_ENTER)
-	_check("Home can select runway for qualified Timber", home.get("start_choice") == RUNWAY)
+	_check("Home can select runway for qualified Lumber", home.get("start_choice") == RUNWAY)
 	await _close_app(app)
 
 	_cleanup()
-	_check("write qualified Avanti runway preference", _write_preferences(PREFS, 1, "en", AVANTI, RUNWAY) == OK)
+	_check("write qualified Vantage Jet runway preference", _write_preferences(PREFS, 1, "en", AVANTI, RUNWAY) == OK)
 	app = await _new_app(PREFS)
 	home = app.get("home") as Control
-	_check("qualified Avanti enables and restores the runway selector", home.get("aircraft_id") == AVANTI
+	_check("qualified Vantage Jet enables and restores the runway selector", home.get("aircraft_id") == AVANTI
 		and home.get("start_choice") == RUNWAY and not home.get("start_button").disabled)
 	await _close_app(app)
 

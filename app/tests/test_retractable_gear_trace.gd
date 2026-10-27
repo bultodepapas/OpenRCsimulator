@@ -45,7 +45,7 @@ func _record_one(metadata: Dictionary, session: Node, inputs: PackedFloat64Array
 func _initialize() -> void:
 	var flight := Flight.new()
 	flight.setup(Catalog.entry("sebart-avanti-s-a200-p100rx").data)
-	_check("Avanti exposes retractable gear, flaps, and seven accepted inputs", flight.gear_is_retractable()
+	_check("Vantage Jet exposes retractable gear, flaps, and seven accepted inputs", flight.gear_is_retractable()
 		and flight.flaps_available() and flight.sim.inputs.size() == 7)
 	var turbulence := {
 		"format": "openrc-weather v2",

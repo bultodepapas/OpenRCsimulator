@@ -23,7 +23,7 @@ const FieldLoader := preload("res://data/field_loader.gd")
 
 const STIK_PATH := "res://data/aircraft/jensen_ugly_stik_60.json"
 const EXTRA_ID := "gp-extra-300s-60"
-# Control without the module: the Extra declared none until EX-14e; the Timber still has none.
+# Control without the module: the Extra declared none until EX-14e; the Lumber still has none.
 const CONTROL_ID := "turbo-lumber-evolution"
 const RHO := 1.225
 var ZERO_WIND := PackedFloat64Array([0.0, 0.0, 0.0])
@@ -146,11 +146,11 @@ func _exact_inactivity(session: Node) -> void:
 	control_state[RB.POS + 2] = -0.5
 	var control_d: Dictionary = control._deflections(control.sim.aux)
 	var control_air := Air.compute(control_state, ZERO_WIND, RHO)
-	_check("Timber (no module): no factors at 0.5 m and reach 0", not GroundEffect.enabled(control_model)
+	_check("Lumber (no module): no factors at 0.5 m and reach 0", not GroundEffect.enabled(control_model)
 		and GroundEffect.factors(control_state, control_model, 0.0).is_empty() and GroundEffect.reach(control_model) == 0.0)
-	_check("Timber: loads with a ground are byte-identical", Aero.loads(control_state, control_air, control_d, control_model, RHO, NAN, 0.0).to_byte_array()
+	_check("Lumber: loads with a ground are byte-identical", Aero.loads(control_state, control_air, control_d, control_model, RHO, NAN, 0.0).to_byte_array()
 		== Aero.loads(control_state, control_air, control_d, control_model, RHO).to_byte_array())
-	_check("Timber: the session never samples a ground", control._ground_effect_reach == 0.0 and is_nan(control._ground_up(control_state)))
+	_check("Lumber: the session never samples a ground", control._ground_effect_reach == 0.0 and is_nan(control._ground_up(control_state)))
 	control.free()
 
 

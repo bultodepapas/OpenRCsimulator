@@ -348,7 +348,8 @@ func _ready() -> void:
 func _resize_layout() -> void:
 	if not is_inside_tree(): return
 	var available := _screen.size - Vector2(32, 32)
-	dialog_panel.custom_minimum_size = Vector2(minf(900, available.x), minf(860, available.y))
+	# 1080p: the Flight tools page, with the statistics scope row and all training switches, fits without scrolling.
+	dialog_panel.custom_minimum_size = Vector2(minf(900, available.x), minf(920, available.y))
 	var stacked := preload("res://ui/ui_theme.gd").text_scale > 1.25 or available.x < 760
 	_switch_grid.columns = 1 if stacked else 2
 	_player_grid.columns = 1 if stacked else 2

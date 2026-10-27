@@ -23,7 +23,7 @@ func _run() -> void:
 	_check("widget IDs append to the existing overlay IDs", Settings.IDS.slice(Settings.IDS.size() - Settings.PLAYER_IDS.size()) == Settings.PLAYER_IDS
 		and Settings.PLAYER_IDS == ["speed", "height", "power", "weather", "fuel", "trims", "engine"] + Settings.CLASSIC_IDS + Settings.NAVIGATION_IDS + Settings.TRAINING_IDS
 		and Settings.NAVIGATION_IDS == ["pilot_radar", "wind_track", "cruise_efficiency"]
-		and Settings.TRAINING_IDS == ["maneuver", "glide", "flight_summary"]
+		and Settings.TRAINING_IDS == ["maneuver", "glide", "flight_summary", "session_stats"]
 		and Settings.CLASSIC_IDS == ["airspeed_dial", "attitude", "altimeter", "heading", "variometer"])
 	_check("existing presets stay unchanged and navigation and training append", Settings.PRESET_ORDER == ["off", "pilot", "full", "developer", "player", "instruments", "cockpit", "navigation", "training"]
 		and Settings.PRESET_ORDER.size() == 9
@@ -51,7 +51,7 @@ func _run() -> void:
 		and navigation.visible == Settings.PRESETS.navigation and navigation.visible.size() == 4)
 	var training: Dictionary = Settings.validate({"preset": "training"})
 	_check("training preset validates to warnings and exactly three training widgets", training.preset == "training"
-		and training.visible == Settings.PRESETS.training and training.visible.size() == Settings.TRAINING_IDS.size() + 1)
+		and training.visible == Settings.PRESETS.training and training.visible.size() == 4 and not training.visible.has("session_stats"))
 	_check("legacy settings do not gain optional position keys", not Settings.validate(Settings.DEFAULTS).has("positions")
 		and not Settings.validate(Settings.DEFAULTS).has("layout_locked")
 		and not Settings.validate(Settings.DEFAULTS).has("widget_size")

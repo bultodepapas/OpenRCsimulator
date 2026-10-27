@@ -754,7 +754,7 @@ static func _placement_box(proxies: Array[Dictionary], id: String, kind: String,
 
 static func _add_avanti_cradle(proxies: Array[Dictionary], id: String, north: float, east: float,
 		heading: float) -> void:
-	# Two padded crossbars and their four low trestle feet support the parked gear-up Avanti.
+	# Two padded crossbars and their four low trestle feet support the parked gear-up Vantage Jet.
 	for row: int in 2:
 		var local_z := -0.62 if row == 0 else 0.62
 		for side: int in 2:

@@ -1,4 +1,4 @@
-# TT-07: the generated Timber estimate loads as its own openrc-aircraft v2 record,
+# TT-07: the generated Lumber estimate loads as its own openrc-aircraft v2 record,
 # preserves its inventory balance, and keeps the borrowed propeller evidence explicit.
 # Run: godot --headless --path . --script res://tests/test_timber_data.gd
 extends SceneTree
@@ -23,7 +23,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	var entry: Dictionary = Catalog.entry(ID)
-	_check("catalog offers the generated Timber data as experimental", not entry.is_empty()
+	_check("catalog offers the generated Lumber data as experimental", not entry.is_empty()
 		and entry.status == Catalog.EXPERIMENTAL and entry.data == DATA)
 	var loaded: Dictionary = AircraftData.load_file(DATA)
 	_check("TT-07 v2 file passes production validation", loaded.get("ok", false), "; ".join(loaded.get("errors", PackedStringArray())))
@@ -34,7 +34,7 @@ func _initialize() -> void:
 
 	var model: Dictionary = loaded.model
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(DATA))
-	_check("loader keeps Timber identity and measured reference span", model.id == ID
+	_check("loader keeps Lumber identity and measured reference span", model.id == ID
 		and absf(float(model.reference.b) - 1.555) < 1e-9, "%s, %.3f m" % [model.id, model.reference.b])
 	_check("estimated inventory totals the declared 2.190 kg flight mass",
 		absf(float(model.mass_kg) - 2.190) < 0.001, "%.6f kg" % model.mass_kg)
@@ -76,5 +76,5 @@ func _initialize() -> void:
 	_check("data labels the estimate as unvalidated", str(raw.description).contains("Not physical validation")
 		and str(raw.description).contains("no battery depletion"))
 
-	print("TT-07 Timber data: %d checks, %d failed" % [_checks, _failures])
+	print("TT-07 Lumber data: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)

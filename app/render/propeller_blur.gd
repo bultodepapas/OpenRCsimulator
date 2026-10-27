@@ -10,7 +10,7 @@
 #
 # Layout: this Node3D sits beside the model (a child of the flight scene, never inside `airplane`), copies the
 # propeller's world transform every frame and owns the disc plus, while fading, an opaque hub copy and a faded blade
-# copy of the rotating meshes (split by radius: the Timber's spinner, backplate and bell share one mesh with its
+# copy of the rotating meshes (split by radius: the Lumber's spinner, backplate and bell share one mesh with its
 # blades). The model's own blade nodes are only shown or hidden; their meshes and materials are never edited, so the
 # Home preview, the projected silhouette (which skips `propeller`) and the crash wreck's duplicate stay as built.
 # A prop strike (render/crash/prop_break.gd) marks the propeller broken: the blur then keeps the blades hidden and
@@ -59,7 +59,7 @@ var _fade_materials: Array[BaseMaterial3D] = []
 
 ## Attaches the blur beside `airplane` (render/airplane.gd build result) under `parent`, reading `session.sim.aux[0]`
 ## each frame; `session` may be null for callers that drive update() themselves (tests, captures). Returns null for
-## an aircraft without a propeller (the Avanti) and never touches the model until the first update() with speed.
+## an aircraft without a propeller (the Vantage Jet) and never touches the model until the first update() with speed.
 static func attach(airplane: Dictionary, session: Node, parent: Node) -> Node3D:
 	if airplane.is_empty() or not airplane.get("has_propeller", true) or airplane.get("propeller") == null:
 		return null

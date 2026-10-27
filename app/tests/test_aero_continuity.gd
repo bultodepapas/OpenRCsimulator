@@ -49,12 +49,12 @@ func _initialize() -> void:
 
 func _test_authored_avanti_polar(model: Dictionary) -> void:
 	var polar: Dictionary = model.envelope.get("wing_polar", {})
-	check("Avanti production model loads its authored positive/negative wing polar",
+	check("Vantage Jet production model loads its authored positive/negative wing polar",
 		polar.has("positive") and polar.has("negative") and polar.positive.values.size() >= 12 and polar.negative.values.size() >= 12,
 		"polar keys=%s" % str(polar.keys()))
 	if polar.is_empty():
 		return
-	check("Avanti table keeps its authored 8 deg asymmetric positive/negative data",
+	check("Vantage Jet table keeps its authored 8 deg asymmetric positive/negative data",
 		absf(float(polar.positive.angles[0]) - deg_to_rad(8.0)) < 1e-15 \
 			and absf(float(polar.positive.values[0]) - 0.5884998174197593) < 1e-12 \
 			and absf(float(polar.negative.values[0]) - 0.5944935880193594) < 1e-12,
@@ -85,10 +85,10 @@ func _test_authored_avanti_polar(model: Dictionary) -> void:
 			* pow(sample[0] - float(model.aero.CL_minD), 2.0)
 		evaluator_match = evaluator_match and absf(float(row.cl) - sample[0]) < 1e-12 \
 			and absf(float(row.cd) - expected_cd) < 1e-12
-	check("Avanti authored polar changes runtime post-stall section coefficients at 25 deg",
+	check("Vantage Jet authored polar changes runtime post-stall section coefficients at 25 deg",
 		max_cl_delta > 0.02 or max_cd_delta > 0.02,
 		"max |dCL|=%.9f max |dCD|=%.9f" % [max_cl_delta, max_cd_delta])
-	check("Avanti runtime section coefficients match its authored polar evaluator", evaluator_match)
+	check("Vantage Jet runtime section coefficients match its authored polar evaluator", evaluator_match)
 
 
 func _state(velocity: PackedFloat64Array, rates: PackedFloat64Array) -> PackedFloat64Array:

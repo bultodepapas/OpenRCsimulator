@@ -221,7 +221,7 @@ func run() -> void:
 		if corrected and finite_liquid:
 			jet.reset()
 			jet.trims.pitch = old_pitch
-			check("production Avanti correction accepts same faster-cruise elevator", jet.adjust_elevator_trim(pilot_correction_deg))
+			check("production Vantage Jet correction accepts same faster-cruise elevator", jet.adjust_elevator_trim(pilot_correction_deg))
 			jet.sim.inputs = jet._inputs()
 			aux = jet.sim.aux
 			aux[2] = jet.trims.pitch
@@ -232,12 +232,12 @@ func run() -> void:
 			fly(jet, 1200)
 			var production_end_mass: Dictionary = jet.mass_properties()
 			var production_end_speed: float = M.norm(RB._slice3(jet.sim.state, RB.VEL))
-			check("production Avanti corrected cruise completes and consumes finite fuel",
+			check("production Vantage Jet corrected cruise completes and consumes finite fuel",
 				jet.sim.tick == 1200 and jet.sim.fault_reason.is_empty() and finite_values(jet.sim.state)
 				and production_start_mass.get("ok", false) and production_end_mass.get("ok", false)
 				and float(production_end_mass.get("fuel_remaining_kg", NAN)) >= 0.0
 				and float(production_end_mass.get("fuel_remaining_kg", NAN)) < float(production_start_mass.get("fuel_remaining_kg", NAN)))
-			print("Avanti production 40 m/s corrected trim, 5 s: fuel %.6f -> %.6f kg, live mass %.6f -> %.6f kg, Δspeed %.6f m/s, Δheight %.6f m" % [
+			print("Vantage Jet production 40 m/s corrected trim, 5 s: fuel %.6f -> %.6f kg, live mass %.6f -> %.6f kg, Δspeed %.6f m/s, Δheight %.6f m" % [
 				float(production_start_mass.get("fuel_remaining_kg", NAN)), float(production_end_mass.get("fuel_remaining_kg", NAN)),
 				float(production_start_mass.get("mass_kg", NAN)), float(production_end_mass.get("mass_kg", NAN)),
 				production_end_speed - production_start_speed, -jet.sim.state[2] - production_start_height])

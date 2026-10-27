@@ -229,8 +229,8 @@ func _determinism(session: Node) -> void:
 
 
 func _belly_slide(session: Node) -> void:
-	# Research 04 anchor: a belly at 1 m/s sink slides to a stop. The Avanti has no landing gear.
-	_check("Avanti session loads", session.aircraft.get("ok", false))
+	# Research 04 anchor: a belly at 1 m/s sink slides to a stop. The Vantage Jet has no landing gear.
+	_check("Vantage Jet session loads", session.aircraft.get("ok", false))
 	session.sim.inputs[3] = 0.0
 	var belly := _state_above(session, 0.01, 0.0, 0.0, 0.0, M.v3(12, 0, 1.0))
 	var slide := _run(session, belly, true, 1440)

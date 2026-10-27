@@ -14,7 +14,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const Airplane := preload("res://render/airplane.gd")
 const Retraction := preload("res://aircraft/retractable_model.gd")
 
-## Largest accepted visual/physics wheel-bottom difference (m) per axis. Mesh-measured radii (Timber, Avanti) agree
+## Largest accepted visual/physics wheel-bottom difference (m) per axis. Mesh-measured radii (Lumber, Vantage Jet) agree
 ## with their profiles to about 0.02 mm; the bound leaves room for that, far below a visible float or sink.
 const TOLERANCE_M := 0.0005
 

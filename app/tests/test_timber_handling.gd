@@ -1,4 +1,4 @@
-# TT-09: fly the estimated Timber through the same FlightSession callbacks and coupled electric step used by the app.
+# TT-09: fly the estimated Lumber through the same FlightSession callbacks and coupled electric step used by the app.
 # These are software-consistency and broad-plausibility checks; the estimate is not physical validation.
 # Run: godot --headless --path . --script res://tests/test_timber_handling.gd
 extends SceneTree
@@ -30,7 +30,7 @@ func _initialize() -> void:
 	session.setup(entry.data, ID)
 	root.add_child(session)
 	var loaded: bool = session.aircraft.get("ok", false) and session.start.get("ok", false)
-	_check("Timber FlightSession loads and trims its own data", loaded,
+	_check("Lumber FlightSession loads and trims its own data", loaded,
 		"%s; %s" % [session.start.get("V", "?"), session.start.get("message", "")])
 	if not loaded:
 		print("%d checks, %d failed" % [_checks, _failures + 1])
@@ -40,7 +40,7 @@ func _initialize() -> void:
 	var model: Dictionary = session.aircraft.model
 	var prop: Dictionary = model.propulsion
 	var v0: float = float(model.start_speed)
-	_check("Timber uses its 2.190 kg, 1.555 m experimental model", model.id == ID
+	_check("Lumber uses its 2.190 kg, 1.555 m experimental model", model.id == ID
 		and absf(float(model.mass_kg) - 2.190) < 0.001 and absf(float(model.reference.b) - 1.555) < 1e-9,
 		"%s / %.3f kg / %.3f m" % [model.id, model.mass_kg, model.reference.b])
 	_check("electric motor shaft is integrated with the coupled RK4 law", session.shaft_is_coupled()
@@ -137,12 +137,12 @@ func _initialize() -> void:
 	for _tick in 80:
 		session.sim.inputs[1] = -0.1
 		session.sim.step()
-	_check("checkpoint restores Timber and exactly replays the electric shaft and wheels", restored
+	_check("checkpoint restores Lumber and exactly replays the electric shaft and wheels", restored
 		and not checkpoint.is_empty() and _matches_snapshot(session.sim, expected),
 		"checkpoint %s; tick %d" % [checkpoint.get("format", "missing"), session.sim.tick])
 
 	session.free()
-	print("TT-09 Timber handling: %d checks, %d failed" % [_checks, _failures])
+	print("TT-09 Lumber handling: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
 

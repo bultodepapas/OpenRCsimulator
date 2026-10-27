@@ -1,4 +1,4 @@
-## AV-09 real-session regression for retractable tricycle gear and source-derived Avanti contacts.
+## AV-09 real-session regression for retractable tricycle gear and source-derived Vantage Jet contacts.
 ## The seven-input layout includes an explicit zero flap request in these gear-only scenarios.
 ## Run with the pinned Godot binary from the repository root:
 ##   godot --headless --path app --script res://tests/test_retractable_gear_ground.gd
@@ -199,7 +199,7 @@ func _initialize() -> void:
 	high_state[RB.POS + 2] = -500.0
 	airborne.sim.state = high_state.duplicate()
 	airborne.sim.previous = high_state.duplicate()
-	_check("file-backed Ventage Jet loads with an applied wheel profile and retractable gear",
+	_check("file-backed Vantage Jet loads with an applied wheel profile and retractable gear",
 		airborne.aircraft.get("ok", false) and airborne.aircraft.model.id == AVANTI_ID
 		and airborne.aircraft.model.capabilities.gear == "retractable_tricycle"
 		and airborne.aircraft.model.wheel_profile.status == "applied" and airborne.wheel_count() == 3,
@@ -230,7 +230,7 @@ func _initialize() -> void:
 	airborne.queue_free()
 
 	var parked_setup := _session()
-	_check("Avanti qualifies for a real default-field runway start", parked_setup.ok, str(parked_setup.get("message", "")))
+	_check("Vantage Jet qualifies for a real default-field runway start", parked_setup.ok, str(parked_setup.get("message", "")))
 	if not parked_setup.ok:
 		Engine.physics_ticks_per_second = saved_tick
 		print("%d checks, %d failed" % [_count, _failures])
@@ -258,7 +258,7 @@ func _initialize() -> void:
 	crosswind.speed_mps = 1.5
 	crosswind.from_deg = 0.0
 	var windy_setup := _session(240, crosswind)
-	_check("Ventage Jet runway solver accepts a steady crosswind", windy_setup.ok, str(windy_setup.get("message", "")))
+	_check("Vantage Jet runway solver accepts a steady crosswind", windy_setup.ok, str(windy_setup.get("message", "")))
 	if windy_setup.ok:
 		var windy: Node = windy_setup.session
 		windy.input_enabled = false

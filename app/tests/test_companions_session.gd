@@ -89,7 +89,7 @@ func _run_avanti_external_actuator_parity() -> void:
 	var equipment_ready: bool = manual.gear_is_retractable() and external.gear_is_retractable() \
 		and manual.flaps_available() and external.flaps_available() \
 		and manual.sim.inputs.size() == 7 and external.sim.inputs.size() == 7
-	_check("Avanti parity fixture exposes retractable gear, brakes, flaps, and seven inputs", equipment_ready)
+	_check("Vantage Jet parity fixture exposes retractable gear, brakes, flaps, and seven inputs", equipment_ready)
 	if not equipment_ready:
 		manual.free()
 		external.free()
@@ -98,7 +98,7 @@ func _run_avanti_external_actuator_parity() -> void:
 	var requests_ok: bool = manual.set_gear_down(true) and manual.set_wheel_brake(0.5) \
 		and manual.set_flaps(1.0)
 	manual.input_enabled = false
-	_check("manual Avanti accepts matching gear, brake, and flap requests", requests_ok)
+	_check("manual Vantage Jet accepts matching gear, brake, and flap requests", requests_ok)
 	var packet := {roll = 0.02, pitch = -0.01, yaw = 0.0, throttle = float(manual.start.throttle)}
 	var external_packet: Dictionary = packet.duplicate(true)
 	external_packet.gear_down = true
@@ -107,9 +107,9 @@ func _run_avanti_external_actuator_parity() -> void:
 	var staged: Dictionary = external.prepare_external_tick(external_packet)
 	var manual_first: bool = _manual_tick(manual, packet)
 	var external_first: bool = staged.get("ok", false) and external.step_external_tick()
-	_check("manual and external Avanti actuator ticks are both accepted", manual_first and external_first,
+	_check("manual and external Vantage Jet actuator ticks are both accepted", manual_first and external_first,
 		"stage=%s manual_tick=%s external_tick=%s" % [str(staged), str(manual_first), str(external_first)])
-	_check("first Avanti external actuator tick matches every session boundary array",
+	_check("first Vantage Jet external actuator tick matches every session boundary array",
 		_same_tick(manual, external))
 	var first_gear_extension: float = float(external.gear_state().extension)
 	var first_flap_fraction: float = float(external.flap_state().actual)
@@ -151,7 +151,7 @@ func _run_external_actuator_packet_atomicity() -> void:
 		and external_avanti._external_pending_packet == pending_before_bad
 		and external_avanti.commands == commands_before_bad
 		and _same_array(external_avanti.sim.inputs, inputs_before_bad), str(invalid_result))
-	_check("the preserved Avanti actuator packet still executes exactly as staged",
+	_check("the preserved Vantage Jet actuator packet still executes exactly as staged",
 		external_avanti.step_external_tick() and external_avanti.sim.tick == 1
 		and external_avanti.sim.inputs.size() == 7 and external_avanti.sim.inputs[4] == 1.0
 		and external_avanti.sim.inputs[5] == 0.25 and external_avanti.sim.inputs[6] == 0.75,

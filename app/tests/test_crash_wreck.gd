@@ -85,7 +85,7 @@ func _check_aircraft(entry: Dictionary) -> void:
 			int(started.detached_group_count) == 1 and int(started.active_body_count) == 1
 			and fragment_groups == ["core", "propeller"])
 	elif String(entry.id) == "turbo-lumber-evolution":
-		# TT-06: the Timber preview is one imported airframe mesh (wing, fuselage and tail together) with tail, gear
+		# TT-06: the Lumber preview is one imported airframe mesh (wing, fuselage and tail together) with tail, gear
 		# and propeller pivots, so C4 has no wing/engine group to release at once; its tail/gear/propeller groups
 		# detach on their delays. Catalog promotion does not change that geometry contract.
 		# Splitting the airframe for the crash twin is TT-13's decision.

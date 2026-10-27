@@ -93,7 +93,7 @@ func _initialize() -> void:
 	_check("in-memory validation keeps legacy gear", memory.ok and not memory.model.landing_gear.contacts[0].has("wheel_radius") \
 		and not memory.model.has("wheel_profile"))
 	var avanti: Dictionary = AircraftData.load_file(AVANTI)
-	_check("Avanti applies its declared retractable gear and sourced wheel profile", avanti.ok \
+	_check("Vantage Jet applies its declared retractable gear and sourced wheel profile", avanti.ok \
 		and avanti.model.landing_gear.contacts.size() == 3 \
 		and avanti.model.wheel_profile.status == "applied" \
 		and avanti.model.landing_gear.contacts[0].wheel_radius == 0.04338 \
@@ -148,13 +148,13 @@ func _initialize() -> void:
 	var initial_meta: Dictionary = profiled.trace_meta()
 	_check("trace identifies the rolling-resistance law", initial_meta.get("wheel_rolling_law", "") == "wheel-positive-terrain-excess-v2")
 	var timber: Dictionary = AircraftData.load_file("res://data/aircraft/turbo_lumber_evolution.json")
-	_check("Timber loads for smooth-pad rolling regression", timber.ok)
+	_check("Lumber loads for smooth-pad rolling regression", timber.ok)
 	if timber.ok:
 		var timber_gear: Dictionary = timber.model.landing_gear
 		var pad := PackedFloat64Array([-INF, INF, -INF, INF, 1.0, 0.5])
 		for contact: Dictionary in timber_gear.contacts:
 			var cf := Wheels.coefficients(timber_gear, contact, pad, PackedFloat64Array([0.0, 0.0, 0.0]))
-			_check("authored Timber %s keeps positive pad resistance" % contact.name,
+			_check("authored Lumber %s keeps positive pad resistance" % contact.name,
 				absf(cf[1] - 0.5 * float(timber_gear.rolling_resistance)) < 1e-12)
 	var layout: Array = JSON.parse_string(initial_meta.wheel_state_layout)
 	_check("trace declares profiled wheel state and its indices", initial_meta.metadata_schema == "openrc-flight-meta v6" \

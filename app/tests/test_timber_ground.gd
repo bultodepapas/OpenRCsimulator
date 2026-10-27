@@ -1,4 +1,4 @@
-# TT-11: qualify Timber runway support, tailwheel taxi steering, ground takeoff, and gear-travel failure detection.
+# TT-11: qualify Lumber runway support, tailwheel taxi steering, ground takeoff, and gear-travel failure detection.
 extends SceneTree
 
 const Session := preload("res://sim/flight_session.gd")
@@ -32,20 +32,20 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var entry: Dictionary = Catalog.entry(TIMBER_ID)
-	_check("Timber catalog entry has data", not entry.is_empty() and FileAccess.file_exists(str(entry.get("data", ""))))
+	_check("Lumber catalog entry has data", not entry.is_empty() and FileAccess.file_exists(str(entry.get("data", ""))))
 	if entry.is_empty() or not FileAccess.file_exists(str(entry.get("data", ""))):
 		_finish()
 		return
 	var loaded: Dictionary = AircraftData.load_file(str(entry.data))
-	_check("Timber aircraft data and tyre profile load", loaded.ok, str(loaded.errors))
+	_check("Lumber aircraft data and tyre profile load", loaded.ok, str(loaded.errors))
 	if not loaded.ok:
 		_finish()
 		return
 	var model: Dictionary = loaded.model
 	var gear: Dictionary = model.get("landing_gear", {})
-	_check("Timber wheel profile is applied", model.get("wheel_profile", {}).get("status", "") == "applied",
+	_check("Lumber wheel profile is applied", model.get("wheel_profile", {}).get("status", "") == "applied",
 		str(model.get("wheel_profile", {})))
-	_check("Timber has three named profiled contacts", gear.get("contacts", []).size() == 3)
+	_check("Lumber has three named profiled contacts", gear.get("contacts", []).size() == 3)
 	for contact: Dictionary in gear.get("contacts", []):
 		var expected_radius: float = 0.014 if contact.name == "tail" else 0.058002
 		_check("%s accepted tyre-profile radius is retained" % str(contact.name),
@@ -68,17 +68,17 @@ func _run() -> void:
 	session.input_enabled = false
 	session.setup(str(entry.data))
 	root.add_child(session)
-	_check("Timber accepts the default field", session.set_field(field))
+	_check("Lumber accepts the default field", session.set_field(field))
 	session.start_choice = Session.START_RUNWAY
 	session.reset()
 	var started: bool = session.start_error.is_empty() and session.is_flyable()
-	_check("Timber selected runway equilibrium solves", started and session.is_flyable()
+	_check("Lumber selected runway equilibrium solves", started and session.is_flyable()
 		and session.sim.fault_reason.is_empty(), session.start_error)
 	var launch_meta: Dictionary = session.trace_meta()
 	var launch_meta_ok: bool = launch_meta.get("selected_start_choice") == Session.START_RUNWAY \
 		and launch_meta.get("launch_choice") == Session.START_RUNWAY \
 		and launch_meta.get("launch_kind") == "runway_threshold"
-	_check("selected runway path records Timber threshold launch", launch_meta_ok,
+	_check("selected runway path records Lumber threshold launch", launch_meta_ok,
 		"choice=%s kind=%s field=%s" % [str(launch_meta.get("launch_choice", "")),
 		str(launch_meta.get("launch_kind", "")), str(launch_meta.get("launch_field_id", ""))])
 	if not started:
@@ -249,5 +249,5 @@ func _speed(state: PackedFloat64Array) -> float:
 
 
 func _finish() -> void:
-	print("TT-11 Timber ground: %d checks, %d failed" % [_checks, _failures])
+	print("TT-11 Lumber ground: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)

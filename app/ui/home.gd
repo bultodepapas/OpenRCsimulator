@@ -573,6 +573,14 @@ func _init() -> void:
 	_statistics_pilot_summary.name = "PilotStatisticsSummary"
 	_statistics_pilot_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	practice_page.add_child(_statistics_pilot_summary)
+	# Beside its Pilot total card, as Aircraft statistics is on the Aircraft page: a pinned rail row would push
+	# the default Flight page into scrolling at 1080p.
+	statistics_button = _button("Statistics · Pilot total", "QuietButton")
+	statistics_button.name = "Statistics"
+	statistics_button.custom_minimum_size.y = 34
+	statistics_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	statistics_button.pressed.connect(func() -> void: statistics_requested.emit(statistics_button, ""))
+	practice_page.add_child(statistics_button)
 	var practice_row := VBoxContainer.new()
 	practice_row.name = "PracticeActions"
 	practice_row.add_theme_constant_override("separation", 6)
@@ -685,12 +693,6 @@ func _init() -> void:
 	quit_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	utility_row.add_child(quit_button)
-	statistics_button = _button("Statistics · Pilot total", "QuietButton")
-	statistics_button.name = "Statistics"
-	statistics_button.custom_minimum_size.y = 34
-	statistics_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	statistics_button.pressed.connect(func() -> void: statistics_requested.emit(statistics_button, ""))
-	_left_layout.add_child(statistics_button)
 	_refresh_statistics_summary()
 	for utility_button: Button in [language_button, settings_button, controls_button, help_button, quit_button]:
 		utility_button.clip_text = false
@@ -1105,7 +1107,7 @@ func _refresh_scrims() -> void:
 
 
 ## The column opens at the top. Wrapped labels settle over a few frames; following the first focus during those
-## frames scrolled the title away with a long aircraft note (P-51, Avanti), so the scroll follows the focus only
+## frames scrolled the title away with a long aircraft note (P-51, Vantage Jet), so the scroll follows the focus only
 ## after they have passed. Then this node stops processing.
 func _process(_delta: float) -> void:
 	_settle_frames -= 1

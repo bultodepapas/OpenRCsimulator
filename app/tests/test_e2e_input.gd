@@ -208,40 +208,40 @@ func _run() -> void:
 	if FileAccess.file_exists(path):
 		DirAccess.remove_absolute(path)
 
-	# Run the same live input path against the Timber's own session after the Stik regression checks above.
+	# Run the same live input path against the Lumber's own session after the Stik regression checks above.
 	await _release_main()
 	_main = load("res://main.tscn").instantiate()
 	_main.aircraft_id = TIMBER # set before _ready so no other aircraft can supply the physics
 	root.add_child(_main)
 	await process_frame
 	var timber_session: Node = _main.session
-	# BAT-13: the Timber flies its finite pack by default (owner decision 2026-10-19).
-	_check("Timber direct session loads and trims its own electric data", timber_session.aircraft.ok
+	# BAT-13: the Lumber flies its finite pack by default (owner decision 2026-10-19).
+	_check("Lumber direct session loads and trims its own electric data", timber_session.aircraft.ok
 		and timber_session.aircraft.model.id == TIMBER and timber_session.start.ok
 		and timber_session.trace_meta().propulsion_model == "electric-pack-ecm-coupled-events-v1")
 
 	_key(KEY_RIGHT, true)
 	await create_timer(0.5).timeout
-	_check("Timber keyboard roll reaches the session", timber_session.raw.roll == 1.0 and timber_session.commands.roll > 0.9, str(timber_session.commands))
+	_check("Lumber keyboard roll reaches the session", timber_session.raw.roll == 1.0 and timber_session.commands.roll > 0.9, str(timber_session.commands))
 	_key(KEY_RIGHT, false)
 	_key(KEY_DOWN, true)
 	await create_timer(0.5).timeout
-	_check("Timber keyboard pitch reaches the session", timber_session.raw.pitch == 1.0 and timber_session.commands.pitch > 0.9, str(timber_session.commands))
+	_check("Lumber keyboard pitch reaches the session", timber_session.raw.pitch == 1.0 and timber_session.commands.pitch > 0.9, str(timber_session.commands))
 	_key(KEY_DOWN, false)
 	_key(KEY_D, true)
 	await create_timer(0.5).timeout
-	_check("Timber keyboard rudder reaches the session", timber_session.raw.yaw == 1.0 and timber_session.commands.yaw > 0.9, str(timber_session.commands))
+	_check("Lumber keyboard rudder reaches the session", timber_session.raw.yaw == 1.0 and timber_session.commands.yaw > 0.9, str(timber_session.commands))
 	_key(KEY_D, false)
 	var timber_trim: float = timber_session.start.throttle
 	_key(KEY_W, true)
 	await create_timer(0.8).timeout
 	_key(KEY_W, false)
-	_check("Timber keyboard throttle raises motor command above trim", timber_session.commands.throttle > timber_trim + 0.1,
+	_check("Lumber keyboard throttle raises motor command above trim", timber_session.commands.throttle > timber_trim + 0.1,
 		"trim %.3f, command %.3f" % [timber_trim, timber_session.commands.throttle])
 	var finite_state := true
 	for value: float in timber_session.sim.state:
 		finite_state = finite_state and is_finite(value)
-	_check("Timber input path keeps every simulated rigid-body value finite", finite_state)
+	_check("Lumber input path keeps every simulated rigid-body value finite", finite_state)
 
 	await _release_main()
 	print("all e2e checks passed" if _failures == 0 else "%d failed" % _failures)

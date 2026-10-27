@@ -67,7 +67,7 @@ func _live_flight() -> void:
 	await process_frame
 
 
-## BAT-13/15: the Timber without --battery flies its default finite pack (owner default, 2026-10-19): O9 shows the
+## BAT-13/15: the Lumber without --battery flies its default finite pack (owner default, 2026-10-19): O9 shows the
 ## pack_ecm cell rows and temperature from radio-style sensors, and still no true SOC outside Diagnostics.
 func _live_pack_flight() -> void:
 	var flight: Node = load("res://main.tscn").instantiate()
@@ -95,7 +95,7 @@ func _live_pack_flight() -> void:
 	await process_frame
 
 
-## --battery=ideal keeps the constant-voltage Timber: no dynamic battery, so O9 stays hidden.
+## --battery=ideal keeps the constant-voltage Lumber: no dynamic battery, so O9 stays hidden.
 func _live_ideal_flight() -> void:
 	var flight: Node = load("res://main.tscn").instantiate()
 	flight.user_args = PackedStringArray(["--aircraft=turbo-lumber-evolution", "--battery=ideal"])

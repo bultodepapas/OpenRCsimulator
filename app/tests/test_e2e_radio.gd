@@ -1,4 +1,4 @@
-# D6a / TT-10 end to end: a fake radio (device 15, injected InputEventJoypadMotion) flying the Timber's real session.
+# D6a / TT-10 end to end: a fake radio (device 15, injected InputEventJoypadMotion) flying the Lumber's real session.
 # Arming, unshaped sticks, the unplug failsafe and the return to the keyboard.
 # Never calls Input.get_joy_guid on the fake device (that prints an engine error): device_info is replaced.
 # Run: godot --headless --path . --script res://tests/test_e2e_radio.gd
@@ -80,8 +80,8 @@ func _run() -> void:
 		return { guid = "fake", name = "Fake EdgeTX", vendor_id = 0x1209, product_id = 0x4f54 }
 	_session.profiles_path = PROFILES # never the pilot's real calibration file
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILES))
-	# BAT-13: the Timber flies its finite pack by default (owner decision 2026-10-19).
-	_check("direct radio test loads Timber electric physics", _session.aircraft.ok and _session.aircraft.model.id == AIRCRAFT
+	# BAT-13: the Lumber flies its finite pack by default (owner decision 2026-10-19).
+	_check("direct radio test loads Lumber electric physics", _session.aircraft.ok and _session.aircraft.model.id == AIRCRAFT
 		and _session.start.ok and _session.trace_meta().propulsion_model == "electric-pack-ecm-coupled-events-v1")
 	_check("starts on the keyboard", not _session.radio.connected and _panel_has("input: keyboard"))
 
@@ -110,7 +110,7 @@ func _run() -> void:
 	_check("elevator stick forward → pitch −1 (nose down)", _session.commands.pitch == -1.0)
 	_motion(3, 1.0)
 	await _settle()
-	_check("rudder stick commands the Timber yaw channel", _session.commands.yaw == 1.0, str(_session.commands))
+	_check("rudder stick commands the Lumber yaw channel", _session.commands.yaw == 1.0, str(_session.commands))
 
 	Input.joy_connection_changed.emit(ID, false)
 	await _settle()

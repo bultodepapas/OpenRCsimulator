@@ -70,3 +70,31 @@ are retained. Source snapshots are selected evidence, not a complete repository
 closure; historical construction scripts contain their executed workspace paths.
 The manifest binds raw payload bytes. Folder attributes and a disposable Git
 autocrlf clone check verify transport without staging the shared working tree.
+
+## Per-OS legacy outputs (2026-10-27)
+
+The legacy output fixture was captured on Windows. The Linux build of the same
+pinned engine (Ubuntu 24.04, glibc 2.39, WSL2) never reproduced it, even at the
+promotion commit: p51d differs in all four digests, gp-extra in all except the
+launch checkpoint. Separately, NITRO-06-R3 (`20662f264`, the documented
+closed-form carburettor root) moved all four gp-extra digests on both OSes.
+`outputs.gp-extra-300s-60` therefore holds the R3 values.
+
+[`construction/reconstruct_legacy_reference.py`](construction/reconstruct_legacy_reference.py)
+rebuilds the old owner from `552d683ea^`, plus `before/` and two retained
+byte-exact copies. It verifies all 400 app inputs in `loaded-source-pins.json`
+and optionally applies only the R3 carburettor.
+[`construction/capture_legacy_outputs.gd`](construction/capture_legacy_outputs.gd)
+runs the test's unchanged legacy body.
+[`construction/merge_legacy_os_capture.py`](construction/merge_legacy_os_capture.py)
+records an OS's differing digests in `outputs_by_os.<os>` and its provenance in
+`os_captures`.
+
+On Windows, the reference reproduced every original digest, and the reference
+with R3 reproduced current HEAD. On WSL Linux, the reference matched Linux at
+`552d683ea`, and the reference with R3 matched Linux HEAD on all four aircraft.
+The test selects digests by `OS.get_name()`, compares them exactly and fails on
+an OS without a capture. Identity is per pinned runtime and OS. The ubuntu-24.04
+CI image is not separately captured. Its earlier jensen and sebart differences
+did not reproduce under WSL and need a CI run to confirm. The sealed
+`manifest.json` predates these files and is unchanged.

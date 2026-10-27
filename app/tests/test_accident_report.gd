@@ -110,26 +110,26 @@ func _timber_parts_behavior() -> void:
 	}
 	var original := JSON.stringify(source)
 	view.show_assessment(source, true)
-	_check("Timber terminal report opens with parts visible", view._expanded)
+	_check("Lumber terminal report opens with parts visible", view._expanded)
 	await _ui.settle()
 	var details := _details_text(view)
-	_check("Timber puts affected parts before price references", details.find("Affected parts") == 0
+	_check("Lumber puts affected parts before price references", details.find("Affected parts") == 0
 		and details.find("Wing, flaps, ailerons and servos") < details.find("Price references"), details)
-	_check("Timber keeps cents on headline amounts above one hundred dollars",
+	_check("Lumber keeps cents on headline amounts above one hundred dollars",
 		view.find_child("ReportAmount", true, false).text == "At least US$115.95")
-	_check("Timber displays frozen SKU and package reference price", details.contains("SPM-1012")
+	_check("Lumber displays frozen SKU and package reference price", details.contains("SPM-1012")
 		and details.contains("One motor") and details.contains("US$74.99") and details.contains("Price proxy"), details)
-	_check("Timber distinguishes pending inspection from a zero-dollar charge", details.contains("Pending")
+	_check("Lumber distinguishes pending inspection from a zero-dollar charge", details.contains("Pending")
 		and not details.contains("US$0.00") and details.contains("excluded from the subtotal"), details)
 	var rows := view.find_children("PartLine*", "HBoxContainer", true, false)
-	_check("Timber sorts only the displayed rows to put known charges first", rows.size() == 2
+	_check("Lumber sorts only the displayed rows to put known charges first", rows.size() == 2
 		and (rows[0].get_child(0).get_child(0) as Label).text == "Wing, flaps, ailerons and servos"
 		and JSON.stringify(source) == original and JSON.stringify(view._report) == original)
-	_check_live_panel_bounds(view, "Timber parts report")
+	_check_live_panel_bounds(view, "Lumber parts report")
 	TranslationServer.set_locale("es")
 	await _ui.settle()
 	details = _details_text(view)
-	_check("Timber parts table and pending state translate to Spanish", details.contains("Piezas afectadas")
+	_check("Lumber parts table and pending state translate to Spanish", details.contains("Piezas afectadas")
 		and details.contains("Pendiente") and details.contains("Ala, flaps, alerones y servos"), details)
 	TranslationServer.set_locale("en")
 	var historical := source.duplicate(true)
@@ -150,16 +150,16 @@ func _timber_parts_behavior() -> void:
 	var pending_before := JSON.stringify(pending)
 	view.show_assessment(pending, true)
 	await _ui.settle()
-	_check("valid Timber inspection names the next step instead of unavailable cost",
+	_check("valid Lumber inspection names the next step instead of unavailable cost",
 		view.find_child("ReportAmount", true, false).text == "Inspection pending"
 		and _details_text(view).contains("No confirmed charges yet.") and not _details_text(view).contains("US$0.00"))
 	_check("pending inspection presentation preserves all report amounts", JSON.stringify(pending) == pending_before
 		and JSON.stringify(view._report) == pending_before)
 	TranslationServer.set_locale("es")
 	await _ui.settle()
-	_check("pending Timber headline and no-charge explanation translate", view.find_child("ReportAmount", true, false).text == "Inspección pendiente"
+	_check("pending Lumber headline and no-charge explanation translate", view.find_child("ReportAmount", true, false).text == "Inspección pendiente"
 		and _details_text(view).contains("Aún no hay costes confirmados."))
-	_check_live_panel_bounds(view, "Timber pending inspection in Spanish")
+	_check_live_panel_bounds(view, "Lumber pending inspection in Spanish")
 	TranslationServer.set_locale("en")
 	pending.ok = false
 	view.show_assessment(pending, true)

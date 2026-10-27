@@ -390,15 +390,15 @@ echo "== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01/V1
 run_with_timeout 180 --script res://aircraft/verify_p51_clearance.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "P-51 clearance contract failed (see above)"; exit 1; fi
 
-echo "== Ventage Jet Blender source and visual contract (AV-31: imported geometry, controls, sections, no propeller)"
+echo "== Vantage Jet Blender source and visual contract (AV-31: imported geometry, controls, sections, no propeller)"
 python3 "$HERE/../assets/aircraft/avanti-s-a200/compile_blender.py" --check || exit 1
 run --script res://aircraft/verify_avanti.gd 2>&1 | tee "$LOG" | tail -1
-if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Avanti visual contract failed (see above)"; exit 1; fi
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Vantage Jet visual contract failed (see above)"; exit 1; fi
 
 echo "== Turbo Lumber Evolution asset identity and generated geometry (TT-01/02/03: manifest, mesh measurements, geometry, constants)"
 python3 "$HERE/../research/timber/tt01/manifest.py" --check || exit 1
 run --script "$HERE/../research/timber/tt02/measure_mesh.gd" -- --out="$HERE/../assets/aircraft/turbo-lumber-evolution/mesh-measurements.json" --check 2>&1 | tee "$LOG" | tail -1
-if grep -qE "^(SCRIPT )?ERROR:|differ" "$LOG"; then echo "Timber mesh measurements are stale or the importer changed (see above)"; exit 1; fi
+if grep -qE "^(SCRIPT )?ERROR:|differ" "$LOG"; then echo "Lumber mesh measurements are stale or the importer changed (see above)"; exit 1; fi
 python3 "$HERE/../assets/aircraft/turbo-lumber-evolution/build_geometry.py" --check || exit 1
 python3 "$HERE/../assets/aircraft/turbo-lumber-evolution/compile_geometry.py" --check || exit 1
 python3 "$HERE/../research/timber/tt03/check_asset.py" --check || exit 1
@@ -408,7 +408,7 @@ python3 "$HERE/../research/timber/tt07/test_derive.py"
 
 echo "== Turbo Lumber Evolution model contract (aircraft/verify_timber.gd, TT-03/TT-05: imported scene, pivots, signs, propeller, gear)"
 run --script res://aircraft/verify_timber.gd 2>&1 | tee "$LOG" | tail -1
-if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Timber model contract failed (see above)"; exit 1; fi
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Lumber model contract failed (see above)"; exit 1; fi
 
 echo "== F4U Corsair identity, generated data and model contract (F4U-03/05/07/11/12: manifest, rig, physics, costing, imported scene)"
 python3 "$HERE/../research/f4u-corsair/F4U-03/manifest.py" --check || exit 1
@@ -478,18 +478,18 @@ grep -q "p51d-mustang-120" "$TRACE" || { echo "the P-51 trace does not name the 
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=sebart-avanti-s-a200-p100rx --trace="$TRACE" --t=3 > /dev/null 2>&1
-grep -q "sebart-avanti-s-a200-p100rx" "$TRACE" || { echo "the Avanti trace does not name the Avanti"; exit 1; }
+grep -q "sebart-avanti-s-a200-p100rx" "$TRACE" || { echo "the Vantage Jet trace does not name the Vantage Jet"; exit 1; }
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=turbo-lumber-evolution --battery=ideal --trace="$TRACE" --t=3 > /dev/null 2>&1
-grep -q "turbo-lumber-evolution" "$TRACE" || { echo "the Timber trace does not name the Timber"; exit 1; }
+grep -q "turbo-lumber-evolution" "$TRACE" || { echo "the Lumber trace does not name the Lumber"; exit 1; }
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3 --aircraft-input="$HERE/data/aircraft/turbo_lumber_evolution.json"; rm -f "$TRACE"
 # BAT-13: v14 carries live mass; the base format still identifies the finite pack.
 TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=turbo-lumber-evolution --trace="$TRACE" --t=3 > /dev/null 2>&1
-grep -q "openrc-trace v14" "$TRACE" && grep -q "mass_base_trace_format.*openrc-trace v13" "$TRACE" || { echo "the default Timber trace is not a finite-pack mass trace"; exit 1; }
+grep -q "openrc-trace v14" "$TRACE" && grep -q "mass_base_trace_format.*openrc-trace v13" "$TRACE" || { echo "the default Lumber trace is not a finite-pack mass trace"; exit 1; }
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3 --aircraft-input="$HERE/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json"; rm -f "$TRACE"
-echo "== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)"
+echo "== Vantage Jet physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)"
 python3 "$HERE/../research/avanti-s/av06/derive_physics.py" --check || exit 1
 echo "== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)"
 expected_failure unknown-aircraft 1 "aircraft 'no-such-aircraft' refused: not in the catalog (" \
@@ -564,18 +564,18 @@ if [ "$(echo $HASHES | tr ' ' '\n' | sort -u | wc -l)" -ne 1 ] || [ -z "$(echo $
 fi
 echo "identical"
 
-echo "== TT-08: Timber coupled electric flight is identical at 30/60/144 fps"
+echo "== TT-08: Lumber coupled electric flight is identical at 30/60/144 fps"
 HASHES=""
 for fps in 30 60 144; do
   out="$(run --fixed-fps "$fps" --script res://tests/run_fixed_step.gd -- --aircraft=turbo-lumber-evolution 2>&1)"
   echo "$out" | grep -E "ticks=|ERROR"
-  if echo "$out" | grep -qE "^(SCRIPT )?ERROR:"; then echo "Timber engine error at $fps fps"; exit 1; fi
+  if echo "$out" | grep -qE "^(SCRIPT )?ERROR:"; then echo "Lumber engine error at $fps fps"; exit 1; fi
   HASHES="$HASHES $(echo "$out" | sed -n 's/^flight_sha256=\([0-9a-f]*\)$/\1/p')"
 done
 if [ "$(echo $HASHES | tr ' ' '\n' | sort -u | wc -l)" -ne 1 ] || [ -z "$(echo $HASHES | tr -d ' ')" ]; then
-  echo "Timber complete checkpoint depends on the rendering frame rate:$HASHES"; exit 1
+  echo "Lumber complete checkpoint depends on the rendering frame rate:$HASHES"; exit 1
 fi
-echo "identical Timber complete checkpoints"
+echo "identical Lumber complete checkpoints"
 
 echo "== E0b5: experimental wash transport at 30/60/144 fps"
 python3 "$HERE/../research/propwash/e0b5/check_frames.py" --godot "$GODOT"

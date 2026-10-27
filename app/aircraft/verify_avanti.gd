@@ -1,4 +1,4 @@
-# AV-31 qualification for the imported Ventage Jet Avanti GLB.
+# AV-31 qualification for the imported Vantage Jet GLB.
 # Run from the repository root: godot --headless --path app --script res://aircraft/verify_avanti.gd
 extends SceneTree
 
@@ -111,7 +111,7 @@ func _run() -> void:
 
 	var build: Dictionary = Builder.build(aircraft_id)
 	var root := build.get("root") as Node3D
-	_check("generic registry/renderer builds Avanti", root != null and build.get("aircraft_id", "") == aircraft_id)
+	_check("generic registry/renderer builds Vantage Jet", root != null and build.get("aircraft_id", "") == aircraft_id)
 	if root == null:
 		_finish()
 		return
@@ -144,7 +144,7 @@ func _run() -> void:
 	_check_turbine_geometry(root, data)
 
 	var physical_result: Dictionary = AD.load_file(Catalog.entry(aircraft_id).data)
-	_check("physical Avanti data loads", physical_result.get("ok", false), str(physical_result.get("errors", [])))
+	_check("physical Vantage Jet data loads", physical_result.get("ok", false), str(physical_result.get("errors", [])))
 	var raw_physical: Variant = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(aircraft_id).data))
 	var witnesses := _capture_witnesses(build, data)
 	var rest_transforms := _rest_transforms(build)
@@ -193,7 +193,7 @@ func _run() -> void:
 
 	var mesh_count: int = int(bounds_result.mesh_count) if bounds_result.valid else 0
 	var art_count: int = data.get("articulations", {}).size()
-	print("AV-31 Avanti imported model %s: %d meshes, %d articulations, %d checks, %d failures" %
+	print("AV-31 Vantage Jet imported model %s: %d meshes, %d articulations, %d checks, %d failures" %
 		[data.revision, mesh_count, art_count, _checks, _failures])
 	if second_root != null:
 		second_root.free()
@@ -203,7 +203,7 @@ func _run() -> void:
 
 func _finish(print_summary := true) -> void:
 	if print_summary:
-		print("AV-31 Avanti imported model: %d checks, %d failures" % [_checks, _failures])
+		print("AV-31 Vantage Jet imported model: %d checks, %d failures" % [_checks, _failures])
 	if _failures == 0:
 		print("PASS AV-31 %d checks" % _checks)
 	else:

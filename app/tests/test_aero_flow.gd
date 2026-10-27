@@ -168,14 +168,14 @@ func _check_wing_section_couple() -> void:
 	root.add_child(flight)
 	if not flight.aircraft.get("ok", false):
 		failures += 1
-		printerr("FAIL wing-section couple: Timber data did not load")
+		printerr("FAIL wing-section couple: Lumber data did not load")
 		flight.free()
 		return
 	var model: Dictionary = flight.aircraft.model.duplicate(true)
 	var cm_ac: float = float(model.surfaces.get("wing_cm_ac", NAN))
 	if not is_finite(cm_ac) or cm_ac == 0.0:
 		failures += 1
-		printerr("FAIL wing-section couple: Timber has no enabled Cm_ac value")
+		printerr("FAIL wing-section couple: Lumber has no enabled Cm_ac value")
 		flight.free()
 		return
 	var no_couple: Dictionary = model.duplicate(true)
@@ -206,8 +206,8 @@ func _check_wing_section_couple() -> void:
 		printerr("FAIL wing-section Cm_ac adds only pitching couple; non-pitch loads changed")
 	if absf(moment_increment - expected_moment) > tolerance:
 		failures += 1
-		printerr("FAIL Timber wing-section Cm_ac analytic strip sum: ", moment_increment, " != ", expected_moment)
-	print("D11j Timber section moment: ΔMy %.12f Nm, analytic %.12f Nm, Cm_ac %.6f" % [moment_increment, expected_moment, cm_ac])
+		printerr("FAIL Lumber wing-section Cm_ac analytic strip sum: ", moment_increment, " != ", expected_moment)
+	print("D11j Lumber section moment: ΔMy %.12f Nm, analytic %.12f Nm, Cm_ac %.6f" % [moment_increment, expected_moment, cm_ac])
 	flight.free()
 
 

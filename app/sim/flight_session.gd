@@ -902,7 +902,7 @@ func _selected_airborne_trim_request(model: Dictionary, down_m: float = -30.0) -
 		return {kind = "inline", result = {ok = false, message = "trim throttle must be within 0..1 (got %s)" % str(target)}}
 	# Search bounds limit this opt-in policy; they do not prescribe a flight speed.
 	# D6e-R3: the level speed at half throttle lies between 1.3 and 2.0 times the slow start speed across the fleet
-	# (Timber 1.25, Ventage Jet 1.92); the bound leaves room for a thinner atmosphere without reaching the solver's limit.
+	# (Lumber 1.25, Vantage Jet 1.92); the bound leaves room for a thinner atmosphere without reaching the solver's limit.
 	var arguments: Array = [speed, target, minf(PowerTrim.MAX_SEARCH_SPEED_MPS, 2.5 * speed),
 		query_model, sim.gravity, query_model.controls.throw_rad, density, charge,
 		PowerTrim.DEFAULT_MAX_ALPHA_RAD]
@@ -4884,7 +4884,7 @@ func anchor_count() -> int:
 	return count
 
 
-## Number of rotating wheels enabled by a validated file-backed profile (zero for in-memory/legacy gear and Avanti).
+## Number of rotating wheels enabled by a validated file-backed profile (zero for in-memory/legacy gear and Vantage Jet).
 func wheel_count() -> int:
 	if _fact_wheel_count != _FACT_UNKNOWN:
 		return _fact_wheel_count

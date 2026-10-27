@@ -9,7 +9,7 @@ const ExtraGeometry := preload("res://aircraft/extra_300s_geometry.gd")
 const P51Geometry := preload("res://aircraft/p51d_geometry.gd")
 
 ## Known blade counts: the Stik's generated blades (ugly_stik_equipment.gd builds two), the Extra's and P-51's
-## geometry data, and the Timber's r1 rotor (geometry.json: "rotating: 3 blades, spinner, backplate, outrunner bell").
+## geometry data, and the Lumber's r1 rotor (geometry.json: "rotating: 3 blades, spinner, backplate, outrunner bell").
 const BLADES := {AirplaneBuilder.STIK_ID: 2, AirplaneBuilder.EXTRA_ID: int(ExtraGeometry.DATA.propeller.blades),
 	AirplaneBuilder.P51_ID: int(P51Geometry.DATA.propeller.blades), AirplaneBuilder.TIMBER_ID: 3}
 
@@ -121,7 +121,7 @@ func _aircraft(id: String) -> void:
 		var root_material: BaseMaterial3D = measured.colors[root_ring]
 		_check("P-51 tip rings carry the yellow tip material", tip_material != root_material and tip_material.albedo_color.g > root_material.albedo_color.g)
 	if id == AirplaneBuilder.TIMBER_ID:
-		_check("Timber spinner, backplate and bell form an opaque hub", measured.hub_radius > 0.01 and measured.hub_radius < 0.5 * measured.radius, str(measured.hub_radius))
+		_check("Lumber spinner, backplate and bell form an opaque hub", measured.hub_radius > 0.01 and measured.hub_radius < 0.5 * measured.radius, str(measured.hub_radius))
 	# Attach and drive it.
 	var holder := Node3D.new()
 	root.add_child(holder)
@@ -216,7 +216,7 @@ func _no_propeller() -> void:
 	root.add_child(airplane.root)
 	var holder := Node3D.new()
 	root.add_child(holder)
-	_check("the Avanti gets no blur", Blur.attach(airplane, null, holder) == null and holder.get_child_count() == 0)
+	_check("the Vantage Jet gets no blur", Blur.attach(airplane, null, holder) == null and holder.get_child_count() == 0)
 	_check("an empty build gets no blur", Blur.attach({}, null, holder) == null)
 	holder.free()
 	airplane.root.free()

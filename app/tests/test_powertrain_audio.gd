@@ -30,8 +30,8 @@ func _run() -> void:
 		_check("profile has usable RPM reference: " + id,
 			float(profile.get("max_rpm", 0.0)) > 0.0 and int(profile.get("blades", 0)) >= 2)
 	_check("P-51 maps to gasoline bank", Powertrain.profile_for("p51d-mustang-120", {}).family == "gasoline")
-	_check("Avanti maps to turbine bank", Powertrain.profile_for("sebart-avanti-s-a200-p100rx", {"kind": "turbine"}).family == "turbine")
-	_check("Timber maps to electric bank", Powertrain.profile_for("turbo-lumber-evolution", {"kind": "electric_prop"}).family == "electric")
+	_check("Vantage Jet maps to turbine bank", Powertrain.profile_for("sebart-avanti-s-a200-p100rx", {"kind": "turbine"}).family == "turbine")
+	_check("Lumber maps to electric bank", Powertrain.profile_for("turbo-lumber-evolution", {"kind": "electric_prop"}).family == "electric")
 	_check("X-Cell maps to rotor bank", Powertrain.profile_for("xcell-60-research", {}).family == "rotor")
 	_test_imported_banks()
 

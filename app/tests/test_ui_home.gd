@@ -590,7 +590,9 @@ func _probe_home_resolutions() -> void:
 				)
 				var rail_limit := minf(size.x * 0.52, 500.0) if scale >= 1.5 else minf(size.x * 0.45, 340.0)
 				var rail_bounded := screen.encloses(rail_rect) and rail_rect.size.x <= rail_limit + 1.0
-				var navigation_reflowed: bool = (size.y < 720) == (responsive_home._navigation.get_parent() == responsive_home._page_host)
+				# Short windows, and enlarged text on compact windows, move navigation into the scrolling page.
+				var navigation_scrolls: bool = size.y < 720 or (scale >= 1.5 and (size.x < 1500 or size.y < 850))
+				var navigation_reflowed: bool = navigation_scrolls == (responsive_home._navigation.get_parent() == responsive_home._page_host)
 				var text_scale_preserved := true
 				if scale >= 1.5:
 					var compact := size.x < 1500 or size.y < 850

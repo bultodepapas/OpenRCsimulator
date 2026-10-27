@@ -28,7 +28,7 @@ func _pose_equal(a: Dictionary, b: Dictionary) -> bool:
 
 func _ordinary_pose_equal(a: Dictionary, b: Dictionary) -> bool:
 	# Ordinary interpolation normalizes the quaternion, even when both states are equal.
-	# AV-17: the corrected Avanti trim exposes a 2.22e-16 basis residual near zero.
+	# AV-17: the corrected Vantage Jet trim exposes a 2.22e-16 basis residual near zero.
 	# Retain exact position and simulation-state checks; only allow roundoff in this basis.
 	if a.pos != b.pos:
 		return false

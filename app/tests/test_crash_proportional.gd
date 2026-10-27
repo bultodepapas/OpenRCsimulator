@@ -64,8 +64,8 @@ func _slapdown() -> void:
 	var dive_v := 20.0 * sqrt(0.5)
 	var nose_only := Severity.estimate(AVANTI_KG, dive_v, dive_v, 45.0, "grass", "engine", AVANTI_KG * 0.20)
 	var with_slap := Severity.estimate(AVANTI_KG, dive_v, dive_v, 45.0, "grass", "engine", AVANTI_KG * 0.20, 1.0, dive_v)
-	_check("Avanti 45 deg dive at 20 m/s: nose contact alone grades C2", nose_only["class"] == 2 and nose_only.slapdown_class == 0)
-	_check("Avanti 45 deg dive at 20 m/s: slapdown raises it to C3", with_slap["class"] == 3 and with_slap.slapdown_class == 3)
+	_check("Vantage Jet 45 deg dive at 20 m/s: nose contact alone grades C2", nose_only["class"] == 2 and nose_only.slapdown_class == 0)
+	_check("Vantage Jet 45 deg dive at 20 m/s: slapdown raises it to C3", with_slap["class"] == 3 and with_slap.slapdown_class == 3)
 	var expected := (0.5 * AVANTI_KG * dive_v * dive_v - 0.5 * AVANTI_KG * 0.20 * dive_v * dive_v) * Severity.SURFACE_TRANSFER["grass"]
 	_check("slapdown energy is the CG normal energy left after the first contact", absf(with_slap.slapdown_energy_j - expected) < 1e-9)
 	var cartwheel := Severity.estimate(STIK_KG, 10.0, 8.0, rad_to_deg(atan2(10.0, 8.0)), "grass", "wing", STIK_KG * 0.07, 1.0, 10.0)

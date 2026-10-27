@@ -1,5 +1,5 @@
 # AV-05: the turbojet branch (physics/turbine.gd) and its loader (aircraft_data.gd _turbine), on an in-memory engine
-# block whose numbers are chosen for hand calculation, not the Avanti's data (test_avanti_handling.gd flies those).
+# block whose numbers are chosen for hand calculation, not the Vantage Jet's data (test_avanti_handling.gd flies those).
 # Run: godot --headless --path . --script res://tests/test_turbine.gd
 extends SceneTree
 

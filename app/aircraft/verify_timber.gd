@@ -327,7 +327,7 @@ func _run() -> void:
 			var source_mat := isolated_cowl.mesh.surface_get_material(s) as BaseMaterial3D
 			if source_mat != null and cowl_seating.has(source_mat.resource_name):
 				isolated_ok = isolated_ok and isolated_cowl.get_surface_override_material(s) != cowl_seating[source_mat.resource_name]
-	_check("separate Timber builds do not share cowl seating overrides", isolated_ok)
+	_check("separate Lumber builds do not share cowl seating overrides", isolated_ok)
 	isolated_model.root.free()
 
 	# TT-05: hinge records and apply_surfaces signs on trailing-edge witness vertices.
@@ -502,7 +502,7 @@ func _run() -> void:
 	model.propeller.rotation.z = 0.0
 	model.gear.steering.rotation.y = 0.0
 
-	print("timber preview %s: %d meshes, %d surfaces, %d triangles, extent %.4f x %.4f x %.4f m" % [Timber.VISUAL_REVISION, meshes.size(), surfaces, triangles, box.size.x, box.size.y, box.size.z])
+	print("Lumber preview %s: %d meshes, %d surfaces, %d triangles, extent %.4f x %.4f x %.4f m" % [Timber.VISUAL_REVISION, meshes.size(), surfaces, triangles, box.size.x, box.size.y, box.size.z])
 	other.root.free()
 	root.free()
 	if _failures == 0: print("PASS %d checks" % _checks)

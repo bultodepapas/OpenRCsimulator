@@ -41,7 +41,7 @@ func _initialize() -> void:
 	var model: Dictionary = _session.aircraft.model
 	var lag: int = _session.downwash_index()
 	_check("Stik: one lagged wing lift-velocity source (m/s) after the anchors", lag == FlightSession.AUX_ANCHORS + 9 and _session.sim.aux.size() == lag + 1)
-	# The lag is an explicit local-model capability. The Avanti oracle path does not receive an unused lag entry.
+	# The lag is an explicit local-model capability. The Vantage Jet oracle path does not receive an unused lag entry.
 
 	for id in ["gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx"]:
 		var other := FlightSession.new()

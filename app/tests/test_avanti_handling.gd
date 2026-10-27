@@ -34,7 +34,7 @@ func _initialize() -> void:
 	var session := FlightSession.new()
 	session.setup(DATA, ID)
 	root.add_child(session)
-	_check("Avanti data loads and trims at its own start speed", session.aircraft.ok and session.start.get("ok", false), "%s %s" % [session.start.get("V", "?"), session.start.get("message", "")])
+	_check("Vantage Jet data loads and trims at its own start speed", session.aircraft.ok and session.start.get("ok", false), "%s %s" % [session.start.get("V", "?"), session.start.get("message", "")])
 	if not session.aircraft.ok or not session.start.get("ok", false):
 		print("%d checks, %d failed" % [_count, _failures + 1])
 		quit(1)

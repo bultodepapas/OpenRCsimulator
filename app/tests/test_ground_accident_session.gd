@@ -56,7 +56,7 @@ func _crash_rows(data: Dictionary) -> Array[Dictionary]:
 func _belly_continues() -> void:
 	var player := _session()
 	var reference := _session()
-	check("real retractable Avanti loaded", player.aircraft.get("ok", false) and player.gear_is_retractable())
+	check("real retractable Vantage Jet loaded", player.aircraft.get("ok", false) and player.gear_is_retractable())
 	check("air start has fully retracted gear", player.sim.aux[player.gear_aux_index()] == 0.0)
 	check("controlled belly initial state installs", player.sim.reset(_belly(player, 0.01))
 		and reference.sim.reset(_belly(reference, 0.01)))

@@ -20,13 +20,13 @@ var _manifest: Dictionary = {}
 
 func _initialize() -> void:
 	var described: Dictionary = Registry.describe(FAMILY_ID)
-	_check("registered Timber manifest is valid", bool(described.get("ok", false)), str(described.get("errors", [])))
+	_check("registered Lumber manifest is valid", bool(described.get("ok", false)), str(described.get("errors", [])))
 	if not described.get("ok", false):
 		print("Imported aircraft model: %d checks, %d failures" % [_checks, _failures])
 		quit(1)
 		return
 	_manifest = described.manifest
-	_check("Timber uses the shared v2 imported builder", _manifest.version == 2 and _manifest.builder.script == "res://aircraft/imported_model.gd")
+	_check("Lumber uses the shared v2 imported builder", _manifest.version == 2 and _manifest.builder.script == "res://aircraft/imported_model.gd")
 	_test_real_timber_and_instance_isolation()
 	_test_renamed_nodes()
 	_test_split_elevator()
@@ -39,13 +39,13 @@ func _initialize() -> void:
 
 func _test_real_timber_and_instance_isolation() -> void:
 	var first_result: Dictionary = Imported.build_checked(_manifest.duplicate(true))
-	_check("build_checked constructs the real Timber scene", first_result.get("ok", false), str(first_result.get("errors", [])))
+	_check("build_checked constructs the real Lumber scene", first_result.get("ok", false), str(first_result.get("errors", [])))
 	if not first_result.get("ok", false):
 		return
 	var first: Dictionary = first_result.model
 	var first_root := first.get("root") as Node3D
 	var second_result: Dictionary = Imported.build_checked(_manifest.duplicate(true))
-	_check("a second Timber instance constructs", second_result.get("ok", false), str(second_result.get("errors", [])))
+	_check("a second Lumber instance constructs", second_result.get("ok", false), str(second_result.get("errors", [])))
 	if not second_result.get("ok", false):
 		first_root.free()
 		return
@@ -57,7 +57,7 @@ func _test_real_timber_and_instance_isolation() -> void:
 	_check("asset hash and revision are carried on root",
 		str(first_root.get_meta("asset_sha256", "")) == str(_manifest.asset.sha256) and
 		str(first_root.get_meta("visual_revision", "")) == str(_manifest.asset.revision))
-	_check("shared derived checks accept Timber", Registry.validate_derived(_manifest, first).ok)
+	_check("shared derived checks accept Lumber", Registry.validate_derived(_manifest, first).ok)
 
 	var cowl_a := _find_mesh(first_root, "cowl")
 	var cowl_b := _find_mesh(second_root, "cowl")
@@ -125,7 +125,7 @@ func _test_real_timber_and_instance_isolation() -> void:
 		gear_wrappers_match = (gear_wrappers_match and wrapper != null and entry != null and
 			wrapper.name == str(entry.wrapper) and str(entry.wrapper) == EXPECTED_GEAR_WRAPPERS.get(role, ""))
 	_check("gear roles map through manifest aliases to stable wrappers", gear_wrappers_match)
-	_check("Timber rotor wrapper and presence are explicit", first.get("has_propeller", false) and first.propeller.name == "propeller")
+	_check("Lumber rotor wrapper and presence are explicit", first.get("has_propeller", false) and first.propeller.name == "propeller")
 
 	var wreck := first_root.duplicate() as Node3D
 	_check("scene root is safe to duplicate for wreck creation", wreck != null and first_root.scene_file_path.is_empty())
@@ -138,7 +138,7 @@ func _test_real_timber_and_instance_isolation() -> void:
 		wreck.free()
 
 	var facade_model: Dictionary = Timber.build()
-	_check("Timber compatibility facade builds through the shared registry", facade_model.get("root") is Node3D)
+	_check("Lumber compatibility facade builds through the shared registry", facade_model.get("root") is Node3D)
 	if facade_model.get("root") is Node3D:
 		facade_model.root.free()
 	second_root.free()

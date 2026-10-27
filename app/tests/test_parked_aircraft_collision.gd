@@ -176,21 +176,21 @@ func _test_avanti_empty_wing_clearance(world: Dictionary) -> void:
 		if str(part.get("part", "")) == "body":
 			body_size = part.get("size", [])
 			break
-	_check("Avanti central body proxy does not fill the wing span",
+	_check("Vantage Jet central body proxy does not fill the wing span",
 		overall_size.size() == 3 and body_size.size() == 3
 		and float(body_size[0]) < float(overall_size[0]) * 0.75)
 	var witness := _empty_local_point(info)
-	_check("Avanti geometry has an empty wing-clearance witness", not witness.is_empty())
+	_check("Vantage Jet geometry has an empty wing-clearance witness", not witness.is_empty())
 	if witness.is_empty():
 		return
-	_check("Avanti clearance witness lies outboard of the fuselage",
+	_check("Vantage Jet clearance witness lies outboard of the fuselage",
 		absf(float(witness[0])) >= float(overall_size[0]) * 0.30)
 	var placement: Dictionary = {
 		north = -100.0, east = 50.0, heading = 123.0, aircraft = aircraft,
 		scale = 0.8, elevation = 0.0, configuration = "assembled",
 	}
 	var proxy := _proxy_by_id(world, "fleet:display:02:%s:part:00" % aircraft)
-	_check("Avanti collision proxy is present in the custom world", not proxy.is_empty())
+	_check("Vantage Jet collision proxy is present in the custom world", not proxy.is_empty())
 	var heading := deg_to_rad(float(placement.heading))
 	var local_x := float(witness[0]) * float(placement.scale)
 	var local_y := float(witness[1]) * float(placement.scale)
@@ -207,7 +207,7 @@ func _test_avanti_empty_wing_clearance(world: Dictionary) -> void:
 		down, direction_north * 5.0, direction_east * 5.0, 0.0)
 	var hit: Collision.Event = Collision.first_hit(clear_start, clear_finish, PackedFloat64Array([0.0, 0.0, 0.0]),
 		world, 32, MASS, inertia)
-	_check("custom solver misses a swept path through Avanti empty wing clearance", hit == null)
+	_check("custom solver misses a swept path through Vantage Jet empty wing clearance", hit == null)
 
 
 func _test_p51_wing_proxy_width_and_empty_clearance(world: Dictionary) -> void:

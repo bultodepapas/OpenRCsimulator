@@ -72,7 +72,7 @@ func _run() -> void:
 		and f.stall_shift_fraction > 0.2 and f.stall_shift_fraction < 0.5 and f.lift_reference_offset_m > 0.04 and f.lift_reference_offset_m < 0.07,
 		"kappa %.3f offset %.4f m" % [f.stall_shift_fraction, f.lift_reference_offset_m])
 
-	# 1. Neutral refinements are byte-identical to their absence (the Ventage Jet law).
+	# 1. Neutral refinements are byte-identical to their absence (the Vantage Jet law).
 	var absent := raw.duplicate(true)
 	absent.flaps.erase("stall_shift_fraction")
 	absent.flaps.erase("lift_reference_offset_m")

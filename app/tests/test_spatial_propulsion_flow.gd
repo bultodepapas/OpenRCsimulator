@@ -168,7 +168,7 @@ func _test_shaft_flow_projection() -> void:
 
 func _test_turbine_intake_flow() -> void:
 	var loaded: Dictionary = AircraftData.load_file("res://data/aircraft/sebart_avanti_s_a200.json")
-	_check("Avanti turbine fixture loads", loaded.get("ok", false), str(loaded.get("errors", [])))
+	_check("Vantage Jet turbine fixture loads", loaded.get("ok", false), str(loaded.get("errors", [])))
 	if not loaded.get("ok", false):
 		return
 	var prop: Dictionary = loaded.model.propulsion

@@ -96,7 +96,7 @@ class TraceAcceptance(unittest.TestCase):
             ('gp-extra-300s-60', 'glow-mean-cycle-carburettor-v4', 'tail-slipstream-increment-v1', True),
             ('p51d-mustang-120', 'propeller-shaft-coupled-rk4-v1', 'tail-slipstream-increment-v1', True),
             ('sebart-avanti-s-a200-p100rx', 'turbine-rpm-governor-rk4-v1', 'none', False),
-            # BAT-13: the Timber flies its finite pack by default; --battery=ideal keeps the fixed bus.
+            # BAT-13: the Lumber flies its finite pack by default; --battery=ideal keeps the fixed bus.
             ('turbo-lumber-evolution', 'electric-pack-ecm-coupled-events-v1', 'none', False),
             ('turbo-lumber-evolution', 'electric-fixed-bus-coupled-stop-v1', 'none', False, '--battery=ideal'),
         ]
@@ -297,7 +297,7 @@ class TraceAcceptance(unittest.TestCase):
                     check_coupled_metadata({k: v for k, v in metadata.items() if k != key})
 
     def test_timber_pack_trace_rejects_corruption(self):
-        """BAT-10: the default Timber pack trace passes, and each pack invariant rejects a corrupted sample."""
+        """BAT-10: the default Lumber pack trace passes, and each pack invariant rejects a corrupted sample."""
         from check_trimmed_flight import check_pack_sample
         path = self.directory / 'timber-pack.csv'
         result = self.run_app('--aircraft=turbo-lumber-evolution', '--trace=' + str(path), '--t=.05')

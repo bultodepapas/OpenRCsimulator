@@ -15,6 +15,7 @@ wait until="flight.session.sim.tick >= 300" timeout_s=120
 home
 assert expr="app.statistics_service.query().started == 2 and app.statistics_service.query().restarts == 1" message="one restart and two flights survive Home"
 assert expr="app.statistics_service.query().partial == 0" message="committed reset does not create a coverage gap"
+press text="Practice"
 press text="Statistics · Pilot total"
 assert expr="screens.is_top('statistics')" message="Home statistics remains available"
 close

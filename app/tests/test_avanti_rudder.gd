@@ -55,7 +55,7 @@ func _test_response_law() -> void:
 func _test_optional_configuration() -> void:
 	var source: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(AVANTI_PATH))
 	var valid: Dictionary = AircraftData.validate_and_derive(source)
-	_check("Avanti gamepad yaw fields validate", bool(valid.get("ok", false)), str(valid.get("errors", [])))
+	_check("Vantage Jet gamepad yaw fields validate", bool(valid.get("ok", false)), str(valid.get("errors", [])))
 	if not bool(valid.get("ok", false)):
 		return
 	var minimum := source.duplicate(true)

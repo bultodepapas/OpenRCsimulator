@@ -287,7 +287,7 @@ static func _solve_electric_from(mode: String, V: float, model: Dictionary, g: f
 		residual_norm = _norm(r)
 		if not is_finite(residual_norm):
 			return _numerical_failure("nonfinite iterated electric trim residual", mode, V, iterations)
-		# The source equilibrium leaves a residual floor near 1e-10 (X8, Timber above 1.2 start speed): an accepted
+		# The source equilibrium leaves a residual floor near 1e-10 (X8, Lumber above 1.2 start speed): an accepted
 		# residual that a Newton step no longer halves ends the solve instead of cycling to the iteration cap.
 		if residual_norm <= 1e-8 and residual_norm > 0.5 * previous_norm:
 			break

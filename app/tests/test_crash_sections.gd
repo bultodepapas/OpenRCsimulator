@@ -242,7 +242,7 @@ func _timber_tagged_parts() -> void:
 	wreck.prepare(timber)
 	var groups := _groups(wreck)
 	for kind in ["wing_left", "wing_right", "horizontal_tail", "vertical_tail", "engine", "canopy", "propeller", "gear"]:
-		_check("Timber r2 tags produce a real %s section" % kind, groups.has(kind), str(groups.keys()))
+		_check("Lumber r2 tags produce a real %s section" % kind, groups.has(kind), str(groups.keys()))
 	var left_members: Array = groups.get("wing_left", {}).get("members", []).map(func(n: Node) -> String: return String(n.name))
 	_check("left wing group contains fixed wing, aileron and flap controls", left_members.has("wing_left_fixed")
 		and left_members.has("aileron_left_hinge") and left_members.has("flap_left_hinge")

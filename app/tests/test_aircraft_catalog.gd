@@ -48,7 +48,7 @@ func _initialize() -> void:
 	for family in airplane_families:
 		if not ModelRegistry.describe(family).get("ok", false):
 			all_airplane_families_registered = false
-	_check("airplane visual families are unique, complete, registered, include Timber, and exclude HX-700",
+	_check("airplane visual families are unique, complete, registered, include Lumber, and exclude HX-700",
 		airplane_families == expected_airplane_families
 		and airplane_families.has(Catalog.visual_family(AirplaneBuilder.TIMBER_ID))
 		and not airplane_families.has("hx-700")
@@ -99,7 +99,7 @@ func _initialize() -> void:
 		_check("%s: surfaces deflect and return through the shared adapter" % id, true)
 		if e.status == Catalog.PREVIEW:
 			_check("%s: preview has no data and cannot fly" % id, e.data == "" and not Catalog.can_fly(id))
-			# A preview may carry a real propeller (the Timber's imported rotor): the catalog, not the model, refuses flight.
+			# A preview may carry a real propeller (the Lumber's imported rotor): the catalog, not the model, refuses flight.
 			# has_propeller must agree with the geometry under the node, and the node is shown exactly when it has some.
 			var prop_meshes: int = airplane.propeller.find_children("*", "MeshInstance3D", true, false).size()
 			_check("%s: preview declares its propeller honestly (%d meshes)" % [id, prop_meshes],

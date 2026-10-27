@@ -10,7 +10,7 @@ The Jet poster is 1600×1000 WebP. Its silent MP4 is 1280×800 H.264 at 24 fps f
 
 `assets/cinema/jet-views.json` gives each still’s camera target in meters and model-viewer orbit `[theta, phi, radius]` in degrees/meters, plus its field of view. Targets use the visible-bounds-centered coordinates shared with the exported web GLB. The Godot capture converts azimuth `a` and elevation `e` using `theta = 180 - a` and `phi = 90 - e`. The matching camera records are also in `jet-cinema.json`.
 
-The Jet capture uses the native catalog builder, model registry/importer, Avanti-S model and geometry generator, aircraft catalog/model records, and `app/assets/aircraft/avanti-s-a200/avanti_s.glb`. `jet-cinema.json` records SHA-256 values for these sources, the capture/package scripts, the encoder, and every generated asset. No aerodynamic or flight-performance claim is inferred from these images.
+The Jet capture uses the native catalog builder, model registry/importer, Vantage Jet model and geometry generator, aircraft catalog/model records, and `app/assets/aircraft/avanti-s-a200/avanti_s.glb`. `jet-cinema.json` records SHA-256 values for these sources, the capture/package scripts, the encoder, and every generated asset. No aerodynamic or flight-performance claim is inferred from these images.
 
 ## Rebuild
 

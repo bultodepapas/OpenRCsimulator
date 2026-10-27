@@ -38,7 +38,7 @@ func _run() -> void:
 	var stock: Variant = _make_main(false)
 	var disabled: Variant = _make_main(true)
 	if stock == null or disabled == null or stock.session == null or disabled.session == null:
-		_check("Avanti production mains create flight sessions",
+		_check("Vantage Jet production mains create flight sessions",
 			stock != null and disabled != null and stock.session != null and disabled.session != null,
 			"stock=%s off=%s" % [stock.startup_error if stock != null else "missing main",
 				disabled.startup_error if disabled != null else "missing main"])
@@ -55,20 +55,20 @@ func _run() -> void:
 		if is_instance_valid(main):
 			main.queue_free()
 	await process_frame
-	print("Avanti smoke: %d checks, %d failed" % [_checks, _failures])
+	print("Vantage Jet smoke: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
 
 
 func _test_authored_profile_and_outlet() -> void:
 	var described: Dictionary = Customization.describe(AVANTI_ID)
-	_check("Avanti customization bindings are accepted", bool(described.get("ok", false)),
+	_check("Vantage Jet customization bindings are accepted", bool(described.get("ok", false)),
 		str(described.get("errors", [])))
 	if not bool(described.get("ok", false)):
 		return
 
 	var bindings: Dictionary = described.bindings
 	var profile: Dictionary = StockSmoke.profile(bindings)
-	_check("stock factory returns a full Avanti presentation profile",
+	_check("stock factory returns a full Vantage Jet presentation profile",
 		not profile.is_empty() and profile.get("smoke", []).size() == 1
 		and str(profile.smoke[0].get("slot", "")) == SLOT_ID)
 	var other: Dictionary = Customization.describe("jensen-das-ugly-stik-60")
@@ -85,7 +85,7 @@ func _test_authored_profile_and_outlet() -> void:
 
 	var airplane: Dictionary = AirplaneBuilder.build(AVANTI_ID)
 	if airplane.is_empty():
-		_check("Avanti visual builds for the authored smoke mount check", false)
+		_check("Vantage Jet visual builds for the authored smoke mount check", false)
 		return
 	airplane.root.transform = Transform3D(Basis(Vector3.UP, 0.31), Vector3(2.0, 1.0, -3.0))
 	var outlet: Vector3 = _outlet_position()
@@ -99,7 +99,7 @@ func _test_authored_profile_and_outlet() -> void:
 
 
 func _test_stock_route_and_lifecycle(stock: Variant, disabled: Variant) -> void:
-	_check("normal Avanti route selects the stock smoke profile",
+	_check("normal Vantage Jet route selects the stock smoke profile",
 		stock._stock_smoke_profile and stock._profile_smoke != null
 		and stock._smoke == null and stock.startup_error.is_empty(), stock.startup_error)
 	_check("stock evidence identifies preset and one bounded show pool",
@@ -123,7 +123,7 @@ func _test_stock_route_and_lifecycle(stock: Variant, disabled: Variant) -> void:
 		smoke_transforms.has(SLOT_ID) and resolved.origin.is_equal_approx(expected),
 		"expected=%s actual=%s" % [expected, resolved.origin])
 
-	_check("Avanti source is running for the smoke request fixture",
+	_check("Vantage Jet source is running for the smoke request fixture",
 		stock.session.propulsion_source_running(), str(stock.session.sim.modes))
 	stock._unhandled_input(_h_key(false))
 	_check("H enables stock smoke and the request reaches its configured maximum",
@@ -144,7 +144,7 @@ func _test_stock_route_and_lifecycle(stock: Variant, disabled: Variant) -> void:
 	stock.session.engine_running = true
 	var liquid_index: int = stock.session._liquid_index()
 	var has_fuel_latch: bool = liquid_index >= 0 and stock.session.sim.continuous.size() > liquid_index + 1
-	_check("Avanti fixture has an accepted finite-fuel source latch", has_fuel_latch)
+	_check("Vantage Jet fixture has an accepted finite-fuel source latch", has_fuel_latch)
 	if has_fuel_latch:
 		var fuel_latch: float = stock.session.sim.continuous[liquid_index + 1]
 		stock.session.sim.continuous[liquid_index + 1] = 0.0
@@ -217,7 +217,7 @@ func _test_exact_simulation_parity(stock: Variant, disabled: Variant) -> void:
 func _test_workshop_empty_profile_precedence() -> void:
 	var described: Dictionary = Customization.describe(AVANTI_ID)
 	if not bool(described.get("ok", false)):
-		_check("Workshop empty-profile fixture has Avanti bindings", false, str(described.get("errors", [])))
+		_check("Workshop empty-profile fixture has Vantage Jet bindings", false, str(described.get("errors", [])))
 		return
 	var data_path: String = str(Catalog.entry(AVANTI_ID).get("data", ""))
 	var base_bytes: PackedByteArray = FileAccess.get_file_as_bytes(data_path)
@@ -228,14 +228,14 @@ func _test_workshop_empty_profile_precedence() -> void:
 		"recipe": WorkshopParameters.defaults(),
 		"presentation_profile": empty_profile,
 	})
-	_check("Workshop can freeze an Avanti trial with an explicit empty smoke choice",
+	_check("Workshop can freeze a Vantage Jet trial with an explicit empty smoke choice",
 		bool(frozen.get("ok", false))
 		and frozen.get("presentation_profile", {}).get("smoke", []).is_empty(),
 		str(frozen.get("errors", [])))
 	if not bool(frozen.get("ok", false)):
 		return
 	var main: Variant = _make_main(false, frozen)
-	_check("explicit empty Workshop choice suppresses the Avanti stock smoke default",
+	_check("explicit empty Workshop choice suppresses the Vantage Jet stock smoke default",
 		main.startup_error.is_empty() and not main._stock_smoke_profile
 		and main._profile_smoke == null and main._smoke == null,
 		"startup_error=%s evidence=%s" % [main.startup_error, main._smoke_evidence()])
@@ -244,7 +244,7 @@ func _test_workshop_empty_profile_precedence() -> void:
 func _test_tricolor_preset_excludes_tailpipe() -> void:
 	var described: Dictionary = Customization.describe(AVANTI_ID)
 	if not bool(described.get("ok", false)):
-		_check("Tricolor fixture has Avanti smoke bindings", false, str(described.get("errors", [])))
+		_check("Tricolor fixture has Vantage Jet smoke bindings", false, str(described.get("errors", [])))
 		return
 	var inspector: Node = WorkshopCustomization.new()
 	inspector.page_kind = "smoke"

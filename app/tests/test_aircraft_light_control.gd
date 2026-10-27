@@ -137,7 +137,7 @@ func _run() -> void:
 		var kit: Node3D = flight._night_kit
 		check(id + " starts lights at 17:30 despite a high sun", kit != null and kit.visible and World.aircraft_sun_elevation(flight._lighting) > 6.0)
 		check(id + " native evening emission is ON", emission.materials.all(func(binding: Dictionary) -> bool: return binding.material.emission_enabled))
-		if id == "turbo-lumber-evolution": check("Timber binds both imported navigation materials", emission.materials.size() == 2)
+		if id == "turbo-lumber-evolution": check("Lumber binds both imported navigation materials", emission.materials.size() == 2)
 		check(id + " kit is attached only once", World.AircraftLights.attach(flight._airplane.root) == kit)
 		flight.controller_action("lights_cycle")
 		check(id + " controller selects NAV", flight._aircraft_lights.selection == "nav" and not kit.get_node("landing_light").visible)

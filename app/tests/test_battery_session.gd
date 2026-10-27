@@ -1,4 +1,4 @@
-# BAT-10/11/13: Timber pack_ecm session end to end. Layout, sag and recovery, heating, ESC soft cut, exhaustion,
+# BAT-10/11/13: Lumber pack_ecm session end to end. Layout, sag and recovery, heating, ESC soft cut, exhaustion,
 # exact replay, trace v13, launch guard and the unchanged ideal mode. Software verification only.
 extends SceneTree
 
@@ -53,7 +53,7 @@ func _initialize() -> void:
 	_catalog_modes()
 	var a: Node = flight()
 	if not a.is_flyable():
-		check("pack Timber is flyable: " + str(a.aircraft.get("errors", [])) + " " + str(a.start_error), false)
+		check("pack Lumber is flyable: " + str(a.aircraft.get("errors", [])) + " " + str(a.start_error), false)
 		a.free()
 		_finish()
 		return
@@ -73,7 +73,7 @@ func _finish() -> void:
 
 
 func _catalog_modes() -> void:
-	check("Timber offers the pack mode", Catalog.has_battery_mode(TIMBER, "pack"))
+	check("Lumber offers the pack mode", Catalog.has_battery_mode(TIMBER, "pack"))
 	check("pack data differs from the ideal data", Catalog.data_for(TIMBER, "pack") != Catalog.data_for(TIMBER, "ideal")
 		and not Catalog.data_for(TIMBER, "ideal").is_empty())
 	check("aircraft without battery data refuse the pack mode", not Catalog.has_battery_mode(Catalog.DEFAULT_ID, "pack")

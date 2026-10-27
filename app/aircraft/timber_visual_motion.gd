@@ -1,4 +1,4 @@
-## Timber-only render observer for the authored main-gear pivots and tire contact cues.
+## Lumber-only render observer for the authored main-gear pivots and tire contact cues.
 ## GroundGearMotion owns wheel spin; this component reads its same detached session values,
 ## articulates only the source gear pivots, and never writes simulation or collision state.
 extends Node
@@ -33,7 +33,7 @@ var _stopped := false
 
 
 ## Attach after GroundGear.attach(); its process priority leaves the shared wheel-spin
-## observer first, then this Timber-only observer replaces linear main-wheel travel with
+## observer first, then this Lumber-only observer replaces linear main-wheel travel with
 ## the source's bounded hinged suspension arc.
 static func attach(airplane: Dictionary, session: Node) -> Node:
 	if str(airplane.get("aircraft_id", "")) != AIRCRAFT_ID:

@@ -32,12 +32,12 @@ func _initialize() -> void:
 func _run_checks() -> void:
 	var source := _load_source(AVANTI_PATH)
 	var loaded: Dictionary = AircraftData.validate_and_derive(source)
-	_check("Avanti source passes aircraft validation", bool(loaded.get("ok", false)), str(loaded.get("errors", [])))
+	_check("Vantage Jet source passes aircraft validation", bool(loaded.get("ok", false)), str(loaded.get("errors", [])))
 	if not bool(loaded.get("ok", false)):
 		_finish()
 		return
 	var model: Dictionary = loaded.model
-	_check("Avanti normalizes the 0.4 gamepad pitch scale", absf(float(model.controls.gamepad.pitch_scale) - 0.4) < EPS)
+	_check("Vantage Jet normalizes the 0.4 gamepad pitch scale", absf(float(model.controls.gamepad.pitch_scale) - 0.4) < EPS)
 
 	_check("default Mode 2 gamepad profile validates", Profile.validate(Profile.defaults("gamepad", "mode2")).ok)
 	var input := _new_gamepad_input()
@@ -61,7 +61,7 @@ func _run_checks() -> void:
 	var rates: Dictionary = model.controls.rates.normal
 	_check("normal gamepad scales pitch only after its input expo",
 		absf(float(normal_outputs.pitch) - expected_half * float(rates.elevator) * 0.4) < EPS)
-	_check("gamepad pitch does not receive Avanti elevator expo a second time",
+	_check("gamepad pitch does not receive Vantage Jet elevator expo a second time",
 		absf(float(normal_outputs.pitch) - Commands.expo(expected_half, float(rates.elevator_expo)) * float(rates.elevator) * 0.4) > 1e-4)
 	_check("normal gamepad pitch gain remains independent of aileron and configured rudder travel",
 		absf(float(normal_outputs.roll) - float(three_axes.roll) * float(rates.aileron)) < EPS
@@ -128,7 +128,7 @@ func _run_checks() -> void:
 
 	var other_source := _load_source(OTHER_AIRCRAFT_PATH)
 	var other_loaded: Dictionary = AircraftData.validate_and_derive(other_source)
-	_check("non-Avanti fallback aircraft passes validation", bool(other_loaded.get("ok", false)), str(other_loaded.get("errors", [])))
+	_check("non-Vantage Jet fallback aircraft passes validation", bool(other_loaded.get("ok", false)), str(other_loaded.get("errors", [])))
 	if other_loaded.get("ok", false):
 		var other_model: Dictionary = other_loaded.model
 		_check("fallback aircraft has no gamepad-specific pitch scale", not other_model.controls.has("gamepad"))

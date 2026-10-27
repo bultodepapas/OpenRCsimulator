@@ -26,7 +26,7 @@ func _initialize() -> void:
 	home.set_aircraft(Catalog.DEFAULT_ID)
 	check("aircraft without pack data hide the choice and fly ideal", not home.battery_button.visible and home.battery_mode == "ideal")
 	home.set_aircraft(TIMBER)
-	check("Timber defaults to the finite pack (owner default)", home.battery_button.visible and home.battery_mode == "pack"
+	check("Lumber defaults to the finite pack (owner default)", home.battery_button.visible and home.battery_mode == "pack"
 		and home.battery_button.text == "Battery: finite pack (experimental)" and Catalog.default_battery_mode(TIMBER) == "pack")
 	home.battery_button.pressed.emit()
 	check("pressing selects ideal", home.battery_mode == "ideal" and home.battery_button.text == "Battery: ideal (never runs flat)")
@@ -36,7 +36,7 @@ func _initialize() -> void:
 	check("an aircraft without pack data flies ideal", home.battery_mode == "ideal" and not home.battery_button.visible
 		and Catalog.default_battery_mode(Catalog.DEFAULT_ID) == "ideal")
 	home.set_aircraft(TIMBER)
-	check("returning to the Timber keeps the pack preference", home.battery_mode == "pack")
+	check("returning to the Lumber keeps the pack preference", home.battery_mode == "pack")
 	home.set_battery_mode("ideal")
 	home.set_aircraft(Catalog.DEFAULT_ID)
 	home.set_aircraft(TIMBER)

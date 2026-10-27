@@ -92,14 +92,14 @@ func _initialize() -> void:
 	var turbine_path := "res://data/aircraft/sebart_avanti_s_a200.json"
 	var turbine_raw := read_raw(turbine_path)
 	var turbine_load: Dictionary = AD.load_file(turbine_path)
-	check("Ventage continuous-turbine contract loads", turbine_load.ok, turbine_load.errors)
+	check("Vantage Jet continuous-turbine contract loads", turbine_load.ok, turbine_load.errors)
 	if turbine_load.ok:
 		var turbine_model: Dictionary = turbine_load.model
 		var turbine: Dictionary = turbine_model.propulsion.liquid_fuel
-		check("Ventage law binds the main tank", turbine.law == "turbine_map_v1" and turbine.tank_id == "main_tank")
-		check("Ventage loader uses continuous RPM integration", Turbine.is_continuous(turbine_model.propulsion))
+		check("Vantage Jet law binds the main tank", turbine.law == "turbine_map_v1" and turbine.tank_id == "main_tank")
+		check("Vantage Jet loader uses continuous RPM integration", Turbine.is_continuous(turbine_model.propulsion))
 		var turbine_reference: Dictionary = LiquidFuel.properties(turbine, {})
-		check("Ventage authored mass is the fixed-datum reference", turbine_reference.ok and close(turbine_reference.mass_kg, turbine_model.mass_kg) and same_array(turbine_reference.inertia, turbine_model.inertia), turbine_reference)
+		check("Vantage Jet authored mass is the fixed-datum reference", turbine_reference.ok and close(turbine_reference.mass_kg, turbine_model.mass_kg) and same_array(turbine_reference.inertia, turbine_model.inertia), turbine_reference)
 		var flow_table: PackedFloat64Array = turbine.fuel_flow_kg_s_by_rpm
 		var turbine_flow: float = LiquidFuel.flow_rate_kg_s(turbine, {"running": true, "rpm": flow_table[0]})
 		check("turbine consumption uses the existing RPM flow map", close(turbine_flow, flow_table[1]))

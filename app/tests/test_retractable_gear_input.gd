@@ -51,7 +51,7 @@ func _run() -> void:
 	root.add_child(flight)
 	flight.set_process(false)
 	flight.set_physics_process(false)
-	_check("Avanti fixture exposes retractable landing gear", session.gear_is_retractable()
+	_check("Vantage Jet fixture exposes retractable landing gear", session.gear_is_retractable()
 		and bool(session.gear_state().available) and not bool(session.gear_state().target_down))
 
 	await ui.tap(KEY_G)

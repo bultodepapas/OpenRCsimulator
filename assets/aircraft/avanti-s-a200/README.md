@@ -1,4 +1,4 @@
-# Ventage Jet: Blender model and P100-RX integration
+# Vantage Jet: Blender model and P100-RX integration
 
 Checked 2026-10-19. Catalog aircraft `sebart-avanti-s-a200-p100rx` uses the supplied Avanti S A200 Blender model through the common version-2 imported-scene contract. Its experimental preset has continuous P100-RX RPM, finite main-tank fuel, retracts and flight flaps. This guide owns asset/build instructions; the [aircraft guide/plan](../../../docs/AVANTI-S-PLAN.md) owns current scope, pending verification and remaining work. [AV-31](../../../docs/research/avanti-blender/AV-31/README.md) is dated model/package evidence.
 
@@ -61,7 +61,7 @@ python research/aircraft-standardization/conformance.py --godot .tools/Godot_v4.
 & '.tools/Godot_v4.7.2-stable_win64_console.exe' --path app --script "$PWD/research/avanti-s/av31/capture.gd" -- --out="$PWD/tmp/avanti-new-captures"
 ```
 
-Capture output must be fresh. Inspect the real rendered rest/full-travel views and turbine cutaway. Select **Ventage Jet** in the aircraft catalog, or launch with `-- --aircraft=sebart-avanti-s-a200-p100rx --quick-flight`. Source hash changes require regeneration of model manifests and Workshop descriptors; an already frozen trial refuses a changed visual dependency.
+Capture output must be fresh. Inspect the real rendered rest/full-travel views and turbine cutaway. Select **Vantage Jet** in the aircraft catalog, or launch with `-- --aircraft=sebart-avanti-s-a200-p100rx --quick-flight`. Source hash changes require regeneration of model manifests and Workshop descriptors; an already frozen trial refuses a changed visual dependency.
 
 For gear-specific captures, run `research/avanti-s/av09/capture_gear.gd` using the same Godot command and a fresh absolute `--out` directory. It captures accepted session fractions 0, 0.5 and 1, then nose steering; [AV-09](../../../docs/research/avanti-gear/AV-09/README.md) retains source and packaged results.
 

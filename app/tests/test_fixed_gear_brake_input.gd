@@ -354,8 +354,15 @@ func log_roundtrip(f: Node, data: Dictionary) -> void:
 
 func legacy() -> void:
 	var frozen: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/fixed_brake_legacy_outputs.json"))
+	# outputs is the original Windows capture (gp-extra moved by NITRO-06-R3). Each OS's libm rounds
+	# some launch trims differently, so the frozen pre-brake reference was also captured on that OS
+	# (GP-12 fixed-brake-input/construction); its differing digests are keyed by OS name.
+	var os_name := OS.get_name()
+	check("frozen legacy reference was captured on " + os_name, frozen.get("os_captures", {}).has(os_name),
+		str(frozen.get("os_captures", {}).keys()))
 	for id: String in frozen.outputs:
-		var expected: Dictionary = frozen.outputs[id]
+		var expected: Dictionary = frozen.outputs[id].duplicate()
+		expected.merge(frozen.get("outputs_by_os", {}).get(os_name, {}).get(id, {}), true)
 		var f := Flight.new()
 		f.setup(Catalog.entry(id).data)
 		check("frozen legacy checkpoint/metadata exact " + id,

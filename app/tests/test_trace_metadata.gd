@@ -129,15 +129,15 @@ func _initialize() -> void:
 				meta.propulsion_model == "propeller-shaft-coupled-rk4-v1" and meta.shaft_integrator == "coupled-rk4")
 			_check("%s slipstream" % entry.id, meta.propwash_model == "tail-slipstream-increment-v1")
 		elif entry.id == "sebart-avanti-s-a200-p100rx":
-			_check("Avanti continuous turbine governor", meta.propulsion_model == Turbine.CONTINUOUS_LAW
+			_check("Vantage Jet continuous turbine governor", meta.propulsion_model == Turbine.CONTINUOUS_LAW
 				and meta.turbine_integrator == "rk4")
-			_check("Avanti no propwash", meta.propwash_model == "none")
+			_check("Vantage Jet no propwash", meta.propwash_model == "none")
 			if session.flaps_available():
 				var input_layout: Array = JSON.parse_string(meta.input_layout)
-				_check("Avanti flap schema and law are explicit", meta.metadata_schema == "openrc-flight-meta v9"
+				_check("Vantage Jet flap schema and law are explicit", meta.metadata_schema == "openrc-flight-meta v9"
 					and meta.flap_law == Flaps.LAW
 					and meta.flap_trace_schema == "openrc-flap-trace v1")
-				_check("Avanti flap indices follow gear and the declared input order",
+				_check("Vantage Jet flap indices follow gear and the declared input order",
 					meta.flap_aux_index == session.flap_aux_index()
 					and meta.flap_input_index == 6
 					and input_layout == ["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake", "flaps"]
@@ -173,7 +173,7 @@ func _initialize() -> void:
 				and recorded_meta.fuel_start_fill == 1.0 and is_finite(current_fill) and current_fill < 1.0,
 				"recorded fill=%s selected reset fill=%s" % [str(current_fill), str(recorded_meta.get("fuel_start_fill"))])
 		if entry.id == TIMBER:
-			_check("Timber trace carries endpoint-sampled motor current", recorder.trace.columns().has("motor_current_a")
+			_check("Lumber trace carries endpoint-sampled motor current", recorder.trace.columns().has("motor_current_a")
 				and recorder.trace.columns().has("drive_bus_current_a"))
 		if glow_profiled:
 			_check("glow CSV exposes accepted firing events and finite tank state",

@@ -2,12 +2,70 @@
 	"baseline_session_sha256": "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864",
 	"baseline_trace_sha256": "1c529262fb33b7db3137f9cba064be0e32a6d9c7620ae224cc06500a5a05a62e",
 	"engine": "4.8-beta1 (official)",
+	"os_captures": {
+		"Linux": {
+			"capture_tool": "docs/research/ground-physics/GP-12/evidence/fixed-brake-input/construction/",
+			"differing_from_outputs": {
+				"gp-extra-300s-60": [
+					"after_three_ticks",
+					"metadata",
+					"trace_csv"
+				],
+				"p51d-mustang-120": [
+					"after_three_ticks",
+					"checkpoint",
+					"metadata",
+					"trace_csv"
+				]
+			},
+			"engine": "4.8-beta1 (official)",
+			"nitro_06_r3_aircraft": [
+				"gp-extra-300s-60"
+			],
+			"nitro_06_r3_reference": {
+				"base_commit": "fa9f387f6",
+				"before_sources": "docs/research/ground-physics/GP-12/evidence/fixed-brake-input/before",
+				"carburetor_sha256": "16d8065ae5ce49d1d79d8d6f14ea3f7e613983587b5b00eeb0f357e536505505",
+				"nitro_06_r3": "20662f264",
+				"pinned_inputs_verified": 400.0
+			},
+			"reference": {
+				"base_commit": "fa9f387f6",
+				"before_sources": "docs/research/ground-physics/GP-12/evidence/fixed-brake-input/before",
+				"carburetor_sha256": "d3fe00763772ca36a9b86e240c7dfb0de6b239350b0930d6000651534956fd7c",
+				"nitro_06_r3": null,
+				"pinned_inputs_verified": 400.0
+			}
+		},
+		"Windows": {
+			"capture_tool": "docs/research/ground-physics/GP-12/evidence/fixed-brake-input/construction/",
+			"differing_from_outputs": {},
+			"engine": "4.8-beta1 (official)",
+			"nitro_06_r3_aircraft": [
+				"gp-extra-300s-60"
+			],
+			"nitro_06_r3_reference": {
+				"base_commit": "fa9f387f6",
+				"before_sources": "docs/research/ground-physics/GP-12/evidence/fixed-brake-input/before",
+				"carburetor_sha256": "16d8065ae5ce49d1d79d8d6f14ea3f7e613983587b5b00eeb0f357e536505505",
+				"nitro_06_r3": "20662f264",
+				"pinned_inputs_verified": 400.0
+			},
+			"reference": {
+				"base_commit": "fa9f387f6",
+				"before_sources": "docs/research/ground-physics/GP-12/evidence/fixed-brake-input/before",
+				"carburetor_sha256": "d3fe00763772ca36a9b86e240c7dfb0de6b239350b0930d6000651534956fd7c",
+				"nitro_06_r3": null,
+				"pinned_inputs_verified": 400.0
+			}
+		}
+	},
 	"outputs": {
 		"gp-extra-300s-60": {
-			"after_three_ticks": "4facb677ac7483bbe2cca3bd7c60b152f5bd627f7987d10ef6de92b57c1b15de",
-			"checkpoint": "d9bd9b7df316718db5379f30a82d900a1cd4e4f48c35ddd844f766ed72593926",
-			"metadata": "d4c4ddc942beb7cf41533fc3c68dfccac6d0e7595d20e875be92d2829148d049",
-			"trace_csv": "7d10b41377ccd39e753e96e809369b85fcc3f0ecb01ebb97e4ba81a5d1fae688"
+			"after_three_ticks": "b6b8f9dfdf7c652a619f33fa0c133658e8d415974cecd7c3eb0b093b259ccf51",
+			"checkpoint": "1d54b43d5f3a748b2e3e1d23b0e7e850e31e2be943e6e878c0545bfe20b62fa8",
+			"metadata": "53c00ad3dc0db1bb1b39d7b0a8c89e964874bf2c8788483210f025d47c046884",
+			"trace_csv": "b55a56ee97498e2e31f7e3ed5aa1751e3534a119b04045a6a5a2cbb2fa951c62"
 		},
 		"jensen-das-ugly-stik-60": {
 			"after_three_ticks": "294f07e2367b4b66c525583678f87eff122017ce7881bcc99af6dcee172990d8",
@@ -26,6 +84,21 @@
 			"checkpoint": "56dbcf8a87fd1b8caed5e2487d5ff0c7090dca54abd69c43396224492070998c",
 			"metadata": "0a6054143348b751c2852b6eb4175937bb1e5067a8d8c7dd2cb4ac9cc9f1dc48",
 			"trace_csv": "1769ccce449a0c18bd4c41af7401f43cec92717fddd0fe1e12e6d4cf5e7c4764"
+		}
+	},
+	"outputs_by_os": {
+		"Linux": {
+			"gp-extra-300s-60": {
+				"after_three_ticks": "5c17b6a03f927f7c8255fa1c67d7f27584e3b3bfa13d994e58af5595054c345c",
+				"metadata": "dd73b214ccc392724bb0795073d8ffc1cbb299c6cc54f4418d1e06ab39367257",
+				"trace_csv": "01250b22e22f56609a694ff6e111bf2e9e9e7e293f203e9c0e79ead6a099c35a"
+			},
+			"p51d-mustang-120": {
+				"after_three_ticks": "7d8cce9616e8e53831d09b2658ae19c7ffe562df2647d186bf07c99e20d27076",
+				"checkpoint": "45665b80b449159a49ccc1b99db7c38ffcaeb48830693552b75e0df0b245c63d",
+				"metadata": "84ad37528bf8d4084f0f475ffacf370f8ae8745d250fd7fcb414938599ffd4f0",
+				"trace_csv": "0279bc28e9c3176b141951a4c25470e903a2198319e7be50773c014cf0864c2f"
+			}
 		}
 	},
 	"physics_hz": 240,

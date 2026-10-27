@@ -61,7 +61,7 @@ func _test_world_inventory_and_identity() -> void:
 	_check("each parked aircraft placement has collision proxies", fleet_placements.size() == 4)
 	_check("flood and stake fixtures receive proxies", lamp_count >= 3)
 	_check("open shelter has 18 posts plus roof", shelter_parts == 19)
-	_check("Avanti display cradle has explicit support boxes", cradle_parts == 6)
+	_check("Vantage Jet display cradle has explicit support boxes", cradle_parts == 6)
 	var nearby: Array[Dictionary] = CollisionWorld.nearby(world, 100.0, 0.0, -1.0, 50.0)
 	_check("nearby query uses local broadphase", not nearby.is_empty() and nearby.size() < world.proxies.size())
 	var changed_scenery := _inventory_scenery()

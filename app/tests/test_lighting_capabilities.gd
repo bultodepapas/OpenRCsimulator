@@ -118,7 +118,7 @@ func _run() -> void:
 	var disabled_strobe_left := _row(authored_disabled_report.get("zones", []), "strobe_left")
 	var disabled_strobe_right := _row(authored_disabled_report.get("zones", []), "strobe_right")
 	var fitted_nav_left := _row(authored_disabled_report.get("zones", []), "nav_left")
-	_check("configured Timber-style report rejects authored-disabled anchors but retains fitted lights",
+	_check("configured Lumber-style report rejects authored-disabled anchors but retains fitted lights",
 		bool(authored_disabled_result.get("ok", false))
 		and authored_disabled_report.get("state") == "configured"
 		and not bool(disabled_nav_tail.get("available", true)) and str(disabled_nav_tail.get("reason", "")) == "missing_fitting"
