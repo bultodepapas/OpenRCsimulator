@@ -1,0 +1,31 @@
+test_glow_carburetor rc=0 :: Glow carburettor: 58 checks, 0 failed
+test_glow_coupling rc=0 :: glow shaft/prop coupling: 65 checks, 0 failed
+test_glow_dive_support rc=1 :: NITRO-61FX-R1 dive support: 10 checks, 2 failed
+test_glow_equilibrium rc=0 :: Glow equilibria: 196 checks, 0 failed
+test_glow_flight_physics rc=0 :: glow flight physics: 110 checks, 0 failed
+test_glow_four_stroke rc=0 :: 304 checks, 0 failed
+test_glow_fuel_feed rc=0 :: NITRO-05 fuel feed: 41 checks, 0 failed
+test_glow_hub_inflow rc=0 :: Glow hub inflow: 168 checks, 0 failed
+test_glow_installation rc=0 :: glow installation contract: 362 checks, 0 failed
+test_glow_lifecycle rc=0 :: NITRO lifecycle: 52 checks, 0 failed
+test_glow_operating_reuse rc=0 :: Glow operating-point reuse: 114 checks, 0 failed
+test_glow_oracle rc=0 :: 723 checks, 0 failed (36 oracle vectors)
+test_glow_prepared rc=0 :: NITRO prepared evaluator: 580 checks, 0 failed
+test_glow_profiles rc=0 :: NITRO profiles: 53 checks, 0 failed
+test_glow_propeller_camber rc=0 :: EX-14f propeller camber: 10 checks, 0 failed
+test_glow_propeller_momentum rc=0 :: glow propeller momentum: 63 checks, 0 failed
+test_glow_propeller_prepared rc=0 :: glow propeller prepared: 38 checks, 0 failed
+test_glow_session rc=0 :: Glow session: 140 checks, 0 failed
+test_glow_stage_reuse rc=0 :: Glow stage reuse: 2005 comparisons, 0 failed (2000 byte-exact load checks)
+test_glow_thermal rc=0 :: NITRO thermal: 15 checks, 0 failed
+test_glow_trace rc=0 :: NITRO-TRACE: 286 checks, 0 failed
+test_glow_two_stroke rc=0 :: 50 checks, 0 failed
+test_glow_vibration rc=0 :: NITRO vibration source observer: 37 checks, 0 failed
+test_nitro_dynamics rc=0 :: Nitro dynamics: 30 checks, 0 failed
+test_rcv_nitro_session rc=0 :: RCV Nitro session: 28 checks, 0 failed
+test_golden rc=0 :: 4 golden flights, 0 failed
+
+# test_glow_dive_support with the baseline carburetor.gd (b6e3fe7d4), same tree otherwise:
+FAIL gp-extra-300s-60 dive: steeper than 70 deg and faster than its 41 m/s-class level Vmax  pitch -32.0 deg, peak 39.3 m/s
+FAIL gp-extra-300s-60 dive: rpm above 17000 rpm yet inside the windmill support  peak 13156 rpm
+NITRO-61FX-R1 dive support: 10 checks, 2 failed

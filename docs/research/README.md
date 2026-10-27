@@ -30,6 +30,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 ## Whole-project audit
 
 - [Debugging tools investigation, 2026-10-19](debugging-tools-2026-10-19.md) reviews 20 official, GitHub, Reddit and forum sources against local diagnostic gaps; records checked-run summaries, evidence integrity and performance-rerun preservation under PT1h-R2 / VQ-01b.
+- [Godot optimization scan, 2026-10-27](godot-optimization-scan-2026-10-27.md) collects CPU, profiling/loop and Compatibility-rendering techniques with sources, corrects two assumptions (alpha-to-coverage is a no-op and pipeline-compilation counters read 0 on Compatibility) and ranks a backlog by output risk and hardware need. Research only.
 - [Godot performance and visual review, 2026-10-14](godot-global-review-2026-10-14.md) compares current source and retained native evidence with Godot 4.7 documentation, repositories and community reports. Its [second round](godot-global-review-2026-10-14.md#9-second-research-round-creative-directions) adds 24 creative experiment ideas; the [execution plan](../plans/global-performance-visual-quality.md) sequences work under existing track owners. No new runtime benchmark or implementation is claimed.
 - [Branch integration, 2026-10-10](branch-integration-2026-10-10.md) records merge decisions and clean-checkout checks.
 - [PT1h release-readiness audit](release-readiness/PT1h/README.md) reconciles code, documents and rc6 evidence; [tool workflows](../TOOLS.md) lists current commands and measurement limits.

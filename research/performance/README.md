@@ -580,6 +580,11 @@ identical settings.
 python3 research/performance/app_cpu_per_sim.py <label> airborne 10 40
 ```
 
+`OPENRC_DETACH_PRESENTATION=1` disconnects the six presentation observers from
+`Simulation.stepped` after the flight starts, keeping the session's contact commit and
+the recorder, and refuses an unexpected connection set. Use it only to measure what the
+observers cost; audio, statistics and crash presentation stop working in that session.
+
 Run one session at a time on an idle host and alternate baseline/candidate runs.
 Swapping scripts in a shared working tree is unsafe while others commit: restore the
 candidate on disk as soon as the flight has loaded its scripts. The numbers are dev-VM
@@ -620,3 +625,38 @@ python3 tools/godot/run_checked.py --timeout 900 -- "$(app/get-godot.sh)" --head
 ```
 
 [GP-19e evidence](../../docs/research/ground-physics/GP-19/evidence/scrape-observation-cost/README.md).
+
+## Hull lake bounds rejection (LU-25-R4)
+
+`hull_lake_pair.gd` compares an explicit prior `hull_contact.gd` with the working tree on
+the default Stik prepared hull and lake: 2,081 near-ground states (a grid across the bank
+bounds ± 40 m and 400 around the runway, quaternion length 0.9–1.1) through `loads`
+without and with both diagnostic collectors, and `terminal`, bytewise. It then times
+`loads` on the runway states.
+
+```sh
+mkdir -p tmp/lu25r4 && git show d434865f2:app/physics/hull_contact.gd > tmp/lu25r4/hull_contact_ref.gd
+python3 tools/godot/run_checked.py --timeout 1400 -- "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/performance/hull_lake_pair.gd" -- --reference="$PWD/tmp/lu25r4/hull_contact_ref.gd"
+```
+
+The near-lake states sample the lake at every point, so a run takes several minutes.
+Session-level pairs use `session_probe.gd --case=runway`. [LU-25-R4 evidence](../../docs/research/landscape-upgrade/LU-25-R4/README.md).
+
+## Carburettor root solve (NITRO-06-R1)
+
+`carburetor_pair.gd` compares an explicit prior `app/physics/glow/carburetor.gd` with the
+working tree: `charge_ratio` over 506,348 demand ratios including edge values, and
+`admission` over 60,802 opening/speed/capacity combinations, bytewise; then it times
+20,000 interior solves.
+
+```sh
+mkdir -p tmp/nitro06r1 && git show b6e3fe7d4:app/physics/glow/carburetor.gd > tmp/nitro06r1/carburetor_ref.gd
+python3 tools/godot/run_checked.py --timeout 1100 -- "$(app/get-godot.sh)" --headless --path app \
+  --script "$PWD/research/performance/carburetor_pair.gd" -- --reference="$PWD/tmp/nitro06r1/carburetor_ref.gd"
+```
+
+It also replays the sweep as (a, b, a, b) pairs and runs five concurrent callers through
+the root memo (NITRO-06-R2), comparing every root with the reference.
+[NITRO-06-R1 evidence](../../docs/research/glow-engines/NITRO-06-R1/README.md),
+[NITRO-06-R2 evidence](../../docs/research/glow-engines/NITRO-06-R2/README.md).

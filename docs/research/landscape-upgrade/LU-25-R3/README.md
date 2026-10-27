@@ -32,6 +32,14 @@ An independent read-only review found no counterexample. It checked zero-length 
 1, and that GDScript evaluates each operator separately, so nothing fuses. These edge
 cases are argued analytically; the probe exercises only the real lake.
 
+`lake_surface.gd` is a stamped input of the default-lake geometry bake, so the edit made
+the bake's source stamp stale. Runtime then falls back to procedural geometry (correct,
+but it gives back the DT-11a cold-load gain), and `test_lake_geometry_bake` reports the
+mismatch. `tools/ground/bake_lake_geometry.gd` regenerated the resource and stamp; its
+`--check` passes, and the basin and water content digests (`5861457b…`, `666a839d…`)
+equal those recorded for [GDU-03](../../engine-upgrade/GDU-03/lake/README.md). Only the
+source hash changed.
+
 Passing scripts: lake surface, covered sampling (761 checks), lake collision, lake ground
 contact, lake session (35), lake definition cache, ground support query (114), hull
 support normal (70), RCV airfield course, lake probe ambient (8), lake world (27).

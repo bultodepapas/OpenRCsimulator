@@ -33,6 +33,7 @@ The installed target is Godot **4.7.2**, Compatibility/OpenGL. This index points
 | LU-25-R1 | [Bounded lake-validation reuse, paired CPU benchmarks and exact behavior checks](LU-25-R1/README.md) |
 | LU-25-R2 | [Contact-only lake bounds rejection, repeated runway CPU benchmarks and boundary parity](LU-25-R2/README.md) |
 | LU-25-R3 | [Inlined lake polygon edge distance, bytewise parity on 7,001 points and query timing](LU-25-R3/README.md) |
+| LU-25-R4 | [Whole-hull lake bounds rejection, bytewise loads/terminal parity and runway session pairs](LU-25-R4/README.md) |
 | L21–24 | [Selectable Club field and Green paradise: loading, switching and resource-pack proof](L21-24/README.md) |
 
 The source/license ledger is [UPGRADE_CREDITS](../../../app/assets/landscape/UPGRADE_CREDITS.md). LU-21 adds exact-source CC0 car and human assets; no runtime plugin was added. Existing exact-package CC0 evidence remains authoritative; current author-wide licensing is not substituted for it.

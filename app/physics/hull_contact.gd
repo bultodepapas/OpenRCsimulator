@@ -249,6 +249,7 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 	active.resize(hull.size() / 3)
 	var any_active := false
 	var lake_samples: Array[Dictionary] = []
+	var lake_clear: bool = not lake.is_empty() and _hull_clear_of_lake(s, geometry)
 	for i in range(0, hull.size(), 3):
 		var depth: float = s[RB.POS + 2] + down[0] * hull[i] + down[1] * hull[i + 1] + down[2] * hull[i + 2]
 		if not is_finite(depth):
@@ -264,7 +265,8 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 				lake_samples.append({point_ned = point_ned, terrain = {covered = false}})
 				active[i / 3] = 0
 				continue
-			var terrain: Dictionary = _lake_sample(geometry, point_ned)
+			# The finiteness check above still runs; only the known {covered = false} answer is skipped.
+			var terrain: Dictionary = {covered = false} if lake_clear else _lake_sample(geometry, point_ned)
 			lake_samples.append({point_ned = point_ned, terrain = terrain})
 			if bool(terrain.get("covered", false)):
 				# Qualification uses this exact force owner's sample, even when no
@@ -490,9 +492,10 @@ static func terminal_at_properties(previous: PackedFloat64Array, s: PackedFloat6
 	var down_before: PackedFloat64Array = _down_row(previous)
 	var worst: Dictionary = none.duplicate()
 	var lake: Dictionary = geometry.get("lake", {})
+	var lake_sampled: bool = not lake.is_empty() and not _hull_clear_of_lake(s, geometry)
 	for i in range(0, hull.size(), 3):
 		var r: PackedFloat64Array = hull.slice(i, i + 3)
-		if not lake.is_empty():
+		if lake_sampled:
 			var point_now: PackedFloat64Array = _point_ned(s, r)
 			var terrain_now: Dictionary = _lake_sample(geometry, point_now)
 			if bool(terrain_now.get("covered", false)):
@@ -540,10 +543,11 @@ static func contacts(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 	var down_before: PackedFloat64Array = _down_row(previous)
 	var q := RB._att(s)
 	var q_before := RB._att(previous)
+	var lake: Dictionary = prepared.get("lake", {})
+	var lake_sampled: bool = not lake.is_empty() and not _hull_clear_of_lake(s, prepared)
 	for i in range(0, hull.size(), 3):
 		var r := hull.slice(i, i + 3)
-		var lake: Dictionary = prepared.get("lake", {})
-		if not lake.is_empty():
+		if lake_sampled:
 			var point_now: PackedFloat64Array = _point_ned(s, r)
 			var terrain_now: Dictionary = _lake_sample(prepared, point_now)
 			if bool(terrain_now.get("covered", false)):

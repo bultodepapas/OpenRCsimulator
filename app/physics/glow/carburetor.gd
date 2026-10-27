@@ -56,20 +56,64 @@ static func charge_ratio(y: float) -> float:
 		return NAN
 	if y <= CRITICAL_RATIO:
 		return y
+	# NITRO-06-R2: a glow evaluation admits the same opening and speed twice (lifecycle and fuel feed),
+	# so it repeats both root solves. Reuse the last two interior roots for bit-equal y; the solve is pure.
+	# Launch trim runs on worker threads, so the memo is guarded.
+	_root_memo_mutex.lock()
+	var cached: float = _root_memo[1] if _root_memo[0] == y else (_root_memo[3] if _root_memo[2] == y else NAN)
+	_root_memo_mutex.unlock()
+	if not is_nan(cached):
+		return cached
+	var root: float = _solve_charge_ratio(y)
+	_root_memo_mutex.lock()
+	_root_memo[_root_memo_next * 2] = y
+	_root_memo[_root_memo_next * 2 + 1] = root
+	_root_memo_next = 1 - _root_memo_next
+	_root_memo_mutex.unlock()
+	return root
+
+
+static var _root_memo := PackedFloat64Array([NAN, NAN, NAN, NAN])
+static var _root_memo_next := 0
+static var _root_memo_mutex := Mutex.new()
+
+
+## The interior root for r_c < y < ∞; callers handle invalid and choked inputs.
+static func _solve_charge_ratio(y: float) -> float:
 	# h(r) = r − y·g(r) rises from r_c − y < 0 to 1 at r = 1 (g falls monotonically). Newton on the bracket,
 	# with a bisection step whenever the Newton step leaves it; a few iterations per RK stage.
 	var lo: float = CRITICAL_RATIO
 	var hi: float = 1.0
 	var r: float = 0.5 * (lo + hi)
+	# NITRO-06-R1: flow_function(r) and _flow_function_slope(r) inlined. Both evaluate r^k, r^(1/γ) and the same
+	# root with identical expressions, so one evaluation serves both; outside (r_c, 1) the original functions run.
+	var k: float = (GAMMA - 1.0) / GAMMA
+	var c: float = 2.0 * GAMMA / (GAMMA - 1.0)
 	for _i in ROOT_ITERATIONS:
-		var h: float = r - y * flow_function(r)
+		var interior: bool = is_finite(r) and r > CRITICAL_RATIO and r < 1.0
+		var power_inverse_gamma: float = 0.0
+		var root: float = 0.0
+		var g: float
+		if interior:
+			root = M.sqrt_(maxf(c * (1.0 - M.pow_(r, k)), 0.0))
+			power_inverse_gamma = M.pow_(r, 1.0 / GAMMA)
+			g = power_inverse_gamma * root / PSI_CHOKED
+		else:
+			g = flow_function(r)
+		var h: float = r - y * g
 		if h > 0.0:
 			hi = r
 		else:
 			lo = r
 		if absf(h) <= ROOT_TOLERANCE or hi - lo <= ROOT_TOLERANCE:
 			break
-		var slope: float = 1.0 - y * _flow_function_slope(r)
+		var dg: float
+		if interior:
+			dg = -INF if root <= 0.0 else (M.pow_(r, 1.0 / GAMMA - 1.0) * root / GAMMA
+				- power_inverse_gamma * c * k * M.pow_(r, k - 1.0) / (2.0 * root)) / PSI_CHOKED
+		else:
+			dg = _flow_function_slope(r)
+		var slope: float = 1.0 - y * dg
 		var next: float = r - h / slope if slope > 0.0 and is_finite(slope) else NAN
 		if not is_finite(next) or next <= lo or next >= hi:
 			next = 0.5 * (lo + hi)

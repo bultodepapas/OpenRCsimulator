@@ -68,6 +68,8 @@ A live-app script profile of the Stik in flight put about half of each accepted 
 
 - Profile the running app (`debugctl.py launch --script-profile`, then `profile`) before choosing a hot spot; a step timer covers only the kernel.
 - For a whole-app A/B on a headless host, cap the frame rate: uncapped frames absorb the saved time and process CPU stays flat.
+- Inline calls into script functions, not engine built-ins: replacing `minf`/`maxf` with identical ternaries was 16% slower (LU-25-R5, rejected in the [LU-25-R4 record](research/landscape-upgrade/LU-25-R4/README.md)). Time every micro-change.
+- An exact edit to a stamped bake input (`lake_surface.gd`, `ground_terrain.gd`, `math3d.gd`, `lake_terrain.gd`) stales the default-lake geometry bake: output stays correct through the procedural fallback, but cold loading slows. Run `test_lake_geometry_bake.gd` and regenerate with `tools/ground/bake_lake_geometry.gd` ([LU-25-R3](research/landscape-upgrade/LU-25-R3/README.md)).
 - Check a cache key's cheap discriminator before serializing the rest. [VQ-01c tick attribution](research/visual-quality-implementation/VQ-01c/tick-observers-2026-10-27/README.md), [GP-19e](research/ground-physics/GP-19/evidence/scrape-observation-cost/README.md)
 
 ## 2026-10-26 · X8-12 — an accepted trim can still burn its iteration cap

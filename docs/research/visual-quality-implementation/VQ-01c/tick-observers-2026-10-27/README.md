@@ -76,6 +76,24 @@ A first attempt measured whole-process CPU with uncapped frames and saw no diffe
 (1,109 vs 1,114 ms per simulated second): headless frames are uncapped, so saved time
 goes into extra frames. It was discarded as a method failure, not a result.
 
+## Unprofiled observer share
+
+`app_cpu_per_sim.py` with `OPENRC_DETACH_PRESENTATION=1` disconnects the six
+presentation observers (windsock/people, ground gear, profile smoke, flight audio, crash
+director, statistics) after the flight starts; the session's contact commit and the
+recorder stay connected. Same settings as above, on the source with LU-25-R3/R4 and
+GP-19e, alternating order ([raw](observer-share-pairs.jsonl)):
+
+| Scenario | Pair 1 | Pair 2 | Pair 3 |
+| --- | ---: | ---: | ---: |
+| Airborne climb, main-thread ms per simulated second | 717 → 468 (−34.6%) | 718 → 467 (−34.9%) | 722 → 482 (−33.2%) |
+| Runway idle | 983 → 756 (−23.1%) | 961 → 743 (−22.7%) | 976 → 747 (−23.6%) |
+
+Without profiler overhead, the presentation observers take about a third of
+main-thread CPU in flight and about a quarter on the runway (both including per-frame
+work at the 30 fps cap). This bounds the gain available from running them per frame
+instead of per tick; their per-tick event contracts remain an owner decision.
+
 ## Not done: candidates for owners
 
 | Candidate | Profile cost | Why not here |
@@ -86,6 +104,8 @@ goes into extra frames. It was discarded as a method failure, not a result.
 | Value-equality guards (`LakeSurface.is_valid_definition`, `is_valid_surface_table`) | 1.09 + 0.61 ms | Deliberate fail-closed design (LU-25-R1) |
 | 240 Hz windsock/people/profile-smoke advance | ≈ 2 ms | Lower cadence changes visuals; owner decision |
 
-Next attribution target: with the Stik idling on the runway, `sim_step_usec` was about
-3.3 ms against 1.3–1.8 ms airborne, before observers. That ground-contact tick has not
-been profiled yet and is the largest remaining cost seen here.
+The runway-idle tick (about 3.3 ms against 1.3–1.8 ms airborne, before observers) was
+then profiled: per-point lake sampling in the hull contact law was the largest leaf.
+[LU-25-R4](../../../landscape-upgrade/LU-25-R4/README.md) rejects it for a hull wholly
+outside the bank bounds: complete-session runway tick −22% median in three pairs,
+identical fingerprints. Ranked next ideas: [optimization scan](../../../godot-optimization-scan-2026-10-27.md).

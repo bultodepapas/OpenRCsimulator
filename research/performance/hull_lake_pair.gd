@@ -10,6 +10,7 @@ const Field = preload("res://data/field_loader.gd")
 const LakeLoader = preload("res://data/lake_loader.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
+const GLOW := "res://data/aircraft/stik_glow_61fx_2t.json"
 
 var _failures := 0
 
@@ -41,6 +42,20 @@ func _run() -> void:
 	var prepared: Dictionary = session._hull_contact
 	_check("prepared hull carries the lake and its bounds", not prepared.get("lake", {}).is_empty()
 		and prepared.get("lake_bounds_ne_m", PackedFloat64Array()).size() == 4)
+	# Live-mass (glow, finite fuel) sessions prepare geometry only and pass mass properties per call.
+	var glow: Node = Session.new()
+	glow.input_enabled = false
+	glow.soft_hull_contacts = true
+	glow.setup(GLOW)
+	root.add_child(glow)
+	glow.set_process(false)
+	glow.set_physics_process(false)
+	_check("glow session with installed default field and lake", glow.is_flyable() and glow.finite_fuel_is_active()
+		and glow.set_field(Field.load_from().field) and glow.set_lake_context(lake.lake))
+	var geometry: Dictionary = glow._hull_contact
+	var properties: Dictionary = glow.mass_properties()
+	_check("glow geometry is geometry-only with lake bounds", bool(geometry.get("geometry_only", false))
+		and geometry.get("lake_bounds_ne_m", PackedFloat64Array()).size() == 4)
 	if _failures > 0:
 		quit(1)
 		return
@@ -56,7 +71,10 @@ func _run() -> void:
 			states.append(_state(rng, north, east))
 	for k: int in 400: # runway neighbourhood, the measured idle case
 		states.append(_state(rng, runway[0] + rng.randf_range(-20.0, 20.0), runway[1] + rng.randf_range(-20.0, 20.0)))
+	var no_samples: Array[Dictionary] = []
 	var mismatches := 0
+	var glow_mismatches := 0
+	var glow_active := 0
 	var clear := 0
 	var covered := 0
 	var touching := 0
@@ -68,11 +86,24 @@ func _run() -> void:
 		var cand_array: Array = []
 		var ref_dict := {}
 		var cand_dict := {}
-		var a := var_to_bytes([reference.loads(s, prepared), reference.loads(s, prepared, [], ref_array),
-			reference.loads(s, prepared, [], ref_dict), ref_array, ref_dict, reference.terminal(previous, s, prepared)])
-		var b := var_to_bytes([Candidate.loads(s, prepared), Candidate.loads(s, prepared, [], cand_array),
-			Candidate.loads(s, prepared, [], cand_dict), cand_array, cand_dict, Candidate.terminal(previous, s, prepared)])
+		var a := var_to_bytes([reference.loads(s, prepared), reference.loads(s, prepared, no_samples, ref_array),
+			reference.loads(s, prepared, no_samples, ref_dict), ref_array, ref_dict, reference.terminal(previous, s, prepared)])
+		var b := var_to_bytes([Candidate.loads(s, prepared), Candidate.loads(s, prepared, no_samples, cand_array),
+			Candidate.loads(s, prepared, no_samples, cand_dict), cand_array, cand_dict, Candidate.terminal(previous, s, prepared)])
 		if a != b: mismatches += 1
+		# contacts() and the live-mass entry points; terminal_at_properties needs a unit previous attitude.
+		var unit_previous := previous.duplicate()
+		var norm := sqrt(unit_previous[RB.ATT] ** 2 + unit_previous[RB.ATT + 1] ** 2 + unit_previous[RB.ATT + 2] ** 2 + unit_previous[RB.ATT + 3] ** 2)
+		for i: int in 4:
+			unit_previous[RB.ATT + i] /= norm
+		var ref_glow := {}
+		var cand_glow := {}
+		var ga := var_to_bytes([reference.contacts(previous, s, prepared), reference.loads_at_properties(s, geometry, properties, ref_glow),
+			ref_glow, reference.terminal_at_properties(unit_previous, s, geometry, properties)])
+		var gb := var_to_bytes([Candidate.contacts(previous, s, prepared), Candidate.loads_at_properties(s, geometry, properties, cand_glow),
+			cand_glow, Candidate.terminal_at_properties(unit_previous, s, geometry, properties)])
+		if ga != gb: glow_mismatches += 1
+		if not Candidate.loads_at_properties(s, geometry, properties).loads.is_empty(): glow_active += 1
 		if Candidate._hull_clear_of_lake(s, prepared): clear += 1
 		if not Candidate.loads(s, prepared).is_empty(): touching += 1
 		if ref_dict.get("reason", "") == "covered_lake_branch_unqualified": covered += 1
@@ -80,6 +111,9 @@ func _run() -> void:
 	_check("loads, diagnostics and terminal bytewise equal", mismatches == 0, "mismatches=%d" % mismatches)
 	_check("both the rejection and the sampled branch are exercised", clear > 0 and clear < states.size() and covered > 0)
 	_check("contact loads are exercised", touching > 100)
+	_check("contacts, loads_at_properties and terminal_at_properties bytewise equal", glow_mismatches == 0,
+		"mismatches=%d" % glow_mismatches)
+	_check("live-mass contact loads are exercised", glow_active > 100, "with_loads=%d" % glow_active)
 	# Paired timing on the runway neighbourhood: loads as one RK stage calls it.
 	var runway_states := states.slice(states.size() - 400)
 	var ref_us := PackedFloat64Array()
@@ -99,6 +133,7 @@ func _run() -> void:
 	print("TIMING runway loads reference_median_us=%.2f candidate_median_us=%.2f ratio=%.3f" % [
 		ref_us[6], cand_us[6], cand_us[6] / ref_us[6]])
 	session.free()
+	glow.free()
 	print("HULL LAKE PAIR failures=", _failures)
 	quit(1 if _failures > 0 else 0)
 
