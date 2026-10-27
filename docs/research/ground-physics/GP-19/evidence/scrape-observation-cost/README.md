@@ -52,12 +52,15 @@ checkpoint (92), checkpoint integrity (149), flight reset transaction (148).
 
 ## Cost
 
-First observation per tick, summed over the 480 ticks of the probe:
+First observation per tick, averaged over the 480 ticks of each probe run:
 
-| Aircraft data | Baseline µs/tick | Candidate µs/tick | Ratio |
-| --- | ---: | ---: | ---: |
-| Electric Stik | 295.8 | 111.3 | 0.376 |
-| Glow Stik | 637.5 | 354.2 | 0.556 |
+| Aircraft data | Run | Baseline µs/tick | Candidate µs/tick | Ratio |
+| --- | ---: | ---: | ---: | ---: |
+| Electric Stik | 1 | 295.8 | 111.3 | 0.376 |
+| Electric Stik | 2 | 354.5 | 120.3 | 0.339 |
+| Glow Stik | 1 | 637.5 | 354.2 | 0.556 |
+| Glow Stik | 2 | 741.1 | 403.0 | 0.544 |
 
-These are single probe runs while the wingtip scrapes. The airborne and runway
-whole-application effect, combined with LU-25-R3, is in the VQ-01c record.
+Both runs were bytewise equal. They measure a scraping wingtip; GDScript compiler
+warnings for the changed files are identical to the baseline's. The whole-application
+effect, combined with LU-25-R3, is in the VQ-01c record.

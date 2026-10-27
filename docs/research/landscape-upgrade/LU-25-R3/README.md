@@ -45,8 +45,12 @@ inside the expanded bank box:
 | Run | Baseline median µs/query | Candidate median µs/query | Ratio |
 | --- | ---: | ---: | ---: |
 | 1 | 138.68 | 86.60 | 0.624 |
+| 2 | 135.88 | 87.21 | 0.642 |
+| 3 | 135.48 | 87.84 | 0.648 |
 
+The median ratio is 0.642, a 36% shorter query; every run had 0 parity mismatches.
 A control run with the unchanged script as both roles gave a ratio of 0.962, which
-bounds this probe's order/noise effect. This is a component result: it applies while
+bounds this probe's order/noise effect. GDScript compiler warnings for the changed
+file are identical to the baseline's. This is a component result: it applies while
 the aircraft or a wheel samples terrain inside the lake's expanded bounds, which
 LU-25-R2 already rejects elsewhere. No complete over-lake session gain is claimed here.

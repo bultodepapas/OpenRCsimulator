@@ -41,7 +41,7 @@ Both are exact: outputs are bytewise equal to the baseline and `test_golden` out
 identical.
 
 - [LU-25-R3](../../../landscape-upgrade/LU-25-R3/README.md): inline the lake polygon
-  edge distance. Terrain query near the lake 138.7 → 86.6 µs.
+  edge distance. Terrain query near the lake 36% shorter (median of three runs).
 - [GP-19e](../../../ground-physics/GP-19/evidence/scrape-observation-cost/README.md):
   no per-tick 15.6 kB cache key; hull law identity formatted once.
 
@@ -57,10 +57,20 @@ until each flight had loaded them. The value is main-thread CPU per simulated se
 | Airborne climb | 1 | 816.31 | 802.55 | −1.69% |
 | Airborne climb | 2 | 851.24 | 807.62 | −5.12% |
 | Airborne climb | 3 | 948.99 | 867.87 | −8.55% |
+| Runway idle | 1 | 1,655.07 | 1,322.31 | −20.10% |
+| Runway idle | 2 | 1,317.30 | 1,306.86 | −0.79% |
+| Runway idle | 3 | 1,293.85 | 1,315.46 | +1.67% |
 
 All three airborne pairs favour the candidate (median −5.1%; whole-process CPU −1.4%,
-−4.6%, −8.3%). Both roles drifted upward across the session, from host load. The
-spread is wide, so treat the magnitude as approximate.
+−4.6%, −8.3%). Both roles drifted upward across the session, and the spread is wide,
+so treat the magnitude as approximate.
+
+Runway idle is **inconclusive**. With loaded wheels `sim_step_usec` is about 3.3 ms, so
+the main thread saturates (realtime 0.60–0.77, 12–16 fps). The metric then reduces to
+the inverse of realtime, and a faster role also draws more frames. The first baseline
+is an outlier; the other two pairs are within noise. No runway gain is claimed. The
+first runway attempt taxied with throttle 0.25 and crashed off the runway before
+sampling ended, so the scenario now idles.
 
 A first attempt measured whole-process CPU with uncapped frames and saw no difference
 (1,109 vs 1,114 ms per simulated second): headless frames are uncapped, so saved time
@@ -75,3 +85,7 @@ goes into extra frames. It was discarded as a method failure, not a result.
 | Cache `wheel_brake_available()` (6 calls per tick) | 1.75 ms | Validates the public, mutable `aircraft` dictionary; caching needs an ownership guarantee |
 | Value-equality guards (`LakeSurface.is_valid_definition`, `is_valid_surface_table`) | 1.09 + 0.61 ms | Deliberate fail-closed design (LU-25-R1) |
 | 240 Hz windsock/people/profile-smoke advance | ≈ 2 ms | Lower cadence changes visuals; owner decision |
+
+Next attribution target: with the Stik idling on the runway, `sim_step_usec` was about
+3.3 ms against 1.3–1.8 ms airborne, before observers. That ground-contact tick has not
+been profiled yet and is the largest remaining cost seen here.

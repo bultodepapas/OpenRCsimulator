@@ -668,10 +668,10 @@ static func _signed_polygon_distance(polygon: PackedFloat64Array, north: float, 
 
 
 ## Combines point-in-polygon and nearest-boundary distance in one edge walk.
-## Every terrain stencil point runs this for both polygons, so the edge distance is
-## _point_segment_distance_sq inlined with identical operations: one GDScript call
-## per edge cost more than the arithmetic (VQ-01c tick attribution, 2026-10-27).
 static func _polygon_state(polygon: PackedFloat64Array, north: float, east: float) -> float:
+	# LU-25-R3: every terrain stencil point walks both polygons, and a GDScript call per
+	# edge cost more than its arithmetic. The edge distance is _point_segment_distance_sq
+	# inlined with identical operations; keep the two in step.
 	var inside: bool = false
 	var on_boundary: bool = false
 	var minimum_sq: float = INF
