@@ -570,8 +570,11 @@ run it alone for timing comparisons. [Dated evidence and limits](../../docs/rese
 Stik case (`airborne` climb or `runway` taxi) and reports main-thread and whole-process
 CPU per simulated second. Unlike the session probes, this includes every accepted-tick
 observer (audio, statistics, crash presentation, windsock, people) that `Simulation.step_usec`
-excludes. It caps frames at 30 and halves `Engine.time_scale` through the bridge;
-uncapped headless frames absorb saved time, and a saturated main thread hides a gain.
+excludes. Through the bridge it caps frames at 30, because uncapped headless frames
+absorb saved time. It also halves `Engine.time_scale`: ticks still arrive at 240 per
+wall second, but delta-driven presentation work shrinks, so a slow host's main thread
+stops saturating. The workload is therefore not normal play; compare roles only under
+identical settings.
 
 ```sh
 python3 research/performance/app_cpu_per_sim.py <label> airborne 10 40
