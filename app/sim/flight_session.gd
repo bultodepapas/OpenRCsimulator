@@ -2145,7 +2145,9 @@ func _start_failure_reason() -> String:
 	if not surface_error.is_empty():
 		return surface_error
 	if not aircraft.get("ok", false):
-		return "aircraft data is invalid"
+		# _set_initial_failure() keeps the validation message in start; the pilot needs the cause, not a generic refusal.
+		var message: String = str(start.get("message", ""))
+		return message if not message.is_empty() else "aircraft data is invalid"
 	return "trimmed starting condition is invalid: " + str(start.get("message", "no valid trim"))
 
 

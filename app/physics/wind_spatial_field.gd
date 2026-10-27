@@ -3,6 +3,7 @@
 class_name WindSpatialField
 extends RefCounted
 
+const M := preload("res://physics/math3d.gd")
 const Config := preload("res://physics/wind_spatial_config.gd")
 const ThermalField := preload("res://physics/wind_thermal_field.gd")
 const TAU_F64 := 6.283185307179586476925286766559
@@ -77,10 +78,10 @@ func _prepare_profile_and_gusts() -> void:
 	_surface_top = float(profile.surface_layer_top_agl_m)
 	_free_air_join_height = float(profile.free_air_join_height_m)
 	var radians := deg_to_rad(float(profile.reference_from_deg))
-	_direction_cosine = cos(radians)
-	_direction_sine = sin(radians)
-	_log_denominator = log((float(profile.reference_height_agl_m) - _displacement_height) / _roughness_length)
-	_wall_scale = log((_wall_height - _displacement_height) / _roughness_length) / _log_denominator
+	_direction_cosine = M.cos_(radians)
+	_direction_sine = M.sin_(radians)
+	_log_denominator = M.log_((float(profile.reference_height_agl_m) - _displacement_height) / _roughness_length)
+	_wall_scale = M.log_((_wall_height - _displacement_height) / _roughness_length) / _log_denominator
 	_wall_scale_slope = 1.0 / ((_wall_height - _displacement_height) * _log_denominator)
 	_gust_transition_height = float(_config.domain.ground_transition_height_m)
 	var gust_values := PackedFloat64Array()
@@ -140,8 +141,8 @@ func absolute_speed_bound_mps() -> float:
 	var displacement := float(profile.displacement_height_m)
 	var reference_height := float(profile.reference_height_agl_m)
 	var upper_join_end := float(profile.surface_layer_top_agl_m) + float(profile.free_air_join_height_m)
-	var log_denominator := log((reference_height - displacement) / z0)
-	var log_speed := float(profile.reference_speed_mps) * log((upper_join_end - displacement) / z0) / log_denominator
+	var log_denominator := M.log_((reference_height - displacement) / z0)
+	var log_speed := float(profile.reference_speed_mps) * M.log_((upper_join_end - displacement) / z0) / log_denominator
 	var free_air: Array = profile.free_air_wind_ned_mps
 	var free_air_speed := sqrt(float(free_air[0]) * float(free_air[0]) + float(free_air[1]) * float(free_air[1]))
 	var bound := maxf(log_speed, free_air_speed)
@@ -247,7 +248,7 @@ func _neutral_profile(height_agl: float) -> PackedFloat64Array:
 	var reference_speed := _reference_speed
 	if reference_speed == 0.0:
 		return PackedFloat64Array([0.0, 0.0, 0.0])
-	var scale := log((height_agl - _displacement_height) / _roughness_length) / _log_denominator
+	var scale := M.log_((height_agl - _displacement_height) / _roughness_length) / _log_denominator
 	var north := -reference_speed * _direction_cosine * scale
 	var east := -reference_speed * _direction_sine * scale
 	return PackedFloat64Array([north, east, 0.0])
@@ -331,11 +332,11 @@ func _turbulence_wind(north_m: float, east_m: float, height_agl: float, epoch_ti
 		var spatial_phase := k_north * north_m + k_east * east_m + phase_offset
 		var temporal_phase := omega * epoch_time
 		var phase := fposmod(fposmod(spatial_phase, TAU_F64) + fposmod(temporal_phase, TAU_F64), TAU_F64)
-		var cosine_phase := cos(phase)
-		var sine_phase := sin(phase)
+		var cosine_phase := M.cos_(phase)
+		var sine_phase := M.sin_(phase)
 		var vertical_phase := k_down * height_agl
-		var sine_vertical := sin(vertical_phase)
-		var cosine_vertical := cos(vertical_phase)
+		var sine_vertical := M.sin_(vertical_phase)
+		var cosine_vertical := M.cos_(vertical_phase)
 		# A per-mode C2 potential taper reaches one over one vertical wavelength.
 		# Its derivative is bounded by 1.875*k_down/TAU and is zero at ground.
 		var wall_fraction := clampf(vertical_phase / TAU_F64, 0.0, 1.0)
@@ -371,23 +372,23 @@ func _resolve_modes() -> PackedFloat64Array:
 	var coherence := float(turbulence.coherence_time_s)
 	var profile: Dictionary = _config.profile
 	var reference_radians := deg_to_rad(float(profile.reference_from_deg))
-	var reference_north := -float(profile.reference_speed_mps) * cos(reference_radians)
-	var reference_east := -float(profile.reference_speed_mps) * sin(reference_radians)
+	var reference_north := -float(profile.reference_speed_mps) * M.cos_(reference_radians)
+	var reference_east := -float(profile.reference_speed_mps) * M.sin_(reference_radians)
 	for index: int in count:
 		# Stratified log-wavelength selection avoids accidental clusters while remaining seed-specific.
 		var jitter := _random_unit() - 0.5
 		var stratum := clampf((float(index) + 0.5 + 0.75 * jitter) / float(count), 0.0, 1.0)
-		var wavelength := min_wavelength * pow(max_wavelength / min_wavelength, stratum)
+		var wavelength := min_wavelength * M.pow_(max_wavelength / min_wavelength, stratum)
 		var wavenumber := TAU_F64 / wavelength
 		var vertical_share := 0.5 + 0.5 * _random_unit()
 		var k_down := wavenumber * vertical_share
 		var k_horizontal := wavenumber * sqrt(maxf(0.0, 1.0 - vertical_share * vertical_share))
 		var wave_angle := TAU_F64 * _random_unit()
-		var k_north := k_horizontal * cos(wave_angle)
-		var k_east := k_horizontal * sin(wave_angle)
+		var k_north := k_horizontal * M.cos_(wave_angle)
+		var k_east := k_horizontal * M.sin_(wave_angle)
 		var axis_angle := TAU_F64 * _random_unit()
-		var axis_north := cos(axis_angle)
-		var axis_east := sin(axis_angle)
+		var axis_north := M.cos_(axis_angle)
+		var axis_east := M.sin_(axis_angle)
 		var cross_wavenumber := -axis_east * k_north + axis_north * k_east
 		var variance_wavenumber := sqrt(k_down * k_down + cross_wavenumber * cross_wavenumber)
 		var potential_amplitude := 0.0

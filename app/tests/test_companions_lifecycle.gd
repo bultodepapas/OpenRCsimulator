@@ -134,7 +134,8 @@ func _cycle_manager(player: Flight, index: int) -> void:
 	root.remove_child(manager)
 	manager.free()
 	_check("headless cycle %d frees the manager" % index, manager_ref.get_ref() == null)
-	_check("headless cycle %d returns to the player-only tree" % index, root.get_child_count() == 1)
+	_check("headless cycle %d returns to the player-only tree" % index,
+		root.get_child_count() == _base_root_children + 1)
 
 
 func _visual_audio_cycle(player: Flight, index: int) -> void:
@@ -191,7 +192,8 @@ func _visual_audio_cycle(player: Flight, index: int) -> void:
 		stream_ref == null or stream_ref.get_ref() == null, str(ids))
 	_check("visual cycle %d leaves no engine voice under the player" % index,
 		root.find_children("engine_sound", "", true, false).is_empty())
-	_check("visual cycle %d restores the player-only tree" % index, root.get_child_count() == 1)
+	_check("visual cycle %d restores the player-only tree" % index,
+		root.get_child_count() == _base_root_children + 1)
 
 
 func _run_isolation_gate(player: Flight) -> void:
@@ -257,6 +259,8 @@ func _run_isolation_gate(player: Flight) -> void:
 
 
 var _field: Dictionary = {}
+# Autoloads (for example InterfaceFonts) are root children before the player is added.
+var _base_root_children := 0
 
 
 func _initialize() -> void:
@@ -273,6 +277,7 @@ func _run() -> void:
 		quit(1)
 		return
 	_field = field_result.field
+	_base_root_children = root.get_child_count()
 	var collision: Dictionary = CollisionSetup.build(_field)
 	if not collision.get("ok", false):
 		printerr("Collision fixture failed: %s" % str(collision.get("errors", [])))
@@ -325,7 +330,7 @@ func _run() -> void:
 		root.remove_child(player)
 	player.free()
 	await process_frame
-	_check("player teardown leaves no companion or flight nodes", root.get_child_count() == 0
+	_check("player teardown leaves no companion or flight nodes", root.get_child_count() == _base_root_children
 		and root.find_children("Companion*", "", true, false).is_empty()
 		and root.find_children("FlightSession", "", true, false).is_empty())
 	print("companions lifecycle: %d checks, %d failed; %d headless cycles, %d visual/audio cycles" %

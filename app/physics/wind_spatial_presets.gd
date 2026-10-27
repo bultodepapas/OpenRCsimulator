@@ -1,6 +1,7 @@
 ## Authored, deterministic spatial-wind practice scenarios. These are not site measurements.
 extends RefCounted
 
+const M := preload("res://physics/math3d.gd")
 const SpatialConfig := preload("res://physics/wind_spatial_config.gd")
 const GUST_AGENDA_STARTS: Array[float] = [
 	6.0, 22.0, 51.0, 93.0, 148.0, 220.0, 311.0, 421.0,
@@ -171,13 +172,13 @@ static func _free_air_vector(config: Dictionary, speed_mps: float, from_deg: flo
 	var profile: Dictionary = config.profile
 	var displacement := float(profile.displacement_height_m)
 	var upper_join_end := float(profile.surface_layer_top_agl_m) + float(profile.free_air_join_height_m)
-	var reference_log := log((reference_height_m - displacement) / roughness_m)
-	var upper_log := log((upper_join_end - displacement) / roughness_m)
+	var reference_log := M.log_((reference_height_m - displacement) / roughness_m)
+	var upper_log := M.log_((upper_join_end - displacement) / roughness_m)
 	var upper_speed := speed_mps * upper_log / reference_log
 	var radians := deg_to_rad(from_deg)
-	return [-upper_speed * cos(radians), -upper_speed * sin(radians), 0.0]
+	return [-upper_speed * M.cos_(radians), -upper_speed * M.sin_(radians), 0.0]
 
 
 static func _from_vector(speed_mps: float, from_deg: float) -> Array[float]:
 	var radians := deg_to_rad(from_deg)
-	return [-speed_mps * cos(radians), -speed_mps * sin(radians), 0.0]
+	return [-speed_mps * M.cos_(radians), -speed_mps * M.sin_(radians), 0.0]

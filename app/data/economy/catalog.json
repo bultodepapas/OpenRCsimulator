@@ -4,7 +4,7 @@
   "price_date": "2026-10-25",
   "generated_from": {
     "price_catalog_sha256": "a4b6017efc68b5840d68a4701783f5b8b511d4d85aeb8304104a1dd416c06dea",
-    "aircraft_costing_sha256": "00f635738f9825ad0ab14c34dc7862a609c62a6c3316efccdb50d6182d3b2781",
+    "aircraft_costing_sha256": "188996f414472a39b0530a187e01cd0c0fedce5e43a025e0bf0358e1073b0b7a",
     "aircraft_catalog_sha256": "6ff6ecefe16acfd9c5335029ea30ab63e1dafa795f5780b3f710a01767f4cb4b",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "c8b34bac1aabf0ce74a9c696e8bb65c888b39021f50e350b01c67dd46a4a9708"
@@ -3608,7 +3608,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "jensen-das-ugly-stik-60",
-      "source_sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77",
+      "source_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "complete_inventory_coverage_with_cost_estimates",
@@ -4049,7 +4049,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-61fx-2t",
-      "source_sha256": "ff43a548cbf8b080a720ab3f912bf6aef0cb9f1c52410c0b022f797294cb5be1",
+      "source_sha256": "babf709c6f8eda13af2bcb8dfc2753b98ae82aafaef048dee45610eeb799d458",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "inherited_complete_inventory_coverage_with_cost_estimates",
@@ -4490,7 +4490,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-55ax-2t",
-      "source_sha256": "742a19d5411c01f81d9fa4c5627803bfde059c3d4ed1082fe82e089dbf55397a",
+      "source_sha256": "66d13e8d7d3a44d371f26d75f5e08fbd75b1088430de7a4fabbc852a4c2ca298",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
@@ -4931,7 +4931,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-fs64v-4t",
-      "source_sha256": "942cca1364cacf61c9a5c0d066ef9bfc99dc9be9c86b0c30cefec19eb3c9c182",
+      "source_sha256": "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
@@ -5372,7 +5372,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "gp-extra-300s-60",
-      "source_sha256": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f",
+      "source_sha256": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -5913,7 +5913,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "p51d-mustang-120",
-      "source_sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d",
+      "source_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -6616,7 +6616,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "f4u-corsair-250",
-      "source_sha256": "e27ba35766bad2e32f7c10b0d3e80d49331af2c557957a85959dca47ebad3d43",
+      "source_sha256": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -7495,7 +7495,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "sebart-avanti-s-a200-p100rx",
-      "source_sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea",
+      "source_sha256": "3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -8063,7 +8063,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "turbo-lumber-evolution",
-      "source_sha256": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf",
+      "source_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",

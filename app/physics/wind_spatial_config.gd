@@ -3,6 +3,7 @@
 class_name WindSpatialConfig
 extends RefCounted
 
+const M := preload("res://physics/math3d.gd")
 const FORMAT := "openrc-spatial-wind v1"
 const FORMAT_V2 := "openrc-spatial-wind v2"
 const FRAME := "NED"
@@ -403,11 +404,11 @@ static func _validate_domain(domain: Dictionary, profile: Dictionary, identity: 
 		errors.append("profile surface-layer and free-air join exceed domain.max_height_agl_m")
 	if layer_top <= displacement + z0:
 		errors.append("profile.surface_layer_top_agl_m must be above d + z0")
-	var neutral_denominator := log((reference_height - displacement) / z0)
+	var neutral_denominator := M.log_((reference_height - displacement) / z0)
 	if not is_finite(neutral_denominator) or neutral_denominator <= 0.0:
 		errors.append("profile neutral logarithm denominator must be positive and finite")
 	else:
-		var wall_log := log((wall - displacement) / z0)
+		var wall_log := M.log_((wall - displacement) / z0)
 		var matched_slope_ratio := wall / ((wall - displacement) * wall_log)
 		if not is_finite(matched_slope_ratio) or matched_slope_ratio < 0.0 or matched_slope_ratio > 3.0:
 			errors.append("profile wall join slope cannot be bounded by the monotone cubic")

@@ -157,7 +157,10 @@
 						-0.0001
 					],
 					"time_s": 0.25,
-					"wind_bytes_hex": "4839a474c12b083df7013748a6be963e208c3db75805de3b"
+					"wind_bytes_hex": "4839a474c12b083df7013748a6be963e208c3db75805de3b",
+					"wind_bytes_hex_by_os": {
+						"Linux": "603ea474c12b083df7013748a6be963e208c3db75805de3b"
+					}
 				},
 				{
 					"position_ned_m": [
@@ -193,7 +196,10 @@
 						-0.0001
 					],
 					"time_s": 2.75,
-					"wind_bytes_hex": "824dfe828e3442bd25363eaaa6be963e886c68bbbd090d3c"
+					"wind_bytes_hex": "824dfe828e3442bd25363eaaa6be963e886c68bbbd090d3c",
+					"wind_bytes_hex_by_os": {
+						"Linux": "304dfe828e3442bd25363eaaa6be963e886c68bbbd090d3c"
+					}
 				},
 				{
 					"position_ned_m": [
@@ -229,7 +235,10 @@
 						-0.0001
 					],
 					"time_s": 17.5,
-					"wind_bytes_hex": "c7bc9453008623bdb6c9804ba6be963e0cf218098893023c"
+					"wind_bytes_hex": "c7bc9453008623bdb6c9804ba6be963e0cf218098893023c",
+					"wind_bytes_hex_by_os": {
+						"Linux": "82bb9453008623bdb6c9804ba6be963e0cf218098893023c"
+					}
 				}
 			],
 			"spatial_hash": "901627a5bb902ad2fb15e625cda0610d106c8ea2a5d9e30719dd99580b37b867",
@@ -470,7 +479,31 @@
 			"thermal_hash": "9f94940e57e08fe6417fcf51b780424c5992575720264b0c49efc976f49414aa"
 		}
 	],
-	"format": "openrc-spatial-mode-grid-before-opt v1",
+	"format": "openrc-spatial-mode-grid-before-opt v2",
+	"os_captures": {
+		"Linux": {
+			"capture_tool": "docs/research/wind-implementation/M5-W05d-R1/fixture-capture/",
+			"engine": "4.8.beta1.official.4d10419ca",
+			"samples_differing_from_wind_bytes_hex": 3,
+			"source_sha256": {
+				"physics/wind_spatial_config.gd": "75486c40764a625fc89836fb8362b420dc82d9c1929cd2588200bd08a869188f",
+				"physics/wind_spatial_field.gd": "c9e213aa6b063c43948854cabbd354209437cbb2e5ce167ab9615e481ea99e86",
+				"physics/wind_thermal_field.gd": "7952776560fbd6e3cb4379d47ee7d77da97720605b7b64f0c9a838114fa54d66",
+				"tests/test_spatial_wind_field.gd": "e6041a5e04a7c18e0e41e73e79f40be2b6f0c0dc97522162dc77589b2703fa3d"
+			}
+		},
+		"Windows": {
+			"capture_tool": "docs/research/wind-implementation/M5-W05d-R1/fixture-capture/",
+			"engine": "4.8.beta1.official.4d10419ca",
+			"samples_differing_from_wind_bytes_hex": 0,
+			"source_sha256": {
+				"physics/wind_spatial_config.gd": "75486c40764a625fc89836fb8362b420dc82d9c1929cd2588200bd08a869188f",
+				"physics/wind_spatial_field.gd": "c9e213aa6b063c43948854cabbd354209437cbb2e5ce167ab9615e481ea99e86",
+				"physics/wind_thermal_field.gd": "7952776560fbd6e3cb4379d47ee7d77da97720605b7b64f0c9a838114fa54d66",
+				"tests/test_spatial_wind_field.gd": "e6041a5e04a7c18e0e41e73e79f40be2b6f0c0dc97522162dc77589b2703fa3d"
+			}
+		}
+	},
 	"positions_ned_m": [
 		[
 			0.0,

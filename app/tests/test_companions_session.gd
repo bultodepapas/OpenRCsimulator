@@ -171,7 +171,7 @@ func _run_external_actuator_packet_atomicity() -> void:
 	var unsupported_errors: Array = unsupported_result.get("errors", [])
 	var reports_all_unsupported_fields: bool = unsupported_errors.has("gear_down is unsupported by this aircraft") \
 		and unsupported_errors.has("flaps are unsupported by this aircraft") \
-		and unsupported_errors.has("brake is unsupported without retractable landing gear")
+		and unsupported_errors.has("brake is unsupported without explicitly available wheel brake hardware")
 	_check("Stik fixture has no retractable gear or flaps", not external_stik.gear_is_retractable()
 		and not external_stik.flaps_available())
 	_check("unsupported gear, flap, and brake reasons reject atomically without replacing the valid packet",

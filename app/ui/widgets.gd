@@ -61,6 +61,27 @@ static func _fit_color_picker_popup(button: ColorPickerButton) -> void:
 		popup.content_scale_factor = maxf(0.1, fit)
 
 
+## Keep an OptionButton's one-line item list inside the viewport with long items and enlarged text.
+## As fit_title: only this popup's font shrinks, never below `minimum_size`; a list that fits keeps the theme size.
+static func fit_option_popup(picker: OptionButton, minimum_size: int = UiTheme.SIZE.small) -> void:
+	picker.get_popup().about_to_popup.connect(_fit_option_popup.bind(picker, minimum_size))
+
+
+static func _fit_option_popup(picker: OptionButton, minimum_size: int) -> void:
+	var popup := picker.get_popup()
+	popup.remove_theme_font_size_override("font_size")
+	var available := picker.get_viewport_rect().size.x - 32.0
+	var natural := popup.get_contents_minimum_size().x
+	if natural <= available:
+		return
+	# Width is margins plus text, so the proportional first guess can still overflow; step down from it.
+	var fitted := maxi(minimum_size, floori(popup.get_theme_font_size("font_size") * available / natural))
+	popup.add_theme_font_size_override("font_size", fitted)
+	while fitted > minimum_size and popup.get_contents_minimum_size().x > available:
+		fitted -= 1
+		popup.add_theme_font_size_override("font_size", fitted)
+
+
 static func gap(height: int) -> Control:
 	var control := Control.new()
 	control.custom_minimum_size.y = height

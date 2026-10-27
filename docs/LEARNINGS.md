@@ -54,6 +54,8 @@ Start here for mistakes worth avoiding. Commands live in [TOOLS](TOOLS.md) and w
 
 - **Freeze the inputs to a comparison.** Concurrent aircraft regeneration changed flight fingerprints during a refactor; parallel suites raced on shared preferences; visual edits mixed two versions in one capture run. Use an isolated source/data snapshot and separate runtime settings for comparable evidence. [H13/H14](research/simulation-state/H13/README.md), [VQ-01a](research/visual-quality-implementation/VQ-01a/README.md).
 
+- **Exact float bytes hold per OS, not across OSes.** A spatial-wind parity fixture captured on Windows failed on Linux CI in 3 of 48 samples (≈1e-14 m/s), although the frozen candidate and the current code agreed byte for byte on Linux: glibc and the Windows CRT round some transcendentals differently. Capture byte fixtures from the frozen source on every OS that runs the check, keyed by `OS.get_name()`; never copy CI's "got" bytes into a fixture. [M5-W05d-R1 fixture capture](research/wind-implementation/M5-W05d-R1/README.md).
+
 - **Match acceptance to the observer.** Software-rendered captures establish pixels and repeatability, not target-GPU frame times or human attitude recognition. Export inspection establishes package structure, not native launch or signing trust. Keep pilot trials, hardware timing and native OS checks as distinct evidence. [L6c](research/visual-quality-implementation/L6c/README.md), [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md).
 
 ## Keeping this useful

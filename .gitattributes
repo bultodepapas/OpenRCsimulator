@@ -8,6 +8,8 @@
 /app/assets/audio/powertrains/LICENSE.txt text eol=lf
 /app/assets/audio/landing_gear/*.json text eol=lf
 /app/assets/audio/landing_gear/LICENSE.txt text eol=lf
+# X8-02 install_assets.py --check pins the delivered licence bytes (LF) on Windows and Linux.
+/app/assets/aircraft/skywalker-x8/LICENSE.txt text eol=lf
 # Grass placement is compared byte-for-byte with its LF generator output.
 /app/data/fields/grass.json text eol=lf
 # Baked hill settlements bind the exact visual ridge profile bytes.

@@ -28,3 +28,6 @@ app/captures/
 
 # Local isolated worktrees.
 /.drafts/
+
+# Claude Code subagent worktrees (local, disposable)
+.claude/worktrees/

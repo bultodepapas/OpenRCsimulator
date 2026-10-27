@@ -363,8 +363,14 @@ func _packed_mode_grid_byte_parity() -> void:
 		return
 	var fixture: Dictionary = fixture_raw
 	_check("sample grid is anchored to the frozen pre-packed-mode candidate",
-		fixture.get("format", "") == "openrc-spatial-mode-grid-before-opt v1"
+		fixture.get("format", "") == "openrc-spatial-mode-grid-before-opt v2"
 		and fixture.get("candidate_manifest_sha256", "") == "7ae3ff0b3c03c0e68ba5e5c5e37139b4e36a4f68923ac4f899d4481671ba990c")
+	# wind_bytes_hex is the original Windows capture. Each OS's libm may round a few
+	# near-cancelling samples differently, so the frozen candidate was also captured
+	# on that OS (M5-W05d-R1/fixture-capture); its differing bytes are keyed by OS name.
+	var os_name := OS.get_name()
+	_check("frozen candidate bytes were captured on " + os_name,
+		fixture.get("os_captures", {}).has(os_name), str(fixture.get("os_captures", {}).keys()))
 	var config_by_id := {}
 	for item: Dictionary in _mode_grid_fixture_configs():
 		config_by_id[item.id] = item.raw
@@ -392,7 +398,8 @@ func _packed_mode_grid_byte_parity() -> void:
 			if actual.get("ok", false):
 				var wind: PackedFloat64Array = actual.get("wind_ned_mps", PackedFloat64Array())
 				actual_hex = wind.to_byte_array().hex_encode()
-			var expected_hex := str(sample_fixture.get("wind_bytes_hex", ""))
+			var expected_hex := str(sample_fixture.get("wind_bytes_hex_by_os", {}).get(os_name,
+				sample_fixture.get("wind_bytes_hex", "")))
 			_check("packed mode preserves exact pre-opt bytes: %s sample %d" % [case_id, sample_index],
 				actual.get("ok", false) and actual_hex == expected_hex, "expected %s got %s" % [expected_hex, actual_hex])
 			compared_samples += 1

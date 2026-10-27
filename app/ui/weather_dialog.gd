@@ -319,6 +319,9 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 
 
 func _ready() -> void:
+	# Spatial preset labels are long; at large text their lists would exceed a small window.
+	for selector: OptionButton in find_children("*", "OptionButton", true, false):
+		Widgets.fit_option_popup(selector)
 	get_viewport().size_changed.connect(_schedule_scroll_height_update)
 	panel.resized.connect(_schedule_scroll_height_update)
 	_schedule_scroll_height_update()

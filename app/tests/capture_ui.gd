@@ -23,6 +23,7 @@ const UpdateCheck := preload("res://app_state/update_check.gd")
 const TARGET_FLIGHT_TIME_S: float = 1.5
 const FLIGHT_PREFERENCES_PATH: String = "user://capture_ui_flight_settings.cfg"
 const WEATHER_PREFERENCES_PATH: String = "user://capture_ui_weather_settings.cfg"
+const FLIGHT_LOADING_TIMEOUT_MSEC: int = 100000 # inside capture.sh's 120 s Pause/Hint process bound
 
 
 func _initialize() -> void:
@@ -298,7 +299,10 @@ func _run() -> void:
 			app.call("open_help", app.get("home").get("help_button"))
 		else:
 			app.call("start_flight")
-			flight = app.get("flight")
+			flight = await _await_staged_flight(app)
+			if flight == null:
+				quit(1)
+				return
 			await create_timer(1.0).timeout
 			route = "interactive-home-fly-first-flight-hint"
 		if screen == "help":
@@ -311,7 +315,10 @@ func _run() -> void:
 		await process_frame
 		TranslationServer.set_locale(lang)
 		app.call("start_flight")
-		flight = app.get("flight")
+		flight = await _await_staged_flight(app)
+		if flight == null:
+			quit(1)
+			return
 		await create_timer(1.0).timeout
 		app.call("open_pause")
 		route = "interactive-home-fly-pause"
@@ -523,6 +530,19 @@ func _run() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(FLIGHT_PREFERENCES_PATH))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(WEATHER_PREFERENCES_PATH))
 	quit(1 if manifest_error != OK else 0)
+
+
+## UI-34c: a rendered Fly is staged behind the loading screen; capture only the flight it finishes building.
+func _await_staged_flight(app: Node) -> Node:
+	var deadline_msec: int = Time.get_ticks_msec() + FLIGHT_LOADING_TIMEOUT_MSEC
+	while bool(app.get("_loading_active")) and Time.get_ticks_msec() < deadline_msec:
+		await process_frame
+	var flight: Node = app.get("flight")
+	if bool(app.get("_loading_active")) or flight == null or flight.get("startup_complete") != true \
+			or not str(flight.get("startup_error")).is_empty():
+		push_error("Home Fly did not finish loading the flight scene: loading=%s" % str(app.get("last_flight_loading")))
+		return null
+	return flight
 
 
 func _new_app(user_args: PackedStringArray, preferences_path: String) -> Node:

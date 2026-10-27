@@ -3,6 +3,7 @@
 class_name WindThermalField
 extends RefCounted
 
+const M := preload("res://physics/math3d.gd")
 const FORMAT := "openrc-thermal-field v1"
 const LAW := "balanced-axisymmetric-streamfunction-c2-v1"
 const FRAME := "NED"
@@ -283,9 +284,9 @@ func _cell_velocity(cell: Dictionary, north_m: float, east_m: float, height_agl:
 
 	var peak := float(cell.peak_updraft_mps)
 	var vertical_wave := 3.1415926535897932384626433832795 * height_agl / top
-	var vertical_value := peak * sin(vertical_wave) * sin(vertical_wave)
-	var vertical_derivative := peak * 3.1415926535897932384626433832795 / top * sin(2.0 * vertical_wave)
-	var exponential := exp(-radial_squared / radius_squared)
+	var vertical_value := peak * M.sin_(vertical_wave) * M.sin_(vertical_wave)
+	var vertical_derivative := peak * 3.1415926535897932384626433832795 / top * M.sin_(2.0 * vertical_wave)
+	var exponential := M.exp_(-radial_squared / radius_squared)
 	var radial_velocity := -0.5 * lifecycle * vertical_derivative * radial_distance * exponential * taper
 	var vertical_up_velocity := 0.0
 	if radial_distance == 0.0:

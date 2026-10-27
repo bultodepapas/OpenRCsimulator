@@ -369,7 +369,7 @@
       ],
       "notes": "Own physical inventory coverage, with explicit null prices and five servo units. Full replacement total remains unknown. No baseline BOM inheritance.",
       "dossier": {
-        "expected_source_sha256": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f",
+        "expected_source_sha256": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
         "lines": [
           {
             "id": "engine_main",
@@ -655,7 +655,7 @@
       ],
       "notes": "Independent coverage of the physical P-51 inventory with exact DA-120 and explicit large-aircraft/ordinary-servo and canister value proxies. The DA-120 amount is a current manufacturer listing but is Sold out. Known priced-part subtotal is $2,456.71: $1,249.00 DA-120 package, seven $103.39 SA-1230SG+ control-servo proxies, two $16.99 HS-311 throttle/choke-servo proxies, and two $225.00 KS3086 canister-body proxies. Linkage, exhaust headers/hardware, the rest of the aircraft and installed proxy identities remain unpriced or unknown; this is not a complete-build purchase amount.",
       "dossier": {
-        "expected_source_sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d",
+        "expected_source_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
         "lines": [
           {
             "id": "engine_main",
@@ -1027,7 +1027,7 @@
       ],
       "notes": "F4U-11-R3 double price pass: parts-only reference subtotal $7,113.88 = twelve servo proxies $1,067.88 + cowl $262 + horizontal surfaces $454 + vertical surfaces $241 + whole-engine package proxy $4,610 + pneumatic-system proxy $479. Kit and unmatched offers remain unattached candidates. Partial purchase references are neither a complete-build amount nor an accident repair bill; no automatic engine/air-system loss or calibrated failure probability is claimed.",
       "dossier": {
-        "expected_source_sha256": "e27ba35766bad2e32f7c10b0d3e80d49331af2c557957a85959dca47ebad3d43",
+        "expected_source_sha256": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673",
         "lines": [
           {
             "id": "engine_moki_s250",
@@ -1547,7 +1547,7 @@
       ],
       "notes": "Independent coverage of the physical 2m Avanti inventory. Known priced-part subtotal is $6,559.12: $2,749.00 exact 2m ARF without retracts, $2,780.00 legacy P100-RX (#850100), $225.00 A200-16 tank, five $98.99 SA-1258TG+ value proxies for the manual's DS8411 group, and three $103.39 SA-1230SG+ value proxies for its DS8911 group. The subtotal is not a complete aircraft or a purchasable matched assembly: pneumatic retracts and turbine installation accessories remain unknown, and current proxy stock does not establish eight-unit availability. No propeller is present in the jet inventory.",
       "dossier": {
-        "expected_source_sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea",
+        "expected_source_sha256": "3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1",
         "lines": [
           {
             "id": "airframe_arf_package",
@@ -1806,7 +1806,7 @@
       ],
       "notes": "Independent partial inventory costing, reviewed 2026-10-20. Known replacement-parts subtotal $465.87 across seven physical rows; five physical groups and assembly remain unpriced. Wing value remains a composite of the wing and four servo offers; the physical propeller_main row is costed as separate $7.99 blade and $8.99 spinner economic lines without duplicate physical IDs. Six servo proxies are counted once: four in the wing and two in tail_servos. Complete package alternatives remain excluded. A blade strike replaces only the propeller_main blade line; spinner_main is inspection-only unless a spinner-specific contact occurs.",
       "dossier": {
-        "expected_source_sha256": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf",
+        "expected_source_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
         "lines": [
           {
             "id": "wing_main",
