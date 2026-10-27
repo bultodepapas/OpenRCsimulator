@@ -711,3 +711,22 @@ python3 tools/godot/run_checked.py --timeout 1400 -- "$(app/get-godot.sh)" --hea
 ```
 
 [LU-25-R6 evidence](../../docs/research/landscape-upgrade/LU-25-R6/README.md).
+
+## Release-template session probe (VQ-01c / NK-0)
+
+Export templates ignore `--path` and `--script`. `release_session_probe/build.sh` exports a
+hard-linked snapshot of `app/` with `session_probe.gd` and a wrapper main scene, so the probe
+runs inside an official release template; the shared `app/` is never written and the snapshot
+is removed on exit. Install the matching template first (`linux_release.x86_64` and
+`version.txt` from the official `Godot_v4.8-beta1_export_templates.tpz`, checked against the
+release's `SHA512-SUMS.txt`, into `~/.local/share/godot/export_templates/4.8.beta1/`). The
+binary is about 1.5 GB.
+
+```sh
+research/performance/release_session_probe/build.sh tmp/release-run/probe.x86_64
+tmp/release-run/probe.x86_64 --headless --audio-driver Dummy -- \
+  --aircraft=jensen-das-ugly-stik-60 --case=trim --output="$PWD/tmp/release-run/trim.json"
+```
+
+The wrapper prints `RELEASE_SESSION_PROBE complete debug=false release=true` and exits with the
+probe's status. [Release tick evidence](../../docs/research/visual-quality-implementation/VQ-01c/release-tick-2026-10-27/README.md).

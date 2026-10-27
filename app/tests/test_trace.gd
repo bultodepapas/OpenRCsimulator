@@ -301,6 +301,12 @@ func _initialize() -> void:
 	_check("save succeeds", trace.save(path) == OK)
 	_check("file on disk equals to_csv()", FileAccess.get_file_as_string(path) == trace.to_csv())
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	# A liquid trace with no identity or rows has an empty CSV: refuse it, as malformed weather traces are refused.
+	var empty_liquid := Trace.new()
+	empty_liquid._liquid_trace = true
+	var empty_path := "user://test-traces/trace-empty-liquid.csv"
+	_check("empty liquid trace is refused and never written", empty_liquid.to_csv().is_empty()
+		and empty_liquid.save(empty_path) == ERR_INVALID_DATA and not FileAccess.file_exists(empty_path))
 
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

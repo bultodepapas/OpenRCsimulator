@@ -32,7 +32,8 @@ class FlightRows extends RefCounted:
   file.store_line("# format: openrc-helicopter-trace v2")
   var keys: Array=meta.keys()
   keys.sort()
-  for key: Variant in keys: file.store_line("# %s: %s"%[str(key),JSON.stringify(meta[key])])
+  # Full precision, as the rows: a reader checks t_s == tick*dt_s against this header's dt_s.
+  for key: Variant in keys: file.store_line("# %s: %s"%[str(key),JSON.stringify(meta[key],"",true,true)])
   file.store_line(",".join(COLUMNS))
   for offset: int in range(0,rows.size(),COLUMNS.size()):
    var fields: PackedStringArray=PackedStringArray()

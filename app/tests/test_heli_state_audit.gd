@@ -172,6 +172,8 @@ func _run() -> void:
 	check("valid fixed ticks continue to record", run_steps(session, 2) and good_recorder.trace.row_count() == 3)
 	var good_path: String = "user://heli-state-audit-valid.csv"
 	check("valid trace still saves", good_recorder.stop(good_path) == OK and FileAccess.file_exists(good_path))
+	var dt_line: String = "# dt_s: " + JSON.stringify(session.sim.dt(), "", true, true)
+	check("header dt_s keeps the rows' full precision", FileAccess.get_file_as_string(good_path).split("\n").has(dt_line), dt_line)
 	if FileAccess.file_exists(good_path): DirAccess.remove_absolute(ProjectSettings.globalize_path(good_path))
 	good_recorder.detach()
 

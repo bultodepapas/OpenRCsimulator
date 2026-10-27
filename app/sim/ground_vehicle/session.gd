@@ -747,7 +747,9 @@ func _replay_validated(controls: Array[Dictionary], actions: Array[Dictionary]) 
 				return false
 			action_index += 1
 		if index < controls.size():
-			if paused and action_index > 0 and actions[action_index - 1].type == "nitro_service":
+			# Every replayed action leaves the session paused, as live; the pilot then re-armed with a
+			# neutral sample and resumed before the next recorded tick.
+			if paused and action_index > 0 and int(actions[action_index - 1].tick) == tick:
 				tick_once({"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false, "armed": true})
 				if not resume():
 					_suppress_signals = false
@@ -758,6 +760,11 @@ func _replay_validated(controls: Array[Dictionary], actions: Array[Dictionary]) 
 	if action_index != actions.size():
 		_suppress_signals = false
 		load_error = "replay actions could not be applied at their tick"
+		return false
+	# A paused tick_once returns true without advancing: a short replay must fail, not pass truncated.
+	if tick != controls.size():
+		_suppress_signals = false
+		load_error = "replay ended at tick %d before its %d recorded ticks" % [tick, controls.size()]
 		return false
 	_suppress_signals = false
 	_set_paused(true)

@@ -63,7 +63,7 @@ players without the library keep the current tick cost.
 
 | Step | Type | Work | Gate | Effort |
 | --- | --- | --- | --- | --- |
-| NK-0 | R | Release-template timing on the target host, observers on/off | p50/p95 still above the 500 µs Gate P on representative aircraft | 1–2 d |
+| NK-0 | R | Release-template timing on the target host, observers on/off | p50/p95 still above the 500 µs Gate P on representative aircraft | 1–2 d; dev-VM run done: [release ×1.2, ≈ 1.0 ms airborne, 2.2 ms runway](visual-quality-implementation/VQ-01c/release-tick-2026-10-27/README.md); target host pending |
 | NK-1 | R | Math identity spike: engine utility functions vs `std::` vs GDScript, 10⁶ inputs per function, Linux and Windows | Per-platform identity table and call cost | 2 d + Windows host |
 | NK-2 | I (GDScript) | Immutable prepared model with a revision boundary (load, edit, reload, restore, Workshop) | Fleet fingerprints unchanged | 3–5 d |
 | NK-3 | I | Option (b) for the Stik route | ≥ 10k exact oracle states incl. malformed inputs; exact 960-tick fingerprints; suite on a native copy | 2–3 wk |

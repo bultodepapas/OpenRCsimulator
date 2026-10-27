@@ -700,6 +700,8 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
  # Simulation restoration revalidates its candidate; emit only after the state commit succeeds.
  if not sim.restore_checkpoint(candidate.simulation): return {ok=false,errors=["simulation restore refused"]}
  commands=candidate.commands.duplicate()
+ # As in reset(): the stick-rate integrator must hold the restored collective, or the first live tick reverts it.
+ if radio.connected and radio.is_rate_throttle(): radio.set_rate_throttle_for_start(commands.throttle)
  flight_mode=candidate.flight_mode
  trainer_enabled=candidate.trainer_enabled
  zero_drive_hold=candidate.zero_drive_hold
@@ -713,5 +715,8 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
  _stage_failure=""
  pause_reason=""
  sim.set_paused(true)
+ if external_controller_selection and radio.connected:
+  radio.require_neutral(true)
+  pause_reason="Checkpoint restored. Release controls and review collective before continuing."
  resetting.emit()
  return {ok=true,errors=[]}

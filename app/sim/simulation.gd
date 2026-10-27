@@ -736,8 +736,8 @@ func _restore_last_valid() -> void:
 		previous = _last_valid_previous.duplicate() if state_is_valid(_last_valid_previous) else state.duplicate()
 		if _array_is_finite(_last_valid_aux):
 			aux = _last_valid_aux.duplicate()
-		if _last_valid_inputs.size() > 0 and _array_is_finite(_last_valid_inputs):
-			model.input_size = _last_valid_inputs.size()
+		# The installed model owns the input layout; inputs from an earlier layout are not restored into it.
+		if _array_is_finite(_last_valid_inputs, model.input_size):
 			inputs = _last_valid_inputs.duplicate()
 		if _loads_are_valid(_last_valid_loads):
 			last_loads = _last_valid_loads.duplicate()

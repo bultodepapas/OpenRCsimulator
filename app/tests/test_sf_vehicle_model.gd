@@ -85,6 +85,17 @@ func _kernel_installation() -> void:
 	_check("forward speed is unchanged in free fall", absf(sim.state[RB.VEL] - 15.0) < 1e-12)
 	var snapshot: Dictionary = sim.checkpoint()
 	_check("checkpoint with five inputs restores", not snapshot.is_empty() and sim.can_restore_checkpoint(snapshot))
+	# A refused reset rolls back to the last valid flight but never rewrites the installed model's input layout.
+	var narrower := VehicleModel.new()
+	narrower.input_size = 4
+	_check("a four-input model installs after a five-input flight", sim.set_model(narrower))
+	sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	var broken: PackedFloat64Array = _level_state()
+	broken[RB.VEL] = NAN
+	_check("a nonfinite initial state is refused", not sim.reset(broken))
+	_check("the refused reset leaves the installed input layout unchanged", narrower.input_size == 4,
+		"input_size %d" % narrower.input_size)
+	_check("the next valid reset uses the installed four-input layout", sim.reset(_level_state()), sim.fault_reason)
 	sim.free()
 
 

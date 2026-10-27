@@ -1691,13 +1691,21 @@ func _base_trace_format() -> String:
 func save(path: String) -> Error:
 	if _invalid_weather:
 		return ERR_INVALID_DATA
-	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+	# An empty CSV (a liquid trace without identity or rows) is not a trace: never write it as one.
+	var csv := to_csv()
+	if csv.is_empty():
+		return ERR_INVALID_DATA
+	var dir_error := DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+	if dir_error != OK and dir_error != ERR_ALREADY_EXISTS:
+		return dir_error
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	if f == null:
 		return FileAccess.get_open_error()
-	f.store_string(to_csv())
+	f.store_string(csv)
+	f.flush()
+	var write_error := f.get_error()
 	f.close()
-	return OK
+	return write_error
 
 
 static func _finite(values: PackedFloat64Array, size: int = -1) -> bool:
