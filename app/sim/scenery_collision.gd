@@ -538,7 +538,7 @@ static func _segment_capsule(start: PackedFloat64Array, finish: PackedFloat64Arr
 		var discriminant := horizontal_b * horizontal_b - 4.0 * horizontal_a * horizontal_c
 		var roots := PackedFloat64Array()
 		if discriminant >= 0.0:
-			var root := M.sqrt_(discriminant)
+			var root := sqrt(discriminant)
 			roots = PackedFloat64Array([
 				(-horizontal_b - root) / (2.0 * horizontal_a),
 				(-horizontal_b + root) / (2.0 * horizontal_a),
@@ -573,7 +573,7 @@ static func _append_sphere_entry(out: Array[float], x: float, y: float, z: float
 	var discriminant := b * b - 4.0 * a * c
 	if discriminant < 0.0:
 		return
-	var t := (-b - M.sqrt_(discriminant)) / (2.0 * a)
+	var t := (-b - sqrt(discriminant)) / (2.0 * a)
 	if t < 0.0 or t > 1.0:
 		return
 	if b + 2.0 * a * t < -GEOMETRY_EPSILON:

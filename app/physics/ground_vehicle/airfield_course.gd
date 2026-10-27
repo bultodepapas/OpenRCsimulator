@@ -197,7 +197,7 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 	terrain[1] += float(overlay.dn)
 	terrain[2] += float(overlay.de)
 	var normal := PackedFloat64Array([-terrain[1], -terrain[2], -1.0])
-	var magnitude := M.sqrt_(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2])
+	var magnitude := sqrt(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2])
 	if not is_finite(magnitude) or magnitude <= 0.0:
 		return _invalid_sample()
 	for axis in normal.size():

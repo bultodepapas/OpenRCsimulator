@@ -32,7 +32,7 @@ static func state_for(V: float, alpha: float, gamma: float, yaw: float, pos_ned:
 		return RB.make_state(pos_ned, M.v3(u, v, w), M.q_from_euler(yaw, gamma + alpha, 0.0), M.v3(0, 0, 0))
 	# Down velocity −u·sinθ + (v·sinφ + w·cosφ)·cosθ = −V·sinγ.
 	var c := v * M.sin_(phi) + w * M.cos_(phi)
-	var theta := M.atan2_(c, u) + M.asin_(V * M.sin_(gamma) / M.sqrt_(u * u + c * c))
+	var theta := M.atan2_(c, u) + M.asin_(V * M.sin_(gamma) / sqrt(u * u + c * c))
 	return RB.make_state(pos_ned, M.v3(u, v, w), M.q_from_euler(yaw, theta, phi), M.v3(0, 0, 0))
 
 
@@ -417,7 +417,7 @@ static func _norm(v: PackedFloat64Array) -> float:
 	var acc := 0.0
 	for x in v:
 		acc += x * x
-	return M.sqrt_(acc)
+	return sqrt(acc)
 
 
 ## Solve A·x = b (A as an Array of PackedFloat64Array rows) by Gaussian elimination with partial pivoting.

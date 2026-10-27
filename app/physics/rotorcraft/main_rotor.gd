@@ -122,7 +122,7 @@ static func _evaluate_prepared(model: Dictionary, omega: float, induced_velocity
 	# estimated, bounded rotor-plane drag and collective thrust that decay
 	# continuously with shaft speed. Parked-blade orientation and windmill energy
 	# capture remain outside this approximation.
-	var crossflow: float = M.sqrt_(hub_air_velocity[0] * hub_air_velocity[0]
+	var crossflow: float = sqrt(hub_air_velocity[0] * hub_air_velocity[0]
 		+ hub_air_velocity[1] * hub_air_velocity[1])
 	var transition: PackedFloat64Array = low_rpm_transition(model, crossflow)
 	var low_result: Dictionary = {}
@@ -148,7 +148,7 @@ static func _evaluate_prepared(model: Dictionary, omega: float, induced_velocity
 	var mu2: float = mu_x * mu_x + mu_y * mu_y
 	if not _finite([mu_x, mu_y, mu_z, lambda0, mu2]) or mu2 >= 2.0:
 		return {"ok": false} # Eq. 27's algebraic domain, not an identified envelope.
-	var mu: float = M.sqrt_(mu2)
+	var mu: float = sqrt(mu2)
 	var a_sigma: float = model.blade_lift_curve_slope_per_rad * model.solidity
 	var ct_ideal: float = 0.5 * a_sigma * (collective_75 * (1.0 / 3.0 + 0.5 * mu2) + 0.5 * (mu_z - lambda0))
 	var ct: float = clampf(ct_ideal, -model.thrust_coefficient_max, model.thrust_coefficient_max)
@@ -159,7 +159,7 @@ static func _evaluate_prepared(model: Dictionary, omega: float, induced_velocity
 	var nx: float = -M.sin_(a1)
 	var ny: float = M.sin_(b1)
 	var nz: float = -M.cos_(a1) * M.cos_(b1)
-	var inverse_length: float = 1.0 / M.sqrt_(nx * nx + ny * ny + nz * nz)
+	var inverse_length: float = 1.0 / sqrt(nx * nx + ny * ny + nz * nz)
 	nx *= inverse_length
 	ny *= inverse_length
 	nz *= inverse_length
@@ -228,7 +228,7 @@ static func low_rpm_estimate_active(model: Dictionary, omega: float,
 		hub_air_velocity: PackedFloat64Array) -> bool:
 	if omega <= 0.0 or hub_air_velocity.size() != 3:
 		return omega == 0.0
-	var crossflow: float = M.sqrt_(hub_air_velocity[0] * hub_air_velocity[0]
+	var crossflow: float = sqrt(hub_air_velocity[0] * hub_air_velocity[0]
 		+ hub_air_velocity[1] * hub_air_velocity[1])
 	return omega <= low_rpm_transition(model, crossflow)[0]
 
@@ -257,7 +257,7 @@ static func _evaluate_low_rpm(model: Dictionary, omega: float, induced_velocity:
 	var nx: float = -M.sin_(a1)
 	var ny: float = M.sin_(b1)
 	var nz: float = -M.cos_(a1) * M.cos_(b1)
-	var inverse_length: float = 1.0 / M.sqrt_(nx * nx + ny * ny + nz * nz)
+	var inverse_length: float = 1.0 / sqrt(nx * nx + ny * ny + nz * nz)
 	nx *= inverse_length
 	ny *= inverse_length
 	nz *= inverse_length

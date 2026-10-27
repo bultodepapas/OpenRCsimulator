@@ -79,7 +79,7 @@ static func factor(drive: float, head: float, needled_head: float) -> float:
 	var needled := drive + needled_head
 	if needled <= 0.0:
 		return 0.0
-	return clampf(M.sqrt_(maxf(0.0, drive + head) / needled), 0.0, MAX_FACTOR)
+	return clampf(sqrt(maxf(0.0, drive + head) / needled), 0.0, MAX_FACTOR)
 
 
 ## The needled condition: level 1 g flight (g_eff straight down the body z axis) with a full tank.

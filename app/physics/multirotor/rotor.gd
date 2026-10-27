@@ -32,4 +32,4 @@ static func loads(omega: float, spin: float, hub: PackedFloat64Array, v_air: Pac
 
 ## Hover rotor speed of n identical rotors carrying weight m·g: ω_h = sqrt(m·g / (n·c_T)).
 static func hover_speed(mass_kg: float, gravity: float, rotor_count: int, rotor: Dictionary) -> float:
-	return M.sqrt_(mass_kg * gravity / (float(rotor_count) * float(rotor.thrust_coefficient_n_s2)))
+	return sqrt(mass_kg * gravity / (float(rotor_count) * float(rotor.thrust_coefficient_n_s2)))

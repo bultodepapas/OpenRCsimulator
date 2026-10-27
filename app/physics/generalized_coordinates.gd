@@ -68,7 +68,7 @@ static func cholesky_factor(matrix: PackedFloat64Array, n: int,
 			if row == column:
 				if value <= scale * pivot_tolerance:
 					return {"ok": false, "error": "nonpositive Cholesky pivot"}
-				lower[row * n + column] = M.sqrt_(value)
+				lower[row * n + column] = sqrt(value)
 			else:
 				lower[row * n + column] = value / lower[column * n + column]
 	return {"ok": true, "lower": lower}

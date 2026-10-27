@@ -23,7 +23,7 @@ static func normalized(z: float, x: float, instability: float = 1.0, loss: float
 		var peak: float = -0.975 - 0.525 * M.pow_(edge, 1.5)
 		var end: float = -2.0 + (peak + 1.5)
 		if z > end:
-			var fade: float = M.sqrt_(maxf(0.0, 1.0 - M.pow_(u, 6.0)))
+			var fade: float = sqrt(maxf(0.0, 1.0 - M.pow_(u, 6.0)))
 			var bn: PackedFloat64Array = _baseline(n, x)
 			var bp: PackedFloat64Array = _baseline(peak, x)
 			var dn: float = (0.85 - (-0.45 + _momentum(-0.45, x, false)[0])) * fade
@@ -56,7 +56,7 @@ static func target(thrust: float, density: float, radius: float, climb: float, c
 	var factor: float = ground_factor(height_over_radius) if thrust != 0.0 else 1.0
 	if thrust == 0.0:
 		return {"ok": true, "velocity": 0.0, "hover": 0.0, "ground_factor": factor}
-	var hover: float = M.sqrt_(absf(thrust) / (2.0 * density * PI * radius * radius))
+	var hover: float = sqrt(absf(thrust) / (2.0 * density * PI * radius * radius))
 	if not is_finite(hover) or hover <= 0.0:
 		return {"ok": false}
 	var sense: float = 1.0 if thrust > 0.0 else -1.0
@@ -122,11 +122,11 @@ static func _momentum(z: float, x: float, windmill: bool) -> PackedFloat64Array:
 		var root: float
 		var slope: float
 		if windmill and z < -2.0:
-			var d: float = M.sqrt_(z * z - 4.0)
+			var d: float = sqrt(z * z - 4.0)
 			root = 2.0 / (-z + d)
 			slope = -0.5 - 0.5 * z / d
 		else:
-			var d: float = M.sqrt_(z * z + 4.0)
+			var d: float = sqrt(z * z + 4.0)
 			root = 2.0 / (z + d) if z >= 0.0 else 0.5 * (-z + d)
 			slope = -0.5 + 0.5 * z / d
 		return PackedFloat64Array([root, slope])
@@ -137,24 +137,24 @@ static func _momentum(z: float, x: float, windmill: bool) -> PackedFloat64Array:
 	# relative accuracy at large accepted velocity ratios.
 	hi = minf(hi, 1.0 / x)
 	if z >= 0.0:
-		hi = minf(hi, 1.0 / M.sqrt_(x * x + z * z))
+		hi = minf(hi, 1.0 / sqrt(x * x + z * z))
 	# Scale the bracket to the small root in deep windmill flight. A bracket
 	# of order |z| loses relative accuracy when v is of order 1/|z|.
 	if windmill and z < -2.0:
-		hi = minf(hi, 2.0 / M.sqrt_(x * x + z * z))
+		hi = minf(hi, 2.0 / sqrt(x * x + z * z))
 	var disc: float = z * z - 8.0 * x * x
 	if z < 0.0 and disc > 0.0:
-		var d: float = M.sqrt_(disc)
+		var d: float = sqrt(disc)
 		var turn_a: float = (-3.0 * z - d) / 4.0
 		var turn_b: float = (-3.0 * z + d) / 4.0
 		if windmill and _residual(turn_a, z, x) >= 0.0:
 			hi = minf(hi, turn_a)
 		elif not windmill and _residual(turn_b, z, x) <= 0.0:
 			lo = turn_b
-	var v: float = 0.5 * (lo + hi) if lo > 0.0 else minf(hi, 1.0 / M.sqrt_(1.0 + x * x + z * z))
+	var v: float = 0.5 * (lo + hi) if lo > 0.0 else minf(hi, 1.0 / sqrt(1.0 + x * x + z * z))
 	var converged: bool = false
 	for _pass: int in range(NEWTON_PASSES):
-		var flow: float = M.sqrt_(x * x + (z + v) * (z + v))
+		var flow: float = sqrt(x * x + (z + v) * (z + v))
 		var residual: float = v * flow - 1.0
 		if absf(residual) <= 1e-13:
 			converged = true
@@ -180,7 +180,7 @@ static func _momentum(z: float, x: float, windmill: bool) -> PackedFloat64Array:
 
 
 static func _residual(v: float, z: float, x: float) -> float:
-	return v * M.sqrt_(x * x + (z + v) * (z + v)) - 1.0
+	return v * sqrt(x * x + (z + v) * (z + v)) - 1.0
 
 
 # A cubic with no constant term, value/slope at a and value at b.

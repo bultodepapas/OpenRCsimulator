@@ -52,7 +52,7 @@ func advance(dt: float) -> bool:
 	for i in 3:
 		var a: float = DAMPING_NS_M[i] / (2.0 * MASS_KG[i])
 		var omega2: float = STIFFNESS_N_M[i] / MASS_KG[i]
-		var w := M.sqrt_(omega2 - a * a)
+		var w := sqrt(omega2 - a * a)
 		var equilibrium: float = force[i] / STIFFNESS_N_M[i]
 		var u := displacement[i] - equilibrium
 		# Check both alternating extrema, not only the end of a long frame.

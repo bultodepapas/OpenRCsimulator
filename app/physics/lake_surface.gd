@@ -190,7 +190,7 @@ static func sweep_probe(lake: Dictionary, from_ned: PackedFloat64Array, to_ned: 
 		return _miss_event()
 	var north_delta: float = to_ned[0] - from_ned[0]
 	var east_delta: float = to_ned[1] - from_ned[1]
-	var horizontal_distance: float = M.sqrt_(north_delta * north_delta + east_delta * east_delta)
+	var horizontal_distance: float = sqrt(north_delta * north_delta + east_delta * east_delta)
 	if horizontal_distance > 2000.0:
 		return _invalid_event("sweep: horizontal segment exceeds the 2000 m bounded query")
 	var shore_fade_override: float = -1.0
@@ -524,7 +524,7 @@ static func _subdivision_count(lake: Dictionary, waves: Array, from_ned: PackedF
 	var fraction_span: float = end_fraction - start_fraction
 	var north_delta: float = (to_ned[0] - from_ned[0]) * fraction_span
 	var east_delta: float = (to_ned[1] - from_ned[1]) * fraction_span
-	var horizontal: float = M.sqrt_(north_delta * north_delta + east_delta * east_delta)
+	var horizontal: float = sqrt(north_delta * north_delta + east_delta * east_delta)
 	var steps: int = maxi(1, ceili(horizontal / 0.25))
 	if material == "water" and _total_wave_amplitude(waves) > 0.0:
 		var duration: float = (end_time - start_time) * fraction_span
@@ -579,7 +579,7 @@ static func _bisection_iterations(lake: Dictionary, from_ned: PackedFloat64Array
 	var fraction_span: float = high - low
 	var north_span: float = absf(to_ned[0] - from_ned[0]) * fraction_span
 	var east_span: float = absf(to_ned[1] - from_ned[1]) * fraction_span
-	var horizontal_span: float = M.sqrt_(north_span * north_span + east_span * east_span)
+	var horizontal_span: float = sqrt(north_span * north_span + east_span * east_span)
 	var residual_span: float = absf(to_ned[2] - from_ned[2]) * fraction_span + 2.0 * horizontal_span
 	if material == "water":
 		var duration_span: float = absf(end_time - start_time) * fraction_span
@@ -660,7 +660,7 @@ static func _polygon_boundary_distance(polygon: PackedFloat64Array, north: float
 		var next: int = (index + 1) % count
 		minimum_sq = minf(minimum_sq, _point_segment_distance_sq(north, east,
 			polygon[index * 2], polygon[index * 2 + 1], polygon[next * 2], polygon[next * 2 + 1]))
-	return M.sqrt_(minimum_sq)
+	return sqrt(minimum_sq)
 
 
 static func _signed_polygon_distance(polygon: PackedFloat64Array, north: float, east: float) -> float:
@@ -700,7 +700,7 @@ static func _polygon_state(polygon: PackedFloat64Array, north: float, east: floa
 			var crossing_east: float = (e2 - e1) * (north - n1) / (n2 - n1) + e1
 			if east < crossing_east:
 				inside = not inside
-	var distance: float = M.sqrt_(minimum_sq)
+	var distance: float = sqrt(minimum_sq)
 	return distance if on_boundary or inside else -distance
 
 

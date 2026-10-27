@@ -90,7 +90,7 @@ static func analyze(model: Dictionary, V: float, g := 9.80665) -> Dictionary:
 		if reals[0] >= 0.0 or reals[1] >= 0.0:
 			return { ok = false, message = "unexpected mode structure: longitudinal %s, lateral %s" % [lon, lat], trim = t,
 				full_jacobian = a, projected_jacobians = projected }
-		var wn: float = M.sqrt_(reals[0] * reals[1])
+		var wn: float = sqrt(reals[0] * reals[1])
 		short_period = { f_hz = wn / TAU, zeta = -(reals[0] + reals[1]) / (2.0 * wn), roots = reals }
 		phugoid = hz.call(lon.oscillatory[0])
 		overdamped = true

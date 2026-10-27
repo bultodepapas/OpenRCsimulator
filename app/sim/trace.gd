@@ -1226,7 +1226,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 			return
 	var q := M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
 	var e := M.q_to_euler(q)
-	var speed := M.sqrt_(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
+	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	_rows.append_array(PackedFloat64Array([
 		tick, t,
 		s[RB.POS], s[RB.POS + 1], s[RB.POS + 2], -s[RB.POS + 2],
@@ -1262,7 +1262,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 				load_wind[axis] += load_noise[axis]
 		var load_air: Dictionary = Air.compute(force_state, load_wind, _weather.air_density(force_state[RB.POS + 2]))
 		_rows.append_array(PackedFloat64Array([wind[0], wind[1], wind[2], air.V,
-			M.sqrt_(velocity_ned[0] * velocity_ned[0] + velocity_ned[1] * velocity_ned[1]), load_time,
+			sqrt(velocity_ned[0] * velocity_ned[0] + velocity_ned[1] * velocity_ned[1]), load_time,
 			load_wind[0], load_wind[1], load_wind[2], load_air.V]))
 		if _weather.is_spatial():
 			var epoch_offset: float = float(_weather.spatial_identity().epoch_offset_s)
@@ -1273,7 +1273,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 			_rows.append_array(load_noise)
 		if not _atmosphere.is_empty():
 			_rows.append_array(PackedFloat64Array([atmosphere_endpoint.rho_kgm3, atmosphere_endpoint.sigma,
-				air.V * M.sqrt_(atmosphere_endpoint.sigma), atmosphere_endpoint.density_altitude_m, atmosphere_endpoint.pressure_pa,
+				air.V * sqrt(atmosphere_endpoint.sigma), atmosphere_endpoint.density_altitude_m, atmosphere_endpoint.pressure_pa,
 				atmosphere_endpoint.temperature_k, atmosphere_endpoint.engine_charge_ratio]))
 			if _weather.has_vertical_atmosphere():
 				_rows.append_array(PackedFloat64Array([float(_weather.configuration().field_elevation_m) - s[RB.POS + 2],

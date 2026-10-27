@@ -1379,7 +1379,7 @@ func _observe_events(previous_state: PackedFloat64Array, next_state: PackedFloat
 	if not braking.is_empty():
 		var north_delta := next_state[0] - previous_state[0]
 		var east_delta := next_state[1] - previous_state[1]
-		braking.distance_m = float(braking.distance_m) + Math3D.sqrt_(north_delta * north_delta + east_delta * east_delta)
+		braking.distance_m = float(braking.distance_m) + sqrt(north_delta * north_delta + east_delta * east_delta)
 		var speed := absf(float(current.get("forward_speed_m_per_s", current.get("speed_m_per_s", 0.0))))
 		if not brake_active or speed <= 0.2:
 			events.append({"type": "braking_distance", "start_tick": int(braking.start_tick),

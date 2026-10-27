@@ -12,8 +12,9 @@ from pathlib import Path
 
 
 APP_ROOT = Path(__file__).resolve().parents[1]
+# sqrt is exempt (H6/H7 amendment, 2026-10-27): IEEE 754 rounds it correctly on every platform.
 FUNCTIONS = (
-    "sin", "cos", "tan", "asin", "acos", "atan", "atan2", "sqrt", "pow", "log", "exp",
+    "sin", "cos", "tan", "asin", "acos", "atan", "atan2", "pow", "log", "exp",
     "sinh", "cosh", "tanh", "asinh", "acosh", "atanh",
 )
 CALL = re.compile(r"(?<![\w.])(" + "|".join(sorted(FUNCTIONS, key=len, reverse=True)) + r")(?=\s*\()")

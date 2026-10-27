@@ -634,11 +634,11 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 			errors.append("%s: missing name" % label)
 			continue
 		var n := float(raw_contacts.size())
-		var zeta: float = damping / (2.0 * M.sqrt_(k * mass / n))
+		var zeta: float = damping / (2.0 * sqrt(k * mass / n))
 		if zeta < 0.05 or zeta > 2.0:
 			errors.append("%s.damping: ratio ζ = %.2f outside 0.05–2 (with m/%d per contact)" % [label, zeta, int(n)])
 		var body := PackedFloat64Array([-(position[0] - cg[0]), position[1] - cg[1], -(position[2] - cg[2])])
-		reach = maxf(reach, M.sqrt_(body[0] * body[0] + body[1] * body[1] + body[2] * body[2]))
+		reach = maxf(reach, sqrt(body[0] * body[0] + body[1] * body[1] + body[2] * body[2]))
 		total_k += k
 		contacts.append({ name = str(c.name), position = body, stiffness = float(k), damping = float(damping), max_compression = float(travel), max_steering = deg_to_rad(steering) })
 	if not errors.is_empty() or contacts.size() < 3:
@@ -655,7 +655,7 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 		errors.append("landing_gear: the CG projects %.3f m outside the support polygon of contacts %s (resting %.1f° from level); the airplane cannot stand on its wheels"
 			% [-float(rest.margin), str(rest.facet), rad_to_deg(rest.tilt)])
 	var dt := 1.0 / float(ProjectSettings.get_setting("physics/common/physics_ticks_per_second", 60))
-	var omega := M.sqrt_(total_k / mass)
+	var omega := sqrt(total_k / mass)
 	# SF-05: a stiffer gear integrates in substeps that keep the E1 rule ω·dt < 0.1 per substep. The kernel runs them
 	# only while a wheel is within reach of the ground (ground_contact.gd substeps()); a bounded count keeps the tick's
 	# cost bounded. The current fleet derives one substep, so its integration is unchanged.
@@ -705,7 +705,7 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 		for i in contacts.size():
 			var k_i: float = mass * Ground.ANCHOR_OMEGA * Ground.ANCHOR_OMEGA * shares[i]
 			contacts[i].anchor_stiffness = k_i
-			contacts[i].anchor_damping = 2.0 * Ground.ANCHOR_ZETA * M.sqrt_(k_i * mass * shares[i])
+			contacts[i].anchor_damping = 2.0 * Ground.ANCHOR_ZETA * sqrt(k_i * mass * shares[i])
 		derived.breakaway_factor = float(breakaway)
 	if gear.has("retraction"):
 		_derive_retraction(errors, gear, derived, cg)
@@ -847,7 +847,7 @@ static func station_ys(span: float, chords: PackedFloat64Array) -> PackedFloat64
 		for k in n:
 			# Strip edge where the area from the root reaches (k + 1)/n of the semi-span's: slope/2·y² + cr·y − A = 0.
 			var target := total * (k + 1) / n
-			var y1 := h if k == n - 1 else (-cr + M.sqrt_(cr * cr + 2.0 * slope * target)) / slope
+			var y1 := h if k == n - 1 else (-cr + sqrt(cr * cr + 2.0 * slope * target)) / slope
 			centres.append((moment.call(y1) - moment.call(y0)) / (area.call(y1) - area.call(y0)))
 			y0 = y1
 	var ys := PackedFloat64Array()
@@ -871,7 +871,7 @@ static func station_edges(span: float, chords: PackedFloat64Array) -> PackedFloa
 		var total := cr * h + slope * h * h / 2.0
 		for k in n:
 			var target := total * (k + 1) / n
-			right.append(h if k == n - 1 else (-cr + M.sqrt_(cr * cr + 2.0 * slope * target)) / slope)
+			right.append(h if k == n - 1 else (-cr + sqrt(cr * cr + 2.0 * slope * target)) / slope)
 	var edges := PackedFloat64Array()
 	for k in range(n, 0, -1):
 		edges.append(-right[k])
@@ -1140,8 +1140,8 @@ static func _vortex_z(px: float, py: float, x1: float, y1: float, x2: float, y2:
 	var cross := r1x * r2y - r1y * r2x
 	if absf(cross) < 1e-14:
 		return 0.0
-	var n1 := M.sqrt_(r1x * r1x + r1y * r1y)
-	var n2 := M.sqrt_(r2x * r2x + r2y * r2y)
+	var n1 := sqrt(r1x * r1x + r1y * r1y)
+	var n2 := sqrt(r2x * r2x + r2y * r2y)
 	var dot := (x2 - x1) * (r1x / n1 - r2x / n2) + (y2 - y1) * (r1y / n1 - r2y / n2)
 	return dot / (4.0 * PI * cross)
 
@@ -1989,7 +1989,7 @@ static func _slipstream(errors: PackedStringArray, node: Variant, domain: Dictio
 			span_dir = _dq(domain, errors, label + ".span_dir", pc.get("span_dir"), "1", -1.0, 1.0, 3),
 			span = _dq(domain, errors, label + ".span", pc.get("span"), "m", 0.01, 2.0),
 		}
-		if piece.span_dir != null and absf(M.sqrt_(piece.span_dir[0] ** 2 + piece.span_dir[1] ** 2 + piece.span_dir[2] ** 2) - 1.0) > 1e-6:
+		if piece.span_dir != null and absf(sqrt(piece.span_dir[0] ** 2 + piece.span_dir[1] ** 2 + piece.span_dir[2] ** 2) - 1.0) > 1e-6:
 			errors.append("%s.span_dir: must be a unit vector" % label)
 		if smooth:
 			piece.profile = _wash_profile(errors, label + ".profile", pc.get("profile"), piece.span, piece.area)

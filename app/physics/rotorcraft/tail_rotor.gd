@@ -74,7 +74,7 @@ static func _evaluate_prepared(model: Dictionary, omega_main: float, main_vi: fl
 		wake = 1.5 * clampf((tangent - model.wake_gi) / (model.wake_gf - model.wake_gi), 0.0, 1.0)
 	var w_tail: float = w + model.hub_distance_aft_m * body_rates[1] - wake * main_vi
 	var normal: float = v - model.hub_distance_aft_m * body_rates[2] + model.hub_height_above_cg_m * body_rates[0]
-	var in_plane: float = M.sqrt_(u * u + w_tail * w_tail)
+	var in_plane: float = sqrt(u * u + w_tail * w_tail)
 	var omega: float = model.tail_to_main_speed_ratio * omega_main
 	var tip: float = omega * model.tail_rotor_radius_m
 	if not _finite([wake, normal, in_plane, omega, tip]):
@@ -93,7 +93,7 @@ static func _evaluate_prepared(model: Dictionary, omega_main: float, main_vi: fl
 		return stopped
 	if tip <= 0.0:
 		return {"ok": false}
-	var low_speed: float = M.sqrt_(in_plane * in_plane + normal * normal)
+	var low_speed: float = sqrt(in_plane * in_plane + normal * normal)
 	var low_weight: float = 0.0
 	if main_nominal_omega_rad_s > 0.0:
 		var nominal_tail_omega: float = main_nominal_omega_rad_s * model.tail_to_main_speed_ratio
@@ -125,7 +125,7 @@ static func _evaluate_prepared(model: Dictionary, omega_main: float, main_vi: fl
 	if not trim.ok or trim.ct >= model.thrust_coefficient_max:
 		# A saturated trim cannot define the smooth local derivatives below.
 		return {"ok": false}
-	var s: float = M.sqrt_(mu * mu + trim.lambda0 * trim.lambda0)
+	var s: float = sqrt(mu * mu + trim.lambda0 * trim.lambda0)
 	var momentum_slope: float = 2.0 * model.wake_efficiency * (mu * mu + 2.0 * trim.lambda0 * trim.lambda0) / s
 	var slope_collective: float = k * pitch_factor * momentum_slope / (momentum_slope + k / 2.0)
 	var slope_normal: float = k / 2.0 * (2.0 * model.wake_efficiency * s) / (momentum_slope + k / 2.0)
@@ -174,7 +174,7 @@ static func _evaluate_low_rpm(model: Dictionary, omega: float, tip: float,
 	var trim: Dictionary = _trim(mu, k, pitch_factor, model.trim_collective_rad, model.wake_efficiency)
 	if not trim.ok:
 		return {"ok": false}
-	var s: float = M.sqrt_(mu * mu + trim.lambda0 * trim.lambda0)
+	var s: float = sqrt(mu * mu + trim.lambda0 * trim.lambda0)
 	var momentum_slope: float = 2.0 * model.wake_efficiency \
 		* (mu * mu + 2.0 * trim.lambda0 * trim.lambda0) / s
 	var slope_collective: float = k * pitch_factor * momentum_slope / (momentum_slope + k / 2.0)
@@ -185,7 +185,7 @@ static func _evaluate_low_rpm(model: Dictionary, omega: float, tip: float,
 	var scale: float = model.rho_kg_m3 * tip * tip * PI * radius * radius
 	var speed_activity: float = 1.0
 	if in_plane > 0.0 or absf(normal) > 0.0:
-		var flow: float = M.sqrt_(in_plane * in_plane + normal * normal)
+		var flow: float = sqrt(in_plane * in_plane + normal * normal)
 		speed_activity = tip * tip / (tip * tip + flow * flow)
 	var thrust: float = model.blockage_factor * scale * ct * speed_activity
 	var lambda0: float = mu_z - 2.0 * (2.0 * ct / a_sigma - collective * pitch_factor)
@@ -257,13 +257,13 @@ static func _trim(mu: float, k: float, pitch_factor: float, collective: float, e
 	if not _finite([drive, b]) or drive <= 0.0 or b <= 0.0:
 		return {"ok": false}
 	var lo: float = 0.0
-	var hi: float = minf(drive / (b + 2.0 * eta * mu), M.sqrt_(drive / (2.0 * eta)))
+	var hi: float = minf(drive / (b + 2.0 * eta * mu), sqrt(drive / (2.0 * eta)))
 	var root: float = hi * 0.5
 	if mu == 0.0:
-		root = 2.0 * drive / (b + M.sqrt_(b * b + 8.0 * eta * drive))
+		root = 2.0 * drive / (b + sqrt(b * b + 8.0 * eta * drive))
 	else:
 		for iteration: int in range(60):
-			var s: float = M.sqrt_(mu * mu + root * root)
+			var s: float = sqrt(mu * mu + root * root)
 			var residual: float = root * (b + 2.0 * eta * s) - drive
 			if absf(residual) <= 1e-13 * drive:
 				break
@@ -274,7 +274,7 @@ static func _trim(mu: float, k: float, pitch_factor: float, collective: float, e
 			var derivative: float = b + 2.0 * eta * (mu * mu + 2.0 * root * root) / s
 			var proposal: float = root - residual / derivative
 			root = proposal if iteration < 12 and proposal > lo and proposal < hi else (lo + hi) / 2.0
-	var s: float = M.sqrt_(mu * mu + root * root)
+	var s: float = sqrt(mu * mu + root * root)
 	var ct: float = 2.0 * eta * root * s
 	var residual: float = root * (b + 2.0 * eta * s) - drive
 	if not _finite([root, ct, residual]) or root <= 0.0 or absf(residual) > 1e-12 * drive:

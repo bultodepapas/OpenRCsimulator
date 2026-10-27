@@ -43,7 +43,7 @@ static var _checked_table_mutex := Mutex.new()
 static func normal_from_up_slopes(slope_north: float, slope_east: float) -> PackedFloat64Array:
 	if not is_finite(slope_north) or not is_finite(slope_east):
 		return PackedFloat64Array()
-	var length := M.sqrt_(1.0 + slope_north * slope_north + slope_east * slope_east)
+	var length := sqrt(1.0 + slope_north * slope_north + slope_east * slope_east)
 	if not is_finite(length):
 		return PackedFloat64Array()
 	return PackedFloat64Array([-slope_north / length, -slope_east / length, -1.0 / length])

@@ -634,7 +634,7 @@ static func pfactor_moment(v_air: PackedFloat64Array, rpm: float, prop: Dictiona
 static func _crossflow(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float, key: String,
 		power: int) -> PackedFloat64Array:
 	var table: PackedFloat64Array = prop.get(key, PackedFloat64Array())
-	var speed := M.sqrt_(M.dot(v_air, v_air))
+	var speed := sqrt(M.dot(v_air, v_air))
 	if table.is_empty() or rpm < STOPPED_RPM or speed < 1e-6:
 		return M.v3(0.0, 0.0, 0.0)
 	var ax := axis(prop)
@@ -706,7 +706,7 @@ static func _tilted_loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionar
 	var pf0 := 0.0
 	var pf1 := 0.0
 	var pf2 := 0.0
-	var speed := M.sqrt_(v0 * v0 + v1 * v1 + v2 * v2)
+	var speed := sqrt(v0 * v0 + v1 * v1 + v2 * v2)
 	if not speed < 1e-6 and rpm != 0.0: # legacy oracle branch; stopped glow has no supported side-force tables
 		var along: float = v0 * a0 + v1 * a1 + v2 * a2
 		var c0: float = v0 - a0 * along

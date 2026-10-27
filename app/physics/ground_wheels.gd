@@ -39,7 +39,7 @@ static func frame(s: PackedFloat64Array, c: Dictionary, steer: float, surfaces: 
 		s[1] + a[3] * r[0] + a[4] * r[1] + a[5] * r[2],
 		s[2] + a[6] * r[0] + a[7] * r[1] + a[8] * r[2]])
 	var terrain := Terrain.sample_validated(p[0], p[1], surfaces, lake) if surfaces_validated else Terrain.sample(p[0], p[1], surfaces, lake)
-	var norm := M.sqrt_(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2])
+	var norm := sqrt(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2])
 	var normal := Terrain.normal_from_up_slopes(terrain[1], terrain[2])
 	if normal.is_empty():
 		# Preserve fail-closed propagation to the stage validity guard.
@@ -63,7 +63,7 @@ static func frame(s: PackedFloat64Array, c: Dictionary, steer: float, surfaces: 
 	hn -= normal[0] * projection
 	he -= normal[1] * projection
 	hd -= normal[2] * projection
-	var length := M.sqrt_(hn * hn + he * he + hd * hd)
+	var length := sqrt(hn * hn + he * he + hd * hd)
 	var heading := PackedFloat64Array([0.0, 0.0, 0.0])
 	if length > 1e-6:
 		heading[0] = hn / length
@@ -97,7 +97,7 @@ static func coefficients(gear: Dictionary, c: Dictionary, surfaces: PackedFloat6
 		# scales Crr; extrapolating a negative excess can create propulsive resistance.
 		var radius: float = c.get("wheel_radius", REFERENCE_RADIUS)
 		var factor: float = surfaces[index + 5]
-		rolling *= factor if factor < 1.0 else 1.0 + (factor - 1.0) * M.sqrt_(float(gear.get("rolling_reference_radius", REFERENCE_RADIUS)) / radius)
+		rolling *= factor if factor < 1.0 else 1.0 + (factor - 1.0) * sqrt(float(gear.get("rolling_reference_radius", REFERENCE_RADIUS)) / radius)
 	return PackedFloat64Array([mu, rolling, float(index)])
 
 
@@ -145,7 +145,7 @@ static func evaluate(s: PackedFloat64Array, gear: Dictionary, steer: float, surf
 			# Soft tire slip is an explicit, documented 240-Hz approximation. Its decay
 			# eigenvalue never exceeds 1/tau even on a high-load touchdown.
 			tire = -minf(limit / SLIP_REFERENCE_SPEED, mass / relaxation) * slip
-			var total := M.sqrt_((rr + tire) * (rr + tire) + lateral * lateral)
+			var total := sqrt((rr + tire) * (rr + tire) + lateral * lateral)
 			if total > limit:
 				var scale := limit / total
 				rr *= scale
@@ -196,7 +196,7 @@ static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces: Pack
 		var east := s[1] + a[3] * r[0] + a[4] * r[1] + a[5] * r[2]
 		var down := s[2] + a[6] * r[0] + a[7] * r[1] + a[8] * r[2]
 		var terrain := Terrain.sample_validated(north, east, surfaces, lake)
-		values.append((down + terrain[0]) / M.sqrt_(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2]))
+		values.append((down + terrain[0]) / sqrt(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2]))
 	return values
 
 
@@ -228,7 +228,7 @@ static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, s
 				out[at] = anchors[at]
 				out[at + 1] = anchors[at + 1]
 				out[at + 2] = 1.0
-		elif M.sqrt_(f.long_speed * f.long_speed + f.side_speed * f.side_speed) < STICK_SPEED:
+		elif sqrt(f.long_speed * f.long_speed + f.side_speed * f.side_speed) < STICK_SPEED:
 			out[at] = f.position[0]
 			out[at + 1] = f.position[1]
 			out[at + 2] = 1.0

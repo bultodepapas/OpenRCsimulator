@@ -44,7 +44,7 @@ static func flow_function(r: float) -> float:
 		return 0.0
 	var k: float = (GAMMA - 1.0) / GAMMA
 	var inner: float = 2.0 * GAMMA / (GAMMA - 1.0) * (1.0 - M.pow_(r, k))
-	return M.pow_(r, 1.0 / GAMMA) * M.sqrt_(maxf(inner, 0.0)) / PSI_CHOKED
+	return M.pow_(r, 1.0 / GAMMA) * sqrt(maxf(inner, 0.0)) / PSI_CHOKED
 
 
 ## Manifold pressure ratio r for the demand/capacity ratio y = a/x: y below r_c (choked), else the root of
@@ -57,8 +57,8 @@ static func charge_ratio(y: float) -> float:
 	# NITRO-06-R3: closed-form root. With t = r^k, k = (γ−1)/γ, the balance r = y·g(r) becomes
 	# t = A·√(1 − t) with A = y·√(2γ/(γ−1))/Ψ_c, whose root in (0, 1) is t = 2/(1 + √(1 + 4/A²));
 	# then r = t^(γ/(γ−1)). Within 8 ulp of the exact root (the former iterative solve: 11 ulp).
-	var a: float = y * M.sqrt_(2.0 * GAMMA / (GAMMA - 1.0)) / PSI_CHOKED
-	var t: float = 2.0 / (1.0 + M.sqrt_(1.0 + 4.0 / (a * a)))
+	var a: float = y * sqrt(2.0 * GAMMA / (GAMMA - 1.0)) / PSI_CHOKED
+	var t: float = 2.0 / (1.0 + sqrt(1.0 + 4.0 / (a * a)))
 	return M.pow_(t, GAMMA / (GAMMA - 1.0))
 
 
@@ -70,7 +70,7 @@ static func lens_fraction(u: float) -> float:
 		return 1.0
 	if u >= 1.0:
 		return 0.0
-	return 2.0 / PI * (M.acos_(u) - u * M.sqrt_(1.0 - u * u))
+	return 2.0 / PI * (M.acos_(u) - u * sqrt(1.0 - u * u))
 
 
 ## Barrel offset u_idle at which the lens equals the idle opening (0 < idle_opening < 1). NAN outside that range.
@@ -102,7 +102,7 @@ static func opening(servo: float, idle_offset_u: float, travel_exponent: float =
 static func capacity_m3_s(effective_area_m2: float) -> float:
 	if not is_finite(effective_area_m2) or effective_area_m2 <= 0.0:
 		return NAN
-	return effective_area_m2 * PSI_CHOKED * M.sqrt_(R_AIR * T_REFERENCE_K)
+	return effective_area_m2 * PSI_CHOKED * sqrt(R_AIR * T_REFERENCE_K)
 
 
 ## Wide-open volumetric demand (m³/s at ambient density) of an engine breathing η_b of its displacement per cycle.

@@ -36,7 +36,7 @@ func commands(s: PackedFloat64Array, clearance: float) -> Dictionary:
 	# Outer heading/cross-track law (rad); inner roll PD (stick per rad, stick per rad/s).
 	var bank_target: float = clampf(heading_error + 0.035 * lateral_error, -0.2, 0.2)
 	var roll: float = 1.5 * (bank_target - euler[2]) - 0.35 * s[10]
-	var beta: float = M.atan2_(s[4], M.sqrt_(s[3] * s[3] + s[5] * s[5]))
+	var beta: float = M.atan2_(s[4], sqrt(s[3] * s[3] + s[5] * s[5]))
 	var yaw: float = 5.0 * beta + 0.5 * heading_error - 0.2 * s[12]
 	if phase == "approach" and clearance < FLARE_HEIGHT:
 		phase = "flare"

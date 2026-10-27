@@ -1295,7 +1295,7 @@ static func _evaluate(
 		var slip_lateral := M.dot(contact_velocity_ned, lateral_world)
 		tire_slip_long[corner] = slip_long
 		tire_slip_lat[corner] = slip_lateral
-		tire_slip_speed[corner] = M.sqrt_(slip_long * slip_long + slip_lateral * slip_lateral)
+		tire_slip_speed[corner] = sqrt(slip_long * slip_long + slip_lateral * slip_lateral)
 		var wheel_circumference_speed := wheel_spin * radius
 		var hub_forward_speed := M.dot(hub_velocity_ned, forward_world)
 		var ratio_denominator := maxf(MIN_SLIP_SPEED_M_PER_S, maxf(absf(hub_forward_speed), absf(wheel_circumference_speed)))
@@ -1353,7 +1353,7 @@ static func _evaluate(
 		if normal_load > 0.0:
 			var rolling_torque := (
 				rolling_scale * float(sample["rolling"]) * normal_load * radius
-				* wheel_spin / M.sqrt_(wheel_spin * wheel_spin + 1.0e-6)
+				* wheel_spin / sqrt(wheel_spin * wheel_spin + 1.0e-6)
 			)
 			rhs[10 + corner] -= rolling_torque
 		var rotor_rate := M.dot(body_rate, wheel_axis) + wheel_spin
@@ -1501,7 +1501,7 @@ static func _corner_geometry(state: PackedFloat64Array, model: Dictionary, steer
 		var travel := state[TRAVEL + corner]
 		if absf(travel) >= arm_length:
 			return _failure("Suspension travel reaches the A-arm geometric singularity")
-		var lateral_offset := M.sqrt_(arm_length * arm_length - travel * travel)
+		var lateral_offset := sqrt(arm_length * arm_length - travel * travel)
 		var side := signf(corner_y[corner])
 		# Preserve the authored wheel station about the shifted CG; travel moves
 		# the hub laterally along its arm from that zero-travel location.
@@ -1883,7 +1883,7 @@ static func _project_friction_circle(
 	var b0 := w00 * free_x + w01 * free_y
 	var b1 := w10 * free_x + w11 * free_y
 	var lower := 0.0
-	var upper := M.sqrt_(b0 * b0 + b1 * b1) / limit
+	var upper := sqrt(b0 * b0 + b1 * b1) / limit
 	for _iteration in 32:
 		var multiplier := 0.5 * (lower + upper)
 		var a00 := w00 + multiplier
@@ -1972,7 +1972,7 @@ static func _surface_error(raw: Variant) -> String:
 	var normal: PackedFloat64Array = normal_variant
 	if normal.size() != 3 or not is_finite(normal[0]) or not is_finite(normal[1]) or not is_finite(normal[2]):
 		return "Road normal must contain three finite NED values"
-	var normal_length := M.sqrt_(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2])
+	var normal_length := sqrt(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2])
 	if absf(normal_length - 1.0) > 1.0e-5:
 		return "Road normal must be unit length"
 	var height := float(surface["height_m"])
@@ -2101,7 +2101,7 @@ static func _valid_attitude(state: PackedFloat64Array) -> bool:
 
 static func _quaternion_length(state: PackedFloat64Array) -> float:
 	var q := _state_quaternion(state)
-	return M.sqrt_(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
+	return sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
 
 
 static func _derivative_is_exactly_zero(value: PackedFloat64Array) -> bool:
@@ -2195,7 +2195,7 @@ static func _check_static_spawn_patch(
 	var mean_height := 0.0
 	for corner in CORNER_COUNT:
 		var side := signf(y[corner])
-		var lateral_offset := M.sqrt_(arm_length * arm_length - travel * travel)
+		var lateral_offset := sqrt(arm_length * arm_length - travel * travel)
 		var r := PackedFloat64Array([
 			x[corner],
 			y[corner] + side * (lateral_offset - arm_length),

@@ -73,7 +73,7 @@ class PreparedEvaluator extends RefCounted:
 				return {ok = false, message = "Propeller section speed overflowed"}
 			if speed_sq == 0.0:
 				continue
-			var speed: float = M.sqrt_(speed_sq)
+			var speed: float = sqrt(speed_sq)
 			if not is_finite(speed) or speed <= 0.0:
 				return {ok = false, message = "Propeller section speed is invalid"}
 			var phi: float = M.atan2_(axial_speed, tangential)
@@ -108,7 +108,7 @@ class PreparedEvaluator extends RefCounted:
 			var ideal_speed_sq: float = axial_speed * axial_speed + 2.0 * thrust / disk_mass_term
 			if not is_finite(ideal_speed_sq) or ideal_speed_sq <= 0.0:
 				return {ok = false, message = "Propeller ideal induced speed overflowed"}
-			var ideal_power: float = 0.5 * thrust * (axial_speed + M.sqrt_(ideal_speed_sq))
+			var ideal_power: float = 0.5 * thrust * (axial_speed + sqrt(ideal_speed_sq))
 			if not is_finite(ideal_power) or ideal_power <= 0.0:
 				return {ok = false, message = "Propeller ideal actuator-disk power overflowed"}
 			var power_scale: float = maxf(absf(shaft_power), ideal_power)

@@ -165,7 +165,7 @@ static func _reference(config:Dictionary,state:PackedFloat64Array,h:float,point:
 		var ell:float=d*rotor.velocity[3+i]
 		for k in 3:ell+=rotor.matrix[(3+i)*n+k]*omega[k]
 		for k in 3:hgyro[k]+=rotor.matrix[k*n+3+i]/d*ell
-	var omega_upper:=AR._add(M.sqrt_(AR._div(energy2,beta))*(1.0+4.0*AR.EPS),AR.ETA)
+	var omega_upper:=AR._add(sqrt(AR._div(energy2,beta))*(1.0+4.0*AR.EPS),AR.ETA)
 	var q:=M.q_normalized(state.slice(RB.ATT,RB.ATT+4))
 	var cmv:=M.add(state.slice(RB.VEL,RB.VEL+3),M.cross(omega,config.properties.cg_body_m))
 	var normal_velocity:=M.dot(M.v3(0,0,-1),M.q_rotate(q,cmv))
@@ -184,7 +184,7 @@ static func _reference(config:Dictionary,state:PackedFloat64Array,h:float,point:
 		var axis:=M.q_rotate(q,support.axle_body)
 		var geo:=Ring.plane(hub,axis,support.radius_m,M.v3(0,0,0),M.v3(0,0,-1))
 		if not geo.ok:return {ok=false,reason="state plane geometry refused"}
-		var kappa:=M.sqrt_(maxf(0.0,1.0-axis[2]*axis[2]))
+		var kappa:=sqrt(maxf(0.0,1.0-axis[2]*axis[2]))
 		var kappa_lower:float=kappa-AR._mul(h,omega_upper)-AR._roundoff(kappa+h*omega_upper,64)
 		if kappa_lower<config.minimum_kappa:return {ok=false,reason="protected kappa cannot close"}
 		var gap_operand:=AR._add(AR._add(M.norm(state.slice(0,3)),M.norm(support.hub_body)),support.radius_m)

@@ -144,7 +144,7 @@ static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, cand
 		q_end = SceneryCollision._negate4(q_end)
 		dot = -dot
 	var angle: float = 2.0 * M.acos_(clampf(dot, -1.0, 1.0))
-	var horizontal_delta: float = M.sqrt_((candidate[RB.POS] - previous[RB.POS]) * (candidate[RB.POS] - previous[RB.POS])
+	var horizontal_delta: float = sqrt((candidate[RB.POS] - previous[RB.POS]) * (candidate[RB.POS] - previous[RB.POS])
 		+ (candidate[RB.POS + 1] - previous[RB.POS + 1]) * (candidate[RB.POS + 1] - previous[RB.POS + 1]))
 	var subdivisions: int = maxi(1, ceili(angle / (MAX_ROTATION_STEP_RAD * ROTATION_SUBSTEP_FRACTION)))
 	subdivisions = maxi(subdivisions, ceili(horizontal_delta / MAX_TRANSLATION_STEP_M))
@@ -519,7 +519,7 @@ static func _prop_disc_is_valid(disc: Dictionary) -> bool:
 static func _surface_normal(slope_north: float, slope_east: float) -> PackedFloat64Array:
 	if not is_finite(slope_north) or not is_finite(slope_east):
 		return PackedFloat64Array()
-	var length: float = M.sqrt_(1.0 + slope_north * slope_north + slope_east * slope_east)
+	var length: float = sqrt(1.0 + slope_north * slope_north + slope_east * slope_east)
 	if not is_finite(length) or length <= 0.0:
 		return PackedFloat64Array()
 	return PackedFloat64Array([-slope_north / length, -slope_east / length, -1.0 / length])

@@ -154,7 +154,7 @@ static func classify(ev: Array, imag_tol := 1e-7) -> Dictionary:
 	for e in ev:
 		if absf(e[1]) > imag_tol:
 			if e[1] > 0.0:
-				var wn := M.sqrt_(e[0] * e[0] + e[1] * e[1])
+				var wn := sqrt(e[0] * e[0] + e[1] * e[1])
 				osc.append({ wn = wn, zeta = -e[0] / wn })
 		else:
 			real.append(e[0])

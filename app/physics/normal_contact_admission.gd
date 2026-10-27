@@ -94,7 +94,7 @@ static func admit(matrix: PackedFloat64Array, kbar: PackedFloat64Array,
 	var stiffness := _gershgorin(metric.matrix, kbar, count)
 	var damping := _gershgorin(metric.matrix, cbar, count)
 	if not stiffness.ok or not damping.ok: return _failure("weighted mobility bound exceeds numeric range")
-	var frequency: float = M.sqrt_(stiffness.bound)
+	var frequency: float = sqrt(stiffness.bound)
 	var rate: float = damping.bound
 	var frequency_steps: float = dt * frequency / MAX_STEP_FREQUENCY
 	var damping_steps: float = dt * rate / MAX_STEP_DAMPING_RATE
@@ -174,7 +174,7 @@ static func plane_envelope(mass_kg: Variant, cg_body_m: PackedFloat64Array,
 	material *= 1.0 + margin
 	damping *= 1.0 + margin
 	geometric *= 1.0 + margin
-	var frequency := M.sqrt_(material + geometric)
+	var frequency := sqrt(material + geometric)
 	var frequency_steps: float = dt * frequency / MAX_STEP_FREQUENCY
 	var damping_steps: float = dt * damping / MAX_STEP_DAMPING_RATE
 	var required: float = maxf(1.0, maxf(frequency_steps, damping_steps))
@@ -264,7 +264,7 @@ static func _plane_failure(reason: String, context: Dictionary = {}, status := "
 
 static func _gershgorin(matrix: PackedFloat64Array, diagonal: PackedFloat64Array, count: int) -> Dictionary:
 	var roots := PackedFloat64Array()
-	for value: float in diagonal: roots.append(M.sqrt_(value))
+	for value: float in diagonal: roots.append(sqrt(value))
 	var row_sums := PackedFloat64Array()
 	var bound := 0.0
 	for i in count:

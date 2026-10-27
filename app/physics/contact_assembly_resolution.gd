@@ -468,7 +468,7 @@ static func _bounds_mass(a:PackedFloat64Array,v:PackedFloat64Array,mass_matrix:P
 			else:
 				if a[i*n+i]<0.0 or a[j*n+j]<0.0:
 					return _failure("negative mobility diagonal")
-				var relative := _div(_div(da[i*n+j],M.sqrt_(a[i*n+i])*(1.0-4.0*EPS)),M.sqrt_(a[j*n+j])*(1.0-4.0*EPS))
+				var relative := _div(_div(da[i*n+j],sqrt(a[i*n+i])*(1.0-4.0*EPS)),sqrt(a[j*n+j])*(1.0-4.0*EPS))
 				correlation_error = maxf(correlation_error, relative)
 	if not is_finite(correlation_error) or correlation_error > QP.KKT_RELATIVE_TOLERANCE:
 		return _failure("relative assembly uncertainty exceeds supported numerical contract")

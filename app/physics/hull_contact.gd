@@ -385,7 +385,7 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary,
 			continue # a damper never pulls the airframe into the ground
 		var vn := north[0] * vx + north[1] * vy + north[2] * vz
 		var ve := east[0] * vx + east[1] * vy + east[2] * vz
-		var slip := M.sqrt_(vn * vn + ve * ve)
+		var slip := sqrt(vn * vn + ve * ve)
 		var mu := FRICTION_MU
 		if not surfaces.is_empty():
 			mu = friction_at(surfaces, s[RB.POS] + north[0] * rx + north[1] * ry + north[2] * rz,
@@ -563,7 +563,7 @@ static func contacts(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 		var v_before := M.q_rotate(q_before, M.add(RB._slice3(previous, RB.VEL), M.cross(RB._slice3(previous, RB.RATE), r)))
 		var v_now := M.q_rotate(q, M.add(RB._slice3(s, RB.VEL), M.cross(RB._slice3(s, RB.RATE), r)))
 		out.append({index = i / 3, new = depth_before <= 0.0, depth_m = depth, normal_speed_mps = maxf(0.0, v_before[2]),
-			slide_speed_mps = M.sqrt_(v_now[0] * v_now[0] + v_now[1] * v_now[1]),
+			slide_speed_mps = sqrt(v_now[0] * v_now[0] + v_now[1] * v_now[1]),
 			point_ned = M.add(RB._slice3(s, RB.POS), M.q_rotate(q, r)), velocity_ned = v_now})
 	return out
 

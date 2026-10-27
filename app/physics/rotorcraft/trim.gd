@@ -162,7 +162,7 @@ static func _scaled_residual(evaluation: Dictionary, context: Dictionary) -> Pac
 	var omega_scale: float = context.drive_model.governor_target_main_rad_s
 	var rho: float = context.main_model.rho_kg_m3
 	var disk_area: float = PI * radius * radius
-	var hover_velocity: float = M.sqrt_(context.mass_kg * g / (2.0 * rho * disk_area))
+	var hover_velocity: float = sqrt(context.mass_kg * g / (2.0 * rho * disk_area))
 	var inflow_scale: float = hover_velocity * hover_velocity / radius
 	return PackedFloat64Array([
 		body[RB.VEL] / g,
@@ -245,7 +245,7 @@ static func _norm(values: PackedFloat64Array) -> float:
 	var total: float = 0.0
 	for value: float in values:
 		total += value * value
-	return M.sqrt_(total)
+	return sqrt(total)
 
 
 static func _as_f64(value: Variant) -> PackedFloat64Array:

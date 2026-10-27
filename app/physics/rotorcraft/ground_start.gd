@@ -239,9 +239,9 @@ static func _actual_envelope_radius(context: Dictionary, skids: Dictionary) -> D
 	for key: String in ["hub_distance_aft_m", "hub_height_above_cg_m", "tail_rotor_radius_m"]:
 		if not tail.has(key) or not is_finite(float(tail[key])):
 			return {"ok": false, "radius": NAN}
-	var main_hub: float = M.sqrt_(main.hub_x_m * main.hub_x_m + main.hub_y_m * main.hub_y_m + main.hub_z_m * main.hub_z_m)
+	var main_hub: float = sqrt(main.hub_x_m * main.hub_x_m + main.hub_y_m * main.hub_y_m + main.hub_z_m * main.hub_z_m)
 	var main_reach: float = main_hub + float(main.rotor_radius_m)
-	var tail_hub: float = M.sqrt_(tail.hub_distance_aft_m * tail.hub_distance_aft_m + tail.hub_height_above_cg_m * tail.hub_height_above_cg_m)
+	var tail_hub: float = sqrt(tail.hub_distance_aft_m * tail.hub_distance_aft_m + tail.hub_height_above_cg_m * tail.hub_height_above_cg_m)
 	var tail_reach: float = tail_hub + float(tail.tail_rotor_radius_m)
 	var skid_reach: float = 0.0
 	for index: int in range(0, 12, 3):
@@ -288,7 +288,7 @@ static func _norm(values: PackedFloat64Array) -> float:
 	var sum: float = 0.0
 	for value: float in values:
 		sum += value * value
-	return M.sqrt_(sum)
+	return sqrt(sum)
 
 
 static func _fail(reason: String) -> Dictionary:

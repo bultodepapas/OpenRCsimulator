@@ -135,7 +135,7 @@ static func gross_thrust(rpm: float, prop: Dictionary, rho: float, u := 0.0) -> 
 	var vj0 := static_gross / flow0
 	var uu := maxf(u, 0.0)
 	var k_jet := table(prop.ram_jet, rpm) if prop.has("ram_jet") else 0.0
-	return mass_flow(rpm, prop, rho, uu) * M.sqrt_(vj0 * vj0 + k_jet * uu * uu)
+	return mass_flow(rpm, prop, rho, uu) * sqrt(vj0 * vj0 + k_jet * uu * uu)
 
 
 ## Net axial thrust (N) at shaft rpm and local axial intake velocity u (m/s): gross exit force − ṁ_capture·u.

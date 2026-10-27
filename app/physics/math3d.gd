@@ -4,6 +4,8 @@
 #   quaternion = [w, x, y, z], unit length, rotates body-frame vectors into the world frame.
 # All transcendental math in physics and simulation goes through this file. The wrappers intentionally
 # call the same Godot built-ins as the old call sites so routing alone preserves same-build results.
+# sqrt is exempt (H6/H7 amendment, 2026-10-27): IEEE 754 rounds it correctly on every platform, so callers
+# use the built-in directly; sqrt_ stays for existing references.
 extends RefCounted
 
 ## Smallest normal IEEE-754 binary64 value; subnormal minors lose relative precision.
@@ -108,7 +110,7 @@ static func cross(a: PackedFloat64Array, b: PackedFloat64Array) -> PackedFloat64
 
 
 static func norm(a: PackedFloat64Array) -> float:
-	return sqrt_(dot(a, a))
+	return sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2])
 
 
 # --- quaternions [w, x, y, z] ---
@@ -136,7 +138,7 @@ static func q_conj(q: PackedFloat64Array) -> PackedFloat64Array:
 
 
 static func q_normalized(q: PackedFloat64Array) -> PackedFloat64Array:
-	var n := sqrt_(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
+	var n := sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
 	return quat(q[0] / n, q[1] / n, q[2] / n, q[3] / n)
 
 

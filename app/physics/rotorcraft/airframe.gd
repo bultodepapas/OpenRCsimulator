@@ -150,14 +150,14 @@ static func _evaluate_compact_stage_prepared(model: Dictionary, cg_air: PackedFl
 		var ideal: float = 0.0
 		var normal_force: float = 0.0
 		if index == 0:
-			var speed: float = M.sqrt_(speed_squared)
+			var speed: float = sqrt(speed_squared)
 			fx = -density_scale * area_x * ux * speed
 			fy = -density_scale * area_y * uy * speed
 			fz = -density_scale * area_z * uz * speed
 		else:
 			var scale: float = density_scale * area_x
 			if index == 1:
-				var in_plane: float = M.sqrt_(ux * ux + uz * uz)
+				var in_plane: float = sqrt(ux * ux + uz * uz)
 				ideal = -scale * (lift_slope * in_plane + absf(uy)) * uy
 				var cap: float = scale * speed_squared
 				if not is_finite(scale) or not is_finite(in_plane) or not is_finite(cap):
@@ -227,13 +227,13 @@ static func _piece(model: Dictionary, prefix: String, cg_air: PackedFloat64Array
 	var normal_force: float = 0.0
 	var limited: bool = false
 	if prefix == "fuselage":
-		var speed: float = M.sqrt_(speed_squared)
+		var speed: float = sqrt(speed_squared)
 		fx = -density_scale * model.fuselage_area_x_m2 * ux * speed
 		fy = -density_scale * model.fuselage_area_y_m2 * uy * speed
 		fz = -density_scale * model.fuselage_area_z_m2 * uz * speed
 	elif prefix == "vertical_fin":
 		var scale: float = density_scale * model.vertical_fin_area_m2
-		var in_plane: float = M.sqrt_(ux * ux + uz * uz)
+		var in_plane: float = sqrt(ux * ux + uz * uz)
 		ideal = -scale * (model.vertical_fin_lift_curve_slope_per_rad * in_plane + absf(uy)) * uy
 		var cap: float = scale * speed_squared
 		if not _finite([scale, in_plane, cap]):

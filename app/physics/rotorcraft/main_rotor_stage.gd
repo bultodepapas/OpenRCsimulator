@@ -84,7 +84,7 @@ static func _evaluate_parts(model: Dictionary, state: PackedFloat64Array, omega:
 			inflow_height_over_radius = -1.0
 	# Match the paper's shaft/body-frame inflow approximation. Projecting this
 	# flow into the exact tilted TPP would be a separately qualified extension.
-	var crossflow: float = M.sqrt_(hub_air_velocity[0] * hub_air_velocity[0] + hub_air_velocity[1] * hub_air_velocity[1])
+	var crossflow: float = sqrt(hub_air_velocity[0] * hub_air_velocity[0] + hub_air_velocity[1] * hub_air_velocity[1])
 	var flow: Dictionary = Inflow.evaluate(state[2], rotor.thrust_n, model.rho_kg_m3, model.rotor_radius_m,
 		-hub_air_velocity[2], crossflow, flow_floor, inflow_height_over_radius, loss, instability)
 	if not flow.ok and rotor.has("estimated_regime"):
@@ -92,7 +92,7 @@ static func _evaluate_parts(model: Dictionary, state: PackedFloat64Array, omega:
 		# is undefined as a useful startup target. Retain the dimensional wake
 		# state and let it decay toward zero with the existing bounded lag.
 		var axial_flow: float = state[2] - hub_air_velocity[2]
-		var effective_flow: float = M.sqrt_(crossflow * crossflow + axial_flow * axial_flow)
+		var effective_flow: float = sqrt(crossflow * crossflow + axial_flow * axial_flow)
 		var decay: Dictionary = Inflow.derivative(state[2], 0.0, model.rotor_radius_m,
 			effective_flow, flow_floor)
 		if not decay.ok:

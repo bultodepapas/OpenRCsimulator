@@ -82,7 +82,7 @@ static func _piece_correction(v: PackedFloat64Array, rates: PackedFloat64Array, 
 	var centre_1: float = hub[1] + ax_le_1 * shaft_scale
 	var centre_2: float = hub[2] + ax_le_2 * shaft_scale
 	var source: PackedFloat64Array = v if source_velocity.is_empty() else source_velocity
-	var speed: float = M.sqrt_(source[0] * source[0] + source[1] * source[1] + source[2] * source[2])
+	var speed: float = sqrt(source[0] * source[0] + source[1] * source[1] + source[2] * source[2])
 	if speed > 1.0e-6 and float(wake.vs) > 1.0e-6:
 		var lean: float = minf(speed / (float(wake.u) + float(wake.w)), 1.0) * distance / speed
 		centre_1 -= source[1] * lean
@@ -239,7 +239,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		radial_body_0 -= axis_0 * axial_projection
 		radial_body_1 -= axis_1 * axial_projection
 		radial_body_2 -= axis_2 * axial_projection
-		var radius: float = maxf(M.sqrt_(radial_body_0 * radial_body_0 + radial_body_1 * radial_body_1
+		var radius: float = maxf(sqrt(radial_body_0 * radial_body_0 + radial_body_1 * radial_body_1
 			+ radial_body_2 * radial_body_2), core)
 		var swirl_scale: float = swirl_strength / (radius * radius)
 		var swirl_0: float = (axis_1 * radial_body_2 - axis_2 * radial_body_1) * swirl_scale
@@ -254,7 +254,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		var axial_normal: float = axial_flow_1 if vertical else axial_flow_2
 		var axial_effective: float
 		if has_downwash:
-			axial_effective = wrapf(M.atan2_(axial_flow_2, axial_flow_0) - Aero.downwash_angle(downwash_product, 1.0, M.sqrt_(axial_flow_0 * axial_flow_0 + axial_normal * axial_normal))
+			axial_effective = wrapf(M.atan2_(axial_flow_2, axial_flow_0) - Aero.downwash_angle(downwash_product, 1.0, sqrt(axial_flow_0 * axial_flow_0 + axial_normal * axial_normal))
 				+ elevator_tau_control + free_incidence, -PI, PI)
 		else:
 			axial_effective = wrapf(M.atan2_(axial_normal, axial_flow_0) + control_angle + incidence, -PI, PI)
@@ -270,7 +270,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 			+ axial_blend * 0.5 * tail_cd90 * M.sin_(2.0 * axial_effective)
 		var axial_sine: float = M.sin_(axial_effective)
 		var axial_cd: float = tail_cd0 + tail_k * axial_cl * axial_cl + tail_cd90 * M.pow_(axial_sine, 2)
-		var axial_flow_speed: float = M.sqrt_(axial_flow_0 * axial_flow_0 + axial_flow_1 * axial_flow_1
+		var axial_flow_speed: float = sqrt(axial_flow_0 * axial_flow_0 + axial_flow_1 * axial_flow_1
 			+ axial_flow_2 * axial_flow_2)
 		var axial_fx: float = 0.0
 		var axial_fy: float = 0.0
@@ -279,7 +279,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		var axial_my: float = 0.0
 		var axial_mz: float = 0.0
 		if axial_flow_speed > 0.0:
-			var axial_plane_speed: float = M.sqrt_(axial_flow_0 * axial_flow_0 + axial_normal * axial_normal)
+			var axial_plane_speed: float = sqrt(axial_flow_0 * axial_flow_0 + axial_normal * axial_normal)
 			var axial_force_scale: float = -0.5 * rho * axial_plane_speed * sample_area * axial_cd
 			axial_fx = axial_flow_0 * axial_force_scale
 			axial_fy = axial_flow_1 * axial_force_scale if vertical else 0.0
@@ -304,7 +304,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		var swirl_normal: float = swirl_flow_1 if vertical else swirl_flow_2
 		var swirl_effective: float
 		if has_downwash:
-			swirl_effective = wrapf(M.atan2_(swirl_flow_2, swirl_flow_0) - Aero.downwash_angle(downwash_product, 1.0, M.sqrt_(swirl_flow_0 * swirl_flow_0 + swirl_normal * swirl_normal))
+			swirl_effective = wrapf(M.atan2_(swirl_flow_2, swirl_flow_0) - Aero.downwash_angle(downwash_product, 1.0, sqrt(swirl_flow_0 * swirl_flow_0 + swirl_normal * swirl_normal))
 				+ elevator_tau_control + free_incidence, -PI, PI)
 		else:
 			swirl_effective = wrapf(M.atan2_(swirl_normal, swirl_flow_0) + control_angle + incidence, -PI, PI)
@@ -320,7 +320,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 			+ swirl_blend * 0.5 * tail_cd90 * M.sin_(2.0 * swirl_effective)
 		var swirl_sine: float = M.sin_(swirl_effective)
 		var swirl_cd: float = tail_cd0 + tail_k * swirl_cl * swirl_cl + tail_cd90 * M.pow_(swirl_sine, 2)
-		var swirl_flow_speed: float = M.sqrt_(swirl_flow_0 * swirl_flow_0 + swirl_flow_1 * swirl_flow_1
+		var swirl_flow_speed: float = sqrt(swirl_flow_0 * swirl_flow_0 + swirl_flow_1 * swirl_flow_1
 			+ swirl_flow_2 * swirl_flow_2)
 		var swirl_fx: float = 0.0
 		var swirl_fy: float = 0.0
@@ -329,7 +329,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		var swirl_my: float = 0.0
 		var swirl_mz: float = 0.0
 		if swirl_flow_speed > 0.0:
-			var swirl_plane_speed: float = M.sqrt_(swirl_flow_0 * swirl_flow_0 + swirl_normal * swirl_normal)
+			var swirl_plane_speed: float = sqrt(swirl_flow_0 * swirl_flow_0 + swirl_normal * swirl_normal)
 			var swirl_force_scale: float = -0.5 * rho * swirl_plane_speed * sample_area * swirl_cd
 			swirl_fx = swirl_flow_0 * swirl_force_scale
 			swirl_fy = swirl_flow_1 * swirl_force_scale if vertical else 0.0
@@ -370,7 +370,7 @@ static func _circle_intersections(along: float, d2: float, radius2: float) -> Ar
 	var radial2: float = radius2 - d2
 	if radial2 < 0.0:
 		return result
-	var half: float = M.sqrt_(radial2)
+	var half: float = sqrt(radial2)
 	result.append(-along - half)
 	if half > ROOT_TOLERANCE:
 		result.append(-along + half)

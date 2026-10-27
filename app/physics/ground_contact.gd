@@ -117,7 +117,7 @@ static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surface
 		var hy := M.sin_(delta)
 		var hn := north[0] * hx + north[1] * hy
 		var he := east[0] * hx + east[1] * hy
-		var h_len := M.sqrt_(hn * hn + he * he)
+		var h_len := sqrt(hn * hn + he * he)
 		var f_n := 0.0
 		var f_e := 0.0
 		if mu > 0.0 and h_len > 1e-6: # a wheel standing on its edge (heading vertical) gets the normal force only
@@ -148,7 +148,7 @@ static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surface
 			else:
 				f_long = -c * f_up * clampf(v_long / maxf(ROLL_CREEP, c * ROLL_CREEP_PER_CRR), -1.0, 1.0)
 				f_lat = -mu_n * clampf(v_lat / (tan_peak * maxf(absf(v_long), SLIP_FLOOR)), -1.0, 1.0)
-			var f_t := M.sqrt_(f_long * f_long + f_lat * f_lat)
+			var f_t := sqrt(f_long * f_long + f_lat * f_lat)
 			if f_t > mu_n: # friction circle
 				f_long *= mu_n / f_t
 				f_lat *= mu_n / f_t
@@ -194,7 +194,7 @@ static func _loads_with_lake(s: PackedFloat64Array, gear: Dictionary, steer: flo
 		var terrain: PackedFloat64Array = Terrain.sample_validated(p_n, p_e, surfaces, lake)
 		if terrain.size() != 3 or not is_finite(terrain[0]) or not is_finite(terrain[1]) or not is_finite(terrain[2]):
 			return PackedFloat64Array([NAN])
-		var norm := M.sqrt_(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2])
+		var norm := sqrt(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2])
 		var normal := Terrain.normal_from_up_slopes(terrain[1], terrain[2])
 		if normal.is_empty():
 			return PackedFloat64Array([NAN])
@@ -222,7 +222,7 @@ static func _loads_with_lake(s: PackedFloat64Array, gear: Dictionary, steer: flo
 		heading[0] -= up_body[0] * heading_projection
 		heading[1] -= up_body[1] * heading_projection
 		heading[2] -= up_body[2] * heading_projection
-		var heading_length: float = M.sqrt_(M.dot(heading, heading))
+		var heading_length: float = sqrt(M.dot(heading, heading))
 		if heading_length > 1e-6:
 			heading[0] /= heading_length
 			heading[1] /= heading_length
@@ -256,7 +256,7 @@ static func _loads_with_lake(s: PackedFloat64Array, gear: Dictionary, steer: flo
 			else:
 				f_long = -rolling * normal_load * clampf(v_long / maxf(ROLL_CREEP, rolling * ROLL_CREEP_PER_CRR), -1.0, 1.0)
 				f_side = -mu_n * clampf(v_lat / (tan_peak * maxf(absf(v_long), SLIP_FLOOR)), -1.0, 1.0)
-			var tangent_force: float = M.sqrt_(f_long * f_long + f_side * f_side)
+			var tangent_force: float = sqrt(f_long * f_long + f_side * f_side)
 			if tangent_force > mu_n:
 				f_long *= mu_n / tangent_force
 				f_side *= mu_n / tangent_force
@@ -325,7 +325,7 @@ static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, s
 		var hy := M.sin_(delta)
 		var hn := north[0] * hx + north[1] * hy
 		var he := east[0] * hx + east[1] * hy
-		var h_len := M.sqrt_(hn * hn + he * he)
+		var h_len := sqrt(hn * hn + he * he)
 		if h_len <= 1e-6:
 			continue
 		hn /= h_len
@@ -353,7 +353,7 @@ static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, s
 				out[at] = anchors[at]
 				out[at + 1] = anchors[at + 1]
 				out[at + 2] = 1.0
-		elif M.sqrt_(vn * vn + ve * ve) < STICK_SPEED:
+		elif sqrt(vn * vn + ve * ve) < STICK_SPEED:
 			out[at] = p_n
 			out[at + 1] = p_e
 			out[at + 2] = 1.0

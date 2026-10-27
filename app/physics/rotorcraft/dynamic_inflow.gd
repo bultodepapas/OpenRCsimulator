@@ -38,7 +38,7 @@ static func evaluate(velocity: float, thrust: float, density: float, radius: flo
 	if not equilibrium.ok:
 		return equilibrium
 	var axial_flow: float = velocity + climb
-	var effective_flow: float = M.sqrt_(crossflow * crossflow + axial_flow * axial_flow)
+	var effective_flow: float = sqrt(crossflow * crossflow + axial_flow * axial_flow)
 	var response: Dictionary = derivative(velocity, equilibrium.velocity, radius, effective_flow, flow_floor)
 	if not response.ok:
 		return response

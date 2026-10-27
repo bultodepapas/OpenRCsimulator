@@ -112,7 +112,7 @@ static func validate(raw: Variant, density: float = 1.225) -> Dictionary:
  for i: int in range(0,12,3):
   var p: PackedFloat64Array=skids.points_body_frd_m.slice(i,i+3)
   reach=maxf(reach,M.norm(p))
- if not is_finite(reach) or reach<=0.0 or M.sqrt_(4.0*skids.spring_n_m/cfg.mass_kg)/Engine.physics_ticks_per_second>.5 or 4.0*skids.damping_n_s_m/(cfg.mass_kg*Engine.physics_ticks_per_second)>1.0:
+ if not is_finite(reach) or reach<=0.0 or sqrt(4.0*skids.spring_n_m/cfg.mass_kg)/Engine.physics_ticks_per_second>.5 or 4.0*skids.damping_n_s_m/(cfg.mass_kg*Engine.physics_ticks_per_second)>1.0:
   return {ok=false,errors=["skid geometry or fixed-step stiffness exceeds the supported envelope"]}
  skids.reach_m=reach
  skids.make_read_only()

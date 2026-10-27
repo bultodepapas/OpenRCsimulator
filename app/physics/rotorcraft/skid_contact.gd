@@ -49,7 +49,7 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
   var arm: PackedFloat64Array = points.slice(i,i+3)
   var offset: PackedFloat64Array = M.q_rotate(q,arm)
   var terrain: PackedFloat64Array = Terrain.sample_validated(state[0]+offset[0],state[1]+offset[1],surfaces)
-  var norm: float = M.sqrt_(1.0+terrain[1]*terrain[1]+terrain[2]*terrain[2])
+  var norm: float = sqrt(1.0+terrain[1]*terrain[1]+terrain[2]*terrain[2])
   var up: PackedFloat64Array = M.v3(-terrain[1]/norm,-terrain[2]/norm,-1.0/norm)
   var normal: PackedFloat64Array = M.q_rotate(inverse,up)
   var depth: float = (state[2]+offset[2]+terrain[0])/norm
@@ -77,7 +77,7 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
    var stiffness: float = float(cfg.spring_n_m)
    var damping: float = float(cfg.damping_n_s_m)
    var world_velocity: PackedFloat64Array = M.q_rotate(q, point_velocity)
-   var speed: float = M.sqrt_(world_velocity[0] * world_velocity[0] + world_velocity[1] * world_velocity[1])
+   var speed: float = sqrt(world_velocity[0] * world_velocity[0] + world_velocity[1] * world_velocity[1])
    var capacity: float = mu * force_n
    var z_max: float = capacity / stiffness if stiffness > 0.0 else 0.0
    var z_north: float = bristles[point_index * 2]
@@ -85,7 +85,7 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
    if is_finite(mu) and mu > 0.0 and is_finite(damping) and damping >= 0.0 and z_max > 0.0:
     var raw_north: float = -stiffness * z_north - damping * world_velocity[0]
     var raw_east: float = -stiffness * z_east - damping * world_velocity[1]
-    var raw_magnitude: float = M.sqrt_(raw_north * raw_north + raw_east * raw_east)
+    var raw_magnitude: float = sqrt(raw_north * raw_north + raw_east * raw_east)
     var scale: float = minf(1.0, capacity / raw_magnitude) if raw_magnitude > 0.0 else 1.0
     var force_north: float = scale * raw_north
     var force_east: float = scale * raw_east
@@ -146,8 +146,8 @@ static func _decay_bristle_pair(bristles: PackedFloat64Array, derivative: Packed
 
 static func strike(state: PackedFloat64Array, main: Dictionary, tail: Dictionary, surfaces: PackedFloat64Array) -> String:
  if not _strike_inputs_valid(state, main, tail, surfaces): return "invalid rotor strike input"
- var main_reach: float=main.rotor_radius_m+M.sqrt_(main.hub_x_m*main.hub_x_m+main.hub_y_m*main.hub_y_m+main.hub_z_m*main.hub_z_m)
- var tail_reach: float=tail.tail_rotor_radius_m+M.sqrt_(tail.hub_distance_aft_m*tail.hub_distance_aft_m+tail.hub_height_above_cg_m*tail.hub_height_above_cg_m)
+ var main_reach: float=main.rotor_radius_m+sqrt(main.hub_x_m*main.hub_x_m+main.hub_y_m*main.hub_y_m+main.hub_z_m*main.hub_z_m)
+ var tail_reach: float=tail.tail_rotor_radius_m+sqrt(tail.hub_distance_aft_m*tail.hub_distance_aft_m+tail.hub_height_above_cg_m*tail.hub_height_above_cg_m)
  var broadphase_reach: float=maxf(main_reach,tail_reach)+Terrain.max_height_validated(surfaces)+.02
  if -state[2] > broadphase_reach: return ""
  var q: PackedFloat64Array=M.q_normalized(state.slice(6,10))
@@ -191,5 +191,5 @@ static func _disc_hits(state: PackedFloat64Array,q: PackedFloat64Array,arm: Pack
  var terrain: PackedFloat64Array=Terrain.sample_validated(state[0]+center[0],state[1]+center[1],surfaces)
  if terrain.size() != 3 or not is_finite(terrain[0]): return true
  # Instantaneous full-disc envelope over the bounded relief, independent of rendered azimuth.
- var reach: float=radius*M.sqrt_(maxf(0.0,1.0-normal[2]*normal[2]))
+ var reach: float=radius*sqrt(maxf(0.0,1.0-normal[2]*normal[2]))
  return state[2]+center[2]+reach+maxf(terrain[0],Terrain.max_height_validated(surfaces)) > 0.0

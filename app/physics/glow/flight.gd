@@ -441,7 +441,7 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	else:
 		load=Blade.evaluate(rpm,M.dot(hub_air,prop.axis),density,install.propeller)
 	if not load.ok: return {ok=false}
-	local_cooling += M.sqrt_(maxf(0.0,load.thrust_n)/(2.0*density*PI*prop.diameter*prop.diameter/4.0))
+	local_cooling += sqrt(maxf(0.0,load.thrust_n)/(2.0*density*PI*prop.diameter*prop.diameter/4.0))
 	# NITRO-05: the feed pressure needs this stage's apparent gravity, so an installation with a fuel_feed block
 	# evaluates the airframe loads first (evaluate() then reuses them).
 	var feed_factor: float=1.0

@@ -44,7 +44,7 @@ static func _finish_step(s: PackedFloat64Array, dt: float, k1: PackedFloat64Arra
 
 static func normalize_attitude(s: PackedFloat64Array) -> PackedFloat64Array:
 	var a := RB.ATT
-	var n := M.sqrt_(s[a] * s[a] + s[a + 1] * s[a + 1] + s[a + 2] * s[a + 2] + s[a + 3] * s[a + 3])
+	var n := sqrt(s[a] * s[a] + s[a + 1] * s[a + 1] + s[a + 2] * s[a + 2] + s[a + 3] * s[a + 3])
 	for i in 4:
 		s[a + i] /= n
 	return s

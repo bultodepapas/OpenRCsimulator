@@ -48,7 +48,7 @@ static func derivative_with_angular_acceleration(s: PackedFloat64Array, properti
 	var rotation_state := s
 	if norm_sq != 1.0:
 		rotation_state = s.duplicate()
-		var inverse_norm := 1.0 / M.sqrt_(norm_sq)
+		var inverse_norm := 1.0 / sqrt(norm_sq)
 		for i in 4: rotation_state[RB.ATT + i] = q[i] * inverse_norm
 	# Start from CM translation, never the old derivative's already corrected datum.
 	var out := RB.derivative(rotation_state, properties.mass_kg, properties.inertia, properties.inverse,

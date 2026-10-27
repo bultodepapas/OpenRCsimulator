@@ -95,4 +95,4 @@ static func reach(model: Dictionary) -> float:
 	var ax: float = arp[0] - cg[0]
 	var ay: float = absf(arp[1] - cg[1]) + 0.5 * b
 	var az: float = arp[2] - cg[2]
-	return FADE_SPAN_RATIO * b + M.sqrt_(ax * ax + ay * ay + az * az)
+	return FADE_SPAN_RATIO * b + sqrt(ax * ax + ay * ay + az * az)

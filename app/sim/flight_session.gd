@@ -3056,7 +3056,7 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 	if impact.trigger == "water":
 		engine_running = false
 	var s: PackedFloat64Array = impact_state if not impact_state.is_empty() else sim.state
-	var speed := M.sqrt_(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
+	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var prev: PackedFloat64Array = sim.previous
 	var sink: float = (s[RB.POS + 2] - prev[RB.POS + 2]) / sim.dt()
 	if not impact_state.is_empty():
@@ -3602,7 +3602,7 @@ func flap_state() -> Dictionary:
 	var spec: Dictionary = aircraft.model.flaps
 	var actual: float = sim.aux[flap_aux_index()]
 	var requested: float = _flap_requested if input_enabled else sim.inputs[flap_input_index()]
-	var speed: float = air_data(sim.state).V * M.sqrt_(air_density(sim.state) / 1.225)
+	var speed: float = air_data(sim.state).V * sqrt(air_density(sim.state) / 1.225)
 	return {available = true, actual = actual, requested = requested,
 		angle_deg = actual * spec.max_angle_deg, target_deg = requested * spec.max_angle_deg,
 		moving = absf(actual - requested) > 1e-10, limit_mps = spec.max_speed_mps,

@@ -138,7 +138,7 @@ static func _first_root(input: PackedFloat64Array) -> Dictionary:
 	else:
 		var discriminant: float = b*b-4.0*a*d
 		if discriminant >= 0.0:
-			var q: float = -0.5*(b + (1.0 if b >= 0.0 else -1.0)*M.sqrt_(discriminant))
+			var q: float = -0.5*(b + (1.0 if b >= 0.0 else -1.0)*sqrt(discriminant))
 			if q == 0.0:
 				_append_inside(boundaries, -b/(2.0*a))
 			else:

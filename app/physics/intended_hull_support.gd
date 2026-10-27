@@ -126,7 +126,7 @@ static func evaluate(prepared: Dictionary, active_ids: PackedStringArray,
 		else: incidental.append(contact_id)
 	var n_body := M.q_rotate(M.q_conj(q_body_to_ned), normal_ned)
 	var roll := M.atan2_(-n_body[1], -n_body[2])
-	var pitch := M.atan2_(n_body[0], M.sqrt_(n_body[1] * n_body[1] + n_body[2] * n_body[2]))
+	var pitch := M.atan2_(n_body[0], sqrt(n_body[1] * n_body[1] + n_body[2] * n_body[2]))
 	var roll_error := _angle(roll - prepared.rest_pose.roll)
 	var pitch_error: float = pitch - prepared.rest_pose.pitch
 	var angular_speed := M.norm(angular_rate_body)

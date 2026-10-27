@@ -66,7 +66,7 @@ static func _smoothstep(x: float) -> float:
 
 static func _tail_plane_speed(s: PackedFloat64Array, air: Dictionary, model: Dictionary, tail: Dictionary) -> float:
 	var flow := M.add(air.v_air, M.cross(s.slice(RB.RATE, RB.RATE+3), _arm(tail.position, model.cg_le)))
-	return M.sqrt_(flow[0]*flow[0] + flow[2]*flow[2])
+	return sqrt(flow[0]*flow[0] + flow[2]*flow[2])
 
 
 ## The α-dependent part of the lift coefficient (no control terms), attached → flat plate.
@@ -256,7 +256,7 @@ static func _surface(v: PackedFloat64Array, rates: PackedFloat64Array, arm: Pack
 static func _surface_with_flow(flow: PackedFloat64Array, arm: PackedFloat64Array,
 		area: float, cl: float, cd: float, vertical: bool, rho: float) -> PackedFloat64Array:
 	var normal: float = flow[1 if vertical else 2]
-	var plane_speed := M.sqrt_(flow[0]*flow[0] + normal*normal)
+	var plane_speed := sqrt(flow[0]*flow[0] + normal*normal)
 	if plane_speed == 0.0:
 		return PackedFloat64Array([0., 0., 0., 0., 0., 0.])
 	var force_scale := -0.5*rho*plane_speed*area*cd
@@ -329,7 +329,7 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 			f0 += station_delta_body[3*i]
 			f1 += station_delta_body[3*i+1]
 			f2 += station_delta_body[3*i+2]
-		var vp := M.sqrt_(f0*f0 + f2*f2)
+		var vp := sqrt(f0*f0 + f2*f2)
 		var angle: float
 		if station_x.is_empty():
 			var control: float = d.aileron_right if ys[i] > 0.0 else d.aileron_left
@@ -351,7 +351,7 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 		angles.append(angle)
 		speeds.append(vp)
 		flap_shifts.append(flap_shift)
-		reference_speed = maxf(reference_speed, M.sqrt_(f0*f0 + f1*f1 + f2*f2))
+		reference_speed = maxf(reference_speed, sqrt(f0*f0 + f1*f1 + f2*f2))
 	# P51-11a (optional flaps.stall_shift_fraction): a flapped strip's stall onset moves by only this fraction of its
 	# camber shift; absent keeps the whole shift without any added arithmetic.
 	var stall_back := 1.0 - float(flap_model.stall_shift_fraction) if flap_active and flap_model.has("stall_shift_fraction") else 0.0
@@ -568,7 +568,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 				k_induced, cl_min_d, induced_factor)
 			flap_delta_cl = cl - clean_coeff[0]
 		wing_cl += (plane_speeds[i] * cl) / stations
-		var speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
+		var speed := sqrt(f0 * f0 + f1 * f1 + f2 * f2)
 		if plane_speeds[i] == 0.0:
 			if strip_diagnostics != null:
 				strip_diagnostics.append({y_m = y, alpha_geometric_rad = effective,
@@ -577,7 +577,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 					lift_velocity_mps = 0.0, section_pitch_couple_nm = 0.0, lift_n = 0.0, drag_n = 0.0,
 					force_body_n = PackedFloat64Array([0., 0., 0.]), moment_body_nm = PackedFloat64Array([0., 0., 0.])})
 			continue # the oracle adds +0.0, which never changes a sum that starts at +0.0
-		var plane_speed := M.sqrt_(f0*f0 + f2*f2)
+		var plane_speed := sqrt(f0*f0 + f2*f2)
 		var force_scale: float = drag_q*plane_speed*station_area*cd
 		var fx: float = f0 * force_scale
 		var fy := 0.0
@@ -678,7 +678,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var body_cy: float = surfaces.get("body_cy_beta", 0.0)
 	var body_cda: float = surfaces.get("body_crossflow_area", 0.0)
 	if body_cy != 0.0 or body_cda != 0.0:
-		var fy_body: float = 0.5 * rho * (float(ref.S) * body_cy * maxf(v0, 0.0) * v1 - body_cda * M.sqrt_(v1 * v1 + v2 * v2) * v1)
+		var fy_body: float = 0.5 * rho * (float(ref.S) * body_cy * maxf(v0, 0.0) * v1 - body_cda * sqrt(v1 * v1 + v2 * v2) * v1)
 		fy_sum += fy_body
 		mx_sum += -az * fy_body
 		mz_sum += ax * fy_body
@@ -748,7 +748,7 @@ static func _tail_surface_from_flow(flow: PackedFloat64Array, arm: PackedFloat64
 	var slope: float
 	if not vertical and tail.has("free_slope"):
 		effective = wrapf(M.atan2_(flow[2], flow[0]) - downwash_angle(downwash_cl, float(tail.downwash_per_cl),
-			M.sqrt_(flow[0]*flow[0] + flow[2]*flow[2]))
+			sqrt(flow[0]*flow[0] + flow[2]*flow[2]))
 			+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
 		slope = tail.free_slope
 	else:
@@ -824,7 +824,7 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 		var rate_x := q*arm_z - r*station_y
 		var rate_y := r*station_arm_x - p*arm_z
 		var rate_z := p*station_y - q*station_arm_x
-		var rate_speed := M.sqrt_(rate_x*rate_x + rate_y*rate_y + rate_z*rate_z)
+		var rate_speed := sqrt(rate_x*rate_x + rate_y*rate_y + rate_z*rate_z)
 		blend = maxf(blend, _smoothstep((M.atan2_(rate_speed, float(air.V))-limit)/a1_span))
 		if blend == 1.0:
 			return blend
@@ -850,7 +850,7 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 		var rate_x := q*tz - r*ty
 		var rate_y := r*tx - p*tz
 		var rate_z := p*ty - q*tx
-		var rate_speed := M.sqrt_(rate_x*rate_x + rate_y*rate_y + rate_z*rate_z)
+		var rate_speed := sqrt(rate_x*rate_x + rate_y*rate_y + rate_z*rate_z)
 		blend = maxf(blend, _smoothstep((M.atan2_(rate_speed, float(air.V))-limit)/a1_span))
 		if blend == 1.0:
 			return blend
@@ -862,7 +862,7 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 				wake = _wing_lift_coefficient_with(s, air, d, model, ge, true)
 			var scale: float = ge[ys.size()+1] if not ge.is_empty() else 1.0
 			angle = wrapf(M.atan2_(component, flow_x) - downwash_angle(wake * scale,
-				float(tail.downwash_per_cl), M.sqrt_(flow_x*flow_x + component*component))
+				float(tail.downwash_per_cl), sqrt(flow_x*flow_x + component*component))
 				+ float(tail.elevator_tau)*control + float(tail.free_incidence), -PI, PI)
 		else:
 			angle = wrapf(M.atan2_(component, flow_x) + tail.control_effectiveness*control + tail.incidence, -PI, PI)
@@ -1198,7 +1198,7 @@ static func _continuation_flow_bounded(flow: PackedFloat64Array) -> bool:
 	for component: float in flow:
 		if absf(component) > SPATIAL_CONTINUATION_MAX_FLOW_MPS:
 			return false
-	return M.sqrt_(flow[0]*flow[0] + flow[1]*flow[1] + flow[2]*flow[2]) <= SPATIAL_CONTINUATION_MAX_FLOW_MPS
+	return sqrt(flow[0]*flow[0] + flow[1]*flow[1] + flow[2]*flow[2]) <= SPATIAL_CONTINUATION_MAX_FLOW_MPS
 
 
 static func _continuation_wing_flow_bounded(flow: Dictionary, stations: int) -> bool:
@@ -1278,8 +1278,8 @@ static func _spatial_domain(s: PackedFloat64Array, air: Dictionary, d: Dictionar
 			return _spatial_failure("spatial bridge requires forward flow at every station")
 		var alpha0 := M.atan2_(before[2], before[0])
 		var alpha1 := M.atan2_(after[2], after[0])
-		var beta0 := M.atan2_(before[1], M.sqrt_(before[0]*before[0]+before[2]*before[2]))
-		var beta1 := M.atan2_(after[1], M.sqrt_(after[0]*after[0]+after[2]*after[2]))
+		var beta0 := M.atan2_(before[1], sqrt(before[0]*before[0]+before[2]*before[2]))
+		var beta1 := M.atan2_(after[1], sqrt(after[0]*after[0]+after[2]*after[2]))
 		var normal: int = 1 if vertical else 2
 		var plane0 := before[0]*before[0]+before[normal]*before[normal]
 		var plane1 := after[0]*after[0]+after[normal]*after[normal]
@@ -1311,7 +1311,7 @@ static func _spatial_domain(s: PackedFloat64Array, air: Dictionary, d: Dictionar
 				var angle: float
 				if not vertical and tail.has("free_slope"):
 					angle = wrapf(M.atan2_(flow[2], flow[0]) - downwash_angle(tail_wake, float(tail.downwash_per_cl),
-						M.sqrt_(flow[0]*flow[0]+flow[2]*flow[2])) + float(tail.elevator_tau)*float(d.elevator)
+						sqrt(flow[0]*flow[0]+flow[2]*flow[2])) + float(tail.elevator_tau)*float(d.elevator)
 						+ float(tail.free_incidence), -PI, PI)
 				else:
 					angle = _tail_angle_from_flow(flow, d, tail, vertical)

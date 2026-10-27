@@ -27,12 +27,12 @@ static func compute(s: PackedFloat64Array, wind_ned: PackedFloat64Array, rho := 
 	var u := s[RB.VEL] - ((wx + tx * qw) + (uy * tz - uz * ty))
 	var v := s[RB.VEL + 1] - ((wy + ty * qw) + (uz * tx - ux * tz))
 	var w := s[RB.VEL + 2] - ((wz + tz * qw) + (ux * ty - uy * tx))
-	var speed := M.sqrt_(u * u + v * v + w * w)
+	var speed := sqrt(u * u + v * v + w * w)
 	return {
 		v_air = M.v3(u, v, w),
 		V = speed,
 		alpha = M.atan2_(w, u),
 		# atan2 form of asin(v / V): identical for V > 0, and well defined at V = 0.
-		beta = M.atan2_(v, M.sqrt_(u * u + w * w)),
+		beta = M.atan2_(v, sqrt(u * u + w * w)),
 		qbar = 0.5 * rho * speed * speed,
 	}

@@ -105,7 +105,7 @@ static func evaluate(prepared: Dictionary, crank_phase_rad: float, omega_rad_s: 
 	var root_argument: float = rod * rod - radius * radius * sine * sine
 	if not is_finite(root_argument) or root_argument <= 0.0:
 		return _fail("Slider-crank geometry is outside its real-valued domain")
-	var root: float = M.sqrt_(root_argument)
+	var root: float = sqrt(root_argument)
 	var position_derivative: float = radius * sine + radius * radius * sine * cosine / root
 	var position_second_derivative: float = radius * cosine + radius * radius * ((cosine * cosine - sine * sine) / root + radius * radius * sine * sine * cosine * cosine / (root * root * root))
 	var piston_acceleration: float = position_second_derivative * omega_rad_s * omega_rad_s + position_derivative * alpha_rad_s2
@@ -116,8 +116,8 @@ static func evaluate(prepared: Dictionary, crank_phase_rad: float, omega_rad_s: 
 	var order_1x_force_sine_n: float = mass * coefficient_1x * alpha_rad_s2
 	var order_2x_force_cosine_n: float = mass * 4.0 * coefficient_2x * omega_rad_s * omega_rad_s
 	var order_2x_force_sine_n: float = mass * 2.0 * coefficient_2x * alpha_rad_s2
-	var order_1x: float = M.sqrt_(order_1x_force_cosine_n * order_1x_force_cosine_n + order_1x_force_sine_n * order_1x_force_sine_n)
-	var order_2x: float = M.sqrt_(order_2x_force_cosine_n * order_2x_force_cosine_n + order_2x_force_sine_n * order_2x_force_sine_n)
+	var order_1x: float = sqrt(order_1x_force_cosine_n * order_1x_force_cosine_n + order_1x_force_sine_n * order_1x_force_sine_n)
+	var order_2x: float = sqrt(order_2x_force_cosine_n * order_2x_force_cosine_n + order_2x_force_sine_n * order_2x_force_sine_n)
 	var cycle_revolutions: int = int(engine.cycle_revolutions)
 	var crank_revolutions_per_second: float = omega_rad_s / TAU
 	var opportunity_hz: float = crank_revolutions_per_second / float(cycle_revolutions)
@@ -152,7 +152,7 @@ static func evaluate(prepared: Dictionary, crank_phase_rad: float, omega_rad_s: 
 
 static func _piston_position(theta: float, crank_radius: float, connecting_rod: float) -> float:
 	var sine: float = M.sin_(theta)
-	return crank_radius * (1.0 - M.cos_(theta)) + connecting_rod - M.sqrt_(connecting_rod * connecting_rod - crank_radius * crank_radius * sine * sine)
+	return crank_radius * (1.0 - M.cos_(theta)) + connecting_rod - sqrt(connecting_rod * connecting_rod - crank_radius * crank_radius * sine * sine)
 
 
 static func _valid_prepared(engine: Dictionary) -> bool:

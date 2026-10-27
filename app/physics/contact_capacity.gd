@@ -75,7 +75,7 @@ static func reserve_published_group(
 		squared = AR._add(squared, AR._mul(ratio, ratio))
 	if not is_finite(squared):
 		return {ok = false, status = "unsupported_arithmetic"}
-	var used := 0.0 if squared == 0.0 else AR._mul(M.sqrt_(squared), 1.0 + 4.0 * AR.EPS)
+	var used := 0.0 if squared == 0.0 else AR._mul(sqrt(squared), 1.0 + 4.0 * AR.EPS)
 	if not is_finite(used):
 		return {ok = false, status = "unsupported_arithmetic"}
 	if used > 1.0:

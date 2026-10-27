@@ -65,7 +65,7 @@ static func sample(track: Dictionary, north: float, east: float) -> Dictionary:
 	if absf(e) > length + radius + half + shoulder or north < float(track.access.north_min_m) - shoulder or absf(n) > radius + half + shoulder and north > float(track.center_north_m):
 		return {"height_m": 0.0, "dn": 0.0, "de": 0.0, "coverage": 0.0, "feature_id": ""}
 	var excess_e := e - clampf(e, -length, length)
-	var distance := M.sqrt_(n * n + excess_e * excess_e)
+	var distance := sqrt(n * n + excess_e * excess_e)
 	var radial_n := n / distance if distance > 1e-12 else 0.0
 	var radial_e := excess_e / distance if distance > 1e-12 else 0.0
 	var lateral := distance - radius

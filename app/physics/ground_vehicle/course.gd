@@ -161,7 +161,7 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 			feature_id = str(feature.id)
 			surface_id = str(feature.surface_id)
 	var normal := PackedFloat64Array([-dheight_dn, -dheight_de, -1.0])
-	var magnitude: float = Math3D.sqrt_(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2])
+	var magnitude: float = sqrt(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2])
 	if magnitude > 0.0:
 		normal[0] /= magnitude
 		normal[1] /= magnitude

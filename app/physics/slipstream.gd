@@ -96,7 +96,7 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 	var wash_0: float = ax[0] * dv
 	var wash_1: float = ax[1] * dv
 	var wash_2: float = ax[2] * dv
-	var speed := M.sqrt_(source[0] * source[0] + source[1] * source[1] + source[2] * source[2])
+	var speed := sqrt(source[0] * source[0] + source[1] * source[1] + source[2] * source[2])
 	# Piece-independent immersion terms.
 	var hub: PackedFloat64Array = ss.hub
 	var ax_le_0: float = -ax[0]
@@ -173,7 +173,7 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 		else:
 			if d2 >= rs * rs:
 				continue
-			var half := M.sqrt_(rs * rs - d2)
+			var half := sqrt(rs * rs - d2)
 			var span: float = piece.span
 			var a := clampf(-along - half, 0.0, span)
 			var b := clampf(-along + half, 0.0, span)
@@ -220,7 +220,7 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 		radial_body_0 -= ax[0] * axial_projection
 		radial_body_1 -= ax[1] * axial_projection
 		radial_body_2 -= ax[2] * axial_projection
-		var radius: float = maxf(M.sqrt_(radial_body_0 * radial_body_0 + radial_body_1 * radial_body_1 + radial_body_2 * radial_body_2), core)
+		var radius: float = maxf(sqrt(radial_body_0 * radial_body_0 + radial_body_1 * radial_body_1 + radial_body_2 * radial_body_2), core)
 		var swirl_scale: float = swirl_strength / (radius * radius)
 		var swirl_0: float = (ax[1] * radial_body_2 - ax[2] * radial_body_1) * swirl_scale
 		var swirl_1: float = (ax[2] * radial_body_0 - ax[0] * radial_body_2) * swirl_scale
@@ -308,7 +308,7 @@ static func wake(v_air: PackedFloat64Array, thrust: float, torque: float, prop: 
 	# Signed momentum flow only in the new bounded route: reverse_weight removes loads by -0.2 vi0 in the fixture.
 	var axial: float = M.dot(v_air, Propulsion.axis(prop))
 	var u: float = axial if smooth else maxf(axial, 0.0)
-	var vs := M.sqrt_(maxf(u * u + 2.0 * thrust / (rho * area), 0.0))
+	var vs := sqrt(maxf(u * u + 2.0 * thrust / (rho * area), 0.0))
 	var w := 0.5 * (vs - u)
 	var ratio := clampf((u + w) / maxf(u + 2.0 * w, 1e-6), (0.25 if smooth else RADIUS_MIN * RADIUS_MIN), RADIUS_MAX * RADIUS_MAX)
 	var m := u / maxf(u + w, 1e-6) if w > 0.0 else 1.0
@@ -316,7 +316,7 @@ static func wake(v_air: PackedFloat64Array, thrust: float, torque: float, prop: 
 	# k_w/2 is an estimated swirl attenuation, not a consequence of the axial decay law. The current radius
 	# is still the ideal contracted radius; no expanded mass-flow or missing reaction is tracked (E0b6).
 	var swirl: float = ss.swirl_factor * 0.5 * k_w * torque / (rho * area * maxf(u + w, SWIRL_SPEED_FLOOR))
-	return { u = u, w = w, vs = u + 2.0 * w, dv = k_w * w, rs = R * M.sqrt_(ratio), swirl = swirl, core = 0.3 * R }
+	return { u = u, w = w, vs = u + 2.0 * w, dv = k_w * w, rs = R * sqrt(ratio), swirl = swirl, core = 0.3 * R }
 
 
 ## The immersed part of one piece: { area (m2), shift (body arm change from the surface's reference position),
@@ -365,7 +365,7 @@ static func immersion(piece: Dictionary, w: Dictionary, hub: PackedFloat64Array,
 	else:
 		if d2 >= rs * rs:
 			return none
-		var half := M.sqrt_(rs * rs - d2)
+		var half := sqrt(rs * rs - d2)
 		var span: float = piece.span
 		var a := clampf(-along - half, 0.0, span)
 		var b := clampf(-along + half, 0.0, span)
@@ -401,7 +401,7 @@ static func immersion(piece: Dictionary, w: Dictionary, hub: PackedFloat64Array,
 	radial_body_1 -= ax[1] * axial_projection
 	radial_body_2 -= ax[2] * axial_projection
 	# Free vortex: v_t = Γ/r along ax × r̂ (clockwise from behind: the air above the shaft moves right).
-	var radius: float = maxf(M.sqrt_(radial_body_0 * radial_body_0 + radial_body_1 * radial_body_1 + radial_body_2 * radial_body_2), w.core)
+	var radius: float = maxf(sqrt(radial_body_0 * radial_body_0 + radial_body_1 * radial_body_1 + radial_body_2 * radial_body_2), w.core)
 	var swirl_scale: float = w.swirl / (radius * radius)
 	var swirl: PackedFloat64Array = PackedFloat64Array([
 		(ax[1] * radial_body_2 - ax[2] * radial_body_1) * swirl_scale,
@@ -416,7 +416,7 @@ static func immersion(piece: Dictionary, w: Dictionary, hub: PackedFloat64Array,
 static func reverse_weight(v: PackedFloat64Array, rpm: float, prop: Dictionary) -> float:
 	if rpm < Propulsion.STOPPED_RPM:
 		return 0.0
-	var vi0: float = rpm / 60.0 * float(prop.diameter) * M.sqrt_(2.0 * float(prop.ct[1]) / PI)
+	var vi0: float = rpm / 60.0 * float(prop.diameter) * sqrt(2.0 * float(prop.ct[1]) / PI)
 	var bounds: PackedFloat64Array = prop.slipstream.reverse_fade
 	var ratio: float = -M.dot(v, Propulsion.axis(prop)) / vi0
 	return 1.0 - Aero._smoothstep((ratio - bounds[0]) / (bounds[1] - bounds[0]))
@@ -430,8 +430,8 @@ static func profile_moments(profile: PackedFloat64Array, along: float, d2: float
 	var outer2: float = rs*rs*(1.0+edge)*(1.0+edge)
 	if d2 >= outer2:
 		return PackedFloat64Array([0.0, 0.0])
-	var outer: float = M.sqrt_(outer2-d2)
-	var inner: float = M.sqrt_(maxf(inner2-d2, 0.0))
+	var outer: float = sqrt(outer2-d2)
+	var inner: float = sqrt(maxf(inner2-d2, 0.0))
 	var total: float = 0.0
 	var moment: float = 0.0
 	for i in range(0, profile.size(), 4):
@@ -503,7 +503,7 @@ static func _segmented_increment(piece: Dictionary, tail: Dictionary, a: float, 
 		rho: float, wing_cl: float, subdivisions: int = 1, sampler := Callable()) -> PackedFloat64Array:
 	var cuts: Array[float] = [a, b]
 	if core * core > d2:
-		var core_half := M.sqrt_(core * core - d2)
+		var core_half := sqrt(core * core - d2)
 		for cut: float in [-along - core_half, -along + core_half]:
 			if cut > a and cut < b:
 				cuts.append(cut)
@@ -564,7 +564,7 @@ static func _segmented_increment(piece: Dictionary, tail: Dictionary, a: float, 
 			rb0 -= ax_0 * axial
 			rb1 -= ax_1 * axial
 			rb2 -= ax_2 * axial
-			var radius: float = maxf(M.sqrt_(rb0 * rb0 + rb1 * rb1 + rb2 * rb2), core)
+			var radius: float = maxf(sqrt(rb0 * rb0 + rb1 * rb1 + rb2 * rb2), core)
 			var scale: float = swirl / (radius * radius) * weight
 			s0 += (ax_1 * rb2 - ax_2 * rb1) * scale
 			s1 += (ax_2 * rb0 - ax_0 * rb2) * scale
@@ -612,7 +612,7 @@ static func _add_tail_load(out: PackedFloat64Array, law: PackedFloat64Array, sig
 		arm_0: float, arm_1: float, arm_2: float, area: float) -> void:
 	var vertical: bool = law[0] == 1.0
 	var normal: float = f1 if vertical else f2
-	var plane: float = M.sqrt_(f0 * f0 + normal * normal)
+	var plane: float = sqrt(f0 * f0 + normal * normal)
 	if plane == 0.0:
 		return
 	var angle: float = M.atan2_(normal, f0)

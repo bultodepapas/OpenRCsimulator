@@ -165,7 +165,7 @@ static func scalar_substeps(prepared: Dictionary, maximum_compression_m: float,
 		return envelope
 	if not envelope.continuous_onset:
 		return _failure("zero-onset damping needs event-aware integration; no smooth scalar bound")
-	var frequency: float = M.sqrt_(envelope.position_derivative_bound_npm / effective_mass_kg)
+	var frequency: float = sqrt(envelope.position_derivative_bound_npm / effective_mass_kg)
 	var rate: float = envelope.rate_derivative_bound_nsm / effective_mass_kg
 	var count: float = maxf(1.0, maxf(dt * frequency / 0.1, dt * rate / 0.25))
 	if not is_finite(count) or count > budget:

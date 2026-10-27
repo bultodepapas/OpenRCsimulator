@@ -438,7 +438,7 @@ static func _measure_rotor(state: PackedFloat64Array, continuous: PackedFloat64A
 	axis_down = clampf(axis_down, -1.0, 1.0)
 	var blade_half_chord: float = maxf(chord * 0.5, 0.0)
 	var vertical_support_m: float = (radius + blade_half_chord) \
-		* M.sqrt_(maxf(0.0, 1.0 - axis_down * axis_down))
+		* sqrt(maxf(0.0, 1.0 - axis_down * axis_down))
 	# The whole blade, including stopped-rotor chord, lies inside this vertical support bound.
 	# max_height bounds every accepted terrain surface, so safely elevated rotors need no point samples.
 	if center[2] + vertical_support_m + max_height <= -1.0e-12:

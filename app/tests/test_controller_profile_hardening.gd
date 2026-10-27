@@ -5,6 +5,7 @@ const Store := preload("res://input/controller_profile_store.gd")
 const Profile := preload("res://input/controller_profile.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const RcCalibration := preload("res://input/rc_calibration.gd")
+const Actions := preload("res://input/controller_actions.gd")
 
 const RECOVERY_PATH := "user://controller_audit_recovery.cfg"
 const CORRUPT_PATH := "user://controller_audit_corrupt.cfg"
@@ -164,6 +165,13 @@ func _run() -> void:
 		var errors_before := engine_errors.count()
 		var upgraded: Dictionary = Profile.upgrade_legacy(_with_field(shape[1], shape[2], shape[3]))
 		check("upgrade_legacy rejects %s without a script error" % shape[0], upgraded.is_empty() and engine_errors.count() == errors_before)
+	for direction: Variant in ["up", 1.0, null]:
+		var errors_before := engine_errors.count()
+		var valid: bool = Actions.valid_binding({"type": "axis", "axis": 4, "sign": 1, "direction": direction})
+		check("action binding rejects a %s direction beside its sign without a script error" % type_string(typeof(direction)),
+			not valid and engine_errors.count() == errors_before)
+	check("action binding still accepts a matching sign and direction",
+		Actions.valid_binding({"type": "axis", "axis": 4, "sign": 1, "direction": 1}))
 
 	# One malformed member rejects the whole stored file (store contract), without aborting.
 	for shape: Array in [

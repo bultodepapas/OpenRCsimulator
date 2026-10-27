@@ -74,7 +74,7 @@ static func prepare(samples: PackedFloat64Array, side: float, slope: float, offs
 		var fixed: int = i if i == 0 else i+1
 		var free: int = i+1 if i == 0 else i
 		var ratio := tangents[fixed*3]/secant
-		var bound := absf(secant)*M.sqrt_(maxf(0.0, 9.0-ratio*ratio))
+		var bound := absf(secant)*sqrt(maxf(0.0, 9.0-ratio*ratio))
 		tangents[free*3] = signf(tangents[free*3])*minf(absf(tangents[free*3]), bound)
 	return {angles = x, values = values, tangents = tangents}
 

@@ -62,10 +62,10 @@ static func heightfield(prepared: Dictionary, hub: PackedFloat64Array,
 	var box: float = amplitude.search_half_width_m
 	# Normal projection is 1-Lipschitz in its unit normal. The analytic Hessian
 	# bounds variation of the normal with horizontal displacement throughout box.
-	var projection_lower: float = center.projection - curvature * M.sqrt_(2.0) * box
+	var projection_lower: float = center.projection - curvature * sqrt(2.0) * box
 	if projection_lower <= MIN_AXLE_PROJECTION:
 		return _failure("axle/normal branch can become degenerate in search box", "inadmissible")
-	var reach: float = M.sqrt_(2.0) * box
+	var reach: float = sqrt(2.0) * box
 	var center_height_distance: float = absf(hub[2] - center.surface_point[2])
 	var gap_bound: float = absf(float(center.gap)) + curvature * reach * (center_height_distance + radius_m) + 0.5 * curvature * reach * reach
 	var normal_reach_number := gap_bound * curvature
@@ -183,7 +183,7 @@ static func _interval_bounds(prepared: Dictionary, hub: PackedFloat64Array,
 		var mask_high: float = north.high * east.high
 		var gradient_n: float = north.first * east.high
 		var gradient_e: float = east.first * north.high
-		var mask_gradient := M.sqrt_(gradient_n * gradient_n + gradient_e * gradient_e)
+		var mask_gradient := sqrt(gradient_n * gradient_n + gradient_e * gradient_e)
 		var cross_bound: float = north.first * east.first
 		var mask_hessian: float = maxf(north.second * east.high + cross_bound, east.second * north.high + cross_bound)
 		var target := _amplitude(prepared, row)
@@ -206,7 +206,7 @@ static func _interval_bounds(prepared: Dictionary, hub: PackedFloat64Array,
 		var k := Terrain.TAU / float(wave[1])
 		var direction_sq := float(wave[2]) * float(wave[2]) + float(wave[3]) * float(wave[3])
 		wave_value_bound += absf(float(wave[0]))
-		wave_gradient += absf(float(wave[0])) * k * M.sqrt_(direction_sq)
+		wave_gradient += absf(float(wave[0])) * k * sqrt(direction_sq)
 		wave_hessian += absf(float(wave[0])) * k * k * direction_sq
 	return {ok = true, slope_bound = amplitude_gradient * wave_value_bound + high * wave_gradient,
 		hessian_bound_per_m = amplitude_hessian * wave_value_bound + 2.0 * amplitude_gradient * wave_gradient + high * wave_hessian,

@@ -487,7 +487,7 @@ func _state_quaternion_is_valid(state: PackedFloat64Array) -> bool:
 	for index in 4:
 		var component := state[6 + index] / scale
 		norm_scaled += component * component
-	var norm := scale * M.sqrt_(norm_scaled)
+	var norm := scale * sqrt(norm_scaled)
 	return is_finite(norm) and norm > 1.0e-10
 
 
@@ -498,7 +498,7 @@ func _stable_norm3(x: float, y: float, z: float) -> float:
 	var scaled_x := x / scale
 	var scaled_y := y / scale
 	var scaled_z := z / scale
-	return scale * M.sqrt_(scaled_x * scaled_x + scaled_y * scaled_y + scaled_z * scaled_z)
+	return scale * sqrt(scaled_x * scaled_x + scaled_y * scaled_y + scaled_z * scaled_z)
 
 
 func _impact_region(previous_state: PackedFloat64Array, next_state: PackedFloat64Array) -> int:

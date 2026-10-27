@@ -187,7 +187,7 @@ static func evaluate(rpm: float, duty: float, enabled: bool, block: PackedFloat6
 	var cell_heat: float = pack_current * pack_current * cells_r0 + rc_dissipation
 	var loss: float = pack_current * pack_current * pack_r + rc_dissipation
 	var transfer: float = float(battery.h_still_w_per_k) + float(battery.h_forced_w_per_k_sqrt_mps) \
-		* M.sqrt_(maxf(cooling_speed_mps, 0.0))
+		* sqrt(maxf(cooling_speed_mps, 0.0))
 	rates[Q] = -pack_current
 	rates[ENERGY] = bus_voltage * pack_current
 	rates[LOSS] = loss

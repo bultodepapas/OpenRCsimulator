@@ -189,7 +189,7 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 			float(local_environment.rho_kgm3), g, anchors, true, wind_ned, enhanced, candidate_air)
 	var idle_feasible: Callable = func(x: PackedFloat64Array) -> Dictionary:
 		var state: PackedFloat64Array = idle_state_at.call(x)
-		var horizontal_shift := M.sqrt_(x[0] * x[0] + x[1] * x[1])
+		var horizontal_shift := sqrt(x[0] * x[0] + x[1] * x[1])
 		var yaw := M.q_to_euler(PackedFloat64Array([state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3]]))[0]
 		var heading_shift := wrapf(yaw - heading, -PI, PI)
 		var rotation_shift := M.norm(PackedFloat64Array([x[3], x[4], x[5]]))
@@ -344,7 +344,7 @@ static func _aft_tricycle_support_pose(contacts: Array) -> Dictionary:
 		normal = M.scale(normal, -1.0)
 	if normal[2] <= 1e-6:
 		return {}
-	var pitch: float = M.atan2_(-normal[0], M.sqrt_(normal[1] * normal[1] + normal[2] * normal[2]))
+	var pitch: float = M.atan2_(-normal[0], sqrt(normal[1] * normal[1] + normal[2] * normal[2]))
 	var roll: float = M.atan2_(normal[1], normal[2])
 	var support_down := -INF
 	for position: PackedFloat64Array in positions:
@@ -535,7 +535,7 @@ static func _contact_feasibility(state: PackedFloat64Array, gear: Dictionary, su
 				long_branch = 1 if request_long > 0.0 else -1
 			if absf(request_side) > side_limit:
 				side_branch = 1 if request_side > 0.0 else -1
-			var requested_norm := M.sqrt_(request_long * request_long + request_side * request_side)
+			var requested_norm := sqrt(request_long * request_long + request_side * request_side)
 			friction_margin = side_limit - requested_norm
 			if requested_norm > side_limit:
 				circle_branch = 1
@@ -899,7 +899,7 @@ static func _norm_l2(v: PackedFloat64Array) -> float:
 		if not is_finite(value):
 			return INF
 		sum += value * value
-	return M.sqrt_(sum)
+	return sqrt(sum)
 
 
 static func _start_failure(message: String, diagnostics: Dictionary, iterations: int, residual: float, scaled_residual: float) -> Dictionary:

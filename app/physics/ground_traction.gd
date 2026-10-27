@@ -256,7 +256,7 @@ static func _interior_face(h: PackedFloat64Array, b: PackedFloat64Array, y: Pack
 		if aa == 0.0: continue
 		var discriminant := bb * bb - 4.0 * aa * minf(0.0, cc)
 		if not is_finite(discriminant): return y
-		var root := M.sqrt_(maxf(0.0, discriminant))
+		var root := sqrt(maxf(0.0, discriminant))
 		var bound := -2.0 * minf(0.0, cc) / (bb + root) if bb > 0.0 else (-bb + root) / (2.0 * aa)
 		step = minf(step, maxf(0.0, bound))
 	if unresolved_trial:
@@ -305,7 +305,7 @@ static func _psd_correction(matrix: PackedFloat64Array, rhs: PackedFloat64Array,
 	var reduced := rhs.duplicate()
 	for i in size:
 		if matrix[i * size + i] <= 0.0: return PackedFloat64Array()
-		scale.append(M.sqrt_(matrix[i * size + i]))
+		scale.append(sqrt(matrix[i * size + i]))
 		permutation.append(i)
 	for i in size:
 		reduced[i] /= scale[i]
@@ -474,7 +474,7 @@ static func _validate_psd(a: PackedFloat64Array, n: int) -> Dictionary:
 	roots.resize(n)
 	for i in n:
 		if a[i * n + i] < 0.0: return _failure("negative mobility diagonal", "indefinite")
-		roots[i] = M.sqrt_(a[i * n + i])
+		roots[i] = sqrt(a[i * n + i])
 	var correlation := PackedFloat64Array()
 	var symmetric := a.duplicate()
 	correlation.resize(n * n)
@@ -620,7 +620,7 @@ static func _work_candidate(a: PackedFloat64Array, v: PackedFloat64Array, limits
 		for i: int in group: length_sq += y[i] * y[i]
 		if length_sq > 1.0:
 			if length_sq > 1.0 + FEASIBILITY_TOLERANCE: return _failure("infeasible block at publication", "nonconverged", iterations)
-			var shrink := (1.0 - 0.000000000000002) / M.sqrt_(length_sq)
+			var shrink := (1.0 - 0.000000000000002) / sqrt(length_sq)
 			for i: int in group:
 				correction = maxf(correction, absf(y[i] * (1.0 - shrink)))
 				y[i] *= shrink
@@ -679,7 +679,7 @@ static func _norm2(value: PackedFloat64Array) -> float:
 static func _hypot(x: float, y: float) -> float:
 	var largest := maxf(absf(x), absf(y))
 	if largest == 0.0: return 0.0
-	return largest * M.sqrt_((x / largest) * (x / largest) + (y / largest) * (y / largest))
+	return largest * sqrt((x / largest) * (x / largest) + (y / largest) * (y / largest))
 
 
 static func _finite(value: PackedFloat64Array) -> bool:

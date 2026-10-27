@@ -69,7 +69,7 @@ static func mix_120(collective: Variant, longitudinal: Variant, lateral: Variant
 		return _failure("longitudinal cyclic must be finite and in [-1, 1]")
 	if not _number_in_range(lateral, -AXIS_LIMIT, AXIS_LIMIT):
 		return _failure("lateral cyclic must be finite and in [-1, 1]")
-	var root_three: float = MATH3D.sqrt_(3.0)
+	var root_three: float = sqrt(3.0)
 	var front: float = float(collective) + float(longitudinal)
 	var rear_right: float = float(collective) - 0.5 * float(longitudinal) + 0.5 * root_three * float(lateral)
 	var rear_left: float = float(collective) - 0.5 * float(longitudinal) - 0.5 * root_three * float(lateral)
@@ -89,7 +89,7 @@ static func unmix_120(servo_positions: Variant) -> Dictionary:
 	var rear_left: float = float(servo_positions[2])
 	var collective: float = (front + rear_right + rear_left) / 3.0
 	var longitudinal: float = (2.0 * front - rear_right - rear_left) / 3.0
-	var lateral: float = (rear_right - rear_left) / MATH3D.sqrt_(3.0)
+	var lateral: float = (rear_right - rear_left) / sqrt(3.0)
 	return {
 		"ok": true,
 		"collective": collective,

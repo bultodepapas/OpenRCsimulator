@@ -62,7 +62,7 @@ static func step(previous: Variant, sigma: Variant, tau: Variant, dt: Variant,
 	var rng := _new_rng(int(seed), int(rng_state))
 	var normals := _active_normals(rng, checked_sigma)
 	var a: float = M.exp_(-interval / correlation_time)
-	var innovation_gain: float = M.sqrt_(maxf(0.0, 1.0 - a * a))
+	var innovation_gain: float = sqrt(maxf(0.0, 1.0 - a * a))
 	var values := M.v3(
 		a * checked_previous[0] + checked_sigma[0] * innovation_gain * normals[0],
 		a * checked_previous[1] + checked_sigma[1] * innovation_gain * normals[1],
@@ -103,7 +103,7 @@ static func _active_normals(rng: RandomNumberGenerator, sigma: PackedFloat64Arra
 static func _normal_pair(rng: RandomNumberGenerator) -> PackedFloat64Array:
 	var u1 := _uniform_open(rng)
 	var u2 := _uniform_open(rng)
-	var radius := M.sqrt_(-2.0 * M.log_(u1))
+	var radius := sqrt(-2.0 * M.log_(u1))
 	var angle := TAU * u2
 	return PackedFloat64Array([radius * M.cos_(angle), radius * M.sin_(angle)])
 

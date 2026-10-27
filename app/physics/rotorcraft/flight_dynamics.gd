@@ -143,7 +143,7 @@ static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: Pac
 	var qnorm2: float = M.dot(quaternion.slice(1, 4), quaternion.slice(1, 4)) + quaternion[0] * quaternion[0]
 	if not is_finite(qnorm2) or qnorm2 <= 1.0e-24:
 		return _failure("helicopter stage attitude quaternion is degenerate", "invalid_attitude")
-	var qnorm: float = M.sqrt_(qnorm2)
+	var qnorm: float = sqrt(qnorm2)
 	if not is_finite(qnorm) or qnorm <= 1.0e-12:
 		return _failure("helicopter stage attitude quaternion is degenerate", "invalid_attitude")
 	var attitude: PackedFloat64Array = quaternion.duplicate()
