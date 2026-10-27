@@ -60,10 +60,16 @@ static func _with_tolerance(prepared: Dictionary, tolerance: Dictionary) -> Dict
 ## rotation a pilot would hear; research 04 §6 proposed 1.5 × idle, but a glow prop at idle also breaks on the ground.
 const STRIKE_MIN_RPM := 300.0
 
+# law() is formatted once: the per-tick hull observation reads it, and every input is a constant.
+static var _law_identity := ""
+
+
 ## Identity of this contact law and its constants, for checkpoint configuration hashes and trace metadata.
 static func law() -> String:
-	return "soft-hull-spring-friction-v2 omega=%s zeta=%s onset_m=%s mu=field-airframe-friction(default %s) friction_rate_max=%s-shared slip_reg_min_mps=%s terminal_j_per_kg=%s crash_depth_m=%s prop_strike_min_rpm=%s flat-ground" % [
-		OMEGA_RAD_S, ZETA, DAMPING_ONSET_M, FRICTION_MU, FRICTION_RATE_MAX, SLIP_REGULARIZATION_MIN_MPS, TERMINAL_J_PER_KG, CRASH_DEPTH_M, STRIKE_MIN_RPM]
+	if _law_identity.is_empty():
+		_law_identity = "soft-hull-spring-friction-v2 omega=%s zeta=%s onset_m=%s mu=field-airframe-friction(default %s) friction_rate_max=%s-shared slip_reg_min_mps=%s terminal_j_per_kg=%s crash_depth_m=%s prop_strike_min_rpm=%s flat-ground" % [
+			OMEGA_RAD_S, ZETA, DAMPING_ONSET_M, FRICTION_MU, FRICTION_RATE_MAX, SLIP_REGULARIZATION_MIN_MPS, TERMINAL_J_PER_KG, CRASH_DEPTH_M, STRIKE_MIN_RPM]
+	return _law_identity
 
 
 ## GP-07c: the airframe friction coefficient at a ground position from the flat table, FRICTION_MU without one.

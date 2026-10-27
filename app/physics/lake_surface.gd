@@ -668,18 +668,31 @@ static func _signed_polygon_distance(polygon: PackedFloat64Array, north: float, 
 
 
 ## Combines point-in-polygon and nearest-boundary distance in one edge walk.
+## Every terrain stencil point runs this for both polygons, so the edge distance is
+## _point_segment_distance_sq inlined with identical operations: one GDScript call
+## per edge cost more than the arithmetic (VQ-01c tick attribution, 2026-10-27).
 static func _polygon_state(polygon: PackedFloat64Array, north: float, east: float) -> float:
 	var inside: bool = false
 	var on_boundary: bool = false
 	var minimum_sq: float = INF
 	var count: int = polygon.size() / 2
 	for index: int in range(count):
-		var next: int = (index + 1) % count
+		var next: int = index + 1 if index + 1 < count else 0
 		var n1: float = polygon[index * 2]
 		var e1: float = polygon[index * 2 + 1]
 		var n2: float = polygon[next * 2]
 		var e2: float = polygon[next * 2 + 1]
-		var distance_sq: float = _point_segment_distance_sq(north, east, n1, e1, n2, e2)
+		var dn: float = n2 - n1
+		var de: float = e2 - e1
+		var length_sq: float = dn * dn + de * de
+		var distance_sq: float
+		if length_sq <= 0.0:
+			distance_sq = (north - n1) * (north - n1) + (east - e1) * (east - e1)
+		else:
+			var t: float = clampf(((north - n1) * dn + (east - e1) * de) / length_sq, 0.0, 1.0)
+			var gap_north: float = north - (n1 + t * dn)
+			var gap_east: float = east - (e1 + t * de)
+			distance_sq = gap_north * gap_north + gap_east * gap_east
 		minimum_sq = minf(minimum_sq, distance_sq)
 		if distance_sq <= EDGE_EPSILON_M * EDGE_EPSILON_M:
 			on_boundary = true

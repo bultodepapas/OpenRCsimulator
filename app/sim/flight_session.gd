@@ -2075,6 +2075,7 @@ func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 ## GP-19 derived presentation cache, never serialized or used by physics.
 var _hull_scrape_cache_key := PackedByteArray()
 var _hull_scrape_cache := {}
+var _hull_scrape_cache_tick := -1
 
 
 ## Accepted endpoint instantaneous friction power. Guard pending configuration
@@ -2093,10 +2094,14 @@ func hull_scrape_observation() -> Dictionary:
 		return result
 	# State/layout/field binding changes invalidate even at the same clock value.
 	# The owner-supplied accepted state is observed once; render only drains audio.
-	var key := var_to_bytes([sim.tick, statistics_generation, sim.state, sim.continuous,
-		_hull_contact, _contact_bindings, _lake, environment.surfaces, environment._ground_support])
-	if key == _hull_scrape_cache_key:
-		return _hull_scrape_cache.duplicate(true)
+	# A key always contains the tick, so a first call at a new tick cannot hit: skip
+	# serializing the bindings (about 16 kB per 240 Hz tick) until a same-tick call.
+	var key := PackedByteArray()
+	if sim.tick == _hull_scrape_cache_tick:
+		key = var_to_bytes([sim.tick, statistics_generation, sim.state, sim.continuous,
+			_hull_contact, _contact_bindings, _lake, environment.surfaces, environment._ground_support])
+		if key == _hull_scrape_cache_key:
+			return _hull_scrape_cache.duplicate(true)
 	var diagnostics := {}
 	if finite_fuel_is_active():
 		var properties := mass_properties()
@@ -2126,8 +2131,9 @@ func hull_scrape_observation() -> Dictionary:
 	result.contacts = rows
 	result.available = true
 	result.reason = ""
+	_hull_scrape_cache_tick = sim.tick
 	_hull_scrape_cache_key = key
-	_hull_scrape_cache = result.duplicate(true)
+	_hull_scrape_cache = result.duplicate(true) if not key.is_empty() else {}
 	return result
 
 
@@ -2260,6 +2266,7 @@ func _clear_pending_contacts() -> void:
 func _reset_contact_history() -> void:
 	_hull_scrape_cache_key = PackedByteArray()
 	_hull_scrape_cache = {}
+	_hull_scrape_cache_tick = -1
 	_contact_tick = -1
 	_soft_contacts_cache_tick = -1
 	_contact_events.clear()
@@ -2270,6 +2277,7 @@ func _reset_contact_history() -> void:
 func _restore_contact_history(record: Dictionary) -> void:
 	_hull_scrape_cache_key = PackedByteArray()
 	_hull_scrape_cache = {}
+	_hull_scrape_cache_tick = -1
 	_contact_tick = int(record.tick)
 	_soft_contacts_cache_tick = -1
 	_active_hull_ids = record.active_hull_ids.duplicate()
