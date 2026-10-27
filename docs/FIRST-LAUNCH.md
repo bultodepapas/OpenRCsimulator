@@ -30,7 +30,7 @@ Fresh settings select the Ugly Stik on the Club field runway: stopped near the t
 
 An aircraft delivered with several paint schemes shows a **Paint** row at the top of the **Aircraft** page; the F4U Corsair offers thirteen in current source. Each click shows the next scheme on the backdrop, and every aircraft remembers its own. The scheme changes only the paint, never the flight model.
 
-**Landscape** cycles between **Club field**, with its runway and scenery, and **Green paradise**, a flat grass surface without scenery objects or a lake. The backdrop updates immediately and the choice is remembered. To switch during a session, use **Pause → End flight → Home**, select the other landscape, then Fly. Green uses airborne airplane starts and helicopter hover; Natural Random requires Club field. RC-car courses are separate. [Landscape details and authoring](LANDSCAPES.md).
+**Landscape** cycles between **Club field**, with its runway and scenery, and **Green paradise**, a flat grass surface without scenery objects or a lake. The backdrop updates immediately and the choice is remembered. To switch during a session, use **Pause → End flight → Home**, select the other landscape, then Fly. At Green, geared airplanes start airborne, the X8 offers hand launch or airborne starts, and the helicopter starts at hover. Natural Random requires Club field. RC-car courses are separate. [Landscape details and authoring](LANDSCAPES.md).
 
 Home also offers two separate experimental activities, each with its own controls: [RC Helicopter Research Trainer](HELICOPTER.md) and [RC cars · Bisonte MT8 and MONSTER CAR 2](../research/rc-monster-truck/README.md).
 

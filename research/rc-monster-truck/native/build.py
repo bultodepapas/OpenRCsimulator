@@ -154,7 +154,8 @@ def validate_platform_receipt(platform: str, record: dict, lock: dict, source_ha
     for key, value in expected.items():
         if record.get(key) != value or (key == "abi_version" and type(record.get(key)) is not int):
             raise SystemExit(f"native {platform} receipt {key} does not match current sources or toolchain lock")
-    if record.get("toolchain_sha256") not in expected_toolchain_digests(platform, lock):
+    digest = record.get("toolchain_sha256")
+    if not isinstance(digest, str) or digest not in expected_toolchain_digests(platform, lock):
         raise SystemExit(f"native {platform} receipt toolchain_sha256 does not match current toolchain inputs")
 
 

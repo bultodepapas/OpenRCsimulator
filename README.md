@@ -46,7 +46,7 @@ The aircraft and features below describe **current source**, which may differ fr
 | [X8 Flying Wing](docs/X8-PLAN.md) | 2.12 m, 6S electric pusher, elevons, no landing gear | Experimental; hand launch or airborne start; asset redistribution terms pending |
 | [RC Helicopter Research Trainer](docs/HELICOPTER.md) | X-Cell .60 SE flight reference with an HX-700 visual surrogate | Experimental historical playable reference; ground-pad or hover start; physical validation remains open |
 
-The six fixed-wing airframes with landing gear offer runway or airborne starts at Club field; the X8 offers hand launch or airborne starts. Green paradise uses airborne starts. The Stik also has three experimental [glow-engine installations](docs/GLOW-ENGINES.md): O.S. MAX-61FX and MAX-55AX two-strokes, and FS-64V four-stroke, with finite fuel and engine start/cut/mixture controls. These share the Stik visual family.
+The six fixed-wing airframes with landing gear offer runway or airborne starts at Club field; the X8 offers hand launch or airborne starts. At Green paradise, geared airplanes start airborne and the X8 retains its hand-launch option. The Stik also has three experimental [glow-engine installations](docs/GLOW-ENGINES.md): O.S. MAX-61FX and MAX-55AX two-strokes, and FS-64V four-stroke, with finite fuel and engine start/cut/mixture controls. These share the Stik visual family.
 
 The playable helicopter uses X-Cell reference physics. The articulated HX-700 inspector and electric 3D candidate are separate research tools; the candidate is laboratory-only. Aircraft-specific controls and modeling limits live in the linked guides.
 
@@ -77,7 +77,7 @@ Takeoff/landing calibration, controller compatibility, target-machine performanc
 
 On Home, press **Landscape** to cycle between **Club field** (the default) and **Green paradise**. The backdrop updates and the choice is saved. To switch after flying, use **Pause → End flight → Home**, select the other landscape, then Fly. Restart keeps the current landscape.
 
-Club field retains the runway, lake, vegetation, buildings and night fixtures. Green paradise contains only a flat grass surface, with no scenery obstacles or lake; airplanes start airborne and the helicopter starts at hover. Natural Random requires Club field. RC truck courses remain separate.
+Club field retains the runway, lake, vegetation, buildings and night fixtures. Green paradise contains only a flat grass surface, with no scenery obstacles or lake; geared airplanes start airborne, the X8 can start by hand launch or airborne, and the helicopter starts at hover. Natural Random requires Club field. RC truck courses remain separate.
 
 | Club field | Green paradise |
 | --- | --- |
