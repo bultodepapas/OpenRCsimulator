@@ -62,6 +62,14 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-27 · VQ-01c — kernel timers miss the tick observers that cost as much as the step
+
+A live-app script profile of the Stik in flight put about half of each accepted 240 Hz tick's script time in read-only observers on `Simulation.stepped`: ground and mechanical audio, flight statistics, crash hull scrape, windsock and people. `Simulation.step_usec` stops before `stepped.emit`, and `bench_regimes.gd` and the session pair probes never attach these observers, so step budgets omitted them. One observer serialized 15.6 kB per tick into a cache key that contained the tick and so could never hit.
+
+- Profile the running app (`debugctl.py launch --script-profile`, then `profile`) before choosing a hot spot; a step timer covers only the kernel.
+- For a whole-app A/B on a headless host, cap the frame rate: uncapped frames absorb the saved time and process CPU stays flat.
+- Check a cache key's cheap discriminator before serializing the rest. [VQ-01c tick attribution](research/visual-quality-implementation/VQ-01c/tick-observers-2026-10-27/README.md), [GP-19e](research/ground-physics/GP-19/evidence/scrape-observation-cost/README.md)
+
 ## 2026-10-26 · X8-12 — an accepted trim can still burn its iteration cap
 
 The X8 and Timber electric trims returned `ok` while every launch spent 50 Newton steps: the source equilibrium leaves a residual floor near 1e-10, just above the 1e-10 goal, so Newton converged in three steps and then alternated between two states until the cap. A tolerance below an evaluation's noise floor costs time silently, and `ok` hides it.

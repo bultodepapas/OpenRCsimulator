@@ -1,0 +1,77 @@
+# VQ-01c — accepted-tick observer attribution and first repairs (2026-10-27)
+
+Linux dev VM, Godot 4.8-beta1, headless, Dummy audio, shared 12-vCPU host with other
+projects running. This is CPU attribution and paired relative evidence. It does not
+measure FPS, GPU, native hardware or the Gate P statistic. Runtime source: baseline
+`f9e6dbe8d`, repairs in `226f66b98`.
+
+## Where an accepted tick goes
+
+`debugctl.py launch --headless --script-profile`, default Stik `fly start=airborne`,
+throttle 0.7, then `profile seconds=40`: 14 samples, 158 accepted ticks (about 11 per
+sample). The profiler adds call overhead and attributes GDScript only. Listings:
+[by total](profile/airborne-by-total.txt), [by self](profile/airborne-by-self.txt).
+
+| Work per profile sample | ms (total) |
+| --- | ---: |
+| `Simulation.step`, including `stepped` observers | 42.49 |
+| Stage evaluation `_wheel_evaluate` (aero loads 6.33, ground evaluation 3.19) | 12.11 |
+| `_pre_step` | 3.79 |
+| Collision step (lake first hit 2.26) | 3.52 |
+| **Observers on `stepped`** | **≈ 20.3** |
+| — flight audio accepted tick: ground contact endpoint 6.66 (wheel snapshot 5.43, of which material lookup 2.03), mechanical 1.50 | 8.26 |
+| — flight statistics adapter | 5.10 |
+| — crash director hull scrape (observation 3.26, of which self 2.18) | 3.72 |
+| — windsock and field people | 1.36 |
+| — profile smoke 0.60, session contact commit 0.56, ground gear 0.41, accident contacts 0.33 | 1.90 |
+
+About half of the step's script time is presentation observers. `Simulation.step_usec`
+is measured before `stepped.emit` (1,490 µs unprofiled in this flight), and
+`bench_regimes.gd` and the session pair probes never attach the observers, so earlier
+per-tick budgets did not include this cost.
+
+An earlier 20 s window, flown near the default lake, was printed but not retained. It
+recorded 111,120 `LakeSurface._point_segment_distance_sq` calls from 5,508
+`_polygon_state` calls, and `ground_audio_model.surface_observation` as the largest
+self-time entry.
+
+## Repairs
+
+Both are exact: outputs are bytewise equal to the baseline and `test_golden` output is
+identical.
+
+- [LU-25-R3](../../../landscape-upgrade/LU-25-R3/README.md): inline the lake polygon
+  edge distance. Terrain query near the lake 138.7 → 86.6 µs.
+- [GP-19e](../../../ground-physics/GP-19/evidence/scrape-observation-cost/README.md):
+  no per-tick 15.6 kB cache key; hull law identity formatted once.
+
+## Whole-application paired result
+
+[`app_cpu_per_sim.py`](../../../../../research/performance/app_cpu_per_sim.py) at a
+30 fps cap and `Engine.time_scale` 0.5, 10 s warmup and 40 s sample, alternating
+baseline/candidate order per pair. The baseline scripts sat in the working tree only
+until each flight had loaded them. The value is main-thread CPU per simulated second.
+
+| Scenario | Pair | Baseline ms | Candidate ms | Change |
+| --- | ---: | ---: | ---: | ---: |
+| Airborne climb | 1 | 816.31 | 802.55 | −1.69% |
+| Airborne climb | 2 | 851.24 | 807.62 | −5.12% |
+| Airborne climb | 3 | 948.99 | 867.87 | −8.55% |
+
+All three airborne pairs favour the candidate (median −5.1%; whole-process CPU −1.4%,
+−4.6%, −8.3%). Both roles drifted upward across the session, from host load. The
+spread is wide, so treat the magnitude as approximate.
+
+A first attempt measured whole-process CPU with uncapped frames and saw no difference
+(1,109 vs 1,114 ms per simulated second): headless frames are uncapped, so saved time
+goes into extra frames. It was discarded as a method failure, not a result.
+
+## Not done: candidates for owners
+
+| Candidate | Profile cost | Why not here |
+| --- | --- | --- |
+| Skip the wheel material lookup while a wheel carries no load | 2.03 ms per sample | Material is audible only while rolling (`force_off` ≥ 1 N), but `test_ground_audio_materials.gd` pins resolved material on every wheel; a GP-19/audio contract decision |
+| Incremental exact median for statistics speed windows | `_add_speed_candidate` 1.35 ms | Copies and sorts the whole window every tick; exact alternative needs its own parity proof |
+| Cache `wheel_brake_available()` (6 calls per tick) | 1.75 ms | Validates the public, mutable `aircraft` dictionary; caching needs an ownership guarantee |
+| Value-equality guards (`LakeSurface.is_valid_definition`, `is_valid_surface_table`) | 1.09 + 0.61 ms | Deliberate fail-closed design (LU-25-R1) |
+| 240 Hz windsock/people/profile-smoke advance | ≈ 2 ms | Lower cadence changes visuals; owner decision |

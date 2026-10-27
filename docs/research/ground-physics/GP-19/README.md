@@ -16,6 +16,8 @@ The [scrape unloading correction](evidence/scrape-unloading/README.md) removes t
 
 The [default-field dry-contact correction](evidence/dry-lake-scrape/README.md) qualifies observations through HullContact's actual sampled force branches. A lake elsewhere in the field no longer suppresses dry scraping; covered or mixed lake batches remain explicitly unavailable. Five hundred and two production checks and 43 independent checks cover unchanged forces/checkpoints, live mass, cache invalidation and actual Main wiring. This corrects the original cohort's blanket lake refusal; it does not add lake-contact acoustics.
 
+GP-19e removes the observation's per-tick cost without changing its packets: the value cache key is serialized only for a repeated call at the same tick, and the hull law identity is formatted once. [Paired parity and timing](evidence/scrape-observation-cost/README.md).
+
 A [native Turbo Lumber capture](evidence/native-continuous-timber/README.md) now completes takeoff, touchdown and straight-ahead terrain rollout in one production flight. WASAPI PCM clocks, zero capture discards/clipping and all 44 selected before/after source hashes pass; estimated Master true peak is -22.5047 dBTP. This single current-physics route does not activate the advanced operator or establish isolated hull-scrape audibility, human listening, whole-fleet coverage or 1080p performance. The capture wrapper follows the live catalog and distinguishes requested-aircraft success from complete catalog coverage.
 
 The [native hull-scrape cohort](evidence/native-hull-scrape/README.md) verifies the

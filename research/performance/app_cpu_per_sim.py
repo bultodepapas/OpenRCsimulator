@@ -8,7 +8,7 @@ still runs 240 physics ticks per wall second, but delta-driven presentation work
 so a slow host's main thread stops saturating (a saturated thread hides a gain as drift).
 The workload is therefore not normal play; compare roles only under identical settings.
 Reports main-thread and whole-process CPU per simulated second.
-Usage: app_cpu_per_sim.py <label> airborne|runway <warmup_s> <sample_s> [max_fps] [time_scale].
+Usage: app_cpu_per_sim.py <label> airborne|runway (idle) <warmup_s> <sample_s> [max_fps] [time_scale].
 Research-only; see research/performance/README.md#whole-app-tick-cpu-vq-01c."""
 import json, os, subprocess, sys, time
 
@@ -44,8 +44,9 @@ def main():
             ctl(port, "fly", "start=airborne")
             ctl(port, "sticks", "throttle=0.62", "pitch=0.02", f"for_s={warm_s + sample_s + 30}")
         elif scenario == "runway":
+            # Idle on the runway: loaded wheels and contact observers, no taxi drift into obstacles.
             ctl(port, "fly", "start=runway")
-            ctl(port, "sticks", "throttle=0.25", f"for_s={warm_s + sample_s + 30}")
+            ctl(port, "sticks", "throttle=0.0", f"for_s={warm_s + sample_s + 30}")
         else:
             raise SystemExit("scenario: airborne|runway")
         time.sleep(warm_s)
@@ -56,6 +57,8 @@ def main():
         s1 = json.loads(ctl(port, "state", "--json"))["flight"]
         perf = json.loads(ctl(port, "perf", "--json"))
         sim_s = s1["time_s"] - s0["time_s"]
+        if sim_s <= 0.0 or s1["crashed"] or s1["paused"]:
+            raise SystemExit(f"invalid sample: sim advanced {sim_s} s, crashed={s1['crashed']}, paused={s1['paused']}")
         print(json.dumps({"label": label, "scenario": scenario, "main_ms_per_sim_s": round(1000 * (m1 - m0) / sim_s, 2),
                           "cpu_ms_per_sim_s": round(1000 * (c1 - c0) / sim_s, 2),
                           "realtime": round(sim_s / (w1 - w0), 4), "sim_step_usec": round(perf["sim_step_usec"], 1),
