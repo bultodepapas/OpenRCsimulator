@@ -9,6 +9,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Trial := preload("res://workshop/trial.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const Cadence := preload("res://render/presentation_cadence.gd")
 var checks := 0
 var failures := 0
 
@@ -80,7 +81,9 @@ func _main_checks() -> void:
 	check("empty selection remains visible in evidence", no_smoke._smoke_evidence().mode == "profile")
 	no_smoke.queue_free()
 	await process_frame
+	Cadence.override_every_frames = 1 # VQ-01c-R1 default: accepted ticks wait for the next rendered frame
 	var stock: Node = load("res://main.tscn").instantiate()
+	Cadence.override_every_frames = -1
 	stock.set_user_args(PackedStringArray(["--scenery=off", "--birds=off", "--soundscape=off", "--smoke-pump=on"]))
 	stock.crash_effects_enabled = false
 	root.add_child(stock)
@@ -105,6 +108,8 @@ func _main_checks() -> void:
 		stock._smoke_key_on = true
 		stock.session.sim.set_paused(false)
 		stock.session.sim.step()
+		check("a consecutive accepted tick waits for the frame's observer flush", stock._profile_request_tape.is_empty())
+		stock._flush_presentation_observers()
 		stock._update_profile_smoke(0.002)
 		check("future accepted request waits for displayed pose", stock._profile_smoke_tick == 0
 			and stock._profile_request_tape.size() == 1 and stock._profile_request_tape[0].tick == 1

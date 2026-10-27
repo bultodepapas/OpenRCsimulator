@@ -78,7 +78,10 @@ inline R clampf(R x, R lo, R hi) { return x.v < lo.v ? lo : (x.v > hi.v ? hi : x
 // Godot Math::abs(double): +0.0 for either zero, the negated value below zero, else unchanged (a NaN keeps its
 // sign bit, unlike fabs; the oracle's math probe checks this against GDScript absf on signed NaNs).
 inline R absf(R x) { return x.v == 0 ? R(0.0) : (x.v < 0 ? -x : x); }
-inline R lerpf(R from, R to, R weight) { return from + (to - from) * weight; }
+// Godot Math::lerp is from + (to - from) * weight, but it is engine C++, not the GDScript evaluator: the pinned
+// binary's NaN priority (probed by the oracle) is weight-first for the product and product-first for the sum.
+// Finite results are unchanged by this operand order (IEEE + and * commute exactly).
+inline R lerpf(R from, R to, R weight) { return weight * (to - from) + from; }
 
 inline bool is_zero_approx(R v) { return absf(v).v < kCmpEpsilon; }
 inline bool is_equal_approx(R left, R right) {

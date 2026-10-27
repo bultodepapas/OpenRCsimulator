@@ -47,7 +47,7 @@ struct Decoder {
 		return false;
 	}
 
-	bool number(const Dictionary &d, const char *key, double &out, bool required, double fallback = 0.0) {
+	bool number(const Dictionary &d, const char *key, nk::R &out, bool required, double fallback = 0.0) {
 		if (!d.has(key)) {
 			if (required) {
 				return fail(std::string("missing ") + key);
@@ -67,7 +67,8 @@ struct Decoder {
 		return fail(std::string("non-numeric ") + key);
 	}
 
-	bool vec(const Dictionary &d, const char *key, std::vector<double> &out, bool required, int size = -1) {
+	template <typename T>
+	bool vec(const Dictionary &d, const char *key, std::vector<T> &out, bool required, int size = -1) {
 		out.clear();
 		if (!d.has(key)) {
 			return required ? fail(std::string("missing ") + key) : true;
@@ -119,17 +120,26 @@ struct Decoder {
 
 bool read_state(const PackedFloat64Array &s) { return s.size() == kStateSize; }
 
-PackedFloat64Array pack(const double *values, int count) {
+// Packed float64 input -> left-first scalars (bit copy).
+template <int N>
+void load(const PackedFloat64Array &in, nk::R (&out)[N]) {
+	const double *src = in.ptr();
+	for (int i = 0; i < N; ++i) {
+		out[i] = src[i];
+	}
+}
+
+PackedFloat64Array pack(const nk::R *values, int count) {
 	PackedFloat64Array out;
 	out.resize(count);
 	double *dst = out.ptrw();
 	for (int i = 0; i < count; ++i) {
-		dst[i] = values[i];
+		dst[i] = values[i].v;
 	}
 	return out;
 }
 
-PackedFloat64Array pack(const std::vector<double> &values) {
+PackedFloat64Array pack(const std::vector<nk::R> &values) {
 	return pack(values.data(), static_cast<int>(values.size()));
 }
 
@@ -145,7 +155,7 @@ bool decode_tail(Decoder &dec, const Dictionary &tail, nk::Tail &out, bool verti
 			"wing_cl0", "downwash_lag_length"})) {
 		return false;
 	}
-	std::vector<double> position;
+	std::vector<nk::R> position;
 	if (!dec.number(tail, "area", out.area, true) || !dec.vec(tail, "position", position, true, 3)) {
 		return false;
 	}
@@ -196,7 +206,7 @@ bool decode_aero(Decoder &dec, const Dictionary &model, nk::AeroModel &m) {
 				"Cndr"})) {
 		return false;
 	}
-	std::vector<double> arp, cg;
+	std::vector<nk::R> arp, cg;
 	if (!dec.number(reference, "S", m.S, true) || !dec.number(reference, "b", m.b, true) ||
 			!dec.number(reference, "c", m.c, true) || !dec.vec(reference, "arp_le", arp, true, 3) ||
 			!dec.vec(model, "cg_le", cg, true, 3)) {
@@ -208,7 +218,7 @@ bool decode_aero(Decoder &dec, const Dictionary &model, nk::AeroModel &m) {
 	}
 	struct Named {
 		const char *key;
-		double *slot;
+		nk::R *slot;
 	};
 	const Named coefficients[] = {{"CL0", &m.CL0}, {"CLa", &m.CLa}, {"CLq", &m.CLq}, {"CLde", &m.CLde},
 		{"CLda_each", &m.CLda_each}, {"CD0", &m.CD0}, {"CL_minD", &m.CL_minD}, {"k_induced", &m.k_induced},
@@ -284,7 +294,7 @@ bool decode_aero(Decoder &dec, const Dictionary &model, nk::AeroModel &m) {
 	if (!m.station_incidence.empty() && static_cast<int>(m.station_incidence.size()) != stations) {
 		return dec.fail("station_incidence size");
 	}
-	if (m.wing_cm_ac != 0.0 && static_cast<int>(m.station_chords.size()) != stations) {
+	if (m.wing_cm_ac.v != 0.0 && static_cast<int>(m.station_chords.size()) != stations) {
 		return dec.fail("wing_cm_ac without one station chord per station");
 	}
 	Dictionary vertical, horizontal;
@@ -330,7 +340,7 @@ bool decode_gear(Decoder &dec, const Dictionary &gear, nk::PreparedGear &out) {
 		}
 		const Dictionary c = contacts[i];
 		nk::WheelContact w;
-		std::vector<double> position;
+		std::vector<nk::R> position;
 		if (!dec.only(c, "landing_gear.contacts[]", {"name", "position", "stiffness", "damping", "max_compression",
 					"max_steering", "damping_onset", "anchor_stiffness", "anchor_damping", "id", "wheel_radius",
 					"wheel_inertia", "spin_relaxation", "brake_torque", "brake_availability", "wheel_provenance"}) ||
@@ -379,7 +389,7 @@ bool decode_lake(Decoder &dec, const Dictionary &lake, nk::LakeTerrain &out) {
 			return dec.fail("lake bed_profile row");
 		}
 		const Dictionary row = profile[i];
-		double inset = 0.0, depth = 0.0;
+		nk::R inset = 0.0, depth = 0.0;
 		if (!dec.number(row, "inset_m", inset, true) || !dec.number(row, "depth_m", depth, true)) {
 			return false;
 		}
@@ -389,10 +399,10 @@ bool decode_lake(Decoder &dec, const Dictionary &lake, nk::LakeTerrain &out) {
 	// lake_surface.gd _polygon_aabb of the bank.
 	double north_min = nk::kInf, north_max = -nk::kInf, east_min = nk::kInf, east_max = -nk::kInf;
 	for (size_t index = 0; index < out.bank.size(); index += 2) {
-		north_min = nk::minf(north_min, out.bank[index]);
-		north_max = nk::maxf(north_max, out.bank[index]);
-		east_min = nk::minf(east_min, out.bank[index + 1]);
-		east_max = nk::maxf(east_max, out.bank[index + 1]);
+		north_min = nk::minf(north_min, out.bank[index]).v;
+		north_max = nk::maxf(north_max, out.bank[index]).v;
+		east_min = nk::minf(east_min, out.bank[index + 1]).v;
+		east_max = nk::maxf(east_max, out.bank[index + 1]).v;
 	}
 	out.bank_aabb[0] = north_min;
 	out.bank_aabb[1] = north_max;
@@ -499,8 +509,10 @@ public:
 			out["error"] = ground_ready_ ? "state size" : "ground not prepared";
 			return out;
 		}
-		std::vector<double> loads, rates;
-		nk::wheels_evaluate(s.ptr(), ground_, steer, anchors.ptr(), static_cast<int>(anchors.size()), speeds.ptr(),
+		nk::R state[kStateSize];
+		load(s, state);
+		std::vector<nk::R> loads, rates;
+		nk::wheels_evaluate(state, ground_, steer, anchors.ptr(), static_cast<int>(anchors.size()), speeds.ptr(),
 			static_cast<int>(speeds.size()), brake, loads, rates);
 		out["ok"] = true;
 		out["loads"] = pack(loads);
@@ -512,8 +524,10 @@ public:
 		if (!ground_ready_ || !read_state(s)) {
 			return PackedFloat64Array();
 		}
-		std::vector<double> out;
-		nk::wheels_compressions(s.ptr(), ground_, out);
+		nk::R state[kStateSize];
+		load(s, state);
+		std::vector<nk::R> out;
+		nk::wheels_compressions(state, ground_, out);
 		return pack(out);
 	}
 
@@ -540,38 +554,43 @@ public:
 		if (!aero_ready_ || !read_state(s) || wind.size() != 3 || !read_deflections(d, deflections)) {
 			return PackedFloat64Array();
 		}
-		const nk::Air air = nk::air_compute(s.ptr(), wind.ptr(), rho);
-		std::vector<double> ge;
+		nk::R state[kStateSize];
+		nk::R wind_ned[3];
+		load(s, state);
+		load(wind, wind_ned);
+		const nk::R *sp = state;
+		const nk::Air air = nk::air_compute(sp, wind_ned, rho);
+		std::vector<nk::R> ge;
 		switch (which) {
 			case 0: {
-				const nk::Loads loads = nk::aero_loads(s.ptr(), air, deflections, aero_, rho, downwash_cl, ground_up);
+				const nk::Loads loads = nk::aero_loads(sp, air, deflections, aero_, rho, downwash_cl, ground_up);
 				return pack(loads.data(), 6);
 			}
 			case 1: {
-				const double values[7] = {air.v[0], air.v[1], air.v[2], air.V, air.alpha, air.beta, air.qbar};
+				const nk::R values[7] = {air.v[0], air.v[1], air.v[2], air.V, air.alpha, air.beta, air.qbar};
 				return pack(values, 7);
 			}
 			case 2:
-				nk::ge_factors(s.ptr(), aero_, ground_up, ge);
+				nk::ge_factors(sp, aero_, ground_up, ge);
 				return pack(ge);
 			case 3: {
-				nk::ge_factors(s.ptr(), aero_, ground_up, ge);
-				const double w = nk::local_flow_weight(s.ptr(), air, deflections, aero_, downwash_cl, ge);
+				nk::ge_factors(sp, aero_, ground_up, ge);
+				const nk::R w = nk::local_flow_weight(sp, air, deflections, aero_, downwash_cl, ge);
 				return pack(&w, 1);
 			}
 			case 4: {
-				nk::ge_factors(s.ptr(), aero_, ground_up, ge);
-				const nk::Loads loads = nk::global_loads(s.ptr(), air, deflections, aero_, rho, downwash_cl, ge);
+				nk::ge_factors(sp, aero_, ground_up, ge);
+				const nk::Loads loads = nk::global_loads(sp, air, deflections, aero_, rho, downwash_cl, ge);
 				return pack(loads.data(), 6);
 			}
 			case 5: {
-				nk::ge_factors(s.ptr(), aero_, ground_up, ge);
-				const nk::Loads loads = nk::local_loads(s.ptr(), air, deflections, aero_, rho, downwash_cl, ge);
+				nk::ge_factors(sp, aero_, ground_up, ge);
+				const nk::Loads loads = nk::local_loads(sp, air, deflections, aero_, rho, downwash_cl, ge);
 				return pack(loads.data(), 6);
 			}
 			case 6: {
-				nk::ge_factors(s.ptr(), aero_, ground_up, ge);
-				const double w = nk::wing_lift_coefficient_with(s.ptr(), air, deflections, aero_, ge, true);
+				nk::ge_factors(sp, aero_, ground_up, ge);
+				const nk::R w = nk::wing_lift_coefficient_with(sp, air, deflections, aero_, ge, true);
 				return pack(&w, 1);
 			}
 			default:
@@ -592,10 +611,10 @@ public:
 		out.resize(n);
 		double *dst = out.ptrw();
 		for (int64_t i = 0; i < n; ++i) {
-			const double x = a[i];
-			const double y = i < b.size() ? b[i] : 0.0;
-			const double z = i < c.size() ? c[i] : 0.0;
-			double r = nk::kNan;
+			const nk::R x = a[i];
+			const nk::R y = i < b.size() ? b[i] : 0.0;
+			const nk::R z = i < c.size() ? c[i] : 0.0;
+			nk::R r = nk::kNan;
 			switch (fn) {
 				case 0: r = nk::wrapf(x, y, z); break;
 				case 1: r = nk::clampf(x, y, z); break;
@@ -613,7 +632,7 @@ public:
 				case 13: r = nk::pow_(x, 2.0); break; // literal exponent through the shim (folding hazard)
 				default: break;
 			}
-			dst[i] = r;
+			dst[i] = r.v;
 		}
 		return out;
 	}
@@ -648,13 +667,15 @@ public:
 		if (!ground_ready_ || !read_state(s) || iterations < 1) {
 			return nk::kNan;
 		}
-		std::vector<double> loads, rates;
+		std::vector<nk::R> loads, rates;
 		double sink = 0.0;
 		const auto start = std::chrono::steady_clock::now();
 		for (int i = 0; i < iterations; ++i) {
-			nk::wheels_evaluate(s.ptr(), ground_, steer, anchors.ptr(), static_cast<int>(anchors.size()), speeds.ptr(),
+			nk::R state[kStateSize];
+			load(s, state);
+			nk::wheels_evaluate(state, ground_, steer, anchors.ptr(), static_cast<int>(anchors.size()), speeds.ptr(),
 				static_cast<int>(speeds.size()), brake, loads, rates);
-			sink += loads.empty() ? 0.0 : loads[0];
+			sink += loads.empty() ? 0.0 : loads[0].v;
 		}
 		const auto end = std::chrono::steady_clock::now();
 		volatile double keep = sink;
@@ -671,9 +692,13 @@ public:
 		double sink = 0.0;
 		const auto start = std::chrono::steady_clock::now();
 		for (int i = 0; i < iterations; ++i) {
-			const nk::Air air = nk::air_compute(s.ptr(), wind.ptr(), rho);
-			const nk::Loads loads = nk::aero_loads(s.ptr(), air, deflections, aero_, rho, downwash_cl, ground_up);
-			sink += loads[0];
+			nk::R state[kStateSize];
+			nk::R wind_ned[3];
+			load(s, state);
+			load(wind, wind_ned);
+			const nk::Air air = nk::air_compute(state, wind_ned, rho);
+			const nk::Loads loads = nk::aero_loads(state, air, deflections, aero_, rho, downwash_cl, ground_up);
+			sink += loads[0].v;
 		}
 		const auto end = std::chrono::steady_clock::now();
 		volatile double keep = sink;

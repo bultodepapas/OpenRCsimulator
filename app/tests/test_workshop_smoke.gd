@@ -89,8 +89,7 @@ func _run() -> void:
 	session.sim.continuous = continuous
 	flight.call("_reset_profile_smoke")
 	flight.set("_profile_last_running", false)
-	flight.call("_sample_profile_smoke", 10, session.sim.time(), session.sim.state,
-		PackedFloat64Array(), PackedFloat64Array(), session.sim.aux)
+	flight.call("_sample_profile_smoke_at", 10, session.sim.time(), session.sim.state, session.sim.aux)
 	var on_tape: Array = flight.get("_profile_source_tape")
 	var request_tape: Array = flight.get("_profile_request_tape")
 	check("direct smoke-pump request enters the 240 Hz request tape",
@@ -111,8 +110,7 @@ func _run() -> void:
 	var time_before: float = session.sim.time()
 	check("stopped accepted source is distinct from enabled ignition command",
 		bool(session.propulsion_power_enabled()) and not bool(session.propulsion_source_running()))
-	flight.call("_sample_profile_smoke", 11, session.sim.time(), session.sim.state,
-		PackedFloat64Array(), PackedFloat64Array(), session.sim.aux)
+	flight.call("_sample_profile_smoke_at", 11, session.sim.time(), session.sim.state, session.sim.aux)
 	var off_tape: Array = flight.get("_profile_source_tape")
 	check("accepted finite-glow latch enqueues one exact off event",
 		off_tape.size() == 1 and int(off_tape[0].tick) == 11

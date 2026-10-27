@@ -5,6 +5,7 @@ const Rig := preload("res://audio/flight_audio.gd")
 const Session := preload("res://sim/flight_session.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Motion := preload("res://audio/mechanical_motion.gd")
+const Cadence := preload("res://render/presentation_cadence.gd")
 const P51 := "res://data/aircraft/p51d_mustang_120.json"
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
 var checks := 0
@@ -91,6 +92,9 @@ func observer_connections(signal_value: Signal, observer_id: int) -> int:
 
 
 func _run() -> void:
+	# This script pins the per-tick accepted contract (presentation cadence 0); the once-per-frame
+	# default is pinned in test_presentation_cadence.gd.
+	Cadence.override_every_frames = 0
 	root.audio_listener_enable_3d = true
 	var player := make_session()
 	var reference := make_session()

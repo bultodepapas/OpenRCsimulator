@@ -161,7 +161,7 @@ inline R lake_smoothstep(R t_value) {
 	return t * t * (3.0 - 2.0 * t);
 }
 
-inline double lake_polygon_state(const std::vector<double> &polygon, R north, double east) {
+inline R lake_polygon_state(const std::vector<double> &polygon, R north, R east) {
 	bool inside = false;
 	bool on_boundary = false;
 	R minimum_sq = kInf;
@@ -220,7 +220,7 @@ struct LakePoint {
 	R v[7];
 };
 
-inline LakePoint lake_terrain_point_state(const LakeTerrain &lake, R north, double east) {
+inline LakePoint lake_terrain_point_state(const LakeTerrain &lake, R north, R east) {
 	const R shore_signed = lake_polygon_state(lake.shoreline, north, east);
 	const R bank_signed = lake_polygon_state(lake.bank, north, east);
 	const R shore_distance = absf(shore_signed);
@@ -234,17 +234,17 @@ inline LakePoint lake_terrain_point_state(const LakeTerrain &lake, R north, doub
 			blend = 0.0;
 		} else {
 			const R span = shore_distance + bank_distance;
-			blend = span <= 0.0 ? 1.0 : lake_smoothstep(bank_distance / span);
+			blend = span <= 0.0 ? R(1.0) : lake_smoothstep(bank_distance / span);
 		}
 	}
-	const R depth = inside_shoreline ? lake_bed_depth(lake, shore_distance) : 0.0;
+	const R depth = inside_shoreline ? lake_bed_depth(lake, shore_distance) : R(0.0);
 	const R ground_down = inside_shoreline ? lake.water_level_down + depth : lake.water_level_down * blend;
 	return {{inside_water ? 1.0 : 0.0, inside_bank ? 1.0 : 0.0, shore_distance, bank_distance, blend, depth,
 			ground_down}};
 }
 
 inline bool lake_outside_expanded_aabb(const LakeTerrain &lake, R north, R east, double margin) {
-	const R *b = lake.bank_aabb;
+	const double *b = lake.bank_aabb;
 	return north < b[0] - margin || north > b[1] + margin || east < b[2] - margin || east > b[3] + margin;
 }
 
@@ -255,7 +255,7 @@ struct LakeCover {
 	R down = 0.0, down_north = 0.0, down_east = 0.0;
 };
 
-inline LakeCover lake_sample_covered(const LakeTerrain &lake, R north, double east) {
+inline LakeCover lake_sample_covered(const LakeTerrain &lake, R north, R east) {
 	LakeCover out;
 	if (lake_outside_expanded_aabb(lake, north, east, kLakeSampleEpsilon)) {
 		return out;

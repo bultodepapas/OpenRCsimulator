@@ -3,6 +3,7 @@ extends SceneTree
 const Motion = preload("res://render/windsock_motion.gd")
 const WindConfig = preload("res://physics/wind_config.gd")
 const Windsock = preload("res://render/windsock.gd")
+const Cadence = preload("res://render/presentation_cadence.gd")
 
 const SAMPLE_HZ: float = 240.0
 const STEP_S: float = 1.0 / 120.0
@@ -204,7 +205,9 @@ func _test_main_wind_callback() -> void:
 	for key: String in ["OPENRC_SCENERY", "OPENRC_SCENERY_AUDIO", "OPENRC_SCENERY_BIRDS"]:
 		saved_environment[key] = OS.get_environment(key)
 		OS.set_environment(key, "off")
+	Cadence.override_every_frames = 1 # VQ-01c-R1 default: once per rendered frame
 	var main: Node = load("res://main.tscn").instantiate() as Node
+	Cadence.override_every_frames = -1
 	main.call("set_user_args", PackedStringArray([
 		"--weather=turbulent", "--scenery=off", "--soundscape=off", "--smoke=off", "--crash-effects=off",
 	]))
@@ -232,10 +235,18 @@ func _test_main_wind_callback() -> void:
 		_check("seeded OU wind sample is repeatable and read-only",
 			WindConfig.has_turbulence(session.call("weather_configuration"))
 			and _same_f64(first_wind, second_wind) and _same_f64(aux_before, sim.get("aux")))
-		for _tick: int in 240:
+		for _tick: int in 10:
 			sim.call("step")
+		_check("consecutive accepted ticks wait for the rendered frame (VQ-01c-R1)",
+			int(motion.simulated_step_index) == initial_index and float(motion.simulated_time_s) == 0.0)
+		main.call("_flush_presentation_observers")
+		_check("the frame flush advances the windsock to the last accepted tick",
+			absf(float(motion.simulated_time_s) - float(sim.call("time"))) <= STEP_S + 1e-8)
+		for _tick: int in 230:
+			sim.call("step")
+		main.call("_flush_presentation_observers")
 		var final_time: float = float(sim.call("time"))
-		_check("Main feeds FlightSession.wind_at into windsock motion on simulation ticks",
+		_check("Main feeds FlightSession.wind_at into windsock motion at accepted endpoints",
 			int(motion.simulated_step_index) > initial_index
 			and absf(float(motion.simulated_time_s) - final_time) <= STEP_S + 1e-8,
 			"motion %.6f s / session %.6f s" % [float(motion.simulated_time_s), final_time])

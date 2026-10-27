@@ -1,0 +1,76 @@
+# H18 regression run, 2026-10-27: frozen hard-linked snapshot of the working tree with H18 (Godot 4.8-beta1 editor,
+# headless, run_checked.py). Selection: every test using aero.gd, ground effect, downwash, wing polars, strip flow
+# or local-flow weight, plus test_golden. 68/71 pass. test_envelope_integrity and test_induced_integrity fail one
+# check each and test_yaw_damping its open R02 gate, identically at df4e1ca5c (before H18) and, for the first two,
+# at session start f9e6dbe8d.
+PASS test_aero 23 checks, 0 failed
+PASS test_aero_continuity R02 continuity: 64 checks, 0 failed
+PASS test_aero_flow H12 local loads: 22501 comparisons in attached planar forward domain, 22500 samples verified attached, 0 failed
+PASS test_aileron_regimes 64 checks, 0 failed
+PASS test_aircraft_contract AS aircraft contract: 4023 checks, 0 failures
+PASS test_aircraft_ground_electric Aircraft ground electric: 196 checks, 0 failed
+PASS test_aircraft_render_contract AS render contract: 403 checks, 0 failures
+PASS test_attached_flow H15 attached flow: 25000 air-data and 25000 global-load byte-exact comparisons (12500 windy, 20284 stalled, 5000 without
+PASS test_avanti_yaw_flight AV-17-R3 yaw flight: 28 checks, 0 failed
+PASS test_body_directional P51-25 body directional: 14 checks, 0 failed
+PASS test_body_side_force D10-R3 body side force: 25 checks, 0 failed
+PASS test_control_actuators Control actuator kernel and isolated surface fixtures: 47 checks, 0 failures
+PASS test_control_surfaces Control surfaces: 26 checks, 0 failures
+PASS test_damping_regimes 20 checks, 0 failed
+PASS test_downwash_lag 24 checks, 0 failed
+PASS test_dynamics 7 checks, 0 failed
+PASS test_electric_session EL1d electric session: 98 checks, 0 failed
+PASS test_envelope 15 checks, 0 failed
+FAIL test_envelope_integrity D1-R4: 64 checks, 1 failed
+PASS test_extra_post_stall EX-14h Extra post-stall polar: 7 checks, 0 failed
+PASS test_flap_aero 28 checks, 0 failed
+PASS test_glow_flight_physics glow flight physics: 110 checks, 0 failed
+PASS test_golden 4 golden flights, 0 failed
+PASS test_ground_contact 23 checks, 0 failed
+PASS test_ground_effect 51 checks, 0 failed
+PASS test_ground_friction 26 checks, 0 failed
+PASS test_ground_start_environment 10 checks, 0 failed
+PASS test_ground_stiction 25 checks, 0 failed
+PASS test_heli_flight HELI-16 flight equations: 41 checks, 0 failed
+PASS test_heli_prepared_context_audit HELI prepared-context audit: 13 checks, 0 failed
+PASS test_heli_trim HELI-18 airborne hover trim: 62 checks, 0 failed
+FAIL test_induced_integrity D1-R5 integration: 177 checks, 1 failed
+PASS test_modes 42 checks, 0 failed
+PASS test_p51_flaps P51-11a flaps: 12 checks, 0 failed
+PASS test_physical_envelope 
+PASS test_rcv36_effects RCV-36 effects: 588 checks, 0 failures
+PASS test_rcv38_lights RCV-38 lights: 108 checks, 0 failures
+PASS test_rcv_ground_effects RCV ground effects: 91 checks, 0 failures
+PASS test_rcv_render_audit RCV render audit: 34 checks, 0 failures
+PASS test_rcv_wet_effects RCV wet effects: 79 checks, 0 failures
+PASS test_regime_consistency 100 checks, 0 failed
+PASS test_segmented_slipstream_parity segmented slipstream parity: checks=381 failures=0 direct=50 loads=30 multi_cut=2 zero_area=8 negative_area=8 horizontal
+PASS test_session_tick_facts Session tick facts: 16 checks, 0 failed
+PASS test_sf_law_properties SF-06 law properties: 245 checks, 0 failed, 0 exempt
+PASS test_shaft_coupled G2 coupled shaft: 99 checks, 0 failed
+PASS test_shaft_refinement G2 refinement: 3 checks, 0 failed
+PASS test_slipstream_downwash E0b3a: 15 checks, 0 failed
+PASS test_slipstream_scalar H13/R02 slipstream: 30001 projected-load comparisons (3 aircraft, 17726 washed, 4287 static air, 1375 stopped), 0 failed
+PASS test_slipstream_sidewash P51-26 slipstream: 10 checks, 0 failed
+PASS test_spatial_aero_continuation Spatial aero continuation: 91 checks, 0 failed
+PASS test_spatial_powered_stage Spatial powered stage: 277 checks, 0 failed
+PASS test_spatial_propulsion_flow spatial propulsion flow: 29 checks, 0 failed
+PASS test_spatial_stage_lean Spatial stage lean: 668 checks, 0 failed
+PASS test_spatial_wash M5-W05c-R2 spatial wash: 30 checks, 0 failed
+PASS test_spatial_wind_aerodynamics Spatial wind aerodynamics: 189 checks, 0 failed
+PASS test_spin 8 checks, 0 failed
+PASS test_stall_solver DATA-2: 571 checks, 0 failed
+PASS test_swirl_accuracy E0b6 swirl accuracy: 41 checks, 0 failed
+PASS test_swirl_optimization E0b6p optimized swirl equivalence: 7 checks, 0 failed
+PASS test_tail_downwash 8 checks, 0 failed
+PASS test_tailless_spatial_wind tailless spatial wind: 121 checks, 0 failed
+PASS test_trim 14 checks, 0 failed
+PASS test_wash_profile E0b3b: 20 checks, 0 failed
+PASS test_wash_transport E0b5 transport: 44 checks, 0 failed
+PASS test_wind_flight wind flight: 51 checks, 0 failed
+PASS test_wing_body_roll D10-R5 wing-body roll: 16 checks, 0 failed
+PASS test_wing_polar D8b-R2 polar: 126 checks, 0 failed
+PASS test_wing_polar_session D8b-R2 session: 8 checks, 0 failed
+PASS test_workshop_compiler Workshop compiler: 377 checks, 0 failures
+PASS test_x8_flying_wing X8 flying wing: 37 checks, 0 failures
+FAIL test_yaw_damping 19 checks, 1 failed, 0 pending R02 alpha comparison

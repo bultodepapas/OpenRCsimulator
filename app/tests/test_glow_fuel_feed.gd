@@ -3,6 +3,7 @@
 # non-gravitational acceleration: trimmed level flight runs needled with g_eff = 1 g down; a full-throttle
 # acceleration (fuel thrown aft, like a steady up-line) leans the engine, more so with a low tank; a dive that drag
 # is slowing richens it; the same head moves the mixture far more at idle than at full throttle (small suction).
+# A pre-primed feed line bound through the loader enters the installation totals that bound accepted Glow states.
 # Run: godot --headless --path . --script res://tests/test_glow_fuel_feed.gd
 extends SceneTree
 
@@ -10,11 +11,18 @@ const Feed := preload("res://physics/glow/fuel_feed.gd")
 const Installation := preload("res://physics/glow/installation.gd")
 const AD := preload("res://physics/aircraft_data.gd")
 const Session := preload("res://sim/flight_session.gd")
+const GlowFlight := preload("res://physics/glow/flight.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 
 const AIRCRAFT := "res://data/aircraft/stik_glow_55ax_2t.json"
 const G := 9.80665
+
+
+## Stands in for the session as owner of the Glow store sample, which reads only the validated aircraft model.
+class ModelOwner extends Node:
+	var aircraft: Dictionary = {}
+
 
 var _checks := 0
 var _failed := 0
@@ -35,6 +43,7 @@ func _run() -> void:
 	_analytic()
 	_rotation_and_solver()
 	_installation()
+	_feed_line_totals()
 	_flights()
 	print("NITRO-05 fuel feed: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed > 0 else 0)
@@ -203,6 +212,68 @@ func _installation() -> void:
 	var unsourced: Dictionary = install_raw.duplicate(true)
 	unsourced.fuel_feed.idle_drive_pressure_pa.source = " "
 	_check("an unsourced pressure is refused", not Installation.prepare_value(unsourced, raw, base_model, bytes).ok)
+
+
+## No bundled aircraft authors a feed line, so this binds a synthetic 5 ml pre-primed line to the 55AX Stik through
+## the real loader (the FUEL-03 authoring pattern) and checks the totals the flight adapter bounds its states by.
+func _feed_line_totals() -> void:
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(AIRCRAFT))
+	raw.fuel_system.tanks[0]["feed_line"] = {"id": "line_main", "liquid_inventory_id": "item_fuel_line",
+		"capacity": _q(0.005, "l")}
+	# The Stik balances with empty tanks, so the line liquid leaves its dry plan CG unchanged.
+	raw.inventory.append({"id": "item_fuel_line", "name": "preprimed glow line", "energy_source": "glow_fuel",
+		"mass": _q(0.002, "kg"), "position": _q([-0.17, 0.0, 0.02], "m"), "size": _q([0.04, 0.02, 0.02], "m")})
+	var loaded: Dictionary = AD.validate_and_derive(raw)
+	_check("the 55AX Stik loads with an authored pre-primed feed line", loaded.get("ok", false), str(loaded.get("errors", [])))
+	if not loaded.get("ok", false):
+		return
+	var install: Dictionary = loaded.model.propulsion.glow
+	var line: Dictionary = install.get("feed_line", {})
+	_check("the installation binds the line to its own liquid item", line.get("liquid_inventory_id") == "item_fuel_line"
+		and float(line.get("capacity_kg", 0.0)) > 0.0 and float(line.get("reference_mass_kg", 0.0)) > 0.0, str(line.keys()))
+	if line.is_empty():
+		return
+	_check("total capacity is the tank plus the line (%.7f kg)" % install.total_capacity_kg,
+		install.total_capacity_kg == install.capacity_fuel_kg + line.capacity_kg,
+		"tank %.7f kg, line %.7f kg" % [install.capacity_fuel_kg, line.capacity_kg])
+	_check("total reference fuel is the tank plus the line (%.7f kg)" % install.total_reference_fuel_kg,
+		install.total_reference_fuel_kg == install.reference_fuel_kg + line.reference_mass_kg,
+		"tank %.7f kg, line %.7f kg" % [install.reference_fuel_kg, line.reference_mass_kg])
+	var holder := ModelOwner.new()
+	holder.aircraft = {model = loaded.model}
+	var start: PackedFloat64Array = _glow_values(install, install.reference_fuel_kg, line.reference_mass_kg)
+	var start_context: Dictionary = GlowFlight.mass_context(holder, start)
+	_check("the authored tank fill with its pre-primed line is an accepted state and store sample",
+		GlowFlight.valid(start, install) and start_context.get("ok", false)
+		and start_context.get("total_fuel_kg") == start[1] and start_context.get("line_fuel_kg") == line.reference_mass_kg,
+		"%.7f kg" % start[1])
+	var full: PackedFloat64Array = _glow_values(install, install.capacity_fuel_kg, line.capacity_kg)
+	_check("tank and line both at capacity reach the total and are accepted",
+		full[1] <= install.total_capacity_kg and GlowFlight.valid(full, install)
+		and GlowFlight.mass_context(holder, full).get("ok", false),
+		"%.9f kg of %.9f kg" % [full[1], install.total_capacity_kg])
+	var over: PackedFloat64Array = full.duplicate()
+	over[1] += 1.0e-6
+	_check("a milligram beyond both stores is refused",
+		not GlowFlight.valid(over, install) and not GlowFlight.mass_context(holder, over).get("ok", false))
+	holder.free()
+
+
+## Accepted Glow values with the engine stopped before its first start, feeding from the main tank.
+func _glow_values(install: Dictionary, main_kg: float, line_kg: float) -> PackedFloat64Array:
+	var values := PackedFloat64Array()
+	values.resize(GlowFlight.SIZE)
+	values[1] = main_kg + line_kg
+	values[2] = float(install.initial_temperature_k)
+	values[8] = float(GlowFlight.REASONS.find("not_started"))
+	values[12] = float(install.profile.operation.nominal_mixture)
+	values[GlowFlight.LINE_FUEL_INDEX] = line_kg
+	values[GlowFlight.SOURCE_MODE_INDEX] = float(GlowFlight.MODE_MAIN_TANK)
+	return values
+
+
+func _q(value: Variant, unit: String) -> Dictionary:
+	return {"value": value, "unit": unit, "kind": "estimated", "source": "feed-line totals test fixture"}
 
 
 ## One airborne 55AX flight for `seconds`: the trimmed start when `speed` is 0, otherwise `pitch_deg` with the
