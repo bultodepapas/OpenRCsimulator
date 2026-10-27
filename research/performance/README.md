@@ -660,6 +660,10 @@ It also replays the sweep as (a, b, a, b) pairs and runs five concurrent callers
 the root memo (NITRO-06-R2), comparing every root with the reference.
 [NITRO-06-R1 evidence](../../docs/research/glow-engines/NITRO-06-R1/README.md),
 [NITRO-06-R2 evidence](../../docs/research/glow-engines/NITRO-06-R2/README.md).
+For NITRO-06-R3's closed-form root, pass `--max-ulp=32`: positive roots and admissions are
+then compared by ulp distance (worst reported), everything else stays bytewise, and the memo
+concurrency check is skipped because the solve keeps no shared state.
+[NITRO-06-R3 evidence](../../docs/research/glow-engines/NITRO-06-R3/README.md).
 
 ## Ground-audio unloaded rows (GP-19f)
 

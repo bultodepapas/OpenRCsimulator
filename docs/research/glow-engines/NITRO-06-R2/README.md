@@ -1,5 +1,7 @@
 # NITRO-06-R2 — Reuse repeated carburettor roots within a glow evaluation
 
+**Superseded 2026-10-27 by [NITRO-06-R3](../NITRO-06-R3/README.md):** the root now has a closed form, so the root memo no longer exists in `carburetor.gd`. This record keeps the measurements of that interim step.
+
 2026-10-27. Working-tree change on top of [NITRO-06-R1](../NITRO-06-R1/README.md). Headless
 CPU evidence on the Linux dev VM (Godot 4.8-beta1 official editor binary, shared host);
 not FPS, release-build or target-hardware qualification. No law or output change.

@@ -31,6 +31,39 @@ holds the measurements that prompted it.
   it cannot help a GDScript kernel.
 - The plan header still names Godot 4.7.2; `app/get-godot.sh` and STACK pin 4.8-beta1.
 
+## Second pass (same day): engine-commit benchmarks and corrections
+
+- **Official benchmarks exist for the pinned commit** `4d10419ca`
+  ([results](https://github.com/godotengine/godot-benchmarks-results/blob/main/2026-10-16_4d10419ca.md),
+  i5-12400, Linux; "debug" = editor binary, "release" = `template_release`): empty script call
+  ≈ 57 → 31 ns, `Callable.call` 152 → 89 ns, stored lambda call 43 → 25 ns, lambda creation
+  ≈ 120 → 90 ns, `signal.emit` with one connection 250 → 170 ns; `Object.new()+free()` ≈ 280 ns
+  single-threaded and ≈ 1.4 µs with 12 contending threads. `PackedFloat64Array` beats
+  `Array[float]` 1.7×. Editor-to-release speedups across the GDScript suite are 1.14–1.93×.
+- **4.8-beta1 export templates and Linux debug symbols are published**
+  ([release](https://github.com/godotengine/godot-builds/releases/tag/4.8-beta1)), so a
+  release measurement and `perf` sampling need no custom build. `perf` on the dev VM is
+  blocked by `kernel.perf_event_paranoid=4` (needs the owner's sudo).
+- **The script profiler over-weights small helpers**: with profiling on, the VM reads the
+  clock at every script entry, exit and call site
+  ([gdscript_vm.cpp](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/modules/gdscript/gdscript_vm.cpp#L704));
+  the profiled kernel is ≈ 1.32× its unprofiled time here.
+- **Every `{}`/`[]` literal allocates**; only const contexts fold them (read-only), so inline
+  `.get(key, {})` defaults in hot paths allocate per call (197 such defaults in `app/physics`,
+  75 in `app/sim`). Per-allocation cost is unmeasured.
+- **Not worth pursuing (evidence)**: the two lambdas and ≈ 15 Callable calls in
+  `Simulation.step` (≈ 3 µs per tick), `stepped.emit` dispatch (≈ 2.5 µs per tick),
+  `range(n)` loops (compiled without allocation), RK4 buffer reuse, Dictionary records →
+  RefCounted classes, StringName keys, and the experimental separate rendering thread
+  ("known bugs… not recommended for production").
+- **New candidates**: compute session-immutable layout indices and capability flags once
+  (`gear_is_retractable` 32 calls per tick, `flaps.enabled` 25, `_model_wheel_count` 20,
+  `glow_is_active` 17; needs the immutable-data rule, like validation caching); share
+  accepted-state `air_data`/terrain/wind results among observers (1–3%); a frame cap that
+  divides 240 Hz (120) so CPU-bound frames carry a constant tick count (pacing, native
+  check); simulation one frame ahead on a worker thread (largest ceiling, needs an owner
+  decision on worker-owned simulation state).
+
 ## CPU: GDScript kernel and observers
 
 - **Script calls dominate tiny helpers.** A call into another script function goes through
@@ -107,4 +140,4 @@ time ([Croteam, GDC 2018](https://gdcvault.com/browse/gdc-18/play/1025031)). Win
 | 7 | Windows pacing: exclusive fullscreen, VRR-aware caps | None | Native Windows | Candidate |
 | 8 | Preserve Alpha Test Coverage on foliage atlases | Visual | Native for motion | Replaces L6b-R1's A2C arm |
 | 9 | Guard the ground shader's `parcel()` Voronoi behind its `far` weight | Byte-identical image expected | Native GPU | Only if fill-bound |
-| 10 | Whole-tick native kernel | Per-backend goldens | All platforms | Only if 1–5 still miss Gate P |
+| 10 | Whole-tick native kernel | Per-backend goldens | All platforms | Only if 1–5 still miss Gate P; [scoped](native-kernel-scoping-2026-10-27.md): stage evaluator first (≤ ≈ 2×), whole tick needs an SF-08 amendment |

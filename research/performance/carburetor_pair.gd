@@ -1,5 +1,7 @@
-## NITRO-06-R1/R2: bytewise parity and paired timing of the carburettor root solve, an explicit prior
-## carburetor.gd (reference, extracted outside app/) versus the working tree. Research-only.
+## NITRO-06-R1/R2/R3: parity and paired timing of the carburettor root solve, an explicit prior
+## carburetor.gd (reference, extracted outside app/) versus the working tree. Bytewise by default;
+## --max-ulp=N compares positive roots by ulp distance (R3's closed form), still bytewise elsewhere.
+## Research-only.
 ## See research/performance/README.md#carburettor-root-solve-nitro-06-r1.
 extends SceneTree
 
@@ -16,6 +18,7 @@ func _run() -> void:
 	var ref_path := ""
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--reference="): ref_path = arg.trim_prefix("--reference=")
+		elif arg.begins_with("--max-ulp="): _max_ulp = int(arg.trim_prefix("--max-ulp="))
 	var reference := GDScript.new()
 	reference.source_code = FileAccess.get_file_as_string(ref_path)
 	if reference.source_code.is_empty() or reference.reload() != OK:
@@ -32,15 +35,16 @@ func _run() -> void:
 		y *= 1.00002
 	var mismatches := 0
 	for value: float in ys:
-		if var_to_bytes(reference.charge_ratio(value)) != var_to_bytes(Candidate.charge_ratio(value)):
+		if not _same(reference.charge_ratio(value), Candidate.charge_ratio(value)):
 			mismatches += 1
-	_check("charge_ratio bytewise equal over %d inputs" % ys.size(), mismatches == 0, "mismatches=%d" % mismatches)
+	_check("charge_ratio %s over %d inputs (worst %d ulp)" % ["bytewise equal" if _max_ulp < 0 else "within %d ulp" % _max_ulp,
+		ys.size(), _worst_ulp], mismatches == 0, "mismatches=%d" % mismatches)
 	# NITRO-06-R2 memo: one glow point solves (restricted, wide-open) twice; replay that pattern so the
 	# candidate answers repeats from its memo, and compare every call.
 	var repeat_mismatches := 0
 	for index: int in range(0, ys.size() - 1, 2):
 		for value: float in [ys[index], ys[index + 1], ys[index], ys[index + 1]]:
-			if var_to_bytes(reference.charge_ratio(value)) != var_to_bytes(Candidate.charge_ratio(value)):
+			if not _same(reference.charge_ratio(value), Candidate.charge_ratio(value)):
 				repeat_mismatches += 1
 	_check("repeated (memo) charge_ratio calls bytewise equal", repeat_mismatches == 0, "mismatches=%d" % repeat_mismatches)
 	# Concurrent callers (launch trim runs on a worker thread): four threads and the main thread
@@ -53,16 +57,17 @@ func _run() -> void:
 			expected[ys[index]] = reference.charge_ratio(ys[index])
 	_concurrent_inputs = concurrent_inputs
 	_concurrent_expected = expected
-	var threads: Array[Thread] = []
-	for worker: int in 4:
-		var thread := Thread.new()
-		thread.start(_hammer.bind(worker))
-		threads.append(thread)
-	var concurrent_mismatches: int = _hammer(4)
-	for thread: Thread in threads:
-		concurrent_mismatches += int(thread.wait_to_finish())
-	_check("concurrent memo callers bytewise equal (%d inputs, 5 callers)" % concurrent_inputs.size(),
-		concurrent_mismatches == 0, "mismatches=%d" % concurrent_mismatches)
+	if _max_ulp < 0: # a memo shares state between threads; a stateless solve (R3) has nothing to race
+		var threads: Array[Thread] = []
+		for worker: int in 4:
+			var thread := Thread.new()
+			thread.start(_hammer.bind(worker))
+			threads.append(thread)
+		var concurrent_mismatches: int = _hammer(4)
+		for thread: Thread in threads:
+			concurrent_mismatches += int(thread.wait_to_finish())
+		_check("concurrent memo callers bytewise equal (%d inputs, 5 callers)" % concurrent_inputs.size(),
+			concurrent_mismatches == 0, "mismatches=%d" % concurrent_mismatches)
 	# admission() over an opening × rpm grid with a representative installation.
 	var admission_mismatches := 0
 	var count := 0
@@ -72,10 +77,11 @@ func _run() -> void:
 			var rpm: float = ni * 60.0
 			for capacity: float in [0.004, 0.02]:
 				count += 1
-				var a := var_to_bytes(reference.admission(opening, rpm, 0.85, 1.0e-5, 1.0, capacity))
-				var b := var_to_bytes(Candidate.admission(opening, rpm, 0.85, 1.0e-5, 1.0, capacity))
-				if a != b: admission_mismatches += 1
-	_check("admission bytewise equal over %d openings, speeds and capacities" % count, admission_mismatches == 0,
+				if not _same(reference.admission(opening, rpm, 0.85, 1.0e-5, 1.0, capacity),
+						Candidate.admission(opening, rpm, 0.85, 1.0e-5, 1.0, capacity)):
+					admission_mismatches += 1
+	_check("admission %s over %d openings, speeds and capacities (worst %d ulp overall)" % [
+		"bytewise equal" if _max_ulp < 0 else "within %d ulp" % _max_ulp, count, _worst_ulp], admission_mismatches == 0,
 		"mismatches=%d" % admission_mismatches)
 	# Paired timing of the solve over the interior part of the sweep.
 	var interior := PackedFloat64Array()
@@ -118,6 +124,21 @@ func _hammer(worker: int) -> int:
 			if PackedFloat64Array([Candidate.charge_ratio(value)]) != PackedFloat64Array([_concurrent_expected[value]]):
 				mismatches += 1
 	return mismatches
+
+
+var _max_ulp := -1
+var _worst_ulp := 0
+
+
+## Bytewise, or for two finite positive values within _max_ulp (bit patterns of positive doubles are ordered).
+func _same(a: float, b: float) -> bool:
+	if var_to_bytes(a) == var_to_bytes(b):
+		return true
+	if _max_ulp < 0 or not is_finite(a) or not is_finite(b) or a <= 0.0 or b <= 0.0:
+		return false
+	var distance: int = absi(PackedFloat64Array([a]).to_byte_array().decode_s64(0) - PackedFloat64Array([b]).to_byte_array().decode_s64(0))
+	_worst_ulp = maxi(_worst_ulp, distance)
+	return distance <= _max_ulp
 
 
 func nextafter(from: float, toward: float) -> float:
