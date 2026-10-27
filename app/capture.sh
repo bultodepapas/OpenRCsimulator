@@ -16,7 +16,7 @@ rm -f "$HERE/captures/run-manifest.json"
 GODOT="$("$HERE/get-godot.sh")"
 # L6b: fresh checkouts have no imported tree atlas. Import before hashing/rendering any scene.
 IMPORT_LOG="$(mktemp)"
-if ! timeout 180 "$GODOT" --headless --path "$HERE" --audio-driver Dummy --import > "$IMPORT_LOG" 2>&1 \
+if ! timeout 600 "$GODOT" --headless --path "$HERE" --audio-driver Dummy --import > "$IMPORT_LOG" 2>&1 \
   || grep -qE "^(SCRIPT |SHADER )?ERROR:" "$IMPORT_LOG"; then
   cat "$IMPORT_LOG"; rm -f "$IMPORT_LOG"; exit 1
 fi

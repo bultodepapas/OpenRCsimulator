@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import textwrap
 import unittest
 
 
@@ -83,6 +84,35 @@ exit 0
         self.assertEqual(result.returncode, 1, result.stdout)
         self.assertIn("import failed", result.stdout)
         self.assertNotIn("VISITED", result.stdout)
+        reports = list((self.root.parent / "tmp/godot-checks").glob("*/report.json"))
+        self.assertEqual(len(reports), 1)
+        report = json.loads(reports[0].read_text())
+        self.assertEqual(report["timeout_seconds"], 600)
+        self.assertEqual(report["reason"], "engine_error")
+
+    def test_ci_import_precedes_schema_and_publishes_failures(self):
+        repository = Path(__file__).resolve().parents[2]
+        workflow = (repository / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        start = workflow.index("      - name: Import resources before schema probes\n")
+        end = workflow.index("      - name: Aircraft v2 contract and explicit v1 loader compatibility", start)
+        step = workflow[start:end]
+        self.assertIn("        id: resource_import\n", step)
+        self.assertIn("        if: matrix.part == 'integration'\n", step)
+        script = textwrap.dedent(step.split("        run: |\n", 1)[1])
+        env = os.environ.copy()
+        env["PROBE_IMPORT_ERROR"] = "1"
+        bash = os.environ.get("OPENRC_TEST_BASH", "bash")
+        result = subprocess.run([bash, "-c", script], cwd=self.root.parent, env=env, text=True,
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30)
+        self.assertEqual(result.returncode, 1, result.stdout)
+        reports = list((self.root.parent / "tmp/godot-checks").glob("*/report.json"))
+        self.assertEqual(len(reports), 1)
+        report = json.loads(reports[0].read_text())
+        self.assertEqual(report["timeout_seconds"], 600)
+        self.assertEqual(report["reason"], "engine_error")
+        self.assertIn("import failed", (reports[0].parent / "engine.log").read_text())
+        condition = "if: always() && (steps.resource_import.outcome != 'skipped' || steps.app_check.outcome != 'skipped')"
+        self.assertEqual(workflow.count(condition), 2)
 
     def test_measured_slow_gates_have_bounded_ci_budgets(self):
         slow_gates = {

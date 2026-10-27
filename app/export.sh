@@ -60,14 +60,24 @@ done
 
 echo "== native package artifacts: verify both platform rows against exported binaries"
 python3 - "$HERE/native/ground_vehicle/build-receipt.json" \
-  "$DIST/linux/libopenrc_ground_vehicle.so" "$DIST/windows/openrc_ground_vehicle.dll" <<'PYRECEIPT'
+  "$DIST/linux/libopenrc_ground_vehicle.so" "$DIST/windows/openrc_ground_vehicle.dll" \
+  "$ROOT/research/rc-monster-truck/native/build.py" <<'PYRECEIPT'
 import hashlib
+import importlib.util
 import json
 import pathlib
 import re
 import sys
 
-receipt_path, linux_path, windows_path = map(pathlib.Path, sys.argv[1:])
+receipt_path, linux_path, windows_path, builder_path = map(pathlib.Path, sys.argv[1:])
+sys.dont_write_bytecode = True
+spec = importlib.util.spec_from_file_location("openrc_native_receipt_builder", builder_path)
+if spec is None or spec.loader is None:
+    raise SystemExit(f"could not load native receipt validator: {builder_path}")
+builder = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(builder)
+lock = builder.locked.load_lock()
+expected_source_hash = builder.source_digest()
 receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
 if not isinstance(receipt, dict) or receipt.get("format") != "openrc-ground-vehicle-native-receipt":
     raise SystemExit("native build receipt is missing or has the wrong format")
@@ -92,6 +102,7 @@ for platform, binary_path in expected_paths.items():
     row = platforms.get(platform)
     if not isinstance(row, dict):
         raise SystemExit(f"native receipt lacks the {platform} platform row")
+    builder.validate_platform_receipt(platform, row, lock, expected_source_hash)
     if row.get("platform") != platform or row.get("architecture") != "x86_64":
         raise SystemExit(f"native {platform} receipt row has the wrong platform/architecture")
     if type(row.get("abi_version")) is not int or row["abi_version"] != 1:
