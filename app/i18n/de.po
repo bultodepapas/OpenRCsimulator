@@ -8951,3 +8951,244 @@ msgstr ""
 
 msgid "Creates a saved build in your local library."
 msgstr "Speichert eine Modellkonfiguration in deiner lokalen Bibliothek."
+
+# D6-TRIM-01: natural out-of-trim airframes (Home trim practice, rudder trim).
+msgid "TRIM PRACTICE · NEXT FLIGHT"
+msgstr "TRIMMTRAINING · NÄCHSTER FLUG"
+
+msgid "No real airplane is rigged perfectly. A warped wing, a crooked fin or a linkage off neutral makes it roll, climb, dive or turn with the sticks centred until you trim it out."
+msgstr "Kein echtes Flugzeug ist perfekt eingestellt. Eine verzogene Fläche, eine schiefe Seitenflosse oder ein Gestänge außerhalb der Neutralstellung lässt es mit mittigen Knüppeln rollen, steigen, sinken oder kurven, bis du es austrimmst."
+
+msgid "Start with a naturally out-of-trim airplane"
+msgstr "Mit einem natürlich vertrimmten Flugzeug starten"
+
+msgid "Out-of-trim intensity"
+msgstr "Stärke der Vertrimmung"
+
+msgid "0% is perfectly trimmed. 100% gives noticeable but realistic tendencies. Each airplane reacts with its own aerodynamics; the trims are never moved for you."
+msgstr "0 % bedeutet perfekt getrimmt. 100 % ergibt deutliche, aber realistische Tendenzen. Jedes Flugzeug reagiert mit seiner eigenen Aerodynamik; die Trimmung wird nie für dich verstellt."
+
+msgid "Trim persistence"
+msgstr "Trimmung behalten"
+
+msgid "First flight only"
+msgstr "Nur erster Flug"
+
+msgid "The airplane starts out of trim on its first flight of the session. Your trims stay after crashes and restarts, and when you fly it again."
+msgstr "Das Flugzeug startet beim ersten Flug der Sitzung vertrimmt. Deine Trimmung bleibt nach Abstürzen und Neustarts erhalten, auch wenn du es erneut fliegst."
+
+msgid "Every flight"
+msgstr "Jeder Flug"
+
+msgid "Every new flight, restart or crash brings new tendencies, and the trims return to the starting trim, so you trim again."
+msgstr "Jeder neue Flug, Neustart oder Absturz bringt neue Tendenzen, und die Trimmung kehrt zur Starttrimmung zurück: Du trimmst erneut."
+
+msgid "Trim with your radio's trim switches, the trim keys listed in Help or your controller's trim buttons. Airplanes only."
+msgstr "Trimme mit den Trimmtastern deines Senders, den in der Hilfe aufgeführten Trimmtasten oder den Trimmtasten deines Controllers. Nur Flugzeuge."
+
+msgid "Trim practice"
+msgstr "Trimmtraining"
+
+msgid "Trim practice currently supports airplanes only."
+msgstr "Das Trimmtraining unterstützt derzeit nur Flugzeuge."
+
+msgid "Next flight trim: Airplanes only"
+msgstr "Trimmung im nächsten Flug: nur Flugzeuge"
+
+msgid "Next flight trim: Off"
+msgstr "Trimmung im nächsten Flug: Aus"
+
+msgid "Next flight trim: %d%% out of trim · every flight"
+msgstr "Trimmung im nächsten Flug: %d%% vertrimmt · jeder Flug"
+
+msgid "Next flight trim: %d%% out of trim · first flight only"
+msgstr "Trimmung im nächsten Flug: %d%% vertrimmt · nur erster Flug"
+
+msgid "Rudder trim: left / right"
+msgstr "Seitenrudertrimmung: links / rechts"
+
+msgid "Rudder trim left"
+msgstr "Seitenrudertrimmung nach links"
+
+msgid "Rudder trim right"
+msgstr "Seitenrudertrimmung nach rechts"
+
+msgid "Rudder trim: %+.1f%%"
+msgstr "Seitenrudertrimmung: %+.1f%%"
+
+msgid "Aileron jam"
+msgstr "Querruder blockiert"
+
+msgid "Elevator jam"
+msgstr "Höhenruder blockiert"
+
+msgid "Rudder jam"
+msgstr "Seitenruder blockiert"
+
+msgid "Aileron trim shift"
+msgstr "Querrudertrimmung verstellt"
+
+msgid "Elevator trim shift"
+msgstr "Höhenrudertrimmung verstellt"
+
+msgid "Slow aileron servo"
+msgstr "Langsames Querruderservo"
+
+msgid "Limited throttle"
+msgstr "Begrenztes Gas"
+
+msgid "Throttle stuck high"
+msgstr "Gas hoch blockiert"
+
+msgid "Slow elevator servo"
+msgstr "Langsames Höhenruderservo"
+
+msgid "Slow rudder servo"
+msgstr "Langsames Seitenruderservo"
+
+msgid "Rudder trim shift"
+msgstr "Seitenrudertrimmung verstellt"
+
+msgid "Throttle stuck low"
+msgstr "Gas niedrig blockiert"
+
+msgid "Restricted aileron travel"
+msgstr "Eingeschränkter Querruderweg"
+
+msgid "Restricted elevator travel"
+msgstr "Eingeschränkter Höhenruderweg"
+
+msgid "Restricted rudder travel"
+msgstr "Eingeschränkter Seitenruderweg"
+
+msgid "Radio link loss"
+msgstr "Verlust der Funkverbindung"
+
+msgid "Engine stops (glow)"
+msgstr "Motor geht aus (Glüh)"
+
+msgid "Motor power loss (electric)"
+msgstr "Leistungsverlust (Elektromotor)"
+
+msgid "Elevator servo is slow."
+msgstr "Höhenruderservo reagiert langsam."
+
+msgid "Rudder servo is slow."
+msgstr "Seitenruderservo reagiert langsam."
+
+msgid "Rudder trim shifted."
+msgstr "Seitenrudertrimmung verstellt."
+
+msgid "Throttle is stuck low."
+msgstr "Gas auf niedriger Stellung blockiert."
+
+msgid "Aileron travel is restricted."
+msgstr "Querruderweg eingeschränkt."
+
+msgid "Elevator travel is restricted."
+msgstr "Höhenruderweg eingeschränkt."
+
+msgid "Rudder travel is restricted."
+msgstr "Seitenruderweg eingeschränkt."
+
+msgid "Make small early pitch corrections and start the flare sooner."
+msgstr "Korrigiere die Längslage früh mit kleinen Ausschlägen und beginne das Abfangen früher."
+
+msgid "Lead rudder corrections early, especially during takeoff and landing."
+msgstr "Gib Seitenruder früh vor, besonders beim Start und bei der Landung."
+
+msgid "Hold steady opposite rudder or trim; expect the airplane to skid in turns."
+msgstr "Halte konstant Gegenruder oder trimme nach; das Flugzeug schiebt in Kurven."
+
+msgid "Keep a safe airspeed, choose a landing area within gliding range and avoid a go-around."
+msgstr "Halte eine sichere Fluggeschwindigkeit, wähle einen Landeplatz in Gleitreichweite und vermeide ein Durchstarten."
+
+msgid "Expect slower rolls; avoid steep banks near the ground and plan wider turns."
+msgstr "Rechne mit langsameren Rollen; vermeide steile Schräglagen in Bodennähe und plane weitere Kurven."
+
+msgid "Keep extra airspeed; the flare and stall recovery have less authority."
+msgstr "Halte zusätzliche Fahrt; beim Abfangen und beim Beenden eines Strömungsabrisses fehlt Ruderwirkung."
+
+msgid "Correct crosswind early; rudder authority is reduced during takeoff and landing."
+msgstr "Korrigiere Seitenwind früh; die Seitenruderwirkung ist bei Start und Landung reduziert."
+
+msgid "Control surfaces and servos"
+msgstr "Ruder und Servos"
+
+msgid "Engine and throttle"
+msgstr "Motor und Gas"
+
+msgid "Radio link"
+msgstr "Funkverbindung"
+
+msgid "0 turns failures off. At 100%, one event is always scheduled. It activates within the chosen time window, counted only while you fly at least 5 m above the terrain."
+msgstr "0 schaltet Störungen aus. Bei 100 % wird immer ein Ereignis eingeplant. Es tritt im gewählten Zeitfenster ein; gezählt wird nur, solange du mindestens 5 m über dem Gelände fliegst."
+
+msgid "When a failure can start"
+msgstr "Wann eine Störung beginnen kann"
+
+msgid "Early (20–60 s)"
+msgstr "Früh (20–60 s)"
+
+msgid "Standard (20–120 s)"
+msgstr "Standard (20–120 s)"
+
+msgid "Late (60–240 s)"
+msgstr "Spät (60–240 s)"
+
+msgid "Severity"
+msgstr "Schweregrad"
+
+msgid "Mild"
+msgstr "Leicht"
+
+msgid "Severe"
+msgstr "Schwer"
+
+msgid "Severity scales trim offsets, servo speed, travel and throttle limits. Jams, engine stops and radio loss are the same at every severity."
+msgstr "Der Schweregrad skaliert Trimmversatz, Servogeschwindigkeit, Ruderweg und Gasgrenzen. Blockierungen, Motorausfälle und Funkverlust sind bei jedem Schweregrad gleich."
+
+msgid "Failure types"
+msgstr "Störungsarten"
+
+msgid "Each flight picks at most one failure at random from the checked types that this aircraft supports."
+msgstr "Jeder Flug wählt höchstens eine Störung zufällig aus den markierten Arten, die dieses Flugzeug unterstützt."
+
+msgid "Select all"
+msgstr "Alle auswählen"
+
+msgid "Clear all"
+msgstr "Alle abwählen"
+
+msgid "Requires catastrophic failures"
+msgstr "Erfordert katastrophale Störungen"
+
+msgid "Not available on this aircraft"
+msgstr "Für dieses Flugzeug nicht verfügbar"
+
+msgid "No checked failure type is available for this aircraft."
+msgstr "Keine markierte Störungsart ist für dieses Flugzeug verfügbar."
+
+msgid "%d checked failure types can occur on this aircraft."
+msgstr "%d markierte Störungsarten können bei diesem Flugzeug auftreten."
+
+msgid "No checked failure type is available for this aircraft. Check one, or set the probability to 0."
+msgstr "Keine markierte Störungsart ist für dieses Flugzeug verfügbar. Markiere eine oder setze die Wahrscheinlichkeit auf 0."
+
+msgid "Next flight failures: %d%% · Custom"
+msgstr "Ausfälle im nächsten Flug: %d%% · Angepasst"
+
+msgid "Next flight failures: %d%% · Custom · Catastrophic enabled"
+msgstr "Ausfälle im nächsten Flug: %d%% · Angepasst · katastrophale Ausfälle aktiviert"
+
+msgid "Next flight failures: %d%% · custom"
+msgstr "Ausfälle im nächsten Flug: %d%% · angepasst"
+
+msgid "Next flight failures: %d%% · custom · catastrophic allowed"
+msgstr "Ausfälle im nächsten Flug: %d%% · angepasst · katastrophale Ausfälle zugelassen"
+
+msgid "No enabled failure type is available for this aircraft. Enable one in Failures or set the probability to 0."
+msgstr "Keine aktivierte Störungsart ist für dieses Flugzeug verfügbar. Aktiviere eine unter Störungen oder setze die Wahrscheinlichkeit auf 0."
+
+msgid "This aircraft has no rudder, so rudder failures cannot occur."
+msgstr "Dieses Flugzeug hat kein Seitenruder, daher können keine Seitenruderstörungen auftreten."

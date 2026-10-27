@@ -259,9 +259,12 @@ struct LakeCover {
 	R down = 0.0, down_north = 0.0, down_east = 0.0;
 };
 
-inline LakeCover lake_sample_covered(const LakeTerrain &lake, R north, R east) {
+// lake_surface.gd sample_terrain_validated, reduced to the fields the contact laws read. A non-finite query is the
+// reference's _invalid_sample(): covered = false with NaN values.
+inline LakeCover lake_sample_terrain(const LakeTerrain &lake, R north, R east) {
 	LakeCover out;
-	if (lake_outside_expanded_aabb(lake, north, east, kLakeSampleEpsilon)) {
+	if (!is_finite(north) || !is_finite(east)) {
+		out.blend = out.blend_north = out.blend_east = out.down = out.down_north = out.down_east = kNan;
 		return out;
 	}
 	const LakePoint center = lake_terrain_point_state(lake, north, east);
@@ -296,6 +299,14 @@ inline LakeCover lake_sample_covered(const LakeTerrain &lake, R north, R east) {
 	out.down_north = (north_plus.v[6] - north_minus.v[6]) / (2.0 * kLakeSampleEpsilon);
 	out.down_east = (east_plus.v[6] - east_minus.v[6]) / (2.0 * kLakeSampleEpsilon);
 	return out;
+}
+
+// lake_surface.gd sample_covered_terrain_validated (finite north/east): bank AABB early-out with the stencil margin.
+inline LakeCover lake_sample_covered(const LakeTerrain &lake, R north, R east) {
+	if (lake_outside_expanded_aabb(lake, north, east, kLakeSampleEpsilon)) {
+		return LakeCover();
+	}
+	return lake_sample_terrain(lake, north, east);
 }
 
 inline Vec3 compose_lake(const Vec3 &base, R north, R east, const LakeTerrain &lake) {

@@ -78,11 +78,13 @@ def main():
         if os.environ.get("OPENRC_DETACH_PRESENTATION") == "1":
             detach_presentation(port)
         time.sleep(warm_s)
-        s0 = json.loads(ctl(port, "state", "--json"))["flight"]
+        top0 = json.loads(ctl(port, "state", "--json"))
+        s0 = top0["flight"]
         c0, m0, w0 = cpu_s(f"/proc/{pid}/stat"), cpu_s(f"/proc/{pid}/task/{pid}/stat"), time.monotonic()
         time.sleep(sample_s)
         c1, m1, w1 = cpu_s(f"/proc/{pid}/stat"), cpu_s(f"/proc/{pid}/task/{pid}/stat"), time.monotonic()
-        s1 = json.loads(ctl(port, "state", "--json"))["flight"]
+        top1 = json.loads(ctl(port, "state", "--json"))
+        s1 = top1["flight"]
         perf = json.loads(ctl(port, "perf", "--json"))
         sim_s = s1["time_s"] - s0["time_s"]
         if sim_s <= 0.0 or s1["crashed"] or s1["paused"]:
@@ -93,6 +95,9 @@ def main():
                           "fps": perf["fps"], "max_fps": max_fps, "time_scale": time_scale,
                           "presentation_detached": os.environ.get("OPENRC_DETACH_PRESENTATION") == "1", "app_dir": app_dir or "app", "height_m": [round(s0["height_m"], 1), round(s1["height_m"], 1)],
                           "presentation_cadence": os.environ.get("OPENRC_PRESENTATION_CADENCE", ""),
+                          # Rendered frames per simulated second over the sample: below max_fps * realtime-equivalent
+                          # means the main thread saturated, and CPU per simulated second then compares unlike work.
+                          "frames_per_sim_s": round((top1["frame"] - top0["frame"]) / sim_s, 2),
                           "crashed": s1["crashed"], "tick": [s0["tick"], s1["tick"]]}))
     finally:
         ctl(port, "stop")

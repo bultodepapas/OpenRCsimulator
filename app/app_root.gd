@@ -51,6 +51,8 @@ const FailureConfig := preload("res://failures/config.gd")
 const FailureCatalog := preload("res://failures/catalog.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const FailureMenu := preload("res://ui/failures_menu.gd")
+const OutOfTrim := preload("res://sim/out_of_trim.gd")
+const TrimPracticeMenu := preload("res://ui/trim_practice_menu.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
 const CompanionsDialog := preload("res://ui/companions_dialog.gd")
 const LiveryPicker := preload("res://ui/livery_picker.gd")
@@ -174,6 +176,12 @@ var companions_dialog: CanvasLayer:
 var failure_menu: CanvasLayer:
 	get:
 		return screens.get_screen("failures") as CanvasLayer
+var trim_practice_menu: CanvasLayer:
+	get:
+		return screens.get_screen("trim_practice") as CanvasLayer
+## D6-TRIM-01: the airframes flown this app session (first flight only keeps each one, and its trim, until quit).
+## Shared by reference with every Home flight's session; never saved.
+var _out_of_trim_airframes: Dictionary = {}
 ## The interactive route has a Home to return to; the direct route (`--` arguments) only flies and quits.
 var has_home := false
 var controllers: Node
@@ -407,7 +415,8 @@ static func failure_cli_options_unsupported_for_aircraft(id: String, args: Packe
 	if not Catalog.is_rotorcraft(id):
 		return false
 	for arg in args:
-		for option in ["--failures", "--catastrophic", "--failure-notices", "--failure-seed"]:
+		for option in ["--failures", "--catastrophic", "--failure-notices", "--failure-seed",
+				"--failure-severity", "--failure-onset", "--failure-exclude"]:
 			if arg == option or arg.begins_with(option + "="):
 				return true
 	return false
@@ -471,6 +480,7 @@ func show_home() -> void:
 	home.set_lighting_config(lighting_config)
 	home.set_sky_config(preferences.get("sky_config", SkyConfig.defaults()))
 	home.set_failure_config(preferences.get("failure_config", FailureConfig.defaults()))
+	home.set_out_of_trim_config(preferences.get("out_of_trim_config", OutOfTrim.defaults()))
 	home.set_companion_config(preferences.get("companion_config", CompanionConfig.defaults()))
 	home.set_time_of_day(world_preset)
 	home.fly_requested.connect(start_flight)
@@ -491,6 +501,7 @@ func show_home() -> void:
 	home.weather_requested.connect(open_weather)
 	home.time_requested.connect(set_time_of_day)
 	home.failures_requested.connect(open_failures_settings)
+	home.trim_practice_requested.connect(open_trim_practice_settings)
 	home.companions_requested.connect(open_companions_settings)
 	home.update_download_requested.connect(_on_update_download)
 	home.update_hidden.connect(_on_update_hidden)
@@ -803,6 +814,11 @@ func start_flight(request: Dictionary = {}) -> void:
 		)
 		if checked_failures.get("ok", false):
 			failure_config_for_flight = checked_failures.config.duplicate(true)
+	var out_of_trim_for_flight: Dictionary = OutOfTrim.defaults()
+	if has_home and not is_random and not helicopter_route:
+		var checked_trim: Dictionary = OutOfTrim.validate(launch_preferences.get("out_of_trim_config", OutOfTrim.defaults()))
+		if checked_trim.ok:
+			out_of_trim_for_flight = checked_trim.config.duplicate(true)
 	if staged:
 		_loading_active = true
 		_loading_cancelled = false
@@ -935,6 +951,9 @@ func start_flight(request: Dictionary = {}) -> void:
 		flight.set("failure_config", failure_config_for_flight.duplicate(true))
 	if not helicopter_route and _has_property(flight, "failure_notifications"):
 		flight.set("failure_notifications", bool(failure_config_for_flight.get("notify", true)))
+	if not helicopter_route and _has_property(flight, "out_of_trim_config"):
+		flight.set("out_of_trim_config", out_of_trim_for_flight.duplicate(true))
+		flight.set("out_of_trim_airframes", _out_of_trim_airframes)
 	# Home preferences feed only the ordinary Club fixed-wing route. Direct CLI arguments and Natural Random
 	# remain owned by their flight entry points, and are never overwritten with Home settings.
 	if has_home and not is_random and not helicopter_route and launch_landscape == Landscapes.DEFAULT_ID \
@@ -2564,6 +2583,39 @@ func _on_failures_applied(raw: Dictionary) -> void:
 		home.set_note(_settings_note)
 	if pause_menu != null:
 		pause_menu.set_note(_settings_note)
+
+
+## D6-TRIM-01: a Home draft for the next airplane flight; the flying airframe never changes until the next Fly.
+func open_trim_practice_settings(from: Control = null) -> void:
+	if flight != null or not screens.is_top("home") or Catalog.is_rotorcraft(home.aircraft_id):
+		return
+	var checked: Dictionary = OutOfTrim.validate(preferences.get("out_of_trim_config", OutOfTrim.defaults()))
+	var menu := TrimPracticeMenu.new(checked.config if checked.ok else OutOfTrim.defaults())
+	menu.applied.connect(_on_trim_practice_applied)
+	menu.cancelled.connect(close_trim_practice_settings)
+	screens.push("trim_practice", menu, from if from != null else home.trim_practice_button)
+
+
+func close_trim_practice_settings() -> void:
+	if screens.is_top("trim_practice"):
+		screens.pop()
+
+
+func _on_trim_practice_applied(raw: Dictionary) -> void:
+	if trim_practice_menu == null:
+		return
+	var checked: Dictionary = OutOfTrim.validate(raw)
+	if not checked.ok:
+		trim_practice_menu.show_apply_error(checked.errors)
+		return
+	preferences.out_of_trim_config = checked.config.duplicate(true)
+	if home != null:
+		home.set_out_of_trim_config(checked.config)
+	var error: Error = Preferences.save_to(preferences_path, preferences)
+	_settings_note = "" if error == OK else tr("Could not save settings (error %d).") % error
+	close_trim_practice_settings()
+	if home != null:
+		home.set_note(_settings_note)
 
 
 ## Opens a draft over Home. Nothing is stored or used by a flight until Apply is pressed.

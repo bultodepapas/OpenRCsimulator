@@ -10,6 +10,7 @@ func _initialize() -> void:
 	_test_curves()
 	_test_mixer()
 	_test_servo_dynamics_and_saturation()
+	_test_servo_travel_endpoint_roundoff()
 	_test_linkage()
 	_test_invalid_inputs()
 	print("%d checks, %d failed" % [_check_count, _failure_count])
@@ -99,6 +100,30 @@ func _test_servo_dynamics_and_saturation() -> void:
 	var no_lag: Dictionary = Swash.step_servos(PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.4, 0.0, -0.2]), no_lag_spec, 0.1)
 	_close("omitting lag requests the rate-limited no-lag response", no_lag["positions"][0], 0.4)
 	_close("no-lag response preserves the negative servo command", no_lag["positions"][2], -0.2)
+
+
+func _test_servo_travel_endpoint_roundoff() -> void:
+	# In float64, previous + (target - previous) can round one ulp past a travel
+	# limit that is not a power of two. The achieved position must stay within the
+	# declared travel so that the next step accepts it as its previous position.
+	var spec := {
+		"travel_min": PackedFloat64Array([-0.7, -0.7, -0.7]),
+		"travel_max": PackedFloat64Array([0.7, 0.7, 0.7]),
+		"rate_per_second": PackedFloat64Array([1000.0, 1000.0, 1000.0]),
+	}
+	var previous := PackedFloat64Array([-0.5916722718265405, 0.4468872489025403, 0.1])
+	var desired := PackedFloat64Array([2.0, -2.0, -0.2])
+	_check("fixture rounds past both travel limits without the guard",
+		previous[0] + (0.7 - previous[0]) > 0.7 and previous[1] + (-0.7 - previous[1]) < -0.7)
+	var first: Dictionary = Swash.step_servos(previous, desired, spec, 1.0 / 240.0)
+	_check("full-travel servo step succeeds", first["ok"])
+	var positions: PackedFloat64Array = first["positions"]
+	_check("servos driven to travel ends stop exactly at their declared limits",
+		positions[0] == 0.7 and positions[1] == -0.7)
+	_check("an in-travel target keeps the unguarded step arithmetic bit for bit",
+		positions[2] == previous[2] + (-0.2 - previous[2]))
+	var second: Dictionary = Swash.step_servos(positions, desired, spec, 1.0 / 240.0)
+	_check("the next step accepts servos held at their travel limits", second["ok"])
 
 
 func _test_linkage() -> void:

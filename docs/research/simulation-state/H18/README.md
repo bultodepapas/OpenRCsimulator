@@ -40,3 +40,16 @@ zero reference speed.
 71 aero, ground-effect, downwash, wing-polar, trim, mode and golden scripts ([summary](tests.txt)): 68 pass, including
 `test_golden`, `test_ground_effect`, `test_downwash_lag`, `test_wing_polar` and `test_x8_flying_wing`. The three
 failures fail identically before H18 (`df4e1ca5c`); `test_yaw_damping` is the deliberately open R02 gate.
+
+## Cost
+
+`session_probe.gd` (2,400 warmup and 14,400 sampled ticks, no presentation observers), three alternating pairs
+between frozen hard-linked snapshots that differ only in `aero.gd` ([cost-pairs.jsonl](cost-pairs.jsonl)):
+
+| Case | Pair 1 µs/tick | Pair 2 | Pair 3 | Median change |
+| --- | --- | --- | --- | ---: |
+| Electric Stik, runway idle (ground effect) | 2,226 → 2,094 | 2,325 → 2,102 | 2,372 → 2,134 | −9.6% |
+
+Fingerprints are identical in every pair. The glow Stik and P-51 runway pairs and the airborne trim pairs ran while
+two other agents saturated the shared host (baseline medians up to twice their quiet values, p95 doubled); they are
+inconclusive and kept in the JSON only as a record. Repeat them on a quiet host.

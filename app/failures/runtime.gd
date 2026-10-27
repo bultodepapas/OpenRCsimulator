@@ -5,6 +5,7 @@ const Catalog := preload("res://failures/catalog.gd")
 
 const PLAN_FORMAT_V1 := "openrc-failure-plan v1"
 const PLAN_FORMAT_V2 := "openrc-failure-plan v2"
+const PLAN_FORMAT_V3 := "openrc-failure-plan v3"
 const PLAN_FORMAT := PLAN_FORMAT_V1
 const SNAPSHOT_FORMAT := "openrc-failure-snapshot v1"
 const RNG_VERSION := 1
@@ -26,7 +27,24 @@ const PLAN_KEYS_V2: Array[String] = [
 	"config", "eligibility_profile", "selected", "id", "onset_airborne_seconds",
 	"onset_airborne_ticks", "parameters", "identity",
 ]
+## v3 keeps the v2 keys; its config adds severity, onset window and excluded types (EM-29).
+const PLAN_KEYS_V3: Array[String] = PLAN_KEYS_V2
 const PLAN_KEYS: Array[String] = PLAN_KEYS_V1
+const NO_ELIGIBLE_MESSAGE := "No enabled failure type is available for this aircraft. Enable one in Failures or set the probability to 0."
+## Training-policy bands in hundredths, not measured RC failure magnitudes. Standard
+## reproduces the v1/v2 ranges and draw counts exactly.
+const SEVERITY_BANDS := {
+	"bias": {"mild": [4, 8], "standard": [8, 18], "severe": [18, 30]},
+	"rate_factor": {"mild": [50, 75], "standard": [25, 50], "severe": [10, 25]},
+	"throttle_ceiling": {"mild": [70, 85], "standard": [45, 70], "severe": [25, 45]},
+	"throttle_high": {"mild": [55, 70], "standard": [70, 90], "severe": [90, 100]},
+	"throttle_low": {"mild": [20, 30], "standard": [8, 20], "severe": [0, 8]},
+	"travel_limit": {"mild": [60, 75], "standard": [40, 60], "severe": [20, 40]},
+}
+const JAM_AXES := {"roll_jam": 0, "pitch_jam": 1, "yaw_jam": 2}
+const BIAS_AXES := {"roll_bias": 0, "pitch_bias": 1, "yaw_bias": 2}
+const SLOW_AXES := {"roll_slow": 0, "pitch_slow": 1, "yaw_slow": 2}
+const TRAVEL_AXES := {"roll_travel_limit": 0, "pitch_travel_limit": 1, "yaw_travel_limit": 2}
 const SNAPSHOT_KEYS: Array[String] = [
 	"format", "plan", "plan_identity", "event_id", "tick", "airborne_ticks",
 	"active", "activation_tick", "last_inputs", "jam_mask", "jam_positions", "held_inputs",
@@ -46,14 +64,29 @@ var _jam_mask := 0
 var _jam_positions := PackedFloat64Array([0.0, 0.0, 0.0])
 var _held_inputs := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 var _pending: Dictionary = {}
+## Reason for the last refused begin(); empty after success.
+var last_error := ""
 
 
 ## Resolve occurrence, event, parameters, and onset once. Invalid input leaves this runtime untouched.
-func begin(config: Dictionary, seed: int, dt: float, eligibility_profile: String = "") -> bool:
-	var resolved := _build_plan_v1(config, seed, dt) if eligibility_profile.is_empty() \
-		else _build_plan_v2(config, seed, dt, eligibility_profile)
+## No profile keeps the historical v1 event set; a profile writes the current v3 plan. An explicit
+## plan_format recreates a historical v2 plan for replaying existing records.
+func begin(config: Dictionary, seed: int, dt: float, eligibility_profile: String = "",
+		plan_format: String = "") -> bool:
+	var resolved: Dictionary
+	if eligibility_profile.is_empty():
+		resolved = _build_plan_v1(config, seed, dt) if plan_format in ["", PLAN_FORMAT_V1] \
+			else {"ok": false, "message": "a v2 or v3 failure plan needs an eligibility profile"}
+	elif plan_format == PLAN_FORMAT_V2:
+		resolved = _build_plan_v2(config, seed, dt, eligibility_profile)
+	elif plan_format in ["", PLAN_FORMAT_V3]:
+		resolved = _build_plan_v3(config, seed, dt, eligibility_profile)
+	else:
+		resolved = {"ok": false, "message": "unknown failure plan format"}
 	if not bool(resolved.get("ok", false)):
+		last_error = str(resolved.get("message", "failure plan is invalid"))
 		return false
+	last_error = ""
 	_plan = resolved.plan.duplicate(true)
 	_config = _plan.config.duplicate(true)
 	_seed = int(_plan.seed)
@@ -91,6 +124,9 @@ func prepare(inputs: PackedFloat64Array, servo: PackedFloat64Array, airborne: bo
 		elif failure_id == "throttle_stuck":
 			var resolved_high := float(_plan.parameters.high_demand)
 			candidate_held_inputs = PackedFloat64Array([0.0, 0.0, 0.0, maxf(inputs[3], resolved_high)])
+		elif failure_id == "throttle_stuck_low":
+			var resolved_low := float(_plan.parameters.low_demand)
+			candidate_held_inputs = PackedFloat64Array([0.0, 0.0, 0.0, minf(inputs[3], resolved_low)])
 		elif failure_id == "radio_loss":
 			candidate_held_inputs = _last_inputs.duplicate()
 			candidate_held_inputs[3] = 0.0
@@ -134,10 +170,11 @@ func effective_axis(axis: int, raw: float) -> float:
 		var mask := _effect_jam_mask()
 		if (mask & (1 << axis)) != 0:
 			return _effect_jam_positions()[axis]
-	if failure_id == "roll_bias" and axis == 0:
+	if int(BIAS_AXES.get(failure_id, -1)) == axis:
 		return clampf(raw + float(_plan.parameters.bias), -1.0, 1.0)
-	if failure_id == "pitch_bias" and axis == 1:
-		return clampf(raw + float(_plan.parameters.bias), -1.0, 1.0)
+	if int(TRAVEL_AXES.get(failure_id, -1)) == axis:
+		var limit := float(_plan.parameters.limit)
+		return clampf(raw, -limit, limit)
 	if failure_id == "radio_loss":
 		return _effect_held_inputs()[axis]
 	return raw
@@ -150,9 +187,7 @@ func effective_throttle(raw: float) -> float:
 	var failure_id := str(_plan.id)
 	if failure_id == "throttle_limit":
 		return minf(raw, float(_plan.parameters.maximum_demand))
-	if failure_id == "throttle_stuck":
-		return _effect_held_inputs()[3]
-	if failure_id == "radio_loss":
+	if failure_id in ["throttle_stuck", "throttle_stuck_low", "radio_loss"]:
 		return _effect_held_inputs()[3]
 	return raw
 
@@ -182,7 +217,7 @@ func servo_rate_factor(axis: int) -> float:
 	var failure_id := str(_plan.id)
 	if _is_jam_id(failure_id) and int(_plan.parameters.axis) == axis:
 		return 0.0
-	if failure_id == "roll_slow" and axis == 0:
+	if int(SLOW_AXES.get(failure_id, -1)) == axis:
 		return float(_plan.parameters.rate_factor)
 	return 1.0
 
@@ -340,6 +375,8 @@ func status() -> Dictionary:
 		source_label = str(definition.get("source_label", ""))
 	return {
 		"active": _active,
+		# A configured episode exists, so a healthy draw can be reported honestly after End.
+		"enabled": true,
 		"selected": bool(_plan.selected),
 		"event_id": failure_id,
 		"label": label_text,
@@ -436,9 +473,21 @@ func _snapshot_state_is_valid(source: Dictionary, resolved: Dictionary, tick: in
 		var held_throttle := float(source.held_inputs[3])
 		return held_throttle >= floor and held_throttle <= 1.0 \
 			and float(source.last_inputs[3]) == held_throttle
+	if failure_id == "throttle_stuck_low":
+		if float(source.held_inputs[0]) != 0.0 or float(source.held_inputs[1]) != 0.0 \
+			or float(source.held_inputs[2]) != 0.0:
+			return false
+		var ceiling := float(resolved.parameters.low_demand)
+		var held_low := float(source.held_inputs[3])
+		return held_low >= 0.0 and held_low <= ceiling and float(source.last_inputs[3]) == held_low
 	if failure_id == "throttle_limit":
 		return _float_array_is_zero(source.held_inputs) \
 			and float(source.last_inputs[3]) <= float(resolved.parameters.maximum_demand)
+	if TRAVEL_AXES.has(failure_id):
+		var travel_limit := float(resolved.parameters.limit)
+		var travel_axis := int(TRAVEL_AXES[failure_id])
+		return _float_array_is_zero(source.held_inputs) \
+			and absf(float(source.last_inputs[travel_axis])) <= travel_limit
 	return _float_array_is_zero(source.held_inputs)
 
 
@@ -448,8 +497,9 @@ func _validated_plan(plan_value: Variant) -> Dictionary:
 	var source: Dictionary = plan_value
 	if typeof(source.get("format")) != TYPE_STRING:
 		return {"ok": false}
-	var is_v2: bool = source.format == PLAN_FORMAT_V2
-	if not is_v2 and source.format != PLAN_FORMAT_V1:
+	var version := 3 if source.format == PLAN_FORMAT_V3 else (2 if source.format == PLAN_FORMAT_V2 else 1)
+	var is_v2: bool = version >= 2
+	if version == 1 and source.format != PLAN_FORMAT_V1:
 		return {"ok": false}
 	if not _has_exact_keys(source, PLAN_KEYS_V2 if is_v2 else PLAN_KEYS_V1):
 		return {"ok": false}
@@ -467,8 +517,13 @@ func _validated_plan(plan_value: Variant) -> Dictionary:
 		or typeof(source.onset_airborne_ticks) != TYPE_INT \
 		or typeof(source.parameters) != TYPE_DICTIONARY or typeof(source.identity) != TYPE_STRING:
 		return {"ok": false}
-	var rebuilt := _build_plan_v2(source.config, int(source.seed), float(source.dt), source.eligibility_profile) \
-		if is_v2 else _build_plan_v1(source.config, int(source.seed), float(source.dt))
+	var rebuilt: Dictionary
+	if version == 3:
+		rebuilt = _build_plan_v3(source.config, int(source.seed), float(source.dt), source.eligibility_profile)
+	elif version == 2:
+		rebuilt = _build_plan_v2(source.config, int(source.seed), float(source.dt), source.eligibility_profile)
+	else:
+		rebuilt = _build_plan_v1(source.config, int(source.seed), float(source.dt))
 	if not bool(rebuilt.get("ok", false)):
 		return {"ok": false}
 	var expected: Dictionary = rebuilt.plan
@@ -478,18 +533,25 @@ func _validated_plan(plan_value: Variant) -> Dictionary:
 
 
 static func _build_plan_v1(config_value: Variant, seed_value: Variant, dt_value: Variant) -> Dictionary:
-	return _build_plan_versioned(config_value, seed_value, dt_value, "", false)
+	return _build_plan_versioned(config_value, seed_value, dt_value, "", 1)
 
 
 static func _build_plan_v2(config_value: Variant, seed_value: Variant, dt_value: Variant,
 		eligibility_profile: String) -> Dictionary:
 	if eligibility_profile not in Catalog.PROFILES:
 		return {"ok": false, "message": "unknown failure eligibility profile"}
-	return _build_plan_versioned(config_value, seed_value, dt_value, eligibility_profile, true)
+	return _build_plan_versioned(config_value, seed_value, dt_value, eligibility_profile, 2)
+
+
+static func _build_plan_v3(config_value: Variant, seed_value: Variant, dt_value: Variant,
+		eligibility_profile: String) -> Dictionary:
+	if eligibility_profile not in Catalog.PROFILES:
+		return {"ok": false, "message": "unknown failure eligibility profile"}
+	return _build_plan_versioned(config_value, seed_value, dt_value, eligibility_profile, 3)
 
 
 static func _build_plan_versioned(config_value: Variant, seed_value: Variant, dt_value: Variant,
-		eligibility_profile: String, version_two: bool) -> Dictionary:
+		eligibility_profile: String, version: int) -> Dictionary:
 	if typeof(seed_value) != TYPE_INT or int(seed_value) < 0 or int(seed_value) > UINT32_MAX:
 		return {"ok": false, "message": "failure seed must be an unsigned 32-bit integer"}
 	if typeof(dt_value) != TYPE_FLOAT or not is_finite(float(dt_value)) \
@@ -499,6 +561,21 @@ static func _build_plan_versioned(config_value: Variant, seed_value: Variant, dt
 	if not bool(config_result.get("ok", false)):
 		return {"ok": false, "message": "failure config is invalid", "errors": config_result.get("errors", PackedStringArray())}
 	var normalized: Dictionary = config_result.config
+	var severity := Config.DEFAULT_SEVERITY
+	var onset_window: Array = Config.onset_window(Config.DEFAULT_ONSET)
+	var v3_ids: Array[String] = []
+	if version < 3:
+		if not Config.uses_default_selection(normalized):
+			return {"ok": false, "message": "failure severity, onset window and type selection need a v3 plan"}
+		normalized = Config.legacy_projection(normalized)
+	else:
+		severity = str(normalized.severity)
+		onset_window = Config.onset_window(str(normalized.onset))
+		v3_ids = Catalog.failure_ids_v3(bool(normalized.include_catastrophic), eligibility_profile,
+			normalized.excluded_ids)
+		# Refuse before drawing so the same request never launches only on lucky seeds.
+		if int(normalized.probability_percent) > 0 and v3_ids.is_empty():
+			return {"ok": false, "message": NO_ELIGIBLE_MESSAGE}
 	var selected := false
 	var failure_id := ""
 	var onset_seconds := 0
@@ -512,28 +589,31 @@ static func _build_plan_versioned(config_value: Variant, seed_value: Variant, dt
 	var occurrence_roll := int(occurrence_draw[1])
 	selected = occurrence_roll < int(normalized.probability_percent)
 	if selected:
-		var ids: Array[String] = Catalog.failure_ids(bool(normalized.include_catastrophic), eligibility_profile)
+		var ids: Array[String] = v3_ids if version == 3 \
+			else Catalog.failure_ids(bool(normalized.include_catastrophic), eligibility_profile)
 		if ids.is_empty():
 			return {"ok": false, "message": "failure profile has no eligible events"}
 		var event_draw := _draw_bounded(state, ids.size())
 		state = int(event_draw[0])
 		failure_id = ids[int(event_draw[1])]
-		parameters = _resolve_parameters(failure_id, state)
+		parameters = _resolve_parameters(failure_id, state, severity)
 		state = int(parameters["_rng_state"])
 		parameters.erase("_rng_state")
-		var onset_draw := _draw_bounded(state, 101)
+		var earliest := int(onset_window[0])
+		var latest := int(onset_window[1])
+		var onset_draw := _draw_bounded(state, latest - earliest + 1)
 		state = int(onset_draw[0])
-		onset_seconds = 20 + int(onset_draw[1])
-		var first_tick := int(ceili(20.0 / float(dt_value)))
-		var last_tick := int(floor(120.0 / float(dt_value)))
+		onset_seconds = earliest + int(onset_draw[1])
+		var first_tick := int(ceili(float(earliest) / float(dt_value)))
+		var last_tick := int(floor(float(latest) / float(dt_value)))
 		onset_ticks = mini(int(ceili(float(onset_seconds) / float(dt_value))), last_tick)
 		onset_ticks = maxi(onset_ticks, first_tick)
 
 	var plan_data: Dictionary = {
-		"format": PLAN_FORMAT_V1,
+		"format": [PLAN_FORMAT_V1, PLAN_FORMAT_V2, PLAN_FORMAT_V3][version - 1],
 		"rng_version": RNG_VERSION,
 		"rng_name": RNG_NAME,
-		"catalog_version": Catalog.VERSION if version_two else Catalog.LEGACY_VERSION,
+		"catalog_version": [Catalog.LEGACY_VERSION, Catalog.PROFILE_VERSION, Catalog.VERSION][version - 1],
 		"seed": int(seed_value),
 		"dt": float(dt_value),
 		"config": normalized.duplicate(true),
@@ -544,51 +624,62 @@ static func _build_plan_versioned(config_value: Variant, seed_value: Variant, dt
 		"parameters": parameters,
 		"identity": "",
 	}
-	if not version_two:
-		plan_data.format = PLAN_FORMAT_V1
-	else:
-		plan_data.format = PLAN_FORMAT_V2
+	if version >= 2:
 		plan_data["eligibility_profile"] = eligibility_profile
 	plan_data.identity = _identity_for(plan_data)
 	return {"ok": true, "plan": plan_data}
 
 
-static func _resolve_parameters(failure_id: String, initial_state: int) -> Dictionary:
+static func _resolve_parameters(failure_id: String, initial_state: int, severity := "standard") -> Dictionary:
 	var state := initial_state
 	var parameters: Dictionary = {}
-	if failure_id in ["roll_jam", "pitch_jam", "yaw_jam"]:
-		var axis := 0 if failure_id == "roll_jam" else (1 if failure_id == "pitch_jam" else 2)
-		parameters = {"mechanism": "logical_axis_position_hold", "axis": axis}
-	elif failure_id in ["roll_bias", "pitch_bias"]:
-		var bias_draw := _draw_bounded(state, 11)
+	if JAM_AXES.has(failure_id):
+		parameters = {"mechanism": "logical_axis_position_hold", "axis": int(JAM_AXES[failure_id])}
+	elif BIAS_AXES.has(failure_id):
+		var bias_draw := _draw_band(state, "bias", severity)
 		state = int(bias_draw[0])
-		var magnitude_hundredths := 8 + int(bias_draw[1])
-		parameters = {"mechanism": "persistent_command_bias", "bias": float(magnitude_hundredths) / 100.0}
+		parameters = {"mechanism": "persistent_command_bias", "bias": float(bias_draw[1]) / 100.0}
 		var sign_draw := _draw_bounded(state, 2)
 		state = int(sign_draw[0])
 		if int(sign_draw[1]) == 0:
 			parameters.bias = -float(parameters.bias)
-	elif failure_id == "roll_slow":
-		var rate_draw := _draw_bounded(state, 26)
+	elif SLOW_AXES.has(failure_id):
+		var rate_draw := _draw_band(state, "rate_factor", severity)
 		state = int(rate_draw[0])
 		parameters = {
 			"mechanism": "reduced_servo_rate",
-			"rate_factor": float(25 + int(rate_draw[1])) / 100.0,
+			"rate_factor": float(rate_draw[1]) / 100.0,
+		}
+	elif TRAVEL_AXES.has(failure_id):
+		var travel_draw := _draw_band(state, "travel_limit", severity)
+		state = int(travel_draw[0])
+		parameters = {
+			"mechanism": "restricted_actuator_travel",
+			"axis": int(TRAVEL_AXES[failure_id]),
+			"limit": float(travel_draw[1]) / 100.0,
 		}
 	elif failure_id == "throttle_limit":
-		var limit_draw := _draw_bounded(state, 26)
+		var limit_draw := _draw_band(state, "throttle_ceiling", severity)
 		state = int(limit_draw[0])
 		parameters = {
 			"mechanism": "throttle_demand_ceiling",
-			"maximum_demand": float(45 + int(limit_draw[1])) / 100.0,
+			"maximum_demand": float(limit_draw[1]) / 100.0,
 		}
 	elif failure_id == "throttle_stuck":
-		var stuck_draw := _draw_bounded(state, 21)
+		var stuck_draw := _draw_band(state, "throttle_high", severity)
 		state = int(stuck_draw[0])
 		parameters = {
 			"mechanism": "elevated_throttle_demand_hold",
-			"high_demand": float(70 + int(stuck_draw[1])) / 100.0,
+			"high_demand": float(stuck_draw[1]) / 100.0,
 			"capture_policy": "max_activation_demand_and_resolved_high_demand",
+		}
+	elif failure_id == "throttle_stuck_low":
+		var low_draw := _draw_band(state, "throttle_low", severity)
+		state = int(low_draw[0])
+		parameters = {
+			"mechanism": "reduced_throttle_demand_hold",
+			"low_demand": float(low_draw[1]) / 100.0,
+			"capture_policy": "min_activation_demand_and_resolved_low_demand",
 		}
 	elif failure_id == "radio_loss":
 		parameters = {
@@ -602,6 +693,13 @@ static func _resolve_parameters(failure_id: String, initial_state: int) -> Dicti
 		parameters = {"mechanism": "electric_motor_drive_disconnect"}
 	parameters["_rng_state"] = state
 	return parameters
+
+
+## Uniform integer in an inclusive severity band (hundredths); returns [state, value].
+static func _draw_band(state: int, band: String, severity: String) -> Array[int]:
+	var bounds: Array = SEVERITY_BANDS[band][severity]
+	var draw := _draw_bounded(state, int(bounds[1]) - int(bounds[0]) + 1)
+	return [int(draw[0]), int(bounds[0]) + int(draw[1])]
 
 
 static func _draw_u32(state: int) -> Array[int]:
@@ -707,4 +805,4 @@ func _float_array_is_zero(values: PackedFloat64Array) -> bool:
 
 
 func _is_jam_id(failure_id: String) -> bool:
-	return failure_id in ["roll_jam", "pitch_jam", "yaw_jam"]
+	return JAM_AXES.has(failure_id)

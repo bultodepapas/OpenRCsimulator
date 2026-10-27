@@ -33,6 +33,9 @@ const ControlSurfaces := preload("res://physics/control_surfaces.gd")
 const InputPanel := preload("res://render/panel.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const FailureConfig := preload("res://failures/config.gd")
+const OutOfTrim := preload("res://sim/out_of_trim.gd")
+## D6-TRIM-01: one rudder trim press in maximum-throw units, like the aileron's 0.5 %.
+const RUDDER_TRIM_STEP := 0.005
 const CompanionConfig := preload("res://ai/companions/config.gd")
 const CompanionManager := preload("res://ai/companions/manager.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
@@ -133,6 +136,11 @@ var _companions_error := ""
 var failure_config: Dictionary = FailureConfig.defaults()
 var failure_seed: int = -1
 var failure_notifications: bool = true
+## D6-TRIM-01: natural out-of-trim airframes, resolved when this flight is created like the failure settings.
+## The shell shares `out_of_trim_airframes` across its flights (first flight only keeps an airframe all session).
+var out_of_trim_config: Dictionary = OutOfTrim.defaults()
+var out_of_trim_seed: int = -1
+var out_of_trim_airframes: Dictionary = {}
 var _failure_notice: CanvasLayer
 var _failure_label: Label
 var _failure_overlays_visible: bool = true
@@ -166,6 +174,16 @@ func _failure_options(options: Dictionary) -> Dictionary:
 			if options[key] not in ["on", "off"]:
 				return {ok = false, errors = ["--%s must be on or off" % key]}
 			config["include_catastrophic" if key == "catastrophic" else "notify"] = options[key] == "on"
+	# EM-29: severity, onset window and excluded types; values are validated by FailureConfig.
+	if options.has("failure-severity"):
+		config.severity = str(options["failure-severity"])
+	if options.has("failure-onset"):
+		config.onset = str(options["failure-onset"])
+	if options.has("failure-exclude"):
+		var excluded: Array[String] = []
+		for item: String in str(options["failure-exclude"]).split(",", false):
+			excluded.append(item.strip_edges())
+		config.excluded_ids = excluded
 	if options.has("failure-seed"):
 		if typeof(options["failure-seed"]) != TYPE_STRING or not str(options["failure-seed"]).is_valid_int():
 			return {ok = false, errors = ["--failure-seed needs an integer from 0 to 4294967295"]}
@@ -183,6 +201,43 @@ func _failure_options(options: Dictionary) -> Dictionary:
 		random_source.randomize()
 		seed_value = random_source.randi() if checked.config.probability_percent > 0 else 0
 	return {ok = true, config = checked.config, seed = seed_value, errors = []}
+
+
+## D6-TRIM-01: --out-of-trim=<0..100> enables it at that intensity, --out-of-trim-mode=first-flight|every-flight,
+## --out-of-trim-seed=<n> fixes the airframe draws. Otherwise the shell's (Home's) selection.
+func _out_of_trim_options(options: Dictionary) -> Dictionary:
+	var config: Dictionary = out_of_trim_config.duplicate(true)
+	var seed_value: int = out_of_trim_seed
+	if options.has("out-of-trim"):
+		if typeof(options["out-of-trim"]) != TYPE_STRING or not str(options["out-of-trim"]).is_valid_int():
+			return {ok = false, errors = ["--out-of-trim needs an integer from 0 to 100"]}
+		config.enabled = true
+		config.intensity_percent = str(options["out-of-trim"]).to_int()
+	if options.has("out-of-trim-mode"):
+		if options["out-of-trim-mode"] not in ["first-flight", "every-flight"]:
+			return {ok = false, errors = ["--out-of-trim-mode must be first-flight or every-flight"]}
+		config.mode = str(options["out-of-trim-mode"]).replace("-", "_")
+	if options.has("out-of-trim-seed"):
+		if typeof(options["out-of-trim-seed"]) != TYPE_STRING or not str(options["out-of-trim-seed"]).is_valid_int():
+			return {ok = false, errors = ["--out-of-trim-seed needs an integer from 0 to 4294967295"]}
+		seed_value = str(options["out-of-trim-seed"]).to_int()
+		if seed_value < 0:
+			return {ok = false, errors = ["--out-of-trim-seed must be non-negative"]}
+	var checked: Dictionary = OutOfTrim.validate(config)
+	if not checked.ok:
+		return checked
+	if seed_value > 4294967295:
+		return {ok = false, errors = ["Out-of-trim seed must fit an unsigned 32-bit integer"]}
+	if seed_value == -1:
+		var random_source := RandomNumberGenerator.new()
+		random_source.randomize()
+		seed_value = random_source.randi() if checked.config.enabled else 0
+	return {ok = true, config = checked.config, seed = seed_value, errors = []}
+
+
+## One built airframe per catalog aircraft (its battery or fuel choice does not rebuild it); a Workshop trial is its own.
+func _out_of_trim_airframe_key() -> String:
+	return aircraft_id if workshop_trial.is_empty() else "workshop:" + str(workshop_trial.identity.get("trial_id", ""))
 
 
 ## Direct/technical launches never read interactive preferences. All values remain SI/full precision.
@@ -626,6 +681,15 @@ func _prepare_flight() -> void:
 		set_process(false)
 		set_process_unhandled_input(false)
 		return
+	var trim_options: Dictionary = _out_of_trim_options(args)
+	if not trim_options.ok or (_scripted and trim_options.config.enabled):
+		startup_error = "; ".join(trim_options.errors) if not trim_options.ok else "Out-of-trim airframes require a physics flight."
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
 	var conditions: Dictionary = _weather_options(args)
 	if not conditions.ok:
 		startup_error = "; ".join(conditions.errors)
@@ -786,6 +850,19 @@ func _prepare_flight() -> void:
 	failure_notifications = failure_config.notify
 	if not _scripted and not session.setup_failures(failure_config, failure_seed):
 		startup_error = session.failure_error
+		session.free()
+		session = null
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
+	out_of_trim_config = trim_options.config.duplicate(true)
+	out_of_trim_seed = trim_options.seed
+	if not _scripted and not session.setup_out_of_trim(out_of_trim_config, out_of_trim_seed, out_of_trim_airframes,
+			_out_of_trim_airframe_key()):
+		startup_error = session.out_of_trim_error
 		session.free()
 		session = null
 		if not interactive_start:
@@ -1547,6 +1624,8 @@ func controller_action(action: String) -> bool:
 		"trim_right": session.adjust_aileron_trim(0.005)
 		"trim_up": session.adjust_elevator_trim(-0.1)
 		"trim_down": session.adjust_elevator_trim(0.1)
+		"trim_yaw_left": session.adjust_rudder_trim(-RUDDER_TRIM_STEP)
+		"trim_yaw_right": session.adjust_rudder_trim(RUDDER_TRIM_STEP)
 		"overlay_preset":
 			if _overlays != null: _overlays.cycle_preset()
 		"rates_toggle":
@@ -1849,6 +1928,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_PAGEUP, KEY_PAGEDOWN:
 				if session.adjust_elevator_trim(-0.1 if event.physical_keycode == KEY_PAGEUP else 0.1):
 					_note = tr("Elevator trim: %+.1f° (PgUp down / PgDn up)") % (session.trims.pitch * session.throws_deg().elevator)
+					get_viewport().set_input_as_handled()
+			KEY_COMMA, KEY_PERIOD:
+				if session.adjust_rudder_trim(-RUDDER_TRIM_STEP if event.physical_keycode == KEY_COMMA else RUDDER_TRIM_STEP):
+					_note = tr("Rudder trim: %+.1f%%") % (session.trims.yaw * 100.0)
 					get_viewport().set_input_as_handled()
 			KEY_J:
 				_begin_smoke_assignment()

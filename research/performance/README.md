@@ -779,3 +779,30 @@ tmp/release-run/probe.x86_64 --headless --audio-driver Dummy -- \
 
 The wrapper prints `RELEASE_SESSION_PROBE complete debug=false release=true` and exits with the
 probe's status. [Release tick evidence](../../docs/research/visual-quality-implementation/VQ-01c/release-tick-2026-10-27/README.md).
+
+## Observer cadence (VQ-01c-R1)
+
+The windsock/people, profile-smoke, ground-gear and flight-audio observers on `Simulation.stepped`
+run once per rendered frame ([`presentation_cadence.gd`](../../app/render/presentation_cadence.gd);
+`--presentation-cadence=<0..4>` after `--` or `OPENRC_PRESENTATION_CADENCE`; 0 is per tick).
+
+`observer_cadence_pair.gd` flies four real Stik descents with aileron pulses. One `FlightAudio` rig per
+cadence observes the same session (per tick; 1–4 frames at 60 fps; one frame at 30 and 144 fps) while a
+rig-free session steps in lockstep. It reports observation counts, touchdown cues and servo transitions
+per rig, and fails on a physics difference or a touchdown cue that differs from per tick.
+
+```sh
+python3 tools/godot/run_checked.py --timeout 2400 -- "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/performance/observer_cadence_pair.gd"
+```
+
+`observer_cadence_bench.py` alternates `app_cpu_per_sim.py` runs of a baseline app copy and a candidate
+app copy at each cadence, rotating the order every pair, and appends JSON lines. Freeze both copies
+first (scripts copied, not hard-linked), so later edits cannot reach a run.
+
+```sh
+python3 research/performance/observer_cadence_bench.py tmp/ab-snap-<base>/app tmp/ab-snap-<cand>/app \
+  tmp/cadence-airborne.jsonl airborne 3 1,2,3,4
+```
+
+[Observer cadence evidence](../../docs/research/visual-quality-implementation/VQ-01c/observer-cadence-2026-10-27/README.md).

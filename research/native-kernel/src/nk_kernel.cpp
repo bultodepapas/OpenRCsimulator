@@ -12,6 +12,7 @@
 #include <godot_cpp/variant/packed_float64_array.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 #include <godot_cpp/variant/string.hpp>
+#include <godot_cpp/variant/string_name.hpp>
 
 #include <chrono>
 #include <initializer_list>
@@ -19,6 +20,7 @@
 #include <vector>
 
 #include "nk_aero.hpp"
+#include "nk_stage.hpp"
 #include "nk_wheels.hpp"
 
 namespace {
@@ -31,7 +33,9 @@ using godot::String;
 using godot::Variant;
 
 constexpr int kStateSize = 13;
-constexpr const char *kBackend = "openrc-native-kernel-nk3-research";
+constexpr const char *kBackend = "native";
+// Bump on any change to the stage contract (inputs, layout, outputs); the app loader and receipt must agree.
+constexpr const char *kBackendVersion = "openrc-native-kernel-stage-v1";
 constexpr int kAbi = 1;
 // Law identities the port mirrors; the oracle compares them with the loaded GDScript constants.
 constexpr const char *kAeroLaw = "section-plane-source-weighted-wake-velocity-v2";
@@ -411,6 +415,138 @@ bool decode_lake(Decoder &dec, const Dictionary &lake, nk::LakeTerrain &out) {
 	return true;
 }
 
+bool decode_prop(Decoder &dec, const Dictionary &prop, nk::PropModel &out) {
+	out = nk::PropModel();
+	// Legacy fixed-pitch propeller only: no kind/glow/electric/turbine source, no axis, no crossflow tables,
+	// no slipstream or shaft (D6).
+	if (!dec.only(prop, "propulsion", {"max_rpm", "idle_rpm", "lag", "diameter", "offset", "ct", "cp", "rotor_inertia",
+				"id", "cp_min"})) {
+		return false;
+	}
+	std::vector<nk::R> offset;
+	if (!dec.number(prop, "diameter", out.diameter, true) || !dec.vec(prop, "offset", offset, true, 3) ||
+			!dec.vec(prop, "ct", out.ct, true) || !dec.vec(prop, "cp", out.cp, true) ||
+			!dec.number(prop, "rotor_inertia", out.rotor_inertia, true) || !dec.number(prop, "cp_min", out.cp_min, false, 0.0)) {
+		return false;
+	}
+	if (out.ct.size() < 4 || out.ct.size() % 2 != 0 || out.cp.size() < 4 || out.cp.size() % 2 != 0) {
+		return dec.fail("propeller ct/cp tables need at least two [J, value] rows");
+	}
+	for (int i = 0; i < 3; ++i) {
+		out.offset[i] = offset[i];
+	}
+	return true;
+}
+
+bool decode_hull(Decoder &dec, const Dictionary &prepared, nk::HullPrepared &out) {
+	out = nk::HullPrepared();
+	if (prepared.is_empty()) {
+		return true;
+	}
+	if (!dec.only(prepared, "hull", {"points", "stiffness", "damping", "reach", "mass", "inertia", "surfaces", "lake",
+				"lake_bounds_ne_m", "terminal_j_per_kg", "crash_depth_m"})) {
+		return false; // geometry_only (live mass) hulls take HullContact.loads_at_properties, not ported
+	}
+	out.present = true;
+	if (!dec.vec(prepared, "points", out.points, true) || !dec.vec(prepared, "stiffness", out.stiffness, true) ||
+			!dec.vec(prepared, "damping", out.damping, true) || !dec.number(prepared, "reach", out.reach, true) ||
+			!dec.vec(prepared, "surfaces", out.surfaces, false)) {
+		return false;
+	}
+	const size_t count = out.points.size() / 3;
+	if (out.points.empty() || out.points.size() % 3 != 0 || out.stiffness.size() != count || out.damping.size() != count) {
+		return dec.fail("hull points/stiffness/damping sizes");
+	}
+	if (!out.surfaces.empty() && out.surfaces.size() % nk::kAirframeStride != 0) {
+		return dec.fail("airframe friction table stride");
+	}
+	Dictionary lake;
+	if (!dec.dict(prepared, "lake", lake, false) || !decode_lake(dec, lake, out.lake)) {
+		return false;
+	}
+	if (prepared.has("lake_bounds_ne_m")) {
+		std::vector<double> bounds;
+		if (!dec.vec(prepared, "lake_bounds_ne_m", bounds, true)) {
+			return false;
+		}
+		out.has_bounds = bounds.size() == 4;
+		for (size_t i = 0; i < 4 && out.has_bounds; ++i) {
+			out.bounds[i] = bounds[i];
+		}
+	}
+	return true;
+}
+
+bool layout_int(Decoder &dec, const Dictionary &layout, const char *key, int &out) {
+	if (!layout.has(key) || layout[key].get_type() != Variant::INT) {
+		return dec.fail(std::string("layout.") + key + " must be an int");
+	}
+	out = static_cast<int>(static_cast<int64_t>(layout[key]));
+	return true;
+}
+
+bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
+	m = nk::StageModel();
+	// Session capabilities whose laws are not ported: the caller keeps the GDScript stage (D6).
+	for (const char *flag : {"retractable", "glow", "coupled", "turbine", "liquid", "finite_fuel", "flaps",
+				"spatial_weather", "turbulence", "vertical_atmosphere", "weather_pending_reset", "not_calm",
+				"slipstream", "rotor_dynamics"}) {
+		if (!config.has(flag) || config[flag].get_type() != Variant::BOOL) {
+			return dec.fail(std::string("capability flag missing: ") + flag);
+		}
+		if (static_cast<bool>(config[flag])) {
+			return dec.fail(std::string("unsupported session capability: ") + flag);
+		}
+	}
+	Dictionary model, gear, lake, hull, layout, propulsion;
+	if (!dec.dict(config, "model", model, true) || !dec.dict(config, "gear", gear, true) ||
+			!dec.dict(config, "lake", lake, true) || !dec.dict(config, "hull", hull, true) ||
+			!dec.dict(config, "layout", layout, true) || !dec.dict(model, "propulsion", propulsion, true)) {
+		return false;
+	}
+	if (!decode_aero(dec, model, m.aero) || !decode_prop(dec, propulsion, m.prop) || !decode_gear(dec, gear, m.ground.gear)) {
+		return false;
+	}
+	if (!config.has("surfaces") || config["surfaces"].get_type() != Variant::PACKED_FLOAT64_ARRAY ||
+			!config.has("lake_valid") || config["lake_valid"].get_type() != Variant::BOOL ||
+			!config.has("soft_hull") || config["soft_hull"].get_type() != Variant::BOOL) {
+		return dec.fail("surfaces, lake_valid and soft_hull are required");
+	}
+	const PackedFloat64Array surfaces = config["surfaces"];
+	m.ground.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
+	m.ground.surfaces.valid = nk::surface_table_is_valid(m.ground.surfaces.values);
+	m.ground.lake_valid = static_cast<bool>(config["lake_valid"]);
+	if (m.ground.lake_valid && !decode_lake(dec, lake, m.ground.lake)) {
+		return false;
+	}
+	m.soft_hull = static_cast<bool>(config["soft_hull"]);
+	if (m.soft_hull && !decode_hull(dec, hull, m.hull)) {
+		return false;
+	}
+	if (!dec.number(config, "density", m.density, true) ||
+			!dec.number(config, "ground_effect_reach", m.ground_effect_reach, true)) {
+		return false;
+	}
+	nk::StageLayout &L = m.layout;
+	if (!layout_int(dec, layout, "aux_size", L.aux_size) || !layout_int(dec, layout, "rpm", L.rpm) ||
+			!layout_int(dec, layout, "servo", L.servo) || !layout_int(dec, layout, "anchors", L.anchors) ||
+			!layout_int(dec, layout, "anchor_count", L.anchor_count) || !layout_int(dec, layout, "downwash", L.downwash) ||
+			!layout_int(dec, layout, "wheel_count", L.wheel_count) || !layout_int(dec, layout, "rotor_index", L.rotor_index) ||
+			!layout_int(dec, layout, "wheel_index", L.wheel_index) || !layout_int(dec, layout, "brake_input", L.brake_input) ||
+			!layout_int(dec, layout, "input_count", L.input_count)) {
+		return false;
+	}
+	if (L.rotor_index != 0 || L.wheel_index != 0) {
+		return dec.fail("continuous wash pieces before the wheels are not ported");
+	}
+	if (L.wheel_count < 1 || L.wheel_count > 16 || L.wheel_count != static_cast<int>(m.ground.gear.contacts.size()) ||
+			L.anchor_count != L.wheel_count || L.anchors + L.anchor_count * 3 > L.aux_size || L.servo + 2 >= L.aux_size ||
+			L.rpm < 0 || L.rpm >= L.aux_size || L.downwash >= L.aux_size) {
+		return dec.fail("unsupported or inconsistent layout");
+	}
+	return true;
+}
+
 bool read_deflections(const PackedFloat64Array &d, nk::Deflections &out) {
 	if (d.size() != 4 && d.size() != 5) {
 		return false;
@@ -432,6 +568,13 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::AeroModel aero_;
 	bool aero_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
+	nk::StageModel stage_;
+	bool stage_ready_ = false;
+	nk::TickContext tick_;
+	int64_t stage_calls_ = 0;
+	bool stage_timing_ = false;
+	double stage_ns_ = 0.0;
+	int64_t context_calls_ = 0;
 
 protected:
 	static void _bind_methods() {
@@ -453,6 +596,16 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("literal_table"), &OpenRCNativeKernel::literal_table);
 		godot::ClassDB::bind_method(D_METHOD("bench_wheels", "s", "steer", "anchors", "speeds", "brake", "iterations"),
 			&OpenRCNativeKernel::bench_wheels);
+		godot::ClassDB::bind_method(D_METHOD("prepare_stage", "config"), &OpenRCNativeKernel::prepare_stage);
+		godot::ClassDB::bind_method(D_METHOD("set_tick_context", "aux", "inputs", "deflections", "time_now"),
+			&OpenRCNativeKernel::set_tick_context);
+		godot::ClassDB::bind_method(D_METHOD("stage", "body", "continuous", "t"), &OpenRCNativeKernel::stage);
+		godot::ClassDB::bind_method(D_METHOD("stage_stats"), &OpenRCNativeKernel::stage_stats);
+		godot::ClassDB::bind_method(D_METHOD("reset_stage_stats", "timing"), &OpenRCNativeKernel::reset_stage_stats);
+		godot::ClassDB::bind_method(D_METHOD("prop_component", "s", "wind", "rho", "rpm"), &OpenRCNativeKernel::prop_component);
+		godot::ClassDB::bind_method(D_METHOD("hull_component", "s"), &OpenRCNativeKernel::hull_component);
+		godot::ClassDB::bind_method(D_METHOD("ground_component", "s", "values"), &OpenRCNativeKernel::ground_component);
+		godot::ClassDB::bind_method(D_METHOD("ground_up_component", "s"), &OpenRCNativeKernel::ground_up_component);
 		godot::ClassDB::bind_method(D_METHOD("bench_aero", "s", "wind", "rho", "d", "downwash_cl", "ground_up", "iterations"),
 			&OpenRCNativeKernel::bench_aero);
 	}
@@ -461,6 +614,8 @@ public:
 	Dictionary backend_identity() const {
 		Dictionary out;
 		out["backend"] = kBackend;
+		out["backend_version"] = kBackendVersion;
+		out["abi_version"] = kAbi;
 		out["abi"] = kAbi;
 		out["aero_law"] = kAeroLaw;
 		out["rolling_law"] = kRollingLaw;
@@ -655,6 +810,9 @@ public:
 			{"0.00000001", nk::kLakeEdgeEpsilon}, {"0.0381", nk::kReferenceRadius}, {"0.02", nk::kStickSpeed},
 			{"0.00003", 0.00003}, {"0.03", 0.03}, {"1e-6", 1e-6}, {"0.01", 0.01}, {"0.1", 0.1}, {"0.25", 0.25},
 			{"1e-5", 1e-5}, {"PI", nk::kPi},
+			{"TAU", nk::kTauConstant}, {"-0.1", nk::kCtFloor}, {"60.0", nk::kHullOmega}, {"0.004", nk::kHullDampingOnset},
+			{"0.4", nk::kHullFrictionMu}, {"120.0", nk::kHullFrictionRateMax}, {"0.001", 0.001}, {"4.0", 4.0},
+			{"2.0", nk::kGroundEffectFade},
 		};
 		for (const auto &entry : table) {
 			out[entry.spelling] = entry.value;
@@ -681,6 +839,147 @@ public:
 		volatile double keep = sink;
 		(void)keep;
 		return std::chrono::duration<double, std::nano>(end - start).count() / iterations;
+	}
+
+	Dictionary prepare_stage(const Dictionary &config) {
+		Decoder dec;
+		nk::StageModel candidate;
+		const bool ok = decode_stage(dec, config, candidate);
+		stage_ready_ = ok;
+		tick_ = nk::TickContext();
+		if (ok) {
+			stage_ = candidate;
+		}
+		Dictionary out;
+		out["ok"] = ok;
+		out["error"] = String(dec.error.c_str());
+		out["law"] = "flight_session._wheel_evaluate/legacy-prop/soft-hull/gp02-wheels";
+		return out;
+	}
+
+	// Once per tick, from the wrapped pre_tick: the aux the kernel installs, the inputs, the session's own
+	// _deflections(aux) [elevator, aileron_right, aileron_left, rudder] and sim.time().
+	bool set_tick_context(const PackedFloat64Array &aux, const PackedFloat64Array &inputs,
+			const PackedFloat64Array &deflections, double time_now) {
+		++context_calls_;
+		tick_.ready = false;
+		if (!stage_ready_ || aux.size() != stage_.layout.aux_size || !read_deflections(deflections, tick_.deflections)) {
+			return false;
+		}
+		tick_.aux.assign(aux.ptr(), aux.ptr() + aux.size());
+		const int brake = stage_.layout.brake_input;
+		tick_.brake = brake >= 0 && brake < inputs.size() ? inputs[brake] : 0.0;
+		tick_.time_now = time_now;
+		tick_.ready = true;
+		return true;
+	}
+
+	Dictionary stage(const PackedFloat64Array &body, const PackedFloat64Array &continuous, double t) {
+		++stage_calls_;
+		const auto start = stage_timing_ ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point();
+		Dictionary out;
+		if (stage_ready_ && read_state(body) && continuous.size() <= 16) {
+			nk::R state[kStateSize];
+			nk::R values[16];
+			load(body, state);
+			for (int64_t i = 0; i < continuous.size(); ++i) {
+				values[i] = continuous[i];
+			}
+			const nk::StageResult result = nk::stage_evaluate(state, values, static_cast<int>(continuous.size()), t,
+				stage_, tick_);
+			if (result.shaped) {
+				// GDScript's {loads = ...} literal keys are StringNames; keep the reference's exact dictionary bytes.
+				static const godot::StringName kLoads("loads"), kDerivative("derivative"), kRotor("rotor_momentum");
+				out[kLoads] = pack(result.loads.data(), 6);
+				out[kDerivative] = pack(result.derivative);
+				out[kRotor] = pack(result.rotor.data(), 3);
+			}
+		}
+		if (stage_timing_) {
+			stage_ns_ += std::chrono::duration<double, std::nano>(std::chrono::steady_clock::now() - start).count();
+		}
+		return out;
+	}
+
+	Dictionary stage_stats() const {
+		Dictionary out;
+		out["stage_calls"] = stage_calls_;
+		out["context_calls"] = context_calls_;
+		out["stage_ns"] = stage_ns_;
+		out["timing"] = stage_timing_;
+		return out;
+	}
+
+	void reset_stage_stats(bool timing) {
+		stage_calls_ = 0;
+		context_calls_ = 0;
+		stage_ns_ = 0.0;
+		stage_timing_ = timing;
+	}
+
+	// Dynamics.loads_from_air's propeller part: Propulsion.stage_air_velocity (datum inflow) then Propulsion.loads.
+	PackedFloat64Array prop_component(const PackedFloat64Array &s, const PackedFloat64Array &wind, double rho, double rpm) const {
+		if (!stage_ready_ || !read_state(s) || wind.size() != 3) {
+			return PackedFloat64Array();
+		}
+		nk::R state[kStateSize];
+		nk::R wind_ned[3];
+		load(s, state);
+		load(wind, wind_ned);
+		const nk::Air air = nk::air_compute(state, wind_ned, rho);
+		if (!nk::is_finite(air.v[0]) || !nk::is_finite(air.v[1]) || !nk::is_finite(air.v[2])) {
+			const nk::R invalid[6] = {nk::kNan, nk::kNan, nk::kNan, nk::kNan, nk::kNan, nk::kNan};
+			return pack(invalid, 6);
+		}
+		const std::array<nk::R, 6> loads = nk::prop_loads(air.v, rpm, stage_.prop, rho);
+		return pack(loads.data(), 6);
+	}
+
+	PackedFloat64Array hull_component(const PackedFloat64Array &s) const {
+		if (!stage_ready_ || !read_state(s)) {
+			return PackedFloat64Array();
+		}
+		nk::R state[kStateSize];
+		load(s, state);
+		std::array<nk::R, 6> loads;
+		if (!nk::hull_loads(state, stage_.hull, loads)) {
+			return PackedFloat64Array();
+		}
+		return pack(loads.data(), 6);
+	}
+
+	// FlightSession._ground_evaluation with the current tick context's aux.
+	Dictionary ground_component(const PackedFloat64Array &s, const PackedFloat64Array &values) const {
+		Dictionary out;
+		if (!stage_ready_ || !tick_.ready || !read_state(s) || values.size() > 16) {
+			out["ok"] = false;
+			return out;
+		}
+		nk::R state[kStateSize];
+		nk::R continuous[16];
+		load(s, state);
+		for (int64_t i = 0; i < values.size(); ++i) {
+			continuous[i] = values[i];
+		}
+		std::array<nk::R, 6> loads{};
+		bool has_loads = false;
+		std::vector<nk::R> rates;
+		const bool ok = nk::stage_ground(state, stage_, tick_, continuous, static_cast<int>(values.size()), loads, has_loads, rates);
+		out["ok"] = ok;
+		if (ok) {
+			out["loads"] = has_loads ? pack(loads.data(), 6) : PackedFloat64Array();
+			out["derivative"] = pack(rates);
+		}
+		return out;
+	}
+
+	double ground_up_component(const PackedFloat64Array &s) const {
+		if (!stage_ready_ || !read_state(s)) {
+			return nk::kNan;
+		}
+		nk::R state[kStateSize];
+		load(s, state);
+		return nk::stage_ground_up(state, stage_).v;
 	}
 
 	double bench_aero(const PackedFloat64Array &s, const PackedFloat64Array &wind, double rho, const PackedFloat64Array &d,

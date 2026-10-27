@@ -245,7 +245,9 @@ static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: Pac
 
 ## RK4 over all 19 continuous values. A shaft stop is located by bisecting the
 ## step duration until every evaluated stage remains on the physical side of
-## zero; the returned event state is set to zero at that located boundary.
+## zero; the returned event state is set to zero at that located boundary. When
+## the trial bounding that boundary was refused for another reason, its fault is
+## returned instead of a stop.
 static func rk4_step_at(state: PackedFloat64Array, time: float, dt: float, context: Dictionary,
 		sticks: PackedFloat64Array, flight_mode: String, trainer_enabled: bool,
 		zero_drive_hold: bool, wind_ned_m_s: PackedFloat64Array, diagnostics: bool = false,
@@ -261,6 +263,7 @@ static func rk4_step_at(state: PackedFloat64Array, time: float, dt: float, conte
 		return full
 	var low: float = 0.0
 	var high: float = dt
+	var high_trial: Dictionary = full
 	var best_state: PackedFloat64Array = state.duplicate()
 	var best_evaluation: Dictionary = {}
 	for iteration: int in range(56):
@@ -273,6 +276,19 @@ static func rk4_step_at(state: PackedFloat64Array, time: float, dt: float, conte
 			best_evaluation = trial.evaluation
 		else:
 			high = middle
+			high_trial = trial
+	# The search converges onto the boundary between accepted trials and the
+	# shortest refused one. Only a zero-speed refusal (or an accepted Ω ≤ 0 end)
+	# there is a rotor stop; any other refusal is this step's fault, not a stop.
+	if not high_trial.ok and high_trial.fault != "rotor_zero_speed_event":
+		return high_trial
+	if best_evaluation.is_empty():
+		# Every trial down to dt·2^-56 crossed zero, so the stop is at the step
+		# start. Stage 1 of the full step already accepted this state.
+		best_evaluation = evaluate(state, context, sticks, flight_mode, trainer_enabled,
+			zero_drive_hold, wind_ned_m_s, diagnostics, extra_loads, trim)
+		if not best_evaluation.ok:
+			return best_evaluation
 	var event_state: PackedFloat64Array = best_state.duplicate()
 	event_state[OMEGA] = 0.0
 	event_state = RK.normalize_attitude(event_state)

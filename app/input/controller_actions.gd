@@ -6,7 +6,7 @@ const OPTIONAL_ACTION_IDS: PackedStringArray = [
 	"camera_previous", "camera_pilot", "camera_chase", "camera_orbit",
 	"camera_zoom_in", "camera_zoom_out", "camera_auto_zoom", "lights_cycle", "rates_toggle",
 	"helicopter_arm", "helicopter_hold", "helicopter_mode", "helicopter_trainer",
-	"restart_flight",
+	"restart_flight", "trim_yaw_left", "trim_yaw_right",
 ]
 const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear"]
 ## Product defaults on standardized gamepads, scoped to implemented vehicle capabilities.
@@ -43,6 +43,9 @@ const ACTIONS: Array[Dictionary] = [
 	{"id": "trim_right", "label": "Trim right", "context": "flight", "mode": "press"},
 	{"id": "trim_up", "label": "Trim up", "context": "flight", "mode": "press"},
 	{"id": "trim_down", "label": "Trim down", "context": "flight", "mode": "press"},
+	# D6-TRIM-01: unbound by default (the D-pad holds the aileron and elevator trims).
+	{"id": "trim_yaw_left", "label": "Rudder trim left", "context": "flight", "mode": "press"},
+	{"id": "trim_yaw_right", "label": "Rudder trim right", "context": "flight", "mode": "press"},
 	{"id": "overlay_preset", "label": "Cycle flight overlays", "context": "flight", "mode": "press"},
 	{"id": "throttle_cut", "label": "Throttle cut (hold)", "context": "flight", "mode": "hold"},
 	{"id": "calibrate", "label": "Calibrate controller", "context": "menu", "mode": "press"},

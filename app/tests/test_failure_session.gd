@@ -71,14 +71,15 @@ func _test_all_airplane_configs() -> void:
 func _test_tick_zero_configuration() -> void:
 	var flight: Node = _new_flight("jensen-das-ugly-stik-60")
 	var settings := _config()
-	_check("failure plan configures at tick zero", flight.setup_failures(settings, 1751), flight.failure_error)
+	# v3 plan seed (EM-29): roll jam at 20 s on the logical profile; 1751 was the v2 seed.
+	_check("failure plan configures at tick zero", flight.setup_failures(settings, 2063), flight.failure_error)
 	var plan: Dictionary = flight._failures.plan()
 	_check("session resolves the requested roll jam", str(plan.get("id", "")) == "roll_jam", plan)
 	var simulation_before: PackedByteArray = var_to_bytes(flight.sim.checkpoint())
 	var runtime_before: Dictionary = flight._failures.snapshot()
 	var malformed := settings.duplicate(true)
 	malformed.erase("notify")
-	_check("malformed settings are refused", not flight.setup_failures(malformed, 1751))
+	_check("malformed settings are refused", not flight.setup_failures(malformed, 2063))
 	_check("bad settings leave the selected plan intact", flight._failures.plan() == plan and flight._failures.snapshot() == runtime_before)
 	_check("bad settings leave physics intact", var_to_bytes(flight.sim.checkpoint()) == simulation_before)
 	_check("out-of-range seed is refused", not flight.setup_failures(settings, -1))
@@ -96,7 +97,7 @@ func _test_activation_checkpoint_and_rollback() -> void:
 	var initial: PackedFloat64Array = source.sim.state.duplicate()
 	initial[RB.POS + 2] = -1000.0
 	_check("test flight moves to a verified airborne altitude", source.sim.reset(initial) and source._failure_airborne())
-	_check("roll-jam episode configures", source.setup_failures(_config(), 1751), source.failure_error)
+	_check("roll-jam episode configures", source.setup_failures(_config(), 2063), source.failure_error)
 	var plan: Dictionary = source._failures.plan()
 	var onset: int = int(plan.onset_airborne_ticks)
 	_check("roll-jam seed has a 20 second onset", str(plan.id) == "roll_jam" and int(plan.onset_airborne_seconds) == 20)

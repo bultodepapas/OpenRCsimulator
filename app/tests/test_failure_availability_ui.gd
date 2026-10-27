@@ -2,6 +2,7 @@ extends SceneTree
 
 const FailureMenu := preload("res://ui/failures_menu.gd")
 const FailureCatalog := preload("res://failures/catalog.gd")
+const FailureConfig := preload("res://failures/config.gd")
 const AircraftCatalog := preload("res://app_state/aircraft_catalog.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const AppRoot := preload("res://app_root.gd")
@@ -90,7 +91,8 @@ func _run() -> void:
 	menu.current_flight_settings = true
 	root.add_child(menu)
 	await _ui.settle()
-	_check("existing settings constructor accepts optional availability", menu.get_draft_config() == config)
+	_check("existing settings constructor accepts optional availability",
+		menu.get_draft_config() == FailureConfig.validate(config).config, menu.get_draft_config())
 	_check("settings card fits the 1280x720 viewport", _fits_viewport(menu.settings_card), menu.settings_card.get_global_rect())
 	_check("settings screen keeps the Apply default focus", _ui.focus_name() == "Apply", _ui.focus_name())
 	var pause_hint_found := false

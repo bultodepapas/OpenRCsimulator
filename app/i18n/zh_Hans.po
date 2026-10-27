@@ -8003,3 +8003,244 @@ msgstr "原厂灯光方案已更改。请重新检查。"
 
 msgid "The draft changed. Review the appearance update again."
 msgstr "草稿已更改。请重新检查外观更新。"
+
+# D6-TRIM-01: natural out-of-trim airframes (Home trim practice, rudder trim).
+msgid "TRIM PRACTICE · NEXT FLIGHT"
+msgstr "微调练习 · 下次飞行"
+
+msgid "No real airplane is rigged perfectly. A warped wing, a crooked fin or a linkage off neutral makes it roll, climb, dive or turn with the sticks centred until you trim it out."
+msgstr "没有一架真实飞机是完美调校的。机翼扭曲、垂尾歪斜或连杆不在中立位，都会让飞机在摇杆居中时横滚、爬升、俯冲或转弯，直到你把它微调好。"
+
+msgid "Start with a naturally out-of-trim airplane"
+msgstr "开始时让飞机带有自然的微调偏差"
+
+msgid "Out-of-trim intensity"
+msgstr "微调偏差强度"
+
+msgid "0% is perfectly trimmed. 100% gives noticeable but realistic tendencies. Each airplane reacts with its own aerodynamics; the trims are never moved for you."
+msgstr "0% 表示完全不需要微调。100% 带来明显但真实的偏向。每架飞机都按自身的空气动力学作出反应；微调绝不会自动替你调整。"
+
+msgid "Trim persistence"
+msgstr "微调保留方式"
+
+msgid "First flight only"
+msgstr "仅首次飞行"
+
+msgid "The airplane starts out of trim on its first flight of the session. Your trims stay after crashes and restarts, and when you fly it again."
+msgstr "飞机在本次会话的首次飞行时带有微调偏差。你的微调在坠机和重新开始后保留，再次驾驶它时也保留。"
+
+msgid "Every flight"
+msgstr "每次飞行"
+
+msgid "Every new flight, restart or crash brings new tendencies, and the trims return to the starting trim, so you trim again."
+msgstr "每次新飞行、重新开始或坠机都会带来新的偏向，微调也会回到起始微调，需要重新微调。"
+
+msgid "Trim with your radio's trim switches, the trim keys listed in Help or your controller's trim buttons. Airplanes only."
+msgstr "可使用遥控器的微调开关、帮助中列出的微调按键或控制器的微调按钮进行微调。仅限飞机。"
+
+msgid "Trim practice"
+msgstr "微调练习"
+
+msgid "Trim practice currently supports airplanes only."
+msgstr "微调练习目前仅支持飞机。"
+
+msgid "Next flight trim: Airplanes only"
+msgstr "下次飞行微调：仅限飞机"
+
+msgid "Next flight trim: Off"
+msgstr "下次飞行微调：关闭"
+
+msgid "Next flight trim: %d%% out of trim · every flight"
+msgstr "下次飞行微调：%d%% 偏差 · 每次飞行"
+
+msgid "Next flight trim: %d%% out of trim · first flight only"
+msgstr "下次飞行微调：%d%% 偏差 · 仅首次飞行"
+
+msgid "Rudder trim: left / right"
+msgstr "方向舵微调：左 / 右"
+
+msgid "Rudder trim left"
+msgstr "方向舵左微调"
+
+msgid "Rudder trim right"
+msgstr "方向舵右微调"
+
+msgid "Rudder trim: %+.1f%%"
+msgstr "方向舵微调：%+.1f%%"
+
+msgid "Aileron jam"
+msgstr "副翼卡死"
+
+msgid "Elevator jam"
+msgstr "升降舵卡死"
+
+msgid "Rudder jam"
+msgstr "方向舵卡死"
+
+msgid "Aileron trim shift"
+msgstr "副翼微调偏移"
+
+msgid "Elevator trim shift"
+msgstr "升降舵微调偏移"
+
+msgid "Slow aileron servo"
+msgstr "副翼舵机迟缓"
+
+msgid "Limited throttle"
+msgstr "油门受限"
+
+msgid "Throttle stuck high"
+msgstr "油门卡在高位"
+
+msgid "Slow elevator servo"
+msgstr "升降舵舵机迟缓"
+
+msgid "Slow rudder servo"
+msgstr "方向舵舵机迟缓"
+
+msgid "Rudder trim shift"
+msgstr "方向舵微调偏移"
+
+msgid "Throttle stuck low"
+msgstr "油门卡在低位"
+
+msgid "Restricted aileron travel"
+msgstr "副翼行程受限"
+
+msgid "Restricted elevator travel"
+msgstr "升降舵行程受限"
+
+msgid "Restricted rudder travel"
+msgstr "方向舵行程受限"
+
+msgid "Radio link loss"
+msgstr "遥控信号丢失"
+
+msgid "Engine stops (glow)"
+msgstr "发动机熄火（甲醇）"
+
+msgid "Motor power loss (electric)"
+msgstr "电机失去动力（电动）"
+
+msgid "Elevator servo is slow."
+msgstr "升降舵舵机响应迟缓。"
+
+msgid "Rudder servo is slow."
+msgstr "方向舵舵机响应迟缓。"
+
+msgid "Rudder trim shifted."
+msgstr "方向舵微调偏移。"
+
+msgid "Throttle is stuck low."
+msgstr "油门卡在低位。"
+
+msgid "Aileron travel is restricted."
+msgstr "副翼行程受限。"
+
+msgid "Elevator travel is restricted."
+msgstr "升降舵行程受限。"
+
+msgid "Rudder travel is restricted."
+msgstr "方向舵行程受限。"
+
+msgid "Make small early pitch corrections and start the flare sooner."
+msgstr "尽早做小幅俯仰修正，并提前开始拉平。"
+
+msgid "Lead rudder corrections early, especially during takeoff and landing."
+msgstr "提前操作方向舵修正，尤其是在起飞和降落时。"
+
+msgid "Hold steady opposite rudder or trim; expect the airplane to skid in turns."
+msgstr "持续保持反向方向舵或微调；转弯时飞机会侧滑。"
+
+msgid "Keep a safe airspeed, choose a landing area within gliding range and avoid a go-around."
+msgstr "保持安全空速，在滑翔范围内选择降落区域，避免复飞。"
+
+msgid "Expect slower rolls; avoid steep banks near the ground and plan wider turns."
+msgstr "横滚会变慢；避免在近地时大坡度转弯，并规划更大的转弯。"
+
+msgid "Keep extra airspeed; the flare and stall recovery have less authority."
+msgstr "保持额外空速；拉平和失速改出时操纵效能降低。"
+
+msgid "Correct crosswind early; rudder authority is reduced during takeoff and landing."
+msgstr "尽早修正侧风；起飞和降落时方向舵效能降低。"
+
+msgid "Control surfaces and servos"
+msgstr "舵面与舵机"
+
+msgid "Engine and throttle"
+msgstr "发动机与油门"
+
+msgid "Radio link"
+msgstr "遥控信号"
+
+msgid "0 turns failures off. At 100%, one event is always scheduled. It activates within the chosen time window, counted only while you fly at least 5 m above the terrain."
+msgstr "0 表示关闭故障。设为 100 % 时，总会安排一个事件。它会在所选时间窗口内触发，只计算你在离地至少 5 米处飞行的时间。"
+
+msgid "When a failure can start"
+msgstr "故障可能开始的时间"
+
+msgid "Early (20–60 s)"
+msgstr "早（20–60 秒）"
+
+msgid "Standard (20–120 s)"
+msgstr "标准（20–120 秒）"
+
+msgid "Late (60–240 s)"
+msgstr "晚（60–240 秒）"
+
+msgid "Severity"
+msgstr "严重程度"
+
+msgid "Mild"
+msgstr "轻微"
+
+msgid "Severe"
+msgstr "严重"
+
+msgid "Severity scales trim offsets, servo speed, travel and throttle limits. Jams, engine stops and radio loss are the same at every severity."
+msgstr "严重程度会调整微调偏移、舵机速度、行程和油门限制。卡死、发动机熄火和信号丢失在任何严重程度下都相同。"
+
+msgid "Failure types"
+msgstr "故障类型"
+
+msgid "Each flight picks at most one failure at random from the checked types that this aircraft supports."
+msgstr "每次飞行最多从此飞机支持的已勾选类型中随机选择一个故障。"
+
+msgid "Select all"
+msgstr "全选"
+
+msgid "Clear all"
+msgstr "全部取消"
+
+msgid "Requires catastrophic failures"
+msgstr "需要启用灾难性故障"
+
+msgid "Not available on this aircraft"
+msgstr "此飞机不可用"
+
+msgid "No checked failure type is available for this aircraft."
+msgstr "没有已勾选的故障类型适用于此飞机。"
+
+msgid "%d checked failure types can occur on this aircraft."
+msgstr "此飞机可能发生 %d 种已勾选的故障类型。"
+
+msgid "No checked failure type is available for this aircraft. Check one, or set the probability to 0."
+msgstr "没有已勾选的故障类型适用于此飞机。请勾选一个，或将概率设为 0。"
+
+msgid "Next flight failures: %d%% · Custom"
+msgstr "下次飞行故障：%d%% · 自定义"
+
+msgid "Next flight failures: %d%% · Custom · Catastrophic enabled"
+msgstr "下次飞行故障：%d%% · 自定义 · 已启用灾难性故障"
+
+msgid "Next flight failures: %d%% · custom"
+msgstr "下次飞行故障：%d%% · 自定义"
+
+msgid "Next flight failures: %d%% · custom · catastrophic allowed"
+msgstr "下次飞行故障：%d%% · 自定义 · 允许灾难性故障"
+
+msgid "No enabled failure type is available for this aircraft. Enable one in Failures or set the probability to 0."
+msgstr "没有已启用的故障类型适用于此飞机。请在“故障”中启用一个，或将概率设为 0。"
+
+msgid "This aircraft has no rudder, so rudder failures cannot occur."
+msgstr "此飞机没有方向舵，因此不会发生方向舵故障。"

@@ -23,8 +23,10 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Landscapes := preload("res://landscapes/catalog.gd")
 const GroundCatalog := preload("res://vehicles/ground/vehicle_catalog.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
+const OutOfTrim := preload("res://sim/out_of_trim.gd")
 const UpdateNotice := preload("res://ui/update_notice.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
+const FailureConfig := preload("res://failures/config.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
@@ -35,6 +37,8 @@ signal ground_vehicle_requested
 signal workshop_requested(from: Control)
 signal natural_random_requested(from: Control)
 signal failures_requested(from: Control)
+## D6-TRIM-01: open the out-of-trim (trim practice) settings for the next flight.
+signal trim_practice_requested(from: Control)
 signal companions_requested(from: Control)
 signal quit_requested
 ## The player asked for the next interface language (a Preferences.LANGUAGES code).
@@ -81,6 +85,7 @@ var landscape_id: String = Landscapes.DEFAULT_ID
 var landscape_button: Button
 var weather_config: Dictionary = WeatherSettings.defaults()
 var failure_config: Dictionary = {"probability_percent": 0, "include_catastrophic": false, "notify": true}
+var out_of_trim_config: Dictionary = OutOfTrim.defaults()
 var lighting_config: Dictionary = TimeOfDay.defaults()
 var sky_config: Dictionary = SkyConfig.defaults()
 var time_of_day: String = "day"
@@ -113,6 +118,8 @@ var workshop_button: Button
 var natural_random_button: Button
 var failures_button: Button
 var failure_summary_label: Label
+var trim_practice_button: Button
+var trim_practice_summary_label: Label
 var companions_button: Button
 var companion_config: Dictionary = CompanionConfig.defaults()
 var weather_button: Button
@@ -590,6 +597,18 @@ func _init() -> void:
 	failure_summary_label.name = "FailureSummary"
 	failure_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	practice_page.add_child(failure_summary_label)
+	trim_practice_button = _button("Trim practice", "HomeChoice")
+	trim_practice_button.name = "TrimPractice"
+	trim_practice_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	Widgets.mark_row(trim_practice_button, "open")
+	trim_practice_button.custom_minimum_size.y = 42
+	trim_practice_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	trim_practice_button.pressed.connect(func() -> void: trim_practice_requested.emit(trim_practice_button))
+	practice_page.add_child(trim_practice_button)
+	trim_practice_summary_label = _label("", "SecondaryLabel", false)
+	trim_practice_summary_label.name = "TrimPracticeSummary"
+	trim_practice_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	practice_page.add_child(trim_practice_summary_label)
 
 	var garage_page := VBoxContainer.new()
 	garage_page.name = "GaragePage"
@@ -1172,6 +1191,9 @@ func set_aircraft(id: String) -> void:
 	failures_button.disabled = rotorcraft
 	failures_button.tooltip_text = tr("Failure practice currently supports airplanes only.") if rotorcraft else ""
 	_update_failure_summary()
+	trim_practice_button.disabled = rotorcraft
+	trim_practice_button.tooltip_text = tr("Trim practice currently supports airplanes only.") if rotorcraft else ""
+	_update_trim_practice_summary()
 	_update_companions_text()
 	if had_focus and not flyable:
 		next_button.grab_focus()
@@ -1499,6 +1521,27 @@ func set_failure_config(config: Dictionary) -> void:
 		_update_failure_summary()
 
 
+## D6-TRIM-01: the checked next-flight trim practice preference, shown beside its Home entry.
+func set_out_of_trim_config(config: Dictionary) -> void:
+	var checked: Dictionary = OutOfTrim.validate(config)
+	out_of_trim_config = checked.config if checked.ok else OutOfTrim.defaults()
+	if is_node_ready():
+		_update_trim_practice_summary()
+
+
+func _update_trim_practice_summary() -> void:
+	if trim_practice_summary_label == null:
+		return
+	if Catalog.is_rotorcraft(aircraft_id):
+		trim_practice_summary_label.text = tr("Next flight trim: Airplanes only")
+	elif not bool(out_of_trim_config.get("enabled", false)):
+		trim_practice_summary_label.text = tr("Next flight trim: Off")
+	elif out_of_trim_config.get("mode") == OutOfTrim.MODE_EVERY_FLIGHT:
+		trim_practice_summary_label.text = tr("Next flight trim: %d%% out of trim · every flight") % int(out_of_trim_config.intensity_percent)
+	else:
+		trim_practice_summary_label.text = tr("Next flight trim: %d%% out of trim · first flight only") % int(out_of_trim_config.intensity_percent)
+
+
 func set_companion_config(raw: Variant) -> Dictionary:
 	var checked: Dictionary = CompanionConfig.validate(raw)
 	if not checked.get("ok", false):
@@ -1516,8 +1559,13 @@ func _update_failure_summary() -> void:
 		failure_summary_label.text = tr("Next flight failures: Airplanes only")
 		return
 	var probability := clampi(int(failure_config.get("probability_percent", 0)), 0, 100)
+	var customized := not FailureConfig.uses_default_selection(failure_config)
 	if probability == 0:
 		failure_summary_label.text = tr("Next flight failures: Off")
+	elif customized and bool(failure_config.get("include_catastrophic", false)):
+		failure_summary_label.text = tr("Next flight failures: %d%% · Custom · Catastrophic enabled") % probability
+	elif customized:
+		failure_summary_label.text = tr("Next flight failures: %d%% · Custom") % probability
 	elif bool(failure_config.get("include_catastrophic", false)):
 		failure_summary_label.text = tr("Next flight failures: %d%% · Catastrophic enabled") % probability
 	else:
@@ -1592,6 +1640,7 @@ func _update_texts() -> void:
 	next_button.tooltip_text = tr("Next aircraft")
 	_update_weather_text()
 	_update_failure_summary()
+	_update_trim_practice_summary()
 	_update_companions_text()
 	_update_control()
 	if is_node_ready(): _apply_responsive_layout.call_deferred()

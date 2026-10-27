@@ -49,28 +49,44 @@ def main() -> int:
     parser.add_argument("--timeout", type=float, default=1800)
     parser.add_argument("--mutant", action="store_true", help="run the negative-control library; expect failure")
     parser.add_argument("--godot", type=Path, default=GODOT)
+    parser.add_argument("--app-library", action="store_true",
+                        help="use the installed res://native/kernel library (build.py --install-app) instead of tmp/")
     parser.add_argument("--render", type=Path, help="only render tables from an existing results JSON")
+    parser.add_argument("--script", default="oracle.gd", choices=("oracle.gd", "stage_oracle.gd", "trajectory.gd", "fleet.gd"),
+                        help="harness to run (all extend oracle.gd and print the same verdict line)")
+    parser.add_argument("--option", action="append", default=[], metavar="NAME=VALUE",
+                        help="extra harness option, passed as --NAME=VALUE (repeatable)")
     args = parser.parse_args()
     if args.render:
         print(render(json.loads(args.render.read_text(encoding="utf-8"))))
         return 0
     variant = "_mutant" if args.mutant else ""
     descriptor = TOOL_ROOT / f"openrc_native_kernel{variant}.gdextension"
-    if not descriptor.is_file():
+    if args.app_library:
+        if args.mutant:
+            parser.error("--app-library never holds the mutant")
+        if not (ROOT / "app/native/kernel/openrc_native_kernel.gdextension").is_file():
+            raise SystemExit("No app install; run build.py --install-app first.")
+        descriptor = "res://native/kernel/openrc_native_kernel.gdextension"
+    elif not descriptor.is_file():
         raise SystemExit(f"Missing {descriptor}; run build.py{' --mutant' if args.mutant else ''} first.")
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    output = TOOL_ROOT / f"results{variant}-{stamp}.json"
+    stem = {"oracle.gd": "results", "stage_oracle.gd": "stage", "trajectory.gd": "trajectory",
+            "fleet.gd": "fleet"}[args.script]
+    output = TOOL_ROOT / f"{stem}{variant}-{stamp}.json"
     marker = "NK3_ORACLE verdict=fail" if args.mutant else "NK3_ORACLE verdict=pass"
     command = [sys.executable, str(ROOT / "tools/godot/run_checked.py"), "--out-dir", str(TOOL_ROOT / "checks"),
-               "--label", f"nk3-oracle{variant}", "--timeout", str(args.timeout), "--require-text", marker, "--",
-               str(args.godot), "--headless", "--path", str(ROOT / "app"), "--script", str(HERE / "oracle.gd"), "--",
+               "--label", f"nk3-{stem}{variant}", "--timeout", str(args.timeout), "--require-text", marker, "--",
+               str(args.godot), "--headless", "--path", str(ROOT / "app"), "--script", str(HERE / args.script), "--",
                f"--extension={descriptor}", f"--output={output}", f"--seed={args.seed}", f"--states={args.states}",
-               f"--variant-states={args.variant_states}", f"--timing-rounds={args.timing_rounds}"]
+               f"--variant-states={args.variant_states}", f"--timing-rounds={args.timing_rounds}",
+               *[f"--{option}" for option in args.option]]
     completed = subprocess.run(command, cwd=ROOT)
     if not output.is_file():
         raise SystemExit(f"Oracle wrote no results ({completed.returncode}); see {TOOL_ROOT / 'checks'}.")
     results = json.loads(output.read_text(encoding="utf-8"))
-    receipt_path = TOOL_ROOT / f"build-receipt{variant}.json"
+    receipt_path = (ROOT / "app/native/kernel/build-receipt.json") if args.app_library \
+        else TOOL_ROOT / f"build-receipt{variant}.json"
     results["build_receipt"] = json.loads(receipt_path.read_text(encoding="utf-8")) if receipt_path.is_file() else None
     output.write_text(json.dumps(results, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(render(results))

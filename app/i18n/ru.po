@@ -8806,3 +8806,244 @@ msgstr "Предложение по штатному освещению изме
 
 msgid "Use stock lighting in a new draft"
 msgstr "Создать черновик со штатным освещением"
+
+# D6-TRIM-01: natural out-of-trim airframes (Home trim practice, rudder trim).
+msgid "TRIM PRACTICE · NEXT FLIGHT"
+msgstr "ПРАКТИКА ТРИММИРОВАНИЯ · СЛЕДУЮЩИЙ ПОЛЁТ"
+
+msgid "No real airplane is rigged perfectly. A warped wing, a crooked fin or a linkage off neutral makes it roll, climb, dive or turn with the sticks centred until you trim it out."
+msgstr "Ни один настоящий самолёт не отрегулирован идеально. Покоробленное крыло, кривой киль или тяга не в нейтрали заставляют его крениться, набирать высоту, пикировать или поворачивать при центрированных ручках, пока вы его не оттриммируете."
+
+msgid "Start with a naturally out-of-trim airplane"
+msgstr "Начинать с естественно разбалансированным самолётом"
+
+msgid "Out-of-trim intensity"
+msgstr "Сила разбалансировки"
+
+msgid "0% is perfectly trimmed. 100% gives noticeable but realistic tendencies. Each airplane reacts with its own aerodynamics; the trims are never moved for you."
+msgstr "0% — идеально оттриммированный самолёт. 100% даёт заметные, но реалистичные тенденции. Каждый самолёт реагирует согласно своей аэродинамике; триммеры никогда не двигаются за вас."
+
+msgid "Trim persistence"
+msgstr "Сохранение триммирования"
+
+msgid "First flight only"
+msgstr "Только первый полёт"
+
+msgid "The airplane starts out of trim on its first flight of the session. Your trims stay after crashes and restarts, and when you fly it again."
+msgstr "Самолёт начинает первый полёт сессии разбалансированным. Ваши триммеры сохраняются после аварий и перезапусков, а также при следующем полёте на нём."
+
+msgid "Every flight"
+msgstr "Каждый полёт"
+
+msgid "Every new flight, restart or crash brings new tendencies, and the trims return to the starting trim, so you trim again."
+msgstr "Каждый новый полёт, перезапуск или авария приносит новые тенденции, а триммеры возвращаются к стартовому триммированию, и вы триммируете заново."
+
+msgid "Trim with your radio's trim switches, the trim keys listed in Help or your controller's trim buttons. Airplanes only."
+msgstr "Триммируйте переключателями триммеров на аппаратуре, клавишами триммирования из справки или кнопками триммеров контроллера. Только самолёты."
+
+msgid "Trim practice"
+msgstr "Практика триммирования"
+
+msgid "Trim practice currently supports airplanes only."
+msgstr "Практика триммирования пока доступна только для самолётов."
+
+msgid "Next flight trim: Airplanes only"
+msgstr "След. полёт: триммирование только для самолётов"
+
+msgid "Next flight trim: Off"
+msgstr "След. полёт: разбалансировка выкл."
+
+msgid "Next flight trim: %d%% out of trim · every flight"
+msgstr "След. полёт: разбалансировка %d%% · каждый полёт"
+
+msgid "Next flight trim: %d%% out of trim · first flight only"
+msgstr "След. полёт: разбалансировка %d%% · только первый полёт"
+
+msgid "Rudder trim: left / right"
+msgstr "Триммирование руля направления: влево / вправо"
+
+msgid "Rudder trim left"
+msgstr "Триммер руля направления влево"
+
+msgid "Rudder trim right"
+msgstr "Триммер руля направления вправо"
+
+msgid "Rudder trim: %+.1f%%"
+msgstr "Триммирование руля направления: %+.1f%%"
+
+msgid "Aileron jam"
+msgstr "Заклинивание элеронов"
+
+msgid "Elevator jam"
+msgstr "Заклинивание руля высоты"
+
+msgid "Rudder jam"
+msgstr "Заклинивание руля направления"
+
+msgid "Aileron trim shift"
+msgstr "Смещение триммера элеронов"
+
+msgid "Elevator trim shift"
+msgstr "Смещение триммера руля высоты"
+
+msgid "Slow aileron servo"
+msgstr "Медленный сервопривод элеронов"
+
+msgid "Limited throttle"
+msgstr "Ограничение газа"
+
+msgid "Throttle stuck high"
+msgstr "Газ застрял вверху"
+
+msgid "Slow elevator servo"
+msgstr "Медленный сервопривод руля высоты"
+
+msgid "Slow rudder servo"
+msgstr "Медленный сервопривод руля направления"
+
+msgid "Rudder trim shift"
+msgstr "Смещение триммера руля направления"
+
+msgid "Throttle stuck low"
+msgstr "Газ застрял внизу"
+
+msgid "Restricted aileron travel"
+msgstr "Ограниченный ход элеронов"
+
+msgid "Restricted elevator travel"
+msgstr "Ограниченный ход руля высоты"
+
+msgid "Restricted rudder travel"
+msgstr "Ограниченный ход руля направления"
+
+msgid "Radio link loss"
+msgstr "Потеря радиосвязи"
+
+msgid "Engine stops (glow)"
+msgstr "Остановка двигателя (калильный)"
+
+msgid "Motor power loss (electric)"
+msgstr "Потеря мощности мотора (электро)"
+
+msgid "Elevator servo is slow."
+msgstr "Сервопривод руля высоты срабатывает медленно."
+
+msgid "Rudder servo is slow."
+msgstr "Сервопривод руля направления срабатывает медленно."
+
+msgid "Rudder trim shifted."
+msgstr "Сместился триммер руля направления."
+
+msgid "Throttle is stuck low."
+msgstr "Газ застрял в нижнем положении."
+
+msgid "Aileron travel is restricted."
+msgstr "Ход элеронов ограничен."
+
+msgid "Elevator travel is restricted."
+msgstr "Ход руля высоты ограничен."
+
+msgid "Rudder travel is restricted."
+msgstr "Ход руля направления ограничен."
+
+msgid "Make small early pitch corrections and start the flare sooner."
+msgstr "Делайте небольшие ранние поправки по тангажу и начинайте выравнивание раньше."
+
+msgid "Lead rudder corrections early, especially during takeoff and landing."
+msgstr "Давайте руль направления с упреждением, особенно на взлёте и посадке."
+
+msgid "Hold steady opposite rudder or trim; expect the airplane to skid in turns."
+msgstr "Держите постоянное противоположное отклонение руля направления или триммер; в разворотах самолёт будет скользить."
+
+msgid "Keep a safe airspeed, choose a landing area within gliding range and avoid a go-around."
+msgstr "Сохраняйте безопасную скорость, выберите место посадки в пределах планирования и избегайте ухода на второй круг."
+
+msgid "Expect slower rolls; avoid steep banks near the ground and plan wider turns."
+msgstr "Крены будут медленнее; избегайте глубоких кренов у земли и планируйте более широкие развороты."
+
+msgid "Keep extra airspeed; the flare and stall recovery have less authority."
+msgstr "Держите запас скорости; при выравнивании и выводе из сваливания эффективность руля меньше."
+
+msgid "Correct crosswind early; rudder authority is reduced during takeoff and landing."
+msgstr "Парируйте боковой ветер заранее; эффективность руля направления на взлёте и посадке снижена."
+
+msgid "Control surfaces and servos"
+msgstr "Рули и сервоприводы"
+
+msgid "Engine and throttle"
+msgstr "Двигатель и газ"
+
+msgid "Radio link"
+msgstr "Радиосвязь"
+
+msgid "0 turns failures off. At 100%, one event is always scheduled. It activates within the chosen time window, counted only while you fly at least 5 m above the terrain."
+msgstr "0 отключает отказы. При 100 % событие всегда запланировано. Оно срабатывает в выбранном интервале времени, который отсчитывается только в полёте не ниже 5 м над землёй."
+
+msgid "When a failure can start"
+msgstr "Когда может начаться отказ"
+
+msgid "Early (20–60 s)"
+msgstr "Рано (20–60 с)"
+
+msgid "Standard (20–120 s)"
+msgstr "Стандартно (20–120 с)"
+
+msgid "Late (60–240 s)"
+msgstr "Поздно (60–240 с)"
+
+msgid "Severity"
+msgstr "Тяжесть"
+
+msgid "Mild"
+msgstr "Лёгкая"
+
+msgid "Severe"
+msgstr "Тяжёлая"
+
+msgid "Severity scales trim offsets, servo speed, travel and throttle limits. Jams, engine stops and radio loss are the same at every severity."
+msgstr "Тяжесть масштабирует смещения триммера, скорость сервоприводов, ход рулей и ограничения газа. Заклинивания, остановки двигателя и потеря радиосвязи одинаковы при любой тяжести."
+
+msgid "Failure types"
+msgstr "Типы отказов"
+
+msgid "Each flight picks at most one failure at random from the checked types that this aircraft supports."
+msgstr "В каждом полёте случайно выбирается не более одного отказа из отмеченных типов, которые поддерживает эта модель."
+
+msgid "Select all"
+msgstr "Выбрать все"
+
+msgid "Clear all"
+msgstr "Снять все"
+
+msgid "Requires catastrophic failures"
+msgstr "Требуются катастрофические отказы"
+
+msgid "Not available on this aircraft"
+msgstr "Недоступно для этой модели"
+
+msgid "No checked failure type is available for this aircraft."
+msgstr "Ни один отмеченный тип отказа недоступен для этой модели."
+
+msgid "%d checked failure types can occur on this aircraft."
+msgstr "Отмеченных типов отказов, возможных на этой модели: %d."
+
+msgid "No checked failure type is available for this aircraft. Check one, or set the probability to 0."
+msgstr "Ни один отмеченный тип отказа недоступен для этой модели. Отметьте один или установите вероятность 0."
+
+msgid "Next flight failures: %d%% · Custom"
+msgstr "След. полёт: отказы %d%% · настроенные"
+
+msgid "Next flight failures: %d%% · Custom · Catastrophic enabled"
+msgstr "След. полёт: отказы %d%% · настроенные · катастрофические вкл."
+
+msgid "Next flight failures: %d%% · custom"
+msgstr "След. полёт: отказы %d%% · настроенные"
+
+msgid "Next flight failures: %d%% · custom · catastrophic allowed"
+msgstr "След. полёт: отказы %d%% · настроенные · катастрофические разрешены"
+
+msgid "No enabled failure type is available for this aircraft. Enable one in Failures or set the probability to 0."
+msgstr "Ни один включённый тип отказа недоступен для этой модели. Включите один в разделе «Отказы» или установите вероятность 0."
+
+msgid "This aircraft has no rudder, so rudder failures cannot occur."
+msgstr "У этой модели нет руля направления, поэтому отказы руля направления невозможны."

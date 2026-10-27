@@ -104,11 +104,13 @@ def key(finding: dict) -> str:
     return f"{finding['file']}|{finding['code']}|{message}"
 
 
-def finding(relative: str, item: dict) -> dict:
+def diagnostic_finding(relative: str, item: dict) -> dict:
     """One language-server diagnostic. Godot 4.8 sends the warning code in `code`; 4.7 prefixed the message."""
     text = item.get("message", "")
     prefix = re.match(r"\(([A-Z_]+)\)", text)
-    code = item.get("code") if isinstance(item.get("code"), str) and item.get("code") else (prefix.group(1) if prefix else "ERROR")
+    code = item.get("code")
+    if not isinstance(code, str) or not code:
+        code = prefix.group(1) if prefix else "ERROR"
     return {"file": relative, "line": item["range"]["start"]["line"] + 1,
             "severity": SEVERITY.get(item.get("severity"), str(item.get("severity"))),
             "code": code, "message": text[prefix.end():].lstrip(" :").strip() if prefix else text}
@@ -140,7 +142,7 @@ def collect(app: Path, files: list[str], port: int, timeout: float, log: Path) -
                                  "message": "the language server sent no diagnostics within 30 s"})
                 continue
             lsp.send({"method": "textDocument/didClose", "params": {"textDocument": {"uri": uri}}})
-            findings.extend(finding(relative, item) for item in diagnostics)
+            findings.extend(diagnostic_finding(relative, item) for item in diagnostics)
             if index % 200 == 0:
                 print(f"# {index}/{len(files)} scripts", file=sys.stderr, flush=True)
     finally:

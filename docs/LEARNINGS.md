@@ -62,6 +62,20 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-27 · EM-31 — masking wing strips does not change loads while the coefficient oracle is active
+
+A disposable-copy probe masked a third, two thirds and all of one wing in the local strip law. `Aero.loads()` still returned intact lift and zero rolling moment at α 2–6°, because the cruise path evaluates the intact coefficient oracle. Any in-flight damage built by removing strips or meshes would therefore show a false recovery.
+
+- Damaged topology must bypass the intact oracle, or regenerate it from the damaged local model, and needs a regression check that the rolling moment of a damaged wing is nonzero at small α. [EM-31](research/failure-mode/EM-31/README.md)
+- With 3 strips per side, the smallest representable loss is a third of the area. Partial-panel damage needs finer or clippable strips.
+
+## 2026-10-27 · NK-3 — bit-exact native ports must keep GDScript's NaN operand order
+
+A C++ port that copies the GDScript arithmetic operation by operation matched every finite result, but 53 of 305,459 malformed-input comparisons differed in a NaN's sign bit. When both operands are NaN, x86 SSE2 returns the first one. The pinned engine's GDScript evaluator always puts the left operand first, while GCC freely swaps the operands of `+` and `*`. Engine C++ helpers have their own order: `lerpf` behaves as `weight * (to - from) + from`.
+
+- For a byte-identical oracle that includes NaN/INF inputs, give every scalar a type whose operators emit one SSE2 instruction with the left operand first, and mirror each engine helper's own order. [NK-3 milestone 1](research/native-kernel/NK-3/README.md)
+- `absf` keeps a NaN's sign (unlike `fabs`), and the GDScript literal `-0.0` is +0.0. Probe each engine helper before porting it.
+
 ## 2026-10-27 · VQ-01c — kernel timers miss the tick observers that cost as much as the step
 
 A live-app script profile of the Stik in flight put about half of each accepted 240 Hz tick's script time in read-only observers on `Simulation.stepped`: ground and mechanical audio, flight statistics, crash hull scrape, windsock and people. `Simulation.step_usec` stops before `stepped.emit`, and `bench_regimes.gd` and the session pair probes never attach these observers, so step budgets omitted them. One observer serialized 15.6 kB per tick into a cache key that contained the tick and so could never hit.

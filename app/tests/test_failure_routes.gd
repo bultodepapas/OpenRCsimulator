@@ -34,6 +34,7 @@ func _run() -> void:
 	var defaults := FailureConfig.defaults()
 	_check("failure defaults are off, non-catastrophic and visible", defaults == {
 		"probability_percent": 0, "include_catastrophic": false, "notify": true,
+		"severity": "standard", "onset": "standard", "excluded_ids": [],
 	})
 	_check("failure validator accepts an integer percentage", FailureConfig.validate({
 		"probability_percent": 100, "include_catastrophic": true, "notify": false,
@@ -62,7 +63,8 @@ func _run() -> void:
 	round_trip.failure_config = {"probability_percent": 100, "include_catastrophic": true, "notify": false}
 	_check("save valid failure preference", Preferences.save_to(PREFS, round_trip) == OK)
 	var loaded: Dictionary = Preferences.load_from(PREFS)
-	_check("failure preferences round-trip", loaded.failure_config == round_trip.failure_config)
+	_check("failure preferences round-trip as the upgraded request",
+		loaded.failure_config == FailureConfig.validate(round_trip.failure_config).config)
 
 	var home_probe: Control = Home.new()
 	home_probe.set_aircraft("xcell-60-research")
@@ -147,9 +149,9 @@ func _run() -> void:
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	_check("Enter confirms and returns to Home", app.failure_menu == null and app.screens.is_top("home"))
-	_check("Apply saves probability and catastrophe choice", app.preferences.failure_config == {
+	_check("Apply saves probability and catastrophe choice", app.preferences.failure_config == FailureConfig.validate({
 		"probability_percent": 100, "include_catastrophic": true, "notify": true,
-	})
+	}).config)
 	_check("Home summarizes the next flight",
 		app.home.failure_summary_label.text.contains("Next flight failures: 100% · Catastrophic enabled"))
 	_check("Apply persisted failure preferences", Preferences.load_from(PREFS).failure_config == app.preferences.failure_config)
@@ -220,9 +222,9 @@ func _run() -> void:
 		and main.failure_config.include_catastrophic)
 	await ui.tap(KEY_ESCAPE)
 	_check("Cancel discards notice, probability and category edits",
-		main.failure_notifications and app.preferences.failure_config == {
+		main.failure_notifications and app.preferences.failure_config == FailureConfig.validate({
 			"probability_percent": 100, "include_catastrophic": true, "notify": true,
-		})
+		}).config)
 
 	await ui.tap(KEY_ENTER) # focus returns to Failure settings when the editor is cancelled
 	await ui.settle()
@@ -232,9 +234,9 @@ func _run() -> void:
 	menu.notify_check.button_pressed = false
 	await ui.tap(KEY_ENTER)
 	_check("Pause Apply updates flight notices and saves next-flight configuration",
-		app.preferences.failure_config == {
+		app.preferences.failure_config == FailureConfig.validate({
 			"probability_percent": 64, "include_catastrophic": false, "notify": false,
-		} and not main.failure_notifications and main.failure_config.probability_percent == 100
+		}).config and not main.failure_notifications and main.failure_config.probability_percent == 100
 		and main.failure_config.include_catastrophic)
 	_check("pause summary updates after Apply", "64%" in app.pause_menu.failure_config_label.text)
 	app.end_flight()

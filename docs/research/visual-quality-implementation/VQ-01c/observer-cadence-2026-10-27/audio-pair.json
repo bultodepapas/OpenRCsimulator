@@ -1,0 +1,546 @@
+{
+ "drop-0.4m": {
+  "physics_exact": true,
+  "ticks": 2880,
+  "variants": {
+   "144fps_x1": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 5,
+    "cues_match_reference": true,
+    "ground_observations": 1948,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 1728,
+    "servo": {
+     "aileron:start": 96,
+     "aileron:stop": 96
+    }
+   },
+   "30fps_x1": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 5,
+    "cues_match_reference": true,
+    "ground_observations": 839,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 360,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   },
+   "60fps_x1": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 5,
+    "cues_match_reference": true,
+    "ground_observations": 1134,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 720,
+    "servo": {
+     "aileron:start": 96,
+     "aileron:stop": 96
+    }
+   },
+   "60fps_x2": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 5,
+    "cues_match_reference": true,
+    "ground_observations": 834,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 360,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   },
+   "60fps_x3": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 5,
+    "cues_match_reference": true,
+    "ground_observations": 736,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 240,
+    "servo": {
+     "aileron:start": 1,
+     "aileron:stop": 1
+    }
+   },
+   "60fps_x4": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 5,
+    "cues_match_reference": true,
+    "ground_observations": 680,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 180,
+    "servo": {
+     "aileron:reverse": 24,
+     "aileron:start": 25,
+     "aileron:stop": 25
+    }
+   },
+   "per_tick": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 5,
+    "cues_match_reference": true,
+    "ground_observations": 2880,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 2880,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   }
+  }
+ },
+ "firm": {
+  "physics_exact": true,
+  "ticks": 2880,
+  "variants": {
+   "144fps_x1": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 8,
+    "cues_match_reference": true,
+    "ground_observations": 2235,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 1728,
+    "servo": {
+     "aileron:start": 96,
+     "aileron:stop": 96
+    }
+   },
+   "30fps_x1": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 8,
+    "cues_match_reference": true,
+    "ground_observations": 1460,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 360,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   },
+   "60fps_x1": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 8,
+    "cues_match_reference": true,
+    "ground_observations": 1669,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 720,
+    "servo": {
+     "aileron:start": 96,
+     "aileron:stop": 96
+    }
+   },
+   "60fps_x2": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 8,
+    "cues_match_reference": true,
+    "ground_observations": 1463,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 360,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   },
+   "60fps_x3": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 8,
+    "cues_match_reference": true,
+    "ground_observations": 1395,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 240,
+    "servo": {
+     "aileron:start": 1,
+     "aileron:stop": 1
+    }
+   },
+   "60fps_x4": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 8,
+    "cues_match_reference": true,
+    "ground_observations": 1346,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 180,
+    "servo": {
+     "aileron:reverse": 24,
+     "aileron:start": 25,
+     "aileron:stop": 25
+    }
+   },
+   "per_tick": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 8,
+    "cues_match_reference": true,
+    "ground_observations": 2880,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 2880,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   }
+  }
+ },
+ "glide-in": {
+  "physics_exact": true,
+  "ticks": 2880,
+  "variants": {
+   "144fps_x1": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 4,
+    "cues_match_reference": true,
+    "ground_observations": 2460,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 1728,
+    "servo": {
+     "aileron:start": 96,
+     "aileron:stop": 96
+    }
+   },
+   "30fps_x1": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 4,
+    "cues_match_reference": true,
+    "ground_observations": 1963,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 360,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   },
+   "60fps_x1": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 4,
+    "cues_match_reference": true,
+    "ground_observations": 2094,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 720,
+    "servo": {
+     "aileron:start": 96,
+     "aileron:stop": 96
+    }
+   },
+   "60fps_x2": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 4,
+    "cues_match_reference": true,
+    "ground_observations": 1959,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 360,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   },
+   "60fps_x3": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 4,
+    "cues_match_reference": true,
+    "ground_observations": 1912,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 240,
+    "servo": {
+     "aileron:start": 1,
+     "aileron:stop": 1
+    }
+   },
+   "60fps_x4": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 4,
+    "cues_match_reference": true,
+    "ground_observations": 1886,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 180,
+    "servo": {
+     "aileron:reverse": 24,
+     "aileron:start": 25,
+     "aileron:stop": 25
+    }
+   },
+   "per_tick": {
+    "cue_delay_ticks": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "cues": 4,
+    "cues_match_reference": true,
+    "ground_observations": 2880,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 2880,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   }
+  }
+ },
+ "steep": {
+  "physics_exact": true,
+  "ticks": 2880,
+  "variants": {
+   "144fps_x1": {
+    "cue_delay_ticks": [],
+    "cues": 0,
+    "cues_match_reference": true,
+    "ground_observations": 1945,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 1728,
+    "servo": {
+     "aileron:start": 96,
+     "aileron:stop": 96
+    }
+   },
+   "30fps_x1": {
+    "cue_delay_ticks": [],
+    "cues": 0,
+    "cues_match_reference": true,
+    "ground_observations": 835,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 360,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   },
+   "60fps_x1": {
+    "cue_delay_ticks": [],
+    "cues": 0,
+    "cues_match_reference": true,
+    "ground_observations": 1127,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 720,
+    "servo": {
+     "aileron:start": 96,
+     "aileron:stop": 96
+    }
+   },
+   "60fps_x2": {
+    "cue_delay_ticks": [],
+    "cues": 0,
+    "cues_match_reference": true,
+    "ground_observations": 835,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 360,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   },
+   "60fps_x3": {
+    "cue_delay_ticks": [],
+    "cues": 0,
+    "cues_match_reference": true,
+    "ground_observations": 737,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 240,
+    "servo": {
+     "aileron:start": 1,
+     "aileron:stop": 1
+    }
+   },
+   "60fps_x4": {
+    "cue_delay_ticks": [],
+    "cues": 0,
+    "cues_match_reference": true,
+    "ground_observations": 689,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 180,
+    "servo": {
+     "aileron:reverse": 24,
+     "aileron:start": 25,
+     "aileron:stop": 25
+    }
+   },
+   "per_tick": {
+    "cue_delay_ticks": [],
+    "cues": 0,
+    "cues_match_reference": true,
+    "ground_observations": 2880,
+    "max_approach_error_mps": 0.0,
+    "max_force_error_n": 0.0,
+    "mechanical_observations": 2880,
+    "servo": {
+     "aileron:reverse": 48,
+     "aileron:start": 48,
+     "aileron:stop": 48
+    }
+   }
+  }
+ }
+}

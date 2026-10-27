@@ -20,6 +20,7 @@ const FLIGHT := [
 const SHORTCUTS := [
 	[[KEY_BRACKETLEFT, KEY_BRACKETRIGHT], "Aileron trim: left / right"],
 	[[KEY_PAGEUP, KEY_PAGEDOWN], "Elevator trim: nose down / up"],
+	[[KEY_COMMA, KEY_PERIOD], "Rudder trim: left / right"],
 	[[KEY_ESCAPE], "Pause menu (in the radio calibration: cancel it)"],
 	[[KEY_R, KEY_P], "Restart / resume after radio failsafe"],
 	[[KEY_C, KEY_1, KEY_2, KEY_4, KEY_5], "Views: next (Shift+C back), pilot, chase (again: 3D), fly-by, orbit"],

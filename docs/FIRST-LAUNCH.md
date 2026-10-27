@@ -46,6 +46,7 @@ Current source records local fixed-wing flight statistics. Open **Home → Stati
 | W / S | Increase / decrease throttle |
 | `[` / `]` | Aileron trim left / right |
 | Page Up / Page Down | Elevator trim nose down / nose up, 0.1° per press |
+| `,` / `.` | Rudder trim left / right, 0.5 % of the rudder throw per press (airplanes with a rudder) |
 | Esc | Pause; cancel radio calibration |
 | R | Restart flight |
 | P | Resume after a radio failsafe |
@@ -79,7 +80,16 @@ Ventage Jet in **Normal** mode uses reduced gamepad elevator travel (±6° befor
 
 Its Normal gamepad rudder uses ±12° travel before trim and a brief progressive response (about 0.3 s to reach 95% of a held target or return). This softens the nose's swing when the stick centers; some aerodynamic return remains normal. The setting also reduces the coupled nosewheel steering command. Full mode and RC radios retain their existing rudder mapping. [Rudder-release evidence](research/avanti-realism/AV-17-R3/README.md).
 
-Adjust elevator trim with **Page Up / Page Down** (Spanish keyboards: **RePág / AvPág**). Establish the desired speed and flight path with the sticks and throttle, then adjust trim to relieve the held elevator command. This is a fixed surface offset, not altitude hold; changes in power or speed may need another adjustment. The transmitter overlay shows the resulting trim. **R** restores the starting trim. Trim keys are ignored while paused or replaying recorded inputs.
+Adjust elevator trim with **Page Up / Page Down** (Spanish keyboards: **RePág / AvPág**). Establish the desired speed and flight path with the sticks and throttle, then adjust trim to relieve the held elevator command. This is a fixed surface offset, not altitude hold; changes in power or speed may need another adjustment. The transmitter overlay shows the resulting trim. **R** restores the starting trim, unless trim practice keeps your trims (below). Trim keys are ignored while paused or replaying recorded inputs.
+
+### Trim practice (current source)
+
+**Home → Practice → Trim practice** starts airplanes naturally out of trim, as a newly built model is: it rolls, climbs, dives or turns with the sticks centred until you trim it out. Tick **Start with a naturally out-of-trim airplane** and choose the **intensity**: 0 % is perfectly trimmed, 100 % gives noticeable but realistic tendencies. Each airplane reacts with its own aerodynamics, so a sensitive aerobatic or jet model shows the same rigging error more than a stable trainer. The simulator never moves your trims.
+
+- **First flight only:** the airplane starts out of trim on its first flight of the session. Your trims stay after crashes and restarts, and when you fly the same airplane again before quitting.
+- **Every flight:** every new flight, restart or crash brings new tendencies, and the trims return to the starting trim. A radio keeps its own trims, so re-centre them yourself.
+
+Trim with your radio's trim switches, the aileron/elevator/rudder trim keys above, or a gamepad's D-pad (aileron and elevator). Gamepad rudder trim has no default button; assign *Rudder trim left / right* under **Controls → Buttons**. Trim practice applies to Home airplane flights; Natural Random, helicopters and cars are unchanged. Technical routes accept `--out-of-trim=<0–100>`, `--out-of-trim-mode=first-flight|every-flight` and `--out-of-trim-seed=<n>`. [Model and evidence](research/radio-input/D6-TRIM-01/README.md).
 
 ### Controller settings (current source)
 

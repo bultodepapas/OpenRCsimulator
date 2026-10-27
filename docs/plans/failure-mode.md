@@ -1,25 +1,26 @@
 # Random failures and emergency practice
 
-**Updated:** 2026-10-14. **Status:** logical-control/throttle mode, glow/electric power loss, aircraft-specific availability and the shared actuator foundation implemented; independent hardware and aircraft recovery qualification remain open. **Owner:** Emergency training track, **EM-00…28**. Shared physics, aircraft contracts, UI, propulsion and damaged-flight work remains with its existing owners in the [track registry](../README.md#tracks-plans-and-step-ids). **Research:** [EM-00 source review and audit](../research/failure-mode/EM-00/README.md). **Implementation evidence:** [EM-01 initial slice](../research/failure-mode/EM-01/README.md), [EM-05 power-loss adapters](../research/failure-mode/EM-05/README.md), [EM-03a controls and availability](../research/failure-mode/EM-03a/README.md).
+**Updated:** 2026-10-27. **Status:** logical-control/throttle mode, glow/electric power loss, aircraft-specific availability, the shared actuator foundation, and per-type selection with severity, onset window and seven more mechanisms (EM-29/30) implemented; independent hardware and aircraft recovery qualification remain open. **Owner:** Emergency training track, **EM-00…28**. Shared physics, aircraft contracts, UI, propulsion and damaged-flight work remains with its existing owners in the [track registry](../README.md#tracks-plans-and-step-ids). **Research:** [EM-00 source review and audit](../research/failure-mode/EM-00/README.md), [EM-00-R1 failure library](../research/failure-mode/EM-00-R1/README.md), [EM-31 wing-loss feasibility](../research/failure-mode/EM-31/README.md). **Implementation evidence:** [EM-01 initial slice](../research/failure-mode/EM-01/README.md), [EM-05 power-loss adapters](../research/failure-mode/EM-05/README.md), [EM-03a controls and availability](../research/failure-mode/EM-03a/README.md), [EM-29/30 selection, severity and mechanisms](../research/failure-mode/EM-29/README.md).
 
-**Outcome:** any supported airplane can participate in optional emergency practice through the same capability-based system. A player chooses a whole-number failure probability from **0 to 100**, optionally admits catastrophic failures, and optionally sees a notice when the failure happens. The airplane responds through its real simulated controls, propulsion and aerodynamics. Learning, surprise and repeatable challenges are the reasons to use the feature.
+**Outcome:** any supported airplane can participate in optional emergency practice through the same capability-based system. A player chooses a whole-number failure probability from **0 to 100**, which failure types may occur, their severity and when they may start, optionally admits catastrophic failures, and optionally sees a notice when the failure happens. The airplane responds through its real simulated controls, propulsion and aerodynamics. Learning, surprise and repeatable challenges are the reasons to use the feature.
 
 The implementation checkpoint below identifies existing behavior. The remaining sections describe the broader target, not delivered or physically validated features. The document is in English following repository policy; the implemented interface supports English and Spanish.
 
 ### Implementation checkpoint — current scope
 
-- **Home → Failures** selects integer probability 0–100, catastrophic admission and notices. Pause offers settings for the next flight; Apply also updates notices in the current flight. Cancel discards all draft changes. Restart retains the resolved episode. End flight reports an active incident, a healthy draw or an interruption before onset.
+- **Home → Failures** selects integer probability 0–100, the onset window (early 20–60 s, standard 20–120 s, late 60–240 s), severity (mild, standard, severe), one checkbox per failure type, catastrophic admission and notices. Unchecked types and the severity/onset choices persist in preferences; the original three-key preference upgrades to the defaults. Pause offers settings for the next flight; Apply also updates notices in the current flight. Cancel discards all draft changes. Restart retains the resolved episode. End flight reports an active incident, a healthy draw or an interruption before onset.
 - **Eight ordinary injected mechanisms:** both ailerons held through the existing roll actuator, elevator hold, rudder hold, roll bias, pitch bias, slow roll servo, throttle-demand ceiling and elevated throttle-demand hold. Jams capture actual servo position; trim does not release a jam. Keyboard `[` / `]` adjusts roll trim; existing PgUp/PgDn adjusts pitch trim.
+- **EM-30 adds seven ordinary mechanisms (plan v3):** slow elevator and rudder servos, rudder trim shift, throttle stuck low, and restricted aileron, elevator and rudder travel. Severity scales trim offsets, servo rate, travel and throttle limits within training-policy bands; jams, source loss and radio loss are the same at every severity. Elevon aircraft (X8) exclude the four rudder-axis types, which would be null events there; the session records that exclusion in the resolved request.
 - **Two family-specific ordinary mechanisms:** finite-glow fuel/combustion cutoff and electric motor-drive disconnection. Each eligible aircraft adds only its own mechanism. Propeller RPM remains a continuous physical state, allowing coast or windmilling. Glow fuel delivery stops without deleting remaining fuel; electric motor current stops while modeled auxiliary consumption continues. These persistent failures prevent restart until Repeat or a new flight; controls remain available.
 - **One opt-in catastrophic mechanism:** sustained simulated receiver link loss, holding the last accepted control commands with throttle demand at idle. Real controller disconnection retains its existing pause behavior.
-- `app/failures/` owns strict configuration, catalog and versioned private RNG/runtime. A draw assigns at most one event. Selection is uniform over the eligible pool: eight ordinary events for control-only profiles, nine for finite-glow/electric profiles, plus radio loss when admitted. This policy supersedes the proposed 90/10 category weighting below. These are training choices, not measured RC reliability.
-- New `openrc-failure-plan v2` records bind to the normalized propulsion profile. Historical v1 records retain their original event set, seed mapping and reader. Restore/reload rejects a v2 profile mismatch before changing the flight. Aircraft IDs do not select mechanisms; legacy RPM models, sampled shaft models and turbines retain control/throttle faults with explicit source-shutdown exclusion reasons. **Available failures for this aircraft** shows the eligible pool and those reasons in Home/Pause; catastrophic admission filters the displayed radio-loss event.
+- `app/failures/` owns strict configuration, catalog and versioned private RNG/runtime. A draw assigns at most one event. Selection is uniform over the eligible pool minus the player's unchecked types: fifteen ordinary events for control-only profiles, sixteen for finite-glow/electric profiles, plus radio loss when admitted. With probability above 0, an empty pool refuses Apply for the shown aircraft and refuses launch for any aircraft, before any draw. This policy supersedes the proposed 90/10 category weighting below. These are training choices, not measured RC reliability.
+- New `openrc-failure-plan v3` records bind to the normalized propulsion profile and the resolved request (severity, onset window, exclusions). Historical v1 and v2 records retain their original event sets, seed mappings and readers, and refuse requests they cannot express. Restore/reload rejects a v2 profile mismatch before changing the flight. Aircraft IDs do not select mechanisms; legacy RPM models, sampled shaft models and turbines retain control/throttle faults with explicit source-shutdown exclusion reasons. **Available failures for this aircraft** shows the eligible pool and those reasons in Home/Pause; catastrophic admission filters the displayed radio-loss event.
 - **EM-03a foundation:** the existing scalar servo law now has a shared actuator kernel, a validated detached batch path, and a direct accepted-surface observation for physics/rendering. Isolated four-position fixtures exercise independent aileron angles. Current aircraft keep their three logical servo states; single-side jams and split elevators are not yet installed capabilities or new random events.
 - Onset is resolved once at **20–120 seconds of qualified airborne time**: accepted physics ticks at least **5 m above local terrain**, with wheels uncompressed. Paused time does not count. Ending before that time does not satisfy the scheduled emergency. The default technical/direct route remains off; Natural Random and non-airplane routes do not inherit this option.
 - The session stages the incident before integration, commits it before external stepped observers and discards it on numerical rejection. `openrc-flight-checkpoint v10` wraps the existing physics format without changing its state layout; native checkpoints carry the complete resolved plan and runtime. Enabled trace headers retain the plan and recording-start state.
-- Direct reproduction on the default legacy Stik: `-- --failures=100 --failure-seed=1751` selects a roll-actuator jam after 20 qualified seconds. The same seed can resolve a different event on a different eligibility profile. Additional flags: `--catastrophic=on|off`, `--failure-notices=on|off`. Seed range is 0–4294967295. Technical launches do not read saved preferences.
+- Direct reproduction on the default legacy Stik: `-- --failures=100 --failure-seed=2063` selects a roll-actuator jam after 20 qualified seconds (seed 1751 did so under plan v2). The same seed can resolve a different event on a different eligibility profile. Additional flags: `--catastrophic=on|off`, `--failure-notices=on|off`, `--failure-severity=mild|standard|severe`, `--failure-onset=early|standard|late`, `--failure-exclude=id,id`. Seed range is 0–4294967295. Technical launches do not read saved preferences.
 
-This advances the logical-topology portions of **EM-01…11**, the capability and source-loss portions of **EM-02/05**, and the receiver profile in **EM-17**. It does **not** close all their acceptance gates. Independent single-aileron/split-elevator hardware, turbine flameout/relight, intermittent power, brownout, in-flight wing separation, richer lessons, exported-build checks, target-hardware performance and RC pilot recovery qualification remain pending. Stuck throttle uses each existing energy model; it does not manufacture finite fuel in a prescribed-fuel installation. The source-loss adapters reuse accepted engine laws; they do not calibrate new shutdown transients.
+This advances the logical-topology portions of **EM-01…11**, the capability and source-loss portions of **EM-02/05**, and the receiver profile in **EM-17**. **EM-29/30** add player selection, severity and onset plus seven mechanisms on existing seams. **EM-31** shows the current aerodynamic model would produce a false recovery after wing loss (§10.5). It does **not** close all their acceptance gates. Independent single-aileron/split-elevator hardware, turbine flameout/relight, intermittent power, brownout, in-flight wing separation, richer lessons, exported-build checks, target-hardware performance and RC pilot recovery qualification remain pending. Stuck throttle uses each existing energy model; it does not manufacture finite fuel in a prescribed-fuel installation. The source-loss adapters reuse accepted engine laws; they do not calibrate new shutdown transients.
 
 **Navigation:** [Product](#1-product-decisions) · [Research](#2-evidence-and-realism-boundaries) · [Menus](#4-player-flow-and-menus) · [Probability](#5-exact-probability-time-and-repeat-semantics) · [Fault catalog](#6-fault-catalog) · [Aircraft standard](#7-standardization-across-airplanes) · [Numerics](#8-numerical-and-code-design) · [Wing loss](#10-wing-separation-and-continued-damaged-flight) · [Practice](#11-useful-and-enjoyable-practice) · [Verification](#13-verification-and-acceptance) · [Phases](#14-phased-implementation).
 
@@ -31,9 +32,13 @@ This advances the logical-topology portions of **EM-01…11**, the capability an
 | Meaning of 90 | Each new accepted flight independently has a 90% chance of being assigned one failure episode. It does not mean 90% damage, nine guaranteed failures in every ten flights, or a 90% chance every second. |
 | Meaning of 100 | Every accepted, compatible flight is assigned an episode, with a bounded activation time. A flight ended before its activation is recorded as interrupted before the event, never as a successful healthy draw. |
 | Default | 0%; **Include catastrophic failures** unchecked; **Notify when a failure occurs** checked. Enabling catastrophe does not change the master probability. |
-| Number of faults | One initiating episode per flight in the first releases. Consequences of that cause, such as a receiver outage affecting several channels, belong to the same episode. Independent multiple failures are a later, explicit advanced option. |
+| Number of faults | One initiating episode per flight in the first releases. Consequences of that cause, such as a receiver outage affecting several channels, belong to the same episode. Independent multiple failures are a later, explicit advanced option: a *Maximum failures per flight* setting (1–3) is EM-26 and needs causal, conflict and workload rules, not a loop over the single-event draw. |
 | Intended difficulty | The ordinary pool contains aircraft-qualified, potentially manageable cases. Recovery still depends on attitude, height, airspeed, weather and pilot action. It never promises survival. |
 | Catastrophe | Opt-in admission of cases with major or potentially unrecoverable loss of control/structure, including sustained radio loss and wing separation. A class label is a training category, not a certified severity assessment. |
+| Which failures | One checkbox per failure type, grouped by axis and system, all checked by default (EM-29). Types the shown aircraft lacks are marked, not hidden, because the preference applies to every aircraft. Catastrophic types also need the catastrophic switch. |
+| Severity | Mild, standard or severe training bands for offsets, servo rate, travel and throttle limits. Standard is the original range. A severe magnitude never turns an ordinary type into a catastrophic one silently. |
+| Onset window | Early 20–60 s, standard 20–120 s or late 60–240 s of qualified airborne time. Probability per flight stays the frequency control; there is no per-second hazard rate. |
+| Selection mix | Uniform over the checked, eligible types. An optional *realistic mix* weighted by [EM-00-R1](../research/failure-mode/EM-00-R1/README.md) category estimates is EM-08a; it must stay labelled as an estimate. |
 | Notices | A brief nonmodal, localized message at committed onset; no automatic pause, camera cut or control interception. Hidden notices suppress diagnostic hints, not physical symptoms. A postflight explanation remains available. |
 | Restart | **Repeat this flight** restores the original start and the same resolved episode. **New flight** makes a new draw. A failed launch, opening a menu or toggling notices never redraws. |
 | Existing normal flight | Remains unchanged at 0%. Physical consequences already present, such as a prop strike or finite-fuel exhaustion, remain possible; 0% disables injected training faults. |
@@ -92,20 +97,28 @@ Current software coverage includes all eight catalog configurations: base Stik, 
 Add **Failures / Fallas** to the existing Home setup area. Keep Fly as the primary action. Show a short summary beside the entry: **Off**, **30% · Standard**, or **100% · Catastrophic enabled**. Do not hide the active probability only inside global Settings.
 
 ```text
-FALLAS DEL PRÓXIMO VUELO
+FAILURES · NEXT FLIGHT                          (implemented, EM-29)
 
-Probabilidad de falla por vuelo       [────●────────] [ 30 ] %
-0: desactivadas · 100: siempre se programa una falla
+Probability of failure per flight     [────●────────] [ 30 ] %
+At most one training failure per flight; ending before onset cancels it.
+When a failure can start              [ Standard (20–120 s)   v ]
+Severity                              [ Standard              v ]
+[ ] Include catastrophic failures     [Available failures for this aircraft]
+[x] Notify when a failure occurs
 
-[ ] Incluir fallas catastróficas
-    Puede perderse todo el control o parte de la estructura.
-[x] Avisar cuando ocurra la falla
+FAILURE TYPES                                   [Select all] [Clear all]
+Control surfaces and servos
+  [x] Aileron jam              [x] Aileron trim shift
+  [x] Slow aileron servo       [x] Restricted aileron travel
+  … elevator rows, rudder rows (marked unavailable on elevon aircraft)
+Engine and throttle
+  [x] Throttle stuck high      [x] Throttle stuck low
+  [x] Limited throttle         [x] Engine stops (glow)  Not available on this aircraft
+Radio link
+  [x] Radio link loss          Requires catastrophic failures
+14 checked failure types can occur on this aircraft.
 
-Las fallas disponibles dependen de los sistemas de este avión.
-Se programa como máximo una emergencia por vuelo.
-Si terminas antes de su activación, la falla no llega a ocurrir.
-
-[Aplicar]  [Cancelar]
+[Cancel]  [Apply]
 ```
 
 Helper text explains that very short flights can finish before activation. Show excluded capabilities in an optional **Available failures** detail view, with meaningful reasons such as **Independent elevators are not modeled**. No raw capability IDs or solver terms in the main flow.
@@ -243,6 +256,30 @@ Ordinary jam profiles need special care. An actuator that freezes at a large cur
 | `multi_engine.single_lost` A/C | One propulsion unit fails. | Wait for AS's repeated propulsion, real thrust arms and differential effects; never fake a twin with a yaw impulse. |
 
 Causal cascades are later work: for example an explicitly powered servo overload leading to bus sag and receiver reboot. Do not achieve the same spectacle by drawing three unrelated faults and calling it one cause. High-frequency flutter and progressive fatigue require structural models and evidence; the initial structural exercise injects a stated separation event, not an unvalidated material-strength threshold.
+
+### 6.4 Library mapping (EM-00-R1, 2026-10-27)
+
+The [EM-00-R1 library](../research/failure-mode/EM-00-R1/README.md) records 97 real RC failures in 11 groups. Each entry has a type (hardware, setup, pilot, external), onset, symptoms, simulation consequence, pilot response, recoverability and evidence level. Admission rules:
+
+- Only hardware (H) and external (X) entries enter the random pool. Setup (S) and pilot (P) entries become EM-19 preflight or scenario lessons. Loss of sight and weather belong to the scenario system.
+- Entries whose evidence is only an estimate or forum report (E/F) are never presented as documented hardware behavior.
+- A library entry ships only through a mechanism in its owning physical law. Otherwise it is listed as blocked, never approximated by a final-force multiplier.
+
+| Library group | Implemented now | Next mechanism → step | Blocking dependency |
+| --- | --- | --- | --- |
+| 3.1 Engines | `glow_fuel_cut` (engine stop); `throttle_stuck`/`throttle_stuck_low` (loose throttle linkage) | Lean overheat derate, glow-plug idle cut, attitude starvation, fuel foam → EM-15b. P-51/F4U shaft cut → EM-15c. Turbine flameout, ECU shutdown, failsafe 0.5 s idle + 1.5 s shutdown → EM-15 | NITRO feed/mixture law; AV turbine lifecycle; AS repeated propulsion for twins |
+| 3.2 Electric | `electric_drive_loss` (hard LVC, overcurrent cut); `throttle_limit` (soft-LVC/thermal surrogate) | Weak pack (cell resistance), latched soft LVC, ESC thermal derate (BLHeli_S 75/50/25/0 % or 60 % cap), desync on a throttle punch, ESC signal-loss timers → EM-15a | Pack mode (BAT); ESC thermal state; BAT-12 rail for an ESC failure that also kills the BEC |
+| 3.3 Propeller | — | Blade loss, departure, imbalance; mount failure → EM-25c (+ EM-25e for CG) | Propulsion damage state. No vibration model exists, so servo-authority loss from vibration is a labelled proxy |
+| 3.4 Controls | Jam (stuck), bias (slipped), slow (weak), restricted travel (blowback surrogate) | Hard-over → **EM-30b**. Floating surface (stripped gear, open clevis, horn loss, overload cutout), jitter, slop → EM-25f. One aileron / half elevator → EM-13/14. Flap asymmetry → EM-25d | D6-SRV hinge-moment law; AS topology. Flutter is not modelled (D6-SRV OD7) |
+| 3.5 Radio | `radio_loss` (sustained, hold last, idle) | Brief dropout ≤ 1 s → EM-17a. Failsafe profiles and *failsafe not set* (throttle holds high) → EM-17b. Dead receiver (no pulses) → EM-17b + EM-25f | Receiver profile data (R25–R31) |
+| 3.6 Airborne power | — | Brownout reboot with receiver-specific reconnect (0.04 s to seconds), open switch or connector → EM-18; surrogate interval first | Causal voltage needs the BAT-12 rail |
+| 3.7 Stabiliser | — | Only when an assist controller is modelled | No assist exists today |
+| 3.8 Setup and pilot | — | Reversed control, wrong model memory, aft CG, no independent kill, low rates, throttle-cut switch → EM-19 cards | — |
+| 3.9 Gear | — | Retract fails up, one leg up, stuck down → EM-25a. Wheel departure, steering, one-sided brake → EM-25b | Leg-up contact without instant crash; per-wheel contact removal |
+| 3.10 Structure | — | Partial or full wing, tail, surface → EM-20…24. Canopy, hatch, battery shift → EM-25e | EM-31 capabilities 1–7 |
+| 3.11 External | — | Mid-air and bird damage sets after structure | Structure first; sight and gusts stay scenarios |
+
+Incidence: no hobby fixed-wing failure rates exist. EM-00-R1 §4.3 proposes estimated category weights for the optional EM-08a mix, based on OSD shares, UK AAIB model-aircraft records 2020–2026 and training value. The ordinary pool is propulsion/energy 40 %, actuators 30 %, brief link/power 10 %, gear 10 %, minor airframe 10 %. The catastrophic pool is sustained link/power 50 %, structure 25 %, catastrophic propulsion 15 %, collision 10 %.
 
 ## 7. Standardization across airplanes
 
@@ -431,6 +468,27 @@ High-angle-of-attack, knife-edge and propwash-dominated recovery on 3D airplanes
 
 Qualification matrix: left/right outer panel, left/right full panel, trainer/aerobatic/warbird/jet/electric families, multiple onset attitudes/speeds/power states, finite fuel variants and ground approaches. Publish recoverability as observed for a named setup, not as a global list of “planes that survive losing a wing.”
 
+### 10.5 Feasibility for the current fleet (EM-31)
+
+The [EM-31 study](../research/failure-mode/EM-31/README.md) answers the requested knife-edge question for this fleet. It is analysis, not validation.
+
+- **Outer 30–50 % of one panel lost:** wings-level trim with full aileron exists on every conventional airplane above V_min ≈ 1.1–3 × stall, with thrust to spare. A fast, flat arrival is plausible. The X8's tailless pitch margin reaches about zero at a 30 % loss.
+- **Complete panel lost:** no fleet airplane has a credible survivable arrival.
+  - The Stiks and the Extra cannot trim wings-level at any speed, because their ailerons span almost the whole panel.
+  - Knife-edge on the fuselage with the remaining wing near zero lift depends entirely on the unqualified fuselage side-force law. The measured body-alone bound sinks every aircraft at 3–47 m/s.
+  - Prop-hang descent needs damaged T/W ≥ about 1.3. Where that exists (Stiks, P-51, F4U), no aileron sits in the propeller wash, so the hover torque-rolls.
+  - The documented one-wing landings ([EM-00 R15/R16](../research/failure-mode/EM-00/README.md#r15--original-account-of-an-rc-one-wing-landing)) were on high-T/W aerobatic models. The right first qualification airplane for knife-edge recovery is such a model, not today's fleet.
+- **Blocker:** masking wing strips today leaves intact lift and **zero rolling moment**, because the coefficient oracle ignores the mask. Shipping separation before EM-31 capabilities 1–7 exist would teach a false recovery. Those capabilities are:
+  1. damaged-topology aerodynamics without the intact oracle;
+  2. at least about 8 removable strips per side with per-strip control coverage;
+  3. downwash rebuilt for the remaining wing;
+  4. dihedral and tail downwash split per panel;
+  5. fuselage side force for every airplane;
+  6. dry-part mass, CG and inertia removal;
+  7. contacts and gear removed with the section.
+
+Order of delivery: the outer-panel loss (case a) first, then full-panel loss as an expected-unrecoverable catastrophic exercise. A knife-edge claim requires per-aircraft side-force acceptance (EM-31 check 5).
+
 ## 11. Useful and enjoyable practice
 
 Random failures enrich normal flying; named lessons make them learnable. First deliver the random modifier and a short debrief. Add the following exercise cards incrementally after their mechanism gates:
@@ -588,6 +646,32 @@ Do not delay useful nonstructural training while this work is pending. Conversel
 | **EM-27** | Resolved-scenario sharing, compatibility diagnostics and third-party/Workshop onboarding conformance. | Versioned packages/identities, missing-content errors, generated-source checks; no silent replacement of aircraft or faults. |
 | **EM-28** | Release acceptance, operating guide and plan consolidation. | All chosen release gates, clean-clone/export checks, request-to-delivery matrix and remaining limitations. Move operating instructions to the canonical guide, preserve evidence, then remove completed plan portions per repository policy. |
 
+### Phase 6 — Failure-library expansion (revision 2026-10-27)
+
+The [EM-00-R1 library](../research/failure-mode/EM-00-R1/README.md) is mapped to mechanisms and owners in §6.4. Sub-steps reuse the step that already owns the class; one mechanism per reviewable change.
+
+| ID | Work | Dependencies and proof/status |
+| --- | --- | --- |
+| **EM-29** | Failure request v2 and plan v3: per-type exclusion, severity bands, onset window, empty-pool refusal; menu, summaries, CLI, eight catalogs. | **Delivered** 2026-10-27; [evidence](../research/failure-mode/EM-29/README.md). |
+| **EM-30** | Seven v3 mechanisms on existing seams; elevon rudder-axis exclusion; reachable healthy-draw debrief. | **Delivered** 2026-10-27; same evidence. |
+| **EM-31** | Wing-loss and knife-edge feasibility for the fleet; required capabilities and acceptance checks. | **Delivered** (analysis); [evidence](../research/failure-mode/EM-31/README.md). Gates EM-20…24. |
+| **EM-30b** | Hard-over: the axis target goes to a resolved end stop and the actual surface gets there through normal servo dynamics. Elevator hard-over is catastrophic; roll and yaw are ordinary only at mild severity after review. | Existing seams; sign/stop and rate checks, per-axis tier rationale (EM-00-R1 `servo.hardover`). |
+| **EM-08a** | Optional *realistic mix* selection policy from EM-00-R1 category weights; plan v4 field, uniform remains default. | EM-00-R1; distribution sweep (G1) and label review. |
+| **EM-17a** | Intermittent link: resolved dropout schedule with hold, failsafe and recovery through existing actuator dynamics; ordinary only for qualified short dropouts. | EM-17; snapshot of interval index and held commands; replay across every dropout boundary. |
+| **EM-17b** | Receiver failsafe profiles: hold-last, preset, and *wrong failsafe* (throttle holds its last demand), named per receiver family. | EM-17a; profile data from manuals; catastrophic tier. |
+| **EM-15a** | Electric faults through the pack/ESC supervisor: weak-cell sag (raised cell resistance), early LVC, ESC thermal cutback, intermittent drive. | BAT/EL owners; pack mode only; current/voltage traces. |
+| **EM-15b** | Glow faults through the fuel-feed and mixture laws: lean cut, feed interruption, reduced power. | NITRO owner; no universal inverted-flight timeout. |
+| **EM-15c** | Shaft-engine cut for the P-51/F4U (gating only today) and a corrected exclusion reason. | Propulsion owner; windmill/friction rundown proof. |
+| **EM-25a** | Retract faults: fails to extend or retract, one leg stays up. | GP owner; leg-up belly/hull contact must not be an instant crash; P-51, F4U, Avanti. |
+| **EM-25b** | Wheel or leg loss and one-sided brake/steering failure with asymmetric ground forces. | GP owner; per-wheel contact removal. |
+| **EM-25c** | Propeller damage and blade loss: thrust/torque reduction and imbalance. | Propulsion owner; today a prop strike only stops the engine. |
+| **EM-25d** | Asymmetric flap (one side stuck or fails to deploy). | AS-15 independent flap actuators; P-51, F4U, Avanti. |
+| **EM-25e** | CG shift (battery or ballast slides) and hatch/canopy loss. | EM-31 capability 6 (runtime mass); drag increment sourced. |
+| **EM-25f** | Servo hardware: stripped gears with a free-floating surface, stall/blowback and centring deadband. | D6-SRV hinge-moment law; free-surface equilibrium, not a guessed angle. |
+| **EM-26** | *Maximum failures per flight* (1–3) and causal cascades. | EM-29 request; conflict groups, workload qualification. |
+
+Preflight/setup errors (reversed channel, wrong model memory, low-rate switch left on, throttle-cut switch) stay named training cards in EM-19, never mid-flight random events.
+
 ### Reviewable delivery order
 
 ```text
@@ -598,6 +682,9 @@ EM-01 → EM-02 → EM-03/04 and family-specific EM-05
 EM-13…19 extend the accepted framework with real subsystem support.
 EM-20…24 depend on CR/AS/physics damaged-flight foundations.
 EM-25…28 add qualified capabilities and consolidate delivered work.
+
+EM-29/30/31 delivered. Next: EM-30b, EM-08a and EM-17a (no new physics),
+then EM-15a…c and EM-25a…f with their owners, then EM-26.
 ```
 
 Use separate PRs/commits for contracts, healthy actuator parity, each physical mechanism, scheduler, lifecycle/recording, and UI. A developer can review each without accepting the entire long-term damaged-flight model. If agents work in parallel, give them distinct owned files and use the repository's requested Luna Max model; shared integration files have one integrator at a time.
@@ -623,6 +710,8 @@ Default scope excludes persistent wear across sessions, real RF propagation/inte
 ## 16. Completion checklist for the requested feature
 
 - [ ] 0–100 probability has exact per-flight semantics and a clear 100% activation/interruption rule.
+- [x] Per-type checkboxes, severity and onset window select the next flight's pool (EM-29/30).
+- [ ] Optional realistic mix (EM-08a) and maximum failures per flight (EM-26).
 - [ ] Catastrophic admission and onset notices are independent checkboxes with truthful behavior.
 - [ ] Single/both aileron, rudder, supported split-elevator, offset/trim and slow/restricted-control cases operate through actual physical surfaces.
 - [ ] Engine/electric/turbine-off and weak/slow/intermittent power use supported family mechanisms.

@@ -12,6 +12,7 @@ const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const OverlaySettings := preload("res://render/overlays/overlay_settings.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const FailureConfig := preload("res://failures/config.gd")
+const OutOfTrim := preload("res://sim/out_of_trim.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
 const ModelManifest := preload("res://aircraft/model_manifest.gd")
@@ -62,6 +63,8 @@ const DEFAULTS := {
 	sky_config = SkyConfig.DEFAULTS,
 	# EM-09: optional injected failures are off until the player opts in.
 	failure_config = {"probability_percent": 0, "include_catastrophic": false, "notify": true},
+	# D6-TRIM-01: natural out-of-trim airframes are off until the player opts in ([trim_practice] section, additive).
+	out_of_trim_config = {"enabled": false, "intensity_percent": 50, "mode": "first_flight"},
 	# FW-MOON-12: visual-only moon choices ([moon] config). An additive section like [hud]: no schema change.
 	moon_config = MoonConfig.DEFAULTS,
 	# AI companions are an additive section. Keep the existing schema so newer files remain protected by `writable`.
@@ -77,6 +80,7 @@ const DEFAULTS := {
 static func load_from(path: String) -> Dictionary:
 	var prefs := DEFAULTS.duplicate(true)
 	prefs.failure_config = FailureConfig.defaults()
+	prefs.out_of_trim_config = OutOfTrim.defaults()
 	prefs.writable = true
 	prefs.note = ""
 	if not FileAccess.file_exists(path):
@@ -160,6 +164,12 @@ static func load_from(path: String) -> Dictionary:
 		prefs.failure_config = checked_failure_config.config.duplicate(true)
 	else:
 		prefs.note = _append_note(prefs.note, "invalid failure settings; using defaults")
+	if cfg.has_section_key("trim_practice", "config"):
+		var checked_trim: Dictionary = OutOfTrim.validate(cfg.get_value("trim_practice", "config"))
+		if checked_trim.ok:
+			prefs.out_of_trim_config = checked_trim.config.duplicate(true)
+		else:
+			prefs.note = _append_note(prefs.note, "invalid trim practice settings; using defaults")
 	var night_field_lighting: Variant = cfg.get_value("night", "field_lighting", DEFAULTS.night_field_lighting)
 	if cfg.has_section_key("sky", "config"):
 		var checked_sky: Dictionary = SkyConfig.validate(cfg.get_value("sky", "config"))
@@ -227,6 +237,9 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	)
 	if not checked_failures.get("ok", false):
 		return ERR_INVALID_DATA
+	var checked_trim: Dictionary = OutOfTrim.validate(prefs.get("out_of_trim_config", OutOfTrim.defaults()))
+	if not checked_trim.ok:
+		return ERR_INVALID_DATA
 	if typeof(time_of_day) != TYPE_STRING or not Conditions.HOME_CHOICES.has(time_of_day):
 		return ERR_INVALID_DATA
 	var checked_moon: Dictionary = MoonConfig.validate(prefs.get("moon_config", MoonConfig.DEFAULTS))
@@ -269,6 +282,7 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("night", "field_activation", checked_night.options.field_activation)
 	cfg.set_value("sky", "config", checked_sky.config)
 	cfg.set_value("failures", "config", checked_failures.config.duplicate(true))
+	cfg.set_value("trim_practice", "config", checked_trim.config.duplicate(true))
 	cfg.set_value("moon", "config", checked_moon.config)
 	cfg.set_value("companions", "config", checked_companions.config.duplicate(true))
 	var hud: Dictionary = OverlaySettings.validate(prefs.get("hud", DEFAULTS.hud))

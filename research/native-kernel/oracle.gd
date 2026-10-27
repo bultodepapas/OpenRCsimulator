@@ -34,6 +34,7 @@ var _native: Object
 var _report := {}
 var _failures := PackedStringArray()
 var _specials := PackedFloat64Array()
+var _options := {}
 
 
 func _initialize() -> void:
@@ -47,7 +48,14 @@ func _run() -> void:
 		return
 	_rng.seed = _seed
 	_specials = _special_values()
-	var status: int = GDExtensionManager.load_extension(_extension)
+	# One OpenRCNativeKernel per process: an app install (app/native/kernel, possibly auto-loaded through
+	# .godot/extension_list.cfg) and a tmp research build cannot both register the class.
+	if ClassDB.class_exists("OpenRCNativeKernel") and not GDExtensionManager.is_extension_loaded(_extension):
+		printerr("NK3_ORACLE another OpenRCNativeKernel library is already loaded; run with --app-library " +
+			"(res://native/kernel) or remove the app install")
+		quit(2)
+		return
+	var status: int = OK if GDExtensionManager.is_extension_loaded(_extension) else GDExtensionManager.load_extension(_extension)
 	if status != OK or not ClassDB.class_exists("OpenRCNativeKernel"):
 		printerr("NK3_ORACLE cannot load extension: %s (status %d)" % [_extension, status])
 		quit(2)
@@ -65,17 +73,26 @@ func _run() -> void:
 		return
 	_check_law_identity()
 	_check_literals()
+	_checks()
+	_finish(started)
+
+
+## Milestone-1 component checks; harnesses extending this script (stage_oracle.gd, trajectory.gd) override it.
+func _checks() -> void:
 	_check_math_shim()
 	var context := _session_context()
 	if context.is_empty():
-		_finish(started)
 		return
 	_check_terrain(context)
 	_check_wheels(context)
 	_check_aero(context)
 	_check_refusals(context)
 	_time_components(context)
-	_finish(started)
+
+
+## Extra `--name=value` options a subclass accepts; values land in `_options`.
+func _extra_option_names() -> PackedStringArray:
+	return PackedStringArray()
 
 
 func _parse() -> bool:
@@ -91,7 +108,9 @@ func _parse() -> bool:
 			"states": _states = pair[1].to_int()
 			"variant-states": _variant_states = pair[1].to_int()
 			"timing-rounds": _timing_rounds = pair[1].to_int()
-			_: _failures.append("unknown option " + pair[0])
+			_:
+				if pair[0] in _extra_option_names(): _options[pair[0]] = pair[1]
+				else: _failures.append("unknown option " + pair[0])
 	if _extension.is_empty() or _output.is_empty():
 		_failures.append("--extension and --output are required")
 	elif FileAccess.file_exists(_output):
@@ -243,7 +262,9 @@ func _source_hashes() -> Dictionary:
 	var out := {}
 	for path: String in ["res://physics/math3d.gd", "res://physics/ground_terrain.gd", "res://physics/lake_surface.gd",
 			"res://physics/ground_wheels.gd", "res://physics/ground_contact.gd", "res://physics/air_data.gd",
-			"res://physics/ground_effect.gd", "res://physics/aero.gd"]:
+			"res://physics/ground_effect.gd", "res://physics/aero.gd", "res://physics/propulsion.gd",
+			"res://physics/dynamics.gd", "res://physics/hull_contact.gd", "res://physics/wind_field.gd",
+			"res://sim/environment.gd", "res://sim/flight_session.gd", "res://sim/simulation.gd"]:
 		out[path] = FileAccess.get_sha256(path)
 	return out
 
@@ -671,7 +692,8 @@ func _aero_inputs(context: Dictionary, surfaces: PackedFloat64Array) -> Dictiona
 		d = context.deflections.duplicate()
 	var downwash: float = NAN if _rng.randf() < 0.3 else _rng.randf_range(-5.0, 30.0)
 	var ground_up: float = terrain_up if near and _rng.randf() < 0.85 else (NAN if _rng.randf() < 0.7 else _rng.randf_range(-2.0, 2.0))
-	if _rng.randf() < 0.08: # malformed / non-finite inputs
+	var malformed := _rng.randf() < 0.08
+	if malformed: # malformed / non-finite inputs
 		match _rng.randi_range(0, 5):
 			0: s[_rng.randi_range(0, 12)] = _special()
 			1: wind[_rng.randi_range(0, 2)] = _special()
@@ -679,7 +701,7 @@ func _aero_inputs(context: Dictionary, surfaces: PackedFloat64Array) -> Dictiona
 			3: d[["elevator", "aileron_right", "aileron_left", "rudder"][_rng.randi_range(0, 3)]] = _special()
 			4: downwash = _special()
 			5: ground_up = _special()
-	return {s = s, wind = wind, rho = rho, d = d, downwash = downwash, ground_up = ground_up}
+	return {s = s, wind = wind, rho = rho, d = d, downwash = downwash, ground_up = ground_up, malformed = malformed}
 
 
 func _check_aero(context: Dictionary) -> void:
@@ -723,6 +745,7 @@ func _check_aero(context: Dictionary) -> void:
 				_native.aero_component(6, s, input.wind, input.rho, da, downwash, ground_up), native_args)
 			var group: String = "aero_" + str(case.name)
 			_tally(group, "states")
+			if input.get("malformed", false): _tally(group, "malformed")
 			_tally(group, "blend_zero" if blend == 0.0 else ("blend_one" if blend == 1.0 else ("blend_partial" if is_finite(blend) else "blend_nan")))
 			if not ge.is_empty(): _tally(group, "ground_effect_active")
 			if not is_nan(downwash): _tally(group, "downwash_lag")

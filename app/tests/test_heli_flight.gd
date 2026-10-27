@@ -88,6 +88,40 @@ func close(label: String, actual: float, expected: float, tolerance: float = 1.0
 	check(label, is_finite(actual) and absf(actual - expected) <= tolerance * maxf(1.0, absf(expected)))
 
 
+func _check_rotor_stop_location(context: Dictionary) -> void:
+	# Throttle-hold spool-down with the weight carried by an external pad load.
+	var pad: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, -8.2 * 9.80665, 0.0, 0.0, 0.0])
+	var calm: PackedFloat64Array = M.v3(0.0, 0.0, 0.0)
+	var sticks: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0, 0.5])
+	var dt: float = 1.0 / 240.0
+	var slow: PackedFloat64Array = state_at_hover()
+	slow[Flight.OMEGA] = 0.003
+	var stop: Dictionary = Flight.rk4_step_at(slow, 0.0, dt, context, sticks, "normal", false, true,
+		calm, false, pad)
+	check("a spool-down step locates its rotor stop inside the step", stop.ok
+		and stop.get("event", "") == "rotor_stopped" and stop.state[Flight.OMEGA] == 0.0
+		and stop.elapsed_s > 0.0 and stop.elapsed_s < dt and stop.evaluation.has("state_derivative"))
+	# Below the bisection resolution every trial crosses zero: the stop is at the
+	# step start and still carries a start-state evaluation.
+	var creeping: PackedFloat64Array = slow.duplicate()
+	creeping[Flight.OMEGA] = 1.0e-25
+	var immediate: Dictionary = Flight.rk4_step_at(creeping, 0.0, dt, context, sticks, "normal", false,
+		true, calm, false, pad)
+	check("a stop below the bisection resolution is located at the step start with an evaluation",
+		immediate.ok and immediate.get("event", "") == "rotor_stopped" and immediate.elapsed_s == 0.0
+		and immediate.state[Flight.OMEGA] == 0.0 and immediate.evaluation.has("state_derivative"))
+	# This deliberately long step crosses zero, but its shorter trials converge onto
+	# an aerodynamic-stage refusal near 19.5 rad/s, not onto a stop. That refusal is
+	# the step result; it must not become a rotor stop with the speed forced to zero.
+	var decaying: PackedFloat64Array = state_at_hover()
+	decaying[Flight.OMEGA] = 20.0
+	decaying[RB.VEL] = 18.0
+	var refused: Dictionary = Flight.rk4_step_at(decaying, 0.0, 1.0, context, sticks, "normal", false,
+		true, calm, false, pad)
+	check("a non-stop refusal at the located boundary is returned, not reported as a rotor stop",
+		not refused.ok and refused.get("fault", "") != "rotor_zero_speed_event" and not refused.has("event"))
+
+
 func _initialize() -> void:
 	var prepared: Dictionary = make_context()
 	check("source-derived component contexts prepare", prepared.ok)
@@ -185,5 +219,6 @@ func _initialize() -> void:
 		and refined.state.size() == 19 and refined.elapsed_s > 0.0)
 	if not refined.ok:
 		print("RK4 error: ", refined.get("message", "unknown"))
+	_check_rotor_stop_location(context)
 	print("HELI-16 flight equations: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

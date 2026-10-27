@@ -8053,3 +8053,244 @@ msgstr "現在の編集内容と名前を、この構成の新しいリビジョ
 
 msgid "Creates a saved build in your local library."
 msgstr "ローカルライブラリに構成を保存します。"
+
+# D6-TRIM-01: natural out-of-trim airframes (Home trim practice, rudder trim).
+msgid "TRIM PRACTICE · NEXT FLIGHT"
+msgstr "トリム練習 · 次のフライト"
+
+msgid "No real airplane is rigged perfectly. A warped wing, a crooked fin or a linkage off neutral makes it roll, climb, dive or turn with the sticks centred until you trim it out."
+msgstr "完璧に調整された実機はありません。翼のねじれ、曲がった垂直尾翼、ニュートラルからずれたリンケージによって、スティックを中央にしていても機体はロール、上昇、降下、旋回し、トリムで修正するまで続きます。"
+
+msgid "Start with a naturally out-of-trim airplane"
+msgstr "自然にトリムがずれた機体で開始"
+
+msgid "Out-of-trim intensity"
+msgstr "トリムずれの強さ"
+
+msgid "0% is perfectly trimmed. 100% gives noticeable but realistic tendencies. Each airplane reacts with its own aerodynamics; the trims are never moved for you."
+msgstr "0% は完全にトリムが取れた状態です。100% では目立つものの現実的な癖が出ます。機体ごとに独自の空力で反応し、トリムが自動で動くことはありません。"
+
+msgid "Trim persistence"
+msgstr "トリムの保持"
+
+msgid "First flight only"
+msgstr "最初のフライトのみ"
+
+msgid "The airplane starts out of trim on its first flight of the session. Your trims stay after crashes and restarts, and when you fly it again."
+msgstr "セッション最初のフライトで機体はトリムがずれた状態で始まります。あなたのトリムは墜落や再スタート後も、次にその機体で飛ぶときも保持されます。"
+
+msgid "Every flight"
+msgstr "毎回のフライト"
+
+msgid "Every new flight, restart or crash brings new tendencies, and the trims return to the starting trim, so you trim again."
+msgstr "新しいフライト、再スタート、墜落のたびに新しい癖が生じ、トリムは開始時のトリムに戻るため、もう一度トリムを取ります。"
+
+msgid "Trim with your radio's trim switches, the trim keys listed in Help or your controller's trim buttons. Airplanes only."
+msgstr "送信機のトリムスイッチ、ヘルプに記載のトリムキー、またはコントローラーのトリムボタンでトリムを取ります。飛行機のみ。"
+
+msgid "Trim practice"
+msgstr "トリム練習"
+
+msgid "Trim practice currently supports airplanes only."
+msgstr "トリム練習は現在、飛行機のみ対応しています。"
+
+msgid "Next flight trim: Airplanes only"
+msgstr "次のフライトのトリム：飛行機のみ"
+
+msgid "Next flight trim: Off"
+msgstr "次のフライトのトリム：オフ"
+
+msgid "Next flight trim: %d%% out of trim · every flight"
+msgstr "次のフライトのトリム：%d%% のずれ · 毎回のフライト"
+
+msgid "Next flight trim: %d%% out of trim · first flight only"
+msgstr "次のフライトのトリム：%d%% のずれ · 最初のフライトのみ"
+
+msgid "Rudder trim: left / right"
+msgstr "ラダーのトリム：左 / 右"
+
+msgid "Rudder trim left"
+msgstr "ラダートリム左"
+
+msgid "Rudder trim right"
+msgstr "ラダートリム右"
+
+msgid "Rudder trim: %+.1f%%"
+msgstr "ラダーのトリム：%+.1f%%"
+
+msgid "Aileron jam"
+msgstr "エルロン固着"
+
+msgid "Elevator jam"
+msgstr "エレベーター固着"
+
+msgid "Rudder jam"
+msgstr "ラダー固着"
+
+msgid "Aileron trim shift"
+msgstr "エルロントリムのずれ"
+
+msgid "Elevator trim shift"
+msgstr "エレベータートリムのずれ"
+
+msgid "Slow aileron servo"
+msgstr "エルロンサーボの遅れ"
+
+msgid "Limited throttle"
+msgstr "スロットル制限"
+
+msgid "Throttle stuck high"
+msgstr "スロットル高位置固着"
+
+msgid "Slow elevator servo"
+msgstr "エレベーターサーボの遅れ"
+
+msgid "Slow rudder servo"
+msgstr "ラダーサーボの遅れ"
+
+msgid "Rudder trim shift"
+msgstr "ラダートリムのずれ"
+
+msgid "Throttle stuck low"
+msgstr "スロットル低位置固着"
+
+msgid "Restricted aileron travel"
+msgstr "エルロン舵角の制限"
+
+msgid "Restricted elevator travel"
+msgstr "エレベーター舵角の制限"
+
+msgid "Restricted rudder travel"
+msgstr "ラダー舵角の制限"
+
+msgid "Radio link loss"
+msgstr "無線リンク喪失"
+
+msgid "Engine stops (glow)"
+msgstr "エンジン停止（グロー）"
+
+msgid "Motor power loss (electric)"
+msgstr "モーター出力喪失（電動）"
+
+msgid "Elevator servo is slow."
+msgstr "エレベーターのサーボ応答が遅くなっています。"
+
+msgid "Rudder servo is slow."
+msgstr "ラダーのサーボ応答が遅くなっています。"
+
+msgid "Rudder trim shifted."
+msgstr "ラダーのトリムがずれました。"
+
+msgid "Throttle is stuck low."
+msgstr "スロットルが低い位置で固着しています。"
+
+msgid "Aileron travel is restricted."
+msgstr "エルロンの舵角が制限されています。"
+
+msgid "Elevator travel is restricted."
+msgstr "エレベーターの舵角が制限されています。"
+
+msgid "Rudder travel is restricted."
+msgstr "ラダーの舵角が制限されています。"
+
+msgid "Make small early pitch corrections and start the flare sooner."
+msgstr "ピッチ修正は早めに小さく行い、フレアを早めに始めてください。"
+
+msgid "Lead rudder corrections early, especially during takeoff and landing."
+msgstr "特に離陸と着陸では、ラダー修正を早めに行ってください。"
+
+msgid "Hold steady opposite rudder or trim; expect the airplane to skid in turns."
+msgstr "反対方向のラダーまたはトリムを一定に保ってください。旋回中は機体が横滑りします。"
+
+msgid "Keep a safe airspeed, choose a landing area within gliding range and avoid a go-around."
+msgstr "安全な速度を保ち、滑空範囲内の着陸場所を選び、ゴーアラウンドは避けてください。"
+
+msgid "Expect slower rolls; avoid steep banks near the ground and plan wider turns."
+msgstr "ロールが遅くなります。地面近くでの深いバンクを避け、旋回を大きく計画してください。"
+
+msgid "Keep extra airspeed; the flare and stall recovery have less authority."
+msgstr "速度に余裕を持たせてください。フレアと失速回復の舵の効きが弱くなっています。"
+
+msgid "Correct crosswind early; rudder authority is reduced during takeoff and landing."
+msgstr "横風は早めに修正してください。離陸と着陸ではラダーの効きが弱くなっています。"
+
+msgid "Control surfaces and servos"
+msgstr "操縦翼面とサーボ"
+
+msgid "Engine and throttle"
+msgstr "エンジンとスロットル"
+
+msgid "Radio link"
+msgstr "無線リンク"
+
+msgid "0 turns failures off. At 100%, one event is always scheduled. It activates within the chosen time window, counted only while you fly at least 5 m above the terrain."
+msgstr "0 で故障はオフになります。100 % では必ず1件の故障が予定されます。選んだ時間帯の中で発生し、地表から5 m以上で飛行している時間だけが数えられます。"
+
+msgid "When a failure can start"
+msgstr "故障が始まる時間帯"
+
+msgid "Early (20–60 s)"
+msgstr "早い（20–60 秒）"
+
+msgid "Standard (20–120 s)"
+msgstr "標準（20–120 秒）"
+
+msgid "Late (60–240 s)"
+msgstr "遅い（60–240 秒）"
+
+msgid "Severity"
+msgstr "重さ"
+
+msgid "Mild"
+msgstr "軽度"
+
+msgid "Severe"
+msgstr "重度"
+
+msgid "Severity scales trim offsets, servo speed, travel and throttle limits. Jams, engine stops and radio loss are the same at every severity."
+msgstr "重さはトリムのずれ、サーボ速度、舵角、スロットル制限を調整します。固着、エンジン停止、無線喪失はどの重さでも同じです。"
+
+msgid "Failure types"
+msgstr "故障の種類"
+
+msgid "Each flight picks at most one failure at random from the checked types that this aircraft supports."
+msgstr "各フライトでは、この機体が対応するチェック済みの種類から最大1件の故障がランダムに選ばれます。"
+
+msgid "Select all"
+msgstr "すべて選択"
+
+msgid "Clear all"
+msgstr "すべて解除"
+
+msgid "Requires catastrophic failures"
+msgstr "重大な故障を含める必要があります"
+
+msgid "Not available on this aircraft"
+msgstr "この機体では利用できません"
+
+msgid "No checked failure type is available for this aircraft."
+msgstr "チェックした故障の種類はこの機体では利用できません。"
+
+msgid "%d checked failure types can occur on this aircraft."
+msgstr "この機体でチェック済みの故障の種類 %d 件が発生する可能性があります。"
+
+msgid "No checked failure type is available for this aircraft. Check one, or set the probability to 0."
+msgstr "チェックした故障の種類はこの機体では利用できません。いずれかをチェックするか、発生率を 0 にしてください。"
+
+msgid "Next flight failures: %d%% · Custom"
+msgstr "次のフライトの故障：%d%% · カスタム"
+
+msgid "Next flight failures: %d%% · Custom · Catastrophic enabled"
+msgstr "次のフライトの故障：%d%% · カスタム · 重大な故障あり"
+
+msgid "Next flight failures: %d%% · custom"
+msgstr "次のフライトの故障：%d%% · カスタム"
+
+msgid "Next flight failures: %d%% · custom · catastrophic allowed"
+msgstr "次のフライトの故障：%d%% · カスタム · 重大な故障を許可"
+
+msgid "No enabled failure type is available for this aircraft. Enable one in Failures or set the probability to 0."
+msgstr "有効な故障の種類はこの機体では利用できません。「故障」でいずれかを有効にするか、発生率を 0 にしてください。"
+
+msgid "This aircraft has no rudder, so rudder failures cannot occur."
+msgstr "この機体にはラダーがないため、ラダーの故障は発生しません。"

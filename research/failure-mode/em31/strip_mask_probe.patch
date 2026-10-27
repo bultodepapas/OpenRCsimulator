@@ -1,0 +1,7 @@
+369c369
+< 			sources.append((speeds[i]/reference_speed) * (1.0-stall))
+---
+> 			sources.append((speeds[i]/reference_speed) * (1.0-stall) * (float(model.strip_mask[i]) if model.has("strip_mask") else 1.0))
+493a494,495
+> 		if model.has("strip_mask") and float(model.strip_mask[i]) == 0.0:
+> 			continue # WINGLOSS-PROBE: detached strip (disposable copy only)

@@ -36,12 +36,22 @@ NAME = "openrc_native_kernel"
 REFERENCE_SOURCES = [
     "app/physics/math3d.gd", "app/physics/ground_terrain.gd", "app/physics/lake_surface.gd",
     "app/physics/ground_wheels.gd", "app/physics/ground_contact.gd", "app/physics/air_data.gd",
-    "app/physics/ground_effect.gd", "app/physics/aero.gd",
+    "app/physics/ground_effect.gd", "app/physics/aero.gd", "app/physics/propulsion.gd", "app/physics/dynamics.gd",
+    "app/physics/hull_contact.gd", "app/physics/wind_field.gd", "app/sim/environment.gd", "app/sim/flight_session.gd",
+    "app/sim/simulation.gd",
 ]
 LIBM_SYMBOLS = {"sin", "cos", "tan", "asin", "acos", "atan", "atan2", "sqrt", "pow", "exp", "log",
                 "sinh", "cosh", "tanh", "fmod", "floor", "sincos"}
 # Floating-point policy: NK-1 flags plus the pow shim's asm barrier (no -fno-builtin needed; checked below).
 EXTRA_FLAGS = ["-std=c++17"]
+# Stage contract identity; must equal nk_kernel.cpp kBackendVersion/kAbi and app/sim/native_stage.gd.
+BACKEND_VERSION = "openrc-native-kernel-stage-v1"
+ABI_VERSION = 1
+RECEIPT_FORMAT = "openrc-native-kernel-receipt"
+APP_DESTINATION = ROOT / "app/native/kernel"
+# Oracle runs an install must cite: same binary, same mirrored sources, verdict pass (results under TOOL_ROOT).
+VERIFICATIONS = {"stage_oracle": "stage-*.json", "trajectory": "trajectory-*.json"}
+MIN_TRAJECTORY_TICKS = 960
 
 
 def sha256_file(path: Path) -> str:
@@ -59,13 +69,108 @@ def libm_imports(binary: Path) -> list[str]:
     return sorted(found)
 
 
+def source_digest() -> str:
+    digest = hashlib.sha256()
+    for path in sorted([*locked.SOURCES.glob("*.cpp"), *locked.SOURCES.glob("*.hpp")]):
+        digest.update(path.name.encode() + b"\0" + path.read_bytes() + b"\0")
+    return digest.hexdigest()
+
+
+def mirrored_sources() -> dict[str, str]:
+    return {name: sha256_file(ROOT / name) for name in REFERENCE_SOURCES}
+
+
+def find_verification(key: str, pattern: str, binary_sha256: str, sources: dict[str, str]) -> dict:
+    """Newest passing oracle run of `pattern` for exactly this binary and these mirrored sources."""
+    for path in sorted(TOOL_ROOT.glob(pattern), reverse=True):
+        if "_mutant" in path.name:
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if data.get("verdict") != "pass" or data.get("build_receipt", {}).get("binary_sha256") != binary_sha256:
+            continue
+        seen = {name.replace("res://", "app/", 1): value for name, value in data.get("sources", {}).items()}
+        if any(seen.get(name) != value for name, value in sources.items()):
+            continue
+        if key == "trajectory":
+            cases = data.get("trajectories", {})
+            if not cases or any(int(case.get("ticks_requested", 0)) < MIN_TRAJECTORY_TICKS for case in cases.values()):
+                continue
+        return {"results": path.name, "results_sha256": sha256_file(path), "verdict": "pass",
+                "compared": data.get("total", {}).get("compared", 0)}
+    raise SystemExit(
+        f"--install-app needs a passing {key} run ({pattern} in {TOOL_ROOT}) for binary {binary_sha256[:12]} and the "
+        f"current mirrored sources; run: python3 research/native-kernel/run.py --script "
+        f"{'stage_oracle.gd' if key == 'stage_oracle' else 'trajectory.gd --option ticks=960'}")
+
+
+def install_app() -> int:
+    """Stage the verified Linux build under the ignored app/native/kernel/ (library, descriptor, receipt, licence)."""
+    lock = locked.load_lock()
+    build_receipt_path = TOOL_ROOT / "build-receipt.json"
+    library = TOOL_ROOT / f"lib/lib{NAME}.so"
+    if not build_receipt_path.is_file() or not library.is_file():
+        raise SystemExit("No build in tmp/native-kernel; run build.py first.")
+    built = json.loads(build_receipt_path.read_text(encoding="utf-8"))
+    if built.get("mutant") or built.get("binary_sha256") != sha256_file(library):
+        raise SystemExit("The staged library does not match its build receipt (or is the mutant).")
+    if built.get("source_sha256") != source_digest():
+        raise SystemExit("Native sources changed since the build; rebuild first.")
+    sources = mirrored_sources()
+    verification = {key: find_verification(key, pattern, built["binary_sha256"], sources)
+                    for key, pattern in VERIFICATIONS.items()}
+    record = {
+        "platform": "linux", "architecture": "x86_64", "backend": "native", "backend_version": BACKEND_VERSION,
+        "abi_version": ABI_VERSION, "binary_sha256": built["binary_sha256"], "source_sha256": built["source_sha256"],
+        "lock_sha256": built["lock_sha256"], "builder_sha256": sha256_file(Path(__file__)),
+        "shared_builder_sha256": built["shared_builder_sha256"], "godot_cpp_commit": built["godot_cpp_commit"],
+        "compiler_version": built["compiler_version"], "cxxflags_appended": built["cxxflags_appended"],
+        "libm_imports": built["libm_imports"], "repository_head": built["repository_head"],
+        "mirrored_sources": sources, "verification": verification,
+    }
+    receipt = {"format": RECEIPT_FORMAT, "backend": "native", "backend_version": BACKEND_VERSION,
+               "abi_version": ABI_VERSION, "platforms": {"linux": record}}
+    destination = APP_DESTINATION
+    if not destination.resolve().is_relative_to((ROOT / "app").resolve()):
+        raise SystemExit(f"Refusing to install native output outside app/: {destination}")
+    destination.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(library, destination / library.name)
+    (destination / f"{NAME}.gdextension").write_text(
+        "; NK-3 native stage, installed by research/native-kernel/build.py --install-app; loaded only by\n"
+        "; app/sim/native_stage.gd after it verifies build-receipt.json.\n"
+        "[configuration]\n"
+        f'entry_symbol = "{NAME}_library_init"\n'
+        'compatibility_minimum = "4.7"\n'
+        "reloadable = false\n\n"
+        "[libraries]\n"
+        f'linux.x86_64 = "res://native/kernel/lib{NAME}.so"\n', encoding="utf-8")
+    (destination / "build-receipt.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+                                                    encoding="utf-8")
+    licence = locked.ensure_godot_cpp(lock) / "LICENSE.md"
+    if not licence.is_file():
+        raise SystemExit(f"Pinned godot-cpp licence not found at {licence}")
+    shutil.copy2(licence, destination / "LICENSE.godot-cpp.md")
+    print(json.dumps(receipt, indent=2, sort_keys=True))
+    print(f"Installed the verified Linux native stage under {destination}.")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--jobs", type=int, default=4, help="SCons jobs (at most 4 on the shared VM)")
     parser.add_argument("--mutant", action="store_true",
                         help="negative control: build with -DNK_MUTATION (deliberate operation-order changes) as a "
                              "separate *_mutant library the oracle must reject")
+    parser.add_argument("--install-app", action="store_true",
+                        help="install the existing verified build into the ignored app/native/kernel/ (no rebuild); "
+                             "requires passing stage-oracle and trajectory runs for this binary and these sources")
     args = parser.parse_args()
+    if args.install_app:
+        if args.mutant:
+            parser.error("--install-app never installs the mutant")
+        return install_app()
     variant = "_mutant" if args.mutant else ""
     library_name = NAME + variant
     library = TOOL_ROOT / f"lib/lib{library_name}.so"
@@ -129,15 +234,14 @@ def main() -> int:
         "reloadable = false\n\n"
         "[libraries]\n"
         f'linux.x86_64 = "lib/lib{library_name}.so"\n', encoding="utf-8")
-    source_digest = hashlib.sha256()
-    for path in sorted([*locked.SOURCES.glob("*.cpp"), *locked.SOURCES.glob("*.hpp")]):
-        source_digest.update(path.name.encode() + b"\0" + path.read_bytes() + b"\0")
     receipt = {
         "library": str(library.relative_to(ROOT)),
         "descriptor": str(descriptor.relative_to(ROOT)),
         "mutant": args.mutant,
         "binary_sha256": sha256_file(library),
-        "source_sha256": source_digest.hexdigest(),
+        "source_sha256": source_digest(),
+        "backend_version": BACKEND_VERSION,
+        "abi_version": ABI_VERSION,
         "lock_sha256": sha256_file(locked.LOCK_PATH),
         "builder_sha256": sha256_file(Path(__file__)),
         "shared_builder_sha256": sha256_file(SHARED_BUILDER),
@@ -148,7 +252,7 @@ def main() -> int:
         "target": "template_release",
         "libm_imports": imports,
         "repository_head": locked.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture=True).strip(),
-        "reference_sources_sha256": {name: sha256_file(ROOT / name) for name in REFERENCE_SOURCES},
+        "reference_sources_sha256": mirrored_sources(),
     }
     (TOOL_ROOT / f"build-receipt{variant}.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n",
                                                    encoding="utf-8")

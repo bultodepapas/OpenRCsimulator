@@ -31,8 +31,10 @@ func setup_failures(config: Dictionary, seed_value: int) -> bool:
 		failure_error = "Failure settings require a valid physics flight at tick zero."
 		return false
 	var candidate: RefCounted = FailureRuntime.new()
-	if not candidate.begin(checked.config, seed_value, sim.dt(), FailureCatalog.profile_for_model(aircraft.model)):
-		failure_error = "Failure seed or timestep is invalid."
+	var request: Dictionary = FailureCatalog.request_for_model(checked.config, aircraft.model)
+	if not candidate.begin(request, seed_value, sim.dt(), FailureCatalog.profile_for_model(aircraft.model)):
+		failure_error = FailureRuntime.NO_ELIGIBLE_MESSAGE if candidate.last_error == FailureRuntime.NO_ELIGIBLE_MESSAGE \
+			else "Failure seed or timestep is invalid."
 		return false
 	_failures = candidate if checked.config.probability_percent > 0 else null
 	failure_error = ""
@@ -66,6 +68,110 @@ func _failure_airborne() -> bool:
 		if compression > 0.0:
 			return false
 	return true
+
+const OutOfTrim := preload("res://sim/out_of_trim.gd")
+## D6-TRIM-01: a non-zero airframe offset wraps the flight checkpoint, outermost, so a replay flies the same airframe.
+const OUT_OF_TRIM_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v13"
+## D6-TRIM-01: the natural out-of-trim selection and its airframe draws ({} when off): config, seed, key, unit, drawn.
+var _out_of_trim: Dictionary = {}
+## Offsets [roll, pitch, yaw] in maximum-throw units that the aerodynamics add to the actual servo positions this flight
+## (sim/out_of_trim.gd). Zero when off. The trims, the servo state and the start trim solver never contain them.
+var _airframe_offset := PackedFloat64Array([0.0, 0.0, 0.0])
+## Shared with the shell for the app session, never copied: airframe key -> {unit, intensity_percent, pilot_trim}.
+var _out_of_trim_airframes: Dictionary = {}
+var out_of_trim_error: String = ""
+
+
+## One selection per new flight at tick zero, like setup_failures(); the next reset rigs the airframe. First flight only
+## reuses the airframe recorded under `airframe_key` at the same intensity, and the trim the pilot gave it.
+func setup_out_of_trim(config: Dictionary, seed_value: int, airframes: Dictionary = {}, airframe_key: String = "") -> bool:
+	if _reject_reset_publication_reentry(): return false
+	var checked: Dictionary = OutOfTrim.validate(config)
+	if not checked.ok:
+		out_of_trim_error = "; ".join(checked.errors)
+		return false
+	if not checked.config.enabled:
+		_out_of_trim = {}
+		out_of_trim_error = ""
+		return true
+	if sim == null or sim.tick != 0 or not physics_enabled or not _flight_ready():
+		out_of_trim_error = "Out-of-trim settings require a valid physics flight at tick zero."
+		return false
+	if seed_value < 0 or seed_value > 4294967295:
+		out_of_trim_error = "Out-of-trim seed must fit an unsigned 32-bit integer."
+		return false
+	_out_of_trim_airframes = airframes
+	_out_of_trim = {config = checked.config, seed = seed_value, key = airframe_key, unit = PackedFloat64Array(), drawn = 0}
+	if checked.config.mode == OutOfTrim.MODE_FIRST_FLIGHT:
+		var record: Dictionary = OutOfTrim.carried_record(airframes.get(airframe_key), checked.config)
+		if not record.is_empty():
+			_out_of_trim.unit = record.unit
+			_set_trims_from_start(record.pilot_trim)
+	out_of_trim_error = ""
+	return true
+
+
+func out_of_trim_active() -> bool:
+	return not _out_of_trim.is_empty()
+
+
+## The airframe this flight flies: offsets in maximum-throw units and degrees, and the pilot's trim beyond the start trim.
+func out_of_trim_status() -> Dictionary:
+	if _out_of_trim.is_empty():
+		return {active = false}
+	var throws: Dictionary = throws_deg()
+	return {active = true, mode = _out_of_trim.config.mode, intensity_percent = _out_of_trim.config.intensity_percent,
+		offset = _airframe_offset.duplicate(), pilot_trim = _pilot_trim_offset(),
+		offset_deg = {aileron = _airframe_offset[0] * float(throws.get("aileron", 0.0)),
+			elevator = _airframe_offset[1] * float(throws.get("elevator", 0.0)),
+			rudder = _airframe_offset[2] * float(throws.get("rudder", 0.0))}}
+
+
+## The pilot's trim beyond the solved start trim [roll, pitch, yaw], in trim units.
+func _pilot_trim_offset() -> PackedFloat64Array:
+	if not _has_valid_start():
+		return PackedFloat64Array([0.0, 0.0, 0.0])
+	return PackedFloat64Array([float(trims.roll) - float(start.roll_command), float(trims.pitch) - float(start.pitch_command),
+		float(trims.yaw) - float(start.get("yaw_command", 0.0))])
+
+
+func _set_trims_from_start(pilot_trim: PackedFloat64Array) -> void:
+	if not _has_valid_start():
+		return
+	trims = {roll = clampf(float(start.roll_command) + pilot_trim[0], -1.0, 1.0),
+		pitch = clampf(float(start.pitch_command) + pilot_trim[1], -1.0, 1.0),
+		yaw = clampf(float(start.get("yaw_command", 0.0)) + pilot_trim[2], -1.0, 1.0)}
+
+
+## Reset staging: every flight rigs a new airframe; first flight only keeps one airframe all session. Off, a restart
+## flies a true airframe again, even after restoring a recorded out-of-trim checkpoint.
+func _stage_out_of_trim() -> void:
+	if _out_of_trim.is_empty():
+		if not OutOfTrim.is_zero(_airframe_offset):
+			_airframe_offset = PackedFloat64Array([0.0, 0.0, 0.0])
+			_deflection_key = PackedFloat64Array()
+		return
+	if _out_of_trim.config.mode == OutOfTrim.MODE_EVERY_FLIGHT or _out_of_trim.unit.is_empty():
+		_out_of_trim.unit = OutOfTrim.draw(_out_of_trim.seed, _out_of_trim.drawn)
+		_out_of_trim.drawn += 1
+	_airframe_offset = OutOfTrim.offsets(_out_of_trim.unit, _out_of_trim.config.intensity_percent, throws_deg())
+	_deflection_key = PackedFloat64Array()
+
+
+## The trims a restart flies with: the solved start trim, plus the pilot's own trim on first flight only.
+func _restore_out_of_trim_trims(carried: PackedFloat64Array) -> void:
+	if _out_of_trim.is_empty():
+		return
+	var keep: bool = _out_of_trim.config.mode == OutOfTrim.MODE_FIRST_FLIGHT
+	_set_trims_from_start(carried if keep else PackedFloat64Array([0.0, 0.0, 0.0]))
+
+
+## First flight only: the shell's registry keeps this airframe and the pilot's trim for the next flight of the session.
+func _remember_out_of_trim_airframe() -> void:
+	if _out_of_trim.is_empty() or _out_of_trim.config.mode != OutOfTrim.MODE_FIRST_FLIGHT or _out_of_trim.unit.is_empty():
+		return
+	_out_of_trim_airframes[_out_of_trim.key] = {unit = _out_of_trim.unit.duplicate(),
+		intensity_percent = _out_of_trim.config.intensity_percent, pilot_trim = _pilot_trim_offset()}
 
 const EventStep: Script = preload("res://physics/event_step.gd")
 const GlowFlight: Script = preload("res://physics/glow/flight.gd")
@@ -907,7 +1013,8 @@ const _START_OWNER_FIELDS := ["_weather", "fuel_start_fill", "input_enabled", "a
 	"_scenery_damage", "soft_contacts", "prop_strike", "crash", "_last_scenery_event", "_last_lake_event",
 	"_contact_tick", "_contact_events", "_active_hull_ids", "_soft_contacts_cache_tick",
 	"_soft_contacts_cache_previous", "_soft_contacts_cache_state", "_pending_contact_tick", "_pending_crash",
-	"_pending_crash_state", "_pending_scenery_event", "_pending_lake_event", "_pending_scenery_damage", "_pending_scenery_tick"]
+	"_pending_crash_state", "_pending_scenery_event", "_pending_lake_event", "_pending_scenery_damage", "_pending_scenery_tick",
+	"_out_of_trim", "_airframe_offset"]
 
 
 func _begin_start_transaction() -> Dictionary:
@@ -2472,7 +2579,10 @@ func _reload_impl() -> String:
 		if not runway_candidate.ok:
 			_refuse_start_transaction(transaction, str(runway_candidate.message))
 			return "reload failed; previous aircraft and flight retained: %s" % runway_candidate.message
+	var pilot_trim: PackedFloat64Array = _pilot_trim_offset() # D6-TRIM-01: the reloaded start trim replaces trims
 	_commit_aircraft(prepared) # Reversible owner staging until the common physical commit.
+	if out_of_trim_active():
+		_set_trims_from_start(pilot_trim) # the reset below carries it on first flight only
 	var receipt := _reset_impl(false, transaction)
 	if not receipt.get("committed", false):
 		_refuse_start_transaction(transaction, str(receipt.get("message", "selected reset refused")))
@@ -3098,11 +3208,14 @@ func _reset_impl(preserve_radio_readiness := false, supplied_transaction: Dictio
 		return _refuse_start_transaction(transaction, "reset preparation attempted owner transition reentry")
 	_fuel_start_fill_known = true
 	_shaft_pending_reset = false
+	var pilot_trim: PackedFloat64Array = _pilot_trim_offset() # D6-TRIM-01: before a refit replaces the start trim
 	var selection_refit: Dictionary = _refit_selected_trim()
 	if not selection_refit.ok:
 		return _refuse_start_transaction(transaction, str(selection_refit.message))
+	_stage_out_of_trim()
 	var result: Dictionary
 	if start_choice == START_RUNWAY:
+		_restore_out_of_trim_trims(pilot_trim)
 		result = _reset_selected_runway_start(transaction)
 		runway_start_outcome = result.duplicate(true)
 		if not result.ok:
@@ -3132,6 +3245,8 @@ func _reset_impl(preserve_radio_readiness := false, supplied_transaction: Dictio
 		# D6e-R1: a restart must restore the solved equilibrium, including pilot-adjusted trim.
 		if _has_valid_start():
 			trims = {roll = start.roll_command, pitch = start.pitch_command, yaw = start.get("yaw_command", 0.0)}
+		# D6-TRIM-01: on a first-flight-only airframe the pilot's own trim survives restarts and crashes.
+		_restore_out_of_trim_trims(pilot_trim)
 		if start_choice == START_AIRBORNE or start_choice == START_HALF_POWER:
 			result = _reset_airborne_candidate(PackedFloat64Array(), NAN, NAN, ["airborne", "trimmed_airborne", ""], transaction)
 		elif start_choice == START_HAND_LAUNCH:
@@ -3140,6 +3255,7 @@ func _reset_impl(preserve_radio_readiness := false, supplied_transaction: Dictio
 			return _refuse_start_transaction(transaction, "unsupported start choice '%s'" % start_choice)
 	if not result.ok:
 		return _refuse_start_transaction(transaction, str(result.get("message", "selected start refused")))
+	_remember_out_of_trim_airframe()
 	if result.get("status", "") == "observer_fault": return result
 	if external_controller_selection and radio.connected:
 		_pending_controller_start = float(commands.throttle) if radio.is_rate_throttle() else -1.0
@@ -3481,6 +3597,7 @@ func adjust_elevator_trim(delta_deg: float) -> bool:
 		return false
 	var throw_deg: float = aircraft.model.controls.throw_deg.elevator
 	trims.pitch = clampf(float(trims.pitch) + delta_deg / throw_deg, -1.0, 1.0)
+	_remember_out_of_trim_airframe()
 	return true
 
 
@@ -3490,6 +3607,19 @@ func adjust_aileron_trim(delta_units: float) -> bool:
 			or sim.paused or not holds.is_empty() or not crash.is_empty() or calibration != null:
 		return false
 	trims.roll = clampf(float(trims.roll) + delta_units, -1.0, 1.0)
+	_remember_out_of_trim_airframe()
+	return true
+
+
+## D6-TRIM-01: rudder trim in normalized maximum-throw units (+ = trailing edge right, nose right), like the aileron's.
+## Refused on an aircraft without a rudder.
+func adjust_rudder_trim(delta_units: float) -> bool:
+	if not is_finite(delta_units) or not physics_enabled or not input_enabled or not _flight_ready() \
+			or sim.paused or not holds.is_empty() or not crash.is_empty() or calibration != null \
+			or throws_deg().has("elevon") or float(throws_deg().get("rudder", 0.0)) <= 0.0:
+		return false
+	trims.yaw = clampf(float(trims.yaw) + delta_units, -1.0, 1.0)
+	_remember_out_of_trim_airframe()
 	return true
 
 
@@ -4440,7 +4570,13 @@ func _deflections(a: PackedFloat64Array) -> Dictionary:
 	if _deflection_key.size() == 4 and _deflection_key[3] == flap and _deflection_key[0] == a[AUX_SERVO] and _deflection_key[1] == a[AUX_SERVO + 1] \
 			and _deflection_key[2] == a[AUX_SERVO + 2]:
 		return _deflection_cache
-	var surfaces := _surface_angles_from_aux(a)
+	var surfaces: Dictionary
+	if OutOfTrim.is_zero(_airframe_offset):
+		surfaces = _surface_angles_from_aux(a)
+	else:
+		# D6-TRIM-01: the air sees the airframe's rigging offsets on top of the servo positions.
+		surfaces = Commands.surface_deflections_deg({roll = a[AUX_SERVO] + _airframe_offset[0],
+			pitch = a[AUX_SERVO + 1] + _airframe_offset[1], yaw = a[AUX_SERVO + 2] + _airframe_offset[2]}, throws_deg())
 	_deflection_cache = Aero.deflections_from_surfaces(surfaces)
 	if flaps_available():
 		_deflection_cache.flap = deg_to_rad(flap * float(aircraft.model.flaps.max_angle_deg))
@@ -5026,6 +5162,12 @@ func trace_meta() -> Dictionary:
 		metadata.failure_plan = JSON.stringify(_failures.plan(), "", true, true)
 		metadata.failure_recording_start = JSON.stringify(_failures.snapshot(), "", true, true)
 		metadata.failure_inputs = "pilot demand before failures; actual servo positions in aux; throttle follows resolved incident"
+	if out_of_trim_active() or not OutOfTrim.is_zero(_airframe_offset):
+		metadata.airframe_trim_offset = JSON.stringify(Array(_airframe_offset), "", true, true)
+		metadata.airframe_trim_law = "D6-TRIM-01 rigging offsets in maximum-throw units [roll, pitch, yaw], added to the actual servo positions for the aerodynamics only; inputs and aux exclude them"
+		if out_of_trim_active():
+			metadata.out_of_trim = JSON.stringify({mode = _out_of_trim.config.mode,
+				intensity_percent = _out_of_trim.config.intensity_percent, unit = Array(_out_of_trim.unit)}, "", true, true)
 	if gear_is_retractable():
 		metadata.metadata_schema = "openrc-flight-meta v8"
 		metadata.gear_law = RetractableGear.LAW
@@ -5176,6 +5318,10 @@ func checkpoint() -> Dictionary:
 		boundary.spatial_physics_format = boundary.format
 		boundary.format = SPATIAL_CHECKPOINT_FORMAT
 		boundary.spatial_weather_receipt = _spatial_weather_receipt(_weather)
+	if not OutOfTrim.is_zero(_airframe_offset):
+		boundary.airframe_physics_format = boundary.format
+		boundary.format = OUT_OF_TRIM_CHECKPOINT_FORMAT
+		boundary.airframe_trim_offset = _airframe_offset.duplicate()
 	return boundary
 
 
@@ -5275,6 +5421,20 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 
 func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) -> bool:
 	if typeof(candidate.get("format")) != TYPE_STRING: return false
+	# D6-TRIM-01: the outermost layer names the airframe the recorded flight flew; without it the airframe is true.
+	var restored_airframe_offset := PackedFloat64Array([0.0, 0.0, 0.0])
+	if candidate.get("format") == OUT_OF_TRIM_CHECKPOINT_FORMAT:
+		if typeof(candidate.get("airframe_physics_format")) != TYPE_STRING \
+				or candidate.airframe_physics_format == OUT_OF_TRIM_CHECKPOINT_FORMAT \
+				or not OutOfTrim.valid_offsets(candidate.get("airframe_trim_offset")):
+			return false
+		restored_airframe_offset = candidate.airframe_trim_offset.duplicate()
+		candidate = candidate.duplicate(true)
+		candidate.format = candidate.airframe_physics_format
+		candidate.erase("airframe_physics_format")
+		candidate.erase("airframe_trim_offset")
+	elif candidate.has("airframe_trim_offset") or candidate.has("airframe_physics_format"):
+		return false
 	var spatial_boundary: bool = candidate.get("format") == SPATIAL_CHECKPOINT_FORMAT
 	if spatial_boundary:
 		var spatial_built := WeatherField.build(candidate.get("weather_config"))
@@ -5552,6 +5712,7 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 		_last_scenery_event = null
 		_last_lake_event = null
 		pause_reason = "checkpoint restored (recorded inputs)"
+		_airframe_offset = restored_airframe_offset
 		_deflection_key = PackedFloat64Array()
 		scenery_damage_changed.emit()
 		contact_events_changed.emit()

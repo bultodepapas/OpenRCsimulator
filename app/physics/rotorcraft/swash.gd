@@ -160,7 +160,10 @@ static func step_servos(previous_positions: Variant, desired_positions: Variant,
 		if not is_finite(lagged_delta) or not is_finite(maximum_delta):
 			return _failure("servo step overflowed finite range")
 		var delta: float = clampf(lagged_delta, -maximum_delta, maximum_delta)
-		positions.append(previous + delta)
+		# previous + (target - previous) can round one ulp past a travel limit that is
+		# not a power of two; the next step would then reject its own previous position.
+		# In-travel sums are returned unchanged.
+		positions.append(clampf(previous + delta, low, high))
 		clamped_flags.append(target != float(desired_positions[index]))
 		rate_limited_flags.append(absf(delta) < absf(lagged_delta))
 	return {

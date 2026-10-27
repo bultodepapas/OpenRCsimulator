@@ -38,11 +38,17 @@ func _config(probability: int, catastrophic := false, notify := true) -> Diction
 
 func _test_config_and_catalog_profiles() -> void:
 	var defaults: Dictionary = FailureConfig.defaults()
-	_check("failure config defaults preserve the three settings", defaults == {
+	_check("failure config defaults keep the three original settings and add EM-29 selection defaults", defaults == {
 		"probability_percent": 0,
 		"include_catastrophic": false,
 		"notify": true,
+		"severity": "standard",
+		"onset": "standard",
+		"excluded_ids": [],
 	}, defaults)
+	var legacy_upgrade: Dictionary = FailureConfig.validate(_config(0))
+	_check("the original three-key request upgrades to the defaults", legacy_upgrade.get("ok", false)
+		and legacy_upgrade.get("config", {}) == defaults, legacy_upgrade)
 	var normalized: Dictionary = FailureConfig.validate(defaults)
 	_check("failure config round-trips through strict validation", normalized.get("ok", false) and normalized.get("config", {}) == defaults)
 	_check("failure config rejects future settings", not FailureConfig.validate({
@@ -56,6 +62,7 @@ func _test_config_and_catalog_profiles() -> void:
 	_check("all current airplane catalog model types are exercised", model_ids.size() >= 8, model_ids)
 	var profiles_seen: Dictionary = {}
 	var loaded_count := 0
+	var elevon_seen := false
 	for aircraft_id: String in model_ids:
 		var entry: Dictionary = AircraftCatalog.entry(aircraft_id)
 		var loaded: Dictionary = AircraftData.load_file(str(entry.get("data", "")))
@@ -72,6 +79,13 @@ func _test_config_and_catalog_profiles() -> void:
 		_check(aircraft_id + " exposes only its eligible power-loss event", available.get("power_loss_ids", []) == expected_power_ids, available)
 		_check(aircraft_id + " availability support flag matches eligible events", bool(available.get("power_loss_supported", false)) == (not expected_power_ids.is_empty()))
 		_check(aircraft_id + " includes every eligible power loss", _array_contains_all(available.get("eligible_ids", []), expected_power_ids))
+		var elevon: bool = str(model.get("controls", {}).get("layout", "")) == "elevon"
+		elevon_seen = elevon_seen or elevon
+		var yaw_offered := _array_contains_any(FailureCatalog.YAW_AXIS_IDS, available.get("eligible_ids", []))
+		_check(aircraft_id + " offers rudder failures only when it has a rudder", yaw_offered != elevon, available)
+		var request: Dictionary = FailureCatalog.request_for_model(FailureConfig.defaults(), model)
+		_check(aircraft_id + " resolved request excludes exactly the missing control axis",
+			request.excluded_ids == (["yaw_bias", "yaw_jam", "yaw_slow", "yaw_travel_limit"] if elevon else []), request)
 
 		var renamed_model: Dictionary = model.duplicate(true)
 		renamed_model["id"] = "unrelated-aircraft-identity"
@@ -81,6 +95,7 @@ func _test_config_and_catalog_profiles() -> void:
 		profiles_seen[profile] = true
 
 	_check("every airplane catalog entry loaded for profile derivation", loaded_count == model_ids.size(), loaded_count)
+	_check("the fleet includes an elevon aircraft for the rudder exclusion", elevon_seen)
 	_check("catalog models exercise control-only eligibility", profiles_seen.has(FailureCatalog.LOGICAL_CONTROLS_PROFILE), profiles_seen)
 	_check("catalog models exercise finite-glow eligibility", profiles_seen.has(FailureCatalog.FINITE_GLOW_PROFILE), profiles_seen)
 	_check("catalog models exercise electric-drive eligibility", profiles_seen.has(FailureCatalog.ELECTRIC_DRIVE_PROFILE), profiles_seen)
@@ -129,21 +144,30 @@ func _test_versioned_plans() -> void:
 	_check("legacy event set cannot select a power-loss event", not POWER_LOSS_IDS.has(str(legacy_plan.get("id", ""))))
 
 	for profile: String in FailureCatalog.PROFILES:
+		var historical := FailureRuntime.new()
+		_check(profile + " recreates a historical v2 plan on request",
+			historical.begin(_config(100), 1751, DT, profile, FailureRuntime.PLAN_FORMAT_V2))
+		var historical_plan: Dictionary = historical.plan()
+		_check(profile + " historical plan keeps the v2 format, catalog and three-key config",
+			historical_plan.get("format", "") == "openrc-failure-plan v2" and int(historical_plan.get("catalog_version", -1)) == 2
+			and historical_plan.get("config", {}).size() == 3, historical_plan)
+		_check(profile + " historical plan chooses only from the frozen v2 event set",
+			FailureCatalog.failure_ids(false, profile).has(str(historical_plan.get("id", ""))), historical_plan)
 		var runtime := FailureRuntime.new()
 		_check(profile + " starts a profile-bound plan", runtime.begin(_config(100), 1751, DT, profile))
 		var plan: Dictionary = runtime.plan()
-		_check(profile + " writes the v2 plan and catalog versions", plan.get("format", "") == "openrc-failure-plan v2" and int(plan.get("catalog_version", -1)) == 2, plan)
+		_check(profile + " writes the v3 plan and catalog versions", plan.get("format", "") == "openrc-failure-plan v3" and int(plan.get("catalog_version", -1)) == 3, plan)
 		_check(profile + " plan binds the exact eligibility profile", str(plan.get("eligibility_profile", "")) == profile)
 		_check(profile + " guarantees occurrence at 100 percent", bool(plan.get("selected", false)), plan)
 		_check(profile + " chooses only from the profile event set",
-			FailureCatalog.failure_ids(false, profile).has(str(plan.get("id", ""))), plan)
+			FailureCatalog.failure_ids_v3(false, profile).has(str(plan.get("id", ""))), plan)
 		_check(profile + " accepts its own profile", runtime.accepts_profile(profile))
 		for other_profile: String in FailureCatalog.PROFILES:
 			if other_profile != profile:
 				_check(profile + " refuses family mismatch " + other_profile, not runtime.accepts_profile(other_profile))
 
 	var disabled := FailureRuntime.new()
-	_check("zero probability configures a v2 plan", disabled.begin(_config(0, false, false), 2001, DT, FailureCatalog.LOGICAL_CONTROLS_PROFILE))
+	_check("zero probability configures a v3 plan", disabled.begin(_config(0, false, false), 2001, DT, FailureCatalog.LOGICAL_CONTROLS_PROFILE))
 	var disabled_plan: Dictionary = disabled.plan()
 	_check("zero probability never selects a failure", not bool(disabled_plan.get("selected", true)) and str(disabled_plan.get("id", "")) == "", disabled_plan)
 	_check("zero-probability plan preserves notification preference", disabled.status().get("notify", true) == false and disabled_plan.config.notify == false)
@@ -176,7 +200,8 @@ func _test_restore_contract() -> void:
 		and bool(legacy_target.accepts_profile(FailureCatalog.ELECTRIC_DRIVE_PROFILE)))
 
 	var v2_source := FailureRuntime.new()
-	_check("v2 source creates a finite-glow plan", v2_source.begin(_config(100), 751, DT, FailureCatalog.FINITE_GLOW_PROFILE))
+	_check("v2 source creates a finite-glow plan", v2_source.begin(_config(100), 751, DT, FailureCatalog.FINITE_GLOW_PROFILE,
+		FailureRuntime.PLAN_FORMAT_V2))
 	var v2_snapshot: Dictionary = v2_source.snapshot()
 	var v2_target := FailureRuntime.new()
 	_check("v2 snapshot restores with its profile", v2_target.restore(v2_snapshot, int(v2_snapshot.get("tick", -1))))
@@ -192,9 +217,22 @@ func _test_restore_contract() -> void:
 	var missing_profile: Dictionary = v2_snapshot.duplicate(true)
 	missing_profile.plan.erase("eligibility_profile")
 	_check_restore_refused_atomically("malformed profile field is rejected", good_live, missing_profile, live_before)
+	var relabelled_plan: Dictionary = v2_snapshot.duplicate(true)
+	relabelled_plan.plan.format = "openrc-failure-plan v3"
+	_check_restore_refused_atomically("v2 plan relabelled as v3 is rejected", good_live, relabelled_plan, live_before)
 	var future_plan: Dictionary = v2_snapshot.duplicate(true)
-	future_plan.plan.format = "openrc-failure-plan v3"
+	future_plan.plan.format = "openrc-failure-plan v4"
 	_check_restore_refused_atomically("future plan version is rejected", good_live, future_plan, live_before)
+	var v3_source := FailureRuntime.new()
+	_check("v3 source creates a finite-glow plan", v3_source.begin(_config(100), 751, DT, FailureCatalog.FINITE_GLOW_PROFILE))
+	var v3_snapshot: Dictionary = v3_source.snapshot()
+	var v3_target := FailureRuntime.new()
+	_check("v3 snapshot restores with its profile", v3_target.restore(v3_snapshot, int(v3_snapshot.get("tick", -1)))
+		and v3_target.accepts_profile(FailureCatalog.FINITE_GLOW_PROFILE)
+		and not v3_target.accepts_profile(FailureCatalog.ELECTRIC_DRIVE_PROFILE))
+	var downgraded_plan: Dictionary = v3_snapshot.duplicate(true)
+	downgraded_plan.plan.format = "openrc-failure-plan v2"
+	_check_restore_refused_atomically("v3 plan relabelled as v2 is rejected", good_live, downgraded_plan, live_before)
 	var profile_mismatch: Dictionary = v2_snapshot.duplicate(true)
 	profile_mismatch.plan.eligibility_profile = FailureCatalog.ELECTRIC_DRIVE_PROFILE
 	_check_restore_refused_atomically("corrupted supported profile is rejected", good_live, profile_mismatch, live_before)

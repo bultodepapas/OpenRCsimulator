@@ -54,7 +54,7 @@ Futaba's web extraction has corrupted glyphs in parts of its text; its clear S.B
 
 [Xicoy TurboJet user manual](https://www.xicoyturbines.com/assets/files/XicoyTurbojetManual_EN.pdf), **version 1.5/2024**, pp.31 and 34–35. Its configured failsafe signal commands idle before shutdown if it persists for two seconds. Autorestart is disabled by default and checks radio validity, engine indications, battery and other faults. The manual describes roughly 10–15 seconds to recover pre-shutdown power, conditional on successful restart.
 
-**Use:** explicit ECU states, signal interpretation, conditional relight and delayed power return. **Limit:** this is not the historical JetCat installation. A claim that this cited revision uses a universal 0.5 s + 1.5 s loss-of-signal sequence was not supported by the reviewed failsafe page and is not adopted. Aircraft suitability and flight conditions are not guaranteed by the restart function.
+**Use:** explicit ECU states, signal interpretation, conditional relight and delayed power return. **Limit:** this is not the historical JetCat installation. A claim that this cited revision uses a universal 0.5 s + 1.5 s loss-of-signal sequence was not supported by the reviewed failsafe page and is not adopted. **Correction (2026-10-27, [EM-00-R1 R50](../EM-00-R1/README.md)):** printed p.40 of the same manual does state the 0.5 s idle + 1.5 s shutdown sequence on signal loss. Aircraft suitability and flight conditions are not guaranteed by the restart function.
 
 ### R08 — Selected JetCat configuration and earlier repository research
 

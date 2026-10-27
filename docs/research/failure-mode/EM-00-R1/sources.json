@@ -1,0 +1,1307 @@
+{
+ "format": "openrc-reference-manifest v1",
+ "topic": "Real RC fixed-wing failure modes, recovery reports and incidence evidence for the emergency-training failure library (EM-00-R1)",
+ "retrieved": "2026-10-27",
+ "note": "Guide: docs/research/failure-mode/EM-00-R1/README.md. New local copies in the gitignored references/failure-mode/; other paths are existing local reference copies reused unchanged. Web-only sources are under links. R-numbers continue EM-00 (R01-R16). Evidence: M official, R report, F forum/single video, E estimate.",
+ "files": [
+  {
+   "id": "R17",
+   "path": "references/failure-mode/osd-uav-roadmap-2002-2027.pdf",
+   "url": "https://www.nasa.gov/centers/dryden/pdf/111759main_DoD_UAV_Roadmap_2003.pdf",
+   "title": "Unmanned Aerial Vehicles Roadmap 2002-2027",
+   "publisher": "Office of the Secretary of Defense (AT&L), hosted by NASA Dryden",
+   "date": "December 2002 (PDF created 2003-06-13)",
+   "accessed": "2026-10-27",
+   "bytes": 8407419,
+   "sha256": "fa30cee64465f33c08c5584a0d47bb658d74916a53fd3ff44f7d4a18928a6987",
+   "kind": "government report",
+   "evidence": "M",
+   "license": "US Government work; reference copy kept local.",
+   "redistribution": "local-reference-only",
+   "use": "Section 5.2, printed pp.48-51, Fig. 5.2-2 extracted from OSD 2003 UAV Reliability Study: Power/Prop 37 %, Flight Control 26 %, Comm 11 %, Human/Ground 17 %, Misc 9 % of combined Predator/Pioneer/Hunter mishaps (nearly 100,000 h, 36 combined years since 1986); Table 5.2-1 Class A rates."
+  },
+  {
+   "id": "R18",
+   "path": "references/failure-mode/wild-2017-jatm-rpas-post-accident.pdf",
+   "url": "https://jatm.com.br/jatm/article/download/701/631/4870",
+   "title": "A Post-Accident Analysis of Civil Remotely-Piloted Aircraft System Accidents and Incidents (doi 10.5028/jatm.v9i2.701)",
+   "publisher": "Journal of Aerospace Technology and Management 9(2):157-168",
+   "date": "2017-04-24",
+   "accessed": "2026-10-27",
+   "bytes": 690925,
+   "sha256": "c4d0ac9f605716010da7799aa54b5ea32ee6c80698c130dbc00ae2ce1917b843",
+   "kind": "peer-reviewed article",
+   "evidence": "R",
+   "license": "Open-access journal article; check journal licence before any redistribution. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "152 civil RPAS cases 2006-2015: SCF 63 %, LOC-I 14 %; equipment problems 41 % (64 % excl. unknown), human factors 15 % (23 %); cruise 45 %, takeoff 30 %, landing 25 %; about a third of equipment problems lost link (printed pp.161-165)."
+  },
+  {
+   "id": "R21",
+   "path": "references/failure-mode/ReimannEtAl_13TR_Part1UAVforReliability.pdf",
+   "url": "https://dept.aem.umn.edu/~SeilerControl/Papers/2013/ReimannEtAl_13TR_Part1UAVforReliability.pdf",
+   "title": "UAV for Reliability (AEM 4331 design report)",
+   "publisher": "University of Minnesota (Reimann, Amos, Bergquist, Cole, Phillips, Shuster; advisor Seiler)",
+   "date": "2013-12-19",
+   "accessed": "2026-10-27",
+   "bytes": 1199015,
+   "sha256": "8fc16dde89af04d77386a0f3df9afd7218cc781388a1e9a53fe468bccb0d9d46",
+   "kind": "student design report",
+   "evidence": "R",
+   "license": "Copyright the authors. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Ultra Stick 120 FMEA/FTA: predicted 2.17 (1A), 2.14 (1B), 2.32 (2) failures per 100 h using NPRD rates x50 servos, x25 other hobby parts; 1A components failsafe switch, receiver, avionics battery, BEC, rudder and elevator servos; stuck outside trim range = 1A."
+  },
+  {
+   "id": "R22",
+   "path": "references/failure-mode/Freeman_14PhD_ReliabilityAssessmentForLowCostUAVs.pdf",
+   "url": "https://dept.aem.umn.edu/~SeilerControl/Thesis/2014/Freeman_14PhD_ReliabilityAssessmentForLowCostUAVs.pdf",
+   "title": "Reliability Assessment for Low-cost Unmanned Aerial Vehicles (PhD dissertation)",
+   "publisher": "University of Minnesota (Paul M. Freeman)",
+   "date": "November 2014",
+   "accessed": "2026-10-27",
+   "bytes": 17351694,
+   "sha256": "14fbc0b7ec197525b8e9655c9688270bb33cd738ae1933bd6aff458ebb6c2039",
+   "kind": "dissertation",
+   "evidence": "R",
+   "license": "Copyright Paul Michael Freeman 2014. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "PDF p.35-36 (printed 23-24): servo fault modes bias, oscillatory/deadband, floating surface, stuck/hardover; PDF p.91 (printed 73): hardover and floating 'two of the more common control surface impairments'."
+  },
+  {
+   "id": "R23",
+   "path": "references/failure-mode/VenkataramanEtAl_17JA_ReliabilityAssesmentOfActuatorArch.pdf",
+   "url": "https://dept.aem.umn.edu/~SeilerControl/Papers/2017/VenkataramanEtAl_17JA_ReliabilityAssesmentOfActuatorArch.pdf",
+   "title": "Reliability Assessment of Actuator Architectures for Unmanned Aircraft (author copy)",
+   "publisher": "Venkataraman, Seiler, Lukatsi, Vanek",
+   "date": "2017 (journal venue not verified from the copy)",
+   "accessed": "2026-10-27",
+   "bytes": 1160203,
+   "sha256": "360dbcf691478bd9db7e79e553ec46d6906494c8ede0fa3837f3a8fb1969d8fa",
+   "kind": "journal article author copy",
+   "evidence": "R",
+   "license": "Copyright the authors/publisher. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Hobby-grade servos have failure times on the order of thousands of hours; Futaba hobby servo (Murtha 2009) as low end of a 500-8000 h MTBF axis."
+  },
+  {
+   "id": "R26",
+   "path": "references/failure-mode/spektrum-dx6e-manual-2019.pdf",
+   "url": "https://cdn.shopify.com/s/files/1/0036/2115/8947/files/dx6e.pdf",
+   "title": "Spektrum DX6e Transmitter Instruction Manual",
+   "publisher": "Horizon Hobby (retailer-hosted copy)",
+   "date": "2019-02-12 (PDF metadata)",
+   "accessed": "2026-10-27",
+   "bytes": 2530378,
+   "sha256": "61ebd2a7329e71b162ab9143915458c420c56ec46376d71f3cbbd176256b3d14",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright Horizon Hobby. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "PDF pp.2, 12, 22-23, 27: SmartSafe/Hold Last/Preset failsafe, wrong failsafe may advance to mid or full throttle, rebind after setup, battery and inactivity alarms, throttle cut, weather/ice caution."
+  },
+  {
+   "id": "R28",
+   "path": "references/failure-mode/frsky-x8r-manual-flyingtech-mirror.pdf",
+   "url": "https://www.flyingtech.co.uk/wp-content/uploads/2021/03/X8R.pdf",
+   "title": "FrSky 2.4GHz ACCST X8R Manual",
+   "publisher": "FrSky Electronic (distributor-hosted copy)",
+   "date": "2015-05-12 (PDF metadata)",
+   "accessed": "2026-10-27",
+   "bytes": 535625,
+   "sha256": "18c67c26193fc4d8ac6b39865b4cea6507fd8a12b5cace625236f86b774c6e33",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright FrSky. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Failsafe default holds last position if not set (flyaway risk); re-bind disables failsafe; range check."
+  },
+  {
+   "id": "R30",
+   "path": "references/failure-mode/orangerx-r617xl-manual-flyingtech-mirror.pdf",
+   "url": "https://www.flyingtech.co.uk/wp-content/uploads/2019/01/R617XL-.pdf",
+   "title": "R617XL DSM2/DSMX-compatible receiver user manual (OrangeRx family; not a Spektrum product)",
+   "publisher": "Distributor-hosted copy",
+   "date": "2018-11-01 (PDF metadata)",
+   "accessed": "2026-10-27",
+   "bytes": 195944,
+   "sha256": "72c35d5380129b7fac0c7906ec5d66d2a760db451368a945f3926b001be0b4ad",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright the manufacturer. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Hold last command < 1 s then bound positions; brownout reconnect up to 1 s during which analog servos may coast to extremes; hold counter; carbon/metal blocking."
+  },
+  {
+   "id": "R35",
+   "path": "references/unsorted-from-tmp-2026-10-22/el-avian-manual.pdf",
+   "url": "https://cdn.shopify.com/s/files/1/0424/5104/2453/files/Avian-Manual-EN_995b579c-48f3-4c81-bc8d-97138c2af403.pdf",
+   "title": "Spektrum Avian Smart ESCs instruction manual (SPMXAE1015-1060...)",
+   "publisher": "Horizon Hobby",
+   "date": "2019-08-22 (PDF metadata)",
+   "accessed": "2026-10-27",
+   "bytes": 678623,
+   "sha256": "a6df725f3cb4f515f48d75410f12e63f40383bdca104748eed645912d8bf7a5d",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright Horizon Hobby. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "PDF pp.15-18: thermal >110 C -> 60 % power; LVC -> 60 % output; throttle-signal loss >0.25 s -> cut; overload and over-current cut; damaged motor early LVC; troubleshooting tones.",
+   "sha256_matches_url_copy": true
+  },
+  {
+   "id": "R36b",
+   "path": "references/failure-mode/hobbywing-skywalker-v2-leaflet-en.pdf",
+   "url": "https://cdn.shopify.com/s/files/1/0109/9702/files/SKYWALKER_V2_mini_Leaflet_EN.pdf",
+   "title": "SkyWalker V2 series leaflet (EN)",
+   "publisher": "Hobbywing",
+   "date": "2025-09-12 (PDF metadata)",
+   "accessed": "2026-10-27",
+   "bytes": 6679314,
+   "sha256": "7477a20ec5ec995fc8664a501e733ac6280ee192ff72fac2a00112217adb0e43",
+   "kind": "manufacturer leaflet",
+   "evidence": "M",
+   "license": "Copyright Hobbywing. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Protections: abnormal input voltage, ESC thermal, throttle signal loss, LVC; LVC type soft (default) or hard; linear vs switch-mode BEC by model."
+  },
+  {
+   "id": "R37",
+   "path": "references/failure-mode/castle-phoenix-edge-qsg-2013-03.pdf",
+   "url": "https://www.astramodel.cz/manualy/castle_creations/castle-edge_qsg.pdf",
+   "title": "Phoenix Edge quick start guide, P/N 095-0223-00",
+   "publisher": "Castle Creations (dealer-hosted copy)",
+   "date": "Revision date 03/2013",
+   "accessed": "2026-10-27",
+   "bytes": 58589,
+   "sha256": "f2cd26b38c0ad5f6f2317dedfdc4828aa9a2f6b270a34e207e01c30a52ceb93f",
+   "kind": "manufacturer guide",
+   "evidence": "M",
+   "license": "Copyright Castle Creations. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "LVC 3.0-3.4 V/cell (3.2 default) or disabled; cutoff types hard, soft (default), RPM decrease, pulsing; error codes LVC, over-temperature, excessive load, start fail, radio glitch, motor anomaly, over-current."
+  },
+  {
+   "id": "R38",
+   "path": "references/failure-mode/blheli-s-manual-silabs-rev16x.pdf",
+   "url": "https://raw.githubusercontent.com/bitdump/BLHeli/master/BLHeli_S%20SiLabs/BLHeli_S%20manual%20SiLabs%20Rev16.x.pdf",
+   "title": "BLHeli_S manual SiLabs Rev16.x",
+   "publisher": "BLHeli project (Steffen Skaug), GitHub bitdump/BLHeli",
+   "date": "2017-11-01 (PDF metadata)",
+   "accessed": "2026-10-27",
+   "bytes": 104879,
+   "sha256": "974e3d89b602f779d1901c875e5f3ece27b4cf1746d6e6bc83e252ca204c848e",
+   "kind": "firmware manual",
+   "evidence": "M",
+   "license": "Project documentation; licence of the PDF not stated. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Demag -> motor stop or stutter on quick throttle increase at low rpm; thermal limit steps 75/50/25/0 % at threshold +0/5/10/15 C (threshold 80-140 C); low-RPM power protect; stall protection."
+  },
+  {
+   "id": "R56",
+   "path": "references/failure-mode/aaib-10-2022-ma-scale-f4-phantom.pdf",
+   "url": "https://assets.publishing.service.gov.uk/media/6321af5ae90e072ce3c633b6/MA_Scale_F4_Phantom__UAS_registration_n-a__10-22.pdf",
+   "title": "AAIB Bulletin 10/2022, MA Scale F4 Phantom, AAIB-27831",
+   "publisher": "UK Air Accidents Investigation Branch",
+   "date": "2022 (event 2021-09-16)",
+   "accessed": "2026-10-27",
+   "bytes": 1799790,
+   "sha256": "c46d748d242e484c937c3c7a13639b916bcadb2228891155b82334d3bae3eda0",
+   "kind": "investigation report",
+   "evidence": "M",
+   "license": "Crown copyright. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "6.4 kg turbine model maiden flight; sluggish ailerons, growing up-trim, veer, stall/spin; cause undetermined; club ~6,500 flights/year."
+  },
+  {
+   "id": "R57",
+   "path": "references/failure-mode/aaib-2-2022-edge-540-g-edgy.pdf",
+   "url": "https://assets.publishing.service.gov.uk/media/6204f069d3bf7f3147a624b3/Edge_540_G-EDGY_02-22.pdf",
+   "title": "AAIB Bulletin 2/2022, Edge 540 G-EDGY, AAIB-27268",
+   "publisher": "UK Air Accidents Investigation Branch",
+   "date": "2022 (event 2021-05-01)",
+   "accessed": "2026-10-27",
+   "bytes": 810914,
+   "sha256": "4e223fd2eab3cc151e76137436f5eedd19bb881fef77884684d5701a5b4e5111",
+   "kind": "investigation report",
+   "evidence": "M",
+   "license": "Crown copyright. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Full-scale analogue: aileron centre-hinge fatigue; right aileron bent up and detached; heavy in roll; approach 100 kt vs 80 kt; landed 2 min 20 s after failure."
+  },
+  {
+   "id": "R61",
+   "path": "references/failure-mode/robart-176-pressure-guard-rev11-14.pdf",
+   "url": "https://cdn.shopify.com/s/files/1/0339/0713/files/176_Pressure_Guard_Instructions_Rev_11-14.pdf?5242",
+   "title": "Pressure Guard pneumatic retract air system monitor instructions, Rev 11-14",
+   "publisher": "Robart Manufacturing",
+   "date": "2014",
+   "accessed": "2026-10-27",
+   "bytes": 392642,
+   "sha256": "4175b71730689e72aabd1ae022fe864694ab6993508d0a93d7e3a74bdac8c2c7",
+   "kind": "manufacturer instructions",
+   "evidence": "M",
+   "license": "Copyright Robart. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Pneumatic gear failure / forced gear-up landing from leak, unfilled reservoir or too many cycles; auto-extend below threshold and on lost signal."
+  },
+  {
+   "id": "R62",
+   "path": "references/failure-mode/eflite-eflg200-electric-retracts-manual.pdf",
+   "url": "https://www.astramodel.cz/manualy/E/EFLG200-Manual.pdf",
+   "title": "E-flite 15- to 25-size electric retract instructions (EFLG200/210/220/230)",
+   "publisher": "Horizon Hobby (dealer-hosted copy)",
+   "date": "2010-06-04 (PDF metadata)",
+   "accessed": "2026-10-27",
+   "bytes": 672154,
+   "sha256": "fd687efb826278d1c10a18ca83b3a7253f0d1915c5f42fe9b76c77a43d0a451e",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright Horizon Hobby. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Receiver-powered retracts; sequence 0.75-1.25 s by voltage; threadlock wheel collars and axle screws against vibration; check wheel wells for obstructions."
+  },
+  {
+   "id": "R27",
+   "path": "references/servos/d6-srv-00/spektrum-ar6335-manual.pdf",
+   "url": "https://www.lindinger.at/media/1d/d9/96/1637162104/9709381_EN_Manual.pdf",
+   "title": "Spektrum AR6335 Nanolite receiver user guide",
+   "publisher": "Horizon Hobby (dealer-hosted copy)",
+   "date": "undated",
+   "accessed": "2026-10-27",
+   "bytes": 259658,
+   "sha256": "5d305266258f93faf79911dd201814a4dc5a51fac2c84cd66b7703e31bad721c",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright Horizon Hobby. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Reused D6-SRV-00 copy. PDF p.3 frame losses/holds; p.5 not for full carbon; p.8 power systems number-one cause of in-flight failures, >=4.8 V under load, QuickConnect ~0.04 s, ModelMatch; connect within 6 s."
+  },
+  {
+   "id": "R32",
+   "path": "references/servos/d6-srv-00/futaba-r7008sb-manual.pdf",
+   "url": "https://cdn.shopify.com/s/files/1/1052/4162/files/r7008sb-manual.pdf",
+   "title": "Futaba R7008SB receiver manual",
+   "publisher": "Futaba",
+   "date": "undated",
+   "accessed": "2026-10-27",
+   "bytes": 808677,
+   "sha256": "c3a5d86a4a02770ce898e8adf5032c950ca624676dc48da94deff00c38a30cc1",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright Futaba. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Reused D6-SRV-00 copy. Antennas 90 deg apart; carbon fuselage: leave 30 mm of each antenna tip exposed."
+  },
+  {
+   "id": "R33",
+   "path": "references/skywalker-x8/hand-launch/opterra_2m_manual_EFL11150.pdf",
+   "url": "https://horizonhobby.com/on/demandware.static/Sites-horizon-us-Site/Sites-horizon-master/default/Manuals/EFL11150-Manual-EN.pdf",
+   "title": "E-flite Opterra 2m instruction manual EFL11150",
+   "publisher": "Horizon Hobby",
+   "date": "2017-06-21 (PDF metadata)",
+   "accessed": "2026-10-27",
+   "bytes": 1552917,
+   "sha256": "d0e1551dc1747d3a2b3bbd5c6b3c399b6902753d66d61dab2b685ef3ed5a5c1c",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright Horizon Hobby. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "PDF pp.11-13: AS3X active after first throttle advance; incorrect direction-test result can crash, do not fly; oscillation = over-control, reduce gain."
+  },
+  {
+   "id": "R34",
+   "path": "references/rc-trim-practice/a-eflite-apprentice-sts-1.5m-manual-efl3700-2019.pdf",
+   "url": "https://www.horizonhobby.com/on/demandware.static/Sites-horizon-us-Site/Sites-horizon-master/default/Manuals/EFL3700-Manual-EN.pdf",
+   "title": "E-flite Apprentice STS 1.5m manual EFL3700",
+   "publisher": "Horizon Hobby",
+   "date": "2019",
+   "accessed": "2026-10-27",
+   "bytes": 10653434,
+   "sha256": "87862711054248e524a8ee10294a6776f14420cf5cf03c391eca70721b9e4dc2",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright Horizon Hobby. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "PDF pp.2, 12, 14, 17, 22, 29: low Tx battery warning, control-direction test, LVC pulsing, low-throttle failsafe, troubleshooting (aft CG, damaged prop), deactivate malfunctioning GPS assist."
+  },
+  {
+   "id": "R42",
+   "path": "references/ugly-stik/downloads/components/os-max-61fx-40-91fx-manual.pdf",
+   "url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/manual/50sx_40-91fx.pdf",
+   "title": "O.S. MAX-50SX, 40/46/61/91FX owner's instructions",
+   "publisher": "O.S. Engines",
+   "date": "undated",
+   "accessed": "2026-10-27",
+   "bytes": 1146155,
+   "sha256": "c7562fb37bfcc5d082a0c1322d0f303d89968e5042aebd8de976ae846313198e",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright O.S. Engines. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "PDF p.3 prop nut backfire, spinner slots, disconnected throttle linkage fouling prop; p.7 tank top 5-10 mm above needle, plug cuts out at idle; p.8 nylon prop thrown blade; p.12 rich/lean idle behaviour."
+  },
+  {
+   "id": "R43",
+   "path": "references/p51-mustang/engines/da120_owners_manual_2018-01-08_desertaircraft_au.pdf",
+   "url": "https://www.desertaircraft.com.au/shop/files/attachments/17517/DA120_MANUAL_1-8-2018.pdf",
+   "title": "DA-120 owner's manual",
+   "publisher": "Desert Aircraft",
+   "date": "2018-01-08",
+   "accessed": "2026-10-27",
+   "bytes": 292349,
+   "sha256": "d5f0d6662f3935cd5ceed65ee1cbf709d18b404e1b2b60a0f8dcf19ae23c14a3",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright Desert Aircraft. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Printed pp.2-7: cooling, hot carb erratic, heat-induced electronics failures, ignition RFI and shielding, ignition battery >=5.0 V, wires break near connectors, prop bolts shear if loose, lean fade on verticals, air leaks lean, motor can stop at any time."
+  },
+  {
+   "id": "R44",
+   "path": "references/p51-mustang/engines/dle120_operators_manual_hobbico.pdf",
+   "url": "http://manuals.hobbico.com/dle/dleg0120-manual.pdf",
+   "title": "DLE-120 operator's manual",
+   "publisher": "DLE / Hobbico",
+   "date": "2014",
+   "accessed": "2026-10-27",
+   "bytes": 478057,
+   "sha256": "fdbe819fdd11f6ecac0408fbe0a01313e393cc184e1b5da15d3ee330831d77b1",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright DLE/Hobbico. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "PDF pp.3-4, 6: lean running overheats plugs; vibration can break the propeller shaft; ignition placement and radio interference; opto kill switch."
+  },
+  {
+   "id": "R45",
+   "path": "references/rc-trim-practice/a-greatplanes-pt20-pt40-mkii-kit-manual-v1.2-2004.pdf",
+   "url": "http://manuals.hobbico.com/gpm/gpma0116-0118-manual-v1_2.pdf",
+   "title": "Great Planes PT-20/PT-40 Mk II kit manual v1.2",
+   "publisher": "Great Planes / Hobbico",
+   "date": "2004",
+   "accessed": "2026-10-27",
+   "bytes": 2278464,
+   "sha256": "b7c43da8f298d13812caf8df884fa359d9ee7e80d39646ad6adaabf49cd4eb21",
+   "kind": "kit manual",
+   "evidence": "M",
+   "license": "Copyright Great Planes. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "PDF pp.53-57: wheel-collar and steering flats, prop imbalance -> screws loosen and fuel foams -> lean/quit, range-check failure causes, rubber-band rule, low rate takeoff, flutter caution and causes."
+  },
+  {
+   "id": "R46",
+   "path": "references/p51-mustang/manuals/topflite_TOPA0400_giant_p51d_kit_manual.pdf",
+   "url": "http://manuals.hobbico.com/top/topa0400-manual.pdf",
+   "title": "Top Flite Giant P-51D Mustang kit manual (IMAA safety code excerpts)",
+   "publisher": "Top Flite / Hobbico",
+   "date": "2001-01-26 (PDF metadata)",
+   "accessed": "2026-10-27",
+   "bytes": 2527717,
+   "sha256": "a2882e6a656d518f9d4091b47060c690493e5e2343aa2df7c10ca262304ccc9a",
+   "kind": "kit manual",
+   "evidence": "M",
+   "license": "Copyright Top Flite. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "PDF pp.56-57: kill switch requirements, one servo per aileron and stab half, heavy-duty servos and hinges, clevis lock nuts and keepers, redundant batteries, anti-glitch devices."
+  },
+  {
+   "id": "R47",
+   "path": "references/ultra-stick-120/Ultrastick V3/pics/Original Horizon manual.pdf",
+   "url": null,
+   "title": "Hangar 9 Ultra Stick 120 assembly manual",
+   "publisher": "Horizon Hobby / Hangar 9",
+   "date": "2003-06 (PDF metadata)",
+   "accessed": "2026-10-27",
+   "bytes": 1147333,
+   "sha256": "53b6d244a6a6e5361d5c0a36a2bc2fa270d1f26d84686411b2f1f87f50bad3f5",
+   "kind": "kit manual",
+   "evidence": "M",
+   "license": "Copyright Horizon Hobby. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "PDF pp.7, 9 hinge tug test; p.30 threadlock against loosening; pp.37-41 clevis and wire keepers. Download URL not recorded."
+  },
+  {
+   "id": "R48",
+   "path": "references/rc-fuel-systems/hangar9-han1925-at6-texan-60-manual.pdf",
+   "url": "https://horizonhobby.com/on/demandware.static/Sites-horizon-us-Site/Sites-horizon-master/default/Manuals/han1925-manual.pdf",
+   "title": "Hangar 9 AT-6 Texan 60 manual HAN1925",
+   "publisher": "Horizon Hobby",
+   "date": "2003",
+   "accessed": "2026-10-27",
+   "bytes": 952289,
+   "sha256": "8ff725ad678f05c24c1c7b0dd3a6b2f4c2db53f285070b5e78e07e9aeab94402",
+   "kind": "kit manual",
+   "evidence": "M",
+   "license": "Copyright Horizon Hobby. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Reused FUEL-00 copy. PDF p.36: clunk must drop freely to the top when the tank is inverted."
+  },
+  {
+   "id": "R50",
+   "path": "references/rc-fuel-systems/xicoy-turbojet-manual-en-v1.5.pdf",
+   "url": "https://www.xicoyturbines.com/assets/files/XicoyTurbojetManual_EN.pdf",
+   "title": "Xicoy TurboJet user manual v1.5/2024",
+   "publisher": "Xicoy Electronica",
+   "date": "2024",
+   "accessed": "2026-10-27",
+   "bytes": 1329109,
+   "sha256": "d34afb0d2820ae3e0bb74b7b8df19304b0c93f7e8e79d7e4c4e87ce52cc7cbe6",
+   "kind": "manufacturer manual",
+   "evidence": "M",
+   "license": "Copyright Xicoy. Reference only; do not redistribute or commit.",
+   "redistribution": "local-reference-only",
+   "use": "Same bytes as EM-00 R07. PDF p.31 never fly with failsafe hold; p.35 autorestart conditions; pp.39-40 shutdown codes and FailSafe 0.5 s idle + 1.5 s shutdown."
+  }
+ ],
+ "links": [
+  {
+   "id": "R19",
+   "url": "https://www.gov.uk/api/content/government/publications/aaib-record-only-uas-investigations-reviewed-april-may-2026",
+   "title": "AAIB Record-only UAS investigations reviewed (40 bimonthly lists, January 2020 to June-July 2026)",
+   "publisher": "UK AAIB via GOV.UK content API",
+   "date": "2020-03-12 to 2026-09-10",
+   "accessed": "2026-10-27",
+   "kind": "investigation listings",
+   "evidence": "M",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "451 rows parsed; 65 model-aircraft rows classified by hand (see derived.aaib_model_aircraft).",
+   "method": "Search API q=\"record-only UAS investigations reviewed\"; each publication's HTML attachment body parsed for <tr> rows (date, type, location, text)."
+  },
+  {
+   "id": "R20a",
+   "url": "https://library.modelaviation.com/article/crashing-not-option-200911",
+   "title": "Crashing is NOT an Option (Don Apostolico)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "November 2009, pp.46-51",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Ranking after pilot error: battery, switch, receiver failure; hobby-shop basis, giant scale; under-glued nylon hinges crash."
+  },
+  {
+   "id": "R20b",
+   "url": "https://library.modelaviation.com/article/defensive-rc-flying-201008",
+   "title": "Defensive RC Flying (Don Apostolico)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "August 2010, pp.38-44",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Setup error chief cause; battery leading cause outside pilot error; switch failure; unset failsafe leaves full throttle."
+  },
+  {
+   "id": "R24",
+   "url": "https://www.modelaviation.com/receiver-voltage",
+   "title": "Receiver voltage (Cal Orr)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "August 2014",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Single battery/switch/connector; failures typically mechanical connections; dropouts ~2.5-2.7 V on tested receivers; BEC rating."
+  },
+  {
+   "id": "R25",
+   "url": "https://handbook.bmfa.org/annex-b/3-radio-control-and-you",
+   "title": "BMFA Members' Handbook, Annex B section 3.12 Failsafes",
+   "publisher": "British Model Flying Association",
+   "date": "revision not stated",
+   "accessed": "2026-10-27",
+   "kind": "association rulebook",
+   "evidence": "M",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Failsafe to idle minimum; 2.4 GHz defaults to hold; rebind may revert; test each session; electric cut; glider spoilers/crow; turbine idle + manual fuel shutoff."
+  },
+  {
+   "id": "R29a",
+   "url": "https://www.expresslrs.org/hardware/pwm-receivers/",
+   "title": "PWM Receivers",
+   "publisher": "ExpressLRS project",
+   "date": "page shows 2024-09-09 (unlabelled)",
+   "accessed": "2026-10-27",
+   "kind": "firmware documentation",
+   "evidence": "M",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Failsafe at LQ 0 or 1 s without valid packet; default 1500 us except output 3 at 988 us; no pulses before first connection."
+  },
+  {
+   "id": "R29b",
+   "url": "https://www.expresslrs.org/software/model-config-match/",
+   "title": "Model Match",
+   "publisher": "ExpressLRS project",
+   "date": "accessed only",
+   "accessed": "2026-10-27",
+   "kind": "firmware documentation",
+   "evidence": "M",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Mismatch prevents data reaching the flight controller/outputs."
+  },
+  {
+   "id": "R31",
+   "url": "https://mail.rcmodelreviews.com/fasst_compatible_review02.shtml",
+   "title": "FASST-compatible receiver review, part two",
+   "publisher": "RC Model Reviews",
+   "date": "updated 2010-08-11",
+   "accessed": "2026-10-27",
+   "kind": "independent review",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "TFR8 and Futaba R608FS recovered from power loss in well under 1 s."
+  },
+  {
+   "id": "R36a",
+   "url": "https://www.manualsdir.com/manuals/737937/hobbywing-skywalker-20a-skywalker-40a-skywalker-40a-ubec.html",
+   "title": "Hobbywing SkyWalker 20A/40A/40A-UBEC user manual (mirror)",
+   "publisher": "Hobbywing via manualsdir",
+   "date": "undated",
+   "accessed": "2026-10-27",
+   "kind": "manufacturer manual mirror",
+   "evidence": "M",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Soft vs immediate LVC; >~110 C output reduced; throttle-signal loss reduce at 1 s, cut after 2 s more; start failure cut at 2 s; linear-BEC servo counts fall with cell count (table garbled; trend only)."
+  },
+  {
+   "id": "R39",
+   "url": "https://library.modelaviation.com/article/safety-comes-first-224",
+   "title": "Safety Comes First (Gary Shaw)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "June 2001, pp.81-82",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Receiver negative lead worn through by vibration; dove in at full throttle."
+  },
+  {
+   "id": "R40",
+   "url": "https://library.modelaviation.com/article/safety-comes-first-201",
+   "title": "Safety Comes First (Gary Shaw)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "April 1999, pp.83-87",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Servo oscillation around trim traced to dirty/corroded extension plugs; delta elevator-failure crash."
+  },
+  {
+   "id": "R41",
+   "url": "https://www.modelaviation.com/article/Flight-Control-Servo-Balancing",
+   "title": "Flight Control Servo Balancing (Eric Richardson)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "undated web article",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Servos fighting cause buzz and up to 180 mA static; disconnected servo feels sluggish."
+  },
+  {
+   "id": "R49",
+   "url": "https://library.modelaviation.com/article/radio-control-pylon-racing-200902",
+   "title": "Radio Control Pylon Racing (Matt Russell)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "February 2009, pp.139-140",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Saito 1.80 starved in turns as tank depleted; pump fix."
+  },
+  {
+   "id": "R51",
+   "url": "https://library.modelaviation.com/article/radio-control-giant-scale-77",
+   "title": "Radio Control: Giant Scale (John A. de Vries)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "October 1988, pp.48-49, 154",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "P-40 blade parted; vibration rendered servos powerless; P-47 cowl adrift into prop."
+  },
+  {
+   "id": "R52",
+   "url": "https://www.modelaviation.com/article/new-people-and-technology",
+   "title": "New People and Technology (Dick Perry)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "June 2026",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Collet adapters loosened while running; vibration common to liberated props."
+  },
+  {
+   "id": "R53",
+   "url": "https://library.modelaviation.com/article/radio-control-giants-70",
+   "title": "Radio Control: Giants (John A. de Vries)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "May 1998, pp.83-84",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Wing folded at centre in pull-out; brace bonding, vibration, fuel-soaked joints."
+  },
+  {
+   "id": "R54",
+   "url": "https://library.modelaviation.com/article/safety-comes-first-66",
+   "title": "Safety Comes First (John Preston)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "July 1985",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "1982 Virginia fatality: repaired stabiliser broke off in flight; power lost."
+  },
+  {
+   "id": "R55",
+   "url": "https://chirp.co.uk/report/duasxxxx-3/",
+   "title": "DUASxxx3 - Battery Ejection, BMFA report",
+   "publisher": "CHIRP Aviation (UK)",
+   "date": "2022-08-24",
+   "accessed": "2026-10-27",
+   "kind": "confidential report summary",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Hatch opened as air brake, end-over-end, battery ejected."
+  },
+  {
+   "id": "R58",
+   "url": "https://www.modelaviation.com/avoiding-deadly-flutter",
+   "title": "Deadly Flutter and How to Avoid It (Gordon Buckland)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "May 2016",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Already in D6-SRV-00 (MA-BUCKLAND-2016-FLUTTER); flutter noise, slop, damage spectrum."
+  },
+  {
+   "id": "R59",
+   "url": "https://library.modelaviation.com/article/radio-control-giant-scale-83",
+   "title": "Radio Control: Giant Scale (John A. de Vries)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "May 1989, pp.46-47, 157",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Rudder hard-over landing; single locked aileron technique; elevator half; author saw only one true hard-over."
+  },
+  {
+   "id": "R60",
+   "url": "https://discuss.ardupilot.org/t/auto-takeoff-error/77717",
+   "title": "Auto Takeoff Error (thread; post by Ronald Pandolfi)",
+   "publisher": "ArduPilot Discourse",
+   "date": "2021-11-07",
+   "accessed": "2026-10-27",
+   "kind": "forum",
+   "evidence": "F",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Untied battery slid aft on climb-out; tied down next flight and climbed normally."
+  },
+  {
+   "id": "R63",
+   "url": "https://www.modelaviation.com/Landing-Gear",
+   "title": "RC Jets: Landing Gear (Jim Hiller)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "January 2023",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Pneumatic leaks (cylinders), air-line degradation; brake setup fiddly."
+  },
+  {
+   "id": "R64",
+   "url": "https://www.modelaviation.com/howtolandinggear",
+   "title": "How To Install Retractable Landing Gear (Chuck Snyder)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "August 2012, p.37",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Wire gear bends on rough landings; incomplete retraction possible."
+  },
+  {
+   "id": "R65",
+   "url": "https://library.modelaviation.com/article/technical-review-200406",
+   "title": "Airtronics VG6000 review (Bob Aberle)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "June 2004",
+   "accessed": "2026-10-27",
+   "kind": "magazine",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Wrong model memory could result in a crash."
+  },
+  {
+   "id": "R66a",
+   "url": "https://www.youtube.com/watch?v=hOBB_-gZFNo",
+   "title": "Jim Bourke One Wing Landing",
+   "publisher": "YouTube, uploader Jim Bourke",
+   "date": "uploaded 2008-09-30",
+   "accessed": "2026-10-27",
+   "kind": "video description",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Yak-54 model wing failed; pilot landed safely (description; no playback measurement)."
+  },
+  {
+   "id": "R66b",
+   "url": "https://avweb.com/multimedia/votw/video-of-the-week-one-winged-rc-landing/",
+   "title": "Video of the Week: One-Winged RC Landing",
+   "publisher": "AVweb",
+   "date": "2008-10-27",
+   "accessed": "2026-10-27",
+   "kind": "news",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Links RCGroups thread t=931845 and the Bourke video."
+  },
+  {
+   "id": "R66c",
+   "url": "https://romanian-spotters.forumgratuit.ro/t876-aterizari",
+   "title": "Repost of Jim Bourke's RCGroups text (30.09.2008)",
+   "publisher": "Romanian Spotters forum",
+   "date": "2008-10-27",
+   "accessed": "2026-10-27",
+   "kind": "forum repost",
+   "evidence": "F",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Left wing departed in full-throttle snap; knife-edge; landed right side up. Original RCGroups thread blocked (402)."
+  },
+  {
+   "id": "R67",
+   "url": "https://www.youtube.com/watch?v=pu-VCN32Vh4",
+   "title": "3D RC plane landing with only one wing.",
+   "publisher": "YouTube, uploader jekyllworks",
+   "date": "uploaded 2008-12-27",
+   "accessed": "2026-10-27",
+   "kind": "video description",
+   "evidence": "F",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "irks.org field; pilot Van landed with one wing."
+  },
+  {
+   "id": "R68",
+   "url": "https://www.youtube.com/watch?v=ibwuaOdA_ng",
+   "title": "RC plane loses wing and lands from knife edge!! REAL!!!!!!",
+   "publisher": "YouTube, uploader Matt P",
+   "date": "uploaded 2013-09-23",
+   "accessed": "2026-10-27",
+   "kind": "video description",
+   "evidence": "F",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Jacob P, Markham Park; wing came off; knife edge; landed."
+  },
+  {
+   "id": "R69",
+   "url": "https://www.youtube.com/watch?v=Gh52tyilpr4",
+   "title": "Tucson Aerobatic Shootout 2009 - Todd Bridges One Wing Landing",
+   "publisher": "YouTube, uploader dbronst3790",
+   "date": "uploaded 2009-10-19",
+   "accessed": "2026-10-27",
+   "kind": "video description",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Low fast snap; lost left wing; circled in knife edge; landed. Complements EM-00 R15."
+  },
+  {
+   "id": "R70",
+   "url": "https://www.avweb.com/news/revisiting-the-one-wing-landing-video-just-for-pilots",
+   "title": "Revisiting The One-Wing Landing Video, Just For Pilots",
+   "publisher": "AVweb",
+   "date": "2008-11-29",
+   "accessed": "2026-10-27",
+   "kind": "news",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Viral full-scale one-wing landing video is a hoax; exclude."
+  },
+  {
+   "id": "R71",
+   "url": "https://taskandpurpose.com/history/1983-negev-mid-air-collision",
+   "title": "That time an Israeli F-15 landed without a wing",
+   "publisher": "Task & Purpose (originally Sandboxx)",
+   "date": "2020-09-23",
+   "accessed": "2026-10-27",
+   "kind": "secondary journalism",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Out-of-domain comparison: 1 May 1983 F-15D; right wing ~2 ft from root; afterburner; ~260 kt landing (others ~300 kt); hook torn off."
+  },
+  {
+   "id": "R72",
+   "url": "https://handbook.bmfa.org/?p=4545",
+   "title": "BMFA Members' Handbook, Annex B section 5 Interference",
+   "publisher": "British Model Flying Association",
+   "date": "(c) 2021",
+   "accessed": "2026-10-27",
+   "kind": "association rulebook",
+   "evidence": "M",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Outside interference rare; rule out airborne power, hardware, ground and pilot causes first."
+  },
+  {
+   "id": "R16-recheck",
+   "url": "https://www.modelaviation.com/xfc2013",
+   "title": "XFC 2013 (Jennifer Orebaugh)",
+   "publisher": "Model Aviation (AMA)",
+   "date": "event 2013-06-14..16",
+   "accessed": "2026-10-27",
+   "kind": "event report",
+   "evidence": "R",
+   "license": "Copyright the publisher/author; cited, not copied.",
+   "use": "Re-read: Manuel Santos wing broke off in freestyle; 'perfect one-wing landing'; aircraft and side not stated."
+  }
+ ],
+ "derived": {
+  "aaib_model_aircraft": {
+   "source": "R19",
+   "classified_by": "EM-00-R1 review, single reader, 2026-10-27",
+   "inclusion": "Aircraft Type names a model aircraft (MA, 'Model Aircraft', 'Radio Controlled Glider'); DJI Mavic and Malloy excluded; commercial fixed-wing UAS not labelled MA excluded.",
+   "classes": {
+    "A": "link lost or unresponsive, cause not determined",
+    "B": "airborne electrical failure stated",
+    "C": "propulsion stop or power loss, control retained",
+    "D": "single control channel lost or intermittent",
+    "E": "structural separation",
+    "F": "pilot handling",
+    "G": "lost sight / weather / wind drift",
+    "H": "mid-air collision",
+    "I": "other / not fixed-wing / unexplained lost control"
+   },
+   "counts": {
+    "A": 21,
+    "B": 3,
+    "C": 4,
+    "D": 5,
+    "E": 4,
+    "F": 5,
+    "G": 16,
+    "H": 1,
+    "I": 6
+   },
+   "n": 65,
+   "rows": [
+    {
+     "class": "G",
+     "date": "24 Apr 2021",
+     "type": "Radio Controlled Glider",
+     "list": "April - May 2021"
+    },
+    {
+     "class": "A",
+     "date": "28 May 2021",
+     "type": "MA Graupner Huskey 1800",
+     "list": "June - July 2021"
+    },
+    {
+     "class": "G",
+     "date": "29 May 2021",
+     "type": "MA ASW28 RC Glider",
+     "list": "June - July 2021"
+    },
+    {
+     "class": "G",
+     "date": "05 Jun 2021",
+     "type": "MA Douglas Skyraider replica",
+     "list": "June - July 2021"
+    },
+    {
+     "class": "D",
+     "date": "08 Jul 2021",
+     "type": "MA Electric powered type unknown",
+     "list": "June - July 2021"
+    },
+    {
+     "class": "E",
+     "date": "11 Jul 2021",
+     "type": "MA type unknown",
+     "list": "June - July 2021"
+    },
+    {
+     "class": "F",
+     "date": "23 Jun 2021",
+     "type": "UAS MA Acrowot",
+     "list": "August - September 2021"
+    },
+    {
+     "class": "F",
+     "date": "18 Sep 2021",
+     "type": "UAS MA Lysander",
+     "list": "August - September 2021"
+    },
+    {
+     "class": "I",
+     "date": "27 Aug 2021",
+     "type": "MA Avro 405 autogyro",
+     "list": "October - November 2021"
+    },
+    {
+     "class": "A",
+     "date": "02 Sep 2021",
+     "type": "MA Ripmax Acro Wot",
+     "list": "October - November 2021"
+    },
+    {
+     "class": "G",
+     "date": "25 Sep 2021",
+     "type": "MA Ripmax Acro Wat",
+     "list": "October - November 2021"
+    },
+    {
+     "class": "A",
+     "date": "03 Jan 2022",
+     "type": "MA Arising Star",
+     "list": "December 2021 - January 2022"
+    },
+    {
+     "class": "A",
+     "date": "22 Jan 2022",
+     "type": "MA Junior 60",
+     "list": "December 2021 - January 2022"
+    },
+    {
+     "class": "G",
+     "date": "10 Apr 2022",
+     "type": "MA Big Swift Glider",
+     "list": "April - May 2022"
+    },
+    {
+     "class": "G",
+     "date": "30 Apr 2022",
+     "type": "MA Powered Glider Alegra 2M",
+     "list": "April - May 2022"
+    },
+    {
+     "class": "G",
+     "date": "15 May 2022",
+     "type": "MA foam, electric powered",
+     "list": "April - May 2022"
+    },
+    {
+     "class": "G",
+     "date": "15 May 2022",
+     "type": "MA fixed wing",
+     "list": "April - May 2022"
+    },
+    {
+     "class": "G",
+     "date": "14 Jun 2022",
+     "type": "UAS MA Multiplex Glider Solius",
+     "list": "June - July 2022"
+    },
+    {
+     "class": "A",
+     "date": "29 Jul 2022",
+     "type": "UAS MA Model Aircraft",
+     "list": "June - July 2022"
+    },
+    {
+     "class": "A",
+     "date": "30 Jul 2022",
+     "type": "UAS MA Viper Pro",
+     "list": "June - July 2022"
+    },
+    {
+     "class": "A",
+     "date": "31 Jul 2022",
+     "type": "UAS MA Red-5 GPS Hawk",
+     "list": "June - July 2022"
+    },
+    {
+     "class": "F",
+     "date": "10 Jul 2022",
+     "type": "MA Sebart Evo-50",
+     "list": "August - September 2022"
+    },
+    {
+     "class": "A",
+     "date": "18 Jul 2022",
+     "type": "MA AtomRC Motorised Glider",
+     "list": "August - September 2022"
+    },
+    {
+     "class": "C",
+     "date": "11 Aug 2022",
+     "type": "MA Flylogix FX2",
+     "list": "August - September 2022"
+    },
+    {
+     "class": "G",
+     "date": "03 Sep 2022",
+     "type": "MA FMS Olympus",
+     "list": "August - September 2022"
+    },
+    {
+     "class": "G",
+     "date": "13 Oct 2022",
+     "type": "MA HobbyZone AeroScout S",
+     "list": "October - November 2022"
+    },
+    {
+     "class": "A",
+     "date": "26 Nov 2022",
+     "type": "MA SebArt Wind S50",
+     "list": "October - November 2022"
+    },
+    {
+     "class": "A",
+     "date": "18 Aug 2022",
+     "type": "MA Hanger 9 Ultra Stick",
+     "list": "December 2022 - January 2023"
+    },
+    {
+     "class": "A",
+     "date": "04 Mar 2023",
+     "type": "MA Model Aircraft",
+     "list": "February - March 2023"
+    },
+    {
+     "class": "I",
+     "date": "20 Feb 2023",
+     "type": "MA Electric powered glider",
+     "list": "April - May 2023"
+    },
+    {
+     "class": "A",
+     "date": "04 Apr 2023",
+     "type": "MA Zephyr",
+     "list": "April - May 2023"
+    },
+    {
+     "class": "A",
+     "date": "04 Apr 2023",
+     "type": "MA Majestic Major",
+     "list": "April - May 2023"
+    },
+    {
+     "class": "F",
+     "date": "12 May 2023",
+     "type": "MA Max-Thrust Riot V2",
+     "list": "April - May 2023"
+    },
+    {
+     "class": "H",
+     "date": "13 May 2023",
+     "type": "MA Soar 40 sports low wing",
+     "list": "April - May 2023"
+    },
+    {
+     "class": "G",
+     "date": "23 May 2023",
+     "type": "MA Hobbyzone Carbon Cub S2",
+     "list": "April - May 2023"
+    },
+    {
+     "class": "G",
+     "date": "19 Mar 2023",
+     "type": "Model Aircraft Clipped Wing Cub",
+     "list": "June - July 2023"
+    },
+    {
+     "class": "C",
+     "date": "25 May 2023",
+     "type": "Model Aircraft Catalina",
+     "list": "June - July 2023"
+    },
+    {
+     "class": "B",
+     "date": "11 Jun 2023",
+     "type": "Model Aircraft Riot",
+     "list": "June - July 2023"
+    },
+    {
+     "class": "A",
+     "date": "13 Jun 2023",
+     "type": "Model Aircraft Condor",
+     "list": "June - July 2023"
+    },
+    {
+     "class": "C",
+     "date": "22 Jun 2023",
+     "type": "Model Aircraft 1911 Deperdussin Monoplane",
+     "list": "June - July 2023"
+    },
+    {
+     "class": "I",
+     "date": "24 Jun 2023",
+     "type": "Model Aircraft Model Glider",
+     "list": "June - July 2023"
+    },
+    {
+     "class": "D",
+     "date": "24 Jun 2023",
+     "type": "Model Aircraft Robey Sirocco 4 glider",
+     "list": "June - July 2023"
+    },
+    {
+     "class": "E",
+     "date": "25 Jul 2023",
+     "type": "Model Aircraft Bristol Bulldog",
+     "list": "June - July 2023"
+    },
+    {
+     "class": "C",
+     "date": "12 August 2023",
+     "type": "Model Aircraft Mitsubishi A6M Zero",
+     "list": "August - September 2023"
+    },
+    {
+     "class": "D",
+     "date": "03 September 2023",
+     "type": "Model Aircraft Airworld Hawk",
+     "list": "August - September 2023"
+    },
+    {
+     "class": "G",
+     "date": "05 September 2023",
+     "type": "Model Aircraft E-Flite Evolution",
+     "list": "August - September 2023"
+    },
+    {
+     "class": "A",
+     "date": "30 September 2023",
+     "type": "Model Aircraft FMS Skytrainer",
+     "list": "August - September 2023"
+    },
+    {
+     "class": "F",
+     "date": "22 Oct 2023",
+     "type": "Model aircraft",
+     "list": "October - November 2023"
+    },
+    {
+     "class": "A",
+     "date": "29 Oct 2023",
+     "type": "MA Scale G91",
+     "list": "October - November 2023"
+    },
+    {
+     "class": "I",
+     "date": "26 Dec 2023",
+     "type": "UAS MA Mini Chevron",
+     "list": "February - March 2024"
+    },
+    {
+     "class": "E",
+     "date": "4 May 2024",
+     "type": "UAS MA Chris Foss Multiphase Glider",
+     "list": "April - May 2024"
+    },
+    {
+     "class": "I",
+     "date": "20 May 2024",
+     "type": "UAS MA OMP Hobby",
+     "list": "June - July 2024"
+    },
+    {
+     "class": "A",
+     "date": "17 Jun 2024",
+     "type": "UAS MA Dynam DHC-2 Beaver",
+     "list": "June - July 2024"
+    },
+    {
+     "class": "I",
+     "date": "25 Jun 2024",
+     "type": "UAS MA Foam Sport Glider",
+     "list": "June - July 2024"
+    },
+    {
+     "class": "G",
+     "date": "19 Jul 2024",
+     "type": "UAS MA Pronto",
+     "list": "June - July 2024"
+    },
+    {
+     "class": "D",
+     "date": "17 Aug 2024",
+     "type": "MA scale Duo Discus",
+     "list": "August - September 2024"
+    },
+    {
+     "class": "A",
+     "date": "13 Sep 2024",
+     "type": "MA semi-scale Cessna 190",
+     "list": "August - September 2024"
+    },
+    {
+     "class": "G",
+     "date": "15 Sep 2024",
+     "type": "MA Arrows Hobby Bigfoot Electric",
+     "list": "August - September 2024"
+    },
+    {
+     "class": "E",
+     "date": "9 Mar 25",
+     "type": "MA Pilot-RC Laser",
+     "list": "February - March 2025"
+    },
+    {
+     "class": "B",
+     "date": "22 May 2025",
+     "type": "MA Freewing MiG-29 Fulcrum",
+     "list": "June - July 2025"
+    },
+    {
+     "class": "D",
+     "date": "6 Aug 2025",
+     "type": "MA glider",
+     "list": "August - September 2025"
+    },
+    {
+     "class": "A",
+     "date": "24 Aug 2025",
+     "type": "MA E-flight apprentice",
+     "list": "August - September 2025"
+    },
+    {
+     "class": "B",
+     "date": "3 Mar 2026",
+     "type": "MA Tiger Trainer OBL",
+     "list": "February - March 2026"
+    },
+    {
+     "class": "A",
+     "date": "26 Apr 2026",
+     "type": "MA Irvine Wild Card",
+     "list": "April - May 2026"
+    },
+    {
+     "class": "A",
+     "date": "26 May 2026",
+     "type": "MA Kiel Kraft Falcon",
+     "list": "April - May 2026"
+    }
+   ]
+  }
+ },
+ "dead_ends": [
+  "rcgroups.com threads return HTTP 402 (TollBit) to automated fetches; original Jim Bourke thread t=931845 unreadable",
+  "rcuniverse.com and modelflying.co.uk return 403",
+  "flyinggiants.com returns a 202 challenge page",
+  "MDPI Aerospace 3(3):22 (Wild, Murray, Baxter 2016) and ro.ecu.edu.au copy return 403; JATM 2017 companion paper used instead",
+  "Williams 2004 DOT/FAA/AM-04/24: FAA, ROSAP, DTIC and Wright State CORE Scholar copies return 403/HTML",
+  "NATO STO MP-HFM-124-05 returns 404; original OSD Feb 2003 UAV Reliability Study not found online (OSD Roadmap extract used)",
+  "ATSB AR-2017-016a RPAS safety analysis timed out twice",
+  "Flying Magazine ?p=29866 one-wing article returns 410",
+  "APC Propellers RPM-limit page and HobbyKing prop-loss blog return 403",
+  "conservancy.umn.edu returns 403; dept.aem.umn.edu copies work",
+  "Spektrum 'hold = 45 contiguous frame losses (~1 s)' definition seen only in forum reposts, not in a reviewed official manual",
+  "No measured reboot time found for Jeti, FrSky ACCST/ACCESS or ELRS beyond the ELRS 1 s failsafe timeout",
+  "No model-engine carburettor icing evidence found (only full-scale)",
+  "No documented raptor downing of an RC airplane found (only harassment anecdotes)",
+  "No published cause statistics found from AMA, BMFA, MAAA, MAAC or NZMAA"
+ ]
+}

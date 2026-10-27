@@ -10,6 +10,7 @@ const Widgets := preload("res://ui/widgets.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
 const UiScale := preload("res://ui/ui_scale.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
+const FailureConfig := preload("res://failures/config.gd")
 
 signal continue_requested
 signal restart_requested
@@ -344,6 +345,11 @@ func failure_config_text(config: Dictionary) -> String:
 	var probability := clampi(int(config.get("probability_percent", 0)), 0, 100)
 	if probability == 0:
 		return tr("Next flight failures: Off")
+	var customized := not FailureConfig.uses_default_selection(config)
+	if customized and bool(config.get("include_catastrophic", false)):
+		return tr("Next flight failures: %d%% · custom · catastrophic allowed") % probability
+	if customized:
+		return tr("Next flight failures: %d%% · custom") % probability
 	if bool(config.get("include_catastrophic", false)):
 		return tr("Next flight failures: %d%% · catastrophic allowed") % probability
 	return tr("Next flight failures: %d%% · standard") % probability

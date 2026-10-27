@@ -4,7 +4,10 @@ extends RefCounted
 const Config: Script = preload("res://environment/time_of_day_config.gd")
 const VisualTimeline: Script = preload("res://environment/visual_timeline.gd")
 const FailureRuntime: Script = preload("res://failures/runtime.gd")
+const OutOfTrim: Script = preload("res://sim/out_of_trim.gd")
 const PHYSICS_FORMAT_FAILURES: String = "openrc-flight-checkpoint v10"
+## D6-TRIM-01: an out-of-trim airframe wraps any supported flight checkpoint, outermost.
+const PHYSICS_FORMAT_AIRFRAME: String = "openrc-flight-checkpoint v13"
 
 const FORMAT: String = "openrc-visual-checkpoint v1"
 const FORMAT_PROGRESSING: String = "openrc-visual-checkpoint v2"
@@ -71,7 +74,7 @@ static func read(candidate: Variant, expected_field_identity: String) -> Diction
 		return _read_paired(source, expected_field_identity, TIMELINE_FORMAT_FIXED)
 	if format_value == FORMAT_PROGRESSING:
 		return _read_paired(source, expected_field_identity, TIMELINE_FORMAT_PROGRESSING)
-	if not PHYSICS_FORMATS.has(str(format_value)) and format_value not in [PHYSICS_FORMAT_COLLISION_WORLD, PHYSICS_FORMAT_FAILURES]:
+	if not PHYSICS_FORMATS.has(str(format_value)) and format_value not in [PHYSICS_FORMAT_COLLISION_WORLD, PHYSICS_FORMAT_FAILURES, PHYSICS_FORMAT_AIRFRAME]:
 		return _failure_read(["unknown checkpoint format '%s'" % str(format_value)])
 	for marker: String in PAIRED_MARKERS:
 		if source.has(marker):
@@ -146,6 +149,18 @@ static func _physics_tick(raw: Variant) -> Dictionary:
 	var format_value: Variant = checkpoint.get("format", null)
 	if typeof(format_value) != TYPE_STRING:
 		return {"ok": false, "errors": ["physics checkpoint format must be a string"]}
+	if format_value == PHYSICS_FORMAT_AIRFRAME:
+		var airframe_inner: Variant = checkpoint.get("airframe_physics_format")
+		if typeof(airframe_inner) != TYPE_STRING or airframe_inner == PHYSICS_FORMAT_AIRFRAME \
+				or not OutOfTrim.valid_offsets(checkpoint.get("airframe_trim_offset")):
+			return {ok = false, errors = ["airframe checkpoint has an invalid physics format or offset"]}
+		var unwrapped: Dictionary = checkpoint.duplicate(true)
+		unwrapped.format = airframe_inner
+		unwrapped.erase("airframe_physics_format")
+		unwrapped.erase("airframe_trim_offset")
+		return _physics_tick(unwrapped)
+	if checkpoint.has("airframe_trim_offset") or checkpoint.has("airframe_physics_format"):
+		return {ok = false, errors = ["airframe offsets require an airframe checkpoint"]}
 	if format_value == PHYSICS_FORMAT_FAILURES:
 		var inner_format: Variant = checkpoint.get("failure_physics_format")
 		if typeof(inner_format) != TYPE_STRING or (inner_format != PHYSICS_FORMAT_COLLISION_WORLD and not PHYSICS_FORMATS.has(inner_format)):

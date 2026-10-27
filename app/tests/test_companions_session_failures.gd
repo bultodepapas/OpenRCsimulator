@@ -29,7 +29,7 @@ func _new_session(external: bool) -> Session:
 	_check("failure fixture starts clear of ground", session.sim.reset(initial) and session._failure_airborne())
 	_check("failure fixture resolves the same seeded plan", session.setup_failures({
 		probability_percent = 100, include_catastrophic = false, notify = true,
-	}, 1751), session.failure_error)
+	}, 2063), session.failure_error) # v3 plan seed: roll jam at 20 s on the logical profile
 	return session
 
 
