@@ -396,9 +396,9 @@
       },
       "wing_aileron_effectiveness": {
         "kind": "derived",
-        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; |Clda_right|/(0.125*CLa), rounded",
+        "source": "D11-R1: research/aero/aileron_effectiveness.py; matches the borrowed Clda_right through the calibrated section slope and induced-flow map (six equal-area strips). Replaces uncoupled CLa estimate 0.144; model consistency, not measured flight calibration. docs/research/aero-consistency/D11-R1/README.md",
         "unit": "1",
-        "value": 0.144
+        "value": 0.21511460134103116
       },
       "wing_body_cl_beta": {
         "kind": "derived",

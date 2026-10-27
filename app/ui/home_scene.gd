@@ -168,7 +168,8 @@ func show_aircraft(id: String, livery := "") -> bool:
 		if main_pivot != null:
 			main_pivot.rotation.z = PROP_ANGLE
 	else:
-		airplane.propeller.rotation.z = PROP_ANGLE
+		# A hull-rested (gearless) airplane parks its blades level, clear of the field.
+		airplane.propeller.rotation.z = float(_presentation.get("propeller_angle", PROP_ANGLE))
 	if not retained:
 		# Capture the neutral model before the night kit is fitted; it must not enter the silhouette.
 		_presentation.bounds = Presentation.mesh_bounds(airplane.root, airplane.root)

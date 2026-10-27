@@ -34,6 +34,16 @@ func _mutant(change: Callable) -> Dictionary:
 	return FieldLights.validate(root)
 
 
+## The modeled tip at a light's own chord station: the outermost vertex on that side within 2 cm of its z. A raked
+## tip's leading corner lies inboard of the span maximum (FW-RGB-12 mounts the Stik lenses there, 6 mm outboard).
+func _station_tip(points: PackedVector3Array, side: float, z: float) -> float:
+	var tip := 0.0
+	for v: Vector3 in points:
+		if absf(v.z - z) <= 0.02:
+			tip = maxf(tip, side * v.x)
+	return tip
+
+
 func _quantity(value: Variant, unit: String) -> Dictionary:
 	return {"value": value, "unit": unit, "kind": "estimated", "source": "focused compatibility test"}
 
@@ -140,12 +150,15 @@ func _initialize() -> void:
 
 	# Night kit on the Stik: red at −x (left), green at +x (right), landing light forward.
 	var airplane: Dictionary = AirplaneBuilder.build()
-	var stik_half := AircraftLights.span_half(AircraftLights.vertices(airplane.root)) # before the kit exists
+	var stik_points := AircraftLights.vertices(airplane.root) # before the kit exists
 	var kit := AircraftLights.attach(airplane.root)
 	var left: Node3D = kit.get_node("nav_left")
 	var right: Node3D = kit.get_node("nav_right")
-	_check("nav lights at the wing tips", left.position.x < -stik_half and right.position.x > stik_half
-		and absf(right.position.x - stik_half) < 0.05)
+	var left_tip := _station_tip(stik_points, -1.0, left.position.z)
+	var right_tip := _station_tip(stik_points, 1.0, right.position.z)
+	_check("nav lights at the wing tips", left.position.x < -left_tip and right.position.x > right_tip
+		and absf(right.position.x - right_tip) < 0.05,
+		"left=%.4f right=%.4f station tips %.4f/%.4f" % [left.position.x, right.position.x, left_tip, right_tip])
 	_check("left red, right green", ((left as MeshInstance3D).mesh.material as ShaderMaterial).get_shader_parameter("light_color").r > 0.9
 		and ((right as MeshInstance3D).mesh.material as ShaderMaterial).get_shader_parameter("light_color").g > 0.9)
 	var landing: SpotLight3D = kit.get_node("landing_light")
@@ -192,7 +205,9 @@ func _initialize() -> void:
 		var nav_left := dressed.get_node("nav_left") as Node3D
 		var nav_right := dressed.get_node("nav_right") as Node3D
 		var tip_ok: bool = nav_right.position.x > half and nav_left.position.x < -half
-		var anchors: Dictionary = plane.root.get_meta("light_anchors", {})
+		# Builder lenses and the companion's authored layout mounts (FW-RGB-12), merged as AircraftLights.attach does.
+		var anchors: Dictionary = (plane.root.get_meta("light_anchors", {}) as Dictionary).duplicate(true)
+		anchors.merge(AircraftLights.resolve_authored_layout(plane.root).anchors)
 		if anchors.has("nav_left") and anchors.has("nav_right"):
 			var left_anchor: Dictionary = anchors.nav_left
 			var right_anchor: Dictionary = anchors.nav_right
@@ -200,10 +215,11 @@ func _initialize() -> void:
 			tip_ok = tip_ok or (left_anchor.get("position") is Vector3 and right_anchor.get("position") is Vector3
 				and nav_left.position.distance_to(left_anchor.position) < 0.0001
 				and nav_right.position.distance_to(right_anchor.position) < 0.0001
-				and absf(absf(nav_left.position.x) - half) <= lens_margin
-				and absf(absf(nav_right.position.x) - half) <= lens_margin)
+				and absf(absf(nav_left.position.x) - _station_tip(pts, -1.0, nav_left.position.z)) <= lens_margin
+				and absf(absf(nav_right.position.x) - _station_tip(pts, 1.0, nav_right.position.z)) <= lens_margin)
 		_check("%s: nav lights at the modeled tips or authored lenses (span %.2f m)" % [id, 2.0 * half], tip_ok,
-			"left=%.4f right=%.4f half=%.4f" % [nav_left.position.x, nav_right.position.x, half])
+			"left=%.4f right=%.4f half=%.4f station tips %.4f/%.4f" % [nav_left.position.x, nav_right.position.x, half,
+			_station_tip(pts, -1.0, nav_left.position.z), _station_tip(pts, 1.0, nav_right.position.z)])
 		plane.root.free()
 
 	# Light on a point: the point helper follows the pinned GLES3 radial and smooth cone functions.
