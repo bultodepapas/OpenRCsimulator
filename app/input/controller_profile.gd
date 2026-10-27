@@ -395,32 +395,34 @@ static func validate(value: Variant) -> Dictionary:
 			if lo >= hi:
 				var error: String = channel_name + " has zero or reversed range"
 				_append_validation_issue(errors, issues, "range_invalid", ["%s.min" % channel_name, "%s.max" % channel_name], error)
-			elif channel.get("range_kind") == "centered" and channel_name != "throttle" and not (lo < center and center < hi):
+			elif range_kind == "centered" and channel_name != "throttle" and not (lo < center and center < hi):
 				var error: String = channel_name + " requires travel on both sides of center"
 				_append_validation_issue(errors, issues, "range_invalid", ["%s.min" % channel_name, "%s.center" % channel_name, "%s.max" % channel_name], error)
-			elif channel.get("range_kind") == "centered" and channel_name == "throttle" and mode_value == "stick_rate" and not (lo < center and center < hi):
+			elif range_kind == "centered" and channel_name == "throttle" and throttle_mode == "stick_rate" and not (lo < center and center < hi):
 				var error: String = "stick_rate throttle requires travel on both sides of center"
 				_append_validation_issue(errors, issues, "range_invalid", ["throttle.min", "throttle.center", "throttle.max"], error)
-			elif channel.get("range_kind") == "centered" and channel_name == "throttle" and mode_value != "stick_rate" and not (lo <= center and center <= hi):
+			elif range_kind == "centered" and channel_name == "throttle" and throttle_mode != "stick_rate" and not (lo <= center and center <= hi):
 				var error: String = "throttle center must be within its endpoints"
 				_append_validation_issue(errors, issues, "range_invalid", ["throttle.min", "throttle.center", "throttle.max"], error)
-			elif channel.get("range_kind") == "absolute" and not (lo <= center and center <= hi):
+			elif range_kind == "absolute" and not (lo <= center and center <= hi):
 				var error: String = channel_name + " absolute range requires center within endpoints"
 				_append_validation_issue(errors, issues, "range_invalid", ["%s.min" % channel_name, "%s.center" % channel_name, "%s.max" % channel_name], error)
-		if kind_value == "gamepad" and channel.get("range_kind") == "centered":
+		if kind == "gamepad" and range_kind == "centered":
 			if not _is_number(channel.get("deadzone")) or float(channel.get("deadzone", -1.0)) < 0.0 or float(channel.get("deadzone", 2.0)) >= 1.0:
 				var error: String = channel_name + ".deadzone must be in [0, 1)"
 				_append_validation_issue(errors, issues, "deadzone_invalid", ["%s.deadzone" % channel_name], error)
 			if not _is_number(channel.get("expo")) or float(channel.get("expo", -1.0)) < 0.0 or float(channel.get("expo", 2.0)) > 1.0:
 				var error: String = channel_name + ".expo must be in [0, 1]"
 				_append_validation_issue(errors, issues, "expo_invalid", ["%s.expo" % channel_name], error)
-	if typeof(mode_value) == TYPE_STRING and mode_value == "stick_rate" and typeof(value.get("throttle")) == TYPE_DICTIONARY and value.throttle.get("range_kind") != "centered":
+	var has_throttle := typeof(value.get("throttle")) == TYPE_DICTIONARY
+	var throttle_range := _string_field(value.get("throttle"), "range_kind")
+	if throttle_mode == "stick_rate" and has_throttle and throttle_range != "centered":
 		var error: String = "stick_rate throttle must use a centered range"
 		_append_validation_issue(errors, issues, "range_invalid", ["throttle.range_kind"], error)
-	if typeof(mode_value) == TYPE_STRING and mode_value == "trigger_absolute" and typeof(value.get("throttle")) == TYPE_DICTIONARY and value.throttle.get("range_kind") != "absolute":
+	if throttle_mode == "trigger_absolute" and has_throttle and throttle_range != "absolute":
 		var error: String = "trigger_absolute throttle must use an absolute range"
 		_append_validation_issue(errors, issues, "range_invalid", ["throttle.range_kind"], error)
-	if typeof(mode_value) == TYPE_STRING and mode_value == "radio_absolute" and typeof(value.get("throttle")) == TYPE_DICTIONARY and value.throttle.get("range_kind") != "absolute":
+	if throttle_mode == "radio_absolute" and has_throttle and throttle_range != "absolute":
 		var error: String = "radio_absolute throttle must use an absolute range"
 		_append_validation_issue(errors, issues, "range_invalid", ["throttle.range_kind"], error)
 	if value.has("aux") and typeof(value.get("aux")) != TYPE_DICTIONARY:
@@ -564,6 +566,14 @@ static func _valid_variant_tree(value: Variant, depth: int) -> bool:
 
 static func _is_number(value: Variant) -> bool:
 	return typeof(value) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(value))
+
+
+## A Dictionary's String field, or "" for any other container or field type.
+static func _string_field(container: Variant, key: String) -> String:
+	if typeof(container) != TYPE_DICTIONARY:
+		return ""
+	var field: Variant = container.get(key)
+	return field if typeof(field) == TYPE_STRING else ""
 
 
 static func _valid_association(value: Variant) -> bool:
