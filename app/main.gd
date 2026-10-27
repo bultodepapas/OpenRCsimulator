@@ -291,6 +291,10 @@ var _accident_checkpoint_restoring := false
 var _accident_paired_history := false
 var _crash_director: CrashDirector
 var _people_crash_clock_s := 0.0 # SC-HUM-05 presentation time since the player's crash
+## VQ-01c-R1: the windsock/people and profile-smoke observers advance once per rendered frame.
+const PresentationCadence := preload("res://render/presentation_cadence.gd")
+var _windsock_cadence := PresentationCadence.new()
+var _profile_smoke_cadence := PresentationCadence.new()
 var _scenery_damage_director: SceneryDamageDirector
 var _cg_model := Vector3.ZERO
 var _env: Environment
@@ -821,8 +825,8 @@ func _prepare_flight() -> void:
 	add_child(session)
 	if startup_checkpoint.is_valid():
 		session.hold("loading")
-	# Sample the committed wind at every tick, including OU gusts between render frames.
-	# The windsock is a read-only presentation consumer; uploads happen in World.update.
+	# The windsock is a read-only presentation consumer; uploads happen in World.update. It samples the
+	# committed wind at the last accepted tick before each rendered frame (VQ-01c-R1; per tick with cadence 0).
 	if not _scripted:
 		session.sim.stepped.connect(_advance_windsock)
 	Input.joy_connection_changed.connect(_on_smoke_connection_changed)
@@ -1039,8 +1043,26 @@ func _prepare_flight() -> void:
 		await _capture(t, c, args.get("out", "user://capture.png"))
 
 
+## Simulation.stepped observer. A reset, seek or gap advances at once; consecutive ticks wait for
+## _flush_presentation_observers(). The cloth and heads integrate the elapsed time in fixed steps.
 func _advance_windsock(_tick: int, time_s: float, state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	if _windsock_cadence.on_tick(_tick):
+		_advance_windsock_to(_tick, time_s, state)
+
+
+## VQ-01c-R1: once per rendered frame, before World.update and the smoke presentation read them.
+func _flush_presentation_observers() -> void:
+	if session == null or session.sim == null:
+		return
+	var sim: Node = session.sim
+	if _windsock_cadence.take(sim.tick):
+		_advance_windsock_to(sim.tick, sim.time(), sim.state)
+	if _profile_smoke_cadence.take(sim.tick):
+		_sample_profile_smoke_at(sim.tick, sim.time(), sim.state, sim.aux)
+
+
+func _advance_windsock_to(_tick: int, time_s: float, state: PackedFloat64Array) -> void:
 	var wind_ned: Array = Array(session.wind_at(time_s))
 	var sampler: Callable = session.environment.wind_world if session.environment.weather.is_spatial() else Callable()
 	if _tick == 0:
@@ -1082,6 +1104,7 @@ func _companion_positions() -> Array:
 
 
 func _process(delta: float) -> void:
+	_flush_presentation_observers()
 	if not interactive_start and Engine.get_process_frames() % 60 == 0:
 		Reconstruction.guard_runtime_failure(get_viewport())
 	if _accident_report != null:
@@ -3205,8 +3228,15 @@ func _smoke_evidence() -> Dictionary:
 	return {mode = "none"}
 
 
+## Simulation.stepped observer; a rewind samples (and resets) at once, consecutive ticks once per frame.
 func _sample_profile_smoke(tick: int, _time: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	if _profile_smoke_cadence.on_tick(tick):
+		_sample_profile_smoke_at(tick, _time, _state, _aux)
+
+
+## Accepted source/request changes enter the tapes keyed by the observed tick.
+func _sample_profile_smoke_at(tick: int, _time: float, _state: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	if _profile_smoke == null: return
 	if _profile_last_accepted_tick >= 0 and tick < _profile_last_accepted_tick:
 		_reset_profile_smoke()

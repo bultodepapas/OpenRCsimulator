@@ -56,8 +56,7 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	var reference_load: float = maxf(1.0, float(sim.mass) * float(sim.gravity) / float(gear_contacts.size()))
 	# Well clear of the ground, every wheel is unloaded and the cues only age their airborne state, so skip the
 	# wheel frames, contact law and material queries. Rows resume in full FAR_HORIZON_S before any wheel can load.
-	if Terrain.is_valid_surface_table(ground_surfaces) and -state[RB.POS + 2] > float(gear.get("reach", INF)) \
-			+ Terrain.max_height_validated(ground_surfaces) + FAR_MARGIN_M + FAR_HORIZON_S * M.norm(base_velocity):
+	if _clear_of_ground(state, gear, ground_surfaces):
 		return _unloaded_rows(gear_contacts, state, attitude, base_velocity, body_rate, reference_load)
 	var wheel_evaluation: Dictionary = {}
 	if wheel_count > 0:
@@ -122,6 +121,26 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 			roll_enabled = true,
 		})
 	return contacts_out
+
+
+## VQ-01c-R1: true when snapshot_contacts() would return unloaded far rows for the accepted state, so no
+## wheel can load within FAR_HORIZON_S. Cheap enough to ask on every accepted tick.
+static func wheels_clear_of_ground(session: Node) -> bool:
+	if session == null or not session.has_method("current_landing_gear"):
+		return false
+	var sim: Variant = session.get("sim")
+	if sim == null or sim.state.size() < RB.SIZE or sim.aux.size() < 4:
+		return false
+	var gear: Dictionary = session.call("current_landing_gear", sim.aux)
+	if gear.get("contacts", []).is_empty():
+		return false
+	return _clear_of_ground(sim.state, gear, session.get("ground_surfaces"))
+
+
+static func _clear_of_ground(state: PackedFloat64Array, gear: Dictionary, ground_surfaces: PackedFloat64Array) -> bool:
+	return Terrain.is_valid_surface_table(ground_surfaces) and -state[RB.POS + 2] > float(gear.get("reach", INF)) \
+		+ Terrain.max_height_validated(ground_surfaces) + FAR_MARGIN_M \
+		+ FAR_HORIZON_S * M.norm(M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]))
 
 
 ## Rows for wheels that cannot touch this tick: the body pose with flat-ground normal, approach and compression

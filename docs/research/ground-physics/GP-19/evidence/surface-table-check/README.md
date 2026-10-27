@@ -38,3 +38,22 @@ Unprofiled, median of 12 alternating rounds of 20,000 calls on the default field
 | --- | ---: | ---: | ---: |
 | `is_valid_surface_table` | 2.006 | 0.286 | −86% |
 | Table check + one runway `sample_validated` with the lake | 8.41 | 6.34 | −25% |
+
+`session_probe.gd` (2,400 warmup and 14,400 sampled ticks, no presentation observers), three alternating pairs
+([cost-pairs.jsonl](cost-pairs.jsonl)). Runway pairs ran between frozen hard-linked snapshots that differ only in
+`ground_terrain.gd`; the trim candidate was the working tree, which also carried the H18 wake reuse, inactive out of
+ground effect:
+
+| Case | Pair 1 µs/tick | Pair 2 | Pair 3 | Median change |
+| --- | --- | --- | --- | ---: |
+| Electric Stik, airborne trim | 915 → 912 | 1,016 → 914 | 1,008 → 979 | −2.9% |
+| Electric Stik, runway idle | 2,334 → 2,423 | 2,473 → 2,313 | 2,533 → 2,249 | −6.5% (noisy) |
+| Glow Stik 61FX, runway idle | 4,453 → 4,456 | 5,227 → 4,914 | 5,345 → 4,584 | −6.0% (noisy) |
+
+Fingerprints are identical in every pair. The runway pairs ran while other agents loaded the shared host and spread
+over 15 points, so they show only that the change is not slower. From the component cost (1.7 µs saved per call,
+about 20 calls per tick on the runway), the expected runway gain is about 1.5%.
+
+## Regressions
+
+120 scripts ([summary](tests.txt)): 117 pass. The 3 failures fail identically at clean `HEAD` and at `f9e6dbe8d`.

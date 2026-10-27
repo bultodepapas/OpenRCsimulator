@@ -18,6 +18,8 @@ const SERVO_BASE_GAIN: float = 0.16
 const RETRACT_BASE_GAIN: float = 0.22
 const PAUSE_FADE_S: float = 0.08
 const STALE_TICK_LIMIT_S: float = 0.2
+## VQ-01c-R1: longest continuous multi-tick interval one accepted observation may cover.
+const MAX_ACCEPTED_INTERVAL_S: float = 0.25
 const EVENT_RELEASE_S: float = 0.02
 const SERVO_PROFILE_PITCH: Dictionary = {"standard": 1.0, "high_torque": 0.82}
 const DEFAULT_VARIATION: Dictionary = {pitch = 1.0, phase = 0.0}
@@ -107,7 +109,13 @@ func observe_accepted(snapshot: Dictionary) -> bool:
 	# even when pause and resume both occur between rendered frames.
 	if not _accepted_motion_state.is_empty() and tick == previous_tick and not snapshot.paused \
 		and float(rate_value) == _accepted_rate_hz: return true
-	if not _accepted_motion_state.is_empty() and ((tick != previous_tick and tick != previous_tick + 1) or float(rate_value) != _accepted_rate_hz):
+	# VQ-01c-R1: `since_tick` declares that the caller saw every tick since that observation; the
+	# classifier then measures motion across the whole interval. Without it, only the next tick continues.
+	var continued: bool = tick == previous_tick + 1
+	if snapshot.has("since_tick"):
+		continued = _integer_tick(snapshot.since_tick) and int(snapshot.since_tick) == previous_tick and tick > previous_tick \
+			and (tick == previous_tick + 1 or float(tick - previous_tick) <= MAX_ACCEPTED_INTERVAL_S * float(rate_value))
+	if not _accepted_motion_state.is_empty() and ((tick != previous_tick and not continued) or float(rate_value) != _accepted_rate_hz):
 		_clear_accepted_observation()
 		_accepted_discontinuities += 1
 	if snapshot.paused: _discard_accepted_events()

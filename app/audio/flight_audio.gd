@@ -16,6 +16,7 @@ const GroundAudio = preload("res://audio/ground_audio.gd")
 const GroundAudioModel = preload("res://audio/ground_audio_model.gd")
 const MechanicalAudio = preload("res://audio/mechanical_audio.gd")
 const MechanicalProfile = preload("res://audio/mechanical_profile.gd")
+const Cadence = preload("res://render/presentation_cadence.gd")
 const TIMBER_ID := "turbo-lumber-evolution"
 var flight: Node3D
 var soundscape: Soundscape
@@ -30,6 +31,10 @@ var _mechanical_session: Node
 var _mechanical_sim: Node
 var _accepted_mechanical_mode := false
 var _accepted_ground_mode := false
+## VQ-01c-R1: accepted endpoints are observed once per rendered frame (see presentation_cadence.gd).
+## Ground contact stays per tick while a touchdown cue is possible near the ground.
+var _mechanical_cadence := Cadence.new()
+var _ground_cadence := Cadence.new()
 var _windsock: WeakRef
 var last_update_usec: int = 0
 var last_mechanical_update_usec: int = 0
@@ -86,6 +91,8 @@ func _connect_mechanical_observer() -> void:
 		or not is_instance_valid(flight.session) or not is_instance_valid(flight.session.sim): return
 	_mechanical_session = flight.session
 	_mechanical_sim = _mechanical_session.sim
+	_mechanical_cadence.reset()
+	_ground_cadence.reset()
 	mechanical_audio.set_accepted_tick_observation(true)
 	_accepted_mechanical_mode = true
 	_accepted_ground_mode = is_instance_valid(ground_audio)
@@ -139,7 +146,24 @@ func _exit_tree() -> void:
 func _on_accepted_mechanical_tick(_tick: int, _time: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	if is_instance_valid(_mechanical_sim) and _tick == _mechanical_sim.tick:
+		if _mechanical_cadence.on_tick(_tick):
+			_observe_mechanical_endpoint()
+		# A wheel airborne at the last observation may load on this tick: keep its touchdown cue exact.
+		# Every deferral is shorter than TOUCHDOWN_MIN_AIRBORNE_S, so a grounded wheel cannot cue unseen.
+		var near_touchdown: bool = _ground_cadence.every_frames > 0 and _accepted_ground_mode \
+			and is_instance_valid(ground_audio) and ground_audio.touchdown_possible() \
+			and not GroundAudioModel.wheels_clear_of_ground(_mechanical_session)
+		if _ground_cadence.on_tick(_tick, near_touchdown):
+			_observe_ground_endpoint()
+
+
+## VQ-01c-R1: once per rendered frame, observe the ticks that waited (the current accepted endpoint).
+func _observe_due_endpoints() -> void:
+	if not is_instance_valid(_mechanical_sim):
+		return
+	if _mechanical_cadence.take(_mechanical_sim.tick):
 		_observe_mechanical_endpoint()
+	if _ground_cadence.take(_mechanical_sim.tick):
 		_observe_ground_endpoint()
 
 
@@ -149,22 +173,28 @@ func _on_mechanical_pause_changed(_paused: bool) -> void:
 
 
 func _observe_mechanical_endpoint() -> void:
-	if not _accepted_mechanical_mode or not is_instance_valid(mechanical_audio) \
+	if not _accepted_mechanical_mode or not is_instance_valid(mechanical_audio) or not is_instance_valid(_mechanical_sim) \
 		or not is_instance_valid(flight) or flight.session != _mechanical_session: return
+	# Any observation settles waiting ticks: they were seen, so this endpoint continues them.
+	_mechanical_cadence.settle(_mechanical_sim.tick)
 	var endpoint := accepted_mechanical_snapshot()
-	if not endpoint.is_empty(): mechanical_audio.observe_accepted(endpoint)
+	if not endpoint.is_empty():
+		endpoint.since_tick = _mechanical_cadence.since_tick if endpoint.tick == _mechanical_cadence.last_tick else -1
+		mechanical_audio.observe_accepted(endpoint)
 
 
 ## The legacy contact law is re-evaluated read-only at accepted endpoints until
 ## the advanced contact owner supplies its accepted receipt. No players run here.
 func _observe_ground_endpoint() -> void:
-	if not _accepted_ground_mode or not is_instance_valid(ground_audio) \
+	if not _accepted_ground_mode or not is_instance_valid(ground_audio) or not is_instance_valid(_mechanical_sim) \
 		or not is_instance_valid(flight) or flight.session != _mechanical_session: return
+	_ground_cadence.settle(_mechanical_sim.tick)
 	var active: bool = _mechanical_session.physics_enabled and bool(_mechanical_session.aircraft.get("ok", false))
 	var paused: bool = _mechanical_sim.paused or not active
 	var contacts: Array = [] if paused else contact_snapshot()
 	ground_audio.observe_accepted({tick = _mechanical_sim.tick, tick_rate = 1.0 / _mechanical_sim.dt(),
-		paused = paused, contacts = contacts})
+		paused = paused, contacts = contacts,
+		since_tick = _ground_cadence.since_tick if _mechanical_sim.tick == _ground_cadence.last_tick else -1})
 
 
 ## Actual accepted actuator values only. This path has no render transforms,
@@ -382,7 +412,8 @@ func mechanical_snapshot(sound: Dictionary, delta: float) -> Dictionary:
 	gear["position"] = root_position
 	gear["target"] = 1.0 if bool(gear.get("target_down", false)) else 0.0
 	_mechanical_snapshot.gear = gear
-	_mechanical_snapshot.tick = flight.session.sim.tick
+	_mechanical_snapshot.tick = _mechanical_cadence.last_tick if _accepted_mechanical_mode and _mechanical_cadence.pending \
+		else flight.session.sim.tick
 	_mechanical_snapshot.paused = bool(sound.get("paused", false)) or not flight.session.physics_enabled
 	_mechanical_snapshot.listener = sound.listener
 	# Quiet mechanisms already sit below the engine. A modest, smoothed residual
@@ -404,6 +435,7 @@ func _process(delta: float) -> void:
 	var started: int = Time.get_ticks_usec()
 	if flight == null or soundscape == null:
 		return
+	_observe_due_endpoints()
 	var tick: int = flight.session.sim.tick
 	if tick < _last_tick:
 		soundscape.reset_observer()
@@ -419,7 +451,9 @@ func _process(delta: float) -> void:
 	if not paused and not _accepted_ground_mode:
 		ground_contacts = contact_snapshot()
 	var engine_power: float = float(sound_snapshot.get("throttle", 0.0)) if bool(sound_snapshot.get("running", false)) else 0.0
-	ground_audio.update_contacts(tick, paused, ground_contacts,
+	# With a cadence above one frame, a frame between observations presents the last accepted contacts.
+	var ground_tick: int = _ground_cadence.last_tick if _accepted_ground_mode and _ground_cadence.pending else tick
+	ground_audio.update_contacts(ground_tick, paused, ground_contacts,
 		engine_power, delta, sound_snapshot.get("listener", Vector3.ZERO), float(Engine.physics_ticks_per_second))
 	if mechanical_audio != null:
 		var mechanical_started: int = Time.get_ticks_usec()

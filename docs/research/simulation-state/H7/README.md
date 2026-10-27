@@ -2,6 +2,8 @@
 
 2026-10-07 · **Status: complete; sensitivity, branch mutations and full Phase H regression pass.** Main-line ROADMAP H7.
 
+**Amendment 2026-10-27:** `sqrt` is exempt from the routing rule; physics and simulation call the built-in directly because IEEE 754 rounds it correctly on every platform. The change is bit-identical by construction (`sqrt_` returned `sqrt(a)`); [DECISIONS](../../../DECISIONS.md) holds the row.
+
 ## Method
 
 `app/tests/check_math_sensitivity.py` copies the app into temporary directories and instruments only those copies. It advances `sin_` and `atan2_` to the exact next binary64 value, then replays all four air goldens. Per-tick branch tapes cover selected aero blend/local-flow, gear contact, and propulsion regime decisions. The same report compares the normal wrapper build with a copy whose call sites use direct built-ins.

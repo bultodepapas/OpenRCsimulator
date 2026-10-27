@@ -152,7 +152,7 @@ def instrument_local_flow_selector(source: str) -> str:
     )
     rate_update = "\t\tblend = maxf(blend, _smoothstep((M.atan2_(rate_speed, float(air.V))-limit)/a1_span))\n"
     for label, following, taken_id in (
-        ("wing rate", "\t\tvar angle := wrapf(M.atan2_(flow_z, flow_x) + aileron_effect*da, -PI, PI)\n", 14),
+        ("wing rate", "\t\tvar angle := wrapf(M.atan2_(flow_z, flow_x) + (aileron_effect*da if station_x.is_empty()\n", 14),
         ("tail rate", "\t\tvar control: float = -float(d.rudder) if vertical else float(d.elevator)\n", 16),
     ):
         instrumented = (f"\t\tif blend == 1.0:\n\t\t\th7_branch_tape.append({taken_id})\n"

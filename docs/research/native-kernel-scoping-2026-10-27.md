@@ -91,3 +91,9 @@ determinism tier (Linux-exact only, or Windows too, on which toolchain); D4 cros
 checkpoint/replay policy; D5 macOS native or reference only, and who builds and signs; D6
 maintenance rule for tracks changing ported laws; D7 first route (Stik or P-51 worst case);
 D8 whether the slow reference path is acceptable for players without the library.
+
+Decided 2026-10-27 (owner delegated: "do it, test, polish, optimize"): D1 port now; D2 no
+amendment, option (b); D3 Linux bit-exact, Windows tolerance-tier through `UtilityFunctions`
+until proven; D4 backend identity pinned, cross-backend replays are candidates; D5 macOS
+reference-only; D6 the native side refuses unknown law identities; D7 electric Stik first;
+D8 yes. [DECISIONS](../DECISIONS.md) holds the row.

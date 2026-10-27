@@ -19,6 +19,8 @@ const MAX_ACCEPTED_EVENTS := 64
 const MAX_ACCEPTED_RATE_HZ := 10000.0
 const ACCEPTED_OBSERVATION_LAW := "accepted-tick-ground-audio-v1"
 const MAX_EVENT_AGE_S := 0.25 # Presentation latency bound; not a landing/event window.
+## VQ-01c-R1: longest continuous multi-tick interval one accepted observation may cover.
+const MAX_ACCEPTED_INTERVAL_S := 0.25
 var _accepted_tick_observation := false
 var _accepted_tick := -1
 var _accepted_rate := 0.0
@@ -66,7 +68,11 @@ func observe_accepted(snapshot: Dictionary) -> bool:
 	var tick: int = snapshot.tick
 	var rate: float = snapshot.tick_rate
 	if tick == _accepted_tick and rate == _accepted_rate and not snapshot.paused: return true
-	var discontinuity := tick != _accepted_tick + 1 or rate != _accepted_rate
+	# VQ-01c-R1: `since_tick` declares that the caller saw every tick since that observation, so the
+	# endpoint continues history across the whole interval. Without it, only the next tick does.
+	var since: int = int(snapshot.since_tick) if snapshot.has("since_tick") else tick - 1
+	var discontinuity := since < 0 or since != _accepted_tick or tick <= since \
+		or (tick - since > 1 and float(tick - since) > MAX_ACCEPTED_INTERVAL_S * rate) or rate != _accepted_rate
 	var seed_only: bool = _accepted_tick < 0 or discontinuity or snapshot.paused or _accepted_paused
 	if discontinuity or snapshot.paused: _clear_accepted_observation()
 	var next_states := {}
@@ -80,7 +86,7 @@ func observe_accepted(snapshot: Dictionary) -> bool:
 			surface = supplied.surface, roll_enabled = supplied.get("roll_enabled", true)}
 		detached_contacts.append(contact)
 		var observed := Motion.advance(contact, _accepted_states.get(contact.id, {}),
-			0.0 if seed_only else 1.0 / rate, seed_only, not seed_only)
+			0.0 if seed_only else float(tick - since) / rate, seed_only, not seed_only)
 		next_states[contact.id] = observed.state
 		if observed.impact_approach >= 0.0:
 			_accepted_observed += 1
@@ -98,7 +104,25 @@ func observe_accepted(snapshot: Dictionary) -> bool:
 	return true
 
 
+## VQ-01c-R1: a cue can fire only when a wheel that was airborne at the last observation loads, so a
+## caller may defer observations while every wheel is grounded (or none can load, see GroundAudioModel).
+func touchdown_possible() -> bool:
+	if _accepted_states.is_empty():
+		return true
+	for state: Dictionary in _accepted_states.values():
+		if not bool(state.get("grounded", false)):
+			return true
+	return false
+
+
+## Tick of the last accepted observation, or -1.
+func accepted_tick() -> int:
+	return _accepted_tick
+
+
 static func _valid_accepted_snapshot(snapshot: Dictionary) -> bool:
+	if snapshot.has("since_tick") and (typeof(snapshot.since_tick) != TYPE_INT or snapshot.since_tick < -1):
+		return false
 	if typeof(snapshot.get("tick")) != TYPE_INT or snapshot.tick < 0 or snapshot.tick > 9007199254740991 \
 		or typeof(snapshot.get("tick_rate")) not in [TYPE_INT, TYPE_FLOAT] \
 		or not is_finite(float(snapshot.tick_rate)) or snapshot.tick_rate < 1.0 or snapshot.tick_rate > MAX_ACCEPTED_RATE_HZ \

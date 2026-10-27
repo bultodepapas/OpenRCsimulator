@@ -5,6 +5,7 @@ extends Node
 
 const Retraction := preload("res://aircraft/retractable_model.gd")
 const NightKit := preload("res://render/world/aircraft_lights.gd")
+const Cadence := preload("res://render/presentation_cadence.gd")
 
 var _session: Node
 var _airplane: Dictionary
@@ -12,6 +13,8 @@ var _rest: Dictionary = {}
 var _angles: Dictionary = {}
 var _previous_speeds := PackedFloat64Array()
 var _last_tick := -1
+## VQ-01c-R1: wheel spin is visible motion, so it advances every rendered frame at most (never less often).
+var _cadence := Cadence.new(mini(Cadence.configured_every_frames(), 1))
 
 
 static func attach(airplane: Dictionary, session: Node) -> Node:
@@ -34,6 +37,13 @@ static func _key(name: String) -> String:
 
 func _stepped(tick: int, _time: float, _state: PackedFloat64Array, _loads: PackedFloat64Array,
 		_inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	if _cadence.on_tick(tick):
+		_advance_wheels(tick)
+
+
+## Spin phase from the accepted wheel speeds since the last observation: trapezoidal over the
+## elapsed ticks (exact per tick; across a frame it uses the two endpoint speeds).
+func _advance_wheels(tick: int) -> void:
 	if not is_instance_valid(_session) or _session.sim == null or not _session.aircraft.get("ok", false) or _session.wheel_count() == 0:
 		return
 	var start: int = _session.wheel_index()
@@ -45,17 +55,22 @@ func _stepped(tick: int, _time: float, _state: PackedFloat64Array, _loads: Packe
 		_last_tick = tick
 		return
 	var contacts: Array = _session.aircraft.model.landing_gear.contacts
+	var elapsed_s: float = float(tick - _last_tick) * _session.sim.dt()
 	for i in speeds.size():
 		var key := _key(contacts[i].name)
 		if _angles.has(key):
 			# All three builders use +X axles and nose -Z; forward rolling is -X.
-			_angles[key] = fmod(float(_angles[key]) - 0.5 * (_previous_speeds[i] + speeds[i]) * _session.sim.dt() / float(contacts[i].wheel_radius), TAU)
+			_angles[key] = fmod(float(_angles[key]) - 0.5 * (_previous_speeds[i] + speeds[i]) * elapsed_s / float(contacts[i].wheel_radius), TAU)
 	_previous_speeds = speeds.duplicate()
 	_last_tick = tick
 
 
 func _process(_dt: float) -> void:
-	if not is_instance_valid(_session) or _session.sim == null or not _session.aircraft.get("ok", false) or _session.wheel_count() == 0:
+	if not is_instance_valid(_session) or _session.sim == null:
+		return
+	if _cadence.take(_session.sim.tick):
+		_advance_wheels(_session.sim.tick)
+	if not _session.aircraft.get("ok", false) or _session.wheel_count() == 0:
 		return
 	var contacts: Array = _session.current_landing_gear().contacts
 	var rig: Dictionary = _airplane.get("gear_retraction", {})
