@@ -563,3 +563,57 @@ $probe = (Resolve-Path research/performance/glow_feed_reuse_probe.gd).Path
 Wrap execution with `tools/godot/run_checked.py` to retain errors and exit status.
 `--correctness-only` skips timings. Timing measures these method calls, not FPS;
 run it alone for timing comparisons. [Dated evidence and limits](../../docs/research/visual-quality-implementation/VQ-01c/game-engineering-2026-10-24/helpers.md).
+
+## Whole-app tick CPU (VQ-01c)
+
+`app_cpu_per_sim.py` launches one headless debug-bridge session, flies a scripted
+Stik case (`airborne` climb or `runway` taxi) and reports main-thread and whole-process
+CPU per simulated second. Unlike the session probes, this includes every accepted-tick
+observer (audio, statistics, crash presentation, windsock, people) that `Simulation.step_usec`
+excludes. It caps frames at 30 and halves `Engine.time_scale` through the bridge;
+uncapped headless frames absorb saved time, and a saturated main thread hides a gain.
+
+```sh
+python3 research/performance/app_cpu_per_sim.py <label> airborne 10 40
+```
+
+Run one session at a time on an idle host and alternate baseline/candidate runs.
+Swapping scripts in a shared working tree is unsafe while others commit: restore the
+candidate on disk as soon as the flight has loaded its scripts. The numbers are dev-VM
+CPU attribution, not FPS, GPU or target-hardware qualification.
+[Tick attribution and paired results](../../docs/research/visual-quality-implementation/VQ-01c/tick-observers-2026-10-27/README.md).
+
+## Lake polygon edge walk (LU-25-R3)
+
+`lake_polygon_pair.gd` compares an explicit prior `lake_surface.gd` with the working
+tree on the default lake: 7,001 points (grid, vertices, edge midpoints, edge offsets
+from 1e-9 to 0.03 m, seeded random) through the polygon helpers and the full terrain,
+covered and shore-distance queries, bytewise. It then alternates 12 timing rounds of
+`sample_terrain_validated` over the points inside the expanded bank box.
+
+```sh
+mkdir -p tmp/lu25r3 && git show f9e6dbe8d:app/physics/lake_surface.gd > tmp/lu25r3/lake_surface_ref.gd
+python3 tools/godot/run_checked.py --timeout 600 -- "$(app/get-godot.sh)" --headless --path app \
+  --script "$PWD/research/performance/lake_polygon_pair.gd" -- --reference="$PWD/tmp/lu25r3/lake_surface_ref.gd"
+```
+
+Any `PARITY mismatches` other than 0 rejects the candidate. [LU-25-R3 evidence](../../docs/research/landscape-upgrade/LU-25-R3/README.md).
+
+## Hull-scrape observation key (GP-19e)
+
+`hull_scrape_pair.gd` runs a prior and the current `flight_session.gd` side by side on
+the hull-scrape test's sliding wingtip contact, for the electric and glow Stik, calling
+`hull_scrape_observation()` one to three times per tick with a pause toggle. It
+compares every packet and the final state bytewise, mutates returned rows to check
+detachment, checks the memoized `HullContact.law()` against the prior formatter and
+times the first call per tick.
+
+```sh
+mkdir -p tmp/gp19e && git show f9e6dbe8d:app/sim/flight_session.gd > tmp/gp19e/flight_session_ref.gd
+git show f9e6dbe8d:app/physics/hull_contact.gd > tmp/gp19e/hull_contact_ref.gd
+python3 tools/godot/run_checked.py --timeout 900 -- "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/performance/hull_scrape_pair.gd" -- \
+  --reference="$PWD/tmp/gp19e/flight_session_ref.gd" --hull-reference="$PWD/tmp/gp19e/hull_contact_ref.gd"
+```
+
+[GP-19e evidence](../../docs/research/ground-physics/GP-19/evidence/scrape-observation-cost/README.md).
