@@ -213,18 +213,19 @@ func _run() -> void:
 		"count=%s tooltip=%s expected=%s status=%s summary=%s" % [home.aircraft_count_label.text,
 			home.aircraft_count_label.tooltip_text, _aircraft_counter_tooltip(AVANTI), status.atr(status.text),
 			home.aircraft_summary_label.atr(home.aircraft_summary_label.text)])
-	# The Lumber's fictional name is the one translated aircraft name (TT-06); the other names pass through tr() unchanged.
+	# Proper aircraft names stay unchanged through tr(); summaries and status text still translate.
 	app.set_aircraft(TIMBER)
 	await ui.settle()
-	_check("Spanish: the Lumber card shows its Spanish name", home.aircraft_name_label.text == "Turbo Tronco"
-		and home.aircraft_name_label.tooltip_text == "Turbo Tronco Evolución", home.aircraft_name_label.text)
+	_check("Spanish: the Lumber card keeps its name", home.aircraft_name_label.text == "Turbo Lumber"
+		and home.aircraft_name_label.tooltip_text == "Turbo Lumber Evolution", home.aircraft_name_label.text)
 	app.set_aircraft(AVANTI)
 	await ui.settle()
 	_check("Spanish: Vantage Jet keeps its name", home.aircraft_name_label.text == "Vantage Jet"
-		and Catalog.entry(AVANTI).name == "Vantage Jet", home.aircraft_name_label.text)
+		and Catalog.entry(AVANTI).name == "Vantage Jet" and Catalog.entry(AVANTI).short_name == "Vantage Jet",
+		home.aircraft_name_label.text)
 	app.set_language("en")
 	await ui.settle()
-	_check("English: the Lumber card shows its English name", Catalog.entry(TIMBER).name == "Turbo Lumber Evolution" and tr(Catalog.entry(TIMBER).name) == "Turbo Lumber Evolution")
+	_check("English: the Lumber card shows its full name", Catalog.entry(TIMBER).name == "Turbo Lumber Evolution" and tr(Catalog.entry(TIMBER).name) == "Turbo Lumber Evolution")
 	await _close(app)
 
 	# A new start remembers the Vantage Jet; then fly the Lumber through Home's real Fly action.

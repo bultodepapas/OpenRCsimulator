@@ -63,13 +63,13 @@ python tools/godot/run_checked.py --label smoke-lifecycle --timeout 180 -- .tool
 
 This reports actual measured duration and allocator/video counters, with representative reset/residual/pause/expiry images. Fifty accelerated cycles do not substitute for a 30-minute wall-time soak or OS process-memory measurement.
 
-For Vantage tailpipe views:
+For Vantage Jet tailpipe views:
 
 ```powershell
 & '.tools/Godot_v4.8-beta1_win64_console.exe' --path app --rendering-driver opengl3 --audio-driver Dummy --script "$PWD/tools/smoke/capture_avanti.gd" -- --out="$PWD/tmp/avanti-smoke-review" --soundscape=off --scenery=off --birds=off
 ```
 
-The harness captures the outlet, a trimmed flight trail and residuals after OFF. Add `--aircraft=<catalog-id>` for another stock installation; default is Vantage. The final frame is nine seconds after show OFF, so admitted show puffs have expired; ordinary exhaust may continue from its running engine. Record which profile/source revision it uses; historical Vantage captures do not qualify the new v2 allocation, motion or fractional timing. Explicit empty/all-disabled Workshop profiles must remain empty in Test fly. Source-bound show smoke additionally needs accepted source operation; independent show mounts have their own request policy.
+The harness captures the outlet, a trimmed flight trail and residuals after OFF. Add `--aircraft=<catalog-id>` for another stock installation; default is Vantage Jet. The final frame is nine seconds after show OFF, so admitted show puffs have expired; ordinary exhaust may continue from its running engine. Record which profile/source revision it uses; historical Vantage Jet captures do not qualify the new v2 allocation, motion or fractional timing. Explicit empty/all-disabled Workshop profiles must remain empty in Test fly. Source-bound show smoke additionally needs accepted source operation; independent show mounts have their own request policy.
 
 ## Retained legacy probes
 

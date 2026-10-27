@@ -17,8 +17,7 @@ static var _finite_fuel_cache := {}
 static var _ground_start_cache := {}
 
 ## In menu order. `short_name` (UI-34b) is the one-line label for the Home card and catalog list; `name` stays complete in
-## details and tooltips. `name` is a proper name (never translated; the Lumber's fictional name is the one exception: es.po carries
-## its Spanish form and ui/home.gd passes names through tr()); `summary` and `status_note` are English source strings
+## details and tooltips. `name` is a proper name and is not translated; `summary` and `status_note` are English source strings
 ## (tr() at the call site). `data` is "" for a preview. render/airplane.gd builds each ID with the model team's builder
 ## and knows its datum; tests/test_aircraft_catalog.gd checks that every ID builds and every flyable one trims.
 const ENTRIES := [
@@ -107,7 +106,7 @@ const ENTRIES := [
 	},
 	{
 		# TT-06: the author's r1 glTF model (assets/aircraft/turbo-lumber-evolution), inspired by the E-flite Turbo Timber
-		# Evolution; fictional name (Spanish "Turbo Tronco Evolución" in es.po). TT-07/08 estimated electric configuration.
+		# Evolution. TT-07/08 estimated electric configuration.
 		id = "turbo-lumber-evolution",
 		visual_family = "turbo-lumber-evolution",
 		name = "Turbo Lumber Evolution",

@@ -12,9 +12,9 @@ Checked 2026-10-20. This guide owns current smoke behavior and onboarding. [Airc
 | --- | --- |
 | Base Stik and finite-glow Stik variants | Faint ordinary exhaust and a requested show pump share the hollow muffler outlet. Observations identify the actual installed engine. |
 | P-51D | Ordinary exhaust and a requested pump share the estimated RC canister outlet at the radiator exit, rather than decorative full-size stacks. Gasoline appearance is separate from the historical `glow_prop` solver kind. [Installation evidence](research/p51-realism/P51-11a/README.md#engine-smoke-p51-v12). |
-| Vantage / Vantage Jet | Requested white tailpipe show smoke, gated by accepted turbine operation. This is not ordinary visible turbine exhaust. |
+| Vantage Jet | Requested white tailpipe show smoke, gated by accepted turbine operation. This is not ordinary visible turbine exhaust. |
 | Extra 300S | Authored show mounts; no verified physical exhaust outlet. Source-exhaust onboarding remains open. |
-| Electric Lumber and electric conversions | No ordinary combustion exhaust. Authored show devices remain separate capabilities. |
+| Electric Turbo Lumber Evolution and electric conversions | No ordinary combustion exhaust. Authored show devices remain separate capabilities. |
 | X-Cell research activity / HX-700 surrogate | Explicit empty capability. Engine/geometry pairing and outlets remain unverified; rotor RPM cannot authorize smoke or a borrowed fixed-wing mount. |
 
 Stock ordinary exhaust follows accepted source operation. Stock show smoke starts OFF. **H**, semantic controller actions or assigned radio AUX request show smoke; source-bound devices additionally require accepted source operation. Cut, depletion, crash and fault suppress the corresponding births. A Workshop trial owns its full appearance selection: explicit empty smoke and all-disabled entries produce no smoke and do not fall through to stock or legacy effects. Invalid profiles cannot silently substitute another outlet.

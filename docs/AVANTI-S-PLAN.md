@@ -4,7 +4,7 @@ Checked 2026-10-19 · Aircraft/model owner · Prefix **AV-00…31** and repair s
 
 ## 1. Identity and scope
 
-**Vantage Jet**, catalog ID `sebart-avanti-s-a200-p100rx`, references the original SebArt A200 (2.00 m span, 2.22 m length) with the **2017 non-BL JetCat P100-RX**. BL, EDF, XS and other Vantage variants do not identify this installation. Borrowed cross-airframe estimates must retain their stated provenance.
+**Vantage Jet**, catalog ID `sebart-avanti-s-a200-p100rx`, references the original SebArt A200 (2.00 m span, 2.22 m length) with the **2017 non-BL JetCat P100-RX**. BL, EDF, XS and other Avanti variants do not identify this installation. Borrowed cross-airframe estimates must retain their stated provenance.
 
 The aircraft is **EXPERIMENTAL**, with airborne and downlocked runway starts. The current [generated aircraft](../app/data/aircraft/sebart_avanti_s_a200.json) selects continuous turbine RPM, finite liquid fuel, retractable tricycle gear and simulated flaps. Its implementation does not establish a measured aircraft envelope.
 
@@ -29,7 +29,7 @@ Full ECU startup, EGT/core thermal history, pump/supply-battery dynamics, coolin
 | Shared fuel law, datum, fill/reset and remaining FUEL work | [Fuel standard](FUEL-SYSTEM.md), [remaining FUEL gates](plans/fuel-mass-balance.md) |
 | Physical/model authoring and extensions | [Aircraft contract](AIRCRAFT_CONTRACT.md), [Blender handoff](BLENDER-AIRCRAFT-HANDOFF.md) |
 | Player controls and replay comparisons | [First launch](FIRST-LAUNCH.md), [flight logging](FLIGHT-LOGGING.md) |
-| Dated source/verification records | [Vantage research index](research/README.md#ventage-jet), [AV-14…17 investigation](research/avanti-realism/README.md) |
+| Dated source/verification records | [Vantage Jet research index](research/README.md#ventage-jet), [AV-14…17 investigation](research/avanti-realism/README.md) |
 
 AV owns the aircraft sources, generated data pipeline, model tools/tests and research. Physics, AS, input/UI, fuel, audio, HUD, crash and export retain their [registered shared boundaries](README.md#tracks-plans-and-step-ids). Preserve unrelated work and exact source identities.
 

@@ -1,6 +1,5 @@
 # Spanish interface texts for OpenRC Simulator (UI-01d). English is the source language: msgid is the English text.
-# Product, aircraft and field proper names are not translated (the one exception is the Lumber's fictional name,
-# "Turbo Lumber Evolution", which ui/home.gd passes through tr()). Keep placeholders (%s) and whole sentences.
+# Product, aircraft and field proper names keep their English names. Keep placeholders (%s) and whole sentences.
 # Add a language: copy this file to <code>.po, translate msgstr, list it in project.godot
 # (internationalization/locale/translations) and in i18n/languages.gd NAMES. See i18n/README.md.
 msgid ""
@@ -649,8 +648,8 @@ msgstr "Experimental: física estimada a escala 1/4,5 (kit de clase CARF, radial
 msgid "Sport jet · 2.00 m · JetCat P100-RX turbine"
 msgstr "Reactor deportivo · 2,00 m · turbina JetCat P100-RX"
 
-msgid "LUMBER"
-msgstr "LUMBER"
+msgid "Turbo Lumber Evolution"
+msgstr "Turbo Lumber Evolution"
 
 msgid "High-wing STOL · 1.55 m · 4S electric"
 msgstr "STOL de ala alta · 1,55 m · eléctrico 4S"
@@ -658,7 +657,7 @@ msgstr "STOL de ala alta · 1,55 m · eléctrico 4S"
 msgid "Experimental: estimated electric motor and borrowed propeller data. Fixed wheels, flaps up, assists off."
 msgstr "Experimental: motor eléctrico estimado y datos de otra hélice. Tren fijo, flaps arriba y asistencias desactivadas."
 
-# X8-09: the X8's working name is descriptive (owner decision D1 pending), so it is translated like the Lumber's.
+# X8-09: the X8's working name is descriptive (owner decision D1 pending), so it follows translated aircraft descriptions.
 msgid "X8 Flying Wing"
 msgstr "Ala volante X8"
 
@@ -5509,8 +5508,8 @@ msgstr "Elige un modelo para el próximo vuelo."
 msgid "Preparing flight…"
 msgstr "Preparando el vuelo…"
 
-msgid "LUMBER"
-msgstr "LUMBER"
+msgid "Turbo Lumber"
+msgstr "Turbo Lumber"
 
 # UI-35b: controller status errors carry a word, not only a colour (UI-30 AL-3).
 msgid "Problem: %s"

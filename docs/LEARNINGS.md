@@ -91,7 +91,7 @@ A live-app script profile of the Stik in flight put about half of each accepted 
 
 ## 2026-10-26 · X8-12 — an accepted trim can still burn its iteration cap
 
-The X8 and Lumber electric trims returned `ok` while every launch spent 50 Newton steps: the source equilibrium leaves a residual floor near 1e-10, just above the 1e-10 goal, so Newton converged in three steps and then alternated between two states until the cap. A tolerance below an evaluation's noise floor costs time silently, and `ok` hides it.
+The X8 and Turbo Lumber Evolution electric trims returned `ok` while every launch spent 50 Newton steps: the source equilibrium leaves a residual floor near 1e-10, just above the 1e-10 goal, so Newton converged in three steps and then alternated between two states until the cap. A tolerance below an evaluation's noise floor costs time silently, and `ok` hides it.
 
 - When adding an aircraft or changing a residual, record trim `iterations` across the speed range; a count at the cap on an accepted trim is a stalled solve.
 - Stop when an accepted residual no longer improves, rather than loosening the goal for everyone; prove parity with digests of the full results across the fleet.
@@ -169,7 +169,7 @@ R59's gear and controls are drivers fed by custom properties. Assigning an ID pr
 
 ## 2026-10-22 · F4U-02 — a script pinned by model manifests reaches parked scenery, and an aborted check can still print PASS
 
-Model manifests pin `imported_model.gd`, `imported_model_contract.gd` and `retractable_model.gd`; Workshop descriptors and the customization registry pin the manifests; the parked-aircraft bakes pin both, and only `bake_parked_aircraft.gd -- --check` notices. After touching those scripts, regenerate in order (`build_models.py`, `build_descriptors.py`, `build_customization.py`, the OpenGL bake) and rerun each `--check`. Separately, a GDScript runtime error inside the conformance preflight aborted the Vantage's pose checks while its line still printed PASS; only the log scan for `SCRIPT ERROR` caught it. Treat engine errors in a check's log as failures of that check, whatever its summary says. [Evidence](research/f4u-corsair/F4U-02/README.md)
+Model manifests pin `imported_model.gd`, `imported_model_contract.gd` and `retractable_model.gd`; Workshop descriptors and the customization registry pin the manifests; the parked-aircraft bakes pin both, and only `bake_parked_aircraft.gd -- --check` notices. After touching those scripts, regenerate in order (`build_models.py`, `build_descriptors.py`, `build_customization.py`, the OpenGL bake) and rerun each `--check`. Separately, a GDScript runtime error inside the conformance preflight aborted the Vantage Jet's pose checks while its line still printed PASS; only the log scan for `SCRIPT ERROR` caught it. Treat engine errors in a check's log as failures of that check, whatever its summary says. [Evidence](research/f4u-corsair/F4U-02/README.md)
 
 ## 2026-10-21 · EX-14h — load the regenerated aircraft after a generator embeds a fitted table
 
@@ -351,7 +351,7 @@ Effective mass at the struck point fixes whole-mass overrating: a level wingtip 
 
 ## 2026-10-12 · TT-02/03/05 — imported meshes: measure arrays, never trust transformed boxes, wrap Euler-driven pivots
 
-An imported object can contain multiple open or overlapping shells. Ray-parity containment assumes a closed boundary; using an AABB-filtered triangle subset opens it further and produced false control-interference reports on Lumber r2. Test surface crossings with the millimetre scaling described in US-V09c, and qualify containment separately. Keep collision-probe semantics distinct from authoring extrema: a max-span cap marker and a navigation lens can differ by 155 mm fore/aft even when the wing skin is unchanged. [TT-19 diagnosis and contact convention](research/timber-integration/TT-19/README.md).
+An imported object can contain multiple open or overlapping shells. Ray-parity containment assumes a closed boundary; using an AABB-filtered triangle subset opens it further and produced false control-interference reports on Turbo Lumber Evolution r2. Test surface crossings with the millimetre scaling described in US-V09c, and qualify containment separately. Keep collision-probe semantics distinct from authoring extrema: a max-span cap marker and a navigation lens can differ by 155 mm fore/aft even when the wing skin is unchanged. [TT-19 diagnosis and contact convention](research/timber-integration/TT-19/README.md).
 
 Three surprises from the first glTF aircraft. A probe reported a vertex 7.9 mm ahead of the spinner because it transformed each mesh's axis-aligned bounding box; the tilted propeller's box corners stuck out and no vertex was there. Measure extents from transformed vertices, and read them with `surface_get_arrays()`: `Mesh.get_faces()` returned positions up to 28 µm off on this import with or without vertex compression. Godot's `rotation.x/z` setters replace a node's whole basis, so an imported pivot with a rest rotation cannot be driven by them; give it a mount that carries the rest basis and an identity child that takes the Euler angle, and prove the sense with a witness vertex. [TT-02](research/timber-integration/TT-02/README.md), [TT-03](research/timber-integration/TT-03/README.md), [TT-05](research/timber-integration/TT-05/README.md).
 
@@ -454,7 +454,7 @@ Splitting fences into visible bays increased the nearby proxy count; selecting t
 
 ## 2026-10-12 · TT-11 — seed ground equilibrium from the support plane
 
-A level Newton seed can converge to a two-main-wheel equilibrium for a taildragger even when the authored three-point gear supports the CG. A small residual does not establish the intended resting configuration. Seed height/roll/pitch from the actual contact plane, retain the established nosewheel branch, and require every selected contact to stick before accepting the start. [Lumber diagnosis, static support and refinement](research/timber-integration/TT-10/README.md).
+A level Newton seed can converge to a two-main-wheel equilibrium for a taildragger even when the authored three-point gear supports the CG. A small residual does not establish the intended resting configuration. Seed height/roll/pitch from the actual contact plane, retain the established nosewheel branch, and require every selected contact to stick before accepting the start. [Turbo Lumber Evolution diagnosis, static support and refinement](research/timber-integration/TT-10/README.md).
 
 ## 2026-10-13 · HELI-04 — check crossflow joins as well as axial joins
 

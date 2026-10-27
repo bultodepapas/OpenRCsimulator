@@ -119,7 +119,6 @@ Creative Commons licenses differ materially; a free download is not necessarily 
 
 The practical goal is an **MIT codebase with clearly documented asset terms**, preferably a fully reusable default asset set. A restrictive optional aircraft package may be possible if its license permits that packaging and delivery, but it must remain explicitly separate and must not be included in a source archive or download that lacks permission. Optional distribution does not cure infringement.
 
-For Lumber, its express internal-evaluation text takes precedence over any casual assumption that every tracked file is MIT. For HX-700, a checksum records identity, not ownership. For Vantage, receipt of the Blender master does not by itself establish redistribution rights in all 22 textures reported by its manifest. Review these before describing the whole repository or a build as freely reusable. Existing tracked files and historical release assets need their own audit; this guide does not remove or retroactively clear them.
 
 ## Permission request and release record
 
@@ -139,8 +138,8 @@ Before release, review the actual archive and repository contents, including emb
 
 ## Current priorities
 
-1. Resolve Lumber's asset grant and HX-700 provenance before their public redistribution. These are explicit current blockers, independent of brand naming.
-2. Finish the SebArt discussion and document the Vantage model/texture author's grant. Vantage Jet remains a name change, not clearance.
+1. Resolve Turbo Lumber Evolution's asset grant and HX-700 provenance before their public redistribution. These are explicit current blockers, independent of brand naming.
+2. Finish the SebArt discussion and document the Vantage Jet model/texture author's grant. Vantage Jet remains a name change, not clearance.
 3. Audit Extra's photo-adapted paint and plan-derived pilot, and the Ugly Stik's plan/finish basis. Use original artwork and distinct names if selecting the conservative route.
 4. Prioritize the P-51 as an independent historical replica, retaining proof for the exact AN 01-60-3 source and a name-use assessment. Apply the same process to other warbirds; do not assume all of them are rights-free.
 5. For a future Extra NG or airliner, decide early between a licensed exact replica, an independently justified factual depiction and a genuinely original aircraft. Avoid spending effort on cosmetic changes that do not address the actual right.

@@ -628,8 +628,8 @@ msgstr "实验机型：依据 1/4.5 比例估算的物理参数（CARF 级套件
 msgid "Sport jet · 2.00 m · JetCat P100-RX turbine"
 msgstr "运动喷气机 · 2.00 米 · JetCat P100-RX 涡轮"
 
-msgid "LUMBER"
-msgstr "LUMBER"
+msgid "Turbo Lumber Evolution"
+msgstr "Turbo Lumber Evolution"
 
 msgid "High-wing STOL · 1.55 m · 4S electric"
 msgstr "高翼短距起降机 · 1.55 米 · 4S 电动"
@@ -5715,8 +5715,8 @@ msgstr "翠绿天堂"
 msgid "Choose a model for the next flight."
 msgstr "为下一次飞行选择模型。"
 
-msgid "LUMBER"
-msgstr "LUMBER"
+msgid "Turbo Lumber"
+msgstr "Turbo Lumber Evolution"
 
 msgid "Problem: %s"
 msgstr "问题：%s"

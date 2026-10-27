@@ -183,7 +183,7 @@ The research Stik uses generic hardware and commercial price proxies. Its numeri
 
 ### 6.3 Covering and labor example rules
 
-For a repairable film-only hole, use `patch_area = (tear_length + 2*overlap)*(tear_width + 2*overlap)`, then layout/waste and color constraints. Consumption cost is `roll_price * used_area / usable_roll_area`; a $25 roll need not mean $25 consumed by a tiny scratch. Checkout cost rounds purchases to whole rolls when workshop stock is empty. Show material usage and cash purchase separately, carrying leftover stock only if the inventory mode exists. Add compatible adhesive and labor once. A foam Lumber repair uses a material-compatible foam/adhesive recipe, not hot film by default.
+For a repairable film-only hole, use `patch_area = (tear_length + 2*overlap)*(tear_width + 2*overlap)`, then layout/waste and color constraints. Consumption cost is `roll_price * used_area / usable_roll_area`; a $25 roll need not mean $25 consumed by a tiny scratch. Checkout cost rounds purchases to whole rolls when workshop stock is empty. Show material usage and cash purchase separately, carrying leftover stock only if the inventory mode exists. Add compatible adhesive and labor once. A foam Turbo Lumber Evolution repair uses a material-compatible foam/adhesive recipe, not hot film by default.
 
 ## 7. Fleet rollout and configuration accounting
 

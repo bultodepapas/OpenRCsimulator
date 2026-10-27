@@ -2,9 +2,9 @@
 
 2026-10-19 · Revision 10 · Step prefix: **EL** (ROADMAP M4b namespace).
 
-**Status:** Synthetic EL1b–e and EL2a routes and the BAT-10 `pack_ecm` Lumber variant are software verified. EL2a-P1/P2 reduce measured battery/event tick costs, but the 500 µs target and original-target remeasurement remain open. Lumber hardware identification, physical validation and pilot acceptance are open; the shipped Lumber pack and powertrain parameters are estimates, not measurements.
+**Status:** Synthetic EL1b–e and EL2a routes and the BAT-10 `pack_ecm` Turbo Lumber Evolution variant are software verified. EL2a-P1/P2 reduce measured battery/event tick costs, but the 500 µs target and original-target remeasurement remain open. Turbo Lumber Evolution hardware identification, physical validation and pilot acceptance are open; the shipped Turbo Lumber Evolution pack and powertrain parameters are estimates, not measurements.
 
-This guide owns the electric motor, ESC power stage, supply/stop integration and remaining EL work. Battery fields/laws, pack integration, telemetry and BAT status live in the [battery guide](plans/battery-realism.md); EL2b, EL3-battery, EL4-pack and EL6 continue there. Loader, trim, flight session and trace changes are shared main-line work. Aircraft/model data follows the model owner. Related plans: [coupled shaft](PROPULSION-CORE-PLAN.md), [Lumber integration](TIMBER-INTEGRATION-PLAN.md), [atmosphere](ATMOSPHERE-PLAN.md), [ROADMAP](../ROADMAP.md).
+This guide owns the electric motor, ESC power stage, supply/stop integration and remaining EL work. Battery fields/laws, pack integration, telemetry and BAT status live in the [battery guide](plans/battery-realism.md); EL2b, EL3-battery, EL4-pack and EL6 continue there. Loader, trim, flight session and trace changes are shared main-line work. Aircraft/model data follows the model owner. Related plans: [coupled shaft](PROPULSION-CORE-PLAN.md), [Turbo Lumber Evolution integration](TIMBER-INTEGRATION-PLAN.md), [atmosphere](ATMOSPHERE-PLAN.md), [ROADMAP](../ROADMAP.md).
 
 ## Current software contract
 
@@ -26,7 +26,7 @@ Electric propeller inflow is sampled at the hub (`v_air + omega × r`) for loads
 
 ## Physical reference and promotion
 
-The reference is the E-flite Turbo Timber Evolution BNF Basic B, EFL105250B: 800 Kv motor, 70 A ESC, stock three-blade 11×7.3 propeller and 4S 3200 mAh pack class. The catalog's finite-pack variant is software integrated, but the exact installed pack and hardware revision, motor R/I0, rotor inertia, loadout and matched stock-prop map remain unidentified. Manufacturer labels do not supply those parameters. SAFE and AS3X state must be recorded separately; disabling SAFE alone is not an unaided-flight reference. The sourced configuration and limits are in [Lumber reference research](research/propulsion/EL1a/timber-reference.md).
+The reference is the E-flite Turbo Timber Evolution BNF Basic B, EFL105250B: 800 Kv motor, 70 A ESC, stock three-blade 11×7.3 propeller and 4S 3200 mAh pack class. The catalog's finite-pack variant is software integrated, but the exact installed pack and hardware revision, motor R/I0, rotor inertia, loadout and matched stock-prop map remain unidentified. Manufacturer labels do not supply those parameters. SAFE and AS3X state must be recorded separately; disabling SAFE alone is not an unaided-flight reference. The sourced configuration and limits are in [Turbo Lumber Evolution reference research](research/propulsion/EL1a/timber-reference.md).
 
 EL5/EL6 require calibrated, matched, held-out physical measurements with hardware/firmware, temperature, environment, channel timing and uncertainty recorded. The ROADMAP targets remain ±10% for current/thrust and ±15% for endurance. The project's uncertainty rule passes when `abs(error)+Uerror <= limit`, fails when `max(0,abs(error)-Uerror) > limit`, and otherwise reports inconclusive; this is a project rule, not a manufacturer requirement. Preserve raw observations and the fit/validation split.
 
@@ -41,7 +41,7 @@ EL5/EL6 require calibrated, matched, held-out physical measurements with hardwar
 | EL1c | Shared source dispatch, equilibrium and trim. [Independent solver checks](research/propulsion/EL1c/README.md) | Complete — software only |
 | EL1d | Coupled session, stop events, checkpoint and telemetry. [Replay, rollback and regression](research/propulsion/EL1d/README.md) | Software verified; performance target missed |
 | EL1e | Synthetic experimental aircraft routes. [Flight and product proof](research/propulsion/EL1e/README.md) | Complete — synthetic fixtures only |
-| EL1f | Lumber configuration and model handoff. [Ownership/input handoff](research/propulsion/EL1f/README.md) | Open — identified hardware/loadout and TT data required |
+| EL1f | Turbo Lumber Evolution configuration and model handoff. [Ownership/input handoff](research/propulsion/EL1f/README.md) | Open — identified hardware/loadout and TT data required |
 | EL2a | OCV/resistance pack, sag, state and exhaustion. [Independent oracle, replay and product proof](research/propulsion/EL2a/README.md) | Software verified; performance target and physical data open |
 | EL2a-P1 | Reduce coupled stage cost with exact behavior preservation. [Paired evidence](research/propulsion/EL2a-P1/README.md) | Complete — battery medians 558–562 µs on the documented WSL host; 500 µs gate open |
 | EL2a-P2 | Bound stop/exhaustion localization and event ordering. [Defects and paired measurements](research/propulsion/EL2a-P2/README.md) | Complete — event medians down 67–90%; event spike and Gate P remain |

@@ -10,7 +10,7 @@
   const state = document.querySelector('#inspector-state');
   const bar = document.querySelector('.inspector-load-track>span');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const names = {stik:'Jensen Das Ugly Stik 60',extra:'Great Planes Extra 300S .60',mustang:'P-51D Mustang 1/4',jet:'VANTAGE',timber:'LUMBER',heli:'RC Helicopter / HX-700'};
+  const names = {stik:'Jensen Das Ugly Stik 60',extra:'Great Planes Extra 300S .60',mustang:'P-51D Mustang 1/4',jet:'Vantage Jet',timber:'Turbo Lumber Evolution',heli:'RC Helicopter / HX-700'};
   const detailPanel = document.querySelector('.inspector-details');
   // WEB-04 camera poses come from the native studio capture, in centered GLB coordinates.
   let jetViews = null, viewsRequest = null;

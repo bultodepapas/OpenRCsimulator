@@ -83,7 +83,7 @@ Fresh interactive preferences select `GENTLE_PRACTICE`: **1.5 m/s FROM 090°, ho
 
 A positive-only vertical pulse has nonzero long-term mean: the default contributes `0.15*4/(2*14) = 0.02143 m/s` upward, and its horizontal pulses add `0.08571 m/s` along the gust direction. That is acceptable for a declared practice waveform, but “mean wind” then describes the background, not the total long-time mean. The current Updraft preset is a global recurring vertical pulse, **not a thermal**. Future natural presets must report background mean versus realized gust statistics and avoid unexplained net upward transport.
 
-The current [aircraft catalog](../app/app_state/aircraft_catalog.gd) contains the Ugly Stik family, Extra 300S, P-51D, F4U Corsair, Vantage/Vantage jet, Turbo Lumber and an experimental helicopter route. It does **not** contain a dedicated sailplane or ultralight indoor model. Use Stik/Extra/Turbo Lumber/warbirds for immediate acceptance, engine-off powered-aircraft cases for early vertical-air checks, and a separately sourced/validated sailplane and lightweight fixture before claiming glider/lightweight qualification. Do not invent a shipped glider or generate one merely to fill this audit.
+The current [aircraft catalog](../app/app_state/aircraft_catalog.gd) contains the Ugly Stik family, Extra 300S, P-51D, F4U Corsair, Vantage Jet, Turbo Lumber Evolution and an experimental helicopter route. It does **not** contain a dedicated sailplane or ultralight indoor model. Use Stik/Extra/Turbo Lumber Evolution/warbirds for immediate acceptance, engine-off powered-aircraft cases for early vertical-air checks, and a separately sourced/validated sailplane and lightweight fixture before claiming glider/lightweight qualification. Do not invent a shipped glider or generate one merely to fill this audit.
 
 ### 2.4 Correctness versus simplification
 
@@ -485,7 +485,7 @@ Advanced severe-shear fixture: lower wind 2 m/s FROM runway, upper 8 m/s FROM ru
 | --- | --- | --- |
 | Sport trainer | Ugly Stik family | Neutral stability and correction workload; runway drift, takeoff hold, straight approach, go-around; no unexplained self-excited motion. |
 | Aerobatic | Extra 300S | Local wing/tail response in upright/inverted/knife-edge and roll maneuvers; weather response remains force-driven through attitude changes. |
-| Light/STOL | Turbo Lumber | Low-speed gust alpha, flap/propwash interaction and touchdown unload/tip behavior; do not call it a validated ultralight surrogate. |
+| Light/STOL | Turbo Lumber Evolution | Low-speed gust alpha, flap/propwash interaction and touchdown unload/tip behavior; do not call it a validated ultralight surrogate. |
 | Higher loading/inertia | P-51D, F4U and jet | Same atmosphere at higher encounter speed; load-frequency/prop-intake checks and numerical bandwidth. |
 | Sailplane | No catalog model | Obtain suitable free, licensed model/data where available, then aircraft-contract/polar validation; first use engine-off cases only for mechanism verification. |
 | Very lightweight RC | No dedicated catalog model | Separate measured mass/inertia/polar fixture and pilot evaluation; default may be too demanding even when suitable for Stik. |

@@ -32,7 +32,7 @@ GP-19d also observes loaded hull friction at accepted endpoints of the existing 
 
 The [scrape unloading correction](research/ground-physics/GP-19/evidence/scrape-unloading/README.md) makes accepted-grain amplitude approach silence with friction power while preserving maximum gain. Its 72 focused production checks establish the envelope and lifecycle behavior, not acoustic calibration.
 
-The [native continuous Turbo Lumber capture](research/ground-physics/GP-19/evidence/native-continuous-timber/README.md) verifies one production flight's mixer clocks, headroom and source stability at its recorded source version. It predates the unloading-envelope correction and does not establish isolated scrape audibility, human listening or full-fleet coverage.
+The [native continuous Turbo Lumber Evolution capture](research/ground-physics/GP-19/evidence/native-continuous-timber/README.md) verifies one production flight's mixer clocks, headroom and source stability at its recorded source version. It predates the unloading-envelope correction and does not establish isolated scrape audibility, human listening or full-fleet coverage.
 
 The later [native hull-scrape check](research/ground-physics/GP-19/evidence/native-hull-scrape/README.md)
 captures the current default-field Stik CrashFX bus through actual accepted physics.

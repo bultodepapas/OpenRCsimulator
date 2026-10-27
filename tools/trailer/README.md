@@ -270,7 +270,7 @@ NumPy **2.4.6** and Matplotlib **3.11.1**. Preserve `analysis.json` and the cue 
 and a fitted pulse do not establish subjective musical phrasing or a listening review.
 
 Revision 3 retains that exact music stem. It opens with source seconds 2–7 of the formation and
-gives the Extra six seconds at 13–19 s for two continuous rolls with a climbing exit. The Lumber
+gives the Extra six seconds at 13–19 s for two continuous rolls with a climbing exit. The Turbo Lumber Evolution
 twilight insert remains at 22–25 s and bypasses the generic grade to preserve native sunset color.
 The current [revision evidence](../../docs/research/cinematic-trailer/revision-3-2026-10-17.md)
 records the accepted takes, measurement limits and output identity.

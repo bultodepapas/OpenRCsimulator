@@ -34,9 +34,9 @@
     "above": "Desde arriba",
     "below": "Desde abajo",
     "interactionPrompt": "Usa el ratón, la pantalla táctil o las flechas para girar. Rueda o pellizca para acercar.",
-    "cockpitAlt": "Primer plano de la cabina del VANTAGE",
-    "wingAlt": "Ala y unión al fuselaje del VANTAGE",
-    "tailAlt": "Deriva y estabilizadores del VANTAGE",
+    "cockpitAlt": "Primer plano de la cabina del Vantage Jet",
+    "wingAlt": "Ala y unión al fuselaje del Vantage Jet",
+    "tailAlt": "Deriva y estabilizadores del Vantage Jet",
     "earlyAlpha": "ALFA TEMPRANA",
     "modelStudy": "ESTUDIO DE AERONAVES / OPENRC"
   },
@@ -75,9 +75,9 @@
     "above": "From above",
     "below": "From below",
     "interactionPrompt": "Use the mouse, touch or arrow keys to orbit. Scroll or pinch to zoom.",
-    "cockpitAlt": "Close-up of the VANTAGE canopy",
-    "wingAlt": "VANTAGE wing and its fuselage junction",
-    "tailAlt": "VANTAGE fin and stabilizers",
+    "cockpitAlt": "Close-up of the Vantage Jet canopy",
+    "wingAlt": "Vantage Jet wing and its fuselage junction",
+    "tailAlt": "Vantage Jet fin and stabilizers",
     "earlyAlpha": "EARLY ALPHA",
     "modelStudy": "AIRCRAFT SHOWCASE / OPENRC"
   }
