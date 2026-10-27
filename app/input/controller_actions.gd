@@ -432,7 +432,8 @@ static func valid_binding(value: Variant) -> bool:
 			if typeof(binding.get("axis")) != TYPE_INT or binding.axis < 0 or binding.axis >= JOY_AXIS_MAX: return false
 			var direction: Variant = binding.get("sign", binding.get("direction", 0))
 			if typeof(direction) != TYPE_INT or direction not in [-1, 1]: return false
-			if binding.has("sign") and binding.has("direction") and binding.sign != binding.direction: return false
+			if binding.has("sign") and binding.has("direction") \
+					and (typeof(binding.direction) != TYPE_INT or binding.sign != binding.direction): return false
 			var threshold: Variant = binding.get("threshold", 0.65)
 			return typeof(threshold) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(threshold)) and threshold > 0.0 and threshold <= 1.0
 	return false
