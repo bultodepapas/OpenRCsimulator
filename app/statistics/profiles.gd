@@ -91,14 +91,16 @@ const _PROFILES := {
 			"contact_nose": [0.241314674530584, 0.0, 0.252438111776503],
 		},
 	},
+	# Developer-only --electric-demo airframes. Their CG differs from the glow Stiks, so their
+	# model-local support points do too; test_flight_statistics_detector.gd resolves each file.
 	"synthetic_stik_electric_4s": {
 		"span_m": 1.524,
 		"main_ids": ["contact_main_left", "contact_main_right"],
 		"stop_ids": ["contact_main_left", "contact_main_right", "contact_nose"],
 		"points": {
-			"contact_main_left": [-0.105607562648019, -0.18, 0.253308375964654],
-			"contact_main_right": [-0.105607562648019, 0.18, 0.253308375964654],
-			"contact_nose": [0.245668437351981, 0.0, 0.250133375964654],
+			"contact_main_left": [-0.0941, -0.18, 0.2531],
+			"contact_main_right": [-0.0941, 0.18, 0.2531],
+			"contact_nose": [0.257176, 0.0, 0.249925],
 		},
 	},
 	"synthetic_stik_electric_4s_battery": {
@@ -106,9 +108,9 @@ const _PROFILES := {
 		"main_ids": ["contact_main_left", "contact_main_right"],
 		"stop_ids": ["contact_main_left", "contact_main_right", "contact_nose"],
 		"points": {
-			"contact_main_left": [-0.105607562648019, -0.18, 0.253308375964654],
-			"contact_main_right": [-0.105607562648019, 0.18, 0.253308375964654],
-			"contact_nose": [0.245668437351981, 0.0, 0.250133375964654],
+			"contact_main_left": [-0.0941, -0.18, 0.2531],
+			"contact_main_right": [-0.0941, 0.18, 0.2531],
+			"contact_nose": [0.257176, 0.0, 0.249925],
 		},
 	},
 	"synthetic_stik_electric_6s": {
@@ -116,9 +118,9 @@ const _PROFILES := {
 		"main_ids": ["contact_main_left", "contact_main_right"],
 		"stop_ids": ["contact_main_left", "contact_main_right", "contact_nose"],
 		"points": {
-			"contact_main_left": [-0.105607562648019, -0.18, 0.253308375964654],
-			"contact_main_right": [-0.105607562648019, 0.18, 0.253308375964654],
-			"contact_nose": [0.245668437351981, 0.0, 0.250133375964654],
+			"contact_main_left": [-0.0941, -0.18, 0.2531],
+			"contact_main_right": [-0.0941, 0.18, 0.2531],
+			"contact_nose": [0.257176, 0.0, 0.249925],
 		},
 	},
 	"synthetic_stik_electric_6s_battery": {
@@ -126,9 +128,9 @@ const _PROFILES := {
 		"main_ids": ["contact_main_left", "contact_main_right"],
 		"stop_ids": ["contact_main_left", "contact_main_right", "contact_nose"],
 		"points": {
-			"contact_main_left": [0.215, -0.18, -0.2531],
-			"contact_main_right": [0.215, 0.18, -0.2531],
-			"contact_nose": [-0.136276, 0.0, -0.249925],
+			"contact_main_left": [-0.0941, -0.18, 0.2531],
+			"contact_main_right": [-0.0941, 0.18, 0.2531],
+			"contact_nose": [0.257176, 0.0, 0.249925],
 		},
 	},
 	"turbo-lumber-evolution": {

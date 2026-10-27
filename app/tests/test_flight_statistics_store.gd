@@ -21,6 +21,8 @@ func _initialize() -> void:
 	_test_future_schema_protection(schema, store_script)
 	_test_commit_interruptions(schema, store_script)
 	_test_delete_fence_recovery(schema, store_script, reducer)
+	_test_malformed_shapes_fail_closed(schema, store_script)
+	_test_completed_deletion_reopens_normally(schema, store_script, reducer)
 	for root_uri: String in _roots:
 		_remove_fixture(root_uri)
 	_finish()
@@ -181,6 +183,92 @@ func _test_delete_fence_recovery(schema: Script, store_script: Script, reducer: 
 	_check("surviving B records are byte-equivalent as values", _has_records(recovered.data.records, prior_b))
 	_check("recovery leaves both slots behind the fence", _both_slots_satisfy_fence(recovered, root_uri))
 	recovered.close()
+
+
+## A checksum covers only the data, so a self-consistent snapshot with wrong field types reaches
+## the validator. Each shape must be refused with a reason, without engine errors.
+func _test_malformed_shapes_fail_closed(schema: Script, store_script: Script) -> void:
+	var root_uri: String = _new_root("malformed_shapes")
+	var store: RefCounted = store_script.new()
+	_check("malformed-shape fixture opens", store.open(root_uri), store.note)
+	var valid: Dictionary = _fixture_with_aircraft_records(schema, store.data)
+	valid.records[1].outcome = "interrupted"
+	valid.records[1].complete_observation = false
+	_check("malformed-shape base document validates", bool(schema.validate(valid).get("ok", false)), str(schema.validate(valid).get("errors", [])))
+	var shapes: Dictionary = {
+		"epochs array": func(doc: Dictionary) -> void: doc.epochs = [],
+		"epochs scalar": func(doc: Dictionary) -> void: doc.epochs = 7,
+		"epochs without aircraft": func(doc: Dictionary) -> void: doc.epochs = {"account": 0},
+		"aircraft epochs list": func(doc: Dictionary) -> void: doc.epochs.aircraft = [],
+		"account epoch dictionary": func(doc: Dictionary) -> void: doc.epochs.account = {},
+		"sequence dictionary": func(doc: Dictionary) -> void: doc.sequence = {},
+		"sequence array": func(doc: Dictionary) -> void: doc.sequence = [],
+		"record sequence array": func(doc: Dictionary) -> void: doc.records[0].seq = [],
+		"flight terminal sequence dictionary": func(doc: Dictionary) -> void: doc.records[0].end_seq = {},
+		"interrupted observation flag dictionary": func(doc: Dictionary) -> void: doc.records[1].complete_observation = {},
+	}
+	for label: String in shapes.keys():
+		var doc: Dictionary = valid.duplicate(true)
+		shapes[label].call(doc)
+		var result: Variant = schema.validate(doc)
+		var refused: bool = typeof(result) == TYPE_DICTIONARY and result.has("ok") and result.ok == false
+		var reasons: PackedStringArray = result.get("errors", PackedStringArray()) if typeof(result) == TYPE_DICTIONARY else PackedStringArray()
+		_check("malformed %s is refused" % label, refused, str(result))
+		_check("malformed %s reports a reason" % label, not reasons.is_empty(), str(result))
+	# End to end: a newer self-consistent snapshot with malformed epochs is refused with its reason.
+	var bad: Dictionary = store.data.duplicate(true)
+	bad.generation = int(store.data.generation) + 1
+	bad.epochs = []
+	var root_path: String = ProjectSettings.globalize_path(root_uri)
+	var bad_slot: String = "snapshot_b.bin" if str(store._current_slot) == "snapshot_a.bin" else "snapshot_a.bin"
+	store.close()
+	_check("malformed-epoch snapshot fixture is written", _write_bytes(root_path.path_join(bad_slot), _encode_snapshot(schema, bad)))
+	var reopened: RefCounted = store_script.new()
+	_check("malformed-epoch snapshot falls back to the valid generation", reopened.open(root_uri) and int(reopened.data.generation) == int(bad.generation) - 1, reopened.note)
+	_check("malformed-epoch snapshot refusal names its reason", str(reopened.note).contains("epochs"), reopened.note)
+	reopened.close()
+
+
+## The purge_complete receipt stays on disk as a fence. Recovery runs once for an interrupted
+## deletion; later opens take the normal path, so corruption is quarantined, not purged.
+func _test_completed_deletion_reopens_normally(schema: Script, store_script: Script, reducer: Script) -> void:
+	var root_uri: String = _new_root("delete_complete")
+	var root_path: String = ProjectSettings.globalize_path(root_uri)
+	var store: RefCounted = store_script.new()
+	_check("completed-deletion fixture opens", store.open(root_uri), store.note)
+	_check("completed-deletion fixture writes", store.commit(_fixture_with_aircraft_records(schema, store.data)), store.note)
+	_stop_stage = "after_deletion_fence_publish"
+	store.interruption_hook = Callable(self, "_interrupt_at")
+	_check("completed-deletion fixture is interrupted after its fence", not store.delete_history("stock:a"), store.note)
+	store.close()
+	var recovered: RefCounted = store_script.new()
+	_check("interrupted deletion still recovers forward", recovered.open(root_uri) and recovered.writable, recovered.note)
+	_check("interrupted deletion recovery is reported once", str(recovered.note).contains("interrupted history deletion"), recovered.note)
+	_check("forward recovery completes the receipt", str(recovered._fence.get("phase", "")) == "purge_complete")
+	recovered.close()
+	var reopened: RefCounted = store_script.new()
+	_check("completed deletion reopens writable", reopened.open(root_uri) and reopened.writable, reopened.note)
+	_check("completed deletion is not reported as recovered again", str(reopened.note).is_empty(), reopened.note)
+	var competing: RefCounted = store_script.new()
+	_check("read-only opener after a completed deletion sees committed data", competing.open(root_uri) and not competing.writable, competing.note)
+	_check("read-only opener does not report pending deletion cleanup", not str(competing.note).contains("deletion"), competing.note)
+	competing.close()
+	var next: Dictionary = reopened.data.duplicate(true)
+	next.clean_exit = not bool(next.clean_exit)
+	_check("completed deletion accepts a later commit", reopened.commit(next), reopened.note)
+	var newest: String = str(reopened._current_slot)
+	var older_generation: int = int(reopened.data.generation) - 1
+	reopened.close()
+	var bad_bytes: PackedByteArray = "{broken-after-deletion".to_utf8_buffer()
+	_check("post-deletion corruption fixture is written", _write_bytes(root_path.path_join(newest), bad_bytes))
+	var damaged: RefCounted = store_script.new()
+	_check("post-deletion corruption recovers the older generation", damaged.open(root_uri) and int(damaged.data.generation) == older_generation, damaged.note)
+	_check("post-deletion corruption is reported as damage", str(damaged.note).contains("damaged copy"), damaged.note)
+	var quarantine: String = "snapshot_quarantine_a.bin" if newest == "snapshot_a.bin" else "snapshot_quarantine_b.bin"
+	_check("post-deletion damaged bytes are quarantined", FileAccess.get_file_as_bytes(root_path.path_join(quarantine)) == bad_bytes)
+	_check("deleted aircraft stays hidden behind the completed fence", reducer.query(damaged.data, "stock:a", "lifetime").started == 0
+		and reducer.query(damaged.data, "stock:b", "lifetime").started == 2)
+	damaged.close()
 
 
 func _fixture_data(schema: Script, source: Dictionary, with_records: bool) -> Dictionary:

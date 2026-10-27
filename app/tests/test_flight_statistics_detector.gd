@@ -13,6 +13,9 @@ const REVIEWED_WHEEL_IDS := ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t",
 	"stik-glow-55ax-2t", "stik-glow-fs64v-4t", "gp-extra-300s-60",
 	"p51d-mustang-120", "f4u-corsair-250", "sebart-avanti-s-a200-p100rx",
 	"turbo-lumber-evolution"]
+## Developer-only electric Stik routes (main.gd --electric-demo) also carry reviewed wheel metadata.
+const ELECTRIC_DEMO_IDS := ["synthetic_stik_electric_4s", "synthetic_stik_electric_4s_battery",
+	"synthetic_stik_electric_6s", "synthetic_stik_electric_6s_battery"]
 const X8_HULL_IDS := ["probe_nose", "probe_nose_left", "probe_nose_right",
 	"probe_nose_left_low", "probe_nose_right_low", "probe_canopy_front", "probe_canopy",
 	"probe_belly_front", "probe_belly", "probe_engine", "probe_wing_left_root_le",
@@ -138,15 +141,16 @@ func _test_profiles_for_catalog_fleet() -> void:
 		_check("%s is an explicitly reviewed wheel profile" % aircraft_id, aircraft_id in REVIEWED_WHEEL_IDS)
 		if aircraft_id not in REVIEWED_WHEEL_IDS:
 			continue
-		_check("%s has reviewed landing support metadata" % aircraft_id,
-			bool(profile.get("landing_available", false)), str(profile.get("reason", "")))
-		_check("%s maps two main contacts and a three-contact stop set" % aircraft_id,
-			profile.get("main_indices", PackedInt32Array()).size() == 2
-				and profile.get("stop_indices", PackedInt32Array()).size() == 3)
-		_check("%s derives finite rest geometry and clearance" % aircraft_id,
-			float(profile.get("rest_height_m", -1.0)) > 0.0
-				and float(profile.get("clearance_m", -1.0)) >= 0.25
-				and is_finite(float(profile.get("rest_pitch_rad", NAN))))
+		_check_reviewed_wheel_profile(aircraft_id, aircraft_id, model, bindings, profile)
+		# Every finite-pack variant flies the same airframe ID, so it needs the same landing credit.
+		var battery_path := str(entry.get("battery_data", ""))
+		if not battery_path.is_empty():
+			var battery: Dictionary = AircraftData.load_file(battery_path)
+			_check("%s finite-pack data loads for the profile check" % aircraft_id, bool(battery.get("ok", false)), str(battery.get("errors", [])))
+			if bool(battery.get("ok", false)):
+				var battery_bindings: Dictionary = ContactContract.describe(battery.model, true)
+				_check_reviewed_wheel_profile("%s finite pack" % aircraft_id, aircraft_id, battery.model, battery_bindings,
+					Profiles.resolve(aircraft_id, battery.model, battery_bindings))
 		if aircraft_id == "jensen-das-ugly-stik-60":
 			var changed_model: Dictionary = model.duplicate(true)
 			var gear: Dictionary = changed_model.landing_gear
@@ -159,6 +163,34 @@ func _test_profiles_for_catalog_fleet() -> void:
 			var changed_bindings: Dictionary = ContactContract.describe(changed_model, true)
 			var changed_profile: Dictionary = Profiles.resolve(aircraft_id, changed_model, changed_bindings)
 			_check("changed support geometry disables landing credit", not bool(changed_profile.landing_available))
+	for demo_id: String in ELECTRIC_DEMO_IDS:
+		var demo: Dictionary = AircraftData.load_file("res://data/aircraft/%s.json" % demo_id)
+		_check("%s data loads for the profile check" % demo_id, bool(demo.get("ok", false)), str(demo.get("errors", [])))
+		if not bool(demo.get("ok", false)):
+			continue
+		var demo_bindings: Dictionary = ContactContract.describe(demo.model, true)
+		_check("%s has valid physical contact bindings" % demo_id, bool(demo_bindings.get("ok", false)), str(demo_bindings.get("errors", [])))
+		_check_reviewed_wheel_profile(demo_id, demo_id, demo.model, demo_bindings,
+			Profiles.resolve(demo_id, demo.model, demo_bindings))
+	for reviewed_id: Variant in Profiles._PROFILES.keys():
+		_check("reviewed wheel metadata has a fleet check: %s" % reviewed_id,
+			reviewed_id in REVIEWED_WHEEL_IDS or reviewed_id in ELECTRIC_DEMO_IDS)
+
+
+func _check_reviewed_wheel_profile(label: String, aircraft_id: String, model: Dictionary, bindings: Dictionary, profile: Dictionary) -> void:
+	_check("%s model identity matches its reviewed profile" % label, str(model.get("id", "")) == aircraft_id, str(model.get("id", "")))
+	var positions: Array[String] = []
+	for contact: Dictionary in model.get("landing_gear", {}).get("contacts", []):
+		positions.append("%s=%s" % [str(contact.get("id", "")), var_to_str(contact.get("position"))])
+	_check("%s has reviewed landing support metadata" % label,
+		bool(profile.get("landing_available", false)), "%s %s" % [str(profile.get("reason", "")), ", ".join(positions)])
+	_check("%s maps two main contacts and a three-contact stop set" % label,
+		profile.get("main_indices", PackedInt32Array()).size() == 2
+			and profile.get("stop_indices", PackedInt32Array()).size() == 3)
+	_check("%s derives finite rest geometry and clearance" % label,
+		float(profile.get("rest_height_m", -1.0)) > 0.0
+			and float(profile.get("clearance_m", -1.0)) >= 0.25
+			and is_finite(float(profile.get("rest_pitch_rad", NAN))))
 
 
 func _test_x8_unreviewed_hull(path: String, model: Dictionary, bindings: Dictionary, profile: Dictionary) -> void:

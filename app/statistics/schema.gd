@@ -134,9 +134,12 @@ static func validate(value: Variant) -> Dictionary:
 	var current_session: String = str(data["current_session"])
 	if not current_session.is_empty() and not session_ids.has(current_session):
 		errors.append("Current session does not exist in the session list.")
-	var record_result: Dictionary = _validate_records(data, session_ids)
-	if not record_result.ok:
-		errors.append_array(record_result.errors)
+	# Records are bounded by the store sequence and counter epochs; when either is already
+	# reported invalid, record checks would dereference it, so they are skipped.
+	if epoch_result.ok and _bounded_integer(data["sequence"], 0, MAX_SEQUENCE):
+		var record_result: Dictionary = _validate_records(data, session_ids)
+		if not record_result.ok:
+			errors.append_array(record_result.errors)
 	if data.has("active_context"):
 		var context_result: Dictionary = _validate_dictionary_tree(data.active_context, MAX_CHECKPOINT_BYTES)
 		if not context_result.ok:
@@ -286,7 +289,7 @@ static func _validate_record(value: Variant, index: int, session_ids: Dictionary
 			errors.append("Record %d metadata is invalid or exceeds its limit." % index)
 	if kind == "flight":
 		errors.append_array(_validate_flight_fields(value, index))
-		if str(value.get("outcome", "")) != "active" and int(value.get("end_seq", -1)) > int(data.sequence):
+		if str(value.get("outcome", "")) != "active" and _is_integer(value.get("end_seq")) and int(value.end_seq) > int(data.sequence):
 			errors.append("Flight record %d terminal sequence exceeds the store sequence." % index)
 	elif value.has("detector_checkpoint"):
 		errors.append("Only a flight record may contain a detector checkpoint.")
@@ -323,19 +326,20 @@ static func _validate_flight_fields(record: Dictionary, index: int) -> PackedStr
 		errors.append("Flight record %d rules version is invalid." % index)
 	elif typeof(record.rules_version) == TYPE_STRING and (str(record.rules_version).strip_edges().is_empty() or str(record.rules_version).length() > 64):
 		errors.append("Flight record %d rules version is invalid." % index)
-	var seq: int = int(record.seq)
 	var outcome: String = str(record.outcome)
+	# Cross-field rules need typed fields; type errors are already reported by the caller or above.
+	var typed: bool = _is_integer(record.seq) and _is_integer(record.end_seq) and typeof(record.complete_observation) == TYPE_BOOL
 	if outcome == "active":
-		if int(record.end_seq) != -1:
+		if typed and int(record.end_seq) != -1:
 			errors.append("Active flight record %d must not have a terminal sequence." % index)
-		if bool(record.complete_observation):
+		if typed and bool(record.complete_observation):
 			errors.append("Active flight record %d cannot be fully observed." % index)
 	else:
-		if int(record.end_seq) <= seq or int(record.end_seq) > MAX_SEQUENCE:
+		if typed and (int(record.end_seq) <= int(record.seq) or int(record.end_seq) > MAX_SEQUENCE):
 			errors.append("Closed flight record %d requires a later terminal sequence." % index)
 		if record.has("ended_utc") and not _valid_utc(record.ended_utc):
 			errors.append("Closed flight record %d end timestamp is invalid." % index)
-		if outcome == "interrupted" and bool(record.complete_observation):
+		if typed and outcome == "interrupted" and bool(record.complete_observation):
 			errors.append("Interrupted flight record %d cannot be fully observed." % index)
 	if record.has("detector_checkpoint"):
 		var checkpoint_result: Dictionary = _validate_dictionary_tree(record.detector_checkpoint, MAX_CHECKPOINT_BYTES)

@@ -75,9 +75,10 @@ func open(root: String = DEFAULT_ROOT) -> bool:
 		note = "A newer statistics schema is present. This build opened it read-only and will not overwrite it."
 		return not data.is_empty()
 	var snapshot_entries: Array = snapshots_result.get("entries", [])
-	if _owns_lock and not _fence.is_empty():
+	var deletion_pending: bool = _deletion_pending(snapshot_entries)
+	if _owns_lock and deletion_pending:
 		return _recover_deletion(snapshot_entries)
-	elif not _fence.is_empty():
+	elif deletion_pending:
 		var safe_snapshot: Dictionary = _newest_fence_safe_snapshot(snapshot_entries, _fence)
 		if safe_snapshot.is_empty():
 			var prepared: Dictionary = _read_snapshot_file(_root_path.path_join(PREPARED_DELETE))
@@ -93,7 +94,7 @@ func open(root: String = DEFAULT_ROOT) -> bool:
 		writable = false
 		note = "History deletion is committed; cleanup requires the single writer."
 		return true
-	var chosen: Dictionary = _newest_snapshot(snapshot_entries)
+	var chosen: Dictionary = _newest_snapshot(snapshot_entries) if _fence.is_empty() else _newest_fence_safe_snapshot(snapshot_entries, _fence)
 	if chosen.is_empty():
 		if has_snapshot_files:
 			note = str(snapshots_result.get("note", "No valid statistics snapshot could be recovered; original files were retained."))
@@ -474,6 +475,19 @@ func _validate_fence_receipt(receipt: Dictionary) -> Dictionary:
 	if typeof(receipt.phase) != TYPE_STRING or str(receipt.phase) not in ["committed", "purge_complete"]:
 		errors.append("Deletion receipt phase is invalid.")
 	return {"ok": errors.is_empty(), "errors": errors}
+
+
+## A purge_complete receipt stays on disk as a fence. Only an unfinished deletion, or a stale
+## pre-fence slot that reappeared after it, needs forward recovery; otherwise open normally.
+func _deletion_pending(entries: Array) -> bool:
+	if _fence.is_empty():
+		return false
+	if str(_fence.get("phase", "")) != "purge_complete":
+		return true
+	for entry_value: Variant in entries:
+		if typeof(entry_value) == TYPE_DICTIONARY and not _snapshot_satisfies_fence(entry_value.get("data", {}), _fence):
+			return true
+	return false
 
 
 func _recover_deletion(entries: Array) -> bool:
