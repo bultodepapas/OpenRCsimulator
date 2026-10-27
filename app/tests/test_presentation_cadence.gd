@@ -70,7 +70,13 @@ func _helper_contract() -> void:
 	c.on_tick(25)
 	check("a tick that moved without a stepped signal is not continuous", c.take(27) and c.since_tick == -1)
 	c.on_tick(28)
-	check("settle observes waiting ticks before a notification", c.settle(28) and c.since_tick == 27 and not c.settle(28))
+	c.observe_at(28)
+	check("another observation continues waiting ticks", c.last_tick == 28 and c.since_tick == 27 and not c.pending)
+	c.observe_at(28)
+	check("repeating an observed tick keeps its interval", c.since_tick == 27)
+	c.observe_at(40)
+	check("observing an unseen tick starts a new history", c.last_tick == 40 and c.since_tick == -1)
+	check("the next stepped tick after it continues", not c.on_tick(41) and c.take(41) and c.since_tick == 40)
 	var two := Cadence.new(2, 240.0)
 	two.on_tick(0)
 	two.on_tick(1)
@@ -166,7 +172,9 @@ func _cues(audio: Node) -> Array:
 func _flight_audio_drop() -> void:
 	root.audio_listener_enable_3d = true
 	var session := _drop_session()
-	check("drop session admitted", session.is_flyable())
+	var reference := _drop_session()
+	check("drop sessions admitted identically", session.is_flyable()
+		and var_to_bytes(session.checkpoint()) == var_to_bytes(reference.checkpoint()))
 	var owner := Owner.new()
 	owner.session = session
 	owner.field = FieldLoader.load_from().field
@@ -178,12 +186,12 @@ func _flight_audio_drop() -> void:
 	root.add_child(owner)
 	var per_tick := _rig(owner, 0)
 	var per_frame := _rig(owner, 1)
-	var before := var_to_bytes(session.checkpoint())
 	var observations := {per_tick = 0, per_frame = 0}
 	var grounded_waits := 0
 	var touchdown_tick := -1
 	for i: int in 480:
 		session.sim.step()
+		reference.sim.step()
 		if (i + 1) % 4 == 0: per_frame._observe_due_endpoints()
 		if per_tick.ground_audio.accepted_tick() == session.sim.tick: observations.per_tick += 1
 		if per_frame.ground_audio.accepted_tick() == session.sim.tick: observations.per_frame += 1
@@ -194,35 +202,35 @@ func _flight_audio_drop() -> void:
 		and not _cues(per_tick).is_empty(), "%s vs %s" % [_cues(per_tick), _cues(per_frame)])
 	check("grounded wheels wait for the frame", grounded_waits > 200 and observations.per_frame < observations.per_tick - 200,
 		str(observations))
-	check("both observers leave the full checkpoint unchanged", before != var_to_bytes(session.checkpoint())
-		and session.sim.fault_reason.is_empty())
+	check("observed physics equals an unobserved session's, byte for byte",
+		var_to_bytes(session.checkpoint()) == var_to_bytes(reference.checkpoint()))
 	check("mechanical endpoints wait for the frame without discontinuities",
 		per_frame.mechanical_audio.diagnostics().accepted_tick_samples < per_tick.mechanical_audio.diagnostics().accepted_tick_samples
 		and per_frame.mechanical_audio.diagnostics().get("accepted_discontinuities", 0) == 0,
 		str(per_frame.mechanical_audio.diagnostics()))
 	# Two frames per observation: a frame in between presents the last accepted contacts, never none.
 	var held := _rig(owner, 2)
-	for i: int in 4: session.sim.step()
-	held._observe_due_endpoints()
-	for i: int in 4: session.sim.step()
+	for i: int in 4:
+		session.sim.step()
+		reference.sim.step()
 	held._process(1.0 / 60.0)
 	var ground: Node = held.ground_audio
 	check("a frame between observations presents the held accepted contacts", ground.accepted_tick() < session.sim.tick
-		and int(ground.get("_last_tick")) == ground.accepted_tick() and not (ground.get("_accepted_contacts") as Array).is_empty())
+		and int(ground.get("_last_tick")) == ground.accepted_tick() and not (ground.get("_accepted_contacts") as Array).is_empty(),
+		"%d %d %d" % [ground.accepted_tick(), session.sim.tick, int(ground.get("_last_tick"))])
+	check("the primed rig continues history into its first interval",
+		held.mechanical_audio.diagnostics().accepted_discontinuities == 0)
 	for audio: Node in [per_tick, per_frame, held]:
 		audio.free()
 	owner.free()
 	session.free()
+	reference.free()
 	await process_frame
 
 
-## Wheel spin phase on a real Stik take-off roll: per frame (every 4 ticks) against per tick.
+## Wheel spin phase in a real Stik drop and roll-out: per frame (every 4 ticks) against per tick.
 func _wheel_phase() -> void:
-	var session: Node = Session.new()
-	session.input_enabled = false
-	session.setup(STIK, "jensen-das-ugly-stik-60")
-	session.set_process(false)
-	session.set_physics_process(false)
+	var session := _drop_session()
 	root.add_child(session)
 	var observers: Array = []
 	for every_frames: int in [0, 1]:
@@ -238,10 +246,6 @@ func _wheel_phase() -> void:
 		Cadence.override_every_frames = -1
 		observer.set_process(false)
 		observers.append(observer)
-	session.reset()
-	var inputs: PackedFloat64Array = session.sim.inputs.duplicate()
-	inputs[3] = 1.0
-	session.sim.inputs = inputs
 	var largest := 0.0
 	var moved := 0.0
 	for i: int in 480:

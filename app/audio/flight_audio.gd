@@ -175,11 +175,11 @@ func _on_mechanical_pause_changed(_paused: bool) -> void:
 func _observe_mechanical_endpoint() -> void:
 	if not _accepted_mechanical_mode or not is_instance_valid(mechanical_audio) or not is_instance_valid(_mechanical_sim) \
 		or not is_instance_valid(flight) or flight.session != _mechanical_session: return
-	# Any observation settles waiting ticks: they were seen, so this endpoint continues them.
-	_mechanical_cadence.settle(_mechanical_sim.tick)
+	# Every observation is recorded; it continues waiting ticks, which were seen.
+	_mechanical_cadence.observe_at(_mechanical_sim.tick)
 	var endpoint := accepted_mechanical_snapshot()
 	if not endpoint.is_empty():
-		endpoint.since_tick = _mechanical_cadence.since_tick if endpoint.tick == _mechanical_cadence.last_tick else -1
+		endpoint.since_tick = _mechanical_cadence.since_tick
 		mechanical_audio.observe_accepted(endpoint)
 
 
@@ -188,13 +188,13 @@ func _observe_mechanical_endpoint() -> void:
 func _observe_ground_endpoint() -> void:
 	if not _accepted_ground_mode or not is_instance_valid(ground_audio) or not is_instance_valid(_mechanical_sim) \
 		or not is_instance_valid(flight) or flight.session != _mechanical_session: return
-	_ground_cadence.settle(_mechanical_sim.tick)
+	_ground_cadence.observe_at(_mechanical_sim.tick)
 	var active: bool = _mechanical_session.physics_enabled and bool(_mechanical_session.aircraft.get("ok", false))
 	var paused: bool = _mechanical_sim.paused or not active
 	var contacts: Array = [] if paused else contact_snapshot()
 	ground_audio.observe_accepted({tick = _mechanical_sim.tick, tick_rate = 1.0 / _mechanical_sim.dt(),
 		paused = paused, contacts = contacts,
-		since_tick = _ground_cadence.since_tick if _mechanical_sim.tick == _ground_cadence.last_tick else -1})
+		since_tick = _ground_cadence.since_tick})
 
 
 ## Actual accepted actuator values only. This path has no render transforms,

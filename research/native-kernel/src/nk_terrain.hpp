@@ -144,7 +144,11 @@ inline Vec3 sample_microrelief_validated(R north, R east, const std::vector<doub
 		const R wavelength = term[1];
 		const R direction_north = term[2];
 		const R direction_east = term[3];
+#ifdef NK_MUTATION
+		const R phase = kTau / wavelength * (direction_north * north + direction_east * east) + term[4]; // negative control
+#else
 		const R phase = kTau * (direction_north * north + direction_east * east) / wavelength + term[4];
+#endif
 		wave += weight * sin_(phase);
 		const R slope_scale = weight * kTau / wavelength * cos_(phase);
 		wave_north += slope_scale * direction_north;

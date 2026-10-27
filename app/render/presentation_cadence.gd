@@ -73,12 +73,11 @@ func take(tick: int) -> bool:
 	return true
 
 
-## Before a pause or similar notification observes the endpoint: true when ticks were waiting.
-func settle(tick: int) -> bool:
-	if not pending:
-		return false
-	_run(tick, tick == _seen_tick)
-	return true
+## Before any other observation (priming, a pause notification, a direct call): records `tick` as
+## observed. Waiting ticks were seen, so it continues them; an unseen tick starts a new history.
+func observe_at(tick: int) -> void:
+	if pending or tick != last_tick:
+		_run(tick, tick == _seen_tick)
 
 
 func reset() -> void:

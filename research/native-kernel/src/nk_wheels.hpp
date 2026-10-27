@@ -110,7 +110,11 @@ inline WheelFrame wheel_frame(const R *s, const WheelContact &c, R steer, const 
 	}
 	const Vec3 &normal = f.normal;
 	f.compression = (f.position[2] + terrain[0]) / norm;
+#ifdef NK_MUTATION
+	const R vx = s[3] + (s[11] * r[2] - s[12] * r[1]); // negative control: reassociated sum
+#else
 	const R vx = s[3] + s[11] * r[2] - s[12] * r[1];
+#endif
 	const R vy = s[4] + s[12] * r[0] - s[10] * r[2];
 	const R vz = s[5] + s[10] * r[1] - s[11] * r[0];
 	const R vn = a[0] * vx + a[1] * vy + a[2] * vz;
@@ -241,7 +245,12 @@ inline bool wheels_evaluate(const R *s, const GroundContext &ctx, R steer, const
 		loads[0] += fx;
 		loads[1] += fy;
 		loads[2] += fz;
+#ifdef NK_MUTATION
+		// negative control: commuted sum (finite-identical; differs only in NaN priority)
+		loads[3] += spin * (rotation[0] * f.side[0] + rotation[3] * f.side[1] + rotation[6] * f.side[2]) + (r[1] * fz - r[2] * fy);
+#else
 		loads[3] += r[1] * fz - r[2] * fy + spin * (rotation[0] * f.side[0] + rotation[3] * f.side[1] + rotation[6] * f.side[2]);
+#endif
 		loads[4] += r[2] * fx - r[0] * fz + spin * (rotation[1] * f.side[0] + rotation[4] * f.side[1] + rotation[7] * f.side[2]);
 		loads[5] += r[0] * fy - r[1] * fx + spin * (rotation[2] * f.side[0] + rotation[5] * f.side[1] + rotation[8] * f.side[2]);
 	}

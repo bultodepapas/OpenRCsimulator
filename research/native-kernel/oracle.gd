@@ -60,6 +60,9 @@ func _run() -> void:
 		identity = _native.backend_identity(), sources = _source_hashes(), components = {}, coverage = {},
 		refusals = {}, timing = {},
 	}
+	if not _self_test():
+		_finish(started)
+		return
 	_check_law_identity()
 	_check_literals()
 	_check_math_shim()
@@ -214,7 +217,27 @@ func _tally(group: String, key: String, amount := 1) -> void:
 	_report.coverage[group][key] = int(_report.coverage[group].get(key, 0)) + amount
 
 
-# ---------------------------------------------------------------- identity, literals, math shim
+# ---------------------------------------------------------------- comparator self-test, identity, literals, math shim
+
+## The comparator must flag a one-ulp change, a zero-sign change and a NaN-sign change before any result counts.
+func _self_test() -> bool:
+	var one := PackedFloat64Array([1.0])
+	var next := _from_bits(PackedInt64Array([_bits(1.0) + 1]))
+	var nan_pair := _from_bits(PackedInt64Array([0x7ff8000000000000, -2251799813685248]))
+	var caught := [
+		not _compare("_self_test", one, next), # GDScript's -0.0 literal is +0.0 (NK-1): build -0.0 from its bits
+		not _compare("_self_test", PackedFloat64Array([0.0]), _from_bits(PackedInt64Array([-9223372036854775808]))),
+		not _compare("_self_test", PackedFloat64Array([nan_pair[0]]), PackedFloat64Array([nan_pair[1]])),
+		_compare("_self_test", one, PackedFloat64Array([1.0])),
+	]
+	var entry: Dictionary = _report.components["_self_test"]
+	var ok: bool = caught == [true, true, true, true] and entry.finite_ulp == 1 and entry.zero_sign == 1 and entry.nan_bits == 1
+	_report.components.erase("_self_test")
+	_report.self_test = {passed = ok, detected = caught}
+	if not ok:
+		_failures.append("comparator self-test failed")
+	return ok
+
 
 func _source_hashes() -> Dictionary:
 	var out := {}
@@ -405,7 +428,7 @@ func _check_terrain(context: Dictionary) -> void:
 func _surface_table_variants(surfaces: PackedFloat64Array) -> Array[PackedFloat64Array]:
 	var out: Array[PackedFloat64Array] = [surfaces, PackedFloat64Array(), PackedFloat64Array([1.0, 2.0, 3.0])]
 	for index in surfaces.size():
-		for value: float in [NAN, INF, -INF, 0.0, -0.0, 0.04, 0.05, 1.0, 1.01, 0.5, 20.0, 20.5, -1.0]:
+		for value: float in [NAN, INF, -INF, 0.0, _specials[1], 0.04, 0.05, 1.0, 1.01, 0.5, 20.0, 20.5, -1.0]: # [1] is a true -0.0
 			var edited := surfaces.duplicate()
 			edited[index] = value
 			out.append(edited)

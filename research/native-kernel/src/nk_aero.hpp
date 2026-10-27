@@ -455,7 +455,11 @@ inline Loads global_loads(const R *s, const Air &air, const Deflections &d, cons
 	const R cl0 = m.CL0;
 	const R cla = m.CLa;
 	const R cd0 = m.CD0;
+#ifdef NK_MUTATION
+	R co_cl = cl0 + (cla * alpha + cl_controls); // negative control: reassociated sum
+#else
 	R co_cl = cl0 + cla * alpha + cl_controls;
+#endif
 	R cd_aero = cd0 + m.k_induced * pow_(co_cl - m.CL_minD, 2.0);
 	{
 		const R base = cl0 + cla * alpha;
