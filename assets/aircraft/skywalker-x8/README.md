@@ -1,6 +1,6 @@
 # Skywalker X8 r4: sources and pipeline
 
-Checked 2026-10-25. `skywalker-x8` is the visual family of the X8 flying wing ([X8 plan](../../../docs/X8-PLAN.md)): the author's parametric r4 game model of a 2.12 m EPO flying wing with two elevons, winglets, an electric pusher and no landing gear. The delivery is frozen in `assets/source-deliveries/skywalker-x8-r4/` without its images (owner rule) and identified by [source-manifest.json](source-manifest.json). The family builds through the shared imported-scene builder; it has no catalog entry or physics data yet (X8-06, X8-09).
+`skywalker-x8` is the visual family of the X8 flying wing ([X8 plan](../../../docs/X8-PLAN.md)): the author's parametric r4 game model of a 2.12 m EPO flying wing with two elevons, winglets, an electric pusher and no landing gear. The delivery is frozen in `assets/source-deliveries/skywalker-x8-r4/` without its images (owner rule) and identified by [source-manifest.json](source-manifest.json). The family builds through the shared imported-scene builder and has experimental physics data and a catalog entry (X8-06, X8-09).
 
 ## Sources
 
@@ -46,4 +46,4 @@ After a binding or model change, also run `build_customization.py`, `build_descr
 - Camera doors: a mechanism role and its flight trigger are undecided; until then they are static.
 - Asset licence terms are **not set** by the owner (`LICENSE.txt`); no redistribution terms are implied ([X8 plan D2](../../../docs/X8-PLAN.md#4-owner-decisions)).
 - Runtime textures are 2048² per skin; the closest Workshop view magnifies them about 2.5× at 1080p (3.4× at 1440p). The 4096 sources were not copied; choosing them is open.
-- Godot import memory and frame cost are not measured yet; no simulator display name.
+- Godot import memory and rendered frame cost are not measured yet. The display name is a working name pending the owner's decision.

@@ -45,7 +45,7 @@ run() { run_with_timeout 60 "$@"; }
 # L6a imports the runtime PNG before tests; a clean checkout has no editor cache.
 IMPORT_LOG="$(mktemp)"
 echo "== import resource dependencies"
-if ! run_with_timeout 180 --import > "$IMPORT_LOG" 2>&1; then
+if ! run_with_timeout 600 --import > "$IMPORT_LOG" 2>&1; then
   cat "$IMPORT_LOG"; rm -f "$IMPORT_LOG"; exit 1
 fi
 rm -f "$IMPORT_LOG"

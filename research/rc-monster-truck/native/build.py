@@ -95,10 +95,8 @@ def source_digest() -> str:
     return digest.hexdigest()
 
 
-def refresh_receipt(platform: str, library: Path, platform_lock: dict, lock: dict) -> dict:
-    platform_root = locked.TOOL_ROOT
-    platform_root.mkdir(parents=True, exist_ok=True)
-    compiler_identity = {
+def compiler_identity(platform: str, lock: dict) -> dict:
+    return {
         "windows": {
             "visual_studio_version": lock["windows"]["visual_studio_version"],
             "compiler_toolset": lock["windows"]["compiler_toolset"],
@@ -106,19 +104,66 @@ def refresh_receipt(platform: str, library: Path, platform_lock: dict, lock: dic
         },
         "linux": {"compiler_version": lock["linux"]["compiler_version"]},
     }[platform]
+
+
+def toolchain_digest(platform: str, platform_lock: dict, lock: dict, lock_hash: str, builder_hash: str) -> str:
     toolchain_input = {
-        "lock_sha256": sha256_file(HERE / "toolchain-lock.json"),
+        "lock_sha256": lock_hash,
         "platform": platform,
         "architecture": "x86_64",
-        "compiler": compiler_identity,
+        "compiler": compiler_identity(platform, lock),
         "floating_point_flags": platform_lock["floating_point_flags"],
         "exception_flags": platform_lock["exception_flags"],
-        "scons_builder_sha256": sha256_file(SHARED_BUILDER),
+        "scons_builder_sha256": builder_hash,
         "godot_cpp_commit": lock["godot_cpp"]["commit"],
     }
-    toolchain_digest = hashlib.sha256(
+    return hashlib.sha256(
         (json.dumps(toolchain_input, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
     ).hexdigest()
+
+
+def expected_toolchain_digests(platform: str, lock: dict) -> set[str]:
+    # Existing receipts hash raw checkout bytes. Git may independently check out
+    # either input with LF or CRLF, so preserve those identities across hosts.
+    def newline_hashes(path: Path) -> set[str]:
+        lf = path.read_bytes().replace(b"\r\n", b"\n")
+        return {hashlib.sha256(data).hexdigest() for data in (lf, lf.replace(b"\n", b"\r\n"))}
+
+    return {
+        toolchain_digest(platform, lock[platform], lock, lock_hash, builder_hash)
+        for lock_hash in newline_hashes(HERE / "toolchain-lock.json")
+        for builder_hash in newline_hashes(SHARED_BUILDER)
+    }
+
+
+def validate_platform_receipt(platform: str, record: dict, lock: dict, source_hash: str) -> None:
+    if not isinstance(record, dict):
+        raise SystemExit(f"native {platform} receipt row is not an object")
+    expected = {
+        "platform": platform,
+        "architecture": "x86_64",
+        "backend": "native",
+        "backend_version": lock["backend_version"],
+        "abi_version": lock["native_abi_version"],
+        "solver_version": lock["solver_version"],
+        "source_sha256": source_hash,
+        "toolchain": compiler_identity(platform, lock),
+        "floating_point_flags": lock[platform]["floating_point_flags"],
+        "exception_flags": lock[platform]["exception_flags"],
+    }
+    for key, value in expected.items():
+        if record.get(key) != value or (key == "abi_version" and type(record.get(key)) is not int):
+            raise SystemExit(f"native {platform} receipt {key} does not match current sources or toolchain lock")
+    if record.get("toolchain_sha256") not in expected_toolchain_digests(platform, lock):
+        raise SystemExit(f"native {platform} receipt toolchain_sha256 does not match current toolchain inputs")
+
+
+def refresh_receipt(platform: str, library: Path, platform_lock: dict, lock: dict) -> dict:
+    platform_root = locked.TOOL_ROOT
+    platform_root.mkdir(parents=True, exist_ok=True)
+    digest = toolchain_digest(
+        platform, platform_lock, lock, sha256_file(HERE / "toolchain-lock.json"), sha256_file(SHARED_BUILDER)
+    )
     record = {
         "platform": platform,
         "architecture": "x86_64",
@@ -127,9 +172,9 @@ def refresh_receipt(platform: str, library: Path, platform_lock: dict, lock: dic
         "abi_version": lock["native_abi_version"],
         "solver_version": lock["solver_version"],
         "source_sha256": source_digest(),
-        "toolchain_sha256": toolchain_digest,
+        "toolchain_sha256": digest,
         "binary_sha256": sha256_file(library),
-        "toolchain": compiler_identity,
+        "toolchain": compiler_identity(platform, lock),
         "floating_point_flags": platform_lock["floating_point_flags"],
         "exception_flags": platform_lock["exception_flags"],
     }
@@ -170,8 +215,7 @@ def stage_app_native(lock: dict) -> None:
                 f"{locked.TOOL_ROOT}; missing {platform}. Build each platform first."
             )
         record = json.loads(receipt.read_text(encoding="utf-8"))
-        if record.get("source_sha256") != source_hash or record.get("backend_version") != lock["backend_version"]:
-            raise SystemExit(f"The {platform} native build is stale for current sources; rebuild it before installation.")
+        validate_platform_receipt(platform, record, lock, source_hash)
         if record.get("binary_sha256") != sha256_file(library):
             raise SystemExit(f"The {platform} native binary no longer matches its build receipt.")
         staged[platform] = record

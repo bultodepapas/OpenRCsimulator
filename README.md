@@ -40,11 +40,13 @@ The aircraft and features below describe **current source**, which may differ fr
 | [Jensen Das Ugly Stik 60](docs/UGLY-STIK-PLAN.md) | 1.52 m, .61 glow, tricycle gear | Reference model under evaluation |
 | [Great Planes Extra 300S .60](docs/EXTRA-300-PLAN.md) | 1.63 m, .61 glow, taildragger | Experimental |
 | [P-51D Mustang 1/4](docs/P51-PLAN.md) | 2.82 m, 120 cc gasoline, retractable taildragger gear | Experimental; simulated flaps and retracts |
+| [F4U-1D Corsair 1/4.5](docs/F4U-PLAN.md) | 2.78 m, Moki S250 radial, retractable taildragger gear | Experimental; simulated flaps, retracts and folding wings |
 | [Ventage Jet](docs/AVANTI-S-PLAN.md) | 2.00 m, JetCat P100-RX turbine | Experimental; simulated flaps and retracts |
 | [Turbo Lumber Evolution](docs/TIMBER-INTEGRATION-PLAN.md) | 1.55 m, 4S electric, fixed wheels | Experimental; finite battery by default, optional ideal supply; flaps up, assists off |
+| [X8 Flying Wing](docs/X8-PLAN.md) | 2.12 m, 6S electric pusher, elevons, no landing gear | Experimental; hand launch or airborne start; asset redistribution terms pending |
 | [RC Helicopter Research Trainer](docs/HELICOPTER.md) | X-Cell .60 SE flight reference with an HX-700 visual surrogate | Experimental historical playable reference; ground-pad or hover start; physical validation remains open |
 
-All five fixed-wing airframes offer runway or airborne starts at Club field; Green paradise uses airborne starts. The Stik also has three experimental [glow-engine installations](docs/GLOW-ENGINES.md): O.S. MAX-61FX and MAX-55AX two-strokes, and FS-64V four-stroke, with finite fuel and engine start/cut/mixture controls. These share the Stik visual family.
+The six fixed-wing airframes with landing gear offer runway or airborne starts at Club field; the X8 offers hand launch or airborne starts. Green paradise uses airborne starts. The Stik also has three experimental [glow-engine installations](docs/GLOW-ENGINES.md): O.S. MAX-61FX and MAX-55AX two-strokes, and FS-64V four-stroke, with finite fuel and engine start/cut/mixture controls. These share the Stik visual family.
 
 The playable helicopter uses X-Cell reference physics. The articulated HX-700 inspector and electric 3D candidate are separate research tools; the candidate is laboratory-only. Aircraft-specific controls and modeling limits live in the linked guides.
 
