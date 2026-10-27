@@ -1,0 +1,12 @@
+test_checkpoint rc=0 :: H8 checkpoints: 92 checks, 0 failed
+test_checkpoint_integrity rc=0 :: H8-R1 checkpoint integrity: 149 checks, 0 failed
+test_crash_hull_labels rc=0 :: 274 checks, 0 failed
+test_lake_collision rc=0 :: all lake collision checks passed
+test_lake_ground_contact rc=0 :: all lake ground contact checks passed
+test_lake_session rc=0 :: 35 lake session checks, 0 failed
+test_prop_strike rc=0 :: 41 checks, 0 failed
+test_prop_strike_feedback rc=0 :: 16 checks, 0 failed
+test_water_checkpoint rc=0 :: LU-27 water checkpoint: 16 checks, 0 failed
+test_water_director rc=0 :: 22 checks, 0 failed
+test_water_effects rc=0 :: 39 checks, 0 failures
+test_golden rc=0 :: 4 golden flights, 0 failed

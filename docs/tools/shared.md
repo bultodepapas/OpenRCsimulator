@@ -74,7 +74,7 @@ There is no GUT or GdUnit. A test is `app/tests/test_<topic>.gd` that `extends S
 | Tool | Status |
 | --- | --- |
 | CodeRabbit GitHub App | Configured by [`.coderabbit.yaml`](../../.coderabbit.yaml); [usage](../TOOLS.md#coderabbit-reviews). |
-| CodeRabbit skills in `.agents/skills/` | Need the `coderabbit` CLI, which is not installed on the dev VM. |
+| CodeRabbit CLI and agent skills | CLI 0.9.1 in `~/.local/bin` on the dev VM (2026-10-27); Claude Code plugin `coderabbit` at user scope; Codex skills in `.agents/skills/`. Each user signs in once; [setup](../TOOLS.md#local-cli-and-agents). |
 | codebase-memory-mcp | Not configured in this repository or on the dev VM; use `rg`. |
 | `gh`, `act`, `xvfb-run`, `rg`, Node 24 | Installed on the dev VM. Blender, FFmpeg and `just` are not. |
 

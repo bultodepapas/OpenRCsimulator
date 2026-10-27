@@ -92,7 +92,13 @@ GP-19e, alternating order ([raw](observer-share-pairs.jsonl)):
 Without profiler overhead, the presentation observers take about a third of
 main-thread CPU in flight and about a quarter on the runway (both including per-frame
 work at the 30 fps cap). This bounds the gain available from running them per frame
-instead of per tick; their per-tick event contracts remain an owner decision.
+instead of per tick. The owner chose that direction; measured steps so far:
+
+- [GP-19f](../../../ground-physics/GP-19/evidence/unloaded-rows/README.md): the ground-audio
+  observer stays per tick but returns cheap unloaded rows well clear of the ground. Flight
+  main-thread CPU −10.3% median (−11.8%, −7.1%, −10.3%); touchdown cues unchanged.
+- Windsock and field people per frame: rejected (+3.2%, +1.0%, −1.2%; no gain beyond
+  noise) and reverted.
 
 ## Not done: candidates for owners
 

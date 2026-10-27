@@ -18,6 +18,8 @@ The [default-field dry-contact correction](evidence/dry-lake-scrape/README.md) q
 
 GP-19e removes the observation's per-tick cost without changing its packets: the value cache key is serialized only for a repeated call at the same tick, and the hull law identity is formatted once. [Paired parity and timing](evidence/scrape-observation-cost/README.md).
 
+GP-19f keeps the accepted ground-audio observer per tick but returns cheap unloaded rows while the aircraft is well above gear reach (reach + terrain bound + 1 m + 0.5 s of travel). Touchdown cues and near-ground rows are bytewise unchanged in three real descents; far rows report the fallback material; flight main-thread CPU −10.3%. [Evidence](evidence/unloaded-rows/README.md).
+
 A [native Turbo Lumber capture](evidence/native-continuous-timber/README.md) now completes takeoff, touchdown and straight-ahead terrain rollout in one production flight. WASAPI PCM clocks, zero capture discards/clipping and all 44 selected before/after source hashes pass; estimated Master true peak is -22.5047 dBTP. This single current-physics route does not activate the advanced operator or establish isolated hull-scrape audibility, human listening, whole-fleet coverage or 1080p performance. The capture wrapper follows the live catalog and distinguishes requested-aircraft success from complete catalog coverage.
 
 The [native hull-scrape cohort](evidence/native-hull-scrape/README.md) verifies the

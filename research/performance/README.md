@@ -660,3 +660,18 @@ It also replays the sweep as (a, b, a, b) pairs and runs five concurrent callers
 the root memo (NITRO-06-R2), comparing every root with the reference.
 [NITRO-06-R1 evidence](../../docs/research/glow-engines/NITRO-06-R1/README.md),
 [NITRO-06-R2 evidence](../../docs/research/glow-engines/NITRO-06-R2/README.md).
+
+## Ground-audio unloaded rows (GP-19f)
+
+`ground_audio_far_pair.gd` flies three real descents to touchdown and feeds an explicit prior
+`app/audio/ground_audio_model.gd` and the working tree into two accepted `GroundAudio`
+observers per tick. Near-ground rows must be bytewise equal and the captured touchdown cues
+identical; far rows must be unloaded.
+
+```sh
+mkdir -p tmp/gp19f && git show b6e3fe7d4:app/audio/ground_audio_model.gd > tmp/gp19f/ground_audio_model_ref.gd
+python3 tools/godot/run_checked.py --timeout 1400 -- "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/performance/ground_audio_far_pair.gd" -- --reference="$PWD/tmp/gp19f/ground_audio_model_ref.gd"
+```
+
+[GP-19f evidence](../../docs/research/ground-physics/GP-19/evidence/unloaded-rows/README.md).

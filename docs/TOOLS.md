@@ -105,7 +105,38 @@ by opening a non-draft PR and checking for the CodeRabbit bot review/check;
 an existing PR can use the manual review command. OSS [rate limits](https://docs.coderabbit.ai/management/rate-limits)
 still apply. Chat replies require a mention; issue enrichment and planning are off.
 The bot applies the repository guidelines and advises reviewers; it does not
-replace CI, physical validation or maintainer approval.
+replace CI, physical validation or maintainer approval. It aborts a review when
+the PR is merged or closed (`abort_on_close`, default on): PRs #6 and #7 were
+merged before their reviews finished. Wait for the CodeRabbit check before
+merging when you want its review.
+
+### Local CLI and agents
+
+The [CLI](https://docs.coderabbit.ai/cli) reviews local changes before a PR.
+Download the official installer (`https://cli.coderabbit.ai/install.sh`), read
+it, then run it; it verifies a signed release manifest and installs `coderabbit`
+and `cr` into `~/.local/bin`. Sign in once in your own terminal with
+`coderabbit auth login` (browser); agents never run the login or handle tokens.
+`coderabbit doctor` checks readiness.
+
+- **Claude Code:** install the official plugin with `/plugin install coderabbit`.
+  It adds `/coderabbit:code-review`, `/coderabbit:autofix` and the
+  `coderabbit:code-reviewer` and `coderabbit:autofix` agents. Do not copy
+  `.agents/skills/code-review` into `.claude/skills/`: the name collides with
+  Claude Code's built-in `/code-review`.
+- **Codex:** uses the skills in `.agents/skills/{code-review,autofix}`, pinned by
+  [`skills-lock.json`](../skills-lock.json).
+
+Common commands: `coderabbit review --agent --base main` or `--uncommitted`
+before a PR; `coderabbit pullrequest <n> --show-threads --agent` to read the
+App's open threads; `coderabbit usage --agent` for quota. A local review sends
+the diff to CodeRabbit, so check the scope for secrets first. A
+`review_skipped` result is not a clean review.
+
+CLI 0.9.1 `coderabbit config validate` fails with `unknown keyword:
+"x-undocumented"` because it compiles the current remote schema strictly. On
+2026-10-27 `.coderabbit.yaml` had 0 errors against the same schema with a
+non-strict JSON Schema validator. Recheck after `coderabbit update`.
 
 ## Release sequence
 

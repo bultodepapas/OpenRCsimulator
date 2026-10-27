@@ -1,0 +1,7 @@
+test_flight_statistics_detector rc=0 :: 111 checks, 0 failed
+test_flight_statistics_lifecycle rc=0 :: Flight statistics lifecycle: 51 checks, 0 failed
+test_flight_statistics_resets rc=0 :: 48 checks, 0 failed
+test_flight_statistics_store rc=0 :: 49 checks, 0 failed
+test_flight_statistics_writer rc=0 :: Flight statistics writer: 18 checks, 0 failed
+test_heli_impact_detector rc=0 :: HELI impact detector: 26 checks, 0 failed
+test_ui_statistics rc=0 :: statistics UI history refresh checks complete

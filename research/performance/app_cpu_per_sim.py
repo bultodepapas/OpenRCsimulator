@@ -57,7 +57,9 @@ def main():
     warm_s, sample_s = float(sys.argv[3]), float(sys.argv[4])
     max_fps = int(sys.argv[5]) if len(sys.argv) > 5 else 30
     time_scale = float(sys.argv[6]) if len(sys.argv) > 6 else 0.5
-    launch = json.loads(ctl(0, "launch", "--headless").splitlines()[-1])
+    # OPENRC_APP_DIR runs a baseline app copy (for example a hard-linked snapshot) without touching app/.
+    app_dir = os.environ.get("OPENRC_APP_DIR", "")
+    launch = json.loads(ctl(0, "launch", "--headless", *(["--app", app_dir] if app_dir else [])).splitlines()[-1])
     port, pid = launch["port"], launch["pid"]
     try:
         # Headless routes keep display preferences in memory, so set the cap directly.
@@ -88,7 +90,7 @@ def main():
                           "cpu_ms_per_sim_s": round(1000 * (c1 - c0) / sim_s, 2),
                           "realtime": round(sim_s / (w1 - w0), 4), "sim_step_usec": round(perf["sim_step_usec"], 1),
                           "fps": perf["fps"], "max_fps": max_fps, "time_scale": time_scale,
-                          "presentation_detached": os.environ.get("OPENRC_DETACH_PRESENTATION") == "1", "height_m": [round(s0["height_m"], 1), round(s1["height_m"], 1)],
+                          "presentation_detached": os.environ.get("OPENRC_DETACH_PRESENTATION") == "1", "app_dir": app_dir or "app", "height_m": [round(s0["height_m"], 1), round(s1["height_m"], 1)],
                           "crashed": s1["crashed"], "tick": [s0["tick"], s1["tick"]]}))
     finally:
         ctl(port, "stop")

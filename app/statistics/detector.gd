@@ -679,16 +679,23 @@ func _trim_speed_window() -> void:
 
 
 func _add_speed_candidate(tick: int) -> void:
-	var tas_values: Array[float] = []
-	var ground_values: Array[float] = []
-	for i in range(_speed_head, _speed_window.size()):
-		var entry: Dictionary = _speed_window[i]
-		tas_values.append(float(entry.tas))
-		ground_values.append(float(entry.groundspeed))
-	var median_tas := _median(tas_values)
-	var median_ground := _median(ground_values)
-	var tas_stable := _all_near_median(tas_values, median_tas)
-	var ground_stable := _all_near_median(ground_values, median_ground)
+	# Runs every accepted tick (UI-FS-08-R1): packed copies sort natively, and the sorted
+	# extremes decide stability exactly (|v − median| is monotonic on each side of the median).
+	var count: int = _speed_window.size() - _speed_head
+	var tas_values := PackedFloat64Array()
+	var ground_values := PackedFloat64Array()
+	tas_values.resize(count)
+	ground_values.resize(count)
+	for i in count:
+		var entry: Dictionary = _speed_window[_speed_head + i]
+		tas_values[i] = float(entry.tas)
+		ground_values[i] = float(entry.groundspeed)
+	tas_values.sort()
+	ground_values.sort()
+	var median_tas := _sorted_median(tas_values)
+	var median_ground := _sorted_median(ground_values)
+	var tas_stable := _sorted_near_median(tas_values, median_tas)
+	var ground_stable := _sorted_near_median(ground_values, median_ground)
 	if not tas_stable or not ground_stable:
 		_record_speed_rejection("unsteady_window")
 	_pending_speed.append({
@@ -721,20 +728,18 @@ func _commit_mature_speed_candidates() -> void:
 		_pending_speed_head = 0
 
 
-func _all_near_median(values: Array[float], median: float) -> bool:
+## Every value within tolerance of the median; `sorted` is ascending and finite.
+func _sorted_near_median(sorted: PackedFloat64Array, median: float) -> bool:
+	if sorted.is_empty():
+		return false
 	var tolerance := maxf(float(_thresholds.speed_stability_absolute_mps),
 		float(_thresholds.speed_stability_fraction) * median)
-	for value: float in values:
-		if absf(value - median) > tolerance:
-			return false
-	return not values.is_empty()
+	return absf(sorted[0] - median) <= tolerance and absf(sorted[sorted.size() - 1] - median) <= tolerance
 
 
-func _median(values: Array[float]) -> float:
-	if values.is_empty():
+func _sorted_median(sorted: PackedFloat64Array) -> float:
+	if sorted.is_empty():
 		return -1.0
-	var sorted: Array[float] = values.duplicate()
-	sorted.sort()
 	var middle := sorted.size() / 2
 	if sorted.size() % 2 == 1:
 		return sorted[middle]

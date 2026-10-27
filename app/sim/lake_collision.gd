@@ -64,6 +64,17 @@ static func first_hit_sampled(lake: Dictionary, previous: PackedFloat64Array,
 	return {ok = true, event = event, reason = ""}
 
 
+## A gear contact's finite body point, or empty when the contact cannot be probed.
+static func _gear_probe_point(contact_value: Variant) -> PackedFloat64Array:
+	if typeof(contact_value) != TYPE_DICTIONARY:
+		return PackedFloat64Array()
+	var body_point_value: Variant = (contact_value as Dictionary).get("position")
+	if typeof(body_point_value) != TYPE_PACKED_FLOAT64_ARRAY or body_point_value.size() != 3 \
+			or not SceneryCollision._packed_finite(body_point_value):
+		return PackedFloat64Array()
+	return body_point_value
+
+
 static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		hull: PackedFloat64Array, gear: Dictionary, tick: int, dt: float, mass: float,
 		inertia: PackedFloat64Array, soft_bank: bool, prop_disc: Dictionary,
@@ -73,37 +84,19 @@ static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, cand
 			or not SceneryCollision._packed_finite(hull) or not is_finite(dt) or dt <= 0.0 or tick < 1 \
 			or not is_finite(mass) or mass <= 0.0 or not _valid_inertia(inertia):
 		return null
-	var probes: Array[Dictionary] = []
+	# LU-25-R6: both rejects below need only the bounding radius. Measure it first (same points, same
+	# order) and build the probe list only for ticks that can reach the lake.
 	var max_radius: float = 0.0
 	for at: int in range(0, hull.size(), 3):
-		var body_point: PackedFloat64Array = hull.slice(at, at + 3)
-		var radius: float = M.norm(body_point)
-		max_radius = maxf(max_radius, radius)
-		probes.append({"body_point": body_point, "kind": "hull", "index": at / 3,
-			"order": at / 3, "name": ""})
-	var gear_offset: int = probes.size()
+		max_radius = maxf(max_radius, M.norm(hull.slice(at, at + 3)))
 	var contacts_value: Variant = gear.get("contacts", [])
 	if typeof(contacts_value) == TYPE_ARRAY:
-		var contacts: Array = contacts_value
-		for index: int in contacts.size():
-			if typeof(contacts[index]) != TYPE_DICTIONARY:
-				continue
-			var contact: Dictionary = contacts[index]
-			var body_point_value: Variant = contact.get("position")
-			if typeof(body_point_value) != TYPE_PACKED_FLOAT64_ARRAY or body_point_value.size() != 3 \
-					or not SceneryCollision._packed_finite(body_point_value):
-				continue
-			var body_point: PackedFloat64Array = body_point_value
-			max_radius = maxf(max_radius, M.norm(body_point))
-			probes.append({"body_point": body_point, "kind": "gear", "index": index,
-				"order": gear_offset + index, "name": str(contact.get("name", ""))})
+		for contact_value: Variant in contacts_value:
+			var gear_point: PackedFloat64Array = _gear_probe_point(contact_value)
+			if not gear_point.is_empty():
+				max_radius = maxf(max_radius, M.norm(gear_point))
 	if _prop_disc_is_valid(prop_disc):
-		var prop_radius: float = M.norm(prop_disc.hub) + float(prop_disc.radius)
-		max_radius = maxf(max_radius, prop_radius)
-		probes.append({"kind": "propeller", "index": -1, "order": probes.size(),
-			"name": "propeller", "disc": prop_disc, "reach": prop_radius})
-	if probes.is_empty():
-		return null
+		max_radius = maxf(max_radius, M.norm(prop_disc.hub) + float(prop_disc.radius))
 	# Every rotating probe lies within max_radius of the interpolated CG. Bound the extra
 	# chord pad with SceneryCollision's full 2-degree limit, wider than these 0.5-degree
 	# subdivisions, so the aggregate reject cannot skip a rotating or grazing contact.
@@ -117,12 +110,32 @@ static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, cand
 	if lowest_possible_probe_down < highest_possible_down - LakeSurface.CONTACT_EPSILON_M:
 		return null
 	var bank_bounds: PackedFloat64Array = _polygon_bounds(lake.bank_ne_m)
-	var shore_bounds: PackedFloat64Array = _polygon_bounds(lake.shoreline_ne_m)
 	var start_north: float = minf(previous[RB.POS], candidate[RB.POS]) - max_radius
 	var end_north: float = maxf(previous[RB.POS], candidate[RB.POS]) + max_radius
 	var start_east: float = minf(previous[RB.POS + 1], candidate[RB.POS + 1]) - max_radius
 	var end_east: float = maxf(previous[RB.POS + 1], candidate[RB.POS + 1]) + max_radius
 	if not _aabb_overlaps(bank_bounds, start_north, end_north, start_east, end_east, 0.0):
+		return null
+	var shore_bounds: PackedFloat64Array = _polygon_bounds(lake.shoreline_ne_m)
+	var probes: Array[Dictionary] = []
+	for at: int in range(0, hull.size(), 3):
+		var body_point: PackedFloat64Array = hull.slice(at, at + 3)
+		probes.append({"body_point": body_point, "kind": "hull", "index": at / 3,
+			"order": at / 3, "name": ""})
+	var gear_offset: int = probes.size()
+	if typeof(contacts_value) == TYPE_ARRAY:
+		var contacts: Array = contacts_value
+		for index: int in contacts.size():
+			var body_point: PackedFloat64Array = _gear_probe_point(contacts[index])
+			if body_point.is_empty():
+				continue
+			probes.append({"body_point": body_point, "kind": "gear", "index": index,
+				"order": gear_offset + index, "name": str(contacts[index].get("name", ""))})
+	if _prop_disc_is_valid(prop_disc):
+		var prop_radius: float = M.norm(prop_disc.hub) + float(prop_disc.radius)
+		probes.append({"kind": "propeller", "index": -1, "order": probes.size(),
+			"name": "propeller", "disc": prop_disc, "reach": prop_radius})
+	if probes.is_empty():
 		return null
 	var q_start: PackedFloat64Array = RB._att(previous)
 	var q_end: PackedFloat64Array = RB._att(candidate)

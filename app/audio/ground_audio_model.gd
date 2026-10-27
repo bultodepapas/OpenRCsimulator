@@ -6,6 +6,11 @@ const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const Wheels := preload("res://physics/ground_wheels.gd")
+const Terrain := preload("res://physics/ground_terrain.gd")
+## GP-19f (2026-10-27): beyond gear reach over the terrain bound, plus this margin and this many
+## seconds of travel at the current speed, no wheel can load before the next real rows begin.
+const FAR_MARGIN_M := 1.0
+const FAR_HORIZON_S := 0.5
 const SURFACE_TYPES := ["runway", "rotorpad", "mown", "rough"]
 ## Authored material identities select existing recordings. This table is an
 ## audio choice, not a friction/roughness model or an inference from land usage.
@@ -45,14 +50,19 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	else:
 		wheel_count = 0
 	var brake: float = float(sim.inputs[5]) if session.has_method("gear_is_retractable") and bool(session.call("gear_is_retractable")) and sim.inputs.size() > 5 else 0.0
-	var wheel_evaluation: Dictionary = {}
-	if wheel_count > 0:
-		wheel_evaluation = Ground.evaluate(state, gear, steer, ground_surfaces, anchors, speeds, brake, true, lake)
-	var wheel_diagnostics: Array = wheel_evaluation.get("wheels", [])
 	var attitude := M.quat(state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3])
 	var base_velocity := M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2])
 	var body_rate := state.slice(RB.RATE, RB.RATE + 3)
 	var reference_load: float = maxf(1.0, float(sim.mass) * float(sim.gravity) / float(gear_contacts.size()))
+	# Well clear of the ground, every wheel is unloaded and the cues only age their airborne state, so skip the
+	# wheel frames, contact law and material queries. Rows resume in full FAR_HORIZON_S before any wheel can load.
+	if Terrain.is_valid_surface_table(ground_surfaces) and -state[RB.POS + 2] > float(gear.get("reach", INF)) \
+			+ Terrain.max_height_validated(ground_surfaces) + FAR_MARGIN_M + FAR_HORIZON_S * M.norm(base_velocity):
+		return _unloaded_rows(gear_contacts, state, attitude, base_velocity, body_rate, reference_load)
+	var wheel_evaluation: Dictionary = {}
+	if wheel_count > 0:
+		wheel_evaluation = Ground.evaluate(state, gear, steer, ground_surfaces, anchors, speeds, brake, true, lake)
+	var wheel_diagnostics: Array = wheel_evaluation.get("wheels", [])
 	var environment := session.get("environment") as RefCounted
 	var time_s: float = sim.time()
 	for index: int in range(gear_contacts.size()):
@@ -112,6 +122,42 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 			roll_enabled = true,
 		})
 	return contacts_out
+
+
+## Rows for wheels that cannot touch this tick: the body pose with flat-ground normal, approach and compression
+## (exact on flat ground), no load, and the explicit hard-roll fallback used whenever no material is resolved.
+static func _unloaded_rows(gear_contacts: Array, state: PackedFloat64Array, attitude: PackedFloat64Array,
+		base_velocity: PackedFloat64Array, body_rate: PackedFloat64Array, reference_load: float) -> Array[Dictionary]:
+	var rows: Array[Dictionary] = []
+	var origin := M.v3(state[RB.POS], state[RB.POS + 1], state[RB.POS + 2])
+	for index: int in range(gear_contacts.size()):
+		var contact: Dictionary = gear_contacts[index]
+		if not contact.has("position"):
+			continue
+		var arm: PackedFloat64Array = contact.position
+		var point_velocity: PackedFloat64Array = M.q_rotate(attitude, M.add(base_velocity, M.cross(body_rate, arm)))
+		var position_ned: PackedFloat64Array = M.add(origin, M.q_rotate(attitude, arm))
+		rows.append({
+			id = str(contact.get("name", "gear_%d" % index)),
+			position = Frames.ned_to_render(Array(position_ned)),
+			velocity_mps = Frames.ned_to_render(Array(point_velocity)),
+			force_n = Frames.ned_to_render([0.0, 0.0, 0.0]),
+			surface_normal = Frames.ned_to_render([0.0, 0.0, -1.0]),
+			normal_force_n = 0.0,
+			reference_load_n = reference_load,
+			compression_m = position_ned[2],
+			approach_speed_mps = maxf(0.0, point_velocity[2]),
+			rolling_speed_mps = 0.0,
+			rim_speed_mps = 0.0,
+			surface = "hard",
+			material_id = "unspecified",
+			material_resolved = false,
+			surface_audio_fallback = true,
+			surface_region_id = "",
+			grounded = false,
+			roll_enabled = true,
+		})
+	return rows
 
 
 ## Read the same solid-support provider used by the accepted session. Unsupported

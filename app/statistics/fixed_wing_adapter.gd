@@ -66,7 +66,7 @@ func sample() -> Dictionary:
 	var body_normal: PackedFloat64Array = M.q_rotate(M.q_conj(q), normal)
 	var bank: float = atan2(body_normal[1], -body_normal[2])
 	var pitch: float = atan2(body_normal[0], sqrt(body_normal[1] ** 2 + body_normal[2] ** 2))
-	var compression: PackedFloat64Array = session.gear_compressions(s)
+	var compression: PackedFloat64Array = _compressions(s)
 	var physical := false
 	var intended := false
 	var stop := bool(profile.get("landing_available", false))
@@ -122,6 +122,24 @@ func sample() -> Dictionary:
 	var damage := _damage_observation()
 	if not damage.is_empty() and not damage.events.is_empty(): result.component_failure_observation = damage
 	return result
+
+
+## Gear compressions, or one negative value per contact above the contact law's own no-touch bound
+## (gear reach over the terrain height bound): only `> 0.00001` contact flags are read here, and every
+## flag is false there, so the per-wheel terrain samples are skipped (UI-FS-08-R1). The session
+## lake needs no check: set_lake_context refuses invalid definitions, so its [NAN] result cannot occur.
+func _compressions(s: PackedFloat64Array) -> PackedFloat64Array:
+	if not session.aircraft.get("ok", false) or not session.sim.state_is_valid(s):
+		return session.gear_compressions(s)
+	var surfaces: PackedFloat64Array = session.ground_surfaces if session.wheel_count() > 0 else PackedFloat64Array()
+	var gear: Dictionary = session.current_landing_gear()
+	if gear.is_empty() or not Terrain.is_valid_surface_table(surfaces) \
+			or -s[RB.POS + 2] <= float(gear.get("reach", INF)) + Terrain.max_height_validated(surfaces):
+		return session.gear_compressions(s)
+	var clear := PackedFloat64Array()
+	clear.resize(gear.get("contacts", []).size())
+	clear.fill(-1.0)
+	return clear
 
 
 ## Only an accepted physical receipt may open a nonterminal accident. Missing legacy

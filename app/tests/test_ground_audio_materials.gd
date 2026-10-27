@@ -66,6 +66,14 @@ func _initialize() -> void:
 		region.center_north = session.sim.state[0]
 		region.center_east = session.sim.state[1]
 	check("actual Session installs field", session.set_field(installed_field))
+	# Well above gear reach, rows are unloaded with the explicit fallback; material is read near the ground.
+	var airborne := Model.snapshot_contacts(session, {"surfaces": []})
+	check("airborne rows well above gear reach carry the explicit unloaded fallback", not airborne.is_empty()
+		and airborne.all(func(c: Dictionary) -> bool:
+			return c.material_id == "unspecified" and c.surface_audio_fallback and float(c.normal_force_n) == 0.0))
+	var near_state: PackedFloat64Array = session.sim.state.duplicate()
+	near_state[2] = -float(session.current_landing_gear().get("reach", 0.0))
+	session.sim.state = near_state
 	var checkpoint := var_to_bytes(session.checkpoint())
 	check("actual Session checkpoint available", not session.checkpoint().is_empty())
 	var contacts := Model.snapshot_contacts(session, {"surfaces": []})
