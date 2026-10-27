@@ -20,6 +20,18 @@ python3 tools/companions/rebind.py --accept   # re-pin and write a receipt
 
 The tool replays the [retained tapes](qualification.json) in candidate mode on two disposable copies under `tmp/`. The copies differ only in the solver directories: the accepted revision and the current tree. Byte-identical CSVs re-pin the profile, update `qualification.json` and write a receipt under [AFC-02/rebinds](../../docs/research/ai-companions/AFC-02/rebinds/). Commit all three together. A run takes about a minute.
 
+## When the engine pin changes
+
+Replay refuses a tape recorded by another engine (`Engine version differs`), so an engine change stops this tool with exit 2. Re-record the nine scenarios with the new pinned engine, point `qualification.json` at them and run the tool again. The probe refuses an existing output directory:
+
+```sh
+G="$(app/get-godot.sh)"; P="$PWD/research/ai-companions/encounter_probe.gd"
+"$G" --headless --path app --audio-driver Dummy --script "$P" -- --record-crossings --out="$PWD/<new dir>/crossings"
+"$G" --headless --path app --audio-driver Dummy --script "$P" -- --out="$PWD/<new dir>/parallel"
+```
+
+The current tapes were recorded on Godot 4.8-beta1 ([AFC-02-R4](../../docs/research/ai-companions/AFC-02-R4/README.md)).
+
 Use `--workspace-root D:/OpenRCsimulator-evidence/rebind` when the repository drive lacks space for the project copy. Each run creates its own directory there; `--keep` retains it for inspection.
 
 | Exit | Meaning |

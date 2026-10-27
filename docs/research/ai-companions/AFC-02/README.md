@@ -305,3 +305,10 @@ wheel profile. Negative checks: a disposable 0.1 % density mutation in
 `physics/aero.gd` changed all nine tapes (up to 0.68 N, exit 1, nothing
 re-pinned); a disposable Stik wheel-row change made replay refuse the
 checkpoint.
+
+## Re-bind tapes on Godot 4.8 (AFC-02-R4), 2026-10-27
+
+The retained tapes were 4.7.2 recordings, which replay refuses since the GDU-03
+engine change, so the tool could not run. The nine scenarios were re-recorded on
+4.8-beta1 and are byte-identical between the accepted and current solver; the
+profile is re-pinned to `590372ba`. [Evidence](../AFC-02-R4/README.md).
