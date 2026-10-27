@@ -1,0 +1,73 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8803f1e5-0162-4504-87fd-ffb48dc5ac4e",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/gp12-shaft-capacity/runtime-app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-shaft-capacity/test_shaft_capacity.gd",
+    "--",
+    "--rows-only",
+    "--skip-reference-audits"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:41:56.039994+00:00",
+  "label": "rows-01",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\checks\\rows-01-qzc9c05g\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\checks\\rows-01-qzc9c05g\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Shaft capacity draft:"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 3,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Cannot find member \"max\" in base \"PackedInt64Array\".",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-shaft-capacity/test_shaft_capacity.gd:64)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Parse Error: Function \"max()\" not found in base PackedInt64Array.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-shaft-capacity/test_shaft_capacity.gd:64)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-shaft-capacity/test_shaft_capacity.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "Shaft capacity draft:"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.954,
+  "log_bytes": 650,
+  "log_sha256": "fcc059d993bbec06858320753050bdbbec791f9fbab31d35f52c59ae450ed538"
+}

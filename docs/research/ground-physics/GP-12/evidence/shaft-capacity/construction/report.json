@@ -1,0 +1,395 @@
+{
+  "format": "openrc-detached-shaft-capacity-review v1",
+  "status": "mapping-foundation-ready-for-review; powered240Hz-startup-unqualified",
+  "production_manifest": "tmp/gp12-shaft-capacity/manifest.json",
+  "production_manifest_sha256": "2d6ce78558d5051fec1b6d6721af0d7997223741acbdec208bc230daf9db5208",
+  "installed_runtime_unchanged": [
+    {
+      "path": "app/physics/contact_capacity.gd",
+      "before_sha256": "f43eaf56725e79695edb47ace1a16fbcead0c30f33bf2ee05f87a267f86f3bab",
+      "after_sha256": "f43eaf56725e79695edb47ace1a16fbcead0c30f33bf2ee05f87a267f86f3bab",
+      "unchanged": true
+    },
+    {
+      "path": "app/physics/aircraft_ground_step.gd",
+      "before_sha256": "64cbe64bd2fe54ef36531564fbbeebe17272652de9c78b7711fa545e2ababc3e",
+      "after_sha256": "64cbe64bd2fe54ef36531564fbbeebe17272652de9c78b7711fa545e2ababc3e",
+      "unchanged": true
+    },
+    {
+      "path": "app/physics/aircraft_ground_electric.gd",
+      "before_sha256": "33361dc677a3369d80d60df99241da58b8a597bcfe9a6ae2730cb921084c6870",
+      "after_sha256": "33361dc677a3369d80d60df99241da58b8a597bcfe9a6ae2730cb921084c6870",
+      "unchanged": true
+    }
+  ],
+  "primary_suites": [
+    "production-projection-01",
+    "projection-generic-02",
+    "projection-step-01",
+    "projection-traction-02"
+  ],
+  "primary_assertions": 489,
+  "main_project_final_assertions": 141,
+  "complete_original_oracles": {
+    "evaluations": 8,
+    "steps": [
+      {
+        "law": "fixed-hub-rk4-normal-endpoint-impulse-lie-v1",
+        "ok": true,
+        "status": "accepted"
+      },
+      {
+        "law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+        "ok": false,
+        "status": "error_control_exhausted"
+      }
+    ],
+    "fixture_sha256": "bbb1d11179dfc89ba23285f1d9c9f5f46fe6f9652ce31990f4ea0f2f7f10ac6d",
+    "capture_source": "results-main-final.bin original fields, checked main-runtime-final; installed runtime prehashes above unchanged",
+    "original_capture_sha256": "dc21fe129bc7f0f8dba42f3045a32ff762ff4e50955b7e0bc8edb1dc4b1313e1"
+  },
+  "negative_control": "disposable installed evaluator force+1N; both aliases changed;16 frozen comparisons refused; restored exact payload hash",
+  "startup": "unchanged strict/throughput raw gates refuse .02 and1 duty from rest at240Hz under16; no operator/reservation change",
+  "mechanism_summary": "tmp/gp12-shaft-capacity/mechanism-summary.json",
+  "receipts": [
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/candidate-generic-01-izs70gdz/report.json",
+      "label": "candidate-generic-01",
+      "ok": false,
+      "reason": "missing_required_text",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "78",
+          "0"
+        ]
+      ],
+      "sha256": "a9618523bb5709596a4867d472e8ac28107ca61f388128429db3dec8af8d00ac",
+      "log_sha256": "5ab6ddf819a578d3e3442e75851b63010cfb79bd207aaade2f0d25e9e01d3d83"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/debug-start-01-u8o14o0_/report.json",
+      "label": "debug-start-01",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [],
+      "sha256": "049f052c13f1bda8f4d154cdcf7645524bbbeffd17a79acc244c8800cb2e3dc1",
+      "log_sha256": "5874b8fe65c652e11143503d86e91710e95816e98d95f58d481dfde7e28fbdf5"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/debug-start-02-t40qy_hn/report.json",
+      "label": "debug-start-02",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [],
+      "sha256": "c7c5f60fa93f0129a795d1ba7407425a48510afe32a2c836415e1f739190bd00",
+      "log_sha256": "80702a0c1bf8328b2e48817f8d8602cfb631513200e66cd22d17be563718087f"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/debug-start-03-l42jevhl/report.json",
+      "label": "debug-start-03",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [],
+      "sha256": "62e4e077ad62686093e92e51de3e541921a8ad4c9162c07b9156edcc4c606223",
+      "log_sha256": "61bf5a5816997cd2a8bd52047b1270b593b08b05884b9cf8a8a4da02783f8560"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/freeze-original-01-v3nge476/report.json",
+      "label": "freeze-original-01",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [],
+      "sha256": "a80b75a06a011d08a12c518b67d91ee6d9b490f963ebe8fe78f2909867fca605",
+      "log_sha256": "477187e5e2e786b8135c0ea55d4f15c184c36d8333620407cb2a1d46461c8afe"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/main-parse-02-7ifuw05o/report.json",
+      "label": "main-parse-02",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [],
+      "sha256": "e0f6711e121f55d39633f6cc4389930db7c9753a0e5d1494ef02eefc25493080",
+      "log_sha256": "1acc654dd7e2c21601f0ecef9a63942db2016bce10866e6eecdd9b70e55ed487"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/main-runtime-03-6runhqsc/report.json",
+      "label": "main-runtime-03",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "126",
+          "0"
+        ]
+      ],
+      "sha256": "4e1da34c972d83a1c7898b4fc69e96f213e4368e5edcedd70d420d111e7c48ad",
+      "log_sha256": "b5d25ef2dbce83ca0478e1b5fb4c38ae5b3d2e9b1bfacd2d2385ce007a177ec8"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/main-runtime-final-ngd7dsbg/report.json",
+      "label": "main-runtime-final",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "127",
+          "0"
+        ]
+      ],
+      "sha256": "a178bf80515c7ad21399cc67300a93ef1051b0207cf9e63999abaf4a8af45560",
+      "log_sha256": "3a44b41c0ca189290baa2b2ef9ebf6c39c98005397873ab266cbbe4d9c23459a"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/main-self-contained-final-95eknpp8/report.json",
+      "label": "main-self-contained-final",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "141",
+          "0"
+        ]
+      ],
+      "sha256": "9af838a6000e82a8c988fa2fc604fc6ce7e9d988cd9c9c11039429192d245f69",
+      "log_sha256": "539037e1fc69c435181eb1190f7d6df4aa15454aa63d5bc57622a1769b255771"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/mechanism-01-0r6hjl_b/report.json",
+      "label": "mechanism-01",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [],
+      "sha256": "c752bc8d2e1ccc1884cbe3270de38feb87de6a3b0deddccb7b5b81d0f2fd078f",
+      "log_sha256": "9cb8c53508d7fe12906695b9120d6f789fb6abb537cbb34372fecfaf32f747f0"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/oracle-force-mutation-01-piv9xe9b/report.json",
+      "label": "oracle-force-mutation-01",
+      "ok": false,
+      "reason": "process_exit",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "119",
+          "16"
+        ]
+      ],
+      "sha256": "32e0133d2d40908ae1bfd690b2a1c2ef314370995a1f16a6e6cb3a386e053c81",
+      "log_sha256": "c9e6603a411d0c2368ec357b1fc4ac6387241a8732d61445e6b45b0f2f24848d"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/parse-01-qba2mbgj/report.json",
+      "label": "parse-01",
+      "ok": false,
+      "reason": "engine_error",
+      "engine_errors": 6,
+      "engine_warnings": 0,
+      "completion_counts": [],
+      "sha256": "cb17d05d607df88e1f1f8a563b35c9bec8d6fc9b1ec7a59ef5102ce50e8ecb91",
+      "log_sha256": "5f11cdf982fb1f28caf2585cf152154a3f4b8fe4131856627aee931bdb9cbf69"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/parse-isolated-01-g3bftjl5/report.json",
+      "label": "parse-isolated-01",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [],
+      "sha256": "fb10d3770a50be9115babcf023a30a04b955740a8f9bdb5cc0ee9765a6a49837",
+      "log_sha256": "1acc654dd7e2c21601f0ecef9a63942db2016bce10866e6eecdd9b70e55ed487"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/production-projection-01-j4em5xmh/report.json",
+      "label": "production-projection-01",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "141",
+          "0"
+        ]
+      ],
+      "sha256": "55e2abe3d2a436b4054b42f23f290688a3fa610d7ecb277ec90e599d891dc832",
+      "log_sha256": "539037e1fc69c435181eb1190f7d6df4aa15454aa63d5bc57622a1769b255771"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/projection-generic-02-q7zs0bw4/report.json",
+      "label": "projection-generic-02",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "78",
+          "0"
+        ]
+      ],
+      "sha256": "cbf0d2e80367d6b394a63b68580863ef5e3134202307ae7e9f976b0dc99b6ab9",
+      "log_sha256": "5ab6ddf819a578d3e3442e75851b63010cfb79bd207aaade2f0d25e9e01d3d83"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/projection-step-01-milru4t4/report.json",
+      "label": "projection-step-01",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "167",
+          "0"
+        ]
+      ],
+      "sha256": "6c45a088bfb008742d16ed7a5708ccbfb2e72631cc01539d8e925b87eeaa6b9c",
+      "log_sha256": "2141d120ae5766d70ac6f424ba091ffcb6208f4e55bb34013379e8e5fb950248"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/projection-traction-01-xpwa7zyd/report.json",
+      "label": "projection-traction-01",
+      "ok": false,
+      "reason": "missing_required_text",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "103",
+          "0"
+        ]
+      ],
+      "sha256": "c114e5eaece185e76e1b3d427a2df83ed5273704cd36ff48d27681ec73415456",
+      "log_sha256": "df466d5b0b0611e6ac20f5ca3eca5c623ab2b0eb5d9f31f5029f207c0d9e4d2e"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/projection-traction-02-4lckjhou/report.json",
+      "label": "projection-traction-02",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "103",
+          "0"
+        ]
+      ],
+      "sha256": "4df751a83d3f29821f3c24d906488e2aadb44e417217020f207ff72e62044593",
+      "log_sha256": "df466d5b0b0611e6ac20f5ca3eca5c623ab2b0eb5d9f31f5029f207c0d9e4d2e"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/rows-01-qzc9c05g/report.json",
+      "label": "rows-01",
+      "ok": false,
+      "reason": "process_exit",
+      "engine_errors": 3,
+      "engine_warnings": 0,
+      "completion_counts": [],
+      "sha256": "1d977fecdf1b2614d07e8b5cdd2d8aa409274d26f5f4a1d4a04a213834a6dfa1",
+      "log_sha256": "fcc059d993bbec06858320753050bdbbec791f9fbab31d35f52c59ae450ed538"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/rows-02-uhnp_20q/report.json",
+      "label": "rows-02",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "104",
+          "0"
+        ]
+      ],
+      "sha256": "6f71ec7775f0a3afc83651df288ffda0bac66520f730ebc824dc03673c8560ed",
+      "log_sha256": "7a7b33f03f04965d987d1cbf960703200b46e73a89a4ab5879329bbfdd33d375"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/runtime-01-4w_ryzxm/report.json",
+      "label": "runtime-01",
+      "ok": false,
+      "reason": "process_exit",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "123",
+          "6"
+        ]
+      ],
+      "sha256": "44ef775fffa15e704c05c04f8aeb694d3c0d3fdd71251a5a9c0311b3511b0e4b",
+      "log_sha256": "88354ee81980a7edf26dc66727f2c23c6e87c4e907f9362173e1302545aa104f"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/runtime-02-i3dnnen6/report.json",
+      "label": "runtime-02",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [
+        [
+          "126",
+          "0"
+        ]
+      ],
+      "sha256": "741ae506349c7b78c334d29b414d4e748a3fdb33c7b9287c8eb5881a78a69fa5",
+      "log_sha256": "b5d25ef2dbce83ca0478e1b5fb4c38ae5b3d2e9b1bfacd2d2385ce007a177ec8"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/summarize-mechanism-01-bc6c_ow3/report.json",
+      "label": "summarize-mechanism-01",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [],
+      "sha256": "42494583a096ed25897cfb934a11dd1ea075e8eedd2c027d8f3ea79af7bfc699",
+      "log_sha256": "f91a8b14ff566fb84920440821286f38243f71c9cf2763467cc2a117c5108871"
+    },
+    {
+      "path": "tmp/gp12-shaft-capacity/checks/summarize-mechanism-02-r25du8io/report.json",
+      "label": "summarize-mechanism-02",
+      "ok": true,
+      "reason": "passed",
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "completion_counts": [],
+      "sha256": "33a3c8d8a42b130c637da17299ffdfdda68e19e8a4084f1f758768b633aefee2",
+      "log_sha256": "f91a8b14ff566fb84920440821286f38243f71c9cf2763467cc2a117c5108871"
+    }
+  ],
+  "exclusions": [
+    "accepted powered startup",
+    "finite battery events",
+    "moving axes/hubs",
+    "stock selection",
+    "performance qualification",
+    "native activation",
+    "physical validation"
+  ]
+}

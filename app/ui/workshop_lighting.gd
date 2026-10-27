@@ -1099,14 +1099,15 @@ func _reset_selected_zone() -> void:
 	if base_id not in Profile.PRESET_IDS:
 		_set_status(tr("This inherited profile has no editable zone default. Choose a preset first."))
 		return
-	var defaults: Dictionary = Profile.preset(base_id)
+	var revision := int(_profile.get("preset_revision", 0))
+	var defaults: Dictionary = Profile.preset(base_id, revision)
 	var zone: Dictionary = {}
 	for item: Dictionary in defaults.get("zones", []):
 		if str(item.get("id", "")) == _selected_zone_id:
 			zone = item.duplicate(true)
 			break
 	if zone.is_empty():
-		for item: Dictionary in Profile.preset("custom").get("zones", []):
+		for item: Dictionary in Profile.preset("custom", revision).get("zones", []):
 			if str(item.get("id", "")) == _selected_zone_id:
 				zone = item.duplicate(true)
 				break

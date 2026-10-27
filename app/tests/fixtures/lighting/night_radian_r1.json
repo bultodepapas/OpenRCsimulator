@@ -1,0 +1,188 @@
+{
+	"brightness": 0.8,
+	"effects": [],
+	"format": "openrc-aircraft-lighting",
+	"orientation_lock": false,
+	"preset_id": "night_radian",
+	"preset_revision": 1,
+	"selection": "preset",
+	"sequence": [],
+	"version": 1,
+	"visual_seed": 0,
+	"zones": [
+		{
+			"brightness": 1.0,
+			"enabled": true,
+			"id": "nav_left",
+			"pattern": {
+				"duty": 0.5,
+				"floor": 1.0,
+				"id": "steady",
+				"palette": [
+					"#FF241C"
+				],
+				"period_ticks": 240,
+				"phase_turns": 0.0,
+				"reverse": false,
+				"segments": 1
+			},
+			"reactive": {
+				"gain": 0.0,
+				"source": "none"
+			}
+		},
+		{
+			"brightness": 1.0,
+			"enabled": true,
+			"id": "nav_right",
+			"pattern": {
+				"duty": 0.5,
+				"floor": 1.0,
+				"id": "steady",
+				"palette": [
+					"#22E85B"
+				],
+				"period_ticks": 240,
+				"phase_turns": 0.0,
+				"reverse": false,
+				"segments": 1
+			},
+			"reactive": {
+				"gain": 0.0,
+				"source": "none"
+			}
+		},
+		{
+			"brightness": 1.0,
+			"enabled": true,
+			"id": "nav_tail",
+			"pattern": {
+				"duty": 0.5,
+				"floor": 1.0,
+				"id": "steady",
+				"palette": [
+					"#FFFFFF"
+				],
+				"period_ticks": 240,
+				"phase_turns": 0.0,
+				"reverse": false,
+				"segments": 1
+			},
+			"reactive": {
+				"gain": 0.0,
+				"source": "none"
+			}
+		},
+		{
+			"brightness": 0.5,
+			"enabled": true,
+			"id": "strip_belly",
+			"pattern": {
+				"duty": 0.5,
+				"floor": 1.0,
+				"id": "steady",
+				"palette": [
+					"#20DFFF"
+				],
+				"period_ticks": 240,
+				"phase_turns": 0.0,
+				"reverse": false,
+				"segments": 1
+			},
+			"reactive": {
+				"gain": 0.0,
+				"source": "none"
+			}
+		},
+		{
+			"brightness": 0.2,
+			"enabled": true,
+			"id": "strip_left",
+			"pattern": {
+				"duty": 0.5,
+				"floor": 1.0,
+				"id": "wave",
+				"palette": [
+					"#20DFFF",
+					"#794CFF",
+					"#FF38A8",
+					"#FFBF4A"
+				],
+				"period_ticks": 1920,
+				"phase_turns": 0.0,
+				"reverse": false,
+				"segments": 1
+			},
+			"reactive": {
+				"gain": 0.0,
+				"source": "none"
+			}
+		},
+		{
+			"brightness": 0.2,
+			"enabled": true,
+			"id": "strip_right",
+			"pattern": {
+				"duty": 0.5,
+				"floor": 1.0,
+				"id": "wave",
+				"palette": [
+					"#20DFFF",
+					"#794CFF",
+					"#FF38A8",
+					"#FFBF4A"
+				],
+				"period_ticks": 1920,
+				"phase_turns": 0.0,
+				"reverse": false,
+				"segments": 1
+			},
+			"reactive": {
+				"gain": 0.0,
+				"source": "none"
+			}
+		},
+		{
+			"brightness": 0.5,
+			"enabled": true,
+			"id": "strip_top_left",
+			"pattern": {
+				"duty": 0.5,
+				"floor": 1.0,
+				"id": "steady",
+				"palette": [
+					"#FFBF4A"
+				],
+				"period_ticks": 240,
+				"phase_turns": 0.0,
+				"reverse": false,
+				"segments": 1
+			},
+			"reactive": {
+				"gain": 0.0,
+				"source": "none"
+			}
+		},
+		{
+			"brightness": 0.5,
+			"enabled": true,
+			"id": "strip_top_right",
+			"pattern": {
+				"duty": 0.5,
+				"floor": 1.0,
+				"id": "steady",
+				"palette": [
+					"#FFBF4A"
+				],
+				"period_ticks": 240,
+				"phase_turns": 0.0,
+				"reverse": false,
+				"segments": 1
+			},
+			"reactive": {
+				"gain": 0.0,
+				"source": "none"
+			}
+		}
+	]
+}

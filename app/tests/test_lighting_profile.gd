@@ -18,7 +18,61 @@ func _reject(label: String, raw: Variant) -> void:
 	_check(label, not result.ok and result.profile.is_empty() and not result.errors.is_empty())
 
 
+func _test_preset_revisions() -> void:
+	# Exact materialized profile exported by the revision-1 factory before the art change.
+	var legacy: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/lighting/night_radian_r1.json"))
+	var before := legacy.duplicate(true)
+	var checked: Dictionary = Profile.validate(legacy)
+	_check("revision 1 materialized preset validates without rewriting", checked.ok and _json_values_equal(checked.profile, before) and legacy == before)
+	_check("historical factory reproduces the original revision 1 template", _json_values_equal(Profile.preset("night_radian", 1), before))
+	var roundtrip: Dictionary = Profile.validate(JSON.parse_string(JSON.stringify(checked.profile)))
+	_check("revision 1 JSON roundtrip keeps its original values and pin", roundtrip.ok and _json_values_equal(roundtrip.profile, before))
+	var custom := legacy.duplicate(true)
+	custom.selection = "custom"
+	custom.brightness = 0.77
+	custom.zones[0].pattern.palette = ["#123456"]
+	checked = Profile.validate(custom)
+	_check("edited revision 1 custom remains materialized and pinned", checked.ok and _json_values_equal(checked.profile, custom))
+	for id: String in Profile.PRESET_IDS:
+		_check("new preset selects catalog revision 2: " + id, Profile.preset(id).preset_revision == 2)
+		_check("revision 1 remains available: " + id, Profile.preset(id, 1).preset_revision == 1)
+		for unsupported: int in [0, 3]:
+			_check("factory refuses unsupported revision %d: %s" % [unsupported, id], Profile.preset(id, unsupported).is_empty())
+	for selection: String in ["preset", "custom"]:
+		for unsupported: int in [0, 3]:
+			var invalid := legacy.duplicate(true)
+			invalid.selection = selection
+			invalid.preset_revision = unsupported
+			_reject("stored %s refuses revision %d" % [selection, unsupported], invalid)
+	var current: Dictionary = Profile.preset("night_radian")
+	_check("Night Radian v2 raises broad wing illumination", _zone(current, "strip_left").brightness == 1.0
+		and _zone(current, "strip_right").brightness == 1.0 and _zone(before, "strip_left").brightness == 0.2)
+	_check("Night Radian v2 retains steady upper orientation accents", _zone(current, "strip_top_left").brightness == 1.5
+		and _json_values_equal(_zone(current, "strip_top_left").pattern, _zone(before, "strip_top_left").pattern))
+	_check("Night Radian v2 explicitly balances the landing beam", _zone(current, "landing_lamp").brightness == 0.125
+		and _zone(before, "landing_lamp").is_empty())
+
+
+func _json_values_equal(a: Variant, b: Variant) -> bool:
+	# JSON numbers are parsed as floats and arrays are untyped. Compare exact values,
+	# not GDScript typed-container identity; do not normalize away fields or use tolerances.
+	if (a is int or a is float) and (b is int or b is float):
+		return float(a) == float(b)
+	if a is Dictionary and b is Dictionary:
+		if a.size() != b.size(): return false
+		for key: Variant in a:
+			if not b.has(key) or not _json_values_equal(a[key], b[key]): return false
+		return true
+	if a is Array and b is Array:
+		if a.size() != b.size(): return false
+		for index: int in a.size():
+			if not _json_values_equal(a[index], b[index]): return false
+		return true
+	return a == b
+
+
 func _initialize() -> void:
+	_test_preset_revisions()
 	var inherited: Dictionary = Profile.defaults()
 	var defaults_result: Dictionary = Profile.validate(inherited)
 	_check("default payload validates as inherit", defaults_result.ok and defaults_result.profile == inherited)

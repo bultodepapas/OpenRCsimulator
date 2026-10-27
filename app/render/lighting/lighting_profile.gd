@@ -3,7 +3,9 @@ class_name LightingProfile
 
 const FORMAT := "openrc-aircraft-lighting"
 const VERSION := 1
-const PRESET_REVISION := 1
+# Catalog revision for newly selected presets. Materialized saved profiles retain their pin.
+const PRESET_REVISION := 2
+const SUPPORTED_PRESET_REVISIONS: Array[int] = [1, 2]
 const MAX_ZONES := 32
 const MAX_EFFECTS := 4
 const MAX_ENABLED_EFFECTS := 2
@@ -78,10 +80,10 @@ static func label(id: String) -> String:
 		_: return ""
 
 
-static func preset(id: String) -> Dictionary:
-	if not PRESET_IDS.has(id):
+static func preset(id: String, revision: int = PRESET_REVISION) -> Dictionary:
+	if not PRESET_IDS.has(id) or not SUPPORTED_PRESET_REVISIONS.has(revision):
 		return {}
-	var checked: Dictionary = validate(_preset_payload(id))
+	var checked: Dictionary = validate(_preset_payload(id, revision))
 	if not checked.ok:
 		return {}
 	return checked.profile
@@ -122,13 +124,13 @@ static func validate(raw: Variant) -> Dictionary:
 			if not zones.is_empty() or not effects.is_empty() or not sequence.is_empty():
 				_error(errors, "profile.%s must have empty zones, effects, and sequence" % selection)
 		"preset":
-			if not _is_base_preset(preset_id) or preset_revision != PRESET_REVISION:
-				_error(errors, "profile.preset must pin a supported preset at revision 1")
+			if not _is_base_preset(preset_id) or not SUPPORTED_PRESET_REVISIONS.has(preset_revision):
+				_error(errors, "profile.preset must pin a supported preset at catalog revision 1 or 2")
 		"custom":
 			if not _is_base_preset(preset_id) and preset_id != "aircraft_default":
 				_error(errors, "profile.custom must pin a supported base preset or aircraft_default")
-			if preset_revision != PRESET_REVISION:
-				_error(errors, "profile.custom must pin base revision 1")
+			if not SUPPORTED_PRESET_REVISIONS.has(preset_revision):
+				_error(errors, "profile.custom must pin base catalog revision 1 or 2")
 	
 	var zone_ids: Dictionary = {}
 	var sequence_zone_ids: Array[String] = []
@@ -173,9 +175,9 @@ static func validate(raw: Variant) -> Dictionary:
 	return {"ok": true, "errors": [], "profile": canonical}
 
 
-static func _preset_payload(id: String) -> Dictionary:
+static func _preset_payload(id: String, revision: int) -> Dictionary:
 	if id == "custom":
-		var custom := _preset_payload("neon_rgb")
+		var custom := _preset_payload("neon_rgb", revision)
 		custom.selection = "custom"
 		custom.orientation_lock = true
 		var present: Array[String] = []
@@ -196,7 +198,7 @@ static func _preset_payload(id: String) -> Dictionary:
 	var profile := defaults()
 	profile.selection = selection
 	profile.preset_id = base_id
-	profile.preset_revision = PRESET_REVISION
+	profile.preset_revision = revision
 	profile.orientation_lock = id == "night_aerobatics"
 	profile.brightness = 0.8 if id == "night_radian" else (0.75 if id == "neon_rgb" else (0.9 if id == "night_aerobatics" else (0.7 if id == "festival" else 1.0)))
 
@@ -249,6 +251,17 @@ static func _preset_payload(id: String) -> Dictionary:
 				_effect("vfx_tip_right", "spark", true, 0.5, 96, false),
 			]
 			profile.sequence = _festival_sequence()
+	if id == "night_radian" and revision == 2:
+		# Profile-only art balance: preserve the v1 template for saved builds and reset.
+		# Keep upper amber orientation accents steady; the broad film uses the lower waves.
+		for zone: Dictionary in profile.zones:
+			match str(zone.id):
+				"strip_left", "strip_right": zone.brightness = 1.0
+				"strip_top_left", "strip_top_right": zone.brightness = 1.5
+				"strip_belly": zone.brightness = 0.75
+		var landing := _zone("landing_lamp", ["#FFF1D6"])
+		landing.brightness = 0.125 # profile 0.8 * zone 0.125: 10% of the inherited beam energy.
+		profile.zones.append(landing)
 	return profile
 
 

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "525a5061-abc9-4602-b3ea-bd30b871ead6",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_shaft_capacity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:59:39.170726+00:00",
+  "label": "installed-shaft-capacity",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\production-checks\\installed-shaft-capacity-lkwvuf6x\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\production-checks\\installed-shaft-capacity-lkwvuf6x\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Shaft capacity draft: 141 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 11.953,
+  "log_bytes": 116,
+  "log_sha256": "539037e1fc69c435181eb1190f7d6df4aa15454aa63d5bc57622a1769b255771"
+}

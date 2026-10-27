@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "98fafd65-4473-441c-9e58-42d9957cb32c",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-shaft-capacity/mechanism.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:47:14.896447+00:00",
+  "label": "mechanism-01",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\checks\\mechanism-01-0r6hjl_b\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\checks\\mechanism-01-0r6hjl_b\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "SHAFT_MECHANISM_COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 10.406,
+  "log_bytes": 1440,
+  "log_sha256": "9cb8c53508d7fe12906695b9120d6f789fb6abb537cbb34372fecfaf32f747f0"
+}

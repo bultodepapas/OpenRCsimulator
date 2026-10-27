@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3ccba200-4900-416e-bd79-7d1977896019",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/gp12-shaft-capacity/runtime-app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_traction_capacity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:51:30.132327+00:00",
+  "label": "projection-traction-01",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\checks\\projection-traction-01-xpwa7zyd\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\checks\\projection-traction-01-xpwa7zyd\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Traction capacity:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "Traction capacity:"
+  ],
+  "reason": "missing_required_text",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 5.484,
+  "log_bytes": 122,
+  "log_sha256": "df466d5b0b0611e6ac20f5ca3eca5c623ab2b0eb5d9f31f5029f207c0d9e4d2e"
+}

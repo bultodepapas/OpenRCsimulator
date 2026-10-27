@@ -1,0 +1,20 @@
+[
+  {
+    "target": "app/physics/contact_capacity.gd",
+    "prehash": "f43eaf56725e79695edb47ace1a16fbcead0c30f33bf2ee05f87a267f86f3bab",
+    "draft": "tmp/gp12-shaft-capacity/candidate/contact_capacity.gd",
+    "sha256": "c59b2d4960c53d70801ac27ac71239454c77329a1b39cbe1957bd93f81ec8b54"
+  },
+  {
+    "target": "app/physics/aircraft_ground_step.gd",
+    "prehash": "64cbe64bd2fe54ef36531564fbbeebe17272652de9c78b7711fa545e2ababc3e",
+    "draft": "tmp/gp12-shaft-capacity/candidate/aircraft_ground_step.gd",
+    "sha256": "9f37ea617bdcca65a3799f6ac2129f1af221b2760a10301ba0d765c7426b858f"
+  },
+  {
+    "target": "app/physics/aircraft_ground_electric.gd",
+    "prehash": "33361dc677a3369d80d60df99241da58b8a597bcfe9a6ae2730cb921084c6870",
+    "draft": "tmp/gp12-shaft-capacity/candidate/aircraft_ground_electric.gd",
+    "sha256": "00ddeaf8237176fc2ed10a5da8e9965de4f51a38f068dded14431fbd9f97b719"
+  }
+]

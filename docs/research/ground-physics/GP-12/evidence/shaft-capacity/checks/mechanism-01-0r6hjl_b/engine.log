@@ -1,0 +1,7 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+SHAFT_MECHANISM 0.002 drive=0.0044165496708 cap=0.01432394487827 statuses=accepted,accepted strict={ &"ok": true, &"admitted": true, &"normalized_error": 0.0211982927754, &"identity": "electric-airborne-raw-SI-P1e-6-V1e-5-W1e-5-spin1e-4-J1e-6-rtol1e-5-v1" } shaft_delta=0.0 Jdelta=0.0000000211983 heatdelta=0.0000000211983
+SHAFT_MECHANISM 0.004 drive=0.0088330993416 cap=0.01432394487827 statuses=accepted,accepted strict={ &"ok": true, &"admitted": false, &"normalized_error": 8.6757363005057, &"identity": "electric-airborne-raw-SI-P1e-6-V1e-5-W1e-5-spin1e-4-J1e-6-rtol1e-5-v1" } shaft_delta=0.00086772456618 Jdelta=0.00000008479321 heatdelta=0.00000008422909
+SHAFT_MECHANISM 0.02 drive=0.044165496708 cap=0.01432394487827 statuses=accepted,accepted strict={ &"ok": true, &"admitted": false, &"normalized_error": 35.9912600320753, &"identity": "electric-airborne-raw-SI-P1e-6-V1e-5-W1e-5-spin1e-4-J1e-6-rtol1e-5-v1" } shaft_delta=0.00369100971235 Jdelta=0.0000006769542 heatdelta=0.00000021124539
+SHAFT_MECHANISM 1.0 drive=2.20827483540005 cap=0.01432394487827 statuses=accepted,accepted strict={ &"ok": true, &"admitted": false, &"normalized_error": 18.3812297198033, &"identity": "electric-airborne-raw-SI-P1e-6-V1e-5-W1e-5-spin1e-4-J1e-6-rtol1e-5-v1" } shaft_delta=0.00369066030295 Jdelta=0.00003369250089 heatdelta=0.00000019552267
+SHAFT_MECHANISM_COMPLETE

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1fc430d7-32e8-48b3-a52f-d5af057ddd23",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/gp12-shaft-capacity/runtime-app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_contact_capacity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:51:23.946010+00:00",
+  "label": "projection-generic-02",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\checks\\projection-generic-02-q7zs0bw4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\checks\\projection-generic-02-q7zs0bw4\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Contact capacity packet:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.141,
+  "log_bytes": 118,
+  "log_sha256": "5ab6ddf819a578d3e3442e75851b63010cfb79bd207aaade2f0d25e9e01d3d83"
+}

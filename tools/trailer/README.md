@@ -123,6 +123,26 @@ and the pilot-source hash. Wheel support uses positive gear compression; hull co
 crash predicate. Generic capture completion does not certify liftoff: check the recorded wheel
 clearance, phase progression and advancing climb alongside the source movie.
 
+For a synthetic-entry approach lighting take, use
+`--aircraft=jensen-das-ugly-stik-60 --start=airborne --shot=lighting-approach --seconds=12`
+with `--director-script=<absolute path to approach_director.gd>`. This adapter reuses
+`app/sim/landing_maneuver.gd`, limited to its calm, wash-off Stik condition. It stages the
+existing test's eastbound entry at 12 m/s and 6 m CG altitude, 94 m before the runway end,
+then resets once before capture and delegates all subsequent motion to the live session.
+The fixture selects reference-speed trim, sets altitude before solving it, and verifies that
+reset preserved the exact declared state. Unsupported starts, aircraft and weather are refused.
+
+The first frame's `approach_fixture` records initial state, solved trims and controller/session
+source hashes. `continuous_from_runway=false` explicitly distinguishes this fixture from a
+complete circuit. Per-frame/tick `approach` observations retain accepted endpoint phase,
+speed, CG sink/height, gear support, minimum wheel-reference runway margin and maximum
+wheel-reference sink including body rotation. These endpoints are not the interpolated visual
+pose; the first image follows the initial reset by several accepted ticks. Hull contact remains
+separate from wheel support. The 12-second take covers approach, flare and early rollout;
+it does not prove a stopped or physically validated landing. Report the existing landing test's
+0.5 m margin separately from actual runway containment, and retain failures rather than
+retuning the controller or moving the entry to hide them.
+
 An external director may expose `configuration_error() -> String`. A nonempty result after
 `configure()` rejects the capture before the director enters the scene, writes a zero-frame
 incomplete manifest and uses the normal scene/audio teardown. Directors should validate before

@@ -54,7 +54,42 @@ func _initialize() -> void:
 	var unchanged := Store.load_variant(saved.variant.id, _directory)
 	_check("failed save preserves previous lighting revision", unchanged.get("ok", false)
 		and unchanged.variant.revision == 1 and unchanged.variant.presentation_profile.lighting == profile.lighting)
+	_test_revision_one(described.bindings, bytes)
 	_finish()
+
+
+func _test_revision_one(bindings: Dictionary, aircraft_bytes: PackedByteArray) -> void:
+	var legacy: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/lighting/night_radian_r1.json"))
+	legacy = Presentation.LightingProfile.validate(legacy).profile
+	for selection: String in ["preset", "custom"]:
+		var profile := Presentation.defaults(bindings)
+		profile.lighting = legacy.duplicate(true)
+		profile.lighting.selection = selection
+		if selection == "custom":
+			profile.lighting.brightness = 0.77
+		var before: Dictionary = profile.lighting.duplicate(true)
+		var path := _directory.path_join("r1-" + selection)
+		var saved := Store.save_variant("Revision 1 " + selection, Catalog.DEFAULT_ID, aircraft_bytes,
+			Compiler.defaults(), "", path, {}, {}, -1, profile)
+		_check("revision 1 %s saves without changing caller data" % selection, saved.get("ok", false) and profile.lighting == before,
+			str(saved.get("errors", [])))
+		if not saved.get("ok", false):
+			continue
+		var loaded := Store.load_variant(saved.variant.id, path)
+		_check("revision 1 %s disk load preserves the original pin and all values" % selection,
+			loaded.get("ok", false) and loaded.variant.presentation_profile.lighting == before)
+		if not loaded.get("ok", false):
+			continue
+		var encoded := Bundle.export_variant(loaded.variant)
+		_check("revision 1 %s exports through the current bundle writer" % selection, encoded.get("ok", false))
+		if not encoded.get("ok", false):
+			continue
+		var decoded := Bundle.decode(encoded.bytes)
+		_check("revision 1 %s bundle decode does not upgrade defaults" % selection, decoded.get("ok", false)
+			and decoded.payload.presentation_profile.lighting == before)
+		var imported := Bundle.import_variant(encoded.bytes, path.path_join("import"))
+		_check("revision 1 %s portable import retains the materialized profile" % selection, imported.get("ok", false)
+			and imported.variant.presentation_profile.lighting == before, str(imported.get("errors", [])))
 
 func _check(label: String, success: bool, detail: String = "") -> void:
 	_checks += 1

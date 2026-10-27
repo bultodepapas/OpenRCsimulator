@@ -1,0 +1,107 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "672f37e9-ffa5-436f-87bc-d158edf7fdd9",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-shaft-capacity/parse.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:40:18.644201+00:00",
+  "label": "parse-01",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\checks\\parse-01-qba2mbgj\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\checks\\parse-01-qba2mbgj\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "SHAFT_DRAFT_PARSED"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 6,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 4,
+      "message": "Cannot open file 'res://.godot/imported/NotoSansCJKjp-Regular.otf-9f8460ebb544883da1f528f86149d6e0.fontdata'.",
+      "context": [
+        "   at: load (core/io/resource_format_binary.cpp:1138)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] japanese_font (res://i18n/fonts.gd:17)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 10,
+      "message": "Failed loading resource: res://.godot/imported/NotoSansCJKjp-Regular.otf-9f8460ebb544883da1f528f86149d6e0.fontdata.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] japanese_font (res://i18n/fonts.gd:17)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 16,
+      "message": "Failed loading resource: res://assets/fonts/NotoSansCJKjp-Regular.otf.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] japanese_font (res://i18n/fonts.gd:17)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 22,
+      "message": "Cannot open file 'res://.godot/imported/NotoSansCJKjp-Regular.otf-9f8460ebb544883da1f528f86149d6e0.fontdata'.",
+      "context": [
+        "   at: load (core/io/resource_format_binary.cpp:1138)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] japanese_font (res://i18n/fonts.gd:17)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 28,
+      "message": "Failed loading resource: res://.godot/imported/NotoSansCJKjp-Regular.otf-9f8460ebb544883da1f528f86149d6e0.fontdata.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] japanese_font (res://i18n/fonts.gd:17)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 34,
+      "message": "Failed loading resource: res://assets/fonts/NotoSansCJKjp-Regular.otf.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] japanese_font (res://i18n/fonts.gd:17)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 1.234,
+  "log_bytes": 2415,
+  "log_sha256": "5f11cdf982fb1f28caf2585cf152154a3f4b8fe4131856627aee931bdb9cbf69"
+}

@@ -1,0 +1,35 @@
+{
+  "scope": "detached stable finite-bearing row mapping; startup remains refused",
+  "payloads": [
+    {
+      "path": "app/physics/contact_capacity.gd",
+      "prehash": "f43eaf56725e79695edb47ace1a16fbcead0c30f33bf2ee05f87a267f86f3bab",
+      "sha256": "4cd701e1c433a760c1435acf0a1fbb3ae1a39808ff1a659cc5e5864a9c2be32a",
+      "bytes": 19498
+    },
+    {
+      "path": "app/physics/aircraft_ground_step.gd",
+      "prehash": "64cbe64bd2fe54ef36531564fbbeebe17272652de9c78b7711fa545e2ababc3e",
+      "sha256": "7142280d140cad06cf3ea1faa4e4b8ec612dc4b9588eb49abe6e0c603124c6b4",
+      "bytes": 61488
+    },
+    {
+      "path": "app/physics/aircraft_ground_electric.gd",
+      "prehash": "33361dc677a3369d80d60df99241da58b8a597bcfe9a6ae2730cb921084c6870",
+      "sha256": "1f08b77d0666007daa6296f4cec3b1d95eb53139a3d977d90de8946783708bdd",
+      "bytes": 18382
+    },
+    {
+      "path": "app/tests/test_shaft_capacity.gd",
+      "prehash": null,
+      "sha256": "5bfd7d59400ce630616282deee87c8010aa3aaeedac58f86586069c2ac070e33",
+      "bytes": 18068
+    },
+    {
+      "path": "app/tests/fixtures/ground_contact_shaft_legacy.bin",
+      "prehash": null,
+      "sha256": "bbb1d11179dfc89ba23285f1d9c9f5f46fe6f9652ce31990f4ea0f2f7f10ac6d",
+      "bytes": 118148
+    }
+  ]
+}

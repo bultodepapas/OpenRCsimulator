@@ -1,0 +1,12 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+AIRBORNE_SOURCE_RATES { &"electromagnetic_per_s": 3.57761920972415, &"prop_branch_per_s": 3.87838548727695, &"shaft_mobility": 2008.72882049225, &"stopped_map_jump_is_not_a_smooth_bound": true } h_rate240=0.0310666862375 transported_wash_states=0
+FAIL low-duty powered source advances complete compared kernel paths step rejected: step policy returned no state
+RUNTIME_POWERED rpm=0.0 n=0.0 gate=0.0
+FAIL throttle cutoff reaches finite-bearing exact nonnegative capture step rejected: step policy returned no state
+RUNTIME_STOP tick=0 rpm=0.0 gate=0.0
+FAIL actual source work pays mechanical energy and bearing heat [0.0, 0.0, 0.0, 0.0]
+FAIL exact captured electric state exports kernel-v2 checkpoint 
+FAIL electric captured checkpoint restores 
+FAIL actual electric capture continuation replays byte-exactly step rejected: step policy returned no state
+Shaft capacity draft: 123 checks, 6 failed

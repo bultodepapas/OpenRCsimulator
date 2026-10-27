@@ -1,0 +1,6 @@
+{
+  "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\runtime-app\\physics\\aircraft_ground_electric.gd",
+  "before": "1f08b77d0666007daa6296f4cec3b1d95eb53139a3d977d90de8946783708bdd",
+  "mutant": "0614962ae59d9853b3bb6df037c409559b064f68af2b6c2bdc2ca63acf0dbf41",
+  "change": "disposable public evaluation force +1N; both res aliases mutate together; frozen original oracle must catch"
+}

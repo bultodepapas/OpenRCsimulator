@@ -201,6 +201,7 @@ func _run() -> void:
 
 	await _test_rejected_edit_focus(editor, lighting)
 	_test_configuration_reuse(bindings)
+	_test_pinned_zone_defaults(bindings)
 	_test_recovery_state(lighting)
 	_test_sequence_integration(editor, lighting)
 	await _test_migration(bindings, 1, true)
@@ -327,6 +328,38 @@ func _effect(profile: Dictionary, anchor_id: String) -> Dictionary:
 		if entry is Dictionary and str(entry.get("anchor_id", "")) == anchor_id:
 			return entry
 	return {}
+
+
+func _test_pinned_zone_defaults(bindings: Dictionary) -> void:
+	var legacy: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/lighting/night_radian_r1.json"))
+	legacy = LightingProfile.validate(legacy).profile
+	var presentation := Presentation.defaults(bindings)
+	presentation.lighting = legacy.duplicate(true)
+	presentation.lighting.selection = "custom"
+	for zone: Dictionary in presentation.lighting.zones:
+		if zone.id == "strip_left":
+			zone.brightness = 0.33
+	var original := presentation.duplicate(true)
+	var probe := LightingPanel.new()
+	root.add_child(probe)
+	probe.configure(bindings, presentation)
+	_check("opening an old lighting build preserves its pin and edited values", presentation == original
+		and probe.get("_profile") == original.lighting)
+	var selector: OptionButton = probe.get("_zone_selector")
+	var index := _metadata_index(selector, "strip_left")
+	selector.select(index)
+	probe.call("_on_zone_selected", index)
+	probe.call("_reset_selected_zone")
+	var reset: Dictionary = probe.get("_profile")
+	_check("zone reset uses the pinned revision 1 default instead of revision 2", reset.preset_revision == 1
+		and _zone(reset, "strip_left") == _zone(legacy, "strip_left")
+		and _zone(reset, "strip_left").brightness == 0.2)
+	var preset: OptionButton = probe.get("_preset")
+	_select_preset(probe, preset, _metadata_index(preset, "night_radian"))
+	var selected: Dictionary = probe.get("_profile")
+	_check("explicit fresh preset selection adopts revision 2", selected.preset_revision == 2
+		and _zone(selected, "strip_left").brightness == 1.0 and _zone(selected, "landing_lamp").brightness == 0.125)
+	probe.free()
 
 
 func _test_configuration_reuse(bindings: Dictionary) -> void:
