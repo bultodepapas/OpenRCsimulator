@@ -1,8 +1,8 @@
 # Fuel-powered RC turbine realism and integration plan
 
-**Checked:** 2026-10-19. **Status:** continuous RPM and single-store finite fuel are implemented. Full ECU/thermal/pump behavior and physical qualification remain pending. Current aircraft handling/ground verification has open regressions; dated passing evidence does not close them. **Owner:** Ventage Jet / physics track. **Parent:** [Ventage Jet guide](../AVANTI-S-PLAN.md). **Steps:** existing AV-05b and AV-10, plus AV-18…30. This document owns detailed turbine work and its status; the parent retains aircraft-wide work. Consolidate completed guidance into the parent/contract and retain evidence before deleting this active plan.
+**Checked:** 2026-10-19. **Status:** continuous RPM and single-store finite fuel are implemented. Full ECU/thermal/pump behavior and physical qualification remain pending. Current aircraft handling/ground verification has open regressions; dated passing evidence does not close them. **Owner:** Vantage Jet / physics track. **Parent:** [Vantage Jet guide](../AVANTI-S-PLAN.md). **Steps:** existing AV-05b and AV-10, plus AV-18…30. This document owns detailed turbine work and its status; the parent retains aircraft-wide work. Consolidate completed guidance into the parent/contract and retain evidence before deleting this active plan.
 
-**Owns:** `app/physics/turbine.gd`, bounded new turbine/fuel kernels, `app/tests/test_turbine*.gd`, Ventage Jet propulsion scenarios, `research/avanti-s/` turbine source/reducers and `docs/research/turbine-realism/`. Aircraft changes go through `research/avanti-s/av06/inputs.json` and `derive_physics.py`; generated `app/data/aircraft/sebart_avanti_s_a200.json` is never edited directly.
+**Owns:** `app/physics/turbine.gd`, bounded new turbine/fuel kernels, `app/tests/test_turbine*.gd`, Vantage Jet propulsion scenarios, `research/avanti-s/` turbine source/reducers and `docs/research/turbine-realism/`. Aircraft changes go through `research/avanti-s/av06/inputs.json` and `derive_physics.py`; generated `app/data/aircraft/sebart_avanti_s_a200.json` is never edited directly.
 
 **Shared boundaries:** aircraft contract/schema/loader; `app/sim/flight_session.gd`, `simulation.gd`, trace/replay; rigid-body equations and mass properties; M5 atmosphere/wind; AV-09 gear/flaps; AUD-08/10 sound; HUD, input, menu and CR terminal-flight behavior. Inspect status and coordinate those seams before implementation. Other tracks retain ownership. The owner authorized implementation on 2026-10-13. Adopted choices go to DECISIONS; future choices remain proposals.
 
@@ -10,7 +10,7 @@
 
 Make the selected RC turbojet behave like an engine with stored rotational/thermal energy, a fuel delivery system and a protective ECU. The aircraft must show the corresponding acceleration, energy management, endurance and changing balance. More delay is not automatically more realistic: response must depend on engine revision, operating point, command amplitude, controller setting and ambient conditions.
 
-The first production target remains the **2017 non-BL JetCat P100-RX** in the existing Ventage Jet. Current P100-RX-BL, Xicoy and KingTech data are comparison evidence. A reusable engine-definition architecture is useful; shipping additional aircraft/engine variants is a separate task.
+The first production target remains the **2017 non-BL JetCat P100-RX** in the existing Vantage Jet. Current P100-RX-BL, Xicoy and KingTech data are comparison evidence. A reusable engine-definition architecture is useful; shipping additional aircraft/engine variants is a separate task.
 
 Acceptance has three distinct levels:
 
@@ -38,7 +38,7 @@ The [fuel standard](../FUEL-SYSTEM.md) owns current datum, inventory, fill and d
 
 ## 3. What the research supports
 
-The following anchors are published specifications, not measured maps of the installed Ventage Jet. Flow refers to liquid fuel/oil mixture where the publication specifies it; missing idle flow is not zero.
+The following anchors are published specifications, not measured maps of the installed Vantage Jet. Flow refers to liquid fuel/oil mixture where the publication specifies it; missing idle flow is not zero.
 
 | Identified engine | Idle / maximum RPM | Idle / maximum thrust | Published consumption | Timing interpretation |
 | --- | ---: | ---: | --- | --- |

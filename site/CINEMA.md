@@ -2,9 +2,9 @@
 
 WEB-03/04 package studio renders of native catalog aircraft. Captures call `Builder.build()` from `res://render/airplane.gd`; model geometry and authored materials remain unchanged. The renders are visual source studies, not gameplay or flight validation.
 
-The earlier Jensen Das Ugly Stik cinema capture is no longer shipped on the website: its generated poster and MP4 were removed after the Jet became the opening aircraft. Its capture settings and source/output hashes remain in `assets/cinema/cinema.json`, and the capture pipeline can reproduce it. The Ventage Jet uses catalog id `sebart-avanti-s-a200-p100rx` and has a separate manifest at `assets/cinema/jet-cinema.json`.
+The earlier Jensen Das Ugly Stik cinema capture is no longer shipped on the website: its generated poster and MP4 were removed after the Jet became the opening aircraft. Its capture settings and source/output hashes remain in `assets/cinema/cinema.json`, and the capture pipeline can reproduce it. The Vantage Jet uses catalog id `sebart-avanti-s-a200-p100rx` and has a separate manifest at `assets/cinema/jet-cinema.json`.
 
-## Ventage Jet render
+## Vantage Jet render
 
 The Jet poster is 1600×1000 WebP. Its silent MP4 is 1280×800 H.264 at 24 fps for 12 seconds; the camera makes a smooth ±9° yaw around a 42° base azimuth. Godot renders both with the exact `#101820` background and a restrained warm key, cool fill, and blue rim. Lossy WebP and H.264 encoding can shift decoded pixel values slightly. The centered native model is framed in a front three-quarter view. The Jet’s cockpit, wing, and tail detail stills are 1280×800 WebP captures of the same geometry.
 

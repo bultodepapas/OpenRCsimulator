@@ -34,7 +34,7 @@ Current scope is **eight distinct vehicle visuals**: five airplane families, one
 | Jensen Das Ugly Stik 60 — `jensen-das-ugly-stik-60` | Takeoff, smooth bank and smoke pass; reference aircraft for the formation | Physical handling qualification remains open. Use its configured smoke installation; test the selected route before promising a smoke maneuver. |
 | Great Planes Extra 300S .60 — `gp-extra-300s-60` | One complete axial roll, framed to show entry and exit | Rehearse on the frozen build. A loop is an alternate only if it fits the slot at actual speed with a readable entry and exit. |
 | P-51D Mustang 1/4 — `p51d-mustang-120` | Low banked pass; retracting gear or landing approach | Use current accepted source behavior; preserve experimental status. Do not infer the current source's gates from an older downloadable package. |
-| Ventage Jet — `sebart-avanti-s-a200-p100rx` | Fast opening pass, turbine buildup, climbing bank | No configured jet smoke emitter. Its existing studio camera arc is a reference for new full-resolution inserts. |
+| Vantage Jet — `sebart-avanti-s-a200-p100rx` | Fast opening pass, turbine buildup, climbing bank | No configured jet smoke emitter. Its existing studio camera arc is a reference for new full-resolution inserts. |
 | Turbo Lumber Evolution — `turbo-lumber-evolution` | Electric takeoff or low grass-field circuit, then a gentle landing | Fixed wheels, flaps up and assists off. Do not imply SAFE/AS3X or battery depletion. |
 | RC Helicopter Research Trainer — `xcell-60-research` | Five-second hero sequence: brief rotor detail into hover/yaw and forward transition | This is the playable X-Cell/HX-700 visual surrogate. Currently one playable helicopter route exists; the advanced articulated HX-700 laboratory candidate is not an additional flyable helicopter. No invented inverted/tic-toc performance. |
 | Bisonte MT8 — `mt8-bisonte` | Suspension compression, corner exit and a genuine ramp jump/landing | Use the playable RC circuit. Accept only a continuous actual takeoff/landing; substitute a grounded suspension/traction sequence if the jump does not work. |
@@ -49,7 +49,7 @@ This table preserves the original edit targets. The [accepted timeline](../resea
 
 | Time | Shot and action | Camera / edit / sound | English copy and purpose |
 | --- | --- | --- | --- |
-| 00:00–00:04 | **G, Ventage Jet:** fast low pass into a climbing bank | Turbine heard before frame entry; close pass opens to readable RC field scale. No logo pre-roll. | Small `OpenRC Simulator` and vehicle identifier. |
+| 00:00–00:04 | **G, Vantage Jet:** fast low pass into a climbing bank | Turbine heard before frame entry; close pass opens to readable RC field scale. No logo pre-roll. | Small `OpenRC Simulator` and vehicle identifier. |
 | 00:04–00:08 | **G, Stik:** wheels release from the runway, bank and smoke begins | Low runway angle; wheel movement and drifting smoke reveal ground handling and wind. | Small vehicle identifier. |
 | 00:08–00:12 | **G, Extra:** one complete axial roll | Hold a clear horizon and the entire aircraft. Cut after recovery; no artificial speed-up. | Small vehicle identifier. |
 | 00:12–00:15 | **G, Mustang:** banked pass with gear transition | Match the previous screen direction; golden-hour rim on the fuselage. | `P-51D Mustang 1/4` |
@@ -109,12 +109,12 @@ Review scope: the current-source feature table, player guide, track registry and
 | Feature family / current scope | Treatment in the 60-second film | Source / boundary |
 | --- | --- | --- |
 | Five fixed-wing families; trim, stalls/spins, servo response and 240 Hz float64 flight model | Takeoff, roll, banking, control and crash shots | [Current features](../../README.md#current-features); show behavior without a physical-validation claim. |
-| Glow 2T/4T, gasoline, electric and turbine propulsion; finite-fuel glow controls | Distinct sound/response across vehicles; variants audited, no extra catalog montage | [Glow engines](../GLOW-ENGINES.md), [propulsion](../PROPULSION-CORE-PLAN.md); do not imply Timber battery depletion. |
+| Glow 2T/4T, gasoline, electric and turbine propulsion; finite-fuel glow controls | Distinct sound/response across vehicles; variants audited, no extra catalog montage | [Glow engines](../GLOW-ENGINES.md), [propulsion](../PROPULSION-CORE-PLAN.md); do not imply Lumber battery depletion. |
 | Playable helicopter: spool, hover, cyclic/collective/yaw and trainer controls | Mandatory 18–23 s hero | [Helicopter](../HELICOPTER.md); advanced HX-700 laboratory work is not another playable helicopter. |
 | Two trucks: electric/nitro, suspension, steering, braking, terrain, circuit ramps/rollers/slalom | Mandatory separate 23–27 and 27–31 s heroes | [RC activity](../../research/rc-monster-truck/README.md); truck experiments and qualification remain separate. |
 | Truck water/mud, damage/recovery, tuning laboratory and recording | Audited; mud/grime may appear within a car shot; no extra showcase slot | [RC activity](../../research/rc-monster-truck/README.md); do not transfer its water behavior or repair economics to aircraft. |
 | Per-wheel aircraft ground handling, suspension, steering, tire grip and rough grass | Stik takeoff and impact | [Ground model](../research/ground-physics/GP-05/README.md); no calibrated landing-distance claim. |
-| Flaps/retracts on equipped aircraft; Stik pump/exhaust smoke | Mustang equipment shot; Stik smoke | [Equipment/controls](../FIRST-LAUNCH.md); no jet smoke or active Timber flaps. |
+| Flaps/retracts on equipped aircraft; Stik pump/exhaust smoke | Mustang equipment shot; Stik smoke | [Equipment/controls](../FIRST-LAUNCH.md); no jet smoke or active Lumber flaps. |
 | Physical mean wind, crosswind, repeating gusts and seeded temporal turbulence | Mandatory 34–38 s correction shot; windsock/smoke elsewhere | [Wind](../WIND-PLAN.md); spatially uniform field, no tornado or obstacle-wake claim. |
 | Nine skies and cloud motion; storm tower, distant rain curtains, branched lightning and delayed thunder | Mandatory 31–34 s Electrical Storm shot | [World controls](../FIELD-WORLD-PLAN.md#sky-and-cloud-controls); visual presentation, not rain/bolt damage or spatial storm forces. |
 | Elevation, temperature, QNH and humidity affecting atmosphere | Audited; carried by the chosen flight setup, no numeric explainer | [Atmosphere](../ATMOSPHERE-PLAN.md); do not claim that storm appearance changes density. |

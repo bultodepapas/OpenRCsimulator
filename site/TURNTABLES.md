@@ -9,7 +9,7 @@
 | `stik` | `jensen-das-ugly-stik-60` | Jensen Das Ugly Stik 60 |
 | `extra` | `gp-extra-300s-60` | Great Planes Extra 300S .60 |
 | `mustang` | `p51d-mustang-120` | P-51D Mustang 1/4 |
-| `jet` | `sebart-avanti-s-a200-p100rx` | Ventage Jet |
+| `jet` | `sebart-avanti-s-a200-p100rx` | Vantage Jet |
 | `timber` | `turbo-lumber-evolution` | Turbo Lumber Evolution |
 | `heli` | `xcell-60-research` | HX-700 helicopter visual |
 

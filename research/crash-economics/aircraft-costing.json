@@ -1547,7 +1547,7 @@
       ],
       "notes": "Independent coverage of the physical 2m Avanti inventory. Known priced-part subtotal is $6,559.12: $2,749.00 exact 2m ARF without retracts, $2,780.00 legacy P100-RX (#850100), $225.00 A200-16 tank, five $98.99 SA-1258TG+ value proxies for the manual's DS8411 group, and three $103.39 SA-1230SG+ value proxies for its DS8911 group. The subtotal is not a complete aircraft or a purchasable matched assembly: pneumatic retracts and turbine installation accessories remain unknown, and current proxy stock does not establish eight-unit availability. No propeller is present in the jet inventory.",
       "dossier": {
-        "expected_source_sha256": "3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1",
+        "expected_source_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
         "lines": [
           {
             "id": "airframe_arf_package",

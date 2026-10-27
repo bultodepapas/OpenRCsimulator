@@ -83,7 +83,7 @@ In the Aircraft Workshop, a player chooses the servo for each installed control.
 | F4U 250 | about 11, including dual flaps and steering | 0.18 s placeholder | 2 × 2S LiFe |
 | Avanti S | 8 (DS8411/DS8911) | 0.11 s | 2 × 2S + PowerBox |
 | X8 | 2 elevons, 17 g | 0.075 s | Telemetry receiver |
-| Timber | Folded into the wing; tail 18 g | 0.14 s | BEC (prescribed current) |
+| Lumber | Folded into the wing; tail 18 g | 0.14 s | BEC (prescribed current) |
 
 ## 4. Findings that shape the plan
 
@@ -397,7 +397,7 @@ graph LR
 | D6-SRV-09 | **Servo bench.** Same module, load sliders, plots, overload test. | Pending. Bench = session parity for identical inputs; bench breakage does not touch the draft or the economy. |
 | D6-SRV-10 | **Telemetry and presentation.** HUD page, log schema, audio `load`. | Pending. HUD capture at 1080p, audio mapping test, versioned log schema test, debug-bridge field. |
 | D6-SRV-11 | **Report and economy.** Cause chain, servo incident via CR-37, gear-set versus replacement quote. | Pending. Incident tests, report capture, a price edit leaves the trajectory identical. |
-| D6-SRV-12 | **Fleet adoption.** Installations for Stik, Extra, P-51, F4U, Avanti, X8 and Timber. Battery tests `servo_authority_dive`, `servo_blowback_recovery`, `rx_bus_sag`. | Pending. Goldens re-recorded with an explained physics change, `--shared-tests` comparison, per-aircraft evidence. |
+| D6-SRV-12 | **Fleet adoption.** Installations for Stik, Extra, P-51, F4U, Vantage, X8 and Lumber. Battery tests `servo_authority_dive`, `servo_blowback_recovery`, `rx_bus_sag`. | Pending. Goldens re-recorded with an explained physics change, `--shared-tests` comparison, per-aircraft evidence. |
 | D6-SRV-13 | **Manufacturer data intake and validation** (OD6). Request template, import with `manual`/`measured` provenance, publication permission per file. Confidential raw files stay in gitignored `references/`. The owner bench is an optional cross-check. | Pending. Tolerances fixed **before** fitting, comparisons on held-out traces; closes physical claims separately from software. Pilot feel stays a separate gate. |
 | D6-SRV-14 | **Research-gated extensions.** Pushrod flex/buckling, two servos per surface, flaps/retracts/steering/throttle, helicopter cyclic. Flutter (OD7), wear (OD4) and per-unit scatter (OD3) are excluded by decision. | Each extension needs its own evidence; none is enabled without it. |
 | D6-SRV-15 | **Consolidation.** Update the Workshop guide and the contract; release notes; close this plan. | Pending. |

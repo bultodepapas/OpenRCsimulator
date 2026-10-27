@@ -714,8 +714,8 @@ msgstr ""
 msgid "Sport jet · 2.00 m · JetCat P100-RX turbine"
 msgstr "スポーツジェット · 2.00 m · JetCat P100-RXタービン"
 
-msgid "Turbo Lumber Evolution"
-msgstr "Turbo Lumber Evolution"
+msgid "LUMBER"
+msgstr "LUMBER"
 
 msgid "High-wing STOL · 1.55 m · 4S electric"
 msgstr "高翼STOL · 1.55 m · 4S電動"
@@ -5818,8 +5818,8 @@ msgstr "緑の楽園"
 msgid "Choose a model for the next flight."
 msgstr "次のフライトで使用する機体を選択してください。"
 
-msgid "Turbo Lumber"
-msgstr "Turbo Lumber"
+msgid "LUMBER"
+msgstr "LUMBER"
 
 msgid "Problem: %s"
 msgstr "問題：%s"

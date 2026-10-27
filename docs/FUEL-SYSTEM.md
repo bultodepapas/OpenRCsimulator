@@ -12,7 +12,7 @@ Capacity and authored reference contents are different quantities. The liquid ma
 
 The registry owns blend composition, reference density, temperature and provenance. Glow installation rejects a profile/registry mismatch. Checkpoint configuration includes the normalized aircraft and installation identities. Exact source bytes and generator outputs stay reproducible across checkouts; hashed text has an explicit line-ending rule.
 
-The base Stik remains an explicit prescribed-fuel reference specimen. Finite Stiks, Extra, P-51 and Ventage use their declared finite adapters. A tank declaration alone does not activate consumption. Synthetic electric donor fixtures are identified as synthetic ballast; they do not establish a physical electric installation.
+The base Stik remains an explicit prescribed-fuel reference specimen. Finite Stiks, Extra, P-51 and Vantage use their declared finite adapters. A tank declaration alone does not activate consumption. Synthetic electric donor fixtures are identified as synthetic ballast; they do not establish a physical electric installation.
 
 ## Datum mass and balance
 
@@ -28,7 +28,7 @@ Check manual CG limits at the declared balance state. Check positive static marg
 
 Glow uses the versioned mean-cycle lifecycle and its per-engine profile. The gasoline adapter uses `gasoline_bsfc_v1`: an explicit idle flow plus nonnegative delivered shaft power above the idle-power reference times BSFC. A stopped source consumes zero. Negative or windmilling shaft power does not produce negative fuel flow. The current P-51 BSFC and idle flow are disclosed estimates, not installed DA-120 measurements.
 
-The turbine adapter uses `turbine_map_v1` with the existing continuous RPM/flow map. Exhaustion disables combustion thrust and fuel flow; rotor deceleration uses an explicitly estimated continuation of the existing schedule. A measured hot-shutdown or passive inlet map is not claimed. The current Ventage adapter consumes the main tank directly. Unknown hopper capacity, placement and transfer dynamics remain an aircraft-evidence limit; dry UAT hardware is not liquid inventory.
+The turbine adapter uses `turbine_map_v1` with the existing continuous RPM/flow map. Exhaustion disables combustion thrust and fuel flow; rotor deceleration uses an explicitly estimated continuation of the existing schedule. A measured hot-shutdown or passive inlet map is not claimed. The current Vantage adapter consumes the main tank directly. Unknown hopper capacity, placement and transfer dynamics remain an aircraft-evidence limit; dry UAT hardware is not liquid inventory.
 
 Fuel depletion is located inside the integration step. Accepted resources remain nonnegative, the source latches off, and the remainder of the step follows the stopped-source law. Residuals carry mass units. RK queries are pure; a failed stage or final projection rolls back the whole transaction. The shared Simulation kernel receives layouts and evaluators through VehicleModel and contains no fuel-family branch.
 

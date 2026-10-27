@@ -17,7 +17,7 @@ static var _finite_fuel_cache := {}
 static var _ground_start_cache := {}
 
 ## In menu order. `short_name` (UI-34b) is the one-line label for the Home card and catalog list; `name` stays complete in
-## details and tooltips. `name` is a proper name (never translated; the Timber's fictional name is the one exception: es.po carries
+## details and tooltips. `name` is a proper name (never translated; the Lumber's fictional name is the one exception: es.po carries
 ## its Spanish form and ui/home.gd passes names through tr()); `summary` and `status_note` are English source strings
 ## (tr() at the call site). `data` is "" for a preview. render/airplane.gd builds each ID with the model team's builder
 ## and knows its datum; tests/test_aircraft_catalog.gd checks that every ID builds and every flyable one trims.
@@ -98,8 +98,8 @@ const ENTRIES := [
 	{
 		id = "sebart-avanti-s-a200-p100rx",
 		visual_family = "sebart-avanti-s-a200-p100rx",
-		name = "Ventage Jet",
-		short_name = "Ventage Jet",
+		name = "Vantage Jet",
+		short_name = "Vantage Jet",
 		summary = "Sport jet · 2.00 m · JetCat P100-RX turbine",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: first physics estimate (turbine, kit and owner data), not yet flight-tested. Runway or airborne start.",

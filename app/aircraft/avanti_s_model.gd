@@ -9,7 +9,7 @@ static func build() -> Dictionary:
 	var registry: Script = load("res://aircraft/model_registry.gd")
 	var result: Dictionary = registry.describe("sebart-avanti-s-a200-p100rx")
 	if not result.ok:
-		push_warning("Ventage Jet model: " + str(result.errors))
+		push_warning("Vantage Jet model: " + str(result.errors))
 		return {}
 	var model := Imported.build(result.manifest)
 	if not model.is_empty(): model.data = Geometry.DATA

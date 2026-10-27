@@ -88,7 +88,7 @@ This snapshot was inspected on 2026-10-13 while other tracks had active edits. T
 | [Natural Random plan](natural-random-flight.md), [scenario_config.gd](../../app/scenarios/scenario_config.gd), [natural_random.gd](../../app/scenarios/natural_random.gd) | Initial runtime integration is present. `openrc-flight-scenario v1` has exact keys, five stock IDs and `mode == natural_random`; no failure module. | Reuse its identity/preparation conventions, but extend the schema deliberately. NR remains fault-free by default; a later explicit combined mode needs NR qualification. |
 | [Workshop](../AIRCRAFT-WORKSHOP.md), generated bindings | Detached experiments and generated model/physical sources. | Training failures are session effects, never saved into aircraft experiments or hand-edited into generated JSON. |
 
-Current software coverage includes all eight catalog configurations: base Stik, Extra, P-51, Ventage Jet, Timber, Stik 2T, Stik 4T and Stik 61FX. The latter inherits finite-glow eligibility without an aircraft-ID branch. Multiple visual or engine variants do not imply independent control topologies. Future catalog additions inherit applicable mechanisms through capabilities, while their training envelope still needs qualification.
+Current software coverage includes all eight catalog configurations: base Stik, Extra, P-51, Vantage Jet, Lumber, Stik 2T, Stik 4T and Stik 61FX. The latter inherits finite-glow eligibility without an aircraft-ID branch. Multiple visual or engine variants do not imply independent control topologies. Future catalog additions inherit applicable mechanisms through capabilities, while their training envelope still needs qualification.
 
 ## 4. Player flow and menus
 
@@ -141,7 +141,7 @@ Provide an emergency section after a landing, crash or explicit End flight. It r
 
 Actions: **Repeat same flight**, **New random flight**, **Practice this failure with explanation**, **Back to Home**. The last action restores ordinary selections. A later **Repeat from before failure** requires a complete accepted checkpoint, including input/arming, fault state, weather and presentation; it is not a cheap teleport.
 
-Do not immediately end control at first wheel contact. Let the airplane settle through the real ground/contact rules; use a qualified dwell and state test for any automatic landing completion. Ventage Jet's current locked-up gear does not qualify a normal runway landing lesson. Until its landing/contact work is accepted, jet practice can grade controlled approach or descent, with the existing collision outcome clearly labeled.
+Do not immediately end control at first wheel contact. Let the airplane settle through the real ground/contact rules; use a qualified dwell and state test for any automatic landing completion. Vantage Jet's current locked-up gear does not qualify a normal runway landing lesson. Until its landing/contact work is accepted, jet practice can grade controlled approach or descent, with the existing collision outcome clearly labeled.
 
 ### 4.4 Natural Random and future Home
 
@@ -662,10 +662,10 @@ The [EM-00-R1 library](../research/failure-mode/EM-00-R1/README.md) is mapped to
 | **EM-15a** | Electric faults through the pack/ESC supervisor: weak-cell sag (raised cell resistance), early LVC, ESC thermal cutback, intermittent drive. | BAT/EL owners; pack mode only; current/voltage traces. |
 | **EM-15b** | Glow faults through the fuel-feed and mixture laws: lean cut, feed interruption, reduced power. | NITRO owner; no universal inverted-flight timeout. |
 | **EM-15c** | Shaft-engine cut for the P-51/F4U (gating only today) and a corrected exclusion reason. | Propulsion owner; windmill/friction rundown proof. |
-| **EM-25a** | Retract faults: fails to extend or retract, one leg stays up. | GP owner; leg-up belly/hull contact must not be an instant crash; P-51, F4U, Avanti. |
+| **EM-25a** | Retract faults: fails to extend or retract, one leg stays up. | GP owner; leg-up belly/hull contact must not be an instant crash; P-51, F4U, Vantage. |
 | **EM-25b** | Wheel or leg loss and one-sided brake/steering failure with asymmetric ground forces. | GP owner; per-wheel contact removal. |
 | **EM-25c** | Propeller damage and blade loss: thrust/torque reduction and imbalance. | Propulsion owner; today a prop strike only stops the engine. |
-| **EM-25d** | Asymmetric flap (one side stuck or fails to deploy). | AS-15 independent flap actuators; P-51, F4U, Avanti. |
+| **EM-25d** | Asymmetric flap (one side stuck or fails to deploy). | AS-15 independent flap actuators; P-51, F4U, Vantage. |
 | **EM-25e** | CG shift (battery or ballast slides) and hatch/canopy loss. | EM-31 capability 6 (runtime mass); drag increment sourced. |
 | **EM-25f** | Servo hardware: stripped gears with a free-floating surface, stall/blowback and centring deadband. | D6-SRV hinge-moment law; free-surface equilibrium, not a guessed angle. |
 | **EM-26** | *Maximum failures per flight* (1–3) and causal cascades. | EM-29 request; conflict groups, workload qualification. |

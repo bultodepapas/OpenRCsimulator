@@ -1,8 +1,8 @@
-# Timber r2 Blender aircraft delivery for OpenRC Simulator
+# Lumber r2 Blender aircraft delivery for OpenRC Simulator
 
-2026-10-13 · Revision 2 · To the aircraft model developer · Delivery specification for Timber r2
+2026-10-13 · Revision 2 · To the aircraft model developer · Delivery specification for Lumber r2
 
-For new airplanes and their skins, use the [reusable Blender handoff](BLENDER-AIRCRAFT-DELIVERY.md). This document retains the Timber-specific dimensions, rig, budgets and accepted-delivery corrections; it is not a template for other aircraft.
+For new airplanes and their skins, use the [reusable Blender handoff](BLENDER-AIRCRAFT-DELIVERY.md). This document retains the Lumber-specific dimensions, rig, budgets and accepted-delivery corrections; it is not a template for other aircraft.
 
 **Delivery status, 2026-10-13:** r2 `d75ae605aa3a` has been received and integrated. The requirements below remain the authoring contract; do not recreate the accepted package. The [TT-19 review](research/timber-integration/TT-19/README.md) records its source identity, native Godot captures, accepted behavior and remaining source corrections, including cowl marking seating and assembled closure-face visibility.
 
@@ -221,10 +221,10 @@ After delivery, we will import r2 in the pinned Godot build, verify `extras`, co
 
 ## Supporting references
 
-This revision restores the developer letter originally committed on 2026-10-08 (`6a3aac4b`, also present as `1504ed82`) and updates it for the imported r1 model and current section-based crash system. It is the current author-facing delivery specification. Step status stays in the Timber plan; historical audits remain dated evidence.
+This revision restores the developer letter originally committed on 2026-10-08 (`6a3aac4b`, also present as `1504ed82`) and updates it for the imported r1 model and current section-based crash system. It is the current author-facing delivery specification. Step status stays in the Lumber plan; historical audits remain dated evidence.
 
-- [Timber integration plan](TIMBER-INTEGRATION-PLAN.md) and [current asset guide](../assets/aircraft/turbo-lumber-evolution/README.md).
+- [Lumber integration plan](TIMBER-INTEGRATION-PLAN.md) and [current asset guide](../assets/aircraft/turbo-lumber-evolution/README.md).
 - [Independent r1 contract review](research/timber-integration/TT-00-R1/contract-review.md), [articulation evidence](research/timber-integration/TT-05/README.md) and [real-part breakup evidence](research/crash-damage-investigations/CR-09c/README.md).
-- [Current Timber adapter](../app/aircraft/timber_model.gd) and [crash section consumer](../app/render/crash/wreck.gd).
+- [Current Lumber adapter](../app/aircraft/timber_model.gd) and [crash section consumer](../app/render/crash/wreck.gd).
 - [Blender glTF exporter documentation](https://docs.blender.org/manual/en/latest/addons/scene_gltf2.html): custom properties export as glTF extras; supported material and collection-export options.
 - [Godot 3D import documentation](https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html): GLB delivery, direct Blender import dependencies and backface-culling behavior.

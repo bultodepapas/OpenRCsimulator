@@ -21,7 +21,7 @@ Contract/schema, aircraft generators, session/logging, HUD, UI, audio, Workshop,
 
 ## 2. Current delivery
 
-Turbo Lumber Evolution is the only catalog aircraft with `battery_data`. Its finite `pack_ecm` variant is the default; Home's **More flight details → Battery** or `--battery=ideal|pack` selects the mode. `pack` is refused without pack data. The ideal Timber variant uses fixed voltage. Selection and default rules live in [AircraftCatalog](../../app/app_state/aircraft_catalog.gd).
+Turbo Lumber Evolution is the only catalog aircraft with `battery_data`. Its finite `pack_ecm` variant is the default; Home's **More flight details → Battery** or `--battery=ideal|pack` selects the mode. `pack` is refused without pack data. The ideal Lumber variant uses fixed voltage. Selection and default rules live in [AircraftCatalog](../../app/app_state/aircraft_catalog.gd).
 
 The [pack law](../../app/physics/battery/pack_ecm.gd) implements 0–2 Thevenin RC branches, an average cell plus one weakest cell, charge/energy/loss accounting, a lumped pack temperature and a closed-form single-motor bus solve. SOC/temperature table lookups are bilinear and clamped. Capacity is temperature-independent; resistance and cutoff produce reduced usable charge under load. Interconnect loss contributes to electrical loss, but not pack heating.
 
@@ -81,7 +81,7 @@ Each BAT status lives here; numerical results stay in the dated evidence linked 
 | --- | --- | --- |
 | BAT-00 | Ownership and decisions D1–D14 | Adopted; BAT-13 supersedes the original default-mode timing. |
 | BAT-01 | Dataset licences, official datasheets and chemistry limits | Partial: LiPo/HG2 inputs and fits recorded in BAT-05; remaining chemistry/SKU source checks open. |
-| BAT-02 | Frozen EL2a/Timber baseline tapes and paired cost | Open: retain exact-replay `.orfl` identities and target-host p50/p95. |
+| BAT-02 | Frozen EL2a/Lumber baseline tapes and paired cost | Open: retain exact-replay `.orfl` identities and target-host p50/p95. |
 | BAT-03 | Independent ECM/thermal reference | Standard-library reference and native comparisons implemented; proposed SciPy/PyBaMM cross-check open. |
 | BAT-04 | Strict formats and loader | Implemented; template metadata and branch-order rejection gaps are listed in BAT-04. |
 | BAT-05 | Source-derived templates and class packs | Implemented for LiPo/HG2; model order selected by held-out residual. Additional chemistries need evidence. |
@@ -92,7 +92,7 @@ Each BAT status lives here; numerical results stay in the dated evidence linked 
 | BAT-10 | Session state, events, checkpoint, trace and log integration | Implemented; replay/lifecycle evidence in BAT-10; performance qualification open. |
 | BAT-11 | Sampled ESC cell detection and LVC | Implemented modes/recovery; identified controller profiles and physical timing remain unvalidated. |
 | BAT-12 | BEC/receiver rail; BAT-12b receiver packs for glow aircraft | Planned with EM-18; preserve the pack-side auxiliary-current reference and prove brownout hooks. |
-| BAT-13 | Timber finite-pack variant and product mode | Implemented default/selector; FT battery scenario and retained baseline `.orfl` evidence open. |
+| BAT-13 | Lumber finite-pack variant and product mode | Implemented default/selector; FT battery scenario and retained baseline `.orfl` evidence open. |
 | BAT-14 | Radio sensor/estimator/alarms | Presentation sampler implemented; tick-synchronous logging, profiles and extra alarms open. |
 | BAT-15 | O9 widget, warning chips and Developer truth | Implemented; rendered captures and pilot reading open. |
 | BAT-16 | Cell-count beeps and low/critical callouts | Planned with AUD; verify scenarios, mute and limiter behavior. |

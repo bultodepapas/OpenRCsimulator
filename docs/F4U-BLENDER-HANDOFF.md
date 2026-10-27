@@ -315,7 +315,7 @@ These ranges are geometric clearance cases; the simulator's throws come from its
 
 ## 7 Retractable gear
 
-The simulator replays a **sampled** retraction. It interpolates rigid carrier transforms between gear-up and gear-down; the Ventage Jet uses the same route. Please provide:
+The simulator replays a **sampled** retraction. It interpolates rigid carrier transforms between gear-up and gear-down; the Vantage Jet uses the same route. Please provide:
 
 1. One action named **`GearRetract`** in the game `.blend`: frame 0 = down and locked, frame 100 = fully up with doors closed, with progress uniform in frame. Include the 86° aft fold, the 90° wheel twist and the door sequence. Extension reverses the same path.
 2. **Export `aircraft.glb` at frame 100.** The simulator binds every imported carrier at the fully stowed sample and refuses a mismatch, so stowed carriers in the GLB must equal frame 100 exactly. The game `.blend` may open at frame 0 for editing; the export command sets frame 100 first.
@@ -401,9 +401,9 @@ We will import g1.3 with Godot 4.7.2, verify `extras`, poses and landmarks, bind
 
 ## Supporting references
 
-- [Reusable Blender aircraft delivery](BLENDER-AIRCRAFT-DELIVERY.md): common requirements for future airplanes and all skins. The [Timber r2 specification](BLENDER-AIRCRAFT-HANDOFF.md) was the original precedent for this request.
+- [Reusable Blender aircraft delivery](BLENDER-AIRCRAFT-DELIVERY.md): common requirements for future airplanes and all skins. The [Lumber r2 specification](BLENDER-AIRCRAFT-HANDOFF.md) was the original precedent for this request.
 - [Model and package contract](AIRCRAFT_CONTRACT.md#model-and-package-contract): imported-model construction, retraction rig and `gltf_extras` crash sections.
-- [Ventage Jet asset guide](../assets/aircraft/avanti-s-a200/README.md): the sampled-retraction precedent.
+- [Vantage Jet asset guide](../assets/aircraft/avanti-s-a200/README.md): the sampled-retraction precedent.
 - [Aircraft Workshop](AIRCRAFT-WORKSHOP.md): current paint slots and registration markings.
 - [Aircraft licensing guide](AIRCRAFT-LICENSING.md): Corsair row.
 - R59 review scripts: [inspect_blend.py](../research/f4u-corsair/F4U-00/inspect_blend.py) and [measure_neutral.py](../research/f4u-corsair/F4U-00/measure_neutral.py).

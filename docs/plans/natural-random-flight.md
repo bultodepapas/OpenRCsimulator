@@ -38,7 +38,7 @@ The initial pool contains the following **unmodified shipped configurations**, w
 | `jensen-das-ugly-stik-60` | Jensen Das Ugly Stik 60 | Baseline sport trainer. |
 | `gp-extra-300s-60` | Great Planes Extra 300S .60 | Stock aerobatic airplane; retain its experimental status note. |
 | `p51d-mustang-120` | P-51D Mustang 1/4 | Stock warbird; retain its experimental status note. |
-| `sebart-avanti-s-a200-p100rx` | Ventage Jet | Stock jet; airborne only, existing gear/flaps limitations remain. |
+| `sebart-avanti-s-a200-p100rx` | Vantage Jet | Stock jet; airborne only, existing gear/flaps limitations remain. |
 | `turbo-lumber-evolution` | Turbo Lumber Evolution | Stock electric STOL airplane; existing flaps/assist limitations remain. |
 
 `stik-glow-55ax-2t` and `stik-glow-fs64v-4t` are also shipped stock configurations, not user modifications. Defer their admission to a later eligibility revision: this keeps the initial qualification matrix bounded and avoids making the Stik three times as common. If admitted, draw airframe family first and configuration second.
@@ -191,7 +191,7 @@ Do not insert new fields into sealed physics/visual checkpoint dictionaries. If 
 
 “The airplane is visible” is an acceptance gate, not something a solar-angle check can establish alone. Qualify all five aircraft against bright sky, cloud and terrain backgrounds, early/late light, wind headings and their actual initial poses. Keep existing camera aids available; never quietly modify the plane's physical size or the pilot's camera choice.
 
-Use production captures at 720p and 1080p from the pilot view, at 50/100/150 m and representative circuit attitudes (level, banking, approaching and departing). Check initial framing, silhouette and attitude recognition, runway/background contrast and sun proximity. Compare airplane-on/off masks using existing capture techniques; do not substitute pixel thresholds for an owner/pilot reading test. Test the smaller Timber/Stik as well as the larger P-51. Define the accepted viewing envelope in evidence; do not promise visibility at arbitrary distance or after the pilot flies into the sun.
+Use production captures at 720p and 1080p from the pilot view, at 50/100/150 m and representative circuit attitudes (level, banking, approaching and departing). Check initial framing, silhouette and attitude recognition, runway/background contrast and sun proximity. Compare airplane-on/off masks using existing capture techniques; do not substitute pixel thresholds for an owner/pilot reading test. Test the smaller Lumber/Stik as well as the larger P-51. Define the accepted viewing envelope in evidence; do not promise visibility at arbitrary distance or after the pilot flies into the sun.
 
 For each admitted airplane/recipe, run real session starts and representative flown circuits/recoveries with fixed seeds, including all wind quadrants and the atmosphere corners. Inspect airspeed, ground drift, angular response, clearance and pilot workload. A trim success or a finite ten-second trace alone does not qualify controllability. Strong-wind draws need an explicit pilot acceptance entry; the 15% target is not grounds to promote a failing combination.
 

@@ -691,8 +691,8 @@ msgstr ""
 msgid "Sport jet · 2.00 m · JetCat P100-RX turbine"
 msgstr "Спортивный реактивный самолёт · 2,00 м · турбина JetCat P100-RX"
 
-msgid "Turbo Lumber Evolution"
-msgstr "Turbo Lumber Evolution"
+msgid "LUMBER"
+msgstr "LUMBER"
 
 msgid "High-wing STOL · 1.55 m · 4S electric"
 msgstr "Высокоплан STOL · 1,55 м · электродвигатель 4S"
@@ -6198,8 +6198,8 @@ msgstr "Зелёный рай"
 msgid "Choose a model for the next flight."
 msgstr "Выберите модель для следующего полёта."
 
-msgid "Turbo Lumber"
-msgstr "Turbo Lumber"
+msgid "LUMBER"
+msgstr "LUMBER"
 
 msgid "Problem: %s"
 msgstr "Проблема: %s"

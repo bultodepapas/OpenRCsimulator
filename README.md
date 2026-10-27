@@ -17,9 +17,9 @@
 
 An open-source RC airplane simulator for a USB transmitter, gamepad or keyboard. Fly from the pilot's position on the field, or use chase, orbit and close-up views. **Early alpha:** automated checks verify the software; flight models still need independent RC measurements and pilot validation.
 
-![Rotating studio tour: Ventage Jet, helicopter, two RC trucks and four more airplanes](docs/media/aircraft-tour.gif)
+![Rotating studio tour: Vantage Jet, helicopter, two RC trucks and four more airplanes](docs/media/aircraft-tour.gif)
 
-Eight vehicles in a full 360° studio tour: Ventage Jet first, followed by the helicopter, Bisonte MT8, MONSTER CAR 2 and the other four airplanes. [Still views and render provenance](docs/media/README.md#aircraft-stills).
+Eight vehicles in a full 360° studio tour: Vantage Jet first, followed by the helicopter, Bisonte MT8, MONSTER CAR 2 and the other four airplanes. [Still views and render provenance](docs/media/README.md#aircraft-stills).
 
 ## Download and fly
 
@@ -41,7 +41,7 @@ The aircraft and features below describe **current source**, which may differ fr
 | [Great Planes Extra 300S .60](docs/EXTRA-300-PLAN.md) | 1.63 m, .61 glow, taildragger | Experimental |
 | [P-51D Mustang 1/4](docs/P51-PLAN.md) | 2.82 m, 120 cc gasoline, retractable taildragger gear | Experimental; simulated flaps and retracts |
 | [F4U-1D Corsair 1/4.5](docs/F4U-PLAN.md) | 2.78 m, Moki S250 radial, retractable taildragger gear | Experimental; simulated flaps, retracts and folding wings |
-| [Ventage Jet](docs/AVANTI-S-PLAN.md) | 2.00 m, JetCat P100-RX turbine | Experimental; simulated flaps and retracts |
+| [Vantage Jet](docs/AVANTI-S-PLAN.md) | 2.00 m, JetCat P100-RX turbine | Experimental; simulated flaps and retracts |
 | [Turbo Lumber Evolution](docs/TIMBER-INTEGRATION-PLAN.md) | 1.55 m, 4S electric, fixed wheels | Experimental; finite battery by default, optional ideal supply; flaps up, assists off |
 | [X8 Flying Wing](docs/X8-PLAN.md) | 2.12 m, 6S electric pusher, elevons, no landing gear | Experimental; hand launch or airborne start; asset redistribution terms pending |
 | [RC Helicopter Research Trainer](docs/HELICOPTER.md) | X-Cell .60 SE flight reference with an HX-700 visual surrogate | Experimental historical playable reference; ground-pad or hover start; physical validation remains open |
@@ -64,7 +64,7 @@ The playable helicopter uses X-Cell reference physics. The articulated HX-700 in
 | Lighting | Day, dawn, dusk, night and passing evening; editable time/date/location, field lamps, campfire, stars and moonlight. Visual time is separate from physical weather. [Time of day](docs/TIME-OF-DAY-PLAN.md) · [Field world](docs/FIELD-WORLD-PLAN.md#night-field-and-campfire) |
 | Field and scenery | Select Club field with its grass, vegetation, lake and club scenery, or Green paradise with a flat grass surface, on Home. Contacts remain engineering models; water impacts do not simulate buoyancy. [Landscape guide](docs/LANDSCAPES.md) · [Scenery status and evidence](docs/LANDSCAPE-PLAN.md#landscape-integration) |
 | Audio | Positional combustion/electric/turbine, propeller/airframe, wind and wildlife sound, with Doppler, propagation delay and air absorption. [Audio](docs/AUDIO-PLAN.md) · [Audio realism](docs/plans/audio-realism.md) |
-| Smoke | Source-bound ordinary exhaust and optional show smoke for supported Stik and P-51D configurations; the stock Ventage Jet has optional white tailpipe show smoke. Trails drift with configured wind. **H** requests show smoke on keyboard; **J** assigns a radio AUX control. [Smoke guide](docs/SMOKE.md) |
+| Smoke | Source-bound ordinary exhaust and optional show smoke for supported Stik and P-51D configurations; the stock Vantage Jet has optional white tailpipe show smoke. Trails drift with configured wind. **H** requests show smoke on keyboard; **J** assigns a radio AUX control. [Smoke guide](docs/SMOKE.md) |
 | Collisions and crashes | Approximate collision proxies, wrecks, debris, fire/smoke and a component damage/cost report. Prices and repair outcomes are estimates. Aftermath persists until Restart. [Crash scope](docs/CRASH-DAMAGE-PLAN.md) |
 | Menus and settings | The current source offers the simulator interface in English, Español, 简体中文, Português (Brasil), Deutsch, Français, Italiano, Русский and 日本語. The v0.1.8 download offers English and Spanish. Saved aircraft/landscape/weather/lighting choices, pause on focus loss, and Settings for window mode, interface scale, opaque panels, reduced motion, game volume and menu volume. Aircraft Workshop trials, Club field Natural Random briefings and optional fixed-wing emergency practice are also available. [Player guide](docs/FIRST-LAUNCH.md) · [Workshop](docs/AIRCRAFT-WORKSHOP.md) · [Natural Random](docs/plans/natural-random-flight.md) · [Failure practice](docs/plans/failure-mode.md) |
 | Recording and diagnostics | **F10** records fixed-wing flights; **F11** marks maneuvers. [Export CSV, verify exact replay and compare candidate physics](docs/FLIGHT-LOGGING.md). Separate helicopter/truck recorders, controller reports, captures and a source-only [flight-test card](research/flight-test/README.md) support investigations. [Tools and commands](docs/TOOLS.md) |

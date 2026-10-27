@@ -1067,7 +1067,7 @@ data["propulsion"]["fuel_consumption"] = {
     "idle_flow": q(0.000080, "kg/s", "estimated", "FUEL-08: explicit 4.8 g/min idle baseline; no published DA-120/gasoline idle flow found in FUEL-00"),
 }
 
-# --- P51-11a: hinged trailing-edge flaps (shared law controls.flaps.hinged_trailing_edge.v1, as the Ventage Jet) ----------
+# --- P51-11a: hinged trailing-edge flaps (shared law controls.flaps.hinged_trailing_edge.v1, as the Vantage Jet) ----------
 # Plain flaps (XP-51: plain, 32.22 sq ft, landing 50 deg, take-off/combat 20 deg; NACA MR L-566 dimension table and
 # Tables III/IV). The kit settings are used: 15 deg take-off and 45 deg landing (source.json kit.flaps_deg, CARF manual).
 # Span and chord fraction are the scaled full-size flap of the visual geometry. The runtime bounds the thin-airfoil shift
@@ -1085,7 +1085,7 @@ flap_cd = note("flaps", "profile drag coefficient", 0.9 * cf_f ** 1.38, "Raymer 
 # (P-51D landing weight 9,000 lb, 233.19 sq ft): the same aerodynamic operating point, not a structural limit of the model.
 _cl_placard = 9000 * 4.4482216 / (0.5 * RHO * (165 * 0.44704) ** 2 * 233.19 * 0.09290304)
 flap_vmax = note("flaps", "flap speed advisory (m/s EAS)", math.sqrt(2 * mass * G0 / (RHO * S * _cl_placard)), f"165 mph placard at CL {_cl_placard:.3f}")
-# P51-11a law refinements (shared optional fields, absent = the Ventage Jet law):
+# P51-11a law refinements (shared optional fields, absent = the Vantage Jet law):
 # - Stall onset: Roskam's plain-flap maximum-lift increment (Airplane Design Part VI, Figs. 8.31-8.33, FAST-GA
 #   digitization; k3 = 1 for plain flaps) is about 0.6-0.7 of the camber increment, so a flapped section stalls at an
 #   angle only kappa = 1 - dClmax/dCl0 of its camber shift earlier. With kappa = 1 (the default) 15 deg of flap lowered

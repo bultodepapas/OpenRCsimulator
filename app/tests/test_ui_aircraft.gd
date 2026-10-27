@@ -141,7 +141,7 @@ func _run() -> void:
 	_check("Extra: Fly enabled, its status says experimental", not home.fly_button.disabled and home.aircraft_status_label.text.begins_with("Experimental"))
 	_check("choosing never starts a flight", app.flight == null)
 
-	# Next again: the P-51 (experimental, flyable); then the Ventage Jet (experimental since AV-07, flyable).
+	# Next again: the P-51 (experimental, flyable); then the Vantage Jet (experimental since AV-07, flyable).
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("P-51: shown, experimental, Fly enabled", home.aircraft_id == P51 and not home.fly_button.disabled
@@ -153,24 +153,24 @@ func _run() -> void:
 		and home.aircraft_status_label.text.begins_with("Experimental") and app.home_scene.airplane.aircraft_id == CORSAIR, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("Ventage Jet: shown, experimental, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled
+	_check("Vantage Jet: shown, experimental, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Experimental"), home.aircraft_status_label.text)
-	_check("Ventage Jet: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == AVANTI and ui.focus_name() == "NextAircraft", ui.focus_name())
-	_check("choosing the Ventage Jet never starts a flight", app.flight == null)
+	_check("Vantage Jet: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == AVANTI and ui.focus_name() == "NextAircraft", ui.focus_name())
+	_check("choosing the Vantage Jet never starts a flight", app.flight == null)
 
-	# The Timber is now the experimental, data-backed electric aircraft (TT-08/10).
+	# The Lumber is now the experimental, data-backed electric aircraft (TT-08/10).
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("Timber: shown, experimental, Fly enabled", home.aircraft_id == TIMBER and not home.fly_button.disabled
+	_check("Lumber: shown, experimental, Fly enabled", home.aircraft_id == TIMBER and not home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Experimental") and home.limits_label.visible, home.aircraft_status_label.text)
 	var timber_note: String = home.aircraft_status_label.text.to_lower()
-	_check("Timber status states the estimated electric, flaps-up configuration",
+	_check("Lumber status states the estimated electric, flaps-up configuration",
 		timber_note.contains("electric") and timber_note.contains("estimated") and timber_note.contains("flaps up")
 		and timber_note.contains("fixed wheels") and timber_note.contains("assists off"), timber_note)
-	_check("Timber: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == TIMBER and ui.focus_name() == "NextAircraft", ui.focus_name())
-	_check("Timber: catalog counter", home.aircraft_count_label.text == _aircraft_counter(TIMBER), home.aircraft_count_label.text)
-	_check("Timber selection is saved without starting a session", Preferences.load_from(PREFS).aircraft == TIMBER and app.flight == null)
-	# X8-09: the X8 flying wing follows the Timber; without landing gear it starts by hand (X8-07).
+	_check("Lumber: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == TIMBER and ui.focus_name() == "NextAircraft", ui.focus_name())
+	_check("Lumber: catalog counter", home.aircraft_count_label.text == _aircraft_counter(TIMBER), home.aircraft_count_label.text)
+	_check("Lumber selection is saved without starting a session", Preferences.load_from(PREFS).aircraft == TIMBER and app.flight == null)
+	# X8-09: the X8 flying wing follows the Lumber; without landing gear it starts by hand (X8-07).
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("X8: shown, experimental, Fly enabled, starts by hand", home.aircraft_id == X8 and not home.fly_button.disabled
@@ -199,10 +199,10 @@ func _run() -> void:
 	_check("previous from the helicopter returns to the X8", home.aircraft_id == X8, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("previous again: the Timber", home.aircraft_id == TIMBER, home.aircraft_id)
+	_check("previous again: the Lumber", home.aircraft_id == TIMBER, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("previous again: the Ventage Jet", home.aircraft_id == AVANTI, home.aircraft_id)
+	_check("previous again: the Vantage Jet", home.aircraft_id == AVANTI, home.aircraft_id)
 	app.set_language("es")
 	await ui.settle()
 	# Labels keep the English source and translate when drawn (auto-translate), so read them the way they are drawn.
@@ -213,26 +213,27 @@ func _run() -> void:
 		"count=%s tooltip=%s expected=%s status=%s summary=%s" % [home.aircraft_count_label.text,
 			home.aircraft_count_label.tooltip_text, _aircraft_counter_tooltip(AVANTI), status.atr(status.text),
 			home.aircraft_summary_label.atr(home.aircraft_summary_label.text)])
-	# The Timber's fictional name is the one translated aircraft name (TT-06); the other names pass through tr() unchanged.
+	# The Lumber's fictional name is the one translated aircraft name (TT-06); the other names pass through tr() unchanged.
 	app.set_aircraft(TIMBER)
 	await ui.settle()
-	_check("Spanish: the Timber card shows its Spanish name", home.aircraft_name_label.text == "Turbo Tronco"
+	_check("Spanish: the Lumber card shows its Spanish name", home.aircraft_name_label.text == "Turbo Tronco"
 		and home.aircraft_name_label.tooltip_text == "Turbo Tronco Evolución", home.aircraft_name_label.text)
 	app.set_aircraft(AVANTI)
 	await ui.settle()
-	_check("Spanish: Ventage Jet keeps its name", home.aircraft_name_label.text == Catalog.entry(AVANTI).name, home.aircraft_name_label.text)
+	_check("Spanish: Vantage Jet keeps its name", home.aircraft_name_label.text == "Vantage Jet"
+		and Catalog.entry(AVANTI).name == "Vantage Jet", home.aircraft_name_label.text)
 	app.set_language("en")
 	await ui.settle()
-	_check("English: the Timber card shows its English name", Catalog.entry(TIMBER).name == "Turbo Lumber Evolution" and tr(Catalog.entry(TIMBER).name) == "Turbo Lumber Evolution")
+	_check("English: the Lumber card shows its English name", Catalog.entry(TIMBER).name == "Turbo Lumber Evolution" and tr(Catalog.entry(TIMBER).name) == "Turbo Lumber Evolution")
 	await _close(app)
 
-	# A new start remembers the Ventage Jet; then fly the Timber through Home's real Fly action.
+	# A new start remembers the Vantage Jet; then fly the Lumber through Home's real Fly action.
 	app = await _app()
 	home = app.home
-	_check("restart: the saved Ventage Jet comes back, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled, ui.focus_name())
+	_check("restart: the saved Vantage Jet comes back, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled, ui.focus_name())
 	app.set_aircraft(TIMBER)
 	await ui.settle()
-	_check("reselected Timber: Fly enabled and choice saved", home.aircraft_id == TIMBER and not home.fly_button.disabled
+	_check("reselected Lumber: Fly enabled and choice saved", home.aircraft_id == TIMBER and not home.fly_button.disabled
 		and Preferences.load_from(PREFS).aircraft == TIMBER)
 	home.fly_button.grab_focus()
 	await ui.tap(KEY_ENTER)
@@ -243,22 +244,22 @@ func _run() -> void:
 	var timber_started: bool = (timber_flight != null and timber_session != null
 		and timber_flight._airplane.aircraft_id == TIMBER and timber_session.aircraft.ok
 		and timber_session.aircraft.model.id == TIMBER and timber_session.start.ok and app.home == null)
-	_check("Fly starts Timber with its own model and physics", timber_started)
+	_check("Fly starts Lumber with its own model and physics", timber_started)
 	if not timber_started:
 		await _close(app)
-		print("all UI aircraft checks failed to start Timber")
+		print("all UI aircraft checks failed to start Lumber")
 		quit(1)
 		return
 
-	# Pause and restart from the visible menu; the same loaded Timber returns at its trimmed start.
+	# Pause and restart from the visible menu; the same loaded Lumber returns at its trimmed start.
 	await ui.tap(KEY_ESCAPE)
-	_check("Timber flight pauses from the keyboard", app.pause_menu != null and timber_session.sim.paused)
+	_check("Lumber flight pauses from the keyboard", app.pause_menu != null and timber_session.sim.paused)
 	await ui.tap(KEY_DOWN)
 	_check("Restart is keyboard reachable", ui.focus_name() == "Restart", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	await ui.settle()
-	_check("Restart restores a fresh trimmed Timber flight", app.flight == timber_flight and app.pause_menu == null
+	_check("Restart restores a fresh trimmed Lumber flight", app.flight == timber_flight and app.pause_menu == null
 		and not timber_session.sim.paused and timber_session.aircraft.model.id == TIMBER and timber_session.sim.time() < 0.25,
 		"t=%.3f s" % timber_session.sim.time())
 
@@ -296,24 +297,24 @@ func _run() -> void:
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	await ui.settle()
-	_check("reselect after End starts Timber again", app.flight != null and app.flight._airplane.aircraft_id == TIMBER
+	_check("reselect after End starts Lumber again", app.flight != null and app.flight._airplane.aircraft_id == TIMBER
 		and app.flight.session.aircraft.model.id == TIMBER)
 	await _close(app)
 
-	# A fresh app reads the persisted Timber choice and can fly it again.
+	# A fresh app reads the persisted Lumber choice and can fly it again.
 	app = await _app()
 	home = app.home
-	_check("new app remembers Timber and keeps Fly enabled", home.aircraft_id == TIMBER and not home.fly_button.disabled
+	_check("new app remembers Lumber and keeps Fly enabled", home.aircraft_id == TIMBER and not home.fly_button.disabled
 		and Preferences.load_from(PREFS).aircraft == TIMBER, home.aircraft_status_label.text)
 	home.fly_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	await ui.settle()
-	_check("persisted Timber choice flies its matching physics", app.flight != null and app.flight._airplane.aircraft_id == TIMBER
+	_check("persisted Lumber choice flies its matching physics", app.flight != null and app.flight._airplane.aircraft_id == TIMBER
 		and app.flight.session.aircraft.model.id == TIMBER)
 	await _close(app)
 
-	# Keep the existing Extra adapter roundtrip alongside the new Timber session checks.
+	# Keep the existing Extra adapter roundtrip alongside the new Lumber session checks.
 	app = await _app()
 	app.set_aircraft(EXTRA)
 	await ui.settle()

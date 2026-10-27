@@ -192,7 +192,7 @@ agreement within 2/255 per sampled RGB channel. `--capture-only` records a faili
 baseline without a nonzero exit; its report must not be presented as a pass.
 [Sun-energy correction and evidence](../../docs/research/visual-quality-implementation/VQ-07/sun-energy-2026-10-22/README.md).
 
-The dated [lake sky-edit and low Ventage Jet fixtures](../../docs/research/visual-quality-implementation/VQ-07/lake-refresh-2026-10-22/README.md)
+The dated [lake sky-edit and low Vantage Jet fixtures](../../docs/research/visual-quality-implementation/VQ-07/lake-refresh-2026-10-22/README.md)
 retain production-reflection checks, prescribed aircraft motion, and rejected
 fixture-only dynamic reflection screens. They do not qualify real-time flight
 pacing or enable aircraft reflections in the game.

@@ -12,7 +12,7 @@ Tools every domain uses: the engine, the test suite, headless runs, flags, trace
 
 ## Full app suite
 
-- **Purpose:** import, generator checks, a parse check of every `.gd`, every `app/tests/test_*.gd` script (676 on 2026-10-24), CLI/trace/replay and frame-rate-independence checks.
+- **Purpose:** import, generator checks, a parse check of every `.gd`, every `app/tests/test_*.gd` script (851 on 2026-10-27), CLI/trace/replay and frame-rate-independence checks.
 - **When:** before every commit that touches `app/`, and after integrating a script.
 - **Command:** `app/test.sh`. One CI partition: `OPENRC_TEST_PART=units OPENRC_UNIT_SHARDS=8 OPENRC_UNIT_SHARD=0 app/test.sh` (shards 0–7), or `OPENRC_TEST_PART=integration app/test.sh`. Evidence goes to `tmp/godot-checks/`; override with `OPENRC_CHECK_OUT=<dir>`.
 - **Result:** exit 0 means every step passed. Failing Godot calls print `Godot check failed: … report: <dir>/report.json`; open that report and its `engine.log`.
@@ -22,6 +22,8 @@ Tools every domain uses: the engine, the test suite, headless runs, flags, trace
   - Two named physical checks run in "pending" mode inside the suite (`test_rudder_authority.gd`, `test_yaw_damping.gd`). Pending is not a pass; run alone they are strict. Details: [TOOLS](../TOOLS.md#app-and-release-commands).
   - The script stops at the first failure (`set -e`), and the integration tail runs after the units. One red unit script hides every later result: run `OPENRC_TEST_PART=integration app/test.sh` for the tail, and loop the remaining `app/tests/test_*.gd` through the [checked runner](#one-godot-script) to see all unit failures.
   - Parallel runs require isolated `user://` profiles. On Windows, even with separate profiles, concurrent editor imports in one checkout contend for the native extension's hot-reload shadow DLL. Serialize imports; use separate checkouts for parallel full suites. The documented remaining-unit loop can reuse an already successful import.
+  - The integration part needs numpy for the X8 generator check (`pip install -r research/skywalker-x8/X8-06/requirements.txt`); CI installs it into a venv on `PATH`.
+  - On a Windows checkout with `core.autocrlf=true`, a generator `--check` that compares bytes can report a stale file that is only CRLF. Pin such outputs `text eol=lf` in `.gitattributes`, as the D8b-R2 candidates and X8 licence are; a fresh `git worktree` gets CRLF everywhere, so run hash-sensitive integration checks in an LF checkout.
   - It does not run the CI-only checks below.
 
 ## CI-only checks

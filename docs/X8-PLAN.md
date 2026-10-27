@@ -35,7 +35,7 @@ The X8 is the first catalog aircraft outside the conventional wing-tail/tractor/
 | X8-09 | Done 2026-10-25 | Catalog (experimental, after the Turbo Lumber), Spanish texts, Workshop descriptor, [economy dossier](research/skywalker-x8/X8-09/economy.md) (12 of 19 lines priced, the rest explicitly unpriced), parked bakes, fleet lists and counts. |
 | X8-10 | Done 2026-10-25 | [Verification](research/skywalker-x8/X8-10/README.md): fleet suites, flight-test card v5 30/40 valid with no script errors. |
 | X8-11 | Owner | Physical evidence: piloted `.orfl`, measured mass/CG/throws of a real X8. |
-| X8-12 | Done 2026-10-26 | [Optimization round](research/skywalker-x8/X8-12/README.md): electric trim stops at its residual floor (X8 launch trim 5.9× faster, Timber 4.6×), generic trim reuses the steady rpm across surface probes (glow 1.6×, bit-identical), one cached data load answers both ground starts. Tick cost, data load and model asset measured and left unchanged. |
+| X8-12 | Done 2026-10-26 | [Optimization round](research/skywalker-x8/X8-12/README.md): electric trim stops at its residual floor (X8 launch trim 5.9× faster, Lumber 4.6×), generic trim reuses the steady rpm across surface probes (glow 1.6×, bit-identical), one cached data load answers both ground starts. Tick cost, data load and model asset measured and left unchanged. |
 
 ## 4. Owner decisions
 
