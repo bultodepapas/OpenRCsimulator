@@ -675,3 +675,35 @@ python3 tools/godot/run_checked.py --timeout 1400 -- "$(app/get-godot.sh)" --hea
 ```
 
 [GP-19f evidence](../../docs/research/ground-physics/GP-19/evidence/unloaded-rows/README.md).
+
+## Statistics observer cost (UI-FS-08-R1)
+
+`statistics_sample_pair.gd` compares an explicit prior `fixed_wing_adapter.gd` with the
+working tree on one real session (two descents to touchdown and a runway idle), bytewise per
+sample. `statistics_detector_pair.gd` feeds identical real samples to a prior and the
+current `detector.gd` and compares returned events and complete snapshots after every tick.
+
+```sh
+mkdir -p tmp/uifs08r1 && git show b6e3fe7d4:app/statistics/fixed_wing_adapter.gd > tmp/uifs08r1/adapter_ref.gd \
+  && git show b6e3fe7d4:app/statistics/detector.gd > tmp/uifs08r1/detector_ref.gd
+python3 tools/godot/run_checked.py --timeout 1400 -- "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/performance/statistics_sample_pair.gd" -- --reference="$PWD/tmp/uifs08r1/adapter_ref.gd"
+python3 tools/godot/run_checked.py --timeout 1400 -- "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/performance/statistics_detector_pair.gd" -- --reference="$PWD/tmp/uifs08r1/detector_ref.gd"
+```
+
+[UI-FS-08-R1 evidence](../../docs/research/flight-statistics/UI-FS-08-R1/README.md).
+
+## Lake collision early rejection (LU-25-R6)
+
+`lake_collision_pair.gd` compares an explicit prior `app/sim/lake_collision.gd` with the
+working tree over 5,844 tick pairs around and far from the default lake, comparing events by
+content (nested records included), then times distant airborne ticks.
+
+```sh
+mkdir -p tmp/lu25r6 && git show b6e3fe7d4:app/sim/lake_collision.gd > tmp/lu25r6/lake_collision_ref.gd
+python3 tools/godot/run_checked.py --timeout 1400 -- "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/performance/lake_collision_pair.gd" -- --reference="$PWD/tmp/lu25r6/lake_collision_ref.gd"
+```
+
+[LU-25-R6 evidence](../../docs/research/landscape-upgrade/LU-25-R6/README.md).
