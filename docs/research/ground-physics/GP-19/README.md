@@ -20,6 +20,8 @@ GP-19e removes the observation's per-tick cost without changing its packets: the
 
 GP-19f keeps the accepted ground-audio observer per tick but returns cheap unloaded rows while the aircraft is well above gear reach (reach + terrain bound + 1 m + 0.5 s of travel). Touchdown cues and near-ground rows are bytewise unchanged in three real descents; far rows report the fallback material; flight main-thread CPU −10.3%. [Evidence](evidence/unloaded-rows/README.md).
 
+GP-19g memoizes `GroundTerrain.is_valid_surface_table` on a detached copy of the last table compared by value, so the 20-odd per-tick guard calls on an unchanged field cost a compare instead of a full row walk (2.0 → 0.29 µs). Bitwise parity over 256,703 interleaved calls. [Evidence](evidence/surface-table-check/README.md).
+
 A [native Turbo Lumber capture](evidence/native-continuous-timber/README.md) now completes takeoff, touchdown and straight-ahead terrain rollout in one production flight. WASAPI PCM clocks, zero capture discards/clipping and all 44 selected before/after source hashes pass; estimated Master true peak is -22.5047 dBTP. This single current-physics route does not activate the advanced operator or establish isolated hull-scrape audibility, human listening, whole-fleet coverage or 1080p performance. The capture wrapper follows the live catalog and distinguishes requested-aircraft success from complete catalog coverage.
 
 The [native hull-scrape cohort](evidence/native-hull-scrape/README.md) verifies the

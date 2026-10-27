@@ -1,0 +1,100 @@
+# NK-2a regression run, 2026-10-27: working tree with NK-2a (Godot 4.8-beta1 editor, headless, tools/godot/run_checked.py).
+# Selection: every test calling a memoized helper, _pre_step/pre_tick or an input/aux layout index, every test editing
+# session.aircraft in place, plus golden flights, reset/statistics transactions, replay integrity, X8/turbine/flap tests.
+# 91/95 pass. The 4 failures fail identically with HEAD's flight_session.gd/aero.gd, at clean HEAD and at session
+# start f9e6dbe8d (hard-linked snapshots), so they predate this change and belong to their owners.
+PASS test_aircraft_contact_session AS-13 contact session: 63 checks, 0 failures
+PASS test_aircraft_ground_battery Aircraft ground finite battery: 384 checks, 0 failed
+PASS test_aircraft_ground_electric Aircraft ground electric: 196 checks, 0 failed
+PASS test_aircraft_propulsion_runtime aircraft propulsion runtime: 246 checks, 0 failed
+PASS test_atmosphere_flight M5-ATM flight: 142 checks, 0 failed
+PASS test_avanti_gamepad AV-17-R2 gamepad contract and input shaping: 29 checks, 0 failed
+PASS test_avanti_gamepad_flight AV-17-R2 gamepad flight: 22 checks, 0 failed
+PASS test_avanti_handling 47 checks, 0 failed
+PASS test_avanti_keyboard AV-17-R1 keyboard and dive recovery: 39 checks, 0 failed
+PASS test_avanti_rudder AV-17-R3 rudder checks: 33 checks, 0 failures
+PASS test_avanti_smoke Avanti smoke: 29 checks, 0 failed
+PASS test_avanti_yaw_flight AV-17-R3 yaw flight: 28 checks, 0 failed
+PASS test_battery_session BAT-10/11/13 battery session: 43 checks, 0 failed
+PASS test_checkpoint H8 checkpoints: 92 checks, 0 failed
+PASS test_checkpoint_integrity H8-R1 checkpoint integrity: 149 checks, 0 failed
+FAIL test_companions_session 65 checks, 1 failed
+PASS test_continuous_state continuous state: 42 checks, 0 failed
+PASS test_control_surface_observation Control surface observation: 65 checks, 0 failed
+PASS test_controller_flight_actions controller flight actions: 32 checks, 0 failures
+PASS test_controller_pause_recovery Controller pause recovery: 59/59 checks passed
+PASS test_crash_integration 224 checks, 0 failed
+PASS test_downwash_lag 24 checks, 0 failed
+PASS test_dynamic_mass_contact_session R05-B FlightSession integration review: 38 checks, 0 failures
+PASS test_electric_battery_session EL2a battery session: 103 checks, 0 failed
+PASS test_electric_session EL1d electric session: 98 checks, 0 failed
+PASS test_envelope 15 checks, 0 failed
+PASS test_extra_runway Extra runway: 18 checks, 0 failed; factor is estimated, not measured
+PASS test_failure_power Failure power adapter: 111 checks, 0 failed
+PASS test_failure_shutdown Failure power shutdown integration: 206 checks, 0 failed
+FAIL test_fixed_gear_brake_input Fixed brake candidate: 256 checks, 9 failed
+PASS test_flap_aero 28 checks, 0 failed
+PASS test_flaps_session AV-09 flaps session: 36 checks, 0 failures
+PASS test_flaps_ui flaps UI: 19 checks, 0 failures
+PASS test_flight_audio_accepted FlightAudio accepted endpoints: 35 checks, 0 failed
+PASS test_flight_log FL-04 flight logs: 3247 checks, 0 failures; /home/bulto/OpenRCsimulator/app/../tmp/flight-log-2780717
+PASS test_flight_log_inputs GP-12 flight-log inputs: 232 checks, 0 failed
+PASS test_flight_reset_transaction Common flight reset: 148 checks, 0 failed; /home/bulto/OpenRCsimulator/app/../tmp/common-reset-2949120
+PASS test_flight_statistics_lifecycle Flight statistics lifecycle: 51 checks, 0 failed
+PASS test_fuel_event_boundaries Fuel tiny boundaries: 46 checks, 0 failed
+PASS test_glow_dive_support NITRO-61FX-R1 dive support: 10 checks, 0 failed
+PASS test_glow_flight_physics glow flight physics: 110 checks, 0 failed
+PASS test_glow_session Glow session: 140 checks, 0 failed
+PASS test_glow_trace NITRO-TRACE: 286 checks, 0 failed
+PASS test_golden 4 golden flights, 0 failed
+PASS test_ground_accident_session GP-14 live sessions: 33 checks, 0 failed
+PASS test_ground_effect 51 checks, 0 failed
+PASS test_ground_friction 26 checks, 0 failed
+PASS test_ground_stage_queries 195 ground-stage checks, 0 failed
+PASS test_ground_stiction 25 checks, 0 failed
+PASS test_gyro 6 checks, 0 failed
+PASS test_intended_hull_support_session Intended hull support sessions: 53 checks, 0 failed
+PASS test_lake_session 35 lake session checks, 0 failed
+FAIL test_landscape_collision_session landscape collision session: 25 checks, 1 failures
+PASS test_mechanical_integration Mechanical integration: 28 checks, 0 failed
+PASS test_menu_trim_prepare Menu trim preparation: 29 checks, 0 failed
+PASS test_modes 42 checks, 0 failed
+PASS test_p51_flaps P51-11a flaps: 12 checks, 0 failed
+PASS test_p51_lights P51-V13 lights: 13 checks, 0 failed
+PASS test_p51_retracts P51-11b retracts: 14 checks, 0 failed
+PASS test_prop_strike 41 checks, 0 failed
+PASS test_replay_integrity H9-R1 replay integrity: 153 checks, 0 failed
+PASS test_reset_publication Reset publication: 180 checks, 0 failed; /home/bulto/OpenRCsimulator/app/../tmp/reset-publication-3585066
+PASS test_retractable_gear AV-09 retractable gear: 77 checks, 0 failed
+PASS test_retractable_gear_ground 26 checks, 0 failed
+PASS test_retractable_gear_input retractable gear input: 8 checks, 0 failures
+PASS test_retractable_gear_trace AV-09 retractable gear trace: 21 checks, 0 failed
+PASS test_rk_stage_time 22 checks, 0 failed
+PASS test_runway_fleet Runway fleet: 136 checks, 0 failed
+PASS test_runway_start 18 checks, 0 failed
+PASS test_runway_transaction VAL-AUD-R04 launch transaction: 32 checks, 0 failed
+PASS test_scenery_damage_session 51 checks, 0 failed
+PASS test_scenery_destruction_runtime scenery destruction runtime: 8 checks, 0 failures
+PASS test_session_guards 32 checks, 0 failed
+PASS test_session_tick_facts Session tick facts: 16 checks, 0 failed
+PASS test_sf_event_protocol 46 checks, 0 failed
+PASS test_shaft_capacity Shaft capacity draft: 141 checks, 0 failed
+PASS test_shaft_coupled G2 coupled shaft: 99 checks, 0 failed
+PASS test_shaft_refinement G2 refinement: 3 checks, 0 failed
+PASS test_slipstream_downwash E0b3a: 15 checks, 0 failed
+PASS test_spatial_powered_stage Spatial powered stage: 277 checks, 0 failed
+PASS test_spatial_propulsion_flow spatial propulsion flow: 29 checks, 0 failed
+PASS test_spin 8 checks, 0 failed
+PASS test_trace 38 checks, 0 failed
+PASS test_trace_metadata C7-R2 / DATA-3: 447 checks, 0 failed
+PASS test_turbine 27 checks, 0 failed
+PASS test_turbine_continuous 46 checks, 0 failed
+PASS test_turbulence_flight M5-W04a turbulence flight: 161 checks, 0 failed
+PASS test_wash_transport E0b5 transport: 44 checks, 0 failed
+PASS test_wheel_session GP-02 wheel session: 51 checks, 0 failed
+PASS test_wind_flight wind flight: 51 checks, 0 failed
+PASS test_wing_polar_session D8b-R2 session: 8 checks, 0 failed
+PASS test_workshop_compiler Workshop compiler: 377 checks, 0 failures
+PASS test_workshop_smoke Workshop smoke integration: 12 checks, 0 failures
+FAIL test_workshop_starts Workshop starts: 380 checks, 1 failed, 18 frozen variants
+PASS test_x8_flying_wing X8 flying wing: 37 checks, 0 failures

@@ -30,7 +30,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 ## Whole-project audit
 
 - [Debugging tools investigation, 2026-10-19](debugging-tools-2026-10-19.md) reviews 20 official, GitHub, Reddit and forum sources against local diagnostic gaps; records checked-run summaries, evidence integrity and performance-rerun preservation under PT1h-R2 / VQ-01b.
-- [Native kernel scoping, 2026-10-27](native-kernel-scoping-2026-10-27.md) sizes a GDExtension port of the simulation tick from the repository's native evidence: interface options with expected gains, determinism and delivery constraints, phases NK-0…8 and owner decisions D1–D8. Research only.
+- [Native kernel scoping, 2026-10-27](native-kernel-scoping-2026-10-27.md) sizes a GDExtension port of the simulation tick from the repository's native evidence: interface options with expected gains, determinism and delivery constraints, phases NK-0…8 and owner decisions D1–D8. Research only. First steps: the [NK-1 math spike](../../research/native-math-spike/README.md) (Linux: native math bit-identical to GDScript) and [NK-2a](native-kernel/NK-2a/README.md), a per-tick memo of the session's aircraft capability answers (identical fingerprints, session tick −8 to −16%).
 - [Godot optimization scan, 2026-10-27](godot-optimization-scan-2026-10-27.md) collects CPU, profiling/loop and Compatibility-rendering techniques with sources, corrects two assumptions (alpha-to-coverage is a no-op and pipeline-compilation counters read 0 on Compatibility) and ranks a backlog by output risk and hardware need. Research only.
 - [Godot performance and visual review, 2026-10-14](godot-global-review-2026-10-14.md) compares current source and retained native evidence with Godot 4.7 documentation, repositories and community reports. Its [second round](godot-global-review-2026-10-14.md#9-second-research-round-creative-directions) adds 24 creative experiment ideas; the [execution plan](../plans/global-performance-visual-quality.md) sequences work under existing track owners. No new runtime benchmark or implementation is claimed.
 - [Branch integration, 2026-10-10](branch-integration-2026-10-10.md) records merge decisions and clean-checkout checks.
@@ -67,7 +67,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ### Servos
 
-[D6-SAV-00](servos/D6-SAV-00/README.md) retains manufacturer correspondence, catalog sources, conflicting specifications and price-observation limits. The [Savox plan](../plans/savox-servos.md) owns proposed catalog and actuator work. Catalog acquisition does not establish installed hardware identity or measured servo response.
+[D6-SAV-00](servos/D6-SAV-00/README.md) retains manufacturer correspondence, catalog sources, conflicting specifications and price-observation limits. The [Savox plan](../plans/savox-servos.md) owns proposed catalog and actuator work. Catalog acquisition does not establish installed hardware identity or measured servo response. [D6-SRV-00](servos/D6-SRV-00/README.md) records the servo load plan's decisions and dated sources (holding torque, voltage scaling, receiver brownout, simulator practice, flutter, product naming; [manifest](servos/D6-SRV-00/sources.json)); the [servo load plan](../plans/servo-dynamics.md) owns loaded response, receiver power and overload work.
 
 ### Random failures and emergency practice
 

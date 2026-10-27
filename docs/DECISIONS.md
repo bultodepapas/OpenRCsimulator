@@ -1152,3 +1152,31 @@ flap-module admission without retuning current aircraft. Discover every catalog
 battery mode in equivalence checks and require complete per-tick replay; preserve
 historical reports under their original probe version. [Contract](AIRCRAFT_CONTRACT.md)
 and [verification](research/aircraft-standardization/AS-06-14/README.md#shared-flight-admission-as-0714-r1-2026-10-26).
+
+### 2026-10-27 — Servo load is caused physics with manufacturer-sourced limits (D6-SRV-00)
+
+Loaded servo response belongs to an aircraft's physics. Each aircraft adopts it through an
+explicit `actuation.servo_load` capability after D6-SRV-12 qualification. There is no global
+"ideal servo" toggle, and aircraft without the capability keep the L1 slew law byte-identical.
+
+Damage follows from load and heat; the random-failure probability does not gate it. A damage
+mode exists for a product only when its strip, back-drive or thermal threshold comes from
+manufacturer data. No such threshold is estimated for a named product. Stall and blowback
+follow from published stall torque.
+
+Owner decisions: units of the same reference are identical (no scatter), there is no wear
+between flights, and manufacturer data is the primary parameter source. Publish only what a
+manufacturer authorizes.
+
+Name real products in plain text with objective, voltage-stated comparisons. Logos or 3D
+likeness require written permission. Flutter is out of scope.
+
+Datasheets set two laws:
+- Holding torque follows a proportional band from the published standing torque (HS-755HB:
+  80 % of stall at 5° hold-out), not a holding multiplier.
+- Voltage scaling uses the published two-point line (proportional scaling errs by about 4 %).
+
+No documented RC simulator models servo torque, blowback, brownout or flutter, so this rests
+on physics and supplied data rather than convention.
+[Plan](plans/servo-dynamics.md#13-decisions-resolved-2026-10-27) and
+[evidence](research/servos/D6-SRV-00/README.md).

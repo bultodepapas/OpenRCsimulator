@@ -41,12 +41,15 @@ func _initialize() -> void:
 			session.free()
 			continue
 		# Full throttle from the start; the elevator pushes over and holds the dive attitude (PD on pitch).
+		# The push is capped at 60% stick: a full-down push at 30 m/s sits on a negative-g departure edge, and
+		# since D11-R1's aileron recalibration the Extra tumbled there instead of diving (2026-10-27 diagnosis
+		# in docs/research/glow-engines/NITRO-06-R1/README.md). 40% gives the same dive.
 		var dive := { mode = "level", speed = 30.0, altitude = 800.0, duration = 12.0,
 			sticks = func(_t: float, s: PackedFloat64Array) -> Dictionary:
 				var pitch := rad_to_deg(M.q_to_euler(s.slice(RB.ATT, RB.ATT + 4))[1])
 				var q: float = s[RB.RATE + 1]
 				var out := Maneuvers._hands_off()
-				out.pitch = clampf(0.05 * (DIVE_PITCH_DEG - pitch) - 0.3 * q, -1.0, 1.0)
+				out.pitch = clampf(0.05 * (DIVE_PITCH_DEG - pitch) - 0.3 * q, -0.6, 1.0)
 				out.roll = clampf(-0.5 * s[RB.RATE], -1.0, 1.0)
 				out.throttle_delta = 1.0
 				return out }

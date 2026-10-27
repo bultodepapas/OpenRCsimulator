@@ -1,0 +1,6 @@
+; NK-1 math identity spike: standalone headless project; see ../README.md.
+config_version=5
+
+[application]
+
+config/name="OpenRC NK-1 math identity spike"

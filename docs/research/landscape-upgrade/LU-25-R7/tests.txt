@@ -1,0 +1,49 @@
+# LU-25-R7 regression run, 2026-10-27: working tree (Godot 4.8-beta1 editor, headless, tools/godot/run_checked.py).
+# Selection: every lake test, every test using LakeSurface or set_lake_context, ground and hull tests, test_golden.
+# 44/45 pass. test_companions_lifecycle fails 61 checks identically with HEAD's lake_surface.gd, at clean HEAD and at
+# session start f9e6dbe8d (hard-linked snapshots), so it predates this change.
+PASS test_aircraft_contact_session AS-13 contact session: 63 checks, 0 failures
+FAIL test_companions_lifecycle companions lifecycle: 653 checks, 61 failed (pre-existing, see header)
+PASS test_companions_observation AFC COMPANION OBSERVATION CHECKS 21 FAILED 0
+PASS test_downloaded_habitats downloaded habitat checks: 330 checks, 0 failures
+PASS test_golden 4 golden flights, 0 failed
+PASS test_ground_accepted_ticks Ground accepted ticks: 93 checks, 0 failed
+PASS test_ground_accident_session GP-14 live sessions: 33 checks, 0 failed
+PASS test_ground_accidents GP-14 accidents: 68 checks, 0 failed
+PASS test_ground_audio 33 checks, 0 failed
+PASS test_ground_audio_materials Ground audio materials: 24 checks, 0 failed
+PASS test_ground_contact 23 checks, 0 failed
+PASS test_ground_effect 51 checks, 0 failed
+PASS test_ground_flight_events Ground flight events: 135 checks, 0 failed
+PASS test_ground_friction 26 checks, 0 failed
+PASS test_ground_image_cache ground image cache: 18 checks, 0 failed
+PASS test_ground_marks 
+PASS test_ground_patch_cache patch cache regression: 94 checks, 0 failures
+PASS test_ground_physics 48 checks, 0 failed
+PASS test_ground_stage_queries 195 ground-stage checks, 0 failed
+PASS test_ground_start_environment 10 checks, 0 failed
+PASS test_ground_start_integrity E3b2-R1: 254 checks, 0 failed
+PASS test_ground_stiction 25 checks, 0 failed
+PASS test_ground_support_query GP-10 support query: 114 checks, 0 failed
+PASS test_ground_surfaces 29 checks, 0 failed
+PASS test_ground_terrain 21 checks, 0 failed
+PASS test_ground_traction GP-12 traction: 659 checks, 0 failed
+PASS test_hull_crossing 40 checks, 0 failed
+PASS test_hull_friction_observation Hull scrape metrics: 388 checks, 0 failed
+PASS test_hull_scrape_audio Hull scrape audio: 60 checks, 0 failed
+PASS test_hull_scrape_session Hull scrape Session: 56 checks, 0 failed
+PASS test_hull_support_normal 70 checks, 0 failed
+PASS test_intended_hull_support_session Intended hull support sessions: 53 checks, 0 failed
+PASS test_lake_collision all lake collision checks passed
+PASS test_lake_covered_sampling 761 checks, 0 failed
+PASS test_lake_definition_cache 
+PASS test_lake_geometry_bake 18 lake geometry bake checks, 0 failed
+PASS test_lake_ground_contact all lake ground contact checks passed
+PASS test_lake_planar_reflection lake planar reflection contract: 75 checks, 0 failed
+PASS test_lake_plants Lake plant checks: PASS
+PASS test_lake_probe_ambient Lake probe ambient: 8 checks, 0 failed
+PASS test_lake_session 35 lake session checks, 0 failed
+PASS test_lake_surface all lake surface checks passed
+PASS test_lake_world 27 lake world checks, 0 failed
+PASS test_rcv_airfield_course RCV airfield course: 0 failed
+PASS test_water_director 22 checks, 0 failed

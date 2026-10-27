@@ -1,6 +1,6 @@
 # Servo load, power and failure plan
 
-**Updated:** 2026-10-27. **Revision:** 1. **Status:** planned; nothing implemented. Extends the [Savox servo plan](savox-servos.md) (D6-SAV) past its speed/mass MVP into loaded response, receiver power, heat and overload failure. **Owner:** physics/input track D6. **Prefix:** `D6-SRV-00…15`. A repo-wide grep on 2026-10-27 found no other use; D6-SRV-00 registers it in the [track registry](../README.md#tracks-plans-and-step-ids).
+**Updated:** 2026-10-27. **Revision:** 2 — decisions OD1–OD7 resolved with [D6-SRV-00 evidence](../research/servos/D6-SRV-00/README.md); holding and voltage laws corrected from datasheets. **Status:** planned; nothing implemented. Extends the [Savox servo plan](savox-servos.md) (D6-SAV) past its speed/mass MVP into loaded response, receiver power, heat and overload failure. **Owner:** physics/input track D6. **Prefix:** `D6-SRV-00…15`. A repo-wide grep on 2026-10-27 found no other use; D6-SRV-00 registers it in the [track registry](../README.md#tracks-plans-and-step-ids).
 
 **Owns (proposed):**
 - `app/physics/servo/`
@@ -19,7 +19,7 @@
 
 Shared runtime files stay with their owners: `app/sim/flight_session.gd`, `app/main.gd` and `app/ui/workshop.gd`.
 
-Line references were checked on 2026-10-27. Parallel work is active in `app/sim/`, so re-verify them before editing.
+Line references were checked on 2026-10-27, after NK-2a moved `flight_session.gd` lines (uncommitted at the time). Re-verify them by symbol before editing.
 
 ## 1. Outcome
 
@@ -61,10 +61,10 @@ In the Aircraft Workshop, a player chooses the servo for each installed control.
 
 | Area | Fact | Source |
 | --- | --- | --- |
-| Actuators | Three logical servos (`srv_roll`, `srv_pitch`, `srv_yaw`) share **one** rate `servo_rate = 1/servo_full_throw_time`. Throttle is not a servo. Flaps have their own law. | [flight_session.gd:4567](../../app/sim/flight_session.gd#L4567), [aircraft_data.gd:2161](../../app/physics/aircraft_data.gd#L2161) |
+| Actuators | Three logical servos (`srv_roll`, `srv_pitch`, `srv_yaw`) share **one** rate `servo_rate = 1/servo_full_throw_time`. Throttle is not a servo. Flaps have their own law. | [flight_session.gd:4629](../../app/sim/flight_session.gd#L4629), [aircraft_data.gd:2161](../../app/physics/aircraft_data.gd#L2161) |
 | Kernel | `step_normalized` (per-channel rates and factors) has no production caller. Ground steering uses the prescribed-angle law. | [control_actuators.gd](../../app/physics/control_actuators.gd) |
 | Loads | **No hinge moment, torque, current, temperature or bus voltage anywhere.** The tail builds local flow and an effective angle, then returns only body loads. | [aero.gd:722](../../app/physics/aero.gd#L722) |
-| Tick seam | `_pre_step` already reads the committed state (`sim.state`) to sample propulsion inflow once per tick, frozen through RK4. | [flight_session.gd:4549](../../app/sim/flight_session.gd#L4549) |
+| Tick seam | `_pre_step` already reads the committed state (`sim.state`) to sample propulsion inflow once per tick, frozen through RK4. | [flight_session.gd:4611](../../app/sim/flight_session.gd#L4611) |
 | Failures | `roll/pitch/yaw_jam`, `*_bias` and `roll_slow` are seeded random draws, one per flight. Nothing is triggered by load. | [catalog.gd](../../app/failures/catalog.gd), [runtime.gd](../../app/failures/runtime.gd) |
 | Electrical | No receiver, BEC or bus model. Electric aircraft prescribe a constant `auxiliary_current_a`. Glow aircraft have no electrical model. | [pack_ecm.gd:151](../../app/physics/battery/pack_ecm.gd#L151) |
 | Damage precedent | Versioned threshold law labelled `experimental_unvalidated`. CR-35a has an analytic lumped thermal law. | [gear_damage.gd:5-9](../../app/physics/gear_damage.gd#L5-L9), [CR-35a](../research/crash-damage-investigations/CR-35a/README.md) |
@@ -145,21 +145,25 @@ For each surface:
 1. **Signal.**
    - Normalized command → pulse in µs (centre 1500, ±100 % ≈ 1100–1900 µs).
    - Optional sample-and-hold at the receiver/servo frame rate (analog 50 Hz, digital up to 333 Hz).
-   - The frame phase is drawn at launch and **recorded**, so replay stays exact.
+   - The frame phase is fixed at session start and **recorded**, so replay stays exact. Nothing is drawn at random.
 2. **Deadband.** Per product, in µs (analog 5–8 µs, digital 1–4 µs; investigation 06), converted to an angle.
 3. **Small signal.**
    - First-order lag τ per class, using the exact update `x += (1 − e^(−dt/τ))(u − x)`.
-   - τ is not published; it is `estimated` by class. The reference is the measured HD-1810MG at 0.075 s.
+   - τ is not published. It comes from manufacturer step-response data (OD6); until then it is an `estimated` class value. The reference is the measured HD-1810MG at 0.075 s.
 4. **Large signal under load.**
    - Opposing load: `ω = ω₀(V) · max(0, 1 − T_opp / T_stall(V))`.
    - An aiding load does not raise speed above ω₀. No overrun is claimed.
-5. **Hold and back-drive.**
-   - While `|T_load| ≤ T_hold = k_hold · T_stall`, the servo holds.
-   - Above that, it is back-driven toward the load at a bounded rate. The quasi-static equilibrium is δ_eq, where `T_s(δ_eq) = T_hold`. That equilibrium is an analytic oracle for the tests.
-6. **Voltage.**
-   - An explicit linear DC-motor law, `servo-dc-linear-v1`: ω₀ ∝ V and T_stall ∝ V.
-   - It is validated against products that publish two voltage points; for example, SB-2270SG+ at 7.4 and 8.4 V.
-   - **No extrapolation** outside the published range. An installation outside that range is refused. Brownout is a separate state (5.4).
+5. **Hold (proportional band) and back-drive.**
+   - Holding torque depends on position error: `T = T_stall · min(1, e/e_sat)`, where e is the shaft position error.
+   - `e_sat` comes from the published standing torque or from manufacturer data. The HS-755HB gives 8.8 kg·cm at 5° hold-out, 80 % of stall, so e_sat ≈ 6.25°.
+   - Under partial load the surface settles off command by `e = (T_load/T_stall) · e_sat`, times dδ/dθ.
+   - Above T_stall the servo is pushed back. The quasi-static equilibrium is δ_eq, where `T_s(δ_eq) = T_stall`. That equilibrium is an analytic oracle for the tests.
+   - There is no fixed "holding multiplier". Back-drive torque is not published; it comes from manufacturer data or stays outside the model.
+6. **Voltage** (law `servo-voltage-twopoint-v1`).
+   - Between published voltage points: a straight line through the published speed, stall torque and stall current. On the HS-755HB, pure proportional scaling overstates these by about 4 % (1.20× measured for a 1.25× voltage ratio).
+   - Below the lowest published point, during sag only: proportional scaling from that point, labelled `derived`, down to the servo cut-out. The cut-out comes from manufacturer data, with Spektrum's "most servos stop below 3.8 V" as a `borrowed` fallback.
+   - **The nominal bus voltage must lie inside the published range.** Otherwise the installation is refused. Brownout is a separate state (5.4).
+   - The linear line through no-load speed and stall torque reproduces the KST HS08 rated point (0.195 versus 0.20 s/60° published).
 7. **Numerics.**
    - Closed form per tick, no extra state integrated inside the RK4 stages. That keeps 240 Hz stable without a stiff loop.
    - Convergence is checked at 240, 480 and 960 Hz.
@@ -174,7 +178,10 @@ Speed is no-load and torque is stall. They are the two ends of a line, not a mea
   - or a linear/switching BEC with a current limit and thermal foldback;
   - plus wiring and switch resistance.
 - **Bus voltage:** `V_bus = V_src(SOC, T) − Σ I · R`. It feeds back into ω₀ and T_stall.
-- **Brownout:** below the receiver's `V_min` for longer than its glitch tolerance, the receiver drops into outage. Once the voltage recovers, it reboots after `t_boot`. The values come from manuals or measurements (D6-SRV-00).
+- **Brownout:** below the receiver's `V_min` for longer than its glitch tolerance, the receiver drops into outage. Once the voltage recovers, it reconnects after `t_reconnect`.
+  - These are per-receiver data, not constants. Spektrum DSMX AR6335: 3.5 V and about 0.04 s with the transmitter on. Spektrum DSM2 AR6110: up to several seconds.
+  - Futaba, Jeti and FrSky publish only a 3.5 V minimum. Their reconnect time comes from manufacturer data; without it, that receiver cannot model brownout.
+  - Measured current peaks (5–9.3 A on one digital servo) are shorter than one 4.17 ms tick. The per-tick bus sees averages, so a peak-driven brownout needs its own law or manufacturer data.
   - During the outage, the EM-17 receiver profiles apply (hold or failsafe).
   - The cause is recorded. There is no random draw. This realizes EM's causal cascade ("servo overload → bus sag → receiver reboot") without inventing three independent faults.
 - **Electric aircraft:** the computed bus current replaces the prescribed `auxiliary_current_a`, but only when the capability is active.
@@ -196,19 +203,22 @@ Speed is no-load and torque is stall. They are the two ends of a line, not a mea
 | Thermal shutdown | Declared protection | Temporary loss of torque | None |
 | Brownout | Section 5.4 | Every servo on the bus unpowered during the outage | Inspection |
 
-- Thresholds by gear material (nylon, Karbonite, metal, titanium) are `estimated`, published as a versioned law with `QUALIFICATION := "experimental_unvalidated"`, like `gear_damage.gd`.
+- **A damage mode exists for a product only when its threshold comes from manufacturer data** (`manual` or `measured`; OD2). Strip, back-drive and thermal thresholds are not published in any datasheet reviewed, and none is estimated for a named product.
+  - A product without that data still stalls and blows back from its published stall torque, but cannot break.
+  - The law is versioned and, until physical validation, carries `QUALIFICATION := "experimental_unvalidated"`, like `gear_damage.gd`. Tests use synthetic fixtures.
 - **The massless float is an explicit surrogate.** It is not free-surface dynamics with inertia; that belongs to L4.
 - **Partner product wording.** A Savox product only fails when its **published** rating is exceeded. Copy and the accident report describe an undersized installation for that airframe, never a product defect.
 
 ### 5.7 Explicitly not modeled
 
-- flutter;
+- flutter (OD7);
+- per-unit variation (OD3: units of the same reference are identical);
 - pushrod buckling or flex;
 - backlash with dynamics;
 - dynamic interaction between servo position loops;
 - two servos fighting on one surface;
 - potentiometer wear and jitter;
-- persistent wear;
+- persistent wear (OD4);
 - water or contamination;
 - temperature effects on the receiver pack beyond what `pack_ecm` already models.
 
@@ -269,7 +279,8 @@ Each module is pure, static, float64 and uses `PackedFloat64Array` only: no `Vec
 
 ### 7.3 Runtime seam (respects SF-01)
 
-- **The kernel does not change.** The servo law runs inside the airplane `pre_tick` (`_pre_step`, [flight_session.gd:4509](../../app/sim/flight_session.gd#L4509)). It replaces the three-axis loop (`:4567`) only when the capability is present. There are no vehicle branches in `Simulation`.
+- **The kernel does not change.** The servo law runs inside the airplane `pre_tick` (`_pre_step`, [flight_session.gd:4571](../../app/sim/flight_session.gd#L4571), called by `_kernel_pre_step` at `:4553`). It replaces the three-axis loop (`:4629`) only when the capability is present. There are no vehicle branches in `Simulation`.
+- **Per-tick memo (NK-2a).** `_kernel_pre_step` arms a memo of pure aircraft-data answers, and `_on_sim_stepped`/`_on_sim_faulted` drop it. The servo law reads the committed state and its prepared installation directly. Only values that are pure functions of `aircraft` may join the memo. Tests that call `_pre_step` directly never arm it.
 - **Order inside `pre_tick`** (documented and tested):
   1. flaps and mix;
   2. EM `effective_inputs`;
@@ -288,10 +299,10 @@ Each module is pure, static, float64 and uses `PackedFloat64Array` only: no `Vec
   - `servo_overload`, `servo_stripped`, `servo_thermal_shutdown`, `servo_burnout`, `receiver_brownout`.
   - They are recorded on the existing event path, then reach EM (notice), the flight log (markers) and CR (`cause_kind: accepted_event`).
 - **Determinism.**
-  - No RNG inside the stages.
-  - Per-unit scatter (if OD3 accepts it) and the frame phase are drawn at launch from the session seed and frozen into identity and the log.
+  - No RNG anywhere in the servo laws. There is no per-unit scatter (OD3).
+  - The frame phase is fixed at session start and recorded in identity and in the log.
   - Checkpoint, restore and replay are exact.
-- **Identity.** Law versions (`servo-dc-linear-v1`, `servo-thermal-lumped-v1`, `servo-damage-v1`) are pinned in `VehicleModel.identity` and in the Workshop compiler version.
+- **Identity.** Law versions (`servo-dc-linear-v1` torque–speed line, `servo-voltage-twopoint-v1`, `servo-thermal-lumped-v1`, `servo-damage-v1`) are pinned in `VehicleModel.identity` and in the Workshop compiler version.
 - **Performance.**
   - Budget: ≤ 1 % of the airplane tick at 240 Hz, measured with the tick-performance tools in the [tool index](../tools/README.md).
   - Loops are allocation-free; the hinge moment uses one local-flow evaluation per surface per tick.
@@ -315,7 +326,7 @@ Each module is pure, static, float64 and uses `PackedFloat64Array` only: no `Vec
 3. **Preview and bench.** Described below.
 
 **Sizing advisor.**
-- `margin = T_hold / T_required(V_dive, δ_max, upper C_h band)`.
+- `margin = T_stall(V_bus) / T_required(V_dive, δ_max, upper C_h band)`. The advisor also shows the steady holding error under that load.
 - `V_dive` must be explicit per aircraft: no aircraft declares it today. Until it is declared, it is `estimated` or derived from the battery's terminal dive.
 - Colour thresholds are a documented, sourced rule (D6-SRV-00). They are not hard-coded heuristics.
 - The advisor always explains: "at 55 m/s this servo holds 10° of the 15° commanded".
@@ -323,6 +334,7 @@ Each module is pure, static, float64 and uses `PackedFloat64Array` only: no `Vec
 **Linkage.**
 - Choose arm and horn holes; see throw, required servo travel, resolution and torque factor.
 - Warnings for binding (travel beyond the stop) and lost resolution (too little servo travel).
+- Qualitative flutter guidance only, sourced to RC practice: slop combined with long horns increases risk at speed, and static balance helps. There is no score and no simulation (OD7).
 
 **Receiver power.**
 - Receiver pack or BEC, voltage point, estimated peak current (every servo at blowback) and margin to `V_min`.
@@ -373,21 +385,21 @@ graph LR
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| D6-SRV-00 | **Research and governance.** Re-derive surface geometry from the generators (finding 1). C_h method and bands. Electrical/thermal data by class. Receiver `V_min` and `t_boot`. Gear-material thresholds. Advisor rule. `V_dive` per aircraft. Bench protocol for the owner. Register the prefix; DECISIONS entry for levels L1–L3/E/T/D. | Pending. Dated record `docs/research/servos/D6-SRV-00/` with sources and ranges, and an independent check of the section 6 numbers. |
+| D6-SRV-00 | **Research and governance.** Decisions OD1–OD7, sources, holding/voltage/brownout data. Then: re-derive surface geometry from the generators (finding 1), C_h method and bands, advisor rule, `V_dive` per aircraft, manufacturer data-request template. Register the prefix. | **Partial:** decisions and evidence in the [dated record](../research/servos/D6-SRV-00/README.md) and the [manifest](../research/servos/D6-SRV-00/sources.json); [DECISIONS](../DECISIONS.md) entry. Geometry, C_h, advisor, `V_dive`, template, registry and an independent check of the section 6 numbers are pending. |
 | D6-SRV-01 | **Hinge-moment observer** (read-only). Contract geometry with AS. H per surface from the same local flow as the aero. Trace/log channels. | Pending. Analytic oracle per surface, signs per `aero.conventions`, **golden flights byte-identical** (observer only), 240/480/960 Hz consistency. |
 | D6-SRV-02 | **Linkage kinematics.** Approximate and exact four-bar, dδ/dθ, required travel, resolution, binding. | Pending. Four-bar oracle, investigation 06's −22°/+15° differential case, both directions, refused invalid geometry. |
 | D6-SRV-03 | **L2 per channel without load.** Adopt `step_normalized`; deadband, τ, slew at catalog speed × linkage, recorded frame hold. Opt-in capability. | Pending. Analytic step, small-signal lag, legacy L1 byte-identical, exact replay, goldens unchanged for aircraft without the capability. |
 | D6-SRV-04 | **L3 load.** Torque–speed line, aiding/opposing load, hold and back-drive, δ_eq. Stik first, P-51 second. | Pending. Analytic δ_eq, monotonicity, no energy from nothing, dt convergence, [flight-log](../FLIGHT-LOGGING.md) candidate per aircraft (`solver_changed`, `complete`). |
 | D6-SRV-05 | **Receiver power.** Currents, receiver pack via `pack_ecm`, BEC, V_bus, voltage law validated against two-point products, receiver state machine with EM-17/18. | Pending. Analytic sag, two-point catalog check, reproducible causal brownout, no RNG, rollback. |
 | D6-SRV-06 | **Heat.** Lumped node, protection, burnout, binding. | Pending. Analytic exponential, fixed-tick idempotence, endpoint-binding scenario. |
-| D6-SRV-07 | **Damage.** Thresholds by material, float surrogate, burnout, clevis. Events toward EM and CR. Gating per OD2. | Pending. Thresholds and transitions, deterministic replay, checkpoint/rollback across the transition, event emitted once. |
+| D6-SRV-07 | **Damage.** Manufacturer-data thresholds only, float surrogate, burnout, clevis. Events toward EM and CR. Active with the capability, independent of the random-failure probability; notices use `notify` (OD2). | Pending. Thresholds and transitions on synthetic fixtures, no mode for a product without data, deterministic replay, checkpoint/rollback across the transition, event emitted once. |
 | D6-SRV-08 | **Workshop Servos page** (with AE and D6-SAV-05). Advisor, linkage, supply, comparison at actual voltage, scaling rules. | Pending. Workshop tests (recipe, compiler, save/load, failed launch, undo); captures 1080p → 1440p/4K → 720p; EN/ES; navigation. |
 | D6-SRV-09 | **Servo bench.** Same module, load sliders, plots, overload test. | Pending. Bench = session parity for identical inputs; bench breakage does not touch the draft or the economy. |
 | D6-SRV-10 | **Telemetry and presentation.** HUD page, log schema, audio `load`. | Pending. HUD capture at 1080p, audio mapping test, versioned log schema test, debug-bridge field. |
 | D6-SRV-11 | **Report and economy.** Cause chain, servo incident via CR-37, gear-set versus replacement quote. | Pending. Incident tests, report capture, a price edit leaves the trajectory identical. |
 | D6-SRV-12 | **Fleet adoption.** Installations for Stik, Extra, P-51, F4U, Avanti, X8 and Timber. Battery tests `servo_authority_dive`, `servo_blowback_recovery`, `rx_bus_sag`. | Pending. Goldens re-recorded with an explained physics change, `--shared-tests` comparison, per-aircraft evidence. |
-| D6-SRV-13 | **Physical validation** (owner). Bench: lever + weights + 240 fps phone + current meter; Savox engineering data if received. | Pending. Tolerances fixed **before** fitting, held-out comparisons; closes physical claims separately from software. |
-| D6-SRV-14 | **Research-gated extensions.** Flutter risk (free play/stiffness), pushrod flex/buckling, two servos per surface, persistent wear (OD4), flaps/retracts/steering/throttle, helicopter cyclic. | Each extension needs its own evidence; none is enabled without it. |
+| D6-SRV-13 | **Manufacturer data intake and validation** (OD6). Request template, import with `manual`/`measured` provenance, publication permission per file. Confidential raw files stay in gitignored `references/`. The owner bench is an optional cross-check. | Pending. Tolerances fixed **before** fitting, comparisons on held-out traces; closes physical claims separately from software. Pilot feel stays a separate gate. |
+| D6-SRV-14 | **Research-gated extensions.** Pushrod flex/buckling, two servos per surface, flaps/retracts/steering/throttle, helicopter cyclic. Flutter (OD7), wear (OD4) and per-unit scatter (OD3) are excluded by decision. | Each extension needs its own evidence; none is enabled without it. |
 | D6-SRV-15 | **Consolidation.** Update the Workshop guide and the contract; release notes; close this plan. | Pending. |
 
 Every step is a small, working, independently reviewable change. The commit message carries the proof: test, trace or measurement.
@@ -404,7 +416,7 @@ Every step is a small, working, independently reviewable change. The commit mess
   - thermal exponential;
   - thresholds;
   - δ_float with C_h = 0.
-- **Session.** L1 parity without the capability; exact checkpoint/restore/replay; rollback of rejected ticks; 240/480/960 Hz; frozen frame phase and scatter.
+- **Session.** L1 parity without the capability; exact checkpoint/restore/replay; rollback of rejected ticks; 240/480/960 Hz; recorded frame phase.
 - **Flight changes.**
   - Follow [FLIGHT-LOGGING](../FLIGHT-LOGGING.md): baseline `.orfl`, exact replay, one candidate with the same input tape.
   - Re-record goldens only at intentional adoption (D6-SRV-12).
@@ -421,27 +433,31 @@ Every step is a small, working, independently reviewable change. The commit mess
 | C_h uncertainty (±40 %) penalizes the stock fleet | Band visible in the advisor; damage only above the **upper** band; fleet qualification in D6-SRV-12 |
 | Wrong geometry (finding 1) | D6-SRV-00 re-derives from generators before any claim |
 | Layout change breaks checkpoints and logs | Explicit `state_layout_identity`; legacy layout untouched; versioned schemas |
-| Loss of determinism (frame, scatter) | Launch-time draws, recorded; no RNG in stages |
+| Loss of determinism (frame phase) | Phase fixed at session start and recorded; no RNG; no per-unit scatter |
+| Manufacturer data never arrives for a product | That product still flies with published speed/stall torque; its damage modes stay unavailable, and the Workshop says so |
 | The Workshop overwhelms beginners | Progressive disclosure: badge and sentence first, curves in "advanced" and on the bench |
-| A partner product appears to "fail" | Failure only beyond the published rating; "undersized installation" wording; owner decides what to communicate to Savox |
+| A partner product appears to "fail" | Failure thresholds come only from that manufacturer's data; "undersized installation" wording; plain-text names, no logos or likeness without permission (OD5) |
 | Conflict on hot shared files (`flight_session.gd`, `workshop.gd`) | Small, coordinated diffs; inspect `git status` before editing; one writer per path |
 | Price contaminating physics | Price outside physical identity (D6-SAV rule) |
 
-## 13. Owner decisions
+## 13. Decisions (resolved 2026-10-27)
 
-| # | Decision | Recommendation |
-| --- | --- | --- |
-| OD1 | Turn on loaded response (L2/L3) in the stock fleet, or keep it opt-in | Opt-in per aircraft until D6-SRV-12 qualifies it, then default on |
-| OD2 | Gating of damage (D) | Always on for Workshop variants; on stock aircraft, tied to the failure setting |
-| OD3 | Per-unit strength scatter | Yes, seeded and recorded, within a narrow band |
-| OD4 | Persistent wear between flights | Not now (EM excludes it); revisit after D6-SRV-12 |
-| OD5 | Products beyond Savox for the stock fleet | Brand-neutral class records (for example "3 kgf·cm analog standard") from investigation 06 datasheets; names only with clear attribution |
-| OD6 | Physical bench by the owner (D6-SRV-13) | Yes: minimal equipment, high value |
-| OD7 | Flutter | Out of scope; at most a free-play advisory with no simulation |
+The owner delegated these decisions and settled OD3, OD4 and OD6 directly. Grounds and sources: [D6-SRV-00](../research/servos/D6-SRV-00/README.md#decisions). Durable record: [DECISIONS](../DECISIONS.md).
+
+| # | Decision |
+| --- | --- |
+| OD1 | Loaded response belongs to an aircraft's physics. It is adopted per aircraft through `actuation.servo_load` after D6-SRV-12 qualification, with an explained golden re-record. There is no global "ideal servo" toggle. Aircraft without the capability keep L1 byte-identical. |
+| OD2 | Damage is caused physics, not an injected failure. The random-failure probability does not gate it, and notices use `notify`. A damage mode exists only for products whose threshold comes from manufacturer data. Stall and blowback are always active with the capability. |
+| OD3 | Units of the same reference are identical. There is no scatter. (Owner) |
+| OD4 | No wear or persistent servo state between flights. (Owner) |
+| OD5 | Real products are named in plain text, with source and data date. Logos, stylized lettering or 3D likeness need written permission; Savox has it. Comparisons are objective, with no "better" or endorsement labels. A failure is called an "undersized installation". A stock aircraft installs the product its source names when data exist, otherwise a brand-neutral class record. |
+| OD6 | Manufacturer data is the primary parameter and validation source (owner). Publish only what the manufacturer authorizes; keep raw confidential files in gitignored `references/`. The owner bench is optional. |
+| OD7 | Flutter is out of scope: no simulation and no numeric score. The Workshop may show sourced qualitative setup guidance. |
 
 ## 14. Sources
 
 - [D6-SAV-00: permission, catalog and prices](../research/servos/D6-SAV-00/README.md).
+- [D6-SRV-00: decisions, holding/voltage/brownout data, simulator practice, flutter and naming evidence](../research/servos/D6-SRV-00/README.md), with its [source manifest](../research/servos/D6-SRV-00/sources.json).
 - [Investigation 06 §4: servo model, datasheets, hinge moments, levels](../research/roadmap-investigations/06-radio-input-servos-latency.md#4-servo-model). This includes [S10–S19]: Hitec/Futaba/Savox datasheets, measured HD-1810MG and DS610, JSBSim/ArduPilot as read-only references, and Roskam/DATCOM via FAST-GA.
 - [EM failure mode](failure-mode.md): EM-03b/04/13/14/17/18/25, `surface.linkage_disconnect` and causal cascades.
 - [Crash economics](crash-damage-economics.md): servo/linkage repair criteria and CR-37.

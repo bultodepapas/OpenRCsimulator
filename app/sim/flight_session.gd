@@ -182,7 +182,11 @@ func shaft_is_coupled() -> bool:
 
 
 func glow_is_active() -> bool:
-	return aircraft.get("ok", false) and Propulsion.is_glow(aircraft.model.propulsion)
+	if _fact_glow != _FACT_UNKNOWN:
+		return _fact_glow == 1
+	var active: bool = aircraft.get("ok", false) and Propulsion.is_glow(aircraft.model.propulsion)
+	if _facts_armed: _fact_glow = int(active)
+	return active
 
 
 func glow_state() -> Dictionary:
@@ -1907,13 +1911,14 @@ func _apply(data: Dictionary) -> bool:
 
 func _commit_aircraft(prepared: Dictionary) -> void:
 	aircraft = prepared.data
+	_drop_tick_facts()
 	# SF-01: the session installs one VehicleModel. Propulsion and contact callbacks are configured on it below
 	# through the kernel's compatibility properties; the laws themselves still live in this session.
 	var vehicle: VehicleModel = VehicleModel.new()
 	vehicle.input_size = _input_count()
 	vehicle.identity = { vehicle = "fixed-wing", loads_law = Aero.LOADS_LAW }
 	vehicle.loads = _loads
-	vehicle.pre_tick = _pre_step
+	vehicle.pre_tick = _kernel_pre_step
 	vehicle.rotor_momentum = rotor_momentum
 	if not sim.set_model(vehicle):
 		push_error("Cannot install the fixed-wing vehicle model")
@@ -1970,6 +1975,7 @@ func propulsion_observation() -> Dictionary:
 
 func _set_initial_failure(prepared: Dictionary) -> void:
 	aircraft = prepared.get("data", {})
+	_drop_tick_facts()
 	start = prepared.get("start", { ok = false, message = prepared.get("message", "aircraft unavailable") })
 	trims = prepared.get("trims", { roll = 0.0, pitch = 0.0, yaw = 0.0 }).duplicate(true)
 	engine_running = false
@@ -2037,6 +2043,7 @@ func _start_failure_reason() -> String:
 
 
 func _on_sim_faulted(reason: String) -> void:
+	_drop_tick_facts()
 	if _failures != null:
 		_failures.rollback()
 	_clear_pending_scenery_damage()
@@ -2046,6 +2053,7 @@ func _on_sim_faulted(reason: String) -> void:
 
 func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	_drop_tick_facts()
 	# This connection precedes external observers: a rejected RK/contact candidate never announces an incident.
 	var failure_activated: bool = _failures != null and tick > 0 and _failures.commit(tick)
 	_committing_contacts = true
@@ -3554,7 +3562,11 @@ func _inputs() -> PackedFloat64Array:
 
 
 func flaps_available() -> bool:
-	return aircraft.get("ok", false) and Flaps.enabled(aircraft.model)
+	if _fact_flaps != _FACT_UNKNOWN:
+		return _fact_flaps == 1
+	var available: bool = aircraft.get("ok", false) and Flaps.enabled(aircraft.model)
+	if _facts_armed: _fact_flaps = int(available)
+	return available
 
 
 func _input_count() -> int:
@@ -3598,7 +3610,11 @@ func flap_state() -> Dictionary:
 
 
 func gear_is_retractable() -> bool:
-	return aircraft.get("ok", false) and RetractableGear.enabled(aircraft.model.get("landing_gear", {}))
+	if _fact_gear_retractable != _FACT_UNKNOWN:
+		return _fact_gear_retractable == 1
+	var retractable: bool = aircraft.get("ok", false) and RetractableGear.enabled(aircraft.model.get("landing_gear", {}))
+	if _facts_armed: _fact_gear_retractable = int(retractable)
+	return retractable
 
 
 func gear_aux_index() -> int:
@@ -3643,6 +3659,14 @@ func toggle_gear() -> bool:
 ## Shared demand is admitted only for explicitly installed, provenance-bearing brake hardware.
 ## Retraction and brake hardware are independent capabilities; the old retractable input layout stays fixed.
 func wheel_brake_available() -> bool:
+	if _fact_wheel_brake != _FACT_UNKNOWN:
+		return _fact_wheel_brake == 1
+	var available: bool = _wheel_brake_hardware()
+	if _facts_armed: _fact_wheel_brake = int(available)
+	return available
+
+
+func _wheel_brake_hardware() -> bool:
 	if typeof(aircraft.get("ok")) != TYPE_BOOL or not aircraft.ok or not aircraft.get("model") is Dictionary:
 		return false
 	var profile: Variant = aircraft.model.get("wheel_profile")
@@ -4030,8 +4054,12 @@ func electric_law() -> String:
 
 
 func _rotor_index() -> int:
+	if _fact_rotor_index != _FACT_UNKNOWN:
+		return _fact_rotor_index
 	var prop: Dictionary = aircraft.model.propulsion
-	return prop.slipstream.pieces.size() if WashTransport.enabled(prop) else 0
+	var index: int = prop.slipstream.pieces.size() if WashTransport.enabled(prop) else 0
+	if _facts_armed: _fact_rotor_index = index
+	return index
 
 
 func _battery_initial_charge() -> float:
@@ -4506,6 +4534,40 @@ func _substeps_with_context(body: PackedFloat64Array, continuous: PackedFloat64A
 	return count
 
 
+## NK-2a: capability and layout answers that depend only on the committed aircraft data, memoized for one
+## kernel tick. The kernel's pre_tick arms the memo; the accepted (stepped) or rejected (faulted) tick drops
+## it, so data replaced or edited between ticks (load, Workshop, tests) is always read afresh. Direct
+## `_pre_step` calls and solves outside the kernel step never arm it.
+const _FACT_UNKNOWN := -2
+var _facts_armed := false
+var _fact_glow := _FACT_UNKNOWN
+var _fact_gear_retractable := _FACT_UNKNOWN
+var _fact_wheel_brake := _FACT_UNKNOWN
+var _fact_flaps := _FACT_UNKNOWN
+var _fact_wheel_count := _FACT_UNKNOWN
+var _fact_anchor_count := _FACT_UNKNOWN
+var _fact_downwash_index := _FACT_UNKNOWN
+var _fact_rotor_index := _FACT_UNKNOWN
+
+
+func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
+	_drop_tick_facts()
+	_facts_armed = true
+	return _pre_step(aux, inputs, dt)
+
+
+func _drop_tick_facts() -> void:
+	_facts_armed = false
+	_fact_glow = _FACT_UNKNOWN
+	_fact_gear_retractable = _FACT_UNKNOWN
+	_fact_wheel_brake = _FACT_UNKNOWN
+	_fact_flaps = _FACT_UNKNOWN
+	_fact_wheel_count = _FACT_UNKNOWN
+	_fact_anchor_count = _FACT_UNKNOWN
+	_fact_downwash_index = _FACT_UNKNOWN
+	_fact_rotor_index = _FACT_UNKNOWN
+
+
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
 	if _weather_pending_reset or _shaft_pending_reset:
 		return PackedFloat64Array([NAN]) # configure→reset boundary cannot advance an old layout/RNG
@@ -4606,11 +4668,15 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 
 ## VAL-AUD-R02: aux index of the lagged wing lift-velocity proxy (m/s) (after the anchors), or −1 without a tail downwash lag.
 func downwash_index() -> int:
+	if _fact_downwash_index != _FACT_UNKNOWN:
+		return _fact_downwash_index
 	# The lag feeds only the local (strip) model's tail: none without an envelope (a pure-oracle model).
-	if not aircraft.get("ok", false) or aircraft.model.get("envelope", {}).is_empty() \
-			or not aircraft.model.get("surfaces", {}).get("horizontal", {}).has("downwash_lag_length"):
-		return -1
-	return AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE
+	var index: int = -1
+	if aircraft.get("ok", false) and not aircraft.model.get("envelope", {}).is_empty() \
+			and aircraft.model.get("surfaces", {}).get("horizontal", {}).has("downwash_lag_length"):
+		index = AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE
+	if _facts_armed: _fact_downwash_index = index
+	return index
 
 
 ## Replay-tolerance component of aux entry i (H9 policy): rpm, servo, anchor or downwash.
@@ -4672,13 +4738,21 @@ func reset_on_runway(north: float, east: float, heading: float) -> bool:
 
 ## E3b1: wheels with a stiction anchor (0 when the gear has no breakaway_factor).
 func anchor_count() -> int:
+	if _fact_anchor_count != _FACT_UNKNOWN:
+		return _fact_anchor_count
 	var gear: Dictionary = aircraft.get("model", {}).get("landing_gear", {}) if aircraft.get("ok", false) else {}
-	return gear.contacts.size() if gear.has("breakaway_factor") else 0
+	var count: int = gear.contacts.size() if gear.has("breakaway_factor") else 0
+	if _facts_armed: _fact_anchor_count = count
+	return count
 
 
 ## Number of rotating wheels enabled by a validated file-backed profile (zero for in-memory/legacy gear and Avanti).
 func wheel_count() -> int:
-	return _model_wheel_count(aircraft.get("model", {})) if aircraft.get("ok", false) else 0
+	if _fact_wheel_count != _FACT_UNKNOWN:
+		return _fact_wheel_count
+	var count: int = _model_wheel_count(aircraft.get("model", {})) if aircraft.get("ok", false) else 0
+	if _facts_armed: _fact_wheel_count = count
+	return count
 
 
 ## First continuous-state index holding wheel rim speeds, in landing_gear.contacts order.

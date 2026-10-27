@@ -41,6 +41,12 @@ faster than the debug binary used for most measurements.
 - Linux on one host: GDScript rounds once per operation; C++ with `-ffp-contract=off`, SSE2,
   the same grouping and glibc libm reproduces it. Precedents: Gate P 32/32 exact 960-tick
   fingerprints; E0b6p 296/297 exact.
+- [NK-1](../../research/native-math-spike/README.md) (Linux, 2026-10-27): `std::` and godot-cpp
+  `UtilityFunctions` both return GDScript's bits for 16 functions over 10⁶ inputs each, because
+  extension and engine call the same glibc symbols in one process. A port must route
+  transcendentals through one shim that copies the engine's `asin`/`acos` clamp and keeps literal
+  `pow` exponents out of constant folding: GCC turns `pow(x, 2.0)` into `x * x`, 1 ulp off in
+  0.085% of cases.
 - Windows: official Godot builds use MinGW while the repository's native modules use MSVC
   `/fp:strict`, so transcendental results can differ; the truck parity harness uses a
   tolerance. Calling the engine's math through godot-cpp utility functions, or building with
@@ -64,8 +70,8 @@ players without the library keep the current tick cost.
 | Step | Type | Work | Gate | Effort |
 | --- | --- | --- | --- | --- |
 | NK-0 | R | Release-template timing on the target host, observers on/off | p50/p95 still above the 500 µs Gate P on representative aircraft | 1–2 d; dev-VM run done: [release ×1.2, ≈ 1.0 ms airborne, 2.2 ms runway](visual-quality-implementation/VQ-01c/release-tick-2026-10-27/README.md); target host pending |
-| NK-1 | R | Math identity spike: engine utility functions vs `std::` vs GDScript, 10⁶ inputs per function, Linux and Windows | Per-platform identity table and call cost | 2 d + Windows host |
-| NK-2 | I (GDScript) | Immutable prepared model with a revision boundary (load, edit, reload, restore, Workshop) | Fleet fingerprints unchanged | 3–5 d |
+| NK-1 | R | Math identity spike: engine utility functions vs `std::` vs GDScript, 10⁶ inputs per function, Linux and Windows | Per-platform identity table and call cost | 2 d + Windows host; Linux done: [16 functions bit-identical by both routes](../../research/native-math-spike/README.md), Windows pending |
+| NK-2 | I (GDScript) | Immutable prepared model with a revision boundary (load, edit, reload, restore, Workshop) | Fleet fingerprints unchanged | 3–5 d; first slice [NK-2a](native-kernel/NK-2a/README.md): per-tick capability memo |
 | NK-3 | I | Option (b) for the Stik route | ≥ 10k exact oracle states incl. malformed inputs; exact 960-tick fingerprints; suite on a native copy | 2–3 wk |
 | NK-4 | Decision | Stop if Gate P is met | — | — |
 | NK-5 | I | Option (c) after an SF-08 amendment; unported laws fall back to the reference | As NK-3 | 2–3 wk |

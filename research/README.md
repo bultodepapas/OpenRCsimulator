@@ -30,6 +30,7 @@ Folder names can differ between tools and reports. Use this map rather than rena
 | [landing](landing/) | Circuit and landing replay/sensitivity experiments | [Ground-handling evidence](../docs/research/README.md#flight-model-and-simulation) |
 | [performance](performance/README.md) | Session/native timing and texture inventory reducers | [VQ evidence](../docs/research/visual-quality-implementation/), [performance commands](../docs/TOOLS.md#native-performance-experiments) |
 | [native-slipstream](native-slipstream/) | Isolated native slipstream comparison | [Gate P evidence and limits](../docs/research/simulation-state/Gate-P/README.md) |
+| [native-math-spike](native-math-spike/README.md) | NK-1: native vs GDScript elementary-math identity and call cost (Linux) | [Native kernel scoping](../docs/research/native-kernel-scoping-2026-10-27.md) |
 | [physics-audit-2026-10-14](physics-audit-2026-10-14/) | Audit probes and bounded remediation experiments | [Dated physics audit](../docs/research/physics-audit-2026-10-14/README.md) |
 
 ### Aircraft and other vehicles

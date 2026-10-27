@@ -1,0 +1,6 @@
+{"aircraft": "jensen-das-ugly-stik-60", "case": "runway", "pair": 1, "base_median_us": 2247.0, "cand_median_us": 2222.0, "change": -0.0111, "base_p95_us": 3689, "cand_p95_us": 3584, "complete": true, "same_fingerprint": true}
+{"aircraft": "jensen-das-ugly-stik-60", "case": "runway", "pair": 2, "base_median_us": 2308.0, "cand_median_us": 2201.0, "change": -0.0464, "base_p95_us": 3751, "cand_p95_us": 3492, "complete": true, "same_fingerprint": true}
+{"aircraft": "jensen-das-ugly-stik-60", "case": "runway", "pair": 3, "base_median_us": 2312.5, "cand_median_us": 2294.5, "change": -0.0078, "base_p95_us": 3792, "cand_p95_us": 3725, "complete": true, "same_fingerprint": true}
+{"aircraft": "stik-glow-61fx-2t", "case": "runway", "pair": 1, "base_median_us": 4634.0, "cand_median_us": 4640.0, "change": 0.0013, "base_p95_us": 8032, "cand_p95_us": 8079, "complete": true, "same_fingerprint": true}
+{"aircraft": "stik-glow-61fx-2t", "case": "runway", "pair": 2, "base_median_us": 4539.0, "cand_median_us": 4621.0, "change": 0.0181, "base_p95_us": 8023, "cand_p95_us": 8081, "complete": true, "same_fingerprint": true}
+{"aircraft": "stik-glow-61fx-2t", "case": "runway", "pair": 3, "base_median_us": 4271.0, "cand_median_us": 4177.0, "change": -0.022, "base_p95_us": 6430, "cand_p95_us": 5861, "complete": true, "same_fingerprint": true}

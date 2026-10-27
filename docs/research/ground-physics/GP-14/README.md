@@ -297,6 +297,31 @@ Independent source/receipt review added no test count. Live changed-field record
 identity, stock advanced contact and full physical/performance qualification remain
 open.
 
+## Frozen 25-endpoint traces are per platform (2026-10-27)
+
+The GP-14h/GP-14i trace digests were captured on Windows and never matched Linux,
+where CI runs. A probe repeating the `_parity()` loop gives the same Linux digests at
+every commit from `80331f1ec` to `df4e1ca5c`, so no commit broke them. Neither cause
+is a physics change:
+
+- `app/data/fuels/openrc-fuel-registry.json` has no `.gitattributes` eol rule. Its
+  raw-byte SHA-256 (CRLF `cae59374…`, LF `6f4908ba…`) enters
+  `checkpoint.configuration`. With a CRLF registry, Linux reproduces the Windows calm,
+  gusty and cool-dense digests exactly; the recorded floats at ticks 0–1 are
+  bit-identical.
+- The platforms' math libraries round differently: the P-51 tick-0 launch trim differs
+  by 1–7 ULP (`state[4]`, `aux`, `last_loads`), and turbulence differs too. Turbulent,
+  split and coupled-rk4 therefore differ even with a CRLF registry.
+
+`test_weather_publication.gd` and `test_shaft_publication.gd` now key the digests by
+`OS.get_name()`, because [H9](../../simulation-state/H9/README.md) treats exact
+fingerprints as same-platform diagnostics. The Linux values were computed at `20662f264`
+and `df4e1ca5c`. Two decisions remain open for the owner:
+
+- an `eol=lf` rule for the registry, which would change the Windows identity pinned in
+  346 docs files and `app/tests/fixtures/fixed_brake_trace_flaps.csv`;
+- whether these measured ULP differences meet the H6/H7 revisit trigger.
+
 ## X8 intended-support qualification
 
 The [X8 rest-geometry audit](evidence/x8-rest-geometry/README.md) found that the existing lower-hull support facet includes the motor mount and an elevon, with only a 2.445 mm CG margin. This rigid geometric diagnostic is not a compliant landing test. Stock intended-support authoring remains gated on resolving those roles and validating continuation; no benign engine/elevon contact is inferred.

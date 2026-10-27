@@ -44,8 +44,16 @@ shared tree untouched), it passes at its introduction `40749e42c` and fails from
 The passing commit with only `gp_extra_300s_60.json` from `58f3a3a22` reproduces the same
 two failures exactly. That file's sole change raises `wing_aileron_effectiveness` from
 0.34067 to 0.467909, the [D11-R1](../../aero-consistency/D11-R1/README.md) recalibration,
-whose evidence does not list this test. The fixture's scripted dive or the recalibrated
-Extra's dive behaviour needs review by the NITRO-61FX-R1 and D11-R1 owners.
+whose evidence does not list this test.
+
+Diagnosis and repair (same day): the fixture pushes over with full-down elevator at 30 m/s.
+Since D11-R1 the Extra departs there into a sustained negative-g rotation (roll rate about
+−1.2 rad/s, pitch −32° after 12 s) instead of diving; the engine is never exercised. The push
+sits on a departure edge: capping it at −0.8, −0.6 or −0.4 stick, or changing the roll-damper
+gain to 1.0 or 0.25, each gives the intended dive (−78.8°, 66 m/s, 18,100 rpm peak). A higher
+roll gain makes the glow Stik tumble instead, so the test now caps the push at −0.6. The glow
+Stik is unchanged by the cap (20,072 rpm peak either way, a thin pre-existing margin over its
+20,000 rpm check). `test_glow_dive_support.gd` passes 10/10.
 
 ## Cost
 

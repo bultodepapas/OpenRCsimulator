@@ -157,6 +157,10 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 	var co_roll: float = a.Clb * beta_eff + a.Clda_right * dar + a.Clda_left * dal + a.Cldr * dr
 	var co_pitch: float = cm_alpha + a.Cmde * de + a.Cmda_each * (dar + dal)
 	var co_yaw: float = a.Cnb * beta_eff + a.Cnda_right * dar + a.Cnda_left * dal + a.Cndr * dr
+	# H18: the ground-effect wake and the lag term's source take identical arguments; evaluate the pure strip law
+	# once when both are needed.
+	var wake_ge := NAN
+	var wake_ge_known := false
 	if not ge.is_empty():
 		# M5-GE-1: ground effect in the oracle (GroundEffect.factors: σ per strip, mean σ, σ_ε). At uniform α strip i's
 		# induced angle is a0·(α + α_s)·(1 − Σ_k E_ik); the image system frees (1 − σ_i) of it: more attached lift at the
@@ -186,7 +190,8 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 		# tail's angle grows by k_ε·(CL_free − σ_ε·CL_ge) on the free slope. The strips' tail law gives the same difference.
 		var ge_tail: Dictionary = model.surfaces.horizontal
 		var wake_free := _wing_lift_coefficient_with(s, air, d, model, PackedFloat64Array(), true)
-		var wake_ge := _wing_lift_coefficient_with(s, air, d, model, ge, true)
+		wake_ge = _wing_lift_coefficient_with(s, air, d, model, ge, true)
+		wake_ge_known = true
 		var tail_speed := _tail_plane_speed(s, air, model, ge_tail)
 		var tail_cl: float = float(ge_tail.free_slope) * float(ge_tail.area) / S * (
 			downwash_angle(wake_free, float(ge_tail.downwash_per_cl), tail_speed)
@@ -199,7 +204,7 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 		# Cmα̇, the same as the local tail's. Zero once settled; NAN (trim, static solves) adds nothing.
 		# M5-GE-1: in ground effect the lag acts on the reduced downwash, k_ε·σ_ε·(CL_ge − lag), as in the strips' tail.
 		var tail: Dictionary = model.surfaces.horizontal
-		var source := _wing_lift_coefficient_with(s, air, d, model, ge, true)
+		var source: float = wake_ge if wake_ge_known else _wing_lift_coefficient_with(s, air, d, model, ge, true)
 		var scale: float = 1.0 if ge.is_empty() else ge[ge.size()-1]
 		var tail_speed := _tail_plane_speed(s, air, model, tail)
 		var lag_cl: float = float(tail.free_slope) * float(tail.area) / S * (
@@ -304,12 +309,16 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 	var flap_shifts := PackedFloat64Array()
 	var flap_model: Dictionary = model.get("flaps", {})
 	var flap_angle: float = float(d.get("flap", 0.0))
-	var flap_active := Flaps.enabled(model) and flap_angle != 0.0 and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
+	var flap_active := flap_angle != 0.0 and Flaps.enabled(model) and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
 	var flap_coverage: PackedFloat64Array = flap_model.get("station_coverage", PackedFloat64Array())
 	# X8-04: tailless strips sit at their own swept stations and carry the elevons.
 	var tailless: Dictionary = model.surfaces.get("tailless", {})
 	var station_x: PackedFloat64Array = tailless.get("station_x", PackedFloat64Array())
 	var reference_speed := 0.0
+	# H18: dictionary reads hoisted out of both station loops, only where the loops would have made them.
+	var aileron_effect := 0.0
+	if station_x.is_empty() and not ys.is_empty():
+		aileron_effect = float(model.surfaces.wing_aileron_effectiveness)
 	for i in ys.size():
 		var y: float = arm[1] + ys[i]
 		var arm_x: float = arm[0] if station_x.is_empty() else -(station_x[i] - model.cg_le[0]) + 0.0
@@ -324,7 +333,7 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 		var angle: float
 		if station_x.is_empty():
 			var control: float = d.aileron_right if ys[i] > 0.0 else d.aileron_left
-			angle = wrapf(M.atan2_(f2, f0) + float(model.surfaces.wing_aileron_effectiveness)*control, -PI, PI)
+			angle = wrapf(M.atan2_(f2, f0) + aileron_effect*control, -PI, PI)
 		else:
 			angle = wrapf(M.atan2_(f2, f0) + elevon_strip_angle(i, ys[i], d, tailless), -PI, PI)
 		if not twist.is_empty():
@@ -346,9 +355,21 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 	# P51-11a (optional flaps.stall_shift_fraction): a flapped strip's stall onset moves by only this fraction of its
 	# camber shift; absent keeps the whole shift without any added arithmetic.
 	var stall_back := 1.0 - float(flap_model.stall_shift_fraction) if flap_active and flap_model.has("stall_shift_fraction") else 0.0
-	for i in ys.size():
-		var source_angle: float = angles[i] if stall_back == 0.0 else angles[i] - stall_back * flap_shifts[i]
-		sources.append((speeds[i]/reference_speed) * (1.0-stall_weight(source_angle, model.envelope)) if reference_speed > 0.0 else 0.0)
+	if reference_speed > 0.0 and not ys.is_empty():
+		# stall_weight() with the envelope's bounds read once; same differences and quotients.
+		var env: Dictionary = model.envelope
+		var a1: float = env.a1
+		var a_span: float = env.a2 - env.a1
+		var n1: float = env.n1
+		var n_span: float = env.n2 - env.n1
+		for i in ys.size():
+			var source_angle: float = angles[i] if stall_back == 0.0 else angles[i] - stall_back * flap_shifts[i]
+			var stall: float = _smoothstep((source_angle - a1) / a_span) if source_angle >= 0.0 \
+				else _smoothstep((-source_angle - n1) / n_span)
+			sources.append((speeds[i]/reference_speed) * (1.0-stall))
+	else:
+		for i in ys.size():
+			sources.append(0.0)
 	return {angles = angles, speeds = speeds, sources = sources, flap_shifts = flap_shifts, reference_speed = reference_speed}
 
 
@@ -440,7 +461,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var flap_shifts: PackedFloat64Array = wing_flow.flap_shifts
 	var flap_model: Dictionary = model.get("flaps", {})
 	var flap_angle: float = float(d.get("flap", 0.0))
-	var flap_active := Flaps.enabled(model) and flap_angle != 0.0 and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
+	var flap_active := flap_angle != 0.0 and Flaps.enabled(model) and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
 	var stall_back := 1.0 - float(flap_model.stall_shift_fraction) if flap_active and flap_model.has("stall_shift_fraction") else 0.0
 	var flap_coverage: PackedFloat64Array = flap_model.get("station_coverage", PackedFloat64Array())
 	var reference_speed: float = float(wing_flow.reference_speed)
@@ -892,7 +913,7 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 	var flap_shifts: PackedFloat64Array = wing_flow.flap_shifts
 	var flap_model: Dictionary = model.get("flaps", {})
 	var flap_angle: float = float(d.get("flap", 0.0))
-	var flap_active := Flaps.enabled(model) and flap_angle != 0.0 and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
+	var flap_active := flap_angle != 0.0 and Flaps.enabled(model) and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
 	var stall_back := 1.0 - float(flap_model.stall_shift_fraction) if flap_active and flap_model.has("stall_shift_fraction") else 0.0
 	var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
 	var coupled := e_map.size() == stations * stations
@@ -941,7 +962,7 @@ static func loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: 
 	# strip-resolved differences from that clean path, so they remain active in the small-angle oracle
 	# domain without changing any aircraft that has no simulated flap command.
 	var flap_config: Dictionary = model.get("flaps", {})
-	if Flaps.enabled(model) and float(d.get("flap", 0.0)) != 0.0 \
+	if float(d.get("flap", 0.0)) != 0.0 and Flaps.enabled(model) \
 			and float(flap_config.get("aerodynamic_gain", 1.0)) != 0.0 \
 			and not model.get("envelope", {}).is_empty():
 		var clean_d := d.duplicate(true)

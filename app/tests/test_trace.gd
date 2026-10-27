@@ -305,6 +305,7 @@ func _initialize() -> void:
 	var empty_liquid := Trace.new()
 	empty_liquid._liquid_trace = true
 	var empty_path := "user://test-traces/trace-empty-liquid.csv"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(empty_path))
 	_check("empty liquid trace is refused and never written", empty_liquid.to_csv().is_empty()
 		and empty_liquid.save(empty_path) == ERR_INVALID_DATA and not FileAccess.file_exists(empty_path))
 

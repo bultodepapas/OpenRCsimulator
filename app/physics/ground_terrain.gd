@@ -30,6 +30,11 @@ const WAVES := [
 	[0.20, 0.41, 0.6, -0.8, 4.73],
 ]
 const TAU := 6.2831853071795864769
+## GP-19g: the last table checked, as a detached copy compared by value, and its verdict. Equal tables differ at
+## most in the sign of a zero, which no check distinguishes; a NaN entry never compares equal.
+static var _checked_table := PackedFloat64Array()
+static var _checked_table_valid := true
+static var _checked_table_mutex := Mutex.new()
 
 
 ## Outward NED unit normal for a height field expressed positive UP. Lake bed
@@ -212,6 +217,22 @@ static func max_height_validated(surfaces: PackedFloat64Array) -> float:
 ## Validate the local six-float contract without depending on GroundSurfaces (which depends on contact code).
 ## Production tables are already validated upstream; this guard also protects test tools and future callers.
 static func is_valid_surface_table(surfaces: PackedFloat64Array) -> bool:
+	_checked_table_mutex.lock()
+	var checked: PackedFloat64Array = _checked_table
+	var valid: bool = _checked_table_valid
+	_checked_table_mutex.unlock()
+	if surfaces == checked:
+		return valid
+	valid = _surface_table_is_valid(surfaces)
+	var detached: PackedFloat64Array = surfaces.duplicate()
+	_checked_table_mutex.lock()
+	_checked_table = detached
+	_checked_table_valid = valid
+	_checked_table_mutex.unlock()
+	return valid
+
+
+static func _surface_table_is_valid(surfaces: PackedFloat64Array) -> bool:
 	if surfaces.is_empty():
 		return true
 	if surfaces.size() % SURFACE_STRIDE != 0:

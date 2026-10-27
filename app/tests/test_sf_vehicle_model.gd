@@ -95,6 +95,7 @@ func _kernel_installation() -> void:
 	_check("a nonfinite initial state is refused", not sim.reset(broken))
 	_check("the refused reset leaves the installed input layout unchanged", narrower.input_size == 4,
 		"input_size %d" % narrower.input_size)
+	sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 	_check("the next valid reset uses the installed four-input layout", sim.reset(_level_state()), sim.fault_reason)
 	sim.free()
 

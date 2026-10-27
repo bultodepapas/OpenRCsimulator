@@ -43,8 +43,16 @@ func _run() -> void:
 	print("Weather publication: %d checks, %d failed; %s" % [checks,failed,output])
 	quit(1 if failed else 0)
 func _parity() -> void:
-	# Complete 25-endpoint traces captured before GP-14h; see its evidence cohort.
-	var expected: Dictionary = {"calm": "e28993adf8aeae616a072f7698fc86d40adaa19961b821cb8254417662df0bab", "cool-dense": "96471c89616b64a915298690f87a938d1891fc55e743419261742457732ef442", "gusty": "3c04da05216e7f9541e005cfb39223a33a30262da8966b6a1c70b25cea8ee4d3", "turbulent": "718475cbac36aab485517d82e6fb948f95a70f5bf961d527acb814cc6991f6eb"}
+	# Complete 25-endpoint traces captured before GP-14h; see its evidence cohort. Exact traces are
+	# per-platform diagnostics (H9): the checkout's line endings enter the fuel-registry identity in
+	# checkpoint.configuration, and turbulence rounds differently per platform math library.
+	var expected_by_platform: Dictionary = {
+		"Windows": {"calm": "e28993adf8aeae616a072f7698fc86d40adaa19961b821cb8254417662df0bab", "cool-dense": "96471c89616b64a915298690f87a938d1891fc55e743419261742457732ef442", "gusty": "3c04da05216e7f9541e005cfb39223a33a30262da8966b6a1c70b25cea8ee4d3", "turbulent": "718475cbac36aab485517d82e6fb948f95a70f5bf961d527acb814cc6991f6eb"},
+		"Linux": {"calm": "8072e03be9140ae4bee356cbc542e5234cee296e4fbc98e39ee1b92b044cf614", "cool-dense": "40f99b65feb6fe4f135f955be8a48b43fa3aafa6b6bc7825333909e0b740145b", "gusty": "070a11e18e96887a7fdda12a2b767fc29cf9feafe5b4abff5b6a195abbc7028a", "turbulent": "243c9b2fb59b973444a0293de38bdfd87c7004eb86e6e683d79a9dab22ecca4a"},
+	}
+	var expected: Dictionary = expected_by_platform.get(OS.get_name(), {})
+	if expected.is_empty():
+		print("frozen 25-endpoint weather traces exist for Windows and Linux only; %s skips them" % OS.get_name())
 	for name: String in ["calm","gusty","turbulent","cool-dense"]:
 		var f := flight()
 		check("valid weather selected",f.setup_weather(Weather.defaults() if name=="calm" else Weather.preset(name)))
@@ -55,7 +63,8 @@ func _parity() -> void:
 			check("complete accepted weather checkpoint",not f.checkpoint().is_empty())
 			hash.update(var_to_bytes(f.checkpoint()))
 			if i < 24: f.sim.step()
-		check("frozen complete 25-endpoint weather trace "+name,hash.finish().hex_encode()==expected[name])
+		var digest := hash.finish().hex_encode()
+		if not expected.is_empty(): check("frozen complete 25-endpoint weather trace "+name,digest==expected[name])
 		f.free()
 func _refusals() -> void:
 	for live: bool in [false,true]:

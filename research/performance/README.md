@@ -712,6 +712,55 @@ python3 tools/godot/run_checked.py --timeout 1400 -- "$(app/get-godot.sh)" --hea
 
 [LU-25-R6 evidence](../../docs/research/landscape-upgrade/LU-25-R6/README.md).
 
+## Lake bank bounds memo (LU-25-R7)
+
+`lake_aabb_pair.gd` compares an explicit prior `app/physics/lake_surface.gd` with the working
+tree over a seeded interleaving of polygons chosen to exercise the bounds memo: equal and
+±0-different copies, NaN, empty and one-vertex polygons, and one array edited in place between
+calls, with points exactly on each bound ± margin and its neighbouring doubles. It then runs
+the covered-terrain and shore-distance queries through the default lake. Any mismatch fails.
+
+```sh
+mkdir -p tmp/lu25r7 && git show d434865f2:app/physics/lake_surface.gd > tmp/lu25r7/lake_surface_ref.gd
+python3 tools/godot/run_checked.py --timeout 800 -- "$(app/get-godot.sh)" --headless --path app \
+  --script "$PWD/research/performance/lake_aabb_pair.gd" -- --reference="$PWD/tmp/lu25r7/lake_surface_ref.gd"
+```
+
+[LU-25-R7 evidence](../../docs/research/landscape-upgrade/LU-25-R7/README.md).
+
+## Terrain sampler (GP-19g)
+
+`terrain_pair.gd` compares an explicit prior `app/physics/ground_terrain.gd` with the working
+tree: the table guard, `max_height` and every terrain sampler over tables that interleave the
+default field's table with ±0, NaN, invalid, empty and edited-in-place variants (with and
+without the default lake), plus 200,000 raw microrelief samples. It then times the table guard
+with one runway sample. Any mismatch fails.
+
+```sh
+mkdir -p tmp/gp19g && git show df4e1ca5c:app/physics/ground_terrain.gd > tmp/gp19g/ground_terrain_ref.gd
+python3 tools/godot/run_checked.py --timeout 1100 -- "$(app/get-godot.sh)" --headless --path app \
+  --script "$PWD/research/performance/terrain_pair.gd" -- --reference="$PWD/tmp/gp19g/ground_terrain_ref.gd"
+```
+
+[GP-19g evidence](../../docs/research/ground-physics/GP-19/evidence/surface-table-check/README.md).
+
+## Aero oracle reuse (H18)
+
+`aero_pair.gd` compares an explicit prior `app/physics/aero.gd` with the working tree through
+`Aero.loads`, `_wing_flow`, `wing_wake_velocity` and `local_flow_weight`, bytewise, for seven
+catalog aircraft (electric and glow Stik, Extra, P-51, X8, Avanti, Timber). Each gets
+`--states` random states (default 3,000): half within 3 m of the ground, random attitude,
+velocity, rates, servo and flap positions, and a downwash-lag value where the aircraft has
+that state. Any mismatch fails.
+
+```sh
+mkdir -p tmp/h18 && git show df4e1ca5c:app/physics/aero.gd > tmp/h18/aero_ref.gd
+python3 tools/godot/run_checked.py --timeout 1700 -- "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/performance/aero_pair.gd" -- --reference="$PWD/tmp/h18/aero_ref.gd"
+```
+
+[H18 evidence](../../docs/research/simulation-state/H18/README.md).
+
 ## Release-template session probe (VQ-01c / NK-0)
 
 Export templates ignore `--path` and `--script`. `release_session_probe/build.sh` exports a

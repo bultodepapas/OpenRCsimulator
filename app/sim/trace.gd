@@ -1701,11 +1701,15 @@ func save(path: String) -> Error:
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	if f == null:
 		return FileAccess.get_open_error()
-	f.store_string(csv)
+	var written := f.store_string(csv)
 	f.flush()
 	var write_error := f.get_error()
 	f.close()
-	return write_error
+	if written and write_error == OK:
+		return OK
+	# A partial file must not pass for a trace.
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	return write_error if write_error != OK else ERR_FILE_CANT_WRITE
 
 
 static func _finite(values: PackedFloat64Array, size: int = -1) -> bool:

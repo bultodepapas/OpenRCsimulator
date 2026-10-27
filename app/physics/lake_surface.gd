@@ -704,8 +704,31 @@ static func _polygon_state(polygon: PackedFloat64Array, north: float, east: floa
 	return distance if on_boundary or inside else -distance
 
 
+## LU-25-R7: bounds of the last polygon seen, keyed by a detached copy compared by value. Only an equal polygon
+## reuses them; a ±0 vertex difference cannot change a comparison against a bound ± margin.
+static var _aabb_polygon := PackedFloat64Array()
+static var _aabb := PackedFloat64Array([INF, -INF, INF, -INF])
+static var _aabb_mutex := Mutex.new()
+
+
 static func _outside_expanded_polygon_aabb(polygon: PackedFloat64Array, north: float, east: float,
 		margin: float) -> bool:
+	_aabb_mutex.lock()
+	var cached_polygon: PackedFloat64Array = _aabb_polygon
+	var bounds: PackedFloat64Array = _aabb
+	_aabb_mutex.unlock()
+	if polygon != cached_polygon:
+		bounds = _polygon_aabb(polygon)
+		var detached: PackedFloat64Array = polygon.duplicate()
+		_aabb_mutex.lock()
+		_aabb_polygon = detached
+		_aabb = bounds
+		_aabb_mutex.unlock()
+	return north < bounds[0] - margin or north > bounds[1] + margin \
+		or east < bounds[2] - margin or east > bounds[3] + margin
+
+
+static func _polygon_aabb(polygon: PackedFloat64Array) -> PackedFloat64Array:
 	var north_min: float = INF
 	var north_max: float = -INF
 	var east_min: float = INF
@@ -715,8 +738,7 @@ static func _outside_expanded_polygon_aabb(polygon: PackedFloat64Array, north: f
 		north_max = maxf(north_max, polygon[index])
 		east_min = minf(east_min, polygon[index + 1])
 		east_max = maxf(east_max, polygon[index + 1])
-	return north < north_min - margin or north > north_max + margin \
-		or east < east_min - margin or east > east_max + margin
+	return PackedFloat64Array([north_min, north_max, east_min, east_max])
 
 
 static func _point_segment_distance_sq(north: float, east: float,

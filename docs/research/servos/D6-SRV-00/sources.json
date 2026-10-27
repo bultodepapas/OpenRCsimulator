@@ -1,0 +1,168 @@
+{
+ "format": "openrc-reference-manifest v1",
+ "topic": "Servo load, holding torque, current, receiver brownout, flutter practice, simulator servo practice and product-name use for the servo load plan (D6-SRV)",
+ "retrieved": "2026-10-27",
+ "note": "Guide: docs/research/servos/D6-SRV-00/README.md. Local copies in the gitignored references/servos/d6-srv-00/ (reference only, do not redistribute). Web-only sources are listed with url and no path. Dead ends: gear-strip torque versus stall torque by gear material (no manufacturer or measured source after 4 searches), back-drive torque (not a typical specification), thermal/overload trip thresholds and timing, receiver reboot times outside Spektrum, MIL-A-8870C numeric free-play limit (paywalled), any RC simulator modelling servo torque, blowback, brownout or flutter, servo-editor documentation for RealFlight 7 through Evolution, Phoenix, ClearView, neXt and PicaSim.",
+ "files": [
+  {
+   "id": "HITEC-HS755HB-2003",
+   "path": "references/servos/d6-srv-00/hitec-hs-755hb-spec-2003.pdf",
+   "url": "https://cdn.sparkfun.com/datasheets/Robotics/33755.pdf",
+   "bytes": 82028,
+   "sha256": "c8e8cd0176c00a75d3d70e3e3fb8202ba0872ce416ab0393b2aca54a7613ffb2",
+   "kind": "manufacturer specification (Hitec, 2003-02-20, retailer mirror)",
+   "evidence": "manual",
+   "license": "Manufacturer document; reference only.",
+   "use": "4.8 / 6.0 V: 0.28 / 0.23 s/60 deg no load; stall 11 / 13.2 kg.cm; standing torque 8.8 / 10.5 kg.cm at 5 deg hold-out (80 % of stall); idle 8 mA; running 230 / 250 mA; stall 1500 / 1800 mA; dead band 5 us; cored metal-brush motor. Speed, torque and stall current all rise 1.20x for a 1.25x voltage ratio."
+  },
+  {
+   "id": "KST-HS08-2020",
+   "path": "references/servos/d6-srv-00/kst-hs08-datasheet-2020.pdf",
+   "url": "https://cdn.shopify.com/s/files/1/0759/8009/files/HS08.pdf",
+   "bytes": 771087,
+   "sha256": "ba895d28b36b496873b47396f4d675ce503787b824d2d40c37e4b5dad5a90fd4",
+   "kind": "manufacturer datasheet (KST, 2020)",
+   "evidence": "manual",
+   "license": "Manufacturer document; reference only.",
+   "use": "6.0 V: stall 0.45 N.m, rated 0.15 N.m; stall current 0.68 A, rated 0.25 A; no-load 0.13 s/60 deg, rated 0.20 s/60 deg; rated voltage 3.8-8.4 V. The linear torque-speed line predicts 0.195 s/60 deg at the rated point."
+  },
+  {
+   "id": "SPEKTRUM-AR6335",
+   "path": "references/servos/d6-srv-00/spektrum-ar6335-manual.pdf",
+   "url": "https://www.lindinger.at/media/1d/d9/96/1637162104/9709381_EN_Manual.pdf",
+   "bytes": 259658,
+   "sha256": "5d305266258f93faf79911dd201814a4dc5a51fac2c84cd66b7703e31bad721c",
+   "kind": "manufacturer manual (Horizon Hobby, DSMX receiver, retailer mirror)",
+   "evidence": "manual",
+   "license": "Manufacturer document; reference only.",
+   "use": "Minimum operational voltage 3.5 V; below 3.5 V the system ceases to operate; with the transmitter on it reconnects typically in about 0.04 s; most servos cease below 3.8 V; Brownout Detection not available in DSMX mode."
+  },
+  {
+   "id": "SPEKTRUM-AR6110-2009",
+   "path": "references/servos/d6-srv-00/spektrum-ar6110-user-guide.pdf",
+   "url": "https://www.superdroidrobots.com/ProdInfo/Files/AR6110UserGuide.pdf",
+   "bytes": 749739,
+   "sha256": "2f5cb3852ca6e3ae80167fdc90dcd07b3ef5b7dcbc0566a609781446d5c8acd9",
+   "kind": "manufacturer user guide (Horizon Hobby, DSM2 receiver, 2009, third-party mirror)",
+   "evidence": "manual",
+   "license": "Manufacturer document; reference only.",
+   "use": "QuickConnect reconnects typically within a second; below 3.5 V a reboot can take several seconds (cold start 2-6 s); power-system test: voltage should remain above 4.8 V with all servos heavily loaded."
+  },
+  {
+   "id": "FUTABA-R7008SB",
+   "path": "references/servos/d6-srv-00/futaba-r7008sb-manual.pdf",
+   "url": "https://cdn.shopify.com/s/files/1/1052/4162/files/r7008sb-manual.pdf",
+   "bytes": 808677,
+   "sha256": "c3a5d86a4a02770ce898e8adf5032c950ca624676dc48da94deff00c38a30cc1",
+   "kind": "manufacturer manual (Futaba FASSTest receiver)",
+   "evidence": "manual",
+   "license": "Manufacturer document; reference only.",
+   "use": "Power requirement 3.7-7.4 V (voltage range 3.5-8.4 V). No reboot time found."
+  },
+  {
+   "id": "FAA-AC-23-629-1A",
+   "path": "references/servos/d6-srv-00/faa-ac-23-629-1a.pdf",
+   "url": "https://rosap.ntl.bts.gov/view/dot/71218/dot_71218_DS1.pdf",
+   "bytes": 408270,
+   "sha256": "5a2d6739bcc19bcf1b05ecec4d12b84f62d4bcd68f653ebf3b94eb31b0459772",
+   "kind": "FAA advisory circular (1985)",
+   "evidence": "manual",
+   "license": "US government work, public domain.",
+   "use": "Report No. 45 simplified flutter criteria for VD below 260 kt EAS, derived statistically from full-size airplanes: aileron K/I balance and wing torsional flexibility limits versus VD, aileron free play below a specified maximum, elevator/rudder dynamic balance, tab free play at most 2 % (tab span up to 35 %) or 1 % of tab chord. Applicability to RC scale not established."
+  },
+  {
+   "id": "NACA-TN-4197",
+   "path": "references/servos/d6-srv-00/naca-tn-4197-ntrs-container.bin",
+   "url": "https://ntrs.nasa.gov/citations/19930085030",
+   "bytes": 10353854,
+   "sha256": "cd46997b270a6463c1a0dd3656af30b990dfbf14f3d72578bf622c45d29cecea",
+   "kind": "NACA technical note (Martin 1958), as served by NTRS in a container wrapping 19930085030.pdf",
+   "evidence": "manual",
+   "license": "US government work, public domain.",
+   "use": "Crude criteria for wing bending-torsion and stall flutter of missile lifting surfaces; control surfaces are only discussed qualitatively. Not a control-surface flutter criterion."
+  },
+  {
+   "id": "REALFLIGHT-G3.5-MANUAL",
+   "path": "references/servos/d6-srv-00/realflight-g3-5-manual.pdf",
+   "url": "https://forums.realflight.com/downloads/RealFlight%20G3.5%20Manual.pdf",
+   "bytes": 9681275,
+   "sha256": "4cc0957bfab300b9ef682929024b5f1dfb3cbb7be85efb1ff82ac57cae8b3565",
+   "kind": "commercial simulator manual (Knife Edge / Great Planes)",
+   "evidence": "manual",
+   "license": "Commercial manual; reference only.",
+   "use": "Physical servo editor exposes SERVO SPEED (s per 60 deg) only; BRAKE SERVO STRENGTH applies to wheel brakes. Flight Failures (reverse, stuck, trim, channel swap, lockout, interference, range) are probability events, all enabled by default. No load-dependent servo behaviour."
+  },
+  {
+   "id": "AEROFLY-TMD-ACTUATORS",
+   "url": "https://www.aerofly.com/dokuwiki/doku.php/aircraft:tmd:actuators",
+   "kind": "simulator file-format documentation (Aerofly FS)",
+   "evidence": "manual",
+   "license": "Web page; link only.",
+   "use": "servoclassic moves toward the target with a given Speed; electrical_actuator has InputVoltage, MinimumVoltage, RatedCurrent and AddLoad, with no torque effect on motion described. Use by Aerofly RC 10 unverified."
+  },
+  {
+   "id": "JSBSIM-FGACTUATOR",
+   "url": "https://jsbsim.sourceforge.net/JSBSim/classJSBSim_1_1FGActuator.html",
+   "kind": "open-source simulator documentation (LGPL)",
+   "evidence": "manual",
+   "license": "Documentation link only; do not copy code.",
+   "use": "Lag, rate limit, deadband, hysteresis, bias, position limit; fail_zero, fail_hardover, fail_stuck set by property. No load term."
+  },
+  {
+   "id": "ARDUPILOT-SITL-SERVOMODEL",
+   "url": "https://github.com/ArduPilot/ardupilot/blob/master/libraries/SITL/ServoModel.cpp",
+   "kind": "open-source simulator source (GPLv3)",
+   "evidence": "manual",
+   "license": "Read only; do not copy code.",
+   "use": "SIM_SERVO_SPEED, time for 60 deg, default 0.14 s; first-order filter or rate limit; no load input."
+  },
+  {
+   "id": "MA-BUXTON-2017-DIGITAL-SERVOS",
+   "url": "https://www.modelaviation.com/digital-servos",
+   "kind": "hobby magazine measurement (Model Aviation, May 2017)",
+   "evidence": "measured",
+   "license": "Web page; link only.",
+   "use": "One coreless digital servo: holding 0.3 A average / 5 A peak, moving 1.3 A average / 9.3 A peak; capacitance reduces peaks. Single unit, sub-tick peaks."
+  },
+  {
+   "id": "MA-BUCKLAND-2016-FLUTTER",
+   "url": "https://www.modelaviation.com/node/1374",
+   "kind": "hobby magazine practice (Model Aviation, May 2016)",
+   "evidence": "borrowed",
+   "license": "Web page; link only.",
+   "use": "Slop is the greatest contributor to flutter at high speed; longer servo horns accentuate gear slop. Qualitative."
+  },
+  {
+   "id": "MA-HULICK-1994-FLUTTER",
+   "url": "https://library.modelaviation.com/article/control-surface-flutter",
+   "kind": "hobby magazine practice (Model Aviation, Oct 1994)",
+   "evidence": "borrowed",
+   "license": "Web page; link only.",
+   "use": "Static balancing of control surfaces is usually the best remedy. Qualitative."
+  },
+  {
+   "id": "CASTLE-CC-BEC-2",
+   "url": "https://buddyrc.com/products/castle-creations-bec",
+   "kind": "retailer product page",
+   "evidence": "manual",
+   "license": "Web page; link only.",
+   "use": "9 A continuous, 14 A peak at 4.75-7.0 V output; the page also has a conflicting table. Example BEC limit only."
+  },
+  {
+   "id": "INTA-FAIR-USE-2020",
+   "url": "https://www.inta.org/fact-sheets/fair-use-of-trademarks-intended-for-a-non-legal-audience/",
+   "kind": "trade association fact sheet (updated 2020-12-16)",
+   "evidence": "borrowed",
+   "license": "Web page; link only. Not legal advice.",
+   "use": "Nominative use: product not readily identifiable without the mark, only as much of the mark as necessary (non-stylized), no suggestion of sponsorship or endorsement."
+  },
+  {
+   "id": "EU-DIR-2006-114-ART4",
+   "url": "https://eur-lex.europa.eu/eli/dir/2006/114/oj",
+   "kind": "EU directive (comparative advertising)",
+   "evidence": "manual",
+   "license": "EU legislation; link only. Not legal advice.",
+   "use": "Comparison must objectively compare material, relevant, verifiable and representative features; no denigration, no unfair advantage of reputation, no confusion."
+  }
+ ]
+}

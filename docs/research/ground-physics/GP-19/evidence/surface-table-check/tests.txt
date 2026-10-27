@@ -1,0 +1,124 @@
+# GP-19g regression run, 2026-10-27: working tree incl. LU-25-R7 and NK-2a (Godot 4.8-beta1 editor, headless, run_checked.py).
+# Selection: every test touching ground_terrain/GroundTerrain, set_field, skid contact, airfield course, ground
+# support, ground wheels or ground contact; every lake test; test_golden. 117/120 pass. The 3 failures fail
+# identically at clean HEAD and at session start f9e6dbe8d (see NK-2a and LU-25-R7 records), so they predate this change.
+PASS test_aircraft_contact_session AS-13 contact session: 63 checks, 0 failures
+PASS test_aircraft_data 88 checks, 0 failed
+PASS test_aircraft_ground_damage Attached gear response: 125 checks, 0 failed
+PASS test_aircraft_ground_dynamics Aircraft ground dynamics: 146 checks, 0 failed
+PASS test_aircraft_ground_stage Aircraft ground stage: 145 checks, 0 failed
+PASS test_airframe_contacts 46 checks, 0 failed
+PASS test_atmosphere_flight M5-ATM flight: 142 checks, 0 failed
+PASS test_companions_airspace AFC-02 static airspace validation: 48 checks, 0 failed
+FAIL test_companions_lifecycle (pre-existing, see header)
+PASS test_companions_manager companions manager: 53 checks, 0 failed
+PASS test_companions_observation AFC COMPANION OBSERVATION CHECKS 21 FAILED 0
+PASS test_companions_presentation companion presentation: 13 checks, 0 failed
+PASS test_companions_record companions record: 156 checks, 0 failed
+FAIL test_companions_session 65 checks, 1 failed
+PASS test_contact_assembly_strategy Contact assembly strategy: 34 checks, 0 failed
+PASS test_contact_mass_prefix Prepared contact mass prefix: 110 checks, 0 failed
+PASS test_contact_policy 84 checks, 0 failed
+PASS test_contact_slip_consistency Contact slip consistency: 19 checks, 0 failed
+PASS test_contact_unresolved_descent Contact unresolved descent: 56 checks, 0 failed
+PASS test_contact_work_consistency Contact work consistency: 24 checks, 0 failed
+PASS test_damage_flight_events Damage flight events: 197 checks, 0 failed; /home/bulto/OpenRCsimulator/app/../tmp/damage-flight-events-3065415
+PASS test_downloaded_habitats downloaded habitat checks: 330 checks, 0 failures
+PASS test_downwash_lag 24 checks, 0 failed
+PASS test_electric_runway EL2a-E1 electric runway: 177 checks, 0 failed
+PASS test_extra_runway Extra runway: 18 checks, 0 failed; factor is estimated, not measured
+PASS test_field_replacement Field replacement: 70 checks, 0 failed; /home/bulto/OpenRCsimulator/app/../tmp/field-replacement-3052354
+FAIL test_fixed_gear_brake_input Fixed brake candidate: 256 checks, 9 failed
+PASS test_flight_ground_accepted Flight ground accepted: 18 checks, 0 failed
+PASS test_flight_reset_transaction Common flight reset: 148 checks, 0 failed; /home/bulto/OpenRCsimulator/app/../tmp/common-reset-3047598
+PASS test_flight_statistics_detector 111 checks, 0 failed
+PASS test_gear_reserve_energy GP-06c gear reserve energy: 19 checks, 0 failed
+PASS test_glow_session Glow session: 140 checks, 0 failed
+PASS test_golden 4 golden flights, 0 failed
+PASS test_grass_ground_material Grass ground material: 38 checks, 0 failures
+PASS test_ground_accepted_ticks Ground accepted ticks: 93 checks, 0 failed
+PASS test_ground_accident_session GP-14 live sessions: 33 checks, 0 failed
+PASS test_ground_accidents GP-14 accidents: 68 checks, 0 failed
+PASS test_ground_audio 33 checks, 0 failed
+PASS test_ground_audio_materials Ground audio materials: 24 checks, 0 failed
+PASS test_ground_contact 23 checks, 0 failed
+PASS test_ground_effect 51 checks, 0 failed
+PASS test_ground_flight_events Ground flight events: 135 checks, 0 failed
+PASS test_ground_friction 26 checks, 0 failed
+PASS test_ground_image_cache ground image cache: 18 checks, 0 failed
+PASS test_ground_marks 
+PASS test_ground_patch_cache patch cache regression: 94 checks, 0 failures
+PASS test_ground_physics 48 checks, 0 failed
+PASS test_ground_stage_queries 195 ground-stage checks, 0 failed
+PASS test_ground_start_environment 10 checks, 0 failed
+PASS test_ground_start_integrity E3b2-R1: 254 checks, 0 failed
+PASS test_ground_stiction 25 checks, 0 failed
+PASS test_ground_support_query GP-10 support query: 114 checks, 0 failed
+PASS test_ground_surfaces 29 checks, 0 failed
+PASS test_ground_terrain 21 checks, 0 failed
+PASS test_ground_traction GP-12 traction: 659 checks, 0 failed
+PASS test_hand_launch X8-07 hand launch: 136 checks, 0 failed
+PASS test_heli_contact_audit HELI contact audit: 8 checks, 0 failed
+PASS test_heli_control_actions HELI-20 controller actions: 28 checks, 0 failed
+PASS test_heli_ground_session HELI-20 ground session: 56 checks, 0 failed
+PASS test_heli_ground_start 14 checks, 0 failed
+PASS test_heli_impact_detector HELI impact detector: 26 checks, 0 failed
+PASS test_heli_render_audit 32 checks, 0 failed
+PASS test_heli_skid_bristles 15 checks, 0 failed
+PASS test_heli_state_audit HELI state audit: 50 checks, 0 failed
+PASS test_hull_crossing 40 checks, 0 failed
+PASS test_hull_friction_observation Hull scrape metrics: 388 checks, 0 failed
+PASS test_hull_scrape_audio Hull scrape audio: 60 checks, 0 failed
+PASS test_hull_scrape_session Hull scrape Session: 56 checks, 0 failed
+PASS test_hull_support_normal 70 checks, 0 failed
+PASS test_intended_hull_support_session Intended hull support sessions: 53 checks, 0 failed
+PASS test_lake_collision all lake collision checks passed
+PASS test_lake_covered_sampling 761 checks, 0 failed
+PASS test_lake_definition_cache 
+PASS test_lake_geometry_bake 18 lake geometry bake checks, 0 failed
+PASS test_lake_ground_contact all lake ground contact checks passed
+PASS test_lake_planar_reflection lake planar reflection contract: 75 checks, 0 failed
+PASS test_lake_plants Lake plant checks: PASS
+PASS test_lake_probe_ambient Lake probe ambient: 8 checks, 0 failed
+PASS test_lake_session 35 lake session checks, 0 failed
+PASS test_lake_surface all lake surface checks passed
+PASS test_lake_world 27 lake world checks, 0 failed
+PASS test_natural_random_flight NR-03 numerical flight qualification: 576 checks, 0 failed
+PASS test_p51_retracts P51-11b retracts: 14 checks, 0 failed
+PASS test_prop_strike 41 checks, 0 failed
+PASS test_rcv_airfield_course RCV airfield course: 0 failed
+PASS test_rcv_airfield_track RCV airfield track: 19 checks, 0 failures
+PASS test_rcv_ground_material 
+PASS test_rcv_nitro_session RCV Nitro session: 28 checks, 0 failed
+PASS test_rcv_track_view 
+PASS test_rcv_vehicle_dynamics RCV-05 vehicle dynamics: 53 checks, 0 failures
+PASS test_reset_publication Reset publication: 180 checks, 0 failed; /home/bulto/OpenRCsimulator/app/../tmp/reset-publication-3477911
+PASS test_restore_publication Restore publication: 137 checks, 0 failed; /home/bulto/OpenRCsimulator/app/../tmp/restore-publication-3181696
+PASS test_retractable_gear_ground 26 checks, 0 failed
+PASS test_runway_checkpoint_metadata UI-06a-R1: 14 checks, 0 failed
+PASS test_runway_fleet Runway fleet: 136 checks, 0 failed
+PASS test_runway_start 18 checks, 0 failed
+PASS test_runway_transaction VAL-AUD-R04 launch transaction: 32 checks, 0 failed
+PASS test_scenery_scenario all scenery scenario checks passed
+PASS test_sf_contact_substeps 13 checks, 0 failed
+PASS test_sf_environment 27 checks, 0 failed
+PASS test_sf_law_properties SF-06 law properties: 245 checks, 0 failed, 0 exempt
+PASS test_shaft_capacity Shaft capacity draft: 141 checks, 0 failed
+PASS test_shaft_coupled G2 coupled shaft: 99 checks, 0 failed
+PASS test_spatial_weather_session M5-W05c-R2 spatial weather session: 101 checks, 0 failures
+PASS test_start_choice UI-06a: 36 checks, 0 failed
+PASS test_tailless_spatial_session tailless spatial session (opt-in spatial v5): 77 checks, 0 failures; ORFL directory /home/bulto/OpenRCsimulator/app/../t
+PASS test_takeoff_roll 8 checks, 0 failed
+PASS test_timber_ground TT-11 Timber ground: 23 checks, 0 failed
+PASS test_touchdown 12 checks, 0 failed
+PASS test_traction_capacity Traction capacity producer: 103 checks, 0 failed
+PASS test_trim_throttle TRIM_THROTTLE_CHECKS 47 failures=0
+PASS test_turbulence_flight M5-W04a turbulence flight: 161 checks, 0 failed
+PASS test_wash_transport E0b5 transport: 44 checks, 0 failed
+PASS test_water_director 22 checks, 0 failed
+PASS test_weather_publication Weather publication: 196 checks, 0 failed; /home/bulto/OpenRCsimulator/app/../tmp/weather-publication-3478929
+PASS test_wheel_coupling 84 checks, 0 failed
+PASS test_wheel_geometry GP-10c wheel geometry: 281 checks, 0 failed
+PASS test_wheel_session GP-02 wheel session: 51 checks, 0 failed
+PASS test_wind_flight wind flight: 51 checks, 0 failed
+PASS test_workshop_experiments Workshop experiments: 111 checks, 0 failures

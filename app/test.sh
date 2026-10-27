@@ -341,7 +341,7 @@ for t in "$HERE"/tests/test_*.gd; do
     # v0.1.4 CI max 53.452 s; v0.1.5 prop-strike measured 55.943 s on WSL and hit CI's 60 s cap.
     # Raise supervision only; bounded test loops and all assertion gates remain unchanged.
     test_workshop_starts.gd|test_p51_ground.gd|test_prop_strike.gd|test_p51_handling.gd|test_ui_modal_responsive.gd|test_rcv_handling.gd) test_timeout=120 ;;
-    test_rcv_vehicle_dynamics.gd|test_rcv_session.gd|test_rcv_airfield_course.gd|test_rcv_airfield_track.gd|test_rcv_obstacle_contacts.gd|test_rcv_activity.gd|test_rcv_presentation.gd|test_rcv_menu.gd|test_rcv_nitro_activity.gd|test_rcv_nitro_session.gd|test_nitro_dynamics.gd) test_timeout=300 ;;
+    test_rcv_vehicle_dynamics.gd|test_rcv_session.gd|test_rcv_airfield_course.gd|test_rcv_airfield_track.gd|test_rcv_obstacle_contacts.gd|test_rcv_activity.gd|test_rcv_presentation.gd|test_rcv_menu.gd|test_rcv_nitro_activity.gd|test_rcv_nitro_session.gd|test_rcv_recovery_replay.gd|test_nitro_dynamics.gd) test_timeout=300 ;;
     test_aircraft_catalog.gd|test_aircraft_light_control.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_landscapes.gd|test_runway_cli.gd|test_runway_fleet.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
   esac
   test_args=()

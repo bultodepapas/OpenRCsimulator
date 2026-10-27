@@ -134,7 +134,7 @@ time ([Croteam, GDC 2018](https://gdcvault.com/browse/gdc-18/play/1025031)). Win
 | 1 | Conservative bounds before per-point/per-edge contact loops | Bit-identical | Any | Done: LU-25-R3, LU-25-R4 (runway session −22%) |
 | 2 | Run presentation observers once per frame, keeping per-tick events in a buffer | Physics identical; presentation by owner | Any | Owner decision across audio, statistics, crash, scenery; measured ceiling: observers are ≈ 34% of main-thread CPU airborne, ≈ 23% on the runway |
 | 3 | Inline `M.*` vector/quaternion helpers in hot loops with exact grouping; enforce the math-routing rule by lint | Bit-identical | Any | Candidate; mechanical, needs byte-parity probes |
-| 4 | Validate immutable model data once (`wheel_brake_available`, lake/surface guards) | Bit-identical | Any | Needs an ownership contract |
+| 4 | Validate immutable model data once (`wheel_brake_available`, lake/surface guards) | Bit-identical | Any | Session answers done: [NK-2a](native-kernel/NK-2a/README.md) per-tick memo, session tick −8 to −16%; lake/surface guards need an API change across owners |
 | 5 | Re-measure a `template_release` export for the current tick | None | Any | Done: [×1.23 airborne, ×1.19 runway](visual-quality-implementation/VQ-01c/release-tick-2026-10-27/README.md) on current source (NITRO-02 had 1.5–1.9× before the 2026-10-27 work) |
 | 6 | Attribute GPU passes (`--gpu-profile`, scale 0.5 vs 1.0, depth prepass on/off) | None | Native GPU | Prerequisite for rendering changes |
 | 7 | Windows pacing: exclusive fullscreen, VRR-aware caps | None | Native Windows | Candidate |
