@@ -19,6 +19,16 @@ static func _field_inputs(field: RefCounted) -> Dictionary:
 	return out
 
 
+static func _spatial_inputs(field: RefCounted) -> Dictionary:
+	var out := {}
+	for key: String in ["_reference_speed", "_roughness_length", "_displacement_height", "_wall_height",
+			"_surface_top", "_free_air_join_height", "_direction_cosine", "_direction_sine", "_log_denominator",
+			"_wall_scale", "_wall_scale_slope", "_gust_transition_height", "_gust_values", "_gust_max_duration",
+			"_turbulence_rms", "_modes"]:
+		out[key] = field.get(key)
+	return out
+
+
 ## Capture object identities and detached configuration; the actual turbulence
 ## Callable must be FlightSession's sampler, not an arbitrary replacement.
 static func provider_identity(session: Node) -> Dictionary:
@@ -51,14 +61,14 @@ static func provider_identity(session: Node) -> Dictionary:
 	if field.is_spatial():
 		if spatial == null or not is_instance_valid(spatial) or spatial.get_script() != SpatialField:
 			return {ok = false, reason = "spatial weather is not the built-in provider"}
-		if spatial.configuration() != config.spatial_wind:
+		if var_to_bytes(spatial.configuration()) != var_to_bytes(config.spatial_wind):
 			return {ok = false, reason = "spatial provider configuration differs from the weather field"}
 		thermal = spatial.get("_thermal_field")
 		var has_thermal: bool = config.spatial_wind.get("format") == "openrc-spatial-wind v2"
 		if has_thermal != (thermal != null) \
 				or (thermal != null and (not is_instance_valid(thermal) or thermal.get_script() != ThermalField)):
 			return {ok = false, reason = "thermal weather provider differs from its configuration"}
-		if thermal != null and thermal.configuration() != config.spatial_wind.thermal_field:
+		if thermal != null and var_to_bytes(thermal.configuration()) != var_to_bytes(config.spatial_wind.thermal_field):
 			return {ok = false, reason = "thermal provider configuration differs from the weather field"}
 	elif spatial != null:
 		return {ok = false, reason = "unexpected spatial weather provider"}
@@ -66,6 +76,8 @@ static func provider_identity(session: Node) -> Dictionary:
 	# Rebuild once at this boundary to refuse changed cached values or seeded modes.
 	var rebuilt: Dictionary = WeatherField.build(config)
 	if not rebuilt.ok or var_to_bytes(_field_inputs(field)) != var_to_bytes(_field_inputs(rebuilt.field)) \
+			or (spatial != null and var_to_bytes(_spatial_inputs(spatial)) \
+				!= var_to_bytes(_spatial_inputs(rebuilt.field.get("_spatial")))) \
 			or var_to_bytes(snapshot(field)) != var_to_bytes(snapshot(rebuilt.field)):
 		return {ok = false, reason = "prepared weather values differ from their validated configuration"}
 	return {ok = true, environment = environment, field = field, spatial = spatial, thermal = thermal,
@@ -93,6 +105,7 @@ static func snapshot(field: RefCounted) -> Dictionary:
 	var config: Dictionary = field.configuration()
 	var out := {format = "openrc-nk3-weather-snapshot-v1", kind = "spatial" if field.is_spatial() else "uniform",
 		vertical_atmosphere = field.has_vertical_atmosphere(), has_turbulence = field.has_turbulence(),
+		temperature_k = float((field.get("_atmosphere") as Dictionary).temperature_k),
 		atmosphere = PackedFloat64Array([float(config.get("field_elevation_m", 0.0)),
 			field.air_density(), field.engine_charge_ratio()])}
 	if not field.is_spatial():

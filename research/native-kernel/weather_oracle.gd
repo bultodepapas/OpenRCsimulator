@@ -23,7 +23,7 @@ func _source_hashes() -> Dictionary:
 func _checks() -> void:
 	_report.format = "openrc-nk3-weather-oracle v1"
 	_report.weather = {presets = [], scenarios = [], refusals = {}}
-	for name: String in ["prepare_weather", "weather_component", "air_component"]:
+	for name: String in ["prepare_weather", "weather_component", "air_component", "temperature_component"]:
 		if not _native.has_method(name):
 			_failures.append("native weather component method missing: " + name)
 			return
@@ -44,6 +44,9 @@ func _checks() -> void:
 	var column_ou: Dictionary = WeatherConfig.upgrade_column(WeatherConfig.GENTLE_PRACTICE,
 		{atmosphere_mode = "standard_column", field_elevation_m = 100.0})
 	scenarios.append({id = "column-and-ou", config = column_ou})
+	var warm: Dictionary = WeatherConfig.upgrade_atmosphere(WeatherConfig.defaults(),
+		{atmosphere_mode = "custom", temperature_c = 38.75, field_elevation_m = 725.0})
+	scenarios.append({id = "warm-uniform-atmosphere", config = warm})
 	var spatial_column: Dictionary = WeatherConfig.preset("spatial-realistic-v1")
 	spatial_column.atmosphere_mode = "standard_column"
 	spatial_column.field_elevation_m = 100.0
@@ -177,6 +180,9 @@ func _check_scenario(scenario: Dictionary, random_count: int) -> void:
 		var reference := PackedFloat64Array([field.air_density(down), field.engine_charge_ratio(down)])
 		var native: PackedFloat64Array = _native.air_component(down)
 		_compare("weather_atmosphere", reference, native, [label, down])
+		var temperature: float = float(field.atmosphere(down).get("temperature_k", NAN))
+		_compare("weather_temperature", PackedFloat64Array([temperature]),
+			PackedFloat64Array([_native.temperature_component(down)]), [label, down])
 		_tally("weather", "air_queries")
 
 
@@ -199,6 +205,15 @@ func _check_weather_refusals() -> void:
 	bad = uniform.duplicate(true)
 	bad.vertical_atmosphere = 1
 	cases.wrong_boolean_type = bad
+	bad = uniform.duplicate(true)
+	bad.temperature_k = NAN
+	cases.nonfinite_temperature = bad
+	bad = uniform.duplicate(true)
+	bad.temperature_k = 0.0
+	cases.nonpositive_temperature = bad
+	bad = uniform.duplicate(true)
+	bad.temperature_k = "288.15"
+	cases.wrong_temperature_type = bad
 	bad = spatial.duplicate(true)
 	bad.has_turbulence = true
 	cases.spatial_ou_conflict = bad
@@ -231,6 +246,12 @@ func _check_weather_refusals() -> void:
 		_compare("weather_refusal", PackedFloat64Array([1.0]), PackedFloat64Array([1.0 if clean else 0.0]), name)
 		if not clean:
 			_failures.append("weather refusal failed: " + name)
+	var legacy := uniform.duplicate(true)
+	legacy.erase("temperature_k")
+	var legacy_prepared: Dictionary = _native.prepare_weather(legacy)
+	var legacy_temperature: float = _native.temperature_component(0.0)
+	_compare("weather_legacy_temperature", PackedFloat64Array([1.0, 288.15]),
+		PackedFloat64Array([1.0 if legacy_prepared.get("ok", false) else 0.0, legacy_temperature]))
 
 
 ## Direct provider mutation is attempted only on this disposable session.

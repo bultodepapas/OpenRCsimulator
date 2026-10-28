@@ -593,6 +593,7 @@ bool layout_int(Decoder &dec, const Dictionary &layout, const char *key, int &ou
 
 bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 	m = nk::StageModel();
+	const bool electric_requested = config.has("electric");
 	// Session capabilities whose laws are not ported: the caller keeps the GDScript stage (D6).
 	for (const char *flag : {"retractable", "glow", "coupled", "turbine", "liquid", "finite_fuel", "flaps",
 				"spatial_weather", "turbulence", "vertical_atmosphere", "weather_pending_reset", "not_calm",
@@ -602,7 +603,9 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		}
 		const bool weather_flag = std::string(flag) == "turbulence" || std::string(flag) == "vertical_atmosphere" ||
 			std::string(flag) == "not_calm" || std::string(flag) == "spatial_weather";
-		if (static_cast<bool>(config[flag]) && !(weather_flag && config.has("weather")) && std::string(flag) != "slipstream") {
+		const bool electric_flag = electric_requested && (std::string(flag) == "coupled" || std::string(flag) == "rotor_dynamics");
+		if (static_cast<bool>(config[flag]) && !(weather_flag && config.has("weather")) && !electric_flag &&
+				std::string(flag) != "slipstream" && std::string(flag) != "flaps") {
 			return dec.fail(std::string("unsupported session capability: ") + flag);
 		}
 	}
@@ -614,9 +617,43 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 	}
 	Dictionary prop_geometry = propulsion.duplicate();
 	prop_geometry.erase("slipstream");
+	if (electric_requested) {
+		if (!propulsion.has("kind") || String(propulsion["kind"]) != "electric_prop" ||
+				!static_cast<bool>(config["coupled"]) || !static_cast<bool>(config["rotor_dynamics"]) || !config.has("weather")) {
+			return dec.fail("electric stage requires a coupled electric model and prepared weather");
+		}
+		for (const char *key : {"kind", "motor", "battery", "esc"}) prop_geometry.erase(key);
+		Dictionary snapshot;
+		if (!dec.dict(config, "electric", snapshot, true)) return false;
+		for (const char *part : {"motor", "battery", "esc"}) {
+			Dictionary supplied, actual;
+			if (!dec.dict(snapshot, part, supplied, true) || !dec.dict(propulsion, part, actual, true)) return false;
+			const Array keys = supplied.keys();
+			for (int64_t i = 0; i < keys.size(); ++i) {
+				if (!actual.has(keys[i]) || supplied[keys[i]] != actual[keys[i]]) return dec.fail("electric snapshot differs from the committed model");
+			}
+		}
+		nk::ElectricBinding electric_candidate;
+		const Dictionary prepared = electric_candidate.prepare_electric(snapshot);
+		if (!static_cast<bool>(prepared["ok"])) return dec.fail("invalid prepared electric source");
+		m.electric = true;
+		m.electric_source = electric_candidate.model();
+		std::vector<nk::R> inertia, inverse;
+		if (!dec.vec(config, "inertia", inertia, true, 6) || !dec.vec(config, "inverse", inverse, true, 6)) return false;
+		for (int i = 0; i < 6; ++i) {
+			if (!nk::is_finite(inertia[i]) || !nk::is_finite(inverse[i])) return dec.fail("nonfinite fixed electric inertia");
+			m.inertia[i] = inertia[i]; m.inverse[i] = inverse[i];
+		}
+		if (!model.has("inertia") || config["inertia"] != model["inertia"]) return dec.fail("electric inertia differs from the committed model");
+		const auto expected_inverse = nk::liquid_inertia_inverse(m.inertia);
+		for (int i = 0; i < 6; ++i) {
+			if (m.inverse[i] != expected_inverse[i]) return dec.fail("electric inverse inertia differs from the reference tensor");
+		}
+	}
 	if (!decode_aero(dec, model, m.aero) || !decode_prop(dec, prop_geometry, m.prop) || !decode_gear(dec, gear, m.ground.gear)) {
 		return false;
 	}
+	if (m.aero.flaps.enabled != static_cast<bool>(config["flaps"])) return dec.fail("flap capability and model differ");
 	Dictionary slipstream;
 	if (!dec.dict(propulsion, "slipstream", slipstream, false)) return false;
 	nk::WakeBinding wake_candidate;
@@ -655,10 +692,14 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		return false;
 	}
 	const int wash_count = m.wake.transport ? static_cast<int>(m.wake.pieces.size()) : 0;
-	if (L.rotor_index != wash_count || L.wheel_index != wash_count) {
+	L.battery_size = m.electric_source.kind == nk::ElectricBatteryKind::PackEcm ? 9 + 2 * m.electric_source.pack.branches :
+		(m.electric_source.kind == nk::ElectricBatteryKind::OcvResistance ? 3 : 0);
+	const int source_count = m.electric ? 1 + L.battery_size : 0;
+	if (L.rotor_index != wash_count || L.wheel_index != wash_count + source_count) {
 		return dec.fail("continuous wash layout differs from prepared wake pieces");
 	}
-	if (L.wheel_count < 1 || L.wheel_count > 16 || L.wheel_count != static_cast<int>(m.ground.gear.contacts.size()) ||
+	if (L.wheel_count < 0 || L.wheel_count > 16 || (L.wheel_count == 0 && !m.ground.gear.empty) ||
+			L.wheel_count != static_cast<int>(m.ground.gear.contacts.size()) ||
 			L.anchor_count != L.wheel_count || L.anchors + L.anchor_count * 3 > L.aux_size || L.servo + 2 >= L.aux_size ||
 			L.rpm < 0 || L.rpm >= L.aux_size || L.downwash >= L.aux_size || L.servo < 0 || L.anchors < 0 ||
 			L.wheel_index + L.wheel_count > kMaxContinuousSize) {
@@ -745,6 +786,7 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("weather_component", "position", "time", "aux", "turbulence_index", "dt"),
 			&OpenRCNativeKernel::weather_component);
 		godot::ClassDB::bind_method(D_METHOD("air_component", "down"), &OpenRCNativeKernel::air_component);
+		godot::ClassDB::bind_method(D_METHOD("temperature_component", "down"), &OpenRCNativeKernel::temperature_component);
 		godot::ClassDB::bind_method(D_METHOD("prepare_electric", "snapshot"), &OpenRCNativeKernel::prepare_electric);
 		godot::ClassDB::bind_method(D_METHOD("electric_component", "rpm", "duty", "block", "enabled", "ambient_k", "cooling_mps"),
 			&OpenRCNativeKernel::electric_component);
@@ -784,6 +826,7 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_stage", "config"), &OpenRCNativeKernel::prepare_stage);
 		godot::ClassDB::bind_method(D_METHOD("set_tick_context", "aux", "inputs", "deflections", "time_now"),
 			&OpenRCNativeKernel::set_tick_context);
+		godot::ClassDB::bind_method(D_METHOD("set_power_context", "throttle", "enabled"), &OpenRCNativeKernel::set_power_context);
 		godot::ClassDB::bind_method(D_METHOD("stage", "body", "continuous", "t"), &OpenRCNativeKernel::stage);
 		godot::ClassDB::bind_method(D_METHOD("stage_stats"), &OpenRCNativeKernel::stage_stats);
 		godot::ClassDB::bind_method(D_METHOD("reset_stage_stats", "timing"), &OpenRCNativeKernel::reset_stage_stats);
@@ -905,6 +948,7 @@ public:
 		return weather_.weather_component(position, time, aux, turbulence_index, dt);
 	}
 	PackedFloat64Array air_component(double down) const { return weather_.air_component(down); }
+	double temperature_component(double down) const { return weather_.temperature_component(down); }
 	Dictionary prepare_electric(const Dictionary &snapshot) { return electric_.prepare_electric(snapshot); }
 	Dictionary electric_component(double rpm, double duty, const PackedFloat64Array &block, bool enabled,
 			double ambient_k, double cooling_mps) const {
@@ -1193,6 +1237,7 @@ public:
 			const PackedFloat64Array &deflections, double time_now) {
 		++context_calls_;
 		tick_.ready = false;
+		tick_.power_ready = false;
 		if (!stage_ready_ || aux.size() != stage_.layout.aux_size || !read_deflections(deflections, tick_.deflections)) {
 			return false;
 		}
@@ -1201,6 +1246,14 @@ public:
 		tick_.brake = brake >= 0 && brake < inputs.size() ? inputs[brake] : 0.0;
 		tick_.time_now = time_now;
 		tick_.ready = true;
+		return true;
+	}
+	bool set_power_context(double throttle, bool enabled) {
+		tick_.power_ready = false;
+		if (!stage_ready_ || !tick_.ready || !stage_.electric) return false;
+		tick_.throttle = throttle;
+		tick_.power_enabled = enabled;
+		tick_.power_ready = true;
 		return true;
 	}
 

@@ -264,17 +264,23 @@ inline bool heli_decode_skids(WeatherSnapshotDecoder &dec, const godot::Dictiona
 inline bool heli_decode_tick(WeatherSnapshotDecoder &dec, const godot::Dictionary &src, HeliTickContext &tick) {
 	if (!dec.keys(src, "helicopter tick", {"inputs", "mode", "trainer", "hold", "armed", "ground_start", "spool_start_s", "trim"}) ||
 		src.size() != 8) return dec.fail("invalid helicopter tick context");
-	std::vector<R> inputs;
 	bool trainer, hold, armed, ground_start;
 	R spool_start;
 	godot::String mode;
 	godot::Dictionary trim;
-	if (!dec.packed(src, "inputs", inputs, 4) || !dec.string(src, "mode", mode) || !dec.boolean(src, "trainer", trainer) ||
+	if (!src.has("inputs") || src["inputs"].get_type() != godot::Variant::PACKED_FLOAT64_ARRAY) return dec.fail("invalid helicopter input shape");
+	const godot::PackedFloat64Array inputs = src["inputs"];
+	if (inputs.size() != 4) return dec.fail("invalid helicopter input shape");
+	if (!dec.string(src, "mode", mode) || !dec.boolean(src, "trainer", trainer) ||
 		!dec.boolean(src, "hold", hold) || !dec.boolean(src, "armed", armed) || !dec.boolean(src, "ground_start", ground_start) ||
 		!dec.number(src, "spool_start_s", spool_start) || !dec.dictionary(src, "trim", trim)) return false;
-	if (mode != godot::String("normal") && mode != godot::String("idle_up")) return dec.fail("unsupported helicopter mode");
+	if (mode.is_empty()) return dec.fail("invalid helicopter evaluation arguments");
+	if (mode != godot::String("normal") && mode != godot::String("idle_up")) return dec.fail("requested flight mode has no usable collective/throttle curve");
 	if (!dec.keys(trim, "trim", {"roll_reference_rad", "pitch_reference_rad", "cyclic_forward_bias_rad", "cyclic_right_bias_rad",
-		"tail_collective_bias_rad", "ground_yaw_precomp_tail_bias_rad", "ground_yaw_precomp_collective_rad"})) return false;
+		"tail_collective_bias_rad", "ground_yaw_precomp_tail_bias_rad", "ground_yaw_precomp_collective_rad"})) {
+		dec.error = "invalid electronics context, state, mode or stick layout";
+		return false;
+	}
 	for (int i = 0; i < 4; ++i) tick.inputs[i] = inputs[i];
 	tick.idle_up = mode == godot::String("idle_up"); tick.trainer = trainer; tick.hold = hold;
 	tick.armed = armed; tick.ground_start = ground_start; tick.spool_start_s = spool_start;
@@ -282,9 +288,15 @@ inline bool heli_decode_tick(WeatherSnapshotDecoder &dec, const godot::Dictionar
 		{"cyclic_forward_bias_rad", &tick.trim.cyclic_forward_bias_rad}, {"cyclic_right_bias_rad", &tick.trim.cyclic_right_bias_rad},
 		{"tail_collective_bias_rad", &tick.trim.tail_collective_bias_rad}, {"ground_yaw_precomp_tail_bias_rad", &tick.trim.ground_yaw_precomp_tail_bias_rad},
 		{"ground_yaw_precomp_collective_rad", &tick.trim.ground_yaw_precomp_collective_rad}};
-	for (const HeliField &field : optional) if (trim.has(field.name) && !dec.number(trim, field.name, *field.value)) return false;
+	for (const HeliField &field : optional) {
+		if (!trim.has(field.name)) continue;
+		const godot::Variant value = trim[field.name];
+		if (value.get_type() == godot::Variant::FLOAT) *field.value = static_cast<double>(value);
+		else if (value.get_type() == godot::Variant::INT) *field.value = static_cast<double>(static_cast<int64_t>(value));
+		else return dec.fail("invalid electronics context, state, mode or stick layout");
+	}
 	const bool has_bias = trim.has("ground_yaw_precomp_tail_bias_rad"), has_collective = trim.has("ground_yaw_precomp_collective_rad");
-	if (has_bias != has_collective) return dec.fail("incomplete helicopter ground yaw precompensation");
+	if (has_bias != has_collective) return dec.fail("invalid electronics context, state, mode or stick layout");
 	tick.trim.ground_precomp = has_bias;
 	return true;
 }

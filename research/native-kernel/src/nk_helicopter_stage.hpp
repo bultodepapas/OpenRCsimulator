@@ -19,17 +19,24 @@ struct HeliDriveModel {
 struct HeliDriveResult {
 	bool ok = false;
 	R net_torque = 0.0, shaft_loss = 0.0;
+	const char *message = "";
 };
+
+inline HeliDriveResult heli_drive_failure(const char *message) {
+	HeliDriveResult result;
+	result.message = message;
+	return result;
+}
 
 inline HeliDriveResult heli_drive(const HeliDriveModel &m, R main_speed, R drive_fraction, bool hold, R drive_scale) {
 	if (!heli_inflow_finite({main_speed, drive_fraction, drive_scale}) || main_speed < 0.0
 			|| drive_fraction < 0.0 || drive_fraction > 1.0 || drive_scale < 0.0 || drive_scale > 1.0) {
-		return {};
+		return heli_drive_failure("invalid drive state, command or prepared context");
 	}
 	const R ratio = m.engine_speed_ratio_to_main;
 	const R engine_speed = ratio * main_speed;
 	if (!is_finite(engine_speed)) {
-		return {};
+		return heli_drive_failure("engine shaft speed overflowed");
 	}
 	if (hold) {
 		R held_loss = m.shaft_viscous_loss_nm_per_rad_s * main_speed;
@@ -65,7 +72,7 @@ inline HeliDriveResult heli_drive(const HeliDriveModel &m, R main_speed, R drive
 		net_torque = main_torque - shaft_loss;
 	}
 	if (!heli_inflow_finite({delivered_torque, engine_power, main_torque, main_power, shaft_loss, net_torque})) {
-		return {};
+		return heli_drive_failure("drive output overflowed finite range");
 	}
 	return {true, net_torque, shaft_loss};
 }
@@ -83,25 +90,32 @@ struct HeliCouplingResult {
 	bool ok = false;
 	R spin_acceleration = 0.0;
 	Vec3 body_acceleration{}, reaction{}, rotor_momentum{};
+	const char *message = "";
 };
+
+inline HeliCouplingResult heli_coupling_failure(const char *message) {
+	HeliCouplingResult result;
+	result.message = message;
+	return result;
+}
 
 inline HeliCouplingResult heli_geared_coupling(const Vec3 &rates, const Vec3 &moment,
 		const std::array<R, 6> &inertia, const std::array<R, 6> &inverse, const Vec3 &b, R spin_inertia,
 		R omega, R generalized_torque, R static_friction) {
 	for (const R value : inertia) {
-		if (!is_finite(value)) return {};
+		if (!is_finite(value)) return heli_coupling_failure("invalid geared-coupling state or context");
 	}
 	for (const R value : inverse) {
-		if (!is_finite(value)) return {};
+		if (!is_finite(value)) return heli_coupling_failure("invalid geared-coupling state or context");
 	}
 	if (!heli_inflow_finite({rates[0], rates[1], rates[2], moment[0], moment[1], moment[2], b[0], b[1], b[2],
 			spin_inertia, omega, generalized_torque, static_friction}) || spin_inertia <= 0.0 || omega < 0.0 || static_friction < 0.0) {
-		return {};
+		return heli_coupling_failure("invalid geared-coupling state or context");
 	}
 	const Vec3 inverse_b = heli_inertia_mul(inverse, b);
 	const R denominator = 1.0 - heli_dot3(b, inverse_b) / spin_inertia;
 	if (!is_finite(denominator) || denominator <= 0.0) {
-		return {};
+		return heli_coupling_failure("geared coupling has nonpositive effective carrier inertia");
 	}
 	const Vec3 body_spin_momentum = heli_inertia_mul(inertia, rates);
 	const Vec3 rotor_momentum = {b[0] * omega, b[1] * omega, b[2] * omega};
@@ -114,7 +128,7 @@ inline HeliCouplingResult heli_geared_coupling(const Vec3 &rates, const Vec3 &mo
 	if (omega == 0.0 && generalized_demand <= static_friction) {
 		const R generalized_reaction = -generalized_demand;
 		if (!is_finite(generalized_reaction)) {
-			return {};
+			return heli_coupling_failure("zero-speed shaft reaction is nonfinite");
 		}
 		return {true, 0.0, unreacted_acceleration, {0.0, 0.0, 0.0}, rotor_momentum};
 	}
@@ -124,7 +138,7 @@ inline HeliCouplingResult heli_geared_coupling(const Vec3 &rates, const Vec3 &mo
 	}
 	const R spin_acceleration = (effective_torque - heli_dot3(b, unreacted_acceleration)) / (spin_inertia * denominator);
 	if (!is_finite(spin_acceleration)) {
-		return {};
+		return heli_coupling_failure("geared spin acceleration is nonfinite");
 	}
 	const Vec3 reaction = {b[0] * -spin_acceleration, b[1] * -spin_acceleration, b[2] * -spin_acceleration};
 	const Vec3 body_acceleration = {unreacted_acceleration[0] - inverse_b[0] * spin_acceleration,
@@ -132,7 +146,7 @@ inline HeliCouplingResult heli_geared_coupling(const Vec3 &rates, const Vec3 &mo
 		unreacted_acceleration[2] - inverse_b[2] * spin_acceleration};
 	if (!heli_inflow_finite({reaction[0], reaction[1], reaction[2], body_acceleration[0], body_acceleration[1],
 			body_acceleration[2], total[0], total[1], total[2]})) {
-		return {};
+		return heli_coupling_failure("geared coupling produced a nonfinite result");
 	}
 	return {true, spin_acceleration, body_acceleration, reaction, rotor_momentum};
 }
@@ -222,7 +236,7 @@ inline HeliStageResult heli_stage(const R *body, const R *continuous, int contin
 	if (!is_finite(qnorm) || qnorm <= 1.0e-12) return heli_stage_failure("helicopter stage attitude quaternion is degenerate");
 	const R attitude[4] = {state[6] / qnorm, state[7] / qnorm, state[8] / qnorm, state[9] / qnorm};
 	const HeliControlResult control = heli_trainer_electronics(m.controls, state.data(), sticks, tick.idle_up, tick.trainer, tick.trim);
-	if (!control.ok) return heli_stage_failure("electronics refused input");
+	if (!control.ok) return heli_stage_failure(control.message);
 	const Vec3 velocity_body = {state[3], state[4], state[5]};
 	const Vec3 velocity_ned = q_rotate3(attitude, velocity_body.data());
 	const Vec3 relative_ned = {velocity_ned[0] - wind_ned[0], velocity_ned[1] - wind_ned[1], velocity_ned[2] - wind_ned[2]};
@@ -252,7 +266,7 @@ inline HeliStageResult heli_stage(const R *body, const R *continuous, int contin
 		control.cyclic_forward, control.cyclic_right, control.tail_collective, height, down_axis);
 	if (!aero.ok) return heli_stage_failure("joint aerodynamic stage refused the flight state");
 	const HeliDriveResult drive = heli_drive(m.drive, state[13], control.drive_fraction, tick.hold || !tick.armed, actual_drive_scale);
-	if (!drive.ok) return heli_stage_failure("drive refused the flight state");
+	if (!drive.ok) return heli_stage_failure(drive.message);
 	if (!is_finite(aero.main.torque) || !is_finite(aero.tail.torque)) {
 		return heli_stage_failure("aerodynamic shaft torque is absent or nonfinite");
 	}
@@ -264,7 +278,7 @@ inline HeliStageResult heli_stage(const R *body, const R *continuous, int contin
 	const Vec3 moment = {loads[3], loads[4], loads[5]};
 	const HeliCouplingResult coupling = heli_geared_coupling(rates, moment, m.inertia, m.inertia_inverse, m.coupling_b,
 		m.spin_inertia, state[13], generalized_torque, m.drive.shaft_loss_torque_nm);
-	if (!coupling.ok) return heli_stage_failure("geared coupling refused the flight state");
+	if (!coupling.ok) return heli_stage_failure(coupling.message);
 	// RigidBody.derivative translation and quaternion paths, in reference operation order; the geared solve
 	// replaces its final three angular accelerations just as Flight.evaluate does.
 	const R v0 = state[3], v1 = state[4], v2 = state[5];
