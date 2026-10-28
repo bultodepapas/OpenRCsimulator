@@ -4,6 +4,7 @@ extends RefCounted
 
 const WeatherAdapter := preload("weather_adapter.gd")
 const Turbine := preload("res://physics/turbine.gd")
+const RB := preload("res://physics/rigid_body.gd")
 const MASS_FIELDS := ["reference_mass_kg", "reference_inertia_kgm2", "references", "capacities", "centers", "tensors"]
 const TURBINE_FIELDS := ["max_rpm", "axis", "offset", "intake_offset", "throttle_map", "accel_limit", "decel_limit",
 	"static_thrust", "mass_flow", "fuel_flow", "governor_tau", "installed_factor", "rotor_inertia", "rotor_sense"]
@@ -59,7 +60,11 @@ static func set_context(session: Node, native: Object, aux: PackedFloat64Array,
 		inputs: PackedFloat64Array, at: float) -> bool:
 	var d: Dictionary = session._deflections(aux)
 	var deflections := PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)])
-	var capture: bool = session._should_capture_substep_context(session.sim.state, session.sim.continuous, at)
+	# The first reset can prepare the native stage before a body is committed.
+	# An empty body may compare equal to itself in the owner's preview predicate,
+	# but cannot identify an actual 13-component RK stage.
+	var capture: bool = session.sim.state.size() == RB.SIZE \
+		and session._should_capture_substep_context(session.sim.state, session.sim.continuous, at)
 	return native.set_tick_context(aux, inputs, deflections, at) \
 		and native.set_power_context(session.propulsion_throttle(), session.propulsion_power_enabled()) \
 		and native.set_preview_context(session.sim.state, session.sim.continuous, capture)

@@ -5,6 +5,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export PYTHONDONTWRITEBYTECODE=1
 for test in \
   native-kernel/test_verification.py \
+  native-kernel/test_verification_families.py \
   native-kernel/test_package.py \
   native-kernel/test_devtools.py \
   performance/test_session_baseline.py \

@@ -2,7 +2,7 @@
 # must be absent, every prepare must refuse with a reason and the reference stage must stay installed. With a stale
 # install (a mirrored GDScript source changed since the oracles verified it) native must be refused the same way.
 # With a fresh install the native stage must reproduce the reference runway take-off roll byte for byte for 960 ticks,
-# uninstall cleanly and refuse the P-51. Evidence and method: docs/research/native-kernel/NK-3/README.md.
+# uninstall cleanly and admit the qualified finite-liquid P-51. Evidence and method: docs/research/native-kernel/NK-3/README.md.
 extends SceneTree
 
 const Flight := preload("res://sim/flight_session.gd")
@@ -79,9 +79,9 @@ func test_complete_manifest() -> void:
 		engine_version = engine_version, solver_sha256 = digest,
 		native_receipt = {
 			format = "openrc-native-kernel-receipt", backend = "native", backend_version = NativeStage.BACKEND_VERSION,
-			abi_version = 1, platforms = {"linux": {
+			abi_version = NativeStage.ABI_VERSION, platforms = {"linux": {
 				platform = "linux", architecture = "x86_64", backend = "native",
-				backend_version = NativeStage.BACKEND_VERSION, abi_version = 1, engine_version = engine_version,
+				backend_version = NativeStage.BACKEND_VERSION, abi_version = NativeStage.ABI_VERSION, engine_version = engine_version,
 				binary_sha256 = digest, source_sha256 = digest, lock_sha256 = digest, engine_sha256 = digest,
 				mirrored_sources = {"app/physics/aero.gd": digest},
 			}},
@@ -89,19 +89,20 @@ func test_complete_manifest() -> void:
 		qualification_sources = {
 			"session_probe.gd": digest, "test_native_stage.gd": digest,
 			"test_native_session.gd": digest, "test_native_replay.gd": digest,
+			"test_native_helicopter_session.gd": digest, "test_heli_restore_radio.gd": digest,
 		},
 	}
 	check("complete native package manifest is accepted", NativePackage._complete_manifest(manifest))
 	var json_numbers: Dictionary = manifest.duplicate(true)
-	json_numbers.native_receipt.abi_version = 1.0
-	json_numbers.native_receipt.platforms.linux.abi_version = 1.0
-	check("JSON numeric ABI 1 is accepted", NativePackage._complete_manifest(json_numbers))
+	json_numbers.native_receipt.abi_version = float(NativeStage.ABI_VERSION)
+	json_numbers.native_receipt.platforms.linux.abi_version = float(NativeStage.ABI_VERSION)
+	check("JSON numeric ABI is accepted", NativePackage._complete_manifest(json_numbers))
 
 	for field: String in ["format", "backend", "backend_version"]:
 		var bad: Dictionary = manifest.duplicate(true)
 		bad.native_receipt[field] = "invalid"
 		check("invalid receipt envelope " + field + " is rejected", not NativePackage._complete_manifest(bad))
-	for abi: Variant in [null, false, true, "1", [], 0, 2, 1.5]:
+	for abi: Variant in [null, false, true, "2", [], 0, 1, 2.5]:
 		var bad_envelope: Dictionary = manifest.duplicate(true)
 		bad_envelope.native_receipt.abi_version = abi
 		check("invalid receipt ABI is rejected: " + str(abi), not NativePackage._complete_manifest(bad_envelope))
@@ -157,10 +158,19 @@ func run_all() -> void:
 	var p51_stage: Callable = p51.sim.model.stage
 	var p51_helper := NativeStage.new()
 	var p51_prepared: Dictionary = p51_helper.prepare(p51)
-	check("the P-51 is refused with a reason", not p51_prepared.ok and not str(p51_prepared.reason).is_empty(),
-		str(p51_prepared))
-	check("a refused install leaves the P-51's stage", not p51_helper.install(p51).is_valid()
-		and p51.sim.model.stage == p51_stage)
+	check("P-51 preparation shares the qualified library gate", p51_prepared.ok == prepared.ok, str(p51_prepared))
+	if prepared.ok:
+		check("P-51 installs its finite-liquid native stage", p51_helper.install(p51) == p51_stage)
+		var p51_reference := runway(P51)
+		var matched := true
+		for _tick in 32:
+			matched = advance(p51) and advance(p51_reference) and record(p51) == record(p51_reference) and matched
+		check("P-51 native finite-liquid ticks match", matched)
+		p51_helper.uninstall(p51)
+		p51_reference.free()
+	else:
+		check("unavailable native library leaves P-51 reference intact", not str(p51_prepared.reason).is_empty()
+			and not p51_helper.install(p51).is_valid() and p51.sim.model.stage == p51_stage)
 	p51.free()
 	if not prepared.ok:
 		# Library absent (CI default), unsupported platform, or a stale install: the reference must stay in charge.

@@ -8,6 +8,7 @@
 #include "nk_glow_propeller.hpp"
 #include "nk_glow_feed.hpp"
 #include "nk_glow_source.hpp"
+#include "nk_glow_stage.hpp"
 #include "nk_liquid_mass.hpp"
 
 namespace nk {
@@ -24,6 +25,7 @@ class GlowBinding {
 	bool has_pickup_ = false;
 	GlowFeedModel feed_;
 	std::array<R, 3> pickup_{};
+	GlowStageModel stage_model_;
 
 	static godot::Dictionary failure(const std::string &reason) {
 		godot::Dictionary out;
@@ -66,13 +68,15 @@ public:
 	bool has_pickup() const { return has_pickup_; }
 	const GlowFeedModel &feed() const { return feed_; }
 	const std::array<R, 3> &pickup() const { return pickup_; }
+	const GlowStageModel &stage_model() const { return stage_model_; }
 
 	godot::Dictionary prepare_glow(const godot::Dictionary &snapshot) {
 		ready_ = false;
+		stage_model_.ready = false;
 		ElectricSnapshotDecoder dec;
 		godot::String format, family;
 		godot::Dictionary src, blade, mass;
-		if (!dec.keys(snapshot, "glow", {"format", "source", "blade", "mass", "feed"}) ||
+		if (!dec.keys(snapshot, "glow", {"format", "source", "blade", "mass", "feed", "lifecycle", "store"}) ||
 				!dec.string(snapshot, "format", format) || !dec.dictionary(snapshot, "source", src) ||
 				!dec.dictionary(snapshot, "blade", blade) || !dec.dictionary(snapshot, "mass", mass)) return failure(dec.error);
 		if (format != godot::String("openrc-nk3-glow-component-v1")) return failure("unknown glow component snapshot format");
@@ -169,6 +173,76 @@ public:
 					decoded_feed.tank_size.data(), decoded_feed.density_kg_m3);
 			if ((decoded_feed.idle_drive_pressure_pa + needled).v <= 0.0) return failure("invalid glow feed needled head");
 		}
+		// Optional full-stage extension; the earlier component-only schema stays
+		// valid but cannot supply a prepared joint-stage model.
+		GlowStageModel staged;
+		const bool has_lifecycle = snapshot.has("lifecycle");
+		if (has_lifecycle != snapshot.has("store")) return failure("glow stage requires lifecycle and store together");
+		if (has_lifecycle) {
+			godot::Dictionary lifecycle, thermal, store;
+			GlowLifecycleModel &life = staged.lifecycle;
+			if (!dec.dictionary(snapshot, "lifecycle", lifecycle) || !dec.dictionary(snapshot, "store", store) ||
+					!dec.keys(lifecycle, "lifecycle", {"nominal_mixture", "idle_opening", "idle_offset", "travel_exponent",
+							"throttle_capacity_m3_s", "servo_time_constant_s", "air_time_constant_s", "fuel_transport_time_constant_s",
+							"lean_misfire_zero_ratio", "lean_misfire_start_ratio", "rich_misfire_start_ratio", "rich_misfire_zero_ratio",
+							"temperature_firing_min_k", "temperature_firing_full_k", "temperature_firing_hot_full_k", "temperature_firing_hot_zero_k", "thermal"}) ||
+					!dec.number(lifecycle, "nominal_mixture", life.nominal_mixture) || !dec.number(lifecycle, "idle_opening", life.idle_opening) ||
+					!dec.number(lifecycle, "idle_offset", life.idle_offset) || !dec.number(lifecycle, "travel_exponent", life.travel_exponent) ||
+					!dec.number(lifecycle, "throttle_capacity_m3_s", life.throttle_capacity_m3_s) ||
+					!dec.number(lifecycle, "servo_time_constant_s", life.servo_time_constant_s) ||
+					!dec.number(lifecycle, "air_time_constant_s", life.air_time_constant_s) ||
+					!dec.number(lifecycle, "fuel_transport_time_constant_s", life.fuel_transport_time_constant_s) ||
+					!dec.number(lifecycle, "lean_misfire_zero_ratio", life.lean_misfire_zero_ratio) ||
+					!dec.number(lifecycle, "lean_misfire_start_ratio", life.lean_misfire_start_ratio) ||
+					!dec.number(lifecycle, "rich_misfire_start_ratio", life.rich_misfire_start_ratio) ||
+					!dec.number(lifecycle, "rich_misfire_zero_ratio", life.rich_misfire_zero_ratio) ||
+					!dec.number(lifecycle, "temperature_firing_min_k", life.temperature_firing_min_k) ||
+					!dec.number(lifecycle, "temperature_firing_full_k", life.temperature_firing_full_k) ||
+					!dec.number(lifecycle, "temperature_firing_hot_full_k", life.temperature_firing_hot_full_k) ||
+					!dec.number(lifecycle, "temperature_firing_hot_zero_k", life.temperature_firing_hot_zero_k) ||
+					!dec.dictionary(lifecycle, "thermal", thermal) ||
+					!dec.keys(thermal, "thermal", {"heat_capacity_j_k", "head_heat_fraction", "cooling_base_w_k",
+							"cooling_airflow_w_s_m_k", "premix_evaporation_j_kg", "evaporation_head_fraction"}) ||
+					!dec.number(thermal, "heat_capacity_j_k", life.thermal.heat_capacity_j_k) ||
+					!dec.number(thermal, "head_heat_fraction", life.thermal.head_heat_fraction) ||
+					!dec.number(thermal, "cooling_base_w_k", life.thermal.cooling_base_w_k) ||
+					!dec.number(thermal, "cooling_airflow_w_s_m_k", life.thermal.cooling_airflow_w_s_m_k) ||
+					!dec.number(thermal, "premix_evaporation_j_kg", life.thermal.premix_evaporation_j_kg) ||
+					!dec.number(thermal, "evaporation_head_fraction", life.thermal.evaporation_head_fraction) ||
+					!dec.keys(store, "store", {"main_capacity_kg", "unusable_kg", "has_line", "line_capacity_kg"}) ||
+					!dec.number(store, "main_capacity_kg", staged.main_capacity_kg) ||
+					!dec.number(store, "unusable_kg", staged.unusable_kg) ||
+					!dec.number(store, "line_capacity_kg", staged.line_capacity_kg)) return failure(dec.error);
+			if (!store.has("has_line") || store["has_line"].get_type() != godot::Variant::BOOL) return failure("missing glow line capability");
+			staged.has_line = static_cast<bool>(store["has_line"]);
+			const auto &t = life.thermal;
+			if (life.nominal_mixture.v <= 0.0 || life.idle_opening.v <= 0.0 || life.idle_opening.v >= 1.0 ||
+					life.idle_offset.v < 0.0 || life.idle_offset.v > 1.0 || life.travel_exponent.v <= 0.0 ||
+					life.throttle_capacity_m3_s.v <= 0.0 || life.servo_time_constant_s.v <= 0.0 || life.air_time_constant_s.v <= 0.0 ||
+					life.fuel_transport_time_constant_s.v <= 0.0 || life.lean_misfire_zero_ratio.v < 0.0 ||
+					life.lean_misfire_zero_ratio.v >= life.lean_misfire_start_ratio.v || life.lean_misfire_start_ratio.v >= 1.0 ||
+					life.rich_misfire_start_ratio.v <= 1.0 || life.rich_misfire_start_ratio.v >= life.rich_misfire_zero_ratio.v ||
+					life.temperature_firing_min_k.v <= 0.0 || life.temperature_firing_min_k.v >= life.temperature_firing_full_k.v ||
+					life.temperature_firing_full_k.v >= life.temperature_firing_hot_full_k.v ||
+					life.temperature_firing_hot_full_k.v >= life.temperature_firing_hot_zero_k.v ||
+					t.heat_capacity_j_k.v <= 0.0 || t.head_heat_fraction.v < 0.0 || t.head_heat_fraction.v > 1.0 ||
+					t.cooling_base_w_k.v < 0.0 || t.cooling_airflow_w_s_m_k.v < 0.0 || t.premix_evaporation_j_kg.v < 0.0 ||
+					t.evaporation_head_fraction.v < 0.0 || t.evaporation_head_fraction.v > 1.0 ||
+					staged.main_capacity_kg.v <= 0.0 || staged.unusable_kg.v < 0.0 || staged.unusable_kg.v >= staged.main_capacity_kg.v ||
+					(staged.has_line ? staged.line_capacity_kg.v <= 0.0 : staged.line_capacity_kg.v != 0.0) ||
+					decoded_mass.resources.size() != static_cast<size_t>(staged.has_line ? 2 : 1) ||
+					decoded_mass.resources[0].capacity_kg.v < staged.main_capacity_kg.v ||
+					(staged.has_line && decoded_mass.resources[1].capacity_kg.v < staged.line_capacity_kg.v)) return failure("invalid glow lifecycle or store");
+			life.source = source;
+			staged.blade = decoded_blade;
+			staged.mass = decoded_mass;
+			staged.has_feed = decoded_has_feed;
+			staged.feed = decoded_feed;
+			staged.has_pickup = decoded_has_pickup;
+			staged.pickup = decoded_pickup;
+			staged.ready = true;
+		}
+		stage_model_ = std::move(staged);
 		source_ = std::move(source);
 		blade_ = decoded_blade;
 		mass_ = std::move(decoded_mass);

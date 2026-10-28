@@ -53,11 +53,17 @@ def evidence(kind):
         "engine": ENGINE_VERSION, "engine_sha256_before": ENGINE, "engine_sha256_after": ENGINE,
         "checked_run": {"ok": True, "complete": True, "reason": "passed", "process_exit": 0,
                         "counts": {"error": 0}, "missing_required_text": []},
-        "build_receipt": {"binary_sha256": BINARY}, "binary_sha256_before": BINARY, "binary_sha256_after": BINARY,
+        "build_receipt": {"binary_sha256": BINARY, "mutant": False, "cxxflags_appended": [],
+                          "source_sha256": builder.source_digest(), "lock_sha256": builder.sha256_file(builder.locked.LOCK_PATH),
+                          "builder_sha256": builder.sha256_file(Path(builder.__file__)),
+                          "backend_version": builder.BACKEND_VERSION, "abi_version": builder.ABI_VERSION,
+                          "reference_sources_sha256": copy.deepcopy(SOURCES)},
+        "binary_sha256_before": BINARY, "binary_sha256_after": BINARY,
+        "reference_sources_before": copy.deepcopy(SOURCES), "reference_sources_after": copy.deepcopy(SOURCES),
         "sources": {name.replace("app/", "res://", 1): digest for name, digest in SOURCES.items()},
         "sources_after": {name.replace("app/", "res://", 1): digest for name, digest in SOURCES.items()},
         "harness_sources": {str(path.relative_to(builder.ROOT)): builder.sha256_file(path) for path in
-                            [*HERE.glob("*.gd"), HERE / "run.py", builder.ROOT / "app/sim/native_stage.gd",
+                            [*HERE.glob("*.gd"), HERE / "run.py", HERE / "build.py", builder.ROOT / "app/sim/native_stage.gd",
                              builder.ROOT / "tools/godot/run_checked.py"]},
         "components": components,
         "total": {"compared": compared, "identical": compared, "mismatched": 0},
@@ -78,8 +84,9 @@ def evidence(kind):
         "checkpoint": {"reference": {"restored": True, "resumed": True, "native_after_restore": False},
                        "native": {"restored": True, "resumed": True, "native_after_restore": True},
                        "passes": [{"ticks_reference": 1200, "ticks_native": 1200, "mismatches": 0} for _ in range(2)]},
-        "fallback": {"aircraft": "p51d-mustang-120", "refused": True, "reason": "unsupported session capability",
-                     "reference_ticks": 960, "ticks": 960, "stage_after_attempt": "evaluate", "fingerprint_equal": True},
+        "fallback": {"aircraft": "jensen-das-ugly-stik-60", "rejected_configuration": "weather_pending_reset",
+                     "refused": True, "reason": "unsupported session capability",
+                     "reference_ticks": 960, "ticks": 960, "stage_after_attempt": "_wheel_evaluate", "fingerprint_equal": True},
     }
 
 
@@ -222,8 +229,10 @@ class PromotionEvidence(unittest.TestCase):
                 self.rejected("trajectory", data)
 
     def test_fallback_phase_requires_refusal_and_full_matching_reference(self):
-        for field, value in (("aircraft", "wrong"), ("refused", False), ("reason", ""), ("reason", " "),
+        for field, value in (("aircraft", "wrong"), ("rejected_configuration", "weather_ready"),
+                             ("refused", False), ("reason", ""), ("reason", " "),
                              ("reference_ticks", 959), ("ticks", 959), ("stage_after_attempt", "stage"),
+                             ("stage_after_attempt", "evaluate"),
                              ("fingerprint_equal", False)):
             with self.subTest(field=field):
                 data = evidence("trajectory")
@@ -277,11 +286,53 @@ class PromotionEvidence(unittest.TestCase):
             self.rejected("trajectory", data)
         for field, value in (("binary_sha256_before", "d" * 64), ("binary_sha256_after", "d" * 64),
                              ("sources_after", {}), ("sources", {}), ("harness_sources", {}),
+                             ("reference_sources_before", {}), ("reference_sources_after", {}),
                              ("run_valid", False), ("engine", "different engine"),
                              ("engine_sha256_before", "d" * 64), ("engine_sha256_after", "d" * 64)):
             data = evidence("trajectory")
             data[field] = value
             self.rejected("trajectory", data)
+        data = evidence("trajectory")
+        data["harness_sources"]["research/native-kernel/glow_oracle.gd"] = "stale"
+        self.rejected("trajectory", data)
+        data = evidence("trajectory")
+        data["sources"]["res://physics/math3d.gd"] = "stale"
+        data["sources_after"] = copy.deepcopy(data["sources"])
+        self.rejected("trajectory", data)
+
+    def test_release_and_negative_control_require_current_build_identities(self):
+        for field in ("source_sha256", "lock_sha256", "builder_sha256", "backend_version", "abi_version",
+                      "reference_sources_sha256"):
+            data = evidence("stage_oracle")
+            data["build_receipt"][field] = "stale"
+            self.rejected("stage_oracle", data)
+        mutant_path = self.root / "lib/libopenrc_native_kernel_mutant.so"
+        mutant_path.parent.mkdir()
+        mutant_path.write_bytes(b"intentional mutation")
+        mutant_sha = builder.sha256_file(mutant_path)
+        data = evidence("stage_oracle")
+        data["build_receipt"].update(binary_sha256=mutant_sha, mutant=True, cxxflags_appended=["-DNK_MUTATION=1"])
+        data["binary_sha256_before"] = data["binary_sha256_after"] = mutant_sha
+        data["checked_run"].update(ok=False, reason="process_exit", process_exit=1)
+        data["verdict"] = "fail"
+        data["components"]["stage_bytes"]["identical"] -= 1
+        data["total"]["identical"] -= 1
+        data["total"]["mismatched"] = 1
+        self.write(data, "run-1_mutant.json")
+        self.assertEqual(self.find("negative_control")["verdict"], "fail")
+        for change in (lambda row: row["checked_run"].update(complete=False),
+                       lambda row: row["checked_run"].update(counts={"error": 1}),
+                       lambda row: row["checked_run"].update(missing_required_text=["missing"]),
+                       lambda row: row["build_receipt"].update(source_sha256="stale"),
+                       lambda row: row["build_receipt"].update(mutant=False),
+                       lambda row: row["build_receipt"].update(cxxflags_appended=[]),
+                       lambda row: row["reference_sources_after"].clear(),
+                       lambda row: row["components"]["stage_bytes"].update(identical=12000)):
+            invalid = copy.deepcopy(data)
+            change(invalid)
+            self.write(invalid, "run-1_mutant.json")
+            with self.assertRaises(SystemExit):
+                self.find("negative_control")
 
     def test_malformed_newer_reports_do_not_hide_older_valid_evidence(self):
         self.write(evidence("trajectory"), "run-1.json")

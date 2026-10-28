@@ -7,7 +7,8 @@ const MANIFEST_PATH := "res://native/kernel/package.json"
 const MANIFEST_FORMAT := "openrc-native-kernel-package v1"
 const ARTIFACT_FORMAT := "openrc-native-kernel-package-artifact v1"
 const RELATIVE_DIRECTORY := "native/kernel"
-const DIAGNOSTICS := ["session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd"]
+const DIAGNOSTICS := ["session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd",
+	"test_native_helicopter_session.gd", "test_heli_restore_radio.gd"]
 static var _checked := false
 static var _result: Dictionary = {}
 
@@ -73,8 +74,8 @@ static func _complete_manifest(manifest: Dictionary) -> bool:
 
 static func _backend(receipt: Dictionary) -> bool:
 	var abi: Variant = receipt.get("abi_version")
-	return receipt.get("backend") == "native" and receipt.get("backend_version") == "openrc-native-kernel-stage-v1" \
-		and (typeof(abi) == TYPE_INT or typeof(abi) == TYPE_FLOAT) and abi == 1
+	return receipt.get("backend") == "native" and receipt.get("backend_version") == "openrc-native-kernel-stage-v2" \
+		and (typeof(abi) == TYPE_INT or typeof(abi) == TYPE_FLOAT) and abi == 2
 
 
 static func _sha256(value: Variant) -> bool:

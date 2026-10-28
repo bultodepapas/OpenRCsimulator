@@ -12,6 +12,8 @@ const GroundStart := preload("res://physics/ground_start.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const WindConfig := preload("res://physics/wind_config.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
+const LiquidFlight := preload("res://sim/liquid_fuel_flight.gd")
+const HullContact := preload("res://physics/hull_contact.gd")
 
 const AIRCRAFT_PATH := "res://data/aircraft/sebart_avanti_s_a200.json"
 const AVANTI_ID := "sebart-avanti-s-a200-p100rx"
@@ -187,8 +189,38 @@ func _landing_case(tick_rate: int, impact_sink: float) -> Dictionary:
 	return result
 
 
+func _invalid_stage_drag() -> void:
+	var created := _session()
+	_check("invalid-drag regression has a runway session", created.ok)
+	var session: Node = created.session
+	if not created.ok:
+		session.free()
+		return
+	session.soft_hull_contacts = true
+	var body: PackedFloat64Array = session.sim.state.duplicate()
+	body[RB.POS + 2] += 0.5
+	var properties: Dictionary = LiquidFlight.properties(session, session.sim.continuous, true)
+	var hull: Dictionary = HullContact.loads_at_properties(body, session._hull_contact, properties)
+	_check("invalid spatial drag is exercised with nonempty hull loads", hull.get("ok", false)
+		and hull.get("loads", PackedFloat64Array()).size() == 6)
+	var air: Dictionary = session.air_data(body, 0.0)
+	air.spatial_air_law = "invalid-point-regression"
+	air.ambient_delta_body_at = func(_point: PackedFloat64Array) -> PackedFloat64Array:
+		return PackedFloat64Array([NAN])
+	var invalid: Dictionary = session._ground_evaluation(body, session.sim.aux, session.sim.continuous, air, properties)
+	_check("invalid spatial drag rejects the stage before adding hull loads", not invalid.get("ok", true))
+	session.soft_hull_contacts = false
+	body[RB.POS + 2] = -100.0
+	body[RB.RATE] = 1.0e308
+	air = {v_air = PackedFloat64Array([1.0e308, 0.0, 0.0])}
+	invalid = session._ground_evaluation(body, session.sim.aux, session.sim.continuous, air, properties)
+	_check("finite inputs overflowing retractable drag reject the stage", not invalid.get("ok", true))
+	session.free()
+
+
 func _initialize() -> void:
 	var saved_tick := Engine.physics_ticks_per_second
+	_invalid_stage_drag()
 	var airborne := FlightSession.new()
 	airborne.setup(AIRCRAFT_PATH)
 	root.add_child(airborne)

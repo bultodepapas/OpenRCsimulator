@@ -224,8 +224,9 @@ func _check_stage_refusals(session: Node) -> void:
 		flagged[flag] = true
 		cases["session_" + flag] = flagged
 	var tilted := base.duplicate(true)
-	tilted.model.propulsion.axis = PackedFloat64Array([0.999, 0.0, 0.0447])
-	cases["prop_axis"] = tilted
+	# Tilted axes are now qualified; malformed geometry must still refuse.
+	tilted.model.propulsion.axis = PackedFloat64Array([0.999, 0.0447])
+	cases["prop_axis_shape"] = tilted
 	var electric := base.duplicate(true)
 	electric.model.propulsion.kind = "electric_prop"
 	cases["prop_electric_kind"] = electric

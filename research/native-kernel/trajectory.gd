@@ -2,13 +2,12 @@
 ## the unmodified reference session, through the real kernel tick (Simulation.step), session input and accepted-step
 ## callbacks, as research/performance/session_probe.gd drives them (detached session, no render/audio/OS input).
 ## Per tick it compares the bytes of state, aux, continuous, inputs, last_loads and modes, and session_probe's
-## SHA-256 fingerprint; then fault paths, a mid-run checkpoint/restore, the D6 fallback (P-51) and paired per-tick
+## SHA-256 fingerprint; then fault paths, a mid-run checkpoint/restore, the D6 refusal of a pending-weather snapshot and paired per-tick
 ## cost with an attribution of what stays GDScript.
 ## Usage: godot --headless --path app --script <abs>/trajectory.gd -- --extension=<abs> --output=<new json>
 ##        [--ticks=4800] [--pairs=3] [--warmup=600] [--samples=4800] [--timing-cases=runway,trim,maneuver]
 extends "stage_oracle.gd"
 
-const P51 := "p51d-mustang-120"
 const CASES := ["trim", "runway", "maneuver", "takeoff", "lake"]
 const MIN_TRAJECTORY_TICKS := 960
 
@@ -392,18 +391,20 @@ static func _fallback_result_ok(runs: Array) -> bool:
 		and baseline.fingerprint == attempted.fingerprint
 
 
-## A refused aircraft keeps the reference stage: the install refuses, and the session's trajectory is byte-identical
+## An uncommitted weather snapshot keeps the reference stage: install refuses, and the session stays byte-identical
 ## to a session where nothing was attempted.
 func _check_fallback() -> void:
 	var runs: Array = []
 	for attempt: bool in [false, true]:
-		var session := _build_session(P51, "trim", true)
+		var session := _build_session("jensen-das-ugly-stik-60", "trim", true)
 		if session == null:
 			return
 		session.read_raw = _reader(session, "maneuver")
 		var install := {ok = false, error = "not attempted"}
 		if attempt:
-			install = Adapter.install(session, _native)
+			var pending: Dictionary = Adapter.config_for(session).duplicate(true)
+			pending.weather_pending_reset = true
+			install = Adapter.install(session, _native, pending)
 		var digest := HashingContext.new()
 		digest.start(HashingContext.HASH_SHA256)
 		_hash_tick(digest, session)
@@ -418,11 +419,11 @@ func _check_fallback() -> void:
 		session.free()
 	if not _fallback_result_ok(runs):
 		_failures.append("fallback did not refuse and retain the reference for 960 matching ticks")
-	_report.fallback = {aircraft = P51, refused = not runs[1].install.ok, reason = runs[1].install.error,
+	_report.fallback = {aircraft = "jensen-das-ugly-stik-60", rejected_configuration = "weather_pending_reset", refused = not runs[1].install.ok, reason = runs[1].install.error,
 		reference_ticks = runs[0].ticks, ticks = runs[1].ticks, stage_after_attempt = runs[1].stage,
 		fingerprint_equal = runs[0].fingerprint == runs[1].fingerprint}
 	_compare("fallback_reference_kept", PackedFloat64Array([1.0, 1.0]),
-		PackedFloat64Array([0.0 if runs[1].install.ok else 1.0, 1.0 if runs[0].fingerprint == runs[1].fingerprint else 0.0]), P51)
+		PackedFloat64Array([0.0 if runs[1].install.ok else 1.0, 1.0 if runs[0].fingerprint == runs[1].fingerprint else 0.0]), "weather_pending_reset")
 
 
 # ---------------------------------------------------------------- per-tick cost

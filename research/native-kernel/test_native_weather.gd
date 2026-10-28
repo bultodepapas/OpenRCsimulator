@@ -3,8 +3,8 @@
 ## and -- --extension=<absolute research .gdextension>.
 extends SceneTree
 
-const NativeWeather := preload("native_weather.gd")
-const WeatherAdapter := preload("weather_adapter.gd")
+const NativeWeather := preload("res://sim/native/native_weather.gd")
+const WeatherAdapter := preload("res://sim/native/weather_adapter.gd")
 const Session := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const WeatherConfig := preload("res://physics/wind_config.gd")
@@ -347,6 +347,14 @@ func _check_fallback_dt() -> void:
 	_check(not _matches(session, prepared.identity), "fallback-dt: changed engine tick rate")
 	Engine.physics_ticks_per_second = original_rate
 	_check(_matches(session, prepared.identity), "fallback-dt: engine tick rate restored")
+	# Simulation commits this same effective dt on its first reset. The native
+	# guard must continue matching without recomputing weather or rebinding.
+	session.sim._fixed_dt = prepared.identity.dt
+	_check(_matches(session, prepared.identity), "fallback-dt: first reset commits the same dt")
+	session.sim._fixed_dt = prepared.identity.dt * 1.25
+	_check(not _matches(session, prepared.identity), "fallback-dt: different committed dt refused")
+	session.sim._fixed_dt = prepared.identity.dt
+	_check(_matches(session, prepared.identity), "fallback-dt: committed dt restored")
 	session.free()
 
 

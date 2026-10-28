@@ -289,18 +289,33 @@ def private_environment(out: Path) -> list[str]:
                      for kind in ("DATA", "CONFIG", "CACHE")]]
 
 
+def snapshot_excludes(app: Path, path: Path) -> bool:
+    """Omit the root installation and captures, not source directories named native."""
+    return path == app / "native" or path.name == "captures"
+
+
+def snapshot_directories(app: Path, parent: Path, dirs: list[str]) -> list[str]:
+    """Apply the copy filter before rejecting retained directory symlinks."""
+    kept = sorted(name for name in dirs if not snapshot_excludes(app, parent / name))
+    for name in kept:
+        path = parent / name
+        if path.is_symlink():
+            raise ValueError(f"private copies do not support directory symlinks: {path}")
+    return kept
+
+
 def snapshot(app: Path, out: Path, godot: Path) -> Path:
     """Private copy including imported resources; import only the copy after excluding native installs."""
     validate_paths(app, out)
+    app = app.resolve()
     for directory, dirs, _ in os.walk(app):
-        dirs[:] = [name for name in dirs if name not in {"native", "captures"}]
-        for name in dirs:
-            if (Path(directory) / name).is_symlink():
-                raise ValueError(f"private copies do not support directory symlinks: {Path(directory) / name}")
+        dirs[:] = snapshot_directories(app, Path(directory), dirs)
     if shutil.disk_usage(out).free < 4 * 1024**3:
         raise ValueError("at least 4 GiB free is required for the private app copy")
     target = out / "app"
-    shutil.copytree(app, target, ignore=shutil.ignore_patterns("native", "captures"))
+    def ignore(directory: str, names: list[str]) -> list[str]:
+        return [name for name in names if snapshot_excludes(app, Path(directory) / name)]
+    shutil.copytree(app, target, ignore=ignore)
     (target / ".godot/extension_list.cfg").unlink(missing_ok=True)
     return target
 
@@ -314,12 +329,14 @@ def import_snapshot(target: Path, out: Path, godot: Path) -> None:
 
 
 def app_hashes(app: Path) -> dict:
+    app = app.resolve()
     hashes = {}
     for directory, dirs, files in os.walk(app):
-        dirs[:] = sorted(name for name in dirs if name not in {".godot", "native", "captures"})
+        parent = Path(directory)
+        dirs[:] = [name for name in snapshot_directories(app, parent, dirs) if name != ".godot"]
         for name in sorted(files):
-            path = Path(directory) / name
-            if name not in {".godot", "native", "captures"} and path.is_file():
+            path = parent / name
+            if name != ".godot" and not snapshot_excludes(app, path) and path.is_file():
                 hashes[str(path.relative_to(app))] = digest(path)
     return hashes
 

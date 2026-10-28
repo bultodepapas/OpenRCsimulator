@@ -9,6 +9,8 @@ const SCRIPTS := {
 	"stage": "test_native_stage.gd",
 	"lifecycle": "test_native_session.gd",
 	"replay": "test_native_replay.gd",
+	"helicopter": "test_native_helicopter_session.gd",
+	"helicopter-radio": "test_heli_restore_radio.gd",
 }
 const SESSION_OPTIONS := ["output", "aircraft", "case", "warmup-ticks", "sample-ticks", "observer", "physics-backend"]
 
@@ -35,7 +37,7 @@ func start(args: PackedStringArray) -> void:
 		options[pair[0]] = pair[1]
 	_mode = str(options.get("native-qualification", ""))
 	if not SCRIPTS.has(_mode):
-		_fail("native-qualification must be session, stage, lifecycle or replay")
+		_fail("native-qualification must be session, stage, lifecycle, replay, helicopter or helicopter-radio")
 		return
 	for key: String in options:
 		if key not in ["quick-flight", "native-qualification"] and (_mode != "session" or key not in SESSION_OPTIONS):

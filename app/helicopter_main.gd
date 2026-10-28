@@ -88,6 +88,9 @@ func smoke_capabilities() -> Dictionary:
 
 func _ready() -> void:
  var args: Dictionary=_user_args()
+ var requested_backend: String=str(args.get("physics-backend","native"))
+ if requested_backend not in ["native","gdscript_reference"]:
+  _refuse("--physics-backend must be native or gdscript_reference"); return
  landscape_id=str(args.get("landscape",landscape_id))
  if not Landscapes.has(landscape_id): _refuse("Unknown landscape: "+landscape_id); return
  if field_path==FieldLoader.DEFAULT_PATH: field_path=Landscapes.entry(landscape_id).field_path
@@ -121,6 +124,8 @@ func _ready() -> void:
  add_child(_magnifier)
  if not camera_preferences.is_empty(): CameraSettings.apply_at_start(_rig,camera_preferences)
  session=Session.new()
+ if not session.setup_stage_backend(requested_backend):
+  _refuse("physics backend refused: "+session.stage_backend_error); return
  session.external_controller_selection=external_controller_selection
  session.physics_enabled=not args.has("trace") and not args.has("capture")
  var selected: Dictionary=Catalog.entry(aircraft_id)
@@ -141,6 +146,7 @@ func _ready() -> void:
  session.resetting.connect(_on_session_resetting)
  session.sim.stepped.connect(_on_sim_stepped)
  if not session.reset(): _refuse(session.start_error); return
+ print("physics backend: ",JSON.stringify(session.stage_backend_status()))
  Builder.align_main_rotor_radius(_airplane,session.aircraft.context.main_model.rotor_radius_m)
  Builder.align_tail_rotor_radius(_airplane,session.aircraft.context.tail_model.tail_rotor_radius_m)
  _crash_presentation=CrashPresentation.new()

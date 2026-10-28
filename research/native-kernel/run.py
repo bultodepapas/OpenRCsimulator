@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import configparser
 import hashlib
+import importlib.util
 import json
 import subprocess
 import sys
@@ -28,8 +29,10 @@ HARNESS_OPTIONS = {
     "weather_oracle.gd": set(), "electric_oracle.gd": set(),
     "wake_oracle.gd": set(), "weather_stage_oracle.gd": {"ticks", "include-spatial"}, "glow_oracle.gd": set(),
     "wake_spatial_oracle.gd": set(),
-    "helicopter_oracle.gd": set(), "liquid_oracle.gd": set(), "gear_oracle.gd": set(),
-    "electric_stage_oracle.gd": {"ticks"}, "liquid_stage_oracle.gd": {"ticks"},
+    "helicopter_oracle.gd": set(), "helicopter_stage_oracle.gd": {"ticks"}, "liquid_oracle.gd": set(), "gear_oracle.gd": set(),
+    "electric_stage_oracle.gd": {"ticks"}, "liquid_stage_oracle.gd": {"ticks"}, "glow_stage_oracle.gd": {"ticks"},
+    "prescribed_stage_oracle.gd": {"ticks"},
+    "legacy_ground_oracle.gd": {"ticks"},
     "trajectory.gd": {"ticks", "pairs", "warmup", "samples", "timing-cases", "skip-timing", "only", "repeats"},
     "fleet.gd": {"warmup", "samples", "aircraft", "weather", "soft-hull"},
 }
@@ -37,6 +40,20 @@ HARNESS_OPTIONS = {
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def reference_source_paths() -> list[str]:
+    """Use the current build roster, not a narrower oracle-specific list."""
+    spec = importlib.util.spec_from_file_location("openrc_native_kernel_build_identity", HERE / "build.py")
+    if spec is None or spec.loader is None:
+        raise ValueError("Cannot load native build source roster")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    paths = module.REFERENCE_SOURCES
+    if not isinstance(paths, list) or not paths or any(not isinstance(name, str) or not name.startswith("app/")
+                                                      for name in paths) or len(set(paths)) != len(paths):
+        raise ValueError("Invalid or repeated native build source paths")
+    return paths
 
 
 def checked_run_matches(report: dict, mutant: bool) -> bool:
@@ -129,15 +146,25 @@ def main() -> int:
     engine_before = sha256(args.godot)
     if binary_before != receipt["binary_sha256"]:
         raise SystemExit("The descriptor's binary differs from its build receipt; rebuild/reinstall first.")
+    paths = reference_source_paths()
+    reference_sources_before = {name: sha256(ROOT / name) for name in paths}
+    built_sources = receipt.get("reference_sources_sha256", receipt.get("mirrored_sources", {}))
+    if reference_sources_before != built_sources:
+        raise SystemExit("Current mirrored sources differ from the selected build receipt; rebuild/reinstall first.")
     harness_paths = [HERE / name for name in ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "trajectory.gd",
-                                              "fleet.gd", "propeller_oracle.gd", "weather_adapter.gd", "run.py")]
+                                              "fleet.gd", "propeller_oracle.gd", "build.py", "run.py")]
+    native_helpers = ROOT / "app/sim/native"
+    harness_paths += [native_helpers / name for name in (
+        "stage_config.gd", "weather_adapter.gd", "native_weather.gd", "native_configuration.gd",
+        "electric_stage_adapter.gd", "liquid_stage_adapter.gd", "glow_stage_adapter.gd", "helicopter_stage_adapter.gd",
+        "prescribed_stage_adapter.gd")]
     harness_paths += [HERE / args.script] if HERE / args.script not in harness_paths else []
     if args.script == "wake_spatial_oracle.gd":
         harness_paths += [HERE / "weather_oracle.gd", HERE / "wake_oracle.gd"]
-    if args.script == "liquid_stage_oracle.gd":
-        harness_paths += [HERE / "liquid_stage_adapter.gd"]
+    if args.script == "helicopter_stage_oracle.gd":
+        harness_paths += [HERE / "helicopter_oracle.gd"]
     if args.script == "electric_stage_oracle.gd":
-        harness_paths += [HERE / "electric_stage_adapter.gd", HERE / "electric_oracle.gd"]
+        harness_paths += [HERE / "electric_oracle.gd"]
     harness_paths += [ROOT / "app/sim/native_stage.gd", ROOT / "tools/godot/run_checked.py"]
     harness_sources = {str(path.relative_to(ROOT)): sha256(path) for path in harness_paths}
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
@@ -146,7 +173,8 @@ def main() -> int:
             "weather_oracle.gd": "weather", "electric_oracle.gd": "electric",
             "wake_oracle.gd": "wake", "weather_stage_oracle.gd": "weather-stage",
             "glow_oracle.gd": "glow", "wake_spatial_oracle.gd": "wake-spatial",
-            "liquid_stage_oracle.gd": "liquid-stage", "liquid_oracle.gd": "liquid", "gear_oracle.gd": "gear", "helicopter_oracle.gd": "helicopter", "electric_stage_oracle.gd": "electric-stage"}[args.script]
+            "glow_stage_oracle.gd": "glow-stage", "liquid_stage_oracle.gd": "liquid-stage", "liquid_oracle.gd": "liquid", "gear_oracle.gd": "gear", "helicopter_stage_oracle.gd": "helicopter-stage", "helicopter_oracle.gd": "helicopter", "electric_stage_oracle.gd": "electric-stage",
+            "prescribed_stage_oracle.gd": "prescribed-stage", "legacy_ground_oracle.gd": "legacy-ground"}[args.script]
     output = TOOL_ROOT / f"{stem}{variant}-{stamp}.json"
     marker = "NK3_ORACLE verdict=fail" if args.mutant else "NK3_ORACLE verdict=pass"
     checks = TOOL_ROOT / "checks"
@@ -170,11 +198,14 @@ def main() -> int:
     results["engine_sha256_before"] = engine_before
     results["engine_sha256_after"] = sha256(args.godot)
     results["harness_sources"] = harness_sources
+    results["reference_sources_before"] = reference_sources_before
+    results["reference_sources_after"] = {name: sha256(ROOT / name) for name in paths}
     results["sources_after"] = {name: sha256(ROOT / "app" / name.removeprefix("res://"))
                                 for name in results["sources"]}
     results["checked_run"] = checked
     unchanged = (results["binary_sha256_after"] == binary_before and results["engine_sha256_after"] == engine_before
                  and results["sources_after"] == results["sources"]
+                 and results["reference_sources_after"] == reference_sources_before
                  and all(sha256(ROOT / name) == digest for name, digest in harness_sources.items()))
     run_ok = checked_run_matches(checked, args.mutant) and completed.returncode == (1 if args.mutant else 0)
     results["run_valid"] = unchanged and run_ok

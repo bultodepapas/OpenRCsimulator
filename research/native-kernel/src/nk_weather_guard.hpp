@@ -369,13 +369,18 @@ public:
 		const Variant fixed = sim->get(p_fixed_dt_);
 		const Variant aux = sim->get(p_aux_);
 		if (pending.get_type() != Variant::BOOL || static_cast<bool>(pending) != helicopter_ || fixed.get_type() != Variant::FLOAT ||
-				!same_bits(static_cast<double>(fixed), fixed_dt_) || aux.get_type() != Variant::PACKED_FLOAT64_ARRAY ||
+				aux.get_type() != Variant::PACKED_FLOAT64_ARRAY ||
 				godot::PackedFloat64Array(aux).size() != aux_size_) return false;
+		const double live_fixed_dt = static_cast<double>(fixed);
+		// First reset commits the same effective fallback dt into the simulation.
+		// This is the only permitted change to a captured unset raw clock.
+		const bool captured_raw_clock = same_bits(live_fixed_dt, fixed_dt_);
+		if (!captured_raw_clock && !(engine_id_ != 0 && same_bits(live_fixed_dt, dt_))) return false;
 		if (!helicopter_) {
 			const Variant index = session->get(p_turbulence_index_);
 			if (index.get_type() != Variant::INT || static_cast<int64_t>(index) != turbulence_aux_index_) return false;
 		}
-		if (engine_id_ != 0) {
+		if (engine_id_ != 0 && captured_raw_clock) {
 			Object *engine = godot::ObjectDB::get_instance(engine_id_);
 			if (!engine) return false;
 			const Variant rate = engine->get(p_physics_rate_);

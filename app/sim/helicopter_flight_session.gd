@@ -21,6 +21,8 @@ const RcInput = preload("res://input/rc_input.gd")
 const RcCalibration = preload("res://input/rc_calibration.gd")
 const WeatherField = preload("res://physics/wind_field.gd")
 const SimEnvironment = preload("res://sim/environment.gd")
+const NativeStage = preload("res://sim/native_stage.gd")
+const NativeWeather = preload("res://sim/native/native_weather.gd")
 const GroundSurfaces = preload("res://physics/ground_surfaces.gd")
 const Terrain = preload("res://physics/ground_terrain.gd")
 signal resetting
@@ -84,6 +86,148 @@ var _trim: Dictionary = {}
 var _ready_to_fly: bool = false
 var _stage_failure: String = ""
 const CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v4"
+const NATIVE_CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v5"
+var _stage_backend_requested: String = NativeStage.BACKEND_REFERENCE
+var _backend_selection_locked: bool = false
+var _native_stage: RefCounted = null
+var _native_previous_pre_tick := Callable()
+var stage_backend_error: String = ""
+var _native_reset_active: bool = false
+var _native_reset_committed: bool = false
+
+
+## Technical sessions retain the reference by default. The application may
+## select the native stage before committing its aircraft configuration.
+func setup_stage_backend(mode: String) -> bool:
+ if _native_transition_reentry(): return false
+ if _backend_selection_locked or mode not in [NativeStage.BACKEND_REFERENCE,NativeStage.BACKEND_NATIVE]:
+  stage_backend_error="stage backend must be native or gdscript_reference and selected before setup"
+  return false
+ _stage_backend_requested=mode
+ stage_backend_error=""
+ return true
+
+
+func stage_backend_identity() -> Dictionary:
+ return _native_stage.backend_identity() if _native_stage!=null and _native_stage.owns_stage(self) else NativeStage.reference_identity()
+
+
+func stage_backend_status() -> Dictionary:
+ return {requested=_stage_backend_requested,identity=stage_backend_identity(),reason=stage_backend_error}
+
+
+func _detach_stage_backend() -> void:
+ if _native_stage!=null:
+  _native_stage.restore_reference_callback(self)
+  if sim.model.pre_tick==Callable(self,"_kernel_pre_step"):
+   sim.model.pre_tick=_native_previous_pre_tick
+ _native_stage=null
+ _native_previous_pre_tick=Callable()
+
+
+func _stage_backend_pending() -> void:
+ if _stage_backend_requested==NativeStage.BACKEND_NATIVE:
+  _detach_stage_backend()
+  stage_backend_error="configuration changed; reset required"
+
+
+func _native_transition_reentry() -> bool:
+ if not _native_reset_active: return false
+ sim.note_reset_publication_reentry()
+ return true
+
+
+## Kernel publication guards the vehicle and physical frame. The session also
+## owns drive, controls and source configuration, which observers may inspect
+## but cannot change while a committed reset or restore is being published.
+const _NATIVE_PUBLICATION_FIELDS := ["aircraft","aircraft_path","_hover","_trim","commands","raw",
+ "flight_mode","trainer_enabled","zero_drive_hold","power","start_choice","_start","_field",
+ "environment","ground_surfaces","_weather","_collision_world","_impact_geometry","_ground_start",
+ "startup_collective","shaft_phase","_phase_omega","crash","_ready_to_fly",
+ "_controller_cut_held","_controller_lost","_native_stage","_native_previous_pre_tick",
+ "_stage_backend_requested","_backend_selection_locked"]
+
+
+func _publish_native_transition() -> void:
+ var saved: Dictionary={}
+ for field: String in _NATIVE_PUBLICATION_FIELDS: saved[field]=Sim._guard_copy(get(field))
+ var provider: RefCounted=_weather
+ var weather_fields: Array=NativeWeather.FIELD_VALUES+["_spatial"]
+ var weather_values: Dictionary={}
+ for field: String in weather_fields: weather_values[field]=Sim._guard_copy(provider.get(field))
+ var environment_values: Dictionary={}
+ for field: String in ["turbulence","lake","road","gravity"]:
+  environment_values[field]=Sim._guard_copy(environment.get(field))
+ resetting.emit()
+ var changed: bool=false
+ for field: String in _NATIVE_PUBLICATION_FIELDS:
+  if not Sim._guard_values_equal(get(field),saved[field]):
+   set(field,Sim._guard_copy(saved[field]))
+   changed=true
+ for field: String in weather_fields:
+  if not Sim._guard_values_equal(provider.get(field),weather_values[field]):
+   provider.set(field,Sim._guard_copy(weather_values[field]))
+   changed=true
+ for field: String in environment_values:
+  if not Sim._guard_values_equal(environment.get(field),environment_values[field]):
+   environment.set(field,Sim._guard_copy(environment_values[field]))
+   changed=true
+ if changed: sim.note_reset_publication_reentry()
+
+
+func _publish_native_restore() -> void:
+ if radio.connected and radio.is_rate_throttle(): radio.set_rate_throttle_for_start(commands.throttle)
+ if external_controller_selection and radio.connected:
+  radio.require_neutral(true)
+  pause_reason="Checkpoint restored. Release controls and review collective before continuing."
+ _publish_native_transition()
+
+
+func _restore_native_guard_after_refusal() -> void:
+ if _native_stage==null or not _ready_to_fly: return
+ if not _native_stage.owns_stage(self):
+  stage_backend_error="native evaluator ownership changed; reset required"
+ elif not _native_stage.configuration_matches(self) and not _native_stage.restore_configuration_guard(self):
+  stage_backend_error="native prepared configuration changed; reset required"
+
+
+## Called only after the reference reset has committed its complete context.
+func _prepare_stage_backend(time_now: float) -> void:
+ _detach_stage_backend()
+ stage_backend_error=""
+ if _stage_backend_requested!=NativeStage.BACKEND_NATIVE or not _ready_to_fly: return
+ var previous: Callable=sim.model.pre_tick
+ _native_previous_pre_tick=previous
+ sim.model.pre_tick=Callable(self,"_kernel_pre_step")
+ var candidate := NativeStage.new()
+ var prepared: Dictionary=candidate.prepare(self)
+ if not prepared.get("ok",false):
+  stage_backend_error=str(prepared.get("reason",prepared.get("error","native stage refused")))
+  sim.model.pre_tick=previous
+  _native_previous_pre_tick=Callable()
+  return
+ _native_stage=candidate
+ if not candidate.install(self).is_valid():
+  stage_backend_error=candidate.reason
+  _detach_stage_backend()
+  return
+ if not candidate.tick_context(self,sim.aux,sim.inputs,time_now):
+  stage_backend_error="native helicopter tick context refused"
+  _detach_stage_backend()
+
+
+## Tick controls and lifecycle are sampled once; native RK stages query only
+## their prepared weather and the immutable state handed over at this boundary.
+func _kernel_pre_step(aux: PackedFloat64Array,inputs: PackedFloat64Array,dt: float) -> PackedFloat64Array:
+ if _native_stage==null or not _native_stage.configuration_matches(self):
+  stage_backend_error="native prepared configuration changed; reset required"
+  return PackedFloat64Array()
+ var next: Variant=_native_previous_pre_tick.call(aux,inputs,dt) if _native_previous_pre_tick.is_valid() else aux
+ if not next is PackedFloat64Array or next.size()!=aux.size(): return PackedFloat64Array()
+ if not _native_stage.tick_context(self,next,inputs,sim.time()):
+  stage_backend_error="native helicopter tick context refused"
+  return PackedFloat64Array()
+ return next
 
 func _init() -> void:
  sim.name="Simulation"
@@ -99,10 +243,15 @@ func _init() -> void:
  vehicle.step_policy=StepAdapter.step
  vehicle.block_aux=func(c: PackedFloat64Array,_a: PackedFloat64Array) -> PackedFloat64Array: return PackedFloat64Array([c[0]*60.0/(2.0*PI)])
  if not sim.set_model(vehicle): push_error("Cannot install the rotorcraft vehicle model")
- sim.faulted.connect(func(reason: String) -> void: pause_reason=reason+(" · "+_stage_failure if not _stage_failure.is_empty() else ""))
+ sim.faulted.connect(func(reason: String) -> void:
+  if _native_stage!=null:
+   var native_failure: String=_native_stage.last_failure()
+   if not native_failure.is_empty(): _stage_failure=native_failure
+  pause_reason=reason+(" · "+_stage_failure if not _stage_failure.is_empty() else ""))
  sim.stepped.connect(_on_stepped)
 
 func setup(path: String=aircraft_path,selected_id: String="") -> bool:
+ if _native_transition_reentry(): return false
  if sim.tick>0:
   start_error="Aircraft configuration changes require a new helicopter flight."
   pause_reason=start_error
@@ -121,6 +270,8 @@ func setup(path: String=aircraft_path,selected_id: String="") -> bool:
   start_error="Helicopter contact geometry could not be prepared."
   pause_reason=start_error
   return false
+ _stage_backend_pending()
+ _backend_selection_locked=true
  aircraft_path=path
  aircraft=loaded
  _impact_geometry=impact_geometry
@@ -135,6 +286,7 @@ func setup(path: String=aircraft_path,selected_id: String="") -> bool:
  return true
 
 func set_field(field: Dictionary) -> bool:
+ if _native_transition_reentry(): return false
  if sim.tick>0:
   surface_error="Field changes require a new helicopter flight."
   return false
@@ -179,6 +331,7 @@ func set_field(field: Dictionary) -> bool:
   surface_error="Field surface table is invalid."
   return false
  var changed: bool=ground_surfaces.to_byte_array()!=built.rects.to_byte_array() or _start.to_byte_array()!=candidate_start.to_byte_array() or _field.get("rotorcraft_pad",{})!=field.get("rotorcraft_pad",{})
+ if changed: _stage_backend_pending()
  ground_surfaces=built.rects
  _field=field.duplicate(true)
  _start=candidate_start
@@ -190,6 +343,7 @@ func set_field(field: Dictionary) -> bool:
  return true
 
 func setup_weather(settings: Variant) -> bool:
+ if _native_transition_reentry(): return false
  var result: Dictionary=WeatherField.build(settings)
  if result.ok and result.field.is_spatial():
   weather_error="Spatial weather is not qualified for rotorcraft. Choose a uniform weather preset."
@@ -213,10 +367,12 @@ func setup_weather(settings: Variant) -> bool:
  return true
 
 func set_start_altitude(altitude: float) -> void:
+ if _native_transition_reentry(): return
  if sim.tick>0 or not is_finite(altitude) or altitude<=.3: return
  var next_start: PackedFloat64Array=_start.duplicate()
  next_start[2]=-altitude
  if next_start.to_byte_array()==_start.to_byte_array(): return
+ _stage_backend_pending()
  _start=next_start
  if _ready_to_fly:
   _ready_to_fly=false
@@ -224,6 +380,7 @@ func set_start_altitude(altitude: float) -> void:
   pause_reason="Start altitude changed; reset helicopter before continuing."
 
 func set_start_choice(choice: String) -> bool:
+ if _native_transition_reentry(): return false
  if sim.tick>0:
   start_error="Start selection changes require a new helicopter flight."
   return false
@@ -231,6 +388,7 @@ func set_start_choice(choice: String) -> bool:
   start_error="Unknown helicopter start; choose ground or airborne."
   return false
  var selected: String="ground" if choice in ["ground","runway"] else "airborne"
+ if selected!=start_choice: _stage_backend_pending()
  if selected!=start_choice and _ready_to_fly:
   _ready_to_fly=false
   sim.set_paused(true)
@@ -238,9 +396,48 @@ func set_start_choice(choice: String) -> bool:
  start_choice=selected
  return true
 
+const _NATIVE_RESET_FIELDS := ["_ready_to_fly","_stage_failure","_hover","_trim","commands","raw",
+ "flight_mode","trainer_enabled","zero_drive_hold","power","pending_mode","shaft_phase","_phase_omega",
+ "crash","_ground_start","startup_collective","calibration","_native_stage","_native_previous_pre_tick",
+ "stage_backend_error","pause_reason"]
+
+
 func reset() -> bool:
- cancel_calibration()
- resetting.emit()
+ if _native_transition_reentry(): return false
+ if _stage_backend_requested!=NativeStage.BACKEND_NATIVE:
+  return _reset_impl(false)
+ var kernel: Dictionary=sim._capture_endpoint_guard()
+ var owner: Dictionary={}
+ for field: String in _NATIVE_RESET_FIELDS: owner[field]=Sim._guard_copy(get(field))
+ # The installed native guard binds the original trim dictionary by identity.
+ # Reset replaces it with a new solve; a refused reset must restore that owner.
+ var prior_trim: Dictionary=_trim
+ var prior_model: RefCounted=sim.model
+ var prior_identity: Dictionary=prior_model.identity
+ var prior_events: Array[Dictionary]=prior_model.events
+ _native_reset_active=true
+ _native_reset_committed=false
+ var accepted: bool=_reset_impl(true)
+ if not accepted and not _native_reset_committed:
+  var refusal: String=start_error
+  sim._endpoint_guard_unchanged(kernel)
+  # Kernel rollback restores detached values. Reattach the original untouched
+  # containers so the prepared native guard still owns the same model roots.
+  if sim.model==prior_model:
+   if Sim._guard_values_equal(prior_identity,sim.model.identity): sim.model.identity=prior_identity
+   if Sim._guard_values_equal(prior_events,sim.model.events): sim.model.events=prior_events
+  for field: String in _NATIVE_RESET_FIELDS:
+   set(field,prior_trim if field=="_trim" else Sim._guard_copy(owner[field]))
+  start_error=refusal
+  _restore_native_guard_after_refusal()
+ _native_reset_active=false
+ _native_reset_committed=false
+ return accepted
+
+
+func _reset_impl(transactional: bool) -> bool:
+ _cancel_calibration_internal()
+ if not transactional: resetting.emit()
  _ready_to_fly=false
  _stage_failure=""
  if not aircraft.ok: return false
@@ -301,8 +498,26 @@ func reset() -> bool:
  sim.model.continuous_size=Flight.STATE_SIZE-13+(8 if start_choice=="ground" else 0)
  sim.continuous=solved.state.slice(13)
  sim.aux=PackedFloat64Array([solved.state[13]*60.0/(2.0*PI)])
- _ready_to_fly=sim.reset(solved.state.slice(0,13))
- start_error="" if _ready_to_fly else sim.fault_reason+(" · "+_stage_failure if not _stage_failure.is_empty() else "")
+ var reset_failure: String=""
+ if transactional:
+  # The accepted reset is evaluated by the existing source stage, then the
+  # native helper is installed against the committed 6- or 14-state layout.
+  _detach_stage_backend()
+  var prepared: Dictionary=sim.prepare_reset(solved.state.slice(0,13))
+  if prepared.get("ok",false):
+   _ready_to_fly=sim.commit_prepared_reset(prepared,Callable(self,"_publish_native_transition"))
+   _native_reset_committed=_ready_to_fly
+   if not _ready_to_fly: reset_failure="prepared helicopter reset was refused"
+  else:
+   _ready_to_fly=false
+   reset_failure=str(prepared.get("message","helicopter reset preparation failed"))
+ else:
+  _ready_to_fly=sim.reset(solved.state.slice(0,13))
+ if _ready_to_fly and transactional and not sim.reset_observer_fault.is_empty():
+  _ready_to_fly=false
+  reset_failure=sim.reset_observer_fault
+ if _ready_to_fly and transactional: _prepare_stage_backend(0.0)
+ start_error="" if _ready_to_fly else (reset_failure if not reset_failure.is_empty() else sim.fault_reason)+( " · "+_stage_failure if not _stage_failure.is_empty() else "")
  pause_reason=start_error
  sim.process_mode=Node.PROCESS_MODE_INHERIT if physics_enabled else Node.PROCESS_MODE_DISABLED
  sim.set_paused(not holds.is_empty() or not _ready_to_fly)
@@ -416,11 +631,13 @@ func _on_stepped(_tick: int,_t: float,body: PackedFloat64Array,_loads: PackedFlo
   sim.set_paused(true)
 
 func set_collision_world(world: Dictionary) -> bool:
+ if _native_transition_reentry(): return false
  if sim.tick>0: return false
  if not world.is_empty():
   if not CollisionWorld._world_header_is_valid(world): return false
   for proxy: Dictionary in world.proxies:
    if not CollisionWorld._proxy_is_valid(proxy): return false
+ if world!=_collision_world or _ready_to_fly: _stage_backend_pending()
  _collision_world=world.duplicate(true)
  if _ready_to_fly:
   _ready_to_fly=false
@@ -461,8 +678,12 @@ func resume() -> void:
   pause_reason=""
   sim.set_paused(false)
 func cancel_calibration() -> void:
+ if _native_transition_reentry(): return
+ _cancel_calibration_internal()
+func _cancel_calibration_internal() -> void:
  if calibration!=null: calibration=null; pause_reason="calibration cancelled"
 func start_calibration() -> bool:
+ if _native_transition_reentry(): return false
  if not radio.connected or radio.profile.get("kind","")!="radio": return false
  calibration=RcCalibration.new(radio.profile)
  radio.set_auxiliary_enabled(false)
@@ -470,6 +691,7 @@ func start_calibration() -> bool:
  pause_reason="calibrating radio"
  return true
 func advance_calibration() -> void:
+ if _native_transition_reentry(): return
  if calibration!=null and calibration.advance(radio.axes):
   if external_controller_selection and persist_controller_profile.is_valid():
    var result: Dictionary=persist_controller_profile.call(calibration.profile)
@@ -485,6 +707,7 @@ func controller_profile_rejection(profile: Dictionary) -> String:
  return "Choose a stick-rate or calibrated radio profile for helicopter collective." if profile.get("throttle_mode","")=="trigger_absolute" else ""
 
 func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_initial_start: bool=false) -> bool:
+ if _native_transition_reentry(): return false
  if id<0:
   calibration=null
   radio.disconnect_device()
@@ -513,6 +736,7 @@ func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_in
  return true
 
 func controller_disconnected() -> void:
+ if _native_transition_reentry(): return
  pending_mode=""
  radio.disconnect_device()
  calibration=null
@@ -521,6 +745,7 @@ func controller_disconnected() -> void:
  pause_reason="Controller lost. Select controls and review collective before continuing."
 
 func controller_focus_lost() -> void:
+ if _native_transition_reentry(): return
  pending_mode=""
  if external_controller_selection and radio.connected:
   radio.set_auxiliary_enabled(false)
@@ -546,6 +771,7 @@ func collective_pitch(mode: String="") -> float:
  return float(curve.value)*model.linkage.collective_rad_per_unit if curve.ok else NAN
 
 func toggle_motor_arm() -> bool:
+ if _native_transition_reentry(): return false
  if power.armed:
   power.armed=false
   zero_drive_hold=true
@@ -565,6 +791,7 @@ func toggle_motor_arm() -> bool:
  return true
 
 func set_drive_hold(enabled: bool) -> bool:
+ if _native_transition_reentry(): return false
  if enabled:
   zero_drive_hold=true
   pending_mode=""
@@ -586,10 +813,12 @@ func set_drive_hold(enabled: bool) -> bool:
 
 # The standard cut control always enters a latched hold; releasing it never starts a motor.
 func set_controller_cut(enabled: bool) -> void:
+ if _native_transition_reentry(): return
  _controller_cut_held=enabled
  if enabled: set_drive_hold(true)
 
 func request_flight_mode() -> bool:
+ if _native_transition_reentry(): return false
  var next: String="idle_up" if flight_mode=="normal" else "normal"
  var old_pitch: float=collective_pitch()
  var new_pitch: float=collective_pitch(next)
@@ -617,8 +846,12 @@ func telemetry() -> Dictionary:
  var out: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind_at(sim.time(),state.slice(0,RB.SIZE)),false,PackedFloat64Array(),_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,sim.time()))
  return out
 func trace_meta() -> Dictionary:
- return {aircraft_id=aircraft.id,aircraft_sha256=aircraft.input_identity.sha256,vehicle="rotorcraft",law="experimental-rotorcraft-v2",lifecycle_law=Lifecycle.LAW,power_at_record_start=power.duplicate(),control_reference=_trim.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}),continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator"+(",skid0_z_n,skid0_z_e,skid1_z_n,skid1_z_e,skid2_z_n,skid2_z_e,skid3_z_n,skid3_z_e" if start_choice=="ground" else ""),qualification=aircraft.qualification,weather=weather_configuration()}
+ var metadata: Dictionary={aircraft_id=aircraft.id,aircraft_sha256=aircraft.input_identity.sha256,vehicle="rotorcraft",law="experimental-rotorcraft-v2",lifecycle_law=Lifecycle.LAW,power_at_record_start=power.duplicate(),control_reference=_trim.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}),continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator"+(",skid0_z_n,skid0_z_e,skid1_z_n,skid1_z_e,skid2_z_n,skid2_z_e,skid3_z_n,skid3_z_e" if start_choice=="ground" else ""),qualification=aircraft.qualification,weather=weather_configuration()}
+ var backend: Dictionary=stage_backend_identity()
+ if backend.backend==NativeStage.BACKEND_NATIVE: metadata.stage_backend=backend
+ return metadata
 func checkpoint() -> Dictionary:
+ if _native_stage!=null and not _native_stage.configuration_matches(self): return {}
  if not _ready_to_fly or not aircraft.get("ok",false) or not crash.is_empty() \
  or not Terrain.is_valid_surface_table(ground_surfaces) or _start.size()!=3:
   return {}
@@ -627,7 +860,12 @@ func checkpoint() -> Dictionary:
  var saved_simulation: Dictionary=sim.checkpoint()
  if saved_simulation.is_empty() or not Lifecycle.valid(power,sim.time()) or (not power.armed and not zero_drive_hold) or not _simulation_configuration_matches(saved_simulation) \
  or not _checkpoint_flight_state_is_valid(saved_simulation,commands,flight_mode,trainer_enabled,zero_drive_hold,power): return {}
- return {format=CHECKPOINT_FORMAT,aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=saved_simulation,commands=commands.duplicate(),trim=_trim.duplicate(),ground_surfaces=ground_surfaces.duplicate(),start_position=_start.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold,power=power.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}).duplicate(true),shaft_phase=shaft_phase.duplicate(),collision_world_identity=str(_collision_world.get("identity",""))}
+ var result: Dictionary={format=CHECKPOINT_FORMAT,aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=saved_simulation,commands=commands.duplicate(),trim=_trim.duplicate(),ground_surfaces=ground_surfaces.duplicate(),start_position=_start.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold,power=power.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}).duplicate(true),shaft_phase=shaft_phase.duplicate(),collision_world_identity=str(_collision_world.get("identity",""))}
+ var backend: Dictionary=stage_backend_identity()
+ if backend.backend==NativeStage.BACKEND_NATIVE:
+  result.format=NATIVE_CHECKPOINT_FORMAT
+  result.stage_backend=backend
+ return result
 
 func _simulation_configuration_matches(saved: Dictionary) -> bool:
  if not aircraft.get("ok",false) or not saved.has_all(["mass","gravity","inertia","aux","continuous"]): return false
@@ -658,10 +896,35 @@ func _checkpoint_flight_state_is_valid(saved: Dictionary,saved_commands: Diction
  return evaluated.ok
 
 func restore_checkpoint(candidate: Variant) -> Dictionary:
+ if _native_transition_reentry(): return {ok=false,errors=["helicopter checkpoint transition is already active"]}
+ if _stage_backend_requested==NativeStage.BACKEND_NATIVE:
+  _native_reset_active=true
+  var result: Dictionary=_restore_checkpoint_impl(candidate,true)
+  _native_reset_active=false
+  if not result.get("ok",false): _restore_native_guard_after_refusal()
+  return result
+ return _restore_checkpoint_impl(candidate,false)
+
+
+func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Dictionary:
  if not _ready_to_fly:
   return {ok=false,errors=["Reset the selected start before restoring a helicopter checkpoint."]}
  if not candidate is Dictionary:
   return {ok=false,errors=["malformed helicopter checkpoint"]}
+ if _native_stage!=null and not _native_stage.configuration_matches(self):
+  return {ok=false,errors=["native helicopter configuration changed; reset required"]}
+ var recorded_backend: Dictionary=NativeStage.reference_identity()
+ if candidate.get("format")==NATIVE_CHECKPOINT_FORMAT:
+  if candidate.size()!=17 or not candidate.get("stage_backend") is Dictionary or candidate.stage_backend.get("backend")!=NativeStage.BACKEND_NATIVE:
+   return {ok=false,errors=["malformed native helicopter checkpoint"]}
+  recorded_backend=candidate.stage_backend.duplicate(true)
+  candidate=candidate.duplicate(true)
+  candidate.erase("stage_backend")
+  candidate.format=CHECKPOINT_FORMAT
+ elif candidate.has("stage_backend"):
+  return {ok=false,errors=["unexpected helicopter checkpoint backend"]}
+ if recorded_backend!=stage_backend_identity():
+  return {ok=false,errors=["helicopter checkpoint stage backend differs from this session"]}
  if candidate.get("format") in ["openrc-helicopter-checkpoint v1","openrc-helicopter-checkpoint v2","openrc-helicopter-checkpoint v3"]:
   return {ok=false,errors=["Helicopter checkpoint v1/v2/v3 lacks the current contact boundary; regenerate with v4"]}
  if candidate.get("format")!=CHECKPOINT_FORMAT or candidate.size()!=16 or not candidate.has_all(["format","aircraft_sha256","weather","simulation","commands","trim","ground_surfaces","start_position","flight_mode","trainer_enabled","zero_drive_hold","power","start_choice","pad","shaft_phase","collision_world_identity"]):
@@ -697,8 +960,58 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
   return {ok=false,errors=["disarmed checkpoint must retain hold"]}
  if not _checkpoint_flight_state_is_valid(saved,candidate.commands,candidate.flight_mode,candidate.trainer_enabled,candidate.zero_drive_hold,candidate.power):
   return {ok=false,errors=["saved commands or flight state are outside the rotorcraft domain"]}
+ if _native_stage!=null:
+  # Preflight the restored tick before publishing any owner/kernel changes.
+  # On refusal, reestablish the old native context and leave the session intact.
+  var previous: Dictionary={mode=flight_mode,trainer=trainer_enabled,hold=zero_drive_hold,power=power}
+  flight_mode=candidate.flight_mode
+  trainer_enabled=candidate.trainer_enabled
+  zero_drive_hold=candidate.zero_drive_hold
+  power=candidate.power
+  var context_ok: bool=_native_stage.tick_context(self,saved.aux,saved.inputs,float(saved.tick)*float(saved.dt))
+  flight_mode=previous.mode
+  trainer_enabled=previous.trainer
+  zero_drive_hold=previous.hold
+  power=previous.power
+  if not context_ok:
+   _native_stage.tick_context(self,sim.aux,sim.inputs,sim.time())
+   return {ok=false,errors=["native helicopter checkpoint tick context refused"]}
+ if transactional:
+  # The kernel may reject its revalidation; stage the owner so its accepted
+  # notification sees the restored controls, and roll back on refusal.
+  var owner: Dictionary={}
+  for field: String in _NATIVE_RESET_FIELDS: owner[field]=Sim._guard_copy(get(field))
+  var prior_trim: Dictionary=_trim
+  var old_start_error: String=start_error
+  commands=candidate.commands.duplicate()
+  flight_mode=candidate.flight_mode
+  trainer_enabled=candidate.trainer_enabled
+  zero_drive_hold=candidate.zero_drive_hold
+  power=candidate.power.duplicate()
+  pending_mode=""
+  shaft_phase=candidate.shaft_phase.duplicate()
+  _phase_omega=PackedFloat64Array([saved.continuous[0]*aircraft.context.main_model.rotation_sense,saved.continuous[0]*aircraft.context.tail_model.tail_to_main_speed_ratio*aircraft.context.tail_model.rotation_sense])
+  crash={}
+  _ready_to_fly=true
+  start_error=""
+  _stage_failure=""
+  pause_reason=""
+  if not sim.restore_checkpoint(saved,Callable(self,"_publish_native_restore")):
+   for field: String in _NATIVE_RESET_FIELDS:
+    set(field,prior_trim if field=="_trim" else Sim._guard_copy(owner[field]))
+   start_error=old_start_error
+   if _native_stage!=null: _native_stage.tick_context(self,sim.aux,sim.inputs,sim.time())
+   return {ok=false,errors=["simulation restore refused"]}
+  if not sim.reset_observer_fault.is_empty():
+   _ready_to_fly=false
+   start_error=sim.reset_observer_fault
+   pause_reason=start_error
+   return {ok=false,errors=[start_error]}
+  return {ok=true,errors=[]}
  # Simulation restoration revalidates its candidate; emit only after the state commit succeeds.
- if not sim.restore_checkpoint(candidate.simulation): return {ok=false,errors=["simulation restore refused"]}
+ if not sim.restore_checkpoint(candidate.simulation):
+  if _native_stage!=null: _native_stage.tick_context(self,sim.aux,sim.inputs,sim.time())
+  return {ok=false,errors=["simulation restore refused"]}
  commands=candidate.commands.duplicate()
  # As in reset(): the stick-rate integrator must hold the restored collective, or the first live tick reverts it.
  if radio.connected and radio.is_rate_throttle(): radio.set_rate_throttle_for_start(commands.throttle)

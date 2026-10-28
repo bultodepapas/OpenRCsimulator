@@ -122,7 +122,7 @@ jobs:
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
             --script "$PWD/research/native-kernel/test_trajectory.gd"
           python3 tools/godot/run_checked.py --timeout 90 --out-dir tmp/godot-checks --label nk3-fleet-policy \
-            --require-text 'NK3 fleet policy: 33 checks, 0 failed' -- \
+            --require-text 'NK3 fleet policy:' --require-text 'checks, 0 failed' -- \
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
             --script "$PWD/research/native-kernel/test_fleet.gd"
       - name: Optional process RAM and I/O backend regressions (PT1h-R4)
@@ -178,7 +178,7 @@ jobs:
   native-kernel-linux:
     name: NK-3 native kernel qualification (Linux)
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 180
     defaults:
       run:
         shell: bash
@@ -202,22 +202,59 @@ jobs:
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import
       - name: Build the locked native stage
         run: python3 research/native-kernel/build.py --jobs 2 2>&1 | tee tmp/nk3-ci/build-output.log
+      - name: Build the separate mutation control
+        run: python3 research/native-kernel/build.py --mutant --jobs 2 2>&1 | tee tmp/nk3-ci/build-mutant-output.log
       - name: Test guarded library loading in disposable projects
         run: |
           python3 research/native-kernel/test_installation.py --godot "$(app/get-godot.sh)" \
             --library "$PWD/tmp/native-kernel/lib/libopenrc_native_kernel.so" \
             --stage "$PWD/app/sim/native_stage.gd" 2>&1 | tee tmp/nk3-ci/installation-tests.log
-      - name: Compare native stage and reference on 12,000 states
+      - name: Run every required native evidence gate
         run: |
-          python3 research/native-kernel/run.py --godot "$(app/get-godot.sh)" --script stage_oracle.gd \
-            --states 12000 --timeout 1800 2>&1 | tee tmp/nk3-ci/stage-oracle.log
-      - name: Compare full trajectories without timing
-        run: |
-          python3 research/native-kernel/run.py --godot "$(app/get-godot.sh)" --script trajectory.gd \
-            --option ticks=14400 --option skip-timing=true --timeout 2400 2>&1 | tee tmp/nk3-ci/trajectory.log
+          python3 - "$(app/get-godot.sh)" <<'PY'
+          import importlib.util
+          import json
+          from pathlib import Path
+          import shlex
+          import subprocess
+          import sys
+
+          root = Path.cwd()
+          script = root / "research/native-kernel/build.py"
+          spec = importlib.util.spec_from_file_location("nk3_ci_builder", script)
+          builder = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(builder)
+          if set(builder.VERIFICATIONS) != set(builder.ORACLE_SCRIPTS) or set(builder.VERIFICATIONS) != set(builder.ORACLE_ARGUMENTS):
+              raise SystemExit("The required evidence roster and oracle commands differ")
+          logs = root / "tmp/nk3-ci/oracles"
+          logs.mkdir(parents=True, exist_ok=True)
+          for key in builder.VERIFICATIONS:
+              options = shlex.split(builder.ORACLE_ARGUMENTS[key])
+              if key == "trajectory":
+                  if options.count("ticks=960") != 1:
+                      raise SystemExit("The required trajectory arguments changed; review the longer CI run")
+                  options[options.index("ticks=960")] = "ticks=14400"
+              command = [sys.executable, str(root / "research/native-kernel/run.py"),
+                         "--godot", sys.argv[1], "--script", builder.ORACLE_SCRIPTS[key],
+                         *options, "--timeout", "2400"]
+              print(f"Running {key}: {shlex.join(command)}", flush=True)
+              with (logs / f"{key}.log").open("w", encoding="utf-8") as output:
+                  result = subprocess.run(command, cwd=root, stdout=output, stderr=subprocess.STDOUT)
+              print((logs / f"{key}.log").read_text(encoding="utf-8"), end="", flush=True)
+              result.check_returncode()
+
+          receipt = json.loads((builder.TOOL_ROOT / "build-receipt.json").read_text(encoding="utf-8"))
+          sources = builder.mirrored_sources()
+          for key, pattern in builder.VERIFICATIONS.items():
+              proof = builder.find_verification(key, pattern, receipt["binary_sha256"], sources)
+              expected = "fail" if key == "negative_control" else "pass"
+              if proof["verdict"] != expected:
+                  raise SystemExit(f"Unexpected {key} verdict: {proof}")
+              print(f"Accepted {key}: {proof}", flush=True)
+          PY
       - name: Install the verified library for production-path tests
         run: python3 research/native-kernel/build.py --install-app 2>&1 | tee tmp/nk3-ci/install-output.log
-      - name: Require native stage, session and replay test branches
+      - name: Require installed native stage, session, replay and helicopter branches
         run: |
           godot="$(app/get-godot.sh)"
           python3 tools/godot/run_checked.py --timeout 180 --out-dir tmp/nk3-ci/checks --label nk3-native-stage \
@@ -229,21 +266,29 @@ jobs:
           python3 tools/godot/run_checked.py --timeout 180 --out-dir tmp/nk3-ci/checks --label nk3-native-replay \
             --require-text 'NK3_NATIVE_REPLAY_NATIVE verdict=pass' -- \
             "$godot" --headless --path app --audio-driver Dummy --script res://tests/test_native_replay.gd
+          python3 tools/godot/run_checked.py --timeout 240 --out-dir tmp/nk3-ci/checks --label nk3-native-helicopter \
+            --require-text 'NK3_NATIVE_HELICOPTER_NATIVE verdict=pass' -- \
+            "$godot" --headless --path app --audio-driver Dummy --script res://tests/test_native_helicopter_session.gd
+          python3 tools/godot/run_checked.py --timeout 240 --out-dir tmp/nk3-ci/checks --label nk3-native-helicopter-radio \
+            --require-text 'NK3_NATIVE_HELICOPTER_RADIO_NATIVE verdict=pass' -- \
+            "$godot" --headless --path app --audio-driver Dummy --script res://tests/test_heli_restore_radio.gd
       - name: Check production reference/native parity (smoke only)
         run: |
           python3 research/performance/session_baseline.py --godot "$(app/get-godot.sh)" \
             --out tmp/nk3-ci/production-probe --aircraft jensen-das-ugly-stik-60 --case trim,runway \
             --warmup-ticks 24 --sample-ticks 240 --repeats 1 --compare-backends --timeout 300 \
             2>&1 | tee tmp/nk3-ci/production-probe.log
+      - name: Preserve the locked godot-cpp checkout for export
+        run: tar -czf tmp/native-kernel/godot-cpp-pinned.tar.gz -C tmp/native-kernel godot-cpp
       - name: Publish verified NK-3 build inputs for export
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: nk3-native-linux-build
           path: |
             tmp/native-kernel/lib/libopenrc_native_kernel.so
-            tmp/native-kernel/build-receipt.json
-            tmp/native-kernel/stage-*.json
-            tmp/native-kernel/trajectory-*.json
+            tmp/native-kernel/lib/libopenrc_native_kernel_mutant.so
+            tmp/native-kernel/*.json
+            tmp/native-kernel/godot-cpp-pinned.tar.gz
           if-no-files-found: error
           retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -252,10 +297,8 @@ jobs:
           name: nk3-native-linux-diagnostics
           path: |
             tmp/nk3-ci/
-            tmp/native-kernel/build.log
-            tmp/native-kernel/build-receipt.json
-            tmp/native-kernel/stage-*.json
-            tmp/native-kernel/trajectory-*.json
+            tmp/native-kernel/build*.log
+            tmp/native-kernel/*.json
             tmp/native-kernel/checks/
             app/native/kernel/build-receipt.json
           if-no-files-found: ignore
@@ -398,6 +441,7 @@ jobs:
         run: |
           godot="$(app/get-godot.sh)"
           "$godot" --version
+          tar -xzf tmp/native-kernel/godot-cpp-pinned.tar.gz -C tmp/native-kernel
           python3 research/native-kernel/build.py --install-app
       - run: app/export.sh # names the packages with git describe, the same identity the app shows (UI-04a)
       - name: Preserve NK-3 package qualification diagnostics

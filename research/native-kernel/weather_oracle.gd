@@ -7,7 +7,7 @@ extends "oracle.gd"
 const WeatherConfig := preload("res://physics/wind_config.gd")
 const WeatherField := preload("res://physics/wind_field.gd")
 const SimEnvironment := preload("res://sim/environment.gd")
-const WeatherAdapter := preload("weather_adapter.gd")
+const WeatherAdapter := preload("res://sim/native/weather_adapter.gd")
 
 
 func _source_hashes() -> Dictionary:

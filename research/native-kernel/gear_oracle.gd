@@ -294,6 +294,14 @@ func _check_live_hull(id: String, session: Node) -> void:
 		_compare_hull(id, invalid_body, geometry, good, mode + "-invalid-body")
 		invalid_body.resize(12)
 		_compare_hull(id, invalid_body, geometry, good, mode + "-short-body")
+		for distance: float in [float(geometry.reach) - 1.0e-9, float(geometry.reach), float(geometry.reach) + 1.0e-9]:
+			var edge_body: PackedFloat64Array = session.sim.state.duplicate()
+			edge_body[RB.POS + 2] = -distance
+			_compare_hull(id, edge_body, geometry, good, mode + "-reach-edge")
+		var overflow_body: PackedFloat64Array = session.sim.state.duplicate()
+		overflow_body[RB.POS + 2] = 0.0
+		overflow_body[RB.ATT + 1] = 1.0e200
+		_compare_hull(id, overflow_body, geometry, good, mode + "-overflow-geometry")
 		var invalid_geometry: Dictionary = geometry.duplicate(true)
 		invalid_geometry.erase("points")
 		if _native.prepare_live_hull(invalid_geometry).get("ok", false):

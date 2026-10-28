@@ -4,6 +4,7 @@ extends SceneTree
 const Flight := preload("res://sim/flight_session.gd")
 const Log := preload("res://sim/flight_log.gd")
 const Reader := preload("res://tools/flight_log_cli.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
 
 
@@ -37,13 +38,13 @@ func _initialize() -> void:
 	call_deferred("run_all")
 
 
-func flight(mode: String) -> Node:
+func flight(mode: String, aircraft_path := STIK) -> Node:
 	var session := Flight.new()
 	session.input_enabled = false
 	session.crash_auto_restart = false
 	if session.has_method("setup_stage_backend"):
 		check("backend selection accepts " + mode, bool(session.call("setup_stage_backend", mode)))
-	session.setup(STIK)
+	session.setup(aircraft_path)
 	check("flight starts for " + mode, session.is_flyable(), str(session.pause_reason))
 	return session
 
@@ -230,10 +231,31 @@ func run_all() -> void:
 			changed.stage_backend.binary_sha256 = "0".repeat(64) if identity.binary_sha256 != "0".repeat(64) else "1".repeat(64)
 			changed.checkpoint.stage_backend = changed.stage_backend.duplicate(true)
 			check("different native binary refuses exact replay", not Reader.prepare_replay(changed).ok)
+		catalog_replay()
 	else:
 		print("NK3_NATIVE_REPLAY_SKIP native library unavailable or not yet verified")
 	native.free()
 	finish()
+
+
+func catalog_replay() -> void:
+	for entry: Dictionary in Catalog.flyable_entries():
+		var id := str(entry.id)
+		if Catalog.is_rotorcraft(id) or id == "jensen-das-ugly-stik-60":
+			continue
+		var modes: Array[String] = [Catalog.default_battery_mode(id)]
+		if modes[0] != "ideal" and Catalog.has_battery_mode(id, "ideal"):
+			modes.append("ideal")
+		for battery: String in modes:
+			var label := "%s-%s" % [id, battery]
+			var session := flight("native", Catalog.data_for(id, battery))
+			check(label + " owns native replay source", session.stage_backend_identity().get("backend") == "native",
+				str(session.stage_backend_status()))
+			if session.is_flyable() and session.stage_backend_identity().get("backend") == "native":
+				var recorded := record(session, label)
+				if recorded.inspected.get("ok", false):
+					exact_replay(recorded.inspected.header, recorded.path, label)
+			session.free()
 
 
 func finish() -> void:

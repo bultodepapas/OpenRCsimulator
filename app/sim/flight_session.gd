@@ -742,22 +742,21 @@ func _prepare_stage_backend(time_now := NAN, backend := "") -> void:
 	if _weather_pending_reset or _shaft_pending_reset:
 		stage_backend_error = "pending configuration requires reset"
 		return
-	# Production opt-in is bounded by the qualified stock aircraft; the research adapter still tests components.
-	if aircraft.model.get("id", "") != "jensen-das-ugly-stik-60" or not workshop_identity.is_empty() \
-			or aircraft.get("input_identity", {}).get("sha256", "") != FileAccess.get_sha256(Scenarios.AIRCRAFT):
-		stage_backend_error = "native stage currently qualifies only the stock Ugly Stik"
-		return
 	var candidate := NativeStage.new()
 	var prepared: Dictionary = candidate.prepare(self)
 	if not prepared.ok:
 		stage_backend_error = str(prepared.reason)
 		return
 	_native_stage = candidate # selects the session-owned tick hook, rather than the research pre_tick wrapper
-	if not candidate.install(self).is_valid():
+	candidate.install(self)
+	if not candidate.is_installed():
 		stage_backend_error = candidate.reason
 		_native_stage = null
 		return
-	candidate.tick_context(self, sim.aux, sim.inputs, time_now)
+	if not candidate.tick_context(self, sim.aux, sim.inputs, time_now):
+		stage_backend_error = candidate.reason
+		candidate.uninstall(self)
+		_native_stage = null
 
 
 func _refresh_stage_backend() -> void:
@@ -1111,6 +1110,8 @@ func _refuse_start_transaction(transaction: Dictionary, message: String, status 
 		sim._endpoint_guard_unchanged(transaction.kernel)
 		for field: String in _START_OWNER_FIELDS:
 			set(field, Sim._guard_copy(transaction.owner[field]))
+		if _native_stage != null and not _native_stage.restore_configuration_guard(self):
+			stage_backend_error = "native configuration differs after transaction rollback; reset required"
 		_end_start_transaction(transaction)
 	return {ok = false, committed = false, ready = false, status = status, message = message}
 
@@ -2240,6 +2241,8 @@ func _configure_continuous_callbacks() -> void:
 
 ## Install only an already prepared callback set; this does not advance state.
 func _install_continuous_callbacks(prepared: Dictionary) -> void:
+	if _native_stage != null:
+		_native_stage.restore_reference_callback(self)
 	_native_stage = null
 	for field: String in PropulsionRuntime.CALLBACK_FIELDS:
 		sim.model.set(field, prepared[field])
@@ -4260,7 +4263,13 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 		var drag_delta := PackedFloat64Array()
 		if stage_air.has("spatial_air_law") and aux[gear_aux_index()] > 0.0:
 			drag_delta = stage_air.ambient_delta_body_at.call(aircraft.model.landing_gear.retraction.drag_center)
-		hull = _add_loads(hull, RetractableGear.drag_loads(s, stage_air.v_air, aircraft.model.landing_gear, aux[gear_aux_index()], air_density(s), drag_delta))
+		var drag: PackedFloat64Array = RetractableGear.drag_loads(s, stage_air.v_air, aircraft.model.landing_gear, aux[gear_aux_index()], air_density(s), drag_delta)
+		if drag.size() not in [0, 6]:
+			return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
+		for value: float in drag:
+			if not is_finite(value):
+				return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
+		hull = _add_loads(hull, drag)
 	var wheel_total: int = wheel_count()
 	if wheel_total == 0:
 		return {ok = true, loads = _add_loads(Ground.loads(s, gear, steer, ground_surfaces, anchors,
@@ -4892,7 +4901,9 @@ func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: f
 		return PackedFloat64Array() # kernel rejects before any native stage can use stale coefficients
 	var next := _pre_step(aux, inputs, dt)
 	if _native_stage != null and next.size() == aux.size():
-		_native_stage.tick_context(self, next, inputs)
+		if not _native_stage.tick_context(self, next, inputs):
+			stage_backend_error = _native_stage.reason
+			return PackedFloat64Array()
 	return next
 
 

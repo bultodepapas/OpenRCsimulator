@@ -192,13 +192,17 @@ func rejected_reset() -> void:
 	var reject := [false]
 	var calls := [0]
 	var observed_candidate := [false]
-	var old_helper: RefCounted = session._native_stage
+	var old_helper: RefCounted
 	model.state_validator = func(_frame: Dictionary, context: Dictionary) -> bool:
 		if reject[0] and context.tick == 0:
 			calls[0] += 1
 			observed_candidate[0] = session._native_stage != old_helper and session._native_stage != null
 			return false
 		return true
+	# The deliberate fixture changes the installed model contract. Prepare its
+	# native owner at the same explicit boundary before exercising rollback.
+	session._prepare_stage_backend()
+	old_helper = session._native_stage
 	check("reset fixture installs explicit layout", session.sim.reset(session.sim.state.duplicate()))
 	for index: int in 8: session.sim.step()
 	check("reset fixture advances", session.sim.tick == 8 and not session.checkpoint().is_empty())
@@ -266,6 +270,7 @@ func stale_mutation() -> void:
 	var before := physical(session)
 	var old_mass: float = session.aircraft.model.mass_kg
 	session.aircraft.model.mass_kg = old_mass + 0.01 # in-place bypass of accepted boundaries
+	check("rollback guard cannot accept changed physical coefficients", not helper.restore_configuration_guard(session))
 	check("in-place model edit refuses checkpoint", session.checkpoint().is_empty())
 	session.sim.step()
 	var after: Dictionary = engine.call("stage_stats")
@@ -330,7 +335,7 @@ func old_helper() -> void:
 	session.free()
 
 
-func unsupported_weather(expect_native: bool) -> void:
+func weather_lifecycle(expect_native: bool) -> void:
 	var session := runway(NativeStage.BACKEND_NATIVE)
 	var reference := runway(NativeStage.BACKEND_REFERENCE)
 	check("calm custom atmosphere selection accepts", reference.setup_weather(Weather.preset("cool-dense")))
@@ -344,12 +349,18 @@ func unsupported_weather(expect_native: bool) -> void:
 			str(would_promote.get("reason", "")))
 	check("gusty weather selection accepts", session.setup_weather(Weather.preset("gusty")))
 	session.reset()
-	check("unported weather falls back with reason", session.is_flyable()
-		and session.stage_backend_identity() == NativeStage.reference_identity()
-		and not str(session.stage_backend_status().reason).is_empty(), str(session.stage_backend_status()))
+	check("gusty weather retains the available backend", session.is_flyable()
+		and session.stage_backend_identity().backend == (NativeStage.BACKEND_NATIVE if expect_native else NativeStage.BACKEND_REFERENCE)
+		and (str(session.stage_backend_status().reason).is_empty() if expect_native else not str(session.stage_backend_status().reason).is_empty()),
+		str(session.stage_backend_status()))
 	session.sim.step()
-	check("fallback weather advances", session.sim.tick == 1 and session.sim.fault_reason.is_empty())
-	check("reference calm checkpoint restores into native-requested fallback", session.restore_checkpoint(calm_checkpoint))
+	check("selected weather advances", session.sim.tick == 1 and session.sim.fault_reason.is_empty())
+	if expect_native:
+		check("native weather session refuses a reference checkpoint", not session.restore_checkpoint(calm_checkpoint))
+		# Reproduce a session already running the reference fallback while its
+		# launch preference remains native. Exact restore must keep that identity.
+		session._prepare_stage_backend(NAN, NativeStage.BACKEND_REFERENCE)
+	check("reference calm checkpoint restores into native-requested session", session.restore_checkpoint(calm_checkpoint))
 	check("reference restore does not silently promote backend", session.stage_backend_status().requested == NativeStage.BACKEND_NATIVE
 		and session.stage_backend_identity() == NativeStage.reference_identity()
 		and session.weather_is_calm() and physical(session) == physical(reference), str(session.stage_backend_status()))
@@ -404,12 +415,12 @@ func run_all() -> void:
 			reprepare()
 			stale_mutation()
 			old_helper()
-	unsupported_weather(prepared.ok)
+	weather_lifecycle(prepared.ok)
 	publication_guard(prepared.ok)
-	var unsupported := runway(NativeStage.BACKEND_NATIVE, P51)
-	check("unsupported aircraft uses reference with a reason", unsupported.stage_backend_identity() == NativeStage.reference_identity()
-		and not str(unsupported.stage_backend_status().reason).is_empty(), str(unsupported.stage_backend_status()))
-	unsupported.free()
+	var liquid := runway(NativeStage.BACKEND_NATIVE, P51)
+	check("finite-liquid aircraft uses the available backend", liquid.stage_backend_identity().backend ==
+		(NativeStage.BACKEND_NATIVE if prepared.ok else NativeStage.BACKEND_REFERENCE), str(liquid.stage_backend_status()))
+	liquid.free()
 	native.free()
 	reference.free()
 	finish()
