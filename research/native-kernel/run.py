@@ -24,8 +24,9 @@ TOOL_ROOT = ROOT / "tmp/native-kernel"
 GODOT = ROOT / ".tools/Godot_v4.8-beta1_linux.x86_64"
 HARNESS_OPTIONS = {
     "oracle.gd": set(), "stage_oracle.gd": set(),
+    "propeller_oracle.gd": set(),
     "trajectory.gd": {"ticks", "pairs", "warmup", "samples", "timing-cases", "skip-timing", "only", "repeats"},
-    "fleet.gd": {"warmup", "samples"},
+    "fleet.gd": {"warmup", "samples", "aircraft", "weather", "soft-hull"},
 }
 
 
@@ -90,7 +91,7 @@ def main() -> int:
     parser.add_argument("--app-library", action="store_true",
                         help="use the installed res://native/kernel library (build.py --install-app) instead of tmp/")
     parser.add_argument("--render", type=Path, help="only render tables from an existing results JSON")
-    parser.add_argument("--script", default="oracle.gd", choices=("oracle.gd", "stage_oracle.gd", "trajectory.gd", "fleet.gd"),
+    parser.add_argument("--script", default="oracle.gd", choices=tuple(HARNESS_OPTIONS),
                         help="harness to run (all extend oracle.gd and print the same verdict line)")
     parser.add_argument("--option", action="append", default=[], metavar="NAME=VALUE",
                         help="extra harness option, passed as --NAME=VALUE (repeatable)")
@@ -124,12 +125,12 @@ def main() -> int:
     if binary_before != receipt["binary_sha256"]:
         raise SystemExit("The descriptor's binary differs from its build receipt; rebuild/reinstall first.")
     harness_paths = [HERE / name for name in ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "trajectory.gd",
-                                              "fleet.gd", "run.py")]
+                                              "fleet.gd", "propeller_oracle.gd", "run.py")]
     harness_paths += [ROOT / "app/sim/native_stage.gd", ROOT / "tools/godot/run_checked.py"]
     harness_sources = {str(path.relative_to(ROOT)): sha256(path) for path in harness_paths}
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     stem = {"oracle.gd": "results", "stage_oracle.gd": "stage", "trajectory.gd": "trajectory",
-            "fleet.gd": "fleet"}[args.script]
+            "fleet.gd": "fleet", "propeller_oracle.gd": "propeller"}[args.script]
     output = TOOL_ROOT / f"{stem}{variant}-{stamp}.json"
     marker = "NK3_ORACLE verdict=fail" if args.mutant else "NK3_ORACLE verdict=pass"
     checks = TOOL_ROOT / "checks"

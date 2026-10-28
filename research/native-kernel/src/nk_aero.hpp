@@ -3,8 +3,8 @@
 // app/physics/aero.gd loads (_global_loads, _local_loads, _wing_flow, local_flow_weight,
 // _wing_lift_coefficient_with, _tail_surface_from_flow, _surface_with_flow, _tail_curve, downwash_angle).
 // Aero.LOADS_LAW "section-plane-source-weighted-wake-velocity-v2". Flaps, tailless elevons and the tabulated wing
-// polar are included below for qualification; production admission remains the decoder's responsibility. Spatial
-// (station-delta) air is not implemented here.
+// polar and optional station-delta raw evaluations are included for qualification; production admission remains
+// the decoder's responsibility.
 #pragma once
 
 #include <array>
@@ -288,8 +288,9 @@ struct WingFlow {
 	R reference_speed = 0.0;
 };
 
-// aero.gd _wing_flow without station deltas.
-inline void wing_flow(const R *s, const Air &air, const Deflections &d, const AeroModel &m, WingFlow &out) {
+// A non-null station_delta contains 3*(wing stations + 2) ambient deltas, already validated by the caller.
+inline void wing_flow(const R *s, const Air &air, const Deflections &d, const AeroModel &m, WingFlow &out,
+		const R *station_delta = nullptr) {
 	const R arm0 = -(m.arp[0] - m.cg[0]);
 	const R arm1 = m.arp[1] - m.cg[1];
 	const R arm2 = -(m.arp[2] - m.cg[2]);
@@ -309,9 +310,14 @@ inline void wing_flow(const R *s, const Air &air, const Deflections &d, const Ae
 	for (int i = 0; i < n; ++i) {
 		const R y = arm1 + m.ys[i];
 		const R arm_x = !has_tailless ? arm0 : -(m.tailless.station_x[i] - m.cg[0]) + 0.0;
-		const R f0 = v[0] + (q * arm2 - r * y);
-		const R f1 = v[1] + (r * arm_x - p * arm2);
-		const R f2 = v[2] + (p * y - q * arm_x);
+		R f0 = v[0] + (q * arm2 - r * y);
+		R f1 = v[1] + (r * arm_x - p * arm2);
+		R f2 = v[2] + (p * y - q * arm_x);
+		if (station_delta != nullptr) {
+			f0 += station_delta[3 * i];
+			f1 += station_delta[3 * i + 1];
+			f2 += station_delta[3 * i + 2];
+		}
 		const R vp = sqrt_(f0 * f0 + f2 * f2);
 		R angle;
 		if (!has_tailless) {
@@ -684,9 +690,9 @@ inline std::array<R, 3> section_coefficients(R alpha, R base, const AeroModel &m
 	return {cl, cd, weight};
 }
 
-// aero.gd _local_loads (include_body = true, no diagnostics or station deltas).
+// aero.gd _local_loads (no diagnostics). Optional spatial deltas exclude omega x r.
 inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const AeroModel &m, R rho,
-		R downwash_cl, const std::vector<R> &ge) {
+		R downwash_cl, const std::vector<R> &ge, const R *station_delta = nullptr, bool include_body = true) {
 	const bool ge_active = !ge.empty();
 	const R p = s[10];
 	const R q = s[11];
@@ -715,7 +721,7 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 	R fx_sum = 0.0, fy_sum = 0.0, fz_sum = 0.0, mx_sum = 0.0, my_sum = 0.0, mz_sum = 0.0;
 	R wing_cl = 0.0;
 	WingFlow flow;
-	wing_flow(s, air, d, m, flow);
+	wing_flow(s, air, d, m, flow, station_delta);
 	const bool coupled = static_cast<int>(m.induced_map.size()) == stations * stations;
 	const R strip_slope = m.strip_slope;
 	const R cm_ac = m.wing_cm_ac;
@@ -726,9 +732,14 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 		const R y = m.ys[i];
 		const R arm_y = ay + y;
 		const R ax_i = !has_tailless ? ax : -(m.tailless.station_x[i] - m.cg[0]) + 0.0;
-		const R f0 = v0 + (q * az - r * arm_y);
-		const R f1 = v1 + (r * ax_i - p * az);
-		const R f2 = v2 + (p * arm_y - q * ax_i);
+		R f0 = v0 + (q * az - r * arm_y);
+		R f1 = v1 + (r * ax_i - p * az);
+		R f2 = v2 + (p * arm_y - q * ax_i);
+		if (station_delta != nullptr) {
+			f0 += station_delta[3 * i];
+			f1 += station_delta[3 * i + 1];
+			f2 += station_delta[3 * i + 2];
+		}
 		(void)f1;
 		const R effective = flow.angles[i];
 		const R stall_angle = stall_back == 0.0 ? effective : effective - stall_back * flow.flap_shifts[i];
@@ -861,8 +872,13 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 		}
 		const Tail &tail = vertical ? m.vertical : m.horizontal;
 		const R arm[3] = {-(tail.position[0] - m.cg[0]), tail.position[1] - m.cg[1], -(tail.position[2] - m.cg[2])};
-		const R tail_flow[3] = {v[0] + (q * arm[2] - r * arm[1]), v[1] + (r * arm[0] - p * arm[2]),
+		R tail_flow[3] = {v[0] + (q * arm[2] - r * arm[1]), v[1] + (r * arm[0] - p * arm[2]),
 			v[2] + (p * arm[1] - q * arm[0])};
+		if (station_delta != nullptr) {
+			for (int axis = 0; axis < 3; ++axis) {
+				tail_flow[axis] += station_delta[3 * (stations + tail_index) + axis];
+			}
+		}
 		const Loads result = tail_surface_from_flow(tail_flow, arm, d, tail, m, tail.area, vertical, rho, wake);
 		fx_sum += result[0];
 		fy_sum += result[1];
@@ -870,6 +886,9 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 		mx_sum += result[3];
 		my_sum += result[4];
 		mz_sum += result[5];
+	}
+	if (!include_body) {
+		return {fx_sum, fy_sum, fz_sum, mx_sum, my_sum, mz_sum};
 	}
 	const R body_cn = m.body_cn_beta;
 	if (body_cn != 0.0) {

@@ -99,8 +99,7 @@ inline HeliControlResult heli_trainer_electronics(const HeliTrainerModel &m, con
 	R cyclic_lateral = sticks[1];
 	const R w = state[6], x = state[7], y = state[8], z = state[9];
 	const R yaw = atan2_(2.0 * (w * z + x * y), 1.0 - 2.0 * (y * y + z * z));
-	// math3d.asin_ applies clamp before calling the engine's asin.
-	const R pitch = ::asin(clampf(2.0 * (w * y - z * x), -1.0, 1.0).v);
+	const R pitch = asin_(2.0 * (w * y - z * x));
 	const R roll = atan2_(2.0 * (w * x + y * z), 1.0 - 2.0 * (x * x + y * y));
 	if (trainer_enabled) {
 		const R desired_roll = clampf(trim.roll_reference_rad + cyclic_lateral * m.trainer_max_tilt_rad,
