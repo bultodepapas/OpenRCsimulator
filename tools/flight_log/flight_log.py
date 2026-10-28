@@ -623,13 +623,12 @@ def _debrief_windows(first_tick: int, final_tick: int, markers: list[dict[str, A
 
 
 def _build_debrief(csv_path: Path | str, log_path: Path | str, report_path: Path | str,
-        replay_report: dict[str, Any]) -> dict[str, Any]:
+        replay_report: dict[str, Any], summary: dict[str, Any]) -> dict[str, Any]:
     """Internal reducer; the CLI supplies only this command's verified exact-replay artifacts."""
     csv_file = Path(csv_path).resolve()
     log_file = Path(log_path).resolve()
     report_file = Path(report_path).resolve()
     first_tick, final_tick, dt_s, events = _validate_exact_replay_report(replay_report, log_file)
-    summary = summarize_csv(csv_file)
     if summary["rows"] != replay_report["rows"] or summary["tick"] != {"first": first_tick, "last": final_tick}:
         raise FlightLogError("replay report row/tick bounds do not match the replayed CSV")
     if not math.isclose(float(summary["time_s"]["first"]), first_tick * dt_s, rel_tol=1e-12, abs_tol=1e-9) \
@@ -1047,7 +1046,7 @@ def _check_godot_report(
     return document
 
 
-def _check_exported_csv(csv_path: Path, report: dict[str, Any]) -> None:
+def _check_exported_csv(csv_path: Path, report: dict[str, Any]) -> dict[str, Any]:
     if not csv_path.is_file() or csv_path.stat().st_size == 0:
         raise FlightLogError(f"Godot did not write a nonempty CSV: {csv_path}")
     summary = summarize_csv(csv_path)
@@ -1062,6 +1061,7 @@ def _check_exported_csv(csv_path: Path, report: dict[str, Any]) -> None:
                 f"exported CSV is truncated: Godot reported {expected} rows, found {summary['rows']}"
             )
         break
+    return summary
 
 
 def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = False) -> int:
@@ -1108,13 +1108,13 @@ def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = Fal
     )
     # Validate the output now so a successful exit never advertises a malformed
     # or incomplete CSV as an export/replay result.
-    _check_exported_csv(csv_path, report)
+    csv_summary = _check_exported_csv(csv_path, report)
     print(f"Wrote {csv_path}")
     print(f"Wrote {report_path}")
     if debrief:
         if _sha256_file(log_path) != source_sha256_before:
             raise FlightLogError("source flight log changed during exact replay; debrief refused")
-        document = _build_debrief(csv_path, log_path, report_path, report)
+        document = _build_debrief(csv_path, log_path, report_path, report, csv_summary)
         debrief_path = _write_json_fresh(output_dir / "debrief.json", document)
         print(f"Wrote {debrief_path}")
     return 0

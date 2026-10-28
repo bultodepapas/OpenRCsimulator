@@ -503,6 +503,9 @@ class FlightLogCommandTests(unittest.TestCase):
         document = json.loads((output / "debrief.json").read_text(encoding="utf-8"))
         self.assertEqual(document["format"], "openrc-flight-debrief v1")
         self.assertEqual(document["replay_report"]["metadata"]["aircraft_id"], "fixture-aircraft")
+        self.assertEqual(document["replay_report"]["baseline_solver_sha256"], "a" * 64)
+        self.assertEqual(document["replay_report"]["current_solver_sha256"], "a" * 64)
+        self.assertFalse(document["replay_report"]["solver_changed"])
         self.assertEqual(document["replay_report"]["events"], events)
         self.assertEqual(document["input_artifacts"]["source_log"]["sha256"], hashlib.sha256(source.read_bytes()).hexdigest())
         self.assertEqual(document["input_artifacts"]["replayed_csv"]["sha256"], hashlib.sha256((output / "flight.csv").read_bytes()).hexdigest())
@@ -557,6 +560,36 @@ class FlightLogCommandTests(unittest.TestCase):
         self.assertEqual(window["kind"], "unmarked_flight")
         self.assertEqual((window["start_tick"], window["end_tick"]), (0, 4))
         self.assertEqual(window["interval_samples"], 4)
+
+    def test_debrief_one_marker_splits_prefix_from_marked_tail(self) -> None:
+        source = self.directory / "one-marker.orfl"
+        source.write_bytes(b"source log fixture")
+        output = self.directory / "one-marker-output"
+
+        def fake_run(command: list[str], **_kwargs: object) -> object:
+            write_csv(output / "flight.csv", debrief_rows())
+            (output / "replay.json").write_text(
+                json.dumps(exact_replay_report(source, [
+                    {"tick": 2, "kind": "marker", "detail": "pilot starts the maneuver"},
+                ])),
+                encoding="utf-8",
+            )
+            return type("Result", (), {"returncode": 0})()
+
+        with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
+            result = flight_log.main(
+                ["debrief", str(source), "--out", str(output), "--godot", str(self.godot)]
+            )
+
+        self.assertEqual(result, 0)
+        document = json.loads((output / "debrief.json").read_text(encoding="utf-8"))
+        prefix, tail = document["flight"]["windows"]
+        self.assertEqual([window["kind"] for window in document["flight"]["windows"]],
+            ["unmarked_prefix", "marker_tail"])
+        self.assertEqual((prefix["start_tick"], prefix["end_tick"]), (0, 2))
+        self.assertEqual((tail["start_tick"], tail["end_tick"]), (2, 4))
+        self.assertEqual((prefix["endpoint_samples"], prefix["interval_samples"]), (3, 2))
+        self.assertEqual((tail["endpoint_samples"], tail["interval_samples"]), (3, 2))
 
     def test_debrief_marker_at_recording_start_keeps_zero_duration_prefix(self) -> None:
         source = self.directory / "start-marker.orfl"
@@ -671,6 +704,11 @@ class FlightLogCommandTests(unittest.TestCase):
             ("CSV interior time", {}, [
                 *debrief_rows()[:2],
                 sample_row(2, t_s=0.25, loads_t_s=0.1),
+                *debrief_rows()[3:],
+            ]),
+            ("CSV load time", {}, [
+                *debrief_rows()[:2],
+                sample_row(2, t_s=0.2, loads_t_s=0.125),
                 *debrief_rows()[3:],
             ]),
         )
