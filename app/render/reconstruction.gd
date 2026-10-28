@@ -67,6 +67,9 @@ static func runtime_capabilities() -> Dictionary:
 	var fsr3_backend_method := RenderingServer.has_method(FSR3_METHOD)
 	var fsr3_backend := fsr3_backend_method and bool(RenderingServer.call(FSR3_METHOD))
 	var fsr2_reason := "engine_mode_missing" if high and fsr2_mode == null else ""
+	var fsr2_failed := bool(_backend_status("fsr2").get("backend_failed", false))
+	if high and fsr2_mode != null and fsr2_failed:
+		fsr2_reason = "fsr2_runtime_failure"
 	var fsr3_reason := ""
 	if high:
 		if fsr3_mode == null:
@@ -83,7 +86,7 @@ static func runtime_capabilities() -> Dictionary:
 			dlss_reason = _streamline_dlss_unavailable_reason()
 	var result := {
 		"high": high,
-		"fsr2": high and fsr2_mode != null,
+		"fsr2": high and fsr2_mode != null and not fsr2_failed,
 		"fsr3": high and fsr3_mode != null and fsr3_backend,
 		"dlss": high and dlss_mode != null and dlss_reason.is_empty(),
 		"fsr2_reason": fsr2_reason,
@@ -223,7 +226,7 @@ static func guard_runtime_failure(viewport: Viewport, backend_status: Dictionary
 	if typeof(policy) != TYPE_DICTIONARY:
 		return false
 	var provider := str(policy.get("provider", ""))
-	if provider not in ["fsr3", "dlss"]:
+	if provider not in ["fsr2", "fsr3", "dlss"]:
 		return false
 	var status := backend_status.duplicate(true)
 	if status.is_empty():

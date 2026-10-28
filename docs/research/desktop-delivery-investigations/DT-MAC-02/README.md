@@ -81,6 +81,38 @@ snapshot and revalidated by Godot before the second attempt. This second run is
 warm-cache software verification, not a successful cold-import qualification.
 Final suite outcome and outstanding failures are recorded here after completion.
 
+The refreshed suite next detected byte-pinned customization sources changed by
+the disposable worktree's `core.autocrlf=true` checkout. Twelve presentation files
+differed only by CRLF/LF; the live checkout's customization freshness check passed.
+The snapshot was synchronized to the exact working-tree bytes (6,792 text/source
+files checked, 2,800 copied), without changing the generated registry. Its
+freshness check then passed. Final broad verification uses the existing
+`integration` partition and four `units` shards, each with a separate user-data
+directory; this changes test scheduling, not assertion or acceptance rules.
+
+Two broad unit partitions currently stop on checks outside the edited graphics
+and capture paths:
+
+- `test_engine_audio.gd`: 146 checks, three device-aware queue-target failures.
+  A separate run with fresh user data reproduced two failures of the same assertion
+  (exit 1, 60.547 s, not a timeout). Relevant audio source/config and all 370
+  baseline-tracked simulation/physics/aircraft files match `c953c8c` after line-ending
+  normalization, with the same pinned engine; a pristine baseline was not executed
+  and the cause is not established. No audio or physics change was made.
+- `test_fixed_gear_brake_input.gd`: 257 checks, two exact frozen-reference failures
+  for `sebart-avanti-s-a200-p100rx` (checkpoint/metadata and CSV). The physics path
+  was not changed and no golden data was re-recorded. The frozen Windows source
+  pin is `3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1`;
+  the snapshot aircraft file is `048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd`.
+  Historical commit `b1c6d9806`, before this Mac work, changed its description
+  from `Ventage Jet` to `Vantage Jet`; parsed JSON is otherwise identical.
+  Aircraft identity hashes include the description and feed checkpoint/trace
+  metadata, explaining a provenance difference without establishing changed
+  physics. The separate three-tick exact continuation check passed. The combined
+  failing assertion does not separate checkpoint and metadata digests, so this
+  is not a complete field-by-field runtime attribution. The acceptance failure
+  remains open for the reference owner; it is not waived or physical validation.
+
 Local raw check output is under ignored `tmp/dt-mac-prep/`; it is not a release
 artifact or a durable substitute for the required native campaign. No screenshots
 were added by this task. Existing unrelated trailer/media work was preserved.

@@ -163,7 +163,7 @@ def _verify_pair_metadata(editor: dict, template: dict, engine: Path, *, current
             raise RuntimeError(f"SDK 2.4 license or notice is not pinned: {name}")
     for group in (runtime, licenses):
         if any(not _plain_name(name) or not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest)
-               for name, digest in group.items()):
+               for name, digest in group.items()) or len({name.casefold() for name in group}) != len(group):
             raise RuntimeError("Unsafe or invalid runtime/license receipt entry")
 
 
@@ -294,9 +294,16 @@ def _checked_report(path_value: object, *, export: bool, engine: Path, snapshot:
         raise RuntimeError("Checked report is outside the candidate checks directory")
     report = product.load_json(path)
     command = report.get("command")
+    counts = report.get("counts")
+    try:
+        started = datetime.fromisoformat(report["started_utc"])
+        if started.utcoffset() is None:
+            raise ValueError("missing UTC offset")
+    except (KeyError, TypeError, ValueError) as error:
+        raise RuntimeError("Checked report has an invalid start time") from error
     if (report.get("format") != "openrc-godot-check v1" or report.get("ok") is not True or
             report.get("complete") is not True or report.get("exit_code") != 0 or
-            report.get("process_exit") != 0 or report.get("counts", {}).get("error") != 0 or
+            report.get("process_exit") != 0 or not isinstance(counts, dict) or counts.get("error") != 0 or
             not isinstance(command, list) or not all(isinstance(value, str) for value in command)):
         raise RuntimeError("Checked import/export report is not complete and successful")
     cwd_value = report.get("cwd")
@@ -375,8 +382,10 @@ def verify_candidate_output(output: Path, engine: Path, editor: dict, template: 
     ground = output / "openrc_ground_vehicle.dll"
     if not ground.is_file() or product.sha(ground) != snapshot["files"].get("app/native/ground_vehicle/openrc_ground_vehicle.dll"):
         raise RuntimeError("Candidate ground-vehicle sidecar differs from source snapshot")
-    import_path, _ = _checked_report(receipt.get("import_report"), export=False, engine=engine, snapshot=snapshot_path)
-    export_path, _ = _checked_report(receipt.get("export_report"), export=True, engine=engine, snapshot=snapshot_path)
+    import_path, import_report = _checked_report(receipt.get("import_report"), export=False, engine=engine, snapshot=snapshot_path)
+    export_path, export_report = _checked_report(receipt.get("export_report"), export=True, engine=engine, snapshot=snapshot_path)
+    if datetime.fromisoformat(export_report["started_utc"]) < datetime.fromisoformat(import_report["started_utc"]):
+        raise RuntimeError("Candidate export predates its checked import")
     imported = snapshot.get("import", {})
     if (imported.get("report") != str(import_path) or imported.get("report_sha256") != product.sha(import_path) or
             imported.get("editor_sha256") != editor["executable_sha256"]):

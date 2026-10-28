@@ -67,11 +67,24 @@ FSR2_STUB = r"""
 #include <atomic>
 #include <cassert>
 #include <cstdint>
+#include <map>
+#include <string>
 #include <vector>
-struct RID { uint64_t id = 1; uint64_t get_id() const { return id; } bool is_null() const { return id == 0; } };
+struct RID { uint64_t id = 1; uint64_t get_id() const { return id; } bool is_null() const { return id == 0; } bool is_valid() const { return id != 0; } };
 struct Projection {};
-struct Size { int width = 1, height = 1; };
+struct Size { union { int width = 1; int x; }; union { int height = 1; int y; }; };
 struct Vec { float x = 0, y = 0; };
+struct Dictionary { std::map<std::string, int64_t> values; int64_t &operator[](const char *key) { return values[key]; } };
+struct RendererViewport { static uint64_t get_temporal_history_reset_requests() { return 12; } };
+struct RD {
+    inline static RD *singleton = nullptr;
+    uint64_t invalid_texture = 0;
+    std::vector<uint64_t> freed;
+    static RD *get_singleton() { return singleton; }
+    bool texture_is_valid(RID rid) { return rid.is_valid() && rid.id != invalid_texture; }
+    void free_rid(RID rid) { freed.push_back(rid.id); }
+};
+using RenderingDevice = RD;
 struct FfxResource {};
 FfxResource get_resource_rd(RID *, const wchar_t *) { return {}; }
 struct FfxFsr2DispatchDescription {
@@ -91,6 +104,7 @@ bool sdk_reset = false;
 int sdk_result = FFX_OK;
 int sdk_backend_result = FFX_OK, sdk_calls = 0;
 const int FFX_ERROR_INVALID_ARGUMENT = 1;
+const int FFX_ERROR_INVALID_POINTER = 2, FFX_ERROR_INVALID_SIZE = 3;
 using FfxCommandList = void *;
 enum { FFX_GPU_JOB_CLEAR_FLOAT, FFX_GPU_JOB_COPY, FFX_GPU_JOB_COMPUTE };
 struct FfxGpuJobDescription { int jobType = FFX_GPU_JOB_COMPUTE, clearJobDescriptor = 0, copyJobDescriptor = 0, computeJobDescriptor = 0; };
@@ -98,6 +112,7 @@ struct FfxFsr2Interface { void *scratchBuffer = nullptr; };
 struct FakeFfxContext { FfxFsr2Interface callbacks; };
 #define ERR_FAIL_NULL_V(x, result) do { if (!(x)) return result; } while (false)
 #define ERR_FAIL_COND_V(x, result) do { if (x) return result; } while (false)
+#define WARN_PRINT(...) do {} while (false)
 namespace RendererRD {
 """
 
@@ -124,12 +139,11 @@ public:
         uint32_t history_reset_view = 0;
         Projection reprojection;
     };
+    static Dictionary get_status();
     bool upscale(const Parameters &);
 };
 }
 using namespace RendererRD;
-static std::atomic<uint64_t> fsr2_dispatches_succeeded{0}, fsr2_reset_dispatches{0}, fsr2_last_reset_viewport{0};
-static std::atomic<uint32_t> fsr2_last_reset_view{0};
 FfxErrorCode execute_gpu_job_clear_float_rd(FSR2Context::Scratch &, int) { return sdk_backend_result; }
 FfxErrorCode execute_gpu_job_copy_rd(FSR2Context::Scratch &, int) { return sdk_backend_result; }
 FfxErrorCode execute_gpu_job_compute_rd(FSR2Context::Scratch &, int) { return sdk_backend_result; }
@@ -149,6 +163,7 @@ FfxErrorCode ffxFsr2ContextDispatch(FakeFfxContext *context, FfxFsr2DispatchDesc
 
 FSR2_MAIN = r"""
 int main() {
+    RD rd; RD::singleton = &rd;
     FSR2Effect effect;
     FSR2Context left, right;
     FSR2Effect::Parameters p;
@@ -162,15 +177,30 @@ int main() {
     auto before = fsr2_reset_dispatches.load();
     assert(!effect.upscale(p) && sdk_reset);
     assert(fsr2_reset_dispatches.load() == before);
+    Dictionary failed_status = FSR2Effect::get_status();
+    assert(failed_status["backend_failed"] && failed_status["last_return_code"] == 7);
     sdk_result = FFX_OK;
+    int calls_before_retry = sdk_calls;
+    assert(!effect.upscale(p) && sdk_calls == calls_before_retry); // Failure is latched.
+    fsr2_backend_failed.store(false); // Simulate a fresh process for independent cases.
     sdk_backend_result = 5; // SDK returns OK despite a failed backend job.
     assert(!effect.upscale(p) && sdk_reset);
     assert(fsr2_reset_dispatches.load() == before);
+    failed_status = FSR2Effect::get_status();
+    assert(failed_status["backend_failed"] && failed_status["last_return_code"] == 5);
+    calls_before_retry = sdk_calls;
     sdk_backend_result = FFX_OK;
+    assert(!effect.upscale(p) && sdk_calls == calls_before_retry);
+    fsr2_backend_failed.store(false);
     p.color.id = 0;
     auto calls_before_invalid = sdk_calls;
     assert(!effect.upscale(p) && sdk_calls == calls_before_invalid);
+    assert(FSR2Effect::get_status()["backend_failed"] && FSR2Effect::get_status()["last_return_code"] == FFX_ERROR_INVALID_ARGUMENT);
+    fsr2_backend_failed.store(false);
     p.color.id = 1;
+    rd.invalid_texture = 1;
+    assert(!effect.upscale(p) && sdk_calls == calls_before_invalid && fsr2_backend_failed.load());
+    rd.invalid_texture = 0; fsr2_backend_failed.store(false);
     p.context = &right; p.history_reset_view = 1;
     assert(effect.upscale(p) && sdk_reset);
     assert(fsr2_last_reset_viewport.load() == 42 && fsr2_last_reset_view.load() == 1);
@@ -230,6 +260,97 @@ int main() {
     assert(execute_gpu_job_copy_rd(scratch, copy) == FFX_ERROR_BACKEND_API_ERROR && rd->copy_calls == 1);
     rd->copy_result = OK; rd->copy_calls = 0;
     assert(execute_gpu_job_copy_rd(scratch, copy) == FFX_OK && rd->copy_calls == 2);
+}
+"""
+
+FSR2_CREATE_STUB = r"""
+#include <atomic>
+#include <cassert>
+#include <cstdint>
+#include <map>
+#include <string>
+#include <vector>
+struct RID { uint64_t id = 0; bool is_valid() const { return id != 0; } };
+struct Size2i { int x = 100, y = 80; };
+struct Dictionary { std::map<std::string, int64_t> values; int64_t &operator[](const char *key) { return values[key]; } };
+struct RendererViewport { static uint64_t get_temporal_history_reset_requests() { return 0; } };
+struct RD {
+    inline static RD *singleton = nullptr;
+    std::vector<uint64_t> freed;
+    static RD *get_singleton() { return singleton; }
+    void free_rid(RID rid) { freed.push_back(rid.id); }
+};
+using RenderingDevice = RD;
+using FfxErrorCode = int;
+constexpr int FFX_OK = 0, FFX_ERROR_INVALID_SIZE = 3;
+constexpr int FFX_FSR2_ENABLE_HIGH_DYNAMIC_RANGE = 1, FFX_FSR2_ENABLE_DEPTH_INVERTED = 2;
+struct FakeFfxContext {};
+struct FfxFsr2Interface {
+    void (*fpCreateBackendContext)() = nullptr, (*fpGetDeviceCapabilities)() = nullptr, (*fpDestroyBackendContext)() = nullptr;
+    void (*fpCreateResource)() = nullptr, (*fpRegisterResource)() = nullptr, (*fpUnregisterResources)() = nullptr;
+    void (*fpGetResourceDescription)() = nullptr, (*fpDestroyResource)() = nullptr, (*fpCreatePipeline)() = nullptr;
+    void (*fpDestroyPipeline)() = nullptr, (*fpScheduleGpuJob)() = nullptr, (*fpExecuteGpuJobs)() = nullptr;
+    void *scratchBuffer = nullptr; size_t scratchBufferSize = 0;
+};
+struct FfxFsr2ContextDescription {
+    int flags = 0;
+    struct { int width = 0, height = 0; } maxRenderSize, displaySize;
+    void *device = nullptr;
+    FfxFsr2Interface callbacks;
+};
+void create_backend_context_rd() {} void get_device_capabilities_rd() {} void destroy_backend_context_rd() {}
+void create_resource_rd() {} void register_resource_rd() {} void unregister_resources_rd() {}
+void get_resource_description_rd() {} void destroy_resource_rd() {} void create_pipeline_rd() {}
+void destroy_pipeline_rd() {} void schedule_gpu_job_rd() {} void execute_gpu_jobs_rd() {}
+#define WARN_PRINT(...) do {} while (false)
+#define memnew(T) new T
+#define memdelete(T) delete (T)
+namespace RendererRD {
+struct FSR2Context {
+    struct Scratch { struct { std::vector<RID> rids; } resources; RID ubo_ring_buffer[4] = {}; } scratch;
+    FakeFfxContext fsr_context = {};
+    FfxFsr2ContextDescription fsr_desc = {};
+    bool fsr_context_created = false;
+    ~FSR2Context();
+};
+class FSR2Effect {
+    int device = 0;
+public:
+    static Dictionary get_status();
+    FSR2Context *create_context(Size2i, Size2i);
+};
+}
+using namespace RendererRD;
+int create_calls = 0, destroy_calls = 0;
+bool fail_create = true;
+FfxErrorCode ffxFsr2ContextCreate(FakeFfxContext *, FfxFsr2ContextDescription *description) {
+    ++create_calls;
+    auto *scratch = static_cast<FSR2Context::Scratch *>(description->callbacks.scratchBuffer);
+    scratch->ubo_ring_buffer[0] = RID{101}; scratch->ubo_ring_buffer[1] = RID{102};
+    scratch->resources.rids = {RID{201}, RID{}, RID{202}};
+    return fail_create ? 9 : FFX_OK;
+}
+void ffxFsr2ContextDestroy(FakeFfxContext *) { ++destroy_calls; }
+"""
+
+FSR2_CREATE_MAIN = r"""
+int main() {
+    RD rd; RD::singleton = &rd;
+    FSR2Effect effect;
+    assert(effect.create_context({}, {}) == nullptr);
+    assert(FSR2Effect::get_status()["backend_failed"] && FSR2Effect::get_status()["last_return_code"] == 9);
+    assert(create_calls == 1 && destroy_calls == 0);
+    assert((rd.freed == std::vector<uint64_t>{201, 202, 101, 102}));
+    fail_create = false;
+    assert(effect.create_context({}, {}) == nullptr && create_calls == 1); // No retry after failure.
+    fsr2_backend_failed.store(false); // Simulate a new process for the success path.
+    FSR2Context *context = effect.create_context({}, {});
+    assert(context && context->fsr_context_created && create_calls == 2);
+    delete context;
+    assert(destroy_calls == 1 && rd.freed.size() == 4); // Successful contexts use SDK destruction.
+    fsr2_backend_failed.store(false);
+    assert(effect.create_context({0, 80}, {}) == nullptr && create_calls == 2);
+    assert(FSR2Effect::get_status()["backend_failed"] && FSR2Effect::get_status()["last_return_code"] == FFX_ERROR_INVALID_SIZE);
 }
 """
 
@@ -708,10 +829,16 @@ class FSRHistoryResetTests(unittest.TestCase):
         self.assertEqual(forward.count("params.history_reset_generation = rb->get_temporal_history_reset_generation();"), 3)
         self.assertIn('D_METHOD("get_temporal_history_reset_providers")', server)
         state = between(header, "// BEGIN FSR2 HISTORY RESET STATE", "// END FSR2 HISTORY RESET STATE")
+        diagnostic_state = between(source, "// BEGIN FSR2 DIAGNOSTIC STATE", "// END FSR2 DIAGNOSTIC STATE")
+        status = function(source, "Dictionary FSR2Effect::get_status(")
         execute_jobs = function(source, "static FfxErrorCode execute_gpu_jobs_rd(")
         dispatch = function(source, "bool FSR2Effect::upscale(")
-        compile_and_run(FSR2_STUB + state + FSR2_AFTER_STATE + execute_jobs + FSR2_AFTER_EXECUTION + dispatch + FSR2_MAIN,
+        compile_and_run(FSR2_STUB + state + FSR2_AFTER_STATE + diagnostic_state + "\n" + status + "\n" + execute_jobs + FSR2_AFTER_EXECUTION + dispatch + FSR2_MAIN,
                         self.directory, "fsr2")
+        destroy_context = function(source, "FSR2Context::~FSR2Context(")
+        create_context = function(source, "FSR2Context *FSR2Effect::create_context(")
+        compile_and_run(FSR2_CREATE_STUB + diagnostic_state + "\n" + status + "\n" + destroy_context + "\n" + create_context + FSR2_CREATE_MAIN,
+                        self.directory, "fsr2_create")
         clear_job = function(source, "static FfxErrorCode execute_gpu_job_clear_float_rd(")
         copy_job = function(source, "static FfxErrorCode execute_gpu_job_copy_rd(")
         compile_and_run(FSR2_RESOURCE_STUB + clear_job + copy_job + FSR2_RESOURCE_MAIN, self.directory, "fsr2_resources")

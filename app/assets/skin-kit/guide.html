@@ -61,7 +61,7 @@
         <p class="intro">El resultado para el simulador es un archivo <code>.orskin</code>. La pintura cambia la apariencia del avión, no su forma ni su comportamiento de vuelo.</p>
         <h3>1. Descarga el kit</h3>
         <ol>
-          <li>En OpenRC abre <strong>Inicio → Aeronaves → Skywalker X8 → Elegir pintura → Crear una skin</strong>. En la ventana de herramientas selecciona <strong>Guardar plantilla de Blender…</strong> y guarda <code>skywalker-x8.zip</code>.</li>
+          <li>En OpenRC abre <strong>Inicio → Aeronaves → Ala X8 → Elegir pintura → Crear una skin</strong>. En la ventana de herramientas selecciona <strong>Guardar plantilla de Blender…</strong> y guarda <code>skywalker-x8.zip</code>.</li>
           <li>Descomprime el ZIP en una carpeta propia. Contiene <code>Skywalker-X8.blend</code>, <code>Export OpenRC Skin.py</code>, <code>README.txt</code> y esta guía <code>guide.html</code>. Guarda una copia sin modificar.</li>
           <li>Instala <a href="https://www.blender.org/download/">Blender gratis desde su página oficial</a>. La plantilla se guardó con Blender 5.2.2: utiliza esa versión o una versión posterior compatible. La descarga y los servicios de IA necesitan internet; esta guía no.</li>
         </ol>
@@ -80,14 +80,14 @@
 
 Utiliza mi kit inicial de OpenRC para Skywalker X8. Inspecciona la plantilla y mis imágenes de referencia. Comprueba y demuestra que puedes abrir el .blend con Blender/bpy o con un Blender conectado antes de afirmar que puedes crear archivos. Si no puedes, dímelo e indica el siguiente paso local; no inventes una exportación.
 
-Crea una pintura llamativa y fácil de reconocer en vuelo que siga mi idea. Usa la imagen Base Color existente de x8_livery y los Base Color de los materiales existentes. Conserva la geometría, la silueta, los objetos, las transformaciones, pivotes, bisagras, UV, nombres de materiales y jerarquía. No cambies la física ni añadas piezas al avión. No dependas de sombreadores procedurales que no estén horneados en la imagen de pintura. Haz que los colores y marcas se vean bien desde arriba y desde abajo. Usa solo arte y referencias que yo tenga permiso de utilizar; indica si usaste material externo.
+Crea una pintura llamativa y fácil de reconocer en vuelo que siga mi idea. Usa la imagen Base Color existente de x8_livery y los Base Color de los materiales existentes. Conserva la geometría, la silueta, los objetos, las transformaciones, pivotes, bisagras, UV, nombres de materiales y jerarquía. Conserva los ajustes originales de mapeo, interpolación y proyección del nodo de textura. No cambies la física ni añadas piezas al avión. No dependas de sombreadores procedurales que no estén horneados en la imagen de pintura. Haz que los colores y marcas se vean bien desde arriba y desde abajo. Usa solo arte y referencias que yo tenga permiso de utilizar; indica si usaste material externo.
 
 Mantén la imagen de pintura en 2048 × 2048 salvo que haya una buena razón para cambiarla. Cada PNG puede medir como máximo 4096 × 4096 y la suma de píxeles decodificados no puede superar 16.777.216. No uses texturas 8K. Guarda la imagen pintada, empaqueta los recursos externos nuevos, guarda un .blend editable y vuelve a abrirlo para comprobar que la pintura se conservó. Utiliza el Export OpenRC Skin.py incluido para producir un .orskin de este kit; no inventes el manifiesto ni renombres otro archivo. Entrega también una imagen de vista previa de 1920 × 1080 y di qué vistas comprobaste realmente. La vista previa es una imagen de revisión, no la textura.
 
 Dame rutas o enlaces de descarga de los archivos reales: .orskin, .blend editable y vista previa. Indica la versión de Blender y qué verificaste. Si tu entorno no puede exportar, dilo y entrega el .blend editado y los pasos locales exactos.</textarea>
         <button type="button" data-copy="prompt-es" data-ok="Copiado." data-fail="Selecciona el texto y cópialo con Ctrl+C o ⌘C.">Copiar encargo</button><span class="status" role="status" aria-live="polite"></span>
         <noscript>Selecciona el texto y usa Ctrl+C o ⌘C para copiarlo.</noscript>
-        <p>El kit utiliza una imagen de pintura de <code>x8_livery</code>; los demás materiales pueden usar su color base Principled. El exportador acepta el color base y una imagen conectada directamente, no combinaciones procedurales sin hornear. Mantén los demás canales del material como están. La transparencia no está garantizada.</p>
+        <p>El kit utiliza una imagen de pintura de <code>x8_livery</code>; los demás materiales pueden usar su color base Principled. El exportador acepta el color base y una imagen conectada directamente, no combinaciones procedurales sin hornear. Conserva el mapeo UV y los ajustes Repeat, Linear y Flat originales del nodo de textura. Mantén los demás canales del material como están. La transparencia no está garantizada.</p>
       </article>
       <article>
         <h2>Termina, exporta y vuela</h2>
@@ -97,7 +97,7 @@ Dame rutas o enlaces de descarga de los archivos reales: .orskin, .blend editabl
           <li>Abre el <code>.blend</code> editado. Revisa arriba, abajo y lados en <strong>Material Preview</strong>; comprueba uniones, zonas reflejadas, marcas y superficies móviles.</li>
           <li>En un <strong>Image Editor</strong>, selecciona la imagen pintada (inicialmente <code>x8_abisal_base_color</code>) y usa <strong>Image → Save</strong>. Para imágenes externas vinculadas nuevas, usa también <strong>File → External Data → Pack Resources</strong>. Luego guarda el <code>.blend</code> con otro nombre mediante <strong>File → Save As</strong> y ábrelo de nuevo para comprobar que la pintura se conservó. Empaquetar recursos por sí solo no guarda los cambios de la imagen ya empaquetada.</li>
           <li>Abre el espacio <strong>Scripting</strong>; en su editor de texto abre <code>Export OpenRC Skin.py</code> de la carpeta del kit y pulsa <strong>Run Script</strong>. En el diálogo elige una ubicación y guarda, por ejemplo, <code>Mi diseño.orskin</code>. El nombre del archivo será el nombre de la pintura: máximo 48 caracteres imprimibles.</li>
-          <li>Para una vista previa, encuadra el avión en <strong>Material Preview</strong>, configura la salida a <strong>1920 × 1080 al 100 %</strong> y usa <strong>View → Viewport Render Image</strong> en la vista 3D; guarda la imagen desde la ventana de imagen. Repite desde otro ángulo si hace falta. El kit no genera una vista previa automáticamente ni incluye cámara.</li>
+          <li>Para una vista previa, encuadra el avión en <strong>Material Preview</strong>, configura la salida a <strong>1920 × 1080 al 100 %</strong> y usa <strong>View → Render Viewport Preview</strong> en la vista 3D; guarda la imagen desde la ventana de imagen. Repite desde otro ángulo si hace falta. El kit no genera una vista previa automáticamente ni incluye cámara.</li>
         </ol>
         <p>La imagen 1920 × 1080 sirve para revisar el diseño. La textura de pintura del kit es de 2048 × 2048. El archivo que se carga en OpenRC es el <code>.orskin</code>, no la imagen ni el <code>.blend</code>.</p>
         <p>Para un asistente que use terminal, desde la carpeta del kit (reemplaza el nombre del proyecto si lo guardaste con otro nombre):</p>
@@ -105,7 +105,7 @@ Dame rutas o enlaces de descarga de los archivos reales: .orskin, .blend editabl
         <p>Si <code>blender</code> no está en la ruta de comandos, utiliza la ruta completa al ejecutable. El exportador de la ventana también sirve.</p>
         <h3>5. Carga la pintura</h3>
         <ol>
-          <li>En OpenRC selecciona <strong>Inicio → Aeronaves → Skywalker X8 → Elegir pintura → Cargar nueva skin…</strong>.</li>
+          <li>En OpenRC selecciona <strong>Inicio → Aeronaves → Ala X8 → Elegir pintura → Cargar nueva skin…</strong>.</li>
           <li>En la ventana de herramientas pulsa <strong>Cargar nueva skin…</strong> y elige el <code>.orskin</code>. Si se importa correctamente, queda seleccionado. Compruébalo en Inicio y en vuelo.</li>
           <li>La skin importada y la selección se conservan al reiniciar. Para volver al aspecto original, elige una pintura incluida en la galería.</li>
         </ol>
@@ -130,7 +130,7 @@ Dame rutas o enlaces de descarga de los archivos reales: .orskin, .blend editabl
         <p class="intro">The simulator loads an <code>.orskin</code> file. A skin changes the aircraft's appearance, not its shape or flight behavior.</p>
         <h3>1. Get the kit</h3>
         <ol>
-          <li>In OpenRC open <strong>Home → Aircraft → Skywalker X8 → Choose paint → Create a skin</strong>. In the dialog select <strong>Save Blender template…</strong> and save <code>skywalker-x8.zip</code>.</li>
+          <li>In OpenRC open <strong>Home → Aircraft → X8 Wing → Choose paint → Create a skin</strong>. In the dialog select <strong>Save Blender template…</strong> and save <code>skywalker-x8.zip</code>.</li>
           <li>Extract the ZIP into its own folder. It contains <code>Skywalker-X8.blend</code>, <code>Export OpenRC Skin.py</code>, <code>README.txt</code> and this <code>guide.html</code>. Keep a clean copy.</li>
           <li>Install <a href="https://www.blender.org/download/">free Blender from its official site</a>. The template was saved with Blender 5.2.2; use that version or a compatible newer version. Downloads and AI services need internet; this guide does not.</li>
         </ol>
@@ -149,14 +149,14 @@ Dame rutas o enlaces de descarga de los archivos reales: .orskin, .blend editabl
 
 Use my attached OpenRC Skywalker X8 starter kit. Inspect the template and my reference images first. Check and show that you can actually open the .blend using Blender/bpy or a connected running Blender before claiming you can produce files. If you cannot, tell me and give me the next local step; do not invent an export.
 
-Create a striking, flight-readable paint scheme that follows my idea. Use the existing x8_livery Base Color image and existing material Base Colors. Keep the aircraft geometry, silhouette, objects, transforms, pivots, hinges, UVs, material names and hierarchy intact. Do not change physics, add aircraft parts or rely on procedural shading that is not baked into the paint image. Keep markings and colors legible from above and below. Use only artwork and references I have permission to use; describe any outside material you used.
+Create a striking, flight-readable paint scheme that follows my idea. Use the existing x8_livery Base Color image and existing material Base Colors. Keep the aircraft geometry, silhouette, objects, transforms, pivots, hinges, UVs, material names and hierarchy intact. Preserve the texture node's original mapping, interpolation and projection settings. Do not change physics, add aircraft parts or rely on procedural shading that is not baked into the paint image. Keep markings and colors legible from above and below. Use only artwork and references I have permission to use; describe any outside material you used.
 
 Keep the paint image at 2048 × 2048 unless there is a good reason to change it. Each PNG must be no larger than 4096 × 4096, with no more than 16,777,216 decoded pixels in total. Do not use 8K textures. Save the painted image itself, pack any newly linked resources, then save an editable .blend and reopen it to verify the paint survived. Use the supplied Export OpenRC Skin.py to produce an .orskin for this kit; do not make up the manifest or simply rename another file. Also provide a 1920 × 1080 preview showing the paint, and state which views you actually checked. The preview is a review image, not the texture.
 
 Give me the actual .orskin, editable .blend and preview file paths or download links. Report the Blender version and what you verified. If an export cannot run in your environment, say so and provide the edited .blend and the exact local steps instead.</textarea>
         <button type="button" data-copy="prompt-en" data-ok="Copied." data-fail="Select the text and copy it with Ctrl+C or ⌘C.">Copy brief</button><span class="status" role="status" aria-live="polite"></span>
         <noscript>Select the text and use Ctrl+C or ⌘C to copy it.</noscript>
-        <p>The kit uses one <code>x8_livery</code> paint image; other materials can use their Principled Base Color. The exporter supports a base color and a directly connected image, not unbaked procedural mixes. Leave other material channels as they are. Transparency is not guaranteed.</p>
+        <p>The kit uses one <code>x8_livery</code> paint image; other materials can use their Principled Base Color. The exporter supports a base color and a directly connected image, not unbaked procedural mixes. Keep the texture node's original UV mapping, Repeat extension, Linear interpolation and Flat projection. Leave other material channels as they are. Transparency is not guaranteed.</p>
       </article>
       <article>
         <h2>Finish, export and fly</h2>
@@ -166,7 +166,7 @@ Give me the actual .orskin, editable .blend and preview file paths or download l
           <li>Open the edited <code>.blend</code>. Inspect the top, underside and sides in <strong>Material Preview</strong>, including seams, mirrored areas, markings and moving surfaces.</li>
           <li>In an <strong>Image Editor</strong>, select the painted image (initially <code>x8_abisal_base_color</code>) and choose <strong>Image → Save</strong>. For newly linked external images also use <strong>File → External Data → Pack Resources</strong>. Then <strong>File → Save As</strong> a new <code>.blend</code> and reopen it to check the paint survived. Packing resources alone does not save edits to the already packed paint image.</li>
           <li>Open the <strong>Scripting</strong> workspace. In its Text Editor open the kit's <code>Export OpenRC Skin.py</code> and choose <strong>Run Script</strong>. In the dialog choose a location and a name such as <code>My design.orskin</code>. The filename becomes the paint name, up to 48 printable characters.</li>
-          <li>For a preview, frame the aircraft in <strong>Material Preview</strong>, set output to <strong>1920 × 1080 at 100%</strong>, and choose <strong>View → Viewport Render Image</strong> in the 3D Viewport; save the image from the image window. Repeat from another angle if needed. The kit does not automatically create a preview or include a camera.</li>
+          <li>For a preview, frame the aircraft in <strong>Material Preview</strong>, set output to <strong>1920 × 1080 at 100%</strong>, and choose <strong>View → Render Viewport Preview</strong> in the 3D Viewport; save the image from the image window. Repeat from another angle if needed. The kit does not automatically create a preview or include a camera.</li>
         </ol>
         <p>The 1920 × 1080 image is for review. The kit's paint texture is 2048 × 2048. Load the <code>.orskin</code> into OpenRC, not the image or the <code>.blend</code>.</p>
         <p>For an assistant using a terminal, run this from the kit folder (replace the project name if you saved it under another name):</p>
@@ -174,7 +174,7 @@ Give me the actual .orskin, editable .blend and preview file paths or download l
         <p>If <code>blender</code> is not on the command path, use the full path to its executable. The GUI exporter works too.</p>
         <h3>5. Load the paint</h3>
         <ol>
-          <li>In OpenRC select <strong>Home → Aircraft → Skywalker X8 → Choose paint → Load new skin…</strong>.</li>
+          <li>In OpenRC select <strong>Home → Aircraft → X8 Wing → Choose paint → Load new skin…</strong>.</li>
           <li>In the dialog choose <strong>Load new skin…</strong> and select the <code>.orskin</code>. A successful import selects it automatically. Inspect it on Home and in flight.</li>
           <li>Imported skins and the selection persist across restarts. To restore the original appearance, select a built-in paint in the gallery.</li>
         </ol>
