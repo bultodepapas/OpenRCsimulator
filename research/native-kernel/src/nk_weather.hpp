@@ -40,12 +40,14 @@ struct WeatherModel {
 	R field_elevation_m = 0.0;
 	R uniform_density = kWeatherSeaDensity;
 	R uniform_charge = 1.0;
+	R uniform_temperature_k = kWeatherSeaTemperature;
 };
 
 struct WeatherAir {
 	bool ok = false;
 	R density = kNan;
 	R engine_charge_ratio = kNan;
+	R temperature_k = kNan;
 };
 
 inline std::array<R, 3> weather_invalid_wind() {
@@ -196,7 +198,7 @@ inline R weather_density_altitude(R density) {
 // column samples geometric altitude = field elevation - NED datum down.
 inline WeatherAir weather_air(const WeatherModel &model, R down_m) {
 	if (!model.vertical_atmosphere) {
-		return {true, model.uniform_density, model.uniform_charge};
+		return {true, model.uniform_density, model.uniform_charge, model.uniform_temperature_k};
 	}
 	const R altitude = model.field_elevation_m - down_m;
 	if (!is_finite(altitude) || altitude.v < -500.0 || altitude.v > 11000.0) {
@@ -217,7 +219,7 @@ inline WeatherAir weather_air(const WeatherModel &model, R down_m) {
 			!is_finite(sigma) || !is_finite(density_altitude)) {
 		return {};
 	}
-	return {true, density, sigma};
+	return {true, density, sigma, temperature};
 }
 
 } // namespace nk

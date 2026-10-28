@@ -69,31 +69,38 @@ struct HeliControlResult {
 	bool ok = false;
 	R collective = 0.0, cyclic_forward = 0.0, cyclic_right = 0.0, tail_collective = 0.0, drive_fraction = 0.0;
 	std::array<R, 2> controller_derivative{};
+	const char *message = "";
 };
+
+inline HeliControlResult heli_control_failure(const char *message) {
+	HeliControlResult result;
+	result.message = message;
+	return result;
+}
 
 inline HeliControlResult heli_trainer_electronics(const HeliTrainerModel &m, const R *state,
 		const std::array<R, 4> &sticks, bool idle_up, bool trainer_enabled, const HeliTrim &trim) {
 	if (!heli_trainer_trim_valid(trim, m)) {
-		return {};
+		return heli_control_failure("invalid electronics context, state, mode or stick layout");
 	}
 	for (int i = 0; i < 19; ++i) {
 		if (!is_finite(state[i])) {
-			return {};
+			return heli_control_failure("electronics state is nonfinite");
 		}
 	}
 	for (const R value : sticks) {
 		if (!is_finite(value) || value < -1.0 || value > 1.0) {
-			return {};
+			return heli_control_failure("pilot sticks must be finite and in [-1, 1]");
 		}
 	}
 	if (absf(state[17]) > 1.0e12 || absf(state[18]) > 1.0e12) {
-		return {};
+		return heli_control_failure("controller state is outside its finite operating range");
 	}
 	const R pitch_value = heli_curve(idle_up ? m.idle_pitch : m.normal_pitch, sticks[3]);
 	const R throttle_value = heli_curve(idle_up ? m.idle_throttle : m.normal_throttle, sticks[3]);
 	if (!is_finite(pitch_value) || pitch_value < -1.0 || pitch_value > 1.0
 			|| !is_finite(throttle_value) || throttle_value < 0.0 || throttle_value > 1.0) {
-		return {};
+		return heli_control_failure("prepared curve output is outside its finite domain");
 	}
 	R cyclic_longitudinal = sticks[0];
 	R cyclic_lateral = sticks[1];
@@ -118,7 +125,7 @@ inline HeliControlResult heli_trainer_electronics(const HeliTrainerModel &m, con
 	if (!heli_inflow_finite({pitch_value, cyclic_longitudinal, cyclic_lateral})
 			|| cyclic_longitudinal < -1.0 || cyclic_longitudinal > 1.0
 			|| cyclic_lateral < -1.0 || cyclic_lateral > 1.0) {
-		return {};
+		return heli_control_failure("swash mix refused the physical stick commands");
 	}
 	const R root_three = sqrt_(3.0);
 	const R front = clampf(pitch_value + cyclic_longitudinal, -1.0, 1.0);
@@ -131,7 +138,7 @@ inline HeliControlResult heli_trainer_electronics(const HeliTrainerModel &m, con
 	const R longitudinal_raw = longitudinal_axis * m.longitudinal_rad_per_unit;
 	const R lateral_raw = lateral_axis * m.lateral_rad_per_unit;
 	if (!heli_inflow_finite({collective_raw, longitudinal_raw, lateral_raw})) {
-		return {};
+		return heli_control_failure("swash linkage refused the mixed commands");
 	}
 	const R theta0 = clampf(collective_raw, m.collective_min_rad, m.collective_max_rad);
 	const R swash_long = clampf(longitudinal_raw, -m.cyclic_max_rad, m.cyclic_max_rad);

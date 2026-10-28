@@ -17,6 +17,8 @@
 #include "nk_spatial_weather.hpp"
 #include "nk_wake_spatial_flow.hpp"
 #include "nk_wake_spatial_aero.hpp"
+#include "nk_electric_stage.hpp"
+#include "nk_electric_coupling.hpp"
 
 namespace nk {
 
@@ -33,6 +35,7 @@ struct StageLayout {
 	int brake_input = -1; // wheel_brake_input_index()
 	int input_count = 0;
 	int turbulence = -1;
+	int battery_size = 0;
 };
 
 struct StageModel {
@@ -49,6 +52,9 @@ struct StageModel {
 	bool spatial_weather = false;
 	SpatialWeather spatial;
 	WakeModel wake;
+	bool electric = false;
+	ElectricPreparedSource electric_source;
+	std::array<R, 6> inertia{}, inverse{};
 	R dt = 0.0;
 };
 
@@ -58,6 +64,8 @@ struct TickContext {
 	R brake = 0.0;
 	Deflections deflections;
 	R time_now = 0.0;
+	bool power_ready = false, power_enabled = false;
+	R throttle = 0.0;
 };
 
 struct StageResult {
@@ -118,7 +126,11 @@ inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx
 		}
 	}
 	if (L.wheel_count == 0) {
-		return false; // the legacy no-wheel-state law is not ported (refused at prepare)
+		if (!m.ground.gear.empty || value_count != L.wheel_index) return false;
+		has_loads = has_hull;
+		loads = hull;
+		rates.clear();
+		return true; // gearless aircraft retain the optional hull wrench only
 	}
 	if (value_count != L.wheel_index + L.wheel_count) {
 		return false;
@@ -169,10 +181,13 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 	StageResult out;
 	const StageLayout &L = m.layout;
 	const int expected = L.rotor_index;
-	if (L.wheel_count == 0 || value_count != expected + L.wheel_count || !ctx.ready) {
+	if (value_count != L.wheel_index + L.wheel_count || !ctx.ready || (m.electric && !ctx.power_ready)) {
 		return out;
 	}
 	const std::vector<R> &a = ctx.aux;
+	const R trial_rpm = m.electric ? values[L.rotor_index] : a[L.rpm];
+	if (m.electric && !is_finite(trial_rpm)) return out;
+	const R rpm = m.electric ? maxf(0.0, trial_rpm) : trial_rpm;
 	const int lag = L.downwash;
 	const R downwash_cl = lag >= 0 && lag < static_cast<int>(a.size()) ? a[lag] : R(kNan);
 	// Each trial pose/time samples its own atmosphere and point flow; no sampled endpoint reuse.
@@ -183,7 +198,8 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 	} else if (!is_finite(s[0]) || !is_finite(s[1]) || !is_finite(s[2]) || !is_finite(at) || at.v < 0.0) {
 		wind = {kNan, kNan, kNan};
 	}
-	const R rho = m.has_weather ? weather_air(m.weather, s[2]).density : m.density;
+	const WeatherAir atmosphere = weather_air(m.weather, s[2]);
+	const R rho = m.has_weather ? atmosphere.density : m.density;
 	Air air = air_compute(s, wind.data(), rho);
 	StageWindContext wind_context{&m, &ctx};
 	SpatialPointContext point_context;
@@ -212,20 +228,22 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 		aero = aero_loads(s, air, ctx.deflections, m.aero, rho, downwash_cl, ground_up);
 	}
 	std::array<R, 6> total;
-	const PropAir prop_air = prop_stage_air_velocity(s, air.v, m.prop, false,
+	const PropAir prop_air = prop_stage_air_velocity(s, air.v, m.prop, m.electric,
 		m.spatial_weather && spatial_flow.ok ? spatial_flow.propulsion_air.data() : nullptr);
+	if (m.electric && !prop_air.ok) return out;
 	if (!aero_valid || !prop_air.ok) {
 		total = {kNan, kNan, kNan, kNan, kNan, kNan}; // Propulsion.stage_air_velocity refuses: _invalid_components
 	} else {
-		const std::array<R, 6> propulsion = prop_loads(prop_air.velocity.data(), a[L.rpm], m.prop, rho);
+		const std::array<R, 6> propulsion = prop_loads(prop_air.velocity.data(), rpm, m.prop, rho);
 		total = aero;
 		for (int i = 0; i < 6; ++i) {
 			total[i] += propulsion[i];
 		}
 		if (m.wake.enabled) {
-			const auto tq = prop_thrust_torque(prop_air.velocity.data(), a[L.rpm], m.prop, rho);
+			// Uniform Slipstream reads datum flow unless the stage explicitly supplies local propulsion air.
+			const auto tq = prop_thrust_torque(m.spatial_weather ? prop_air.velocity.data() : air.v, rpm, m.prop, rho);
 			const WakePointSampler sampler = spatial_wake_sampler(point_context);
-			const auto wash = wake_loads(s, air, ctx.deflections, m.aero, m.prop, m.wake, a[L.rpm], rho,
+			const auto wash = wake_loads(s, air, ctx.deflections, m.aero, m.prop, m.wake, rpm, rho,
 				tq[0], tq[1], downwash_cl, expected > 0 ? values : nullptr,
 				m.spatial_weather ? spatial_flow.wake_source_delta.data() : nullptr, m.spatial_weather ? &sampler : nullptr);
 			for (int i = 0; i < 6; ++i) total[i] += wash[i];
@@ -242,28 +260,47 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 			total[i] += ground_loads[i];
 		}
 	}
-	if (expected == 0) {
+	ElectricStagePoint source;
+	ElectricCouplingResult coupling;
+	if (m.electric) {
+		const bool dynamic = m.electric_source.kind != ElectricBatteryKind::FixedVoltage;
+		const R ambient = spatial_flow_finite3(s) ? atmosphere.temperature_k : R(kNan);
+		const R cooling = m.electric_source.kind == ElectricBatteryKind::PackEcm ?
+			m.electric_source.pack.cooling_airflow_fraction * sqrt_(air.v[0] * air.v[0] + air.v[1] * air.v[1] + air.v[2] * air.v[2]) : R(0.0);
+		source = m.electric_source.evaluate(rpm, ctx.throttle, values + L.rotor_index + 1, L.battery_size,
+			ctx.power_enabled, ambient, cooling);
+		const ElectricCouplingSource drive{source.ok, source.values[0], source.values[1]};
+		coupling = electric_coupled_response(s, trial_rpm, m.prop, m.electric_source.motor, m.inertia.data(), m.inverse.data(),
+			prop_air.velocity.data(), rho, atmosphere.engine_charge_ratio, ctx.throttle, dynamic, drive, total.data());
+		if (!coupling.ok) return out;
+		total = coupling.loads;
+	}
+	if (expected == 0 && !m.electric) {
 		out.derivative = std::move(rates);
-	} else {
+	} else if (expected > 0) {
 		R source[3] = {air.v[0], air.v[1], air.v[2]};
 		if (m.spatial_weather && spatial_flow.ok) {
 			for (int i = 0; i < 3; ++i) if (spatial_flow.wake_source_delta[i] != 0.0) source[i] += spatial_flow.wake_source_delta[i];
 		}
 		// Nonspatial WashTransport reads datum air; spatial transport shares the explicit propeller point.
 		const auto tq = prop_thrust_torque(m.spatial_weather && spatial_flow.ok ? prop_air.velocity.data() : air.v,
-			a[L.rpm], m.prop, rho);
-		const auto target = wake_transport_target(source, a[L.rpm], tq[0], tq[1], m.prop, m.wake, rho);
+			rpm, m.prop, rho);
+		const auto target = wake_transport_target(source, rpm, tq[0], tq[1], m.prop, m.wake, rho);
 		if (m.spatial_weather && (!spatial_flow.ok || !is_finite(target[0]) || !is_finite(target[1]))) return out;
 		out.derivative.resize(expected);
 		wake_transport_derivative(target, values, m.wake, out.derivative.data());
-		out.derivative.insert(out.derivative.end(), rates.begin(), rates.end());
 	}
+	if (m.electric) {
+		out.derivative.push_back(coupling.rpm_rate);
+		out.derivative.insert(out.derivative.end(), source.rates.begin(), source.rates.end());
+	}
+	if (expected > 0 || m.electric) out.derivative.insert(out.derivative.end(), rates.begin(), rates.end());
 	if (static_cast<int>(out.derivative.size()) != value_count) {
 		return out;
 	}
 	out.shaped = true;
 	out.loads = total;
-	out.rotor = prop_rotor_momentum(m.prop, a[L.rpm]);
+	out.rotor = prop_rotor_momentum(m.prop, rpm);
 	return out;
 }
 

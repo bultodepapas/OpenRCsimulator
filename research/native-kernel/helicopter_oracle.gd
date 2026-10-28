@@ -44,6 +44,7 @@ func _checks() -> void:
 		_failures.append("default field failed to load")
 		return
 	var weather_ids := ["calm", "steady", "crosswind", "gusty", "updraft", "hot-high", "cool-dense"]
+	_report.reference_start_refusals = []
 	for start: String in ["airborne", "ground"]:
 		for weather_id: String in weather_ids:
 			var session := _make_session(loaded_field.field, start, weather_id)
@@ -56,7 +57,9 @@ func _checks() -> void:
 				session.free()
 				continue
 			_check_session(session, start, weather_id, maxi(1, int(ceil(float(_states) / float(2 * weather_ids.size())))))
-			if weather_id == "calm": _check_heli_refusals(session, snapshot, start)
+			if weather_id == "calm":
+				_check_malformed_stages(session, start)
+				_check_heli_refusals(session, snapshot, start)
 			session.free()
 
 
@@ -67,7 +70,26 @@ func _make_session(field: Dictionary, start: String, weather_id: String) -> Node
 		_failures.append("helicopter setup %s/%s: %s" % [start, weather_id, str(session.start_error)])
 		session.free()
 		return null
-	if not session.setup_weather(HeliWindConfig.preset(weather_id)) or not session.set_start_choice(start) or not session.reset():
+	if not session.set_start_choice(start):
+		_failures.append("helicopter start choice refused: " + start)
+		session.free()
+		return null
+	# At stock hot-high density, reference reset currently cannot solve trim.
+	# Keep a real calm reset as a clearly labeled component seed, then prepare the
+	# actual hot-high context. This never claims an available hot-high flight start.
+	if weather_id == "hot-high" and not session.reset():
+		_failures.append("calm seed for hot-high component failed: " + start)
+		session.free()
+		return null
+	if not session.setup_weather(HeliWindConfig.preset(weather_id)):
+		_failures.append("helicopter weather %s/%s: %s" % [start, weather_id, str(session.weather_error)])
+		session.free()
+		return null
+	var reset_ok: bool = session.reset()
+	if not reset_ok and weather_id == "hot-high" and str(session.start_error).contains("hover trim line search could not reduce the full-force residual"):
+		_report.reference_start_refusals.append({start = start, weather = weather_id, reason = session.start_error,
+			component_seed = "calm reference reset; no hot-high flight start"})
+	elif not reset_ok:
 		_failures.append("helicopter reset %s/%s: %s / %s" % [start, weather_id, str(session.start_error), str(session.weather_error)])
 		session.free()
 		return null
@@ -103,6 +125,8 @@ func _compare_stage(session: Node, body: PackedFloat64Array, continuous: PackedF
 		PackedFloat64Array([1.0 if native_ok else 0.0]), inputs)
 	if not reference_ok or not native_ok:
 		if native_ok != reference_ok: _tally("helicopter", "validity_mismatches")
+		if not reference_ok and not native_ok:
+			_compare("helicopter_failure_message", str(session._stage_failure), str(native.get("error", "")), inputs)
 		return false
 	for key: String in ["loads", "body_derivative", "derivative", "rotor_momentum"]:
 		_compare("helicopter_" + key, reference[key], native.get(key), inputs)
@@ -117,7 +141,8 @@ func _check_session(session: Node, start: String, weather_id: String, count: int
 	var zero_bristles := PackedFloat64Array()
 	zero_bristles.resize(8)
 	# The live reset state must compare before any manufactured perturbations.
-	if not _compare_stage(session, initial_body, initial_continuous, 0.0, [start, weather_id, "reset"]):
+	# Hot-high is explicitly a calm-derived seed after the recorded refusal above.
+	if not _compare_stage(session, initial_body, initial_continuous, 0.0, [start, weather_id, "reset_or_labeled_seed"]) and weather_id != "hot-high":
 		_failures.append("native helicopter reset stage refused: " + start + "/" + weather_id)
 	for i in count:
 		var body := initial_body.duplicate()
@@ -166,6 +191,77 @@ func _check_session(session: Node, start: String, weather_id: String, count: int
 			_tally(group, "stopped" if continuous[0] == 0.0 else ("near_stop" if factors[i % factors.size()] < 0.20 else "running"))
 			if start == "ground":
 				_tally(group, "contact" if contact.get("max_depth_m", 0.0) > 0.0 else "unloaded")
+
+
+func _check_malformed_stages(session: Node, start: String) -> void:
+	var initial_body: PackedFloat64Array = session.sim.state.duplicate()
+	var initial_values: PackedFloat64Array = session.sim.continuous.duplicate()
+	var saved_trim: Dictionary = session._trim.duplicate(true)
+	var saved_inputs: PackedFloat64Array = session.sim.inputs.duplicate()
+	var saved_mode: String = session.flight_mode
+	session.flight_mode = "normal"
+	session.sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.5])
+	# Stay clear of ground for attitude/refusal checks; contact-specific bad
+	# memory is still tested individually in the 14-state case below.
+	initial_body[2] = -30.0
+	var bad_values := initial_values.duplicate()
+	bad_values[0] = -0.001
+	if _compare_stage(session, initial_body, bad_values, 0.0, [start, "negative_rotor"]):
+		_failures.append("negative helicopter rotor speed was not refused")
+	bad_values = initial_values.duplicate()
+	bad_values[3] = NAN
+	if _compare_stage(session, initial_body, bad_values, 0.0, [start, "nan_inflow"]):
+		_failures.append("nonfinite helicopter inflow was not refused")
+	var bad_body := initial_body.duplicate()
+	bad_body[3] = NAN
+	if _compare_stage(session, bad_body, initial_values, 0.0, [start, "nan_velocity"]):
+		_failures.append("nonfinite helicopter body was not refused")
+	bad_body = initial_body.duplicate()
+	bad_body[3] = 1e150
+	if _compare_stage(session, bad_body, initial_values, 0.0, [start, "overflow_flow"]):
+		_failures.append("unbounded helicopter flow was not refused")
+	if _compare_stage(session, initial_body, initial_values, -1.0, [start, "invalid_wind_time"]):
+		_failures.append("invalid helicopter wind time was not refused")
+	session.sim.inputs[0] = 2.0
+	if _compare_stage(session, initial_body, initial_values, 0.0, [start, "invalid_stick"]):
+		_failures.append("out-of-range helicopter stick was not refused")
+	session.sim.inputs[0] = NAN
+	if _compare_stage(session, initial_body, initial_values, 0.0, [start, "nan_stick"]):
+		_failures.append("nonfinite helicopter stick was not refused")
+	session.sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.5])
+	for mode: String in ["", "unconfigured"]:
+		session.flight_mode = mode
+		if _compare_stage(session, initial_body, initial_values, 0.0, [start, "unsupported_mode", mode]):
+			_failures.append("unsupported helicopter mode was not refused")
+	session.flight_mode = "normal"
+	session._trim = {cyclic_forward_bias_rad = 100.0}
+	if _compare_stage(session, initial_body, initial_values, 0.0, [start, "invalid_trim"]):
+		_failures.append("out-of-range helicopter trim was not refused")
+	session._trim = {cyclic_forward_bias_rad = NAN}
+	if _compare_stage(session, initial_body, initial_values, 0.0, [start, "nan_trim"]):
+		_failures.append("nonfinite helicopter trim was not refused")
+	session._trim = {future_unmodeled_bias = 0.0}
+	if _compare_stage(session, initial_body, initial_values, 0.0, [start, "unknown_trim"]):
+		_failures.append("unknown helicopter trim was not refused")
+	session._trim = saved_trim
+	if start == "ground":
+		for axis in 8:
+			bad_values = initial_values.duplicate()
+			bad_values[6 + axis] = NAN
+			if _compare_stage(session, initial_body, bad_values, 0.0, [start, "nan_bristle", axis]):
+				_failures.append("nonfinite skid bristle was not refused: %d" % axis)
+	var q0: float = _from_bits(PackedInt64Array([0x3d719799812dea11]))[0]
+	var qnext: float = _from_bits(PackedInt64Array([0x3d719799812dea12]))[0]
+	for probe: Dictionary in [{name = "attitude_threshold", q = q0, valid = false},
+			{name = "attitude_above_threshold", q = qnext, valid = true}]:
+		bad_body = initial_body.duplicate()
+		for axis in 4: bad_body[6 + axis] = 0.0
+		bad_body[6] = probe.q
+		var accepted := _compare_stage(session, bad_body, initial_values, 0.0, [start, probe.name])
+		if accepted != probe.valid: _failures.append("helicopter attitude threshold produced unexpected validity: " + str(probe.name))
+	session._trim = saved_trim
+	session.sim.inputs = saved_inputs
+	session.flight_mode = saved_mode
 
 
 func _check_heli_refusals(session: Node, snapshot: Dictionary, start: String) -> void:

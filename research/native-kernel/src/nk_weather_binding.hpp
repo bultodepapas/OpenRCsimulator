@@ -24,7 +24,8 @@
 namespace nk {
 
 // Snapshot v1 schema:
-// {format, kind, vertical_atmosphere, has_turbulence, atmosphere, uniform|spatial}.
+// {format, kind, vertical_atmosphere, has_turbulence, atmosphere, uniform|spatial,
+//  temperature_k?}. Older snapshots omit temperature_k and use 288.15 K.
 // atmosphere float64 = [field elevation, uniform density, uniform charge].
 // uniform float64 = [speed, from degrees, gust, gust-up, duration, period, delay].
 // spatial has domain[7], profile[14], layers[4*N], gust_values[4*N],
@@ -311,7 +312,7 @@ public:
 		std::vector<R> atmosphere, uniform;
 		godot::Dictionary spatial;
 		if (!dec.keys(config, "weather", {"format", "kind", "vertical_atmosphere", "has_turbulence", "atmosphere",
-				"uniform", "spatial"}) || !dec.string(config, "format", format) || !dec.string(config, "kind", kind) ||
+				"uniform", "spatial", "temperature_k"}) || !dec.string(config, "format", format) || !dec.string(config, "kind", kind) ||
 				!dec.boolean(config, "vertical_atmosphere", vertical) || !dec.boolean(config, "has_turbulence", turbulent) ||
 				!dec.packed(config, "atmosphere", atmosphere, 3)) {
 			return failure(dec.error);
@@ -324,6 +325,11 @@ public:
 			return failure("invalid atmosphere snapshot");
 		}
 		WeatherModel weather;
+		R uniform_temperature = kWeatherSeaTemperature;
+		if (config.has("temperature_k") &&
+				(!dec.number(config, "temperature_k", uniform_temperature) || uniform_temperature.v <= 0.0)) {
+			return failure(dec.error.empty() ? "invalid uniform temperature" : dec.error);
+		}
 		SpatialWeather spatial_model;
 		const bool spatial_kind = kind == godot::String("spatial");
 		if (!spatial_kind) {
@@ -351,6 +357,7 @@ public:
 			weather.uniform_density = atmosphere[1];
 			weather.uniform_charge = atmosphere[2];
 		}
+		weather.uniform_temperature_k = uniform_temperature;
 		weather_ = weather;
 		spatial_model_ = std::move(spatial_model);
 		spatial_ = spatial_kind;
@@ -397,6 +404,8 @@ public:
 		out[1] = value.engine_charge_ratio.v;
 		return out;
 	}
+
+	double temperature_component(double down_m) const { return air(down_m).temperature_k.v; }
 
 private:
 	static godot::Dictionary failure(const std::string &reason) {
