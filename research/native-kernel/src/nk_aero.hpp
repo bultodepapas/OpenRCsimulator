@@ -2,9 +2,9 @@
 // operation by operation: app/physics/air_data.gd compute, app/physics/ground_effect.gd factors/law and
 // app/physics/aero.gd loads (_global_loads, _local_loads, _wing_flow, local_flow_weight,
 // _wing_lift_coefficient_with, _tail_surface_from_flow, _surface_with_flow, _tail_curve, downwash_angle).
-// Supported law: Aero.LOADS_LAW "section-plane-source-weighted-wake-velocity-v2" without flaps, tailless elevons,
-// tabulated wing polar or spatial (station-delta) air; prepare_aero refuses those models (D6) so the caller keeps
-// the GDScript reference.
+// Aero.LOADS_LAW "section-plane-source-weighted-wake-velocity-v2". Flaps, tailless elevons and the tabulated wing
+// polar are included below for qualification; production admission remains the decoder's responsibility. Spatial
+// (station-delta) air is not implemented here.
 #pragma once
 
 #include <array>
@@ -38,6 +38,36 @@ struct Tail {
 	R free_incidence = 0.0;
 };
 
+// These values come from AircraftData's validated, already prepared dictionaries. In particular, polar tangents
+// and flap/elevon geometry must not be derived again in the stage evaluator.
+struct FlapModel {
+	bool enabled = false;
+	std::vector<R> station_coverage;
+	R effective_angle_limit_deg = 0.0, lift_effectiveness = 0.0, aerodynamic_gain = 1.0;
+	R profile_drag_coefficient = 0.0, thin_airfoil_moment_per_cl = 0.0;
+	R hinge_fraction = 0.0, chord_fraction = 0.0;
+	bool has_stall_shift_fraction = false;
+	R stall_shift_fraction = 0.0;
+	bool has_lift_reference_offset_m = false;
+	R lift_reference_offset_m = 0.0;
+};
+
+struct WingPolarBranch {
+	std::vector<R> angles, values, tangents;
+};
+
+struct WingPolarModel {
+	bool enabled = false;
+	WingPolarBranch positive, negative;
+	R cd0 = 0.0, cd90 = 0.0, slope = 0.0, offset = 0.0;
+	std::vector<R> strip_factor;
+};
+
+struct TaillessModel {
+	std::vector<R> station_x, elevon_coverage;
+	R tau = 0.0, moment_per_rad = 0.0;
+};
+
 struct AeroModel {
 	// reference / mass datum
 	R S = 0.0, b = 0.0, c = 0.0;
@@ -59,6 +89,8 @@ struct AeroModel {
 	R strip_alpha_zero = 0.0;
 	std::vector<R> strip_row_sum;
 	std::vector<R> station_chords;
+	WingPolarModel polar;
+	FlapModel flaps;
 	bool ground_effect = false;
 	R ge_induced_coefficient = 0, ge_induced_exponent = 0, ge_downwash_coefficient = 0, ge_downwash_exponent = 0;
 	// surfaces
@@ -66,6 +98,7 @@ struct AeroModel {
 	R tail_CD0 = 0, tail_k = 0, tail_CD90 = 0;
 	R body_cn_beta = 0, wing_body_cl_beta = 0, body_cy_beta = 0, body_crossflow_area = 0, wing_cm_ac = 0;
 	std::vector<R> station_incidence;
+	TaillessModel tailless;
 	Tail horizontal;
 	Tail vertical;
 };
@@ -73,6 +106,7 @@ struct AeroModel {
 // Aerospace deflections in the data convention (radians).
 struct Deflections {
 	R elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0;
+	R flap = 0.0;
 };
 
 using Loads = std::array<R, 6>;
@@ -184,6 +218,55 @@ inline R downwash_angle(R wake_velocity, R gain, R plane_speed) {
 	return wake_velocity != 0.0 ? atan2_(gain * wake_velocity, plane_speed) : R(0.0);
 }
 
+// wing_polar.gd evaluate. Each branch contains prepared angles and interleaved [CL, CD, attached] values/tangents.
+inline std::array<R, 3> wing_polar_evaluate(R alpha, R base, const WingPolarModel &polar) {
+	const R side = alpha >= 0.0 ? R(1.0) : R(-1.0);
+	const R angle = absf(alpha);
+	const WingPolarBranch &branch = side > 0.0 ? polar.positive : polar.negative;
+	const std::vector<R> &x = branch.angles;
+	if (angle <= x[0]) {
+		return {base, polar.cd0, 1.0};
+	}
+	if (angle >= kPi / 2.0) {
+		const R sine = sin_(alpha);
+		return {0.5 * polar.cd90 * sin_(2.0 * alpha), polar.cd0 + polar.cd90 * sine * sine, 0.0};
+	}
+	int index = 0;
+	while (index + 1 < static_cast<int>(x.size()) - 1 && angle > x[index + 1]) {
+		++index;
+	}
+	const R h = x[index + 1] - x[index];
+	const R t = (angle - x[index]) / h;
+	const R t2 = t * t;
+	const R t3 = t2 * t;
+	const R h00 = 2.0 * t3 - 3.0 * t2 + 1.0;
+	const R h10 = t3 - 2.0 * t2 + t;
+	const R h01 = -2.0 * t3 + 3.0 * t2;
+	const R h11 = t3 - t2;
+	std::array<R, 3> result;
+	for (int component = 0; component < 3; ++component) {
+		result[component] = h00 * branch.values[index * 3 + component] + h10 * h * branch.tangents[index * 3 + component]
+			+ h01 * branch.values[(index + 1) * 3 + component] + h11 * h * branch.tangents[(index + 1) * 3 + component];
+	}
+	result[1] = maxf(0.0, result[1]);
+	result[2] = clampf(result[2], 0.0, 1.0);
+	const R reference = polar.offset + polar.slope * alpha;
+	result[0] = side * result[0] + result[2] * (base - reference);
+	return result;
+}
+
+inline bool flap_active(const Deflections &d, const AeroModel &m) {
+	return d.flap != 0.0 && m.flaps.enabled && m.flaps.aerodynamic_gain != 0.0;
+}
+
+inline R elevon_deflection(R y, const Deflections &d) {
+	return d.elevator + (y > 0.0 ? d.aileron_right : d.aileron_left);
+}
+
+inline R elevon_strip_angle(int i, R y, const Deflections &d, const TaillessModel &tailless) {
+	return tailless.tau * tailless.elevon_coverage[i] * elevon_deflection(y, d);
+}
+
 // M.add(air.v_air, M.cross(rates, _arm(position, cg))) then sqrt(f0^2 + f2^2): aero.gd _tail_plane_speed.
 inline R tail_plane_speed(const R *s, const Air &air, const AeroModel &m, const Tail &tail) {
 	const R arm0 = -(tail.position[0] - m.cg[0]);
@@ -201,10 +284,11 @@ struct WingFlow {
 	R angles[16];
 	R speeds[16];
 	R sources[16];
+	R flap_shifts[16];
 	R reference_speed = 0.0;
 };
 
-// aero.gd _wing_flow without station deltas, flaps or tailless stations.
+// aero.gd _wing_flow without station deltas.
 inline void wing_flow(const R *s, const Air &air, const Deflections &d, const AeroModel &m, WingFlow &out) {
 	const R arm0 = -(m.arp[0] - m.cg[0]);
 	const R arm1 = m.arp[1] - m.cg[1];
@@ -215,34 +299,51 @@ inline void wing_flow(const R *s, const Air &air, const Deflections &d, const Ae
 	const R r = s[12];
 	const int n = static_cast<int>(m.ys.size());
 	const bool has_twist = !m.station_incidence.empty();
+	const bool has_tailless = !m.tailless.station_x.empty();
+	const bool flapped = flap_active(d, m);
 	R reference_speed = 0.0;
 	R aileron_effect = 0.0;
-	if (n > 0) {
+	if (!has_tailless && n > 0) {
 		aileron_effect = m.wing_aileron_effectiveness;
 	}
 	for (int i = 0; i < n; ++i) {
 		const R y = arm1 + m.ys[i];
-		const R arm_x = arm0;
+		const R arm_x = !has_tailless ? arm0 : -(m.tailless.station_x[i] - m.cg[0]) + 0.0;
 		const R f0 = v[0] + (q * arm2 - r * y);
 		const R f1 = v[1] + (r * arm_x - p * arm2);
 		const R f2 = v[2] + (p * y - q * arm_x);
 		const R vp = sqrt_(f0 * f0 + f2 * f2);
-		const R control = m.ys[i] > 0.0 ? d.aileron_right : d.aileron_left;
-		R angle = wrapf(atan2_(f2, f0) + aileron_effect * control, -kPi, kPi);
+		R angle;
+		if (!has_tailless) {
+			const R control = m.ys[i] > 0.0 ? d.aileron_right : d.aileron_left;
+			angle = wrapf(atan2_(f2, f0) + aileron_effect * control, -kPi, kPi);
+		} else {
+			angle = wrapf(atan2_(f2, f0) + elevon_strip_angle(i, m.ys[i], d, m.tailless), -kPi, kPi);
+		}
 		if (has_twist) {
 			angle = wrapf(angle + m.station_incidence[i], -kPi, kPi);
 		}
+		R flap_shift = 0.0;
+		if (flapped && i < static_cast<int>(m.flaps.station_coverage.size())) {
+			const R limit = m.flaps.effective_angle_limit_deg * (kPi / 180.0);
+			const R raw_shift = d.flap * m.flaps.lift_effectiveness;
+			const R bounded_shift = limit * tanh_(raw_shift / limit);
+			flap_shift = bounded_shift * m.flaps.station_coverage[i] * m.flaps.aerodynamic_gain * maxf(cos_(angle), 0.0);
+			angle = wrapf(angle + flap_shift, -kPi, kPi);
+		}
 		out.angles[i] = angle;
 		out.speeds[i] = vp;
+		out.flap_shifts[i] = flap_shift;
 		reference_speed = maxf(reference_speed, sqrt_(f0 * f0 + f1 * f1 + f2 * f2));
 	}
+	const R stall_back = flapped && m.flaps.has_stall_shift_fraction ? 1.0 - m.flaps.stall_shift_fraction : R(0.0);
 	if (reference_speed > 0.0 && n > 0) {
 		const R a1 = m.a1;
 		const R a_span = m.a2 - m.a1;
 		const R n1 = m.n1;
 		const R n_span = m.n2 - m.n1;
 		for (int i = 0; i < n; ++i) {
-			const R source_angle = out.angles[i];
+			const R source_angle = stall_back == 0.0 ? out.angles[i] : out.angles[i] - stall_back * out.flap_shifts[i];
 			const R stall = source_angle >= 0.0 ? aero_smoothstep((source_angle - a1) / a_span)
 				: aero_smoothstep((-source_angle - n1) / n_span);
 			out.sources[i] = (out.speeds[i] / reference_speed) * (1.0 - stall);
@@ -255,7 +356,7 @@ inline void wing_flow(const R *s, const Air &air, const Deflections &d, const Ae
 	out.reference_speed = reference_speed;
 }
 
-// aero.gd _wing_lift_coefficient_with (no flaps, no polar).
+// aero.gd _wing_lift_coefficient_with.
 inline R wing_lift_coefficient_with(const R *s, const Air &air, const Deflections &d, const AeroModel &m,
 		const std::vector<R> &ge, bool dimensional) {
 	const bool ge_active = !ge.empty();
@@ -269,11 +370,13 @@ inline R wing_lift_coefficient_with(const R *s, const Air &air, const Deflection
 	const R a_span = m.a2 - m.a1;
 	const R n1 = m.n1;
 	const R n_span = m.n2 - m.n1;
+	const bool flapped = flap_active(d, m);
+	const R stall_back = flapped && m.flaps.has_stall_shift_fraction ? 1.0 - m.flaps.stall_shift_fraction : R(0.0);
 	R wing_cl = 0.0;
 	for (int i = 0; i < stations; ++i) {
 		const R effective = flow.angles[i];
-		const R stall_angle = effective;
-		const R weight = stall_angle >= 0.0 ? aero_smoothstep((stall_angle - a1) / a_span)
+		const R stall_angle = stall_back == 0.0 ? effective : effective - stall_back * flow.flap_shifts[i];
+		R weight = stall_angle >= 0.0 ? aero_smoothstep((stall_angle - a1) / a_span)
 			: aero_smoothstep((-stall_angle - n1) / n_span);
 		R base;
 		if (coupled) {
@@ -288,7 +391,16 @@ inline R wing_lift_coefficient_with(const R *s, const Air &air, const Deflection
 		if (ge_active) {
 			base += (1.0 - ge[i]) * (strip_slope * (effective + m.strip_alpha_zero) - base);
 		}
-		const R cl = weight == 0.0 ? base : (1.0 - weight) * base + weight * 0.5 * cd90 * sin_(2.0 * effective);
+		R cl = weight == 0.0 ? base : (1.0 - weight) * base + weight * 0.5 * cd90 * sin_(2.0 * effective);
+		if (m.polar.enabled) {
+			const R polar_angle = m.polar.strip_factor.empty() ? effective : effective * m.polar.strip_factor[i];
+			const std::array<R, 3> sample = wing_polar_evaluate(polar_angle, base, m.polar);
+			cl = sample[0];
+			weight = 1.0 - sample[2];
+		}
+		if (flapped) {
+			cl += strip_slope * flow.flap_shifts[i] * weight * maxf(cos_(effective), 0.0);
+		}
 		wing_cl += (dimensional ? flow.speeds[i] * cl : cl) / static_cast<double>(stations);
 	}
 	return wing_cl;
@@ -369,10 +481,11 @@ inline R local_flow_weight(const R *s, const Air &air, const Deflections &d, con
 	const R da_right = d.aileron_right;
 	const R da_left = d.aileron_left;
 	const int n = static_cast<int>(m.ys.size());
+	const bool has_tailless = !m.tailless.station_x.empty();
 	for (int i = 0; i < n; ++i) {
 		const R y = m.ys[i];
 		const R station_y = arm_y + y;
-		const R station_arm_x = arm_x;
+		const R station_arm_x = !has_tailless ? arm_x : -(m.tailless.station_x[i] - m.cg[0]) + 0.0;
 		const R flow_x = v0 + (q * arm_z - r * station_y);
 		const R flow_z = v2 + (p * station_y - q * station_arm_x);
 		const R da = y > 0 ? da_right : da_left;
@@ -384,7 +497,8 @@ inline R local_flow_weight(const R *s, const Air &air, const Deflections &d, con
 		if (blend == 1.0) {
 			return blend;
 		}
-		R angle = wrapf(atan2_(flow_z, flow_x) + aileron_effect * da, -kPi, kPi);
+		R angle = wrapf(atan2_(flow_z, flow_x) + (!has_tailless ? aileron_effect * da
+			: elevon_strip_angle(i, y, d, m.tailless)), -kPi, kPi);
 		if (has_twist) {
 			angle = wrapf(angle + m.station_incidence[i], -kPi, kPi);
 		}
@@ -549,7 +663,28 @@ inline Loads global_loads(const R *s, const Air &air, const Deflections &d, cons
 	return {fx, fy, fz, mx + (ry * fz - rz * fy), my + (rz * fx - rx * fz), mz + (rx * fy - ry * fx)};
 }
 
-// aero.gd _local_loads (include_body = true, no diagnostics, no station deltas, no flaps/polar/tailless).
+// aero.gd _section_coefficients: clean strip reference used by the flap pitch increment.
+inline std::array<R, 3> section_coefficients(R alpha, R base, const AeroModel &m, R induced_scale) {
+	const R a_span = m.a2 - m.a1;
+	const R n_span = m.n2 - m.n1;
+	R weight = alpha >= 0.0 ? aero_smoothstep((alpha - m.a1) / a_span)
+		: aero_smoothstep((-alpha - m.n1) / n_span);
+	R cl;
+	R cd;
+	if (m.polar.enabled) {
+		const std::array<R, 3> sample = wing_polar_evaluate(alpha, base, m.polar);
+		cl = sample[0];
+		weight = 1.0 - sample[2];
+		cd = sample[1] + sample[2] * induced_scale * m.k_induced * pow_(cl - m.CL_minD, 2.0);
+	} else {
+		cl = weight == 0.0 ? base : (1.0 - weight) * base + weight * 0.5 * m.CD90 * sin_(2.0 * alpha);
+		cd = m.CD0 + (1.0 - weight) * induced_scale * m.k_induced * pow_(cl - m.CL_minD, 2.0)
+			+ weight * m.CD90 * pow_(sin_(alpha), 2.0);
+	}
+	return {cl, cd, weight};
+}
+
+// aero.gd _local_loads (include_body = true, no diagnostics or station deltas).
 inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const AeroModel &m, R rho,
 		R downwash_cl, const std::vector<R> &ge) {
 	const bool ge_active = !ge.empty();
@@ -584,17 +719,20 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 	const bool coupled = static_cast<int>(m.induced_map.size()) == stations * stations;
 	const R strip_slope = m.strip_slope;
 	const R cm_ac = m.wing_cm_ac;
+	const bool flapped = flap_active(d, m);
+	const R stall_back = flapped && m.flaps.has_stall_shift_fraction ? 1.0 - m.flaps.stall_shift_fraction : R(0.0);
+	const bool has_tailless = !m.tailless.station_x.empty();
 	for (int i = 0; i < stations; ++i) {
 		const R y = m.ys[i];
 		const R arm_y = ay + y;
-		const R ax_i = ax;
+		const R ax_i = !has_tailless ? ax : -(m.tailless.station_x[i] - m.cg[0]) + 0.0;
 		const R f0 = v0 + (q * az - r * arm_y);
 		const R f1 = v1 + (r * ax_i - p * az);
 		const R f2 = v2 + (p * arm_y - q * ax_i);
 		(void)f1;
 		const R effective = flow.angles[i];
-		const R stall_angle = effective;
-		const R weight = stall_angle >= 0.0 ? aero_smoothstep((stall_angle - a1) / a_span)
+		const R stall_angle = stall_back == 0.0 ? effective : effective - stall_back * flow.flap_shifts[i];
+		R weight = stall_angle >= 0.0 ? aero_smoothstep((stall_angle - a1) / a_span)
 			: aero_smoothstep((-stall_angle - n1) / n_span);
 		R base;
 		if (coupled) {
@@ -613,9 +751,58 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 			cl = weight == 0.0 ? base : (1.0 - weight) * base + weight * 0.5 * cd90 * sin_(2.0 * effective);
 			cd = cd0 + (1.0 - weight) * ge[i] * k_induced * pow_(cl - cl_min_d, 2.0) +
 				weight * cd90 * pow_(sin_(effective), 2.0);
+			if (m.polar.enabled) {
+				const R polar_angle = m.polar.strip_factor.empty() ? effective : effective * m.polar.strip_factor[i];
+				const std::array<R, 3> sample = wing_polar_evaluate(polar_angle, base, m.polar);
+				cl = sample[0];
+				weight = 1.0 - sample[2];
+				cd = sample[1] + sample[2] * ge[i] * k_induced * pow_(cl - cl_min_d, 2.0);
+			}
 		} else {
 			cl = weight == 0.0 ? base : (1.0 - weight) * base + weight * 0.5 * cd90 * sin_(2.0 * effective);
 			cd = cd0 + (1.0 - weight) * k_induced * pow_(cl - cl_min_d, 2.0) + weight * cd90 * pow_(sin_(effective), 2.0);
+			if (m.polar.enabled) {
+				const R polar_angle = m.polar.strip_factor.empty() ? effective : effective * m.polar.strip_factor[i];
+				const std::array<R, 3> sample = wing_polar_evaluate(polar_angle, base, m.polar);
+				cl = sample[0];
+				weight = 1.0 - sample[2];
+				cd = sample[1] + sample[2] * k_induced * pow_(cl - cl_min_d, 2.0);
+			}
+		}
+		R flap_profile_drag = 0.0;
+		R flap_delta_cl = 0.0;
+		if (flapped && i < static_cast<int>(m.flaps.station_coverage.size()) && flow.flap_shifts[i] != 0.0) {
+			const R flap_lift_delta = strip_slope * flow.flap_shifts[i] * weight * maxf(cos_(effective), 0.0);
+			const R pre_extension_cl = cl;
+			cl += flap_lift_delta;
+			const R induced_factor = ge_active ? ge[i] : R(1.0);
+			const R induced_cl_delta = pow_(cl - cl_min_d, 2.0) - pow_(pre_extension_cl - cl_min_d, 2.0);
+			cd += maxf(induced_cl_delta, 0.0) * (1.0 - weight) * induced_factor * k_induced;
+			flap_profile_drag = m.flaps.profile_drag_coefficient * m.flaps.station_coverage[i] * m.flaps.aerodynamic_gain
+				* pow_(sin_(d.flap), 2.0) * maxf(cos_(effective), 0.0);
+			cd += flap_profile_drag;
+			const R clean_effective = effective - flow.flap_shifts[i];
+			R clean_base;
+			if (coupled) {
+				R clean_mapped = 0.0;
+				for (int k = 0; k < stations; ++k) {
+					const R clean_angle_k = flow.angles[k] - flow.flap_shifts[k];
+					const R clean_weight_k = clean_angle_k >= 0.0 ? aero_smoothstep((clean_angle_k - a1) / a_span)
+						: aero_smoothstep((-clean_angle_k - n1) / n_span);
+					const R clean_source_k = flow.reference_speed > 0.0
+						? (flow.speeds[k] / flow.reference_speed) * (1.0 - clean_weight_k) : R(0.0);
+					clean_mapped += m.induced_map[i * stations + k] * clean_angle_k * (k == i ? R(1.0) : clean_source_k);
+				}
+				clean_base = m.strip_cl0[i] + strip_slope * clean_mapped;
+			} else {
+				clean_base = cl0 + cla * clean_effective;
+			}
+			if (ge_active) {
+				clean_base += (1.0 - ge[i]) * (strip_slope * (clean_effective + m.strip_alpha_zero) - clean_base);
+			}
+			const R clean_angle = m.polar.strip_factor.empty() ? clean_effective : clean_effective * m.polar.strip_factor[i];
+			const std::array<R, 3> clean_coeff = section_coefficients(clean_angle, clean_base, m, induced_factor);
+			flap_delta_cl = cl - clean_coeff[0];
 		}
 		wing_cl += (flow.speeds[i] * cl) / static_cast<double>(stations);
 		if (flow.speeds[i] == 0.0) {
@@ -640,6 +827,27 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 		if (cm_ac != 0.0 && plane_speed > 0.0) {
 			const R section_my = lift_q * plane_speed * plane_speed * station_area * m.station_chords[i] * cm_ac;
 			my_sum += section_my;
+		}
+		if (has_tailless && plane_speed > 0.0) {
+			const R elevon_couple = lift_q * plane_speed * plane_speed * station_area * m.station_chords[i]
+				* m.tailless.moment_per_rad * m.tailless.elevon_coverage[i] * elevon_deflection(y, d) * (1.0 - weight);
+			my_sum += elevon_couple;
+		}
+		if (flapped && plane_speed > 0.0 && flow.flap_shifts[i] != 0.0) {
+			const R chord_i = i < static_cast<int>(m.station_chords.size()) ? m.station_chords[i] : m.c;
+			const R lift_q_area = lift_q * plane_speed * plane_speed * station_area;
+			R flap_couple = lift_q_area * chord_i * flap_delta_cl * m.flaps.thin_airfoil_moment_per_cl;
+			if (m.flaps.has_lift_reference_offset_m) {
+				flap_couple -= lift_q_area * flap_delta_cl * m.flaps.lift_reference_offset_m;
+			}
+			const R flap_center = m.flaps.hinge_fraction + 0.5 * m.flaps.chord_fraction * cos_(d.flap);
+			const R arm_x = -(flap_center - 0.25) * chord_i;
+			const R arm_z = 0.5 * m.flaps.chord_fraction * chord_i * sin_(d.flap);
+			const R profile_drag_scale = drag_q * plane_speed * station_area * flap_profile_drag;
+			const R profile_drag_fx = f0 * profile_drag_scale;
+			const R profile_drag_fz = f2 * profile_drag_scale;
+			flap_couple += arm_z * profile_drag_fx - arm_x * profile_drag_fz;
+			my_sum += flap_couple;
 		}
 	}
 	R wake = is_nan(downwash_cl) ? wing_cl : downwash_cl;
@@ -682,11 +890,26 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 	return {fx_sum, fy_sum, fz_sum, mx_sum, my_sum, mz_sum};
 }
 
-// aero.gd loads for a supported (envelope, no flaps) model.
+// aero.gd loads for a supported envelope model.
 inline Loads aero_loads(const R *s, const Air &air, const Deflections &d, const AeroModel &m, R rho,
 		R downwash_cl, R ground_up) {
 	std::vector<R> ge;
 	ge_factors(s, m, ground_up, ge);
+	if (flap_active(d, m)) {
+		Deflections clean_d = d;
+		clean_d.flap = 0.0;
+		const R blend_clean = local_flow_weight(s, air, clean_d, m, downwash_cl, ge);
+		if (blend_clean == 1.0) {
+			return local_loads(s, air, d, m, rho, downwash_cl, ge);
+		}
+		Loads loads_clean = global_loads(s, air, clean_d, m, rho, downwash_cl, ge);
+		const Loads local_clean = local_loads(s, air, clean_d, m, rho, downwash_cl, ge);
+		const Loads local_flapped = local_loads(s, air, d, m, rho, downwash_cl, ge);
+		for (int i = 0; i < 6; ++i) {
+			loads_clean[i] = local_flapped[i] + (1.0 - blend_clean) * (loads_clean[i] - local_clean[i]);
+		}
+		return loads_clean;
+	}
 	const R blend = local_flow_weight(s, air, d, m, downwash_cl, ge);
 	if (blend == 0.0) {
 		return global_loads(s, air, d, m, rho, downwash_cl, ge);
