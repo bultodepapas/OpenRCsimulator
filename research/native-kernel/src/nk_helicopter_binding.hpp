@@ -183,4 +183,181 @@ inline bool heli_decode_controls(WeatherSnapshotDecoder &dec, const godot::Dicti
 		|| dec.fail("invalid helicopter control parameters");
 }
 
+inline bool heli_decode_context(WeatherSnapshotDecoder &dec, const godot::Dictionary &src, HeliStageModel &m) {
+	if (!src.is_read_only() || src.size() != 19 || !dec.keys(src, "flight context", {"law", "mass_kg", "gravity_m_s2",
+		"inertia_kg_m2", "inertia_body_kg_m2", "inertia_inverse_kg_m2", "main_model", "tail_model", "airframe_model",
+		"aero_context", "drive_model", "electronics_model", "spin_inertia_kg_m2", "b_body_frd_kg_m2", "flow_floor_m_s",
+		"fin_tail_wake_fraction", "height_over_radius", "inflow_loss", "inflow_instability"})) return dec.fail("invalid or mutable helicopter flight context");
+	godot::String law;
+	if (!dec.string(src, "law", law) || law != godot::String("openrc-helicopter-flight-dynamics-v1")) return dec.fail("unsupported helicopter flight law");
+	godot::Dictionary main, tail, airframe, aero, drive, electronics;
+	if (!dec.dictionary(src, "main_model", main) || !dec.dictionary(src, "tail_model", tail) ||
+		!dec.dictionary(src, "airframe_model", airframe) || !dec.dictionary(src, "aero_context", aero) ||
+		!dec.dictionary(src, "drive_model", drive) || !dec.dictionary(src, "electronics_model", electronics) ||
+		!heli_decode_main(dec, main, m.aero.main) || !heli_decode_tail(dec, tail, m.aero.tail) ||
+		!heli_decode_airframe(dec, airframe, m.aero.airframe) || !heli_decode_drive(dec, drive, m.drive) ||
+		!heli_decode_controls(dec, electronics, m.controls)) return false;
+	if (!aero.is_read_only() || aero.size() != 9 || !dec.keys(aero, "aerodynamic context", {"law", "main_model", "tail_model",
+		"airframe_model", "flow_floor_m_s", "fin_tail_wake_fraction", "height_over_radius", "loss", "instability"})) {
+		return dec.fail("invalid or mutable helicopter aerodynamic context");
+	}
+	godot::String aero_law;
+	godot::Dictionary aero_main, aero_tail, aero_airframe;
+	if (!dec.string(aero, "law", aero_law) || aero_law != godot::String("openrc-helicopter-aero-performance-context-v1") ||
+		!dec.dictionary(aero, "main_model", aero_main) || !dec.dictionary(aero, "tail_model", aero_tail) ||
+		!dec.dictionary(aero, "airframe_model", aero_airframe) || aero_main != main || aero_tail != tail || aero_airframe != airframe) {
+		return dec.fail("helicopter aerodynamic context disagrees with flight models");
+	}
+	R ae_flow, ae_fraction, ae_height, ae_loss, ae_instability;
+	if (!heli_decode_fields(dec, src, {{"mass_kg", &m.mass_kg}, {"gravity_m_s2", &m.gravity_m_s2},
+		{"spin_inertia_kg_m2", &m.spin_inertia}, {"flow_floor_m_s", &m.aero.flow_floor_m_s},
+		{"fin_tail_wake_fraction", &m.aero.fin_tail_wake_fraction}, {"height_over_radius", &m.aero.height_over_radius},
+		{"inflow_loss", &m.aero.inflow_loss}, {"inflow_instability", &m.aero.inflow_instability}}) ||
+		!heli_decode_fields(dec, aero, {{"flow_floor_m_s", &ae_flow}, {"fin_tail_wake_fraction", &ae_fraction},
+		{"height_over_radius", &ae_height}, {"loss", &ae_loss}, {"instability", &ae_instability}})) return false;
+	if (ae_flow != m.aero.flow_floor_m_s || ae_fraction != m.aero.fin_tail_wake_fraction || ae_height != m.aero.height_over_radius ||
+		ae_loss != m.aero.inflow_loss || ae_instability != m.aero.inflow_instability ||
+		m.mass_kg <= 0.0 || m.gravity_m_s2 < 0.0 || m.spin_inertia <= 0.0 || m.aero.flow_floor_m_s <= 0.0 ||
+		m.aero.fin_tail_wake_fraction < 0.0 || m.aero.fin_tail_wake_fraction > 1.0 ||
+		(m.aero.height_over_radius < 0.0 && m.aero.height_over_radius != -1.0) || m.aero.inflow_loss < 1.0 ||
+		m.aero.inflow_instability < 0.0 || m.aero.inflow_instability > 1.0 ||
+		m.aero.main.rho_kg_m3 != m.aero.tail.rho_kg_m3 || m.aero.main.rho_kg_m3 != m.aero.airframe.rho_kg_m3 ||
+		m.aero.main.rotor_radius_m != static_cast<double>(tail["main_rotor_radius_m"]) ||
+		m.aero.airframe.vertical_fin_area != static_cast<double>(tail["vertical_fin_area_m2"])) {
+		return dec.fail("inconsistent helicopter flight and aerodynamic parameters");
+	}
+	std::vector<R> inertia, duplicate, inverse, b;
+	if (!dec.packed(src, "inertia_kg_m2", inertia, 6) || !dec.packed(src, "inertia_body_kg_m2", duplicate, 6) ||
+		!dec.packed(src, "inertia_inverse_kg_m2", inverse, 6) || !dec.packed(src, "b_body_frd_kg_m2", b, 3)) return false;
+	for (int i = 0; i < 6; ++i) {
+		if (bits(inertia[i].v) != bits(duplicate[i].v)) return dec.fail("inconsistent helicopter inertia tensors");
+		m.inertia[i] = inertia[i]; m.inertia_inverse[i] = inverse[i];
+	}
+	for (int i = 0; i < 3; ++i) m.coupling_b[i] = b[i];
+	const R a = inertia[0], j = inertia[1], c = inertia[2], d = inertia[3], e = inertia[4], f = inertia[5];
+	const R c00 = j * c - f * f, c11 = a * c - e * e, c22 = a * j - d * d;
+	const R c01 = e * f - d * c, c02 = d * f - j * e, c12 = d * e - a * f;
+	const R det = a * c00 + d * c01 + e * c02;
+	if (a <= 0.0 || c22 <= 0.0 || !is_finite(det) || det <= 0.0) return dec.fail("helicopter inertia is not positive definite");
+	const R expected_inverse[6] = {c00 / det, c11 / det, c22 / det, c01 / det, c02 / det, c12 / det};
+	for (int i = 0; i < 6; ++i) if (bits(expected_inverse[i].v) != bits(inverse[i].v)) return dec.fail("helicopter inverse inertia disagrees");
+	const Vec3 inverse_b = heli_inertia_mul(m.inertia_inverse, m.coupling_b);
+	const R denominator = 1.0 - heli_dot3(m.coupling_b, inverse_b) / m.spin_inertia;
+	if (!is_finite(denominator) || denominator <= 0.0) return dec.fail("invalid helicopter effective carrier inertia");
+	return true;
+}
+
+inline bool heli_decode_skids(WeatherSnapshotDecoder &dec, const godot::Dictionary &src, HeliSkidModel &m) {
+	if (!src.is_read_only() || src.size() != 6 || !dec.keys(src, "skids", {"points_body_frd_m", "spring_n_m",
+		"damping_n_s_m", "friction", "slip_m_s", "reach_m"})) return dec.fail("invalid or mutable helicopter skids");
+	std::vector<R> points;
+	if (!dec.packed(src, "points_body_frd_m", points, 12) ||
+		!heli_decode_fields(dec, src, {{"spring_n_m", &m.spring_n_m}, {"damping_n_s_m", &m.damping_n_s_m},
+		{"friction", &m.friction}, {"slip_m_s", &m.slip_m_s}, {"reach_m", &m.reach_m}})) return false;
+	R reach = 0.0;
+	for (int i = 0; i < 12; ++i) m.points_body_frd_m[i] = points[i];
+	for (int i = 0; i < 12; i += 3) reach = maxf(reach, sqrt_(points[i] * points[i] + points[i + 1] * points[i + 1] + points[i + 2] * points[i + 2]));
+	return (m.spring_n_m > 0.0 && m.damping_n_s_m > 0.0 && m.friction > 0.0 && m.slip_m_s > 0.0 &&
+		m.reach_m > 0.0 && bits(m.reach_m.v) == bits(reach.v)) || dec.fail("invalid helicopter skid parameters");
+}
+
+inline bool heli_decode_tick(WeatherSnapshotDecoder &dec, const godot::Dictionary &src, HeliTickContext &tick) {
+	if (!dec.keys(src, "helicopter tick", {"inputs", "mode", "trainer", "hold", "armed", "ground_start", "spool_start_s", "trim"}) ||
+		src.size() != 8) return dec.fail("invalid helicopter tick context");
+	std::vector<R> inputs;
+	bool trainer, hold, armed, ground_start;
+	R spool_start;
+	godot::String mode;
+	godot::Dictionary trim;
+	if (!dec.packed(src, "inputs", inputs, 4) || !dec.string(src, "mode", mode) || !dec.boolean(src, "trainer", trainer) ||
+		!dec.boolean(src, "hold", hold) || !dec.boolean(src, "armed", armed) || !dec.boolean(src, "ground_start", ground_start) ||
+		!dec.number(src, "spool_start_s", spool_start) || !dec.dictionary(src, "trim", trim)) return false;
+	if (mode != godot::String("normal") && mode != godot::String("idle_up")) return dec.fail("unsupported helicopter mode");
+	if (!dec.keys(trim, "trim", {"roll_reference_rad", "pitch_reference_rad", "cyclic_forward_bias_rad", "cyclic_right_bias_rad",
+		"tail_collective_bias_rad", "ground_yaw_precomp_tail_bias_rad", "ground_yaw_precomp_collective_rad"})) return false;
+	for (int i = 0; i < 4; ++i) tick.inputs[i] = inputs[i];
+	tick.idle_up = mode == godot::String("idle_up"); tick.trainer = trainer; tick.hold = hold;
+	tick.armed = armed; tick.ground_start = ground_start; tick.spool_start_s = spool_start;
+	const HeliField optional[] = {{"roll_reference_rad", &tick.trim.roll_reference_rad}, {"pitch_reference_rad", &tick.trim.pitch_reference_rad},
+		{"cyclic_forward_bias_rad", &tick.trim.cyclic_forward_bias_rad}, {"cyclic_right_bias_rad", &tick.trim.cyclic_right_bias_rad},
+		{"tail_collective_bias_rad", &tick.trim.tail_collective_bias_rad}, {"ground_yaw_precomp_tail_bias_rad", &tick.trim.ground_yaw_precomp_tail_bias_rad},
+		{"ground_yaw_precomp_collective_rad", &tick.trim.ground_yaw_precomp_collective_rad}};
+	for (const HeliField &field : optional) if (trim.has(field.name) && !dec.number(trim, field.name, *field.value)) return false;
+	const bool has_bias = trim.has("ground_yaw_precomp_tail_bias_rad"), has_collective = trim.has("ground_yaw_precomp_collective_rad");
+	if (has_bias != has_collective) return dec.fail("incomplete helicopter ground yaw precompensation");
+	tick.trim.ground_precomp = has_bias;
+	return true;
+}
+
+class HelicopterBinding {
+	bool ready_ = false;
+	HeliStageModel model_;
+
+public:
+	bool ready() const { return ready_; }
+	const HeliStageModel &model() const { return model_; }
+
+	godot::Dictionary prepare_helicopter(const godot::Dictionary &snapshot) {
+		ready_ = false;
+		WeatherSnapshotDecoder dec;
+		godot::String format;
+		godot::Dictionary context, skids;
+		if (!dec.keys(snapshot, "helicopter snapshot", {"format", "context", "skids", "surfaces"}) || snapshot.size() != 4 ||
+			!dec.string(snapshot, "format", format) || format != godot::String("openrc-nk3-helicopter-snapshot-v1") ||
+			!dec.dictionary(snapshot, "context", context) || !dec.dictionary(snapshot, "skids", skids)) return failure(dec.error.empty() ? "invalid helicopter snapshot" : dec.error);
+		if (!snapshot.has("surfaces") || snapshot["surfaces"].get_type() != godot::Variant::PACKED_FLOAT64_ARRAY) return failure("missing helicopter surface table");
+		const godot::PackedFloat64Array surfaces = snapshot["surfaces"];
+		HeliStageModel candidate;
+		if (surfaces.size() > 6000) return failure("helicopter surface table too large");
+		candidate.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
+		candidate.surfaces.valid = surface_table_is_valid(candidate.surfaces.values);
+		if (!candidate.surfaces.valid || !heli_decode_context(dec, context, candidate) || !heli_decode_skids(dec, skids, candidate.skids)) {
+			return failure(dec.error.empty() ? "invalid helicopter surface table" : dec.error);
+		}
+		model_ = std::move(candidate);
+		ready_ = true;
+		godot::Dictionary out;
+		out["ok"] = true; out["error"] = "";
+		return out;
+	}
+
+	godot::Dictionary heli_component(const godot::PackedFloat64Array &body, const godot::PackedFloat64Array &continuous,
+			double time, const godot::Dictionary &raw_tick, const godot::PackedFloat64Array &wind) const {
+		if (!ready_ || body.size() != 13 || (continuous.size() != 6 && continuous.size() != 14) || wind.size() != 3) {
+			return failure("invalid helicopter component argument shape or unprepared model");
+		}
+		WeatherSnapshotDecoder dec;
+		HeliTickContext tick;
+		if (!heli_decode_tick(dec, raw_tick, tick)) return failure(dec.error);
+		R state[13], values[14];
+		Vec3 wind_ned;
+		for (int i = 0; i < 13; ++i) state[i] = body[i];
+		for (int64_t i = 0; i < continuous.size(); ++i) values[i] = continuous[i];
+		for (int i = 0; i < 3; ++i) wind_ned[i] = wind[i];
+		const HeliStageResult result = heli_stage(state, values, static_cast<int>(continuous.size()), time, model_, tick, wind_ned);
+		if (!result.ok) return failure(result.message);
+		godot::Dictionary out;
+		out["ok"] = true;
+		out["error"] = "";
+		out["loads"] = pack(result.loads.data(), 6);
+		out["body_derivative"] = pack(result.body_derivative.data(), 13);
+		out["derivative"] = pack(result.derivative.data(), result.derivative_size);
+		out["rotor_momentum"] = pack(result.rotor_momentum.data(), 3);
+		return out;
+	}
+
+private:
+	static godot::Dictionary failure(const std::string &message) {
+		godot::Dictionary out;
+		out["ok"] = false; out["error"] = godot::String(message.c_str());
+		return out;
+	}
+	static godot::PackedFloat64Array pack(const R *values, int size) {
+		godot::PackedFloat64Array out;
+		out.resize(size);
+		for (int i = 0; i < size; ++i) out[i] = values[i].v;
+		return out;
+	}
+};
+
 } // namespace nk

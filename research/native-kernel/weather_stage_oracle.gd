@@ -134,11 +134,24 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 	var delay: float = weather.gust_delay_s
 	var duration: float = weather.gust_duration_s
 	var period: float = weather.gust_period_s
+	var spatial: bool = session._weather.is_spatial()
+	var spatial_config: Dictionary = weather.spatial_wind if spatial else {}
 	var turb_index: int = session.turbulence_index() if session._weather.has_turbulence() else -1
 	var finite_stages := 0
+	var finite_spatial_flows := 0
+	var gradient_stages := 0
 	for index: int in count:
 		var drawn := _stage_state(context, context.surfaces, context.lake)
 		var state: PackedFloat64Array = drawn.s
+		if spatial and not drawn.malformed:
+			# Leave room for every aerodynamic/propeller point under arbitrary
+			# unit rotations, so ordinary sampling actually exercises the law.
+			var domain: Dictionary = spatial_config.domain
+			state[RB.POS] = clampf(state[RB.POS], -float(domain.half_extent_north_m) + 5.0,
+				float(domain.half_extent_north_m) - 5.0)
+			state[RB.POS + 1] = clampf(state[RB.POS + 1], -float(domain.half_extent_east_m) + 5.0,
+				float(domain.half_extent_east_m) - 5.0)
+			state[RB.POS + 2] = -_rng.randf_range(5.0, float(domain.max_height_agl_m) - 5.0)
 		var aux := _stage_aux(context, session, state)
 		if turb_index >= 0:
 			var actual: PackedFloat64Array = windows[index % windows.size()]
@@ -152,6 +165,22 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 			3: stage_time = delay + duration
 			4: stage_time = delay + period
 			_: stage_time = _rng.randf_range(0.0, 120.0)
+		if spatial and not drawn.malformed:
+			var events: Array = spatial_config.gusts.events
+			if not events.is_empty():
+				var event: Dictionary = events[index % events.size()]
+				var fraction: float = [0.0, 0.25, 0.5, 0.75, 1.0][index % 5]
+				stage_time = maxf(0.0, float(event.start_s) + fraction * float(event.duration_s) \
+					- float(spatial_config.identity.epoch_offset_s))
+			if spatial_config.has("thermal_field") and index % 5 == 0:
+				var thermal: Dictionary = spatial_config.thermal_field
+				if not thermal.cells.is_empty():
+					var cell: Dictionary = thermal.cells[0]
+					var age: float = 0.5 * float(cell.duration_s)
+					stage_time = maxf(0.0, float(cell.birth_s) + age - float(thermal.identity.epoch_offset_s))
+					state[RB.POS] = float(cell.center_ne_m[0]) + float(cell.drift_ne_mps[0]) * age
+					state[RB.POS + 1] = float(cell.center_ne_m[1]) + float(cell.drift_ne_mps[1]) * age
+					state[RB.POS + 2] = -0.5 * float(cell.top_agl_m)
 		if turb_index >= 0 and index % 3 == 0:
 			stage_time = aux[turb_index + 6] + session.sim.dt() * [0.0, 0.5, 1.0][int(index / 3) % 3]
 		if drawn.malformed and index % 9 == 0:
@@ -172,11 +201,18 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 		var reference: Dictionary = session._wheel_evaluate(state, values, stage_time)
 		var native: Dictionary = _native.stage(state, values, stage_time)
 		_compare_stage(reference, native, [label, state, aux, values, stage_time])
-		if not reference.is_empty() and reference.get("loads") is PackedFloat64Array:
-			var finite := true
-			for value: float in reference.loads:
-				finite = finite and is_finite(value)
-			if finite:
+		if _finite_stage(reference, values.size()):
+			if spatial:
+				var stage_air: Dictionary = session.air_data(state, stage_time)
+				var deltas: Variant = stage_air.get("aero_station_delta_body")
+				if stage_air.has("spatial_air_law") and deltas is PackedFloat64Array:
+					finite_spatial_flows += 1
+					var gradient := false
+					for value: float in deltas:
+						gradient = gradient or value != 0.0
+					if gradient: gradient_stages += 1
+					finite_stages += 1
+			else:
 				finite_stages += 1
 		_tally("weather_stage", "states")
 		_tally("weather_stage", "malformed" if drawn.malformed else "ordinary")
@@ -185,9 +221,18 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 		_failures.append("weather-stage %s has no finite shaped stage" % label)
 	else:
 		_tally("weather_stage", "finite_shaped", finite_stages)
+	if spatial:
+		_tally("weather_stage", "finite_spatial_flows", finite_spatial_flows)
+		_tally("weather_stage", "spatial_gradient_stages", gradient_stages)
+		if gradient_stages == 0:
+			_failures.append("weather-stage %s has no finite nonuniform spatial flow" % label)
+	_report.weather_stage.scenario_coverage[label] = {states = count, finite_stages = finite_stages,
+		finite_spatial_flows = finite_spatial_flows, spatial_gradient_stages = gradient_stages}
+	if spatial:
+		_check_spatial_domain_refusals(session, config, label)
 	# True weather capability flags must never be silently cleared: a missing
 	# snapshot is refused, even if the unchanged model otherwise prepares.
-	if config.not_calm or config.turbulence or config.vertical_atmosphere:
+	if config.not_calm or config.turbulence or config.vertical_atmosphere or config.spatial_weather:
 		var missing := config.duplicate(true)
 		missing.erase("weather")
 		var refused: Dictionary = _native.prepare_stage(missing)

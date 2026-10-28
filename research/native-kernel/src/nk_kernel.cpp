@@ -584,7 +584,9 @@ bool layout_int(Decoder &dec, const Dictionary &layout, const char *key, int &ou
 	if (!layout.has(key) || layout[key].get_type() != Variant::INT) {
 		return dec.fail(std::string("layout.") + key + " must be an int");
 	}
-	out = static_cast<int>(static_cast<int64_t>(layout[key]));
+	const int64_t value = layout[key];
+	if (value < -1 || value > 4096) return dec.fail(std::string("layout index out of range: ") + key);
+	out = static_cast<int>(value);
 	return true;
 }
 
@@ -657,7 +659,8 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 	}
 	if (L.wheel_count < 1 || L.wheel_count > 16 || L.wheel_count != static_cast<int>(m.ground.gear.contacts.size()) ||
 			L.anchor_count != L.wheel_count || L.anchors + L.anchor_count * 3 > L.aux_size || L.servo + 2 >= L.aux_size ||
-			L.rpm < 0 || L.rpm >= L.aux_size || L.downwash >= L.aux_size) {
+			L.rpm < 0 || L.rpm >= L.aux_size || L.downwash >= L.aux_size || L.servo < 0 || L.anchors < 0 ||
+			L.wheel_index + L.wheel_count > kMaxContinuousSize) {
 		return dec.fail("unsupported or inconsistent layout");
 	}
 	if (config.has("weather")) {
@@ -1195,9 +1198,9 @@ public:
 		++stage_calls_;
 		const auto start = stage_timing_ ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point();
 		Dictionary out;
-		if (stage_ready_ && read_state(body) && continuous.size() <= 16) {
+		if (stage_ready_ && read_state(body) && continuous.size() <= kMaxContinuousSize) {
 			nk::R state[kStateSize];
-			nk::R values[16];
+			nk::R values[kMaxContinuousSize];
 			load(body, state);
 			for (int64_t i = 0; i < continuous.size(); ++i) {
 				values[i] = continuous[i];
@@ -1268,12 +1271,12 @@ public:
 	// FlightSession._ground_evaluation with the current tick context's aux.
 	Dictionary ground_component(const PackedFloat64Array &s, const PackedFloat64Array &values) const {
 		Dictionary out;
-		if (!stage_ready_ || !tick_.ready || !read_state(s) || values.size() > 16) {
+		if (!stage_ready_ || !tick_.ready || !read_state(s) || values.size() > kMaxContinuousSize) {
 			out["ok"] = false;
 			return out;
 		}
 		nk::R state[kStateSize];
-		nk::R continuous[16];
+		nk::R continuous[kMaxContinuousSize];
 		load(s, state);
 		for (int64_t i = 0; i < values.size(); ++i) {
 			continuous[i] = values[i];
