@@ -1370,88 +1370,184 @@ func _init() -> void:
 ## Workshop trials resolve once. Reload/reset must retain that exact immutable candidate.
 var _frozen_aircraft: Dictionary = {}
 var _staged_trim_job: Dictionary = {}
+const _STAGED_IDLE := 0
+const _STAGED_BEGINNING := 1
+const _STAGED_READY := 2
+const _STAGED_FINISHING := 3
+const _STAGED_CANCELLING := 4
+const _STAGED_DONE := 5
+var _staged_phase := _STAGED_IDLE
+var _staged_cancel := false
+var _staged_completed := false
+var _staged_preflight: Dictionary = {}
+var _staged_request: Dictionary = {}
+var _staged_resolution: Dictionary = {}
 var workshop_presentation_identity: Dictionary = {}
 var workshop_identity: Dictionary = {}
 
 
 func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Dictionary = {}) -> void:
 	if _reject_reset_publication_reentry(): return
+	if _staged_phase in [_STAGED_BEGINNING, _STAGED_READY, _STAGED_FINISHING, _STAGED_CANCELLING]: return
 	_begin_setup(path, expected_id, frozen_data)
 	_finish_setup(_prepare_aircraft(_load_selected_aircraft()))
 
 
-## Staged startup keeps all session/model work on the main thread and yields only for a cold cruise-trim solve.
-## false means the owner requested cancellation; validation failures still complete setup with an invalid session.
+## Compatibility wrapper for callers that do not overlap setup with other main-thread work.
+## false means cancellation or a duplicate call; validation failures still complete as an invalid session.
 func setup_staged(path: String, expected_id: String, frozen_data: Dictionary, frame: Signal,
 		should_cancel: Callable) -> bool:
-	if _reject_reset_publication_reentry(): return false
+	if not begin_staged_setup(path, expected_id, frozen_data, should_cancel):
+		return false
+	return await finish_staged_setup(frame, should_cancel)
+
+
+## Prepare privately and reserve/adopt at most one managed worker before returning to the caller.
+## The Simulation stays detached and neither aircraft/start nor the shared cache is published here.
+func begin_staged_setup(path: String, expected_id: String, frozen_data: Dictionary,
+		should_cancel: Callable) -> bool:
+	if _reject_reset_publication_reentry() or _staged_phase != _STAGED_IDLE or sim != null:
+		return false
+	_staged_phase = _STAGED_BEGINNING
 	if _staged_cancel_requested(should_cancel):
+		_staged_phase = _STAGED_DONE
 		return false
 	_begin_setup(path, expected_id, frozen_data)
 	if _staged_cancel_requested(should_cancel):
 		_discard_staged_setup()
+		_staged_phase = _STAGED_DONE
 		return false
 	var data: Dictionary = _load_selected_aircraft()
 	if _staged_cancel_requested(should_cancel):
 		_discard_staged_setup()
+		_staged_phase = _STAGED_DONE
 		return false
-	var preflight: Dictionary = _prepare_aircraft_before_trim(data)
+	_staged_preflight = _prepare_aircraft_before_trim(data)
 	if _staged_cancel_requested(should_cancel):
 		_discard_staged_setup()
+		_clear_staged_preparation()
+		_staged_phase = _STAGED_DONE
 		return false
-	if not preflight.get("ok", false):
-		_finish_setup(preflight, false)
+	if _staged_preflight.get("ok", false):
+		_staged_request = _selected_airborne_trim_request(_staged_preflight.model)
+		if _staged_cancel_requested(should_cancel):
+			_discard_staged_setup()
+			_clear_staged_preparation()
+			_staged_phase = _STAGED_DONE
+			return false
+		if _staged_request.kind != "inline":
+			_staged_resolution = _launch_trim_cache.acquire_managed(_staged_request.arguments, false, self)
+			if _staged_resolution.get("kind", "") == "pending":
+				_staged_trim_job = _staged_resolution
+	_staged_phase = _STAGED_READY
+	return true
+
+
+## Complete a begun transaction once. A busy foreign worker is waited out without starting a second solve.
+func finish_staged_setup(frame: Signal, should_cancel: Callable) -> bool:
+	if _staged_phase != _STAGED_READY:
+		return false
+	_staged_phase = _STAGED_FINISHING
+	if _staged_cancel_requested(should_cancel):
+		await _cancel_staged_owned(frame)
+		return false
+	if not _staged_preflight.get("ok", false):
+		var invalid: Dictionary = _staged_preflight
+		_clear_staged_preparation()
+		_staged_phase = _STAGED_DONE
+		_finish_setup(invalid, false)
+		_staged_completed = true
 		return true
 
-	var request: Dictionary = _selected_airborne_trim_request(preflight.model)
 	var candidate_start: Dictionary = {}
-	var cache_job: Dictionary = {}
 	var cache_trim_result: Dictionary = {}
-	if request.kind == "inline":
-		candidate_start = request.result
+	if _staged_request.kind == "inline":
+		candidate_start = _staged_request.result
 	else:
-		var resolution: Dictionary = _launch_trim_cache.acquire_managed(request.arguments, false, self)
-		while resolution.get("kind", "") == "wait":
+		while _staged_resolution.get("kind", "") == "wait":
 			await frame
 			if _staged_cancel_requested(should_cancel):
-				_discard_staged_setup()
+				await _cancel_staged_owned(frame)
 				return false
-			resolution = _launch_trim_cache.acquire_managed(request.arguments, false, self)
-		if resolution.get("kind", "") == "pending":
-			cache_job = resolution
-			_staged_trim_job = resolution
+			_staged_resolution = _launch_trim_cache.acquire_managed(_staged_request.arguments, false, self)
+			if _staged_resolution.get("kind", "") == "pending":
+				_staged_trim_job = _staged_resolution
+		if _staged_resolution.get("kind", "") == "pending":
 			var cancelled := _staged_cancel_requested(should_cancel)
-			var progress: Dictionary = _launch_trim_cache.poll_managed(cache_job)
+			var progress: Dictionary = _launch_trim_cache.poll_managed(_staged_trim_job)
 			while not progress.get("complete", false):
 				await frame
 				if _staged_cancel_requested(should_cancel):
 					cancelled = true
-				progress = _launch_trim_cache.poll_managed(cache_job)
+				progress = _launch_trim_cache.poll_managed(_staged_trim_job)
 			if cancelled or _staged_cancel_requested(should_cancel):
-				_finish_staged_trim_job(false)
-				_discard_staged_setup()
+				await _cancel_staged_owned(frame)
 				return false
 			cache_trim_result = progress.result
 		else:
-			cache_trim_result = resolution.get("result", {ok = false,
-				message = str(resolution.get("reason", "launch trim solve unavailable"))})
+			cache_trim_result = _staged_resolution.get("result", {ok = false,
+				message = str(_staged_resolution.get("reason", "launch trim solve unavailable"))})
 		candidate_start = _place_cruise_trim_result(cache_trim_result)
 
 	if _staged_cancel_requested(should_cancel):
-		if not cache_job.is_empty():
-			_finish_staged_trim_job(false)
-		_discard_staged_setup()
+		await _cancel_staged_owned(frame)
 		return false
-	var prepared: Dictionary = _finish_aircraft_prepare(preflight, candidate_start)
+	var prepared: Dictionary = _finish_aircraft_prepare(_staged_preflight, candidate_start)
 	if _staged_cancel_requested(should_cancel):
-		if not cache_job.is_empty():
-			_finish_staged_trim_job(false)
-		_discard_staged_setup()
+		await _cancel_staged_owned(frame)
 		return false
-	if not cache_job.is_empty():
+	if not _staged_trim_job.is_empty():
 		_finish_staged_trim_job(prepared.get("ok", false))
+	_clear_staged_preparation()
+	_staged_phase = _STAGED_DONE
 	_finish_setup(prepared, false)
+	_staged_completed = true
 	return true
+
+
+## Read-only lifecycle state for an owner that may outlive this detached Session.
+func staged_setup_pending() -> bool:
+	return _staged_phase != _STAGED_IDLE and _staged_phase != _STAGED_DONE
+
+
+## Completion includes invalid aircraft; cancellation never completes setup.
+func staged_setup_completed() -> bool:
+	return _staged_completed
+
+
+## A caller abandoning a begun transaction waits for its own worker, then releases without publication.
+## If finish is already running, it owns the drain and observes this cancellation flag.
+func cancel_staged_setup(frame: Signal) -> void:
+	if _staged_phase == _STAGED_IDLE or _staged_phase == _STAGED_DONE:
+		return
+	_staged_cancel = true
+	if _staged_phase == _STAGED_BEGINNING:
+		return # a reentrant cancellation is observed by begin's next guard
+	if _staged_phase == _STAGED_FINISHING or _staged_phase == _STAGED_CANCELLING:
+		while _staged_phase == _STAGED_FINISHING or _staged_phase == _STAGED_CANCELLING:
+			await frame
+		return
+	_staged_phase = _STAGED_CANCELLING
+	await _cancel_staged_owned(frame)
+
+
+func _cancel_staged_owned(frame: Signal) -> void:
+	if not _staged_trim_job.is_empty():
+		var progress: Dictionary = _launch_trim_cache.poll_managed(_staged_trim_job)
+		while not progress.get("complete", false):
+			await frame
+			progress = _launch_trim_cache.poll_managed(_staged_trim_job)
+		_finish_staged_trim_job(false)
+	_discard_staged_setup()
+	_clear_staged_preparation()
+	_staged_phase = _STAGED_DONE
+
+
+func _clear_staged_preparation() -> void:
+	_staged_preflight = {}
+	_staged_request = {}
+	_staged_resolution = {}
+	_staged_cancel = false
 
 
 func _finish_staged_trim_job(retain_success: bool) -> void:
@@ -1496,7 +1592,10 @@ func _finish_setup(prepared: Dictionary, reset_invalid := true) -> void:
 
 
 func _staged_cancel_requested(should_cancel: Callable) -> bool:
-	return should_cancel.is_valid() and bool(should_cancel.call())
+	if _staged_cancel:
+		return true
+	var requested := should_cancel.is_valid() and bool(should_cancel.call())
+	return _staged_cancel or requested
 
 
 func _discard_staged_setup() -> void:
@@ -1505,6 +1604,7 @@ func _discard_staged_setup() -> void:
 			sim.get_parent().remove_child(sim)
 		sim.free()
 	sim = null
+	_frozen_aircraft = {}
 
 
 ## Disables all automatic input and physics callbacks. Call after setup and before adding this node to the tree.
