@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c2799114-46ce-49ec-8d23-bb34b4ff6c1e",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/roi-battery-20261028/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-28T20:26:16.426771+00:00",
+  "label": "session-regression-test_companions_session",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-battery-20261028\\checks\\session-regression-test_companions_session-tmulux25\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-battery-20261028\\checks\\session-regression-test_companions_session-tmulux25\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.672,
+  "log_bytes": 1426,
+  "log_sha256": "76e4144fdc84dcb526ab2174597c2dec1b9db1d413a7736141d44508f72f6289"
+}

@@ -570,6 +570,11 @@ method comparison, not a recreation of the dated working tree. Defaults measure
 10 warmup + 60 sampled simulation seconds. The result is CPU callback cost, with
 rendering and GPU work excluded.
 
+`--battery=ideal|pack` selects the catalog data explicitly (default `ideal`, preserving
+the original probe). Unsupported aircraft/mode combinations are refused before setup.
+Reports include the selected mode, data path/hash and actual dynamic/pack flags; use
+`--aircraft=turbo-lumber-evolution --battery=pack` for the finite ECM battery route.
+
 [H16 results, complete before/after scripts, commands and regression evidence](../../docs/research/simulation-state/H16/README.md)
 retain all three airborne repeats per aircraft and the flat runway result.
 

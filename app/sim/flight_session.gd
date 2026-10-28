@@ -1573,6 +1573,10 @@ func _begin_setup(path: String, expected_id: String, frozen_data: Dictionary) ->
 	_frozen_aircraft = frozen_data.duplicate(true)
 	sim = Sim.new()
 	sim.modes = PackedInt64Array([1])
+	# The kernel can publish located events before stepped, and pause before faulted.
+	# Drop every tick fact before any external observer can mutate configuration.
+	sim.events_located.connect(_drop_tick_facts.unbind(2))
+	sim.paused_changed.connect(_drop_tick_facts.unbind(1))
 	sim.faulted.connect(_on_sim_faulted)
 	sim.stepped.connect(_on_sim_stepped)
 
@@ -4335,18 +4339,29 @@ func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> Pack
 
 
 func battery_is_dynamic() -> bool:
-	return aircraft.get("ok", false) and Propulsion.has_dynamic_battery(aircraft.model.propulsion)
+	if _fact_battery_dynamic != _FACT_UNKNOWN:
+		return _fact_battery_dynamic == 1
+	var active: bool = aircraft.get("ok", false) and Propulsion.has_dynamic_battery(aircraft.model.propulsion)
+	if _facts_armed: _fact_battery_dynamic = int(active)
+	return active
 
 
 func battery_is_pack() -> bool:
-	return aircraft.get("ok", false) and Propulsion.has_pack_ecm(aircraft.model.propulsion)
+	if _fact_battery_pack != _FACT_UNKNOWN:
+		return _fact_battery_pack == 1
+	var active: bool = aircraft.get("ok", false) and Propulsion.has_pack_ecm(aircraft.model.propulsion)
+	if _facts_armed: _fact_battery_pack = int(active)
+	return active
 
 
 ## Battery slots after the shaft rpm: three for the OCV/resistance pack, 9 + 2K for pack_ecm.
 func _battery_block_size() -> int:
-	if battery_is_pack():
-		return PackEcm.block_size(aircraft.model.propulsion.battery)
-	return 3 if battery_is_dynamic() else 0
+	if _fact_battery_block_size != _FACT_UNKNOWN:
+		return _fact_battery_block_size
+	var size: int = PackEcm.block_size(aircraft.model.propulsion.battery) if battery_is_pack() \
+		else (3 if battery_is_dynamic() else 0)
+	if _facts_armed: _fact_battery_block_size = size
+	return size
 
 
 ## Connection at reset: rested pack at the start position's air temperature, ESC cell detection, open limit.
@@ -4873,6 +4888,9 @@ var _fact_wheel_count := _FACT_UNKNOWN
 var _fact_anchor_count := _FACT_UNKNOWN
 var _fact_downwash_index := _FACT_UNKNOWN
 var _fact_rotor_index := _FACT_UNKNOWN
+var _fact_battery_dynamic := _FACT_UNKNOWN
+var _fact_battery_pack := _FACT_UNKNOWN
+var _fact_battery_block_size := _FACT_UNKNOWN
 
 
 func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
@@ -4899,6 +4917,9 @@ func _drop_tick_facts() -> void:
 	_fact_anchor_count = _FACT_UNKNOWN
 	_fact_downwash_index = _FACT_UNKNOWN
 	_fact_rotor_index = _FACT_UNKNOWN
+	_fact_battery_dynamic = _FACT_UNKNOWN
+	_fact_battery_pack = _FACT_UNKNOWN
+	_fact_battery_block_size = _FACT_UNKNOWN
 
 
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:

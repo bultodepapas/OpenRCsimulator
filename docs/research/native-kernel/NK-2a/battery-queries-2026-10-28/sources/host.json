@@ -1,0 +1,9 @@
+{
+  "os": "Microsoft Windows 11 Pro",
+  "version": "10.0.26100",
+  "build": "26100",
+  "cpu": "AMD Ryzen 9 5900X 12-Core Processor            ",
+  "logical_processors": 24,
+  "physical_memory_bytes": 68603191296,
+  "power_scheme": "Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)"
+}

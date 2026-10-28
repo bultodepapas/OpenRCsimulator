@@ -4,6 +4,8 @@ Reviewed **2026-10-28**, source `f1e877d54`. Planning only: this review ran no n
 
 **Implementation follow-up, 2026-10-28:** immediate Fly now overlaps numeric launch preparation with world construction. Five alternating native 1080p pairs reduce median first readiness from **3.789 to 3.531 s (6.8%)** on the measured Windows host; warm readiness is essentially unchanged. [UI-34c / DT-11a evidence and limits](docs/research/menu-investigations/UI-34c-R5/immediate-fly-2026-10-28/README.md). This is editor loading evidence, not release or flight-performance qualification.
 
+**Second delivery, 2026-10-28:** NK-2a now reuses battery type and block-size queries within each physics tick. Three paired complete-session runs per case reduce CPU callback cost by a median **6.4% for P-51 trim** and **6.1% for Timber pack trim**; Stik runway idle is effectively unchanged. [Exact-state comparisons, lifecycle checks and limits](docs/research/native-kernel/NK-2a/battery-queries-2026-10-28/README.md). These are GDScript headless CPU measurements, not rendered-frame or native-backend qualification.
+
 **Recommended next delivery:** establish a current release baseline at 1080p, then remove one measured observer, physics or loading cost. Prefer a small change with complete-workload evidence over a new scheduler, renderer or vendor SDK.
 
 This document triages future optimization ideas. It introduces no new track or step IDs. The [global performance plan](docs/plans/global-performance-visual-quality.md) owns delivery gates; the [track registry](docs/README.md#tracks-plans-and-step-ids) assigns implementation ownership; [ROADMAP](ROADMAP.md#execution-order-and-release-gates) owns Gate P. Detailed status and evidence remain in those homes.
@@ -57,6 +59,8 @@ GP-19f already reduced unloaded ground-audio work; UI-FS-08-R1 already optimized
 Re-profile remaining consumers, then reuse one accepted-state calculation or eliminate one proven redundant lookup. Changing the unloaded-wheel material lookup needs the existing audio contract resolved. Keep recorders, event detection, statistics accounting and touchdown/crash cues on their required samples. If a presentation consumer moves to frame cadence, preserve all intervening events, pause/reset/restore behavior and sound/visual continuity. A new event-journal framework is not a prerequisite for this slice.
 
 ### Aircraft hot path: reuse within one evaluation
+
+The battery-query slice above is delivered using the existing per-tick facts. It also clears those facts before located-event and pause observers run. Keep native source-receipt checks intact; changed mirrored source requires native requalification. The flap loop below remains an unmeasured candidate.
 
 Current [aero.gd](app/physics/aero.gd), `_local_loads`, recomputes `clean_angle_k`, `clean_weight_k` and `clean_source_k` inside each coupled flap station's inner loop. If a current powered/flap profile shows meaningful cost, calculate the station-only terms once within that invocation. Preserve reduction order, branch behavior and float64 grouping; include zero flow, reverse flow, stall and flap transitions in parity checks. Account for scratch allocation cost.
 

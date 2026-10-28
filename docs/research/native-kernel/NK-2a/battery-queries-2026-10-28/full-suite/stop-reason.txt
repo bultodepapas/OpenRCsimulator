@@ -1,0 +1,1 @@
+Stopped remaining full-suite work after test_fixed_gear_brake_input independently reproduced the same two Avanti legacy-identity failures on baseline and candidate. The broad suite is partial, not passed.

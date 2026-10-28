@@ -1,0 +1,37 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f9c2e17b-ba29-4771-9cd6-40d614b13e77",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/roi-battery-20261028/baseline/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-28T19:51:15.866606+00:00",
+  "label": "baseline-import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-battery-20261028\\checks\\baseline-import-lwj0vo83\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-battery-20261028\\checks\\baseline-import-lwj0vo83\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 17.64,
+  "log_bytes": 1411,
+  "log_sha256": "78c00f0ea4cb70a497c1df2885653e2fbb11e4539f5dcbe5ffc23d60c0d2ad14"
+}

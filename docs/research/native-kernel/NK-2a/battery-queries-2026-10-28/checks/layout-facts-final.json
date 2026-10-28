@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d1f0b19f-729b-4156-9487-5f061dc1b701",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/roi-battery-20261028/baseline/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator/tmp/roi-battery-20261028/candidate_layout_facts.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-28T20:03:48.766057+00:00",
+  "label": "layout-facts-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-battery-20261028\\checks\\layout-facts-final-ygkpmxek\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-battery-20261028\\checks\\layout-facts-final-ygkpmxek\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.0,
+  "log_bytes": 634,
+  "log_sha256": "2e13210d27ad08fff9d64e5b896436b66d3e700f2a2a368df580d909a69ad824"
+}

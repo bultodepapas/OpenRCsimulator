@@ -1,0 +1,509 @@
+{
+  "format": "openrc-battery-query-timing-summary-v1",
+  "measurement_scope": "CPU callbacks only. Two detached sessions, identical input tape, alternating 120-tick batches; per-tick clocks exclude hashing/checkpoints. Checkpoints compared every batch; numeric state/inputs/loads/modes hashed every tick. No GPU or real-time acceptance.",
+  "method": "Serial campaigns; each run alternates 120-tick baseline/candidate batches. Means use every timed tick. Gains are 100*(baseline-candidate)/baseline. The run median is the median of three paired-run percentage gains.",
+  "warmup_ticks": 2400,
+  "timed_ticks_per_run": 14400,
+  "batches_per_run": 120,
+  "ticks_per_batch": 120,
+  "series": {
+    "predicate_only_superseded": {
+      "p51-trim": {
+        "aircraft": "p51d-mustang-120",
+        "case_id": "trim",
+        "battery_mode": "ideal",
+        "battery_dynamic": false,
+        "battery_pack": false,
+        "aircraft_data": "res://data/aircraft/p51d_mustang_120.json",
+        "aircraft_data_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "world_identity": "4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f",
+        "proxies": 6092,
+        "pairs": [
+          {
+            "run": 1,
+            "raw_report": "raw/p51-trim-1.json.gz",
+            "checked_runner_report": "checks/p51-trim-1.json",
+            "baseline_mean_usec_per_tick": 1921.435139,
+            "candidate_mean_usec_per_tick": 1780.065972,
+            "gain_percent_of_baseline": 7.357478,
+            "median_paired_batch_gain_percent": 5.387119,
+            "fingerprints_sha256": [
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d",
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d"
+            ]
+          },
+          {
+            "run": 2,
+            "raw_report": "raw/p51-trim-2.json.gz",
+            "checked_runner_report": "checks/p51-trim-2.json",
+            "baseline_mean_usec_per_tick": 1875.364306,
+            "candidate_mean_usec_per_tick": 1781.757431,
+            "gain_percent_of_baseline": 4.991397,
+            "median_paired_batch_gain_percent": 5.210092,
+            "fingerprints_sha256": [
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d",
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d"
+            ]
+          },
+          {
+            "run": 3,
+            "raw_report": "raw/p51-trim-3.json.gz",
+            "checked_runner_report": "checks/p51-trim-3.json",
+            "baseline_mean_usec_per_tick": 1847.651597,
+            "candidate_mean_usec_per_tick": 1752.418681,
+            "gain_percent_of_baseline": 5.154268,
+            "median_paired_batch_gain_percent": 5.593517,
+            "fingerprints_sha256": [
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d",
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d"
+            ]
+          }
+        ],
+        "median_paired_run_gain_percent": 5.154268
+      },
+      "stik-runway": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "case_id": "runway",
+        "battery_mode": "ideal",
+        "battery_dynamic": false,
+        "battery_pack": false,
+        "aircraft_data": "res://data/aircraft/jensen_ugly_stik_60.json",
+        "aircraft_data_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "world_identity": "4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f",
+        "proxies": 6092,
+        "pairs": [
+          {
+            "run": 1,
+            "raw_report": "raw/stik-runway-1.json.gz",
+            "checked_runner_report": "checks/stik-runway-1.json",
+            "baseline_mean_usec_per_tick": 1626.611875,
+            "candidate_mean_usec_per_tick": 1627.685417,
+            "gain_percent_of_baseline": -0.065999,
+            "median_paired_batch_gain_percent": 0.196434,
+            "fingerprints_sha256": [
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9",
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9"
+            ]
+          },
+          {
+            "run": 2,
+            "raw_report": "raw/stik-runway-2.json.gz",
+            "checked_runner_report": "checks/stik-runway-2.json",
+            "baseline_mean_usec_per_tick": 1627.245,
+            "candidate_mean_usec_per_tick": 1636.459375,
+            "gain_percent_of_baseline": -0.566256,
+            "median_paired_batch_gain_percent": 0.33481,
+            "fingerprints_sha256": [
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9",
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9"
+            ]
+          },
+          {
+            "run": 3,
+            "raw_report": "raw/stik-runway-3.json.gz",
+            "checked_runner_report": "checks/stik-runway-3.json",
+            "baseline_mean_usec_per_tick": 1753.843264,
+            "candidate_mean_usec_per_tick": 1771.559653,
+            "gain_percent_of_baseline": -1.010147,
+            "median_paired_batch_gain_percent": -0.124638,
+            "fingerprints_sha256": [
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9",
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9"
+            ]
+          }
+        ],
+        "median_paired_run_gain_percent": -0.566256
+      },
+      "timber-pack": {
+        "aircraft": "turbo-lumber-evolution",
+        "case_id": "trim",
+        "battery_mode": "pack",
+        "battery_dynamic": true,
+        "battery_pack": true,
+        "aircraft_data": "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
+        "aircraft_data_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "world_identity": "4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f",
+        "proxies": 6092,
+        "pairs": [
+          {
+            "run": 1,
+            "raw_report": "raw/timber-pack-1.json.gz",
+            "checked_runner_report": "checks/timber-pack-1.json",
+            "baseline_mean_usec_per_tick": 1180.881736,
+            "candidate_mean_usec_per_tick": 1119.436597,
+            "gain_percent_of_baseline": 5.203327,
+            "median_paired_batch_gain_percent": 4.992213,
+            "fingerprints_sha256": [
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994",
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994"
+            ]
+          },
+          {
+            "run": 2,
+            "raw_report": "raw/timber-pack-2.json.gz",
+            "checked_runner_report": "checks/timber-pack-2.json",
+            "baseline_mean_usec_per_tick": 1184.022361,
+            "candidate_mean_usec_per_tick": 1138.328056,
+            "gain_percent_of_baseline": 3.859243,
+            "median_paired_batch_gain_percent": 4.415193,
+            "fingerprints_sha256": [
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994",
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994"
+            ]
+          },
+          {
+            "run": 3,
+            "raw_report": "raw/timber-pack-3.json.gz",
+            "checked_runner_report": "checks/timber-pack-3.json",
+            "baseline_mean_usec_per_tick": 1192.791389,
+            "candidate_mean_usec_per_tick": 1148.215417,
+            "gain_percent_of_baseline": 3.737114,
+            "median_paired_batch_gain_percent": 4.100921,
+            "fingerprints_sha256": [
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994",
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994"
+            ]
+          }
+        ],
+        "median_paired_run_gain_percent": 3.859243
+      }
+    },
+    "layout_final": {
+      "p51-trim": {
+        "aircraft": "p51d-mustang-120",
+        "case_id": "trim",
+        "battery_mode": "ideal",
+        "battery_dynamic": false,
+        "battery_pack": false,
+        "aircraft_data": "res://data/aircraft/p51d_mustang_120.json",
+        "aircraft_data_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "world_identity": "4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f",
+        "proxies": 6092,
+        "pairs": [
+          {
+            "run": 1,
+            "raw_report": "raw/layout-p51-trim-1.json.gz",
+            "checked_runner_report": "checks/layout-p51-trim-1.json",
+            "baseline_mean_usec_per_tick": 1850.376389,
+            "candidate_mean_usec_per_tick": 1740.577292,
+            "gain_percent_of_baseline": 5.933879,
+            "median_paired_batch_gain_percent": 6.083668,
+            "fingerprints_sha256": [
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d",
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d"
+            ],
+            "baseline_tick_p50_usec": 1791,
+            "baseline_tick_p95_usec": 2273,
+            "candidate_tick_p50_usec": 1679,
+            "candidate_tick_p95_usec": 2177
+          },
+          {
+            "run": 2,
+            "raw_report": "raw/layout-p51-trim-2.json.gz",
+            "checked_runner_report": "checks/layout-p51-trim-2.json",
+            "baseline_mean_usec_per_tick": 1848.882222,
+            "candidate_mean_usec_per_tick": 1728.160139,
+            "gain_percent_of_baseline": 6.529463,
+            "median_paired_batch_gain_percent": 6.180154,
+            "fingerprints_sha256": [
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d",
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d"
+            ],
+            "baseline_tick_p50_usec": 1781,
+            "baseline_tick_p95_usec": 2302,
+            "candidate_tick_p50_usec": 1667,
+            "candidate_tick_p95_usec": 2135
+          },
+          {
+            "run": 3,
+            "raw_report": "raw/layout-p51-trim-3.json.gz",
+            "checked_runner_report": "checks/layout-p51-trim-3.json",
+            "baseline_mean_usec_per_tick": 1730.524028,
+            "candidate_mean_usec_per_tick": 1619.943542,
+            "gain_percent_of_baseline": 6.39,
+            "median_paired_batch_gain_percent": 6.316994,
+            "fingerprints_sha256": [
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d",
+              "5e625c14b025abb150c686b44bf50a3690fb4361465110ec61feeb324095a17d"
+            ],
+            "baseline_tick_p50_usec": 1692,
+            "baseline_tick_p95_usec": 1907,
+            "candidate_tick_p50_usec": 1584,
+            "candidate_tick_p95_usec": 1791
+          }
+        ],
+        "median_paired_run_gain_percent": 6.39
+      },
+      "stik-runway": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "case_id": "runway",
+        "battery_mode": "ideal",
+        "battery_dynamic": false,
+        "battery_pack": false,
+        "aircraft_data": "res://data/aircraft/jensen_ugly_stik_60.json",
+        "aircraft_data_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "world_identity": "4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f",
+        "proxies": 6092,
+        "pairs": [
+          {
+            "run": 1,
+            "raw_report": "raw/layout-stik-runway-1.json.gz",
+            "checked_runner_report": "checks/layout-stik-runway-1.json",
+            "baseline_mean_usec_per_tick": 1608.657917,
+            "candidate_mean_usec_per_tick": 1596.26625,
+            "gain_percent_of_baseline": 0.770311,
+            "median_paired_batch_gain_percent": 0.514398,
+            "fingerprints_sha256": [
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9",
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9"
+            ],
+            "baseline_tick_p50_usec": 1539,
+            "baseline_tick_p95_usec": 2071,
+            "candidate_tick_p50_usec": 1533,
+            "candidate_tick_p95_usec": 2013
+          },
+          {
+            "run": 2,
+            "raw_report": "raw/layout-stik-runway-2.json.gz",
+            "checked_runner_report": "checks/layout-stik-runway-2.json",
+            "baseline_mean_usec_per_tick": 1542.321528,
+            "candidate_mean_usec_per_tick": 1537.152361,
+            "gain_percent_of_baseline": 0.335155,
+            "median_paired_batch_gain_percent": -0.105916,
+            "fingerprints_sha256": [
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9",
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9"
+            ],
+            "baseline_tick_p50_usec": 1498,
+            "baseline_tick_p95_usec": 1794,
+            "candidate_tick_p50_usec": 1498,
+            "candidate_tick_p95_usec": 1770
+          },
+          {
+            "run": 3,
+            "raw_report": "raw/layout-stik-runway-3.json.gz",
+            "checked_runner_report": "checks/layout-stik-runway-3.json",
+            "baseline_mean_usec_per_tick": 1502.325556,
+            "candidate_mean_usec_per_tick": 1503.271667,
+            "gain_percent_of_baseline": -0.062976,
+            "median_paired_batch_gain_percent": -0.196238,
+            "fingerprints_sha256": [
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9",
+              "91b71e489ad960bad99002dab31865a656b361bb63e3c8a5231942ae09fcfad9"
+            ],
+            "baseline_tick_p50_usec": 1470,
+            "baseline_tick_p95_usec": 1639,
+            "candidate_tick_p50_usec": 1473,
+            "candidate_tick_p95_usec": 1628
+          }
+        ],
+        "median_paired_run_gain_percent": 0.335155
+      },
+      "timber-pack": {
+        "aircraft": "turbo-lumber-evolution",
+        "case_id": "trim",
+        "battery_mode": "pack",
+        "battery_dynamic": true,
+        "battery_pack": true,
+        "aircraft_data": "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
+        "aircraft_data_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "world_identity": "4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f",
+        "proxies": 6092,
+        "pairs": [
+          {
+            "run": 1,
+            "raw_report": "raw/layout-timber-pack-1.json.gz",
+            "checked_runner_report": "checks/layout-timber-pack-1.json",
+            "baseline_mean_usec_per_tick": 1156.500069,
+            "candidate_mean_usec_per_tick": 1084.282431,
+            "gain_percent_of_baseline": 6.244499,
+            "median_paired_batch_gain_percent": 6.339973,
+            "fingerprints_sha256": [
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994",
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994"
+            ],
+            "baseline_tick_p50_usec": 1105,
+            "baseline_tick_p95_usec": 1469,
+            "candidate_tick_p50_usec": 1035,
+            "candidate_tick_p95_usec": 1391
+          },
+          {
+            "run": 2,
+            "raw_report": "raw/layout-timber-pack-2.json.gz",
+            "checked_runner_report": "checks/layout-timber-pack-2.json",
+            "baseline_mean_usec_per_tick": 1083.808681,
+            "candidate_mean_usec_per_tick": 1017.808264,
+            "gain_percent_of_baseline": 6.089674,
+            "median_paired_batch_gain_percent": 6.024297,
+            "fingerprints_sha256": [
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994",
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994"
+            ],
+            "baseline_tick_p50_usec": 1059,
+            "baseline_tick_p95_usec": 1203,
+            "candidate_tick_p50_usec": 994,
+            "candidate_tick_p95_usec": 1134
+          },
+          {
+            "run": 3,
+            "raw_report": "raw/layout-timber-pack-3.json.gz",
+            "checked_runner_report": "checks/layout-timber-pack-3.json",
+            "baseline_mean_usec_per_tick": 1084.011111,
+            "candidate_mean_usec_per_tick": 1017.581319,
+            "gain_percent_of_baseline": 6.128147,
+            "median_paired_batch_gain_percent": 6.003993,
+            "fingerprints_sha256": [
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994",
+              "957a7af8e535573398eb43a3eacd962418a5df79528d5b353b9f25356dbcf994"
+            ],
+            "baseline_tick_p50_usec": 1053,
+            "baseline_tick_p95_usec": 1215,
+            "candidate_tick_p50_usec": 989,
+            "candidate_tick_p95_usec": 1160
+          }
+        ],
+        "median_paired_run_gain_percent": 6.128147
+      }
+    }
+  },
+  "flight_card": {
+    "baseline_valid_tests": 4,
+    "candidate_valid_tests": 4,
+    "comparison_changes": 0,
+    "comparison_absolute_tolerance": 0,
+    "comparison_relative_tolerance": 0,
+    "profile_difference": "Only result wall_s durations differ; all other profile fields match.",
+    "comparison": "flight-card/comparison.md",
+    "aircraft_data_identity_note": "run.json hashes exact aircraft file bytes; profile.json hashes the loader's sorted JSON representation. Each identity matches between baseline and candidate.",
+    "aircraft_file_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+    "aircraft_semantic_sha256": "ceeba33960e5445de44ea29452f5e82bb1a726c9567e4424bfc63bb4a48b43f1"
+  },
+  "focused_verification": {
+    "integrated_checks": 765,
+    "golden_flights": 4,
+    "checks": {
+      "integrated-test_session_tick_facts": {
+        "report": "checks/integrated-test_session_tick_facts.json",
+        "log": "checks/integrated-test_session_tick_facts.log",
+        "checks": 91
+      },
+      "integrated-test_battery_session": {
+        "report": "checks/integrated-test_battery_session.json",
+        "log": "checks/integrated-test_battery_session.log",
+        "checks": 43
+      },
+      "integrated-test_electric_battery_session": {
+        "report": "checks/integrated-test_electric_battery_session.json",
+        "log": "checks/integrated-test_electric_battery_session.log",
+        "checks": 103
+      },
+      "integrated-test_checkpoint_integrity": {
+        "report": "checks/integrated-test_checkpoint_integrity.json",
+        "log": "checks/integrated-test_checkpoint_integrity.log",
+        "checks": 149
+      },
+      "integrated-test_replay_integrity": {
+        "report": "checks/integrated-test_replay_integrity.json",
+        "log": "checks/integrated-test_replay_integrity.log",
+        "checks": 153
+      },
+      "integrated-test_flight_reset_transaction": {
+        "report": "checks/integrated-test_flight_reset_transaction.json",
+        "log": "checks/integrated-test_flight_reset_transaction.log",
+        "checks": 148
+      },
+      "integrated-test_native_stage": {
+        "report": "checks/integrated-test_native_stage.json",
+        "log": "checks/integrated-test_native_stage.log",
+        "checks": 78
+      },
+      "integrated-test_golden": {
+        "report": "checks/integrated-test_golden.json",
+        "log": "checks/integrated-test_golden.log",
+        "checks": 4
+      }
+    },
+    "native_stage_scope": "Windows runtime refused the Linux x86_64-only native library; native execution is not qualified by this run.",
+    "expected_rejections": {
+      "probe-invalid-mode": {
+        "report": "expected-checks/probe-invalid-mode.json",
+        "log": "expected-checks/probe-invalid-mode.log",
+        "expected_exit": 2,
+        "required_text": "unsupported battery mode for selected aircraft",
+        "output_json_absent_when_checked": true
+      },
+      "probe-unsupported-pack": {
+        "report": "expected-checks/probe-unsupported-pack.json",
+        "log": "expected-checks/probe-unsupported-pack.log",
+        "expected_exit": 2,
+        "required_text": "unsupported battery mode for selected aircraft",
+        "output_json_absent_when_checked": true
+      }
+    },
+    "additional_session_checks": 65,
+    "additional_session_passes": {
+      "session-regression-test_companions_session": {
+        "report": "checks/session-regression-test_companions_session.json",
+        "log": "checks/session-regression-test_companions_session.log",
+        "checks": 65
+      }
+    },
+    "total_passing_session_checks": 830,
+    "known_failures": {
+      "scope": "Independent checked runs of the same test against the candidate and frozen baseline in this Windows environment.",
+      "baseline_and_candidate_failure_lines_match_exactly": true,
+      "failure_lines": [
+        "FAIL frozen legacy checkpoint/metadata exact sebart-avanti-s-a200-p100rx ",
+        "FAIL frozen legacy CSV exact sebart-avanti-s-a200-p100rx "
+      ],
+      "test_file_sha256": "55ccef6fd9a491a5e2fa9aa1522f48af1b38e16c777f7497e420b0ecb4256ad6",
+      "test_files_identical": true,
+      "runs": {
+        "session-regression-test_fixed_gear_brake_input": {
+          "report": "known-failures/session-regression-test_fixed_gear_brake_input.json",
+          "log": "known-failures/session-regression-test_fixed_gear_brake_input.log",
+          "checks": 257,
+          "failed": 2,
+          "exit_code": 1
+        },
+        "baseline-test_fixed_gear_brake_input": {
+          "report": "known-failures/baseline-test_fixed_gear_brake_input.json",
+          "log": "known-failures/baseline-test_fixed_gear_brake_input.log",
+          "checks": 257,
+          "failed": 2,
+          "exit_code": 1
+        }
+      },
+      "interpretation": "Both failures reproduce on the frozen baseline; they remain unresolved and do not count as passing checks."
+    },
+    "listed_integrated_checks_all_passed": true
+  },
+  "full_suite": {
+    "status": "incomplete: deliberately stopped",
+    "command": "& 'C:/Program Files/Git/bin/bash.exe' -c 'bash tmp/roi-battery-20261028/candidate/app/test.sh' > tmp/roi-battery-20261028/full-suite.stdout 2>&1",
+    "selection": "OPENRC_TEST_PART not overridden; full default suite",
+    "start_utc": "2026-10-28T20:15:30+00:00",
+    "stop_action": "After the separate brake failures matched baseline and candidate, the verified outer bash PID 13936 was stopped with taskkill /PID 13936 /T /F.",
+    "recorded_exit_code": 1,
+    "exit_interpretation": "Exit 1 was captured after intentional termination, not a natural full-suite test failure.",
+    "stdout": "full-suite/full-suite.stdout",
+    "stop_reason": "full-suite/stop-reason.txt",
+    "exit_file": "full-suite/full-suite.exit",
+    "completed_checked_runs": 327,
+    "completed_checked_runs_passed": 327,
+    "completed_parse_checks": 314,
+    "parse_target_script_count": 1520,
+    "other_completed_checked_runs": 13,
+    "completed_reports_and_logs": "full-suite/completed-checks.jsonl.gz",
+    "last_completed_parse_script": "res://render/flight_cue_shadows.gd",
+    "last_completed_parse_started_utc": "2026-10-28T20:27:07.070980+00:00",
+    "stopped_invocation": "The full suite itself is incomplete. No reportless checked-runner directory remained at capture; no incomplete child result is inferred.",
+    "completed_prior_phases": [
+      "offline generator and reference checks",
+      "float64 type guard",
+      "transcendental math guard",
+      "shader TIME guard"
+    ]
+  },
+  "percentile_method": "Per-run tick percentiles use nearest rank: sorted_samples[ceil(p*N)-1]."
+}
