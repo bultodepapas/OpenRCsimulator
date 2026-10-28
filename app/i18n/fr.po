@@ -9250,3 +9250,49 @@ msgstr "MetalFX nécessite un essai Metal explicitement activé sur un Mac compa
 
 msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
 msgstr "MetalFX n’utilise pas la netteté FSR. Votre valeur enregistrée est conservée."
+
+# Complete existing graphics status messages used by the Mac trial UI.
+msgid "Enable High (restart)"
+msgstr "Activer Élevé (redémarrage)"
+
+msgid "Keep your changes before restarting."
+msgstr "Conservez vos modifications avant de redémarrer."
+
+msgid "DLAA · Native AA"
+msgstr "DLAA · AA natif"
+
+msgid "NVIDIA Reflex"
+msgstr "NVIDIA Reflex"
+
+msgid "Boost"
+msgstr "Boost"
+
+msgid "Unconfirmed"
+msgstr "Non confirmé"
+
+msgid "Reflex: Requested %s → SDK accepted %s"
+msgstr "Reflex : Demandé %s → Accepté par le SDK %s"
+
+msgid "Reflex mode change is waiting for the next frame."
+msgstr "Le changement de mode Reflex attend la prochaine image."
+
+msgid "NVIDIA Reflex can reduce rendering latency on supported NVIDIA hardware. Boost also requests higher GPU clocks."
+msgstr "NVIDIA Reflex peut réduire la latence de rendu sur le matériel NVIDIA compatible. Boost demande également des fréquences GPU plus élevées."
+
+msgid "NVIDIA Reflex is not included in this game build."
+msgstr "NVIDIA Reflex n’est pas inclus dans cette version du jeu."
+
+msgid "NVIDIA Reflex could not continue in this graphics session. Your saved choice is kept."
+msgstr "NVIDIA Reflex n’a pas pu continuer dans cette session graphique. Votre choix enregistré est conservé."
+
+msgid "NVIDIA Reflex status is unavailable. Your saved choice is kept."
+msgstr "L’état de NVIDIA Reflex est indisponible. Votre choix enregistré est conservé."
+
+msgid "The current graphics session does not report NVIDIA Reflex support. Your saved choice is kept."
+msgstr "La session graphique actuelle ne signale pas de prise en charge de NVIDIA Reflex. Votre choix enregistré est conservé."
+
+msgid "Flight companions: Unavailable"
+msgstr "Compagnons de vol : Indisponibles"
+
+msgid "Flight companions are unavailable in this game build."
+msgstr "Les compagnons de vol sont indisponibles dans cette version du jeu."

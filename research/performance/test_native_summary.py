@@ -4,6 +4,7 @@ import json
 import hashlib
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 try:
@@ -159,7 +160,9 @@ def write_stream_run(directory: Path, name: str, source: dict) -> tuple[Path, li
                     "frames": count})
     report["stream"] = {"file": report_path.name + ".frames.jsonl", "chunks": len(records) - 2,
                         "frames": count, "complete": True, "chunk_frames": 512,
-                        "max_bytes": 268_435_456}
+                        "max_bytes": 268_435_456, "rejected_frames": 0, "unstored_frames": 0,
+                        "write_calls": len(records), "write_total_usec": 0, "write_max_usec": 0,
+                        "write_timing_scope": "synthetic fixture"}
     report_path.with_suffix(".log").write_text("Godot clean\n", encoding="utf-8")
     write_stream_fixture(report_path, report, records)
     return report_path, records
@@ -392,6 +395,28 @@ class NativeReportValidationTests(unittest.TestCase):
 
 
 class StreamReportTests(unittest.TestCase):
+    def test_thirty_minute_equivalent_streams_at_60_and_120_hz(self):
+        for hz in (60, 120):
+            with self.subTest(hz=hz), tempfile.TemporaryDirectory() as temp_dir:
+                count = hz * 1800
+                ticks = [(index + 1) * (240 // hz) for index in range(count)]
+                source = valid_report(ticks=ticks, warmup_s=10.0, actual_warmup_s=10.0, sample_s=1800.0)
+                ends = [2_000_000 + ((index + 1) * 1_000_000 // hz) for index in range(count)]
+                wall = [ends[0] - 2_000_000] + [right - left for left, right in zip(ends, ends[1:])]
+                ordered = sorted(wall)
+                rank = lambda percent: ordered[(count * percent + 99) // 100 - 1] / 1000.0
+                source.update(frame_wall_usec=wall, frame_end_monotonic_usec=ends,
+                              frame_deltas_s=[value / 1_000_000.0 for value in wall],
+                              frame_ms={"p50": rank(50), "p95": rank(95), "p99": rank(99),
+                                        "max": ordered[-1] / 1000.0},
+                              actual_sample_s=1800.0, wall_seconds=1800.0, seconds=1800.0)
+                path, _records = write_stream_run(Path(temp_dir), "run-1", source)
+                result = summarize_run(path, DEFAULT_POLICY)
+                self.assertTrue(result["collection_valid"], result["collection_reasons"])
+                self.assertTrue(result["performance_pass"])
+                self.assertEqual(result["stream"]["frames"], count)
+                self.assertEqual(result["metrics"]["frame_ms"], source["frame_ms"])
+
     def test_stream_matches_legacy_analysis_across_chunk_boundaries(self):
         source = sustained_report()
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -467,6 +492,40 @@ class StreamReportTests(unittest.TestCase):
                 result = summarize_run(path, SHORT_POLICY)
                 self.assertFalse(result["collection_valid"])
                 self.assertFalse(result["performance_pass"])
+
+    def test_stream_rejects_duplicate_json_keys_and_false_counters(self):
+        for fault in ("duplicate-key", "rejected", "unstored", "write-timing"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temp_dir:
+                path, _records = write_stream_run(Path(temp_dir), "run-1", valid_report())
+                report = json.loads(path.read_text(encoding="utf-8"))
+                sidecar = path.with_name(report["stream"]["file"])
+                if fault == "duplicate-key":
+                    payload = sidecar.read_bytes().replace(b'"sequence":0', b'"sequence":0,"sequence":0', 1)
+                    sidecar.write_bytes(payload)
+                    report["stream"].update(bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest())
+                elif fault == "rejected":
+                    report["stream"]["rejected_frames"] = 1
+                elif fault == "unstored":
+                    report["stream"]["unstored_frames"] = 1
+                else:
+                    report["stream"]["write_calls"] = 0
+                path.write_text(json.dumps(report), encoding="utf-8")
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertFalse(result["collection_valid"])
+                self.assertFalse(result["performance_pass"])
+
+    def test_native_summary_bounds_report_and_log_reads(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            path = write_run(root, "run-1", valid_report(), "longer than five bytes")
+            with patch(f"{summarize_run.__module__}.MAX_REPORT_BYTES", 5):
+                report_result = summarize_run(path, SHORT_POLICY)
+            with patch(f"{summarize_run.__module__}.MAX_LOG_BYTES", 5):
+                log_result = summarize_run(path, SHORT_POLICY)
+        self.assertFalse(report_result["collection_valid"])
+        self.assertFalse(log_result["collection_valid"])
+        self.assertTrue(any("byte limit" in reason for reason in report_result["collection_reasons"]))
+        self.assertTrue(any("byte limit" in reason for reason in log_result["collection_reasons"]))
 
 
 class NativeRunClassificationTests(unittest.TestCase):

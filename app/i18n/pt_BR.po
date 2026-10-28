@@ -9118,3 +9118,49 @@ msgstr "MetalFX requer um teste de Metal ativado explicitamente em um Mac compat
 
 msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
 msgstr "MetalFX não usa a nitidez do FSR. Seu valor salvo é mantido."
+
+# Complete existing graphics status messages used by the Mac trial UI.
+msgid "Enable High (restart)"
+msgstr "Ativar Alta (reiniciar)"
+
+msgid "Keep your changes before restarting."
+msgstr "Mantenha suas alterações antes de reiniciar."
+
+msgid "DLAA · Native AA"
+msgstr "DLAA · AA nativo"
+
+msgid "NVIDIA Reflex"
+msgstr "NVIDIA Reflex"
+
+msgid "Boost"
+msgstr "Boost"
+
+msgid "Unconfirmed"
+msgstr "Não confirmado"
+
+msgid "Reflex: Requested %s → SDK accepted %s"
+msgstr "Reflex: Solicitado %s → SDK aceitou %s"
+
+msgid "Reflex mode change is waiting for the next frame."
+msgstr "A mudança do modo Reflex aguarda o próximo quadro."
+
+msgid "NVIDIA Reflex can reduce rendering latency on supported NVIDIA hardware. Boost also requests higher GPU clocks."
+msgstr "NVIDIA Reflex pode reduzir a latência de renderização em hardware NVIDIA compatível. Boost também solicita frequências mais altas da GPU."
+
+msgid "NVIDIA Reflex is not included in this game build."
+msgstr "NVIDIA Reflex não está incluído nesta versão do jogo."
+
+msgid "NVIDIA Reflex could not continue in this graphics session. Your saved choice is kept."
+msgstr "NVIDIA Reflex não pôde continuar nesta sessão gráfica. Sua escolha salva é mantida."
+
+msgid "NVIDIA Reflex status is unavailable. Your saved choice is kept."
+msgstr "O estado do NVIDIA Reflex está indisponível. Sua escolha salva é mantida."
+
+msgid "The current graphics session does not report NVIDIA Reflex support. Your saved choice is kept."
+msgstr "A sessão gráfica atual não informa suporte ao NVIDIA Reflex. Sua escolha salva é mantida."
+
+msgid "Flight companions: Unavailable"
+msgstr "Companheiros de voo: Indisponível"
+
+msgid "Flight companions are unavailable in this game build."
+msgstr "Companheiros de voo estão indisponíveis nesta versão do jogo."

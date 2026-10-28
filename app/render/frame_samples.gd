@@ -54,6 +54,10 @@ var _stream_frames: int = 0
 var _stream_closed: bool = false
 var _stream_complete: bool = false
 var _stream_error: String = ""
+var _stream_write_calls: int = 0
+var _stream_write_total_usec: int = 0
+var _stream_write_max_usec: int = 0
+var _stream_rejected_frames: int = 0
 var _chunk_engine_delta_s := PackedFloat64Array()
 var _first_metrics: Dictionary = {}
 var _last_metrics: Dictionary = {}
@@ -186,6 +190,8 @@ func record_frame(engine_delta: float, wall_delta_usec: int, monotonic_end_usec:
 		_sample_deadline_usec = _actual_sample_start_usec + roundi(sample_s * MICROSECONDS_PER_SECOND)
 	if _actual_sample_start_usec >= 0 and relative_start_usec < _sample_deadline_usec:
 		if _wall_delta_s.size() >= max_frames:
+			if not _stream_path.is_empty():
+				_stream_rejected_frames += 1
 			return _fail("frame retention limit reached (%d); shorten --t or increase --frametimes-max-frames" % max_frames)
 		_wall_delta_s.append(float(wall_delta_usec) / float(MICROSECONDS_PER_SECOND))
 		_engine_delta_s.append(engine_delta)
@@ -287,19 +293,30 @@ func _start_stream(path: String) -> bool:
 
 
 func _write_stream_line(value: Dictionary) -> bool:
+	var started_usec: int = Time.get_ticks_usec()
 	var bytes: PackedByteArray = (JSON.stringify(value, "", true, true) + "\n").to_utf8_buffer()
 	if _stream_bytes + bytes.size() > STREAM_MAX_BYTES:
 		_stream_error = "frame stream byte limit reached (%d)" % STREAM_MAX_BYTES
+		_track_stream_write(started_usec)
 		return false
 	_stream_file.store_buffer(bytes)
 	_stream_file.flush()
 	var error: Error = _stream_file.get_error()
 	if error != OK:
 		_stream_error = "frame stream write failed: %s" % error_string(error)
+		_track_stream_write(started_usec)
 		return false
 	_stream_hash.update(bytes)
 	_stream_bytes += bytes.size()
+	_track_stream_write(started_usec)
 	return true
+
+
+func _track_stream_write(started_usec: int) -> void:
+	var duration: int = maxi(0, Time.get_ticks_usec() - started_usec)
+	_stream_write_calls += 1
+	_stream_write_total_usec += duration
+	_stream_write_max_usec = maxi(_stream_write_max_usec, duration)
 
 
 func _flush_stream_chunk() -> bool:
@@ -406,7 +423,11 @@ func report() -> Dictionary:
 		result.sample_endpoints = {first = _first_metrics.duplicate(true), last = _last_metrics.duplicate(true)}
 		result.stream = {file = _stream_path.get_file(), chunks = _stream_chunks, frames = _stream_frames,
 			bytes = _stream_bytes, sha256 = _stream_sha256, complete = _stream_complete,
-			chunk_frames = STREAM_CHUNK_FRAMES, max_bytes = STREAM_MAX_BYTES}
+			chunk_frames = STREAM_CHUNK_FRAMES, max_bytes = STREAM_MAX_BYTES,
+			rejected_frames = _stream_rejected_frames, unstored_frames = _wall_delta_s.size() - _stream_frames,
+			write_calls = _stream_write_calls, write_total_usec = _stream_write_total_usec,
+			write_max_usec = _stream_write_max_usec,
+			write_timing_scope = "JSON encoding, synchronous write/flush and hashing; excludes per-frame sampling"}
 		result.complete = finished and failure.is_empty() and _stream_complete
 	return result
 

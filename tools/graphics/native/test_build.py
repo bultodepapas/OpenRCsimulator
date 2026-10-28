@@ -134,6 +134,31 @@ class EnginePatchTests(unittest.TestCase):
         self.assertEqual(outer_file.read_bytes(), b"outer repository work\n")
 
 
+class LegacyCacheTests(unittest.TestCase):
+    def test_sdk24_cache_is_rejected_before_any_mutation(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="native-sdk-cache-test-") as temporary:
+            cache = Path(temporary)
+            tree = cache / native_build.ARCHIVES[0][3] / "thirdparty/amd-fsr-sdk24"
+            tree.mkdir(parents=True)
+            (tree / "preserve.txt").write_bytes(b"partial SDK intake")
+            (cache / "unrelated.bin").write_bytes(b"preserve unrelated work")
+            before = {p.relative_to(cache): p.read_bytes() for p in cache.rglob("*") if p.is_file()}
+            with mock.patch.object(native_build, "fetch") as fetch, \
+                    mock.patch.object(native_build, "apply_engine_patches") as patches:
+                with self.assertRaisesRegex(RuntimeError, "SDK 2.4 headers"):
+                    native_build.prepare(cache, prepare_only=True)
+                fetch.assert_not_called()
+                patches.assert_not_called()
+            self.assertEqual(before, {p.relative_to(cache): p.read_bytes() for p in cache.rglob("*") if p.is_file()})
+
+    def test_clean_cache_reaches_existing_fetch_path(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="native-sdk-cache-test-") as temporary:
+            with mock.patch.object(native_build, "fetch", side_effect=RuntimeError("fetch reached")) as fetch:
+                with self.assertRaisesRegex(RuntimeError, "fetch reached"):
+                    native_build.prepare(Path(temporary), prepare_only=True)
+                fetch.assert_called_once()
+
+
 class DLSSHistoryResetTests(unittest.TestCase):
     def test_per_context_success_acknowledges_captured_generation(self) -> None:
         compiler = shutil.which("g++") or shutil.which("clang++")

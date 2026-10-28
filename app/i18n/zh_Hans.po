@@ -8275,3 +8275,49 @@ msgstr "MetalFX 需要在受支持的 Mac 上明确启用 Metal 测试。"
 
 msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
 msgstr "MetalFX 不使用 FSR 锐化。已保存的数值将保留。"
+
+# Complete existing graphics status messages used by the Mac trial UI.
+msgid "Enable High (restart)"
+msgstr "启用高画质（重启）"
+
+msgid "Keep your changes before restarting."
+msgstr "重启前请先保留更改。"
+
+msgid "DLAA · Native AA"
+msgstr "DLAA · 原生抗锯齿"
+
+msgid "NVIDIA Reflex"
+msgstr "NVIDIA Reflex"
+
+msgid "Boost"
+msgstr "增强"
+
+msgid "Unconfirmed"
+msgstr "未确认"
+
+msgid "Reflex: Requested %s → SDK accepted %s"
+msgstr "Reflex：请求 %s → SDK 已接受 %s"
+
+msgid "Reflex mode change is waiting for the next frame."
+msgstr "Reflex 模式更改正在等待下一帧。"
+
+msgid "NVIDIA Reflex can reduce rendering latency on supported NVIDIA hardware. Boost also requests higher GPU clocks."
+msgstr "NVIDIA Reflex 可降低受支持的 NVIDIA 硬件上的渲染延迟。增强模式还会请求更高的 GPU 时钟频率。"
+
+msgid "NVIDIA Reflex is not included in this game build."
+msgstr "此游戏版本不包含 NVIDIA Reflex。"
+
+msgid "NVIDIA Reflex could not continue in this graphics session. Your saved choice is kept."
+msgstr "NVIDIA Reflex 无法在当前图形会话中继续运行。已保存的选择将保留。"
+
+msgid "NVIDIA Reflex status is unavailable. Your saved choice is kept."
+msgstr "NVIDIA Reflex 状态不可用。已保存的选择将保留。"
+
+msgid "The current graphics session does not report NVIDIA Reflex support. Your saved choice is kept."
+msgstr "当前图形会话未报告 NVIDIA Reflex 支持。已保存的选择将保留。"
+
+msgid "Flight companions: Unavailable"
+msgstr "飞行伙伴：不可用"
+
+msgid "Flight companions are unavailable in this game build."
+msgstr "此游戏版本不支持飞行伙伴。"

@@ -33,6 +33,8 @@ STREAM_MAX_FRAMES = 1_000_000
 STREAM_CHUNK_FRAMES = 512
 STREAM_MAX_LINE_BYTES = 8 * 1024 * 1024
 STREAM_MAX_RETAINED_ARRAY_BYTES = 128 * 1024 * 1024
+MAX_REPORT_BYTES = 128 * 1024 * 1024
+MAX_LOG_BYTES = 64 * 1024 * 1024
 SUMMARY_FORMAT = "openrc-native-frame-summary v1"
 DEFAULT_POLICY = {
     "p95_max_ms": 18.0,
@@ -57,6 +59,23 @@ def _is_int(value: Any) -> bool:
 
 def _reject_constant(value: str) -> None:
     raise ValueError(f"non-finite JSON value {value} is forbidden")
+
+
+def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON object key {key!r}")
+        result[key] = value
+    return result
+
+
+def _read_bounded(path: Path, maximum: int) -> bytes:
+    with path.open("rb") as stream:
+        data = stream.read(maximum + 1)
+    if len(data) > maximum:
+        raise ValueError(f"input exceeds the {maximum}-byte limit")
+    return data
 
 
 def _finite_tree(value: Any, path: str = "report") -> list[str]:
@@ -528,6 +547,11 @@ def _hydrate_stream_report(report: dict[str, Any], report_path: Path, *, include
     """
     if report.get("version") != 3 or type(report.get("version")) is not int:
         raise ValueError("stream report version must be integer 3")
+    if not isinstance(report.get("capture_id"), str):
+        raise ValueError("stream report capture_id must be a string")
+    if (report.get("raw_metrics") != {} or any(report.get(key) != [] for key in
+            ("frame_deltas_s", "frame_wall_usec", "frame_end_monotonic_usec", "engine_frame_deltas_s"))):
+        raise ValueError("stream report must not embed conflicting frame arrays")
     stream = report.get("stream")
     if not isinstance(stream, dict):
         raise ValueError("stream metadata must be an object")
@@ -557,6 +581,15 @@ def _hydrate_stream_report(report: dict[str, Any], report_path: Path, *, include
         raise ValueError("report frame count must match stream frame count")
     if stream.get("chunk_frames") != STREAM_CHUNK_FRAMES or stream.get("max_bytes") != STREAM_MAX_BYTES:
         raise ValueError("stream bounds do not match the supported format")
+    for key in ("rejected_frames", "unstored_frames", "write_calls", "write_total_usec", "write_max_usec"):
+        if not _is_int(stream.get(key)) or stream[key] < 0:
+            raise ValueError(f"stream {key} must be a non-negative integer")
+    if stream["rejected_frames"] or stream["unstored_frames"]:
+        raise ValueError("a complete stream cannot have rejected or unstored frames")
+    if stream["write_calls"] != expected_chunks + 2 or stream["write_total_usec"] < stream["write_max_usec"]:
+        raise ValueError("stream write timing counters are inconsistent")
+    if not isinstance(stream.get("write_timing_scope"), str) or not stream["write_timing_scope"].strip():
+        raise ValueError("stream write timing scope is missing")
     if path.stat().st_size != expected_bytes:
         raise ValueError("stream byte count does not match the file")
     expected_hash = stream.get("sha256")
@@ -583,7 +616,10 @@ def _hydrate_stream_report(report: dict[str, Any], report_path: Path, *, include
 
     with path.open("rb") as source:
         while True:
-            line = source.readline(STREAM_MAX_LINE_BYTES + 1)
+            # One byte of look-ahead detects growth after the initial stat without
+            # reading an unbounded line or exceeding the caller's budget by more.
+            read_limit = min(STREAM_MAX_LINE_BYTES + 1, max_input_bytes - bytes_read + 1)
+            line = source.readline(read_limit)
             if not line:
                 break
             bytes_read += len(line)
@@ -592,12 +628,14 @@ def _hydrate_stream_report(report: dict[str, Any], report_path: Path, *, include
             if not line.endswith(b"\n"):
                 raise ValueError("stream ends with a truncated record")
             digest.update(line)
-            record = json.loads(line.decode("utf-8"), parse_constant=_reject_constant)
+            record = json.loads(line.decode("utf-8"), parse_constant=_reject_constant,
+                                object_pairs_hook=_unique_object)
             if not isinstance(record, dict):
                 raise ValueError("stream record must be an object")
             kind = record.get("type")
             if not header_seen:
-                if kind != "header" or record.get("format") != STREAM_DATA_FORMAT or record.get("version") != 1:
+                if (kind != "header" or record.get("format") != STREAM_DATA_FORMAT
+                        or type(record.get("version")) is not int or record["version"] != 1):
                     raise ValueError("stream header is invalid")
                 if (record.get("capture_id") != report.get("capture_id")
                         or record.get("chunk_frames") != STREAM_CHUNK_FRAMES
@@ -692,7 +730,9 @@ def _hydrate_stream_report(report: dict[str, Any], report_path: Path, *, include
                     frame_wall_usec=wall, frame_end_monotonic_usec=ends,
                     raw_metrics=retained_metrics)
     return hydrated, {"file": filename, "bytes": bytes_read, "sha256": digest.hexdigest(),
-                      "chunks": chunks, "frames": len(wall)}
+                      "chunks": chunks, "frames": len(wall),
+                      "write_calls": stream["write_calls"], "write_total_usec": stream["write_total_usec"],
+                      "write_max_usec": stream["write_max_usec"], "write_timing_scope": stream["write_timing_scope"]}
 
 
 def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
@@ -704,7 +744,7 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
     log_path = report_path.with_suffix(".log")
 
     try:
-        report_bytes = report_path.read_bytes()
+        report_bytes = _read_bounded(report_path, MAX_REPORT_BYTES)
         report = json.loads(report_bytes.decode("utf-8"), parse_constant=_reject_constant)
         if isinstance(report, dict):
             value = report.get("format")
@@ -718,14 +758,14 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
     engine_errors: list[str] = []
     log_decode_error: str | None = None
     try:
-        log_bytes = log_path.read_bytes()
+        log_bytes = _read_bounded(log_path, MAX_LOG_BYTES)
         try:
             log_text = _decode_log(log_bytes)
         except UnicodeError as error:
             log_decode_error = f"matching log encoding is invalid: {error}"
             log_text = log_bytes.decode("utf-8", errors="replace")
         engine_errors = _log_error_lines(log_text)
-    except OSError as error:
+    except (OSError, ValueError) as error:
         errors.append(f"matching log is unavailable: {error}")
     if log_decode_error:
         errors.append(log_decode_error)

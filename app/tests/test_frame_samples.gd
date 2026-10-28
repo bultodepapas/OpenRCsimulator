@@ -93,7 +93,7 @@ func _test_stream_options_and_failures() -> void:
 	var capped := FrameSamples.new()
 	_check("stream frame-cap config accepted", capped.configure(0.0, 1.0, 2, capped_path))
 	var accepted: bool = capped.record_frame(0.1, 100000, 100000, {sim_tick = 1.0}) and capped.record_frame(0.1, 100000, 200000, {sim_tick = 2.0})
-	_check("frame overflow closes an incomplete stream", accepted and not capped.record_frame(0.1, 100000, 300000, {sim_tick = 3.0}) and not capped.report().complete and capped.report().stream.frames == 2 and capped.failure.contains("limit"))
+	_check("frame overflow closes an incomplete stream", accepted and not capped.record_frame(0.1, 100000, 300000, {sim_tick = 3.0}) and not capped.report().complete and capped.report().stream.frames == 2 and capped.report().stream.rejected_frames == 1 and capped.report().stream.unstored_frames == 0 and capped.failure.contains("limit"))
 	_remove_stream(capped_path)
 
 	var bytes_path: String = _stream_path("byte-cap")
@@ -103,7 +103,7 @@ func _test_stream_options_and_failures() -> void:
 	bytes_capped._stream_bytes = FrameSamples.STREAM_MAX_BYTES
 	_check("byte-cap fixture accepts a buffered sample", bytes_capped.record_frame(0.1, 100000, 100000, {sim_tick = 1.0}))
 	bytes_capped.abort("interrupt")
-	_check("byte-cap stays incomplete and does not fabricate completion", not bytes_capped.report().complete and not bytes_capped.report().stream.complete and _stream_records(bytes_path).size() == 1)
+	_check("byte-cap stays incomplete and does not fabricate completion", not bytes_capped.report().complete and not bytes_capped.report().stream.complete and bytes_capped.report().stream.unstored_frames == 1 and _stream_records(bytes_path).size() == 1)
 	_remove_stream(bytes_path)
 
 
@@ -148,7 +148,8 @@ func _test_stream_long_run(hz: int) -> void:
 	var report: Dictionary = logger.report()
 	var records: Array = _stream_records(path)
 	_check("%d Hz stream covers 30 minutes with bounded chunks" % hz, accepted and report.complete and report.frames == count and report.stream.frames == count and max_chunk < FrameSamples.STREAM_CHUNK_FRAMES and is_equal_approx(report.actual_sample_s, 1800.0), logger.failure)
-	_check("%d Hz stream has ordered header, chunks, trailer and hash" % hz, records.size() == report.stream.chunks + 2 and records[0].type == "header" and records[-1].type == "trailer" and records[-1].complete and report.stream.sha256.length() == 64, str(report.stream))
+	_check("%d Hz stream has ordered header, chunks, trailer and hash" % hz, records.size() == report.stream.chunks + 2 and records[0].type == "header" and records[-1].type == "trailer" and records[-1].complete and report.stream.sha256.length() == 64 and report.stream.unstored_frames == 0 and report.stream.rejected_frames == 0, str(report.stream))
+	_check("%d Hz stream records write overhead" % hz, report.stream.write_calls == report.stream.chunks + 2 and report.stream.write_total_usec >= report.stream.write_max_usec)
 	_check("%d Hz stream preserves measured endpoints without embedding raw arrays" % hz, report.raw_metrics.is_empty() and report.frame_wall_usec.is_empty() and report.sample_endpoints.first.sim_tick == 240.0 / hz and report.sample_endpoints.last.sim_tick == 432000.0)
 	_remove_stream(path)
 

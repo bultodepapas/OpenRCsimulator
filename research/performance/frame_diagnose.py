@@ -475,7 +475,7 @@ def diagnose(report_path: Path, log_path: Path, *, budget_ms: float = DEFAULT_BU
             stream_reserved_bytes = declared_bytes
         try:
             analysis_report, stream_evidence = _hydrate_stream_report(
-                report, report_path, include_metrics=True, max_input_bytes=min(remaining_bytes, STREAM_MAX_BYTES))
+                report, report_path, include_metrics=True, max_input_bytes=min(stream_reserved_bytes, STREAM_MAX_BYTES))
         except (OSError, UnicodeError, ValueError, RecursionError, OverflowError, TypeError) as error:
             report_errors.append(f"stream is unreadable or invalid: {error}")
 

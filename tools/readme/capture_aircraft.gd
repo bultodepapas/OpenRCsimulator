@@ -13,6 +13,8 @@ const STILL_SIZE: Vector2i = Vector2i(1920, 1080)
 const TOUR_SIZE: Vector2i = Vector2i(800, 450)
 const BACKGROUND: Color = Color("111820")
 const GROUND_IDS = ["mt8-bisonte", "monster-car-2"]
+const STILL_FRACTION: float = 0.76 # 12% margin on each side.
+const TOUR_FRACTION: float = 0.60 # Extra space for the tour's title and status.
 
 var output: String = ""
 var world: Node3D
@@ -116,6 +118,7 @@ func _run() -> void:
 	_add_light(Vector3(48, -28, 0), 0.40)
 	camera = Camera3D.new()
 	camera.fov = 38.0
+	camera.keep_aspect = Camera3D.KEEP_HEIGHT
 	camera.current = true
 	world.add_child(camera)
 	var canvas: CanvasLayer = CanvasLayer.new()
@@ -148,10 +151,17 @@ func _run() -> void:
 			push_error("Vehicle has no finite visible bounds: " + id)
 			quit(1)
 			return
+		var vertices: Array[Vector3] = []
+		var mesh_corners: Array[Vector3] = []
+		_collect_geometry(airplane, Transform3D.IDENTITY, vertices, mesh_corners)
+		if vertices.is_empty() or mesh_corners.is_empty():
+			push_error("Vehicle has no visible mesh geometry: " + id)
+			quit(1)
+			return
 		title.visible = false
 		status.visible = false
 		root.size = STILL_SIZE
-		_aim(center, extent, -42.0)
+		_aim(center, vertices, -42.0, STILL_FRACTION)
 		var still: String = "%s.png" % id
 		if not await _save(output.path_join(still), STILL_SIZE):
 			quit(1)
@@ -175,7 +185,7 @@ func _run() -> void:
 			status.visible = true
 			for frame: int in range(FRAME_COUNT):
 				var angle: float = -42.0 + 360.0 * float(frame) / float(FRAME_COUNT)
-				_aim(center, extent, angle)
+				_aim(center, mesh_corners, angle, TOUR_FRACTION)
 				if not await _save(output.path_join("frames/%03d.png" % global_frame), TOUR_SIZE):
 					quit(1)
 					return
@@ -270,11 +280,57 @@ func _bounds(node: Node3D, parent_transform: Transform3D) -> AABB:
 	return result
 
 
-func _aim(center: Vector3, extent: float, azimuth: float) -> void:
+func _collect_geometry(node: Node3D, parent_transform: Transform3D, vertices: Array[Vector3], mesh_corners: Array[Vector3]) -> void:
+	var transform: Transform3D = parent_transform * node.transform
+	if node is MeshInstance3D and node.visible and node.mesh != null:
+		var corners: Array[Vector3] = []
+		for corner: int in range(8):
+			corners.append(transform * node.get_aabb().get_endpoint(corner))
+		mesh_corners.append_array(corners)
+		var start_count: int = vertices.size()
+		for surface: int in range(node.mesh.get_surface_count()):
+			var arrays: Array = node.mesh.surface_get_arrays(surface)
+			if arrays.size() > Mesh.ARRAY_VERTEX and arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array:
+				for vertex: Vector3 in arrays[Mesh.ARRAY_VERTEX]:
+					vertices.append(transform * vertex)
+		# A mesh without readable vertices still gets a conservative bounding box.
+		if vertices.size() == start_count:
+			vertices.append_array(corners)
+	for child: Node in node.get_children():
+		if child is Node3D and child.visible:
+			_collect_geometry(child, transform, vertices, mesh_corners)
+
+
+# Fit the projected geometry, rather than scaling by the longest world axis.
+# Intersect the allowable camera-centre intervals for every vertex. This keeps
+# each point inside the requested fraction of both axes, including perspective.
+func _aim(center: Vector3, points: Array[Vector3], azimuth: float, fraction: float) -> void:
 	var az: float = deg_to_rad(azimuth)
 	var elevation: float = deg_to_rad(22.0)
-	var offset: Vector3 = extent * 1.70 * Vector3(sin(az) * cos(elevation), sin(elevation), -cos(az) * cos(elevation))
-	camera.look_at_from_position(center + offset, center)
+	var outward: Vector3 = Vector3(sin(az) * cos(elevation), sin(elevation), -cos(az) * cos(elevation)).normalized()
+	var right: Vector3 = Vector3.UP.cross(outward).normalized()
+	var up: Vector3 = outward.cross(right).normalized()
+	var vertical: float = tan(deg_to_rad(camera.fov) * 0.5) * fraction
+	var horizontal: float = vertical * float(STILL_SIZE.x) / float(STILL_SIZE.y)
+	var max_right: float = -INF
+	var min_right: float = INF
+	var max_up: float = -INF
+	var min_up: float = INF
+	var max_depth: float = -INF
+	for point: Vector3 in points:
+		var relative: Vector3 = point - center
+		var x: float = relative.dot(right)
+		var y: float = relative.dot(up)
+		var depth: float = relative.dot(outward)
+		max_right = maxf(max_right, x + horizontal * depth)
+		min_right = minf(min_right, x - horizontal * depth)
+		max_up = maxf(max_up, y + vertical * depth)
+		min_up = minf(min_up, y - vertical * depth)
+		max_depth = maxf(max_depth, depth)
+	var distance: float = maxf((max_right - min_right) / (2.0 * horizontal), (max_up - min_up) / (2.0 * vertical))
+	distance = maxf(distance, max_depth + camera.near + 0.01)
+	var target: Vector3 = center + right * (max_right + min_right) * 0.5 + up * (max_up + min_up) * 0.5
+	camera.look_at_from_position(target + outward * distance, target)
 
 
 func _save(path: String, expected: Vector2i) -> bool:

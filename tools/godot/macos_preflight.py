@@ -165,13 +165,16 @@ def parse_profile(raw: str) -> tuple[list[dict], bool]:
             if not isinstance(display, dict):
                 raise ValueError("invalid display entry")
             display_count += 1
-            raw_resolution = display.get("_spdisplays_resolution") or display.get("spdisplays_resolution")
+            resolution_key = ("_spdisplays_resolution" if display.get("_spdisplays_resolution")
+                              else "spdisplays_resolution")
+            raw_resolution = display.get(resolution_key)
             match = re.search(r"\b(\d{2,5})\s*[x×]\s*(\d{2,5})\b", raw_resolution) if isinstance(raw_resolution, str) else None
             raw_main = display.get("spdisplays_main")
             main = True if raw_main in ("spdisplays_yes", "yes", True) else False if raw_main in ("spdisplays_no", "no", False) else None
             raw_connection = display.get("spdisplays_connection_type")
             connection = raw_connection if raw_connection in ("spdisplays_internal", "spdisplays_external", "internal", "external") else None
-            output_displays.append({"pixel_dimensions": [int(match.group(1)), int(match.group(2))] if match else None,
+            output_displays.append({"reported_dimensions": [int(match.group(1)), int(match.group(2))] if match else None,
+                                    "resolution_source": resolution_key if match else None,
                                     "main": main, "connection": connection})
         gpus.append({"model": clean_text(gpu.get("sppci_model")) or clean_text(gpu.get("_name")),
                      "metal_reported": clean_text(gpu.get("spdisplays_metal")), "displays": output_displays})
@@ -225,6 +228,8 @@ def collect(godot: Path) -> dict:
         return result.text
 
     host_arch = clean_text(platform.machine())
+    if host_arch is None:
+        issues.append("process_architecture:unavailable")
     translated, translation_issue = process_translation()
     if translation_issue:
         issues.append("process_translation:" + translation_issue)
@@ -255,7 +260,7 @@ def collect(godot: Path) -> dict:
             gpus, truncated = parse_profile(profile)
             if truncated:
                 issues.append("displays:entry_limit")
-        except (ValueError, json.JSONDecodeError):
+        except (ValueError, RecursionError):
             issues.append("displays:invalid_json")
     if not gpus or not any(gpu["model"] for gpu in gpus):
         issues.append("displays:no_gpu_data")
@@ -298,6 +303,7 @@ def collect(godot: Path) -> dict:
         "format": "openrc-macos-preflight-v1", "captured_utc": datetime.now(timezone.utc).isoformat(),
         "collection": {"complete": not issues, "issues": issues, "time_budget_seconds": TOTAL_SECONDS,
                        "command_output_limit_bytes": MAX_OUTPUT_BYTES,
+                       "display_resolution_note": "System-reported dimensions; drawable and render pixels are unverified.",
                        "qualification": "inventory only; no renderer, GPU performance, package or physical qualification"},
         "host": {"model_identifier": model, "cpu": cpu, "memory_bytes": memory_bytes,
                  "os_version": os_version, "os_build": os_build, "hardware_arm64": hardware_arm64,
@@ -321,4 +327,25 @@ def main() -> int:
         print(json.dumps({"collection_started": False, "requires": "Darwin and --godot",
                           "collects": ["model and memory", "OS and process architecture", "filtered GPU/display data",
                                        "engine path/hash/version", "tool paths"],
-                          "serial_numbers": "not collected", "outp
+                          "serial_numbers": "discarded from system output in memory; never written",
+                          "output_directory": str(args.out_dir)}))
+        return 0
+    if platform.system() != "Darwin":
+        parser.exit(2, "macOS preflight collection requires a native Darwin host; use --dry-run for scope.\n")
+    if args.godot is None:
+        parser.error("--godot is required for collection")
+    report = collect(args.godot)
+    try:
+        args.out_dir.mkdir(parents=True, exist_ok=True)
+        output = args.out_dir / ("macos-preflight-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid.uuid4().hex + ".json")
+        with output.open("x", encoding="utf-8") as stream:
+            json.dump(report, stream, indent=2, ensure_ascii=True)
+            stream.write("\n")
+    except OSError as error:
+        parser.exit(2, "Could not write new preflight receipt: " + str(error) + "\n")
+    print(output)
+    return 0 if report["collection"]["complete"] else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

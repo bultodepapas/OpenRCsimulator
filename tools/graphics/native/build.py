@@ -112,6 +112,11 @@ def apply_engine_patches(engine: Path, archive: Path) -> None:
 
 
 def prepare(cache: Path, jobs: int = 4, prepare_only: bool = False) -> tuple[Path, dict]:
+    # fsr3.cpp prefers SDK 2.4 headers when present. Never certify that mixed
+    # cache as the legacy SDK 1.1.4 build, or rewrite the other candidate.
+    sdk24_tree = cache / ARCHIVES[0][3] / "thirdparty/amd-fsr-sdk24"
+    if os.path.lexists(sdk24_tree):
+        raise RuntimeError("SDK 2.4 headers exist in this cache; use a separate fresh --cache for the legacy build")
     cache.mkdir(parents=True, exist_ok=True)
     engine, amd, nvidia = (fetch(cache, spec) for spec in ARCHIVES)
     apply_engine_patches(engine, cache / ARCHIVES[0][0])
