@@ -22,9 +22,16 @@ func _extra_option_names() -> PackedStringArray:
 func _checks() -> void:
 	_report.format = "openrc-nk3-trajectory v2"
 	_report.trajectories = {}
+	var only: String = str(_options.get("only", "all"))
+	var skip_timing: bool = str(_options.get("skip-timing", "")) == "true"
+	if only not in ["all", "timing", "attribution"]:
+		_failures.append("unknown trajectory mode: " + only)
+		return
+	if skip_timing and only != "all":
+		_failures.append("cannot skip timing for mode " + only)
+		return
 	_report.load_average = {start = _load_average()}
 	var ticks: int = int(_options.get("ticks", "4800"))
-	var only: String = str(_options.get("only", "all"))
 	if ticks <= 0:
 		_failures.append("trajectory ticks must be positive")
 		_report.load_average.end = _load_average()
@@ -37,7 +44,7 @@ func _checks() -> void:
 		_check_fallback()
 	if only == "attribution" and _report.components.is_empty():
 		_compare("attribution_only_run", PackedFloat64Array([1.0]), PackedFloat64Array([1.0]))
-	if str(_options.get("skip-timing", "")) != "true":
+	if not skip_timing:
 		if only in ["all", "timing"]:
 			_time_sessions()
 			if not _failures.is_empty():
@@ -118,6 +125,12 @@ static func _hash_tick(digest: HashingContext, session: Node) -> void:
 	var sim: Node = session.sim
 	for values: Variant in [sim.state, sim.aux, sim.continuous, sim.inputs, sim.last_loads, sim.modes]:
 		digest.update(values.to_byte_array())
+
+
+## Lengths, types and tick boundaries are encoded as well as the packed state bytes.
+static func _hash_timing_tick(digest: HashingContext, session: Node) -> void:
+	var sim: Node = session.sim
+	digest.update(var_to_bytes([sim.tick, sim.state, sim.aux, sim.continuous, sim.inputs, sim.last_loads, sim.modes]))
 
 
 static func _end_record(session: Node) -> Dictionary:
@@ -445,7 +458,8 @@ static func _timing_tick_error(session: Node, before_tick: int, native: Object, 
 	return ""
 
 
-static func _timing_warmup(session: Node, native: Object, expected_stage: Callable, warmup: int) -> Dictionary:
+static func _timing_warmup(session: Node, native: Object, expected_stage: Callable, warmup: int,
+		digest: HashingContext = null) -> Dictionary:
 	var error := _timing_state_error(session, native, expected_stage)
 	if not error.is_empty():
 		return {ok = false, error = error, completed = 0}
@@ -460,6 +474,8 @@ static func _timing_warmup(session: Node, native: Object, expected_stage: Callab
 		error = _timing_tick_error(session, before_tick, native, expected_stage, previous, current)
 		if not error.is_empty():
 			return {ok = false, error = "warm-up tick %d: %s" % [index + 1, error], completed = index}
+		if digest != null:
+			_hash_timing_tick(digest, session)
 		previous = current
 	return {ok = true, completed = warmup, stats = previous}
 
@@ -471,7 +487,10 @@ static func _timed_session(session: Node, native: Object, warmup: int, samples: 
 	if native != null and not Adapter.installed(session, native):
 		return {ok = false, error = "native stage is not installed", warmup_completed = 0, samples_completed = 0}
 	var expected_stage: Callable = session.sim.model.stage if native != null else Callable()
-	var warmed := _timing_warmup(session, native, expected_stage, warmup)
+	var digest := HashingContext.new()
+	digest.start(HashingContext.HASH_SHA256)
+	_hash_timing_tick(digest, session)
+	var warmed := _timing_warmup(session, native, expected_stage, warmup, digest)
 	if not warmed.ok:
 		return {ok = false, error = warmed.error, warmup_completed = warmed.completed, samples_completed = 0}
 	var previous: Dictionary = warmed.stats
@@ -487,9 +506,11 @@ static func _timed_session(session: Node, native: Object, warmup: int, samples: 
 		if not error.is_empty():
 			return {ok = false, error = "sample tick %d: %s" % [index + 1, error],
 				warmup_completed = warmup, samples_completed = index}
+		_hash_timing_tick(digest, session)
 		previous = current
 		tick_usec.append(float(elapsed))
 	return {ok = true, warmup_completed = warmup, samples_completed = tick_usec.size(),
+		trajectory_sha256 = digest.finish().hex_encode(),
 		median = _percentile(tick_usec, 0.5), p95 = _percentile(tick_usec, 0.95), mean = _mean(tick_usec)}
 
 
@@ -510,12 +531,22 @@ static func _mean(values: PackedFloat64Array) -> float:
 	return total / maxi(1, values.size())
 
 
+func _record_measurement_scope() -> void:
+	_report.measurement_scope = {
+		backend = "research stage_adapter.gd, not the production session backend",
+		boundary = "detached session and simulation physics callbacks per tick",
+		timing_validation = "initial state and every warm-up and sample tick are hashed; native stats and hashes run outside the stopwatch and can perturb subsequent samples",
+		attribution = "callback wrappers and native stage clocks add instrumentation; native stats checks run outside the tick stopwatch",
+	}
+
+
 ## Alternating pairs (reference first, then native first, ...), session_probe's per-tick boundary.
 func _time_sessions() -> void:
 	var pairs: int = int(_options.get("pairs", "3"))
 	var warmup: int = int(_options.get("warmup", "600"))
 	var samples: int = int(_options.get("samples", "4800"))
 	var cases: PackedStringArray = str(_options.get("timing-cases", "runway,trim,maneuver")).split(",")
+	_record_measurement_scope()
 	_report.session_timing = {pairs = pairs, warmup = warmup, samples = samples, cases = {}}
 	if pairs <= 0 or warmup <= 0 or samples <= 0:
 		_failures.append("timing pairs, warmup and samples must be positive")
@@ -533,10 +564,21 @@ func _time_sessions() -> void:
 				var result := _timed_run(case, native, warmup, samples)
 				row[backend] = result
 				if not result.ok:
-					rows.append(row)
-					_report.session_timing.cases[case] = {pairs = rows, error = result.error}
+					_report.session_timing.cases[case] = {error = result.error, pair = pair + 1,
+						backend = backend, warmup_completed = result.get("warmup_completed", 0),
+						samples_completed = result.get("samples_completed", 0)}
 					_failures.append("timing %s pair %d %s: %s" % [case, pair + 1, backend, result.error])
 					return
+			var ref_hash: String = str(row.reference.get("trajectory_sha256", ""))
+			var nat_hash: String = str(row.native.get("trajectory_sha256", ""))
+			if ref_hash.length() != 64 or not ref_hash.is_valid_hex_number() or ref_hash != nat_hash:
+				var error := "reference and native timing trajectories differ or lack a valid fingerprint"
+				_report.session_timing.cases[case] = {error = error, pair = pair + 1,
+					reference_trajectory_sha256 = ref_hash, native_trajectory_sha256 = nat_hash,
+					reference_completed = {warmup = row.reference.warmup_completed, samples = row.reference.samples_completed},
+					native_completed = {warmup = row.native.warmup_completed, samples = row.native.samples_completed}}
+				_failures.append("timing %s pair %d: %s" % [case, pair + 1, error])
+				return
 			rows.append(row)
 		var ref_median := PackedFloat64Array()
 		var nat_median := PackedFloat64Array()
@@ -560,6 +602,7 @@ func _time_sessions() -> void:
 ## both backends alike (they add a few µs per call, so this is separate from the timing pairs); the native stage's
 ## own time inside the extension is read from its counters. Alternating repeats; medians per field.
 func _attribute_native() -> void:
+	_record_measurement_scope()
 	_report.attribution = {}
 	var samples: int = int(_options.get("samples", "4800"))
 	var repeats: int = int(_options.get("repeats", "3"))

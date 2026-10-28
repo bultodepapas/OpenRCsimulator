@@ -1,5 +1,65 @@
 # NK-3 native tooling research (2026-10-28)
 
+Implemented workflow: [C++ development tools](../../../../research/native-kernel/README.md#c-development-tools-nk-3).
+Final verification: [retained Linux receipts](tooling-checks-linux-2026-10-28.json).
+
+## Robustness, usefulness, function and efficiency review
+
+The follow-up review found reproducible false-success paths, now corrected. The retained evidence file includes
+the earlier complete oracles and compact execution receipts, plus `review_2026_10_28` for the revised tools.
+Earlier counts and hashes below remain historical; they are not substituted for the revised harness.
+
+| Finding | Resolution and proof |
+| --- | --- |
+| A 960-tick report could satisfy a 14,400-tick request; missing fault, restore and fallback phases could still pass | Bind the requested seed/ticks and require all named phases and exact comparison counts. The new missing-phase regressions exposed 37 failures against the previous gate; the revised 14-test gate suite passes. Previously captured complete reports remain valid under the stricter policy. |
+| A compiler command could override instrumentation; unrelated startup overflow could satisfy the detector control | Check effective compiler options, reject disabled/recovering sanitizer instrumentation, and require the control marker plus diagnostic origin. Include the build-policy and checked-run helper hashes in build/check identity. |
+| An output directory inside its input could recurse indefinitely; inherited loader variables could interfere | Reject overlapping paths and directory symlink cycles before copying; clear preload, library-path and audit overrides in the engine environment. |
+| Invalid/contradictory timing modes could succeed without measurements; a healthy divergent flight could appear faster | Reject no-op mode combinations; match a digest covering initial state and every warm-up/sample tick before reporting paired timing. Divergent or incomplete pairs have no timing summary. |
+| Two independent checks duplicate the private project and import | `--script all` runs both oracles sequentially on one frozen snapshot and stops on failure. The actual combined run used one import and one 1.9 GiB copy, versus two copies (about 3.8 GiB) before. |
+
+The revised wrapper passed **23 Python tests**, the completed-work policy **14 Python tests**, and the timing
+harness **130 GDScript checks**. The full offline tool suite and the wrapper tests in a fresh sparse clone passed.
+A newly built UBSan extension passed the combined check: **128,565 exact comparisons over 12,000 states**
+(918 malformed), followed by **21,672 exact trajectory/phase comparisons**, with all five primary cases completing
+960 ticks and no sanitizer diagnostics. A short native timing execution smoke also passed with matching full-tape
+digests. Its numbers are not performance qualification.
+
+**Usefulness and remaining limits:** these tools now provide practical compiler/editor integration, undefined-
+behavior checks and stronger migration regressions. They do not measure the complete production-native route:
+the research adapter omits the production session's per-tick backend configuration check and uses its own context
+handoff. Reports and the guide now identify that boundary. Hashing and native stats queries occur outside the
+stopwatch but can still perturb later samples; quantify that effect on an idle target before performance claims.
+ASan still needs a compatible engine; clang-tidy and perf were not executed here.
+
+**Efficiency:** sharing the snapshot removes duplicated I/O, storage and import work. Cold setup remains expensive:
+the previous uncached import took 357.9 s versus 36.5 s for its stage oracle, while the cached import took 7.4 s.
+Those are this host's observations, not portable estimates. Fresh builds still recreate the pinned bindings;
+safe incremental build caching and a production-backend benchmark are future improvements, not delivered here.
+Full source manifests and compiler logs remain temporary; the retained JSON contains complete oracle records
+and compact execution/control receipts so phase claims remain inspectable after temporary output cleanup.
+
+## Executed tooling verification
+
+GCC 13.3 UBSan and optimized profile builds completed with isolated godot-cpp objects, debugging symbols and
+SCons compilation databases containing the NK-3 translation unit and resolved generated headers. The UBSan
+positive control caused signed integer overflow through the real GDExtension loader and failed as required.
+ASan controls using that same loader correctly rejected the official editor's `RTLD_DEEPBIND` mode; a compatible
+ASan-built engine remains untested. The operational default is UBSan, not the initial ASan proposal below.
+
+On one frozen project snapshot, the UBSan stage oracle passed 12,000 states (918 malformed), with 128,565 exact
+comparisons and no sanitizer diagnostics. All five trajectory cases completed 960 ticks each with 3,840 native
+stage calls and 960 context calls per case, zero uncovered ticks and matching fingerprints. Fault, restore and
+fallback checks also ran: 21,672 exact comparisons overall. Source, harness, engine and library identities remained
+unchanged during both runs. The live tree was changing in parallel; two attempted captures were rejected and are
+excluded. These results qualify the tooling on its recorded snapshot, not subsequent live-tree changes.
+
+The profile library also passed a short real-session execution smoke of the repaired timing and attribution
+paths (one pair, 10 warm-up ticks, 20 samples; one attribution repeat). This only proves execution/completion
+checks; no performance numbers are promoted from this shared host. Ten Python wrapper regressions, 105 GDScript
+timing-policy checks, the full offline tool suite and the ten wrapper tests in a fresh sparse clone passed.
+No full application suite, clang-tidy analysis, perf capture, physical validation or display qualification was run
+for this tooling increment. The earlier source review and the ASan loader finding are retained below.
+
 Question: which existing, freely available tools most cheaply improve C++ migration checks and performance
 investigation without changing the NK-3 numerical contract? This is a research note, not evidence that a new
 tool or workflow has passed. The inspected tree was at `b16c48de4b481c246aac4db7fb443d9ca3767ab3` with unrelated

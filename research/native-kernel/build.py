@@ -54,6 +54,16 @@ VERIFICATIONS = {"stage_oracle": "stage-*.json", "trajectory": "trajectory-*.jso
 MIN_TRAJECTORY_TICKS = 960
 MIN_STAGE_STATES = 10000
 TRAJECTORY_CASES = {"trim", "runway", "maneuver", "takeoff", "lake"}
+# trajectory.gd injects each fault after 1,200 healthy ticks; its report records the expected rejection branch.
+FAULT_REASONS = {
+    "state_nan_velocity": "step rejected: current state ",
+    "continuous_nan_wheel": "step rejected: input or auxiliary state ",
+    "overflow_velocity": "step rejected: pre-step produced ",
+    "overflow_rates": "step rejected: pre-step produced ",
+    "buried_state": "step rejected: joint stage evaluation ",
+}
+PHASE_TICKS = 1200
+FALLBACK_TICKS = 960
 
 
 def sha256_file(path: Path) -> str:
@@ -129,6 +139,7 @@ def verification_error(key: str, data: dict) -> str:
     elif key == "trajectory":
         if data["format"] != "openrc-nk3-trajectory v2" or set(data["trajectories"]) != TRAJECTORY_CASES:
             return "all five v2 trajectory cases are required"
+        trajectory_ticks = 0
         for name, case in data["trajectories"].items():
             requested, actual = case["ticks_requested"], case["ticks_run"]
             if (type(requested) is not int or type(actual) is not int
@@ -139,6 +150,8 @@ def verification_error(key: str, data: dict) -> str:
                     or case["completion_ok"] is not True):
                 return "unexpected trajectory termination"
             expected_crash = name in {"takeoff", "lake"} and end["crashed"] is True
+            if expected_crash and end["paused"] is not True:
+                return "a crashed trajectory must be paused"
             if not expected_crash and (actual != requested or end["crashed"] is not False or end["paused"] is not False):
                 return "truncated or unexpectedly stopped trajectory"
             fingerprint = case["native_fingerprint"]
@@ -148,6 +161,62 @@ def verification_error(key: str, data: dict) -> str:
             if (case["native_lost_install_ticks"] != 0 or case["native_uncovered_ticks"] != 0
                     or case["native_context_calls"] < actual or case["native_stage_calls"] < 4 * actual):
                 return "native stage did not cover every tick"
+            trajectory_ticks += actual
+
+        faults = data.get("fault_paths")
+        if not isinstance(faults, dict) or set(faults) != set(FAULT_REASONS):
+            return "all five fault paths are required"
+        for name, expected_reason in FAULT_REASONS.items():
+            outcome = faults[name]
+            if not isinstance(outcome, dict) or outcome.get("advanced") is not False:
+                return f"fault path {name} did not reject its step"
+            reference, native = outcome.get("reference"), outcome.get("native")
+            if not isinstance(reference, dict) or not isinstance(native, dict) or reference != native:
+                return f"fault path {name} outcomes differ"
+            for end in (reference, native):
+                reason = end.get("fault")
+                if (type(end.get("tick")) is not int or end["tick"] != PHASE_TICKS
+                        or not isinstance(reason, str) or not reason.startswith(expected_reason)
+                        or end.get("paused") is not True or end.get("crashed") is not False):
+                    return f"fault path {name} did not reach the expected rejection"
+
+        checkpoint = data.get("checkpoint")
+        if not isinstance(checkpoint, dict):
+            return "checkpoint/restore evidence is missing"
+        reference, native, passes = checkpoint.get("reference"), checkpoint.get("native"), checkpoint.get("passes")
+        if not isinstance(reference, dict) or not isinstance(native, dict) or not isinstance(passes, list):
+            return "checkpoint/restore evidence is malformed"
+        if (any(info.get("restored") is not True or info.get("resumed") is not True for info in (reference, native))
+                or reference.get("native_after_restore") is not False
+                or not (native.get("native_after_restore") is True or native.get("reinstalled") is True)):
+            return "checkpoint restore, resume or native stage is missing"
+        if (len(passes) != 2 or any(not isinstance(row, dict)
+                or type(row.get("ticks_reference")) is not int or row["ticks_reference"] != PHASE_TICKS
+                or type(row.get("ticks_native")) is not int or row["ticks_native"] != PHASE_TICKS
+                or type(row.get("mismatches")) is not int or row["mismatches"] != 0 for row in passes)):
+            return "checkpoint passes must each compare 1200 matching ticks"
+
+        fallback = data.get("fallback")
+        if (not isinstance(fallback, dict) or fallback.get("aircraft") != "p51d-mustang-120"
+                or fallback.get("refused") is not True or not isinstance(fallback.get("reason"), str)
+                or not fallback["reason"].strip() or fallback.get("stage_after_attempt") != "evaluate"
+                or type(fallback.get("reference_ticks")) is not int or fallback["reference_ticks"] != FALLBACK_TICKS
+                or type(fallback.get("ticks")) is not int or fallback["ticks"] != FALLBACK_TICKS
+                or fallback.get("fingerprint_equal") is not True):
+            return "fallback must refuse and retain the matching reference for 960 ticks"
+
+        required_counts = {
+            "trajectory_end": len(TRAJECTORY_CASES), "trajectory_fingerprint": len(TRAJECTORY_CASES),
+            **{name: trajectory_ticks for name in ("trajectory_tick_floats", "trajectory_tick_sizes", "trajectory_tick_modes")},
+            **{name: len(FAULT_REASONS) for name in ("fault_path_end", "fault_path_bytes", "fault_path_sizes", "fault_path_modes")},
+            **{name: 2 * PHASE_TICKS for name in ("checkpoint_tick_floats", "checkpoint_tick_sizes", "checkpoint_tick_modes")},
+            "checkpoint_pass_length": 2, "fallback_reference_kept": 1,
+        }
+        for name, expected in required_counts.items():
+            row = components.get(name)
+            if (not isinstance(row, dict) or type(row.get("count")) is not int or row["count"] != expected
+                    or type(row.get("identical")) is not int or row["identical"] != expected):
+                return f"missing or incomplete trajectory comparisons: {name}"
     else:
         return "unknown verification kind"
     return ""

@@ -28,11 +28,18 @@ class FakeSimulation:
 	var tick := 0
 	var paused := false
 	var fault_reason := ""
+	var state := PackedFloat64Array([0.0])
+	var aux := PackedFloat64Array([0.0])
+	var continuous := PackedFloat64Array([0.0])
+	var inputs := PackedFloat64Array([0.0])
+	var last_loads := PackedFloat64Array([0.0])
+	var modes := PackedInt64Array([0])
 	var model := {stage = Callable(), pre_tick = Callable(), post_tick_joint = Callable(), post_tick = Callable()}
 	var native: FakeNative
 	var session: Node
 	var failure := ""
 	var fail_at := -1
+	var divergent_field := "state"
 
 	func dt() -> float:
 		return 1.0 / 240.0
@@ -49,6 +56,21 @@ class FakeSimulation:
 			return
 		var before := tick
 		tick += 2 if failure == "double" and before == fail_at else 1
+		state[0] = 0.0
+		aux[0] = float(tick)
+		continuous[0] = float(tick)
+		inputs[0] = float(tick)
+		last_loads[0] = float(tick)
+		modes[0] = tick
+		if failure == "divergence" and tick == fail_at:
+			match divergent_field:
+				"state": state[0] += 1.0
+				"state_zero_sign": state[0] = PackedByteArray([0, 0, 0, 0, 0, 0, 0, 128]).decode_double(0)
+				"aux": aux[0] += 1.0
+				"continuous": continuous[0] += 1.0
+				"inputs": inputs[0] += 1.0
+				"last_loads": last_loads[0] += 1.0
+				"modes": modes[0] += 1
 		if failure != "context" or tick != fail_at:
 			model.pre_tick.call(1, 2, 3)
 		var calls := 3 if failure == "stage" and tick == fail_at else 4
@@ -82,6 +104,55 @@ class FailingTimingHarness:
 
 	func _timed_run(_case: String, _native: bool, _warmup: int, _samples: int) -> Dictionary:
 		return {ok = false, error = "sentinel failure"}
+
+
+class PartialTimingHarness:
+	extends "trajectory.gd"
+
+	func _timed_run(_case: String, native: bool, _warmup: int, _samples: int) -> Dictionary:
+		if native:
+			return {ok = false, error = "native stopped", warmup_completed = 1, samples_completed = 0}
+		return {ok = true, median = 1.0, p95 = 1.0, mean = 1.0, trajectory_sha256 = "a".repeat(64)}
+
+
+class PairedTimingHarness:
+	extends "trajectory.gd"
+	var divergent_field := ""
+	var divergent_tick := -1
+
+	func _session_for(_case: String, native: bool) -> Dictionary:
+		var session := FakeSession.new()
+		if native:
+			session.sim.native = _native as FakeNative
+			session.sim.model.stage = Callable(_native, "stage")
+			if not divergent_field.is_empty():
+				session.sim.failure = "divergence"
+				session.sim.divergent_field = divergent_field
+				session.sim.fail_at = divergent_tick
+		return {session = session}
+
+
+class ModeHarness:
+	extends "trajectory.gd"
+	var called: Array[String] = []
+
+	func _compare_trajectory(_case: String, _ticks: int) -> void:
+		called.append("trajectory")
+
+	func _check_fault_paths() -> void:
+		called.append("fault")
+
+	func _check_checkpoint_restore() -> void:
+		called.append("checkpoint")
+
+	func _check_fallback() -> void:
+		called.append("fallback")
+
+	func _time_sessions() -> void:
+		called.append("timing")
+
+	func _attribute_native() -> void:
+		called.append("attribution")
 
 
 class AttributionHarness:
@@ -131,6 +202,37 @@ func _end(tick: int, crashed := false, paused := false, fault := "") -> Dictiona
 
 
 func _initialize() -> void:
+	for invalid: Dictionary in [{only = "timng"}, {only = "timing", "skip-timing" = "true"},
+			{only = "attribution", "skip-timing" = "true"}]:
+		var mode := ModeHarness.new()
+		mode._options = invalid
+		mode._report = {components = {literal = {count = 1, identical = 1}}}
+		mode._checks()
+		_check(not mode._failures.is_empty() and mode.called.is_empty(),
+			"invalid mode fails before requested work: " + str(invalid))
+		mode.free()
+	var mode := ModeHarness.new()
+	mode._options = {only = "all", "skip-timing" = "true"}
+	mode._report = {components = {literal = {count = 1, identical = 1}}}
+	mode._checks()
+	_check(mode._failures.is_empty() and mode.called.count("trajectory") == 5 \
+		and not "timing" in mode.called and not "attribution" in mode.called,
+		"all mode can still skip timing after its trajectory checks")
+	mode.free()
+	mode = ModeHarness.new()
+	mode._options = {only = "timing"}
+	mode._report = {components = {literal = {count = 1, identical = 1}}}
+	mode._checks()
+	_check(mode._failures.is_empty() and mode.called == ["timing", "attribution"],
+		"timing mode executes timing and attribution")
+	mode.free()
+	mode = ModeHarness.new()
+	mode._options = {only = "attribution"}
+	mode._report = {components = {literal = {count = 1, identical = 1}}}
+	mode._checks()
+	_check(mode._failures.is_empty() and mode.called == ["attribution"], "attribution mode executes attribution")
+	mode.free()
+
 	var healthy := _fake_timed_run("", -1, false)
 	_check(healthy.ok and healthy.warmup_completed == 2 and healthy.samples_completed == 3,
 		"reference timing accepts every completed tick")
@@ -151,6 +253,36 @@ func _initialize() -> void:
 	_check_failed_timing(_fake_timed_run("stage", 3, true), "cover", "uncovered native stage fails")
 	_check_failed_timing(_fake_timed_run("context", 1, true), "warm-up tick 1", "uncovered native warm-up fails")
 
+	var pair := PairedTimingHarness.new()
+	pair._native = FakeNative.new()
+	pair._options = {pairs = "1", warmup = "2", samples = "3", "timing-cases" = "trim"}
+	pair._report = {}
+	pair._time_sessions()
+	var success: Dictionary = pair._report.session_timing.cases.trim
+	_check(pair._failures.is_empty() and success.has("reference_median_us"), "matching completed timing pair succeeds")
+	_check(success.pairs[0].reference.trajectory_sha256 == success.pairs[0].native.trajectory_sha256 \
+		and success.pairs[0].reference.trajectory_sha256.length() == 64, "matching pair retains its full tape hashes")
+	_check("research stage_adapter.gd" in pair._report.measurement_scope.backend \
+		and "outside the stopwatch" in pair._report.measurement_scope.timing_validation,
+		"report identifies the research boundary and outside-stopwatch validation")
+	pair.free()
+	for field: String in ["state", "state_zero_sign", "aux", "continuous", "inputs", "last_loads", "modes"]:
+		for changed_tick: int in [1, 3]:
+			pair = PairedTimingHarness.new()
+			pair._native = FakeNative.new()
+			pair._options = {pairs = "1", warmup = "2", samples = "3", "timing-cases" = "trim"}
+			pair._report = {}
+			pair.divergent_field = field
+			pair.divergent_tick = changed_tick
+			pair._time_sessions()
+			var rejected: Dictionary = pair._report.session_timing.cases.trim
+			_check(pair._failures.size() == 1 and "trajectories differ" in pair._failures[0] \
+				and not rejected.has("reference_median_us") and not rejected.has("pairs") \
+				and rejected.reference_completed == {warmup = 2, samples = 3} \
+				and rejected.native_completed == {warmup = 2, samples = 3},
+				"reject transient %s difference at tick %d despite a matching final state" % [field, changed_tick])
+			pair.free()
+
 	var harness := FailingTimingHarness.new()
 	harness._options = {pairs = "1", warmup = "1", samples = "1", "timing-cases" = "trim"}
 	harness._report = {}
@@ -167,7 +299,17 @@ func _initialize() -> void:
 	harness._options = {samples = "1", repeats = "0"}
 	harness._attribute_native()
 	_check(harness._failures.size() == 1 and "positive" in harness._failures[0], "zero attribution repeats fail")
+	_check("research stage_adapter.gd" in harness._report.measurement_scope.backend,
+		"attribution report identifies the research boundary")
 	harness.free()
+	var partial := PartialTimingHarness.new()
+	partial._options = {pairs = "1", warmup = "1", samples = "1", "timing-cases" = "trim"}
+	partial._report = {}
+	partial._time_sessions()
+	_check(partial._failures.size() == 1 and not partial._report.session_timing.cases.trim.has("pairs") \
+		and not partial._report.session_timing.cases.trim.has("reference_median_us"),
+		"failed second backend does not report one-sided timing")
+	partial.free()
 
 	var attribution := AttributionHarness.new()
 	attribution._native = FakeNative.new()

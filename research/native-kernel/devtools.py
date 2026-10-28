@@ -20,6 +20,8 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+
+
 def sanitizer_flags(mode: str) -> list[str]:
     if mode == "profile":
         return []
@@ -51,6 +53,21 @@ def write_json(path: Path, value) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n")
 
 
+def read_object(path: Path) -> dict:
+    value = json.loads(path.read_text())
+    if not isinstance(value, dict):
+        raise ValueError(f"expected a JSON object in {path}")
+    return value
+
+
+def validate_paths(app: Path, out: Path) -> None:
+    app, out = app.resolve(), out.resolve()
+    if not app.is_dir() or not (app / "project.godot").is_file():
+        raise ValueError(f"--app must contain project.godot: {app}")
+    if out.is_relative_to(app) or app.is_relative_to(out):
+        raise ValueError("--app and --out must not overlap (including resolved symlinks)")
+
+
 def fresh(path: Path) -> Path:
     path = path.resolve()
     if not path.is_relative_to(ROOT / "tmp") or path == ROOT / "tmp":
@@ -61,12 +78,15 @@ def fresh(path: Path) -> Path:
 
 def source_hashes() -> dict:
     paths = [*HERE.glob("src/*.cpp"), *HERE.glob("src/*.hpp"), HERE / "toolchain-lock.json",
-             HERE / "devtools.py", ROOT / "research/native-slipstream/build.py"]
+             HERE / "devtools.py", HERE / "build.py", ROOT / "research/native-slipstream/build.py",
+             ROOT / "tools/godot/run_checked.py"]
     return {str(p.relative_to(ROOT)): digest(p) for p in sorted(paths)}
 
 
 def validate_compdb(path: Path, mode: str) -> list[dict]:
     entries = json.loads(path.read_text())
+    if not isinstance(entries, list) or any(not isinstance(row, dict) for row in entries):
+        raise ValueError("compilation database must be an array of command objects")
     expected = {p.resolve() for p in (HERE / "src").glob("*.cpp")}
     selected = []
     for entry in entries:
@@ -74,12 +94,29 @@ def validate_compdb(path: Path, mode: str) -> list[dict]:
         if file not in expected:
             continue
         args = entry.get("arguments") or shlex.split(entry["command"])
+        if not isinstance(args, list) or not args or any(not isinstance(arg, str) for arg in args):
+            raise ValueError(f"invalid compilation arguments for {file}")
         required = [*FP_FLAGS, "-std=c++17", "-fexceptions", "-fno-omit-frame-pointer"]
         required += sanitizer_flags(mode)
         if not all(flag in args for flag in required):
             raise ValueError(f"compilation database lacks required flags for {file}")
-        if any(flag in args for flag in ("-ffast-math", "-Ofast", "-ffp-contract=fast")):
+        if any(flag in args for flag in ("-ffast-math", "-Ofast", "-funsafe-math-optimizations",
+                                        "-fassociative-math", "-freciprocal-math", "-ffinite-math-only",
+                                        "-fno-signed-zeros")):
             raise ValueError(f"compilation database has unsafe floating-point flags for {file}")
+        for family, expected_flag in ((('-fexceptions', '-fno-exceptions'), '-fexceptions'),
+                                      (('-fomit-frame-pointer', '-fno-omit-frame-pointer'), '-fno-omit-frame-pointer')):
+            if [arg for arg in args if arg in family][-1] != expected_flag:
+                raise ValueError(f"compilation database overrides {expected_flag} for {file}")
+        for prefix, expected_flag in (("-std=", "-std=c++17"), ("-ffp-contract=", "-ffp-contract=off")):
+            if [arg for arg in args if arg.startswith(prefix)][-1] != expected_flag:
+                raise ValueError(f"compilation database overrides {expected_flag} for {file}")
+        if any(arg.startswith("-fno-sanitize=") for arg in args):
+            raise ValueError(f"compilation database disables sanitizer checks for {file}")
+        if mode != "profile" and any(arg.startswith("-fsanitize-recover=") for arg in args):
+            raise ValueError(f"compilation database enables sanitizer recovery for {file}")
+        if mode == "profile" and any(arg.startswith("-fsanitize=") for arg in args):
+            raise ValueError("profile compilation must not enable sanitizers")
         includes = []
         for i, arg in enumerate(args):
             if arg == "-I" and i + 1 < len(args):
@@ -193,10 +230,13 @@ def controls(godot: Path, out: Path, mode: str) -> dict:
     source = out / "positive-control.cpp"
     source.write_text('''#include <cstdlib>
 #include <climits>
+#include <cstdio>
 __attribute__((constructor)) static void fault() {
     if (std::getenv("NK3_ASAN_CONTROL")) {
+        std::fputs("NK3_CONTROL_BEGIN asan\\n", stderr); std::fflush(stderr);
         volatile int *p = new int[1]; p[1] = 42; delete[] p;
     } else {
+        std::fputs("NK3_CONTROL_BEGIN ubsan\\n", stderr); std::fflush(stderr);
         volatile int x = INT_MAX; volatile int y = x + 1; (void)y;
     }
 }
@@ -229,20 +269,34 @@ extern "C" bool nk3_control_init(void *, void *, void *) { return false; }
                           "--audio-driver", "Dummy", "--script", str(script), "--", str(descriptor)],
                          out / "controls", name, 60)
         log = Path(report["log"]).read_text(errors="replace")
-        report["detected"] = (report["complete"] is True and report["process_exit"] not in (None, 0)
-                              and report["reason"] == "process_exit" and expected in log)
+        report["detected"] = control_detected(report, log, name, expected, source, library)
         reports[name] = report
     write_json(out / "positive-controls.json", reports)
     return reports
 
 
+def control_detected(report: dict, log: str, name: str, expected: str, source: Path, library: Path) -> bool:
+    marker = f"NK3_CONTROL_BEGIN {name}\n"
+    after_marker = log.partition(marker)[2]
+    origin = str(source) in after_marker or (name == "asan" and library.name in after_marker)
+    return (report["complete"] is True and report["process_exit"] not in (None, 0)
+            and report["reason"] == "process_exit" and expected in after_marker and origin)
+
+
 def private_environment(out: Path) -> list[str]:
-    return ["env", *[f"XDG_{kind}_HOME={out / ('xdg-' + kind.lower())}"
+    return ["env", "-u", "LD_PRELOAD", "-u", "LD_LIBRARY_PATH", "-u", "LD_AUDIT",
+            *[f"XDG_{kind}_HOME={out / ('xdg-' + kind.lower())}"
                      for kind in ("DATA", "CONFIG", "CACHE")]]
 
 
 def snapshot(app: Path, out: Path, godot: Path) -> Path:
     """Private copy including imported resources; import only the copy after excluding native installs."""
+    validate_paths(app, out)
+    for directory, dirs, _ in os.walk(app):
+        dirs[:] = [name for name in dirs if name not in {"native", "captures"}]
+        for name in dirs:
+            if (Path(directory) / name).is_symlink():
+                raise ValueError(f"private copies do not support directory symlinks: {Path(directory) / name}")
     if shutil.disk_usage(out).free < 4 * 1024**3:
         raise ValueError("at least 4 GiB free is required for the private app copy")
     target = out / "app"
@@ -260,11 +314,18 @@ def import_snapshot(target: Path, out: Path, godot: Path) -> None:
 
 
 def app_hashes(app: Path) -> dict:
-    return {str(p.relative_to(app)): digest(p) for p in sorted(app.rglob("*"))
-            if p.is_file() and not {".godot", "native", "captures"}.intersection(p.relative_to(app).parts)}
+    hashes = {}
+    for directory, dirs, files in os.walk(app):
+        dirs[:] = sorted(name for name in dirs if name not in {".godot", "native", "captures"})
+        for name in sorted(files):
+            path = Path(directory) / name
+            if name not in {".godot", "native", "captures"} and path.is_file():
+                hashes[str(path.relative_to(app))] = digest(path)
+    return hashes
 
 
-def coverage_error(oracle: dict, report: dict, script: str, states: int) -> str:
+def coverage_error(oracle: dict, report: dict, script: str, states: int, ticks: int = 960,
+                   seed: int | None = None) -> str:
     """Reuse the existing completed-work policy; literal probes alone cannot qualify a diagnostic."""
     owner = module("nk3_verification", HERE / "build.py")
     try:
@@ -272,17 +333,22 @@ def coverage_error(oracle: dict, report: dict, script: str, states: int) -> str:
         error = owner.verification_error(key, dict(oracle, run_valid=report["ok"], checked_run=report))
         if error:
             return error
+        if seed is not None and oracle.get("seed") != seed:
+            return "oracle seed differs from the requested seed"
         if key == "stage_oracle" and sum(oracle["coverage"][key]["states"]
                                         for key in ("stage_air", "stage_ground", "stage_hull")) != states:
             return "stage coverage differs from requested state count"
-    except (KeyError, TypeError, ValueError) as error:
+        if key == "trajectory" and any(case["ticks_requested"] != ticks for case in oracle["trajectories"].values()):
+            return "trajectory length differs from requested tick count"
+    except (KeyError, TypeError, ValueError, AttributeError) as error:
         return f"malformed oracle evidence: {error}"
     return ""
 
 
 def check(args) -> int:
+    validate_paths(args.app, args.out)
     build_dir = args.build.resolve()
-    receipt = json.loads((build_dir / "development-build.json").read_text())
+    receipt = read_object(build_dir / "development-build.json")
     library = build_dir / "lib/libopenrc_native_kernel.so"
     descriptor = build_dir / "openrc_native_kernel.gdextension"
     if (receipt["format"] != FORMAT or receipt["installable"] is not False
@@ -315,29 +381,43 @@ def check(args) -> int:
     for file in HERE.glob("*.gd"):
         shutil.copy2(file, harness / file.name)
     harness_hashes = {p.name: digest(p) for p in harness.glob("*.gd")}
-    output = out / "oracle.json"
-    command = [str(godot), "--headless", "--path", str(app), "--audio-driver", "Dummy",
-               "--script", str(harness / args.script), "--", f"--extension={descriptor}",
-               f"--output={output}", f"--states={args.states}", f"--seed={args.seed}"]
-    if args.script == "trajectory.gd":
-        command += [f"--ticks={args.ticks}", "--skip-timing=true"]
-    if receipt["mode"] != "profile":
-        command = [*sanitizer_environment(receipt["mode"]), *command]
-    command = [*private_environment(out), *command]
-    report = checked(command, out / "checks", "oracle", args.timeout, ["NK3_ORACLE verdict=pass"])
-    oracle = json.loads(output.read_text()) if output.is_file() else {}
-    unchanged = (engine_hash == digest(godot) and receipt["binary_sha256"] == digest(library)
-                 and receipt["descriptor_sha256"] == digest(descriptor) and copied == app_hashes(app)
-                 and receipt["source_hashes"] == source_hashes()
-                 and receipt["compile_database_sha256"] == digest(build_dir / "compile_commands.json")
-                 and harness_hashes == {p.name: digest(p) for p in harness.glob("*.gd")})
-    error = coverage_error(oracle, report, args.script, args.states)
-    passed = report["ok"] and unchanged and not error
+    scripts = ["stage_oracle.gd", "trajectory.gd"] if args.script == "all" else [args.script]
+    runs = {}
+    for script in scripts:
+        output = out / (f"{Path(script).stem}.json" if args.script == "all" else "oracle.json")
+        command = [str(godot), "--headless", "--path", str(app), "--audio-driver", "Dummy",
+                   "--script", str(harness / script), "--", f"--extension={descriptor}",
+                   f"--output={output}", f"--states={args.states}", f"--seed={args.seed}"]
+        if script == "trajectory.gd":
+            command += [f"--ticks={args.ticks}", "--skip-timing=true"]
+        if receipt["mode"] != "profile":
+            command = [*sanitizer_environment(receipt["mode"]), *command]
+        command = [*private_environment(out), *command]
+        report = checked(command, out / "checks", Path(script).stem, args.timeout, ["NK3_ORACLE verdict=pass"])
+        parse_error = ""
+        try:
+            oracle = read_object(output)
+        except (OSError, ValueError) as error:
+            oracle, parse_error = {}, f"oracle output unavailable or invalid: {error}"
+        unchanged = (engine_hash == digest(godot) and receipt["binary_sha256"] == digest(library)
+                     and receipt["descriptor_sha256"] == digest(descriptor) and copied == app_hashes(app)
+                     and receipt["source_hashes"] == source_hashes()
+                     and receipt["compile_database_sha256"] == digest(build_dir / "compile_commands.json")
+                     and harness_hashes == {p.name: digest(p) for p in harness.glob("*.gd")})
+        error = parse_error or coverage_error(oracle, report, script, args.states, args.ticks, args.seed)
+        runs[script] = {"ok": bool(report["ok"] and unchanged and not error), "unchanged": unchanged,
+                        "checked_run": report, "coverage_error": error, "total": oracle.get("total"),
+                        "coverage": oracle.get("coverage"), "oracle": str(output)}
+        if not runs[script]["ok"]:
+            break
+    passed = len(runs) == len(scripts) and all(run["ok"] for run in runs.values())
     summary = {"format": "openrc-nk3-development-check v1", "ok": passed, "installable": False,
                "mode": receipt["mode"], "build": receipt, "engine_sha256": engine_hash,
-               "source_snapshot": copied, "harness_hashes": harness_hashes, "unchanged": unchanged,
-               "checked_run": report, "positive_controls": control_reports, "total": oracle.get("total"),
-               "coverage": oracle.get("coverage"), "coverage_error": error, "performance_qualification": False}
+               "source_snapshot": copied, "harness_hashes": harness_hashes,
+               "positive_controls": control_reports, "performance_qualification": False,
+               "requested_scripts": scripts, "runs": runs}
+    if len(scripts) == 1:
+        summary.update(runs[scripts[0]])
     write_json(out / "summary.json", summary)
     print(f"Development check {'PASS' if passed else 'FAIL'}: {out / 'summary.json'}")
     return 0 if passed else 1
@@ -356,7 +436,8 @@ def main() -> int:
     checker.add_argument("--out", type=Path, required=True)
     checker.add_argument("--app", type=Path, default=ROOT / "app")
     checker.add_argument("--godot", type=Path, default=ROOT / ".tools/Godot_v4.8-beta1_linux.x86_64")
-    checker.add_argument("--script", choices=("stage_oracle.gd", "trajectory.gd"), default="stage_oracle.gd")
+    checker.add_argument("--script", choices=("stage_oracle.gd", "trajectory.gd", "all"), default="stage_oracle.gd",
+                         help="all freezes/imports once and checks stage then trajectory; stops on the first failure")
     checker.add_argument("--states", type=int, default=12000)
     checker.add_argument("--seed", type=int, default=20261027)
     checker.add_argument("--ticks", type=int, default=960)
@@ -366,7 +447,7 @@ def main() -> int:
         parser.error("states must be >= 10000, ticks >= 960, and 0 < timeout <= 7200")
     try:
         return build(args) if args.command == "build" else check(args)
-    except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
+    except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
         print(f"NK-3 development tool: {error}", file=sys.stderr)
         return 1
 

@@ -151,22 +151,25 @@ regular build directory or installation receipts. Every output directory must be
 
 ```bash
 python3 research/native-kernel/devtools.py build --mode ubsan --jobs 2 --out tmp/nk3-ubsan
-python3 research/native-kernel/devtools.py check --build tmp/nk3-ubsan --out tmp/nk3-ubsan-stage
-python3 research/native-kernel/devtools.py check --build tmp/nk3-ubsan --out tmp/nk3-ubsan-ticks \
-  --script trajectory.gd --ticks 960
+python3 research/native-kernel/devtools.py check --build tmp/nk3-ubsan --out tmp/nk3-ubsan-check \
+  --script all --ticks 960
 python3 research/native-kernel/devtools.py build --mode profile --jobs 2 --out tmp/nk3-profile
 python3 research/native-kernel/test_devtools.py
 ```
 
 The check copies and imports a private app (including its existing import cache, excluding installed native
-extensions), isolates XDG user-data/config/cache paths, freezes the harness and records source, engine and library
-hashes. Allow at least 4 GiB free for each private copy. Source changes during the copy fail the run. It forces
+extensions), isolates XDG user-data/config/cache paths, clears inherited loader overrides, freezes the harness and
+records source, helper, engine and library hashes. Allow at least 4 GiB free for each private copy. `--script all`
+copies/imports once, runs stage then trajectory sequentially and stops on the first failure. Single-oracle checks
+remain available with `--script stage_oracle.gd` (default) or `--script trajectory.gd`. Source changes during the
+copy fail the run. Overlapping input/output paths and directory symlinks are rejected before copying. It forces
 UBSan to halt, rejects sanitizer stderr even on exit zero, and retains checked-run logs, a separate amended
 `diagnostic-report.json` and `summary.json`. Before copying, a disposable library constructor deliberately causes
 signed integer overflow through the same engine's `GDExtensionManager.load_extension`; it must fail with that
-specific diagnostic. `positive-controls.json` records the detector proof. The production library and C++ source
+specific diagnostic, control marker and source identity. `positive-controls.json` records the detector proof. The production library and C++ source
 are never mutated. The stage check requires at least 10,000 actual states including malformed cases, and
-trajectory checks reuse the normal completed-work policy; literal probes alone cannot pass.
+trajectory checks require the requested seed/tick count and all fault, restore and fallback phases; literal
+probes alone cannot pass. Combined checks retain per-oracle results in `summary.json.runs`.
 
 `--mode asan` builds ASan+UBSan and also checks a heap-buffer-overflow control. It **requires a compatible
 ASan-built Godot**, supplied with `check --godot /path/to/engine`. The pinned official Linux editor uses
@@ -191,9 +194,15 @@ clang-tidy -p tmp/nk3-profile -checks='-*,clang-analyzer-*,bugprone-*' \
 Static analysis is advisory and requires its own recorded tool version; compiler errors are not a clean result.
 Use stock `perf record`/`perf report` or GDB with the profile library and its descriptor. Counter access depends
 on host permissions; no tool here changes system policy. Whole-oracle profiles include the reference backend,
-startup and wrappers. Use the regular `trajectory.gd` paired timing for per-tick comparison on an otherwise idle
-host. Its timing and attribution paths require completed warm-up, every requested tick advancing exactly once,
-no pause/fault/crash and native-stage coverage before aggregation; failed work has no percentile result.
+startup and wrappers. The regular `trajectory.gd` paired timing measures the **research stage adapter**, excluding
+the production session's backend configuration checks and context handoff; it cannot establish production-native
+cost. Its timing and attribution paths require completed warm-up, every requested tick advancing exactly once,
+no pause/fault/crash and native-stage coverage before aggregation. Timing pairs must also match a SHA-256 digest
+of the initial state and every warm-up/sample tick (state, auxiliary state, continuous state, inputs, loads and
+modes). Failed or divergent work has no timing summary. Unknown modes and contradictory skip options fail.
+Hashing and native stats queries are outside the stopwatch but may perturb later samples; reports declare this
+instrumentation. Use an otherwise idle host and a separately qualified production-path benchmark for runtime
+performance decisions.
 Sanitizer/profile overhead and shared-host measurements do not qualify target performance or 1080p rendering.
 
 Design sources and bounded execution evidence: [tooling research](../../docs/research/native-kernel/NK-3/tooling-research-2026-10-28.md).

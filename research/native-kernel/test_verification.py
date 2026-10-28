@@ -29,10 +29,19 @@ SOURCES = {"app/sim/flight_session.gd": "b" * 64}
 
 def evidence(kind):
     """Synthetic completed run, including actual coverage and the independent checked-run receipt."""
-    components = {name: {"count": 12000, "identical": 12000} for name in (
-        "stage_shape", "prop_loads", "hull_loads", "ground_evaluation_ok", "ground_up",
-        "stage_bytes", "stage_loads", "stage_derivative", "stage_rotor_momentum",
-        "ground_evaluation_loads", "ground_evaluation_derivative")}
+    if kind == "stage_oracle":
+        counts = {name: 12000 for name in (
+            "stage_shape", "prop_loads", "hull_loads", "ground_evaluation_ok", "ground_up",
+            "stage_bytes", "stage_loads", "stage_derivative", "stage_rotor_momentum",
+            "ground_evaluation_loads", "ground_evaluation_derivative")}
+    else:
+        counts = {"trajectory_end": 5, "trajectory_fingerprint": 5,
+                  **{name: 4800 for name in ("trajectory_tick_floats", "trajectory_tick_sizes", "trajectory_tick_modes")},
+                  **{name: 5 for name in ("fault_path_end", "fault_path_bytes", "fault_path_sizes", "fault_path_modes")},
+                  **{name: 2400 for name in ("checkpoint_tick_floats", "checkpoint_tick_sizes", "checkpoint_tick_modes")},
+                  "checkpoint_pass_length": 2, "fallback_reference_kept": 1}
+    components = {name: {"count": count, "identical": count} for name, count in counts.items()}
+    compared = sum(counts.values())
     end = {"tick": 960, "fault": "", "crashed": False, "paused": False}
     case = {"ticks_requested": 960, "ticks_run": 960, "reference_end": end, "native_end": end.copy(),
             "completion_ok": True, "native_fingerprint": "c" * 64, "reference_fingerprint": "c" * 64,
@@ -51,10 +60,26 @@ def evidence(kind):
                             [*HERE.glob("*.gd"), HERE / "run.py", builder.ROOT / "app/sim/native_stage.gd",
                              builder.ROOT / "tools/godot/run_checked.py"]},
         "components": components,
-        "total": {"compared": 132000, "identical": 132000, "mismatched": 0},
+        "total": {"compared": compared, "identical": compared, "mismatched": 0},
         "coverage": {name: {"states": 4000, "malformed": 100, "stage_shaped": 4000}
                      for name in ("stage_air", "stage_ground", "stage_hull")},
         "trajectories": {name: copy.deepcopy(case) for name in builder.TRAJECTORY_CASES},
+        "fault_paths": {
+            name: {"advanced": False,
+                   "reference": {"tick": 1200, "fault": reason, "paused": True, "crashed": False},
+                   "native": {"tick": 1200, "fault": reason, "paused": True, "crashed": False}}
+            for name, reason in {
+                "state_nan_velocity": "step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+                "continuous_nan_wheel": "step rejected: input or auxiliary state is nonfinite or malformed",
+                "overflow_velocity": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+                "overflow_rates": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+                "buried_state": "step rejected: joint stage evaluation is nonfinite or malformed",
+            }.items()},
+        "checkpoint": {"reference": {"restored": True, "resumed": True, "native_after_restore": False},
+                       "native": {"restored": True, "resumed": True, "native_after_restore": True},
+                       "passes": [{"ticks_reference": 1200, "ticks_native": 1200, "mismatches": 0} for _ in range(2)]},
+        "fallback": {"aircraft": "p51d-mustang-120", "refused": True, "reason": "unsupported session capability",
+                     "reference_ticks": 960, "ticks": 960, "stage_after_attempt": "evaluate", "fingerprint_equal": True},
     }
 
 
@@ -82,6 +107,11 @@ class PromotionEvidence(unittest.TestCase):
         self.write(data)
         with self.assertRaises(SystemExit):
             self.find(kind)
+
+    @staticmethod
+    def retotal(data):
+        compared = sum(row["count"] for row in data["components"].values())
+        data["total"] = {"compared": compared, "identical": compared, "mismatched": 0}
 
     def test_completed_runs_qualify_and_pin_the_evidence_bytes(self):
         for kind in ("stage_oracle", "trajectory"):
@@ -116,6 +146,11 @@ class PromotionEvidence(unittest.TestCase):
                 case[key].update(crashed=True, paused=True)
             self.write(data)
             self.find("trajectory")
+            for key in ("reference_end", "native_end"):
+                case[key]["paused"] = False
+            self.rejected("trajectory", data)
+            for key in ("reference_end", "native_end"):
+                case[key]["paused"] = True
             case["ticks_run"] = 959
             self.rejected("trajectory", data)
 
@@ -126,6 +161,98 @@ class PromotionEvidence(unittest.TestCase):
         data = evidence("trajectory")
         data["format"] = "openrc-nk3-trajectory v1"
         self.rejected("trajectory", data)
+
+    def test_fault_phases_require_all_cases_and_complete_matching_comparisons(self):
+        names = list(evidence("trajectory")["fault_paths"])
+        for name in names:
+            with self.subTest(missing_case=name):
+                data = evidence("trajectory")
+                del data["fault_paths"][name]
+                self.rejected("trajectory", data)
+        for field, value in (("advanced", True), ("advanced", 0)):
+            data = evidence("trajectory")
+            data["fault_paths"][names[0]][field] = value
+            self.rejected("trajectory", data)
+        for field, value in (("tick", 1199), ("fault", ""), ("fault", "unexpected failure"),
+                             ("paused", False), ("crashed", True)):
+            with self.subTest(end_field=field, value=value):
+                data = evidence("trajectory")
+                for backend in ("reference", "native"):
+                    data["fault_paths"][names[0]][backend][field] = value
+                self.rejected("trajectory", data)
+        data = evidence("trajectory")
+        data["fault_paths"][names[0]]["native"]["fault"] += " mismatch"
+        self.rejected("trajectory", data)
+        for field, value in (("tick", 1200.0), ("paused", 1), ("crashed", 0)):
+            with self.subTest(native_type=field):
+                data = evidence("trajectory")
+                data["fault_paths"][names[0]]["native"][field] = value
+                self.rejected("trajectory", data)
+        for name in ("fault_path_end", "fault_path_bytes", "fault_path_sizes", "fault_path_modes"):
+            with self.subTest(component=name):
+                data = evidence("trajectory")
+                data["components"][name] = {"count": 4, "identical": 4}
+                self.retotal(data)
+                self.rejected("trajectory", data)
+
+    def test_checkpoint_phase_requires_restore_and_both_full_matching_passes(self):
+        for backend, field in (("reference", "restored"), ("reference", "resumed"),
+                               ("native", "restored"), ("native", "resumed"),
+                               ("native", "native_after_restore")):
+            with self.subTest(backend=backend, field=field):
+                data = evidence("trajectory")
+                data["checkpoint"][backend][field] = False
+                self.rejected("trajectory", data)
+        data = evidence("trajectory")
+        data["checkpoint"]["native"].update(native_after_restore=False, reinstalled=True)
+        self.write(data)
+        self.find("trajectory")
+        for attempt in range(2):
+            for field, value in (("ticks_reference", 1199), ("ticks_native", 0), ("mismatches", 1)):
+                with self.subTest(attempt=attempt, field=field):
+                    data = evidence("trajectory")
+                    data["checkpoint"]["passes"][attempt][field] = value
+                    self.rejected("trajectory", data)
+        for name in ("checkpoint_tick_floats", "checkpoint_tick_sizes", "checkpoint_tick_modes", "checkpoint_pass_length"):
+            with self.subTest(component=name):
+                data = evidence("trajectory")
+                data["components"][name]["count"] -= 1
+                data["components"][name]["identical"] -= 1
+                self.retotal(data)
+                self.rejected("trajectory", data)
+
+    def test_fallback_phase_requires_refusal_and_full_matching_reference(self):
+        for field, value in (("aircraft", "wrong"), ("refused", False), ("reason", ""), ("reason", " "),
+                             ("reference_ticks", 959), ("ticks", 959), ("stage_after_attempt", "stage"),
+                             ("fingerprint_equal", False)):
+            with self.subTest(field=field):
+                data = evidence("trajectory")
+                data["fallback"][field] = value
+                self.rejected("trajectory", data)
+        data = evidence("trajectory")
+        del data["components"]["fallback_reference_kept"]
+        self.retotal(data)
+        self.rejected("trajectory", data)
+
+    def test_missing_phase_or_truncated_tick_comparisons_cannot_pass(self):
+        for phase, prefix in (("fault_paths", "fault_path_"), ("checkpoint", "checkpoint_"),
+                              ("fallback", "fallback_")):
+            with self.subTest(phase=phase):
+                data = evidence("trajectory")
+                del data[phase]
+                for component in list(data["components"]):
+                    if component.startswith(prefix):
+                        del data["components"][component]
+                self.retotal(data)
+                self.rejected("trajectory", data)
+        for name in ("trajectory_tick_floats", "trajectory_tick_sizes", "trajectory_tick_modes",
+                     "trajectory_end", "trajectory_fingerprint"):
+            with self.subTest(component=name):
+                data = evidence("trajectory")
+                data["components"][name]["count"] -= 1
+                data["components"][name]["identical"] -= 1
+                self.retotal(data)
+                self.rejected("trajectory", data)
 
     def test_stage_requests_are_not_actual_coverage(self):
         for count in (0, 3333):

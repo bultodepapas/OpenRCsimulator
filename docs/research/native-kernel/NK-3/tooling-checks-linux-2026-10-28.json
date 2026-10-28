@@ -1,0 +1,2119 @@
+{
+  "asan_editor_control": {
+    "reason": "Pinned official Godot uses RTLD_DEEPBIND; both late-load controls rejected before any application snapshot",
+    "report_sha256": "19583a648586c748b3d0982f8c5f88d13ab71cfa7afb6ef9c41ae91af646fba1",
+    "supported": false
+  },
+  "builds": {
+    "profile": {
+      "binary_sha256": "376c0c3d1bac27a74f8849cbff92adb0f46fe6d85eb838601da64a74cd09f20d",
+      "compile_database_sha256": "574a627ef3dbf6103068cc9a115a4c0e57fc2207a73a4d6fd870699e48057444",
+      "compiler": "13.3.0",
+      "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+      "mode": "profile",
+      "native_translation_units": 1,
+      "scons_version": "4.10.1",
+      "source_hashes": {
+        "research/native-kernel/devtools.py": "0ae5ab77f463a6fa5babd4e4cb968592a9e9908791111120215e677a52eb9f04",
+        "research/native-kernel/src/nk_aero.hpp": "c80d5a37f816b50c6e6878a2b4395bb5f56145f835e491493a3c6ea052603604",
+        "research/native-kernel/src/nk_hull.hpp": "11b23298a791e353ef4f920bcd2436c051c400c81450ff77fb68f3c28c0bea9c",
+        "research/native-kernel/src/nk_kernel.cpp": "ef44bb3380ef2378b413c89c190653cc273f32837d092490894a5d9c6b99c68a",
+        "research/native-kernel/src/nk_math.hpp": "4ccdb0814358065c34308f8c5edb045935e417134ee69a50112114d8f29c81cd",
+        "research/native-kernel/src/nk_prop.hpp": "af7028b5708d4d4e6679042840be1e55854580acf1d9189e12e2842b148e2821",
+        "research/native-kernel/src/nk_stage.hpp": "61ccd4a0401f36d444354361b85b0d99b70b1faff7dc5875c1ec01fac73159c5",
+        "research/native-kernel/src/nk_terrain.hpp": "206f64b044c3551adb7f1ee4965dba900b1243bd4ecaf4aaffec1fc017865a79",
+        "research/native-kernel/src/nk_wheels.hpp": "7952bfa8a581c20c574f91e212bb8bd18fb4671ce148c46ecf20e95a01dc07fb",
+        "research/native-kernel/toolchain-lock.json": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+        "research/native-slipstream/build.py": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745"
+      }
+    },
+    "ubsan": {
+      "binary_sha256": "bfe4ef0c1b9da00029fc883f19e9bb76e3b92f3d4fd81678e51207a08837aadd",
+      "compile_database_sha256": "e825303933b494f673f49e034633f84d016b63770caf0f0252ad2ccb99253d9b",
+      "compiler": "13.3.0",
+      "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+      "mode": "ubsan",
+      "native_translation_units": 1,
+      "scons_version": "4.10.1",
+      "source_hashes": {
+        "research/native-kernel/devtools.py": "0ae5ab77f463a6fa5babd4e4cb968592a9e9908791111120215e677a52eb9f04",
+        "research/native-kernel/src/nk_aero.hpp": "c80d5a37f816b50c6e6878a2b4395bb5f56145f835e491493a3c6ea052603604",
+        "research/native-kernel/src/nk_hull.hpp": "11b23298a791e353ef4f920bcd2436c051c400c81450ff77fb68f3c28c0bea9c",
+        "research/native-kernel/src/nk_kernel.cpp": "ef44bb3380ef2378b413c89c190653cc273f32837d092490894a5d9c6b99c68a",
+        "research/native-kernel/src/nk_math.hpp": "4ccdb0814358065c34308f8c5edb045935e417134ee69a50112114d8f29c81cd",
+        "research/native-kernel/src/nk_prop.hpp": "af7028b5708d4d4e6679042840be1e55854580acf1d9189e12e2842b148e2821",
+        "research/native-kernel/src/nk_stage.hpp": "61ccd4a0401f36d444354361b85b0d99b70b1faff7dc5875c1ec01fac73159c5",
+        "research/native-kernel/src/nk_terrain.hpp": "206f64b044c3551adb7f1ee4965dba900b1243bd4ecaf4aaffec1fc017865a79",
+        "research/native-kernel/src/nk_wheels.hpp": "7952bfa8a581c20c574f91e212bb8bd18fb4671ce148c46ecf20e95a01dc07fb",
+        "research/native-kernel/toolchain-lock.json": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+        "research/native-slipstream/build.py": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745"
+      }
+    }
+  },
+  "date": "2026-10-28",
+  "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+  "format": "openrc-nk3-tooling-evidence v1",
+  "generated_from": [
+    "devtools.py development-build.json and summary.json",
+    "trajectory.gd oracle.json",
+    "run_checked.py report.json"
+  ],
+  "harness_hashes": {
+    "fleet.gd": "c2e9276f8f404a878cb42893db437086d0d3371429446a1887ccc7b72fb276d8",
+    "oracle.gd": "f6a447cd8dc05b830c42ebdbda44ca626d0a032eb2ccd91c7f32f702bc94de55",
+    "stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+    "stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+    "test_trajectory.gd": "848d64c41e9c6fd513b4c25874fb5c99c796fdf7be117bd1bf48bd1cabb9b127",
+    "trajectory.gd": "1d7b1b058392d8e28b583dbb174e50328d45925267b844bf0e32e48474325dd4"
+  },
+  "positive_control": {
+    "detected": true,
+    "method": "GDExtensionManager loads a disposable shared library whose constructor triggers signed integer overflow",
+    "process_exit": 1
+  },
+  "reference_sources": {
+    "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+    "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+    "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+    "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+    "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+    "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+    "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+    "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+    "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+    "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+    "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+    "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+    "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+    "res://sim/flight_session.gd": "0d552292904f5bdff99f9669d131473d986124bc6e4a8ff8fd64a91b4480c7fd",
+    "res://sim/native_stage.gd": "52747fc8f33a11da6789a1941da4b072a103350ac44f676b0a38f1043648ae50",
+    "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+  },
+  "regressions": {
+    "fresh_sparse_clone_tests": "10 passed; ignored tmp output verified",
+    "full_offline_tool_suite": "passed",
+    "gdscript_timing_checks": 105,
+    "offline_log_sha256": "fde84b13f463d7d05c46e9ac96914db439e4396407651bf63d24ab349c32c09e",
+    "python_development_tests": 10
+  },
+  "retained_checked_runs": {
+    "stage": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 36.493257,
+      "missing_required_text": [],
+      "ok": true,
+      "positive_control": {
+        "complete": true,
+        "detected": true,
+        "process_exit": 1,
+        "reason": "process_exit",
+        "sanitizer_diagnostics": [
+          "/home/bulto/OpenRCsimulator/tmp/nk3-ubsan-frozen-stage/positive-control.cpp:7:54: runtime error: signed integer overflow: 2147483647 + 1 cannot be represented in type 'int'"
+        ]
+      },
+      "process_exit": 0,
+      "reason": "passed",
+      "sanitizer_diagnostics": []
+    },
+    "trajectory": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 55.756888,
+      "missing_required_text": [],
+      "ok": true,
+      "positive_control": {
+        "complete": true,
+        "detected": true,
+        "process_exit": 1,
+        "reason": "process_exit",
+        "sanitizer_diagnostics": [
+          "/home/bulto/OpenRCsimulator/tmp/nk3-ubsan-frozen-trajectory/positive-control.cpp:7:54: runtime error: signed integer overflow: 2147483647 + 1 cannot be represented in type 'int'"
+        ]
+      },
+      "process_exit": 0,
+      "reason": "passed",
+      "sanitizer_diagnostics": []
+    }
+  },
+  "retained_oracles": {
+    "stage": {
+      "components": {
+        "ground_evaluation_derivative": {
+          "class_mismatch": 0,
+          "count": 11421,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 11421,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "ground_evaluation_loads": {
+          "class_mismatch": 0,
+          "count": 11421,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 11421,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "ground_evaluation_ok": {
+          "class_mismatch": 0,
+          "count": 12000,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 12000,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "ground_up": {
+          "class_mismatch": 0,
+          "count": 12000,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 12000,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "hull_loads": {
+          "class_mismatch": 0,
+          "count": 12000,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 12000,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "literals": {
+          "class_mismatch": 0,
+          "count": 39,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 39,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "prop_loads": {
+          "class_mismatch": 0,
+          "count": 12000,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 12000,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "stage_bytes": {
+          "class_mismatch": 0,
+          "count": 11421,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 11421,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "stage_derivative": {
+          "class_mismatch": 0,
+          "count": 11421,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 11421,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "stage_loads": {
+          "class_mismatch": 0,
+          "count": 11421,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 11421,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "stage_rotor_momentum": {
+          "class_mismatch": 0,
+          "count": 11421,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 11421,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "stage_shape": {
+          "class_mismatch": 0,
+          "count": 12000,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 12000,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        }
+      },
+      "coverage": {
+        "stage_air": {
+          "ground_loaded": 161,
+          "hull_loaded": 156,
+          "hull_near_lake": 407,
+          "hull_points_lake_covered": 5318,
+          "malformed": 306,
+          "propeller_turning": 3718,
+          "stage_nonfinite_loads": 167,
+          "stage_shaped": 3992,
+          "stage_valid": 3825,
+          "states": 4138
+        },
+        "stage_ground": {
+          "ground_loaded": 3407,
+          "hull_loaded": 816,
+          "hull_near_lake": 1060,
+          "hull_points_lake_covered": 16867,
+          "malformed": 385,
+          "propeller_turning": 4413,
+          "stage_nonfinite_loads": 61,
+          "stage_shaped": 4608,
+          "stage_valid": 4547,
+          "states": 4888
+        },
+        "stage_hull": {
+          "ground_loaded": 2181,
+          "hull_loaded": 2294,
+          "hull_near_lake": 668,
+          "hull_points_lake_covered": 10423,
+          "malformed": 227,
+          "propeller_turning": 2688,
+          "stage_nonfinite_loads": 43,
+          "stage_shaped": 2821,
+          "stage_valid": 2778,
+          "states": 2974
+        }
+      },
+      "engine": "4.8-beta1 (official)",
+      "failures": [],
+      "format": "openrc-nk3-stage-oracle v1",
+      "identity": {
+        "abi": 1,
+        "abi_version": 1,
+        "aero_law": "section-plane-source-weighted-wake-velocity-v2",
+        "backend": "native",
+        "backend_version": "openrc-native-kernel-stage-v1",
+        "rolling_law": "wheel-positive-terrain-excess-v2",
+        "state_size": 13
+      },
+      "law_identity": {
+        "aero_native": "section-plane-source-weighted-wake-velocity-v2",
+        "aero_reference": "section-plane-source-weighted-wake-velocity-v2",
+        "rolling_native": "wheel-positive-terrain-excess-v2",
+        "rolling_reference": "wheel-positive-terrain-excess-v2"
+      },
+      "prepare": {
+        "error": "",
+        "ok": true
+      },
+      "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+      "refusals": {
+        "hull_geometry_only": {
+          "error": "unsupported key hull.geometry_only",
+          "refused": true
+        },
+        "layout_wash_pieces": {
+          "error": "continuous wash pieces before the wheels are not ported",
+          "refused": true
+        },
+        "prop_axis": {
+          "error": "unsupported key propulsion.axis",
+          "refused": true
+        },
+        "prop_electric_kind": {
+          "error": "unsupported key propulsion.kind",
+          "refused": true
+        },
+        "session_coupled": {
+          "error": "unsupported session capability: coupled",
+          "refused": true
+        },
+        "session_finite_fuel": {
+          "error": "unsupported session capability: finite_fuel",
+          "refused": true
+        },
+        "session_flaps": {
+          "error": "unsupported session capability: flaps",
+          "refused": true
+        },
+        "session_glow": {
+          "error": "unsupported session capability: glow",
+          "refused": true
+        },
+        "session_liquid": {
+          "error": "unsupported session capability: liquid",
+          "refused": true
+        },
+        "session_not_calm": {
+          "error": "unsupported session capability: not_calm",
+          "refused": true
+        },
+        "session_retractable": {
+          "error": "unsupported session capability: retractable",
+          "refused": true
+        },
+        "session_rotor_dynamics": {
+          "error": "unsupported session capability: rotor_dynamics",
+          "refused": true
+        },
+        "session_slipstream": {
+          "error": "unsupported session capability: slipstream",
+          "refused": true
+        },
+        "session_spatial_weather": {
+          "error": "unsupported session capability: spatial_weather",
+          "refused": true
+        },
+        "session_turbine": {
+          "error": "unsupported session capability: turbine",
+          "refused": true
+        },
+        "session_turbulence": {
+          "error": "unsupported session capability: turbulence",
+          "refused": true
+        },
+        "session_vertical_atmosphere": {
+          "error": "unsupported session capability: vertical_atmosphere",
+          "refused": true
+        },
+        "session_weather_pending_reset": {
+          "error": "unsupported session capability: weather_pending_reset",
+          "refused": true
+        }
+      },
+      "seed": 20261027,
+      "self_test": {
+        "detected": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "passed": true
+      },
+      "sources": {
+        "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+        "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+        "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+        "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+        "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+        "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+        "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+        "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+        "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+        "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+        "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+        "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+        "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+        "res://sim/flight_session.gd": "0d552292904f5bdff99f9669d131473d986124bc6e4a8ff8fd64a91b4480c7fd",
+        "res://sim/native_stage.gd": "52747fc8f33a11da6789a1941da4b072a103350ac44f676b0a38f1043648ae50",
+        "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+      },
+      "states": 12000,
+      "timing": {},
+      "total": {
+        "compared": 128565,
+        "identical": 128565,
+        "mismatched": 0
+      },
+      "variant_states": 1500,
+      "verdict": "pass",
+      "wall_ms": 31763
+    },
+    "trajectory": {
+      "checkpoint": {
+        "native": {
+          "native_after_restore": true,
+          "pause_after_restore": "checkpoint restored (recorded inputs)",
+          "restored": true,
+          "resumed": true
+        },
+        "passes": [
+          {
+            "mismatches": 0,
+            "ticks_native": 1200,
+            "ticks_reference": 1200
+          },
+          {
+            "mismatches": 0,
+            "ticks_native": 1200,
+            "ticks_reference": 1200
+          }
+        ],
+        "reference": {
+          "native_after_restore": false,
+          "pause_after_restore": "checkpoint restored (recorded inputs)",
+          "restored": true,
+          "resumed": true
+        },
+        "reference_restored_ticks_equal_to_uninterrupted": 0
+      },
+      "components": {
+        "checkpoint_pass_length": {
+          "class_mismatch": 0,
+          "count": 2,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 2,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "checkpoint_tick_floats": {
+          "class_mismatch": 0,
+          "count": 2400,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 2400,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "checkpoint_tick_modes": {
+          "class_mismatch": 0,
+          "count": 2400,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 2400,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "checkpoint_tick_sizes": {
+          "class_mismatch": 0,
+          "count": 2400,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 2400,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "fallback_reference_kept": {
+          "class_mismatch": 0,
+          "count": 1,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 1,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "fault_path_bytes": {
+          "class_mismatch": 0,
+          "count": 5,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 5,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "fault_path_end": {
+          "class_mismatch": 0,
+          "count": 5,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 5,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "fault_path_modes": {
+          "class_mismatch": 0,
+          "count": 5,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 5,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "fault_path_sizes": {
+          "class_mismatch": 0,
+          "count": 5,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 5,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "literals": {
+          "class_mismatch": 0,
+          "count": 39,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 39,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "trajectory_end": {
+          "class_mismatch": 0,
+          "count": 5,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 5,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "trajectory_fingerprint": {
+          "class_mismatch": 0,
+          "count": 5,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 5,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "trajectory_tick_floats": {
+          "class_mismatch": 0,
+          "count": 4800,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 4800,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "trajectory_tick_modes": {
+          "class_mismatch": 0,
+          "count": 4800,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 4800,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        },
+        "trajectory_tick_sizes": {
+          "class_mismatch": 0,
+          "count": 4800,
+          "examples": [],
+          "finite_ulp": 0,
+          "identical": 4800,
+          "max_ulp": 0,
+          "nan_bits": 0,
+          "shape": 0,
+          "zero_sign": 0
+        }
+      },
+      "coverage": {},
+      "engine": "4.8-beta1 (official)",
+      "failures": [],
+      "fallback": {
+        "aircraft": "p51d-mustang-120",
+        "fingerprint_equal": true,
+        "reason": "unsupported session capability: retractable",
+        "reference_ticks": 960,
+        "refused": true,
+        "stage_after_attempt": "evaluate",
+        "ticks": 960
+      },
+      "fault_paths": {
+        "buried_state": {
+          "advanced": false,
+          "native": {
+            "crashed": false,
+            "fault": "step rejected: joint stage evaluation is nonfinite or malformed",
+            "pause_reason": "simulation fault: step rejected: joint stage evaluation is nonfinite or malformed",
+            "paused": true,
+            "tick": 1200
+          },
+          "reference": {
+            "crashed": false,
+            "fault": "step rejected: joint stage evaluation is nonfinite or malformed",
+            "pause_reason": "simulation fault: step rejected: joint stage evaluation is nonfinite or malformed",
+            "paused": true,
+            "tick": 1200
+          }
+        },
+        "continuous_nan_wheel": {
+          "advanced": false,
+          "native": {
+            "crashed": false,
+            "fault": "step rejected: input or auxiliary state is nonfinite or malformed",
+            "pause_reason": "simulation fault: step rejected: input or auxiliary state is nonfinite or malformed",
+            "paused": true,
+            "tick": 1200
+          },
+          "reference": {
+            "crashed": false,
+            "fault": "step rejected: input or auxiliary state is nonfinite or malformed",
+            "pause_reason": "simulation fault: step rejected: input or auxiliary state is nonfinite or malformed",
+            "paused": true,
+            "tick": 1200
+          }
+        },
+        "overflow_rates": {
+          "advanced": false,
+          "native": {
+            "crashed": false,
+            "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+            "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+            "paused": true,
+            "tick": 1200
+          },
+          "reference": {
+            "crashed": false,
+            "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+            "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+            "paused": true,
+            "tick": 1200
+          }
+        },
+        "overflow_velocity": {
+          "advanced": false,
+          "native": {
+            "crashed": false,
+            "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+            "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+            "paused": true,
+            "tick": 1200
+          },
+          "reference": {
+            "crashed": false,
+            "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+            "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+            "paused": true,
+            "tick": 1200
+          }
+        },
+        "state_nan_velocity": {
+          "advanced": false,
+          "native": {
+            "crashed": false,
+            "fault": "step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+            "pause_reason": "simulation fault: step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+            "paused": true,
+            "tick": 1200
+          },
+          "reference": {
+            "crashed": false,
+            "fault": "step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+            "pause_reason": "simulation fault: step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+            "paused": true,
+            "tick": 1200
+          }
+        }
+      },
+      "format": "openrc-nk3-trajectory v2",
+      "identity": {
+        "abi": 1,
+        "abi_version": 1,
+        "aero_law": "section-plane-source-weighted-wake-velocity-v2",
+        "backend": "native",
+        "backend_version": "openrc-native-kernel-stage-v1",
+        "rolling_law": "wheel-positive-terrain-excess-v2",
+        "state_size": 13
+      },
+      "law_identity": {
+        "aero_native": "section-plane-source-weighted-wake-velocity-v2",
+        "aero_reference": "section-plane-source-weighted-wake-velocity-v2",
+        "rolling_native": "wheel-positive-terrain-excess-v2",
+        "rolling_reference": "wheel-positive-terrain-excess-v2"
+      },
+      "load_average": {
+        "end": "3.74 7.17 6.81 3/1071 1757125",
+        "start": "4.58 7.92 7.02 3/1053 1754629"
+      },
+      "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+      "refusals": {},
+      "seed": 20261027,
+      "self_test": {
+        "detected": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "passed": true
+      },
+      "sources": {
+        "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+        "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+        "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+        "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+        "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+        "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+        "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+        "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+        "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+        "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+        "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+        "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+        "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+        "res://sim/flight_session.gd": "0d552292904f5bdff99f9669d131473d986124bc6e4a8ff8fd64a91b4480c7fd",
+        "res://sim/native_stage.gd": "52747fc8f33a11da6789a1941da4b072a103350ac44f676b0a38f1043648ae50",
+        "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+      },
+      "states": 12000,
+      "timing": {},
+      "total": {
+        "compared": 21672,
+        "identical": 21672,
+        "mismatched": 0
+      },
+      "trajectories": {
+        "lake": {
+          "completion_ok": true,
+          "first_divergence_tick": -1,
+          "native_context_calls": 960,
+          "native_end": {
+            "crashed": false,
+            "fault": "",
+            "pause_reason": "",
+            "paused": false,
+            "tick": 960
+          },
+          "native_fingerprint": "19dd6308d8c53f024542b9428a23fd38c271f3fb6878e7a047cef9929a336d91",
+          "native_lost_install_ticks": 0,
+          "native_stage_calls": 3840,
+          "native_uncovered_ticks": 0,
+          "reference_end": {
+            "crashed": false,
+            "fault": "",
+            "pause_reason": "",
+            "paused": false,
+            "tick": 960
+          },
+          "reference_fingerprint": "19dd6308d8c53f024542b9428a23fd38c271f3fb6878e7a047cef9929a336d91",
+          "ticks_requested": 960,
+          "ticks_run": 960
+        },
+        "maneuver": {
+          "completion_ok": true,
+          "first_divergence_tick": -1,
+          "native_context_calls": 960,
+          "native_end": {
+            "crashed": false,
+            "fault": "",
+            "pause_reason": "",
+            "paused": false,
+            "tick": 960
+          },
+          "native_fingerprint": "6a34bc9606a4727ef574808bf36aa420f16c061e358b764a9e09f54df32e9831",
+          "native_lost_install_ticks": 0,
+          "native_stage_calls": 3840,
+          "native_uncovered_ticks": 0,
+          "reference_end": {
+            "crashed": false,
+            "fault": "",
+            "pause_reason": "",
+            "paused": false,
+            "tick": 960
+          },
+          "reference_fingerprint": "6a34bc9606a4727ef574808bf36aa420f16c061e358b764a9e09f54df32e9831",
+          "ticks_requested": 960,
+          "ticks_run": 960
+        },
+        "runway": {
+          "completion_ok": true,
+          "first_divergence_tick": -1,
+          "native_context_calls": 960,
+          "native_end": {
+            "crashed": false,
+            "fault": "",
+            "pause_reason": "",
+            "paused": false,
+            "tick": 960
+          },
+          "native_fingerprint": "8dacd29433f80dd5b6891435e6dcd3feba48d554ef542209fa79e565fc7558f4",
+          "native_lost_install_ticks": 0,
+          "native_stage_calls": 3840,
+          "native_uncovered_ticks": 0,
+          "reference_end": {
+            "crashed": false,
+            "fault": "",
+            "pause_reason": "",
+            "paused": false,
+            "tick": 960
+          },
+          "reference_fingerprint": "8dacd29433f80dd5b6891435e6dcd3feba48d554ef542209fa79e565fc7558f4",
+          "ticks_requested": 960,
+          "ticks_run": 960
+        },
+        "takeoff": {
+          "completion_ok": true,
+          "first_divergence_tick": -1,
+          "native_context_calls": 960,
+          "native_end": {
+            "crashed": false,
+            "fault": "",
+            "pause_reason": "",
+            "paused": false,
+            "tick": 960
+          },
+          "native_fingerprint": "2920c75c08cf81df249ddf12a740490344ec2f572c399bcbe3ac93261e7b81cb",
+          "native_lost_install_ticks": 0,
+          "native_stage_calls": 3840,
+          "native_uncovered_ticks": 0,
+          "reference_end": {
+            "crashed": false,
+            "fault": "",
+            "pause_reason": "",
+            "paused": false,
+            "tick": 960
+          },
+          "reference_fingerprint": "2920c75c08cf81df249ddf12a740490344ec2f572c399bcbe3ac93261e7b81cb",
+          "ticks_requested": 960,
+          "ticks_run": 960
+        },
+        "trim": {
+          "completion_ok": true,
+          "first_divergence_tick": -1,
+          "native_context_calls": 960,
+          "native_end": {
+            "crashed": false,
+            "fault": "",
+            "pause_reason": "",
+            "paused": false,
+            "tick": 960
+          },
+          "native_fingerprint": "2d8cc50a8445a641db5791647c03d7d70534a7b8f0cf256f15ec90234372e447",
+          "native_lost_install_ticks": 0,
+          "native_stage_calls": 3840,
+          "native_uncovered_ticks": 0,
+          "reference_end": {
+            "crashed": false,
+            "fault": "",
+            "pause_reason": "",
+            "paused": false,
+            "tick": 960
+          },
+          "reference_fingerprint": "2d8cc50a8445a641db5791647c03d7d70534a7b8f0cf256f15ec90234372e447",
+          "ticks_requested": 960,
+          "ticks_run": 960
+        }
+      },
+      "variant_states": 1500,
+      "verdict": "pass",
+      "wall_ms": 50900
+    }
+  },
+  "retention_note": "Complete oracle results and compact execution/control receipts retained. Full source manifest, compiler logs and original runner logs remain temporary; their hashes are provenance, not a self-contained source archive.",
+  "review_2026_10_28": {
+    "build": {
+      "binary_sha256": "8b26e32570aefe15fe4feecd9bc808116074e4023c643903c6a4fc5dd1d62dd0",
+      "command": [
+        "/home/bulto/OpenRCsimulator/tmp/nk3-review-ubsan-build/dependencies/venv/bin/python",
+        "-m",
+        "SCons",
+        "-C",
+        "/home/bulto/OpenRCsimulator/tmp/nk3-review-ubsan-build",
+        "-j2",
+        "platform=linux",
+        "arch=x86_64",
+        "target=template_release",
+        "debug_symbols=yes",
+        "lto=none",
+        "verbose=yes",
+        "optimize=debug",
+        "compiledb=yes",
+        "compiledb_file=/home/bulto/OpenRCsimulator/tmp/nk3-review-ubsan-build/compile_commands.json"
+      ],
+      "compile_database_sha256": "a791cb4da5f5f1a771a900d17c7247387f9705df3a2b0b98f2660373160890dd",
+      "compiler": "13.3.0",
+      "descriptor_sha256": "d364b47130b2fc482163d1b29cfcc11572b29ad5a0e19ca3b7a9c0695f5a2792",
+      "format": "openrc-nk3-development-build v1",
+      "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+      "installable": false,
+      "libm_imports": [
+        "atan2@GLIBC_2.2.5",
+        "cos@GLIBC_2.2.5",
+        "pow@GLIBC_2.29",
+        "sin@GLIBC_2.2.5",
+        "sqrt@GLIBC_2.2.5"
+      ],
+      "mode": "ubsan",
+      "native_translation_units": 1,
+      "scons_version": "4.10.1",
+      "source_hashes": {
+        "research/native-kernel/build.py": "3fd2de9226000ff624b5243d038f32f1dc205f1d144c4389340f3b7af245d23f",
+        "research/native-kernel/devtools.py": "cd5ee2ae4dcd9b80f2193cd80ff4cfca3bb1855f28d9bc934c1ba847565a8f6f",
+        "research/native-kernel/src/nk_aero.hpp": "c80d5a37f816b50c6e6878a2b4395bb5f56145f835e491493a3c6ea052603604",
+        "research/native-kernel/src/nk_hull.hpp": "11b23298a791e353ef4f920bcd2436c051c400c81450ff77fb68f3c28c0bea9c",
+        "research/native-kernel/src/nk_kernel.cpp": "ef44bb3380ef2378b413c89c190653cc273f32837d092490894a5d9c6b99c68a",
+        "research/native-kernel/src/nk_math.hpp": "4ccdb0814358065c34308f8c5edb045935e417134ee69a50112114d8f29c81cd",
+        "research/native-kernel/src/nk_prop.hpp": "af7028b5708d4d4e6679042840be1e55854580acf1d9189e12e2842b148e2821",
+        "research/native-kernel/src/nk_stage.hpp": "61ccd4a0401f36d444354361b85b0d99b70b1faff7dc5875c1ec01fac73159c5",
+        "research/native-kernel/src/nk_terrain.hpp": "206f64b044c3551adb7f1ee4965dba900b1243bd4ecaf4aaffec1fc017865a79",
+        "research/native-kernel/src/nk_wheels.hpp": "7952bfa8a581c20c574f91e212bb8bd18fb4671ce148c46ecf20e95a01dc07fb",
+        "research/native-kernel/toolchain-lock.json": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+        "research/native-slipstream/build.py": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+        "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+      }
+    },
+    "combined": {
+      "imports": 1,
+      "ok": true,
+      "requested_scripts": [
+        "stage_oracle.gd",
+        "trajectory.gd"
+      ],
+      "runs": {
+        "stage_oracle.gd": {
+          "checked_run": {
+            "complete": true,
+            "counts": {
+              "error": 0,
+              "warning": 0
+            },
+            "elapsed_seconds": 48.826005,
+            "missing_required_text": [],
+            "ok": true,
+            "process_exit": 0,
+            "reason": "passed",
+            "sanitizer_diagnostics": []
+          },
+          "coverage_error": "",
+          "ok": true,
+          "oracle": {
+            "components": {
+              "ground_evaluation_derivative": {
+                "class_mismatch": 0,
+                "count": 11421,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 11421,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "ground_evaluation_loads": {
+                "class_mismatch": 0,
+                "count": 11421,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 11421,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "ground_evaluation_ok": {
+                "class_mismatch": 0,
+                "count": 12000,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 12000,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "ground_up": {
+                "class_mismatch": 0,
+                "count": 12000,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 12000,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "hull_loads": {
+                "class_mismatch": 0,
+                "count": 12000,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 12000,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "literals": {
+                "class_mismatch": 0,
+                "count": 39,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 39,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "prop_loads": {
+                "class_mismatch": 0,
+                "count": 12000,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 12000,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "stage_bytes": {
+                "class_mismatch": 0,
+                "count": 11421,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 11421,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "stage_derivative": {
+                "class_mismatch": 0,
+                "count": 11421,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 11421,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "stage_loads": {
+                "class_mismatch": 0,
+                "count": 11421,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 11421,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "stage_rotor_momentum": {
+                "class_mismatch": 0,
+                "count": 11421,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 11421,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "stage_shape": {
+                "class_mismatch": 0,
+                "count": 12000,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 12000,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              }
+            },
+            "coverage": {
+              "stage_air": {
+                "ground_loaded": 161,
+                "hull_loaded": 156,
+                "hull_near_lake": 407,
+                "hull_points_lake_covered": 5318,
+                "malformed": 306,
+                "propeller_turning": 3718,
+                "stage_nonfinite_loads": 167,
+                "stage_shaped": 3992,
+                "stage_valid": 3825,
+                "states": 4138
+              },
+              "stage_ground": {
+                "ground_loaded": 3407,
+                "hull_loaded": 816,
+                "hull_near_lake": 1060,
+                "hull_points_lake_covered": 16867,
+                "malformed": 385,
+                "propeller_turning": 4413,
+                "stage_nonfinite_loads": 61,
+                "stage_shaped": 4608,
+                "stage_valid": 4547,
+                "states": 4888
+              },
+              "stage_hull": {
+                "ground_loaded": 2181,
+                "hull_loaded": 2294,
+                "hull_near_lake": 668,
+                "hull_points_lake_covered": 10423,
+                "malformed": 227,
+                "propeller_turning": 2688,
+                "stage_nonfinite_loads": 43,
+                "stage_shaped": 2821,
+                "stage_valid": 2778,
+                "states": 2974
+              }
+            },
+            "engine": "4.8-beta1 (official)",
+            "failures": [],
+            "format": "openrc-nk3-stage-oracle v1",
+            "identity": {
+              "abi": 1,
+              "abi_version": 1,
+              "aero_law": "section-plane-source-weighted-wake-velocity-v2",
+              "backend": "native",
+              "backend_version": "openrc-native-kernel-stage-v1",
+              "rolling_law": "wheel-positive-terrain-excess-v2",
+              "state_size": 13
+            },
+            "law_identity": {
+              "aero_native": "section-plane-source-weighted-wake-velocity-v2",
+              "aero_reference": "section-plane-source-weighted-wake-velocity-v2",
+              "rolling_native": "wheel-positive-terrain-excess-v2",
+              "rolling_reference": "wheel-positive-terrain-excess-v2"
+            },
+            "prepare": {
+              "error": "",
+              "ok": true
+            },
+            "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+            "refusals": {
+              "hull_geometry_only": {
+                "error": "unsupported key hull.geometry_only",
+                "refused": true
+              },
+              "layout_wash_pieces": {
+                "error": "continuous wash pieces before the wheels are not ported",
+                "refused": true
+              },
+              "prop_axis": {
+                "error": "unsupported key propulsion.axis",
+                "refused": true
+              },
+              "prop_electric_kind": {
+                "error": "unsupported key propulsion.kind",
+                "refused": true
+              },
+              "session_coupled": {
+                "error": "unsupported session capability: coupled",
+                "refused": true
+              },
+              "session_finite_fuel": {
+                "error": "unsupported session capability: finite_fuel",
+                "refused": true
+              },
+              "session_flaps": {
+                "error": "unsupported session capability: flaps",
+                "refused": true
+              },
+              "session_glow": {
+                "error": "unsupported session capability: glow",
+                "refused": true
+              },
+              "session_liquid": {
+                "error": "unsupported session capability: liquid",
+                "refused": true
+              },
+              "session_not_calm": {
+                "error": "unsupported session capability: not_calm",
+                "refused": true
+              },
+              "session_retractable": {
+                "error": "unsupported session capability: retractable",
+                "refused": true
+              },
+              "session_rotor_dynamics": {
+                "error": "unsupported session capability: rotor_dynamics",
+                "refused": true
+              },
+              "session_slipstream": {
+                "error": "unsupported session capability: slipstream",
+                "refused": true
+              },
+              "session_spatial_weather": {
+                "error": "unsupported session capability: spatial_weather",
+                "refused": true
+              },
+              "session_turbine": {
+                "error": "unsupported session capability: turbine",
+                "refused": true
+              },
+              "session_turbulence": {
+                "error": "unsupported session capability: turbulence",
+                "refused": true
+              },
+              "session_vertical_atmosphere": {
+                "error": "unsupported session capability: vertical_atmosphere",
+                "refused": true
+              },
+              "session_weather_pending_reset": {
+                "error": "unsupported session capability: weather_pending_reset",
+                "refused": true
+              }
+            },
+            "seed": 20261027,
+            "self_test": {
+              "detected": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "passed": true
+            },
+            "sources": {
+              "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+              "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+              "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+              "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+              "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+              "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+              "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+              "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+              "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+              "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+              "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+              "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+              "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+              "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+              "res://sim/flight_session.gd": "0d552292904f5bdff99f9669d131473d986124bc6e4a8ff8fd64a91b4480c7fd",
+              "res://sim/native_stage.gd": "52747fc8f33a11da6789a1941da4b072a103350ac44f676b0a38f1043648ae50",
+              "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+            },
+            "states": 12000,
+            "timing": {},
+            "total": {
+              "compared": 128565,
+              "identical": 128565,
+              "mismatched": 0
+            },
+            "variant_states": 1500,
+            "verdict": "pass",
+            "wall_ms": 43879
+          },
+          "unchanged": true
+        },
+        "trajectory.gd": {
+          "checked_run": {
+            "complete": true,
+            "counts": {
+              "error": 0,
+              "warning": 0
+            },
+            "elapsed_seconds": 65.870329,
+            "missing_required_text": [],
+            "ok": true,
+            "process_exit": 0,
+            "reason": "passed",
+            "sanitizer_diagnostics": []
+          },
+          "coverage_error": "",
+          "ok": true,
+          "oracle": {
+            "checkpoint": {
+              "native": {
+                "native_after_restore": true,
+                "pause_after_restore": "checkpoint restored (recorded inputs)",
+                "restored": true,
+                "resumed": true
+              },
+              "passes": [
+                {
+                  "mismatches": 0,
+                  "ticks_native": 1200,
+                  "ticks_reference": 1200
+                },
+                {
+                  "mismatches": 0,
+                  "ticks_native": 1200,
+                  "ticks_reference": 1200
+                }
+              ],
+              "reference": {
+                "native_after_restore": false,
+                "pause_after_restore": "checkpoint restored (recorded inputs)",
+                "restored": true,
+                "resumed": true
+              },
+              "reference_restored_ticks_equal_to_uninterrupted": 0
+            },
+            "components": {
+              "checkpoint_pass_length": {
+                "class_mismatch": 0,
+                "count": 2,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 2,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "checkpoint_tick_floats": {
+                "class_mismatch": 0,
+                "count": 2400,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 2400,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "checkpoint_tick_modes": {
+                "class_mismatch": 0,
+                "count": 2400,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 2400,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "checkpoint_tick_sizes": {
+                "class_mismatch": 0,
+                "count": 2400,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 2400,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "fallback_reference_kept": {
+                "class_mismatch": 0,
+                "count": 1,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 1,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "fault_path_bytes": {
+                "class_mismatch": 0,
+                "count": 5,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 5,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "fault_path_end": {
+                "class_mismatch": 0,
+                "count": 5,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 5,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "fault_path_modes": {
+                "class_mismatch": 0,
+                "count": 5,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 5,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "fault_path_sizes": {
+                "class_mismatch": 0,
+                "count": 5,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 5,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "literals": {
+                "class_mismatch": 0,
+                "count": 39,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 39,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "trajectory_end": {
+                "class_mismatch": 0,
+                "count": 5,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 5,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "trajectory_fingerprint": {
+                "class_mismatch": 0,
+                "count": 5,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 5,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "trajectory_tick_floats": {
+                "class_mismatch": 0,
+                "count": 4800,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 4800,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "trajectory_tick_modes": {
+                "class_mismatch": 0,
+                "count": 4800,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 4800,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              },
+              "trajectory_tick_sizes": {
+                "class_mismatch": 0,
+                "count": 4800,
+                "examples": [],
+                "finite_ulp": 0,
+                "identical": 4800,
+                "max_ulp": 0,
+                "nan_bits": 0,
+                "shape": 0,
+                "zero_sign": 0
+              }
+            },
+            "coverage": {},
+            "engine": "4.8-beta1 (official)",
+            "failures": [],
+            "fallback": {
+              "aircraft": "p51d-mustang-120",
+              "fingerprint_equal": true,
+              "reason": "unsupported session capability: retractable",
+              "reference_ticks": 960,
+              "refused": true,
+              "stage_after_attempt": "evaluate",
+              "ticks": 960
+            },
+            "fault_paths": {
+              "buried_state": {
+                "advanced": false,
+                "native": {
+                  "crashed": false,
+                  "fault": "step rejected: joint stage evaluation is nonfinite or malformed",
+                  "pause_reason": "simulation fault: step rejected: joint stage evaluation is nonfinite or malformed",
+                  "paused": true,
+                  "tick": 1200
+                },
+                "reference": {
+                  "crashed": false,
+                  "fault": "step rejected: joint stage evaluation is nonfinite or malformed",
+                  "pause_reason": "simulation fault: step rejected: joint stage evaluation is nonfinite or malformed",
+                  "paused": true,
+                  "tick": 1200
+                }
+              },
+              "continuous_nan_wheel": {
+                "advanced": false,
+                "native": {
+                  "crashed": false,
+                  "fault": "step rejected: input or auxiliary state is nonfinite or malformed",
+                  "pause_reason": "simulation fault: step rejected: input or auxiliary state is nonfinite or malformed",
+                  "paused": true,
+                  "tick": 1200
+                },
+                "reference": {
+                  "crashed": false,
+                  "fault": "step rejected: input or auxiliary state is nonfinite or malformed",
+                  "pause_reason": "simulation fault: step rejected: input or auxiliary state is nonfinite or malformed",
+                  "paused": true,
+                  "tick": 1200
+                }
+              },
+              "overflow_rates": {
+                "advanced": false,
+                "native": {
+                  "crashed": false,
+                  "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+                  "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+                  "paused": true,
+                  "tick": 1200
+                },
+                "reference": {
+                  "crashed": false,
+                  "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+                  "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+                  "paused": true,
+                  "tick": 1200
+                }
+              },
+              "overflow_velocity": {
+                "advanced": false,
+                "native": {
+                  "crashed": false,
+                  "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+                  "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+                  "paused": true,
+                  "tick": 1200
+                },
+                "reference": {
+                  "crashed": false,
+                  "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+                  "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+                  "paused": true,
+                  "tick": 1200
+                }
+              },
+              "state_nan_velocity": {
+                "advanced": false,
+                "native": {
+                  "crashed": false,
+                  "fault": "step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+                  "pause_reason": "simulation fault: step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+                  "paused": true,
+                  "tick": 1200
+                },
+                "reference": {
+                  "crashed": false,
+                  "fault": "step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+                  "pause_reason": "simulation fault: step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+                  "paused": true,
+                  "tick": 1200
+                }
+              }
+            },
+            "format": "openrc-nk3-trajectory v2",
+            "identity": {
+              "abi": 1,
+              "abi_version": 1,
+              "aero_law": "section-plane-source-weighted-wake-velocity-v2",
+              "backend": "native",
+              "backend_version": "openrc-native-kernel-stage-v1",
+              "rolling_law": "wheel-positive-terrain-excess-v2",
+              "state_size": 13
+            },
+            "law_identity": {
+              "aero_native": "section-plane-source-weighted-wake-velocity-v2",
+              "aero_reference": "section-plane-source-weighted-wake-velocity-v2",
+              "rolling_native": "wheel-positive-terrain-excess-v2",
+              "rolling_reference": "wheel-positive-terrain-excess-v2"
+            },
+            "load_average": {
+              "end": "5.43 5.39 5.29 5/1131 1826152",
+              "start": "5.84 5.43 5.29 6/1130 1823975"
+            },
+            "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+            "refusals": {},
+            "seed": 20261027,
+            "self_test": {
+              "detected": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "passed": true
+            },
+            "sources": {
+              "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+              "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+              "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+              "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+              "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+              "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+              "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+              "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+              "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+              "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+              "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+              "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+              "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+              "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+              "res://sim/flight_session.gd": "0d552292904f5bdff99f9669d131473d986124bc6e4a8ff8fd64a91b4480c7fd",
+              "res://sim/native_stage.gd": "52747fc8f33a11da6789a1941da4b072a103350ac44f676b0a38f1043648ae50",
+              "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+            },
+            "states": 12000,
+            "timing": {},
+            "total": {
+              "compared": 21672,
+              "identical": 21672,
+              "mismatched": 0
+            },
+            "trajectories": {
+              "lake": {
+                "completion_ok": true,
+                "first_divergence_tick": -1,
+                "native_context_calls": 960,
+                "native_end": {
+                  "crashed": false,
+                  "fault": "",
+                  "pause_reason": "",
+                  "paused": false,
+                  "tick": 960
+                },
+                "native_fingerprint": "19dd6308d8c53f024542b9428a23fd38c271f3fb6878e7a047cef9929a336d91",
+                "native_lost_install_ticks": 0,
+                "native_stage_calls": 3840,
+                "native_uncovered_ticks": 0,
+                "reference_end": {
+                  "crashed": false,
+                  "fault": "",
+                  "pause_reason": "",
+                  "paused": false,
+                  "tick": 960
+                },
+                "reference_fingerprint": "19dd6308d8c53f024542b9428a23fd38c271f3fb6878e7a047cef9929a336d91",
+                "ticks_requested": 960,
+                "ticks_run": 960
+              },
+              "maneuver": {
+                "completion_ok": true,
+                "first_divergence_tick": -1,
+                "native_context_calls": 960,
+                "native_end": {
+                  "crashed": false,
+                  "fault": "",
+                  "pause_reason": "",
+                  "paused": false,
+                  "tick": 960
+                },
+                "native_fingerprint": "6a34bc9606a4727ef574808bf36aa420f16c061e358b764a9e09f54df32e9831",
+                "native_lost_install_ticks": 0,
+                "native_stage_calls": 3840,
+                "native_uncovered_ticks": 0,
+                "reference_end": {
+                  "crashed": false,
+                  "fault": "",
+                  "pause_reason": "",
+                  "paused": false,
+                  "tick": 960
+                },
+                "reference_fingerprint": "6a34bc9606a4727ef574808bf36aa420f16c061e358b764a9e09f54df32e9831",
+                "ticks_requested": 960,
+                "ticks_run": 960
+              },
+              "runway": {
+                "completion_ok": true,
+                "first_divergence_tick": -1,
+                "native_context_calls": 960,
+                "native_end": {
+                  "crashed": false,
+                  "fault": "",
+                  "pause_reason": "",
+                  "paused": false,
+                  "tick": 960
+                },
+                "native_fingerprint": "8dacd29433f80dd5b6891435e6dcd3feba48d554ef542209fa79e565fc7558f4",
+                "native_lost_install_ticks": 0,
+                "native_stage_calls": 3840,
+                "native_uncovered_ticks": 0,
+                "reference_end": {
+                  "crashed": false,
+                  "fault": "",
+                  "pause_reason": "",
+                  "paused": false,
+                  "tick": 960
+                },
+                "reference_fingerprint": "8dacd29433f80dd5b6891435e6dcd3feba48d554ef542209fa79e565fc7558f4",
+                "ticks_requested": 960,
+                "ticks_run": 960
+              },
+              "takeoff": {
+                "completion_ok": true,
+                "first_divergence_tick": -1,
+                "native_context_calls": 960,
+                "native_end": {
+                  "crashed": false,
+                  "fault": "",
+                  "pause_reason": "",
+                  "paused": false,
+                  "tick": 960
+                },
+                "native_fingerprint": "2920c75c08cf81df249ddf12a740490344ec2f572c399bcbe3ac93261e7b81cb",
+                "native_lost_install_ticks": 0,
+                "native_stage_calls": 3840,
+                "native_uncovered_ticks": 0,
+                "reference_end": {
+                  "crashed": false,
+                  "fault": "",
+                  "pause_reason": "",
+                  "paused": false,
+                  "tick": 960
+                },
+                "reference_fingerprint": "2920c75c08cf81df249ddf12a740490344ec2f572c399bcbe3ac93261e7b81cb",
+                "ticks_requested": 960,
+                "ticks_run": 960
+              },
+              "trim": {
+                "completion_ok": true,
+                "first_divergence_tick": -1,
+                "native_context_calls": 960,
+                "native_end": {
+                  "crashed": false,
+                  "fault": "",
+                  "pause_reason": "",
+                  "paused": false,
+                  "tick": 960
+                },
+                "native_fingerprint": "2d8cc50a8445a641db5791647c03d7d70534a7b8f0cf256f15ec90234372e447",
+                "native_lost_install_ticks": 0,
+                "native_stage_calls": 3840,
+                "native_uncovered_ticks": 0,
+                "reference_end": {
+                  "crashed": false,
+                  "fault": "",
+                  "pause_reason": "",
+                  "paused": false,
+                  "tick": 960
+                },
+                "reference_fingerprint": "2d8cc50a8445a641db5791647c03d7d70534a7b8f0cf256f15ec90234372e447",
+                "ticks_requested": 960,
+                "ticks_run": 960
+              }
+            },
+            "variant_states": 1500,
+            "verdict": "pass",
+            "wall_ms": 60215
+          },
+          "unchanged": true
+        }
+      },
+      "snapshots": 1
+    },
+    "efficiency": {
+      "combined_import_seconds": 6.382281,
+      "combined_private_snapshots": 1,
+      "note": "Snapshot count/storage and past import wall times are observations on this host, not portable speedup claims. Cold builds still rebuild bindings.",
+      "observed_snapshot_du": "1.9 GiB",
+      "prior_cached_import_seconds": 7.376017,
+      "prior_cold_import_seconds": 357.91789,
+      "prior_private_snapshots": 2
+    },
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "fixes": [
+      "Requested seed/tick count and all fault/restore/fallback phases required",
+      "Compiler flag overrides and missing helper identities rejected",
+      "Control fault must identify its marker and origin",
+      "Overlapping paths and directory symlink cycles rejected; inherited loader overrides cleared",
+      "Malformed/no-op/partial executions cannot pass",
+      "Paired timing hashes the initial state and every warmup/sample tick",
+      "Combined oracle mode shares one private copy and one import"
+    ],
+    "harness_hashes": {
+      "fleet.gd": "c2e9276f8f404a878cb42893db437086d0d3371429446a1887ccc7b72fb276d8",
+      "oracle.gd": "f6a447cd8dc05b830c42ebdbda44ca626d0a032eb2ccd91c7f32f702bc94de55",
+      "stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+      "stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+      "test_trajectory.gd": "ee03e34e0dd05825ff51147a6a4832b2d0e3a821eceb5ec8030f583b110281ef",
+      "trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93"
+    },
+    "positive_control": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "detected": true,
+      "elapsed_seconds": 0.222424,
+      "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\nNK3_CONTROL_BEGIN ubsan\n/home/bulto/OpenRCsimulator/tmp/nk3-review-combined-final/positive-control.cpp:10:54: runtime error: signed integer overflow: 2147483647 + 1 cannot be represented in type 'int'\n    #0 0x766a48904381 in fault /home/bulto/OpenRCsimulator/tmp/nk3-review-combined-final/positive-control.cpp:10\n    #1 0x766a48ee071e  (/lib64/ld-linux-x86-64.so.2+0x571e) (BuildId: 0d77dbd4379bf0b5af3e05be7fb6af1e4cea7c96)\n    #2 0x766a48ee0823  (/lib64/ld-linux-x86-64.so.2+0x5823) (BuildId: 0d77dbd4379bf0b5af3e05be7fb6af1e4cea7c96)\n    #3 0x766a48edc5b1 in _dl_catch_exception (/lib64/ld-linux-x86-64.so.2+0x15b1) (BuildId: 0d77dbd4379bf0b5af3e05be7fb6af1e4cea7c96)\n    #4 0x766a48ee7d7b  (/lib64/ld-linux-x86-64.so.2+0xcd7b) (BuildId: 0d77dbd4379bf0b5af3e05be7fb6af1e4cea7c96)\n    #5 0x766a48edc51b in _dl_catch_exception (/lib64/ld-linux-x86-64.so.2+0x151b) (BuildId: 0d77dbd4379bf0b5af3e05be7fb6af1e4cea7c96)\n    #6 0x766a48ee8163  (/lib64/ld-linux-x86-64.so.2+0xd163) (BuildId: 0d77dbd4379bf0b5af3e05be7fb6af1e4cea7c96)\n    #7 0x766a48a98283  (/lib/x86_64-linux-gnu/libc.so.6+0x98283) (BuildId: a4a7992a8e66555c8141ab2a08a8465ff6e0ea65)\n    #8 0x766a48edc51b in _dl_catch_exception (/lib64/ld-linux-x86-64.so.2+0x151b) (BuildId: 0d77dbd4379bf0b5af3e05be7fb6af1e4cea7c96)\n    #9 0x766a48edc668  (/lib64/ld-linux-x86-64.so.2+0x1668) (BuildId: 0d77dbd4379bf0b5af3e05be7fb6af1e4cea7c96)\n    #10 0x766a48a97d62  (/lib/x86_64-linux-gnu/libc.so.6+0x97d62) (BuildId: a4a7992a8e66555c8141ab2a08a8465ff6e0ea65)\n    #11 0x766a48a9833e in dlopen (/lib/x86_64-linux-gnu/libc.so.6+0x9833e) (BuildId: a4a7992a8e66555c8141ab2a08a8465ff6e0ea65)\n    #12 0x61cdf02dfb67  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0x2157b67)\n    #13 0x61cdf36de5e9  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0x55565e9)\n    #14 0x61cdf36a9d5d  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0x5521d5d)\n    #15 0x61cdf370a116  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0x5582116)\n    #16 0x61cdf370a5d4  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0x55825d4)\n    #17 0x61cdf36c110f  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0x553910f)\n    #18 0x61cdef187643  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0xfff643)\n    #19 0x61cdef010c33  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0xe88c33)\n    #20 0x61cdf31f58c3  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0x506d8c3)\n    #21 0x61cdf17bfa42  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0x3637a42)\n    #22 0x61cdeea2d8f0  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0x8a58f0)\n    #23 0x61cdee9599f2  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0x7d19f2)\n    #24 0x766a48a2a1c9  (/lib/x86_64-linux-gnu/libc.so.6+0x2a1c9) (BuildId: a4a7992a8e66555c8141ab2a08a8465ff6e0ea65)\n    #25 0x766a48a2a28a in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2a28a) (BuildId: a4a7992a8e66555c8141ab2a08a8465ff6e0ea65)\n    #26 0x61cdee9b7fc0  (/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64+0x82ffc0)\n\n",
+      "missing_required_text": [],
+      "ok": false,
+      "process_exit": 1,
+      "reason": "process_exit",
+      "sanitizer_diagnostics": [
+        "/home/bulto/OpenRCsimulator/tmp/nk3-review-combined-final/positive-control.cpp:10:54: runtime error: signed integer overflow: 2147483647 + 1 cannot be represented in type 'int'"
+      ]
+    },
+    "regressions": {
+      "development_python_tests": 23,
+      "fresh_sparse_clone_development_tests": 23,
+      "full_offline_tool_suite": "passed",
+      "gdscript_timing_checks": 130,
+      "verification_python_tests": 14
+    },
+    "remaining_limits": [
+      "Timing uses the research adapter, not the production backend configuration/context path",
+      "Outside-stopwatch hashing and native stats can perturb later timing samples",
+      "ASan still requires a compatible diagnostic engine; official-editor limitation unchanged",
+      "clang-tidy and perf were not run",
+      "Full source manifests and compiler logs remain temporary; complete oracle records and compact execution receipts are retained here"
+    ],
+    "scope": "Robustness/usefulness/function/efficiency review; software checks on an identified frozen project. No production-native performance qualification.",
+    "snapshot_manifest_sha256": "3f60e69e6f0e9c7050d034e546241a6744fc8ce32770b0a5029f3f5015d1c9a8",
+    "timing_execution_smoke": {
+      "checked_run": {
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 14.766218,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed"
+      },
+      "measurement_scope": {
+        "attribution": "callback wrappers and native stage clocks add instrumentation; native stats checks run outside the tick stopwatch",
+        "backend": "research stage_adapter.gd, not the production session backend",
+        "boundary": "detached session and simulation physics callbacks per tick",
+        "timing_validation": "initial state and every warm-up and sample tick are hashed; native stats and hashes run outside the stopwatch and can perturb subsequent samples"
+      },
+      "ok": true,
+      "pairs": {
+        "maneuver": {
+          "native": {
+            "ok": true,
+            "samples_completed": 20,
+            "trajectory_sha256": "3f4420fcc4c3b3418fe4e11699df19f778c6e5fb3e088573575a57c00e475f0c",
+            "warmup_completed": 10
+          },
+          "reference": {
+            "ok": true,
+            "samples_completed": 20,
+            "trajectory_sha256": "3f4420fcc4c3b3418fe4e11699df19f778c6e5fb3e088573575a57c00e475f0c",
+            "warmup_completed": 10
+          }
+        },
+        "runway": {
+          "native": {
+            "ok": true,
+            "samples_completed": 20,
+            "trajectory_sha256": "0d8dafe1777e9425d2c8145474bd4971e26b14a2f460c32cddc001dedc9e3c9b",
+            "warmup_completed": 10
+          },
+          "reference": {
+            "ok": true,
+            "samples_completed": 20,
+            "trajectory_sha256": "0d8dafe1777e9425d2c8145474bd4971e26b14a2f460c32cddc001dedc9e3c9b",
+            "warmup_completed": 10
+          }
+        },
+        "trim": {
+          "native": {
+            "ok": true,
+            "samples_completed": 20,
+            "trajectory_sha256": "3f4420fcc4c3b3418fe4e11699df19f778c6e5fb3e088573575a57c00e475f0c",
+            "warmup_completed": 10
+          },
+          "reference": {
+            "ok": true,
+            "samples_completed": 20,
+            "trajectory_sha256": "3f4420fcc4c3b3418fe4e11699df19f778c6e5fb3e088573575a57c00e475f0c",
+            "warmup_completed": 10
+          }
+        }
+      },
+      "performance_qualification": false
+    }
+  },
+  "scope": "Development tools on a frozen Linux project snapshot; no installation, physical validation or target-host performance qualification.",
+  "source_snapshot_sha256": "3f60e69e6f0e9c7050d034e546241a6744fc8ce32770b0a5029f3f5015d1c9a8",
+  "stage": {
+    "coverage": {
+      "stage_air": {
+        "ground_loaded": 161,
+        "hull_loaded": 156,
+        "hull_near_lake": 407,
+        "hull_points_lake_covered": 5318,
+        "malformed": 306,
+        "propeller_turning": 3718,
+        "stage_nonfinite_loads": 167,
+        "stage_shaped": 3992,
+        "stage_valid": 3825,
+        "states": 4138
+      },
+      "stage_ground": {
+        "ground_loaded": 3407,
+        "hull_loaded": 816,
+        "hull_near_lake": 1060,
+        "hull_points_lake_covered": 16867,
+        "malformed": 385,
+        "propeller_turning": 4413,
+        "stage_nonfinite_loads": 61,
+        "stage_shaped": 4608,
+        "stage_valid": 4547,
+        "states": 4888
+      },
+      "stage_hull": {
+        "ground_loaded": 2181,
+        "hull_loaded": 2294,
+        "hull_near_lake": 668,
+        "hull_points_lake_covered": 10423,
+        "malformed": 227,
+        "propeller_turning": 2688,
+        "stage_nonfinite_loads": 43,
+        "stage_shaped": 2821,
+        "stage_valid": 2778,
+        "states": 2974
+      }
+    },
+    "ok": true,
+    "raw_summary_sha256": "e0e6ff802a6a57253793a33beadee3952f07dff840829f15b39b9f98a6905ca6",
+    "sanitizer_diagnostics": [],
+    "total": {
+      "compared": 128565,
+      "identical": 128565,
+      "mismatched": 0
+    },
+    "unchanged": true
+  },
+  "timing_execution_smoke": {
+    "attribution_cases": [
+      "runway_native",
+      "runway_reference",
+      "trim_native",
+      "trim_reference"
+    ],
+    "attribution_repeats": 1,
+    "cases": [
+      "maneuver",
+      "runway",
+      "trim"
+    ],
+    "checked_run_ok": true,
+    "note": "Short functional smoke of completed-work validation; shared host. Timing values deliberately not promoted.",
+    "ok": true,
+    "pairs": 1,
+    "performance_qualification": false,
+    "report_sha256": "9a975d8e7f48ee46a7a0d7789e2743f80811608d6cc7494c1d57e2227c00aac0",
+    "samples": 20,
+    "total": {
+      "compared": 21672,
+      "identical": 21672,
+      "mismatched": 0
+    },
+    "warmup": 10
+  },
+  "trajectory": {
+    "cases": {
+      "lake": {
+        "completion_ok": true,
+        "native_context_calls": 960,
+        "native_fingerprint": "19dd6308d8c53f024542b9428a23fd38c271f3fb6878e7a047cef9929a336d91",
+        "native_stage_calls": 3840,
+        "native_uncovered_ticks": 0,
+        "reference_fingerprint": "19dd6308d8c53f024542b9428a23fd38c271f3fb6878e7a047cef9929a336d91",
+        "ticks_run": 960
+      },
+      "maneuver": {
+        "completion_ok": true,
+        "native_context_calls": 960,
+        "native_fingerprint": "6a34bc9606a4727ef574808bf36aa420f16c061e358b764a9e09f54df32e9831",
+        "native_stage_calls": 3840,
+        "native_uncovered_ticks": 0,
+        "reference_fingerprint": "6a34bc9606a4727ef574808bf36aa420f16c061e358b764a9e09f54df32e9831",
+        "ticks_run": 960
+      },
+      "runway": {
+        "completion_ok": true,
+        "native_context_calls": 960,
+        "native_fingerprint": "8dacd29433f80dd5b6891435e6dcd3feba48d554ef542209fa79e565fc7558f4",
+        "native_stage_calls": 3840,
+        "native_uncovered_ticks": 0,
+        "reference_fingerprint": "8dacd29433f80dd5b6891435e6dcd3feba48d554ef542209fa79e565fc7558f4",
+        "ticks_run": 960
+      },
+      "takeoff": {
+        "completion_ok": true,
+        "native_context_calls": 960,
+        "native_fingerprint": "2920c75c08cf81df249ddf12a740490344ec2f572c399bcbe3ac93261e7b81cb",
+        "native_stage_calls": 3840,
+        "native_uncovered_ticks": 0,
+        "reference_fingerprint": "2920c75c08cf81df249ddf12a740490344ec2f572c399bcbe3ac93261e7b81cb",
+        "ticks_run": 960
+      },
+      "trim": {
+        "completion_ok": true,
+        "native_context_calls": 960,
+        "native_fingerprint": "2d8cc50a8445a641db5791647c03d7d70534a7b8f0cf256f15ec90234372e447",
+        "native_stage_calls": 3840,
+        "native_uncovered_ticks": 0,
+        "reference_fingerprint": "2d8cc50a8445a641db5791647c03d7d70534a7b8f0cf256f15ec90234372e447",
+        "ticks_run": 960
+      }
+    },
+    "ok": true,
+    "raw_summary_sha256": "179aea01798058bfa909232d4664a696d57a4f06321a83eed7863758d8e230b4",
+    "sanitizer_diagnostics": [],
+    "total": {
+      "compared": 21672,
+      "identical": 21672,
+      "mismatched": 0
+    },
+    "unchanged": true
+  },
+  "ubsan_runtime": {
+    "file": "libubsan.so.1.0.0",
+    "sha256": "f4a999fcf8392a200e9d93fb066ddb9e89daab8cd94a62137f4506472240a2e8"
+  },
+  "unperformed": [
+    "ASan-compatible engine oracle",
+    "clang-tidy (not installed)",
+    "perf capture",
+    "full application suite",
+    "release/target-host timing",
+    "1080p rendering qualification"
+  ]
+}
