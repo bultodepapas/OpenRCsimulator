@@ -8,6 +8,7 @@ missing-library case uses a private project and does not change the installation
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
 import os
@@ -89,8 +90,8 @@ def missing_binary_project(source: Path, destination: Path) -> None:
     (destination / "native/kernel/libopenrc_native_kernel.so").unlink()
 
 
-def missing_binary_package(executable: Path, destination: Path) -> Path:
-    """Keep the exact exported executable and remove only the private sidecar library."""
+def private_package(executable: Path, destination: Path) -> Path:
+    """Keep the exact exported executable and copy its sidecars for private mutations."""
     destination.mkdir()
     private_executable = destination / executable.name
     try:
@@ -98,7 +99,39 @@ def missing_binary_package(executable: Path, destination: Path) -> Path:
     except OSError:
         shutil.copy2(executable, private_executable)
     shutil.copytree(executable.parent / "native", destination / "native")
+    return private_executable
+
+
+def missing_binary_package(executable: Path, destination: Path) -> Path:
+    private_executable = private_package(executable, destination)
     (destination / "native/kernel/libopenrc_native_kernel.so").unlink()
+    return private_executable
+
+
+def corrupt_package(executable: Path, destination: Path, case: str) -> Path:
+    private_executable = private_package(executable, destination)
+    kernel = destination / "native/kernel"
+    receipt_path = kernel / "package-receipt.json"
+    if case == "corrupt-descriptor":
+        with (kernel / "openrc_native_kernel.gdextension").open("ab") as descriptor:
+            descriptor.write(b"\n; altered in private fallback fixture\n")
+    elif case == "corrupt-binary":
+        library = kernel / "libopenrc_native_kernel.so"
+        with library.open("ab") as binary:
+            binary.write(b"\nopenrc private fallback fixture\n")
+        # Even a sidecar receipt updated to match the altered file must not override the embedded pin.
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        receipt["native_binary_sha256"] = hashlib.sha256(library.read_bytes()).hexdigest()
+        receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    elif case == "malformed-receipt":
+        receipt_path.write_text("{", encoding="utf-8")
+    elif case == "wrong-executable-hash":
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        original = receipt["executable_sha256"]
+        receipt["executable_sha256"] = ("1" if original[0] == "0" else "0") + original[1:]
+        receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    else:
+        raise ValueError(f"unknown private package mutation: {case}")
     return private_executable
 
 
@@ -159,6 +192,26 @@ def check(engine: Path, project: Path | None, output: Path) -> None:
     if "stage_backend" in missing_meta or missing_rows != reference_rows:
         raise AssertionError("missing-library trace metadata or reference sample rows differ")
     print("PASS missing binary fallback in private project or package", flush=True)
+
+    if project is None:
+        corrupt_cases = {
+            "corrupt-descriptor": "native package descriptor differs from the verified loader contract",
+            "corrupt-binary": "native package binary differs from its embedded identity",
+            "malformed-receipt": "native package artifact receipt is missing or malformed",
+            "wrong-executable-hash": "native package executable differs from its artifact receipt",
+        }
+        for name, expected_reason in corrupt_cases.items():
+            candidate = corrupt_package(engine, output / f"{name}-package", name)
+            candidate_trace = output / f"{name}.csv"
+            _, candidate_log = run_case(candidate, None, output, name, common + [f"--trace={candidate_trace}"])
+            actual = status(candidate_log)
+            if actual.get("requested") != "native" or actual.get("identity", {}).get("backend") != "gdscript_reference" \
+                    or actual.get("reason") != expected_reason:
+                raise AssertionError(f"{name} did not report its expected reference fallback: {actual}")
+            candidate_meta, candidate_rows = trace_parts(candidate_trace)
+            if "stage_backend" in candidate_meta or candidate_rows != reference_rows:
+                raise AssertionError(f"{name} trace metadata or reference sample rows differ")
+            print(f"PASS {name} fallback in private package", flush=True)
 
     invalid_trace = output / "invalid.csv"
     _, invalid_log = run_case(engine, project, output, "invalid", common + [
