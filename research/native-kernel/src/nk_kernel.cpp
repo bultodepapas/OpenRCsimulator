@@ -33,6 +33,7 @@
 #include "nk_weather_guard.hpp"
 #include "nk_point_sampler.hpp"
 #include <godot_cpp/variant/callable.hpp>
+#include <godot_cpp/classes/ref.hpp>
 
 namespace {
 
@@ -1383,7 +1384,7 @@ public:
 	bool set_preview_context(const PackedFloat64Array &body, const PackedFloat64Array &continuous, bool capture) {
 		tick_.capture_preview = false;
 		if (!stage_ready_ || !tick_.ready || !read_state(body) || continuous.size() > kMaxContinuousSize) return false;
-		load(body, tick_.preview_body.data());
+		for (int i = 0; i < kStateSize; ++i) tick_.preview_body[i] = body[i];
 		tick_.preview_values.assign(continuous.ptr(), continuous.ptr() + continuous.size());
 		tick_.capture_preview = capture;
 		return true;

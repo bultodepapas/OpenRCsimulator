@@ -67,7 +67,33 @@ func _liquid_compare(name: String, reference: Dictionary, native: Dictionary, in
 	_compare(name + "_keys", var_to_bytes(reference.keys()), var_to_bytes(native.keys()), inputs)
 	for key: String in ["loads", "derivative", "rotor_momentum", "body_derivative"]:
 		_compare(name + "_" + key, reference.get(key), native.get(key), inputs)
-	_compare(name + "_bytes", var_to_bytes(reference), var_to_bytes(native), inputs)
+	# Spatial preview owns a fresh sampler object and Callable in each
+	# implementation. Their object IDs cannot be byte-identical; compare the
+	# complete remaining context, then exercise both live samplers directly.
+	var expected: Dictionary = reference.duplicate(true)
+	var actual: Dictionary = native.duplicate(true)
+	if reference.has("stage_context") and native.has("stage_context"):
+		var reference_air: Dictionary = reference.stage_context.air
+		var native_air: Dictionary = native.stage_context.air
+		_compare(name + "_preview_air_keys", var_to_bytes(reference_air.keys()), var_to_bytes(native_air.keys()), inputs)
+		if reference_air.has("spatial_sampler") and native_air.has("spatial_sampler"):
+			var valid_reference: bool = is_instance_valid(reference_air.spatial_sampler) and \
+				reference_air.ambient_delta_body_at is Callable and reference_air.ambient_delta_body_at.is_valid()
+			var valid_native: bool = is_instance_valid(native_air.spatial_sampler) and \
+				native_air.ambient_delta_body_at is Callable and native_air.ambient_delta_body_at.is_valid()
+			_compare(name + "_preview_sampler_valid", PackedFloat64Array([1.0 if valid_reference else 0.0]),
+				PackedFloat64Array([1.0 if valid_native else 0.0]), inputs)
+			if valid_reference and valid_native:
+				for point: PackedFloat64Array in [PackedFloat64Array([0.0, 0.0, 0.0]),
+						PackedFloat64Array([-1.0, 0.0, 0.0]), PackedFloat64Array([1.0, 0.5, -0.25]),
+						PackedFloat64Array([0.5, -0.8, 0.4])]:
+					_compare(name + "_preview_sampler_delta", reference_air.ambient_delta_body_at.call(point),
+						native_air.ambient_delta_body_at.call(point), [inputs, point])
+		expected.stage_context.air.erase("spatial_sampler")
+		expected.stage_context.air.erase("ambient_delta_body_at")
+		actual.stage_context.air.erase("spatial_sampler")
+		actual.stage_context.air.erase("ambient_delta_body_at")
+	_compare(name + "_bytes", var_to_bytes(expected), var_to_bytes(actual), inputs)
 
 
 func _check_case(id: String, scenario: Dictionary) -> void:
