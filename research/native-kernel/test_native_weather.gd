@@ -72,6 +72,9 @@ func _check_preset(preset: Dictionary) -> void:
 	var snapshot: Dictionary = prepared.snapshot
 	var snapshot_bytes := var_to_bytes(snapshot)
 	_check(snapshot.is_read_only(), label + ": snapshot read-only")
+	if snapshot.has("spatial"):
+		_check(snapshot.spatial.is_read_only() and snapshot.spatial.thermal.is_read_only(),
+			label + ": nested snapshot read-only")
 	_check(NativeWeather.matches(session, identity), label + ": initial match")
 	_check(snapshot_bytes == var_to_bytes(WeatherAdapter.snapshot(session._weather)), label + ": exact snapshot")
 	var field: RefCounted = session._weather
@@ -130,11 +133,16 @@ func _check_values(session: Node, identity: Variant, provider: RefCounted, field
 
 func _check_nested_spatial(session: Node, identity: Variant, spatial: RefCounted, label: String) -> void:
 	var config: Dictionary = spatial.get("_config")
-	var original := config.duplicate(true)
+	var original_extent: float = config.domain.half_extent_north_m
 	config.domain.half_extent_north_m += 1.0
 	_check(not NativeWeather.matches(session, identity), label + ": nested spatial domain")
-	spatial.set("_config", original)
+	config.domain.half_extent_north_m = original_extent
 	_check(NativeWeather.matches(session, identity), label + ": nested spatial restored")
+	var domain: Dictionary = config.domain
+	config.domain = domain.duplicate(true)
+	_check(not NativeWeather.matches(session, identity), label + ": replaced nested container")
+	config.domain = domain
+	_check(NativeWeather.matches(session, identity), label + ": restored nested container")
 	var transition: float = spatial.get("_gust_transition_height")
 	spatial.set("_gust_transition_height", transition + 1.0)
 	_check(not WeatherAdapter.provider_identity(session).get("ok", false), label + ": mutated transition refuses prepare")
@@ -142,11 +150,11 @@ func _check_nested_spatial(session: Node, identity: Variant, spatial: RefCounted
 	var thermal: Variant = spatial.get("_thermal_field")
 	if thermal != null:
 		var thermal_config: Dictionary = thermal.get("_config")
-		var thermal_original := thermal_config.duplicate(true)
 		if not thermal_config.cells.is_empty():
+			var original_radius: float = thermal_config.cells[0].radius_m
 			thermal_config.cells[0].radius_m += 1.0
 			_check(not NativeWeather.matches(session, identity), label + ": nested thermal agenda")
-			thermal.set("_config", thermal_original)
+			thermal_config.cells[0].radius_m = original_radius
 			_check(NativeWeather.matches(session, identity), label + ": nested thermal restored")
 
 
@@ -205,11 +213,10 @@ func _check_signed_zero() -> void:
 		return
 	var field: RefCounted = session._weather
 	var saved: Dictionary = field.get("_config")
-	var changed := saved.duplicate(true)
-	changed.field_elevation_m = _negative_zero
-	field.set("_config", changed)
+	var elevation: float = saved.field_elevation_m
+	saved.field_elevation_m = _negative_zero
 	_check(not NativeWeather.matches(session, prepared.identity), "signed-zero: scalar elevation mutation")
-	field.set("_config", saved)
+	saved.field_elevation_m = elevation
 	var mean: PackedFloat64Array = field.get("_mean_ned")
 	var changed_mean := mean.duplicate()
 	changed_mean[0] = _negative_zero
@@ -228,19 +235,24 @@ func _check_signed_zero() -> void:
 		return
 	var spatial: RefCounted = spatial_session._weather.get("_spatial")
 	var spatial_config: Dictionary = spatial.get("_config")
-	var spatial_changed := spatial_config.duplicate(true)
-	spatial_changed.identity.epoch_offset_s = _negative_zero
-	spatial.set("_config", spatial_changed)
+	var spatial_epoch: float = spatial_config.identity.epoch_offset_s
+	spatial_config.identity.epoch_offset_s = _negative_zero
 	_check(not NativeWeather.matches(spatial_session, spatial_prepared.identity), "signed-zero: spatial epoch mutation")
 	_check(not NativeWeather.prepare(spatial_session).get("ok", false), "signed-zero: spatial mismatch refuses prepare")
-	spatial.set("_config", spatial_config)
+	spatial_config.identity.epoch_offset_s = spatial_epoch
 	var thermal: RefCounted = spatial.get("_thermal_field")
 	var thermal_config: Dictionary = thermal.get("_config")
-	var thermal_changed := thermal_config.duplicate(true)
-	thermal_changed.identity.epoch_offset_s = _negative_zero
-	thermal.set("_config", thermal_changed)
+	var thermal_epoch: float = thermal_config.identity.epoch_offset_s
+	thermal_config.identity.epoch_offset_s = _negative_zero
 	_check(not NativeWeather.matches(spatial_session, spatial_prepared.identity), "signed-zero: thermal epoch mutation")
 	_check(not NativeWeather.prepare(spatial_session).get("ok", false), "signed-zero: thermal mismatch refuses prepare")
-	thermal.set("_config", thermal_config)
+	thermal_config.identity.epoch_offset_s = thermal_epoch
 	_check(NativeWeather.matches(spatial_session, spatial_prepared.identity), "signed-zero: spatial restored")
 	spatial_session.free()
+	var nested := {values = PackedFloat64Array([0.0])}
+	var watches: Array[NativeWeather.Watch] = []
+	NativeWeather._capture_watches(nested, watches)
+	nested.values[0] = _negative_zero
+	_check(not NativeWeather._watches_match(watches), "signed-zero: nested packed array mutation")
+	nested.values[0] = 0.0
+	_check(NativeWeather._watches_match(watches), "signed-zero: nested packed array restored")

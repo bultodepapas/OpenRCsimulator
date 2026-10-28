@@ -168,12 +168,24 @@ func _check_session(session: Node, start: String, weather_id: String, count: int
 		else:
 			body[2] = -_rng.randf_range(1.0, 30.0)
 			if i % 5 == 0: body[2] = initial_body[2] * 0.15 # near-ground effect
+			if i % 8 == 3:
+				var attitude := M.q_from_euler(_rng.randf_range(-PI, PI), _rng.randf_range(-1.4, 1.4),
+					_rng.randf_range(-PI, PI))
+				for axis in 4: body[6 + axis] = attitude[axis]
+				body[2] = -_rng.randf_range(2.0, 30.0)
+			if i % 6 == 4:
+				body[3] = _rng.randf_range(-12.0, 20.0)
+				body[5] = _rng.randf_range(-8.0, 8.0)
 		# Explicit stopped/low/blended/normal shaft speeds and signed inflow.
 		var factors := [0.0, 0.01, 0.04, 0.06, 0.08, 0.12, 0.20, 1.0]
 		continuous[0] = nominal * factors[i % factors.size()]
 		continuous[1] = _rng.randf_range(-0.035, 0.035)
 		continuous[2] = _rng.randf_range(-0.035, 0.035)
 		continuous[3] = _rng.randf_range(-1.5, 5.5)
+		if i % 17 == 5:
+			continuous[1] = _rng.randf_range(-0.3, 0.3)
+			continuous[2] = _rng.randf_range(-0.3, 0.3)
+			continuous[3] = _rng.randf_range(-6.0, 10.0)
 		continuous[4] = _rng.randf_range(-0.2, 0.2)
 		continuous[5] = _rng.randf_range(-0.1, 0.1)
 		if i % 9 == 0:
@@ -189,6 +201,9 @@ func _check_session(session: Node, start: String, weather_id: String, count: int
 			_tally(group, "trainer" if session.trainer_enabled else "direct")
 			_tally(group, "idle_up" if mode else "normal")
 			_tally(group, "stopped" if continuous[0] == 0.0 else ("near_stop" if factors[i % factors.size()] < 0.20 else "running"))
+			if start == "airborne":
+				var body_down: PackedFloat64Array = M.q_rotate(M.q_normalized(body.slice(6, 10)), M.v3(0.0, 0.0, 1.0))
+				if body_down[2] < 0.0: _tally(group, "inverted")
 			if start == "ground":
 				_tally(group, "contact" if contact.get("max_depth_m", 0.0) > 0.0 else "unloaded")
 

@@ -21205,5 +21205,797 @@
    "Existing broad-suite fixed-brake failure predates NK-3 and reproduced against the reference control; no frozen/golden data was regenerated.",
    "Raw performance reports and logs remain at the recorded local tmp paths; this record retains their hashes, completion identities and reduced measurements."
   ]
+ },
+ "coverage_expansion_components_2026_10_28": {
+  "acceptance_limit": "Component and research stage parity only. The scoped fleet run uses the previous accepted Stik binary. This does not qualify all-aircraft production admission, full lifecycle/replay, target performance or physical validation.",
+  "literal_correction": "GDScript spelling 1e-24 parses to binary64 0x3af357c299a88ea8; C++ decimal is one ULP lower. Spatial quaternion guards use exact kGd1eMinus24; 1.0e-24 remains a distinct spelling.",
+  "reference_limit": "X-Cell hot-high start fails reference hover trim. Helicopter component cases explicitly use calm-reset seeds with hot-high density; no hot-high start/flight qualification is claimed.",
+  "reports": [
+   {
+    "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+    "coverage": {},
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "format": "openrc-nk3-fleet v2",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "f8a6b962480e21733d003f880dc10768e3f5e9e08a1ea2a6dcef04e63a06993f",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/fleet-20261028T190119878974Z.json",
+    "run_valid": true,
+    "scope": {
+     "conditions": "Stock catalog battery/start/contact options and named compatible weather presets; custom configurations and arbitrary input histories require separate evidence.",
+     "declared_aircraft": [
+      "jensen-das-ugly-stik-60",
+      "stik-glow-61fx-2t",
+      "stik-glow-55ax-2t",
+      "stik-glow-fs64v-4t",
+      "gp-extra-300s-60",
+      "p51d-mustang-120",
+      "f4u-corsair-250",
+      "sebart-avanti-s-a200-p100rx",
+      "turbo-lumber-evolution",
+      "skywalker-x8",
+      "xcell-60-research"
+     ],
+     "declared_rows": 1238,
+     "filters": {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "soft_hull": "on",
+      "weather": "calm"
+     },
+     "matrix_complete": false,
+     "samples_requested": 16,
+     "scope": "scoped",
+     "selected_rows": 3,
+     "warmup_requested": 4
+    },
+    "sha256": "9e449fecc99e3ae6dbd0a95b4767eca866cc9d6b8ee041a0efa340df43f1d435",
+    "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db",
+    "states_requested": 12000,
+    "total": {
+     "compared": 42,
+     "identical": 42,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "64e36f0935a0cd1108e1dd45def41de4fd82a0d66c393b1362541891bf87d358",
+    "coverage": {
+     "weather": {
+      "air_queries": 208,
+      "point_queries": 20721,
+      "real_ou_windows": 9,
+      "thermal_cell_samples": 12
+     }
+    },
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "format": "openrc-nk3-weather-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "b3e8e45279494251b95696e595a37db5025bd3ddfeb32134aa6927e88e43d41e",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "fb7d4edd419ddd71080456ece9ec9329a01831ee73461ceaac4796ddfef0c797",
+     "research/native-kernel/weather_oracle.gd": "7559aaca700e9a4b7d4b19b22d55529a2829a7228a67201f7be2cd2cc82c2091",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/weather-20261028T191052764617Z.json",
+    "run_valid": true,
+    "scope": {},
+    "sha256": "213cb02536fb0173e06ad324e6a51ddd9aead3c171a8c322299f3b281242d9fc",
+    "source_sha256": "880cfe72dcac104cf8e0e1151436e2da54b3bc1f09495ebc98cffa655a0a72fa",
+    "states_requested": 12000,
+    "total": {
+     "compared": 21074,
+     "identical": 21074,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "64e36f0935a0cd1108e1dd45def41de4fd82a0d66c393b1362541891bf87d358",
+    "coverage": {
+     "weather_stage": {
+      "finite_shaped": 2773,
+      "malformed": 279,
+      "ordinary": 2721,
+      "real_ou_window_states": 750,
+      "states": 3000
+     }
+    },
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "format": "openrc-nk3-weather-stage-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "b3e8e45279494251b95696e595a37db5025bd3ddfeb32134aa6927e88e43d41e",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "fb7d4edd419ddd71080456ece9ec9329a01831ee73461ceaac4796ddfef0c797",
+     "research/native-kernel/weather_stage_oracle.gd": "b3f06ef04854ac6e1d743fd1193e21030656dca94fc9250be1c262e21c855199",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/weather-stage-20261028T191104156999Z.json",
+    "run_valid": true,
+    "scope": {},
+    "sha256": "d7b98842976322ea51f0a6d508bf748868da4ec7d19cd0f8ad45cbfcbf6d83f3",
+    "source_sha256": "880cfe72dcac104cf8e0e1151436e2da54b3bc1f09495ebc98cffa655a0a72fa",
+    "states_requested": 3000,
+    "total": {
+     "compared": 17615,
+     "identical": 17615,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "4db948c8c9f2285ad7910b8f78f87fa2c366ed70dce217eb9626d1d9a558f412",
+    "coverage": {
+     "weather_stage": {
+      "finite_shaped": 467,
+      "finite_spatial_flows": 185,
+      "malformed": 43,
+      "ordinary": 457,
+      "real_ou_window_states": 75,
+      "spatial_domain_refusals": 24,
+      "spatial_gradient_stages": 116,
+      "states": 500
+     }
+    },
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "format": "openrc-nk3-weather-stage-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "5edaa7c975bedebabc26af1495f208b5cbaae2a7865b54156c97d3eb57287eee",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "fb7d4edd419ddd71080456ece9ec9329a01831ee73461ceaac4796ddfef0c797",
+     "research/native-kernel/weather_stage_oracle.gd": "ec2e603745a21a0585b85c665fe136ed47f0e2665beb56853cec7415fdfd0b68",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/weather-stage-20261028T191533893245Z.json",
+    "run_valid": true,
+    "scope": {},
+    "sha256": "3458c8fb5f2231a72027731b74ffde1d57f13b61902af1ea3e7f3c93c4fcffa4",
+    "source_sha256": "928f0ccae6e5be8a9b0588bfd4909ae7dd42da177bc44188317829ff0986ab57",
+    "states_requested": 500,
+    "total": {
+     "compared": 5648,
+     "identical": 5648,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "a7cc31c70d7b54aba2599aaf440a19f9f160a8d2bd217efbe1ca63daafa7ff40",
+    "coverage": {
+     "propeller_f4u-corsair-250": {
+      "states": 1493
+     },
+     "propeller_jensen-das-ugly-stik-60": {
+      "states": 1492
+     },
+     "propeller_p51d-mustang-120": {
+      "states": 1491
+     },
+     "propeller_skywalker-x8": {
+      "states": 1491
+     },
+     "propeller_turbo-lumber-evolution": {
+      "states": 1491
+     }
+    },
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "format": "openrc-nk3-propeller-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "43c472f2ef4f472631b7799092a2c0c2083c7d448ac29332e671397220df491e",
+     "research/native-kernel/oracle.gd": "90c287a08869eb311d52964d7429d3279f80420a4c95eda95dc514eebe468b1d",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "5bff2e75ab3c8f669330f28c6064ec9bafb8799489deafc4b28b2c48fb15b707",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/propeller-20261028T185744298873Z.json",
+    "run_valid": true,
+    "scope": {},
+    "sha256": "4ad8d9364f14a41d5a2a6c09d0ef79ee6955f4c8c23acd059206ff5a3cf3d8cc",
+    "source_sha256": "188704f01c4dd59e5198a3fbfd6a881a67f999ff8ce9c2b4a0c622072735fd5e",
+    "states_requested": 1500,
+    "total": {
+     "compared": 52293,
+     "identical": 52293,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "999630dde1f4e803a4da9febc21904c89aa3306dd1bb398393f57dd5df1f473b",
+    "coverage": {
+     "electric_coupled_skywalker-x8/ideal": {
+      "states": 10000
+     },
+     "electric_coupled_skywalker-x8/pack": {
+      "states": 10000
+     },
+     "electric_coupled_turbo-lumber-evolution/ideal": {
+      "states": 10000
+     },
+     "electric_coupled_turbo-lumber-evolution/pack": {
+      "states": 10000
+     },
+     "electric_skywalker-x8/ideal": {
+      "states": 10000
+     },
+     "electric_skywalker-x8/pack": {
+      "states": 10000
+     },
+     "electric_synthetic_ecm_0_branches": {
+      "states": 10000
+     },
+     "electric_synthetic_ecm_2_branches": {
+      "states": 10000
+     },
+     "electric_synthetic_ocv": {
+      "states": 10000
+     },
+     "electric_turbo-lumber-evolution/ideal": {
+      "states": 10000
+     },
+     "electric_turbo-lumber-evolution/pack": {
+      "states": 10000
+     }
+    },
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "format": "openrc-nk3-electric-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/electric_oracle.gd": "a271ac0bcb649c232745baae8828331a84292ff5561f2dcddbbddb49a3048083",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "e3e10ccf6765d095a78e7cc0fa686c1d112d1c5beffd618e36f3fa09d5d4c9dd",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "fb7d4edd419ddd71080456ece9ec9329a01831ee73461ceaac4796ddfef0c797",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/electric-20261028T191812978528Z.json",
+    "run_valid": true,
+    "scope": {},
+    "sha256": "4cc005b297fa34491240b67d7d2941d5dca6e7077c3fede0e455ea5e5e73abd5",
+    "source_sha256": "b9b50c4538909c7930e70d5aec35f7e8c50be90c54096143319788d6a598b138",
+    "states_requested": 10000,
+    "total": {
+     "compared": 317766,
+     "identical": 317766,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "64e36f0935a0cd1108e1dd45def41de4fd82a0d66c393b1362541891bf87d358",
+    "coverage": {
+     "glow_feed_stik-glow-55ax-2t": {
+      "states": 1500
+     },
+     "glow_feed_stik-glow-61fx-2t": {
+      "states": 1500
+     },
+     "glow_feed_stik-glow-fs64v-4t": {
+      "states": 1500
+     },
+     "glow_feed_synthetic_pickup": {
+      "states": 1500
+     },
+     "glow_gp-extra-300s-60": {
+      "states": 1500
+     },
+     "glow_stik-glow-55ax-2t": {
+      "states": 1500
+     },
+     "glow_stik-glow-61fx-2t": {
+      "states": 1500
+     },
+     "glow_stik-glow-fs64v-4t": {
+      "states": 1500
+     },
+     "glow_two_resource": {
+      "states": 1500
+     }
+    },
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "format": "openrc-nk3-glow-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/glow_oracle.gd": "3d0dac9b6485b2bfd57f0b0753c39ff6b8bd854e2567efadd7c4d6d3228e7595",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "b3e8e45279494251b95696e595a37db5025bd3ddfeb32134aa6927e88e43d41e",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "fb7d4edd419ddd71080456ece9ec9329a01831ee73461ceaac4796ddfef0c797",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/glow-20261028T191029749889Z.json",
+    "run_valid": true,
+    "scope": {},
+    "sha256": "2c4e1f56080028c435b0f5c9da26fec4af31824bc2086339657d32aa54d9496f",
+    "source_sha256": "880cfe72dcac104cf8e0e1151436e2da54b3bc1f09495ebc98cffa655a0a72fa",
+    "states_requested": 1500,
+    "total": {
+     "compared": 74343,
+     "identical": 74343,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "64e36f0935a0cd1108e1dd45def41de4fd82a0d66c393b1362541891bf87d358",
+    "coverage": {
+     "wake_f4u-corsair-250": {
+      "held_wake": 750,
+      "hub_delta": 500,
+      "nonzero_load": 830,
+      "reverse_flow": 447,
+      "states": 1500,
+      "stopped": 137
+     },
+     "wake_gp-extra-300s-60": {
+      "held_wake": 750,
+      "hub_delta": 500,
+      "nonzero_load": 1040,
+      "reverse_flow": 413,
+      "states": 1500,
+      "stopped": 137
+     },
+     "wake_manufactured_legacy": {
+      "held_wake": 750,
+      "hub_delta": 500,
+      "nonzero_load": 1080,
+      "reverse_flow": 426,
+      "states": 1500,
+      "stopped": 137
+     },
+     "wake_manufactured_smooth": {
+      "held_wake": 750,
+      "hub_delta": 500,
+      "nonzero_load": 903,
+      "reverse_flow": 430,
+      "states": 1500,
+      "stopped": 137
+     },
+     "wake_manufactured_smooth_swirl": {
+      "held_wake": 750,
+      "hub_delta": 500,
+      "nonzero_load": 890,
+      "reverse_flow": 438,
+      "states": 1500,
+      "stopped": 137
+     },
+     "wake_manufactured_transport": {
+      "held_wake": 750,
+      "hub_delta": 500,
+      "nonzero_load": 992,
+      "reverse_flow": 417,
+      "states": 1500,
+      "stopped": 137,
+      "transport": 1500
+     },
+     "wake_p51d-mustang-120": {
+      "held_wake": 750,
+      "hub_delta": 500,
+      "nonzero_load": 869,
+      "reverse_flow": 436,
+      "states": 1500,
+      "stopped": 137
+     }
+    },
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "format": "openrc-nk3-wake-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "b3e8e45279494251b95696e595a37db5025bd3ddfeb32134aa6927e88e43d41e",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/wake_oracle.gd": "59737c396121718f210f048f21405d8572d754013c973d7a29f9d10b994addd7",
+     "research/native-kernel/weather_adapter.gd": "fb7d4edd419ddd71080456ece9ec9329a01831ee73461ceaac4796ddfef0c797",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/wake-20261028T191035773379Z.json",
+    "run_valid": true,
+    "scope": {},
+    "sha256": "c8eeac85757ca1818e51f81385a0833e2d280ac6afdfad1ce169d8ec9ddada42",
+    "source_sha256": "880cfe72dcac104cf8e0e1151436e2da54b3bc1f09495ebc98cffa655a0a72fa",
+    "states_requested": 1500,
+    "total": {
+     "compared": 28634,
+     "identical": 28634,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "64e36f0935a0cd1108e1dd45def41de4fd82a0d66c393b1362541891bf87d358",
+    "coverage": {
+     "spatial_aero_f4u-corsair-250": {
+      "attached": 35,
+      "continuation": 100,
+      "uniform": 50
+     },
+     "spatial_aero_gp-extra-300s-60": {
+      "attached": 38,
+      "continuation": 100,
+      "uniform": 50
+     },
+     "spatial_aero_jensen-das-ugly-stik-60": {
+      "attached": 33,
+      "continuation": 100,
+      "uniform": 50
+     },
+     "spatial_aero_p51d-mustang-120": {
+      "attached": 33,
+      "continuation": 100,
+      "uniform": 50
+     },
+     "spatial_aero_sebart-avanti-s-a200-p100rx": {
+      "attached": 25,
+      "continuation": 100,
+      "uniform": 50
+     },
+     "spatial_aero_skywalker-x8": {
+      "attached": 36,
+      "continuation": 100,
+      "uniform": 50
+     },
+     "spatial_aero_stik-glow-55ax-2t": {
+      "attached": 34,
+      "continuation": 100,
+      "uniform": 50
+     },
+     "spatial_aero_stik-glow-61fx-2t": {
+      "attached": 39,
+      "continuation": 100,
+      "uniform": 50
+     },
+     "spatial_aero_stik-glow-fs64v-4t": {
+      "attached": 38,
+      "continuation": 100,
+      "uniform": 50
+     },
+     "spatial_aero_turbo-lumber-evolution": {
+      "attached": 39,
+      "continuation": 100,
+      "uniform": 50
+     },
+     "spatial_boundaries": {
+      "delta_bound": 10,
+      "density_bound": 10,
+      "inactive_horizontal": 1,
+      "infinite_downwash": 10,
+      "infinite_ground": 10,
+      "nonfinite_body": 10,
+      "nonfinite_delta": 10,
+      "quaternion_norm_above": 10,
+      "quaternion_norm_below": 10,
+      "quaternion_norm_equal": 10,
+      "short_delta": 10,
+      "tail_flow_bound": 10,
+      "wing_flow_bound": 10,
+      "zero_quaternion": 10
+     },
+     "weather_calm": {
+      "flow_states": 63
+     },
+     "weather_cool-dense": {
+      "flow_states": 63
+     },
+     "weather_crosswind": {
+      "flow_states": 63
+     },
+     "weather_gentle-practice": {
+      "flow_states": 63
+     },
+     "weather_gusty": {
+      "flow_states": 63
+     },
+     "weather_hot-high": {
+      "flow_states": 63
+     },
+     "weather_spatial-crosswind-v1": {
+      "flow_states": 63,
+      "spatial_field_states": 63
+     },
+     "weather_spatial-gusty-v1": {
+      "flow_states": 63,
+      "spatial_field_states": 63
+     },
+     "weather_spatial-light-breeze-v1": {
+      "flow_states": 63,
+      "spatial_field_states": 63
+     },
+     "weather_spatial-realistic-v1": {
+      "flow_states": 63,
+      "spatial_field_states": 63
+     },
+     "weather_spatial-shear-v1": {
+      "flow_states": 63,
+      "spatial_field_states": 63
+     },
+     "weather_spatial-strong-wind-v1": {
+      "flow_states": 63,
+      "spatial_field_states": 63
+     },
+     "weather_spatial-thermal-soaring-v2": {
+      "flow_states": 63,
+      "spatial_field_states": 63
+     },
+     "weather_standard-column": {
+      "flow_states": 63
+     },
+     "weather_steady": {
+      "flow_states": 63
+     },
+     "weather_turbulent": {
+      "flow_states": 63
+     },
+     "weather_updraft": {
+      "flow_states": 63
+     }
+    },
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "format": "openrc-nk3-wake-spatial-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "b3e8e45279494251b95696e595a37db5025bd3ddfeb32134aa6927e88e43d41e",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/wake_oracle.gd": "59737c396121718f210f048f21405d8572d754013c973d7a29f9d10b994addd7",
+     "research/native-kernel/wake_spatial_oracle.gd": "2946a014693895ead22f6d17e3813910846a568f7b350aefda79030bcc4e27c1",
+     "research/native-kernel/weather_adapter.gd": "fb7d4edd419ddd71080456ece9ec9329a01831ee73461ceaac4796ddfef0c797",
+     "research/native-kernel/weather_oracle.gd": "7559aaca700e9a4b7d4b19b22d55529a2829a7228a67201f7be2cd2cc82c2091",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/wake-spatial-20261028T191035768804Z.json",
+    "run_valid": true,
+    "scope": {},
+    "sha256": "2846c74135e88e63ea67669b169f89648755fd9bc476787f9dccc60a810b99a5",
+    "source_sha256": "880cfe72dcac104cf8e0e1151436e2da54b3bc1f09495ebc98cffa655a0a72fa",
+    "states_requested": 1000,
+    "total": {
+     "compared": 16699,
+     "identical": 16699,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "999630dde1f4e803a4da9febc21904c89aa3306dd1bb398393f57dd5df1f473b",
+    "coverage": {
+     "helicopter": {
+      "accepted": 2018
+     },
+     "helicopter_airborne_calm": {
+      "accepted": 143,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95
+     },
+     "helicopter_airborne_cool-dense": {
+      "accepted": 143,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95
+     },
+     "helicopter_airborne_crosswind": {
+      "accepted": 143,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95
+     },
+     "helicopter_airborne_gusty": {
+      "accepted": 143,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95
+     },
+     "helicopter_airborne_hot-high": {
+      "accepted": 143,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95
+     },
+     "helicopter_airborne_steady": {
+      "accepted": 143,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95
+     },
+     "helicopter_airborne_updraft": {
+      "accepted": 143,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95
+     },
+     "helicopter_ground_calm": {
+      "accepted": 143,
+      "contact": 77,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95,
+      "unloaded": 66
+     },
+     "helicopter_ground_cool-dense": {
+      "accepted": 143,
+      "contact": 67,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95,
+      "unloaded": 76
+     },
+     "helicopter_ground_crosswind": {
+      "accepted": 143,
+      "contact": 74,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95,
+      "unloaded": 69
+     },
+     "helicopter_ground_gusty": {
+      "accepted": 143,
+      "contact": 76,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95,
+      "unloaded": 67
+     },
+     "helicopter_ground_hot-high": {
+      "accepted": 143,
+      "contact": 70,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95,
+      "unloaded": 73
+     },
+     "helicopter_ground_steady": {
+      "accepted": 143,
+      "contact": 69,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95,
+      "unloaded": 74
+     },
+     "helicopter_ground_updraft": {
+      "accepted": 143,
+      "contact": 70,
+      "direct": 48,
+      "idle_up": 71,
+      "near_stop": 90,
+      "normal": 72,
+      "running": 35,
+      "states": 143,
+      "stopped": 18,
+      "trainer": 95,
+      "unloaded": 73
+     }
+    },
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "format": "openrc-nk3-helicopter-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/helicopter_oracle.gd": "a1781e8bdc6ccd39419e1ef8aab885208e949b5ce65d690570b7548890685769",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "e3e10ccf6765d095a78e7cc0fa686c1d112d1c5beffd618e36f3fa09d5d4c9dd",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "65893b72746a5a91ec19ff899a4dafbd64042b6289195566a10693756a150f9f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/helicopter-20261028T192038960277Z.json",
+    "run_valid": true,
+    "scope": {},
+    "sha256": "0f06781e8eaeb1ddfccabe6fa086fb8bdc7d18bf7a214f032e552cced8e0ad63",
+    "source_sha256": "b9b50c4538909c7930e70d5aec35f7e8c50be90c54096143319788d6a598b138",
+    "states_requested": 2000,
+    "total": {
+     "compared": 10248,
+     "identical": 10248,
+     "mismatched": 0
+    }
+   }
+  ],
+  "scope": "All currently simulatable aircraft and supported conditions on Linux x86_64; Windows/macOS excluded.",
+  "status": "in_progress_not_promoted"
  }
 }

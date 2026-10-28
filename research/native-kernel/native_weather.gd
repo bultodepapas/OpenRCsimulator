@@ -18,6 +18,17 @@ const SPATIAL_VALUES := [
 const THERMAL_VALUES := ["_config"]
 
 
+class Watch:
+	extends RefCounted
+	const CONTAINER := 0
+	const ZERO := 1
+	const PACKED := 2
+	var parent: Variant
+	var key: Variant
+	var kind: int
+	var expected: Variant
+
+
 class Identity:
 	extends RefCounted
 	var session: Node
@@ -40,6 +51,10 @@ class Identity:
 	var field_values: Dictionary
 	var spatial_values: Dictionary
 	var thermal_values: Dictionary
+	var field_roots: Dictionary = {}
+	var spatial_roots: Dictionary = {}
+	var thermal_roots: Dictionary = {}
+	var watches: Array[Watch] = []
 
 
 ## A detached snapshot for the native decoder and an independent live guard.
@@ -68,9 +83,15 @@ static func prepare(session: Node) -> Dictionary:
 	identity.turbulence_index = captured.turbulence_index
 	identity.turbulence_aux_index = session._turbulence_aux_index
 	identity.aux_size = session.sim.aux.size()
-	identity.field_values = _capture_values(identity.field, FIELD_VALUES)
-	identity.spatial_values = _capture_values(identity.spatial, SPATIAL_VALUES) if identity.spatial != null else {}
-	identity.thermal_values = _capture_values(identity.thermal, THERMAL_VALUES) if identity.thermal != null else {}
+	identity.field_values = _capture_values(identity.field, FIELD_VALUES, identity.field_roots, identity.watches)
+	identity.spatial_values = _capture_values(identity.spatial, SPATIAL_VALUES, identity.spatial_roots,
+		identity.watches) if identity.spatial != null else {}
+	identity.thermal_values = _capture_values(identity.thermal, THERMAL_VALUES, identity.thermal_roots,
+		identity.watches) if identity.thermal != null else {}
+	identity.field_roots.make_read_only()
+	identity.spatial_roots.make_read_only()
+	identity.thermal_roots.make_read_only()
+	identity.watches.make_read_only()
 	var snapshot: Dictionary = captured.prepared_snapshot.duplicate(true)
 	_freeze_containers(snapshot)
 	return {ok = true, snapshot = snapshot, identity = identity}
@@ -95,29 +116,32 @@ static func matches(session: Node, identity: Variant) -> bool:
 		return false
 	var field: RefCounted = environment.weather
 	if field == null or not is_instance_valid(field) or field != identity.field \
-			or field.get_script() != identity.field_script or not _values_match(field, identity.field_values):
+			or field.get_script() != identity.field_script \
+			or not _values_match(field, identity.field_values, identity.field_roots):
 		return false
 	var spatial: Variant = field.get("_spatial")
 	if spatial != identity.spatial:
 		return false
 	if spatial != null:
 		if not is_instance_valid(spatial) or spatial.get_script() != identity.spatial_script \
-				or not _values_match(spatial, identity.spatial_values):
+				or not _values_match(spatial, identity.spatial_values, identity.spatial_roots):
 			return false
 		var thermal: Variant = spatial.get("_thermal_field")
 		if thermal != identity.thermal:
 			return false
 		if thermal != null and (not is_instance_valid(thermal) or thermal.get_script() != identity.thermal_script \
-				or not _values_match(thermal, identity.thermal_values)):
+				or not _values_match(thermal, identity.thermal_values, identity.thermal_roots)):
 			return false
-	return true
+	return _watches_match(identity.watches)
 
 
-static func _capture_values(provider: RefCounted, fields: Array) -> Dictionary:
+static func _capture_values(provider: RefCounted, fields: Array, roots: Dictionary, watches: Array[Watch]) -> Dictionary:
 	var out := {}
 	for key: String in fields:
 		var value: Variant = provider.get(key)
 		if value is Dictionary or value is Array:
+			roots[key] = value
+			_capture_watches(value, watches)
 			value = value.duplicate(true)
 		elif typeof(value) in [TYPE_PACKED_FLOAT64_ARRAY, TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_INT64_ARRAY,
 				TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_STRING_ARRAY]:
@@ -125,6 +149,42 @@ static func _capture_values(provider: RefCounted, fields: Array) -> Dictionary:
 		out[key] = value
 	_freeze_containers(out)
 	return out
+
+
+## Native deep equality checks ordinary nested value changes efficiently. It
+## regards signed zeros as equal, so prepare a short watch list for zero-valued
+## floats and packed float arrays. Also pin every container's identity: a
+## replacement must not disconnect the captured live references in that list.
+static func _capture_watches(container: Variant, watches: Array[Watch]) -> void:
+	if container is Dictionary:
+		for key: Variant in container:
+			_capture_watch(container, key, container[key], watches)
+	elif container is Array:
+		for index: int in container.size():
+			_capture_watch(container, index, container[index], watches)
+
+
+static func _capture_watch(parent: Variant, key: Variant, child: Variant, watches: Array[Watch]) -> void:
+	var kind := -1
+	var expected: Variant
+	if child is Dictionary or child is Array:
+		kind = Watch.CONTAINER
+		expected = child
+	elif typeof(child) == TYPE_FLOAT and float(child) == 0.0:
+		kind = Watch.ZERO
+		expected = atan2(float(child), -1.0) > 0.0
+	elif typeof(child) in [TYPE_PACKED_FLOAT64_ARRAY, TYPE_PACKED_FLOAT32_ARRAY]:
+		kind = Watch.PACKED
+		expected = child.duplicate()
+	if kind >= 0:
+		var watch := Watch.new()
+		watch.parent = parent
+		watch.key = key
+		watch.kind = kind
+		watch.expected = expected
+		watches.append(watch)
+	if kind == Watch.CONTAINER:
+		_capture_watches(child, watches)
 
 
 ## Dictionary and Array are reference types. Make each detached container
@@ -140,10 +200,31 @@ static func _freeze_containers(value: Variant) -> void:
 		value.make_read_only()
 
 
-static func _values_match(provider: RefCounted, saved: Dictionary) -> bool:
+static func _values_match(provider: RefCounted, saved: Dictionary, roots: Dictionary) -> bool:
 	for key: String in saved:
-		if not _same_value(provider.get(key), saved[key]):
+		var value: Variant = provider.get(key)
+		if roots.has(key):
+			if not is_same(value, roots[key]) or value != saved[key]:
+				return false
+		elif not _same_value(value, saved[key]):
 			return false
+	return true
+
+
+static func _watches_match(watches: Array[Watch]) -> bool:
+	for watch: Watch in watches:
+		var current: Variant = watch.parent[watch.key]
+		match watch.kind:
+			Watch.CONTAINER:
+				if not is_same(current, watch.expected):
+					return false
+			Watch.ZERO:
+				if typeof(current) != TYPE_FLOAT or float(current) != 0.0 \
+						or (atan2(float(current), -1.0) > 0.0) != watch.expected:
+					return false
+			Watch.PACKED:
+				if typeof(current) != typeof(watch.expected) or current != watch.expected:
+					return false
 	return true
 
 
@@ -159,22 +240,4 @@ static func _same_float(left: float, right: float) -> bool:
 static func _same_value(left: Variant, right: Variant) -> bool:
 	if typeof(left) != typeof(right):
 		return false
-	match typeof(left):
-		TYPE_FLOAT:
-			return _same_float(left, right)
-		TYPE_DICTIONARY:
-			if left.size() != right.size():
-				return false
-			for key: Variant in right:
-				if not left.has(key) or not _same_value(left[key], right[key]):
-					return false
-			return true
-		TYPE_ARRAY:
-			if left.size() != right.size():
-				return false
-			for index: int in right.size():
-				if not _same_value(left[index], right[index]):
-					return false
-			return true
-		_:
-			return left == right
+	return _same_float(left, right) if typeof(left) == TYPE_FLOAT else left == right
