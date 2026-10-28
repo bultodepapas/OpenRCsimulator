@@ -116,6 +116,14 @@ func _test_durable_service() -> void:
 	service.begin_activity(player, "jensen-das-ugly-stik-60", "Ugly Stick")
 	for i: int in 300: player.sim.step()
 	check("active flight and detector checkpoint save: %s" % service.note, service.flush())
+	var reader: Node = load("res://statistics/service.gd").new()
+	check("second service opens the owned store read-only", not reader.setup(path, true) and not reader.store.writable)
+	var reader_before: Dictionary = reader.data.duplicate(true)
+	reader.begin_activity(player, "jensen-das-ugly-stik-60", "Ugly Stick")
+	check("read-only service starts no activity", reader.detector == null and reader._session == null)
+	check("read-only service with no activity can finish without changing data", reader.finish() and reader.data == reader_before)
+	reader.close()
+	reader.free()
 	player.hold("test_checkpoint")
 	service._process(0.0)
 	check("automatic checkpoint starts a background writer", service._writer.pending())
@@ -132,6 +140,7 @@ func _test_durable_service() -> void:
 	var saved_session: String = service.data.current_session
 	service.store.writable = false
 	check("failed end keeps activity attached", not service.end_activity() and not service.can_manage())
+	check("failed quit does not discard an active owned session", not service.finish() and service.detector != null)
 	check("failed end rolls back active outcome", service.query().active == 1 and service.query().closed == 0)
 	service.store.writable = true
 	for i: int in 24: player.sim.step()
@@ -145,6 +154,9 @@ func _test_durable_service() -> void:
 	check("recovery retains session and durable time", recovered.data.current_session == saved_session and result.airborne_seconds == saved_time)
 	check("recovery closes once as partial without completion", result.started == 1 and result.completed == 0 and result.closed == 1 and result.partial == 1)
 	check("recovered ledger permits independent reset", recovered.reset_counters("account"))
+	recovered.store.writable = false
+	check("owned recovered session still reports a failed finish", not recovered.finish())
+	recovered.store.writable = true
 	check("clean finish saved", recovered.finish())
 	recovered.close()
 	recovered.free()

@@ -1,0 +1,7 @@
+# Run even after a failed assertion. A refused fixture guard has no state to restore.
+eval expr="controllers.refresh() if app.has_meta('disconnect_focus_fixture') else null"
+eval expr="controllers._manual_roles.clear() if app.has_meta('disconnect_focus_fixture') else null"
+eval expr="controllers._manual_roles.merge(app.get_meta('disconnect_focus_fixture').manual_roles, true) if app.has_meta('disconnect_focus_fixture') else null"
+eval expr="controllers.set_process(app.get_meta('disconnect_focus_fixture').processing) if app.has_meta('disconnect_focus_fixture') else null"
+eval expr="app.remove_meta('disconnect_focus_before') if app.has_meta('disconnect_focus_before') else null"
+eval expr="app.remove_meta('disconnect_focus_fixture') if app.has_meta('disconnect_focus_fixture') else null"

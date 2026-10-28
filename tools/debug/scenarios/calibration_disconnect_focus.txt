@@ -1,0 +1,22 @@
+# UI-15: a synthetic radio disappearing during Home calibration must leave keyboard navigation usable.
+# Isolated keyboard-only fixture; the sibling .cleanup restores discovery even on failure.
+assert expr="screens.is_top('home') and Input.get_connected_joypads().is_empty() and controllers.registry.selected_device_id('flight') == -1 and controllers.registry.selected_device_id('ui') == -1" message="fixture requires Home without connected or selected controllers"
+eval expr="app.set_meta('disconnect_focus_fixture', {'processing': controllers.is_processing(), 'manual_roles': controllers._manual_roles.duplicate(true), 'profiles': controllers.store.load_all().profiles.duplicate(true)})"
+eval expr="controllers.set_process(false)"
+eval expr="controllers.registry.update_devices([{'id':15,'name':'Synthetic focus-test radio','guid':'focus-test-radio','kind':'radio','known':false,'serial_number':'focus-test'}])"
+eval expr="controllers._apply_automatic_defaults()"
+open screen=controls
+wait frames=4
+press text="Calibrate selected radio"
+assert expr="screens.is_top('radio_calibration')" message="calibration wizard opened"
+eval expr="controllers.registry.update_devices([])"
+wait frames=4
+assert expr="screens.is_top('controls') and tree.root.gui_get_focus_owner() != null" message="disconnect restores Controls focus"
+eval expr="app.set_meta('disconnect_focus_before',tree.root.gui_get_focus_owner())"
+key name=Down
+assert expr="tree.root.gui_get_focus_owner() != null and tree.root.gui_get_focus_owner() != app.get_meta('disconnect_focus_before')" message="Down navigates after disconnect"
+eval expr="app.set_meta('disconnect_focus_before',tree.root.gui_get_focus_owner())"
+key name=Tab
+assert expr="tree.root.gui_get_focus_owner() != null and tree.root.gui_get_focus_owner() != app.get_meta('disconnect_focus_before')" message="Tab navigates after disconnect"
+press text=Cancel
+assert expr="screens.is_top('home') and controllers.store.load_all().profiles == app.get_meta('disconnect_focus_fixture').profiles" message="Controls closed without saving a synthetic profile"

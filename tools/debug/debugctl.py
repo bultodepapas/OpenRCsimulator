@@ -785,28 +785,74 @@ def run_script(argv: list[str]) -> int:
         print("run needs exactly one file (or - for stdin)", file=sys.stderr)
         return 2
     source = sys.stdin if files[0] == "-" else open(files[0])
-    failures = 0
-    with source:
-        for number, line in enumerate(source, 1):
-            if not line.strip() or line.lstrip().startswith("#"):
-                continue
-            print(f"> {line.rstrip()}", flush=True)
-            try:
-                seq = result_of("ping")["log_seq"] if fail_on_error else 0
-                execute_line(line)
+    cleanup = Path(files[0]).with_suffix(".cleanup") if files[0] != "-" else None
+    if cleanup == Path(files[0]):
+        cleanup = None  # Executing a cleanup file directly must not execute it twice.
+    status, cleanup_status = 0, 0
+    try:
+        with source:
+            for number, line in enumerate(source, 1):
+                if not line.strip() or line.lstrip().startswith("#"):
+                    continue
+                print(f"> {line.rstrip()}", flush=True)
+                try:
+                    seq = result_of("ping")["log_seq"] if fail_on_error else 0
+                    execute_line(line)
+                    if fail_on_error:
+                        new = new_errors(seq)
+                        if new:
+                            raise Refused("new engine errors: " + " | ".join(format_record(r) for r in new[:5]))
+                except (Refused, ValueError) as error:
+                    status = 1
+                    print(f"line {number}: {error}", file=sys.stderr)
+                    if not keep_going:
+                        break
+                except OSError as error:
+                    status = 2
+                    print(f"line {number}: connection: {error}", file=sys.stderr)
+                    break
+    finally:
+        if cleanup is not None:
+            cleanup_status = _run_cleanup(cleanup, fail_on_error)
+    return status or cleanup_status
+
+
+def _run_cleanup(path: Path, fail_on_error: bool) -> int:
+    """Attempt each cleanup command even if an earlier command or log check failed."""
+    try:
+        source = path.open()
+    except FileNotFoundError:
+        return 0
+    except OSError as error:
+        print(f"cleanup {path}: {error}", file=sys.stderr)
+        return 2
+    status = 0
+    try:
+        with source:
+            for number, line in enumerate(source, 1):
+                if not line.strip() or line.lstrip().startswith("#"):
+                    continue
+                print(f"> cleanup: {line.rstrip()}", flush=True)
+                seq = None
                 if fail_on_error:
-                    new = new_errors(seq)
-                    if new:
-                        raise Refused("new engine errors: " + " | ".join(format_record(r) for r in new[:5]))
-            except (Refused, ValueError) as error:
-                failures += 1
-                print(f"line {number}: {error}", file=sys.stderr)
-                if not keep_going:
-                    return 1
-            except OSError as error:
-                print(f"line {number}: connection: {error}", file=sys.stderr)
-                return 2
-    return 1 if failures else 0
+                    try:
+                        seq = result_of("ping")["log_seq"]
+                    except (Refused, ValueError, OSError) as error:
+                        status = max(status, 2 if isinstance(error, OSError) else 1)
+                        print(f"cleanup line {number}: log check: {error}", file=sys.stderr)
+                try:
+                    execute_line(line)
+                    if seq is not None:
+                        new = new_errors(seq)
+                        if new:
+                            raise Refused("new engine errors: " + " | ".join(format_record(r) for r in new[:5]))
+                except (Refused, ValueError, OSError) as error:
+                    status = max(status, 2 if isinstance(error, OSError) else 1)
+                    print(f"cleanup line {number}: {error}", file=sys.stderr)
+    except (OSError, UnicodeError) as error:
+        print(f"cleanup {path}: {error}", file=sys.stderr)
+        status = 2
+    return status
 
 
 def new_errors(since: int) -> list:

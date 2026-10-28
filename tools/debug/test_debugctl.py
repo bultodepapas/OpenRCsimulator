@@ -174,6 +174,87 @@ class DebugctlTests(unittest.TestCase):
         self.assertEqual(status, 1)
         self.assertEqual(self.bridge.requests[-1]["note"], "after failure")
 
+    def test_run_executes_sibling_cleanup_after_success(self) -> None:
+        script = Path(self.tmp.name) / "scenario.txt"
+        script.write_text("ping note=main\n")
+        script.with_suffix(".cleanup").write_text("ping note=cleanup\n")
+        status, _, err = self.run_cli("run", str(script))
+        self.assertEqual((status, err), (0, ""))
+        self.assertEqual([r.get("note") for r in self.bridge.requests], ["main", "cleanup"])
+
+    def test_run_executes_cleanup_after_assertion_and_keeps_original_failure(self) -> None:
+        script = Path(self.tmp.name) / "scenario.txt"
+        script.write_text("assert expr=false\nping note=unreached\n")
+        script.with_suffix(".cleanup").write_text("ping note=cleanup\n")
+        status, out, err = self.run_cli("run", str(script))
+        self.assertEqual(status, 1)
+        self.assertIn("line 1: assertion failed", err)
+        self.assertNotIn("unreached", out)
+        self.assertEqual([r["cmd"] for r in self.bridge.requests], ["assert", "ping"])
+        self.assertEqual(self.bridge.requests[-1]["note"], "cleanup")
+
+    def test_cleanup_attempts_remaining_commands_and_reports_both_failures(self) -> None:
+        script = Path(self.tmp.name) / "scenario.txt"
+        script.write_text("assert expr=false\n")
+        script.with_suffix(".cleanup").write_text("nope\nping note=after_cleanup_error\n")
+        status, _, err = self.run_cli("run", str(script))
+        self.assertEqual(status, 1)
+        self.assertIn("line 1: assertion failed", err)
+        self.assertIn("cleanup line 1:", err)
+        self.assertEqual(self.bridge.requests[-1]["note"], "after_cleanup_error")
+        script.write_text("ping note=main\n")
+        status, _, err = self.run_cli("run", str(script))
+        self.assertEqual(status, 1)
+        self.assertIn("cleanup line 1:", err)
+        self.assertEqual(self.bridge.requests[-1]["note"], "after_cleanup_error")
+
+    def test_cleanup_attempts_commands_after_connection_failure_and_keeps_main_status(self) -> None:
+        script = Path(self.tmp.name) / "scenario.txt"
+        script.write_text("assert expr=false\n")
+        script.with_suffix(".cleanup").write_text("ping note=connection_error\nping note=after_connection_error\n")
+        original = debugctl.execute_line
+        def execute(line):
+            if "connection_error" in line and "after_connection_error" not in line:
+                raise OSError("simulated connection failure")
+            return original(line)
+        with patch.object(debugctl, "execute_line", side_effect=execute):
+            status, _, err = self.run_cli("run", str(script))
+        self.assertEqual(status, 1)  # Original assertion failure remains the result.
+        self.assertIn("line 1: assertion failed", err)
+        self.assertIn("cleanup line 1: simulated connection failure", err)
+        self.assertEqual(self.bridge.requests[-1]["note"], "after_connection_error")
+
+    def test_cleanup_file_is_not_recursively_executed(self) -> None:
+        script = Path(self.tmp.name) / "scenario.cleanup"
+        script.write_text("ping note=once\n")
+        status, _, _ = self.run_cli("run", str(script))
+        self.assertEqual(status, 0)
+        self.assertEqual([r.get("note") for r in self.bridge.requests], ["once"])
+
+    def test_cleanup_reports_engine_errors_when_requested(self) -> None:
+        script = Path(self.tmp.name) / "scenario.txt"
+        script.write_text("ping note=main\n")
+        script.with_suffix(".cleanup").write_text("state note=cleanup1\nstate note=cleanup2\n")
+        original_result = debugctl.result_of
+        def result(command, *args, **kwargs):
+            if command == "ping":
+                return {"log_seq": 1}
+            return original_result(command, *args, **kwargs)
+        with patch.object(debugctl, "result_of", side_effect=result), \
+                patch.object(debugctl, "new_errors", side_effect=[[], [{"level": "script_error", "text": "cleanup failure"}], []]), \
+                patch.object(debugctl, "format_record", return_value="cleanup engine failure"):
+            status, _, err = self.run_cli("run", str(script), "--fail-on-error")
+        self.assertEqual(status, 1)
+        self.assertIn("cleanup line 1: new engine errors: cleanup engine failure", err)
+        self.assertEqual(self.bridge.requests[-1]["note"], "cleanup2")
+
+    def test_run_stdin_has_no_sibling_cleanup(self) -> None:
+        (Path(self.tmp.name) / "-.cleanup").write_text("nope\n")
+        with patch.object(sys, "stdin", io.StringIO("ping note=stdin\n")):
+            status, _, err = self.run_cli("run", "-")
+        self.assertEqual((status, err), (0, ""))
+        self.assertEqual(self.bridge.requests[-1]["note"], "stdin")
+
     def test_watch_streams_csv_in_chunks(self) -> None:
         target = Path(self.tmp.name) / "watch.csv"
         status, out, _ = self.run_cli("watch", "--every", "6", "--count", "13", "--csv", str(target), "height=-s[2]")
