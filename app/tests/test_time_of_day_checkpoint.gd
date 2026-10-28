@@ -122,7 +122,7 @@ func _run() -> void:
 	flight.restore_checkpoint(Envelope.make(original.physics, timeline, flight._field_identity()).checkpoint)
 	flight.session.reset()
 	check("restart retains selected start light and starts new history", sim.tick == 0 and flight.lighting_config == night and flight.checkpoint().timeline.events.is_empty())
-	for condition: String in ["steady", "turbulent", "hot-high"]:
+	for condition: String in ["steady", "turbulent", "hot-high", "spatial-gusty-v1"]:
 		flight.session.reset()
 		check("configure replay variant " + condition, flight.session.setup_weather(WeatherConfig.preset(condition)))
 		flight.session.reset()
@@ -130,8 +130,16 @@ func _run() -> void:
 			sim.step()
 		var weather_saved: Dictionary = flight.checkpoint()
 		var expected_format: String = "openrc-flight-checkpoint v3" if condition == "hot-high" else "openrc-flight-checkpoint v2"
-		check("real physical format " + condition, weather_saved.physics.format == "openrc-flight-checkpoint v7"
-			and weather_saved.physics.physics_format == expected_format)
+		var weather_physics: Dictionary = weather_saved.get("physics", {})
+		var wrapper: String = str(weather_physics.get("stage_physics_format", weather_physics.get("format", "")))
+		var expected_wrapper: String = "openrc-flight-checkpoint v12" if condition.begins_with("spatial-") else "openrc-flight-checkpoint v7"
+		check("real physical format " + condition, wrapper == expected_wrapper \
+			and weather_physics.get("physics_format") == expected_format \
+			and (expected_wrapper != "openrc-flight-checkpoint v12" \
+				or weather_physics.get("spatial_physics_format") == "openrc-flight-checkpoint v7"))
+		var backend: Dictionary = flight.session.stage_backend_identity()
+		check("backend identity retained " + condition, \
+			weather_physics.get("stage_backend", {backend = "gdscript_reference"}) == backend)
 		check("paired weather restore " + condition, flight.restore_checkpoint(weather_saved).ok
 			and var_to_bytes(flight.session.checkpoint()) == var_to_bytes(weather_saved.physics))
 		check("bare weather fallback " + condition, flight.restore_checkpoint(weather_saved.physics).get("context_status") == "legacy_missing_visual"
@@ -158,7 +166,8 @@ func _run() -> void:
 		shaft_flight.free()
 		quit(1)
 		return
-	check("real finite-fuel v11 physical checkpoint", shaft_saved.physics.format == "openrc-flight-checkpoint v7"
+	check("real finite-fuel v11 physical checkpoint", \
+		shaft_saved.physics.get("stage_physics_format", shaft_saved.physics.format) == "openrc-flight-checkpoint v7"
 		and shaft_saved.physics.physics_format == "openrc-flight-checkpoint v11"
 		and shaft_saved.physics.liquid_physics_format == "openrc-flight-checkpoint v4")
 	check("coupled shaft paired restoration exact", shaft_flight.restore_checkpoint(shaft_saved).ok

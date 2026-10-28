@@ -40,4 +40,3 @@ static func config_for(session: Node) -> Dictionary:
 		slipstream = not prop.get("slipstream", {}).is_empty(),
 		rotor_dynamics = Propulsion.has_rotor_dynamics(prop) or (sim.model.stage.is_valid() and stage_method != REFERENCE_STAGE_METHOD),
 	}
-

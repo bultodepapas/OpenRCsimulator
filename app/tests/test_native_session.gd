@@ -217,7 +217,8 @@ func spatial_visual_checkpoints(native: Node, reference: Node) -> void:
 	var config: Dictionary = Weather.spatial_defaults()
 	for session: Node in [native, reference]:
 		var backend: String = session.stage_backend_identity().backend
-		var accepted: bool = session.setup_weather(config)
+		session.reset()
+		var accepted: bool = session.sim.tick == 0 and session.is_flyable() and session.setup_weather(config)
 		if accepted:
 			session.reset()
 		check(backend + " spatial weather resets", accepted and session.is_flyable() \
@@ -228,11 +229,20 @@ func spatial_visual_checkpoints(native: Node, reference: Node) -> void:
 		check(backend + " spatial checkpoint retains its receipt", snapshot.has("spatial_weather_receipt") \
 			and (snapshot.get("format") == "openrc-flight-checkpoint v12" \
 				or snapshot.get("stage_physics_format") == "openrc-flight-checkpoint v12"))
-		var damaged: Dictionary = snapshot.duplicate(true)
-		if damaged.has("spatial_weather_receipt"):
-			damaged.spatial_weather_receipt.content_sha256 = "0".repeat(64)
+		for defect: String in ["missing_receipt", "wrong_hash", "wrong_inner", "changed_weather", "extra_receipt"]:
+			var damaged: Dictionary = snapshot.duplicate(true)
+			if not damaged.has("spatial_weather_receipt"):
+				break
+			match defect:
+				"missing_receipt": damaged.erase("spatial_weather_receipt")
+				"wrong_hash": damaged.spatial_weather_receipt.content_sha256 = "0".repeat(64)
+				"wrong_inner": damaged.spatial_physics_format = "openrc-flight-checkpoint v1"
+				"changed_weather": damaged.weather_config.spatial_wind.profile.reference_speed_mps += 0.125
+				"extra_receipt": damaged.spatial_weather_receipt.unexpected = true
 			var timeline: Dictionary = VisualTimeline.create(VisualConfig.defaults()).timeline
-			check(backend + " changed spatial receipt is refused", not VisualCheckpoint.make(damaged, timeline, "test-field").ok)
+			check(backend + " spatial " + defect + " is refused", \
+				not VisualCheckpoint.make(damaged, timeline, "test-field").ok \
+				and not VisualCheckpoint.read(damaged, "test-field").ok)
 	visual_checkpoints(native, reference)
 
 
