@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ca5ae232-32e1-4e11-8aaf-9ed3c2540856",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_time_of_day_scenery_update.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-28T22:00:01.406701+00:00",
+  "label": "integrated-test_time_of_day_scenery_update",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-scenery-20261028\\checks\\integrated-test_time_of_day_scenery_update-1q2t4bmi\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-scenery-20261028\\checks\\integrated-test_time_of_day_scenery_update-1q2t4bmi\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.625,
+  "log_bytes": 1493,
+  "log_sha256": "42446ced69bb616d4d14bbeb9650c854e2ea99cd06527aa0e071a29612b24148"
+}

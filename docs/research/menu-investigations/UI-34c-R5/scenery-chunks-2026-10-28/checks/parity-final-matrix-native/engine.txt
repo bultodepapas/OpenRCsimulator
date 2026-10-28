@@ -1,0 +1,47 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok   default field fixture loads
+ok   staged build returns a field
+ok   sync and staged node structure, transforms, and mesh arrays match
+ok   sync and staged metadata match apart from build timing
+ok   staged field reports synchronous work time separately from yields
+ok   field checkpoints run in order through final landscape attachment
+ok   field input edits at a scenery checkpoint leave completed geometry unchanged
+ok   field input edits leave completed metadata unchanged
+ok   false checkpoint cancels after a ground surface and returns null
+ok   cancelled detached field nodes and resources are disposed
+ok   scenery fixture loads
+ok   low ordered units preserve geometry, buffers and materials
+ok   low ordered units preserve metadata
+ok   balanced ordered units preserve geometry, buffers and materials
+ok   balanced ordered units preserve metadata
+ok   high ordered units preserve geometry, buffers and materials
+ok   high ordered units preserve metadata
+ok   cancellation target is reached: Building scenery placements
+ok   cancel frees detached scenery and refuses transfer: Building scenery placements
+ok   cancel releases scenery resources: Building scenery placements
+ok   cancellation target is reached: Building parked aircraft
+ok   cancel frees detached scenery and refuses transfer: Building parked aircraft
+ok   cancel releases scenery resources: Building parked aircraft
+ok   cancellation target is reached: Building scenery trees
+ok   cancel frees detached scenery and refuses transfer: Building scenery trees
+ok   cancel releases scenery resources: Building scenery trees
+ok   cancellation target is reached: Building scenery botanicals
+ok   cancel frees detached scenery and refuses transfer: Building scenery botanicals
+ok   cancel releases scenery resources: Building scenery botanicals
+ok   cancellation target is reached: Building scenery cells
+ok   cancel frees detached scenery and refuses transfer: Building scenery cells
+ok   cancel releases scenery resources: Building scenery cells
+ok   cancellation target is reached: Building scenery shadows
+ok   cancel frees detached scenery and refuses transfer: Building scenery shadows
+ok   cancel releases scenery resources: Building scenery shadows
+ok   dropping an unfinished job frees its detached root
+ok   taken scene survives job release
+ok   input and bird-preference edits between chunks cannot alter scenery geometry
+ok   input and bird-preference edits between chunks cannot alter scenery metadata
+ok   empty groups complete without an invalid group access
+ok   field cancellation reaches the interior of scenery construction
+ok   field cancellation releases its detached scenery job
+ok   a cancelled build does not prevent a complete retry
+43 field staged build checks, 0 failed

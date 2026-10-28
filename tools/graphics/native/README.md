@@ -26,6 +26,11 @@ not provide qualified AI companions, AccessKit, D3D12, Frame Generation or Ray
 Reconstruction. Saved companion requests remain saved but player flights run
 without companions, with their unavailability shown on Home.
 
+The fork predates beta1's multi-bounce occlusion, contact shadows and maple-leaf
+alpha-coverage mipmap preservation. Its import cache is therefore distinct;
+restoring pinned authoring sidecars does not establish identical foliage mipmaps.
+Title fitting and Compatibility crash marks use capability-based fallbacks.
+
 ## Engine provenance and historical trial
 
 This opt-in Windows/Vulkan build connects NVIDIA's existing DLSS integration and

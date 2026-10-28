@@ -490,5 +490,107 @@
         "paused_count": 2
       }
     }
+  },
+  "independent_matrix": {
+    "parity-final-matrix-headless": {
+      "report_sha256": "9ce4847df5ca3ca65a5f694fd96d33d8a403c28241f0f0772d6a62b2a8c5c2a7",
+      "engine_log_sha256": "ee33d2dbd648e5278463be64fb504eb9718e5948c9ba469bd3035e1dc3fbe68b",
+      "stdout_sha256": "ee33d2dbd648e5278463be64fb504eb9718e5948c9ba469bd3035e1dc3fbe68b",
+      "assertions": 43
+    },
+    "parity-final-matrix-native": {
+      "report_sha256": "29f2ca5fa312f0ec0f34c33fb5792bc66cc8de5971ed7ab28ea6d846d969a8eb",
+      "engine_log_sha256": "a568f94a1b52575ec23ae4d03c19108f253f45a113371b137f6bb0f54fd8888d",
+      "stdout_sha256": "a568f94a1b52575ec23ae4d03c19108f253f45a113371b137f6bb0f54fd8888d",
+      "assertions": 43
+    },
+    "reference_field_wrapper": {
+      "path": "inputs/reference_field.gd.txt",
+      "sha256": "92731e6ec5e5b68cb9df256cf1949cafe02a896bd4185307f172cf9b082dd56e",
+      "note": "Frozen baseline Field, with only the Scenery preload replaced by the absolute baseline snapshot path."
+    },
+    "test_source": {
+      "path": "inputs/test_field_staged_build.gd.txt",
+      "sha256": "72206283a868e17f28fd29815770a8e56f02ffcfb5531e4855d771c857e26a10",
+      "note": "The later test used by both independent checks and integrated into app; distinct from the unused test file in the measured candidate app snapshot."
+    }
+  },
+  "integration_source_identity": {
+    "path": "inputs/integration-identity.json",
+    "sha256": "64c961b55078f38333ea77c587a7dd70841d63d8265eb8b7fa8a5f4af372a3f6",
+    "note": "Parent tree and source hashes captured for the integration; runtime hashes match measured candidate."
+  },
+  "integrated_checks": {
+    "integrated-test_field_staged_build": {
+      "report_sha256": "6a1cb47cc0be66d191137e8a975a1f055b28ba17ae3b2dceb333b769c9645a21",
+      "engine_log_sha256": "ee33d2dbd648e5278463be64fb504eb9718e5948c9ba469bd3035e1dc3fbe68b",
+      "stdout_sha256": "ee33d2dbd648e5278463be64fb504eb9718e5948c9ba469bd3035e1dc3fbe68b"
+    },
+    "integrated-test_scenery_build": {
+      "report_sha256": "9ef286f78abfd92f9b145dd637f9fc1ec370b05900a12e017d4023997b5ac215",
+      "engine_log_sha256": "63621fd41b44cecd6dc23cb68f5e4506ea08f3e41da57f3c673667143e7ee40c",
+      "stdout_sha256": "63621fd41b44cecd6dc23cb68f5e4506ea08f3e41da57f3c673667143e7ee40c"
+    },
+    "integrated-test_landscape_scenery_eligibility": {
+      "report_sha256": "2448548d234c75ef1b8b6c453ebb3f71ca125e4346f887cc3d47b94c528c59c1",
+      "engine_log_sha256": "f308fe392879f73733c3587cd75dc67870144a742e2bca574650bb01d0c453ee",
+      "stdout_sha256": "f308fe392879f73733c3587cd75dc67870144a742e2bca574650bb01d0c453ee"
+    },
+    "integrated-test_flight_loading": {
+      "report_sha256": "8a3ad97e908ba7278d86fb5e4e4f6d151de744edc2187cbff2b86801743dd16f",
+      "engine_log_sha256": "8f26352916264e7490bcdca485e06e473377465bb6a30c6769365b5ba9a4be24",
+      "stdout_sha256": "8f26352916264e7490bcdca485e06e473377465bb6a30c6769365b5ba9a4be24"
+    },
+    "integrated-test_main_startup_overlap": {
+      "report_sha256": "0d9cd93183dc916b411ebb34d2299043611fb51c565382bbb38dceadbdf8dbf3",
+      "engine_log_sha256": "dec27ddb3ba7c9313967fbadb658fbe6ce7cded6a989f9e466a81e6eef27a0f8",
+      "stdout_sha256": "dec27ddb3ba7c9313967fbadb658fbe6ce7cded6a989f9e466a81e6eef27a0f8"
+    },
+    "integrated-test_scenery_destruction": {
+      "report_sha256": "ac5a891754cd7cd9e02142fb04b87c3b640b196daf77998a63794881df49994d",
+      "engine_log_sha256": "1276ed768918c4fa14306551bbeb232b52f1f0a9e3f250d8cde53a5ea5bfcd85",
+      "stdout_sha256": "1276ed768918c4fa14306551bbeb232b52f1f0a9e3f250d8cde53a5ea5bfcd85"
+    },
+    "integrated-test_time_of_day_scenery_update": {
+      "report_sha256": "264acb38b980267486328b6005bfd4c03e7d52dcc3e9d904cd0138527fe185bd",
+      "engine_log_sha256": "42446ced69bb616d4d14bbeb9650c854e2ea99cd06527aa0e071a29612b24148",
+      "stdout_sha256": "42446ced69bb616d4d14bbeb9650c854e2ea99cd06527aa0e071a29612b24148"
+    },
+    "loading_probe_fixtures": {
+      "stdout_sha256": "bbea82bf8125ae354705392ff1135487994ef0e0a7cda1509c8f920d2b7f16c5",
+      "note": "Six Python fixture PASS lines; no checked Godot receipt for this Python command is recorded."
+    }
+  },
+  "nk3_boundary": {
+    "path": "inputs/nk3-boundary-check.json",
+    "sha256": "096247c8b1868715a04658edc179f1f6d453a783dbf8b0f377036352749c0a24",
+    "note": "Reference source-list overlap check; does not requalify any native backend."
+  },
+  "integrated_camera": {
+    "report_sha256": "5b955be0b8436ebb24e8c1b029bdda875b192f2fd91f27f1d864d87a2e67911c",
+    "engine_log_sha256": "acc9e6a0cdafd92e8a51c03e4a9dc83337761cff956b499369e6dbc0f1f0cabf",
+    "stdout_sha256": "acc9e6a0cdafd92e8a51c03e4a9dc83337761cff956b499369e6dbc0f1f0cabf",
+    "raw_json_sha256": "b8a6321acebe0983b45f9a070692b2cf6fbfd51ad76685b9b6473f66d136b551",
+    "camera_samples": 25,
+    "uncovered_samples": 14,
+    "uncovered_placed_with_pose_and_startup_complete": 14,
+    "paused_first_draw": true,
+    "first_draw_holds": {
+      "menu": true
+    },
+    "orphan_nodes": 0,
+    "images_retained": false,
+    "scope": "Camera diagnostics and readbacks; excluded from timing comparisons."
+  },
+  "post_collection_host_observation": {
+    "source": "Collector WMI and powercfg observation after collection; no per-run receipt",
+    "os": "Windows 11 Pro 10.0.26100 build 26100",
+    "cpu": "AMD Ryzen 9 5900X",
+    "physical_cores": 12,
+    "logical_processors": 24,
+    "visible_memory_kib": 66995304,
+    "power_plan": "Balanced",
+    "power_scheme_guid": "381b4222-f694-41f0-9685-ff5bb260df2e",
+    "gpu_and_driver": "RTX 3090 / NVIDIA 617.42 (also recorded in engine logs)"
   }
 }

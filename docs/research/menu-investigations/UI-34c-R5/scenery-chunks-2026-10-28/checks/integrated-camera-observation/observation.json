@@ -1,0 +1,1536 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"aircraft_id": "turbo-lumber-evolution",
+	"app_load_and_instantiate_usec": 2155599,
+	"cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+	"camera_observation_enabled": true,
+	"complete": true,
+	"cycles": [
+		{
+			"camera_handoff": [
+				{
+					"aircraft_position": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						0.0,
+						0.0,
+						-1.0
+					],
+					"camera_fov": 50.0,
+					"camera_placed": false,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": true,
+					"frame": 442,
+					"has_render_pose": false,
+					"loading_active": true,
+					"phase": "Preparing instruments",
+					"startup_complete": false,
+					"usec": 15676941,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						0.0,
+						0.0,
+						-1.0
+					],
+					"camera_fov": 50.0,
+					"camera_placed": false,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": true,
+					"frame": 443,
+					"has_render_pose": false,
+					"loading_active": true,
+					"phase": "Checking flight",
+					"startup_complete": false,
+					"usec": 15968418,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						0.0,
+						0.0,
+						-1.0
+					],
+					"camera_fov": 50.0,
+					"camera_placed": false,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": true,
+					"frame": 444,
+					"has_render_pose": false,
+					"loading_active": true,
+					"phase": "Preparing flight model",
+					"startup_complete": false,
+					"usec": 16001414,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						0.0,
+						0.0,
+						-1.0
+					],
+					"camera_fov": 50.0,
+					"camera_placed": false,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": true,
+					"frame": 445,
+					"has_render_pose": false,
+					"loading_active": true,
+					"phase": "Preparing contacts",
+					"startup_complete": false,
+					"usec": 16041028,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						0.0,
+						0.0,
+						-1.0
+					],
+					"camera_fov": 50.0,
+					"camera_placed": false,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": true,
+					"frame": 446,
+					"has_render_pose": false,
+					"loading_active": true,
+					"phase": "Preparing start",
+					"startup_complete": false,
+					"usec": 16449264,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						0.0,
+						0.0,
+						-1.0
+					],
+					"camera_fov": 50.0,
+					"camera_placed": false,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": true,
+					"frame": 447,
+					"has_render_pose": false,
+					"loading_active": true,
+					"phase": "Preparing effects",
+					"startup_complete": false,
+					"usec": 16541209,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						0.0,
+						0.0,
+						-1.0
+					],
+					"camera_fov": 50.0,
+					"camera_placed": false,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": true,
+					"frame": 448,
+					"has_render_pose": false,
+					"loading_active": true,
+					"phase": "Preparing sound",
+					"startup_complete": false,
+					"usec": 16556317,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						0.0,
+						0.0,
+						-1.0
+					],
+					"camera_fov": 50.0,
+					"camera_placed": false,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": true,
+					"frame": 448,
+					"has_render_pose": false,
+					"loading_active": true,
+					"phase": "Preparing sound",
+					"startup_complete": false,
+					"usec": 16735610,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						0.0,
+						0.0,
+						-1.0
+					],
+					"camera_fov": 50.0,
+					"camera_placed": false,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": true,
+					"frame": 448,
+					"has_render_pose": false,
+					"loading_active": true,
+					"phase": "Preparing sound",
+					"startup_complete": false,
+					"usec": 16809902,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": true,
+					"frame": 449,
+					"has_render_pose": true,
+					"loading_active": true,
+					"phase": "Finishing flight",
+					"startup_complete": true,
+					"usec": 16935119,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": true,
+					"frame": 450,
+					"has_render_pose": true,
+					"loading_active": true,
+					"phase": "Finishing flight",
+					"startup_complete": true,
+					"usec": 17118881,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 451,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 17161242,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 452,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 17801524,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 453,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 17816409,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 454,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 17833999,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 455,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 17848999,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 456,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 17864358,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 457,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 17878836,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 458,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 17896878,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 459,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 17913556,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 460,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 17929250,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 461,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 18467235,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 462,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 18481795,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 463,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 18500796,
+					"view": "pilot"
+				},
+				{
+					"aircraft_position": [
+						-39.9400215148926,
+						30.0026893615723,
+						-60.0
+					],
+					"camera_current": true,
+					"camera_forward": [
+						-0.516359508037567,
+						0.365324348211288,
+						-0.774539232254028
+					],
+					"camera_fov": 39.5080490112305,
+					"camera_placed": true,
+					"camera_position": [
+						0.0,
+						1.70000004768372,
+						0.0
+					],
+					"covered": false,
+					"frame": 464,
+					"has_render_pose": true,
+					"loading_active": false,
+					"phase": "",
+					"startup_complete": true,
+					"usec": 18514248,
+					"view": "pilot"
+				}
+			],
+			"cycle": 1,
+			"fly_first_draw_usec": 6705948,
+			"fly_ready_usec": 6051485,
+			"fly_sync_usec": 6101,
+			"handoff_frames_usec": [
+				6122,
+				47224,
+				3210,
+				2303,
+				5520,
+				4182,
+				8470,
+				7993,
+				8318,
+				8536,
+				8519,
+				8210,
+				8374,
+				8276,
+				8268,
+				8376,
+				16617,
+				8280,
+				16740,
+				12086,
+				4350,
+				11410,
+				5720,
+				11340,
+				4960,
+				10532,
+				6280,
+				12651,
+				3736,
+				17457,
+				7950,
+				8105,
+				8270,
+				8327,
+				9898,
+				6786,
+				17407,
+				16259,
+				10093,
+				6900,
+				16013,
+				17054,
+				8141,
+				8602,
+				8174,
+				8092,
+				16625,
+				8385,
+				8179,
+				8441,
+				16893,
+				8351,
+				8175,
+				8681,
+				8036,
+				8265,
+				8686,
+				7964,
+				8305,
+				8406,
+				8836,
+				7797,
+				8387,
+				8625,
+				8092,
+				8253,
+				8483,
+				8245,
+				8315,
+				8614,
+				8280,
+				8164,
+				8331,
+				8668,
+				8433,
+				8139,
+				8087,
+				8394,
+				8309,
+				8198,
+				8473,
+				8129,
+				8426,
+				8675,
+				8121,
+				8063,
+				8463,
+				8468,
+				8181,
+				8531,
+				8127,
+				8382,
+				8224,
+				8216,
+				8671,
+				8480,
+				8148,
+				8232,
+				8422,
+				8172,
+				8515,
+				8171,
+				8478,
+				8192,
+				8344,
+				8124,
+				8459,
+				8309,
+				8677,
+				8085,
+				8356,
+				8310,
+				8362,
+				8338,
+				8801,
+				7827,
+				8363,
+				8340,
+				8459,
+				8144,
+				8321,
+				8414,
+				8460,
+				7998,
+				8306,
+				8264,
+				8705,
+				8241,
+				8245,
+				8313,
+				8699,
+				7893,
+				8713,
+				8134,
+				8334,
+				8396,
+				8649,
+				8143,
+				8392,
+				8066,
+				8142,
+				8494,
+				8451,
+				8487,
+				8174,
+				8330,
+				8361,
+				8455,
+				8279,
+				7983,
+				8766,
+				8110,
+				8263,
+				8349,
+				8663,
+				7890,
+				8344,
+				8274,
+				8518,
+				8336,
+				8659,
+				8016,
+				8367,
+				8181,
+				8432,
+				8671,
+				7925,
+				8382,
+				8277,
+				8261,
+				8467,
+				8461,
+				8337,
+				8039,
+				8661,
+				8130,
+				8371,
+				8301,
+				8449,
+				8136,
+				8702,
+				8082,
+				8529,
+				8243,
+				8612,
+				7994,
+				8195,
+				8247,
+				8400,
+				8224,
+				9275,
+				7583,
+				8361,
+				8204,
+				8332,
+				8232,
+				8537,
+				8625,
+				8114,
+				8266,
+				8511,
+				8147,
+				8336,
+				8289,
+				8476,
+				8159,
+				8353,
+				8276,
+				8370,
+				8379,
+				8291,
+				8282,
+				8463,
+				8371,
+				8316,
+				8236,
+				8314,
+				8395,
+				8463,
+				8284,
+				8386,
+				8303,
+				8504,
+				8094,
+				8407,
+				8150,
+				8648,
+				7984,
+				8533,
+				8141,
+				8648,
+				8377,
+				7957,
+				8428,
+				8297,
+				8192,
+				8474,
+				8295,
+				8350,
+				8313,
+				8466,
+				8540,
+				8134,
+				8313,
+				8501,
+				8198,
+				8470,
+				8039,
+				8585,
+				8287,
+				8297,
+				8426,
+				8812,
+				14818,
+				2269,
+				7254,
+				9769,
+				16531,
+				16709,
+				16453,
+				23909,
+				8142,
+				8748,
+				8550,
+				8135,
+				8073,
+				8216,
+				8459,
+				8375,
+				8563,
+				8051,
+				8511,
+				8151,
+				8312,
+				8362,
+				8554,
+				8289,
+				8015,
+				8496,
+				8090,
+				8619,
+				8391,
+				8117,
+				8368,
+				8429,
+				8046,
+				8661,
+				8113,
+				8326,
+				8397,
+				8246,
+				8526,
+				8305,
+				8239,
+				8546,
+				8101,
+				8360,
+				8463,
+				8198,
+				8321,
+				8325,
+				8352,
+				8393,
+				8301,
+				8328,
+				8320,
+				8375,
+				8397,
+				8258,
+				8279,
+				8481,
+				8171,
+				8298,
+				8418,
+				8225,
+				8452,
+				8357,
+				8181,
+				8456,
+				8221,
+				8461,
+				8427,
+				8161,
+				8414,
+				8296,
+				8390,
+				8305,
+				8271,
+				8304,
+				8315,
+				8463,
+				8255,
+				8298,
+				8334,
+				8388,
+				8260,
+				8357,
+				8207,
+				8438,
+				8437,
+				8177,
+				8691,
+				8111,
+				8242,
+				8390,
+				8627,
+				8115,
+				8442,
+				8190,
+				8485,
+				8367,
+				8389,
+				8071,
+				8857,
+				7878,
+				8392,
+				8382,
+				8303,
+				8677,
+				7974,
+				8378,
+				8404,
+				8378,
+				8123,
+				8425,
+				8301,
+				8879,
+				8276,
+				7987,
+				8423,
+				8039,
+				8222,
+				8501,
+				8289,
+				8530,
+				8102,
+				8308,
+				8462,
+				8114,
+				8332,
+				8262,
+				8554,
+				8275,
+				8434,
+				8296,
+				8257,
+				8494,
+				8072,
+				8545,
+				8228,
+				8338,
+				8678,
+				8112,
+				93345,
+				115181,
+				19593,
+				4814,
+				3041,
+				53430,
+				19014,
+				31316,
+				8878,
+				48092,
+				3594,
+				3672,
+				28355,
+				7642,
+				21494,
+				22364,
+				21885,
+				17525,
+				18326,
+				18955,
+				17564,
+				18046,
+				17754,
+				17674,
+				18835,
+				9034,
+				1938,
+				6121,
+				2350,
+				30599,
+				2327,
+				7569,
+				21440,
+				21864,
+				2357,
+				3699,
+				4211,
+				5739,
+				41423,
+				2517,
+				7391,
+				4050,
+				3231,
+				124777,
+				3524,
+				16224,
+				66844,
+				7026,
+				107456,
+				291453,
+				33024,
+				39515,
+				408131,
+				92129,
+				15039,
+				330950,
+				227231,
+				43744
+			],
+			"holds_at_first_draw": {
+				"menu": true
+			},
+			"home_dwell": {
+				"elapsed_usec": 1,
+				"frames_usec": [],
+				"memory_after_bytes": 274534231,
+				"requested_msec": 0
+			},
+			"home_to_ready_usec": 6051551,
+			"loading": {
+				"accepted_usec": 11107703,
+				"aircraft": "turbo-lumber-evolution",
+				"feedback_usec": 55871,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 1488
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 3364700
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 78616
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 110669
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 17005
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 615
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1764
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 51604
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 17104
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 29729
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 7247
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 46458
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1692
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2263
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 27056
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 6296
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 20186
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 21055
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 20348
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 16115
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 16619
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 17345
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 16034
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 16019
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 16020
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 16022
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 16814
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 7121
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 326
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 4431
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 596
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 28800
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 308
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 5902
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 19973
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 18751
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 160
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 2416
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 1243
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 4196
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 39714
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 317
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5703
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1272
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1335
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 122539
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 742
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 12082
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 64140
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 4471
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 102356
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 177036
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 8325
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 26406
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 394229
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 79059
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 241
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 311796
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 142385
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 3550,
+				"total_usec": 6020558
+			},
+			"loading_first_draw_usec": 57041,
+			"memory_before_dwell_bytes": 274534167,
+			"memory_before_fly_bytes": 274534231,
+			"nodes_at_home": 827,
+			"nodes_in_flight": 1680,
+			"orphan_nodes": 0,
+			"pause_reason_at_first_draw": "",
+			"paused_at_first_draw": true,
+			"preparation_after_fly": {
+				"drained": true,
+				"mode": "off",
+				"scene_active": false,
+				"trim_active": false
+			},
+			"preparation_before_fly": {
+				"drained": true,
+				"mode": "off",
+				"scene_active": false,
+				"trim_active": false
+			},
+			"return_first_draw_usec": 1326201,
+			"return_sync_usec": 1166091,
+			"startup_preparation": {
+				"acquire_usec": 60247,
+				"finish_setup_usec": 8302,
+				"overlapped": true,
+				"workers_after": 1,
+				"workers_before": 0,
+				"world_usec": 1330267
+			},
+			"tick_at_first_draw": 0,
+			"trim_cache_after_fly": {
+				"bypasses": 0,
+				"entries": 1,
+				"entry_limit": 2,
+				"has_entry": true,
+				"hits": 0,
+				"managed_owner": "",
+				"managed_token": 0,
+				"menu_adoptions": 0,
+				"menu_completed": 0,
+				"menu_discarded": 0,
+				"menu_skipped": 0,
+				"menu_starts": 0,
+				"misses": 1,
+				"retained_key_bytes": 20780,
+				"retained_key_limit_bytes": 1048576,
+				"staged_worker_active": false,
+				"staged_workers_started": 1
+			},
+			"trim_cache_before_fly": {
+				"bypasses": 0,
+				"entries": 0,
+				"entry_limit": 2,
+				"has_entry": false,
+				"hits": 0,
+				"managed_owner": "",
+				"managed_token": 0,
+				"menu_adoptions": 0,
+				"menu_completed": 0,
+				"menu_discarded": 0,
+				"menu_skipped": 0,
+				"menu_starts": 0,
+				"misses": 0,
+				"retained_key_bytes": 0,
+				"retained_key_limit_bytes": 1048576,
+				"staged_worker_active": false,
+				"staged_workers_started": 0
+			}
+		}
+	],
+	"display_server": "Windows",
+	"engine": {
+		"build": "official",
+		"hash": "4d10419cacd6d3009976e8f9fd3abd970fd58018",
+		"hex": 264192,
+		"major": 4,
+		"minor": 8,
+		"patch": 0,
+		"status": "beta1",
+		"string": "4.8-beta1 (official)",
+		"timestamp": 0
+	},
+	"fly_timing_semantics": "fly_sync_usec is pressed.emit dispatch only; fly_ready_usec includes deferred handoff and validated scene readiness; fly_first_draw_usec additionally waits for post-draw",
+	"format": "openrc-loading-probe v1",
+	"home_dwell_requested_msec": 0,
+	"home_first_draw_engine_elapsed_usec": 11106467,
+	"home_first_draw_from_load_usec": 6239722,
+	"home_sync_usec": 3229042,
+	"input_mode": "keyboard",
+	"max_fps": 0,
+	"prefetch_delay_msec": 350,
+	"prefetch_mode": "off",
+	"renderer": "gl_compatibility",
+	"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+	"shutdown": {
+		"audio_released": true,
+		"elapsed_usec": 237417,
+		"preparation_drained": true,
+		"remaining_playbacks": 0,
+		"settings_removed": true,
+		"timeout_usec": 1000000,
+		"tracked_playbacks": 1
+	},
+	"start_choice": "airborne",
+	"viewport_size": [
+		1920,
+		1080
+	],
+	"vsync_mode": 1
+}

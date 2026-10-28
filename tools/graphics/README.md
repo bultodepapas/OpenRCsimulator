@@ -13,7 +13,9 @@ marker or automatic restart is saved. Restart is unavailable during a flight or
 Workshop session. If the engine falls back, Settings reports Standard.
 
 High enables short-range SSAO, four blended directional-shadow cascades in an
-8192-pixel atlas, solar-angle PCSS, multi-bounce ambient occlusion, and sky reflections during flowing time of day.
+8192-pixel atlas, solar-angle PCSS, and sky reflections during flowing time of day.
+The official beta1 engine additionally supports multi-bounce ambient occlusion;
+the pinned NVIDIA fork does not implement that newer setting.
 The existing exposure, haze, aircraft, scenery population and simulation are
 retained. High defaults to native rendering; FSR2 is now an explicit optional
 choice (below). It does not enable motion blur, SSR, full GI or volumetric fog.

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import importlib.util
 from datetime import datetime, timezone
+import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -137,6 +138,37 @@ class SnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "unexpected edits"):
             product.receipt_generated_imports(snapshot)
         self.assertEqual(sidecar.read_bytes(), b"[params]\nother=malicious\n")
+
+    def test_cache_metadata_is_reconciled_only_with_matching_import(self) -> None:
+        product.prepare_snapshot()
+        snapshot = self.root / "tmp/nvidia-product"
+        original = (self.root / "app/icon.svg.import").read_bytes()
+        sidecar = snapshot / "app/icon.svg.import"
+        imported = b"[params]\nother=1\n"
+        sidecar.write_bytes(imported)
+        mtime = int(sidecar.stat().st_mtime)
+        cache = snapshot / "app/.godot/editor/filesystem_cache10"
+        cache.parent.mkdir(parents=True)
+        digest = hashlib.md5(imported, usedforsecurity=False).hexdigest()
+        cache.write_text(f"cache-version\n::res://::0\nicon.svg::CompressedTexture2D::1::0::{mtime}::1::::<><><>0<>0<>{digest}<>res://.godot/imported/icon.ctex::\n", encoding="utf-8")
+        receipt = product.receipt_generated_imports(snapshot)
+        self.assertEqual(sidecar.read_bytes(), original)
+        self.assertEqual(int(sidecar.stat().st_mtime), mtime)
+        self.assertIn(hashlib.md5(original, usedforsecurity=False).hexdigest(), cache.read_text(encoding="utf-8"))
+        self.assertEqual(receipt["import_cache_adjustment"]["entries"], 1)
+
+    def test_wrong_cache_identity_rejects_before_restoring_sidecar(self) -> None:
+        product.prepare_snapshot()
+        snapshot = self.root / "tmp/nvidia-product"
+        sidecar = snapshot / "app/icon.svg.import"
+        imported = b"[params]\nother=1\n"
+        sidecar.write_bytes(imported)
+        cache = snapshot / "app/.godot/editor/filesystem_cache10"
+        cache.parent.mkdir(parents=True)
+        cache.write_text(f"cache-version\n::res://::0\nicon.svg::CompressedTexture2D::1::0::{int(sidecar.stat().st_mtime)}::1::::<><><>0<>0<>incorrect<>res://.godot/imported/icon.ctex::\n", encoding="utf-8")
+        with self.assertRaisesRegex(RuntimeError, "cache does not identify"):
+            product.receipt_generated_imports(snapshot)
+        self.assertEqual(sidecar.read_bytes(), imported)
 
     def test_refresh_preserves_only_receipted_editor_cache(self) -> None:
         product.prepare_snapshot()
