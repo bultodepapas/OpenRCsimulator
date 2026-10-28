@@ -111,6 +111,8 @@ jobs:
         run: |
           python3 app/tests/test_ci_partitions.py
           python3 app/tests/test_export_identity.py
+          python3 research/rc-monster-truck/native/test_install_only.py
+          python3 research/f4u-corsair/F4U-07/test_generated_identity.py
           research/test-tools.sh
       - name: Optional process RAM and I/O backend regressions (PT1h-R4)
         if: matrix.part == 'integration'
@@ -160,6 +162,7 @@ jobs:
             .tools/native-ground-vehicle/libopenrc_ground_vehicle.so
             .tools/native-ground-vehicle/build-receipt.linux.json
             .tools/native-ground-vehicle/parity-linux-latest.log
+            .tools/native-ground-vehicle/godot-cpp/LICENSE.md
 
   visuals:
     name: Godot visual captures
@@ -288,7 +291,8 @@ jobs:
           cp "$RUNNER_TEMP/rc-native-linux/build-receipt.linux.json" "$native_tool_root/"
           cp "$RUNNER_TEMP/rc-native-windows/openrc_ground_vehicle.dll" "$native_tool_root/"
           cp "$RUNNER_TEMP/rc-native-windows/build-receipt.windows.json" "$native_tool_root/"
-          python3 research/rc-monster-truck/native/build.py --jobs 2 --install-app --godot "$(app/get-godot.sh)"
+          cp "$RUNNER_TEMP/rc-native-linux/godot-cpp/LICENSE.md" "$native_tool_root/LICENSE.godot-cpp.md"
+          python3 research/rc-monster-truck/native/build.py --install-only
       - run: app/export.sh # names the packages with git describe, the same identity the app shows (UI-04a)
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:

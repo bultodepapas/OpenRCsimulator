@@ -2288,9 +2288,9 @@
     "app/render/treeline.gd": "7d32ab8e069e86ad6455bdd392474624be11b5f1544919b9584857102f6ce0e6",
     "app/scenery/imported_hedge.gd": "67bde34184e298295085757de642964fa4461fce29f84b0b3304165c6f96937c",
     "app/scenery/imported_vegetation.gd": "27843f02e5aeba9570995dbc72df4fdc85962838d34a379b6aec85706eaa17cf",
-    "app/scenery/models.gd": "fb93bbb19b8155f3b9aa71be4cf17b1532b9b130d4b02c8cbfe8edcb2be619c9",
+    "app/scenery/models.gd": "72daff888627ac0839246777fb2aec49ef33a0a4403cd1ae4fa6ba0c49f4f703",
     "app/scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",
-    "app/scenery/prefabs.gd": "e00c81ded615aca9c51c858c07a4f202407b81522d972c540375e665c7a55584",
+    "app/scenery/prefabs.gd": "7a2e33f25de71557a0c235e4923484d4d4070b334419b9a38df986dabf6c8c87",
     "app/scenery/vegetation_placement.gd": "3c0ae8b78e3e573f44a4c9c731e7e7566d25d93d76472653b50d15b173aeae98",
     "tools/trees/place.py": "e182c0cdd7032c26162465c16bf37446ed8f6e2b49b575a652f9f4379ece44b2"
   },

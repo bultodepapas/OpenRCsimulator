@@ -12,6 +12,13 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/.." && pwd)"
 [ $# -eq 0 ] || { echo "export.sh takes no version argument any more: the build identity is git describe (UI-04a)"; exit 1; }
 VERSION="$(git -C "$ROOT" describe --tags --always --dirty)"
+# Godot discovers untracked project resources too; git describe only sees
+# tracked changes. Ignored generated native artifacts have their own receipt
+# validation below and do not change the source identity.
+UNTRACKED_APP="$(git -C "$ROOT" ls-files --others --exclude-standard -- app/)"
+if [[ -n "$UNTRACKED_APP" && "$VERSION" != *-dirty ]]; then
+  VERSION="${VERSION}-dirty"
+fi
 # git describe prefers annotated tags when several tags name HEAD. A release
 # must carry its triggering tag even when another tag exists on that commit.
 if [[ "${GITHUB_REF:-}" == refs/tags/v* ]]; then

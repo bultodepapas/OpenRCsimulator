@@ -1022,6 +1022,9 @@ def check_consistency(d):
 check_consistency(data)
 validate_physical_identity(data)
 text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+# Aircraft data is hash-bound by Workshop and crash economics. Match the
+# repository's eol=crlf checkout on every host, including Linux.
+aircraft_bytes = text.replace("\n", "\r\n").encode("utf-8")
 rows = ["| Section | Quantity | Value | How |", "| --- | --- | --- | --- |"]
 for sec, name, val, how in log:
     v = ", ".join(f"{x:.4g}" for x in val) if isinstance(val, list) else f"{val:.4g}"
@@ -1076,13 +1079,17 @@ Engine and propeller: peak torque {Q0:.2f} N·m from the Moki manual's static po
 if "--dry" in sys.argv:
     print("\n".join(rows))
 elif "--check" in sys.argv:
-    stale = [p for p, t in ((OUT, text), (REPORT, report)) if not p.exists() or p.read_text(encoding="utf-8") != t]
+    stale = []
+    if not OUT.exists() or OUT.read_bytes() != aircraft_bytes:
+        stale.append(OUT)
+    if not REPORT.exists() or REPORT.read_text(encoding="utf-8") != report:
+        stale.append(REPORT)
     if stale:
         sys.exit("stale: " + ", ".join(p.name for p in stale) + f" (run {SCRIPT})")
     print("f4u_corsair_250.json and derivation.md are up to date")
 else:
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(text, encoding="utf-8")
+    OUT.write_bytes(aircraft_bytes)
     REPORT.write_text(report, encoding="utf-8")
     print(f"wrote {OUT.name} and {REPORT.name}")
     print(f"mass {mass:.3f} kg, CG {100 * cg_mac:.1f} % MAC, NP {np_mac:.1f} % MAC, SM {sm:.1f}, CLmax {CL_max:.3f}, stall {Vs:.1f} m/s, start {V_start} m/s, static {rpm_static:.0f} rpm, thrust {thrust_static / G0:.1f} kgf")

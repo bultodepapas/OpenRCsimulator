@@ -204,7 +204,7 @@ def refresh_receipt(platform: str, library: Path, platform_lock: dict, lock: dic
     return record
 
 
-def stage_app_native(lock: dict) -> None:
+def stage_app_native(lock: dict, dependency_license: Path | None = None) -> None:
     source_hash = source_digest()
     staged: dict[str, dict] = {}
     for platform in ("windows", "linux"):
@@ -212,7 +212,7 @@ def stage_app_native(lock: dict) -> None:
         receipt = locked.TOOL_ROOT / f"build-receipt.{platform}.json"
         if not library.is_file() or not receipt.is_file():
             raise SystemExit(
-                "--install-app requires both verified Windows and Linux x86_64 builds in "
+                "Native installation requires both verified Windows and Linux x86_64 builds in "
                 f"{locked.TOOL_ROOT}; missing {platform}. Build each platform first."
             )
         record = json.loads(receipt.read_text(encoding="utf-8"))
@@ -220,6 +220,11 @@ def stage_app_native(lock: dict) -> None:
         if record.get("binary_sha256") != sha256_file(library):
             raise SystemExit(f"The {platform} native binary no longer matches its build receipt.")
         staged[platform] = record
+
+    if dependency_license is None:
+        dependency_license = locked.ensure_godot_cpp(lock) / "LICENSE.md"
+    if not dependency_license.is_file():
+        raise SystemExit(f"Pinned godot-cpp license not found at {dependency_license}")
 
     destination = ROOT / "app/native/ground_vehicle"
     if not destination.resolve().is_relative_to((ROOT / "app").resolve()):
@@ -238,9 +243,6 @@ def stage_app_native(lock: dict) -> None:
         "platforms": staged,
     }
     (destination / "build-receipt.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    dependency_license = locked.ensure_godot_cpp(lock) / "LICENSE.md"
-    if not dependency_license.is_file():
-        raise SystemExit(f"Pinned godot-cpp license not found at {dependency_license}")
     shutil.copy2(dependency_license, destination / "LICENSE.godot-cpp.md")
     print(f"Installed Windows and Linux native outputs with receipt and godot-cpp license under {destination}.")
 
@@ -415,13 +417,32 @@ def run_parity_test(library: Path, godot_arg: Path | None, lock: dict) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--jobs", type=int, default=2)
+    parser.add_argument("--jobs", type=int)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--godot", type=Path, help="pinned Godot executable for smoke and parity checks")
     parser.add_argument("--skip-smoke", action="store_true", help="build only; skip loading the extension in Godot")
     parser.add_argument("--skip-parity", action="store_true", help="skip the evaluator parity harness")
-    parser.add_argument("--install-app", action="store_true", help="stage matched Windows/Linux outputs under app/native/ground_vehicle")
+    install = parser.add_mutually_exclusive_group()
+    install.add_argument("--install-app", action="store_true", help="build, then stage matched Windows/Linux outputs under app/native/ground_vehicle")
+    install.add_argument("--install-only", action="store_true", help="validate and stage existing artifacts without building or downloading")
     args = parser.parse_args()
+    if args.install_only:
+        if args.jobs is not None or args.output is not None or args.godot is not None or args.skip_smoke or args.skip_parity:
+            parser.error("--install-only cannot be combined with build, smoke or parity options")
+        lock = locked.load_lock()
+        license_path = locked.TOOL_ROOT / "LICENSE.godot-cpp.md"
+        sources = json.loads((ROOT / "research/native-slipstream/sources.json").read_text(encoding="utf-8"))
+        matching = [row for row in sources["sources"] if row.get("component") == "godot-cpp bindings"
+                    and row.get("revision") == lock["godot_cpp"]["commit"]]
+        if len(matching) != 1 or not license_path.is_file():
+            raise SystemExit("Pinned godot-cpp license or matching source record is missing")
+        license_hash = hashlib.sha256(license_path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+        if license_hash != matching[0].get("license_file_sha256"):
+            raise SystemExit("Staged godot-cpp license does not match the pinned source record")
+        stage_app_native(lock, license_path)
+        return 0
+    if args.jobs is None:
+        args.jobs = 2
     if args.jobs < 1:
         parser.error("--jobs must be positive")
 

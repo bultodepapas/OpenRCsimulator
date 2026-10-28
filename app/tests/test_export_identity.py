@@ -97,6 +97,39 @@ exit 23
         self.assertIn("numeric 1.2.3", result.stdout)
         self.assertTrue((self.root / "identity.json").is_file(), result.stdout)
 
+    def test_tagged_release_rejects_untracked_project_resource(self):
+        self.git("tag", "v1.2.3")
+        (self.app / "scratch scene.gd").write_text("extends Node\n", encoding="utf-8")
+        result = self.export(GITHUB_REF="refs/tags/v1.2.3")
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn("requires a clean working tree", result.stdout)
+        self.assertFalse((self.root / "identity.json").exists())
+
+    def test_branch_export_marks_untracked_project_resource_dirty(self):
+        self.git("tag", "v1.2.3")
+        (self.app / "scratch.gd").write_text("extends Node\n", encoding="utf-8")
+        result = self.export(GITHUB_REF="refs/heads/main")
+        self.assertEqual(result.returncode, 1, result.stdout)
+        identity = json.loads((self.root / "identity.json").read_text())
+        self.assertEqual(identity["DESCRIBE"], "v1.2.3-dirty")
+        self.assertEqual(identity["DIRTY"], "1")
+
+    def test_ignored_generated_files_and_nonproject_notes_do_not_dirty_identity(self):
+        (self.root / ".gitignore").write_text("/app/.godot/\n/app/native/ground_vehicle/\n", encoding="utf-8")
+        self.git("add", ".gitignore")
+        self.git("commit", "--quiet", "-m", "generated artifact exclusions")
+        self.git("tag", "v1.2.3")
+        for relative in (".godot/cache", "native/ground_vehicle/build-receipt.json"):
+            path = self.app / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("fixture", encoding="utf-8")
+        (self.root / "local-notes.md").write_text("outside the project", encoding="utf-8")
+        result = self.export(GITHUB_REF="refs/tags/v1.2.3")
+        self.assertEqual(result.returncode, 1, result.stdout)  # fake import exits 23
+        identity = json.loads((self.root / "identity.json").read_text())
+        self.assertEqual(identity["DESCRIBE"], "v1.2.3")
+        self.assertEqual(identity["DIRTY"], "0")
+
     def test_release_rejects_wrong_commit_dirty_tree_and_numeric_mismatch(self):
         self.git("tag", "v1.2.3")
         self.git("tag", "v9.8.7")

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import os
@@ -80,6 +81,11 @@ POSITION_COLUMNS = ("north_m", "east_m", "down_m")
 VELOCITY_COLUMNS = ("u_mps", "v_mps", "w_mps")
 RATE_COLUMNS = ("p_radps", "q_radps", "r_radps")
 QUATERNION_COLUMNS = ("qw", "qx", "qy", "qz")
+DEBRIEF_STATE_COLUMNS = ("alpha_rad", "beta_rad", *RATE_COLUMNS)
+DEBRIEF_COMMAND_COLUMNS = ("cmd_roll", "cmd_pitch", "cmd_yaw", "cmd_throttle",
+    "cmd_flaps", "cmd_gear_down", "cmd_wheel_brake")
+DEBRIEF_SERVO_COLUMNS = ("srv_roll", "srv_pitch", "srv_yaw", "srv_flaps")
+DEBRIEF_LOAD_COLUMNS = ("Fx_N", "Fy_N", "Fz_N", "Mx_Nm", "My_Nm", "Mz_Nm")
 
 
 class FlightLogError(Exception):
@@ -414,6 +420,268 @@ def summarize_csv(path: Path | str) -> dict[str, Any]:
             },
             "columns": {name: value.json() for name, value in stats.items()},
         }
+
+
+class _Range:
+    """Minimum and maximum only; debriefs describe samples without scoring them."""
+
+    def __init__(self) -> None:
+        self.minimum: float | None = None
+        self.maximum: float | None = None
+
+    def add(self, value: int | float) -> None:
+        value = float(value)
+        if not math.isfinite(value):
+            raise FlightLogError("debrief metric is nonfinite")
+        self.minimum = value if self.minimum is None else min(self.minimum, value)
+        self.maximum = value if self.maximum is None else max(self.maximum, value)
+
+    def json(self) -> dict[str, float]:
+        if self.minimum is None or self.maximum is None:
+            return {}
+        return {"min": self.minimum, "max": self.maximum}
+
+
+class _DebriefWindow:
+    """Bounded per-window accumulators for endpoint and interval-timed columns."""
+
+    def __init__(self, start_tick: int, end_tick: int, kind: str,
+            start_boundary: dict[str, Any], end_boundary: dict[str, Any]) -> None:
+        self.start_tick = start_tick
+        self.end_tick = end_tick
+        self.kind = kind
+        self.start_boundary = start_boundary
+        self.end_boundary = end_boundary
+        self.endpoint_samples = 0
+        self.interval_samples = 0
+        self.state_ranges = {name: _Range() for name in ("altitude_m", "tas_mps", *DEBRIEF_STATE_COLUMNS)}
+        self.interval_ranges: dict[str, dict[str, _Range]] = {
+            "commands": {}, "servos": {}, "loads": {}}
+        self._state_first: dict[str, float] = {}
+        self._state_last: dict[str, float] = {}
+        self._first_interval_tick: int | None = None
+        self._last_interval_tick: int | None = None
+        self._first_load_time_s: float | None = None
+        self._last_load_time_s: float | None = None
+
+    def add_state(self, row: dict[str, int | float]) -> None:
+        values = {"altitude_m": -float(row["down_m"]), "tas_mps": float(row["tas_mps"])}
+        values.update({name: float(row[name]) for name in DEBRIEF_STATE_COLUMNS})
+        for name, value in values.items():
+            self.state_ranges[name].add(value)
+        if self.endpoint_samples == 0:
+            self._state_first = values
+        self._state_last = values
+        self.endpoint_samples += 1
+
+    def add_interval(self, row: dict[str, int | float], columns: dict[str, tuple[str, ...]]) -> None:
+        tick = int(row["tick"])
+        self._first_interval_tick = tick if self._first_interval_tick is None else self._first_interval_tick
+        self._last_interval_tick = tick
+        for group, names in columns.items():
+            for name in names:
+                self.interval_ranges[group].setdefault(name, _Range()).add(row[name])
+        self._first_load_time_s = float(row["loads_t_s"]) if self._first_load_time_s is None else self._first_load_time_s
+        self._last_load_time_s = float(row["loads_t_s"])
+        self.interval_samples += 1
+
+    def json(self, dt_s: float) -> dict[str, Any]:
+        if self.endpoint_samples == 0:
+            raise FlightLogError("debrief window contains no endpoint samples")
+        if self.endpoint_samples != self.end_tick - self.start_tick + 1:
+            raise FlightLogError("debrief endpoint sample count does not match window ticks")
+        if self.interval_samples != self.end_tick - self.start_tick:
+            raise FlightLogError("debrief interval sample count does not match window ticks")
+        state: dict[str, Any] = {name: stats.json() for name, stats in self.state_ranges.items()}
+        for name in state:
+            start = self._state_first[name]
+            end = self._state_last[name]
+            delta = end - start
+            if not math.isfinite(delta):
+                raise FlightLogError("debrief state delta is nonfinite")
+            state[name].update({"start": start, "end": end, "delta": delta})
+        intervals = {
+            group: {name: stats.json() for name, stats in values.items()}
+            for group, values in self.interval_ranges.items()
+        }
+        return {
+            "kind": self.kind,
+            "start_tick": self.start_tick,
+            "end_tick": self.end_tick,
+            "duration_s": (self.end_tick - self.start_tick) * dt_s,
+            "start_boundary": self.start_boundary,
+            "end_boundary": self.end_boundary,
+            "endpoint_samples": self.endpoint_samples,
+            "interval_samples": self.interval_samples,
+            "state_endpoints": state,
+            "interval_channels": intervals,
+            "command_and_load_tick_range": (
+                [self._first_interval_tick, self._last_interval_tick]
+                if self._first_interval_tick is not None else None),
+            "loads_t_s_range": (
+                [self._first_load_time_s, self._last_load_time_s]
+                if self._first_load_time_s is not None else None),
+        }
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    try:
+        with path.open("rb") as stream:
+            for block in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(block)
+    except OSError as exc:
+        raise FlightLogError(f"cannot hash {path}: {exc}") from exc
+    return digest.hexdigest()
+
+
+def _validate_exact_replay_report(report: dict[str, Any], log_path: Path) -> tuple[int, int, float, list[dict[str, Any]]]:
+    """Require the exact, complete replay contract before describing any segment."""
+    if report.get("format") != "openrc-flight-log-report v1" or report.get("status") != "ok" or report.get("error") != "":
+        raise FlightLogError("debrief requires a valid flight-log replay report")
+    if report.get("mode") != "exact" or report.get("complete") is not True:
+        raise FlightLogError("debrief requires a complete exact replay")
+    if report.get("solver_changed") is not False:
+        raise FlightLogError("debrief requires solver_changed=false")
+    if report.get("source") != str(log_path):
+        raise FlightLogError("replay report source path does not match the requested log")
+    for key in ("source_sha256", "baseline_solver_sha256", "current_solver_sha256"):
+        value = report.get(key)
+        if not isinstance(value, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", value):
+            raise FlightLogError(f"exact replay report must include a SHA-256 {key}")
+    if report["baseline_solver_sha256"].lower() != report["current_solver_sha256"].lower():
+        raise FlightLogError("exact replay solver identities differ")
+    if report["source_sha256"].lower() != _sha256_file(log_path):
+        raise FlightLogError("flight log changed during replay")
+    for key in ("first_tick", "final_tick", "rows"):
+        if type(report.get(key)) is not int:
+            raise FlightLogError(f"exact replay report must include integer {key}")
+    first_tick = int(report["first_tick"])
+    final_tick = int(report["final_tick"])
+    rows = int(report["rows"])
+    if first_tick < 0 or final_tick < first_tick or rows != final_tick - first_tick + 1:
+        raise FlightLogError("exact replay report has inconsistent tick bounds or row count")
+    dt_value = report.get("dt_s")
+    if type(dt_value) not in (int, float) or not math.isfinite(float(dt_value)) or float(dt_value) <= 0.0:
+        raise FlightLogError("exact replay report must include a positive finite dt_s")
+    if not isinstance(report.get("metadata"), dict):
+        raise FlightLogError("exact replay report must include metadata")
+    if type(report.get("events_omitted")) is not int or report["events_omitted"] != 0:
+        raise FlightLogError("debrief refuses missing or truncated marker events")
+    events = report.get("events")
+    if not isinstance(events, list) or len(events) > 10000:
+        raise FlightLogError("exact replay report has an invalid or oversized events list")
+    return first_tick, final_tick, float(dt_value), events
+
+
+def _marker_groups(events: list[dict[str, Any]], first_tick: int, final_tick: int) -> list[dict[str, Any]]:
+    groups: list[dict[str, Any]] = []
+    last_tick = first_tick
+    for event in events:
+        if not isinstance(event, dict):
+            raise FlightLogError("exact replay report contains a malformed event")
+        if event.get("kind") != "marker":
+            continue
+        tick = event.get("tick")
+        label = event.get("detail")
+        if type(tick) is not int or not isinstance(label, str):
+            raise FlightLogError("exact replay report contains an invalid marker")
+        if tick < first_tick or tick > final_tick:
+            raise FlightLogError("marker tick falls outside the replayed CSV range")
+        if groups and tick < last_tick:
+            raise FlightLogError("marker ticks are out of order")
+        if groups and tick == last_tick:
+            groups[-1]["labels"].append(label)
+        else:
+            groups.append({"tick": tick, "labels": [label]})
+        last_tick = tick
+    return groups
+
+
+def _debrief_windows(first_tick: int, final_tick: int, markers: list[dict[str, Any]]) -> list[_DebriefWindow]:
+    start_edge = {"kind": "recording_start", "tick": first_tick}
+    end_edge = {"kind": "recording_end", "tick": final_tick}
+    if not markers:
+        return [_DebriefWindow(first_tick, final_tick, "unmarked_flight", start_edge, end_edge)]
+    boundaries = [start_edge, *({"kind": "marker", **marker} for marker in markers), end_edge]
+    windows: list[_DebriefWindow] = []
+    for start, end in zip(boundaries, boundaries[1:]):
+        left = int(start["tick"])
+        right = int(end["tick"])
+        if right < left:
+            raise FlightLogError("marker windows are out of order")
+        if start["kind"] == "recording_start" and end["kind"] == "marker":
+            kind = "unmarked_prefix"
+        elif start["kind"] == "marker" and end["kind"] == "recording_end":
+            kind = "marker_tail"
+        elif start["kind"] == "marker" and end["kind"] == "marker":
+            kind = "between_markers"
+        else:
+            kind = "unmarked_flight"
+        windows.append(_DebriefWindow(left, right, kind, start, end))
+    return windows
+
+
+def _build_debrief(csv_path: Path | str, log_path: Path | str, report_path: Path | str,
+        replay_report: dict[str, Any]) -> dict[str, Any]:
+    """Internal reducer; the CLI supplies only this command's verified exact-replay artifacts."""
+    csv_file = Path(csv_path).resolve()
+    log_file = Path(log_path).resolve()
+    report_file = Path(report_path).resolve()
+    first_tick, final_tick, dt_s, events = _validate_exact_replay_report(replay_report, log_file)
+    summary = summarize_csv(csv_file)
+    if summary["rows"] != replay_report["rows"] or summary["tick"] != {"first": first_tick, "last": final_tick}:
+        raise FlightLogError("replay report row/tick bounds do not match the replayed CSV")
+    if not math.isclose(float(summary["time_s"]["first"]), first_tick * dt_s, rel_tol=1e-12, abs_tol=1e-9) \
+            or not math.isclose(float(summary["time_s"]["last"]), final_tick * dt_s, rel_tol=1e-12, abs_tol=1e-9):
+        raise FlightLogError("replay CSV timestamps do not match report dt_s/tick bounds")
+    markers = _marker_groups(events, first_tick, final_tick)
+    windows = _debrief_windows(first_tick, final_tick, markers)
+    with FlightCsvReader(csv_file) as reader:
+        available = set(reader.header)
+        columns = {
+            "commands": tuple(name for name in DEBRIEF_COMMAND_COLUMNS if name in available),
+            "servos": tuple(name for name in DEBRIEF_SERVO_COLUMNS if name in available),
+            "loads": tuple(name for name in DEBRIEF_LOAD_COLUMNS if name in available),
+        }
+        window_index = 0
+        for row in reader:
+            tick = int(row["tick"])
+            if not math.isclose(float(row["t_s"]), tick * dt_s, rel_tol=1e-12, abs_tol=1e-9):
+                raise FlightLogError(f"replay CSV time does not match report dt_s at tick {tick}")
+            expected_load_time = max(0, tick - 1) * dt_s
+            if not math.isclose(float(row["loads_t_s"]), expected_load_time, rel_tol=1e-12, abs_tol=1e-9):
+                raise FlightLogError(f"replay CSV load time does not match report dt_s at tick {tick}")
+            while window_index < len(windows) - 1 and tick > windows[window_index].end_tick:
+                window_index += 1
+            for index in range(max(0, window_index - 1), min(len(windows), window_index + 2)):
+                window = windows[index]
+                if window.start_tick <= tick <= window.end_tick:
+                    window.add_state(row)
+                if window.start_tick < tick <= window.end_tick:
+                    window.add_interval(row, columns)
+        if reader.row_count != replay_report["rows"]:
+            raise FlightLogError("replayed CSV row count changed during debrief")
+    return {
+        "format": "openrc-flight-debrief v1",
+        "status": "ok",
+        "interpretation": "Descriptive replay data only; no pilot grade, physical validation, or causal diagnosis.",
+        "window_semantics": {
+            "state_endpoints": "inclusive [start_tick, end_tick]; marker endpoint rows are shared by adjacent windows",
+            "commands_and_loads": "interval rows with start_tick < tick <= end_tick; command k drove k-1 to k; see loads_t_s for load time",
+        },
+        "input_artifacts": {
+            "source_log": {"path": str(log_file), "sha256": replay_report["source_sha256"]},
+            "replayed_csv": {"path": csv_file.name, "sha256": _sha256_file(csv_file)},
+            "replay_report": {"path": report_file.name, "sha256": _sha256_file(report_file)},
+        },
+        "replay_report": replay_report,
+        "flight": {
+            "first_tick": first_tick, "final_tick": final_tick, "rows": summary["rows"], "dt_s": dt_s,
+            "duration_s": summary["time_s"]["duration"], "marker_groups": markers,
+            "windows": [window.json(dt_s) for window in windows],
+        },
+    }
 
 
 class _DifferenceStats:
@@ -796,14 +1064,16 @@ def _check_exported_csv(csv_path: Path, report: dict[str, Any]) -> None:
         break
 
 
-def _godot_export(args: argparse.Namespace, replay: bool) -> int:
+def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = False) -> int:
     recover = bool(not replay and getattr(args, "recover", False))
     log_path = _existing_log(args.log, allow_truncated=recover)
+    source_sha256_before = _sha256_file(log_path) if debrief else ""
     godot = _resolve_godot(args.godot)
     timeout = _check_timeout(args.timeout)
     candidate: Path | None = None
-    if replay and args.candidate:
-        candidate = Path(args.candidate).expanduser().resolve()
+    candidate_value = getattr(args, "candidate", None)
+    if replay and candidate_value:
+        candidate = Path(candidate_value).expanduser().resolve()
         if not candidate.is_file():
             raise FlightLogError(f"candidate aircraft JSON does not exist: {candidate}")
     output_dir = _fresh_directory(args.out)
@@ -841,6 +1111,12 @@ def _godot_export(args: argparse.Namespace, replay: bool) -> int:
     _check_exported_csv(csv_path, report)
     print(f"Wrote {csv_path}")
     print(f"Wrote {report_path}")
+    if debrief:
+        if _sha256_file(log_path) != source_sha256_before:
+            raise FlightLogError("source flight log changed during exact replay; debrief refused")
+        document = _build_debrief(csv_path, log_path, report_path, report)
+        debrief_path = _write_json_fresh(output_dir / "debrief.json", document)
+        print(f"Wrote {debrief_path}")
     return 0
 
 
@@ -902,6 +1178,14 @@ def _make_parser() -> argparse.ArgumentParser:
     replay.add_argument("--candidate", help="candidate aircraft JSON")
     replay.add_argument("--timeout", type=float, default=300.0, help="maximum run time in seconds (default: 300)")
     replay.set_defaults(handler=lambda args: _godot_export(args, replay=True))
+
+    debrief = subparsers.add_parser(
+        "debrief", help="exactly replay a complete flight and summarize its marked windows")
+    debrief.add_argument("log", help="source .orfl flight log")
+    debrief.add_argument("--out", required=True, help="new output directory")
+    debrief.add_argument("--godot", help="Godot executable (or set GODOT)")
+    debrief.add_argument("--timeout", type=float, default=300.0, help="maximum run time in seconds (default: 300)")
+    debrief.set_defaults(handler=lambda args: _godot_export(args, replay=True, debrief=True))
 
     summarize = subparsers.add_parser("summarize", help="summarize a CSV flight log")
     summarize.add_argument("csv", help="flight log CSV")

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import contextlib
 import csv
+import hashlib
 import io
 import json
 import math
@@ -56,6 +57,50 @@ def write_csv(path: Path, rows: list[dict[str, object]], *, metadata: str = "") 
         writer = csv.DictWriter(stream, fieldnames=HEADER, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
+
+
+def debrief_rows() -> list[dict[str, object]]:
+    return [
+        sample_row(
+            tick,
+            t_s=tick * 0.1,
+            loads_t_s=max(0, tick - 1) * 0.1,
+            down_m=10.0 - tick,
+            tas_mps=10.0 + tick,
+            alpha_rad=0.1 * tick,
+            beta_rad=-0.05 * tick,
+            p_radps=float(tick),
+            q_radps=float(-tick),
+            r_radps=float(tick) / 2.0,
+            cmd_roll=0.1 * tick,
+            cmd_pitch=-0.1 * tick,
+            srv_roll=0.08 * tick,
+            Fx_N=2.0 * tick,
+        )
+        for tick in range(5)
+    ]
+
+
+def exact_replay_report(log_path: Path, events: list[dict[str, object]] | None = None) -> dict[str, object]:
+    return {
+        "format": "openrc-flight-log-report v1",
+        "status": "ok",
+        "error": "",
+        "mode": "exact",
+        "complete": True,
+        "solver_changed": False,
+        "source": str(log_path.resolve()),
+        "source_sha256": hashlib.sha256(log_path.read_bytes()).hexdigest(),
+        "baseline_solver_sha256": "a" * 64,
+        "current_solver_sha256": "a" * 64,
+        "first_tick": 0,
+        "final_tick": 4,
+        "rows": 5,
+        "dt_s": 0.1,
+        "metadata": {"aircraft_id": "fixture-aircraft"},
+        "events": events or [],
+        "events_omitted": 0,
+    }
 
 
 class FlightLogCsvTests(unittest.TestCase):
@@ -426,6 +471,232 @@ class FlightLogCommandTests(unittest.TestCase):
         with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
             with self.assertRaisesRegex(flight_log.FlightLogError, "engine error"):
                 flight_log._run_godot([str(self.godot)], 5, output)
+
+    def test_debrief_replays_then_writes_marker_windows_and_artifact_hashes(self) -> None:
+        source = self.directory / "practice flight.orfl"
+        source.write_bytes(b"source log fixture")
+        output = self.directory / "debrief output"
+        events: list[dict[str, object]] = [
+            {"tick": 2, "kind": "marker", "detail": "figure start"},
+            {"tick": 2, "kind": "marker", "detail": "pull begins"},
+            {"tick": 3, "kind": "pause", "detail": ""},
+            {"tick": 4, "kind": "marker", "detail": "figure end"},
+        ]
+
+        def fake_run(command: list[str], **_kwargs: object) -> object:
+            self.assertIn("--replay", command)
+            self.assertNotIn("--candidate", " ".join(command))
+            self.assertIn(f"--log={source.resolve()}", command)
+            write_csv(output / "flight.csv", debrief_rows())
+            report = exact_replay_report(source, events)
+            (output / "replay.json").write_text(json.dumps(report), encoding="utf-8")
+            return type("Result", (), {"returncode": 0})()
+
+        with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
+            result = flight_log.main(
+                ["debrief", str(source), "--out", str(output), "--godot", str(self.godot)]
+            )
+
+        self.assertEqual(result, 0)
+        for name in ("flight.csv", "replay.json", "godot.log", "debrief.json"):
+            self.assertTrue((output / name).is_file(), name)
+        document = json.loads((output / "debrief.json").read_text(encoding="utf-8"))
+        self.assertEqual(document["format"], "openrc-flight-debrief v1")
+        self.assertEqual(document["replay_report"]["metadata"]["aircraft_id"], "fixture-aircraft")
+        self.assertEqual(document["replay_report"]["events"], events)
+        self.assertEqual(document["input_artifacts"]["source_log"]["sha256"], hashlib.sha256(source.read_bytes()).hexdigest())
+        self.assertEqual(document["input_artifacts"]["replayed_csv"]["sha256"], hashlib.sha256((output / "flight.csv").read_bytes()).hexdigest())
+        self.assertEqual(document["input_artifacts"]["replay_report"]["sha256"], hashlib.sha256((output / "replay.json").read_bytes()).hexdigest())
+
+        flight = document["flight"]
+        self.assertEqual(flight["marker_groups"], [
+            {"tick": 2, "labels": ["figure start", "pull begins"]},
+            {"tick": 4, "labels": ["figure end"]},
+        ])
+        self.assertEqual([window["kind"] for window in flight["windows"]],
+            ["unmarked_prefix", "between_markers", "marker_tail"])
+        prefix, between, tail = flight["windows"]
+        self.assertEqual((prefix["start_tick"], prefix["end_tick"], prefix["endpoint_samples"], prefix["interval_samples"]),
+            (0, 2, 3, 2))
+        self.assertEqual(prefix["state_endpoints"]["altitude_m"],
+            {"min": -10.0, "max": -8.0, "start": -10.0, "end": -8.0, "delta": 2.0})
+        self.assertEqual(prefix["state_endpoints"]["alpha_rad"],
+            {"min": 0.0, "max": 0.2, "start": 0.0, "end": 0.2, "delta": 0.2})
+        self.assertEqual(prefix["interval_channels"]["commands"]["cmd_roll"], {"min": 0.1, "max": 0.2})
+        self.assertEqual(prefix["interval_channels"]["loads"]["Fx_N"], {"min": 2.0, "max": 4.0})
+        self.assertEqual(prefix["loads_t_s_range"], [0.0, 0.1])
+        self.assertEqual((between["start_tick"], between["end_tick"], between["endpoint_samples"], between["interval_samples"]),
+            (2, 4, 3, 2))
+        self.assertEqual(tail["endpoint_samples"], 1)
+        self.assertEqual(tail["interval_samples"], 0)
+        self.assertEqual(tail["interval_channels"]["commands"], {})
+
+    def test_debrief_without_markers_reports_one_unmarked_flight(self) -> None:
+        source = self.directory / "unmarked.orfl"
+        source.write_bytes(b"source log fixture")
+        output = self.directory / "unmarked-output"
+
+        def fake_run(command: list[str], **_kwargs: object) -> object:
+            self.assertIn("--replay", command)
+            write_csv(output / "flight.csv", debrief_rows())
+            (output / "replay.json").write_text(
+                json.dumps(exact_replay_report(source)), encoding="utf-8"
+            )
+            return type("Result", (), {"returncode": 0})()
+
+        with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
+            result = flight_log.main(
+                ["debrief", str(source), "--out", str(output), "--godot", str(self.godot)]
+            )
+
+        self.assertEqual(result, 0)
+        document = json.loads((output / "debrief.json").read_text(encoding="utf-8"))
+        self.assertEqual(document["flight"]["marker_groups"], [])
+        self.assertEqual(len(document["flight"]["windows"]), 1)
+        window = document["flight"]["windows"][0]
+        self.assertEqual(window["kind"], "unmarked_flight")
+        self.assertEqual((window["start_tick"], window["end_tick"]), (0, 4))
+        self.assertEqual(window["interval_samples"], 4)
+
+    def test_debrief_marker_at_recording_start_keeps_zero_duration_prefix(self) -> None:
+        source = self.directory / "start-marker.orfl"
+        source.write_bytes(b"source log fixture")
+        output = self.directory / "start-marker-output"
+
+        def fake_run(command: list[str], **_kwargs: object) -> object:
+            write_csv(output / "flight.csv", debrief_rows())
+            (output / "replay.json").write_text(
+                json.dumps(exact_replay_report(source, [
+                    {"tick": 0, "kind": "marker", "detail": "recording begins in maneuver"},
+                ])),
+                encoding="utf-8",
+            )
+            return type("Result", (), {"returncode": 0})()
+
+        with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
+            result = flight_log.main(
+                ["debrief", str(source), "--out", str(output), "--godot", str(self.godot)]
+            )
+
+        self.assertEqual(result, 0)
+        document = json.loads((output / "debrief.json").read_text(encoding="utf-8"))
+        prefix, tail = document["flight"]["windows"]
+        self.assertEqual((prefix["start_tick"], prefix["end_tick"]), (0, 0))
+        self.assertEqual((prefix["endpoint_samples"], prefix["interval_samples"]), (1, 0))
+        self.assertEqual((tail["start_tick"], tail["end_tick"]), (0, 4))
+        self.assertEqual((tail["endpoint_samples"], tail["interval_samples"]), (5, 4))
+
+    def test_debrief_refuses_incomplete_or_truncated_event_reports_but_keeps_replay_artifacts(self) -> None:
+        cases = (("incomplete", {"complete": False}), ("truncated events", {"events_omitted": 1}))
+        for label, change in cases:
+            with self.subTest(label=label):
+                source = self.directory / f"{label.replace(' ', '-')}.orfl"
+                source.write_bytes(b"source log fixture")
+                output = self.directory / f"{label.replace(' ', '-')}-output"
+
+                def fake_run(command: list[str], **_kwargs: object) -> object:
+                    self.assertIn("--replay", command)
+                    write_csv(output / "flight.csv", debrief_rows())
+                    report = exact_replay_report(source)
+                    report.update(change)
+                    (output / "replay.json").write_text(json.dumps(report), encoding="utf-8")
+                    return type("Result", (), {"returncode": 0})()
+
+                stderr = io.StringIO()
+                with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
+                    with contextlib.redirect_stderr(stderr):
+                        result = flight_log.main(
+                            ["debrief", str(source), "--out", str(output), "--godot", str(self.godot)]
+                        )
+                self.assertNotEqual(result, 0)
+                self.assertTrue((output / "flight.csv").is_file())
+                self.assertTrue((output / "replay.json").is_file())
+                self.assertFalse((output / "debrief.json").exists())
+                expected_error = "incomplete" if label == "incomplete" else "debrief"
+                self.assertIn(expected_error, stderr.getvalue().lower())
+
+    def test_debrief_cli_does_not_accept_arbitrary_csv_report_pairs(self) -> None:
+        source = self.directory / "source.orfl"
+        source.write_bytes(b"source log fixture")
+        csv_path = self.directory / "untrusted.csv"
+        report_path = self.directory / "untrusted.json"
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            with self.assertRaises(SystemExit) as raised:
+                flight_log.main([
+                    "debrief", str(source), str(csv_path), str(report_path),
+                    "--out", str(self.directory / "output"),
+                ])
+        self.assertEqual(raised.exception.code, 2)
+        self.assertIn("unrecognized arguments", stderr.getvalue())
+
+    def test_debrief_rejects_out_of_order_and_out_of_range_markers(self) -> None:
+        cases = (
+            ("out of order", [
+                {"tick": 3, "kind": "marker", "detail": "late"},
+                {"tick": 2, "kind": "marker", "detail": "early"},
+            ]),
+            ("outside", [{"tick": 5, "kind": "marker", "detail": "outside"}]),
+        )
+        for label, events in cases:
+            with self.subTest(label=label):
+                source = self.directory / f"{label.replace(' ', '-')}.orfl"
+                source.write_bytes(b"source log fixture")
+                output = self.directory / f"{label.replace(' ', '-')}-output"
+
+                def fake_run(command: list[str], **_kwargs: object) -> object:
+                    write_csv(output / "flight.csv", debrief_rows())
+                    (output / "replay.json").write_text(
+                        json.dumps(exact_replay_report(source, events)), encoding="utf-8"
+                    )
+                    return type("Result", (), {"returncode": 0})()
+
+                stderr = io.StringIO()
+                with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
+                    with contextlib.redirect_stderr(stderr):
+                        result = flight_log.main(
+                            ["debrief", str(source), "--out", str(output), "--godot", str(self.godot)]
+                        )
+                self.assertEqual(result, 2)
+                self.assertIn(label, stderr.getvalue())
+                self.assertTrue((output / "flight.csv").is_file())
+                self.assertTrue((output / "replay.json").is_file())
+                self.assertFalse((output / "debrief.json").exists())
+
+    def test_debrief_rejects_report_tick_count_and_timestep_mismatches(self) -> None:
+        cases = (
+            ("row count", {"rows": 4}, debrief_rows()),
+            ("tick bounds", {"first_tick": 1, "final_tick": 5}, debrief_rows()),
+            ("timestep", {"dt_s": 0.2}, debrief_rows()),
+            ("CSV interior time", {}, [
+                *debrief_rows()[:2],
+                sample_row(2, t_s=0.25, loads_t_s=0.1),
+                *debrief_rows()[3:],
+            ]),
+        )
+        for label, changes, rows in cases:
+            with self.subTest(label=label):
+                source = self.directory / f"mismatch-{label.replace(' ', '-')}.orfl"
+                source.write_bytes(b"source log fixture")
+                output = self.directory / f"mismatch-{label.replace(' ', '-')}-output"
+
+                def fake_run(command: list[str], **_kwargs: object) -> object:
+                    write_csv(output / "flight.csv", rows)
+                    report = exact_replay_report(source)
+                    report.update(changes)
+                    (output / "replay.json").write_text(json.dumps(report), encoding="utf-8")
+                    return type("Result", (), {"returncode": 0})()
+
+                stderr = io.StringIO()
+                with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
+                    with contextlib.redirect_stderr(stderr):
+                        result = flight_log.main(
+                            ["debrief", str(source), "--out", str(output), "--godot", str(self.godot)]
+                        )
+                self.assertEqual(result, 2)
+                self.assertIn("report", stderr.getvalue().lower())
+                self.assertTrue((output / "flight.csv").is_file())
+                self.assertFalse((output / "debrief.json").exists())
 
 
 if __name__ == "__main__":
