@@ -41,6 +41,17 @@ func _initialize() -> void:
     var ok := not preloaded and status == again
     if expectation == "ok":
         ok = ok and status.ok and loaded
+        var receipt: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Stage.RECEIPT_PATH))
+        for invalid: Variant in [null, {}, [], true, "1", 1.5]:
+            var bad_envelope: Dictionary = receipt.duplicate(true)
+            bad_envelope.abi_version = invalid
+            var bad_row: Dictionary = receipt.duplicate(true)
+            bad_row.platforms.linux.abi_version = invalid
+            ok = ok and Stage._platform_row(bad_envelope).is_empty() and Stage._platform_row(bad_row).is_empty()
+        var float_abi: Dictionary = receipt.duplicate(true)
+        float_abi.abi_version = 1.0
+        float_abi.platforms.linux.abi_version = 1.0
+        ok = ok and not Stage._platform_row(float_abi).is_empty()
     elif expectation == "preloaded":
         ok = ok and early_status == 0 and loaded and not status.ok and expected_reason in str(status.reason)
     else:
@@ -102,6 +113,11 @@ def run(godot: Path, library: Path, stage: Path) -> None:
             "valid": ("ok", ""),
             "missing-receipt": ("refuse", "not installed"),
             "invalid-receipt": ("refuse", "receipt is malformed"),
+            "invalid-json-receipt": ("refuse", "receipt is malformed"),
+            "invalid-envelope-abi": ("refuse", "receipt is malformed"),
+            "invalid-platform-abi": ("refuse", "receipt is malformed"),
+            "invalid-source-digest": ("refuse", "receipt is malformed"),
+            "invalid-source-path": ("refuse", "receipt is malformed"),
             "missing-binary": ("refuse", "binary"),
             "wrong-binary-with-matching-alternate": ("refuse", "binary"),
             "wrong-engine": ("refuse", "exact verified Godot"),
@@ -110,6 +126,7 @@ def run(godot: Path, library: Path, stage: Path) -> None:
             "extra-feature-key": ("refuse", "descriptor"),
             "extra-dependencies": ("refuse", "descriptor"),
             "wrong-entry-symbol": ("refuse", "descriptor"),
+            "malformed-descriptor": ("refuse", "descriptor"),
             "preloaded-class": ("preloaded", "before verification"),
             "migrated-cache": ("ok", ""),
         }
@@ -125,6 +142,14 @@ def run(godot: Path, library: Path, stage: Path) -> None:
                 receipt_path.unlink()
             elif name == "invalid-receipt":
                 record["format"] = "wrong-receipt"
+            elif name == "invalid-envelope-abi":
+                record["abi_version"] = {}
+            elif name == "invalid-platform-abi":
+                record["platforms"]["linux"]["abi_version"] = {}
+            elif name == "invalid-source-digest":
+                record["platforms"]["linux"]["mirrored_sources"]["app/proof.txt"] = "invalid"
+            elif name == "invalid-source-path":
+                record["platforms"]["linux"]["mirrored_sources"] = {"app/../proof.txt": "a" * 64}
             elif name == "missing-binary":
                 lib.unlink()
             elif name == "wrong-binary-with-matching-alternate":
@@ -141,11 +166,15 @@ def run(godot: Path, library: Path, stage: Path) -> None:
                 descriptor.write_text(builder.APP_DESCRIPTOR + '\n[dependencies]\nlinux.x86_64 = {"libother.so": ""}\n')
             elif name == "wrong-entry-symbol":
                 descriptor.write_text(builder.APP_DESCRIPTOR.replace("openrc_native_kernel_library_init", "other_init"))
+            elif name == "malformed-descriptor":
+                descriptor.write_text("[configuration\n")
             elif name == "migrated-cache":
                 registry = project / ".godot/extension_list.cfg"
                 registry.write_text("res://native/kernel/openrc_native_kernel.gdextension\n")
                 builder.prepare_manual_loading(project, fixture)
-            if receipt_path.exists():
+            if name == "invalid-json-receipt":
+                receipt_path.write_text("{")
+            elif receipt_path.exists():
                 receipt_path.write_text(json.dumps(record))
             checked(project, engine, checks, name,
                     ["--script", str(project / "test.gd"), "--", expectation, reason], "NK3_LOADER_TEST ok=true")

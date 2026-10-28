@@ -25,6 +25,17 @@ const BACKEND_VERSION := "openrc-native-kernel-stage-v1"
 const ABI_VERSION := 1
 const NATIVE_CLASS := "OpenRCNativeKernel"
 const REFERENCE_STAGE_METHOD := &"_wheel_evaluate"
+# Match research/native-kernel/build.py: no feature override or dependency may select unchecked code.
+const EXPECTED_DESCRIPTOR := (
+	"; NK-3 native stage, installed by research/native-kernel/build.py --install-app.\n"
+	+ "; .gdignore prevents discovery; app/sim/native_stage.gd loads it after receipt checks.\n"
+	+ "[configuration]\n"
+	+ "entry_symbol = \"openrc_native_kernel_library_init\"\n"
+	+ "compatibility_minimum = \"4.7\"\n"
+	+ "reloadable = false\n\n"
+	+ "[libraries]\n"
+	+ "linux.x86_64 = \"res://native/kernel/libopenrc_native_kernel.so\"\n"
+)
 
 static var _library_checked := false
 static var _library_error := ""
@@ -235,61 +246,91 @@ static func _load_library() -> String:
 		return "native stage: Linux x86_64 only"
 	if not FileAccess.file_exists(EXTENSION_PATH) or not FileAccess.file_exists(RECEIPT_PATH):
 		return "native stage library not installed"
-	var row := _platform_row(JSON.parse_string(FileAccess.get_file_as_string(RECEIPT_PATH)))
+	var receipt := JSON.new()
+	if receipt.parse(FileAccess.get_file_as_string(RECEIPT_PATH)) != OK:
+		return "native stage receipt is malformed or for another backend version or ABI"
+	var row := _platform_row(receipt.data)
 	if row.is_empty():
 		return "native stage receipt is malformed or for another backend version or ABI"
 	if row.get("engine_version") != Engine.get_version_info().string \
 			or str(row.get("engine_sha256", "")).length() != 64 \
 			or FileAccess.get_sha256(OS.get_executable_path()) != row.engine_sha256:
 		return "native stage requires the exact verified Godot executable; reinstall after verification"
+	var descriptor_error := _descriptor_error()
+	if not descriptor_error.is_empty():
+		return descriptor_error
 	if not _binary_matches(str(row.binary_sha256)):
 		return "native stage binary does not match its receipt"
-	if not GDExtensionManager.is_extension_loaded(EXTENSION_PATH):
-		if ClassDB.class_exists(NATIVE_CLASS):
-			return "another %s library is already loaded" % NATIVE_CLASS
-		var status: int = GDExtensionManager.load_extension(EXTENSION_PATH)
-		if status != GDExtensionManager.LOAD_STATUS_OK and status != GDExtensionManager.LOAD_STATUS_ALREADY_LOADED:
-			return "native stage library failed to load (status %d)" % status
+	var source_error := _source_error(row)
+	if not source_error.is_empty():
+		return source_error
+	# An already loaded extension ran initialization before these checks, and Godot does not identify its loaded
+	# binary. Do not select it even if the present files match: restart after removing the stale cache registration.
+	if GDExtensionManager.is_extension_loaded(EXTENSION_PATH) or ClassDB.class_exists(NATIVE_CLASS):
+		return "native stage was loaded before verification; restart after clearing the cached extension registration"
+	var status: int = GDExtensionManager.load_extension(EXTENSION_PATH)
+	if status != GDExtensionManager.LOAD_STATUS_OK:
+		return "native stage library failed to load (status %d)" % status
 	if not ClassDB.class_exists(NATIVE_CLASS):
 		return "native stage class is missing after loading"
 	var identity: Variant = ClassDB.instantiate(NATIVE_CLASS).call("backend_identity")
 	if typeof(identity) != TYPE_DICTIONARY or identity.get("backend") != BACKEND_NATIVE \
-			or identity.get("backend_version") != BACKEND_VERSION or int(identity.get("abi_version", 0)) != ABI_VERSION:
+			or identity.get("backend_version") != BACKEND_VERSION or not _abi_matches(identity.get("abi_version")):
 		return "native stage identity does not match its receipt"
 	_receipt_row = row
 	return ""
 
 
+## Only the one checked file may be loaded. Extra feature entries or dependencies could select other code.
+static func _descriptor_error() -> String:
+	return "" if FileAccess.get_file_as_string(EXTENSION_PATH) == EXPECTED_DESCRIPTOR \
+			else "native stage descriptor differs from the verified loader contract"
+
+
 static func _platform_row(value: Variant) -> Dictionary:
 	if typeof(value) != TYPE_DICTIONARY or value.get("format") != RECEIPT_FORMAT or value.get("backend") != BACKEND_NATIVE \
-			or value.get("backend_version") != BACKEND_VERSION or int(value.get("abi_version", 0)) != ABI_VERSION \
+			or value.get("backend_version") != BACKEND_VERSION or not _abi_matches(value.get("abi_version")) \
 			or typeof(value.get("platforms")) != TYPE_DICTIONARY:
 		return {}
 	var row: Variant = value.platforms.get("linux")
 	if typeof(row) != TYPE_DICTIONARY or row.get("backend_version") != BACKEND_VERSION \
-			or int(row.get("abi_version", 0)) != ABI_VERSION or typeof(row.get("mirrored_sources")) != TYPE_DICTIONARY:
+			or not _abi_matches(row.get("abi_version")) or typeof(row.get("mirrored_sources")) != TYPE_DICTIONARY:
 		return {}
 	for key: String in ["binary_sha256", "source_sha256", "lock_sha256"]:
 		var digest: String = str(row.get(key, ""))
 		if digest.length() != 64 or not digest.is_valid_hex_number():
 			return {}
+	if row.mirrored_sources.is_empty():
+		return {}
+	for source: Variant in row.mirrored_sources:
+		if typeof(source) != TYPE_STRING or not source.begins_with("app/"):
+			return {}
+		var relative: String = source.trim_prefix("app/")
+		var components := relative.split("/", true)
+		var source_digest: Variant = row.mirrored_sources[source]
+		if components.has("") or components.has(".") or components.has("..") or "\\" in relative \
+				or typeof(source_digest) != TYPE_STRING or source_digest.length() != 64 \
+				or not source_digest.is_valid_hex_number():
+			return {}
 	return row
 
 
+static func _abi_matches(value: Variant) -> bool:
+	return (typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT) and value == ABI_VERSION
+
+
 static func _binary_matches(expected_sha256: String) -> bool:
-	var paths := PackedStringArray(["res://native/kernel/" + LIBRARY_FILE])
-	var executable_directory := OS.get_executable_path().get_base_dir()
-	for relative: String in ["native/kernel/" + LIBRARY_FILE, "native/" + LIBRARY_FILE, LIBRARY_FILE]:
-		paths.append(executable_directory.path_join(relative))
-	for path: String in paths:
-		if FileAccess.file_exists(path) and FileAccess.get_sha256(path) == expected_sha256:
-			return true
-	return false
+	var path := "res://native/kernel/" + LIBRARY_FILE
+	return FileAccess.file_exists(path) and FileAccess.get_sha256(path) == expected_sha256
 
 
 ## Every GDScript file the port mirrors must still hash as it did when the oracles verified this binary.
 static func _mirrored_source_error() -> String:
-	var sources: Dictionary = _receipt_row.get("mirrored_sources", {})
+	return _source_error(_receipt_row)
+
+
+static func _source_error(row: Dictionary) -> String:
+	var sources: Dictionary = row.get("mirrored_sources", {})
 	if sources.is_empty():
 		return "native stage receipt lists no mirrored sources"
 	for name: String in sources:
