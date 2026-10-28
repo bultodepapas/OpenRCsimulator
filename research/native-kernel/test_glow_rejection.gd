@@ -257,13 +257,19 @@ func _run() -> void:
 	native.stage(body, values, TRIAL_TIME)
 	_check("nonfinite context cannot be classified as a finite refusal", native.stage_rejection_diagnostic().is_empty())
 	_check("finite context restored", _context(session, native))
+	var negative_zero_bits := PackedByteArray([0, 0, 0, 0, 0, 0, 0, 128])
+	var positive_zero_bits := PackedByteArray([0, 0, 0, 0, 0, 0, 0, 0])
 	var signed_zero := values.duplicate()
-	signed_zero[0] = -0.0
+	signed_zero[0] = negative_zero_bits.decode_double(0)
+	var signed_zero_input_bits := PackedFloat64Array([signed_zero[0]]).to_byte_array()
+	var positive_zero_input_bits := PackedFloat64Array([positive_zero_bits.decode_double(0)]).to_byte_array()
+	_check("signed-zero inputs have distinct expected float64 bits", \
+		signed_zero_input_bits == negative_zero_bits and positive_zero_input_bits == positive_zero_bits)
 	var signed_zero_diagnostic := _reported(native, body, signed_zero)
 	_check("negative zero is a stopped rotor and keeps its float64 sign", \
 		signed_zero_diagnostic.get("code", "") == "glow_stopped_reverse_drive" \
-		and _packed_equal(PackedFloat64Array([signed_zero_diagnostic.get("rpm", 1.0)]), PackedFloat64Array([signed_zero[0]])) \
-		and not _packed_equal(PackedFloat64Array([signed_zero[0]]), PackedFloat64Array([0.0])))
+		and PackedFloat64Array([signed_zero_diagnostic.get("rpm", 1.0)]).to_byte_array() == negative_zero_bits \
+		and _packed_equal(signed_zero_diagnostic.get("continuous", PackedFloat64Array()), signed_zero))
 	var moving_left := values.duplicate()
 	moving_left[0] = -0.001
 	var left_reference: Dictionary = Glow.evaluate(body, moving_left, TRIAL_TIME, session)
