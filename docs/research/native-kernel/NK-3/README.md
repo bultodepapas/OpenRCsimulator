@@ -1,4 +1,4 @@
-# NK-3 — native stage evaluator, electric Ugly Stik (2026-10-27)
+# NK-3 — native stage evaluator, Ugly Stik baseline (2026-10-27)
 
 Step NK-3 of the [native-kernel scoping](../../native-kernel-scoping-2026-10-27.md#phases-r-research-i-implementation),
 option (b): one `VehicleModel.stage` boundary on a prepared model. The owner approved NK-3 on 2026-10-27 and
@@ -6,9 +6,14 @@ delegated D1–D8 to the lead (port now; no SF-08 amendment; Linux bit-exact fin
 identity pinned in checkpoints; macOS reference-only; native refuses unknown laws; Stik first; reference always
 available). The application now requests native physics by default for the verified Linux x86_64 route, with
 reference fallback for unsupported configurations and explicit reference selection. The current supported scope
-is the stock electric Ugly Stik in calm conditions. Milestones 1 and 2 below remain the original research
+is the stock legacy prescribed-RPM Ugly Stik in calm conditions. Milestones 1 and 2 below remain the original research
 snapshots; the promotion section records release-package qualification and its limits.
 Code and commands: [research/native-kernel](../../../../research/native-kernel/README.md).
+
+The owner subsequently requested all simulatable aircraft and supported conditions. That expansion is active,
+not yet qualified; its [coverage checklist](../../../../research/native-kernel/README.md#coverage-expansion-in-progress-nk-3)
+separates new component work from production admission. Historical "electric Stik" labels below identify the
+same legacy prescribed-RPM baseline; they do not demonstrate coupled electric or battery support.
 
 ## Normal-flight integration (2026-10-28)
 

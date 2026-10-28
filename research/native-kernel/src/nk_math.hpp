@@ -75,6 +75,7 @@ inline bool is_nan(R x) { return std::isnan(x.v); }
 inline R maxf(R a, R b) { return a.v > b.v ? a : b; }
 inline R minf(R a, R b) { return a.v < b.v ? a : b; }
 inline R clampf(R x, R lo, R hi) { return x.v < lo.v ? lo : (x.v > hi.v ? hi : x); }
+inline R asin_(R x) { return ::asin(clampf(x, -1.0, 1.0).v); }
 // Godot Math::abs(double): +0.0 for either zero, the negated value below zero, else unchanged (a NaN keeps its
 // sign bit, unlike fabs; the oracle's math probe checks this against GDScript absf on signed NaNs).
 inline R absf(R x) { return x.v == 0 ? R(0.0) : (x.v < 0 ? -x : x); }

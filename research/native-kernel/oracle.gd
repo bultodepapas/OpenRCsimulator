@@ -19,6 +19,7 @@ const Air := preload("res://physics/air_data.gd")
 const GroundEffect := preload("res://physics/ground_effect.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
 
 const AIRCRAFT := "jensen-das-ugly-stik-60"
 const MAX_EXAMPLES := 6
@@ -633,7 +634,7 @@ func _bad_lake(lake: Dictionary) -> Dictionary:
 # ---------------------------------------------------------------- aero
 
 func _deflection_array(d: Dictionary) -> PackedFloat64Array:
-	return PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder])
+	return PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)])
 
 
 func _aero_inputs(context: Dictionary, surfaces: PackedFloat64Array) -> Dictionary:
@@ -713,17 +714,32 @@ func _check_aero(context: Dictionary) -> void:
 		{name = "variant_uncoupled", model = _aero_variant_uncoupled(context.model), states = _variant_states},
 		{name = "variant_legacy_horizontal", model = _aero_variant_legacy_tail(context.model), states = _variant_states},
 	]
+	# NK-3 breadth: validate each prepared catalog geometry with the actual flap, polar and tailless laws.
+	# This qualifies components only; fleet.gd separately requires the production native stage on every tick.
+	for id: String in Catalog.airplane_flyable_ids():
+		if id == AIRCRAFT:
+			continue
+		var loaded: Dictionary = AircraftData.load_file(Catalog.data_for(id))
+		if not loaded.ok:
+			_failures.append("catalog aero data failed: " + id)
+			continue
+		cases.append({name = id, model = loaded.model, states = _variant_states})
 	for case: Dictionary in cases:
 		var model: Dictionary = case.model
 		var prepared: Dictionary = _native.prepare_aero(model)
 		if not prepared.ok:
 			_failures.append("prepare_aero %s failed: %s" % [case.name, prepared.error])
 			continue
-		var legacy: bool = case.name == "variant_legacy_horizontal"
+		# Only sessions with a free horizontal tail own the downwash-lag state.
+		var legacy: bool = not model.surfaces.get("horizontal", {}).has("free_slope")
 		for i in int(case.states):
 			var input := _aero_inputs(context, context.surfaces)
 			var s: PackedFloat64Array = input.s
 			var d: Dictionary = input.d
+			if model.get("capabilities", {}).get("flaps", "") == "simulated":
+				d.flap = _rng.randf_range(0.0, deg_to_rad(float(model.flaps.max_angle_deg)))
+				if i % 31 == 0:
+					d.flap = _special()
 			var downwash: float = NAN if legacy else input.downwash
 			var ground_up: float = input.ground_up
 			var air: Dictionary = Air.compute(s, input.wind, input.rho)

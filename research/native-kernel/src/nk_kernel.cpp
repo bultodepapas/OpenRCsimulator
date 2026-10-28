@@ -180,14 +180,9 @@ bool decode_tail(Decoder &dec, const Dictionary &tail, nk::Tail &out, bool verti
 
 bool decode_aero(Decoder &dec, const Dictionary &model, nk::AeroModel &m) {
 	m = nk::AeroModel();
-	// Flaps.enabled(model): the flap law is not ported.
 	Dictionary capabilities;
 	if (!dec.dict(model, "capabilities", capabilities, false)) {
 		return false;
-	}
-	if (capabilities.has("flaps") && String(capabilities["flaps"]) == String("simulated") && model.has("flaps") &&
-			model["flaps"].get_type() == Variant::DICTIONARY && !Dictionary(model["flaps"]).is_empty()) {
-		return dec.fail("flaps law not ported");
 	}
 	Dictionary reference, aero, envelope, surfaces, ground_effect;
 	if (!dec.dict(model, "reference", reference, true) || !dec.dict(model, "aero", aero, true) ||
@@ -200,10 +195,10 @@ bool decode_aero(Decoder &dec, const Dictionary &model, nk::AeroModel &m) {
 	if (!dec.only(reference, "reference", {"S", "b", "c", "geometric_chord", "arp_le", "planform", "chords"}) ||
 			!dec.only(envelope, "envelope", {"a1", "a2", "n1", "n2", "b1", "b2", "CD90", "CL_max", "CL_min",
 				"station_ys", "strip_slope", "strip_cl0", "induced_map", "strip_alpha_zero", "strip_row_sum",
-				"station_chords", "ground_effect"}) ||
+				"station_chords", "ground_effect", "wing_polar"}) ||
 			!dec.only(surfaces, "surfaces", {"wing_aileron_effectiveness", "attached_limit", "tail_local_limit",
 				"tail_stall_end", "tail_CD0", "tail_k", "tail_CD90", "body_cn_beta", "wing_body_cl_beta", "body_cy_beta",
-				"body_crossflow_area", "wing_cm_ac", "station_incidence", "horizontal", "vertical"}) ||
+				"body_crossflow_area", "wing_cm_ac", "station_incidence", "horizontal", "vertical", "tailless"}) ||
 			!dec.only(aero, "aero", {"CL0", "CLa", "CLadot", "CLq", "CLde", "CLda_each", "CD0", "CL_minD", "k_induced",
 				"CDda_each", "CDdr", "CDde", "CYb", "CYp", "CYr", "CYdr", "Clb", "Clp", "Clr", "Clda_right", "Clda_left",
 				"Cldr", "Cm0", "Cma", "Cmq", "Cmde", "Cmda_each", "Cnb", "Cnp", "Cnr", "Cnda_right", "Cnda_left",
@@ -253,6 +248,87 @@ bool decode_aero(Decoder &dec, const Dictionary &model, nk::AeroModel &m) {
 	const int stations = static_cast<int>(m.ys.size());
 	if (stations < 1 || stations > 16) {
 		return dec.fail("station count outside 1..16");
+	}
+	// Prepared tables are copied verbatim. Recomputing tangents or geometry here would change rounding.
+	if (envelope.has("wing_polar")) {
+		Dictionary polar;
+		if (!dec.dict(envelope, "wing_polar", polar, true) ||
+				!dec.only(polar, "wing_polar", {"positive", "negative", "cd0", "cd90", "slope", "offset",
+					"spanwise_progression", "strip_factor"}) ||
+				!dec.number(polar, "cd0", m.polar.cd0, true) || !dec.number(polar, "cd90", m.polar.cd90, true) ||
+				!dec.number(polar, "slope", m.polar.slope, true) || !dec.number(polar, "offset", m.polar.offset, true) ||
+				!dec.vec(polar, "strip_factor", m.polar.strip_factor, false)) {
+			return false;
+		}
+		if (!m.polar.strip_factor.empty() && static_cast<int>(m.polar.strip_factor.size()) != stations) {
+			return dec.fail("wing polar strip_factor size");
+		}
+		for (const char *side : {"positive", "negative"}) {
+			Dictionary branch;
+			nk::WingPolarBranch &b = std::string(side) == "positive" ? m.polar.positive : m.polar.negative;
+			if (!dec.dict(polar, side, branch, true) || !dec.only(branch, "wing_polar branch", {"angles", "values", "tangents"}) ||
+					!dec.vec(branch, "angles", b.angles, true) || !dec.vec(branch, "values", b.values, true) ||
+					!dec.vec(branch, "tangents", b.tangents, true)) {
+				return false;
+			}
+			if (b.angles.size() < 4 || b.angles.size() > 64 || b.values.size() != b.angles.size() * 3 ||
+					b.tangents.size() != b.values.size()) {
+				return dec.fail("wing polar branch dimensions");
+			}
+			for (size_t i = 0; i < b.angles.size(); ++i) {
+				if (!nk::is_finite(b.angles[i]) || (i > 0 && b.angles[i] <= b.angles[i - 1])) {
+					return dec.fail("wing polar angles must be finite and increasing");
+				}
+			}
+			for (size_t i = 0; i < b.values.size(); ++i) {
+				if (!nk::is_finite(b.values[i]) || !nk::is_finite(b.tangents[i])) {
+					return dec.fail("nonfinite wing polar table");
+				}
+			}
+		}
+		m.polar.enabled = true;
+	}
+	if (capabilities.has("flaps") && String(capabilities["flaps"]) == String("simulated")) {
+		Dictionary flap;
+		if (!dec.dict(model, "flaps", flap, true) || !dec.only(flap, "flaps", {"max_angle_deg", "takeoff_angle_deg",
+				"takeoff_fraction", "inner_span_m", "outer_span_m", "hinge_fraction", "chord_fraction", "lift_effectiveness",
+				"thin_airfoil_moment_per_cl", "extension_time", "retraction_time", "max_speed_mps",
+				"elevator_mix_per_flap_fraction", "effective_angle_limit_deg", "profile_drag_coefficient",
+				"aerodynamic_gain", "station_coverage", "stall_shift_fraction", "lift_reference_offset_m"}) ||
+				!dec.vec(flap, "station_coverage", m.flaps.station_coverage, true, stations)) {
+			return false;
+		}
+		const Named flap_numbers[] = {{"hinge_fraction", &m.flaps.hinge_fraction}, {"chord_fraction", &m.flaps.chord_fraction},
+			{"lift_effectiveness", &m.flaps.lift_effectiveness}, {"thin_airfoil_moment_per_cl", &m.flaps.thin_airfoil_moment_per_cl},
+			{"effective_angle_limit_deg", &m.flaps.effective_angle_limit_deg}, {"profile_drag_coefficient", &m.flaps.profile_drag_coefficient}};
+		for (const Named &entry : flap_numbers) {
+			if (!dec.number(flap, entry.key, *entry.slot, true) || !nk::is_finite(*entry.slot)) {
+				return dec.fail("invalid flap scalar");
+			}
+		}
+		if (!dec.number(flap, "aerodynamic_gain", m.flaps.aerodynamic_gain, false, 1.0) ||
+				!dec.number(flap, "stall_shift_fraction", m.flaps.stall_shift_fraction, false) ||
+				!dec.number(flap, "lift_reference_offset_m", m.flaps.lift_reference_offset_m, false)) {
+			return false;
+		}
+		m.flaps.has_stall_shift_fraction = flap.has("stall_shift_fraction");
+		m.flaps.has_lift_reference_offset_m = flap.has("lift_reference_offset_m");
+		m.flaps.enabled = true;
+	}
+	if (surfaces.has("tailless")) {
+		Dictionary tailless;
+		if (!dec.dict(surfaces, "tailless", tailless, true) || !dec.only(tailless, "surfaces.tailless",
+				{"station_x_authored", "elevon_coverage", "elevon_chord_fraction", "station_x", "station_shift",
+					"tau", "thin_airfoil_tau", "moment_per_rad"}) ||
+				!dec.vec(tailless, "station_x", m.tailless.station_x, true, stations) ||
+				!dec.vec(tailless, "elevon_coverage", m.tailless.elevon_coverage, true, stations) ||
+				!dec.number(tailless, "tau", m.tailless.tau, true) ||
+				!dec.number(tailless, "moment_per_rad", m.tailless.moment_per_rad, true)) {
+			return false;
+		}
+		if (surfaces.has("horizontal") || static_cast<int>(m.station_chords.size()) != stations) {
+			return dec.fail("tailless model needs station chords and no horizontal tail");
+		}
 	}
 	m.has_strip_alpha_zero = envelope.has("strip_alpha_zero");
 	if (!dec.number(envelope, "strip_alpha_zero", m.strip_alpha_zero, false, 0.0)) {
@@ -417,10 +493,9 @@ bool decode_lake(Decoder &dec, const Dictionary &lake, nk::LakeTerrain &out) {
 
 bool decode_prop(Decoder &dec, const Dictionary &prop, nk::PropModel &out) {
 	out = nk::PropModel();
-	// Legacy fixed-pitch propeller only: no kind/glow/electric/turbine source, no axis, no crossflow tables,
-	// no slipstream or shaft (D6).
+	// Geometry-only decoder. Source, wake and shaft admission belongs to the complete stage decoder.
 	if (!dec.only(prop, "propulsion", {"max_rpm", "idle_rpm", "lag", "diameter", "offset", "ct", "cp", "rotor_inertia",
-				"id", "cp_min"})) {
+				"id", "cp_min", "axis", "normal_force", "pfactor_moment"})) {
 		return false;
 	}
 	std::vector<nk::R> offset;
@@ -434,6 +509,28 @@ bool decode_prop(Decoder &dec, const Dictionary &prop, nk::PropModel &out) {
 	}
 	for (int i = 0; i < 3; ++i) {
 		out.offset[i] = offset[i];
+	}
+	out.has_axis = prop.has("axis");
+	if (out.has_axis) {
+		std::vector<nk::R> axis;
+		if (!dec.vec(prop, "axis", axis, true, 3)) {
+			return false;
+		}
+		for (int i = 0; i < 3; ++i) {
+			if (!nk::is_finite(axis[i])) {
+				return dec.fail("nonfinite propeller axis");
+			}
+			out.axis[i] = axis[i];
+		}
+	}
+	if (!dec.vec(prop, "normal_force", out.normal_force, false) ||
+			!dec.vec(prop, "pfactor_moment", out.pfactor_moment, false)) {
+		return false;
+	}
+	for (const auto *table : {&out.normal_force, &out.pfactor_moment}) {
+		if (!table->empty() && (table->size() < 4 || table->size() % 2 != 0)) {
+			return dec.fail("propeller crossflow table dimensions");
+		}
 	}
 	return true;
 }
@@ -555,6 +652,7 @@ bool read_deflections(const PackedFloat64Array &d, nk::Deflections &out) {
 	out.aileron_right = d[1];
 	out.aileron_left = d[2];
 	out.rudder = d[3];
+	out.flap = d.size() == 5 ? d[4] : 0.0;
 	return true;
 }
 
@@ -567,6 +665,8 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	bool ground_ready_ = false;
 	nk::AeroModel aero_;
 	bool aero_ready_ = false;
+	nk::PropModel prop_;
+	bool prop_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
 	bool stage_ready_ = false;
@@ -588,6 +688,9 @@ protected:
 			&OpenRCNativeKernel::wheels_evaluate);
 		godot::ClassDB::bind_method(D_METHOD("wheels_compressions", "s"), &OpenRCNativeKernel::wheels_compressions);
 		godot::ClassDB::bind_method(D_METHOD("prepare_aero", "model"), &OpenRCNativeKernel::prepare_aero);
+		godot::ClassDB::bind_method(D_METHOD("prepare_propeller", "model"), &OpenRCNativeKernel::prepare_propeller);
+		godot::ClassDB::bind_method(D_METHOD("propeller_component", "s", "air", "rho", "rpm", "local_hub", "explicit_air"),
+			&OpenRCNativeKernel::propeller_component);
 		godot::ClassDB::bind_method(D_METHOD("aero_component", "which", "s", "wind", "rho", "d", "downwash_cl", "ground_up"),
 			&OpenRCNativeKernel::aero_component);
 		godot::ClassDB::bind_method(D_METHOD("aero_loads", "s", "wind", "rho", "d", "downwash_cl", "ground_up"),
@@ -698,6 +801,51 @@ public:
 		out["ok"] = ok;
 		out["error"] = String(dec.error.c_str());
 		out["law"] = kAeroLaw;
+		return out;
+	}
+
+	Dictionary prepare_propeller(const Dictionary &model) {
+		Decoder dec;
+		nk::PropModel candidate;
+		prop_ready_ = decode_prop(dec, model, candidate);
+		if (prop_ready_) {
+			prop_ = std::move(candidate);
+		}
+		Dictionary out;
+		out["ok"] = prop_ready_;
+		out["error"] = String(dec.error.c_str());
+		return out;
+	}
+
+	Dictionary propeller_component(const PackedFloat64Array &s, const PackedFloat64Array &air, double rho,
+			double rpm, bool local_hub, const PackedFloat64Array &explicit_air) const {
+		Dictionary out;
+		out["ok"] = false;
+		if (!prop_ready_ || !read_state(s) || air.size() != 3 || (explicit_air.size() != 0 && explicit_air.size() != 3)) {
+			return out;
+		}
+		nk::R state[kStateSize], datum[3], local[3];
+		load(s, state);
+		load(air, datum);
+		if (!explicit_air.is_empty()) {
+			load(explicit_air, local);
+		}
+		const auto flow = nk::prop_stage_air_velocity(state, datum, prop_, local_hub, explicit_air.is_empty() ? nullptr : local);
+		if (!flow.ok) {
+			return out;
+		}
+		const auto tq = nk::prop_thrust_torque(flow.velocity.data(), rpm, prop_, rho);
+		const auto loads = nk::prop_loads(flow.velocity.data(), rpm, prop_, rho);
+		const auto rotor = nk::prop_rotor_momentum(prop_, rpm);
+		const auto normal = nk::prop_normal_force(flow.velocity.data(), rpm, prop_, rho);
+		const auto pfactor = nk::prop_pfactor_moment(flow.velocity.data(), rpm, prop_, rho);
+		out["ok"] = true;
+		out["velocity"] = pack(flow.velocity.data(), 3);
+		out["thrust_torque"] = pack(tq.data(), 3);
+		out["loads"] = pack(loads.data(), 6);
+		out["rotor_momentum"] = pack(rotor.data(), 3);
+		out["normal_force"] = pack(normal.data(), 3);
+		out["pfactor_moment"] = pack(pfactor.data(), 3);
 		return out;
 	}
 
@@ -813,6 +961,8 @@ public:
 			{"TAU", nk::kTauConstant}, {"-0.1", nk::kCtFloor}, {"60.0", nk::kHullOmega}, {"0.004", nk::kHullDampingOnset},
 			{"0.4", nk::kHullFrictionMu}, {"120.0", nk::kHullFrictionRateMax}, {"0.001", 0.001}, {"4.0", 4.0},
 			{"2.0", nk::kGroundEffectFade},
+			{"180.0", 180.0}, {"1e-11", 1e-11}, {"0.5", 0.5}, {"10.0", 10.0},
+			{"100.0", 100.0}, {"3600.0", 3600.0},
 		};
 		for (const auto &entry : table) {
 			out[entry.spelling] = entry.value;

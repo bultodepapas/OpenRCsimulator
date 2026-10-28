@@ -1,7 +1,7 @@
 # NK-3 native stage evaluator
 
 Step NK-3 of the [native-kernel scoping](../../docs/research/native-kernel-scoping-2026-10-27.md#phases-r-research-i-implementation):
-a GDExtension (godot-cpp) port of the joint RK stage of the electric Ugly Stik (`jensen-das-ugly-stik-60`),
+a GDExtension (godot-cpp) port of the joint RK stage of the legacy prescribed-RPM Ugly Stik (`jensen-das-ugly-stik-60`),
 `FlightSession._wheel_evaluate`, proven byte-identical to the GDScript reference per component and through the real
 kernel tick. Build outputs stay in the ignored `tmp/native-kernel/`; `--install-app` can stage a verified Linux
 library in ignored `app/native/kernel/`. The application requests native physics by default.
@@ -10,6 +10,26 @@ selects the reference explicitly. The low-level `FlightSession` default remains 
 Evidence and timings: [docs/research/native-kernel/NK-3](../../docs/research/native-kernel/NK-3/README.md).
 The [promotion record](../../docs/research/native-kernel/NK-3/README.md#promotion-to-the-default-backend)
 defines the supported Linux scope and separates backend qualification from display and hardware acceptance.
+
+## Coverage expansion in progress (NK-3)
+
+The owner expanded the goal on 2026-10-28 to every currently simulatable aircraft and supported flight condition
+on Linux x86_64. The accepted Stik package remains the rollback baseline; new C++ headers are unqualified until
+their component, stage, lifecycle and replay gates pass. A committed header is not production support.
+Earlier references to the baseline as "electric Stik" were imprecise: its source uses legacy prescribed RPM.
+The coupled electric sources belong to Turbo Lumber and X8.
+
+| Required coverage | Integration and acceptance still required |
+| --- | --- |
+| Ten fixed-wing catalog aircraft, default battery and ideal variants, validated workshop models | Prepared flaps, wing polars, elevons, propeller axes; capability-based admission after exact oracles |
+| Legacy, coupled electric, finite glow two/four-stroke, liquid combustion and turbine | Same-stage shaft/source rates, batteries, live fuel mass, events and stop projections |
+| X-Cell helicopter | Prepared controls, drive, rotors, skid memory, body derivative; independent vehicle gates |
+| Every validated weather configuration | Stage-time gusts/OU, vertical atmosphere, spatial profiles/modes/thermals and local point flow |
+| Every supported start/contact and flight lifecycle | Retractable gear, soft contacts, transported wake, failures, resets, rollback and exact replay |
+| Default delivery | Strict complete native fleet coverage, source-bound receipt, package tests and paired measurements |
+
+Shared pre-tick/discrete supervision may remain GDScript under the existing kernel contract. Continuous laws
+claimed as native must execute in C++; matching reference fallbacks cannot establish native coverage.
 
 ## Optional normal-flight backend
 
