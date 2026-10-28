@@ -2,6 +2,12 @@
 
 2026-10-21 · Implementation-planning revision · Owner: Visual quality (VQ), with L/LU/SC, FW/TOD/SUN, aircraft, SM/CR, UI and DT owners.
 
+**Owner priority, 2026-10-28:** make the existing NVIDIA DLSS/DLAA trial usable and
+implement the bounded Reflex integration on the available RTX host. This selects
+VQ-07d/h for immediate work and supersedes their earlier vendor deferral. Keep the
+custom engine and package separate from the official engine; broader performance,
+motion-quality and release gates still apply. [Native integration guide](../../tools/graphics/native/README.md).
+
 Make OpenRC look substantially more convincing while flying: recognizable aircraft materials, stable vegetation, coherent sunlight and atmosphere, convincing ground contact, and smooth motion. Use modern rendering where it improves those outcomes. “AAA quality” is an ambition, not an acceptance metric or a promise of a particular technology.
 
 **Execution order:** freeze a usable baseline → resolve attributed pacing/loading blockers → prioritize the selected Compatibility work in its owning order. A bounded, isolated Forward+ study may then answer parity/cost questions; only justified candidates advance to combined qualification and accepted settings. Retain Compatibility whenever the renderer study fails its stop/go gates. RTX, neural rendering and frame generation remain deferred.
@@ -174,7 +180,7 @@ The parallel branch represents an isolated experiment, not permission to ship ar
 | VQ-07e | For an owner-confirmed gap, compare shadow allocation/probes first, then one justified PCSS, SSR or indirect-light candidate. | **PCSS/shadow trial implemented; acceptance conditional after c.** Reuse projected-shadow/environment references and VQ-04b's comparison contract; pin AA to baseline or accepted d result. No gap means skip. Each effect needs its own outcome. |
 | VQ-07f | Evaluate bounded atmosphere and effect improvements when FW/SM/CR identify a gap. FW-85 retains the cloud-backend decision. | **Conditional; after c.** Same authoritative inputs, readable pilot circuit, pause/reset/cut behavior, bounded particles/overdraw and cost. Volumetric clouds are not required. |
 | VQ-07g | Record the renderer decision; if advancing, integrate accepted candidates and qualify the exact combination before proposing persistent qualified High settings. | **Pending; after selected outcomes, including early rejection.** Retain/defer can close the study with no new profile. Adoption needs combined native/pilot/platform evidence and recovery; selected effects passing alone is insufficient. |
-| VQ-07h | Review vendor technologies in disposable projects, only after the native path has a decision and a named unresolved need. | **Deferred, optional.** Pinned SDK/fork sample, license/build/API/hardware assessment, latency and image evidence. Not required to close VQ-07a…g. |
+| VQ-07h | Verify selected vendor technologies in the isolated native-engine package. | **DLSS/DLAA and Reflex selected by owner, 2026-10-28.** Pinned SDK/fork, actual runtime capabilities and rendered integration checks; latency and broader qualification remain separate. Frame generation and path tracing remain deferred. |
 
 ### VQ-07b: concrete migration hazards
 
@@ -194,7 +200,7 @@ Godot documents different shader colour/depth conventions and compositor availab
 
 Owner-requested native-provider follow-up, 2026-10-24: the application now discovers
 optional FSR3/DLSS capabilities, with a separate pinned Windows/Vulkan engine
-experiment. Production remains on 4.7.2. See the [implementation evidence](../research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md)
+experiment. Production uses official 4.8-beta1. See the [implementation evidence](../research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md)
 and [build guide](../../tools/graphics/native/README.md). This does not close the
 motion-quality, performance, export or cross-device qualification gates below.
 

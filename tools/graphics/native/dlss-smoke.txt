@@ -3,7 +3,11 @@
 pause
 assert expr="ProjectSettings.get_setting('rendering/streamline/dlss_preset', '?') == 'K'" message="Validated DLSS preset K is pinned"
 assert expr="Engine.has_singleton('Streamline') and Engine.get_singleton('Streamline').has_method('get_dlss_status')" message="DLSS backend status API available"
-window mode=fullscreen
+window mode=windowed
+eval expr="DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)"
+window size=1920x1080
+wait frames=2
+assert expr="app.get_viewport().get_visible_rect().size == Vector2(1920, 1080)" message="Actual 1080p output"
 assert expr="ResourceLoader.load('res://render/reconstruction.gd').runtime_capabilities().dlss" message="DLSS capability available"
 eval expr="app.set_meta('dlss_smoke_dispatches', Engine.get_singleton('Streamline').call('get_dlss_status').dispatches)"
 eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'dlss_native','fsr2_sharpness':0.9,'msaa_3d':2})"
@@ -33,8 +37,9 @@ window size=1600x900
 wait frames=64
 assert expr="not Engine.get_singleton('Streamline').call('get_dlss_status').backend_failed and Engine.get_singleton('Streamline').call('get_dlss_status').available and Engine.get_singleton('Streamline').call('get_dlss_status').dispatches > app.get_meta('dlss_smoke_dispatches') and ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport()).provider == 'dlss'" message="DLSS dispatch advances without backend failure"
 eval expr="app.set_meta('dlss_smoke_dispatches', Engine.get_singleton('Streamline').call('get_dlss_status').dispatches)"
-window mode=fullscreen
+window size=1920x1080
 wait frames=64
+assert expr="app.get_viewport().get_visible_rect().size == Vector2(1920, 1080)" message="Resize restores actual 1080p"
 assert expr="not Engine.get_singleton('Streamline').call('get_dlss_status').backend_failed and Engine.get_singleton('Streamline').call('get_dlss_status').available and Engine.get_singleton('Streamline').call('get_dlss_status').dispatches > app.get_meta('dlss_smoke_dispatches') and ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport()).provider == 'dlss'" message="DLSS dispatch advances without backend failure"
 eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'native','msaa_3d':2})"
 wait frames=32

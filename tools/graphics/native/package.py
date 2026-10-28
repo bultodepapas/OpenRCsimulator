@@ -29,6 +29,34 @@ sys.path.insert(0, str(ROOT / "tools/godot"))
 from run_checked import run_checked
 
 
+def launcher_files() -> dict[str, bytes]:
+    """Explicit 1080p direct-flight presets; each owns an isolated local profile."""
+    presets = {
+        "Native.cmd": ("native", "off"),
+        "FSR3 Quality.cmd": ("fsr3_quality", "off"),
+        "DLSS Quality.cmd": ("dlss_quality", "on"),
+        "DLAA.cmd": ("dlss_native", "on"),
+        "DLSS Balanced.cmd": ("dlss_balanced", "on"),
+        "DLSS Performance.cmd": ("dlss_performance", "on"),
+        "DLSS Quality - Reflex Off.cmd": ("dlss_quality", "off"),
+        "DLSS Quality - Reflex Boost.cmd": ("dlss_quality", "boost"),
+        "Graphics Options.cmd": ("native", "on"),
+    }
+    files: dict[str, bytes] = {}
+    for name, (mode, reflex) in presets.items():
+        options = name == "Graphics Options.cmd"
+        slug = "options" if options else f"{mode.replace('_', '-')}-reflex-{reflex}"
+        user_args = "" if options else " -- --quick-flight"
+        body = ("@echo off\r\nsetlocal\r\n" f'set "APPDATA=%~dp0profile-{slug}"\r\n'
+                'if not exist "%APPDATA%" mkdir "%APPDATA%"\r\n'
+                f'set "OPENRC_GRAPHICS_PROFILE=high"\r\nset "OPENRC_RECONSTRUCTION={mode}"\r\n'
+                f'set "OPENRC_NVIDIA_REFLEX={reflex}"\r\n'
+                'cd /d "%~dp0"\r\nstart "" "%~dp0OpenRC Native Trial.exe"'
+                f' --resolution 1920x1080 --borderless{user_args}\r\nendlocal\r\n')
+        files[name] = body.encode("utf-8")
+    return files
+
+
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -90,6 +118,14 @@ def main() -> int:
     if digest(CANDIDATE / "app/project.godot") != candidate.get("candidate_project_sha256"): raise RuntimeError("candidate project changed after its receipt")
     if '\nstreamline/dlss_preset="K"\n' not in (CANDIDATE / "app/project.godot").read_text(encoding="utf-8"):
         raise RuntimeError("candidate does not pin the validated DLSS preset K")
+    if 'NvidiaReflex="*res://native_trial/reflex_startup.gd"' not in (CANDIDATE / "app/project.godot").read_text(encoding="utf-8"):
+        raise RuntimeError("candidate does not install the Reflex startup adapter")
+    expected_trial_sources = {name: digest(source) for name, source in candidate_pins.TRIAL_SOURCES.items()}
+    if candidate.get("trial_sources") != expected_trial_sources:
+        raise RuntimeError("candidate trial-source receipt is stale")
+    for name, expected in expected_trial_sources.items():
+        if digest(CANDIDATE / name) != expected:
+            raise RuntimeError(f"candidate trial source changed: {name}")
     registry = CANDIDATE / "app/data/aircraft_customization.json"
     if digest(registry) != candidate.get("generated_registry_sha256"): raise RuntimeError("candidate presentation registry changed after generation")
     generator = CANDIDATE / "research/aircraft-standardization/build_customization.py"
@@ -127,7 +163,6 @@ def main() -> int:
     template_exe = engine / "godot.windows.template_release.x86_64.exe"
     date = subprocess.check_output(["git", "show", "-s", "--format=%cI", BASE], cwd=ROOT, text=True).strip()
     build_id = {"describe": f"experimental-{BASE[:12]}", "commit": BASE, "dirty": True, "commit_date": date}
-    launchers = {"Native.cmd": "native", "FSR3 Quality.cmd": "fsr3_quality", "DLSS Quality.cmd": "dlss_quality"}
     managed: dict[str, bytes] = {
         "OpenRC Native Trial.exe": template_exe.read_bytes(),
         "openrc-editor-build.json": editor_receipt_path.read_bytes(),
@@ -138,18 +173,20 @@ def main() -> int:
         managed[name] = (engine / name).read_bytes()
     for source in license_files:
         managed[f"licenses/{source.name}"] = source.read_bytes()
-    for name, mode in launchers.items():
-        slug = mode.replace("_", "-")
-        body = ("@echo off\r\nsetlocal\r\n" f'set "APPDATA=%~dp0profile-{slug}"\r\n'
-                'if not exist "%APPDATA%" mkdir "%APPDATA%"\r\n'
-                f'set "OPENRC_GRAPHICS_PROFILE=high"\r\nset "OPENRC_RECONSTRUCTION={mode}"\r\n'
-                'cd /d "%~dp0"\r\nstart "" "%~dp0OpenRC Native Trial.exe" -- --quick-flight\r\nendlocal\r\n')
-        managed[name] = body.encode("utf-8")
-    managed["Graphics Options.cmd"] = (
-        '@echo off\r\nsetlocal\r\nset "APPDATA=%~dp0profile-options"\r\n'
-        'if not exist "%APPDATA%" mkdir "%APPDATA%"\r\n'
-        'set "OPENRC_GRAPHICS_PROFILE=high"\r\nset "OPENRC_RECONSTRUCTION=native"\r\n'
-        'cd /d "%~dp0"\r\nstart "" "%~dp0OpenRC Native Trial.exe"\r\nendlocal\r\n'
+    managed.update(launcher_files())
+    managed["LEEME.txt"] = (
+        "OpenRC - prueba NVIDIA (Windows/Vulkan)\r\n\r\n"
+        "Abre DLSS Quality.cmd para volar a 1920x1080 con DLSS y Reflex.\r\n"
+        "DLAA.cmd conserva la resolucion 3D completa y usa antialiasing NVIDIA.\r\n"
+        "Balanced y Performance reducen mas la resolucion 3D.\r\n"
+        "Reflex Boost y Reflex Off tienen accesos separados para comparar.\r\n"
+        "Graphics Options.cmd abre el menu; elige reconstruccion en Settings > Graphics.\r\n"
+        "Native.cmd vuelve a resolucion nativa sin Reflex.\r\n\r\n"
+        "Este paquete experimental usa una copia fijada del simulador, no la ultima version.\r\n"
+        "Mantiene perfiles separados. Conserva todos los DLL junto al ejecutable.\r\n"
+        "Sin soporte DLSS, el juego usa resolucion nativa. Reflex requiere soporte real del driver.\r\n"
+        "Frame Generation, Ray Reconstruction y path tracing no estan habilitados.\r\n"
+        "Las pruebas de integracion no demuestran una reduccion de latencia ni certifican otras GPU.\r\n"
     ).encode("utf-8")
 
     if OUT.exists() and not OUT.is_dir():

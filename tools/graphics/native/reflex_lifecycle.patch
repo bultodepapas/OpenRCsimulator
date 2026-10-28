@@ -1,0 +1,521 @@
+--- a/drivers/streamline/streamline.cpp
++++ b/drivers/streamline/streamline.cpp
+@@ -48,6 +48,7 @@
+ 	ClassDB::bind_method(D_METHOD("get_capability", "capability_type"), &Streamline::get_capability);
+ 
+ 	ClassDB::bind_method(D_METHOD("get_dlss_status"), &Streamline::get_dlss_status);
++	ClassDB::bind_method(D_METHOD("get_reflex_status"), &Streamline::get_reflex_status);
+ 
+ 	BIND_ENUM_CONSTANT(STREAMLINE_PARAM_REFLEX_MODE);
+ 	BIND_ENUM_CONSTANT(STREAMLINE_PARAM_REFLEX_FRAME_LIMIT_US);
+@@ -95,6 +96,26 @@
+ #endif
+ }
+ 
++#ifdef STREAMLINE_ENABLED
++// Latched failures are visible to the application; request Off on the next
++// main-thread update without changing the player's requested option.
++static void record_reflex_failure(StreamlineContext &p_context, sl::Result p_result) {
++	p_context.reflex_failure_result.store(int(p_result));
++	if (!p_context.reflex_failed.exchange(true)) {
++		p_context.reflex_force_off.store(true);
++		WARN_PRINT("Streamline Reflex failed: " + String(StreamlineContext::result_to_string(p_result)));
++	}
++}
++
++static void record_pcl_failure(StreamlineContext &p_context, sl::Result p_result) {
++	p_context.pcl_failure_result.store(int(p_result));
++	if (!p_context.pcl_failed.exchange(true)) {
++		p_context.reflex_force_off.store(true);
++		WARN_PRINT("Streamline PCL failed: " + String(StreamlineContext::result_to_string(p_result)));
++	}
++}
++#endif
++
+ void Streamline::emit_marker(StreamlineMarkerType marker) {
+ #ifdef STREAMLINE_ENABLED
+ 	StreamlineContext &sl_context = StreamlineContext::get();
+@@ -104,29 +125,27 @@
+ 		case StreamlineMarkerType::STREAMLINE_MARKER_INITIALIZE_D3D12:
+ 			sl_context.initialize(marker == StreamlineMarkerType::STREAMLINE_MARKER_INITIALIZE_D3D12);
+ 			return;
+-		case StreamlineMarkerType::STREAMLINE_MARKER_AFTER_DEVICE_CREATION:
++		case StreamlineMarkerType::STREAMLINE_MARKER_AFTER_DEVICE_CREATION: {
++			_THREAD_SAFE_METHOD_
+ 			sl_context.load_functions_post_init();
+-
+ 			if (sl_context.streamline_capabilities.pcl_available) {
+-				sl::PCLOptions pcl_options = {};
+-				pcl_options.virtualKey = sl::PCLHotKey::eVK_F13;
+-				pcl_options.idThread = 0;
+-				sl_context.pcl_set_options(pcl_options);
+-			}
+-
++				sl_context.pcl_options = {};
++				sl_context.pcl_options.virtualKey = sl::PCLHotKey::eVK_F13;
++				sl_context.pcl_options.idThread = 0;
++				sl_context.pcl_options_dirty = true;
++			}
+ 			if (sl_context.streamline_capabilities.reflex_available) {
+-				sl::ReflexOptions reflex_options = {};
+-				reflex_options.frameLimitUs = 0;
+-				reflex_options.virtualKey = (uint16_t)sl::PCLHotKey::eVK_F13;
+-				reflex_options.mode = sl::ReflexMode::eOff;
+-				reflex_options.useMarkersToOptimize = false;
+-				reflex_options.idThread = 0;
+-				sl_context.reflex_set_options(reflex_options);
+-			}
+-
+-			// load initial project settings
++				sl_context.reflex_options = {};
++				sl_context.reflex_options.frameLimitUs = 0;
++				sl_context.reflex_options.virtualKey = (uint16_t)sl::PCLHotKey::eVK_F13;
++				sl_context.reflex_options.mode = sl::ReflexMode::eOff;
++				sl_context.reflex_options.useMarkersToOptimize = false;
++				sl_context.reflex_options.idThread = 0;
++				sl_context.reflex_options_dirty = true;
++			}
+ 			update_project_settings();
+ 			return;
++		}
+ 		case StreamlineMarkerType::STREAMLINE_MARKER_BEFORE_DEVICE_DESTROY:
+ 			if (sl_context.slShutdown) {
+ 				sl_context.slShutdown();
+@@ -137,40 +156,102 @@
+ 			break;
+ 	}
+ 
+-	if (!sl_context.is_game || !sl_context.streamline_capabilities.reflex_available) {
+-		// Make sure we still get frame tokens, needed for DLSS.
++	if (!sl_context.is_game) {
++		// Frame tokens are also needed by DLSS in editor-driven game runs.
+ 		if (marker == StreamlineMarkerType::STREAMLINE_MARKER_BEFORE_MESSAGE_LOOP) {
+ 			sl_context.get_new_frame_token();
+ 		}
+ 		return;
+ 	}
+ 
++	if (marker == StreamlineMarkerType::STREAMLINE_MARKER_BEFORE_MESSAGE_LOOP) {
++		if (sl_context.dlssg_delay > 0) {
++			--sl_context.dlssg_delay;
++		}
++		{
++			_THREAD_SAFE_METHOD_
++			// PCL and Reflex are separate capabilities. Both SetOptions calls and
++			// GetState are not SDK-thread-safe and execute only on this thread.
++			if (sl_context.streamline_capabilities.pcl_available && sl_context.pcl_options_dirty) {
++				sl::Result result = sl_context.pcl_set_options(sl_context.pcl_options);
++				sl_context.pcl_options_result.store(int(result));
++				sl_context.pcl_options_dirty = false;
++				if (result != sl::Result::eOk || sl_context.slPCLSetMarker == nullptr) {
++					record_pcl_failure(sl_context, result != sl::Result::eOk ? result : sl::Result::eErrorMissingOrInvalidAPI);
++				}
++			}
++			const bool force_off = sl_context.reflex_force_off.exchange(false);
++			if (sl_context.streamline_capabilities.reflex_available && (sl_context.reflex_options_dirty || force_off)) {
++				sl::ReflexState state{};
++				sl::Result state_result = sl_context.reflex_get_state(state);
++				sl_context.reflex_state_result.store(int(state_result));
++				sl_context.reflex_low_latency_available.store(state_result == sl::Result::eOk && state.lowLatencyAvailable);
++				if (state_result != sl::Result::eOk || sl_context.slReflexSleep == nullptr) {
++					record_reflex_failure(sl_context, state_result != sl::Result::eOk ? state_result : sl::Result::eErrorMissingOrInvalidAPI);
++				}
++				sl::ReflexOptions applied = sl_context.reflex_options;
++				if (!sl_context.reflex_low_latency_available.load() || sl_context.reflex_failed.load() ||
++						!sl_context.streamline_capabilities.pcl_available || sl_context.pcl_failed.load()) {
++					applied.mode = sl::ReflexMode::eOff;
++				}
++				if (sl_context.reflex_failed.load() || sl_context.pcl_failed.load()) {
++					applied.frameLimitUs = 0;
++				}
++				sl::Result set_result = sl_context.reflex_set_options(applied);
++				sl_context.reflex_set_calls.fetch_add(1);
++				sl_context.reflex_set_result.store(int(set_result));
++				sl_context.reflex_options_dirty = false;
++				if (set_result == sl::Result::eOk) {
++					sl_context.reflex_applied_mode.store(int(applied.mode));
++				} else {
++					record_reflex_failure(sl_context, set_result);
++					// A failed mode change may leave the previous mode active. Make one
++					// explicit Off attempt and report unknown if that also fails.
++					applied.mode = sl::ReflexMode::eOff;
++					applied.frameLimitUs = 0;
++					sl::Result off_result = sl_context.reflex_set_options(applied);
++					sl_context.reflex_set_calls.fetch_add(1);
++					sl_context.reflex_applied_mode.store(off_result == sl::Result::eOk ? int(sl::ReflexMode::eOff) : -1);
++					sl_context.reflex_force_off.store(false);
++				}
++			}
++		}
++		sl::FrameToken *frame_token = sl_context.get_new_frame_token();
++		if (sl_context.streamline_capabilities.reflex_available) {
++			// Sleep must run when supported even in Off mode. Do not hold the
++			// settings mutex while waiting: the render thread must keep submitting.
++			sl::Result result = sl_context.reflex_sleep(frame_token);
++			sl_context.reflex_sleep_calls.fetch_add(1);
++			sl_context.reflex_sleep_result.store(int(result));
++			if (frame_token != nullptr) {
++				sl_context.reflex_sleep_frame_id.store(uint32_t(*frame_token));
++			}
++			if (result == sl::Result::eOk) {
++				sl_context.reflex_sleep_successes.fetch_add(1);
++			} else {
++				record_reflex_failure(sl_context, result);
++			}
++		}
++		return;
++	}
++
++	if (marker == StreamlineMarkerType::STREAMLINE_MARKER_MODIFY_SWAPCHAIN) {
++		sl_context.dlssg_disable();
++		return;
++	}
++	if (!sl_context.streamline_capabilities.pcl_available) {
++		return;
++	}
+ 	sl::PCLMarker sl_marker = sl::PCLMarker::eMaximum;
++	bool render_marker = false;
+ 	switch (marker) {
+-		case StreamlineMarkerType::STREAMLINE_MARKER_MODIFY_SWAPCHAIN:
+-			sl_context.dlssg_disable();
+-			return;
+-		case StreamlineMarkerType::STREAMLINE_MARKER_BEFORE_MESSAGE_LOOP:
+-			if (sl_context.dlssg_delay > 0) {
+-				--sl_context.dlssg_delay;
+-			}
+-			if (sl_context.pcl_options_dirty) {
+-				sl_context.pcl_set_options(sl_context.pcl_options);
+-			}
+-			if (sl_context.reflex_options_dirty) {
+-				sl_context.reflex_set_options(sl_context.reflex_options);
+-			}
+-
+-			sl_context.get_new_frame_token();
+-			if (sl_context.reflex_options.mode != sl::ReflexMode::eOff || sl_context.reflex_options.frameLimitUs > 0) {
+-				sl_context.reflex_sleep(sl_context.last_token);
+-			}
+-			break;
+ 		case StreamlineMarkerType::STREAMLINE_MARKER_BEGIN_RENDER:
+ 			sl_marker = sl::PCLMarker::eRenderSubmitStart;
++			render_marker = true;
+ 			break;
+ 		case StreamlineMarkerType::STREAMLINE_MARKER_END_RENDER:
+ 			sl_marker = sl::PCLMarker::eRenderSubmitEnd;
++			render_marker = true;
+ 			break;
+ 		case StreamlineMarkerType::STREAMLINE_MARKER_BEGIN_SIMULATION:
+ 			sl_marker = sl::PCLMarker::eSimulationStart;
+@@ -180,9 +261,11 @@
+ 			break;
+ 		case StreamlineMarkerType::STREAMLINE_MARKER_BEGIN_PRESENT:
+ 			sl_marker = sl::PCLMarker::ePresentStart;
++			render_marker = true;
+ 			break;
+ 		case StreamlineMarkerType::STREAMLINE_MARKER_END_PRESENT:
+ 			sl_marker = sl::PCLMarker::ePresentEnd;
++			render_marker = true;
+ 			break;
+ 		case StreamlineMarkerType::STREAMLINE_MARKER_PC_PING:
+ 			sl_marker = sl::PCLMarker::ePCLatencyPing;
+@@ -190,9 +273,47 @@
+ 		default:
+ 			return;
+ 	}
+-
+-	if (sl_context.last_token && sl_marker != sl::PCLMarker::eMaximum) {
+-		sl_context.pcl_marker(sl_context.last_token, sl_marker);
++	// The main thread can already own the next simulation token when the
++	// queued render/present callbacks run. Use the token installed with draw.
++	sl::FrameToken *frame_token = render_marker ? sl_context.render_token : sl_context.last_token;
++	if (frame_token == nullptr) {
++		return; // Startup may precede the first token.
++	}
++	const uint32_t frame_id = uint32_t(*frame_token);
++	if (render_marker && frame_id != sl_context.render_frame_id) {
++		sl_context.pcl_expired_tokens.fetch_add(1);
++		record_pcl_failure(sl_context, sl::Result::eErrorInvalidIntegration);
++		return;
++	}
++	sl::Result result = sl_context.pcl_marker(frame_token, sl_marker);
++	sl_context.pcl_marker_calls.fetch_add(1);
++	sl_context.pcl_marker_result.store(int(result));
++	if (result != sl::Result::eOk) {
++		record_pcl_failure(sl_context, result);
++		return;
++	}
++	sl_context.pcl_marker_successes.fetch_add(1);
++	switch (marker) {
++		case STREAMLINE_MARKER_BEGIN_SIMULATION:
++			sl_context.pcl_simulation_start_successes.fetch_add(1);
++			sl_context.pcl_simulation_frame_id.store(frame_id);
++			break;
++		case STREAMLINE_MARKER_BEGIN_RENDER:
++			sl_context.pcl_render_start_successes.fetch_add(1);
++			sl_context.pcl_render_frame_id.store(frame_id);
++			break;
++		case STREAMLINE_MARKER_END_RENDER:
++			sl_context.pcl_render_end_successes.fetch_add(1);
++			break;
++		case STREAMLINE_MARKER_BEGIN_PRESENT:
++			sl_context.pcl_present_start_successes.fetch_add(1);
++			sl_context.pcl_present_frame_id.store(frame_id);
++			break;
++		case STREAMLINE_MARKER_END_PRESENT:
++			sl_context.pcl_present_end_successes.fetch_add(1);
++			break;
++		default:
++			break;
+ 	}
+ #endif
+ }
+@@ -259,6 +380,57 @@
+ 	status["backend_failed"] = false;
+ 	return status;
+ #endif
++}
++
++Dictionary Streamline::get_reflex_status() const {
++	Dictionary status;
++#ifdef STREAMLINE_ENABLED
++	_THREAD_SAFE_METHOD_
++	const StreamlineContext &ctx = StreamlineContext::get();
++	const bool plugin_supported = ctx.is_game && ctx.streamline_capabilities.reflex_available;
++	const bool plugin_ready = plugin_supported && ctx.slReflexSetOptions && ctx.slReflexGetState && ctx.slReflexSleep;
++	const bool pcl_supported = ctx.is_game && ctx.streamline_capabilities.pcl_available;
++	const bool pcl_ready = pcl_supported && ctx.slPCLSetOptions && ctx.slPCLSetMarker;
++	const bool failed = ctx.reflex_failed.load() || ctx.pcl_failed.load();
++	status["plugin_supported"] = plugin_supported;
++	status["plugin_ready"] = plugin_ready;
++	status["pcl_supported"] = pcl_supported;
++	status["pcl_ready"] = pcl_ready;
++	status["low_latency_available"] = ctx.reflex_low_latency_available.load();
++	status["available"] = plugin_ready && pcl_ready && ctx.reflex_low_latency_available.load() && !failed;
++	status["backend_failed"] = failed;
++	status["requested_mode"] = int(ctx.reflex_options.mode);
++	status["applied_mode"] = ctx.reflex_applied_mode.load();
++	status["state_result"] = ctx.reflex_state_result.load();
++	status["set_result"] = ctx.reflex_set_result.load();
++	status["sleep_result"] = ctx.reflex_sleep_result.load();
++	status["failure_result"] = ctx.reflex_failure_result.load();
++	status["pcl_options_result"] = ctx.pcl_options_result.load();
++	status["pcl_marker_result"] = ctx.pcl_marker_result.load();
++	status["pcl_failure_result"] = ctx.pcl_failure_result.load();
++	status["set_calls"] = int64_t(ctx.reflex_set_calls.load());
++	status["sleep_calls"] = int64_t(ctx.reflex_sleep_calls.load());
++	status["sleep_successes"] = int64_t(ctx.reflex_sleep_successes.load());
++	status["sleep_frame_id"] = int64_t(ctx.reflex_sleep_frame_id.load());
++	status["pcl_marker_calls"] = int64_t(ctx.pcl_marker_calls.load());
++	status["pcl_marker_successes"] = int64_t(ctx.pcl_marker_successes.load());
++	status["simulation_start_successes"] = int64_t(ctx.pcl_simulation_start_successes.load());
++	status["render_start_successes"] = int64_t(ctx.pcl_render_start_successes.load());
++	status["render_end_successes"] = int64_t(ctx.pcl_render_end_successes.load());
++	status["present_start_successes"] = int64_t(ctx.pcl_present_start_successes.load());
++	status["present_end_successes"] = int64_t(ctx.pcl_present_end_successes.load());
++	status["expired_tokens"] = int64_t(ctx.pcl_expired_tokens.load());
++	status["simulation_frame_id"] = int64_t(ctx.pcl_simulation_frame_id.load());
++	status["render_frame_id"] = int64_t(ctx.pcl_render_frame_id.load());
++	status["present_frame_id"] = int64_t(ctx.pcl_present_frame_id.load());
++#else
++	status["plugin_supported"] = false;
++	status["available"] = false;
++	status["backend_failed"] = false;
++	status["requested_mode"] = 0;
++	status["applied_mode"] = -1;
++#endif
++	return status;
+ }
+ 
+ bool Streamline::get_capability(StreamlineCapabilityType p_capability_type) {
+@@ -273,8 +445,12 @@
+ 			return StreamlineContext::get().streamline_capabilities.dlss_rr_available;
+ 		case STREAMLINE_CAPABILITY_NIS:
+ 			return StreamlineContext::get().streamline_capabilities.nis_available;
+-		case STREAMLINE_CAPABILITY_REFLEX:
+-			return StreamlineContext::get().streamline_capabilities.reflex_available;
++		case STREAMLINE_CAPABILITY_REFLEX: {
++			const StreamlineContext &ctx = StreamlineContext::get();
++			return ctx.is_game && ctx.streamline_capabilities.reflex_available && ctx.streamline_capabilities.pcl_available &&
++					ctx.slReflexSetOptions && ctx.slReflexGetState && ctx.slReflexSleep && ctx.slPCLSetOptions && ctx.slPCLSetMarker &&
++					ctx.reflex_low_latency_available.load() && !ctx.reflex_failed.load() && !ctx.pcl_failed.load();
++		}
+ 		case STREAMLINE_CAPABILITY_PCL:
+ 			return StreamlineContext::get().streamline_capabilities.pcl_available;
+ 	}
+--- a/drivers/streamline/streamline.h
++++ b/drivers/streamline/streamline.h
+@@ -52,6 +52,7 @@
+ 	void set_parameter(StreamlineParameterType p_parameter_type, const Variant &p_value);
+ 	bool get_capability(StreamlineCapabilityType p_capability_type);
+ 	Dictionary get_dlss_status() const;
++	Dictionary get_reflex_status() const;
+ 
+ 	void set_internal_parameter(const char *p_key, void *p_value);
+ 	void *get_internal_parameter(StreamlineInternalParameterType p_internal_parameter_type);
+--- a/drivers/streamline/streamline_context.cpp
++++ b/drivers/streamline/streamline_context.cpp
+@@ -188,47 +188,39 @@
+ 	}
+ }
+ 
+-void StreamlineContext::reflex_set_options(const sl::ReflexOptions &opts) {
+-	STREAMLINE_GAME_ONLY; // Disable reflex for editor or project settings.
+-
+-	reflex_options = opts;
+-	reflex_options_dirty = false;
+-	sl::Result result = this->slReflexSetOptions ? this->slReflexSetOptions(opts) : sl::Result::eOk;
+-	ERR_FAIL_COND_MSG(result != sl::Result::eOk, StreamlineContext::result_to_string(result));
+-}
+-
+-void StreamlineContext::pcl_set_options(const sl::PCLOptions &opts) {
+-	STREAMLINE_GAME_ONLY; // Disable PCL for editor or project settings.
+-
+-	pcl_options = opts;
+-	pcl_options_dirty = false;
+-	sl::Result result = this->slPCLSetOptions ? this->slPCLSetOptions(opts) : sl::Result::eOk;
+-	ERR_FAIL_COND_MSG(result != sl::Result::eOk, StreamlineContext::result_to_string(result));
+-}
+-
+-void StreamlineContext::pcl_marker(sl::FrameToken *frameToken, sl::PCLMarker marker) {
+-	STREAMLINE_GAME_ONLY; // Disable PCL for editor or project settings.
+-
+-	sl::Result result = this->slPCLSetMarker ? this->slPCLSetMarker(marker, *frameToken) : sl::Result::eOk;
+-	ERR_FAIL_COND_MSG(result != sl::Result::eOk, StreamlineContext::result_to_string(result));
+-}
+-
+-void StreamlineContext::reflex_sleep(sl::FrameToken *frameToken) {
+-	STREAMLINE_GAME_ONLY; // Disable reflex for editor or project settings.
+-
+-	if (frameToken == nullptr) {
+-		return;
+-	}
+-
+-	sl::Result result = this->slReflexSleep ? this->slReflexSleep(*frameToken) : sl::Result::eOk;
+-	ERR_FAIL_COND_MSG(result != sl::Result::eOk, StreamlineContext::result_to_string(result));
+-}
+-
+-void StreamlineContext::reflex_get_state(sl::ReflexState &reflexState) {
+-	STREAMLINE_GAME_ONLY; // Disable reflex for editor or project settings.
+-
+-	sl::Result result = this->slReflexGetState ? this->slReflexGetState(reflexState) : sl::Result::eOk;
+-	ERR_FAIL_COND_MSG(result != sl::Result::eOk, StreamlineContext::result_to_string(result));
++sl::Result StreamlineContext::reflex_set_options(const sl::ReflexOptions &opts) {
++	if (!is_game) {
++		return sl::Result::eErrorInvalidState;
++	}
++	return slReflexSetOptions ? slReflexSetOptions(opts) : sl::Result::eErrorMissingOrInvalidAPI;
++}
++
++sl::Result StreamlineContext::pcl_set_options(const sl::PCLOptions &opts) {
++	if (!is_game) {
++		return sl::Result::eErrorInvalidState;
++	}
++	return slPCLSetOptions ? slPCLSetOptions(opts) : sl::Result::eErrorMissingOrInvalidAPI;
++}
++
++sl::Result StreamlineContext::pcl_marker(sl::FrameToken *frameToken, sl::PCLMarker marker) {
++	if (!is_game || frameToken == nullptr) {
++		return sl::Result::eErrorInvalidState;
++	}
++	return slPCLSetMarker ? slPCLSetMarker(marker, *frameToken) : sl::Result::eErrorMissingOrInvalidAPI;
++}
++
++sl::Result StreamlineContext::reflex_sleep(sl::FrameToken *frameToken) {
++	if (!is_game || frameToken == nullptr) {
++		return sl::Result::eErrorInvalidState;
++	}
++	return slReflexSleep ? slReflexSleep(*frameToken) : sl::Result::eErrorMissingOrInvalidAPI;
++}
++
++sl::Result StreamlineContext::reflex_get_state(sl::ReflexState &reflexState) {
++	if (!is_game) {
++		return sl::Result::eErrorInvalidState;
++	}
++	return slReflexGetState ? slReflexGetState(reflexState) : sl::Result::eErrorMissingOrInvalidAPI;
+ }
+ 
+ sl::FrameToken *StreamlineContext::get_new_frame_token() {
+--- a/drivers/streamline/streamline_context.h
++++ b/drivers/streamline/streamline_context.h
+@@ -31,6 +31,8 @@
+ #pragma once
+ 
+ #ifdef STREAMLINE_ENABLED
++#include <atomic>
++
+ #include "drivers/streamline/streamline_data.h"
+ #include "drivers/streamline/streamline_headers.h"
+ class StreamlineContext {
+@@ -57,11 +59,41 @@
+ 	PFun_slReflexSetOptions *slReflexSetOptions = nullptr;
+ 	PFun_slReflexSleep *slReflexSleep = nullptr;
+ 
++	// Main-thread options are protected by Streamline's mutex. Cross-thread
++	// counters and the failure latch are atomic; SDK sleep never holds that mutex.
++	std::atomic<bool> reflex_low_latency_available{ false };
++	std::atomic<bool> reflex_failed{ false };
++	std::atomic<bool> reflex_force_off{ false };
++	std::atomic<int> reflex_applied_mode{ -1 }; // -1 means not confirmed by SetOptions.
++	std::atomic<int> reflex_state_result{ -1 };
++	std::atomic<int> reflex_set_result{ -1 };
++	std::atomic<int> reflex_sleep_result{ -1 };
++	std::atomic<int> reflex_failure_result{ 0 };
++	std::atomic<uint64_t> reflex_set_calls{ 0 };
++	std::atomic<uint64_t> reflex_sleep_calls{ 0 };
++	std::atomic<uint64_t> reflex_sleep_successes{ 0 };
++	std::atomic<uint32_t> reflex_sleep_frame_id{ 0 };
++
+ 	// PCL
+ 	sl::PCLOptions pcl_options;
+ 	bool pcl_options_dirty = true;
+ 	PFun_slPCLSetMarker *slPCLSetMarker = nullptr;
+ 	PFun_slPCLSetOptions *slPCLSetOptions = nullptr;
++	std::atomic<bool> pcl_failed{ false };
++	std::atomic<int> pcl_options_result{ -1 };
++	std::atomic<int> pcl_marker_result{ -1 };
++	std::atomic<int> pcl_failure_result{ 0 };
++	std::atomic<uint64_t> pcl_marker_calls{ 0 };
++	std::atomic<uint64_t> pcl_marker_successes{ 0 };
++	std::atomic<uint64_t> pcl_simulation_start_successes{ 0 };
++	std::atomic<uint64_t> pcl_render_start_successes{ 0 };
++	std::atomic<uint64_t> pcl_render_end_successes{ 0 };
++	std::atomic<uint64_t> pcl_present_start_successes{ 0 };
++	std::atomic<uint64_t> pcl_present_end_successes{ 0 };
++	std::atomic<uint64_t> pcl_expired_tokens{ 0 };
++	std::atomic<uint32_t> pcl_simulation_frame_id{ 0 };
++	std::atomic<uint32_t> pcl_render_frame_id{ 0 };
++	std::atomic<uint32_t> pcl_present_frame_id{ 0 };
+ 
+ 	// DLSS Super Resolution
+ 	PFun_slDLSSGetOptimalSettings *slDLSSGetOptimalSettings = nullptr;
+@@ -94,11 +126,11 @@
+ 	void load_functions_post_init();
+ 	static const char *result_to_string(sl::Result result);
+ 
+-	void reflex_set_options(const sl::ReflexOptions &opts);
+-	void reflex_sleep(sl::FrameToken *frameToken);
+-	void reflex_get_state(sl::ReflexState &reflexState);
+-	void pcl_set_options(const sl::PCLOptions &opts);
+-	void pcl_marker(sl::FrameToken *frameToken, sl::PCLMarker marker);
++	sl::Result reflex_set_options(const sl::ReflexOptions &opts);
++	sl::Result reflex_sleep(sl::FrameToken *frameToken);
++	sl::Result reflex_get_state(sl::ReflexState &reflexState);
++	sl::Result pcl_set_options(const sl::PCLOptions &opts);
++	sl::Result pcl_marker(sl::FrameToken *frameToken, sl::PCLMarker marker);
+ 	sl::FrameToken *get_new_frame_token();
+ 
+ 	void dlssg_disable();
+--- a/core/input/input.cpp
++++ b/core/input/input.cpp
+@@ -876,7 +876,11 @@
+ 
+ 	Ref<InputEventKey> k = p_event;
+ 	if (k.is_valid() && !k->is_echo() && k->get_keycode() == Key::F13) {
+-		Streamline::get_singleton()->emit_marker(STREAMLINE_MARKER_PC_PING);
++		// The SDK hotkey generates both key-down and key-up events; only the
++		// press represents a new latency ping for this frame.
++		if (k->is_pressed()) {
++			Streamline::get_singleton()->emit_marker(STREAMLINE_MARKER_PC_PING);
++		}
+ 	} else if (k.is_valid() && !k->is_echo() && k->get_keycode() != Key::NONE) {
+ 		if (k->is_pressed()) {
+ 			keys_pressed.insert(k->get_keycode());

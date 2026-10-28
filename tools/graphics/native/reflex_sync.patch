@@ -1,0 +1,120 @@
+--- a/drivers/streamline/streamline.cpp
++++ b/drivers/streamline/streamline.cpp
+@@ -164,33 +164,36 @@
+ 		return;
+ 	}
+ 
+-	if (marker == StreamlineMarkerType::STREAMLINE_MARKER_BEFORE_MESSAGE_LOOP) {
+-		if (sl_context.dlssg_delay > 0) {
+-			--sl_context.dlssg_delay;
+-		}
+-		{
+-			_THREAD_SAFE_METHOD_
+-			// PCL and Reflex are separate capabilities. Both SetOptions calls and
+-			// GetState are not SDK-thread-safe and execute only on this thread.
+-			if (sl_context.streamline_capabilities.pcl_available && sl_context.pcl_options_dirty) {
+-				sl::Result result = sl_context.pcl_set_options(sl_context.pcl_options);
+-				sl_context.pcl_options_result.store(int(result));
+-				sl_context.pcl_options_dirty = false;
+-				if (result != sl::Result::eOk || sl_context.slPCLSetMarker == nullptr) {
+-					record_pcl_failure(sl_context, result != sl::Result::eOk ? result : sl::Result::eErrorMissingOrInvalidAPI);
+-				}
++	if (marker == StreamlineMarkerType::STREAMLINE_MARKER_AFTER_RENDER_SYNC) {
++		_THREAD_SAFE_METHOD_
++		// The render queue was drained before this marker. GetState and both
++		// SetOptions calls are not SDK-thread-safe and cannot overlap PCL render
++		// or present markers from the previous draw.
++		if (sl_context.streamline_capabilities.pcl_available && sl_context.pcl_options_dirty) {
++			sl::Result result = sl_context.pcl_set_options(sl_context.pcl_options);
++			sl_context.pcl_options_result.store(int(result));
++			sl_context.pcl_options_dirty = false;
++			if (result != sl::Result::eOk || sl_context.slPCLSetMarker == nullptr) {
++				record_pcl_failure(sl_context, result != sl::Result::eOk ? result : sl::Result::eErrorMissingOrInvalidAPI);
++			}
++		}
++		if (sl_context.streamline_capabilities.reflex_available) {
++			// Sleep can return eOk while the SDK internally withdraws low-latency
++			// support. Refresh state each frame, not only on an option change.
++			const bool previously_available = sl_context.reflex_low_latency_available.load();
++			sl::ReflexState state{};
++			sl::Result state_result = sl_context.reflex_get_state(state);
++			sl_context.reflex_state_calls.fetch_add(1);
++			sl_context.reflex_state_result.store(int(state_result));
++			const bool currently_available = state_result == sl::Result::eOk && state.lowLatencyAvailable;
++			sl_context.reflex_low_latency_available.store(currently_available);
++			if (state_result != sl::Result::eOk || sl_context.slReflexSleep == nullptr) {
++				record_reflex_failure(sl_context, state_result != sl::Result::eOk ? state_result : sl::Result::eErrorMissingOrInvalidAPI);
+ 			}
+ 			const bool force_off = sl_context.reflex_force_off.exchange(false);
+-			if (sl_context.streamline_capabilities.reflex_available && (sl_context.reflex_options_dirty || force_off)) {
+-				sl::ReflexState state{};
+-				sl::Result state_result = sl_context.reflex_get_state(state);
+-				sl_context.reflex_state_result.store(int(state_result));
+-				sl_context.reflex_low_latency_available.store(state_result == sl::Result::eOk && state.lowLatencyAvailable);
+-				if (state_result != sl::Result::eOk || sl_context.slReflexSleep == nullptr) {
+-					record_reflex_failure(sl_context, state_result != sl::Result::eOk ? state_result : sl::Result::eErrorMissingOrInvalidAPI);
+-				}
++			if (sl_context.reflex_options_dirty || force_off || previously_available != currently_available) {
+ 				sl::ReflexOptions applied = sl_context.reflex_options;
+-				if (!sl_context.reflex_low_latency_available.load() || sl_context.reflex_failed.load() ||
++				if (!currently_available || sl_context.reflex_failed.load() ||
+ 						!sl_context.streamline_capabilities.pcl_available || sl_context.pcl_failed.load()) {
+ 					applied.mode = sl::ReflexMode::eOff;
+ 				}
+@@ -216,6 +219,13 @@
+ 				}
+ 			}
+ 		}
++		return;
++	}
++
++	if (marker == StreamlineMarkerType::STREAMLINE_MARKER_BEFORE_MESSAGE_LOOP) {
++		if (sl_context.dlssg_delay > 0) {
++			--sl_context.dlssg_delay;
++		}
+ 		sl::FrameToken *frame_token = sl_context.get_new_frame_token();
+ 		if (sl_context.streamline_capabilities.reflex_available) {
+ 			// Sleep must run when supported even in Off mode. Do not hold the
+@@ -408,6 +418,7 @@
+ 	status["pcl_options_result"] = ctx.pcl_options_result.load();
+ 	status["pcl_marker_result"] = ctx.pcl_marker_result.load();
+ 	status["pcl_failure_result"] = ctx.pcl_failure_result.load();
++	status["state_calls"] = int64_t(ctx.reflex_state_calls.load());
+ 	status["set_calls"] = int64_t(ctx.reflex_set_calls.load());
+ 	status["sleep_calls"] = int64_t(ctx.reflex_sleep_calls.load());
+ 	status["sleep_successes"] = int64_t(ctx.reflex_sleep_successes.load());
+--- a/drivers/streamline/streamline_context.h
++++ b/drivers/streamline/streamline_context.h
+@@ -69,6 +69,7 @@
+ 	std::atomic<int> reflex_set_result{ -1 };
+ 	std::atomic<int> reflex_sleep_result{ -1 };
+ 	std::atomic<int> reflex_failure_result{ 0 };
++	std::atomic<uint64_t> reflex_state_calls{ 0 };
+ 	std::atomic<uint64_t> reflex_set_calls{ 0 };
+ 	std::atomic<uint64_t> reflex_sleep_calls{ 0 };
+ 	std::atomic<uint64_t> reflex_sleep_successes{ 0 };
+--- a/drivers/streamline/streamline_data.h
++++ b/drivers/streamline/streamline_data.h
+@@ -34,6 +34,7 @@
+ 	STREAMLINE_MARKER_INITIALIZE_VULKAN,
+ 	STREAMLINE_MARKER_INITIALIZE_D3D12,
+ 	STREAMLINE_MARKER_BEFORE_MESSAGE_LOOP,
++	STREAMLINE_MARKER_AFTER_RENDER_SYNC,
+ 	STREAMLINE_MARKER_BEFORE_DEVICE_DESTROY,
+ 	STREAMLINE_MARKER_AFTER_DEVICE_CREATION,
+ 	STREAMLINE_MARKER_MODIFY_SWAPCHAIN,
+--- a/main/main.cpp
++++ b/main/main.cpp
+@@ -5122,6 +5122,12 @@
+ 	GodotProfileZoneGrouped(_profile_zone, "RenderingServer::sync");
+ 	RenderingServer::get_singleton()->sync(); //sync if still drawing from previous frames.
+ 
++	// Reflex GetState and SetOptions are not SDK-thread-safe. Perform them
++	// only after the previous draw completes and before enqueueing this draw.
++	if (Streamline::get_singleton()) {
++		Streamline::get_singleton()->emit_marker(STREAMLINE_MARKER_AFTER_RENDER_SYNC);
++	}
++
+ 	GodotProfileZoneGrouped(_profile_zone, "RenderingServer::draw");
+ 	const bool has_pending_resources_for_processing = RD::get_singleton() && RD::get_singleton()->has_pending_resources_for_processing();
+ 	bool wants_present = (DisplayServer::get_singleton()->can_any_window_draw() ||

@@ -54,8 +54,12 @@ Create the parent directory first; output and its `.settings.cfg` sidecar must n
 Verify the recorded `viewport_size`: fullscreen can use the desktop's resolution despite
 `--resolution`, so a 4K desktop does not establish a 1080p sample.
 Optional `--aircraft=<id>` selects a flyable fixed-wing aircraft. `--start=airborne|runway`
-selects its start (default `airborne`). `--dwell-ms=0..30000`
-waits after each Home draw before pressing Fly. `--prefetch=off|scene|trim|scene_trim`
+selects its start (default `airborne`).
+`--input=auto|keyboard` keeps automatic device selection by default or explicitly
+selects keyboard flight/menu controls through the ordinary controller service in
+the private profile. Use the same mode for both roles; a paused first draw does not
+establish interactive readiness.
+`--dwell-ms=0..30000` waits after each Home draw before pressing Fly. `--prefetch=off|scene|trim|scene_trim`
 selects the preparation experiment (default `off`); `--prefetch-delay-ms=0..10000`
 sets its stable-selection delay (default 350 ms). Non-off modes require an app that
 implements preparation. Compare identical dwell and delay settings across roles.
