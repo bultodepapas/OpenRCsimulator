@@ -5,9 +5,14 @@ const Config: Script = preload("res://environment/time_of_day_config.gd")
 const VisualTimeline: Script = preload("res://environment/visual_timeline.gd")
 const FailureRuntime: Script = preload("res://failures/runtime.gd")
 const OutOfTrim: Script = preload("res://sim/out_of_trim.gd")
+const WeatherField: Script = preload("res://physics/wind_field.gd")
+const WindFlow: Script = preload("res://physics/wind_aircraft_flow.gd")
+const Aero: Script = preload("res://physics/aero.gd")
 const PHYSICS_FORMAT_FAILURES: String = "openrc-flight-checkpoint v10"
+const PHYSICS_FORMAT_SPATIAL: String = "openrc-flight-checkpoint v12"
 ## D6-TRIM-01: an out-of-trim airframe wraps any supported flight checkpoint, outermost.
 const PHYSICS_FORMAT_AIRFRAME: String = "openrc-flight-checkpoint v13"
+const PHYSICS_FORMAT_NATIVE: String = "openrc-flight-checkpoint v14"
 
 const FORMAT: String = "openrc-visual-checkpoint v1"
 const FORMAT_PROGRESSING: String = "openrc-visual-checkpoint v2"
@@ -23,6 +28,8 @@ const PHYSICS_FORMATS: Array[String] = [
 ]
 const PAIRED_FIELDS: Array[String] = ["format", "physics", "timeline", "field_identity", "payload_sha256"]
 const PAIRED_MARKERS: Array[String] = ["physics", "timeline", "field_identity", "payload_sha256"]
+const NATIVE_IDENTITY_FIELDS: Array[String] = ["backend", "backend_version", "abi_version",
+	"binary_sha256", "source_sha256", "lock_sha256"]
 const MAX_SAFE_TICK: int = 9007199254740991
 const MAX_DATA_DEPTH: int = 64
 
@@ -74,7 +81,8 @@ static func read(candidate: Variant, expected_field_identity: String) -> Diction
 		return _read_paired(source, expected_field_identity, TIMELINE_FORMAT_FIXED)
 	if format_value == FORMAT_PROGRESSING:
 		return _read_paired(source, expected_field_identity, TIMELINE_FORMAT_PROGRESSING)
-	if not PHYSICS_FORMATS.has(str(format_value)) and format_value not in [PHYSICS_FORMAT_COLLISION_WORLD, PHYSICS_FORMAT_FAILURES, PHYSICS_FORMAT_AIRFRAME]:
+	if not PHYSICS_FORMATS.has(str(format_value)) and format_value not in [PHYSICS_FORMAT_COLLISION_WORLD,
+			PHYSICS_FORMAT_FAILURES, PHYSICS_FORMAT_SPATIAL, PHYSICS_FORMAT_AIRFRAME, PHYSICS_FORMAT_NATIVE]:
 		return _failure_read(["unknown checkpoint format '%s'" % str(format_value)])
 	for marker: String in PAIRED_MARKERS:
 		if source.has(marker):
@@ -149,6 +157,18 @@ static func _physics_tick(raw: Variant) -> Dictionary:
 	var format_value: Variant = checkpoint.get("format", null)
 	if typeof(format_value) != TYPE_STRING:
 		return {"ok": false, "errors": ["physics checkpoint format must be a string"]}
+	if format_value == PHYSICS_FORMAT_NATIVE:
+		var stage_inner: Variant = checkpoint.get("stage_physics_format")
+		if typeof(stage_inner) != TYPE_STRING or stage_inner == PHYSICS_FORMAT_NATIVE \
+				or not _valid_native_stage_identity(checkpoint.get("stage_backend")):
+			return {"ok": false, "errors": ["native checkpoint has an invalid physics format or backend identity"]}
+		var unwrapped: Dictionary = checkpoint.duplicate(true)
+		unwrapped.format = stage_inner
+		unwrapped.erase("stage_physics_format")
+		unwrapped.erase("stage_backend")
+		return _physics_tick(unwrapped)
+	if checkpoint.has("stage_backend") or checkpoint.has("stage_physics_format"):
+		return {"ok": false, "errors": ["stage identity requires a native checkpoint"]}
 	if format_value == PHYSICS_FORMAT_AIRFRAME:
 		var airframe_inner: Variant = checkpoint.get("airframe_physics_format")
 		if typeof(airframe_inner) != TYPE_STRING or airframe_inner == PHYSICS_FORMAT_AIRFRAME \
@@ -161,6 +181,21 @@ static func _physics_tick(raw: Variant) -> Dictionary:
 		return _physics_tick(unwrapped)
 	if checkpoint.has("airframe_trim_offset") or checkpoint.has("airframe_physics_format"):
 		return {ok = false, errors = ["airframe offsets require an airframe checkpoint"]}
+	if format_value == PHYSICS_FORMAT_SPATIAL:
+		var spatial_inner: Variant = checkpoint.get("spatial_physics_format")
+		if spatial_inner not in ["openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3",
+				"openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6",
+				PHYSICS_FORMAT_COLLISION_WORLD, "openrc-flight-checkpoint v8", "openrc-flight-checkpoint v9",
+				"openrc-flight-checkpoint v11", PHYSICS_FORMAT_FAILURES] \
+				or not _valid_spatial_weather(checkpoint):
+			return {ok = false, errors = ["spatial checkpoint has an invalid physics format or weather receipt"]}
+		var unwrapped: Dictionary = checkpoint.duplicate(true)
+		unwrapped.format = spatial_inner
+		unwrapped.erase("spatial_physics_format")
+		unwrapped.erase("spatial_weather_receipt")
+		return _physics_tick(unwrapped)
+	if checkpoint.has("spatial_physics_format") or checkpoint.has("spatial_weather_receipt"):
+		return {ok = false, errors = ["spatial weather receipt requires a spatial checkpoint"]}
 	if format_value == PHYSICS_FORMAT_FAILURES:
 		var inner_format: Variant = checkpoint.get("failure_physics_format")
 		if typeof(inner_format) != TYPE_STRING or (inner_format != PHYSICS_FORMAT_COLLISION_WORLD and not PHYSICS_FORMATS.has(inner_format)):
@@ -182,11 +217,22 @@ static func _physics_tick(raw: Variant) -> Dictionary:
 		var physics_format: Variant = checkpoint.get("physics_format", null)
 		if typeof(physics_format) != TYPE_STRING or not PHYSICS_FORMATS.has(str(physics_format)):
 			return {"ok": false, "errors": ["v7 physics_format must identify supported flight physics"]}
-		var collision_world_identity: Variant = checkpoint.get("collision_world_identity", null)
-		if typeof(collision_world_identity) != TYPE_STRING or not _is_sha256(str(collision_world_identity)):
-			return {"ok": false, "errors": ["v7 collision_world_identity must be a lowercase SHA-256"]}
+		var has_world: bool = checkpoint.has("collision_world_identity")
+		var has_lake: bool = checkpoint.has("lake_identity")
+		if (not has_world and not has_lake) \
+				or (has_world and (typeof(checkpoint.collision_world_identity) != TYPE_STRING \
+					or not _is_sha256(checkpoint.collision_world_identity))) \
+				or (has_lake and (typeof(checkpoint.lake_identity) != TYPE_STRING \
+					or not _is_sha256(checkpoint.lake_identity) \
+					or typeof(checkpoint.get("lake_id")) != TYPE_STRING \
+					or str(checkpoint.lake_id).strip_edges().is_empty())) \
+				or (not has_lake and checkpoint.has("lake_id")):
+			return {"ok": false, "errors": ["v7 requires valid collision-world or lake identity"]}
 	elif not PHYSICS_FORMATS.has(str(format_value)):
 		return {"ok": false, "errors": ["unsupported physics checkpoint format"]}
+	elif checkpoint.has("collision_world_identity") or checkpoint.has("lake_identity") \
+			or checkpoint.has("lake_id") or checkpoint.has("physics_format"):
+		return {"ok": false, "errors": ["collision-world or lake identity requires a v7 checkpoint"]}
 	var simulation: Variant = checkpoint.get("simulation", null)
 	if typeof(simulation) != TYPE_DICTIONARY:
 		return {"ok": false, "errors": ["physics checkpoint must contain a simulation object"]}
@@ -194,6 +240,34 @@ static func _physics_tick(raw: Variant) -> Dictionary:
 	if typeof(tick) != TYPE_INT or tick < 0 or tick > MAX_SAFE_TICK:
 		return {"ok": false, "errors": ["physics simulation.tick must be a non-negative safe integer"]}
 	return {"ok": true, "tick": int(tick), "errors": []}
+
+
+static func _valid_native_stage_identity(value: Variant) -> bool:
+	if not value is Dictionary or not _has_exact_keys(value, NATIVE_IDENTITY_FIELDS) \
+			or value.get("backend") != "native" or typeof(value.get("backend_version")) != TYPE_STRING \
+			or str(value.backend_version).strip_edges().is_empty() \
+			or typeof(value.get("abi_version")) != TYPE_INT or int(value.abi_version) <= 0:
+		return false
+	for key: String in ["binary_sha256", "source_sha256", "lock_sha256"]:
+		if typeof(value.get(key)) != TYPE_STRING or not _is_sha256(value[key]):
+			return false
+	return true
+
+
+## FlightSession owns the receipt schema and checks it again at restore; pairing
+## must not accept a spatial provider whose immutable identity was altered.
+static func _valid_spatial_weather(checkpoint: Dictionary) -> bool:
+	var built: Dictionary = WeatherField.build(checkpoint.get("weather_config"))
+	if not built.get("ok", false) or not built.field.is_spatial() \
+			or not checkpoint.get("spatial_weather_receipt") is Dictionary:
+		return false
+	var field: RefCounted = built.field
+	var expected := {format = "openrc-spatial-weather-receipt v1", field = field.spatial_identity(),
+		content_sha256 = field.spatial_content_hash(), point_air_law = WindFlow.STAGE_AIR_LAW,
+		aerodynamic_law = Aero.SPATIAL_CONTINUATION_LAW,
+		clock = "simulation-seconds-plus-immutable-epoch-offset; reset-reuses-epoch-v1"}
+	return JSON.parse_string(JSON.stringify(checkpoint.spatial_weather_receipt, "", true, true)) == \
+		JSON.parse_string(JSON.stringify(expected, "", true, true))
 
 
 static func _timeline_at_tick(raw: Variant, checkpoint_tick: int, expected_format: String = "") -> Dictionary:

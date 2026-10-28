@@ -244,6 +244,59 @@ class FleetCampaignTests(unittest.TestCase):
 
         asyncio.run(scenario())
 
+    def test_live_drift_cancels_workers_with_clear_reason(self):
+        async def scenario():
+            active = asyncio.Event()
+            cancelled = asyncio.Event()
+            guard = {"binary_sha256": "a" * 64}
+
+            async def fake_shard(_aircraft, _out, _semaphore, _warmup, _samples, _timeout):
+                active.set()
+                try:
+                    await asyncio.Event().wait()
+                except asyncio.CancelledError:
+                    cancelled.set()
+                    raise
+
+            with mock.patch.object(campaign, "run_shard", side_effect=fake_shard), \
+                    mock.patch.object(campaign, "snapshot", return_value={"binary_sha256": "b" * 64}):
+                with self.assertRaisesRegex(campaign.CampaignError, "snapshot changed: binary_sha256"):
+                    await campaign.run_shards(["running"], Path("."), 1, 2, 3, 10,
+                                              guard=guard, monitor_interval=0.01)
+            self.assertTrue(active.is_set())
+            self.assertTrue(cancelled.is_set())
+
+        asyncio.run(scenario())
+
+    def test_live_drift_names_changed_mirrored_source(self):
+        with tempfile.TemporaryDirectory(dir=campaign.ROOT / "tmp") as temporary:
+            source = Path(temporary) / "source.gd"
+            source.write_text("before", encoding="utf-8")
+            name = str(source.relative_to(campaign.ROOT))
+            guard = {"reference_sources": {name: campaign.sha256(source)}}
+            source.write_text("after", encoding="utf-8")
+            with mock.patch.object(campaign, "snapshot", side_effect=campaign.CampaignError("receipt stale")):
+                reason = campaign.drift_reason(guard)
+            self.assertIn("receipt stale", reason)
+            self.assertIn(name, reason)
+
+    def test_unchanged_snapshot_allows_completed_shards(self):
+        async def scenario():
+            guard = {"binary_sha256": "a" * 64}
+
+            async def fake_shard(aircraft, _out, _semaphore, _warmup, _samples, _timeout):
+                await asyncio.sleep(0.04)
+                return aircraft, Path(aircraft)
+
+            with mock.patch.object(campaign, "run_shard", side_effect=fake_shard), \
+                    mock.patch.object(campaign, "snapshot", return_value=guard) as check:
+                result = await campaign.run_shards(["fixed"], Path("."), 1, 2, 3, 10,
+                                                   guard=guard, monitor_interval=0.01)
+            self.assertEqual(result, {"fixed": Path("fixed")})
+            self.assertGreater(check.call_count, 0)
+
+        asyncio.run(scenario())
+
 
 if __name__ == "__main__":
     unittest.main()

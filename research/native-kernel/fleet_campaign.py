@@ -457,20 +457,61 @@ async def wait_reused_report(aircraft: str, path: Path, timeout: int) -> tuple[s
     raise CampaignError(f"{aircraft}: timed out waiting for reused shard: {path}")
 
 
+def drift_reason(guard: dict[str, Any]) -> str:
+    """Explain changes even when snapshot rejects an installed receipt as stale."""
+    try:
+        current = snapshot()
+    except (CampaignError, OSError, ValueError, KeyError, TypeError) as error:
+        changed = []
+        for name, digest in guard.get("reference_sources", {}).items():
+            path = ROOT / name
+            try:
+                if not path.is_file() or sha256(path) != digest:
+                    changed.append(name)
+            except OSError:
+                changed.append(name)
+        detail = f"; changed mirrored sources: {', '.join(changed[:8])}" if changed else ""
+        return f"frozen source/binary/engine snapshot is invalid: {error}{detail}"
+    changed_fields = [name for name in guard if current.get(name) != guard[name]]
+    if set(current) != set(guard):
+        changed_fields.append("snapshot fields")
+    return "frozen source/binary/engine snapshot changed: " + ", ".join(changed_fields) if changed_fields else ""
+
+
+async def monitor_snapshot(guard: dict[str, Any], interval: float = 5.0) -> None:
+    while True:
+        await asyncio.sleep(interval)
+        reason = drift_reason(guard)
+        if reason:
+            raise CampaignError(reason)
+
+
 async def run_shards(aircraft: list[str], out: Path, jobs: int, warmup: int, samples: int,
-                     timeout: int, reused: dict[str, Path] | None = None) -> dict[str, Path]:
+                     timeout: int, reused: dict[str, Path] | None = None,
+                     guard: dict[str, Any] | None = None, monitor_interval: float = 5.0) -> dict[str, Path]:
     semaphore = asyncio.Semaphore(jobs)
     reused = reused or {}
     tasks = [asyncio.create_task(wait_reused_report(name, reused[name], timeout) if name in reused
                                  else run_shard(name, out, semaphore, warmup, samples, timeout))
              for name in aircraft]
+    collected = asyncio.gather(*tasks)
+    monitor = asyncio.create_task(monitor_snapshot(guard, monitor_interval)) if guard is not None else None
     try:
-        return dict(await asyncio.gather(*tasks))
+        if monitor is not None:
+            finished, _pending = await asyncio.wait((collected, monitor), return_when=asyncio.FIRST_COMPLETED)
+            if monitor in finished:
+                await monitor
+        return dict(await collected)
     except BaseException:
         for task in tasks:
             task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)
+        await asyncio.gather(collected, return_exceptions=True)
         raise
+    finally:
+        if monitor is not None:
+            monitor.cancel()
+            await asyncio.gather(monitor, return_exceptions=True)
 
 
 def main() -> int:
@@ -505,7 +546,7 @@ def main() -> int:
         manifest_script_hash = sha256(out / "manifest.gd")
         require(snapshot() == guard, "source, binary or engine changed during manifest generation")
         print(f"Declared fleet: {len(expected)} rows across {len(aircraft)} aircraft", flush=True)
-        paths = asyncio.run(run_shards(aircraft, out, args.jobs, args.warmup, args.samples, args.timeout, reused))
+        paths = asyncio.run(run_shards(aircraft, out, args.jobs, args.warmup, args.samples, args.timeout, reused, guard))
         report_hashes = {name: sha256(path) for name, path in paths.items()}
         reports = {name: json.loads(path.read_text(encoding="utf-8")) for name, path in paths.items()}
         totals = validate_reports(manifest, reports, guard, args.warmup, args.samples)
