@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "81ff7b59-d215-4683-a8b8-e833e5fbd9fd",
+  "command": [
+    ".tools/Godot_v4.8-beta1_linux.x86_64",
+    "--headless",
+    "--path",
+    "/home/bulto/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/home/bulto/OpenRCsimulator/docs/research/wind-implementation/M5-W05d-R2/record_boundary_fixture.gd",
+    "--",
+    "--out=/home/bulto/OpenRCsimulator/tmp/beta-prep-20261028/wind-boundary/linux-current.json"
+  ],
+  "cwd": "/home/bulto/OpenRCsimulator",
+  "started_utc": "2026-10-28T12:07:52.578683+00:00",
+  "label": "current",
+  "log": "/home/bulto/OpenRCsimulator/tmp/beta-prep-20261028/wind-boundary/checks/current-fcygiwsl/engine.log",
+  "report": "/home/bulto/OpenRCsimulator/tmp/beta-prep-20261028/wind-boundary/checks/current-fcygiwsl/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.665871,
+  "log_bytes": 109,
+  "log_sha256": "4c3bc3f26c860ccfc75e514964a57107d33f7028469e57c86933a9d3552eac6d"
+}

@@ -1,0 +1,230 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4a27c803-c500-41f6-b5df-f2f3671d26ac",
+  "command": [
+    ".tools/Godot_v4.8-beta1_linux.x86_64",
+    "--headless",
+    "--path",
+    "/home/bulto/OpenRCsimulator/tmp/beta-prep-20261028/wind-boundary/clone/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_spatial_wind_prepared.gd"
+  ],
+  "cwd": "/home/bulto/OpenRCsimulator",
+  "started_utc": "2026-10-28T12:10:22.552887+00:00",
+  "label": "fresh-clone",
+  "log": "/home/bulto/OpenRCsimulator/tmp/beta-prep-20261028/wind-boundary/checks/fresh-clone-034qr1d9/engine.log",
+  "report": "/home/bulto/OpenRCsimulator/tmp/beta-prep-20261028/wind-boundary/checks/fresh-clone-034qr1d9/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "prepared spatial wind: 1543 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 20,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Cannot open file 'res://i18n/es.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed loading resource: res://i18n/es.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Cannot open file 'res://i18n/zh_Hans.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 9,
+      "message": "Failed loading resource: res://i18n/zh_Hans.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 11,
+      "message": "Cannot open file 'res://i18n/pt_BR.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 13,
+      "message": "Failed loading resource: res://i18n/pt_BR.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 15,
+      "message": "Cannot open file 'res://i18n/de.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 17,
+      "message": "Failed loading resource: res://i18n/de.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 19,
+      "message": "Cannot open file 'res://i18n/fr.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 21,
+      "message": "Failed loading resource: res://i18n/fr.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 23,
+      "message": "Cannot open file 'res://i18n/it.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 25,
+      "message": "Failed loading resource: res://i18n/it.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 27,
+      "message": "Cannot open file 'res://i18n/ru.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 29,
+      "message": "Failed loading resource: res://i18n/ru.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 31,
+      "message": "Cannot open file 'res://i18n/ja.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 33,
+      "message": "Failed loading resource: res://i18n/ja.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "prepared spatial wind: 1543 checks, 0 failed"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 36,
+      "message": "Resource file not found: res://assets/fonts/NotoSansCJKsc-Regular.otf (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] chinese_font (res://i18n/fonts.gd:11)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 42,
+      "message": "Resource file not found: res://assets/fonts/NotoSansCJKjp-Regular.otf (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] japanese_font (res://i18n/fonts.gd:17)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 48,
+      "message": "Resource file not found: res://assets/fonts/NotoSansCJKsc-Regular.otf (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] chinese_font (res://i18n/fonts.gd:11)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 54,
+      "message": "Resource file not found: res://assets/fonts/NotoSansCJKjp-Regular.otf (expected type: unknown)",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:325)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] japanese_font (res://i18n/fonts.gd:17)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.384746,
+  "log_bytes": 3069,
+  "log_sha256": "674a04d1bab210c433b2653a7ed9c06e5a7c9ac8ba966fb5b2891b75a5a77c9f"
+}

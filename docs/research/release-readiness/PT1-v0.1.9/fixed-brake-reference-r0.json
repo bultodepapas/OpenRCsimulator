@@ -1,0 +1,41 @@
+{
+	"engine": "4.8-beta1 (official)",
+	"format": "openrc-fixed-brake-legacy-capture v1",
+	"os": "Linux",
+	"outputs": {
+		"gp-extra-300s-60": {
+			"after_three_ticks": "fe3fe75e86416219faecf2c1b5800d11cfa60dcaebb3ca150b3bf9ad5a717e40",
+			"checkpoint": "b532d8831eae0874a8478c8279d3569b388c5f2d3cdd3c0a02faf8e973f08230",
+			"metadata": "9ab90008c11c95296678f05beed040c6ebcb99ed5b4efa60150bc7917578dc46",
+			"trace_csv": "7997d6acf9e4144113459829ba306d0d1c737e09ee84e1bd7b078ceea388c2e8"
+		},
+		"jensen-das-ugly-stik-60": {
+			"after_three_ticks": "294f07e2367b4b66c525583678f87eff122017ce7881bcc99af6dcee172990d8",
+			"checkpoint": "639a8540ba16a7f8c4a57522fd90e8dc0719297de20e8acd1f793dce161d2966",
+			"metadata": "cbe30f6482b8eb7eff3d081af8ffbc3dff720ac3a870caa64837732cc2c41db7",
+			"trace_csv": "e9ed39fe5338f9ea9dc37f647d30350339802137821507fa5f78de33dfa9f48c"
+		},
+		"p51d-mustang-120": {
+			"after_three_ticks": "7d8cce9616e8e53831d09b2658ae19c7ffe562df2647d186bf07c99e20d27076",
+			"checkpoint": "0d54c88e7b175a2dc1a3c5ca498ceb669cc43a75819fb0066a00ee5b3fb7f74b",
+			"metadata": "84ad37528bf8d4084f0f475ffacf370f8ae8745d250fd7fcb414938599ffd4f0",
+			"trace_csv": "3ca86240ae43842fb9c98a704e77ec323389046dc9f41aa7303b90b29078fa60"
+		},
+		"sebart-avanti-s-a200-p100rx": {
+			"after_three_ticks": "258f3b9ea4668e7d4da432a86bc714f443c14303a9eb756236c2f8ff3b777203",
+			"checkpoint": "bec9d632a8de6360a7be31ee6685ef5a5d67063ebeb9b6e82bd026f2bb7bc5c0",
+			"metadata": "0a6054143348b751c2852b6eb4175937bb1e5067a8d8c7dd2cb4ac9cc9f1dc48",
+			"trace_csv": "58fd863dfe8314d22b340efd4b6c237f0b117fb4b11cbe0772ce8ed29ba0f196"
+		}
+	},
+	"physics_hz": 240,
+	"reference": {
+		"base_commit": "fa9f387f6",
+		"before_sources": "docs/research/ground-physics/GP-12/evidence/fixed-brake-input/before",
+		"carburetor_sha256": "a09ccf8997001d4887517d8393d8fca9f401a997d2b40083a7a527ff29e71222",
+		"nitro_06_r3": null,
+		"pinned_inputs_verified": 400.0
+	},
+	"session_sha256": "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864",
+	"trace_sha256": "1c529262fb33b7db3137f9cba064be0e32a6d9c7620ae224cc06500a5a05a62e"
+}

@@ -1,0 +1,295 @@
+{
+  "format": "openrc-fl05-verification v1",
+  "date": "2026-10-28",
+  "scope": "offline software verification; synthetic flight fixtures; no physics changes or physical/performance qualification",
+  "investigation_base_commit": "96287766296b3fef6a37dcd4cc3847d7efbe9f19",
+  "receipt_commit": "5af16fdcf76d40c7efe0a6696c6864a09b076a65",
+  "source_sha256": {
+    "tools/flight_log/flight_log.py": "a04750aa39df996fad6497c7c996487761a24c139940e68d64d05f90899516fb",
+    "tools/flight_log/test_flight_log.py": "0eca1c914e7fee93bb4fc91e4b739ceb30857e7ed98f78f798d908bf6268f393",
+    "app/tools/flight_log_cli.gd": "63910193d1db8e2dc46961b9536b548e35c307e81e63ce338333b029b46442c7",
+    "app/sim/flight_log.gd": "12ce681766360ffe0821ce71b39ee329e5ff33e57a54604d2d82e142f55dc038",
+    "app/tests/test_flight_log.gd": "e5d5aa102039487a16ed9e68e809d58d6cc1d4830af6f0a2a276678560f2fea6",
+    "app/get-godot.sh": "e37bd376c2fe2f23457cdf94cd5626d69b2dd3c5626a889e253a8a264c63b1c0"
+  },
+  "host": {
+    "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "engine": "4.8.beta1.official.4d10419ca",
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82"
+  },
+  "fixture_checks": {
+    "checks": 3247,
+    "failures": 0,
+    "report_sha256": "db54a3a51606ac363b0cdf6782ceec884b6c563cd298e83dae5d927f0685a886"
+  },
+  "python_tests": {
+    "tests": 27,
+    "status": "passed",
+    "log_sha256": "f9ac281e2effd29cdf54aafa5d3d23ea4ebe1d4b8fd17b8c452b465be9fe54f7"
+  },
+  "reducer_allocation": {
+    "method": "tracemalloc after CSV generation, fixed marker count, includes hashing; not RSS or timing",
+    "1000_rows_peak_bytes": 1362353,
+    "20000_rows_peak_bytes": 2138303,
+    "maximum_peak_bytes": 4194304,
+    "maximum_growth_bytes": 1048576
+  },
+  "fresh_checkout": {
+    "kind": "fresh sparse local clone with final tool/test source overlay",
+    "exit_code": 0,
+    "no_engine_run": true,
+    "tests": 27,
+    "log_sha256": "64378e91e53a62b15934eb292dde14d7ae36d6b642bcddf188d5fa3867cd7269"
+  },
+  "cases": [
+    {
+      "aircraft_fixture": "gp_extra_300s_60",
+      "rows": 261,
+      "solver_sha256": "5ec70a64cef6e5ace5d9acc164405067c7ee9feba02f017a1c57516ca50f7df6",
+      "complete": true,
+      "solver_changed": false,
+      "marker_groups": [
+        {
+          "labels": [
+            "roll reversal"
+          ],
+          "tick": 56
+        }
+      ],
+      "windows": [
+        {
+          "kind": "unmarked_prefix",
+          "start_tick": 0,
+          "end_tick": 56,
+          "endpoint_samples": 57,
+          "interval_samples": 56,
+          "duration_s": 0.23333333333333334
+        },
+        {
+          "kind": "marker_tail",
+          "start_tick": 56,
+          "end_tick": 260,
+          "endpoint_samples": 205,
+          "interval_samples": 204,
+          "duration_s": 0.85
+        }
+      ],
+      "sha256": {
+        "source_log": "ae50262e4152d0259157c7b6283caebc2c4905d6c07cdf2f5c36ccd2218ad666",
+        "flight_csv": "2e0dc2a38f55023e7ebe3f4328de1b3ccd872cbf785deee03e6f7c23d8efbebf",
+        "replay_report": "03f692672db251b2fcabb2a9924e64aff227257968d1ada8389fece1d39abe05",
+        "debrief": "f6d787c76506cf76a2e17d158d1378fa83aa61f13a3cbbe058d5c34adfab40b5"
+      }
+    },
+    {
+      "aircraft_fixture": "jensen_ugly_stik_60",
+      "rows": 261,
+      "solver_sha256": "5ec70a64cef6e5ace5d9acc164405067c7ee9feba02f017a1c57516ca50f7df6",
+      "complete": true,
+      "solver_changed": false,
+      "marker_groups": [
+        {
+          "labels": [
+            "roll reversal"
+          ],
+          "tick": 56
+        }
+      ],
+      "windows": [
+        {
+          "kind": "unmarked_prefix",
+          "start_tick": 0,
+          "end_tick": 56,
+          "endpoint_samples": 57,
+          "interval_samples": 56,
+          "duration_s": 0.23333333333333334
+        },
+        {
+          "kind": "marker_tail",
+          "start_tick": 56,
+          "end_tick": 260,
+          "endpoint_samples": 205,
+          "interval_samples": 204,
+          "duration_s": 0.85
+        }
+      ],
+      "sha256": {
+        "source_log": "4fdb4ec36dafcc3cb06904061ec6ca88e95ece5a43cd5544221d1b9a468e1acf",
+        "flight_csv": "9d858640d75fe9f53ea674df082a76d400a6fba6ad9c4c6ce06e604da0452d8d",
+        "replay_report": "25f771f1747b5ac7b5eb29ea87f1b68c5beacb53291abcd653ecfadb53b9a44f",
+        "debrief": "b2bb1de181ced5c1aaca14184dc2b2fc73a723ab012a69b0304adc99d5741a49"
+      }
+    },
+    {
+      "aircraft_fixture": "p51d_mustang_120",
+      "rows": 261,
+      "solver_sha256": "5ec70a64cef6e5ace5d9acc164405067c7ee9feba02f017a1c57516ca50f7df6",
+      "complete": true,
+      "solver_changed": false,
+      "marker_groups": [
+        {
+          "labels": [
+            "roll reversal"
+          ],
+          "tick": 56
+        }
+      ],
+      "windows": [
+        {
+          "kind": "unmarked_prefix",
+          "start_tick": 0,
+          "end_tick": 56,
+          "endpoint_samples": 57,
+          "interval_samples": 56,
+          "duration_s": 0.23333333333333334
+        },
+        {
+          "kind": "marker_tail",
+          "start_tick": 56,
+          "end_tick": 260,
+          "endpoint_samples": 205,
+          "interval_samples": 204,
+          "duration_s": 0.85
+        }
+      ],
+      "sha256": {
+        "source_log": "66f636e9bb97819695661473a3b757567e0e92470d5e6f765ad1fc68580d7f63",
+        "flight_csv": "c61ce074bc579f2c97a7db4d7a5ed3a8bb2163dd55c564c0cfab1fb95c6cce8c",
+        "replay_report": "6268ed3204df35cced07912610f28a69ab9a6be50bc02b549eec198621edce41",
+        "debrief": "fd751b072c607e6b80c806085b00e941366dc01f43d68a9ce047d742b1914eb4"
+      }
+    },
+    {
+      "aircraft_fixture": "sebart_avanti_s_a200",
+      "rows": 261,
+      "solver_sha256": "5ec70a64cef6e5ace5d9acc164405067c7ee9feba02f017a1c57516ca50f7df6",
+      "complete": true,
+      "solver_changed": false,
+      "marker_groups": [
+        {
+          "labels": [
+            "roll reversal"
+          ],
+          "tick": 56
+        }
+      ],
+      "windows": [
+        {
+          "kind": "unmarked_prefix",
+          "start_tick": 0,
+          "end_tick": 56,
+          "endpoint_samples": 57,
+          "interval_samples": 56,
+          "duration_s": 0.23333333333333334
+        },
+        {
+          "kind": "marker_tail",
+          "start_tick": 56,
+          "end_tick": 260,
+          "endpoint_samples": 205,
+          "interval_samples": 204,
+          "duration_s": 0.85
+        }
+      ],
+      "sha256": {
+        "source_log": "352278179d3e84e50338bdc33cf6f767dd37279da399ddf0ac961a90afbd1a7b",
+        "flight_csv": "3c68aaed087c84287b0e050479adf8cd697a5a55264720a940f049a81759fcff",
+        "replay_report": "1e2c969224d297475d63312a78bd0c2744c92d79dde695ee891ffcf1464de331",
+        "debrief": "9f40f9822c234950e2a2bad4deb124299a2f0b82aa38757aac010f01a459b37c"
+      }
+    },
+    {
+      "aircraft_fixture": "stik_glow_61fx_2t",
+      "rows": 261,
+      "solver_sha256": "5ec70a64cef6e5ace5d9acc164405067c7ee9feba02f017a1c57516ca50f7df6",
+      "complete": true,
+      "solver_changed": false,
+      "marker_groups": [
+        {
+          "labels": [
+            "roll reversal"
+          ],
+          "tick": 56
+        }
+      ],
+      "windows": [
+        {
+          "kind": "unmarked_prefix",
+          "start_tick": 0,
+          "end_tick": 56,
+          "endpoint_samples": 57,
+          "interval_samples": 56,
+          "duration_s": 0.23333333333333334
+        },
+        {
+          "kind": "marker_tail",
+          "start_tick": 56,
+          "end_tick": 260,
+          "endpoint_samples": 205,
+          "interval_samples": 204,
+          "duration_s": 0.85
+        }
+      ],
+      "sha256": {
+        "source_log": "2ac1260c8b06855ec69bd7a06953204183d01bf48d7ff63b5dd0e86f08bebd74",
+        "flight_csv": "3a44965dfbb3172ba7519b80d506f3d76853a5ad6f022d0613310c80bfcad018",
+        "replay_report": "0b711979778f6bd09f7711bbdb489c3062e4108e17757debcb1c5588a7206d3b",
+        "debrief": "14ef821a8d96e3c750f137aac2f6fa86de469f17da71e3fc335f5274d686c114"
+      }
+    },
+    {
+      "aircraft_fixture": "turbo_lumber_evolution",
+      "rows": 261,
+      "solver_sha256": "5ec70a64cef6e5ace5d9acc164405067c7ee9feba02f017a1c57516ca50f7df6",
+      "complete": true,
+      "solver_changed": false,
+      "marker_groups": [
+        {
+          "labels": [
+            "roll reversal"
+          ],
+          "tick": 56
+        }
+      ],
+      "windows": [
+        {
+          "kind": "unmarked_prefix",
+          "start_tick": 0,
+          "end_tick": 56,
+          "endpoint_samples": 57,
+          "interval_samples": 56,
+          "duration_s": 0.23333333333333334
+        },
+        {
+          "kind": "marker_tail",
+          "start_tick": 56,
+          "end_tick": 260,
+          "endpoint_samples": 205,
+          "interval_samples": 204,
+          "duration_s": 0.85
+        }
+      ],
+      "sha256": {
+        "source_log": "e9a63198e92427d00763eb5c47bb4e9a36b3c3e677f690e5c4cc5f428348861c",
+        "flight_csv": "5f6ecea9aebd6fad029acb31255807de831d0bb4ba29c7a40afdcd44ecaf736e",
+        "replay_report": "a9289f869aaa286f37119420ea58495d53e4778763a37599392c66260ce511de",
+        "debrief": "0acc655ba8fcca92d365cc344d69f34690b296846f90bf6790bb4dcc94f28729"
+      }
+    }
+  ],
+  "negative_controls": [
+    {
+      "case": "truncate",
+      "exit_code": 2,
+      "debrief_produced": false
+    },
+    {
+      "case": "bitflip",
+      "exit_code": 2,
+      "debrief_produced": false
+    }
+  ],
+  "local_raw_outputs": "tmp/moonshot-fl05-20261028",
+  "reproduction": "README.md#reproduce"
+}

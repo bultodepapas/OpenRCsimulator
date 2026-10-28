@@ -1,7 +1,10 @@
 extends SceneTree
 
 const Field := preload("res://physics/wind_spatial_field.gd")
-const FIXTURE := "res://tests/fixtures/spatial_wind_boundary_before.json"
+const FIXTURES := {
+	"Windows": "res://tests/fixtures/spatial_wind_boundary_before.json",
+	"Linux": "res://tests/fixtures/spatial_wind_boundary_before_linux.json",
+}
 var _checks := 0
 var _failed := 0
 
@@ -14,7 +17,13 @@ func _check(label: String, success: bool) -> void:
 
 
 func _initialize() -> void:
-	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(FIXTURE))
+	var os_name: String = OS.get_name()
+	if not FIXTURES.has(os_name):
+		printerr("No pre-optimization boundary capture for OS: " + os_name)
+		quit(1)
+		return
+	var fixture_path: String = FIXTURES[os_name]
+	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(fixture_path))
 	_check("boundary fixture loads", typeof(raw) == TYPE_DICTIONARY)
 	if typeof(raw) != TYPE_DICTIONARY:
 		quit(1)

@@ -1,0 +1,39 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fdf84369-2859-42d7-9bd4-7fa4afb618e0",
+  "command": [
+    ".tools/Godot_v4.8-beta1_linux.x86_64",
+    "--headless",
+    "--path",
+    "/home/bulto/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--check-only",
+    "--script",
+    "res://tests/test_spatial_wind_prepared.gd"
+  ],
+  "cwd": "/home/bulto/OpenRCsimulator",
+  "started_utc": "2026-10-28T12:09:45.830525+00:00",
+  "label": "final-parse",
+  "log": "/home/bulto/OpenRCsimulator/tmp/beta-prep-20261028/wind-boundary/checks/final-parse-mrhrn1di/engine.log",
+  "report": "/home/bulto/OpenRCsimulator/tmp/beta-prep-20261028/wind-boundary/checks/final-parse-mrhrn1di/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.588203,
+  "log_bytes": 70,
+  "log_sha256": "8054c2a6d4ee4e9b5099593e0378721e703bba0b7bc3401c0a58100e4411d8ee"
+}

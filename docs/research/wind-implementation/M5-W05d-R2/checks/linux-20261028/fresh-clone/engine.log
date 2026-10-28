@@ -1,0 +1,59 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ERROR: Cannot open file 'res://i18n/es.po'.
+   at: load (core/io/translation_loader_po.cpp:356)
+ERROR: Failed loading resource: res://i18n/es.po.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://i18n/zh_Hans.po'.
+   at: load (core/io/translation_loader_po.cpp:356)
+ERROR: Failed loading resource: res://i18n/zh_Hans.po.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://i18n/pt_BR.po'.
+   at: load (core/io/translation_loader_po.cpp:356)
+ERROR: Failed loading resource: res://i18n/pt_BR.po.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://i18n/de.po'.
+   at: load (core/io/translation_loader_po.cpp:356)
+ERROR: Failed loading resource: res://i18n/de.po.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://i18n/fr.po'.
+   at: load (core/io/translation_loader_po.cpp:356)
+ERROR: Failed loading resource: res://i18n/fr.po.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://i18n/it.po'.
+   at: load (core/io/translation_loader_po.cpp:356)
+ERROR: Failed loading resource: res://i18n/it.po.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://i18n/ru.po'.
+   at: load (core/io/translation_loader_po.cpp:356)
+ERROR: Failed loading resource: res://i18n/ru.po.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://i18n/ja.po'.
+   at: load (core/io/translation_loader_po.cpp:356)
+ERROR: Failed loading resource: res://i18n/ja.po.
+   at: _load (core/io/resource_loader.cpp:317)
+prepared spatial wind: 1543 checks, 0 failed
+ERROR: Resource file not found: res://assets/fonts/NotoSansCJKsc-Regular.otf (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+   GDScript backtrace (most recent call first):
+       [0] chinese_font (res://i18n/fonts.gd:11)
+       [1] _update_fallback (res://i18n/fonts.gd:40)
+       [2] _enter_tree (res://i18n/fonts.gd:31)
+ERROR: Resource file not found: res://assets/fonts/NotoSansCJKjp-Regular.otf (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+   GDScript backtrace (most recent call first):
+       [0] japanese_font (res://i18n/fonts.gd:17)
+       [1] _update_fallback (res://i18n/fonts.gd:41)
+       [2] _enter_tree (res://i18n/fonts.gd:31)
+ERROR: Resource file not found: res://assets/fonts/NotoSansCJKsc-Regular.otf (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+   GDScript backtrace (most recent call first):
+       [0] chinese_font (res://i18n/fonts.gd:11)
+       [1] _update_fallback (res://i18n/fonts.gd:40)
+       [2] _notification (res://i18n/fonts.gd:36)
+ERROR: Resource file not found: res://assets/fonts/NotoSansCJKjp-Regular.otf (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+   GDScript backtrace (most recent call first):
+       [0] japanese_font (res://i18n/fonts.gd:17)
+       [1] _update_fallback (res://i18n/fonts.gd:41)
+       [2] _notification (res://i18n/fonts.gd:36)
