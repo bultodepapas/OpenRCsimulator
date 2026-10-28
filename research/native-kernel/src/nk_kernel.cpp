@@ -593,7 +593,9 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		if (!config.has(flag) || config[flag].get_type() != Variant::BOOL) {
 			return dec.fail(std::string("capability flag missing: ") + flag);
 		}
-		if (static_cast<bool>(config[flag])) {
+		const bool weather_flag = std::string(flag) == "turbulence" || std::string(flag) == "vertical_atmosphere" ||
+			std::string(flag) == "not_calm";
+		if (static_cast<bool>(config[flag]) && !(weather_flag && config.has("weather"))) {
 			return dec.fail(std::string("unsupported session capability: ") + flag);
 		}
 	}
@@ -642,6 +644,26 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 			L.anchor_count != L.wheel_count || L.anchors + L.anchor_count * 3 > L.aux_size || L.servo + 2 >= L.aux_size ||
 			L.rpm < 0 || L.rpm >= L.aux_size || L.downwash >= L.aux_size) {
 		return dec.fail("unsupported or inconsistent layout");
+	}
+	if (config.has("weather")) {
+		Dictionary snapshot;
+		if (!dec.dict(config, "weather", snapshot, true) || !dec.number(config, "dt", m.dt, true) ||
+				!nk::is_finite(m.dt) || m.dt <= 0.0 || !layout_int(dec, layout, "turbulence", L.turbulence)) {
+			return dec.fail("weather needs a finite positive tick dt and turbulence layout");
+		}
+		nk::WeatherBinding candidate;
+		const Dictionary prepared = candidate.prepare_weather(snapshot);
+		if (!static_cast<bool>(prepared["ok"]) || candidate.is_spatial()) {
+			return dec.fail("joint weather stage needs a valid uniform snapshot");
+		}
+		m.weather = candidate.uniform_model();
+		if (m.weather.has_turbulence != static_cast<bool>(config["turbulence"]) ||
+				m.weather.vertical_atmosphere != static_cast<bool>(config["vertical_atmosphere"]) ||
+				m.weather.calm == static_cast<bool>(config["not_calm"]) ||
+				(m.weather.has_turbulence && (L.turbulence < 0 || L.turbulence + 7 > L.aux_size))) {
+			return dec.fail("weather snapshot and session capabilities/layout differ");
+		}
+		m.has_weather = true;
 	}
 	return true;
 }

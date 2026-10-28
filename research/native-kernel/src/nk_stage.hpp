@@ -13,6 +13,7 @@
 #include "nk_hull.hpp"
 #include "nk_prop.hpp"
 #include "nk_wheels.hpp"
+#include "nk_weather.hpp"
 
 namespace nk {
 
@@ -28,6 +29,7 @@ struct StageLayout {
 	int wheel_index = 0;  // wheel_index()
 	int brake_input = -1; // wheel_brake_input_index()
 	int input_count = 0;
+	int turbulence = -1;
 };
 
 struct StageModel {
@@ -39,6 +41,9 @@ struct StageModel {
 	StageLayout layout;
 	R density = 0.0;            // weather.air_density(): uniform field, no vertical column
 	R ground_effect_reach = 0.0; // FlightSession._ground_effect_reach
+	bool has_weather = false;
+	WeatherModel weather;
+	R dt = 0.0;
 };
 
 struct TickContext {
@@ -151,12 +156,14 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 	const R downwash_cl = lag >= 0 && lag < static_cast<int>(a.size()) ? a[lag] : R(kNan);
 	// air_data(s, stage_time): calm uniform weather, FlightSession.wind_at -> Environment.wind_world.
 	const R at = is_nan(stage_time) ? ctx.time_now : stage_time;
-	R wind[3] = {0.0, 0.0, 0.0};
-	if (!is_finite(s[0]) || !is_finite(s[1]) || !is_finite(s[2]) || !is_finite(at) || at.v < 0.0) {
-		wind[0] = wind[1] = wind[2] = kNan;
+	std::array<R, 3> wind{0.0, 0.0, 0.0};
+	if (m.has_weather) {
+		wind = weather_wind(m.weather, s, at, ctx.aux, L.turbulence, m.dt);
+	} else if (!is_finite(s[0]) || !is_finite(s[1]) || !is_finite(s[2]) || !is_finite(at) || at.v < 0.0) {
+		wind = {kNan, kNan, kNan};
 	}
-	const R rho = m.density;
-	const Air air = air_compute(s, wind, rho);
+	const R rho = m.has_weather ? weather_air(m.weather, s[2]).density : m.density;
+	const Air air = air_compute(s, wind.data(), rho);
 	const R ground_up = stage_ground_up(s, m);
 	// Dynamics.loads_from_air: Aero.loads, then the propeller at its stage inflow.
 	const Loads aero = aero_loads(s, air, ctx.deflections, m.aero, rho, downwash_cl, ground_up);
