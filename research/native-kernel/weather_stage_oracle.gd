@@ -74,6 +74,26 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 		_failures.append("weather-stage %s provider refused: %s" % [label, str(provider.get("reason", ""))])
 		session.free()
 		return
+	if label == "steady":
+		# This session is disposable. Verify that a replaced callback or an
+		# in-place cached wind edit cannot reuse the captured provider identity.
+		var original: Callable = session.environment.turbulence
+		session.environment.turbulence = func(_time: float) -> PackedFloat64Array: return PackedFloat64Array()
+		var callback_refused: bool = WeatherAdapter.config_for(session).is_empty() \
+			and not WeatherAdapter.provider_matches(session, provider)
+		session.environment.turbulence = original
+		var old_mean: PackedFloat64Array = session._weather.get("_mean_ned")
+		var changed := old_mean.duplicate()
+		changed[0] += 1.0
+		session._weather.set("_mean_ned", changed)
+		var mutation_refused: bool = WeatherAdapter.config_for(session).is_empty() \
+			and not WeatherAdapter.provider_matches(session, provider)
+		session._weather.set("_mean_ned", old_mean)
+		var restored: bool = WeatherAdapter.provider_matches(session, provider)
+		var intact := callback_refused and mutation_refused and restored
+		_compare("weather_provider_guard", PackedFloat64Array([1.0]), PackedFloat64Array([1.0 if intact else 0.0]), label)
+		if not intact:
+			_failures.append("weather provider mutation/callback guard failed")
 	var prepared: Dictionary = _native.prepare_stage(config)
 	if not prepared.get("ok", false):
 		_failures.append("weather-stage %s native prepare refused: %s" % [label, str(prepared.get("error", ""))])

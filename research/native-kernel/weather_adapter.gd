@@ -10,6 +10,15 @@ const ThermalField := preload("res://physics/wind_thermal_field.gd")
 const SimEnvironment := preload("res://sim/environment.gd")
 
 
+static func _field_inputs(field: RefCounted) -> Dictionary:
+	var out := {}
+	for key: String in ["_atmosphere", "_atmosphere_active", "_vertical_air", "_rho", "_engine_charge",
+			"_mean_ned", "_gust_ned", "_gust_duration_s", "_gust_period_s", "_gust_delay_s", "_has_gust",
+			"_calm", "_turbulent", "_turbulence_rms", "_turbulence_tau", "_turbulence_seed"]:
+		out[key] = field.get(key)
+	return out
+
+
 ## Capture object identities and detached configuration; the actual turbulence
 ## Callable must be FlightSession's sampler, not an arbitrary replacement.
 static func provider_identity(session: Node) -> Dictionary:
@@ -42,16 +51,26 @@ static func provider_identity(session: Node) -> Dictionary:
 	if field.is_spatial():
 		if spatial == null or not is_instance_valid(spatial) or spatial.get_script() != SpatialField:
 			return {ok = false, reason = "spatial weather is not the built-in provider"}
+		if spatial.configuration() != config.spatial_wind:
+			return {ok = false, reason = "spatial provider configuration differs from the weather field"}
 		thermal = spatial.get("_thermal_field")
 		var has_thermal: bool = config.spatial_wind.get("format") == "openrc-spatial-wind v2"
 		if has_thermal != (thermal != null) \
 				or (thermal != null and (not is_instance_valid(thermal) or thermal.get_script() != ThermalField)):
 			return {ok = false, reason = "thermal weather provider differs from its configuration"}
+		if thermal != null and thermal.configuration() != config.spatial_wind.thermal_field:
+			return {ok = false, reason = "thermal provider configuration differs from the weather field"}
 	elif spatial != null:
 		return {ok = false, reason = "unexpected spatial weather provider"}
+	# GDScript fields are logically immutable but can be reached through Object.get/set.
+	# Rebuild once at this boundary to refuse changed cached values or seeded modes.
+	var rebuilt: Dictionary = WeatherField.build(config)
+	if not rebuilt.ok or var_to_bytes(_field_inputs(field)) != var_to_bytes(_field_inputs(rebuilt.field)) \
+			or var_to_bytes(snapshot(field)) != var_to_bytes(snapshot(rebuilt.field)):
+		return {ok = false, reason = "prepared weather values differ from their validated configuration"}
 	return {ok = true, environment = environment, field = field, spatial = spatial, thermal = thermal,
 		turbulence = turbulence, configuration = config, dt = dt, turbulence_index = index,
-		prepared_snapshot = snapshot(field)}
+		field_inputs = _field_inputs(field), prepared_snapshot = snapshot(field)}
 
 
 ## Used only at owner boundaries: checks that the prepared provider and callback
@@ -64,6 +83,7 @@ static func provider_matches(session: Node, identity: Dictionary) -> bool:
 		and current.field == identity.field and current.spatial == identity.spatial and current.thermal == identity.thermal \
 		and current.turbulence == identity.turbulence and current.configuration == identity.configuration \
 		and current.dt == identity.dt and current.turbulence_index == identity.turbulence_index \
+		and var_to_bytes(current.field_inputs) == var_to_bytes(identity.field_inputs) \
 		and var_to_bytes(current.prepared_snapshot) == var_to_bytes(identity.prepared_snapshot)
 
 
