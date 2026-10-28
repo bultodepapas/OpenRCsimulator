@@ -28,6 +28,9 @@
 #include "nk_wake_spatial_binding.hpp"
 #include "nk_glow_binding.hpp"
 #include "nk_helicopter_binding.hpp"
+#include "nk_liquid_binding.hpp"
+#include "nk_gear_binding.hpp"
+#include "nk_weather_guard.hpp"
 
 namespace {
 
@@ -542,23 +545,26 @@ bool decode_prop(Decoder &dec, const Dictionary &prop, nk::PropModel &out) {
 	return true;
 }
 
-bool decode_hull(Decoder &dec, const Dictionary &prepared, nk::HullPrepared &out) {
+bool decode_hull(Decoder &dec, const Dictionary &prepared, nk::HullPrepared &out, bool geometry_only = false) {
 	out = nk::HullPrepared();
 	if (prepared.is_empty()) {
 		return true;
 	}
 	if (!dec.only(prepared, "hull", {"points", "stiffness", "damping", "reach", "mass", "inertia", "surfaces", "lake",
-				"lake_bounds_ne_m", "terminal_j_per_kg", "crash_depth_m"})) {
-		return false; // geometry_only (live mass) hulls take HullContact.loads_at_properties, not ported
+				"lake_bounds_ne_m", "terminal_j_per_kg", "crash_depth_m", "geometry_only"})) {
+		return false;
 	}
+	if (prepared.has("geometry_only") && (prepared["geometry_only"].get_type() != Variant::BOOL ||
+			!geometry_only || !static_cast<bool>(prepared["geometry_only"]))) return dec.fail("unexpected geometry-only hull");
+	if (geometry_only && !prepared.has("geometry_only")) return dec.fail("missing geometry-only hull marker");
 	out.present = true;
-	if (!dec.vec(prepared, "points", out.points, true) || !dec.vec(prepared, "stiffness", out.stiffness, true) ||
-			!dec.vec(prepared, "damping", out.damping, true) || !dec.number(prepared, "reach", out.reach, true) ||
+	if (!dec.vec(prepared, "points", out.points, true) || !dec.vec(prepared, "stiffness", out.stiffness, !geometry_only) ||
+			!dec.vec(prepared, "damping", out.damping, !geometry_only) || !dec.number(prepared, "reach", out.reach, true) ||
 			!dec.vec(prepared, "surfaces", out.surfaces, false)) {
 		return false;
 	}
 	const size_t count = out.points.size() / 3;
-	if (out.points.empty() || out.points.size() % 3 != 0 || out.stiffness.size() != count || out.damping.size() != count) {
+	if (out.points.empty() || out.points.size() % 3 != 0 || (!geometry_only && (out.stiffness.size() != count || out.damping.size() != count))) {
 		return dec.fail("hull points/stiffness/damping sizes");
 	}
 	if (!out.surfaces.empty() && out.surfaces.size() % nk::kAirframeStride != 0) {
@@ -763,6 +769,10 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::WakeBinding wake_;
 	nk::GlowBinding glow_;
 	nk::HelicopterBinding helicopter_;
+	nk::LiquidBinding liquid_;
+	nk::GearBinding gear_;
+	nk::LiveHullBinding live_hull_;
+	nk::WeatherGuard weather_guard_;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
 	bool stage_ready_ = false;
@@ -775,6 +785,19 @@ class OpenRCNativeKernel : public godot::RefCounted {
 protected:
 	static void _bind_methods() {
 		using godot::D_METHOD;
+		godot::ClassDB::bind_method(D_METHOD("prepare_weather_guard", "session", "identity"), &OpenRCNativeKernel::prepare_weather_guard);
+		godot::ClassDB::bind_method(D_METHOD("weather_guard_matches", "session"), &OpenRCNativeKernel::weather_guard_matches);
+		godot::ClassDB::bind_method(D_METHOD("prepare_liquid", "snapshot"), &OpenRCNativeKernel::prepare_liquid);
+		godot::ClassDB::bind_method(D_METHOD("liquid_mass_component", "usable"), &OpenRCNativeKernel::liquid_mass_component);
+		godot::ClassDB::bind_method(D_METHOD("liquid_gas_laws_component", "rpm", "throttle", "axial", "rho", "charge", "shaft_power", "running"), &OpenRCNativeKernel::liquid_gas_laws_component);
+		godot::ClassDB::bind_method(D_METHOD("liquid_gas_component", "body", "external", "prop_air", "datum_air", "explicit_air", "stage", "running", "gravity"), &OpenRCNativeKernel::liquid_gas_component);
+		godot::ClassDB::bind_method(D_METHOD("liquid_turbine_component", "body", "datum_air", "explicit_air", "stage", "running"), &OpenRCNativeKernel::liquid_turbine_component);
+		godot::ClassDB::bind_method(D_METHOD("prepare_retractable", "source"), &OpenRCNativeKernel::prepare_retractable);
+		godot::ClassDB::bind_method(D_METHOD("gear_component", "part", "body", "air", "extension", "density", "ambient_delta", "target", "dt"), &OpenRCNativeKernel::gear_component);
+		godot::ClassDB::bind_method(D_METHOD("gear_wheels_component", "body", "extension", "steer", "anchors", "speeds", "brake"), &OpenRCNativeKernel::gear_wheels_component);
+		godot::ClassDB::bind_method(D_METHOD("prepare_live_hull", "source"), &OpenRCNativeKernel::prepare_live_hull);
+		godot::ClassDB::bind_method(D_METHOD("live_hull_component", "body", "properties"), &OpenRCNativeKernel::live_hull_component);
+
 		godot::ClassDB::bind_method(D_METHOD("backend_identity"), &OpenRCNativeKernel::backend_identity);
 		godot::ClassDB::bind_method(D_METHOD("prepare_ground", "gear", "surfaces", "lake", "lake_valid"),
 			&OpenRCNativeKernel::prepare_ground);
@@ -862,7 +885,20 @@ public:
 		candidate.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 		candidate.surfaces.valid = nk::surface_table_is_valid(candidate.surfaces.values);
 		candidate.lake_valid = lake_valid;
-		const bool ok = decode_gear(dec, gear, candidate.gear) && (!lake_valid || decode_lake(dec, lake, candidate.lake));
+		// Decode the fixed contact data independently; the retractable binding
+		// validates the full authored paths before any moving-pose evaluation.
+		Dictionary base = gear.duplicate(true);
+		base.erase("retraction");
+		if (base.has("contacts") && base["contacts"].get_type() == Variant::ARRAY) {
+			Array contacts = base["contacts"];
+			for (int64_t i = 0; i < contacts.size(); ++i) {
+				if (contacts[i].get_type() == Variant::DICTIONARY) {
+					Dictionary contact = contacts[i];
+					contact.erase("retraction_path");
+				}
+			}
+		}
+		const bool ok = decode_gear(dec, base, candidate.gear) && (!lake_valid || decode_lake(dec, lake, candidate.lake));
 		ground_ready_ = ok;
 		if (ok) {
 			ground_ = candidate;
@@ -1012,6 +1048,48 @@ public:
 			const PackedFloat64Array &omega) const {
 		return glow_.glow_feed_component(remaining, capacity, unusable, admission, rpm, force, mass, arm, alpha, omega);
 	}
+
+	Dictionary prepare_weather_guard(godot::Object *session, godot::Object *identity) { return weather_guard_.prepare_weather_guard(session, identity); }
+	bool weather_guard_matches(godot::Object *session) const { return weather_guard_.weather_guard_matches(session); }
+	Dictionary prepare_liquid(const Dictionary &snapshot) { return liquid_.prepare_liquid(snapshot); }
+	Dictionary liquid_mass_component(double usable) const { return liquid_.liquid_mass_component(usable); }
+	Dictionary liquid_gas_laws_component(double rpm, double throttle, double axial, double rho, double charge, double shaft_power, bool running) const {
+		if (!prop_ready_) return nk::spatial_binding_failure("propeller not prepared");
+		return liquid_.liquid_gas_laws_component(prop_, rpm, throttle, axial, rho, charge, shaft_power, running);
+	}
+	Dictionary liquid_gas_component(const PackedFloat64Array &body, const PackedFloat64Array &external,
+			const PackedFloat64Array &prop_air, const PackedFloat64Array &datum_air, bool explicit_air,
+			const PackedFloat64Array &stage, bool running, double gravity) const {
+		if (!prop_ready_) return nk::spatial_binding_failure("propeller not prepared");
+		return liquid_.liquid_gas_component(prop_, body, external, prop_air, datum_air, explicit_air, stage, running, gravity);
+	}
+	Dictionary liquid_turbine_component(const PackedFloat64Array &body, const PackedFloat64Array &datum_air,
+			const PackedFloat64Array &explicit_air, const PackedFloat64Array &stage, bool running) const {
+		return liquid_.liquid_turbine_component(body, datum_air, explicit_air, stage, running);
+	}
+	Dictionary prepare_retractable(const Dictionary &source) {
+		if (!ground_ready_) return nk::spatial_binding_failure("ground not prepared");
+		return gear_.prepare_retractable(source, ground_);
+	}
+	PackedFloat64Array gear_component(int64_t part, const PackedFloat64Array &body, const PackedFloat64Array &air,
+			double extension, double density, const PackedFloat64Array &ambient_delta, double target, double dt) const {
+		return gear_.gear_component(part, body, air, extension, density, ambient_delta, target, dt);
+	}
+	Dictionary gear_wheels_component(const PackedFloat64Array &body, double extension, double steer,
+			const PackedFloat64Array &anchors, const PackedFloat64Array &speeds, double brake) const {
+		return gear_.gear_wheels_component(body, extension, steer, anchors, speeds, brake);
+	}
+	Dictionary prepare_live_hull(const Dictionary &source) {
+		Decoder dec;
+		nk::HullPrepared prepared;
+		live_hull_ = nk::LiveHullBinding();
+		if (!decode_hull(dec, source, prepared, true)) return nk::spatial_binding_failure(dec.error);
+		return live_hull_.prepare_live_hull(source, prepared);
+	}
+	Dictionary live_hull_component(const PackedFloat64Array &body, const Dictionary &properties) const {
+		return live_hull_.live_hull_component(body, properties);
+	}
+
 	Dictionary prepare_helicopter(const Dictionary &snapshot) { return helicopter_.prepare_helicopter(snapshot); }
 	Dictionary heli_component(const PackedFloat64Array &body, const PackedFloat64Array &continuous, double time,
 			const Dictionary &tick, const PackedFloat64Array &wind) const {

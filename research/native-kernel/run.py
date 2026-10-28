@@ -28,7 +28,7 @@ HARNESS_OPTIONS = {
     "weather_oracle.gd": set(), "electric_oracle.gd": set(),
     "wake_oracle.gd": set(), "weather_stage_oracle.gd": {"ticks", "include-spatial"}, "glow_oracle.gd": set(),
     "wake_spatial_oracle.gd": set(),
-    "helicopter_oracle.gd": set(),
+    "helicopter_oracle.gd": set(), "liquid_oracle.gd": set(), "gear_oracle.gd": set(),
     "electric_stage_oracle.gd": {"ticks"},
     "trajectory.gd": {"ticks", "pairs", "warmup", "samples", "timing-cases", "skip-timing", "only", "repeats"},
     "fleet.gd": {"warmup", "samples", "aircraft", "weather", "soft-hull"},
@@ -144,7 +144,7 @@ def main() -> int:
             "weather_oracle.gd": "weather", "electric_oracle.gd": "electric",
             "wake_oracle.gd": "wake", "weather_stage_oracle.gd": "weather-stage",
             "glow_oracle.gd": "glow", "wake_spatial_oracle.gd": "wake-spatial",
-            "helicopter_oracle.gd": "helicopter", "electric_stage_oracle.gd": "electric-stage"}[args.script]
+            "liquid_oracle.gd": "liquid", "gear_oracle.gd": "gear", "helicopter_oracle.gd": "helicopter", "electric_stage_oracle.gd": "electric-stage"}[args.script]
     output = TOOL_ROOT / f"{stem}{variant}-{stamp}.json"
     marker = "NK3_ORACLE verdict=fail" if args.mutant else "NK3_ORACLE verdict=pass"
     checks = TOOL_ROOT / "checks"

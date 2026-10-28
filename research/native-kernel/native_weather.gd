@@ -34,7 +34,9 @@ class Identity:
 	var session: Node
 	var session_script: Script
 	var sim: Node
+	var sim_script: Script
 	var model: RefCounted
+	var model_script: Script
 	var environment: RefCounted
 	var environment_script: Script
 	var field: RefCounted
@@ -60,6 +62,13 @@ class Identity:
 ## A detached snapshot for the native decoder and an independent live guard.
 ## Rebuilding/serializing validated reference weather is allowed only here.
 static func prepare(session: Node) -> Dictionary:
+	# This adapter covers the fixed-wing owner. Rotorcraft use a different
+	# session and layout contract and need their own explicit admission.
+	if session == null or not is_instance_valid(session) \
+			or session.get_script() != load("res://sim/flight_session.gd") \
+			or session.sim == null or session.sim.get_script() != load("res://sim/simulation.gd") \
+			or session.sim.model == null or session.sim.model.get_script() != load("res://sim/vehicle_model.gd"):
+		return {ok = false, reason = "unsupported fixed-wing session or simulation provider"}
 	var captured := WeatherAdapter.provider_identity(session)
 	if not captured.get("ok", false):
 		return {ok = false, reason = str(captured.get("reason", "weather provider refused"))}
@@ -67,7 +76,9 @@ static func prepare(session: Node) -> Dictionary:
 	identity.session = session
 	identity.session_script = session.get_script()
 	identity.sim = session.sim
+	identity.sim_script = identity.sim.get_script()
 	identity.model = session.sim.model
+	identity.model_script = identity.model.get_script()
 	identity.environment = captured.environment
 	identity.environment_script = identity.environment.get_script()
 	identity.field = captured.field
@@ -105,7 +116,8 @@ static func matches(session: Node, identity: Variant) -> bool:
 			or session != identity.session or session.get_script() != identity.session_script:
 		return false
 	if session.sim == null or not is_instance_valid(session.sim) or session.sim != identity.sim \
-			or session.sim.model != identity.model or session._weather_pending_reset:
+			or session.sim.get_script() != identity.sim_script or session.sim.model != identity.model \
+			or session.sim.model.get_script() != identity.model_script or session._weather_pending_reset:
 		return false
 	if not _same_float(session.sim.dt(), identity.dt) or session.sim.aux.size() != identity.aux_size \
 			or session._turbulence_aux_index != identity.turbulence_aux_index:

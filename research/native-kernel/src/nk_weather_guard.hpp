@@ -56,7 +56,9 @@ class WeatherGuard {
 	uint64_t session_id_ = 0;
 	uint64_t sim_id_ = 0;
 	Variant session_script_;
+	Variant sim_script_;
 	Variant model_;
+	Variant model_script_;
 	Variant environment_;
 	Variant environment_script_;
 	Variant field_;
@@ -269,7 +271,9 @@ class WeatherGuard {
 		session_id_ = owner->get_instance_id();
 		sim_id_ = sim->get_instance_id();
 		session_script_ = identity->get("session_script");
+		sim_script_ = identity->get("sim_script");
 		model_ = identity->get("model");
+		model_script_ = identity->get("model_script");
 		environment_ = identity->get("environment");
 		environment_script_ = identity->get("environment_script");
 		field_ = identity->get("field");
@@ -279,6 +283,11 @@ class WeatherGuard {
 		thermal_ = identity->get("thermal");
 		thermal_script_ = identity->get("thermal_script");
 		turbulence_ = identity->get("turbulence");
+		if (!instance_matches(owner->get_script(), session_script_) ||
+				static_cast<Object *>(owner->get(p_sim_)) != sim || !instance_matches(sim->get_script(), sim_script_) ||
+				!instance_matches(sim->get(p_model_), model_) || !object_variant(model_)) return false;
+		Object *model = model_;
+		if (!instance_matches(model->get_script(), model_script_)) return false;
 		const Variant expected_dt = identity->get("dt");
 		const Variant expected_aux_size = identity->get("aux_size");
 		const Variant expected_index = identity->get("turbulence_aux_index");
@@ -305,6 +314,10 @@ class WeatherGuard {
 		} else if (!same_bits(dt_, fixed_dt_)) {
 			return false;
 		}
+		// Validate every owner and script before touching provider properties.
+		// Script fields are plain variables only on the admitted built-in scripts.
+		ready_ = true;
+		if (!weather_guard_matches(session)) return false;
 		if (!append_fields(field_, identity->get("field_values"), {
 				"_config", "_atmosphere", "_atmosphere_active", "_vertical_air", "_rho", "_engine_charge",
 				"_mean_ned", "_gust_ned", "_gust_duration_s", "_gust_period_s", "_gust_delay_s", "_has_gust",
@@ -341,7 +354,10 @@ public:
 		if (!ready_ || !session || godot::ObjectDB::get_instance(session_id_) != session) return false;
 		Object *sim = godot::ObjectDB::get_instance(sim_id_);
 		if (!sim || !instance_matches(session->get_script(), session_script_) ||
-				static_cast<Object *>(session->get(p_sim_)) != sim || !instance_matches(sim->get(p_model_), model_)) return false;
+				static_cast<Object *>(session->get(p_sim_)) != sim || !instance_matches(sim->get_script(), sim_script_) ||
+				!instance_matches(sim->get(p_model_), model_)) return false;
+		Object *model = model_;
+		if (!model || !instance_matches(model->get_script(), model_script_)) return false;
 		const Variant pending = session->get(p_pending_);
 		const Variant index = session->get(p_turbulence_index_);
 		const Variant fixed = sim->get(p_fixed_dt_);

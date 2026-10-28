@@ -1,7 +1,8 @@
 // NK-3: soft crash-hull contacts, mirroring app/physics/hull_contact.gd loads(s, prepared) with default arguments
 // (no precomputed lake samples, no diagnostics): touching count, LU-25-R4 hull-clear-of-lake early-out, the lake
 // branch (_lake_sample, _lake_compression, _lake_load) and the flat-field branch with GP-07c airframe friction.
-// The prepared dictionary (HullContact.prepare) is decoded once; geometry-only (live mass) hulls are refused.
+// Static coefficients come from HullContact.prepare; the separate live-mass
+// entry point below accepts a prepared geometry-only hull and mass snapshot.
 #pragma once
 
 #include <array>
