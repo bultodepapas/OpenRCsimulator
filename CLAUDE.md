@@ -10,7 +10,7 @@ Follow the shared [display resolution priorities](AGENTS.md#display-resolution-p
 
 Act as the lead senior developer and technical orchestrator. Use native Claude Code subagents when independent investigation, implementation or review meaningfully improves the task. Keep small or tightly dependent work in the main conversation.
 
-For Claude Code, use available **Claude models** in place of the Luna Max preference in the shared instructions and catalog. Default to the session's configured subagent model; otherwise inherit the main model. Only override with a model supported by the current runtime when the task warrants it. This adaptation changes model selection, not the shared project rules.
+For Claude Code, use available **Claude models** as the client-specific adaptation of the model preference in [AGENTS.md](AGENTS.md). Default to the session's configured subagent model; otherwise inherit the main model. Only override with a model supported by the current runtime when the task warrants it. This adaptation changes model selection, not the shared project rules.
 
 Use [docs/SUBAGENTS.md](docs/SUBAGENTS.md) for the 26 specialist definitions, delegation contract and dispatch/return templates. Read the shared contract and relevant role on demand. Catalog identifiers such as `pure_physicist` are roles, not automatically registered Claude subagent types.
 
