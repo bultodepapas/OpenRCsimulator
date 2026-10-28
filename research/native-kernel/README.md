@@ -199,6 +199,21 @@ release publication depends on the job. The export job then qualifies the actual
 
 ## Linux release packages
 
+After installation, run the complete declared fleet matrix before promoting expanded coverage:
+
+```bash
+python3 research/native-kernel/fleet_campaign.py --out tmp/nk3-fleet-qualified \
+  --jobs 3 --warmup 600 --samples 2400 --timeout 7200
+```
+
+The campaign reads the canonical matrix from `fleet.gd`, runs each aircraft through the existing checked runner,
+and validates the exact union of row keys. All shards must share the same engine, native binary, receipt,
+source and harness identities. Flight rows require every requested tick, matching fingerprints and native call
+coverage; explicitly known startup refusals require the same reset failure from both backends and are counted
+separately. A scoped report alone does not qualify the whole fleet. `--reuse-report AIRCRAFT=REPORT` accepts
+only a complete, matching full-aircraft report, including one still being produced. Concurrent runs establish
+software equivalence, not timing or physical validation.
+
 `app/export.sh` prepares the verified identity, exports the ordinary application, stages the exact native
 sidecars, and tests that executable before creating the release archive. The CI export job consumes the
 library and oracle receipts from `native-kernel-linux`; the other vehicle's native artifacts keep their own gates.

@@ -22024,6 +22024,182 @@
      "failures": 0,
      "limit": "Precedes added rejected-restore validator mutation regression."
     }
+   },
+   "final_source_qualification": {
+    "source_commit": "68e909a86",
+    "companion_rebind_commit": "b0a035e49",
+    "status": "installed; full fleet and release qualification in progress",
+    "native_source_sha256": "fe1c9111c05185fd4e6ffd379348196f5165278b1d3df98c17f3e8f6c1d79c34",
+    "binary_sha256": "bc1e5f343e7e0631b068de5ec04b1966b2646888fffe9a908414ff26ba3fce81",
+    "builder_sha256": "414da435a4e71227fa74e288444b1afec60f35ae8b526b20dd1e0b78f055d0c2",
+    "installer_gates": {
+     "stage_oracle": {
+      "results": "stage-20261028T210010219276Z.json",
+      "results_sha256": "6d09031e52c33f557438919fb3f997cf9cad77bae177280fcbb27fd5464a4650",
+      "verdict": "pass",
+      "compared": 128664
+     },
+     "trajectory": {
+      "results": "trajectory-20261028T210010119271Z.json",
+      "results_sha256": "697fa30d38deb1ccd09ccdf8c160371849e24811c36c11ecc3c73d18d71a8363",
+      "verdict": "pass",
+      "compared": 21771
+     },
+     "propeller": {
+      "results": "propeller-20261028T210010129725Z.json",
+      "results_sha256": "178a5d244d07e59a2421ad30960e382df6ed2096cacd00ebec982b580b05a67a",
+      "verdict": "pass",
+      "compared": 41958
+     },
+     "electric": {
+      "results": "electric-20261028T210010206045Z.json",
+      "results_sha256": "b72d44aabd713c0885f04ebb93ec3715fd9e2e7de6669275f0e8fc321dcfa19c",
+      "verdict": "pass",
+      "compared": 32010
+     },
+     "electric_stage": {
+      "results": "electric-stage-20261028T210018215940Z.json",
+      "results_sha256": "5dee928da330ba09920af64949b3262f2063bd1f6d37919bce31a25a8fa10cf2",
+      "verdict": "pass",
+      "compared": 66988
+     },
+     "liquid": {
+      "results": "liquid-20261028T210018281441Z.json",
+      "results_sha256": "c75251448d9964c1c8f5e02bbc44fa55c288a932b17b132160930dd572a0c895",
+      "verdict": "pass",
+      "compared": 15572
+     },
+     "liquid_stage": {
+      "results": "liquid-stage-20261028T210024710809Z.json",
+      "results_sha256": "8c6ddd73299eb5b692b008507f748bfa922e23f57754c4b68fd0731a3c88ab84",
+      "verdict": "pass",
+      "compared": 64136
+     },
+     "glow": {
+      "results": "glow-20261028T210049429773Z.json",
+      "results_sha256": "d47dd89cf6952fd23ba168da343e34d90889f4e2f542024e1d113790f49f72f0",
+      "verdict": "pass",
+      "compared": 49606
+     },
+     "glow_stage": {
+      "results": "glow-stage-20261028T210052256775Z.json",
+      "results_sha256": "18bf1d26a6ee7db750acd3acfb5a191fce5ae916609ca03702b1765707aa968e",
+      "verdict": "pass",
+      "compared": 79767
+     },
+     "helicopter": {
+      "results": "helicopter-20261028T210058435173Z.json",
+      "results_sha256": "a0e7ff80211e330e4b348560a17418c909fed2bde08781cf402642147d3d4bd5",
+      "verdict": "pass",
+      "compared": 50336
+     },
+     "helicopter_stage": {
+      "results": "helicopter-stage-20261028T210102494936Z.json",
+      "results_sha256": "9bb4129386164b23adf6dde6cfc5a5ba049b5795a283eda19dca28067840ebd3",
+      "verdict": "pass",
+      "compared": 61281
+     },
+     "weather": {
+      "results": "weather-20261028T210115704792Z.json",
+      "results_sha256": "8724f074bf99ea13bea6201953438b83a34f0d56f49c1a1498ea06b57a6bbdec",
+      "verdict": "pass",
+      "compared": 21549
+     },
+     "weather_stage": {
+      "results": "weather-stage-20261028T210118311715Z.json",
+      "results_sha256": "5b75c6526776505ce3e59a29f551e4f368258ba57d993226d8adaaa0f9403645",
+      "verdict": "pass",
+      "compared": 59340
+     },
+     "wake": {
+      "results": "wake-20261028T210124424760Z.json",
+      "results_sha256": "e900ae3cf85cacdaac5f8d9169561134d0a241e6f21194cef518559636b5f2ce",
+      "verdict": "pass",
+      "compared": 19138
+     },
+     "wake_spatial": {
+      "results": "wake-spatial-20261028T210128965754Z.json",
+      "results_sha256": "9dcd4f1492dafa0663cc74f76b7ea81c6cec59623346d479b8fb87e4a4f63fdd",
+      "verdict": "pass",
+      "compared": 20204
+     },
+     "gear": {
+      "results": "gear-20261028T210135451821Z.json",
+      "results_sha256": "e7cf50db08fdd46597acd67dd339dde2d13aab714af575e110c0f44e24ccc263",
+      "verdict": "pass",
+      "compared": 35452
+     },
+     "prescribed_stage": {
+      "results": "prescribed-stage-20261028T210140489463Z.json",
+      "results_sha256": "284a78422f21f79c80712dfe652eb61e6d2c920518590c9f2d7bf08366c0c7fd",
+      "verdict": "pass",
+      "compared": 49571
+     },
+     "legacy_ground": {
+      "results": "legacy-ground-20261028T210154274871Z.json",
+      "results_sha256": "b3be724ac826b2fb18c9bbbe50e74e159d6779b9a710b0539974d8e4fbea8732",
+      "verdict": "pass",
+      "compared": 14806
+     },
+     "negative_control": {
+      "results": "stage_mutant-20261028T210207245255Z.json",
+      "results_sha256": "1b49fd7f4001ebe3bd7c5b7bf5eb83b45b2a9655f1b703b80229dabed914ec36",
+      "verdict": "fail",
+      "compared": 128664
+     }
+    },
+    "installer_log": "tmp/nk3-abi2-reinstall-final.log",
+    "installer_log_sha256": "64533a5a131bf8c9dfce7b9615a480bcec0704d722fed6b904abcf1adaa82ead",
+    "body_only_transition": {
+     "defect": "Dropping a native helper during shaft-integrator selection left loads and rotor_momentum bound to the destroyed owner.",
+     "correction": "Restore reference callbacks before replacing continuous callbacks.",
+     "proof": "Prescribed stage gate requires split/coupled/split reset, callback ownership, two complete 64-tick exact native/reference tapes and uninstall restoration."
+    },
+    "sanitizer": {
+     "summary": "tmp/nk3-abi2-ubsan-corrected-check/summary.json",
+     "summary_sha256": "a29266f51a19703d9bcb662e57a873221341e022930fb8da2f56da6673667c15",
+     "mode": "ubsan",
+     "positive_control_detected": true,
+     "stage_exact_comparisons": 128664,
+     "trajectory_exact_comparisons": 21771,
+     "diagnostics": [],
+     "snapshot_retention": "tmp/nk3-abi2-ubsan-corrected-check/snapshot-retention.json",
+     "excluded_run": {
+      "summary": "tmp/nk3-abi2-final-ubsan-check/summary.json",
+      "reason": "The old recursive directory-name filter omitted app/sim/native source. Corrected copy, source hashing and symlink preflight share a root-aware exclusion; regression suite passed 26 tests."
+     }
+    },
+    "fleet_policy": {
+     "checks": 136,
+     "log": "tmp/nk3-fleet-policy-installed-2125.log",
+     "declared_rows": 1238,
+     "declared_aircraft": 11,
+     "explicit_paired_start_refusals": 18,
+     "limit": "Paired reset refusals are not successful native flights. The complete duration campaign is pending."
+    },
+    "ci": {
+     "required_installer_gates": 19,
+     "installed_native_diagnostics": 5,
+     "trajectory_ticks": 14400,
+     "local_checks": [
+      "offline tool suite",
+      "9 CI partition tests",
+      "13 export identity tests",
+      "19-gate orchestration positive/failure fixtures",
+      "actual qualified report/binary transfer and missing-artifact rejection"
+     ],
+     "remote_run": "not performed"
+    },
+    "companion_rebind": {
+     "receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-10-28-60c39a66-to-67b67a11.json",
+     "identical_tapes": 9,
+     "rows_per_tape": 2881
+    },
+    "limits": [
+     "Headless software agreement is not physical validation or 1080p hardware qualification.",
+     "Full-fleet campaign, final executable diagnostics and paired release timing remain pending.",
+     "The initial unit partition reached a 60-second supervision timeout in test_aircraft_ground_electric.gd; a checked continuation preserves the same assertions with 600-second supervision."
+    ]
    }
   },
   "acceptance_limit": "Component and research stage parity only. The scoped fleet run uses the previous accepted Stik binary. This does not qualify all-aircraft production admission, full lifecycle/replay, target performance or physical validation.",
