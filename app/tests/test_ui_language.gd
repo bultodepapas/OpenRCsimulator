@@ -6,6 +6,7 @@ extends SceneTree
 const Preferences := preload("res://app_state/preferences.gd")
 const Home := preload("res://ui/home.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
+const InterfaceFont := preload("res://i18n/fonts.gd")
 const PREFS := "user://test_ui_language_settings.cfg"
 
 var _failures := 0
@@ -27,6 +28,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	await process_frame # Autoloads install bundled fonts before screens enter the tree.
+	_font_atlas_isolation()
 	_preferences_file()
 	await _catalog()
 	await _default_and_switch()
@@ -35,6 +37,55 @@ func _run() -> void:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(f))
 	print("all UI language checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)
+
+
+func _render_font_chars(font: FontFile, characters: String) -> void:
+	for character: String in characters:
+		var glyph: int = font.get_glyph_index(26, character.unicode_at(0), 0)
+		if glyph > 0:
+			font.render_glyph(0, Vector2i(26, 0), glyph)
+
+
+func _glyph_pixels(font: FontFile, glyph: int) -> PackedByteArray:
+	var size := Vector2i(26, 0)
+	var texture_index: int = font.get_glyph_texture_idx(0, size, glyph)
+	if texture_index < 0:
+		return PackedByteArray()
+	var atlas: Image = font.get_texture_image(0, size, texture_index)
+	return atlas.get_region(Rect2i(font.get_glyph_uv_rect(0, size, glyph))).get_data()
+
+
+func _font_atlas_isolation() -> void:
+	var original: FontFile = ThemeDB.fallback_font
+	var size := Vector2i(26, 0)
+	_render_font_chars(original, "Use opaque panels")
+	var names: FontVariation = InterfaceFont.language_names_font()
+	var names_base: FontFile = names.base_font
+	_render_font_chars(original, "Settings interface color display background")
+	_render_font_chars(names_base, "Русский Français Español Deutsch Polski Português")
+	var reference := FontFile.new()
+	reference.antialiasing = original.antialiasing
+	reference.generate_mipmaps = original.generate_mipmaps
+	reference.multichannel_signed_distance_field = original.multichannel_signed_distance_field
+	reference.msdf_pixel_range = original.msdf_pixel_range
+	reference.msdf_size = original.msdf_size
+	reference.fixed_size = original.fixed_size
+	reference.force_autohinter = original.force_autohinter
+	reference.hinting = original.hinting
+	reference.subpixel_positioning = original.subpixel_positioning
+	reference.oversampling = original.oversampling
+	reference.set_data(original.get_data())
+	var mismatches := PackedInt32Array()
+	var glyphs: PackedInt32Array = original.get_glyph_list(0, size)
+	for glyph: int in glyphs:
+		reference.render_glyph(0, size, glyph)
+		if _glyph_pixels(original, glyph) != _glyph_pixels(reference, glyph):
+			mismatches.append(glyph)
+	_check("language-name glyphs cannot corrupt the shared 26px UI atlas", not glyphs.is_empty() and mismatches.is_empty(),
+		"glyphs=%d mismatches=%s" % [glyphs.size(), mismatches])
+	# Restore clean caches even when the regression is run against the old shallow copy.
+	original.remove_size_cache(0, size)
+	names_base.remove_size_cache(0, size)
 
 
 func _write(text: String) -> void:

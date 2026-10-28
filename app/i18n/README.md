@@ -24,6 +24,9 @@ English-only, preference-independent behavior.
   while Chinese is active, and removes it when returning to a Latin-script language.
   This preserves the existing Latin layout metrics. The language dropdown has
   its own multilingual font so the Chinese option is readable in every locale.
+  Its base uses a deep font copy: shallow copies share cached atlas images and
+  interleaved glyph additions can overwrite main-interface letters on the pinned engine.
+  `test_ui_language.gd` checks the resulting glyph pixels against a fresh font.
   Fonts and translations are local resources; no online translation is used.
 
 Terminology: throttle 油门; roll 横滚; pitch 俯仰; yaw 偏航; aileron 副翼;

@@ -21,7 +21,8 @@ static func japanese_font() -> Font:
 static func language_names_font() -> Font:
 	if _language_names == null:
 		_language_names = FontVariation.new()
-		_language_names.base_font = ThemeDB.fallback_font.duplicate()
+		# Shallow copies share atlas images, so later glyph insertions can corrupt the UI font.
+		_language_names.base_font = ThemeDB.fallback_font.duplicate(true)
 		_language_names.base_font.fallbacks = []
 		_language_names.fallbacks = [japanese_font(), chinese_font()]
 	return _language_names

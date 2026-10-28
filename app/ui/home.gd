@@ -591,6 +591,7 @@ func _init() -> void:
 	natural_random_button = _button("Natural Random", "HomeChoice")
 	natural_random_button.name = "NaturalRandom"
 	natural_random_button.alignment = HORIZONTAL_ALIGNMENT_LEFT # UI-33 (UI-30 HN-6): a row that opens a screen
+	natural_random_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	Widgets.mark_row(natural_random_button, "open")
 	natural_random_button.custom_minimum_size.y = 42
 	natural_random_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -599,6 +600,7 @@ func _init() -> void:
 	failures_button = _button("Failure practice", "HomeChoice")
 	failures_button.name = "Failures"
 	failures_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	failures_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	Widgets.mark_row(failures_button, "open")
 	failures_button.custom_minimum_size.y = 42
 	failures_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL

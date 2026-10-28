@@ -58,6 +58,8 @@ Start here for mistakes worth avoiding. Commands live in [TOOLS](TOOLS.md) and w
 
 - **Match acceptance to the observer.** Software-rendered captures establish pixels and repeatability, not target-GPU frame times or human attitude recognition. Export inspection establishes package structure, not native launch or signing trust. Keep pilot trials, hardware timing and native OS checks as distinct evidence. [L6c](research/visual-quality-implementation/L6c/README.md), [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md).
 
+- **Font cache identity is not pixel isolation (UI-01k).** On the pinned 4.8 beta, a shallow `FontFile.duplicate()` retained independent glyph placement state but shared atlas images. Interleaving new glyphs in the language-picker copy and main font corrupted visible labels while text, metrics and layout tests stayed correct. Deep-copy this independently extended font and compare glyph pixels against a fresh same-data font in the regression. [Reproduction and evidence](research/release-readiness/PT1-v0.1.9/README.md#follow-up-stability-and-usability-pass-2026-10-28).
+
 ## Keeping this useful
 
 Add a lesson when an observed failure or surprising result changes how a future developer should work. State the cause, the practical consequence and an evidence link with the relevant step ID. Merge with an existing lesson when possible; keep specialized detail in the topic guides above.

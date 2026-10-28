@@ -149,24 +149,88 @@ func _run() -> void:
 	var malformed := ConfigFile.new()
 	malformed.set_value("meta", "schema", 1)
 	malformed.set_value("display", "window_resolution", "1024x768")
+	malformed.set_value("display", "window_mode", "borderless")
+	malformed.set_value("display", "ui_scale", 1.5)
+	malformed.set_value("accessibility", "opaque_panels", true)
+	malformed.set_value("audio", "master_volume", 0.3)
 	_check("invalid preference fixture saves", malformed.save(PREFS) == OK)
 	var recovered := DisplayPreferences.load_from(PREFS)
 	_check("invalid persisted values use defaults and report recovery", recovered.window_resolution == "auto"
 		and recovered.note.contains("invalid display values were replaced with defaults") and recovered.writable)
+	_check("invalid value does not reset valid display, accessibility or audio choices",
+		recovered.window_mode == "borderless" and recovered.ui_scale == 1.5
+		and recovered.opaque_panels and recovered.master_volume == 0.3)
+	var recovered_store := DisplayPreferences.new(PREFS)
+	var changed: Dictionary = recovered_store.config.duplicate(true)
+	changed.menu_volume = 0.6
+	_check("saving an unrelated choice after recovery succeeds", recovered_store.save(changed) == OK)
+	var recovered_again := DisplayPreferences.load_from(PREFS)
+	_check("valid choices survive recovery and a later save", recovered_again.window_mode == "borderless"
+		and recovered_again.ui_scale == 1.5 and recovered_again.opaque_panels
+		and recovered_again.master_volume == 0.3 and recovered_again.menu_volume == 0.6)
+	_independent_recovery()
 
 	var future := ConfigFile.new()
 	future.set_value("meta", "schema", DisplayPreferences.SCHEMA + 1)
 	future.set_value("display", "window_resolution", "1920x1080")
 	future.set_value("graphics", "max_fps", 120)
+	future.set_value("graphics", "reconstruction", "future-renderer")
 	_check("future-schema fixture saves", future.save(PREFS) == OK)
 	var future_load := DisplayPreferences.load_from(PREFS)
 	_check("future-schema settings remain readable but protected", not future_load.writable
 		and future_load.note.contains("newer version") and future_load.window_resolution == "1920x1080"
-		and future_load.max_fps == 120)
+		and future_load.max_fps == 120 and future_load.reconstruction == "native"
+		and future_load.note.contains("invalid display values were replaced with defaults"))
 	_check("future-schema file cannot be overwritten", DisplayPreferences.save_to(PREFS, DisplayPreferences.DEFAULTS) == ERR_FILE_NO_PERMISSION)
 	var preserved := ConfigFile.new()
 	_check("future-schema file remains readable after rejected save", preserved.load(PREFS) == OK
 		and preserved.get_value("meta", "schema", -1) == DisplayPreferences.SCHEMA + 1)
+
+
+func _independent_recovery() -> void:
+	var chosen: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
+	chosen.merge({"window_mode": "borderless", "window_resolution": "1920x1080", "ui_scale": 1.5,
+		"max_fps": 120, "vsync_mode": "disabled", "msaa_3d": 1, "reconstruction": "fsr2_quality",
+		"fsr2_sharpness": 0.4, "scene_detail": "high", "birds": "few", "opaque_panels": true,
+		"reduced_motion": true, "menu_volume": 0.2, "master_volume": 0.3,
+		"aircraft_lighting_quality": "high", "camera_fov": 60}, true)
+	var cases := [
+		["display", "window_mode", "fullscreen"], ["display", "window_resolution", "1024x768"],
+		["display", "ui_scale", 1.13], ["graphics", "max_fps", 75],
+		["graphics", "vsync_mode", "adaptive"], ["graphics", "msaa_3d", 4],
+		["graphics", "reconstruction", "unknown"], ["graphics", "fsr2_sharpness", 2.0],
+		["graphics", "scene_detail", "unknown"], ["graphics", "birds", "unknown"],
+		["accessibility", "opaque_panels", "yes"], ["accessibility", "reduced_motion", "yes"],
+		["audio", "menu_volume", -0.1], ["audio", "master_volume", 1.1],
+	]
+	for item: Array in cases:
+		var section: String = item[0]
+		var key: String = item[1]
+		_check("write baseline for invalid " + key, DisplayPreferences.save_to(PREFS, chosen) == OK)
+		var cfg := ConfigFile.new()
+		var loaded_ok: bool = cfg.load(PREFS) == OK
+		cfg.set_value(section, key, item[2])
+		_check("write invalid " + key, loaded_ok and cfg.save(PREFS) == OK)
+		var expected: Dictionary = chosen.duplicate(true)
+		expected[key] = DisplayPreferences.DEFAULTS[key]
+		var store := DisplayPreferences.new(PREFS)
+		_check("only invalid " + key + " falls back", store.config == expected and store.writable
+			and store.note.contains("invalid display values were replaced with defaults"))
+		_check("recovered " + key + " persists with other choices", store.save(store.config) == OK
+			and DisplayPreferences.new(PREFS).config == expected)
+	_check("write baseline for multiple invalid values", DisplayPreferences.save_to(PREFS, chosen) == OK)
+	var multiple := ConfigFile.new()
+	var multiple_loaded: bool = multiple.load(PREFS) == OK
+	multiple.set_value("display", "window_resolution", "1024x768")
+	multiple.set_value("audio", "master_volume", 1.1)
+	_check("write multiple invalid values", multiple_loaded and multiple.save(PREFS) == OK)
+	var multiple_expected: Dictionary = chosen.duplicate(true)
+	multiple_expected.window_resolution = DisplayPreferences.DEFAULTS.window_resolution
+	multiple_expected.master_volume = DisplayPreferences.DEFAULTS.master_volume
+	var multiple_store := DisplayPreferences.new(PREFS)
+	_check("multiple invalid values recover without resetting other choices", multiple_store.config == multiple_expected)
+	_check("multiple recovered values persist with other choices", multiple_store.save(multiple_store.config) == OK
+		and DisplayPreferences.new(PREFS).config == multiple_expected)
 
 
 func _reset() -> void:

@@ -214,7 +214,7 @@ func _run() -> void:
 		_check("keyboard opens section %d without launching" % section, home._pages[section].visible
 			and home._pages.filter(func(page): return page.visible).size() == 1 and app.flight == null)
 	home._select_page(0)
-	for locale: String in ["en", "es"]:
+	for locale: String in ["en", "es", "zh_Hans", "pt_BR", "de", "fr", "it", "ru", "ja"]:
 		TranslationServer.set_locale(locale)
 		home._select_page(2)
 		await ui.settle()

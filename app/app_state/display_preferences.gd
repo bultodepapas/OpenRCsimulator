@@ -156,6 +156,19 @@ static func load_from(file_path: String) -> Dictionary:
 		if not _valid_aircraft_lighting_value(key, raw[key]):
 			raw[key] = DEFAULTS[key]
 			result.note = _append_note(result.note, "invalid aircraft lighting %s replaced with its default" % AIRCRAFT_LIGHTING_FILE_KEYS[key])
+	# Apply the same isolation to base display, graphics, accessibility and audio
+	# values. Reuse the save validator so the accepted values cannot drift apart.
+	var recovered_base := false
+	for key: String in raw:
+		if CAMERA_FILE_KEYS.has(key) or AIRCRAFT_LIGHTING_FILE_KEYS.has(key):
+			continue
+		var single := DEFAULTS.duplicate(true)
+		single[key] = raw[key]
+		if not validate(single).ok:
+			raw[key] = DEFAULTS[key]
+			recovered_base = true
+	if recovered_base:
+		result.note = _append_note(result.note, "invalid display values were replaced with defaults")
 	var checked := validate(raw)
 	if checked.ok:
 		result.merge(checked.config, true)
