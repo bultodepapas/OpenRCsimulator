@@ -37,6 +37,7 @@ SNAPSHOT_FORMAT = "openrc-nvidia-product-snapshot v1"
 PACKAGE_FORMAT = "openrc-nvidia-product-package v1"
 SNAPSHOT_RECEIPT = "snapshot-receipt.json"
 PACKAGE_RECEIPT = "package-receipt.json"
+IMPORT_BASELINE = "import-baseline"
 ENGINE = ROOT / ".tools/advanced-rendering" / f"godot-{native_build.COMMIT}" / "bin"
 DEADLINE: float | None = None
 
@@ -227,6 +228,22 @@ def tree_files(root: Path, *, ignore_cache: bool = False) -> set[str]:
     return actual
 
 
+def unknown_directories(root: Path, names: set[str], *, ignore_cache: bool = False) -> set[str]:
+    allowed = set()
+    for name in names:
+        parent = PurePosixPath(name).parent
+        while str(parent) != ".":
+            allowed.add(parent.as_posix())
+            parent = parent.parent
+    found = set()
+    for base, dirs, _ in os.walk(root, followlinks=False):
+        relative_base = Path(base).relative_to(root)
+        if ignore_cache and relative_base == Path("app") and ".godot" in dirs:
+            dirs.remove(".godot")
+        found.update((relative_base / name).as_posix() for name in dirs)
+    return found - allowed
+
+
 def verify_tree(root: Path, receipt_name: str, expected_format: str, *, ignore_cache: bool = False) -> dict:
     if not root.is_dir():
         raise RuntimeError(f"missing output directory: {root}")
@@ -250,20 +267,63 @@ def verify_tree(root: Path, receipt_name: str, expected_format: str, *, ignore_c
     expected_names = set(files) | set(generated) | {receipt_name}
     if actual != expected_names:
         raise RuntimeError(f"unknown or missing output files under {root}: {sorted(actual ^ expected_names)[:10]}")
+    extra_dirs = unknown_directories(root, expected_names, ignore_cache=ignore_cache)
+    if extra_dirs:
+        raise RuntimeError(f"unknown output directories under {root}: {sorted(extra_dirs)[:10]}")
     return receipt
 
 
 def receipt_generated_imports(root: Path) -> dict:
-    """Record only UID sidecars newly emitted by the immediately preceding import."""
+    """Record UIDs and restore checked source sidecars changed by this editor."""
     reject_links(root)
     path = root / SNAPSHOT_RECEIPT
     receipt = load_json(path)
     files = receipt.get("files")
     if receipt.get("format") != SNAPSHOT_FORMAT or not isinstance(files, dict):
         raise RuntimeError(f"invalid snapshot receipt: {path}")
-    for name, expected in files.items():
+    originals = receipt.get("import_originals", {})
+    if not isinstance(originals, dict):
+        raise RuntimeError("invalid import-originals receipt")
+    # This upstream editor predates three newer import settings. It drops only
+    # those settings when it rewrites sidecars. Preserve the exact authoring bytes
+    # because aircraft proofs deliberately pin selected .import files.
+    removed_settings = {"mipmaps/alpha_test_threshold=0.5", "mipmaps/preserve_alpha_test_coverage=false",
+                        "mipmaps/preserve_alpha_test_coverage=true", "mesh_library/create_categories_from_hierarchy=false"}
+    restores: dict[str, bytes] = {}
+    rewrites: dict[str, dict[str, str]] = {}
+    new_originals: dict[str, bytes] = {}
+    for name, expected in list(files.items()):
         target = root.joinpath(*safe_relative(name).parts)
-        if not target.is_file() or sha(target) != expected:
+        if not target.is_file():
+            raise RuntimeError(f"source disappeared during import: {target}")
+        actual = sha(target)
+        if name.startswith("app/") and name.endswith(".import"):
+            baseline_name = originals.get(name)
+            if baseline_name is None:
+                baseline_name = f"{IMPORT_BASELINE}/{name}"
+                original_path = source_path(name)
+            else:
+                safe_relative(baseline_name, IMPORT_BASELINE)
+                if files.get(baseline_name) != expected:
+                    raise RuntimeError(f"import baseline receipt differs from source: {name}")
+                original_path = root.joinpath(*PurePosixPath(baseline_name).parts)
+            if not original_path.is_file() or sha(original_path) != expected:
+                raise RuntimeError(f"original import sidecar is unavailable or changed: {name}")
+            original = original_path.read_bytes()
+            if baseline_name not in files:
+                originals[name] = baseline_name
+                new_originals[baseline_name] = original
+            if actual != expected:
+                try:
+                    before = original.decode("utf-8").splitlines()
+                    after = target.read_text(encoding="utf-8").splitlines()
+                except UnicodeError as error:
+                    raise RuntimeError(f"invalid import sidecar text: {name}") from error
+                if [line for line in before if line not in removed_settings] != after:
+                    raise RuntimeError(f"import sidecar has unexpected edits: {name}")
+                restores[name] = original
+                rewrites[name] = {"source_sha256": expected, "imported_sha256": actual}
+        elif actual != expected:
             raise RuntimeError(f"source changed during import: {target}")
     old_generated = receipt.get("generated_import_files", {})
     if not isinstance(old_generated, dict):
@@ -285,6 +345,20 @@ def receipt_generated_imports(root: Path) -> dict:
         if not re.fullmatch(r"uid://[a-z0-9]+", uid):
             raise RuntimeError(f"invalid generated UID: {target}")
         generated[name] = sha(target)
+    extra_dirs = unknown_directories(root, set(files) | set(generated) | {SNAPSHOT_RECEIPT}, ignore_cache=True)
+    if extra_dirs:
+        raise RuntimeError(f"unexpected directories appeared during import: {sorted(extra_dirs)[:10]}")
+    # All changes are validated before restoring any source byte.
+    for name, data in new_originals.items():
+        target = root.joinpath(*safe_relative(name).parts)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
+        files[name] = hashlib.sha256(data).hexdigest()
+    for name, data in restores.items():
+        root.joinpath(*safe_relative(name).parts).write_bytes(data)
+    receipt["files"] = files
+    receipt["import_originals"] = originals
+    receipt["import_sidecar_rewrites"] = rewrites
     receipt["generated_import_files"] = generated
     path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     verify_tree(root, SNAPSHOT_RECEIPT, SNAPSHOT_FORMAT, ignore_cache=True)
@@ -390,6 +464,17 @@ def prepare_snapshot() -> dict:
             expected = original_project_hash if name == "app/project.godot" else snapshot_hash
             if not source_path(name).is_file() or sha(source_path(name)) != expected:
                 raise RuntimeError(f"source changed during snapshot; retry: {name}")
+        import_originals: dict[str, str] = {}
+        for name in app_files:
+            if name.endswith(".import"):
+                baseline_name = f"{IMPORT_BASELINE}/{name}"
+                target = staging.joinpath(*PurePosixPath(baseline_name).parts)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(staging.joinpath(*PurePosixPath(name).parts), target)
+                files[baseline_name] = sha(target)
+                if files[baseline_name] != files[name]:
+                    raise RuntimeError(f"import baseline differs from source: {name}")
+                import_originals[name] = baseline_name
         status = git("status", "--porcelain=v1", "-z", "--untracked-files=all").decode("utf-8")
         dirty = bool(status)
         describe = git("describe", "--tags", "--always", "--dirty").decode().strip()
@@ -402,7 +487,7 @@ def prepare_snapshot() -> dict:
                    "project_override": {"path": "app/project.godot", "setting": "renderer/rendering_method",
                                         "source": "gl_compatibility", "snapshot": "forward_plus",
                                         "source_sha256": original_project_hash, "snapshot_sha256": files["app/project.godot"]},
-                   "files": files}
+                   "files": files, "import_originals": import_originals}
         if previous and (SNAPSHOT / "app/.godot").exists():
             origin = previous.get("import") or previous.get("cache_origin")
             receipt["cache_origin"] = {"editor_sha256": origin["editor_sha256"],
@@ -459,6 +544,10 @@ def launcher_files() -> dict[str, bytes]:
 
 def verify_product() -> dict:
     receipt = verify_tree(OUTPUT, PACKAGE_RECEIPT, PACKAGE_FORMAT)
+    for name in ("OpenRC Simulator.exe", "OpenRC Simulator.pck", "OpenRC Simulator.cmd", "Standard Graphics.cmd",
+                 SNAPSHOT_RECEIPT, "openrc-editor-build.json", "openrc-template_release-build.json"):
+        if not (OUTPUT / name).is_file() or not (OUTPUT / name).stat().st_size:
+            raise RuntimeError(f"product required file is missing or empty: {name}")
     snapshot = load_json(OUTPUT / SNAPSHOT_RECEIPT)
     editor = load_json(OUTPUT / "openrc-editor-build.json")
     template = load_json(OUTPUT / "openrc-template_release-build.json")
@@ -499,6 +588,7 @@ def verify_product() -> dict:
 
 def package_product(snapshot: dict) -> dict:
     editor, template, licenses = verify_engine()
+    license_hashes = {path.name: sha(path) for path in licenses}
     verify_tree(SNAPSHOT, SNAPSHOT_RECEIPT, SNAPSHOT_FORMAT, ignore_cache=True)
     if OUTPUT.exists():
         verify_tree(OUTPUT, PACKAGE_RECEIPT, PACKAGE_FORMAT)
@@ -525,6 +615,10 @@ def package_product(snapshot: dict) -> dict:
                              required=["[ DONE ] savepack"], label="nvidia-product-export")
         if not result.get("ok") or not pack.is_file() or not pack.stat().st_size:
             raise RuntimeError(f"Windows pack export failed; runner report: {result.get('report')}")
+        final_editor, final_template, final_licenses = verify_engine()
+        if (final_editor != editor or final_template != template
+                or {path.name: sha(path) for path in final_licenses} != license_hashes):
+            raise RuntimeError("engine, runtime or license inputs changed during export")
         # Check every snapshotted source again after running Godot.
         verify_tree(SNAPSHOT, SNAPSHOT_RECEIPT, SNAPSHOT_FORMAT, ignore_cache=True)
         ground_source = SNAPSHOT / "app/native/ground_vehicle/openrc_ground_vehicle.dll"

@@ -31,6 +31,8 @@ class SnapshotTests(unittest.TestCase):
         run_git(self.root, "config", "user.email", "product-test@example.invalid")
         self.put("app/project.godot", b'[rendering]\nrenderer/rendering_method="gl_compatibility"\n')
         self.put("app/kept.gd", b"tracked\n")
+        self.put("app/icon.svg", b"<svg/>\n")
+        self.put("app/icon.svg.import", b'[params]\nmipmaps/preserve_alpha_test_coverage=false\nmipmaps/alpha_test_threshold=0.5\nother=1\n')
         self.put("assets/aircraft/proof.json", b"proof\n")
         self.put("app/data/aircraft_models/test.json", json.dumps({"source_registry": {"path": "assets/aircraft/proof.json"},
             "geometry": {"source": {"path": "res://kept.gd"}}, "authoring_sources": [], "dependencies": []}).encode())
@@ -121,6 +123,20 @@ class SnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "unexpected file appeared"):
             product.receipt_generated_imports(snapshot)
         self.assertTrue(unknown.exists())
+
+    def test_import_restores_exact_authored_sidecar_and_rejects_other_edits(self) -> None:
+        product.prepare_snapshot()
+        snapshot = self.root / "tmp/nvidia-product"
+        original = (self.root / "app/icon.svg.import").read_bytes()
+        sidecar = snapshot / "app/icon.svg.import"
+        sidecar.write_bytes(b"[params]\nother=1\n")
+        receipt = product.receipt_generated_imports(snapshot)
+        self.assertEqual(sidecar.read_bytes(), original)
+        self.assertIn("app/icon.svg.import", receipt["import_sidecar_rewrites"])
+        sidecar.write_bytes(b"[params]\nother=malicious\n")
+        with self.assertRaisesRegex(RuntimeError, "unexpected edits"):
+            product.receipt_generated_imports(snapshot)
+        self.assertEqual(sidecar.read_bytes(), b"[params]\nother=malicious\n")
 
     def test_refresh_preserves_only_receipted_editor_cache(self) -> None:
         product.prepare_snapshot()
@@ -241,6 +257,9 @@ class PackageValidationTests(unittest.TestCase):
         output.mkdir()
         shutil.copyfile(self.engine / "godot.windows.template_release.x86_64.exe", output / "OpenRC Simulator.exe")
         shutil.copyfile(self.engine / "runtime.dll", output / "runtime.dll")
+        (output / "OpenRC Simulator.pck").write_bytes(b"pack")
+        for name, contents in product.launcher_files().items():
+            (output / name).write_bytes(contents)
         for name in ("openrc-editor-build.json", "openrc-template_release-build.json"):
             shutil.copyfile(self.engine / name, output / name)
         (output / "openrc_ground_vehicle.dll").write_bytes(b"ground")
