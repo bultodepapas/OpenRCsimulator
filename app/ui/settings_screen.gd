@@ -48,6 +48,7 @@ var _destinations: BoxContainer
 var _close_button: Button
 var _rows: Array[BoxContainer] = []
 var _localized_controls: Array[Dictionary] = []
+var _localized_tooltips: Array[Dictionary] = []
 var _window_picker: OptionButton
 var _resolution_picker: OptionButton
 var _fps_picker: OptionButton
@@ -244,9 +245,7 @@ func _build() -> void:
 		_scene_detail_picker.set_item_metadata(_scene_detail_picker.item_count - 1, level)
 	_scene_detail_picker.item_selected.connect(_scene_detail_selected)
 	_add_row(graphics_page, "Scene detail", _scene_detail_picker)
-	var detected: Dictionary = SceneDetail.detected()
-	_scene_detail_picker.tooltip_text = tr("Trees, props and model detail, from your next flight. Automatic picks a level for your GPU. Extreme draws every nearby field tree in 3D and needs a strong GPU.") \
-		+ "\n" + tr("Detected: %s (%s).") % [RenderingServer.get_video_adapter_name(), tr(str(detected.reason))]
+	_refresh_scene_detail_tooltip()
 	# SC-BIRD (birds-sky-life plan D2): presentation only and live; birds fly away or arrive instead of popping.
 	_birds_picker = OptionButton.new()
 	_birds_picker.name = "Birds"
@@ -255,7 +254,7 @@ func _build() -> void:
 		_birds_picker.set_item_metadata(_birds_picker.item_count - 1, level)
 	_birds_picker.item_selected.connect(_birds_selected)
 	_add_row(graphics_page, "Birds", _birds_picker)
-	_birds_picker.tooltip_text = tr("Vultures and storks in thermals, kites, swallows and evening swifts, by time of day and weather. Changes apply at once: birds fly away or arrive. Normal follows Scene detail; Many keeps full flocks at every level.")
+	_set_localized_tooltip(_birds_picker, "Vultures and storks in thermals, kites, swallows and evening swifts, by time of day and weather. Changes apply at once: birds fly away or arrive. Normal follows Scene detail; Many keeps full flocks at every level.")
 	_graphics_info = _label("", "SecondaryLabel", true)
 	_lighting_quality_picker = OptionButton.new()
 	_lighting_quality_picker.name = "AircraftLightingQuality"
@@ -266,7 +265,7 @@ func _build() -> void:
 		_draft.aircraft_lighting_quality = str(_lighting_quality_picker.get_item_metadata(index))
 		_on_presentation_option_changed())
 	_add_row(lighting_page, "Aircraft lighting", _lighting_quality_picker)
-	_lighting_quality_picker.tooltip_text = tr("Low keeps aircraft LEDs and landing lights. Standard adds nearby spill and fewer show particles. High uses the full bounded show effects.")
+	_set_localized_tooltip(_lighting_quality_picker, "Low keeps aircraft LEDs and landing lights. Standard adds nearby spill and fewer show particles. High uses the full bounded show effects.")
 	_lighting_vfx_toggle = CheckButton.new()
 	_lighting_vfx_toggle.name = "AircraftLightingShowVfx"
 	_lighting_vfx_toggle.theme_type_variation = "SettingsToggle"
@@ -290,10 +289,10 @@ func _build() -> void:
 	# CAM-17: camera preferences; presentation only, applied to a Home flight at once.
 	_camera_view_picker = _camera_picker("CameraView", "camera_view", CameraSettings.VIEWS)
 	_add_row(camera_page, "First view", _camera_view_picker)
-	_camera_view_picker.tooltip_text = tr("The pilot view stays the reference for learning to fly; chase and orbit are aids. Right-drag turns the orbit; the wheel or +/− zooms.")
+	_set_localized_tooltip(_camera_view_picker, "The pilot view stays the reference for learning to fly; chase and orbit are aids. Right-drag turns the orbit; the wheel or +/− zooms.")
 	_camera_fov_picker = _camera_picker("CameraFov", "camera_fov", CameraSettings.FOVS)
 	_add_row(camera_page, "Pilot field of view", _camera_fov_picker)
-	_camera_fov_picker.tooltip_text = tr("The pilot view's widest angle; auto zoom narrows it for a distant airplane. About 30° shows the airplane at its real size on a 24–27-inch screen at arm's length.")
+	_set_localized_tooltip(_camera_fov_picker, "The pilot view's widest angle; auto zoom narrows it for a distant airplane. About 30° shows the airplane at its real size on a 24–27-inch screen at arm's length.")
 	# CAM-06: one picker for auto zoom on/off (Z in flight) and its law.
 	_camera_zoom_picker = OptionButton.new()
 	_camera_zoom_picker.name = "CameraAutoZoom"
@@ -306,7 +305,7 @@ func _build() -> void:
 		if value != "off":
 			_draft.camera_zoom_law = value
 		_on_presentation_option_changed())
-	_camera_zoom_picker.tooltip_text = tr("Constant size keeps a distant airplane the same size on screen. Keeps looming lets it shrink slowly, so you still see it come and go. Gentle zooms least. Z turns auto zoom off and on in flight.")
+	_set_localized_tooltip(_camera_zoom_picker, "Constant size keeps a distant airplane the same size on screen. Keeps looming lets it shrink slowly, so you still see it come and go. Gentle zooms least. Z turns auto zoom off and on in flight.")
 	_add_row(camera_page, "Auto zoom (Z)", _camera_zoom_picker)
 	# CAM-06b/28: one picker for the two pilot-view aids keeps the page within 1080p without scrolling.
 	_camera_aids_picker = OptionButton.new()
@@ -319,10 +318,10 @@ func _build() -> void:
 		_draft.camera_horizon_bias = value in ["horizon", "both"]
 		_draft.camera_overhead_smoothing = value in ["overhead", "both"]
 		_on_presentation_option_changed())
-	_camera_aids_picker.tooltip_text = tr("Keep the horizon in view: the view tilts down so the ground shows under a high airplane. Smooth overhead passes: the picture turns gradually instead of flipping when the airplane passes overhead.")
+	_set_localized_tooltip(_camera_aids_picker, "Keep the horizon in view: the view tilts down so the ground shows under a high airplane. Smooth overhead passes: the picture turns gradually instead of flipping when the airplane passes overhead.")
 	_add_row(camera_page, "Pilot view aids", _camera_aids_picker)
 	_camera_magnifier_picker = _camera_picker("CameraMagnifier", "camera_magnifier", CameraSettings.MAGNIFIER_MODES)
-	_camera_magnifier_picker.tooltip_text = tr("Pilot view: a small window at the top shows the airplane up close, so its attitude reads while the main view keeps the real distance. Automatic shows it when the airplane gets small.")
+	_set_localized_tooltip(_camera_magnifier_picker, "Pilot view: a small window at the top shows the airplane up close, so its attitude reads while the main view keeps the real distance. Automatic shows it when the airplane gets small.")
 	_add_row(camera_page, "Magnifier", _camera_magnifier_picker)
 	_camera_chase_picker = _camera_picker("CameraChaseDistance", "camera_chase_distance", CameraSettings.CHASE_DISTANCES)
 	_add_row(camera_page, "Chase distance", _camera_chase_picker)
@@ -334,14 +333,14 @@ func _build() -> void:
 	_opaque_toggle = CheckButton.new()
 	_opaque_toggle.name = "OpaquePanels"
 	_opaque_toggle.theme_type_variation = "SettingsToggle"
-	_opaque_toggle.tooltip_text = tr("Use opaque panels")
+	_set_localized_tooltip(_opaque_toggle, "Use opaque panels")
 	_opaque_toggle.toggled.connect(_opaque_toggled)
 	_add_row(interface_page, "Use opaque panels", _opaque_toggle)
 
 	_motion_toggle = CheckButton.new()
 	_motion_toggle.name = "ReducedMotion"
 	_motion_toggle.theme_type_variation = "SettingsToggle"
-	_motion_toggle.tooltip_text = tr("Reduce interface motion")
+	_set_localized_tooltip(_motion_toggle, "Reduce interface motion")
 	_motion_toggle.toggled.connect(_motion_toggled)
 	_add_row(interface_page, "Reduce interface motion", _motion_toggle)
 	_lighting_flashes_toggle = CheckButton.new()
@@ -351,7 +350,7 @@ func _build() -> void:
 		_draft.aircraft_lighting_reduced_flashes = enabled
 		_on_presentation_option_changed())
 	_add_row(lighting_page, "Reduce aircraft flashes", _lighting_flashes_toggle)
-	_lighting_flashes_toggle.tooltip_text = tr("Keep aircraft lights steady and disable show effects. Saved aircraft colors and sequences are preserved.")
+	_set_localized_tooltip(_lighting_flashes_toggle, "Keep aircraft lights steady and disable show effects. Saved aircraft colors and sequences are preserved.")
 	lighting_page.add_child(_label("These preferences apply to every aircraft and Workshop preview. Customize individual colors and sequences in Workshop.", "SecondaryLabel", true))
 	var lighting_defaults := _button("Restore lighting defaults", "QuietButton", "AircraftLightingDefaults")
 	lighting_defaults.pressed.connect(func() -> void:
@@ -550,7 +549,7 @@ func _camera_toggle(node_name: String, key: String, tooltip: String) -> CheckBut
 	var toggle := CheckButton.new()
 	toggle.name = node_name
 	toggle.theme_type_variation = "SettingsToggle"
-	toggle.tooltip_text = tr(tooltip)
+	_set_localized_tooltip(toggle, tooltip)
 	toggle.toggled.connect(func(enabled: bool) -> void:
 		_draft[key] = enabled
 		_on_presentation_option_changed())
@@ -663,6 +662,12 @@ func _refresh_graphics_info() -> void:
 	if bool(active_policy.get("fallback", false)):
 		var reason := str(active_policy.get("fallback_reason", ""))
 		_graphics_info.text += "\n" + _reconstruction_fallback_text(requested, reason)
+
+
+func _refresh_scene_detail_tooltip() -> void:
+	var detected: Dictionary = SceneDetail.detected()
+	_scene_detail_picker.tooltip_text = tr("Trees, props and model detail, from your next flight. Automatic picks a level for your GPU. Extreme draws every nearby field tree in 3D and needs a strong GPU.") \
+		+ "\n" + tr("Detected: %s (%s).") % [RenderingServer.get_video_adapter_name(), tr(str(detected.reason))]
 
 
 func set_graphics_restart_available(available: bool) -> void:
@@ -960,7 +965,7 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_scene_detail_picker, "scene_detail"],
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_scene_detail_picker, "scene_detail"], [_birds_picker, "birds"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],
 			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_zoom_picker, "camera_zoom"], [_camera_magnifier_picker, "camera_magnifier"], [_camera_aids_picker, "camera_aids"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"]]:
 		var picker: OptionButton = entry[0]
@@ -968,17 +973,18 @@ func _refresh_translated_text() -> void:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))
 	_refresh_graphics_info()
 	_sync_reconstruction_controls()
-	if _opaque_toggle != null:
-		_opaque_toggle.tooltip_text = tr("Use opaque panels")
-	if _motion_toggle != null:
-		_motion_toggle.tooltip_text = tr("Reduce interface motion")
-	if _lighting_quality_picker != null:
-		_lighting_quality_picker.tooltip_text = tr("Low keeps aircraft LEDs and landing lights. Standard adds nearby spill and fewer show particles. High uses the full bounded show effects.")
-	if _lighting_flashes_toggle != null:
-		_lighting_flashes_toggle.tooltip_text = tr("Keep aircraft lights steady and disable show effects. Saved aircraft colors and sequences are preserved.")
+	for entry: Dictionary in _localized_tooltips:
+		entry.control.tooltip_text = tr(str(entry.source))
+	_refresh_scene_detail_tooltip()
+	set_graphics_restart_available(not _graphics_restart_button.disabled)
 	if _status != null:
 		_refresh_status_text()
 	_refresh_volume_text()
+
+
+func _set_localized_tooltip(control: Control, source: String) -> void:
+	control.tooltip_text = tr(source)
+	_localized_tooltips.append({"control": control, "source": source})
 
 
 func _label(source: String, variation: String, wrap := false) -> Label:

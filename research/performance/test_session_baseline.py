@@ -2,11 +2,15 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+import json
 from pathlib import Path
+from unittest.mock import patch
 
 try:
     from .session_baseline import (
         alternating_observer_order,
+        _run_probe,
+        _sha256_file,
         parse_probe_file,
         percentile_nearest_rank,
         reduce_backend_pair,
@@ -16,6 +20,8 @@ try:
 except ImportError:  # Also support direct execution from this directory.
     from session_baseline import (
         alternating_observer_order,
+        _run_probe,
+        _sha256_file,
         parse_probe_file,
         percentile_nearest_rank,
         reduce_backend_pair,
@@ -183,7 +189,9 @@ class ReducerTests(unittest.TestCase):
         self.assertEqual(validate_probe_report(native), [])
         self.assertTrue(reduce_backend_pair(reference, native)["comparable"])
         for field, value in (("fingerprint", "1" * 64), ("solver_sha256", "2" * 64),
-                             ("aircraft_sha256", "3" * 64), ("fingerprint_boundaries", 9)):
+                             ("aircraft_sha256", "3" * 64), ("fingerprint_boundaries", 9),
+                             ("solver_identity_kind", "packaged-executable-v1"),
+                             ("template_release", True), ("probe_sha256", "4" * 64)):
             changed = valid_current_report("native")
             changed[field] = value
             with self.subTest(field=field):
@@ -266,6 +274,60 @@ class ReducerTests(unittest.TestCase):
         self.assertEqual(alternating_observer_order(3), ("on", "off"))
         with self.assertRaises(ValueError):
             alternating_observer_order(0)
+
+
+class ReleaseProbeAdmissionTests(unittest.TestCase):
+    def test_release_probe_requires_exact_host_executable_and_embedded_probe(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            executable, probe = root / "release", root / "probe.gd"
+            executable.write_bytes(b"release executable")
+            probe.write_bytes(b"probe source")
+            library = root / "native/kernel/libopenrc_native_kernel.so"
+            library.parent.mkdir(parents=True)
+            library.write_bytes(b"native library")
+            exe_hash, probe_hash = _sha256_file(executable), _sha256_file(probe)
+            output, log = root / "report.json", root / "run.log"
+            report = valid_current_report("native")
+            report["backend"]["actual"]["binary_sha256"] = _sha256_file(library)
+            report.update({"template_release": True, "solver_identity_kind": "packaged-executable-v1",
+                           "solver_sha256": exe_hash, "probe_sha256": probe_hash})
+            marker = "NATIVE_QUALIFICATION mode=session verdict=pass\n"
+
+            def run_case(candidate: dict, output_marker: str, expected_hash: str = exe_hash):
+                class Process:
+                    returncode = 0
+
+                    def __init__(self, command, **kwargs):
+                        self.command = command
+                        output.write_text(json.dumps(candidate), encoding="utf-8")
+                        kwargs["stdout"].write(output_marker)
+
+                    def wait(self, timeout):
+                        return 0
+
+                with patch("subprocess.Popen", Process):
+                    return _run_probe(godot=executable, app_dir=root, probe=probe, output_json=output,
+                                      log_path=log, aircraft_id=report["aircraft_id"], case_id="trim",
+                                      observer=True, warmup_ticks=4, sample_ticks=5, timeout=5,
+                                      physics_backend="native", native_source_sha256="c" * 64,
+                                      release_executable=True, executable_sha256=expected_hash,
+                                      probe_sha256=probe_hash)
+
+            accepted = run_case(report, marker)
+            self.assertTrue(accepted["accepted"], accepted["failures"])
+            self.assertIn("--native-qualification=session", accepted["command"])
+            self.assertNotIn("--path", accepted["command"])
+            self.assertNotIn("--script", accepted["command"])
+            for field, value in (("template_release", False), ("solver_sha256", "1" * 64),
+                                 ("solver_identity_kind", "source-tree-v1"), ("probe_sha256", "2" * 64)):
+                changed = dict(report, **{field: value})
+                with self.subTest(field=field):
+                    self.assertFalse(run_case(changed, marker)["accepted"])
+            self.assertFalse(run_case(report, "")["accepted"])
+            self.assertFalse(run_case(report, marker, "0" * 64)["accepted"])
+            library.write_bytes(b"different native library")
+            self.assertFalse(run_case(report, marker)["accepted"])
 
 
 if __name__ == "__main__":

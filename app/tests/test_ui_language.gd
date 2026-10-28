@@ -119,6 +119,23 @@ func _preferences_file() -> void:
 	p = Preferences.load_from(PREFS)
 	_check("unreadable file -> defaults, kept as .bad", p.language == "en" and FileAccess.file_exists(PREFS + ".bad")
 		and not FileAccess.file_exists(PREFS) and "kept as" in p.note, p.note)
+	_check("preserved unreadable settings allow a new file", p.writable and Preferences.save_to(PREFS, p) == OK)
+	_reset()
+	var backup := ProjectSettings.globalize_path(PREFS + ".bad")
+	_check("create blocked backup directory", DirAccess.make_dir_absolute(backup) == OK)
+	var marker := FileAccess.open(backup.path_join("marker"), FileAccess.WRITE)
+	marker.store_string("occupied")
+	marker.close()
+	var broken := "this is not [a config file\n"
+	_write(broken)
+	p = Preferences.load_from(PREFS)
+	_check("failed settings backup protects the original", not p.writable and "will not be overwritten" in p.note
+		and FileAccess.get_file_as_string(PREFS) == broken, p.note)
+	p.language = "es"
+	_check("failed settings backup refuses later saves", Preferences.save_to(PREFS, p) == ERR_FILE_NO_PERMISSION
+		and p.language == "es" and FileAccess.get_file_as_string(PREFS) == broken)
+	DirAccess.remove_absolute(backup.path_join("marker"))
+	DirAccess.remove_absolute(backup)
 	_reset()
 	var newer := "[meta]\nschema=99\n[ui]\nlanguage=\"es\"\n"
 	_write(newer)

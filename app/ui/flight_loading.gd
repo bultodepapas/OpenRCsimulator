@@ -119,9 +119,18 @@ func _init(existing_theme: Theme = null) -> void:
 	_refresh_text()
 
 
+func _enter_tree() -> void:
+	# The coordinator temporarily detaches this same screen while installing the flight.
+	_focus_cancel.call_deferred()
+
+
 func _ready() -> void:
 	_resize_panel()
-	cancel_button.grab_focus.call_deferred()
+
+
+func _focus_cancel() -> void:
+	if is_inside_tree() and surface.is_visible_in_tree() and not cancel_button.disabled:
+		cancel_button.grab_focus()
 
 
 func configure(summary: String) -> void:

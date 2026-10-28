@@ -75,8 +75,8 @@ const DEFAULTS := {
 }
 
 
-## Returns the preferences: the DEFAULTS keys plus `writable` (false for a file from a newer version, which must
-## not be overwritten) and `note` (what happened to an unusable file, "" when all is well).
+## Returns the preferences: the DEFAULTS keys plus `writable` (false for a newer file or an unreadable file that
+## could not be preserved) and `note` (what happened to an unusable file, "" when all is well).
 static func load_from(path: String) -> Dictionary:
 	var prefs := DEFAULTS.duplicate(true)
 	prefs.failure_config = FailureConfig.defaults()
@@ -92,7 +92,9 @@ static func load_from(path: String) -> Dictionary:
 		var backup := path + ".bad"
 		DirAccess.remove_absolute(backup)
 		var err := DirAccess.rename_absolute(path, backup)
-		prefs.note = "settings file unreadable: %s" % ("kept as " + backup.get_file() if err == OK else "could not keep a copy (error %d)" % err)
+		if err != OK:
+			prefs.writable = false
+		prefs.note = "settings file unreadable: %s" % ("kept as " + backup.get_file() if err == OK else "could not keep a copy (error %d); original will not be overwritten" % err)
 		return prefs
 	if schema > SCHEMA:
 		prefs.writable = false

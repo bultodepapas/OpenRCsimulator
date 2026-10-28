@@ -423,7 +423,8 @@ def reduce_pair(on_report: dict[str, Any] | None, off_report: dict[str, Any] | N
             reasons.append("observer modes reported different machines")
 
         for key in ("format", "aircraft_id", "case_id", "requested", "completed", "final_tick", "backend",
-                    "fingerprint_boundaries", "solver_sha256", "aircraft_sha256"):
+                    "fingerprint_boundaries", "solver_sha256", "solver_identity_kind", "template_release",
+                    "probe_sha256", "aircraft_sha256"):
             if on_report.get(key) != off_report.get(key):
                 reasons.append(f"observer modes differ in {key}")
 
@@ -457,7 +458,8 @@ def reduce_backend_pair(reference: dict[str, Any] | None, native: dict[str, Any]
             if not isinstance(report.get("backend"), dict) or report["backend"].get("requested") != expected:
                 reasons.append(f"{label}: requested backend is not {expected}")
     if isinstance(reference, dict) and isinstance(native, dict):
-        for key in ("fingerprint", "fingerprint_boundaries", "solver_sha256", "aircraft_sha256",
+        for key in ("fingerprint", "fingerprint_boundaries", "solver_sha256", "solver_identity_kind",
+                    "template_release", "probe_sha256", "aircraft_sha256",
                     "aircraft_id", "case_id", "requested", "completed", "final_tick", "input_reads",
                     "world", "machine", "tick_hz"):
             if reference.get(key) != native.get(key):
@@ -646,9 +648,14 @@ def _run_probe(
     timeout: float,
     physics_backend: str,
     native_source_sha256: str,
+    release_executable: bool = False,
+    executable_sha256: str = "",
+    probe_sha256: str = "",
 ) -> dict[str, Any]:
-    command = [
-        str(godot), "--headless", "--path", str(app_dir), "--script", str(probe), "--",
+    command = ([str(godot), "--headless", "--audio-driver", "Dummy", "--", "--quick-flight",
+                "--native-qualification=session"] if release_executable else
+               [str(godot), "--headless", "--path", str(app_dir), "--script", str(probe), "--"])
+    command += [
         f"--output={output_json.resolve()}",
         f"--aircraft={aircraft_id}",
         f"--case={case_id}",
@@ -660,6 +667,10 @@ def _run_probe(
     timed_out = False
     exit_code: int | None = None
     launch_error: str | None = None
+    executable_before = _sha256_file(godot) if release_executable else ""
+    native_library = godot.parent / "native/kernel/libopenrc_native_kernel.so"
+    library_before = (_sha256_file(native_library) if release_executable and physics_backend == "native"
+                      and native_library.is_file() else "")
     with log_path.open("w", encoding="utf-8", errors="replace") as log_stream:
         try:
             process = subprocess.Popen(
@@ -692,20 +703,37 @@ def _run_probe(
     validation_errors: list[str] = []
     if report is not None:
         validation_errors = validate_probe_report(report, expected=expected)
+        if release_executable:
+            if report.get("template_release") is not True:
+                validation_errors.append("session did not run in a release template")
+            if report.get("solver_identity_kind") != "packaged-executable-v1" \
+                    or report.get("solver_sha256") != executable_sha256:
+                validation_errors.append("session did not identify the verified release executable")
+            if report.get("probe_sha256") != probe_sha256:
+                validation_errors.append("packaged probe differs from the recorded source")
         if physics_backend == "native" and report.get("complete") is True:
             backend = report.get("backend")
             actual = backend.get("actual", {}) if isinstance(backend, dict) else {}
             if not isinstance(actual, dict) or actual.get("source_sha256") != native_source_sha256:
                 validation_errors.append("installed native source identity differs from the current C++ sources")
+            if release_executable and (not library_before or actual.get("binary_sha256") != library_before):
+                validation_errors.append("native identity differs from the release sibling library")
     failures: list[str] = []
     if launch_error:
         failures.append(launch_error)
+    if release_executable and (executable_before != executable_sha256 or _sha256_file(godot) != executable_sha256):
+        failures.append("release executable changed before or during the probe")
+    if release_executable and physics_backend == "native" and (not library_before or not native_library.is_file()
+                                                                  or _sha256_file(native_library) != library_before):
+        failures.append("release native library is missing or changed during the probe")
     if timed_out:
         failures.append(f"Godot timed out after {timeout:g}s")
     if exit_code != 0:
         failures.append(f"Godot exited with status {exit_code}")
     if engine_errors:
         failures.append("engine error in log: " + " | ".join(engine_errors))
+    if release_executable and "NATIVE_QUALIFICATION mode=session verdict=pass" not in log_text:
+        failures.append("release qualification host did not report a passing session")
     if report_error:
         failures.append(report_error)
     failures.extend(validation_errors)
@@ -793,6 +821,8 @@ def parse_id_list(values: Sequence[str] | None, defaults: Sequence[str], label: 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--godot", help="pinned Godot 4.8-beta1 executable")
+    parser.add_argument("--release-executable", action="store_true",
+                        help="use --godot as the actual exported Linux release executable")
     parser.add_argument("--out", type=Path, required=True, help="new or empty output directory")
     parser.add_argument("--probe", type=Path, help="probe script; defaults beside this runner")
     parser.add_argument("--aircraft", action="append", help="catalog ID; repeat or pass comma-separated IDs")
@@ -847,6 +877,7 @@ def run_campaign(args: argparse.Namespace) -> int:
         "repeats": args.repeats,
         "pair_type": "backends" if args.compare_backends else "observer",
         "physics_backend": args.physics_backend,
+        "release_executable": args.release_executable,
         "timeout_seconds_per_probe": args.timeout,
         "tick_hz": 240,
         "meaning": "simulation ticks; default warmup is 10 simulated seconds and default sample is 60 simulated seconds, not real-time qualification",
@@ -912,6 +943,9 @@ def run_campaign(args: argparse.Namespace) -> int:
                             timeout=args.timeout,
                             physics_backend=physics_backend,
                             native_source_sha256=metadata["native_source_sha256"],
+                            release_executable=args.release_executable,
+                            executable_sha256=metadata["engine"]["sha256"],
+                            probe_sha256=metadata["probe"]["sha256"],
                         )
                         reports[mode] = run["report"] if run["accepted"] else None
                         if run["accepted"] and isinstance(run["report"], dict):
@@ -1077,7 +1111,8 @@ def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path) -> 
             failures.append("campaign pair sets differ")
         for key in sorted(set(old_runs) & set(new_runs)):
             old, new = old_runs[key], new_runs[key]
-            for field in ("fingerprint", "fingerprint_boundaries", "solver_sha256", "aircraft_sha256",
+            for field in ("fingerprint", "fingerprint_boundaries", "solver_sha256", "solver_identity_kind",
+                          "template_release", "probe_sha256", "aircraft_sha256",
                           "world", "machine", "requested", "completed", "final_tick", "input_reads"):
                 if old["raw"]["reference"].get(field) != new["raw"]["reference"].get(field):
                     failures.append(f"{key}: reference reports differ in {field}")
@@ -1117,9 +1152,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.compare_campaigns:
+            if args.release_executable:
+                raise ValueError("--release-executable applies to a new campaign, not a campaign comparison")
             return compare_campaigns(*args.compare_campaigns, args.out)
         if not args.godot:
             raise ValueError("--godot is required for a campaign")
+        if args.release_executable and args.probe:
+            raise ValueError("--release-executable uses the fixed embedded probe; --probe is not permitted")
         if args.warmup_ticks < 0 or args.warmup_ticks > 72000:
             raise ValueError("warmup ticks must be within 0..72000")
         if args.sample_ticks < 1 or args.sample_ticks > 72000:
