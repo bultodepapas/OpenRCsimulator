@@ -25,6 +25,8 @@
 #include "nk_weather_binding.hpp"
 #include "nk_electric_binding.hpp"
 #include "nk_wake_binding.hpp"
+#include "nk_wake_spatial_binding.hpp"
+#include "nk_glow_binding.hpp"
 
 namespace {
 
@@ -695,6 +697,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::WeatherBinding weather_;
 	nk::ElectricBinding electric_;
 	nk::WakeBinding wake_;
+	nk::GlowBinding glow_;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
 	bool stage_ready_ = false;
@@ -727,6 +730,19 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_wake", "slipstream"), &OpenRCNativeKernel::prepare_wake);
 		godot::ClassDB::bind_method(D_METHOD("wake_component", "part", "body", "wind", "rho", "deflections", "rpm",
 			"thrust_torque", "downwash", "lagged", "source_delta"), &OpenRCNativeKernel::wake_component);
+		godot::ClassDB::bind_method(D_METHOD("spatial_aero_component", "body", "wind", "rho", "controls", "deltas",
+			"downwash", "ground_up", "continuation"), &OpenRCNativeKernel::spatial_aero_component);
+		godot::ClassDB::bind_method(D_METHOD("spatial_flow_component", "body", "time", "rho", "aux", "turbulence_index", "dt"),
+			&OpenRCNativeKernel::spatial_flow_component);
+		godot::ClassDB::bind_method(D_METHOD("spatial_wake_component", "body", "time", "rho", "controls", "rpm", "tq", "downwash",
+			"lagged", "aux", "turbulence_index", "dt"), &OpenRCNativeKernel::spatial_wake_component);
+		godot::ClassDB::bind_method(D_METHOD("prepare_glow", "snapshot"), &OpenRCNativeKernel::prepare_glow);
+		godot::ClassDB::bind_method(D_METHOD("glow_source_component", "rpm", "admission", "mixture", "dry_density", "running", "firing"),
+			&OpenRCNativeKernel::glow_source_component);
+		godot::ClassDB::bind_method(D_METHOD("glow_blade_component", "rpm", "axial_speed", "density"), &OpenRCNativeKernel::glow_blade_component);
+		godot::ClassDB::bind_method(D_METHOD("glow_mass_component", "amounts"), &OpenRCNativeKernel::glow_mass_component);
+		godot::ClassDB::bind_method(D_METHOD("glow_body_component", "body", "amounts", "force", "moment", "gravity", "rotor"),
+			&OpenRCNativeKernel::glow_body_component);
 		godot::ClassDB::bind_method(D_METHOD("propeller_component", "s", "air", "rho", "rpm", "local_hub", "explicit_air"),
 			&OpenRCNativeKernel::propeller_component);
 		godot::ClassDB::bind_method(D_METHOD("aero_component", "which", "s", "wind", "rho", "d", "downwash_cl", "ground_up"),
@@ -880,6 +896,35 @@ public:
 			double rho, const PackedFloat64Array &deflections, double rpm, const PackedFloat64Array &thrust_torque,
 			double downwash, const PackedFloat64Array &lagged, const PackedFloat64Array &source_delta) const {
 		return wake_.wake_component(part, body, wind, rho, deflections, rpm, thrust_torque, downwash, lagged, source_delta);
+	}
+	Dictionary spatial_aero_component(const PackedFloat64Array &body, const PackedFloat64Array &wind, double rho,
+			const PackedFloat64Array &controls, const PackedFloat64Array &deltas, double downwash, double ground_up, bool continuation) const {
+		if (!aero_ready_) return nk::spatial_binding_failure("aero not prepared");
+		return nk::spatial_aero_component(aero_, body, wind, rho, controls, deltas, downwash, ground_up, continuation);
+	}
+	Dictionary spatial_flow_component(const PackedFloat64Array &body, double time, double rho, const PackedFloat64Array &aux,
+			int64_t turbulence_index, double dt) const {
+		if (!aero_ready_ || !prop_ready_ || !weather_.ready()) return nk::spatial_binding_failure("spatial models not prepared");
+		return nk::spatial_flow_component(aero_, prop_.offset, weather_, body, time, rho, aux, turbulence_index, dt);
+	}
+	Dictionary spatial_wake_component(const PackedFloat64Array &body, double time, double rho, const PackedFloat64Array &controls,
+			double rpm, const PackedFloat64Array &tq, double downwash, const PackedFloat64Array &lagged, const PackedFloat64Array &aux,
+			int64_t turbulence_index, double dt) const {
+		if (!aero_ready_ || !prop_ready_ || !wake_.ready() || !weather_.ready()) return nk::spatial_binding_failure("spatial models not prepared");
+		return nk::spatial_wake_component(aero_, prop_, wake_.model(), weather_, body, time, rho, controls, rpm, tq, downwash, lagged,
+			aux, turbulence_index, dt);
+	}
+	Dictionary prepare_glow(const Dictionary &snapshot) { return glow_.prepare_glow(snapshot); }
+	Dictionary glow_source_component(double rpm, double admission, double mixture, double dry_density, bool running, double firing) const {
+		return glow_.glow_source_component(rpm, admission, mixture, dry_density, running, firing);
+	}
+	Dictionary glow_blade_component(double rpm, double axial_speed, double density) const {
+		return glow_.glow_blade_component(rpm, axial_speed, density);
+	}
+	Dictionary glow_mass_component(const PackedFloat64Array &amounts) const { return glow_.glow_mass_component(amounts); }
+	Dictionary glow_body_component(const PackedFloat64Array &body, const PackedFloat64Array &amounts, const PackedFloat64Array &force,
+			const PackedFloat64Array &moment, double gravity, const PackedFloat64Array &rotor) const {
+		return glow_.glow_body_component(body, amounts, force, moment, gravity, rotor);
 	}
 
 	Dictionary propeller_component(const PackedFloat64Array &s, const PackedFloat64Array &air, double rho,

@@ -50,7 +50,8 @@ static func provider_identity(session: Node) -> Dictionary:
 	elif spatial != null:
 		return {ok = false, reason = "unexpected spatial weather provider"}
 	return {ok = true, environment = environment, field = field, spatial = spatial, thermal = thermal,
-		turbulence = turbulence, configuration = config, dt = dt, turbulence_index = index}
+		turbulence = turbulence, configuration = config, dt = dt, turbulence_index = index,
+		prepared_snapshot = snapshot(field)}
 
 
 ## Used only at owner boundaries: checks that the prepared provider and callback
@@ -62,7 +63,8 @@ static func provider_matches(session: Node, identity: Dictionary) -> bool:
 	return current.get("ok", false) and current.environment == identity.environment \
 		and current.field == identity.field and current.spatial == identity.spatial and current.thermal == identity.thermal \
 		and current.turbulence == identity.turbulence and current.configuration == identity.configuration \
-		and current.dt == identity.dt and current.turbulence_index == identity.turbulence_index
+		and current.dt == identity.dt and current.turbulence_index == identity.turbulence_index \
+		and var_to_bytes(current.prepared_snapshot) == var_to_bytes(identity.prepared_snapshot)
 
 
 ## Exact detached provider coefficients: temporal RNG is separately owned by
@@ -123,7 +125,7 @@ static func config_for(session: Node) -> Dictionary:
 	if not identity.get("ok", false):
 		return {}
 	var config: Dictionary = NativeStage.config_for(session)
-	config.weather = snapshot(identity.field)
+	config.weather = identity.prepared_snapshot.duplicate(true)
 	config.dt = identity.dt
 	config.layout.turbulence = identity.turbulence_index
 	return config
