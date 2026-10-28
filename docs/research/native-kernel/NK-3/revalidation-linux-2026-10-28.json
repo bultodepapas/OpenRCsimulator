@@ -21208,7 +21208,7 @@
  },
  "coverage_expansion_components_2026_10_28": {
   "abi2_integration_in_progress": {
-   "acceptance_limit": "Earlier passing reports predate subsequent source and harness edits. Refresh exact-source receipts and all required gates before installation; installed lifecycle, full fleet, replay, release executable and paired production timing remain required.",
+   "acceptance_limit": "Current isolated candidate passes all 19 installer gates, five actual exported native modes, default-route checks and exact player replay. Full fleet coverage and isolated paired release timing remain pending; explicit reverse-drive domain rejections must not be counted as completed flights.",
    "corrections": [
     "FlightSession validates retractable drag shape and finite entries before summing hull loads; existing ground-session regression passes 30 checks, including malformed spatial point and overflowing finite drag inputs.",
     "Helicopter reset/restore publication guards cover control API reentry and direct owner/weather mutations; actual native rollback qualification is still in progress.",
@@ -22025,10 +22025,10 @@
      "limit": "Precedes added rejected-restore validator mutation regression."
     }
    },
-   "final_source_qualification": {
+   "prior_source_qualification_68e909a86": {
     "source_commit": "68e909a86",
     "companion_rebind_commit": "b0a035e49",
-    "status": "installed; full fleet and release qualification in progress",
+    "status": "superseded by isolated source qualification at 313f14c34; retained dated evidence only",
     "native_source_sha256": "fe1c9111c05185fd4e6ffd379348196f5165278b1d3df98c17f3e8f6c1d79c34",
     "binary_sha256": "bc1e5f343e7e0631b068de5ec04b1966b2646888fffe9a908414ff26ba3fce81",
     "builder_sha256": "414da435a4e71227fa74e288444b1afec60f35ae8b526b20dd1e0b78f055d0c2",
@@ -22200,6 +22200,269 @@
      "Full-fleet campaign, final executable diagnostics and paired release timing remain pending.",
      "The initial unit partition reached a 60-second supervision timeout in test_aircraft_ground_electric.gd; a checked continuation preserves the same assertions with 600-second supervision."
     ]
+   },
+   "current_isolated_source_qualification": {
+    "source_commit": "313f14c34b672640ecdffdea9e62bc4f17ef8a1b",
+    "status": "candidate; complete fleet coverage and isolated paired timing pending",
+    "package_identity": {
+     "authoring_before_equals_after": true,
+     "authoring_files": 20,
+     "build_environment": "v0.1.8-518-g313f14c34",
+     "editor_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+     "executable_sha256": "b6d8f70fe389ba393cf85cd156d10fcb5db34c0254a3aff92042b3fae861d685",
+     "git_head": "313f14c34b672640ecdffdea9e62bc4f17ef8a1b",
+     "manifest_sha256": "b4e304416d95fec2128bf2951e873688e670a9a74fa14605ae862a17ac09c239",
+     "native_sha256": "0d5d9fa2a07fa051f2a6aa2e71c76205eafe7a0576c4567cb479da32e9456378",
+     "native_source_sha256": "fe1c9111c05185fd4e6ffd379348196f5165278b1d3df98c17f3e8f6c1d79c34",
+     "package_receipt_sha256": "61c2c2c6a58225f47c5fdf97acb3d42e7e47a2584b9cb3c7f98054f1b5397246",
+     "source_before_equals_after": true,
+     "source_files": 4409,
+     "template_sha256": "93cdaedf75fb5b5fd244fb8c3348b0fefde893eff85e0de382e1b9970d58ddf3",
+     "tracked_assets": 966
+    },
+    "installer_gates": {
+     "electric": {
+      "compared": 32010,
+      "results": "electric-20261028T214037170807Z.json",
+      "results_sha256": "72dcba17aba287d275e1728731d3bcd6ee3300005a0144e173cc3541263188ae",
+      "verdict": "pass"
+     },
+     "propeller": {
+      "compared": 41958,
+      "results": "propeller-20261028T214037003010Z.json",
+      "results_sha256": "69f6ba3ed29e4aaccd845fdd679cb7b5f066640f1fa5ca0ceff455f5a9268e0f",
+      "verdict": "pass"
+     },
+     "liquid": {
+      "compared": 15572,
+      "results": "liquid-20261028T214055143345Z.json",
+      "results_sha256": "50af14b3db1239235767688376b34ffed7111e988e2b87e2a2e9b9b6db0c5393",
+      "verdict": "pass"
+     },
+     "electric_stage": {
+      "compared": 66988,
+      "results": "electric-stage-20261028T214053510663Z.json",
+      "results_sha256": "f7285ff362177f293d33a9605cad228dd2fb995ff6ccdfa326bdc6378af20290",
+      "verdict": "pass"
+     },
+     "stage_oracle": {
+      "compared": 128664,
+      "results": "stage-20261028T214037395200Z.json",
+      "results_sha256": "a6f607f25a7ce3191412335a3fbce6e60033e70021619b02ddfac64b64048d91",
+      "verdict": "pass"
+     },
+     "glow": {
+      "compared": 49606,
+      "results": "glow-20261028T214142917145Z.json",
+      "results_sha256": "f266621cdfb83b88f6f402b91781af83572989c8dae01c8d5df6b0d3ad10c7dd",
+      "verdict": "pass"
+     },
+     "liquid_stage": {
+      "compared": 64136,
+      "results": "liquid-stage-20261028T214111577705Z.json",
+      "results_sha256": "5134ef06a3f374ba09149fc34b6f77837728bb4b08cb07ce910c08a6ae74a97c",
+      "verdict": "pass"
+     },
+     "trajectory": {
+      "compared": 21771,
+      "results": "trajectory-20261028T214037363587Z.json",
+      "results_sha256": "7943fcb158595b1fec469cb7f65c9b77af397be7e7404e3f857269cf17734683",
+      "verdict": "pass"
+     },
+     "helicopter": {
+      "compared": 50336,
+      "results": "helicopter-20261028T214150356511Z.json",
+      "results_sha256": "139ec461ccf325f04b333b39674158c4c359f4e57c889295ecf9c731577f64fd",
+      "verdict": "pass"
+     },
+     "weather": {
+      "compared": 21549,
+      "results": "weather-20261028T214202133626Z.json",
+      "results_sha256": "e5c3dae3850ca05db0409a69aa3c8f65038a954a967682ed19f7089e856065e0",
+      "verdict": "pass"
+     },
+     "helicopter_stage": {
+      "compared": 61281,
+      "results": "helicopter-stage-20261028T214153825282Z.json",
+      "results_sha256": "873a999b47fc686fa9163d2d8f85e069d6812183bf6ffb69d8414726b11a56a1",
+      "verdict": "pass"
+     },
+     "wake": {
+      "compared": 19138,
+      "results": "wake-20261028T214211699355Z.json",
+      "results_sha256": "2d80ae13c340efdc7cdf02b10b7829adabe746c950ea43315484dfc38eae6355",
+      "verdict": "pass"
+     },
+     "wake_spatial": {
+      "compared": 20204,
+      "results": "wake-spatial-20261028T214218874728Z.json",
+      "results_sha256": "24e6be1622f087860692bfd14caa129a2f1e28aa6e98c6d8e9be9e09e6959092",
+      "verdict": "pass"
+     },
+     "weather_stage": {
+      "compared": 59340,
+      "results": "weather-stage-20261028T214204653505Z.json",
+      "results_sha256": "026e6aa37dea02aed4bb00758720b960a4e0a0b38faef395429615fda9699978",
+      "verdict": "pass"
+     },
+     "gear": {
+      "compared": 35452,
+      "results": "gear-20261028T214224699821Z.json",
+      "results_sha256": "f147a63036fed7816fd9470d22226d98816e848a97b569efd35b64434e1dcf7a",
+      "verdict": "pass"
+     },
+     "glow_stage": {
+      "compared": 79767,
+      "results": "glow-stage-20261028T214144508321Z.json",
+      "results_sha256": "855e17754800c5251a81a3e8d7190345490263b6824feb6aaa84d33a7fda23af",
+      "verdict": "pass"
+     },
+     "prescribed_stage": {
+      "compared": 49571,
+      "results": "prescribed-stage-20261028T214232120216Z.json",
+      "results_sha256": "5062801b084fe163e421b9dd880627b73d8241aef37d594fc0c3972bc00a3a15",
+      "verdict": "pass"
+     },
+     "legacy_ground": {
+      "compared": 14806,
+      "results": "legacy-ground-20261028T214246752951Z.json",
+      "results_sha256": "c4cf38ead99709d9af51df63e484783c7e0ee622da20aeab22cd5d389c8e9e43",
+      "verdict": "pass"
+     },
+     "negative_control": {
+      "compared": 128664,
+      "results": "stage_mutant-20261028T214303735238Z.json",
+      "results_sha256": "e1036ad7df51e488c64e1e8f42d1c1f8d91c2fade8a9a805d86c737a637f7ac0",
+      "verdict": "fail"
+     }
+    },
+    "installer_summary": {
+     "path": "tmp/nk3-final-isolated/tmp/nk3-isolated-19-gates/summary.json",
+     "sha256": "d648591c44148f553fe9568f4773ee3110d15e79416e1a8ce88c3d85ecf0fe92"
+    },
+    "package_qualification": {
+     "path": "tmp/nk3-linux-final-package/evidence/qualification.json",
+     "sha256": "0e8c77a43a070ef521195f53de244dde98fcd61b72a53262b1fc920eba06289e"
+    },
+    "package_checks": {
+     "stage": 94,
+     "lifecycle": 150,
+     "replay": 152,
+     "helicopter": 234,
+     "helicopter_radio": 80,
+     "default_route_checked_cases": 18,
+     "explicit_refusal_cases": 5,
+     "exact_player_replay_rows": 65,
+     "exact_player_replay_complete": true,
+     "solver_changed": false
+    },
+    "sanitizer": {
+     "mode": "ubsan",
+     "summary": {
+      "path": "tmp/nk3-current-runtime-ubsan/summary.json",
+      "sha256": "ca358ae83941039093579a0ff9ae1bd0ffd1a49575bdee2b5b9d01a9e212646f"
+     },
+     "positive_control_detected": true,
+     "stage_exact_comparisons": 128664,
+     "trajectory_exact_comparisons": 21771,
+     "sanitizer_diagnostics": [],
+     "instrumented_binary_sha256": "05f0b9c7e02e38cb89ce53b5ac504b843f4d3bde097be32e03ed7be49db1d194",
+     "provenance": "Unchanged instrumented C++ build reused after validating all source/tool inputs and compilation database; current runtime independently snapshotted.",
+     "retained_source": {
+      "path": "tmp/nk3-current-runtime-ubsan/retained-source.tar.gz",
+      "sha256": "0bb29b56ddcafe3a429cf414720fc7cd71bcdb7e339dcd38c3f54968b1d6d68d"
+     }
+    },
+    "runtime_corrections": [
+     {
+      "path": "app/app_state/visual_checkpoint.gd",
+      "change": "Validate native-v14 and spatial-v12 session checkpoints and valid lake-only-v7 checkpoints; reject malformed native/spatial identities.",
+      "proof": "Native session 150 checks, visual checkpoint 62 checks, progressing checkpoint 36 checks; actual native/reference main visual checkpoints 57 each and economy checkpoints 65 each. The earlier empty-checkpoint path no longer passes vacuously."
+     },
+     {
+      "path": "app/sim/native/native_weather.gd",
+      "change": "Route signed-zero guard atan2 through math3d without changing builtin semantics.",
+      "proof": "H6 guard passes; isolated forbidden-call injection is rejected."
+     }
+    ],
+    "companion_rebind": {
+     "receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-10-28-67b67a11-to-f4a7f0a4.json",
+     "identical_tapes": 9,
+     "rows_per_tape": 2881
+    },
+    "fleet": {
+     "declared_rows": 1238,
+     "declared_aircraft": 11,
+     "requested_warmup_ticks": 600,
+     "requested_sample_ticks": 2400,
+     "complete": false,
+     "interrupted_run": "tmp/nk3-final-isolated/tmp/nk3-fleet-campaign-final",
+     "diagnostic_row_lines": 146,
+     "full_duration_pass_lines": 136,
+     "paired_reset_refusal_lines": 6,
+     "fault_lines": 4,
+     "acceptance": "Interrupted shards and partial rows do not establish full matrix coverage or complete qualification.",
+     "finding": {
+      "aircraft": [
+       "stik-glow-61fx-2t",
+       "stik-glow-55ax-2t"
+      ],
+      "weather": "gusty",
+      "start": "runway",
+      "soft_hull": [
+       true,
+       false
+      ],
+      "accepted_ticks": {
+       "stik-glow-61fx-2t": 873,
+       "stik-glow-55ax-2t": 801
+      },
+      "cause": "Already stopped glow engines receive finite reverse drive demand exceeding static friction at an uncommitted RK trial; existing installation domain explicitly rejects reverse rotation. Native/reference accepted states and rejection boundary agree.",
+      "source": "app/physics/glow/flight.gd::_stage_coupling",
+      "diagnostics": [
+       "tmp/nk3-final-isolated/tmp/nk3-glow-gusty-diagnosis",
+       "tmp/nk3-final-isolated/tmp/nk3-glow-gusty-diagnosis-55ax"
+      ],
+      "independent_control": "tmp/nk3-premerge-session-control/comparison.json",
+      "limit": "The shared generic simulation fault is insufficient evidence to waive a row. Domain-specific refusal evidence remains separate from a healthy completed flight."
+     }
+    },
+    "broad_test_continuation": {
+     "results": {
+      "path": "tmp/nk3-abi2-unit-continuation/results.json",
+      "sha256": "9205c39a9f9f2fd0ae2088997a8aa85e309a3f48cd364dfd1c2c31992948333d"
+     },
+     "tests": 835,
+     "passed_at_execution": 831,
+     "failed_at_execution": [
+      "test_economy_checkpoint.gd",
+      "test_engine_audio.gd",
+      "test_fixed_gear_brake_input.gd",
+      "test_glow_audio_pump.gd"
+     ],
+     "follow_up": {
+      "economy": "Corrected and independently passed 65 checks each with actual native and explicit reference backends.",
+      "glow_audio_pump": "Independent rerun passed 20 checks with zero startup skips.",
+      "engine_audio": "Independent rerun retained one queue-target failure; identical pre-existing failure documented before ABI2. Not a passing audio gate.",
+      "fixed_gear_brake_input": "Seven pre-existing frozen-fixture assertions retained; no golden or physics data changed."
+     },
+     "limit": "Continuation preserves original assertions after a 60-second supervision timeout. Shared-tree execution spans independent changes; this is not a clean single-snapshot full-suite pass."
+    },
+    "limits": [
+     "Linux x86_64 only.",
+     "Headless agreement and sanitizer checks do not establish physical realism or 1080p rendering/hardware acceptance.",
+     "No complete fleet campaign or current isolated paired performance result yet.",
+     "Candidate package is not published or promoted by these results."
+    ],
+    "candidate_archive": {
+     "path": "tmp/nk3-linux-final-package/evidence/candidate-archive.json",
+     "sha256": "cd6f63c8fa85f49df8423651ff65fa47accb113989d94df800c6d2989ef79366"
+    },
+    "executable_retention": {
+     "path": "tmp/nk3-linux-final-package/evidence/executable-retention.json",
+     "sha256": "a9f70082c44ad6d1158b8e827714db1e3d72a6a36cb1af43dab1bc6f007f4d75"
+    },
+    "follow_up": "Optional native rejection diagnostics and a separately counted runtime-domain proof are being implemented. These results qualify only the recorded source and binary; they do not cover subsequent edits."
    }
   },
   "acceptance_limit": "Component and research stage parity only. The scoped fleet run uses the previous accepted Stik binary. This does not qualify all-aircraft production admission, full lifecycle/replay, target performance or physical validation.",
@@ -22210,7 +22473,7 @@
    "Research glow stages passed all four catalog installations and seven weather scenarios; lifecycle event breadth and production admission remain pending."
   ],
   "literal_correction": "GDScript spelling 1e-24 parses to binary64 0x3af357c299a88ea8; C++ decimal is one ULP lower. Spatial quaternion guards use exact kGd1eMinus24; 1.0e-24 remains a distinct spelling. GDScript 1e-30 is 0x39b4484bfeebc29f; the C++ port uses kGd1eMinus30 only for that spelling, and independently checks 1.0e-30.",
-  "production_integration_status": "ABI 2 source integration in progress; fresh full proof roster, installed session/fleet/replay, package and performance gates pending. Earlier ABI 1 research passes are dated evidence, not ABI 2 release qualification.",
+  "production_integration_status": "Capability-based ABI2 integration is implemented and installed locally; current isolated Linux candidate qualification remains incomplete.",
   "reference_limit": "X-Cell hot-high start fails reference hover trim. Helicopter component cases explicitly use calm-reset seeds with hot-high density; no hot-high start/flight qualification is claimed.",
   "reports": [
    {
