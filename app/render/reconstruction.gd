@@ -2,6 +2,7 @@
 extends RefCounted
 
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
+const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const MODES: Array[String] = [
 	"native",
 	"fsr2_native", "fsr2_85", "fsr2_quality", "fsr2_balanced", "fsr2_performance",
@@ -131,7 +132,8 @@ static func startup_config() -> Dictionary:
 	var strength := OS.get_environment(SHARPNESS_ENVIRONMENT_KEY).strip_edges()
 	return {"reconstruction": OS.get_environment(ENVIRONMENT_KEY).strip_edges().to_lower()
 		if OS.has_environment(ENVIRONMENT_KEY) else "native",
-		"fsr2_sharpness": sharpness_strength(strength.to_float() if strength.is_valid_float() else DEFAULT_SHARPNESS)}
+		"fsr2_sharpness": sharpness_strength(strength.to_float() if strength.is_valid_float() else DEFAULT_SHARPNESS),
+		"nvidia_reflex": NvidiaReflex.startup_mode()}
 
 
 static func sharpness_strength(value: Variant) -> float:
@@ -156,6 +158,7 @@ static func capture_settle_frames(mode: int, scale: float, capabilities: Diction
 
 static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
 	var previous_failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {})
+	NvidiaReflex.apply(str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE)))
 	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
 	var requested := str(config.get("reconstruction", "native"))
 	var policy := resolve(requested, gates)
@@ -213,6 +216,11 @@ static func guard_runtime_failure(viewport: Viewport, backend_status: Dictionary
 
 static func describe(viewport: Viewport) -> Dictionary:
 	var policy: Dictionary = viewport.get_meta(POLICY_META, resolve("native", runtime_capabilities())).duplicate(true)
+	var config: Variant = viewport.get_meta(CONFIG_META, {})
+	var reflex_request := NvidiaReflex.DEFAULT_MODE
+	if typeof(config) == TYPE_DICTIONARY:
+		reflex_request = str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE))
+	policy["nvidia_reflex"] = NvidiaReflex.describe(reflex_request)
 	policy["scaling_3d_mode"] = viewport.scaling_3d_mode
 	policy["scale"] = viewport.scaling_3d_scale
 	policy["msaa_3d"] = viewport.msaa_3d

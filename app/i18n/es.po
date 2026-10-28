@@ -5876,24 +5876,21 @@ msgstr "Salida: %d × %d · VSync: %s"
 
 msgid "The driver or desktop compositor may override VSync."
 msgstr "El controlador o el escritorio pueden imponer su propio ajuste de VSync."
-# VQ-07 experimental graphics trial.
-msgid "Try High (restart)"
-msgstr "Probar Alta gama (reinicia)"
+# VQ-07 graphics profile.
+msgid "Enable High (restart)"
+msgstr "Activar Alta gama (reinicia)"
 
 msgid "Restart in Standard"
 msgstr "Reiniciar en Estándar"
 
-msgid "High is a temporary experiment. Keep your changes before restarting. A normal launch returns to Standard."
-msgstr "Alta gama es una prueba temporal. Conserva tus ajustes antes de reiniciar. Un inicio normal vuelve a Estándar."
+msgid "Keep your changes before restarting."
+msgstr "Conserva tus ajustes antes de reiniciar."
 
 msgid "Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ capable GPU."
 msgstr "Sombras más suaves, oclusión ambiental y reflejos del cielo. Requiere una GPU compatible con Forward+."
 
 msgid "Graphics mode: %s"
 msgstr "Modo gráfico: %s"
-
-msgid "High (experimental)"
-msgstr "Alta gama (experimental)"
 
 msgid "Standard"
 msgstr "Estándar"
@@ -6251,8 +6248,8 @@ msgstr "FSR3 · Equilibrado"
 msgid "FSR3 · Performance"
 msgstr "FSR3 · Rendimiento"
 
-msgid "DLSS · Native AA"
-msgstr "DLSS · AA nativo"
+msgid "DLAA · Native AA"
+msgstr "DLAA · AA nativo"
 
 msgid "DLSS · Quality"
 msgstr "DLSS · Calidad"
@@ -6262,6 +6259,36 @@ msgstr "DLSS · Equilibrado"
 
 msgid "DLSS · Performance"
 msgstr "DLSS · Rendimiento"
+
+msgid "NVIDIA Reflex"
+msgstr "NVIDIA Reflex"
+
+msgid "Boost"
+msgstr "Impulso"
+
+msgid "Unconfirmed"
+msgstr "Sin confirmar"
+
+msgid "Reflex: Requested %s → SDK accepted %s"
+msgstr "Reflex: solicitado %s → aceptado por el SDK %s"
+
+msgid "Reflex mode change is waiting for the next frame."
+msgstr "El cambio de modo de Reflex espera el siguiente fotograma."
+
+msgid "NVIDIA Reflex can reduce rendering latency on supported NVIDIA hardware. Boost also requests higher GPU clocks."
+msgstr "NVIDIA Reflex puede reducir la latencia de renderizado en hardware NVIDIA compatible. Impulso también solicita mayor frecuencia de la GPU."
+
+msgid "NVIDIA Reflex is not included in this game build."
+msgstr "Esta versión del juego no incluye NVIDIA Reflex."
+
+msgid "NVIDIA Reflex could not continue in this graphics session. Your saved choice is kept."
+msgstr "NVIDIA Reflex no pudo continuar en esta sesión gráfica. Se conserva la opción guardada."
+
+msgid "NVIDIA Reflex status is unavailable. Your saved choice is kept."
+msgstr "El estado de NVIDIA Reflex no está disponible. Se conserva la opción guardada."
+
+msgid "The current graphics session does not report NVIDIA Reflex support. Your saved choice is kept."
+msgstr "La sesión gráfica actual no indica compatibilidad con NVIDIA Reflex. Se conserva la opción guardada."
 
 msgid "Unavailable"
 msgstr "No disponible"
