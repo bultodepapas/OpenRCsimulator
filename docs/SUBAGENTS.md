@@ -15,7 +15,7 @@ Read the [delegation rules](#lead-agent-and-delegation-rules), send a [brief](#d
 
 1. **Delegate an independent outcome.** Start with zero to two specialists; add another only for a separate deliverable or unresolved question. Respect the session's tool/concurrency limits. Select models through the preference in [AGENTS](../AGENTS.md) and the client's supported runtime; if unavailable, use a suitable available model and report the substitution. Role labels and model display names are not executable identifiers.
 2. **Make the brief self-contained.** Include repository root, question, owner/step, baseline commit and relevant dirty files, applicable instructions, exact read/write scope, output location, acceptance and stop condition. Do not assume the child inherits the parent conversation or repository instructions.
-3. **Assign one writer per path.** Research and review are source-read-only through every tool; implementation needs assigned paths. Put check outputs in a unique assigned directory and deliberate mutations in disposable copies. Check `git status` before dispatch and integration; preserve unrelated work. If HEAD or inputs move, identify the actual version before claiming the findings still apply.
+3. **Assign one writer per path.** Research and review default to source-read-only through every tool; implementation, including a focused regression test, needs explicitly assigned paths and acceptance criteria. Put check outputs in a unique assigned directory and deliberate mutations in disposable copies. Check `git status` before dispatch and integration; preserve unrelated work. If HEAD or inputs move, identify the actual version before claiming the findings still apply.
 4. **Reserve shared resources.** One agent owns a live Blender scene, app interaction, radio or capture session at a time. Worktrees do not isolate preferences, devices or all caches. Run performance comparisons without competing CPU/GPU work or imports/exports, and isolate runtime settings and outputs.
 5. **Keep review independent and bounded.** Give critical reviewers requirements and evidence before the preferred conclusion. Request concrete counterexamples, not a quota of objections. Resolve disagreements through a discriminating check; agent agreement is not physical or hardware evidence. Stop when the question is answered or required evidence is unavailable, and report that limit.
 6. **Keep delegation shallow.** Reuse specialists for focused follow-ups. Children delegate only when the lead explicitly assigns that responsibility and budget. A role does not confer ownership of another track or authority for unrelated actions.
@@ -102,7 +102,7 @@ Determine whether the discrete implementation solves its stated equations. Retur
 
 ### 11. Flight-Test Engineer — `flight_test_engineer`
 
-Define a discriminating maneuver, outputs and uncertainty; preserve/replay a baseline and compare one controlled candidate. Return the card, identities, effect sizes and missing independent measurements. Candidate replay is open loop: it does not re-trim, model pilot adaptation or repeat device/rates/expo conditioning. Those changes need input-pipeline checks or a new controlled recording. Use the existing [flight tests](../research/flight-test/README.md), [logs](FLIGHT-LOGGING.md) and [reducers](../research/validation/dashboard.md).
+Define a discriminating maneuver, outputs and uncertainty; preserve/replay a baseline and compare one controlled candidate. Keep calibration observations separate from held-out validation cases. Return the card, identities, effect sizes and missing independent measurements. Candidate replay is open loop: it does not re-trim, model pilot adaptation or repeat device/rates/expo conditioning. Those changes need input-pipeline checks or a new controlled recording. Use the existing [flight tests](../research/flight-test/README.md), [logs](FLIGHT-LOGGING.md) and [reducers](../research/validation/dashboard.md).
 
 ### 12. Aircraft Data Steward — `aircraft_data_steward`
 
@@ -152,7 +152,7 @@ Exercise the affected player flow through actual navigation, focus, save/load, i
 
 ### 23. Audio QA Engineer — `audio_qa_engineer`
 
-Inspect actual mixed audio for clipping, loop seams, pitch/event timing and attenuation at matched installation, RPM/load, camera/listener and backend. Return timestamped findings and capture/analysis artifacts; state explicitly when listening was unavailable. Audio observes simulation and does not validate its powertrain law. Preserve bank provenance and coordinate audio/model/camera ownership. Start with the [audio guide](AUDIO-PLAN.md) and bank documentation.
+Inspect actual mixed audio and listen when audio tools are available, checking clipping, loop seams, pitch/event timing and attenuation at matched installation, RPM/load, camera/listener and backend. Return timestamped findings and capture/analysis artifacts; state explicitly when listening was unavailable. Audio observes simulation and does not validate its powertrain law. Preserve bank provenance and coordinate audio/model/camera ownership. Start with the [audio guide](AUDIO-PLAN.md) and bank documentation.
 
 ### 24. Scenario and Companion Engineer — `scenario_companion_engineer`
 
