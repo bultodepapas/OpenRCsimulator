@@ -2,6 +2,7 @@ extends SceneTree
 const SkinTools = preload("res://ui/skin_tools.gd")
 const Picker = preload("res://ui/livery_picker.gd")
 const UiTheme = preload("res://ui/ui_theme.gd")
+const Languages = preload("res://i18n/languages.gd")
 var failures := 0
 var checks := 0
 
@@ -18,7 +19,7 @@ func _run() -> void:
 	var original_size := root.size
 	var original_locale := TranslationServer.get_locale()
 	var original_scale := UiTheme.text_scale
-	for locale in ["en", "es"]:
+	for locale in Languages.NAMES:
 		TranslationServer.set_locale(locale)
 		for scale in [1.0, 2.0]:
 			root.size = Vector2i(1920, 1080)
@@ -42,6 +43,13 @@ func _run() -> void:
 			check("invalid skin stays in dialog with actionable error", imported_ids.is_empty() and not dialog._status.text.is_empty())
 			dialog.free()
 			await process_frame
+	var guide_path := "user://skin-tool-guide-test.html"
+	for locale in Languages.NAMES:
+		check("guide written for " + locale, SkinTools._write_guide(guide_path, locale))
+		var source := FileAccess.get_file_as_string(guide_path)
+		check("guide follows app locale " + locale, source.contains('data-default-locale="' + locale + '"') and source.contains('id="' + locale + '"'))
+	check("unknown guide locale falls back to English", SkinTools._write_guide(guide_path, "xx") and FileAccess.get_file_as_string(guide_path).contains('data-default-locale="en"'))
+	DirAccess.remove_absolute(guide_path)
 	var output := "user://skin-tool-copy-test.zip"
 	check("bundled template can be saved", SkinTools._copy_resource(SkinTools.KIT, output))
 	check("template copy is byte exact", FileAccess.get_sha256(output) == FileAccess.get_sha256(SkinTools.KIT))

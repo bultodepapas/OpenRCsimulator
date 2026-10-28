@@ -46,6 +46,11 @@ python tools/graphics/native/sdk24.py
 python tools/graphics/native/build_sdk24.py --target editor --jobs 4
 ```
 
+The destination machine needs a Vulkan-capable graphics driver and the
+[Microsoft Visual C++ v14 x64 runtime](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist/).
+The signed AMD DLLs import `MSVCP140.dll`, `VCRUNTIME140.dll` and
+`VCRUNTIME140_1.dll`; the upscaler also imports `vulkan-1.dll`.
+
 `build_sdk24.py --prepare-only` checks staging without compiling. The default
 engine cache is `.tools/advanced-rendering-fsr24`; receipts bind the SDK intake,
 patched engine sources, headers, runtime, notices and executable. Changed inputs

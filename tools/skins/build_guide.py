@@ -49,7 +49,7 @@ def dictionaries():
             if not isinstance(value, str) or not value.strip():
                 raise ValueError(f"{code}.{key}: empty or non-string translation")
         for key, tokens in {
-            "prompt_budget": ["2048", "4096", "16,777,216", "16 MiB", "32 MiB", "8K"],
+            "prompt_budget": ["2048", "4096", "16 MiB", "32 MiB", "8K"],
             "prompt_paint": ["x8_livery", "x8_abisal_base_color", "sRGB"],
             "prompt_export": ["Export OpenRC Skin.py", ".orskin"],
             "prompt_deliver": ["1920", "1080", ".blend", ".orskin"],
@@ -57,6 +57,8 @@ def dictionaries():
             for token in tokens:
                 if token not in strings[key]:
                     raise ValueError(f"{code}.{key}: missing contract token {token}")
+        if not re.search(r"16[,. \u00a0\u202f]?777[,. \u00a0\u202f]?216", strings["prompt_budget"]):
+            raise ValueError(f"{code}: combined pixel limit differs from the contract")
     return data
 
 

@@ -4,6 +4,7 @@ extends CanvasLayer
 const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const CustomSkin := preload("res://aircraft/custom_skin.gd")
+const Languages := preload("res://i18n/languages.gd")
 const KIT := "res://assets/skin-kit/skywalker-x8.zip"
 const GUIDE := "res://assets/skin-kit/guide.html"
 signal close_requested
@@ -100,8 +101,23 @@ func _file_selected(path: String) -> void:
 
 func open_guide() -> void:
 	var path := "user://skin-guide.html"
-	if not _copy_resource(GUIDE, path) or OS.shell_open(ProjectSettings.globalize_path(path)) != OK:
+	if not _write_guide(path, TranslationServer.get_locale()) or OS.shell_open(ProjectSettings.globalize_path(path)) != OK:
 		_status.text = tr("Could not open the guide. Use guide.html inside the template ZIP.")
+
+
+static func _write_guide(destination: String, locale: String) -> bool:
+	var input := FileAccess.open(GUIDE, FileAccess.READ)
+	if input == null: return false
+	var source := input.get_as_text()
+	var marker := 'data-default-locale="auto"'
+	if not source.contains(marker): return false
+	var code := Languages.supported_locale(locale)
+	source = source.replace(marker, 'data-default-locale="' + code + '"')
+	var output := FileAccess.open(destination, FileAccess.WRITE)
+	if output == null: return false
+	output.store_string(source)
+	output.flush()
+	return output.get_error() == OK
 
 
 static func _copy_resource(source: String, destination: String) -> bool:
