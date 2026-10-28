@@ -60,11 +60,44 @@ The historical speedups below describe the research adapter. This session integr
 its end-to-end speedup has not yet been measured on an isolated target host. Windows, macOS native execution,
 export delivery and 1080p hardware qualification remain open. Software equivalence is not physical validation.
 
-The next increment should measure the normal-flight path with its configuration guard on an isolated host,
-then remove the owned wheel-rate vector copy in `src/nk_stage.hpp` if the allocation profile justifies it.
-Moving the completed rates into the result can avoid a stage allocation without changing arithmetic; it still
-requires the same exact-output gates and a before/after measurement. Larger native pre-step or RK integration
-should follow the measured remaining cost and preserve the shared `VehicleModel` contract.
+The C++ ownership increment transfers the completed wheel-rate vector into the stage result with `std::move`.
+This removes the explicit copy and its separate destination allocation without changing arithmetic. A production
+probe now measures the real session's backend selection, configuration guard and tick-context handoff, checking
+native coverage and typed state fingerprints at every initial, warmup and sample boundary. Its report and
+before/after reducer reject fallback, incomplete work, altered sources and mismatched trajectories.
+Shared-host contention prevents attributing a timing gain to this small C++ change. Larger native pre-step or RK
+integration should follow isolated target measurements and preserve the shared `VehicleModel` contract.
+
+## Production-path hardening and measurement (2026-10-28)
+
+Library `eb415e50…7db6f` contains the wheel-rate ownership change. Final requalification passed all 128,565
+stage and 155,931 trajectory comparisons (49,553 exact ticks), followed by 26 adapter, 118 session and 44 replay
+checks with explicit native-success markers. The installer now excludes the extension from automatic discovery
+and removes its old cache registration. The loader checks the canonical descriptor, exact local binary, engine
+and sources before initialization, rejects preloaded code, and handles corrupt receipt/ABI metadata without
+engine errors. Nineteen disposable Godot loader cases, 21 installation/policy tests and 17 probe guard cases pass.
+
+The final production campaign used an isolated source checkout: three alternating reference/native pairs per
+case, 600 warmup and 2,400 sampled ticks per process. All 18 processes completed, with 27,000 matching ticks
+per backend. Median values across the three pairs on the shared Linux development host:
+
+| Case | Reference mean µs/tick | Native mean µs/tick | Paired speedup | Native p95 µs/tick |
+| --- | ---: | ---: | ---: | ---: |
+| Trim | 1,024.7 | 520.8 | 1.98× | 818 |
+| Manoeuvre | 975.2 | 541.6 | 1.87× | 844 |
+| Runway idle | 2,247.7 | 766.2 | 3.01× | 1,153 |
+
+These timings include the production session guard and context handoff, but exclude rendering, audio, OS input
+and presentation observers. They do not qualify Gate P, a release template or a display resolution. An earlier
+C++ before/after candidate campaign correctly failed because another session changed application files; it also
+overlapped a CPU-heavy rendered run. Do not attribute a speedup to `std::move` from these measurements.
+
+The new `native-kernel-linux` CI job builds and qualifies NK-3, requires the native test branches and checks a
+short production pair; release publication depends on it. Workflow lint and nine CI partition tests pass locally;
+the remote job has not been run. The final companion source rebind preserved all nine 2,881-row tapes and
+passed 43 profile checks. Commands remain in the [native guide](../../../../research/native-kernel/README.md)
+and [performance guide](../../../../research/performance/README.md); exact identities, results and limitations
+are retained under `production_path_hardening` in the [revalidation record](revalidation-linux-2026-10-28.json).
 
 ## Promotion to the default backend
 

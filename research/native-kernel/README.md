@@ -7,6 +7,8 @@ kernel tick. Build outputs stay in the ignored `tmp/native-kernel/`; `--install-
 library in ignored `app/native/kernel/`. Normal fixed-wing flights can select it with `--physics-backend=native`.
 Reference GDScript remains the default; unsupported or unverified configurations report a reference fallback.
 Evidence and timings: [docs/research/native-kernel/NK-3](../../docs/research/native-kernel/NK-3/README.md).
+The owner has authorized promotion once ready; the [promotion gates](../../docs/research/native-kernel/NK-3/README.md#promotion-to-the-default-backend)
+remain open for packaged delivery and target-host performance.
 
 ## Optional normal-flight backend
 
@@ -116,6 +118,13 @@ must complete the requested length without a fault, pause or crash; only take-of
 matching crash after the minimum. Native context and stage calls are checked per accepted tick. Fault injection,
 checkpoint/restore and the P-51 refusal must execute their full prerequisite and comparison tapes.
 
+Stop the editor and app before installation. The installer creates `native/kernel/.gdignore` before publishing
+the descriptor and removes only NK-3's old entry from `.godot/extension_list.cfg`, preserving other registrations.
+This protects the next process; it cannot undo initialization in a running process. The loader accepts only the
+canonical descriptor and its exact local library, checks the engine and mirrored sources before loading, and
+refuses an extension already loaded outside that check. Corrupt JSON/ABI metadata returns a clean fallback.
+Do not hand-edit the descriptor or remove `.gdignore`; reinstall through the tool.
+
 ```bash
 python3 research/native-kernel/test_verification.py
 python3 tools/godot/run_checked.py --timeout 90 -- \
@@ -140,6 +149,12 @@ regressions run through `research/test-tools.sh`; CI also runs the library-free 
 This local installation does not qualify exports, Windows, target-host timing or the full fleet. The receipt's
 mirrored-source list includes the stock aircraft data but is not a manifest of every environment input; retained
 results describe their recorded snapshot, and other data changes require fresh verification.
+
+`python3 research/native-kernel/test_installation.py` exercises guarded loading and cache migration in disposable
+projects using the built library and pinned editor; it does not change the app installation. CI's
+`native-kernel-linux` job builds and qualifies the library, requires explicit native-success markers in all three
+runtime tests, and checks a short production reference/native pair. Its diagnostics are retained on failure and
+release publication depends on the job. This is a developer-build gate, not exported-runtime qualification.
 
 ## C++ development tools (NK-3)
 
