@@ -13,9 +13,13 @@ const Terrain := preload("res://physics/ground_terrain.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
 const NativeConfiguration := preload("res://sim/native/native_configuration.gd")
 const WeatherAdapter := preload("res://sim/native/weather_adapter.gd")
+const PrescribedAdapter := preload("res://sim/native/prescribed_stage_adapter.gd")
 const SmoothFixture := preload("res://tests/test_wash_transport.gd")
 
 const TICKS := 3
+const P51_PATH := "res://data/aircraft/p51d_mustang_120.json"
+# Two floats per CT row put this table just beyond the former recursive budget.
+const SNAPSHOT_CT_ROWS := 524289
 var checks := 0
 var failures := 0
 
@@ -391,6 +395,120 @@ func _guard_alias(data: Dictionary) -> void:
 	session.free()
 
 
+func _prescribed_raw() -> Dictionary:
+	var raw := _read(P51_PATH)
+	raw.propulsion.erase("fuel_consumption")
+	raw.capabilities.energy = "prescribed_fuel"
+	return raw
+
+
+func _prescribed_test_config() -> Dictionary:
+	var raw := _prescribed_raw()
+	var data := _validated(raw, "prescribed control")
+	if data.is_empty(): return {}
+	var session := Flight.new()
+	session.input_enabled = false
+	session.physics_enabled = false
+	session.setup("synthetic://native-prescribed-admission", raw.id, data)
+	check("prescribed control starts", session.is_flyable() and not session.sim.paused \
+		and session.sim.fault_reason.is_empty(), str(session.pause_reason))
+	var config: Dictionary = PrescribedAdapter.config_for(session)
+	check("prescribed control config exists", not config.is_empty())
+	if not config.is_empty(): config = config.duplicate(true)
+	session.free()
+	return config
+
+
+## Alter only the two source snapshots. Existing session model and other stage
+## prerequisites stay unchanged, so the decoder error identifies comparison.
+func _snapshot_with_sources(config: Dictionary, actual: Dictionary, saved: Dictionary) -> Dictionary:
+	var changed: Dictionary = config.duplicate()
+	var model: Dictionary = config.model.duplicate()
+	var prescribed: Dictionary = config.prescribed.duplicate()
+	model.propulsion = actual
+	prescribed.source = saved
+	changed.model = model
+	changed.prescribed = prescribed
+	return changed
+
+
+func _snapshot_alias(config: Dictionary) -> void:
+	var native: Object = ClassDB.instantiate(NativeStage.NATIVE_CLASS)
+	var initial: Dictionary = native.prepare_stage(config)
+	check("prescribed snapshot valid control prepares", initial.get("ok", false), str(initial))
+	if not initial.get("ok", false): return
+	var actual: Dictionary = config.model.propulsion.duplicate()
+	var saved: Dictionary = config.prescribed.source.duplicate()
+	var live_leaf := {value = 1.0}
+	var saved_leaf := {value = 1.0}
+	var live: Variant = live_leaf
+	var snapshot_value: Variant = saved_leaf
+	for i in 24:
+		if i % 2 == 0:
+			live = [live, live]
+			snapshot_value = [snapshot_value, snapshot_value]
+		else:
+			live = {left = live, right = live}
+			snapshot_value = {left = snapshot_value, right = snapshot_value}
+	actual.native_admission_alias = live
+	saved.native_admission_alias = snapshot_value
+	var changed := _snapshot_with_sources(config, actual, saved)
+	var started := Time.get_ticks_msec()
+	var result: Dictionary = native.prepare_stage(changed)
+	check("prescribed shared DAG compares then rejects unknown field", not result.get("ok", true) \
+		and str(result.get("error", "")).contains("unsupported prescribed shaft source.native_admission_alias"), str(result))
+	check("prescribed shared DAG comparison is bounded", Time.get_ticks_msec() - started < 10000)
+	saved_leaf.value = 2.0
+	result = native.prepare_stage(changed)
+	check("prescribed shared DAG catches changed leaf", not result.get("ok", true) \
+		and result.get("error") == "prescribed source differs from the committed model", str(result))
+	var live_deep: Variant = live_leaf
+	var saved_deep: Variant = saved_leaf
+	saved_leaf.value = 1.0
+	for _i in 33:
+		live_deep = [live_deep]
+		saved_deep = [saved_deep]
+	actual.native_admission_alias = [live_leaf, live_deep]
+	saved.native_admission_alias = [saved_leaf, saved_deep]
+	result = native.prepare_stage(changed)
+	check("prescribed snapshot rejects deeper alias", not result.get("ok", true) \
+		and result.get("error") == "prescribed source differs from the committed model", str(result))
+	var live_cycle: Array = []
+	var saved_cycle: Array = []
+	live_cycle.append(live_cycle)
+	saved_cycle.append(saved_cycle)
+	actual.native_admission_alias = live_cycle
+	saved.native_admission_alias = saved_cycle
+	result = native.prepare_stage(changed)
+	check("prescribed snapshot rejects cycles", not result.get("ok", true) \
+		and result.get("error") == "prescribed source differs from the committed model", str(result))
+	actual.erase("native_admission_alias")
+	saved.erase("native_admission_alias")
+	live_cycle.clear()
+	saved_cycle.clear()
+
+
+func _large_prescribed_snapshot(config: Dictionary) -> void:
+	var raw := _prescribed_raw()
+	var rows := []
+	rows.resize(SNAPSHOT_CT_ROWS)
+	for i: int in rows.size(): rows[i] = [float(i) / float(rows.size() - 1), 0.1]
+	raw.propulsion.propeller.ct_table.value = rows
+	# This is the complete reference v2 validation, not a fabricated normalized
+	# source. J increases from 0 to 1, and each thrust coefficient is valid.
+	var data: Dictionary = AircraftData.validate_and_derive(raw)
+	check("large prescribed table passes full aircraft validation", data.get("ok", false), str(data.get("errors", [])))
+	if not data.get("ok", false): return
+	var actual: Dictionary = data.model.propulsion
+	check("large prescribed table exceeds the former flat budget", actual.ct.size() == SNAPSHOT_CT_ROWS * 2 \
+		and actual.ct.size() > 1024 * 1024, str(actual.ct.size()))
+	var saved: Dictionary = actual.duplicate(true)
+	var candidate := _snapshot_with_sources(config, actual, saved)
+	var native: Object = ClassDB.instantiate(NativeStage.NATIVE_CLASS)
+	var prepared: Dictionary = native.prepare_stage(candidate)
+	check("large validated prescribed source prepares natively", prepared.get("ok", false), str(prepared))
+
+
 func _bad_surfaces(session: Node) -> void:
 	var native: Object = ClassDB.instantiate(NativeStage.NATIVE_CLASS)
 	var snapshot: Dictionary = HeliAdapter.snapshot(session)
@@ -432,5 +550,9 @@ func _run() -> void:
 		_bad_wake(control)
 		_guard_alias(control)
 		_helicopter_boundaries()
+		var prescribed := _prescribed_test_config()
+		if not prescribed.is_empty():
+			_snapshot_alias(prescribed)
+			_large_prescribed_snapshot(prescribed)
 	print("NK3_NATIVE_ADMISSION verdict=%s checks=%d failures=%d" % ["pass" if failures == 0 else "fail", checks, failures])
 	quit(1 if failures else 0)

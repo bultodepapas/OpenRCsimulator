@@ -214,6 +214,20 @@ python3 tools/godot/run_checked.py --timeout 1200 --require-text 'NK3_RUNTIME_DO
 
 ## Linux release packages
 
+After installation, also run the validated-model admission regressions. They require actual native ownership
+and cover Workshop wake scaling, large wake/field tables, shared configuration data, rotating-wheel layouts
+above the former fixed buffer sizes, empty states, and checkpoint replay. The large prescribed-source table
+case verifies preparation only; it is not a completed flight or physical-validation claim.
+
+```bash
+python3 tools/godot/run_checked.py --timeout 600 --require-text 'NK3_NATIVE_ADMISSION verdict=pass' -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/native-kernel/test_native_admission.gd"
+python3 tools/godot/run_checked.py --timeout 600 --require-text 'NK3_NATIVE_WHEEL_ADMISSION verdict=pass' -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/native-kernel/test_native_wheel_admission.gd"
+```
+
 After installation, run the complete declared fleet matrix before promoting expanded coverage:
 
 ```bash

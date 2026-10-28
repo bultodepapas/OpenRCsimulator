@@ -108,7 +108,7 @@ struct Decoder {
 		if (size >= 0 && packed.size() != size) {
 			return fail(std::string("unexpected size ") + key);
 		}
-		out.assign(packed.ptr(), packed.ptr() + packed.size());
+		if (!packed.is_empty()) out.assign(packed.ptr(), packed.ptr() + packed.size());
 		return true;
 	}
 
@@ -783,7 +783,7 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		return dec.fail("surfaces, lake_valid and soft_hull are required");
 	}
 	const PackedFloat64Array surfaces = config["surfaces"];
-	m.ground.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
+	if (!surfaces.is_empty()) m.ground.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 	m.ground.surfaces.valid = nk::surface_table_is_valid(m.ground.surfaces.values);
 	m.ground.lake_valid = static_cast<bool>(config["lake_valid"]);
 	if (!m.ground.lake_valid) m.ground.lake.present = !lake.is_empty();
@@ -1146,7 +1146,7 @@ public:
 		Decoder dec;
 		nk::GroundContext candidate;
 		Dictionary out;
-		candidate.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
+		if (!surfaces.is_empty()) candidate.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 		candidate.surfaces.valid = nk::surface_table_is_valid(candidate.surfaces.values);
 		candidate.lake_valid = lake_valid;
 		if (!lake_valid) candidate.lake.present = !lake.is_empty();
@@ -1164,7 +1164,8 @@ public:
 	}
 
 	bool surface_table_is_valid(const PackedFloat64Array &surfaces) const {
-		std::vector<double> values(surfaces.ptr(), surfaces.ptr() + surfaces.size());
+		std::vector<double> values;
+		if (!surfaces.is_empty()) values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 		return nk::surface_table_is_valid(values);
 	}
 
@@ -1661,7 +1662,8 @@ public:
 		}
 		if (!read_state(body) || continuous.size() != static_cast<int64_t>(continuous_scratch_.size())) return false;
 		for (int i = 0; i < kStateSize; ++i) tick_.preview_body[i] = body[i];
-		tick_.preview_values.assign(continuous.ptr(), continuous.ptr() + continuous.size());
+		if (continuous.is_empty()) tick_.preview_values.clear();
+		else tick_.preview_values.assign(continuous.ptr(), continuous.ptr() + continuous.size());
 		tick_.capture_preview = capture;
 		return true;
 	}

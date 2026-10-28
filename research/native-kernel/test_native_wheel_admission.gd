@@ -153,6 +153,12 @@ func _tape(reference: Node, candidate: Node, count: int) -> void:
 	_check(label + " restores matching-backend checkpoints", restored)
 	var replayed: bool = restored
 	if restored:
+		var replay_stats := {}
+		if _owns(candidate):
+			candidate._native_stage._native.reset_stage_stats(false)
+			replay_stats = candidate._native_stage.stage_stats()
+		else:
+			replayed = false
 		for tick in TICKS:
 			reference.sim.step()
 			candidate.sim.step()
@@ -162,6 +168,11 @@ func _tape(reference: Node, candidate: Node, count: int) -> void:
 				and reference.sim.tick == reference_cp.simulation.tick + tick + 1 \
 				and candidate.sim.tick == candidate_cp.simulation.tick + tick + 1 \
 				and _frame(reference) == reference_tape[tick] and _frame(candidate) == candidate_tape[tick]
+			if _owns(candidate):
+				var current: Dictionary = candidate._native_stage.stage_stats()
+				replayed = replayed and int(current.get("context_calls", 0)) - int(replay_stats.get("context_calls", 0)) >= 1 \
+					and int(current.get("stage_calls", 0)) - int(replay_stats.get("stage_calls", 0)) >= 4
+				replay_stats = current
 	_check(label + " replays checkpoints exactly with native ownership", complete and same and replayed)
 
 
@@ -294,6 +305,43 @@ func _liquid_prepared(native: Object, session: Node, count: int) -> void:
 	_check(label + " invalid prepare disarms stage", native.stage(state, values, session.sim.time()).is_empty())
 
 
+## A validated unprofiled airframe has no rotating-wheel or source state. The
+## binding's public preview API must also handle an enabled capture with this
+## genuinely empty continuous array, including after a larger preparation.
+func _empty_preview(native: Object) -> void:
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/jensen_ugly_stik_60.json"))
+	var data: Dictionary = AircraftData.validate_and_derive(raw)
+	_check("body-only unprofiled aircraft validates", data.get("ok", false), str(data.get("errors", [])))
+	if not data.get("ok", false): return
+	data.input_identity = {format = AircraftData.FORMAT, sha256 = JSON.stringify(raw, "", true, true).sha256_text()}
+	var session := _flight(data, NativeStage.BACKEND_REFERENCE, 0)
+	var body_only: bool = session.sim.continuous.is_empty() and not session.sim.model.stage.is_valid() \
+		and session.sim.model.loads.is_valid()
+	_check("unprofiled session has body-only layout", body_only)
+	_check("unfielded session has empty ground table", session.ground_surfaces.is_empty())
+	if not body_only:
+		session.free()
+		return
+	var config := WeatherAdapter.config_for(session)
+	var prepared: Dictionary = native.prepare_stage(config)
+	_check("body-only stage prepares after larger layout", prepared.get("ok", false), str(prepared))
+	if prepared.get("ok", false):
+		_check("body-only tick context", _set_context(native, session))
+		var body: PackedFloat64Array = session.sim.state
+		var empty := PackedFloat64Array()
+		_check("body-only accepts enabled empty preview", native.set_preview_context(body, empty, true))
+		var expected: PackedFloat64Array = session.sim.model.loads.call(body, session.sim.time())
+		var actual: Dictionary = native.stage(body, empty, session.sim.time())
+		_check("body-only empty stage has exact loads", not expected.is_empty() \
+			and var_to_bytes(expected) == var_to_bytes(actual.get("loads")) \
+			and var_to_bytes(expected) == var_to_bytes(native.body_loads(body, session.sim.time())))
+		_check("body-only accepts disabled empty preview", native.set_preview_context(body, empty, false))
+		var ground: Dictionary = native.prepare_ground({}, empty, {}, true)
+		_check("empty table validates and prepares as ground", native.surface_table_is_valid(empty) \
+			and ground.get("ok", false) and ground.get("surfaces_valid", false), str(ground))
+	session.free()
+
+
 func _run() -> void:
 	var library: Dictionary = NativeStage.library_status()
 	_check("verified native library", library.get("ok", false), str(library))
@@ -326,6 +374,7 @@ func _run() -> void:
 			_prepared_check(native, references[16], 16, "reprepare after liquid")
 		_malformed(native, references[16])
 		_prepared_check(native, references[65], 65, "reprepare after malformed")
+		_empty_preview(native)
 	for reference: Node in references.values(): reference.free()
 	for reference: Node in liquid_references.values(): reference.free()
 	_done()
