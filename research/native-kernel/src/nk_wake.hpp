@@ -476,4 +476,117 @@ inline Loads wake_swirl_correction(const R *state, const R *v, const Deflections
 	return result;
 }
 
+// Slipstream.stage_loads. The caller supplies actual same-stage thrust/torque;
+// lagged is either null or contains one value per piece. source_delta is an
+// optional hub ambient delta (without rotation). The point sampler is queried
+// only at tail force locations and remains native throughout this evaluation.
+inline Loads wake_loads(const R *state, const Air &air, const Deflections &d, const AeroModel &m,
+		const PropModel &prop, const WakeModel &ss, R rpm, R rho, R thrust, R torque, R downwash = kNan,
+		const R *lagged = nullptr, const R *source_delta = nullptr, const WakePointSampler *sampler = nullptr) {
+	if ((rpm < kStoppedRpm && lagged == nullptr) || !ss.enabled) return Loads{};
+	R source[3] = {air.v[0], air.v[1], air.v[2]};
+	for (int i = 0; i < 3; ++i) {
+		if (!is_finite(source[i])) return wake_invalid();
+		if (source_delta != nullptr) {
+			if (!is_finite(source_delta[i])) return wake_invalid();
+			if (source_delta[i] != 0.0) source[i] += source_delta[i];
+			if (!is_finite(source[i])) return wake_invalid();
+		}
+	}
+	if (sampler != nullptr && sampler->sample == nullptr) return wake_invalid();
+	R fade = ss.smooth ? wake_reverse_weight(source, rpm, prop, ss) : R(1.0);
+	if (lagged != nullptr && rpm < kStoppedRpm) fade = source[0] >= 0.0 ? R(1.0) : R(0.0);
+	if (fade == 0.0) return Loads{};
+	const WakeState w = wake_state(source, thrust, torque, prop, ss, rho);
+	const auto axis = wake_axis(prop);
+	const R *ax = axis.data();
+	R wash[3] = {ax[0] * w.dv, ax[1] * w.dv, ax[2] * w.dv};
+	const R swirl_strength = ss.smooth ? R(0.0) : w.swirl;
+	R wing_cl = 0.0;
+	if (m.horizontal.present && m.horizontal.free) {
+		const std::vector<R> no_ground;
+		wing_cl = is_nan(downwash) ? wing_lift_coefficient_with(state, air, d, m, no_ground, true) : downwash;
+	}
+	Loads out{};
+	std::array<R, 3> crossflow{};
+	if (ss.segmented) crossflow = wake_sidewash(source, rpm, prop, w, ax, rho, ss.sidewash_gain);
+	for (std::size_t i = 0; i < ss.pieces.size(); ++i) {
+		const WakePiece &piece = ss.pieces[i];
+		if (lagged != nullptr) {
+			wash[0] = ax[0] * lagged[i]; wash[1] = ax[1] * lagged[i]; wash[2] = ax[2] * lagged[i];
+		}
+		const WakeGeometry geo = wake_geometry(piece, ss, w, ax, source);
+		R immersed, full, eta;
+		if (ss.smooth) {
+			const auto moments = wake_profile_moments(piece.profile, geo.along, geo.d2, w.rs, ss.edge_fraction);
+			immersed = moments[0];
+			if (immersed <= 0.0) continue;
+			full = piece.area;
+			eta = moments[1] / immersed;
+		} else {
+			if (geo.d2 >= w.rs * w.rs) continue;
+			const R half = sqrt_(w.rs * w.rs - geo.d2);
+			const R a = clampf(-geo.along - half, 0.0, piece.span);
+			const R b = clampf(-geo.along + half, 0.0, piece.span);
+			if (b <= a) continue;
+			const R c0 = piece.chords[0], slope = (piece.chords[1] - c0) / piece.span;
+			if (ss.segmented) {
+				const R combined_wash[3] = {wash[0] + crossflow[0], wash[1] + crossflow[1], wash[2] + crossflow[2]};
+				const Tail &tail = piece.vertical ? m.vertical : m.horizontal;
+				const Loads segment = wake_segmented_increment(piece, tail, a, b, c0, slope, geo, ax,
+					w.core, swirl_strength, combined_wash, state, air.v, d, m, rho, wing_cl, sampler);
+				for (int c = 0; c < 6; ++c) out[c] += segment[c];
+				continue;
+			}
+			const R area_b = c0 * b + 0.5 * slope * b * b;
+			const R area_a = c0 * a + 0.5 * slope * a * a;
+			immersed = area_b - area_a;
+			full = c0 * piece.span + 0.5 * slope * piece.span * piece.span;
+			if (immersed <= 0.0) continue;
+			const R moment_b = 0.5 * c0 * b * b + slope * b * b * b / 3.0;
+			const R moment_a = 0.5 * c0 * a * a + slope * a * a * a / 3.0;
+			eta = (moment_b - moment_a) / immersed;
+		}
+		const R point0 = piece.root[0] + piece.span_dir[0] * eta;
+		const R point1 = piece.root[1] + piece.span_dir[1] * eta;
+		const R point2 = piece.root[2] + piece.span_dir[2] * eta;
+		const Tail &tail = piece.vertical ? m.vertical : m.horizontal;
+		const R shift1 = point1 - tail.position[1];
+		R shift2 = -(point2 - tail.position[2]);
+		if (ss.smooth && !piece.vertical) shift2 = 0.0;
+		R rb0 = -(point0 - geo.centre[0]), rb1 = point1 - geo.centre[1], rb2 = -(point2 - geo.centre[2]);
+		const R axial_projection = rb0 * ax[0] + rb1 * ax[1] + rb2 * ax[2];
+		rb0 -= ax[0] * axial_projection; rb1 -= ax[1] * axial_projection; rb2 -= ax[2] * axial_projection;
+		const R radius = maxf(sqrt_(rb0 * rb0 + rb1 * rb1 + rb2 * rb2), w.core);
+		const R swirl_scale = swirl_strength / (radius * radius);
+		const R swirl0 = (ax[1] * rb2 - ax[2] * rb1) * swirl_scale;
+		const R swirl1 = (ax[2] * rb0 - ax[0] * rb2) * swirl_scale;
+		const R swirl2 = (ax[0] * rb1 - ax[1] * rb0) * swirl_scale;
+		const R area = piece.area * immersed / full;
+		if (area <= 0.0) continue;
+		const R arm[3] = {-(tail.position[0] - m.cg[0]) + 0.0,
+			tail.position[1] - m.cg[1] + shift1, -(tail.position[2] - m.cg[2]) + shift2};
+		const R rate0 = state[11] * arm[2] - state[12] * arm[1];
+		const R rate1 = state[12] * arm[0] - state[10] * arm[2];
+		const R rate2 = state[10] * arm[1] - state[11] * arm[0];
+		R local_v[3];
+		if (!wake_point_air(air.v, sampler, arm, local_v)) return wake_invalid();
+		const R free_flow[3] = {(local_v[0] + 0.0) + rate0, (local_v[1] + 0.0) + rate1, (local_v[2] + 0.0) + rate2};
+		const R washed_flow[3] = {(local_v[0] + (wash[0] - swirl0)) + rate0,
+			(local_v[1] + (wash[1] - swirl1)) + rate1, (local_v[2] + (wash[2] - swirl2)) + rate2};
+		const Loads free = tail_surface_from_flow(free_flow, arm, d, tail, m, area, piece.vertical, rho, wing_cl);
+		const Loads washed = tail_surface_from_flow(washed_flow, arm, d, tail, m, area, piece.vertical, rho, wing_cl);
+		for (int c = 0; c < 6; ++c) out[c] += washed[c] - free[c];
+	}
+	if (ss.smooth) {
+		for (int c = 0; c < 6; ++c) out[c] *= fade;
+		if (w.swirl != 0.0) {
+			// Deliberately uses equilibrium wake.dv even with transported_dv: this is the current reference law.
+			const Loads correction = wake_swirl_correction(state, air.v, d, m, ss, w, ax, source, fade, rho, wing_cl, sampler);
+			for (int c = 0; c < 6; ++c) out[c] += correction[c];
+		}
+	}
+	return out;
+}
+
 } // namespace nk
