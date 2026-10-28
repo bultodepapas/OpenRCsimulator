@@ -197,6 +197,21 @@ projects using the built library and pinned editor; it does not change the app i
 runtime tests, and checks a short production reference/native pair. Its diagnostics are retained on failure and
 release publication depends on the job. The export job then qualifies the actual release executable as described below.
 
+The optional `set_stage_rejection_diagnostics(true)` native diagnostic records a bounded, detached rejection
+payload from the actual C++ stage. It is disabled in normal flight, does not alter stage results, and clears
+when a later evaluation or context/preparation transition invalidates the evidence. The stopped-glow diagnostic
+is a model-domain explanation; the application's generic RK fault message remains unchanged. Its actual-library
+regression is required in Linux CI after installation:
+
+```bash
+python3 tools/godot/run_checked.py --timeout 600 --require-text 'NK3_GLOW_REJECTION_NATIVE verdict=pass' -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/native-kernel/test_glow_rejection.gd"
+python3 tools/godot/run_checked.py --timeout 1200 --require-text 'NK3_RUNTIME_DOMAIN_NATIVE verdict=pass' -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/native-kernel/test_fleet.gd" -- --require-runtime-domain
+```
+
 ## Linux release packages
 
 After installation, run the complete declared fleet matrix before promoting expanded coverage:
@@ -209,8 +224,13 @@ python3 research/native-kernel/fleet_campaign.py --out tmp/nk3-fleet-qualified \
 The campaign reads the canonical matrix from `fleet.gd`, runs each aircraft through the existing checked runner,
 and validates the exact union of row keys. All shards must share the same engine, native binary, receipt,
 source and harness identities. Flight rows require every requested tick, matching fingerprints and native call
-coverage; explicitly known startup refusals require the same reset failure from both backends and are counted
-separately. A scoped report alone does not qualify the whole fleet. `--reuse-report AIRCRAFT=REPORT` accepts
+coverage. Explicitly known startup refusals require the same reset failure from both backends. Four stopped-glow
+runway/gusty tapes have a separately checked runtime-domain refusal: the 61FX stops after 873 accepted ticks
+and the 55AX after 801, with each contact option. Their next RK trial would require reverse rotation beyond
+the installation's static hold domain. These outcomes require exact accepted-prefix, rejected-trial and rollback
+agreement, actual native ownership and counters, and finite branch evidence from C++ and the reference.
+Neither startup nor runtime refusals count as completed flights. Unknown faults still fail the campaign.
+A scoped report alone does not qualify the whole fleet. `--reuse-report AIRCRAFT=REPORT` accepts
 only a complete, matching full-aircraft report, including one still being produced. Concurrent runs establish
 software equivalence, not timing or physical validation.
 

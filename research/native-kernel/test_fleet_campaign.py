@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import asyncio
 import copy
+import hashlib
 import importlib.util
+import math
 from pathlib import Path
+import struct
 import tempfile
 import unittest
 from unittest import mock
@@ -88,7 +91,7 @@ def fixtures():
                     "filters": {"aircraft": aircraft, "weather": "", "soft_hull": ""},
                     "declared_aircraft": ["fixed", "heli"], "declared_rows": 3, "selected_rows": len(rows),
                     "matrix_complete": False, "warmup_requested": 2, "samples_requested": 3, "failed": 0,
-                    "flight_passed": flights, "reference_refused": refusals},
+                    "flight_passed": flights, "reference_refused": refusals, "runtime_refused": 0},
                 "fleet": rows, "components": components,
                 "total": {"compared": count, "identical": count, "mismatched": 0}}
 
@@ -96,11 +99,169 @@ def fixtures():
                       "heli": report("heli", [flight(b)], 1, 0)}, guard
 
 
+def encode_runtime_array(items):
+    data = bytearray(struct.pack("<II", 28, len(items)))
+    for kind, value in items:
+        if kind == "packed":
+            data.extend(struct.pack("<II", 33, len(value)))
+            for number in value:
+                data.extend(struct.pack("<d", number))
+        elif kind == "float":
+            data.extend(struct.pack("<Id", 3 | (1 << 16), value))
+        elif kind == "bool":
+            data.extend(struct.pack("<II", 1, int(value)))
+        else:
+            raise AssertionError(kind)
+    return bytes(data)
+
+
+def runtime_payloads(tick=873):
+    body, continuous = [0.0] * 13, [0.0] * 22
+    body[6], continuous[8], continuous[18] = 1.0, 2.0, 1.0
+    tick_time = float(tick) * (1.0 / 240.0)
+    trial = [("packed", body), ("packed", continuous), ("float", tick_time + (1.0 / 240.0))]
+    context = [("packed", [0.0] * 14), ("packed", [0.0] * 4), ("packed", [0.0] * 5),
+               ("float", tick_time), ("float", 0.0), ("float", 0.0), ("bool", False), ("bool", False)]
+    return trial, context
+
+
+def replace_runtime_payload(proof, name, data):
+    digest = hashlib.sha256(data).hexdigest()
+    proof[name + "_bytes_hex"] = proof["native_" + name + "_bytes_hex"] = data.hex()
+    proof[name + "_sha256"] = proof["native_" + name + "_sha256"] = digest
+
+
+def runtime_fixture():
+    _, reports, guard = fixtures()
+    aircraft = "stik-glow-61fx-2t"
+    row = {"aircraft": aircraft, "vehicle": "fixed-wing", "battery": "ideal", "case": "runway",
+           "weather": "gusty", "soft_hull": True, "default_battery": True,
+           "expected": "runtime-domain-refusal", "expected_runtime_tick": 873}
+    manifest = {"format": "openrc-nk3-fleet-manifest v1", "aircraft": [aircraft], "rows": [row]}
+    end = {"tick": 873, "fault": campaign.RUNTIME_FAULT, "crashed": False, "paused": True, "held": False,
+           "pause_reason": "simulation fault: " + campaign.RUNTIME_FAULT}
+    cause = {"code": campaign.RUNTIME_CODE, "origin": "feed_endpoint", "feed_factor": 0.0, "rpm": 0.0,
+             "demand_nm": -0.02, "friction_nm": 0.01, "prop_load_torque_nm": 0.02,
+             "axial_acceleration_rad_s2": 0.0, "rotor_inertia_kg_m2": 0.01}
+    native_cause = {**cause, "feed_factor": 0.0}
+    trial_items, context_items = runtime_payloads()
+    trial, context = encode_runtime_array(trial_items), encode_runtime_array(context_items)
+    proof = {"code": campaign.RUNTIME_CODE, "origin": "feed_endpoint", "accepted_ticks": 873,
+             "attempted_tick": 874, "requested_ticks": 3000, "warmup_completed": 600,
+             "samples_completed": 273, "prefix_boundaries": 874, "reference_prefix_sha256": "d" * 64,
+             "native_prefix_sha256": "d" * 64, "prefix_equal_every_tick": True, "terminal_equal": True,
+             "reference_rollback": True, "native_rollback": True, "reference_end": end, "native_end": copy.deepcopy(end),
+             "reference_identity": {"backend": "gdscript_reference"}, "reference_owner_retained": True,
+             "reference_aircraft_sha256": "c" * 64, "native_aircraft_sha256": "c" * 64,
+             "native_identity": {"backend": "native", "abi_version": 2, "binary_sha256": guard["binary_sha256"],
+                                 "source_sha256": guard["receipt"]["source_sha256"],
+                                 "lock_sha256": guard["receipt"]["lock_sha256"]},
+             "native_owner_retained": True, "native_covered_every_tick": True,
+             "reference_input_reads": 874, "native_input_reads": 874,
+             "native_stage_calls": 3496, "native_context_calls": 874,
+             "rejected_stage_calls": 4, "rejected_context_calls": 1,
+             "native_diagnostic_stage_call": 3496, "native_diagnostic_context_call": 874,
+             "trial_equal": True, "context_equal": True, "reference_result_empty": True,
+             "trial_bytes_hex": trial.hex(), "trial_sha256": hashlib.sha256(trial).hexdigest(),
+             "native_trial_bytes_hex": trial.hex(), "native_trial_sha256": hashlib.sha256(trial).hexdigest(),
+             "context_bytes_hex": context.hex(), "context_sha256": hashlib.sha256(context).hexdigest(),
+             "native_context_bytes_hex": context.hex(), "native_context_sha256": hashlib.sha256(context).hexdigest(),
+             "reference_cause": cause, "native_cause": native_cause}
+    result = {**row, "status": "runtime-domain-refused", "reason": campaign.RUNTIME_CODE,
+              "fingerprint_equal": False, "reference": {"complete": False, "requested": "gdscript_reference"},
+              "native": {"complete": False, "requested": "native"}, "runtime_domain": proof}
+    report = copy.deepcopy(reports["fixed"])
+    report["checked_run"]["command"] = ["godot", "--extension=res://native/kernel/openrc_native_kernel.gdextension",
+                                        f"--aircraft={aircraft}", "--warmup=600", "--samples=2400"]
+    report["fleet_scope"].update(filters={"aircraft": aircraft, "weather": "", "soft_hull": ""},
+        declared_aircraft=[aircraft], declared_rows=1, selected_rows=1, warmup_requested=600,
+        samples_requested=2400, flight_passed=0, reference_refused=0, runtime_refused=1)
+    report["fleet"] = [result]
+    report["components"] = {"literals": {"count": 1, "identical": 1},
+                            "fleet_runtime_domain_refusal": {"count": 1, "identical": 1}}
+    report["total"] = {"compared": 2, "identical": 2, "mismatched": 0}
+    return manifest, {aircraft: report}, guard
+
+
 class FleetCampaignTests(unittest.TestCase):
     def test_complete_union(self):
         manifest, reports, guard = fixtures()
         self.assertEqual(campaign.validate_reports(manifest, reports, guard, 2, 3),
-                         {"declared": 3, "flight_passed": 2, "reference_refused": 1})
+                         {"declared": 3, "flight_passed": 2, "reference_refused": 1, "runtime_refused": 0})
+
+    def test_bounded_runtime_refusal_is_separate_from_flights(self):
+        manifest, reports, guard = runtime_fixture()
+        self.assertEqual(campaign.validate_reports(manifest, reports, guard, 600, 2400),
+                         {"declared": 1, "flight_passed": 0, "reference_refused": 0, "runtime_refused": 1})
+
+    def test_runtime_refusal_rejects_missing_or_altered_proof(self):
+        mutations = [
+            lambda r: r.update(status="pass"), lambda r: r["native"].update(complete=True),
+            lambda r: r["runtime_domain"].update(accepted_ticks=872),
+            lambda r: r["runtime_domain"].update(samples_completed=274),
+            lambda r: r["runtime_domain"].update(prefix_equal_every_tick=False),
+            lambda r: r["runtime_domain"].update(native_owner_retained=False),
+            lambda r: r["runtime_domain"].update(reference_owner_retained=False),
+            lambda r: r["runtime_domain"].update(native_aircraft_sha256="d" * 64),
+            lambda r: r["runtime_domain"]["reference_identity"].update(backend="native"),
+            lambda r: r["runtime_domain"].update(native_covered_every_tick=False),
+            lambda r: r["runtime_domain"].update(rejected_stage_calls=0),
+            lambda r: r["runtime_domain"].update(rejected_context_calls=0),
+            lambda r: r["runtime_domain"].update(native_diagnostic_stage_call=0),
+            lambda r: r["runtime_domain"].update(trial_equal=False),
+            lambda r: r["runtime_domain"].update(context_equal=False),
+            lambda r: r["runtime_domain"].update(trial_bytes_hex="00"),
+            lambda r: r["runtime_domain"]["native_end"].update(fault="unrelated"),
+            lambda r: r["runtime_domain"]["native_identity"].update(backend="gdscript_reference"),
+            lambda r: r["runtime_domain"]["native_cause"].update(code="unrelated"),
+            lambda r: r["runtime_domain"]["native_cause"].update(feed_factor=1.0),
+            lambda r: r["runtime_domain"]["native_cause"].update(demand_nm=float("nan")),
+            lambda r: r["runtime_domain"]["native_cause"].update(friction_nm=0.5),
+        ]
+        for index, mutate in enumerate(mutations):
+            with self.subTest(case=index):
+                manifest, reports, guard = runtime_fixture()
+                mutate(next(iter(reports.values()))["fleet"][0])
+                with self.assertRaises(campaign.CampaignError):
+                    campaign.validate_reports(manifest, reports, guard, 600, 2400)
+
+    def test_identical_invalid_reverse_boundaries_fail(self):
+        for field, value in (("demand_nm", -0.01), ("demand_nm", -0.009), ("demand_nm", float("nan")),
+                             ("rotor_inertia_kg_m2", 0.0), ("rotor_inertia_kg_m2", -1.0),
+                             ("prop_load_torque_nm", 0.03)):
+            with self.subTest(field=field, value=value):
+                manifest, reports, guard = runtime_fixture()
+                proof = next(iter(reports.values()))["fleet"][0]["runtime_domain"]
+                proof["reference_cause"][field] = value
+                proof["native_cause"][field] = value
+                if field == "demand_nm" and math.isfinite(value):
+                    proof["reference_cause"]["prop_load_torque_nm"] = -value
+                    proof["native_cause"]["prop_load_torque_nm"] = -value
+                with self.assertRaises(campaign.CampaignError):
+                    campaign.validate_reports(manifest, reports, guard, 600, 2400)
+
+    def test_identical_rehashed_malformed_payloads_fail(self):
+        def short_body(trial, context): trial[0][1].pop()
+        def short_continuous(trial, context): trial[1][1].pop()
+        def nonfinite_body(trial, context): trial[0][1][0] = float("nan")
+        def degenerate_attitude(trial, context): trial[0][1][6] = 0.0
+        def wrong_mode(trial, context): trial[1][1][18] = 0.0
+        def wrong_stage_time(trial, context): trial[2] = ("float", 0.0)
+        def short_context(trial, context): context[0][1].pop()
+        def nonfinite_input(trial, context): context[1][1][0] = float("inf")
+        def wrong_tick_time(trial, context): context[3] = ("float", 0.0)
+        def wrong_flags(trial, context): context[6] = ("bool", True)
+        for mutate in (short_body, short_continuous, nonfinite_body, degenerate_attitude, wrong_mode,
+                       wrong_stage_time, short_context, nonfinite_input, wrong_tick_time, wrong_flags):
+            with self.subTest(case=mutate.__name__):
+                manifest, reports, guard = runtime_fixture()
+                proof = next(iter(reports.values()))["fleet"][0]["runtime_domain"]
+                trial, context = runtime_payloads()
+                mutate(trial, context)
+                replace_runtime_payload(proof, "trial", encode_runtime_array(trial))
+                replace_runtime_payload(proof, "context", encode_runtime_array(context))
+                with self.assertRaises(campaign.CampaignError):
+                    campaign.validate_reports(manifest, reports, guard, 600, 2400)
 
     def test_manifest_rejects_duplicates_and_missing_refusal_proof(self):
         manifest, _, _ = fixtures()

@@ -244,7 +244,8 @@ inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx
 
 // FlightSession._wheel_evaluate.
 inline StageResult stage_evaluate(const R *s, const R *values, int value_count, R stage_time, const StageModel &m,
-		const TickContext &ctx) {
+		const TickContext &ctx, GlowStageRejection *rejection = nullptr) {
+	if (rejection != nullptr) rejection->code = GlowRejectionCode::None;
 	StageResult out;
 	const StageLayout &L = m.layout;
 	const int expected = L.rotor_index;
@@ -352,7 +353,7 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 	}
 	if (m.glow.ready) {
 		const auto result = glow_stage_finish(m.glow, glow_trial, m.prop, s, values, total.data(), rates.data(),
-			static_cast<int>(rates.size()), ctx.throttle, m.gravity);
+			static_cast<int>(rates.size()), ctx.throttle, m.gravity, rejection);
 		if (!result.ok) return out;
 		out.shaped = true;
 		out.loads = result.loads;

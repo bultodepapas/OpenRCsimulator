@@ -145,6 +145,35 @@ struct GlowStageFeedPayload {
 	GlowCoupledStage coupling;
 };
 
+// Observe only evaluations actually consumed by glow_feed_solve, never the
+// speculative factor=1 base. An endpoint refusal cannot explain the solve if
+// another sampled endpoint failed for a different reason.
+struct GlowFeedRejectionWitness {
+	GlowStageRejection first_reverse;
+	bool saw_reverse = false;
+	bool saw_other_failure = false;
+
+	void rejected_probe(R candidate, const GlowStageRejection &sample) {
+		if (sample.code != GlowRejectionCode::StoppedReverseDrive || !is_finite(candidate) ||
+				(candidate.v != 0.0 && candidate.v != 2.0)) {
+			saw_other_failure = true;
+			return;
+		}
+		if (!saw_reverse) {
+			first_reverse = sample;
+			first_reverse.origin = GlowRejectionOrigin::FeedEndpoint;
+			first_reverse.feed_factor = candidate.v;
+		}
+		saw_reverse = true;
+	}
+
+	void other_failure() { saw_other_failure = true; }
+
+	void publish_on_failure(GlowStageRejection *out) const {
+		if (out != nullptr && saw_reverse && !saw_other_failure) *out = first_reverse;
+	}
+};
+
 // The exact stage's airframe+propeller+ground external wrench is supplied at
 // fixed datum O. With a feed block it must be evaluated before lifecycle/feed
 // closure; otherwise it can be evaluated after the trial blade. `wheel_rates`
@@ -152,7 +181,8 @@ struct GlowStageFeedPayload {
 // pure functions and never crosses the Godot boundary.
 inline GlowStageResult glow_stage_finish(const GlowStageModel &model, const GlowStageTrial &trial,
 		const PropModel &prop, const R *body, const R *values, const R *external,
-		const R *wheel_rates, int wheel_count, R throttle, R gravity) {
+		const R *wheel_rates, int wheel_count, R throttle, R gravity, GlowStageRejection *rejection = nullptr) {
+	if (rejection != nullptr) rejection->code = GlowRejectionCode::None;
 	GlowStageResult out;
 	if (!model.ready || !trial.ok || body == nullptr || values == nullptr || external == nullptr || wheel_count < 0 ||
 			(wheel_count > 0 && wheel_rates == nullptr)) return out;
@@ -189,6 +219,9 @@ inline GlowStageResult glow_stage_finish(const GlowStageModel &model, const Glow
 		R target = kNan;
 		if (reuse) target = glow_feed_factor_for_stage(context, model.feed, external, mass.mass_kg, tank_arm,
 				base_coupling.body_derivative.data() + 10, omega, model.has_pickup ? model.pickup.data() : nullptr);
+		// The factor=1 base is speculative. Only a rejected probe actually
+		// consumed by the feed solver may explain the solver's final refusal.
+		GlowFeedRejectionWitness witness;
 		auto solve = glow_feed_solve<GlowStageFeedPayload>([&](R candidate) {
 			GlowFeedProbe<GlowStageFeedPayload> probe;
 			GlowLifecyclePoint sampled;
@@ -198,28 +231,47 @@ inline GlowStageResult glow_stage_finish(const GlowStageModel &model, const Glow
 				const R flow = base.fuel_target_kg_s * candidate;
 				const R rate = active ? (flow - current) / model.lifecycle.fuel_transport_time_constant_s :
 						-current / model.lifecycle.fuel_transport_time_constant_s;
-				if (!is_finite(rate)) return probe;
+				if (!is_finite(rate)) {
+					if (rejection != nullptr) witness.other_failure();
+					return probe;
+				}
 				sampled.fuel_target_kg_s = flow;
 				sampled.rates[4] = rate;
 				response = base_coupling;
 			} else {
 				sampled = glow_lifecycle_evaluate(model.lifecycle, state, trial.rpm, throttle,
 						trial.mixture, trial.dry_density, trial.ambient_k, trial.cooling_mps, candidate, trial.lifecycle_floor);
-				if (!sampled.ok) return probe;
+				if (!sampled.ok) {
+					if (rejection != nullptr) witness.other_failure();
+					return probe;
+				}
+				GlowStageRejection sample_rejection;
 				response = glow_coupled_stage(body, external, values, prop, model.lifecycle, state,
-						sampled, trial.blade, mass, trial.dry_density, gravity);
+						sampled, trial.blade, mass, trial.dry_density, gravity,
+						rejection != nullptr ? &sample_rejection : nullptr);
+				if (!response.ok && rejection != nullptr) {
+					witness.rejected_probe(candidate, sample_rejection);
+				}
 			}
 			if (!response.ok) return probe;
 			const R candidate_target = reuse ? target : glow_feed_factor_for_stage(context, model.feed,
 					external, mass.mass_kg, tank_arm, response.body_derivative.data() + 10, omega,
 					model.has_pickup ? model.pickup.data() : nullptr);
-			if (!is_finite(candidate_target)) return probe;
+			if (!is_finite(candidate_target)) {
+				if (rejection != nullptr) witness.other_failure();
+				return probe;
+			}
+			// The solver itself also rejects finite targets outside its domain.
+			if (rejection != nullptr && (candidate_target.v < 0.0 || candidate_target.v > 2.0)) witness.other_failure();
 			probe.ok = true;
 			probe.target_factor = candidate_target;
 			probe.payload = {sampled, response};
 			return probe;
 		}, 1.0);
-		if (!solve.ok) return out;
+		if (!solve.ok) {
+			if (rejection != nullptr) witness.publish_on_failure(rejection);
+			return out;
+		}
 		feed_factor = solve.factor;
 		life = solve.payload.life;
 		coupling = solve.payload.coupling;
@@ -228,7 +280,7 @@ inline GlowStageResult glow_stage_finish(const GlowStageModel &model, const Glow
 				trial.dry_density, trial.ambient_k, trial.cooling_mps, feed_factor, trial.lifecycle_floor);
 		if (!life.ok) return out;
 		coupling = glow_coupled_stage(body, external, values, prop, model.lifecycle, state, life, trial.blade,
-				mass, trial.dry_density, gravity);
+				mass, trial.dry_density, gravity, rejection);
 		if (!coupling.ok) return out;
 		if (model.has_feed) {
 			// point() still evaluates feed telemetry off the main tank, without

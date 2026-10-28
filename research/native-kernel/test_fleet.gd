@@ -53,6 +53,19 @@ class RefusalFleet:
 		return (reference_result if requested_backend == "gdscript_reference" else native_result).duplicate(true)
 
 
+class RuntimeRouteFleet:
+	extends Fleet
+	var runtime_calls := 0
+	var normal_calls := 0
+
+	func _fleet_runtime_case(_row: Dictionary, _warmup: int, _samples: int) -> void:
+		runtime_calls += 1
+
+	func _fleet_execute(_row: Dictionary, requested: String, _warmup: int, _samples: int) -> Dictionary:
+		normal_calls += 1
+		return {complete = false, requested = requested, error = "synthetic incomplete run"}
+
+
 class FakeSimulation:
 	extends Node
 	var tick := 0
@@ -202,6 +215,61 @@ func _run_fake(fleet: Object, requested: String, failure := "", fail_at := -1,
 	return result
 
 
+func _runtime_proof_fixture(row: Dictionary, warmup: int, samples: int) -> Dictionary:
+	var tick: int = row.expected_runtime_tick
+	var body := PackedFloat64Array()
+	body.resize(13)
+	body[6] = 1.0
+	var continuous := PackedFloat64Array()
+	continuous.resize(22)
+	continuous[8] = 2.0
+	continuous[18] = 1.0
+	var aux := PackedFloat64Array()
+	aux.resize(14)
+	var inputs := PackedFloat64Array()
+	inputs.resize(4)
+	var deflections := PackedFloat64Array()
+	deflections.resize(5)
+	var tick_time: float = float(tick) * (1.0 / 240.0)
+	var trial := [body, continuous, tick_time + (1.0 / 240.0)]
+	var context := [aux, inputs, deflections, tick_time, 0.0, 0.0, false, false]
+	var end := {tick = tick, fault = Fleet.GLOW_REVERSE_FAULT, crashed = false, paused = true,
+		held = false, pause_reason = "simulation fault: " + Fleet.GLOW_REVERSE_FAULT}
+	var cause := {code = Fleet.GLOW_REVERSE_CODE, origin = "feed_endpoint", feed_factor = 0.0, rpm = 0.0,
+		demand_nm = -0.02, friction_nm = 0.01, prop_load_torque_nm = 0.02,
+		axial_acceleration_rad_s2 = 0.0, rotor_inertia_kg_m2 = 0.01}
+	var native_cause := cause.duplicate(true)
+	return {code = Fleet.GLOW_REVERSE_CODE, origin = "feed_endpoint", accepted_ticks = tick,
+		attempted_tick = tick + 1, requested_ticks = warmup + samples,
+		warmup_completed = mini(warmup, tick), samples_completed = maxi(0, tick - warmup),
+		prefix_boundaries = tick + 1, reference_prefix_sha256 = "a".repeat(64),
+		native_prefix_sha256 = "a".repeat(64), prefix_equal_every_tick = true,
+		terminal_equal = true, reference_rollback = true, native_rollback = true,
+		reference_end = end.duplicate(true), native_end = end.duplicate(true),
+		reference_identity = {backend = "gdscript_reference"}, reference_owner_retained = true,
+		reference_aircraft_sha256 = "c".repeat(64), native_aircraft_sha256 = "c".repeat(64),
+		native_identity = {backend = "native", abi_version = 2}, native_owner_retained = true,
+		native_covered_every_tick = true, reference_input_reads = tick + 1, native_input_reads = tick + 1,
+		native_stage_calls = 4 * tick + 4, native_context_calls = tick + 1,
+		rejected_stage_calls = 4, rejected_context_calls = 1,
+		native_diagnostic_stage_call = 4 * tick + 4, native_diagnostic_context_call = tick + 1,
+		trial_equal = true, context_equal = true, reference_result_empty = true,
+		trial_bytes_hex = var_to_bytes(trial).hex_encode(), trial_sha256 = Fleet._fleet_bytes_sha(trial),
+		native_trial_bytes_hex = var_to_bytes(trial).hex_encode(), native_trial_sha256 = Fleet._fleet_bytes_sha(trial),
+		context_bytes_hex = var_to_bytes(context).hex_encode(), context_sha256 = Fleet._fleet_bytes_sha(context),
+		native_context_bytes_hex = var_to_bytes(context).hex_encode(), native_context_sha256 = Fleet._fleet_bytes_sha(context),
+		reference_cause = cause.duplicate(true), native_cause = native_cause}
+
+
+func _replace_runtime_payload(proof: Dictionary, field: String, payload: Variant) -> void:
+	var bytes: PackedByteArray = var_to_bytes(payload)
+	var digest: String = Fleet._fleet_bytes_sha(payload)
+	proof[field + "_bytes_hex"] = bytes.hex_encode()
+	proof[field + "_sha256"] = digest
+	proof["native_" + field + "_bytes_hex"] = bytes.hex_encode()
+	proof["native_" + field + "_sha256"] = digest
+
+
 func _initialize() -> void:
 	var fleet := Fleet.new()
 	var reference := _run_fake(fleet, "gdscript_reference")
@@ -254,6 +322,107 @@ func _initialize() -> void:
 		_check(not rejected.complete and not Fleet._fleet_pair_error(body_reference, rejected, 2, 3).is_empty(),
 			"body callback %s fails qualification" % failure)
 	var declared := Fleet._fleet_declared_rows()
+	var runtime_rows: Array[Dictionary] = []
+	for row: Dictionary in declared:
+		if row.get("expected") == "runtime-domain-refusal": runtime_rows.append(row)
+	_check(runtime_rows.size() == 4, "only the four observed reverse-breakaway rows are declared")
+	for row: Dictionary in runtime_rows:
+		var expected_tick: int = 873 if row.aircraft == "stik-glow-61fx-2t" else 801
+		_check(Fleet._fleet_runtime_tick(row) == expected_tick,
+			"runtime-domain declaration has its exact accepted tick: %s/soft=%s" % [row.aircraft, row.soft_hull])
+	var runtime_row := runtime_rows[0].duplicate(true)
+	var runtime_proof := _runtime_proof_fixture(runtime_row, 600, 2400)
+	_check(Fleet._fleet_runtime_proof_error(runtime_row, runtime_proof, 600, 2400).is_empty(),
+		"a complete exact runtime-domain proof is accepted separately")
+	var warmup_proof := _runtime_proof_fixture(runtime_row, 900, 1)
+	_check(Fleet._fleet_runtime_proof_error(runtime_row, warmup_proof, 900, 1).is_empty() \
+		and warmup_proof.warmup_completed == runtime_row.expected_runtime_tick and warmup_proof.samples_completed == 0,
+		"a refusal during warmup records its actual phase counts")
+	var wrong_runtime_row := runtime_row.duplicate(true)
+	wrong_runtime_row.aircraft = "gp-extra-300s-60"
+	_check(not Fleet._fleet_runtime_proof_error(wrong_runtime_row, runtime_proof, 600, 2400).is_empty(),
+		"another aircraft cannot use the runtime-domain declaration")
+	for change: Array in [["accepted_ticks", runtime_row.expected_runtime_tick - 1],
+			["attempted_tick", runtime_row.expected_runtime_tick], ["prefix_equal_every_tick", false],
+			["terminal_equal", false], ["reference_rollback", false], ["native_rollback", false],
+			["reference_owner_retained", false], ["native_aircraft_sha256", "d".repeat(64)],
+			["native_owner_retained", false], ["native_covered_every_tick", false],
+			["native_input_reads", 0], ["rejected_stage_calls", 0], ["rejected_context_calls", 0],
+			["native_diagnostic_stage_call", 0], ["native_diagnostic_context_call", 0],
+			["trial_equal", false], ["context_equal", false], ["reference_result_empty", false],
+			["trial_sha256", "b".repeat(64)], ["context_bytes_hex", "not-hex"]]:
+		var altered: Dictionary = runtime_proof.duplicate(true)
+		altered[change[0]] = change[1]
+		_check(not Fleet._fleet_runtime_proof_error(runtime_row, altered, 600, 2400).is_empty(),
+			"runtime-domain proof rejects altered " + str(change[0]))
+	for change: Array in [["code", "unknown"], ["origin", "direct"], ["feed_factor", 1.0], ["rpm", 1.0],
+			["demand_nm", NAN], ["friction_nm", -1.0], ["prop_load_torque_nm", 2.0]]:
+		var altered: Dictionary = runtime_proof.duplicate(true)
+		altered.native_cause[change[0]] = change[1]
+		_check(not Fleet._fleet_runtime_proof_error(runtime_row, altered, 600, 2400).is_empty(),
+			"runtime-domain proof rejects invalid native branch field " + str(change[0]))
+	var wrong_reference: Dictionary = runtime_proof.duplicate(true)
+	wrong_reference.reference_identity.backend = "native"
+	_check(not Fleet._fleet_runtime_proof_error(runtime_row, wrong_reference, 600, 2400).is_empty(),
+		"runtime-domain proof rejects a native evaluator masquerading as reference")
+	var owner_fixture := FakeSession.new()
+	var original_owner: Callable = owner_fixture.sim.model.stage
+	var wrapper := func(body: Variant, continuous: Variant, at: Variant) -> Variant:
+		return original_owner.call(body, continuous, at)
+	owner_fixture.sim.model.stage = wrapper
+	var owner_expected := {stage = wrapper, loads = Callable(), rotor_momentum = Callable(),
+		block_loads = Callable(), block_derivative = Callable(), stage_rotor_momentum = Callable()}
+	_check(Fleet._fleet_backend_owner_error(owner_fixture, "gdscript_reference", {backend = "gdscript_reference"},
+		owner_expected, null, null).is_empty(), "reference wrapper retains its verified owner")
+	owner_fixture.sim.model.stage = original_owner
+	_check(not Fleet._fleet_backend_owner_error(owner_fixture, "gdscript_reference", {backend = "gdscript_reference"},
+		owner_expected, null, null).is_empty(), "replacing the reference wrapper fails ownership")
+	owner_fixture.sim.model.stage = wrapper
+	owner_fixture.actual = "native"
+	_check(not Fleet._fleet_backend_owner_error(owner_fixture, "gdscript_reference", {backend = "gdscript_reference"},
+		owner_expected, null, null).is_empty(), "reference identity changing after rejection fails ownership")
+	owner_fixture.free()
+	for change: Array in [["demand_nm", -0.01], ["demand_nm", -0.009], ["demand_nm", NAN],
+			["rotor_inertia_kg_m2", 0.0], ["rotor_inertia_kg_m2", -1.0], ["prop_load_torque_nm", 0.03]]:
+		var altered: Dictionary = runtime_proof.duplicate(true)
+		altered.reference_cause[change[0]] = change[1]
+		altered.native_cause[change[0]] = change[1]
+		if change[0] == "demand_nm" and is_finite(change[1]):
+			altered.reference_cause.prop_load_torque_nm = -change[1]
+			altered.native_cause.prop_load_torque_nm = -change[1]
+		_check(not Fleet._fleet_runtime_proof_error(runtime_row, altered, 600, 2400).is_empty(),
+			"runtime-domain proof rejects identical but invalid boundary value " + str(change[0]))
+	for problem: String in ["body shape", "continuous shape", "nonfinite body", "degenerate attitude", "wrong mode", "wrong stage time", "context shape", "nonfinite input", "wrong tick time", "wrong flags"]:
+		var altered: Dictionary = runtime_proof.duplicate(true)
+		var trial: Array = bytes_to_var(runtime_proof.trial_bytes_hex.hex_decode())
+		var context: Array = bytes_to_var(runtime_proof.context_bytes_hex.hex_decode())
+		match problem:
+			"body shape": trial[0].resize(12)
+			"continuous shape": trial[1].resize(21)
+			"nonfinite body": trial[0][0] = NAN
+			"degenerate attitude": trial[0][6] = 0.0
+			"wrong mode": trial[1][18] = 0.0
+			"wrong stage time": trial[2] += 1.0
+			"context shape": context[0].resize(13)
+			"nonfinite input": context[1][0] = INF
+			"wrong tick time": context[3] += 1.0
+			"wrong flags": context[6] = true
+		_replace_runtime_payload(altered, "trial", trial)
+		_replace_runtime_payload(altered, "context", context)
+		_check(not Fleet._fleet_runtime_proof_error(runtime_row, altered, 600, 2400).is_empty(),
+			"runtime-domain proof rejects identically rehashed " + problem)
+	var route := RuntimeRouteFleet.new()
+	route._report = {fleet = [], components = {}}
+	route._fleet_case(runtime_row, 1, 1)
+	_check(route.normal_calls == 1 and route.runtime_calls == 0,
+		"a horizon ending before the known boundary remains an ordinary flight")
+	route._fleet_case(runtime_row, runtime_row.expected_runtime_tick - 1, 1)
+	_check(route.normal_calls == 2 and route.runtime_calls == 0,
+		"a horizon ending exactly at the last accepted tick remains an ordinary flight")
+	route._fleet_case(runtime_row, 600, 2400)
+	_check(route.normal_calls == 2 and route.runtime_calls == 1,
+		"a horizon beyond the known boundary requires the specific runtime-domain proof")
+	route.free()
 	for id: String in Catalog.flyable_ids():
 		_check(not Fleet._fleet_selected_rows(declared, id, "", "").is_empty(), "catalog aircraft is declared: " + id)
 	for id: String in Catalog.airplane_flyable_ids():
@@ -355,6 +524,24 @@ func _initialize() -> void:
 		_check(fleet._failures.is_empty(), "actual paired reset refusals leave no policy errors")
 	else:
 		print("NK3 fleet policy: native reset checks skipped (verified library unavailable)")
+	if OS.get_cmdline_user_args().has("--require-runtime-domain"):
+		var can_probe := native_available and ClassDB.class_has_method("OpenRCNativeKernel", "set_stage_rejection_diagnostics") \
+			and ClassDB.class_has_method("OpenRCNativeKernel", "stage_rejection_diagnostic")
+		_check(can_probe, "verified native rejection diagnostic is available")
+		if can_probe:
+			fleet._report = {fleet = [], components = {}}
+			fleet._failures = PackedStringArray()
+			var native_proofs := 0
+			for row: Dictionary in runtime_rows:
+				fleet._fleet_runtime_case(row, 600, 2400)
+				var result: Dictionary = fleet._report.fleet.back()
+				var accepted: bool = result.status == "runtime-domain-refused" and not result.reference.complete \
+					and not result.native.complete and Fleet._fleet_runtime_proof_error(row, result.runtime_domain, 600, 2400).is_empty()
+				_check(accepted, "actual native/reference reverse-domain proof: %s/soft=%s (%s)" \
+					% [row.aircraft, row.soft_hull, result.reason])
+				if accepted: native_proofs += 1
+			if native_proofs == 4 and fleet._failures.is_empty() and _failures == 0:
+				print("NK3_RUNTIME_DOMAIN_NATIVE verdict=pass")
 	var filtered := Fleet._fleet_selected_rows(declared, Catalog.DEFAULT_ID, "calm", "on")
 	_check(not filtered.is_empty() and filtered.size() < declared.size(), "filters select a scoped matrix")
 	for row: Dictionary in filtered:
