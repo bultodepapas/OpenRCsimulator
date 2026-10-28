@@ -90,7 +90,7 @@ def main():
     x = uv.x
     uv.x += 0.05
     expect_rejection(lambda: LIB["export_skin"](destination), "UVs")
-    uv.x = x
+    obj.data.uv_layers.active.data[0].uv.x = x
     assert destination.read_bytes() == b"keep this file"
 
     # An oversized image must be rejected before it is written to the package.
@@ -100,7 +100,24 @@ def main():
     expect_rejection(lambda: LIB["export_skin"](destination), "dimensions")
     image_node.image = image
     bpy.data.images.remove(oversized)
+    image_node.extension = "CLIP"
+    expect_rejection(lambda: LIB["export_skin"](destination), "original UV mapping")
+    image_node.extension = "REPEAT"
+    uv_node = nodes.new("ShaderNodeUVMap")
+    links.new(uv_node.outputs["UV"], image_node.inputs["Vector"])
+    expect_rejection(lambda: LIB["export_skin"](destination), "original UV mapping")
+    nodes.remove(uv_node)
     assert destination.read_bytes() == b"keep this file"
+
+    # The equivalent of Image > Save updates a packed dirty image. Saving and
+    # reopening the .blend must retain the paint for later editing.
+    image.pack()
+    saved = OUT / "reopened-edit.blend"
+    bpy.ops.wm.save_as_mainfile(filepath=str(saved), compress=True)
+    bpy.ops.wm.open_mainfile(filepath=str(saved))
+    reopened = bpy.data.images["x8_abisal_base_color"]
+    assert tuple(reopened.size) == (2048, 2048) and reopened.packed_file is not None
+    assert all(abs(a - b) <= 0.01 for a, b in zip(reopened.pixels[:4], (0.9, 0.2, 0.05, 1.0)))
     print(f"OpenRC skin starter checks passed; painted package: {package}")
 
 

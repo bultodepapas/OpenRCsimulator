@@ -111,6 +111,14 @@ Dame rutas o enlaces de descarga de los archivos reales: .orskin, .blend editabl
         </ol>
         <p>Si se rechaza el archivo, lee el mensaje y revisa que sea un <code>.orskin</code> exportado con el kit del X8 y para la versión actual del modelo. Para otro avión o una versión distinta, descarga un kit nuevo y vuelve a exportar. Un rechazo no cambia la pintura seleccionada. Se pueden instalar hasta 32 pinturas personalizadas para el X8; importar dos veces el mismo archivo no crea otra entrada.</p>
         <p>Límites de importación: <code>.orskin</code> de hasta 32 MiB; PNG de hasta 16 MiB y 4096 × 4096 cada uno; máximo 16.777.216 píxeles decodificados sumando todas las imágenes y hasta nueve materiales/texturas. Una imagen de 4096 × 4096 consume todo el límite de píxeles. Comienza con una imagen de 2048 × 2048.</p>
+        <h3>Si necesitas liberar espacio</h3>
+        <p>Cierra OpenRC y abre la carpeta de copias instaladas del X8. En Linux, si configuraste <code>XDG_DATA_HOME</code>, úsalo en lugar de <code>~/.local/share</code>.</p>
+        <ul>
+          <li>Windows: <code>%APPDATA%\Godot\app_userdata\OpenRC Simulator\skins\skywalker-x8</code></li>
+          <li>macOS: <code>~/Library/Application Support/Godot/app_userdata/OpenRC Simulator/skins/skywalker-x8</code></li>
+          <li>Linux: <code>~/.local/share/godot/app_userdata/OpenRC Simulator/skins/skywalker-x8</code></li>
+        </ul>
+        <p>Las copias instaladas se llaman <code>custom-&lt;hash&gt;.orskin</code>, no tienen el nombre del diseño. Para identificar una, cópiala a otra carpeta, cambia <strong>la copia</strong> a extensión <code>.zip</code> y abre su <code>manifest.json</code> en un editor de texto: el campo <code>label</code> indica el nombre. Elimina solo las copias instaladas que no quieras de la carpeta del X8. Conserva en otro lugar tus exportaciones originales y proyectos editables. Abre OpenRC de nuevo y elige una pintura disponible.</p>
         <p>Conserva el <code>.blend</code>, las imágenes y sus referencias para futuras ediciones. Antes de compartir el archivo de skin, la plantilla del avión o arte de terceros, comprueba los permisos aplicables.</p>
       </article>
     </section>
@@ -122,7 +130,7 @@ Dame rutas o enlaces de descarga de los archivos reales: .orskin, .blend editabl
         <p class="intro">The simulator loads an <code>.orskin</code> file. A skin changes the aircraft's appearance, not its shape or flight behavior.</p>
         <h3>1. Get the kit</h3>
         <ol>
-          <li>In OpenRC open <strong>Home → Aircraft → Skywalker X8 → Choose paint → Create a skin</strong>. In Skin tools select <strong>Save Blender template…</strong> and save <code>skywalker-x8.zip</code>.</li>
+          <li>In OpenRC open <strong>Home → Aircraft → Skywalker X8 → Choose paint → Create a skin</strong>. In the dialog select <strong>Save Blender template…</strong> and save <code>skywalker-x8.zip</code>.</li>
           <li>Extract the ZIP into its own folder. It contains <code>Skywalker-X8.blend</code>, <code>Export OpenRC Skin.py</code>, <code>README.txt</code> and this <code>guide.html</code>. Keep a clean copy.</li>
           <li>Install <a href="https://www.blender.org/download/">free Blender from its official site</a>. The template was saved with Blender 5.2.2; use that version or a compatible newer version. Downloads and AI services need internet; this guide does not.</li>
         </ol>
@@ -167,11 +175,19 @@ Give me the actual .orskin, editable .blend and preview file paths or download l
         <h3>5. Load the paint</h3>
         <ol>
           <li>In OpenRC select <strong>Home → Aircraft → Skywalker X8 → Choose paint → Load new skin…</strong>.</li>
-          <li>In Skin tools choose <strong>Load new skin…</strong> and select the <code>.orskin</code>. A successful import selects it automatically. Inspect it on Home and in flight.</li>
+          <li>In the dialog choose <strong>Load new skin…</strong> and select the <code>.orskin</code>. A successful import selects it automatically. Inspect it on Home and in flight.</li>
           <li>Imported skins and the selection persist across restarts. To restore the original appearance, select a built-in paint in the gallery.</li>
         </ol>
         <p>If import fails, read the message and check that the file is an <code>.orskin</code> exported from the X8 kit for the current model version. For another aircraft or version, download a fresh kit and export again. Rejection leaves the current selection unchanged. Up to 32 custom paints may be installed for the X8; importing identical bytes twice does not make a second entry.</p>
         <p>Import limits: up to 32 MiB for the <code>.orskin</code>; up to 16 MiB and 4096 × 4096 per PNG; at most 16,777,216 decoded pixels across all images and nine materials/textures. One 4096 × 4096 image uses the full pixel allowance. Start with one 2048 × 2048 image.</p>
+        <h3>If you need to make space</h3>
+        <p>Close OpenRC and open the X8 installed-copy folder below. On Linux, use <code>XDG_DATA_HOME</code> instead of <code>~/.local/share</code> if you set it.</p>
+        <ul>
+          <li>Windows: <code>%APPDATA%\Godot\app_userdata\OpenRC Simulator\skins\skywalker-x8</code></li>
+          <li>macOS: <code>~/Library/Application Support/Godot/app_userdata/OpenRC Simulator/skins/skywalker-x8</code></li>
+          <li>Linux: <code>~/.local/share/godot/app_userdata/OpenRC Simulator/skins/skywalker-x8</code></li>
+        </ul>
+        <p>Installed copies are named <code>custom-&lt;hash&gt;.orskin</code>, not after the design. To identify one, copy it elsewhere, rename <strong>the copy</strong> to <code>.zip</code> and open its <code>manifest.json</code> in a text editor: the <code>label</code> field gives the name. Remove only unwanted installed copies from the X8 folder. Keep your original exports and editable projects elsewhere. Reopen OpenRC and choose an available paint.</p>
         <p>Keep the <code>.blend</code>, images and references for future edits. Check the applicable permissions before sharing the skin file, aircraft template or third-party artwork.</p>
       </article>
     </section>

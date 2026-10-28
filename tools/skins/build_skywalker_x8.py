@@ -25,8 +25,10 @@ README = """OpenRC Skywalker X8 skin starter
 1. Extract this ZIP and open Skywalker-X8.blend in Blender 5.2.2.
 2. Paint the existing x8_livery Base Color image in Texture Paint, or change
    a material's Principled Base Color. Keep the model, UVs and slots unchanged.
-3. Save your .blend. Pack external images with File > External Data > Pack
-   Resources to keep them with your project.
+3. In an Image Editor choose x8_abisal_base_color and use Image > Save to
+   update its packed paint. Pack any newly linked images with File > External
+   Data > Pack Resources, then save your .blend under a new name. Reopen it
+   to check that the paint was retained.
 4. Switch to Scripting. In the Text Editor select Export OpenRC Skin.py and
    click Run Script. Choose a filename ending in .orskin and save it. The
    filename becomes the name shown in OpenRC.

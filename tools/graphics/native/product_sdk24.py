@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 from contextlib import contextmanager
 from datetime import datetime
+import json
 import os
 from pathlib import Path
 import re
@@ -47,6 +48,7 @@ AMD_NOTICES = {
     "AMD-FidelityFX-kit-LICENSE.md": "Kits/FidelityFX/docs/license.md",
     "AMD-FSR-SDK-2.4-third-party.md": "3rdpartynotice.md",
 }
+PACKAGER_IMPORTS = {name: product.sha(HERE / name) for name in ("product.py", "product_sdk24.py")}
 
 
 def _safe_file(path: Path) -> Path:
@@ -99,7 +101,8 @@ def _verify_pair_metadata(editor: dict, template: dict, engine: Path, *, current
                 "platform": "windows", "graphics_api": "vulkan", "frame_generation_enabled": False,
                 "sources": _expected_sources()}
     for label, row in (("editor", editor), ("template_release", template)):
-        if any(row.get(key) != value for key, value in expected.items()):
+        if (row.get("experimental") is not True or row.get("frame_generation_enabled") is not False or
+                any(row.get(key) != value for key, value in expected.items())):
             raise RuntimeError(f"{label} is not a pinned SDK 2.4 Windows/Vulkan candidate")
         if not isinstance(row.get("version"), str) or not row["version"]:
             raise RuntimeError(f"{label} lacks an engine version")
@@ -140,14 +143,18 @@ def _verify_pair_metadata(editor: dict, template: dict, engine: Path, *, current
         raise RuntimeError("SDK 2.4 header hashes differ from the intake pins")
     required_source = sdk_build.patched_paths(frozen) | set(sdk_build.ADAPTER_FILES.values())
     required_source.update("thirdparty/amd-fsr-sdk24/" + name for name in header_pins)
+    for name, target in sdk_build.ADAPTER_FILES.items():
+        if sources.get(target) != integration_map.get(name):
+            raise RuntimeError(f"Staged adapter source differs from its integration pin: {name}")
     for name, digest in header_pins.items():
         if sources.get("thirdparty/amd-fsr-sdk24/" + name) != digest:
             raise RuntimeError(f"Engine source lacks the pinned SDK header: {name}")
     for name, digest in streamline.items():
         if not _plain_name(name) or sources.get("thirdparty/streamline/include/" + name) != digest:
             raise RuntimeError(f"Streamline header identity differs: {name}")
-    if not required_source.issubset(sources):
-        raise RuntimeError("SDK 2.4 engine source receipt omits patched or copied inputs")
+    required_source.update("thirdparty/streamline/include/" + name for name in streamline)
+    if set(sources) != required_source:
+        raise RuntimeError("SDK 2.4 engine source receipt does not cover the exact patched/copied inputs")
     for name, path in AMD_DLLS.items():
         if runtime.get(name) != sdk24.PINNED_FILES[path][0]:
             raise RuntimeError(f"SDK 2.4 runtime is not pinned: {name}")
@@ -228,7 +235,7 @@ def candidate_launchers() -> dict[str, bytes]:
 
 
 @contextmanager
-def candidate_profile(engine: Path, editor_path: Path, template_path: Path, output: Path):
+def candidate_profile(engine: Path, editor_path: Path, template_path: Path, output: Path, snapshot: Path):
     def verify():
         return verify_engine_pair(editor_path, template_path, engine)
 
@@ -244,19 +251,39 @@ def candidate_profile(engine: Path, editor_path: Path, template_path: Path, outp
         return [f"tools/graphics/native/{name}" for name in editor["integration"]] + [
             "tools/graphics/native/product.py", "tools/graphics/native/product_sdk24.py"]
 
-    values = {"ENGINE": engine / "bin", "SNAPSHOT": SNAPSHOT, "OUTPUT": output, "CHECKS": CHECKS,
+    values = {"ENGINE": engine / "bin", "SNAPSHOT": snapshot, "OUTPUT": output, "CHECKS": CHECKS,
               "SNAPSHOT_FORMAT": SNAPSHOT_FORMAT, "PACKAGE_FORMAT": PACKAGE_FORMAT,
               "verify_engine": verify, "engine_receipt_path": resolve_receipt,
               "additional_snapshot_files": snapshot_sources, "launcher_files": candidate_launchers,
               "DEADLINE": time.monotonic() + 1200}
     previous = {name: getattr(product, name) for name in values}
     try:
+        _verify_packager_sources()
         for name, value in values.items():
             setattr(product, name, value)
         yield
     finally:
         for name, value in previous.items():
             setattr(product, name, value)
+
+
+def _verify_packager_sources() -> None:
+    for name, digest in PACKAGER_IMPORTS.items():
+        path = HERE / name
+        if not path.is_file() or product.sha(path) != digest:
+            raise RuntimeError(f"Packaging source changed after import: {name}")
+
+
+def _snapshot_path(receipt: dict) -> Path:
+    binding = receipt.get("export_binding")
+    if not isinstance(binding, dict) or not isinstance(binding.get("snapshot_path"), str):
+        raise RuntimeError("Candidate receipt lacks a source snapshot path")
+    path = Path(binding["snapshot_path"])
+    if not path.is_absolute() or path.resolve().parent != SNAPSHOT.resolve() or not path.name.startswith("source-"):
+        raise RuntimeError("Candidate snapshot is outside its isolated root")
+    if product.is_link(path) or product.is_link(path.parent):
+        raise RuntimeError("Candidate snapshot path is linked")
+    return path.resolve()
 
 
 def _checked_report(path_value: object, *, export: bool, engine: Path, snapshot: Path) -> tuple[Path, dict]:
@@ -304,6 +331,7 @@ def _checked_report(path_value: object, *, export: bool, engine: Path, snapshot:
 
 
 def verify_candidate_output(output: Path, engine: Path, editor: dict, template: dict) -> dict:
+    _verify_packager_sources()
     receipt = product.verify_tree(output, product.PACKAGE_RECEIPT, PACKAGE_FORMAT)
     candidate_editor = product.load_json(output / "openrc-editor-build.json")
     candidate_template = product.load_json(output / "openrc-template_release-build.json")
@@ -326,15 +354,19 @@ def verify_candidate_output(output: Path, engine: Path, editor: dict, template: 
         path = license_dir / name
         if not path.is_file() or product.sha(path) != digest:
             raise RuntimeError(f"Candidate license or notice differs: {name}")
-    snapshot = product.verify_tree(SNAPSHOT, product.SNAPSHOT_RECEIPT, SNAPSHOT_FORMAT, ignore_cache=True)
+    snapshot_path = _snapshot_path(receipt)
+    snapshot = product.verify_tree(snapshot_path, product.SNAPSHOT_RECEIPT, SNAPSHOT_FORMAT, ignore_cache=True)
     packaged_snapshot = output / product.SNAPSHOT_RECEIPT
-    if (not packaged_snapshot.is_file() or product.sha(packaged_snapshot) != product.sha(SNAPSHOT / product.SNAPSHOT_RECEIPT) or
+    if (not packaged_snapshot.is_file() or product.sha(packaged_snapshot) != product.sha(snapshot_path / product.SNAPSHOT_RECEIPT) or
             receipt.get("snapshot_sha256") != product.sha(packaged_snapshot) or
             receipt.get("build_identity") != snapshot.get("build_identity")):
         raise RuntimeError("Candidate and source snapshot identities differ")
     for name, digest in editor["integration"].items():
         if snapshot["files"].get(f"tools/graphics/native/{name}") != digest:
             raise RuntimeError(f"Snapshot does not contain the build integration source: {name}")
+    for name, digest in PACKAGER_IMPORTS.items():
+        if snapshot["files"].get(f"tools/graphics/native/{name}") != digest:
+            raise RuntimeError(f"Snapshot does not contain the executing packaging source: {name}")
     if (receipt.get("godot_commit") != native_build.COMMIT or receipt.get("sources") != editor["sources"] or
             receipt.get("integration") != editor["integration"] or receipt.get("runtime") != editor["runtime"] or
             receipt.get("editor_sha256") != editor["executable_sha256"] or
@@ -343,8 +375,8 @@ def verify_candidate_output(output: Path, engine: Path, editor: dict, template: 
     ground = output / "openrc_ground_vehicle.dll"
     if not ground.is_file() or product.sha(ground) != snapshot["files"].get("app/native/ground_vehicle/openrc_ground_vehicle.dll"):
         raise RuntimeError("Candidate ground-vehicle sidecar differs from source snapshot")
-    import_path, _ = _checked_report(receipt.get("import_report"), export=False, engine=engine, snapshot=SNAPSHOT)
-    export_path, _ = _checked_report(receipt.get("export_report"), export=True, engine=engine, snapshot=SNAPSHOT)
+    import_path, _ = _checked_report(receipt.get("import_report"), export=False, engine=engine, snapshot=snapshot_path)
+    export_path, _ = _checked_report(receipt.get("export_report"), export=True, engine=engine, snapshot=snapshot_path)
     imported = snapshot.get("import", {})
     if (imported.get("report") != str(import_path) or imported.get("report_sha256") != product.sha(import_path) or
             imported.get("editor_sha256") != editor["executable_sha256"]):
@@ -352,7 +384,7 @@ def verify_candidate_output(output: Path, engine: Path, editor: dict, template: 
     pack = output / "OpenRC Simulator.pck"
     if not pack.is_file() or not pack.stat().st_size:
         raise RuntimeError("Candidate exported PCK is missing or empty")
-    expected_binding = {"pck_sha256": product.sha(pack), "snapshot_sha256": product.sha(packaged_snapshot),
+    expected_binding = {"snapshot_path": str(snapshot_path), "pck_sha256": product.sha(pack), "snapshot_sha256": product.sha(packaged_snapshot),
                         "import_report_sha256": product.sha(import_path), "export_report_sha256": product.sha(export_path)}
     if receipt.get("export_binding") != expected_binding:
         raise RuntimeError("Candidate PCK, source snapshot and checked reports are not bound")
@@ -364,14 +396,14 @@ def _bind_export(output: Path) -> None:
     receipt = product.load_json(path)
     if "export_binding" in receipt:
         raise RuntimeError("Unexpected existing candidate export binding")
-    import_path, _ = _checked_report(receipt.get("import_report"), export=False, engine=product.ENGINE.parent, snapshot=SNAPSHOT)
-    export_path, _ = _checked_report(receipt.get("export_report"), export=True, engine=product.ENGINE.parent, snapshot=SNAPSHOT)
-    receipt["export_binding"] = {"pck_sha256": product.sha(output / "OpenRC Simulator.pck"),
+    import_path, _ = _checked_report(receipt.get("import_report"), export=False, engine=product.ENGINE.parent, snapshot=product.SNAPSHOT)
+    export_path, _ = _checked_report(receipt.get("export_report"), export=True, engine=product.ENGINE.parent, snapshot=product.SNAPSHOT)
+    receipt["export_binding"] = {"snapshot_path": str(product.SNAPSHOT.resolve()), "pck_sha256": product.sha(output / "OpenRC Simulator.pck"),
                                  "snapshot_sha256": product.sha(output / product.SNAPSHOT_RECEIPT),
                                  "import_report_sha256": product.sha(import_path), "export_report_sha256": product.sha(export_path)}
     temporary = output / ("candidate-receipt-" + uuid.uuid4().hex + ".tmp")
     try:
-        temporary.write_text(__import__("json").dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        temporary.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         temporary.replace(path)
     finally:
         temporary.unlink(missing_ok=True)
@@ -381,7 +413,12 @@ def package_candidate(engine: Path, editor_path: Path, template_path: Path) -> d
     editor, template, _ = verify_engine_pair(editor_path, template_path, engine)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     pending = OUTPUT.parent / ("fsr24-candidate-pending-" + uuid.uuid4().hex)
-    with candidate_profile(engine, editor_path, template_path, pending):
+    snapshot_path = SNAPSHOT / ("source-" + uuid.uuid4().hex)
+    with candidate_profile(engine, editor_path, template_path, pending, snapshot_path):
+        previous_hash = None
+        if OUTPUT.exists():
+            verify_candidate_output(OUTPUT, engine, editor, template)
+            previous_hash = product.sha(OUTPUT / product.PACKAGE_RECEIPT)
         snapshot = product.prepare_snapshot()
         product.package_product(snapshot)
         _bind_export(pending)
@@ -389,7 +426,11 @@ def package_candidate(engine: Path, editor_path: Path, template_path: Path) -> d
         receipt = verify_candidate_output(pending, engine, editor, template)
         if OUTPUT.exists():
             # Never replace an unreceipted or changed previous candidate.
+            if previous_hash is None or product.sha(OUTPUT / product.PACKAGE_RECEIPT) != previous_hash:
+                raise RuntimeError("Existing candidate changed during export")
             verify_candidate_output(OUTPUT, engine, editor, template)
+        elif previous_hash is not None:
+            raise RuntimeError("Existing candidate disappeared during export")
         product.replace_tree(pending, OUTPUT)
     print(f"Packaged unqualified SDK 2.4 candidate: {OUTPUT}")
     return receipt
@@ -413,7 +454,8 @@ def main() -> int:
     if args.package:
         package_candidate(engine, editor_path, template_path)
     elif args.verify:
-        with candidate_profile(engine, editor_path, template_path, OUTPUT):
+        snapshot_path = _snapshot_path(product.load_json(OUTPUT / product.PACKAGE_RECEIPT))
+        with candidate_profile(engine, editor_path, template_path, OUTPUT, snapshot_path):
             verify_candidate_output(OUTPUT, engine, editor, template)
         print(f"Verified unqualified SDK 2.4 candidate: {OUTPUT}")
     else:

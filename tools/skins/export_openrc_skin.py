@@ -51,8 +51,10 @@ def mesh_signature(obj):
         for index in face.vertices:
             h.update(struct.pack("<I", index))
     h.update(struct.pack("<I", len(mesh.uv_layers)))
+    h.update(struct.pack("<i", mesh.uv_layers.active_index))
     for layer in mesh.uv_layers:
         _bytes(h, layer.name)
+        h.update(struct.pack("<?", layer.active_render))
         for uv in layer.data:
             h.update(struct.pack("<2f", *uv.uv))
     return h.hexdigest()
@@ -60,6 +62,10 @@ def mesh_signature(obj):
 
 def mesh_signatures():
     result = {}
+    for obj in bpy.data.objects:
+        if obj.type == "MESH":
+            obj.update_from_editmode()
+    bpy.context.view_layer.update()
     for obj in bpy.data.objects:
         if obj.type != "MESH":
             continue
@@ -130,6 +136,16 @@ def _material_entry(identity, mat, users, image_number):
         node = link.from_node
         if node.type != "TEX_IMAGE" or link.from_socket != node.outputs.get("Color") or node.image is None:
             raise ValueError(f"{identity}: bake procedural or mixed Base Color to one Image Texture connected directly to Principled Base Color.")
+        mapping = node.texture_mapping
+        if (node.inputs["Vector"].is_linked or node.extension != "REPEAT" or
+                node.interpolation != "Linear" or node.projection != "FLAT" or
+                tuple(mapping.translation) != (0.0, 0.0, 0.0) or
+                tuple(mapping.rotation) != (0.0, 0.0, 0.0) or
+                tuple(mapping.scale) != (1.0, 1.0, 1.0) or
+                mapping.use_min or mapping.use_max or
+                (mapping.mapping_x, mapping.mapping_y, mapping.mapping_z) != ("X", "Y", "Z") or
+                mapping.mapping != "FLAT" or mapping.vector_type != "POINT"):
+            raise ValueError(f"{identity}: use the original UV mapping and the image's default Repeat, Linear and Flat settings; bake other mappings to the original UVs.")
         image = node.image
         # Packed images are loaded lazily after reopening the .blend.
         _ = image.size[:]
@@ -207,6 +223,8 @@ def export_skin(output, label=None):
         manifest_bytes = json.dumps(manifest, ensure_ascii=True, indent=2).encode("utf-8") + b"\n"
         if len(manifest_bytes) > 64 * 1024:
             raise ValueError("The skin manifest exceeds 64 KiB.")
+        if len(manifest_bytes) + sum(len(data) for data in textures.values()) > MAX_ARCHIVE_BYTES:
+            raise ValueError("The expanded skin package exceeds 32 MiB; reduce the paint images.")
         # Build next to the destination and atomically replace it only after validation.
         fd, temporary = tempfile.mkstemp(prefix=".openrc-skin-", suffix=".tmp", dir=str(output.parent))
         os.close(fd)

@@ -4,7 +4,7 @@ The current-source skin kit supports **Skywalker X8** (`skywalker-x8`). A skin c
 
 ## 1. Get the starter kit
 
-1. On Home choose **Aircraft → Skywalker X8 → Choose paint → Create a skin**. In **Skin tools**, select **Save Blender template…** and save `skywalker-x8.zip`.
+1. On Home choose **Aircraft → Skywalker X8 → Choose paint → Create a skin**. In the dialog, select **Save Blender template…** and save `skywalker-x8.zip`.
 2. Extract the ZIP into its own folder. It contains `Skywalker-X8.blend`, `Export OpenRC Skin.py`, `README.txt` and the offline `guide.html`. The template has the aircraft and its existing 2048 × 2048 paint image. Keep a copy of the unedited kit.
 3. Select **Open skin guide** in the same dialog for the offline, bilingual version of this tutorial and editable copy buttons for the AI prompt.
 4. Install [Blender](https://www.blender.org/download/) on your computer. The template was saved with Blender 5.2.2; use that version or a compatible newer version. The download and AI services need an internet connection; the guide itself does not.
@@ -58,8 +58,18 @@ When exporting an edited project, replace `Skywalker-X8.blend` with its path. If
 
 ## 5. Load and fly
 
-In OpenRC select **Aircraft → Skywalker X8 → Choose paint → Load new skin…**. In **Skin tools**, select **Load new skin…** and choose the exported `.orskin`. The new paint is selected automatically on a successful import; inspect it on Home and in flight. Imported skins and the selected paint are retained across restarts. To return to the original appearance, choose a built-in paint in the gallery.
+In OpenRC select **Aircraft → Skywalker X8 → Choose paint → Load new skin…**. In the dialog, select **Load new skin…** and choose the exported `.orskin`. The new paint is selected automatically on a successful import; inspect it on Home and in flight. Imported skins and the selected paint are retained across restarts. To return to the original appearance, choose a built-in paint in the gallery.
 
 If the simulator rejects the file, read its message. Check that it is a real `.orskin`, was made from the X8 kit for the current model, and meets the limits above. A skin for another aircraft or a different model version cannot be used here: download a fresh kit and export again. A rejected import leaves the current selection unchanged. If a design looks incomplete, inspect the saved image and UV placement in Blender, export again and load the new file. Up to 32 custom paints may be installed for the X8; loading the same bytes again does not create another entry.
+
+To make space, close OpenRC and find its installed copies in the following folder. Linux uses `$XDG_DATA_HOME` instead of `~/.local/share` if you have set it.
+
+| System | X8 custom-paint folder |
+| --- | --- |
+| Windows | `%APPDATA%\Godot\app_userdata\OpenRC Simulator\skins\skywalker-x8` |
+| macOS | `~/Library/Application Support/Godot/app_userdata/OpenRC Simulator/skins/skywalker-x8` |
+| Linux | `~/.local/share/godot/app_userdata/OpenRC Simulator/skins/skywalker-x8` |
+
+These installed copies have names such as `custom-<hash>.orskin`, not your original design name. To identify one, copy it elsewhere, rename **the copy** to `.zip`, and read its `manifest.json` field `label` in a text editor. Remove only the unwanted installed `.orskin` files from the X8 folder; keep your original exports and editable projects elsewhere. Reopen OpenRC and select an available paint. [Godot's data-path documentation](https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html) describes the platform locations.
 
 Keep the `.blend`, source images and references for future changes. Sharing the `.orskin` is separate from sharing the aircraft template or third-party artwork: check the applicable permissions first.

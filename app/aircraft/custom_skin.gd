@@ -89,7 +89,7 @@ static func choices(aircraft_id: String) -> Array:
 	var base := _base()
 	if not base.ok: return []
 	var result := []
-	for filename in inventory.files:
+	for filename: String in inventory.files:
 		if result.size() >= INSTALLED_LIMIT: break
 		var id := ID_PREFIX + filename.trim_prefix("custom-").trim_suffix(".orskin")
 		if not is_custom_id(id): continue
@@ -151,7 +151,8 @@ static func apply(aircraft_id: String, id: String, stock_sha256: String, root: N
 				if painted == null: return _failure("Could not copy a stock material.")
 				var record: Dictionary = records[name]
 				var color: Array = record.base_color
-				painted.albedo_color = Color(float(color[0]), float(color[1]), float(color[2]), float(color[3]))
+				# glTF/Blender base-color factors are linear; Godot material colors are sRGB.
+				painted.albedo_color = Color(float(color[0]), float(color[1]), float(color[2]), float(color[3])).linear_to_srgb()
 				if float(color[3]) < 1.0: painted.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 				if record.has("texture"):
 					var texture_name := str(record.texture)
@@ -159,6 +160,8 @@ static func apply(aircraft_id: String, id: String, stock_sha256: String, root: N
 						textures[texture_name] = ImageTexture.create_from_image(inspected.images[texture_name])
 					if textures[texture_name] == null: return _failure("Could not create a custom paint texture.")
 					painted.albedo_texture = textures[texture_name]
+				else:
+					painted.albedo_texture = null
 				copies[key] = painted
 			changes.append({node = mesh_node, surface = surface, material = copies[key]})
 	for name in records:

@@ -90,6 +90,7 @@ func _run() -> void:
 	_check("custom selection saves and reloads", Preferences.save_to(pref_path, prefs) == OK and Preferences.load_from(pref_path).liveries.get(X8, "") == id)
 	var default_plane: Dictionary = Builder.build(X8)
 	var painted_plane: Dictionary = Builder.build(X8, NAN, {}, id)
+	var stock_orange := Color()
 	_check("custom build succeeds", not painted_plane.is_empty())
 	if not default_plane.is_empty() and not painted_plane.is_empty():
 		var original_mat := _material(default_plane.root, "x8_livery")
@@ -98,12 +99,26 @@ func _run() -> void:
 		if not original_mat.is_empty() and not painted_mat.is_empty():
 			var a := original_mat.material as StandardMaterial3D
 			var b := painted_mat.material as StandardMaterial3D
-			_check("paint duplicates the material and replaces only base color/texture", a != b and b.albedo_color.is_equal_approx(Color(0.25, 0.5, 0.75, 1.0)) and b.albedo_texture != a.albedo_texture and b.normal_texture == a.normal_texture and b.roughness_texture == a.roughness_texture and b.roughness == a.roughness and b.metallic == a.metallic)
+			_check("paint duplicates the material and replaces only base color/texture", a != b and b.albedo_color.is_equal_approx(Color(0.25, 0.5, 0.75, 1.0).linear_to_srgb()) and b.albedo_texture != a.albedo_texture and b.normal_texture == a.normal_texture and b.roughness_texture == a.roughness_texture and b.roughness == a.roughness and b.metallic == a.metallic)
 			_check("custom texture has mipmaps", b.albedo_texture.get_image().has_mipmaps())
 			_check("stock scene and shared mesh remain untouched", original_mat.node.get_surface_override_material(original_mat.surface) == null and original_mat.node.mesh == painted_mat.node.mesh)
 		_check("stock asset and binding identity remain unchanged", painted_plane.root.get_meta("asset_sha256") == base_hash and painted_plane.root.get_meta("livery") == default_plane.root.get_meta("livery") and painted_plane.model_manifest_sha256 == default_plane.model_manifest_sha256 and painted_plane.custom_skin.id == id)
+		stock_orange = _material(default_plane.root, "x8_orange").material.albedo_color
 	if not default_plane.is_empty(): default_plane.root.free()
 	if not painted_plane.is_empty(): painted_plane.root.free()
+	var solid_manifest := manifest.duplicate(true)
+	solid_manifest.materials[0].erase("texture")
+	solid_manifest.materials.append({name = "x8_orange", base_color = [0.95, 0.3, 0.02, 1.0]})
+	var solid_result: Dictionary = CustomPaint.import_file(_zip("solid", solid_manifest), X8)
+	_check("solid-color paint imports without a PNG", solid_result.get("ok", false))
+	if solid_result.get("ok", false):
+		var solid_plane: Dictionary = Builder.build(X8, NAN, {}, solid_result.id)
+		var solid_material := _material(solid_plane.root, "x8_livery") if not solid_plane.is_empty() else {}
+		_check("solid color clears the stock base-color texture", not solid_material.is_empty() and solid_material.material.albedo_texture == null)
+		var solid_orange := _material(solid_plane.root, "x8_orange") if not solid_plane.is_empty() else {}
+		_check("linear GLB factor round-trips to the imported Godot color", not solid_orange.is_empty() and solid_orange.material.albedo_color.is_equal_approx(stock_orange))
+		if not solid_plane.is_empty(): solid_plane.root.free()
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(CustomPaint._path_for(X8, solid_result.id)))
 
 	var bad := manifest.duplicate(true)
 	bad.aircraft_id = "f4u-corsair-250"
