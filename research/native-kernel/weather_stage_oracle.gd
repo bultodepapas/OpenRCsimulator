@@ -229,7 +229,7 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 	_report.weather_stage.scenario_coverage[label] = {states = count, finite_stages = finite_stages,
 		finite_spatial_flows = finite_spatial_flows, spatial_gradient_stages = gradient_stages}
 	if spatial:
-		_check_spatial_domain_refusals(session, config, label)
+		_check_spatial_domain_refusals(session, config, label, context.aux)
 	# True weather capability flags must never be silently cleared: a missing
 	# snapshot is refused, even if the unchanged model otherwise prepares.
 	if config.not_calm or config.turbulence or config.vertical_atmosphere or config.spatial_weather:
@@ -242,6 +242,98 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 		if not correct:
 			_failures.append("weather-stage %s accepted non-calm capabilities without a snapshot" % label)
 	session.free()
+
+
+static func _finite_stage(stage: Dictionary, derivative_size: int) -> bool:
+	if not stage.get("loads") is PackedFloat64Array or not stage.get("derivative") is PackedFloat64Array \
+			or not stage.get("rotor_momentum") is PackedFloat64Array or stage.loads.size() != 6 \
+			or stage.derivative.size() != derivative_size or stage.rotor_momentum.size() != 3:
+		return false
+	for values: PackedFloat64Array in [stage.loads, stage.derivative, stage.rotor_momentum]:
+		for value: float in values:
+			if not is_finite(value):
+				return false
+	return true
+
+
+## Prove that both the native point-flow component and the complete stage fail
+## closed when the datum, stage clock, or a station leaves the weather domain.
+## The valid datum/control proves that missing component preparation cannot
+## masquerade as a correct native refusal.
+func _check_spatial_domain_refusals(session: Node, config: Dictionary, label: String,
+		aux: PackedFloat64Array) -> void:
+	for method: String in ["prepare_aero", "prepare_propeller", "prepare_weather", "spatial_flow_component"]:
+		if not _native.has_method(method):
+			_failures.append("spatial failure control missing native component " + method)
+			return
+	var prop: Dictionary = session.aircraft.model.propulsion
+	var geometry := {}
+	for key: String in ["diameter", "offset", "ct", "cp", "rotor_inertia", "cp_min", "axis", "normal_force", "pfactor_moment"]:
+		if prop.has(key): geometry[key] = prop[key]
+	var aero: Dictionary = _native.prepare_aero(session.aircraft.model)
+	var propulsion: Dictionary = _native.prepare_propeller(geometry)
+	var weather: Dictionary = _native.prepare_weather(config.weather)
+	if not aero.get("ok", false) or not propulsion.get("ok", false) or not weather.get("ok", false):
+		_failures.append("spatial component control prepare failed for %s: %s/%s/%s" % [label,
+			str(aero.get("error", "")), str(propulsion.get("error", "")), str(weather.get("error", ""))])
+		return
+	var body: PackedFloat64Array = session.sim.state.duplicate()
+	var density: float = session.air_density(body)
+	var reference: Dictionary = WindFlow.stage_air(body, session.aircraft.model, session.environment, 0.0,
+		density, Aero.SPATIAL_CONTINUATION_LAW, false)
+	var control: Dictionary = _native.spatial_flow_component(body, 0.0, density, aux, -1, session.sim.dt())
+	var control_ok: bool = reference.get("ok", false) and control.get("ok", false) \
+		and control.get("station_delta_body") is PackedFloat64Array
+	_compare("weather_spatial_component_control", PackedFloat64Array([1.0]),
+		PackedFloat64Array([1.0 if control_ok else 0.0]), label)
+	if not control_ok:
+		_failures.append("spatial component valid control failed for " + label)
+		return
+	var domain: Dictionary = session.weather_configuration().spatial_wind.domain
+	var invalid_datum := body.duplicate()
+	invalid_datum[RB.POS] = float(domain.half_extent_north_m) + 5.0
+	var invalid_station := body.duplicate()
+	invalid_station[RB.POS] = 0.0
+	invalid_station[RB.POS + 1] = 0.0
+	invalid_station[RB.POS + 2] = -0.01
+	invalid_station[RB.ATT] = sqrt(0.5)
+	invalid_station[RB.ATT + 1] = sqrt(0.5)
+	invalid_station[RB.ATT + 2] = 0.0
+	invalid_station[RB.ATT + 3] = 0.0
+	var cases: Array[Dictionary] = [
+		{name = "datum", state = invalid_datum, time_s = 0.0},
+		{name = "clock", state = body.duplicate(), time_s = float(domain.time_horizon_s) + 1.0},
+		{name = "station", state = invalid_station, time_s = 0.0},
+	]
+	session.sim.aux = aux.duplicate()
+	for item: Dictionary in cases:
+		var state: PackedFloat64Array = item.state
+		var time_s: float = item.time_s
+		var rho: float = session.air_density(state)
+		var ref_flow: Dictionary = WindFlow.stage_air(state, session.aircraft.model, session.environment,
+			time_s, rho, Aero.SPATIAL_CONTINUATION_LAW, false)
+		var native_flow: Dictionary = _native.spatial_flow_component(state, time_s, rho, aux, -1, session.sim.dt())
+		var refused: bool = not ref_flow.get("ok", true) and not native_flow.get("ok", true) \
+			and not str(native_flow.get("error", "")).is_empty() \
+			and not native_flow.has("station_delta_body") and not native_flow.has("propulsion_air_body")
+		if item.name == "station":
+			# The datum must be valid: refusal comes from a physical station.
+			var datum: PackedFloat64Array = session.environment.wind_world(state.slice(RB.POS, RB.POS + 3), time_s)
+			for value: float in datum:
+				refused = refused and is_finite(value)
+		_compare("weather_spatial_component_refusal", PackedFloat64Array([1.0]),
+			PackedFloat64Array([1.0 if refused else 0.0]), [label, item.name])
+		if not refused:
+			_failures.append("spatial component did not fail closed for %s/%s" % [label, item.name])
+		var context_ok: bool = _native.set_tick_context(aux, session.sim.inputs,
+			Adapter.deflection_array(session._deflections(aux)), session.sim.time())
+		var values: PackedFloat64Array = session.sim.continuous.duplicate()
+		var ref_stage: Dictionary = session._wheel_evaluate(state, values, time_s)
+		var native_stage: Dictionary = _native.stage(state, values, time_s)
+		_compare_stage(ref_stage, native_stage, [label, "invalid-domain", item.name, state, time_s])
+		if not context_ok or _finite_stage(ref_stage, values.size()) or _finite_stage(native_stage, values.size()):
+			_failures.append("spatial joint stage accepted an invalid weather point for %s/%s" % [label, item.name])
+		_tally("weather_stage", "spatial_domain_refusals")
 
 
 static func _weather_tape(session: Node) -> PackedByteArray:
