@@ -19,6 +19,7 @@
 #include <initializer_list>
 #include <limits>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "nk_aero.hpp"
@@ -50,7 +51,9 @@ using godot::String;
 using godot::Variant;
 
 constexpr int kStateSize = 13;
-constexpr int kMaxContinuousSize = 64;
+// Refusal diagnostics deliberately retain bounded copies; execution is sized
+// to the validated layout and is not subject to this diagnostic limit.
+constexpr int kMaxDiagnosticContinuousSize = 64;
 constexpr int kMaxDiagnosticAuxSize = 4096;
 constexpr int kMaxDiagnosticInputSize = 256;
 constexpr const char *kBackend = "native";
@@ -822,16 +825,23 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 	if (L.rotor_index != wash_count || L.wheel_index != wash_count + source_count) {
 		return dec.fail("continuous wash layout differs from prepared wake pieces");
 	}
+	const int64_t ground_value_count = int64_t(L.wheel_index) + L.wheel_count;
+	const int64_t continuous_count = ground_value_count + (m.liquid.ready ? 2 : 0);
 	if (m.liquid.ready && (!layout_int(dec, layout, "liquid_index", L.liquid_index) ||
-			int64_t(L.liquid_index) != int64_t(L.wheel_index) + L.wheel_count || int64_t(L.liquid_index) + 2 > kMaxContinuousSize)) {
+			int64_t(L.liquid_index) != ground_value_count)) {
 		return dec.fail("invalid liquid inventory layout");
 	}
+	if (m.ground.gear.contacts.size() > static_cast<size_t>(std::numeric_limits<int>::max())) {
+		return dec.fail("gear contact count exceeds index range");
+	}
 	const int gear_count = static_cast<int>(m.ground.gear.contacts.size());
-	if (L.wheel_count < 0 || L.wheel_count > 16 ||
+	if (L.wheel_count < 0 || L.anchor_count < 0 ||
 			(L.wheel_count != 0 && L.wheel_count != gear_count) ||
-			(L.anchor_count != 0 && L.anchor_count != gear_count) || int64_t(L.anchors) + int64_t(L.anchor_count) * 3 > L.aux_size || int64_t(L.servo) + 2 >= L.aux_size ||
+			(L.anchor_count != 0 && L.anchor_count != gear_count) ||
+			int64_t(L.anchor_count) * 3 > std::numeric_limits<int>::max() ||
+			int64_t(L.anchors) + int64_t(L.anchor_count) * 3 > L.aux_size || int64_t(L.servo) + 2 >= L.aux_size ||
 			L.rpm < 0 || L.rpm >= L.aux_size || L.downwash >= L.aux_size || L.servo < 0 || L.anchors < 0 ||
-			int64_t(L.wheel_index) + L.wheel_count > kMaxContinuousSize) {
+			ground_value_count < 0 || continuous_count > std::numeric_limits<int>::max()) {
 		return dec.fail("unsupported or inconsistent layout");
 	}
 	if (config.has("weather")) {
@@ -903,6 +913,9 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::StageModel stage_;
 	bool stage_ready_ = false;
 	nk::TickContext tick_;
+	// The binding converts Godot arrays once per call, into storage sized at
+	// preparation. The same non-reentrant session owner uses both entry points.
+	mutable std::vector<nk::R> continuous_scratch_;
 	int64_t stage_calls_ = 0;
 	bool stage_timing_ = false;
 	double stage_ns_ = 0.0;
@@ -948,7 +961,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 				rejection_.rotor_inertia_kg_m2 <= 0.0 ||
 				(rejection_.origin == nk::GlowRejectionOrigin::FeedEndpoint &&
 						(!std::isfinite(rejection_.feed_factor) || (rejection_.feed_factor != 0.0 && rejection_.feed_factor != 2.0))) ||
-				body.size() != kStateSize || continuous.size() > kMaxContinuousSize ||
+				body.size() != kStateSize || continuous.size() > kMaxDiagnosticContinuousSize ||
 				continuous.size() != stage_.layout.wheel_index + stage_.layout.wheel_count ||
 				stage_.layout.rotor_index < 0 || stage_.layout.rotor_index >= continuous.size() ||
 				continuous[stage_.layout.rotor_index] != 0.0 || !std::isfinite(t) || t < 0.0 ||
@@ -1588,7 +1601,14 @@ public:
 		stage_ready_ = ok;
 		tick_ = nk::TickContext();
 		if (ok) {
-			stage_ = candidate;
+			stage_ = std::move(candidate);
+			const nk::StageLayout &layout = stage_.layout;
+			continuous_scratch_.resize(static_cast<size_t>(layout.wheel_index) + layout.wheel_count + (stage_.liquid.ready ? 2 : 0));
+			tick_.ground_anchors.resize(static_cast<size_t>(layout.anchor_count) * 3);
+			tick_.wheel_speeds.resize(static_cast<size_t>(layout.wheel_count));
+			tick_.preview_values.reserve(continuous_scratch_.size());
+		} else {
+			continuous_scratch_.clear();
 		}
 		Dictionary out;
 		out["ok"] = ok;
@@ -1639,7 +1659,7 @@ public:
 			tick_.preview_values.clear();
 			return true; // initial setup can have no committed body yet
 		}
-		if (!read_state(body) || continuous.size() > kMaxContinuousSize) return false;
+		if (!read_state(body) || continuous.size() != static_cast<int64_t>(continuous_scratch_.size())) return false;
 		for (int i = 0; i < kStateSize; ++i) tick_.preview_body[i] = body[i];
 		tick_.preview_values.assign(continuous.ptr(), continuous.ptr() + continuous.size());
 		tick_.capture_preview = capture;
@@ -1694,14 +1714,13 @@ public:
 		const auto start = stage_timing_ ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point();
 		Dictionary out;
 		if (heli_stage_ready_) out = helicopter_.heli_stage(body, continuous, t);
-		else if (stage_ready_ && read_state(body) && continuous.size() <= kMaxContinuousSize) {
+		else if (stage_ready_ && read_state(body) && continuous.size() == static_cast<int64_t>(continuous_scratch_.size())) {
 			nk::R state[kStateSize];
-			nk::R values[kMaxContinuousSize];
 			load(body, state);
 			for (int64_t i = 0; i < continuous.size(); ++i) {
-				values[i] = continuous[i];
+				continuous_scratch_[static_cast<size_t>(i)] = continuous[i];
 			}
-			const nk::StageResult result = nk::stage_evaluate(state, values, static_cast<int>(continuous.size()), t,
+			const nk::StageResult result = nk::stage_evaluate(state, continuous_scratch_.data(), static_cast<int>(continuous.size()), t,
 				stage_, tick_, rejection_diagnostics_enabled_ ? &rejection_ : nullptr);
 			if (result.shaped) {
 				// GDScript's {loads = ...} literal keys are StringNames; keep the reference's exact dictionary bytes.
@@ -1801,20 +1820,20 @@ public:
 	// FlightSession._ground_evaluation with the current tick context's aux.
 	Dictionary ground_component(const PackedFloat64Array &s, const PackedFloat64Array &values) const {
 		Dictionary out;
-		if (!stage_ready_ || !tick_.ready || !read_state(s) || values.size() > kMaxContinuousSize) {
+		if (!stage_ready_ || !tick_.ready || !read_state(s) ||
+				values.size() != int64_t(stage_.layout.wheel_index) + stage_.layout.wheel_count) {
 			out["ok"] = false;
 			return out;
 		}
 		nk::R state[kStateSize];
-		nk::R continuous[kMaxContinuousSize];
 		load(s, state);
 		for (int64_t i = 0; i < values.size(); ++i) {
-			continuous[i] = values[i];
+			continuous_scratch_[static_cast<size_t>(i)] = values[i];
 		}
 		std::array<nk::R, 6> loads{};
 		bool has_loads = false;
 		std::vector<nk::R> rates;
-		const bool ok = nk::stage_ground(state, stage_, tick_, continuous, static_cast<int>(values.size()), loads, has_loads, rates);
+		const bool ok = nk::stage_ground(state, stage_, tick_, continuous_scratch_.data(), static_cast<int>(values.size()), loads, has_loads, rates);
 		out["ok"] = ok;
 		if (ok) {
 			out["loads"] = has_loads ? pack(loads.data(), 6) : PackedFloat64Array();

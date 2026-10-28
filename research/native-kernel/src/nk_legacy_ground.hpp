@@ -34,6 +34,7 @@ inline bool legacy_ground_loads(const R *s, const GroundContext &ctx, R steer,
 	R out[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 	bool touched = false;
 	for (int index = 0; index < contact_count; ++index) {
+		const std::size_t anchor_at = static_cast<std::size_t>(index) * 3;
 		const WheelContact &contact = gear.contacts[index];
 		const R *r = contact.position;
 		if (!lake) {
@@ -63,10 +64,10 @@ inline bool legacy_ground_loads(const R *s, const GroundContext &ctx, R steer,
 				R mu_n = mu * f_up;
 				R c = c_rr;
 				if (!ctx.surfaces.values.empty()) {
-					const int i = wheel_surface_at(ctx.surfaces.values,
+					const std::size_t i = wheel_surface_at(ctx.surfaces.values,
 						s[0] + north[0] * r[0] + north[1] * r[1] + north[2] * r[2],
 						s[1] + east[0] * r[0] + east[1] * r[1] + east[2] * r[2]);
-					if (i + 5 >= static_cast<int>(ctx.surfaces.values.size())) {
+					if (i + 5 >= ctx.surfaces.values.size()) {
 						loads.assign(1, kNan);
 						return false;
 					}
@@ -76,14 +77,14 @@ inline bool legacy_ground_loads(const R *s, const GroundContext &ctx, R steer,
 				R f_long;
 				R f_lat;
 				if (anchor_count > 0) {
-					if (!anchors || anchor_count < contact_count * 3) {
+					if (!anchors || static_cast<int64_t>(anchor_count) < static_cast<int64_t>(contact_count) * 3) {
 						loads.assign(1, kNan);
 						return false;
 					}
 				}
-				if (anchor_count > 0 && anchors[index * 3 + 2] == 1.0) {
-					const R dn = s[0] + north[0] * r[0] + north[1] * r[1] + north[2] * r[2] - anchors[index * 3];
-					const R de = s[1] + east[0] * r[0] + east[1] * r[1] + east[2] * r[2] - anchors[index * 3 + 1];
+				if (anchor_count > 0 && anchors[anchor_at + 2] == 1.0) {
+					const R dn = s[0] + north[0] * r[0] + north[1] * r[1] + north[2] * r[2] - anchors[anchor_at];
+					const R de = s[1] + east[0] * r[0] + east[1] * r[1] + east[2] * r[2] - anchors[anchor_at + 1];
 					const R hold_long = breakaway * c * f_up;
 					f_long = clampf(-contact.anchor_stiffness * (dn * hn + de * he) - contact.anchor_damping * v_long,
 						-hold_long, hold_long);
@@ -163,16 +164,16 @@ inline bool legacy_ground_loads(const R *s, const GroundContext &ctx, R steer,
 			R mu_n = mu * normal_load;
 			R rolling = c_rr;
 			if (!ctx.surfaces.values.empty()) {
-				const int i = wheel_surface_at(ctx.surfaces.values, p_n, p_e);
-				if (i + 5 >= static_cast<int>(ctx.surfaces.values.size())) {
+				const std::size_t i = wheel_surface_at(ctx.surfaces.values, p_n, p_e);
+				if (i + 5 >= ctx.surfaces.values.size()) {
 					loads.assign(1, kNan);
 					return false;
 				}
 				mu_n *= ctx.surfaces.values[i + 4];
 				rolling *= ctx.surfaces.values[i + 5];
 			}
-			const int anchor_at = index * 3;
-			const bool anchored = anchor_count == contact_count * 3 && anchors && anchors[anchor_at + 2] == 1.0;
+			const bool anchored = static_cast<int64_t>(anchor_count) == static_cast<int64_t>(contact_count) * 3 &&
+				anchors && anchors[anchor_at + 2] == 1.0;
 			if (anchored) {
 				const R delta_n = p_n - anchors[anchor_at];
 				const R delta_e = p_e - anchors[anchor_at + 1];

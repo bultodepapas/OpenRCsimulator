@@ -282,6 +282,16 @@ jobs:
             --require-text 'NK3_GLOW_REJECTION_NATIVE verdict=pass' -- \
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
             --script "$PWD/research/native-kernel/test_glow_rejection.gd"
+      - name: Verify validated native admission boundaries
+        run: |
+          python3 tools/godot/run_checked.py --timeout 600 --out-dir tmp/nk3-ci/checks --label nk3-native-admission \
+            --require-text 'NK3_NATIVE_ADMISSION verdict=pass' -- \
+            "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+            --script "$PWD/research/native-kernel/test_native_admission.gd"
+          python3 tools/godot/run_checked.py --timeout 600 --out-dir tmp/nk3-ci/checks --label nk3-native-wheel-admission \
+            --require-text 'NK3_NATIVE_WHEEL_ADMISSION verdict=pass' -- \
+            "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+            --script "$PWD/research/native-kernel/test_native_wheel_admission.gd"
       - name: Require paired native runtime-domain refusal proofs
         run: |
           python3 tools/godot/run_checked.py --timeout 1200 --out-dir tmp/nk3-ci/checks --label nk3-runtime-domain \

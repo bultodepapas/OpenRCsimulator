@@ -22463,6 +22463,326 @@
      "sha256": "a9f70082c44ad6d1158b8e827714db1e3d72a6a36cb1af43dab1bc6f007f4d75"
     },
     "follow_up": "Optional native rejection diagnostics and a separately counted runtime-domain proof are being implemented. These results qualify only the recorded source and binary; they do not cover subsequent edits."
+   },
+   "native_runtime_domain_qualification": {
+    "status": "source and bounded refusal diagnostics verified; full fleet and final delivery still pending",
+    "source_commit": "af33fd7a3625911119a7fd758ee8b558a6581c9e",
+    "fixture_only_follow_up_commit": "1c33c0914",
+    "native_source_sha256": "c0777e83d122be7f1bd2dfba1f58d0e41c0eb287ecfbd37bd680912d3f03115e",
+    "binary_sha256": "74ce8abcb021d0687024b887c59866f1d10649d9b860a69078a45564b644dbf7",
+    "mutant_binary_sha256": "7957d0dd1fbe4fa799bd45991a887192e53b5321431c931883b0ba0478ffb2c6",
+    "behavior": "Opt-in bounded diagnostic captures the actual C++ stopped-glow reverse-drive branch, trial and tick context. Normal stage output, floating-point order, equations and default diagnostic-disabled behavior remain unchanged.",
+    "installer_gates": {
+     "electric": {
+      "compared": 32010,
+      "results": "electric-20261028T223838394431Z.json",
+      "results_sha256": "07d5ad494a9d6910dfc00ee620f8c42fc7714b70c0640b96e256e7d8f3ca8742",
+      "verdict": "pass"
+     },
+     "propeller": {
+      "compared": 41958,
+      "results": "propeller-20261028T223838398220Z.json",
+      "results_sha256": "cc56308e455698443095a844369bd2465409b1833ac7e719e5fe90a7755201f5",
+      "verdict": "pass"
+     },
+     "liquid": {
+      "compared": 15572,
+      "results": "liquid-20261028T223847476477Z.json",
+      "results_sha256": "e25777e87a927eb6847bcf75b907cfacc26ea1b5738fe9667c68e2e99ca8b6bb",
+      "verdict": "pass"
+     },
+     "stage_oracle": {
+      "compared": 128664,
+      "results": "stage-20261028T223838405343Z.json",
+      "results_sha256": "01e28fa12203cfc1a00928dcec34db378c77d4cc40cdcf55cdd18bc890cd95d3",
+      "verdict": "pass"
+     },
+     "electric_stage": {
+      "compared": 66988,
+      "results": "electric-stage-20261028T223847456059Z.json",
+      "results_sha256": "0169b6180e0a9a49b32ae3424beb23961f87ec2942953ce049cf527f7fbdf273",
+      "verdict": "pass"
+     },
+     "glow": {
+      "compared": 49606,
+      "results": "glow-20261028T223935643292Z.json",
+      "results_sha256": "40e55a7d0b27683a0719cee40f1f6fa4386f24ce6794a6e598624bd8677162f6",
+      "verdict": "pass"
+     },
+     "liquid_stage": {
+      "compared": 64136,
+      "results": "liquid-stage-20261028T223857921704Z.json",
+      "results_sha256": "7776a2fbc61681944af3201e6fe58157692490455125f78e325cdeba8d633b8e",
+      "verdict": "pass"
+     },
+     "trajectory": {
+      "compared": 21771,
+      "results": "trajectory-20261028T223838430231Z.json",
+      "results_sha256": "34a4cd893d8e2f39fbb2329a4f610abfd9d5a4ce9afa585210daa930fa0b2faf",
+      "verdict": "pass"
+     },
+     "helicopter": {
+      "compared": 50336,
+      "results": "helicopter-20261028T223946687504Z.json",
+      "results_sha256": "c809605155cd2032d4f3b72d7edc05fc371007983f66a987ddb341aa83db192b",
+      "verdict": "pass"
+     },
+     "weather": {
+      "compared": 21549,
+      "results": "weather-20261028T224005738818Z.json",
+      "results_sha256": "080ee25b47b2ac92d6df260046effe4e3a6e0a1874fa4a7fde1f2cae4079fc20",
+      "verdict": "pass"
+     },
+     "helicopter_stage": {
+      "compared": 61281,
+      "results": "helicopter-stage-20261028T223951825272Z.json",
+      "results_sha256": "f4d333950cbd036f6e304d2357ae6a9bdfec4bad5095be5331da432fc96e0efe",
+      "verdict": "pass"
+     },
+     "wake": {
+      "compared": 19138,
+      "results": "wake-20261028T224015772251Z.json",
+      "results_sha256": "b8b74241c49a0860936ef533aca9abeb702093b005a65bcc7e4ea88e57e99c0a",
+      "verdict": "pass"
+     },
+     "wake_spatial": {
+      "compared": 20204,
+      "results": "wake-spatial-20261028T224018564243Z.json",
+      "results_sha256": "db2ade47d87c758a08bfb68cb5c647af3bfe37a61a5934c3e819e4bb71662a0c",
+      "verdict": "pass"
+     },
+     "weather_stage": {
+      "compared": 59340,
+      "results": "weather-stage-20261028T224006742506Z.json",
+      "results_sha256": "7bbdd497501275e871c9be0e3d59a1290769c65728be57c37ada23b75fc3ae77",
+      "verdict": "pass"
+     },
+     "glow_stage": {
+      "compared": 79767,
+      "results": "glow-stage-20261028T223941382596Z.json",
+      "results_sha256": "6da18fa3cc61537c0c9bc22126975271749770bb34c6cda3d3c758605ae22709",
+      "verdict": "pass"
+     },
+     "gear": {
+      "compared": 35452,
+      "results": "gear-20261028T224023910584Z.json",
+      "results_sha256": "0667dbd3ebe86a8be2bc321d5b06e00d29e06f55005ce61813403758b014fba1",
+      "verdict": "pass"
+     },
+     "prescribed_stage": {
+      "compared": 49571,
+      "results": "prescribed-stage-20261028T224027801213Z.json",
+      "results_sha256": "56037ce90190b923b981180b520ca5bb99fdf72e7ffad0fa8a28f722eac93c35",
+      "verdict": "pass"
+     },
+     "legacy_ground": {
+      "compared": 14806,
+      "results": "legacy-ground-20261028T224039838998Z.json",
+      "results_sha256": "3f088e995978ec3365740a434dfe8861568f481476e2dc5fe8637c721a7b7cc7",
+      "verdict": "pass"
+     },
+     "negative_control": {
+      "compared": 128664,
+      "results": "stage_mutant-20261028T224057374032Z.json",
+      "results_sha256": "b495dbbcfb82bc83b49b1aa8ca546ec981ef1673e29a6fb306c9166e3cf56907",
+      "verdict": "fail"
+     }
+    },
+    "installer_summary": {
+     "path": "tmp/nk3-domain-isolated/tmp/nk3-isolated-19-gates/summary.json",
+     "sha256": "d44617bbc33dff8a1af3012601cd9d4792263229233581027c4f626206d6a06a"
+    },
+    "installer_log": {
+     "path": "tmp/nk3-domain-isolated/tmp/nk3-domain-install.log",
+     "sha256": "b71525e2ef6cab91546ca29f226f1fd1921c5d0ae876a5355b5f09e68c654563"
+    },
+    "unchanged_during_gates": {
+     "tracked_files": 4639,
+     "before": {
+      "path": "tmp/nk3-domain-isolated/tmp/nk3-isolated-19-gates/sources-before.json",
+      "sha256": "591eac4076355d0332b34d433124e2e5e03dab66dde39d9833e4de00551aa4a1"
+     },
+     "after": {
+      "path": "tmp/nk3-domain-isolated/tmp/nk3-isolated-19-gates/sources-after.json",
+      "sha256": "591eac4076355d0332b34d433124e2e5e03dab66dde39d9833e4de00551aa4a1"
+     }
+    },
+    "policy_checks": {
+     "gdscript": 194,
+     "python_campaign": 18,
+     "pure_cpp_boundary_and_provenance": 18,
+     "cpp_syntax": "locked g++13.3 passes"
+    },
+    "installed_diagnostic": {
+     "checks": 46,
+     "report": {
+      "path": "tmp/nk3-domain-linux-package/installed-fixture/checks/glow-rejection-installed-55_o9cvq/report.json",
+      "sha256": "3e3a50f6049efdf4a09d127bd80dd461363540e83d8ade43a77cc1f4ada0e0c0"
+     }
+    },
+    "actual_paired_runtime_refusals": {
+     "checks": 199,
+     "report": {
+      "path": "tmp/nk3-domain-isolated/tmp/nk3-runtime-domain-native/checks/runtime-domain-native-05gjwx64/report.json",
+      "sha256": "b1b770e871406fd9c48f6d409e891eeeb925226b74aa62b2c59cbf4fe5eddc5d"
+     },
+     "rows": 4,
+     "accepted_ticks": {
+      "stik-glow-61fx-2t": 873,
+      "stik-glow-55ax-2t": 801
+     },
+     "requested_ticks": 3000,
+     "healthy_completed_flights": 0,
+     "proof": "Both requested backends and evaluator ownership remain correct through the accepted prefix and rejecting attempt. Typed trial, sampled context, rollback state, aircraft identity, native counters and finite same-endpoint lifecycle/coupling branch match. These are separately counted runtime-domain refusals, never completed flights."
+    },
+    "sanitizer": {
+     "mode": "ubsan",
+     "binary_sha256": "ac36e9b38f16442d8e873875b323a0618f84e1ac8623aca7c68d4b2fce6baafa",
+     "summary": {
+      "path": "tmp/nk3-domain-ubsan-check/summary.json",
+      "sha256": "337638777d2d2b642f680a0986da66b5f48b107fd92f6f5b9ec5fac99e68c30a"
+     },
+     "positive_control_detected": true,
+     "stage_exact_comparisons": 128664,
+     "trajectory_exact_comparisons": 21771,
+     "diagnostics": [],
+     "source_archive": {
+      "path": "tmp/nk3-domain-ubsan-check/retained-source.tar.gz",
+      "sha256": "03faf68ed214f7b5508f5048efe29de786b58d3ac4e632ee7d90ba1d129bd579"
+     },
+     "retention_manifest": {
+      "path": "tmp/nk3-domain-ubsan-check/retained-source-manifest.json",
+      "sha256": "ab96c74095e111f0b28ea830be3917cbab23c1c5524398ca8178a64d1111ac1d"
+     },
+     "actual_diagnostic_checks": 46,
+     "actual_diagnostic_report": {
+      "path": "tmp/nk3-domain-ubsan-diagnostic/fixed/checks/glow-rejection-ubsan-fixed-hy88vg14/report.json",
+      "sha256": "40e43a142a249c738c226ab11a109364c7b2dd57dde24fb935410be2e2850b26"
+     },
+     "pure_boundary_controls": 18,
+     "pure_boundary_log": {
+      "path": "tmp/nk3-domain-ubsan-diagnostic/boundaries-ubsan.log",
+      "sha256": "4eaa19405b4c98f04b4872a7671eac185f5986b33df96e78ad3c555406dd7ab2"
+     }
+    },
+    "signed_zero_fixture_correction": {
+     "finding": "The pinned GDScript compiler can intern equal positive-zero and negative-zero constants together; a literal-based sign assertion failed in the initial staged fixture.",
+     "correction": "Decode both signs from explicit IEEE-754 bytes and assert the input, diagnostic RPM and continuous-state bits.",
+     "scope": "Fixture only; unchanged C++ source and both binaries. Corrected staged normal and UBSan tests each pass 46 checks, followed by the unmodified installed test.",
+     "initial_failed_diagnostics": [
+      "tmp/nk3-domain-staged-diagnostic/run.log",
+      "tmp/nk3-domain-ubsan-diagnostic/run.log"
+     ]
+    },
+    "limits": [
+     "Full 1238-row campaign is not yet complete.",
+     "These checks do not establish physical validity outside the existing model domain.",
+     "Candidate timing was interrupted after independent admission counterexamples; source corrections, final-source qualification and final archive remain pending; no promotion."
+    ],
+    "actual_linux_package": {
+     "status": "pass",
+     "promoted": false,
+     "report": {
+      "path": "tmp/nk3-domain-linux-package/evidence/qualification.json",
+      "sha256": "6680b4e2914b52f282319b625d28cfd36e126457b8dd0ab7b54ab664f8aaf135"
+     },
+     "identity": {
+      "authoring_before_equals_after": true,
+      "authoring_files": 20,
+      "build_environment": {
+       "OPENRC_BUILD_COMMIT": "1c33c0914a0f6f31b5868e645689c303239b9899",
+       "OPENRC_BUILD_DATE": "2026-10-28T22:41:43+00:00",
+       "OPENRC_BUILD_DESCRIBE": "v0.1.8-523-g1c33c0914",
+       "OPENRC_BUILD_DIRTY": "0"
+      },
+      "editor_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+      "executable_sha256": "6378633be66521bcbf47b6713917de724e371c73b4f2f21d78cc874292b2f755",
+      "git_head": "1c33c0914a0f6f31b5868e645689c303239b9899",
+      "manifest_sha256": "9038af50bab05f9c97037cd15c214eac50d1982ca7192097a2d7dec67a85ffc8",
+      "native_sha256": "74ce8abcb021d0687024b887c59866f1d10649d9b860a69078a45564b644dbf7",
+      "native_source_sha256": "c0777e83d122be7f1bd2dfba1f58d0e41c0eb287ecfbd37bd680912d3f03115e",
+      "package_receipt_sha256": "5ec1a63139ce993046a5b605684a235324427852cdad9fcfc7d260ea22946477",
+      "source_before_equals_after": true,
+      "source_files": 4409,
+      "template_sha256": "93cdaedf75fb5b5fd244fb8c3348b0fefde893eff85e0de382e1b9970d58ddf3",
+      "tracked_assets": 966
+     },
+     "native_modes": [
+      "stage",
+      "lifecycle",
+      "replay",
+      "helicopter",
+      "helicopter-radio"
+     ],
+     "default_route_checked_cases": 18,
+     "default_route_expected_refusals": [
+      "invalid",
+      "missing-helicopter-qualification",
+      "missing-helicopter-radio-qualification",
+      "qualification-refusal",
+      "scripted-backend"
+     ],
+     "player_replay_exact": true,
+     "player_replay_rows": 65,
+     "source_before_equals_after": true,
+     "authoring_before_equals_after": true
+    }
+   },
+   "native_admission_follow_up": {
+    "status": "confirmed source admission gaps; corrections in progress, not yet built or qualified",
+    "candidate_source_commit": "1c33c0914a0f6f31b5868e645689c303239b9899",
+    "candidate_native_sha256": "74ce8abcb021d0687024b887c59866f1d10649d9b860a69078a45564b644dbf7",
+    "findings": {
+     "path": "tmp/nk3-completion-audit/findings.md",
+     "sha256": "2adf1c00f7f3383a968ce0edc9f2734a834dd3149f6f6918243ae95b100012e0"
+    },
+    "counterexamples": [
+     {
+      "case": "1025 legacy wake pieces",
+      "evidence": {
+       "path": "tmp/nk3-completion-audit/checks/wake-limit-tz5vw6d3/report.json",
+       "sha256": "d0de4b9b078e7e2d80ee18a9daf72be65503b4b04c033740a91ecbbe5fec50a7"
+      },
+      "result": "Validated source, native request selects reference; 1024 control installs native. Three healthy exact reference ticks."
+     },
+     {
+      "case": "1000 helicopter field rectangles plus outside row",
+      "evidence": {
+       "path": "tmp/nk3-completion-audit/checks/heli-surface-limit-0pieilfx/report.json",
+       "sha256": "72d5761fea7f1b066fa8d14490d9448a86b07513095bb76570bb9d588c6302f9"
+      },
+      "result": "FieldLoader accepts both fields; 6006 float64 values select reference, 6000 control installs native. Three healthy exact reference ticks."
+     },
+     {
+      "case": "Workshop legacy wake scale 0.1",
+      "evidence": {
+       "path": "tmp/nk3-completion-audit/checks/wake-scale-xxlnavws/report.json",
+       "sha256": "b8f5003e01bdc763173125a659bfccd5700f2d77632c35b2b71eed9735405483"
+      },
+      "result": "Workshop compiler accepts scaled geometry; native imposes unscaled authored dimensional limits and falls back. Three healthy exact reference ticks."
+     },
+     {
+      "case": "17 rotating wheels",
+      "evidence": {
+       "path": "tmp/nk3-completion-audit/checks/wheel-limit-ycd1dieh/report.json",
+       "sha256": "15189f43bb100aa11292c25a926fbc5fb9f0147b2ad01c197a8a1a20cd9277b8"
+      },
+      "result": "External valid wheel-profile/session interface accepts source and starts; native falls back. 16-wheel control installs native. Not a shipped catalog profile."
+     },
+     {
+      "case": "65 continuous wheel states",
+      "evidence": {
+       "path": "tmp/nk3-completion-audit/checks/wheel65-limit-25uetn_q/report.json",
+       "sha256": "4ee1b63c31ae55d79d4a23af7b07cb4e654df6901d7f8284d18d7b8db48d3833"
+      },
+      "result": "External valid profile/session source starts and advances three healthy ticks; native falls back. Requires preparation-sized buffers, not just removing bounds."
+     }
+    ],
+    "interpretation": "These synthetic fixtures isolate software admission; they do not establish physical realism. Native requests executing GDScript are failures for the expanded objective.",
+    "interrupted_timing": {
+     "path": "tmp/nk3-domain-isolated/tmp/nk3-domain-release-performance/interruption.json",
+     "sha256": "26b0cfc4add78aebb50ce4028c2f96fe4d32e63509cf372d20cd3bb2919a4411"
+    }
    }
   },
   "acceptance_limit": "Component and research stage parity only. The scoped fleet run uses the previous accepted Stik binary. This does not qualify all-aircraft production admission, full lifecycle/replay, target performance or physical validation.",

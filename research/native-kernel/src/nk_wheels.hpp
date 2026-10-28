@@ -66,10 +66,9 @@ inline R wheel_damping(const WheelContact &c, R compression) {
 	return c.damping * x * (2.0 - x);
 }
 
-inline int wheel_surface_at(const std::vector<double> &table, R north, R east) {
-	int at = 0;
-	const int size = static_cast<int>(table.size());
-	while (at + kSurfaceStride < size) {
+inline std::size_t wheel_surface_at(const std::vector<double> &table, R north, R east) {
+	std::size_t at = 0;
+	while (at + kSurfaceStride < table.size()) {
 		if (north >= table[at] && north <= table[at + 1] && east >= table[at + 2] && east <= table[at + 3]) {
 			return at;
 		}
@@ -153,7 +152,7 @@ inline void wheel_coefficients(const PreparedGear &gear, const WheelContact &c, 
 		const Vec3 &p, R &mu, R &rolling, R &index) {
 	mu = gear.side_friction;
 	rolling = gear.rolling_resistance;
-	int at = -1;
+	std::size_t at = 0;
 	if (!surfaces.empty()) {
 		at = wheel_surface_at(surfaces, p[0], p[1]);
 		mu *= surfaces[at + 4];
@@ -161,7 +160,7 @@ inline void wheel_coefficients(const PreparedGear &gear, const WheelContact &c, 
 		const R factor = surfaces[at + 5];
 		rolling *= factor < 1.0 ? factor : 1.0 + (factor - 1.0) * sqrt_(gear.rolling_reference_radius / radius);
 	}
-	index = static_cast<double>(at);
+	index = surfaces.empty() ? -1.0 : static_cast<double>(at);
 }
 
 // ground_wheels.gd evaluate(..., diagnostics_enabled = false, lake). loads is empty (size 0) when nothing touches.
@@ -203,9 +202,11 @@ inline bool wheels_evaluate(const R *s, const GroundContext &ctx, R steer, const
 		const R relaxation = c.spin_relaxation;
 		if (n > 0.0 && f.valid_heading && cf0 > 0.0) {
 			const R limit = cf0 * n;
-			const bool stuck = anchor_count == contacts * 3 && anchors[i * 3 + 2] == 1.0 && absf(slip) < kStickSpeed;
+			const std::size_t anchor_at = static_cast<std::size_t>(i) * 3;
+			const bool stuck = static_cast<int64_t>(anchor_count) == static_cast<int64_t>(contacts) * 3 &&
+				anchors[anchor_at + 2] == 1.0 && absf(slip) < kStickSpeed;
 			if (stuck) {
-				const Vec3 displacement = {f.position[0] - anchors[i * 3], f.position[1] - anchors[i * 3 + 1], 0.0};
+				const Vec3 displacement = {f.position[0] - anchors[anchor_at], f.position[1] - anchors[anchor_at + 1], 0.0};
 				const R hold = gear.breakaway_factor * cf1 * n;
 				rr = clampf(-c.anchor_stiffness * dot3(displacement, f.heading) - c.anchor_damping * f.long_speed,
 					-hold, hold);

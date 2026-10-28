@@ -329,8 +329,7 @@ public:
 		if (!snapshot.has("surfaces") || snapshot["surfaces"].get_type() != godot::Variant::PACKED_FLOAT64_ARRAY) return failure("missing helicopter surface table");
 		const godot::PackedFloat64Array surfaces = snapshot["surfaces"];
 		HeliStageModel candidate;
-		if (surfaces.size() > 6000) return failure("helicopter surface table too large");
-		candidate.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
+		if (!surfaces.is_empty()) candidate.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 		candidate.surfaces.valid = surface_table_is_valid(candidate.surfaces.values);
 		if (!candidate.surfaces.valid || !heli_decode_context(dec, context, candidate) || !heli_decode_skids(dec, skids, candidate.skids)) {
 			return failure(dec.error.empty() ? "invalid helicopter surface table" : dec.error);

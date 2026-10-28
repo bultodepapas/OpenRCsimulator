@@ -25,6 +25,8 @@
 #include <utility>
 #include <vector>
 
+#include "nk_variant_identity.hpp"
+
 namespace nk {
 
 class ConfigurationGuard {
@@ -44,7 +46,7 @@ class ConfigurationGuard {
 		Variant expected;
 		int64_t container_size = -1;
 	};
-	static constexpr std::size_t kMaxWatches = 65536;
+	// Validated schemas have bounded nesting; flat model size is owned by the source validator.
 	static constexpr int kMaxDepth = 32;
 
 	bool ready_ = false;
@@ -133,8 +135,8 @@ class ConfigurationGuard {
 		return -1;
 	}
 
-	bool append_watch(Watch watch, const Variant &live, const Variant &expected, int depth) {
-		if (depth > kMaxDepth || watches_.size() >= kMaxWatches || live.get_type() != expected.get_type()) return false;
+	bool append_watch(Watch watch, const Variant &live, const Variant &expected, int depth, CompletedVariantPairs &completed) {
+		if (depth > kMaxDepth || watches_.size() == watches_.max_size() || live.get_type() != expected.get_type()) return false;
 		if (!container(live)) {
 			if (!same_scalar(live, expected)) return false;
 			watch.expected = detached_scalar(expected);
@@ -142,10 +144,14 @@ class ConfigurationGuard {
 			return true;
 		}
 		const int64_t size = container_size(live);
-		if (size < 0 || size != container_size(expected) || static_cast<std::size_t>(size) > kMaxWatches) return false;
+		if (size < 0 || size != container_size(expected)) return false;
 		watch.expected = live;
 		watch.container_size = size;
 		watches_.push_back(std::move(watch));
+		if (size == 0) return true;
+		VariantPairKey key;
+		if (!variant_pair_key(live, expected, depth, key)) return false;
+		if (variant_pair_completed(completed, key, live, expected)) return true;
 		if (live.get_type() == Variant::DICTIONARY) {
 			const Dictionary current = live;
 			const Dictionary saved = expected;
@@ -157,7 +163,7 @@ class ConfigurationGuard {
 				child.source = Parent::DictionaryEntry;
 				child.parent = live;
 				child.key = key;
-				if (!append_watch(std::move(child), current[key], saved[key], depth + 1)) return false;
+				if (!append_watch(std::move(child), current[key], saved[key], depth + 1, completed)) return false;
 			}
 		} else {
 			const Array current = live;
@@ -167,14 +173,16 @@ class ConfigurationGuard {
 				child.source = Parent::ArrayEntry;
 				child.parent = live;
 				child.index = i;
-				if (!append_watch(std::move(child), current[i], saved[i], depth + 1)) return false;
+				if (!append_watch(std::move(child), current[i], saved[i], depth + 1, completed)) return false;
 			}
 		}
+		// Only completed pairs are memoized: a cycle must still hit kMaxDepth.
+		completed.emplace(key, std::make_pair(live, expected));
 		return true;
 	}
 
 	bool append_fields(Object *object, const Variant &retained, Parent kind, const Variant &values,
-			std::initializer_list<const char *> names) {
+			CompletedVariantPairs &completed, std::initializer_list<const char *> names) {
 		if (!object || values.get_type() != Variant::DICTIONARY) return false;
 		const Dictionary saved = values;
 		if (saved.size() != static_cast<int64_t>(names.size())) return false;
@@ -185,7 +193,7 @@ class ConfigurationGuard {
 			watch.source = kind;
 			watch.parent = retained; // only RefCounted owners are retained
 			watch.property = StringName(name);
-			if (!append_watch(std::move(watch), object->get(StringName(name)), saved[key], 0)) return false;
+			if (!append_watch(std::move(watch), object->get(StringName(name)), saved[key], 0, completed)) return false;
 		}
 		return true;
 	}
@@ -230,7 +238,7 @@ class ConfigurationGuard {
 	static bool read_int(const Variant &value, int64_t &out) {
 		if (value.get_type() != Variant::INT) return false;
 		out = static_cast<int64_t>(value);
-		return out >= 0 && out <= 65536;
+		return out >= 0;
 	}
 	static Dictionary failure(const char *message) {
 		Dictionary out;
@@ -275,16 +283,17 @@ class ConfigurationGuard {
 				!read_int(identity->get("continuous_size"), continuous_size_) || !read_int(identity->get("modes_size"), modes_size_)) return false;
 		ready_ = true;
 		if (!configuration_guard_matches(session)) return false;
+		CompletedVariantPairs completed; // preparation only; no cache or allocation per tick
 		const bool session_fields_ok = helicopter_ ?
-				append_fields(owner, Variant(), Parent::SessionProperty, identity->get("session_values"),
+				append_fields(owner, Variant(), Parent::SessionProperty, identity->get("session_values"), completed,
 						{"aircraft", "_trim", "start_choice", "_ready_to_fly"}) :
-				append_fields(owner, Variant(), Parent::SessionProperty, identity->get("session_values"), {
+				append_fields(owner, Variant(), Parent::SessionProperty, identity->get("session_values"), completed, {
 						"aircraft", "_hull_contact", "_airframe_surfaces", "_ground_effect_reach", "soft_hull_contacts",
 						"_shaft_integrator", "_shaft_explicit", "_shaft_pending_reset"});
 		if (!session_fields_ok ||
-				!append_fields(environment, environment_, Parent::OwnedProperty, identity->get("environment_values"), {"surfaces", "lake"}) ||
-				!append_fields(sim, Variant(), Parent::SimulationProperty, identity->get("sim_values"), {"mass", "inertia", "gravity"}) ||
-				!append_fields(vehicle, vehicle_, Parent::OwnedProperty, identity->get("vehicle_values"), {
+				!append_fields(environment, environment_, Parent::OwnedProperty, identity->get("environment_values"), completed, {"surfaces", "lake"}) ||
+				!append_fields(sim, Variant(), Parent::SimulationProperty, identity->get("sim_values"), completed, {"mass", "inertia", "gravity"}) ||
+				!append_fields(vehicle, vehicle_, Parent::OwnedProperty, identity->get("vehicle_values"), completed, {
 				"input_size", "aux_size", "modes_size", "continuous_size", "identity", "state_layout_identity", "loads",
 				"block_loads", "block_derivative", "stage_rotor_momentum", "rotor_momentum", "pre_tick", "post_tick",
 				"post_tick_joint", "block_aux", "step_policy", "events", "substeps", "substeps_joint", "endpoint_transition", "state_validator"})) return false;

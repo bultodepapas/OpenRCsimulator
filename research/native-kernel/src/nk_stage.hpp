@@ -85,6 +85,10 @@ struct TickContext {
 	bool capture_preview = false;
 	std::array<R, 13> preview_body{};
 	std::vector<R> preview_values;
+	// Allocated for the validated gear layout at preparation, then reused for
+	// every stage of the session. A kernel instance has one tick owner.
+	mutable std::vector<double> ground_anchors;
+	mutable std::vector<double> wheel_speeds;
 };
 
 struct StageResult {
@@ -139,10 +143,10 @@ inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx
 	const GroundContext &ground = m.retraction.enabled ? ctx.posed_ground : m.ground;
 	const R steer = ctx.aux[L.servo + 2];
 	const R brake = ctx.brake;
-	// Valid legacy gear can carry more contacts than the stock wheel profiles.
-	// Reuse storage across stages; prepared layout validation bounds this copy.
-	static thread_local std::vector<double> anchors;
-	anchors.resize(static_cast<size_t>(L.anchor_count) * 3);
+	// Prepared storage covers both legacy contacts and rotating wheel profiles.
+	std::vector<double> &anchors = ctx.ground_anchors;
+	if (anchors.size() != static_cast<size_t>(L.anchor_count) * 3 ||
+			ctx.wheel_speeds.size() != static_cast<size_t>(L.wheel_count)) return false;
 	const int anchor_values = static_cast<int>(anchors.size());
 	for (int i = 0; i < anchor_values; ++i) anchors[static_cast<size_t>(i)] = ctx.aux[L.anchors + i].v;
 	std::array<R, 6> hull{};
@@ -202,7 +206,7 @@ inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx
 	if (value_count != L.wheel_index + L.wheel_count) {
 		return false;
 	}
-	double speeds[16];
+	std::vector<double> &speeds = ctx.wheel_speeds;
 	for (int i = 0; i < L.wheel_count; ++i) {
 		speeds[i] = values[L.wheel_index + i].v;
 		if (!std::isfinite(speeds[i])) {
@@ -210,7 +214,7 @@ inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx
 		}
 	}
 	static thread_local std::vector<R> wheel_loads;
-	wheels_evaluate(s, ground, steer, anchors.data(), anchor_values, speeds, L.wheel_count, brake, wheel_loads, rates);
+	wheels_evaluate(s, ground, steer, anchors.data(), anchor_values, speeds.data(), L.wheel_count, brake, wheel_loads, rates);
 	if ((!wheel_loads.empty() && wheel_loads.size() != 6) || static_cast<int>(rates.size()) != L.wheel_count) {
 		return false;
 	}
