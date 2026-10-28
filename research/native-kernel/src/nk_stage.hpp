@@ -14,6 +14,9 @@
 #include "nk_prop.hpp"
 #include "nk_wheels.hpp"
 #include "nk_weather.hpp"
+#include "nk_spatial_weather.hpp"
+#include "nk_wake_spatial_flow.hpp"
+#include "nk_wake_spatial_aero.hpp"
 
 namespace nk {
 
@@ -43,6 +46,9 @@ struct StageModel {
 	R ground_effect_reach = 0.0; // FlightSession._ground_effect_reach
 	bool has_weather = false;
 	WeatherModel weather;
+	bool spatial_weather = false;
+	SpatialWeather spatial;
+	WakeModel wake;
 	R dt = 0.0;
 };
 
@@ -60,6 +66,21 @@ struct StageResult {
 	std::vector<R> derivative;
 	std::array<R, 3> rotor{};
 };
+
+// A callback into immutable native weather only. Its context is local to one RK stage.
+struct StageWindContext {
+	const StageModel *model;
+	const TickContext *tick;
+};
+
+inline bool stage_wind_sample(void *opaque, const R *position, R time, R *wind) {
+	const auto &context = *static_cast<const StageWindContext *>(opaque);
+	const StageModel &m = *context.model;
+	const auto sample = m.spatial_weather ? spatial_weather_wind(m.spatial, position, time) :
+		weather_wind(m.weather, position, time, context.tick->aux, m.layout.turbulence, m.dt);
+	for (int i = 0; i < 3; ++i) wind[i] = sample[i];
+	return spatial_flow_finite3(wind);
+}
 
 // FlightSession._ground_up.
 inline R stage_ground_up(const R *s, const StageModel &m) {
@@ -154,7 +175,7 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 	const std::vector<R> &a = ctx.aux;
 	const int lag = L.downwash;
 	const R downwash_cl = lag >= 0 && lag < static_cast<int>(a.size()) ? a[lag] : R(kNan);
-	// air_data(s, stage_time): calm uniform weather, FlightSession.wind_at -> Environment.wind_world.
+	// Each trial pose/time samples its own atmosphere and point flow; no sampled endpoint reuse.
 	const R at = is_nan(stage_time) ? ctx.time_now : stage_time;
 	std::array<R, 3> wind{0.0, 0.0, 0.0};
 	if (m.has_weather) {
@@ -163,18 +184,51 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 		wind = {kNan, kNan, kNan};
 	}
 	const R rho = m.has_weather ? weather_air(m.weather, s[2]).density : m.density;
-	const Air air = air_compute(s, wind.data(), rho);
+	Air air = air_compute(s, wind.data(), rho);
+	StageWindContext wind_context{&m, &ctx};
+	SpatialPointContext point_context;
+	SpatialFlowResult spatial_flow;
+	if (m.spatial_weather) {
+		const SpatialWindProvider provider{stage_wind_sample, &wind_context};
+		spatial_flow = spatial_flow_sample(s, m.aero, m.prop.offset, provider, at, rho, point_context);
+		if (spatial_flow.ok) {
+			air = spatial_flow.air;
+		} else {
+			// FlightSession.air_data's rejected point field becomes invalid datum air, not calm flow.
+			const R invalid_wind[3] = {kNan, kNan, kNan};
+			air = air_compute(s, invalid_wind, rho);
+		}
+	}
 	const R ground_up = stage_ground_up(s, m);
 	// Dynamics.loads_from_air: Aero.loads, then the propeller at its stage inflow.
-	const Loads aero = aero_loads(s, air, ctx.deflections, m.aero, rho, downwash_cl, ground_up);
+	Loads aero;
+	bool aero_valid = true;
+	if (m.spatial_weather && spatial_flow.ok) {
+		const auto evaluated = spatial_aero_loads(s, air, ctx.deflections, m.aero, rho, spatial_flow.aero_deltas.data(),
+			spatial_flow.aero_deltas.size(), downwash_cl, ground_up, true);
+		aero_valid = evaluated.ok;
+		aero = evaluated.loads;
+	} else {
+		aero = aero_loads(s, air, ctx.deflections, m.aero, rho, downwash_cl, ground_up);
+	}
 	std::array<R, 6> total;
-	if (!is_finite(air.v[0]) || !is_finite(air.v[1]) || !is_finite(air.v[2])) {
+	const PropAir prop_air = prop_stage_air_velocity(s, air.v, m.prop, false,
+		m.spatial_weather && spatial_flow.ok ? spatial_flow.propulsion_air.data() : nullptr);
+	if (!aero_valid || !prop_air.ok) {
 		total = {kNan, kNan, kNan, kNan, kNan, kNan}; // Propulsion.stage_air_velocity refuses: _invalid_components
 	} else {
-		const std::array<R, 6> propulsion = prop_loads(air.v, a[L.rpm], m.prop, rho);
+		const std::array<R, 6> propulsion = prop_loads(prop_air.velocity.data(), a[L.rpm], m.prop, rho);
 		total = aero;
 		for (int i = 0; i < 6; ++i) {
 			total[i] += propulsion[i];
+		}
+		if (m.wake.enabled) {
+			const auto tq = prop_thrust_torque(prop_air.velocity.data(), a[L.rpm], m.prop, rho);
+			const WakePointSampler sampler = spatial_wake_sampler(point_context);
+			const auto wash = wake_loads(s, air, ctx.deflections, m.aero, m.prop, m.wake, a[L.rpm], rho,
+				tq[0], tq[1], downwash_cl, expected > 0 ? values : nullptr,
+				m.spatial_weather ? spatial_flow.wake_source_delta.data() : nullptr, m.spatial_weather ? &sampler : nullptr);
+			for (int i = 0; i < 6; ++i) total[i] += wash[i];
 		}
 	}
 	std::array<R, 6> ground_loads{};
@@ -188,7 +242,22 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 			total[i] += ground_loads[i];
 		}
 	}
-	out.derivative = std::move(rates); // expected == 0: transfer the completed wheel rates without another allocation
+	if (expected == 0) {
+		out.derivative = std::move(rates);
+	} else {
+		R source[3] = {air.v[0], air.v[1], air.v[2]};
+		if (m.spatial_weather && spatial_flow.ok) {
+			for (int i = 0; i < 3; ++i) if (spatial_flow.wake_source_delta[i] != 0.0) source[i] += spatial_flow.wake_source_delta[i];
+		}
+		// Nonspatial WashTransport reads datum air; spatial transport shares the explicit propeller point.
+		const auto tq = prop_thrust_torque(m.spatial_weather && spatial_flow.ok ? prop_air.velocity.data() : air.v,
+			a[L.rpm], m.prop, rho);
+		const auto target = wake_transport_target(source, a[L.rpm], tq[0], tq[1], m.prop, m.wake, rho);
+		if (m.spatial_weather && (!spatial_flow.ok || !is_finite(target[0]) || !is_finite(target[1]))) return out;
+		out.derivative.resize(expected);
+		wake_transport_derivative(target, values, m.wake, out.derivative.data());
+		out.derivative.insert(out.derivative.end(), rates.begin(), rates.end());
+	}
 	if (static_cast<int>(out.derivative.size()) != value_count) {
 		return out;
 	}

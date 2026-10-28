@@ -1,27 +1,31 @@
 ## NK-3 joint-stage weather oracle. Uses the real fixed-wing reference session,
 ## its shared pre_tick and actual OU aux intervals; native stage owns every RK
-## weather query. Spatial v5 remains explicitly skipped until point-flow/aero
-## integration is complete. This research adapter does not change app admission.
+## weather query. Spatial v5 runs only with the explicit include-spatial option;
+## this research adapter does not change application admission.
 extends "stage_oracle.gd"
 
 const WeatherConfig := preload("res://physics/wind_config.gd")
 const WeatherAdapter := preload("weather_adapter.gd")
+const WindFlow := preload("res://physics/wind_aircraft_flow.gd")
 
 
 func _extra_option_names() -> PackedStringArray:
-	return PackedStringArray(["ticks"])
+	return PackedStringArray(["ticks", "include-spatial"])
 
 
 func _checks() -> void:
 	_report.format = "openrc-nk3-weather-stage-oracle v1"
-	_report.weather_stage = {scenarios = [], skipped_spatial = [], trajectories = {}, refusals = {}}
+	_report.weather_stage = {scenarios = [], scenario_coverage = {}, skipped_spatial = [], trajectories = {}, refusals = {}}
 	var ticks: int = int(_options.get("ticks", "240"))
-	if _states <= 0 or ticks <= 0:
+	var include_option := str(_options.get("include-spatial", "false"))
+	if _states <= 0 or ticks <= 0 or include_option not in ["true", "false"]:
 		_failures.append("weather-stage states and trajectory ticks must be positive")
 		return
+	var include_spatial := include_option == "true"
+	_report.weather_stage.include_spatial = include_spatial
 	var scenarios: Array[Dictionary] = []
 	for preset: Dictionary in WeatherConfig.presets():
-		if preset.config.format == WeatherConfig.SPATIAL_FORMAT:
+		if preset.config.format == WeatherConfig.SPATIAL_FORMAT and not include_spatial:
 			_report.weather_stage.skipped_spatial.append(str(preset.id))
 		else:
 			scenarios.append(preset)
@@ -34,16 +38,35 @@ func _checks() -> void:
 	var combined: Dictionary = WeatherConfig.upgrade_column(WeatherConfig.GENTLE_PRACTICE,
 		{atmosphere_mode = "standard_column", field_elevation_m = 100.0})
 	scenarios.append({id = "custom-column-and-ou", config = combined})
+	if include_spatial:
+		var spatial_column: Dictionary = WeatherConfig.preset("spatial-realistic-v1")
+		spatial_column.atmosphere_mode = "standard_column"
+		spatial_column.field_elevation_m = 100.0
+		scenarios.append({id = "custom-spatial-column", config = spatial_column})
 	var count := maxi(1, int(ceil(float(_states) / float(scenarios.size()))))
 	for scenario: Dictionary in scenarios:
 		_check_weather_stage(scenario, count)
 	var gust := WeatherConfig.preset("gusty")
 	gust.gust_delay_s = 0.0
-	for scenario: Dictionary in [
+	var trajectories: Array[Dictionary] = [
 		{id = "active-gust", config = gust},
 		{id = "turbulent", config = WeatherConfig.preset("turbulent")},
 		{id = "standard-column", config = WeatherConfig.preset("standard-column")},
-	]:
+	]
+	if include_spatial:
+		for preset: Dictionary in WeatherConfig.presets():
+			if preset.config.format == WeatherConfig.SPATIAL_FORMAT:
+				trajectories.append(preset)
+		var active_gust: Dictionary = WeatherConfig.preset("spatial-gusty-v1")
+		active_gust.spatial_wind.gusts.events[0].start_s = 0.0
+		trajectories.append({id = "spatial-active-gust", config = active_gust})
+		var active_thermal: Dictionary = WeatherConfig.preset("spatial-thermal-soaring-v2")
+		active_thermal.spatial_wind.thermal_field.cells[0].birth_s = 0.0
+		active_thermal.spatial_wind.thermal_field.cells[0].duration_s = 120.0
+		active_thermal.spatial_wind.thermal_field.cells[0].center_ne_m = [60.0, -40.0]
+		active_thermal.spatial_wind.thermal_field.cells[0].drift_ne_mps = [0.0, 0.0]
+		trajectories.append({id = "spatial-active-thermal", config = active_thermal})
+	for scenario: Dictionary in trajectories:
 		_check_weather_trajectory(scenario, ticks)
 
 
@@ -111,11 +134,24 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 	var delay: float = weather.gust_delay_s
 	var duration: float = weather.gust_duration_s
 	var period: float = weather.gust_period_s
+	var spatial: bool = session._weather.is_spatial()
+	var spatial_config: Dictionary = weather.spatial_wind if spatial else {}
 	var turb_index: int = session.turbulence_index() if session._weather.has_turbulence() else -1
 	var finite_stages := 0
+	var finite_spatial_flows := 0
+	var gradient_stages := 0
 	for index: int in count:
 		var drawn := _stage_state(context, context.surfaces, context.lake)
 		var state: PackedFloat64Array = drawn.s
+		if spatial and not drawn.malformed:
+			# Leave room for every aerodynamic/propeller point under arbitrary
+			# unit rotations, so ordinary sampling actually exercises the law.
+			var domain: Dictionary = spatial_config.domain
+			state[RB.POS] = clampf(state[RB.POS], -float(domain.half_extent_north_m) + 5.0,
+				float(domain.half_extent_north_m) - 5.0)
+			state[RB.POS + 1] = clampf(state[RB.POS + 1], -float(domain.half_extent_east_m) + 5.0,
+				float(domain.half_extent_east_m) - 5.0)
+			state[RB.POS + 2] = -_rng.randf_range(5.0, float(domain.max_height_agl_m) - 5.0)
 		var aux := _stage_aux(context, session, state)
 		if turb_index >= 0:
 			var actual: PackedFloat64Array = windows[index % windows.size()]
@@ -129,6 +165,22 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 			3: stage_time = delay + duration
 			4: stage_time = delay + period
 			_: stage_time = _rng.randf_range(0.0, 120.0)
+		if spatial and not drawn.malformed:
+			var events: Array = spatial_config.gusts.events
+			if not events.is_empty():
+				var event: Dictionary = events[index % events.size()]
+				var fraction: float = [0.0, 0.25, 0.5, 0.75, 1.0][index % 5]
+				stage_time = maxf(0.0, float(event.start_s) + fraction * float(event.duration_s) \
+					- float(spatial_config.identity.epoch_offset_s))
+			if spatial_config.has("thermal_field") and index % 5 == 0:
+				var thermal: Dictionary = spatial_config.thermal_field
+				if not thermal.cells.is_empty():
+					var cell: Dictionary = thermal.cells[0]
+					var age: float = 0.5 * float(cell.duration_s)
+					stage_time = maxf(0.0, float(cell.birth_s) + age - float(thermal.identity.epoch_offset_s))
+					state[RB.POS] = float(cell.center_ne_m[0]) + float(cell.drift_ne_mps[0]) * age
+					state[RB.POS + 1] = float(cell.center_ne_m[1]) + float(cell.drift_ne_mps[1]) * age
+					state[RB.POS + 2] = -0.5 * float(cell.top_agl_m)
 		if turb_index >= 0 and index % 3 == 0:
 			stage_time = aux[turb_index + 6] + session.sim.dt() * [0.0, 0.5, 1.0][int(index / 3) % 3]
 		if drawn.malformed and index % 9 == 0:
@@ -149,11 +201,18 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 		var reference: Dictionary = session._wheel_evaluate(state, values, stage_time)
 		var native: Dictionary = _native.stage(state, values, stage_time)
 		_compare_stage(reference, native, [label, state, aux, values, stage_time])
-		if not reference.is_empty() and reference.get("loads") is PackedFloat64Array:
-			var finite := true
-			for value: float in reference.loads:
-				finite = finite and is_finite(value)
-			if finite:
+		if _finite_stage(reference, values.size()):
+			if spatial:
+				var stage_air: Dictionary = session.air_data(state, stage_time)
+				var deltas: Variant = stage_air.get("aero_station_delta_body")
+				if stage_air.has("spatial_air_law") and deltas is PackedFloat64Array:
+					finite_spatial_flows += 1
+					var gradient := false
+					for value: float in deltas:
+						gradient = gradient or value != 0.0
+					if gradient: gradient_stages += 1
+					finite_stages += 1
+			else:
 				finite_stages += 1
 		_tally("weather_stage", "states")
 		_tally("weather_stage", "malformed" if drawn.malformed else "ordinary")
@@ -162,9 +221,18 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 		_failures.append("weather-stage %s has no finite shaped stage" % label)
 	else:
 		_tally("weather_stage", "finite_shaped", finite_stages)
+	if spatial:
+		_tally("weather_stage", "finite_spatial_flows", finite_spatial_flows)
+		_tally("weather_stage", "spatial_gradient_stages", gradient_stages)
+		if gradient_stages == 0:
+			_failures.append("weather-stage %s has no finite nonuniform spatial flow" % label)
+	_report.weather_stage.scenario_coverage[label] = {states = count, finite_stages = finite_stages,
+		finite_spatial_flows = finite_spatial_flows, spatial_gradient_stages = gradient_stages}
+	if spatial:
+		_check_spatial_domain_refusals(session, config, label, context.aux)
 	# True weather capability flags must never be silently cleared: a missing
 	# snapshot is refused, even if the unchanged model otherwise prepares.
-	if config.not_calm or config.turbulence or config.vertical_atmosphere:
+	if config.not_calm or config.turbulence or config.vertical_atmosphere or config.spatial_weather:
 		var missing := config.duplicate(true)
 		missing.erase("weather")
 		var refused: Dictionary = _native.prepare_stage(missing)
@@ -174,6 +242,98 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 		if not correct:
 			_failures.append("weather-stage %s accepted non-calm capabilities without a snapshot" % label)
 	session.free()
+
+
+static func _finite_stage(stage: Dictionary, derivative_size: int) -> bool:
+	if not stage.get("loads") is PackedFloat64Array or not stage.get("derivative") is PackedFloat64Array \
+			or not stage.get("rotor_momentum") is PackedFloat64Array or stage.loads.size() != 6 \
+			or stage.derivative.size() != derivative_size or stage.rotor_momentum.size() != 3:
+		return false
+	for values: PackedFloat64Array in [stage.loads, stage.derivative, stage.rotor_momentum]:
+		for value: float in values:
+			if not is_finite(value):
+				return false
+	return true
+
+
+## Prove that both the native point-flow component and the complete stage fail
+## closed when the datum, stage clock, or a station leaves the weather domain.
+## The valid datum/control proves that missing component preparation cannot
+## masquerade as a correct native refusal.
+func _check_spatial_domain_refusals(session: Node, config: Dictionary, label: String,
+		aux: PackedFloat64Array) -> void:
+	for method: String in ["prepare_aero", "prepare_propeller", "prepare_weather", "spatial_flow_component"]:
+		if not _native.has_method(method):
+			_failures.append("spatial failure control missing native component " + method)
+			return
+	var prop: Dictionary = session.aircraft.model.propulsion
+	var geometry := {}
+	for key: String in ["diameter", "offset", "ct", "cp", "rotor_inertia", "cp_min", "axis", "normal_force", "pfactor_moment"]:
+		if prop.has(key): geometry[key] = prop[key]
+	var aero: Dictionary = _native.prepare_aero(session.aircraft.model)
+	var propulsion: Dictionary = _native.prepare_propeller(geometry)
+	var weather: Dictionary = _native.prepare_weather(config.weather)
+	if not aero.get("ok", false) or not propulsion.get("ok", false) or not weather.get("ok", false):
+		_failures.append("spatial component control prepare failed for %s: %s/%s/%s" % [label,
+			str(aero.get("error", "")), str(propulsion.get("error", "")), str(weather.get("error", ""))])
+		return
+	var body: PackedFloat64Array = session.sim.state.duplicate()
+	var density: float = session.air_density(body)
+	var reference: Dictionary = WindFlow.stage_air(body, session.aircraft.model, session.environment, 0.0,
+		density, Aero.SPATIAL_CONTINUATION_LAW, false)
+	var control: Dictionary = _native.spatial_flow_component(body, 0.0, density, aux, -1, session.sim.dt())
+	var control_ok: bool = reference.get("ok", false) and control.get("ok", false) \
+		and control.get("station_delta_body") is PackedFloat64Array
+	_compare("weather_spatial_component_control", PackedFloat64Array([1.0]),
+		PackedFloat64Array([1.0 if control_ok else 0.0]), label)
+	if not control_ok:
+		_failures.append("spatial component valid control failed for " + label)
+		return
+	var domain: Dictionary = session.weather_configuration().spatial_wind.domain
+	var invalid_datum := body.duplicate()
+	invalid_datum[RB.POS] = float(domain.half_extent_north_m) + 5.0
+	var invalid_station := body.duplicate()
+	invalid_station[RB.POS] = 0.0
+	invalid_station[RB.POS + 1] = 0.0
+	invalid_station[RB.POS + 2] = -0.01
+	invalid_station[RB.ATT] = sqrt(0.5)
+	invalid_station[RB.ATT + 1] = sqrt(0.5)
+	invalid_station[RB.ATT + 2] = 0.0
+	invalid_station[RB.ATT + 3] = 0.0
+	var cases: Array[Dictionary] = [
+		{name = "datum", state = invalid_datum, time_s = 0.0},
+		{name = "clock", state = body.duplicate(), time_s = float(domain.time_horizon_s) + 1.0},
+		{name = "station", state = invalid_station, time_s = 0.0},
+	]
+	session.sim.aux = aux.duplicate()
+	for item: Dictionary in cases:
+		var state: PackedFloat64Array = item.state
+		var time_s: float = item.time_s
+		var rho: float = session.air_density(state)
+		var ref_flow: Dictionary = WindFlow.stage_air(state, session.aircraft.model, session.environment,
+			time_s, rho, Aero.SPATIAL_CONTINUATION_LAW, false)
+		var native_flow: Dictionary = _native.spatial_flow_component(state, time_s, rho, aux, -1, session.sim.dt())
+		var refused: bool = not ref_flow.get("ok", true) and not native_flow.get("ok", true) \
+			and not str(native_flow.get("error", "")).is_empty() \
+			and not native_flow.has("station_delta_body") and not native_flow.has("propulsion_air_body")
+		if item.name == "station":
+			# The datum must be valid: refusal comes from a physical station.
+			var datum: PackedFloat64Array = session.environment.wind_world(state.slice(RB.POS, RB.POS + 3), time_s)
+			for value: float in datum:
+				refused = refused and is_finite(value)
+		_compare("weather_spatial_component_refusal", PackedFloat64Array([1.0]),
+			PackedFloat64Array([1.0 if refused else 0.0]), [label, item.name])
+		if not refused:
+			_failures.append("spatial component did not fail closed for %s/%s" % [label, item.name])
+		var context_ok: bool = _native.set_tick_context(aux, session.sim.inputs,
+			Adapter.deflection_array(session._deflections(aux)), session.sim.time())
+		var values: PackedFloat64Array = session.sim.continuous.duplicate()
+		var ref_stage: Dictionary = session._wheel_evaluate(state, values, time_s)
+		var native_stage: Dictionary = _native.stage(state, values, time_s)
+		_compare_stage(ref_stage, native_stage, [label, "invalid-domain", item.name, state, time_s])
+		if not context_ok or _finite_stage(ref_stage, values.size()) or _finite_stage(native_stage, values.size()):
+			_failures.append("spatial joint stage accepted an invalid weather point for %s/%s" % [label, item.name])
+		_tally("weather_stage", "spatial_domain_refusals")
 
 
 static func _weather_tape(session: Node) -> PackedByteArray:

@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "nk_battery.hpp"
+#include "nk_electric_coupling.hpp"
 #include "nk_pack_ecm.hpp"
 
 namespace nk {
@@ -264,6 +265,47 @@ public:
 			out["values"] = result;
 			out["rates"] = rates;
 		}
+		return out;
+	}
+
+
+	// Qualification probe: stage = [trial rpm, local air x/y/z, density,
+	// charge ratio, duty, ambient K, cooling m/s]. The caller owns the prepared
+	// propeller and supplies the same pre-reaction loads and inertia as the session.
+	godot::Dictionary electric_coupling_component(const PropModel &prop, const godot::PackedFloat64Array &body,
+			const godot::PackedFloat64Array &stage, const godot::PackedFloat64Array &block,
+			const godot::PackedFloat64Array &inertia, const godot::PackedFloat64Array &inverse,
+			const godot::PackedFloat64Array &external, bool enabled) const {
+		godot::Dictionary out;
+		out["ok"] = false;
+		if (!ready_ || body.size() != 13 || stage.size() != 9 || block.size() > 13 || inertia.size() != 6 ||
+				inverse.size() != 6 || external.size() != 6) return out;
+		R body_values[13], stage_values[9], pack_values[13], j[6], j_inv[6], loads[6];
+		for (int i = 0; i < 13; ++i) body_values[i] = body[i];
+		for (int i = 0; i < 9; ++i) stage_values[i] = stage[i];
+		for (int64_t i = 0; i < block.size(); ++i) pack_values[i] = block[i];
+		for (int i = 0; i < 6; ++i) { j[i] = inertia[i]; j_inv[i] = inverse[i]; loads[i] = external[i]; }
+		if (!is_finite(stage_values[0])) return out;
+		const R rpm = maxf(0.0, stage_values[0]);
+		const ElectricStagePoint point = evaluate(rpm, stage_values[6], pack_values, static_cast<int>(block.size()),
+				enabled, stage_values[7], stage_values[8]);
+		const ElectricCouplingSource source{point.ok, point.values[0], point.values[1]};
+		const auto coupled = electric_coupled_response(body_values, stage_values[0], prop, motor_, j, j_inv,
+				stage_values + 1, stage_values[4], stage_values[5], stage_values[6],
+				kind_ != ElectricBatteryKind::FixedVoltage, source, loads);
+		out["ok"] = coupled.ok;
+		if (!coupled.ok) return out;
+		godot::PackedFloat64Array values, rates;
+		values.resize(14);
+		values[0] = coupled.spin_acceleration.v;
+		for (int i = 0; i < 3; ++i) { values[1 + i] = coupled.reaction[i].v; values[4 + i] = coupled.rotor[i].v; }
+		values[7] = coupled.rpm_rate.v;
+		for (int i = 0; i < 6; ++i) values[8 + i] = coupled.loads[i].v;
+		rates.resize(static_cast<int64_t>(point.rates.size()));
+		for (size_t i = 0; i < point.rates.size(); ++i) rates[static_cast<int64_t>(i)] = point.rates[i].v;
+		out["values"] = values;
+		out["rates"] = rates;
+		out["locked"] = coupled.locked;
 		return out;
 	}
 
