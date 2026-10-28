@@ -38,7 +38,7 @@ REFERENCE_SOURCES = [
     "app/physics/ground_wheels.gd", "app/physics/ground_contact.gd", "app/physics/air_data.gd",
     "app/physics/ground_effect.gd", "app/physics/aero.gd", "app/physics/propulsion.gd", "app/physics/dynamics.gd",
     "app/physics/hull_contact.gd", "app/physics/wind_field.gd", "app/sim/environment.gd", "app/sim/flight_session.gd",
-    "app/sim/simulation.gd",
+    "app/sim/simulation.gd", "app/sim/native_stage.gd", "app/data/aircraft/jensen_ugly_stik_60.json",
 ]
 LIBM_SYMBOLS = {"sin", "cos", "tan", "asin", "acos", "atan", "atan2", "sqrt", "pow", "exp", "log",
                 "sinh", "cosh", "tanh", "fmod", "floor", "sincos"}
@@ -221,6 +221,7 @@ def install_app() -> int:
         "compiler_version": built["compiler_version"], "cxxflags_appended": built["cxxflags_appended"],
         "libm_imports": built["libm_imports"], "repository_head": built["repository_head"],
         "mirrored_sources": sources, "verification": verification,
+        "engine_version": pinned_engine_identity()[0], "engine_sha256": pinned_engine_identity()[1],
     }
     receipt = {"format": RECEIPT_FORMAT, "backend": "native", "backend_version": BACKEND_VERSION,
                "abi_version": ABI_VERSION, "platforms": {"linux": record}}

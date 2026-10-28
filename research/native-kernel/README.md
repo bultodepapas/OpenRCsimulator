@@ -112,6 +112,55 @@ This local installation does not qualify exports, Windows, target-host timing or
 mirrored-source list is not a manifest of every aircraft/environment input; retained results describe their
 recorded snapshot, and data changes require fresh verification.
 
+## C++ development tools (NK-3)
+
+`devtools.py` reuses the locked GCC/SCons/godot-cpp toolchain and existing stage/trajectory oracles. It provides
+two **development-only** builds, with separate godot-cpp checkouts and objects, symbols, frame pointers and
+SCons-generated `compile_commands.json`. `sanitize` instruments both bindings and NK-3 with GCC ASan/UBSan;
+`profile` keeps an optimized, unsanitized library for debugger/profiler use. Neither writes into `app/`, the
+regular build directory or installation receipts. Every output directory must be new and under `tmp/`.
+
+```bash
+python3 research/native-kernel/devtools.py build --mode sanitize --jobs 2 --out tmp/nk3-sanitize
+python3 research/native-kernel/devtools.py check --build tmp/nk3-sanitize --out tmp/nk3-sanitize-stage
+python3 research/native-kernel/devtools.py check --build tmp/nk3-sanitize --out tmp/nk3-sanitize-ticks \
+  --script trajectory.gd --ticks 960
+python3 research/native-kernel/devtools.py build --mode profile --jobs 2 --out tmp/nk3-profile
+python3 research/native-kernel/test_devtools.py
+```
+
+The check copies and imports a private app (including its existing import cache, excluding installed native
+extensions), freezes the harness and records source, engine and library hashes. Allow at least 4 GiB free for
+each private copy. Source changes during the copy fail the run. It preloads GCC's matching ASan runtime into
+Godot only, forces UBSan to halt, rejects sanitizer stderr even on exit zero, and retains checked-run logs and
+`summary.json`. Before the oracle, two disposable shared-library constructors deliberately cause a heap buffer
+overflow and signed integer overflow in the same engine process; each must fail with its specific diagnostic.
+`positive-controls.json` records that detector proof. The production library and C++ source are never mutated.
+
+Sanitizer checks cover instrumented code, not the official engine's internals. Leak detection is disabled for
+this uninstrumented host. The intentional NaN/Inf corpus remains valid input for the existing numerical oracle;
+the wrapper does not enable floating-point divide-by-zero traps. A passing short development run does not
+satisfy the normal installation gate, fleet validation or physical validation. Run the regular builder and
+verification workflow above before promotion. Timing is disabled in development checks.
+
+Point clangd at the build's compilation database; it includes the real NK-3 translation unit, generated includes
+and strict FP flags. If clang-tidy is installed, use the database without automatic fixes, for example:
+
+```bash
+clang-tidy -p tmp/nk3-profile -checks='-*,clang-analyzer-*,bugprone-*' \
+  research/native-kernel/src/nk_kernel.cpp
+```
+
+Static analysis is advisory and requires its own recorded tool version; compiler errors are not a clean result.
+Use stock `perf record`/`perf report` or GDB with the profile library and its descriptor. Counter access depends
+on host permissions; no tool here changes system policy. Whole-oracle profiles include the reference backend,
+startup and wrappers. Use the regular `trajectory.gd` paired timing for per-tick comparison on an otherwise idle
+host. Its timing and attribution paths require completed warm-up, every requested tick advancing exactly once,
+no pause/fault/crash and native-stage coverage before aggregation; failed work has no percentile result.
+Sanitizer/profile overhead and shared-host measurements do not qualify target performance or 1080p rendering.
+
+Design sources and bounded execution evidence: [tooling research](../../docs/research/native-kernel/NK-3/tooling-research-2026-10-28.md).
+
 ## Windows design note (not built)
 
 MSVC x64 has no inline assembly, so rule 2 needs another left-first mechanism there; none is verified yet:

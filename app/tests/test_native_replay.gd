@@ -16,6 +16,7 @@ class BackendIdentityFlight extends Flight:
 var checks := 0
 var failures := 0
 var destination := ""
+var reference_only := false
 
 
 func check(label: String, passed: bool, detail := "") -> void:
@@ -27,6 +28,7 @@ func check(label: String, passed: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	Engine.physics_ticks_per_second = 240
+	reference_only = OS.get_cmdline_user_args().has("--reference-only")
 	destination = ProjectSettings.globalize_path("res://../tmp/native-replay-%d" % Time.get_ticks_usec())
 	DirAccess.make_dir_recursive_absolute(destination)
 	call_deferred("run_all")
@@ -186,6 +188,10 @@ func run_all() -> void:
 	reference.free()
 	changing_backend_stops_log()
 
+	if reference_only:
+		print("NK3_NATIVE_REPLAY_SKIP reference-only run")
+		finish()
+		return
 	var native := flight("native")
 	var identity: Variant = native.call("stage_backend_identity") if native.has_method("stage_backend_identity") \
 		else {backend = "gdscript_reference"}

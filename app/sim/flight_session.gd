@@ -261,6 +261,7 @@ func setup_shaft_integrator(mode: Variant) -> bool:
 		return false
 	_install_continuous_callbacks(callbacks)
 	shaft_error = ""
+	_prepare_stage_backend()
 	# Pending selection is accepted now. The explicit reset still constructs the
 	# physical layout and owns statistics credit; no sample is published here.
 	transaction.committed = true
@@ -529,6 +530,7 @@ func setup_weather(settings: Variant) -> bool:
 	_weather = built.field
 	_weather_pending_reset = true
 	weather_error = ""
+	_prepare_stage_backend()
 	# This accepts a pending configuration, not a new physical start. Keep the
 	# historical setup_weather(); reset() contract, with no tick or credit here.
 	transaction.committed = true
@@ -729,12 +731,16 @@ func stage_backend_status() -> Dictionary:
 
 ## Fresh candidate, never mutate the helper retained by an uncommitted start transaction. Called only outside
 ## kernel evaluation/publication, after the complete aircraft/environment/layout revision has been staged.
-func _prepare_stage_backend(time_now := NAN) -> void:
+func _prepare_stage_backend(time_now := NAN, backend := "") -> void:
 	if _native_stage != null:
 		_native_stage.restore_reference_callback(self)
 	_native_stage = null
 	stage_backend_error = ""
-	if _stage_backend_requested != NativeStage.BACKEND_NATIVE or sim == null or not aircraft.get("ok", false):
+	var selected: String = _stage_backend_requested if backend.is_empty() else backend
+	if selected != NativeStage.BACKEND_NATIVE or sim == null or not aircraft.get("ok", false):
+		return
+	if _weather_pending_reset or _shaft_pending_reset:
+		stage_backend_error = "pending configuration requires reset"
 		return
 	# Production opt-in is bounded by the qualified stock aircraft; the research adapter still tests components.
 	if aircraft.model.get("id", "") != "jensen-das-ugly-stik-60" or not workshop_identity.is_empty() \
@@ -1310,6 +1316,7 @@ var ground_surfaces: PackedFloat64Array:
 	get:
 		return environment.surfaces
 	set(value):
+		if _reject_reset_publication_reentry(): return
 		environment.surfaces = value
 		_refresh_stage_backend()
 ## H2: last deflections built by _deflections() and the servo positions they belong to (cleared with each aircraft).
@@ -1322,6 +1329,7 @@ var airframe_surfaces: PackedFloat64Array:
 	get:
 		return _airframe_surfaces
 	set(value):
+		if _reject_reset_publication_reentry(): return
 		_airframe_surfaces = value.duplicate()
 		if sim != null and aircraft.get("ok", false):
 			_hull_contact = _prepare_hull_contact()
@@ -5403,6 +5411,11 @@ func checkpoint() -> Dictionary:
 		boundary.airframe_physics_format = boundary.format
 		boundary.format = OUT_OF_TRIM_CHECKPOINT_FORMAT
 		boundary.airframe_trim_offset = _airframe_offset.duplicate()
+	var backend := stage_backend_identity()
+	if backend.backend == NativeStage.BACKEND_NATIVE:
+		boundary.stage_physics_format = boundary.format
+		boundary.format = NATIVE_CHECKPOINT_FORMAT
+		boundary.stage_backend = backend
 	return boundary
 
 
@@ -5426,6 +5439,9 @@ func _configuration_for_weather(field: WeatherField) -> String:
 	var config_hash := HashingContext.new()
 	config_hash.start(HashingContext.HASH_SHA256)
 	var parts: Array = [aircraft.model, ground_surfaces]
+	var backend := stage_backend_identity()
+	if backend.backend == NativeStage.BACKEND_NATIVE:
+		parts.append(backend)
 	if not aircraft.model.get("envelope", {}).is_empty():
 		parts.append(Aero.LOADS_LAW + "; " + Aero.WAKE_STATE_UNIT)
 	if Turbine.is_turbine(aircraft.model.propulsion):
@@ -5502,6 +5518,22 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 
 func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) -> bool:
 	if typeof(candidate.get("format")) != TYPE_STRING: return false
+	var recorded_backend := NativeStage.reference_identity()
+	if candidate.format == NATIVE_CHECKPOINT_FORMAT:
+		if not candidate.get("stage_backend") is Dictionary \
+				or candidate.stage_backend.get("backend") != NativeStage.BACKEND_NATIVE \
+				or typeof(candidate.get("stage_physics_format")) != TYPE_STRING \
+				or candidate.stage_physics_format == NATIVE_CHECKPOINT_FORMAT:
+			return false
+		recorded_backend = candidate.stage_backend.duplicate(true)
+		candidate = candidate.duplicate(true)
+		candidate.format = candidate.stage_physics_format
+		candidate.erase("stage_physics_format")
+		candidate.erase("stage_backend")
+	elif candidate.has("stage_backend") or candidate.has("stage_physics_format"):
+		return false
+	if recorded_backend != stage_backend_identity():
+		return false
 	# D6-TRIM-01: the outermost layer names the airframe the recorded flight flew; without it the airframe is true.
 	var restored_airframe_offset := PackedFloat64Array([0.0, 0.0, 0.0])
 	if candidate.get("format") == OUT_OF_TRIM_CHECKPOINT_FORMAT:
@@ -5754,6 +5786,15 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 	# The common transaction restores it silently on any precommit refusal.
 	sim.aux = snapshot.aux.duplicate()
 	sim.modes = snapshot.modes.duplicate()
+	sim.inputs = snapshot.inputs.duplicate()
+	_weather = restored_weather
+	_weather_pending_reset = false
+	_shaft_pending_reset = false
+	_airframe_offset = restored_airframe_offset
+	_deflection_key = PackedFloat64Array()
+	_prepare_stage_backend(float(snapshot.tick) * float(snapshot.dt), str(recorded_backend.backend))
+	if recorded_backend != stage_backend_identity():
+		return false
 	return sim.restore_checkpoint(snapshot, func() -> void:
 		transaction.committed = true
 		_reset_physical_committed = true

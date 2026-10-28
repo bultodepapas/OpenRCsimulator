@@ -40,6 +40,9 @@ func _checks() -> void:
 	if str(_options.get("skip-timing", "")) != "true":
 		if only in ["all", "timing"]:
 			_time_sessions()
+			if not _failures.is_empty():
+				_report.load_average.end = _load_average()
+				return
 		if only in ["all", "timing", "attribution"]:
 			_attribute_native()
 	_report.load_average.end = _load_average()
@@ -417,23 +420,87 @@ static func _percentile(values: PackedFloat64Array, fraction: float) -> float:
 	return sorted[clampi(int(round(fraction * (sorted.size() - 1))), 0, sorted.size() - 1)]
 
 
-func _timed_run(case: String, native: bool, warmup: int, samples: int) -> Dictionary:
-	var built := _session_for(case, native)
-	if built.is_empty():
-		return {}
-	var session: Node = built.session
+static func _timing_state_error(session: Node, native: Object, expected_stage: Callable) -> String:
+	if not session.sim.fault_reason.is_empty():
+		return "simulation fault: " + str(session.sim.fault_reason)
+	if not session.crash.is_empty():
+		return "session crashed"
+	if session.sim.paused:
+		return "simulation paused"
+	if native != null and session.sim.model.stage != expected_stage:
+		return "native stage was replaced"
+	return ""
+
+
+## Check outside the stopwatch, including every warm-up tick: a later extra substep cannot hide a missed tick.
+static func _timing_tick_error(session: Node, before_tick: int, native: Object, expected_stage: Callable,
+		before_stats: Dictionary, after_stats: Dictionary) -> String:
+	var error := _timing_state_error(session, native, expected_stage)
+	if not error.is_empty():
+		return error
+	if session.sim.tick != before_tick + 1:
+		return "tick did not advance exactly once"
+	if native != null and not _native_tick_covered(before_stats, after_stats):
+		return "native stage or context did not cover the tick"
+	return ""
+
+
+static func _timing_warmup(session: Node, native: Object, expected_stage: Callable, warmup: int) -> Dictionary:
+	var error := _timing_state_error(session, native, expected_stage)
+	if not error.is_empty():
+		return {ok = false, error = error, completed = 0}
+	if native != null:
+		native.reset_stage_stats(false)
+	var previous: Dictionary = native.stage_stats() if native != null else {}
 	for index in warmup:
-		if not _advance(session):
-			break
+		var before_tick: int = session.sim.tick
+		session._physics_process(session.sim.dt())
+		session.sim._physics_process(session.sim.dt())
+		var current: Dictionary = native.stage_stats() if native != null else {}
+		error = _timing_tick_error(session, before_tick, native, expected_stage, previous, current)
+		if not error.is_empty():
+			return {ok = false, error = "warm-up tick %d: %s" % [index + 1, error], completed = index}
+		previous = current
+	return {ok = true, completed = warmup, stats = previous}
+
+
+## The caller owns the session. Failed work never gets a percentile or mean.
+static func _timed_session(session: Node, native: Object, warmup: int, samples: int) -> Dictionary:
+	if warmup <= 0 or samples <= 0:
+		return {ok = false, error = "warmup and samples must be positive", warmup_completed = 0, samples_completed = 0}
+	if native != null and not Adapter.installed(session, native):
+		return {ok = false, error = "native stage is not installed", warmup_completed = 0, samples_completed = 0}
+	var expected_stage: Callable = session.sim.model.stage if native != null else Callable()
+	var warmed := _timing_warmup(session, native, expected_stage, warmup)
+	if not warmed.ok:
+		return {ok = false, error = warmed.error, warmup_completed = warmed.completed, samples_completed = 0}
+	var previous: Dictionary = warmed.stats
 	var tick_usec := PackedFloat64Array()
 	for index in samples:
+		var before_tick: int = session.sim.tick
 		var start := Time.get_ticks_usec()
 		session._physics_process(session.sim.dt())
 		session.sim._physics_process(session.sim.dt())
-		tick_usec.append(float(Time.get_ticks_usec() - start))
-	var ok: bool = session.sim.fault_reason.is_empty() and session.crash.is_empty()
+		var elapsed := Time.get_ticks_usec() - start
+		var current: Dictionary = native.stage_stats() if native != null else {}
+		var error := _timing_tick_error(session, before_tick, native, expected_stage, previous, current)
+		if not error.is_empty():
+			return {ok = false, error = "sample tick %d: %s" % [index + 1, error],
+				warmup_completed = warmup, samples_completed = index}
+		previous = current
+		tick_usec.append(float(elapsed))
+	return {ok = true, warmup_completed = warmup, samples_completed = tick_usec.size(),
+		median = _percentile(tick_usec, 0.5), p95 = _percentile(tick_usec, 0.95), mean = _mean(tick_usec)}
+
+
+func _timed_run(case: String, native: bool, warmup: int, samples: int) -> Dictionary:
+	var built := _session_for(case, native)
+	if built.is_empty():
+		return {ok = false, error = "could not build session", warmup_completed = 0, samples_completed = 0}
+	var session: Node = built.session
+	var result := _timed_session(session, _native if native else null, warmup, samples)
 	session.free()
-	return {ok = ok, median = _percentile(tick_usec, 0.5), p95 = _percentile(tick_usec, 0.95), mean = _mean(tick_usec)}
+	return result
 
 
 static func _mean(values: PackedFloat64Array) -> float:
@@ -450,13 +517,26 @@ func _time_sessions() -> void:
 	var samples: int = int(_options.get("samples", "4800"))
 	var cases: PackedStringArray = str(_options.get("timing-cases", "runway,trim,maneuver")).split(",")
 	_report.session_timing = {pairs = pairs, warmup = warmup, samples = samples, cases = {}}
+	if pairs <= 0 or warmup <= 0 or samples <= 0:
+		_failures.append("timing pairs, warmup and samples must be positive")
+		return
 	for case: String in cases:
+		if case not in CASES:
+			_failures.append("unknown timing case: %s" % case)
+			return
 		var rows: Array = []
 		for pair in pairs:
 			var row := {}
 			for order in 2:
 				var native: bool = (pair + order) % 2 == 1
-				row["native" if native else "reference"] = _timed_run(case, native, warmup, samples)
+				var backend := "native" if native else "reference"
+				var result := _timed_run(case, native, warmup, samples)
+				row[backend] = result
+				if not result.ok:
+					rows.append(row)
+					_report.session_timing.cases[case] = {pairs = rows, error = result.error}
+					_failures.append("timing %s pair %d %s: %s" % [case, pair + 1, backend, result.error])
+					return
 			rows.append(row)
 		var ref_median := PackedFloat64Array()
 		var nat_median := PackedFloat64Array()
@@ -483,6 +563,9 @@ func _attribute_native() -> void:
 	_report.attribution = {}
 	var samples: int = int(_options.get("samples", "4800"))
 	var repeats: int = int(_options.get("repeats", "3"))
+	if samples <= 0 or repeats <= 0:
+		_failures.append("attribution samples and repeats must be positive")
+		return
 	for case: String in ["runway", "trim"]:
 		var collected := {reference = [], native = []}
 		for repeat in repeats:
@@ -504,11 +587,19 @@ func _attribute_native() -> void:
 
 
 func _attribution_run(case: String, native: bool, samples: int) -> Dictionary:
+	if samples <= 0:
+		_failures.append("attribution samples must be positive")
+		return {}
 	var built := _session_for(case, native)
 	if built.is_empty():
+		_failures.append("attribution %s: could not build session" % case)
 		return {}
 	var session: Node = built.session
 	var sim: Node = session.sim
+	if native and not Adapter.installed(session, _native):
+		_failures.append("attribution %s: native stage is not installed" % case)
+		session.free()
+		return {}
 	var spent := {pre_tick = 0, stage = 0, post_tick = 0}
 	var wrap := func(key: String, inner: Callable) -> Callable:
 		return func(a: Variant, b: Variant, c: Variant, d: Variant = null, e: Variant = null) -> Variant:
@@ -521,23 +612,39 @@ func _attribution_run(case: String, native: bool, samples: int) -> Dictionary:
 			return result
 	sim.model.pre_tick = wrap.call("pre_tick", sim.model.pre_tick)
 	sim.model.stage = wrap.call("stage", sim.model.stage)
+	var expected_stage: Callable = sim.model.stage if native else Callable()
 	if sim.model.post_tick_joint.is_valid():
 		sim.model.post_tick_joint = wrap.call("post_tick", sim.model.post_tick_joint)
 	elif sim.model.post_tick.is_valid():
 		sim.model.post_tick = wrap.call("post_tick", sim.model.post_tick)
-	for index in 600:
-		_advance(session)
+	var timing_native: Object = _native if native else null
+	var warmed := _timing_warmup(session, timing_native, expected_stage, 600)
+	if not warmed.ok:
+		_failures.append("attribution %s %s: %s" % [case, "native" if native else "reference", warmed.error])
+		_native.reset_stage_stats(false)
+		session.free()
+		return {}
 	for key: String in spent:
 		spent[key] = 0
 	_native.reset_stage_stats(native)
+	var previous: Dictionary = _native.stage_stats() if native else {}
 	var input_usec := 0
 	var tick_usec := 0
 	for index in samples:
+		var before_tick: int = sim.tick
 		var start := Time.get_ticks_usec()
 		session._physics_process(sim.dt())
 		var middle := Time.get_ticks_usec()
 		sim._physics_process(sim.dt())
 		var end := Time.get_ticks_usec()
+		var current: Dictionary = _native.stage_stats() if native else {}
+		var error := _timing_tick_error(session, before_tick, timing_native, expected_stage, previous, current)
+		if not error.is_empty():
+			_failures.append("attribution %s %s sample tick %d: %s" % [case, "native" if native else "reference", index + 1, error])
+			_native.reset_stage_stats(false)
+			session.free()
+			return {}
+		previous = current
 		input_usec += middle - start
 		tick_usec += end - start
 	var stats: Dictionary = _native.stage_stats()

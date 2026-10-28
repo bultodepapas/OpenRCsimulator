@@ -264,7 +264,8 @@ func _source_hashes() -> Dictionary:
 			"res://physics/ground_wheels.gd", "res://physics/ground_contact.gd", "res://physics/air_data.gd",
 			"res://physics/ground_effect.gd", "res://physics/aero.gd", "res://physics/propulsion.gd",
 			"res://physics/dynamics.gd", "res://physics/hull_contact.gd", "res://physics/wind_field.gd",
-			"res://sim/environment.gd", "res://sim/flight_session.gd", "res://sim/simulation.gd"]:
+			"res://sim/environment.gd", "res://sim/flight_session.gd", "res://sim/simulation.gd",
+			"res://sim/native_stage.gd", "res://data/aircraft/jensen_ugly_stik_60.json"]:
 		out[path] = FileAccess.get_sha256(path)
 	return out
 

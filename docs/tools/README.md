@@ -12,6 +12,7 @@ Find the tool for your task here before you write ad-hoc test or debug code. Rea
 | Change aircraft handling (roll rate, throws, aero data) and validate it | [physics](physics.md#flight-test-battery) | `python3 research/flight-test/run.py --out tmp/ft-base --aircraft <id> --only trim_sweep,stall_power_off,vmax,roll_rate` |
 | Edit an aircraft JSON or other generated data | [physics](physics.md#aircraft-data-and-generators) | run the owning generator's `--check` |
 | Compare flight feel before and after a physics change | [physics](physics.md#flight-log-and-replay) | `python3 tools/flight_log/flight_log.py --help` |
+| Develop or diagnose the NK-3 C++ port (ASan/UBSan, compilation database, profiling symbols, exactness/timing) | [Native kernel tools](../../research/native-kernel/README.md#c-development-tools-nk-3) | `python3 research/native-kernel/devtools.py --help` |
 | Change shaders, materials, lighting, landscape or scenery and verify it | [graphics](graphics.md#area-capture-checkers) | `"$(app/tests/visual-env.sh)" tools/<area>/check_*.py --app app --godot "$(app/get-godot.sh)" --out tmp/<new>` |
 | Run the full visual capture set | [graphics](graphics.md#visual-capture-suite) | `app/capture.sh` |
 | Measure frame time or GPU cost | [graphics](graphics.md#frame-diagnosis) | `--frametimes=<json> --frame-diagnostics` |

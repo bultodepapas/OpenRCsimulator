@@ -238,6 +238,10 @@ static func _load_library() -> String:
 	var row := _platform_row(JSON.parse_string(FileAccess.get_file_as_string(RECEIPT_PATH)))
 	if row.is_empty():
 		return "native stage receipt is malformed or for another backend version or ABI"
+	if row.get("engine_version") != Engine.get_version_info().string \
+			or str(row.get("engine_sha256", "")).length() != 64 \
+			or FileAccess.get_sha256(OS.get_executable_path()) != row.engine_sha256:
+		return "native stage requires the exact verified Godot executable; reinstall after verification"
 	if not _binary_matches(str(row.binary_sha256)):
 		return "native stage binary does not match its receipt"
 	if not GDExtensionManager.is_extension_loaded(EXTENSION_PATH):

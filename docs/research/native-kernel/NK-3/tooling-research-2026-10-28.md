@@ -14,7 +14,7 @@ and the pinned Linux Godot editor ([lock](../../../../research/native-kernel/too
 | Will a sanitizer report necessarily fail the existing runner? | GCC 13.3 says [UBSan normally recovers](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Instrumentation-Options.html), so an error may still exit successfully. The [checked runner](../../../../tools/godot/run_checked.py) recognizes Godot-style line-start diagnostics; a typical ASan `==pid==ERROR` or UBSan `file:line: runtime error` is not classified by that expression. The existing numerical `NK_MUTATION` is not a sanitizer positive control. |
 | Is a compilation database already available? | The [pinned godot-cpp source](https://github.com/godotengine/godot-cpp/blob/507ed9d840c01a3c5b2a39af8bb4000bfac30bf5/tools/godotcpp.py) defines `compiledb` and `compiledb_file`. [SCons](https://mail.scons.org/doc/latest/HTML/scons-user/ch27.html) supplies the database builder; [clang-tidy](https://clang.llvm.org/extra/clang-tidy/) consumes a compilation database. The current [NK-3 builder](../../../../research/native-kernel/build.py) does not expose this option. Inclusion of its outer `SharedObject` and all actual flags must be verified. |
 | Does static analysis certify exact math? | No. [Clang](https://clang.llvm.org/docs/DriverInternals.html) does not support every GCC option; [GCC](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Extended-Asm.html) cannot validate all instruction/operand semantics inside extended asm. NK-3's [`nk::R`](../../../../research/native-kernel/src/nk_math.hpp) deliberately uses SSE2 asm and a `pow` barrier to preserve operand and library behavior; the existing pinned-GCC byte oracles remain necessary. |
-| What timing evidence already exists? | The [trajectory harness](../../../../research/native-kernel/trajectory.gd) already alternates reference/native pairs, warms up, and reports per-tick median and p95. Its timed loop currently breaks on a failed warm-up but still measures; it does not verify tick advancement for each measured call or reject a paused session. Existing [results](README.md) are shared-VM, debug-editor evidence, not target-host qualification. |
+| What timing evidence already exists? | The [trajectory harness](../../../../research/native-kernel/trajectory.gd) already alternates reference/native pairs, warms up, and reports per-tick median and p95. At the inspected snapshot its timed loop broke on a failed warm-up but still measured; it did not verify tick advancement for each measured call or reject a paused session. Existing [results](README.md) are shared-VM, debug-editor evidence, not target-host qualification. |
 | What can Linux `perf` add? | [`perf stat -r`](https://github.com/torvalds/linux/blob/master/tools/perf/Documentation/perf-stat.txt) repeats a command and reports mean and standard deviation; [`perf record`](https://github.com/torvalds/linux/blob/master/tools/perf/Documentation/perf-record.txt) can sample call stacks. Access depends on [kernel perf permissions](https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html). Whole-command counters include startup and, in the present harness, both backends; they are not native-stage cost alone. |
 
 ## Ranked recommendations
@@ -55,3 +55,12 @@ and the pinned Linux Godot editor ([lock](../../../../research/native-kernel/too
 
 No new benchmark, sanitizer build or analysis was executed for this note. These checks establish software
 behavior and measured execution cost only; neither establishes physical realism or display qualification.
+
+## Focused timing policy repair (2026-10-28)
+
+The timing and attribution loops now reject invalid counts, incomplete warm-up, failed or non-advancing ticks,
+and missing native-stage/context coverage before emitting timing summaries. Checks run outside the measured
+session/simulation calls. A checked headless run of `test_trajectory.gd` passed 105 checks with zero failures,
+engine warnings or errors; it includes fake-session cases for both loops. The local report and log are under
+`tmp/nk3-timing-tool-checks/nk3-timing-policy-recheck-3n110os5/`. This is policy verification, not a native
+performance measurement; the pre-repair historical results above have not been requalified.

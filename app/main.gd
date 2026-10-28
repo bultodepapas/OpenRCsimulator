@@ -729,6 +729,14 @@ func _prepare_flight() -> void:
 	if not await _startup_stage("Checking flight"):
 		return
 	session = FlightSession.new()
+	if args.has("physics-backend") and (not session.setup_stage_backend(str(args["physics-backend"])) or _scripted):
+		printerr("physics backend refused: ", session.stage_backend_error if not _scripted else "requires a physics flight")
+		session.free()
+		session = null
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
 	session.external_controller_selection = external_controller_selection
 	session.physics_enabled = not _scripted
 	# This explicit airborne operating point must be selected before setup solves trim.
@@ -1040,6 +1048,8 @@ func _prepare_flight() -> void:
 	# E3d1: interactive flights get soft hull contacts (a wingtip brush or belly slide continues); scripted, capture
 	# and trace routes keep "any hull contact is a crash". -- --soft-contacts=off restores it interactively.
 	session.soft_hull_contacts = not _scripted and not args.has("capture") and str(args.get("soft-contacts", "on")) != "off"
+	if args.has("physics-backend"):
+		print("physics backend: ", JSON.stringify(session.stage_backend_status()))
 	if accident_reports_enabled and not _scripted and not args.has("capture") and not args.has("trace") \
 		and str(args.get("accident-report", "on")) != "off":
 		_accident_incident = AccidentIncident.new()
