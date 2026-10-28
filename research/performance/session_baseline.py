@@ -504,6 +504,18 @@ def native_source_digest(root: Path) -> str:
     return digest.hexdigest()
 
 
+def app_source_digest(app: Path) -> str:
+    """Hash application code and text data, excluding generated cache and installed native binaries."""
+    digest = hashlib.sha256()
+    paths = sorted(path for path in app.rglob("*") if path.is_file() and path.suffix.lower() in CODE_SUFFIXES
+                   and not any(part in (".godot", "native", "captures") for part in path.relative_to(app).parts))
+    if not paths:
+        raise RuntimeError("application source files are missing")
+    for path in paths:
+        digest.update(path.relative_to(app).as_posix().encode() + b"\0" + path.read_bytes() + b"\0")
+    return digest.hexdigest()
+
+
 def _git(root: Path, *args: str) -> bytes:
     result = subprocess.run(
         ["git", *args], cwd=root, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -780,7 +792,7 @@ def parse_id_list(values: Sequence[str] | None, defaults: Sequence[str], label: 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--godot", required=True, help="pinned Godot 4.8-beta1 executable")
+    parser.add_argument("--godot", help="pinned Godot 4.8-beta1 executable")
     parser.add_argument("--out", type=Path, required=True, help="new or empty output directory")
     parser.add_argument("--probe", type=Path, help="probe script; defaults beside this runner")
     parser.add_argument("--aircraft", action="append", help="catalog ID; repeat or pass comma-separated IDs")
@@ -793,6 +805,8 @@ def build_parser() -> argparse.ArgumentParser:
                         help="backend for the default observer-on/off pairs")
     parser.add_argument("--compare-backends", action="store_true",
                         help="alternate observer-on reference/native pairs instead of observer pairs")
+    parser.add_argument("--compare-campaigns", nargs=2, type=Path, metavar=("BEFORE", "AFTER"),
+                        help="compare two completed backend campaign JSON files")
     return parser
 
 
@@ -841,12 +855,15 @@ def run_campaign(args: argparse.Namespace) -> int:
     pairs: list[dict[str, Any]] = []
     summaries: list[dict[str, Any]] = []
     metadata: dict[str, Any] = {"system": capture_system_identity()}
+    native_identities: set[str] = set()
+    solver_identities: set[str] = set()
     try:
         try:
             metadata["workspace"] = capture_workspace_identity(root)
             godot = resolve_executable(args.godot)
             metadata["engine"] = inspect_godot(godot, args.timeout)
             metadata["native_source_sha256"] = native_source_digest(root)
+            metadata["app_source_sha256"] = app_source_digest(app_dir)
             metadata["probe"] = {
                 "path": str(probe),
                 "sha256": _sha256_file(probe) if probe.is_file() else None,
@@ -897,7 +914,14 @@ def run_campaign(args: argparse.Namespace) -> int:
                             native_source_sha256=metadata["native_source_sha256"],
                         )
                         reports[mode] = run["report"] if run["accepted"] else None
+                        if run["accepted"] and isinstance(run["report"], dict):
+                            accepted_report = run["report"]
+                            solver_identities.add(accepted_report["solver_sha256"])
+                            if physics_backend == "native":
+                                native_identities.add(json.dumps(accepted_report["backend"]["actual"], sort_keys=True))
                         runs[mode] = _safe_report_view(run)
+                        runs[mode]["report_relative_path"] = json_path.relative_to(output_dir).as_posix()
+                        runs[mode]["report_sha256"] = _sha256_file(json_path) if json_path.is_file() else None
                         print(f"{aircraft_id}/{case_id}/{stem}: {'accepted' if run['accepted'] else 'failed'}", flush=True)
                         all_run_count += 1
                         for message in run["failures"]:
@@ -935,10 +959,16 @@ def run_campaign(args: argparse.Namespace) -> int:
 
         if native_source_digest(root) != metadata["native_source_sha256"]:
             failures.append("native C++ source changed during the campaign")
+        if app_source_digest(app_dir) != metadata["app_source_sha256"]:
+            failures.append("application code or text data changed during the campaign")
         if _sha256_file(probe) != metadata["probe"]["sha256"]:
             failures.append("probe changed during the campaign")
         if _sha256_file(godot) != metadata["engine"]["sha256"]:
             failures.append("Godot executable changed during the campaign")
+        if len(solver_identities) > 1:
+            failures.append("solver source identity changed between runs")
+        if len(native_identities) > 1:
+            failures.append("installed native backend identity changed between runs")
         complete = not failures and all(len([p for p in pairs if p["aircraft_id"] == a and p["case_id"] == c and p["comparable"]]) == args.repeats
                                        for a in args.aircraft_ids for c in args.case_ids)
         report = {
@@ -965,10 +995,131 @@ def run_campaign(args: argparse.Namespace) -> int:
             pass
 
 
+def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int], dict[str, Any]]]:
+    """Re-read and verify retained raw reports; do not trust the campaign's summary alone."""
+    with path.open(encoding="utf-8") as stream:
+        campaign = json.load(stream, parse_constant=_json_constant)
+    if not isinstance(campaign, dict) or campaign.get("format") != BASELINE_FORMAT or campaign.get("complete") is not True:
+        raise ValueError(f"{path}: campaign is not complete")
+    config, metadata, pairs = campaign.get("configuration"), campaign.get("metadata"), campaign.get("pairs")
+    if not isinstance(config, dict) or config.get("pair_type") != "backends" or not isinstance(metadata, dict) or not isinstance(pairs, list):
+        raise ValueError(f"{path}: backend campaign metadata or pairs are missing")
+    aircraft, cases, repeats = config.get("aircraft"), config.get("cases"), config.get("repeats")
+    if (not isinstance(aircraft, list) or not aircraft or not isinstance(cases, list) or not cases
+            or not _is_int(repeats) or repeats < 1 or any(not isinstance(item, str) for item in aircraft + cases)):
+        raise ValueError(f"{path}: invalid campaign configuration")
+    expected_keys = {(air, case, repeat) for air in aircraft for case in cases for repeat in range(1, repeats + 1)}
+    runs: dict[tuple[str, str, int], dict[str, Any]] = {}
+    native_ids: set[str] = set()
+    solver_ids: set[str] = set()
+    for pair in pairs:
+        if not isinstance(pair, dict) or pair.get("comparable") is not True or not isinstance(pair.get("runs"), dict):
+            raise ValueError(f"{path}: invalid or incomparable pair")
+        key = (pair.get("aircraft_id"), pair.get("case_id"), pair.get("repeat"))
+        if key not in expected_keys or key in runs:
+            raise ValueError(f"{path}: unexpected or duplicate pair {key}")
+        raw: dict[str, Any] = {}
+        for mode in ("reference", "native"):
+            item = pair["runs"].get(mode)
+            if not isinstance(item, dict) or item.get("accepted") is not True or not isinstance(item.get("report_relative_path"), str):
+                raise ValueError(f"{path}: missing accepted {mode} report")
+            raw_path = (path.parent / item["report_relative_path"]).resolve()
+            if not raw_path.is_relative_to(path.parent.resolve()) or not raw_path.is_file() or _sha256_file(raw_path) != item.get("report_sha256"):
+                raise ValueError(f"{path}: missing or changed {mode} raw report")
+            report, error = parse_probe_file(raw_path)
+            if error or report is None:
+                raise ValueError(f"{raw_path}: {error}")
+            raw[mode] = report
+        reduced = reduce_backend_pair(raw["reference"], raw["native"])
+        if not reduced["comparable"]:
+            raise ValueError(f"{path}: raw pair is not comparable: {reduced['reasons']}")
+        for report in raw.values():
+            if (report["aircraft_id"], report["case_id"]) != key[:2] or report["requested"] != {
+                "warmup_ticks": config.get("warmup_ticks"), "sample_ticks": config.get("sample_ticks")
+            }:
+                raise ValueError(f"{path}: raw report differs from campaign configuration")
+        identity = raw["native"]["backend"]["actual"]
+        if identity["source_sha256"] != metadata.get("native_source_sha256"):
+            raise ValueError(f"{path}: native binary does not match campaign source")
+        native_ids.add(json.dumps(identity, sort_keys=True))
+        solver_ids.add(raw["reference"]["solver_sha256"])
+        runs[key] = {"raw": raw, "reduced": reduced}
+    if set(runs) != expected_keys or len(native_ids) != 1 or len(solver_ids) != 1:
+        raise ValueError(f"{path}: missing pairs or inconsistent native/solver identity")
+    return campaign, runs
+
+
+def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path) -> int:
+    """Compare separate native builds only when their reference trajectories and inputs match."""
+    output_dir = output_dir.expanduser().resolve()
+    if output_dir.exists() and (not output_dir.is_dir() or any(output_dir.iterdir())):
+        raise ValueError(f"output must be a fresh or empty directory: {output_dir}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    failures: list[str] = []
+    rows: list[dict[str, Any]] = []
+    try:
+        before_path, after_path = before_path.expanduser().resolve(), after_path.expanduser().resolve()
+        before, old_runs = _campaign_runs(before_path)
+        after, new_runs = _campaign_runs(after_path)
+        for key in ("aircraft", "cases", "warmup_ticks", "sample_ticks", "repeats", "tick_hz", "pair_type"):
+            if before["configuration"].get(key) != after["configuration"].get(key):
+                failures.append(f"campaign configuration differs in {key}")
+        old_meta, new_meta = before["metadata"], after["metadata"]
+        for key in ("app_source_sha256", "system"):
+            if not old_meta.get(key) or old_meta.get(key) != new_meta.get(key):
+                failures.append(f"campaign metadata differs in {key}")
+        for group, key in (("engine", "sha256"), ("engine", "runtime_binary_sha256"), ("probe", "sha256")):
+            old_group, new_group = old_meta.get(group), new_meta.get(group)
+            if (not isinstance(old_group, dict) or not isinstance(new_group, dict)
+                    or not old_group.get(key) or old_group.get(key) != new_group.get(key)):
+                failures.append(f"campaign metadata differs in {group}.{key}")
+        if set(old_runs) != set(new_runs):
+            failures.append("campaign pair sets differ")
+        for key in sorted(set(old_runs) & set(new_runs)):
+            old, new = old_runs[key], new_runs[key]
+            for field in ("fingerprint", "fingerprint_boundaries", "solver_sha256", "aircraft_sha256",
+                          "world", "machine", "requested", "completed", "final_tick", "input_reads"):
+                if old["raw"]["reference"].get(field) != new["raw"]["reference"].get(field):
+                    failures.append(f"{key}: reference reports differ in {field}")
+            old_id = old["raw"]["native"]["backend"]["actual"]
+            new_id = new["raw"]["native"]["backend"]["actual"]
+            for field in ("backend_version", "abi_version", "lock_sha256"):
+                if old_id.get(field) != new_id.get(field):
+                    failures.append(f"{key}: native build identity differs in {field}")
+            old_rate, new_rate = old["reduced"]["native_usec_per_tick"], new["reduced"]["native_usec_per_tick"]
+            rows.append({"aircraft_id": key[0], "case_id": key[1], "repeat": key[2],
+                         "before_native_usec_per_tick": old_rate, "after_native_usec_per_tick": new_rate,
+                         "before_over_after": old_rate / new_rate if new_rate > 0 else None,
+                         "before_native_identity": old_id, "after_native_identity": new_id})
+    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as error:
+        failures.append(str(error))
+    summary = []
+    if not failures:
+        for aircraft_id, case_id in sorted({(row["aircraft_id"], row["case_id"]) for row in rows}):
+            selected = [row for row in rows if row["aircraft_id"] == aircraft_id and row["case_id"] == case_id]
+            old_median = percentile_nearest_rank([row["before_native_usec_per_tick"] for row in selected], 50)
+            new_median = percentile_nearest_rank([row["after_native_usec_per_tick"] for row in selected], 50)
+            summary.append({"aircraft_id": aircraft_id, "case_id": case_id, "repeats": len(selected),
+                            "before_native_median_usec_per_tick": old_median,
+                            "after_native_median_usec_per_tick": new_median,
+                            "before_over_after_medians": old_median / new_median if new_median > 0 else None})
+    result = {"format": "openrc-session-campaign-comparison v1", "complete": not failures,
+              "before": str(before_path), "after": str(after_path), "pairs": rows if not failures else [],
+              "summary": summary, "failures": failures,
+              "scope": "Separate build campaigns, not interleaved across builds; host variation can bias the comparison. Raw callback stopwatch excludes fingerprint and guard work, which can perturb subsequent ticks."}
+    _write_json(output_dir / "session_comparison.json", result)
+    print(f"session campaign comparison: {'complete' if not failures else 'failed'}; report {output_dir / 'session_comparison.json'}")
+    return 0 if not failures else 1
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
+        if args.compare_campaigns:
+            return compare_campaigns(*args.compare_campaigns, args.out)
+        if not args.godot:
+            raise ValueError("--godot is required for a campaign")
         if args.warmup_ticks < 0 or args.warmup_ticks > 72000:
             raise ValueError("warmup ticks must be within 0..72000")
         if args.sample_ticks < 1 or args.sample_ticks > 72000:

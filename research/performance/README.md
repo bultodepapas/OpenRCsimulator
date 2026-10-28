@@ -118,7 +118,7 @@ From the repository root, after importing the app with the pinned Godot build:
 
 ```powershell
 python research/performance/session_baseline.py `
-  --godot .tools/Godot_v4.7.2-stable_win64_console.exe `
+  --godot .tools/Godot_v4.8-beta1_win64_console.exe `
   --out tmp/session-baseline-new --case trim
 ```
 
@@ -151,7 +151,7 @@ guard, integrator, post-step collision and accepted-step callbacks without addin
 second physics implementation. No session enters the scene tree, so OS devices,
 focus notifications and engine scheduling cannot change the declared input sequence.
 
-`openrc-session-cost v1` records:
+`openrc-session-cost v2` records:
 
 - Raw integer microseconds per tick, partitioned into the session/input callback and
   the simulation callback. The former includes session contact/health work, not just
@@ -160,9 +160,12 @@ focus notifications and engine scheduling cannot change the declared input seque
   environment/reset. These exclude rendering and **are not Home/Fly loading times**.
 - Exact requested/completed tick counts, one input read per accepted tick, world
   identities, engine/CPU identity and failure reason.
-- A SHA-256 fingerprint of numeric body/auxiliary/continuous state, effective inputs,
-  loads and modes at the sample start and every accepted sample boundary. This is
-  not complete checkpoint/event equality or independent physical validation.
+- The requested and installed backend, solver and aircraft hashes, and a SHA-256
+  fingerprint of the typed, length-delimited body/previous/auxiliary/continuous
+  arrays, effective inputs, loads and modes at the initial boundary and every
+  warmup and sample tick. This is not complete checkpoint/event equality or
+  independent physical validation. Historical v1 reports remain readable but
+  cannot be used for backend comparisons.
 
 Clock reads bracket only the two callbacks. Array retention, guards and fingerprints
 are outside each per-tick interval but inside `measured_wall_usec`. Observer-off uses
@@ -176,6 +179,57 @@ dirty/untracked code hashes. It rejects nonzero exit, engine errors even with ex
 timeouts, incomplete ticks, malformed samples and mismatched pair identities. It uses
 nearest-rank percentiles and keeps aircraft/case distributions separate. Stop on faults;
 never bypass a pause/crash, weaken numerical guards or re-record goldens to finish a run.
+
+### Production native/reference and native build comparisons (NK-3)
+
+Install a verified native stage using the [NK-3 build procedure](../native-kernel/README.md#optional-normal-flight-backend).
+The current production route supports the stock Ugly Stik on Linux x86_64. Use a fresh
+output directory, the pinned executable, and a quiet host:
+
+```sh
+python3 research/performance/session_baseline.py --godot "$(app/get-godot.sh)" \
+  --out tmp/nk3-before --aircraft jensen-das-ugly-stik-60 --case trim,maneuver,runway \
+  --warmup-ticks 600 --sample-ticks 2400 --repeats 3 --compare-backends
+```
+
+The runner alternates the reference/native order and collects per-callback stopwatch
+samples for both. Each session selects the backend before setup. A native run fails if
+the installed backend falls back, changes, or its stage/context counters do not cover
+every warmup and sample tick. Each pair requires equal fingerprints, complete ticks,
+input counts, solver/aircraft/world and machine identities. Native binary and C++ source
+hashes must match the installed receipt and current sources; application code/text data,
+probe and engine identities must remain unchanged during the campaign. Fingerprint and
+backend/counter checks run outside each stopwatch and can perturb subsequent samples.
+
+The guard verifier defaults to reference-only and also runs on systems without the
+optional library. On Linux, after installing a verified native library, include native
+fallback and tick-coverage checks using a new output directory:
+
+```sh
+python3 research/performance/verify_session_probe.py --godot "$(app/get-godot.sh)" \
+  --out tmp/nk3-probe-guards --native-guards
+```
+
+The native checks require the staged library and reuse the imported asset cache; their
+absent and stale library cases use disposable project metadata and copies of the native
+receipt/library. They never mutate the installed files.
+
+To compare two verified native builds, retain the first campaign and its raw reports,
+build and install the candidate, then repeat the command with a new output directory.
+Compare the two completed campaign reports:
+
+```sh
+python3 research/performance/session_baseline.py --compare-campaigns \
+  tmp/nk3-before/session_baseline.json tmp/nk3-after/session_baseline.json --out tmp/nk3-comparison
+```
+
+The comparison reopens and hashes raw reports, validates each pair, and rejects changes
+to the reference trajectory, workload, application sources, engine, probe, machine or
+native ABI/lock. Only native source and binary identities may differ. Campaigns occur
+in separate blocks, so drift and other host activity can bias before/after results;
+neither this test nor a headless result qualifies 1080p rendering or physical realism.
+`--physics-backend=native` instead runs the normal observer-on/off study with native;
+the default remains `gdscript_reference`.
 
 ### FlightAudio sound-speed accessor microprobe
 
@@ -344,7 +398,7 @@ are separate results. No native reduction closes hardware, pilot or physical gat
 
 ```powershell
 python -m unittest discover -s research/performance -p "test_*.py"
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app `
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app `
   --check-only --script ../research/performance/session_probe.gd
 ```
 
@@ -358,7 +412,7 @@ Run the real guard verification with a fresh output directory:
 
 ```powershell
 python research/performance/verify_session_probe.py `
-  --godot .tools/Godot_v4.7.2-stable_win64_console.exe --out tmp/probe-guards-new
+  --godot .tools/Godot_v4.8-beta1_win64_console.exe --out tmp/probe-guards-new
 python research/performance/native_summary.py `
   --input tmp/native-runs --out tmp/native-summary-new.json
 python research/performance/texture_inventory.py `

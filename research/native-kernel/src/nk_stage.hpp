@@ -6,6 +6,7 @@
 #pragma once
 
 #include <array>
+#include <utility>
 #include <vector>
 
 #include "nk_aero.hpp"
@@ -180,7 +181,7 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 			total[i] += ground_loads[i];
 		}
 	}
-	out.derivative = rates; // expected == 0: no wash derivative precedes the wheel rates
+	out.derivative = std::move(rates); // expected == 0: transfer the completed wheel rates without another allocation
 	if (static_cast<int>(out.derivative.size()) != value_count) {
 		return out;
 	}

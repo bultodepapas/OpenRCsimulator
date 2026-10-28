@@ -322,5 +322,96 @@ class CheckedRunner(unittest.TestCase):
             self.assertEqual(runner.selected_binary(path), builder.ROOT / "app/native/kernel/actual.so")
 
 
+class ManualLoadingInstallation(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory(prefix="nk3-manual-loading-")
+        self.addCleanup(self.directory.cleanup)
+        self.root = Path(self.directory.name)
+        self.app = self.root / "app"
+        self.app.mkdir()
+        self.destination = self.app / "native/kernel"
+        self.registry = self.app / ".godot/extension_list.cfg"
+        self.own_entry = b"res://native/kernel/openrc_native_kernel.gdextension"
+
+    def prepare(self):
+        builder.prepare_manual_loading(self.app, self.destination)
+
+    def test_fresh_install_excludes_descriptor_before_import(self):
+        self.prepare()
+        self.assertTrue((self.destination / ".gdignore").is_file())
+        self.assertFalse(self.registry.exists())
+        self.prepare()  # repeated installs are harmless
+
+    def test_migration_removes_only_our_entries_and_preserves_other_bytes_and_mode(self):
+        self.registry.parent.mkdir()
+        other = b"res://native/ground_vehicle/ground.gdextension\r\n"
+        remainder = b"res://another.gdextension\n"
+        self.registry.write_bytes(other + self.own_entry + b"\r\n" + remainder + self.own_entry)
+        self.registry.chmod(0o640)
+        self.prepare()
+        self.assertEqual(self.registry.read_bytes(), other + remainder)
+        self.assertEqual(self.registry.stat().st_mode & 0o777, 0o640)
+        self.assertTrue((self.destination / ".gdignore").is_file())
+        self.prepare()
+        self.assertEqual(self.registry.read_bytes(), other + remainder)
+
+    def test_unrelated_registry_is_not_rewritten(self):
+        self.registry.parent.mkdir()
+        content = b"res://native/kernel/another.gdextension\n"
+        self.registry.write_bytes(content)
+        inode = self.registry.stat().st_ino
+        self.prepare()
+        self.assertEqual(self.registry.read_bytes(), content)
+        self.assertEqual(self.registry.stat().st_ino, inode)
+
+    def test_failed_atomic_replace_leaves_old_registry_intact(self):
+        self.registry.parent.mkdir()
+        original = self.own_entry + b"\nres://other.gdextension\n"
+        self.registry.write_bytes(original)
+        with patch.object(builder.os, "replace", side_effect=OSError("failed")):
+            with self.assertRaises(OSError):
+                self.prepare()
+        self.assertEqual(self.registry.read_bytes(), original)
+        self.assertEqual(list(self.registry.parent.glob(".nk3-extension-list-*")), [])
+
+    def test_refuses_external_destination_and_symlinked_registry(self):
+        with self.assertRaises(SystemExit):
+            builder.prepare_manual_loading(self.app, self.root / "outside")
+        outside = self.root / "external-list"
+        outside.write_bytes(self.own_entry + b"\n")
+        self.registry.parent.mkdir()
+        self.registry.symlink_to(outside)
+        with self.assertRaises(SystemExit):
+            self.prepare()
+        self.assertEqual(outside.read_bytes(), self.own_entry + b"\n")
+
+    def test_refuses_symlinked_native_directory_and_import_marker(self):
+        self.destination.parent.mkdir()
+        alternate = self.app / "other"
+        alternate.mkdir()
+        self.destination.symlink_to(alternate, target_is_directory=True)
+        with self.assertRaises(SystemExit):
+            self.prepare()
+        self.assertFalse((alternate / ".gdignore").exists())
+        self.destination.unlink()
+        self.destination.mkdir()
+        marker_target = self.root / "marker-target"
+        marker_target.write_text("unchanged")
+        (self.destination / ".gdignore").symlink_to(marker_target)
+        with self.assertRaises(SystemExit):
+            self.prepare()
+        self.assertEqual(marker_target.read_text(), "unchanged")
+
+    def test_refuses_symlinked_cache_directory(self):
+        alternate = self.app / "other-cache"
+        alternate.mkdir()
+        alternate_registry = alternate / "extension_list.cfg"
+        alternate_registry.write_bytes(self.own_entry + b"\n")
+        (self.app / ".godot").symlink_to(alternate, target_is_directory=True)
+        with self.assertRaises(SystemExit):
+            self.prepare()
+        self.assertEqual(alternate_registry.read_bytes(), self.own_entry + b"\n")
+
+
 if __name__ == "__main__":
     unittest.main()

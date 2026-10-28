@@ -14,7 +14,9 @@ import importlib.util
 import json
 import os
 import shutil
+import stat
 import subprocess
+import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -49,6 +51,16 @@ BACKEND_VERSION = "openrc-native-kernel-stage-v1"
 ABI_VERSION = 1
 RECEIPT_FORMAT = "openrc-native-kernel-receipt"
 APP_DESTINATION = ROOT / "app/native/kernel"
+APP_DESCRIPTOR = (
+    "; NK-3 native stage, installed by research/native-kernel/build.py --install-app.\n"
+    "; .gdignore prevents discovery; app/sim/native_stage.gd loads it after receipt checks.\n"
+    "[configuration]\n"
+    f'entry_symbol = "{NAME}_library_init"\n'
+    'compatibility_minimum = "4.7"\n'
+    "reloadable = false\n\n"
+    "[libraries]\n"
+    f'linux.x86_64 = "res://native/kernel/lib{NAME}.so"\n'
+)
 # Oracle runs an install must cite: same binary, same mirrored sources, verdict pass (results under TOOL_ROOT).
 VERIFICATIONS = {"stage_oracle": "stage-*.json", "trajectory": "trajectory-*.json"}
 MIN_TRAJECTORY_TICKS = 960
@@ -267,6 +279,50 @@ def find_verification(key: str, pattern: str, binary_sha256: str, sources: dict[
         f"{'stage_oracle.gd' if key == 'stage_oracle' else 'trajectory.gd --option ticks=960'}")
 
 
+def prepare_manual_loading(app_dir: Path, destination: Path) -> None:
+    """Prevent import-time loading, including registrations from an older installation.
+
+    Run before starting Godot. Its cache is a line-based list, not a project-owned manifest;
+    remove only this descriptor and preserve all other registrations byte for byte.
+    """
+    app_dir = app_dir.resolve()
+    expected_destination = app_dir / "native/kernel"
+    if (destination.absolute() != expected_destination or (app_dir / "native").is_symlink()
+            or destination.is_symlink() or destination.resolve() != expected_destination):
+        raise SystemExit(f"Refusing unexpected or symlinked native output: {destination}")
+    destination.mkdir(parents=True, exist_ok=True)
+    ignore = destination / ".gdignore"
+    if ignore.is_symlink() or (ignore.exists() and not ignore.is_file()):
+        raise SystemExit(f"Cannot create native import exclusion: {ignore}")
+    if not ignore.exists():
+        ignore.touch(exist_ok=False)
+
+    registry = app_dir / ".godot/extension_list.cfg"
+    if registry.parent.is_symlink() or registry.is_symlink() or not registry.resolve().is_relative_to(app_dir):
+        raise SystemExit(f"Refusing to modify an external or symlinked extension list: {registry}")
+    if not registry.exists():
+        return
+    if not registry.is_file():
+        raise SystemExit(f"Extension list is not a regular file: {registry}")
+    original = registry.read_bytes()
+    descriptor = f"res://native/kernel/{NAME}.gdextension".encode("utf-8")
+    retained = b"".join(line for line in original.splitlines(keepends=True)
+                        if line.rstrip(b"\r\n") != descriptor)
+    if retained == original:
+        return
+    # Replace only after a complete write; a failed migration keeps the previous registry.
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=registry.parent, prefix=".nk3-extension-list-", delete=False) as file:
+            temporary = Path(file.name)
+            file.write(retained)
+        os.chmod(temporary, stat.S_IMODE(registry.stat().st_mode))
+        os.replace(temporary, registry)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
 def install_app() -> int:
     """Stage the verified Linux build under the ignored app/native/kernel/ (library, descriptor, receipt, licence)."""
     lock = locked.load_lock()
@@ -295,24 +351,14 @@ def install_app() -> int:
     receipt = {"format": RECEIPT_FORMAT, "backend": "native", "backend_version": BACKEND_VERSION,
                "abi_version": ABI_VERSION, "platforms": {"linux": record}}
     destination = APP_DESTINATION
-    if not destination.resolve().is_relative_to((ROOT / "app").resolve()):
-        raise SystemExit(f"Refusing to install native output outside app/: {destination}")
-    destination.mkdir(parents=True, exist_ok=True)
+    prepare_manual_loading(ROOT / "app", destination)
     installed_library = destination / library.name
     # Revalidation of unchanged C++ only refreshes the receipt; do not rewrite a library mapped by another app.
     if not installed_library.is_file() or sha256_file(installed_library) != built["binary_sha256"]:
         staged_library = destination / (library.name + ".tmp")
         shutil.copy2(library, staged_library)
         staged_library.replace(installed_library)
-    (destination / f"{NAME}.gdextension").write_text(
-        "; NK-3 native stage, installed by research/native-kernel/build.py --install-app; loaded only by\n"
-        "; app/sim/native_stage.gd after it verifies build-receipt.json.\n"
-        "[configuration]\n"
-        f'entry_symbol = "{NAME}_library_init"\n'
-        'compatibility_minimum = "4.7"\n'
-        "reloadable = false\n\n"
-        "[libraries]\n"
-        f'linux.x86_64 = "res://native/kernel/lib{NAME}.so"\n', encoding="utf-8")
+    (destination / f"{NAME}.gdextension").write_text(APP_DESCRIPTOR, encoding="utf-8")
     (destination / "build-receipt.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n",
                                                     encoding="utf-8")
     licence = locked.ensure_godot_cpp(lock) / "LICENSE.md"

@@ -9,6 +9,7 @@ try:
         alternating_observer_order,
         parse_probe_file,
         percentile_nearest_rank,
+        reduce_backend_pair,
         reduce_pair,
         validate_probe_report,
     )
@@ -17,6 +18,7 @@ except ImportError:  # Also support direct execution from this directory.
         alternating_observer_order,
         parse_probe_file,
         percentile_nearest_rank,
+        reduce_backend_pair,
         reduce_pair,
         validate_probe_report,
     )
@@ -52,6 +54,21 @@ def valid_report(observer: bool = True) -> dict:
         "tick_hz": 240,
         "scope": "deterministic complete-session CPU probe",
     }
+
+
+def valid_current_report(backend: str = "gdscript_reference", observer: bool = True) -> dict:
+    report = valid_report(observer)
+    actual = {"backend": backend}
+    stats = {}
+    if backend == "native":
+        actual.update({"backend_version": "openrc-native-kernel-stage-v1", "abi_version": 1,
+                       "binary_sha256": "b" * 64, "source_sha256": "c" * 64, "lock_sha256": "d" * 64})
+        stats = {"context_calls": 9, "stage_calls": 36, "stage_ns": 0, "timing": False}
+    report.update({"format": "openrc-session-cost v2", "backend": {"requested": backend, "actual": actual,
+                   "native_stats": stats}, "fingerprint_boundaries": 10,
+                   "solver_sha256": "e" * 64, "aircraft_sha256": "f" * 64})
+    report["machine"]["godot"] = "4.8-beta1 (official)"
+    return report
 
 
 class ProbeReportValidationTests(unittest.TestCase):
@@ -160,6 +177,42 @@ class ProbeReportValidationTests(unittest.TestCase):
 
 
 class ReducerTests(unittest.TestCase):
+    def test_current_backend_pair_requires_identity_and_complete_trajectory(self):
+        reference, native = valid_current_report(), valid_current_report("native")
+        self.assertEqual(validate_probe_report(reference), [])
+        self.assertEqual(validate_probe_report(native), [])
+        self.assertTrue(reduce_backend_pair(reference, native)["comparable"])
+        for field, value in (("fingerprint", "1" * 64), ("solver_sha256", "2" * 64),
+                             ("aircraft_sha256", "3" * 64), ("fingerprint_boundaries", 9)):
+            changed = valid_current_report("native")
+            changed[field] = value
+            with self.subTest(field=field):
+                self.assertFalse(reduce_backend_pair(reference, changed)["comparable"])
+                self.assertIsNone(reduce_backend_pair(reference, changed)["reference_over_native"])
+
+    def test_native_fallback_or_uncovered_ticks_cannot_be_timed(self):
+        reference = valid_current_report()
+        native = valid_current_report("native")
+        native["backend"]["actual"] = {"backend": "gdscript_reference"}
+        self.assertFalse(reduce_backend_pair(reference, native)["comparable"])
+        for counter in ("stage_calls", "context_calls"):
+            native = valid_current_report("native")
+            native["backend"]["native_stats"][counter] = 0
+            self.assertFalse(reduce_backend_pair(reference, native)["comparable"])
+        self.assertFalse(reduce_backend_pair(valid_report(), valid_report())["comparable"])
+
+    def test_observer_pair_rejects_mixed_backend_or_sources(self):
+        for mutation in ("backend", "solver_sha256", "aircraft_sha256", "fingerprint_boundaries"):
+            on, off = valid_current_report(), valid_current_report(observer=False)
+            if mutation == "backend":
+                off = valid_current_report("native", observer=False)
+            elif mutation == "fingerprint_boundaries":
+                off[mutation] -= 1
+            else:
+                off[mutation] = "9" * 64
+            with self.subTest(mutation=mutation):
+                self.assertFalse(reduce_pair(on, off)["comparable"])
+
     def test_direct_reduction_rejects_equal_missing_or_malformed_identities(self):
         for field in ("fingerprint", "machine", "world", "format", "completed"):
             on_report, off_report = valid_report(True), valid_report(False)

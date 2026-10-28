@@ -66,6 +66,26 @@ Moving the completed rates into the result can avoid a stage allocation without 
 requires the same exact-output gates and a before/after measurement. Larger native pre-step or RK integration
 should follow the measured remaining cost and preserve the shared `VehicleModel` contract.
 
+## Promotion to the default backend
+
+The owner authorized making NK-3 official once ready (2026-10-28). That authorization does not establish
+release readiness. Keep the reference default until the supported delivery route meets these gates:
+
+1. Verify the exact descriptor-selected binary before initialization; fresh imports and migrated caches must
+   not auto-load NK-3. Missing, mismatched and unsupported installations must retain a usable reference route.
+2. Complete the exact stage/trajectory, lifecycle and replay gates for the final source, binary and engine.
+   Use production session admission for fleet fallback checks; the research adapter alone does not prove it.
+3. Measure the production session path, including configuration guards, with complete identical input tapes.
+   Retain paired results and source identities. Editor/shared-host timings do not qualify a release template.
+4. Build and verify the supported package: preserve binary/source identity through exported resources, qualify
+   the actual template executable, and test installation, launch, fallback, reset and replay from a clean package.
+   The current editor hash and loose-GDScript source checks are not an export identity scheme.
+5. Qualify the declared target-host performance and platform scope before changing its default. Keep explicit
+   reference selection and fallback; a Linux qualification does not qualify Windows or macOS native execution.
+
+The current native scope remains the stock electric Ugly Stik on Linux x86_64. Packaging and target-host
+qualification are open. The application's separate 1080p display gates also remain distinct from CPU equivalence.
+
 ## Verification gate repair (2026-10-28)
 
 The old install gate checked requested trajectory length, so two equally truncated runs could approve a binary.
