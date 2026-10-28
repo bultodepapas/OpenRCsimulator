@@ -4,11 +4,39 @@ Step NK-3 of the [native-kernel scoping](../../native-kernel-scoping-2026-10-27.
 option (b): one `VehicleModel.stage` boundary on a prepared model. The owner approved NK-3 on 2026-10-27 and
 delegated D1–D8 to the lead (port now; no SF-08 amendment; Linux bit-exact fingerprints, Windows later; backend
 identity pinned in checkpoints; macOS reference-only; native refuses unknown laws; Stik first; reference always
-available). Milestones 1 and 2 below describe the original research snapshot. A loader and optional local
-installation now exist in `app/`, but normal flights still use GDScript; production selection, revision handling,
-checkpoint backend identity and exported delivery remain pending. Milestone 2 (the complete stage through the
+available). Milestones 1 and 2 below describe the original research snapshot. Normal flights now offer an explicit
+Linux developer opt-in, with session revision handling and checkpoint/replay backend identity. GDScript remains
+the default; exported delivery remains pending. Milestone 2 (the complete stage through the
 kernel) builds on milestone 1 (the components), kept below as dated evidence.
 Code and commands: [research/native-kernel](../../../../research/native-kernel/README.md).
+
+## Normal-flight integration (2026-10-28)
+
+`FlightSession` owns the optional prepared native stage. Reset and restore create a fresh helper and prime its
+context before tick-zero load evaluation; refusals retain the previous helper/model and accepted physical state.
+Accepted field/lake/contact changes reprepare outside evaluation. Per-tick comparisons reject bypassed changes
+before stale coefficients run. Native checkpoints add an outer v14 identity envelope; reference formats and
+configuration hashes remain unchanged. Exact replay verifies the actual backend, while explicit reference
+candidates report the solver change. Mid-recording backend changes leave an incomplete diagnostic prefix.
+
+The source receipt now includes the adapter and stock aircraft JSON, and runtime selection also requires the exact
+verified engine executable. Scope remains stock Ugly Stik, Linux x86_64, calm supported configurations, with
+explicit reference fallback. No C++ equation, aircraft data or golden flight was changed in this integration.
+
+Requalification of the unchanged binary passed 128,565 stage comparisons and 155,931 trajectory comparisons
+(49,553 matching ticks). The installed native session test passed 118 checks, including 960 exact ticks, resets,
+rollback, restore, identity refusal, environment changes and stale-state protection. Native replay passed 44
+checks, including a complete 64-tick exact recording/replay. A separate imported app copy without the library
+passed 54 fallback checks. The native helper passed 26 checks and trajectory policy passed 105 checks. A normal CLI native trace completed 240 ticks and
+identified the native binary in its metadata. Existing checkpoint, reset-transaction and publication tests passed
+92, 148 and 180 checks. Operational commands and admission limits live in the
+[normal-flight guide](../../../../research/native-kernel/README.md#optional-normal-flight-backend).
+Reports, logs and receipt are retained in the `normal_flight_integration` section of the
+[revalidation record](revalidation-linux-2026-10-28.json).
+
+The historical speedups below describe the research adapter. This session integration adds a configuration guard;
+its end-to-end speedup has not yet been measured on an isolated target host. Windows, macOS native execution,
+export delivery and 1080p hardware qualification remain open. Software equivalence is not physical validation.
 
 ## Verification gate repair (2026-10-28)
 

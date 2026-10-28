@@ -15,10 +15,9 @@ class DevelopmentToolsTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.work = Path(self.temp.name)
 
-    def database(self, mode="sanitize"):
+    def database(self, mode="ubsan"):
         flags = [*dev.FP_FLAGS, "-std=c++17", "-fexceptions", "-fno-omit-frame-pointer"]
-        if mode == "sanitize":
-            flags += dev.SANITIZERS
+        flags += dev.sanitizer_flags(mode)
         for header in ("godot_cpp/core/defs.hpp", "godot_cpp/classes/ref_counted.hpp"):
             path = self.work / "include" / header
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -28,7 +27,7 @@ class DevelopmentToolsTests(unittest.TestCase):
                  "command": "g++ " + " ".join(flags) + " -c " + str(source)}
                 for source in (dev.HERE / "src").glob("*.cpp")]
 
-    def validate(self, rows, mode="sanitize"):
+    def validate(self, rows, mode="ubsan"):
         path = self.work / "compile_commands.json"
         path.write_text(json.dumps(rows))
         return dev.validate_compdb(path, mode)
@@ -41,7 +40,7 @@ class DevelopmentToolsTests(unittest.TestCase):
             self.validate([{ "file": "unrelated.cpp", "directory": str(self.work), "command": "g++"}])
 
     def test_db_rejects_lost_instrumentation_or_fp_policy(self):
-        for flag in [*dev.FP_FLAGS, *dev.SANITIZERS, "-std=c++17", "-fno-omit-frame-pointer"]:
+        for flag in [*dev.FP_FLAGS, *dev.sanitizer_flags("ubsan"), "-std=c++17", "-fno-omit-frame-pointer"]:
             with self.subTest(flag=flag):
                 rows = self.database()
                 rows[0]["command"] = rows[0]["command"].replace(flag, "")

@@ -142,30 +142,38 @@ results describe their recorded snapshot, and other data changes require fresh v
 ## C++ development tools (NK-3)
 
 `devtools.py` reuses the locked GCC/SCons/godot-cpp toolchain and existing stage/trajectory oracles. It provides
-two **development-only** builds, with separate godot-cpp checkouts and objects, symbols, frame pointers and
-SCons-generated `compile_commands.json`. `sanitize` instruments both bindings and NK-3 with GCC ASan/UBSan;
+**development-only** builds, with separate godot-cpp checkouts and objects, symbols, frame pointers and
+SCons-generated `compile_commands.json`. `ubsan` instruments both bindings and NK-3 with GCC UBSan;
 `profile` keeps an optimized, unsanitized library for debugger/profiler use. Neither writes into `app/`, the
 regular build directory or installation receipts. Every output directory must be new and under `tmp/`.
 
 ```bash
-python3 research/native-kernel/devtools.py build --mode sanitize --jobs 2 --out tmp/nk3-sanitize
-python3 research/native-kernel/devtools.py check --build tmp/nk3-sanitize --out tmp/nk3-sanitize-stage
-python3 research/native-kernel/devtools.py check --build tmp/nk3-sanitize --out tmp/nk3-sanitize-ticks \
+python3 research/native-kernel/devtools.py build --mode ubsan --jobs 2 --out tmp/nk3-ubsan
+python3 research/native-kernel/devtools.py check --build tmp/nk3-ubsan --out tmp/nk3-ubsan-stage
+python3 research/native-kernel/devtools.py check --build tmp/nk3-ubsan --out tmp/nk3-ubsan-ticks \
   --script trajectory.gd --ticks 960
 python3 research/native-kernel/devtools.py build --mode profile --jobs 2 --out tmp/nk3-profile
 python3 research/native-kernel/test_devtools.py
 ```
 
 The check copies and imports a private app (including its existing import cache, excluding installed native
-extensions), freezes the harness and records source, engine and library hashes. Allow at least 4 GiB free for
-each private copy. Source changes during the copy fail the run. It preloads GCC's matching ASan runtime into
-Godot only, forces UBSan to halt, rejects sanitizer stderr even on exit zero, and retains checked-run logs and
-`summary.json`. Before the oracle, two disposable shared-library constructors deliberately cause a heap buffer
-overflow and signed integer overflow in the same engine process; each must fail with its specific diagnostic.
-`positive-controls.json` records that detector proof. The production library and C++ source are never mutated.
+extensions), isolates XDG user-data/config/cache paths, freezes the harness and records source, engine and library
+hashes. Allow at least 4 GiB free for each private copy. Source changes during the copy fail the run. It forces
+UBSan to halt, rejects sanitizer stderr even on exit zero, and retains checked-run logs, a separate amended
+`diagnostic-report.json` and `summary.json`. Before copying, a disposable library constructor deliberately causes
+signed integer overflow through the same engine's `GDExtensionManager.load_extension`; it must fail with that
+specific diagnostic. `positive-controls.json` records the detector proof. The production library and C++ source
+are never mutated. The stage check requires at least 10,000 actual states including malformed cases, and
+trajectory checks reuse the normal completed-work policy; literal probes alone cannot pass.
 
-Sanitizer checks cover instrumented code, not the official engine's internals. Leak detection is disabled for
-this uninstrumented host. The intentional NaN/Inf corpus remains valid input for the existing numerical oracle;
+`--mode asan` builds ASan+UBSan and also checks a heap-buffer-overflow control. It **requires a compatible
+ASan-built Godot**, supplied with `check --godot /path/to/engine`. The pinned official Linux editor uses
+`RTLD_DEEPBIND`, which ASan cannot support. The actual loader control rejects that combination before copying
+the app. No loader shim or system-policy change is applied. An ASan-built engine is not provided or qualified
+by this tool. In this mode only, GCC's matching ASan runtime is preloaded into the Godot child.
+
+UBSan checks undefined behavior in instrumented code, not engine internals or general memory safety. ASan leak
+detection is disabled. The intentional NaN/Inf corpus remains valid input for the existing numerical oracle;
 the wrapper does not enable floating-point divide-by-zero traps. A passing short development run does not
 satisfy the normal installation gate, fleet validation or physical validation. Run the regular builder and
 verification workflow above before promotion. Timing is disabled in development checks.

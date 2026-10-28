@@ -64,3 +64,37 @@ session/simulation calls. A checked headless run of `test_trajectory.gd` passed 
 engine warnings or errors; it includes fake-session cases for both loops. The local report and log are under
 `tmp/nk3-timing-tool-checks/nk3-timing-policy-recheck-3n110os5/`. This is policy verification, not a native
 performance measurement; the pre-repair historical results above have not been requalified.
+
+## ASan loader result and revised recommendation (2026-10-28)
+
+**This supersedes the ASan recommendation above for the official Linux editor.** A real stage-oracle attempt
+with GCC 13.3.0 ASan/UBSan extension `07e9b83d…279dc58` and the pinned editor `28485fbd…5e82` failed at extension
+load, before any oracle results. The checked process exited 1 and lacked the pass marker; its local log is
+`tmp/nk3-dev-stage-final/checks/oracle-ml7f__jd/engine.log`. The separate ASan and UBSan positive controls
+detected their injected faults, but they used a preloaded constructor before `Godot --version` and did not
+exercise GDExtension loading.
+
+The [exact Godot revision](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/drivers/unix/os_unix.cpp)
+selects `RTLD_NOW | RTLD_DEEPBIND` at compilation unless `ASAN_ENABLED` is defined; the same source passes
+that mode to `dlopen` for GDExtension libraries. The [sanitizer maintainers](https://github.com/google/sanitizers/wiki/AddressSanitizer)
+state that ASan does not support `RTLD_DEEPBIND`, and their [issue](https://github.com/google/sanitizers/issues/611)
+describes the broken allocator interception behind this restriction. The generic shared-library preload advice
+in the evidence table does not establish compatibility with this loader. No Godot runtime switch was found in the
+inspected loader. GCC's [ASan source](https://github.com/gcc-mirror/gcc/blob/releases/gcc-13.3.0/libsanitizer/asan/asan_linux.cpp)
+shows `verify_asan_link_order` controls a different startup check; turning it off does not remove deep binding.
+
+For the smallest next check, try a **UBSan-only** extension against the unchanged official editor, with a
+separate receipt, `-fsanitize=undefined` at compile and link, non-recovery and `UBSAN_ENABLED` for godot-cpp.
+Run a disposable fault injected into an actually called native stage through the same GDExtension loader and
+require the intended diagnostic and nonzero exit, then run the unmodified stage oracle. This route is a candidate,
+not a demonstrated pass; it provides undefined-behavior coverage, not ASan memory checks. The host's GCC 13
+`libubsan.so` exports UBSan handlers and showed no exported `dlopen` interceptor during read-only inspection,
+which does not itself prove the proposed run.
+
+For ASan coverage, use a separate diagnostic Godot built from the pinned engine source with `use_asan=yes`
+and a matching compiler/runtime, leaving the official binary untouched. Godot's
+[sanitizer instructions](https://docs.godotengine.org/en/4.7/engine_details/development/debugging/using_sanitizers.html)
+describe the supported build option. Record that engine's identity and repeat both a loader-path ASan positive
+control and the oracle; its results belong to the diagnostic build, not the official-editor gate. A custom
+`dlopen` interposer that strips flags would alter symbol resolution and sanitizer interception, so it is not a
+supported substitute established by these sources. No UBSan-only or rebuilt-engine check was run for this note.

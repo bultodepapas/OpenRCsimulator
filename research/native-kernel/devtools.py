@@ -20,9 +20,15 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SANITIZERS = ["-fsanitize=address,undefined", "-fno-sanitize-recover=undefined"]
+def sanitizer_flags(mode: str) -> list[str]:
+    if mode == "profile":
+        return []
+    return [f"-fsanitize={'address,undefined' if mode == 'asan' else 'undefined'}",
+            "-fno-sanitize-recover=undefined"]
+
+
 FP_FLAGS = ["-fno-fast-math", "-ffp-contract=off"]
-SIGNATURE = re.compile(r"AddressSanitizer|UndefinedBehaviorSanitizer|LeakSanitizer|runtime error:")
+SIGNATURE = re.compile(r"AddressSanitizer|UndefinedBehaviorSanitizer|LeakSanitizer|runtime error:|RTLD_DEEPBIND")
 FORMAT = "openrc-nk3-development-build v1"
 
 
@@ -69,8 +75,7 @@ def validate_compdb(path: Path, mode: str) -> list[dict]:
             continue
         args = entry.get("arguments") or shlex.split(entry["command"])
         required = [*FP_FLAGS, "-std=c++17", "-fexceptions", "-fno-omit-frame-pointer"]
-        if mode == "sanitize":
-            required += SANITIZERS
+        required += sanitizer_flags(mode)
         if not all(flag in args for flag in required):
             raise ValueError(f"compilation database lacks required flags for {file}")
         if any(flag in args for flag in ("-ffast-math", "-Ofast", "-ffp-contract=fast")):
@@ -114,8 +119,7 @@ def build(args) -> int:
         raise ValueError("pinned build profile hash differs")
     (out / "build_profile.json").write_text(profile)
     flags = [*FP_FLAGS, "-fexceptions", "-fno-omit-frame-pointer"]
-    if args.mode == "sanitize":
-        flags += SANITIZERS
+    flags += sanitizer_flags(args.mode)
     script = locked.sconstruct_text(cpp, HERE / "src", out / "lib", out / "build_profile.json",
                                     lock["godot"]["extension_api"])
     anchor = 'env["build_profile"] = profile_path'
@@ -123,14 +127,14 @@ def build(args) -> int:
         raise ValueError("shared SConstruct changed; update the development adapter")
     # Before SConscript, so generated bindings as well as NK-3 code are instrumented.
     script = script.replace(anchor, anchor + f"\nenv.Append(CCFLAGS={flags!r})\n" +
-                            f"env.Append(LINKFLAGS={SANITIZERS if args.mode == 'sanitize' else []!r})\n" +
-                            f"env.Append(CPPDEFINES={['ASAN_ENABLED'] if args.mode == 'sanitize' else []!r})")
+                            f"env.Append(LINKFLAGS={sanitizer_flags(args.mode)!r})\n" +
+                            f"env.Append(CPPDEFINES={['ASAN_ENABLED', 'UBSAN_ENABLED'] if args.mode == 'asan' else ['UBSAN_ENABLED'] if args.mode == 'ubsan' else []!r})")
     script = script.replace('env.Append(CPPPATH=[source_dir])',
                             'env.Append(CXXFLAGS=["-std=c++17", "-fexceptions"])\nenv.Append(CPPPATH=[source_dir])')
     (out / "SConstruct").write_text(script.replace("openrc_slipstream", "openrc_native_kernel"))
     command = [*scons, "-C", str(out), f"-j{args.jobs}", "platform=linux", "arch=x86_64",
                "target=template_release", "debug_symbols=yes", "lto=none", "verbose=yes",
-               f"optimize={'debug' if args.mode == 'sanitize' else 'speed'}", "compiledb=yes",
+               f"optimize={'speed' if args.mode == 'profile' else 'debug'}", "compiledb=yes",
                f"compiledb_file={out / 'compile_commands.json'}"]
     with (out / "build.log").open("w") as log:
         subprocess.run(command, env=dict(os.environ, CC="gcc", CXX="g++"), stdout=log,
@@ -158,7 +162,9 @@ def build(args) -> int:
     return 0
 
 
-def sanitizer_environment() -> list[str]:
+def sanitizer_environment(mode: str) -> list[str]:
+    if mode == "ubsan":
+        return ["env", "UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1"]
     runtime = Path(subprocess.check_output(["g++", "-print-file-name=libasan.so"], text=True).strip()).resolve()
     if not runtime.is_file():
         raise ValueError("matching GCC libasan is unavailable")
@@ -182,7 +188,7 @@ def checked(command: list[str], out: Path, label: str, timeout: float, required=
     return report
 
 
-def controls(godot: Path, out: Path) -> dict:
+def controls(godot: Path, out: Path, mode: str) -> dict:
     """Prove both detectors in a disposable shared library loaded by the same Godot executable."""
     source = out / "positive-control.cpp"
     source.write_text('''#include <cstdlib>
@@ -194,20 +200,34 @@ __attribute__((constructor)) static void fault() {
         volatile int x = INT_MAX; volatile int y = x + 1; (void)y;
     }
 }
+extern "C" bool nk3_control_init(void *, void *, void *) { return false; }
 ''')
     library = out / "positive-control.so"
-    subprocess.run(["g++", "-shared", "-fPIC", "-g", "-O0", *SANITIZERS, str(source),
+    subprocess.run(["g++", "-shared", "-fPIC", "-g", "-O0", *sanitizer_flags(mode), str(source),
                     "-o", str(library)], check=True)
-    # Loading before --version runs the shared-object constructor without modifying the engine or port.
+    project = out / "control-project"
+    project.mkdir()
+    (project / "project.godot").write_text('config_version=5\n[application]\nconfig/name="NK3 detector control"\n')
+    descriptor = out / "positive-control.gdextension"
+    descriptor.write_text('[configuration]\nentry_symbol="nk3_control_init"\ncompatibility_minimum="4.7"\n'
+                          f'[libraries]\nlinux.x86_64="{library}"\n')
+    script = out / "positive-control.gd"
+    script.write_text('extends SceneTree\nfunc _initialize() -> void:\n'
+                      '\tGDExtensionManager.load_extension(OS.get_cmdline_user_args()[0])\n\tquit(0)\n')
+    # Exercise the same late GDExtensionManager/dlopen path as the port, including RTLD_DEEPBIND compatibility.
     reports = {}
-    for name, expected in (("asan", "heap-buffer-overflow"), ("ubsan", "signed integer overflow")):
-        env = sanitizer_environment()
-        env[1] += ":" + str(library)
+    cases = [("ubsan", "signed integer overflow")]
+    if mode == "asan":
+        cases.insert(0, ("asan", "heap-buffer-overflow"))
+    for name, expected in cases:
+        env = sanitizer_environment(mode)
         env.insert(1, "-u")
         env.insert(2, "NK3_ASAN_CONTROL")
         if name == "asan":
             env.append("NK3_ASAN_CONTROL=1")
-        report = checked([*env, str(godot), "--version"], out / "controls", name, 60)
+        report = checked([*private_environment(out), *env, str(godot), "--headless", "--path", str(project),
+                          "--audio-driver", "Dummy", "--script", str(script), "--", str(descriptor)],
+                         out / "controls", name, 60)
         log = Path(report["log"]).read_text(errors="replace")
         report["detected"] = (report["complete"] is True and report["process_exit"] not in (None, 0)
                               and report["reason"] == "process_exit" and expected in log)
@@ -266,7 +286,7 @@ def check(args) -> int:
     library = build_dir / "lib/libopenrc_native_kernel.so"
     descriptor = build_dir / "openrc_native_kernel.gdextension"
     if (receipt["format"] != FORMAT or receipt["installable"] is not False
-            or receipt["mode"] not in ("sanitize", "profile") or receipt["source_hashes"] != source_hashes()
+            or receipt["mode"] not in ("ubsan", "asan", "profile") or receipt["source_hashes"] != source_hashes()
             or receipt["binary_sha256"] != digest(library)
             or receipt["compile_database_sha256"] != digest(build_dir / "compile_commands.json")
             or receipt["descriptor_sha256"] != digest(descriptor)):
@@ -275,9 +295,11 @@ def check(args) -> int:
     godot = args.godot.resolve()
     engine_hash = digest(godot)
     out = fresh(args.out)
-    control_reports = controls(godot, out) if receipt["mode"] == "sanitize" else {}
+    control_reports = controls(godot, out, receipt["mode"]) if receipt["mode"] != "profile" else {}
     if any(not report["detected"] for report in control_reports.values()):
-        raise ValueError(f"sanitizer positive control failed; inspect {out / 'positive-controls.json'}")
+        raise ValueError(f"sanitizer positive control failed; inspect {out / 'positive-controls.json'}. "
+                         "ASan requires a compatible ASan-built Godot; the official editor uses RTLD_DEEPBIND. "
+                         "Use the ubsan build with the official editor.")
     before = app_hashes(args.app)
     write_json(out / "source-before.json", before)
     app = snapshot(args.app.resolve(), out, godot)
@@ -299,8 +321,8 @@ def check(args) -> int:
                f"--output={output}", f"--states={args.states}", f"--seed={args.seed}"]
     if args.script == "trajectory.gd":
         command += [f"--ticks={args.ticks}", "--skip-timing=true"]
-    if receipt["mode"] == "sanitize":
-        command = [*sanitizer_environment(), *command]
+    if receipt["mode"] != "profile":
+        command = [*sanitizer_environment(receipt["mode"]), *command]
     command = [*private_environment(out), *command]
     report = checked(command, out / "checks", "oracle", args.timeout, ["NK3_ORACLE verdict=pass"])
     oracle = json.loads(output.read_text()) if output.is_file() else {}
@@ -325,7 +347,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     builder = commands.add_parser("build", help="isolated symbol/sanitizer build with SCons compilation database")
-    builder.add_argument("--mode", choices=("sanitize", "profile"), default="sanitize")
+    builder.add_argument("--mode", choices=("ubsan", "asan", "profile"), default="ubsan",
+                         help="ubsan: official editor; asan: requires a compatible ASan-built engine; profile: symbols")
     builder.add_argument("--jobs", type=int, choices=range(1, 5), default=2)
     builder.add_argument("--out", type=Path, required=True)
     checker = commands.add_parser("check", help="run existing oracles against a private imported project copy")
