@@ -143,6 +143,51 @@ func _run() -> void:
 			and var_to_bytes(finite_read.get("physics", {})) == var_to_bytes(finite_snapshot))
 	collision.physics_format = "openrc-flight-checkpoint v12"
 	_check("collision envelope still refuses unknown physics", not VisualCheckpoint.make(collision, timeline, "field:west").ok)
+	var lake: Dictionary = _physics(10)
+	lake.physics_format = lake.format
+	lake.format = "openrc-flight-checkpoint v7"
+	lake.lake_identity = "b".repeat(64)
+	lake.lake_id = "fixture-lake"
+	var lake_pair: Dictionary = VisualCheckpoint.make(lake, timeline, "field:west")
+	var lake_read: Dictionary = VisualCheckpoint.read(lake_pair.get("checkpoint", {}), "field:west")
+	_check("lake-only physical checkpoint pairs and reads", lake_read.get("ok", false)
+		and var_to_bytes(lake_read.get("physics", {})) == var_to_bytes(lake))
+	var bad_lake: Dictionary = lake.duplicate(true)
+	bad_lake.erase("lake_id")
+	_check("incomplete lake identity is refused", not VisualCheckpoint.make(bad_lake, timeline, "field:west").ok)
+	bad_lake = lake.duplicate(true)
+	bad_lake.lake_identity = "invalid"
+	_check("malformed lake digest is refused", not VisualCheckpoint.make(bad_lake, timeline, "field:west").ok)
+	var native: Dictionary = _physics(10)
+	native.stage_physics_format = native.format
+	native.format = "openrc-flight-checkpoint v14"
+	native.stage_backend = {backend = "native", backend_version = "fixture-stage-v2", abi_version = 2,
+		binary_sha256 = "a".repeat(64), source_sha256 = "b".repeat(64), lock_sha256 = "c".repeat(64)}
+	var native_pair: Dictionary = VisualCheckpoint.make(native, timeline, "field:west")
+	var native_read: Dictionary = VisualCheckpoint.read(native_pair.get("checkpoint", {}), "field:west")
+	_check("native physics identity survives visual pairing", native_read.get("ok", false)
+		and var_to_bytes(native_read.get("physics", {})) == var_to_bytes(native))
+	var native_fallback: Dictionary = VisualCheckpoint.read(native, "field:west")
+	_check("native physics-only checkpoint gets the visual fallback", native_fallback.get("ok", false)
+		and native_fallback.get("context_status") == "legacy_missing_visual"
+		and var_to_bytes(native_fallback.get("physics", {})) == var_to_bytes(native))
+	for defect: String in ["missing_inner", "recursive", "unknown_inner", "missing_identity", "reference_backend",
+			"bad_digest", "bad_abi", "extra_identity"]:
+		var bad_native: Dictionary = native.duplicate(true)
+		match defect:
+			"missing_inner": bad_native.erase("stage_physics_format")
+			"recursive": bad_native.stage_physics_format = "openrc-flight-checkpoint v14"
+			"unknown_inner": bad_native.stage_physics_format = "openrc-flight-checkpoint v99"
+			"missing_identity": bad_native.erase("stage_backend")
+			"reference_backend": bad_native.stage_backend = {backend = "gdscript_reference"}
+			"bad_digest": bad_native.stage_backend.binary_sha256 = "z".repeat(64)
+			"bad_abi": bad_native.stage_backend.abi_version = true
+			"extra_identity": bad_native.stage_backend.extra = true
+		_check("native wrapper refuses " + defect, not VisualCheckpoint.make(bad_native, timeline, "field:west").ok
+			and not VisualCheckpoint.read(_unchecked_record(bad_native, timeline, "field:west"), "field:west").ok)
+	var stray_stage: Dictionary = _physics(10)
+	stray_stage.stage_backend = native.stage_backend
+	_check("older physics format cannot smuggle a stage identity", not VisualCheckpoint.make(stray_stage, timeline, "field:west").ok)
 	var partial_legacy: Dictionary = _physics(10)
 	partial_legacy["timeline"] = {}
 	_check("physics-only record with a visual marker never falls back", not VisualCheckpoint.read(partial_legacy, "field:west").get("ok", false))

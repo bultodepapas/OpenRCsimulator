@@ -10,6 +10,9 @@ const LakeLoader := preload("res://data/lake_loader.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
 const VehicleModel := preload("res://sim/vehicle_model.gd")
 const Weather := preload("res://physics/wind_config.gd")
+const VisualCheckpoint := preload("res://app_state/visual_checkpoint.gd")
+const VisualTimeline := preload("res://environment/visual_timeline.gd")
+const VisualConfig := preload("res://environment/time_of_day_config.gd")
 
 const STIK := "jensen-das-ugly-stik-60"
 const P51 := "p51d-mustang-120"
@@ -180,6 +183,57 @@ func checkpoints(native: Node, reference: Node) -> void:
 		equal = equal and physical(native) == physical(reference)
 	check("restored tape stays byte-identical", advanced == 32 and equal,
 		"%d/32; %s / %s" % [advanced, native.sim.fault_reason, reference.sim.fault_reason])
+
+
+func visual_checkpoints(native: Node, reference: Node) -> void:
+	var config: Dictionary = VisualConfig.defaults()
+	config.mode = "astronomical"
+	var fixed: Dictionary = VisualTimeline.create(config).timeline
+	var progressing: Dictionary = VisualTimeline.create_progressing(config, 0, 1).timeline
+	for session: Node in [native, reference]:
+		var backend: String = session.stage_backend_identity().backend
+		for kind: String in ["fixed", "progressing"]:
+			var snapshot: Dictionary = session.checkpoint()
+			var timeline: Dictionary = fixed if kind == "fixed" else progressing
+			var saved: Dictionary = VisualCheckpoint.make(snapshot, timeline, "test-field")
+			var loaded: Dictionary = VisualCheckpoint.read(saved.get("checkpoint", {}), "test-field")
+			var identical: bool = loaded.get("ok", false) \
+				and var_to_bytes(loaded.get("physics", {})) == var_to_bytes(snapshot) \
+				and var_to_bytes(loaded.get("timeline", {})) == var_to_bytes(timeline)
+			check(backend + " " + kind + " visual pair preserves the actual checkpoint", identical,
+				str(saved.get("errors", [])) + " / " + str(loaded.get("errors", [])))
+			if not identical:
+				continue
+			var previous_tick: int = session.sim.tick
+			session.sim.step()
+			var advanced: bool = session.sim.tick == previous_tick + 1 and session.sim.fault_reason.is_empty()
+			check(backend + " " + kind + " visual physics restores after advancing", advanced \
+				and session.restore_checkpoint(loaded.physics) \
+				and var_to_bytes(session.checkpoint()) == var_to_bytes(snapshot) \
+				and session.stage_backend_identity().backend == backend, str(session.sim.fault_reason))
+
+
+func spatial_visual_checkpoints(native: Node, reference: Node) -> void:
+	var config: Dictionary = Weather.spatial_defaults()
+	for session: Node in [native, reference]:
+		var backend: String = session.stage_backend_identity().backend
+		var accepted: bool = session.setup_weather(config)
+		if accepted:
+			session.reset()
+		check(backend + " spatial weather resets", accepted and session.is_flyable() \
+			and session.stage_backend_identity().backend == backend, str(session.stage_backend_status()))
+		if not accepted or not session.is_flyable() or session.stage_backend_identity().backend != backend:
+			return
+		var snapshot: Dictionary = session.checkpoint()
+		check(backend + " spatial checkpoint retains its receipt", snapshot.has("spatial_weather_receipt") \
+			and (snapshot.get("format") == "openrc-flight-checkpoint v12" \
+				or snapshot.get("stage_physics_format") == "openrc-flight-checkpoint v12"))
+		var damaged: Dictionary = snapshot.duplicate(true)
+		if damaged.has("spatial_weather_receipt"):
+			damaged.spatial_weather_receipt.content_sha256 = "0".repeat(64)
+			var timeline: Dictionary = VisualTimeline.create(VisualConfig.defaults()).timeline
+			check(backend + " changed spatial receipt is refused", not VisualCheckpoint.make(damaged, timeline, "test-field").ok)
+	visual_checkpoints(native, reference)
 
 
 func rejected_reset() -> void:
@@ -411,6 +465,8 @@ func run_all() -> void:
 			_native_exercised = true
 			trajectory(native, reference)
 			checkpoints(native, reference)
+			visual_checkpoints(native, reference)
+			spatial_visual_checkpoints(native, reference)
 			rejected_reset()
 			reprepare()
 			stale_mutation()

@@ -33,7 +33,9 @@ func _run() -> void:
 	_unit_cases(bindings)
 	_repair_cases(bindings)
 	_settlement_cases()
-	check("healthy visual checkpoint keeps its existing format", main.checkpoint().get("format") != StateCodec.ENVELOPE)
+	var healthy: Dictionary = main.checkpoint()
+	check("healthy visual checkpoint is nonempty and keeps its existing format",
+		not healthy.is_empty() and healthy.get("format") == "openrc-visual-checkpoint v1")
 	var ledger: Variant = main._accident_incident
 	var tick: int = session.sim.tick
 	var event: Dictionary = Events.hull_events([{index = 0, new = true, depth_m = 0.001}], bindings, PackedStringArray(), tick).events[0]
