@@ -5038,7 +5038,6 @@ func trace_meta() -> Dictionary:
 	elif str(_launch_metadata.get("launch_kind", "")) == "checkpoint_restore":
 		scenario = "checkpoint replay (original launch unknown)"
 	var metadata: Dictionary = {
-		stage_backend = stage_backend_identity(),
 		metadata_schema = "openrc-flight-meta v2",
 		scenario = scenario,
 		selected_start_choice = _launch_metadata.get("selected_start_choice", start_choice),
@@ -5294,6 +5293,10 @@ func trace_meta() -> Dictionary:
 		metadata.weather_timing = "datum wind/TAS at row position/time; loads_* at previous body position and k1 time; all surface/prop points use that stage time"
 		metadata.spatial_aero_model = Aero.SPATIAL_CONTINUATION_LAW
 		metadata.spatial_aero_limits = "continuous local section surrogate; held reference wake; datum body residuals; no dynamic stall or measured RC qualification"
+	# Preserve frozen reference trace bytes; absence denotes the historical reference backend.
+	var backend := stage_backend_identity()
+	if backend.backend == NativeStage.BACKEND_NATIVE:
+		metadata.stage_backend = backend
 	return metadata
 
 
