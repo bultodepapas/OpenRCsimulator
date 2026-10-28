@@ -1,9 +1,9 @@
 # NK-3 native stage evaluator
 
 Step NK-3 of the [native-kernel scoping](../../docs/research/native-kernel-scoping-2026-10-27.md#phases-r-research-i-implementation):
-a GDExtension (godot-cpp) port of the joint RK stage of the legacy prescribed-RPM Ugly Stik (`jensen-das-ugly-stik-60`),
-`FlightSession._wheel_evaluate`, proven byte-identical to the GDScript reference per component and through the real
-kernel tick. Build outputs stay in the ignored `tmp/native-kernel/`; `--install-app` can stage a verified Linux
+a GDExtension (godot-cpp) port of continuous aircraft evaluation. The accepted baseline is the legacy
+prescribed-RPM Ugly Stik (`jensen-das-ugly-stik-60`); ABI 2 expands propulsion, weather and vehicle coverage
+under the qualification work below. Build outputs stay in the ignored `tmp/native-kernel/`; `--install-app` can stage a verified Linux
 library in ignored `app/native/kernel/`. The application requests native physics by default.
 Unsupported or unverified configurations report a reference fallback; `--physics-backend=gdscript_reference`
 selects the reference explicitly. The low-level `FlightSession` default remains reference for tools and replay.
@@ -28,10 +28,18 @@ The coupled electric sources belong to Turbo Lumber and X8.
 | Every supported start/contact and flight lifecycle | Retractable gear, soft contacts, transported wake, failures, resets, rollback and exact replay |
 | Default delivery | Strict complete native fleet coverage, source-bound receipt, package tests and paired measurements |
 
+Research joint stages now cover the coupled electric, finite-liquid gas/turbine, finite glow and helicopter families.
+The [dated component and stage evidence](../../docs/research/native-kernel/NK-3/revalidation-linux-2026-10-28.json)
+records exact comparisons, paired tapes, source lifecycle events and remaining limits. ABI 2 integration and
+capability-based production admission are implemented. The first ABI 2 installation passed native lifecycle,
+catalog replay and application-routing checks; final-source fleet qualification and new default delivery
+remain pending. The existing helicopter reference
+rejects spatial/OU/column weather, and its hot-high start currently fails hover trim.
+
 Shared pre-tick/discrete supervision may remain GDScript under the existing kernel contract. Continuous laws
 claimed as native must execute in C++; matching reference fallbacks cannot establish native coverage.
 
-## Optional normal-flight backend
+## Normal-flight backend selection
 
 After verification and installation below:
 
@@ -39,9 +47,10 @@ After verification and installation below:
 "$(app/get-godot.sh)" --path app -- --quick-flight --aircraft=jensen-das-ugly-stik-60 --weather=calm
 ```
 
-Selection is launch-time only. The Linux x86_64 route admits the stock Ugly Stik, calm weather and
-the capabilities accepted by the native stage. Workshop variants, other aircraft and unsupported weather keep
-the reference evaluator. The interactive flight console prints requested/actual backend and refusal reason.
+Selection is launch-time only. ABI 2 selects a stage from the validated model's propulsion and vehicle
+capabilities, with native weather and configuration guards. This replaces the baseline stock-aircraft restriction;
+the expansion still requires the gates above before delivery. Unsupported or unverified configurations report
+reference fallback. The interactive flight console prints requested/actual backend and refusal reason.
 Native traces record the identity in metadata; its absence denotes reference and preserves pre-integration
 reference CSV bytes. In source builds, the exact verified Godot executable, binary and mirrored source/data hashes must match.
 Release packages instead verify the complete executable and embedded manifest before loading their pinned sidecar.
@@ -52,6 +61,7 @@ surface/lake/soft-contact setters reprepare at a boundary. Per-tick comparisons 
 changes before stale coefficients can run; they do not serialize, hash or decode the model each tick.
 
 Native checkpoints use an outer `openrc-flight-checkpoint v14` envelope carrying the backend and library identity.
+Helicopter native checkpoints use `openrc-helicopter-checkpoint v5`, retaining the v4 physical fields and adding the backend identity.
 Reference checkpoint formats/hashes stay unchanged. Exact replay requires that identity; explicit candidate
 replay may use reference and reports `solver_changed`. A backend change during recording leaves an incomplete
 diagnostic prefix. See [flight logging](../../docs/FLIGHT-LOGGING.md).
@@ -64,10 +74,18 @@ diagnostic prefix. See [flight logging](../../docs/FLIGHT-LOGGING.md).
 | `nk_terrain.hpp` | `ground_terrain.gd` `sample_validated` (micro-relief, surface-table validity) and `_compose_lake`; `lake_surface.gd` terrain sampler (covered early-out, five-point stencil, bed profile) |
 | `nk_wheels.hpp` | `ground_wheels.gd` `evaluate` (diagnostics off), `frame`, `coefficients`, `compressions` |
 | `nk_aero.hpp` | `air_data.gd` `compute`; `ground_effect.gd` `factors`; `aero.gd` `loads` and its strip, oracle and tail laws |
-| `nk_prop.hpp` | `propulsion.gd` legacy propeller: datum stage inflow, `coefficient`, `thrust_torque`, untilted `loads_from_thrust_torque`; `dynamics.gd` `rotor_momentum` |
+| `nk_prop.hpp` | `propulsion.gd` propeller geometry, inflow, coefficient tables, tilted-axis loads and rotor momentum |
 | `nk_hull.hpp` | `hull_contact.gd` `loads` (flat and lake branches, airframe friction, shared regularization) |
-| `nk_stage.hpp` | `flight_session.gd` `_wheel_evaluate`, `_ground_evaluation` (fixed gear), `_ground_up`, calm `air_data`; `dynamics.gd` `loads_from_air` without slipstream |
+| `nk_stage.hpp`, family stage headers | Fixed-wing joint/body evaluation, source rates, rotor response, live liquid/glow mass and retractable contacts |
+| `nk_electric*`, `nk_liquid*`, `nk_glow*`, `nk_prescribed*` | Electric motor/battery, finite gas/turbine, glow lifecycle and prescribed-fuel shaft/turbine laws |
+| `nk_weather*`, `nk_spatial*`, `nk_wake*` | Stage-time weather, atmosphere, local spatial flow and transported/quasistatic wake |
+| `nk_helicopter*` | Helicopter controls, rotor/airframe forces, drive, body derivatives and ground contact |
+| `nk_legacy_ground.hpp` | Legacy no-wheel-state flat/lake contact law for valid older or workshop models |
 | `nk_kernel.cpp` | `OpenRCNativeKernel` (RefCounted): prepare, per-call and per-tick methods, probes, counters, benches |
+
+These rows identify implemented code, not release qualification. Installed fleet, lifecycle and package evidence
+must match the exact candidate. Preparation guards retain explicit resource budgets; an over-budget input is
+refused with a diagnostic and cannot count as native coverage.
 
 Laws: `Aero.LOADS_LAW` `section-plane-source-weighted-wake-velocity-v2` (envelope, coupled or uncoupled strips,
 ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tails); `Wheels.ROLLING_LAW`
@@ -82,13 +100,12 @@ ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tai
   `pre_tick`, the inputs, the session's own `_deflections(aux)` (`[elevator, aileron_right, aileron_left, rudder]`)
   and `sim.time()`. `stage(body, continuous, t)` is then the joint stage: `{loads, derivative, rotor_momentum}` with
   `StringName` keys like the reference literal, or `{}` exactly where the reference returns `{}`.
-- `stage_adapter.gd` `install(session, native)` swaps exactly one boundary (`sim.model.stage`, SF-08) and wraps
-  `sim.model.pre_tick` to hand over the tick context; the tick transaction, pre-step, collision and observers stay
-  GDScript. A refusal changes nothing on the session.
-- D6: decoding refuses unknown keys in every dictionary the laws read and unported capabilities: retractable gear,
-  glow, coupled shaft, turbine, liquid or finite fuel, flaps, slipstream or wash pieces, rotor dynamics or another
-  stage method, tilted or non-legacy propellers, live-mass (geometry-only) hulls, and any weather that is not calm,
-  uniform and settled (spatial, turbulence, vertical column, pending reset). The caller keeps the reference.
+- Production adapters in `app/sim/native/` install the prepared family evaluator through `VehicleModel.stage`.
+  A model without continuous state uses `loads` and `rotor_momentum`; detachment restores both callbacks before
+  replacing its owner. Tick transactions, discrete supervision, collision and observers remain in GDScript.
+- D6: preparation rejects malformed data, unsupported laws, pending configuration changes and exceeded resource
+  budgets. Family adapters admit the capabilities listed above. Rejection preserves the reference callbacks;
+  a later configuration mutation faults before the next native evaluation rather than using stale coefficients.
 
 ## Exactness rules (keep them when extending the port)
 
@@ -137,7 +154,7 @@ oracle must actually compare at least 10,000 states across air, ground and hull 
 inputs. Trajectory v2 must compare all five cases for at least 960 actual ticks each. Trim, runway and manoeuvre
 must complete the requested length without a fault, pause or crash; only take-off and lake may end early in a
 matching crash after the minimum. Native context and stage calls are checked per accepted tick. Fault injection,
-checkpoint/restore and the P-51 refusal must execute their full prerequisite and comparison tapes.
+checkpoint/restore and pending-weather-configuration refusal must execute their full prerequisite and comparison tapes.
 
 Stop the editor and app before installation. The installer creates `native/kernel/.gdignore` before publishing
 the descriptor and removes only NK-3's old entry from `.godot/extension_list.cfg`, preserving other registrations.
@@ -151,9 +168,11 @@ python3 research/native-kernel/test_verification.py
 python3 tools/godot/run_checked.py --timeout 90 -- \
   "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
   --script "$PWD/research/native-kernel/test_trajectory.gd"
-python3 research/native-kernel/run.py --app-library --script stage_oracle.gd
-python3 research/native-kernel/run.py --app-library --script trajectory.gd \
-  --option ticks=14400 --option skip-timing=true
+python3 research/native-kernel/run.py --script stage_oracle.gd --states 12000
+python3 research/native-kernel/run.py --script trajectory.gd \
+  --option ticks=960 --option skip-timing=true
+# Run every additional family/weather gate and the deliberate mutant control listed
+# in build.py ORACLE_ARGUMENTS. The installer prints any missing gate's command.
 python3 research/native-kernel/build.py --install-app
 python3 tools/godot/run_checked.py --timeout 90 -- \
   "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
@@ -164,8 +183,9 @@ python3 tools/godot/run_checked.py --timeout 90 -- \
   "$(app/get-godot.sh)" --headless --path app --script res://tests/test_native_replay.gd
 ```
 
-For the first installation, omit `--app-library` from both oracle runs. All three tests must exercise their native
-branches after installation; successful absent/stale-library branches establish fallback only. The Python gate
+Use the temporary build for all prerequisite oracles, including after a source or ABI change; `--app-library`
+selects the already installed candidate and is appropriate only after installation. All production family tests
+must exercise their native branches after installation; successful absent/stale-library branches establish fallback only. The Python gate
 regressions run through `research/test-tools.sh`; CI also runs the library-free GDScript policy regression.
 This local installation does not qualify exports, Windows, target-host timing or the full fleet. The receipt's
 mirrored-source list includes the stock aircraft data but is not a manifest of every environment input; retained
@@ -173,7 +193,7 @@ results describe their recorded snapshot, and other data changes require fresh v
 
 `python3 research/native-kernel/test_installation.py` exercises guarded loading and cache migration in disposable
 projects using the built library and pinned editor; it does not change the app installation. CI's
-`native-kernel-linux` job builds and qualifies the library, requires explicit native-success markers in all three
+`native-kernel-linux` job builds and qualifies the library, requires explicit native-success markers in its
 runtime tests, and checks a short production reference/native pair. Its diagnostics are retained on failure and
 release publication depends on the job. The export job then qualifies the actual release executable as described below.
 
@@ -190,9 +210,9 @@ the final executable (including its embedded PCK) and manifest hashes. This is c
 cryptographic signature. Keep `native/kernel/` beside the executable when moving the package; a missing or
 altered sidecar selects reference. No runtime C++ build or source-tree access is needed.
 
-The package gate runs the existing stage, lifecycle and exact-replay tests through
-`--quick-flight --native-qualification=stage|lifecycle|replay`. It also compares typed reference/native session
-fingerprints in the same executable and tests default selection, explicit reference, unsupported aircraft and
+The package gate runs stage, lifecycle, exact-replay and helicopter tests through
+`--quick-flight --native-qualification=stage|lifecycle|replay|helicopter|helicopter-radio`. It also compares typed reference/native session
+fingerprints in the same executable and tests default selection, explicit reference, aircraft families and
 corrupted/missing sidecar fallback. Completed diagnostics must actually exercise native code; skipped or
 interrupted tests do not pass. The diagnostic route accepts fixed modes, never a script path.
 

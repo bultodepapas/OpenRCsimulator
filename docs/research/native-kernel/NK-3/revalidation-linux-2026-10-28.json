@@ -209,7 +209,7 @@
      "timeout_seconds": 120.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\ntrace saved: ../tmp/nk3-native-cli.csv (241 rows)\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\ntrace saved: ../tmp/nk3-native-cli.csv (241 rows)\n",
     "log_sha256": "e428481e0b33178bed06f5565a67eb0b3ed48dfb86e22b0a9357f13aae37450c"
    },
    "tmp/nk3-integration-checks/native-replay-1p_9zddp": {
@@ -249,7 +249,7 @@
      "timeout_seconds": 90.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/reference.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/reference.orfl (64 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/backend-switch-before-tick.orfl\nFlight log stopped: the stage backend changed; file is incomplete.\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/backend-switch-during-tick.orfl\nFlight log stopped: the stage backend changed; file is incomplete.\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/native.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/native.orfl (64 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nNK3_NATIVE_REPLAY checks=44 failures=0 out=/home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/reference.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/reference.orfl (64 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/backend-switch-before-tick.orfl\nFlight log stopped: the stage backend changed; file is incomplete.\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/backend-switch-during-tick.orfl\nFlight log stopped: the stage backend changed; file is incomplete.\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/native.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087/native.orfl (64 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nNK3_NATIVE_REPLAY checks=44 failures=0 out=/home/bulto/OpenRCsimulator/app/../tmp/native-replay-3551087\n",
     "log_sha256": "02d9d77888510608277c0ebc3e8baa390e533835eb780ae1fcba078b4b66b21e"
    },
    "tmp/nk3-integration-checks/native-stage-pvudpaa_": {
@@ -289,7 +289,7 @@
      "timeout_seconds": 90.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nNative stage: 26 checks, 0 failed\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nNative stage: 26 checks, 0 failed\n",
     "log_sha256": "9e07db53b6edd6f07bffb1ec711e4e1a538bb8aa24b5d76a4427e0a3b6736155"
    },
    "tmp/nk3-integration-checks/trajectory-policy-8i9q7wqc": {
@@ -374,7 +374,7 @@
      "timeout_seconds": 120.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nNK3_NATIVE_SESSION_SKIP native unavailable or stale: native stage library not installed\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nNK3_NATIVE_SESSION checks=54 failures=0\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nNK3_NATIVE_SESSION_SKIP native unavailable or stale: native stage library not installed\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nNK3_NATIVE_SESSION checks=54 failures=0\n",
     "log_sha256": "7d98c439cd29ba931733299d461144665413886feafa412674b3538fb8d5be0e"
    },
    "tmp/nk3-session-checks/native-session-qualified-o_kpd1y0": {
@@ -418,7 +418,7 @@
      "timeout_seconds": 180.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nNK3_NATIVE_SESSION checks=118 failures=0\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nNK3_NATIVE_SESSION checks=118 failures=0\n",
     "log_sha256": "49818bfbcd1c24b4da7ffe529298a2cb7327a5ee846ecb9341978a47f8866754"
    },
    "tmp/nk3-integration-checks/avanti-smoke-recheck-osgkivnr": {
@@ -578,7 +578,7 @@
      "timeout_seconds": 120.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\nok   rotorcraft direct route rejects an enabled companion group\nok   rotorcraft direct route allows an explicitly disabled group\nok   fixed-wing direct route keeps enabled companions available\nok   non-companion direct arguments leave companions disabled\nok   direct companion CLI validates --companions\nok   direct companion CLI validates --companions=4\nok   direct companion CLI validates --companions=-1\nok   direct companion CLI validates --companions=1.5\nok   direct companion CLI validates --companions-seed\nok   direct companion CLI validates --companions-seed=-1\nok   direct companion CLI validates --companions-seed=4294967296\nok   Home companions default Off with count 1 and seed 1\nok   Home companions are disabled outside Club Field\nok   Home opens the companions dialog through the shell\nok   Home Cancel preserves preferences and the live Home draft\nok   Home Apply persists the checked count and seed\nok   Home summary reflects the saved choice\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nok   Home flight receives the saved companion config before startup\nok   the manager starts three real AI pilots\nok   Pause freezes simulation ticks and propeller angle\nok   Pause dialog reports all three active pilots\nok   Pause Cancel leaves the flight config and active group unchanged\nok   Cancel preserves live companion presentation\nok   Pause Apply stages two pilots for the next restart\nok   sound and labels apply without replacing or advancing the paused flight\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nok   Restart rebuilds the live group from the staged count\nok   Pause Save as default is the only Pause action that persists\nok   Pause save failure rolls the staged flight config back\nok   failed save also restores live presentation\nok   Pause save failure preserves the previous on-disk default\nok   Cancel after a failed save leaves the flight config unchanged\nok   Remove now appears for an active group\nok   Remove now leaves no active AI pilots\nok   Remove now does not rewrite the saved default\nok   future preferences fixture writes\nok   future schema stays protected\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nok   direct CLI ignores saved Home companion settings\nok   direct fixed-wing Pause keeps the flight settings entry\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663/player.orfl\nFlight log REC: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663/companion-0.orfl\nCompanion capture REC: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663\nok   synthetic electric demo cannot enable companions or fleet capture\nok   synthetic electric demo retains explicit companion Off support\nok   direct CLI starts a fleet capture before flight ticks\nok   capture HUD distinguishes the fleet and leaves the separate player log idle\nFlight log saved: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663/player.orfl (48 ticks)\nFlight log saved: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663/companion-0.orfl (48 ticks)\nCompanion capture closed: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663 (complete=true, tick=48)\nok   F10 closes all streams without starting a second player log\nok   capture HUD confirms a saved cohort\nok   F11 marks the player stream\nok   F11 marks the companion-0 stream\nok   F11 marks every stream at the same tick\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nok   Restart rebuilds the companion without reusing its capture directory\nok   capture directory is never saved in Home preferences\nCompanions shell: 0 failed\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\nok   rotorcraft direct route rejects an enabled companion group\nok   rotorcraft direct route allows an explicitly disabled group\nok   fixed-wing direct route keeps enabled companions available\nok   non-companion direct arguments leave companions disabled\nok   direct companion CLI validates --companions\nok   direct companion CLI validates --companions=4\nok   direct companion CLI validates --companions=-1\nok   direct companion CLI validates --companions=1.5\nok   direct companion CLI validates --companions-seed\nok   direct companion CLI validates --companions-seed=-1\nok   direct companion CLI validates --companions-seed=4294967296\nok   Home companions default Off with count 1 and seed 1\nok   Home companions are disabled outside Club Field\nok   Home opens the companions dialog through the shell\nok   Home Cancel preserves preferences and the live Home draft\nok   Home Apply persists the checked count and seed\nok   Home summary reflects the saved choice\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nok   Home flight receives the saved companion config before startup\nok   the manager starts three real AI pilots\nok   Pause freezes simulation ticks and propeller angle\nok   Pause dialog reports all three active pilots\nok   Pause Cancel leaves the flight config and active group unchanged\nok   Cancel preserves live companion presentation\nok   Pause Apply stages two pilots for the next restart\nok   sound and labels apply without replacing or advancing the paused flight\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nok   Restart rebuilds the live group from the staged count\nok   Pause Save as default is the only Pause action that persists\nok   Pause save failure rolls the staged flight config back\nok   failed save also restores live presentation\nok   Pause save failure preserves the previous on-disk default\nok   Cancel after a failed save leaves the flight config unchanged\nok   Remove now appears for an active group\nok   Remove now leaves no active AI pilots\nok   Remove now does not rewrite the saved default\nok   future preferences fixture writes\nok   future schema stays protected\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nok   direct CLI ignores saved Home companion settings\nok   direct fixed-wing Pause keeps the flight settings entry\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663/player.orfl\nFlight log REC: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663/companion-0.orfl\nCompanion capture REC: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663\nok   synthetic electric demo cannot enable companions or fleet capture\nok   synthetic electric demo retains explicit companion Off support\nok   direct CLI starts a fleet capture before flight ticks\nok   capture HUD distinguishes the fleet and leaves the separate player log idle\nFlight log saved: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663/player.orfl (48 ticks)\nFlight log saved: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663/companion-0.orfl (48 ticks)\nCompanion capture closed: /home/bulto/OpenRCsimulator/tmp/afc-shell-capture-34224663 (complete=true, tick=48)\nok   F10 closes all streams without starting a second player log\nok   capture HUD confirms a saved cohort\nok   F11 marks the player stream\nok   F11 marks the companion-0 stream\nok   F11 marks every stream at the same tick\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nok   Restart rebuilds the companion without reusing its capture directory\nok   capture directory is never saved in Home preferences\nCompanions shell: 0 failed\n",
     "log_sha256": "13daa79847d669af8de5fbeab0974a15abbbea253e6c7d64a36495e9dbaf3399"
    },
    "tmp/nk3-integration-checks/legacy-trace-compatibility-iempm6p4": {
@@ -618,7 +618,7 @@
      "timeout_seconds": 120.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\nFAIL frozen legacy checkpoint/metadata exact gp-extra-300s-60 \nFAIL frozen legacy CSV exact gp-extra-300s-60 \naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFAIL frozen legacy checkpoint/metadata exact jensen-das-ugly-stik-60 \nFAIL frozen legacy checkpoint/metadata exact p51d-mustang-120 \nFAIL frozen legacy CSV exact p51d-mustang-120 \naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFAIL frozen legacy checkpoint/metadata exact sebart-avanti-s-a200-p100rx \nFAIL frozen legacy CSV exact sebart-avanti-s-a200-p100rx \naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-12892229.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-12892229.orfl (4 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-13237973.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-13237973.orfl (4 ticks)\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFixed brake candidate: 257 checks, 7 failed\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\nFAIL frozen legacy checkpoint/metadata exact gp-extra-300s-60 \nFAIL frozen legacy CSV exact gp-extra-300s-60 \naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFAIL frozen legacy checkpoint/metadata exact jensen-das-ugly-stik-60 \nFAIL frozen legacy checkpoint/metadata exact p51d-mustang-120 \nFAIL frozen legacy CSV exact p51d-mustang-120 \naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFAIL frozen legacy checkpoint/metadata exact sebart-avanti-s-a200-p100rx \nFAIL frozen legacy CSV exact sebart-avanti-s-a200-p100rx \naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-12892229.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-12892229.orfl (4 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-13237973.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-13237973.orfl (4 ticks)\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFixed brake candidate: 257 checks, 7 failed\n",
     "log_sha256": "0bb9abcd6d652bb24d0d81aec43dfa21f569801430ff5f98dababfc743036ab6"
    },
    "tmp/nk3-integration-checks/native-cli-final-6socp8ii": {
@@ -661,7 +661,7 @@
      "timeout_seconds": 120.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\ntrace saved: ../tmp/nk3-native-cli-final.csv (241 rows)\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\ntrace saved: ../tmp/nk3-native-cli-final.csv (241 rows)\n",
     "log_sha256": "9fd950df8e943ec6b3720bc4cad1d669bec4ce91c07e4a98d5dfa96f2845182f"
    },
    "tmp/nk3-integration-checks/native-normal-flight-97crfhj6": {
@@ -708,7 +708,7 @@
      "timeout_seconds": 120.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nphysics backend: {\"identity\":{\"abi_version\":1,\"backend\":\"native\",\"backend_version\":\"openrc-native-kernel-stage-v1\",\"binary_sha256\":\"a25f3c0fde93e7e42ad4df06052614694ad8f2c69b267e4a33d5cb3f963f0e11\",\"lock_sha256\":\"850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34\",\"source_sha256\":\"2f4595364e9798524600b8fc0636a7b497e13e7c852dde78fd5adcdf59429d5a\"},\"reason\":\"\",\"requested\":\"native\"}\nframe times: p50 9.82 ms, p95 28.18 ms, p99 28.18 ms over 17 frames (complete=true) \u2192 ../tmp/nk3-native-normal-flight.json\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nphysics backend: {\"identity\":{\"abi_version\":1,\"backend\":\"native\",\"backend_version\":\"openrc-native-kernel-stage-v1\",\"binary_sha256\":\"a25f3c0fde93e7e42ad4df06052614694ad8f2c69b267e4a33d5cb3f963f0e11\",\"lock_sha256\":\"850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34\",\"source_sha256\":\"2f4595364e9798524600b8fc0636a7b497e13e7c852dde78fd5adcdf59429d5a\"},\"reason\":\"\",\"requested\":\"native\"}\nframe times: p50 9.82 ms, p95 28.18 ms, p99 28.18 ms over 17 frames (complete=true) → ../tmp/nk3-native-normal-flight.json\n",
     "log_sha256": "f602623c3f4241d9d14bc790571372c3976c88e8af7a3eb59c5768783210166e"
    },
    "tmp/nk3-integration-checks/native-replay-final-kgtcg1c_": {
@@ -750,7 +750,7 @@
      "timeout_seconds": 120.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/reference.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/reference.orfl (64 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/backend-switch-before-tick.orfl\nFlight log stopped: the stage backend changed; file is incomplete.\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/backend-switch-during-tick.orfl\nFlight log stopped: the stage backend changed; file is incomplete.\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/native.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/native.orfl (64 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nNK3_NATIVE_REPLAY checks=44 failures=0 out=/home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/reference.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/reference.orfl (64 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/backend-switch-before-tick.orfl\nFlight log stopped: the stage backend changed; file is incomplete.\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/backend-switch-during-tick.orfl\nFlight log stopped: the stage backend changed; file is incomplete.\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/native.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812/native.orfl (64 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nNK3_NATIVE_REPLAY checks=44 failures=0 out=/home/bulto/OpenRCsimulator/app/../tmp/native-replay-4074812\n",
     "log_sha256": "c7f30df8ea13f2aa24a602f4666cbe9ff7d569d5c56f8db249405a1d7f50abb3"
    },
    "tmp/nk3-integration-checks/native-session-final-gakcon1d": {
@@ -792,7 +792,7 @@
      "timeout_seconds": 180.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nNK3_NATIVE_SESSION checks=118 failures=0\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nNK3_NATIVE_SESSION checks=118 failures=0\n",
     "log_sha256": "49818bfbcd1c24b4da7ffe529298a2cb7327a5ee846ecb9341978a47f8866754"
    },
    "tmp/nk3-integration-checks/native-stage-final-poj_zjmu": {
@@ -834,7 +834,7 @@
      "timeout_seconds": 120.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nNative stage: 26 checks, 0 failed\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nNative stage: 26 checks, 0 failed\n",
     "log_sha256": "9e07db53b6edd6f07bffb1ec711e4e1a538bb8aa24b5d76a4427e0a3b6736155"
    },
    "tmp/nk3-integration-checks/preintegration-legacy-trace-a5r0zf1z": {
@@ -874,7 +874,7 @@
      "timeout_seconds": 120.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\nFAIL frozen legacy checkpoint/metadata exact gp-extra-300s-60 \nFAIL frozen legacy CSV exact gp-extra-300s-60 \naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFAIL frozen legacy checkpoint/metadata exact jensen-das-ugly-stik-60 \nFAIL frozen legacy checkpoint/metadata exact p51d-mustang-120 \nFAIL frozen legacy CSV exact p51d-mustang-120 \naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFAIL frozen legacy checkpoint/metadata exact sebart-avanti-s-a200-p100rx \nFAIL frozen legacy CSV exact sebart-avanti-s-a200-p100rx \naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-11202801.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-11202801.orfl (4 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-11522170.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-11522170.orfl (4 ticks)\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFixed brake candidate: 257 checks, 7 failed\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\nFAIL frozen legacy checkpoint/metadata exact gp-extra-300s-60 \nFAIL frozen legacy CSV exact gp-extra-300s-60 \naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFAIL frozen legacy checkpoint/metadata exact jensen-das-ugly-stik-60 \nFAIL frozen legacy checkpoint/metadata exact p51d-mustang-120 \nFAIL frozen legacy CSV exact p51d-mustang-120 \naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFAIL frozen legacy checkpoint/metadata exact sebart-avanti-s-a200-p100rx \nFAIL frozen legacy CSV exact sebart-avanti-s-a200-p100rx \naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-11202801.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-11202801.orfl (4 ticks)\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFlight log REC: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-11522170.orfl\nFlight log saved: /home/bulto/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-11522170.orfl (4 ticks)\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nFixed brake candidate: 257 checks, 7 failed\n",
     "log_sha256": "5364c4e7f29747bcec8c337489177a166241df9f84d95cf9f525fc7397a701f5"
    },
    "tmp/nk3-integration-checks/reference-baseline-capture-3ggjfpta": {
@@ -916,7 +916,7 @@
      "timeout_seconds": 90.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\ncaptured /home/bulto/OpenRCsimulator/tmp/nk3-preintegration-compatibility/baseline.json on Linux\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\ncaptured /home/bulto/OpenRCsimulator/tmp/nk3-preintegration-compatibility/baseline.json on Linux\n",
     "log_sha256": "8ef052f5348311b86eba38a5f0a454cf0bc159519fb541cc8c71e0cb4a70b679"
    },
    "tmp/nk3-integration-checks/reference-current-capture-t3d4fr4b": {
@@ -958,7 +958,7 @@
      "timeout_seconds": 90.0,
      "warnings_as_errors": false
     },
-    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\ncaptured /home/bulto/OpenRCsimulator/tmp/nk3-preintegration-compatibility/current.json on Linux\n",
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\ncaptured /home/bulto/OpenRCsimulator/tmp/nk3-preintegration-compatibility/current.json on Linux\n",
     "log_sha256": "d03f038d0f2d8223f9b709ce278a432899bcee33c424bba7d37fae42f665bfe3"
    }
   },
@@ -15830,7 +15830,7 @@
    "limits": "Parity on these tapes only; not exact replay, not a new qualification, not physical validation."
   },
   "measurement_context": {
-   "before": "Completed in the shared working tree. Short loader diagnostics overlapped roughly 15:27:45\u201315:28:10 UTC; indicative development figures only.",
+   "before": "Completed in the shared working tree. Short loader diagnostics overlapped roughly 15:27:45–15:28:10 UTC; indicative development figures only.",
    "cpp_candidate_rejected": "All nine paired trajectories matched, but the campaign correctly failed because unrelated display/UI application files changed. A separate rendered Godot process consumed about 610% CPU at 15:37:35 UTC. Excluded from optimization attribution.",
    "final": "Isolated tracked-source checkout plus explicit frozen working-tree sources and final receipt. 18 accepted processes, nine pairs, 3000 ticks per process; 27000 exactly matching ticks per backend. Load averages at 15:56:06 UTC: 0.71/5.28/6.50; at 15:59:06 UTC: 0.87/3.39/5.55. Shared development host, not a controlled target-hardware qualification.",
    "raw_reports": "Per-tick JSON files remain under tmp/nk3-production-final/runs; campaign entries retain their SHA-256 and reductions. They are not duplicated into this retained report.",
@@ -21207,8 +21207,834 @@
   ]
  },
  "coverage_expansion_components_2026_10_28": {
+  "abi2_integration_in_progress": {
+   "acceptance_limit": "Earlier passing reports predate subsequent source and harness edits. Refresh exact-source receipts and all required gates before installation; installed lifecycle, full fleet, replay, release executable and paired production timing remain required.",
+   "corrections": [
+    "FlightSession validates retractable drag shape and finite entries before summing hull loads; existing ground-session regression passes 30 checks, including malformed spatial point and overflowing finite drag inputs.",
+    "Helicopter reset/restore publication guards cover control API reentry and direct owner/weather mutations; actual native rollback qualification is still in progress.",
+    "Fleet fingerprints now include accepted events for both vehicle families.",
+    "Canonical native preparation and guard helpers live under app/sim/native; release manifests include native helicopter lifecycle and radio replay diagnostics.",
+    "Supported prescribed-fuel split/coupled shaft, sampled/continuous turbine and legacy ground-contact routes are being ported after an admission audit exposed fallback gaps.",
+    "Native flight-log replay coverage was extended to all fixed-wing catalog entries and default/ideal battery variants; native execution awaits the verified installation.",
+    "Refused fixed-wing transactions rebind the native container guard against its original immutable preparation values; changed coefficients remain rejected.",
+    "Weather guard accepts the first clock commitment only when it equals the captured effective step; all other clock changes remain rejected.",
+    "Optional source previews are disabled before a committed body exists; this fixes first-start P-51/F4U fallback without changing the physical stage.",
+    "Native body callbacks cover zero-continuous-state models; 24-contact legacy models preserve all 72 anchor values."
+   ],
+   "excluded_run": "liquid-stage-20261028T200909976219Z: reference retractable drag did not reject malformed/nonfinite results before adding hull loads; eight stage shape disagreements and one checked engine error. Never accepted as qualification.",
+   "first_full_family_runs": [
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "electric_coupled_skywalker-x8/ideal": {
+       "states": 1000
+      },
+      "electric_coupled_skywalker-x8/pack": {
+       "states": 1000
+      },
+      "electric_coupled_turbo-lumber-evolution/ideal": {
+       "states": 1000
+      },
+      "electric_coupled_turbo-lumber-evolution/pack": {
+       "states": 1000
+      },
+      "electric_skywalker-x8/ideal": {
+       "states": 1000
+      },
+      "electric_skywalker-x8/pack": {
+       "states": 1000
+      },
+      "electric_synthetic_ecm_0_branches": {
+       "states": 1000
+      },
+      "electric_synthetic_ecm_2_branches": {
+       "states": 1000
+      },
+      "electric_synthetic_ocv": {
+       "states": 1000
+      },
+      "electric_turbo-lumber-evolution/ideal": {
+       "states": 1000
+      },
+      "electric_turbo-lumber-evolution/pack": {
+       "states": 1000
+      }
+     },
+     "format": "openrc-nk3-electric-oracle v1",
+     "path": "tmp/native-kernel/electric-20261028T200857708520Z.json",
+     "run_valid": true,
+     "sha256": "0a278df0c01e9d3e24bff17e48a02d6bf41d0426f2f4f260667e33e974017f05",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "electric_stage": {
+       "states": 14000
+      }
+     },
+     "format": "openrc-nk3-electric-stage-oracle v1",
+     "path": "tmp/native-kernel/electric-stage-20261028T200900539427Z.json",
+     "run_valid": true,
+     "sha256": "67d882f0d5466cbd35fe38ca318e48219c6307aa9dd24a060f613545958e8444",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {},
+     "format": "openrc-nk3-gear-hull-oracle v1",
+     "path": "tmp/native-kernel/gear-20261028T200909787971Z.json",
+     "run_valid": true,
+     "sha256": "c9df212439662651b5b358cdcb57ffe9e06ad0e82d8c8f2939eae2a1ac6d4381",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "glow_feed_stik-glow-55ax-2t": {
+       "states": 1000
+      },
+      "glow_feed_stik-glow-61fx-2t": {
+       "states": 1000
+      },
+      "glow_feed_stik-glow-fs64v-4t": {
+       "states": 1000
+      },
+      "glow_feed_synthetic_pickup": {
+       "states": 1000
+      },
+      "glow_gp-extra-300s-60": {
+       "states": 1000
+      },
+      "glow_stik-glow-55ax-2t": {
+       "states": 1000
+      },
+      "glow_stik-glow-61fx-2t": {
+       "states": 1000
+      },
+      "glow_stik-glow-fs64v-4t": {
+       "states": 1000
+      },
+      "glow_two_resource": {
+       "states": 1000
+      }
+     },
+     "format": "openrc-nk3-glow-oracle v1",
+     "path": "tmp/native-kernel/glow-20261028T200930878879Z.json",
+     "run_valid": true,
+     "sha256": "d54620c8f9dd951447b858f5942999df16038e1b3737a1d38631b9899872e94b",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "glow_stage": {
+       "states": 14000
+      }
+     },
+     "format": "openrc-nk3-glow-stage-oracle v1",
+     "path": "tmp/native-kernel/glow-stage-20261028T200948562869Z.json",
+     "run_valid": true,
+     "sha256": "5793ac7d63c453cf44c4723e718aa51a7ef690d7952d772f3675772546fac4be",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "helicopter": {
+       "accepted": 10026
+      },
+      "helicopter_airborne_calm": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 51,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_cool-dense": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 47,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_crosswind": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 52,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_gusty": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 46,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_hot-high": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 41,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_steady": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 44,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_updraft": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 44,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_ground_calm": {
+       "accepted": 715,
+       "contact": 367,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 348
+      },
+      "helicopter_ground_cool-dense": {
+       "accepted": 715,
+       "contact": 344,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 371
+      },
+      "helicopter_ground_crosswind": {
+       "accepted": 715,
+       "contact": 361,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 354
+      },
+      "helicopter_ground_gusty": {
+       "accepted": 715,
+       "contact": 385,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 330
+      },
+      "helicopter_ground_hot-high": {
+       "accepted": 715,
+       "contact": 367,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 348
+      },
+      "helicopter_ground_steady": {
+       "accepted": 715,
+       "contact": 370,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 345
+      },
+      "helicopter_ground_updraft": {
+       "accepted": 715,
+       "contact": 360,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 355
+      }
+     },
+     "format": "openrc-nk3-helicopter-oracle v1",
+     "path": "tmp/native-kernel/helicopter-20261028T200909876897Z.json",
+     "run_valid": true,
+     "sha256": "12fbc40f9170505ba19bd9fa8d1a81d88a47328da0acca4996ca9ff75ae14063",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "helicopter": {
+       "accepted": 10026
+      },
+      "helicopter_airborne_calm": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 51,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_cool-dense": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 47,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_crosswind": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 52,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_gusty": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 46,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_hot-high": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 41,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_steady": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 44,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_airborne_updraft": {
+       "accepted": 715,
+       "direct": 239,
+       "idle_up": 357,
+       "inverted": 44,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476
+      },
+      "helicopter_ground_calm": {
+       "accepted": 715,
+       "contact": 367,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 348
+      },
+      "helicopter_ground_cool-dense": {
+       "accepted": 715,
+       "contact": 344,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 371
+      },
+      "helicopter_ground_crosswind": {
+       "accepted": 715,
+       "contact": 361,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 354
+      },
+      "helicopter_ground_gusty": {
+       "accepted": 715,
+       "contact": 385,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 330
+      },
+      "helicopter_ground_hot-high": {
+       "accepted": 715,
+       "contact": 367,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 348
+      },
+      "helicopter_ground_steady": {
+       "accepted": 715,
+       "contact": 370,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 345
+      },
+      "helicopter_ground_updraft": {
+       "accepted": 715,
+       "contact": 360,
+       "direct": 239,
+       "idle_up": 357,
+       "near_stop": 447,
+       "normal": 358,
+       "running": 178,
+       "states": 715,
+       "stopped": 90,
+       "trainer": 476,
+       "unloaded": 355
+      }
+     },
+     "format": "openrc-nk3-helicopter-stage-oracle v1",
+     "path": "tmp/native-kernel/helicopter-stage-20261028T200909824675Z.json",
+     "run_valid": true,
+     "sha256": "6ee78625a84b97ca334b3870b5fba531217ecb56bff6a376210effefba507aca",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "liquid_f4u-corsair-250": {
+       "states": 1000
+      },
+      "liquid_p51d-mustang-120": {
+       "states": 1000
+      },
+      "liquid_sebart-avanti-s-a200-p100rx": {
+       "states": 1000
+      }
+     },
+     "format": "openrc-nk3-liquid-oracle v1",
+     "path": "tmp/native-kernel/liquid-20261028T200913352662Z.json",
+     "run_valid": true,
+     "sha256": "08974fa7c002fdfa8f7762e52795bf3dd206d7ff9ffa136fc2875d8cb69101d8",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {},
+     "format": "openrc-nk3-liquid-stage-oracle v1",
+     "path": "tmp/native-kernel/liquid-stage-20261028T200909976219Z.json",
+     "run_valid": false,
+     "sha256": "3655564b3cda6edcde0299b5dac45d12f53aadd605d7c840bb87ba1c36f2aa7c",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "propeller_f4u-corsair-250": {
+       "states": 1194
+      },
+      "propeller_jensen-das-ugly-stik-60": {
+       "states": 1193
+      },
+      "propeller_p51d-mustang-120": {
+       "states": 1193
+      },
+      "propeller_skywalker-x8": {
+       "states": 1193
+      },
+      "propeller_turbo-lumber-evolution": {
+       "states": 1197
+      }
+     },
+     "format": "openrc-nk3-propeller-oracle v1",
+     "path": "tmp/native-kernel/propeller-20261028T200843245203Z.json",
+     "run_valid": true,
+     "sha256": "8bd10e44e7585e44201c100bba19de5915a024a450e6bb3050337674d1ac9c91",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "wake_f4u-corsair-250": {
+       "held_wake": 500,
+       "hub_delta": 334,
+       "nonzero_load": 579,
+       "reverse_flow": 265,
+       "states": 1000,
+       "stopped": 91
+      },
+      "wake_gp-extra-300s-60": {
+       "held_wake": 500,
+       "hub_delta": 334,
+       "nonzero_load": 710,
+       "reverse_flow": 278,
+       "states": 1000,
+       "stopped": 91
+      },
+      "wake_manufactured_legacy": {
+       "held_wake": 500,
+       "hub_delta": 334,
+       "nonzero_load": 710,
+       "reverse_flow": 289,
+       "states": 1000,
+       "stopped": 91
+      },
+      "wake_manufactured_smooth": {
+       "held_wake": 500,
+       "hub_delta": 334,
+       "nonzero_load": 597,
+       "reverse_flow": 297,
+       "states": 1000,
+       "stopped": 91
+      },
+      "wake_manufactured_smooth_swirl": {
+       "held_wake": 500,
+       "hub_delta": 334,
+       "nonzero_load": 575,
+       "reverse_flow": 316,
+       "states": 1000,
+       "stopped": 91
+      },
+      "wake_manufactured_transport": {
+       "held_wake": 500,
+       "hub_delta": 334,
+       "nonzero_load": 663,
+       "reverse_flow": 287,
+       "states": 1000,
+       "stopped": 91,
+       "transport": 1000
+      },
+      "wake_p51d-mustang-120": {
+       "held_wake": 500,
+       "hub_delta": 334,
+       "nonzero_load": 595,
+       "reverse_flow": 270,
+       "states": 1000,
+       "stopped": 91
+      }
+     },
+     "format": "openrc-nk3-wake-oracle v1",
+     "path": "tmp/native-kernel/wake-20261028T200909888012Z.json",
+     "run_valid": true,
+     "sha256": "8f1ffa173cffcc6ef884fec239ed3d61c0f4bc019006c3bccb81489f59600d9e",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "spatial_aero_f4u-corsair-250": {
+       "attached": 41,
+       "continuation": 120,
+       "uniform": 60
+      },
+      "spatial_aero_gp-extra-300s-60": {
+       "attached": 45,
+       "continuation": 120,
+       "uniform": 60
+      },
+      "spatial_aero_jensen-das-ugly-stik-60": {
+       "attached": 40,
+       "continuation": 120,
+       "uniform": 60
+      },
+      "spatial_aero_p51d-mustang-120": {
+       "attached": 45,
+       "continuation": 120,
+       "uniform": 60
+      },
+      "spatial_aero_sebart-avanti-s-a200-p100rx": {
+       "attached": 33,
+       "continuation": 120,
+       "uniform": 60
+      },
+      "spatial_aero_skywalker-x8": {
+       "attached": 51,
+       "continuation": 120,
+       "uniform": 60
+      },
+      "spatial_aero_stik-glow-55ax-2t": {
+       "attached": 43,
+       "continuation": 120,
+       "uniform": 60
+      },
+      "spatial_aero_stik-glow-61fx-2t": {
+       "attached": 48,
+       "continuation": 120,
+       "uniform": 60
+      },
+      "spatial_aero_stik-glow-fs64v-4t": {
+       "attached": 47,
+       "continuation": 120,
+       "uniform": 60
+      },
+      "spatial_aero_turbo-lumber-evolution": {
+       "attached": 52,
+       "continuation": 120,
+       "uniform": 60
+      },
+      "spatial_boundaries": {
+       "delta_bound": 10,
+       "density_bound": 10,
+       "inactive_horizontal": 1,
+       "infinite_downwash": 10,
+       "infinite_ground": 10,
+       "nonfinite_body": 10,
+       "nonfinite_delta": 10,
+       "quaternion_norm_above": 10,
+       "quaternion_norm_below": 10,
+       "quaternion_norm_equal": 10,
+       "short_delta": 10,
+       "tail_flow_bound": 10,
+       "wing_flow_bound": 10,
+       "zero_quaternion": 10
+      },
+      "weather_calm": {
+       "flow_states": 77
+      },
+      "weather_cool-dense": {
+       "flow_states": 77
+      },
+      "weather_crosswind": {
+       "flow_states": 77
+      },
+      "weather_gentle-practice": {
+       "flow_states": 77
+      },
+      "weather_gusty": {
+       "flow_states": 77
+      },
+      "weather_hot-high": {
+       "flow_states": 77
+      },
+      "weather_spatial-crosswind-v1": {
+       "flow_states": 77,
+       "spatial_field_states": 77
+      },
+      "weather_spatial-gusty-v1": {
+       "flow_states": 77,
+       "spatial_field_states": 77
+      },
+      "weather_spatial-light-breeze-v1": {
+       "flow_states": 77,
+       "spatial_field_states": 77
+      },
+      "weather_spatial-realistic-v1": {
+       "flow_states": 77,
+       "spatial_field_states": 77
+      },
+      "weather_spatial-shear-v1": {
+       "flow_states": 77,
+       "spatial_field_states": 77
+      },
+      "weather_spatial-strong-wind-v1": {
+       "flow_states": 77,
+       "spatial_field_states": 77
+      },
+      "weather_spatial-thermal-soaring-v2": {
+       "flow_states": 77,
+       "spatial_field_states": 77
+      },
+      "weather_standard-column": {
+       "flow_states": 77
+      },
+      "weather_steady": {
+       "flow_states": 77
+      },
+      "weather_turbulent": {
+       "flow_states": 77
+      },
+      "weather_updraft": {
+       "flow_states": 77
+      }
+     },
+     "format": "openrc-nk3-wake-spatial-oracle v1",
+     "path": "tmp/native-kernel/wake-spatial-20261028T200900525117Z.json",
+     "run_valid": true,
+     "sha256": "d0837ec1ab18e46f2d1a6144e9bfb4b6201d5a14907b8f3226562ce9025d39e3",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "weather": {
+       "air_queries": 216,
+       "point_queries": 20802,
+       "real_ou_windows": 9,
+       "thermal_cell_samples": 12
+      }
+     },
+     "format": "openrc-nk3-weather-oracle v1",
+     "path": "tmp/native-kernel/weather-20261028T200900566514Z.json",
+     "run_valid": true,
+     "sha256": "981d444795578757e7e7dc446db1759bda223ea28b676b9d2f44a197aa2722dd",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    },
+    {
+     "binary_sha256": "ba3aeb5060d2524094679f67c5d76ed428a6b8c7174f93e0966f8122c1561693",
+     "checks": {
+      "weather_stage": {
+       "finite_shaped": 11058,
+       "finite_spatial_flows": 4372,
+       "malformed": 992,
+       "ordinary": 11008,
+       "real_ou_window_states": 1800,
+       "spatial_domain_refusals": 24,
+       "spatial_gradient_stages": 2832,
+       "states": 12000
+      }
+     },
+     "format": "openrc-nk3-weather-stage-oracle v1",
+     "path": "tmp/native-kernel/weather-stage-20261028T200900533380Z.json",
+     "run_valid": true,
+     "sha256": "27d45a67c322d0ad88ecd3088f9e409a6ad7ef350714eba71bb0888b884827a1",
+     "source_sha256": "a60a84240b6cc65bc5f59f60cb95833b9446a6d56acf2bb86b66a91e4134e362"
+    }
+   ],
+   "scope": "Linux x86_64, all supported fixed-wing and helicopter configurations; source integration is under requalification.",
+   "status": "not-promoted",
+   "private_native_diagnostics": {
+    "scope": "Disposable candidate loader, synthetic loader receipt; not installed/release qualification.",
+    "fixed_wing_lifecycle": {
+     "checks": 120,
+     "failures": 0
+    },
+    "all_catalog_fixed_wing_replay": {
+     "checks": 152,
+     "failures": 0,
+     "log": "tmp/nk3-allcatalog-private-preview-fix2.log",
+     "limit": "Private two-adapter initial-body fix; final production evidence must match refreshed receipt."
+    },
+    "helicopter_lifecycle": {
+     "checks": 223,
+     "failures": 0,
+     "limit": "Precedes added rejected-restore validator mutation regression."
+    }
+   }
+  },
   "acceptance_limit": "Component and research stage parity only. The scoped fleet run uses the previous accepted Stik binary. This does not qualify all-aircraft production admission, full lifecycle/replay, target performance or physical validation.",
-  "literal_correction": "GDScript spelling 1e-24 parses to binary64 0x3af357c299a88ea8; C++ decimal is one ULP lower. Spatial quaternion guards use exact kGd1eMinus24; 1.0e-24 remains a distinct spelling.",
+  "joint_stage_findings": [
+   "Spatial washed propulsion uses same-stage thrust/torque loads even below the legacy stopped-RPM threshold; paired liquid stages exposed and verified this dispatch correction.",
+   "Gas stage previews retain exact numeric fields and a detached native spatial point sampler; owner identities differ by implementation and are verified through callback behavior.",
+   "All three finite-liquid catalog aircraft completed paired research exhaustion tapes with identical located events, zero usable fuel and disabled source latch.",
+   "Research glow stages passed all four catalog installations and seven weather scenarios; lifecycle event breadth and production admission remain pending."
+  ],
+  "literal_correction": "GDScript spelling 1e-24 parses to binary64 0x3af357c299a88ea8; C++ decimal is one ULP lower. Spatial quaternion guards use exact kGd1eMinus24; 1.0e-24 remains a distinct spelling. GDScript 1e-30 is 0x39b4484bfeebc29f; the C++ port uses kGd1eMinus30 only for that spelling, and independently checks 1.0e-30.",
+  "production_integration_status": "ABI 2 source integration in progress; fresh full proof roster, installed session/fleet/replay, package and performance gates pending. Earlier ABI 1 research passes are dated evidence, not ABI 2 release qualification.",
   "reference_limit": "X-Cell hot-high start fails reference hover trim. Helicopter component cases explicitly use calm-reset seeds with hot-high density; no hot-high start/flight qualification is claimed.",
   "reports": [
    {
@@ -21991,6 +22817,3061 @@
     "total": {
      "compared": 10248,
      "identical": 10248,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "0fbfd58a166510b100745b3a719dc71efbc1eb58b52e5731681ec1eea6672efb",
+    "coverage": {
+     "liquid_cases": [
+      {
+       "family": "gas",
+       "mass_accepted": 293,
+       "mass_rejected": 7,
+       "name": "p51d-mustang-120",
+       "resources": 1,
+       "source_accepted": 264,
+       "source_rejected": 36,
+       "states": 300
+      },
+      {
+       "family": "gas",
+       "mass_accepted": 293,
+       "mass_rejected": 7,
+       "name": "f4u-corsair-250",
+       "resources": 1,
+       "source_accepted": 264,
+       "source_rejected": 36,
+       "states": 300
+      },
+      {
+       "family": "turbine",
+       "mass_accepted": 293,
+       "mass_rejected": 7,
+       "name": "sebart-avanti-s-a200-p100rx",
+       "resources": 1,
+       "source_accepted": 296,
+       "source_rejected": 4,
+       "states": 300
+      }
+     ]
+    },
+    "engine_sha256": null,
+    "format": "openrc-nk3-liquid-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/liquid_oracle.gd": "383306668237598e617fd43ae96ab4a2da66006afb281e9f41ac52605bc4b672",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "ea64e218e43139d0a04091c6fc14d1dd24e410303c6f41e2611debf4fc2ff0d7",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "65893b72746a5a91ec19ff899a4dafbd64042b6289195566a10693756a150f9f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/liquid-20261028T193144708570Z.json",
+    "run_valid": true,
+    "sha256": "497de0dcca48ac7012ba34e875fb8c2a36b2990ccc346e4d933daf61a9c64667",
+    "source_sha256": "4e0446e456f8384472b13afe6dfd206e82f4227283d4a855c2d5c09fdc1a6aca",
+    "states_requested": null,
+    "total": {
+     "compared": 4765,
+     "identical": 4765,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "edb81e63d91caaca177c9c92b8753d3badd2524497f6e78c3d93b14b3aa848cc",
+    "coverage": {},
+    "engine_sha256": null,
+    "format": "openrc-nk3-gear-hull-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/gear_oracle.gd": "6bc33f7464cae5dc3bfe00c93a7663a1331e6bb0d8c90cbfc3b1d8eaa1962467",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "a0a715d5ebae4c093cf676682ef909b467c5b30f32619d7848cf52fe474b41f2",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1ff7bf7e1ef975a94a5f382046ca153de6b997720b6b2e7a7d946dafcf12e101",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "31068e6ced60612b355af999365184705aa742d1aeaa0315feab3df8d367c98f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/gear-20261028T194159447817Z.json",
+    "run_valid": true,
+    "sha256": "9125e1e30656f7dee6d642c758b831243a3736953bab15753b048dab6fffd905",
+    "source_sha256": "92563b0465ea152b709780ee50d9d8516f693b6216a8bf3215e338eda039df52",
+    "states_requested": null,
+    "total": {
+     "compared": 3948,
+     "identical": 3948,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "edb81e63d91caaca177c9c92b8753d3badd2524497f6e78c3d93b14b3aa848cc",
+    "coverage": {
+     "liquid_stage": {
+      "cases": [
+       {
+        "family": "gas",
+        "finite": 12,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/calm",
+        "preview_expected": true,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/gusty",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/turbulent",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 12,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/hot-high",
+        "preview_expected": true,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/standard-column",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/spatial-gusty-v1",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 12,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/spatial-thermal-soaring-v2",
+        "preview_expected": true,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/calm",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/gusty",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 10,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/turbulent",
+        "preview_expected": true,
+        "refused": 10,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/hot-high",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 12,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/standard-column",
+        "preview_expected": true,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 12,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/spatial-gusty-v1",
+        "preview_expected": true,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 10,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/spatial-thermal-soaring-v2",
+        "preview_expected": true,
+        "refused": 10,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 11,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/calm",
+        "preview_expected": false,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 12,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/gusty",
+        "preview_expected": false,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 12,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/turbulent",
+        "preview_expected": false,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 11,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/hot-high",
+        "preview_expected": false,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 12,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/standard-column",
+        "preview_expected": false,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 11,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/spatial-gusty-v1",
+        "preview_expected": false,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 11,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/spatial-thermal-soaring-v2",
+        "preview_expected": false,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       }
+      ],
+      "trajectories": [
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "p51d-mustang-120/runway/calm",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "p51d-mustang-120/trim/spatial-thermal-soaring-v2",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": true,
+        "exhaustion_observed": true,
+        "first_divergence": -1,
+        "name": "p51d-mustang-120/trim/calm/exhaustion",
+        "native_context_calls": 16,
+        "native_stage_calls": 80,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "f4u-corsair-250/runway/calm",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "f4u-corsair-250/trim/spatial-thermal-soaring-v2",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": true,
+        "exhaustion_observed": true,
+        "first_divergence": -1,
+        "name": "f4u-corsair-250/trim/calm/exhaustion",
+        "native_context_calls": 16,
+        "native_stage_calls": 80,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "sebart-avanti-s-a200-p100rx/runway/calm",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "sebart-avanti-s-a200-p100rx/trim/spatial-thermal-soaring-v2",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": true,
+        "exhaustion_observed": true,
+        "first_divergence": -1,
+        "name": "sebart-avanti-s-a200-p100rx/trim/calm/exhaustion",
+        "native_context_calls": 16,
+        "native_stage_calls": 83,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       }
+      ]
+     }
+    },
+    "engine_sha256": null,
+    "format": "openrc-nk3-liquid-stage-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/liquid_stage_adapter.gd": "d139f1d8bfec3efd6d62cd1286b5afa134db3875120c4bb2724c57be10912e4c",
+     "research/native-kernel/liquid_stage_oracle.gd": "36cc7aeae0f67274464f0b05aafc082347c559ce8be754a617bfb0c32aa61105",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "a0a715d5ebae4c093cf676682ef909b467c5b30f32619d7848cf52fe474b41f2",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1ff7bf7e1ef975a94a5f382046ca153de6b997720b6b2e7a7d946dafcf12e101",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "31068e6ced60612b355af999365184705aa742d1aeaa0315feab3df8d367c98f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/liquid-stage-20261028T194137624722Z.json",
+    "run_valid": true,
+    "sha256": "2bfe1aa02b64da747758c78911bd208c5dcef783a2f49e3671eefc4dee1b5006",
+    "source_sha256": "92563b0465ea152b709780ee50d9d8516f693b6216a8bf3215e338eda039df52",
+    "states_requested": null,
+    "total": {
+     "compared": 3190,
+     "identical": 3190,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "edb81e63d91caaca177c9c92b8753d3badd2524497f6e78c3d93b14b3aa848cc",
+    "coverage": {
+     "glow_stage": {
+      "cases": [
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-61fx-2t/calm",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-61fx-2t/gusty",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 92,
+        "name": "stik-glow-61fx-2t/turbulent",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 91,
+        "name": "stik-glow-61fx-2t/hot-high",
+        "refused": 9,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 95,
+        "name": "stik-glow-61fx-2t/standard-column",
+        "refused": 5,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 91,
+        "name": "stik-glow-61fx-2t/spatial-gusty-v1",
+        "refused": 9,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 88,
+        "name": "stik-glow-61fx-2t/spatial-thermal-soaring-v2",
+        "refused": 12,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 95,
+        "name": "stik-glow-55ax-2t/calm",
+        "refused": 5,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 94,
+        "name": "stik-glow-55ax-2t/gusty",
+        "refused": 6,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 94,
+        "name": "stik-glow-55ax-2t/turbulent",
+        "refused": 6,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-55ax-2t/hot-high",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-55ax-2t/standard-column",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 92,
+        "name": "stik-glow-55ax-2t/spatial-gusty-v1",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 95,
+        "name": "stik-glow-55ax-2t/spatial-thermal-soaring-v2",
+        "refused": 5,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 96,
+        "name": "stik-glow-fs64v-4t/calm",
+        "refused": 4,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 92,
+        "name": "stik-glow-fs64v-4t/gusty",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-fs64v-4t/turbulent",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-fs64v-4t/hot-high",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 92,
+        "name": "stik-glow-fs64v-4t/standard-column",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 92,
+        "name": "stik-glow-fs64v-4t/spatial-gusty-v1",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 87,
+        "name": "stik-glow-fs64v-4t/spatial-thermal-soaring-v2",
+        "refused": 13,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 92,
+        "name": "gp-extra-300s-60/calm",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 90,
+        "name": "gp-extra-300s-60/gusty",
+        "refused": 10,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 91,
+        "name": "gp-extra-300s-60/turbulent",
+        "refused": 9,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 87,
+        "name": "gp-extra-300s-60/hot-high",
+        "refused": 13,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 96,
+        "name": "gp-extra-300s-60/standard-column",
+        "refused": 4,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 92,
+        "name": "gp-extra-300s-60/spatial-gusty-v1",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 89,
+        "name": "gp-extra-300s-60/spatial-thermal-soaring-v2",
+        "refused": 11,
+        "states": 100,
+        "wheel_count": 3
+       }
+      ],
+      "trajectories": [
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "stik-glow-61fx-2t/calm",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "stik-glow-55ax-2t/turbulent",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "stik-glow-fs64v-4t/hot-high",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "gp-extra-300s-60/spatial-thermal-soaring-v2",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       }
+      ]
+     }
+    },
+    "engine_sha256": null,
+    "format": "openrc-nk3-glow-stage-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/glow_stage_adapter.gd": "e4dc07e614397da51c2a5d3b5b40a1c12f91452ce07a27b55f614d2f3eb14de4",
+     "research/native-kernel/glow_stage_oracle.gd": "020081dc2b8f5adfce33e4ee1d8ea5c4035a6b57f24de5ca78a009f92139a7c5",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "a0a715d5ebae4c093cf676682ef909b467c5b30f32619d7848cf52fe474b41f2",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1ff7bf7e1ef975a94a5f382046ca153de6b997720b6b2e7a7d946dafcf12e101",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "31068e6ced60612b355af999365184705aa742d1aeaa0315feab3df8d367c98f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/glow-stage-20261028T194234180767Z.json",
+    "run_valid": true,
+    "sha256": "95437ccf40e2cd0d0662464c83d9a1db0b95bff6c12c6395a6243bce062794c6",
+    "source_sha256": "92563b0465ea152b709780ee50d9d8516f693b6216a8bf3215e338eda039df52",
+    "states_requested": null,
+    "total": {
+     "compared": 15912,
+     "identical": 15912,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "edb81e63d91caaca177c9c92b8753d3badd2524497f6e78c3d93b14b3aa848cc",
+    "coverage": {},
+    "engine_sha256": null,
+    "format": "openrc-nk3-stage-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "a0a715d5ebae4c093cf676682ef909b467c5b30f32619d7848cf52fe474b41f2",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1ff7bf7e1ef975a94a5f382046ca153de6b997720b6b2e7a7d946dafcf12e101",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "31068e6ced60612b355af999365184705aa742d1aeaa0315feab3df8d367c98f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/stage-20261028T194152782970Z.json",
+    "run_valid": true,
+    "sha256": "1a49697dd3716b51fce6eab2e448dc3bf6b436b1a5dc2bcb5b05c52121bdbfba",
+    "source_sha256": "92563b0465ea152b709780ee50d9d8516f693b6216a8bf3215e338eda039df52",
+    "states_requested": null,
+    "total": {
+     "compared": 2256,
+     "identical": 2256,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "071f453b6e3d1aca03a15789630b3ab50c12a2f0ea16843c66463d2bb30e8de3",
+    "coverage": {
+     "electric_stage": {
+      "cases": [
+       {
+        "battery_size": 0,
+        "finite": 131,
+        "name": "turbo-lumber-evolution/ideal/calm",
+        "refused": 9,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 134,
+        "name": "turbo-lumber-evolution/ideal/gusty",
+        "refused": 6,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 134,
+        "name": "turbo-lumber-evolution/ideal/turbulent",
+        "refused": 6,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 129,
+        "name": "turbo-lumber-evolution/ideal/hot-high",
+        "refused": 11,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 128,
+        "name": "turbo-lumber-evolution/ideal/standard-column",
+        "refused": 12,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 130,
+        "name": "turbo-lumber-evolution/ideal/spatial-gusty-v1",
+        "refused": 10,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 131,
+        "name": "turbo-lumber-evolution/ideal/spatial-thermal-soaring-v2",
+        "refused": 9,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 132,
+        "name": "turbo-lumber-evolution/pack/calm",
+        "refused": 8,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 130,
+        "name": "turbo-lumber-evolution/pack/gusty",
+        "refused": 10,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 130,
+        "name": "turbo-lumber-evolution/pack/turbulent",
+        "refused": 10,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 128,
+        "name": "turbo-lumber-evolution/pack/hot-high",
+        "refused": 12,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 133,
+        "name": "turbo-lumber-evolution/pack/standard-column",
+        "refused": 7,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 129,
+        "name": "turbo-lumber-evolution/pack/spatial-gusty-v1",
+        "refused": 11,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 126,
+        "name": "turbo-lumber-evolution/pack/spatial-thermal-soaring-v2",
+        "refused": 14,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 128,
+        "name": "skywalker-x8/ideal/calm",
+        "refused": 12,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 135,
+        "name": "skywalker-x8/ideal/gusty",
+        "refused": 5,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 132,
+        "name": "skywalker-x8/ideal/turbulent",
+        "refused": 8,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 133,
+        "name": "skywalker-x8/ideal/hot-high",
+        "refused": 7,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 134,
+        "name": "skywalker-x8/ideal/standard-column",
+        "refused": 6,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 130,
+        "name": "skywalker-x8/ideal/spatial-gusty-v1",
+        "refused": 10,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 133,
+        "name": "skywalker-x8/ideal/spatial-thermal-soaring-v2",
+        "refused": 7,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 134,
+        "name": "skywalker-x8/pack/calm",
+        "refused": 6,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 129,
+        "name": "skywalker-x8/pack/gusty",
+        "refused": 11,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 133,
+        "name": "skywalker-x8/pack/turbulent",
+        "refused": 7,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 130,
+        "name": "skywalker-x8/pack/hot-high",
+        "refused": 10,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 133,
+        "name": "skywalker-x8/pack/standard-column",
+        "refused": 7,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 124,
+        "name": "skywalker-x8/pack/spatial-gusty-v1",
+        "refused": 16,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 128,
+        "name": "skywalker-x8/pack/spatial-thermal-soaring-v2",
+        "refused": 12,
+        "states": 140,
+        "wash_count": 0,
+        "wheel_count": 0
+       }
+      ],
+      "trajectories": [
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "turbo-lumber-evolution/ideal/calm",
+        "native_context_calls": 64,
+        "native_stage_calls": 256,
+        "requested_ticks": 64,
+        "ticks_run": 64
+       },
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "turbo-lumber-evolution/pack/turbulent",
+        "native_context_calls": 64,
+        "native_stage_calls": 256,
+        "requested_ticks": 64,
+        "ticks_run": 64
+       },
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "skywalker-x8/ideal/hot-high",
+        "native_context_calls": 64,
+        "native_stage_calls": 256,
+        "requested_ticks": 64,
+        "ticks_run": 64
+       },
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "skywalker-x8/pack/spatial-thermal-soaring-v2",
+        "native_context_calls": 64,
+        "native_stage_calls": 256,
+        "requested_ticks": 64,
+        "ticks_run": 64
+       }
+      ]
+     }
+    },
+    "engine_sha256": null,
+    "format": "openrc-nk3-electric-stage-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/electric_oracle.gd": "a271ac0bcb649c232745baae8828331a84292ff5561f2dcddbbddb49a3048083",
+     "research/native-kernel/electric_stage_adapter.gd": "a638bb9bef5c89471f506501cee63caa6e260c342684c79fd2546cc4cc7cd26a",
+     "research/native-kernel/electric_stage_oracle.gd": "83ab51c01e9bc849ecb16b1a004df316e8f2dafcfaa8ea0aee4b77eef13829b8",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "f6f99f5fc84c2f4c8cbfa2cd028927fad2beb4eb8f4eed76acd7df9bf2c09c92",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "65893b72746a5a91ec19ff899a4dafbd64042b6289195566a10693756a150f9f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/electric-stage-20261028T192427698058Z.json",
+    "run_valid": true,
+    "sha256": "47def0c9ec308bbdda17985a358a0779780a7648e932b0f3e360c44718823562",
+    "source_sha256": "985313d4a77f1ff481892fd8a1d559890783ea559f216789d3b7eef3267f4c09",
+    "states_requested": null,
+    "total": {
+     "compared": 18958,
+     "identical": 18958,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "071f453b6e3d1aca03a15789630b3ab50c12a2f0ea16843c66463d2bb30e8de3",
+    "coverage": {},
+    "engine_sha256": null,
+    "format": "openrc-nk3-helicopter-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/helicopter_oracle.gd": "7658c5ac8190f6f644d5aad72f4dc93ca5a3f7c77f5fddd475fce9cbcb0bcbd7",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "f6f99f5fc84c2f4c8cbfa2cd028927fad2beb4eb8f4eed76acd7df9bf2c09c92",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "65893b72746a5a91ec19ff899a4dafbd64042b6289195566a10693756a150f9f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/helicopter-20261028T192409229815Z.json",
+    "run_valid": true,
+    "sha256": "db17802f87ae70dfdb717ced89564284b6209238935dee367aa3f48729294b2d",
+    "source_sha256": "985313d4a77f1ff481892fd8a1d559890783ea559f216789d3b7eef3267f4c09",
+    "states_requested": null,
+    "total": {
+     "compared": 10292,
+     "identical": 10292,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "071f453b6e3d1aca03a15789630b3ab50c12a2f0ea16843c66463d2bb30e8de3",
+    "coverage": {
+     "weather": {
+      "presets": [
+       "calm",
+       "steady",
+       "crosswind",
+       "gusty",
+       "updraft",
+       "turbulent",
+       "hot-high",
+       "cool-dense",
+       "gentle-practice",
+       "standard-column",
+       "spatial-realistic-v1",
+       "spatial-light-breeze-v1",
+       "spatial-crosswind-v1",
+       "spatial-gusty-v1",
+       "spatial-shear-v1",
+       "spatial-thermal-soaring-v2",
+       "spatial-strong-wind-v1"
+      ],
+      "refusals": {
+       "incomplete_mode": {
+        "cleared": true,
+        "error": "spatial gust or mode layout is invalid",
+        "refused": true
+       },
+       "invalid_ground_extension": {
+        "cleared": true,
+        "error": "spatial domain is invalid",
+        "refused": true
+       },
+       "invalid_gust_maximum": {
+        "cleared": true,
+        "error": "spatial gust or mode layout is invalid",
+        "refused": true
+       },
+       "nonfinite_mode": {
+        "cleared": true,
+        "error": "nonfinite array value modes",
+        "refused": true
+       },
+       "nonfinite_speed": {
+        "cleared": true,
+        "error": "nonfinite array value uniform",
+        "refused": true
+       },
+       "nonfinite_temperature": {
+        "cleared": true,
+        "error": "nonfinite temperature_k",
+        "refused": true
+       },
+       "nonpositive_temperature": {
+        "cleared": true,
+        "error": "invalid uniform temperature",
+        "refused": true
+       },
+       "period_before_duration": {
+        "cleared": true,
+        "error": "invalid uniform weather snapshot",
+        "refused": true
+       },
+       "spatial_ou_conflict": {
+        "cleared": true,
+        "error": "spatial snapshot must not carry legacy wind or OU",
+        "refused": true
+       },
+       "unknown_key": {
+        "cleared": true,
+        "error": "unsupported weather.extra",
+        "refused": true
+       },
+       "wrong_array_type": {
+        "cleared": true,
+        "error": "missing or non-float64 array uniform",
+        "refused": true
+       },
+       "wrong_boolean_type": {
+        "cleared": true,
+        "error": "missing or non-boolean vertical_atmosphere",
+        "refused": true
+       },
+       "wrong_temperature_type": {
+        "cleared": true,
+        "error": "non-numeric temperature_k",
+        "refused": true
+       }
+      },
+      "scenarios": [
+       "calm",
+       "steady",
+       "crosswind",
+       "gusty",
+       "updraft",
+       "turbulent",
+       "hot-high",
+       "cool-dense",
+       "gentle-practice",
+       "standard-column",
+       "spatial-realistic-v1",
+       "spatial-light-breeze-v1",
+       "spatial-crosswind-v1",
+       "spatial-gusty-v1",
+       "spatial-shear-v1",
+       "spatial-thermal-soaring-v2",
+       "spatial-strong-wind-v1",
+       "direction-0.0",
+       "direction-45.0",
+       "direction-90.0",
+       "direction-135.0",
+       "direction-180.0",
+       "direction-270.0",
+       "direction-360.0",
+       "column-and-ou",
+       "warm-uniform-atmosphere",
+       "spatial-and-column"
+      ]
+     }
+    },
+    "engine_sha256": null,
+    "format": "openrc-nk3-weather-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "f6f99f5fc84c2f4c8cbfa2cd028927fad2beb4eb8f4eed76acd7df9bf2c09c92",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "65893b72746a5a91ec19ff899a4dafbd64042b6289195566a10693756a150f9f",
+     "research/native-kernel/weather_oracle.gd": "87a78e267042add3781f99ca742e0d18405fdf193fa8792f6466ed790f5c307a",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/weather-20261028T192542722870Z.json",
+    "run_valid": true,
+    "sha256": "07559053b63b4b8d136118a0b9ee49c0900bc9d1ea2665725b2b45e1eeb59f4e",
+    "source_sha256": "985313d4a77f1ff481892fd8a1d559890783ea559f216789d3b7eef3267f4c09",
+    "states_requested": null,
+    "total": {
+     "compared": 21545,
+     "identical": 21545,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "8a434560e48e88ff412f193ba31ee017f36ec5e54f667c8abfe00c61a9176c54",
+    "coverage": {
+     "electric_stage": {
+      "cases": [
+       {
+        "battery_size": 0,
+        "finite": 92,
+        "name": "turbo-lumber-evolution/ideal/calm",
+        "refused": 8,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 97,
+        "name": "turbo-lumber-evolution/ideal/gusty",
+        "refused": 3,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 94,
+        "name": "turbo-lumber-evolution/ideal/turbulent",
+        "refused": 6,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 95,
+        "name": "turbo-lumber-evolution/ideal/hot-high",
+        "refused": 5,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 91,
+        "name": "turbo-lumber-evolution/ideal/standard-column",
+        "refused": 9,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 96,
+        "name": "turbo-lumber-evolution/ideal/spatial-gusty-v1",
+        "refused": 4,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 90,
+        "name": "turbo-lumber-evolution/ideal/spatial-thermal-soaring-v2",
+        "refused": 10,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 94,
+        "name": "turbo-lumber-evolution/pack/calm",
+        "refused": 6,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 93,
+        "name": "turbo-lumber-evolution/pack/gusty",
+        "refused": 7,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 96,
+        "name": "turbo-lumber-evolution/pack/turbulent",
+        "refused": 4,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 95,
+        "name": "turbo-lumber-evolution/pack/hot-high",
+        "refused": 5,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 92,
+        "name": "turbo-lumber-evolution/pack/standard-column",
+        "refused": 8,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 90,
+        "name": "turbo-lumber-evolution/pack/spatial-gusty-v1",
+        "refused": 10,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 11,
+        "finite": 90,
+        "name": "turbo-lumber-evolution/pack/spatial-thermal-soaring-v2",
+        "refused": 10,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 3
+       },
+       {
+        "battery_size": 0,
+        "finite": 93,
+        "name": "skywalker-x8/ideal/calm",
+        "refused": 7,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 91,
+        "name": "skywalker-x8/ideal/gusty",
+        "refused": 9,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 94,
+        "name": "skywalker-x8/ideal/turbulent",
+        "refused": 6,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 95,
+        "name": "skywalker-x8/ideal/hot-high",
+        "refused": 5,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 96,
+        "name": "skywalker-x8/ideal/standard-column",
+        "refused": 4,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 90,
+        "name": "skywalker-x8/ideal/spatial-gusty-v1",
+        "refused": 10,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 0,
+        "finite": 90,
+        "name": "skywalker-x8/ideal/spatial-thermal-soaring-v2",
+        "refused": 10,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 92,
+        "name": "skywalker-x8/pack/calm",
+        "refused": 8,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 93,
+        "name": "skywalker-x8/pack/gusty",
+        "refused": 7,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 93,
+        "name": "skywalker-x8/pack/turbulent",
+        "refused": 7,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 94,
+        "name": "skywalker-x8/pack/hot-high",
+        "refused": 6,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 95,
+        "name": "skywalker-x8/pack/standard-column",
+        "refused": 5,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 95,
+        "name": "skywalker-x8/pack/spatial-gusty-v1",
+        "refused": 5,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       },
+       {
+        "battery_size": 11,
+        "finite": 88,
+        "name": "skywalker-x8/pack/spatial-thermal-soaring-v2",
+        "refused": 12,
+        "states": 100,
+        "wash_count": 0,
+        "wheel_count": 0
+       }
+      ],
+      "trajectories": [
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "turbo-lumber-evolution/ideal/calm",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "turbo-lumber-evolution/pack/turbulent",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "skywalker-x8/ideal/hot-high",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "first_divergence": -1,
+        "name": "skywalker-x8/pack/spatial-thermal-soaring-v2",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       }
+      ]
+     }
+    },
+    "format": "openrc-nk3-electric-stage-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/electric_oracle.gd": "a271ac0bcb649c232745baae8828331a84292ff5561f2dcddbbddb49a3048083",
+     "research/native-kernel/electric_stage_adapter.gd": "a638bb9bef5c89471f506501cee63caa6e260c342684c79fd2546cc4cc7cd26a",
+     "research/native-kernel/electric_stage_oracle.gd": "5194aced24b0fb1dd924b80d25df74c9114a0b022ccb67ee70b78acba6887c83",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "663003dcb2d48a7e90ce0852b5e161824292e15760994678c4447bd736c48912",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1ff7bf7e1ef975a94a5f382046ca153de6b997720b6b2e7a7d946dafcf12e101",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "31068e6ced60612b355af999365184705aa742d1aeaa0315feab3df8d367c98f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/electric-stage-20261028T195019416765Z.json",
+    "run_valid": true,
+    "sha256": "d1eeaf24bc6919563b486c8a3e5c68264fbe5c7654cc3d963eec115e9bd25a38",
+    "source_sha256": "f1a3f9e35f8efb1dd91d09ceaa6b43a1f90c1db1555ec4739eb431c94e1018e5",
+    "total": {
+     "compared": 13456,
+     "identical": 13456,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "8a434560e48e88ff412f193ba31ee017f36ec5e54f667c8abfe00c61a9176c54",
+    "coverage": {
+     "helicopter_stage": {
+      "cases": [
+       {
+        "continuous_size": 6,
+        "seeded_only": false,
+        "start": "airborne",
+        "states": 16,
+        "weather": "calm"
+       },
+       {
+        "continuous_size": 6,
+        "seeded_only": false,
+        "start": "airborne",
+        "states": 16,
+        "weather": "steady"
+       },
+       {
+        "continuous_size": 6,
+        "seeded_only": false,
+        "start": "airborne",
+        "states": 16,
+        "weather": "crosswind"
+       },
+       {
+        "continuous_size": 6,
+        "seeded_only": false,
+        "start": "airborne",
+        "states": 16,
+        "weather": "gusty"
+       },
+       {
+        "continuous_size": 6,
+        "seeded_only": false,
+        "start": "airborne",
+        "states": 16,
+        "weather": "updraft"
+       },
+       {
+        "continuous_size": 6,
+        "seeded_only": true,
+        "start": "airborne",
+        "states": 16,
+        "weather": "hot-high"
+       },
+       {
+        "continuous_size": 6,
+        "seeded_only": false,
+        "start": "airborne",
+        "states": 16,
+        "weather": "cool-dense"
+       },
+       {
+        "continuous_size": 14,
+        "seeded_only": false,
+        "start": "ground",
+        "states": 16,
+        "weather": "calm"
+       },
+       {
+        "continuous_size": 14,
+        "seeded_only": false,
+        "start": "ground",
+        "states": 16,
+        "weather": "steady"
+       },
+       {
+        "continuous_size": 14,
+        "seeded_only": false,
+        "start": "ground",
+        "states": 16,
+        "weather": "crosswind"
+       },
+       {
+        "continuous_size": 14,
+        "seeded_only": false,
+        "start": "ground",
+        "states": 16,
+        "weather": "gusty"
+       },
+       {
+        "continuous_size": 14,
+        "seeded_only": false,
+        "start": "ground",
+        "states": 16,
+        "weather": "updraft"
+       },
+       {
+        "continuous_size": 14,
+        "seeded_only": true,
+        "start": "ground",
+        "states": 16,
+        "weather": "hot-high"
+       },
+       {
+        "continuous_size": 14,
+        "seeded_only": false,
+        "start": "ground",
+        "states": 16,
+        "weather": "cool-dense"
+       }
+      ],
+      "replays": [
+       {
+        "checkpoint_tick": 8,
+        "complete": true,
+        "first_divergence": -1,
+        "native_context_calls": 8,
+        "native_stage_calls": 32,
+        "requested_ticks": 8,
+        "start": "airborne",
+        "ticks_run": 8
+       },
+       {
+        "checkpoint_tick": 8,
+        "complete": true,
+        "first_divergence": -1,
+        "native_context_calls": 8,
+        "native_stage_calls": 32,
+        "requested_ticks": 8,
+        "start": "ground",
+        "ticks_run": 8
+       }
+      ],
+      "trajectories": [
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "airborne/calm",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "airborne/steady",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "airborne/crosswind",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "airborne/gusty",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "airborne/updraft",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "airborne/cool-dense",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "ground/calm",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "ground/steady",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "ground/crosswind",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "ground/gusty",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "ground/updraft",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": true,
+        "changed_trainer": true,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": true,
+        "name": "ground/cool-dense",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "stop_expected": false,
+        "stop_observed": false,
+        "ticks_run": 16
+       },
+       {
+        "changed_mode": false,
+        "changed_trainer": false,
+        "complete": true,
+        "first_divergence": -1,
+        "held_drive": false,
+        "name": "airborne/crosswind/rotor-stop",
+        "native_context_calls": 16,
+        "native_stage_calls": 109,
+        "requested_ticks": 16,
+        "stop_expected": true,
+        "stop_observed": true,
+        "ticks_run": 16
+       }
+      ]
+     },
+     "reference_start_refusals": [
+      {
+       "component_seed": "calm reference reset; no hot-high flight start",
+       "reason": "Helicopter start refused: hover trim line search could not reduce the full-force residual",
+       "start": "airborne",
+       "weather": "hot-high"
+      },
+      {
+       "component_seed": "calm reference reset; no hot-high flight start",
+       "reason": "Ground trainer control reference refused: hover trim line search could not reduce the full-force residual",
+       "start": "ground",
+       "weather": "hot-high"
+      }
+     ]
+    },
+    "format": "openrc-nk3-helicopter-stage-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/helicopter_oracle.gd": "7658c5ac8190f6f644d5aad72f4dc93ca5a3f7c77f5fddd475fce9cbcb0bcbd7",
+     "research/native-kernel/helicopter_stage_adapter.gd": "c0e84ce78fcf930fa2ef58b7a24fe31fe6efa59150cc0d5d2ff3cf74ff862e1e",
+     "research/native-kernel/helicopter_stage_oracle.gd": "a526cf69cc725a8bd645f4c5bcc3d215b53eda325b667b1da75a2e0d4b4b4f6c",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "663003dcb2d48a7e90ce0852b5e161824292e15760994678c4447bd736c48912",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1ff7bf7e1ef975a94a5f382046ca153de6b997720b6b2e7a7d946dafcf12e101",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "31068e6ced60612b355af999365184705aa742d1aeaa0315feab3df8d367c98f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/helicopter-stage-20261028T195028213920Z.json",
+    "run_valid": true,
+    "sha256": "1bfc55ed744c7c37ff3be6fdcbb1c6026b49a2c08790254a72e22d89da8b814c",
+    "source_sha256": "f1a3f9e35f8efb1dd91d09ceaa6b43a1f90c1db1555ec4739eb431c94e1018e5",
+    "total": {
+     "compared": 1893,
+     "identical": 1893,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "8a434560e48e88ff412f193ba31ee017f36ec5e54f667c8abfe00c61a9176c54",
+    "coverage": {
+     "liquid_stage": {
+      "cases": [
+       {
+        "family": "gas",
+        "finite": 12,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/calm",
+        "preview_expected": true,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/gusty",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/turbulent",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 12,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/hot-high",
+        "preview_expected": true,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/standard-column",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/spatial-gusty-v1",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 12,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "p51d-mustang-120/spatial-thermal-soaring-v2",
+        "preview_expected": true,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/calm",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/gusty",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 10,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/turbulent",
+        "preview_expected": true,
+        "refused": 10,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 11,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/hot-high",
+        "preview_expected": true,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 12,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/standard-column",
+        "preview_expected": true,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 12,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/spatial-gusty-v1",
+        "preview_expected": true,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "gas",
+        "finite": 10,
+        "forced_preview": true,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "f4u-corsair-250/spatial-thermal-soaring-v2",
+        "preview_expected": true,
+        "refused": 10,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 11,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/calm",
+        "preview_expected": false,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 12,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/gusty",
+        "preview_expected": false,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 12,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/turbulent",
+        "preview_expected": false,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 11,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/hot-high",
+        "preview_expected": false,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 12,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/standard-column",
+        "preview_expected": false,
+        "refused": 8,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 11,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/spatial-gusty-v1",
+        "preview_expected": false,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       },
+       {
+        "family": "turbine",
+        "finite": 11,
+        "forced_preview": false,
+        "gear_down": 5,
+        "gear_partial": 10,
+        "gear_up": 5,
+        "name": "sebart-avanti-s-a200-p100rx/spatial-thermal-soaring-v2",
+        "preview_expected": false,
+        "refused": 9,
+        "source_off": 4,
+        "states": 20,
+        "wash_count": 0
+       }
+      ],
+      "trajectories": [
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "p51d-mustang-120/runway/calm",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "p51d-mustang-120/trim/spatial-thermal-soaring-v2",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": true,
+        "exhaustion_observed": true,
+        "first_divergence": -1,
+        "name": "p51d-mustang-120/trim/calm/exhaustion",
+        "native_context_calls": 16,
+        "native_stage_calls": 80,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "f4u-corsair-250/runway/calm",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "f4u-corsair-250/trim/spatial-thermal-soaring-v2",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": true,
+        "exhaustion_observed": true,
+        "first_divergence": -1,
+        "name": "f4u-corsair-250/trim/calm/exhaustion",
+        "native_context_calls": 16,
+        "native_stage_calls": 80,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "sebart-avanti-s-a200-p100rx/runway/calm",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": false,
+        "exhaustion_observed": false,
+        "first_divergence": -1,
+        "name": "sebart-avanti-s-a200-p100rx/trim/spatial-thermal-soaring-v2",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "exhaustion_expected": true,
+        "exhaustion_observed": true,
+        "first_divergence": -1,
+        "name": "sebart-avanti-s-a200-p100rx/trim/calm/exhaustion",
+        "native_context_calls": 16,
+        "native_stage_calls": 83,
+        "requested_ticks": 16,
+        "ticks_run": 16
+       }
+      ]
+     }
+    },
+    "format": "openrc-nk3-liquid-stage-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/liquid_stage_adapter.gd": "d139f1d8bfec3efd6d62cd1286b5afa134db3875120c4bb2724c57be10912e4c",
+     "research/native-kernel/liquid_stage_oracle.gd": "e00382480bd15a2bac8e0555ddfeb1d9096b95a78b431cbd7f918d45eba6a850",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "663003dcb2d48a7e90ce0852b5e161824292e15760994678c4447bd736c48912",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1ff7bf7e1ef975a94a5f382046ca153de6b997720b6b2e7a7d946dafcf12e101",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "31068e6ced60612b355af999365184705aa742d1aeaa0315feab3df8d367c98f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/liquid-stage-20261028T195044602048Z.json",
+    "run_valid": true,
+    "sha256": "becf87716cb024c9282adbe38f316ac91240fc66ec87b6a72db4df7bd142ca95",
+    "source_sha256": "f1a3f9e35f8efb1dd91d09ceaa6b43a1f90c1db1555ec4739eb431c94e1018e5",
+    "total": {
+     "compared": 3224,
+     "identical": 3224,
+     "mismatched": 0
+    }
+   },
+   {
+    "binary_sha256": "8a434560e48e88ff412f193ba31ee017f36ec5e54f667c8abfe00c61a9176c54",
+    "coverage": {
+     "glow_stage": {
+      "cases": [
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-61fx-2t/calm",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-61fx-2t/gusty",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 92,
+        "name": "stik-glow-61fx-2t/turbulent",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 91,
+        "name": "stik-glow-61fx-2t/hot-high",
+        "refused": 9,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 95,
+        "name": "stik-glow-61fx-2t/standard-column",
+        "refused": 5,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 91,
+        "name": "stik-glow-61fx-2t/spatial-gusty-v1",
+        "refused": 9,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 88,
+        "name": "stik-glow-61fx-2t/spatial-thermal-soaring-v2",
+        "refused": 12,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 95,
+        "name": "stik-glow-55ax-2t/calm",
+        "refused": 5,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 94,
+        "name": "stik-glow-55ax-2t/gusty",
+        "refused": 6,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 94,
+        "name": "stik-glow-55ax-2t/turbulent",
+        "refused": 6,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-55ax-2t/hot-high",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-55ax-2t/standard-column",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 92,
+        "name": "stik-glow-55ax-2t/spatial-gusty-v1",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": true,
+        "finite": 95,
+        "name": "stik-glow-55ax-2t/spatial-thermal-soaring-v2",
+        "refused": 5,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 96,
+        "name": "stik-glow-fs64v-4t/calm",
+        "refused": 4,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 92,
+        "name": "stik-glow-fs64v-4t/gusty",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-fs64v-4t/turbulent",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 93,
+        "name": "stik-glow-fs64v-4t/hot-high",
+        "refused": 7,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 92,
+        "name": "stik-glow-fs64v-4t/standard-column",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 92,
+        "name": "stik-glow-fs64v-4t/spatial-gusty-v1",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_4t",
+        "feed": true,
+        "finite": 87,
+        "name": "stik-glow-fs64v-4t/spatial-thermal-soaring-v2",
+        "refused": 13,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 92,
+        "name": "gp-extra-300s-60/calm",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 90,
+        "name": "gp-extra-300s-60/gusty",
+        "refused": 10,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 91,
+        "name": "gp-extra-300s-60/turbulent",
+        "refused": 9,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 87,
+        "name": "gp-extra-300s-60/hot-high",
+        "refused": 13,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 96,
+        "name": "gp-extra-300s-60/standard-column",
+        "refused": 4,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 92,
+        "name": "gp-extra-300s-60/spatial-gusty-v1",
+        "refused": 8,
+        "states": 100,
+        "wheel_count": 3
+       },
+       {
+        "family": "glow_2t",
+        "feed": false,
+        "finite": 89,
+        "name": "gp-extra-300s-60/spatial-thermal-soaring-v2",
+        "refused": 11,
+        "states": 100,
+        "wheel_count": 3
+       }
+      ],
+      "trajectories": [
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "nominal",
+        "first_divergence": -1,
+        "located": [],
+        "name": "stik-glow-61fx-2t/calm/nominal",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "exhaustion",
+        "first_divergence": -1,
+        "located": [
+         "fuel_exhausted",
+         "glow_stopped"
+        ],
+        "name": "stik-glow-61fx-2t/calm/exhaustion",
+        "native_context_calls": 16,
+        "native_stage_calls": 92,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "overheat",
+        "first_divergence": -1,
+        "located": [
+         "glow_stopped"
+        ],
+        "name": "stik-glow-61fx-2t/calm/overheat",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "stall",
+        "first_divergence": -1,
+        "located": [
+         "glow_stopped"
+        ],
+        "name": "stik-glow-61fx-2t/calm/stall",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": true,
+        "event_kind": "cut_restart",
+        "first_divergence": -1,
+        "located": [],
+        "name": "stik-glow-61fx-2t/calm/cut_restart",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": true,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "nominal",
+        "first_divergence": -1,
+        "located": [],
+        "name": "stik-glow-55ax-2t/turbulent/nominal",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "exhaustion",
+        "first_divergence": -1,
+        "located": [
+         "fuel_exhausted",
+         "glow_stopped"
+        ],
+        "name": "stik-glow-55ax-2t/calm/exhaustion",
+        "native_context_calls": 16,
+        "native_stage_calls": 92,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "overheat",
+        "first_divergence": -1,
+        "located": [
+         "glow_stopped"
+        ],
+        "name": "stik-glow-55ax-2t/calm/overheat",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "stall",
+        "first_divergence": -1,
+        "located": [
+         "glow_stopped"
+        ],
+        "name": "stik-glow-55ax-2t/calm/stall",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": true,
+        "event_kind": "cut_restart",
+        "first_divergence": -1,
+        "located": [],
+        "name": "stik-glow-55ax-2t/calm/cut_restart",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": true,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "nominal",
+        "first_divergence": -1,
+        "located": [],
+        "name": "stik-glow-fs64v-4t/hot-high/nominal",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "exhaustion",
+        "first_divergence": -1,
+        "located": [
+         "fuel_exhausted",
+         "glow_stopped"
+        ],
+        "name": "stik-glow-fs64v-4t/calm/exhaustion",
+        "native_context_calls": 16,
+        "native_stage_calls": 92,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "overheat",
+        "first_divergence": -1,
+        "located": [
+         "glow_stopped"
+        ],
+        "name": "stik-glow-fs64v-4t/calm/overheat",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "stall",
+        "first_divergence": -1,
+        "located": [
+         "glow_stopped"
+        ],
+        "name": "stik-glow-fs64v-4t/calm/stall",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": true,
+        "event_kind": "cut_restart",
+        "first_divergence": -1,
+        "located": [],
+        "name": "stik-glow-fs64v-4t/calm/cut_restart",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": true,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "nominal",
+        "first_divergence": -1,
+        "located": [],
+        "name": "gp-extra-300s-60/spatial-thermal-soaring-v2/nominal",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "exhaustion",
+        "first_divergence": -1,
+        "located": [
+         "fuel_exhausted",
+         "glow_stopped"
+        ],
+        "name": "gp-extra-300s-60/calm/exhaustion",
+        "native_context_calls": 16,
+        "native_stage_calls": 95,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "overheat",
+        "first_divergence": -1,
+        "located": [
+         "glow_stopped"
+        ],
+        "name": "gp-extra-300s-60/calm/overheat",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": false,
+        "event_kind": "stall",
+        "first_divergence": -1,
+        "located": [
+         "glow_stopped"
+        ],
+        "name": "gp-extra-300s-60/calm/stall",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": false,
+        "ticks_run": 16
+       },
+       {
+        "complete": true,
+        "cut_ok": true,
+        "event_kind": "cut_restart",
+        "first_divergence": -1,
+        "located": [],
+        "name": "gp-extra-300s-60/calm/cut_restart",
+        "native_context_calls": 16,
+        "native_stage_calls": 64,
+        "requested_ticks": 16,
+        "restart_ok": true,
+        "ticks_run": 16
+       }
+      ]
+     }
+    },
+    "format": "openrc-nk3-glow-stage-oracle v1",
+    "harness_sources": {
+     "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+     "research/native-kernel/fleet.gd": "9c2017f4facd69bda6b7cf8c316590f5d6122b5f4a5110bc16966741c39c6c42",
+     "research/native-kernel/glow_stage_adapter.gd": "e4dc07e614397da51c2a5d3b5b40a1c12f91452ce07a27b55f614d2f3eb14de4",
+     "research/native-kernel/glow_stage_oracle.gd": "bb60cdc2932e97365fd65c3a0b17429f0a978ecd5b27fd302fe54aeb3e0087d8",
+     "research/native-kernel/oracle.gd": "f21345f3f152c65aabb32cc5ff05bb1111123dd70ef37d8588293074313ec511",
+     "research/native-kernel/propeller_oracle.gd": "d9f7d2643400f9ccc694095c55a1faad26a067c06093cf5a299afa4f405a356f",
+     "research/native-kernel/run.py": "663003dcb2d48a7e90ce0852b5e161824292e15760994678c4447bd736c48912",
+     "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+     "research/native-kernel/stage_oracle.gd": "1ff7bf7e1ef975a94a5f382046ca153de6b997720b6b2e7a7d946dafcf12e101",
+     "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+     "research/native-kernel/weather_adapter.gd": "31068e6ced60612b355af999365184705aa742d1aeaa0315feab3df8d367c98f",
+     "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "path": "tmp/native-kernel/glow-stage-20261028T195118123249Z.json",
+    "run_valid": true,
+    "sha256": "d8aec0d0c3ca679fac1e38b78118e747de4c0fcc1c4f750ede2cc8fecd0e60f9",
+    "source_sha256": "f1a3f9e35f8efb1dd91d09ceaa6b43a1f90c1db1555ec4739eb431c94e1018e5",
+    "total": {
+     "compared": 16227,
+     "identical": 16227,
      "mismatched": 0
     }
    }
