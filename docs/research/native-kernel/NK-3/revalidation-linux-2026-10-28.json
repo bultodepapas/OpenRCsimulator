@@ -22729,7 +22729,7 @@
     }
    },
    "native_admission_follow_up": {
-    "status": "confirmed source admission gaps; corrections in progress, not yet built or qualified",
+    "status": "19 installer gates, actual installed admission and staged UBSan passed; final package, paired performance and full fleet qualification pending",
     "candidate_source_commit": "1c33c0914a0f6f31b5868e645689c303239b9899",
     "candidate_native_sha256": "74ce8abcb021d0687024b887c59866f1d10649d9b860a69078a45564b644dbf7",
     "findings": {
@@ -22782,6 +22782,145 @@
     "interrupted_timing": {
      "path": "tmp/nk3-domain-isolated/tmp/nk3-domain-release-performance/interruption.json",
      "sha256": "26b0cfc4add78aebb50ce4028c2f96fe4d32e63509cf372d20cd3bb2919a4411"
+    },
+    "implementation_commits": [
+     "a3617ed0f",
+     "eef621296c0d91b0573da7e44dad02d6c22bc775"
+    ],
+    "additional_counterexamples": [
+     {
+      "case": "more than 65536 configuration watches",
+      "evidence": {
+       "path": "tmp/godot-checks/godot-lb8jo4lz/report.json",
+       "sha256": "c5d593d27e7dda7ad2d42f5f43e6222c2d36ef2b2c0ff89fa49ffd15ee53dccd"
+      },
+      "result": "10000-piece validated wake starts on reference; old native guard preparation and actual native ownership assertions fail."
+     },
+     {
+      "case": "prescribed source with 1048578 CT values",
+      "evidence": {
+       "path": "tmp/godot-checks/godot-t9fpj7ll/report.json",
+       "sha256": "8b278902a886fb9f7ac5601998f4d0cff23e8ec0ae72221d465fb815cad0b8d8"
+      },
+      "result": "524289 monotone CT rows pass AircraftData validation; old native prepare_stage refuses with prescribed source differs from committed model. Preparation-only evidence, not a flight."
+     }
+    ],
+    "corrections": [
+     "Honor validated Workshop dimensions and legacy wake/field counts; preserve finite, structural and law checks.",
+     "Use checked index widths and prepare-sized per-instance continuous/anchor/wheel buffers; preserve arithmetic order.",
+     "Keep each configuration edge watch and memoize only completed container pairs during preparation; exact bits, type checks and depth/cycle refusals remain.",
+     "Remove the flat snapshot-comparison budget using the same identity-checked memoization.",
+     "Handle empty packed arrays before forming C++ iterator ranges."
+    ],
+    "syntax_check": {
+     "path": "tmp/nk3-admission-work/syntax-final.log",
+     "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "builds": {
+     "normal": {
+      "receipt": {
+       "path": "tmp/nk3-admission-isolated/tmp/native-kernel/build-receipt.json",
+       "sha256": "efc4b1266e66189f9594383b51407049ec398703b29e51acddb83e98f4f6b65e"
+      },
+      "source_sha256": "14c124bba22f72760de4deb3c69be5d21b64590c83b2adb4231a7608b4572f03",
+      "binary_sha256": "d023a8758404ad2b95949214af92e6f888f91fb32977b61e0db5ad4220178fc1",
+      "repository_head": "eef621296c0d91b0573da7e44dad02d6c22bc775"
+     },
+     "negative_control": {
+      "receipt": {
+       "path": "tmp/nk3-admission-isolated/tmp/native-kernel/build-receipt_mutant.json",
+       "sha256": "b9ebe5eb4ad951673ad0c12891d85898aed03dfc544084c9669fcb1b382882f6"
+      },
+      "source_sha256": "14c124bba22f72760de4deb3c69be5d21b64590c83b2adb4231a7608b4572f03",
+      "binary_sha256": "fc42b4890857f083ca535d66534136e4ea14a1ba30a708d124791da165ffe351",
+      "repository_head": "eef621296c0d91b0573da7e44dad02d6c22bc775"
+     }
+    },
+    "source_snapshot_before_gates": {
+     "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-19-gates/sources-before.json",
+     "sha256": "b6c69a6e6d589d9dcd7fdab84b59575b45eb0a553843d866c3d3a675fb738d7e"
+    },
+    "source_snapshot_files": 4642,
+    "superseded_slow_probe": {
+     "evidence": {
+      "path": "tmp/godot-checks/godot-5k_0cntn/report.json",
+      "sha256": "35b4d6f5f0be9f5088bab7678c50cbcad3d8619f7a1a4e3ca94cb04ffe268dfb"
+     },
+     "status": "interrupted, not passed",
+     "reason": "The valid CT-array fixture exercises the same flat snapshot budget in about eight seconds; the 69906-piece preparatory probe was superseded."
+    },
+    "qualification_limits": [
+     "Full 1238-row campaign, actual final release and isolated paired timing remain pending; no expanded default promotion.",
+     "Synthetic admission fixtures verify software admission and exact behavior, not physical realism. Large CT-table regression qualifies preparation only.",
+     "Superseded executable bytes remain recoverable from verified lossless deltas against the retained original accepted rollback ZIP; obsolete materialized executables and the unpromoted 313 ZIP container were removed."
+    ],
+    "installer_summary": {
+     "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-19-gates/summary.json",
+     "sha256": "9026de95aa2098413b30f08e2b91cf10b2758e8cf1c8d7111a546413b1521fff"
+    },
+    "source_snapshot_after_gates": {
+     "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-19-gates/sources-after.json",
+     "sha256": "b6c69a6e6d589d9dcd7fdab84b59575b45eb0a553843d866c3d3a675fb738d7e"
+    },
+    "installer_log": {
+     "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-install.log",
+     "sha256": "68191e9866a19e4f91c1816159c6c7444f3c1e7ccd965be94f553576d37720d3"
+    },
+    "installed_checks": {
+     "admission": {
+      "checks": 191,
+      "report": {
+       "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-checks/checks/admission-mdwzonc8/report.json",
+       "sha256": "cec5d67bd97e0b6c34385fb68b12e1cf955b022c211dad469e0da327fb834e91"
+      }
+     },
+     "wheel": {
+      "checks": 214,
+      "report": {
+       "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-checks/checks/wheel-ni2ymwrs/report.json",
+       "sha256": "f2d39be2bd324202735ee33edad4de4bfd4fdac885ec545a5bbab095172be8cd"
+      }
+     },
+     "glow-rejection": {
+      "checks": 46,
+      "report": {
+       "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-checks/checks/glow-rejection-129w7i22/report.json",
+       "sha256": "5bfb709d869ca662f98d7b1796466e915e8a49a89966a1fe7afb6da2809a4d05"
+      }
+     },
+     "runtime-domain": {
+      "checks": 199,
+      "report": {
+       "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-checks/checks/runtime-domain-24fidquk/report.json",
+       "sha256": "ebee924800358c42ee5ca7bff0e9739f25308d5238750398357d43b40ea7fedc"
+      }
+     }
+    },
+    "ubsan": {
+     "core_summary": {
+      "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-ubsan-check/summary.json",
+      "sha256": "4bbd944f8f0d55ecef796b3ebac28c281569127758a3a213c556571a346214bb"
+     },
+     "staged_admission_summary": {
+      "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-ubsan-diagnostics/summary.json",
+      "sha256": "19ecdbd94e46f1224fd59befd044a74914738f1eb16199155834ca100b7c6a0d"
+     },
+     "native_admission_checks": 191,
+     "wheel_admission_checks": 214,
+     "sanitizer_diagnostics": [],
+     "retained_source": {
+      "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-ubsan-check/retained-source.tar.gz",
+      "sha256": "2196c5ecdf479ac26dcd6f2cab887f8896108b475ce05fdb4b291badab016e04"
+     },
+     "retention_manifest": {
+      "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-ubsan-check/retained-source-manifest.json",
+      "sha256": "5349e5c8b52bda9fa17a6b5fa98d0a58baec95e6fc985a6fd2f5fd915134ccb9"
+     },
+     "limit": "Instrumented development binary, not an installation or package qualification."
+    },
+    "superseded_package_retention": {
+     "path": "tmp/nk3-admission-work/package-retention/manifest.json",
+     "sha256": "d90e0e0ff4df2569cc132944742450675914b2f92eeb99ab53fee250e31c95b2"
     }
    }
   },
