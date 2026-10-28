@@ -177,7 +177,7 @@ python3 research/aircraft-editor/test_descriptor_checkout.py
 
 The checkout test creates and removes disposable Git fixture repositories, including fixture commits, under ignored `.tools/`; it never stages or commits the working repository. It checks LF/CRLF checkouts and generator consistency. A descriptor rejection must be resolved in the owning aircraft/module pipeline; do not weaken assertions or hand-edit generated descriptors.
 
-After intentionally changing aircraft/model sources through their owning generators, regenerate model manifests with `python3 research/aircraft-standardization/build_models.py`, then descriptors with `python3 research/aircraft-editor/build_descriptors.py`, and repeat the checks above. Exact aircraft bytes and model-manifest hashes are inputs; honor `.gitattributes` before regenerating. [Byte/EOL lesson](LEARNINGS.md#2026-10-13--cr-01d--run-a-generators---check-at-head-before-regenerating).
+After intentionally changing aircraft/model sources through their owning generators, regenerate model manifests with `python3 research/aircraft-standardization/build_models.py`, then descriptors with `python3 research/aircraft-editor/build_descriptors.py`, and repeat the checks above. Exact aircraft bytes and model-manifest hashes are inputs; honor `.gitattributes` before regenerating. [Byte/EOL lesson](learnings/runtime-and-delivery.md#clean-builds-and-desktop-evidence).
 
 Presentation slot/source changes use `python3 research/aircraft-standardization/build_customization.py`, followed by its `--check` and tests. This generator does not rewrite physical model manifests. Exported builds carry a separate closed presentation proof package; `test_presentation_sources.gd` checks its missing/corrupt proof refusals.
 
