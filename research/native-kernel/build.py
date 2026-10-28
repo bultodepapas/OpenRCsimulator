@@ -43,6 +43,11 @@ REFERENCE_SOURCES = [
     "app/sim/simulation.gd", "app/sim/native_stage.gd", "app/app_state/native_package.gd",
     "app/data/aircraft/jensen_ugly_stik_60.json",
     "app/physics/flaps.gd", "app/physics/wing_polar.gd", "app/physics/aircraft_data.gd",
+    "app/physics/wind_config.gd", "app/physics/atmosphere.gd", "app/physics/wind_turbulence.gd",
+    "app/physics/wind_spatial_config.gd", "app/physics/wind_spatial_field.gd",
+    "app/physics/wind_spatial_presets.gd", "app/physics/wind_thermal_field.gd",
+    "app/physics/electric_motor.gd", "app/physics/electric_supply.gd",
+    "app/physics/battery/battery_data.gd", "app/physics/battery/pack_ecm.gd",
 ]
 LIBM_SYMBOLS = {"sin", "cos", "tan", "asin", "acos", "atan", "atan2", "sqrt", "pow", "exp", "log",
                 "sinh", "cosh", "tanh", "fmod", "floor", "sincos"}

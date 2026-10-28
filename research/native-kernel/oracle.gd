@@ -272,7 +272,13 @@ func _source_hashes() -> Dictionary:
 			"res://physics/ground_effect.gd", "res://physics/aero.gd", "res://physics/propulsion.gd",
 			"res://physics/dynamics.gd", "res://physics/hull_contact.gd", "res://physics/wind_field.gd",
 			"res://sim/environment.gd", "res://sim/flight_session.gd", "res://sim/simulation.gd",
-			"res://sim/native_stage.gd", "res://app_state/native_package.gd", "res://data/aircraft/jensen_ugly_stik_60.json"]:
+			"res://sim/native_stage.gd", "res://app_state/native_package.gd", "res://data/aircraft/jensen_ugly_stik_60.json",
+			"res://physics/flaps.gd", "res://physics/wing_polar.gd", "res://physics/aircraft_data.gd",
+			"res://physics/wind_config.gd", "res://physics/atmosphere.gd", "res://physics/wind_turbulence.gd",
+			"res://physics/wind_spatial_config.gd", "res://physics/wind_spatial_field.gd",
+			"res://physics/wind_spatial_presets.gd", "res://physics/wind_thermal_field.gd",
+			"res://physics/electric_motor.gd", "res://physics/electric_supply.gd",
+			"res://physics/battery/battery_data.gd", "res://physics/battery/pack_ecm.gd"]:
 		out[path] = FileAccess.get_sha256(path)
 	return out
 

@@ -25,6 +25,7 @@ GODOT = ROOT / ".tools/Godot_v4.8-beta1_linux.x86_64"
 HARNESS_OPTIONS = {
     "oracle.gd": set(), "stage_oracle.gd": set(),
     "propeller_oracle.gd": set(),
+    "weather_oracle.gd": set(), "electric_oracle.gd": set(),
     "trajectory.gd": {"ticks", "pairs", "warmup", "samples", "timing-cases", "skip-timing", "only", "repeats"},
     "fleet.gd": {"warmup", "samples", "aircraft", "weather", "soft-hull"},
 }
@@ -126,11 +127,13 @@ def main() -> int:
         raise SystemExit("The descriptor's binary differs from its build receipt; rebuild/reinstall first.")
     harness_paths = [HERE / name for name in ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "trajectory.gd",
                                               "fleet.gd", "propeller_oracle.gd", "run.py")]
+    harness_paths += [HERE / args.script] if HERE / args.script not in harness_paths else []
     harness_paths += [ROOT / "app/sim/native_stage.gd", ROOT / "tools/godot/run_checked.py"]
     harness_sources = {str(path.relative_to(ROOT)): sha256(path) for path in harness_paths}
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     stem = {"oracle.gd": "results", "stage_oracle.gd": "stage", "trajectory.gd": "trajectory",
-            "fleet.gd": "fleet", "propeller_oracle.gd": "propeller"}[args.script]
+            "fleet.gd": "fleet", "propeller_oracle.gd": "propeller",
+            "weather_oracle.gd": "weather", "electric_oracle.gd": "electric"}[args.script]
     output = TOOL_ROOT / f"{stem}{variant}-{stamp}.json"
     marker = "NK3_ORACLE verdict=fail" if args.mutant else "NK3_ORACLE verdict=pass"
     checks = TOOL_ROOT / "checks"
