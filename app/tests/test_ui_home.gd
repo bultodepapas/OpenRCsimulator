@@ -218,8 +218,51 @@ func _run() -> void:
 		TranslationServer.set_locale(locale)
 		home._select_page(2)
 		await ui.settle()
-		_check("Practice preserves the compact rail in " + locale, home.get_node("HomeRail").size.x <= 304.5
-			and not scroll.get_v_scroll_bar().visible)
+		var practice_rail: Control = home.get_node("HomeRail")
+		var practice_page: Control = home._pages[2]
+		var horizontal_fit := true
+		for control: Control in practice_page.find_children("*", "Control", true, false):
+			if control.is_visible_in_tree():
+				var rect := control.get_global_rect()
+				var body_rect := scroll.get_global_rect()
+				if rect.position.x < body_rect.position.x - 1.0 or rect.end.x > body_rect.end.x + 1.0:
+					horizontal_fit = false
+		_check("Practice stays within the compact rail in " + locale,
+			practice_rail.size.x <= 304.5 and horizontal_fit,
+			"viewport=%s rail=%s body=%s page=%s bar=%s" % [root.size, practice_rail.size, scroll.size,
+			practice_page.size, scroll.get_v_scroll_bar().visible])
+		home.natural_random_button.grab_focus()
+		await ui.settle()
+		await ui.tap(KEY_UP)
+		_check("Practice keyboard reaches pilot statistics in " + locale,
+			ui.focus_name() == "Statistics" and scroll.get_global_rect().encloses(home.statistics_button.get_global_rect()), ui.focus_name())
+		for action: Button in [home.natural_random_button, home.failures_button, home.trim_practice_button]:
+			await ui.tap(KEY_DOWN)
+			_check("Practice keyboard reveals %s in %s" % [action.name, locale],
+				ui.focus_name() == action.name and scroll.get_global_rect().encloses(action.get_global_rect()),
+				"focus=%s body=%s action=%s" % [ui.focus_name(), scroll.get_global_rect(), action.get_global_rect()])
+		# The UI gamepad uses the same focus chain, but only after explicit device selection.
+		preload("res://ui/ui_input.gd").set_gamepad(UiDriver.FAKE_DEVICE)
+		home.natural_random_button.grab_focus()
+		await ui.settle()
+		await ui.joy_button(JOY_BUTTON_DPAD_UP)
+		_check("Practice controller reaches pilot statistics in " + locale,
+			ui.focus_name() == "Statistics" and scroll.get_global_rect().encloses(home.statistics_button.get_global_rect()), ui.focus_name())
+		for action: Button in [home.natural_random_button, home.failures_button, home.trim_practice_button]:
+			await ui.joy_button(JOY_BUTTON_DPAD_DOWN)
+			_check("Practice controller reveals %s in %s" % [action.name, locale],
+				ui.focus_name() == action.name and scroll.get_global_rect().encloses(action.get_global_rect()),
+				"focus=%s body=%s action=%s" % [ui.focus_name(), scroll.get_global_rect(), action.get_global_rect()])
+		preload("res://ui/ui_input.gd").isolate_joypads()
+		root.size = Vector2i(1920, 1080)
+		await ui.settle()
+		await ui.settle()
+		_check("Practice fits without scrolling at 1080p in " + locale, not scroll.get_v_scroll_bar().visible
+			and practice_rail.size.x <= 340.5,
+			"viewport=%s rail=%s body=%s page=%s bar=%s" % [root.size, practice_rail.size, scroll.size,
+			practice_page.size, scroll.get_v_scroll_bar().visible])
+		root.size = Vector2i(1280, 720)
+		await ui.settle()
 		home._select_page(3)
 		await ui.settle()
 		_check("Garage preserves the compact rail and visible action in " + locale,

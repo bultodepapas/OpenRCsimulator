@@ -608,6 +608,8 @@ func _init() -> void:
 	trim_practice_button = _button("Trim practice", "HomeChoice")
 	trim_practice_button.name = "TrimPractice"
 	trim_practice_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	# Keep long translations within the rail without truncating the action.
+	trim_practice_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	Widgets.mark_row(trim_practice_button, "open")
 	trim_practice_button.custom_minimum_size.y = 42
 	trim_practice_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -861,6 +863,13 @@ func _ready() -> void:
 	landscape_button.focus_neighbor_left = landscape_button.get_path_to(start_button)
 	landscape_button.focus_neighbor_bottom = landscape_button.get_path_to(weather_button)
 	weather_button.focus_neighbor_top = weather_button.get_path_to(landscape_button)
+	# Practice can scroll at compact heights. Keep its controls in visual order
+	# so keyboard and the selected UI controller reveal every action.
+	var practice_actions: Array[Button] = [statistics_button, natural_random_button, failures_button, trim_practice_button]
+	for index in practice_actions.size():
+		var action: Button = practice_actions[index]
+		if index > 0: action.focus_neighbor_top = action.get_path_to(practice_actions[index - 1])
+		if index + 1 < practice_actions.size(): action.focus_neighbor_bottom = action.get_path_to(practice_actions[index + 1])
 	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button if not fly_button.disabled else _page_buttons[0])
 	fly_button.focus_neighbor_bottom = fly_button.get_path_to(controls_button)
 	fly_button.focus_neighbor_right = fly_button.get_path_to(language_button)
