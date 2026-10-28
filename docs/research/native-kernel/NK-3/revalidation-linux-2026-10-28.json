@@ -1,0 +1,1252 @@
+{
+ "date": "2026-10-28",
+ "format": "openrc-nk3-revalidation v1",
+ "gate_regressions": {
+  "original_gate_negative_control": {
+   "assertion_failures_detected": 16,
+   "baseline": "b44cf51ae",
+   "errors": 0,
+   "log_sha256": "272725ffcef25b7ece8ab463bd189ab5e454d73f56f1176a9a3e6c8d363ee8a0",
+   "method": "Original find_verification loaded into a disposable Python process; current rejection tests against synthetic evidence",
+   "tests": 3
+  },
+  "python": {
+   "command": "python3 research/native-kernel/test_verification.py",
+   "failures": 0,
+   "log": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.077s\n\nOK\n",
+   "tests": 10
+  }
+ },
+ "installed_receipt": {
+  "abi_version": 1,
+  "backend": "native",
+  "backend_version": "openrc-native-kernel-stage-v1",
+  "format": "openrc-native-kernel-receipt",
+  "platforms": {
+   "linux": {
+    "abi_version": 1,
+    "architecture": "x86_64",
+    "backend": "native",
+    "backend_version": "openrc-native-kernel-stage-v1",
+    "binary_sha256": "a25f3c0fde93e7e42ad4df06052614694ad8f2c69b267e4a33d5cb3f963f0e11",
+    "builder_sha256": "e6b624c6927056d85be4ffad0f874c32eec15512ec477a23d25f8fbb739596a4",
+    "compiler_version": "13.3.0",
+    "cxxflags_appended": [
+     "-fno-fast-math",
+     "-ffp-contract=off",
+     "-fexceptions",
+     "-std=c++17"
+    ],
+    "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+    "libm_imports": [
+     "atan2@GLIBC_2.2.5",
+     "cos@GLIBC_2.2.5",
+     "pow@GLIBC_2.29",
+     "sin@GLIBC_2.2.5",
+     "sincos@GLIBC_2.2.5",
+     "sqrt@GLIBC_2.2.5"
+    ],
+    "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+    "mirrored_sources": {
+     "app/physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+     "app/physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+     "app/physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+     "app/physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+     "app/physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+     "app/physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+     "app/physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+     "app/physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+     "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+     "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+     "app/physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+     "app/physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+     "app/sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+     "app/sim/flight_session.gd": "8bfaf24b57e3861e78512a93e389e53d8e040c86b316862444975f722c5f737e",
+     "app/sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+    },
+    "platform": "linux",
+    "repository_head": "430c5feb60676c092cccdd4588359143166ab5c9",
+    "shared_builder_sha256": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+    "source_sha256": "2f4595364e9798524600b8fc0636a7b497e13e7c852dde78fd5adcdf59429d5a",
+    "verification": {
+     "stage_oracle": {
+      "compared": 128565,
+      "results": "stage-20261028T123429335699Z.json",
+      "results_sha256": "02ee9c22ca58d0601761a41452139e86fe260b75c92c13a4c2a5f1dabcda6784",
+      "verdict": "pass"
+     },
+     "trajectory": {
+      "compared": 155931,
+      "results": "trajectory-20261028T123802136503Z.json",
+      "results_sha256": "21e559eb025eea3c5b607a20583cbe85d2ec64c8ad7c66e49532339fd3ba3e97",
+      "verdict": "pass"
+     }
+    }
+   }
+  }
+ },
+ "integration_checks": {
+  "native-installed": {
+   "capture_id": "0f51d2f1-a339-46de-95a9-4e8683251e60",
+   "command": [
+    "/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_native_stage.gd"
+   ],
+   "complete": true,
+   "counts": {
+    "error": 0,
+    "warning": 0
+   },
+   "cwd": "/home/bulto/OpenRCsimulator",
+   "detail": "",
+   "diagnostics": [],
+   "elapsed_seconds": 6.904684,
+   "exit_code": 0,
+   "format": "openrc-godot-check v1",
+   "label": "native-installed",
+   "log": "/home/bulto/OpenRCsimulator/tmp/nk3-gate-regression/native-installed-kglats25/engine.log",
+   "log_bytes": 290,
+   "log_sha256": "9e07db53b6edd6f07bffb1ec711e4e1a538bb8aa24b5d76a4427e0a3b6736155",
+   "max_log_bytes": 8388608,
+   "missing_required_text": [],
+   "ok": true,
+   "process_exit": 0,
+   "reason": "passed",
+   "report": "/home/bulto/OpenRCsimulator/tmp/nk3-gate-regression/native-installed-kglats25/report.json",
+   "required_text": [
+    "Native stage: 26 checks, 0 failed"
+   ],
+   "started_utc": "2026-10-28T12:43:11.160287+00:00",
+   "timeout_seconds": 120.0,
+   "warnings_as_errors": false
+  },
+  "trajectory-policy": {
+   "capture_id": "dd6a4024-0bc2-41f9-9197-a504b1265e24",
+   "command": [
+    "/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/home/bulto/OpenRCsimulator/research/native-kernel/test_trajectory.gd"
+   ],
+   "complete": true,
+   "counts": {
+    "error": 0,
+    "warning": 0
+   },
+   "cwd": "/home/bulto/OpenRCsimulator",
+   "detail": "",
+   "diagnostics": [],
+   "elapsed_seconds": 3.927827,
+   "exit_code": 0,
+   "format": "openrc-godot-check v1",
+   "label": "trajectory-policy",
+   "log": "/home/bulto/OpenRCsimulator/tmp/nk3-gate-regression/trajectory-policy-ui4qbhti/engine.log",
+   "log_bytes": 113,
+   "log_sha256": "88de56118ca7f116ca2d12b7a5cfedff3a67131834f2422f2b68976d1e5cbc2c",
+   "max_log_bytes": 8388608,
+   "missing_required_text": [],
+   "ok": true,
+   "process_exit": 0,
+   "reason": "passed",
+   "report": "/home/bulto/OpenRCsimulator/tmp/nk3-gate-regression/trajectory-policy-ui4qbhti/report.json",
+   "required_text": [
+    "NK3_TRAJECTORY_POLICY checks=69 failures=0"
+   ],
+   "started_utc": "2026-10-28T12:43:55.357456+00:00",
+   "timeout_seconds": 90.0,
+   "warnings_as_errors": false
+  }
+ },
+ "repository_head_at_collection": "08257de6a77a533f7311b86dd3e3d49396278393",
+ "repository_head_at_start": "b44cf51ae",
+ "scope": "Linux software equivalence and evidence gates; no physics changes, timing qualification or normal-flight activation",
+ "stage_oracle": {
+  "binary_sha256_after": "a25f3c0fde93e7e42ad4df06052614694ad8f2c69b267e4a33d5cb3f963f0e11",
+  "binary_sha256_before": "a25f3c0fde93e7e42ad4df06052614694ad8f2c69b267e4a33d5cb3f963f0e11",
+  "build_receipt": {
+   "abi_version": 1,
+   "architecture": "x86_64",
+   "backend": "native",
+   "backend_version": "openrc-native-kernel-stage-v1",
+   "binary_sha256": "a25f3c0fde93e7e42ad4df06052614694ad8f2c69b267e4a33d5cb3f963f0e11",
+   "builder_sha256": "c86a61cbd5d8e385d52a3483aae1e82f2ca5752f9d3880d8830202eb501fc84e",
+   "compiler_version": "13.3.0",
+   "cxxflags_appended": [
+    "-fno-fast-math",
+    "-ffp-contract=off",
+    "-fexceptions",
+    "-std=c++17"
+   ],
+   "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+   "libm_imports": [
+    "atan2@GLIBC_2.2.5",
+    "cos@GLIBC_2.2.5",
+    "pow@GLIBC_2.29",
+    "sin@GLIBC_2.2.5",
+    "sincos@GLIBC_2.2.5",
+    "sqrt@GLIBC_2.2.5"
+   ],
+   "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+   "mirrored_sources": {
+    "app/physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+    "app/physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+    "app/physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+    "app/physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+    "app/physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+    "app/physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+    "app/physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+    "app/physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+    "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+    "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "app/physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+    "app/physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+    "app/sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+    "app/sim/flight_session.gd": "58a6b6e43832bfc5fa1114d338e589130f4225347ed7ee5076bc897380521fe4",
+    "app/sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+   },
+   "platform": "linux",
+   "repository_head": "430c5feb60676c092cccdd4588359143166ab5c9",
+   "shared_builder_sha256": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+   "source_sha256": "2f4595364e9798524600b8fc0636a7b497e13e7c852dde78fd5adcdf59429d5a",
+   "verification": {
+    "stage_oracle": {
+     "compared": 128565,
+     "results": "stage-20261027T182948Z.json",
+     "results_sha256": "7dea21db528a74a0dd0e85d3ac6118823337d0792f6783602805ef8307f6271c",
+     "verdict": "pass"
+    },
+    "trajectory": {
+     "compared": 101568,
+     "results": "trajectory-20261027T183026Z.json",
+     "results_sha256": "8a15fd5a868df7ce4dd25dbfcfb0b6456709e05e31868234537c62c272c3a4bd",
+     "verdict": "pass"
+    }
+   }
+  },
+  "checked_run": {
+   "capture_id": "f83699c4-b2ca-44f4-9e6d-7278f34b5c3e",
+   "command": [
+    "/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64",
+    "--headless",
+    "--path",
+    "/home/bulto/OpenRCsimulator/app",
+    "--script",
+    "/home/bulto/OpenRCsimulator/research/native-kernel/stage_oracle.gd",
+    "--",
+    "--extension=res://native/kernel/openrc_native_kernel.gdextension",
+    "--output=/home/bulto/OpenRCsimulator/tmp/native-kernel/stage-20261028T123429335699Z.json",
+    "--seed=20261027",
+    "--states=12000",
+    "--variant-states=1500",
+    "--timing-rounds=15"
+   ],
+   "complete": true,
+   "counts": {
+    "error": 0,
+    "warning": 0
+   },
+   "cwd": "/home/bulto/OpenRCsimulator",
+   "detail": "",
+   "diagnostics": [],
+   "elapsed_seconds": 64.160614,
+   "exit_code": 0,
+   "format": "openrc-godot-check v1",
+   "label": "nk3-stage",
+   "log": "/home/bulto/OpenRCsimulator/tmp/native-kernel/checks/stage-o6aqjt2_/nk3-stage-3mogas6s/engine.log",
+   "log_bytes": 318,
+   "log_sha256": "dfda09cc8123d371589da1792eb358647ecfc17022aa77736bb99fbfedbea97b",
+   "max_log_bytes": 8388608,
+   "missing_required_text": [],
+   "ok": true,
+   "process_exit": 0,
+   "reason": "passed",
+   "report": "/home/bulto/OpenRCsimulator/tmp/native-kernel/checks/stage-o6aqjt2_/nk3-stage-3mogas6s/report.json",
+   "required_text": [
+    "NK3_ORACLE verdict=pass"
+   ],
+   "started_utc": "2026-10-28T12:34:29.407458+00:00",
+   "timeout_seconds": 600.0,
+   "warnings_as_errors": false
+  },
+  "components": {
+   "ground_evaluation_derivative": {
+    "class_mismatch": 0,
+    "count": 11421,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 11421,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "ground_evaluation_loads": {
+    "class_mismatch": 0,
+    "count": 11421,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 11421,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "ground_evaluation_ok": {
+    "class_mismatch": 0,
+    "count": 12000,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 12000,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "ground_up": {
+    "class_mismatch": 0,
+    "count": 12000,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 12000,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "hull_loads": {
+    "class_mismatch": 0,
+    "count": 12000,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 12000,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "literals": {
+    "class_mismatch": 0,
+    "count": 39,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 39,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "prop_loads": {
+    "class_mismatch": 0,
+    "count": 12000,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 12000,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "stage_bytes": {
+    "class_mismatch": 0,
+    "count": 11421,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 11421,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "stage_derivative": {
+    "class_mismatch": 0,
+    "count": 11421,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 11421,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "stage_loads": {
+    "class_mismatch": 0,
+    "count": 11421,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 11421,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "stage_rotor_momentum": {
+    "class_mismatch": 0,
+    "count": 11421,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 11421,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "stage_shape": {
+    "class_mismatch": 0,
+    "count": 12000,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 12000,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   }
+  },
+  "coverage": {
+   "stage_air": {
+    "ground_loaded": 161,
+    "hull_loaded": 156,
+    "hull_near_lake": 407,
+    "hull_points_lake_covered": 5318,
+    "malformed": 306,
+    "propeller_turning": 3718,
+    "stage_nonfinite_loads": 167,
+    "stage_shaped": 3992,
+    "stage_valid": 3825,
+    "states": 4138
+   },
+   "stage_ground": {
+    "ground_loaded": 3407,
+    "hull_loaded": 816,
+    "hull_near_lake": 1060,
+    "hull_points_lake_covered": 16867,
+    "malformed": 385,
+    "propeller_turning": 4413,
+    "stage_nonfinite_loads": 61,
+    "stage_shaped": 4608,
+    "stage_valid": 4547,
+    "states": 4888
+   },
+   "stage_hull": {
+    "ground_loaded": 2181,
+    "hull_loaded": 2294,
+    "hull_near_lake": 668,
+    "hull_points_lake_covered": 10423,
+    "malformed": 227,
+    "propeller_turning": 2688,
+    "stage_nonfinite_loads": 43,
+    "stage_shaped": 2821,
+    "stage_valid": 2778,
+    "states": 2974
+   }
+  },
+  "engine": "4.8-beta1 (official)",
+  "engine_sha256_after": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+  "engine_sha256_before": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+  "failures": [],
+  "format": "openrc-nk3-stage-oracle v1",
+  "harness_sources": {
+   "app/sim/native_stage.gd": "3af5f9dbd6ba792acc201a67632eecb56df133c744ec375ab3d71e6c6ab1765c",
+   "research/native-kernel/fleet.gd": "c2e9276f8f404a878cb42893db437086d0d3371429446a1887ccc7b72fb276d8",
+   "research/native-kernel/oracle.gd": "52c1965d5278a00de8efe0c97a1a673ad5963b2ac95e6cafec4eba476903835e",
+   "research/native-kernel/run.py": "53381ee5a33da1df07b0c65b319345abc8e138ffbe2063f96a1fe20baa0ccef4",
+   "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+   "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+   "research/native-kernel/trajectory.gd": "d5d26982e645c185ddc6e3263096bcac51dea9282086bc25d6c348163a80424a",
+   "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+  },
+  "identity": {
+   "abi": 1,
+   "abi_version": 1,
+   "aero_law": "section-plane-source-weighted-wake-velocity-v2",
+   "backend": "native",
+   "backend_version": "openrc-native-kernel-stage-v1",
+   "rolling_law": "wheel-positive-terrain-excess-v2",
+   "state_size": 13
+  },
+  "law_identity": {
+   "aero_native": "section-plane-source-weighted-wake-velocity-v2",
+   "aero_reference": "section-plane-source-weighted-wake-velocity-v2",
+   "rolling_native": "wheel-positive-terrain-excess-v2",
+   "rolling_reference": "wheel-positive-terrain-excess-v2"
+  },
+  "prepare": {
+   "error": "",
+   "ok": true
+  },
+  "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+  "refusals": {
+   "hull_geometry_only": {
+    "error": "unsupported key hull.geometry_only",
+    "refused": true
+   },
+   "layout_wash_pieces": {
+    "error": "continuous wash pieces before the wheels are not ported",
+    "refused": true
+   },
+   "prop_axis": {
+    "error": "unsupported key propulsion.axis",
+    "refused": true
+   },
+   "prop_electric_kind": {
+    "error": "unsupported key propulsion.kind",
+    "refused": true
+   },
+   "session_coupled": {
+    "error": "unsupported session capability: coupled",
+    "refused": true
+   },
+   "session_finite_fuel": {
+    "error": "unsupported session capability: finite_fuel",
+    "refused": true
+   },
+   "session_flaps": {
+    "error": "unsupported session capability: flaps",
+    "refused": true
+   },
+   "session_glow": {
+    "error": "unsupported session capability: glow",
+    "refused": true
+   },
+   "session_liquid": {
+    "error": "unsupported session capability: liquid",
+    "refused": true
+   },
+   "session_not_calm": {
+    "error": "unsupported session capability: not_calm",
+    "refused": true
+   },
+   "session_retractable": {
+    "error": "unsupported session capability: retractable",
+    "refused": true
+   },
+   "session_rotor_dynamics": {
+    "error": "unsupported session capability: rotor_dynamics",
+    "refused": true
+   },
+   "session_slipstream": {
+    "error": "unsupported session capability: slipstream",
+    "refused": true
+   },
+   "session_spatial_weather": {
+    "error": "unsupported session capability: spatial_weather",
+    "refused": true
+   },
+   "session_turbine": {
+    "error": "unsupported session capability: turbine",
+    "refused": true
+   },
+   "session_turbulence": {
+    "error": "unsupported session capability: turbulence",
+    "refused": true
+   },
+   "session_vertical_atmosphere": {
+    "error": "unsupported session capability: vertical_atmosphere",
+    "refused": true
+   },
+   "session_weather_pending_reset": {
+    "error": "unsupported session capability: weather_pending_reset",
+    "refused": true
+   }
+  },
+  "run_valid": true,
+  "seed": 20261027,
+  "self_test": {
+   "detected": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "passed": true
+  },
+  "sources": {
+   "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+   "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+   "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+   "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+   "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+   "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+   "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+   "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+   "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+   "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+   "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+   "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+   "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+   "res://sim/flight_session.gd": "8bfaf24b57e3861e78512a93e389e53d8e040c86b316862444975f722c5f737e",
+   "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+  },
+  "sources_after": {
+   "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+   "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+   "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+   "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+   "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+   "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+   "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+   "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+   "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+   "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+   "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+   "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+   "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+   "res://sim/flight_session.gd": "8bfaf24b57e3861e78512a93e389e53d8e040c86b316862444975f722c5f737e",
+   "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+  },
+  "states": 12000,
+  "timing": {},
+  "total": {
+   "compared": 128565,
+   "identical": 128565,
+   "mismatched": 0
+  },
+  "variant_states": 1500,
+  "verdict": "pass",
+  "wall_ms": 57220
+ },
+ "trajectory": {
+  "binary_sha256_after": "a25f3c0fde93e7e42ad4df06052614694ad8f2c69b267e4a33d5cb3f963f0e11",
+  "binary_sha256_before": "a25f3c0fde93e7e42ad4df06052614694ad8f2c69b267e4a33d5cb3f963f0e11",
+  "build_receipt": {
+   "abi_version": 1,
+   "architecture": "x86_64",
+   "backend": "native",
+   "backend_version": "openrc-native-kernel-stage-v1",
+   "binary_sha256": "a25f3c0fde93e7e42ad4df06052614694ad8f2c69b267e4a33d5cb3f963f0e11",
+   "builder_sha256": "c86a61cbd5d8e385d52a3483aae1e82f2ca5752f9d3880d8830202eb501fc84e",
+   "compiler_version": "13.3.0",
+   "cxxflags_appended": [
+    "-fno-fast-math",
+    "-ffp-contract=off",
+    "-fexceptions",
+    "-std=c++17"
+   ],
+   "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+   "libm_imports": [
+    "atan2@GLIBC_2.2.5",
+    "cos@GLIBC_2.2.5",
+    "pow@GLIBC_2.29",
+    "sin@GLIBC_2.2.5",
+    "sincos@GLIBC_2.2.5",
+    "sqrt@GLIBC_2.2.5"
+   ],
+   "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+   "mirrored_sources": {
+    "app/physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+    "app/physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+    "app/physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+    "app/physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+    "app/physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+    "app/physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+    "app/physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+    "app/physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+    "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+    "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "app/physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+    "app/physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+    "app/sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+    "app/sim/flight_session.gd": "58a6b6e43832bfc5fa1114d338e589130f4225347ed7ee5076bc897380521fe4",
+    "app/sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+   },
+   "platform": "linux",
+   "repository_head": "430c5feb60676c092cccdd4588359143166ab5c9",
+   "shared_builder_sha256": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+   "source_sha256": "2f4595364e9798524600b8fc0636a7b497e13e7c852dde78fd5adcdf59429d5a",
+   "verification": {
+    "stage_oracle": {
+     "compared": 128565,
+     "results": "stage-20261027T182948Z.json",
+     "results_sha256": "7dea21db528a74a0dd0e85d3ac6118823337d0792f6783602805ef8307f6271c",
+     "verdict": "pass"
+    },
+    "trajectory": {
+     "compared": 101568,
+     "results": "trajectory-20261027T183026Z.json",
+     "results_sha256": "8a15fd5a868df7ce4dd25dbfcfb0b6456709e05e31868234537c62c272c3a4bd",
+     "verdict": "pass"
+    }
+   }
+  },
+  "checked_run": {
+   "capture_id": "0977afee-44ec-47be-ad4a-0809373923c2",
+   "command": [
+    "/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64",
+    "--headless",
+    "--path",
+    "/home/bulto/OpenRCsimulator/app",
+    "--script",
+    "/home/bulto/OpenRCsimulator/research/native-kernel/trajectory.gd",
+    "--",
+    "--extension=res://native/kernel/openrc_native_kernel.gdextension",
+    "--output=/home/bulto/OpenRCsimulator/tmp/native-kernel/trajectory-20261028T123802136503Z.json",
+    "--seed=20261027",
+    "--states=12000",
+    "--variant-states=1500",
+    "--timing-rounds=15",
+    "--ticks=14400",
+    "--skip-timing=true"
+   ],
+   "complete": true,
+   "counts": {
+    "error": 0,
+    "warning": 0
+   },
+   "cwd": "/home/bulto/OpenRCsimulator",
+   "detail": "",
+   "diagnostics": [],
+   "elapsed_seconds": 206.883426,
+   "exit_code": 0,
+   "format": "openrc-godot-check v1",
+   "label": "nk3-trajectory",
+   "log": "/home/bulto/OpenRCsimulator/tmp/native-kernel/checks/trajectory-7j8tb9a9/nk3-trajectory-pf3p8pyi/engine.log",
+   "log_bytes": 3937,
+   "log_sha256": "ad4e3dce84466c996ebd86cc1799864b6227e3e1f45641513912ae4683202812",
+   "max_log_bytes": 8388608,
+   "missing_required_text": [],
+   "ok": true,
+   "process_exit": 0,
+   "reason": "passed",
+   "report": "/home/bulto/OpenRCsimulator/tmp/native-kernel/checks/trajectory-7j8tb9a9/nk3-trajectory-pf3p8pyi/report.json",
+   "required_text": [
+    "NK3_ORACLE verdict=pass"
+   ],
+   "started_utc": "2026-10-28T12:38:02.268679+00:00",
+   "timeout_seconds": 1200.0,
+   "warnings_as_errors": false
+  },
+  "checkpoint": {
+   "native": {
+    "native_after_restore": true,
+    "pause_after_restore": "checkpoint restored (recorded inputs)",
+    "restored": true,
+    "resumed": true
+   },
+   "passes": [
+    {
+     "mismatches": 0,
+     "ticks_native": 1200,
+     "ticks_reference": 1200
+    },
+    {
+     "mismatches": 0,
+     "ticks_native": 1200,
+     "ticks_reference": 1200
+    }
+   ],
+   "reference": {
+    "native_after_restore": false,
+    "pause_after_restore": "checkpoint restored (recorded inputs)",
+    "restored": true,
+    "resumed": true
+   },
+   "reference_restored_ticks_equal_to_uninterrupted": 0
+  },
+  "components": {
+   "checkpoint_pass_length": {
+    "class_mismatch": 0,
+    "count": 2,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 2,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "checkpoint_tick_floats": {
+    "class_mismatch": 0,
+    "count": 2400,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 2400,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "checkpoint_tick_modes": {
+    "class_mismatch": 0,
+    "count": 2400,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 2400,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "checkpoint_tick_sizes": {
+    "class_mismatch": 0,
+    "count": 2400,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 2400,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "fallback_reference_kept": {
+    "class_mismatch": 0,
+    "count": 1,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 1,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "fault_path_bytes": {
+    "class_mismatch": 0,
+    "count": 5,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 5,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "fault_path_end": {
+    "class_mismatch": 0,
+    "count": 5,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 5,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "fault_path_modes": {
+    "class_mismatch": 0,
+    "count": 5,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 5,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "fault_path_sizes": {
+    "class_mismatch": 0,
+    "count": 5,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 5,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "literals": {
+    "class_mismatch": 0,
+    "count": 39,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 39,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "trajectory_end": {
+    "class_mismatch": 0,
+    "count": 5,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 5,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "trajectory_fingerprint": {
+    "class_mismatch": 0,
+    "count": 5,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 5,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "trajectory_tick_floats": {
+    "class_mismatch": 0,
+    "count": 49553,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 49553,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "trajectory_tick_modes": {
+    "class_mismatch": 0,
+    "count": 49553,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 49553,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   },
+   "trajectory_tick_sizes": {
+    "class_mismatch": 0,
+    "count": 49553,
+    "examples": [],
+    "finite_ulp": 0,
+    "identical": 49553,
+    "max_ulp": 0,
+    "nan_bits": 0,
+    "shape": 0,
+    "zero_sign": 0
+   }
+  },
+  "coverage": {},
+  "engine": "4.8-beta1 (official)",
+  "engine_sha256_after": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+  "engine_sha256_before": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+  "failures": [],
+  "fallback": {
+   "aircraft": "p51d-mustang-120",
+   "fingerprint_equal": true,
+   "reason": "unsupported session capability: retractable",
+   "reference_ticks": 960,
+   "refused": true,
+   "stage_after_attempt": "evaluate",
+   "ticks": 960
+  },
+  "fault_paths": {
+   "buried_state": {
+    "advanced": false,
+    "native": {
+     "crashed": false,
+     "fault": "step rejected: joint stage evaluation is nonfinite or malformed",
+     "pause_reason": "simulation fault: step rejected: joint stage evaluation is nonfinite or malformed",
+     "paused": true,
+     "tick": 1200
+    },
+    "reference": {
+     "crashed": false,
+     "fault": "step rejected: joint stage evaluation is nonfinite or malformed",
+     "pause_reason": "simulation fault: step rejected: joint stage evaluation is nonfinite or malformed",
+     "paused": true,
+     "tick": 1200
+    }
+   },
+   "continuous_nan_wheel": {
+    "advanced": false,
+    "native": {
+     "crashed": false,
+     "fault": "step rejected: input or auxiliary state is nonfinite or malformed",
+     "pause_reason": "simulation fault: step rejected: input or auxiliary state is nonfinite or malformed",
+     "paused": true,
+     "tick": 1200
+    },
+    "reference": {
+     "crashed": false,
+     "fault": "step rejected: input or auxiliary state is nonfinite or malformed",
+     "pause_reason": "simulation fault: step rejected: input or auxiliary state is nonfinite or malformed",
+     "paused": true,
+     "tick": 1200
+    }
+   },
+   "overflow_rates": {
+    "advanced": false,
+    "native": {
+     "crashed": false,
+     "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+     "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+     "paused": true,
+     "tick": 1200
+    },
+    "reference": {
+     "crashed": false,
+     "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+     "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+     "paused": true,
+     "tick": 1200
+    }
+   },
+   "overflow_velocity": {
+    "advanced": false,
+    "native": {
+     "crashed": false,
+     "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+     "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+     "paused": true,
+     "tick": 1200
+    },
+    "reference": {
+     "crashed": false,
+     "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+     "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+     "paused": true,
+     "tick": 1200
+    }
+   },
+   "state_nan_velocity": {
+    "advanced": false,
+    "native": {
+     "crashed": false,
+     "fault": "step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+     "pause_reason": "simulation fault: step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+     "paused": true,
+     "tick": 1200
+    },
+    "reference": {
+     "crashed": false,
+     "fault": "step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+     "pause_reason": "simulation fault: step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+     "paused": true,
+     "tick": 1200
+    }
+   }
+  },
+  "format": "openrc-nk3-trajectory v2",
+  "harness_sources": {
+   "app/sim/native_stage.gd": "3af5f9dbd6ba792acc201a67632eecb56df133c744ec375ab3d71e6c6ab1765c",
+   "research/native-kernel/fleet.gd": "c2e9276f8f404a878cb42893db437086d0d3371429446a1887ccc7b72fb276d8",
+   "research/native-kernel/oracle.gd": "52c1965d5278a00de8efe0c97a1a673ad5963b2ac95e6cafec4eba476903835e",
+   "research/native-kernel/run.py": "53381ee5a33da1df07b0c65b319345abc8e138ffbe2063f96a1fe20baa0ccef4",
+   "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+   "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+   "research/native-kernel/trajectory.gd": "d5d26982e645c185ddc6e3263096bcac51dea9282086bc25d6c348163a80424a",
+   "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+  },
+  "identity": {
+   "abi": 1,
+   "abi_version": 1,
+   "aero_law": "section-plane-source-weighted-wake-velocity-v2",
+   "backend": "native",
+   "backend_version": "openrc-native-kernel-stage-v1",
+   "rolling_law": "wheel-positive-terrain-excess-v2",
+   "state_size": 13
+  },
+  "law_identity": {
+   "aero_native": "section-plane-source-weighted-wake-velocity-v2",
+   "aero_reference": "section-plane-source-weighted-wake-velocity-v2",
+   "rolling_native": "wheel-positive-terrain-excess-v2",
+   "rolling_reference": "wheel-positive-terrain-excess-v2"
+  },
+  "load_average": {
+   "end": "10.58 9.69 7.18 2/1066 1654202",
+   "start": "14.00 9.83 6.68 17/1097 1649307"
+  },
+  "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+  "refusals": {},
+  "run_valid": true,
+  "seed": 20261027,
+  "self_test": {
+   "detected": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "passed": true
+  },
+  "sources": {
+   "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+   "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+   "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+   "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+   "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+   "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+   "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+   "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+   "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+   "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+   "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+   "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+   "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+   "res://sim/flight_session.gd": "8bfaf24b57e3861e78512a93e389e53d8e040c86b316862444975f722c5f737e",
+   "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+  },
+  "sources_after": {
+   "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+   "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+   "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+   "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+   "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+   "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+   "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+   "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+   "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+   "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+   "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+   "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+   "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+   "res://sim/flight_session.gd": "8bfaf24b57e3861e78512a93e389e53d8e040c86b316862444975f722c5f737e",
+   "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+  },
+  "states": 12000,
+  "timing": {},
+  "total": {
+   "compared": 155931,
+   "identical": 155931,
+   "mismatched": 0
+  },
+  "trajectories": {
+   "lake": {
+    "completion_ok": true,
+    "first_divergence_tick": -1,
+    "native_context_calls": 3846,
+    "native_end": {
+     "crashed": true,
+     "fault": "",
+     "pause_reason": "CRASH at 8.4 m/s (sink 8.7 m/s, airframe contact (hull point 25), point speed 7.4 m/s at detected tick) - [R] restart",
+     "paused": true,
+     "tick": 3846
+    },
+    "native_fingerprint": "64e0d6d0da8f240467c3aef441d5ae0d4a52ecd90e1bf950332592edb186acb1",
+    "native_lost_install_ticks": 0,
+    "native_stage_calls": 15384,
+    "native_uncovered_ticks": 0,
+    "reference_end": {
+     "crashed": true,
+     "fault": "",
+     "pause_reason": "CRASH at 8.4 m/s (sink 8.7 m/s, airframe contact (hull point 25), point speed 7.4 m/s at detected tick) - [R] restart",
+     "paused": true,
+     "tick": 3846
+    },
+    "reference_fingerprint": "64e0d6d0da8f240467c3aef441d5ae0d4a52ecd90e1bf950332592edb186acb1",
+    "ticks_requested": 14400,
+    "ticks_run": 3846
+   },
+   "maneuver": {
+    "completion_ok": true,
+    "first_divergence_tick": -1,
+    "native_context_calls": 14400,
+    "native_end": {
+     "crashed": false,
+     "fault": "",
+     "pause_reason": "",
+     "paused": false,
+     "tick": 14400
+    },
+    "native_fingerprint": "8676b495cda9ce9acae66b398fc89191366ffa39e96365b420062a39c5820e3f",
+    "native_lost_install_ticks": 0,
+    "native_stage_calls": 57600,
+    "native_uncovered_ticks": 0,
+    "reference_end": {
+     "crashed": false,
+     "fault": "",
+     "pause_reason": "",
+     "paused": false,
+     "tick": 14400
+    },
+    "reference_fingerprint": "8676b495cda9ce9acae66b398fc89191366ffa39e96365b420062a39c5820e3f",
+    "ticks_requested": 14400,
+    "ticks_run": 14400
+   },
+   "runway": {
+    "completion_ok": true,
+    "first_divergence_tick": -1,
+    "native_context_calls": 14400,
+    "native_end": {
+     "crashed": false,
+     "fault": "",
+     "pause_reason": "",
+     "paused": false,
+     "tick": 14400
+    },
+    "native_fingerprint": "85637b42b1c0e117ec56cd408be43fd2a3e9d2a832566537e92167288dddef17",
+    "native_lost_install_ticks": 0,
+    "native_stage_calls": 57600,
+    "native_uncovered_ticks": 0,
+    "reference_end": {
+     "crashed": false,
+     "fault": "",
+     "pause_reason": "",
+     "paused": false,
+     "tick": 14400
+    },
+    "reference_fingerprint": "85637b42b1c0e117ec56cd408be43fd2a3e9d2a832566537e92167288dddef17",
+    "ticks_requested": 14400,
+    "ticks_run": 14400
+   },
+   "takeoff": {
+    "completion_ok": true,
+    "first_divergence_tick": -1,
+    "native_context_calls": 2507,
+    "native_end": {
+     "crashed": true,
+     "fault": "",
+     "pause_reason": "CRASH at 37.4 m/s (sink 35.3 m/s, airframe contact (hull point 25), point speed 37.4 m/s at detected tick) - [R] restart",
+     "paused": true,
+     "tick": 2507
+    },
+    "native_fingerprint": "d011d6a12f2593b0a451b7fa3007b56e8ec78f426809dff23fba2489a542def4",
+    "native_lost_install_ticks": 0,
+    "native_stage_calls": 10028,
+    "native_uncovered_ticks": 0,
+    "reference_end": {
+     "crashed": true,
+     "fault": "",
+     "pause_reason": "CRASH at 37.4 m/s (sink 35.3 m/s, airframe contact (hull point 25), point speed 37.4 m/s at detected tick) - [R] restart",
+     "paused": true,
+     "tick": 2507
+    },
+    "reference_fingerprint": "d011d6a12f2593b0a451b7fa3007b56e8ec78f426809dff23fba2489a542def4",
+    "ticks_requested": 14400,
+    "ticks_run": 2507
+   },
+   "trim": {
+    "completion_ok": true,
+    "first_divergence_tick": -1,
+    "native_context_calls": 14400,
+    "native_end": {
+     "crashed": false,
+     "fault": "",
+     "pause_reason": "",
+     "paused": false,
+     "tick": 14400
+    },
+    "native_fingerprint": "32f76875fb8433748b795e2aa98a3475fb8556ebcaf7562ddec6204289c794e9",
+    "native_lost_install_ticks": 0,
+    "native_stage_calls": 57600,
+    "native_uncovered_ticks": 0,
+    "reference_end": {
+     "crashed": false,
+     "fault": "",
+     "pause_reason": "",
+     "paused": false,
+     "tick": 14400
+    },
+    "reference_fingerprint": "32f76875fb8433748b795e2aa98a3475fb8556ebcaf7562ddec6204289c794e9",
+    "ticks_requested": 14400,
+    "ticks_run": 14400
+   }
+  },
+  "variant_states": 1500,
+  "verdict": "pass",
+  "wall_ms": 197322
+ },
+ "verification_source_sha256": {
+  ".github/workflows/ci.yml": "ba6d14411c2d83aa6ba9017fab4b3ed41d7fba0fc59e2e4e9a0decd9414033fe",
+  "research/native-kernel/build.py": "e6b624c6927056d85be4ffad0f874c32eec15512ec477a23d25f8fbb739596a4",
+  "research/native-kernel/run.py": "53381ee5a33da1df07b0c65b319345abc8e138ffbe2063f96a1fe20baa0ccef4",
+  "research/native-kernel/test_trajectory.gd": "061c1624423e7e97f9a721a9d139a3dbf42e777d1ee64da6e54d48220e5ca45d",
+  "research/native-kernel/test_verification.py": "145d751fb841e8ae81a5f2170ba025456ce184ac7f2ba250401ac586532dcaea",
+  "research/native-kernel/trajectory.gd": "d5d26982e645c185ddc6e3263096bcac51dea9282086bc25d6c348163a80424a",
+  "research/test-tools.sh": "7d45c4091b0592d81a2aa42223cb55745b7655af5b8eb574c44fbbed1c97ed04"
+ }
+}

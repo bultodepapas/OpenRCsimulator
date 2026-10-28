@@ -22,7 +22,7 @@ def load(name):
 builder = load("build")
 runner = load("run")
 BINARY = "a" * 64
-ENGINE_VERSION = "4.8.beta1.official.4d10419ca"
+ENGINE_VERSION = "4.8-beta1 (official)"
 ENGINE = "e" * 64
 SOURCES = {"app/sim/flight_session.gd": "b" * 64}
 

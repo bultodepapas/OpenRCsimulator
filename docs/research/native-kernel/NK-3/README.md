@@ -4,9 +4,45 @@ Step NK-3 of the [native-kernel scoping](../../native-kernel-scoping-2026-10-27.
 option (b): one `VehicleModel.stage` boundary on a prepared model. The owner approved NK-3 on 2026-10-27 and
 delegated D1–D8 to the lead (port now; no SF-08 amendment; Linux bit-exact fingerprints, Windows later; backend
 identity pinned in checkpoints; macOS reference-only; native refuses unknown laws; Stik first; reference always
-available). Research only: nothing is installed into `app/`. Milestone 2 (the complete stage through the
+available). Milestones 1 and 2 below describe the original research snapshot. A loader and optional local
+installation now exist in `app/`, but normal flights still use GDScript; production selection, revision handling,
+checkpoint backend identity and exported delivery remain pending. Milestone 2 (the complete stage through the
 kernel) builds on milestone 1 (the components), kept below as dated evidence.
 Code and commands: [research/native-kernel](../../../../research/native-kernel/README.md).
+
+## Verification gate repair (2026-10-28)
+
+The old install gate checked requested trajectory length, so two equally truncated runs could approve a binary.
+It also accepted a passing stage report without requiring actual random-state coverage. The repaired gate requires
+at least 10,000 compared stage states including malformed cases, all five trajectories with at least 960 actual
+ticks each, the expected termination for each tape, and native coverage on every accepted tick. Fault injection,
+restore and fallback checks now assert their prerequisites and completed work. Per-tick comparisons preserve
+integer modes and individual float-array sizes.
+
+The runner now binds results to the descriptor-selected binary, the engine, mirrored sources, harness versions and
+a complete checked Godot run without engine errors. The installer checks the pinned Linux editor and current
+identities; old reports lacking these fields require a rerun. Reserved options cannot replace the selected
+extension or output path. A negative control requires an actual comparison difference, not just a failed run.
+These are software-evidence repairs, with no changes to the C++ equations, aircraft data or runtime selection.
+
+The lightweight regressions run in CI: Python through `research/test-tools.sh`, plus the standalone GDScript
+trajectory policy check. The operational commands and exact scope are in the
+[verification guide](../../../../research/native-kernel/README.md#verification-and-local-installation).
+
+Revalidation: [retained results and receipts](revalidation-linux-2026-10-28.json), official Linux editor
+`28485fbd…5e82`, unchanged C++ binary `a25f3c0f…0e11`. The mirrored sources and harness hashes match the runs;
+the session source is newer than the 2026-10-27 snapshot. Stage: 128,565/128,565 comparisons over 12,000 contexts
+(918 malformed). Trajectories: 49,553 matching ticks, with the same case lengths and fingerprints listed below;
+155,931/155,931 comparisons including the new array-size/mode checks, five fault paths, two 1,200-tick restore
+passes and the 960-tick P-51 fallback. All five cases have zero uncovered native ticks. Timing was skipped.
+
+Local installation succeeded with the stricter gate. `test_native_stage.gd` then exercised the native branch:
+26 checks, zero failures, including 960 exact ticks and uninstall back to reference. Policy regressions: 69
+GDScript checks and 10 Python tests pass. Loading the original gate into a disposable Python process produces
+16 assertion failures across three rejection tests, confirming detection of the former false positives. The
+library is unchanged; revalidation refreshes its receipt without rewriting the mapped binary. An interrupted
+intermediate run produced no complete report and was excluded. No full app suite, fresh fleet run, release
+benchmark or hardware/display qualification is claimed by this increment. Normal-flight integration remains open.
 
 ## Milestone 2: the complete stage through the kernel
 

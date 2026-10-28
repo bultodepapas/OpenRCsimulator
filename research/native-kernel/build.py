@@ -158,7 +158,8 @@ def pinned_engine_identity() -> tuple[str, str]:
     # The official editor is downloaded/verified by app/get-godot.sh; custom --godot runs remain research only.
     engine_release = engine_version.split(".official.")[0].replace(".beta", "-beta").replace(".rc", "-rc")
     engine_path = ROOT / ".tools" / f"Godot_v{engine_release}_linux.x86_64"
-    return engine_version, sha256_file(engine_path) if engine_path.is_file() else ""
+    # Engine.get_version_info().string is the display label, unlike the full `godot --version` identity.
+    return f"{engine_release} (official)", sha256_file(engine_path) if engine_path.is_file() else ""
 
 
 def find_verification(key: str, pattern: str, binary_sha256: str, sources: dict[str, str]) -> dict:
@@ -227,7 +228,12 @@ def install_app() -> int:
     if not destination.resolve().is_relative_to((ROOT / "app").resolve()):
         raise SystemExit(f"Refusing to install native output outside app/: {destination}")
     destination.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(library, destination / library.name)
+    installed_library = destination / library.name
+    # Revalidation of unchanged C++ only refreshes the receipt; do not rewrite a library mapped by another app.
+    if not installed_library.is_file() or sha256_file(installed_library) != built["binary_sha256"]:
+        staged_library = destination / (library.name + ".tmp")
+        shutil.copy2(library, staged_library)
+        staged_library.replace(installed_library)
     (destination / f"{NAME}.gdextension").write_text(
         "; NK-3 native stage, installed by research/native-kernel/build.py --install-app; loaded only by\n"
         "; app/sim/native_stage.gd after it verifies build-receipt.json.\n"
