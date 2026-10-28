@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import difflib
 import importlib.util
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -182,7 +183,7 @@ int main() {
 """
         with tempfile.TemporaryDirectory(prefix="dlss-history-state-test-") as temporary:
             source = Path(temporary) / "state.cpp"
-            binary = Path(temporary) / ("state.exe" if __import__("os").name == "nt" else "state")
+            binary = Path(temporary) / ("state.exe" if os.name == "nt" else "state")
             source.write_text(program, encoding="utf-8")
             subprocess.run([compiler, "-std=c++17", "-Wall", "-Wextra", "-Werror", str(source), "-o", str(binary)],
                            check=True, capture_output=True)

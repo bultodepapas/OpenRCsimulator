@@ -11,11 +11,19 @@
 #if defined(WINDOWS_ENABLED) && defined(VULKAN_ENABLED)
 
 #include "drivers/vulkan/godot_vulkan.h"
+#include "servers/rendering/renderer_viewport.h"
+#if __has_include("thirdparty/amd-fsr-sdk24/upscalers/include/ffx_upscale.h")
+#include "thirdparty/amd-fsr-sdk24/api/include/ffx_api.h"
+#include "thirdparty/amd-fsr-sdk24/upscalers/include/ffx_upscale.h"
+#include "thirdparty/amd-fsr-sdk24/api/include/vk/ffx_api_vk.h"
+#else
 #include "thirdparty/amd-fsr3/ffx_api/ffx_api.h"
 #include "thirdparty/amd-fsr3/ffx_api/ffx_upscale.h"
 #include "thirdparty/amd-fsr3/ffx_api/vk/ffx_api_vk.h"
+#endif
 
 #include <atomic>
+#include <cctype>
 #include <cstring>
 #include <mutex>
 #include <string>
@@ -23,15 +31,40 @@
 
 namespace RendererRD {
 
+// BEGIN FSR3 HISTORY RESET STATE
+// Used only by graph callbacks for one context, in render-graph order.
+class FSR3HistoryResetState {
+	bool has_dispatched = false;
+	uint64_t completed_generation = 0;
+
+public:
+	bool should_reset(uint64_t p_generation) const {
+		return !has_dispatched || p_generation > completed_generation;
+	}
+	void dispatched(uint64_t p_generation) {
+		has_dispatched = true;
+		if (p_generation > completed_generation) {
+			completed_generation = p_generation;
+		}
+	}
+};
+// END FSR3 HISTORY RESET STATE
+
 struct FSR3ContextInternal {
 	ffxContext context = nullptr;
 	// The FFX API requires pointers in the creation chain to outlive the context.
 	ffxCreateBackendVKDesc backend = {};
 	ffxCreateContextDescUpscale description = {};
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+	ffxCreateContextDescUpscaleVersion api_version = {};
+	ffxOverrideVersion version_override = {};
+#endif
 	VkDevice device = VK_NULL_HANDLE;
 	Size2i internal_size;
 	Size2i target_size;
 	RID reactive_mask;
+	uint64_t required_resources = 0;
+	FSR3HistoryResetState history_reset;
 	std::atomic<bool> failed{ false };
 	std::atomic<bool> has_successful_dispatch{ false };
 	std::atomic<uint32_t> references{ 1 };
@@ -47,6 +80,10 @@ struct FSR3Api {
 	PfnFfxQuery query = nullptr;
 	PfnFfxDispatch dispatch = nullptr;
 	std::string provider_version;
+	uint64_t provider_version_id = 0;
+	uint64_t required_resources = 0;
+	uint64_t optional_resources = 0;
+	std::string requested_implementation;
 };
 
 static FSR3Api &get_fsr3_api() {
@@ -57,6 +94,8 @@ static FSR3Api &get_fsr3_api() {
 static std::atomic<bool> backend_failed{ false };
 static std::atomic<uint64_t> contexts_created{ 0 };
 static std::atomic<uint64_t> dispatches_succeeded{ 0 };
+static std::atomic<uint64_t> reset_dispatches{ 0 };
+static std::atomic<uint64_t> last_reset_viewport{ 0 };
 static std::atomic<uint32_t> last_return_code{ FFX_API_RETURN_OK };
 
 static VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL fsr3_get_device_proc_addr(VkDevice p_device, const char *p_name) {
@@ -74,6 +113,24 @@ static void record_backend_failure(uint32_t p_return_code) {
 	backend_failed.store(true, std::memory_order_release);
 }
 
+// Match the complete numeric release token, not 3.1.60 or 13.1.6. Driver
+// implementations marked '*' are excluded from a bundled-version qualification.
+static bool matches_bundled_version(const std::string &p_name, const char *p_version) {
+	if (p_name.find('*') != std::string::npos) {
+		return false;
+	}
+	const size_t size = std::strlen(p_version);
+	for (size_t at = p_name.find(p_version); at != std::string::npos; at = p_name.find(p_version, at + 1)) {
+		const size_t end = at + size;
+		if ((at == 0 || (!std::isdigit(static_cast<unsigned char>(p_name[at - 1])) && p_name[at - 1] != '.')) &&
+				(end == p_name.size() || (!std::isalnum(static_cast<unsigned char>(p_name[end])) &&
+						p_name[end] != '.' && p_name[end] != '-' && p_name[end] != '+'))) {
+			return true;
+		}
+	}
+	return false;
+}
+
 static bool load_fsr3_api() {
 	FSR3Api &api = get_fsr3_api();
 	std::lock_guard<std::mutex> lock(api.mutex);
@@ -86,12 +143,22 @@ static bool load_fsr3_api() {
 	if (os == nullptr) {
 		return false;
 	}
-	String library_path = os->get_executable_path().get_base_dir().path_join("amd_fidelityfx_vk.dll");
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+	const char *library_name = "amd_fidelityfx_loader_vk.dll";
+	// Require the packaged signed effect. The SDK can reuse an already loaded
+	// provider; the version query below verifies effect identity, not DLL bytes.
+	if (!FileAccess::exists(os->get_executable_path().get_base_dir().path_join("amd_fidelityfx_upscaler_vk.dll"))) {
+		return false;
+	}
+#else
+	const char *library_name = "amd_fidelityfx_vk.dll";
+#endif
+	String library_path = os->get_executable_path().get_base_dir().path_join(library_name);
 	if (!FileAccess::exists(library_path)) {
 		return false; // Optional backend absent: the app keeps Native/FSR2 available.
 	}
 	if (os->open_dynamic_library(library_path, api.library) != OK) {
-		WARN_PRINT("FSR3: could not load amd_fidelityfx_vk.dll beside the executable.");
+		WARN_PRINT(vformat("FSR: could not load %s beside the executable.", library_name));
 		api.library = nullptr;
 		return false;
 	}
@@ -114,8 +181,11 @@ static bool load_fsr3_api() {
 	}
 
 	api.loaded = api.create_context != nullptr && api.destroy_context != nullptr && api.dispatch != nullptr;
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+	api.loaded = api.loaded && api.query != nullptr;
+#endif
 	if (!api.loaded) {
-		WARN_PRINT("FSR3: amd_fidelityfx_vk.dll is missing a required FFX API export.");
+		WARN_PRINT("FSR: runtime is missing a required FFX API export.");
 		os->close_dynamic_library(api.library);
 		api.library = nullptr;
 		api.create_context = nullptr;
@@ -291,12 +361,30 @@ Dictionary FSR3Effect::get_status() {
 	status["backend_failed"] = backend_failed.load(std::memory_order_acquire);
 	status["contexts_created"] = int64_t(contexts_created.load(std::memory_order_relaxed));
 	status["dispatches_succeeded"] = int64_t(dispatches_succeeded.load(std::memory_order_relaxed));
+	status["reset_requests"] = int64_t(RendererViewport::get_temporal_history_reset_requests());
+	status["reset_dispatches"] = int64_t(reset_dispatches.load(std::memory_order_relaxed));
+	status["last_reset_viewport"] = int64_t(last_reset_viewport.load(std::memory_order_relaxed));
 	status["last_return_code"] = int64_t(last_return_code.load(std::memory_order_relaxed));
 	FSR3Api &api = get_fsr3_api();
 	{
 		std::lock_guard<std::mutex> lock(api.mutex);
 		status["provider_version"] = String(api.provider_version.c_str());
+		status["provider_version_id"] = int64_t(api.provider_version_id);
+		status["provider_version_id_hex"] = "0x" + String::num_uint64(api.provider_version_id, 16);
+		status["provider_scope"] = "last_created_context";
+		status["driver_provider"] = api.provider_version.find('*') != std::string::npos;
+		status["version_override"] = !api.requested_implementation.empty() && api.requested_implementation != "auto";
+		status["requested_implementation"] = String(api.requested_implementation.c_str());
+		status["required_resources"] = int64_t(api.required_resources);
+		status["optional_resources"] = int64_t(api.optional_resources);
 	}
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+	status["fidelityfx_sdk"] = "2.4.0";
+	status["api_version"] = "4.1.2";
+#else
+	status["fidelityfx_sdk"] = "1.1.4";
+	status["api_version"] = "3.1.4";
+#endif
 	return status;
 }
 
@@ -318,10 +406,16 @@ FSR3Context *FSR3Effect::create_context(Size2i p_internal_size, Size2i p_target_
 
 	ffxCreateBackendVKDesc &backend = context->internal->backend;
 	backend.header.type = FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_VK;
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+	backend.deviceContext.vkDevice = context->internal->device;
+	backend.deviceContext.vkPhysicalDevice = (VkPhysicalDevice)(uintptr_t)physical_device_handle;
+	backend.deviceContext.vkDeviceProcAddr = fsr3_get_device_proc_addr;
+#else
 	backend.vkDevice = context->internal->device;
 	backend.vkPhysicalDevice = (VkPhysicalDevice)(uintptr_t)physical_device_handle;
 	backend.vkDeviceProcAddr = fsr3_get_device_proc_addr;
-	if (backend.vkDeviceProcAddr(backend.vkDevice, "vkGetBufferMemoryRequirements2KHR") == nullptr) {
+#endif
+	if (fsr3_get_device_proc_addr(context->internal->device, "vkGetBufferMemoryRequirements2KHR") == nullptr) {
 		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
 		WARN_PRINT("FSR3: required Vulkan memory-requirements command is unavailable.");
 		memdelete(context);
@@ -339,6 +433,81 @@ FSR3Context *FSR3Effect::create_context(Size2i p_internal_size, Size2i p_target_
 	description.fpMessage = nullptr;
 
 	FSR3Api &api = get_fsr3_api();
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+	// Keep creation-chain storage alive for the entire context lifetime.
+	context->internal->api_version.header.type = FFX_API_CREATE_CONTEXT_DESC_TYPE_UPSCALE_VERSION;
+	context->internal->api_version.version = FFX_UPSCALER_VERSION;
+	context->internal->api_version.header.pNext = &backend.header;
+	description.header.pNext = &context->internal->api_version.header;
+	String requested = OS::get_singleton()->get_environment("OPENRC_FSR_IMPLEMENTATION").strip_edges().to_lower();
+	if (requested.is_empty()) {
+		requested = "analytical"; // Qualification starts with the pinned cross-vendor provider.
+	}
+	{
+		std::lock_guard<std::mutex> lock(api.mutex);
+		api.requested_implementation = requested.utf8().get_data();
+		api.provider_version.clear();
+		api.provider_version_id = 0;
+		api.required_resources = 0;
+		api.optional_resources = 0;
+	}
+	if (requested != "analytical" && requested != "ml" && requested != "auto") {
+		WARN_PRINT("FSR: OPENRC_FSR_IMPLEMENTATION must be analytical, ml or auto.");
+		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+		memdelete(context);
+		return nullptr;
+	}
+	if (requested != "auto") {
+		uint64_t count = 0;
+		ffxQueryDescGetVersions versions = {};
+		versions.header.type = FFX_API_QUERY_DESC_TYPE_GET_VERSIONS;
+		versions.createDescType = FFX_API_CREATE_CONTEXT_DESC_TYPE_UPSCALE;
+		versions.device = &backend.deviceContext;
+		versions.outputCount = &count;
+		ffxReturnCode_t query_result = api.query(nullptr, &versions.header);
+		if (query_result != FFX_API_RETURN_OK || count == 0 || count > 64) {
+			WARN_PRINT("FSR: could not enumerate a bounded list of device-supported implementations.");
+			record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+			memdelete(context);
+			return nullptr;
+		}
+		std::vector<uint64_t> ids(count);
+		std::vector<const char *> names(count, nullptr);
+		const uint64_t capacity = count;
+		versions.versionIds = ids.data();
+		versions.versionNames = names.data();
+		query_result = api.query(nullptr, &versions.header);
+		uint64_t selected = 0;
+		bool found = false;
+		bool ambiguous = false;
+		const char *wanted = requested == "ml" ? "4.1.2" : "3.1.6";
+		if (query_result == FFX_API_RETURN_OK && count <= capacity) {
+			for (uint64_t i = 0; i < count; i++) {
+				if (names[i] != nullptr) {
+					const std::string name(names[i]);
+					// Pin only the shipped version, never a driver override with the same label.
+					if (matches_bundled_version(name, wanted)) {
+						if (found && selected != ids[i]) {
+							ambiguous = true;
+						}
+						selected = ids[i];
+						found = true;
+					}
+				}
+			}
+		}
+		if (!found || ambiguous) {
+			WARN_PRINT(vformat("FSR: requested bundled provider %s is not available on this device.", wanted));
+			record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+			memdelete(context);
+			return nullptr;
+		}
+		context->internal->version_override.header.type = FFX_API_DESC_TYPE_OVERRIDE_VERSION;
+		context->internal->version_override.versionId = selected;
+		context->internal->version_override.header.pNext = description.header.pNext;
+		description.header.pNext = &context->internal->version_override.header;
+	}
+#endif
 	ffxReturnCode_t result = api.create_context(&context->internal->context, &description.header, nullptr);
 	if (result != FFX_API_RETURN_OK) {
 		record_backend_failure(result);
@@ -352,11 +521,41 @@ FSR3Context *FSR3Effect::create_context(Size2i p_internal_size, Size2i p_target_
 		ffxQueryGetProviderVersion provider_query = {};
 		provider_query.header.type = FFX_API_QUERY_DESC_TYPE_GET_PROVIDER_VERSION;
 		ffxReturnCode_t query_result = api.query(&context->internal->context, &provider_query.header);
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+		if (query_result != FFX_API_RETURN_OK || provider_query.versionName == nullptr || provider_query.versionId == 0 ||
+				(requested != "auto" && provider_query.versionId != context->internal->version_override.versionId)) {
+			WARN_PRINT("FSR: created context did not confirm the requested provider identity.");
+			record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+			memdelete(context);
+			return nullptr;
+		}
+#endif
 		if (query_result == FFX_API_RETURN_OK && provider_query.versionName != nullptr) {
 			std::lock_guard<std::mutex> lock(api.mutex);
 			api.provider_version = provider_query.versionName;
+			api.provider_version_id = provider_query.versionId;
 		}
 	}
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+	ffxQueryDescUpscaleGetResourceRequirements resources = {};
+	resources.header.type = FFX_API_QUERY_DESC_TYPE_UPSCALE_GET_RESOURCE_REQUIREMENTS;
+	const uint64_t supported_resources = FFX_API_QUERY_RESOURCE_INPUT_COLOR | FFX_API_QUERY_RESOURCE_INPUT_DEPTH |
+			FFX_API_QUERY_RESOURCE_INPUT_MV | FFX_API_QUERY_RESOURCE_INPUT_EXPOSURE |
+			FFX_API_QUERY_RESOURCE_INPUT_REACTIVEMASK;
+	if (api.query(&context->internal->context, &resources.header) != FFX_API_RETURN_OK ||
+			(resources.required_resources & ~supported_resources) != 0) {
+		WARN_PRINT("FSR: selected provider's required inputs are not supported by this adapter.");
+		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+		memdelete(context);
+		return nullptr;
+	}
+	context->internal->required_resources = resources.required_resources;
+	{
+		std::lock_guard<std::mutex> lock(api.mutex);
+		api.required_resources = resources.required_resources;
+		api.optional_resources = resources.optional_resources;
+	}
+#endif
 
 	RD::TextureFormat mask_format = {};
 	mask_format.texture_type = RD::TEXTURE_TYPE_2D;
@@ -383,6 +582,14 @@ void FSR3Effect::upscale(const FSR3Context::Parameters &p_params) {
 	collect_retired_contexts();
 	ERR_FAIL_COND(p_params.context == nullptr || p_params.context->internal == nullptr);
 	ERR_FAIL_COND(p_params.context->internal->failed.load(std::memory_order_acquire) || backend_failed.load(std::memory_order_acquire));
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+	if ((p_params.context->internal->required_resources & FFX_API_QUERY_RESOURCE_INPUT_REACTIVEMASK) != 0 && p_params.reactive.is_null()) {
+		p_params.context->internal->failed.store(true, std::memory_order_release);
+		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+		WARN_PRINT("FSR: required reactive mask is missing.");
+		return;
+	}
+#endif
 	ERR_FAIL_COND(p_params.color.is_null() || p_params.depth.is_null() || p_params.velocity.is_null() || p_params.output.is_null());
 	ERR_FAIL_COND(p_params.color == p_params.output || p_params.depth == p_params.output || p_params.velocity == p_params.output);
 
@@ -482,6 +689,12 @@ void FSR3Effect::upscale(const FSR3Context::Parameters &p_params) {
 
 void FSR3Effect::_dispatch_graph_callback(RenderingDeviceDriver *p_driver, RDD::CommandBufferID p_command_buffer, void *p_userdata) {
 	DispatchPayload *payload = static_cast<DispatchPayload *>(p_userdata);
+	// A prior queued dispatch may have latched failure after this one was recorded.
+	if (payload->context->failed.load(std::memory_order_acquire) || backend_failed.load(std::memory_order_acquire)) {
+		release_context_internal(payload->context, true);
+		memdelete(payload);
+		return;
+	}
 	void *native_command_buffer = p_driver->command_buffer_get_native_handle(p_command_buffer);
 	const FSR3Context::Parameters &params = payload->parameters;
 
@@ -502,7 +715,9 @@ void FSR3Effect::_dispatch_graph_callback(RenderingDeviceDriver *p_driver, RDD::
 	dispatch.sharpness = params.sharpness;
 	dispatch.frameTimeDelta = params.delta_time * 1000.0f;
 	dispatch.preExposure = 1.0f;
-	dispatch.reset = params.reset_accumulation;
+	// A queued frame owns its generation; only a successful SDK dispatch consumes it.
+	const bool reset = params.reset_accumulation || payload->context->history_reset.should_reset(params.history_reset_generation);
+	dispatch.reset = reset;
 	// FFX names the depth=0 and depth=1 planes; reverse-Z swaps their distances.
 	dispatch.cameraNear = params.z_far;
 	dispatch.cameraFar = params.z_near;
@@ -516,6 +731,11 @@ void FSR3Effect::_dispatch_graph_callback(RenderingDeviceDriver *p_driver, RDD::
 		record_backend_failure(result);
 		WARN_PRINT(vformat("FSR3: frame dispatch failed (%d).", result));
 	} else {
+		payload->context->history_reset.dispatched(params.history_reset_generation);
+		if (reset) {
+			last_reset_viewport.store(params.history_reset_viewport.get_id(), std::memory_order_relaxed);
+			reset_dispatches.fetch_add(1, std::memory_order_relaxed);
+		}
 		last_return_code.store(FFX_API_RETURN_OK, std::memory_order_relaxed);
 		dispatches_succeeded.fetch_add(1, std::memory_order_relaxed);
 		payload->context->has_successful_dispatch.store(true, std::memory_order_release);

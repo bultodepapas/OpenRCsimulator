@@ -143,7 +143,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [DT-00-R1](desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](desktop-delivery-investigations/DT-00-R2/README.md) for platform, installer, display, performance and native-test research. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) tracks acceptance.
 
-The [twenty M1–M5 investigations, 2026-10-24](desktop-delivery-investigations/DT-MAC-00-R1/README.md) extend the [initial Apple Silicon review](apple-silicon-performance-2026-10-24.md) and support the [M1–M5 execution plan](../plans/apple-silicon-performance.md): native tools, capabilities/presets, renderer/MetalFX comparisons and sustained 1080p qualification. An M1 is available for tests; the research contains no native Mac performance result.
+The [Apple/Godot integration audit, 2026-10-28](desktop-delivery-investigations/DT-MAC-00-R2/README.md) supports the [Apple Silicon execution plan](../plans/apple-silicon-performance.md): exact engine compatibility, Metal 4 boundaries, MetalFX integration, 2026 Apple features, repository gaps and native 1080p qualification. It extends the [twenty M1–M5 investigations, 2026-10-24](desktop-delivery-investigations/DT-MAC-00-R1/README.md) and [initial review](apple-silicon-performance-2026-10-24.md). The historical plan records an available M1, but no native Mac performance result was produced by this research.
 
 ### Roadmap knowledge base (all phases)
 

@@ -142,10 +142,10 @@ func _commands_at(t: float) -> Dictionary:
 			c.throttle = 0.94
 			c.roll = 0.9 if t < 3.55 else (-0.45 if t < 3.8 else 0.0)
 			c.pitch = 0.025
-		"mustang-pass":
+		"mustang-pass", "corsair-pass": # TRA-09 reuses the warbird pass for the F4U.
 			c.throttle = 0.9
 			c.roll = 0.16 if t >= 0.9 and t < 2.0 else 0.0
-		"timber-pass":
+		"timber-pass", "x8-pass": # TRA-09 reuses the electric pass for the X8 wing.
 			c.throttle = 0.88
 			c.roll = -0.12 if t >= 0.65 and t < 1.6 else 0.07 if t >= 2.0 and t < 2.6 else 0.0
 		"controls":
@@ -208,12 +208,12 @@ func _place_camera(t: float) -> void:
 			height = lerpf(1.9, 1.35, elapsed)
 			lateral = 1.8 * sin(elapsed * PI)
 			fov = 37.0
-		"mustang-pass":
+		"mustang-pass", "corsair-pass":
 			distance = lerpf(8.0, 5.1, elapsed)
 			height = lerpf(2.15, 1.4, elapsed)
 			lateral = lerpf(-1.8, 1.5, elapsed)
 			fov = 36.0
-		"timber-pass":
+		"timber-pass", "x8-pass":
 			distance = lerpf(7.0, 4.7, elapsed)
 			height = lerpf(1.9, 1.25, elapsed)
 			lateral = 1.8 * sin(elapsed * PI * 0.9)

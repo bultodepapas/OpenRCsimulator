@@ -350,6 +350,7 @@ var _accident_reload_pending := false
 var _accident_checkpoint_restoring := false
 var _accident_paired_history := false
 var _crash_director: CrashDirector
+var _history_crash_camera_active := false
 var _people_crash_clock_s := 0.0 # SC-HUM-05 presentation time since the player's crash
 ## VQ-01c-R1: the windsock/people and profile-smoke observers advance once per rendered frame.
 const PresentationCadence := preload("res://render/presentation_cadence.gd")
@@ -1365,9 +1366,11 @@ func _process(delta: float) -> void:
 			"effects_allowed": not sim.paused and session.crash.is_empty() and sim.fault_reason.is_empty(),
 		})
 	_advance_people_after_crash(dt)
+	var crash_camera_active := false
 	if _crash_director != null:
 		_crash_director.update(dt)
-		if _crash_director.active and is_nan(_look.x):
+		crash_camera_active = _crash_director.active and is_nan(_look.x)
+		if crash_camera_active:
 			# CAM-27: the pilot keeps the director's view of the impact; the other views follow the wreck through the rig.
 			if _rig.view == "pilot":
 				_crash_director.aim(_camera, false)
@@ -1375,6 +1378,9 @@ func _process(delta: float) -> void:
 				_rig.focus(_crash_director.focus_point(), _ground_height, _camera_clearance)
 		if _crash_director.active and diagnostics_visible:
 			_panel.text = _crash_director.description()
+	if crash_camera_active != _history_crash_camera_active:
+		Reconstruction.request_history_reset(get_viewport(), "camera_crash_focus_changed")
+		_history_crash_camera_active = crash_camera_active
 	var performance_visible: bool = _overlays == null or (_overlays.visible and _overlays.frames.performance.visible)
 	_update_hud(diagnostics_visible or _hud.text.is_empty(), performance_visible)
 	if _overlays != null:
@@ -2744,6 +2750,7 @@ func _exit_tree() -> void:
 
 ## One file never mixes two flights.
 func _on_resetting() -> void:
+	_history_crash_camera_active = false # rig.reset() below already invalidates this flight's history.
 	if _overlays != null:
 		_overlays.reset_flight()
 	if _companions_initialized and (companions != null or companion_config.enabled) and not _companions_reset_pending:

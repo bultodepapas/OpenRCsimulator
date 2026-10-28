@@ -227,7 +227,13 @@ static func request_history_reset(viewport: Viewport, reason: String, backend: O
 	var target: Object = RenderingServer if backend == null else backend
 	var policy: Dictionary = viewport.get_meta(POLICY_META, {})
 	var supported := is_instance_valid(target) and target.has_method(HISTORY_RESET_METHOD)
-	var submit: bool = supported and policy.get("provider", "native") == "dlss" and viewport.get_viewport_rid().is_valid()
+	var provider := str(policy.get("provider", "native"))
+	# Older custom engines wire this API only to DLSS. FSR needs explicit support.
+	var provider_supported := provider == "dlss"
+	if supported and target.has_method("get_temporal_history_reset_providers"):
+		var providers: Variant = target.call("get_temporal_history_reset_providers")
+		provider_supported = (typeof(providers) == TYPE_PACKED_STRING_ARRAY or typeof(providers) == TYPE_ARRAY) and provider in providers
+	var submit: bool = supported and provider_supported and viewport.get_viewport_rid().is_valid()
 	if submit:
 		target.call(HISTORY_RESET_METHOD, viewport.get_viewport_rid())
 		receipt.submitted += 1
@@ -326,7 +332,7 @@ static func _streamline_dlss_unavailable_reason() -> String:
 
 
 static func _backend_status(provider: String) -> Dictionary:
-	var backend: Object = RenderingServer if provider == "fsr3" else null
+	var backend: Object = RenderingServer if provider in ["fsr2", "fsr3"] else null
 	if provider == "dlss" and Engine.has_singleton(DLSS_SINGLETON):
 		backend = Engine.get_singleton(DLSS_SINGLETON)
 	var status_method := "get_" + provider + "_status"

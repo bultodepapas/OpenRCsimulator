@@ -75,9 +75,12 @@ func _run() -> void:
 
 	rig.set_view("orbit")
 	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
-	rig.drag(Vector2(20.0, 10.0))
-	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
 	count = _count(viewport)
+	rig.drag(Vector2(20.0, 10.0))
+	for i in 30:
+		target += velocity * dt
+		rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
+	_check("smoothed orbit motion does not request resets", _count(viewport) == count)
 	rig.reset_view()
 	_check("orbit reset snaps and sends one request", _count(viewport) == count + 1
 		and _reason(viewport) == "camera_orbit_reset")
@@ -94,6 +97,11 @@ func _run() -> void:
 	count = _count(viewport)
 	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
 	_check("stationary fly-by update does not repeat the request", _count(viewport) == count)
+	target += Vector3(300.0, 0.0, 0.0)
+	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
+	_check("fly-by teleport replacement sends one request", _count(viewport) == count + 1
+		and _reason(viewport) == "camera_flyby_reposition")
+	count = _count(viewport)
 	rig.zoom(1.0)
 	_check("fly-by FOV zoom sends one request", _count(viewport) == count + 1
 		and _reason(viewport) == "camera_flyby_zoom")

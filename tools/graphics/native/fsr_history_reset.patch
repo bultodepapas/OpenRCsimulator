@@ -1,0 +1,400 @@
+diff --git a/servers/rendering/renderer_rd/effects/fsr2.cpp b/servers/rendering/renderer_rd/effects/fsr2.cpp
+index 207bb29..8955e4a 100644
+--- a/servers/rendering/renderer_rd/effects/fsr2.cpp
++++ b/servers/rendering/renderer_rd/effects/fsr2.cpp
+@@ -32,9 +32,27 @@
+ 
+ #include "servers/rendering/renderer_rd/storage_rd/material_storage.h"
+ #include "servers/rendering/renderer_rd/uniform_set_cache_rd.h"
++#include "servers/rendering/renderer_viewport.h"
++
++#include <atomic>
+ 
+ using namespace RendererRD;
+ 
++static std::atomic<uint64_t> fsr2_dispatches_succeeded{ 0 };
++static std::atomic<uint64_t> fsr2_reset_dispatches{ 0 };
++static std::atomic<uint64_t> fsr2_last_reset_viewport{ 0 };
++static std::atomic<uint32_t> fsr2_last_reset_view{ 0 };
++
++Dictionary FSR2Effect::get_status() {
++	Dictionary status;
++	status["dispatches_succeeded"] = int64_t(fsr2_dispatches_succeeded.load(std::memory_order_relaxed));
++	status["reset_requests"] = int64_t(RendererViewport::get_temporal_history_reset_requests());
++	status["reset_dispatches"] = int64_t(fsr2_reset_dispatches.load(std::memory_order_relaxed));
++	status["last_reset_viewport"] = int64_t(fsr2_last_reset_viewport.load(std::memory_order_relaxed));
++	status["last_reset_view"] = int64_t(fsr2_last_reset_view.load(std::memory_order_relaxed));
++	return status;
++}
++
+ #ifndef _MSC_VER
+ #include <cwchar>
+ #define wcscpy_s wcscpy
+@@ -257,7 +275,10 @@ static FfxErrorCode register_resource_rd(FfxFsr2Interface *p_backend_interface,
+ 
+ 	FSR2Context::Scratch &scratch = *reinterpret_cast<FSR2Context::Scratch *>(p_backend_interface->scratchBuffer);
+ 	const RID &rid = *reinterpret_cast<const RID *>(p_in_resource->resource);
+-	ERR_FAIL_COND_V(rid.is_null(), FFX_ERROR_INVALID_ARGUMENT);
++	if (rid.is_null()) {
++		scratch.dispatch_error = FFX_ERROR_INVALID_ARGUMENT;
++		ERR_FAIL_V(FFX_ERROR_INVALID_ARGUMENT);
++	}
+ 
+ 	// Add the resource to the storage and use the internal index to reference it.
+ 	p_out_resource->internalIndex = scratch.resources.add(rid, true, FSR2Context::RESOURCE_ID_DYNAMIC, p_in_resource->description);
+@@ -363,7 +384,7 @@ static FfxErrorCode execute_gpu_job_clear_float_rd(FSR2Context::Scratch &p_scrat
+ 	ERR_FAIL_COND_V(desc.type == FFX_RESOURCE_TYPE_BUFFER, FFX_ERROR_INVALID_ARGUMENT);
+ 
+ 	Color color(p_job.color[0], p_job.color[1], p_job.color[2], p_job.color[3]);
+-	RD::get_singleton()->texture_clear(resource, color, 0, desc.mipCount, 0, 1);
++	ERR_FAIL_COND_V(RD::get_singleton()->texture_clear(resource, color, 0, desc.mipCount, 0, 1) != OK, FFX_ERROR_BACKEND_API_ERROR);
+ 
+ 	return FFX_OK;
+ }
+@@ -378,7 +399,7 @@ static FfxErrorCode execute_gpu_job_copy_rd(FSR2Context::Scratch &p_scratch, con
+ 	ERR_FAIL_COND_V(dst_desc.type == FFX_RESOURCE_TYPE_BUFFER, FFX_ERROR_INVALID_ARGUMENT);
+ 
+ 	for (uint32_t mip_level = 0; mip_level < src_desc.mipCount; mip_level++) {
+-		RD::get_singleton()->texture_copy(src, dst, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(src_desc.width, src_desc.height, src_desc.depth), mip_level, mip_level, 0, 0);
++		ERR_FAIL_COND_V(RD::get_singleton()->texture_copy(src, dst, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(src_desc.width, src_desc.height, src_desc.depth), mip_level, mip_level, 0, 0) != OK, FFX_ERROR_BACKEND_API_ERROR);
+ 	}
+ 
+ 	return FFX_OK;
+@@ -435,7 +456,7 @@ static FfxErrorCode execute_gpu_job_compute_rd(FSR2Context::Scratch &p_scratch,
+ 		RID buffer_rid = p_scratch.ubo_ring_buffer[p_scratch.ubo_ring_buffer_index];
+ 		p_scratch.ubo_ring_buffer_index = (p_scratch.ubo_ring_buffer_index + 1) % FSR2_UBO_RING_BUFFER_SIZE;
+ 
+-		RD::get_singleton()->buffer_update(buffer_rid, 0, p_job.cbs[i].uint32Size * sizeof(uint32_t), p_job.cbs[i].data);
++		ERR_FAIL_COND_V(RD::get_singleton()->buffer_update(buffer_rid, 0, p_job.cbs[i].uint32Size * sizeof(uint32_t), p_job.cbs[i].data) != OK, FFX_ERROR_BACKEND_API_ERROR);
+ 
+ 		RD::Uniform buffer_uniform(RD::UNIFORM_TYPE_UNIFORM_BUFFER, p_job.pipeline.cbResourceBindings[i].slotIndex, buffer_rid);
+ 		compute_uniforms.push_back(buffer_uniform);
+@@ -446,6 +467,7 @@ static FfxErrorCode execute_gpu_job_compute_rd(FSR2Context::Scratch &p_scratch,
+ 	RD::Uniform u_linear_clamp_sampler(RD::UniformType::UNIFORM_TYPE_SAMPLER, 1, device.linear_clamp_sampler);
+ 
+ 	RD::ComputeListID compute_list = RD::get_singleton()->compute_list_begin();
++	ERR_FAIL_COND_V(compute_list == RD::INVALID_ID, FFX_ERROR_BACKEND_API_ERROR);
+ 	RD::get_singleton()->compute_list_bind_compute_pipeline(compute_list, backend_pipeline.pipeline_rid);
+ 	RD::get_singleton()->compute_list_bind_uniform_set(compute_list, uniform_set_cache->get_cache(root_signature.shader_rid, 0, u_point_clamp_sampler, u_linear_clamp_sampler), 0);
+ 	RD::get_singleton()->compute_list_bind_uniform_set(compute_list, uniform_set_cache->get_cache_vec(root_signature.shader_rid, 1, compute_uniforms), 1);
+@@ -477,6 +499,7 @@ static FfxErrorCode execute_gpu_jobs_rd(FfxFsr2Interface *p_backend_interface, F
+ 		}
+ 
+ 		if (error_code != FFX_OK) {
++			scratch.dispatch_error = error_code;
+ 			scratch.gpu_jobs.clear();
+ 			return error_code;
+ 		}
+@@ -834,7 +857,9 @@ FSR2Context *FSR2Effect::create_context(Size2i p_internal_size, Size2i p_target_
+ 	}
+ }
+ 
+-void FSR2Effect::upscale(const Parameters &p_params) {
++bool FSR2Effect::upscale(const Parameters &p_params) {
++	ERR_FAIL_NULL_V(p_params.context, false);
++	ERR_FAIL_COND_V(p_params.color.is_null() || p_params.depth.is_null() || p_params.velocity.is_null() || p_params.output.is_null(), false);
+ 	// TODO: Transparency & Composition mask is not implemented.
+ 	FfxFsr2DispatchDescription dispatch_desc = {};
+ 	RID color = p_params.color;
+@@ -856,7 +881,7 @@ void FSR2Effect::upscale(const Parameters &p_params) {
+ 	dispatch_desc.jitterOffset.y = p_params.jitter.y;
+ 	dispatch_desc.motionVectorScale.x = float(p_params.internal_size.width);
+ 	dispatch_desc.motionVectorScale.y = float(p_params.internal_size.height);
+-	dispatch_desc.reset = p_params.reset_accumulation;
++	dispatch_desc.reset = p_params.reset_accumulation || p_params.context->history_reset.should_reset(p_params.history_reset_generation);
+ 	dispatch_desc.renderSize.width = p_params.internal_size.width;
+ 	dispatch_desc.renderSize.height = p_params.internal_size.height;
+ 	dispatch_desc.enableSharpening = (p_params.sharpness > 1e-6f);
+@@ -875,6 +900,16 @@ void FSR2Effect::upscale(const Parameters &p_params) {
+ 
+ 	RendererRD::MaterialStorage::store_camera(p_params.reprojection, dispatch_desc.reprojectionMatrix);
+ 
++	// This bundled SDK discards backend callback return codes, so track them too.
++	p_params.context->scratch.dispatch_error = FFX_OK;
+ 	FfxErrorCode result = ffxFsr2ContextDispatch(&p_params.context->fsr_context, &dispatch_desc);
+-	ERR_FAIL_COND(result != FFX_OK);
++	ERR_FAIL_COND_V(result != FFX_OK || p_params.context->scratch.dispatch_error != FFX_OK, false);
++	p_params.context->history_reset.dispatched(p_params.history_reset_generation);
++	if (dispatch_desc.reset) {
++		fsr2_last_reset_viewport.store(p_params.history_reset_viewport.get_id(), std::memory_order_relaxed);
++		fsr2_last_reset_view.store(p_params.history_reset_view, std::memory_order_relaxed);
++		fsr2_reset_dispatches.fetch_add(1, std::memory_order_relaxed);
++	}
++	fsr2_dispatches_succeeded.fetch_add(1, std::memory_order_relaxed);
++	return true;
+ }
+diff --git a/servers/rendering/renderer_rd/effects/fsr2.h b/servers/rendering/renderer_rd/effects/fsr2.h
+index 5c1d1fc..978ac7f 100644
+--- a/servers/rendering/renderer_rd/effects/fsr2.h
++++ b/servers/rendering/renderer_rd/effects/fsr2.h
+@@ -30,6 +30,7 @@
+ 
+ #pragma once
+ 
++#include "core/variant/dictionary.h"
+ #include "servers/rendering/renderer_rd/shaders/effects/fsr2/fsr2_accumulate_pass.glsl.gen.h"
+ #include "servers/rendering/renderer_rd/shaders/effects/fsr2/fsr2_autogen_reactive_pass.glsl.gen.h"
+ #include "servers/rendering/renderer_rd/shaders/effects/fsr2/fsr2_compute_luminance_pyramid_pass.glsl.gen.h"
+@@ -53,6 +54,26 @@
+ #define FSR2_UBO_RING_BUFFER_SIZE (FSR2_MAX_BUFFERED_DESCRIPTORS * FSR2_MAX_UNIFORM_BUFFERS)
+ 
+ namespace RendererRD {
++
++// BEGIN FSR2 HISTORY RESET STATE
++// A distinct instance is owned by each FSR2 view context on the render thread.
++class FSR2HistoryResetState {
++	bool has_dispatched = false;
++	uint64_t completed_generation = 0;
++
++public:
++	bool should_reset(uint64_t p_generation) const {
++		return !has_dispatched || p_generation > completed_generation;
++	}
++	void dispatched(uint64_t p_generation) {
++		has_dispatched = true;
++		if (p_generation > completed_generation) {
++			completed_generation = p_generation;
++		}
++	}
++};
++// END FSR2 HISTORY RESET STATE
++
+ class FSR2Context {
+ public:
+ 	enum ResourceID : uint32_t {
+@@ -112,6 +133,7 @@ public:
+ 	struct Scratch {
+ 		Resources resources;
+ 		LocalVector<FfxGpuJobDescription> gpu_jobs;
++		FfxErrorCode dispatch_error = FFX_OK;
+ 		RID ubo_ring_buffer[FSR2_UBO_RING_BUFFER_SIZE];
+ 		uint32_t ubo_ring_buffer_index = 0;
+ 		FfxDevice device = nullptr;
+@@ -120,6 +142,7 @@ public:
+ 	Scratch scratch;
+ 	FfxFsr2Context fsr_context;
+ 	FfxFsr2ContextDescription fsr_desc;
++	FSR2HistoryResetState history_reset;
+ 
+ 	~FSR2Context();
+ };
+@@ -169,13 +192,17 @@ public:
+ 		float delta_time = 0.0f;
+ 		float sharpness = 0.0f;
+ 		bool reset_accumulation = false;
++		uint64_t history_reset_generation = 0;
++		RID history_reset_viewport;
++		uint32_t history_reset_view = 0;
+ 		Projection reprojection;
+ 	};
+ 
+ 	FSR2Effect();
+ 	~FSR2Effect();
++	static Dictionary get_status();
+ 	FSR2Context *create_context(Size2i p_internal_size, Size2i p_target_size);
+-	void upscale(const Parameters &p_params);
++	bool upscale(const Parameters &p_params);
+ 
+ private:
+ 	struct {
+diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+index e2000ac..5ee33a1 100644
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+@@ -84,10 +84,19 @@ void RenderForwardClustered::RenderBufferDataForwardClustered::ensure_voxelgi()
+ 	}
+ }
+ 
+-void RenderForwardClustered::RenderBufferDataForwardClustered::ensure_fsr2(RendererRD::FSR2Effect *effect) {
+-	if (fsr2_context == nullptr) {
+-		fsr2_context = effect->create_context(render_buffers->get_internal_size(), render_buffers->get_target_size());
++bool RenderForwardClustered::RenderBufferDataForwardClustered::ensure_fsr2(RendererRD::FSR2Effect *effect) {
++	while (fsr2_contexts.size() < render_buffers->get_view_count()) {
++		fsr2_contexts.push_back(nullptr);
+ 	}
++	for (uint32_t v = 0; v < render_buffers->get_view_count(); v++) {
++		if (fsr2_contexts[v] == nullptr) {
++			fsr2_contexts[v] = effect->create_context(render_buffers->get_internal_size(), render_buffers->get_target_size());
++		}
++		if (fsr2_contexts[v] == nullptr) {
++			return false;
++		}
++	}
++	return true;
+ }
+ 
+ void RenderForwardClustered::RenderBufferDataForwardClustered::ensure_fsr3(RendererRD::FSR3Effect *effect) {
+@@ -141,10 +150,10 @@ void RenderForwardClustered::RenderBufferDataForwardClustered::free_data() {
+ 		cluster_builder = nullptr;
+ 	}
+ 
+-	if (fsr2_context) {
+-		memdelete(fsr2_context);
+-		fsr2_context = nullptr;
++	for (RendererRD::FSR2Context *context : fsr2_contexts) {
++		memdelete_notnull(context);
+ 	}
++	fsr2_contexts.clear();
+ 	if (fsr3_context) {
+ 		memdelete(fsr3_context);
+ 		fsr3_context = nullptr;
+@@ -1806,7 +1815,10 @@ void RenderForwardClustered::_render_3d_upscaling(const RenderDataRD *p_render_d
+ 	ERR_FAIL_COND(rb_data.is_null());
+ 
+ 	if (p_scale_type == SCALE_3D_FSR2) {
+-		rb_data->ensure_fsr2(fsr2_effect);
++		if (!rb_data->ensure_fsr2(fsr2_effect)) {
++			rb->set_upscaler_ready(false);
++			return;
++		}
+ 
+ 		RID exposure;
+ 		if (RSG::camera_attributes->camera_attributes_uses_auto_exposure(p_render_data->camera_attributes)) {
+@@ -1816,13 +1828,14 @@ void RenderForwardClustered::_render_3d_upscaling(const RenderDataRD *p_render_d
+ 		RD::get_singleton()->draw_command_begin_label("FSR2");
+ 		RENDER_TIMESTAMP("FSR2");
+ 
++		bool all_views_succeeded = true;
+ 		for (uint32_t v = 0; v < rb->get_view_count(); v++) {
+ 			real_t fov = p_render_data->scene_data->cam_projection.get_fov();
+ 			real_t aspect = p_render_data->scene_data->cam_projection.get_aspect();
+ 			real_t fovy = p_render_data->scene_data->cam_projection.get_fovy(fov, 1.0 / aspect);
+ 			Vector2 jitter = p_render_data->scene_data->taa_jitter * Vector2(rb->get_internal_size()) * 0.5f;
+ 			RendererRD::FSR2Effect::Parameters params;
+-			params.context = rb_data->get_fsr2_context();
++			params.context = rb_data->get_fsr2_context(v);
+ 			params.internal_size = rb->get_internal_size();
+ 			params.sharpness = CLAMP(1.0f - (rb->get_fsr_sharpness() / 2.0f), 0.0f, 1.0f);
+ 			params.color = rb->get_internal_texture(v);
+@@ -1836,7 +1849,9 @@ void RenderForwardClustered::_render_3d_upscaling(const RenderDataRD *p_render_d
+ 			params.fovy = fovy;
+ 			params.jitter = jitter;
+ 			params.delta_time = float(p_time_step);
+-			params.reset_accumulation = false; // FIXME: The engine does not provide a way to reset the accumulation.
++			params.history_reset_generation = rb->get_temporal_history_reset_generation();
++			params.history_reset_viewport = rb->get_temporal_history_viewport();
++			params.history_reset_view = v;
+ 
+ 			Projection correction;
+ 			correction.set_depth_correction(true, true, false);
+@@ -1847,9 +1862,11 @@ void RenderForwardClustered::_render_3d_upscaling(const RenderDataRD *p_render_d
+ 			const Transform3D &cur_transform = p_render_data->scene_data->cam_transform;
+ 			params.reprojection = (correction * prev_proj) * prev_transform.affine_inverse() * cur_transform * (correction * cur_proj).inverse();
+ 
+-			rb->set_upscaler_ready(true);
+-			fsr2_effect->upscale(params);
++			if (!fsr2_effect->upscale(params)) {
++				all_views_succeeded = false;
++			}
+ 		}
++		rb->set_upscaler_ready(all_views_succeeded);
+ 
+ 		RD::get_singleton()->draw_command_end_label();
+ 	} else if (p_scale_type == SCALE_3D_FSR3) {
+@@ -1892,7 +1909,8 @@ void RenderForwardClustered::_render_3d_upscaling(const RenderDataRD *p_render_d
+ 			params.fovy = fovy;
+ 			params.jitter = jitter;
+ 			params.delta_time = float(p_time_step);
+-			params.reset_accumulation = false; // FIXME: The engine does not provide a way to reset the accumulation.
++			params.history_reset_generation = rb->get_temporal_history_reset_generation();
++			params.history_reset_viewport = rb->get_temporal_history_viewport();
+ 
+ 			Projection correction;
+ 			correction.set_depth_correction(true, true, false);
+diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h
+index d29b564..43be8a0 100644
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h
+@@ -100,7 +100,7 @@ public:
+ 
+ 	private:
+ 		RenderSceneBuffersRD *render_buffers = nullptr;
+-		RendererRD::FSR2Context *fsr2_context = nullptr;
++		LocalVector<RendererRD::FSR2Context *> fsr2_contexts;
+ 		RendererRD::FSR3Context *fsr3_context = nullptr;
+ 		RendererRD::DLSSContext *dlss_context = nullptr;
+ #ifdef METAL_MFXTEMPORAL_ENABLED
+@@ -149,10 +149,10 @@ public:
+ 		RID get_voxelgi(uint32_t p_layer) { return render_buffers->get_texture_slice(RB_SCOPE_FORWARD_CLUSTERED, RB_TEX_VOXEL_GI, p_layer, 0); }
+ 		RID get_voxelgi_msaa(uint32_t p_layer) { return render_buffers->get_texture_slice(RB_SCOPE_FORWARD_CLUSTERED, RB_TEX_VOXEL_GI_MSAA, p_layer, 0); }
+ 
+-		void ensure_fsr2(RendererRD::FSR2Effect *effect);
++		bool ensure_fsr2(RendererRD::FSR2Effect *effect);
+ 		void ensure_fsr3(RendererRD::FSR3Effect *effect);
+ 		RendererRD::FSR3Context *get_fsr3_context() const { return fsr3_context; }
+-		RendererRD::FSR2Context *get_fsr2_context() const { return fsr2_context; }
++		RendererRD::FSR2Context *get_fsr2_context(uint32_t p_view) const { return fsr2_contexts[p_view]; }
+ 
+ 		void ensure_dlss(RendererRD::DLSSEffect *effect);
+ 		RendererRD::DLSSContext *get_dlss_context() const { return dlss_context; }
+diff --git a/servers/rendering/rendering_server.cpp b/servers/rendering/rendering_server.cpp
+index 072f386..6ea3573 100644
+--- a/servers/rendering/rendering_server.cpp
++++ b/servers/rendering/rendering_server.cpp
+@@ -30,6 +30,7 @@
+ 
+ #include "rendering_server.h"
+ #ifdef RD_ENABLED
++#include "servers/rendering/renderer_rd/effects/fsr2.h"
+ #include "servers/rendering/renderer_rd/effects/fsr3.h"
+ #endif
+ #include "rendering_server.compat.inc"
+@@ -2884,6 +2885,7 @@ void RenderingServer::_bind_methods() {
+ 	ClassDB::bind_method(D_METHOD("viewport_set_disable_2d", "viewport", "disable"), &RenderingServer::viewport_set_disable_2d);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_environment_mode", "viewport", "mode"), &RenderingServer::viewport_set_environment_mode);
+ 	ClassDB::bind_method(D_METHOD("viewport_request_temporal_history_reset", "viewport"), &RenderingServer::viewport_request_temporal_history_reset);
++	ClassDB::bind_method(D_METHOD("get_temporal_history_reset_providers"), &RenderingServer::get_temporal_history_reset_providers);
+ 	ClassDB::bind_method(D_METHOD("viewport_attach_camera", "viewport", "camera"), &RenderingServer::viewport_attach_camera);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_scenario", "viewport", "scenario"), &RenderingServer::viewport_set_scenario);
+ 	ClassDB::bind_method(D_METHOD("viewport_attach_canvas", "viewport", "canvas"), &RenderingServer::viewport_attach_canvas);
+@@ -2935,6 +2937,7 @@ void RenderingServer::_bind_methods() {
+ 	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_DLSS);
+ 	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_FSR3);
+ 	ClassDB::bind_method(D_METHOD("is_fsr3_available"), &RenderingServer::is_fsr3_available);
++	ClassDB::bind_method(D_METHOD("get_fsr2_status"), &RenderingServer::get_fsr2_status);
+ 	ClassDB::bind_method(D_METHOD("get_fsr3_status"), &RenderingServer::get_fsr3_status);
+ 	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_MAX);
+ 
+@@ -3871,6 +3874,28 @@ bool RenderingServer::is_fsr3_available() const {
+ #endif
+ }
+ 
++PackedStringArray RenderingServer::get_temporal_history_reset_providers() const {
++	PackedStringArray providers;
++#ifdef RD_ENABLED
++#ifdef STREAMLINE_ENABLED
++	providers.push_back("dlss");
++#endif
++	providers.push_back("fsr2");
++#if defined(WINDOWS_ENABLED) && defined(VULKAN_ENABLED)
++	providers.push_back("fsr3");
++#endif
++#endif
++	return providers;
++}
++
++Dictionary RenderingServer::get_fsr2_status() const {
++#ifdef RD_ENABLED
++	return RendererRD::FSR2Effect::get_status();
++#else
++	return Dictionary();
++#endif
++}
++
+ Dictionary RenderingServer::get_fsr3_status() const {
+ #ifdef RD_ENABLED
+ 	return RendererRD::FSR3Effect::get_status();
+diff --git a/servers/rendering/rendering_server.h b/servers/rendering/rendering_server.h
+index 5530d7f..bd1aa57 100644
+--- a/servers/rendering/rendering_server.h
++++ b/servers/rendering/rendering_server.h
+@@ -1060,7 +1060,9 @@ public:
+ #endif
+ 
+ 	RenderingServer();
++	PackedStringArray get_temporal_history_reset_providers() const;
+ 	bool is_fsr3_available() const;
++	Dictionary get_fsr2_status() const;
+ 	Dictionary get_fsr3_status() const;
+ 	virtual ~RenderingServer();
+ 

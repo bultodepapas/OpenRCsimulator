@@ -27,6 +27,8 @@ public:
 		float delta_time = 0.0f;
 		float sharpness = 0.0f;
 		bool reset_accumulation = false;
+		uint64_t history_reset_generation = 0;
+		RID history_reset_viewport;
 		Projection reprojection;
 	};
 

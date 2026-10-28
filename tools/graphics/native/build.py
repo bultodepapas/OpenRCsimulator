@@ -33,7 +33,8 @@ ARCHIVES = (
 ENGINE_PATCHES = ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch",
                   "shutdown_thread.patch", "load_token_lifetime.patch", "reflection_atlas_lifetime.patch",
                   "buffer_write_sync.patch", "dlss_frame_lifecycle.patch", "dlss_failure_paths.patch",
-                  "reflex_lifecycle.patch", "reflex_sync.patch", "dlss_history_reset.patch")
+                  "reflex_lifecycle.patch", "reflex_sync.patch", "dlss_history_reset.patch",
+                  "fsr_history_reset.patch")
 
 
 def sha256(path: Path) -> str:
