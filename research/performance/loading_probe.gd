@@ -62,6 +62,7 @@ func _run() -> void:
 		return
 	var preferences_script: Script = load("res://app_state/preferences.gd")
 	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
+	var flight_session: Script = load("res://sim/flight_session.gd")
 	if not catalog.can_fly(aircraft) or catalog.is_rotorcraft(aircraft):
 		_fail("Probe requires a flyable fixed-wing catalog ID")
 		return
@@ -102,6 +103,7 @@ func _run() -> void:
 		var memory_before_dwell := int(Performance.get_monitor(Performance.MEMORY_STATIC))
 		var dwell := await _wait_at_home(dwell_msec)
 		var preparation_before_fly := _preparation_snapshot(app)
+		var trim_cache_before: Dictionary = flight_session.launch_trim_cache_stats()
 		var fly: Button = app.get("home").get("fly_button")
 		if fly.disabled:
 			_fail("Home Fly is disabled")
@@ -145,12 +147,16 @@ func _run() -> void:
 			"memory_before_fly_bytes": dwell.memory_after_bytes,
 			"preparation_before_fly": preparation_before_fly,
 			"preparation_after_fly": _preparation_snapshot(app),
+			"trim_cache_before_fly": trim_cache_before,
+			"trim_cache_after_fly": flight_session.launch_trim_cache_stats(),
 			"fly_ready_usec": ready - begin,
 			"fly_first_draw_usec": drawn - begin,
 			"tick_at_first_draw": sim.get("tick"), "paused_at_first_draw": sim.get("paused"),
 			"nodes_in_flight": int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
 			"handoff_frames_usec": handoff.frames_usec,
 		}
+		if "startup_preparation_metrics" in flight:
+			sample["startup_preparation"] = flight.startup_preparation_metrics.duplicate(true)
 		if "last_flight_loading" in app:
 			sample["loading"] = app.last_flight_loading.duplicate(true)
 			if app.last_flight_loading.has("feedback_usec"):

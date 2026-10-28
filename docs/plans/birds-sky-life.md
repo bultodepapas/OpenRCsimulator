@@ -192,7 +192,7 @@ Two slices are in place (00 → 05, then 08 with storks and swifts). Next: the o
 | ID | Question | Recommendation |
 | --- | --- | --- |
 | D1 | Species set | Iberian/Mediterranean set of §4, data-driven so other regions are new data files |
-| D2 | Default density | **Implemented 2026-10-24 as recommended:** Settings → Graphics → Birds (Off, Few, Normal = the Scene detail tier, Many), live ([decision](../DECISIONS.md#2026-10-24--birds-setting-in-settings--graphics-sc-bird-d2)); owner may change it |
+| D2 | Default density | **Implemented 2026-10-24 as recommended:** Settings → Graphics → Birds (Off, Few, Normal = the Scene detail tier, Many), live ([decision](../DECISIONS.md#scene-detail-and-birds)); owner may change it |
 | D3 | Reactive birds | Yes, after the analytic slice, ≤ 48 agents, presentation only |
 | D4 | Bird strike | Off by default; separate opt-in step through existing contracts |
 | D5 | Near tier | Downloaded CC0 models re-weighted to the shader rig; no skinning |
