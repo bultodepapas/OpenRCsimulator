@@ -67,6 +67,15 @@ does not count the call overhead charged to the callers; the session pairs, not 
 brakes, downwash lag, wind flight, checkpoint and reset transactions. The other four fail identically with `HEAD`'s
 files, at clean `HEAD` and at `f9e6dbe8d`, so they predate this change.
 
+## Battery-query follow-up, 2026-10-28
+
+The current session also memoizes `battery_is_dynamic`, `battery_is_pack` and
+`_battery_block_size` within the same kernel tick. Located-event and pause signals
+drop all facts before external observers, covering publication before `stepped` and
+fault notification before `faulted`. The [follow-up evidence](battery-queries-2026-10-28/README.md)
+owns the current-source timings, exact checkpoint comparisons and battery-layout
+regressions; the original Linux measurements above remain historical.
+
 ## Remaining
 
 The lake and surface-table guards (`LakeSurface.is_valid_definition`, `Terrain.is_valid_surface_table`) run inside

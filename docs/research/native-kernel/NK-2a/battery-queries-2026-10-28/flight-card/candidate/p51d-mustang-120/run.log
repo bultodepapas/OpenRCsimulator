@@ -1,0 +1,7 @@
+
+FT p51d-mustang-120: 21.50 kg, S 1.372 m2, start 25.0 m/s, CL_max 1.02 -> Vs estimate 15.7 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.101,"first_untrimmable_mps":56.25,"points":31,"slowest_trim_mps":17.5}
+FT stall_power_off          valid {"altitude_lost_m":50.4,"bank_in_first_second_deg":-86.4,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.57,"max_bank_in_recovery_deg":86.4,"ratio_to_cl_max_estimate":0.999,"recovery_time_s":4.31,"stall_alpha_deg":16.3,"stall_speed_mps":15.65,"wing_drop":"left"}
+FT vmax                     valid {"height_error_end_m":0.06,"height_error_run_m":1.51,"initial_acceleration_mps2":3.44,"max_level_speed_kmh":209.6,"max_level_speed_mps":58.21,"rpm_at_max":7587,"time_plus_10_mps_s":2.43,"time_plus_5_mps_s":1.35,"time_to_90_percent_s":11.41}
+FT roll_rate                valid {}
+FT report: tmp\roi-battery-20261028\flight-candidate/p51d-mustang-120/profile.md

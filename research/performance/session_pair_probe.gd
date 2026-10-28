@@ -11,6 +11,7 @@ var _reference: Script
 var _candidate: Script
 var _output := ""
 var _aircraft := "p51d-mustang-120"
+var _battery := "ideal"
 var _case := "trim"
 var _warmup := 2400
 var _samples := 14400
@@ -23,6 +24,7 @@ func _initialize() -> void:
 		elif arg.begins_with("--candidate="): _candidate = load(arg.trim_prefix("--candidate="))
 		elif arg.begins_with("--output="): _output = arg.trim_prefix("--output=" )
 		elif arg.begins_with("--aircraft="): _aircraft = arg.trim_prefix("--aircraft=")
+		elif arg.begins_with("--battery="): _battery = arg.trim_prefix("--battery=")
 		elif arg.begins_with("--case="): _case = arg.trim_prefix("--case=")
 		elif arg.begins_with("--warmup="): _warmup = int(arg.trim_prefix("--warmup="))
 		elif arg.begins_with("--samples="): _samples = int(arg.trim_prefix("--samples="))
@@ -34,6 +36,8 @@ func _initialize() -> void:
 	var entry: Dictionary = Catalog.entry(_aircraft)
 	if entry.is_empty() or not Catalog.can_fly(_aircraft) or Catalog.is_rotorcraft(_aircraft):
 		_failed = "expected a flyable fixed-wing catalog aircraft"
+	elif not Catalog.has_battery_mode(_aircraft, _battery):
+		_failed = "unsupported battery mode for selected aircraft"
 	if not _failed.is_empty():
 		printerr(_failed)
 		quit(2)
@@ -58,7 +62,7 @@ func _prepare(script: Script, field: Dictionary, lake: Dictionary, world: Dictio
 	session.crash_auto_restart = false
 	session.soft_hull_contacts = true
 	session.read_raw = func() -> Dictionary: return _raw(session)
-	session.setup(str(Catalog.entry(_aircraft).data), _aircraft)
+	session.setup(Catalog.data_for(_aircraft, _battery), _aircraft)
 	if not session.is_flyable() or not session.set_field(field) or not session.set_collision_world(world) \
 			or not session.set_lake_context(lake):
 		_failed = "setup failed"
@@ -123,7 +127,10 @@ func _run() -> void:
 	var fingerprints: Array[String] = [digests[0].finish().hex_encode(), digests[1].finish().hex_encode()]
 	if fingerprints[0] != fingerprints[1]: _failed = "numeric trajectory mismatch"
 	var report := {format = "openrc-paired-session-cost v1", complete = _failed.is_empty(), failure = _failed,
-		aircraft = _aircraft, case_id = _case, warmup_ticks = _warmup, requested_ticks = _samples,
+		aircraft = _aircraft, battery_mode = _battery, aircraft_data = Catalog.data_for(_aircraft, _battery),
+		aircraft_data_sha256 = FileAccess.get_sha256(Catalog.data_for(_aircraft, _battery)),
+		battery_dynamic = sessions[0].battery_is_dynamic(), battery_pack = sessions[0].battery_is_pack(),
+		case_id = _case, warmup_ticks = _warmup, requested_ticks = _samples,
 		batch_ticks = _batch, completed_batches = complete_batches, fingerprints = fingerprints,
 		baseline_tick_usec = times[0], candidate_tick_usec = times[1],
 		baseline_batch_usec = batches[0], candidate_batch_usec = batches[1],

@@ -86,6 +86,10 @@ request, or preceded the final teardown correction; those runs are excluded abov
   removal during both cancellation drainage and finalization.
 - `test_launch_trim_cache.gd`: 47 checks. Four existing golden flights pass without
   re-recording; their normal floating-point comparison tolerances remain unchanged.
+- After integration, checked import succeeds; `test_flight_session_staged.gd` passes
+  12 checks and Main's 18-check parity comparison passes again. The loading probe's
+  six teardown/handoff/file-preservation fixtures also pass. Full-suite and package
+  qualification were not run for this slice.
 
 Software and loading evidence does not establish physical validation. The full fleet,
 landscape/day/night/route/input matrix, release-package checks, RSS/VRAM measurement,

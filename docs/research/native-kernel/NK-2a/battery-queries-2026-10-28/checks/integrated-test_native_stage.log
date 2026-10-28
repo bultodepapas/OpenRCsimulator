@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Native stage: library absent; refused: native stage: Linux x86_64 only
+Native stage: 78 checks, 0 failed

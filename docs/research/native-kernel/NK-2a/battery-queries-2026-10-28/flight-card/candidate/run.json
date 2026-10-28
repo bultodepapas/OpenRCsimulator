@@ -1,0 +1,22 @@
+{
+  "card": "ft-card-v5",
+  "commit": "30dc51cf56536360213068a23f5b07b953b4b829",
+  "dirty_paths": [
+    "app/sim/flight_session.gd",
+    "app/tests/test_session_tick_facts.gd"
+  ],
+  "godot": "4.8.beta1.official.4d10419ca",
+  "app": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-battery-20261028\\candidate\\app",
+  "only": "trim_sweep,stall_power_off,vmax,roll_rate",
+  "aircraft": {
+    "p51d-mustang-120": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 39.3,
+      "valid_tests": 4,
+      "tests": 4,
+      "data_file": "data/aircraft/p51d_mustang_120.json",
+      "data_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c"
+    }
+  }
+}
