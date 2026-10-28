@@ -81,7 +81,7 @@ inline SpatialFlowResult spatial_flow_sample(const R *s, const AeroModel &m, con
 	}
 	for (int i = 0; i < 13; ++i) if (!is_finite(s[i])) return spatial_flow_failure("state must be a finite full rigid-body state with a nondegenerate quaternion");
 	const R norm_sq = s[6] * s[6] + s[7] * s[7] + s[8] * s[8] + s[9] * s[9];
-	if (!is_finite(norm_sq) || norm_sq <= 1e-24) return spatial_flow_failure("state must be a finite full rigid-body state with a nondegenerate quaternion");
+	if (!is_finite(norm_sq) || norm_sq <= kGd1eMinus24) return spatial_flow_failure("state must be a finite full rigid-body state with a nondegenerate quaternion");
 	if (!is_finite(time) || time < 0.0) return spatial_flow_failure("time_s must be finite and nonnegative");
 	if (!is_finite(rho) || rho <= 0.0) return spatial_flow_failure("invalid stage density");
 	point.provider = provider;

@@ -14,7 +14,9 @@ const TransportFixture := preload("res://tests/test_wash_transport.gd")
 func _source_hashes() -> Dictionary:
 	var out: Dictionary = super._source_hashes()
 	for path: String in ["res://physics/wind_aircraft_flow.gd", "res://physics/slipstream.gd",
-			"res://physics/swirl_loads.gd", "res://physics/wash_transport.gd"]:
+			"res://physics/swirl_loads.gd", "res://physics/wash_transport.gd",
+			"res://tests/test_wash_profile.gd", "res://tests/test_wash_transport.gd",
+			"res://tests/fixtures/stik_wash_profile.json"]:
 		out[path] = FileAccess.get_sha256(path)
 	return out
 
@@ -124,9 +126,73 @@ func _check_direct_aero(models: Array[Dictionary]) -> void:
 					PackedFloat64Array([1.0 if got.uniform else 0.0]), args)
 				if not ref.uniform and continuation:
 					_compare("spatial_aero_zero_planes", PackedFloat64Array([ref.flow.reference_zero_plane_wing_stations,
-						ref.flow.spatial_zero_plane_wing_stations]), PackedFloat64Array(got.zero_planes), args)
+						ref.flow.spatial_zero_plane_wing_stations]), PackedFloat64Array([got.zero_planes[0], got.zero_planes[1]]), args)
 				_tally("spatial_aero_" + label, "continuation" if continuation else "attached")
 				if ref.uniform: _tally("spatial_aero_" + label, "uniform")
+		_check_spatial_boundaries(model, label)
+
+
+func _check_spatial_boundaries(model: Dictionary, label: String) -> void:
+	var base := PackedFloat64Array([0.0, 0.0, -10.0, 20.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var wind := PackedFloat64Array([0.0, 0.0, 0.0])
+	var d := {elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0, flap = 0.0}
+	var zero := PackedFloat64Array()
+	zero.resize(3 * (model.envelope.station_ys.size() + 2))
+	var cases: Array[Dictionary] = []
+	var invalid_body := base.duplicate()
+	invalid_body[3] = NAN
+	cases.append({name = "nonfinite_body", body = invalid_body, rho = 1.225, delta = zero, wake = NAN, ground = NAN})
+	invalid_body = base.duplicate()
+	invalid_body[6] = 0.0
+	cases.append({name = "zero_quaternion", body = invalid_body, rho = 1.225, delta = zero, wake = NAN, ground = NAN})
+	# q0^2 is the binary64 value immediately below the engine-parsed 1e-24;
+	# q1^2 adds exactly one ULP, and the next q0 makes the sum one ULP above.
+	var q0: float = _from_bits(PackedInt64Array([0x3d719799812dea11]))[0]
+	var q1: float = _from_bits(PackedInt64Array([0x3bd0000000000000]))[0]
+	var qnext: float = _from_bits(PackedInt64Array([0x3d719799812dea12]))[0]
+	for threshold: Dictionary in [{name = "quaternion_norm_below", q0 = q0, q1 = 0.0},
+			{name = "quaternion_norm_equal", q0 = q0, q1 = q1},
+			{name = "quaternion_norm_above", q0 = qnext, q1 = 0.0}]:
+		var threshold_body := base.duplicate()
+		threshold_body[6] = threshold.q0
+		threshold_body[7] = threshold.q1
+		cases.append({name = threshold.name, body = threshold_body, rho = 1.225, delta = zero, wake = NAN, ground = NAN})
+	cases.append({name = "density_bound", body = base, rho = 1001.0, delta = zero, wake = NAN, ground = NAN})
+	cases.append({name = "infinite_downwash", body = base, rho = 1.225, delta = zero, wake = INF, ground = NAN})
+	cases.append({name = "infinite_ground", body = base, rho = 1.225, delta = zero, wake = NAN, ground = INF})
+	cases.append({name = "short_delta", body = base, rho = 1.225, delta = zero.slice(1), wake = NAN, ground = NAN})
+	var bad_delta := zero.duplicate()
+	bad_delta[0] = NAN
+	cases.append({name = "nonfinite_delta", body = base, rho = 1.225, delta = bad_delta, wake = NAN, ground = NAN})
+	bad_delta = zero.duplicate()
+	bad_delta[0] = 1001.0
+	cases.append({name = "delta_bound", body = base, rho = 1.225, delta = bad_delta, wake = NAN, ground = NAN})
+	bad_delta = zero.duplicate()
+	bad_delta[0] = 600.0
+	cases.append({name = "wing_flow_bound", body = base, rho = 1.225, delta = bad_delta, wake = NAN, ground = NAN})
+	bad_delta = zero.duplicate()
+	bad_delta[3 * (model.envelope.station_ys.size() + 1)] = 600.0
+	cases.append({name = "tail_flow_bound", body = base, rho = 1.225, delta = bad_delta, wake = NAN, ground = NAN})
+	if model.surfaces.has("tailless"):
+		bad_delta = zero.duplicate()
+		bad_delta[3 * model.envelope.station_ys.size()] = 0.1
+		cases.append({name = "inactive_horizontal", body = base, rho = 1.225, delta = bad_delta, wake = NAN, ground = NAN})
+	for test: Dictionary in cases:
+		var air: Dictionary = Air.compute(test.body, wind, test.rho)
+		var ref: Dictionary = Aero.ambient_spatial_continuation_loads(test.body, air, d, model, test.rho,
+			test.delta, test.wake, test.ground)
+		var got: Dictionary = _native.spatial_aero_component(test.body, wind, test.rho, _deflection_array(d),
+			test.delta, test.wake, test.ground, true)
+		var args := [label, test.name]
+		_compare("spatial_boundary_validity", PackedFloat64Array([1.0 if ref.ok else 0.0]),
+			PackedFloat64Array([1.0 if got.ok else 0.0]), args)
+		if not ref.ok and not got.ok:
+			_compare("spatial_boundary_error", str(ref.errors[0]), str(got.error), args)
+			if got.has("loads") or got.has("delta"):
+				_failures.append("spatial refusal exposed partial loads: " + str(args))
+		elif ref.ok and got.ok:
+			_compare("spatial_boundary_loads", ref.loads, got.loads, args)
+		_tally("spatial_boundaries", str(test.name))
 
 
 func _geometry(prop: Dictionary) -> Dictionary:
@@ -164,6 +230,8 @@ func _check_weather_models(scenario: Dictionary, models: Array[Dictionary], per_
 		if not w.ok:
 			_failures.append("spatial wake prepare %s: %s" % [row.name, w.error])
 			continue
+		if scenario.id == "calm" and row.name == AIRCRAFT:
+			_check_flow_quaternion_boundaries(field, model)
 		for i in per_pair:
 			var window: Dictionary = windows[i % windows.size()]
 			var environment := SimEnvironment.new()
@@ -203,3 +271,21 @@ func _check_weather_models(scenario: Dictionary, models: Array[Dictionary], per_
 			if actual.ok: _compare("spatial_wake_loads", expected, actual.loads, args)
 			_tally("weather_" + str(scenario.id), "flow_states")
 			if field.is_spatial(): _tally("weather_" + str(scenario.id), "spatial_field_states")
+
+
+func _check_flow_quaternion_boundaries(field: RefCounted, model: Dictionary) -> void:
+	var environment := SimEnvironment.new()
+	environment.weather = field
+	var q0: float = _from_bits(PackedInt64Array([0x3d719799812dea11]))[0]
+	var q1: float = _from_bits(PackedInt64Array([0x3bd0000000000000]))[0]
+	var qnext: float = _from_bits(PackedInt64Array([0x3d719799812dea12]))[0]
+	for test: Dictionary in [{name = "below", q0 = q0, q1 = 0.0, expected = false},
+			{name = "equal", q0 = q0, q1 = q1, expected = false},
+			{name = "above", q0 = qnext, q1 = 0.0, expected = true}]:
+		var body := PackedFloat64Array([0.0, 0.0, -10.0, 20.0, 0.0, 0.0, test.q0, test.q1, 0.0, 0.0, 0.0, 0.0, 0.0])
+		var ref: Dictionary = WindFlow.stage_air(body, model, environment, 0.0, 1.225, Aero.SPATIAL_CONTINUATION_LAW, false)
+		var got: Dictionary = _native.spatial_flow_component(body, 0.0, 1.225, PackedFloat64Array(), -1, 1.0 / 240.0)
+		_compare("spatial_flow_quaternion_validity", PackedFloat64Array([1.0 if test.expected else 0.0]),
+			PackedFloat64Array([1.0 if ref.ok else 0.0]), test.name)
+		_compare("spatial_flow_quaternion_validity", PackedFloat64Array([1.0 if ref.ok else 0.0]),
+			PackedFloat64Array([1.0 if got.ok else 0.0]), test.name)

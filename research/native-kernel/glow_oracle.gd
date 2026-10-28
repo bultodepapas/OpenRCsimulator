@@ -42,6 +42,7 @@ func _checks() -> void:
 		_failures.append("glow oracle needs at least two states per installation")
 		return
 	_report.glow_cases = []
+	var multi_source: Dictionary = {}
 	for id: String in GLOW_IDS:
 		var loaded: Dictionary = AircraftData.load_file(Catalog.data_for(id))
 		if not loaded.get("ok", false):
@@ -52,6 +53,10 @@ func _checks() -> void:
 			_failures.append("catalog aircraft lacks glow installation: " + id)
 			continue
 		_check_case(id, propulsion.glow)
+		if multi_source.is_empty():
+			multi_source = propulsion.glow
+	if not multi_source.is_empty():
+		_check_multi_resource(multi_source)
 	if _report.glow_cases.size() != GLOW_IDS.size():
 		_failures.append("not all glow catalog installations were exercised")
 
@@ -266,3 +271,64 @@ func _check_glow_refusals(name: String, snapshot: Dictionary) -> void:
 	malformed.mass.reference_inertia_kgm2 = PackedFloat64Array([1.0])
 	if _native.prepare_glow(malformed).get("ok", false):
 		_failures.append("glow malformed mass inertia was admitted: " + name)
+
+
+## The installed aircraft currently expose one fuel resource. Build a validated
+## second line/tank resource from an actual installation to cover ordering and
+## summation in the same prepared MassInventory path used by future aircraft.
+func _check_multi_resource(install: Dictionary) -> void:
+	var existing: Dictionary = install.mass_reference
+	var resources: Array = existing.resources.duplicate(true)
+	resources.append({id = "native_oracle_second_resource", reference_mass_kg = 0.01, capacity_mass_kg = 0.04,
+		center_body_m = PackedFloat64Array([0.12, -0.04, 0.08]), size_body_m = PackedFloat64Array([0.06, 0.04, 0.02])})
+	var prepared: Dictionary = Inventory.prepare_reference(existing.reference_mass_kg, existing.reference_inertia_kgm2, resources)
+	if not prepared.get("ok", false):
+		_failures.append("cannot prepare two-resource glow mass fixture")
+		return
+	var snapshot: Dictionary = _snapshot(install)
+	for field: String in MASS_MODEL_FIELDS:
+		snapshot.mass[field] = prepared[field]
+	var native_prep: Dictionary = _native.prepare_glow(snapshot)
+	if not native_prep.get("ok", false):
+		_failures.append("cannot prepare two-resource native glow mass fixture: " + str(native_prep.get("error", "")))
+		return
+	var accepted := 0
+	var rejected := 0
+	for i: int in _states:
+		var amounts: PackedFloat64Array = _amounts(prepared, i)
+		if i % 59 == 1:
+			amounts[1] = prepared.capacities[1] + 1.0
+		elif i % 113 == 1:
+			amounts[1] = _special()
+		var expected: Dictionary = Inventory.evaluate_reference(prepared, amounts)
+		var actual: Dictionary = _native.glow_mass_component(amounts)
+		var expected_ok: bool = expected.get("ok", false)
+		var actual_ok: bool = actual.get("ok", false)
+		var inputs := ["two_resource", i, amounts]
+		_compare_status("glow_multi_mass_validity", expected_ok, actual_ok, inputs)
+		if expected_ok and actual_ok:
+			_compare("glow_multi_mass_values", _mass_values(expected), actual.values, inputs)
+			var body: PackedFloat64Array = _body()
+			var force: PackedFloat64Array = _vector(40.0)
+			var moment: PackedFloat64Array = _vector(10.0)
+			var rotor: PackedFloat64Array = _vector(1.0)
+			var gravity: float = _rng.randf_range(8.0, 12.0)
+			var derivative: PackedFloat64Array = FixedDatumBody.derivative(body, expected, force, moment, gravity, rotor)
+			var native_body: Dictionary = _native.glow_body_component(body, amounts, force, moment, gravity, rotor)
+			if not native_body.get("ok", false):
+				_failures.append("valid two-resource glow body refused at state %d" % i)
+			else:
+				_compare("glow_multi_body_derivative", derivative, native_body.values,
+					["two_resource", i, body, amounts, force, moment, gravity, rotor])
+			accepted += 1
+		else:
+			rejected += 1
+		_tally("glow_two_resource", "states")
+	if accepted == 0 or rejected == 0:
+		_failures.append("two-resource glow mass did not exercise accepted and rejected states")
+	if _native.glow_mass_component(PackedFloat64Array([0.0])).get("ok", false):
+		_failures.append("two-resource glow mass accepted a truncated state")
+	if _native.glow_body_component(PackedFloat64Array(), prepared.references, PackedFloat64Array([0.0, 0.0, 0.0]),
+			PackedFloat64Array([0.0, 0.0, 0.0]), 9.80665, PackedFloat64Array([0.0, 0.0, 0.0])).get("ok", false):
+		_failures.append("glow body accepted a truncated state")
+	_report.glow_multi_mass = {resources = resources.size(), states = _states, accepted = accepted, rejected = rejected}

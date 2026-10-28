@@ -82,7 +82,7 @@ inline SpatialAeroResult spatial_aero_loads(const R *s, const Air &air, const De
 	for (int i = 0; i < 13; ++i) if (!is_finite(s[i])) return spatial_aero_failure("invalid body, density, wake or ground input");
 	R quaternion_norm = 0.0;
 	for (int i = 0; i < 4; ++i) quaternion_norm += s[6 + i] * s[6 + i];
-	if (!is_finite(quaternion_norm) || quaternion_norm <= 1e-24) return spatial_aero_failure("invalid body quaternion");
+	if (!is_finite(quaternion_norm) || quaternion_norm <= kGd1eMinus24) return spatial_aero_failure("invalid body quaternion");
 	for (R v : air.v) if (!is_finite(v)) return spatial_aero_failure("invalid reference air velocity");
 	if (!is_finite(air.V) || !is_finite(air.alpha) || !is_finite(air.beta) || !is_finite(air.qbar)) {
 		return spatial_aero_failure("invalid reference air data");

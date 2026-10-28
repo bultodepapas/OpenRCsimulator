@@ -6,6 +6,7 @@
 #include <vector>
 #include "nk_electric_binding.hpp" // shared strict Godot snapshot decoder
 #include "nk_glow_propeller.hpp"
+#include "nk_glow_feed.hpp"
 #include "nk_glow_source.hpp"
 #include "nk_liquid_mass.hpp"
 
@@ -19,6 +20,10 @@ class GlowBinding {
 	GlowSourceModel source_;
 	GlowBladeModel blade_;
 	LiquidMassModel mass_;
+	bool has_feed_ = false;
+	bool has_pickup_ = false;
+	GlowFeedModel feed_;
+	std::array<R, 3> pickup_{};
 
 	static godot::Dictionary failure(const std::string &reason) {
 		godot::Dictionary out;
@@ -57,13 +62,17 @@ public:
 	const GlowSourceModel &source() const { return source_; }
 	const GlowBladeModel &blade() const { return blade_; }
 	const LiquidMassModel &mass() const { return mass_; }
+	bool has_feed() const { return has_feed_; }
+	bool has_pickup() const { return has_pickup_; }
+	const GlowFeedModel &feed() const { return feed_; }
+	const std::array<R, 3> &pickup() const { return pickup_; }
 
 	godot::Dictionary prepare_glow(const godot::Dictionary &snapshot) {
 		ready_ = false;
 		ElectricSnapshotDecoder dec;
 		godot::String format, family;
 		godot::Dictionary src, blade, mass;
-		if (!dec.keys(snapshot, "glow", {"format", "source", "blade", "mass"}) ||
+		if (!dec.keys(snapshot, "glow", {"format", "source", "blade", "mass", "feed"}) ||
 				!dec.string(snapshot, "format", format) || !dec.dictionary(snapshot, "source", src) ||
 				!dec.dictionary(snapshot, "blade", blade) || !dec.dictionary(snapshot, "mass", mass)) return failure(dec.error);
 		if (format != godot::String("openrc-nk3-glow-component-v1")) return failure("unknown glow component snapshot format");
@@ -126,9 +135,47 @@ public:
 			decoded_mass.resources.push_back(resource);
 		}
 		if (decoded_mass.reference_mass_kg.v <= total.v) return failure("reference mass must exceed reference resources");
+		const bool decoded_has_feed = snapshot.has("feed");
+		bool decoded_has_pickup = false;
+		GlowFeedModel decoded_feed;
+		std::array<R, 3> decoded_pickup{};
+		if (decoded_has_feed) {
+			godot::Dictionary feed;
+			std::vector<double> carburetor, tank_center, tank_size, pickup;
+			if (!dec.dictionary(snapshot, "feed", feed) ||
+					!dec.keys(feed, "feed", {"carburetor_body_m", "tank_center_body_m", "tank_size_body_m", "density_kg_m3",
+							"idle_drive_pressure_pa", "wot_drive_pressure_pa", "rated_rpm", "pickup_body_m"}) ||
+					!dec.packed(feed, "carburetor_body_m", carburetor) || !dec.packed(feed, "tank_center_body_m", tank_center) ||
+					!dec.packed(feed, "tank_size_body_m", tank_size) || !dec.number(feed, "density_kg_m3", decoded_feed.density_kg_m3) ||
+					!dec.number(feed, "idle_drive_pressure_pa", decoded_feed.idle_drive_pressure_pa) ||
+					!dec.number(feed, "wot_drive_pressure_pa", decoded_feed.wot_drive_pressure_pa) ||
+					!dec.number(feed, "rated_rpm", decoded_feed.rated_rpm)) return failure(dec.error);
+			decoded_has_pickup = feed.has("pickup_body_m");
+			if (decoded_has_pickup && !dec.packed(feed, "pickup_body_m", pickup)) return failure(dec.error);
+			if (carburetor.size() != 3 || tank_center.size() != 3 || tank_size.size() != 3 ||
+					(decoded_has_pickup && pickup.size() != 3) || decoded_feed.density_kg_m3.v <= 0.0 ||
+					decoded_feed.rated_rpm.v <= 0.0 || decoded_feed.idle_drive_pressure_pa.v <= 0.0 ||
+					decoded_feed.wot_drive_pressure_pa.v < decoded_feed.idle_drive_pressure_pa.v ||
+					decoded_feed.wot_drive_pressure_pa.v > 100000.0) return failure("invalid glow feed model");
+			for (int k = 0; k < 3; ++k) {
+				const size_t i = static_cast<size_t>(k);
+				if (tank_size[i] < 0.0 || std::fabs(carburetor[i]) > 2.0) return failure("invalid glow feed geometry");
+				decoded_feed.carburetor[k] = carburetor[i]; decoded_feed.tank_center[k] = tank_center[i];
+				decoded_feed.tank_size[k] = tank_size[i];
+				if (decoded_has_pickup) decoded_pickup[k] = pickup[i];
+			}
+			const R g[3] = {0.0, 0.0, 9.80665};
+			const R needled = glow_feed_head(g, 1.0, decoded_feed.carburetor.data(), decoded_feed.tank_center.data(),
+					decoded_feed.tank_size.data(), decoded_feed.density_kg_m3);
+			if ((decoded_feed.idle_drive_pressure_pa + needled).v <= 0.0) return failure("invalid glow feed needled head");
+		}
 		source_ = std::move(source);
 		blade_ = decoded_blade;
 		mass_ = std::move(decoded_mass);
+		feed_ = decoded_feed;
+		pickup_ = decoded_pickup;
+		has_feed_ = decoded_has_feed;
+		has_pickup_ = decoded_has_pickup;
 		ready_ = true;
 		godot::Dictionary out;
 		out["ok"] = true;
@@ -181,6 +228,29 @@ public:
 			values.insert(values.end(), properties.inertia_origin.begin(), properties.inertia_origin.end());
 			out["values"] = pack(values);
 		}
+		return out;
+	}
+
+	// A valid context can still yield NaN when stage apparent gravity or pickup is
+	// malformed; that matches FuelFeed.factor_for_stage's explicit failure signal.
+	godot::Dictionary glow_feed_component(double remaining, double capacity, double unusable, double admission,
+			double rpm, const godot::PackedFloat64Array &force, double mass, const godot::PackedFloat64Array &arm,
+			const godot::PackedFloat64Array &alpha, const godot::PackedFloat64Array &omega) const {
+		godot::Dictionary out;
+		out["ok"] = false;
+		if (!ready_ || !has_feed_) return out;
+		const auto context = glow_feed_prepare_context(feed_, remaining, capacity, unusable, admission, rpm);
+		out["ok"] = context.ok;
+		if (!context.ok) return out;
+		out["context"] = pack({context.fill_fraction, context.drive_pa, context.needled_head_pa});
+		R factor = kNan;
+		if (force.size() == 3 && arm.size() == 3 && alpha.size() == 3 && omega.size() == 3) {
+			std::array<R, 3> f{}, a{}, acceleration{}, rate{};
+			for (int i = 0; i < 3; ++i) { f[i] = force[i]; a[i] = arm[i]; acceleration[i] = alpha[i]; rate[i] = omega[i]; }
+			factor = glow_feed_factor_for_stage(context, feed_, f.data(), mass, a.data(), acceleration.data(), rate.data(),
+					has_pickup_ ? pickup_.data() : nullptr);
+		}
+		out["factor"] = factor.v;
 		return out;
 	}
 

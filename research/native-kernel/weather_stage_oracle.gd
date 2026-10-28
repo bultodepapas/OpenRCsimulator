@@ -112,6 +112,7 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 	var duration: float = weather.gust_duration_s
 	var period: float = weather.gust_period_s
 	var turb_index: int = session.turbulence_index() if session._weather.has_turbulence() else -1
+	var finite_stages := 0
 	for index: int in count:
 		var drawn := _stage_state(context, context.surfaces, context.lake)
 		var state: PackedFloat64Array = drawn.s
@@ -143,14 +144,24 @@ func _check_weather_stage(scenario: Dictionary, count: int) -> void:
 			values[wheel] = _rng.randf_range(-25.0, 25.0)
 		if drawn.malformed and index % 7 == 0 and not values.is_empty():
 			values[index % values.size()] = _special()
-		if index % 53 == 0:
+		if index > 0 and index % 53 == 0:
 			values.resize((values.size() + 1) % 5)
 		var reference: Dictionary = session._wheel_evaluate(state, values, stage_time)
 		var native: Dictionary = _native.stage(state, values, stage_time)
 		_compare_stage(reference, native, [label, state, aux, values, stage_time])
+		if not reference.is_empty() and reference.get("loads") is PackedFloat64Array:
+			var finite := true
+			for value: float in reference.loads:
+				finite = finite and is_finite(value)
+			if finite:
+				finite_stages += 1
 		_tally("weather_stage", "states")
 		_tally("weather_stage", "malformed" if drawn.malformed else "ordinary")
 		if turb_index >= 0: _tally("weather_stage", "real_ou_window_states")
+	if finite_stages == 0:
+		_failures.append("weather-stage %s has no finite shaped stage" % label)
+	else:
+		_tally("weather_stage", "finite_shaped", finite_stages)
 	# True weather capability flags must never be silently cleared: a missing
 	# snapshot is refused, even if the unchanged model otherwise prepares.
 	if config.not_calm or config.turbulence or config.vertical_atmosphere:

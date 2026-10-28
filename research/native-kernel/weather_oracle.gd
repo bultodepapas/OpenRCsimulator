@@ -52,6 +52,7 @@ func _checks() -> void:
 	for scenario: Dictionary in scenarios:
 		_check_scenario(scenario, per_scenario)
 	_check_weather_refusals()
+	_check_spatial_provider_guard()
 
 
 ## Read the real session's initial and advanced OU windows, including its actual
@@ -230,3 +231,34 @@ func _check_weather_refusals() -> void:
 		_compare("weather_refusal", PackedFloat64Array([1.0]), PackedFloat64Array([1.0 if clean else 0.0]), name)
 		if not clean:
 			_failures.append("weather refusal failed: " + name)
+
+
+## Direct provider mutation is attempted only on this disposable session.
+## A captured spatial snapshot must not be reused after its seeded modes change.
+func _check_spatial_provider_guard() -> void:
+	var session: Node = Session.new()
+	session.setup(str(Catalog.entry(AIRCRAFT).data), AIRCRAFT)
+	if not session.is_flyable() or not session.setup_weather(WeatherConfig.preset("spatial-realistic-v1")):
+		_failures.append("spatial provider guard session did not start")
+		session.free()
+		return
+	session.reset()
+	var identity := WeatherAdapter.provider_identity(session)
+	if not identity.get("ok", false):
+		_failures.append("spatial provider guard failed to capture identity")
+		session.free()
+		return
+	var provider: RefCounted = session._weather.get("_spatial")
+	var original: PackedFloat64Array = provider.get("_modes")
+	var changed := original.duplicate()
+	changed[0] += 1.0
+	provider.set("_modes", changed)
+	var refused: bool = WeatherAdapter.config_for(session).is_empty() \
+		and not WeatherAdapter.provider_matches(session, identity)
+	provider.set("_modes", original)
+	var restored: bool = WeatherAdapter.provider_matches(session, identity)
+	_compare("weather_spatial_provider_guard", PackedFloat64Array([1.0]),
+		PackedFloat64Array([1.0 if refused and restored else 0.0]))
+	if not refused or not restored:
+		_failures.append("spatial mode mutation guard failed")
+	session.free()

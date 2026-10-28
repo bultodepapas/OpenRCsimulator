@@ -663,7 +663,8 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		if (m.weather.has_turbulence != static_cast<bool>(config["turbulence"]) ||
 				m.weather.vertical_atmosphere != static_cast<bool>(config["vertical_atmosphere"]) ||
 				m.weather.calm == static_cast<bool>(config["not_calm"]) ||
-				(m.weather.has_turbulence && (L.turbulence < 0 || L.turbulence + 7 > L.aux_size))) {
+				(m.weather.has_turbulence && (L.turbulence < 4 || L.turbulence + 7 != L.aux_size)) ||
+				(!m.weather.has_turbulence && L.turbulence != -1)) {
 			return dec.fail("weather snapshot and session capabilities/layout differ");
 		}
 		m.has_weather = true;
@@ -743,6 +744,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("glow_mass_component", "amounts"), &OpenRCNativeKernel::glow_mass_component);
 		godot::ClassDB::bind_method(D_METHOD("glow_body_component", "body", "amounts", "force", "moment", "gravity", "rotor"),
 			&OpenRCNativeKernel::glow_body_component);
+		godot::ClassDB::bind_method(D_METHOD("glow_feed_component", "remaining", "capacity", "unusable", "admission", "rpm",
+			"force", "mass", "arm", "alpha", "omega"), &OpenRCNativeKernel::glow_feed_component);
 		godot::ClassDB::bind_method(D_METHOD("propeller_component", "s", "air", "rho", "rpm", "local_hub", "explicit_air"),
 			&OpenRCNativeKernel::propeller_component);
 		godot::ClassDB::bind_method(D_METHOD("aero_component", "which", "s", "wind", "rho", "d", "downwash_cl", "ground_up"),
@@ -926,6 +929,11 @@ public:
 			const PackedFloat64Array &moment, double gravity, const PackedFloat64Array &rotor) const {
 		return glow_.glow_body_component(body, amounts, force, moment, gravity, rotor);
 	}
+	Dictionary glow_feed_component(double remaining, double capacity, double unusable, double admission, double rpm,
+			const PackedFloat64Array &force, double mass, const PackedFloat64Array &arm, const PackedFloat64Array &alpha,
+			const PackedFloat64Array &omega) const {
+		return glow_.glow_feed_component(remaining, capacity, unusable, admission, rpm, force, mass, arm, alpha, omega);
+	}
 
 	Dictionary propeller_component(const PackedFloat64Array &s, const PackedFloat64Array &air, double rho,
 			double rpm, bool local_hub, const PackedFloat64Array &explicit_air) const {
@@ -1092,7 +1100,7 @@ public:
 			{"1.5", 1.5}, {"1000.0", 1000.0}, {"10000.0", 10000.0}, {"11000.0", 11000.0},
 			{"12.0", 12.0}, {"1200.0", 1200.0}, {"125000000.0", 125000000.0}, {"15.0", 15.0},
 			{"1500.0", 1500.0}, {"16.0", 16.0}, {"1e-10", 1e-10}, {"1e-12", 1e-12},
-			{"1e-13", 1e-13}, {"1e-15", 1e-15}, {"1e-24", 1e-24}, {"1e-8", 1e-8},
+			{"1e-13", 1e-13}, {"1e-15", 1e-15}, {"1e-24", nk::kGd1eMinus24}, {"1e-8", 1e-8},
 			{"1e6", 1e6}, {"2.1", 2.1}, {"20.0", 20.0}, {"200.0", 200.0},
 			{"270.0", 270.0}, {"287.05", 287.05}, {"3.0", 3.0}, {"3.1415926535897932384626433833", 3.1415926535897932384626433833},
 			{"30.0", 30.0}, {"360.0", 360.0}, {"3600000.0", 3600000.0}, {"4000.0", 4000.0},
