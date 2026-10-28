@@ -5,6 +5,7 @@ extends "oracle.gd"
 
 const GlowSource := preload("res://physics/glow/source.gd")
 const GlowBlade := preload("res://physics/glow/propeller.gd")
+const GlowFeed := preload("res://physics/glow/fuel_feed.gd")
 const Inventory := preload("res://physics/mass_inventory.gd")
 const FixedDatumBody := preload("res://physics/fixed_datum_body.gd")
 
@@ -23,7 +24,7 @@ func _source_hashes() -> Dictionary:
 	var out: Dictionary = super._source_hashes()
 	for path: String in ["res://physics/glow/source.gd", "res://physics/glow/profile.gd",
 			"res://physics/glow/installation.gd", "res://physics/glow/two_stroke.gd", "res://physics/glow/four_stroke.gd",
-			"res://physics/glow/propeller.gd", "res://physics/glow/fuel_mass.gd", "res://physics/mass_inventory.gd",
+			"res://physics/glow/propeller.gd", "res://physics/glow/fuel_mass.gd", "res://physics/glow/fuel_feed.gd", "res://physics/mass_inventory.gd",
 			"res://physics/fixed_datum_body.gd", "res://physics/rigid_body.gd", "res://physics/aircraft_data.gd",
 			"res://data/aircraft/stik_glow_61fx_2t.json", "res://data/aircraft/stik_glow_55ax_2t.json",
 			"res://data/aircraft/stik_glow_fs64v_4t.json", "res://data/aircraft/gp_extra_300s_60.json",
@@ -42,6 +43,7 @@ func _checks() -> void:
 		_failures.append("glow oracle needs at least two states per installation")
 		return
 	_report.glow_cases = []
+	_report.glow_feed_cases = []
 	var multi_source: Dictionary = {}
 	for id: String in GLOW_IDS:
 		var loaded: Dictionary = AircraftData.load_file(Catalog.data_for(id))
@@ -53,10 +55,14 @@ func _checks() -> void:
 			_failures.append("catalog aircraft lacks glow installation: " + id)
 			continue
 		_check_case(id, propulsion.glow)
+		if propulsion.glow.has("fuel_feed"):
+			_check_feed_case(id, propulsion.glow, false)
 		if multi_source.is_empty():
 			multi_source = propulsion.glow
 	if not multi_source.is_empty():
 		_check_multi_resource(multi_source)
+		if multi_source.has("fuel_feed"):
+			_check_feed_case("synthetic_pickup", multi_source, true)
 	if _report.glow_cases.size() != GLOW_IDS.size():
 		_failures.append("not all glow catalog installations were exercised")
 
@@ -84,7 +90,16 @@ func _snapshot(install: Dictionary) -> Dictionary:
 	var mass := {}
 	for field: String in MASS_MODEL_FIELDS:
 		mass[field] = install.mass_reference[field]
-	return {format = "openrc-nk3-glow-component-v1", source = source, blade = blade, mass = mass}
+	var out := {format = "openrc-nk3-glow-component-v1", source = source, blade = blade, mass = mass}
+	if install.has("fuel_feed"):
+		var f: Dictionary = install.fuel_feed
+		out.feed = {carburetor_body_m = f.carburetor_body_m, tank_center_body_m = install.tank_position,
+			tank_size_body_m = install.tank_size, density_kg_m3 = f.density_kg_m3,
+			idle_drive_pressure_pa = f.idle_drive_pressure_pa, wot_drive_pressure_pa = f.wot_drive_pressure_pa,
+			rated_rpm = f.rated_rpm}
+		if install.has("pickup_position"):
+			out.feed.pickup_body_m = install.pickup_position
+	return out
 
 
 func _selected_values(point: Dictionary, fields: Array) -> PackedFloat64Array:
@@ -332,3 +347,81 @@ func _check_multi_resource(install: Dictionary) -> void:
 			PackedFloat64Array([0.0, 0.0, 0.0]), 9.80665, PackedFloat64Array([0.0, 0.0, 0.0])).get("ok", false):
 		_failures.append("glow body accepted a truncated state")
 	_report.glow_multi_mass = {resources = resources.size(), states = _states, accepted = accepted, rejected = rejected}
+
+
+## Same-stage feed closure's candidate-independent context and its scalar
+## factor evaluator, using installed feed geometry and an optional pickup.
+func _check_feed_case(name: String, install: Dictionary, synthetic_pickup: bool) -> void:
+	var snapshot: Dictionary = _snapshot(install)
+	if synthetic_pickup:
+		var center: PackedFloat64Array = install.tank_position
+		snapshot.feed.pickup_body_m = PackedFloat64Array([center[0], center[1], center[2] + 0.25 * install.tank_size[2]])
+	var pickup: PackedFloat64Array = snapshot.feed.get("pickup_body_m", PackedFloat64Array())
+	var native_prep: Dictionary = _native.prepare_glow(snapshot)
+	if not native_prep.get("ok", false):
+		_failures.append("native feed preparation %s failed: %s" % [name, native_prep.get("error", "")])
+		return
+	var context_accepted := 0
+	var context_rejected := 0
+	var finite_factor := 0
+	var nonfinite_factor := 0
+	var zero_factor := 0
+	var capacity: float = install.capacity_fuel_kg
+	var unusable: float = install.unusable_fuel_kg
+	for i: int in _states:
+		var remaining: float = _rng.randf_range(0.0, capacity)
+		var c: float = capacity
+		var u: float = unusable
+		var admission: float = _rng.randf_range(-0.1, 1.1)
+		var rpm: float = _rng.randf_range(0.0, install.profile.operation.max_rpm)
+		var force: PackedFloat64Array = _vector(40.0)
+		var mass: float = _rng.randf_range(1.5, 8.0)
+		var arm: PackedFloat64Array = _vector(0.2)
+		var alpha: PackedFloat64Array = _vector(4.0)
+		var omega: PackedFloat64Array = _vector(6.0)
+		if i % 17 == 0: remaining = [0.0, capacity, unusable][(i / 17) % 3]
+		if i % 19 == 0: admission = [0.0, 0.5, 1.0][(i / 19) % 3]
+		if i % 37 == 0:
+			force = PackedFloat64Array([0.0, 0.0, 0.0])
+			alpha = PackedFloat64Array([0.0, 0.0, 0.0])
+			omega = PackedFloat64Array([0.0, 0.0, 0.0])
+		if i % 61 == 0: c = 0.0
+		elif i % 61 == 1: u = capacity
+		elif i % 61 == 2: rpm = -1.0
+		elif i % 71 == 0:
+			match (i / 71) % 7:
+				0: remaining = _special()
+				1: admission = _special()
+				2: rpm = _special()
+				3: mass = _special()
+				4: force[_rng.randi_range(0, 2)] = _special()
+				5: arm[_rng.randi_range(0, 2)] = _special()
+				6: omega[_rng.randi_range(0, 2)] = _special()
+		var expected: Dictionary = GlowFeed.prepare_factor_context(install.fuel_feed, remaining, c, u, admission, rpm,
+			install.tank_position, install.tank_size)
+		var actual: Dictionary = _native.glow_feed_component(remaining, c, u, admission, rpm, force, mass, arm, alpha, omega)
+		var inputs := [name, i, remaining, c, u, admission, rpm, force, mass, arm, alpha, omega, pickup]
+		var expected_ok: bool = expected.get("ok", false)
+		var actual_ok: bool = actual.get("ok", false)
+		_compare_status("glow_feed_context_validity", expected_ok, actual_ok, inputs)
+		if expected_ok and actual_ok:
+			_compare("glow_feed_context", PackedFloat64Array([expected.fill_fraction, expected.drive_pa, expected.needled_head_pa]),
+				actual.context, inputs)
+			var factor: float = GlowFeed.factor_for_stage(expected, force, mass, arm, alpha, omega, pickup)
+			_compare("glow_feed_factor", PackedFloat64Array([factor]), PackedFloat64Array([actual.factor]), inputs)
+			context_accepted += 1
+			if is_finite(factor):
+				finite_factor += 1
+				if factor == 0.0: zero_factor += 1
+			else:
+				nonfinite_factor += 1
+		else:
+			context_rejected += 1
+		_tally("glow_feed_" + name, "states")
+	if context_accepted == 0 or context_rejected == 0 or finite_factor == 0 or zero_factor == 0:
+		_failures.append("glow feed %s missed an accepted, rejected, finite or zero case" % name)
+	if synthetic_pickup and nonfinite_factor == 0:
+		_failures.append("glow pickup fixture missed the undefined free surface")
+	_report.glow_feed_cases.append({name = name, pickup = not pickup.is_empty(), states = _states,
+		context_accepted = context_accepted, context_rejected = context_rejected,
+		finite_factor = finite_factor, nonfinite_factor = nonfinite_factor, zero_factor = zero_factor})

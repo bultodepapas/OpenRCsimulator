@@ -130,6 +130,8 @@ def main() -> int:
     harness_paths = [HERE / name for name in ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "trajectory.gd",
                                               "fleet.gd", "propeller_oracle.gd", "weather_adapter.gd", "run.py")]
     harness_paths += [HERE / args.script] if HERE / args.script not in harness_paths else []
+    if args.script == "wake_spatial_oracle.gd":
+        harness_paths += [HERE / "weather_oracle.gd", HERE / "wake_oracle.gd"]
     harness_paths += [ROOT / "app/sim/native_stage.gd", ROOT / "tools/godot/run_checked.py"]
     harness_sources = {str(path.relative_to(ROOT)): sha256(path) for path in harness_paths}
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
