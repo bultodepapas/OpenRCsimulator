@@ -6,6 +6,7 @@
 #pragma once
 
 #include <array>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -19,6 +20,8 @@
 #include "nk_wake_spatial_aero.hpp"
 #include "nk_electric_stage.hpp"
 #include "nk_electric_coupling.hpp"
+#include "nk_retractable.hpp"
+#include "nk_liquid_stage.hpp"
 
 namespace nk {
 
@@ -36,12 +39,15 @@ struct StageLayout {
 	int input_count = 0;
 	int turbulence = -1;
 	int battery_size = 0;
+	int gear_aux = -1;
+	int liquid_index = -1;
 };
 
 struct StageModel {
 	AeroModel aero;
 	PropModel prop;
 	GroundContext ground;
+	RetractableModel retraction;
 	HullPrepared hull;
 	bool soft_hull = false;
 	StageLayout layout;
@@ -51,8 +57,11 @@ struct StageModel {
 	WeatherModel weather;
 	bool spatial_weather = false;
 	SpatialWeather spatial;
+	std::shared_ptr<const SpatialWeather> spatial_identity;
 	WakeModel wake;
 	bool electric = false;
+	LiquidStageModel liquid;
+	R gravity = 0.0;
 	ElectricPreparedSource electric_source;
 	std::array<R, 6> inertia{}, inverse{};
 	R dt = 0.0;
@@ -66,6 +75,10 @@ struct TickContext {
 	R time_now = 0.0;
 	bool power_ready = false, power_enabled = false;
 	R throttle = 0.0;
+	GroundContext posed_ground;
+	bool capture_preview = false;
+	std::array<R, 13> preview_body{};
+	std::vector<R> preview_values;
 };
 
 struct StageResult {
@@ -73,6 +86,15 @@ struct StageResult {
 	std::array<R, 6> loads{};
 	std::vector<R> derivative;
 	std::array<R, 3> rotor{};
+	bool has_body_derivative = false;
+	std::array<R, 13> body_derivative{};
+	bool has_preview = false, preview_spatial = false;
+	Air preview_air;
+	R preview_time = 0.0, preview_rho = 0.0;
+	SpatialFlowResult preview_flow;
+	SpatialPointContext preview_point;
+	std::array<R, 6> pre_reaction{};
+	std::vector<R> preview_wheel_rates;
 };
 
 // A callback into immutable native weather only. Its context is local to one RK stage.
@@ -104,8 +126,11 @@ inline R stage_ground_up(const R *s, const StageModel &m) {
 
 // FlightSession._ground_evaluation for fixed gear: false = {ok: false}.
 inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx, const R *values, int value_count,
-		std::array<R, 6> &loads, bool &has_loads, std::vector<R> &rates) {
+		std::array<R, 6> &loads, bool &has_loads, std::vector<R> &rates,
+		const Air *air = nullptr, SpatialPointContext *point = nullptr, R rho = 0.0,
+		const LiquidMassProperties *live = nullptr) {
 	const StageLayout &L = m.layout;
+	const GroundContext &ground = m.retraction.enabled ? ctx.posed_ground : m.ground;
 	const R steer = ctx.aux[L.servo + 2];
 	const R brake = ctx.brake;
 	double anchors[64];
@@ -116,7 +141,18 @@ inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx
 	std::array<R, 6> hull{};
 	bool has_hull = false;
 	if (m.soft_hull) {
-		has_hull = hull_loads(s, m.hull, hull);
+		if (live != nullptr) {
+			if (!m.hull.present) return false;
+			// FlightSession avoids live contact evaluation entirely above geometry reach.
+			if (-s[2] <= m.hull.reach) {
+				const auto sampled = hull_loads_at_properties(s, m.hull, *live);
+				if (!sampled.ok) return false;
+				has_hull = sampled.touched;
+				hull = sampled.loads;
+			}
+		} else {
+			has_hull = hull_loads(s, m.hull, hull);
+		}
 		if (has_hull) {
 			for (const R &value : hull) {
 				if (!is_finite(value)) {
@@ -125,8 +161,27 @@ inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx
 			}
 		}
 	}
+	if (m.retraction.enabled) {
+		if (air == nullptr || L.gear_aux < 0) return false;
+		const R extension = ctx.aux[L.gear_aux];
+		R delta[3];
+		const R *delta_ptr = nullptr;
+		if (point != nullptr && extension > 0.0) {
+			if (!spatial_point_delta(point, m.retraction.drag_center.data(), delta)) return false;
+			delta_ptr = delta;
+		}
+		const auto drag = retractable_drag(s, air->v, m.retraction, extension, rho, delta_ptr, delta_ptr ? 3 : 0);
+		if (!drag.empty()) {
+			if (drag.size() != 6) return false;
+			for (int i = 0; i < 6; ++i) {
+				if (!is_finite(drag[i])) return false;
+				hull[i] = has_hull ? hull[i] + drag[i] : drag[i];
+			}
+			has_hull = true;
+		}
+	}
 	if (L.wheel_count == 0) {
-		if (!m.ground.gear.empty || value_count != L.wheel_index) return false;
+		if (!ground.gear.empty || value_count != L.wheel_index) return false;
 		has_loads = has_hull;
 		loads = hull;
 		rates.clear();
@@ -143,7 +198,7 @@ inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx
 		}
 	}
 	static thread_local std::vector<R> wheel_loads;
-	wheels_evaluate(s, m.ground, steer, anchors, anchor_values, speeds, L.wheel_count, brake, wheel_loads, rates);
+	wheels_evaluate(s, ground, steer, anchors, anchor_values, speeds, L.wheel_count, brake, wheel_loads, rates);
 	if ((!wheel_loads.empty() && wheel_loads.size() != 6) || static_cast<int>(rates.size()) != L.wheel_count) {
 		return false;
 	}
@@ -181,11 +236,16 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 	StageResult out;
 	const StageLayout &L = m.layout;
 	const int expected = L.rotor_index;
-	if (value_count != L.wheel_index + L.wheel_count || !ctx.ready || (m.electric && !ctx.power_ready)) {
+	if (value_count != L.wheel_index + L.wheel_count + (m.liquid.ready ? 2 : 0) || !ctx.ready ||
+			((m.electric || m.liquid.ready) && !ctx.power_ready)) {
 		return out;
 	}
+	const LiquidStageLayout liquid_layout{L.rotor_index, L.wheel_index, L.wheel_count};
+	const auto liquid_trial = m.liquid.ready ? liquid_trial_properties(m.liquid, liquid_layout, values, value_count, ctx.power_enabled) : LiquidStageTrial{};
+	if (m.liquid.ready && !liquid_trial.ok) return out;
+	const bool turbine = m.liquid.ready && !m.liquid.gas;
 	const std::vector<R> &a = ctx.aux;
-	const R trial_rpm = m.electric ? values[L.rotor_index] : a[L.rpm];
+	const R trial_rpm = (m.electric || m.liquid.ready) ? values[L.rotor_index] : a[L.rpm];
 	if (m.electric && !is_finite(trial_rpm)) return out;
 	const R rpm = m.electric ? maxf(0.0, trial_rpm) : trial_rpm;
 	const int lag = L.downwash;
@@ -228,13 +288,17 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 		aero = aero_loads(s, air, ctx.deflections, m.aero, rho, downwash_cl, ground_up);
 	}
 	std::array<R, 6> total;
-	const PropAir prop_air = prop_stage_air_velocity(s, air.v, m.prop, m.electric,
-		m.spatial_weather && spatial_flow.ok ? spatial_flow.propulsion_air.data() : nullptr);
-	if (m.electric && !prop_air.ok) return out;
+	const R *explicit_air = m.spatial_weather && spatial_flow.ok ? spatial_flow.propulsion_air.data() : nullptr;
+	const PropAir prop_air = turbine ? liquid_turbine_stage_air_velocity(s, air.v, m.liquid.turbine, explicit_air) :
+		prop_stage_air_velocity(s, air.v, m.prop, m.electric, explicit_air);
+	if ((m.electric || m.liquid.ready) && !prop_air.ok) return out;
+	const auto turbine_point = turbine ? liquid_turbine_stage(prop_air.velocity.data(), rpm, ctx.throttle,
+		m.liquid.turbine, rho, liquid_trial.running) : LiquidTurbineStage{};
+	if (turbine && !turbine_point.ok) return out;
 	if (!aero_valid || !prop_air.ok) {
 		total = {kNan, kNan, kNan, kNan, kNan, kNan}; // Propulsion.stage_air_velocity refuses: _invalid_components
 	} else {
-		const std::array<R, 6> propulsion = prop_loads(prop_air.velocity.data(), rpm, m.prop, rho);
+		const std::array<R, 6> propulsion = turbine ? turbine_point.loads : prop_loads(prop_air.velocity.data(), rpm, m.prop, rho);
 		total = aero;
 		for (int i = 0; i < 6; ++i) {
 			total[i] += propulsion[i];
@@ -252,7 +316,8 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 	std::array<R, 6> ground_loads{};
 	bool has_ground_loads = false;
 	std::vector<R> rates;
-	if (!stage_ground(s, m, ctx, values, value_count, ground_loads, has_ground_loads, rates)) {
+	if (!stage_ground(s, m, ctx, values, value_count - (m.liquid.ready ? 2 : 0), ground_loads, has_ground_loads, rates, &air,
+			m.spatial_weather && spatial_flow.ok ? &point_context : nullptr, rho, m.liquid.ready ? &liquid_trial.mass : nullptr)) {
 		return out;
 	}
 	if (has_ground_loads) {
@@ -275,7 +340,7 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 		if (!coupling.ok) return out;
 		total = coupling.loads;
 	}
-	if (expected == 0 && !m.electric) {
+	if (expected == 0 && !m.electric && !m.liquid.ready) {
 		out.derivative = std::move(rates);
 	} else if (expected > 0) {
 		R source[3] = {air.v[0], air.v[1], air.v[2]};
@@ -289,6 +354,35 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 		if (m.spatial_weather && (!spatial_flow.ok || !is_finite(target[0]) || !is_finite(target[1]))) return out;
 		out.derivative.resize(expected);
 		wake_transport_derivative(target, values, m.wake, out.derivative.data());
+	}
+	if (m.liquid.ready) {
+		bool capture = ctx.capture_preview && m.liquid.gas && at == ctx.time_now &&
+			static_cast<int>(ctx.preview_values.size()) == value_count;
+		for (int i = 0; i < 13 && capture; ++i) capture = s[i] == ctx.preview_body[i];
+		for (int i = 0; i < value_count && capture; ++i) capture = values[i] == ctx.preview_values[i];
+		const auto result = liquid_stage_finish(m.liquid, liquid_layout, liquid_trial, s, total.data(), prop_air.velocity.data(),
+			air.v, explicit_air != nullptr, m.prop, ctx.throttle, rho, atmosphere.engine_charge_ratio, m.gravity,
+			out.derivative.data(), expected, rates.data(), static_cast<int>(rates.size()), turbine ? &turbine_point : nullptr, capture);
+		if (!result.ok) return out;
+		out.shaped = true;
+		out.loads = result.loads;
+		out.derivative = result.derivative;
+		out.rotor = result.rotor;
+		out.has_body_derivative = true;
+		out.body_derivative = result.body_derivative;
+		if (result.has_pre_reaction) {
+			out.has_preview = true;
+			out.pre_reaction = result.pre_reaction;
+			out.preview_air = air;
+			out.preview_time = at;
+			out.preview_rho = rho;
+			out.preview_spatial = m.spatial_weather && spatial_flow.ok;
+			out.preview_flow = spatial_flow;
+			out.preview_point = point_context;
+			out.preview_point.provider = {}; // stack-owned provider must never escape
+			out.preview_wheel_rates = rates;
+		}
+		return out;
 	}
 	if (m.electric) {
 		out.derivative.push_back(coupling.rpm_rate);

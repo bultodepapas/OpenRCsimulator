@@ -9,6 +9,7 @@
 #include <godot_cpp/variant/variant.hpp>
 
 #include "nk_retractable.hpp"
+#include "nk_hull.hpp"
 #include "nk_weather_binding.hpp"
 
 namespace nk {
@@ -154,6 +155,95 @@ private:
 		}
 		m.enabled = true;
 		return true;
+	}
+};
+
+class LiveHullBinding {
+	bool ready_ = false;
+	HullPrepared geometry_;
+
+public:
+	bool ready() const { return ready_; }
+	const HullPrepared &geometry() const { return geometry_; }
+
+	// The root decoder resolves lake geometry and friction once. Check its
+	// prepared values against the actual geometry-only source snapshot here.
+	godot::Dictionary prepare_live_hull(const godot::Dictionary &source, const HullPrepared &prepared) {
+		ready_ = false;
+		WeatherSnapshotDecoder dec;
+		if (!dec.keys(source, "hull geometry", {"points", "reach", "geometry_only", "surfaces", "lake", "lake_bounds_ne_m",
+			"terminal_j_per_kg", "crash_depth_m"})) return failure(dec.error);
+		bool geometry_only = false;
+		R reach;
+		std::vector<R> points;
+		if (!dec.boolean(source, "geometry_only", geometry_only) || !geometry_only || !dec.number(source, "reach", reach) ||
+			!dec.packed(source, "points", points) || points.empty() || points.size() % 3 != 0 || !prepared.present ||
+			bits(reach.v) != bits(prepared.reach.v) || points.size() != prepared.points.size()) {
+			return failure(dec.error.empty() ? "invalid hull geometry" : dec.error);
+		}
+		for (std::size_t i = 0; i < points.size(); ++i) if (bits(points[i].v) != bits(prepared.points[i].v)) return failure("prepared hull points disagree");
+		if (!source.has("surfaces") || source["surfaces"].get_type() != godot::Variant::PACKED_FLOAT64_ARRAY) return failure("invalid hull surface table");
+		const godot::PackedFloat64Array surfaces = source["surfaces"];
+		if (surfaces.size() != static_cast<int64_t>(prepared.surfaces.size())) return failure("prepared hull surface table disagrees");
+		for (int64_t i = 0; i < surfaces.size(); ++i) if (bits(surfaces[i]) != bits(prepared.surfaces[static_cast<std::size_t>(i)])) return failure("prepared hull surface table disagrees");
+		const bool has_lake = source.has("lake");
+		if (has_lake != prepared.lake.present || (has_lake && source["lake"].get_type() != godot::Variant::DICTIONARY)) {
+			return failure("prepared hull lake disagrees");
+		}
+		geometry_ = prepared;
+		ready_ = true;
+		godot::Dictionary out;
+		out["ok"] = true; out["error"] = "";
+		return out;
+	}
+
+	godot::Dictionary live_hull_component(const godot::PackedFloat64Array &body, const godot::Dictionary &properties) const {
+		if (!ready_) return hull_result_failure("invalid_contact_geometry");
+		for (const char *key : {"mass_kg", "cg_body_m", "inertia", "inverse"}) {
+			if (!properties.has(key)) return hull_result_failure("mass_properties_missing_field");
+		}
+		if (properties.has("ok") && (properties["ok"].get_type() != godot::Variant::BOOL || !static_cast<bool>(properties["ok"]))) {
+			return hull_result_failure("mass_properties_not_ok");
+		}
+		const godot::Variant mass = properties["mass_kg"], cg = properties["cg_body_m"];
+		const godot::Variant inertia = properties["inertia"], inverse = properties["inverse"];
+		if ((mass.get_type() != godot::Variant::FLOAT && mass.get_type() != godot::Variant::INT) ||
+			cg.get_type() != godot::Variant::PACKED_FLOAT64_ARRAY || inertia.get_type() != godot::Variant::PACKED_FLOAT64_ARRAY ||
+			inverse.get_type() != godot::Variant::PACKED_FLOAT64_ARRAY) return hull_result_failure("mass_properties_wrong_type");
+		const godot::PackedFloat64Array cg_values = cg, j = inertia, j_inverse = inverse;
+		if (cg_values.size() != 3 || j.size() != 6 || j_inverse.size() != 6) return hull_result_failure("mass_properties_invalid_value");
+		LiquidMassProperties p;
+		p.ok = true;
+		p.mass_kg = mass.get_type() == godot::Variant::FLOAT ? static_cast<double>(mass) : static_cast<double>(static_cast<int64_t>(mass));
+		for (int i = 0; i < 3; ++i) p.cg[i] = cg_values[i];
+		for (int i = 0; i < 6; ++i) { p.inertia[i] = j[i]; p.inverse[i] = j_inverse[i]; }
+		const char *property_error = live_hull_properties_error(p);
+		if (property_error[0] != '\0') return hull_result_failure(property_error);
+		if (body.size() != 13) return hull_result_failure("invalid_rigid_body_state");
+		R state[13];
+		for (int i = 0; i < 13; ++i) state[i] = body[i];
+		const LiveHullResult value = hull_loads_at_properties(state, geometry_, p);
+		if (!value.ok) return hull_result_failure(value.reason);
+		godot::PackedFloat64Array loads;
+		if (value.touched) {
+			loads.resize(6);
+			for (int i = 0; i < 6; ++i) loads[i] = value.loads[i].v;
+		}
+		godot::Dictionary out;
+		out["ok"] = true; out["reason"] = ""; out["loads"] = loads;
+		return out;
+	}
+
+private:
+	static godot::Dictionary failure(const std::string &message) {
+		godot::Dictionary out;
+		out["ok"] = false; out["error"] = godot::String(message.c_str());
+		return out;
+	}
+	static godot::Dictionary hull_result_failure(const char *reason) {
+		godot::Dictionary out;
+		out["ok"] = false; out["reason"] = reason; out["loads"] = godot::PackedFloat64Array();
+		return out;
 	}
 };
 

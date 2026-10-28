@@ -99,6 +99,40 @@ static func provider_matches(session: Node, identity: Dictionary) -> bool:
 		and var_to_bytes(current.prepared_snapshot) == var_to_bytes(identity.prepared_snapshot)
 
 
+## HelicopterFlightSession has a distinct contract: its current setup refuses
+## spatial wind, column atmosphere and OU turbulence and supplies no callback.
+## Do not manufacture the fixed-wing owner's pending-reset or OU layout here.
+static func helicopter_provider_identity(session: Node) -> Dictionary:
+	if session == null or not is_instance_valid(session) \
+			or session.get_script() != load("res://sim/helicopter_flight_session.gd") or session.sim == null:
+		return {ok = false, reason = "unsupported helicopter session"}
+	if not session._ready_to_fly:
+		return {ok = false, reason = "helicopter has no completed reset"}
+	var environment: Variant = session.environment
+	if environment == null or not is_instance_valid(environment) or environment.get_script() != SimEnvironment:
+		return {ok = false, reason = "environment is not the built-in provider"}
+	var field: Variant = environment.weather
+	if field == null or not is_instance_valid(field) or field.get_script() != WeatherField:
+		return {ok = false, reason = "weather is not the built-in provider"}
+	var turbulence: Callable = environment.turbulence
+	if turbulence != Callable() or field.is_spatial() or field.has_turbulence() or field.has_vertical_atmosphere():
+		return {ok = false, reason = "helicopter weather requires uniform wind and no turbulence callback"}
+	var dt: float = session.sim.dt()
+	if not is_finite(dt) or dt <= 0.0 or session.sim.aux.size() != 1 or session.sim.model.aux_size != 1:
+		return {ok = false, reason = "invalid helicopter tick duration or auxiliary layout"}
+	var config: Dictionary = field.configuration()
+	var checked: Dictionary = WeatherConfig.validate(config)
+	if not checked.ok or var_to_bytes(checked.config) != var_to_bytes(config):
+		return {ok = false, reason = "weather configuration is not validated and canonical"}
+	var rebuilt: Dictionary = WeatherField.build(config)
+	if not rebuilt.ok or var_to_bytes(_field_inputs(field)) != var_to_bytes(_field_inputs(rebuilt.field)) \
+			or var_to_bytes(snapshot(field)) != var_to_bytes(snapshot(rebuilt.field)):
+		return {ok = false, reason = "prepared weather values differ from their validated configuration"}
+	return {ok = true, environment = environment, field = field, spatial = null, thermal = null,
+		turbulence = turbulence, configuration = config, dt = dt, turbulence_index = -1,
+		field_inputs = _field_inputs(field), prepared_snapshot = snapshot(field)}
+
+
 ## Exact detached provider coefficients: temporal RNG is separately owned by
 ## FlightSession; spatial modes are copied from the already resolved field.
 static func snapshot(field: RefCounted) -> Dictionary:

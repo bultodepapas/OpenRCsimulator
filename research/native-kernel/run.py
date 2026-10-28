@@ -28,8 +28,8 @@ HARNESS_OPTIONS = {
     "weather_oracle.gd": set(), "electric_oracle.gd": set(),
     "wake_oracle.gd": set(), "weather_stage_oracle.gd": {"ticks", "include-spatial"}, "glow_oracle.gd": set(),
     "wake_spatial_oracle.gd": set(),
-    "helicopter_oracle.gd": set(),
-    "electric_stage_oracle.gd": {"ticks"},
+    "helicopter_oracle.gd": set(), "liquid_oracle.gd": set(), "gear_oracle.gd": set(),
+    "electric_stage_oracle.gd": {"ticks"}, "liquid_stage_oracle.gd": {"ticks"},
     "trajectory.gd": {"ticks", "pairs", "warmup", "samples", "timing-cases", "skip-timing", "only", "repeats"},
     "fleet.gd": {"warmup", "samples", "aircraft", "weather", "soft-hull"},
 }
@@ -134,6 +134,8 @@ def main() -> int:
     harness_paths += [HERE / args.script] if HERE / args.script not in harness_paths else []
     if args.script == "wake_spatial_oracle.gd":
         harness_paths += [HERE / "weather_oracle.gd", HERE / "wake_oracle.gd"]
+    if args.script == "liquid_stage_oracle.gd":
+        harness_paths += [HERE / "liquid_stage_adapter.gd"]
     if args.script == "electric_stage_oracle.gd":
         harness_paths += [HERE / "electric_stage_adapter.gd", HERE / "electric_oracle.gd"]
     harness_paths += [ROOT / "app/sim/native_stage.gd", ROOT / "tools/godot/run_checked.py"]
@@ -144,7 +146,7 @@ def main() -> int:
             "weather_oracle.gd": "weather", "electric_oracle.gd": "electric",
             "wake_oracle.gd": "wake", "weather_stage_oracle.gd": "weather-stage",
             "glow_oracle.gd": "glow", "wake_spatial_oracle.gd": "wake-spatial",
-            "helicopter_oracle.gd": "helicopter", "electric_stage_oracle.gd": "electric-stage"}[args.script]
+            "liquid_stage_oracle.gd": "liquid-stage", "liquid_oracle.gd": "liquid", "gear_oracle.gd": "gear", "helicopter_oracle.gd": "helicopter", "electric_stage_oracle.gd": "electric-stage"}[args.script]
     output = TOOL_ROOT / f"{stem}{variant}-{stamp}.json"
     marker = "NK3_ORACLE verdict=fail" if args.mutant else "NK3_ORACLE verdict=pass"
     checks = TOOL_ROOT / "checks"

@@ -93,7 +93,7 @@ inline GlowCoupledStage glow_coupled_stage(const R *body, const R *external, con
 	out.rotor = rotor;
 	out.derivative[0] = response.spin_acceleration * 60.0 / kTauConstant;
 	for (int i = 0; i < 6; ++i) out.derivative[i + 1] = life.rates[i];
-	if (values[18].v == 2.0) out.derivative[17] = out.derivative[1];
+	if (std::trunc(values[18].v) == 2.0) out.derivative[17] = out.derivative[1];
 	out.derivative[13] = life.source.brake_power_w;
 	out.derivative[14] = blade.shaft_power_w;
 	out.derivative[15] = blade.thrust_power_w;

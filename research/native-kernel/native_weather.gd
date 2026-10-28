@@ -31,10 +31,13 @@ class Watch:
 
 class Identity:
 	extends RefCounted
+	var owner_kind: String = "fixed_wing"
 	var session: Node
 	var session_script: Script
 	var sim: Node
+	var sim_script: Script
 	var model: RefCounted
+	var model_script: Script
 	var environment: RefCounted
 	var environment_script: Script
 	var field: RefCounted
@@ -60,14 +63,42 @@ class Identity:
 ## A detached snapshot for the native decoder and an independent live guard.
 ## Rebuilding/serializing validated reference weather is allowed only here.
 static func prepare(session: Node) -> Dictionary:
+	# This adapter covers the fixed-wing owner. Rotorcraft use a different
+	# session and layout contract and need their own explicit admission.
+	if session == null or not is_instance_valid(session) \
+			or session.get_script() != load("res://sim/flight_session.gd") \
+			or session.sim == null or session.sim.get_script() != load("res://sim/simulation.gd") \
+			or session.sim.model == null or session.sim.model.get_script() != load("res://sim/vehicle_model.gd"):
+		return {ok = false, reason = "unsupported fixed-wing session or simulation provider"}
 	var captured := WeatherAdapter.provider_identity(session)
 	if not captured.get("ok", false):
 		return {ok = false, reason = str(captured.get("reason", "weather provider refused"))}
+	return _prepare_captured(session, captured, "fixed_wing")
+
+
+## Helicopter sessions support their own subset and have no OU index/pending
+## fields. Keep the admission separate instead of fabricating those fields.
+static func prepare_helicopter(session: Node) -> Dictionary:
+	if session == null or not is_instance_valid(session) \
+			or session.get_script() != load("res://sim/helicopter_flight_session.gd") \
+			or session.sim == null or session.sim.get_script() != load("res://sim/simulation.gd") \
+			or session.sim.model == null or session.sim.model.get_script() != load("res://sim/vehicle_model.gd"):
+		return {ok = false, reason = "unsupported helicopter session or simulation provider"}
+	var captured := WeatherAdapter.helicopter_provider_identity(session)
+	if not captured.get("ok", false):
+		return {ok = false, reason = str(captured.get("reason", "helicopter weather provider refused"))}
+	return _prepare_captured(session, captured, "helicopter")
+
+
+static func _prepare_captured(session: Node, captured: Dictionary, owner_kind: String) -> Dictionary:
 	var identity := Identity.new()
+	identity.owner_kind = owner_kind
 	identity.session = session
 	identity.session_script = session.get_script()
 	identity.sim = session.sim
+	identity.sim_script = identity.sim.get_script()
 	identity.model = session.sim.model
+	identity.model_script = identity.model.get_script()
 	identity.environment = captured.environment
 	identity.environment_script = identity.environment.get_script()
 	identity.field = captured.field
@@ -81,7 +112,7 @@ static func prepare(session: Node) -> Dictionary:
 	identity.turbulence = captured.turbulence
 	identity.dt = captured.dt
 	identity.turbulence_index = captured.turbulence_index
-	identity.turbulence_aux_index = session._turbulence_aux_index
+	identity.turbulence_aux_index = session._turbulence_aux_index if owner_kind == "fixed_wing" else -1
 	identity.aux_size = session.sim.aux.size()
 	identity.field_values = _capture_values(identity.field, FIELD_VALUES, identity.field_roots, identity.watches)
 	identity.spatial_values = _capture_values(identity.spatial, SPATIAL_VALUES, identity.spatial_roots,
@@ -105,10 +136,18 @@ static func matches(session: Node, identity: Variant) -> bool:
 			or session != identity.session or session.get_script() != identity.session_script:
 		return false
 	if session.sim == null or not is_instance_valid(session.sim) or session.sim != identity.sim \
-			or session.sim.model != identity.model or session._weather_pending_reset:
+			or session.sim.get_script() != identity.sim_script or session.sim.model != identity.model \
+			or session.sim.model.get_script() != identity.model_script:
 		return false
-	if not _same_float(session.sim.dt(), identity.dt) or session.sim.aux.size() != identity.aux_size \
-			or session._turbulence_aux_index != identity.turbulence_aux_index:
+	if identity.owner_kind == "fixed_wing":
+		if session._weather_pending_reset or session._turbulence_aux_index != identity.turbulence_aux_index:
+			return false
+	elif identity.owner_kind == "helicopter":
+		if not session._ready_to_fly:
+			return false
+	else:
+		return false
+	if not _same_float(session.sim.dt(), identity.dt) or session.sim.aux.size() != identity.aux_size:
 		return false
 	var environment: RefCounted = session.environment
 	if environment == null or not is_instance_valid(environment) or environment != identity.environment \
