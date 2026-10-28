@@ -7,6 +7,7 @@ extends "oracle.gd"
 const WeatherConfig := preload("res://physics/wind_config.gd")
 const WeatherField := preload("res://physics/wind_field.gd")
 const SimEnvironment := preload("res://sim/environment.gd")
+const WeatherAdapter := preload("weather_adapter.gd")
 
 
 func _source_hashes() -> Dictionary:
@@ -16,57 +17,6 @@ func _source_hashes() -> Dictionary:
 			"res://physics/wind_spatial_field.gd", "res://physics/wind_spatial_presets.gd",
 			"res://physics/wind_thermal_field.gd"]:
 		out[path] = FileAccess.get_sha256(path)
-	return out
-
-
-## Construct the precise prepared snapshot schema consumed by nk_weather_binding.hpp.
-## Provider's computed modes and coefficients are copied, never reconstructed.
-static func _snapshot(field: RefCounted) -> Dictionary:
-	var config: Dictionary = field.configuration()
-	var out := {format = "openrc-nk3-weather-snapshot-v1", kind = "spatial" if field.is_spatial() else "uniform",
-		vertical_atmosphere = field.has_vertical_atmosphere(), has_turbulence = field.has_turbulence(),
-		atmosphere = PackedFloat64Array([float(config.get("field_elevation_m", 0.0)),
-			field.air_density(), field.engine_charge_ratio()])}
-	if not field.is_spatial():
-		out.uniform = PackedFloat64Array([float(config.speed_mps), float(config.from_deg), float(config.gust_mps),
-			float(config.gust_up_mps), float(config.gust_duration_s), float(config.gust_period_s), float(config.gust_delay_s)])
-		return out
-	var provider: RefCounted = field.get("_spatial")
-	var spatial: Dictionary = config.spatial_wind
-	var domain: Dictionary = spatial.domain
-	var profile: Dictionary = spatial.profile
-	var free_air: Array = profile.free_air_wind_ned_mps
-	var layers := PackedFloat64Array()
-	for layer: Dictionary in profile.layers:
-		layers.append_array(PackedFloat64Array([float(layer.center_agl_m), float(layer.half_thickness_m),
-			float(layer.delta_wind_ned_mps[0]), float(layer.delta_wind_ned_mps[1])]))
-	var thermal := {}
-	if provider.get("_thermal_field") != null:
-		var source: Dictionary = spatial.thermal_field
-		var thermal_domain: Dictionary = source.domain
-		var cells := PackedFloat64Array()
-		for cell: Dictionary in source.cells:
-			cells.append_array(PackedFloat64Array([float(cell.birth_s), float(cell.duration_s), float(cell.center_ne_m[0]),
-				float(cell.center_ne_m[1]), float(cell.drift_ne_mps[0]), float(cell.drift_ne_mps[1]),
-				float(cell.radius_m), float(cell.top_agl_m), float(cell.peak_updraft_mps)]))
-		thermal = {domain = PackedFloat64Array([float(thermal_domain.half_extent_north_m),
-			float(thermal_domain.half_extent_east_m), float(thermal_domain.max_height_agl_m),
-			float(thermal_domain.time_horizon_s), float(source.identity.epoch_offset_s)]), cells = cells}
-	out.spatial = {
-		domain = PackedFloat64Array([float(domain.half_extent_north_m), float(domain.half_extent_east_m),
-			float(domain.max_height_agl_m), float(domain.time_horizon_s), float(domain.ground_extension_m),
-			float(spatial.identity.epoch_offset_s), float(domain.ground_transition_height_m)]),
-		profile = PackedFloat64Array([float(provider.get("_reference_speed")), float(provider.get("_roughness_length")),
-			float(provider.get("_displacement_height")), float(provider.get("_wall_height")),
-			float(provider.get("_surface_top")), float(provider.get("_free_air_join_height")),
-			float(provider.get("_direction_cosine")), float(provider.get("_direction_sine")),
-			float(provider.get("_log_denominator")), float(provider.get("_wall_scale")),
-			float(provider.get("_wall_scale_slope")), float(free_air[0]), float(free_air[1]), float(free_air[2])]),
-		layers = layers, gust_values = (provider.get("_gust_values") as PackedFloat64Array).duplicate(),
-		gust_max_duration = float(provider.get("_gust_max_duration")),
-		turbulence_rms = float(provider.get("_turbulence_rms")),
-		modes = (provider.get("_modes") as PackedFloat64Array).duplicate(), thermal = thermal,
-	}
 	return out
 
 
@@ -160,7 +110,7 @@ func _check_scenario(scenario: Dictionary, random_count: int) -> void:
 		_failures.append("weather scenario %s invalid: %s" % [label, str(built.errors)])
 		return
 	var field: RefCounted = built.field
-	var snapshot := _snapshot(field)
+	var snapshot := WeatherAdapter.snapshot(field)
 	var prepared: Dictionary = _native.prepare_weather(snapshot)
 	if not prepared.get("ok", false):
 		_failures.append("native weather refused %s: %s" % [label, str(prepared.get("error", ""))])
@@ -206,6 +156,22 @@ func _check_scenario(scenario: Dictionary, random_count: int) -> void:
 			var position := PackedFloat64Array([_rng.randf_range(-9999.0, 9999.0),
 				_rng.randf_range(-9999.0, 9999.0), -_rng.randf_range(0.0, 199.0)])
 			_compare_wind(label, field, position, _rng.randf_range(0.0, 1000.0), window)
+		if field.is_spatial():
+			var spatial: Dictionary = field.configuration().spatial_wind
+			if spatial.has("thermal_field"):
+				var thermal: Dictionary = spatial.thermal_field
+				for cell: Dictionary in thermal.cells:
+					for age: float in [0.0, float(cell.duration_s) * 0.5, float(cell.duration_s)]:
+						var time_s: float = float(cell.birth_s) + age - float(thermal.identity.epoch_offset_s)
+						if time_s < 0.0:
+							continue
+						var center_n: float = float(cell.center_ne_m[0]) + float(cell.drift_ne_mps[0]) * age
+						var center_e: float = float(cell.center_ne_m[1]) + float(cell.drift_ne_mps[1]) * age
+						for radial: float in [0.0, 4.0, 4.5, 5.0]:
+							var point := PackedFloat64Array([center_n + radial * float(cell.radius_m), center_e,
+								-0.5 * float(cell.top_agl_m)])
+							_compare_wind(label, field, point, time_s, window)
+							_tally("weather", "thermal_cell_samples")
 	for down: float in [-11000.0, -1000.0, -100.0, 0.0, 500.0, 500.000001, NAN, INF]:
 		var reference := PackedFloat64Array([field.air_density(down), field.engine_charge_ratio(down)])
 		var native: PackedFloat64Array = _native.air_component(down)
@@ -214,8 +180,8 @@ func _check_scenario(scenario: Dictionary, random_count: int) -> void:
 
 
 func _check_weather_refusals() -> void:
-	var uniform: Dictionary = _snapshot(WeatherField.build(WeatherConfig.defaults()).field)
-	var spatial: Dictionary = _snapshot(WeatherField.build(WeatherConfig.preset("spatial-realistic-v1")).field)
+	var uniform: Dictionary = WeatherAdapter.snapshot(WeatherField.build(WeatherConfig.defaults()).field)
+	var spatial: Dictionary = WeatherAdapter.snapshot(WeatherField.build(WeatherConfig.preset("spatial-realistic-v1")).field)
 	var cases := {}
 	var bad := uniform.duplicate(true)
 	bad.extra = 1

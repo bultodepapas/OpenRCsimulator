@@ -24,6 +24,7 @@
 #include "nk_wheels.hpp"
 #include "nk_weather_binding.hpp"
 #include "nk_electric_binding.hpp"
+#include "nk_wake_binding.hpp"
 
 namespace {
 
@@ -693,6 +694,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	bool prop_ready_ = false;
 	nk::WeatherBinding weather_;
 	nk::ElectricBinding electric_;
+	nk::WakeBinding wake_;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
 	bool stage_ready_ = false;
@@ -722,6 +724,9 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_electric", "snapshot"), &OpenRCNativeKernel::prepare_electric);
 		godot::ClassDB::bind_method(D_METHOD("electric_component", "rpm", "duty", "block", "enabled", "ambient_k", "cooling_mps"),
 			&OpenRCNativeKernel::electric_component);
+		godot::ClassDB::bind_method(D_METHOD("prepare_wake", "slipstream"), &OpenRCNativeKernel::prepare_wake);
+		godot::ClassDB::bind_method(D_METHOD("wake_component", "part", "body", "wind", "rho", "deflections", "rpm",
+			"thrust_torque", "downwash", "lagged", "source_delta"), &OpenRCNativeKernel::wake_component);
 		godot::ClassDB::bind_method(D_METHOD("propeller_component", "s", "air", "rho", "rpm", "local_hub", "explicit_air"),
 			&OpenRCNativeKernel::propeller_component);
 		godot::ClassDB::bind_method(D_METHOD("aero_component", "which", "s", "wind", "rho", "d", "downwash_cl", "ground_up"),
@@ -860,6 +865,21 @@ public:
 	Dictionary electric_component(double rpm, double duty, const PackedFloat64Array &block, bool enabled,
 			double ambient_k, double cooling_mps) const {
 		return electric_.electric_component(rpm, duty, block, enabled, ambient_k, cooling_mps);
+	}
+	Dictionary prepare_wake(const Dictionary &slipstream) {
+		if (!aero_ready_ || !prop_ready_) {
+			wake_ = nk::WakeBinding();
+			Dictionary out;
+			out["ok"] = false;
+			out["error"] = "prepare aerodynamic and propeller models before the wake";
+			return out;
+		}
+		return wake_.prepare_wake(slipstream, aero_, prop_);
+	}
+	PackedFloat64Array wake_component(int64_t part, const PackedFloat64Array &body, const PackedFloat64Array &wind,
+			double rho, const PackedFloat64Array &deflections, double rpm, const PackedFloat64Array &thrust_torque,
+			double downwash, const PackedFloat64Array &lagged, const PackedFloat64Array &source_delta) const {
+		return wake_.wake_component(part, body, wind, rho, deflections, rpm, thrust_torque, downwash, lagged, source_delta);
 	}
 
 	Dictionary propeller_component(const PackedFloat64Array &s, const PackedFloat64Array &air, double rho,

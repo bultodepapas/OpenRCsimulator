@@ -26,6 +26,7 @@ HARNESS_OPTIONS = {
     "oracle.gd": set(), "stage_oracle.gd": set(),
     "propeller_oracle.gd": set(),
     "weather_oracle.gd": set(), "electric_oracle.gd": set(),
+    "wake_oracle.gd": set(), "weather_stage_oracle.gd": set(),
     "trajectory.gd": {"ticks", "pairs", "warmup", "samples", "timing-cases", "skip-timing", "only", "repeats"},
     "fleet.gd": {"warmup", "samples", "aircraft", "weather", "soft-hull"},
 }
@@ -133,7 +134,8 @@ def main() -> int:
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     stem = {"oracle.gd": "results", "stage_oracle.gd": "stage", "trajectory.gd": "trajectory",
             "fleet.gd": "fleet", "propeller_oracle.gd": "propeller",
-            "weather_oracle.gd": "weather", "electric_oracle.gd": "electric"}[args.script]
+            "weather_oracle.gd": "weather", "electric_oracle.gd": "electric",
+            "wake_oracle.gd": "wake", "weather_stage_oracle.gd": "weather-stage"}[args.script]
     output = TOOL_ROOT / f"{stem}{variant}-{stamp}.json"
     marker = "NK3_ORACLE verdict=fail" if args.mutant else "NK3_ORACLE verdict=pass"
     checks = TOOL_ROOT / "checks"
