@@ -1,27 +1,31 @@
 ## NK-3 joint-stage weather oracle. Uses the real fixed-wing reference session,
 ## its shared pre_tick and actual OU aux intervals; native stage owns every RK
-## weather query. Spatial v5 remains explicitly skipped until point-flow/aero
-## integration is complete. This research adapter does not change app admission.
+## weather query. Spatial v5 runs only with the explicit include-spatial option;
+## this research adapter does not change application admission.
 extends "stage_oracle.gd"
 
 const WeatherConfig := preload("res://physics/wind_config.gd")
 const WeatherAdapter := preload("weather_adapter.gd")
+const WindFlow := preload("res://physics/wind_aircraft_flow.gd")
 
 
 func _extra_option_names() -> PackedStringArray:
-	return PackedStringArray(["ticks"])
+	return PackedStringArray(["ticks", "include-spatial"])
 
 
 func _checks() -> void:
 	_report.format = "openrc-nk3-weather-stage-oracle v1"
-	_report.weather_stage = {scenarios = [], skipped_spatial = [], trajectories = {}, refusals = {}}
+	_report.weather_stage = {scenarios = [], scenario_coverage = {}, skipped_spatial = [], trajectories = {}, refusals = {}}
 	var ticks: int = int(_options.get("ticks", "240"))
-	if _states <= 0 or ticks <= 0:
+	var include_option := str(_options.get("include-spatial", "false"))
+	if _states <= 0 or ticks <= 0 or include_option not in ["true", "false"]:
 		_failures.append("weather-stage states and trajectory ticks must be positive")
 		return
+	var include_spatial := include_option == "true"
+	_report.weather_stage.include_spatial = include_spatial
 	var scenarios: Array[Dictionary] = []
 	for preset: Dictionary in WeatherConfig.presets():
-		if preset.config.format == WeatherConfig.SPATIAL_FORMAT:
+		if preset.config.format == WeatherConfig.SPATIAL_FORMAT and not include_spatial:
 			_report.weather_stage.skipped_spatial.append(str(preset.id))
 		else:
 			scenarios.append(preset)
@@ -34,16 +38,35 @@ func _checks() -> void:
 	var combined: Dictionary = WeatherConfig.upgrade_column(WeatherConfig.GENTLE_PRACTICE,
 		{atmosphere_mode = "standard_column", field_elevation_m = 100.0})
 	scenarios.append({id = "custom-column-and-ou", config = combined})
+	if include_spatial:
+		var spatial_column: Dictionary = WeatherConfig.preset("spatial-realistic-v1")
+		spatial_column.atmosphere_mode = "standard_column"
+		spatial_column.field_elevation_m = 100.0
+		scenarios.append({id = "custom-spatial-column", config = spatial_column})
 	var count := maxi(1, int(ceil(float(_states) / float(scenarios.size()))))
 	for scenario: Dictionary in scenarios:
 		_check_weather_stage(scenario, count)
 	var gust := WeatherConfig.preset("gusty")
 	gust.gust_delay_s = 0.0
-	for scenario: Dictionary in [
+	var trajectories: Array[Dictionary] = [
 		{id = "active-gust", config = gust},
 		{id = "turbulent", config = WeatherConfig.preset("turbulent")},
 		{id = "standard-column", config = WeatherConfig.preset("standard-column")},
-	]:
+	]
+	if include_spatial:
+		for preset: Dictionary in WeatherConfig.presets():
+			if preset.config.format == WeatherConfig.SPATIAL_FORMAT:
+				trajectories.append(preset)
+		var active_gust: Dictionary = WeatherConfig.preset("spatial-gusty-v1")
+		active_gust.spatial_wind.gusts.events[0].start_s = 0.0
+		trajectories.append({id = "spatial-active-gust", config = active_gust})
+		var active_thermal: Dictionary = WeatherConfig.preset("spatial-thermal-soaring-v2")
+		active_thermal.spatial_wind.thermal_field.cells[0].birth_s = 0.0
+		active_thermal.spatial_wind.thermal_field.cells[0].duration_s = 120.0
+		active_thermal.spatial_wind.thermal_field.cells[0].center_ne_m = [60.0, -40.0]
+		active_thermal.spatial_wind.thermal_field.cells[0].drift_ne_mps = [0.0, 0.0]
+		trajectories.append({id = "spatial-active-thermal", config = active_thermal})
+	for scenario: Dictionary in trajectories:
 		_check_weather_trajectory(scenario, ticks)
 
 

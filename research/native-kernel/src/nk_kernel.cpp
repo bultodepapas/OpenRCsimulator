@@ -38,6 +38,7 @@ using godot::String;
 using godot::Variant;
 
 constexpr int kStateSize = 13;
+constexpr int kMaxContinuousSize = 64;
 constexpr const char *kBackend = "native";
 // Bump on any change to the stage contract (inputs, layout, outputs); the app loader and receipt must agree.
 constexpr const char *kBackendVersion = "openrc-native-kernel-stage-v1";
@@ -597,8 +598,8 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 			return dec.fail(std::string("capability flag missing: ") + flag);
 		}
 		const bool weather_flag = std::string(flag) == "turbulence" || std::string(flag) == "vertical_atmosphere" ||
-			std::string(flag) == "not_calm";
-		if (static_cast<bool>(config[flag]) && !(weather_flag && config.has("weather"))) {
+			std::string(flag) == "not_calm" || std::string(flag) == "spatial_weather";
+		if (static_cast<bool>(config[flag]) && !(weather_flag && config.has("weather")) && std::string(flag) != "slipstream") {
 			return dec.fail(std::string("unsupported session capability: ") + flag);
 		}
 	}
@@ -608,9 +609,19 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 			!dec.dict(config, "layout", layout, true) || !dec.dict(model, "propulsion", propulsion, true)) {
 		return false;
 	}
-	if (!decode_aero(dec, model, m.aero) || !decode_prop(dec, propulsion, m.prop) || !decode_gear(dec, gear, m.ground.gear)) {
+	Dictionary prop_geometry = propulsion.duplicate();
+	prop_geometry.erase("slipstream");
+	if (!decode_aero(dec, model, m.aero) || !decode_prop(dec, prop_geometry, m.prop) || !decode_gear(dec, gear, m.ground.gear)) {
 		return false;
 	}
+	Dictionary slipstream;
+	if (!dec.dict(propulsion, "slipstream", slipstream, false)) return false;
+	nk::WakeBinding wake_candidate;
+	const Dictionary wake_result = wake_candidate.prepare_wake(slipstream, m.aero, m.prop);
+	if (!static_cast<bool>(wake_result["ok"]) || (!slipstream.is_empty()) != static_cast<bool>(config["slipstream"])) {
+		return dec.fail("invalid wake model or capability flag");
+	}
+	m.wake = wake_candidate.model();
 	if (!config.has("surfaces") || config["surfaces"].get_type() != Variant::PACKED_FLOAT64_ARRAY ||
 			!config.has("lake_valid") || config["lake_valid"].get_type() != Variant::BOOL ||
 			!config.has("soft_hull") || config["soft_hull"].get_type() != Variant::BOOL) {
@@ -640,8 +651,9 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 			!layout_int(dec, layout, "input_count", L.input_count)) {
 		return false;
 	}
-	if (L.rotor_index != 0 || L.wheel_index != 0) {
-		return dec.fail("continuous wash pieces before the wheels are not ported");
+	const int wash_count = m.wake.transport ? static_cast<int>(m.wake.pieces.size()) : 0;
+	if (L.rotor_index != wash_count || L.wheel_index != wash_count) {
+		return dec.fail("continuous wash layout differs from prepared wake pieces");
 	}
 	if (L.wheel_count < 1 || L.wheel_count > 16 || L.wheel_count != static_cast<int>(m.ground.gear.contacts.size()) ||
 			L.anchor_count != L.wheel_count || L.anchors + L.anchor_count * 3 > L.aux_size || L.servo + 2 >= L.aux_size ||
@@ -656,17 +668,20 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		}
 		nk::WeatherBinding candidate;
 		const Dictionary prepared = candidate.prepare_weather(snapshot);
-		if (!static_cast<bool>(prepared["ok"]) || candidate.is_spatial()) {
-			return dec.fail("joint weather stage needs a valid uniform snapshot");
+		if (!static_cast<bool>(prepared["ok"]) || candidate.is_spatial() != static_cast<bool>(config["spatial_weather"])) {
+			return dec.fail("joint weather stage needs a matching valid snapshot");
 		}
 		m.weather = candidate.uniform_model();
+		m.spatial_weather = candidate.is_spatial();
+		m.spatial = candidate.spatial_model();
 		if (m.weather.has_turbulence != static_cast<bool>(config["turbulence"]) ||
 				m.weather.vertical_atmosphere != static_cast<bool>(config["vertical_atmosphere"]) ||
-				m.weather.calm == static_cast<bool>(config["not_calm"]) ||
+				(!m.spatial_weather && m.weather.calm == static_cast<bool>(config["not_calm"])) ||
 				(m.weather.has_turbulence && (L.turbulence < 4 || L.turbulence + 7 != L.aux_size)) ||
 				(!m.weather.has_turbulence && L.turbulence != -1)) {
 			return dec.fail("weather snapshot and session capabilities/layout differ");
 		}
+		if (m.spatial_weather && m.aero.ys.size() != 6) return dec.fail("spatial stage requires six wing stations");
 		m.has_weather = true;
 	}
 	return true;
@@ -728,6 +743,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("prepare_electric", "snapshot"), &OpenRCNativeKernel::prepare_electric);
 		godot::ClassDB::bind_method(D_METHOD("electric_component", "rpm", "duty", "block", "enabled", "ambient_k", "cooling_mps"),
 			&OpenRCNativeKernel::electric_component);
+		godot::ClassDB::bind_method(D_METHOD("electric_coupling_component", "body", "stage", "block", "inertia", "inverse", "external", "enabled"),
+			&OpenRCNativeKernel::electric_coupling_component);
 		godot::ClassDB::bind_method(D_METHOD("prepare_wake", "slipstream"), &OpenRCNativeKernel::prepare_wake);
 		godot::ClassDB::bind_method(D_METHOD("wake_component", "part", "body", "wind", "rho", "deflections", "rpm",
 			"thrust_torque", "downwash", "lagged", "source_delta"), &OpenRCNativeKernel::wake_component);
@@ -884,6 +901,12 @@ public:
 	Dictionary electric_component(double rpm, double duty, const PackedFloat64Array &block, bool enabled,
 			double ambient_k, double cooling_mps) const {
 		return electric_.electric_component(rpm, duty, block, enabled, ambient_k, cooling_mps);
+	}
+	Dictionary electric_coupling_component(const PackedFloat64Array &body, const PackedFloat64Array &stage,
+			const PackedFloat64Array &block, const PackedFloat64Array &inertia, const PackedFloat64Array &inverse,
+			const PackedFloat64Array &external, bool enabled) const {
+		if (!prop_ready_) { Dictionary out; out["ok"] = false; return out; }
+		return electric_.electric_coupling_component(prop_, body, stage, block, inertia, inverse, external, enabled);
 	}
 	Dictionary prepare_wake(const Dictionary &slipstream) {
 		if (!aero_ready_ || !prop_ready_) {
