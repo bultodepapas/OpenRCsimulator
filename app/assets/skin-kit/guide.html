@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="data:,">
+  <title>Crear una skin · OpenRC Simulator</title>
+  <style>
+    :root { color: #192a3b; background: #f1f5f5; font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: #075c75; text-decoration-thickness: .08em; text-underline-offset: .15em; }
+    a:hover { color: #003a50; }
+    a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid #d18318; outline-offset: 3px; }
+    header { background: #102b3c; color: #fff; padding: 2.4rem 1.2rem 2rem; }
+    .wrap { width: min(100%, 880px); margin: auto; }
+    .eyebrow { color: #a8e0d4; font-size: .79rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+    h1, h2, h3 { line-height: 1.2; }
+    h1 { font-size: clamp(2rem, 5vw, 3.2rem); letter-spacing: -.035em; margin: .5rem 0 .6rem; }
+    header p { color: #d8e8ec; max-width: 42rem; margin: 0; }
+    nav { margin-top: 1.1rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    nav a { color: #c5eee5; font-weight: 700; }
+    main { padding: 1rem 1.2rem 4rem; }
+    section { scroll-margin-top: 1rem; }
+    article { background: #fff; border: 1px solid #dbe5e5; border-radius: 14px; margin: 1.25rem 0; padding: clamp(1.1rem, 3vw, 2rem); box-shadow: 0 6px 22px #173d4910; }
+    h2 { font-size: 1.65rem; margin: .1rem 0 1rem; }
+    h3 { font-size: 1.16rem; margin: 1.8rem 0 .5rem; }
+    p, ul, ol { margin: .65rem 0 1rem; }
+    li { margin: .36rem 0; padding-left: .15rem; }
+    .intro { font-size: 1.08rem; color: #415a68; }
+    .tag { display: inline-block; background: #e0f2ed; color: #075c54; border-radius: 99px; padding: .16rem .65rem; font-weight: 700; font-size: .83rem; }
+    .note { border-left: 4px solid #4c9c8c; padding: .3rem 1rem; background: #eff8f5; margin: 1rem 0; }
+    code { background: #edf3f4; border-radius: 4px; padding: .05rem .25rem; overflow-wrap: anywhere; font-size: .91em; }
+    pre { background: #edf3f4; border-radius: 8px; padding: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.45; }
+    pre code { padding: 0; }
+    label { display: block; font-weight: 700; margin: .8rem 0 .35rem; }
+    textarea { display: block; width: 100%; min-height: 31rem; padding: .9rem; color: #192a3b; background: #f8fbfa; border: 1px solid #95b3b5; border-radius: 8px; font: .91rem/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; resize: vertical; }
+    button { border: 0; border-radius: 7px; background: #075c62; color: #fff; padding: .7rem 1rem; font: inherit; font-weight: 700; cursor: pointer; margin: .7rem .7rem .1rem 0; }
+    button:hover { background: #06464c; }
+    .status { font-size: .88rem; color: #31525a; }
+    .language { margin: 2.8rem 0 0; font-size: 1rem; color: #486470; border-top: 1px solid #cddcdd; padding-top: 1.5rem; }
+    footer { color: #56717b; font-size: .85rem; padding-bottom: 2rem; }
+    @media print { header { color: #000; background: none; padding: 0; } header p, .eyebrow, nav a { color: #000; } article { box-shadow: none; break-inside: avoid; } button { display: none; } textarea { min-height: 32rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="eyebrow">OpenRC Simulator · guía del jugador</div>
+      <h1>Tu avión, tu diseño.</h1>
+      <p>Crea una skin para el Skywalker X8 con Blender y la ayuda de una IA. Esta guía se puede leer sin conexión.</p>
+      <nav aria-label="Idioma / Language"><a href="#es">Español</a><a href="#en" lang="en">English</a></nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <section id="es" lang="es">
+      <article>
+        <span class="tag">Disponible para Skywalker X8</span>
+        <h2>Una idea se convierte en una skin</h2>
+        <p class="intro">El resultado para el simulador es un archivo <code>.orskin</code>. La pintura cambia la apariencia del avión, no su forma ni su comportamiento de vuelo.</p>
+        <h3>1. Descarga el kit</h3>
+        <ol>
+          <li>En OpenRC abre <strong>Inicio → Aeronaves → Skywalker X8 → Elegir pintura → Crear una skin</strong>. En la ventana de herramientas selecciona <strong>Guardar plantilla de Blender…</strong> y guarda <code>skywalker-x8.zip</code>.</li>
+          <li>Descomprime el ZIP en una carpeta propia. Contiene <code>Skywalker-X8.blend</code>, <code>Export OpenRC Skin.py</code>, <code>README.txt</code> y esta guía <code>guide.html</code>. Guarda una copia sin modificar.</li>
+          <li>Instala <a href="https://www.blender.org/download/">Blender gratis desde su página oficial</a>. La plantilla se guardó con Blender 5.2.2: utiliza esa versión o una versión posterior compatible. La descarga y los servicios de IA necesitan internet; esta guía no.</li>
+        </ol>
+        <h3>2. Elige tu idea y una forma de trabajar</h3>
+        <p>Por ejemplo: <strong>«Hazme una skin inspirada en un tiburón blanco»</strong>. Añade colores, dónde quieres las marcas y un nombre. Elige referencias propias o que tengas permiso de usar; guarda su origen y las condiciones de uso, especialmente si contienen logotipos o arte ajeno.</p>
+        <ul>
+          <li><strong>Codex en tu computador:</strong> abre la carpeta descomprimida en una sesión local de Codex, comparte la idea, las referencias y el texto de abajo. Pídele que localice y pruebe Blender instalado o que use un MCP de Blender ya configurado. Si tienes la CLI, puedes iniciar <code>codex</code> en la carpeta. Dale acceso de escritura a esa carpeta.</li>
+          <li><strong>Claude Desktop + Blender:</strong> abre el <code>.blend</code> y configura e inicia el <a href="https://academy.claude.com/tutorials/using-the-blender-connector-in-claude">conector de Blender</a>. Comparte el texto y las referencias en Claude Desktop. El conector trabaja con la escena abierta: después guarda el proyecto en Blender. El conector requiere Blender 4.2 o posterior, pero para esta plantilla utiliza la versión indicada arriba.</li>
+          <li><strong>Claude en navegador u otra IA en la nube:</strong> sube el ZIP y las referencias si el servicio lo permite. Pide primero que compruebe ejecutando Blender o <code>bpy</code> que puede abrir la plantilla. Crear archivos en la nube no garantiza que Blender esté instalado; el conector local de Blender no funciona en Claude del navegador. Si no supera la prueba, usa una de las opciones locales. También puedes terminar en tu Blender local si recibes un <code>.blend</code> editado.</li>
+        </ul>
+        <p class="note">Una respuesta de texto o una imagen renombrada no es una skin terminada. Pide archivos reales y las comprobaciones que la IA sí pudo realizar.</p>
+        <h3>3. Copia el encargo para la IA</h3>
+        <p>Edita la primera frase con tu idea. Adjunta el kit y tus referencias, o indica la carpeta local. Puedes copiar el texto para Claude o Codex.</p>
+        <label for="prompt-es">Tu encargo en español</label>
+        <textarea id="prompt-es" spellcheck="true">Hazme una skin inspirada en un tiburón blanco.
+
+Utiliza mi kit inicial de OpenRC para Skywalker X8. Inspecciona la plantilla y mis imágenes de referencia. Comprueba y demuestra que puedes abrir el .blend con Blender/bpy o con un Blender conectado antes de afirmar que puedes crear archivos. Si no puedes, dímelo e indica el siguiente paso local; no inventes una exportación.
+
+Crea una pintura llamativa y fácil de reconocer en vuelo que siga mi idea. Usa la imagen Base Color existente de x8_livery y los Base Color de los materiales existentes. Conserva la geometría, la silueta, los objetos, las transformaciones, pivotes, bisagras, UV, nombres de materiales y jerarquía. No cambies la física ni añadas piezas al avión. No dependas de sombreadores procedurales que no estén horneados en la imagen de pintura. Haz que los colores y marcas se vean bien desde arriba y desde abajo. Usa solo arte y referencias que yo tenga permiso de utilizar; indica si usaste material externo.
+
+Mantén la imagen de pintura en 2048 × 2048 salvo que haya una buena razón para cambiarla. Cada PNG puede medir como máximo 4096 × 4096 y la suma de píxeles decodificados no puede superar 16.777.216. No uses texturas 8K. Guarda la imagen pintada, empaqueta los recursos externos nuevos, guarda un .blend editable y vuelve a abrirlo para comprobar que la pintura se conservó. Utiliza el Export OpenRC Skin.py incluido para producir un .orskin de este kit; no inventes el manifiesto ni renombres otro archivo. Entrega también una imagen de vista previa de 1920 × 1080 y di qué vistas comprobaste realmente. La vista previa es una imagen de revisión, no la textura.
+
+Dame rutas o enlaces de descarga de los archivos reales: .orskin, .blend editable y vista previa. Indica la versión de Blender y qué verificaste. Si tu entorno no puede exportar, dilo y entrega el .blend editado y los pasos locales exactos.</textarea>
+        <button type="button" data-copy="prompt-es" data-ok="Copiado." data-fail="Selecciona el texto y cópialo con Ctrl+C o ⌘C.">Copiar encargo</button><span class="status" role="status" aria-live="polite"></span>
+        <noscript>Selecciona el texto y usa Ctrl+C o ⌘C para copiarlo.</noscript>
+        <p>El kit utiliza una imagen de pintura de <code>x8_livery</code>; los demás materiales pueden usar su color base Principled. El exportador acepta el color base y una imagen conectada directamente, no combinaciones procedurales sin hornear. Mantén los demás canales del material como están. La transparencia no está garantizada.</p>
+      </article>
+      <article>
+        <h2>Termina, exporta y vuela</h2>
+        <h3>4. Guarda y exporta en Blender</h3>
+        <p>Tu asistente puede hacerlo. Si solo te devuelve el proyecto editado, sigue estos pasos:</p>
+        <ol>
+          <li>Abre el <code>.blend</code> editado. Revisa arriba, abajo y lados en <strong>Material Preview</strong>; comprueba uniones, zonas reflejadas, marcas y superficies móviles.</li>
+          <li>En un <strong>Image Editor</strong>, selecciona la imagen pintada (inicialmente <code>x8_abisal_base_color</code>) y usa <strong>Image → Save</strong>. Para imágenes externas vinculadas nuevas, usa también <strong>File → External Data → Pack Resources</strong>. Luego guarda el <code>.blend</code> con otro nombre mediante <strong>File → Save As</strong> y ábrelo de nuevo para comprobar que la pintura se conservó. Empaquetar recursos por sí solo no guarda los cambios de la imagen ya empaquetada.</li>
+          <li>Abre el espacio <strong>Scripting</strong>; en su editor de texto abre <code>Export OpenRC Skin.py</code> de la carpeta del kit y pulsa <strong>Run Script</strong>. En el diálogo elige una ubicación y guarda, por ejemplo, <code>Mi diseño.orskin</code>. El nombre del archivo será el nombre de la pintura: máximo 48 caracteres imprimibles.</li>
+          <li>Para una vista previa, encuadra el avión en <strong>Material Preview</strong>, configura la salida a <strong>1920 × 1080 al 100 %</strong> y usa <strong>View → Viewport Render Image</strong> en la vista 3D; guarda la imagen desde la ventana de imagen. Repite desde otro ángulo si hace falta. El kit no genera una vista previa automáticamente ni incluye cámara.</li>
+        </ol>
+        <p>La imagen 1920 × 1080 sirve para revisar el diseño. La textura de pintura del kit es de 2048 × 2048. El archivo que se carga en OpenRC es el <code>.orskin</code>, no la imagen ni el <code>.blend</code>.</p>
+        <p>Para un asistente que use terminal, desde la carpeta del kit (reemplaza el nombre del proyecto si lo guardaste con otro nombre):</p>
+        <pre><code>blender --background Skywalker-X8.blend --python "Export OpenRC Skin.py" -- --output my-design.orskin --label "My design"</code></pre>
+        <p>Si <code>blender</code> no está en la ruta de comandos, utiliza la ruta completa al ejecutable. El exportador de la ventana también sirve.</p>
+        <h3>5. Carga la pintura</h3>
+        <ol>
+          <li>En OpenRC selecciona <strong>Inicio → Aeronaves → Skywalker X8 → Elegir pintura → Cargar nueva skin…</strong>.</li>
+          <li>En la ventana de herramientas pulsa <strong>Cargar nueva skin…</strong> y elige el <code>.orskin</code>. Si se importa correctamente, queda seleccionado. Compruébalo en Inicio y en vuelo.</li>
+          <li>La skin importada y la selección se conservan al reiniciar. Para volver al aspecto original, elige una pintura incluida en la galería.</li>
+        </ol>
+        <p>Si se rechaza el archivo, lee el mensaje y revisa que sea un <code>.orskin</code> exportado con el kit del X8 y para la versión actual del modelo. Para otro avión o una versión distinta, descarga un kit nuevo y vuelve a exportar. Un rechazo no cambia la pintura seleccionada. Se pueden instalar hasta 32 pinturas personalizadas para el X8; importar dos veces el mismo archivo no crea otra entrada.</p>
+        <p>Límites de importación: <code>.orskin</code> de hasta 32 MiB; PNG de hasta 16 MiB y 4096 × 4096 cada uno; máximo 16.777.216 píxeles decodificados sumando todas las imágenes y hasta nueve materiales/texturas. Una imagen de 4096 × 4096 consume todo el límite de píxeles. Comienza con una imagen de 2048 × 2048.</p>
+        <p>Conserva el <code>.blend</code>, las imágenes y sus referencias para futuras ediciones. Antes de compartir el archivo de skin, la plantilla del avión o arte de terceros, comprueba los permisos aplicables.</p>
+      </article>
+    </section>
+    <section id="en" lang="en">
+      <div class="language">English · <a href="#es">Volver al español</a></div>
+      <article>
+        <span class="tag">Available for Skywalker X8</span>
+        <h2>Turn an idea into a skin</h2>
+        <p class="intro">The simulator loads an <code>.orskin</code> file. A skin changes the aircraft's appearance, not its shape or flight behavior.</p>
+        <h3>1. Get the kit</h3>
+        <ol>
+          <li>In OpenRC open <strong>Home → Aircraft → Skywalker X8 → Choose paint → Create a skin</strong>. In Skin tools select <strong>Save Blender template…</strong> and save <code>skywalker-x8.zip</code>.</li>
+          <li>Extract the ZIP into its own folder. It contains <code>Skywalker-X8.blend</code>, <code>Export OpenRC Skin.py</code>, <code>README.txt</code> and this <code>guide.html</code>. Keep a clean copy.</li>
+          <li>Install <a href="https://www.blender.org/download/">free Blender from its official site</a>. The template was saved with Blender 5.2.2; use that version or a compatible newer version. Downloads and AI services need internet; this guide does not.</li>
+        </ol>
+        <h3>2. Choose an idea and a way to work</h3>
+        <p>For example: <strong>“Make me a skin inspired by a great white shark.”</strong> Add colors, placement and a name. Use references you own or have permission to use; keep their source and terms, especially for logos or someone else's artwork.</p>
+        <ul>
+          <li><strong>Codex on your computer:</strong> open the extracted folder in a local Codex session. Supply the prompt and references below. Ask it to find and test your installed Blender or use a configured Blender MCP. If you have the CLI, you can start <code>codex</code> in the folder. Give it write access to the folder.</li>
+          <li><strong>Claude Desktop + Blender:</strong> open the <code>.blend</code>, set up and start the <a href="https://academy.claude.com/tutorials/using-the-blender-connector-in-claude">Blender connector</a>, then supply the prompt and references in Claude Desktop. The connector works on the open scene; save the project in Blender afterwards. Its Blender 4.2 minimum does not replace the newer version needed by this kit.</li>
+          <li><strong>Claude in a browser or another cloud assistant:</strong> upload the ZIP and references if accepted. First ask it to demonstrate that it can run Blender or <code>bpy</code> and open the template. Cloud file creation does not guarantee Blender is installed; Claude's browser cannot use the local Blender connector. If the check fails, use a local route. You may also finish the export locally if you receive an edited <code>.blend</code>.</li>
+        </ul>
+        <p class="note">A text answer or a renamed image is not a finished skin. Ask for actual files and an honest report of the checks performed.</p>
+        <h3>3. Copy the AI brief</h3>
+        <p>Change the first sentence to your idea. Attach the kit and references, or give the assistant the local folder. This prompt works for Claude or Codex.</p>
+        <label for="prompt-en">Your English brief</label>
+        <textarea id="prompt-en" spellcheck="true">Make me a skin inspired by a great white shark.
+
+Use my attached OpenRC Skywalker X8 starter kit. Inspect the template and my reference images first. Check and show that you can actually open the .blend using Blender/bpy or a connected running Blender before claiming you can produce files. If you cannot, tell me and give me the next local step; do not invent an export.
+
+Create a striking, flight-readable paint scheme that follows my idea. Use the existing x8_livery Base Color image and existing material Base Colors. Keep the aircraft geometry, silhouette, objects, transforms, pivots, hinges, UVs, material names and hierarchy intact. Do not change physics, add aircraft parts or rely on procedural shading that is not baked into the paint image. Keep markings and colors legible from above and below. Use only artwork and references I have permission to use; describe any outside material you used.
+
+Keep the paint image at 2048 × 2048 unless there is a good reason to change it. Each PNG must be no larger than 4096 × 4096, with no more than 16,777,216 decoded pixels in total. Do not use 8K textures. Save the painted image itself, pack any newly linked resources, then save an editable .blend and reopen it to verify the paint survived. Use the supplied Export OpenRC Skin.py to produce an .orskin for this kit; do not make up the manifest or simply rename another file. Also provide a 1920 × 1080 preview showing the paint, and state which views you actually checked. The preview is a review image, not the texture.
+
+Give me the actual .orskin, editable .blend and preview file paths or download links. Report the Blender version and what you verified. If an export cannot run in your environment, say so and provide the edited .blend and the exact local steps instead.</textarea>
+        <button type="button" data-copy="prompt-en" data-ok="Copied." data-fail="Select the text and copy it with Ctrl+C or ⌘C.">Copy brief</button><span class="status" role="status" aria-live="polite"></span>
+        <noscript>Select the text and use Ctrl+C or ⌘C to copy it.</noscript>
+        <p>The kit uses one <code>x8_livery</code> paint image; other materials can use their Principled Base Color. The exporter supports a base color and a directly connected image, not unbaked procedural mixes. Leave other material channels as they are. Transparency is not guaranteed.</p>
+      </article>
+      <article>
+        <h2>Finish, export and fly</h2>
+        <h3>4. Save and export in Blender</h3>
+        <p>Your assistant may do this. If it returns only the edited project, complete these steps:</p>
+        <ol>
+          <li>Open the edited <code>.blend</code>. Inspect the top, underside and sides in <strong>Material Preview</strong>, including seams, mirrored areas, markings and moving surfaces.</li>
+          <li>In an <strong>Image Editor</strong>, select the painted image (initially <code>x8_abisal_base_color</code>) and choose <strong>Image → Save</strong>. For newly linked external images also use <strong>File → External Data → Pack Resources</strong>. Then <strong>File → Save As</strong> a new <code>.blend</code> and reopen it to check the paint survived. Packing resources alone does not save edits to the already packed paint image.</li>
+          <li>Open the <strong>Scripting</strong> workspace. In its Text Editor open the kit's <code>Export OpenRC Skin.py</code> and choose <strong>Run Script</strong>. In the dialog choose a location and a name such as <code>My design.orskin</code>. The filename becomes the paint name, up to 48 printable characters.</li>
+          <li>For a preview, frame the aircraft in <strong>Material Preview</strong>, set output to <strong>1920 × 1080 at 100%</strong>, and choose <strong>View → Viewport Render Image</strong> in the 3D Viewport; save the image from the image window. Repeat from another angle if needed. The kit does not automatically create a preview or include a camera.</li>
+        </ol>
+        <p>The 1920 × 1080 image is for review. The kit's paint texture is 2048 × 2048. Load the <code>.orskin</code> into OpenRC, not the image or the <code>.blend</code>.</p>
+        <p>For an assistant using a terminal, run this from the kit folder (replace the project name if you saved it under another name):</p>
+        <pre><code>blender --background Skywalker-X8.blend --python "Export OpenRC Skin.py" -- --output my-design.orskin --label "My design"</code></pre>
+        <p>If <code>blender</code> is not on the command path, use the full path to its executable. The GUI exporter works too.</p>
+        <h3>5. Load the paint</h3>
+        <ol>
+          <li>In OpenRC select <strong>Home → Aircraft → Skywalker X8 → Choose paint → Load new skin…</strong>.</li>
+          <li>In Skin tools choose <strong>Load new skin…</strong> and select the <code>.orskin</code>. A successful import selects it automatically. Inspect it on Home and in flight.</li>
+          <li>Imported skins and the selection persist across restarts. To restore the original appearance, select a built-in paint in the gallery.</li>
+        </ol>
+        <p>If import fails, read the message and check that the file is an <code>.orskin</code> exported from the X8 kit for the current model version. For another aircraft or version, download a fresh kit and export again. Rejection leaves the current selection unchanged. Up to 32 custom paints may be installed for the X8; importing identical bytes twice does not make a second entry.</p>
+        <p>Import limits: up to 32 MiB for the <code>.orskin</code>; up to 16 MiB and 4096 × 4096 per PNG; at most 16,777,216 decoded pixels across all images and nine materials/textures. One 4096 × 4096 image uses the full pixel allowance. Start with one 2048 × 2048 image.</p>
+        <p>Keep the <code>.blend</code>, images and references for future edits. Check the applicable permissions before sharing the skin file, aircraft template or third-party artwork.</p>
+      </article>
+    </section>
+    <footer>
+      <p>Referencias / References: <a href="https://academy.claude.com/tutorials/using-the-blender-connector-in-claude">Claude + Blender</a> · <a href="https://support.claude.com/en/articles/12111783-create-and-edit-files-with-claude">Claude file creation</a> · <a href="https://developers.openai.com/codex/cli/">Codex CLI</a> · <a href="https://docs.blender.org/manual/en/5.0/files/blend/packed_data.html">Blender: packed resources</a> · <a href="https://docs.blender.org/manual/en/latest/editors/3dview/viewport_render.html">Blender: viewport render</a></p>
+      <p>Esta página funciona sin conexión. Los enlaces externos necesitan internet. / This page works offline. External links require internet.</p>
+    </footer>
+  </main>
+  <script>
+    document.querySelectorAll('[data-copy]').forEach(function (button) {
+      button.addEventListener('click', async function () {
+        var field = document.getElementById(button.dataset.copy);
+        var status = button.nextElementSibling;
+        var copied = false;
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(field.value);
+            copied = true;
+          }
+        } catch (_) { /* The selectable text is the fallback. */ }
+        if (!copied) {
+          field.focus();
+          field.select();
+          try { copied = document.execCommand('copy'); } catch (_) { /* Copy manually. */ }
+        }
+        status.textContent = copied ? button.dataset.ok : button.dataset.fail;
+      });
+    });
+  </script>
+</body>
+</html>

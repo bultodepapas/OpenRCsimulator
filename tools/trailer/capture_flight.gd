@@ -238,6 +238,7 @@ func _run() -> void:
 			_failure = str(_main.session.start_error)
 		await _abort_live_capture("Production flight startup failed: " + _failure, 1)
 		return
+	_detach_desk_controller(_main.session)
 	if _lighting_flight == "normal":
 		var normal_flight: Dictionary = _validate_normal_flight()
 		if not bool(normal_flight.get("ok", false)):
@@ -1015,6 +1016,16 @@ static func validate_lighting_profile_options(options: Dictionary) -> Dictionary
 	if options.has("lighting-profile") and str(options.get("lighting-profile", "")).strip_edges().is_empty():
 		return {"ok": false, "error": "--lighting-profile requires an absolute JSON file path."}
 	return {"ok": true, "error": ""}
+
+
+## TRA-09: a gamepad plugged into the filming machine must not arm, hold or drive the director's flight.
+static func _detach_desk_controller(session: Node) -> void:
+	if Input.joy_connection_changed.is_connected(session._on_joy_connection_changed):
+		Input.joy_connection_changed.disconnect(session._on_joy_connection_changed)
+	if session.radio.connected:
+		session.radio.disconnect_device()
+		print("FLIGHT_CAPTURE_CONTROLLER_DETACHED")
+	session.set_process_input(false)
 
 
 ## Uses stock authored outlets through the ordinary frozen Workshop profile, without a second smoke system.

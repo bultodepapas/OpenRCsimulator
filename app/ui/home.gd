@@ -1406,6 +1406,11 @@ func livery_choices() -> Array:
 	return _livery_choices.duplicate(true)
 
 
+func refresh_liveries() -> void:
+	_livery_choices_aircraft = ""
+	_update_livery()
+
+
 func _cycle_fuel_fill() -> void:
 	set_fuel_fill(FUEL_FILLS[(FUEL_FILLS.find(fuel_start_fill) + 1) % FUEL_FILLS.size()])
 

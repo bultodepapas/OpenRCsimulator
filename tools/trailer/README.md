@@ -303,6 +303,17 @@ Supply a music stem with the corresponding duration and intended ending fade.
 
 The 2026-10-21 refresh reruns every simulator picture scene and the formation on the current source tree, retaining revision 6's 58-second timeline. The current crash happens later than the old take; derive its approach, impact and report cuts from the new capture instead of copying old source offsets. Detect the report's first visible and first reset frames in the decoded AVI before making the clean FFV1 source. The [refresh evidence](../../docs/research/cinematic-trailer/refresh-2026-10-21.md) records the accepted boundaries and delivery.
 
+TRA-09 (revision 8) adds presentation-only options. `capture_formation.gd --mix` renders five distinct
+airframes with colored show-smoke tints (600 frames, still labeled cinematic). `capture_flight.gd` accepts
+`--workshop-scale=<ratio>` (with a lighting preset; freezes the ordinary Workshop `virtual_similarity_v1`
+recipe) and `--livery=<id>`. `flight_director.gd` adds `corsair-pass`, `x8-pass`, `mini-pass`, `giant-pass`,
+`companions` (frames the first live AI companion and its nearest neighbor) and `corsair-roll`: wings-level
+altitude hold at full throttle for 9 s, then full aileron held. Identical inputs give the same flight for every
+livery, so the edit can cut between livery takes on one clock. `assemble.py` reads an optional
+`end_card_detail` line. `capture_flight.gd` now detaches any connected gamepad/radio from the session after
+startup (`FLIGHT_CAPTURE_CONTROLLER_DETACHED`): a desk controller otherwise froze takes at tick 3 while the
+manifest still read `complete`. Check that the logged tick advances, not only `complete`.
+
 Output checks cover resolution, 60 fps, the manifest's frame count/duration, full decode and decoded AAC true peak.
 `render-manifest.json` retains source/output hashes and audio measurements. These checks do not
 replace listening review, prove physical realism, or establish exact replay equivalence.

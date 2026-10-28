@@ -56,6 +56,8 @@ const TrimPracticeMenu := preload("res://ui/trim_practice_menu.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
 const CompanionsDialog := preload("res://ui/companions_dialog.gd")
 const LiveryPicker := preload("res://ui/livery_picker.gd")
+const SkinTools := preload("res://ui/skin_tools.gd")
+const CustomSkin := preload("res://aircraft/custom_skin.gd")
 const FLIGHT_SCENE := "res://main.tscn"
 const InputReport = preload("res://input/input_report.gd")
 const NaturalRandom = preload("res://scenarios/natural_random.gd")
@@ -649,8 +651,10 @@ func open_livery_picker(from: Control = null) -> void:
 	var choices: Array = home.livery_choices()
 	if choices.size() < 2: return
 	var aircraft_id: String = home.aircraft_id
-	var dialog := LiveryPicker.new(choices, home.livery_id, tr(Catalog.short_name(home.aircraft_id)), home.livery_preview_cache, home.theme)
+	var dialog := LiveryPicker.new(choices, home.livery_id, tr(Catalog.short_name(home.aircraft_id)), home.livery_preview_cache, home.theme, CustomSkin.supports(aircraft_id))
 	dialog.close_requested.connect(close_livery_picker)
+	dialog.create_skin_requested.connect(open_skin_tools)
+	dialog.load_skin_requested.connect(open_skin_tools.bind(true))
 	dialog.selected.connect(func(id: String) -> void:
 		close_livery_picker()
 		if home != null and home.aircraft_id == aircraft_id and AirplaneBuilder.resolve_livery_choice(choices, id) != home.livery_id:
@@ -661,6 +665,27 @@ func open_livery_picker(from: Control = null) -> void:
 
 func close_livery_picker() -> void:
 	if screens.is_top("liveries"): screens.pop()
+
+
+func open_skin_tools(load_file := false) -> void:
+	if _loading_active or home == null or not CustomSkin.supports(home.aircraft_id): return
+	close_livery_picker()
+	if not screens.is_top("home"): return
+	var aircraft_id: String = home.aircraft_id
+	var dialog := SkinTools.new(aircraft_id, home.theme)
+	dialog.close_requested.connect(func() -> void:
+		if screens.is_top("skin_tools"): screens.pop()
+	)
+	dialog.imported.connect(func(id: String) -> void:
+		if screens.is_top("skin_tools"): screens.pop()
+		if home != null and home.aircraft_id == aircraft_id:
+			home.refresh_liveries()
+			set_livery(id)
+	)
+	if not screens.push("skin_tools", dialog, home.livery_button):
+		dialog.free()
+	elif load_file:
+		dialog.choose_skin.call_deferred()
 
 
 ## The saved paint scheme that `id` still offers, else "" (its default paint).

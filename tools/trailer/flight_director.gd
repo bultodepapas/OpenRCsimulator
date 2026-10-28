@@ -14,6 +14,9 @@ var frame_records: Array[Dictionary] = []
 var record_tick_evidence := true # Real-time frame measurements avoid allocating a second full tick log.
 var _gear_keys: Array[String] = ["left", "right", "nose", "tail"]
 var _post_report_restart := false
+var _last_state := PackedFloat64Array() # TRA-09: latest accepted state for the Corsair run-up hold.
+var _run_up_altitude_m := -1.0
+const CORSAIR_TOP_RUDDER := 1.0 # Sign verified against measured nose drop in knife-edge.
 
 
 func configure(flight_main: Node, shot_name: String, shot_duration_s: float, output_fps: int) -> void:
@@ -144,8 +147,15 @@ func _commands_at(t: float) -> Dictionary:
 			c.pitch = 0.025
 		"corsair-roll": # TRA-09: full-throttle run-up, then one axial roll; identical for every livery take.
 			c.throttle = 1.0
-			c.roll = 1.0 if t >= 7.0 else 0.0 # Aileron held: continuous rolls once top speed is reached.
-			c.pitch = -0.03 if t < 7.0 else 0.04
+			# Run-up to top speed, nose raised before entry, then aileron held with top rudder
+			# in knife-edge and forward stick inverted (axial-roll technique).
+			if t < 9.0:
+				c = _corsair_run_up(c, 0.21 if t >= 8.3 else NAN)
+			else:
+				var bank: float = _attitude().x
+				c.roll = 1.0
+				c.yaw = CORSAIR_TOP_RUDDER * 0.6 * sin(bank)
+				c.pitch = 0.06 * cos(bank)
 		"mini-pass":
 			pass # TRA-09: neutral trimmed flight keeps the 10 % model off the grass.
 		"mustang-pass", "corsair-pass": # TRA-09 reuses the warbird pass for the F4U.
@@ -166,8 +176,42 @@ func _commands_at(t: float) -> Dictionary:
 	return c
 
 
+## TRA-09: pilot-like wings-level, altitude-hold stick during the full-throttle run-up.
+## pitch_override_rad (when finite) replaces altitude hold with a fixed nose-up attitude.
+func _corsair_run_up(c: Dictionary, pitch_override_rad := NAN) -> Dictionary:
+	c.roll = 0.0
+	c.pitch = 0.0
+	if _last_state.size() < RB.ATT + 4:
+		return c
+	var attitude: Vector2 = _attitude()
+	var bank: float = attitude.x
+	var pitch: float = attitude.y
+	var altitude: float = -_last_state[RB.POS + 2]
+	if _run_up_altitude_m < 0.0:
+		_run_up_altitude_m = altitude
+	var pitch_target: float = clampf(0.03 * (_run_up_altitude_m - altitude), -0.08, 0.08)
+	if is_finite(pitch_override_rad):
+		pitch_target = pitch_override_rad
+	c.roll = clampf(-1.5 * bank, -0.5, 0.5)
+	c.pitch = clampf(2.5 * (pitch_target - pitch), -0.4, 0.4)
+	return c
+
+
+## Bank (x) and pitch (y) in radians from the latest accepted NED attitude.
+func _attitude() -> Vector2:
+	if _last_state.size() < RB.ATT + 4:
+		return Vector2.ZERO
+	var w: float = _last_state[RB.ATT]
+	var x: float = _last_state[RB.ATT + 1]
+	var y: float = _last_state[RB.ATT + 2]
+	var z: float = _last_state[RB.ATT + 3]
+	return Vector2(atan2(2.0 * (w * x + y * z), 1.0 - 2.0 * (x * x + y * y)),
+		asin(clampf(2.0 * (w * y - z * x), -1.0, 1.0)))
+
+
 func _on_sim_stepped(tick: int, time_s: float, state: PackedFloat64Array, _loads: PackedFloat64Array,
 		inputs: PackedFloat64Array, aux: PackedFloat64Array) -> void:
+	_last_state = state
 	if not record_tick_evidence:
 		return
 	var commands: Dictionary = main.session.commands

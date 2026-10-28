@@ -4,6 +4,7 @@ extends Node
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const HX700 := preload("res://aircraft/hx700_model.gd")
+const CustomSkin := preload("res://aircraft/custom_skin.gd")
 const RESOURCE_LIMIT := 2
 var _active_path := ""
 var _active_callback := Callable()
@@ -28,7 +29,7 @@ static func path_for(id: String, livery := "") -> String:
 	var asset: Variant = parsed.get("asset", {})
 	if not asset is Dictionary or asset.get("kind") != "imported_glb": return ""
 	var path: String = str(asset.get("path", ""))
-	if not livery.is_empty():
+	if not livery.is_empty() and not CustomSkin.is_custom_id(livery):
 		path = ""
 		for record: Variant in parsed.get("liveries", []):
 			if record is Dictionary and record.get("id") == livery: path = str(record.get("path", ""))

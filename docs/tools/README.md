@@ -24,6 +24,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Bug investigation | [General playbook](debugging.md), [physics](debugging-physics.md), [graphics](debugging-graphics.md). |
 | CI failure or evidence summary | [CI](shared.md#ci); [checked-log summary/JUnit](shared.md#evidence-summary). |
 | Aircraft Workshop | [Generation, tests, captures and analysis](../TOOLS.md#aircraft-workshop). |
+| Player skin template and texture-only export | [Skin toolkit](../../tools/skins/README.md); [player tutorial](../AIRCRAFT-SKINS.md). |
 | Radio/controller diagnostics | [Device report, calibration and latency](../TOOLS.md#radio-diagnostics). |
 | Helicopter or ground vehicle | [Helicopter guide](../HELICOPTER.md), [ground-vehicle tools](../../research/rc-monster-truck/README.md). |
 | Physical measurements | [Mass, inertia, thrust and video reducers](../TOOLS.md#aircraft-measurement-reducers). |

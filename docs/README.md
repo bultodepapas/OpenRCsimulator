@@ -23,6 +23,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | AMD FSR completion, latest SDK integration and separate frame generation | [VQ-07d/h FSR completion plan](plans/amd-fsr-completion.md); [release/source audit, 2026-10-28](research/advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md) |
 | Aircraft format, fields, conventions and extension rules | [AIRCRAFT_CONTRACT](AIRCRAFT_CONTRACT.md) |
 | Reusable Blender developer handoff for new airplanes and all their skins | [Blender aircraft delivery](BLENDER-AIRCRAFT-DELIVERY.md) |
+| Create a personal X8 paint with Blender and AI, then load it in the simulator | [Aircraft skins tutorial](AIRCRAFT-SKINS.md) |
 | Landscape folders, field data, adapters, registration and validation | [Landscape contributor guide](LANDSCAPES.md); [selection plan](plans/landscape-selection.md) |
 | Workbench: edit, save and test experimental aircraft | [Aircraft Workshop entry point](AIRCRAFT-WORKSHOP.md); [consolidated AE plan](plans/aircraft-editor.md) |
 | Aircraft geometry, generators and configuration limits | The aircraft guide below and its asset README |

@@ -99,6 +99,18 @@ def listed_app_files() -> list[str]:
     return [name for name in result if source_path(name).is_file()]
 
 
+def additional_snapshot_files() -> list[str]:
+    """Optional profile-owned source proof; the legacy product adds none."""
+    return []
+
+
+def engine_receipt_path(label: str) -> Path:
+    """Resolve the legacy engine receipt; isolated profiles may use an archive."""
+    if label not in ("editor", "template_release"):
+        raise ValueError(f"unsupported engine receipt label: {label}")
+    return ENGINE / f"openrc-{label}-build.json"
+
+
 def external_proof_files(app: Path) -> list[str]:
     """Mirror the aircraft export plugin's authoring/dependency source set."""
     names: set[str] = set()
@@ -516,7 +528,7 @@ def prepare_snapshot() -> dict:
     app_files = listed_app_files()
     if not app_files:
         raise RuntimeError("current application source set is empty")
-    native_files = ground_vehicle_inputs()
+    native_files = ground_vehicle_inputs() + additional_snapshot_files()
     SNAPSHOT.parent.mkdir(parents=True, exist_ok=True)
     if not SNAPSHOT.parent.resolve().is_relative_to(ROOT.resolve()):
         raise RuntimeError("snapshot parent is outside the repository")
@@ -591,8 +603,8 @@ def prepare_snapshot() -> dict:
 
 
 def verify_engine() -> tuple[dict, dict, list[Path]]:
-    editor = load_json(ENGINE / "openrc-editor-build.json")
-    template = load_json(ENGINE / "openrc-template_release-build.json")
+    editor = load_json(engine_receipt_path("editor"))
+    template = load_json(engine_receipt_path("template_release"))
     integration = {name: sha(HERE / name) for name in trial_package.INTEGRATION}
     sources = {name: digest for name, _, digest, _ in native_build.ARCHIVES}
     shared = ("godot_commit", "version", "fidelityfx_sdk", "fsr_upscaler", "streamline", "platform",
@@ -725,8 +737,8 @@ def package_product(snapshot: dict) -> dict:
             shutil.copyfile(path, target)
         for name, content in launcher_files().items():
             (staging / name).write_bytes(content)
-        for name in ("openrc-editor-build.json", "openrc-template_release-build.json"):
-            shutil.copyfile(ENGINE / name, staging / name)
+        for label in ("editor", "template_release"):
+            shutil.copyfile(engine_receipt_path(label), staging / f"openrc-{label}-build.json")
         shutil.copyfile(SNAPSHOT / SNAPSHOT_RECEIPT, staging / SNAPSHOT_RECEIPT)
         files = {path.relative_to(staging).as_posix(): sha(path) for path in staging.rglob("*") if path.is_file()}
         receipt = {"format": PACKAGE_FORMAT, "build_identity": identity, "godot_commit": native_build.COMMIT,

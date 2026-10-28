@@ -53,21 +53,26 @@ fixtures; native Mac qualification is not implied:
 | Check | Result / scope |
 | --- | --- |
 | Editor getter | 10 fixtures on Windows Git Bash and WSL; existing Windows/Linux cache paths and shell syntax checked |
-| Template/preflight/correction | 40 tests per platform; Windows skips FIFO and four native export cases, WSL skips the four export cases |
-| Research launcher/profile | 20 Python tests, including actual Windows headless identity; 78 profile assertions |
+| Template/preflight/correction | 30 tests; combined with getter, 40 per platform. Windows skips FIFO and four native export cases, WSL skips the four export cases |
+| Research launcher/profile | 21 Python tests, including actual Windows headless identity; 78 profile assertions |
 | Research preparation | 13 fixtures including identity, path/copy validation, retained partial failure and atomic receipt publication |
-| Stream collector | 110 Godot assertions including 30-minute-equivalent 60/120 Hz streams, bounds, malformed metrics and interruption |
+| Stream collector | 112 Godot assertions including 30-minute-equivalent 60/120 Hz streams, bounds, malformed metrics, interruption and late report-path collision |
 | Summary/diagnosis | 71 Python tests including legacy reports, long streams, missing/corrupt/oversized input and completion checks |
-| Real capture | Legacy and v3 short captures, frame-cap rejection and external-owner interruption tested with the actual headless Main; counts/final results retained below |
-| Reconstruction/preferences | MetalFX policy, shared reconstruction, display preferences, diagnostics, history and Settings focused checks; final results retained below |
+| Real capture | Seven actual headless Main cases: legacy and v3 short captures, frame-cap rejection, external-owner interruption and preservation of a late-created report sentinel |
+| Reconstruction/preferences | MetalFX policy 51, shared reconstruction 118, display preferences 160, diagnostics 26, reconstruction history 16, FSR history 11, camera history 25, advanced graphics 146; Settings 1080p/200% and nine-language checks passed |
 
 The shared tree advanced through externally created commits during this work;
 the specialists did not commit or revert other workstreams. A detached test snapshot
 was frozen from base `1fc7258e6e3f0d8bdbff88da365167f11912b3dd`, working HEAD
 `3bfc7d65320320ceaaa8f174b0c977b618e1a6be` plus dirty changes. Its binary patch
 SHA-256 is `cc5ca10f80ea6215f4600ba00cd4dc7ae1dbe7f51c5b34c539330a19bce9eb77`.
-Later review fixes receive focused checks separately; this is not an assertion
-that the changing shared checkout is one immutable release candidate.
+That first snapshot captured an in-progress UI review edit, and its warm-cache run
+correctly rejected a type-inference error. After the specialists finished, the
+snapshot was refreshed with their final files at 23:00 UTC: patch SHA-256
+`1f481522f13e281324a28667ee2492158c504aadd44f946664074ff9786615b9`, same base and
+working HEAD. The final per-file manifest is retained with local check output.
+This is not an assertion that the changing shared checkout is one immutable
+release candidate.
 
 The first full-suite attempt exited during fresh import of the existing
 `f4u_corsair.glb`, process status `4294967295`, without a script error diagnostic.

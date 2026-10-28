@@ -33,7 +33,7 @@ This plan retains the creative targets and remaining review gates. The [producti
 | 0:11.5–0:14 | **R** wind/gust correction | `MEAN WIND · GUSTS · SEEDED TURBULENCE` |
 | 0:14–0:16.5 | **R** jet pass | `SPOOLING TURBINE · DOPPLER · SOUND DELAY` |
 | 0:16.5–0:19 | **R** Stik bank (gear) | `PER-WHEEL SUSPENSION · TIRE SLIP · STALLS & SPINS` |
-| 0:19–0:21 | **G** F4U Corsair pass | `F4U-1D CORSAIR 1/4.5` / `2.78 m · MOKI 250 RADIAL` |
+| 0:19–0:21 | **G** F4U Corsair: full-throttle level run-up to top speed, then aileron held through two rolls; the edit cuts between eleven livery takes of the identical deterministic flight every 0.2 s | `13 PAINT SCHEMES.` / `Full throttle · aileron held · same flight, every livery` |
 | 0:21–0:23 | **G** X8 flying wing | `X8 FLYING WING` / `FLIGHT-IDENTIFIED AERODYNAMICS` |
 | 0:23–0:25 | **R** Turbo Lumber twilight | `TURBO LUMBER EVOLUTION` / `ELECTRIC` |
 | 0:25–0:27 | **R** helicopter | `RC HELICOPTER` / `COLLECTIVE · CYCLIC · ROTOR SPOOL` |
@@ -48,6 +48,8 @@ This plan retains the creative targets and remaining review gates. The [producti
 | 0:51–0:55 | **R** crash approach, impact, report | `EVERY MISTAKE HAS A COST.` |
 | 0:55–1:03 | **C** formation reprise (fan-out) | — |
 | 1:03–1:06 | end card | `EVERY INPUT MATTERS.` / `9 LANGUAGES · OPEN SOURCE · EARLY ALPHA` / URL |
+
+The owner added on 2026-10-28: show the Corsair's liveries switching rapidly during a spectacular roll, at full speed, with the aileron held. Liveries are chosen before flight; the switch is editorial and the card says so. `luftwaffe` and `japan` are left out of the public edit. Settings lists DLSS/FSR as unavailable in the standard Compatibility build, so the trailer shows a labeled card, not that screen.
 
 Claims stay inside source scope: aircraft remain experimental and not flight-validated; Workshop size is virtual similarity scaling; companions are an experimental 1–3 roster; DLSS/DLAA/Reflex and FSR are unqualified trials; radios are EdgeTX/OpenTX USB joystick mode, without a brand compatibility list. The score is re-rendered to the new length from the same licensed Uprising source.
 

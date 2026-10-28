@@ -5,6 +5,8 @@ const Widgets = preload("res://ui/widgets.gd")
 const UiTheme = preload("res://ui/ui_theme.gd")
 signal selected(id: String)
 signal close_requested
+signal create_skin_requested
+signal load_skin_requested
 var buttons: Array[Button] = []
 var cancel_button: Button
 var panel: PanelContainer
@@ -20,8 +22,9 @@ var _pending: Array[int] = []
 var _labels: Array[Label] = []
 var _font_size := -1
 var _focus_columns := 0
+var _skin_actions: Array[Button] = []
 
-func _init(choices: Array = [], current := "", aircraft_name := "", previews: Dictionary = {}, shared_theme: Theme = null) -> void:
+func _init(choices: Array = [], current := "", aircraft_name := "", previews: Dictionary = {}, shared_theme: Theme = null, custom_skins := false) -> void:
 	name = "LiveryPicker"
 	layer = 12
 	_previews = previews
@@ -95,6 +98,16 @@ func _init(choices: Array = [], current := "", aircraft_name := "", previews: Di
 		button.pressed.connect(_choose.bind(str(choice.id)))
 		grid.add_child(button)
 		buttons.append(button)
+	if custom_skins:
+		var actions := HBoxContainer.new()
+		shell.add_child(actions)
+		var create := Widgets.button("Create a skin", "", "CreateSkin")
+		create.pressed.connect(func() -> void: create_skin_requested.emit())
+		actions.add_child(create)
+		var import_skin := Widgets.button("Load new skin…", "", "LoadSkin")
+		import_skin.pressed.connect(func() -> void: load_skin_requested.emit())
+		actions.add_child(import_skin)
+		_skin_actions.assign([create, import_skin])
 	cancel_button = Widgets.button("Back")
 	cancel_button.pressed.connect(func() -> void: close_requested.emit())
 	shell.add_child(cancel_button)
@@ -151,18 +164,22 @@ func _resize() -> void:
 		_sync_focus()
 
 func _sync_focus() -> void:
+	var footer: Array[Button] = _skin_actions.duplicate()
+	footer.append(cancel_button)
 	for index in buttons.size():
 		var button := buttons[index]
 		button.focus_neighbor_left = button.get_path_to(buttons[index - 1] if index % grid.columns > 0 else button)
 		button.focus_neighbor_right = button.get_path_to(buttons[index + 1] if index % grid.columns < grid.columns - 1 and index + 1 < buttons.size() else button)
 		button.focus_neighbor_top = button.get_path_to(buttons[index - grid.columns] if index >= grid.columns else button)
-		button.focus_neighbor_bottom = button.get_path_to(buttons[index + grid.columns] if index + grid.columns < buttons.size() else cancel_button)
+		button.focus_neighbor_bottom = button.get_path_to(buttons[index + grid.columns] if index + grid.columns < buttons.size() else footer[0])
 		button.focus_previous = button.get_path_to(buttons[index - 1] if index > 0 else cancel_button)
-		button.focus_next = button.get_path_to(buttons[index + 1] if index + 1 < buttons.size() else cancel_button)
+		button.focus_next = button.get_path_to(buttons[index + 1] if index + 1 < buttons.size() else footer[0])
+	for index in footer.size():
+		footer[index].focus_next = footer[index].get_path_to(footer[index + 1] if index + 1 < footer.size() else buttons[0] if not buttons.is_empty() else footer[0])
+		footer[index].focus_previous = footer[index].get_path_to(footer[index - 1] if index > 0 else buttons.back() if not buttons.is_empty() else cancel_button)
 	if not buttons.is_empty():
 		cancel_button.focus_neighbor_top = cancel_button.get_path_to(buttons.back())
 		cancel_button.focus_next = cancel_button.get_path_to(buttons[0])
-		cancel_button.focus_previous = cancel_button.get_path_to(buttons.back())
 
 func _choose(id: String) -> void:
 	if _chosen: return

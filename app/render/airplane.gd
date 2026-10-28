@@ -12,6 +12,7 @@ const AircraftCustomization := preload("res://render/aircraft_customization.gd")
 const LightingSkins := preload("res://render/lighting/lighting_skins.gd")
 const TimberVisualLighting := preload("res://aircraft/timber_visual_lighting.gd")
 const TimberVisualDetails := preload("res://aircraft/timber_visual_details.gd")
+const CustomSkin := preload("res://aircraft/custom_skin.gd")
 
 const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
@@ -68,18 +69,30 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 		push_error("Aircraft model builder has no build method: " + str(manifest.builder.script))
 		return {}
 	# F4U-16: a livery's GLB is verified before its scene loads. V1 manifests have no liveries.
-	var livery: Dictionary = registry.livery(manifest, livery_id)
+	var custom_livery := CustomSkin.is_custom_id(livery_id)
+	if custom_livery and not CustomSkin.supports(id):
+		push_warning("Custom aircraft paint is unavailable for this aircraft.")
+		return {}
+	var stock_livery: String = "" if custom_livery else livery_id
+	var livery: Dictionary = registry.livery(manifest, stock_livery)
 	if not livery.get("ok", false):
 		push_error("Aircraft livery: " + str(livery.get("errors", [])))
 		return {}
 	# V1 builders keep their zero-argument ABI. V2 constructs imported scenes from checked bindings.
-	var airplane: Dictionary = builder.call("build", manifest, livery_id) if manifest.version == 2 else builder.call("build")
+	var airplane: Dictionary = builder.call("build", manifest, stock_livery) if manifest.version == 2 else builder.call("build")
 	var verified: Dictionary = registry.validate_derived(manifest, airplane)
 	if not verified.get("ok", false):
 		if airplane.get("root") is Node:
 			airplane.root.free()
 		push_error("Aircraft model bindings: " + str(verified.get("errors", [])))
 		return {}
+	if custom_livery:
+		var paint: Dictionary = CustomSkin.apply(id, livery_id, str(manifest.asset.sha256), airplane.root)
+		if not paint.get("ok", false):
+			airplane.root.free()
+			push_warning("Custom aircraft paint: " + str(paint.get("errors", [])))
+			return {}
+		airplane.custom_skin = {id = paint.id, label = paint.label, sha256 = paint.sha256}
 	var data_path: String = str(Catalog.entry(id).get("data", ""))
 	var model: Dictionary = {}
 	if not data_path.is_empty():
@@ -161,6 +174,7 @@ static func livery_choices(id: String) -> Array:
 				var thumbnail := "res://assets/ui/liveries/%s/%s-%s.png" % [family, record.id, record.get("sha256", "")]
 				if ResourceLoader.exists(thumbnail): choice.thumbnail = thumbnail
 				choices.append(choice)
+	choices.append_array(CustomSkin.choices(id))
 	return choices
 
 
