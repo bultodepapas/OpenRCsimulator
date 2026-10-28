@@ -138,10 +138,50 @@ through the existing checked Godot runner. Output is
 `tmp/native-reconstruction-export/`, with the executable, PCK, runtime DLLs,
 licenses and hash receipts. `FSR3 Quality.cmd`, `DLSS Quality.cmd` and `Native.cmd`
 start a direct flight with separate local profiles. They do not use the player's
-production preferences. `Graphics Options.cmd` opens Home in High with its own
+production preferences. Launchers request a borderless **1920×1080** window.
+`DLAA.cmd`, `DLSS Balanced.cmd` and `DLSS Performance.cmd` select the other NVIDIA
+reconstruction modes. NVIDIA launchers request Reflex On; the separate
+`DLSS Quality - Reflex Off.cmd` and `DLSS Quality - Reflex Boost.cmd` launchers
+allow explicit comparisons. `Native.cmd` and the FSR3 launcher request Reflex Off.
+`Graphics Options.cmd` opens Home in High with its own
 profile: Settings → Graphics exposes the available providers and preserves kept
 choices. Its initial reconstruction is Native. The standard `app/export.sh` still uses the production
 engine and must not be used to package this trial.
+
+## NVIDIA Reflex trial
+
+`reflex_lifecycle.patch` repairs the existing NVIDIA integration rather than
+introducing another latency implementation. Availability requires the SDK's
+`ReflexState.lowLatencyAvailable`, loaded Reflex/PCL functions and no latched
+failure. Supported sessions call Sleep even when Off; PCL capability is separate.
+`reflex_sync.patch` refreshes driver availability each frame and applies options
+after rendering sync, before enqueueing the next draw. The SDK's non-thread-safe
+state/options calls cannot overlap the previous draw's markers. Loss of reported
+low-latency support also returns the accepted mode to Off.
+Queued render/present markers use the token captured with their draw, rather
+than the next simulation frame's token. SDK errors request Off and remain visible.
+
+The trial-only autoload is copied from `reflex_startup.gd` with a checked hash in
+the candidate/package receipts. `OPENRC_NVIDIA_REFLEX=off|on|boost` chooses its
+request (unset defaults to Off). It reports requested and SDK-accepted mode after
+a frame boundary and reports later availability/failure changes. The stock app
+and official engine do not install this adapter. `Streamline.get_reflex_status()`
+exposes capabilities, requested/accepted modes, SDK results, successful sleep and
+marker counters, frame IDs and expired-token count. Accepted mode is not an
+independent measurement of driver behavior or input-to-photon latency.
+
+After launch, use the existing bridge with your session's port:
+
+```powershell
+python tools/debug/debugctl.py run tools/graphics/native/reflex-smoke.txt --fail-on-error
+```
+
+This exercises Off, On, Boost and Off again, requiring successful SDK calls and
+progress in simulation/render/present markers. The [standalone fixture](repro/README.md)
+also covers separate-thread rendering. Neither check establishes a latency gain.
+Use NVIDIA's [pinned Reflex integration guide](https://github.com/NVIDIA-RTX/Streamline/blob/v2.11.1/docs/ProgrammingGuideReflex.md)
+for hardware measurement and qualification. Frame Generation, Ray Reconstruction
+and path tracing remain disabled; copying their SDK DLLs does not enable them.
 
 ## Integration contract
 

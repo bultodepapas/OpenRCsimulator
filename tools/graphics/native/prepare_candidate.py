@@ -29,6 +29,9 @@ GENERATOR_RELATIVE = Path("research/aircraft-standardization/build_customization
 GENERATOR_SHA256 = "a78b580aa320dfd4d34e27ef2e017cb395e19f71a5e35b25132a7228482e7ac6"
 RECEIPT_RELATIVE = Path("presentation-engine-receipt.json")
 RECEIPT_FORMAT = "openrc-native-reconstruction-candidate-receipt v1"
+TRIAL_SOURCES = {
+    "app/native_trial/reflex_startup.gd": Path(__file__).with_name("reflex_startup.gd"),
+}
 INTEGRATION_OVERLAYS = (
     "app/render/reconstruction.gd",
     "app/app_state/display_preferences.gd",
@@ -285,6 +288,7 @@ def prepare_forward_plus_project(previous: dict, changes: list[dict[str, str]]) 
         path,
     )
     expected = replace_once(expected, "[rendering]\n", '[rendering]\n\nstreamline/dlss_preset="K"\n', path)
+    expected = replace_once(expected, "[display]\n", '[autoload]\n\nNvidiaReflex="*res://native_trial/reflex_startup.gd"\n\n[display]\n', path)
     # MovieWriter fixes its output size at startup; a 1080p window alone still
     # records the historical 720p viewport. Keep diagnostic movies at the primary target.
     expected = replace_once(expected, "[display]\n", "[display]\n\nwindow/size/viewport_width.movie=1920\nwindow/size/viewport_height.movie=1080\n", path).encode("utf-8")
@@ -307,6 +311,23 @@ def prepare_forward_plus_project(previous: dict, changes: list[dict[str, str]]) 
         "renderer": "forward_plus",
     })
     return sha256(expected)
+
+
+def prepare_trial_sources(previous: dict) -> dict[str, str]:
+    """Install the small trial-only adapter with drift protection and source hashes."""
+    expected = {name: source.read_bytes() for name, source in TRIAL_SOURCES.items()}
+    for name, content in expected.items():
+        target = CANDIDATE / name
+        if target.exists() and sha256(target.read_bytes()) not in {
+            sha256(content), previous.get("trial_sources", {}).get(name)
+        }:
+            raise RuntimeError(f"candidate trial source has an unexpected edit: {name}")
+    for name, content in expected.items():
+        target = CANDIDATE / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if not target.exists() or target.read_bytes() != content:
+            target.write_bytes(content)
+    return {name: sha256(content) for name, content in expected.items()}
 
 
 def read_receipt() -> dict:
@@ -356,6 +377,7 @@ def main() -> int:
     for path, digest in integration_overlay_hashes.items():
         if integration_overlay_records[path]["expected_final_sha256"] != digest:
             raise RuntimeError(f"prepared integration overlay differs from its pinned hash: {path}")
+    trial_sources = prepare_trial_sources(old_receipt)
     candidate_project_sha256 = prepare_forward_plus_project(old_receipt, changes)
 
     source_changes = {
@@ -462,6 +484,7 @@ def main() -> int:
         "engine_identity": ENGINE_VERSION,
         "candidate_renderer": "forward_plus",
         "candidate_project_sha256": candidate_project_sha256,
+        "trial_sources": trial_sources,
         "integration_overlays": {
             path: {
                 **integration_overlay_records[path],

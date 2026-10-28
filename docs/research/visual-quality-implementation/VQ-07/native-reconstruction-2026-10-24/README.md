@@ -453,3 +453,64 @@ the K workaround is accepted only for the recorded hardware and tested sequences
 Cross-device/driver, camera-cut resets, motion quality, long-session behavior,
 latency and matched GPU cost remain open. Frame generation and ray reconstruction
 are not enabled, and the production engine pin remains 4.7.2.
+
+## Follow-up: usable NVIDIA package and Reflex integration — 2026-10-28
+
+At the owner's request, the existing DLSS/DLAA candidate was rebuilt and packaged
+with the NVIDIA fork's Reflex integration repaired. The official development
+engine is now 4.8-beta1; this trial remains a distinct custom build and uses the
+pinned older application snapshot `343be4b0bba0` plus its receipted overlays.
+It is not a promotion of the current application onto the custom engine.
+
+The new Reflex patches query actual low-latency availability, retain requested
+versus SDK-accepted mode, call Sleep even when Off, separate PCL support, and use
+the queued draw's token for render/present markers. A follow-up source audit found
+that the initial implementation could overlap non-thread-safe state/options calls
+with render markers. The final patch performs those calls after rendering sync,
+refreshes availability each frame, and returns the accepted mode to Off on loss
+of support or a latched SDK failure. No SDK or driver version was changed.
+The [integration guide](../../../../../tools/graphics/native/README.md#nvidia-reflex-trial)
+owns the commands, environment option and status API.
+
+The generated 40-file package provides DLSS Quality/Balanced/Performance, DLAA,
+and Reflex On/Off/Boost launchers, each with a separate local profile. Direct-flight
+launchers request borderless 1920×1080. The adapter reports requested and
+SDK-accepted modes instead of treating a request as proof of activation. Candidate
+and package preflight verify its source hash and autoload registration.
+
+| Final check on RTX 3090, driver 617.42 | Result |
+| --- | --- |
+| Reflex Off → On → Boost → Off, ordinary render thread | All four phases passed; 199 successful Sleep calls and 200 state queries; zero expired tokens |
+| Same sequence, separate thread and fixed FPS | All four phases passed; state queries, Sleep and simulation/render/present markers advanced in every mode; zero expired tokens |
+| DLSS preset K, separate thread and fixed FPS | Six phases, 384 frames, 360 successful evaluations; zero engine/Vulkan errors |
+| Full game, actual 1080p | DLAA/Quality/Balanced/Performance, resize, Native/MSAA restoration and Reflex mode changes passed |
+| Combined DLSS Quality + Reflex On | Camera changes, 120 active drawn frames at idle on the runway, pause and restart passed; final status: 2,410 DLSS evaluations, 5,372 successful Sleep calls, no backend failure; zero ObjectDB leaks at shutdown |
+| Final custom-engine reconstruction/settings tests | 102 / 120 checks; zero failed, zero engine errors/warnings |
+| Exported direct flight | Reflex On accepted, available and not failed; zero engine errors; normal window-close exit |
+| Exported DLSS Quality capture | 1920×1080 PNG and matching manifest hash; 32 evaluations, no fallback, zero errors/warnings; visually inspected |
+| Package integrity | All 40 managed files match their receipt hashes; editor/template integration receipts match |
+| Fresh clone with exact tool overlay | Nine tests passed; eleven real engine patches applied to 29 pristine files, then repeated without rewriting any file |
+
+The first baseline smoke used fullscreen and therefore ran at the monitor's 4K
+resolution. The corrected fixture explicitly sizes and asserts 1080p; that is the
+primary-target result above. An initial combined script was refused by the pause
+menu's hold; the completed run resumes through the actual menu action. Release
+templates reject `--path` and disable the debug bridge, so export verification used
+direct checked execution and the built-in capture route. No guard was bypassed.
+
+Vulkan validation was observed in the editor fixture and full-game logs. Loader
+notifications, the separate-thread experimental warning and existing RGB8-to-RGBA8
+conversion warnings remain visible. The final full-game log has 45 warnings; the
+exported direct-flight log has 44. Their only warning categories are loader
+notifications and texture conversion; neither has engine/Vulkan errors. The export
+capture is clean, but this does not separately establish release-layer activation.
+
+[Verification identities and results](verification-nvidia-2026-10-28.json) retain
+the exact builds, package hashes, checked-run reports, full-game statuses and
+fresh-clone proof. Raw logs and images remain ignored under
+`tmp/nvidia-validation-20261028/` and the named bridge sessions. No FPS improvement,
+input-to-photon reduction, physical validation or NVIDIA certification is claimed.
+The driver-controlled flash-trigger path required for NVIDIA's complete Reflex
+verification remains absent. DLSS camera-cut history resets, temporal motion
+quality, long-session behavior and other GPU/driver/platform qualification remain
+open. Frame generation, ray reconstruction and path tracing are still disabled.

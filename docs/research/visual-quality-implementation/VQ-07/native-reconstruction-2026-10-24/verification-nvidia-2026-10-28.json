@@ -1,0 +1,1317 @@
+{
+  "format": "openrc-nvidia-integration-verification v1",
+  "date": "2026-10-28",
+  "scope": "VQ-07d/h isolated Windows Vulkan trial",
+  "host": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "617.42",
+    "primary_output": [
+      1920,
+      1080
+    ]
+  },
+  "source_head": "7e794e6953861a617796d509c25d223595e0313f",
+  "engine": {
+    "openrc-editor-build.json": {
+      "experimental": true,
+      "production_engine_unchanged": "4.8-beta1",
+      "godot_repository": "https://github.com/NVIDIA-RTX/godot",
+      "godot_commit": "135dff3887a3d2ccf45cafbd9bdffa7b718e1e76",
+      "fidelityfx_sdk": "1.1.4",
+      "fsr_upscaler": "3.1.4",
+      "streamline": "2.11.1",
+      "platform": "windows",
+      "graphics_api": "vulkan",
+      "frame_generation_enabled": false,
+      "sources": {
+        "godot-nvidia.zip": "8f9d9604270ccca92d14cc57afca142079476cbe050e0486a90b84da17ce907a",
+        "fidelityfx-1.1.4.zip": "9a19e1f20bf269163f052186ed563209c5a1d0f7b1cf7e567e643dee6cc61179",
+        "streamline-2.11.1.zip": "0c1d562e59557434cabfb8997157cb8c04fc7d23f077c8bdf5260975b73dfb89"
+      },
+      "integration": {
+        "engine.patch": "e3d55e67e352b150da8dc1c3c3ea9caa0cbbabd2542e6f87bcd64285eb637620",
+        "vulkan_validation.patch": "26f91e399e339b4c4725f925a7c779254c9720112acf4ed49e52652480475206",
+        "dlss_validation.patch": "9bc70d7b64586a5515ad04e8c2bef9215aafae49b648ee0096d7d4aef550e9ed",
+        "shutdown_thread.patch": "a253b37bbbf88fed10bbbc6b33ce7823e52c9ffcff84fc5a973059148210d858",
+        "load_token_lifetime.patch": "868c518c78d2afe86e4ea29e53ec0d13488fa1c62a0dbd9b079d7ad70e8260a1",
+        "reflection_atlas_lifetime.patch": "86ab87598f732271991332a2be5f4ba1f6e2987fbacc21030e39645ab9b3010f",
+        "buffer_write_sync.patch": "d4ed03e2f95878ca226ad2bd0c689ea2294622cb92c3dacc2080f970f812aea6",
+        "dlss_frame_lifecycle.patch": "b17141de6aeec722a6d6af3dabaa8d4619709a33167d93ff07e0949303eea2c5",
+        "dlss_failure_paths.patch": "bf81e9af717ceeffed761350c2a8fdf39d64ca37cd350482a8c543ec726f46ee",
+        "reflex_lifecycle.patch": "1dff3a3e323eef0905fa1c501ab085f894a3e0682ca76b9f55035100d182c458",
+        "reflex_sync.patch": "3e0891bc6d0bdda63c77a06b1325bc2e576f702c72ba5bf5991e55b46d0fb5b4",
+        "fidelityfx.patch": "b8de4d034d67f681ba554a437ab69f7e95d2b1ac019315aac77555e6fd50d528",
+        "build_fidelityfx.py": "49e006c4bc989310f89a0f38fb4cf7b1b4763aa571f3076769abe695fe6d5785",
+        "fsr3.h": "acb7566f1fc05b4b6bc3d83a482b962d23247a3936cdf4f095e96eb92dab9fd4",
+        "fsr3.cpp": "e5ec7a18ea9961c5f05a5b2f81517d46da731d2489f06a5234c8f81827a5347d",
+        "fsr3_prepare.glsl": "a6a62b2ba1d5981ed48b326fc55ad5015935b6903ebcd2526a65f5bfdc569035"
+      },
+      "streamline_headers": {
+        "sl.h": "e1e81a7428d15b30db37587e9469bd68a56d630d820a4accec0aee3b17e157dd",
+        "sl_appidentity.h": "1337385ac9867d66fa6beb34c750e79aaf25a74a156a47e83f24937299dade87",
+        "sl_consts.h": "69a9f35aeecd7fbf68a997872ba2e29f27af7da4675f76b94628393d14474abf",
+        "sl_core_api.h": "328dc3a2c1dee579c200ca97e2d5b1ec38c893be4ba2745ef5ad506af7172e81",
+        "sl_core_types.h": "4096734a92c16e95a6d9051040dc4da93bb1e3e3715e34eb2cb1b1740bb05b15",
+        "sl_deepdvc.h": "c6086ffe6b1e00588368fdb91e4ab9dd9617624e0e4344cd503a2ca73e46d1a4",
+        "sl_device_wrappers.h": "af7741305b1a468c3a83efaa2005ecd53d2ffd7aadb8ec6868c9dcb4a8a8e3a1",
+        "sl_directsr.h": "65d4e68b2a0f0425ea4d381379172197b81352a50a5e399a8e8f51953e765c71",
+        "sl_dlss.h": "d2c8c61fa71794c8ba424cebce5b3079ebfab8e47ed98b4b00cf8b257ecfd6b5",
+        "sl_dlss_d.h": "a726e8135f2e36ad3939ce852530a879e1d909b85539c20c8cb5029ab122f2c4",
+        "sl_dlss_g.h": "1fc18cbe004e280df1f787276d08a1b28b8a8c4c65856fbaa659f56dff6a915d",
+        "sl_helpers.h": "b495f1e1dc88674474b49bc74b8f2d3ba8f19bab089e5127194bc44cf1e68df1",
+        "sl_helpers_vk.h": "82604567d239d00ac0ac2270cec744f6f11266e1d9d5187a95d4954f76d8c41c",
+        "sl_hooks.h": "cfeff70a52e1cc012cf4c955a15cc9d0b290f7e084dcb3c0168a9af06ff8f122",
+        "sl_matrix_helpers.h": "a65758d85abba1e12845d266d7d5e36aaefa952383cdf093f3143cd6d8653341",
+        "sl_nis.h": "f45be3cf149200e1eae081cd144c95726a7a290a89822a5d52b9f538e52484aa",
+        "sl_nvperf.h": "025f9f1c8482e75a90f8b8efccdc9cfc53a9fc8b05ba3acc6c3783708b66bd69",
+        "sl_pcl.h": "f43c5135fc8d5349ccd345e424f8cf1f61953a9f17e9897204b0741a3ab7b0fb",
+        "sl_reflex.h": "3b623a1189e04a686384d224a58c4ad9974c4e6e3204077676f6ec529475164c",
+        "sl_result.h": "2a0f6c12863bdc00b38910a5ec85d1f083c5671ee817a920afe626ac2a9100f7",
+        "sl_security.h": "a36b1c20394402bee7ce738089a5a1305ff6e9dd9dd517566154ce834f7c32b4",
+        "sl_struct.h": "5c5fcdb6b8386e81c8e003a7b45a730c83aa96b8d6e03692a54521c94d4825a5",
+        "sl_template.h": "af2d4a61361f2603872dcb6edc86cc9e18912762a5c03e6a782ff39a8c3b871b",
+        "sl_version.h": "c07ea4433db72800a0d60f8e17fff3adf09a195c3dfb8f70edf0b359a1ecea12"
+      },
+      "fidelityfx_runtime_build": {
+        "source": {
+          "archive": "fidelityfx-1.1.4.zip",
+          "archive_sha256": "9a19e1f20bf269163f052186ed563209c5a1d0f7b1cf7e567e643dee6cc61179",
+          "sdk_version": "1.1.4",
+          "fsr3_upscaler": "3.1.4"
+        },
+        "patch_sha256": "b8de4d034d67f681ba554a437ab69f7e95d2b1ac019315aac77555e6fd50d528",
+        "vulkan": {
+          "loader": "C:\\WINDOWS\\System32\\vulkan-1.dll",
+          "loader_file_version": "1.4.341.0",
+          "loader_sha256": "0f8b9d12b001932d4c0a86945215432ab9f746fdbf32688d211d3d93b791b139",
+          "headers": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\thirdparty\\vulkan\\include",
+          "vulkan_headers_version": "1.4.335",
+          "vulkan_core_header_sha256": "b8944f451db2231a07acbce90d1d6de2993fc6d656ab120cd833447ec9120710",
+          "import_library": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\fidelityfx-native-build\\vulkan-1.lib",
+          "import_library_sha256": "3c18fd822e9b4dd59b490d0c8ec33a4b802a1422d70428927076ee3efaff782d",
+          "msvc_librarian": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\lib.exe",
+          "msvc_librarian_sha256": "d8dae02a50c7571c6c0ea5cd7a853830aaca8fad13f8f4be147828d51dd4adec",
+          "visual_studio_version": "18.11.12324.101",
+          "export_count": 265,
+          "llvm_readobj": "LLVM (http://llvm.org/):\n  LLVM version 22.1.8\n  Optimized build."
+        },
+        "toolchain": {
+          "cmake": "cmake version 4.4.2",
+          "generator": "Visual Studio 18 2026",
+          "visual_studio_version": "18.11.12324.101",
+          "cmake_sdk_documented_range": "3.23-3.30; current version is recorded above",
+          "configuration": "Release",
+          "jobs": 4,
+          "shader_compiler": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\FidelityFX-SDK-1.1.4\\sdk\\tools\\binary_store\\FidelityFX_SC.exe",
+          "shader_compiler_sha256": "75480f2245e7b2cac300b013fad1453d4b966e5bd52c69205a40537de05f02a9",
+          "glslang": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\FidelityFX-SDK-1.1.4\\sdk\\tools\\binary_store\\glslangValidator.exe",
+          "glslang_sha256": "8106440be591596425d7ef401e62b8e21ce778be7a4aa8d240d319b614691a8c"
+        },
+        "effects": [
+          "FSR3 Upscaler 3.1.4",
+          "Optical Flow",
+          "Frame Interpolation"
+        ],
+        "runtime_dll": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\FidelityFX-SDK-1.1.4\\ffx-api\\bin\\amd_fidelityfx_vk.dll",
+        "runtime_dll_sha256": "5c6aba3469e0e2170c35ce900e510ad3649500fca10139d4489490d634bbca8e",
+        "receipt": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\fidelityfx-native-build\\fidelityfx-runtime-receipt.json"
+      },
+      "runtime": {
+        "amd_fidelityfx_vk.dll": "5c6aba3469e0e2170c35ce900e510ad3649500fca10139d4489490d634bbca8e",
+        "NvLowLatencyVk.dll": "2a77dc3e1c724b7eea5755be0ae7423752e79a2459fae72181a9f00e3507e5d6",
+        "nvngx_deepdvc.dll": "814bd287102fa0dbaba612ff94be9023ea940210b5fbd2bac2fabf7cb248b38a",
+        "nvngx_dlss.dll": "2173e05733fde21c7ae77c7573d1d5b60d651e659f71708807a680afe2829e4d",
+        "nvngx_dlssd.dll": "fddc24c5d343507f19a0dbd94be267418f95b5910d7615a80213ec041e069663",
+        "nvngx_dlssg.dll": "17e00fc66d32f348fa16d387d635ac1b994aa7317b3e6d968867d1ee77af3564",
+        "sl.common.dll": "9d39bf058d0dc64677fd4fab28c02b0564e16764bfdbe775d8dc5b759489cbb2",
+        "sl.deepdvc.dll": "0138befcfcd63014ea8f5ab7b005a9bebb9d883e900f8f0cc5a4a378b0af71fc",
+        "sl.directsr.dll": "2e5ebdf810368bd3f9fa9d5c928fa99c42f9462b2edcd672f5c80a7f8447474c",
+        "sl.dlss.dll": "7779f3c653535808b6f98307de8b067ca38f1dba16e3c7362b13dcd7d4e7dabe",
+        "sl.dlss_d.dll": "c8b0aacc6150bb53bad229d5ea0cf565bc8c4fa3be616bd6636afd9ae01416d3",
+        "sl.dlss_g.dll": "dae3f24a690f3dee3fbd89bdde47fbeb6bf480cee376ecfd0242a50e0bb6e6c6",
+        "sl.interposer.dll": "98ac2097902686441d6cbd1182fcf5cb15e9e7fa0744bfdf176ec728a4a49f1a",
+        "sl.nis.dll": "a3217cc877f7aa8e54d29c3cedc975c1397511af5c017c1e6057187bb9332b2a",
+        "sl.nvperf.dll": "b8f6a8e963f073490156b0ebccc73d4fe083a5c0b71484aaedc1292e6e9ee5ed",
+        "sl.pcl.dll": "4a7bb40f1328cff599de932d5fc73cfd58bd32f3e29f7c19fa464ab3e2aaa440",
+        "sl.reflex.dll": "cfbaed0b1c27d0ba415f67e2aeca32607adf2b83be084ee8ad49f7e34c89010c"
+      },
+      "build_command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "-m",
+        "SCons",
+        "platform=windows",
+        "target=editor",
+        "arch=x86_64",
+        "d3d12=no",
+        "angle=no",
+        "accesskit=no",
+        "winrt=no",
+        "use_streamline=yes",
+        "debug_symbols=no",
+        "-j4"
+      ],
+      "executable": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.exe",
+      "executable_sha256": "dcb04b38fdc0f5b6877f34c29c87af2e5975a488d567728e4c2bcacb486bc38f",
+      "version": "4.8.dev.custom_build"
+    },
+    "openrc-template_release-build.json": {
+      "experimental": true,
+      "production_engine_unchanged": "4.8-beta1",
+      "godot_repository": "https://github.com/NVIDIA-RTX/godot",
+      "godot_commit": "135dff3887a3d2ccf45cafbd9bdffa7b718e1e76",
+      "fidelityfx_sdk": "1.1.4",
+      "fsr_upscaler": "3.1.4",
+      "streamline": "2.11.1",
+      "platform": "windows",
+      "graphics_api": "vulkan",
+      "frame_generation_enabled": false,
+      "sources": {
+        "godot-nvidia.zip": "8f9d9604270ccca92d14cc57afca142079476cbe050e0486a90b84da17ce907a",
+        "fidelityfx-1.1.4.zip": "9a19e1f20bf269163f052186ed563209c5a1d0f7b1cf7e567e643dee6cc61179",
+        "streamline-2.11.1.zip": "0c1d562e59557434cabfb8997157cb8c04fc7d23f077c8bdf5260975b73dfb89"
+      },
+      "integration": {
+        "engine.patch": "e3d55e67e352b150da8dc1c3c3ea9caa0cbbabd2542e6f87bcd64285eb637620",
+        "vulkan_validation.patch": "26f91e399e339b4c4725f925a7c779254c9720112acf4ed49e52652480475206",
+        "dlss_validation.patch": "9bc70d7b64586a5515ad04e8c2bef9215aafae49b648ee0096d7d4aef550e9ed",
+        "shutdown_thread.patch": "a253b37bbbf88fed10bbbc6b33ce7823e52c9ffcff84fc5a973059148210d858",
+        "load_token_lifetime.patch": "868c518c78d2afe86e4ea29e53ec0d13488fa1c62a0dbd9b079d7ad70e8260a1",
+        "reflection_atlas_lifetime.patch": "86ab87598f732271991332a2be5f4ba1f6e2987fbacc21030e39645ab9b3010f",
+        "buffer_write_sync.patch": "d4ed03e2f95878ca226ad2bd0c689ea2294622cb92c3dacc2080f970f812aea6",
+        "dlss_frame_lifecycle.patch": "b17141de6aeec722a6d6af3dabaa8d4619709a33167d93ff07e0949303eea2c5",
+        "dlss_failure_paths.patch": "bf81e9af717ceeffed761350c2a8fdf39d64ca37cd350482a8c543ec726f46ee",
+        "reflex_lifecycle.patch": "1dff3a3e323eef0905fa1c501ab085f894a3e0682ca76b9f55035100d182c458",
+        "reflex_sync.patch": "3e0891bc6d0bdda63c77a06b1325bc2e576f702c72ba5bf5991e55b46d0fb5b4",
+        "fidelityfx.patch": "b8de4d034d67f681ba554a437ab69f7e95d2b1ac019315aac77555e6fd50d528",
+        "build_fidelityfx.py": "49e006c4bc989310f89a0f38fb4cf7b1b4763aa571f3076769abe695fe6d5785",
+        "fsr3.h": "acb7566f1fc05b4b6bc3d83a482b962d23247a3936cdf4f095e96eb92dab9fd4",
+        "fsr3.cpp": "e5ec7a18ea9961c5f05a5b2f81517d46da731d2489f06a5234c8f81827a5347d",
+        "fsr3_prepare.glsl": "a6a62b2ba1d5981ed48b326fc55ad5015935b6903ebcd2526a65f5bfdc569035"
+      },
+      "streamline_headers": {
+        "sl.h": "e1e81a7428d15b30db37587e9469bd68a56d630d820a4accec0aee3b17e157dd",
+        "sl_appidentity.h": "1337385ac9867d66fa6beb34c750e79aaf25a74a156a47e83f24937299dade87",
+        "sl_consts.h": "69a9f35aeecd7fbf68a997872ba2e29f27af7da4675f76b94628393d14474abf",
+        "sl_core_api.h": "328dc3a2c1dee579c200ca97e2d5b1ec38c893be4ba2745ef5ad506af7172e81",
+        "sl_core_types.h": "4096734a92c16e95a6d9051040dc4da93bb1e3e3715e34eb2cb1b1740bb05b15",
+        "sl_deepdvc.h": "c6086ffe6b1e00588368fdb91e4ab9dd9617624e0e4344cd503a2ca73e46d1a4",
+        "sl_device_wrappers.h": "af7741305b1a468c3a83efaa2005ecd53d2ffd7aadb8ec6868c9dcb4a8a8e3a1",
+        "sl_directsr.h": "65d4e68b2a0f0425ea4d381379172197b81352a50a5e399a8e8f51953e765c71",
+        "sl_dlss.h": "d2c8c61fa71794c8ba424cebce5b3079ebfab8e47ed98b4b00cf8b257ecfd6b5",
+        "sl_dlss_d.h": "a726e8135f2e36ad3939ce852530a879e1d909b85539c20c8cb5029ab122f2c4",
+        "sl_dlss_g.h": "1fc18cbe004e280df1f787276d08a1b28b8a8c4c65856fbaa659f56dff6a915d",
+        "sl_helpers.h": "b495f1e1dc88674474b49bc74b8f2d3ba8f19bab089e5127194bc44cf1e68df1",
+        "sl_helpers_vk.h": "82604567d239d00ac0ac2270cec744f6f11266e1d9d5187a95d4954f76d8c41c",
+        "sl_hooks.h": "cfeff70a52e1cc012cf4c955a15cc9d0b290f7e084dcb3c0168a9af06ff8f122",
+        "sl_matrix_helpers.h": "a65758d85abba1e12845d266d7d5e36aaefa952383cdf093f3143cd6d8653341",
+        "sl_nis.h": "f45be3cf149200e1eae081cd144c95726a7a290a89822a5d52b9f538e52484aa",
+        "sl_nvperf.h": "025f9f1c8482e75a90f8b8efccdc9cfc53a9fc8b05ba3acc6c3783708b66bd69",
+        "sl_pcl.h": "f43c5135fc8d5349ccd345e424f8cf1f61953a9f17e9897204b0741a3ab7b0fb",
+        "sl_reflex.h": "3b623a1189e04a686384d224a58c4ad9974c4e6e3204077676f6ec529475164c",
+        "sl_result.h": "2a0f6c12863bdc00b38910a5ec85d1f083c5671ee817a920afe626ac2a9100f7",
+        "sl_security.h": "a36b1c20394402bee7ce738089a5a1305ff6e9dd9dd517566154ce834f7c32b4",
+        "sl_struct.h": "5c5fcdb6b8386e81c8e003a7b45a730c83aa96b8d6e03692a54521c94d4825a5",
+        "sl_template.h": "af2d4a61361f2603872dcb6edc86cc9e18912762a5c03e6a782ff39a8c3b871b",
+        "sl_version.h": "c07ea4433db72800a0d60f8e17fff3adf09a195c3dfb8f70edf0b359a1ecea12"
+      },
+      "fidelityfx_runtime_build": {
+        "source": {
+          "archive": "fidelityfx-1.1.4.zip",
+          "archive_sha256": "9a19e1f20bf269163f052186ed563209c5a1d0f7b1cf7e567e643dee6cc61179",
+          "sdk_version": "1.1.4",
+          "fsr3_upscaler": "3.1.4"
+        },
+        "patch_sha256": "b8de4d034d67f681ba554a437ab69f7e95d2b1ac019315aac77555e6fd50d528",
+        "vulkan": {
+          "loader": "C:\\WINDOWS\\System32\\vulkan-1.dll",
+          "loader_file_version": "1.4.341.0",
+          "loader_sha256": "0f8b9d12b001932d4c0a86945215432ab9f746fdbf32688d211d3d93b791b139",
+          "headers": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\thirdparty\\vulkan\\include",
+          "vulkan_headers_version": "1.4.335",
+          "vulkan_core_header_sha256": "b8944f451db2231a07acbce90d1d6de2993fc6d656ab120cd833447ec9120710",
+          "import_library": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\fidelityfx-native-build\\vulkan-1.lib",
+          "import_library_sha256": "3c18fd822e9b4dd59b490d0c8ec33a4b802a1422d70428927076ee3efaff782d",
+          "msvc_librarian": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\lib.exe",
+          "msvc_librarian_sha256": "d8dae02a50c7571c6c0ea5cd7a853830aaca8fad13f8f4be147828d51dd4adec",
+          "visual_studio_version": "18.11.12324.101",
+          "export_count": 265,
+          "llvm_readobj": "LLVM (http://llvm.org/):\n  LLVM version 22.1.8\n  Optimized build."
+        },
+        "toolchain": {
+          "cmake": "cmake version 4.4.2",
+          "generator": "Visual Studio 18 2026",
+          "visual_studio_version": "18.11.12324.101",
+          "cmake_sdk_documented_range": "3.23-3.30; current version is recorded above",
+          "configuration": "Release",
+          "jobs": 4,
+          "shader_compiler": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\FidelityFX-SDK-1.1.4\\sdk\\tools\\binary_store\\FidelityFX_SC.exe",
+          "shader_compiler_sha256": "75480f2245e7b2cac300b013fad1453d4b966e5bd52c69205a40537de05f02a9",
+          "glslang": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\FidelityFX-SDK-1.1.4\\sdk\\tools\\binary_store\\glslangValidator.exe",
+          "glslang_sha256": "8106440be591596425d7ef401e62b8e21ce778be7a4aa8d240d319b614691a8c"
+        },
+        "effects": [
+          "FSR3 Upscaler 3.1.4",
+          "Optical Flow",
+          "Frame Interpolation"
+        ],
+        "runtime_dll": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\FidelityFX-SDK-1.1.4\\ffx-api\\bin\\amd_fidelityfx_vk.dll",
+        "runtime_dll_sha256": "5c6aba3469e0e2170c35ce900e510ad3649500fca10139d4489490d634bbca8e",
+        "receipt": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\fidelityfx-native-build\\fidelityfx-runtime-receipt.json"
+      },
+      "runtime": {
+        "amd_fidelityfx_vk.dll": "5c6aba3469e0e2170c35ce900e510ad3649500fca10139d4489490d634bbca8e",
+        "NvLowLatencyVk.dll": "2a77dc3e1c724b7eea5755be0ae7423752e79a2459fae72181a9f00e3507e5d6",
+        "nvngx_deepdvc.dll": "814bd287102fa0dbaba612ff94be9023ea940210b5fbd2bac2fabf7cb248b38a",
+        "nvngx_dlss.dll": "2173e05733fde21c7ae77c7573d1d5b60d651e659f71708807a680afe2829e4d",
+        "nvngx_dlssd.dll": "fddc24c5d343507f19a0dbd94be267418f95b5910d7615a80213ec041e069663",
+        "nvngx_dlssg.dll": "17e00fc66d32f348fa16d387d635ac1b994aa7317b3e6d968867d1ee77af3564",
+        "sl.common.dll": "9d39bf058d0dc64677fd4fab28c02b0564e16764bfdbe775d8dc5b759489cbb2",
+        "sl.deepdvc.dll": "0138befcfcd63014ea8f5ab7b005a9bebb9d883e900f8f0cc5a4a378b0af71fc",
+        "sl.directsr.dll": "2e5ebdf810368bd3f9fa9d5c928fa99c42f9462b2edcd672f5c80a7f8447474c",
+        "sl.dlss.dll": "7779f3c653535808b6f98307de8b067ca38f1dba16e3c7362b13dcd7d4e7dabe",
+        "sl.dlss_d.dll": "c8b0aacc6150bb53bad229d5ea0cf565bc8c4fa3be616bd6636afd9ae01416d3",
+        "sl.dlss_g.dll": "dae3f24a690f3dee3fbd89bdde47fbeb6bf480cee376ecfd0242a50e0bb6e6c6",
+        "sl.interposer.dll": "98ac2097902686441d6cbd1182fcf5cb15e9e7fa0744bfdf176ec728a4a49f1a",
+        "sl.nis.dll": "a3217cc877f7aa8e54d29c3cedc975c1397511af5c017c1e6057187bb9332b2a",
+        "sl.nvperf.dll": "b8f6a8e963f073490156b0ebccc73d4fe083a5c0b71484aaedc1292e6e9ee5ed",
+        "sl.pcl.dll": "4a7bb40f1328cff599de932d5fc73cfd58bd32f3e29f7c19fa464ab3e2aaa440",
+        "sl.reflex.dll": "cfbaed0b1c27d0ba415f67e2aeca32607adf2b83be084ee8ad49f7e34c89010c"
+      },
+      "build_command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "-m",
+        "SCons",
+        "platform=windows",
+        "target=template_release",
+        "arch=x86_64",
+        "d3d12=no",
+        "angle=no",
+        "accesskit=no",
+        "winrt=no",
+        "use_streamline=yes",
+        "debug_symbols=no",
+        "-j4"
+      ],
+      "executable": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.template_release.x86_64.exe",
+      "executable_sha256": "33f0f92410749d9f863af233660ea9c48f7de25db0411f2dc6f36050b573fbbd",
+      "version": "4.8.dev.custom_build"
+    }
+  },
+  "package": {
+    "receipt_sha256": "0cc72719301ae77ea2f699456b5ecd646436f0579134063325afdaea6be47ab8",
+    "verified_files": 40,
+    "files": {
+      "OpenRC Native Trial.pck": "eb101f1c3002158ece1ec5632b9334565299354487ebf704e5d110a6d0885448",
+      "OpenRC Native Trial.exe": "33f0f92410749d9f863af233660ea9c48f7de25db0411f2dc6f36050b573fbbd",
+      "openrc-editor-build.json": "9c4c2ff1abfba401b39ef424c735054fd670df8943cb7c31237a37de3fc04581",
+      "openrc-template_release-build.json": "8bbddbc02d17fc5a5417c54bcab9db05b932954774466758093e3f5e5750fcdc",
+      "presentation-engine-receipt.json": "9cc5182cb9fbb29acb8860c2fb3b9f40208bfd905807fd097e6cd223bf1c89c0",
+      "amd_fidelityfx_vk.dll": "5c6aba3469e0e2170c35ce900e510ad3649500fca10139d4489490d634bbca8e",
+      "NvLowLatencyVk.dll": "2a77dc3e1c724b7eea5755be0ae7423752e79a2459fae72181a9f00e3507e5d6",
+      "nvngx_deepdvc.dll": "814bd287102fa0dbaba612ff94be9023ea940210b5fbd2bac2fabf7cb248b38a",
+      "nvngx_dlss.dll": "2173e05733fde21c7ae77c7573d1d5b60d651e659f71708807a680afe2829e4d",
+      "nvngx_dlssd.dll": "fddc24c5d343507f19a0dbd94be267418f95b5910d7615a80213ec041e069663",
+      "nvngx_dlssg.dll": "17e00fc66d32f348fa16d387d635ac1b994aa7317b3e6d968867d1ee77af3564",
+      "sl.common.dll": "9d39bf058d0dc64677fd4fab28c02b0564e16764bfdbe775d8dc5b759489cbb2",
+      "sl.deepdvc.dll": "0138befcfcd63014ea8f5ab7b005a9bebb9d883e900f8f0cc5a4a378b0af71fc",
+      "sl.directsr.dll": "2e5ebdf810368bd3f9fa9d5c928fa99c42f9462b2edcd672f5c80a7f8447474c",
+      "sl.dlss.dll": "7779f3c653535808b6f98307de8b067ca38f1dba16e3c7362b13dcd7d4e7dabe",
+      "sl.dlss_d.dll": "c8b0aacc6150bb53bad229d5ea0cf565bc8c4fa3be616bd6636afd9ae01416d3",
+      "sl.dlss_g.dll": "dae3f24a690f3dee3fbd89bdde47fbeb6bf480cee376ecfd0242a50e0bb6e6c6",
+      "sl.interposer.dll": "98ac2097902686441d6cbd1182fcf5cb15e9e7fa0744bfdf176ec728a4a49f1a",
+      "sl.nis.dll": "a3217cc877f7aa8e54d29c3cedc975c1397511af5c017c1e6057187bb9332b2a",
+      "sl.nvperf.dll": "b8f6a8e963f073490156b0ebccc73d4fe083a5c0b71484aaedc1292e6e9ee5ed",
+      "sl.pcl.dll": "4a7bb40f1328cff599de932d5fc73cfd58bd32f3e29f7c19fa464ab3e2aaa440",
+      "sl.reflex.dll": "cfbaed0b1c27d0ba415f67e2aeca32607adf2b83be084ee8ad49f7e34c89010c",
+      "licenses/FidelityFX-LICENSE.txt": "82cf74fc23885107c7f69249ac3f1dac55898ff68320eb2c753984cae6b2d78a",
+      "licenses/Godot-LICENSE.txt": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+      "licenses/nis.license.txt": "f80ecfbce8a84a5b4c1c59dc5a9f0ee9cf5a989c9fba3a9486ee874f7595a454",
+      "licenses/nvngx_dlss.license.txt": "3027f23ca5a46dd9cb8183fbd522983a86f64d7daac5982912bf9f214671f294",
+      "licenses/OpenRC-LICENSE.txt": "2d4dad4844d4fe37238ece86717ae47da69d6c805a898e5c9b41a0de2bfee904",
+      "licenses/reflex.license.txt": "ebf83c07fb3b2939908c3795d887afde3161c89a28ba391724efc784ce1bdabe",
+      "licenses/Streamline-LICENSE.txt": "7b6f23e7d6f3ad6292f9308d2b42cdc3d82ae4e9b2abb55f230279d83bedd43d",
+      "licenses/Streamline-third-party.md": "87a414a75a83ac4fe43111d99a52075b6d009c8802dd718084b94dfdf1b06f59",
+      "Native.cmd": "3770d03735f0366b4457676e43d0b23fc2de19eaf21e49f0085b1d4460ca545e",
+      "FSR3 Quality.cmd": "2ae787b692d05442fed600a2af3b5f536bee514984f7db29197369992ab98bac",
+      "DLSS Quality.cmd": "9b638c2cfada79624ba98b77f62726585853e5570e26e70787d1221a5f603598",
+      "DLAA.cmd": "9b2d28f31ec058bbbaec0714ee2f84209b227ebbbedee9c0e383207fca046564",
+      "DLSS Balanced.cmd": "5c8f8d5140e22d0d5a2b1f292ae775c77fdafd756e5280f4489f553f8f0c96de",
+      "DLSS Performance.cmd": "c4f1e1040e25a7c522d0945ed582c57758395e9ef4b8f4f4b03c1a12c54b9c61",
+      "DLSS Quality - Reflex Off.cmd": "af8400fcddc5ac7e949f2869390393a6de07280331449e8f889b7b63704a520c",
+      "DLSS Quality - Reflex Boost.cmd": "bb6864289e6427b003917eed7694bbdd7155fbdc4edad2e7a1f924cf374102fb",
+      "Graphics Options.cmd": "3611e4600ff235937618b45d6ee1183fb7890e13939645062998a9d1e0af8970",
+      "LEEME.txt": "47d510bbcd325197046c391f1513645b0dbefdfa41619e5dd57b9c56a24b04f2"
+    },
+    "source_base_commit": "343be4b0bba007ec4295e7da408220a0577d97e1"
+  },
+  "checks": [
+    {
+      "report": "tmp/godot-checks/reflex-final-default-cfudr_dm/report.json",
+      "label": "reflex-final-default",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.console.exe",
+        "--verbose",
+        "--path",
+        "tmp/nvidia-validation-20261028/repro",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://reflex.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "elapsed_seconds": 17.125,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+          "context": [
+            "\tenv var 'VK_INSTANCE_LAYERS' defined and adding layers \"VK_LAYER_KHRONOS_validation\"",
+            "\tObjects - 1",
+            "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 1486730315488"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 9,
+          "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+          "context": [
+            "\tenv var 'VK_INSTANCE_LAYERS' defined and adding layers \"VK_LAYER_KHRONOS_validation\"",
+            "\tObjects - 1",
+            "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 1486730315488"
+          ]
+        }
+      ],
+      "log_sha256": "78c97bcbb0448c98246989b004c0d4a9da6a15dfa57c734fabe767bc1ceceb07",
+      "required_text": [
+        "REFLEX_SMOKE|COMPLETE"
+      ],
+      "missing_required_text": []
+    },
+    {
+      "report": "tmp/godot-checks/reflex-final-separate-nxohstla/report.json",
+      "label": "reflex-final-separate",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.console.exe",
+        "--verbose",
+        "--render-thread",
+        "separate",
+        "--fixed-fps",
+        "60",
+        "--path",
+        "tmp/nvidia-validation-20261028/repro",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://reflex.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "elapsed_seconds": 16.641,
+      "counts": {
+        "error": 0,
+        "warning": 3
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+          "context": [
+            "\tenv var 'VK_INSTANCE_LAYERS' defined and adding layers \"VK_LAYER_KHRONOS_validation\"",
+            "\tObjects - 1",
+            "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 2737058578640"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 9,
+          "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+          "context": [
+            "\tenv var 'VK_INSTANCE_LAYERS' defined and adding layers \"VK_LAYER_KHRONOS_validation\"",
+            "\tObjects - 1",
+            "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 2737058578640"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 48,
+          "message": "The separate rendering thread feature is experimental. Feel free to try it since it will eventually become a stable feature.",
+          "context": [
+            "However, bear in mind that at the moment it can lead to project crashes or instability.",
+            "So, unless you want to test the engine, set the \"rendering/driver/threads/thread_model\" project setting to 'Safe'.",
+            "   at: Main::setup2 (main\\main.cpp:3557)"
+          ]
+        }
+      ],
+      "log_sha256": "882dd1f235be7f9a1e0b44976168c525e9088853734ba91a0a731d16331b9d39",
+      "required_text": [
+        "REFLEX_SMOKE|COMPLETE"
+      ],
+      "missing_required_text": []
+    },
+    {
+      "report": "tmp/godot-checks/dlss-reflex-final-k-5uiblrsi/report.json",
+      "label": "dlss-reflex-final-k",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.console.exe",
+        "--verbose",
+        "--render-thread",
+        "separate",
+        "--fixed-fps",
+        "60",
+        "--path",
+        "tmp/nvidia-validation-20261028/repro",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://minimal.gd",
+        "--",
+        "--preset=K"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "elapsed_seconds": 19.984,
+      "counts": {
+        "error": 0,
+        "warning": 3
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+          "context": [
+            "\tenv var 'VK_INSTANCE_LAYERS' defined and adding layers \"VK_LAYER_KHRONOS_validation\"",
+            "\tObjects - 1",
+            "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 1843857093664"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 9,
+          "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+          "context": [
+            "\tenv var 'VK_INSTANCE_LAYERS' defined and adding layers \"VK_LAYER_KHRONOS_validation\"",
+            "\tObjects - 1",
+            "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 1843857093664"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 48,
+          "message": "The separate rendering thread feature is experimental. Feel free to try it since it will eventually become a stable feature.",
+          "context": [
+            "However, bear in mind that at the moment it can lead to project crashes or instability.",
+            "So, unless you want to test the engine, set the \"rendering/driver/threads/thread_model\" project setting to 'Safe'.",
+            "   at: Main::setup2 (main\\main.cpp:3557)"
+          ]
+        }
+      ],
+      "log_sha256": "509dc315a98647dc124c41308e2c4cd5fe20333b730c60f6de03546f783953e8",
+      "required_text": [
+        "MINIMAL_DLSS|RUN_COMPLETE|provider=dlss"
+      ],
+      "missing_required_text": []
+    },
+    {
+      "report": "tmp/godot-checks/nvidia-final-reconstruction-policy-gbv3qejw/report.json",
+      "label": "nvidia-final-reconstruction-policy",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.console.exe",
+        "--headless",
+        "--path",
+        "tmp/native-reconstruction-candidate/app",
+        "--script",
+        "res://tests/test_reconstruction.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "elapsed_seconds": 14.625,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "log_sha256": "76fb17d99cd9a6ec2aff3d1b05e9508891c0f48420723cd88d96769c31e53c07",
+      "required_text": [],
+      "missing_required_text": []
+    },
+    {
+      "report": "tmp/godot-checks/nvidia-final-graphics-settings-f5lyfuiw/report.json",
+      "label": "nvidia-final-graphics-settings",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.console.exe",
+        "--headless",
+        "--path",
+        "tmp/native-reconstruction-candidate/app",
+        "--script",
+        "res://tests/test_advanced_graphics_settings.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "elapsed_seconds": 18.531,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "log_sha256": "c9e2a6d77d3502d6c78cd76a8172a792ebae9b64e119cda6e97b6dc477b32359",
+      "required_text": [],
+      "missing_required_text": []
+    },
+    {
+      "report": "tmp/godot-checks/nvidia-export-dlss-reflex-7knz8kmm/report.json",
+      "label": "nvidia-export-dlss-reflex",
+      "command": [
+        ".\\OpenRC Native Trial.exe",
+        "--verbose",
+        "--resolution",
+        "1920x1080",
+        "--borderless",
+        "--",
+        "--quick-flight"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "elapsed_seconds": 89.735,
+      "counts": {
+        "error": 0,
+        "warning": 44
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+          "context": [
+            "\twindows_read_data_files_in_registry: Registry lookup failed to get layer manifest files.",
+            "\tObjects - 1",
+            "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 2391913908768"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 279,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg remapped: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 284,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg' remapped 'res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb remapped: res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 319,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg' remapped 'res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 324,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 332,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg' remapped 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 337,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 345,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 355,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 360,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 368,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 373,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 384,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 389,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 458,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png' remapped 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png' at thread -1",
+            "Completed load for: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf' remapped 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf' at thread -1"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 472,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg' remapped 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg remapped: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 477,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg' remapped 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg remapped: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 482,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg' remapped 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg' at thread -1",
+            "Shader cache miss for SceneForwardClusteredShaderRD/da3513a3e129e4af69345003ea79f3e630aa4e83e9792af6d5aa771243173832/a496140de1a54a7fd99443fd4b03919305b2f8ae"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 497,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/windsock/Fabric001_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/windsock/Fabric001_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/windsock/Fabric001_1K-JPG_Roughness.jpg remapped: res://assets/landscape/windsock/Fabric001_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 502,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/windsock/Fabric001_1K-JPG_Roughness.jpg' remapped 'res://assets/landscape/windsock/Fabric001_1K-JPG_Roughness.jpg' at thread -1",
+            "Loading resource: res://render/landscape_upgrade/ridge_haze.gdshader remapped: res://render/landscape_upgrade/ridge_haze.gdshader"
+          ]
+        }
+      ],
+      "log_sha256": "1ed1c545c460fb8036a3f216e908368dbffad4de8a1818d48e7b26d82b3083d1",
+      "required_text": [
+        "NVIDIA_REFLEX|requested=on|sdk_accepted=on|available=true|failed=false"
+      ],
+      "missing_required_text": []
+    },
+    {
+      "report": "tmp/godot-checks/nvidia-export-capture-ec6v047x/report.json",
+      "label": "nvidia-export-capture",
+      "command": [
+        ".\\OpenRC Native Trial.exe",
+        "--resolution",
+        "1920x1080",
+        "--borderless",
+        "--fixed-fps",
+        "60",
+        "--audio-driver",
+        "Dummy",
+        "--",
+        "--capture",
+        "--t=1.5",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/nvidia-validation-20261028/export-dlss-1080.png"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "elapsed_seconds": 18.703,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "log_sha256": "643212dcaa230d4e7f5278b492cac4474ec3f0bd8104d00297131e83b20beb79",
+      "required_text": [
+        "(error 0)"
+      ],
+      "missing_required_text": []
+    }
+  ],
+  "full_game": {
+    "log": "tmp/debug-bridge/20261028-163858-47944/engine.log",
+    "log_sha256": "cb1e3fd98f5014da45f0e353b9d9aeda020b7cf3c9c24dfba0cb3dda6f497cc7",
+    "diagnostics": {
+      "counts": {
+        "error": 0,
+        "warning": 45
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+          "context": [
+            "\tenv var 'VK_INSTANCE_LAYERS' defined and adding layers \"VK_LAYER_KHRONOS_validation\"",
+            "\tObjects - 1",
+            "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 2632664563824"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 9,
+          "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+          "context": [
+            "\tenv var 'VK_INSTANCE_LAYERS' defined and adding layers \"VK_LAYER_KHRONOS_validation\"",
+            "\tObjects - 1",
+            "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 2632664563824"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 284,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg remapped: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 289,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg' remapped 'res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb remapped: res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 324,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg' remapped 'res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 329,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 337,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg' remapped 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 342,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 350,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 360,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 365,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 373,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 378,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 389,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 394,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 463,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png' remapped 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png' at thread -1",
+            "Completed load for: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf' remapped 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf' at thread -1"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 477,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg' remapped 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg remapped: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 482,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg' remapped 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg remapped: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 487,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg' remapped 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg' at thread -1",
+            "Shader cache miss for SceneForwardClusteredShaderRD/da3513a3e129e4af69345003ea79f3e630aa4e83e9792af6d5aa771243173832/a496140de1a54a7fd99443fd4b03919305b2f8ae"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 502,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/windsock/Fabric001_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/windsock/Fabric001_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/windsock/Fabric001_1K-JPG_Roughness.jpg remapped: res://assets/landscape/windsock/Fabric001_1K-JPG_Roughness.jpg"
+          ]
+        }
+      ],
+      "missing_required_text": []
+    },
+    "final_states": [
+      {
+        "requested": "dlss_quality",
+        "requested_provider": "dlss",
+        "effective": "dlss_quality",
+        "provider": "dlss",
+        "effective_provider": "dlss",
+        "provider_available": true,
+        "fallback": false,
+        "fallback_reason": "",
+        "scale": 0.6666666865348816,
+        "temporal": true,
+        "scaling_3d_mode": 6,
+        "msaa_3d": 0,
+        "fsr_sharpness": 0.0,
+        "sharpening_strength": 0.0,
+        "sharpening_active": false,
+        "texture_mipmap_bias": 0.0,
+        "backend": {
+          "available": true,
+          "backend_failed": false,
+          "dispatches": 2410,
+          "contexts_created": 10,
+          "last_return_code": 0,
+          "last_frame_id": 5371,
+          "frame_based_tagging": true
+        },
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "nominal_3d_size": [
+          1280,
+          720
+        ]
+      },
+      {
+        "plugin_supported": true,
+        "plugin_ready": true,
+        "pcl_supported": true,
+        "pcl_ready": true,
+        "low_latency_available": true,
+        "available": true,
+        "backend_failed": false,
+        "requested_mode": 1,
+        "applied_mode": 1,
+        "state_result": 0,
+        "set_result": 0,
+        "sleep_result": 0,
+        "failure_result": 0,
+        "pcl_options_result": 0,
+        "pcl_marker_result": 0,
+        "pcl_failure_result": 0,
+        "state_calls": 5372,
+        "set_calls": 6,
+        "sleep_calls": 5372,
+        "sleep_successes": 5372,
+        "sleep_frame_id": 5373,
+        "pcl_marker_calls": 32231,
+        "pcl_marker_successes": 32231,
+        "simulation_start_successes": 5372,
+        "render_start_successes": 5372,
+        "render_end_successes": 5372,
+        "present_start_successes": 5372,
+        "present_end_successes": 5372,
+        "expired_tokens": 0,
+        "simulation_frame_id": 5373,
+        "render_frame_id": 5372,
+        "present_frame_id": 5372
+      }
+    ],
+    "stop": {
+      "stopped": true,
+      "pid": 56580,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "artifacts": {
+      "game-dlss.log": "304d4dd954ff4f3388e8d73bcd7680b7f66b2ecf5acda65a51e4ad07349f7b5a",
+      "game-reflex.log": "1623add86843eaa683993cd8ad5e230b9b5ad141adfb7907ddfeb9dfc2779b70",
+      "game-combined-r2.log": "9a0a884d37135655db8aa385be961a4a34e26cb4726a17dac4c36e4a24a0c433"
+    }
+  },
+  "export_capture": {
+    "png_sha256": "83ead281033ab953e91e5f24acfc5d55efa113a2be2b1e2f24e188d065dc3c9a",
+    "manifest_sha256": "2812437ca3a0e04dc85e0590b1d7642da0f9e73ae3c8904b4f5c97d2a71d7642",
+    "output": [
+      1920,
+      1080
+    ],
+    "reconstruction": {
+      "backend": {
+        "available": true,
+        "backend_failed": false,
+        "contexts_created": 1,
+        "dispatches": 32,
+        "frame_based_tagging": true,
+        "last_frame_id": 36,
+        "last_return_code": 0
+      },
+      "effective": "dlss_quality",
+      "effective_provider": "dlss",
+      "fallback": false,
+      "fallback_reason": "",
+      "fsr_sharpness": 0.0,
+      "msaa_3d": 0,
+      "nominal_3d_size": [
+        1280,
+        720
+      ],
+      "output_size": [
+        1920.0,
+        1080.0
+      ],
+      "provider": "dlss",
+      "provider_available": true,
+      "requested": "dlss_quality",
+      "requested_provider": "dlss",
+      "scale": 0.666666686534882,
+      "scaling_3d_mode": 6,
+      "sharpening_active": false,
+      "sharpening_strength": 0.0,
+      "temporal": true,
+      "texture_mipmap_bias": 0.0
+    },
+    "visually_inspected": true
+  },
+  "fresh_clone": {
+    "status": "passed",
+    "source_repo": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "clone": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\nvidia-validation-20261028\\fresh-clone",
+    "source_head": "7e794e6953861a617796d509c25d223595e0313f",
+    "clone_head": "7e794e6953861a617796d509c25d223595e0313f",
+    "overlays_sha256": {
+      "tools/graphics/native/README.md": "f9da983a5e0a02de6a12d9d343f00f16532b1ff34010c4a2d1ff0ce077d8453d",
+      "tools/graphics/native/build.py": "40803d119cc28beefa21445ed2eca325a6600856f4a782928cc3ea290fda729e",
+      "tools/graphics/native/dlss-smoke.txt": "39bb927a54960f9322f46ea978d12d5179bc5f3452f7af16248027995e188f9c",
+      "tools/graphics/native/package.py": "0993969a0688ecd84539842473ccddf69e85e3f6f19b861aa9ac3d421634fcb4",
+      "tools/graphics/native/prepare_candidate.py": "2d457a1aa913942191be45f51c8764edcdb2460e24cf1a22cb7586b403f9cbf5",
+      "tools/graphics/native/reflex-smoke.txt": "5f1fca86da65834c4e83c2ec16e4e77f2ee7c4842efddf79e7d808f9426147b0",
+      "tools/graphics/native/reflex_lifecycle.patch": "1dff3a3e323eef0905fa1c501ab085f894a3e0682ca76b9f55035100d182c458",
+      "tools/graphics/native/reflex_startup.gd": "d14a6a3013c0fbcbb50a08d9d0c53201e324b1928411207512b34d5262990580",
+      "tools/graphics/native/reflex_sync.patch": "3e0891bc6d0bdda63c77a06b1325bc2e576f702c72ba5bf5991e55b46d0fb5b4",
+      "tools/graphics/native/repro/README.md": "24e106097c7b306b389027051b5ccd22dd4684db8185bbcccb4489e780375dec",
+      "tools/graphics/native/repro/reflex.gd": "fdcca7f671fa5a6365bd6248759e482bc108964445752d6cb148619e6711fb4e",
+      "tools/graphics/native/test_prepare_candidate.py": "7cd97d8be22505ce2f94b39662b04cb5971b1cc5ac7d032350e32722fef1c485"
+    },
+    "unit_tests": {
+      "exit_code": 0,
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\nvidia-validation-20261028\\unit-tests.log",
+      "summary": [
+        "Ran 9 tests in 1.164s",
+        "OK"
+      ]
+    },
+    "archive_sha256": "8f9d9604270ccca92d14cc57afca142079476cbe050e0486a90b84da17ce907a",
+    "engine_commit": "135dff3887a3d2ccf45cafbd9bdffa7b718e1e76",
+    "patches_sha256": {
+      "engine.patch": "d498ddf2769657861546fb0882eb2e790bdb70ef6183213cd91d0b7228bdb4c6",
+      "vulkan_validation.patch": "0327615ea5eb471c294582c52a1bb200c7aa23e0f13481748d719e4cf38a2bf9",
+      "dlss_validation.patch": "9bc70d7b64586a5515ad04e8c2bef9215aafae49b648ee0096d7d4aef550e9ed",
+      "shutdown_thread.patch": "516dddd7ac129627dfd1acd236b7a51c539e234c63041d74947f2774b28f67a7",
+      "load_token_lifetime.patch": "04f76ad6181008a31eafbfdee45c0a3b0e6cac87cb7586db8a8c564e452734c7",
+      "reflection_atlas_lifetime.patch": "daf4012912abe8ae5c42786e50dd40ebfb3d0cfe96fd19d4f25ae777da337631",
+      "buffer_write_sync.patch": "c1dfd896152f0785fba2894ce37b2242bc1e240b2fd224df57fe950107aa542c",
+      "dlss_frame_lifecycle.patch": "e6144d0fa13ca50e22c85e5493075e66f86219f1c321727a7deec04cbe43c30c",
+      "dlss_failure_paths.patch": "06e43d7ff695d5f769e3356bb9a3135d729b0a1ce091876b55adcbecf5a174b4",
+      "reflex_lifecycle.patch": "1dff3a3e323eef0905fa1c501ab085f894a3e0682ca76b9f55035100d182c458",
+      "reflex_sync.patch": "3e0891bc6d0bdda63c77a06b1325bc2e576f702c72ba5bf5991e55b46d0fb5b4"
+    },
+    "real_patch_stack": {
+      "source_files": 29,
+      "changed_files": 29,
+      "first_pass": "passed",
+      "repeat_pass": "identical without rewrites",
+      "unrelated_sentinel": "unchanged",
+      "final_tree_sha256": "d6ce6f268388b37af031bb519c07b7129923a7b6747a6cd0b27d47ed1ea22e8e",
+      "files_sha256": {
+        "core/input/input.cpp": "0d367bb9f523f098b26f2e9bdb7cb881df11bf68c992ac2bcd422092d0590a02",
+        "core/io/resource_loader.cpp": "3c32a7543a44c678474a4833b8a35b266afaaaeb3626d44f26080b8756c59ecf",
+        "drivers/streamline/streamline.cpp": "03602c838cc411f89985800e31452128251eb2975f174d70fa7aabb28ca0a287",
+        "drivers/streamline/streamline.h": "50862ed79f68017176f5815174c7b4c16732c14d8792cd72d11db8b62309443c",
+        "drivers/streamline/streamline_context.cpp": "cd57fc0f97f785f95145be63c76353767a49b568fe5c35f6518cbb3f07f4794d",
+        "drivers/streamline/streamline_context.h": "def4ba005daec2452eee5b6305b89f418e3754491623c4aafebaecfa81ea7bfa",
+        "drivers/streamline/streamline_data.h": "d6e07b9f048ddc8263462d95ba6e4593c2b0ca4a34474a054c35f9cfd251a9f2",
+        "drivers/vulkan/rendering_device_driver_vulkan.cpp": "d78a4c8a9254ab1ac5bed6d17b29281ddc50517d7d9aae8b009030bd76549b74",
+        "main/main.cpp": "0cf181afe5014766abc1db3d7d46e21a58dafb14e859def9abc3c779ff3f0a27",
+        "platform/windows/rendering_context_driver_vulkan_windows.cpp": "94b71b9f9b2c2bcea59d5616944b546407d3bda926df94c585c42f3263d7f5e1",
+        "scene/main/viewport.cpp": "8a2b4e426f08837f97402dd2063eb96b0c2aba3cd6198f254f5ccf113845df84",
+        "scene/main/viewport.h": "039b65b9a7ba5990db32374e2b381904f3347666b5388549ac16721a0bf10386",
+        "servers/rendering/renderer_rd/effects/SCsub": "50665207824e265a87f791c77ea3f6ac3529fd2d3ec0eecf2d4c3cf32e6b5bb7",
+        "servers/rendering/renderer_rd/effects/dlss.cpp": "28f25c258bdba1a4f121fff5bf67d34f68b56fbabe7dc5012872bf07b1ca8beb",
+        "servers/rendering/renderer_rd/effects/dlss.h": "88251adb0744c6c83a8fc5684c150ffaed0cd5e9869525689564fcddc2d2555b",
+        "servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp": "e7e5bef3314d27f7c27a0c047c182a7b70d9bae3569383fcc3eef49d7a84bdbe",
+        "servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h": "ba51d297bd349d3bff315948411011f6fc7a3257ee0b3f2ddfa6f6cbcfb8d011",
+        "servers/rendering/renderer_rd/renderer_scene_render_rd.cpp": "5586d6a095a10aaf2681c02adc9f9cac2790c1668c9897353da7a2dadc5b6877",
+        "servers/rendering/renderer_rd/shaders/effects/motion_vector_decode.glsl": "80ddb018bb2b7401348a89aecc0ec19d705f74d941b5454553db7dc5347a65aa",
+        "servers/rendering/renderer_rd/storage_rd/light_storage.cpp": "584f009072c70e635962f75c7dd6c741d5cd1a8ec8b5b37947abb43dc5622a9d",
+        "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp": "a4d8ffcab322de46bf0b1631a628de57ee69f217f54501e73d276a0405406561",
+        "servers/rendering/renderer_viewport.cpp": "14ea3406388d7c46468c5a3125f2f2061a01336edbc05437ad7ea85c3d495761",
+        "servers/rendering/rendering_device.cpp": "be8a1c0963c70042e399741634722b9487ad633ac419d6de7f2200df71fd6136",
+        "servers/rendering/rendering_device.h": "d25ba4cc341e2e390d8193a532ff5da0c6866f19aaf03420f453769a459b0609",
+        "servers/rendering/rendering_device_graph.cpp": "eee6061e0cc3f265e752347815099ea4d86d8a95e7ecaec64c14d2b8c384fa72",
+        "servers/rendering/rendering_server.cpp": "717ea805fc25c04d8ff03de0c99a9caf28a5e736e8d19def86036987aeb05f39",
+        "servers/rendering/rendering_server.h": "ac4ed73726357d0ff37d49a51a55eec910cc9d47a8a555d645fbaf46e5f15bc2",
+        "servers/rendering/rendering_server_default.cpp": "4c3253dfd66ab91b7c67a91a5d84eb88107def55d94f152d0534d41ff9707ed3",
+        "servers/rendering/rendering_server_enums.h": "017669fb0bdf074f4f63fdb652224d9270a794dbfac215d1f6aa5df3b503e139"
+      }
+    },
+    "source_files_changed_during_check": []
+  },
+  "limits": [
+    "Pinned older application snapshot; not promotion of the current production application or official engine.",
+    "SDK modes and counters are integration evidence, not measured latency or NVIDIA certification.",
+    "Driver-controlled flash-trigger verification remains unimplemented/unqualified.",
+    "DLSS camera-cut history resets, temporal motion quality, long-session behavior and other GPU/driver/platform qualification remain open.",
+    "No performance qualification or FPS improvement claimed. Validation and debug overhead are present.",
+    "Release export tests do not prove Vulkan validation-layer activation.",
+    "First baseline smoke used fullscreen on a 4K display; corrected fixture explicitly verifies 1080p.",
+    "An initial combined script resume was refused by the pause-menu hold; corrected run uses the Resume menu action.",
+    "Release templates reject --path and disable the debug bridge. Export checked through direct execution and built-in capture; no runtime guard was bypassed.",
+    "Frame generation, ray reconstruction and path tracing remain disabled."
+  ]
+}

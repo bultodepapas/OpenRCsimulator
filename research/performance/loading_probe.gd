@@ -22,6 +22,7 @@ func _run() -> void:
 	var output := ""
 	var aircraft := "jensen-das-ugly-stik-60"
 	var start_choice := "airborne"
+	var input_mode := "auto"
 	var cycles := 3
 	var dwell_msec := 0
 	var prefetch_mode := "off"
@@ -35,6 +36,8 @@ func _run() -> void:
 			aircraft = arg.trim_prefix("--aircraft=")
 		elif arg.begins_with("--start="):
 			start_choice = arg.trim_prefix("--start=")
+		elif arg.begins_with("--input="):
+			input_mode = arg.trim_prefix("--input=")
 		elif arg.begins_with("--cycles=") and arg.trim_prefix("--cycles=").is_valid_int():
 			cycles = int(arg.trim_prefix("--cycles="))
 		elif arg.begins_with("--dwell-ms=") and arg.trim_prefix("--dwell-ms=").is_valid_int():
@@ -55,6 +58,9 @@ func _run() -> void:
 		return
 	if DisplayServer.get_name() == "headless":
 		_fail("Loading first-draw measurements require a native renderer")
+		return
+	if input_mode not in ["auto", "keyboard"]:
+		_fail("Use --input=auto|keyboard")
 		return
 	var prefs_path := output + ".settings.cfg"
 	if FileAccess.file_exists(prefs_path):
@@ -89,6 +95,11 @@ func _run() -> void:
 		return
 	var before_home := Time.get_ticks_usec()
 	root.add_child(app)
+	# Use the same explicit selection as Controls, within the probe's private profile.
+	# This keeps connected controllers from adding a different confirmation hold to each role.
+	if input_mode == "keyboard" and not app.controllers.select_devices(-1, -1):
+		_fail("Could not select keyboard controls")
+		return
 	var home_ready := Time.get_ticks_usec()
 	await process_frame
 	await RenderingServer.frame_post_draw
@@ -189,6 +200,7 @@ func _run() -> void:
 	var report := {
 		"format": "openrc-loading-probe v1", "complete": true, "aircraft_id": aircraft,
 		"start_choice": start_choice, "camera_observation_enabled": _observe_camera,
+		"input_mode": input_mode,
 		"engine": Engine.get_version_info(), "adapter": RenderingServer.get_video_adapter_name(),
 		"renderer": RenderingServer.get_current_rendering_method(), "display_server": DisplayServer.get_name(),
 		"viewport_size": [root.size.x, root.size.y], "max_fps": Engine.max_fps,

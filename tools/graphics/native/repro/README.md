@@ -1,5 +1,25 @@
 # Minimal DLSS Vulkan reproducer
 
+## Reflex scheduling fixture
+
+`reflex.gd` exercises Off → On → Boost → Off for 48 drawn frames per mode in a
+small rotating-box scene. It requires the patched `get_reflex_status` API, actual
+driver low-latency support, accepted mode changes, successful Sleep even when Off,
+advancing simulation/render/present markers, and no expired render tokens.
+
+Using the engine and validation environment below:
+
+```powershell
+python tools/godot/run_checked.py --label reflex-modes --timeout 150 --require-text 'REFLEX_SMOKE|COMPLETE' -- $Godot --verbose --path $Project --audio-driver Dummy --script res://reflex.gd
+```
+
+Repeat with `--render-thread separate --fixed-fps 60` before `--path`. A headless
+or unsupported host exits 2, rather than passing. These checks prove bounded SDK
+integration, not a latency reduction or NVIDIA certification. Keep logs/caches
+outside tracked paths; copy this small fixture into `tmp/` for local runs.
+
+## DLSS mode and resize fixture
+
 This standalone Godot project removes OpenRC assets and scripts from the DLSS mode and resize validation case. It uses a generated grid of boxes, one large floor box, a directional light, and a camera. The project selects Forward+ and the Windows Vulkan driver, with D3D12 and Compatibility fallback disabled.
 
 The DLSS run first requires `Viewport.SCALING_3D_MODE_DLSS` and the Streamline DLSS capability to be present and true. It disables MSAA, TAA, screen-space AA, and Godot's extra `fsr_sharpness` control, matching the app's DLSS path. It then renders 64 frames for each phase:
