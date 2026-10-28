@@ -4,6 +4,7 @@
 extends RefCounted
 
 const WeatherAdapter := preload("weather_adapter.gd")
+const M := preload("res://physics/math3d.gd")
 
 const FIELD_VALUES := [
 	"_config", "_atmosphere", "_atmosphere_active", "_vertical_air", "_rho", "_engine_charge",
@@ -211,7 +212,7 @@ static func _capture_watch(parent: Variant, key: Variant, child: Variant, watche
 		expected = child
 	elif typeof(child) == TYPE_FLOAT and float(child) == 0.0:
 		kind = Watch.ZERO
-		expected = atan2(float(child), -1.0) > 0.0
+		expected = M.atan2_(float(child), -1.0) > 0.0
 	elif typeof(child) in [TYPE_PACKED_FLOAT64_ARRAY, TYPE_PACKED_FLOAT32_ARRAY]:
 		kind = Watch.PACKED
 		expected = child.duplicate()
@@ -259,7 +260,7 @@ static func _watches_match(watches: Array[Watch]) -> bool:
 					return false
 			Watch.ZERO:
 				if typeof(current) != TYPE_FLOAT or float(current) != 0.0 \
-						or (atan2(float(current), -1.0) > 0.0) != watch.expected:
+						or (M.atan2_(float(current), -1.0) > 0.0) != watch.expected:
 					return false
 			Watch.PACKED:
 				if typeof(current) != typeof(watch.expected) or current != watch.expected:
@@ -273,7 +274,7 @@ static func _watches_match(watches: Array[Watch]) -> bool:
 static func _same_float(left: float, right: float) -> bool:
 	if left != right:
 		return false
-	return left != 0.0 or atan2(left, -1.0) == atan2(right, -1.0)
+	return left != 0.0 or M.atan2_(left, -1.0) == M.atan2_(right, -1.0)
 
 
 static func _same_value(left: Variant, right: Variant) -> bool:
