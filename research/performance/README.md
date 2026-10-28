@@ -44,13 +44,15 @@ renderer; headless execution is rejected. It preserves normal callbacks and focu
 safety, records pause/tick state, and never forces a pose or advances physics manually.
 
 ```powershell
-& .tools/Godot_v4.7.2-stable_win64_console.exe --path app --audio-driver Dummy `
-  --resolution 1920x1080 --fullscreen `
+& .tools/Godot_v4.8-beta1_win64_console.exe --path app --audio-driver Dummy `
+  --resolution 1920x1080 --windowed `
   --script "$PWD/research/performance/loading_probe.gd" -- `
   --output="$PWD/tmp/loading-new.json" --cycles=3
 ```
 
 Create the parent directory first; output and its `.settings.cfg` sidecar must not exist.
+Verify the recorded `viewport_size`: fullscreen can use the desktop's resolution despite
+`--resolution`, so a 4K desktop does not establish a 1080p sample.
 Optional `--aircraft=<id>` selects a flyable fixed-wing aircraft. `--start=airborne|runway`
 selects its start (default `airborne`). `--dwell-ms=0..30000`
 waits after each Home draw before pressing Fly. `--prefetch=off|scene|trim|scene_trim`
@@ -74,6 +76,12 @@ frames and 60 seconds for the handoff and rejects cancellation, retry-ready reje
 startup errors and unflyable sessions. An external timeout bounds blocking construction.
 A paused first draw is not interactive readiness. Three cycles do not establish the
 DT-12 soak or package gate.
+
+`trim_cache_before_fly` / `trim_cache_after_fly` expose worker starts, adoption and cache
+ownership. When Main supports overlapping preparation, `startup_preparation` records
+acquisition, world construction and post-world setup durations plus worker counts.
+`finish_setup_usec` includes any remaining wait, final validation and initial reset;
+it is not pure worker time. Timings overlap and must not be added as independent costs.
 
 After the last sample, the probe stops and awaits any Home preparation before freeing
 its scene, then observes weak references to the

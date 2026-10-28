@@ -286,6 +286,9 @@ var interactive_start: bool = false
 var startup_checkpoint := Callable()
 ## Polled on the main thread while a private numeric trim job runs.
 var startup_cancel_requested := Callable()
+## UI-34c: owned privately until world construction and final setup validation finish.
+var _preparing_session: Node
+var startup_preparation_metrics: Dictionary = {}
 var startup_complete := false
 signal startup_finished
 signal frame_time_report_written(exit_code: int)
@@ -446,6 +449,7 @@ func _ready() -> void:
 	if startup_checkpoint.is_valid():
 		process_mode = Node.PROCESS_MODE_DISABLED
 	await _prepare_flight()
+	await _cancel_preparing_session()
 	var startup_args := _user_args()
 	var prime_pose := (interactive_start and startup_checkpoint.is_valid()) or startup_args.has("quick-flight")
 	if prime_pose and not _capturing and not _scripted and not startup_args.has("capture") and not startup_args.has("trace") \
@@ -466,6 +470,65 @@ func _startup_stage(label: String) -> bool:
 
 func _startup_cancel_requested() -> bool:
 	return not is_inside_tree() or (startup_cancel_requested.is_valid() and bool(startup_cancel_requested.call()))
+
+
+## Freeze the same foreground setup as the historical path; selected weather/fuel still apply later.
+func _new_flight_setup(args: Dictionary) -> Dictionary:
+	var next_session := FlightSession.new()
+	# The app requests native physics by default; tools and replay retain their reference default.
+	if (not _scripted or args.has("physics-backend")) \
+			and (not next_session.setup_stage_backend(str(args.get("physics-backend", "native"))) or _scripted):
+		printerr("physics backend refused: ", next_session.stage_backend_error if not _scripted else "requires a physics flight")
+		next_session.free()
+		next_session = null
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return {}
+	next_session.external_controller_selection = external_controller_selection
+	next_session.physics_enabled = not _scripted
+	# This explicit airborne operating point must be selected before setup solves trim.
+	# Runway selection still waits for field/contact configuration below.
+	next_session.trim_throttle = trim_throttle # D6e-R4: setup() solves it for airborne and runway launches alike
+	if start_choice == FlightSession.START_HALF_POWER:
+		next_session.start_choice = start_choice
+	if args.has("shaft-integrator") and (not next_session.setup_shaft_integrator(args["shaft-integrator"]) or _scripted):
+		printerr("shaft integrator refused: ", next_session.shaft_error if not _scripted else "requires a physics flight")
+		next_session.free() # refused before add_child(): this owner would otherwise remain orphaned
+		next_session = null
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return {}
+	var physics_path: String = _experimental_aircraft_path if not _experimental_aircraft_path.is_empty() else (Catalog.data_for(aircraft_id, battery_mode) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_"))
+	var expected_id: String = aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else ""
+	var frozen_data: Dictionary = {}
+	if not workshop_trial.is_empty():
+		next_session.workshop_identity = workshop_trial.identity.duplicate(true)
+		next_session.workshop_presentation_identity = workshop_trial.get("presentation_identity", {}).duplicate(true)
+		physics_path = "workshop://" + str(workshop_trial.identity.trial_id)
+		expected_id = str(workshop_trial.data.model.id)
+		frozen_data = workshop_trial.data
+	return {session = next_session, path = physics_path, expected_id = expected_id, frozen_data = frozen_data}
+
+
+## Controlled cancellation waits without joining a live worker. Raw removal uses the Session's orphan drain.
+func _cancel_preparing_session() -> void:
+	if not is_instance_valid(_preparing_session):
+		return
+	var owned: Node = _preparing_session
+	var tree: SceneTree = get_tree()
+	if tree != null:
+		# Never await a coroutine owned by this detached Session: _exit_tree may free it
+		# while the worker drains. The saved tree signal keeps this wait in Main's lifetime.
+		var frame: Signal = tree.process_frame
+		owned.cancel_staged_setup(frame)
+		while is_instance_valid(owned) and owned.staged_setup_pending():
+			await frame
+	if is_instance_valid(owned):
+		if is_same(_preparing_session, owned):
+			_preparing_session = null
+		owned.free()
 
 
 func _prepare_flight() -> void:
@@ -720,7 +783,23 @@ func _prepare_flight() -> void:
 		set_process_unhandled_input(false)
 		return
 	Atmosphere.engine_shadows = Atmosphere.engine_shadows_enabled(args, interactive_start)
-	if not await _build_world():
+	var overlap_setup := interactive_start and startup_checkpoint.is_valid() and not _scripted
+	startup_preparation_metrics = {overlapped = overlap_setup, acquire_usec = 0,
+		workers_before = FlightSession.launch_trim_cache_stats().staged_workers_started}
+	if overlap_setup:
+		var acquire_began := Time.get_ticks_usec()
+		var setup_request: Dictionary = _new_flight_setup(args)
+		if setup_request.is_empty():
+			return
+		_preparing_session = setup_request.session
+		if not _preparing_session.begin_staged_setup(setup_request.path, setup_request.expected_id,
+				setup_request.frozen_data, _startup_cancel_requested):
+			return
+		startup_preparation_metrics.acquire_usec = Time.get_ticks_usec() - acquire_began
+	var world_began := Time.get_ticks_usec()
+	var world_ready: bool = await _build_world()
+	startup_preparation_metrics.world_usec = Time.get_ticks_usec() - world_began
+	if not world_ready:
 		set_process(false)
 		set_process_unhandled_input(false)
 		if not interactive_start:
@@ -748,46 +827,33 @@ func _prepare_flight() -> void:
 			return
 	if not await _startup_stage("Checking flight"):
 		return
-	session = FlightSession.new()
-	# The app requests native physics by default; the session keeps its reference default for tools and replay.
-	if (not _scripted or args.has("physics-backend")) \
-			and (not session.setup_stage_backend(str(args.get("physics-backend", "native"))) or _scripted):
-		printerr("physics backend refused: ", session.stage_backend_error if not _scripted else "requires a physics flight")
-		session.free()
-		session = null
-		get_tree().quit(ERR_INVALID_PARAMETER)
-		set_process(false)
-		set_process_unhandled_input(false)
-		return
-	session.external_controller_selection = external_controller_selection
-	session.physics_enabled = not _scripted
-	# This explicit airborne operating point must be selected before setup solves trim.
-	# Runway selection still waits for field/contact configuration below.
-	session.trim_throttle = trim_throttle # D6e-R4: setup() solves it for airborne and runway launches alike
-	if start_choice == FlightSession.START_HALF_POWER:
-		session.start_choice = start_choice
-	if args.has("shaft-integrator") and (not session.setup_shaft_integrator(args["shaft-integrator"]) or _scripted):
-		printerr("shaft integrator refused: ", session.shaft_error if not _scripted else "requires a physics flight")
-		session.free() # refused before add_child(): this owner would otherwise remain orphaned
-		session = null
-		get_tree().quit(ERR_INVALID_PARAMETER)
-		set_process(false)
-		set_process_unhandled_input(false)
-		return
-	var physics_path: String = _experimental_aircraft_path if not _experimental_aircraft_path.is_empty() else (Catalog.data_for(aircraft_id, battery_mode) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_"))
-	var expected_id: String = aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else ""
-	var frozen_data: Dictionary = {}
-	if not workshop_trial.is_empty():
-		session.workshop_identity = workshop_trial.identity.duplicate(true)
-		session.workshop_presentation_identity = workshop_trial.get("presentation_identity", {}).duplicate(true)
-		physics_path = "workshop://" + str(workshop_trial.identity.trial_id)
-		expected_id = str(workshop_trial.data.model.id)
-		frozen_data = workshop_trial.data
-	if startup_checkpoint.is_valid():
-		if not await session.setup_staged(physics_path, expected_id, frozen_data, get_tree().process_frame, _startup_cancel_requested):
+	var finish_began := Time.get_ticks_usec()
+	if is_instance_valid(_preparing_session):
+		# Main can survive raw removal while _exit_tree frees its detached Session.
+		# Own the wait here instead of awaiting a coroutine on that shorter-lived node.
+		var owned: Node = _preparing_session
+		var frame: Signal = get_tree().process_frame
+		owned.finish_staged_setup(frame, _startup_cancel_requested)
+		while is_instance_valid(owned) and owned.staged_setup_pending():
+			await frame
+		if not is_instance_valid(owned) or not owned.staged_setup_completed() or _startup_cancel_requested():
 			return
+		# Publication stays after world construction, final validation and the unchanged initial reset.
+		session = _preparing_session
+		_preparing_session = null
 	else:
-		session.setup(physics_path, expected_id, frozen_data)
+		var setup_request: Dictionary = _new_flight_setup(args)
+		if setup_request.is_empty():
+			return
+		session = setup_request.session
+		if startup_checkpoint.is_valid():
+			if not await session.setup_staged(setup_request.path, setup_request.expected_id, setup_request.frozen_data,
+					get_tree().process_frame, _startup_cancel_requested):
+				return
+		else:
+			session.setup(setup_request.path, setup_request.expected_id, setup_request.frozen_data)
+	startup_preparation_metrics.finish_setup_usec = Time.get_ticks_usec() - finish_began
+	startup_preparation_metrics.workers_after = FlightSession.launch_trim_cache_stats().staged_workers_started
 	if not await _startup_stage("Preparing flight model"):
 		return
 	# Glow visuals use the exact propeller selected by the validated runtime model. Applying from the base geometry
@@ -1061,7 +1127,7 @@ func _prepare_flight() -> void:
 		crash_context.field = field
 		crash_context.aircraft_id = aircraft_id
 		crash_context.workshop_trial = workshop_trial
-		crash_context.aircraft_data_path = physics_path
+		crash_context.aircraft_data_path = session.aircraft_path
 		crash_context.cg_model = _cg_model
 		crash_context.pose_provider = Callable(self, "_current_pose")
 		crash_context.wind_provider = Callable(self, "_render_wind")
@@ -2653,6 +2719,9 @@ func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
 
 
 func _exit_tree() -> void:
+	if is_instance_valid(_preparing_session):
+		_preparing_session.free()
+		_preparing_session = null
 	if is_instance_valid(_rgb_lighting):
 		_rgb_lighting.dispose()
 	CameraRig.hold_cursor(false) # never leave the menus with a held cursor (CAM-29)

@@ -17,6 +17,26 @@ class SceneLoadGate extends RefCounted:
 		return ResourceLoader.load(path, type_hint)
 
 
+## Holds observation of an existing worker's completion without starting another worker.
+class HeldTrimPoll extends RefCounted:
+	var original: RefCounted
+	var released := false
+	var owner: String:
+		get:
+			return str(original.owner)
+		set(value):
+			original.owner = value
+	var complete: bool:
+		get:
+			return bool(original.complete)
+
+	func poll() -> bool:
+		return original.poll() if released else false
+
+	func result_copy() -> Dictionary:
+		return original.result_copy()
+
+
 class UnavailableSceneLoad extends "res://ui/flight_scene_load.gd":
 	func start(_path: String) -> Error:
 		complete = true
@@ -32,15 +52,52 @@ class RejectedFlight extends Node:
 		return true
 
 
+## Hold the real Main before building the world, after the numeric transaction begins.
+class WorldGateFlight extends "res://main.gd":
+	const SessionScript := preload("res://sim/flight_session.gd")
+	var entered_world_gate := false
+	var release_world_gate := false
+	var reject_world := false
+	var private_state_valid := false
+	var prepared_session_id := 0
+	var prepared_session_ref: WeakRef
+	var prepared_sim_ref: WeakRef
+	var gate_stats: Dictionary = {}
+
+	func _build_world() -> bool:
+		entered_world_gate = true
+		gate_stats = SessionScript.launch_trim_cache_stats().duplicate(true)
+		if is_instance_valid(_preparing_session):
+			prepared_session_id = _preparing_session.get_instance_id()
+			prepared_session_ref = weakref(_preparing_session)
+			if is_instance_valid(_preparing_session.sim):
+				prepared_sim_ref = weakref(_preparing_session.sim)
+				private_state_valid = session == null and _preparing_session.get_parent() == null \
+					and _preparing_session.sim.get_parent() == null and _preparing_session.sim.tick == 0
+		while not release_world_gate and not _startup_cancel_requested():
+			await get_tree().process_frame
+		if _startup_cancel_requested():
+			return false
+		if reject_world:
+			startup_error = "Intentional world build rejection"
+			return false
+		return await super._build_world()
+
+
 class TrackedApp extends "res://app_root.gd":
+	const SessionScript := preload("res://sim/flight_session.gd")
 	var flight_creations := 0
 	var scene_job_creations := 0
 	var scene_load_gate: SceneLoadGate
 	var scene_thread_unavailable := false
 	var reject_next_flight := false
+	var use_world_gate := false
+	var reject_world := false
 	var rejected_candidate_ref: WeakRef
 	var rejected_candidate_session_was_null := false
 	var quit_candidate_instance_id := 0
+	var quit_prepared_session_ref: WeakRef
+	var quit_prepared_sim_ref: WeakRef
 	var quit_commit_calls := 0
 	var quit_commit_state: Dictionary = {}
 
@@ -61,6 +118,10 @@ class TrackedApp extends "res://app_root.gd":
 			rejected_candidate_ref = weakref(rejected)
 			rejected_candidate_session_was_null = rejected.session == null
 			return rejected
+		if use_world_gate:
+			var gated := WorldGateFlight.new()
+			gated.reject_world = reject_world
+			return gated
 		return super._create_flight(aircraft_id)
 
 	func _commit_app_quit() -> void:
@@ -75,6 +136,10 @@ class TrackedApp extends "res://app_root.gd":
 			"home_scene_attached": is_instance_valid(home_scene) and home_scene.is_inside_tree(),
 			"candidate_disposal_scheduled": not is_instance_valid(candidate)
 				or (candidate is Node and candidate.is_queued_for_deletion()),
+			"prepared_session_gone": quit_prepared_session_ref != null and quit_prepared_session_ref.get_ref() == null,
+			"prepared_sim_gone": quit_prepared_sim_ref != null and quit_prepared_sim_ref.get_ref() == null,
+			"trim_busy": SessionScript.menu_trim_busy(),
+			"trim_stats": SessionScript.launch_trim_cache_stats().duplicate(true),
 			"status": str(last_flight_loading.get("status", "")),
 		}
 
@@ -164,6 +229,344 @@ func _clear_test_files() -> void:
 		var absolute := ProjectSettings.globalize_path(path)
 		if FileAccess.file_exists(absolute):
 			DirAccess.remove_absolute(absolute)
+
+
+func _wait_trim_drained() -> bool:
+	for _index in 18000:
+		if not FlightSession.menu_trim_busy():
+			return true
+		await process_frame
+	return not FlightSession.menu_trim_busy()
+
+
+func _new_world_gate_app() -> TrackedApp:
+	var app := TrackedApp.new()
+	app.user_args = PackedStringArray()
+	app.preferences_path = PREFS
+	app.flight_loading_enabled = true
+	app.home_flight_prefetch_mode = "off"
+	app.window_focus_probe = func() -> bool: return true
+	app.use_world_gate = true
+	root.add_child(app)
+	await _frames(8)
+	if app.controllers != null:
+		app.controllers.select_devices(-1, -1)
+	return app
+
+
+func _launch_world_gate(app: TrackedApp, label: String) -> WorldGateFlight:
+	var drained := await _wait_trim_drained()
+	_check(label + " starts with no outstanding trim worker", drained)
+	if not drained:
+		return null
+	FlightSession._launch_trim_cache.clear()
+	app.start_flight()
+	for _index in 2400:
+		var candidate := app.flight as WorldGateFlight
+		if is_instance_valid(candidate) and candidate.entered_world_gate:
+			var stats: Dictionary = candidate.gate_stats
+			_check(label + " keeps one prepared session and trim job private during world build",
+				candidate.private_state_valid and candidate.prepared_session_id != 0
+				and candidate.prepared_session_ref != null and candidate.prepared_sim_ref != null
+				and int(stats.get("staged_workers_started", 0)) == 1
+				and bool(stats.get("staged_worker_active", false))
+				and str(stats.get("managed_owner", "")) == "flight"
+				and int(stats.get("entries", -1)) == 0)
+			return candidate
+		if not app._loading_active:
+			break
+		await process_frame
+	_check(label + " reaches the world gate", false)
+	return null
+
+
+func _run_world_gate_cases() -> void:
+	# Reuse one Home for cancellation, world rejection and successful publication.
+	var app := await _new_world_gate_app()
+	var original_home: Control = app.home
+	var gate := await _launch_world_gate(app, "Cancel")
+	if gate == null:
+		app.free()
+		await _wait_trim_drained()
+		return
+	var pending_session: WeakRef = gate.prepared_session_ref
+	var pending_sim: WeakRef = gate.prepared_sim_ref
+	app.cancel_flight_loading()
+	var cancelled := await _wait_idle(app, 18000)
+	await _frames(4)
+	var stats: Dictionary = FlightSession.launch_trim_cache_stats()
+	_check("cancel at the world gate drains without publishing and restores Home",
+		cancelled and app.flight == null and app.home == original_home and app.home.is_inside_tree()
+		and app.home_scene != null and app.home_scene.is_inside_tree() and app.screens.is_top("home")
+		and app.last_flight_loading.get("status", "") == "cancelled"
+		and pending_session != null and pending_session.get_ref() == null
+		and pending_sim != null and pending_sim.get_ref() == null
+		and int(stats.get("staged_workers_started", 0)) == 1 and not FlightSession.menu_trim_busy()
+		and int(stats.get("entries", -1)) == 0)
+	if not cancelled:
+		app.free()
+		await _wait_trim_drained()
+		return
+
+	app.reject_world = true
+	gate = await _launch_world_gate(app, "Rejected world")
+	if gate == null:
+		app.free()
+		await _wait_trim_drained()
+		return
+	pending_session = gate.prepared_session_ref
+	pending_sim = gate.prepared_sim_ref
+	gate.release_world_gate = true
+	var rejected := await _wait_idle(app, 18000)
+	await _frames(4)
+	stats = FlightSession.launch_trim_cache_stats()
+	_check("rejected world discards the private session and restores Home",
+		rejected and app.flight == null and app.home == original_home and app.home.is_inside_tree()
+		and app.screens.is_top("home") and app.last_flight_loading.get("status", "") == "failed"
+		and app.home.note_label.text.contains("Intentional world build rejection")
+		and pending_session != null and pending_session.get_ref() == null
+		and pending_sim != null and pending_sim.get_ref() == null
+		and int(stats.get("staged_workers_started", 0)) == 1 and not FlightSession.menu_trim_busy()
+		and int(stats.get("entries", -1)) == 0)
+	if not rejected:
+		app.free()
+		await _wait_trim_drained()
+		return
+
+	app.reject_world = false
+	gate = await _launch_world_gate(app, "Successful world")
+	if gate == null:
+		app.free()
+		await _wait_trim_drained()
+		return
+	var prepared_id := gate.prepared_session_id
+	gate.release_world_gate = true
+	var completed := await _wait_idle(app, 18000)
+	var ready_flight: Node = app.flight if is_instance_valid(app.flight) else null
+	var ready_session: Node = ready_flight.session if ready_flight != null else null
+	stats = FlightSession.launch_trim_cache_stats()
+	_check("successful world publishes the same prepared session without a duplicate worker",
+		completed and app.last_flight_loading.get("status", "") == "ready"
+		and ready_flight == gate and is_instance_valid(ready_session)
+		and ready_session.get_instance_id() == prepared_id and ready_session.is_flyable()
+		and gate._preparing_session == null and int(stats.get("staged_workers_started", 0)) == 1
+		and not FlightSession.menu_trim_busy())
+	var duplicate_refused := false
+	if is_instance_valid(ready_session):
+		var repeated: bool = await ready_session.finish_staged_setup(process_frame, func() -> bool: return false)
+		duplicate_refused = not repeated and ready_flight.session == ready_session \
+			and int(FlightSession.launch_trim_cache_stats().get("staged_workers_started", 0)) == 1
+	_check("a completed session cannot be finalized twice", duplicate_refused)
+	app.free()
+	await _frames(4)
+	await _wait_trim_drained()
+
+	# Controlled Quit must wait for the private numeric transaction before restoring Home and committing.
+	var quit_app := await _new_world_gate_app()
+	var quit_home: Control = quit_app.home # the loading route temporarily removes Home from the screen stack
+	gate = await _launch_world_gate(quit_app, "Quit")
+	if gate == null:
+		quit_app.free()
+		await _wait_trim_drained()
+		return
+	pending_session = gate.prepared_session_ref
+	pending_sim = gate.prepared_sim_ref
+	quit_app.quit_prepared_session_ref = pending_session
+	quit_app.quit_prepared_sim_ref = pending_sim
+	quit_app.quit_candidate_instance_id = gate.get_instance_id()
+	quit_app.quit_app()
+	var quit_finished := await _wait_quit_commit(quit_app, 18000)
+	await _frames(4)
+	stats = FlightSession.launch_trim_cache_stats()
+	var quit_detail := {finished = quit_finished, calls = quit_app.quit_commit_calls,
+		flight_cleared = quit_app.flight == null, home_same = quit_app.home == quit_home,
+		home_inside = is_instance_valid(quit_app.home) and quit_app.home.is_inside_tree(),
+		home_top = quit_app.screens.is_top("home"), commit = quit_app.quit_commit_state,
+		session_gone = pending_session != null and pending_session.get_ref() == null,
+		sim_gone = pending_sim != null and pending_sim.get_ref() == null, stats = stats}
+	_check("Quit at the world gate drains before commit and restores Home",
+		quit_finished and quit_app.quit_commit_calls == 1 and quit_app.flight == null
+		and quit_app.home == quit_home and quit_app.home.is_inside_tree() and quit_app.screens.is_top("home")
+		and quit_app.quit_commit_state.get("candidate_disposal_scheduled", false)
+		and quit_app.quit_commit_state.get("prepared_session_gone", false)
+		and quit_app.quit_commit_state.get("prepared_sim_gone", false)
+		and not quit_app.quit_commit_state.get("trim_busy", true)
+		and int(quit_app.quit_commit_state.get("trim_stats", {}).get("entries", -1)) == 0
+		and quit_app.quit_commit_state.get("status", "") == "cancelled"
+		and pending_session != null and pending_session.get_ref() == null
+		and pending_sim != null and pending_sim.get_ref() == null
+		and int(stats.get("staged_workers_started", 0)) == 1 and not FlightSession.menu_trim_busy()
+		and int(stats.get("entries", -1)) == 0, str(quit_detail))
+	quit_app.free()
+	await _frames(4)
+	await _wait_trim_drained()
+
+	# A raw owner free cannot await; the cache-owned frame callback must finish the abandoned job.
+	var raw_app := await _new_world_gate_app()
+	gate = await _launch_world_gate(raw_app, "Raw free")
+	if gate == null:
+		raw_app.free()
+		await _wait_trim_drained()
+		return
+	pending_session = gate.prepared_session_ref
+	pending_sim = gate.prepared_sim_ref
+	var raw_app_ref: WeakRef = weakref(raw_app)
+	var raw_flight_ref: WeakRef = weakref(gate)
+	raw_app.free()
+	var raw_drained := await _wait_trim_drained()
+	await _frames(4)
+	stats = FlightSession.launch_trim_cache_stats()
+	_check("raw AppRoot.free releases private nodes and independently drains the worker",
+		raw_drained and raw_app_ref.get_ref() == null and raw_flight_ref.get_ref() == null
+		and pending_session != null and pending_session.get_ref() == null
+		and pending_sim != null and pending_sim.get_ref() == null
+		and int(stats.get("staged_workers_started", 0)) == 1
+		and not FlightSession.menu_trim_busy() and int(stats.get("entries", -1)) == 0)
+
+
+func _run_retained_main_removal() -> void:
+	var initially_drained := await _wait_trim_drained()
+	_check("retained Main test starts without an outstanding trim", initially_drained)
+	if not initially_drained:
+		return
+	FlightSession._launch_trim_cache.clear()
+	var cancel_state := {requested = false}
+	var gate := WorldGateFlight.new()
+	gate.interactive_start = true
+	gate.start_choice = FlightSession.START_RUNWAY
+	gate.trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE
+	gate.startup_checkpoint = func(_label: String) -> bool: return true
+	gate.startup_cancel_requested = func() -> bool: return bool(cancel_state.requested)
+	root.add_child(gate)
+	for _index in 2400:
+		if gate.entered_world_gate or gate.startup_complete:
+			break
+		await process_frame
+	var pending: Node = gate._preparing_session
+	var resolution: Dictionary = pending._staged_trim_job if is_instance_valid(pending) else {}
+	var original_job: RefCounted = resolution.get("job") as RefCounted
+	var valid_job := gate.entered_world_gate and gate.private_state_valid and is_instance_valid(pending) \
+		and original_job != null and is_same(original_job, FlightSession._launch_trim_cache._managed_job)
+	_check("retained Main test reaches world build with the real reserved job", valid_job)
+	if not valid_job:
+		gate.free()
+		await _wait_trim_drained()
+		return
+	var pending_ref: WeakRef = weakref(pending)
+	var sim_ref: WeakRef = weakref(pending.sim)
+	# The real worker may finish before the next frame. Hold its poll result so that
+	# cancellation is provably suspended when the still-retained Main leaves the tree.
+	var held := HeldTrimPoll.new()
+	held.original = original_job
+	FlightSession._launch_trim_cache._managed_job = held
+	pending._staged_trim_job["job"] = held
+	pending._staged_resolution["job"] = held
+	cancel_state.requested = true
+	var waiting := false
+	for _index in 2400:
+		if not is_instance_valid(pending):
+			break
+		if pending._staged_phase == FlightSession._STAGED_CANCELLING:
+			waiting = true
+			break
+		await process_frame
+	_check("controlled cancellation is suspended while observing the held job", waiting)
+	if not waiting:
+		held.released = true
+		gate.free()
+		await _wait_trim_drained()
+		return
+	root.remove_child(gate) # retain Main itself; its detached Session must still be released
+	var after_remove: Dictionary = FlightSession.launch_trim_cache_stats()
+	_check("removing a retained Main frees the private session and abandons the job",
+		is_instance_valid(gate) and not gate.is_inside_tree() and gate._preparing_session == null
+		and pending_ref.get_ref() == null and sim_ref.get_ref() == null
+		and str(after_remove.get("managed_owner", "")) == "abandoned"
+		and bool(after_remove.get("staged_worker_active", false))
+		and int(after_remove.get("entries", -1)) == 0)
+	held.released = true
+	var drained := await _wait_trim_drained()
+	await _frames(4)
+	var final_stats: Dictionary = FlightSession.launch_trim_cache_stats()
+	_check("retained Main resumes cleanup while the abandoned job drains without publication",
+		drained and gate.startup_complete and gate.session == null and gate._preparing_session == null
+		and int(final_stats.get("staged_workers_started", 0)) == 1
+		and int(final_stats.get("entries", -1)) == 0 and not FlightSession.menu_trim_busy())
+	gate.free()
+
+
+func _run_retained_main_finish_removal() -> void:
+	var initially_drained := await _wait_trim_drained()
+	_check("retained Main finish test starts without an outstanding trim", initially_drained)
+	if not initially_drained:
+		return
+	FlightSession._launch_trim_cache.clear()
+	var gate := WorldGateFlight.new()
+	gate.interactive_start = true
+	gate.start_choice = FlightSession.START_RUNWAY
+	gate.trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE
+	gate.startup_checkpoint = func(_label: String) -> bool: return true
+	gate.startup_cancel_requested = func() -> bool: return false
+	var finished := {count = 0}
+	gate.startup_finished.connect(func() -> void: finished.count += 1)
+	root.add_child(gate)
+	for _index in 2400:
+		if gate.entered_world_gate or gate.startup_complete:
+			break
+		await process_frame
+	var pending: Node = gate._preparing_session
+	var resolution: Dictionary = pending._staged_trim_job if is_instance_valid(pending) else {}
+	var original_job: RefCounted = resolution.get("job") as RefCounted
+	var valid_job := gate.entered_world_gate and gate.private_state_valid and is_instance_valid(pending) \
+		and original_job != null and is_same(original_job, FlightSession._launch_trim_cache._managed_job)
+	_check("retained Main finish test reaches the real reserved trim job", valid_job)
+	if not valid_job:
+		gate.free()
+		await _wait_trim_drained()
+		return
+	var pending_ref: WeakRef = weakref(pending)
+	var sim_ref: WeakRef = weakref(pending.sim)
+	# Hold the real job's poll result across world construction, so finish must suspend.
+	var held := HeldTrimPoll.new()
+	held.original = original_job
+	FlightSession._launch_trim_cache._managed_job = held
+	pending._staged_trim_job["job"] = held
+	pending._staged_resolution["job"] = held
+	gate.release_world_gate = true
+	var waiting := false
+	for _index in 18000:
+		if not is_instance_valid(pending) or gate.startup_complete:
+			break
+		if pending._staged_phase == FlightSession._STAGED_FINISHING:
+			waiting = true
+			break
+		await process_frame
+	_check("flight finalization is suspended on the held trim job", waiting)
+	if not waiting:
+		held.released = true
+		gate.free()
+		await _wait_trim_drained()
+		return
+	root.remove_child(gate) # Main is retained while the Session it awaited is freed
+	var after_remove: Dictionary = FlightSession.launch_trim_cache_stats()
+	_check("removing Main during finish frees its detached session and abandons the job",
+		is_instance_valid(gate) and not gate.is_inside_tree() and gate._preparing_session == null
+		and pending_ref.get_ref() == null and sim_ref.get_ref() == null
+		and str(after_remove.get("managed_owner", "")) == "abandoned"
+		and bool(after_remove.get("staged_worker_active", false))
+		and int(after_remove.get("entries", -1)) == 0)
+	held.released = true
+	var drained := await _wait_trim_drained()
+	for _index in 2400:
+		if gate.startup_complete:
+			break
+		await process_frame
+	var final_stats: Dictionary = FlightSession.launch_trim_cache_stats()
+	_check("retained Main leaves finish wait and signals once after its session is removed",
+		drained and gate.startup_complete and finished.count == 1 and gate.session == null
+		and gate._preparing_session == null and int(final_stats.get("staged_workers_started", 0)) == 1
+		and int(final_stats.get("entries", -1)) == 0 and not FlightSession.menu_trim_busy())
+	gate.free()
 
 
 func _run() -> void:
@@ -486,6 +889,9 @@ func _run() -> void:
 	paused = false
 	quit_app.queue_free()
 	await _frames()
+	await _run_world_gate_cases()
+	await _run_retained_main_removal()
+	await _run_retained_main_finish_removal()
 	TranslationServer.set_locale("en")
 	_clear_test_files()
 	print("Flight loading: %d checks, %d failed" % [_checks, _failures])
