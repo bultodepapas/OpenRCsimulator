@@ -240,8 +240,13 @@ func _place_camera(t: float) -> void:
 				distance = lerpf(5.5, 7.0, beat)
 				height = lerpf(1.7, 2.0, beat)
 				lateral = lerpf(-1.4, -2.0, beat)
-	var look_ahead := 0.5 if shot != "crash" else 0.0
-	var look_target: Vector3 = center + forward * look_ahead + Vector3.UP * 0.22
+	# TRA-09 Workshop size shots keep the default orbit, framed in proportion to the virtual size.
+	var size_frame := 0.24 if shot == "mini-pass" else (2.6 if shot == "giant-pass" else 1.0)
+	distance *= size_frame
+	height *= size_frame
+	lateral *= size_frame
+	var look_ahead := (0.5 if shot != "crash" else 0.0) * size_frame
+	var look_target: Vector3 = center + forward * look_ahead + Vector3.UP * 0.22 * size_frame
 	main._camera.global_position = center - forward * distance + right * lateral + Vector3.UP * height
 	main._camera.look_at(look_target, Vector3.UP)
 	main._camera.fov = fov

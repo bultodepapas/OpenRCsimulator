@@ -8,6 +8,7 @@ causality, or establish GPU hardware performance.
 from __future__ import annotations
 
 import argparse
+from array import array
 import hashlib
 import heapq
 import json
@@ -24,9 +25,9 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 try:
-    from .native_summary import validate_native_report
+    from .native_summary import STREAM_FORMAT, STREAM_MAX_BYTES, _hydrate_stream_report, validate_native_report
 except ImportError:  # Direct execution puts this directory, not its parent, on sys.path.
-    from native_summary import validate_native_report
+    from native_summary import STREAM_FORMAT, STREAM_MAX_BYTES, _hydrate_stream_report, validate_native_report
 
 from tools.godot.run_checked import inspect_log
 
@@ -94,7 +95,7 @@ class InputReadError(ValueError):
 
 
 class InputLimitError(InputReadError):
-    """Raised when the combined report and log exceed the configured byte cap."""
+    """Raised when the combined report, stream and log exceed the byte cap."""
 
 
 class ReportReadError(InputReadError):
@@ -174,10 +175,10 @@ def _validate_report(report: dict[str, Any]) -> tuple[list[str], dict[str, Any] 
     if isinstance(raw_metrics, dict):
         for key in (*CONTEXT_METRICS, "render_gpu_ms", *MEMORY_METRICS):
             values = raw_metrics.get(key)
-            if isinstance(values, list) and any(isinstance(value, (int, float)) and value < 0 for value in values):
+            if isinstance(values, (list, array)) and any(isinstance(value, (int, float)) and value < 0 for value in values):
                 errors.append(f"raw_metrics.{key} must not contain negative values")
         invalid_counts = raw_metrics.get("invalid_value_count")
-        if isinstance(invalid_counts, list) and any(
+        if isinstance(invalid_counts, (list, array)) and any(
             isinstance(value, (int, float)) and (value < 0 or not float(value).is_integer())
             for value in invalid_counts
         ):
@@ -382,7 +383,7 @@ def _measurement_issues(report: dict[str, Any]) -> list[str]:
 
     sampled_invalid_indices: list[int] = []
     invalid_counts = raw_metrics.get("invalid_value_count")
-    if isinstance(invalid_counts, list):
+    if isinstance(invalid_counts, (list, array)):
         sampled_invalid_indices = [
             index for index, value in enumerate(invalid_counts)
             if _finite_number(value) and value > 0
@@ -418,7 +419,7 @@ def _measurement_issues(report: dict[str, Any]) -> list[str]:
 
     gpu_values = raw_metrics.get("render_gpu_ms")
     timing_available = metadata.get("render_timing_available") if isinstance(metadata, dict) else None
-    if (isinstance(gpu_values, list) and timing_available is False
+    if (isinstance(gpu_values, (list, array)) and timing_available is False
             and any(type(value) in (int, float) and value > 0.0 for value in gpu_values)):
         issues.append("positive render_gpu_ms samples contradict frame_diagnostics.render_timing_available=false")
     return issues
@@ -459,13 +460,32 @@ def diagnose(report_path: Path, log_path: Path, *, budget_ms: float = DEFAULT_BU
     except (OSError, ValueError, RecursionError, OverflowError, TypeError, RuntimeError) as error:
         report_errors.append(str(error))
 
+    analysis_report = report
+    stream_evidence: dict[str, Any] | None = None
+    stream_reserved_bytes = 0
+    has_stream = report is not None and report.get("format") == STREAM_FORMAT
+    remaining_bytes = max(0, max_input_bytes - min(report_bytes_read, max_input_bytes))
+    if has_stream:
+        analysis_report = None
+        stream = report.get("stream")
+        declared_bytes = stream.get("bytes") if isinstance(stream, dict) else None
+        if type(declared_bytes) is int and 0 < declared_bytes <= remaining_bytes:
+            # Reserve the declared size even on a failed read so report + attempted
+            # stream + log never exceed the requested combined budget.
+            stream_reserved_bytes = declared_bytes
+        try:
+            analysis_report, stream_evidence = _hydrate_stream_report(
+                report, report_path, include_metrics=True, max_input_bytes=min(remaining_bytes, STREAM_MAX_BYTES))
+        except (OSError, UnicodeError, ValueError, RecursionError, OverflowError, TypeError) as error:
+            report_errors.append(f"stream is unreadable or invalid: {error}")
+
     validation_errors: list[str] = []
     derived: dict[str, Any] | None = None
-    if report is not None:
-        validation_errors, derived = _validate_report(report)
-    measurement_issues = _measurement_issues(report) if report is not None else []
+    if analysis_report is not None:
+        validation_errors, derived = _validate_report(analysis_report)
+    measurement_issues = _measurement_issues(analysis_report) if analysis_report is not None else []
 
-    remaining_bytes = max(0, max_input_bytes - min(report_bytes_read, max_input_bytes))
+    remaining_bytes -= stream_reserved_bytes
     log_errors: list[str] = []
     log_bytes_read = 0
     log_sha256: str | None = None
@@ -491,8 +511,8 @@ def diagnose(report_path: Path, log_path: Path, *, budget_ms: float = DEFAULT_BU
     log_error_count = int(log_result.get("counts", {}).get("error", 0))
 
     frame_diagnostics: dict[str, Any] | None = None
-    if report is not None and derived is not None and not validation_errors:
-        frame_diagnostics = analyze_frames(report, derived, budget_ms, top)
+    if analysis_report is not None and derived is not None and not validation_errors:
+        frame_diagnostics = analyze_frames(analysis_report, derived, budget_ms, top)
 
     valid = bool(report is not None and not report_errors and not validation_errors and not measurement_issues
                  and not log_errors and log_error_count == 0)
@@ -521,7 +541,9 @@ def diagnose(report_path: Path, log_path: Path, *, budget_ms: float = DEFAULT_BU
             "log": str(log_path.resolve()),
             "log_sha256": log_sha256,
             "log_bytes": log_bytes_read if log_sha256 is not None else None,
-            "combined_input_bytes": (len(report_bytes) if report_bytes is not None else min(report_bytes_read, max_input_bytes + 1))
+            "combined_input_bytes": None if has_stream and stream_evidence is None else
+                (len(report_bytes) if report_bytes is not None else min(report_bytes_read, max_input_bytes + 1))
+                + (stream_evidence["bytes"] if stream_evidence is not None else 0)
                 + (log_bytes_read if log_sha256 is not None else min(log_bytes_read, remaining_bytes + 1)),
             "max_input_bytes": max_input_bytes,
         },
@@ -550,6 +572,8 @@ def diagnose(report_path: Path, log_path: Path, *, budget_ms: float = DEFAULT_BU
             "causal_attribution": "not_established",
         },
     }
+    if has_stream:
+        result["source"]["stream"] = stream_evidence
     return result
 
 
@@ -566,14 +590,14 @@ def write_new_json(path: Path, value: dict[str, Any]) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--report", type=Path, required=True, help="one openrc-frametimes v2 JSON report")
+    parser.add_argument("--report", type=Path, required=True, help="one openrc-frametimes v2 or v3 JSON report")
     parser.add_argument("--log", type=Path, required=True, help="combined engine log for that report")
     parser.add_argument("--out", type=Path, required=True, help="new openrc-frame-diagnosis JSON path")
     parser.add_argument("--budget-ms", type=float, default=DEFAULT_BUDGET_MS,
                         help=f"wall-frame interval budget in milliseconds (default: {DEFAULT_BUDGET_MS:g})")
     parser.add_argument("--top", type=int, default=DEFAULT_TOP, help=f"maximum top frames/bursts to retain (1..{MAX_TOP})")
     parser.add_argument("--max-input-bytes", type=parse_byte_limit, default=DEFAULT_MAX_INPUT_BYTES,
-                        help="combined report+log byte cap; accepts B/KB/MB/GB or KiB/MiB/GiB (default: 64MiB)")
+                        help="combined report+stream+log byte cap; accepts B/KB/MB/GB or KiB/MiB/GiB (default: 64MiB)")
     return parser
 
 

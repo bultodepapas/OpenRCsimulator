@@ -580,7 +580,10 @@ func _choice_caption(key: String, value: Variant) -> String:
 			fsr3_native = tr("FSR3 · Native AA"), fsr3_85 = tr("FSR3 · 85%"), fsr3_quality = tr("FSR3 · Quality"),
 			fsr3_balanced = tr("FSR3 · Balanced"), fsr3_performance = tr("FSR3 · Performance"),
 			dlss_native = tr("DLAA · Native AA"), dlss_quality = tr("DLSS · Quality"),
-			dlss_balanced = tr("DLSS · Balanced"), dlss_performance = tr("DLSS · Performance")}.get(value, str(value))
+			dlss_balanced = tr("DLSS · Balanced"), dlss_performance = tr("DLSS · Performance"),
+			metalfx_spatial_85 = tr("MetalFX Spatial · 85%"), metalfx_spatial_quality = tr("MetalFX Spatial · Quality"),
+			metalfx_temporal_native = tr("MetalFX Temporal · Native AA"), metalfx_temporal_85 = tr("MetalFX Temporal · 85%"),
+			metalfx_temporal_quality = tr("MetalFX Temporal · Quality")}.get(value, str(value))
 		"nvidia_reflex": return {off = tr("Off"), on = tr("On"), boost = tr("Boost"),
 			unconfirmed = tr("Unconfirmed")}.get(value, str(value))
 		"scene_detail":
@@ -670,7 +673,8 @@ func _refresh_graphics_info() -> void:
 	var input_width := roundi(output_size.x * scale)
 	var input_height := roundi(output_size.y * scale)
 	_graphics_info.text += "\n" + tr("Reconstruction: Requested %s → Active %s") % [
-		_choice_caption("reconstruction", requested), _choice_caption("reconstruction", effective)]
+		_choice_caption("reconstruction", requested), tr("Unconfirmed") if active_policy.get("execution_status", "") == "unverified_trial" \
+		else _choice_caption("reconstruction", effective)]
 	_graphics_info.text += "\n" + tr("Estimated 3D input: %d × %d → Output: %d × %d") % [
 		input_width, input_height, roundi(output_size.x), roundi(output_size.y)]
 	if bool(active_policy.get("fallback", false)):
@@ -820,9 +824,11 @@ func _sync_controls() -> void:
 func _sync_reconstruction_controls() -> void:
 	var capabilities := Reconstruction.runtime_capabilities()
 	var high_active := bool(capabilities.high)
-	_reconstruction_picker.disabled = not high_active
+	_reconstruction_picker.disabled = not Reconstruction.options_available(capabilities)
 	_reconstruction_picker.tooltip_text = tr("Choose a reconstruction option available in High graphics. Check distant aircraft detail in motion.") if high_active \
 		else tr("Restart in High from Home to use reconstruction.")
+	if bool(capabilities.get("metalfx_spatial", false)) or bool(capabilities.get("metalfx_temporal", false)):
+		_reconstruction_picker.tooltip_text = tr("MetalFX is an experimental Mac option. Compare distant aircraft detail in motion.")
 	_reconstruction_picker.tooltip_text += "\n" + tr("At 1080p, Quality uses about 1280 × 720 3D input; Performance uses 960 × 540. Quality keeps more input detail than Balanced or Performance. Lower input may soften distant detail; compare while moving.")
 	for index: int in _reconstruction_picker.item_count:
 		var mode := str(_reconstruction_picker.get_item_metadata(index))
@@ -842,13 +848,15 @@ func _sync_reconstruction_controls() -> void:
 	var requested_provider := str(Reconstruction.MODE_PROVIDERS.get(requested_mode, ""))
 	if policy.provider == "dlss":
 		_fsr2_sharpness_slider.tooltip_text = tr("DLSS controls its own reconstruction sharpness. This saved FSR value is kept for FSR2 or FSR3.")
+	elif policy.provider in Reconstruction.MetalFX.PROVIDERS:
+		_fsr2_sharpness_slider.tooltip_text = tr("MetalFX does not use FSR sharpness. Your saved value is kept.")
 	elif requested_provider == "dlss" and policy.fallback:
 		_fsr2_sharpness_slider.tooltip_text = tr("FSR sharpness is inactive while Native is active. This saved value stays for FSR2 or FSR3. DLSS controls sharpness when it is active.")
 	elif policy.provider in ["fsr2", "fsr3"]:
 		_fsr2_sharpness_slider.tooltip_text = tr("0% disables FSR sharpening. Higher values sharpen edges but can exaggerate halos and shimmer.")
 	else:
 		_fsr2_sharpness_slider.tooltip_text = tr("Native rendering does not use FSR sharpness. This saved value is kept for FSR2 or FSR3.")
-	_msaa_picker.disabled = high_active and bool(policy.temporal)
+	_msaa_picker.disabled = bool(policy.temporal)
 	_msaa_picker.tooltip_text = tr("Temporal reconstruction provides antialiasing. Your MSAA choice returns with Native rendering.") if _msaa_picker.disabled \
 		else tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
 
@@ -901,6 +909,12 @@ func _reconstruction_option_tooltip(mode: String, reason: String) -> String:
 
 
 func _reconstruction_unavailable_text(provider: String, reason: String) -> String:
+	if provider in Reconstruction.MetalFX.PROVIDERS:
+		if reason == "metalfx_history_reset_unavailable":
+			return tr("MetalFX Temporal returned to Native after a camera change. Select Native before retrying.")
+		if reason in ["metalfx_scale_out_of_range", "metalfx_invalid_scale_limits"]:
+			return tr("This MetalFX input scale is unavailable on the current device.")
+		return tr("MetalFX requires an explicitly enabled Metal trial on a supported Mac.")
 	if reason == "engine_mode_missing":
 		return tr("The current game build does not offer %s reconstruction.") % str({
 			"fsr2": "FSR2", "fsr3": "FSR3", "dlss": "DLSS"}.get(provider, "this"))

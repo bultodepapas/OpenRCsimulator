@@ -33,6 +33,7 @@ func _initialize() -> void:
 	HighGraphics._reported = false
 	Atmosphere.state = {}
 	OS.unset_environment(PROFILE_ENV)
+	_test_research_profile()
 	_check("default profile follows actual renderer", HighGraphics.active() == native_forward_plus and HighGraphics.requested().is_empty())
 	OS.set_environment(PROFILE_ENV, "standard")
 	_test_standard_integration()
@@ -85,6 +86,59 @@ func _check(label: String, ok: bool, detail := "") -> void:
 	if not ok:
 		_failures += 1
 		printerr("FAIL %s %s" % [label, detail])
+
+
+func _test_research_profile() -> void:
+	_check("explicit Standard does not enable High effects on Forward+",
+		not HighGraphics._active_for("standard", "forward_plus", "macOS"))
+	_check("bare and High Forward+ retain existing behavior",
+		HighGraphics._active_for("", "forward_plus", "macOS")
+		and HighGraphics._active_for("high", "forward_plus", "macOS"))
+	_check("Mobile, Compatibility and headless never activate High",
+		not HighGraphics._active_for("high", "mobile", "macOS")
+		and not HighGraphics._active_for("high", "gl_compatibility", "macOS")
+		and not HighGraphics._active_for("high", "forward_plus", "headless"))
+	var research_key := HighGraphics.RESEARCH_ENVIRONMENT_KEY
+	var had_research := OS.has_environment(research_key)
+	var previous_research := OS.get_environment(research_key)
+	var had_profile := OS.has_environment(PROFILE_ENV)
+	var previous_profile := OS.get_environment(PROFILE_ENV)
+	var identity := {"requested_method": "forward_plus", "requested_driver": "metal",
+		"requested_effects": "common", "requested_reconstruction": "metalfx_spatial_85",
+		"project_name": "OpenRC-Research-0123456789abcdef0123456789abcdef",
+		"project_sha256": "project-hash", "profile_sha256": "profile-hash"}
+	OS.set_environment(PROFILE_ENV, "standard")
+	OS.set_environment(research_key, JSON.stringify(identity))
+	var receipt: Dictionary = HighGraphics.describe().research
+	_check("research receipt preserves requested identity without claiming shader parity",
+		receipt.requested_method == "forward_plus" and receipt.requested_driver == "metal"
+		and receipt.requested_effects == "common" and receipt.requested_reconstruction == "metalfx_spatial_85")
+	_check("research receipt reads actual method, driver and profile",
+		receipt.effective_method == RenderingServer.get_current_rendering_method()
+		and receipt.effective_driver == RenderingServer.get_current_rendering_driver_name()
+		and receipt.effective_profile == "standard")
+	_check("research receipt exposes mismatch rather than assuming requested backend",
+		receipt.method_matches == (receipt.effective_method == identity.requested_method)
+		and receipt.driver_matches == (receipt.effective_driver == identity.requested_driver))
+	_check("research receipt records settings and isolation without claiming a private path",
+		receipt.effective_project_name == str(ProjectSettings.get_setting("application/config/name", ""))
+		and receipt.user_directory_name_matches == (OS.get_user_data_dir().get_file() == identity.project_name)
+		and receipt.project_sha256_at_launch == "project-hash"
+		and receipt.multi_bounce_occlusion_project_setting == ProjectSettings.get_setting(
+			"rendering/lights_and_shadows/multi_bounce_occlusion/enabled", false))
+	OS.set_environment(research_key, "not json")
+	_check("malformed research identity is reported instead of inventing a backend",
+		HighGraphics.describe().research.error == "invalid launcher research identity")
+	OS.set_environment(research_key, JSON.stringify({"requested_method": "mobile"}))
+	_check("incomplete research identity is reported", HighGraphics.describe().research.error == "incomplete launcher research identity")
+	if had_profile:
+		OS.set_environment(PROFILE_ENV, previous_profile)
+	else:
+		OS.unset_environment(PROFILE_ENV)
+	if had_research:
+		OS.set_environment(research_key, previous_research)
+	else:
+		OS.unset_environment(research_key)
 
 
 func _test_flow_policy(native_high: bool) -> void:

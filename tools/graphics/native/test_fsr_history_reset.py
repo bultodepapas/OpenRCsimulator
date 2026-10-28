@@ -350,6 +350,300 @@ int main() {
 }
 """
 
+FSR3_PREP_STUB = r"""
+#include <atomic>
+#include <cassert>
+#include <cstdint>
+#include <cstring>
+struct RID {
+    uint64_t id = 0;
+    bool is_null() const { return id == 0; }
+    bool operator==(const RID &other) const { return id == other.id; }
+};
+struct Size {
+    int x = 100, y = 80;
+    bool operator!=(const Size &other) const { return x != other.x || y != other.y; }
+};
+struct Projection { struct Column { float x, y, z, w; } columns[4] = {}; };
+constexpr int FFX_API_RETURN_ERROR_RUNTIME_ERROR = 1;
+constexpr uint64_t FFX_API_QUERY_RESOURCE_INPUT_REACTIVEMASK = 16;
+std::atomic<bool> backend_failed{false};
+int failures = 0;
+void record_backend_failure(uint32_t) { ++failures; backend_failed.store(true); }
+void collect_retired_contexts() {}
+#define WARN_PRINT(...) do {} while (false)
+struct RD {
+    using ComputeListID = int;
+    static constexpr int INVALID_ID = -1;
+    enum { UNIFORM_TYPE_IMAGE, UNIFORM_TYPE_TEXTURE };
+    struct Uniform { Uniform(int, int, RID) {} };
+    inline static RD *singleton = nullptr;
+    uint64_t invalid_texture = 0, invalid_pipeline = 0, invalid_uniform = 0;
+    bool fail_begin = false;
+    int begins = 0, dispatches = 0, ends = 0, bound_pipeline = 0, bound_sets = 0;
+    static RD *get_singleton() { return singleton; }
+    bool texture_is_valid(RID rid) { return !rid.is_null() && rid.id != invalid_texture; }
+    bool compute_pipeline_is_valid(RID rid) { return !rid.is_null() && rid.id != invalid_pipeline; }
+    bool uniform_set_is_valid(RID rid) { return !rid.is_null() && rid.id != invalid_uniform; }
+    ComputeListID compute_list_begin() { ++begins; return fail_begin ? INVALID_ID : 1; }
+    void compute_list_bind_compute_pipeline(ComputeListID, RID rid) { bound_pipeline = int(rid.id); }
+    void compute_list_bind_uniform_set(ComputeListID, RID, int) { ++bound_sets; }
+    void compute_list_set_push_constant(ComputeListID, const float *, size_t) {}
+    void compute_list_dispatch_threads(ComputeListID, int, int, int) { ++dispatches; }
+    void compute_list_end() { ++ends; }
+};
+using RenderingDevice = RD;
+struct UniformSetCacheRD {
+    inline static UniformSetCacheRD *singleton = nullptr;
+    int null_set = -1;
+    static UniformSetCacheRD *get_singleton() { return singleton; }
+    template <typename... Args> RID get_cache(RID, int set, const Args &...) {
+        return set == null_set ? RID{} : RID{uint64_t(30 + set)};
+    }
+};
+struct FSR3ContextInternal {
+    std::atomic<bool> failed{false};
+    uint64_t required_resources = 0;
+    Size internal_size;
+    RID reactive_mask{5};
+};
+struct FSR3Context {
+    FSR3ContextInternal *internal = nullptr;
+    struct Parameters {
+        FSR3Context *context = nullptr;
+        Size internal_size;
+        RID color{1}, depth{2}, velocity{3}, output{4}, reactive;
+        Projection reprojection;
+    };
+};
+struct FakePrepare {
+    bool missing_shader = false;
+    RID version_get_shader(RID, uint32_t variant) { return missing_shader ? RID{} : RID{uint64_t(20 + variant)}; }
+};
+class FSR3Effect {
+public:
+    struct { RID prepare_version{10}; FakePrepare prepare; RID prepare_pipeline[2] = {{11}, {12}}; } shaders;
+    void upscale(const FSR3Context::Parameters &);
+};
+"""
+
+FSR3_PREP_MAIN = r"""
+struct Fixture {
+    RD rd;
+    UniformSetCacheRD cache;
+    FSR3ContextInternal internal;
+    FSR3Context context;
+    FSR3Context::Parameters params;
+    FSR3Effect effect;
+    Fixture() {
+        backend_failed.store(false); failures = 0;
+        RD::singleton = &rd; UniformSetCacheRD::singleton = &cache;
+        context.internal = &internal; params.context = &context;
+    }
+    void failed(bool begin_attempted = false) {
+        effect.upscale(params);
+        assert(backend_failed.load() && internal.failed.load() && failures == 1);
+        assert(rd.begins == int(begin_attempted) && rd.dispatches == 0 && rd.ends == 0);
+        effect.upscale(params); // A latched failure never retries preparation.
+        assert(failures == 1 && rd.begins == int(begin_attempted));
+    }
+    void passed(int variant) {
+        effect.upscale(params);
+        assert(!backend_failed.load() && !internal.failed.load() && failures == 0);
+        assert(rd.begins == 1 && rd.dispatches == 1 && rd.ends == 1 && rd.bound_sets == 2);
+        assert(rd.bound_pipeline == 11 + variant);
+    }
+};
+int main() {
+    { Fixture f; f.params.context = nullptr; f.effect.upscale(f.params); assert(backend_failed.load() && failures == 1 && !f.internal.failed.load()); }
+    { Fixture f; f.context.internal = nullptr; f.effect.upscale(f.params); assert(backend_failed.load() && failures == 1); }
+    { Fixture f; f.params.color = {}; f.failed(); }
+    { Fixture f; f.params.depth = {}; f.failed(); }
+    { Fixture f; f.params.velocity = {}; f.failed(); }
+    { Fixture f; f.params.output = {}; f.failed(); }
+    { Fixture f; f.params.output = f.params.color; f.failed(); }
+    { Fixture f; f.params.internal_size.x = 0; f.failed(); }
+    { Fixture f; f.params.internal_size.x++; f.failed(); }
+    for (uint64_t id = 1; id <= 5; ++id) { Fixture f; f.rd.invalid_texture = id; f.failed(); }
+    { Fixture f; f.params.reactive = RID{6}; f.rd.invalid_texture = 6; f.failed(); }
+    { Fixture f; RD::singleton = nullptr; f.failed(); }
+    { Fixture f; UniformSetCacheRD::singleton = nullptr; f.failed(); }
+    { Fixture f; f.effect.shaders.prepare_version = {}; f.failed(); }
+    { Fixture f; f.rd.invalid_pipeline = 11; f.failed(); }
+    { Fixture f; f.rd.invalid_pipeline = 12; f.failed(); } // Inactive variant still gates readiness.
+    { Fixture f; f.effect.shaders.prepare.missing_shader = true; f.failed(); }
+    { Fixture f; f.cache.null_set = 0; f.failed(); }
+    { Fixture f; f.cache.null_set = 1; f.failed(); }
+    { Fixture f; f.params.reactive = RID{6}; f.rd.invalid_uniform = 31; f.failed(); }
+    { Fixture f; f.rd.fail_begin = true; f.failed(true); }
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+    { Fixture f; f.internal.required_resources = FFX_API_QUERY_RESOURCE_INPUT_REACTIVEMASK; f.failed(); }
+#endif
+    { Fixture f; f.passed(0); }
+    { Fixture f; f.params.reactive = RID{6}; f.passed(1); }
+}
+"""
+
+FSR3_CREATE_STUB = r"""
+#include <atomic>
+#include <cassert>
+#include <cstdint>
+#include <mutex>
+#include <string>
+#include <vector>
+struct RID { uint64_t id = 0; bool is_null() const { return id == 0; } };
+struct Size2i { int x = 100, y = 80; };
+struct CharString { std::string value; const char *get_data() const { return value.c_str(); } };
+struct String {
+    std::string value;
+    String(const char *s = "") : value(s) {}
+    String strip_edges() const { return *this; }
+    String to_lower() const { return *this; }
+    bool is_empty() const { return value.empty(); }
+    bool operator==(const char *s) const { return value == s; }
+    bool operator!=(const char *s) const { return value != s; }
+    CharString utf8() const { return {value}; }
+};
+struct OS { static OS *get_singleton() { static OS os; return &os; } String get_environment(const char *) { return "auto"; } };
+struct Header { uint64_t type = 0; Header *pNext = nullptr; };
+using VkDevice = void *;
+using VkPhysicalDevice = void *;
+using ffxContext = void *;
+using ffxReturnCode_t = uint32_t;
+constexpr uint32_t FFX_API_RETURN_OK = 0, FFX_API_RETURN_ERROR_RUNTIME_ERROR = 1;
+enum { FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_VK = 1, FFX_API_CREATE_CONTEXT_DESC_TYPE_UPSCALE,
+       FFX_API_CREATE_CONTEXT_DESC_TYPE_UPSCALE_VERSION, FFX_API_QUERY_DESC_TYPE_GET_VERSIONS,
+       FFX_API_DESC_TYPE_OVERRIDE_VERSION, FFX_API_QUERY_DESC_TYPE_GET_PROVIDER_VERSION,
+       FFX_API_QUERY_DESC_TYPE_UPSCALE_GET_RESOURCE_REQUIREMENTS };
+constexpr uint32_t FFX_UPSCALER_VERSION = 123;
+enum { FFX_UPSCALE_ENABLE_HIGH_DYNAMIC_RANGE = 1, FFX_UPSCALE_ENABLE_DEPTH_INVERTED = 2, FFX_UPSCALE_ENABLE_AUTO_EXPOSURE = 4 };
+enum { FFX_API_QUERY_RESOURCE_INPUT_COLOR = 1, FFX_API_QUERY_RESOURCE_INPUT_DEPTH = 2,
+       FFX_API_QUERY_RESOURCE_INPUT_MV = 4, FFX_API_QUERY_RESOURCE_INPUT_EXPOSURE = 8,
+       FFX_API_QUERY_RESOURCE_INPUT_REACTIVEMASK = 16 };
+struct ffxCreateBackendVKDesc {
+    Header header;
+    struct DeviceContext { VkDevice vkDevice = nullptr; VkPhysicalDevice vkPhysicalDevice = nullptr; void *(*vkDeviceProcAddr)(VkDevice, const char *) = nullptr; } deviceContext;
+    VkDevice vkDevice = nullptr; VkPhysicalDevice vkPhysicalDevice = nullptr; void *(*vkDeviceProcAddr)(VkDevice, const char *) = nullptr;
+};
+struct ffxCreateContextDescUpscale { Header header; uint32_t flags = 0; struct Dimensions { uint32_t width = 0, height = 0; } maxRenderSize, maxUpscaleSize; void *fpMessage = nullptr; };
+struct ffxCreateContextDescUpscaleVersion { Header header; uint32_t version = 0; };
+struct ffxOverrideVersion { Header header; uint64_t versionId = 0; };
+struct ffxQueryDescGetVersions { Header header; uint64_t createDescType = 0; void *device = nullptr; uint64_t *outputCount = nullptr, *versionIds = nullptr; const char **versionNames = nullptr; };
+struct ffxQueryGetProviderVersion { Header header; const char *versionName = nullptr; uint64_t versionId = 0; };
+struct ffxQueryDescUpscaleGetResourceRequirements { Header header; uint64_t required_resources = 0, optional_resources = 0; };
+struct RD {
+    inline static RD *singleton = nullptr;
+    enum { DRIVER_RESOURCE_LOGICAL_DEVICE, DRIVER_RESOURCE_PHYSICAL_DEVICE, TEXTURE_TYPE_2D, DATA_FORMAT_R8_UNORM,
+           TEXTURE_USAGE_SAMPLING_BIT = 1, TEXTURE_USAGE_STORAGE_BIT = 2 };
+    struct TextureView {};
+    struct TextureFormat { int texture_type = 0, format = 0, width = 0, height = 0, depth = 0, array_layers = 0, mipmaps = 0, usage_bits = 0; bool is_discardable = false; };
+    uint64_t logical = 11, physical = 12;
+    bool fail_mask = false;
+    static RD *get_singleton() { return singleton; }
+    uint64_t get_driver_resource(int kind) { return kind == DRIVER_RESOURCE_LOGICAL_DEVICE ? logical : physical; }
+    RID texture_create(TextureFormat, TextureView) { return fail_mask ? RID{} : RID{42}; }
+};
+using RenderingDevice = RD;
+void *fsr3_get_device_proc_addr(VkDevice, const char *) { return reinterpret_cast<void *>(1); }
+struct FSR3ContextInternal {
+    ffxContext context = nullptr;
+    ffxCreateBackendVKDesc backend;
+    ffxCreateContextDescUpscale description;
+    ffxCreateContextDescUpscaleVersion api_version;
+    ffxOverrideVersion version_override;
+    VkDevice device = nullptr;
+    Size2i internal_size, target_size;
+    RID reactive_mask;
+    uint64_t required_resources = 0;
+};
+struct FSR3Context { FSR3ContextInternal *internal = nullptr; ~FSR3Context() { delete internal; } };
+struct FSR3Api {
+    std::mutex mutex;
+    ffxReturnCode_t (*create_context)(ffxContext *, Header *, void *) = nullptr;
+    ffxReturnCode_t (*query)(ffxContext *, Header *) = nullptr;
+    std::string provider_version, requested_implementation;
+    uint64_t provider_version_id = 0, required_resources = 0, optional_resources = 0;
+};
+FSR3Api &get_fsr3_api() { static FSR3Api api; return api; }
+std::atomic<bool> backend_failed{false};
+std::atomic<uint64_t> contexts_created{0};
+std::atomic<uint32_t> last_return_code{0};
+bool available = true, fail_create = false, fail_provider_query = false, fail_requirements = false;
+const char *provider_name = "old";
+uint64_t provider_id = 7, required = 1, optional = 16;
+void collect_retired_contexts() {}
+void record_backend_failure(uint32_t code) { backend_failed.store(true); last_return_code.store(code); }
+bool matches_bundled_version(const std::string &, const char *) { return true; }
+template<typename... Args> const char *vformat(const char *s, Args...) { return s; }
+#define WARN_PRINT(...) do {} while (false)
+#define memnew(T) new T
+#define memdelete(T) delete (T)
+ffxReturnCode_t fake_create(ffxContext *context, Header *, void *) { if (fail_create) return 7; *context = reinterpret_cast<void *>(1); return FFX_API_RETURN_OK; }
+ffxReturnCode_t fake_query(ffxContext *, Header *header) {
+    if (header->type == FFX_API_QUERY_DESC_TYPE_GET_PROVIDER_VERSION) {
+        if (fail_provider_query) return 3;
+        auto *query = reinterpret_cast<ffxQueryGetProviderVersion *>(header);
+        query->versionName = provider_name; query->versionId = provider_id;
+    } else if (header->type == FFX_API_QUERY_DESC_TYPE_UPSCALE_GET_RESOURCE_REQUIREMENTS) {
+        if (fail_requirements) return 4;
+        auto *query = reinterpret_cast<ffxQueryDescUpscaleGetResourceRequirements *>(header);
+        query->required_resources = required; query->optional_resources = optional;
+    } else {
+        auto *query = reinterpret_cast<ffxQueryDescGetVersions *>(header);
+        if (*query->outputCount == 0) *query->outputCount = 1;
+        else { query->versionIds[0] = provider_id; query->versionNames[0] = provider_name; }
+    }
+    return FFX_API_RETURN_OK;
+}
+class FSR3Effect {
+public:
+    static bool is_available() { return available && !backend_failed.load(); }
+    FSR3Context *create_context(Size2i, Size2i);
+};
+"""
+
+FSR3_CREATE_MAIN = r"""
+int main() {
+    RD rd; RD::singleton = &rd;
+    auto &api = get_fsr3_api(); api.create_context = fake_create; api.query = fake_query;
+    FSR3Effect effect;
+    auto reset_failure = [&]() { backend_failed.store(false); last_return_code.store(0); };
+    available = false; assert(!effect.create_context({}, {}) && backend_failed.load()); available = true; reset_failure();
+    assert(!effect.create_context({0, 80}, {}) && backend_failed.load()); reset_failure();
+    assert(!effect.create_context({}, {100, 0}) && backend_failed.load()); reset_failure();
+    RD::singleton = nullptr; assert(!effect.create_context({}, {}) && backend_failed.load()); RD::singleton = &rd; reset_failure();
+    rd.logical = 0; assert(!effect.create_context({}, {}) && backend_failed.load()); rd.logical = 11; reset_failure();
+    rd.physical = 0; assert(!effect.create_context({}, {}) && backend_failed.load()); rd.physical = 12; reset_failure();
+    FSR3Context *first = effect.create_context({}, {});
+    assert(first && api.provider_version == "old" && api.provider_version_id == 7 && contexts_created.load() == 1);
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+    assert(api.required_resources == 1 && api.optional_resources == 16 && api.requested_implementation == "auto");
+#endif
+    delete first;
+    provider_name = "new"; provider_id = 9; required = 2; optional = 8;
+    fail_create = true; assert(!effect.create_context({}, {}) && backend_failed.load());
+    assert(api.provider_version == "old" && api.provider_version_id == 7 && contexts_created.load() == 1);
+    fail_create = false; reset_failure();
+    rd.fail_mask = true; assert(!effect.create_context({}, {}) && backend_failed.load());
+    assert(api.provider_version == "old" && api.provider_version_id == 7 && contexts_created.load() == 1);
+    rd.fail_mask = false; reset_failure();
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+    fail_provider_query = true; assert(!effect.create_context({}, {}) && backend_failed.load());
+    assert(api.provider_version == "old" && api.required_resources == 1 && api.optional_resources == 16);
+    fail_provider_query = false; reset_failure();
+    fail_requirements = true; assert(!effect.create_context({}, {}) && backend_failed.load());
+    assert(api.provider_version == "old" && api.required_resources == 1 && api.optional_resources == 16);
+    fail_requirements = false; reset_failure();
+#endif
+    FSR3Context *next = effect.create_context({}, {});
+    assert(next && api.provider_version == "new" && api.provider_version_id == 9 && contexts_created.load() == 2);
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+    assert(api.required_resources == 2 && api.optional_resources == 8 && api.requested_implementation == "auto");
+#endif
+    delete next;
+}
+"""
+
 
 class FSRHistoryResetTests(unittest.TestCase):
     @classmethod
@@ -364,6 +658,22 @@ class FSRHistoryResetTests(unittest.TestCase):
         state = between(source, "// BEGIN FSR3 HISTORY RESET STATE", "// END FSR3 HISTORY RESET STATE")
         callback = function(source, "void FSR3Effect::_dispatch_graph_callback(")
         compile_and_run(FSR3_STUB + state + FSR3_AFTER_STATE + callback + FSR3_MAIN, self.directory, "fsr3")
+
+    def test_fsr3_preparation_failures_latch_before_dispatch(self) -> None:
+        source = (HERE / "fsr3.cpp").read_text(encoding="utf-8")
+        upscale = function(source, "void FSR3Effect::upscale(")
+        # The real setup is tested up to graph payload creation. Callback success,
+        # failure and ownership are covered separately above.
+        prepare = upscale[:upscale.index("\n\tDispatchPayload *payload =")] + "\n}\n"
+        for name, defines in (("fsr3_prepare_legacy", ""), ("fsr3_prepare_sdk24", "#define FFX_UPSCALER_VERSION_MAJOR 4\n")):
+            compile_and_run(defines + FSR3_PREP_STUB + prepare + FSR3_PREP_MAIN, self.directory, name)
+
+    def test_fsr3_creation_failures_and_provider_status_are_transactional(self) -> None:
+        source = (HERE / "fsr3.cpp").read_text(encoding="utf-8")
+        create = function(source, "FSR3Context *FSR3Effect::create_context(")
+        self.assertIn('status["provider_scope"] = "last_successful_context";', source)
+        for name, defines in (("fsr3_create_legacy", ""), ("fsr3_create_sdk24", "#define FFX_UPSCALER_VERSION_MAJOR 4\n")):
+            compile_and_run(defines + FSR3_CREATE_STUB + create + FSR3_CREATE_MAIN, self.directory, name)
 
     def test_fsr2_dispatch_and_ordered_patch_against_pinned_archive(self) -> None:
         if not shutil.which("git"):

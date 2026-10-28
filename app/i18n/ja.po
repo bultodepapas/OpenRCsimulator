@@ -8294,3 +8294,34 @@ msgstr "有効な故障の種類はこの機体では利用できません。「
 
 msgid "This aircraft has no rudder, so rudder failures cannot occur."
 msgstr "この機体にはラダーがないため、ラダーの故障は発生しません。"
+
+# DT-MAC: opt-in MetalFX trials.
+msgid "MetalFX Spatial · 85%"
+msgstr "MetalFX 空間 · 85%"
+
+msgid "MetalFX Spatial · Quality"
+msgstr "MetalFX 空間 · 品質"
+
+msgid "MetalFX Temporal · Native AA"
+msgstr "MetalFX 時間 · ネイティブ AA"
+
+msgid "MetalFX Temporal · 85%"
+msgstr "MetalFX 時間 · 85%"
+
+msgid "MetalFX Temporal · Quality"
+msgstr "MetalFX 時間 · 品質"
+
+msgid "MetalFX is an experimental Mac option. Compare distant aircraft detail in motion."
+msgstr "MetalFX は Mac 向けの実験的なオプションです。動いている遠方の機体の細部を比較してください。"
+
+msgid "MetalFX Temporal returned to Native after a camera change. Select Native before retrying."
+msgstr "カメラ変更後、MetalFX 時間モードはネイティブに戻りました。再試行前にネイティブを選択してください。"
+
+msgid "This MetalFX input scale is unavailable on the current device."
+msgstr "この MetalFX 入力スケールは現在のデバイスでは利用できません。"
+
+msgid "MetalFX requires an explicitly enabled Metal trial on a supported Mac."
+msgstr "MetalFX には、対応する Mac で明示的に有効にした Metal テストが必要です。"
+
+msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
+msgstr "MetalFX は FSR のシャープネスを使用しません。保存された値は維持されます。"

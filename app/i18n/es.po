@@ -7871,3 +7871,34 @@ msgstr "Compañeros de vuelo: No disponibles"
 
 msgid "Flight companions are unavailable in this game build."
 msgstr "Los compañeros de vuelo no están disponibles en esta versión del juego."
+
+# DT-MAC: opt-in MetalFX trials.
+msgid "MetalFX Spatial · 85%"
+msgstr "MetalFX espacial · 85%"
+
+msgid "MetalFX Spatial · Quality"
+msgstr "MetalFX espacial · Calidad"
+
+msgid "MetalFX Temporal · Native AA"
+msgstr "MetalFX temporal · AA nativo"
+
+msgid "MetalFX Temporal · 85%"
+msgstr "MetalFX temporal · 85%"
+
+msgid "MetalFX Temporal · Quality"
+msgstr "MetalFX temporal · Calidad"
+
+msgid "MetalFX is an experimental Mac option. Compare distant aircraft detail in motion."
+msgstr "MetalFX es una opción experimental para Mac. Compara el detalle de los aviones lejanos en movimiento."
+
+msgid "MetalFX Temporal returned to Native after a camera change. Select Native before retrying."
+msgstr "MetalFX temporal volvió a Nativo tras un cambio de cámara. Selecciona Nativo antes de volver a intentarlo."
+
+msgid "This MetalFX input scale is unavailable on the current device."
+msgstr "Esta escala de entrada de MetalFX no está disponible en el dispositivo actual."
+
+msgid "MetalFX requires an explicitly enabled Metal trial on a supported Mac."
+msgstr "MetalFX requiere una prueba de Metal activada explícitamente en un Mac compatible."
+
+msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
+msgstr "MetalFX no usa la nitidez de FSR. Se conserva tu valor guardado."

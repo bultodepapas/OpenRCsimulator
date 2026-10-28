@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import tempfile
 import unittest
 from pathlib import Path
@@ -126,6 +127,50 @@ def write_run(directory: Path, name: str, report: dict, log_text: str = "Godot c
     report_path.write_text(json.dumps(report, allow_nan=True), encoding="utf-8")
     report_path.with_suffix(".log").write_text(log_text, encoding="utf-8")
     return report_path
+
+
+def write_stream_run(directory: Path, name: str, source: dict) -> tuple[Path, list[dict]]:
+    """Build the on-disk stream format from a known-valid legacy fixture."""
+    report = dict(source)
+    report_path = directory / f"{name}.json"
+    metrics = source["raw_metrics"]
+    count = source["frames"]
+    max_frames = count
+    report.update(
+        format="openrc-frametimes v3", version=3, capture_id="fixture", max_frames=max_frames,
+        actual_sample_start_monotonic_usec=source["frame_end_monotonic_usec"][0] - source["frame_wall_usec"][0],
+        actual_sample_end_monotonic_usec=source["frame_end_monotonic_usec"][-1],
+        sample_endpoints={"first": {key: values[0] for key, values in metrics.items()},
+                          "last": {key: values[-1] for key, values in metrics.items()}},
+        frame_deltas_s=[], frame_wall_usec=[], frame_end_monotonic_usec=[],
+        engine_frame_deltas_s=[], raw_metrics={},
+    )
+    records = [{"type": "header", "format": "openrc-frame-stream v1", "version": 1,
+                "capture_id": "fixture", "chunk_frames": 512, "max_frames": max_frames,
+                "max_bytes": 268_435_456, "warmup_s": report["warmup_s"], "sample_s": report["sample_s"]}]
+    for start in range(0, count, 512):
+        end = min(start + 512, count)
+        records.append({"type": "chunk", "sequence": len(records) - 1, "start_frame": start,
+                        "frames": end - start, "wall_usec": source["frame_wall_usec"][start:end],
+                        "end_usec": source["frame_end_monotonic_usec"][start:end],
+                        "engine_delta_s": source["frame_deltas_s"][start:end],
+                        "metrics": {key: values[start:end] for key, values in metrics.items()}})
+    records.append({"type": "trailer", "complete": True, "failure": "", "chunks": len(records) - 1,
+                    "frames": count})
+    report["stream"] = {"file": report_path.name + ".frames.jsonl", "chunks": len(records) - 2,
+                        "frames": count, "complete": True, "chunk_frames": 512,
+                        "max_bytes": 268_435_456}
+    report_path.with_suffix(".log").write_text("Godot clean\n", encoding="utf-8")
+    write_stream_fixture(report_path, report, records)
+    return report_path, records
+
+
+def write_stream_fixture(report_path: Path, report: dict, records: list[dict]) -> None:
+    payload = b"".join((json.dumps(record, separators=(",", ":"), allow_nan=False) + "\n").encode()
+                       for record in records)
+    report["stream"].update(bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest())
+    report_path.with_name(report["stream"]["file"]).write_bytes(payload)
+    report_path.write_text(json.dumps(report, allow_nan=False), encoding="utf-8")
 
 
 def lake_reflection_settings(
@@ -344,6 +389,84 @@ class NativeReportValidationTests(unittest.TestCase):
         report["frame_end_monotonic_usec"][2] = report["frame_end_monotonic_usec"][1]
         errors, _ = validate_native_report(report)
         self.assertTrue(any("strictly increasing" in error for error in errors))
+
+
+class StreamReportTests(unittest.TestCase):
+    def test_stream_matches_legacy_analysis_across_chunk_boundaries(self):
+        source = sustained_report()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            legacy = summarize_run(write_run(root, "run-legacy", source), DEFAULT_POLICY)
+            path, records = write_stream_run(root, "run-stream", source)
+            stream = summarize_run(path, DEFAULT_POLICY)
+        self.assertGreater(len(records), 3)
+        self.assertTrue(stream["collection_valid"], stream["collection_reasons"])
+        self.assertTrue(stream["performance_pass"])
+        self.assertEqual(stream["metrics"], legacy["metrics"])
+        self.assertEqual(stream["stream"]["frames"], source["frames"])
+        self.assertEqual(stream["report_format"], "openrc-frametimes v3")
+
+    def test_stream_rejects_bad_sequence_schema_and_continuity(self):
+        for fault in ("sequence", "schema", "clock", "endpoint"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temp_dir:
+                path, records = write_stream_run(Path(temp_dir), "run-1", sustained_report())
+                report = json.loads(path.read_text(encoding="utf-8"))
+                if fault == "sequence":
+                    records[2]["sequence"] += 1
+                elif fault == "schema":
+                    del records[2]["metrics"]["fps_monitor"]
+                elif fault == "clock":
+                    records[2]["end_usec"][0] += 1
+                else:
+                    report["sample_endpoints"]["first"]["sim_tick"] += 1
+                write_stream_fixture(path, report, records)
+                result = summarize_run(path, DEFAULT_POLICY)
+                self.assertFalse(result["collection_valid"])
+                self.assertFalse(result["performance_pass"])
+                self.assertTrue(any("stream" in reason for reason in result["collection_reasons"]))
+
+    def test_stream_requires_complete_intact_trailer_and_hash(self):
+        for fault in ("missing-trailer", "truncated-line", "bad-hash", "marked-incomplete", "missing-file"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temp_dir:
+                path, records = write_stream_run(Path(temp_dir), "run-1", valid_report())
+                report = json.loads(path.read_text(encoding="utf-8"))
+                sidecar = path.with_name(report["stream"]["file"])
+                if fault == "missing-trailer":
+                    write_stream_fixture(path, report, records[:-1])
+                elif fault == "truncated-line":
+                    payload = sidecar.read_bytes()[:-1]
+                    sidecar.write_bytes(payload)
+                    report["stream"].update(bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest())
+                    path.write_text(json.dumps(report), encoding="utf-8")
+                elif fault == "bad-hash":
+                    report["stream"]["sha256"] = "0" * 64
+                    path.write_text(json.dumps(report), encoding="utf-8")
+                elif fault == "marked-incomplete":
+                    report["complete"] = False
+                    report["stream"]["complete"] = False
+                    path.write_text(json.dumps(report), encoding="utf-8")
+                else:
+                    sidecar.unlink()
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertFalse(result["collection_valid"])
+                self.assertFalse(result["performance_pass"])
+                self.assertTrue(any("stream" in reason for reason in result["collection_reasons"]))
+
+    def test_stream_rejects_path_escape_and_overstated_limits(self):
+        for fault in ("path", "max-frames", "max-bytes"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temp_dir:
+                path, _records = write_stream_run(Path(temp_dir), "run-1", valid_report())
+                report = json.loads(path.read_text(encoding="utf-8"))
+                if fault == "path":
+                    report["stream"]["file"] = "../other.jsonl"
+                elif fault == "max-frames":
+                    report["max_frames"] = 1_000_001
+                else:
+                    report["stream"]["bytes"] = 268_435_457
+                path.write_text(json.dumps(report), encoding="utf-8")
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertFalse(result["collection_valid"])
+                self.assertFalse(result["performance_pass"])
 
 
 class NativeRunClassificationTests(unittest.TestCase):

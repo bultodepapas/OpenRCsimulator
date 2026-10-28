@@ -127,7 +127,7 @@ def feature_plate(path, cue):
     return {"text_bounds": bounds, "safe_area": [72, 64, W - 72, 450], "scrim_bottom": bottom + 160}
 
 
-def end_card(path):
+def end_card(path, detail=""):
     im = Image.new("RGB", (W, H))
     px = im.load()
     for y in range(H):
@@ -140,6 +140,8 @@ def end_card(path):
     tracked(d, (153, 490), "SIMULATOR", 49, 14, (214, 226, 236), True)
     d.rectangle((153, 598, 285, 602), fill=(255, 170, 77))
     d.text((150, 648), "EVERY INPUT MATTERS.", font=font(59), fill=(249, 250, 252))
+    if detail:
+        tracked(d, (153, 734), detail, 27, 3, (214, 226, 236), True)
     d.text((153, 776), "bultodepapas.github.io/OpenRCsimulator", font=font(32, True), fill=(173, 199, 217))
     tracked(d, (1590, 94), "EARLY ALPHA", 24, 2, (173, 199, 217), True)
     d.text((153, 986), "Music: Uprising by Scott Buckley · CC BY 4.0 · scottbuckley.com.au", font=font(24, True), fill=(143, 164, 182))
@@ -172,7 +174,7 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     total_duration = total_frames / FPS
     out.mkdir(parents=True, exist_ok=True)
     work.mkdir(parents=True, exist_ok=True)
-    end_card(work / "end-card.png")
+    end_card(work / "end-card.png", spec.get("end_card_detail", ""))
     source_rows = []
     video_clips, audio_clips = [], []
     timeline = 0

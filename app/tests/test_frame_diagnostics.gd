@@ -41,6 +41,9 @@ func _run_checks() -> void:
 	var root_viewport: Viewport = get_root()
 	observer.start(root_viewport)
 	var started: Dictionary = observer.metadata()
+	_check("platform and presentation limits remain explicit", started.os_version == OS.get_version()
+		and started.architecture == Engine.get_architecture_name() and started.metal_command_backend == "not_observed"
+		and started.presentation_timing.contains("not_collected") and started.vsync_mode == DisplayServer.window_get_vsync_mode(), str(started))
 	_check("diagnostics record main-view reconstruction", started.reconstruction_at_start.scale == root_viewport.scaling_3d_scale
 		and started.reconstruction_at_start.msaa_3d == root_viewport.msaa_3d, str(started))
 	var expected_timing_available: bool = FrameDiagnostics._timing_unavailable_reason(DisplayServer.get_name(), OS.get_name(), started.rendering_method).is_empty()

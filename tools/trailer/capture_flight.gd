@@ -171,7 +171,8 @@ func _run() -> void:
 			lighting.selection = "disabled"
 		_lighting_profile_data = lighting.duplicate(true)
 		if _lighting_flight == "workshop":
-			var prepared := freeze_lighting_trial(_main.aircraft_id, lighting, _effective_lighting_smoke_mode())
+			var prepared := freeze_lighting_trial(_main.aircraft_id, lighting, _effective_lighting_smoke_mode(),
+				float(_options.get("workshop-scale", 1.0)))
 			if not prepared.get("ok", false):
 				push_error("Lighting capture trial refused: " + str(prepared.get("errors", [])))
 				_main.free()
@@ -1017,7 +1018,9 @@ static func validate_lighting_profile_options(options: Dictionary) -> Dictionary
 
 
 ## Uses stock authored outlets through the ordinary frozen Workshop profile, without a second smoke system.
-static func freeze_lighting_trial(aircraft_id: String, lighting: Dictionary, smoke_mode := "off") -> Dictionary:
+## TRA-09: workshop_scale != 1 freezes the ordinary Workshop virtual-size recipe (10–500 %).
+static func freeze_lighting_trial(aircraft_id: String, lighting: Dictionary, smoke_mode := "off",
+		workshop_scale := 1.0) -> Dictionary:
 	if smoke_mode not in ["off", "stock"]:
 		return {"ok": false, "errors": ["--lighting-smoke must be off or stock."]}
 	var described := Customization.describe(aircraft_id)
@@ -1027,7 +1030,8 @@ static func freeze_lighting_trial(aircraft_id: String, lighting: Dictionary, smo
 	profile.lighting = lighting.duplicate(true)
 	var payload := {"base_id": aircraft_id,
 		"base_bytes": FileAccess.get_file_as_bytes(Catalog.entry(aircraft_id).data),
-		"recipe": {}, "presentation_profile": profile}
+		"recipe": {} if is_equal_approx(workshop_scale, 1.0) else {"scale": workshop_scale,
+			"size_model": "virtual_similarity_v1"}, "presentation_profile": profile}
 	var frozen := Trial.freeze(payload)
 	if not bool(frozen.get("ok", false)):
 		return frozen

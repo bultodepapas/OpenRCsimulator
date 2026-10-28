@@ -12,9 +12,11 @@ NEEDED=(linux_release.x86_64 windows_release_x86_64.exe macos.zip version.txt)
 
 TOOLS="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)/.tools"
 PROJECT="$(cd "$(dirname "$0")" && pwd)"
+CHECKSUM=(sha512sum)
+GODOT_TEMPLATES_PYTHON="${OPENRC_GODOT_PYTHON:-python3}"
 case "$(uname -s)" in
   MINGW*|MSYS*|CYGWIN*) DATA_ROOT="$(cygpath -u "${APPDATA:?APPDATA is required on Windows}")/Godot" ;;
-  Darwin) DATA_ROOT="$HOME/Library/Application Support/Godot" ;;
+  Darwin) DATA_ROOT="$HOME/Library/Application Support/Godot"; CHECKSUM=(shasum -a 512) ;;
   *) DATA_ROOT="${XDG_DATA_HOME:-$HOME/.local/share}/godot" ;;
 esac
 DEST="$DATA_ROOT/export_templates/$TEMPLATE_DIR_NAME"
@@ -23,7 +25,10 @@ present() {
   [ "$(tr -d '\r\n' < "$DEST/version.txt")" = "$TEMPLATE_DIR_NAME" ]
 }
 prepare_macos() {
-  python3 "$PROJECT/../tools/godot/macos_universal_template.py" --source "$DEST/macos.zip" --project "$PROJECT" >&2
+  if ! "$GODOT_TEMPLATES_PYTHON" -c 'import hashlib, sys; sys.exit(0 if hasattr(hashlib, "file_digest") else 1)'; then
+    echo "The macOS template correction requires Python 3.11+; set OPENRC_GODOT_PYTHON to its executable." >&2; return 1
+  fi
+  "$GODOT_TEMPLATES_PYTHON" "$PROJECT/../tools/godot/macos_universal_template.py" --source "$DEST/macos.zip" --project "$PROJECT" >&2
 }
 if present; then prepare_macos; echo "$DEST"; exit 0; fi
 mkdir -p "$TOOLS" "$DEST"
@@ -31,7 +36,7 @@ if [ ! -f "$TOOLS/$FILE" ]; then
   curl -sSfL -o "$TOOLS/$FILE.part" "https://github.com/godotengine/godot-builds/releases/download/$VERSION/$FILE"
   mv "$TOOLS/$FILE.part" "$TOOLS/$FILE"
 fi
-echo "$SHA512  $TOOLS/$FILE" | sha512sum -c - >&2
+printf '%s  %s\n' "$SHA512" "$TOOLS/$FILE" | "${CHECKSUM[@]}" -c - >&2
 unzip -q -o -j "$TOOLS/$FILE" $(printf 'templates/%s ' "${NEEDED[@]}") -d "$DEST"
 [ "$(tr -d '\r\n' < "$DEST/version.txt")" = "$TEMPLATE_DIR_NAME" ] || { echo "unexpected template version: $(cat "$DEST/version.txt")" >&2; exit 1; }
 rm "$TOOLS/$FILE"

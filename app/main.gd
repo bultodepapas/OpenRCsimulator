@@ -1194,8 +1194,12 @@ func _prepare_flight() -> void:
 		_frametimes_path = str(frametime_options.path)
 		_frametimes_warmup_s = float(frametime_options.warmup_s)
 		_frametimes_duration = float(frametime_options.sample_s)
+		if not str(frametime_options.get("stream_path", "")).is_empty() and FileAccess.file_exists(_frametimes_path):
+			push_error("Streaming frame-time report already exists: " + _frametimes_path)
+			get_tree().quit(1)
+			return
 		_frametime_samples = FrameSamples.new()
-		if not _frametime_samples.configure(_frametimes_warmup_s, _frametimes_duration, int(frametime_options.max_frames)):
+		if not _frametime_samples.configure(_frametimes_warmup_s, _frametimes_duration, int(frametime_options.max_frames), str(frametime_options.get("stream_path", ""))):
 			push_error("Invalid frame-time options: " + _frametime_samples.failure)
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
@@ -2725,6 +2729,14 @@ func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
 
 
 func _exit_tree() -> void:
+	if _frametimes_active and _frametime_samples != null:
+		_frametime_samples.abort("flight closed before collection completed")
+		var interrupted: Dictionary = _frametime_samples.report()
+		interrupted["interruption"] = "flight closed; session endpoint metadata unavailable"
+		var written: Dictionary = FrameSamples.write_json(_frametimes_path, interrupted)
+		if not written.ok:
+			push_error("Cannot write interrupted frame-time report: " + error_string(int(written.error)))
+		_frametimes_active = false
 	if is_instance_valid(_preparing_session):
 		_preparing_session.free()
 		_preparing_session = null
@@ -3257,6 +3269,14 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 	var sample_metrics: Dictionary = report.raw_metrics
 	var sample_times: PackedFloat64Array = sample_metrics.get("sim_time_s", PackedFloat64Array())
 	var sample_ticks: PackedFloat64Array = sample_metrics.get("sim_tick", PackedFloat64Array())
+	if report.get("format", "") == FrameSamples.STREAM_FORMAT:
+		var endpoints: Dictionary = report.get("sample_endpoints", {})
+		var first: Dictionary = endpoints.get("first", {})
+		var last: Dictionary = endpoints.get("last", {})
+		if first.has("sim_time_s") and last.has("sim_time_s"):
+			sample_times = PackedFloat64Array([first.sim_time_s, last.sim_time_s])
+		if first.has("sim_tick") and last.has("sim_tick"):
+			sample_ticks = PackedFloat64Array([first.sim_tick, last.sim_tick])
 	var sample_simulation: Dictionary = {
 		scope = "first sampled frame end through last sampled frame end; excludes the first sampled interval",
 		start_time_s = sample_times[0] if not sample_times.is_empty() else sim_end_s,
@@ -3285,6 +3305,7 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		preset = "high-experimental" if Atmosphere.HighGraphics.active() else "current-default",
 		graphics_profile = Atmosphere.HighGraphics.describe(),
 		backend = RenderingServer.get_current_rendering_method(),
+		rendering_driver = RenderingServer.get_current_rendering_driver_name(),
 		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa,
 			use_hdr_2d = get_viewport().use_hdr_2d,
 			scaling_3d_scale = get_viewport().scaling_3d_scale, scaling_3d_mode = get_viewport().scaling_3d_mode,
@@ -3306,6 +3327,8 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		api = RenderingServer.get_video_adapter_api_version(),
 		godot = Engine.get_version_info().string,
 		os = OS.get_name(),
+		os_version = OS.get_version(),
+		architecture = Engine.get_architecture_name(),
 		pid = OS.get_process_id(),
 		window = "%dx%d" % [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y],
 		vsync = DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED,

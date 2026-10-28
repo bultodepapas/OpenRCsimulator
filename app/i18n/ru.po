@@ -9047,3 +9047,34 @@ msgstr "Ни один включённый тип отказа недоступ�
 
 msgid "This aircraft has no rudder, so rudder failures cannot occur."
 msgstr "У этой модели нет руля направления, поэтому отказы руля направления невозможны."
+
+# DT-MAC: opt-in MetalFX trials.
+msgid "MetalFX Spatial · 85%"
+msgstr "MetalFX пространственный · 85%"
+
+msgid "MetalFX Spatial · Quality"
+msgstr "MetalFX пространственный · Качество"
+
+msgid "MetalFX Temporal · Native AA"
+msgstr "MetalFX временной · Нативное AA"
+
+msgid "MetalFX Temporal · 85%"
+msgstr "MetalFX временной · 85%"
+
+msgid "MetalFX Temporal · Quality"
+msgstr "MetalFX временной · Качество"
+
+msgid "MetalFX is an experimental Mac option. Compare distant aircraft detail in motion."
+msgstr "MetalFX — экспериментальная функция для Mac. Сравните детали далёких самолётов в движении."
+
+msgid "MetalFX Temporal returned to Native after a camera change. Select Native before retrying."
+msgstr "После смены камеры MetalFX временной вернулся в нативный режим. Выберите нативный режим перед повторной попыткой."
+
+msgid "This MetalFX input scale is unavailable on the current device."
+msgstr "Этот масштаб входного изображения MetalFX недоступен на текущем устройстве."
+
+msgid "MetalFX requires an explicitly enabled Metal trial on a supported Mac."
+msgstr "Для MetalFX необходимо явно включить тест Metal на совместимом Mac."
+
+msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
+msgstr "MetalFX не использует резкость FSR. Сохранённое значение не меняется."

@@ -112,7 +112,7 @@ func _run() -> void:
 	settings._msaa_picker.item_selected.emit(3)
 	_check("8x MSAA reaches the real viewport", root.msaa_3d == Viewport.MSAA_8X)
 	var reconstruction_caps := Reconstruction.runtime_capabilities()
-	_check("reconstruction menu follows active High renderer", settings._reconstruction_picker.disabled == not reconstruction_caps.high)
+	_check("reconstruction menu follows provider capabilities", settings._reconstruction_picker.disabled == not Reconstruction.options_available(reconstruction_caps))
 	_check("1080p help compares Quality and Performance input sizes",
 		settings._reconstruction_picker.tooltip_text.contains("1280 × 720")
 		and settings._reconstruction_picker.tooltip_text.contains("960 × 540")

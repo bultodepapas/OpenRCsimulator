@@ -555,3 +555,34 @@ This is functional verification, not an FPS, latency, temporal-quality or
 cross-device guarantee. The [official NVIDIA/Godot review](../../../advanced-graphics-2026-10-21/nvidia-dlss-reflex-2026-10-28.md)
 prioritizes the remaining camera-history, exposure, accepted-resolution and
 Reflex measurement work.
+
+## DLSS temporal-history follow-up — 2026-10-28
+
+`dlss_history_reset.patch` replaces the constant-false reset input with
+viewport-scoped generations. Requests survive warm-up, multiple requests before
+evaluation coalesce, and only successful SDK evaluation acknowledges the captured
+generation. Camera/scenario RID changes invalidate that viewport. App view/style
+changes, flight reset, fly-by reposition, snap zoom, chase teleport and crash-focus
+entry/exit submit explicit discontinuities; ordinary camera updates retain history.
+The [operating contract](../../../../../tools/graphics/native/README.md#integration-contract)
+and [rendered fixture](../../../../../tools/graphics/native/repro/README.md#dlss-temporal-history-regression)
+own API details and reproduction commands.
+
+On the RTX 3090 / driver 617.42, two independent 1920 × 1080 DLAA viewports
+completed deferred/warm-up requests, coalescing, unchanged attachments and
+camera/scenario changes with exactly five successful reset evaluations. Default
+rendering completed 377 SDK evaluations; separate-thread fixed-60 rendering
+completed 375. Both checked runs had zero engine/Vulkan errors. The six-phase
+DLAA/Quality/Balanced/Performance and resize regression also passed on the new
+editor with separate-thread fixed-60 rendering and validation enabled. Loader
+notifications and Godot's separate-thread warning remain visible; the product
+keeps its ordinary rendering-thread configuration.
+
+The eight build regressions and seventeen product regressions passed, including
+the actual compiled C++ generation helper. That helper checks acknowledgement
+ordering and omitted success; it is not real SDK failure injection. The existing
+backend still latches SDK failures and falls back rather than retrying in process.
+Global status fields use separate atomics and were sampled after isolated settled
+phases; they are not coherent per-viewport telemetry under arbitrary concurrency.
+Stereo/XR, arbitrary uninstrumented teleports, moving-image quality and hardware
+latency remain outside this evidence. Streamline 2.11.1 and preset K are unchanged.

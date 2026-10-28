@@ -9072,3 +9072,34 @@ msgstr "Nessun tipo di avaria attivato è disponibile per questo aereo. Attivane
 
 msgid "This aircraft has no rudder, so rudder failures cannot occur."
 msgstr "Questo aereo non ha timone, quindi non possono verificarsi avarie del timone."
+
+# DT-MAC: opt-in MetalFX trials.
+msgid "MetalFX Spatial · 85%"
+msgstr "MetalFX spaziale · 85%"
+
+msgid "MetalFX Spatial · Quality"
+msgstr "MetalFX spaziale · Qualità"
+
+msgid "MetalFX Temporal · Native AA"
+msgstr "MetalFX temporale · AA nativo"
+
+msgid "MetalFX Temporal · 85%"
+msgstr "MetalFX temporale · 85%"
+
+msgid "MetalFX Temporal · Quality"
+msgstr "MetalFX temporale · Qualità"
+
+msgid "MetalFX is an experimental Mac option. Compare distant aircraft detail in motion."
+msgstr "MetalFX è un’opzione sperimentale per Mac. Confronta i dettagli degli aerei lontani in movimento."
+
+msgid "MetalFX Temporal returned to Native after a camera change. Select Native before retrying."
+msgstr "MetalFX temporale è tornato a Nativo dopo un cambio di telecamera. Seleziona Nativo prima di riprovare."
+
+msgid "This MetalFX input scale is unavailable on the current device."
+msgstr "Questa scala di ingresso MetalFX non è disponibile sul dispositivo attuale."
+
+msgid "MetalFX requires an explicitly enabled Metal trial on a supported Mac."
+msgstr "MetalFX richiede una prova Metal attivata esplicitamente su un Mac compatibile."
+
+msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
+msgstr "MetalFX non usa la nitidezza FSR. Il valore salvato viene conservato."

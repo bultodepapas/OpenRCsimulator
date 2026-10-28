@@ -7,10 +7,13 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
+import types
 import unittest
 from unittest import mock
+import zipfile
 
 
 SPEC = importlib.util.spec_from_file_location("build_sdk24_under_test", Path(__file__).with_name("build_sdk24.py"))
@@ -43,10 +46,12 @@ class PrepareTests(unittest.TestCase):
         self.engine = self.cache / "engine"
         self.nvidia = Path(self.temporary.name) / "nvidia"
 
-        for name in ("fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl", "sdk24.py", "build_sdk24.py"):
+        for name in ("fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl", "sdk24.py", "build_sdk24.py", "build.py"):
             put(self.here, name, f"fixture {name}\n".encode())
+        put(self.here, "engine.patch", b"--- a/core/patched.cpp\n+++ b/core/patched.cpp\n")
         put(self.root, "LICENSE", b"openrc license\n")
         put(self.engine, "LICENSE.txt", b"engine license\n")
+        put(self.engine, "core/patched.cpp", b"patched engine source\n")
         (self.engine / "servers/rendering/renderer_rd/effects").mkdir(parents=True)
         (self.engine / "servers/rendering/renderer_rd/shaders/effects").mkdir(parents=True)
         self.sdk_files = {
@@ -85,11 +90,13 @@ class PrepareTests(unittest.TestCase):
         self.patches = [
             mock.patch.object(candidate, "ROOT", self.root),
             mock.patch.object(candidate, "HERE", self.here),
+            mock.patch.object(candidate, "IMPORT_IDENTITIES", {name: digest(self.here / name)
+                              for name in ("build.py", "sdk24.py", "build_sdk24.py")}),
             mock.patch.object(candidate.native_build, "ARCHIVES", specs),
-            mock.patch.object(candidate.native_build, "ENGINE_PATCHES", ()),
+            mock.patch.object(candidate.native_build, "ENGINE_PATCHES", ("engine.patch",)),
             mock.patch.object(candidate.sdk24, "prepare", return_value=(self.source, self.sdk_receipt)),
             mock.patch.object(candidate.native_build, "fetch", side_effect=[self.engine, self.nvidia]),
-            mock.patch.object(candidate.native_build, "apply_engine_patches"),
+            mock.patch.object(candidate, "apply_frozen_engine_patches"),
         ]
         for patch in self.patches:
             patch.start()
@@ -194,6 +201,80 @@ class PrepareTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "(?i)(runtime|sha|hash|mismatch)"):
             candidate.prepare(self.cache, self.intake)
 
+    def test_integration_edit_during_preparation_uses_snapshot_and_fails(self) -> None:
+        original = (self.here / "fsr3.cpp").read_bytes()
+
+        def mutate_after_freeze(_engine, _archive, snapshot):
+            self.assertEqual((snapshot / "fsr3.cpp").read_bytes(), original)
+            (self.here / "fsr3.cpp").write_bytes(b"concurrent integration edit")
+
+        candidate.apply_frozen_engine_patches.side_effect = mutate_after_freeze
+        with self.assertRaisesRegex(RuntimeError, "Integration source changed"):
+            candidate.prepare(self.cache, self.intake)
+        staged = self.engine / "servers/rendering/renderer_rd/effects/fsr3.cpp"
+        self.assertEqual(staged.read_bytes(), original)
+        self.assertFalse((self.engine / "bin/openrc-sdk24-prepare.json").exists())
+
+    def test_imported_helper_changes_require_restart_before_staging(self) -> None:
+        (self.here / "sdk24.py").write_bytes(b"changed after module import")
+        with self.assertRaisesRegex(RuntimeError, "changed after import"):
+            candidate.prepare(self.cache, self.intake)
+        candidate.sdk24.prepare.assert_not_called()
+
+    def test_unexpected_sdk_header_file_is_preserved_and_rejected(self) -> None:
+        extra = put(self.engine, "thirdparty/amd-fsr-sdk24/unexpected.h", b"unknown local work")
+        with self.assertRaisesRegex(RuntimeError, "unexpected files"):
+            candidate.prepare(self.cache, self.intake)
+        self.assertEqual(extra.read_bytes(), b"unknown local work")
+
+    def test_patched_engine_and_integration_edits_invalidate_build_inputs(self) -> None:
+        engine, receipt = candidate.prepare(self.cache, self.intake)
+        self.assertIn("build.py", receipt["integration"])
+        self.assertIn("core/patched.cpp", receipt["engine_source"])
+        self.assertIn("servers/rendering/renderer_rd/effects/fsr3.cpp", receipt["engine_source"])
+        candidate.verify_build_inputs(engine, receipt)
+        patched = engine / "core/patched.cpp"
+        original = patched.read_bytes()
+        patched.write_bytes(b"different patched source")
+        with self.assertRaisesRegex(RuntimeError, "Engine source hash mismatch"):
+            candidate.verify_build_inputs(engine, receipt)
+        patched.write_bytes(original)
+        (self.here / "fsr3.h").write_bytes(b"different integration source")
+        with self.assertRaisesRegex(RuntimeError, "Integration source changed"):
+            candidate.verify_build_inputs(engine, receipt)
+
+    def test_existing_receipt_is_preserved_before_staging(self) -> None:
+        previous = put(self.engine, "bin/openrc-editor-build.json", b"previous receipt evidence\n")
+        candidate.prepare(self.cache, self.intake)
+        self.assertFalse(previous.exists())
+        saved = list((self.root / "tmp/fsr-sdk24-build-receipts").glob("openrc-editor-build-*.json"))
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0].read_bytes(), b"previous receipt evidence\n")
+
+    def test_receipt_publication_does_not_replace_existing_file(self) -> None:
+        path = put(self.cache, "receipt.json", b"other process receipt\n")
+        with self.assertRaises(FileExistsError):
+            candidate.write_receipt(path, {"candidate": True})
+        self.assertEqual(path.read_bytes(), b"other process receipt\n")
+
+    @unittest.skipUnless(os.name == "nt", "The candidate builder targets Windows")
+    def test_build_input_mutation_prevents_a_success_receipt(self) -> None:
+        engine, receipt = candidate.prepare(self.cache, self.intake)
+        fake_scons = types.ModuleType("SCons")
+        fake_scons.__version__ = "4.10.1"
+
+        def mutate_during_build(command, **kwargs):
+            (engine / "core/patched.cpp").write_bytes(b"changed during compilation")
+            return subprocess.CompletedProcess(command, 0)
+
+        with (mock.patch.object(candidate, "prepare", return_value=(engine, receipt)),
+              mock.patch.object(candidate.subprocess, "run", side_effect=mutate_during_build),
+              mock.patch.object(sys, "argv", ["build_sdk24.py"]),
+              mock.patch.dict(sys.modules, {"SCons": fake_scons})):
+            with self.assertRaisesRegex(RuntimeError, "Engine source hash mismatch"):
+                candidate.main()
+        self.assertFalse((engine / "bin/openrc-editor-build.json").exists())
+
 
 class ProviderSelectorTests(unittest.TestCase):
     def test_actual_version_matcher_uses_exact_bundled_version_tokens(self) -> None:
@@ -247,6 +328,38 @@ int main() {
                         raise
                     time.sleep(0.1)
             self.assertEqual(result.returncode, 0, result.stderr.decode(errors="replace"))
+
+
+class FrozenPatchStackTests(unittest.TestCase):
+    def test_frozen_helper_applies_real_patch_stack_to_pinned_archive(self) -> None:
+        if not shutil.which("git"):
+            self.skipTest("Git is required for the native patch stack")
+        root = Path(__file__).resolve().parents[3]
+        archive = root / ".tools/advanced-rendering" / candidate.native_build.ARCHIVES[0][0]
+        if not archive.is_file():
+            self.skipTest("Pinned engine archive is not in the local native cache")
+        self.assertEqual(candidate.native_build.sha256(archive), candidate.native_build.ARCHIVES[0][2])
+        frozen, _ = candidate.freeze_integration()
+        paths = candidate.patched_paths(frozen)
+        self.assertTrue(paths)
+        output = root / "tmp/fsr-sdk24-intake"
+        output.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="frozen-patches-", dir=output) as temporary:
+            directory = Path(temporary)
+            engine = directory / "engine"
+            snapshot = directory / "integration"
+            engine.mkdir()
+            snapshot.mkdir()
+            for name, data in frozen.items():
+                (snapshot / name).write_bytes(data)
+            with zipfile.ZipFile(archive) as package:
+                for name in paths:
+                    content = package.read(f"godot-{candidate.native_build.COMMIT}/{name}")
+                    put(engine, name, content)
+            candidate.apply_frozen_engine_patches(engine, archive, snapshot)
+            first = {name: digest(engine / name) for name in paths}
+            candidate.apply_frozen_engine_patches(engine, archive, snapshot)
+            self.assertEqual({name: digest(engine / name) for name in paths}, first)
 
 
 if __name__ == "__main__":

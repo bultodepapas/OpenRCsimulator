@@ -371,7 +371,7 @@ Dictionary FSR3Effect::get_status() {
 		status["provider_version"] = String(api.provider_version.c_str());
 		status["provider_version_id"] = int64_t(api.provider_version_id);
 		status["provider_version_id_hex"] = "0x" + String::num_uint64(api.provider_version_id, 16);
-		status["provider_scope"] = "last_created_context";
+		status["provider_scope"] = "last_successful_context";
 		status["driver_provider"] = api.provider_version.find('*') != std::string::npos;
 		status["version_override"] = !api.requested_implementation.empty() && api.requested_implementation != "auto";
 		status["requested_implementation"] = String(api.requested_implementation.c_str());
@@ -390,13 +390,32 @@ Dictionary FSR3Effect::get_status() {
 
 FSR3Context *FSR3Effect::create_context(Size2i p_internal_size, Size2i p_target_size) {
 	collect_retired_contexts();
-	ERR_FAIL_COND_V(!is_available(), nullptr);
-	ERR_FAIL_COND_V(p_internal_size.x <= 0 || p_internal_size.y <= 0 || p_target_size.x <= 0 || p_target_size.y <= 0, nullptr);
+	if (!is_available()) {
+		if (!backend_failed.load(std::memory_order_acquire)) {
+			record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+			WARN_PRINT("FSR: upscaler backend became unavailable during context creation.");
+		}
+		return nullptr;
+	}
+	if (p_internal_size.x <= 0 || p_internal_size.y <= 0 || p_target_size.x <= 0 || p_target_size.y <= 0) {
+		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+		WARN_PRINT("FSR: invalid context dimensions.");
+		return nullptr;
+	}
 
 	RenderingDevice *rd = RD::get_singleton();
+	if (rd == nullptr) {
+		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+		WARN_PRINT("FSR: rendering device is unavailable during context creation.");
+		return nullptr;
+	}
 	uint64_t device_handle = rd->get_driver_resource(RD::DRIVER_RESOURCE_LOGICAL_DEVICE);
 	uint64_t physical_device_handle = rd->get_driver_resource(RD::DRIVER_RESOURCE_PHYSICAL_DEVICE);
-	ERR_FAIL_COND_V(device_handle == 0 || physical_device_handle == 0, nullptr);
+	if (device_handle == 0 || physical_device_handle == 0) {
+		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+		WARN_PRINT("FSR: Vulkan device handles are unavailable during context creation.");
+		return nullptr;
+	}
 
 	FSR3Context *context = memnew(FSR3Context);
 	context->internal = memnew(FSR3ContextInternal);
@@ -433,6 +452,13 @@ FSR3Context *FSR3Effect::create_context(Size2i p_internal_size, Size2i p_target_
 	description.fpMessage = nullptr;
 
 	FSR3Api &api = get_fsr3_api();
+	// Publish diagnostics only after the entire context is ready; a failed
+	// replacement must not erase or partially overwrite the last success.
+	std::string provider_version;
+	uint64_t provider_version_id = 0;
+	uint64_t required_resources = 0;
+	uint64_t optional_resources = 0;
+	std::string requested_implementation;
 #if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
 	// Keep creation-chain storage alive for the entire context lifetime.
 	context->internal->api_version.header.type = FFX_API_CREATE_CONTEXT_DESC_TYPE_UPSCALE_VERSION;
@@ -443,14 +469,7 @@ FSR3Context *FSR3Effect::create_context(Size2i p_internal_size, Size2i p_target_
 	if (requested.is_empty()) {
 		requested = "analytical"; // Qualification starts with the pinned cross-vendor provider.
 	}
-	{
-		std::lock_guard<std::mutex> lock(api.mutex);
-		api.requested_implementation = requested.utf8().get_data();
-		api.provider_version.clear();
-		api.provider_version_id = 0;
-		api.required_resources = 0;
-		api.optional_resources = 0;
-	}
+	requested_implementation = requested.utf8().get_data();
 	if (requested != "analytical" && requested != "ml" && requested != "auto") {
 		WARN_PRINT("FSR: OPENRC_FSR_IMPLEMENTATION must be analytical, ml or auto.");
 		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
@@ -531,9 +550,8 @@ FSR3Context *FSR3Effect::create_context(Size2i p_internal_size, Size2i p_target_
 		}
 #endif
 		if (query_result == FFX_API_RETURN_OK && provider_query.versionName != nullptr) {
-			std::lock_guard<std::mutex> lock(api.mutex);
-			api.provider_version = provider_query.versionName;
-			api.provider_version_id = provider_query.versionId;
+			provider_version = provider_query.versionName;
+			provider_version_id = provider_query.versionId;
 		}
 	}
 #if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
@@ -550,11 +568,8 @@ FSR3Context *FSR3Effect::create_context(Size2i p_internal_size, Size2i p_target_
 		return nullptr;
 	}
 	context->internal->required_resources = resources.required_resources;
-	{
-		std::lock_guard<std::mutex> lock(api.mutex);
-		api.required_resources = resources.required_resources;
-		api.optional_resources = resources.optional_resources;
-	}
+	required_resources = resources.required_resources;
+	optional_resources = resources.optional_resources;
 #endif
 
 	RD::TextureFormat mask_format = {};
@@ -574,70 +589,113 @@ FSR3Context *FSR3Effect::create_context(Size2i p_internal_size, Size2i p_target_
 		memdelete(context);
 		return nullptr;
 	}
+	{
+		std::lock_guard<std::mutex> lock(api.mutex);
+		api.provider_version = provider_version;
+		api.provider_version_id = provider_version_id;
+		api.required_resources = required_resources;
+		api.optional_resources = optional_resources;
+		api.requested_implementation = requested_implementation;
+	}
 	contexts_created.fetch_add(1, std::memory_order_relaxed);
 	return context;
 }
 
 void FSR3Effect::upscale(const FSR3Context::Parameters &p_params) {
 	collect_retired_contexts();
-	ERR_FAIL_COND(p_params.context == nullptr || p_params.context->internal == nullptr);
-	ERR_FAIL_COND(p_params.context->internal->failed.load(std::memory_order_acquire) || backend_failed.load(std::memory_order_acquire));
-#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
-	if ((p_params.context->internal->required_resources & FFX_API_QUERY_RESOURCE_INPUT_REACTIVEMASK) != 0 && p_params.reactive.is_null()) {
-		p_params.context->internal->failed.store(true, std::memory_order_release);
+	if (backend_failed.load(std::memory_order_acquire)) {
+		return;
+	}
+	if (p_params.context == nullptr || p_params.context->internal == nullptr) {
 		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
-		WARN_PRINT("FSR: required reactive mask is missing.");
+		WARN_PRINT("FSR: upscaler context is missing.");
+		return;
+	}
+	FSR3ContextInternal *internal = p_params.context->internal;
+	if (internal->failed.load(std::memory_order_acquire)) {
+		return;
+	}
+	// Every pre-dispatch failure must reach the app's Native fallback, including
+	// failures after a previous successful frame made this context ready.
+	auto fail = [&](const char *p_reason) {
+		internal->failed.store(true, std::memory_order_release);
+		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+		WARN_PRINT(p_reason);
+	};
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+	if ((internal->required_resources & FFX_API_QUERY_RESOURCE_INPUT_REACTIVEMASK) != 0 && p_params.reactive.is_null()) {
+		fail("FSR: required reactive mask is missing.");
 		return;
 	}
 #endif
-	ERR_FAIL_COND(p_params.color.is_null() || p_params.depth.is_null() || p_params.velocity.is_null() || p_params.output.is_null());
-	ERR_FAIL_COND(p_params.color == p_params.output || p_params.depth == p_params.output || p_params.velocity == p_params.output);
+	if (p_params.internal_size.x <= 0 || p_params.internal_size.y <= 0 || p_params.internal_size != internal->internal_size ||
+			p_params.color.is_null() || p_params.depth.is_null() || p_params.velocity.is_null() || p_params.output.is_null() ||
+			p_params.color == p_params.output || p_params.depth == p_params.output || p_params.velocity == p_params.output) {
+		fail("FSR: invalid upscaler dimensions or input/output textures.");
+		return;
+	}
 
 	RenderingDevice *rd = RD::get_singleton();
 	UniformSetCacheRD *uniform_set_cache = UniformSetCacheRD::get_singleton();
-	ERR_FAIL_NULL(uniform_set_cache);
+	if (rd == nullptr || uniform_set_cache == nullptr) {
+		fail("FSR: rendering device or uniform cache is unavailable.");
+		return;
+	}
+	if (!rd->texture_is_valid(p_params.color) || !rd->texture_is_valid(p_params.depth) ||
+			!rd->texture_is_valid(p_params.velocity) || !rd->texture_is_valid(p_params.output) ||
+			!rd->texture_is_valid(internal->reactive_mask) ||
+			(!p_params.reactive.is_null() && !rd->texture_is_valid(p_params.reactive))) {
+		fail("FSR: an upscaler texture is invalid.");
+		return;
+	}
+	if (shaders.prepare_version.is_null() || !rd->compute_pipeline_is_valid(shaders.prepare_pipeline[0]) ||
+			!rd->compute_pipeline_is_valid(shaders.prepare_pipeline[1])) {
+		fail("FSR: motion/reactive preparation pipelines are unavailable.");
+		return;
+	}
 
 	// Decode Godot's invalid motion vectors and copy the alpha-only view into a real R8
 	// image. FFX imports VkImage and creates its own VkImageView, so Godot's alpha swizzle
 	// is not carried through to the native FFX backend.
 	RD::Uniform velocity_image(RD::UNIFORM_TYPE_IMAGE, 0, p_params.velocity);
 	RD::Uniform depth_texture(RD::UNIFORM_TYPE_TEXTURE, 0, p_params.depth);
-	RD::Uniform reactive_mask_image(RD::UNIFORM_TYPE_IMAGE, 1, p_params.context->internal->reactive_mask);
-	RID shader;
-	if (!p_params.reactive.is_null()) {
-		RD::Uniform reactive_texture(RD::UNIFORM_TYPE_TEXTURE, 1, p_params.reactive);
-		shader = shaders.prepare.version_get_shader(shaders.prepare_version, 1);
-		ERR_FAIL_COND(shader.is_null());
-		RD::ComputeListID compute_list = rd->compute_list_begin();
-		rd->compute_list_bind_compute_pipeline(compute_list, shaders.prepare_pipeline[1]);
-		rd->compute_list_bind_uniform_set(compute_list, uniform_set_cache->get_cache(shader, 0, velocity_image, reactive_mask_image), 0);
-		rd->compute_list_bind_uniform_set(compute_list, uniform_set_cache->get_cache(shader, 1, depth_texture, reactive_texture), 1);
-		float push_constants[20];
-		push_constants[0] = p_params.internal_size.x;
-		push_constants[1] = p_params.internal_size.y;
-		push_constants[2] = 0.0f;
-		push_constants[3] = 0.0f;
-		memcpy(push_constants + 4, &p_params.reprojection.columns[0].x, sizeof(float) * 16);
-		rd->compute_list_set_push_constant(compute_list, push_constants, sizeof(push_constants));
-		rd->compute_list_dispatch_threads(compute_list, p_params.internal_size.x, p_params.internal_size.y, 1);
-		rd->compute_list_end();
-	} else {
-		shader = shaders.prepare.version_get_shader(shaders.prepare_version, 0);
-		ERR_FAIL_COND(shader.is_null());
-		RD::ComputeListID compute_list = rd->compute_list_begin();
-		rd->compute_list_bind_compute_pipeline(compute_list, shaders.prepare_pipeline[0]);
-		rd->compute_list_bind_uniform_set(compute_list, uniform_set_cache->get_cache(shader, 0, velocity_image, reactive_mask_image), 0);
-		rd->compute_list_bind_uniform_set(compute_list, uniform_set_cache->get_cache(shader, 1, depth_texture), 1);
-		float push_constants[20];
-		push_constants[0] = p_params.internal_size.x;
-		push_constants[1] = p_params.internal_size.y;
-		push_constants[2] = 0.0f;
-		push_constants[3] = 0.0f;
-		memcpy(push_constants + 4, &p_params.reprojection.columns[0].x, sizeof(float) * 16);
-		rd->compute_list_set_push_constant(compute_list, push_constants, sizeof(push_constants));
-		rd->compute_list_dispatch_threads(compute_list, p_params.internal_size.x, p_params.internal_size.y, 1);
-		rd->compute_list_end();
+	RD::Uniform reactive_mask_image(RD::UNIFORM_TYPE_IMAGE, 1, internal->reactive_mask);
+	const bool has_reactive = !p_params.reactive.is_null();
+	const uint32_t shader_variant = has_reactive ? 1 : 0;
+	RID shader = shaders.prepare.version_get_shader(shaders.prepare_version, shader_variant);
+	if (shader.is_null()) {
+		fail("FSR: motion/reactive preparation shader is unavailable.");
+		return;
 	}
+	RID images = uniform_set_cache->get_cache(shader, 0, velocity_image, reactive_mask_image);
+	RID inputs;
+	if (has_reactive) {
+		RD::Uniform reactive_texture(RD::UNIFORM_TYPE_TEXTURE, 1, p_params.reactive);
+		inputs = uniform_set_cache->get_cache(shader, 1, depth_texture, reactive_texture);
+	} else {
+		inputs = uniform_set_cache->get_cache(shader, 1, depth_texture);
+	}
+	if (!rd->uniform_set_is_valid(images) || !rd->uniform_set_is_valid(inputs)) {
+		fail("FSR: motion/reactive preparation uniform sets are unavailable.");
+		return;
+	}
+	RD::ComputeListID compute_list = rd->compute_list_begin();
+	if (compute_list == RD::INVALID_ID) {
+		fail("FSR: could not begin motion/reactive preparation.");
+		return;
+	}
+	rd->compute_list_bind_compute_pipeline(compute_list, shaders.prepare_pipeline[shader_variant]);
+	rd->compute_list_bind_uniform_set(compute_list, images, 0);
+	rd->compute_list_bind_uniform_set(compute_list, inputs, 1);
+	float push_constants[20];
+	push_constants[0] = p_params.internal_size.x;
+	push_constants[1] = p_params.internal_size.y;
+	push_constants[2] = 0.0f;
+	push_constants[3] = 0.0f;
+	memcpy(push_constants + 4, &p_params.reprojection.columns[0].x, sizeof(float) * 16);
+	rd->compute_list_set_push_constant(compute_list, push_constants, sizeof(push_constants));
+	rd->compute_list_dispatch_threads(compute_list, p_params.internal_size.x, p_params.internal_size.y, 1);
+	rd->compute_list_end();
 
 	DispatchPayload *payload = memnew(DispatchPayload);
 	payload->context = p_params.context->internal;
@@ -646,14 +704,12 @@ void FSR3Effect::upscale(const FSR3Context::Parameters &p_params) {
 			!make_api_resource(p_params.depth, FFX_API_RESOURCE_STATE_COMPUTE_READ, false, payload->depth) ||
 			!make_api_resource(p_params.velocity, FFX_API_RESOURCE_STATE_COMPUTE_READ, false, payload->velocity) ||
 			!make_api_resource(p_params.output, FFX_API_RESOURCE_STATE_UNORDERED_ACCESS, true, payload->output)) {
-		p_params.context->internal->failed.store(true, std::memory_order_release);
-		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+		fail("FSR: could not import a required upscaler resource.");
 		memdelete(payload);
 		return;
 	}
 	if (!p_params.reactive.is_null() && !make_api_resource(p_params.context->internal->reactive_mask, FFX_API_RESOURCE_STATE_COMPUTE_READ, false, payload->reactive)) {
-		p_params.context->internal->failed.store(true, std::memory_order_release);
-		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+		fail("FSR: could not import the reactive mask.");
 		memdelete(payload);
 		return;
 	}
@@ -680,8 +736,7 @@ void FSR3Effect::upscale(const FSR3Context::Parameters &p_params) {
 	Error error = rd->driver_callback_add((RDD::DriverCallback)_dispatch_graph_callback, payload,
 			VectorView<RD::CallbackResource>(resources, resource_count));
 	if (error != OK) {
-		p_params.context->internal->failed.store(true, std::memory_order_release);
-		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+		fail("FSR: render graph rejected the upscaler callback.");
 		release_context_internal(payload->context, false);
 		memdelete(payload);
 	}

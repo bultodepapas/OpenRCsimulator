@@ -3,6 +3,7 @@
 extends RefCounted
 
 const ENVIRONMENT_KEY := "OPENRC_GRAPHICS_PROFILE"
+const RESEARCH_ENVIRONMENT_KEY := "OPENRC_GRAPHICS_RESEARCH"
 const CONTACT_ENVIRONMENT_KEY := "OPENRC_CONTACT_SHADOWS"
 const CONTACT_SHADOW_SETTING := "rendering/lights_and_shadows/contact_shadow/enabled"
 const CONTACT_THICKNESS_SETTING := "rendering/lights_and_shadows/contact_shadow/surface_thickness"
@@ -14,8 +15,10 @@ static func requested() -> String:
 	return OS.get_environment(ENVIRONMENT_KEY).strip_edges().to_lower()
 
 static func active() -> bool:
-	return requested() in ["", "high"] and RenderingServer.get_current_rendering_method() == "forward_plus" \
-		and DisplayServer.get_name() != "headless"
+	return _active_for(requested(), RenderingServer.get_current_rendering_method(), DisplayServer.get_name())
+
+static func _active_for(profile: String, renderer: String, display: String) -> bool:
+	return profile in ["", "high"] and renderer == "forward_plus" and display != "headless"
 
 static func supports_contact_shadows() -> bool:
 	for property: Dictionary in ClassDB.class_get_property_list("DirectionalLight3D"):
@@ -28,8 +31,37 @@ static func contact_shadows_requested() -> bool:
 		and OS.get_environment(CONTACT_ENVIRONMENT_KEY).strip_edges().to_lower() == "on"
 
 static func describe() -> Dictionary:
-	return {"requested": requested(), "active": "high" if active() else "standard",
+	var result := {"requested": requested(), "active": "high" if active() else "standard",
 		"renderer": RenderingServer.get_current_rendering_method(), "gpu": RenderingServer.get_video_adapter_name()}
+	var raw := OS.get_environment(RESEARCH_ENVIRONMENT_KEY)
+	if raw.is_empty():
+		return result
+	var parser := JSON.new()
+	if parser.parse(raw) != OK or typeof(parser.data) != TYPE_DICTIONARY:
+		result["research"] = {"error": "invalid launcher research identity"}
+		return result
+	var identity: Dictionary = parser.data
+	for key: String in ["requested_method", "requested_driver", "requested_effects", "requested_reconstruction",
+			"project_name", "project_sha256", "profile_sha256"]:
+		if typeof(identity.get(key)) != TYPE_STRING:
+			result["research"] = {"error": "incomplete launcher research identity"}
+			return result
+	var actual_name := str(ProjectSettings.get_setting("application/config/name", ""))
+	var actual_driver := RenderingServer.get_current_rendering_driver_name()
+	# These are renderer/profile observations, not proof of shader parity or MetalFX execution.
+	result["research"] = {
+		"requested_method": identity.requested_method, "requested_driver": identity.requested_driver,
+		"requested_effects": identity.requested_effects, "requested_reconstruction": identity.requested_reconstruction,
+		"effective_method": result.renderer, "effective_driver": actual_driver,
+		"effective_profile": result.active, "method_matches": result.renderer == identity.requested_method,
+		"driver_matches": actual_driver == identity.requested_driver,
+		"requested_project_name": identity.project_name, "effective_project_name": actual_name,
+		"user_directory_name_matches": OS.get_user_data_dir().get_file() == identity.project_name,
+		"project_sha256_at_launch": identity.project_sha256, "profile_sha256_at_launch": identity.profile_sha256,
+		"multi_bounce_occlusion_project_setting": ProjectSettings.get_setting(
+			"rendering/lights_and_shadows/multi_bounce_occlusion/enabled", false),
+	}
+	return result
 
 static func restart_arguments(profile: String, editor_binary: bool, project_path: String) -> PackedStringArray:
 	if profile not in ["standard", "high"]:

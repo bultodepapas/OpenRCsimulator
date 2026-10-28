@@ -20,6 +20,8 @@ const RECONSTRUCTION_MODES: Array[String] = [
 	"fsr2_native", "fsr2_85", "fsr2_quality", "fsr2_balanced", "fsr2_performance",
 	"fsr3_native", "fsr3_85", "fsr3_quality", "fsr3_balanced", "fsr3_performance",
 	"dlss_native", "dlss_quality", "dlss_balanced", "dlss_performance",
+	"metalfx_spatial_85", "metalfx_spatial_quality",
+	"metalfx_temporal_native", "metalfx_temporal_85", "metalfx_temporal_quality",
 ]
 # VQ-06b: mirrors render/scene_detail.gd LEVELS (test_scene_detail.gd keeps them equal).
 const SCENE_DETAILS: Array[String] = ["auto", "low", "medium", "high", "extreme"]

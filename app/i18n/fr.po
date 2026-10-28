@@ -9219,3 +9219,34 @@ msgstr "Aucun type de panne activé n’est disponible pour cet avion. Activez-e
 
 msgid "This aircraft has no rudder, so rudder failures cannot occur."
 msgstr "Cet avion n’a pas de gouverne de direction : les pannes de direction ne peuvent pas survenir."
+
+# DT-MAC: opt-in MetalFX trials.
+msgid "MetalFX Spatial · 85%"
+msgstr "MetalFX spatial · 85%"
+
+msgid "MetalFX Spatial · Quality"
+msgstr "MetalFX spatial · Qualité"
+
+msgid "MetalFX Temporal · Native AA"
+msgstr "MetalFX temporel · AA natif"
+
+msgid "MetalFX Temporal · 85%"
+msgstr "MetalFX temporel · 85%"
+
+msgid "MetalFX Temporal · Quality"
+msgstr "MetalFX temporel · Qualité"
+
+msgid "MetalFX is an experimental Mac option. Compare distant aircraft detail in motion."
+msgstr "MetalFX est une option expérimentale pour Mac. Comparez les détails des avions éloignés en mouvement."
+
+msgid "MetalFX Temporal returned to Native after a camera change. Select Native before retrying."
+msgstr "MetalFX temporel est revenu au mode Natif après un changement de caméra. Sélectionnez Natif avant de réessayer."
+
+msgid "This MetalFX input scale is unavailable on the current device."
+msgstr "Cette échelle d’entrée MetalFX n’est pas disponible sur l’appareil actuel."
+
+msgid "MetalFX requires an explicitly enabled Metal trial on a supported Mac."
+msgstr "MetalFX nécessite un essai Metal explicitement activé sur un Mac compatible."
+
+msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
+msgstr "MetalFX n’utilise pas la netteté FSR. Votre valeur enregistrée est conservée."

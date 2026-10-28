@@ -35,6 +35,45 @@ exact pinned authoring bytes and reconciles only the corresponding checked cache
 identities. Unknown changes fail packaging. Receipts retain imported/restored
 hashes and unsupported options; aircraft validation and export plugins stay enabled.
 
+## AMD SDK 2.4 candidate
+
+The separate Windows/Vulkan upscaling candidate uses AMD's pinned SDK 2.4.0
+headers and signed loader/effect DLLs. Build it without replacing the existing
+engine cache or NVIDIA package:
+
+```powershell
+python tools/graphics/native/sdk24.py
+python tools/graphics/native/build_sdk24.py --target editor --jobs 4
+```
+
+`build_sdk24.py --prepare-only` checks staging without compiling. The default
+engine cache is `.tools/advanced-rendering-fsr24`; receipts bind the SDK intake,
+patched engine sources, headers, runtime, notices and executable. Changed inputs
+fail verification, and earlier receipts are retained before another preparation.
+This candidate is not yet supported by `product.py` packaging.
+
+For an isolated candidate launch, `OPENRC_FSR_IMPLEMENTATION=analytical` (default)
+pins the bundled FSR 3.1.6 provider; `ml` requests bundled FSR 4.1.2; `auto` allows
+SDK selection. These are developer controls, not qualified player options. The
+adapter queries available implementations, verifies the selected provider after
+context creation and rejects unmet required render resources. Availability of the
+loader alone does not establish ML hardware support. `RenderingServer.get_fsr3_status()`
+reports the actual provider name/ID and requested implementation. SDK success and
+provider identity do not establish visual quality or performance.
+
+The shared reset patch advertises compiled temporal providers through
+`RenderingServer.get_temporal_history_reset_providers()`. FSR2 keeps separate
+history per view; FSR3 supports one view. Both acknowledge a captured history
+generation only after a successful dispatch. The application only submits FSR
+reset requests when this explicit capability is present; older DLSS-only engines
+retain their existing behavior. FSR2 and FSR3 diagnostic counters expose successful
+reset dispatches separately from requests.
+
+See the [completion plan](../../../docs/plans/amd-fsr-completion.md) and
+[dated SDK evidence](../../../docs/research/advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md)
+for completed checks and outstanding rendered gates. FSR4 qualification, frame
+generation, ray regeneration and radiance caching remain pending.
+
 ## Engine provenance and historical trial
 
 This opt-in Windows/Vulkan build connects NVIDIA's existing DLSS integration and
@@ -240,6 +279,16 @@ and path tracing remain disabled; copying their SDK DLLs does not enable them.
   token through queued draws and owns each callback's parameters. It also advances
   tokens in `--fixed-fps` capture mode. `dlss_failure_paths.patch` handles rejected
   callback ownership and output-clear failures. Both enter editor/template receipts.
+- `dlss_history_reset.patch` adds per-viewport temporal-history generations.
+  Camera/scenario replacement and explicit
+  `RenderingServer.viewport_request_temporal_history_reset(viewport_rid)` requests
+  reach DLSS at SDK evaluation. Only a successful evaluation acknowledges that
+  generation; queued older callbacks cannot consume a newer request. New contexts
+  reset on their first evaluation. The app submits cuts for view/style changes,
+  camera snaps, flight restart and crash-focus transitions, while smooth motion
+  retains history. `Reconstruction.describe()` distinguishes notifications from
+  submitted requests; Streamline's `reset_dispatches` counts successful evaluations
+  with reset set. Global diagnostic counters are not an atomic multi-field snapshot.
 - Preferences retain the requested mode across devices. Unsupported requests
   render natively, with the effective mode reported separately. UI options are
   disabled when unavailable. Native remains the default.
@@ -256,14 +305,16 @@ and path tracing remain disabled; copying their SDK DLLs does not enable them.
 - FSR3 uses its internal automatic exposure for HDR normalization. Godot's
   average-luminance texture is not an exposure multiplier and is not passed as
   one. Reverse-Z plane ordering follows the FFX dispatch contract.
-- This adapter handles one view per context. Stereo/XR, temporal-history reset
-  on arbitrary camera cuts, animated shader motion and transparency quality
-  require separate work and evidence.
+- This adapter handles one view per context. Stereo/XR, uninstrumented arbitrary
+  camera teleports, animated shader motion and transparency quality require
+  separate work and evidence. The DLSS reset API does not establish temporal
+  reset support for other providers without the explicit capability query described above.
 
 FSR 3.1 **upscaling** is independent of frame generation. This implementation
 does not enable generated frames, path tracing or ray reconstruction. FSR4 is
-not exposed as an available feature: the public Vulkan SDK required for that
-path was still forthcoming in the [dated research](../../../docs/research/advanced-graphics-2026-10-21/dlss-fsr-2026-10-24.md).
+not exposed as an available player feature. The separate SDK 2.4 candidate above
+supersedes the earlier Vulkan SDK availability limitation, with rendered
+qualification still required.
 Other GPUs, platforms and drivers require their own rendered qualification.
 
 ## Source and license identities

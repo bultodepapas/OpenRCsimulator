@@ -9087,3 +9087,34 @@ msgstr "Nenhum tipo de falha ativado está disponível para esta aeronave. Ative
 
 msgid "This aircraft has no rudder, so rudder failures cannot occur."
 msgstr "Esta aeronave não tem leme, então não podem ocorrer falhas de leme."
+
+# DT-MAC: opt-in MetalFX trials.
+msgid "MetalFX Spatial · 85%"
+msgstr "MetalFX espacial · 85%"
+
+msgid "MetalFX Spatial · Quality"
+msgstr "MetalFX espacial · Qualidade"
+
+msgid "MetalFX Temporal · Native AA"
+msgstr "MetalFX temporal · AA nativo"
+
+msgid "MetalFX Temporal · 85%"
+msgstr "MetalFX temporal · 85%"
+
+msgid "MetalFX Temporal · Quality"
+msgstr "MetalFX temporal · Qualidade"
+
+msgid "MetalFX is an experimental Mac option. Compare distant aircraft detail in motion."
+msgstr "MetalFX é uma opção experimental para Mac. Compare os detalhes de aeronaves distantes em movimento."
+
+msgid "MetalFX Temporal returned to Native after a camera change. Select Native before retrying."
+msgstr "MetalFX temporal voltou para Nativo após uma mudança de câmera. Selecione Nativo antes de tentar novamente."
+
+msgid "This MetalFX input scale is unavailable on the current device."
+msgstr "Esta escala de entrada do MetalFX não está disponível no dispositivo atual."
+
+msgid "MetalFX requires an explicitly enabled Metal trial on a supported Mac."
+msgstr "MetalFX requer um teste de Metal ativado explicitamente em um Mac compatível."
+
+msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
+msgstr "MetalFX não usa a nitidez do FSR. Seu valor salvo é mantido."

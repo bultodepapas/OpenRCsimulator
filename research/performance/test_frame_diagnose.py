@@ -18,7 +18,7 @@ try:
         write_new_json,
     )
     from .session_baseline import percentile_nearest_rank
-    from .test_native_summary import valid_report
+    from .test_native_summary import sustained_report, valid_report, write_stream_fixture, write_stream_run
 except ImportError:  # Also support direct execution from this directory.
     from frame_diagnose import (
         DEFAULT_BUDGET_MS,
@@ -28,7 +28,7 @@ except ImportError:  # Also support direct execution from this directory.
         write_new_json,
     )
     from session_baseline import percentile_nearest_rank
-    from test_native_summary import valid_report
+    from test_native_summary import sustained_report, valid_report, write_stream_fixture, write_stream_run
 
 
 def report_with_intervals(intervals_usec: list[int]) -> dict:
@@ -80,6 +80,71 @@ def report_with_intervals(intervals_usec: list[int]) -> dict:
 
 
 class FrameDiagnoseTests(unittest.TestCase):
+    def test_stream_diagnosis_matches_legacy_and_retains_context(self):
+        report = report_with_intervals([16_667, 16_667, 40_000, 16_667])
+        legacy = diagnose_report(report)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, _ = write_stream_run(Path(temp_dir), "run", report)
+            result = diagnose(path, path.with_suffix(".log"))
+        self.assertTrue(result["valid"], result["validity_reasons"])
+        self.assertEqual(result["observations"], legacy["observations"])
+        self.assertEqual(result["source"]["stream"]["frames"], 4)
+        self.assertEqual(result["source"]["combined_input_bytes"],
+                         result["source"]["report_bytes"] + result["source"]["stream"]["bytes"]
+                         + result["source"]["log_bytes"])
+
+    def test_stream_diagnosis_rejects_bad_path_hash_and_duplicate_chunk(self):
+        for fault in ("path", "hash", "duplicate"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temp_dir:
+                path, records = write_stream_run(Path(temp_dir), "run", sustained_report())
+                report = json.loads(path.read_text(encoding="utf-8"))
+                if fault == "path":
+                    report["stream"]["file"] = "../outside.jsonl"
+                elif fault == "hash":
+                    report["stream"]["sha256"] = "0" * 64
+                else:
+                    records.insert(2, dict(records[1]))
+                    write_stream_fixture(path, report, records)
+                path.write_text(json.dumps(report), encoding="utf-8")
+                result = diagnose(path, path.with_suffix(".log"))
+                self.assertFalse(result["valid"])
+                self.assertTrue(any("stream" in reason for reason in result["validity_reasons"]))
+                self.assertIsNone(result["observations"])
+
+    def test_stream_diagnosis_counts_sidecar_toward_input_cap(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, _ = write_stream_run(Path(temp_dir), "run", report_with_intervals([12_000] * 4))
+            metadata = json.loads(path.read_text(encoding="utf-8"))
+            cap = path.stat().st_size + metadata["stream"]["bytes"] - 1
+            result = diagnose(path, path.with_suffix(".log"), max_input_bytes=cap)
+        self.assertFalse(result["valid"])
+        self.assertTrue(any("stream" in reason and "limit" in reason for reason in result["validity_reasons"]))
+        self.assertIsNone(result["observations"])
+
+    def test_stream_diagnosis_enforces_retained_array_memory_limit(self):
+        report = report_with_intervals([12_000] * 4)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, records = write_stream_run(Path(temp_dir), "run", report)
+            stream_report = json.loads(path.read_text(encoding="utf-8"))
+            stream_report["frames"] = 1_000_000
+            stream_report["max_frames"] = 1_000_000
+            stream_report["stream"]["frames"] = 1_000_000
+            records[0]["max_frames"] = 1_000_000
+            write_stream_fixture(path, stream_report, records)
+            result = diagnose(path, path.with_suffix(".log"))
+        self.assertFalse(result["valid"])
+        self.assertTrue(any("memory limit" in reason for reason in result["validity_reasons"]))
+
+    def test_stream_diagnosis_does_not_ignore_invalid_observer_values(self):
+        report = report_with_intervals([12_000] * 4)
+        report["raw_metrics"]["invalid_value_count"][1] = 1
+        report["frame_diagnostics"] = {"invalid_numeric_value_count": 1}
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, _ = write_stream_run(Path(temp_dir), "run", report)
+            result = diagnose(path, path.with_suffix(".log"))
+        self.assertFalse(result["valid"])
+        self.assertTrue(any("invalid numeric readings" in issue for issue in result["measurement_issues"]))
+
     def test_overflowing_metadata_publishes_invalid_diagnosis(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)

@@ -66,6 +66,28 @@ SDK internally or qualifies other drivers from this comparison.
 
 On 2026-10-25, the same fixture in an isolated working directory completed with Streamline 2.11.1 on the RTX 3090. Native with the shutdown ownership patch exited zero with no engine errors (192 frames). DLSS exited zero after all 384 frames but emitted two `VUID-vkCmdDraw-None-09600` errors, so its checked validation failed. See the [dated evidence](../../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). Generated caches and logs must remain untracked.
 
+## DLSS temporal-history regression
+
+`dlss_history_reset.gd` renders two independent 1920 × 1080 viewports using
+DLAA and preset K. It checks deferred requests while disabled, requests during
+warm-up, coalescing, steady rendering, explicit cuts and camera/scenario replacement.
+The unchanged viewport must keep its history. A replaced World3D is retained until
+the queued viewport attachment has completed; freeing it early invalidates the fixture.
+
+With the same validation environment and `$Godot`/`$Project` above:
+
+```powershell
+python tools/godot/run_checked.py --label dlss-history --timeout 150 --require-text 'DLSS_HISTORY|COMPLETE' -- $Godot --verbose --path $Project --audio-driver Dummy --script res://dlss_history_reset.gd
+python tools/godot/run_checked.py --label dlss-history-separate --timeout 150 --require-text 'DLSS_HISTORY|COMPLETE' -- $Godot --verbose --render-thread separate --fixed-fps 60 --path $Project --audio-driver Dummy --script res://dlss_history_reset.gd
+```
+
+Require completion and zero engine/validation errors. The separate rendering
+thread remains a Godot test configuration, not the product default. Counters are
+sampled after settled, isolated phases; their separate atomics do not guarantee
+a coherent arbitrary concurrent snapshot. The offline `test_build` suite exercises
+the actual C++ generation helper, including omitted success acknowledgement and
+older queued work. This does not inject a real SDK failure or qualify XR.
+
 ## Canvas buffer synchronization regression
 
 `canvas_waw.gd` isolates a separate native-renderer defect: a ColorRect followed

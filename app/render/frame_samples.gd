@@ -8,6 +8,15 @@ const MAX_WARMUP_SECONDS := 3600.0
 const MAX_SAMPLE_SECONDS := 300.0
 const DEFAULT_MAX_FRAMES := 60000
 const MAX_FRAMES := 120000
+const STREAM_FORMAT := "openrc-frametimes v3"
+const STREAM_DATA_FORMAT := "openrc-frame-stream v1"
+const STREAM_MAX_SAMPLE_SECONDS := 3600.0
+const STREAM_DEFAULT_MAX_FRAMES := 500000
+const STREAM_MAX_FRAMES := 1000000
+const STREAM_CHUNK_FRAMES := 512
+const STREAM_MAX_BYTES := 268435456
+const STREAM_MAX_METRICS := 64
+const STREAM_MAX_METRIC_NAME := 128
 const MICROSECONDS_PER_SECOND := 1000000
 const GrassSceneSnapshot := preload("res://render/grass_scene_snapshot.gd")
 
@@ -35,12 +44,25 @@ var _metric_names := PackedStringArray()
 var _raw_metrics: Dictionary = {}
 var _capture_id: String = ""
 var _clock_start: Dictionary = {}
+var _stream_path: String = ""
+var _stream_file: FileAccess = null
+var _stream_hash: HashingContext = null
+var _stream_sha256: String = ""
+var _stream_bytes: int = 0
+var _stream_chunks: int = 0
+var _stream_frames: int = 0
+var _stream_closed: bool = false
+var _stream_complete: bool = false
+var _stream_error: String = ""
+var _chunk_engine_delta_s := PackedFloat64Array()
+var _first_metrics: Dictionary = {}
+var _last_metrics: Dictionary = {}
 
 
 static func options(args: Dictionary) -> Dictionary:
 	if not args.has("frametimes"):
-		if args.has("frame-diagnostics") or args.has("frametimes-max-frames"):
-			return { ok = false, error = "--frame-diagnostics and --frametimes-max-frames require --frametimes=<file.json>" }
+		if args.has("frame-diagnostics") or args.has("frametimes-max-frames") or args.has("frametimes-stream"):
+			return { ok = false, error = "--frame-diagnostics, --frametimes-max-frames and --frametimes-stream require --frametimes=<file.json>" }
 		if args.has("warmup"):
 			return { ok = false, error = "--warmup requires --frametimes=<file.json>" }
 		return { ok = true, enabled = false }
@@ -51,14 +73,18 @@ static func options(args: Dictionary) -> Dictionary:
 		return { ok = false, error = "--frametimes requires a non-empty file path" }
 	if args.has("frame-diagnostics") and not (typeof(args["frame-diagnostics"]) == TYPE_BOOL and args["frame-diagnostics"] == true):
 		return { ok = false, error = "--frame-diagnostics is a flag without a value" }
-	var frame_limit: int = DEFAULT_MAX_FRAMES
+	if args.has("frametimes-stream") and not (typeof(args["frametimes-stream"]) == TYPE_BOOL and args["frametimes-stream"] == true):
+		return { ok = false, error = "--frametimes-stream is a flag without a value" }
+	var streaming: bool = args.has("frametimes-stream")
+	var limit_ceiling: int = STREAM_MAX_FRAMES if streaming else MAX_FRAMES
+	var frame_limit: int = STREAM_DEFAULT_MAX_FRAMES if streaming else DEFAULT_MAX_FRAMES
 	if args.has("frametimes-max-frames"):
 		var raw_limit: Variant = args["frametimes-max-frames"]
 		if not raw_limit is String or not raw_limit.is_valid_int():
 			return { ok = false, error = "--frametimes-max-frames requires an integer" }
 		frame_limit = raw_limit.to_int()
-		if frame_limit < 1 or frame_limit > MAX_FRAMES:
-			return { ok = false, error = "--frametimes-max-frames must be between 1 and %d" % MAX_FRAMES }
+		if frame_limit < 1 or frame_limit > limit_ceiling:
+			return { ok = false, error = "--frametimes-max-frames must be between 1 and %d" % limit_ceiling }
 	var warmup: Dictionary = _number_option(args, "warmup", 1.0)
 	if not warmup.ok:
 		return warmup
@@ -69,8 +95,9 @@ static func options(args: Dictionary) -> Dictionary:
 	var sample_s_value: float = float(duration.value)
 	if warmup_s_value < 0.0 or warmup_s_value > MAX_WARMUP_SECONDS:
 		return { ok = false, error = "--warmup must be between 0 and %.0f seconds" % MAX_WARMUP_SECONDS }
-	if sample_s_value <= 0.0 or sample_s_value > MAX_SAMPLE_SECONDS:
-		return { ok = false, error = "--t must be greater than 0 and at most %.0f seconds" % MAX_SAMPLE_SECONDS }
+	var duration_ceiling: float = STREAM_MAX_SAMPLE_SECONDS if streaming else MAX_SAMPLE_SECONDS
+	if sample_s_value <= 0.0 or sample_s_value > duration_ceiling:
+		return { ok = false, error = "--t must be greater than 0 and at most %.0f seconds" % duration_ceiling }
 	return {
 		ok = true,
 		enabled = true,
@@ -79,6 +106,7 @@ static func options(args: Dictionary) -> Dictionary:
 		sample_s = sample_s_value,
 		max_frames = frame_limit,
 		diagnostics = args.has("frame-diagnostics"),
+		stream_path = ((raw_path as String).strip_edges() + ".frames.jsonl") if streaming else "",
 	}
 
 
@@ -97,18 +125,21 @@ static func _number_option(args: Dictionary, key: String, default_value: float) 
 	return { ok = true, value = value }
 
 
-func configure(warmup_seconds: float, sample_seconds: float, frame_limit: int = DEFAULT_MAX_FRAMES) -> bool:
+func configure(warmup_seconds: float, sample_seconds: float, frame_limit: int = DEFAULT_MAX_FRAMES, stream_path: String = "") -> bool:
 	if _configured:
 		failure = "logger is already configured; create a fresh collector"
 		return false
-	if frame_limit < 1 or frame_limit > MAX_FRAMES:
-		failure = "frame limit must be between 1 and %d" % MAX_FRAMES
+	var streaming: bool = not stream_path.is_empty()
+	var limit_ceiling: int = STREAM_MAX_FRAMES if streaming else MAX_FRAMES
+	var duration_ceiling: float = STREAM_MAX_SAMPLE_SECONDS if streaming else MAX_SAMPLE_SECONDS
+	if frame_limit < 1 or frame_limit > limit_ceiling:
+		failure = "frame limit must be between 1 and %d" % limit_ceiling
 		return false
 	if not is_finite(warmup_seconds) or warmup_seconds < 0.0 or warmup_seconds > MAX_WARMUP_SECONDS:
 		failure = "warm-up must be finite and between 0 and %.0f seconds" % MAX_WARMUP_SECONDS
 		return false
-	if not is_finite(sample_seconds) or sample_seconds <= 0.0 or sample_seconds > MAX_SAMPLE_SECONDS:
-		failure = "sample duration must be finite, greater than 0, and at most %.0f seconds" % MAX_SAMPLE_SECONDS
+	if not is_finite(sample_seconds) or sample_seconds <= 0.0 or sample_seconds > duration_ceiling:
+		failure = "sample duration must be finite, greater than 0, and at most %.0f seconds" % duration_ceiling
 		return false
 	warmup_s = warmup_seconds
 	sample_s = sample_seconds
@@ -116,6 +147,9 @@ func configure(warmup_seconds: float, sample_seconds: float, frame_limit: int = 
 	_warmup_usec = roundi(warmup_s * MICROSECONDS_PER_SECOND)
 	_capture_id = OS.get_environment("OPENRC_DIAGNOSTIC_CAPTURE_ID")
 	_clock_start = _clock_anchor()
+	if streaming and not _start_stream(stream_path):
+		failure = _stream_error
+		return false
 	_configured = true
 	return true
 
@@ -159,15 +193,29 @@ func record_frame(engine_delta: float, wall_delta_usec: int, monotonic_end_usec:
 		_end_monotonic_usec.append(monotonic_end_usec)
 		_append_metrics(metrics)
 		_actual_sample_end_usec = relative_end_usec
+		if not _stream_path.is_empty():
+			_chunk_engine_delta_s.append(engine_delta)
+			if _first_metrics.is_empty():
+				_first_metrics = metrics.duplicate(true)
+			_last_metrics = metrics.duplicate(true)
+			if _wall_delta_usec.size() >= STREAM_CHUNK_FRAMES and not _flush_stream_chunk():
+				return _fail(_stream_error)
 	_last_end_usec = monotonic_end_usec
 	if _actual_sample_start_usec >= 0 and elapsed_wall_usec >= _sample_deadline_usec:
 		finished = true
+		if not _stream_path.is_empty() and not _seal_stream(true):
+			failure = _stream_error
+			return false
 	return true
 
 
 func _metrics_are_valid(metrics: Dictionary) -> bool:
+	if not _stream_path.is_empty() and metrics.size() > STREAM_MAX_METRICS:
+		return false
 	for key in metrics.keys():
 		if typeof(key) != TYPE_STRING and typeof(key) != TYPE_STRING_NAME:
+			return false
+		if not _stream_path.is_empty() and (str(key).is_empty() or str(key).length() > STREAM_MAX_METRIC_NAME):
 			return false
 		var value: Variant = metrics[key]
 		if typeof(value) != TYPE_FLOAT and typeof(value) != TYPE_INT:
@@ -203,7 +251,87 @@ func _append_metrics(metrics: Dictionary) -> void:
 func _fail(reason: String) -> bool:
 	failure = reason
 	finished = true
+	if not _stream_path.is_empty() and not _stream_closed:
+		_seal_stream(false)
 	return false
+
+
+## Close an orderly interruption as an incomplete prefix. A process crash has no trailer.
+func abort(reason: String) -> void:
+	if _configured and not finished:
+		_fail(reason if not reason.is_empty() else "frame collection interrupted")
+
+
+func _start_stream(path: String) -> bool:
+	if path.strip_edges() != path or path.is_empty() or FileAccess.file_exists(path):
+		_stream_error = "frame stream path must be new and non-empty"
+		return false
+	_stream_file = FileAccess.open(path, FileAccess.WRITE)
+	if _stream_file == null:
+		_stream_error = "cannot open frame stream: %s" % error_string(FileAccess.get_open_error())
+		return false
+	_stream_path = path
+	_stream_hash = HashingContext.new()
+	if _stream_hash.start(HashingContext.HASH_SHA256) != OK:
+		_stream_error = "cannot initialize frame stream hash"
+		_stream_file.close()
+		_stream_closed = true
+		return false
+	if not _write_stream_line({type = "header", format = STREAM_DATA_FORMAT, version = 1,
+			capture_id = _capture_id, chunk_frames = STREAM_CHUNK_FRAMES, max_frames = max_frames,
+			max_bytes = STREAM_MAX_BYTES, warmup_s = warmup_s, sample_s = sample_s}):
+		_stream_file.close()
+		_stream_closed = true
+		return false
+	return true
+
+
+func _write_stream_line(value: Dictionary) -> bool:
+	var bytes: PackedByteArray = (JSON.stringify(value, "", true, true) + "\n").to_utf8_buffer()
+	if _stream_bytes + bytes.size() > STREAM_MAX_BYTES:
+		_stream_error = "frame stream byte limit reached (%d)" % STREAM_MAX_BYTES
+		return false
+	_stream_file.store_buffer(bytes)
+	_stream_file.flush()
+	var error: Error = _stream_file.get_error()
+	if error != OK:
+		_stream_error = "frame stream write failed: %s" % error_string(error)
+		return false
+	_stream_hash.update(bytes)
+	_stream_bytes += bytes.size()
+	return true
+
+
+func _flush_stream_chunk() -> bool:
+	var count: int = _wall_delta_usec.size()
+	if count == 0:
+		return true
+	if not _write_stream_line({type = "chunk", sequence = _stream_chunks, start_frame = _stream_frames,
+			frames = count, wall_usec = _wall_delta_usec, end_usec = _end_monotonic_usec,
+			engine_delta_s = _chunk_engine_delta_s, metrics = _raw_metrics}):
+		return false
+	_stream_chunks += 1
+	_stream_frames += count
+	_wall_delta_usec.clear()
+	_end_monotonic_usec.clear()
+	_chunk_engine_delta_s.clear()
+	for key in _metric_names:
+		_raw_metrics[key] = PackedFloat64Array()
+	return true
+
+
+func _seal_stream(complete: bool) -> bool:
+	if _stream_closed:
+		return _stream_complete if complete else true
+	var ok: bool = _flush_stream_chunk()
+	if ok:
+		ok = _write_stream_line({type = "trailer", complete = complete, failure = failure,
+			chunks = _stream_chunks, frames = _stream_frames})
+	_stream_file.close()
+	_stream_closed = true
+	_stream_complete = complete and ok
+	_stream_sha256 = _stream_hash.finish().hex_encode()
+	return ok
 
 
 ## Read-only scene observation after frame collection has finished.
@@ -235,7 +363,7 @@ func report() -> Dictionary:
 	for key in _metric_names:
 		var values: PackedFloat64Array = _raw_metrics[key]
 		raw_metrics[key] = values.duplicate()
-	return {
+	var result: Dictionary = {
 		format = FORMAT,
 		capture_id = _capture_id,
 		clock = { source = "godot_ticks_usec", origin_usec = 0,
@@ -267,6 +395,20 @@ func report() -> Dictionary:
 		complete = finished and failure.is_empty(),
 		failure = failure,
 	}
+	if not _stream_path.is_empty():
+		result.format = STREAM_FORMAT
+		result.version = 3
+		result.frame_deltas_s = PackedFloat64Array()
+		result.frame_wall_usec = PackedInt64Array()
+		result.frame_end_monotonic_usec = PackedInt64Array()
+		result.engine_frame_deltas_s = PackedFloat64Array()
+		result.raw_metrics = {}
+		result.sample_endpoints = {first = _first_metrics.duplicate(true), last = _last_metrics.duplicate(true)}
+		result.stream = {file = _stream_path.get_file(), chunks = _stream_chunks, frames = _stream_frames,
+			bytes = _stream_bytes, sha256 = _stream_sha256, complete = _stream_complete,
+			chunk_frames = STREAM_CHUNK_FRAMES, max_bytes = STREAM_MAX_BYTES}
+		result.complete = finished and failure.is_empty() and _stream_complete
+	return result
 
 
 static func _percentiles(values: PackedFloat64Array) -> Dictionary:
@@ -286,7 +428,7 @@ static func write_json(path: String, data: Dictionary) -> Dictionary:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return { ok = false, error = FileAccess.get_open_error() }
-	file.store_string(JSON.stringify(data, "  ", true) + "\n")
+	file.store_string(JSON.stringify(data, "  ", true, data.get("format") == STREAM_FORMAT) + "\n")
 	file.flush()
 	var write_error: Error = file.get_error()
 	file.close()

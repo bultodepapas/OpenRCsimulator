@@ -10,6 +10,7 @@ consistent across a campaign; this is not a render-quality qualification.
 from __future__ import annotations
 
 import argparse
+from array import array
 import hashlib
 import json
 import math
@@ -25,6 +26,13 @@ except ImportError:  # Direct execution adds this directory to sys.path.
 
 
 FORMAT = "openrc-frametimes v2"
+STREAM_FORMAT = "openrc-frametimes v3"
+STREAM_DATA_FORMAT = "openrc-frame-stream v1"
+STREAM_MAX_BYTES = 268_435_456
+STREAM_MAX_FRAMES = 1_000_000
+STREAM_CHUNK_FRAMES = 512
+STREAM_MAX_LINE_BYTES = 8 * 1024 * 1024
+STREAM_MAX_RETAINED_ARRAY_BYTES = 128 * 1024 * 1024
 SUMMARY_FORMAT = "openrc-native-frame-summary v1"
 DEFAULT_POLICY = {
     "p95_max_ms": 18.0,
@@ -72,8 +80,8 @@ def _finite_field(container: dict[str, Any], key: str, errors: list[str], label:
     return float(value)
 
 
-def _array_numbers(value: Any, label: str, errors: list[str], *, positive: bool = False) -> list[float] | None:
-    if not isinstance(value, list):
+def _array_numbers(value: Any, label: str, errors: list[str], *, positive: bool = False) -> Sequence[float] | None:
+    if not isinstance(value, (list, array)):
         errors.append(f"{label} must be an array")
         return None
     result: list[float] = []
@@ -84,12 +92,13 @@ def _array_numbers(value: Any, label: str, errors: list[str], *, positive: bool 
         number = float(item)
         if positive and number <= 0:
             errors.append(f"{label}[{index}] must be positive")
-        result.append(number)
-    return result
+        if not isinstance(value, array):
+            result.append(number)
+    return value if isinstance(value, array) else result
 
 
-def _array_ints(value: Any, label: str, errors: list[str], *, positive: bool = False) -> list[int] | None:
-    if not isinstance(value, list):
+def _array_ints(value: Any, label: str, errors: list[str], *, positive: bool = False) -> Sequence[int] | None:
+    if not isinstance(value, (list, array)):
         errors.append(f"{label} must be an array")
         return None
     result: list[int] = []
@@ -98,8 +107,9 @@ def _array_ints(value: Any, label: str, errors: list[str], *, positive: bool = F
             qualifier = "positive" if positive else "non-negative"
             errors.append(f"{label}[{index}] must be a {qualifier} integer")
             continue
-        result.append(item)
-    return result
+        if not isinstance(value, array):
+            result.append(item)
+    return value if isinstance(value, array) else result
 
 
 def _close(left: float, right: float, *, tolerance: float = 1e-6) -> bool:
@@ -507,6 +517,184 @@ def _decode_log(log_bytes: bytes) -> str:
     return log_bytes.decode("utf-8")
 
 
+def _hydrate_stream_report(report: dict[str, Any], report_path: Path, *, include_metrics: bool = False,
+                           max_input_bytes: int = STREAM_MAX_BYTES) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Read a bounded v3 stream, validate every chunk, and reuse the v2 numerical checks.
+
+    The default retains five compact numeric arrays for exact percentiles and
+    simulation checks. Diagnosis can request all metrics, subject to an explicit
+    retained-array ceiling. Other values are validated as chunks arrive. Frame,
+    byte and line limits are enforced before allocation and during reading.
+    """
+    if report.get("version") != 3 or type(report.get("version")) is not int:
+        raise ValueError("stream report version must be integer 3")
+    stream = report.get("stream")
+    if not isinstance(stream, dict):
+        raise ValueError("stream metadata must be an object")
+    filename = stream.get("file")
+    if filename != report_path.name + ".frames.jsonl":
+        raise ValueError("stream file must be the report's same-directory sibling")
+    path = report_path.with_name(filename)
+    if path.is_symlink():
+        raise ValueError("stream file must not be a symbolic link")
+    if type(stream.get("complete")) is not bool or stream["complete"] is not True:
+        raise ValueError("stream is marked incomplete")
+    expected_bytes = stream.get("bytes")
+    expected_chunks = stream.get("chunks")
+    expected_frames = stream.get("frames")
+    max_frames = report.get("max_frames")
+    if not _is_int(max_input_bytes) or not 0 <= max_input_bytes <= STREAM_MAX_BYTES:
+        raise ValueError("stream input byte budget is invalid")
+    if not _is_int(expected_bytes) or not 1 <= expected_bytes <= min(STREAM_MAX_BYTES, max_input_bytes):
+        raise ValueError("stream byte count is invalid or exceeds the hard limit")
+    if not _is_int(expected_chunks) or expected_chunks < 1:
+        raise ValueError("stream chunk count must be positive")
+    if not _is_int(expected_frames) or not 1 <= expected_frames <= STREAM_MAX_FRAMES:
+        raise ValueError("stream frame count is invalid or exceeds the hard limit")
+    if not _is_int(max_frames) or not expected_frames <= max_frames <= STREAM_MAX_FRAMES:
+        raise ValueError("stream frame retention limit is invalid")
+    if report.get("frames") != expected_frames or type(report.get("frames")) is not int:
+        raise ValueError("report frame count must match stream frame count")
+    if stream.get("chunk_frames") != STREAM_CHUNK_FRAMES or stream.get("max_bytes") != STREAM_MAX_BYTES:
+        raise ValueError("stream bounds do not match the supported format")
+    if path.stat().st_size != expected_bytes:
+        raise ValueError("stream byte count does not match the file")
+    expected_hash = stream.get("sha256")
+    if not isinstance(expected_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_hash):
+        raise ValueError("stream SHA-256 is missing or invalid")
+
+    wall = array("q")
+    ends = array("q")
+    deltas = array("d")
+    ticks = array("d")
+    times = array("d")
+    retained_metrics: dict[str, array] = {"sim_tick": ticks, "sim_time_s": times}
+    digest = hashlib.sha256()
+    bytes_read = 0
+    chunks = 0
+    names: set[str] | None = None
+    first_metrics: dict[str, float] | None = None
+    last_metrics: dict[str, float] | None = None
+    previous_end: int | None = None
+    previous_chunk_frames = STREAM_CHUNK_FRAMES
+    header_seen = False
+    trailer_seen = False
+    max_int64 = (1 << 63) - 1
+
+    with path.open("rb") as source:
+        while True:
+            line = source.readline(STREAM_MAX_LINE_BYTES + 1)
+            if not line:
+                break
+            bytes_read += len(line)
+            if bytes_read > min(STREAM_MAX_BYTES, max_input_bytes) or len(line) > STREAM_MAX_LINE_BYTES:
+                raise ValueError("stream input exceeds a byte or line limit")
+            if not line.endswith(b"\n"):
+                raise ValueError("stream ends with a truncated record")
+            digest.update(line)
+            record = json.loads(line.decode("utf-8"), parse_constant=_reject_constant)
+            if not isinstance(record, dict):
+                raise ValueError("stream record must be an object")
+            kind = record.get("type")
+            if not header_seen:
+                if kind != "header" or record.get("format") != STREAM_DATA_FORMAT or record.get("version") != 1:
+                    raise ValueError("stream header is invalid")
+                if (record.get("capture_id") != report.get("capture_id")
+                        or record.get("chunk_frames") != STREAM_CHUNK_FRAMES
+                        or record.get("max_frames") != max_frames
+                        or record.get("max_bytes") != STREAM_MAX_BYTES
+                        or record.get("sample_s") != report.get("sample_s")
+                        or record.get("warmup_s") != report.get("warmup_s")):
+                    raise ValueError("stream header does not match the report")
+                header_seen = True
+                continue
+            if trailer_seen:
+                raise ValueError("stream contains data after its trailer")
+            if kind == "trailer":
+                if (record.get("complete") is not True or record.get("failure") != ""
+                        or record.get("chunks") != chunks or record.get("frames") != len(wall)):
+                    raise ValueError("stream trailer is incomplete or inconsistent")
+                trailer_seen = True
+                continue
+            if kind != "chunk":
+                raise ValueError("unexpected stream record type")
+            count = record.get("frames")
+            if (not _is_int(count) or not 1 <= count <= STREAM_CHUNK_FRAMES
+                    or previous_chunk_frames != STREAM_CHUNK_FRAMES
+                    or record.get("sequence") != chunks or type(record.get("sequence")) is not int
+                    or record.get("start_frame") != len(wall) or type(record.get("start_frame")) is not int):
+                raise ValueError("stream chunk sequence, size, or start frame is invalid")
+            if len(wall) + count > expected_frames:
+                raise ValueError("stream contains more frames than declared")
+            chunk_wall = record.get("wall_usec")
+            chunk_ends = record.get("end_usec")
+            engine = record.get("engine_delta_s")
+            metrics = record.get("metrics")
+            if (not isinstance(chunk_wall, list) or len(chunk_wall) != count
+                    or not isinstance(chunk_ends, list) or len(chunk_ends) != count
+                    or not isinstance(engine, list) or len(engine) != count
+                    or not isinstance(metrics, dict)):
+                raise ValueError("stream chunk arrays do not match its frame count")
+            keys = set(metrics)
+            if (len(keys) > 64 or any(not isinstance(key, str) or not 1 <= len(key) <= 128 for key in keys)
+                    or not {"sim_tick", "sim_time_s"}.issubset(keys)):
+                raise ValueError("stream metric names are invalid or omit simulation metrics")
+            if names is None:
+                names = keys
+                retained_count = len(keys) if include_metrics else 2
+                if expected_frames * (3 + retained_count) * 8 > STREAM_MAX_RETAINED_ARRAY_BYTES:
+                    raise ValueError("stream would exceed the retained numeric-array memory limit")
+                if include_metrics:
+                    for key in keys - retained_metrics.keys():
+                        retained_metrics[key] = array("d")
+            elif keys != names:
+                raise ValueError("stream metric schema changed between chunks")
+            for key, values in metrics.items():
+                if not isinstance(values, list) or len(values) != count or any(not _is_number(value) for value in values):
+                    raise ValueError(f"stream metric {key!r} has invalid or missing samples")
+            if any(not _is_number(value) or value < 0 for value in engine):
+                raise ValueError("stream engine deltas must be finite and non-negative")
+            for index in range(count):
+                interval = chunk_wall[index]
+                endpoint = chunk_ends[index]
+                if (not _is_int(interval) or not 0 < interval <= max_int64
+                        or not _is_int(endpoint) or not 0 < endpoint <= max_int64):
+                    raise ValueError("stream wall intervals and endpoints must be positive int64 values")
+                if previous_end is not None and endpoint - interval != previous_end:
+                    raise ValueError("stream wall intervals are not contiguous")
+                wall.append(interval)
+                ends.append(endpoint)
+                deltas.append(interval / 1_000_000.0)
+                previous_end = endpoint
+            for key, values in retained_metrics.items():
+                values.extend(float(value) for value in metrics[key])
+            if first_metrics is None:
+                first_metrics = {key: values[0] for key, values in metrics.items()}
+            last_metrics = {key: values[-1] for key, values in metrics.items()}
+            previous_chunk_frames = count
+            chunks += 1
+
+    if not header_seen or not trailer_seen:
+        raise ValueError("stream is missing its header or completion trailer")
+    if bytes_read != expected_bytes or digest.hexdigest() != expected_hash:
+        raise ValueError("stream byte count or SHA-256 does not match the report")
+    if chunks != expected_chunks or len(wall) != expected_frames:
+        raise ValueError("stream chunk or frame count does not match the report")
+    endpoints = report.get("sample_endpoints")
+    if not isinstance(endpoints, dict) or endpoints.get("first") != first_metrics or endpoints.get("last") != last_metrics:
+        raise ValueError("stream sample endpoints do not match the report")
+    if (report.get("actual_sample_start_monotonic_usec") != ends[0] - wall[0]
+            or report.get("actual_sample_end_monotonic_usec") != ends[-1]):
+        raise ValueError("stream sample clock boundaries do not match the report")
+
+    hydrated = dict(report)
+    hydrated.update(format=FORMAT, version=2, frame_deltas_s=deltas,
+                    frame_wall_usec=wall, frame_end_monotonic_usec=ends,
+                    raw_metrics=retained_metrics)
+    return hydrated, {"file": filename, "bytes": bytes_read, "sha256": digest.hexdigest(),
+                      "chunks": chunks, "frames": len(wall)}
+
+
 def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
     report_bytes: bytes | None = None
     log_bytes: bytes | None = None
@@ -545,9 +733,18 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
         errors.append("matching log contains Godot ERROR output")
 
     derived: dict[str, Any] | None = None
+    stream_evidence: dict[str, Any] | None = None
     if report is not None:
-        schema_errors, derived = validate_native_report(report)
-        errors.extend(schema_errors)
+        if report_format == STREAM_FORMAT:
+            try:
+                hydrated, stream_evidence = _hydrate_stream_report(report, report_path)
+                schema_errors, derived = validate_native_report(hydrated)
+                errors.extend(schema_errors)
+            except (OSError, UnicodeError, ValueError, OverflowError, RecursionError) as error:
+                errors.append(f"stream is unreadable or invalid: {error}")
+        else:
+            schema_errors, derived = validate_native_report(report)
+            errors.extend(schema_errors)
 
     collection_valid = not errors
     active_reasons: list[str] = []
@@ -581,6 +778,7 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "report": report_path.name,
         "report_format": report_format,
         "report_sha256": _sha256_bytes(report_bytes) if report_bytes is not None else None,
+        "stream": stream_evidence,
         "log": log_path.name,
         "log_sha256": _sha256_bytes(log_bytes) if log_bytes is not None else None,
         "engine_errors": engine_errors,

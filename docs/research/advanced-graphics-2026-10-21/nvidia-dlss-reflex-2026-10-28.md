@@ -39,6 +39,14 @@ per-viewport discontinuity signal for camera switches, teleports and scene or
 flight resets, with the correct queued frame token. Do not reset continuously
 for ordinary camera motion.
 
+Implementation follow-up, later on 2026-10-28: `dlss_history_reset.patch` replaces
+the unconditional false value with viewport-scoped generations and successful
+SDK acknowledgement. Camera and flight discontinuities are wired through the
+application. The [native evidence](../visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md#dlss-temporal-history-follow-up--2026-10-28)
+owns the subsequent build and rendered results. This resolves the inspected
+constant-false path for the covered events; motion-vector correctness, arbitrary
+uninstrumented teleports and moving-image acceptance remain separate work.
+
 The [2.11.1 DLSS guide](https://github.com/NVIDIA-RTX/Streamline/blob/v2.11.1/docs/ProgrammingGuideDLSS.md)
 requires render-resolution color, depth and motion vectors, output-resolution
 color, and consistent jitter and vector scaling. The fork declares normalized
