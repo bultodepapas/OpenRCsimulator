@@ -120,10 +120,9 @@ exit 0
             "test_p51_ground.gd",
             "test_prop_strike.gd",
             "test_p51_handling.gd",
-            "test_ui_modal_responsive.gd",
             "test_rcv_handling.gd",
         }
-        for name in slow_gates | {"test_p51_envelope.gd", "test_trim_throttle.gd", "test_half_power_start.gd"}:
+        for name in slow_gates | {"test_p51_envelope.gd", "test_trim_throttle.gd", "test_half_power_start.gd", "test_ui_home_layout.gd", "test_ui_modal_responsive.gd"}:
             (self.root / "tests" / name).touch()
         result = self.run_partition(0, 1)
         self.assertEqual(result.returncode, 0, result.stdout)
@@ -140,6 +139,8 @@ exit 0
         # The merged trim regression includes both airborne holds and controlled runway takeoffs.
         self.assertEqual(budgets["test_trim_throttle.gd"], 300)
         self.assertEqual(budgets["test_half_power_start.gd"], 600)
+        self.assertEqual(budgets["test_ui_home_layout.gd"], 180)
+        self.assertEqual(budgets["test_ui_modal_responsive.gd"], 600)
         self.assertEqual(budgets["test_probe_00.gd"], 60)
 
     def test_expected_cli_failures_are_uploaded_outside_positive_summary(self):

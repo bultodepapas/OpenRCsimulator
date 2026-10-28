@@ -257,10 +257,16 @@ func _run() -> void:
 		root.size = Vector2i(1920, 1080)
 		await ui.settle()
 		await ui.settle()
+		var all_visible_inside := true
+		for control: Control in practice_page.find_children("*", "Control", true, false):
+			if control.is_visible_in_tree() and not scroll.get_global_rect().encloses(control.get_global_rect()):
+				all_visible_inside = false
 		_check("Practice fits without scrolling at 1080p in " + locale, not scroll.get_v_scroll_bar().visible
-			and practice_rail.size.x <= 340.5,
-			"viewport=%s rail=%s body=%s page=%s bar=%s" % [root.size, practice_rail.size, scroll.size,
-			practice_page.size, scroll.get_v_scroll_bar().visible])
+			and practice_rail.size.x <= 340.5 and all_visible_inside and home._navigation.columns == 1
+			and home._statistics_pilot_summary.is_visible_in_tree() and home.failure_summary_label.is_visible_in_tree()
+			and home.trim_practice_summary_label.is_visible_in_tree(),
+			"viewport=%s rail=%s body=%s page=%s bar=%s content_inside=%s" % [root.size, practice_rail.size, scroll.size,
+			practice_page.size, scroll.get_v_scroll_bar().visible, all_visible_inside])
 		root.size = Vector2i(1280, 720)
 		await ui.settle()
 		home._select_page(3)

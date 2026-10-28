@@ -3,7 +3,9 @@
 Step NK-3 of the [native-kernel scoping](../../docs/research/native-kernel-scoping-2026-10-27.md#phases-r-research-i-implementation):
 a GDExtension (godot-cpp) port of the joint RK stage of the electric Ugly Stik (`jensen-das-ugly-stik-60`),
 `FlightSession._wheel_evaluate`, proven byte-identical to the GDScript reference per component and through the real
-kernel tick. Nothing here is installed into `app/`; build outputs stay in the ignored `tmp/native-kernel/`.
+kernel tick. Build outputs stay in the ignored `tmp/native-kernel/`; `--install-app` can stage a verified Linux
+library in ignored `app/native/kernel/`. The loader in `app/sim/native_stage.gd` is exercised by tests and research
+harnesses; `FlightSession` does not yet select it during normal flight. Reference GDScript remains the default.
 Evidence and timings: [docs/research/native-kernel/NK-3](../../docs/research/native-kernel/NK-3/README.md).
 
 ## What is ported
@@ -72,6 +74,43 @@ All three harnesses run with `--path app` through `tools/godot/run_checked.py`, 
 automatically; `stage_oracle.gd` and `trajectory.gd` extend `oracle.gd`. Trajectory options (`--option`):
 `ticks`, `pairs`, `warmup`, `samples`, `repeats`, `timing-cases`, `only=all|timing|attribution`, `skip-timing=true`.
 Run one Godot process at a time under `nice`; timings on a shared VM are indicative only.
+
+## Verification and local installation
+
+Use `--app-library` on oracle runs if an installed library is already auto-loaded by Godot. The runner resolves
+the binary from the selected descriptor and checks its receipt and SHA-256 before running. It retains the checked
+Godot report, engine/binary hashes before and after, mirrored source hashes before and after, and harness hashes.
+Reserved runner arguments cannot be overridden through `--option`. A negative control needs actual differing
+comparisons, an orderly exit 1, and no engine/script errors; a timeout or invalid request is not mutation evidence.
+
+`build.py --install-app` requires fresh reports for the exact binary, current mirrored sources and harness, and
+the pinned Linux editor. Historical reports lacking these receipts cannot qualify an installation. The stage
+oracle must actually compare at least 10,000 states across air, ground and hull domains, including malformed
+inputs. Trajectory v2 must compare all five cases for at least 960 actual ticks each. Trim, runway and manoeuvre
+must complete the requested length without a fault, pause or crash; only take-off and lake may end early in a
+matching crash after the minimum. Native context and stage calls are checked per accepted tick. Fault injection,
+checkpoint/restore and the P-51 refusal must execute their full prerequisite and comparison tapes.
+
+```bash
+python3 research/native-kernel/test_verification.py
+python3 tools/godot/run_checked.py --timeout 90 -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/native-kernel/test_trajectory.gd"
+python3 research/native-kernel/run.py --app-library --script stage_oracle.gd
+python3 research/native-kernel/run.py --app-library --script trajectory.gd \
+  --option ticks=14400 --option skip-timing=true
+python3 research/native-kernel/build.py --install-app
+python3 tools/godot/run_checked.py --timeout 90 -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script res://tests/test_native_stage.gd
+```
+
+For the first installation, omit `--app-library` from both oracle runs. The last test must exercise the native
+branch after installation; its successful absent/stale-library branch establishes fallback only. The Python gate
+regressions run through `research/test-tools.sh`; CI also runs the library-free GDScript policy regression.
+This local installation does not qualify exports, Windows, target-host timing or the full fleet. The receipt's
+mirrored-source list is not a manifest of every aircraft/environment input; retained results describe their
+recorded snapshot, and data changes require fresh verification.
 
 ## Windows design note (not built)
 

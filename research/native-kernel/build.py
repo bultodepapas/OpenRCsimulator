@@ -52,6 +52,8 @@ APP_DESTINATION = ROOT / "app/native/kernel"
 # Oracle runs an install must cite: same binary, same mirrored sources, verdict pass (results under TOOL_ROOT).
 VERIFICATIONS = {"stage_oracle": "stage-*.json", "trajectory": "trajectory-*.json"}
 MIN_TRAJECTORY_TICKS = 960
+MIN_STAGE_STATES = 10000
+TRAJECTORY_CASES = {"trim", "runway", "maneuver", "takeoff", "lake"}
 
 
 def sha256_file(path: Path) -> str:
@@ -80,24 +82,113 @@ def mirrored_sources() -> dict[str, str]:
     return {name: sha256_file(ROOT / name) for name in REFERENCE_SOURCES}
 
 
+def verification_error(key: str, data: dict) -> str:
+    """Promotion requires completed work, not merely an oracle's pass label.
+
+    Historical reports without checked-run evidence remain research records; rerun them to install.
+    Invalid JSON field types are rejected by find_verification, never coerced into qualifying counts.
+    """
+    if data["run_valid"] is not True:
+        return "run identity or checked execution failed"
+    checked = data["checked_run"]
+    if (checked["ok"] is not True or checked["complete"] is not True
+            or checked["reason"] != "passed" or checked["process_exit"] != 0
+            or checked["counts"]["error"] != 0):
+        return "checked Godot run did not complete successfully"
+    if data["verdict"] != "pass" or data["failures"] != []:
+        return "oracle failed"
+    components = data["components"]
+    counts = []
+    for row in components.values():
+        count = row["count"]
+        if type(count) is not int or count <= 0 or row["identical"] != count:
+            return "missing or differing comparisons"
+        counts.append(count)
+    compared = sum(counts)
+    if not compared or data["total"] != {"compared": compared, "identical": compared, "mismatched": 0}:
+        return "comparison totals do not match"
+    if key == "stage_oracle":
+        if data["format"] != "openrc-nk3-stage-oracle v1":
+            return "wrong stage oracle format"
+        coverage = [data["coverage"][name] for name in ("stage_air", "stage_ground", "stage_hull")]
+        if any(type(row["states"]) is not int or row["states"] <= 0 for row in coverage):
+            return "missing stage domains"
+        states = sum(row["states"] for row in coverage)
+        if states < MIN_STAGE_STATES or sum(row.get("malformed", 0) for row in coverage) <= 0:
+            return "insufficient actual stage states or malformed coverage"
+        for name in ("stage_shape", "prop_loads", "hull_loads", "ground_evaluation_ok", "ground_up"):
+            if components[name]["count"] != states:
+                return "stage components did not cover every state"
+        shaped = sum(row["stage_shaped"] for row in coverage)
+        for name in ("stage_bytes", "stage_loads", "stage_derivative", "stage_rotor_momentum",
+                     "ground_evaluation_loads", "ground_evaluation_derivative"):
+            if not 0 < components[name]["count"] <= states:
+                return "missing shaped stage comparisons"
+            if name.startswith("stage_") and components[name]["count"] != shaped:
+                return "shaped stage comparisons do not match coverage"
+    elif key == "trajectory":
+        if data["format"] != "openrc-nk3-trajectory v2" or set(data["trajectories"]) != TRAJECTORY_CASES:
+            return "all five v2 trajectory cases are required"
+        for name, case in data["trajectories"].items():
+            requested, actual = case["ticks_requested"], case["ticks_run"]
+            if (type(requested) is not int or type(actual) is not int
+                    or not MIN_TRAJECTORY_TICKS <= actual <= requested):
+                return "insufficient actual trajectory ticks"
+            end = case["native_end"]
+            if (case["reference_end"] != end or end["fault"] != "" or end["tick"] != actual
+                    or case["completion_ok"] is not True):
+                return "unexpected trajectory termination"
+            expected_crash = name in {"takeoff", "lake"} and end["crashed"] is True
+            if not expected_crash and (actual != requested or end["crashed"] is not False or end["paused"] is not False):
+                return "truncated or unexpectedly stopped trajectory"
+            fingerprint = case["native_fingerprint"]
+            if (len(fingerprint) != 64 or case["reference_fingerprint"] != fingerprint
+                    or case["first_divergence_tick"] != -1):
+                return "trajectory differs from reference"
+            if (case["native_lost_install_ticks"] != 0 or case["native_uncovered_ticks"] != 0
+                    or case["native_context_calls"] < actual or case["native_stage_calls"] < 4 * actual):
+                return "native stage did not cover every tick"
+    else:
+        return "unknown verification kind"
+    return ""
+
+
+def pinned_engine_identity() -> tuple[str, str]:
+    engine_version = locked.load_lock()["godot"]["version"]
+    # The official editor is downloaded/verified by app/get-godot.sh; custom --godot runs remain research only.
+    engine_release = engine_version.split(".official.")[0].replace(".beta", "-beta").replace(".rc", "-rc")
+    engine_path = ROOT / ".tools" / f"Godot_v{engine_release}_linux.x86_64"
+    return engine_version, sha256_file(engine_path) if engine_path.is_file() else ""
+
+
 def find_verification(key: str, pattern: str, binary_sha256: str, sources: dict[str, str]) -> dict:
     """Newest passing oracle run of `pattern` for exactly this binary and these mirrored sources."""
+    engine_version, engine_sha256 = pinned_engine_identity()
     for path in sorted(TOOL_ROOT.glob(pattern), reverse=True):
         if "_mutant" in path.name:
             continue
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            continue
-        if data.get("verdict") != "pass" or data.get("build_receipt", {}).get("binary_sha256") != binary_sha256:
-            continue
-        seen = {name.replace("res://", "app/", 1): value for name, value in data.get("sources", {}).items()}
-        if any(seen.get(name) != value for name, value in sources.items()):
-            continue
-        if key == "trajectory":
-            cases = data.get("trajectories", {})
-            if not cases or any(int(case.get("ticks_requested", 0)) < MIN_TRAJECTORY_TICKS for case in cases.values()):
+            if (not engine_sha256 or data["engine"] != engine_version
+                    or data["engine_sha256_before"] != engine_sha256 or data["engine_sha256_after"] != engine_sha256):
                 continue
+            if (data["build_receipt"]["binary_sha256"] != binary_sha256
+                    or data["binary_sha256_before"] != binary_sha256 or data["binary_sha256_after"] != binary_sha256):
+                continue
+            seen = {name.replace("res://", "app/", 1): value for name, value in data["sources"].items()}
+            if any(seen.get(name) != value for name, value in sources.items()):
+                continue
+            harness = ["research/native-kernel/" + name for name in
+                       ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "run.py")]
+            harness += ["app/sim/native_stage.gd", "tools/godot/run_checked.py"]
+            if key == "trajectory":
+                harness.append("research/native-kernel/trajectory.gd")
+            if any(data["harness_sources"].get(name) != sha256_file(ROOT / name) for name in harness):
+                continue
+            if data["sources_after"] != data["sources"] or verification_error(key, data):
+                continue
+        except (OSError, ValueError, KeyError, TypeError, AttributeError):
+            continue
         return {"results": path.name, "results_sha256": sha256_file(path), "verdict": "pass",
                 "compared": data.get("total", {}).get("compared", 0)}
     raise SystemExit(

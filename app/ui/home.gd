@@ -55,6 +55,8 @@ var statistics_button: Button
 var aircraft_statistics_button: Button
 var _statistics_aircraft_summary: Label
 var _statistics_pilot_summary: Label
+var _practice_title: Label
+var _practice_intro: Label
 ## The player chose another aircraft (a catalog ID); the owner remembers it and calls set_aircraft().
 signal aircraft_requested(id: String)
 ## Open the direct paint gallery; browsing does not request another 3D model.
@@ -561,14 +563,15 @@ func _init() -> void:
 	practice_page.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_page_host.add_child(practice_page)
 	_pages.append(practice_page)
-	practice_page.add_child(_label("Practice", "SectionTitle"))
-	var practice_intro := _label(
+	_practice_title = _label("Practice", "SectionTitle")
+	practice_page.add_child(_practice_title)
+	_practice_intro = _label(
 		"Review a random setup, or practice with system failures.",
 		"SecondaryLabel"
 	)
-	practice_intro.name = "PracticeSummary"
-	practice_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	practice_page.add_child(practice_intro)
+	_practice_intro.name = "PracticeSummary"
+	_practice_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	practice_page.add_child(_practice_intro)
 	_statistics_pilot_summary = _label("", "SecondaryLabel")
 	_statistics_pilot_summary.name = "PilotStatisticsSummary"
 	_statistics_pilot_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -966,6 +969,9 @@ func _apply_responsive_layout() -> void:
 	var span := UiScale.span_margin(viewport_size.x) # UI-35c (UI-30 SP-5): centred span beyond 21:9
 	var rail_width := minf(viewport_size.x * 0.48, 500.0) if large_text else \
 		clampf(viewport_size.x * 0.24, 280.0, 304.0) if compact else clampf(viewport_size.x * 0.167, 280.0, 340.0)
+	# Practice retains a bounded rail but uses its full normal-width allowance.
+	if not compact and not large_text and _pages[2].visible:
+		rail_width = 340.0
 	var header_top := 14.0 if compact else 20.0
 	# Enlarged translations must leave room for the selected page on compact windows.
 	var navigation_in_scroll := viewport_size.y < 720.0 or (large_text and (compact or _pages[1].visible))
@@ -1044,8 +1050,16 @@ func _apply_responsive_layout() -> void:
 	_navigation.columns = 2 if compact else 1
 	_conditions_row.columns = 1 if large_text else 2 if compact else 1
 	_pages[0].add_theme_constant_override("separation", 2 if compact_action_density else 6)
+	# The selected Practice navigation and action labels already identify this page.
+	# Reserve the limited height for the full statistics and setting summaries.
+	var practice_compact := not large_text and viewport_size.y <= 1080.0
+	_practice_title.visible = not practice_compact
+	_practice_intro.visible = not practice_compact
+	_pages[2].add_theme_constant_override("separation", 2 if practice_compact else 6)
 	for action: Button in [start_button, landscape_button, weather_button, time_button, _details_button]:
 		_set_compact_action_density(action, compact_action_density)
+	for action: Button in [statistics_button, natural_random_button, failures_button, trim_practice_button]:
+		_set_compact_action_density(action, practice_compact)
 	for button in _nav_buttons:
 		button.custom_minimum_size.y = 36.0 if compact else 40.0
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT

@@ -10,6 +10,7 @@ extends "stage_oracle.gd"
 
 const P51 := "p51d-mustang-120"
 const CASES := ["trim", "runway", "maneuver", "takeoff", "lake"]
+const MIN_TRAJECTORY_TICKS := 960
 
 var _input_reads := 0
 
@@ -19,11 +20,15 @@ func _extra_option_names() -> PackedStringArray:
 
 
 func _checks() -> void:
-	_report.format = "openrc-nk3-trajectory v1"
+	_report.format = "openrc-nk3-trajectory v2"
 	_report.trajectories = {}
 	_report.load_average = {start = _load_average()}
 	var ticks: int = int(_options.get("ticks", "4800"))
 	var only: String = str(_options.get("only", "all"))
+	if ticks <= 0:
+		_failures.append("trajectory ticks must be positive")
+		_report.load_average.end = _load_average()
+		return
 	if only == "all":
 		for case: String in CASES:
 			_compare_trajectory(case, ticks)
@@ -99,9 +104,11 @@ func _advance(session: Node) -> bool:
 static func _tick_record(session: Node) -> Dictionary:
 	var sim: Node = session.sim
 	var floats := PackedFloat64Array()
+	var sizes := PackedInt64Array()
 	for values: PackedFloat64Array in [sim.state, sim.aux, sim.continuous, sim.inputs, sim.last_loads]:
+		sizes.append(values.size())
 		floats.append_array(values)
-	return {floats = floats, modes = sim.modes.duplicate()}
+	return {floats = floats, sizes = sizes, modes = sim.modes.duplicate()}
 
 
 static func _hash_tick(digest: HashingContext, session: Node) -> void:
@@ -113,6 +120,29 @@ static func _hash_tick(digest: HashingContext, session: Node) -> void:
 static func _end_record(session: Node) -> Dictionary:
 	return {tick = session.sim.tick, fault = str(session.sim.fault_reason), crashed = not session.crash.is_empty(),
 		paused = session.sim.paused, pause_reason = str(session.pause_reason)}
+
+
+## A shared early fault or pause is not trajectory evidence. Crashes can end the two research tapes only after
+## the required minimum; the other cases must reach every requested tick in a healthy session.
+static func _trajectory_completion_ok(case: String, requested: int, ran: int, end: Dictionary) -> bool:
+	if case not in CASES or requested <= 0 or ran < mini(requested, MIN_TRAJECTORY_TICKS) or ran > requested:
+		return false
+	if typeof(end.get("tick")) != TYPE_INT or int(end.tick) != ran \
+			or typeof(end.get("fault")) != TYPE_STRING or not end.fault.is_empty() \
+			or typeof(end.get("crashed")) != TYPE_BOOL or typeof(end.get("paused")) != TYPE_BOOL:
+		return false
+	var crashed: bool = end.crashed
+	if bool(end.paused) != crashed:
+		return false
+	if case in ["trim", "runway", "maneuver"]:
+		return ran == requested and not crashed
+	return ran == requested or crashed
+
+
+## Counters are sampled on each accepted tick: aggregate totals alone can hide an uncovered tick after substeps.
+static func _native_tick_covered(before: Dictionary, after: Dictionary) -> bool:
+	return int(after.get("context_calls", 0)) - int(before.get("context_calls", 0)) >= 1 \
+		and int(after.get("stage_calls", 0)) - int(before.get("stage_calls", 0)) >= 4
 
 
 ## Run `ticks` ticks; per-tick records, session_probe fingerprint and how the run ended.
@@ -128,15 +158,22 @@ func _trajectory(case: String, native: bool, ticks: int) -> Dictionary:
 	_hash_tick(digest, session)
 	var records: Array = []
 	var lost_install := 0
+	var uncovered_ticks := 0
+	var previous_stats: Dictionary = _native.stage_stats() if native else {}
 	for index in ticks:
 		if not _advance(session):
 			break
 		records.append(_tick_record(session))
 		_hash_tick(digest, session)
-		if native and not Adapter.installed(session, _native):
-			lost_install += 1
+		if native:
+			var stats: Dictionary = _native.stage_stats()
+			if not _native_tick_covered(previous_stats, stats):
+				uncovered_ticks += 1
+			previous_stats = stats
+			if not Adapter.installed(session, _native):
+				lost_install += 1
 	var out := {records = records, fingerprint = digest.finish().hex_encode(), end = _end_record(session),
-		lost_install = lost_install}
+		lost_install = lost_install, uncovered_ticks = uncovered_ticks}
 	if native:
 		out.stats = _native.stage_stats()
 	session.free()
@@ -155,27 +192,38 @@ func _compare_trajectory(case: String, ticks: int) -> void:
 		var a: Dictionary = reference.records[i]
 		var b: Dictionary = native.records[i]
 		var same_floats := _compare("trajectory_tick_floats", a.floats, b.floats, [case, i + 1])
-		var same_modes := _compare("trajectory_tick_modes", PackedFloat64Array(Array(a.modes)), PackedFloat64Array(Array(b.modes)), [case, i + 1])
-		if first_divergence < 0 and not (same_floats and same_modes):
+		var same_sizes := _compare("trajectory_tick_sizes", a.sizes, b.sizes, [case, i + 1])
+		var same_modes := _compare("trajectory_tick_modes", a.modes, b.modes, [case, i + 1])
+		if first_divergence < 0 and not (same_floats and same_sizes and same_modes):
 			first_divergence = i + 1
 	var ends_equal: bool = reference.end == native.end and reference.records.size() == native.records.size()
 	_compare("trajectory_end", PackedFloat64Array([1.0]), PackedFloat64Array([1.0 if ends_equal else 0.0]), [case, reference.end, native.end])
 	_compare("trajectory_fingerprint", PackedFloat64Array([1.0]),
 		PackedFloat64Array([1.0 if reference.fingerprint == native.fingerprint else 0.0]), case)
 	var stats: Dictionary = native.stats
-	var expected_contexts: int = native.records.size() + (1 if native.end.fault != "" else 0)
+	var completion_ok: bool = _trajectory_completion_ok(case, ticks, reference.records.size(), reference.end) \
+		and _trajectory_completion_ok(case, ticks, native.records.size(), native.end)
 	_report.trajectories[case] = {ticks_requested = ticks, ticks_run = native.records.size(),
+		completion_ok = completion_ok,
 		reference_end = reference.end, native_end = native.end, first_divergence_tick = first_divergence,
 		reference_fingerprint = reference.fingerprint, native_fingerprint = native.fingerprint,
 		native_stage_calls = stats.stage_calls, native_context_calls = stats.context_calls,
-		native_lost_install_ticks = native.lost_install}
-	if native.lost_install > 0 or int(stats.context_calls) < native.records.size() or int(stats.stage_calls) < 4 * native.records.size():
+		native_lost_install_ticks = native.lost_install, native_uncovered_ticks = native.uncovered_ticks}
+	if not completion_ok:
+		_failures.append("trajectory %s: insufficient ticks or unhealthy end" % case)
+	if native.lost_install > 0 or native.uncovered_ticks > 0:
 		_failures.append("trajectory %s: the native stage was not in use on every tick" % case)
 	print("NK3_TRAJECTORY case=%s ticks=%d end=%s divergence=%d fingerprint_equal=%s" % [case, native.records.size(),
 		native.end, first_divergence, reference.fingerprint == native.fingerprint])
 
 
 # ---------------------------------------------------------------- fault paths
+
+static func _fault_outcome_ok(before_tick: int, advanced: bool, end: Dictionary) -> bool:
+	return before_tick == 1200 and not advanced and end.get("tick", -1) == 1200 \
+		and typeof(end.get("fault")) == TYPE_STRING and not end.fault.is_empty() \
+		and end.get("paused", false) == true and end.get("crashed", true) == false
+
 
 ## Inject one malformed or overflowing value at tick 1200 of a runway run; both backends must reject the same tick
 ## with the same reason and leave the same bytes.
@@ -194,17 +242,27 @@ func _check_fault_paths() -> void:
 			for index in 1200:
 				if not _advance(session):
 					break
+			if session.sim.tick != 1200 or session.sim.paused or not session.sim.fault_reason.is_empty() \
+					or not session.crash.is_empty():
+				_failures.append("fault path %s did not reach injection tick in a healthy session" % name)
+				session.free()
+				return
 			_inject(session.sim, name)
 			# The kernel transaction alone (Simulation.step): the session's input step would see a buried hull as a crash.
 			var tick_before: int = session.sim.tick
 			session.sim.step()
 			var advanced: bool = session.sim.tick == tick_before + 1
 			var record := _tick_record(session)
-			ends.append({advanced = advanced, end = _end_record(session), floats = record.floats, modes = record.modes})
+			var end := _end_record(session)
+			if not _fault_outcome_ok(tick_before, advanced, end):
+				_failures.append("fault path %s was not rejected at the injection tick" % name)
+			ends.append({advanced = advanced, end = end, floats = record.floats, sizes = record.sizes, modes = record.modes})
 			session.free()
 		var same_end: bool = ends[0].advanced == ends[1].advanced and ends[0].end == ends[1].end
 		_compare("fault_path_end", PackedFloat64Array([1.0]), PackedFloat64Array([1.0 if same_end else 0.0]), [name, ends[0].end, ends[1].end])
 		_compare("fault_path_bytes", ends[0].floats, ends[1].floats, name)
+		_compare("fault_path_sizes", ends[0].sizes, ends[1].sizes, name)
+		_compare("fault_path_modes", ends[0].modes, ends[1].modes, name)
 		_report.fault_paths[name] = {reference = ends[0].end, native = ends[1].end, advanced = ends[0].advanced}
 
 
@@ -226,6 +284,18 @@ static func _inject(sim: Node, name: String) -> void:
 
 # ---------------------------------------------------------------- checkpoint / restore
 
+static func _checkpoint_result_ok(run: Dictionary, native: bool) -> bool:
+	var info: Variant = run.get("info")
+	var passes: Variant = run.get("passes")
+	if not (info is Dictionary) or not (passes is Array) or passes.size() != 2:
+		return false
+	if info.get("restored", false) != true or info.get("resumed", false) != true:
+		return false
+	if native and not (info.get("native_after_restore", false) or info.get("reinstalled", false)):
+		return false
+	return passes[0] is Array and passes[1] is Array and passes[0].size() == 1200 and passes[1].size() == 1200
+
+
 ## Both backends: run to tick 1200, take checkpoint_json, run to 2400, restore, resume, run to 2400 again. Each pass
 ## must match tick for tick between backends. Whether the restored pass equals the uninterrupted one is a property of
 ## the session's restore semantics (recorded inputs), reported but not a native criterion.
@@ -235,7 +305,10 @@ func _restore_run(native: bool) -> Dictionary:
 		return {}
 	var session: Node = built.session
 	for index in 1200:
-		_advance(session)
+		if not _advance(session):
+			_failures.append("checkpoint/restore did not reach tick 1200")
+			session.free()
+			return {}
 	var json_text: String = session.checkpoint_json()
 	var passes: Array = []
 	var info := {}
@@ -243,6 +316,10 @@ func _restore_run(native: bool) -> Dictionary:
 		if attempt == 1:
 			info.restored = session.restore_checkpoint_json(json_text)
 			info.pause_after_restore = str(session.pause_reason)
+			if not info.restored:
+				_failures.append("checkpoint restore failed")
+				session.free()
+				return {}
 			session.resume() # a restore pauses the session; the pilot's explicit resume continues it
 			info.resumed = not session.sim.paused
 			info.native_after_restore = Adapter.installed(session, _native) if native else false
@@ -264,13 +341,18 @@ func _check_checkpoint_restore() -> void:
 	if reference.is_empty() or native.is_empty():
 		_failures.append("checkpoint/restore run did not start")
 		return
+	if not _checkpoint_result_ok(reference, false) or not _checkpoint_result_ok(native, true):
+		_failures.append("checkpoint/restore did not complete both 1200-tick passes")
 	var summary := {reference = reference.info, native = native.info, passes = []}
 	for attempt in 2:
 		var a: Array = reference.passes[attempt]
 		var b: Array = native.passes[attempt]
 		var mismatches := 0
 		for i in mini(a.size(), b.size()):
-			if not _compare("checkpoint_tick_floats", a[i].floats, b[i].floats, ["pass", attempt, 1201 + i]):
+			var same_floats := _compare("checkpoint_tick_floats", a[i].floats, b[i].floats, ["pass", attempt, 1201 + i])
+			var same_sizes := _compare("checkpoint_tick_sizes", a[i].sizes, b[i].sizes, ["pass", attempt, 1201 + i])
+			var same_modes := _compare("checkpoint_tick_modes", a[i].modes, b[i].modes, ["pass", attempt, 1201 + i])
+			if not (same_floats and same_sizes and same_modes):
 				mismatches += 1
 		_compare("checkpoint_pass_length", PackedFloat64Array([a.size()]), PackedFloat64Array([b.size()]), attempt)
 		summary.passes.append({ticks_reference = a.size(), ticks_native = b.size(), mismatches = mismatches})
@@ -283,6 +365,16 @@ func _check_checkpoint_restore() -> void:
 
 
 # ---------------------------------------------------------------- D6 fallback
+
+static func _fallback_result_ok(runs: Array) -> bool:
+	if runs.size() != 2:
+		return false
+	var baseline: Dictionary = runs[0]
+	var attempted: Dictionary = runs[1]
+	return baseline.ticks == 960 and attempted.ticks == 960 and not attempted.install.ok \
+		and not str(attempted.install.error).is_empty() and baseline.stage == attempted.stage \
+		and baseline.fingerprint == attempted.fingerprint
+
 
 ## A refused aircraft keeps the reference stage: the install refuses, and the session's trajectory is byte-identical
 ## to a session where nothing was attempted.
@@ -308,8 +400,10 @@ func _check_fallback() -> void:
 		runs.append({install = install, ticks = ticks, fingerprint = digest.finish().hex_encode(),
 			stage = session.sim.model.stage.get_method()})
 		session.free()
+	if not _fallback_result_ok(runs):
+		_failures.append("fallback did not refuse and retain the reference for 960 matching ticks")
 	_report.fallback = {aircraft = P51, refused = not runs[1].install.ok, reason = runs[1].install.error,
-		ticks = runs[1].ticks, stage_after_attempt = runs[1].stage,
+		reference_ticks = runs[0].ticks, ticks = runs[1].ticks, stage_after_attempt = runs[1].stage,
 		fingerprint_equal = runs[0].fingerprint == runs[1].fingerprint}
 	_compare("fallback_reference_kept", PackedFloat64Array([1.0, 1.0]),
 		PackedFloat64Array([0.0 if runs[1].install.ok else 1.0, 1.0 if runs[0].fingerprint == runs[1].fingerprint else 0.0]), P51)
