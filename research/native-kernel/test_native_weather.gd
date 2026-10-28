@@ -11,7 +11,11 @@ const WeatherConfig := preload("res://physics/wind_config.gd")
 const WeatherField := preload("res://physics/wind_field.gd")
 const SimEnvironment := preload("res://sim/environment.gd")
 const VehicleModel := preload("res://sim/vehicle_model.gd")
+const HelicopterSession := preload("res://sim/helicopter_flight_session.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
 const AIRCRAFT := "jensen-das-ugly-stik-60"
+const HELICOPTER_ID := "xcell-60-research"
+const HELICOPTER_PATH := "res://data/aircraft/xcell_60_research.json"
 
 var _failures := PackedStringArray()
 var _checks := 0
@@ -50,6 +54,8 @@ func _run() -> void:
 		_check_preset(preset)
 	_check_signed_zero()
 	_check_fallback_dt()
+	_check_script_replacement()
+	_check_helicopters()
 	if _failures.is_empty():
 		print("NK3_NATIVE_WEATHER_TEST verdict=pass checks=%d presets=%d" % [_checks, presets.size()])
 		quit(0)
@@ -128,6 +134,16 @@ func _check_preset(preset: Dictionary) -> void:
 			_check_values(session, identity, thermal, NativeWeather.THERMAL_VALUES, label + ": thermal")
 		_check_nested_spatial(session, identity, spatial, label)
 	_check(snapshot_bytes == var_to_bytes(snapshot), label + ": snapshot detached")
+	if label == "calm":
+		var saved_values: Dictionary = identity.field_values
+		identity.field_values = {}
+		var refused: Dictionary = _native.prepare_weather_guard(session, identity)
+		_check(not refused.get("ok", true) and not _native.weather_guard_matches(session),
+			label + ": incomplete identity refuses and disarms")
+		identity.field_values = saved_values
+		if not _prepare_guard(session, identity, label + ": restored identity"):
+			session.free()
+			return
 	_check_owner(session, identity, label)
 	for index: int in 2:
 		session.sim.step()
@@ -332,3 +348,76 @@ func _check_fallback_dt() -> void:
 	Engine.physics_ticks_per_second = original_rate
 	_check(_matches(session, prepared.identity), "fallback-dt: engine tick rate restored")
 	session.free()
+
+
+func _check_script_replacement() -> void:
+	for name: String in ["session", "simulation", "model"]:
+		var session := _session(WeatherConfig.defaults(), "script-" + name)
+		if session == null:
+			continue
+		var prepared: Dictionary = NativeWeather.prepare(session)
+		if not prepared.get("ok", false) or not _prepare_guard(session, prepared.identity, "script-" + name):
+			_failures.append("script-" + name + ": prepare refused")
+			session.free()
+			continue
+		match name:
+			"session": session.set_script(null)
+			"simulation": session.sim.set_script(null)
+			"model": session.sim.model.set_script(null)
+		_check(not _matches(session, prepared.identity), "script-" + name + ": replacement refused")
+		session.free()
+
+
+func _check_helicopters() -> void:
+	var loaded: Dictionary = FieldLoader.load_from()
+	if not loaded.get("ok", false):
+		_failures.append("helicopter field failed to load")
+		return
+	var started := 0
+	for weather_id: String in ["calm", "steady", "crosswind", "gusty", "updraft", "hot-high", "cool-dense"]:
+		var label := "helicopter-" + weather_id
+		var session: Node = HelicopterSession.new()
+		if not session.setup(HELICOPTER_PATH, HELICOPTER_ID) or not session.set_field(loaded.field) \
+				or not session.setup_weather(WeatherConfig.preset(weather_id)):
+			_failures.append(label + ": setup failed: " + str(session.weather_error))
+			session.free()
+			continue
+		if not session.reset():
+			if weather_id == "hot-high" and str(session.start_error).contains("hover trim line search could not reduce the full-force residual"):
+				print("helicopter hot-high reset refused by reference: ", session.start_error)
+			else:
+				_failures.append(label + ": reset failed: " + str(session.start_error))
+			session.free()
+			continue
+		started += 1
+		var prepared: Dictionary = NativeWeather.prepare_helicopter(session)
+		_check(prepared.get("ok", false), label + ": weather prepare")
+		if not prepared.get("ok", false) or not _prepare_guard(session, prepared.identity, label):
+			_failures.append(label + ": guard prepare failed")
+			session.free()
+			continue
+		var identity: Variant = prepared.identity
+		_check(identity.owner_kind == "helicopter" and identity.turbulence_index == -1,
+			label + ": explicit owner and turbulence layout")
+		_check(_matches(session, identity), label + ": initial match")
+		_check_values(session, identity, session.environment.weather, NativeWeather.FIELD_VALUES, label + ": field")
+		var callback: Callable = session.environment.turbulence
+		session.environment.turbulence = func(_time: float) -> PackedFloat64Array: return PackedFloat64Array()
+		_check(not _matches(session, identity), label + ": callback replacement")
+		_check(not NativeWeather.prepare_helicopter(session).get("ok", true), label + ": callback prepare refusal")
+		session.environment.turbulence = callback
+		session._ready_to_fly = false
+		_check(not _matches(session, identity), label + ": readiness changed")
+		_check(not NativeWeather.prepare_helicopter(session).get("ok", true), label + ": unready prepare refusal")
+		session._ready_to_fly = true
+		var original_field: RefCounted = session.environment.weather
+		for unsupported: String in ["turbulent", "standard-column", "spatial-realistic-v1"]:
+			_check(not session.setup_weather(WeatherConfig.preset(unsupported)) and session.environment.weather == original_field,
+				label + ": unsupported " + unsupported + " refused by reference")
+		_check(_matches(session, identity), label + ": original provider restored")
+		session.sim.step()
+		_check(session.sim.tick == 1 and not session.sim.paused and session.sim.fault_reason.is_empty(),
+			label + ": reference tick advanced")
+		_check(_matches(session, identity), label + ": matches after reference tick")
+		session.free()
+	_check(started >= 6, "helicopter: insufficient healthy reference starts")

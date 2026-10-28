@@ -7,6 +7,7 @@
 #include "nk_electric_binding.hpp" // strict snapshot scalar/array decoder
 #include "nk_liquid_mass.hpp"
 #include "nk_liquid_propulsion.hpp"
+#include "nk_liquid_stage.hpp"
 
 namespace nk {
 
@@ -63,6 +64,23 @@ public:
 	R capacity() const { return capacity_; }
 	R unusable() const { return unusable_; }
 	int bound_index() const { return bound_index_; }
+
+	// Copy only at the session preparation boundary; repeated stages use the
+	// resulting pure typed model and never retain a Godot dictionary.
+	LiquidStageModel stage_model() const {
+		LiquidStageModel model;
+		if (!ready_) return model;
+		model.ready = true;
+		model.gas = gas_;
+		model.mass = mass_;
+		model.gas_shaft = gas_shaft_;
+		model.gas_fuel = gas_fuel_;
+		model.turbine = turbine_;
+		model.capacity_kg = capacity_;
+		model.unusable_kg = unusable_;
+		model.bound_index = bound_index_;
+		return model;
+	}
 
 	godot::Dictionary prepare_liquid(const godot::Dictionary &snapshot) {
 		ready_ = false;

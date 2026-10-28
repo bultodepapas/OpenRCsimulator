@@ -402,6 +402,22 @@ bool decode_aero(Decoder &dec, const Dictionary &model, nk::AeroModel &m) {
 	return true;
 }
 
+// Preparation-only projection. Moving geometry remains validated by GearBinding.
+Dictionary fixed_gear_source(const Dictionary &gear) {
+	Dictionary base = gear.duplicate(true);
+	base.erase("retraction");
+	if (base.has("contacts") && base["contacts"].get_type() == Variant::ARRAY) {
+		Array contacts = base["contacts"];
+		for (int64_t i = 0; i < contacts.size(); ++i) {
+			if (contacts[i].get_type() == Variant::DICTIONARY) {
+				Dictionary contact = contacts[i];
+				contact.erase("retraction_path");
+			}
+		}
+	}
+	return base;
+}
+
 bool decode_gear(Decoder &dec, const Dictionary &gear, nk::PreparedGear &out) {
 	out = nk::PreparedGear();
 	if (gear.is_empty()) {
@@ -611,7 +627,7 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 			std::string(flag) == "not_calm" || std::string(flag) == "spatial_weather";
 		const bool electric_flag = electric_requested && (std::string(flag) == "coupled" || std::string(flag) == "rotor_dynamics");
 		if (static_cast<bool>(config[flag]) && !(weather_flag && config.has("weather")) && !electric_flag &&
-				std::string(flag) != "slipstream" && std::string(flag) != "flaps") {
+				std::string(flag) != "slipstream" && std::string(flag) != "flaps" && std::string(flag) != "retractable") {
 			return dec.fail(std::string("unsupported session capability: ") + flag);
 		}
 	}
@@ -656,7 +672,7 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 			if (m.inverse[i] != expected_inverse[i]) return dec.fail("electric inverse inertia differs from the reference tensor");
 		}
 	}
-	if (!decode_aero(dec, model, m.aero) || !decode_prop(dec, prop_geometry, m.prop) || !decode_gear(dec, gear, m.ground.gear)) {
+	if (!decode_aero(dec, model, m.aero) || !decode_prop(dec, prop_geometry, m.prop) || !decode_gear(dec, static_cast<bool>(config["retractable"]) ? fixed_gear_source(gear) : gear, m.ground.gear)) {
 		return false;
 	}
 	if (m.aero.flaps.enabled != static_cast<bool>(config["flaps"])) return dec.fail("flap capability and model differ");
@@ -680,6 +696,12 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 	if (m.ground.lake_valid && !decode_lake(dec, lake, m.ground.lake)) {
 		return false;
 	}
+	if (static_cast<bool>(config["retractable"])) {
+		nk::GearBinding retraction;
+		const Dictionary result = retraction.prepare_retractable(gear, m.ground);
+		if (!static_cast<bool>(result["ok"])) return dec.fail("invalid retractable gear");
+		m.retraction = retraction.model();
+	}
 	m.soft_hull = static_cast<bool>(config["soft_hull"]);
 	if (m.soft_hull && !decode_hull(dec, hull, m.hull)) {
 		return false;
@@ -697,6 +719,8 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 			!layout_int(dec, layout, "input_count", L.input_count)) {
 		return false;
 	}
+	if (m.retraction.enabled && (!layout_int(dec, layout, "gear_aux", L.gear_aux) ||
+			L.gear_aux < 0 || L.gear_aux + 1 >= L.aux_size)) return dec.fail("invalid retractable actuator layout");
 	const int wash_count = m.wake.transport ? static_cast<int>(m.wake.pieces.size()) : 0;
 	L.battery_size = m.electric_source.kind == nk::ElectricBatteryKind::PackEcm ? 9 + 2 * m.electric_source.pack.branches :
 		(m.electric_source.kind == nk::ElectricBatteryKind::OcvResistance ? 3 : 0);
@@ -885,20 +909,7 @@ public:
 		candidate.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 		candidate.surfaces.valid = nk::surface_table_is_valid(candidate.surfaces.values);
 		candidate.lake_valid = lake_valid;
-		// Decode the fixed contact data independently; the retractable binding
-		// validates the full authored paths before any moving-pose evaluation.
-		Dictionary base = gear.duplicate(true);
-		base.erase("retraction");
-		if (base.has("contacts") && base["contacts"].get_type() == Variant::ARRAY) {
-			Array contacts = base["contacts"];
-			for (int64_t i = 0; i < contacts.size(); ++i) {
-				if (contacts[i].get_type() == Variant::DICTIONARY) {
-					Dictionary contact = contacts[i];
-					contact.erase("retraction_path");
-				}
-			}
-		}
-		const bool ok = decode_gear(dec, base, candidate.gear) && (!lake_valid || decode_lake(dec, lake, candidate.lake));
+		const bool ok = decode_gear(dec, fixed_gear_source(gear), candidate.gear) && (!lake_valid || decode_lake(dec, lake, candidate.lake));
 		ground_ready_ = ok;
 		if (ok) {
 			ground_ = candidate;
@@ -1083,7 +1094,7 @@ public:
 		Decoder dec;
 		nk::HullPrepared prepared;
 		live_hull_ = nk::LiveHullBinding();
-		if (!decode_hull(dec, source, prepared, true)) return nk::spatial_binding_failure(dec.error);
+		if (!decode_hull(dec, source, prepared, true)) return nk::spatial_binding_failure(dec.error.c_str());
 		return live_hull_.prepare_live_hull(source, prepared);
 	}
 	Dictionary live_hull_component(const PackedFloat64Array &body, const Dictionary &properties) const {
@@ -1325,6 +1336,13 @@ public:
 		tick_.aux.assign(aux.ptr(), aux.ptr() + aux.size());
 		const int brake = stage_.layout.brake_input;
 		tick_.brake = brake >= 0 && brake < inputs.size() ? inputs[brake] : 0.0;
+		if (stage_.retraction.enabled) {
+			const int index = stage_.layout.gear_aux;
+			if (inputs.size() != stage_.layout.input_count || !nk::retractable_valid_fraction(tick_.aux[index]) ||
+					(tick_.aux[index + 1] != 0.0 && tick_.aux[index + 1] != 1.0)) return false;
+			tick_.posed_ground = stage_.ground;
+			if (!nk::retractable_pose(stage_.ground.gear, stage_.retraction, tick_.aux[index], tick_.posed_ground.gear)) return false;
+		}
 		tick_.time_now = time_now;
 		tick_.ready = true;
 		return true;

@@ -19,6 +19,7 @@
 #include "nk_wake_spatial_aero.hpp"
 #include "nk_electric_stage.hpp"
 #include "nk_electric_coupling.hpp"
+#include "nk_retractable.hpp"
 
 namespace nk {
 
@@ -36,12 +37,14 @@ struct StageLayout {
 	int input_count = 0;
 	int turbulence = -1;
 	int battery_size = 0;
+	int gear_aux = -1;
 };
 
 struct StageModel {
 	AeroModel aero;
 	PropModel prop;
 	GroundContext ground;
+	RetractableModel retraction;
 	HullPrepared hull;
 	bool soft_hull = false;
 	StageLayout layout;
@@ -66,6 +69,7 @@ struct TickContext {
 	R time_now = 0.0;
 	bool power_ready = false, power_enabled = false;
 	R throttle = 0.0;
+	GroundContext posed_ground;
 };
 
 struct StageResult {
@@ -104,8 +108,11 @@ inline R stage_ground_up(const R *s, const StageModel &m) {
 
 // FlightSession._ground_evaluation for fixed gear: false = {ok: false}.
 inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx, const R *values, int value_count,
-		std::array<R, 6> &loads, bool &has_loads, std::vector<R> &rates) {
+		std::array<R, 6> &loads, bool &has_loads, std::vector<R> &rates,
+		const Air *air = nullptr, SpatialPointContext *point = nullptr, R rho = 0.0,
+		const LiquidMassProperties *live = nullptr) {
 	const StageLayout &L = m.layout;
+	const GroundContext &ground = m.retraction.enabled ? ctx.posed_ground : m.ground;
 	const R steer = ctx.aux[L.servo + 2];
 	const R brake = ctx.brake;
 	double anchors[64];
@@ -116,7 +123,18 @@ inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx
 	std::array<R, 6> hull{};
 	bool has_hull = false;
 	if (m.soft_hull) {
-		has_hull = hull_loads(s, m.hull, hull);
+		if (live != nullptr) {
+			if (!m.hull.present) return false;
+			// FlightSession avoids live contact evaluation entirely above geometry reach.
+			if (-s[2] <= m.hull.reach) {
+				const auto sampled = hull_loads_at_properties(s, m.hull, *live);
+				if (!sampled.ok) return false;
+				has_hull = sampled.touched;
+				hull = sampled.loads;
+			}
+		} else {
+			has_hull = hull_loads(s, m.hull, hull);
+		}
 		if (has_hull) {
 			for (const R &value : hull) {
 				if (!is_finite(value)) {
@@ -125,8 +143,27 @@ inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx
 			}
 		}
 	}
+	if (m.retraction.enabled) {
+		if (air == nullptr || L.gear_aux < 0) return false;
+		const R extension = ctx.aux[L.gear_aux];
+		R delta[3];
+		const R *delta_ptr = nullptr;
+		if (point != nullptr && extension > 0.0) {
+			if (!spatial_point_delta(point, m.retraction.drag_center.data(), delta)) return false;
+			delta_ptr = delta;
+		}
+		const auto drag = retractable_drag(s, air->v, m.retraction, extension, rho, delta_ptr, delta_ptr ? 3 : 0);
+		if (!drag.empty()) {
+			if (drag.size() != 6) return false;
+			for (int i = 0; i < 6; ++i) {
+				if (!is_finite(drag[i])) return false;
+				hull[i] = has_hull ? hull[i] + drag[i] : drag[i];
+			}
+			has_hull = true;
+		}
+	}
 	if (L.wheel_count == 0) {
-		if (!m.ground.gear.empty || value_count != L.wheel_index) return false;
+		if (!ground.gear.empty || value_count != L.wheel_index) return false;
 		has_loads = has_hull;
 		loads = hull;
 		rates.clear();
@@ -143,7 +180,7 @@ inline bool stage_ground(const R *s, const StageModel &m, const TickContext &ctx
 		}
 	}
 	static thread_local std::vector<R> wheel_loads;
-	wheels_evaluate(s, m.ground, steer, anchors, anchor_values, speeds, L.wheel_count, brake, wheel_loads, rates);
+	wheels_evaluate(s, ground, steer, anchors, anchor_values, speeds, L.wheel_count, brake, wheel_loads, rates);
 	if ((!wheel_loads.empty() && wheel_loads.size() != 6) || static_cast<int>(rates.size()) != L.wheel_count) {
 		return false;
 	}
@@ -252,7 +289,8 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 	std::array<R, 6> ground_loads{};
 	bool has_ground_loads = false;
 	std::vector<R> rates;
-	if (!stage_ground(s, m, ctx, values, value_count, ground_loads, has_ground_loads, rates)) {
+	if (!stage_ground(s, m, ctx, values, value_count, ground_loads, has_ground_loads, rates, &air,
+			m.spatial_weather && spatial_flow.ok ? &point_context : nullptr, rho)) {
 		return out;
 	}
 	if (has_ground_loads) {

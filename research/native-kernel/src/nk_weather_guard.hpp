@@ -53,6 +53,7 @@ class WeatherGuard {
 	static constexpr int kMaxDepth = 32;
 
 	bool ready_ = false;
+	bool helicopter_ = false;
 	uint64_t session_id_ = 0;
 	uint64_t sim_id_ = 0;
 	Variant session_script_;
@@ -90,6 +91,7 @@ class WeatherGuard {
 	StringName p_aux_ = "aux";
 	StringName p_turbulence_index_ = "_turbulence_aux_index";
 	StringName p_pending_ = "_weather_pending_reset";
+	StringName p_ready_to_fly_ = "_ready_to_fly";
 
 	static bool same_bits(double a, double b) { return std::memcmp(&a, &b, sizeof(double)) == 0; }
 
@@ -270,6 +272,11 @@ class WeatherGuard {
 				godot::ObjectDB::get_instance(sim->get_instance_id()) != sim) return false;
 		session_id_ = owner->get_instance_id();
 		sim_id_ = sim->get_instance_id();
+		const Variant kind = identity->get("owner_kind");
+		if (kind.get_type() != Variant::STRING) return false;
+		const godot::String owner_kind = kind;
+		if (owner_kind == godot::String("helicopter")) helicopter_ = true;
+		else if (owner_kind != godot::String("fixed_wing")) return false;
 		session_script_ = identity->get("session_script");
 		sim_script_ = identity->get("sim_script");
 		model_ = identity->get("model");
@@ -358,14 +365,16 @@ public:
 				!instance_matches(sim->get(p_model_), model_)) return false;
 		Object *model = model_;
 		if (!model || !instance_matches(model->get_script(), model_script_)) return false;
-		const Variant pending = session->get(p_pending_);
-		const Variant index = session->get(p_turbulence_index_);
+		const Variant pending = session->get(helicopter_ ? p_ready_to_fly_ : p_pending_);
 		const Variant fixed = sim->get(p_fixed_dt_);
 		const Variant aux = sim->get(p_aux_);
-		if (pending.get_type() != Variant::BOOL || static_cast<bool>(pending) || index.get_type() != Variant::INT ||
-				static_cast<int64_t>(index) != turbulence_aux_index_ || fixed.get_type() != Variant::FLOAT ||
+		if (pending.get_type() != Variant::BOOL || static_cast<bool>(pending) != helicopter_ || fixed.get_type() != Variant::FLOAT ||
 				!same_bits(static_cast<double>(fixed), fixed_dt_) || aux.get_type() != Variant::PACKED_FLOAT64_ARRAY ||
 				godot::PackedFloat64Array(aux).size() != aux_size_) return false;
+		if (!helicopter_) {
+			const Variant index = session->get(p_turbulence_index_);
+			if (index.get_type() != Variant::INT || static_cast<int64_t>(index) != turbulence_aux_index_) return false;
+		}
 		if (engine_id_ != 0) {
 			Object *engine = godot::ObjectDB::get_instance(engine_id_);
 			if (!engine) return false;
