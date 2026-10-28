@@ -711,6 +711,9 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 				!nk::is_finite(m.dt) || m.dt <= 0.0 || !layout_int(dec, layout, "turbulence", L.turbulence)) {
 			return dec.fail("weather needs a finite positive tick dt and turbulence layout");
 		}
+		if (m.electric && m.electric_source.kind == nk::ElectricBatteryKind::PackEcm && !snapshot.has("temperature_k")) {
+			return dec.fail("pack stage requires the actual prepared atmosphere temperature");
+		}
 		nk::WeatherBinding candidate;
 		const Dictionary prepared = candidate.prepare_weather(snapshot);
 		if (!static_cast<bool>(prepared["ok"]) || candidate.is_spatial() != static_cast<bool>(config["spatial_weather"])) {

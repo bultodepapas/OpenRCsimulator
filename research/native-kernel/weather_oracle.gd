@@ -176,6 +176,15 @@ func _check_scenario(scenario: Dictionary, random_count: int) -> void:
 								-0.5 * float(cell.top_agl_m)])
 							_compare_wind(label, field, point, time_s, window)
 							_tally("weather", "thermal_cell_samples")
+	# Exercise the actual session atmosphere path in addition to the field
+	# component. The binding takes only down; environment_at also validates the
+	# complete NED position, so compare these queries for finite positions.
+	var atmosphere_session: Node = Session.new()
+	atmosphere_session.environment.weather = field
+	var atmosphere_state := PackedFloat64Array()
+	atmosphere_state.resize(RB.SIZE)
+	atmosphere_state[0] = 1.0
+	atmosphere_state[1] = -2.0
 	for down: float in [-11000.0, -1000.0, -100.0, 0.0, 500.0, 500.000001, NAN, INF]:
 		var reference := PackedFloat64Array([field.air_density(down), field.engine_charge_ratio(down)])
 		var native: PackedFloat64Array = _native.air_component(down)
@@ -183,7 +192,13 @@ func _check_scenario(scenario: Dictionary, random_count: int) -> void:
 		var temperature: float = float(field.atmosphere(down).get("temperature_k", NAN))
 		_compare("weather_temperature", PackedFloat64Array([temperature]),
 			PackedFloat64Array([_native.temperature_component(down)]), [label, down])
+		if is_finite(down):
+			atmosphere_state[2] = down
+			var session_air: Dictionary = atmosphere_session.environment_at(atmosphere_state)
+			_compare("weather_session_temperature", PackedFloat64Array([float(session_air.get("temperature_k", NAN))]),
+				PackedFloat64Array([_native.temperature_component(down)]), [label, down])
 		_tally("weather", "air_queries")
+	atmosphere_session.free()
 
 
 func _check_weather_refusals() -> void:
