@@ -64,6 +64,12 @@ the route remains usable; these single pairs do not establish additional speedup
 
 The `*-prefetch-*.json` reports retain actual dwell, Home-to-ready, cache adoption,
 frame intervals, allocation counts and clean shutdown. All first draws were unpaused.
+The [20-transition run](candidate-soak-20.json) also stays unpaused, returns to exactly
+828 Home nodes each time and reports zero orphan nodes. One worker supplies the first
+flight and 19 cache hits supply the rest; shutdown drains preparation and audio.
+Static allocation grows about 0.60 MB after the first return while the probe retains
+19 further reports; that measurement does not isolate a production memory leak or
+establish flat RSS/VRAM. The longer memory qualification remains open.
 Earlier exploratory timing used a 4K fullscreen window despite a 1080p command-line
 request, or preceded the final teardown correction; those runs are excluded above.
 
