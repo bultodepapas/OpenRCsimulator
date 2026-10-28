@@ -48,7 +48,8 @@ class SDK24ProductTests(unittest.TestCase):
         self.checks = self.root / "tmp/godot-checks/fsr24-product"
         self.output = self.root / "dist/windows-fsr24-candidate"
         self.integration_bytes = {name: f"source {name}\n".encode() for name in
-                                  ("engine.patch", "fsr3.cpp", "sdk24.py", "build_sdk24.py", "build.py")}
+                                  ("engine.patch", "fsr3.cpp", "fsr3.h", "fsr3_prepare.glsl", "sdk24.py", "build_sdk24.py", "build.py")}
+        self.integration_bytes["engine.patch"] = b"+++ b/src/patched.cpp\n"
         for name, content in self.integration_bytes.items():
             put(self.here, name, content)
         for name in ("product.py", "product_sdk24.py"):
@@ -74,6 +75,8 @@ class SDK24ProductTests(unittest.TestCase):
         self.engine_sources = {
             "src/patched.cpp": b"patched source",
             "src/fsr3.cpp": self.integration_bytes["fsr3.cpp"],
+            "src/fsr3.h": self.integration_bytes["fsr3.h"],
+            "src/fsr3_prepare.glsl": self.integration_bytes["fsr3_prepare.glsl"],
             "thirdparty/amd-fsr-sdk24/api/include/ffx_api.h": sdk_data["Kits/FidelityFX/api/include/ffx_api.h"],
             "thirdparty/amd-fsr-sdk24/upscalers/include/ffx_upscale.h": sdk_data["Kits/FidelityFX/upscalers/include/ffx_upscale.h"],
             "thirdparty/streamline/include/sl.h": b"streamline header",
@@ -125,7 +128,8 @@ class SDK24ProductTests(unittest.TestCase):
             mock.patch.object(candidate.sdk24, "SIGNED_DLLS", tuple(candidate.AMD_DLLS.values())),
             mock.patch.object(candidate.sdk24, "verify_signature", return_value=signature),
             mock.patch.object(candidate.sdk_build, "HERE", self.here),
-            mock.patch.object(candidate.sdk_build, "ADAPTER_FILES", {"fsr3.cpp": "src/fsr3.cpp"}),
+            mock.patch.object(candidate.sdk_build, "ADAPTER_FILES", {name: "src/" + name for name in
+                                                                    ("fsr3.cpp", "fsr3.h", "fsr3_prepare.glsl")}),
             mock.patch.object(candidate.sdk_build, "freeze_integration", return_value=(self.integration_bytes, self.integration)),
             mock.patch.object(candidate.sdk_build, "patched_paths", return_value={"src/patched.cpp"}),
         ]
@@ -136,8 +140,10 @@ class SDK24ProductTests(unittest.TestCase):
     def save_receipt(self, path: Path, data: dict) -> None:
         path.write_text(json.dumps(data), encoding="utf-8")
 
-    def make_candidate_output(self) -> tuple[Path, dict]:
-        snapshot = self.snapshot_base / "source-fixture"
+    def make_candidate_output(self, snapshot: Path | None = None, output: Path | None = None,
+                              *, with_binding: bool = True) -> tuple[Path, dict]:
+        snapshot = snapshot or self.snapshot_base / "source-fixture"
+        output = output or self.output
         identity = {"commit": "fixture", "dirty": True}
         files = {}
         for name, content in self.integration_bytes.items():
@@ -149,13 +155,15 @@ class SDK24ProductTests(unittest.TestCase):
             content = (self.here / name).read_bytes()
             put(snapshot, rel, content)
             files[rel] = sha(content)
-        put(snapshot, "app/project.godot", b"forward plus fixture")
+        project = candidate.candidate_snapshot_project(
+            b'[application]\nconfig/name="OpenRC Simulator"\n[rendering]\nrenderer/rendering_method="gl_compatibility"\n')
+        put(snapshot, "app/project.godot", project)
         put(snapshot, "app/native/ground_vehicle/openrc_ground_vehicle.dll", b"ground dll")
-        files["app/project.godot"] = sha(b"forward plus fixture")
+        files["app/project.godot"] = sha(project)
         files["app/native/ground_vehicle/openrc_ground_vehicle.dll"] = sha(b"ground dll")
 
         def checked(label: str, export: bool) -> Path:
-            directory = self.checks / label
+            directory = self.checks / (label + "-" + snapshot.name)
             log = put(directory, "engine.log", b"[ DONE ] savepack\n" if export else b"import complete\n")
             command = [str(self.bin / "godot.windows.editor.x86_64.exe"), "--headless", "--path", str(snapshot / "app")]
             if export:
@@ -171,41 +179,44 @@ class SDK24ProductTests(unittest.TestCase):
         import_report = checked("import", False)
         export_report = checked("export", True)
         snapshot_receipt = {"format": candidate.SNAPSHOT_FORMAT, "build_identity": identity, "files": files,
+                            "project_override": candidate.candidate_project_override("a" * 64, sha(project)),
                             "import": {"report": str(import_report.resolve()), "report_sha256": sha(import_report.read_bytes()),
                                        "editor_sha256": self.editor["executable_sha256"]}}
         snap_file = put(snapshot, candidate.product.SNAPSHOT_RECEIPT, json.dumps(snapshot_receipt).encode())
-        put(self.output, "OpenRC Simulator.exe", b"template")
-        put(self.output, "OpenRC Simulator.pck", b"exported pck")
-        put(self.output, "openrc_ground_vehicle.dll", b"ground dll")
-        put(self.output, "openrc-editor-build.json", json.dumps(self.editor).encode())
-        put(self.output, "openrc-template_release-build.json", json.dumps(self.template).encode())
-        put(self.output, candidate.product.SNAPSHOT_RECEIPT, snap_file.read_bytes())
+        put(output, "OpenRC Simulator.exe", (self.bin / "godot.windows.template_release.x86_64.exe").read_bytes())
+        put(output, "OpenRC Simulator.pck", b"exported pck")
+        put(output, "openrc_ground_vehicle.dll", b"ground dll")
+        put(output, "openrc-editor-build.json", json.dumps(self.editor).encode())
+        put(output, "openrc-template_release-build.json", json.dumps(self.template).encode())
+        put(output, candidate.product.SNAPSHOT_RECEIPT, snap_file.read_bytes())
         for name in self.runtime:
-            put(self.output, name, (self.bin / name).read_bytes())
+            put(output, name, (self.bin / name).read_bytes())
         for name in self.licenses:
-            put(self.output, "licenses/" + name, (self.bin / "licenses" / name).read_bytes())
+            put(output, "licenses/" + name, (self.bin / "licenses" / name).read_bytes())
         for name, content in candidate.candidate_launchers().items():
-            put(self.output, name, content)
-        managed = {path.relative_to(self.output).as_posix(): sha(path.read_bytes())
-                   for path in self.output.rglob("*") if path.is_file()}
+            put(output, name, content)
+        managed = {path.relative_to(output).as_posix(): sha(path.read_bytes())
+                   for path in output.rglob("*") if path.is_file()}
         receipt = {"format": candidate.PACKAGE_FORMAT, "build_identity": identity,
                    "godot_commit": candidate.native_build.COMMIT, "sources": self.editor["sources"],
                    "integration": self.editor["integration"], "runtime": self.editor["runtime"],
                    "editor_sha256": self.editor["executable_sha256"], "template_sha256": self.template["executable_sha256"],
                    "snapshot_sha256": sha(snap_file.read_bytes()), "import_report": str(import_report),
-                   "export_report": str(export_report), "files": managed,
-                   "export_binding": {"snapshot_path": str(snapshot.resolve()), "pck_sha256": sha(b"exported pck"),
-                                      "snapshot_sha256": sha(snap_file.read_bytes()),
-                                      "import_report_sha256": sha(import_report.read_bytes()),
-                                      "export_report_sha256": sha(export_report.read_bytes())}}
-        put(self.output, candidate.product.PACKAGE_RECEIPT, json.dumps(receipt).encode())
+                   "export_report": str(export_report), "files": managed}
+        if with_binding:
+            receipt["export_binding"] = {"snapshot_path": str(snapshot.resolve()), "pck_sha256": sha(b"exported pck"),
+                                         "snapshot_sha256": sha(snap_file.read_bytes()),
+                                         "import_report_sha256": sha(import_report.read_bytes()),
+                                         "export_report_sha256": sha(export_report.read_bytes()),
+                                         "packager_sources": dict(self.packager_imports)}
+        put(output, candidate.product.PACKAGE_RECEIPT, json.dumps(receipt).encode())
         return snapshot, receipt
 
     def initialize_app_repository(self) -> None:
         if not shutil.which("git"):
             self.skipTest("Git is required for the current-source snapshot")
         put(self.root, ".gitignore", b"/.tools/\n/tmp/\n/dist/\n")
-        put(self.root, "app/project.godot", b'[rendering]\nrenderer/rendering_method="gl_compatibility"\n')
+        put(self.root, "app/project.godot", b'[application]\nconfig/name="OpenRC Simulator"\n[rendering]\nrenderer/rendering_method="gl_compatibility"\n')
         put(self.root, "app/aircraft.gd", b"aircraft source")
         put(self.root, "assets/aircraft/proof.json", b"proof")
         model = {"source_registry": {"path": "assets/aircraft/proof.json"},
@@ -274,13 +285,22 @@ class SDK24ProductTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             candidate.verify_engine_pair(self.editor_path, self.template_path, self.engine)
 
-    def test_receipt_outside_workspace_and_ambiguous_archive_are_rejected(self) -> None:
+    def test_receipt_discovery_deduplicates_equivalent_pairs_but_rejects_ambiguity(self) -> None:
         with tempfile.TemporaryDirectory(prefix="outside-fsr24-") as outside:
             path = Path(outside) / "editor.json"
             path.write_text(json.dumps(self.editor), encoding="utf-8")
             with self.assertRaisesRegex(RuntimeError, "outside the workspace"):
                 candidate.select_pair(self.engine, path, self.template_path)
-        put(self.archives, "openrc-editor-build-duplicate.json", json.dumps(self.editor).encode())
+        duplicate = copy.deepcopy(self.editor)
+        duplicate["build_command"].append("-j6")
+        duplicate["sdk_intake"]["tag_check"] = {"live": True, "checked_utc": "2026-10-28T12:00:00+00:00"}
+        duplicate_template = copy.deepcopy(self.template)
+        duplicate_template["sdk_intake"]["tag_check"] = duplicate["sdk_intake"]["tag_check"]
+        duplicate_path = put(self.archives, "openrc-editor-build-duplicate.json", json.dumps(duplicate).encode())
+        put(self.archives, "openrc-template_release-build-duplicate.json", json.dumps(duplicate_template).encode())
+        candidate.select_pair(self.engine, None, None)
+        duplicate["build_command"].append("optimize=speed")
+        self.save_receipt(duplicate_path, duplicate)
         with self.assertRaisesRegex(RuntimeError, "found 2"):
             candidate.select_pair(self.engine, None, None)
 
@@ -299,8 +319,11 @@ class SDK24ProductTests(unittest.TestCase):
                 self.assertIn("tools/graphics/native/sdk24.py", sources)
                 self.assertIn("tools/graphics/native/build_sdk24.py", sources)
                 launchers = candidate.product.launcher_files()
-                self.assertIn(b"OpenRC-FSR24-Candidate", launchers["OpenRC Simulator.cmd"])
+                self.assertNotIn(b"APPDATA", b"".join(launchers.values()))
                 self.assertIn(b"not qualified", launchers["EXPERIMENTAL.txt"])
+                self.assertIn(b"Vulkan-capable", launchers["EXPERIMENTAL.txt"])
+                self.assertIn(b"Visual C++ v14 x64", launchers["EXPERIMENTAL.txt"])
+                self.assertIn(b"https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist/", launchers["EXPERIMENTAL.txt"])
                 raise RuntimeError("fixture failure")
         self.assertEqual({name: getattr(candidate.product, name) for name in original}, original)
 
@@ -374,6 +397,92 @@ class SDK24ProductTests(unittest.TestCase):
             for name, digest in self.packager_imports.items():
                 self.assertEqual(receipt["files"][f"tools/graphics/native/{name}"], digest)
             candidate.product.verify_tree(snapshot, candidate.product.SNAPSHOT_RECEIPT, candidate.SNAPSHOT_FORMAT, ignore_cache=True)
+            candidate._verify_candidate_project(receipt, snapshot)
+
+    def test_candidate_user_directory_rejects_conflicting_project_settings(self) -> None:
+        original = b'[application]\nconfig/name="OpenRC Simulator"\n[rendering]\nrenderer/rendering_method="gl_compatibility"\n'
+        transformed = candidate.candidate_snapshot_project(original)
+        self.assertEqual(candidate._user_dir_settings(transformed), [
+            b"config/use_custom_user_dir=true", b'config/custom_user_dir_name="OpenRC-FSR24-Candidate"'])
+        self.assertNotIn(b"config/use_custom_user_dir", candidate.LEGACY_SNAPSHOT_PROJECT(original))
+        for setting in (b"config/use_custom_user_dir=false", b'config/custom_user_dir_name.windows="wrong"'):
+            with self.subTest(setting=setting):
+                with self.assertRaisesRegex(RuntimeError, "already defines"):
+                    candidate.candidate_snapshot_project(original.replace(b"[application]\n", b"[application]\n" + setting + b"\n"))
+
+    def test_candidate_user_directory_is_verified_from_snapshot_bytes(self) -> None:
+        snapshot, _ = self.make_candidate_output()
+        project = snapshot / "app/project.godot"
+        project.write_bytes(project.read_bytes().replace(b"OpenRC-FSR24-Candidate", b"OpenRC Simulator"))
+        receipt = candidate.product.load_json(snapshot / candidate.product.SNAPSHOT_RECEIPT)
+        receipt["files"]["app/project.godot"] = sha(project.read_bytes())
+        receipt["project_override"]["snapshot_sha256"] = sha(project.read_bytes())
+        with self.assertRaisesRegex(RuntimeError, "does not select the isolated"):
+            candidate._verify_candidate_project(receipt, snapshot)
+
+    def upgrade_current_pair_and_packager(self) -> None:
+        self.integration_bytes["fsr3.cpp"] = b"upgraded adapter source\n"
+        put(self.here, "fsr3.cpp", self.integration_bytes["fsr3.cpp"])
+        put(self.engine, "src/fsr3.cpp", self.integration_bytes["fsr3.cpp"])
+        self.integration = {name: sha(data) for name, data in self.integration_bytes.items()}
+        candidate.sdk_build.freeze_integration.return_value = (self.integration_bytes, self.integration)
+        self.editor = copy.deepcopy(self.editor)
+        self.template = copy.deepcopy(self.template)
+        for label, row in (("editor", self.editor), ("template_release", self.template)):
+            row["integration"] = dict(self.integration)
+            row["engine_source"]["src/fsr3.cpp"] = self.integration["fsr3.cpp"]
+            exe = put(self.bin, f"godot.windows.{label}.x86_64.exe", (label + " upgraded").encode())
+            row["executable_sha256"] = sha(exe.read_bytes())
+        self.save_receipt(self.editor_path, self.editor)
+        self.save_receipt(self.template_path, self.template)
+        put(self.here, "product_sdk24.py", b"upgraded candidate packager\n")
+        self.packager_imports = {name: sha((self.here / name).read_bytes()) for name in ("product.py", "product_sdk24.py")}
+        candidate.PACKAGER_IMPORTS = self.packager_imports
+
+    def test_new_pair_replaces_verified_previous_candidate(self) -> None:
+        old_snapshot, old_receipt = self.make_candidate_output()
+        self.upgrade_current_pair_and_packager()
+        self.assertEqual(candidate.verify_candidate_output(self.output, current=False), old_receipt)
+
+        def fake_export(_snapshot: dict) -> None:
+            self.make_candidate_output(candidate.product.SNAPSHOT, candidate.product.OUTPUT, with_binding=False)
+
+        with (mock.patch.object(candidate.product, "prepare_snapshot", return_value={}),
+              mock.patch.object(candidate.product, "package_product", side_effect=fake_export)):
+            receipt = candidate.package_candidate(self.engine, self.editor_path, self.template_path)
+        self.assertEqual(receipt["editor_sha256"], self.editor["executable_sha256"])
+        self.assertEqual(receipt["template_sha256"], self.template["executable_sha256"])
+        self.assertNotEqual(receipt["editor_sha256"], old_receipt["editor_sha256"])
+        self.assertTrue(old_snapshot.is_dir())
+        self.assertEqual(candidate.verify_candidate_output(self.output, current=False), receipt)
+
+    def test_upgraded_pair_failed_export_preserves_previous_candidate(self) -> None:
+        old_snapshot, old_receipt = self.make_candidate_output()
+        old_bytes = (self.output / candidate.product.PACKAGE_RECEIPT).read_bytes()
+        self.upgrade_current_pair_and_packager()
+        with (mock.patch.object(candidate.product, "prepare_snapshot", return_value={}),
+              mock.patch.object(candidate.product, "package_product", side_effect=RuntimeError("fake export failed"))):
+            with self.assertRaisesRegex(RuntimeError, "fake export failed"):
+                candidate.package_candidate(self.engine, self.editor_path, self.template_path)
+        self.assertEqual((self.output / candidate.product.PACKAGE_RECEIPT).read_bytes(), old_bytes)
+        self.assertTrue(old_snapshot.is_dir())
+        self.assertEqual(candidate.verify_candidate_output(self.output, current=False), old_receipt)
+
+    def test_replacement_refuses_previous_candidate_changed_during_export(self) -> None:
+        _, old_receipt = self.make_candidate_output()
+        self.upgrade_current_pair_and_packager()
+        old_pck = (self.output / "OpenRC Simulator.pck").read_bytes()
+
+        def fake_export(_snapshot: dict) -> None:
+            self.make_candidate_output(candidate.product.SNAPSHOT, candidate.product.OUTPUT, with_binding=False)
+            (self.output / "EXPERIMENTAL.txt").write_bytes(b"changed during export")
+
+        with (mock.patch.object(candidate.product, "prepare_snapshot", return_value={}),
+              mock.patch.object(candidate.product, "package_product", side_effect=fake_export)):
+            with self.assertRaisesRegex(RuntimeError, "managed file changed"):
+                candidate.package_candidate(self.engine, self.editor_path, self.template_path)
+        self.assertEqual((self.output / "OpenRC Simulator.pck").read_bytes(), old_pck)
+        self.assertEqual(candidate.product.load_json(self.output / candidate.product.PACKAGE_RECEIPT), old_receipt)
 
     def test_failed_candidate_export_preserves_existing_package_and_snapshot(self) -> None:
         old_snapshot, _ = self.make_candidate_output()

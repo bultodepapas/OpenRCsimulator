@@ -304,34 +304,24 @@ func _place_camera(t: float) -> void:
 	main._camera.fov = fov
 
 
-## TRA-09: chase the first live AI companion and widen until its nearest neighbor shares the frame.
+## TRA-09: hero chase of the first live AI companion; the rest of the traffic stays in the scene behind it.
 func _frame_companions() -> bool:
 	var manager: Node = main.get("companions")
 	if manager == null:
 		return false
-	var roots: Array[Node3D] = []
 	for agent: Node in manager.agents:
 		if is_instance_valid(agent) and str(agent.failure).is_empty() and not agent.view.is_empty():
-			roots.append(agent.view.root)
-	roots.append(main._airplane.root)
-	if roots.size() < 2:
-		return false
-	var lead: Node3D = roots[0]
-	var other: Node3D = roots[1]
-	for candidate: Node3D in roots.slice(2):
-		if candidate.global_position.distance_to(lead.global_position) < other.global_position.distance_to(lead.global_position):
-			other = candidate
-	var forward: Vector3 = -lead.global_basis.z
-	forward = Vector3(forward.x, 0.0, forward.z).normalized()
-	if forward.length_squared() < 0.9:
-		forward = Vector3.FORWARD
-	var mid: Vector3 = (lead.global_position + other.global_position) * 0.5
-	var spread: float = minf(lead.global_position.distance_to(other.global_position), 120.0)
-	var distance: float = 9.0 + spread * 0.9
-	main._camera.global_position = lead.global_position - forward * distance + forward.cross(Vector3.UP) * 3.0 + Vector3.UP * (2.5 + spread * 0.15)
-	main._camera.look_at(mid if spread < 120.0 else lead.global_position, Vector3.UP)
-	main._camera.fov = 40.0
-	return true
+			var lead: Node3D = agent.view.root
+			var forward: Vector3 = -lead.global_basis.z
+			forward = Vector3(forward.x, 0.0, forward.z).normalized()
+			if forward.length_squared() < 0.9:
+				forward = Vector3.FORWARD
+			var right: Vector3 = forward.cross(Vector3.UP)
+			main._camera.global_position = lead.global_position - forward * 7.0 + right * 2.2 + Vector3.UP * 2.0
+			main._camera.look_at(lead.global_position + forward * 1.5, Vector3.UP)
+			main._camera.fov = 24.0
+			return true
+	return false
 
 
 func _smoke_evidence() -> Dictionary:

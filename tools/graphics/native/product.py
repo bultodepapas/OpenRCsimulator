@@ -209,6 +209,12 @@ def snapshot_project(source: bytes) -> bytes:
     return source.replace(old, new, 1)
 
 
+def snapshot_project_override(source_hash: str, snapshot_hash: str) -> dict:
+    return {"path": "app/project.godot", "setting": "renderer/rendering_method",
+            "source": "gl_compatibility", "snapshot": "forward_plus",
+            "source_sha256": source_hash, "snapshot_sha256": snapshot_hash}
+
+
 def reject_links(root: Path) -> None:
     if is_link(root):
         raise RuntimeError(f"refusing linked output: {root}")
@@ -580,9 +586,7 @@ def prepare_snapshot() -> dict:
                     "describe": describe, "dirty": dirty,
                     "status_porcelain": [s for s in status.split("\0") if s]}
         receipt = {"format": SNAPSHOT_FORMAT, "build_identity": identity,
-                   "project_override": {"path": "app/project.godot", "setting": "renderer/rendering_method",
-                                        "source": "gl_compatibility", "snapshot": "forward_plus",
-                                        "source_sha256": original_project_hash, "snapshot_sha256": files["app/project.godot"]},
+                   "project_override": snapshot_project_override(original_project_hash, files["app/project.godot"]),
                    "files": files, "import_originals": import_originals}
         if previous and (SNAPSHOT / "app/.godot").exists():
             origin = previous.get("import") or previous.get("cache_origin")

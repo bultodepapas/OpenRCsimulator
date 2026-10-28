@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Package an existing X8 UV-atlas PNG as an OpenRC paint, without Blender.
 
-    python pack_image.py --image painted-atlas.png --output paint.orskin --label "My paint"
+    python pack_image.py painted-atlas.png --output paint.orskin --label "My paint"
 
 The input must follow the Skywalker X8's *existing* x8_livery UV layout. A
 photograph or illustration of an aircraft is not a UV atlas. Validation can
@@ -189,7 +189,7 @@ def pack_image(image_path, output_path, label=None):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Package an existing Skywalker X8 UV-atlas PNG as an OpenRC .orskin.")
-    parser.add_argument("--image", required=True, help="Painted X8 atlas PNG, following the original UV layout")
+    parser.add_argument("image", help="Painted X8 atlas PNG, following the original UV layout")
     parser.add_argument("--output", required=True, help="Destination .orskin file")
     parser.add_argument("--label", help="Paint name, up to 48 printable characters (default: output filename)")
     args = parser.parse_args(argv)

@@ -32,6 +32,7 @@ PATHS = {
     "Linux": "~/.local/share/godot/app_userdata/OpenRC Simulator/skins/skywalker-x8",
 }
 COMMAND = 'blender --background Skywalker-X8.blend --python "Export OpenRC Skin.py" -- --output my-design.orskin --label "My design"'
+IMAGE_COMMAND = 'python pack_image.py X8-Paint-edited.png --output my-design.orskin --label "My design"'
 
 
 def dictionaries():
@@ -95,6 +96,10 @@ def build():
         parts.append(f'</select><label for="prompt-{code}">{esc(s["prompt_label"])}</label><textarea class="prompt" id="prompt-{code}" rows="24" spellcheck="false">{esc(prompt(s))}</textarea>')
         parts.append(f'<button type="button" class="copy">{esc(s["copy"])}</button><p class="status" role="status" aria-live="polite"></p></article>')
         parts.append('<article><h2>' + esc(s["finish_title"]) + '</h2>' + ''.join(paragraph(k) for k in ["save_body", "preview_body", "export_body"]) + '<pre><code>' + esc(COMMAND) + '</code></pre></article>')
+        parts.append('<article><h2>' + esc(s["image_title"]) + '</h2>' + paragraph("image_body"))
+        parts.append(f'<label for="image-prompt-{code}">{esc(s["image_prompt_label"])}</label><textarea class="image-prompt" id="image-prompt-{code}" rows="16">{esc(s["image_prompt"])}</textarea>')
+        parts.append('<button type="button" class="image-copy">' + esc(s["copy"]) + '</button><p class="image-status" role="status" aria-live="polite"></p>')
+        parts.append(paragraph("image_steps") + '<pre><code>' + esc(IMAGE_COMMAND) + '</code></pre>' + paragraph("image_limits") + '</article>')
         parts.append('<article><h2>' + esc(s["load_title"]) + '</h2>' + ''.join(paragraph(k) for k in ["load_body", "failure_body", "cleanup_body"]) + '<dl>')
         for system, path in PATHS.items():
             parts.append('<dt>' + system + '</dt><dd><code>' + esc(path) + '</code></dd>')
@@ -128,7 +133,9 @@ function selectLanguage(){const hash=location.hash.slice(1);const preferred=docu
 for(const section of sections){const s=translations[section.id],idea=section.querySelector('.idea'),provider=section.querySelector('.provider'),output=section.querySelector('.prompt'),status=section.querySelector('.status');
 const rebuild=()=>{output.value=[s.idea_heading,idea.value,s.route_heading,s['route_'+provider.value],s.instructions_heading,...keys.map(k=>s[k])].join('\\n\\n');status.textContent='';};
 idea.addEventListener('input',rebuild);provider.addEventListener('change',rebuild);
-section.querySelector('.copy').addEventListener('click',async()=>{const text=output.value;let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true;}}catch(_){}if(!ok){output.focus();output.select();try{ok=document.execCommand('copy');}catch(_){}}status.textContent=ok?s.copied:s.copy_failed;});}
+const copyToClipboard=async(field,message)=>{const text=field.value;let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true;}}catch(_){}if(!ok){field.focus();field.select();try{ok=document.execCommand('copy');}catch(_){}}message.textContent=ok?s.copied:s.copy_failed;};
+section.querySelector('.copy').addEventListener('click',()=>copyToClipboard(output,status));
+section.querySelector('.image-copy').addEventListener('click',()=>copyToClipboard(section.querySelector('.image-prompt'),section.querySelector('.image-status')));}
 addEventListener('hashchange',selectLanguage);selectLanguage();
 """
 

@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 from contextlib import contextmanager
 from datetime import datetime
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -49,6 +50,9 @@ AMD_NOTICES = {
     "AMD-FSR-SDK-2.4-third-party.md": "3rdpartynotice.md",
 }
 PACKAGER_IMPORTS = {name: product.sha(HERE / name) for name in ("product.py", "product_sdk24.py")}
+LEGACY_SNAPSHOT_PROJECT = product.snapshot_project
+LEGACY_PROJECT_OVERRIDE = product.snapshot_project_override
+CANDIDATE_USER_DIR = "OpenRC-FSR24-Candidate"
 
 
 def _safe_file(path: Path) -> Path:
@@ -93,19 +97,30 @@ def _expected_sources() -> dict[str, str]:
     return {name: digest for name, _, digest, _ in (native_build.ARCHIVES[0], native_build.ARCHIVES[2])}
 
 
-def _verify_pair_metadata(editor: dict, template: dict, engine: Path, *, current: bool) -> None:
+def _verify_pair_metadata(editor: dict, template: dict, engine: Path, *, current: bool,
+                          snapshot_path: Path | None = None) -> None:
     expected = {"experimental": True, "production_engine_unchanged": "4.8-beta1",
                 "godot_repository": "https://github.com/NVIDIA-RTX/godot", "godot_commit": native_build.COMMIT,
                 "fidelityfx_sdk": "2.4.0", "fsr_upscaler": "runtime_queried",
                 "bundled_upscalers": ["3.1.6", "4.1.2"], "streamline": "2.11.1",
                 "platform": "windows", "graphics_api": "vulkan", "frame_generation_enabled": False,
                 "sources": _expected_sources()}
+    if not current:
+        for key in ("production_engine_unchanged", "godot_commit", "streamline", "sources"):
+            expected.pop(key)
     for label, row in (("editor", editor), ("template_release", template)):
         if (row.get("experimental") is not True or row.get("frame_generation_enabled") is not False or
                 any(row.get(key) != value for key, value in expected.items())):
             raise RuntimeError(f"{label} is not a pinned SDK 2.4 Windows/Vulkan candidate")
         if not isinstance(row.get("version"), str) or not row["version"]:
             raise RuntimeError(f"{label} lacks an engine version")
+        if (not isinstance(row.get("production_engine_unchanged"), str) or not row["production_engine_unchanged"] or
+                not isinstance(row.get("streamline"), str) or not row["streamline"] or
+                not isinstance(row.get("godot_commit"), str) or not re.fullmatch(r"[0-9a-f]{40}", row["godot_commit"]) or
+                not isinstance(row.get("sources"), dict) or not row["sources"] or
+                any(not _plain_name(name) or not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest)
+                    for name, digest in row["sources"].items())):
+            raise RuntimeError(f"{label} has invalid source identity")
         command = row.get("build_command")
         required = {"platform=windows", f"target={label}", "arch=x86_64", "use_streamline=yes",
                     "d3d12=no", "angle=no", "accesskit=no", "winrt=no"}
@@ -119,13 +134,31 @@ def _verify_pair_metadata(editor: dict, template: dict, engine: Path, *, current
         _sdk_receipt_valid(row.get("sdk_intake"))
     if any(editor.get(key) != template.get(key) for key in COMMON):
         raise RuntimeError("SDK 2.4 editor and template source/runtime identities differ")
-    frozen, integration = sdk_build.freeze_integration()
-    if current and editor.get("integration") != integration:
-        raise RuntimeError("SDK 2.4 integration differs from the current source")
     integration_map = editor.get("integration")
-    expected_names = set(integration)
-    if not isinstance(integration_map, dict) or set(integration_map) != expected_names:
+    if (not isinstance(integration_map, dict) or not integration_map or
+            any(not _plain_name(name) or not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest)
+                for name, digest in integration_map.items()) or
+            not {"build.py", "build_sdk24.py", "sdk24.py", "fsr3.cpp", "fsr3.h", "fsr3_prepare.glsl"}.issubset(integration_map)):
         raise RuntimeError("SDK 2.4 integration receipt lacks required source files")
+    if current:
+        frozen, integration = sdk_build.freeze_integration()
+        if integration_map != integration:
+            raise RuntimeError("SDK 2.4 integration differs from the current source")
+        patched = sdk_build.patched_paths(frozen)
+    else:
+        if snapshot_path is None:
+            raise RuntimeError("Previous candidate lacks its retained source snapshot")
+        patches = [name for name in integration_map if name.endswith(".patch")]
+        if not patches:
+            raise RuntimeError("Previous candidate lacks its engine patches")
+        patched = set()
+        for name in patches:
+            patch = (snapshot_path / "tools/graphics/native" / name).read_bytes()
+            if hashlib.sha256(patch).hexdigest() != integration_map[name]:
+                raise RuntimeError(f"Previous integration patch differs from receipt: {name}")
+            for path in re.findall(r"^\+\+\+ b/(.+)$", patch.decode("utf-8").replace("\r\n", "\n"), re.MULTILINE):
+                product.safe_relative(path)
+                patched.add(path)
     sources = editor.get("engine_source")
     headers = editor.get("amd_headers")
     streamline = editor.get("streamline_headers")
@@ -141,9 +174,18 @@ def _verify_pair_metadata(editor: dict, template: dict, engine: Path, *, current
                    if name.startswith(("Kits/FidelityFX/api/include/", "Kits/FidelityFX/upscalers/include/"))}
     if headers != header_pins:
         raise RuntimeError("SDK 2.4 header hashes differ from the intake pins")
-    required_source = sdk_build.patched_paths(frozen) | set(sdk_build.ADAPTER_FILES.values())
+    if current:
+        adapters = sdk_build.ADAPTER_FILES
+    else:
+        adapters = {}
+        for name in ("fsr3.cpp", "fsr3.h", "fsr3_prepare.glsl"):
+            paths = [path for path in sources if path.rsplit("/", 1)[-1] == name]
+            if len(paths) != 1:
+                raise RuntimeError(f"Previous engine source lacks a unique adapter: {name}")
+            adapters[name] = paths[0]
+    required_source = patched | set(adapters.values())
     required_source.update("thirdparty/amd-fsr-sdk24/" + name for name in header_pins)
-    for name, target in sdk_build.ADAPTER_FILES.items():
+    for name, target in adapters.items():
         if sources.get(target) != integration_map.get(name):
             raise RuntimeError(f"Staged adapter source differs from its integration pin: {name}")
     for name, digest in header_pins.items():
@@ -204,23 +246,28 @@ def select_pair(engine: Path, editor_path: Path | None, template_path: Path | No
     templates = _receipt_candidates(engine, "template_release", template_path)
     if not editors or not templates:
         raise RuntimeError("Both SDK 2.4 editor and release-template receipts are required")
-    matches = []
+    matches = {}
     for editor in editors:
         for template in templates:
             try:
-                verify_engine_pair(editor, template, engine)
+                editor_data, template_data, _ = verify_engine_pair(editor, template, engine)
             except (OSError, RuntimeError, ValueError):
                 continue
-            matches.append((editor, template))
+            def identity(row: dict) -> dict:
+                result = dict(row)
+                result["build_command"] = [arg for arg in row["build_command"] if not re.fullmatch(r"-j[0-9]+", arg)]
+                result["sdk_intake"] = dict(row["sdk_intake"])
+                result["sdk_intake"].pop("tag_check", None)
+                return result
+            key = json.dumps([identity(editor_data), identity(template_data)], sort_keys=True)
+            matches.setdefault(key, (editor, template))
     if len(matches) != 1:
         raise RuntimeError(f"Expected one matching SDK 2.4 receipt pair, found {len(matches)}; pass explicit receipts")
-    return matches[0]
+    return next(iter(matches.values()))
 
 
 def candidate_launchers() -> dict[str, bytes]:
     prefix = ("@echo off\r\nsetlocal\r\n"
-              'set "APPDATA=%LOCALAPPDATA%\\OpenRC-FSR24-Candidate"\r\n'
-              'if not exist "%APPDATA%" mkdir "%APPDATA%"\r\n'
               'set "OPENRC_FSR_IMPLEMENTATION=analytical"\r\ncd /d "%~dp0"\r\n')
     def launcher(extra: str = "", settings: str = "") -> bytes:
         return (prefix + settings + f'start "" "%~dp0OpenRC Simulator.exe"{extra}\r\nendlocal\r\n').encode("utf-8")
@@ -229,9 +276,70 @@ def candidate_launchers() -> dict[str, bytes]:
         "Standard Graphics.cmd": launcher(" --rendering-method gl_compatibility"),
         "FSR3 Analytical.cmd": launcher(settings='set "OPENRC_GRAPHICS_PROFILE=high"\r\nset "OPENRC_RECONSTRUCTION=fsr3_quality"\r\n'),
         "EXPERIMENTAL.txt": ("OpenRC SDK 2.4 candidate: experimental Windows/Vulkan build.\r\n"
-                             "Provider support, rendered quality, safety and performance are not qualified.\r\n"
+                             "Requires a Vulkan-capable graphics driver and Microsoft Visual C++ v14 x64 redistributable.\r\n"
+                             "https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist/\r\n"
+                             "Provider support, rendered quality, stability and performance are not qualified.\r\n"
                              "Frame generation is not integrated. Candidate settings use a separate profile.\r\n").encode("utf-8"),
     }
+
+
+def _user_dir_settings(project: bytes) -> list[bytes]:
+    section = b""
+    sections = 0
+    settings = []
+    for line in project.splitlines():
+        stripped = line.strip()
+        if stripped.startswith(b"[") and stripped.endswith(b"]"):
+            section = stripped
+            sections += section == b"[application]"
+        elif section == b"[application]" and re.match(
+                rb"^config/(?:use_custom_user_dir|custom_user_dir_name)(?:\.[^=\s]+)?\s*=", stripped):
+            settings.append(stripped)
+    if sections != 1:
+        raise RuntimeError("Candidate project must have one application section")
+    return settings
+
+
+def candidate_snapshot_project(source: bytes) -> bytes:
+    if _user_dir_settings(source):
+        raise RuntimeError("Project already defines custom user directory settings")
+    source = LEGACY_SNAPSHOT_PROJECT(source)
+    lines = source.splitlines(keepends=True)
+    for index, line in enumerate(lines):
+        if line.strip() == b"[application]":
+            newline = b"\r\n" if line.endswith(b"\r\n") else b"\n"
+            separator = b"" if line.endswith((b"\n", b"\r")) else newline
+            lines[index] = line + separator + b"config/use_custom_user_dir=true" + newline + (
+                b'config/custom_user_dir_name="' + CANDIDATE_USER_DIR.encode("ascii") + b'"' + newline)
+            break
+    return b"".join(lines)
+
+
+def candidate_project_override(source_hash: str, snapshot_hash: str) -> dict:
+    override = LEGACY_PROJECT_OVERRIDE(source_hash, snapshot_hash)
+    override["candidate_user_dir"] = {"use_custom_user_dir": True, "custom_user_dir_name": CANDIDATE_USER_DIR}
+    return override
+
+
+def _verify_project_override(snapshot: dict) -> dict:
+    override = snapshot.get("project_override")
+    if (not isinstance(override, dict) or override.get("path") != "app/project.godot" or
+            override.get("setting") != "renderer/rendering_method" or
+            override.get("source") != "gl_compatibility" or override.get("snapshot") != "forward_plus" or
+            not isinstance(override.get("source_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", override["source_sha256"]) or
+            override.get("snapshot_sha256") != snapshot.get("files", {}).get("app/project.godot")):
+        raise RuntimeError("Candidate project override is not bound to the snapshot")
+    return override
+
+
+def _verify_candidate_project(snapshot: dict, snapshot_path: Path) -> None:
+    override = _verify_project_override(snapshot)
+    expected = {"use_custom_user_dir": True, "custom_user_dir_name": CANDIDATE_USER_DIR}
+    if override.get("candidate_user_dir") != expected:
+        raise RuntimeError("Candidate project override does not bind the isolated user directory")
+    settings = _user_dir_settings((snapshot_path / "app/project.godot").read_bytes())
+    if settings != [b"config/use_custom_user_dir=true", b'config/custom_user_dir_name="' + CANDIDATE_USER_DIR.encode("ascii") + b'"']:
+        raise RuntimeError("Candidate project does not select the isolated user directory")
 
 
 @contextmanager
@@ -255,6 +363,7 @@ def candidate_profile(engine: Path, editor_path: Path, template_path: Path, outp
               "SNAPSHOT_FORMAT": SNAPSHOT_FORMAT, "PACKAGE_FORMAT": PACKAGE_FORMAT,
               "verify_engine": verify, "engine_receipt_path": resolve_receipt,
               "additional_snapshot_files": snapshot_sources, "launcher_files": candidate_launchers,
+              "snapshot_project": candidate_snapshot_project, "snapshot_project_override": candidate_project_override,
               "DEADLINE": time.monotonic() + 1200}
     previous = {name: getattr(product, name) for name in values}
     try:
@@ -337,14 +446,27 @@ def _checked_report(path_value: object, *, export: bool, engine: Path, snapshot:
     return path, report
 
 
-def verify_candidate_output(output: Path, engine: Path, editor: dict, template: dict) -> dict:
-    _verify_packager_sources()
+def verify_candidate_output(output: Path, engine: Path | None = None, editor: dict | None = None,
+                            template: dict | None = None, *, current: bool = True) -> dict:
+    if current:
+        _verify_packager_sources()
     receipt = product.verify_tree(output, product.PACKAGE_RECEIPT, PACKAGE_FORMAT)
     candidate_editor = product.load_json(output / "openrc-editor-build.json")
     candidate_template = product.load_json(output / "openrc-template_release-build.json")
-    if candidate_editor != editor or candidate_template != template:
-        raise RuntimeError("Packaged SDK 2.4 receipts differ from the selected build pair")
-    _verify_pair_metadata(candidate_editor, candidate_template, engine, current=True)
+    snapshot_path = _snapshot_path(receipt)
+    snapshot = product.verify_tree(snapshot_path, product.SNAPSHOT_RECEIPT, SNAPSHOT_FORMAT, ignore_cache=True)
+    if current:
+        if engine is None or candidate_editor != editor or candidate_template != template:
+            raise RuntimeError("Packaged SDK 2.4 receipts differ from the selected build pair")
+    else:
+        editor = candidate_editor
+        template = candidate_template
+        previous_exe = Path(str(editor.get("executable", "")))
+        if (not previous_exe.is_absolute() or previous_exe.parent.name != "bin" or
+                not previous_exe.resolve().is_relative_to(ROOT.resolve())):
+            raise RuntimeError("Previous candidate editor path is outside the workspace")
+        engine = previous_exe.parent.parent
+    _verify_pair_metadata(candidate_editor, candidate_template, engine, current=current, snapshot_path=snapshot_path)
     exe = output / "OpenRC Simulator.exe"
     if not exe.is_file() or product.sha(exe) != template["executable_sha256"]:
         raise RuntimeError("Candidate executable differs from the release template")
@@ -361,8 +483,6 @@ def verify_candidate_output(output: Path, engine: Path, editor: dict, template: 
         path = license_dir / name
         if not path.is_file() or product.sha(path) != digest:
             raise RuntimeError(f"Candidate license or notice differs: {name}")
-    snapshot_path = _snapshot_path(receipt)
-    snapshot = product.verify_tree(snapshot_path, product.SNAPSHOT_RECEIPT, SNAPSHOT_FORMAT, ignore_cache=True)
     packaged_snapshot = output / product.SNAPSHOT_RECEIPT
     if (not packaged_snapshot.is_file() or product.sha(packaged_snapshot) != product.sha(snapshot_path / product.SNAPSHOT_RECEIPT) or
             receipt.get("snapshot_sha256") != product.sha(packaged_snapshot) or
@@ -371,10 +491,25 @@ def verify_candidate_output(output: Path, engine: Path, editor: dict, template: 
     for name, digest in editor["integration"].items():
         if snapshot["files"].get(f"tools/graphics/native/{name}") != digest:
             raise RuntimeError(f"Snapshot does not contain the build integration source: {name}")
-    for name, digest in PACKAGER_IMPORTS.items():
+    binding = receipt.get("export_binding", {})
+    package_sources = binding.get("packager_sources")
+    if package_sources is None and not current:
+        package_sources = {name: snapshot.get("files", {}).get(f"tools/graphics/native/{name}") for name in PACKAGER_IMPORTS}
+    if (not isinstance(package_sources, dict) or set(package_sources) != set(PACKAGER_IMPORTS) or
+            any(not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest) for digest in package_sources.values()) or
+            (current and package_sources != PACKAGER_IMPORTS)):
+        raise RuntimeError("Candidate packaging source identities are invalid")
+    for name, digest in package_sources.items():
         if snapshot["files"].get(f"tools/graphics/native/{name}") != digest:
-            raise RuntimeError(f"Snapshot does not contain the executing packaging source: {name}")
-    if (receipt.get("godot_commit") != native_build.COMMIT or receipt.get("sources") != editor["sources"] or
+            raise RuntimeError(f"Snapshot does not contain the packaging source: {name}")
+    override = _verify_project_override(snapshot)
+    if current or "candidate_user_dir" in override:
+        _verify_candidate_project(snapshot, snapshot_path)
+    if current:
+        for name, expected in candidate_launchers().items():
+            if (output / name).read_bytes() != expected:
+                raise RuntimeError(f"Candidate launcher or notice differs: {name}")
+    if (receipt.get("godot_commit") != editor["godot_commit"] or receipt.get("sources") != editor["sources"] or
             receipt.get("integration") != editor["integration"] or receipt.get("runtime") != editor["runtime"] or
             receipt.get("editor_sha256") != editor["executable_sha256"] or
             receipt.get("template_sha256") != template["executable_sha256"]):
@@ -395,6 +530,8 @@ def verify_candidate_output(output: Path, engine: Path, editor: dict, template: 
         raise RuntimeError("Candidate exported PCK is missing or empty")
     expected_binding = {"snapshot_path": str(snapshot_path), "pck_sha256": product.sha(pack), "snapshot_sha256": product.sha(packaged_snapshot),
                         "import_report_sha256": product.sha(import_path), "export_report_sha256": product.sha(export_path)}
+    if "packager_sources" in binding:
+        expected_binding["packager_sources"] = package_sources
     if receipt.get("export_binding") != expected_binding:
         raise RuntimeError("Candidate PCK, source snapshot and checked reports are not bound")
     return receipt
@@ -409,7 +546,8 @@ def _bind_export(output: Path) -> None:
     export_path, _ = _checked_report(receipt.get("export_report"), export=True, engine=product.ENGINE.parent, snapshot=product.SNAPSHOT)
     receipt["export_binding"] = {"snapshot_path": str(product.SNAPSHOT.resolve()), "pck_sha256": product.sha(output / "OpenRC Simulator.pck"),
                                  "snapshot_sha256": product.sha(output / product.SNAPSHOT_RECEIPT),
-                                 "import_report_sha256": product.sha(import_path), "export_report_sha256": product.sha(export_path)}
+                                 "import_report_sha256": product.sha(import_path), "export_report_sha256": product.sha(export_path),
+                                 "packager_sources": PACKAGER_IMPORTS}
     temporary = output / ("candidate-receipt-" + uuid.uuid4().hex + ".tmp")
     try:
         temporary.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -426,7 +564,7 @@ def package_candidate(engine: Path, editor_path: Path, template_path: Path) -> d
     with candidate_profile(engine, editor_path, template_path, pending, snapshot_path):
         previous_hash = None
         if OUTPUT.exists():
-            verify_candidate_output(OUTPUT, engine, editor, template)
+            verify_candidate_output(OUTPUT, current=False)
             previous_hash = product.sha(OUTPUT / product.PACKAGE_RECEIPT)
         snapshot = product.prepare_snapshot()
         product.package_product(snapshot)
@@ -437,7 +575,7 @@ def package_candidate(engine: Path, editor_path: Path, template_path: Path) -> d
             # Never replace an unreceipted or changed previous candidate.
             if previous_hash is None or product.sha(OUTPUT / product.PACKAGE_RECEIPT) != previous_hash:
                 raise RuntimeError("Existing candidate changed during export")
-            verify_candidate_output(OUTPUT, engine, editor, template)
+            verify_candidate_output(OUTPUT, current=False)
         elif previous_hash is not None:
             raise RuntimeError("Existing candidate disappeared during export")
         product.replace_tree(pending, OUTPUT)
