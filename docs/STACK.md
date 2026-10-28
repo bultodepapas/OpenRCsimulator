@@ -17,7 +17,9 @@ Display development follows the [shared resolution policy](../AGENTS.md#display-
 | Delivery | Windows x86_64, Linux x86_64 and macOS universal ZIP exports; build identity embedded at export |
 | Checks | Headless GDScript and Python checks, golden flights, rendered captures and package smoke checks |
 
-Aircraft flight has no third-party native solver. The experimental RC ground activity can use an optional C++ GDExtension for its evaluator; GDScript remains its reference and fallback, and macOS uses the reference path. The [native build guide](../research/rc-monster-truck/native/README.md) pins its toolchain and artifacts. Python, Node and asset-generation tools are development dependencies pinned in their own manifests. The three.js bake-off is frozen; its lockfile and [comparison](../prototypes/stage0/COMPARISON.md) remain historical.
+Aircraft flight has no third-party native solver. NK-3 offers an optional in-house C++ joint-stage evaluator for the stock Ugly Stik on verified Linux x86_64 developer builds. `--physics-backend=native` selects it through the existing `VehicleModel.stage` boundary; GDScript stays the default and fallback. The [NK-3 guide](../research/native-kernel/README.md#optional-normal-flight-backend) owns admission, installation and checkpoint/replay identity rules; native export and target-host qualification remain open.
+
+The experimental RC ground activity can use an optional C++ GDExtension for its evaluator; GDScript remains its reference and fallback, and macOS uses the reference path. The [native build guide](../research/rc-monster-truck/native/README.md) pins its toolchain and artifacts. Python, Node and asset-generation tools are development dependencies pinned in their own manifests. The three.js bake-off is frozen; its lockfile and [comparison](../prototypes/stage0/COMPARISON.md) remain historical.
 
 ## Supported vehicle paths
 

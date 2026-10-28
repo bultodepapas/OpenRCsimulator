@@ -33,10 +33,38 @@ identified the native binary in its metadata. Existing checkpoint, reset-transac
 [normal-flight guide](../../../../research/native-kernel/README.md#optional-normal-flight-backend).
 Reports, logs and receipt are retained in the `normal_flight_integration` section of the
 [revalidation record](revalidation-linux-2026-10-28.json).
+The ordinary Main flight route also selected native successfully. The companion source pin was renewed through
+the existing rebind tool: all nine retained tapes (2,881 rows each) produced identical candidate CSVs against the
+previous accepted solver. [Rebind receipt](../../ai-companions/AFC-02/rebinds/2026-10-28-5ec70a64-to-e73bc476.json).
+
+The broad regression run exposed a reference CSV compatibility issue: adding `stage_backend` to every trace
+changed frozen reference metadata. Commit `f608ecb55` now adds it only to native traces; reference ORFL headers
+still identify the backend explicitly. Reusing the retained capture tool in disposable diagnostic copies showed
+all 16 checkpoint/metadata/CSV/three-tick digests across four aircraft match the pre-integration session
+`b16c48de4`, with the same current dependencies. The fixed-brake fixture still reports seven failures with both
+session versions; no golden or frozen fixture was regenerated. The revalidation record retains both controls.
+The final source was requalified with the same stage/trajectory counts, 118 session checks, 44 replay checks,
+26 helper checks and a native CLI trace. All nine companion tapes also remained identical through the
+[final source rebind](../../ai-companions/AFC-02/rebinds/2026-10-28-e73bc476-to-1d7e67b8.json).
+
+Across the partition prefixes and checked continuations, all 853 unit scripts ran: 852 passed and the fixed-brake
+fixture above remained red. Shared-host 60-second timeouts passed on repeats; remaining continuations used
+600-second supervision with the original assertions and existing known-physical-limit flags. An audio queue
+assertion also passed on repeat. The metadata fix landed during this broad run, so this is not a clean,
+single-snapshot standard-suite pass. Final native and reference-compatibility checks were repeated explicitly.
+The integration partition (`OPENRC_TEST_PART=integration app/test.sh`) completed with exit 0, including resource
+import, script parsing, generated-data checks, fleet CLI traces, logger failures and 30/60/144 FPS equivalence.
+Its final ground-contact checks passed 21/116 (E5a) and 125 (E5b). The same shared-tree qualification limit applies.
 
 The historical speedups below describe the research adapter. This session integration adds a configuration guard;
 its end-to-end speedup has not yet been measured on an isolated target host. Windows, macOS native execution,
 export delivery and 1080p hardware qualification remain open. Software equivalence is not physical validation.
+
+The next increment should measure the normal-flight path with its configuration guard on an isolated host,
+then remove the owned wheel-rate vector copy in `src/nk_stage.hpp` if the allocation profile justifies it.
+Moving the completed rates into the result can avoid a stage allocation without changing arithmetic; it still
+requires the same exact-output gates and a before/after measurement. Larger native pre-step or RK integration
+should follow the measured remaining cost and preserve the shared `VehicleModel` contract.
 
 ## Verification gate repair (2026-10-28)
 
@@ -70,7 +98,8 @@ GDScript checks and 10 Python tests pass. Loading the original gate into a dispo
 16 assertion failures across three rejection tests, confirming detection of the former false positives. The
 library is unchanged; revalidation refreshes its receipt without rewriting the mapped binary. An interrupted
 intermediate run produced no complete report and was excluded. No full app suite, fresh fleet run, release
-benchmark or hardware/display qualification is claimed by this increment. Normal-flight integration remains open.
+benchmark or hardware/display qualification is claimed by this gate-repair increment. At that snapshot,
+normal-flight integration was still open.
 
 ## Milestone 2: the complete stage through the kernel
 

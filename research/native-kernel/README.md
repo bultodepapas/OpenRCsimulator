@@ -18,8 +18,10 @@ After verification and installation below:
 
 Selection is launch-time only. This Linux x86_64 developer route admits the stock Ugly Stik, calm weather and
 the capabilities accepted by the native stage. Workshop variants, other aircraft and unsupported weather keep
-the reference evaluator. The console prints requested/actual backend and refusal reason. The exact verified
-Godot executable, binary and mirrored source/data hashes must match. Exported delivery remains unqualified.
+the reference evaluator. The interactive flight console prints requested/actual backend and refusal reason.
+Native traces record the identity in metadata; its absence denotes reference and preserves pre-integration
+reference CSV bytes. The exact verified Godot executable, binary and mirrored source/data hashes must match.
+Exported delivery remains unqualified.
 
 `FlightSession` prepares a fresh stage within each reset/restore transaction and primes tick-zero context before
 evaluating initial loads. Rejected starts preserve the previous helper, callbacks and physical state. Accepted
