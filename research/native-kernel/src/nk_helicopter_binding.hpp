@@ -8,6 +8,7 @@
 #include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/variant/packed_float64_array.hpp>
 #include <godot_cpp/variant/string.hpp>
+#include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/variant/variant.hpp>
 
 #include <array>
@@ -303,7 +304,12 @@ inline bool heli_decode_tick(WeatherSnapshotDecoder &dec, const godot::Dictionar
 
 class HelicopterBinding {
 	bool ready_ = false;
+	bool stage_ready_ = false;
+	bool tick_ready_ = false;
 	HeliStageModel model_;
+	HeliTickContext tick_;
+	WeatherBinding weather_;
+	std::string last_failure_;
 
 public:
 	bool ready() const { return ready_; }
@@ -311,6 +317,9 @@ public:
 
 	godot::Dictionary prepare_helicopter(const godot::Dictionary &snapshot) {
 		ready_ = false;
+		stage_ready_ = false;
+		tick_ready_ = false;
+		last_failure_.clear();
 		WeatherSnapshotDecoder dec;
 		godot::String format;
 		godot::Dictionary context, skids;
@@ -333,6 +342,69 @@ public:
 		return out;
 	}
 
+	// Preparation and tick decoding are boundary operations. The resulting
+	// RK evaluator uses no Godot model or environment callback. Helicopter's
+	// current session admits only a uniform, steady/gust weather provider.
+	godot::Dictionary prepare_heli_stage(const godot::Dictionary &snapshot, const godot::Dictionary &weather) {
+		const godot::Dictionary helicopter = prepare_helicopter(snapshot);
+		if (!static_cast<bool>(helicopter["ok"])) return helicopter;
+		const godot::Dictionary prepared_weather = weather_.prepare_weather(weather);
+		if (!static_cast<bool>(prepared_weather["ok"])) {
+			ready_ = false;
+			return failure("invalid helicopter weather snapshot");
+		}
+		const WeatherModel &model_weather = weather_.uniform_model();
+		if (weather_.is_spatial() || model_weather.has_turbulence || model_weather.vertical_atmosphere ||
+				bits(model_weather.uniform_density.v) != bits(model_.aero.main.rho_kg_m3.v)) {
+			ready_ = false;
+			return failure("unsupported helicopter weather or mismatched density");
+		}
+		stage_ready_ = true;
+		godot::Dictionary out;
+		out["ok"] = true; out["error"] = "";
+		return out;
+	}
+
+	bool stage_ready() const { return stage_ready_; }
+
+	bool set_heli_tick_context(const godot::Dictionary &raw_tick) {
+		tick_ready_ = false;
+		last_failure_.clear();
+		if (!stage_ready_) { last_failure_ = "unprepared helicopter stage"; return false; }
+		WeatherSnapshotDecoder dec;
+		HeliTickContext candidate;
+		if (!heli_decode_tick(dec, raw_tick, candidate)) { last_failure_ = dec.error; return false; }
+		tick_ = candidate;
+		tick_ready_ = true;
+		return true;
+	}
+
+	// This is the VehicleModel.stage return shape, without the component
+	// oracle's ok/error wrapper. Failure text is exposed at the fault boundary.
+	godot::Dictionary heli_stage(const godot::PackedFloat64Array &body,
+			const godot::PackedFloat64Array &continuous, double time) {
+		godot::Dictionary out;
+		last_failure_.clear();
+		if (!stage_ready_ || !tick_ready_ || body.size() != 13 || (continuous.size() != 6 && continuous.size() != 14)) {
+			last_failure_ = "invalid helicopter evaluation arguments";
+			return out;
+		}
+		R state[13], values[14];
+		for (int i = 0; i < 13; ++i) state[i] = body[i];
+		for (int64_t i = 0; i < continuous.size(); ++i) values[i] = continuous[i];
+		static const std::vector<R> kNoTurbulence;
+		const Vec3 wind = weather_.wind(state, time, kNoTurbulence, -1, 0.0);
+		const HeliStageResult result = nk::heli_stage(state, values, static_cast<int>(continuous.size()), time, model_, tick_, wind);
+		if (!result.ok) { last_failure_ = result.message; return out; }
+		out[godot::StringName("loads")] = pack(result.loads.data(), 6);
+		out[godot::StringName("body_derivative")] = pack(result.body_derivative.data(), 13);
+		out[godot::StringName("derivative")] = pack(result.derivative.data(), result.derivative_size);
+		out[godot::StringName("rotor_momentum")] = pack(result.rotor_momentum.data(), 3);
+		return out;
+	}
+
+	godot::String heli_last_failure() const { return godot::String(last_failure_.c_str()); }
+
 	godot::Dictionary heli_component(const godot::PackedFloat64Array &body, const godot::PackedFloat64Array &continuous,
 			double time, const godot::Dictionary &raw_tick, const godot::PackedFloat64Array &wind) const {
 		if (!ready_ || body.size() != 13 || (continuous.size() != 6 && continuous.size() != 14) || wind.size() != 3) {
@@ -346,7 +418,7 @@ public:
 		for (int i = 0; i < 13; ++i) state[i] = body[i];
 		for (int64_t i = 0; i < continuous.size(); ++i) values[i] = continuous[i];
 		for (int i = 0; i < 3; ++i) wind_ned[i] = wind[i];
-		const HeliStageResult result = heli_stage(state, values, static_cast<int>(continuous.size()), time, model_, tick, wind_ned);
+		const HeliStageResult result = nk::heli_stage(state, values, static_cast<int>(continuous.size()), time, model_, tick, wind_ned);
 		if (!result.ok) return failure(result.message);
 		godot::Dictionary out;
 		out["ok"] = true;

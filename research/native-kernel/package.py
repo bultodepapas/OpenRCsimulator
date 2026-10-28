@@ -26,6 +26,8 @@ QUALIFICATION = {
     "test_native_stage.gd": ROOT / "app/tests/test_native_stage.gd",
     "test_native_session.gd": ROOT / "app/tests/test_native_session.gd",
     "test_native_replay.gd": ROOT / "app/tests/test_native_replay.gd",
+    "test_native_helicopter_session.gd": ROOT / "app/tests/test_native_helicopter_session.gd",
+    "test_heli_restore_radio.gd": ROOT / "app/tests/test_heli_restore_radio.gd",
 }
 DESCRIPTOR = (
     "; NK-3 packaged stage; loaded explicitly after embedded identity verification.\n"

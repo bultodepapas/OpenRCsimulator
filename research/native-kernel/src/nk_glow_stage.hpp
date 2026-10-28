@@ -95,7 +95,7 @@ inline GlowStageTrial glow_stage_prepare(const GlowStageModel &model, const Prop
 	state.fuel_kg = values[1]; state.temperature_k = values[2]; state.servo_fraction = values[3];
 	state.air_fraction = values[4]; state.fuel_transport_kg_s = values[5]; state.phase_revolutions = values[6];
 	state.running = values[7].v == 1.0;
-	if (state.fuel_kg.v < 0.0) state.fuel_kg = 1e-30;
+	if (state.fuel_kg.v < 0.0) state.fuel_kg = kGd1eMinus30;
 	if (state.temperature_k.v <= 0.0 || state.phase_revolutions.v < 0.0) return out;
 	if (injected_cut) {
 		// Life.cut validates accepted transport and clears it, before stage evaluation.
@@ -111,7 +111,7 @@ inline GlowStageTrial glow_stage_prepare(const GlowStageModel &model, const Prop
 	const double mode = std::trunc(values[18].v);
 	if (mode == 1.0 && !model.has_line && mass.main_fuel_kg.v <= model.unusable_kg.v) {
 		// Connected left limit while locating the residue boundary.
-		state.fuel_kg = model.unusable_kg + 1e-30;
+		state.fuel_kg = model.unusable_kg + 1.0e-30;
 	}
 	const R rpm = maxf(0.0, values[0]);
 	const R axis[3] = {prop.has_axis ? prop.axis[0] : R(1.0), prop.has_axis ? prop.axis[1] : R(0.0),
@@ -168,7 +168,7 @@ inline GlowStageResult glow_stage_finish(const GlowStageModel &model, const Glow
 	R tank_arm[3] = {model.feed.tank_center[0] - mass.cg[0], model.feed.tank_center[1] - mass.cg[1],
 			model.feed.tank_center[2] - mass.cg[2]};
 	if (model.has_feed && trial.mode == 1.0) {
-		const R solve_fuel = maxf(trial.stage_mass.main_fuel_kg, model.unusable_kg + 1e-30);
+		const R solve_fuel = maxf(trial.stage_mass.main_fuel_kg, model.unusable_kg + 1.0e-30);
 		// Flight.admission_at uses the raw lifecycle air_fraction, not the
 		// lifecycle evaluator's clamped opening.
 		const R breathing = glow_source_table_sample(model.lifecycle.source.breathing, trial.rpm);

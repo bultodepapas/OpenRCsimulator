@@ -2,7 +2,7 @@
 ## Called at preparation boundaries only; native RK stages never call the field.
 extends RefCounted
 
-const NativeStage := preload("res://sim/native_stage.gd")
+const StageConfig := preload("res://sim/native/stage_config.gd")
 const WeatherConfig := preload("res://physics/wind_config.gd")
 const WeatherField := preload("res://physics/wind_field.gd")
 const SpatialField := preload("res://physics/wind_spatial_field.gd")
@@ -191,7 +191,13 @@ static func config_for(session: Node) -> Dictionary:
 	var identity := provider_identity(session)
 	if not identity.get("ok", false):
 		return {}
-	var config: Dictionary = NativeStage.config_for(session)
+	var config: Dictionary = StageConfig.config_for(session)
+	# Retraction uses a prepared full-extension geometry and a tick-held pose.
+	# The currently posed contacts are not the source definition used by the
+	# native retraction model (and can already be partially retracted here).
+	if session.gear_is_retractable():
+		config.gear = session.aircraft.model.landing_gear.duplicate(true)
+		config.layout.gear_aux = session.gear_aux_index()
 	config.weather = identity.prepared_snapshot.duplicate(true)
 	config.dt = identity.dt
 	config.layout.turbulence = identity.turbulence_index

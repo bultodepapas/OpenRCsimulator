@@ -3,7 +3,7 @@
 ## resource, control, collision, and substep policies remain reference-owned.
 extends "stage_oracle.gd"
 
-const LiquidAdapter := preload("liquid_stage_adapter.gd")
+const LiquidAdapter := preload("res://sim/native/liquid_stage_adapter.gd")
 const LiquidWeather := preload("res://physics/wind_config.gd")
 const LiquidTurbine := preload("res://physics/turbine.gd")
 
@@ -57,10 +57,11 @@ func _checks() -> void:
 			_check_case(id, scenario)
 		_check_trajectory(id, "runway", scenarios[0], ticks)
 		_check_trajectory(id, "trim", scenarios[6], ticks)
+		_check_trajectory(id, "trim", scenarios[0], ticks, true)
 	if _report.liquid_stage.cases.size() != AIRCRAFT_IDS.size() * scenarios.size():
 		_failures.append("liquid stage aircraft/weather matrix incomplete")
-	if _report.liquid_stage.trajectories.size() != AIRCRAFT_IDS.size() * 2:
-		_failures.append("liquid runway and airborne trajectory matrix incomplete")
+	if _report.liquid_stage.trajectories.size() != AIRCRAFT_IDS.size() * 3:
+		_failures.append("liquid runway, airborne, and exhaustion trajectory matrix incomplete")
 
 
 func _liquid_compare(name: String, reference: Dictionary, native: Dictionary, inputs: Array) -> void:
@@ -89,8 +90,10 @@ func _liquid_compare(name: String, reference: Dictionary, native: Dictionary, in
 						PackedFloat64Array([0.5, -0.8, 0.4])]:
 					_compare(name + "_preview_sampler_delta", reference_air.ambient_delta_body_at.call(point),
 						native_air.ambient_delta_body_at.call(point), [inputs, point])
+	if expected.has("stage_context"):
 		expected.stage_context.air.erase("spatial_sampler")
 		expected.stage_context.air.erase("ambient_delta_body_at")
+	if actual.has("stage_context"):
 		actual.stage_context.air.erase("spatial_sampler")
 		actual.stage_context.air.erase("ambient_delta_body_at")
 	_compare(name + "_bytes", var_to_bytes(expected), var_to_bytes(actual), inputs)
@@ -156,6 +159,13 @@ func _check_case(id: String, scenario: Dictionary) -> void:
 				[label, session.sim.state, preview_values, session.sim.time()])
 			forced_preview = preview_reference.has("stage_context")
 			if not forced_preview: _failures.append("forced liquid gas preview was not produced: " + label)
+			# Air sampling accepts NaN as the current time, but the preview
+			# predicate compares the unspecialized incoming time first.
+			var no_time_reference: Dictionary = session.sim.model.stage.call(session.sim.state, preview_values, NAN)
+			var no_time_native: Dictionary = _native.stage(session.sim.state, preview_values, NAN)
+			_liquid_compare("liquid_nan_time_stage", no_time_reference, no_time_native, [label, session.sim.state, preview_values])
+			if no_time_reference.has("stage_context"):
+				_failures.append("NaN-time source stage unexpectedly captured preview: " + label)
 		session.sim.continuous = original
 		session.engine_running = saved_engine
 	var finite := 0
@@ -223,7 +233,85 @@ func _check_case(id: String, scenario: Dictionary) -> void:
 		gear_up = gear_up, gear_partial = gear_partial, gear_down = gear_down, source_off = source_off,
 		preview_expected = preview_expected, forced_preview = forced_preview,
 		family = "turbine" if turbine else "gas", wash_count = rotor})
+	if scenario.id == "calm": _check_snapshot_refusals(id, session, config)
 	session.free()
+
+
+func _signed_zero_inventory(snapshot: Dictionary) -> bool:
+	for key: String in ["reference_inertia_kgm2", "references", "capacities"]:
+		var values: PackedFloat64Array = snapshot.mass[key].duplicate()
+		for i: int in values.size():
+			if values[i] == 0.0:
+				values[i] = _from_bits(PackedInt64Array([-9223372036854775808 if _bits(values[i]) == 0 else 0]))[0]
+				snapshot.mass[key] = values
+				return true
+	for key: String in ["centers", "tensors"]:
+		var rows: Array = snapshot.mass[key]
+		for row_index: int in rows.size():
+			var values: PackedFloat64Array = rows[row_index].duplicate()
+			for i: int in values.size():
+				if values[i] == 0.0:
+					values[i] = _from_bits(PackedInt64Array([-9223372036854775808 if _bits(values[i]) == 0 else 0]))[0]
+					rows[row_index] = values
+					return true
+	return false
+
+
+func _check_snapshot_refusals(id: String, session: Node, config: Dictionary) -> void:
+	var tests: Array[Dictionary] = []
+	var other_id: String = "f4u-corsair-250" if id == "p51d-mustang-120" else "p51d-mustang-120"
+	var other: Dictionary = AircraftData.load_file(Catalog.data_for(other_id))
+	if not other.get("ok", false):
+		_failures.append("other-aircraft snapshot fixture failed: " + other_id)
+		return
+	var bad: Dictionary = config.duplicate(true)
+	bad.liquid_source = LiquidAdapter.snapshot(other.model.propulsion)
+	tests.append({name = "another_aircraft_source", config = bad})
+	bad = config.duplicate(true)
+	if bad.liquid_source.family == "gas":
+		bad.liquid_source.source.bsfc_kg_kwh *= 1.01
+	else:
+		bad.liquid_source.source.installed_factor *= 0.99
+	tests.append({name = "valid_changed_source", config = bad})
+	bad = config.duplicate(true)
+	bad.liquid_source.store.capacity_kg *= 1.01
+	tests.append({name = "changed_capacity", config = bad})
+	bad = config.duplicate(true)
+	bad.liquid_source.store.unusable_kg += 0.00001
+	tests.append({name = "changed_unusable", config = bad})
+	bad = config.duplicate(true)
+	bad.liquid_source.store.bound_index += 1
+	tests.append({name = "changed_store_index", config = bad})
+	bad = config.duplicate(true)
+	if not _signed_zero_inventory(bad.liquid_source):
+		_failures.append("no signed-zero inventory fixture: " + id)
+	else:
+		tests.append({name = "inventory_signed_zero", config = bad})
+	bad = config.duplicate(true)
+	bad.model.mass_kg *= 1.01
+	tests.append({name = "model_mass_changed", config = bad})
+	bad = config.duplicate(true)
+	bad.model.inertia[0] *= 1.01
+	tests.append({name = "model_inertia_changed", config = bad})
+	bad = config.duplicate(true)
+	bad.gear.retraction.extension_time *= 1.01
+	tests.append({name = "retraction_changed", config = bad})
+	bad = config.duplicate(true)
+	var path: PackedFloat64Array = bad.gear.contacts[0].retraction_path.duplicate()
+	path[0] += 0.0001
+	bad.gear.contacts[0].retraction_path = path
+	tests.append({name = "gear_path_changed", config = bad})
+	for test: Dictionary in tests:
+		var valid: Dictionary = _native.prepare_stage(config)
+		if not valid.get("ok", false) or not LiquidAdapter.set_context(session, _native, session.sim.aux,
+				session.sim.inputs, session.sim.time()):
+			_failures.append("liquid snapshot refusal baseline failed: %s/%s" % [id, test.name])
+			return
+		var refused: Dictionary = _native.prepare_stage(test.config)
+		_compare("liquid_snapshot_refusal", PackedFloat64Array([0.0]),
+			PackedFloat64Array([1.0 if refused.get("ok", false) else 0.0]), [id, test.name])
+		if not _native.stage(session.sim.state, session.sim.continuous, session.sim.time()).is_empty():
+			_failures.append("liquid failed prepare retained a stale stage: %s/%s" % [id, test.name])
 
 
 static func _finite_stage(stage: Dictionary, derivative_size: int) -> bool:
@@ -239,17 +327,25 @@ static func _finite_stage(stage: Dictionary, derivative_size: int) -> bool:
 
 static func _tape(session: Node) -> PackedByteArray:
 	var sim: Node = session.sim
-	return var_to_bytes([sim.tick, sim.state, sim.previous, sim.aux, sim.continuous, sim.inputs, sim.last_loads, sim.modes])
+	return var_to_bytes([sim.tick, sim.state, sim.previous, sim.aux, sim.continuous, sim.inputs, sim.last_loads,
+		sim.modes, sim.last_events])
 
 
-func _check_trajectory(id: String, start: String, scenario: Dictionary, ticks: int) -> void:
-	var label := "%s/%s/%s" % [id, start, str(scenario.id)]
+func _check_trajectory(id: String, start: String, scenario: Dictionary, ticks: int, exhaustion := false) -> void:
+	var label := "%s/%s/%s%s" % [id, start, str(scenario.id), "/exhaustion" if exhaustion else ""]
 	var reference := _build_session(id, start, false, scenario.config)
 	var native := _build_session(id, start, false, scenario.config)
 	if reference == null or native == null:
 		if reference != null: reference.free()
 		if native != null: native.free()
 		return
+	if exhaustion:
+		# The reference's FUEL-08 session test uses this real near-empty
+		# accepted state to locate exhaustion within the first tick.
+		for session: Node in [reference, native]:
+			session.sim.state[RB.POS + 2] = -1000.0
+			session.sim.continuous[session._liquid_index()] = 1.0e-9
+			session.sim.continuous[session._liquid_index() + 1] = 1.0
 	var config: Dictionary = LiquidAdapter.config_for(native)
 	var prepared: Dictionary = _native.prepare_stage(config) if not config.is_empty() else {ok = false, error = "missing provider or liquid source snapshot"}
 	if not prepared.get("ok", false):
@@ -272,6 +368,7 @@ func _check_trajectory(id: String, start: String, scenario: Dictionary, ticks: i
 	var complete := true
 	var ran := 0
 	var first_divergence := -1
+	var exhausted := false
 	if not _compare("liquid_trajectory_tick", _tape(reference), _tape(native), [label, 0]): first_divergence = 0
 	for i: int in ticks:
 		var inputs: PackedFloat64Array = reference.sim.inputs.duplicate()
@@ -299,11 +396,19 @@ func _check_trajectory(id: String, start: String, scenario: Dictionary, ticks: i
 			break
 		previous = stats
 		ran += 1
+		for event: Dictionary in reference.sim.last_events:
+			if event.get("type") == "fuel_exhausted":
+				exhausted = true
+				var index: int = reference._liquid_index()
+				if reference.sim.continuous[index] != 0.0 or reference.sim.continuous[index + 1] != 0.0:
+					_failures.append("located exhaustion did not turn off the source: " + label)
 		if not _compare("liquid_trajectory_tick", _tape(reference), _tape(native), [label, i + 1]) and first_divergence < 0:
 			first_divergence = i + 1
 	_report.liquid_stage.trajectories.append({name = label, requested_ticks = ticks, ticks_run = ran,
 		complete = complete and ran == ticks, first_divergence = first_divergence,
+		exhaustion_expected = exhaustion, exhaustion_observed = exhausted,
 		native_stage_calls = int(previous.get("stage_calls", 0)), native_context_calls = int(previous.get("context_calls", 0))})
 	if first_divergence >= 0: _failures.append("liquid trajectory %s diverged at tick %d" % [label, first_divergence])
+	if exhaustion and not exhausted: _failures.append("liquid trajectory did not locate exhaustion: " + label)
 	reference.free()
 	native.free()

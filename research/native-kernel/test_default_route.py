@@ -181,17 +181,17 @@ def check(engine: Path, project: Path | None, output: Path) -> None:
         raise AssertionError("reference trace metadata or native/reference sample rows differ")
     print("PASS explicit reference and matching trace rows", flush=True)
 
-    unsupported_trace = output / "unsupported.csv"
-    _, unsupported_log = run_case(engine, project, output, "unsupported", common + [
-        "--aircraft=p51d-mustang-120", f"--trace={unsupported_trace}"])
-    unsupported = status(unsupported_log)
-    if unsupported.get("requested") != "native" or unsupported.get("identity", {}).get("backend") != "gdscript_reference" \
-            or "only the stock Ugly Stik" not in unsupported.get("reason", ""):
-        raise AssertionError(f"unsupported aircraft did not report its reference fallback: {unsupported}")
-    unsupported_meta, _ = trace_parts(unsupported_trace)
-    if "stage_backend" in unsupported_meta:
-        raise AssertionError("unsupported-aircraft trace claimed a native stage")
-    print("PASS unsupported aircraft fallback", flush=True)
+    liquid_trace = output / "liquid.csv"
+    _, liquid_log = run_case(engine, project, output, "liquid", common + [
+        "--aircraft=p51d-mustang-120", f"--trace={liquid_trace}"])
+    liquid = status(liquid_log)
+    if liquid.get("requested") != "native" or liquid.get("identity", {}).get("backend") != "native" \
+            or liquid.get("reason") != "":
+        raise AssertionError(f"finite-liquid aircraft did not select native by default: {liquid}")
+    liquid_meta, _ = trace_parts(liquid_trace)
+    if "stage_backend" not in liquid_meta:
+        raise AssertionError("finite-liquid trace omitted the native stage identity")
+    print("PASS finite-liquid aircraft native default", flush=True)
 
     missing_engine = engine
     private_project = None
@@ -210,6 +210,39 @@ def check(engine: Path, project: Path | None, output: Path) -> None:
     if "stage_backend" in missing_meta or missing_rows != reference_rows:
         raise AssertionError("missing-library trace metadata or reference sample rows differ")
     print("PASS missing binary fallback in private project or package", flush=True)
+
+    helicopter_rows = {}
+    for name, selected_engine, selected_project, extra, expected in (
+        ("native", engine, project, [], "native"),
+        ("reference", engine, project, ["--physics-backend=gdscript_reference"], "gdscript_reference"),
+        ("missing", missing_engine, private_project, [], "gdscript_reference"),
+    ):
+        helicopter_trace = output / f"helicopter-{name}.csv"
+        _, helicopter_log = run_case(selected_engine, selected_project, output, f"helicopter-{name}",
+                                     common + ["--aircraft=xcell-60-research", "--start=airborne",
+                                               f"--trace={helicopter_trace}"] + extra)
+        actual = status(helicopter_log)
+        requested = "gdscript_reference" if name == "reference" else "native"
+        if actual.get("requested") != requested or actual.get("identity", {}).get("backend") != expected:
+            raise AssertionError(f"helicopter {name} selected the wrong backend: {actual}")
+        if name == "missing":
+            if not any(word in actual.get("reason", "") for word in ("binary", "library")):
+                raise AssertionError(f"helicopter missing binary omitted the fallback reason: {actual}")
+        elif actual.get("reason") != "":
+            raise AssertionError(f"helicopter {name} unexpectedly fell back: {actual}")
+        metadata, helicopter_rows[name] = trace_parts(helicopter_trace)
+        if ("stage_backend" in metadata) != (expected == "native"):
+            raise AssertionError(f"helicopter {name} trace omitted or misrepresented its backend")
+    if not helicopter_rows["native"] == helicopter_rows["reference"] == helicopter_rows["missing"]:
+        raise AssertionError("helicopter native/reference/fallback trace rows differ")
+    print("PASS helicopter native default, explicit reference and missing binary fallback", flush=True)
+    for mode in ("helicopter", "helicopter-radio"):
+        _, refusal_log = run_case(missing_engine, private_project, output, f"missing-{mode}-qualification",
+                                  ["--quick-flight", f"--native-qualification={mode}"], success=False)
+        if f"NATIVE_QUALIFICATION mode={mode} verdict=fail" not in refusal_log \
+                or "_NATIVE verdict=pass" in refusal_log:
+            raise AssertionError(f"missing-library fallback passed {mode} native qualification")
+    print("PASS missing binary cannot qualify helicopter native execution", flush=True)
 
     if project is None:
         corrupt_cases = {

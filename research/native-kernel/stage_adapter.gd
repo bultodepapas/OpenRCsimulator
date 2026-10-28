@@ -18,9 +18,9 @@ static func config_for(session: Node) -> Dictionary:
 
 
 ## Prepare and swap. Returns {ok, error, restore: Callable}; on refusal nothing on the session changes.
-static func install(session: Node, native: Object) -> Dictionary:
+static func install(session: Node, native: Object, prepared_config: Dictionary = {}) -> Dictionary:
 	var sim: Node = session.sim
-	var prepared: Dictionary = native.prepare_stage(config_for(session))
+	var prepared: Dictionary = native.prepare_stage(config_for(session) if prepared_config.is_empty() else prepared_config)
 	if not prepared.ok:
 		return {ok = false, error = prepared.error}
 	var original_stage: Callable = sim.model.stage

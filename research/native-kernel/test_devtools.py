@@ -181,6 +181,55 @@ class DevelopmentToolsTests(unittest.TestCase):
                 dev.snapshot(app, out, self.work / "godot")
             copy.assert_not_called()
 
+    def test_snapshot_keeps_nested_native_sources_and_hashes_the_copy(self):
+        app, out = self.work / "app", self.work / "output"
+        out.mkdir()
+        for name, contents in (("project.godot", "config_version=5\n"),
+                               ("sim/native/weather_adapter.gd", "# native weather source\n"),
+                               ("sim/native/nested/helper.gd", "# nested source\n"),
+                               ("native/kernel/libopenrc_native_kernel.so", "installed binary"),
+                               ("captures/frame.png", "old capture"),
+                               (".godot/extension_list.cfg", "installed extension"),
+                               (".godot/imported/resource", "cached import")):
+            path = app / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(contents)
+        with patch.object(dev.shutil, "disk_usage", return_value=SimpleNamespace(free=5 * 1024**3)):
+            before = dev.app_hashes(app)
+            copied = dev.snapshot(app, out, self.work / "godot")
+        self.assertEqual(before, dev.app_hashes(copied))
+        self.assertIn("sim/native/weather_adapter.gd", before)
+        self.assertIn("sim/native/nested/helper.gd", before)
+        self.assertFalse((copied / "native").exists())
+        self.assertFalse((copied / "captures").exists())
+        self.assertFalse((copied / ".godot/extension_list.cfg").exists())
+        self.assertTrue((copied / ".godot/imported/resource").is_file())
+        (copied / "sim/native/weather_adapter.gd").write_text("# changed during check\n")
+        self.assertNotEqual(before, dev.app_hashes(copied))
+
+    def test_nested_native_directory_symlink_is_rejected(self):
+        app, out = self.work / "app", self.work / "output"
+        (app / "sim").mkdir(parents=True)
+        out.mkdir()
+        (app / "project.godot").write_text("config_version=5\n")
+        (app / "sim/native").symlink_to(app, target_is_directory=True)
+        with patch.object(dev.shutil, "copytree") as copy:
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                dev.snapshot(app, out, self.work / "godot")
+            copy.assert_not_called()
+        with self.assertRaisesRegex(ValueError, "symlink"):
+            dev.app_hashes(app)
+        # The installed root is excluded, so even an alias there is never followed.
+        (app / "sim/native").unlink()
+        (app / "sim/native").mkdir()
+        (app / "sim/native/helper.gd").write_text("# retained source\n")
+        (app / "native").symlink_to(app, target_is_directory=True)
+        with patch.object(dev.shutil, "disk_usage", return_value=SimpleNamespace(free=5 * 1024**3)):
+            copied = dev.snapshot(app, out, self.work / "godot")
+        self.assertTrue((copied / "sim/native/helper.gd").is_file())
+        self.assertFalse((copied / "native").exists())
+        self.assertEqual(dev.app_hashes(app), dev.app_hashes(copied))
+
     def test_json_object_reader_rejects_nonobjects_and_bad_json(self):
         path = self.work / "input.json"
         path.write_text('{"ok": true}')
@@ -263,6 +312,8 @@ class DevelopmentCheckWorkflowTests(unittest.TestCase):
         self.app.mkdir()
         (self.app / "project.godot").write_text("config_version=5\n")
         (self.app / "model.gd").write_text("# fixture application")
+        (self.app / "sim/native").mkdir(parents=True)
+        (self.app / "sim/native/helper.gd").write_text("# fixture native helper")
         self.engine = self.root / "godot"
         self.engine.write_bytes(b"fixture engine")
         self.build = self.root / "tmp/build"
@@ -303,9 +354,12 @@ class DevelopmentCheckWorkflowTests(unittest.TestCase):
                 output.write_text(json.dumps(oracle_evidence("stage_oracle" if label == "stage_oracle" else "trajectory")))
             if result == "change_snapshot":
                 (self.args.out / "app/model.gd").write_text("# changed during oracle")
+            elif result == "change_native_source":
+                (self.args.out / "app/sim/native/helper.gd").write_text("# changed during oracle")
             return {"ok": result != "failure", "complete": True,
                     "reason": "process_exit" if result == "failure" else "passed",
-                    "process_exit": 1 if result == "failure" else 0, "counts": {"error": 0}}
+                    "process_exit": 1 if result == "failure" else 0, "counts": {"error": 0},
+                    "missing_required_text": []}
 
         with patch.object(dev, "controls", return_value={"ubsan": {"detected": True}}) as controls, \
              patch.object(dev, "snapshot", wraps=dev.snapshot) as snapshot, \
@@ -356,6 +410,14 @@ class DevelopmentCheckWorkflowTests(unittest.TestCase):
         self.args.ticks = 960
         result, summary, commands, _, _, _ = self.run_check({"trajectory": "change_snapshot"})
         self.assertEqual(result, 1)
+        self.assertFalse(summary["runs"]["trajectory.gd"]["unchanged"])
+        self.assertFalse(summary["ok"])
+        self.assertEqual(len(commands), 2)
+
+    def test_changed_native_helper_during_oracle_invalidates_the_snapshot(self):
+        result, summary, commands, _, _, _ = self.run_check({"trajectory": "change_native_source"})
+        self.assertEqual(result, 1)
+        self.assertIn("sim/native/helper.gd", summary["source_snapshot"])
         self.assertFalse(summary["runs"]["trajectory.gd"]["unchanged"])
         self.assertFalse(summary["ok"])
         self.assertEqual(len(commands), 2)

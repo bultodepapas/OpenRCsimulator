@@ -59,6 +59,7 @@ static func config_for(session: Node) -> Dictionary:
 	var config: Dictionary = WeatherAdapter.config_for(session)
 	if config.is_empty(): return {}
 	config.glow_snapshot = snapshot(session.aircraft.model.propulsion.glow)
+	config.gravity = session.sim.gravity
 	return config
 
 

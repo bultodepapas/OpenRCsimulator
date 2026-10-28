@@ -16,6 +16,7 @@
 
 #include <chrono>
 #include <initializer_list>
+#include <limits>
 #include <string>
 #include <vector>
 
@@ -29,9 +30,12 @@
 #include "nk_glow_binding.hpp"
 #include "nk_helicopter_binding.hpp"
 #include "nk_liquid_binding.hpp"
+#include "nk_prescribed_binding.hpp"
 #include "nk_gear_binding.hpp"
 #include "nk_weather_guard.hpp"
 #include "nk_point_sampler.hpp"
+#include "nk_configuration_guard.hpp"
+#include "nk_stage_snapshot.hpp"
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/classes/ref.hpp>
 
@@ -48,8 +52,8 @@ constexpr int kStateSize = 13;
 constexpr int kMaxContinuousSize = 64;
 constexpr const char *kBackend = "native";
 // Bump on any change to the stage contract (inputs, layout, outputs); the app loader and receipt must agree.
-constexpr const char *kBackendVersion = "openrc-native-kernel-stage-v1";
-constexpr int kAbi = 1;
+constexpr const char *kBackendVersion = "openrc-native-kernel-stage-v2";
+constexpr int kAbi = 2;
 // Law identities the port mirrors; the oracle compares them with the loaded GDScript constants.
 constexpr const char *kAeroLaw = "section-plane-source-weighted-wake-velocity-v2";
 constexpr const char *kRollingLaw = "wheel-positive-terrain-excess-v2";
@@ -457,8 +461,8 @@ bool decode_gear(Decoder &dec, const Dictionary &gear, nk::PreparedGear &out) {
 				!dec.number(c, "damping", w.damping, true) ||
 				!dec.number(c, "damping_onset", w.damping_onset, false, 0.0) ||
 				!dec.number(c, "max_steering", w.max_steering, false, 0.0) ||
-				!dec.number(c, "anchor_stiffness", w.anchor_stiffness, true) ||
-				!dec.number(c, "anchor_damping", w.anchor_damping, true) ||
+				!dec.number(c, "anchor_stiffness", w.anchor_stiffness, false, 0.0) ||
+				!dec.number(c, "anchor_damping", w.anchor_damping, false, 0.0) ||
 				!dec.number(c, "wheel_radius", w.wheel_radius, false, nk::kReferenceRadius) ||
 				!dec.number(c, "wheel_inertia", w.wheel_inertia, false, 0.00003) ||
 				!dec.number(c, "spin_relaxation", w.spin_relaxation, false, 0.03) ||
@@ -611,7 +615,7 @@ bool layout_int(Decoder &dec, const Dictionary &layout, const char *key, int &ou
 		return dec.fail(std::string("layout.") + key + " must be an int");
 	}
 	const int64_t value = layout[key];
-	if (value < -1 || value > 4096) return dec.fail(std::string("layout index out of range: ") + key);
+	if (value < -1 || value > std::numeric_limits<int>::max()) return dec.fail(std::string("layout index out of range: ") + key);
 	out = static_cast<int>(value);
 	return true;
 }
@@ -620,7 +624,9 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 	m = nk::StageModel();
 	const bool electric_requested = config.has("electric");
 	const bool liquid_requested = config.has("liquid_source");
-	if (electric_requested && liquid_requested) return dec.fail("multiple stage source families");
+	const bool glow_requested = config.has("glow_snapshot");
+	const bool prescribed_requested = config.has("prescribed");
+	if (int(electric_requested) + int(liquid_requested) + int(glow_requested) + int(prescribed_requested) > 1) return dec.fail("multiple stage source families");
 	// Session capabilities whose laws are not ported: the caller keeps the GDScript stage (D6).
 	for (const char *flag : {"retractable", "glow", "coupled", "turbine", "liquid", "finite_fuel", "flaps",
 				"spatial_weather", "turbulence", "vertical_atmosphere", "weather_pending_reset", "not_calm",
@@ -633,7 +639,11 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		const bool electric_flag = electric_requested && (std::string(flag) == "coupled" || std::string(flag) == "rotor_dynamics");
 		const bool liquid_flag = liquid_requested && (std::string(flag) == "coupled" || std::string(flag) == "rotor_dynamics" ||
 			std::string(flag) == "liquid" || std::string(flag) == "finite_fuel" || std::string(flag) == "turbine");
-		if (static_cast<bool>(config[flag]) && !liquid_flag && !(weather_flag && config.has("weather")) && !electric_flag &&
+		const bool glow_flag = glow_requested && (std::string(flag) == "coupled" || std::string(flag) == "rotor_dynamics" ||
+			std::string(flag) == "glow" || std::string(flag) == "finite_fuel");
+		const bool prescribed_flag = prescribed_requested && (std::string(flag) == "coupled" ||
+			std::string(flag) == "rotor_dynamics" || std::string(flag) == "turbine");
+		if (static_cast<bool>(config[flag]) && !glow_flag && !liquid_flag && !prescribed_flag && !(weather_flag && config.has("weather")) && !electric_flag &&
 				std::string(flag) != "slipstream" && std::string(flag) != "flaps" && std::string(flag) != "retractable") {
 			return dec.fail(std::string("unsupported session capability: ") + flag);
 		}
@@ -653,7 +663,7 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		}
 		for (const char *key : {"kind", "motor", "battery", "esc"}) prop_geometry.erase(key);
 		Dictionary snapshot;
-		if (!dec.dict(config, "electric", snapshot, true)) return false;
+		if (!dec.dict(config, "electric", snapshot, true) || !nk::stage_snapshot_electric(model, snapshot, dec.error)) return false;
 		for (const char *part : {"motor", "battery", "esc"}) {
 			Dictionary supplied, actual;
 			if (!dec.dict(snapshot, part, supplied, true) || !dec.dict(propulsion, part, actual, true)) return false;
@@ -673,17 +683,35 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 			if (!nk::is_finite(inertia[i]) || !nk::is_finite(inverse[i])) return dec.fail("nonfinite fixed electric inertia");
 			m.inertia[i] = inertia[i]; m.inverse[i] = inverse[i];
 		}
-		if (!model.has("inertia") || config["inertia"] != model["inertia"]) return dec.fail("electric inertia differs from the committed model");
+		if (!model.has("inertia") || !nk::stage_snapshot_exact(config["inertia"], model["inertia"])) return dec.fail("electric inertia differs from the committed model");
 		const auto expected_inverse = nk::liquid_inertia_inverse(m.inertia);
 		for (int i = 0; i < 6; ++i) {
-			if (m.inverse[i] != expected_inverse[i]) return dec.fail("electric inverse inertia differs from the reference tensor");
+			if (nk::bits(m.inverse[i].v) != nk::bits(expected_inverse[i].v)) return dec.fail("electric inverse inertia differs from the reference tensor");
 		}
+	}
+	if (glow_requested) {
+		Dictionary snapshot;
+		if (!static_cast<bool>(config["glow"]) || !static_cast<bool>(config["coupled"]) ||
+				!static_cast<bool>(config["finite_fuel"]) || !config.has("weather") ||
+				!dec.dict(config, "glow_snapshot", snapshot, true) || !dec.number(config, "gravity", m.gravity, true) ||
+				!nk::is_finite(m.gravity)) return dec.fail("invalid glow stage prerequisites");
+		if (!nk::stage_snapshot_glow(model, snapshot, dec.error)) return false;
+		nk::GlowBinding candidate;
+		const Dictionary prepared = candidate.prepare_glow(snapshot);
+		if (!static_cast<bool>(prepared["ok"]) || !candidate.stage_model().ready) return dec.fail("invalid prepared glow lifecycle");
+		m.glow = candidate.stage_model();
+		Dictionary selected;
+		for (const char *key : {"diameter", "offset", "ct", "cp", "rotor_inertia", "cp_min", "axis", "normal_force", "pfactor_moment"}) {
+			if (propulsion.has(key)) selected[key] = propulsion[key];
+		}
+		prop_geometry = selected;
 	}
 	if (liquid_requested) {
 		Dictionary snapshot;
 		if (!static_cast<bool>(config["liquid"]) || !static_cast<bool>(config["finite_fuel"]) ||
 				!config.has("weather") || !dec.dict(config, "liquid_source", snapshot, true) ||
 				!dec.number(config, "gravity", m.gravity, true) || !nk::is_finite(m.gravity)) return dec.fail("invalid liquid stage prerequisites");
+		if (!nk::stage_snapshot_liquid(model, snapshot, dec.error)) return false;
 		nk::LiquidBinding candidate;
 		const Dictionary prepared = candidate.prepare_liquid(snapshot);
 		if (!static_cast<bool>(prepared["ok"])) return dec.fail("invalid prepared liquid source");
@@ -699,7 +727,39 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 			for (int i = 0; i < 3; ++i) m.prop.offset[i] = m.liquid.turbine.intake_offset[i];
 		}
 	}
-	if (!decode_aero(dec, model, m.aero) || ((!m.liquid.ready || m.liquid.gas) && !decode_prop(dec, prop_geometry, m.prop)) || !decode_gear(dec, static_cast<bool>(config["retractable"]) ? fixed_gear_source(gear) : gear, m.ground.gear)) {
+	if (prescribed_requested) {
+		Dictionary snapshot;
+		if (!config.has("weather") || static_cast<bool>(config["liquid"]) || static_cast<bool>(config["glow"]) ||
+				static_cast<bool>(config["finite_fuel"]) || !dec.dict(config, "prescribed", snapshot, true)) return dec.fail("invalid prescribed stage prerequisites");
+		nk::PrescribedBinding candidate;
+		const Dictionary prepared = candidate.prepare_prescribed(snapshot, model);
+		if (!static_cast<bool>(prepared["ok"])) return dec.fail(String(prepared["error"]).utf8().get_data());
+		m.prescribed = candidate.model();
+		if (static_cast<bool>(config["turbine"]) != m.prescribed.is_turbine() ||
+				static_cast<bool>(config["coupled"]) != m.prescribed.coupled() ||
+				static_cast<bool>(config["rotor_dynamics"]) != (m.prescribed.gas() || m.prescribed.continuous_turbine())) return dec.fail("prescribed source capability mismatch");
+		if (m.prescribed.gas()) {
+			Dictionary selected;
+			for (const char *key : {"diameter", "offset", "ct", "cp", "rotor_inertia", "cp_min", "axis", "normal_force", "pfactor_moment"}) {
+				if (propulsion.has(key)) selected[key] = propulsion[key];
+			}
+			prop_geometry = selected;
+		} else {
+			for (int i = 0; i < 3; ++i) m.prop.offset[i] = m.prescribed.turbine.intake_offset[i];
+		}
+		if (m.prescribed.coupled()) {
+			std::vector<nk::R> inertia, inverse;
+			if (!dec.vec(config, "inertia", inertia, true, 6) || !dec.vec(config, "inverse", inverse, true, 6)) return false;
+			for (int i = 0; i < 6; ++i) {
+				if (!nk::is_finite(inertia[i]) || !nk::is_finite(inverse[i])) return dec.fail("nonfinite prescribed inertia");
+				m.inertia[i] = inertia[i]; m.inverse[i] = inverse[i];
+			}
+			if (!model.has("inertia") || !nk::stage_snapshot_exact(config["inertia"], model["inertia"])) return dec.fail("prescribed inertia differs from committed model");
+			const auto expected_inverse = nk::liquid_inertia_inverse(m.inertia);
+			for (int i = 0; i < 6; ++i) if (nk::bits(m.inverse[i].v) != nk::bits(expected_inverse[i].v)) return dec.fail("prescribed inverse inertia differs from reference");
+		}
+	}
+	if (!decode_aero(dec, model, m.aero) || ((!m.liquid.ready || m.liquid.gas) && !m.prescribed.is_turbine() && !decode_prop(dec, prop_geometry, m.prop)) || !decode_gear(dec, static_cast<bool>(config["retractable"]) ? fixed_gear_source(gear) : gear, m.ground.gear)) {
 		return false;
 	}
 	if (m.aero.flaps.enabled != static_cast<bool>(config["flaps"])) return dec.fail("flap capability and model differ");
@@ -720,17 +780,19 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 	m.ground.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 	m.ground.surfaces.valid = nk::surface_table_is_valid(m.ground.surfaces.values);
 	m.ground.lake_valid = static_cast<bool>(config["lake_valid"]);
+	if (!m.ground.lake_valid) m.ground.lake.present = !lake.is_empty();
 	if (m.ground.lake_valid && !decode_lake(dec, lake, m.ground.lake)) {
 		return false;
 	}
 	if (static_cast<bool>(config["retractable"])) {
+		if (!model.has("landing_gear") || !nk::stage_snapshot_exact(gear, model["landing_gear"])) return dec.fail("retractable snapshot differs from committed model");
 		nk::GearBinding retraction;
 		const Dictionary result = retraction.prepare_retractable(gear, m.ground);
 		if (!static_cast<bool>(result["ok"])) return dec.fail("invalid retractable gear");
 		m.retraction = retraction.model();
 	}
 	m.soft_hull = static_cast<bool>(config["soft_hull"]);
-	if (m.soft_hull && !decode_hull(dec, hull, m.hull, m.liquid.ready)) {
+	if (m.soft_hull && !decode_hull(dec, hull, m.hull, m.liquid.ready || m.glow.ready)) {
 		return false;
 	}
 	if (!dec.number(config, "density", m.density, true) ||
@@ -747,23 +809,26 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		return false;
 	}
 	if (m.retraction.enabled && (!layout_int(dec, layout, "gear_aux", L.gear_aux) ||
-			L.gear_aux < 0 || L.gear_aux + 1 >= L.aux_size)) return dec.fail("invalid retractable actuator layout");
+			L.gear_aux < 0 || int64_t(L.gear_aux) + 1 >= L.aux_size)) return dec.fail("invalid retractable actuator layout");
 	const int wash_count = m.wake.transport ? static_cast<int>(m.wake.pieces.size()) : 0;
 	L.battery_size = m.electric_source.kind == nk::ElectricBatteryKind::PackEcm ? 9 + 2 * m.electric_source.pack.branches :
 		(m.electric_source.kind == nk::ElectricBatteryKind::OcvResistance ? 3 : 0);
-	const int source_count = m.electric ? 1 + L.battery_size : (m.liquid.ready ? 1 : 0);
+	const int source_count = m.electric ? 1 + L.battery_size : (m.liquid.ready ? 1 : (m.glow.ready ? 19 :
+		(m.prescribed.coupled() || m.prescribed.continuous_turbine() ? 1 : 0)));
+	if (m.glow.ready && m.wake.transport) return dec.fail("glow stage does not transport continuous wake pieces");
 	if (L.rotor_index != wash_count || L.wheel_index != wash_count + source_count) {
 		return dec.fail("continuous wash layout differs from prepared wake pieces");
 	}
 	if (m.liquid.ready && (!layout_int(dec, layout, "liquid_index", L.liquid_index) ||
-			L.liquid_index != L.wheel_index + L.wheel_count || L.liquid_index + 2 > kMaxContinuousSize)) {
+			int64_t(L.liquid_index) != int64_t(L.wheel_index) + L.wheel_count || int64_t(L.liquid_index) + 2 > kMaxContinuousSize)) {
 		return dec.fail("invalid liquid inventory layout");
 	}
-	if (L.wheel_count < 0 || L.wheel_count > 16 || (L.wheel_count == 0 && !m.ground.gear.empty) ||
-			L.wheel_count != static_cast<int>(m.ground.gear.contacts.size()) ||
-			L.anchor_count != L.wheel_count || L.anchors + L.anchor_count * 3 > L.aux_size || L.servo + 2 >= L.aux_size ||
+	const int gear_count = static_cast<int>(m.ground.gear.contacts.size());
+	if (L.wheel_count < 0 || L.wheel_count > 16 ||
+			(L.wheel_count != 0 && L.wheel_count != gear_count) ||
+			(L.anchor_count != 0 && L.anchor_count != gear_count) || int64_t(L.anchors) + int64_t(L.anchor_count) * 3 > L.aux_size || int64_t(L.servo) + 2 >= L.aux_size ||
 			L.rpm < 0 || L.rpm >= L.aux_size || L.downwash >= L.aux_size || L.servo < 0 || L.anchors < 0 ||
-			L.wheel_index + L.wheel_count > kMaxContinuousSize) {
+			int64_t(L.wheel_index) + L.wheel_count > kMaxContinuousSize) {
 		return dec.fail("unsupported or inconsistent layout");
 	}
 	if (config.has("weather")) {
@@ -772,7 +837,7 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 				!nk::is_finite(m.dt) || m.dt <= 0.0 || !layout_int(dec, layout, "turbulence", L.turbulence)) {
 			return dec.fail("weather needs a finite positive tick dt and turbulence layout");
 		}
-		if (m.electric && m.electric_source.kind == nk::ElectricBatteryKind::PackEcm && !snapshot.has("temperature_k")) {
+		if ((m.glow.ready || (m.electric && m.electric_source.kind == nk::ElectricBatteryKind::PackEcm)) && !snapshot.has("temperature_k")) {
 			return dec.fail("pack stage requires the actual prepared atmosphere temperature");
 		}
 		nk::WeatherBinding candidate;
@@ -787,7 +852,7 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		if (m.weather.has_turbulence != static_cast<bool>(config["turbulence"]) ||
 				m.weather.vertical_atmosphere != static_cast<bool>(config["vertical_atmosphere"]) ||
 				(!m.spatial_weather && m.weather.calm == static_cast<bool>(config["not_calm"])) ||
-				(m.weather.has_turbulence && (L.turbulence < 4 || L.turbulence + 7 != L.aux_size)) ||
+				(m.weather.has_turbulence && (L.turbulence < 4 || int64_t(L.turbulence) + 7 != L.aux_size)) ||
 				(!m.weather.has_turbulence && L.turbulence != -1)) {
 			return dec.fail("weather snapshot and session capabilities/layout differ");
 		}
@@ -829,6 +894,8 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::GearBinding gear_;
 	nk::LiveHullBinding live_hull_;
 	nk::WeatherGuard weather_guard_;
+	nk::ConfigurationGuard configuration_guard_;
+	bool heli_stage_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
 	bool stage_ready_ = false;
@@ -841,6 +908,12 @@ class OpenRCNativeKernel : public godot::RefCounted {
 protected:
 	static void _bind_methods() {
 		using godot::D_METHOD;
+		godot::ClassDB::bind_method(D_METHOD("prepare_configuration_guard", "session", "identity"), &OpenRCNativeKernel::prepare_configuration_guard);
+		godot::ClassDB::bind_method(D_METHOD("configuration_guard_matches", "session"), &OpenRCNativeKernel::configuration_guard_matches);
+		godot::ClassDB::bind_method(D_METHOD("prepare_heli_stage", "snapshot", "weather"), &OpenRCNativeKernel::prepare_heli_stage);
+		godot::ClassDB::bind_method(D_METHOD("set_heli_tick_context", "tick"), &OpenRCNativeKernel::set_heli_tick_context);
+		godot::ClassDB::bind_method(D_METHOD("heli_last_failure"), &OpenRCNativeKernel::heli_last_failure);
+		godot::ClassDB::bind_method(D_METHOD("set_glow_context", "throttle", "engine_running", "injected_cut"), &OpenRCNativeKernel::set_glow_context);
 		godot::ClassDB::bind_method(D_METHOD("set_preview_context", "body", "continuous", "capture"), &OpenRCNativeKernel::set_preview_context);
 		godot::ClassDB::bind_method(D_METHOD("prepare_weather_guard", "session", "identity"), &OpenRCNativeKernel::prepare_weather_guard);
 		godot::ClassDB::bind_method(D_METHOD("weather_guard_matches", "session"), &OpenRCNativeKernel::weather_guard_matches);
@@ -911,11 +984,14 @@ protected:
 			&OpenRCNativeKernel::set_tick_context);
 		godot::ClassDB::bind_method(D_METHOD("set_power_context", "throttle", "enabled"), &OpenRCNativeKernel::set_power_context);
 		godot::ClassDB::bind_method(D_METHOD("stage", "body", "continuous", "t"), &OpenRCNativeKernel::stage);
+		godot::ClassDB::bind_method(D_METHOD("body_loads", "body", "time"), &OpenRCNativeKernel::body_loads);
+		godot::ClassDB::bind_method(D_METHOD("body_rotor", "aux"), &OpenRCNativeKernel::body_rotor);
 		godot::ClassDB::bind_method(D_METHOD("stage_stats"), &OpenRCNativeKernel::stage_stats);
 		godot::ClassDB::bind_method(D_METHOD("reset_stage_stats", "timing"), &OpenRCNativeKernel::reset_stage_stats);
 		godot::ClassDB::bind_method(D_METHOD("prop_component", "s", "wind", "rho", "rpm"), &OpenRCNativeKernel::prop_component);
 		godot::ClassDB::bind_method(D_METHOD("hull_component", "s"), &OpenRCNativeKernel::hull_component);
 		godot::ClassDB::bind_method(D_METHOD("ground_component", "s", "values"), &OpenRCNativeKernel::ground_component);
+		godot::ClassDB::bind_method(D_METHOD("legacy_ground_component", "body", "steer", "anchors"), &OpenRCNativeKernel::legacy_ground_component);
 		godot::ClassDB::bind_method(D_METHOD("ground_up_component", "s"), &OpenRCNativeKernel::ground_up_component);
 		godot::ClassDB::bind_method(D_METHOD("bench_aero", "s", "wind", "rho", "d", "downwash_cl", "ground_up", "iterations"),
 			&OpenRCNativeKernel::bench_aero);
@@ -942,7 +1018,9 @@ public:
 		candidate.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 		candidate.surfaces.valid = nk::surface_table_is_valid(candidate.surfaces.values);
 		candidate.lake_valid = lake_valid;
+		if (!lake_valid) candidate.lake.present = !lake.is_empty();
 		const bool ok = decode_gear(dec, fixed_gear_source(gear), candidate.gear) && (!lake_valid || decode_lake(dec, lake, candidate.lake));
+		gear_ = nk::GearBinding();
 		ground_ready_ = ok;
 		if (ok) {
 			ground_ = candidate;
@@ -986,6 +1064,15 @@ public:
 		return out;
 	}
 
+	PackedFloat64Array legacy_ground_component(const PackedFloat64Array &body, double steer, const PackedFloat64Array &anchors) const {
+		if (!ground_ready_ || !read_state(body)) return PackedFloat64Array();
+		nk::R state[kStateSize];
+		load(body, state);
+		std::vector<nk::R> values;
+		nk::legacy_ground_loads(state, ground_, steer, anchors.ptr(), static_cast<int>(anchors.size()), values);
+		return pack(values);
+	}
+
 	PackedFloat64Array wheels_compressions(const PackedFloat64Array &s) const {
 		if (!ground_ready_ || !read_state(s)) {
 			return PackedFloat64Array();
@@ -998,6 +1085,7 @@ public:
 	}
 
 	Dictionary prepare_aero(const Dictionary &model) {
+		wake_ = nk::WakeBinding();
 		Decoder dec;
 		nk::AeroModel candidate;
 		const bool ok = decode_aero(dec, model, candidate);
@@ -1013,6 +1101,7 @@ public:
 	}
 
 	Dictionary prepare_propeller(const Dictionary &model) {
+		wake_ = nk::WakeBinding();
 		Decoder dec;
 		nk::PropModel candidate;
 		prop_ready_ = decode_prop(dec, model, candidate);
@@ -1093,6 +1182,21 @@ public:
 		return glow_.glow_feed_component(remaining, capacity, unusable, admission, rpm, force, mass, arm, alpha, omega);
 	}
 
+	Dictionary prepare_configuration_guard(godot::Object *session, godot::Object *identity) { return configuration_guard_.prepare_configuration_guard(session, identity); }
+	bool configuration_guard_matches(godot::Object *session) const { return configuration_guard_.configuration_guard_matches(session); }
+	Dictionary prepare_heli_stage(const Dictionary &snapshot, const Dictionary &weather) {
+		heli_stage_ready_ = false;
+		stage_ready_ = false;
+		tick_.ready = false;
+		const Dictionary result = helicopter_.prepare_heli_stage(snapshot, weather);
+		heli_stage_ready_ = helicopter_.stage_ready();
+		return result;
+	}
+	bool set_heli_tick_context(const Dictionary &tick) {
+		++context_calls_;
+		return heli_stage_ready_ && helicopter_.set_heli_tick_context(tick);
+	}
+	String heli_last_failure() const { return helicopter_.heli_last_failure(); }
 	Dictionary prepare_weather_guard(godot::Object *session, godot::Object *identity) { return weather_guard_.prepare_weather_guard(session, identity); }
 	bool weather_guard_matches(godot::Object *session) const { return weather_guard_.weather_guard_matches(session); }
 	Dictionary prepare_liquid(const Dictionary &snapshot) { return liquid_.prepare_liquid(snapshot); }
@@ -1112,7 +1216,10 @@ public:
 		return liquid_.liquid_turbine_component(body, datum_air, explicit_air, stage, running);
 	}
 	Dictionary prepare_retractable(const Dictionary &source) {
-		if (!ground_ready_) return nk::spatial_binding_failure("ground not prepared");
+		if (!ground_ready_) {
+			gear_ = nk::GearBinding();
+			return nk::spatial_binding_failure("ground not prepared");
+		}
 		return gear_.prepare_retractable(source, ground_);
 	}
 	PackedFloat64Array gear_component(int64_t part, const PackedFloat64Array &body, const PackedFloat64Array &air,
@@ -1312,6 +1419,9 @@ public:
 			{"5.0", 5.0}, {"50.0", 50.0}, {"500.0", 500.0}, {"6.0", 6.0},
 			{"6.2831853071795864769252867666", 6.2831853071795864769252867666}, {"64.0", 64.0}, {"7.0", 7.0}, {"720.0", 720.0},
 			{"8.0", 8.0}, {"80.0", 80.0}, {"86400.0", 86400.0}, {"90.0", 90.0},
+			{"100000.0", 100000.0},
+			{"1e-30", nk::kGd1eMinus30}, {"1.0e-30", 1.0e-30},
+			{"9223372036854775808.0", 9223372036854775808.0},
 		};
 		for (const auto &entry : table) {
 			out[entry.spelling] = entry.value;
@@ -1341,6 +1451,7 @@ public:
 	}
 
 	Dictionary prepare_stage(const Dictionary &config) {
+		heli_stage_ready_ = false;
 		Decoder dec;
 		nk::StageModel candidate;
 		const bool ok = decode_stage(dec, config, candidate);
@@ -1383,26 +1494,63 @@ public:
 	}
 	bool set_preview_context(const PackedFloat64Array &body, const PackedFloat64Array &continuous, bool capture) {
 		tick_.capture_preview = false;
-		if (!stage_ready_ || !tick_.ready || !read_state(body) || continuous.size() > kMaxContinuousSize) return false;
+		if (!stage_ready_ || !tick_.ready) return false;
+		if (!capture) {
+			tick_.preview_values.clear();
+			return true; // initial setup can have no committed body yet
+		}
+		if (!read_state(body) || continuous.size() > kMaxContinuousSize) return false;
 		for (int i = 0; i < kStateSize; ++i) tick_.preview_body[i] = body[i];
 		tick_.preview_values.assign(continuous.ptr(), continuous.ptr() + continuous.size());
 		tick_.capture_preview = capture;
 		return true;
 	}
+	bool set_glow_context(double throttle, bool engine_running, bool injected_cut) {
+		tick_.power_ready = false;
+		if (!stage_ready_ || !tick_.ready || !stage_.glow.ready) return false;
+		tick_.throttle = throttle;
+		tick_.power_enabled = engine_running;
+		tick_.injected_cut = injected_cut;
+		tick_.power_ready = true;
+		return true;
+	}
 	bool set_power_context(double throttle, bool enabled) {
 		tick_.power_ready = false;
-		if (!stage_ready_ || !tick_.ready || (!stage_.electric && !stage_.liquid.ready)) return false;
+		if (!stage_ready_ || !tick_.ready || (!stage_.electric && !stage_.liquid.ready && !stage_.prescribed.ready())) return false;
 		tick_.throttle = throttle;
 		tick_.power_enabled = enabled;
 		tick_.power_ready = true;
 		return true;
 	}
 
+	PackedFloat64Array body_loads(const PackedFloat64Array &body, double t) {
+		++stage_calls_;
+		const auto start = stage_timing_ ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point();
+		PackedFloat64Array out;
+		if (stage_ready_ && tick_.ready && read_state(body) && stage_.layout.wheel_index == 0 && stage_.layout.wheel_count == 0) {
+			nk::R state[kStateSize], empty[1];
+			load(body, state);
+			const auto result = nk::stage_evaluate(state, empty, 0, t, stage_, tick_);
+			if (result.shaped) out = pack(result.loads.data(), 6);
+		}
+		if (stage_timing_) stage_ns_ += std::chrono::duration<double, std::nano>(std::chrono::steady_clock::now() - start).count();
+		return out;
+	}
+
+	PackedFloat64Array body_rotor(const PackedFloat64Array &aux) const {
+		if (!stage_ready_ || stage_.layout.rpm < 0 || stage_.layout.rpm >= aux.size()) return PackedFloat64Array();
+		const nk::R rpm = aux[stage_.layout.rpm];
+		const auto rotor = stage_.prescribed.is_turbine() ? nk::liquid_turbine_rotor_momentum(rpm, stage_.prescribed.turbine) :
+			nk::prop_rotor_momentum(stage_.prop, rpm);
+		return pack(rotor.data(), 3);
+	}
+
 	Dictionary stage(const PackedFloat64Array &body, const PackedFloat64Array &continuous, double t) {
 		++stage_calls_;
 		const auto start = stage_timing_ ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point();
 		Dictionary out;
-		if (stage_ready_ && read_state(body) && continuous.size() <= kMaxContinuousSize) {
+		if (heli_stage_ready_) out = helicopter_.heli_stage(body, continuous, t);
+		else if (stage_ready_ && read_state(body) && continuous.size() <= kMaxContinuousSize) {
 			nk::R state[kStateSize];
 			nk::R values[kMaxContinuousSize];
 			load(body, state);

@@ -9,6 +9,8 @@ const SOURCES := {
 	"test_native_stage.gd": "tests/test_native_stage.gd",
 	"test_native_session.gd": "tests/test_native_session.gd",
 	"test_native_replay.gd": "tests/test_native_replay.gd",
+	"test_native_helicopter_session.gd": "tests/test_native_helicopter_session.gd",
+	"test_heli_restore_radio.gd": "tests/test_heli_restore_radio.gd",
 }
 var _manifest: Dictionary = {}
 

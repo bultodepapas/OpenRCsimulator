@@ -171,10 +171,15 @@ NK3_EVIDENCE="$(mktemp -d "$ROOT/tmp/nk3-export-XXXXXXXX")"
 mkdir -p "$NK3_EVIDENCE/user-data"
 LINUX_EXE="$DIST/linux/openrc-simulator.x86_64"
 echo "== NK-3: qualify the exact exported Linux executable"
-for mode in stage lifecycle replay; do
+for mode in stage lifecycle replay helicopter helicopter-radio; do
+  required_markers=(--require-text "NATIVE_QUALIFICATION preloaded=false"
+                    --require-text "NATIVE_QUALIFICATION mode=$mode verdict=pass")
+  case "$mode" in
+    helicopter) required_markers+=(--require-text "NK3_NATIVE_HELICOPTER_NATIVE verdict=pass") ;;
+    helicopter-radio) required_markers+=(--require-text "NK3_NATIVE_HELICOPTER_RADIO_NATIVE verdict=pass") ;;
+  esac
   XDG_DATA_HOME="$NK3_EVIDENCE/user-data" python3 "$ROOT/tools/godot/run_checked.py" --timeout 600 --out-dir "$NK3_EVIDENCE/checks" \
-    --label "nk3-package-$mode" --require-text "NATIVE_QUALIFICATION preloaded=false" \
-    --require-text "NATIVE_QUALIFICATION mode=$mode verdict=pass" -- \
+    --label "nk3-package-$mode" "${required_markers[@]}" -- \
     "$LINUX_EXE" --headless --audio-driver Dummy -- --quick-flight "--native-qualification=$mode"
 done
 

@@ -58,6 +58,8 @@ constexpr double kCmpEpsilon = 0.00001;
 // The pinned GDScript parser rounds the spelling `1e-24` one ULP above the C++ literal.
 // `1.0e-24` is a distinct spelling with its own oracle entry; do not replace that threshold.
 constexpr double kGd1eMinus24 = 0x1.357c299a88ea8p-80;
+// The pinned GDScript parser rounds the spelling 1e-30 one ULP below C++.
+constexpr double kGd1eMinus30 = 0x1.4484bfeebc29fp-100;
 
 inline R sin_(R a) { return ::sin(a.v); }
 inline R cos_(R a) { return ::cos(a.v); }

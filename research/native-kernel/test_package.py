@@ -67,7 +67,7 @@ class PackageAdmissionTests(unittest.TestCase):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text("diagnostic " + name + "\n")
             self.qualification[name] = path
-        for name in ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "trajectory.gd", "run.py"):
+        for name in ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "trajectory.gd", "run.py", "build.py"):
             (self.tool / name).write_text("harness " + name + "\n")
         checked_runner = self.root / "tools/godot/run_checked.py"
         checked_runner.parent.mkdir(parents=True)
@@ -80,6 +80,9 @@ class PackageAdmissionTests(unittest.TestCase):
             (package, "MANIFEST", self.manifest), (package, "QUALIFICATION", self.qualification),
             (builder, "ROOT", self.root), (builder, "APP_DESTINATION", self.install),
             (builder, "TOOL_ROOT", self.evidence_dir), (builder, "REFERENCE_SOURCES", self.mirrored_names),
+            # Package admission delegates evidence policy to build.py. Exercise that boundary
+            # with two independent kinds; the complete family roster has its own policy tests.
+            (builder, "VERIFICATIONS", {"stage_oracle": "stage-*.json", "trajectory": "trajectory-*.json"}),
             (builder.locked, "SOURCES", self.native_sources), (builder.locked, "LOCK_PATH", self.lock),
         ]
         for owner, name, value in replacements:
@@ -95,10 +98,16 @@ class PackageAdmissionTests(unittest.TestCase):
             data["engine"] = version
             data["engine_sha256_before"] = data["engine_sha256_after"] = editor_sha
             data["build_receipt"]["binary_sha256"] = self.binary_sha
+            data["build_receipt"]["source_sha256"] = builder.source_digest()
+            data["build_receipt"]["lock_sha256"] = builder.sha256_file(builder.locked.LOCK_PATH)
+            data["build_receipt"]["builder_sha256"] = builder.sha256_file(Path(builder.__file__))
+            data["build_receipt"]["reference_sources_sha256"] = copy.deepcopy(self.sources)
             data["binary_sha256_before"] = data["binary_sha256_after"] = self.binary_sha
+            data["reference_sources_before"] = copy.deepcopy(self.sources)
+            data["reference_sources_after"] = copy.deepcopy(self.sources)
             data["sources"] = {name.replace("app/", "res://", 1): digest for name, digest in self.sources.items()}
             data["sources_after"] = copy.deepcopy(data["sources"])
-            harness = [self.tool / name for name in ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "run.py", "trajectory.gd")]
+            harness = [self.tool / name for name in ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "run.py", "build.py", "trajectory.gd")]
             harness += [self.root / "app/sim/native_stage.gd", checked_runner]
             data["harness_sources"] = {str(path.relative_to(self.root)): package.sha(path) for path in harness}
             evidence_path = self.evidence_dir / ("stage-verified.json" if kind == "stage_oracle" else "trajectory-verified.json")
@@ -149,6 +158,25 @@ class PackageAdmissionTests(unittest.TestCase):
         self.assertEqual((destination / "LICENSE.godot-cpp.md").read_bytes(), (self.install / "LICENSE.godot-cpp.md").read_bytes())
         self.assertEqual((destination / "openrc_native_kernel.gdextension").read_text(), package.DESCRIPTOR)
         self.assertEqual(self.install_bytes(), self.original_install)
+
+    def test_helicopter_diagnostics_are_bound_and_cannot_change_during_export(self):
+        names = ("test_native_helicopter_session.gd", "test_heli_restore_radio.gd")
+        self.assertTrue(set(names).issubset(package.QUALIFICATION))
+        package.prepare()
+        manifest = json.loads(self.manifest.read_text())
+        for name in names:
+            with self.subTest(diagnostic=name):
+                path = self.qualification[name]
+                self.assertEqual(manifest["qualification_sources"][name], package.sha(path))
+                original = path.read_bytes()
+                path.write_bytes(original + b"changed during export\n")
+                executable = self.executable("changed-" + name)
+                try:
+                    with self.assertRaisesRegex(ValueError, "diagnostic sources changed"):
+                        package.finalize(executable, self.template)
+                    self.assertFalse((executable.parent / "native/kernel").exists())
+                finally:
+                    path.write_bytes(original)
 
     def test_prepare_refuses_stale_inputs_and_missing_evidence(self):
         mutations = {
@@ -201,7 +229,7 @@ class PackageAdmissionTests(unittest.TestCase):
                     package.verified_install()
         cases = [
             ("format", "other"), ("backend", "gdscript_reference"), ("backend_version", "other"),
-            ("abi_version", True), ("abi_version", 1.0), ("abi_version", "1"), ("abi_version", 2),
+            ("abi_version", True), ("abi_version", 2.0), ("abi_version", "2"), ("abi_version", 1),
             ("platforms", None), ("platforms", []), ("platforms", {}),
         ]
         for field, value in cases:
@@ -219,8 +247,8 @@ class PackageAdmissionTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     package.verified_install()
         for field, value in (("backend", "gdscript_reference"), ("backend_version", "other"),
-                             ("abi_version", True), ("abi_version", 1.0), ("abi_version", "1"),
-                             ("abi_version", 2), ("platform", "windows"), ("architecture", "arm64"),
+                             ("abi_version", True), ("abi_version", 2.0), ("abi_version", "2"),
+                             ("abi_version", 1), ("platform", "windows"), ("architecture", "arm64"),
                              ("verification", None), ("verification", [])):
             with self.subTest(scope="row", field=field, value=value):
                 receipt = copy.deepcopy(self.receipt)

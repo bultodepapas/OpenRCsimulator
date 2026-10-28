@@ -1,13 +1,7 @@
-## NK-3: optional native joint stage for the fixed-wing wheel route (FlightSession._wheel_evaluate), proven
-## byte-identical to the GDScript reference on the electric Ugly Stik (docs/research/native-kernel/NK-3/README.md).
-## The reference stage is always installed first. This helper swaps exactly `sim.model.stage` (SF-08) after checking,
-## in order: the build receipt (format, backend version, ABI, binary SHA-256), the mirrored GDScript sources the port
-## copies (any edit since the verified build refuses native until the oracles re-run and the library is reinstalled),
-## the law identities, and the native D6 refusals of unported aircraft, options and weather.
-## Without the library every query reports the reference backend and prepare() refuses with a reason; nothing errors.
-## Linux x86_64 only. Release packages bind compiled scripts through the exact executable and embedded identity;
-## unsupported or unverified installations keep the reference.
-## Lifetime: keep this object alive while installed; the swapped Callable refers to its native instance.
+## Native continuous aircraft stages. Discrete tick, event and collision policies
+## remain owned by each session. A source-bound receipt and exact preparation
+## guards are required before a native evaluator replaces its reference.
+## Linux x86_64; the owner retains this helper for the installed callback lifetime.
 extends RefCounted
 
 const Aero := preload("res://physics/aero.gd")
@@ -15,6 +9,14 @@ const Wheels := preload("res://physics/ground_wheels.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const Turbine := preload("res://physics/turbine.gd")
+const NativeConfiguration := preload("res://sim/native/native_configuration.gd")
+const WeatherAdapter := preload("res://sim/native/weather_adapter.gd")
+const ElectricAdapter := preload("res://sim/native/electric_stage_adapter.gd")
+const LiquidAdapter := preload("res://sim/native/liquid_stage_adapter.gd")
+const GlowAdapter := preload("res://sim/native/glow_stage_adapter.gd")
+const PrescribedAdapter := preload("res://sim/native/prescribed_stage_adapter.gd")
+const HelicopterAdapter := preload("res://sim/native/helicopter_stage_adapter.gd")
+const StageConfig := preload("res://sim/native/stage_config.gd")
 const NativePackage := preload("res://app_state/native_package.gd")
 
 const EXTENSION_PATH := "res://native/kernel/openrc_native_kernel.gdextension"
@@ -23,8 +25,8 @@ const LIBRARY_FILE := "libopenrc_native_kernel.so"
 const RECEIPT_FORMAT := "openrc-native-kernel-receipt"
 const BACKEND_REFERENCE := "gdscript_reference"
 const BACKEND_NATIVE := "native"
-const BACKEND_VERSION := "openrc-native-kernel-stage-v1"
-const ABI_VERSION := 1
+const BACKEND_VERSION := "openrc-native-kernel-stage-v2"
+const ABI_VERSION := 2
 const NATIVE_CLASS := "OpenRCNativeKernel"
 const REFERENCE_STAGE_METHOD := &"_wheel_evaluate"
 # Match research/native-kernel/build.py: no feature override or dependency may select unchecked code.
@@ -58,12 +60,15 @@ var _prepared := false
 var _installed := false
 var _reference_stage := Callable()
 var _reference_pre_tick := Callable()
+var _reference_loads := Callable()
+var _reference_rotor := Callable()
+var _body_only := false
 var _installed_model: RefCounted = null
 var _config := {}
-var _weather: RefCounted = null
-var _mass := 0.0
-var _inertia := PackedFloat64Array()
-var _turbulence := Callable()
+var _configuration_identity: RefCounted
+var _weather_identity: RefCounted
+var _family := ""
+
 
 
 ## {ok, reason}: the library is installed, matches its receipt and loaded (checked once per process).
@@ -99,14 +104,21 @@ func is_installed() -> bool:
 
 
 func owns_stage(session: Node) -> bool:
-	return _installed and session.sim.model == _installed_model \
-		and session.sim.model.stage == Callable(_native, "stage")
+	if not _installed or session.sim.model != _installed_model: return false
+	if _body_only:
+		return not _installed_model.stage.is_valid() and _installed_model.loads == Callable(_native, "body_loads") \
+			and _installed_model.rotor_momentum == Callable(_native, "body_rotor")
+	return _installed_model.stage == Callable(_native, "stage")
 
 
 ## Detach without changing this helper. A transaction can restore its pointer and original model on refusal.
 func restore_reference_callback(session: Node) -> void:
 	if owns_stage(session):
-		_installed_model.stage = _reference_stage
+		if _body_only:
+			_installed_model.loads = _reference_loads
+			_installed_model.rotor_momentum = _reference_rotor
+		else:
+			_installed_model.stage = _reference_stage
 		if _reference_pre_tick.is_valid():
 			_installed_model.pre_tick = _reference_pre_tick
 
@@ -114,76 +126,132 @@ func restore_reference_callback(session: Node) -> void:
 ## Once per tick, no serialization, hashing or native decoding. Detect bypassed configuration setters and
 ## in-place model edits before the prepared native equations can read stale data. Normal setters rebuild once.
 func configuration_matches(session: Node) -> bool:
-	return owns_stage(session) and _config.model == session.aircraft.model \
-		and _config.surfaces == session.ground_surfaces and _config.lake == session._lake \
-		and _config.hull == session._hull_contact and _config.soft_hull == session.soft_hull_contacts \
-		and _config.ground_effect_reach == session._ground_effect_reach \
-		and _mass == session.sim.mass and _inertia == session.sim.inertia \
-		and _weather == session._weather and _weather.is_calm() and not _weather.has_turbulence() \
-		and not _weather.has_vertical_atmosphere() and _config.density == session.air_density() \
-		and _turbulence == session.environment.turbulence \
-		and not session._weather_pending_reset and not session._shaft_pending_reset \
-		and not session.shaft_is_coupled()
+	return owns_stage(session) and _native.weather_guard_matches(session) \
+		and _native.configuration_guard_matches(session)
 
+
+## A refused transaction may restore equal values into new containers. Rebind
+## their identities against the original immutable preparation snapshot; never
+## recapture the live values as a new configuration.
+func restore_configuration_guard(session: Node) -> bool:
+	if not owns_stage(session) or not _native.weather_guard_matches(session):
+		return false
+	var installed: Callable = _installed_model.stage
+	_installed_model.stage = _configuration_identity.reference_stage
+	var restored: Dictionary = _native.prepare_configuration_guard(session, _configuration_identity)
+	_installed_model.stage = installed
+	return restored.get("ok", false) and configuration_matches(session)
+
+
+func last_failure() -> String:
+	if _native == null: return reason
+	return str(_native.heli_last_failure()) if _family == "helicopter" else reason
+
+
+func stage_stats() -> Dictionary:
+	return _native.stage_stats() if _native != null else {stage_calls = 0, context_calls = 0}
 
 ## Decode the session's committed aircraft, field, lake, hull, layout and weather into the native stage.
 ## {ok, reason}; a refusal leaves the session untouched and records `reason`.
 func prepare(session: Node) -> Dictionary:
 	_prepared = false
-	if _installed:
-		return _refuse("uninstall before preparing again")
+	if _installed: return _refuse("uninstall before preparing again")
 	var status := library_status()
-	if not status.ok:
-		return _refuse(status.reason)
+	if not status.ok: return _refuse(status.reason)
 	var source_error := _mirrored_source_error()
-	if not source_error.is_empty():
-		return _refuse(source_error)
+	if not source_error.is_empty(): return _refuse(source_error)
 	if session == null or session.get("sim") == null or not session.aircraft.get("ok", false):
 		return _refuse("no committed aircraft and simulation")
-	if _native == null:
-		_native = ClassDB.instantiate(NATIVE_CLASS)
+	if _native == null: _native = ClassDB.instantiate(NATIVE_CLASS)
 	var identity: Dictionary = _native.backend_identity()
-	if identity.get("aero_law") != Aero.LOADS_LAW or identity.get("rolling_law") != Wheels.ROLLING_LAW:
-		return _refuse("native law identities differ from the loaded GDScript laws")
-	var config := config_for(session)
-	var result: Dictionary = _native.prepare_stage(config)
-	if not result.ok:
-		return _refuse("native stage refused: " + str(result.error))
+	if identity.get("backend_version") != BACKEND_VERSION or identity.get("abi_version") != ABI_VERSION \
+			or identity.get("aero_law") != Aero.LOADS_LAW or identity.get("rolling_law") != Wheels.ROLLING_LAW:
+		return _refuse("native contract differs from the loaded application")
+	var boundary: Dictionary
+	var result: Dictionary
+	if session.get_script() == load("res://sim/helicopter_flight_session.gd"):
+		_family = "helicopter"
+		boundary = NativeConfiguration.prepare_helicopter(session)
+		if not boundary.get("ok", false): return _refuse(str(boundary.get("reason", "helicopter configuration refused")))
+		result = _native.prepare_heli_stage(boundary.snapshot, boundary.weather)
+		_config = boundary.snapshot
+	elif session.get_script() == load("res://sim/flight_session.gd"):
+		var builder: Callable
+		if session.glow_is_active():
+			_family = "glow"
+			builder = GlowAdapter.config_for
+		elif session.liquid_fuel_is_active():
+			_family = "liquid"
+			builder = LiquidAdapter.config_for
+		elif Propulsion.is_electric(session.aircraft.model.propulsion):
+			_family = "electric"
+			builder = ElectricAdapter.config_for
+		elif not PrescribedAdapter.kind_for(session).is_empty():
+			_family = "prescribed"
+			builder = PrescribedAdapter.config_for
+		else:
+			_family = "wheel"
+			builder = WeatherAdapter.config_for
+		boundary = NativeConfiguration.prepare(session, builder)
+		if not boundary.get("ok", false): return _refuse(str(boundary.get("reason", "aircraft configuration refused")))
+		result = _native.prepare_stage(boundary.config)
+		_config = boundary.config
+	else:
+		return _refuse("unsupported session owner")
+	if not result.get("ok", false): return _refuse("native stage refused: " + str(result.get("error", "invalid prepared source")))
+	_configuration_identity = boundary.identity
+	_weather_identity = boundary.weather_identity
+	var weather_guard: Dictionary = _native.prepare_weather_guard(session, _weather_identity)
+	var configuration_guard: Dictionary = _native.prepare_configuration_guard(session, _configuration_identity)
+	if not weather_guard.get("ok", false) or not configuration_guard.get("ok", false):
+		return _refuse("native preparation identity changed before installation")
 	_prepared = true
-	_config = config.duplicate(true)
-	_weather = session._weather
-	_mass = session.sim.mass
-	_inertia = session.sim.inertia.duplicate()
-	_turbulence = session.environment.turbulence
 	reason = ""
 	return {ok = true, reason = ""}
 
-
-## Swap the session's reference stage for the prepared native stage. Returns the previous stage Callable, or an
-## invalid Callable (nothing changed) when not prepared or the session's stage is not the reference wheel stage.
+## Swap the session's reference callbacks for the prepared native evaluator. Returns the previous stage Callable,
+## which may be empty on a successful body-only/split installation; use is_installed() to check success.
 ## A session that owns this helper (`session._native_stage == self`) calls tick_context() from `_kernel_pre_step`;
 ## for any other helper (research, tests, an unpatched session) `pre_tick` is wrapped to hand over the same context.
 func install(session: Node) -> Callable:
-	if not _prepared or _installed:
-		return Callable()
+	if not _prepared or _installed: return Callable()
 	var model: RefCounted = session.sim.model
-	if model.stage.get_object() != session or model.stage.get_method() != REFERENCE_STAGE_METHOD:
-		reason = "the session's stage is not the reference _wheel_evaluate"
+	if model.stage != _configuration_identity.reference_stage \
+			or not _native.weather_guard_matches(session) or not _native.configuration_guard_matches(session):
+		reason = "prepared reference owner or configuration changed before installation"
 		return Callable()
 	_reference_stage = model.stage
+	_body_only = session.sim.continuous.is_empty()
+	_reference_loads = model.loads
+	_reference_rotor = model.rotor_momentum
 	if session.get("_native_stage") != self:
 		_reference_pre_tick = model.pre_tick
 		var inner: Callable = _reference_pre_tick
 		model.pre_tick = func(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> Variant:
-			var next: Variant = inner.call(aux, inputs, dt)
-			if next is PackedFloat64Array:
-				tick_context(session, next, inputs)
+			if not configuration_matches(session): return PackedFloat64Array()
+			var next: Variant = inner.call(aux, inputs, dt) if inner.is_valid() else aux
+			if next is PackedFloat64Array and not tick_context(session, next, inputs): return PackedFloat64Array()
 			return next
-	model.stage = Callable(_native, "stage")
+	if _body_only:
+		model.loads = Callable(_native, "body_loads")
+		model.rotor_momentum = Callable(_native, "body_rotor")
+	if _body_only or _reference_pre_tick.is_valid():
+		# Capture every retained callback before the stage swap. Body-only native
+		# loads and rotor callbacks replace their reference owners here.
+		_configuration_identity.vehicle_values = NativeConfiguration._capture(model, NativeConfiguration.VEHICLE_FIELDS)
+		var rebound: Dictionary = _native.prepare_configuration_guard(session, _configuration_identity)
+		if not rebound.get("ok", false):
+			if _reference_pre_tick.is_valid(): model.pre_tick = _reference_pre_tick
+			if _body_only:
+				model.loads = _reference_loads
+				model.rotor_momentum = _reference_rotor
+			_reference_pre_tick = Callable()
+			reason = "cannot retain the native tick handoff owner"
+			return Callable()
+	if not _body_only: model.stage = Callable(_native, "stage")
 	_installed_model = model
 	_installed = true
 	return _reference_stage
-
 
 ## Restore the reference stage (and pre_tick if it was wrapped). Returns the stage Callable that was in place.
 func uninstall(session: Node) -> Callable:
@@ -194,6 +262,9 @@ func uninstall(session: Node) -> Callable:
 	restore_reference_callback(session)
 	_reference_stage = Callable()
 	_reference_pre_tick = Callable()
+	_reference_loads = Callable()
+	_reference_rotor = Callable()
+	_body_only = false
 	_installed = false
 	_prepared = false
 	_installed_model = null
@@ -203,48 +274,27 @@ func uninstall(session: Node) -> Callable:
 
 ## Per-tick context, once per kernel tick after the pre-step: the aux the kernel installs, the inputs, the
 ## session's own deflections for that aux and the tick's time. No-op while the reference stage is in use.
-func tick_context(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64Array, time_now := NAN) -> void:
-	if not _installed:
-		return
-	var deflections: Dictionary = session._deflections(aux)
-	_native.set_tick_context(aux, inputs, PackedFloat64Array([deflections.elevator, deflections.aileron_right,
-		deflections.aileron_left, deflections.rudder]), session.sim.time() if is_nan(time_now) else time_now)
-
+func tick_context(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64Array, time_now := NAN) -> bool:
+	if not _installed: return false
+	var at: float = session.sim.time() if is_nan(time_now) else time_now
+	var accepted := false
+	match _family:
+		"helicopter": accepted = _native.set_heli_tick_context(HelicopterAdapter.tick(session, inputs))
+		"electric": accepted = ElectricAdapter.set_context(session, _native, aux, inputs, at)
+		"liquid": accepted = LiquidAdapter.set_context(session, _native, aux, inputs, at)
+		"glow": accepted = GlowAdapter.set_context(session, _native, aux, inputs, at)
+		"prescribed": accepted = PrescribedAdapter.set_context(session, _native, aux, inputs, at)
+		"wheel":
+			var d: Dictionary = session._deflections(aux)
+			accepted = _native.set_tick_context(aux, inputs,
+				PackedFloat64Array([d.elevator, d.aileron_right, d.aileron_left, d.rudder, d.get("flap", 0.0)]), at)
+	if not accepted: reason = "native tick context refused"
+	return accepted
 
 ## prepare_stage() input: committed model, gear, surface table, lake, prepared hull, layout, density and
-## ground-effect reach, plus every session capability the native stage does not port (each must be false).
+## ground-effect reach and explicit capability flags; family adapters add their validated source snapshots.
 static func config_for(session: Node) -> Dictionary:
-	var sim: Node = session.sim
-	var model: Dictionary = session.aircraft.model
-	var prop: Dictionary = model.propulsion
-	var lake: Dictionary = session._lake
-	var weather: RefCounted = session._weather
-	var constants: Dictionary = session.get_script().get_script_constant_map()
-	var stage_method: StringName = sim.model.stage.get_method() if sim.model.stage.is_valid() else &""
-	return {
-		model = model,
-		gear = session.current_landing_gear(sim.aux),
-		surfaces = session.ground_surfaces,
-		lake = lake,
-		lake_valid = lake.is_empty() or LakeSurface.is_valid_definition(lake),
-		hull = session._hull_contact,
-		soft_hull = session.soft_hull_contacts,
-		density = session.air_density(),
-		ground_effect_reach = session._ground_effect_reach,
-		layout = {aux_size = sim.aux.size(), rpm = int(constants.get("AUX_RPM", -1)),
-			servo = int(constants.get("AUX_SERVO", -1)), anchors = int(constants.get("AUX_ANCHORS", -1)),
-			anchor_count = session.anchor_count(), downwash = session.downwash_index(),
-			wheel_count = session.wheel_count(), rotor_index = session._rotor_index(), wheel_index = session.wheel_index(),
-			brake_input = session.wheel_brake_input_index(), input_count = sim.inputs.size()},
-		retractable = session.gear_is_retractable(), glow = session.glow_is_active(),
-		coupled = session.shaft_is_coupled(), turbine = Turbine.is_turbine(prop) or session.turbine_is_continuous(),
-		liquid = session.liquid_fuel_is_active(), finite_fuel = session.finite_fuel_is_active(),
-		flaps = session.flaps_available(), spatial_weather = weather.is_spatial(),
-		turbulence = weather.has_turbulence(), vertical_atmosphere = weather.has_vertical_atmosphere(),
-		weather_pending_reset = session._weather_pending_reset, not_calm = not weather.is_calm(),
-		slipstream = not prop.get("slipstream", {}).is_empty(),
-		rotor_dynamics = Propulsion.has_rotor_dynamics(prop) or stage_method != REFERENCE_STAGE_METHOD,
-	}
+	return StageConfig.config_for(session)
 
 
 func _refuse(why: String) -> Dictionary:

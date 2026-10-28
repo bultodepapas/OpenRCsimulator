@@ -5,7 +5,7 @@
 extends "stage_oracle.gd"
 
 const WeatherConfig := preload("res://physics/wind_config.gd")
-const WeatherAdapter := preload("weather_adapter.gd")
+const WeatherAdapter := preload("res://sim/native/weather_adapter.gd")
 const WindFlow := preload("res://physics/wind_aircraft_flow.gd")
 
 
