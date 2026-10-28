@@ -133,5 +133,61 @@ class EnginePatchTests(unittest.TestCase):
         self.assertEqual(outer_file.read_bytes(), b"outer repository work\n")
 
 
+class DLSSHistoryResetTests(unittest.TestCase):
+    def test_per_context_success_acknowledges_captured_generation(self) -> None:
+        compiler = shutil.which("g++") or shutil.which("clang++")
+        if not compiler:
+            self.skipTest("A C++ compiler is required for the DLSS history state test")
+
+        # Compile the actual state helper added by the engine patch. The surrounding
+        # integration is exercised separately by the rendered repro fixture.
+        patch = Path(__file__).with_name("dlss_history_reset.patch").read_text(encoding="utf-8")
+        added = "\n".join(line[1:] for line in patch.splitlines() if line.startswith("+") and not line.startswith("+++"))
+        begin, end = "// BEGIN DLSS HISTORY RESET STATE", "// END DLSS HISTORY RESET STATE"
+        self.assertEqual(added.count(begin), 1)
+        self.assertEqual(added.count(end), 1)
+        state = added[added.index(begin):added.index(end) + len(end)]
+        program = """#include <cassert>
+#include <cstdint>
+""" + state + """
+int main() {
+    DLSSHistoryResetState a, b;
+    // No evaluation occurs during warmup or a rejected/failed callback.
+    assert(a.should_reset(2));
+    assert(a.should_reset(2));
+    assert(b.should_reset(1));
+    // The first successful callback coalesces requests for A only.
+    a.evaluated(2);
+    assert(!a.should_reset(2));
+    assert(b.should_reset(1));
+    b.evaluated(1);
+    assert(!b.should_reset(1));
+    // A queued frame carries generation 2; a newer request is generation 3.
+    assert(!a.should_reset(2));
+    assert(a.should_reset(3));
+    a.evaluated(2);
+    assert(a.should_reset(3));
+    assert(!b.should_reset(1));
+    a.evaluated(3);
+    assert(!a.should_reset(3));
+    // A stale completion cannot roll back a newer success.
+    a.evaluated(2);
+    assert(!a.should_reset(3));
+    // A replacement context must reset on its own first evaluation.
+    DLSSHistoryResetState recreated;
+    assert(recreated.should_reset(3));
+    recreated.evaluated(3);
+    assert(!recreated.should_reset(3));
+}
+"""
+        with tempfile.TemporaryDirectory(prefix="dlss-history-state-test-") as temporary:
+            source = Path(temporary) / "state.cpp"
+            binary = Path(temporary) / ("state.exe" if __import__("os").name == "nt" else "state")
+            source.write_text(program, encoding="utf-8")
+            subprocess.run([compiler, "-std=c++17", "-Wall", "-Wextra", "-Werror", str(source), "-o", str(binary)],
+                           check=True, capture_output=True)
+            subprocess.run([str(binary)], check=True, capture_output=True)
+
+
 if __name__ == "__main__":
     unittest.main()

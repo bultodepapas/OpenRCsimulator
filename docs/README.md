@@ -20,6 +20,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Performance/visual implementation order, gates and idea decisions | [Global implementation plan](plans/global-performance-visual-quality.md); [dated research and sources](research/godot-global-review-2026-10-14.md) |
 | Apple Silicon M1–M5 performance, native Metal comparisons and sustained 1080p qualification | [Apple Silicon performance plan](plans/apple-silicon-performance.md); [twenty investigations, 2026-10-24](research/desktop-delivery-investigations/DT-MAC-00-R1/README.md) |
 | Advanced graphics, isolated Forward+ comparison and proposed High profile | [VQ-07 upgrade plan](plans/advanced-graphics.md); [source audit, 2026-10-21](research/advanced-graphics-2026-10-21/README.md) |
+| AMD FSR completion, latest SDK integration and separate frame generation | [VQ-07d/h FSR completion plan](plans/amd-fsr-completion.md); [release/source audit, 2026-10-28](research/advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md) |
 | Aircraft format, fields, conventions and extension rules | [AIRCRAFT_CONTRACT](AIRCRAFT_CONTRACT.md) |
 | Reusable Blender developer handoff for new airplanes and all their skins | [Blender aircraft delivery](BLENDER-AIRCRAFT-DELIVERY.md) |
 | Landscape folders, field data, adapters, registration and validation | [Landscape contributor guide](LANDSCAPES.md); [selection plan](plans/landscape-selection.md) |

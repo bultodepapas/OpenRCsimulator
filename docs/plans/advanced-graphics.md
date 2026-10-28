@@ -8,6 +8,12 @@ VQ-07d/h for immediate work and supersedes their earlier vendor deferral. Keep t
 custom engine and package separate from the official engine; broader performance,
 motion-quality and release gates still apply. [Native integration guide](../../tools/graphics/native/README.md).
 
+**AMD planning request, 2026-10-28:** the [FSR completion plan](amd-fsr-completion.md)
+owns the remaining VQ-07d/h AMD substeps, including SDK2.4 Vulkan upscaling,
+FSR4 and separate frame-generation integration. Its [dated audit](../research/advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md)
+supersedes older SDK2.3 API restrictions. These are pending implementation and
+qualification tasks; RR/radiance caching retain separate renderer prerequisites.
+
 Make OpenRC look substantially more convincing while flying: recognizable aircraft materials, stable vegetation, coherent sunlight and atmosphere, convincing ground contact, and smooth motion. Use modern rendering where it improves those outcomes. “AAA quality” is an ambition, not an acceptance metric or a promise of a particular technology.
 
 **Execution order:** freeze a usable baseline → resolve attributed pacing/loading blockers → prioritize the selected Compatibility work in its owning order. A bounded, isolated Forward+ study may then answer parity/cost questions; only justified candidates advance to combined qualification and accepted settings. Retain Compatibility whenever the renderer study fails its stop/go gates. RTX, neural rendering and frame generation remain deferred.

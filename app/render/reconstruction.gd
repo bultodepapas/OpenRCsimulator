@@ -36,6 +36,8 @@ const DLSS_CAPABILITY := "STREAMLINE_CAPABILITY_DLSS"
 const POLICY_META := &"openrc_reconstruction"
 const CONFIG_META := &"openrc_reconstruction_config"
 const RUNTIME_FAILURE_META := &"openrc_reconstruction_runtime_failure"
+const HISTORY_RESET_META := &"openrc_reconstruction_history_reset"
+const HISTORY_RESET_METHOD := &"viewport_request_temporal_history_reset"
 
 
 ## High is the gate for every optional reconstruction provider.
@@ -214,6 +216,25 @@ static func guard_runtime_failure(viewport: Viewport, backend_status: Dictionary
 	return true
 
 
+## Discontinuities invalidate history; ordinary camera movement must not call this.
+## Submission is not SDK acknowledgement. The native backend reports successful resets.
+static func request_history_reset(viewport: Viewport, reason: String, backend: Object = null) -> bool:
+	if not is_instance_valid(viewport):
+		return false
+	var previous: Dictionary = viewport.get_meta(HISTORY_RESET_META, {})
+	var receipt := {"notifications": int(previous.get("notifications", 0)) + 1,
+		"submitted": int(previous.get("submitted", 0)), "last_reason": reason.left(80)}
+	var target: Object = RenderingServer if backend == null else backend
+	var policy: Dictionary = viewport.get_meta(POLICY_META, {})
+	var supported := is_instance_valid(target) and target.has_method(HISTORY_RESET_METHOD)
+	var submit: bool = supported and policy.get("provider", "native") == "dlss" and viewport.get_viewport_rid().is_valid()
+	if submit:
+		target.call(HISTORY_RESET_METHOD, viewport.get_viewport_rid())
+		receipt.submitted += 1
+	viewport.set_meta(HISTORY_RESET_META, receipt)
+	return submit
+
+
 static func describe(viewport: Viewport) -> Dictionary:
 	var policy: Dictionary = viewport.get_meta(POLICY_META, resolve("native", runtime_capabilities())).duplicate(true)
 	var config: Variant = viewport.get_meta(CONFIG_META, {})
@@ -221,6 +242,8 @@ static func describe(viewport: Viewport) -> Dictionary:
 	if typeof(config) == TYPE_DICTIONARY:
 		reflex_request = str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE))
 	policy["nvidia_reflex"] = NvidiaReflex.describe(reflex_request)
+	policy["history_reset"] = viewport.get_meta(HISTORY_RESET_META, {"notifications": 0, "submitted": 0, "last_reason": ""}).duplicate(true)
+	policy.history_reset["api_available"] = RenderingServer.has_method(HISTORY_RESET_METHOD)
 	policy["scaling_3d_mode"] = viewport.scaling_3d_mode
 	policy["scale"] = viewport.scaling_3d_scale
 	policy["msaa_3d"] = viewport.msaa_3d
