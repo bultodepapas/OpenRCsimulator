@@ -5,8 +5,61 @@ const Log := preload("res://sim/flight_log.gd")
 const Flight := preload("res://sim/flight_session.gd")
 const Data := preload("res://physics/aircraft_data.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const REFERENCE_STAGE_BACKEND := "gdscript_reference"
+const NATIVE_STAGE_BACKEND := "native"
+const STAGE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v14"
 var options := {}
 var report := {status = "error", error = "Not started", format = "openrc-flight-log-report v1"}
+
+
+## Current tools can be rebound to older solvers whose FlightSession has no backend API.
+static func _session_stage_backend(session: Object) -> Variant:
+	return session.call("stage_backend_identity") if session.has_method("stage_backend_identity") \
+		else {backend = REFERENCE_STAGE_BACKEND}
+
+
+static func _valid_stage_backend(identity: Variant) -> bool:
+	if not identity is Dictionary or typeof(identity.get("backend")) != TYPE_STRING:
+		return false
+	if identity.backend == REFERENCE_STAGE_BACKEND:
+		return identity.size() == 1
+	if identity.backend != NATIVE_STAGE_BACKEND or identity.size() != 6 \
+			or typeof(identity.get("backend_version")) != TYPE_STRING or identity.backend_version.is_empty() \
+			or typeof(identity.get("abi_version")) != TYPE_INT or identity.abi_version <= 0:
+		return false
+	for key: String in ["binary_sha256", "source_sha256", "lock_sha256"]:
+		if typeof(identity.get(key)) != TYPE_STRING or identity[key].length() != 64 \
+				or not identity[key].is_valid_hex_number():
+			return false
+	return true
+
+
+## A missing identity is a historical reference log. A present one must be well formed and
+## agree with the native checkpoint wrapper, including when a candidate replay unwraps it.
+static func recorded_stage_backend(header: Dictionary) -> Dictionary:
+	var identity: Variant = header.get("stage_backend", {backend = REFERENCE_STAGE_BACKEND})
+	if not _valid_stage_backend(identity):
+		return {ok = false, error = "Invalid recorded stage backend identity."}
+	var checkpoint: Variant = header.get("checkpoint")
+	if not checkpoint is Dictionary:
+		return {ok = false, error = "Missing stage checkpoint."}
+	var native: bool = identity.backend == NATIVE_STAGE_BACKEND
+	var wrapped: bool = checkpoint.get("format") == STAGE_CHECKPOINT_FORMAT
+	if wrapped != native:
+		return {ok = false, error = "Stage backend and checkpoint wrapper disagree."}
+	if wrapped:
+		if typeof(checkpoint.get("stage_physics_format")) != TYPE_STRING \
+				or checkpoint.stage_physics_format.is_empty() or checkpoint.stage_physics_format == STAGE_CHECKPOINT_FORMAT \
+				or not _valid_stage_backend(checkpoint.get("stage_backend")) or checkpoint.stage_backend != identity:
+			return {ok = false, error = "Invalid native stage checkpoint identity."}
+	elif checkpoint.has("stage_physics_format") or checkpoint.has("stage_backend"):
+		return {ok = false, error = "Unexpected stage checkpoint fields."}
+	return {ok = true, identity = identity.duplicate(true)}
+
+
+static func solver_changed(recorded_solver: String, current_solver: String,
+		recorded_backend: Dictionary, current_backend: Dictionary) -> bool:
+	return recorded_solver != current_solver or recorded_backend != current_backend
 
 
 func _initialize() -> void:
@@ -42,12 +95,18 @@ func _run() -> void:
 		_finish(checked.error)
 		return
 	var header: Dictionary = checked.header
+	var recorded_backend: Dictionary = recorded_stage_backend(header).identity
+	var current_solver: String = Log.solver_identity()
+	# Export does not run a flight; compare to this tool's reference default until
+	# replay selects and verifies an actual stage below.
+	var current_backend := {backend = REFERENCE_STAGE_BACKEND}
 	report.merge({source = str(options.log), source_sha256 = FileAccess.get_sha256(options.log),
 		rows = checked.rows, first_tick = checked.first_tick, final_tick = checked.footer.final_tick,
 		dt_s = header.dt_s, complete = checked.complete, recovery_reason = checked.get("recovery_reason", ""), metadata = header.metadata, events = checked.events,
 		events_omitted = checked.get("events_omitted", 0),
-		baseline_solver_sha256 = header.solver_sha256, current_solver_sha256 = Log.solver_identity(),
-		solver_changed = header.solver_sha256 != Log.solver_identity(), baseline_build = header.build,
+		baseline_solver_sha256 = header.solver_sha256, current_solver_sha256 = current_solver,
+		solver_changed = solver_changed(header.solver_sha256, current_solver, recorded_backend, current_backend),
+		baseline_build = header.build, baseline_stage_backend = recorded_backend, current_stage_backend = current_backend,
 		observer_usec = checked.footer.observer_usec, peak_buffer_rows = checked.footer.peak_buffer_rows}, true)
 	var flight: Node = null
 	if options.has("replay"):
@@ -56,6 +115,9 @@ func _run() -> void:
 			_finish(prepared.error)
 			return
 		flight = prepared.flight
+		var active_backend: Dictionary = prepared.stage_backend
+		report.current_stage_backend = active_backend
+		report.solver_changed = solver_changed(header.solver_sha256, current_solver, recorded_backend, active_backend)
 		report.mode = "candidate" if options.has("candidate") else "exact"
 		report.candidate = str(options.get("candidate", ""))
 		report.candidate_identity = flight.aircraft.get("input_identity", {})
@@ -128,6 +190,8 @@ static func inspect(path: String, recover := false) -> Dictionary:
 		return {ok = false, error = "Unsupported flight-log header."}
 	for key in ["metadata", "checkpoint", "aircraft", "collision_world", "lake", "weather", "layout", "build"]:
 		if not header.get(key) is Dictionary: return {ok = false, error = "Missing header dictionary: " + key}
+	var backend := recorded_stage_backend(header)
+	if not backend.ok: return backend
 	for key in ["engine", "solver_sha256", "aircraft_path", "ground_field_id", "shaft_integrator"]:
 		if typeof(header.get(key)) != TYPE_STRING: return {ok = false, error = "Missing header string: " + key}
 	# GP-07c: logs recorded before the airframe friction table have no airframe_surfaces (soft ones are refused by the
@@ -233,6 +297,8 @@ static func validate_row(row: Variant, layout: Dictionary, tick: int) -> String:
 
 
 static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
+	var recorded_backend := recorded_stage_backend(header)
+	if not recorded_backend.ok: return recorded_backend
 	if header.engine != Engine.get_version_info().string:
 		return {ok = false, error = "Engine version differs; use the recorded engine."}
 	if candidate.is_empty() and (header.solver_sha256 == "unavailable-export" or Log.solver_identity() == "unavailable-export"):
@@ -244,6 +310,14 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 	var aircraft: Dictionary = header.aircraft if candidate.is_empty() else Data.load_file(candidate)
 	if not aircraft.get("ok", false): return {ok = false, error = "Candidate aircraft data invalid."}
 	var flight := Flight.new()
+	var requested_backend: String = str(recorded_backend.identity.backend) if candidate.is_empty() else REFERENCE_STAGE_BACKEND
+	if flight.has_method("setup_stage_backend"):
+		if not flight.call("setup_stage_backend", requested_backend):
+			flight.free()
+			return {ok = false, error = "Recorded stage backend could not be selected."}
+	elif requested_backend != REFERENCE_STAGE_BACKEND:
+		flight.free()
+		return {ok = false, error = "This solver cannot select the recorded native stage backend."}
 	flight.input_enabled = false
 	flight.crash_auto_restart = false
 	flight.soft_hull_contacts = header.soft_hull_contacts
@@ -256,8 +330,17 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 	var ready: bool = flight.setup_shaft_integrator(header.shaft_integrator) \
 		and flight.setup_weather(header.weather) and flight.set_collision_world(header.collision_world) and flight.set_lake_context(header.lake)
 	flight.reset()
+	var active_backend: Variant = _session_stage_backend(flight)
+	var expected_backend: Dictionary = recorded_backend.identity if candidate.is_empty() else {backend = REFERENCE_STAGE_BACKEND}
+	if not _valid_stage_backend(active_backend) or active_backend != expected_backend:
+		flight.free()
+		return {ok = false, error = "Selected stage backend does not match the recorded or requested identity."}
 	var checkpoint: Dictionary = header.checkpoint.duplicate(true)
 	if not candidate.is_empty():
+		if checkpoint.get("format") == STAGE_CHECKPOINT_FORMAT:
+			checkpoint.format = checkpoint.stage_physics_format
+			checkpoint.erase("stage_physics_format")
+			checkpoint.erase("stage_backend")
 		var candidate_checkpoint: Dictionary = flight.checkpoint()
 		if candidate_checkpoint.is_empty(): ready = false
 		else:
@@ -273,12 +356,15 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 	if not ready or not flight.restore_checkpoint(checkpoint):
 		flight.free()
 		return {ok = false, error = "Recorded configuration/checkpoint is incompatible with the selected aircraft or solver."}
+	if _session_stage_backend(flight) != expected_backend:
+		flight.free()
+		return {ok = false, error = "Stage backend changed while restoring the checkpoint."}
 	var recorded := input_names(header.layout, header.metadata)
 	var installed := input_names({inputs = flight.sim.inputs.size()}, flight.trace_meta())
 	if not recorded.ok or not installed.ok or recorded.names != installed.names:
 		flight.free()
 		return {ok = false, error = "Recorded input roles differ from the selected aircraft; replay refused."}
-	return {ok = true, flight = flight}
+	return {ok = true, flight = flight, stage_backend = expected_backend.duplicate(true)}
 
 
 static func disagreement(expected: Dictionary, actual: Dictionary) -> String:

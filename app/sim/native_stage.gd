@@ -36,6 +36,12 @@ var _prepared := false
 var _installed := false
 var _reference_stage := Callable()
 var _reference_pre_tick := Callable()
+var _installed_model: RefCounted = null
+var _config := {}
+var _weather: RefCounted = null
+var _mass := 0.0
+var _inertia := PackedFloat64Array()
+var _turbulence := Callable()
 
 
 ## {ok, reason}: the library is installed, matches its receipt and loaded (checked once per process).
@@ -70,6 +76,34 @@ func is_installed() -> bool:
 	return _installed
 
 
+func owns_stage(session: Node) -> bool:
+	return _installed and session.sim.model == _installed_model \
+		and session.sim.model.stage == Callable(_native, "stage")
+
+
+## Detach without changing this helper. A transaction can restore its pointer and original model on refusal.
+func restore_reference_callback(session: Node) -> void:
+	if owns_stage(session):
+		_installed_model.stage = _reference_stage
+		if _reference_pre_tick.is_valid():
+			_installed_model.pre_tick = _reference_pre_tick
+
+
+## Once per tick, no serialization, hashing or native decoding. Detect bypassed configuration setters and
+## in-place model edits before the prepared native equations can read stale data. Normal setters rebuild once.
+func configuration_matches(session: Node) -> bool:
+	return owns_stage(session) and _config.model == session.aircraft.model \
+		and _config.surfaces == session.ground_surfaces and _config.lake == session._lake \
+		and _config.hull == session._hull_contact and _config.soft_hull == session.soft_hull_contacts \
+		and _config.ground_effect_reach == session._ground_effect_reach \
+		and _mass == session.sim.mass and _inertia == session.sim.inertia \
+		and _weather == session._weather and _weather.is_calm() and not _weather.has_turbulence() \
+		and not _weather.has_vertical_atmosphere() and _config.density == session.air_density() \
+		and _turbulence == session.environment.turbulence \
+		and not session._weather_pending_reset and not session._shaft_pending_reset \
+		and not session.shaft_is_coupled()
+
+
 ## Decode the session's committed aircraft, field, lake, hull, layout and weather into the native stage.
 ## {ok, reason}; a refusal leaves the session untouched and records `reason`.
 func prepare(session: Node) -> Dictionary:
@@ -89,10 +123,16 @@ func prepare(session: Node) -> Dictionary:
 	var identity: Dictionary = _native.backend_identity()
 	if identity.get("aero_law") != Aero.LOADS_LAW or identity.get("rolling_law") != Wheels.ROLLING_LAW:
 		return _refuse("native law identities differ from the loaded GDScript laws")
-	var result: Dictionary = _native.prepare_stage(config_for(session))
+	var config := config_for(session)
+	var result: Dictionary = _native.prepare_stage(config)
 	if not result.ok:
 		return _refuse("native stage refused: " + str(result.error))
 	_prepared = true
+	_config = config.duplicate(true)
+	_weather = session._weather
+	_mass = session.sim.mass
+	_inertia = session.sim.inertia.duplicate()
+	_turbulence = session.environment.turbulence
 	reason = ""
 	return {ok = true, reason = ""}
 
@@ -118,6 +158,7 @@ func install(session: Node) -> Callable:
 				tick_context(session, next, inputs)
 			return next
 	model.stage = Callable(_native, "stage")
+	_installed_model = model
 	_installed = true
 	return _reference_stage
 
@@ -128,25 +169,24 @@ func uninstall(session: Node) -> Callable:
 		return Callable()
 	var model: RefCounted = session.sim.model
 	var previous: Callable = model.stage
-	model.stage = _reference_stage
-	if _reference_pre_tick.is_valid():
-		model.pre_tick = _reference_pre_tick
+	restore_reference_callback(session)
 	_reference_stage = Callable()
 	_reference_pre_tick = Callable()
 	_installed = false
 	_prepared = false
+	_installed_model = null
 	reason = "uninstalled"
 	return previous
 
 
 ## Per-tick context, once per kernel tick after the pre-step: the aux the kernel installs, the inputs, the
 ## session's own deflections for that aux and the tick's time. No-op while the reference stage is in use.
-func tick_context(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64Array) -> void:
+func tick_context(session: Node, aux: PackedFloat64Array, inputs: PackedFloat64Array, time_now := NAN) -> void:
 	if not _installed:
 		return
 	var deflections: Dictionary = session._deflections(aux)
 	_native.set_tick_context(aux, inputs, PackedFloat64Array([deflections.elevator, deflections.aileron_right,
-		deflections.aileron_left, deflections.rudder]), session.sim.time())
+		deflections.aileron_left, deflections.rudder]), session.sim.time() if is_nan(time_now) else time_now)
 
 
 ## prepare_stage() input: committed model, gear, surface table, lake, prepared hull, layout, density and

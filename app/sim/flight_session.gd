@@ -699,6 +699,66 @@ const RcInput := preload("res://input/rc_input.gd")
 const RcCalibration := preload("res://input/rc_calibration.gd")
 const Sim := preload("res://sim/simulation.gd")
 const VehicleModel := preload("res://sim/vehicle_model.gd")
+const NativeStage := preload("res://sim/native_stage.gd")
+const NATIVE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v14"
+
+var _stage_backend_requested := "gdscript_reference"
+var _native_stage: RefCounted = null
+var stage_backend_error := ""
+
+
+## Experimental launch-time choice. A live session cannot silently change solver identity.
+func setup_stage_backend(mode: String) -> bool:
+	if _reject_reset_publication_reentry(): return false
+	if sim != null or mode not in [NativeStage.BACKEND_REFERENCE, NativeStage.BACKEND_NATIVE]:
+		stage_backend_error = "stage backend must be native or gdscript_reference and selected before setup"
+		return false
+	_stage_backend_requested = mode
+	stage_backend_error = ""
+	return true
+
+
+func stage_backend_identity() -> Dictionary:
+	return _native_stage.backend_identity() if _native_stage != null and _native_stage.owns_stage(self) \
+		else NativeStage.reference_identity()
+
+
+func stage_backend_status() -> Dictionary:
+	return {requested = _stage_backend_requested, identity = stage_backend_identity(), reason = stage_backend_error}
+
+
+## Fresh candidate, never mutate the helper retained by an uncommitted start transaction. Called only outside
+## kernel evaluation/publication, after the complete aircraft/environment/layout revision has been staged.
+func _prepare_stage_backend(time_now := NAN) -> void:
+	if _native_stage != null:
+		_native_stage.restore_reference_callback(self)
+	_native_stage = null
+	stage_backend_error = ""
+	if _stage_backend_requested != NativeStage.BACKEND_NATIVE or sim == null or not aircraft.get("ok", false):
+		return
+	# Production opt-in is bounded by the qualified stock aircraft; the research adapter still tests components.
+	if aircraft.model.get("id", "") != "jensen-das-ugly-stik-60" or not workshop_identity.is_empty() \
+			or aircraft.get("input_identity", {}).get("sha256", "") != FileAccess.get_sha256(Scenarios.AIRCRAFT):
+		stage_backend_error = "native stage currently qualifies only the stock Ugly Stik"
+		return
+	var candidate := NativeStage.new()
+	var prepared: Dictionary = candidate.prepare(self)
+	if not prepared.ok:
+		stage_backend_error = str(prepared.reason)
+		return
+	_native_stage = candidate # selects the session-owned tick hook, rather than the research pre_tick wrapper
+	if not candidate.install(self).is_valid():
+		stage_backend_error = candidate.reason
+		_native_stage = null
+		return
+	candidate.tick_context(self, sim.aux, sim.inputs, time_now)
+
+
+func _refresh_stage_backend() -> void:
+	if sim != null and not _reset_transaction_active and _stage_backend_requested == NativeStage.BACKEND_NATIVE:
+		_prepare_stage_backend()
+
+
 const Scenarios := preload("res://sim/scenarios.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const M := preload("res://physics/math3d.gd")
@@ -1014,7 +1074,7 @@ const _START_OWNER_FIELDS := ["_weather", "fuel_start_fill", "input_enabled", "a
 	"_contact_tick", "_contact_events", "_active_hull_ids", "_soft_contacts_cache_tick",
 	"_soft_contacts_cache_previous", "_soft_contacts_cache_state", "_pending_contact_tick", "_pending_crash",
 	"_pending_crash_state", "_pending_scenery_event", "_pending_lake_event", "_pending_scenery_damage", "_pending_scenery_tick",
-	"_out_of_trim", "_airframe_offset"]
+	"_out_of_trim", "_airframe_offset", "_native_stage", "stage_backend_error"]
 
 
 func _begin_start_transaction() -> Dictionary:
@@ -1211,8 +1271,10 @@ var _soft_contacts_cache_previous := PackedFloat64Array()
 var _soft_contacts_cache_state := PackedFloat64Array()
 var soft_hull_contacts := false:
 	set(value):
+		if _reject_reset_publication_reentry(): return
 		soft_hull_contacts = value
 		_soft_contacts_cache_tick = -1
+		_refresh_stage_backend()
 var _hull_contact := {}
 ## E3d1 presentation feed: the hull points touching after the latest tick (HullContact.contacts); read-only.
 var soft_contacts: Array = []
@@ -1249,6 +1311,7 @@ var ground_surfaces: PackedFloat64Array:
 		return environment.surfaces
 	set(value):
 		environment.surfaces = value
+		_refresh_stage_backend()
 ## H2: last deflections built by _deflections() and the servo positions they belong to (cleared with each aircraft).
 var _deflection_key := PackedFloat64Array()
 var _deflection_cache := {}
@@ -1262,6 +1325,7 @@ var airframe_surfaces: PackedFloat64Array:
 		_airframe_surfaces = value.duplicate()
 		if sim != null and aircraft.get("ok", false):
 			_hull_contact = _prepare_hull_contact()
+		_refresh_stage_backend()
 var _airframe_surfaces := PackedFloat64Array()
 ## The field id the surfaces came from ("" = none: pavement), and why they could not be built ("" = fine).
 var ground_field_id := ""
@@ -1709,6 +1773,7 @@ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> 
 	ground_field_id = str(field.get("id", "?"))
 	_runway_field = field.duplicate(true)
 	_field_installed = true
+	_refresh_stage_backend()
 	return true
 
 
@@ -1733,6 +1798,7 @@ func set_lake_context(normalized_lake: Dictionary) -> bool:
 	if sim != null and aircraft.get("ok", false):
 		_hull_contact = _prepare_hull_contact()
 	_sync_post_step()
+	_refresh_stage_backend()
 	return true
 
 
@@ -2017,6 +2083,7 @@ func _apply(data: Dictionary) -> bool:
 
 
 func _commit_aircraft(prepared: Dictionary) -> void:
+	_native_stage = null # the transaction retains the previous helper/model until commit or rollback
 	aircraft = prepared.data
 	_drop_tick_facts()
 	# SF-01: the session installs one VehicleModel. Propulsion and contact callbacks are configured on it below
@@ -2061,6 +2128,7 @@ func _configure_continuous_callbacks() -> void:
 
 ## Install only an already prepared callback set; this does not advance state.
 func _install_continuous_callbacks(prepared: Dictionary) -> void:
+	_native_stage = null
 	for field: String in PropulsionRuntime.CALLBACK_FIELDS:
 		sim.model.set(field, prepared[field])
 	if sim.model.stage.is_valid() and _substep_preview_supported():
@@ -3326,6 +3394,7 @@ func _reset_airborne_candidate(release := PackedFloat64Array(), release_throttle
 		aux[downwash_index()] = _wing_cl(initial, aux, 0.0) # E0a2b: start settled, no downwash transient
 	sim.aux = aux
 	sim.continuous = _settled_continuous(initial, aux)
+	_prepare_stage_backend(0.0)
 	var result := _commit_start_candidate(sim.prepare_reset(initial), transaction)
 	if result.get("committed", false):
 		_capture_launch(str(launch[0]), str(launch[1]), str(launch[2]), str(result.get("observer_fault", "")))
@@ -3457,6 +3526,7 @@ func _apply_runway_start(north: float, east: float, heading: float, supplied_tra
 		aux[downwash_index()] = _wing_cl(solved.state, aux, 0.0)
 	sim.aux = aux
 	sim.continuous = _settled_continuous(solved.state, aux)
+	_prepare_stage_backend(0.0)
 	var receipt := _commit_start_candidate(sim.prepare_reset(solved.state), transaction)
 	if not receipt.ok:
 		return {ok = false, status = "numerical_unresolved", message = "runway start: " + str(receipt.message), diagnostics = solved.get("diagnostics", {})}
@@ -4691,7 +4761,13 @@ var _fact_rotor_index := _FACT_UNKNOWN
 func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
 	_drop_tick_facts()
 	_facts_armed = true
-	return _pre_step(aux, inputs, dt)
+	if _native_stage != null and not _native_stage.configuration_matches(self):
+		stage_backend_error = "native prepared configuration changed outside an accepted boundary; reset required"
+		return PackedFloat64Array() # kernel rejects before any native stage can use stale coefficients
+	var next := _pre_step(aux, inputs, dt)
+	if _native_stage != null and next.size() == aux.size():
+		_native_stage.tick_context(self, next, inputs)
+	return next
 
 
 func _drop_tick_facts() -> void:
@@ -4954,6 +5030,7 @@ func trace_meta() -> Dictionary:
 	elif str(_launch_metadata.get("launch_kind", "")) == "checkpoint_restore":
 		scenario = "checkpoint replay (original launch unknown)"
 	var metadata: Dictionary = {
+		stage_backend = stage_backend_identity(),
 		metadata_schema = "openrc-flight-meta v2",
 		scenario = scenario,
 		selected_start_choice = _launch_metadata.get("selected_start_choice", start_choice),
@@ -5226,6 +5303,8 @@ func restore_checkpoint_json(text: String) -> bool:
 
 func checkpoint() -> Dictionary:
 	if not _flight_ready():
+		return {}
+	if _native_stage != null and not _native_stage.configuration_matches(self):
 		return {}
 	if gear_is_retractable() and (not _gear_aux_valid(sim.aux) or sim.inputs.size() != _input_count() \
 			or sim.inputs[4] not in [0.0, 1.0] or not RetractableGear.valid_fraction(sim.inputs[5])):

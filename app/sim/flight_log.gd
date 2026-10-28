@@ -36,6 +36,12 @@ func _init(session: Node) -> void:
 	_session = session
 
 
+func _stage_backend_identity() -> Variant:
+	# Older fixed-wing sessions predate selectable stage backends and always use the reference.
+	return _session.call("stage_backend_identity") if _session.has_method("stage_backend_identity") \
+		else {backend = "gdscript_reference"}
+
+
 func start(destination := "") -> Error:
 	if recording:
 		return ERR_ALREADY_IN_USE
@@ -43,6 +49,9 @@ func start(destination := "") -> Error:
 	var checkpoint: Dictionary = _session.checkpoint()
 	if checkpoint.is_empty() or not _session.physics_enabled:
 		return _failed("Flight log requires a valid fixed-wing checkpoint.", ERR_INVALID_DATA)
+	var stage_backend: Variant = _stage_backend_identity()
+	if not stage_backend is Dictionary:
+		return _failed("Flight log requires a valid stage backend identity.", ERR_INVALID_DATA)
 	path = destination
 	if path.is_empty():
 		path = "user://flight_logs/flight-%s-%d.orfl" % [Time.get_datetime_string_from_system(true).replace(":", "-"), Time.get_ticks_usec()]
@@ -68,6 +77,7 @@ func start(destination := "") -> Error:
 		kind = "header", format = FORMAT, created_utc = Time.get_datetime_string_from_system(true),
 		dt_s = _session.sim.dt(), engine = Engine.get_version_info().string,
 		build = BuildInfo.current(), solver_sha256 = solver_identity(),
+		stage_backend = stage_backend.duplicate(true),
 		metadata = _session.trace_meta(), checkpoint = checkpoint,
 		aircraft = _session.aircraft.duplicate(true), aircraft_path = _session.aircraft_path,
 		ground_surfaces = _session.ground_surfaces.duplicate(), ground_field_id = _session.ground_field_id,
@@ -151,6 +161,9 @@ func _boundary() -> Dictionary:
 func _before_step(_tick: int) -> void:
 	if not recording:
 		return
+	if _stage_backend_identity() != header.stage_backend:
+		_failed("Flight log stopped: the stage backend changed; file is incomplete.", ERR_INVALID_DATA)
+		return
 	var started := Time.get_ticks_usec()
 	_pending = {}
 	# Starter, engine cut and other out-of-tick edits are sparse interventions, never lost inputs.
@@ -188,6 +201,9 @@ static func _controls(value: Dictionary) -> PackedFloat64Array:
 
 func _stepped(tick: int, _t: float, _s: PackedFloat64Array, _l: PackedFloat64Array, _i: PackedFloat64Array, _a: PackedFloat64Array) -> void:
 	if not recording:
+		return
+	if _stage_backend_identity() != header.stage_backend:
+		_failed("Flight log stopped: the stage backend changed; file is incomplete.", ERR_INVALID_DATA)
 		return
 	var started := Time.get_ticks_usec()
 	if tick != _last_tick + 1:
