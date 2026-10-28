@@ -59,29 +59,60 @@ def write_csv(path: Path, rows: list[dict[str, object]], *, metadata: str = "") 
         writer.writerows(rows)
 
 
-def debrief_rows() -> list[dict[str, object]]:
+def debrief_rows(first_tick: int = 0, row_count: int = 5, dt_s: float = 0.1) -> list[dict[str, object]]:
     return [
         sample_row(
-            tick,
-            t_s=tick * 0.1,
-            loads_t_s=max(0, tick - 1) * 0.1,
-            down_m=10.0 - tick,
-            tas_mps=10.0 + tick,
-            alpha_rad=0.1 * tick,
-            beta_rad=-0.05 * tick,
-            p_radps=float(tick),
-            q_radps=float(-tick),
-            r_radps=float(tick) / 2.0,
-            cmd_roll=0.1 * tick,
-            cmd_pitch=-0.1 * tick,
-            srv_roll=0.08 * tick,
-            Fx_N=2.0 * tick,
+            first_tick + offset,
+            t_s=(first_tick + offset) * dt_s,
+            loads_t_s=max(0, first_tick + offset - 1) * dt_s,
+            down_m=10.0 - offset,
+            tas_mps=10.0 + offset,
+            alpha_rad=0.1 * offset,
+            beta_rad=-0.05 * offset,
+            p_radps=float(offset),
+            q_radps=float(-offset),
+            r_radps=float(offset) / 2.0,
+            cmd_roll=0.1 * offset,
+            cmd_pitch=-0.1 * offset,
+            srv_roll=0.08 * offset,
+            Fx_N=2.0 * offset,
         )
-        for tick in range(5)
+        for offset in range(row_count)
     ]
 
 
-def exact_replay_report(log_path: Path, events: list[dict[str, object]] | None = None) -> dict[str, object]:
+def write_debrief_csv(path: Path, first_tick: int, row_count: int, dt_s: float) -> None:
+    with path.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=HEADER, lineterminator="\n")
+        writer.writeheader()
+        for offset in range(row_count):
+            tick = first_tick + offset
+            writer.writerow(sample_row(
+                tick,
+                t_s=tick * dt_s,
+                loads_t_s=max(0, tick - 1) * dt_s,
+                down_m=10.0 - offset,
+                tas_mps=10.0 + offset,
+                alpha_rad=0.1 * offset,
+                beta_rad=-0.05 * offset,
+                p_radps=float(offset),
+                q_radps=float(-offset),
+                r_radps=float(offset) / 2.0,
+                cmd_roll=0.1 * offset,
+                cmd_pitch=-0.1 * offset,
+                srv_roll=0.08 * offset,
+                Fx_N=2.0 * offset,
+            ))
+
+
+def exact_replay_report(
+    log_path: Path,
+    events: list[dict[str, object]] | None = None,
+    *,
+    first_tick: int = 0,
+    row_count: int = 5,
+    dt_s: float = 0.1,
+) -> dict[str, object]:
     return {
         "format": "openrc-flight-log-report v1",
         "status": "ok",
@@ -93,12 +124,12 @@ def exact_replay_report(log_path: Path, events: list[dict[str, object]] | None =
         "source_sha256": hashlib.sha256(log_path.read_bytes()).hexdigest(),
         "baseline_solver_sha256": "a" * 64,
         "current_solver_sha256": "a" * 64,
-        "first_tick": 0,
-        "final_tick": 4,
-        "rows": 5,
-        "dt_s": 0.1,
+        "first_tick": first_tick,
+        "final_tick": first_tick + row_count - 1,
+        "rows": row_count,
+        "dt_s": dt_s,
         "metadata": {"aircraft_id": "fixture-aircraft"},
-        "events": events or [],
+        "events": events if events is not None else [],
         "events_omitted": 0,
     }
 
@@ -591,6 +622,116 @@ class FlightLogCommandTests(unittest.TestCase):
         self.assertEqual((prefix["endpoint_samples"], prefix["interval_samples"]), (3, 2))
         self.assertEqual((tail["endpoint_samples"], tail["interval_samples"]), (3, 2))
 
+    def test_debrief_supports_midflight_recording_tick_origin(self) -> None:
+        source = self.directory / "midflight.orfl"
+        source.write_bytes(b"source log fixture")
+        output = self.directory / "midflight-output"
+        first_tick = 1200
+        dt_s = 1.0 / 240.0
+        events = [{"tick": 1202, "kind": "marker", "detail": "marked maneuver"}]
+
+        def fake_run(command: list[str], **_kwargs: object) -> object:
+            self.assertIn("--replay", command)
+            write_csv(output / "flight.csv", debrief_rows(first_tick, 5, dt_s))
+            report = exact_replay_report(
+                source, events, first_tick=first_tick, row_count=5, dt_s=dt_s
+            )
+            (output / "replay.json").write_text(json.dumps(report), encoding="utf-8")
+            return type("Result", (), {"returncode": 0})()
+
+        with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
+            result = flight_log.main(
+                ["debrief", str(source), "--out", str(output), "--godot", str(self.godot)]
+            )
+
+        self.assertEqual(result, 0)
+        document = json.loads((output / "debrief.json").read_text(encoding="utf-8"))
+        flight = document["flight"]
+        self.assertEqual((flight["first_tick"], flight["final_tick"], flight["rows"]), (1200, 1204, 5))
+        self.assertAlmostEqual(flight["duration_s"], 4 * dt_s)
+        prefix, tail = flight["windows"]
+        self.assertEqual((prefix["start_tick"], prefix["end_tick"]), (1200, 1202))
+        self.assertEqual((tail["start_tick"], tail["end_tick"]), (1202, 1204))
+        self.assertAlmostEqual(prefix["loads_t_s_range"][0], 1200 * dt_s)
+        self.assertAlmostEqual(prefix["loads_t_s_range"][1], 1201 * dt_s)
+
+    def test_debrief_refuses_wrong_source_solver_and_candidate_provenance(self) -> None:
+        cases = (
+            ("candidate mode", {"mode": "candidate"}, "complete exact replay"),
+            ("source path", {"source": "/different/source.orfl"}, "source path"),
+            ("source hash", {"source_sha256": "b" * 64}, "flight log changed"),
+            ("solver changed", {"solver_changed": True}, "solver_changed=false"),
+            ("solver identity", {"current_solver_sha256": "b" * 64}, "identities differ"),
+        )
+        for label, changes, expected_error in cases:
+            with self.subTest(label=label):
+                source = self.directory / f"provenance-{label.replace(' ', '-')}.orfl"
+                source.write_bytes(b"source log fixture")
+                output = self.directory / f"provenance-{label.replace(' ', '-')}-output"
+
+                def fake_run(command: list[str], **_kwargs: object) -> object:
+                    self.assertIn("--replay", command)
+                    self.assertNotIn("--candidate", " ".join(command))
+                    write_csv(output / "flight.csv", debrief_rows())
+                    report = exact_replay_report(source)
+                    report.update(changes)
+                    (output / "replay.json").write_text(json.dumps(report), encoding="utf-8")
+                    return type("Result", (), {"returncode": 0})()
+
+                stderr = io.StringIO()
+                with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
+                    with contextlib.redirect_stderr(stderr):
+                        result = flight_log.main(
+                            ["debrief", str(source), "--out", str(output), "--godot", str(self.godot)]
+                        )
+                self.assertEqual(result, 2)
+                self.assertIn(expected_error, stderr.getvalue())
+                self.assertTrue((output / "flight.csv").is_file())
+                self.assertTrue((output / "replay.json").is_file())
+                self.assertFalse((output / "debrief.json").exists())
+
+    def test_debrief_reducer_memory_does_not_scale_with_row_count(self) -> None:
+        source = self.directory / "memory-source.orfl"
+        source.write_bytes(b"source log fixture")
+        dt_s = 1.0 / 240.0
+        peaks: list[tuple[int, int]] = []
+        for row_count in (1000, 20000):
+            with self.subTest(row_count=row_count):
+                first_tick = 0
+                csv_path = self.directory / f"memory-{row_count}.csv"
+                report_path = self.directory / f"memory-{row_count}.json"
+                write_debrief_csv(csv_path, first_tick, row_count, dt_s)
+                events = [{
+                    "tick": row_count // 2,
+                    "kind": "marker",
+                    "detail": "bounded memory marker",
+                }]
+                report = exact_replay_report(
+                    source, events, first_tick=first_tick, row_count=row_count, dt_s=dt_s
+                )
+                report_path.write_text(json.dumps(report), encoding="utf-8")
+                summary = flight_log.summarize_csv(csv_path)
+
+                tracemalloc.start()
+                try:
+                    document = flight_log._build_debrief(
+                        csv_path, source, report_path, report, summary
+                    )
+                    _current, peak = tracemalloc.get_traced_memory()
+                finally:
+                    tracemalloc.stop()
+                self.assertEqual(document["flight"]["rows"], row_count)
+                self.assertLess(peak, 4 * 1024 * 1024)
+                peaks.append((row_count, peak))
+
+        small_peak = peaks[0][1]
+        large_peak = peaks[1][1]
+        self.assertLessEqual(large_peak, small_peak + 1024 * 1024)
+        print(
+            f"debrief reducer peak bytes: {peaks[0][0]} rows={small_peak}, "
+            f"{peaks[1][0]} rows={large_peak}"
+        )
+
     def test_debrief_marker_at_recording_start_keeps_zero_duration_prefix(self) -> None:
         source = self.directory / "start-marker.orfl"
         source.write_bytes(b"source log fixture")
@@ -668,10 +809,11 @@ class FlightLogCommandTests(unittest.TestCase):
             ("out of order", [
                 {"tick": 3, "kind": "marker", "detail": "late"},
                 {"tick": 2, "kind": "marker", "detail": "early"},
-            ]),
-            ("outside", [{"tick": 5, "kind": "marker", "detail": "outside"}]),
+            ], "out of order"),
+            ("outside marker", [{"tick": 5, "kind": "marker", "detail": "outside"}], "outside"),
+            ("outside pause", [{"tick": 5, "kind": "pause", "detail": ""}], "outside"),
         )
-        for label, events in cases:
+        for label, events, expected_error in cases:
             with self.subTest(label=label):
                 source = self.directory / f"{label.replace(' ', '-')}.orfl"
                 source.write_bytes(b"source log fixture")
@@ -691,7 +833,7 @@ class FlightLogCommandTests(unittest.TestCase):
                             ["debrief", str(source), "--out", str(output), "--godot", str(self.godot)]
                         )
                 self.assertEqual(result, 2)
-                self.assertIn(label, stderr.getvalue())
+                self.assertIn(expected_error, stderr.getvalue())
                 self.assertTrue((output / "flight.csv").is_file())
                 self.assertTrue((output / "replay.json").is_file())
                 self.assertFalse((output / "debrief.json").exists())

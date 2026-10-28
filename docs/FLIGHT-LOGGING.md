@@ -1,6 +1,6 @@
 # Flight logging and replay
 
-Current fixed-wing workflow, checked 2026-10-19. Owner: physics/simulation, FL-01…04.
+Current fixed-wing workflow; marker debrief added 2026-10-28. Owner: physics/simulation, FL-01…05.
 Records fixed-wing flights for handling investigations. The existing **T** CSV trace,
 helicopter recorder and truck recorder retain their own contracts.
 
@@ -116,6 +116,54 @@ Export works independently of current solver identity. Exact replay currently
 requires available solver source fingerprints; compiled packages without source
 fingerprints must be analyzed from a matching source checkout, and compatibility
 is still checked rather than assumed.
+
+## Debrief marked maneuvers
+
+```powershell
+python tools/flight_log/flight_log.py debrief tmp/my-flight.orfl --out tmp/my-debrief
+```
+
+Use the same engine selection as replay (`--godot` or `GODOT`). The command first
+runs the existing **exact replay** and then writes `debrief.json` beside
+`flight.csv`, `replay.json` and `godot.log`. It needs a complete source log and
+its compatible engine/solver. Existing output directories are refused.
+`--timeout` bounds the Godot replay (default 300 seconds), not the subsequent
+offline CSV reduction. There is no candidate or recovered-prefix debrief mode.
+
+The `openrc-flight-debrief v1` document preserves the replay report, including
+aircraft/configuration metadata, solver identities and events, plus SHA-256 hashes
+of the source log, replayed CSV and replay report. The CLI produces its own
+checked artifacts; it does not certify an arbitrary supplied CSV/report pair.
+It refuses incomplete replay, omitted events, changed sources/solver identity,
+invalid marker order/range and inconsistent row counts, tick bounds or timestamps.
+On a reduction failure, retain the existing replay artifacts for diagnosis; no
+successful `debrief.json` is produced.
+
+F11 starts a marked inspection window. Equal-tick markers retain their ordered
+labels together. The report includes the unmarked prefix, intervals between
+distinct markers and the final marked tail. With no markers, it reports one
+unmarked flight. A marker on the first or last tick can create a zero-duration
+window with one state sample and no command intervals. A marker is the pilot's
+label, not an automatically recognized maneuver.
+
+- State statistics use **`[start_tick, end_tick]`**; adjacent windows share their
+  boundary state. Altitude is `-down_m` relative to the local NED datum, **not
+  terrain-relative AGL**. Other endpoint channels include TAS, alpha/beta and
+  body rates. Values include start/end, delta and min/max, with units in names.
+- Commands, sampled servos and loads use **`(start_tick, end_tick]`**. Row `k`
+  describes the command for `k−1→k`; the first endpoint's preceding command is
+  excluded. `loads_t_s_range` retains the loads' earlier sampling times. These
+  are sampled ranges, not extrema proven between simulation ticks.
+- `endpoint_samples` and `interval_samples` expose the distinction. State
+  endpoint counts overlap across windows; interval counts partition the flight.
+
+Debrief reads rows incrementally and keeps per-window accumulators; storage
+scales with the bounded marker list rather than the number of flight rows.
+It reports measurements from a numerical replay, without pilot grades, causal
+diagnoses, handling recommendations or physical-validation claims. Use the
+existing PlotJuggler workflow below to inspect curves. In-app coaching and
+candidate branching are future work in [MOONSHOT](../MOONSHOT.md#6-first-engineering-transformation-flight-intelligence-from-verified-flight-records).
+[FL-05 evidence](research/flight-logging/FL-05/README.md) records validation.
 
 ## Compare a physics change
 

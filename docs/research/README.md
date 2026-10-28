@@ -29,6 +29,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ## Whole-project audit
 
+- [Moonshot vision](../../MOONSHOT.md), researched 2026-10-28: [engine/world](moonshot/engine-world-2026-10-28.md), [physics/AI](moonshot/physics-ai-2026-10-28.md) and [product/platform](moonshot/product-platform-2026-10-28.md) investigations. Eight proposed transformations, engine alternatives and a six-phase year plan; first implementation evidence is FL-05 below.
 - [Debugging tools investigation, 2026-10-19](debugging-tools-2026-10-19.md) reviews 20 official, GitHub, Reddit and forum sources against local diagnostic gaps; records checked-run summaries, evidence integrity and performance-rerun preservation under PT1h-R2 / VQ-01b.
 - [Native kernel scoping, 2026-10-27](native-kernel-scoping-2026-10-27.md) sizes a GDExtension port of the simulation tick from the repository's native evidence: interface options with expected gains, determinism and delivery constraints, phases NK-0…8 and owner decisions D1–D8. Research only. First steps: the [NK-1 math spike](../../research/native-math-spike/README.md) (Linux: native math bit-identical to GDScript) and [NK-2a](native-kernel/NK-2a/README.md), a per-tick memo of the session's aircraft capability answers (identical fingerprints, session tick −8 to −16%). [NK-3 milestone 1](native-kernel/NK-3/README.md) ports the Stik's terrain, wheel and aero components to a GDExtension, bit-identical to the reference including NaN signs.
 - [Godot optimization scan, 2026-10-27](godot-optimization-scan-2026-10-27.md) collects CPU, profiling/loop and Compatibility-rendering techniques with sources, corrects two assumptions (alpha-to-coverage is a no-op and pipeline-compilation counters read 0 on Compatibility) and ranks a backlog by output risk and hardware need. Research only.
@@ -54,6 +55,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 ### Flight logging
 
 - [FL-01…04: flight logging design, sources and verification](flight-logging/FL-01/README.md); [current manual](../FLIGHT-LOGGING.md). Bounded fixed-wing recorder, exact replay, explicit candidate experiments and CSV analysis.
+- [FL-05: exact-replay marker debrief](flight-logging/FL-05/README.md). Offline descriptive windows with explicit state/command timing, complete replay and artifact identities; no pilot grading or physical validation.
 
 ### Flight-test battery
 

@@ -8,7 +8,7 @@ Keep Godot as the product engine for the next development year. Do not plan an U
 
 Retain the float64 `VehicleModel`/`Simulation` boundary and keep optional native evaluator work inside its current contract. That is already a useful portability seam. A fully engine-neutral simulation library remains a possible later investment, but it would require more than wrapping the current GDScript callback contract.
 
-This assessment does not replace the root task’s selected first product slice, FL-05 exact-replay debrief markers. That slice is engine-independent and can proceed on the existing runtime. For a later small world slice, SC-18 has a contained wind-cue opportunity described below.
+This assessment does not replace the root task’s selected first engineering slice, FL-05 exact-replay debrief markers. That slice uses the existing Godot replay runtime without an engine change. For a later small world slice, SC-18 has a contained wind-cue opportunity described below.
 
 ## Current implementation and evidence
 

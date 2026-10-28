@@ -580,14 +580,15 @@ def _marker_groups(events: list[dict[str, Any]], first_tick: int, final_tick: in
     for event in events:
         if not isinstance(event, dict):
             raise FlightLogError("exact replay report contains a malformed event")
-        if event.get("kind") != "marker":
-            continue
         tick = event.get("tick")
         label = event.get("detail")
-        if type(tick) is not int or not isinstance(label, str):
-            raise FlightLogError("exact replay report contains an invalid marker")
+        kind = event.get("kind")
+        if type(tick) is not int or not isinstance(label, str) or not isinstance(kind, str):
+            raise FlightLogError("exact replay report contains an invalid event")
         if tick < first_tick or tick > final_tick:
-            raise FlightLogError("marker tick falls outside the replayed CSV range")
+            raise FlightLogError("event tick falls outside the replayed CSV range")
+        if kind != "marker":
+            continue
         if groups and tick < last_tick:
             raise FlightLogError("marker ticks are out of order")
         if groups and tick == last_tick:
