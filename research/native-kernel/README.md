@@ -4,9 +4,32 @@ Step NK-3 of the [native-kernel scoping](../../docs/research/native-kernel-scopi
 a GDExtension (godot-cpp) port of the joint RK stage of the electric Ugly Stik (`jensen-das-ugly-stik-60`),
 `FlightSession._wheel_evaluate`, proven byte-identical to the GDScript reference per component and through the real
 kernel tick. Build outputs stay in the ignored `tmp/native-kernel/`; `--install-app` can stage a verified Linux
-library in ignored `app/native/kernel/`. The loader in `app/sim/native_stage.gd` is exercised by tests and research
-harnesses; `FlightSession` does not yet select it during normal flight. Reference GDScript remains the default.
+library in ignored `app/native/kernel/`. Normal fixed-wing flights can select it with `--physics-backend=native`.
+Reference GDScript remains the default; unsupported or unverified configurations report a reference fallback.
 Evidence and timings: [docs/research/native-kernel/NK-3](../../docs/research/native-kernel/NK-3/README.md).
+
+## Optional normal-flight backend
+
+After verification and installation below:
+
+```bash
+"$(app/get-godot.sh)" --path app -- --quick-flight --aircraft=jensen-das-ugly-stik-60 --physics-backend=native
+```
+
+Selection is launch-time only. This Linux x86_64 developer route admits the stock Ugly Stik, calm weather and
+the capabilities accepted by the native stage. Workshop variants, other aircraft and unsupported weather keep
+the reference evaluator. The console prints requested/actual backend and refusal reason. The exact verified
+Godot executable, binary and mirrored source/data hashes must match. Exported delivery remains unqualified.
+
+`FlightSession` prepares a fresh stage within each reset/restore transaction and primes tick-zero context before
+evaluating initial loads. Rejected starts preserve the previous helper, callbacks and physical state. Accepted
+surface/lake/soft-contact setters reprepare at a boundary. Per-tick comparisons detect bypassed configuration
+changes before stale coefficients can run; they do not serialize, hash or decode the model each tick.
+
+Native checkpoints use an outer `openrc-flight-checkpoint v14` envelope carrying the backend and library identity.
+Reference checkpoint formats/hashes stay unchanged. Exact replay requires that identity; explicit candidate
+replay may use reference and reports `solver_changed`. A backend change during recording leaves an incomplete
+diagnostic prefix. See [flight logging](../../docs/FLIGHT-LOGGING.md).
 
 ## What is ported
 
@@ -103,14 +126,18 @@ python3 research/native-kernel/build.py --install-app
 python3 tools/godot/run_checked.py --timeout 90 -- \
   "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
   --script res://tests/test_native_stage.gd
+python3 tools/godot/run_checked.py --timeout 120 -- \
+  "$(app/get-godot.sh)" --headless --path app --script res://tests/test_native_session.gd
+python3 tools/godot/run_checked.py --timeout 90 -- \
+  "$(app/get-godot.sh)" --headless --path app --script res://tests/test_native_replay.gd
 ```
 
-For the first installation, omit `--app-library` from both oracle runs. The last test must exercise the native
-branch after installation; its successful absent/stale-library branch establishes fallback only. The Python gate
+For the first installation, omit `--app-library` from both oracle runs. All three tests must exercise their native
+branches after installation; successful absent/stale-library branches establish fallback only. The Python gate
 regressions run through `research/test-tools.sh`; CI also runs the library-free GDScript policy regression.
 This local installation does not qualify exports, Windows, target-host timing or the full fleet. The receipt's
-mirrored-source list is not a manifest of every aircraft/environment input; retained results describe their
-recorded snapshot, and data changes require fresh verification.
+mirrored-source list includes the stock aircraft data but is not a manifest of every environment input; retained
+results describe their recorded snapshot, and other data changes require fresh verification.
 
 ## C++ development tools (NK-3)
 

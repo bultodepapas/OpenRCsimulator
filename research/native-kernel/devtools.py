@@ -228,12 +228,15 @@ def snapshot(app: Path, out: Path, godot: Path) -> Path:
     target = out / "app"
     shutil.copytree(app, target, ignore=shutil.ignore_patterns("native", "captures"))
     (target / ".godot/extension_list.cfg").unlink(missing_ok=True)
+    return target
+
+
+def import_snapshot(target: Path, out: Path, godot: Path) -> None:
     report = checked([*private_environment(out), str(godot), "--headless", "--path", str(target), "--audio-driver", "Dummy",
                       "--import"], out / "checks", "import", 600)
     write_json(out / "import.json", report)
     if not report["ok"]:
         raise ValueError(f"private project import failed: {report['log']}")
-    return target
 
 
 def app_hashes(app: Path) -> dict:
@@ -282,6 +285,9 @@ def check(args) -> int:
     if before != copied or before != app_hashes(args.app):
         write_json(out / "source-copied.json", copied)
         raise ValueError("app sources changed while copying; rerun in a new directory")
+    # Import may generate .uid/.import metadata for newly added sources; freeze that completed snapshot too.
+    import_snapshot(app, out, godot)
+    copied = app_hashes(app)
     harness = out / "harness"
     harness.mkdir()
     for file in HERE.glob("*.gd"):

@@ -19,6 +19,11 @@ class DevelopmentToolsTests(unittest.TestCase):
         flags = [*dev.FP_FLAGS, "-std=c++17", "-fexceptions", "-fno-omit-frame-pointer"]
         if mode == "sanitize":
             flags += dev.SANITIZERS
+        for header in ("godot_cpp/core/defs.hpp", "godot_cpp/classes/ref_counted.hpp"):
+            path = self.work / "include" / header
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.touch()
+        flags += [f"-I{self.work / 'include'}", f"-I{dev.HERE / 'src'}"]
         return [{"directory": str(self.work), "file": str(source),
                  "command": "g++ " + " ".join(flags) + " -c " + str(source)}
                 for source in (dev.HERE / "src").glob("*.cpp")]
@@ -46,6 +51,16 @@ class DevelopmentToolsTests(unittest.TestCase):
     def test_profile_database_does_not_require_sanitizers(self):
         self.assertTrue(self.validate(self.database("profile"), "profile"))
 
+    def test_database_needs_generated_headers_and_strict_flags(self):
+        rows = self.database()
+        (self.work / "include/godot_cpp/classes/ref_counted.hpp").unlink()
+        with self.assertRaisesRegex(ValueError, "cannot resolve"):
+            self.validate(rows)
+        rows = self.database()
+        rows[0]["command"] += " -ffast-math"
+        with self.assertRaisesRegex(ValueError, "unsafe floating-point"):
+            self.validate(rows)
+
     def test_sanitizer_stderr_does_not_look_like_godot_errors(self):
         for diagnostic in ["==123==ERROR: AddressSanitizer: heap-buffer-overflow",
                            "test.cpp:9:8: runtime error: signed integer overflow",
@@ -62,6 +77,20 @@ class DevelopmentToolsTests(unittest.TestCase):
         self.assertEqual(report["process_exit"], 0)
         self.assertFalse(report["ok"])
         self.assertTrue(report["sanitizer_diagnostics"])
+        saved = json.loads(Path(report["diagnostic_report"]).read_text())
+        self.assertFalse(saved["ok"])
+
+    def test_literal_only_oracle_cannot_pass(self):
+        oracle = {"verdict": "pass", "failures": [], "format": "openrc-nk3-stage-oracle v1",
+                  "components": {"literals": {"count": 30, "identical": 30}},
+                  "total": {"compared": 30, "identical": 30, "mismatched": 0}, "coverage": {}}
+        checked = {"ok": True, "complete": True, "reason": "passed", "process_exit": 0,
+                   "counts": {"error": 0}}
+        self.assertTrue(dev.coverage_error(oracle, checked, "stage_oracle.gd", 12000))
+
+    def test_private_userdata_environment(self):
+        values = dev.private_environment(self.work)
+        self.assertIn(f"XDG_DATA_HOME={self.work / 'xdg-data'}", values)
 
     def test_missing_marker_is_not_a_pass(self):
         report = dev.checked(["python3", "-c", "pass"], self.work, "empty", 10, ["NK3_ORACLE verdict=pass"])

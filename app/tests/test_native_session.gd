@@ -114,6 +114,12 @@ func selection() -> void:
 func trajectory(native: Node, reference: Node) -> void:
 	check("native start installs the owned stage", native.stage_backend_identity().backend == NativeStage.BACKEND_NATIVE
 		and native._native_stage != null and native._native_stage.owns_stage(native))
+	var before := physical(native)
+	var helper: RefCounted = native._native_stage
+	var stage: Callable = native.sim.model.stage
+	check("native selection cannot change after setup", not native.setup_stage_backend(NativeStage.BACKEND_REFERENCE)
+		and native.stage_backend_status().requested == NativeStage.BACKEND_NATIVE
+		and native._native_stage == helper and native.sim.model.stage == stage and physical(native) == before)
 	check("native and reference reset bytes agree", physical(native) == physical(reference))
 	same_steps(native, reference, TICKS, "takeoff roll")
 	check("takeoff tape actually moved aircraft", absf(native.sim.state[3]) > 1.0)
@@ -272,7 +278,7 @@ func stale_mutation() -> void:
 	session.free()
 
 
-func publication_guard() -> void:
+func publication_guard(expect_native: bool) -> void:
 	for field_name: String in ["ground_surfaces", "airframe_surfaces"]:
 		var session := runway(NativeStage.BACKEND_NATIVE)
 		for index: int in 4: session.sim.step()
@@ -283,19 +289,27 @@ func publication_guard() -> void:
 		session.resetting.connect(func() -> void:
 			attempted[0] += 1
 			installed[0] = session._native_stage
-			stats_at_publication[0] = installed[0].get("_native").call("stage_stats")
+			if installed[0] != null:
+				stats_at_publication[0] = installed[0].get("_native").call("stage_stats")
 			session.set(field_name, PackedFloat64Array()), CONNECT_ONE_SHOT)
 		session.reset()
-		check(field_name + " publication attempted exactly once", attempted[0] == 1 and installed[0] != null)
+		check(field_name + " publication attempted exactly once", attempted[0] == 1)
 		check(field_name + " publication cannot change prepared data", session.get(field_name) == before
-			and session._native_stage == installed[0] and session._native_stage.configuration_matches(session)
+			and session._native_stage == installed[0]
 			and session.sim.tick == 0 and session.sim.paused and not session.sim.fault_reason.is_empty())
-		var engine: Object = session._native_stage.get("_native")
-		session.sim.step()
-		var after: Dictionary = engine.call("stage_stats")
-		check(field_name + " rejected publication cannot advance native", session.sim.tick == 0
-			and after.stage_calls == stats_at_publication[0].stage_calls
-			and after.context_calls == stats_at_publication[0].context_calls)
+		if expect_native:
+			check(field_name + " retains its prepared native helper", session._native_stage != null
+				and session._native_stage.configuration_matches(session))
+			if session._native_stage != null:
+				var engine: Object = session._native_stage.get("_native")
+				session.sim.step()
+				var after: Dictionary = engine.call("stage_stats")
+				check(field_name + " rejected publication cannot advance native", session.sim.tick == 0
+					and after.stage_calls == stats_at_publication[0].stage_calls
+					and after.context_calls == stats_at_publication[0].context_calls)
+		else:
+			session.sim.step()
+			check(field_name + " rejected publication cannot advance reference", session.sim.tick == 0)
 		session.free()
 
 
@@ -314,16 +328,18 @@ func old_helper() -> void:
 	session.free()
 
 
-func unsupported_weather() -> void:
+func unsupported_weather(expect_native: bool) -> void:
 	var session := runway(NativeStage.BACKEND_NATIVE)
 	var reference := runway(NativeStage.BACKEND_REFERENCE)
 	check("calm custom atmosphere selection accepts", reference.setup_weather(Weather.preset("cool-dense")))
 	reference.reset()
 	var calm_checkpoint: Dictionary = reference.checkpoint()
-	var would_promote: Dictionary = NativeStage.new().prepare(reference)
-	check("calm custom reference checkpoint would otherwise qualify for native", reference.is_flyable()
-		and reference.weather_is_calm() and calm_checkpoint.has("weather_config") and would_promote.ok,
-		str(would_promote.get("reason", "")))
+	check("reference checkpoint is calm and carries custom atmosphere", reference.is_flyable()
+		and reference.weather_is_calm() and calm_checkpoint.has("weather_config"))
+	if expect_native:
+		var would_promote: Dictionary = NativeStage.new().prepare(reference)
+		check("calm custom reference checkpoint would otherwise qualify for native", would_promote.ok,
+			str(would_promote.get("reason", "")))
 	check("gusty weather selection accepts", session.setup_weather(Weather.preset("gusty")))
 	session.reset()
 	check("unported weather falls back with reason", session.is_flyable()
@@ -384,9 +400,9 @@ func run_all() -> void:
 			rejected_reset()
 			reprepare()
 			stale_mutation()
-			publication_guard()
 			old_helper()
-			unsupported_weather()
+	unsupported_weather(prepared.ok)
+	publication_guard(prepared.ok)
 	var unsupported := runway(NativeStage.BACKEND_NATIVE, P51)
 	check("unsupported aircraft uses reference with a reason", unsupported.stage_backend_identity() == NativeStage.reference_identity()
 		and not str(unsupported.stage_backend_status().reason).is_empty(), str(unsupported.stage_backend_status()))

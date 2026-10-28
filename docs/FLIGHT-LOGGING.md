@@ -37,6 +37,11 @@ buffer; it adds no simulated flight time. F11 marks a simulation tick, not wall 
 Recording can begin midway through a flight; it captures the complete initial
 physics checkpoint, including current propulsion, wind RNG and actuator state.
 
+NK-3 recordings also identify the actual stage backend. Exact native replay requires the same verified library;
+historical logs without this field select reference. Explicit native-to-reference candidate replay reports
+`solver_changed`. If the backend changes during recording, the file ends as an incomplete diagnostic prefix.
+The optional native route and its limits are documented in the [NK-3 guide](../research/native-kernel/README.md#optional-normal-flight-backend).
+
 For prepared runway, airborne/half-power, hand-launch and reload routes, rejected
 reset candidates leave the old flight and recording intact.
 After physical commit, the reset notification closes the old recording before the
