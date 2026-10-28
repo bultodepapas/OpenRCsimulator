@@ -52,4 +52,11 @@
   "sources_body": "Reviewed 2026-10-28. Clear steps and explicit deliverables follow Anthropic's prompting guidance. Scene inspection, UV-aware paint, seam checks and saving edited images follow Blender documentation. The texture budgets and protected aircraft structure are OpenRC's own package contract, not a promise from an AI service. A good prompt still needs actual execution and visual review.",
   "source_prompt": "Anthropic: prompting best practices",
   "source_connector": "Claude: Blender connector setup",
-  "source_cloud": "Claude: code execution and
+  "source_cloud": "Claude: code execution and file creation",
+  "source_mcp": "Blender: official MCP server and scene-inspection examples",
+  "source_paint": "Blender: Texture Paint and saving images",
+  "source_uv": "Blender: UV layouts and seams",
+  "source_preview": "Blender: viewport preview rendering",
+  "source_download": "Download Blender",
+  "source_paths": "Godot: user-data folders"
+}

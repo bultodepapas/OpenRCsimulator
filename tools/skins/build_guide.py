@@ -140,4 +140,9 @@ def main():
         if not OUTPUT.exists() or OUTPUT.read_text(encoding='utf-8') != content:
             raise SystemExit('Skin guide is stale; run python tools/skins/build_guide.py')
     else:
- 
+        OUTPUT.write_text(content, encoding='utf-8', newline='\n')
+    print(f'Skin guide: {len(LOCALES)} complete languages; ' + ('current' if args.check else 'generated'))
+
+
+if __name__ == '__main__':
+    main()

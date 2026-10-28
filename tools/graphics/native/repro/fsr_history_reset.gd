@@ -181,10 +181,10 @@ func _status(phase: String) -> Dictionary:
 
 
 func _valid_status(status: Dictionary) -> bool:
-	for field: String in ["reset_requests", "reset_dispatches", "dispatches_succeeded", "last_reset_viewport"]:
+	for field: String in ["reset_requests", "reset_dispatches", "dispatches_succeeded", "last_reset_viewport", "backend_failed"]:
 		if not status.has(field):
 			return false
-	return _provider != "fsr3" or (bool(status.get("available", false)) and not bool(status.get("backend_failed", true)))
+	return not bool(status.backend_failed) and (_provider != "fsr3" or bool(status.get("available", false)))
 
 
 func _one_reset(before: Dictionary, after: Dictionary, viewport: SubViewport) -> bool:
