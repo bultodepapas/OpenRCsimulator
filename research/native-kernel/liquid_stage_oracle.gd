@@ -112,6 +112,26 @@ func _check_case(id: String, scenario: Dictionary) -> void:
 	var preview_expected: bool = session._should_capture_substep_context(session.sim.state, original, session.sim.time())
 	_compare("liquid_preview_presence", PackedFloat64Array([1.0 if preview_expected else 0.0]),
 		PackedFloat64Array([1.0 if initial_reference.has("stage_context") else 0.0]), [label])
+	var forced_preview := false
+	if not turbine:
+		# Run the exact accepted-state preview contract even if the runway
+		# fixture happened to start its shaft below the capture threshold.
+		var preview_values: PackedFloat64Array = original.duplicate()
+		preview_values[rotor] = maxf(100.0, preview_values[rotor])
+		var saved_engine: bool = session.engine_running
+		session.sim.continuous = preview_values
+		session.engine_running = true
+		if not LiquidAdapter.set_context(session, _native, session.sim.aux, session.sim.inputs, session.sim.time()):
+			_failures.append("forced liquid preview handoff refused: " + label)
+		else:
+			var preview_reference: Dictionary = session.sim.model.stage.call(session.sim.state, preview_values, session.sim.time())
+			var preview_native: Dictionary = _native.stage(session.sim.state, preview_values, session.sim.time())
+			_liquid_compare("liquid_forced_preview", preview_reference, preview_native,
+				[label, session.sim.state, preview_values, session.sim.time()])
+			forced_preview = preview_reference.has("stage_context")
+			if not forced_preview: _failures.append("forced liquid gas preview was not produced: " + label)
+		session.sim.continuous = original
+		session.engine_running = saved_engine
 	var finite := 0
 	var refused := 0
 	var gear_down := 0
@@ -175,7 +195,8 @@ func _check_case(id: String, scenario: Dictionary) -> void:
 		_failures.append("liquid stage %s missed a required branch" % label)
 	_report.liquid_stage.cases.append({name = label, states = _states, finite = finite, refused = refused,
 		gear_up = gear_up, gear_partial = gear_partial, gear_down = gear_down, source_off = source_off,
-		preview_expected = preview_expected, family = "turbine" if turbine else "gas", wash_count = rotor})
+		preview_expected = preview_expected, forced_preview = forced_preview,
+		family = "turbine" if turbine else "gas", wash_count = rotor})
 	session.free()
 
 

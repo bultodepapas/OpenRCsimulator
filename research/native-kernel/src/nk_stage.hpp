@@ -6,6 +6,7 @@
 #pragma once
 
 #include <array>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -56,6 +57,7 @@ struct StageModel {
 	WeatherModel weather;
 	bool spatial_weather = false;
 	SpatialWeather spatial;
+	std::shared_ptr<const SpatialWeather> spatial_identity;
 	WakeModel wake;
 	bool electric = false;
 	LiquidStageModel liquid;
@@ -74,6 +76,9 @@ struct TickContext {
 	bool power_ready = false, power_enabled = false;
 	R throttle = 0.0;
 	GroundContext posed_ground;
+	bool capture_preview = false;
+	std::array<R, 13> preview_body{};
+	std::vector<R> preview_values;
 };
 
 struct StageResult {
@@ -83,6 +88,13 @@ struct StageResult {
 	std::array<R, 3> rotor{};
 	bool has_body_derivative = false;
 	std::array<R, 13> body_derivative{};
+	bool has_preview = false, preview_spatial = false;
+	Air preview_air;
+	R preview_time = 0.0, preview_rho = 0.0;
+	SpatialFlowResult preview_flow;
+	SpatialPointContext preview_point;
+	std::array<R, 6> pre_reaction{};
+	std::vector<R> preview_wheel_rates;
 };
 
 // A callback into immutable native weather only. Its context is local to one RK stage.
@@ -344,9 +356,13 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 		wake_transport_derivative(target, values, m.wake, out.derivative.data());
 	}
 	if (m.liquid.ready) {
+		bool capture = ctx.capture_preview && m.liquid.gas && at == ctx.time_now &&
+			static_cast<int>(ctx.preview_values.size()) == value_count;
+		for (int i = 0; i < 13 && capture; ++i) capture = s[i] == ctx.preview_body[i];
+		for (int i = 0; i < value_count && capture; ++i) capture = values[i] == ctx.preview_values[i];
 		const auto result = liquid_stage_finish(m.liquid, liquid_layout, liquid_trial, s, total.data(), prop_air.velocity.data(),
 			air.v, explicit_air != nullptr, m.prop, ctx.throttle, rho, atmosphere.engine_charge_ratio, m.gravity,
-			out.derivative.data(), expected, rates.data(), static_cast<int>(rates.size()), turbine ? &turbine_point : nullptr);
+			out.derivative.data(), expected, rates.data(), static_cast<int>(rates.size()), turbine ? &turbine_point : nullptr, capture);
 		if (!result.ok) return out;
 		out.shaped = true;
 		out.loads = result.loads;
@@ -354,6 +370,18 @@ inline StageResult stage_evaluate(const R *s, const R *values, int value_count, 
 		out.rotor = result.rotor;
 		out.has_body_derivative = true;
 		out.body_derivative = result.body_derivative;
+		if (result.has_pre_reaction) {
+			out.has_preview = true;
+			out.pre_reaction = result.pre_reaction;
+			out.preview_air = air;
+			out.preview_time = at;
+			out.preview_rho = rho;
+			out.preview_spatial = m.spatial_weather && spatial_flow.ok;
+			out.preview_flow = spatial_flow;
+			out.preview_point = point_context;
+			out.preview_point.provider = {}; // stack-owned provider must never escape
+			out.preview_wheel_rates = rates;
+		}
 		return out;
 	}
 	if (m.electric) {

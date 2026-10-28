@@ -160,6 +160,14 @@ func _check_retractable(id: String, session: Node) -> void:
 			[0.5, 1.0, NAN], [1.0 - 1.0e-12, 1.0, 1.0e-14], [1.0e-12, 0.0, 1.0e-14]]:
 		_compare("gear_actuator_edges", PackedFloat64Array([RetractableGear.advance(parameters[0], parameters[1], parameters[2], gear)]),
 			_native.gear_component(2, body, velocity, parameters[0], 1.225, PackedFloat64Array(), parameters[1], parameters[2]), [id, parameters])
+	var invalid_gear: Dictionary = gear.duplicate(true)
+	var invalid_path: PackedFloat64Array = invalid_gear.contacts[0].retraction_path.duplicate()
+	invalid_path[0] = NAN
+	invalid_gear.contacts[0].retraction_path = invalid_path
+	if _native.prepare_retractable(invalid_gear).get("ok", false):
+		_failures.append("nonfinite retraction path admitted: " + id)
+	if not _native.gear_component(0, body, velocity, 0.5, 1.225, PackedFloat64Array(), 1.0, 0.01).is_empty():
+		_failures.append("failed gear prepare retained a stale model: " + id)
 	if loaded_down == 0 or unlocked == 0 or spatial_nonzero == 0 or spatial_invalid == 0 or air_free == 0:
 		_failures.append("insufficient gear coverage: " + id)
 	_report.gear_cases.append({name = id, states = _states, loaded_down = loaded_down, unlocked = unlocked,
@@ -205,6 +213,7 @@ func _check_live_hull(id: String, session: Node) -> void:
 	var lake: Dictionary = session._lake
 	var flat_loaded := 0
 	var lake_loaded := 0
+	var bank_loaded := 0
 	var clear := 0
 	var accepted_mass := 0
 	for mode: String in ["flat", "lake"]:
@@ -223,6 +232,7 @@ func _check_live_hull(id: String, session: Node) -> void:
 				return
 			accepted_mass += 1
 			var body := _ground_state(context, surfaces, lake, false)
+			var bank_fixture := false
 			# Guarantee free flight, flat contact, lake bed contact, and conservative lake clearance.
 			if i % 4 == 0:
 				body[RB.POS + 2] = -float(geometry.reach) - 1.0
@@ -231,17 +241,30 @@ func _check_live_hull(id: String, session: Node) -> void:
 				body[1] = _rng.randf_range(-45.0, 45.0)
 				body[2] = _rng.randf_range(-0.15, 0.15)
 			else:
-				body[0] = 110.0 + _rng.randf_range(-2.0, 2.0)
-				body[1] = 125.0 + _rng.randf_range(-2.0, 2.0)
+				if i % 3 == 1:
+					# Sample halfway between matching shoreline/bank vertices;
+					# these authored slopes exercise nonvertical terrain normals.
+					var shore: PackedFloat64Array = lake.shoreline_ne_m
+					var bank: PackedFloat64Array = lake.bank_ne_m
+					var vertex: int = ((i / 3) % (shore.size() / 2)) * 2
+					body[0] = (shore[vertex] + bank[vertex]) * 0.5
+					body[1] = (shore[vertex + 1] + bank[vertex + 1]) * 0.5
+				else:
+					body[0] = 110.0 + _rng.randf_range(-2.0, 2.0)
+					body[1] = 125.0 + _rng.randf_range(-2.0, 2.0)
 				var terrain: Dictionary = LakeSurface.sample_covered_terrain_validated(lake, body[0], body[1])
 				if not terrain.get("covered", false):
 					_failures.append("lake bed fixture is not covered: " + id)
 					return
+				bank_fixture = terrain.get("region") == "bank" and \
+					(float(terrain.slope_north) != 0.0 or float(terrain.slope_east) != 0.0)
 				body[2] = float(terrain.ground_down_m) + _rng.randf_range(-0.1, 0.1)
 			var reference := _compare_hull(id, body, geometry, properties, "%s-%d" % [mode, i])
 			if reference.get("ok", false) and reference.loads.size() == 6:
 				if mode == "flat": flat_loaded += 1
-				else: lake_loaded += 1
+				else:
+					lake_loaded += 1
+					if bank_fixture: bank_loaded += 1
 			elif reference.get("ok", false) and reference.loads.is_empty():
 				clear += 1
 		var good: Dictionary = _properties(session, 1)
@@ -271,8 +294,14 @@ func _check_live_hull(id: String, session: Node) -> void:
 		_compare_hull(id, invalid_body, geometry, good, mode + "-invalid-body")
 		invalid_body.resize(12)
 		_compare_hull(id, invalid_body, geometry, good, mode + "-short-body")
-	if flat_loaded == 0 or lake_loaded == 0 or clear == 0:
+		var invalid_geometry: Dictionary = geometry.duplicate(true)
+		invalid_geometry.erase("points")
+		if _native.prepare_live_hull(invalid_geometry).get("ok", false):
+			_failures.append("incomplete hull geometry admitted: " + id + "/" + mode)
+		if _native.live_hull_component(session.sim.state, good).get("ok", false):
+			_failures.append("failed hull prepare retained a stale model: " + id + "/" + mode)
+	if flat_loaded == 0 or lake_loaded == 0 or bank_loaded == 0 or clear == 0:
 		_failures.append("insufficient live-hull branch coverage: " + id)
 	_report.live_hull_cases.append({name = id, states_per_terrain = _states, valid_mass_samples = accepted_mass,
-		flat_loaded = flat_loaded, lake_loaded = lake_loaded, unloaded = clear,
+		flat_loaded = flat_loaded, lake_loaded = lake_loaded, bank_loaded = bank_loaded, unloaded = clear,
 		family = "liquid" if session.liquid_fuel_is_active() else "glow"})

@@ -31,6 +31,8 @@
 #include "nk_liquid_binding.hpp"
 #include "nk_gear_binding.hpp"
 #include "nk_weather_guard.hpp"
+#include "nk_point_sampler.hpp"
+#include <godot_cpp/variant/callable.hpp>
 
 namespace {
 
@@ -616,6 +618,8 @@ bool layout_int(Decoder &dec, const Dictionary &layout, const char *key, int &ou
 bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 	m = nk::StageModel();
 	const bool electric_requested = config.has("electric");
+	const bool liquid_requested = config.has("liquid_source");
+	if (electric_requested && liquid_requested) return dec.fail("multiple stage source families");
 	// Session capabilities whose laws are not ported: the caller keeps the GDScript stage (D6).
 	for (const char *flag : {"retractable", "glow", "coupled", "turbine", "liquid", "finite_fuel", "flaps",
 				"spatial_weather", "turbulence", "vertical_atmosphere", "weather_pending_reset", "not_calm",
@@ -626,7 +630,9 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		const bool weather_flag = std::string(flag) == "turbulence" || std::string(flag) == "vertical_atmosphere" ||
 			std::string(flag) == "not_calm" || std::string(flag) == "spatial_weather";
 		const bool electric_flag = electric_requested && (std::string(flag) == "coupled" || std::string(flag) == "rotor_dynamics");
-		if (static_cast<bool>(config[flag]) && !(weather_flag && config.has("weather")) && !electric_flag &&
+		const bool liquid_flag = liquid_requested && (std::string(flag) == "coupled" || std::string(flag) == "rotor_dynamics" ||
+			std::string(flag) == "liquid" || std::string(flag) == "finite_fuel" || std::string(flag) == "turbine");
+		if (static_cast<bool>(config[flag]) && !liquid_flag && !(weather_flag && config.has("weather")) && !electric_flag &&
 				std::string(flag) != "slipstream" && std::string(flag) != "flaps" && std::string(flag) != "retractable") {
 			return dec.fail(std::string("unsupported session capability: ") + flag);
 		}
@@ -672,7 +678,27 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 			if (m.inverse[i] != expected_inverse[i]) return dec.fail("electric inverse inertia differs from the reference tensor");
 		}
 	}
-	if (!decode_aero(dec, model, m.aero) || !decode_prop(dec, prop_geometry, m.prop) || !decode_gear(dec, static_cast<bool>(config["retractable"]) ? fixed_gear_source(gear) : gear, m.ground.gear)) {
+	if (liquid_requested) {
+		Dictionary snapshot;
+		if (!static_cast<bool>(config["liquid"]) || !static_cast<bool>(config["finite_fuel"]) ||
+				!config.has("weather") || !dec.dict(config, "liquid_source", snapshot, true) ||
+				!dec.number(config, "gravity", m.gravity, true) || !nk::is_finite(m.gravity)) return dec.fail("invalid liquid stage prerequisites");
+		nk::LiquidBinding candidate;
+		const Dictionary prepared = candidate.prepare_liquid(snapshot);
+		if (!static_cast<bool>(prepared["ok"])) return dec.fail("invalid prepared liquid source");
+		m.liquid = candidate.stage_model();
+		if (static_cast<bool>(config["turbine"]) == m.liquid.gas) return dec.fail("liquid source family mismatch");
+		if (m.liquid.gas) {
+			Dictionary selected;
+			for (const char *key : {"diameter", "offset", "ct", "cp", "rotor_inertia", "cp_min", "axis", "normal_force", "pfactor_moment"}) {
+				if (propulsion.has(key)) selected[key] = propulsion[key];
+			}
+			prop_geometry = selected;
+		} else {
+			for (int i = 0; i < 3; ++i) m.prop.offset[i] = m.liquid.turbine.intake_offset[i];
+		}
+	}
+	if (!decode_aero(dec, model, m.aero) || ((!m.liquid.ready || m.liquid.gas) && !decode_prop(dec, prop_geometry, m.prop)) || !decode_gear(dec, static_cast<bool>(config["retractable"]) ? fixed_gear_source(gear) : gear, m.ground.gear)) {
 		return false;
 	}
 	if (m.aero.flaps.enabled != static_cast<bool>(config["flaps"])) return dec.fail("flap capability and model differ");
@@ -703,7 +729,7 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		m.retraction = retraction.model();
 	}
 	m.soft_hull = static_cast<bool>(config["soft_hull"]);
-	if (m.soft_hull && !decode_hull(dec, hull, m.hull)) {
+	if (m.soft_hull && !decode_hull(dec, hull, m.hull, m.liquid.ready)) {
 		return false;
 	}
 	if (!dec.number(config, "density", m.density, true) ||
@@ -724,9 +750,13 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 	const int wash_count = m.wake.transport ? static_cast<int>(m.wake.pieces.size()) : 0;
 	L.battery_size = m.electric_source.kind == nk::ElectricBatteryKind::PackEcm ? 9 + 2 * m.electric_source.pack.branches :
 		(m.electric_source.kind == nk::ElectricBatteryKind::OcvResistance ? 3 : 0);
-	const int source_count = m.electric ? 1 + L.battery_size : 0;
+	const int source_count = m.electric ? 1 + L.battery_size : (m.liquid.ready ? 1 : 0);
 	if (L.rotor_index != wash_count || L.wheel_index != wash_count + source_count) {
 		return dec.fail("continuous wash layout differs from prepared wake pieces");
+	}
+	if (m.liquid.ready && (!layout_int(dec, layout, "liquid_index", L.liquid_index) ||
+			L.liquid_index != L.wheel_index + L.wheel_count || L.liquid_index + 2 > kMaxContinuousSize)) {
+		return dec.fail("invalid liquid inventory layout");
 	}
 	if (L.wheel_count < 0 || L.wheel_count > 16 || (L.wheel_count == 0 && !m.ground.gear.empty) ||
 			L.wheel_count != static_cast<int>(m.ground.gear.contacts.size()) ||
@@ -752,6 +782,7 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		m.weather = candidate.uniform_model();
 		m.spatial_weather = candidate.is_spatial();
 		m.spatial = candidate.spatial_model();
+		if (m.spatial_weather) m.spatial_identity = std::make_shared<const nk::SpatialWeather>(m.spatial);
 		if (m.weather.has_turbulence != static_cast<bool>(config["turbulence"]) ||
 				m.weather.vertical_atmosphere != static_cast<bool>(config["vertical_atmosphere"]) ||
 				(!m.spatial_weather && m.weather.calm == static_cast<bool>(config["not_calm"])) ||
@@ -809,6 +840,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 protected:
 	static void _bind_methods() {
 		using godot::D_METHOD;
+		godot::ClassDB::bind_method(D_METHOD("set_preview_context", "body", "continuous", "capture"), &OpenRCNativeKernel::set_preview_context);
 		godot::ClassDB::bind_method(D_METHOD("prepare_weather_guard", "session", "identity"), &OpenRCNativeKernel::prepare_weather_guard);
 		godot::ClassDB::bind_method(D_METHOD("weather_guard_matches", "session"), &OpenRCNativeKernel::weather_guard_matches);
 		godot::ClassDB::bind_method(D_METHOD("prepare_liquid", "snapshot"), &OpenRCNativeKernel::prepare_liquid);
@@ -1330,6 +1362,7 @@ public:
 		++context_calls_;
 		tick_.ready = false;
 		tick_.power_ready = false;
+		tick_.capture_preview = false;
 		if (!stage_ready_ || aux.size() != stage_.layout.aux_size || !read_deflections(deflections, tick_.deflections)) {
 			return false;
 		}
@@ -1347,9 +1380,17 @@ public:
 		tick_.ready = true;
 		return true;
 	}
+	bool set_preview_context(const PackedFloat64Array &body, const PackedFloat64Array &continuous, bool capture) {
+		tick_.capture_preview = false;
+		if (!stage_ready_ || !tick_.ready || !read_state(body) || continuous.size() > kMaxContinuousSize) return false;
+		load(body, tick_.preview_body.data());
+		tick_.preview_values.assign(continuous.ptr(), continuous.ptr() + continuous.size());
+		tick_.capture_preview = capture;
+		return true;
+	}
 	bool set_power_context(double throttle, bool enabled) {
 		tick_.power_ready = false;
-		if (!stage_ready_ || !tick_.ready || !stage_.electric) return false;
+		if (!stage_ready_ || !tick_.ready || (!stage_.electric && !stage_.liquid.ready)) return false;
 		tick_.throttle = throttle;
 		tick_.power_enabled = enabled;
 		tick_.power_ready = true;
@@ -1375,6 +1416,36 @@ public:
 				out[kLoads] = pack(result.loads.data(), 6);
 				out[kDerivative] = pack(result.derivative);
 				out[kRotor] = pack(result.rotor.data(), 3);
+				if (result.has_body_derivative) out[godot::StringName("body_derivative")] = pack(result.body_derivative.data(), 13);
+				if (result.has_preview) {
+					Dictionary air;
+					const nk::Air &a = result.preview_air;
+					air[godot::StringName("v_air")] = pack(a.v, 3);
+					air[godot::StringName("V")] = a.V.v;
+					air[godot::StringName("alpha")] = a.alpha.v;
+					air[godot::StringName("beta")] = a.beta.v;
+					air[godot::StringName("qbar")] = a.qbar.v;
+					if (result.preview_spatial) {
+						godot::Ref<OpenRCNativePointSampler> sampler;
+						sampler.instantiate();
+						sampler->prepare(stage_.spatial_identity, result.preview_point);
+						air[godot::StringName("spatial_air_law")] = "m5-w05c-r2-point-air-v1";
+						air[godot::StringName("spatial_aero_law")] = "matched-unwashed-full-angle-section-delta-v1";
+						air[godot::StringName("spatial_state")] = body;
+						air[godot::StringName("spatial_time_s")] = result.preview_time.v;
+						air[godot::StringName("spatial_rho")] = result.preview_rho.v;
+						air[godot::StringName("aero_station_delta_body")] = pack(result.preview_flow.aero_deltas.data(), 24);
+						air[godot::StringName("spatial_sampler")] = sampler;
+						air[godot::StringName("ambient_delta_body_at")] = godot::Callable(sampler.ptr(), "delta_at");
+						air[godot::StringName("propulsion_air_body")] = pack(result.preview_flow.propulsion_air.data(), 3);
+						air[godot::StringName("wake_source_delta_body")] = pack(result.preview_flow.wake_source_delta.data(), 3);
+					}
+					Dictionary context;
+					context[godot::StringName("air")] = air;
+					context[godot::StringName("pre_reaction_loads")] = pack(result.pre_reaction.data(), 6);
+					context[godot::StringName("wheel_derivative")] = pack(result.preview_wheel_rates);
+					out[godot::StringName("stage_context")] = context;
+				}
 			}
 		}
 		if (stage_timing_) {
@@ -1490,6 +1561,7 @@ public:
 
 void initialize_openrc_native_kernel(godot::ModuleInitializationLevel level) {
 	if (level == godot::MODULE_INITIALIZATION_LEVEL_SCENE) {
+		godot::ClassDB::register_class<OpenRCNativePointSampler>();
 		godot::ClassDB::register_class<OpenRCNativeKernel>();
 	}
 }
