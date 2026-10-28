@@ -11,6 +11,23 @@ const NativeStage := preload("res://sim/native_stage.gd")
 const WindConfig := preload("res://physics/wind_config.gd")
 
 
+## The production loader must verify the receipt before the class is initialized.
+## The generic oracle loader deliberately cannot be used for this check.
+func _load_native_extension() -> bool:
+	if _extension != NativeStage.EXTENSION_PATH:
+		printerr("NK3_FLEET requires --app-library and the canonical production descriptor")
+		return false
+	var status: Dictionary = NativeStage.library_status()
+	if not status.get("ok", false):
+		printerr("NK3_FLEET production library refused: " + str(status.get("reason", "unknown")))
+		return false
+	_native = ClassDB.instantiate(NativeStage.NATIVE_CLASS)
+	if _native == null:
+		printerr("NK3_FLEET production native class unavailable after receipt verification")
+		return false
+	return true
+
+
 func _extra_option_names() -> PackedStringArray:
 	return PackedStringArray(["warmup", "samples", "aircraft", "weather", "soft-hull"])
 

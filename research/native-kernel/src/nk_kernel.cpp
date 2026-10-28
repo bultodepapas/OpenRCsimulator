@@ -22,6 +22,8 @@
 #include "nk_aero.hpp"
 #include "nk_stage.hpp"
 #include "nk_wheels.hpp"
+#include "nk_weather_binding.hpp"
+#include "nk_electric_binding.hpp"
 
 namespace {
 
@@ -667,6 +669,8 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	bool aero_ready_ = false;
 	nk::PropModel prop_;
 	bool prop_ready_ = false;
+	nk::WeatherBinding weather_;
+	nk::ElectricBinding electric_;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
 	bool stage_ready_ = false;
@@ -689,6 +693,13 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("wheels_compressions", "s"), &OpenRCNativeKernel::wheels_compressions);
 		godot::ClassDB::bind_method(D_METHOD("prepare_aero", "model"), &OpenRCNativeKernel::prepare_aero);
 		godot::ClassDB::bind_method(D_METHOD("prepare_propeller", "model"), &OpenRCNativeKernel::prepare_propeller);
+		godot::ClassDB::bind_method(D_METHOD("prepare_weather", "config"), &OpenRCNativeKernel::prepare_weather);
+		godot::ClassDB::bind_method(D_METHOD("weather_component", "position", "time", "aux", "turbulence_index", "dt"),
+			&OpenRCNativeKernel::weather_component);
+		godot::ClassDB::bind_method(D_METHOD("air_component", "down"), &OpenRCNativeKernel::air_component);
+		godot::ClassDB::bind_method(D_METHOD("prepare_electric", "snapshot"), &OpenRCNativeKernel::prepare_electric);
+		godot::ClassDB::bind_method(D_METHOD("electric_component", "rpm", "duty", "block", "enabled", "ambient_k", "cooling_mps"),
+			&OpenRCNativeKernel::electric_component);
 		godot::ClassDB::bind_method(D_METHOD("propeller_component", "s", "air", "rho", "rpm", "local_hub", "explicit_air"),
 			&OpenRCNativeKernel::propeller_component);
 		godot::ClassDB::bind_method(D_METHOD("aero_component", "which", "s", "wind", "rho", "d", "downwash_cl", "ground_up"),
@@ -815,6 +826,18 @@ public:
 		out["ok"] = prop_ready_;
 		out["error"] = String(dec.error.c_str());
 		return out;
+	}
+
+	Dictionary prepare_weather(const Dictionary &config) { return weather_.prepare_weather(config); }
+	PackedFloat64Array weather_component(const PackedFloat64Array &position, double time, const PackedFloat64Array &aux,
+			int64_t turbulence_index, double dt) const {
+		return weather_.weather_component(position, time, aux, turbulence_index, dt);
+	}
+	PackedFloat64Array air_component(double down) const { return weather_.air_component(down); }
+	Dictionary prepare_electric(const Dictionary &snapshot) { return electric_.prepare_electric(snapshot); }
+	Dictionary electric_component(double rpm, double duty, const PackedFloat64Array &block, bool enabled,
+			double ambient_k, double cooling_mps) const {
+		return electric_.electric_component(rpm, duty, block, enabled, ambient_k, cooling_mps);
 	}
 
 	Dictionary propeller_component(const PackedFloat64Array &s, const PackedFloat64Array &air, double rho,
@@ -963,6 +986,11 @@ public:
 			{"2.0", nk::kGroundEffectFade},
 			{"180.0", 180.0}, {"1e-11", 1e-11}, {"0.5", 0.5}, {"10.0", 10.0},
 			{"100.0", 100.0}, {"3600.0", 3600.0},
+			{"101325.0", nk::kWeatherSeaPressure}, {"288.15", nk::kWeatherSeaTemperature},
+			{"1.225", nk::kWeatherSeaDensity}, {"9.80665", nk::kWeatherGravity},
+			{"0.0065", nk::kWeatherLapse}, {"287.05287", nk::kWeatherDryGas},
+			{"6356766.0", nk::kWeatherEarthRadius}, {"6.283185307179586476925286766559", nk::kSpatialWeatherTau},
+			{"3.1415926535897932384626433832795", nk::kSpatialThermalPi},
 		};
 		for (const auto &entry : table) {
 			out[entry.spelling] = entry.value;

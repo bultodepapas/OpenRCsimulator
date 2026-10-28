@@ -297,6 +297,9 @@ class WeatherBinding {
 public:
 	bool ready() const { return ready_; }
 	bool is_spatial() const { return ready_ && spatial_; }
+	// Copy these into a prepared pure StageModel only after ready() succeeds.
+	const WeatherModel &uniform_model() const { return weather_; }
+	const SpatialWeather &spatial_model() const { return spatial_model_; }
 
 	godot::Dictionary prepare_weather(const godot::Dictionary &config) {
 		ready_ = false;
