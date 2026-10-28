@@ -1,0 +1,3 @@
+# Local recovery copies. Some source files exceed the repository's 100 MiB push limit.
+*.blend*
+
