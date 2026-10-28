@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "nk_terrain.hpp"
+#include "nk_liquid_mass.hpp"
 
 namespace nk {
 
@@ -216,6 +217,153 @@ inline bool hull_loads(const R *s, const HullPrepared &h, std::array<R, 6> &out)
 		touched = true;
 	}
 	return touched;
+}
+
+// Live-mass counterpart of HullContact.loads_at_properties. A geometry-only
+// HullPrepared uses present/points/reach/surfaces/lake/bounds; its stiffness
+// and damping arrays are deliberately empty until an active contact exists.
+struct LiveHullResult {
+	bool ok = false, touched = false;
+	const char *reason = "";
+	std::array<R, 6> loads{};
+};
+
+inline LiveHullResult live_hull_failure(const char *reason) {
+	LiveHullResult result;
+	result.reason = reason;
+	return result;
+}
+
+inline bool live_hull_psd(const std::array<R, 6> &v) {
+	if (!liquid_finite6(v)) return false;
+	const R scale = maxf(maxf(absf(v[0]), absf(v[1])), maxf(absf(v[2]), maxf(absf(v[3]), maxf(absf(v[4]), absf(v[5])))));
+	if (scale == 0.0) return true;
+	const R a = v[0] / scale, b = v[1] / scale, c = v[2] / scale;
+	const R d = v[3] / scale, e = v[4] / scale, f = v[5] / scale;
+	if (a < -1.0e-12 || b < -1.0e-12 || c < -1.0e-12) return false;
+	if (a * b - d * d < -1.0e-12 || a * c - e * e < -1.0e-12 || b * c - f * f < -1.0e-12) return false;
+	return a * (b * c - f * f) + d * (e * f - d * c) + e * (d * f - b * e) >= -1.0e-12;
+}
+
+inline bool live_hull_physical_tensor(const std::array<R, 6> &v) {
+	if (!live_hull_psd(v)) return false;
+	const R scale = liquid_tensor_scale(v);
+	if (scale == 0.0) return true;
+	const auto n = liquid_normalized_tensor(v, scale);
+	const R half_trace = (n[0] + n[1] + n[2]) * 0.5;
+	return live_hull_psd({half_trace - n[0], half_trace - n[1], half_trace - n[2], -n[3], -n[4], -n[5]});
+}
+
+inline Vec3 live_hull_inertia_mul(const std::array<R, 6> &j, const Vec3 &v) {
+	return {j[0] * v[0] + j[3] * v[1] + j[4] * v[2], j[3] * v[0] + j[1] * v[1] + j[5] * v[2],
+		j[4] * v[0] + j[5] * v[1] + j[2] * v[2]};
+}
+
+inline const char *live_hull_properties_error(const LiquidMassProperties &p) {
+	if (!p.ok) return "mass_properties_not_ok";
+	if (!is_finite(p.mass_kg) || p.mass_kg <= 0.0 || !is_finite(p.cg[0]) || !is_finite(p.cg[1]) ||
+		!is_finite(p.cg[2]) || !live_hull_physical_tensor(p.inertia) || !liquid_finite6(p.inverse)) {
+		return "mass_properties_invalid_value";
+	}
+	const Vec3 columns[3] = {{p.inverse[0], p.inverse[3], p.inverse[4]},
+		{p.inverse[3], p.inverse[1], p.inverse[5]}, {p.inverse[4], p.inverse[5], p.inverse[2]}};
+	for (int column = 0; column < 3; ++column) {
+		const Vec3 product = live_hull_inertia_mul(p.inertia, columns[column]);
+		for (int row = 0; row < 3; ++row) {
+			const R expected = row == column ? R(1.0) : R(0.0);
+			if (!is_finite(product[row]) || absf(product[row] - expected) > 1.0e-8) return "mass_properties_inverse_mismatch";
+		}
+	}
+	return "";
+}
+
+inline LiveHullResult hull_loads_at_properties(const R *s, const HullPrepared &geometry, const LiquidMassProperties &p) {
+	const char *property_error = live_hull_properties_error(p);
+	if (property_error[0] != '\0') return live_hull_failure(property_error);
+	if (!geometry.present || geometry.points.empty() || geometry.points.size() % 3 != 0 || !is_finite(geometry.reach)) {
+		return live_hull_failure("invalid_contact_geometry");
+	}
+	for (int i = 0; i < 13; ++i) if (!is_finite(s[i])) return live_hull_failure("invalid_rigid_body_state");
+	if (-s[2] > geometry.reach) return {true, false, "", {}};
+	const int count = static_cast<int>(geometry.points.size() / 3);
+	const R w = s[6], x = s[7], y = s[8], z = s[9];
+	const R down[3] = {2.0 * (x * z - w * y), 2.0 * (y * z + w * x), 1.0 - 2.0 * (x * x + y * y)};
+	// Lake's conservative datum test precedes every individual coverage sample.
+	if (geometry.lake.present) {
+		bool may_contact = false;
+		for (int i = 0; i < count; ++i) {
+			const R *arm = &geometry.points[3 * i];
+			const R depth = s[2] + down[0] * arm[0] + down[1] * arm[1] + down[2] * arm[2];
+			if (!is_finite(depth)) return live_hull_failure("invalid_contact_geometry");
+			const auto rotated = q_rotate3(s + 6, arm);
+			const R point[3] = {s[0] + rotated[0], s[1] + rotated[1], s[2] + rotated[2]};
+			if (!is_finite(point[0]) || !is_finite(point[1]) || !is_finite(point[2])) return live_hull_failure("invalid_contact_geometry");
+			if (depth > 0.0 || point[2] > 0.0) { may_contact = true; break; }
+		}
+		if (!may_contact) return {true, false, "", {}};
+	}
+	std::vector<unsigned char> active(static_cast<std::size_t>(count), 0);
+	bool any_active = false;
+	const bool lake_clear = geometry.lake.present && hull_clear_of_lake(s, geometry);
+	for (int i = 0; i < count; ++i) {
+		const R *arm = &geometry.points[3 * i];
+		const R depth = s[2] + down[0] * arm[0] + down[1] * arm[1] + down[2] * arm[2];
+		if (!is_finite(depth)) return live_hull_failure("invalid_contact_geometry");
+		bool may_touch = depth > 0.0;
+		if (geometry.lake.present) {
+			const auto rotated = q_rotate3(s + 6, arm);
+			const std::array<R, 3> point = {s[0] + rotated[0], s[1] + rotated[1], s[2] + rotated[2]};
+			if (!is_finite(point[0]) || !is_finite(point[1]) || !is_finite(point[2])) return live_hull_failure("invalid_contact_geometry");
+			if (depth <= 0.0 && point[2] <= 0.0) continue;
+			const LakeCover terrain = lake_clear ? LakeCover() : hull_lake_sample(geometry, point);
+			if (terrain.covered) {
+				if (!is_finite(terrain.down)) return live_hull_failure("invalid_lake_terrain");
+				may_touch = point[2] > terrain.down;
+			}
+		}
+		active[static_cast<std::size_t>(i)] = may_touch ? 1 : 0;
+		any_active = any_active || may_touch;
+	}
+	if (!any_active) return {true, false, "", {}};
+	static constexpr int directions[26][3] = {
+		{1,0,0}, {-1,0,0}, {0,1,0}, {0,-1,0}, {0,0,1}, {0,0,-1},
+		{1,1,0}, {1,-1,0}, {-1,1,0}, {-1,-1,0}, {1,0,1}, {1,0,-1}, {-1,0,1}, {-1,0,-1},
+		{0,1,1}, {0,1,-1}, {0,-1,1}, {0,-1,-1}, {1,1,1}, {1,1,-1}, {1,-1,1}, {1,-1,-1},
+		{-1,1,1}, {-1,1,-1}, {-1,-1,1}, {-1,-1,-1}};
+	HullPrepared prepared = geometry;
+	prepared.stiffness.assign(static_cast<std::size_t>(count), 0.0);
+	prepared.damping.assign(static_cast<std::size_t>(count), 0.0);
+	const R inverse_identity[4] = {1.0, -R(0.0), -R(0.0), -R(0.0)};
+	for (int i = 0; i < count; ++i) {
+		if (!active[static_cast<std::size_t>(i)]) continue;
+		const R *arm = &geometry.points[3 * i];
+		const Vec3 center_arm = {arm[0] - p.cg[0], arm[1] - p.cg[1], arm[2] - p.cg[2]};
+		R smallest = p.mass_kg;
+		for (const auto &direction : directions) {
+			const Vec3 normal = {static_cast<double>(direction[0]), static_cast<double>(direction[1]), static_cast<double>(direction[2])};
+			const R length = sqrt_(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2]);
+			const R inv_length = 1.0 / length;
+			const Vec3 scaled = {normal[0] * inv_length, normal[1] * inv_length, normal[2] * inv_length};
+			const Vec3 normal_body = q_rotate3(inverse_identity, scaled.data());
+			const Vec3 angular = {center_arm[1] * normal_body[2] - center_arm[2] * normal_body[1],
+				center_arm[2] * normal_body[0] - center_arm[0] * normal_body[2], center_arm[0] * normal_body[1] - center_arm[1] * normal_body[0]};
+			const Vec3 product = live_hull_inertia_mul(p.inverse, angular);
+			const R rotational_inverse = angular[0] * product[0] + angular[1] * product[1] + angular[2] * product[2];
+			const R inverse_effective = 1.0 / p.mass_kg + rotational_inverse;
+			if (!is_finite(inverse_effective) || inverse_effective <= 0.0) return live_hull_failure("invalid_inverse_effective_mass");
+			const R effective = 1.0 / inverse_effective;
+			if (!is_finite(effective) || effective <= 0.0 || effective > p.mass_kg * (R(1.0) + R(1.0e-10))) {
+				return live_hull_failure("effective_mass_out_of_bounds");
+			}
+			smallest = minf(smallest, minf(effective, p.mass_kg));
+		}
+		prepared.stiffness[i] = smallest * kHullOmega * kHullOmega;
+		prepared.damping[i] = R(2.0) * R(0.7) * smallest * kHullOmega;
+	}
+	LiveHullResult result;
+	result.ok = true;
+	result.touched = hull_loads(s, prepared, result.loads);
+	return result;
 }
 
 } // namespace nk
