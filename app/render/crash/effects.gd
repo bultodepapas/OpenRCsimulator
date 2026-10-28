@@ -75,6 +75,19 @@ var _fragments_settled := true
 var _origin := Vector3.ZERO
 var last_update_usec := 0
 
+
+## A numeric 4.8 version is insufficient: some development builds expose
+## Decal but their active renderer returns an invalid decal RID.
+static func supports_decals() -> bool:
+	if DisplayServer.get_name() == "headless":
+		return false
+	var probe := RenderingServer.decal_create()
+	if not probe.is_valid():
+		return false
+	RenderingServer.free_rid(probe)
+	return true
+
+
 func prepare() -> void:
 	if not emitters.is_empty():
 		return
@@ -240,9 +253,8 @@ func _build_marks() -> void:
 		add_child(mark)
 		marks.append(mark)
 	# Reserve a world-wide bounded pool. Other effects in this world retain their planes.
-	# Headless/older engines keep the explicit fallback without unsupported renderer calls.
-	var version := Engine.get_version_info()
-	if DisplayServer.get_name() == "headless" or int(version.major) != 4 or int(version.minor) < 8:
+	# Unsupported renderers keep the visible plane fallback.
+	if not supports_decals():
 		return
 	var used := 0
 	for existing: Node in get_tree().get_nodes_in_group(DECAL_GROUP):

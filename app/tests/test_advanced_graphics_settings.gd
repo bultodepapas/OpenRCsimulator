@@ -5,6 +5,7 @@ extends SceneTree
 const UiDriver := preload("res://tests/ui_driver.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
+const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const PREFS := "user://test_advanced_graphics_settings.cfg"
 var failures := 0
@@ -76,6 +77,29 @@ func _run() -> void:
 		and not settings._resolution_picker.disabled)
 	if DisplayServer.get_name() != "headless":
 		_check("fullscreen timeout restores native mode and size", root.mode == Window.MODE_WINDOWED and root.size == initial_size and root.position == initial_position)
+	var reflex_status := NvidiaReflex.describe(str(settings._draft.nvidia_reflex))
+	_check("Reflex default remains selected even when unsupported",
+		settings._reflex_picker.get_item_metadata(settings._reflex_picker.selected) == "on")
+	for index: int in settings._reflex_picker.item_count:
+		var mode := str(settings._reflex_picker.get_item_metadata(index))
+		_check("Reflex option follows reported capability: " + mode,
+			settings._reflex_picker.is_item_disabled(index) == not NvidiaReflex.option_status(mode, reflex_status).available)
+	settings._reflex_picker.select(0)
+	settings._reflex_picker.item_selected.emit(0)
+	_check("Reflex preview starts recovery and leaves saved On untouched", settings._draft.nvidia_reflex == "off"
+		and settings._trial_deadline_msec > Time.get_ticks_msec()
+		and DisplayPreferences.load_from(PREFS + ".display").nvidia_reflex == "on"
+		and Reconstruction.describe(root).nvidia_reflex.requested == "off")
+	settings._revert()
+	_check("Reflex revert restores the prior request", settings._draft.nvidia_reflex == "on"
+		and Reconstruction.describe(root).nvidia_reflex.requested == "on")
+	settings._reflex_picker.select(0)
+	settings._reflex_picker.item_selected.emit(0)
+	settings.keep_changes()
+	_check("Keep saves the Reflex request", DisplayPreferences.load_from(PREFS + ".display").nvidia_reflex == "off")
+	settings._restore_graphics_defaults()
+	settings.keep_changes()
+	_check("graphics defaults restore Reflex On", DisplayPreferences.load_from(PREFS + ".display").nvidia_reflex == "on")
 	settings._vsync_picker.select(1)
 	settings._vsync_picker.item_selected.emit(1)
 	await ui.settle()

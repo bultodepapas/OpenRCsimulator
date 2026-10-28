@@ -128,9 +128,9 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 ## Presentation
 
-### Compatibility baseline; advanced renderers are explicit trials
+### Compatibility baseline and a Windows NVIDIA package
 
-**VQ-07 / GDU-11.** Ordinary launches retain Compatibility. Home's opt-in Forward+ High route is a separate restart-based trial, and full-resolution Native rendering remains the default while FSR/DLSS candidates qualify. Engine support or exposed settings do not prove the feature renders correctly or meets the flight budget. Keep backend-specific behavior and native/pilot gates explicit. [Advanced graphics plan](plans/advanced-graphics.md), [GDU-11 implementation](research/engine-upgrade/GDU-11/implementation.md).
+**VQ-07 / GDU-11.** The official-engine build retains Compatibility. Following the owner's 2026-10-28 request, the current-source Windows NVIDIA package defaults to Forward+ and exposes DLSS, DLAA and Reflex as regular saved settings. This supersedes their experimental UI status, not the remaining performance, motion-quality or cross-device gates. Full-resolution Native reconstruction remains the initial choice; Reflex requests On when supported. Matched binaries, runtime hashes and a separate import cache prevent mixing the NVIDIA fork with official-engine resources. Strict AI companion engine admission remains unchanged, and saved companion requests cannot block player-only flights on the fork. Keep the Standard launcher for recovery. [Native package guide](../tools/graphics/native/README.md), [advanced graphics plan](plans/advanced-graphics.md), [GDU-11 implementation](research/engine-upgrade/GDU-11/implementation.md).
 
 ### Scene detail and birds
 

@@ -7865,3 +7865,9 @@ msgstr "Ningún tipo de falla activado está disponible para este avión. Activa
 
 msgid "This aircraft has no rudder, so rudder failures cannot occur."
 msgstr "Este avión no tiene timón, así que no pueden ocurrir fallas de timón."
+
+msgid "Flight companions: Unavailable"
+msgstr "Compañeros de vuelo: No disponibles"
+
+msgid "Flight companions are unavailable in this game build."
+msgstr "Los compañeros de vuelo no están disponibles en esta versión del juego."

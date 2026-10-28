@@ -33,7 +33,8 @@ func _initialize() -> void:
 	HighGraphics._reported = false
 	Atmosphere.state = {}
 	OS.unset_environment(PROFILE_ENV)
-	_check("no request selects standard", not HighGraphics.active() and HighGraphics.requested().is_empty())
+	_check("default profile follows actual renderer", HighGraphics.active() == native_forward_plus and HighGraphics.requested().is_empty())
+	OS.set_environment(PROFILE_ENV, "standard")
 	_test_standard_integration()
 	_check("Standard never enables contact shadows", not ProjectSettings.get_setting(HighGraphics.CONTACT_SHADOW_SETTING))
 	OS.set_environment(HighGraphics.CONTACT_ENVIRONMENT_KEY, "on")
@@ -189,7 +190,7 @@ func _test_high_native_values() -> void:
 	OS.set_environment(HighGraphics.CONTACT_ENVIRONMENT_KEY, " ON ")
 	HighGraphics._configured = false
 	HighGraphics.configure()
-	_check("native High enables the explicit contact experiment", ProjectSettings.get_setting(HighGraphics.CONTACT_SHADOW_SETTING))
+	_check("contact experiment requires engine support", ProjectSettings.get_setting(HighGraphics.CONTACT_SHADOW_SETTING) == HighGraphics.supports_contact_shadows())
 	_check("contact experiment uses nondegenerate surface thickness", _near(ProjectSettings.get_setting(HighGraphics.CONTACT_THICKNESS_SETTING), 0.01))
 	_check("contact experiment bounds ray length", ProjectSettings.get_setting(HighGraphics.CONTACT_LENGTH_SETTING) == 0)
 	OS.unset_environment(HighGraphics.CONTACT_ENVIRONMENT_KEY)
@@ -220,7 +221,8 @@ func _test_high_native_values() -> void:
 	_check("native high uses solar angular size", _near(sun.light_angular_distance, 0.53))
 	_check("native high preserves direct light colour", sun.light_color == Color(0.4, 0.5, 0.6))
 	_check("native high preserves direct light energy", _near(sun.light_energy, 1.7))
-	_check("High sun permits contact shadows without unfiltered stochastic blur", sun.shadow_contact_shadows_allow and _near(sun.shadow_contact_shadows_blur, 0.0))
+	if HighGraphics.supports_contact_shadows():
+		_check("High sun permits contact shadows without unfiltered stochastic blur", sun.get("shadow_contact_shadows_allow") and _near(sun.get("shadow_contact_shadows_blur"), 0.0))
 	sun.free()
 
 

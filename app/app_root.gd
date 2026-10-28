@@ -914,7 +914,8 @@ func start_flight(request: Dictionary = {}) -> void:
 		remove_child(home_scene) # one camera and one WorldEnvironment when the flight builds its own
 	flight = candidate_flight
 	_flight_companions_available = not is_random and not helicopter_route \
-		and launch_landscape == Landscapes.DEFAULT_ID and _has_property(flight, "companion_config")
+		and launch_landscape == Landscapes.DEFAULT_ID and _has_property(flight, "companion_config") \
+		and CompanionConfig.engine_qualified()
 	flight.field_path = launch_field_path
 	flight.landscape_id = launch_landscape
 	if flight.has_method("set_user_args"):
@@ -958,7 +959,7 @@ func start_flight(request: Dictionary = {}) -> void:
 	# remain owned by their flight entry points, and are never overwritten with Home settings.
 	if has_home and not is_random and not helicopter_route and launch_landscape == Landscapes.DEFAULT_ID \
 			and _has_property(flight, "companion_config"):
-		var checked_companions: Dictionary = CompanionConfig.validate(
+		var checked_companions: Dictionary = CompanionConfig.for_current_engine(
 			launch_preferences.get("companion_config", CompanionConfig.defaults())
 		)
 		flight.set("companion_config", checked_companions.config if checked_companions.get("ok", false) else CompanionConfig.defaults())

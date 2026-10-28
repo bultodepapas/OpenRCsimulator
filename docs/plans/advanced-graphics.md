@@ -200,7 +200,10 @@ Godot documents different shader colour/depth conventions and compositor availab
 
 Owner-requested native-provider follow-up, 2026-10-24: the application now discovers
 optional FSR3/DLSS capabilities, with a separate pinned Windows/Vulkan engine
-experiment. Production uses official 4.8-beta1. See the [implementation evidence](../research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md)
+integration. On 2026-10-28 the owner requested promotion of DLSS, DLAA and Reflex
+to normal selectable settings in the Windows NVIDIA package. The current-source
+package opens at Home with Forward+; the cross-platform build retains official
+4.8-beta1. See the [implementation evidence](../research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md)
 and [build guide](../../tools/graphics/native/README.md). This does not close the
 motion-quality, performance, export or cross-device qualification gates below.
 

@@ -1605,14 +1605,18 @@ func _update_companions_text() -> void:
 	var enabled := bool(companion_config.get("enabled", false))
 	var count := int(companion_config.get("count", 1))
 	var seed := int(companion_config.get("seed", 1))
-	var available := not Catalog.is_rotorcraft(aircraft_id) and landscape_id == Landscapes.DEFAULT_ID
+	var engine_qualified := CompanionConfig.engine_qualified()
+	var available := engine_qualified and not Catalog.is_rotorcraft(aircraft_id) and landscape_id == Landscapes.DEFAULT_ID
 	companions_button.text = tr("Flight companions: %s · %d") % [
 		tr("On") if enabled else tr("Off"), count,
 	]
 	companions_button.tooltip_text = tr("Flight companions: %s · %d companions · seed %d") % [
 		tr("On") if enabled else tr("Off"), count, seed,
 	]
-	if not available:
+	if not engine_qualified:
+		companions_button.text = tr("Flight companions: Unavailable")
+		companions_button.tooltip_text = tr("Flight companions are unavailable in this game build.")
+	elif not available:
 		companions_button.tooltip_text += "\n" + tr("Available for airplanes at Club Field.")
 	companions_button.disabled = not available
 

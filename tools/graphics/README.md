@@ -1,13 +1,14 @@
-# Experimental High graphics
+# Graphics modes
 
 VQ-07 uses the existing Godot renderer and accepted assets. Standard remains the
-default. High is an opt-in, temporary Forward+ trial, not a qualified hardware
-preset. Current evidence and remaining gates: [VQ-07 trial](../../docs/research/visual-quality-implementation/VQ-07/high-trial-2026-10-21/README.md).
+default in the official-engine build. The [Windows NVIDIA package](native/README.md)
+defaults to High and exposes DLSS, DLAA and Reflex in Settings. High is not a
+hardware performance guarantee. Current evidence and remaining gates: [VQ-07 trial](../../docs/research/visual-quality-implementation/VQ-07/high-trial-2026-10-21/README.md).
 Follow-up: [field-cue colors and Windows menu restart](../../docs/research/visual-quality-implementation/VQ-07/high-followup-2026-10-21/README.md).
 
-From Home, open **Settings → Graphics → Try High (restart)**. Keep pending display
+From Home, open **Settings → Graphics → Enable High (restart)**. Keep pending display
 changes first. **Restart in Standard** returns to Compatibility. Closing the game
-and launching normally also returns to Standard; no renderer preference, retry
+and launching normally returns to the package default; no renderer preference, retry
 marker or automatic restart is saved. Restart is unavailable during a flight or
 Workshop session. If the engine falls back, Settings reports Standard.
 
@@ -34,12 +35,12 @@ removed the leak in matched custom Windows editor controls and preserved six Hig
 1080p captures exactly; it is not the shipping replacement. Full lifecycle and
 platform qualification remain open. Do not suppress the pinned engine's warning.
 
-## Native DLSS and FSR 3.1 experiment
+## NVIDIA DLSS, DLAA, Reflex and FSR 3.1
 
 The [native integration guide](native/README.md) owns the separate Windows/Vulkan
 engine build, SDK pins and runtime requirements. The menu discovers each provider
 through engine capabilities; stock Godot keeps those entries unavailable and uses
-Native for unsupported saved requests. This separate experimental build does not
+Native for unsupported saved requests. This Windows package does not
 replace the standard official Godot 4.8-beta1 pin.
 
 ## Explicit startup

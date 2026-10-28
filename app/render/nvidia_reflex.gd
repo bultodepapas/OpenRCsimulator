@@ -22,6 +22,8 @@ static func apply(requested: String, backend: Object = null, parameter: Variant 
 	var parameter_id: Variant = _parameter_or_runtime(parameter)
 	if not _api_available(target, parameter_id):
 		return
+	if not _valid_status(target.call("get_reflex_status")):
+		return
 	var mode := requested if requested in MODES else "off"
 	target.call("set_parameter", int(parameter_id), MODES.find(mode))
 
@@ -35,18 +37,16 @@ static func describe(requested: String, backend: Object = null, parameter: Varia
 	if not _api_available(target, parameter_id):
 		return result
 	var raw: Variant = target.call("get_reflex_status")
-	if typeof(raw) != TYPE_DICTIONARY:
+	if not _valid_status(raw):
 		result.reason = "status_invalid"
 		return result
 	result.backend = raw.duplicate(true)
 	var accepted: Variant = raw.get("applied_mode", -1)
 	if typeof(accepted) == TYPE_INT and accepted >= 0 and accepted < MODES.size():
 		result.accepted = MODES[accepted]
-	var failed: Variant = raw.get("backend_failed", false)
-	var available: Variant = raw.get("available", false)
-	if typeof(failed) != TYPE_BOOL or typeof(available) != TYPE_BOOL:
-		result.reason = "status_invalid"
-	elif failed:
+	var failed: bool = raw.backend_failed
+	var available: bool = raw.available
+	if failed:
 		result.reason = "runtime_failure"
 	elif not available:
 		result.reason = "unavailable"
@@ -63,7 +63,7 @@ static func option_status(mode: String, status: Dictionary) -> Dictionary:
 		return {"available": false, "reason": "unknown_mode"}
 	if mode == "off":
 		return {"available": true, "reason": ""}
-	return {"available": bool(status.get("available", false)),
+	return {"available": typeof(status.get("available")) == TYPE_BOOL and status.available,
 		"reason": str(status.get("reason", "unavailable"))}
 
 
@@ -84,3 +84,13 @@ static func _parameter_or_runtime(parameter: Variant) -> Variant:
 static func _api_available(backend: Object, parameter: Variant) -> bool:
 	return backend != null and is_instance_valid(backend) and typeof(parameter) == TYPE_INT \
 		and backend.has_method("get_reflex_status") and backend.has_method("set_parameter")
+
+
+static func _valid_status(raw: Variant) -> bool:
+	if typeof(raw) != TYPE_DICTIONARY or not raw.has("available") or not raw.has("backend_failed") \
+			or not raw.has("applied_mode"):
+		return false
+	if typeof(raw.available) != TYPE_BOOL or typeof(raw.backend_failed) != TYPE_BOOL \
+			or typeof(raw.applied_mode) != TYPE_INT:
+		return false
+	return raw.applied_mode >= -1 and raw.applied_mode < MODES.size()

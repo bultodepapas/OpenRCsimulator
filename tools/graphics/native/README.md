@@ -1,10 +1,38 @@
-# Native reconstruction experiment (VQ-07d)
+# NVIDIA graphics for Windows (VQ-07d)
+
+## Play with DLSS, DLAA and Reflex
+
+The Windows NVIDIA package uses the current application and opens at Home.
+DLSS, DLAA and Reflex are regular, capability-checked graphics options, following
+the owner's promotion request on 2026-10-28. Build and open it from the repository:
+
+```powershell
+python tools/graphics/native/product.py --package
+python tools/graphics/native/product.py --verify --launch
+```
+
+The output is `dist/windows-nvidia/OpenRC Simulator.exe`. Open **Settings →
+Graphics** and select **3D reconstruction** (DLSS or DLAA) and **NVIDIA Reflex**
+(Off, On, On + Boost), then keep the changes. Requests are saved; unavailable
+features explain their status. Reflex defaults to On on supported hardware.
+Reconstruction defaults to Native until selected. The UI reports SDK acceptance
+separately from the requested Reflex mode; acceptance is not a latency measurement.
+
+The package defaults to Forward+ and includes matched engine/runtime receipts,
+licenses and source hashes. `Standard Graphics.cmd` starts Compatibility for
+recovery. Source snapshots and import caches stay isolated under `tmp/nvidia-product`.
+The official cross-platform engine pin remains unchanged. This Windows build does
+not provide qualified AI companions, AccessKit, D3D12, Frame Generation or Ray
+Reconstruction. Saved companion requests remain saved but player flights run
+without companions, with their unavailability shown on Home.
+
+## Engine provenance and historical trial
 
 This opt-in Windows/Vulkan build connects NVIDIA's existing DLSS integration and
 AMD's FSR 3.1.4 upscaler, built from the pinned SDK with Vulkan fixes. It remains separate from the
 standard official Godot 4.8-beta1 build. The upstream NVIDIA commit is based on
 Godot 4.8-dev; run it on a disposable application copy and qualify this distinct
-engine build before shipping it. The GPU used for local checks is not the product support boundary.
+engine build independently. The GPU used for local checks is not the product support boundary.
 
 See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md).
 The current trial pins Streamline 2.11.1 and DLSS **preset K**. On the RTX 3090,

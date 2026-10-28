@@ -28,7 +28,9 @@ func run() -> void:
 	fx.ground_sampler = slope
 	fx.prepare()
 	var native := DisplayServer.get_name() != "headless"
-	check("native pool respects eight-per-receiver limit", fx.mark_decals.size() == (8 if native else 0))
+	var decal_support := Effects.supports_decals()
+	check("headless renderer retains plane fallback", native or not decal_support)
+	check("supported renderers respect eight-per-receiver limit", fx.mark_decals.size() == (8 if decal_support else 0))
 	var second := Effects.new()
 	viewport.add_child(second)
 	second.prepare()
@@ -89,13 +91,14 @@ func run() -> void:
 				DirAccess.make_dir_recursive_absolute(output)
 				check("save native evidence", after.save_png(output.path_join("marks-16-1080.png")) == OK and before.save_png(output.path_join("receiver-1080.png")) == OK)
 		check("decal cannot project onto aircraft or wreck layers", fx.mark_decals.all(func(d): return d.cull_mask == Ground.MARK_RECEIVER_LAYER))
-		receiver.layers = 1
-		await draw()
-		var excluded := viewport.get_texture().get_image()
-		for i in 8:
-			var pixel := Vector2i(camera.unproject_position(Vector3(points[i].x, slope(points[i])[0], points[i].z)))
-			check("unmarked geometry rejects projected mark %d" % i, absf(luminance(excluded.get_pixelv(pixel)) - luminance(before.get_pixelv(pixel))) < 0.01)
-		receiver.layers |= Ground.MARK_RECEIVER_LAYER
+		if decal_support:
+			receiver.layers = 1
+			await draw()
+			var excluded := viewport.get_texture().get_image()
+			for i in 8:
+				var pixel := Vector2i(camera.unproject_position(Vector3(points[i].x, slope(points[i])[0], points[i].z)))
+				check("unmarked geometry rejects projected mark %d" % i, absf(luminance(excluded.get_pixelv(pixel)) - luminance(before.get_pixelv(pixel))) < 0.01)
+			receiver.layers |= Ground.MARK_RECEIVER_LAYER
 		camera.position.x += 2.0
 		camera.look_at(Vector3.ZERO)
 		await draw()

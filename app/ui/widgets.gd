@@ -19,11 +19,24 @@ static func label(text: String, variation: String, wrap := false, translate := t
 ## GDU-11f: one-line headings may fit within theme bounds, never engine defaults.
 ## Call when the containing screen receives its theme/scale update.
 static func fit_title(control: Label, minimum_size: int, maximum_size := -1) -> void:
+	# A previous fallback override must not mask the newly scaled theme size.
+	if control.has_meta("_openrc_title_fallback_font"):
+		control.remove_theme_font_size_override("font_size")
+		control.remove_meta("_openrc_title_fallback_font")
 	var maximum := maximum_size if maximum_size > 0 else control.get_theme_font_size("font_size")
 	var minimum := clampi(minimum_size, 1, maximum)
-	control.minimum_font_size = minimum
-	control.maximum_font_size = maximum
-	control.resize_font_to_fit = true
+	var properties := {}
+	for property: Dictionary in control.get_property_list():
+		properties[property.name] = true
+	if properties.has_all(["minimum_font_size", "maximum_font_size", "resize_font_to_fit"]):
+		control.set("minimum_font_size", minimum)
+		control.set("maximum_font_size", maximum)
+		control.set("resize_font_to_fit", true)
+	else:
+		# Older builds have no native fitter. Keep text readable at the body size
+		# and retain the existing one-line ellipsis for names that still overflow.
+		control.add_theme_font_size_override("font_size", minimum)
+		control.set_meta("_openrc_title_fallback_font", true)
 	control.autowrap_mode = TextServer.AUTOWRAP_OFF
 	control.max_lines_visible = 1
 	control.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
