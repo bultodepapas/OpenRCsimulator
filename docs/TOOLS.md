@@ -141,7 +141,7 @@ non-strict JSON Schema validator. Recheck after `coderabbit update`.
 ## Release sequence
 
 1. Review the selected diff and retain proof beside the owning research evidence.
-2. Run applicable schema/generator, offline, app and visual checks. Export from an isolated Linux checkout; keep unrelated files out of `dist/`.
+2. Run applicable schema/generator, offline, app and visual checks. Export from an isolated Linux checkout; keep unrelated files out of `dist/`. After the last edit under `app/physics`, `app/sim` or `app/failures` (comments included: the pin hashes exact source bytes), run `python3 tools/companions/rebind.py --accept` and commit its three files; an exported build refuses AI companions while the pin is stale ([rebind tool](../tools/companions/README.md)).
 3. Add `docs/releases/<tag>.md`. A `vX.Y.Z` tag must match `app/project.godot`; `git describe` supplies package identity. `app/export.sh` takes no version argument.
 4. Create the annotated tag on the reviewed commit and push the commit and tag together (for example, `git push --atomic origin HEAD:main refs/tags/vX.Y.Z`). The tag must be visible when `main` exports: `app/export.sh` uses `git describe` and rejects a previous tag that differs from `app/project.godot`.
    CI exports on `main`, `v*` tags and manual dispatch. After checks and release notes pass, `vX.Y.Z` tags publish official releases; suffixed tags publish prereleases.

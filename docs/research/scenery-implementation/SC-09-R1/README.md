@@ -125,6 +125,50 @@ aircraft. Native samples are diagnostic; they do not establish frame-time p95 on
 all target hardware. Independent pilot/readability and target-hardware acceptance
 remain under [Gate SC](../../../SCENERY-PLAN.md#remaining-work).
 
+## Revision SC-09-R2: parked engine detail follows Scene detail
+
+2026-10-27. The US-V13 O.S. 61 engine GLB adds 12 authored materials to the
+assembled Stik snapshot and 11 to the service snapshot, so the fleet batches
+rose from 179 to 199 material submissions. The owner made the detail a graphics
+choice. High and Extreme (scenery tier `high`) keep the baked meshes unchanged.
+Medium and Low (`balanced`, `low`) use a runtime-derived copy: the surfaces
+whose material name starts with `M_` (exactly the engine GLB's materials,
+checked against the GLB by the test) merge into one opaque vertex-coloured
+surface. Each vertex takes the albedo texture's ≤128 px mip at its UV times the
+albedo colour; metallic and roughness are vertex-weighted means. All other
+surfaces, materials and LODs are unchanged. The derived mesh is cached per
+session; Scene detail applies from the next world build, like the other tiers.
+
+The variant is derived at runtime, not baked, so the repository stays the same
+size. On this Windows checkout, rebaking with 4.8-beta1 produced different bytes for all six
+resources (Stik 7.4 → 9.3 MB, Avanti 3.4 → 5.0 MB). A second baked variant
+would have added resource churn on every rebake. The merge costs about 30 ms
+per Stik configuration once per session (rendered OpenGL, RTX 3090; 13–15 ms
+headless).
+
+| Tier | Fleet material submissions | Budget (`test_scenery_build.gd`) |
+| --- | ---: | ---: |
+| High / Extreme | 199 | 200 |
+| Medium (`balanced`) | 178 | 180 |
+| Low | 178 | 180 |
+
+Native 1920 × 1080 counters, Medium tier, full engine → merged engine (same
+build otherwise; RTX 3090, Compatibility):
+
+| View | Draws | Primitives |
+| --- | ---: | ---: |
+| Fleet close | 153 → 143 | 328,494 → 328,946 |
+| West shelter | 390 → 369 | 612,684 → 613,590 |
+| East shelter | 390 → 369 | 526,176 → 527,082 |
+| Service bay | 140 → 130 | 329,193 → 329,255 |
+| Pit shelters | 364 → 343 | 559,851 → 560,757 |
+| Ready bay, pilot south | unchanged | unchanged |
+
+Most baked engine surfaces have no LOD, so the merged surface (also without LOD)
+adds at most about 900 drawn primitives. In the
+service-bay close view, the merged engine reads at the same size and tone, without normal-map
+relief. The capture images are not retained.
+
 ## Retained checks
 
 | Check | Result / evidence |

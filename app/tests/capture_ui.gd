@@ -154,15 +154,29 @@ func _run() -> void:
 			return
 		var transition_start_usec: int = Time.get_ticks_usec()
 		fly_button.pressed.emit()
-		# Home acknowledges the press on one rendered frame before emitting fly_requested.
-		# Wait only two frames so a stalled or rejected transition still fails this capture.
-		for _ack_frame in 2:
+		# UI-34c: a rendered Fly builds the flight behind the staged loading screen over several drawn frames.
+		# Freeze the simulation as soon as it exists (still held at tick 0 by loading), so the ready launch can
+		# never add a variable physics tick; capture only after the loading layer is gone.
+		var loading_deadline_msec: int = Time.get_ticks_msec() + FLIGHT_LOADING_TIMEOUT_MSEC
+		var frozen_sim: Node = null
+		while Time.get_ticks_msec() < loading_deadline_msec:
 			await process_frame
 			flight = app.get("flight")
-			if flight != null:
+			var loading_session: Variant = flight.get("session") if flight != null else null
+			if frozen_sim == null and loading_session is Node and loading_session.get("sim") is Node:
+				frozen_sim = loading_session.get("sim")
+				frozen_sim.process_mode = Node.PROCESS_MODE_DISABLED
+				loading_session.set("input_enabled", false)
+			if not bool(app.get("_loading_active")):
 				break
-		if flight == null:
-			push_error("Home Fly did not create the flight scene")
+		if flight == null or bool(app.get("_loading_active")) or flight.get("startup_complete") == false \
+				or frozen_sim == null or frozen_sim != flight.get("session").get("sim"):
+			push_error("Home Fly did not create the flight scene: loading=%s" % str(app.get("last_flight_loading")))
+			quit(1)
+			return
+		var top_screen: Variant = app.get("screens").call("top")
+		if top_screen != null:
+			push_error("Flight capture is covered by a shell screen after loading: %s" % str(top_screen))
 			quit(1)
 			return
 		var session_choice: String = str(flight.get("start_choice"))

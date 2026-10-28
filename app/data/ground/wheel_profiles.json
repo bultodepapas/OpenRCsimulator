@@ -109,7 +109,7 @@
       }
     },
     "sebart-avanti-s-a200-p100rx": {
-      "description": "Vantage Jet Avanti S source-model wheel profile. Wheel radii come from the imported Blender wheel meshes; wheel-only masses, inertias, spin relaxation, and brake torque are explicit estimates. Optional main-wheel brakes are assumed installed; the manufacturer lists the brake option but gives no torque rating.",
+      "description": "Ventage Jet Avanti S source-model wheel profile. Wheel radii come from the imported Blender wheel meshes; wheel-only masses, inertias, spin relaxation, and brake torque are explicit estimates. Optional main-wheel brakes are assumed installed; the manufacturer lists the brake option but gives no torque rating.",
       "contacts": {
         "main_left": {
           "wheel_radius": {"value": 0.04338, "unit": "m", "kind": "derived", "source": "assets/aircraft/avanti-s-a200/blender-geometry.json: source wheel-mesh radial bound from the axle; visual mesh measurement, not a certified physical tyre dimension"},

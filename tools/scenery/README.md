@@ -46,6 +46,9 @@ The legacy `collides: false` field keeps rendering nodes passive; it does not di
 the simulator contacts built separately by `collision_world.gd`.
 Each generated mesh is static, shared between copies, and has no aircraft controller.
 Copies are grouped by aircraft, configuration and shelter in eight MultiMesh batches.
+Below the `high` tier (Scene detail Medium/Low), `app/scenery/parked_aircraft.gd` merges the Stik's
+O.S. 61 engine materials into one vertex-coloured surface at runtime. Budgets: 200 material submissions
+at `high`, 180 below ([SC-09-R2](../../docs/research/scenery-implementation/SC-09-R1/README.md#revision-sc-09-r2-parked-engine-detail-follows-scene-detail)).
 Embedded textures use S3TC for the existing desktop export targets, with shared identical
 image payloads and unchanged texture dimensions. Re-run the native resource checker after baking.
 Grass and slab contact shadows follow sun updates; bench shadows are clipped to the worktop.

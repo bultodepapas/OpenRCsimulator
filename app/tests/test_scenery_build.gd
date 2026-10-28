@@ -8,6 +8,7 @@ const Loader = preload("res://scenery/scenery_loader.gd")
 const Prefabs = preload("res://scenery/prefabs.gd")
 const Models = preload("res://scenery/models.gd")
 const Population = preload("res://scenery/population.gd")
+const ParkedAircraft = preload("res://scenery/parked_aircraft.gd")
 const ImportedVegetation = preload("res://scenery/imported_vegetation.gd")
 const VegetationPlacement = preload("res://scenery/vegetation_placement.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
@@ -19,6 +20,9 @@ const ShaderClock = preload("res://render/shader_clock.gd")
 const OPTS := {audio = false, birds = false, theme = "", quality = "high"}
 const SourceBudget = preload("res://tests/scene_source_budget.gd") # LU-34 per-subsystem allowances
 const BUDGET_FLEET_TRIANGLES := 350000 # Full near meshes, before per-view automatic LOD; native evidence in SC-09-R1.
+# SC-09-R2 parked-fleet material submissions per scenery tier: High keeps the Stik's 12 authored O.S. 61 engine
+# materials (measured 199); Balanced and Low merge them into one surface per Stik batch (measured 178).
+const BUDGET_FLEET_SURFACES := {high = 200, balanced = 180, low = 180}
 const BUDGET_BUILD_MS := 800.0 # Warm scene-construction gate. Cold source import/parsing remains a measured performance target.
 
 var _failures := 0
@@ -45,6 +49,7 @@ func _initialize() -> void:
 	_test_models()
 	_test_winding()
 	_test_tiers()
+	_test_parked_detail()
 	_test_themes()
 	print("all scenery build checks passed" if _failures == 0 else "%d scenery build checks failed" % _failures)
 	quit(1 if _failures > 0 else 0)
@@ -94,8 +99,9 @@ func _test_build() -> void:
 		parked_fleet.process_mode == Node.PROCESS_MODE_DISABLED and parked_fleet.get_child_count() == 8
 		and parked_fleet.get_children().all(func(child: Node) -> bool:
 			return child is MultiMeshInstance3D and child.get_script() == null and child.get_child_count() == 0))
-	_check("repeated aircraft share draws within each shelter",
-		int(stats.fleet_batch_surfaces) < int(stats.fleet_surfaces) and int(stats.fleet_batch_surfaces) <= 180)
+	_check("repeated aircraft share draws within each shelter (High budget %d)" % BUDGET_FLEET_SURFACES.high,
+		int(stats.fleet_batch_surfaces) < int(stats.fleet_surfaces)
+		and int(stats.fleet_batch_surfaces) <= int(BUDGET_FLEET_SURFACES.high), str(stats.fleet_batch_surfaces))
 	var motion_counts := {rotor = 0, flag = 0, crown = 0, bush_tips = 0}
 	var motion_node: Node = root.get_node("Motion")
 	for part: Node in motion_node.get_children():
@@ -367,9 +373,55 @@ func _test_tiers() -> void:
 		and motion_counts.high.bush_tips == 0 and int(counts.high.moving_people) >= 2
 		and int(counts.high.moving_people) <= 9 and int(counts.high.botanical_plants) > 0,
 		"%s moving_people=%d" % [motion_counts.high, int(counts.high.moving_people)])
+	for q: String in ["low", "balanced"]:
+		_check("tiers: %s parked fleet stays within %d material submissions" % [q, int(BUDGET_FLEET_SURFACES[q])],
+			int(counts[q].fleet) == 13 and int(counts[q].fleet_batch_surfaces) <= int(BUDGET_FLEET_SURFACES[q])
+			and int(counts[q].fleet_batch_surfaces) < int(counts.high.fleet_batch_surfaces),
+			"%s surfaces=%d high=%d" % [q, int(counts[q].fleet_batch_surfaces), int(counts.high.fleet_batch_surfaces)])
+	print("     parked fleet surfaces: low %d, balanced %d, high %d" % [int(counts.low.fleet_batch_surfaces),
+		int(counts.balanced.fleet_batch_surfaces), int(counts.high.fleet_batch_surfaces)])
 	_check("tiers: downloaded habitat plants use stable density subsets",
 		int(counts.low.botanical_plants) < int(counts.balanced.botanical_plants)
 		and int(counts.balanced.botanical_plants) < int(counts.high.botanical_plants))
+
+
+## SC-09-R2: below High, exactly the engine GLB's materials merge into one surface; nothing else changes.
+func _test_parked_detail() -> void:
+	var engine_materials := {}
+	var engine: Node = load("res://assets/aircraft/ugly-stik-60/os61_engine.glb").instantiate()
+	for part: Node in engine.find_children("*", "MeshInstance3D", true, false):
+		var part_mesh := (part as MeshInstance3D).mesh
+		for surface in part_mesh.get_surface_count():
+			engine_materials[part_mesh.surface_get_material(surface).resource_name] = true
+	engine.free()
+	for configuration: String in ["assembled", "service"]:
+		var full := ParkedAircraft.mesh("jensen-das-ugly-stik-60", configuration, "high")
+		var lite := ParkedAircraft.mesh("jensen-das-ugly-stik-60", configuration, "balanced")
+		var merged := ParkedAircraft.detail_surfaces(full, "M_")
+		var names := {}
+		for surface: int in merged:
+			names[full.surface_get_material(surface).resource_name] = true
+		var only_engine := not merged.is_empty()
+		for name: String in names:
+			only_engine = only_engine and engine_materials.has(name)
+		var engine_surfaces := 0
+		for surface in full.get_surface_count():
+			if engine_materials.has(full.surface_get_material(surface).resource_name):
+				engine_surfaces += 1
+		var last := lite.get_surface_count() - 1
+		var material := lite.surface_get_material(last) as StandardMaterial3D
+		_check("parked Stik %s: Balanced/Low merge exactly its %d engine materials into one surface" % [configuration, merged.size()],
+			only_engine and merged.size() == engine_surfaces
+			and lite.get_surface_count() == full.get_surface_count() - merged.size() + 1
+			and material != null and material.vertex_color_use_as_albedo
+			and lite.surface_get_arrays(last)[Mesh.ARRAY_COLOR] is PackedColorArray,
+			"merged=%s lite=%d full=%d" % [names.keys(), lite.get_surface_count(), full.get_surface_count()])
+		_check("parked Stik %s: merged engine keeps every near triangle and the bounds" % configuration,
+			Population.triangles(lite) == Population.triangles(full) and lite.get_aabb().is_equal_approx(full.get_aabb())
+			and ParkedAircraft.mesh("jensen-das-ugly-stik-60", configuration, "low") == lite,
+			"%d vs %d" % [Population.triangles(lite), Population.triangles(full)])
+	_check("parked aircraft without engine detail share the baked mesh in every tier",
+		ParkedAircraft.mesh("gp-extra-300s-60", "assembled", "low") == ParkedAircraft.mesh("gp-extra-300s-60"))
 
 
 func _test_themes() -> void:

@@ -384,7 +384,8 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 			"fleet": # Offline material-preserving snapshots, shared resources and automatic mesh LODs.
 				for placement_index: int in group.placements.size():
 					var pl: Dictionary = group.placements[placement_index]
-					var mesh := ParkedAircraft.mesh(pl.aircraft, pl.get("configuration", "assembled"))
+					# SC-09-R2: below High the Stik engine detail merges into one surface per batch.
+					var mesh := ParkedAircraft.mesh(pl.aircraft, pl.get("configuration", "assembled"), quality)
 					if mesh == null:
 						continue
 					# Batch repeated airframes per shelter, keeping east/west culling independent.

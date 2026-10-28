@@ -64,7 +64,7 @@
       "volume_fractions": {"jet_a": 0.95, "turbine_oil": 0.05},
       "reference_temperature": {"value": 288.15, "unit": "K", "kind": "borrowed", "source": "component reference temperature"},
       "relative_uncertainty": {"value": 0.04, "unit": "1", "kind": "estimated", "source": "Jet A specification range 775-840 kg/m3; whether 5 % is of the final mixture or added remains open in AV-10a"},
-      "use": "the JetCat P100-RX installation in the Vantage Jet"
+      "use": "the JetCat P100-RX installation in the Ventage Jet"
     }
   }
 }
