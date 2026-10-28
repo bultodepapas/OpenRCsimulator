@@ -962,6 +962,17 @@ def _resolve_godot(explicit: str | None) -> str:
     raise FlightLogError(f"Godot executable from {source} was not found: {candidate_value}")
 
 
+def _resolve_release_executable(value: str) -> str:
+    candidate = os.path.expandvars(value.strip().strip('"'))
+    path = Path(candidate).expanduser()
+    if path.is_file():
+        return str(path.resolve())
+    located = shutil.which(candidate)
+    if located:
+        return str(Path(located).resolve())
+    raise FlightLogError(f"release executable from --release-executable was not found: {candidate}")
+
+
 def _check_timeout(timeout: float | None) -> float | None:
     if timeout is None:
         return None
@@ -1069,7 +1080,10 @@ def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = Fal
     recover = bool(not replay and getattr(args, "recover", False))
     log_path = _existing_log(args.log, allow_truncated=recover)
     source_sha256_before = _sha256_file(log_path) if debrief else ""
-    godot = _resolve_godot(args.godot)
+    release_value = getattr(args, "release_executable", None)
+    using_release = release_value is not None
+    godot = _resolve_release_executable(release_value) if using_release else _resolve_godot(args.godot)
+    executable_sha256 = _sha256_file(Path(godot)) if using_release else ""
     timeout = _check_timeout(args.timeout)
     candidate: Path | None = None
     candidate_value = getattr(args, "candidate", None)
@@ -1080,16 +1094,10 @@ def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = Fal
     output_dir = _fresh_directory(args.out)
     csv_path = output_dir / "flight.csv"
     report_path = output_dir / ("replay.json" if replay else "export.json")
-    command = [
-        godot,
-        "--headless",
-        "--path",
-        str(APP),
-        "--audio-driver",
-        "Dummy",
-        "--script",
-        GODOT_SCRIPT,
-        "--",
+    command = ([godot, "--headless", "--audio-driver", "Dummy", "--", "--quick-flight", "--flight-log-cli"]
+               if using_release else [godot, "--headless", "--path", str(APP), "--audio-driver", "Dummy",
+                                      "--script", GODOT_SCRIPT, "--"])
+    command += [
         f"--log={log_path}",
         f"--csv={csv_path}",
         f"--report={report_path}",
@@ -1102,11 +1110,19 @@ def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = Fal
         command.append("--recover")
 
     _run_godot(command, timeout, output_dir / "godot.log")
+    if using_release and _sha256_file(Path(godot)) != executable_sha256:
+        raise FlightLogError("release executable changed during export/replay")
     report = _check_godot_report(
         report_path,
         recover=recover,
         candidate_replay=bool(replay and candidate is not None),
     )
+    if using_release and replay and candidate is None:
+        _validate_exact_replay_report(report, log_path)
+        if report.get("baseline_solver_identity_kind") != "packaged-executable-v1" \
+                or report.get("current_solver_identity_kind") != "packaged-executable-v1" \
+                or report.get("current_solver_sha256") != executable_sha256:
+            raise FlightLogError("exact replay did not identify the selected release executable")
     # Validate the output now so a successful exit never advertises a malformed
     # or incomplete CSV as an export/replay result.
     csv_summary = _check_exported_csv(csv_path, report)
@@ -1163,7 +1179,9 @@ def _make_parser() -> argparse.ArgumentParser:
     export = subparsers.add_parser("export", help="export a .orfl log to CSV in a new directory")
     export.add_argument("log", help="source .orfl flight log")
     export.add_argument("--out", required=True, help="new output directory")
-    export.add_argument("--godot", help="Godot executable (or set GODOT)")
+    export_executable = export.add_mutually_exclusive_group()
+    export_executable.add_argument("--godot", help="Godot executable (or set GODOT)")
+    export_executable.add_argument("--release-executable", help="exported executable that recorded the flight")
     export.add_argument("--timeout", type=float, default=300.0, help="maximum run time in seconds (default: 300)")
     export.add_argument(
         "--recover",
@@ -1175,7 +1193,9 @@ def _make_parser() -> argparse.ArgumentParser:
     replay = subparsers.add_parser("replay", help="replay a .orfl log and export its CSV in a new directory")
     replay.add_argument("log", help="source .orfl flight log")
     replay.add_argument("--out", required=True, help="new output directory")
-    replay.add_argument("--godot", help="Godot executable (or set GODOT)")
+    replay_executable = replay.add_mutually_exclusive_group()
+    replay_executable.add_argument("--godot", help="Godot executable (or set GODOT)")
+    replay_executable.add_argument("--release-executable", help="exported executable that recorded the flight")
     replay.add_argument("--candidate", help="candidate aircraft JSON")
     replay.add_argument("--timeout", type=float, default=300.0, help="maximum run time in seconds (default: 300)")
     replay.set_defaults(handler=lambda args: _godot_export(args, replay=True))
@@ -1184,7 +1204,9 @@ def _make_parser() -> argparse.ArgumentParser:
         "debrief", help="exactly replay a complete flight and summarize its marked windows")
     debrief.add_argument("log", help="source .orfl flight log")
     debrief.add_argument("--out", required=True, help="new output directory")
-    debrief.add_argument("--godot", help="Godot executable (or set GODOT)")
+    debrief_executable = debrief.add_mutually_exclusive_group()
+    debrief_executable.add_argument("--godot", help="Godot executable (or set GODOT)")
+    debrief_executable.add_argument("--release-executable", help="exported executable that recorded the flight")
     debrief.add_argument("--timeout", type=float, default=300.0, help="maximum run time in seconds (default: 300)")
     debrief.set_defaults(handler=lambda args: _godot_export(args, replay=True, debrief=True))
 

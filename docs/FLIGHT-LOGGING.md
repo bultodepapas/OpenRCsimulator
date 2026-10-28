@@ -40,7 +40,19 @@ physics checkpoint, including current propulsion, wind RNG and actuator state.
 NK-3 recordings also identify the actual stage backend. Exact native replay requires the same verified library;
 historical logs without this field select reference. Explicit native-to-reference candidate replay reports
 `solver_changed`. If the backend changes during recording, the file ends as an incomplete diagnostic prefix.
-The optional native route and its limits are documented in the [NK-3 guide](../research/native-kernel/README.md#optional-normal-flight-backend).
+The default native route and its limits are documented in the [NK-3 guide](../research/native-kernel/README.md#optional-normal-flight-backend).
+
+Verified Linux packages record `solver_identity_kind=packaged-executable-v1` and the complete executable hash.
+Their exact replay uses that same executable and sidecars, including its embedded compiled scripts:
+
+```bash
+python3 tools/flight_log/flight_log.py replay /path/to/flight.orfl \
+  --release-executable /path/to/openrc-simulator.x86_64 --out tmp/package-replay
+```
+
+Use the same option with `export` to inspect a package recording. A different executable or an editor source
+identity cannot establish exact package replay. Source-built recordings retain their existing source-tree identity
+and `--godot` workflow. This package-specific identity does not change companion or Workshop source pinning.
 
 For prepared runway, airborne/half-power, hand-launch and reload routes, rejected
 reset candidates leave the old flight and recording intact.

@@ -10,6 +10,7 @@ const NATIVE_STAGE_BACKEND := "native"
 const STAGE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v14"
 var options := {}
 var report := {status = "error", error = "Not started", format = "openrc-flight-log-report v1"}
+var _completed := false
 
 
 ## Current tools can be rebound to older solvers whose FlightSession has no backend API.
@@ -107,10 +108,12 @@ func _run() -> void:
 		if FileAccess.file_exists(options[key]):
 			# Never replace reports, including with an error report.
 			printerr("Output already exists: " + str(options[key]))
+			_completed = true
 			quit(1)
 			return
 	if ProjectSettings.globalize_path(options.csv).simplify_path().to_lower() == ProjectSettings.globalize_path(options.report).simplify_path().to_lower():
 		printerr("CSV and report must have different output paths.")
+		_completed = true
 		quit(1)
 		return
 	if options.has("candidate") and (not options.has("replay") or typeof(options.candidate) != TYPE_STRING):
@@ -527,4 +530,5 @@ func _finish(error: String) -> void:
 			report.status = "error"
 	if not error.is_empty(): printerr(error)
 	else: print("Flight log %s: %d rows verified." % [report.mode, report.rows])
+	_completed = true
 	quit(0 if error.is_empty() else 1)

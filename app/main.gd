@@ -48,6 +48,7 @@ const SceneryDamageDirector = preload("res://render/crash/scenery_damage.gd")
 const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
 const Recorder := preload("res://sim/recorder.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
+const FlightLogCliHost := preload("res://tools/flight_log_cli_host.gd")
 const NativeQualification := preload("res://tools/native_qualification.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
@@ -433,6 +434,14 @@ func _ready() -> void:
 			var qualification := NativeQualification.new()
 			add_child(qualification)
 			qualification.start(user_args)
+			return
+		if argument.begins_with("--flight-log-cli"):
+			set_process(false)
+			set_process_input(false)
+			set_process_unhandled_input(false)
+			var log_host := FlightLogCliHost.new()
+			add_child(log_host)
+			log_host.start(user_args)
 			return
 	if startup_checkpoint.is_valid():
 		process_mode = Node.PROCESS_MODE_DISABLED

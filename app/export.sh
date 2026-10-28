@@ -168,14 +168,35 @@ echo "host editor $(sha256sum "$HOST_GODOT" | cut -d ' ' -f1); Linux sidecar $(s
 
 mkdir -p "$ROOT/tmp"
 NK3_EVIDENCE="$(mktemp -d "$ROOT/tmp/nk3-export-XXXXXXXX")"
+mkdir -p "$NK3_EVIDENCE/user-data"
 LINUX_EXE="$DIST/linux/openrc-simulator.x86_64"
 echo "== NK-3: qualify the exact exported Linux executable"
 for mode in stage lifecycle replay; do
-  python3 "$ROOT/tools/godot/run_checked.py" --timeout 600 --out-dir "$NK3_EVIDENCE/checks" \
+  XDG_DATA_HOME="$NK3_EVIDENCE/user-data" python3 "$ROOT/tools/godot/run_checked.py" --timeout 600 --out-dir "$NK3_EVIDENCE/checks" \
     --label "nk3-package-$mode" --require-text "NATIVE_QUALIFICATION preloaded=false" \
     --require-text "NATIVE_QUALIFICATION mode=$mode verdict=pass" -- \
     "$LINUX_EXE" --headless --audio-driver Dummy -- --quick-flight "--native-qualification=$mode"
 done
+
+echo "== NK-3: replay the recorded native flight with the shipped executable and player CLI"
+mapfile -d '' -t NK3_NATIVE_LOGS < <(find "$NK3_EVIDENCE/user-data" -type f -name native.orfl -print0)
+if [[ "${#NK3_NATIVE_LOGS[@]}" -ne 1 ]]; then
+  echo "expected exactly one recorded native flight in $NK3_EVIDENCE/user-data"; exit 1
+fi
+python3 "$ROOT/tools/flight_log/flight_log.py" replay "${NK3_NATIVE_LOGS[0]}" \
+  --release-executable "$LINUX_EXE" --out "$NK3_EVIDENCE/player-replay" --timeout 300
+python3 - "$NK3_EVIDENCE/player-replay/replay.json" <<'PYREPLAY'
+import json
+import pathlib
+import sys
+
+report = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
+baseline = report.get("baseline_stage_backend")
+if not isinstance(baseline, dict) or baseline.get("backend") != "native" \
+        or report.get("current_stage_backend") != baseline:
+    raise SystemExit("player replay did not use the recorded native stage")
+print("player CLI exactly replayed the recorded native stage")
+PYREPLAY
 
 echo "== NK-3: compare reference and native production sessions in the exported executable"
 python3 "$ROOT/research/performance/session_baseline.py" --release-executable --godot "$LINUX_EXE" \

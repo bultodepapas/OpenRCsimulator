@@ -403,6 +403,8 @@ jobs:
           name: nk3-package-diagnostics
           path: |
             tmp/nk3-export-*/checks/
+            tmp/nk3-export-*/user-data/
+            tmp/nk3-export-*/player-replay/
             tmp/nk3-export-*/production-pair/
             tmp/nk3-export-*/default-route/checks/
             tmp/nk3-export-*/default-route/*.csv

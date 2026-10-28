@@ -90,14 +90,32 @@ def missing_binary_project(source: Path, destination: Path) -> None:
     (destination / "native/kernel/libopenrc_native_kernel.so").unlink()
 
 
+def sha256_file(path: Path) -> str:
+    checksum = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            checksum.update(block)
+    return checksum.hexdigest()
+
+
+def link_or_copy_verified(source: Path, destination: Path) -> None:
+    """Keep unchanged package files byte-identical without writing through a hard link."""
+    try:
+        os.link(source.resolve(), destination)
+    except OSError:
+        shutil.copy2(source, destination)
+    if sha256_file(source) != sha256_file(destination):
+        raise RuntimeError(f"private package file differs from its source: {source}")
+
+
 def private_package(executable: Path, destination: Path) -> Path:
-    """Keep the exact exported executable and copy its sidecars for private mutations."""
+    """Keep the exact executable and root sidecars; copy native/ for private mutations."""
     destination.mkdir()
     private_executable = destination / executable.name
-    try:
-        os.link(executable, private_executable)
-    except OSError:
-        shutil.copy2(executable, private_executable)
+    link_or_copy_verified(executable, private_executable)
+    for sidecar in executable.parent.iterdir():
+        if sidecar.name != executable.name and sidecar.is_file():
+            link_or_copy_verified(sidecar, destination / sidecar.name)
     shutil.copytree(executable.parent / "native", destination / "native")
     return private_executable
 
@@ -121,7 +139,7 @@ def corrupt_package(executable: Path, destination: Path, case: str) -> Path:
             binary.write(b"\nopenrc private fallback fixture\n")
         # Even a sidecar receipt updated to match the altered file must not override the embedded pin.
         receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-        receipt["native_binary_sha256"] = hashlib.sha256(library.read_bytes()).hexdigest()
+        receipt["native_binary_sha256"] = sha256_file(library)
         receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
     elif case == "malformed-receipt":
         receipt_path.write_text("{", encoding="utf-8")
