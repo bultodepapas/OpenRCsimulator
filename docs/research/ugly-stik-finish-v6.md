@@ -284,7 +284,7 @@ Each servo is now placed from its shaft, so the case hangs below its arm. The ta
 - 31 of 32 related tests pass: crash ×6, scuffs ×2, soft contact, gear ×2, prop strike ×2, blur, grain, night kit, engine smoke, smoke system, manifests, customization, liveries, catalogue, aircraft data, Workshop ×3, UI ×2, parked collision, contact contract and control presentation. `test_companions_profiles` fails on its existing `pilot.gd` pin, which is unrelated.
 - In-game 1080p production-light bench: `under`, `wing_under` and `stab_under` show the hatch, slot, arm, pushrod and horns.
 
-**Pitfall.** `SurfaceTool.append_from` keeps only indexed triangles once any merged part is indexed. The new plates were unindexed, so the batched horn webs and the arm blades vanished in game and in glTF. One horn had 84 positions and 36 indices. The plates are now indexed ([lesson](../LEARNINGS.md#2026-10-25--us-v17--surfacetool-merges-drop-unindexed-triangles-once-any-part-is-indexed)).
+**Pitfall.** `SurfaceTool.append_from` keeps only indexed triangles once any merged part is indexed. The new plates were unindexed, so the batched horn webs and the arm blades vanished in game and in glTF. One horn had 84 positions and 36 indices. The plates are now indexed ([lesson](../learnings/models-and-rendering.md#aircraft-models-and-references)).
 
 **Cross-track.** `app/data/economy/catalog.json` still prices one `central_aileron_servo`, four physical servos in all. The model now has five. That catalogue belongs to the crash-economics owner.
 
