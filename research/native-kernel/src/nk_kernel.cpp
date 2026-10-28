@@ -27,6 +27,7 @@
 #include "nk_wake_binding.hpp"
 #include "nk_wake_spatial_binding.hpp"
 #include "nk_glow_binding.hpp"
+#include "nk_helicopter_binding.hpp"
 
 namespace {
 
@@ -717,6 +718,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::ElectricBinding electric_;
 	nk::WakeBinding wake_;
 	nk::GlowBinding glow_;
+	nk::HelicopterBinding helicopter_;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
 	bool stage_ready_ = false;
@@ -766,6 +768,9 @@ protected:
 			&OpenRCNativeKernel::glow_body_component);
 		godot::ClassDB::bind_method(D_METHOD("glow_feed_component", "remaining", "capacity", "unusable", "admission", "rpm",
 			"force", "mass", "arm", "alpha", "omega"), &OpenRCNativeKernel::glow_feed_component);
+		godot::ClassDB::bind_method(D_METHOD("prepare_helicopter", "snapshot"), &OpenRCNativeKernel::prepare_helicopter);
+		godot::ClassDB::bind_method(D_METHOD("heli_component", "body", "continuous", "time", "tick", "wind"),
+			&OpenRCNativeKernel::heli_component);
 		godot::ClassDB::bind_method(D_METHOD("propeller_component", "s", "air", "rho", "rpm", "local_hub", "explicit_air"),
 			&OpenRCNativeKernel::propeller_component);
 		godot::ClassDB::bind_method(D_METHOD("aero_component", "which", "s", "wind", "rho", "d", "downwash_cl", "ground_up"),
@@ -959,6 +964,11 @@ public:
 			const PackedFloat64Array &force, double mass, const PackedFloat64Array &arm, const PackedFloat64Array &alpha,
 			const PackedFloat64Array &omega) const {
 		return glow_.glow_feed_component(remaining, capacity, unusable, admission, rpm, force, mass, arm, alpha, omega);
+	}
+	Dictionary prepare_helicopter(const Dictionary &snapshot) { return helicopter_.prepare_helicopter(snapshot); }
+	Dictionary heli_component(const PackedFloat64Array &body, const PackedFloat64Array &continuous, double time,
+			const Dictionary &tick, const PackedFloat64Array &wind) const {
+		return helicopter_.heli_component(body, continuous, time, tick, wind);
 	}
 
 	Dictionary propeller_component(const PackedFloat64Array &s, const PackedFloat64Array &air, double rho,

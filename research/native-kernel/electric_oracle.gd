@@ -5,6 +5,7 @@ extends "oracle.gd"
 const Propulsion := preload("res://physics/propulsion.gd")
 const PackEcm := preload("res://physics/battery/pack_ecm.gd")
 const ElectricDynamics := preload("res://physics/dynamics.gd")
+const RotorCoupling := preload("res://physics/rotor_coupling.gd")
 
 const ELECTRIC_IDS := ["turbo-lumber-evolution", "skywalker-x8"]
 const ECM_FIELDS := ["kind", "series", "branches", "group_capacity_c", "initial_soc", "weak_capacity_factor",
@@ -347,4 +348,75 @@ func _check_coupled_case(id: String, mode: String) -> void:
 		_failures.append("coupled electric %s missed a required stop-boundary or validity branch" % name)
 	_report.electric_coupled_cases.append({name = name, states = _states, accepted = accepted, rejected = rejected,
 		locked = locked, forward_breakaway = forward, reverse_refused = reverse, negative_trial = negative})
+	_check_coupling_guards(name, session, base_block, inertia, inverse)
 	session.free()
+
+
+## Fixed-voltage shaft_rate rejects invalid density/charge/inflow, whereas the
+## dynamic-battery response evaluates only the checks in its own path. Compare
+## each malformed or boundary scalar against the reference laws explicitly.
+func _check_coupling_guards(name: String, session: Node, block: PackedFloat64Array,
+		inertia: PackedFloat64Array, inverse: PackedFloat64Array) -> void:
+	var prop: Dictionary = session.aircraft.model.propulsion
+	var body: PackedFloat64Array = session.sim.state.duplicate()
+	var external := PackedFloat64Array([1.0, -2.0, 3.0, 0.02, -0.03, 0.04])
+	var axis: PackedFloat64Array = Propulsion.axis(prop)
+	var original := PackedFloat64Array([5000.0, 5.0, -2.0, 1.0, 1.225, 1.0, 0.5, 288.15, 2.0])
+	var cases: Array = [{index = -1, value = 0.0}, {index = 0, value = NAN}, {index = 0, value = INF},
+		{index = 1, value = NAN}, {index = 1, value = INF}, {index = 4, value = 0.0},
+		{index = 4, value = -1.0}, {index = 4, value = NAN}, {index = 4, value = INF},
+		{index = 5, value = 0.0}, {index = 5, value = -1.0}, {index = 5, value = NAN},
+		{index = 5, value = INF}, {index = 6, value = -0.1}, {index = 6, value = 1.1},
+		{index = 6, value = NAN}, {index = 7, value = NAN}, {index = 8, value = NAN}]
+	var valid := 0
+	var invalid := 0
+	for fixture: Dictionary in cases:
+		var stage: PackedFloat64Array = original.duplicate()
+		if fixture.index >= 0: stage[fixture.index] = fixture.value
+		var expected := _guard_reference(session, body, stage, block, inertia, inverse, external, axis)
+		var actual: Dictionary = _native.electric_coupling_component(body, stage, block, inertia, inverse, external, true)
+		var expected_ok: bool = expected.get("ok", false)
+		var actual_ok: bool = actual.get("ok", false)
+		var inputs := [name, fixture, stage]
+		_compare("electric_coupled_guard_validity", PackedFloat64Array([1.0 if expected_ok else 0.0]),
+			PackedFloat64Array([1.0 if actual_ok else 0.0]), inputs)
+		if expected_ok and actual_ok:
+			_compare("electric_coupled_guard_values", expected.values, actual.values, inputs)
+			_compare("electric_coupled_guard_rates", expected.rates, actual.rates, inputs)
+			valid += 1
+		else:
+			invalid += 1
+	if valid == 0 or invalid == 0:
+		_failures.append("coupled electric guard fixtures missed acceptance or rejection: " + name)
+
+
+func _guard_reference(session: Node, body: PackedFloat64Array, stage: PackedFloat64Array, block: PackedFloat64Array,
+		inertia: PackedFloat64Array, inverse: PackedFloat64Array, external: PackedFloat64Array, axis: PackedFloat64Array) -> Dictionary:
+	if not is_finite(stage[0]) or stage[0] < 0.0:
+		return {ok = false}
+	var local := stage.slice(1, 4)
+	for value: float in local:
+		if not is_finite(value): return {ok = false}
+	var prop: Dictionary = session.aircraft.model.propulsion
+	var source: Dictionary = _reference(prop, stage[0], stage[6], block, true, stage[7], stage[8])
+	if not source.get("ok", false): return {ok = false}
+	var axial: float = M.dot(local, axis)
+	var rate: float
+	if session.battery_is_dynamic():
+		var load: float = Propulsion.prop_torque(stage[0], axial, prop, stage[4])
+		rate = (float(source.values[0]) - load) / float(prop.rotor_inertia) * 60.0 / TAU
+	else:
+		rate = Propulsion.shaft_rate(stage[0], stage[6], axial, prop, stage[4], stage[5], true)
+	if not is_finite(rate): return {ok = false}
+	var response: Dictionary = RotorCoupling.response(body.slice(RB.RATE, RB.RATE + 3), external.slice(3, 6),
+		inertia, inverse, axis, prop.rotor_inertia, stage[0] * TAU / 60.0,
+		rate * prop.rotor_inertia * TAU / 60.0)
+	if not response.get("ok", false): return {ok = false}
+	var loads: PackedFloat64Array = external.duplicate()
+	for k: int in 3: loads[3 + k] += response.reaction[k]
+	var values := PackedFloat64Array([response.spin_acceleration])
+	values.append_array(response.reaction)
+	values.append_array(ElectricDynamics.rotor_momentum(session.aircraft.model, stage[0]))
+	values.append(response.spin_acceleration * 60.0 / TAU)
+	values.append_array(loads)
+	return {ok = true, values = values, rates = source.rates}

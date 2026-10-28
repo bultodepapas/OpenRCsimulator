@@ -15,9 +15,8 @@
 #include <utility>
 #include <vector>
 
-#include "nk_battery.hpp"
+#include "nk_electric_stage.hpp"
 #include "nk_electric_coupling.hpp"
-#include "nk_pack_ecm.hpp"
 
 namespace nk {
 
@@ -122,32 +121,19 @@ struct ElectricSnapshotDecoder {
 	}
 };
 
-enum class ElectricBatteryKind { FixedVoltage, OcvResistance, PackEcm };
-
-struct ElectricStagePoint {
-	bool ok = false;
-	// Torque, motor current, pack/bus current, bus voltage.
-	std::array<R, 4> values{};
-	std::vector<R> rates;
-};
-
 class ElectricBinding {
-	bool ready_ = false;
-	ElectricBatteryKind kind_ = ElectricBatteryKind::FixedVoltage;
-	ElectricMotorModel motor_;
-	R fixed_voltage_ = 0.0;
-	OcvBatteryModel ocv_;
-	PackEcmModel pack_;
+	ElectricPreparedSource model_;
 
 public:
-	bool ready() const { return ready_; }
-	ElectricBatteryKind kind() const { return kind_; }
-	const ElectricMotorModel &motor() const { return motor_; }
-	const OcvBatteryModel &ocv() const { return ocv_; }
-	const PackEcmModel &pack() const { return pack_; }
+	bool ready() const { return model_.ready; }
+	ElectricBatteryKind kind() const { return model_.kind; }
+	const ElectricMotorModel &motor() const { return model_.motor; }
+	const OcvBatteryModel &ocv() const { return model_.ocv; }
+	const PackEcmModel &pack() const { return model_.pack; }
+	const ElectricPreparedSource &model() const { return model_; }
 
 	godot::Dictionary prepare_electric(const godot::Dictionary &snapshot) {
-		ready_ = false;
+		model_.ready = false;
 		ElectricSnapshotDecoder dec;
 		godot::String format, battery_kind, esc_kind, mapping;
 		godot::Dictionary motor, battery, esc;
@@ -210,12 +196,12 @@ public:
 		} else {
 			return failure("unsupported electric battery kind");
 		}
-		motor_ = decoded_motor;
-		kind_ = decoded_kind;
-		fixed_voltage_ = voltage;
-		ocv_ = std::move(ocv);
-		pack_ = std::move(pack);
-		ready_ = true;
+		model_.motor = decoded_motor;
+		model_.kind = decoded_kind;
+		model_.fixed_voltage = voltage;
+		model_.ocv = std::move(ocv);
+		model_.pack = std::move(pack);
+		model_.ready = true;
 		godot::Dictionary out;
 		out["ok"] = true;
 		out["error"] = "";
@@ -226,26 +212,7 @@ public:
 	// sub-block; the owning session must validate the complete continuous layout.
 	ElectricStagePoint evaluate(R rpm, R duty, const R *block, int size, bool enabled,
 			R ambient_k, R cooling_mps) const {
-		ElectricStagePoint out;
-		if (!ready_) return out;
-		if (kind_ == ElectricBatteryKind::FixedVoltage) {
-			if (size != 0) return out;
-			const ElectricMotorPoint point = electric_motor_evaluate(rpm, duty, fixed_voltage_, motor_, enabled);
-			if (!point.ok) return out;
-			out.values = {point.shaft_torque_nm, point.motor_current_a, point.battery_current_a, fixed_voltage_};
-		} else if (kind_ == ElectricBatteryKind::OcvResistance) {
-			const OcvBatteryPoint point = ocv_battery_stage(rpm, duty, block, size, ocv_, motor_, enabled);
-			if (!point.ok) return out;
-			out.values = {point.motor.shaft_torque_nm, point.motor_current_a, point.pack_current_a, point.bus_voltage_v};
-			out.rates.assign(point.rates.begin(), point.rates.end());
-		} else {
-			PackEcmPoint point = pack_ecm_stage(rpm, duty, block, size, pack_, motor_, enabled, ambient_k, cooling_mps);
-			if (!point.ok) return out;
-			out.values = {point.motor.shaft_torque_nm, point.motor_current_a, point.pack_current_a, point.bus_voltage_v};
-			out.rates = std::move(point.rates);
-		}
-		out.ok = true;
-		return out;
+		return model_.evaluate(rpm, duty, block, size, enabled, ambient_k, cooling_mps);
 	}
 
 	godot::Dictionary electric_component(double rpm, double duty, const godot::PackedFloat64Array &block,
@@ -278,7 +245,7 @@ public:
 			const godot::PackedFloat64Array &external, bool enabled) const {
 		godot::Dictionary out;
 		out["ok"] = false;
-		if (!ready_ || body.size() != 13 || stage.size() != 9 || block.size() > 13 || inertia.size() != 6 ||
+		if (!model_.ready || body.size() != 13 || stage.size() != 9 || block.size() > 13 || inertia.size() != 6 ||
 				inverse.size() != 6 || external.size() != 6) return out;
 		R body_values[13], stage_values[9], pack_values[13], j[6], j_inv[6], loads[6];
 		for (int i = 0; i < 13; ++i) body_values[i] = body[i];
@@ -290,9 +257,9 @@ public:
 		const ElectricStagePoint point = evaluate(rpm, stage_values[6], pack_values, static_cast<int>(block.size()),
 				enabled, stage_values[7], stage_values[8]);
 		const ElectricCouplingSource source{point.ok, point.values[0], point.values[1]};
-		const auto coupled = electric_coupled_response(body_values, stage_values[0], prop, motor_, j, j_inv,
+		const auto coupled = electric_coupled_response(body_values, stage_values[0], prop, model_.motor, j, j_inv,
 				stage_values + 1, stage_values[4], stage_values[5], stage_values[6],
-				kind_ != ElectricBatteryKind::FixedVoltage, source, loads);
+				model_.kind != ElectricBatteryKind::FixedVoltage, source, loads);
 		out["ok"] = coupled.ok;
 		if (!coupled.ok) return out;
 		godot::PackedFloat64Array values, rates;
