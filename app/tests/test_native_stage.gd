@@ -10,6 +10,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
+const NativePackage := preload("res://app_state/native_package.gd")
 
 const STIK := "jensen-das-ugly-stik-60"
 const P51 := "p51d-mustang-120"
@@ -18,6 +19,7 @@ const TICKS := 960
 var checks := 0
 var failures := 0
 var _native_exercised := false
+var _finished := false
 
 
 func check(label: String, condition: bool, detail := "") -> void:
@@ -69,7 +71,76 @@ func record(session: Node) -> PackedByteArray:
 	return bytes
 
 
+func test_complete_manifest() -> void:
+	var digest := "a".repeat(64)
+	var engine_version := "fixture-engine"
+	var manifest := {
+		format = NativePackage.MANIFEST_FORMAT, platform = "linux", architecture = "x86_64",
+		engine_version = engine_version, solver_sha256 = digest,
+		native_receipt = {
+			format = "openrc-native-kernel-receipt", backend = "native", backend_version = NativeStage.BACKEND_VERSION,
+			abi_version = 1, platforms = {"linux": {
+				platform = "linux", architecture = "x86_64", backend = "native",
+				backend_version = NativeStage.BACKEND_VERSION, abi_version = 1, engine_version = engine_version,
+				binary_sha256 = digest, source_sha256 = digest, lock_sha256 = digest, engine_sha256 = digest,
+				mirrored_sources = {"app/physics/aero.gd": digest},
+			}},
+		},
+		qualification_sources = {
+			"session_probe.gd": digest, "test_native_stage.gd": digest,
+			"test_native_session.gd": digest, "test_native_replay.gd": digest,
+		},
+	}
+	check("complete native package manifest is accepted", NativePackage._complete_manifest(manifest))
+	var json_numbers: Dictionary = manifest.duplicate(true)
+	json_numbers.native_receipt.abi_version = 1.0
+	json_numbers.native_receipt.platforms.linux.abi_version = 1.0
+	check("JSON numeric ABI 1 is accepted", NativePackage._complete_manifest(json_numbers))
+
+	for field: String in ["format", "backend", "backend_version"]:
+		var bad: Dictionary = manifest.duplicate(true)
+		bad.native_receipt[field] = "invalid"
+		check("invalid receipt envelope " + field + " is rejected", not NativePackage._complete_manifest(bad))
+	for abi: Variant in [null, false, true, "1", [], 0, 2, 1.5]:
+		var bad_envelope: Dictionary = manifest.duplicate(true)
+		bad_envelope.native_receipt.abi_version = abi
+		check("invalid receipt ABI is rejected: " + str(abi), not NativePackage._complete_manifest(bad_envelope))
+		var bad_row: Dictionary = manifest.duplicate(true)
+		bad_row.native_receipt.platforms.linux.abi_version = abi
+		check("invalid Linux ABI is rejected: " + str(abi), not NativePackage._complete_manifest(bad_row))
+	for platforms: Variant in [null, [], {}, {"linux": null}]:
+		var bad: Dictionary = manifest.duplicate(true)
+		bad.native_receipt.platforms = platforms
+		check("missing or malformed Linux receipt is rejected: " + str(platforms), not NativePackage._complete_manifest(bad))
+	for field: String in ["backend", "backend_version", "platform", "architecture", "engine_version"]:
+		var bad: Dictionary = manifest.duplicate(true)
+		bad.native_receipt.platforms.linux[field] = "invalid"
+		check("invalid Linux receipt " + field + " is rejected", not NativePackage._complete_manifest(bad))
+
+	for field: String in ["binary_sha256", "source_sha256", "lock_sha256", "engine_sha256"]:
+		for invalid_digest: Variant in [null, 1, "", "a".repeat(63), "g".repeat(64)]:
+			var bad: Dictionary = manifest.duplicate(true)
+			bad.native_receipt.platforms.linux[field] = invalid_digest
+			check("invalid Linux digest " + field + " is rejected: " + str(invalid_digest),
+				not NativePackage._complete_manifest(bad))
+	for sources: Variant in [null, [], {}, {"other/aero.gd": digest}, {"app/physics/aero.gd": "bad"}, {1: digest}]:
+		var bad: Dictionary = manifest.duplicate(true)
+		bad.native_receipt.platforms.linux.mirrored_sources = sources
+		check("missing or malformed mirrored sources are rejected: " + str(sources), not NativePackage._complete_manifest(bad))
+	for name: String in NativePackage.DIAGNOSTICS:
+		var missing: Dictionary = manifest.duplicate(true)
+		missing.qualification_sources.erase(name)
+		check("missing diagnostic is rejected: " + name, not NativePackage._complete_manifest(missing))
+	var extra: Dictionary = manifest.duplicate(true)
+	extra.qualification_sources["unexpected.gd"] = digest
+	check("unexpected diagnostic is rejected", not NativePackage._complete_manifest(extra))
+	var bad_diagnostic: Dictionary = manifest.duplicate(true)
+	bad_diagnostic.qualification_sources["test_native_stage.gd"] = "g".repeat(64)
+	check("malformed diagnostic digest is rejected", not NativePackage._complete_manifest(bad_diagnostic))
+
+
 func run_all() -> void:
+	test_complete_manifest()
 	var status: Dictionary = NativeStage.library_status()
 	check("library status carries a reason when absent", status.ok or not str(status.reason).is_empty(), str(status))
 	var stik := runway(STIK)
@@ -145,6 +216,7 @@ func run_all() -> void:
 
 
 func finish() -> void:
+	_finished = true
 	print("Native stage: %d checks, %d failed" % [checks, failures])
 	if _native_exercised and checks > 0 and failures == 0:
 		print("NK3_NATIVE_STAGE_NATIVE verdict=pass")

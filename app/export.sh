@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Release builds (PT1): Windows, Linux and macOS exports into <repo>/dist, each checked, zipped, with SHA256SUMS.
-#   - the exported Linux binary flies the app-level trimmed-flight check headless (proves the data is in the pack);
+#   - the exported Linux binary qualifies NK-3 and flies the app-level trimmed-flight check headless;
 #   - the macOS zip is a universal, ad-hoc signed app bundle (tests/check_macos_export.py);
 #   - UI-04a: one build identity (git describe, commit, dirty, commit date), computed here once, names the ZIPs, is
 #     written into every pack as res://build_info.json (addons/build_info) and is checked in the exported binary's
@@ -41,7 +41,7 @@ export OPENRC_BUILD_DIRTY="$([[ "$VERSION" == *-dirty ]] && echo 1 || echo 0)"
 export OPENRC_BUILD_DATE="$(git -C "$ROOT" show -s --format=%cI HEAD)"
 echo "== build identity: $VERSION (commit $OPENRC_BUILD_COMMIT, $OPENRC_BUILD_DATE), numeric $NUMERIC"
 GODOT="$("$HERE/get-godot.sh")"
-"$HERE/get-templates.sh" > /dev/null
+TEMPLATE_DIR="$("$HERE/get-templates.sh")"
 DIST="$ROOT/dist"
 rm -rf "$DIST" && mkdir -p "$DIST/linux" "$DIST/windows" "$DIST/macos"
 run() { timeout 600 "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"; }
@@ -53,6 +53,8 @@ trap 'rm -f "$LOG"; rm -rf "$PACK_PROBE" "$HOST_PROBE"' EXIT
 echo "== import (a fresh clone has no .godot cache)"
 run --import > "$LOG" 2>&1 || { cat "$LOG"; exit 1; }
 if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG"; then cat "$LOG"; echo "engine error while importing"; exit 1; fi
+echo "== prepare verified NK-3 export identity"
+python3 "$ROOT/research/native-kernel/package.py" prepare
 for preset in Linux Windows macOS; do
   case "$preset" in
     Linux) out="$DIST/linux/openrc-simulator.x86_64" ;;
@@ -63,6 +65,11 @@ for preset in Linux Windows macOS; do
   run --export-release "$preset" "$out" > "$LOG" 2>&1 || { cat "$LOG"; echo "export $preset failed"; exit 1; }
   if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then cat "$LOG"; echo "engine error while exporting $preset"; exit 1; fi
   [ -s "$out" ] || { echo "export $preset produced no file"; exit 1; }
+  if [[ "$preset" == Linux ]]; then
+    echo "== stage verified NK-3 sidecars for the exact exported executable"
+    python3 "$ROOT/research/native-kernel/package.py" finalize \
+      --executable "$out" --template "$TEMPLATE_DIR/linux_release.x86_64"
+  fi
 done
 
 echo "== native package artifacts: verify both platform rows against exported binaries"
@@ -159,14 +166,73 @@ cmp -s "$GODOT" "$HOST_GODOT" || { echo "host editor staging changed the pinned 
 cmp -s "$DIST/linux/libopenrc_ground_vehicle.so" "$HOST_SIDECAR" || { echo "host native sidecar staging changed the exported binary"; exit 1; }
 echo "host editor $(sha256sum "$HOST_GODOT" | cut -d ' ' -f1); Linux sidecar $(sha256sum "$HOST_SIDECAR" | cut -d ' ' -f1)"
 
-echo "== smoke test: the exported Linux binary flies trimmed level flight"
-TRACE="$(mktemp --suffix=.csv)"
-timeout 120 "$DIST/linux/openrc-simulator.x86_64" --headless --audio-driver Dummy -- --trace="$TRACE" --t=3 > "$LOG" 2>&1 \
+mkdir -p "$ROOT/tmp"
+NK3_EVIDENCE="$(mktemp -d "$ROOT/tmp/nk3-export-XXXXXXXX")"
+mkdir -p "$NK3_EVIDENCE/user-data"
+LINUX_EXE="$DIST/linux/openrc-simulator.x86_64"
+echo "== NK-3: qualify the exact exported Linux executable"
+for mode in stage lifecycle replay; do
+  XDG_DATA_HOME="$NK3_EVIDENCE/user-data" python3 "$ROOT/tools/godot/run_checked.py" --timeout 600 --out-dir "$NK3_EVIDENCE/checks" \
+    --label "nk3-package-$mode" --require-text "NATIVE_QUALIFICATION preloaded=false" \
+    --require-text "NATIVE_QUALIFICATION mode=$mode verdict=pass" -- \
+    "$LINUX_EXE" --headless --audio-driver Dummy -- --quick-flight "--native-qualification=$mode"
+done
+
+echo "== NK-3: replay the recorded native flight with the shipped executable and player CLI"
+mapfile -d '' -t NK3_NATIVE_LOGS < <(find "$NK3_EVIDENCE/user-data" -type f -name native.orfl -print0)
+if [[ "${#NK3_NATIVE_LOGS[@]}" -ne 1 ]]; then
+  echo "expected exactly one recorded native flight in $NK3_EVIDENCE/user-data"; exit 1
+fi
+python3 "$ROOT/tools/flight_log/flight_log.py" replay "${NK3_NATIVE_LOGS[0]}" \
+  --release-executable "$LINUX_EXE" --out "$NK3_EVIDENCE/player-replay" --timeout 300
+python3 - "$NK3_EVIDENCE/player-replay/replay.json" <<'PYREPLAY'
+import json
+import pathlib
+import sys
+
+report = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
+baseline = report.get("baseline_stage_backend")
+if not isinstance(baseline, dict) or baseline.get("backend") != "native" \
+        or report.get("current_stage_backend") != baseline:
+    raise SystemExit("player replay did not use the recorded native stage")
+print("player CLI exactly replayed the recorded native stage")
+PYREPLAY
+
+echo "== NK-3: compare reference and native production sessions in the exported executable"
+python3 "$ROOT/research/performance/session_baseline.py" --release-executable --godot "$LINUX_EXE" \
+  --out "$NK3_EVIDENCE/production-pair" --aircraft jensen-das-ugly-stik-60 --case trim,runway \
+  --warmup-ticks 24 --sample-ticks 240 --repeats 1 --compare-backends --timeout 300
+
+echo "== NK-3: check default selection, explicit reference and fallback in the exported executable"
+python3 "$ROOT/research/native-kernel/test_default_route.py" --release-executable "$LINUX_EXE" \
+  --out "$NK3_EVIDENCE/default-route"
+
+echo "== smoke test: the exported Linux binary flies trimmed level flight with native physics"
+TRACE="$NK3_EVIDENCE/trimmed.csv"
+python3 "$ROOT/tools/godot/run_checked.py" --timeout 180 --out-dir "$NK3_EVIDENCE/checks" \
+  --label nk3-package-trimmed -- "$LINUX_EXE" --headless --audio-driver Dummy -- --trace="$TRACE" --t=3 > "$LOG" 2>&1 \
   || { cat "$LOG"; echo "exported binary failed"; exit 1; }
-if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then cat "$LOG"; echo "engine error in the exported binary"; exit 1; fi
+cat "$LOG"
+python3 - "$LOG" "$TRACE" <<'PYBACKEND'
+import json
+from pathlib import Path
+import sys
+
+log, trace = (Path(path).read_text(encoding="utf-8") for path in sys.argv[1:])
+statuses = [line.removeprefix("physics backend: ") for line in log.splitlines() if line.startswith("physics backend: ")]
+identities = [line.removeprefix("# stage_backend: ") for line in trace.splitlines() if line.startswith("# stage_backend: ")]
+if len(statuses) != 1 or len(identities) != 1:
+    raise SystemExit("exported flight did not report exactly one backend status and trace identity")
+status = json.loads(statuses[0])
+identity = json.loads(identities[0].replace('&"', '"'))
+if status.get("requested") != "native" or status.get("reason") != "" \
+        or status.get("identity", {}).get("backend") != "native" or identity != status["identity"]:
+    raise SystemExit("exported default flight did not install and record the verified native stage")
+print("exported flight requested, installed and recorded the native stage")
+PYBACKEND
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3
 grep -qxF "# app_build: $VERSION" "$TRACE" || { grep "^# app_" "$TRACE"; echo "the exported binary does not report build $VERSION"; exit 1; }
-echo "exported binary reports build $VERSION"; rm -f "$TRACE"
+echo "exported binary reports build $VERSION; NK-3 evidence: $NK3_EVIDENCE"
 
 echo "== macOS bundle: universal and ad-hoc signed"
 python3 "$HERE/tests/check_macos_export.py" "$DIST/macos/OpenRC Simulator.zip"

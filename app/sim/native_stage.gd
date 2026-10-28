@@ -5,7 +5,8 @@
 ## copies (any edit since the verified build refuses native until the oracles re-run and the library is reinstalled),
 ## the law identities, and the native D6 refusals of unported aircraft, options and weather.
 ## Without the library every query reports the reference backend and prepare() refuses with a reason; nothing errors.
-## Linux x86_64 only; other platforms and exported builds (scripts as binary tokens) keep the reference.
+## Linux x86_64 only. Release packages bind compiled scripts through the exact executable and embedded identity;
+## unsupported or unverified installations keep the reference.
 ## Lifetime: keep this object alive while installed; the swapped Callable refers to its native instance.
 extends RefCounted
 
@@ -14,6 +15,7 @@ const Wheels := preload("res://physics/ground_wheels.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const Turbine := preload("res://physics/turbine.gd")
+const NativePackage := preload("res://app_state/native_package.gd")
 
 const EXTENSION_PATH := "res://native/kernel/openrc_native_kernel.gdextension"
 const RECEIPT_PATH := "res://native/kernel/build-receipt.json"
@@ -35,6 +37,15 @@ const EXPECTED_DESCRIPTOR := (
 	+ "reloadable = false\n\n"
 	+ "[libraries]\n"
 	+ "linux.x86_64 = \"res://native/kernel/libopenrc_native_kernel.so\"\n"
+)
+const EXPECTED_PACKAGE_DESCRIPTOR := (
+	"; NK-3 packaged stage; loaded explicitly after embedded identity verification.\n"
+	+ "[configuration]\n"
+	+ "entry_symbol = \"openrc_native_kernel_library_init\"\n"
+	+ "compatibility_minimum = \"4.7\"\n"
+	+ "reloadable = false\n\n"
+	+ "[libraries]\n"
+	+ "linux.x86_64 = \"libopenrc_native_kernel.so\"\n"
 )
 
 static var _library_checked := false
@@ -244,6 +255,8 @@ func _refuse(why: String) -> Dictionary:
 static func _load_library() -> String:
 	if OS.get_name() != "Linux" or Engine.get_architecture_name() != "x86_64":
 		return "native stage: Linux x86_64 only"
+	if OS.has_feature("template_release"):
+		return _load_package_library()
 	if not FileAccess.file_exists(EXTENSION_PATH) or not FileAccess.file_exists(RECEIPT_PATH):
 		return "native stage library not installed"
 	var receipt := JSON.new()
@@ -264,11 +277,32 @@ static func _load_library() -> String:
 	var source_error := _source_error(row)
 	if not source_error.is_empty():
 		return source_error
+	return _initialize_library(EXTENSION_PATH, row)
+
+
+static func _load_package_library() -> String:
+	var package := NativePackage.identity()
+	if not package.ok:
+		return str(package.reason)
+	var row := _platform_row(package.manifest.native_receipt)
+	if row.is_empty() or row.get("engine_version") != package.manifest.engine_version:
+		return "native package has no valid verified Linux receipt"
+	var directory := NativePackage.directory()
+	var descriptor := directory.path_join("openrc_native_kernel.gdextension")
+	var library := directory.path_join(LIBRARY_FILE)
+	if not FileAccess.file_exists(descriptor) or FileAccess.get_file_as_string(descriptor) != EXPECTED_PACKAGE_DESCRIPTOR:
+		return "native package descriptor differs from the verified loader contract"
+	if not FileAccess.file_exists(library) or FileAccess.get_sha256(library) != row.binary_sha256:
+		return "native package binary differs from its embedded identity"
+	return _initialize_library(descriptor, row)
+
+
+static func _initialize_library(descriptor: String, row: Dictionary) -> String:
 	# An already loaded extension ran initialization before these checks, and Godot does not identify its loaded
 	# binary. Do not select it even if the present files match: restart after removing the stale cache registration.
-	if GDExtensionManager.is_extension_loaded(EXTENSION_PATH) or ClassDB.class_exists(NATIVE_CLASS):
+	if GDExtensionManager.is_extension_loaded(descriptor) or ClassDB.class_exists(NATIVE_CLASS):
 		return "native stage was loaded before verification; restart after clearing the cached extension registration"
-	var status: int = GDExtensionManager.load_extension(EXTENSION_PATH)
+	var status: int = GDExtensionManager.load_extension(descriptor)
 	if status != GDExtensionManager.LOAD_STATUS_OK:
 		return "native stage library failed to load (status %d)" % status
 	if not ClassDB.class_exists(NATIVE_CLASS):
@@ -326,6 +360,11 @@ static func _binary_matches(expected_sha256: String) -> bool:
 
 ## Every GDScript file the port mirrors must still hash as it did when the oracles verified this binary.
 static func _mirrored_source_error() -> String:
+	if OS.has_feature("template_release"):
+		# The embedded manifest was checked against the oracle-qualified sources at export. Compiled resources
+		# are bound by the exact final executable hash, rather than pretending loose .gd files still exist.
+		var package := NativePackage.identity()
+		return "" if package.ok else str(package.reason)
 	return _source_error(_receipt_row)
 
 

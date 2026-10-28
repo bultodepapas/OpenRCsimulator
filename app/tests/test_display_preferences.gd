@@ -185,6 +185,36 @@ func _run() -> void:
 	var preserved := ConfigFile.new()
 	_check("future-schema file remains readable after rejected save", preserved.load(PREFS) == OK
 		and preserved.get_value("meta", "schema", -1) == DisplayPreferences.SCHEMA + 1)
+	_bad_file_preservation()
+
+
+func _bad_file_preservation() -> void:
+	_reset()
+	var broken := "this is not [a config file\n"
+	var file := FileAccess.open(PREFS, FileAccess.WRITE)
+	file.store_string(broken)
+	file.close()
+	var store := DisplayPreferences.new(PREFS)
+	_check("preserved unreadable display settings remain writable", store.writable and FileAccess.get_file_as_string(PREFS + ".bad") == broken
+		and store.save(store.config) == OK)
+	_reset()
+	var backup := ProjectSettings.globalize_path(PREFS + ".bad")
+	_check("create blocked display backup directory", DirAccess.make_dir_absolute(backup) == OK)
+	file = FileAccess.open(backup.path_join("marker"), FileAccess.WRITE)
+	file.store_string("occupied")
+	file.close()
+	file = FileAccess.open(PREFS, FileAccess.WRITE)
+	file.store_string(broken)
+	file.close()
+	store = DisplayPreferences.new(PREFS)
+	_check("failed display backup protects the original", not store.writable and "will not be overwritten" in store.note
+		and FileAccess.get_file_as_string(PREFS) == broken)
+	var candidate: Dictionary = store.config.duplicate(true)
+	candidate.opaque_panels = true
+	_check("failed display backup refuses later saves", store.save(candidate) == ERR_FILE_NO_PERMISSION
+		and candidate.opaque_panels and FileAccess.get_file_as_string(PREFS) == broken)
+	DirAccess.remove_absolute(backup.path_join("marker"))
+	DirAccess.remove_absolute(backup)
 
 
 func _independent_recovery() -> void:

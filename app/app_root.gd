@@ -1525,13 +1525,29 @@ func _open_radio_calibration(setup: Node) -> void:
 	wizard.completed.connect(func(profile: Dictionary, warning: String) -> void:
 		if not screens.is_top("radio_calibration"): return
 		screens.pop()
-		setup.apply_calibration_draft(profile, device_id, generation, warning))
+		setup.apply_calibration_draft(profile, device_id, generation, warning)
+		_restore_calibration_controls_focus.call_deferred(setup))
 	wizard.cancelled.connect(func(reason: String) -> void:
 		if not screens.is_top("radio_calibration"): return
 		screens.pop()
-		setup._set_status(reason, false))
+		setup._set_status(reason, false)
+		_restore_calibration_controls_focus.call_deferred(setup))
 	if not screens.push("radio_calibration", wizard, setup.calibrate_button):
 		wizard.free()
+
+
+func _restore_calibration_controls_focus(setup: Node) -> void:
+	if not is_instance_valid(setup) or not screens.is_top("controls") or screens.top() != setup:
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused != null and focused.is_visible_in_tree() and focused.focus_mode != Control.FOCUS_NONE \
+			and (not focused is BaseButton or not focused.disabled):
+		return
+	for target: Control in [setup.flight_device_picker, setup.save_button]:
+		if is_instance_valid(target) and target.is_visible_in_tree() and target.focus_mode != Control.FOCUS_NONE \
+				and (not target is BaseButton or not target.disabled):
+			target.grab_focus()
+			return
 
 
 func _controller_bindings(id: int, flight_context := false) -> Dictionary:

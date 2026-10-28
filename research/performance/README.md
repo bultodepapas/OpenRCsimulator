@@ -201,6 +201,12 @@ hashes must match the installed receipt and current sources; application code/te
 probe and engine identities must remain unchanged during the campaign. Fingerprint and
 backend/counter checks run outside each stopwatch and can perturb subsequent samples.
 
+For an actual Linux package, add `--release-executable` and set `--godot` to its exported executable.
+The runner uses the fixed embedded probe through the ordinary application entry point, checks the executable
+and sibling-library hashes before/after each run, and requires a package identity and completion marker.
+It never substitutes a different main scene or a diagnostic executable. Keep the source probe identical to the
+embedded one. See [package commands and qualification](../native-kernel/README.md#linux-release-packages).
+
 The guard verifier defaults to reference-only and also runs on systems without the
 optional library. On Linux, after installing a verified native library, include native
 fallback and tick-coverage checks using a new output directory:

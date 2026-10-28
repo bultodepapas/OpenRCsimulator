@@ -10,6 +10,7 @@ const NATIVE_STAGE_BACKEND := "native"
 const STAGE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v14"
 var options := {}
 var report := {status = "error", error = "Not started", format = "openrc-flight-log-report v1"}
+var _completed := false
 
 
 ## Current tools can be rebound to older solvers whose FlightSession has no backend API.
@@ -58,8 +59,37 @@ static func recorded_stage_backend(header: Dictionary) -> Dictionary:
 
 
 static func solver_changed(recorded_solver: String, current_solver: String,
-		recorded_backend: Dictionary, current_backend: Dictionary) -> bool:
-	return recorded_solver != current_solver or recorded_backend != current_backend
+		recorded_backend: Dictionary, current_backend: Dictionary,
+		recorded_kind := "source-tree-v1", current_kind := "source-tree-v1") -> bool:
+	return recorded_solver == "unavailable-export" or current_solver == "unavailable-export" \
+		or recorded_kind != current_kind or recorded_solver != current_solver or recorded_backend != current_backend
+
+
+## The reader is also rebound to older source trees whose FlightLog predates
+## package replay identities. Their historical source fingerprint still works.
+static func _current_replay_identity() -> Dictionary:
+	var script: Script = Log
+	if script.has_method("replay_solver_identity") and script.has_method("replay_identity_kind"):
+		var digest: Variant = script.call("replay_solver_identity")
+		var kind: Variant = script.call("replay_identity_kind")
+		if typeof(digest) == TYPE_STRING and typeof(kind) == TYPE_STRING:
+			return {sha256 = digest, kind = kind}
+		return {sha256 = "unavailable-export", kind = "unavailable"}
+	var digest := Log.solver_identity()
+	return {sha256 = digest, kind = "source-tree-v1" if digest != "unavailable-export" else "unavailable"}
+
+
+static func recorded_replay_identity(header: Dictionary) -> Dictionary:
+	var kind: Variant = header.get("solver_identity_kind", "source-tree-v1")
+	var digest: Variant = header.get("solver_sha256")
+	if typeof(kind) != TYPE_STRING or kind not in ["source-tree-v1", "packaged-executable-v1"] \
+			or typeof(digest) != TYPE_STRING:
+		return {ok = false, error = "Invalid recorded solver identity."}
+	if digest == "unavailable-export":
+		if kind != "source-tree-v1": return {ok = false, error = "Invalid recorded solver identity."}
+	elif digest.length() != 64 or not digest.is_valid_hex_number():
+		return {ok = false, error = "Invalid recorded solver identity."}
+	return {ok = true, kind = kind, sha256 = digest}
 
 
 func _initialize() -> void:
@@ -78,10 +108,12 @@ func _run() -> void:
 		if FileAccess.file_exists(options[key]):
 			# Never replace reports, including with an error report.
 			printerr("Output already exists: " + str(options[key]))
+			_completed = true
 			quit(1)
 			return
 	if ProjectSettings.globalize_path(options.csv).simplify_path().to_lower() == ProjectSettings.globalize_path(options.report).simplify_path().to_lower():
 		printerr("CSV and report must have different output paths.")
+		_completed = true
 		quit(1)
 		return
 	if options.has("candidate") and (not options.has("replay") or typeof(options.candidate) != TYPE_STRING):
@@ -96,7 +128,9 @@ func _run() -> void:
 		return
 	var header: Dictionary = checked.header
 	var recorded_backend: Dictionary = recorded_stage_backend(header).identity
-	var current_solver: String = Log.solver_identity()
+	var current_identity := _current_replay_identity()
+	var recorded_identity := recorded_replay_identity(header)
+	var current_solver: String = current_identity.sha256
 	# Export does not run a flight; compare to this tool's reference default until
 	# replay selects and verifies an actual stage below.
 	var current_backend := {backend = REFERENCE_STAGE_BACKEND}
@@ -105,7 +139,9 @@ func _run() -> void:
 		dt_s = header.dt_s, complete = checked.complete, recovery_reason = checked.get("recovery_reason", ""), metadata = header.metadata, events = checked.events,
 		events_omitted = checked.get("events_omitted", 0),
 		baseline_solver_sha256 = header.solver_sha256, current_solver_sha256 = current_solver,
-		solver_changed = solver_changed(header.solver_sha256, current_solver, recorded_backend, current_backend),
+		baseline_solver_identity_kind = recorded_identity.kind, current_solver_identity_kind = current_identity.kind,
+		solver_changed = solver_changed(header.solver_sha256, current_solver, recorded_backend, current_backend,
+			recorded_identity.kind, current_identity.kind),
 		baseline_build = header.build, baseline_stage_backend = recorded_backend, current_stage_backend = current_backend,
 		observer_usec = checked.footer.observer_usec, peak_buffer_rows = checked.footer.peak_buffer_rows}, true)
 	var flight: Node = null
@@ -117,7 +153,8 @@ func _run() -> void:
 		flight = prepared.flight
 		var active_backend: Dictionary = prepared.stage_backend
 		report.current_stage_backend = active_backend
-		report.solver_changed = solver_changed(header.solver_sha256, current_solver, recorded_backend, active_backend)
+		report.solver_changed = solver_changed(header.solver_sha256, current_solver, recorded_backend, active_backend,
+			recorded_identity.kind, current_identity.kind)
 		report.mode = "candidate" if options.has("candidate") else "exact"
 		report.candidate = str(options.get("candidate", ""))
 		report.candidate_identity = flight.aircraft.get("input_identity", {})
@@ -194,6 +231,8 @@ static func inspect(path: String, recover := false) -> Dictionary:
 	if not backend.ok: return backend
 	for key in ["engine", "solver_sha256", "aircraft_path", "ground_field_id", "shaft_integrator"]:
 		if typeof(header.get(key)) != TYPE_STRING: return {ok = false, error = "Missing header string: " + key}
+	var solver := recorded_replay_identity(header)
+	if not solver.ok: return solver
 	# GP-07c: logs recorded before the airframe friction table have no airframe_surfaces (soft ones are refused by the
 	# contact-law identity anyway); a present one must be a flat table.
 	if typeof(header.get("soft_hull_contacts")) != TYPE_BOOL or not header.get("ground_surfaces") is PackedFloat64Array \
@@ -299,12 +338,17 @@ static func validate_row(row: Variant, layout: Dictionary, tick: int) -> String:
 static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 	var recorded_backend := recorded_stage_backend(header)
 	if not recorded_backend.ok: return recorded_backend
+	var recorded_identity := recorded_replay_identity(header)
+	if not recorded_identity.ok: return recorded_identity
 	if header.engine != Engine.get_version_info().string:
 		return {ok = false, error = "Engine version differs; use the recorded engine."}
-	if candidate.is_empty() and (header.solver_sha256 == "unavailable-export" or Log.solver_identity() == "unavailable-export"):
-		return {ok = false, error = "Source fingerprint unavailable. Export remains available; exact replay requires a source build."}
-	if candidate.is_empty() and header.solver_sha256 != Log.solver_identity():
-		return {ok = false, error = "Solver sources differ. Exact replay refused; use explicit --candidate for an experiment."}
+	var current_identity := _current_replay_identity()
+	if candidate.is_empty() and (recorded_identity.sha256 == "unavailable-export" \
+			or current_identity.sha256 == "unavailable-export" or current_identity.kind == "unavailable"):
+		return {ok = false, error = "Solver fingerprint unavailable. Exact replay requires the recorded verified source or package."}
+	if candidate.is_empty() and (recorded_identity.kind != current_identity.kind \
+			or recorded_identity.sha256 != current_identity.sha256):
+		return {ok = false, error = "Solver identity differs. Exact replay refused; use explicit --candidate for an experiment."}
 	if absf(header.dt_s - 1.0 / Engine.physics_ticks_per_second) > 1e-15:
 		return {ok = false, error = "Physics tick rate differs."}
 	var aircraft: Dictionary = header.aircraft if candidate.is_empty() else Data.load_file(candidate)
@@ -486,4 +530,5 @@ func _finish(error: String) -> void:
 			report.status = "error"
 	if not error.is_empty(): printerr(error)
 	else: print("Flight log %s: %d rows verified." % [report.mode, report.rows])
+	_completed = true
 	quit(0 if error.is_empty() else 1)

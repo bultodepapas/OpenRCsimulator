@@ -262,7 +262,19 @@ func _run() -> void:
 		and is_instance_valid(candidate) and is_instance_valid(candidate_session)
 		and candidate_session.holds.has("loading") and tick_before == 0)
 	if effects_reached:
-		app.cancel_flight_loading()
+		var cancel: Button = app._loading_screen.cancel_button
+		var focus: Control = root.gui_get_focus_owner()
+		_check("Cancel retains focus during effects checkpoint", focus == cancel, "focus=%s" % str(focus))
+		for pressed: bool in [true, false]:
+			var key := InputEventKey.new()
+			key.keycode = KEY_ENTER
+			key.physical_keycode = KEY_ENTER
+			key.pressed = pressed
+			root.push_input(key, true)
+		_check("Enter requests cancellation during effects checkpoint", app._loading_cancelled,
+			"cancelled=%s" % app._loading_cancelled)
+		if not app._loading_cancelled:
+			app.cancel_flight_loading() # clean up after observing failure; preserve later coverage
 	var tick_changed := false
 	for _index in 8:
 		await process_frame

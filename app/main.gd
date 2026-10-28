@@ -48,6 +48,8 @@ const SceneryDamageDirector = preload("res://render/crash/scenery_damage.gd")
 const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
 const Recorder := preload("res://sim/recorder.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
+const FlightLogCliHost := preload("res://tools/flight_log_cli_host.gd")
+const NativeQualification := preload("res://tools/native_qualification.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Preferences := preload("res://app_state/preferences.gd")
@@ -423,6 +425,24 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 
 
 func _ready() -> void:
+	# A fixed diagnostic runs in this same executable and owns its exit; it never starts a flight scene.
+	for argument: String in user_args:
+		if argument.begins_with("--native-qualification"):
+			set_process(false)
+			set_process_input(false)
+			set_process_unhandled_input(false)
+			var qualification := NativeQualification.new()
+			add_child(qualification)
+			qualification.start(user_args)
+			return
+		if argument.begins_with("--flight-log-cli"):
+			set_process(false)
+			set_process_input(false)
+			set_process_unhandled_input(false)
+			var log_host := FlightLogCliHost.new()
+			add_child(log_host)
+			log_host.start(user_args)
+			return
 	if startup_checkpoint.is_valid():
 		process_mode = Node.PROCESS_MODE_DISABLED
 	await _prepare_flight()
@@ -729,7 +749,9 @@ func _prepare_flight() -> void:
 	if not await _startup_stage("Checking flight"):
 		return
 	session = FlightSession.new()
-	if args.has("physics-backend") and (not session.setup_stage_backend(str(args["physics-backend"])) or _scripted):
+	# The app requests native physics by default; the session keeps its reference default for tools and replay.
+	if (not _scripted or args.has("physics-backend")) \
+			and (not session.setup_stage_backend(str(args.get("physics-backend", "native"))) or _scripted):
 		printerr("physics backend refused: ", session.stage_backend_error if not _scripted else "requires a physics flight")
 		session.free()
 		session = null
@@ -985,6 +1007,13 @@ func _prepare_flight() -> void:
 			printerr("Flight start refused: " + startup_error)
 			get_tree().quit(ERR_INVALID_PARAMETER)
 		return
+	# E3d1: interactive flights get soft hull contacts (a wingtip brush or belly slide continues); scripted, capture
+	# and trace routes keep "any hull contact is a crash". -- --soft-contacts=off restores it interactively.
+	session.soft_hull_contacts = not _scripted and not args.has("capture") and not args.has("trace") \
+			and str(args.get("soft-contacts", "on")) != "off"
+	if not _scripted:
+		# Include the requested and active backend plus any fallback reason, including for headless traces.
+		print("physics backend: ", JSON.stringify(session.stage_backend_status()))
 	if args.has("trace"):
 		if not session.aircraft.ok or not session.surface_error.is_empty():
 			# Never record a "flight" on invalid data (it would be a ballistic throw): fail the run instead.
@@ -1045,11 +1074,6 @@ func _prepare_flight() -> void:
 			push_error("Main: crash presentation context was refused; crash effects are unavailable.")
 			_crash_director.queue_free()
 			_crash_director = null
-	# E3d1: interactive flights get soft hull contacts (a wingtip brush or belly slide continues); scripted, capture
-	# and trace routes keep "any hull contact is a crash". -- --soft-contacts=off restores it interactively.
-	session.soft_hull_contacts = not _scripted and not args.has("capture") and str(args.get("soft-contacts", "on")) != "off"
-	if args.has("physics-backend"):
-		print("physics backend: ", JSON.stringify(session.stage_backend_status()))
 	if accident_reports_enabled and not _scripted and not args.has("capture") and not args.has("trace") \
 		and str(args.get("accident-report", "on")) != "off":
 		_accident_incident = AccidentIncident.new()

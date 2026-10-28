@@ -195,8 +195,9 @@ def main():
     for aircraft in ids:
         for name in ("baseline", "candidate"):
             path = out / f"{name}-{aircraft}.csv"
+            # Historical snapshots must use the same solver identity for byte-exact CSV comparisons.
             run(f"trace-{name}-{aircraft}", projects[name], ["--headless", "--",
-                "--aircraft=" + aircraft, "--trace=" + str(path), "--t=3"])
+                "--aircraft=" + aircraft, "--physics-backend=gdscript_reference", "--trace=" + str(path), "--t=3"])
         before = out / f"baseline-{aircraft}.csv"
         after = out / f"candidate-{aircraft}.csv"
         # Snapshot preparation normalized CRLF in candidate JSON. Validate that

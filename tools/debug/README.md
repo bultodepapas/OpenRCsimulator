@@ -155,6 +155,12 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
   - The summary groups records whose texts differ only in numbers, with counts, first/last sequence and the
     script location.
   - `--fail-on-error` stops a repro script at the first line after which the engine logged an error.
+  - A file run by `run` or `smoke` may have a sibling cleanup file: `scenario.txt` uses `scenario.cleanup`.
+    After the main script succeeds or fails, every cleanup command is attempted, even if an earlier one fails.
+    Cleanup failures are reported and fail the run; an existing main-script failure remains the result. The same
+    `--fail-on-error` log checks apply to cleanup. Stdin has no cleanup file, and a cleanup file run directly does
+    not execute itself twice. `soak` executes its lines directly and does **not** run sibling cleanup; use it only
+    with scripts that restore their own state.
 - **Leaks: `objects` and `soak`.**
   - `objects` counts live nodes by class and script (internal children included), and orphan nodes by class, with
     samples. It also reports totals for objects, nodes, resources, orphans and static memory.
@@ -417,13 +423,13 @@ to the bridge on a stand-in AppRoot. It covers:
   new orphan `Node`s; `profile` parses the engine's profile format, and 5,000 profile lines evict no warning from
   the main log.
 
-**Client tests.** These run in `research/test-tools.sh`, with 25 tests, mostly against a fake server. They cover:
+**Client tests.** These run in `research/test-tools.sh`, with 35 tests, mostly against a fake server. They cover:
 
 - argument and JSON parsing, and quoted values that stay strings;
 - the token, exit codes, and the `ui` table with its short paths;
 - the remembered session port and token (sent only to that port), and `OPENRC_DEBUG_BRIDGE=1` not being read as a
   port;
-- `stop` without a session, and `run` stop and `--keep-going`;
+- `stop` without a session; `run` stop, `--keep-going`, and failure-safe sibling cleanup;
 - `watch` CSV chunks, `crawl` passes and failures, and `clean`;
 - the crash and leak exit report, using the engine's real output format;
 - hitch attribution to the action before it, and seed-reproducible monkey actions;

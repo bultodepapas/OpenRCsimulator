@@ -18,6 +18,7 @@ var _warmup := 2400
 var _samples := 14400
 var _observer := true
 var _failure := ""
+var _finished := false
 var _warmup_done := 0
 var _sample_done := 0
 var _tick_usec := PackedInt64Array()
@@ -46,11 +47,18 @@ func _initialize() -> void:
 func _parse() -> bool:
 	var seen := {}
 	for arg: String in OS.get_cmdline_user_args():
+		# The production release routes this same probe through its fixed host.
+		if arg == "--quick-flight":
+			if seen.has("quick-flight"): return _fail("duplicate --quick-flight")
+			seen["quick-flight"] = true
+			continue
 		var pair := arg.trim_prefix("--").split("=", true, 1)
 		if not arg.begins_with("--") or pair.size() != 2 or seen.has(pair[0]):
 			return _fail("expected unique --name=value arguments")
 		seen[pair[0]] = true
 		match pair[0]:
+			"native-qualification":
+				if pair[1] != "session": return _fail("native-qualification must select session")
 			"output": _output = pair[1]
 			"aircraft": _aircraft = pair[1]
 			"case": _case = pair[1]
@@ -215,6 +223,14 @@ func _run() -> void:
 				_sample_done += 1
 				_hash_tick(digest)
 			elapsed = Time.get_ticks_usec() - started
+	var log_script: Script = FlightLog
+	var solver_identity: String = str(log_script.call("replay_solver_identity")) \
+		if log_script.has_method("replay_solver_identity") else FlightLog.solver_identity()
+	var solver_kind: String = str(log_script.call("replay_identity_kind")) \
+		if log_script.has_method("replay_identity_kind") else "source-tree-v1"
+	var own_script: Script = get_script()
+	var probe_sha256 := FileAccess.get_sha256(own_script.resource_path) if own_script != null \
+		and FileAccess.file_exists(own_script.resource_path) else ""
 	var report := {
 		format = "openrc-session-cost v2", complete = _failure.is_empty(), failure = _failure,
 		aircraft_id = _aircraft, case_id = _case, observer = _observer,
@@ -225,7 +241,8 @@ func _run() -> void:
 		fingerprint_boundaries = _fingerprint_boundaries,
 		backend = {requested = _backend_requested, actual = _backend_identity,
 			native_stats = _native_stats},
-		solver_sha256 = FlightLog.solver_identity(),
+		solver_sha256 = solver_identity, solver_identity_kind = solver_kind,
+		probe_sha256 = probe_sha256, template_release = OS.has_feature("template_release"),
 		aircraft_sha256 = str(_session.aircraft.get("input_identity", {}).get("sha256", "")) if _session != null else "",
 		final_tick = _session.sim.tick if _session != null else 0, input_reads = _input_reads,
 		setup_usec = _setup_usec,
@@ -246,6 +263,7 @@ func _run() -> void:
 		if file.get_error() != OK: _failure = "report write failed"
 		file.close()
 	if _session != null: _session.free()
+	_finished = true
 	print("session probe: %s / %s / %d samples / %s" % [_aircraft, _case, _sample_done, "complete" if _failure.is_empty() else _failure])
 	quit(0 if _failure.is_empty() else 1)
 

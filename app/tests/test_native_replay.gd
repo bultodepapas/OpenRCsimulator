@@ -16,6 +16,7 @@ class BackendIdentityFlight extends Flight:
 var checks := 0
 var failures := 0
 var _native_exercised := false
+var _finished := false
 var destination := ""
 var reference_only := false
 
@@ -30,7 +31,8 @@ func check(label: String, passed: bool, detail := "") -> void:
 func _initialize() -> void:
 	Engine.physics_ticks_per_second = 240
 	reference_only = OS.get_cmdline_user_args().has("--reference-only")
-	destination = ProjectSettings.globalize_path("res://../tmp/native-replay-%d" % Time.get_ticks_usec())
+	var output_root := "user://" if OS.has_feature("template_release") else "res://../tmp/"
+	destination = ProjectSettings.globalize_path(output_root.path_join("native-replay-%d-%d" % [OS.get_process_id(), Time.get_ticks_usec()]))
 	DirAccess.make_dir_recursive_absolute(destination)
 	call_deferred("run_all")
 
@@ -146,6 +148,26 @@ func run_all() -> void:
 		return
 	var header: Dictionary = run.inspected.header
 	check("new reference header identifies backend", header.get("stage_backend") == {backend = "gdscript_reference"})
+	var actual_kind := Log.replay_identity_kind()
+	check("recorded identity agrees with this runtime", Reader.recorded_replay_identity(header).get("kind") == actual_kind \
+		and header.solver_sha256 == Log.replay_solver_identity())
+	check("source solver fingerprint stays unavailable in packages", not OS.has_feature("template_release") \
+		or Log.solver_identity() == "unavailable-export")
+	var changed_kind: Dictionary = header.duplicate(true)
+	changed_kind.solver_identity_kind = "source-tree-v1" if actual_kind == "packaged-executable-v1" else "packaged-executable-v1"
+	check("equal digest with a different identity kind refuses exact replay", not Reader.prepare_replay(changed_kind).ok \
+		and Reader.solver_changed(header.solver_sha256, header.solver_sha256, {backend = "gdscript_reference"}, \
+			{backend = "gdscript_reference"}, changed_kind.solver_identity_kind, actual_kind))
+	for invalid: Variant in [null, true, "", "unknown"]:
+		var bad_identity: Dictionary = header.duplicate(true)
+		bad_identity.solver_identity_kind = invalid
+		check("invalid solver identity kind is refused", not Reader.recorded_replay_identity(bad_identity).ok \
+			and not Reader.prepare_replay(bad_identity).ok)
+	var changed_digest: Dictionary = header.duplicate(true)
+	changed_digest.solver_sha256 = "0".repeat(64) if header.solver_sha256 != "0".repeat(64) else "1".repeat(64)
+	check("different solver digest refuses exact replay", not Reader.prepare_replay(changed_digest).ok)
+	check("unavailable fingerprints count as changed", Reader.solver_changed("unavailable-export", "unavailable-export", \
+		{backend = "gdscript_reference"}, {backend = "gdscript_reference"}))
 	exact_replay(header, run.path, "reference")
 	var old: Dictionary = header.duplicate(true)
 	old.erase("stage_backend")
@@ -215,6 +237,7 @@ func run_all() -> void:
 
 
 func finish() -> void:
+	_finished = true
 	print("NK3_NATIVE_REPLAY checks=%d failures=%d out=%s" % [checks, failures, destination])
 	if _native_exercised and checks > 0 and failures == 0:
 		print("NK3_NATIVE_REPLAY_NATIVE verdict=pass")

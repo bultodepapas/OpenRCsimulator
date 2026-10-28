@@ -2,6 +2,7 @@ extends SceneTree
 
 const UiDriver := preload("res://tests/ui_driver.gd")
 const Profile := preload("res://input/controller_profile.gd")
+const Screen := preload("res://ui/screen.gd")
 const Radio := preload("res://input/rc_input.gd")
 const PREFS := "user://test_controller_preflight_calibration.cfg"
 var failures: int = 0
@@ -53,6 +54,25 @@ func _run() -> void:
 	await _open_wizard()
 	await ui.tap(KEY_ESCAPE)
 	check("Escape cancels without altering the draft or its edited name", app.screens.is_top("controls") and setup.current_profile() == original and setup.profile_name_edit.text == "My limited radio")
+	check("normal cancellation restores the calibration button focus", root.gui_get_focus_owner() == setup.calibrate_button)
+	await _open_wizard()
+	app.screens.top().request_close()
+	setup.save_button.grab_focus()
+	await ui.settle()
+	check("deferred recovery preserves a newer Controls focus", root.gui_get_focus_owner() == setup.save_button)
+	await _open_wizard()
+	app.screens.top().request_close()
+	var overlay := CanvasLayer.new()
+	var overlay_surface: Control = Screen.mount(overlay)
+	var overlay_button := Button.new()
+	overlay_button.text = "New screen"
+	overlay_surface.add_child(overlay_button)
+	check("newer screen opens before deferred recovery", app.screens.push("test_overlay", overlay))
+	overlay_button.grab_focus()
+	await ui.settle()
+	check("deferred recovery does not take focus from a newer screen", app.screens.is_top("test_overlay")
+		and root.gui_get_focus_owner() == overlay_button)
+	app.screens.pop()
 	await _open_wizard()
 	app.screens.top().request_close()
 	check("Close cancels without saving", app.screens.is_top("controls") and app.controllers.store.load_all().profiles.is_empty())
@@ -64,6 +84,19 @@ func _run() -> void:
 	devices.clear()
 	app.controllers.refresh()
 	check("disconnect cancels and disables calibration", app.screens.is_top("controls") and not setup.calibrate_button.visible and setup.current_profile() == original)
+	await ui.settle()
+	var disconnect_focus := root.gui_get_focus_owner()
+	check("disconnect restores an enabled Controls focus", disconnect_focus != null
+		and setup._screen.is_ancestor_of(disconnect_focus) and disconnect_focus.is_visible_in_tree()
+		and (not disconnect_focus is BaseButton or not disconnect_focus.disabled))
+	await ui.tap(KEY_DOWN)
+	var after_down := root.gui_get_focus_owner()
+	check("Down navigates Controls after disconnect", after_down != null and after_down != disconnect_focus
+		and setup._screen.is_ancestor_of(after_down))
+	await ui.tap(KEY_TAB)
+	var after_tab := root.gui_get_focus_owner()
+	check("Tab navigates Controls after disconnect", after_tab != null and after_tab != after_down
+		and setup._screen.is_ancestor_of(after_tab))
 	devices.append({"id": 15, "name": "Synthetic limited radio", "guid": "issue5-radio", "kind": "radio", "known": false, "serial_number": "issue5"})
 	app.controllers.refresh()
 	await _open_wizard()

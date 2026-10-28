@@ -231,6 +231,17 @@ jobs:
             --out tmp/nk3-ci/production-probe --aircraft jensen-das-ugly-stik-60 --case trim,runway \
             --warmup-ticks 24 --sample-ticks 240 --repeats 1 --compare-backends --timeout 300 \
             2>&1 | tee tmp/nk3-ci/production-probe.log
+      - name: Publish verified NK-3 build inputs for export
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nk3-native-linux-build
+          path: |
+            tmp/native-kernel/lib/libopenrc_native_kernel.so
+            tmp/native-kernel/build-receipt.json
+            tmp/native-kernel/stage-*.json
+            tmp/native-kernel/trajectory-*.json
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
@@ -342,7 +353,7 @@ jobs:
     name: Release builds (Windows, Linux, macOS)
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     # Package in parallel with app/visual checks; publication below still requires every check.
-    needs: [native-linux, native-windows]
+    needs: [native-linux, native-windows, native-kernel-linux]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -365,6 +376,10 @@ jobs:
         with:
           name: rc-native-windows
           path: ${{ runner.temp }}/rc-native-windows
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: nk3-native-linux-build
+          path: tmp/native-kernel
       - name: Install matching Windows and Linux native artifacts before export
         run: |
           native_tool_root=".tools/native-ground-vehicle"
@@ -375,7 +390,28 @@ jobs:
           cp "$RUNNER_TEMP/rc-native-windows/build-receipt.windows.json" "$native_tool_root/"
           cp "$RUNNER_TEMP/rc-native-linux/godot-cpp/LICENSE.md" "$native_tool_root/LICENSE.godot-cpp.md"
           python3 research/rc-monster-truck/native/build.py --install-only
+      - name: Install oracle-qualified NK-3 Linux artifact before export
+        run: |
+          godot="$(app/get-godot.sh)"
+          "$godot" --version
+          python3 research/native-kernel/build.py --install-app
       - run: app/export.sh # names the packages with git describe, the same identity the app shows (UI-04a)
+      - name: Preserve NK-3 package qualification diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nk3-package-diagnostics
+          path: |
+            tmp/nk3-export-*/checks/
+            tmp/nk3-export-*/user-data/
+            tmp/nk3-export-*/player-replay/
+            tmp/nk3-export-*/production-pair/
+            tmp/nk3-export-*/default-route/checks/
+            tmp/nk3-export-*/default-route/*.csv
+            tmp/nk3-export-*/default-route/*.json
+            tmp/nk3-export-*/trimmed.csv
+          if-no-files-found: ignore
+          retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: release-builds

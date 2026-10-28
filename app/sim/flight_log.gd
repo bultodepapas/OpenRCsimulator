@@ -9,6 +9,7 @@ const CHUNK_TICKS := 240
 const MAX_BYTES := 512 * 1024 * 1024
 const MAX_TICKS := 240 * 60 * 60
 const BuildInfo := preload("res://app_state/build_info.gd")
+const NativePackage := preload("res://app_state/native_package.gd")
 const BODY := preload("res://physics/rigid_body.gd")
 const Air := preload("res://physics/air_data.gd")
 
@@ -73,10 +74,11 @@ func start(destination := "") -> Error:
 	peak_buffer_rows = 0
 	_start_tick = _session.sim.tick
 	_last_tick = _start_tick
+	var replay_identity := _replay_identity()
 	header = {
 		kind = "header", format = FORMAT, created_utc = Time.get_datetime_string_from_system(true),
 		dt_s = _session.sim.dt(), engine = Engine.get_version_info().string,
-		build = BuildInfo.current(), solver_sha256 = solver_identity(),
+		build = BuildInfo.current(), solver_sha256 = replay_identity.sha256,
 		stage_backend = stage_backend.duplicate(true),
 		metadata = _session.trace_meta(), checkpoint = checkpoint,
 		aircraft = _session.aircraft.duplicate(true), aircraft_path = _session.aircraft_path,
@@ -92,6 +94,9 @@ func start(destination := "") -> Error:
 			continuous = _session.sim.continuous.size(), modes = _session.sim.modes.size(), mass = 4},
 		mass_boundary = "FUEL-06: live mass kg and CG offset [x, y, z] m body FRD from the fixed datum O, accepted tick end",
 	}
+	# Source-built headers remain byte-compatible with historical logs.
+	if replay_identity.kind == "packaged-executable-v1":
+		header.solver_identity_kind = replay_identity.kind
 	_file.store_buffer(MAGIC.to_ascii_buffer())
 	if not _write_packet(header):
 		return ERR_FILE_CANT_WRITE
@@ -342,6 +347,27 @@ static func solver_identity() -> String:
 		hash.update(source.to_utf8_buffer())
 		hash.update(FileAccess.get_file_as_bytes(source))
 	return hash.finish().hex_encode() if not paths.is_empty() else "unavailable-export"
+
+
+## Replay identity is intentionally separate from the source identity used by
+## companion and workshop qualification. A package binds its embedded scripts
+## and engine to the verified executable, not to a claim about loose sources.
+static func replay_solver_identity() -> String:
+	return str(_replay_identity().sha256)
+
+
+static func replay_identity_kind() -> String:
+	return str(_replay_identity().kind)
+
+
+static func _replay_identity() -> Dictionary:
+	if OS.has_feature("template_release"):
+		var package: Dictionary = NativePackage.identity()
+		if package.get("ok", false):
+			return {kind = "packaged-executable-v1", sha256 = str(package.executable_sha256)}
+		return {kind = "unavailable", sha256 = "unavailable-export"}
+	var digest := solver_identity()
+	return {kind = "source-tree-v1" if digest != "unavailable-export" else "unavailable", sha256 = digest}
 
 
 static func _source_paths(directory: String, paths: Array[String]) -> void:

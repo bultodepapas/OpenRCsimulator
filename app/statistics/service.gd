@@ -40,6 +40,7 @@ var _write_tick := 0
 var _durable_tick := 0
 var _save_error := ""
 var _available := true
+var _opened_read_only := false
 
 
 func setup(path: String = "user://flight_statistics", save: bool = true) -> bool:
@@ -55,6 +56,7 @@ func setup(path: String = "user://flight_statistics", save: bool = true) -> bool
 		data = load("res://statistics/schema.gd").create(_uuid())
 	if data.is_empty():
 		data = load("res://statistics/schema.gd").create(_uuid())
+	_opened_read_only = save and not store.writable
 	if not save or store.writable:
 		_recover()
 	return not save or store.writable
@@ -107,6 +109,7 @@ func begin_activity(session: Node, aircraft_id: String, aircraft_name: String, m
 	if not end_activity("abandoned"):
 		return
 	_ensure_session()
+	_opened_read_only = false # This service has now taken responsibility for a session.
 	_session = session
 	_aircraft_id = aircraft_id
 	_aircraft_name = aircraft_name
@@ -338,6 +341,9 @@ func end_activity(reason: String = "abandoned", discard_unsaved: bool = false, c
 	_finish_write()
 	if detector == null:
 		if close_session and not discard_unsaved:
+			# A store opened read-only never began a session here; its existing history belongs to another writer.
+			if _opened_read_only and persistent and not store.writable and not _dirty:
+				return true
 			_close_session_record()
 			return flush(false)
 		return true

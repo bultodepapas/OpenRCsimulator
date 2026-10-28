@@ -15842,5 +15842,5368 @@
    "Application default remains reference. Packaged identity/loading, target-host performance and any additional native platform require qualification before promotion.",
    "The earlier broad app-suite results are a separate historical snapshot; no new complete app-suite run is claimed for this increment."
   ]
+ },
+ "official_default_linux": {
+  "date_utc": "2026-10-28",
+  "scope": "Official application default request for verified Linux x86_64 stock electric Ugly Stik, calm supported configurations. Reference fallback/opt-out; low-level sessions remain reference.",
+  "implementation_commit": "9ee9af457",
+  "repository_head_at_collection": "9ee9af457fc42fd7320f3b5c6eb1faae43a04b07",
+  "source_snapshot": {
+   "origin_commit": "9ee9af457",
+   "source_app_sha256": "5e552592fe4cfe1a811e870d2ebc20d789e9cc1d547e8f17da817e35f58ccbb8",
+   "scope": "Source-isolated release measurement; executable is independently hashed by runner."
+  },
+  "installed_receipt": {
+   "abi_version": 1,
+   "backend": "native",
+   "backend_version": "openrc-native-kernel-stage-v1",
+   "format": "openrc-native-kernel-receipt",
+   "platforms": {
+    "linux": {
+     "abi_version": 1,
+     "architecture": "x86_64",
+     "backend": "native",
+     "backend_version": "openrc-native-kernel-stage-v1",
+     "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+     "builder_sha256": "eb2de507d8e3696b675f2a22c69530968734e235859f41dbb823eeaaccec5258",
+     "compiler_version": "13.3.0",
+     "cxxflags_appended": [
+      "-fno-fast-math",
+      "-ffp-contract=off",
+      "-fexceptions",
+      "-std=c++17"
+     ],
+     "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+     "engine_version": "4.8-beta1 (official)",
+     "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+     "libm_imports": [
+      "atan2@GLIBC_2.2.5",
+      "cos@GLIBC_2.2.5",
+      "pow@GLIBC_2.29",
+      "sin@GLIBC_2.2.5",
+      "sincos@GLIBC_2.2.5",
+      "sqrt@GLIBC_2.2.5"
+     ],
+     "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+     "mirrored_sources": {
+      "app/app_state/native_package.gd": "677c0b4840afe6fdb8e5cadcbaa5cbe90728ec67eda4bd197607f104cd2552f3",
+      "app/data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+      "app/physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+      "app/physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+      "app/physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+      "app/physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+      "app/physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+      "app/physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+      "app/physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+      "app/physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+      "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+      "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+      "app/physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+      "app/physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+      "app/sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+      "app/sim/flight_session.gd": "0d7b187f6c258cd27096db5222eeab8f39658cb13fd8f802ff6ddddb86981b1e",
+      "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+      "app/sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+     },
+     "platform": "linux",
+     "repository_head": "fe85e06b529a2ba72882833aac037b92b2365aff",
+     "shared_builder_sha256": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+     "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db",
+     "verification": {
+      "stage_oracle": {
+       "compared": 128565,
+       "results": "stage-20261028T174118488006Z.json",
+       "results_sha256": "b0ad72f42d00a6dff4fa1dad7ed6e73092ba5ce6016b496a91980479bcc64049",
+       "verdict": "pass"
+      },
+      "trajectory": {
+       "compared": 155931,
+       "results": "trajectory-20261028T174159628622Z.json",
+       "results_sha256": "c8cb6072fd0bba39e23e888fcd3e06bab34695555bb245870f478e30d708f4b7",
+       "verdict": "pass"
+      }
+     }
+    }
+   }
+  },
+  "package_manifest": {
+   "architecture": "x86_64",
+   "engine_version": "4.8-beta1 (official)",
+   "format": "openrc-native-kernel-package v1",
+   "native_receipt": {
+    "abi_version": 1,
+    "backend": "native",
+    "backend_version": "openrc-native-kernel-stage-v1",
+    "format": "openrc-native-kernel-receipt",
+    "platforms": {
+     "linux": {
+      "abi_version": 1,
+      "architecture": "x86_64",
+      "backend": "native",
+      "backend_version": "openrc-native-kernel-stage-v1",
+      "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+      "builder_sha256": "eb2de507d8e3696b675f2a22c69530968734e235859f41dbb823eeaaccec5258",
+      "compiler_version": "13.3.0",
+      "cxxflags_appended": [
+       "-fno-fast-math",
+       "-ffp-contract=off",
+       "-fexceptions",
+       "-std=c++17"
+      ],
+      "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+      "engine_version": "4.8-beta1 (official)",
+      "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+      "libm_imports": [
+       "atan2@GLIBC_2.2.5",
+       "cos@GLIBC_2.2.5",
+       "pow@GLIBC_2.29",
+       "sin@GLIBC_2.2.5",
+       "sincos@GLIBC_2.2.5",
+       "sqrt@GLIBC_2.2.5"
+      ],
+      "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+      "mirrored_sources": {
+       "app/app_state/native_package.gd": "677c0b4840afe6fdb8e5cadcbaa5cbe90728ec67eda4bd197607f104cd2552f3",
+       "app/data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+       "app/physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+       "app/physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+       "app/physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+       "app/physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+       "app/physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+       "app/physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+       "app/physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+       "app/physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+       "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+       "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+       "app/physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+       "app/physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+       "app/sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+       "app/sim/flight_session.gd": "0d7b187f6c258cd27096db5222eeab8f39658cb13fd8f802ff6ddddb86981b1e",
+       "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+       "app/sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+      },
+      "platform": "linux",
+      "repository_head": "fe85e06b529a2ba72882833aac037b92b2365aff",
+      "shared_builder_sha256": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+      "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db",
+      "verification": {
+       "stage_oracle": {
+        "compared": 128565,
+        "results": "stage-20261028T174118488006Z.json",
+        "results_sha256": "b0ad72f42d00a6dff4fa1dad7ed6e73092ba5ce6016b496a91980479bcc64049",
+        "verdict": "pass"
+       },
+       "trajectory": {
+        "compared": 155931,
+        "results": "trajectory-20261028T174159628622Z.json",
+        "results_sha256": "c8cb6072fd0bba39e23e888fcd3e06bab34695555bb245870f478e30d708f4b7",
+        "verdict": "pass"
+       }
+      }
+     }
+    }
+   },
+   "platform": "linux",
+   "qualification_sources": {
+    "session_probe.gd": "199dad9e74996155789b45bfa7879bcda431c29ad9d491411f6e7c60826ae9e6",
+    "test_native_replay.gd": "e5eb7cb534ce13693f69f9d83da951b4bf5fd35696d3a71bda8d29bd60b179b4",
+    "test_native_session.gd": "bfa1d4e484828c6897d1cb8a0064ff3f3664cd277795a9bf83f396fc99d29ab0",
+    "test_native_stage.gd": "331cdb551cc71be275e33d23604cc4fab3ebdf07e562b265a1de6020eaf49270"
+   },
+   "solver_sha256": "60c39a6620cfe344952c09e397c98fcf64bad5e6dbf08288bb9796dfcf374956"
+  },
+  "package_artifact": {
+   "editor_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+   "executable_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+   "format": "openrc-native-kernel-package-artifact v1",
+   "manifest_sha256": "a463293c70aecaf40e2fa25250433cf0b9660043775713c35847c98ec19e8d13",
+   "native_binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+   "template_sha256": "93cdaedf75fb5b5fd244fb8c3348b0fefde893eff85e0de382e1b9970d58ddf3"
+  },
+  "stage_oracle": {
+   "binary_sha256_after": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+   "binary_sha256_before": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+   "build_receipt": {
+    "abi_version": 1,
+    "architecture": "x86_64",
+    "backend": "native",
+    "backend_version": "openrc-native-kernel-stage-v1",
+    "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+    "builder_sha256": "dc23908c113c0e025d47ea15e6d2e2ffff92bcf564a4b685fe8e0f5835f7f650",
+    "compiler_version": "13.3.0",
+    "cxxflags_appended": [
+     "-fno-fast-math",
+     "-ffp-contract=off",
+     "-fexceptions",
+     "-std=c++17"
+    ],
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "engine_version": "4.8-beta1 (official)",
+    "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+    "libm_imports": [
+     "atan2@GLIBC_2.2.5",
+     "cos@GLIBC_2.2.5",
+     "pow@GLIBC_2.29",
+     "sin@GLIBC_2.2.5",
+     "sincos@GLIBC_2.2.5",
+     "sqrt@GLIBC_2.2.5"
+    ],
+    "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+    "mirrored_sources": {
+     "app/data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+     "app/physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+     "app/physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+     "app/physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+     "app/physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+     "app/physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+     "app/physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+     "app/physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+     "app/physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+     "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+     "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+     "app/physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+     "app/physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+     "app/sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+     "app/sim/flight_session.gd": "0d7b187f6c258cd27096db5222eeab8f39658cb13fd8f802ff6ddddb86981b1e",
+     "app/sim/native_stage.gd": "bf16fb495b4f3bf5bc9695cabb45dd9c246f7c3704b3c411de06461ad31c68b5",
+     "app/sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+    },
+    "platform": "linux",
+    "repository_head": "fe85e06b529a2ba72882833aac037b92b2365aff",
+    "shared_builder_sha256": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+    "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db",
+    "verification": {
+     "stage_oracle": {
+      "compared": 128565,
+      "results": "stage-20261028T154647268989Z.json",
+      "results_sha256": "7d3bf38a55281a0ca316fa2b57ef7a031c8eebbe9c460bcf603508d8a8428568",
+      "verdict": "pass"
+     },
+     "trajectory": {
+      "compared": 155931,
+      "results": "trajectory-20261028T154811785712Z.json",
+      "results_sha256": "44df689cf221e3f94d3cf0c4d445346783d5a15ad0eefab20c1a1ea05f6aa746",
+      "verdict": "pass"
+     }
+    }
+   },
+   "checked_run": {
+    "capture_id": "e9a0ecf8-bf80-4f5e-b6c0-6a77dc1d39be",
+    "command": [
+     "/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64",
+     "--headless",
+     "--path",
+     "/home/bulto/OpenRCsimulator/app",
+     "--script",
+     "/home/bulto/OpenRCsimulator/research/native-kernel/stage_oracle.gd",
+     "--",
+     "--extension=res://native/kernel/openrc_native_kernel.gdextension",
+     "--output=/home/bulto/OpenRCsimulator/tmp/native-kernel/stage-20261028T174118488006Z.json",
+     "--seed=20261027",
+     "--states=12000",
+     "--variant-states=1500",
+     "--timing-rounds=15"
+    ],
+    "complete": true,
+    "counts": {
+     "error": 0,
+     "warning": 0
+    },
+    "cwd": "/home/bulto/OpenRCsimulator",
+    "detail": "",
+    "diagnostics": [],
+    "elapsed_seconds": 31.230178,
+    "exit_code": 0,
+    "format": "openrc-godot-check v1",
+    "label": "nk3-stage",
+    "log": "/home/bulto/OpenRCsimulator/tmp/native-kernel/checks/stage-b7b6db9y/nk3-stage-7bo37km6/engine.log",
+    "log_bytes": 318,
+    "log_sha256": "203b8eef3d4dae741de8255ade5eef648eb97f8004b60e75a9472fb064a4176c",
+    "max_log_bytes": 8388608,
+    "missing_required_text": [],
+    "ok": true,
+    "process_exit": 0,
+    "reason": "passed",
+    "report": "/home/bulto/OpenRCsimulator/tmp/native-kernel/checks/stage-b7b6db9y/nk3-stage-7bo37km6/report.json",
+    "required_text": [
+     "NK3_ORACLE verdict=pass"
+    ],
+    "started_utc": "2026-10-28T17:41:18.537213+00:00",
+    "timeout_seconds": 300.0,
+    "warnings_as_errors": false
+   },
+   "components": {
+    "ground_evaluation_derivative": {
+     "class_mismatch": 0,
+     "count": 11421,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 11421,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "ground_evaluation_loads": {
+     "class_mismatch": 0,
+     "count": 11421,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 11421,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "ground_evaluation_ok": {
+     "class_mismatch": 0,
+     "count": 12000,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 12000,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "ground_up": {
+     "class_mismatch": 0,
+     "count": 12000,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 12000,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "hull_loads": {
+     "class_mismatch": 0,
+     "count": 12000,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 12000,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "literals": {
+     "class_mismatch": 0,
+     "count": 39,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 39,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "prop_loads": {
+     "class_mismatch": 0,
+     "count": 12000,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 12000,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "stage_bytes": {
+     "class_mismatch": 0,
+     "count": 11421,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 11421,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "stage_derivative": {
+     "class_mismatch": 0,
+     "count": 11421,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 11421,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "stage_loads": {
+     "class_mismatch": 0,
+     "count": 11421,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 11421,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "stage_rotor_momentum": {
+     "class_mismatch": 0,
+     "count": 11421,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 11421,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "stage_shape": {
+     "class_mismatch": 0,
+     "count": 12000,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 12000,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    }
+   },
+   "coverage": {
+    "stage_air": {
+     "ground_loaded": 161,
+     "hull_loaded": 156,
+     "hull_near_lake": 407,
+     "hull_points_lake_covered": 5318,
+     "malformed": 306,
+     "propeller_turning": 3718,
+     "stage_nonfinite_loads": 167,
+     "stage_shaped": 3992,
+     "stage_valid": 3825,
+     "states": 4138
+    },
+    "stage_ground": {
+     "ground_loaded": 3407,
+     "hull_loaded": 816,
+     "hull_near_lake": 1060,
+     "hull_points_lake_covered": 16867,
+     "malformed": 385,
+     "propeller_turning": 4413,
+     "stage_nonfinite_loads": 61,
+     "stage_shaped": 4608,
+     "stage_valid": 4547,
+     "states": 4888
+    },
+    "stage_hull": {
+     "ground_loaded": 2181,
+     "hull_loaded": 2294,
+     "hull_near_lake": 668,
+     "hull_points_lake_covered": 10423,
+     "malformed": 227,
+     "propeller_turning": 2688,
+     "stage_nonfinite_loads": 43,
+     "stage_shaped": 2821,
+     "stage_valid": 2778,
+     "states": 2974
+    }
+   },
+   "engine": "4.8-beta1 (official)",
+   "engine_sha256_after": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+   "engine_sha256_before": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+   "failures": [],
+   "format": "openrc-nk3-stage-oracle v1",
+   "harness_sources": {
+    "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+    "research/native-kernel/fleet.gd": "c2e9276f8f404a878cb42893db437086d0d3371429446a1887ccc7b72fb276d8",
+    "research/native-kernel/oracle.gd": "4943f7aa009b1a584ac73a11e26a8971ca9b105eafb857704f2704ae9f4cf3ec",
+    "research/native-kernel/run.py": "53381ee5a33da1df07b0c65b319345abc8e138ffbe2063f96a1fe20baa0ccef4",
+    "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+    "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+    "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+    "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+   },
+   "identity": {
+    "abi": 1,
+    "abi_version": 1,
+    "aero_law": "section-plane-source-weighted-wake-velocity-v2",
+    "backend": "native",
+    "backend_version": "openrc-native-kernel-stage-v1",
+    "rolling_law": "wheel-positive-terrain-excess-v2",
+    "state_size": 13
+   },
+   "law_identity": {
+    "aero_native": "section-plane-source-weighted-wake-velocity-v2",
+    "aero_reference": "section-plane-source-weighted-wake-velocity-v2",
+    "rolling_native": "wheel-positive-terrain-excess-v2",
+    "rolling_reference": "wheel-positive-terrain-excess-v2"
+   },
+   "prepare": {
+    "error": "",
+    "ok": true
+   },
+   "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+   "refusals": {
+    "hull_geometry_only": {
+     "error": "unsupported key hull.geometry_only",
+     "refused": true
+    },
+    "layout_wash_pieces": {
+     "error": "continuous wash pieces before the wheels are not ported",
+     "refused": true
+    },
+    "prop_axis": {
+     "error": "unsupported key propulsion.axis",
+     "refused": true
+    },
+    "prop_electric_kind": {
+     "error": "unsupported key propulsion.kind",
+     "refused": true
+    },
+    "session_coupled": {
+     "error": "unsupported session capability: coupled",
+     "refused": true
+    },
+    "session_finite_fuel": {
+     "error": "unsupported session capability: finite_fuel",
+     "refused": true
+    },
+    "session_flaps": {
+     "error": "unsupported session capability: flaps",
+     "refused": true
+    },
+    "session_glow": {
+     "error": "unsupported session capability: glow",
+     "refused": true
+    },
+    "session_liquid": {
+     "error": "unsupported session capability: liquid",
+     "refused": true
+    },
+    "session_not_calm": {
+     "error": "unsupported session capability: not_calm",
+     "refused": true
+    },
+    "session_retractable": {
+     "error": "unsupported session capability: retractable",
+     "refused": true
+    },
+    "session_rotor_dynamics": {
+     "error": "unsupported session capability: rotor_dynamics",
+     "refused": true
+    },
+    "session_slipstream": {
+     "error": "unsupported session capability: slipstream",
+     "refused": true
+    },
+    "session_spatial_weather": {
+     "error": "unsupported session capability: spatial_weather",
+     "refused": true
+    },
+    "session_turbine": {
+     "error": "unsupported session capability: turbine",
+     "refused": true
+    },
+    "session_turbulence": {
+     "error": "unsupported session capability: turbulence",
+     "refused": true
+    },
+    "session_vertical_atmosphere": {
+     "error": "unsupported session capability: vertical_atmosphere",
+     "refused": true
+    },
+    "session_weather_pending_reset": {
+     "error": "unsupported session capability: weather_pending_reset",
+     "refused": true
+    }
+   },
+   "run_valid": true,
+   "seed": 20261027,
+   "self_test": {
+    "detected": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "passed": true
+   },
+   "sources": {
+    "res://app_state/native_package.gd": "677c0b4840afe6fdb8e5cadcbaa5cbe90728ec67eda4bd197607f104cd2552f3",
+    "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+    "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+    "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+    "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+    "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+    "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+    "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+    "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+    "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+    "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+    "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+    "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+    "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+    "res://sim/flight_session.gd": "0d7b187f6c258cd27096db5222eeab8f39658cb13fd8f802ff6ddddb86981b1e",
+    "res://sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+    "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+   },
+   "sources_after": {
+    "res://app_state/native_package.gd": "677c0b4840afe6fdb8e5cadcbaa5cbe90728ec67eda4bd197607f104cd2552f3",
+    "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+    "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+    "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+    "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+    "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+    "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+    "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+    "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+    "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+    "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+    "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+    "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+    "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+    "res://sim/flight_session.gd": "0d7b187f6c258cd27096db5222eeab8f39658cb13fd8f802ff6ddddb86981b1e",
+    "res://sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+    "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+   },
+   "states": 12000,
+   "timing": {},
+   "total": {
+    "compared": 128565,
+    "identical": 128565,
+    "mismatched": 0
+   },
+   "variant_states": 1500,
+   "verdict": "pass",
+   "wall_ms": 27307
+  },
+  "trajectory": {
+   "binary_sha256_after": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+   "binary_sha256_before": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+   "build_receipt": {
+    "abi_version": 1,
+    "architecture": "x86_64",
+    "backend": "native",
+    "backend_version": "openrc-native-kernel-stage-v1",
+    "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+    "builder_sha256": "dc23908c113c0e025d47ea15e6d2e2ffff92bcf564a4b685fe8e0f5835f7f650",
+    "compiler_version": "13.3.0",
+    "cxxflags_appended": [
+     "-fno-fast-math",
+     "-ffp-contract=off",
+     "-fexceptions",
+     "-std=c++17"
+    ],
+    "engine_sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "engine_version": "4.8-beta1 (official)",
+    "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+    "libm_imports": [
+     "atan2@GLIBC_2.2.5",
+     "cos@GLIBC_2.2.5",
+     "pow@GLIBC_2.29",
+     "sin@GLIBC_2.2.5",
+     "sincos@GLIBC_2.2.5",
+     "sqrt@GLIBC_2.2.5"
+    ],
+    "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+    "mirrored_sources": {
+     "app/data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+     "app/physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+     "app/physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+     "app/physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+     "app/physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+     "app/physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+     "app/physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+     "app/physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+     "app/physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+     "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+     "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+     "app/physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+     "app/physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+     "app/sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+     "app/sim/flight_session.gd": "0d7b187f6c258cd27096db5222eeab8f39658cb13fd8f802ff6ddddb86981b1e",
+     "app/sim/native_stage.gd": "bf16fb495b4f3bf5bc9695cabb45dd9c246f7c3704b3c411de06461ad31c68b5",
+     "app/sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+    },
+    "platform": "linux",
+    "repository_head": "fe85e06b529a2ba72882833aac037b92b2365aff",
+    "shared_builder_sha256": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+    "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db",
+    "verification": {
+     "stage_oracle": {
+      "compared": 128565,
+      "results": "stage-20261028T154647268989Z.json",
+      "results_sha256": "7d3bf38a55281a0ca316fa2b57ef7a031c8eebbe9c460bcf603508d8a8428568",
+      "verdict": "pass"
+     },
+     "trajectory": {
+      "compared": 155931,
+      "results": "trajectory-20261028T154811785712Z.json",
+      "results_sha256": "44df689cf221e3f94d3cf0c4d445346783d5a15ad0eefab20c1a1ea05f6aa746",
+      "verdict": "pass"
+     }
+    }
+   },
+   "checked_run": {
+    "capture_id": "4369b296-aa9b-4664-a770-8f59f6c80f80",
+    "command": [
+     "/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64",
+     "--headless",
+     "--path",
+     "/home/bulto/OpenRCsimulator/app",
+     "--script",
+     "/home/bulto/OpenRCsimulator/research/native-kernel/trajectory.gd",
+     "--",
+     "--extension=res://native/kernel/openrc_native_kernel.gdextension",
+     "--output=/home/bulto/OpenRCsimulator/tmp/native-kernel/trajectory-20261028T174159628622Z.json",
+     "--seed=20261027",
+     "--states=12000",
+     "--variant-states=1500",
+     "--timing-rounds=15",
+     "--ticks=14400",
+     "--skip-timing=true"
+    ],
+    "complete": true,
+    "counts": {
+     "error": 0,
+     "warning": 0
+    },
+    "cwd": "/home/bulto/OpenRCsimulator",
+    "detail": "",
+    "diagnostics": [],
+    "elapsed_seconds": 143.298291,
+    "exit_code": 0,
+    "format": "openrc-godot-check v1",
+    "label": "nk3-trajectory",
+    "log": "/home/bulto/OpenRCsimulator/tmp/native-kernel/checks/trajectory-unmi8rex/nk3-trajectory-qf4b3pzy/engine.log",
+    "log_bytes": 3937,
+    "log_sha256": "6223155ca1d29e44f61560e47becd50bd29f79f4ee92782f2820fdf734f1621d",
+    "max_log_bytes": 8388608,
+    "missing_required_text": [],
+    "ok": true,
+    "process_exit": 0,
+    "reason": "passed",
+    "report": "/home/bulto/OpenRCsimulator/tmp/native-kernel/checks/trajectory-unmi8rex/nk3-trajectory-qf4b3pzy/report.json",
+    "required_text": [
+     "NK3_ORACLE verdict=pass"
+    ],
+    "started_utc": "2026-10-28T17:41:59.668358+00:00",
+    "timeout_seconds": 2400.0,
+    "warnings_as_errors": false
+   },
+   "checkpoint": {
+    "native": {
+     "native_after_restore": true,
+     "pause_after_restore": "checkpoint restored (recorded inputs)",
+     "restored": true,
+     "resumed": true
+    },
+    "passes": [
+     {
+      "mismatches": 0,
+      "ticks_native": 1200,
+      "ticks_reference": 1200
+     },
+     {
+      "mismatches": 0,
+      "ticks_native": 1200,
+      "ticks_reference": 1200
+     }
+    ],
+    "reference": {
+     "native_after_restore": false,
+     "pause_after_restore": "checkpoint restored (recorded inputs)",
+     "restored": true,
+     "resumed": true
+    },
+    "reference_restored_ticks_equal_to_uninterrupted": 0
+   },
+   "components": {
+    "checkpoint_pass_length": {
+     "class_mismatch": 0,
+     "count": 2,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 2,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "checkpoint_tick_floats": {
+     "class_mismatch": 0,
+     "count": 2400,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 2400,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "checkpoint_tick_modes": {
+     "class_mismatch": 0,
+     "count": 2400,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 2400,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "checkpoint_tick_sizes": {
+     "class_mismatch": 0,
+     "count": 2400,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 2400,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "fallback_reference_kept": {
+     "class_mismatch": 0,
+     "count": 1,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 1,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "fault_path_bytes": {
+     "class_mismatch": 0,
+     "count": 5,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 5,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "fault_path_end": {
+     "class_mismatch": 0,
+     "count": 5,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 5,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "fault_path_modes": {
+     "class_mismatch": 0,
+     "count": 5,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 5,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "fault_path_sizes": {
+     "class_mismatch": 0,
+     "count": 5,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 5,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "literals": {
+     "class_mismatch": 0,
+     "count": 39,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 39,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "trajectory_end": {
+     "class_mismatch": 0,
+     "count": 5,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 5,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "trajectory_fingerprint": {
+     "class_mismatch": 0,
+     "count": 5,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 5,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "trajectory_tick_floats": {
+     "class_mismatch": 0,
+     "count": 49553,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 49553,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "trajectory_tick_modes": {
+     "class_mismatch": 0,
+     "count": 49553,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 49553,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    },
+    "trajectory_tick_sizes": {
+     "class_mismatch": 0,
+     "count": 49553,
+     "examples": [],
+     "finite_ulp": 0,
+     "identical": 49553,
+     "max_ulp": 0,
+     "nan_bits": 0,
+     "shape": 0,
+     "zero_sign": 0
+    }
+   },
+   "coverage": {},
+   "engine": "4.8-beta1 (official)",
+   "engine_sha256_after": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+   "engine_sha256_before": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+   "failures": [],
+   "fallback": {
+    "aircraft": "p51d-mustang-120",
+    "fingerprint_equal": true,
+    "reason": "unsupported session capability: retractable",
+    "reference_ticks": 960,
+    "refused": true,
+    "stage_after_attempt": "evaluate",
+    "ticks": 960
+   },
+   "fault_paths": {
+    "buried_state": {
+     "advanced": false,
+     "native": {
+      "crashed": false,
+      "fault": "step rejected: joint stage evaluation is nonfinite or malformed",
+      "pause_reason": "simulation fault: step rejected: joint stage evaluation is nonfinite or malformed",
+      "paused": true,
+      "tick": 1200
+     },
+     "reference": {
+      "crashed": false,
+      "fault": "step rejected: joint stage evaluation is nonfinite or malformed",
+      "pause_reason": "simulation fault: step rejected: joint stage evaluation is nonfinite or malformed",
+      "paused": true,
+      "tick": 1200
+     }
+    },
+    "continuous_nan_wheel": {
+     "advanced": false,
+     "native": {
+      "crashed": false,
+      "fault": "step rejected: input or auxiliary state is nonfinite or malformed",
+      "pause_reason": "simulation fault: step rejected: input or auxiliary state is nonfinite or malformed",
+      "paused": true,
+      "tick": 1200
+     },
+     "reference": {
+      "crashed": false,
+      "fault": "step rejected: input or auxiliary state is nonfinite or malformed",
+      "pause_reason": "simulation fault: step rejected: input or auxiliary state is nonfinite or malformed",
+      "paused": true,
+      "tick": 1200
+     }
+    },
+    "overflow_rates": {
+     "advanced": false,
+     "native": {
+      "crashed": false,
+      "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+      "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+      "paused": true,
+      "tick": 1200
+     },
+     "reference": {
+      "crashed": false,
+      "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+      "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+      "paused": true,
+      "tick": 1200
+     }
+    },
+    "overflow_velocity": {
+     "advanced": false,
+     "native": {
+      "crashed": false,
+      "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+      "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+      "paused": true,
+      "tick": 1200
+     },
+     "reference": {
+      "crashed": false,
+      "fault": "step rejected: pre-step produced nonfinite or malformed auxiliary state",
+      "pause_reason": "simulation fault: step rejected: pre-step produced nonfinite or malformed auxiliary state",
+      "paused": true,
+      "tick": 1200
+     }
+    },
+    "state_nan_velocity": {
+     "advanced": false,
+     "native": {
+      "crashed": false,
+      "fault": "step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+      "pause_reason": "simulation fault: step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+      "paused": true,
+      "tick": 1200
+     },
+     "reference": {
+      "crashed": false,
+      "fault": "step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+      "pause_reason": "simulation fault: step rejected: current state is nonfinite, malformed, or has a degenerate quaternion",
+      "paused": true,
+      "tick": 1200
+     }
+    }
+   },
+   "format": "openrc-nk3-trajectory v2",
+   "harness_sources": {
+    "app/sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+    "research/native-kernel/fleet.gd": "c2e9276f8f404a878cb42893db437086d0d3371429446a1887ccc7b72fb276d8",
+    "research/native-kernel/oracle.gd": "4943f7aa009b1a584ac73a11e26a8971ca9b105eafb857704f2704ae9f4cf3ec",
+    "research/native-kernel/run.py": "53381ee5a33da1df07b0c65b319345abc8e138ffbe2063f96a1fe20baa0ccef4",
+    "research/native-kernel/stage_adapter.gd": "8711b9d390922965942a690b66467891545137cdebab770b170c2068e3e7ff1b",
+    "research/native-kernel/stage_oracle.gd": "1349e19df5618e4535c25786d3b56a4f92ecd543deec16baad479382f20d01d8",
+    "research/native-kernel/trajectory.gd": "8313a2f1cbde93304e916471f3bb2a9ceaf35910a13eca195c2d68791e468d93",
+    "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+   },
+   "identity": {
+    "abi": 1,
+    "abi_version": 1,
+    "aero_law": "section-plane-source-weighted-wake-velocity-v2",
+    "backend": "native",
+    "backend_version": "openrc-native-kernel-stage-v1",
+    "rolling_law": "wheel-positive-terrain-excess-v2",
+    "state_size": 13
+   },
+   "law_identity": {
+    "aero_native": "section-plane-source-weighted-wake-velocity-v2",
+    "aero_reference": "section-plane-source-weighted-wake-velocity-v2",
+    "rolling_native": "wheel-positive-terrain-excess-v2",
+    "rolling_reference": "wheel-positive-terrain-excess-v2"
+   },
+   "load_average": {
+    "end": "3.26 5.05 6.79 4/1100 2131212",
+    "start": "1.00 6.39 7.46 3/1051 2127643"
+   },
+   "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+   "refusals": {},
+   "run_valid": true,
+   "seed": 20261027,
+   "self_test": {
+    "detected": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "passed": true
+   },
+   "sources": {
+    "res://app_state/native_package.gd": "677c0b4840afe6fdb8e5cadcbaa5cbe90728ec67eda4bd197607f104cd2552f3",
+    "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+    "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+    "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+    "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+    "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+    "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+    "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+    "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+    "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+    "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+    "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+    "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+    "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+    "res://sim/flight_session.gd": "0d7b187f6c258cd27096db5222eeab8f39658cb13fd8f802ff6ddddb86981b1e",
+    "res://sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+    "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+   },
+   "sources_after": {
+    "res://app_state/native_package.gd": "677c0b4840afe6fdb8e5cadcbaa5cbe90728ec67eda4bd197607f104cd2552f3",
+    "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+    "res://physics/aero.gd": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+    "res://physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+    "res://physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+    "res://physics/ground_contact.gd": "2f71e4bab7c23ee031d418520bcf85f7fceee92dab3bb6408af1cf65dcbcc717",
+    "res://physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+    "res://physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+    "res://physics/ground_wheels.gd": "bbb4fc5c9f6bdf47db75f77bbaa5d6937d9fefa62407dc01facc09bb82ee9757",
+    "res://physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+    "res://physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+    "res://physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "res://physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+    "res://physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+    "res://sim/environment.gd": "c986bedfe934219c5a5616b308fc04618faa26e288b1a3d6dcf3bba3c0ed61b5",
+    "res://sim/flight_session.gd": "0d7b187f6c258cd27096db5222eeab8f39658cb13fd8f802ff6ddddb86981b1e",
+    "res://sim/native_stage.gd": "88261482f06fdea5b55ae6a66a3a9593726c0dd012b3ce3f8956edbb06375c96",
+    "res://sim/simulation.gd": "d0d18bb9442a812e4fee341ff453cb06c1a90c49071e285291c63bd4fa02bca1"
+   },
+   "states": 12000,
+   "timing": {},
+   "total": {
+    "compared": 155931,
+    "identical": 155931,
+    "mismatched": 0
+   },
+   "trajectories": {
+    "lake": {
+     "completion_ok": true,
+     "first_divergence_tick": -1,
+     "native_context_calls": 3846,
+     "native_end": {
+      "crashed": true,
+      "fault": "",
+      "pause_reason": "CRASH at 8.4 m/s (sink 8.7 m/s, airframe contact (hull point 25), point speed 7.4 m/s at detected tick) - [R] restart",
+      "paused": true,
+      "tick": 3846
+     },
+     "native_fingerprint": "64e0d6d0da8f240467c3aef441d5ae0d4a52ecd90e1bf950332592edb186acb1",
+     "native_lost_install_ticks": 0,
+     "native_stage_calls": 15384,
+     "native_uncovered_ticks": 0,
+     "reference_end": {
+      "crashed": true,
+      "fault": "",
+      "pause_reason": "CRASH at 8.4 m/s (sink 8.7 m/s, airframe contact (hull point 25), point speed 7.4 m/s at detected tick) - [R] restart",
+      "paused": true,
+      "tick": 3846
+     },
+     "reference_fingerprint": "64e0d6d0da8f240467c3aef441d5ae0d4a52ecd90e1bf950332592edb186acb1",
+     "ticks_requested": 14400,
+     "ticks_run": 3846
+    },
+    "maneuver": {
+     "completion_ok": true,
+     "first_divergence_tick": -1,
+     "native_context_calls": 14400,
+     "native_end": {
+      "crashed": false,
+      "fault": "",
+      "pause_reason": "",
+      "paused": false,
+      "tick": 14400
+     },
+     "native_fingerprint": "8676b495cda9ce9acae66b398fc89191366ffa39e96365b420062a39c5820e3f",
+     "native_lost_install_ticks": 0,
+     "native_stage_calls": 57600,
+     "native_uncovered_ticks": 0,
+     "reference_end": {
+      "crashed": false,
+      "fault": "",
+      "pause_reason": "",
+      "paused": false,
+      "tick": 14400
+     },
+     "reference_fingerprint": "8676b495cda9ce9acae66b398fc89191366ffa39e96365b420062a39c5820e3f",
+     "ticks_requested": 14400,
+     "ticks_run": 14400
+    },
+    "runway": {
+     "completion_ok": true,
+     "first_divergence_tick": -1,
+     "native_context_calls": 14400,
+     "native_end": {
+      "crashed": false,
+      "fault": "",
+      "pause_reason": "",
+      "paused": false,
+      "tick": 14400
+     },
+     "native_fingerprint": "85637b42b1c0e117ec56cd408be43fd2a3e9d2a832566537e92167288dddef17",
+     "native_lost_install_ticks": 0,
+     "native_stage_calls": 57600,
+     "native_uncovered_ticks": 0,
+     "reference_end": {
+      "crashed": false,
+      "fault": "",
+      "pause_reason": "",
+      "paused": false,
+      "tick": 14400
+     },
+     "reference_fingerprint": "85637b42b1c0e117ec56cd408be43fd2a3e9d2a832566537e92167288dddef17",
+     "ticks_requested": 14400,
+     "ticks_run": 14400
+    },
+    "takeoff": {
+     "completion_ok": true,
+     "first_divergence_tick": -1,
+     "native_context_calls": 2507,
+     "native_end": {
+      "crashed": true,
+      "fault": "",
+      "pause_reason": "CRASH at 37.4 m/s (sink 35.3 m/s, airframe contact (hull point 25), point speed 37.4 m/s at detected tick) - [R] restart",
+      "paused": true,
+      "tick": 2507
+     },
+     "native_fingerprint": "d011d6a12f2593b0a451b7fa3007b56e8ec78f426809dff23fba2489a542def4",
+     "native_lost_install_ticks": 0,
+     "native_stage_calls": 10028,
+     "native_uncovered_ticks": 0,
+     "reference_end": {
+      "crashed": true,
+      "fault": "",
+      "pause_reason": "CRASH at 37.4 m/s (sink 35.3 m/s, airframe contact (hull point 25), point speed 37.4 m/s at detected tick) - [R] restart",
+      "paused": true,
+      "tick": 2507
+     },
+     "reference_fingerprint": "d011d6a12f2593b0a451b7fa3007b56e8ec78f426809dff23fba2489a542def4",
+     "ticks_requested": 14400,
+     "ticks_run": 2507
+    },
+    "trim": {
+     "completion_ok": true,
+     "first_divergence_tick": -1,
+     "native_context_calls": 14400,
+     "native_end": {
+      "crashed": false,
+      "fault": "",
+      "pause_reason": "",
+      "paused": false,
+      "tick": 14400
+     },
+     "native_fingerprint": "32f76875fb8433748b795e2aa98a3475fb8556ebcaf7562ddec6204289c794e9",
+     "native_lost_install_ticks": 0,
+     "native_stage_calls": 57600,
+     "native_uncovered_ticks": 0,
+     "reference_end": {
+      "crashed": false,
+      "fault": "",
+      "pause_reason": "",
+      "paused": false,
+      "tick": 14400
+     },
+     "reference_fingerprint": "32f76875fb8433748b795e2aa98a3475fb8556ebcaf7562ddec6204289c794e9",
+     "ticks_requested": 14400,
+     "ticks_run": 14400
+    }
+   },
+   "variant_states": 1500,
+   "verdict": "pass",
+   "wall_ms": 139223
+  },
+  "checked_release_runs": [
+   {
+    "path": "tmp/nk3-package-final-checks/companion-profile-plzckj9a/report.json",
+    "sha256": "153b8065e55753b5469232d9d9694524940281361b9c0cb20e462b4f893b26b6",
+    "expected_exit_code": 0,
+    "report": {
+     "format": "openrc-godot-check v1",
+     "capture_id": "164b85fe-ffd5-48ca-9ed7-6a03735f1517",
+     "command": [
+      ".tools/Godot_v4.8-beta1_linux.x86_64",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_companions_profiles.gd"
+     ],
+     "cwd": "/home/bulto/OpenRCsimulator",
+     "started_utc": "2026-10-28T18:10:06.503788+00:00",
+     "label": "companion-profile",
+     "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/companion-profile-plzckj9a/engine.log",
+     "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/companion-profile-plzckj9a/report.json",
+     "timeout_seconds": 120.0,
+     "max_log_bytes": 8388608,
+     "warnings_as_errors": false,
+     "required_text": [],
+     "process_exit": 0,
+     "complete": true,
+     "counts": {
+      "error": 0,
+      "warning": 0
+     },
+     "diagnostics": [],
+     "missing_required_text": [],
+     "reason": "passed",
+     "detail": "",
+     "exit_code": 0,
+     "ok": true,
+     "elapsed_seconds": 4.007988,
+     "log_bytes": 2533,
+     "log_sha256": "f6f4815ed3d2c9dccd434f02762a2ffd7e7fcfebfe7f4c21c88c266b644deda6"
+    }
+   },
+   {
+    "path": "tmp/nk3-package-final-checks/export-linux-hl_8ty25/report.json",
+    "sha256": "c3f95da490fb90f6a5fdcf2a450a84b4ba7a6092e260c6f203d7f07bb27f6ee0",
+    "expected_exit_code": 0,
+    "report": {
+     "format": "openrc-godot-check v1",
+     "capture_id": "7542974d-c1c7-4df3-9695-2d1d1300bad0",
+     "command": [
+      ".tools/Godot_v4.8-beta1_linux.x86_64",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--export-release",
+      "Linux",
+      "/home/bulto/OpenRCsimulator/tmp/nk3-official-linux-final/openrc-simulator.x86_64"
+     ],
+     "cwd": "/home/bulto/OpenRCsimulator",
+     "started_utc": "2026-10-28T17:56:37.251655+00:00",
+     "label": "export-linux",
+     "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/export-linux-hl_8ty25/engine.log",
+     "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/export-linux-hl_8ty25/report.json",
+     "timeout_seconds": 900.0,
+     "max_log_bytes": 8388608,
+     "warnings_as_errors": false,
+     "required_text": [],
+     "process_exit": 0,
+     "complete": true,
+     "counts": {
+      "error": 0,
+      "warning": 0
+     },
+     "diagnostics": [],
+     "missing_required_text": [],
+     "reason": "passed",
+     "detail": "",
+     "exit_code": 0,
+     "ok": true,
+     "elapsed_seconds": 12.221446,
+     "log_bytes": 276273,
+     "log_sha256": "bf92af2f9b43154a5917660c9ef6a36352dc00b87bf8bb5116474db25936c88a"
+    }
+   },
+   {
+    "path": "tmp/nk3-package-final-checks/release-lifecycle-jz34q1bf/report.json",
+    "sha256": "49d6e214cabeb57a8c350409f8b69babd6e0f9a95dd797ca08e9d14cadfb02cb",
+    "expected_exit_code": 0,
+    "report": {
+     "format": "openrc-godot-check v1",
+     "capture_id": "0b6085ff-504c-4fbe-b77f-ad4ad6af04bd",
+     "command": [
+      "tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+      "--headless",
+      "--audio-driver",
+      "Dummy",
+      "--",
+      "--quick-flight",
+      "--native-qualification=lifecycle"
+     ],
+     "cwd": "/home/bulto/OpenRCsimulator",
+     "started_utc": "2026-10-28T17:58:13.363755+00:00",
+     "label": "release-lifecycle",
+     "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/release-lifecycle-jz34q1bf/engine.log",
+     "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/release-lifecycle-jz34q1bf/report.json",
+     "timeout_seconds": 300.0,
+     "max_log_bytes": 8388608,
+     "warnings_as_errors": false,
+     "required_text": [
+      "NATIVE_QUALIFICATION preloaded=false",
+      "NATIVE_QUALIFICATION mode=lifecycle verdict=pass"
+     ],
+     "process_exit": 0,
+     "complete": true,
+     "counts": {
+      "error": 0,
+      "warning": 0
+     },
+     "diagnostics": [],
+     "missing_required_text": [],
+     "reason": "passed",
+     "detail": "",
+     "exit_code": 0,
+     "ok": true,
+     "elapsed_seconds": 16.942434,
+     "log_bytes": 1352,
+     "log_sha256": "7bc513f809ba96cd983d1fb9d366af84e8c162dbb77e0cf313242b9a0fc4faf0"
+    }
+   },
+   {
+    "path": "tmp/nk3-package-final-checks/release-replay-93xil93g/report.json",
+    "sha256": "93ee249a63bc323f78ad4dc66fce958b36e7d6a2e8e607065cf4d1f306ea3061",
+    "expected_exit_code": 0,
+    "report": {
+     "format": "openrc-godot-check v1",
+     "capture_id": "413abe67-64b7-4a81-bccd-56a4f06e6c57",
+     "command": [
+      "tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+      "--headless",
+      "--audio-driver",
+      "Dummy",
+      "--",
+      "--quick-flight",
+      "--native-qualification=replay"
+     ],
+     "cwd": "/home/bulto/OpenRCsimulator",
+     "started_utc": "2026-10-28T17:58:30.357618+00:00",
+     "label": "release-replay",
+     "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/release-replay-93xil93g/engine.log",
+     "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/release-replay-93xil93g/report.json",
+     "timeout_seconds": 300.0,
+     "max_log_bytes": 8388608,
+     "warnings_as_errors": false,
+     "required_text": [
+      "NATIVE_QUALIFICATION preloaded=false",
+      "NATIVE_QUALIFICATION mode=replay verdict=pass"
+     ],
+     "process_exit": 0,
+     "complete": true,
+     "counts": {
+      "error": 0,
+      "warning": 0
+     },
+     "diagnostics": [],
+     "missing_required_text": [],
+     "reason": "passed",
+     "detail": "",
+     "exit_code": 0,
+     "ok": true,
+     "elapsed_seconds": 13.383638,
+     "log_bytes": 2476,
+     "log_sha256": "f348c5079c6973a121b5653c1ecf25eb64738e9e636be1ac7e65f3d4ccffe7a9"
+    }
+   },
+   {
+    "path": "tmp/nk3-package-final-checks/release-stage-pjpyfq8h/report.json",
+    "sha256": "2a3cdce1176bc69d861c52ad72c98bbf03d13ec8ffa1f7ee36949cc51ecde1f7",
+    "expected_exit_code": 0,
+    "report": {
+     "format": "openrc-godot-check v1",
+     "capture_id": "12aa365d-c511-4e5f-b762-afe1001f34e7",
+     "command": [
+      "tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+      "--headless",
+      "--audio-driver",
+      "Dummy",
+      "--",
+      "--quick-flight",
+      "--native-qualification=stage"
+     ],
+     "cwd": "/home/bulto/OpenRCsimulator",
+     "started_utc": "2026-10-28T17:57:57.101761+00:00",
+     "label": "release-stage",
+     "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/release-stage-pjpyfq8h/engine.log",
+     "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/release-stage-pjpyfq8h/report.json",
+     "timeout_seconds": 300.0,
+     "max_log_bytes": 8388608,
+     "warnings_as_errors": false,
+     "required_text": [
+      "NATIVE_QUALIFICATION preloaded=false",
+      "NATIVE_QUALIFICATION mode=stage verdict=pass"
+     ],
+     "process_exit": 0,
+     "complete": true,
+     "counts": {
+      "error": 0,
+      "warning": 0
+     },
+     "diagnostics": [],
+     "missing_required_text": [],
+     "reason": "passed",
+     "detail": "",
+     "exit_code": 0,
+     "ok": true,
+     "elapsed_seconds": 16.205658,
+     "log_bytes": 409,
+     "log_sha256": "b7e4a5b7a98d3fbf066fcb6c109dacd3b92ce9d1d8f7654d22df75efbbd94acc"
+    }
+   },
+   {
+    "path": "tmp/nk3-package-final-checks/relocated-native-em477k78/report.json",
+    "sha256": "72f5bb9e79722c2c7c28dce8e65ef5e84b0edb39c607a9e2db51faaf33658e1f",
+    "expected_exit_code": 0,
+    "report": {
+     "format": "openrc-godot-check v1",
+     "capture_id": "02a1e8c0-3d00-4bbd-afc2-da3b0b254b3a",
+     "command": [
+      "tmp/nk3-package-relocated/openrc-simulator.x86_64",
+      "--headless",
+      "--audio-driver",
+      "Dummy",
+      "--",
+      "--quick-flight",
+      "--native-qualification=session",
+      "--aircraft=jensen-das-ugly-stik-60",
+      "--case=trim",
+      "--warmup-ticks=24",
+      "--sample-ticks=240",
+      "--observer=on",
+      "--physics-backend=native",
+      "--output=/home/bulto/OpenRCsimulator/tmp/nk3-package-relocated-session.json"
+     ],
+     "cwd": "/home/bulto/OpenRCsimulator",
+     "started_utc": "2026-10-28T18:15:09.860490+00:00",
+     "label": "relocated-native",
+     "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/relocated-native-em477k78/engine.log",
+     "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/relocated-native-em477k78/report.json",
+     "timeout_seconds": 180.0,
+     "max_log_bytes": 8388608,
+     "warnings_as_errors": false,
+     "required_text": [
+      "NATIVE_QUALIFICATION preloaded=false",
+      "NATIVE_QUALIFICATION mode=session verdict=pass"
+     ],
+     "process_exit": 0,
+     "complete": true,
+     "counts": {
+      "error": 0,
+      "warning": 0
+     },
+     "diagnostics": [],
+     "missing_required_text": [],
+     "reason": "passed",
+     "detail": "",
+     "exit_code": 0,
+     "ok": true,
+     "elapsed_seconds": 12.941785,
+     "log_bytes": 318,
+     "log_sha256": "970da440827e4f497522222d0acf8314c038acab01b622ca89ba2b0549fdd80e"
+    }
+   }
+  ],
+  "editor_native_checks": {
+   "stage": 88,
+   "session": 118,
+   "replay": 53,
+   "checked_runs": [
+    {
+     "path": "tmp/nk3-package-checks/editor-native-replay-ke4dl94e/report.json",
+     "sha256": "3457ffef731814a83b7399cdce0db61285e37454e7aace687f898d03d236ea4a",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "3e58048a-9ace-4cfb-a9f5-602f5a5a5b85",
+      "command": [
+       ".tools/Godot_v4.8-beta1_linux.x86_64",
+       "--headless",
+       "--path",
+       "app",
+       "--audio-driver",
+       "Dummy",
+       "--script",
+       "res://tests/test_native_replay.gd"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T17:45:39.084658+00:00",
+      "label": "editor-native-replay",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-checks/editor-native-replay-ke4dl94e/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-checks/editor-native-replay-ke4dl94e/report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+       "NK3_NATIVE_REPLAY_NATIVE verdict=pass"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 71.670383,
+      "log_bytes": 1945,
+      "log_sha256": "fbce3d793f8b0b89dfa1c9f19ebcc23d1a8fde75a84046cf30d4bc8f26d89aa1"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-checks/editor-native-session-lg0au4uu/report.json",
+     "sha256": "996d84cf4cb24326528ca14d09af63472db48a70e51fd335d19217fef9bc341b",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "19ff594f-1f69-4035-988f-f4f1e2ec64e1",
+      "command": [
+       ".tools/Godot_v4.8-beta1_linux.x86_64",
+       "--headless",
+       "--path",
+       "app",
+       "--audio-driver",
+       "Dummy",
+       "--script",
+       "res://tests/test_native_session.gd"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T17:45:39.086296+00:00",
+      "label": "editor-native-session",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-checks/editor-native-session-lg0au4uu/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-checks/editor-native-session-lg0au4uu/report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+       "NK3_NATIVE_SESSION_NATIVE verdict=pass"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 80.57077,
+      "log_bytes": 1266,
+      "log_sha256": "6680fa4898229430b347926b7653349331d86839b1c04ff35f22bb4fc2da27cc"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-checks/editor-native-stage-t7lwu8a9/report.json",
+     "sha256": "3e5265c52723e79edc05cd421e28868c0ce329fd1d86788204f1c62f93ea0900",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "98b80224-3fb8-410d-9cd8-25015fd8c4cc",
+      "command": [
+       ".tools/Godot_v4.8-beta1_linux.x86_64",
+       "--headless",
+       "--path",
+       "app",
+       "--audio-driver",
+       "Dummy",
+       "--script",
+       "res://tests/test_native_stage.gd"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T17:45:39.066240+00:00",
+      "label": "editor-native-stage",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-checks/editor-native-stage-t7lwu8a9/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-checks/editor-native-stage-t7lwu8a9/report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+       "NK3_NATIVE_STAGE_NATIVE verdict=pass"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 75.396493,
+      "log_bytes": 327,
+      "log_sha256": "52aabe0d5fe5487980c1affb7f9734fa7fb933fb707174d0c8ef0ae28c10ef7b"
+     }
+    }
+   ]
+  },
+  "default_route": {
+   "verdict": "pass",
+   "cases": [
+    "default native trace",
+    "explicit reference and matching trace rows",
+    "unsupported aircraft fallback",
+    "missing binary fallback in private project or package",
+    "corrupt-descriptor fallback in private package",
+    "corrupt-binary fallback in private package",
+    "malformed-receipt fallback in private package",
+    "wrong-executable-hash fallback in private package",
+    "invalid backend refusal",
+    "malformed qualification refusal before flight",
+    "scripted route and backend refusal",
+    "ordinary flight native route"
+   ],
+   "log": {
+    "path": "tmp/nk3-package-final-default.log",
+    "sha256": "b93c4e976ded0801166a150552ca78ece9748bf99d18f611235f803d44719d77",
+    "bytes": 645
+   },
+   "checked_runs": [
+    {
+     "path": "tmp/nk3-package-final-default/checks/corrupt-binary-08gctnzh/report.json",
+     "sha256": "3b30356ae8a507b931fa720ed5bdef138ab516f957e5d74adb2bffc125106f36",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "0ca92b47-002e-481e-b4bd-6bf0520d56d0",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/corrupt-binary-package/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--quick-flight",
+       "--weather=calm",
+       "--t=.05",
+       "--trace=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/corrupt-binary.csv"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T18:00:46.056251+00:00",
+      "label": "corrupt-binary",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/corrupt-binary-08gctnzh/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/corrupt-binary-08gctnzh/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 16.129358,
+      "log_bytes": 415,
+      "log_sha256": "5490328888439fb4ae505fe36fbfa77fe3c5985b5815bd96fb4f2983e5b9490d"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/corrupt-descriptor-90j9leni/report.json",
+     "sha256": "fb8e0d2139a1e1d1a51c58ac73f8ff95ad5b21d1315a386c966e40ef9edeffa4",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "08516275-2fc3-4ab3-907e-f5b238101ced",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/corrupt-descriptor-package/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--quick-flight",
+       "--weather=calm",
+       "--t=.05",
+       "--trace=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/corrupt-descriptor.csv"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T18:00:23.052532+00:00",
+      "label": "corrupt-descriptor",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/corrupt-descriptor-90j9leni/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/corrupt-descriptor-90j9leni/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 15.849809,
+      "log_bytes": 430,
+      "log_sha256": "061d6a1feac2bf53c27dd1c7b71b7c0115a5fb4f072db5aab09de943b2ac867d"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/default-v9og8co7/report.json",
+     "sha256": "16cd7fecf1a3661066db0cd503cbbf3836afc459b75c22f3336f7ef43e0b7644",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "145c331d-e08c-4ea1-ba74-01c5d1503ff3",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--quick-flight",
+       "--weather=calm",
+       "--t=.05",
+       "--trace=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/default.csv"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T17:59:17.024900+00:00",
+      "label": "default",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/default-v9og8co7/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/default-v9og8co7/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 14.993691,
+      "log_bytes": 653,
+      "log_sha256": "2c5278aee3ffe07c635ba10629cc05b7c54f8408155d01a974a30454e45967d9"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/invalid-m5dveo6o/report.json",
+     "sha256": "b82308e5e284e385145b27bd503086df1c0691ef8427b2b246b3b36373fed033",
+     "expected_exit_code": 31,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "d5e9afc6-de21-47e6-87fd-8839cdd215a3",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--quick-flight",
+       "--weather=calm",
+       "--t=.05",
+       "--physics-backend=invalid",
+       "--trace=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/invalid.csv"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T18:01:41.440038+00:00",
+      "label": "invalid",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/invalid-m5dveo6o/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/invalid-m5dveo6o/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 31,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "process_exit",
+      "detail": "",
+      "exit_code": 31,
+      "ok": false,
+      "elapsed_seconds": 8.781842,
+      "log_bytes": 172,
+      "log_sha256": "d5186e1a925f49efd2367708ea61bf568293c87a0e715884955c8bda84d704d0"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/live-yixkg9f1/report.json",
+     "sha256": "78e78bc99d88b67a34776311215c44d6b413d2d93f16657a0da0cc1d39ce04de",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "70ed2336-3e53-4511-afb2-3031a8d47034",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--quick-flight",
+       "--weather=calm",
+       "--frametimes=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/live.json",
+       "--warmup=0",
+       "--t=.05"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T18:02:15.966944+00:00",
+      "label": "live",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/live-yixkg9f1/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/live-yixkg9f1/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 17.193448,
+      "log_bytes": 715,
+      "log_sha256": "c8c8d961e51392f09e5e68a727c4c774d95a91287ea4ff19c0a67305c6dc7870"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/malformed-receipt-neyos322/report.json",
+     "sha256": "1498bb0debcd45052ca7e9fff8d5568d0968de7be398b33ebbf6bff95e66a268",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "37d46698-88a6-42f4-aebf-cd191842c8e3",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/malformed-receipt-package/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--quick-flight",
+       "--weather=calm",
+       "--t=.05",
+       "--trace=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/malformed-receipt.csv"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T18:01:09.576853+00:00",
+      "label": "malformed-receipt",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/malformed-receipt-neyos322/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/malformed-receipt-neyos322/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 9.424459,
+      "log_bytes": 417,
+      "log_sha256": "17963edd045a0b81002f67d94d790a7b865a60917d9611cadf4255bb42717b98"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/missing-binary-ssxky1bj/report.json",
+     "sha256": "a78fc1fabbe3b85d4f92090e211a77f1c2a22e99b7a75946964ca3171d9bed71",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "db8ed629-db3f-42a8-9cf8-222a20db3733",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/missing-binary-package/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--quick-flight",
+       "--weather=calm",
+       "--t=.05",
+       "--trace=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/missing.csv"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T17:59:57.172908+00:00",
+      "label": "missing-binary",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/missing-binary-ssxky1bj/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/missing-binary-ssxky1bj/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 19.203542,
+      "log_bytes": 408,
+      "log_sha256": "84ce8415ef8f119acfbf46c89e4d15ef98055334386efcd8c3950c57458abbb9"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/qualification-refusal-k9lrvdl0/report.json",
+     "sha256": "b96b6d817d8c3066130a3e7f06a1a312080ea39337dfbe507205a9ac462e193b",
+     "expected_exit_code": 1,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "a795b658-9134-439a-83dd-1b9487ff8522",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--quick-flight",
+       "--native-qualification-invalid"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T18:01:50.222547+00:00",
+      "label": "qualification-refusal",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/qualification-refusal-k9lrvdl0/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/qualification-refusal-k9lrvdl0/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "process_exit",
+      "detail": "",
+      "exit_code": 1,
+      "ok": false,
+      "elapsed_seconds": 5.960621,
+      "log_bytes": 148,
+      "log_sha256": "d61f500aa7a333b9b26a6622df337133e7e8bc5da3d3a5e959ff1ff225c4df3c"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/reference-eoncbkpu/report.json",
+     "sha256": "0c0a528f9ede2100bc6c0aa66f814c8c7c2a903cde386dbaa384fac267de2778",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "3b02255b-3a5b-4510-8cd9-ff2f30d7b308",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--quick-flight",
+       "--weather=calm",
+       "--t=.05",
+       "--physics-backend=gdscript_reference",
+       "--trace=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/reference.csv"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T17:59:32.019314+00:00",
+      "label": "reference",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/reference-eoncbkpu/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/reference-eoncbkpu/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 8.954766,
+      "log_bytes": 366,
+      "log_sha256": "a265a374d29d052d767cb13834eec29c255b86c3bae28da89db084b05c9e2f47"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/scripted-_dtul0il/report.json",
+     "sha256": "0b2296598126420e7cd2096cc7dc0c2fb732f9d4b39bfdbbf260f328fd4e5384",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "291b033a-4acf-4a88-9421-d8eadf14c85e",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--scripted",
+       "--frametimes=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/scripted.json",
+       "--warmup=0",
+       "--t=.05"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T18:01:56.183726+00:00",
+      "label": "scripted",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/scripted-_dtul0il/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/scripted-_dtul0il/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 10.351985,
+      "log_bytes": 320,
+      "log_sha256": "78db11edce0d8cbc4da53c4ef3d98c6baf95b4187f5b8db99ac27eaf11d0de3e"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/scripted-backend-9oe1f36w/report.json",
+     "sha256": "0c90048fec80d64bda5acbddf24ed7760f364394e6d947788c705493a02d5f46",
+     "expected_exit_code": 31,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "bc059957-4080-4020-988f-14e289c10beb",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--scripted",
+       "--physics-backend=native",
+       "--frametimes=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/scripted-refusal.json",
+       "--warmup=0",
+       "--t=.05"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T18:02:06.537320+00:00",
+      "label": "scripted-backend",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/scripted-backend-9oe1f36w/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/scripted-backend-9oe1f36w/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 31,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "process_exit",
+      "detail": "",
+      "exit_code": 31,
+      "ok": false,
+      "elapsed_seconds": 9.429212,
+      "log_bytes": 121,
+      "log_sha256": "e08dc203d7c8559dd0e3a171bbd28ae193bbb4687e086d021d81c950bc9c4742"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/unsupported-nugfc65z/report.json",
+     "sha256": "7416038def9ac69bc029df09062b35dfb123ded3525c76885ac6fc8767bed8ba",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "136c841a-517d-444a-b8fc-671275ba69d8",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--quick-flight",
+       "--weather=calm",
+       "--t=.05",
+       "--aircraft=p51d-mustang-120",
+       "--trace=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/unsupported.csv"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T17:59:40.975729+00:00",
+      "label": "unsupported",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/unsupported-nugfc65z/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/unsupported-nugfc65z/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 9.508108,
+      "log_bytes": 320,
+      "log_sha256": "5d67250a30e889cf046df2c6dd1991b7ee576966b006391ab3decbd132e63106"
+     }
+    },
+    {
+     "path": "tmp/nk3-package-final-default/checks/wrong-executable-hash-hq0jkohj/report.json",
+     "sha256": "17dc52161f2539f3aaa7c426a720561e60828b05af68b43b6470e57651433b63",
+     "expected_exit_code": 0,
+     "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "c092e32e-cae3-41ba-b808-5cd5c030549a",
+      "command": [
+       "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/wrong-executable-hash-package/openrc-simulator.x86_64",
+       "--headless",
+       "--audio-driver",
+       "Dummy",
+       "--",
+       "--quick-flight",
+       "--weather=calm",
+       "--t=.05",
+       "--trace=/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/wrong-executable-hash.csv"
+      ],
+      "cwd": "/home/bulto/OpenRCsimulator",
+      "started_utc": "2026-10-28T18:01:25.880434+00:00",
+      "label": "wrong-executable-hash",
+      "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/wrong-executable-hash-hq0jkohj/engine.log",
+      "report": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-default/checks/wrong-executable-hash-hq0jkohj/report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+       "error": 0,
+       "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 15.559008,
+      "log_bytes": 425,
+      "log_sha256": "880e32338142a67e30739fece209fefd5f5865e47f314b87a6bf6e8c2b438dcf"
+     }
+    }
+   ]
+  },
+  "player_replay": {
+   "verification": {
+    "exact": {
+     "verdict": "pass",
+     "rows": 65,
+     "exit_code": 0
+    },
+    "export": {
+     "verdict": "pass",
+     "rows": 65,
+     "exit_code": 0
+    },
+    "different_executable": {
+     "verdict": "pass",
+     "cli_exit_code": 2,
+     "engine_exit_code": 1,
+     "reason": "Solver identity differs. Exact replay refused; use explicit --candidate for an experiment."
+    },
+    "note": "The first orchestration assertion expected CLI exit 1; this tool maps engine failure to documented CLI exit 2. The refusal itself passed both runs."
+   },
+   "exact_report": {
+    "baseline_build": {
+     "commit": "9ee9af457fc42fd7320f3b5c6eb1faae43a04b07",
+     "commit_date": "2026-10-28T17:56:35+00:00",
+     "describe": "v0.1.8-450-g9ee9af457-dirty",
+     "dirty": true,
+     "godot": "4.8-beta1 (official)",
+     "label": "0.1.8+450.g9ee9af457.dirty",
+     "parsed": {
+      "after": 450,
+      "base": "0.1.8",
+      "dirty": true,
+      "prerelease": "",
+      "semver": "0.1.8+450.g9ee9af457.dirty",
+      "sha": "9ee9af457",
+      "tag": "v0.1.8"
+     },
+     "source": "export",
+     "version": "0.1.8"
+    },
+    "baseline_solver_identity_kind": "packaged-executable-v1",
+    "baseline_solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+    "baseline_stage_backend": {
+     "abi_version": 1,
+     "backend": "native",
+     "backend_version": "openrc-native-kernel-stage-v1",
+     "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+     "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+     "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+    },
+    "candidate": "",
+    "candidate_identity": {
+     "format": "openrc-aircraft v2",
+     "sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06"
+    },
+    "comparison_method": "Byte-exact comparison of every recorded numeric physics/air sample on the recorded solver.",
+    "complete": true,
+    "current_solver_identity_kind": "packaged-executable-v1",
+    "current_solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+    "current_stage_backend": {
+     "abi_version": 1,
+     "backend": "native",
+     "backend_version": "openrc-native-kernel-stage-v1",
+     "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+     "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+     "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+    },
+    "dt_s": 0.004166666666666667,
+    "error": "",
+    "events": [
+     {
+      "detail": "stopped",
+      "kind": "stop",
+      "tick": 64
+     }
+    ],
+    "events_omitted": 0,
+    "final_tick": 64,
+    "first_tick": 0,
+    "format": "openrc-flight-log-report v1",
+    "metadata": {
+     "aero_loads_law": "section-plane-source-weighted-wake-velocity-v2",
+     "aero_model": "section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle",
+     "aircraft": "jensen-das-ugly-stik-60 (res://data/aircraft/jensen_ugly_stik_60.json)",
+     "aircraft_input_format": "openrc-aircraft v2",
+     "aircraft_input_hash_convention": "sha256 of exact aircraft input file bytes",
+     "aircraft_input_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+     "aircraft_semantic_hash_convention": "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
+     "aircraft_semantic_sha256": "74389583464ad23d8031f27386317cd5496996cb2c966ae1ece707dbf48b3a29",
+     "aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
+     "configuration": "virtual-balanced-reference-v2-empty-tank",
+     "continuous_layout": "wheel rim speeds in m/s, landing-gear contact order, appended continuous tail",
+     "created_utc": "2026-10-28T17:58:43",
+     "dt_s": 0.004166666666666667,
+     "engine": "Godot 4.8-beta1 (official)",
+     "engine_rpm_semantics": "propeller shaft rpm",
+     "frames": "world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]",
+     "gravity_mps2": 9.80665,
+     "ground": "3 profiled spring-damper gear contacts on flat 0 m dry-pavement fixture; per-contact wheel radius and inertia, steering, continuous relative wheel spin; brakes off (no brake command exposed)",
+     "ground_effect_model": "image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)",
+     "inertia_kgm2": "Jxx Jyy Jzz Jxy Jxz Jyz = 0.11573524791512 0.3692385127982 0.46611754023941 -0.00954 0.00736510279719 0.00054849887236",
+     "launch_aux": "[5159.1071759800525,0.02103925927458998,0.13842444673697182,0.01891865980414328]",
+     "launch_choice": "airborne",
+     "launch_continuous": "[0.0,0.0,0.0]",
+     "launch_engine_running": "true",
+     "launch_error": "",
+     "launch_field_id": "",
+     "launch_ground_anchors": "[]",
+     "launch_kind": "trimmed_airborne",
+     "launch_state": "[60.0,-40.0,-30.0,14.959760772465627,-0.03171751409814058,1.097520674018512,0.7066327926155301,-0.02588622027985514,0.025886220279855144,0.70663279261553,0.0,0.0,0.0]",
+     "launch_trim_throttle": "reference",
+     "loads": "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
+     "mass_kg": 2.8786621383897963,
+     "metadata_schema": "openrc-flight-meta v6",
+     "propulsion_features": "{\"propeller_normal_force\":false,\"propeller_pfactor\":false,\"rotor_gyroscopic_coupling\":true,\"turbine_ram_flow\":false,\"turbine_ram_jet\":false}",
+     "propulsion_model": "propeller-rpm-lag-v1",
+     "propwash_model": "none",
+     "recording_start_aux": "[5159.1071759800525,0.02103925927458998,0.13842444673697182,0.01891865980414328]",
+     "recording_start_continuous": "[0.0,0.0,0.0]",
+     "recording_start_engine_running": "true",
+     "recording_start_tick": 0,
+     "runway_fallback": "none",
+     "runway_start_status": "not_attempted",
+     "scenario": "trimmed level flight (engine running) across view at 15.0 m/s (D5: six-axis trim, calm air)",
+     "selected_start_choice": "airborne",
+     "stage_backend": {
+      "abi_version": 1,
+      "backend": "native",
+      "backend_version": "openrc-native-kernel-stage-v1",
+      "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+      "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+      "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+     },
+     "state_layout": "[\"north_m\",\"east_m\",\"down_m\",\"u_mps\",\"v_mps\",\"w_mps\",\"qw\",\"qx\",\"qy\",\"qz\",\"p_radps\",\"q_radps\",\"r_radps\"]",
+     "state_timing": "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
+     "wake_state_unit": "m/s (equal-area mean of section Vp*CL)",
+     "wheel_brakes": "[{\"availability\":\"none\",\"contact\":\"main_left\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"main_right\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"nose\",\"max_torque_nm\":0.0}]",
+     "wheel_profile_hash_convention": "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes",
+     "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+     "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4",
+     "wheel_profile_status": "applied",
+     "wheel_rolling_law": "wheel-positive-terrain-excess-v2",
+     "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"nose\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+     "wheel_state_model": "relative-wheel-rim-speed-rk4-v1",
+     "wing_polar_model": "legacy attached-to-flat-plate blend"
+    },
+    "mode": "exact",
+    "observer_usec": 3340,
+    "peak_buffer_rows": 64,
+    "recovery_reason": "",
+    "rows": 65,
+    "solver_changed": false,
+    "source": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/user-data/godot/app_userdata/OpenRC Simulator/native-replay-2151049-12487227/native.orfl",
+    "source_sha256": "6d779ef80c2d50a80d22bb710a43b3752c81ffa8af3b95c7bc294d9843415d03",
+    "status": "ok"
+   },
+   "exact_csv": {
+    "path": "tmp/nk3-package-final-player-cli/exact/flight.csv",
+    "sha256": "2a00c6bb36dc5da69a83ba820f2d076c0c68f0d1d3d56d275287dea4bec7ca9d",
+    "bytes": 45299
+   },
+   "export_report": {
+    "baseline_build": {
+     "commit": "9ee9af457fc42fd7320f3b5c6eb1faae43a04b07",
+     "commit_date": "2026-10-28T17:56:35+00:00",
+     "describe": "v0.1.8-450-g9ee9af457-dirty",
+     "dirty": true,
+     "godot": "4.8-beta1 (official)",
+     "label": "0.1.8+450.g9ee9af457.dirty",
+     "parsed": {
+      "after": 450,
+      "base": "0.1.8",
+      "dirty": true,
+      "prerelease": "",
+      "semver": "0.1.8+450.g9ee9af457.dirty",
+      "sha": "9ee9af457",
+      "tag": "v0.1.8"
+     },
+     "source": "export",
+     "version": "0.1.8"
+    },
+    "baseline_solver_identity_kind": "packaged-executable-v1",
+    "baseline_solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+    "baseline_stage_backend": {
+     "abi_version": 1,
+     "backend": "native",
+     "backend_version": "openrc-native-kernel-stage-v1",
+     "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+     "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+     "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+    },
+    "complete": true,
+    "current_solver_identity_kind": "packaged-executable-v1",
+    "current_solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+    "current_stage_backend": {
+     "backend": "gdscript_reference"
+    },
+    "dt_s": 0.004166666666666667,
+    "error": "",
+    "events": [
+     {
+      "detail": "stopped",
+      "kind": "stop",
+      "tick": 64
+     }
+    ],
+    "events_omitted": 0,
+    "final_tick": 64,
+    "first_tick": 0,
+    "format": "openrc-flight-log-report v1",
+    "metadata": {
+     "aero_loads_law": "section-plane-source-weighted-wake-velocity-v2",
+     "aero_model": "section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle",
+     "aircraft": "jensen-das-ugly-stik-60 (res://data/aircraft/jensen_ugly_stik_60.json)",
+     "aircraft_input_format": "openrc-aircraft v2",
+     "aircraft_input_hash_convention": "sha256 of exact aircraft input file bytes",
+     "aircraft_input_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+     "aircraft_semantic_hash_convention": "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
+     "aircraft_semantic_sha256": "74389583464ad23d8031f27386317cd5496996cb2c966ae1ece707dbf48b3a29",
+     "aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
+     "configuration": "virtual-balanced-reference-v2-empty-tank",
+     "continuous_layout": "wheel rim speeds in m/s, landing-gear contact order, appended continuous tail",
+     "created_utc": "2026-10-28T17:58:43",
+     "dt_s": 0.004166666666666667,
+     "engine": "Godot 4.8-beta1 (official)",
+     "engine_rpm_semantics": "propeller shaft rpm",
+     "frames": "world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]",
+     "gravity_mps2": 9.80665,
+     "ground": "3 profiled spring-damper gear contacts on flat 0 m dry-pavement fixture; per-contact wheel radius and inertia, steering, continuous relative wheel spin; brakes off (no brake command exposed)",
+     "ground_effect_model": "image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)",
+     "inertia_kgm2": "Jxx Jyy Jzz Jxy Jxz Jyz = 0.11573524791512 0.3692385127982 0.46611754023941 -0.00954 0.00736510279719 0.00054849887236",
+     "launch_aux": "[5159.1071759800525,0.02103925927458998,0.13842444673697182,0.01891865980414328]",
+     "launch_choice": "airborne",
+     "launch_continuous": "[0.0,0.0,0.0]",
+     "launch_engine_running": "true",
+     "launch_error": "",
+     "launch_field_id": "",
+     "launch_ground_anchors": "[]",
+     "launch_kind": "trimmed_airborne",
+     "launch_state": "[60.0,-40.0,-30.0,14.959760772465627,-0.03171751409814058,1.097520674018512,0.7066327926155301,-0.02588622027985514,0.025886220279855144,0.70663279261553,0.0,0.0,0.0]",
+     "launch_trim_throttle": "reference",
+     "loads": "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
+     "mass_kg": 2.8786621383897963,
+     "metadata_schema": "openrc-flight-meta v6",
+     "propulsion_features": "{\"propeller_normal_force\":false,\"propeller_pfactor\":false,\"rotor_gyroscopic_coupling\":true,\"turbine_ram_flow\":false,\"turbine_ram_jet\":false}",
+     "propulsion_model": "propeller-rpm-lag-v1",
+     "propwash_model": "none",
+     "recording_start_aux": "[5159.1071759800525,0.02103925927458998,0.13842444673697182,0.01891865980414328]",
+     "recording_start_continuous": "[0.0,0.0,0.0]",
+     "recording_start_engine_running": "true",
+     "recording_start_tick": 0,
+     "runway_fallback": "none",
+     "runway_start_status": "not_attempted",
+     "scenario": "trimmed level flight (engine running) across view at 15.0 m/s (D5: six-axis trim, calm air)",
+     "selected_start_choice": "airborne",
+     "stage_backend": {
+      "abi_version": 1,
+      "backend": "native",
+      "backend_version": "openrc-native-kernel-stage-v1",
+      "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+      "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+      "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+     },
+     "state_layout": "[\"north_m\",\"east_m\",\"down_m\",\"u_mps\",\"v_mps\",\"w_mps\",\"qw\",\"qx\",\"qy\",\"qz\",\"p_radps\",\"q_radps\",\"r_radps\"]",
+     "state_timing": "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
+     "wake_state_unit": "m/s (equal-area mean of section Vp*CL)",
+     "wheel_brakes": "[{\"availability\":\"none\",\"contact\":\"main_left\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"main_right\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"nose\",\"max_torque_nm\":0.0}]",
+     "wheel_profile_hash_convention": "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes",
+     "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+     "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4",
+     "wheel_profile_status": "applied",
+     "wheel_rolling_law": "wheel-positive-terrain-excess-v2",
+     "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"nose\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+     "wheel_state_model": "relative-wheel-rim-speed-rk4-v1",
+     "wing_polar_model": "legacy attached-to-flat-plate blend"
+    },
+    "mode": "export",
+    "observer_usec": 3340,
+    "peak_buffer_rows": 64,
+    "recovery_reason": "",
+    "rows": 65,
+    "solver_changed": true,
+    "source": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-checks/user-data/godot/app_userdata/OpenRC Simulator/native-replay-2151049-12487227/native.orfl",
+    "source_sha256": "6d779ef80c2d50a80d22bb710a43b3752c81ffa8af3b95c7bc294d9843415d03",
+    "status": "ok"
+   },
+   "different_executable_refusal": {
+    "baseline_build": {
+     "commit": "1bfe8d535ae23e7e7ab9b8f703652658b493068d",
+     "commit_date": "2026-10-28T17:46:43+00:00",
+     "describe": "v0.1.8-449-g1bfe8d535-dirty",
+     "dirty": true,
+     "godot": "4.8-beta1 (official)",
+     "label": "0.1.8+449.g1bfe8d535.dirty",
+     "parsed": {
+      "after": 449,
+      "base": "0.1.8",
+      "dirty": true,
+      "prerelease": "",
+      "semver": "0.1.8+449.g1bfe8d535.dirty",
+      "sha": "1bfe8d535",
+      "tag": "v0.1.8"
+     },
+     "source": "export",
+     "version": "0.1.8"
+    },
+    "baseline_solver_identity_kind": "packaged-executable-v1",
+    "baseline_solver_sha256": "58adc2efe00d022cb6199348cdeeaa4697ba8b7890bf11236b004c279b9b5d9f",
+    "baseline_stage_backend": {
+     "abi_version": 1,
+     "backend": "native",
+     "backend_version": "openrc-native-kernel-stage-v1",
+     "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+     "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+     "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+    },
+    "complete": true,
+    "current_solver_identity_kind": "packaged-executable-v1",
+    "current_solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+    "current_stage_backend": {
+     "backend": "gdscript_reference"
+    },
+    "dt_s": 0.004166666666666667,
+    "error": "Solver identity differs. Exact replay refused; use explicit --candidate for an experiment.",
+    "events": [
+     {
+      "detail": "stopped",
+      "kind": "stop",
+      "tick": 64
+     }
+    ],
+    "events_omitted": 0,
+    "final_tick": 64,
+    "first_tick": 0,
+    "format": "openrc-flight-log-report v1",
+    "metadata": {
+     "aero_loads_law": "section-plane-source-weighted-wake-velocity-v2",
+     "aero_model": "section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle",
+     "aircraft": "jensen-das-ugly-stik-60 (res://data/aircraft/jensen_ugly_stik_60.json)",
+     "aircraft_input_format": "openrc-aircraft v2",
+     "aircraft_input_hash_convention": "sha256 of exact aircraft input file bytes",
+     "aircraft_input_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+     "aircraft_semantic_hash_convention": "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
+     "aircraft_semantic_sha256": "74389583464ad23d8031f27386317cd5496996cb2c966ae1ece707dbf48b3a29",
+     "aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
+     "configuration": "virtual-balanced-reference-v2-empty-tank",
+     "continuous_layout": "wheel rim speeds in m/s, landing-gear contact order, appended continuous tail",
+     "created_utc": "2026-10-28T17:50:41",
+     "dt_s": 0.004166666666666667,
+     "engine": "Godot 4.8-beta1 (official)",
+     "engine_rpm_semantics": "propeller shaft rpm",
+     "frames": "world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]",
+     "gravity_mps2": 9.80665,
+     "ground": "3 profiled spring-damper gear contacts on flat 0 m dry-pavement fixture; per-contact wheel radius and inertia, steering, continuous relative wheel spin; brakes off (no brake command exposed)",
+     "ground_effect_model": "image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)",
+     "inertia_kgm2": "Jxx Jyy Jzz Jxy Jxz Jyz = 0.11573524791512 0.3692385127982 0.46611754023941 -0.00954 0.00736510279719 0.00054849887236",
+     "launch_aux": "[5159.1071759800525,0.02103925927458998,0.13842444673697182,0.01891865980414328]",
+     "launch_choice": "airborne",
+     "launch_continuous": "[0.0,0.0,0.0]",
+     "launch_engine_running": "true",
+     "launch_error": "",
+     "launch_field_id": "",
+     "launch_ground_anchors": "[]",
+     "launch_kind": "trimmed_airborne",
+     "launch_state": "[60.0,-40.0,-30.0,14.959760772465627,-0.03171751409814058,1.097520674018512,0.7066327926155301,-0.02588622027985514,0.025886220279855144,0.70663279261553,0.0,0.0,0.0]",
+     "launch_trim_throttle": "reference",
+     "loads": "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
+     "mass_kg": 2.8786621383897963,
+     "metadata_schema": "openrc-flight-meta v6",
+     "propulsion_features": "{\"propeller_normal_force\":false,\"propeller_pfactor\":false,\"rotor_gyroscopic_coupling\":true,\"turbine_ram_flow\":false,\"turbine_ram_jet\":false}",
+     "propulsion_model": "propeller-rpm-lag-v1",
+     "propwash_model": "none",
+     "recording_start_aux": "[5159.1071759800525,0.02103925927458998,0.13842444673697182,0.01891865980414328]",
+     "recording_start_continuous": "[0.0,0.0,0.0]",
+     "recording_start_engine_running": "true",
+     "recording_start_tick": 0,
+     "runway_fallback": "none",
+     "runway_start_status": "not_attempted",
+     "scenario": "trimmed level flight (engine running) across view at 15.0 m/s (D5: six-axis trim, calm air)",
+     "selected_start_choice": "airborne",
+     "stage_backend": {
+      "abi_version": 1,
+      "backend": "native",
+      "backend_version": "openrc-native-kernel-stage-v1",
+      "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+      "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+      "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+     },
+     "state_layout": "[\"north_m\",\"east_m\",\"down_m\",\"u_mps\",\"v_mps\",\"w_mps\",\"qw\",\"qx\",\"qy\",\"qz\",\"p_radps\",\"q_radps\",\"r_radps\"]",
+     "state_timing": "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
+     "wake_state_unit": "m/s (equal-area mean of section Vp*CL)",
+     "wheel_brakes": "[{\"availability\":\"none\",\"contact\":\"main_left\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"main_right\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"nose\",\"max_torque_nm\":0.0}]",
+     "wheel_profile_hash_convention": "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes",
+     "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+     "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4",
+     "wheel_profile_status": "applied",
+     "wheel_rolling_law": "wheel-positive-terrain-excess-v2",
+     "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"nose\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+     "wheel_state_model": "relative-wheel-rim-speed-rk4-v1",
+     "wing_polar_model": "legacy attached-to-flat-plate blend"
+    },
+    "observer_usec": 6310,
+    "peak_buffer_rows": 64,
+    "recovery_reason": "",
+    "rows": 65,
+    "solver_changed": true,
+    "source": "/home/bulto/OpenRCsimulator/tmp/nk3-package-checks/user-data/godot/app_userdata/OpenRC Simulator/native-replay-2138769-24791694/native.orfl",
+    "source_sha256": "6a302b9f4a3ed5ee0886969fd11d2508787df1d8de4d4635f0fddc44d677ba16",
+    "status": "error"
+   },
+   "native_tape": {
+    "path": "docs/research/native-kernel/NK-3/package-native-linux-2026-10-28.orfl",
+    "sha256": "6d779ef80c2d50a80d22bb710a43b3752c81ffa8af3b95c7bc294d9843415d03",
+    "bytes": 81308
+   },
+   "reference_tape": {
+    "path": "docs/research/native-kernel/NK-3/package-reference-linux-2026-10-28.orfl",
+    "sha256": "33aeaee9f8230a4ffb0baee7fff68a7a29a8110fb008b452395f2c0795390854",
+    "bytes": 79496
+   }
+  },
+  "performance": {
+   "campaign": {
+    "complete": true,
+    "configuration": {
+     "aircraft": [
+      "jensen-das-ugly-stik-60"
+     ],
+     "cases": [
+      "trim",
+      "maneuver",
+      "runway"
+     ],
+     "meaning": "simulation ticks; default warmup is 10 simulated seconds and default sample is 60 simulated seconds, not real-time qualification",
+     "pair_type": "backends",
+     "physics_backend": "gdscript_reference",
+     "release_executable": true,
+     "repeats": 3,
+     "sample_ticks": 2400,
+     "tick_hz": 240,
+     "timeout_seconds_per_probe": 300.0,
+     "warmup_ticks": 600
+    },
+    "failure": "",
+    "failures": [],
+    "format": "openrc-session-baseline v1",
+    "metadata": {
+     "app_source_sha256": "5e552592fe4cfe1a811e870d2ebc20d789e9cc1d547e8f17da817e35f58ccbb8",
+     "engine": {
+      "path": "/home/bulto/OpenRCsimulator/tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+      "required_version": "4.8-beta1",
+      "runtime_binary_path": "/home/bulto/OpenRCsimulator/tmp/nk3-official-linux-final/openrc-simulator.x86_64",
+      "runtime_binary_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+      "sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+      "version": "4.8.beta1.official.4d10419ca"
+     },
+     "native_source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db",
+     "probe": {
+      "path": "/home/bulto/OpenRCsimulator/tmp/nk3-release-source/research/performance/session_probe.gd",
+      "sha256": "199dad9e74996155789b45bfa7879bcda431c29ad9d491411f6e7c60826ae9e6"
+     },
+     "system": {
+      "logical_cpu_count": 12,
+      "machine": "x86_64",
+      "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+      "processor": "x86_64",
+      "python": "3.12.3",
+      "release": "6.8.0-142-generic",
+      "system": "Linux"
+     },
+     "workspace": {
+      "branch": "",
+      "commit": "9ee9af457fc42fd7320f3b5c6eb1faae43a04b07",
+      "dirty_tracked_code": [
+       {
+        "path": "app/app_root.gd",
+        "present": true,
+        "sha256": "4cb794eba1c5356163dee009fc19c745967efe09f45fe5bcc16c1a7bea6fed12",
+        "tracked": true
+       },
+       {
+        "path": "app/statistics/service.gd",
+        "present": true,
+        "sha256": "f57294dbd2de3426bd7bc9a0b7f9db420990ed33133b184f4a1f6a6644b8f070",
+        "tracked": true
+       },
+       {
+        "path": "app/tests/test_controller_preflight_calibration.gd",
+        "present": true,
+        "sha256": "336623e9826d8fe622793fe18eaefa4ecbb2249fbf6a3eeed772b9413dec3056",
+        "tracked": true
+       },
+       {
+        "path": "app/tests/test_flight_statistics_lifecycle.gd",
+        "present": true,
+        "sha256": "c947ba1f418ccafff664eb896b34a501bae13325dac8f4ff1f216a466a478f58",
+        "tracked": true
+       }
+      ],
+      "status_porcelain": [
+       " M app/app_root.gd",
+       " M app/statistics/service.gd",
+       " M app/tests/test_controller_preflight_calibration.gd",
+       " M app/tests/test_flight_statistics_lifecycle.gd"
+      ],
+      "untracked_code": []
+     }
+    },
+    "pairs": [
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "backend_order": [
+       "reference",
+       "native"
+      ],
+      "case_id": "trim",
+      "comparable": true,
+      "native_simulation_usec_per_tick": 352.5375,
+      "native_usec_per_tick": 428.2416666666667,
+      "reasons": [],
+      "reference_over_native": 2.106628850532215,
+      "reference_simulation_usec_per_tick": 807.79375,
+      "reference_usec_per_tick": 902.14625,
+      "repeat": 1,
+      "runs": {
+       "native": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "abi_version": 1,
+          "backend": "native",
+          "backend_version": "openrc-native-kernel-stage-v1",
+          "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+          "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+          "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+         },
+         "native_stats": {
+          "context_calls": 3000,
+          "stage_calls": 12000,
+          "stage_ns": 0.0,
+          "timing": false
+         },
+         "requested": "native"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-01-backend-native.log",
+        "measured_wall_usec": 1087357,
+        "measured_wall_usec_per_sample_tick": 453.0654166666667,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-01-backend-native.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/trim/repeat-01-backend-native.json",
+        "report_sha256": "4bddb2f24223e4fc899bb4e8845f915195b6517522721e2e39e5d7c4b4980b35",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 555,
+          "p50": 65,
+          "p95": 115,
+          "p99": 181
+         },
+         "simulation_usec": {
+          "p100": 1777,
+          "p50": 312,
+          "p95": 534,
+          "p99": 869
+         },
+         "tick_usec": {
+          "p100": 2150,
+          "p50": 384,
+          "p95": 644,
+          "p99": 1041
+         }
+        },
+        "validation_errors": []
+       },
+       "reference": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "backend": "gdscript_reference"
+         },
+         "native_stats": {},
+         "requested": "gdscript_reference"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-01-backend-reference.log",
+        "measured_wall_usec": 2216701,
+        "measured_wall_usec_per_sample_tick": 923.6254166666666,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-01-backend-reference.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/trim/repeat-01-backend-reference.json",
+        "report_sha256": "5d979e1501376ddf3630128854a410c0039fc5c5fcc8606260b166f207e2e048",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 664,
+          "p50": 77,
+          "p95": 174,
+          "p99": 289
+         },
+         "simulation_usec": {
+          "p100": 4232,
+          "p50": 728,
+          "p95": 1207,
+          "p99": 1540
+         },
+         "tick_usec": {
+          "p100": 4728,
+          "p50": 810,
+          "p95": 1360,
+          "p99": 1828
+         }
+        },
+        "validation_errors": []
+       }
+      }
+     },
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "backend_order": [
+       "native",
+       "reference"
+      ],
+      "case_id": "trim",
+      "comparable": true,
+      "native_simulation_usec_per_tick": 360.45125,
+      "native_usec_per_tick": 438.7725,
+      "reasons": [],
+      "reference_over_native": 1.9422764644548143,
+      "reference_simulation_usec_per_tick": 765.1270833333333,
+      "reference_usec_per_tick": 852.2175,
+      "repeat": 2,
+      "runs": {
+       "native": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "abi_version": 1,
+          "backend": "native",
+          "backend_version": "openrc-native-kernel-stage-v1",
+          "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+          "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+          "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+         },
+         "native_stats": {
+          "context_calls": 3000,
+          "stage_calls": 12000,
+          "stage_ns": 0.0,
+          "timing": false
+         },
+         "requested": "native"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-02-backend-native.log",
+        "measured_wall_usec": 1116255,
+        "measured_wall_usec_per_sample_tick": 465.10625,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-02-backend-native.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/trim/repeat-02-backend-native.json",
+        "report_sha256": "6a40b4d5d3266b62e3e8bc99462e1dc83a824d73ecf3d358531933d8c3f0a4db",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 578,
+          "p50": 68,
+          "p95": 118,
+          "p99": 195
+         },
+         "simulation_usec": {
+          "p100": 3775,
+          "p50": 324,
+          "p95": 520,
+          "p99": 908
+         },
+         "tick_usec": {
+          "p100": 4353,
+          "p50": 395,
+          "p95": 626,
+          "p99": 1096
+         }
+        },
+        "validation_errors": []
+       },
+       "reference": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "backend": "gdscript_reference"
+         },
+         "native_stats": {},
+         "requested": "gdscript_reference"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-02-backend-reference.log",
+        "measured_wall_usec": 2091798,
+        "measured_wall_usec_per_sample_tick": 871.5825,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-02-backend-reference.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/trim/repeat-02-backend-reference.json",
+        "report_sha256": "7065bd8e2e5b16cb0adc03accdea61509b73f2dcaf407cf1b13ed716f705a138",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 558,
+          "p50": 73,
+          "p95": 158,
+          "p99": 249
+         },
+         "simulation_usec": {
+          "p100": 2289,
+          "p50": 707,
+          "p95": 1097,
+          "p99": 1485
+         },
+         "tick_usec": {
+          "p100": 2610,
+          "p50": 783,
+          "p95": 1248,
+          "p99": 1674
+         }
+        },
+        "validation_errors": []
+       }
+      }
+     },
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "backend_order": [
+       "reference",
+       "native"
+      ],
+      "case_id": "trim",
+      "comparable": true,
+      "native_simulation_usec_per_tick": 372.8645833333333,
+      "native_usec_per_tick": 453.70416666666665,
+      "reasons": [],
+      "reference_over_native": 1.823455996473473,
+      "reference_simulation_usec_per_tick": 744.7304166666667,
+      "reference_usec_per_tick": 827.3095833333333,
+      "repeat": 3,
+      "runs": {
+       "native": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "abi_version": 1,
+          "backend": "native",
+          "backend_version": "openrc-native-kernel-stage-v1",
+          "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+          "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+          "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+         },
+         "native_stats": {
+          "context_calls": 3000,
+          "stage_calls": 12000,
+          "stage_ns": 0.0,
+          "timing": false
+         },
+         "requested": "native"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-03-backend-native.log",
+        "measured_wall_usec": 1152707,
+        "measured_wall_usec_per_sample_tick": 480.2945833333333,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-03-backend-native.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/trim/repeat-03-backend-native.json",
+        "report_sha256": "fa52f0b3793e4ee248862db7ab16ec667b674a69364db61fec56bf6513db1635",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 556,
+          "p50": 68,
+          "p95": 126,
+          "p99": 203
+         },
+         "simulation_usec": {
+          "p100": 2516,
+          "p50": 330,
+          "p95": 564,
+          "p99": 854
+         },
+         "tick_usec": {
+          "p100": 3029,
+          "p50": 401,
+          "p95": 681,
+          "p99": 1041
+         }
+        },
+        "validation_errors": []
+       },
+       "reference": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "backend": "gdscript_reference"
+         },
+         "native_stats": {},
+         "requested": "gdscript_reference"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-03-backend-reference.log",
+        "measured_wall_usec": 2030029,
+        "measured_wall_usec_per_sample_tick": 845.8454166666667,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-03-backend-reference.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/trim/repeat-03-backend-reference.json",
+        "report_sha256": "d052e6c2337e4bcb3cdff658de153e6544a17027d0cd521c1d1fb7e2425fe338",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 644,
+          "p50": 68,
+          "p95": 149,
+          "p99": 248
+         },
+         "simulation_usec": {
+          "p100": 2817,
+          "p50": 685,
+          "p95": 1058,
+          "p99": 1461
+         },
+         "tick_usec": {
+          "p100": 3095,
+          "p50": 756,
+          "p95": 1194,
+          "p99": 1675
+         }
+        },
+        "validation_errors": []
+       }
+      }
+     },
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "backend_order": [
+       "reference",
+       "native"
+      ],
+      "case_id": "maneuver",
+      "comparable": true,
+      "native_simulation_usec_per_tick": 335.3858333333333,
+      "native_usec_per_tick": 407.58458333333334,
+      "reasons": [],
+      "reference_over_native": 2.0906376283859283,
+      "reference_simulation_usec_per_tick": 765.9,
+      "reference_usec_per_tick": 852.1116666666667,
+      "repeat": 1,
+      "runs": {
+       "native": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "abi_version": 1,
+          "backend": "native",
+          "backend_version": "openrc-native-kernel-stage-v1",
+          "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+          "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+          "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+         },
+         "native_stats": {
+          "context_calls": 3000,
+          "stage_calls": 12000,
+          "stage_ns": 0.0,
+          "timing": false
+         },
+         "requested": "native"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-backend-native.log",
+        "measured_wall_usec": 1034669,
+        "measured_wall_usec_per_sample_tick": 431.1120833333333,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-backend-native.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/maneuver/repeat-01-backend-native.json",
+        "report_sha256": "4e98b67927f97aad04400db091af8eacf23e5690eb19a33534951dd07dab9ff8",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 494,
+          "p50": 65,
+          "p95": 107,
+          "p99": 140
+         },
+         "simulation_usec": {
+          "p100": 2229,
+          "p50": 308,
+          "p95": 472,
+          "p99": 609
+         },
+         "tick_usec": {
+          "p100": 2513,
+          "p50": 376,
+          "p95": 575,
+          "p99": 747
+         }
+        },
+        "validation_errors": []
+       },
+       "reference": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "backend": "gdscript_reference"
+         },
+         "native_stats": {},
+         "requested": "gdscript_reference"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-backend-reference.log",
+        "measured_wall_usec": 2090053,
+        "measured_wall_usec_per_sample_tick": 870.8554166666667,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-backend-reference.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/maneuver/repeat-01-backend-reference.json",
+        "report_sha256": "0abe9cd6674fe05d193e606ebe7dc949aaa2fc51c934f3fa887d3e998f5c021f",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 585,
+          "p50": 70,
+          "p95": 148,
+          "p99": 335
+         },
+         "simulation_usec": {
+          "p100": 5031,
+          "p50": 699,
+          "p95": 1097,
+          "p99": 1759
+         },
+         "tick_usec": {
+          "p100": 5383,
+          "p50": 772,
+          "p95": 1254,
+          "p99": 2083
+         }
+        },
+        "validation_errors": []
+       }
+      }
+     },
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "backend_order": [
+       "native",
+       "reference"
+      ],
+      "case_id": "maneuver",
+      "comparable": true,
+      "native_simulation_usec_per_tick": 356.75166666666667,
+      "native_usec_per_tick": 434.28541666666666,
+      "reasons": [],
+      "reference_over_native": 2.017921201974508,
+      "reference_simulation_usec_per_tick": 784.49,
+      "reference_usec_per_tick": 876.35375,
+      "repeat": 2,
+      "runs": {
+       "native": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "abi_version": 1,
+          "backend": "native",
+          "backend_version": "openrc-native-kernel-stage-v1",
+          "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+          "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+          "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+         },
+         "native_stats": {
+          "context_calls": 3000,
+          "stage_calls": 12000,
+          "stage_ns": 0.0,
+          "timing": false
+         },
+         "requested": "native"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-02-backend-native.log",
+        "measured_wall_usec": 1105485,
+        "measured_wall_usec_per_sample_tick": 460.61875,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-02-backend-native.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/maneuver/repeat-02-backend-native.json",
+        "report_sha256": "86e0aa23eac2205bb56b4ec48179369b93bdcdafbbc3b7b2c91d7a28346a3bb1",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 439,
+          "p50": 68,
+          "p95": 118,
+          "p99": 185
+         },
+         "simulation_usec": {
+          "p100": 2198,
+          "p50": 324,
+          "p95": 516,
+          "p99": 765
+         },
+         "tick_usec": {
+          "p100": 2637,
+          "p50": 396,
+          "p95": 624,
+          "p99": 919
+         }
+        },
+        "validation_errors": []
+       },
+       "reference": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "backend": "gdscript_reference"
+         },
+         "native_stats": {},
+         "requested": "gdscript_reference"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-02-backend-reference.log",
+        "measured_wall_usec": 2153951,
+        "measured_wall_usec_per_sample_tick": 897.4795833333334,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-02-backend-reference.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/maneuver/repeat-02-backend-reference.json",
+        "report_sha256": "c502953ccdb576c54db873551c7dfa7756028a73113fbe3ea512a564d99d40b4",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 490,
+          "p50": 77,
+          "p95": 162,
+          "p99": 271
+         },
+         "simulation_usec": {
+          "p100": 2373,
+          "p50": 720,
+          "p95": 1121,
+          "p99": 1469
+         },
+         "tick_usec": {
+          "p100": 2628,
+          "p50": 803,
+          "p95": 1267,
+          "p99": 1733
+         }
+        },
+        "validation_errors": []
+       }
+      }
+     },
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "backend_order": [
+       "reference",
+       "native"
+      ],
+      "case_id": "maneuver",
+      "comparable": true,
+      "native_simulation_usec_per_tick": 332.71,
+      "native_usec_per_tick": 404.52,
+      "reasons": [],
+      "reference_over_native": 2.071256262566334,
+      "reference_simulation_usec_per_tick": 753.5108333333334,
+      "reference_usec_per_tick": 837.8645833333334,
+      "repeat": 3,
+      "runs": {
+       "native": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "abi_version": 1,
+          "backend": "native",
+          "backend_version": "openrc-native-kernel-stage-v1",
+          "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+          "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+          "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+         },
+         "native_stats": {
+          "context_calls": 3000,
+          "stage_calls": 12000,
+          "stage_ns": 0.0,
+          "timing": false
+         },
+         "requested": "native"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-03-backend-native.log",
+        "measured_wall_usec": 1027317,
+        "measured_wall_usec_per_sample_tick": 428.04875,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-03-backend-native.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/maneuver/repeat-03-backend-native.json",
+        "report_sha256": "19ba7ce03e6b2f2fee7833368600264a3b2d93623d2408103d4a0cf7fdab9714",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 272,
+          "p50": 65,
+          "p95": 103,
+          "p99": 139
+         },
+         "simulation_usec": {
+          "p100": 1801,
+          "p50": 309,
+          "p95": 452,
+          "p99": 613
+         },
+         "tick_usec": {
+          "p100": 2051,
+          "p50": 378,
+          "p95": 544,
+          "p99": 746
+         }
+        },
+        "validation_errors": []
+       },
+       "reference": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "backend": "gdscript_reference"
+         },
+         "native_stats": {},
+         "requested": "gdscript_reference"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-03-backend-reference.log",
+        "measured_wall_usec": 2055571,
+        "measured_wall_usec_per_sample_tick": 856.4879166666667,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-03-backend-reference.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/maneuver/repeat-03-backend-reference.json",
+        "report_sha256": "67929e78969e20b6006f0e76b7a3939f7f715e10a192eb0764fde78912025d9c",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 710,
+          "p50": 70,
+          "p95": 148,
+          "p99": 257
+         },
+         "simulation_usec": {
+          "p100": 2460,
+          "p50": 698,
+          "p95": 1057,
+          "p99": 1470
+         },
+         "tick_usec": {
+          "p100": 2967,
+          "p50": 771,
+          "p95": 1199,
+          "p99": 1732
+         }
+        },
+        "validation_errors": []
+       }
+      }
+     },
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "backend_order": [
+       "reference",
+       "native"
+      ],
+      "case_id": "runway",
+      "comparable": true,
+      "native_simulation_usec_per_tick": 568.8591666666666,
+      "native_usec_per_tick": 703.2166666666667,
+      "reasons": [],
+      "reference_over_native": 2.869737278695518,
+      "reference_simulation_usec_per_tick": 1859.63625,
+      "reference_usec_per_tick": 2018.0470833333334,
+      "repeat": 1,
+      "runs": {
+       "native": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "abi_version": 1,
+          "backend": "native",
+          "backend_version": "openrc-native-kernel-stage-v1",
+          "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+          "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+          "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+         },
+         "native_stats": {
+          "context_calls": 3000,
+          "stage_calls": 12000,
+          "stage_ns": 0.0,
+          "timing": false
+         },
+         "requested": "native"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-01-backend-native.log",
+        "measured_wall_usec": 1760158,
+        "measured_wall_usec_per_sample_tick": 733.3991666666667,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-01-backend-native.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/runway/repeat-01-backend-native.json",
+        "report_sha256": "70be8daf00016e10a03d4038b04fb515e777c74253d731905c67165d96ea8afb",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 714,
+          "p50": 116,
+          "p95": 219,
+          "p99": 361
+         },
+         "simulation_usec": {
+          "p100": 2803,
+          "p50": 497,
+          "p95": 923,
+          "p99": 1508
+         },
+         "tick_usec": {
+          "p100": 3079,
+          "p50": 615,
+          "p95": 1141,
+          "p99": 1767
+         }
+        },
+        "validation_errors": []
+       },
+       "reference": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "backend": "gdscript_reference"
+         },
+         "native_stats": {},
+         "requested": "gdscript_reference"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-01-backend-reference.log",
+        "measured_wall_usec": 4912046,
+        "measured_wall_usec_per_sample_tick": 2046.6858333333332,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-01-backend-reference.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/runway/repeat-01-backend-reference.json",
+        "report_sha256": "b5017c85b23d240e7b2c5dd8317e00bd704e1978ba80070579a9862bc6290e0d",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 864,
+          "p50": 144,
+          "p95": 262,
+          "p99": 372
+         },
+         "simulation_usec": {
+          "p100": 8489,
+          "p50": 1739,
+          "p95": 2680,
+          "p99": 3543
+         },
+         "tick_usec": {
+          "p100": 8972,
+          "p50": 1896,
+          "p95": 2919,
+          "p99": 3863
+         }
+        },
+        "validation_errors": []
+       }
+      }
+     },
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "backend_order": [
+       "native",
+       "reference"
+      ],
+      "case_id": "runway",
+      "comparable": true,
+      "native_simulation_usec_per_tick": 542.8945833333333,
+      "native_usec_per_tick": 673.1425,
+      "reasons": [],
+      "reference_over_native": 2.8660344330261913,
+      "reference_simulation_usec_per_tick": 1779.00375,
+      "reference_usec_per_tick": 1929.2495833333332,
+      "repeat": 2,
+      "runs": {
+       "native": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "abi_version": 1,
+          "backend": "native",
+          "backend_version": "openrc-native-kernel-stage-v1",
+          "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+          "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+          "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+         },
+         "native_stats": {
+          "context_calls": 3000,
+          "stage_calls": 12000,
+          "stage_ns": 0.0,
+          "timing": false
+         },
+         "requested": "native"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-02-backend-native.log",
+        "measured_wall_usec": 1686776,
+        "measured_wall_usec_per_sample_tick": 702.8233333333334,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-02-backend-native.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/runway/repeat-02-backend-native.json",
+        "report_sha256": "62c4a776bc5b93ddb856ca13f2f305f1adf3e66109b174805523130ed83332c8",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 632,
+          "p50": 114,
+          "p95": 210,
+          "p99": 309
+         },
+         "simulation_usec": {
+          "p100": 2645,
+          "p50": 477,
+          "p95": 878,
+          "p99": 1194
+         },
+         "tick_usec": {
+          "p100": 3152,
+          "p50": 592,
+          "p95": 1076,
+          "p99": 1469
+         }
+        },
+        "validation_errors": []
+       },
+       "reference": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "backend": "gdscript_reference"
+         },
+         "native_stats": {},
+         "requested": "gdscript_reference"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-02-backend-reference.log",
+        "measured_wall_usec": 4694482,
+        "measured_wall_usec_per_sample_tick": 1956.0341666666666,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-02-backend-reference.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/runway/repeat-02-backend-reference.json",
+        "report_sha256": "406e93155743ad6487a9fce92152f0246caf1252ce5f4ac507ac54ff68bb765e",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 898,
+          "p50": 135,
+          "p95": 254,
+          "p99": 397
+         },
+         "simulation_usec": {
+          "p100": 4731,
+          "p50": 1652,
+          "p95": 2596,
+          "p99": 3555
+         },
+         "tick_usec": {
+          "p100": 5191,
+          "p50": 1796,
+          "p95": 2827,
+          "p99": 3876
+         }
+        },
+        "validation_errors": []
+       }
+      }
+     },
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "backend_order": [
+       "reference",
+       "native"
+      ],
+      "case_id": "runway",
+      "comparable": true,
+      "native_simulation_usec_per_tick": 525.4054166666666,
+      "native_usec_per_tick": 652.5725,
+      "reasons": [],
+      "reference_over_native": 2.8935999448337157,
+      "reference_simulation_usec_per_tick": 1745.1304166666666,
+      "reference_usec_per_tick": 1888.28375,
+      "repeat": 3,
+      "runs": {
+       "native": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "abi_version": 1,
+          "backend": "native",
+          "backend_version": "openrc-native-kernel-stage-v1",
+          "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+          "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+          "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+         },
+         "native_stats": {
+          "context_calls": 3000,
+          "stage_calls": 12000,
+          "stage_ns": 0.0,
+          "timing": false
+         },
+         "requested": "native"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-03-backend-native.log",
+        "measured_wall_usec": 1633783,
+        "measured_wall_usec_per_sample_tick": 680.7429166666667,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-03-backend-native.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/runway/repeat-03-backend-native.json",
+        "report_sha256": "2bdacc274394df76d13b6f1dd8bfd4f5b2943597f959037a3a688fd6088b817b",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 730,
+          "p50": 113,
+          "p95": 193,
+          "p99": 285
+         },
+         "simulation_usec": {
+          "p100": 2893,
+          "p50": 476,
+          "p95": 782,
+          "p99": 1237
+         },
+         "tick_usec": {
+          "p100": 3166,
+          "p50": 591,
+          "p95": 969,
+          "p99": 1570
+         }
+        },
+        "validation_errors": []
+       },
+       "reference": {
+        "accepted": true,
+        "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+        "backend": {
+         "actual": {
+          "backend": "gdscript_reference"
+         },
+         "native_stats": {},
+         "requested": "gdscript_reference"
+        },
+        "complete": true,
+        "failure": "",
+        "failures": [],
+        "final_tick": 3000,
+        "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+        "fingerprint_boundaries": 3001,
+        "log": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-03-backend-reference.log",
+        "measured_wall_usec": 4589206,
+        "measured_wall_usec_per_sample_tick": 1912.1691666666666,
+        "observer": true,
+        "report_file": "/home/bulto/OpenRCsimulator/tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-03-backend-reference.json",
+        "report_relative_path": "runs/jensen-das-ugly-stik-60/runway/repeat-03-backend-reference.json",
+        "report_sha256": "d9c16e0ace55f83849a5224ecf6b6d326ce35f27111723c9f1f5b5075407b61e",
+        "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+        "timing_usec_nearest_rank": {
+         "input_usec": {
+          "p100": 875,
+          "p50": 128,
+          "p95": 233,
+          "p99": 358
+         },
+         "simulation_usec": {
+          "p100": 5952,
+          "p50": 1619,
+          "p95": 2483,
+          "p99": 3184
+         },
+         "tick_usec": {
+          "p100": 6655,
+          "p50": 1750,
+          "p95": 2715,
+          "p99": 3431
+         }
+        },
+        "validation_errors": []
+       }
+      }
+     }
+    ],
+    "status": "complete",
+    "summary": [
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "trim",
+      "comparable_pairs": 3,
+      "reference_over_native_nearest_rank": {
+       "p50": 1.9422764644548143,
+       "p95": 2.106628850532215,
+       "p99": 2.106628850532215
+      },
+      "requested_pairs": 3
+     },
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "maneuver",
+      "comparable_pairs": 3,
+      "reference_over_native_nearest_rank": {
+       "p50": 2.071256262566334,
+       "p95": 2.0906376283859283,
+       "p99": 2.0906376283859283
+      },
+      "requested_pairs": 3
+     },
+     {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "runway",
+      "comparable_pairs": 3,
+      "reference_over_native_nearest_rank": {
+       "p50": 2.869737278695518,
+       "p95": 2.8935999448337157,
+       "p99": 2.8935999448337157
+      },
+      "requested_pairs": 3
+     }
+    ]
+   },
+   "raw_report_identities": [
+    {
+     "case": "trim",
+     "repeat": 1,
+     "backend": "native",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-01-backend-native.json",
+     "sha256": "4bddb2f24223e4fc899bb4e8845f915195b6517522721e2e39e5d7c4b4980b35",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "abi_version": 1,
+       "backend": "native",
+       "backend_version": "openrc-native-kernel-stage-v1",
+       "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+       "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+       "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+      },
+      "native_stats": {
+       "context_calls": 3000,
+       "stage_calls": 12000,
+       "stage_ns": 0.0,
+       "timing": false
+      },
+      "requested": "native"
+     }
+    },
+    {
+     "case": "trim",
+     "repeat": 1,
+     "backend": "reference",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-01-backend-reference.json",
+     "sha256": "5d979e1501376ddf3630128854a410c0039fc5c5fcc8606260b166f207e2e048",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "backend": "gdscript_reference"
+      },
+      "native_stats": {},
+      "requested": "gdscript_reference"
+     }
+    },
+    {
+     "case": "trim",
+     "repeat": 2,
+     "backend": "native",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-02-backend-native.json",
+     "sha256": "6a40b4d5d3266b62e3e8bc99462e1dc83a824d73ecf3d358531933d8c3f0a4db",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "abi_version": 1,
+       "backend": "native",
+       "backend_version": "openrc-native-kernel-stage-v1",
+       "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+       "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+       "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+      },
+      "native_stats": {
+       "context_calls": 3000,
+       "stage_calls": 12000,
+       "stage_ns": 0.0,
+       "timing": false
+      },
+      "requested": "native"
+     }
+    },
+    {
+     "case": "trim",
+     "repeat": 2,
+     "backend": "reference",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-02-backend-reference.json",
+     "sha256": "7065bd8e2e5b16cb0adc03accdea61509b73f2dcaf407cf1b13ed716f705a138",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "backend": "gdscript_reference"
+      },
+      "native_stats": {},
+      "requested": "gdscript_reference"
+     }
+    },
+    {
+     "case": "trim",
+     "repeat": 3,
+     "backend": "native",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-03-backend-native.json",
+     "sha256": "fa52f0b3793e4ee248862db7ab16ec667b674a69364db61fec56bf6513db1635",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "abi_version": 1,
+       "backend": "native",
+       "backend_version": "openrc-native-kernel-stage-v1",
+       "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+       "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+       "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+      },
+      "native_stats": {
+       "context_calls": 3000,
+       "stage_calls": 12000,
+       "stage_ns": 0.0,
+       "timing": false
+      },
+      "requested": "native"
+     }
+    },
+    {
+     "case": "trim",
+     "repeat": 3,
+     "backend": "reference",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/trim/repeat-03-backend-reference.json",
+     "sha256": "d052e6c2337e4bcb3cdff658de153e6544a17027d0cd521c1d1fb7e2425fe338",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "1ba4fd778efe7d256f9b7c8d47f3ae8b9cf4e7aed4cc215b6ea5c7f7778d2039",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "backend": "gdscript_reference"
+      },
+      "native_stats": {},
+      "requested": "gdscript_reference"
+     }
+    },
+    {
+     "case": "maneuver",
+     "repeat": 1,
+     "backend": "native",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-backend-native.json",
+     "sha256": "4e98b67927f97aad04400db091af8eacf23e5690eb19a33534951dd07dab9ff8",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "abi_version": 1,
+       "backend": "native",
+       "backend_version": "openrc-native-kernel-stage-v1",
+       "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+       "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+       "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+      },
+      "native_stats": {
+       "context_calls": 3000,
+       "stage_calls": 12000,
+       "stage_ns": 0.0,
+       "timing": false
+      },
+      "requested": "native"
+     }
+    },
+    {
+     "case": "maneuver",
+     "repeat": 1,
+     "backend": "reference",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-backend-reference.json",
+     "sha256": "0abe9cd6674fe05d193e606ebe7dc949aaa2fc51c934f3fa887d3e998f5c021f",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "backend": "gdscript_reference"
+      },
+      "native_stats": {},
+      "requested": "gdscript_reference"
+     }
+    },
+    {
+     "case": "maneuver",
+     "repeat": 2,
+     "backend": "native",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-02-backend-native.json",
+     "sha256": "86e0aa23eac2205bb56b4ec48179369b93bdcdafbbc3b7b2c91d7a28346a3bb1",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "abi_version": 1,
+       "backend": "native",
+       "backend_version": "openrc-native-kernel-stage-v1",
+       "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+       "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+       "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+      },
+      "native_stats": {
+       "context_calls": 3000,
+       "stage_calls": 12000,
+       "stage_ns": 0.0,
+       "timing": false
+      },
+      "requested": "native"
+     }
+    },
+    {
+     "case": "maneuver",
+     "repeat": 2,
+     "backend": "reference",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-02-backend-reference.json",
+     "sha256": "c502953ccdb576c54db873551c7dfa7756028a73113fbe3ea512a564d99d40b4",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "backend": "gdscript_reference"
+      },
+      "native_stats": {},
+      "requested": "gdscript_reference"
+     }
+    },
+    {
+     "case": "maneuver",
+     "repeat": 3,
+     "backend": "native",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-03-backend-native.json",
+     "sha256": "19ba7ce03e6b2f2fee7833368600264a3b2d93623d2408103d4a0cf7fdab9714",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "abi_version": 1,
+       "backend": "native",
+       "backend_version": "openrc-native-kernel-stage-v1",
+       "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+       "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+       "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+      },
+      "native_stats": {
+       "context_calls": 3000,
+       "stage_calls": 12000,
+       "stage_ns": 0.0,
+       "timing": false
+      },
+      "requested": "native"
+     }
+    },
+    {
+     "case": "maneuver",
+     "repeat": 3,
+     "backend": "reference",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/maneuver/repeat-03-backend-reference.json",
+     "sha256": "67929e78969e20b6006f0e76b7a3939f7f715e10a192eb0764fde78912025d9c",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "373536d7ddbeb021de637d7c21b3fedcddee42a998cb1a2aece53c4eae4afbdd",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "backend": "gdscript_reference"
+      },
+      "native_stats": {},
+      "requested": "gdscript_reference"
+     }
+    },
+    {
+     "case": "runway",
+     "repeat": 1,
+     "backend": "native",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-01-backend-native.json",
+     "sha256": "70be8daf00016e10a03d4038b04fb515e777c74253d731905c67165d96ea8afb",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "abi_version": 1,
+       "backend": "native",
+       "backend_version": "openrc-native-kernel-stage-v1",
+       "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+       "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+       "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+      },
+      "native_stats": {
+       "context_calls": 3000,
+       "stage_calls": 12000,
+       "stage_ns": 0.0,
+       "timing": false
+      },
+      "requested": "native"
+     }
+    },
+    {
+     "case": "runway",
+     "repeat": 1,
+     "backend": "reference",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-01-backend-reference.json",
+     "sha256": "b5017c85b23d240e7b2c5dd8317e00bd704e1978ba80070579a9862bc6290e0d",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "backend": "gdscript_reference"
+      },
+      "native_stats": {},
+      "requested": "gdscript_reference"
+     }
+    },
+    {
+     "case": "runway",
+     "repeat": 2,
+     "backend": "native",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-02-backend-native.json",
+     "sha256": "62c4a776bc5b93ddb856ca13f2f305f1adf3e66109b174805523130ed83332c8",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "abi_version": 1,
+       "backend": "native",
+       "backend_version": "openrc-native-kernel-stage-v1",
+       "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+       "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+       "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+      },
+      "native_stats": {
+       "context_calls": 3000,
+       "stage_calls": 12000,
+       "stage_ns": 0.0,
+       "timing": false
+      },
+      "requested": "native"
+     }
+    },
+    {
+     "case": "runway",
+     "repeat": 2,
+     "backend": "reference",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-02-backend-reference.json",
+     "sha256": "406e93155743ad6487a9fce92152f0246caf1252ce5f4ac507ac54ff68bb765e",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "backend": "gdscript_reference"
+      },
+      "native_stats": {},
+      "requested": "gdscript_reference"
+     }
+    },
+    {
+     "case": "runway",
+     "repeat": 3,
+     "backend": "native",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-03-backend-native.json",
+     "sha256": "2bdacc274394df76d13b6f1dd8bfd4f5b2943597f959037a3a688fd6088b817b",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "abi_version": 1,
+       "backend": "native",
+       "backend_version": "openrc-native-kernel-stage-v1",
+       "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+       "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+       "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+      },
+      "native_stats": {
+       "context_calls": 3000,
+       "stage_calls": 12000,
+       "stage_ns": 0.0,
+       "timing": false
+      },
+      "requested": "native"
+     }
+    },
+    {
+     "case": "runway",
+     "repeat": 3,
+     "backend": "reference",
+     "path": "tmp/nk3-package-final-performance/runs/jensen-das-ugly-stik-60/runway/repeat-03-backend-reference.json",
+     "sha256": "d9c16e0ace55f83849a5224ecf6b6d326ce35f27111723c9f1f5b5075407b61e",
+     "completed": {
+      "sample_ticks": 2400,
+      "warmup_ticks": 600
+     },
+     "fingerprint": "4831da1936f91222c34aeefd729b775bae2732d1b5993674e02fb9487eb7ee2d",
+     "fingerprint_boundaries": 3001,
+     "backend_identity": {
+      "actual": {
+       "backend": "gdscript_reference"
+      },
+      "native_stats": {},
+      "requested": "gdscript_reference"
+     }
+    }
+   ],
+   "metrics": [
+    {
+     "case": "trim",
+     "reference_mean_median_us": 852.2175,
+     "native_mean_median_us": 438.7725,
+     "paired_speedup_median": 1.9422764644548143,
+     "native_p95_median_us": 644
+    },
+    {
+     "case": "maneuver",
+     "reference_mean_median_us": 852.1116666666667,
+     "native_mean_median_us": 407.58458333333334,
+     "paired_speedup_median": 2.071256262566334,
+     "native_p95_median_us": 575
+    },
+    {
+     "case": "runway",
+     "reference_mean_median_us": 1929.2495833333332,
+     "native_mean_median_us": 673.1425,
+     "paired_speedup_median": 2.869737278695518,
+     "native_p95_median_us": 1076
+    }
+   ],
+   "matching_ticks_per_backend": 27000,
+   "source_isolated": true,
+   "host": "Shared Linux KVM development host; no simultaneous agent benchmark/render run during this campaign. Not dedicated target hardware."
+  },
+  "archive": {
+   "verdict": "pass",
+   "archive": "tmp/openrc-simulator-nk3-linux-x86_64.zip",
+   "archive_sha256": "d0df81109cd53d76a9cc80ba908f7aeb66ab48b6b1daf55f6002c5afb32fb08c",
+   "archive_bytes": 1319043773,
+   "members": {
+    "native/kernel/openrc_native_kernel.gdextension": {
+     "sha256": "fa4430396a73cacf8d1e04c382cb2238b83448179fd3638b4783062b0b3f8af1",
+     "bytes": 252
+    },
+    "native/kernel/LICENSE.godot-cpp.md": {
+     "sha256": "26a5b210d90760156ce886267ce9df235787dcc6cebfd7ecd95ef5b6fdcc95bf",
+     "bytes": 1093
+    },
+    "native/kernel/package-receipt.json": {
+     "sha256": "892b06daf12847ca265aa4d302dd81e700d2696a3b7dbbc049f4c2bb60ac2880",
+     "bytes": 509
+    },
+    "native/kernel/libopenrc_native_kernel.so": {
+     "sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+     "bytes": 1033528
+    },
+    "openrc-simulator.x86_64": {
+     "sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+     "bytes": 1540104352
+    },
+    "LICENSE": {
+     "sha256": "cd2208264102029a4395258fbdb687fd35d1b298f496aaa3d1684d01d72b7dbb",
+     "bytes": 1085
+    }
+   },
+   "relocation": "Archive sidecars extracted into a fresh directory; executable hard-linked after archived executable bytes matched the tested artifact hash."
+  },
+  "relocated_native_probe": {
+   "aircraft_id": "jensen-das-ugly-stik-60",
+   "aircraft_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+   "backend": {
+    "actual": {
+     "abi_version": 1,
+     "backend": "native",
+     "backend_version": "openrc-native-kernel-stage-v1",
+     "binary_sha256": "eb415e509b3aefd5819e9aad9f9adaf49e3d5bcb47904c54998a1b8f63f7db6f",
+     "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+     "source_sha256": "594175ea658f6784d6f477686954cc1de076ec2894dc49931d532ce9d88a06db"
+    },
+    "native_stats": {
+     "context_calls": 264,
+     "stage_calls": 1056,
+     "stage_ns": 0.0,
+     "timing": false
+    },
+    "requested": "native"
+   },
+   "case_id": "trim",
+   "complete": true,
+   "completed": {
+    "sample_ticks": 240,
+    "warmup_ticks": 24
+   },
+   "failure": "",
+   "final_tick": 264,
+   "fingerprint": "fa11b2d744fd6c07c0b7a38774b2dd303fc7e58679f55336d287a777c700f982",
+   "fingerprint_boundaries": 265,
+   "format": "openrc-session-cost v2",
+   "input_reads": 264,
+   "input_usec": [
+    68,
+    67,
+    149,
+    94,
+    178,
+    206,
+    100,
+    138,
+    74,
+    71,
+    65,
+    94,
+    98,
+    102,
+    125,
+    121,
+    445,
+    108,
+    71,
+    67,
+    76,
+    94,
+    69,
+    91,
+    85,
+    87,
+    107,
+    66,
+    66,
+    65,
+    67,
+    80,
+    194,
+    90,
+    82,
+    86,
+    70,
+    78,
+    67,
+    74,
+    67,
+    70,
+    112,
+    72,
+    66,
+    79,
+    78,
+    75,
+    68,
+    66,
+    65,
+    94,
+    78,
+    140,
+    77,
+    82,
+    95,
+    115,
+    67,
+    65,
+    75,
+    65,
+    70,
+    74,
+    89,
+    72,
+    69,
+    64,
+    91,
+    64,
+    141,
+    63,
+    68,
+    69,
+    68,
+    136,
+    117,
+    68,
+    95,
+    65,
+    66,
+    66,
+    86,
+    63,
+    65,
+    72,
+    63,
+    122,
+    78,
+    89,
+    61,
+    61,
+    61,
+    61,
+    67,
+    63,
+    63,
+    63,
+    62,
+    62,
+    61,
+    62,
+    75,
+    96,
+    93,
+    65,
+    119,
+    64,
+    63,
+    64,
+    93,
+    64,
+    63,
+    63,
+    62,
+    66,
+    67,
+    70,
+    70,
+    63,
+    78,
+    63,
+    67,
+    63,
+    63,
+    62,
+    65,
+    64,
+    76,
+    94,
+    67,
+    63,
+    63,
+    80,
+    102,
+    83,
+    73,
+    74,
+    75,
+    95,
+    91,
+    75,
+    65,
+    69,
+    75,
+    82,
+    89,
+    75,
+    89,
+    80,
+    74,
+    67,
+    64,
+    120,
+    64,
+    64,
+    62,
+    92,
+    64,
+    86,
+    63,
+    62,
+    61,
+    65,
+    63,
+    64,
+    95,
+    122,
+    64,
+    84,
+    67,
+    65,
+    140,
+    80,
+    66,
+    63,
+    82,
+    69,
+    67,
+    118,
+    88,
+    89,
+    68,
+    66,
+    65,
+    67,
+    65,
+    87,
+    63,
+    64,
+    103,
+    61,
+    61,
+    60,
+    87,
+    71,
+    67,
+    65,
+    86,
+    77,
+    62,
+    63,
+    61,
+    61,
+    62,
+    61,
+    75,
+    61,
+    61,
+    62,
+    60,
+    109,
+    61,
+    61,
+    64,
+    64,
+    62,
+    61,
+    60,
+    62,
+    61,
+    61,
+    62,
+    61,
+    64,
+    84,
+    64,
+    61,
+    61,
+    61,
+    60,
+    123,
+    60,
+    82,
+    77,
+    87,
+    89,
+    62,
+    64,
+    107
+   ],
+   "machine": {
+    "architecture": "x86_64",
+    "godot": "4.8-beta1 (official)",
+    "logical_cpu_count": 12,
+    "os": "Linux",
+    "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz"
+   },
+   "measured_wall_usec": 115091,
+   "observer": true,
+   "probe_sha256": "199dad9e74996155789b45bfa7879bcda431c29ad9d491411f6e7c60826ae9e6",
+   "requested": {
+    "sample_ticks": 240,
+    "warmup_ticks": 24
+   },
+   "scope": "CPU only: deterministic raw-input seam, FlightSession._physics_process then Simulation._physics_process including collision and accepted-step callbacks. Detached session, no render/audio/OS input/scheduler. Durations are simulated ticks, not wall-clock warmup/sample. Hashing, backend and native counter checks run outside per-tick timing and can perturb later ticks; the sample loop wall time includes them. Fingerprint covers types, shapes and numeric simulation arrays at the initial boundary and every warmup and sample tick, not all Session/event/checkpoint state. No Gate P or native frame qualification claim.",
+   "setup_usec": {
+    "aircraft_setup": 247078,
+    "collision_build": 278041,
+    "data_load": 21995,
+    "environment_and_reset": 34613
+   },
+   "simulation_usec": [
+    330,
+    402,
+    508,
+    468,
+    900,
+    758,
+    460,
+    539,
+    372,
+    314,
+    446,
+    393,
+    480,
+    519,
+    504,
+    1490,
+    839,
+    456,
+    315,
+    356,
+    365,
+    454,
+    374,
+    383,
+    323,
+    397,
+    427,
+    340,
+    302,
+    324,
+    365,
+    613,
+    607,
+    542,
+    404,
+    378,
+    353,
+    337,
+    414,
+    330,
+    325,
+    449,
+    487,
+    341,
+    379,
+    368,
+    478,
+    360,
+    336,
+    303,
+    322,
+    432,
+    415,
+    418,
+    357,
+    321,
+    390,
+    390,
+    332,
+    347,
+    316,
+    363,
+    335,
+    468,
+    395,
+    400,
+    315,
+    332,
+    373,
+    302,
+    306,
+    365,
+    462,
+    369,
+    455,
+    583,
+    401,
+    441,
+    324,
+    328,
+    331,
+    303,
+    303,
+    298,
+    346,
+    305,
+    292,
+    428,
+    296,
+    326,
+    285,
+    369,
+    287,
+    286,
+    298,
+    349,
+    294,
+    417,
+    291,
+    286,
+    390,
+    400,
+    443,
+    469,
+    364,
+    297,
+    367,
+    296,
+    356,
+    402,
+    472,
+    299,
+    384,
+    325,
+    368,
+    329,
+    326,
+    457,
+    328,
+    352,
+    323,
+    486,
+    303,
+    372,
+    294,
+    293,
+    415,
+    295,
+    483,
+    378,
+    352,
+    288,
+    339,
+    537,
+    596,
+    416,
+    323,
+    331,
+    397,
+    392,
+    309,
+    317,
+    396,
+    308,
+    410,
+    353,
+    374,
+    469,
+    426,
+    360,
+    353,
+    339,
+    296,
+    296,
+    322,
+    354,
+    346,
+    348,
+    295,
+    301,
+    354,
+    287,
+    386,
+    406,
+    350,
+    301,
+    333,
+    350,
+    303,
+    396,
+    309,
+    366,
+    342,
+    364,
+    303,
+    298,
+    307,
+    338,
+    400,
+    417,
+    450,
+    364,
+    350,
+    306,
+    346,
+    356,
+    309,
+    317,
+    326,
+    370,
+    306,
+    352,
+    286,
+    285,
+    372,
+    366,
+    337,
+    407,
+    338,
+    340,
+    345,
+    305,
+    284,
+    336,
+    285,
+    334,
+    287,
+    284,
+    332,
+    284,
+    284,
+    293,
+    285,
+    319,
+    291,
+    290,
+    315,
+    285,
+    298,
+    287,
+    285,
+    404,
+    332,
+    347,
+    295,
+    443,
+    289,
+    286,
+    354,
+    285,
+    285,
+    287,
+    350,
+    351,
+    300,
+    414,
+    338,
+    373,
+    379,
+    370
+   ],
+   "solver_identity_kind": "packaged-executable-v1",
+   "solver_sha256": "df3f0f971e16095cac78c15eeeb6ab4ffb6d76632972110a9a270066ea2daca0",
+   "template_release": true,
+   "tick_hz": 240,
+   "tick_usec": [
+    398,
+    469,
+    657,
+    562,
+    1078,
+    964,
+    560,
+    677,
+    446,
+    385,
+    511,
+    487,
+    578,
+    621,
+    629,
+    1611,
+    1284,
+    564,
+    386,
+    423,
+    441,
+    548,
+    443,
+    474,
+    408,
+    484,
+    534,
+    406,
+    368,
+    389,
+    432,
+    693,
+    801,
+    632,
+    486,
+    464,
+    423,
+    415,
+    481,
+    404,
+    392,
+    519,
+    599,
+    413,
+    445,
+    447,
+    556,
+    435,
+    404,
+    369,
+    387,
+    526,
+    493,
+    558,
+    434,
+    403,
+    485,
+    505,
+    399,
+    412,
+    391,
+    428,
+    405,
+    542,
+    484,
+    472,
+    384,
+    396,
+    464,
+    366,
+    447,
+    428,
+    530,
+    438,
+    523,
+    719,
+    518,
+    509,
+    419,
+    393,
+    397,
+    369,
+    389,
+    361,
+    411,
+    377,
+    355,
+    550,
+    374,
+    415,
+    346,
+    430,
+    348,
+    347,
+    365,
+    412,
+    357,
+    480,
+    353,
+    348,
+    451,
+    462,
+    518,
+    565,
+    457,
+    362,
+    486,
+    360,
+    419,
+    466,
+    565,
+    363,
+    447,
+    388,
+    430,
+    395,
+    393,
+    527,
+    398,
+    415,
+    401,
+    549,
+    370,
+    435,
+    357,
+    355,
+    480,
+    359,
+    559,
+    472,
+    419,
+    351,
+    402,
+    617,
+    698,
+    499,
+    396,
+    405,
+    472,
+    487,
+    400,
+    392,
+    461,
+    377,
+    485,
+    435,
+    463,
+    544,
+    515,
+    440,
+    427,
+    406,
+    360,
+    416,
+    386,
+    418,
+    408,
+    440,
+    359,
+    387,
+    417,
+    349,
+    447,
+    471,
+    413,
+    365,
+    428,
+    472,
+    367,
+    480,
+    376,
+    431,
+    482,
+    444,
+    369,
+    361,
+    389,
+    407,
+    467,
+    535,
+    538,
+    453,
+    418,
+    372,
+    411,
+    423,
+    374,
+    404,
+    389,
+    434,
+    409,
+    413,
+    347,
+    345,
+    459,
+    437,
+    404,
+    472,
+    424,
+    417,
+    407,
+    368,
+    345,
+    397,
+    347,
+    395,
+    362,
+    345,
+    393,
+    346,
+    344,
+    402,
+    346,
+    380,
+    355,
+    354,
+    377,
+    346,
+    358,
+    349,
+    346,
+    465,
+    394,
+    408,
+    359,
+    527,
+    353,
+    347,
+    415,
+    346,
+    345,
+    410,
+    410,
+    433,
+    377,
+    501,
+    427,
+    435,
+    443,
+    477
+   ],
+   "world": {
+    "field": "default",
+    "identity": "ba184dbc8864dae651ca914ae14b0b1fd36f65d1cf5c52f80a08d0c188c84a6d",
+    "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+    "proxies": 6092
+   }
+  },
+  "additional_checks": {
+   "native_python_policy": {
+    "tests": 53,
+    "log": {
+     "path": "tmp/nk3-package-policy-tests.log",
+     "sha256": "d058ff39c24faa15a40e9c82d820d0faaeceb6c807e2a2f82ed6efd20587b564",
+     "bytes": 152
+    }
+   },
+   "fresh_checkout_package_policy": {
+    "tests": 9,
+    "log": {
+     "path": "tmp/nk3-package-fresh-policy.log",
+     "sha256": "b0e12de39910f06e9e309240f9fa6aaddfe794cbc0f297ee41a3908d58d3851e",
+     "bytes": 107
+    }
+   },
+   "performance_python_policy": {
+    "tests": 21,
+    "verdict": "pass"
+   },
+   "flight_log_python_policy": {
+    "tests": 31,
+    "log": {
+     "path": "tmp/nk3-package-flight-log-policy.log",
+     "sha256": "e97e004de2cf684fe323a8b1697eb804473a48aec938bae45a850f4d820b52ca",
+     "bytes": 3979
+    }
+   },
+   "loader": {
+    "cases": 19,
+    "log": {
+     "path": "tmp/nk3-package-loader-retry.log",
+     "sha256": "98903c72a9dc9ff1893cbe956bc4b559b06c0f5d171f2eef696bd195bc6cbd9f",
+     "bytes": 499
+    },
+    "earlier_attempt": "The migrated-cache case hit its unchanged 30-second deadline during concurrent shared-host workloads; the complete repeat passed all 19 cases."
+   },
+   "companion": {
+    "profile_checks": 43,
+    "log": {
+     "path": "tmp/nk3-package-final-companions.log",
+     "sha256": "f6f4815ed3d2c9dccd434f02762a2ffd7e7fcfebfe7f4c21c88c266b644deda6",
+     "bytes": 2533
+    },
+    "rebind": {
+     "format": "openrc-ai-solver-rebind v1",
+     "date": "2026-10-28",
+     "accepted_before": {
+      "solver_sha256": "782b04aa46ea9f9553289e057e4d1b2333498f9bf1c03d1c7cc025cee6fb16fa",
+      "rev": "ac75ea470ab61b4b98edccd3b64aa2d4374231cd"
+     },
+     "current_solver_sha256": "60c39a6620cfe344952c09e397c98fcf64bad5e6dbf08288bb9796dfcf374956",
+     "head": "b913440fb500790bbcd8ddfe9b8c751872d7839a",
+     "solver_tree_committed": true,
+     "changed_sources": [
+      "app/sim/flight_log.gd",
+      "app/sim/native_stage.gd"
+     ],
+     "candidate_aircraft": "app/data/aircraft/jensen_ugly_stik_60.json",
+     "identical": true,
+     "tapes": [
+      {
+       "tape": "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261020-crossing-right-ai.orfl",
+       "orfl_sha256": "89ecdaab6b5cdedaa164967e2a01b6a189cd5fe450b5fca61ceaacaa74b1784e",
+       "rows": 2881,
+       "base_csv_sha256": "7f75ccf1987e3208c0308e139751f3698de7675ac46ed297e02fec5c05d287d3",
+       "head_csv_sha256": "7f75ccf1987e3208c0308e139751f3698de7675ac46ed297e02fec5c05d287d3",
+       "identical": true
+      },
+      {
+       "tape": "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261020-crossing-right-player-coupled.orfl",
+       "orfl_sha256": "73dd60a38ef8cabf2c14ab942e3c3e712aa21b9a7173882ba57dde1b7d9a8a20",
+       "rows": 2881,
+       "base_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+       "head_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+       "identical": true
+      },
+      {
+       "tape": "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261020-crossing-right-player-exogenous.orfl",
+       "orfl_sha256": "86e9dae87e2c1adc1e314f2a2adf4b0ce84c055d77e72d4afceb4f196cbed6c4",
+       "rows": 2881,
+       "base_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+       "head_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+       "identical": true
+      },
+      {
+       "tape": "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261021-crossing-left-ai.orfl",
+       "orfl_sha256": "ba384f57d0d4e7f32a714d23252d6f34ac2d85834915ba5d76eba49b8fc3598d",
+       "rows": 2881,
+       "base_csv_sha256": "3c68c51b76bf131db63018d822916bc80792c89a3c2493b939ded107501abfb2",
+       "head_csv_sha256": "3c68c51b76bf131db63018d822916bc80792c89a3c2493b939ded107501abfb2",
+       "identical": true
+      },
+      {
+       "tape": "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261021-crossing-left-player-coupled.orfl",
+       "orfl_sha256": "a4b7cbf89b2c94e83be5cd1068cfa825a8b3d0a957f177bf2a3922a28ba5a385",
+       "rows": 2881,
+       "base_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+       "head_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+       "identical": true
+      },
+      {
+       "tape": "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261021-crossing-left-player-exogenous.orfl",
+       "orfl_sha256": "49bbea8ff78b64bc06fe496d6efd043dc6a26513f58d9458becea63e20f59b76",
+       "rows": 2881,
+       "base_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+       "head_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+       "identical": true
+      },
+      {
+       "tape": "docs/research/ai-companions/AFC-02-R4/tapes/parallel-two-threats-ai.orfl",
+       "orfl_sha256": "1829adfdcebdfeac40681150123c60c498669412e6349c2db06f17750d03bfb3",
+       "rows": 2881,
+       "base_csv_sha256": "466d7c88884e138e830912ab463aa65d6262fae8771ce2857b8b29a5ef86a1a6",
+       "head_csv_sha256": "466d7c88884e138e830912ab463aa65d6262fae8771ce2857b8b29a5ef86a1a6",
+       "identical": true
+      },
+      {
+       "tape": "docs/research/ai-companions/AFC-02-R4/tapes/parallel-two-threats-peer.orfl",
+       "orfl_sha256": "7c96656477b8765aa3d3fec5d99e405b2cb71aaa9ef50833ca02e682424a1fb7",
+       "rows": 2881,
+       "base_csv_sha256": "27138fbae16909c4a4fd362bdaf1236db8f22a8ab03000a09a7f8bb604190261",
+       "head_csv_sha256": "27138fbae16909c4a4fd362bdaf1236db8f22a8ab03000a09a7f8bb604190261",
+       "identical": true
+      },
+      {
+       "tape": "docs/research/ai-companions/AFC-02-R4/tapes/parallel-two-threats-player.orfl",
+       "orfl_sha256": "3b021f86ee821647d81435446dc9da3449cf2d9c448c6f6f107ecc66f288d872",
+       "rows": 2881,
+       "base_csv_sha256": "85ed958d7101f0db25e4f83f9cd31fd3e2e4e2726b5f2eba3c5c626234f04ebc",
+       "head_csv_sha256": "85ed958d7101f0db25e4f83f9cd31fd3e2e4e2726b5f2eba3c5c626234f04ebc",
+       "identical": true
+      }
+     ],
+     "method": "Candidate replays of the retained tapes on two disposable copies differing only in the solver directories (accepted rev vs current tree); CSV bytes compared.",
+     "limits": "Parity on these tapes only; not exact replay, not a new qualification, not physical validation."
+    }
+   },
+   "workflow": "actionlint, bash syntax, nine CI partition and thirteen export-identity checks passed locally; remote CI not run."
+  },
+  "limitations": [
+   "Detached production-session timing excludes rendering, audio, OS input and scheduling; identity checks outside each stopwatch can perturb subsequent ticks.",
+   "Native p95 exceeds 500 us on this host; the relative CPU gain does not close Gate P or 1080p qualification.",
+   "Software equivalence is not physical validation; native weather/fleet coverage and Windows/macOS remain separate work.",
+   "Local package qualifies NK-3. The full cross-platform export pipeline and separate ground-vehicle native artifacts are wired in CI but were not executed as a complete local release pipeline.",
+   "Existing broad-suite fixed-brake failure predates NK-3 and reproduced against the reference control; no frozen/golden data was regenerated.",
+   "Raw performance reports and logs remain at the recorded local tmp paths; this record retains their hashes, completion identities and reduced measurements."
+  ]
  }
 }

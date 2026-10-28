@@ -1,29 +1,30 @@
-# NK-3 native stage evaluator (research)
+# NK-3 native stage evaluator
 
 Step NK-3 of the [native-kernel scoping](../../docs/research/native-kernel-scoping-2026-10-27.md#phases-r-research-i-implementation):
 a GDExtension (godot-cpp) port of the joint RK stage of the electric Ugly Stik (`jensen-das-ugly-stik-60`),
 `FlightSession._wheel_evaluate`, proven byte-identical to the GDScript reference per component and through the real
 kernel tick. Build outputs stay in the ignored `tmp/native-kernel/`; `--install-app` can stage a verified Linux
-library in ignored `app/native/kernel/`. Normal fixed-wing flights can select it with `--physics-backend=native`.
-Reference GDScript remains the default; unsupported or unverified configurations report a reference fallback.
+library in ignored `app/native/kernel/`. The application requests native physics by default.
+Unsupported or unverified configurations report a reference fallback; `--physics-backend=gdscript_reference`
+selects the reference explicitly. The low-level `FlightSession` default remains reference for tools and replay.
 Evidence and timings: [docs/research/native-kernel/NK-3](../../docs/research/native-kernel/NK-3/README.md).
-The owner has authorized promotion once ready; the [promotion gates](../../docs/research/native-kernel/NK-3/README.md#promotion-to-the-default-backend)
-remain open for packaged delivery and target-host performance.
+The [promotion record](../../docs/research/native-kernel/NK-3/README.md#promotion-to-the-default-backend)
+defines the supported Linux scope and separates backend qualification from display and hardware acceptance.
 
 ## Optional normal-flight backend
 
 After verification and installation below:
 
 ```bash
-"$(app/get-godot.sh)" --path app -- --quick-flight --aircraft=jensen-das-ugly-stik-60 --physics-backend=native
+"$(app/get-godot.sh)" --path app -- --quick-flight --aircraft=jensen-das-ugly-stik-60 --weather=calm
 ```
 
-Selection is launch-time only. This Linux x86_64 developer route admits the stock Ugly Stik, calm weather and
+Selection is launch-time only. The Linux x86_64 route admits the stock Ugly Stik, calm weather and
 the capabilities accepted by the native stage. Workshop variants, other aircraft and unsupported weather keep
 the reference evaluator. The interactive flight console prints requested/actual backend and refusal reason.
 Native traces record the identity in metadata; its absence denotes reference and preserves pre-integration
-reference CSV bytes. The exact verified Godot executable, binary and mirrored source/data hashes must match.
-Exported delivery remains unqualified.
+reference CSV bytes. In source builds, the exact verified Godot executable, binary and mirrored source/data hashes must match.
+Release packages instead verify the complete executable and embedded manifest before loading their pinned sidecar.
 
 `FlightSession` prepares a fresh stage within each reset/restore transaction and primes tick-zero context before
 evaluating initial loads. Rejected starts preserve the previous helper, callbacks and physical state. Accepted
@@ -104,7 +105,7 @@ Run one Godot process at a time under `nice`; timings on a shared VM are indicat
 
 ## Verification and local installation
 
-Use `--app-library` on oracle runs if an installed library is already auto-loaded by Godot. The runner resolves
+Use `--app-library` on oracle runs to test the installed library. NK-3 must not be auto-loaded by Godot. The runner resolves
 the binary from the selected descriptor and checks its receipt and SHA-256 before running. It retains the checked
 Godot report, engine/binary hashes before and after, mirrored source hashes before and after, and harness hashes.
 Reserved runner arguments cannot be overridden through `--option`. A negative control needs actual differing
@@ -154,7 +155,38 @@ results describe their recorded snapshot, and other data changes require fresh v
 projects using the built library and pinned editor; it does not change the app installation. CI's
 `native-kernel-linux` job builds and qualifies the library, requires explicit native-success markers in all three
 runtime tests, and checks a short production reference/native pair. Its diagnostics are retained on failure and
-release publication depends on the job. This is a developer-build gate, not exported-runtime qualification.
+release publication depends on the job. The export job then qualifies the actual release executable as described below.
+
+## Linux release packages
+
+`app/export.sh` prepares the verified identity, exports the ordinary application, stages the exact native
+sidecars, and tests that executable before creating the release archive. The CI export job consumes the
+library and oracle receipts from `native-kernel-linux`; the other vehicle's native artifacts keep their own gates.
+A local export needs the same verified inputs for both tracks. Do not manually register NK-3 as an exported extension.
+
+The export plugin embeds `res://native/kernel/package.json` and the fixed diagnostic sources. That immutable
+manifest pins the verified library, source provenance and diagnostic digests. A sidecar artifact receipt binds
+the final executable (including its embedded PCK) and manifest hashes. This is consistency checking, not a
+cryptographic signature. Keep `native/kernel/` beside the executable when moving the package; a missing or
+altered sidecar selects reference. No runtime C++ build or source-tree access is needed.
+
+The package gate runs the existing stage, lifecycle and exact-replay tests through
+`--quick-flight --native-qualification=stage|lifecycle|replay`. It also compares typed reference/native session
+fingerprints in the same executable and tests default selection, explicit reference, unsupported aircraft and
+corrupted/missing sidecar fallback. Completed diagnostics must actually exercise native code; skipped or
+interrupted tests do not pass. The diagnostic route accepts fixed modes, never a script path.
+
+For a longer paired CPU measurement of a retained release:
+
+```bash
+python3 research/performance/session_baseline.py --release-executable --godot /path/to/openrc-simulator.x86_64 \
+  --out tmp/nk3-release-pairs --aircraft jensen-das-ugly-stik-60 --case trim,maneuver,runway \
+  --warmup-ticks 600 --sample-ticks 2400 --repeats 3 --compare-backends
+python3 research/native-kernel/test_default_route.py --release-executable /path/to/openrc-simulator.x86_64
+```
+
+Run timing alone on the measured host. These headless checks do not qualify rendering at 1080p or any other
+resolution, physical realism, Windows/macOS native execution, or unsupported aircraft and weather.
 
 ## C++ development tools (NK-3)
 

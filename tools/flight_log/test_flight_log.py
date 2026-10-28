@@ -388,6 +388,84 @@ class FlightLogCommandTests(unittest.TestCase):
         self.assertTrue((output / "flight.csv").is_file())
         self.assertTrue((output / "export.json").is_file())
 
+    def test_release_export_uses_only_the_fixed_shipped_entry_point(self) -> None:
+        source = self.directory / "package flight.orfl"
+        source.write_bytes(b"orfl")
+        output = self.directory / "package export"
+
+        def fake_run(command: list[str], **_kwargs: object) -> object:
+            self.assertEqual(command[0], str(self.godot.resolve()))
+            self.assertIn("--flight-log-cli", command)
+            self.assertIn("--quick-flight", command)
+            self.assertNotIn("--path", command)
+            self.assertNotIn("--script", command)
+            self.assertIn(f"--log={source.resolve()}", command)
+            self.assertIn(f"--csv={(output / 'flight.csv').resolve()}", command)
+            write_csv(output / "flight.csv", [sample_row(0), sample_row(1)])
+            (output / "export.json").write_text(
+                json.dumps({"status": "ok", "error": "", "complete": True, "rows": 2}), encoding="utf-8")
+            return type("Result", (), {"returncode": 0})()
+
+        with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
+            result = flight_log.main(["export", str(source), "--out", str(output),
+                                      "--release-executable", str(self.godot)])
+        self.assertEqual(result, 0)
+
+    def test_release_exact_replay_requires_the_selected_executable_identity(self) -> None:
+        source = self.directory / "package replay.orfl"
+        source.write_bytes(b"orfl")
+        executable_hash = hashlib.sha256(self.godot.read_bytes()).hexdigest()
+
+        def run_case(name: str, mutate: str = "") -> int:
+            output = self.directory / name
+
+            def fake_run(command: list[str], **_kwargs: object) -> object:
+                self.assertIn("--flight-log-cli", command)
+                self.assertIn("--replay", command)
+                self.assertNotIn("--script", command)
+                self.assertNotIn("--path", command)
+                write_debrief_csv(output / "flight.csv", 0, 2, 0.1)
+                report = exact_replay_report(source, row_count=2)
+                report.update({"baseline_solver_sha256": executable_hash, "current_solver_sha256": executable_hash,
+                               "baseline_solver_identity_kind": "packaged-executable-v1",
+                               "current_solver_identity_kind": "packaged-executable-v1"})
+                if mutate == "identity":
+                    report["current_solver_sha256"] = "f" * 64
+                elif mutate == "kind":
+                    report["current_solver_identity_kind"] = "source-tree-v1"
+                elif mutate == "changed":
+                    report["solver_changed"] = True
+                elif mutate == "executable":
+                    self.godot.write_bytes(b"modified executable")
+                (output / "replay.json").write_text(json.dumps(report), encoding="utf-8")
+                return type("Result", (), {"returncode": 0})()
+
+            with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run):
+                with contextlib.redirect_stderr(io.StringIO()):
+                    return flight_log.main(["replay", str(source), "--out", str(output),
+                                            "--release-executable", str(self.godot)])
+
+        self.assertEqual(run_case("valid"), 0)
+        for mutation in ("identity", "kind", "changed", "executable"):
+            with self.subTest(mutation=mutation):
+                self.assertNotEqual(run_case("bad-" + mutation, mutation), 0)
+
+    def test_release_executable_and_editor_options_are_mutually_exclusive(self) -> None:
+        source = self.directory / "flight.orfl"
+        source.write_bytes(b"orfl")
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            flight_log.main(["replay", str(source), "--out", str(self.directory / "out"),
+                             "--godot", str(self.godot), "--release-executable", str(self.godot)])
+
+    def test_empty_release_executable_does_not_fall_back_to_editor(self) -> None:
+        source = self.directory / "flight.orfl"
+        source.write_bytes(b"orfl")
+        with mock.patch.object(flight_log, "_resolve_godot", side_effect=AssertionError("unexpected editor fallback")):
+            with contextlib.redirect_stderr(io.StringIO()):
+                result = flight_log.main(["replay", str(source), "--out", str(self.directory / "out"),
+                                          "--release-executable", ""])
+        self.assertNotEqual(result, 0)
+
     def test_recover_is_export_only_and_accepts_a_verified_prefix(self) -> None:
         source = self.directory / "interrupted.orfl.truncate"
         source.write_bytes(b"orfl")

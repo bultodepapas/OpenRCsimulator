@@ -295,7 +295,9 @@ static func _preserve_bad_file(file_path: String, result: Dictionary, reason: St
 	var absolute_backup := ProjectSettings.globalize_path(backup)
 	DirAccess.remove_absolute(absolute_backup)
 	var err := DirAccess.rename_absolute(absolute_path, absolute_backup)
-	result.note = "%s; %s" % [reason, "kept as " + backup.get_file() if err == OK else "could not keep a copy (error %d)" % err]
+	if err != OK:
+		result.writable = false
+	result.note = "%s; %s" % [reason, "kept as " + backup.get_file() if err == OK else "could not keep a copy (error %d); original will not be overwritten" % err]
 	return result
 
 

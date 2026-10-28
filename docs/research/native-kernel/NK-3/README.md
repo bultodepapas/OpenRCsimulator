@@ -4,10 +4,10 @@ Step NK-3 of the [native-kernel scoping](../../native-kernel-scoping-2026-10-27.
 option (b): one `VehicleModel.stage` boundary on a prepared model. The owner approved NK-3 on 2026-10-27 and
 delegated D1–D8 to the lead (port now; no SF-08 amendment; Linux bit-exact fingerprints, Windows later; backend
 identity pinned in checkpoints; macOS reference-only; native refuses unknown laws; Stik first; reference always
-available). Milestones 1 and 2 below describe the original research snapshot. Normal flights now offer an explicit
-Linux developer opt-in, with session revision handling and checkpoint/replay backend identity. GDScript remains
-the default; exported delivery remains pending. Milestone 2 (the complete stage through the
-kernel) builds on milestone 1 (the components), kept below as dated evidence.
+available). The application now requests native physics by default for the verified Linux x86_64 route, with
+reference fallback for unsupported configurations and explicit reference selection. The current supported scope
+is the stock electric Ugly Stik in calm conditions. Milestones 1 and 2 below remain the original research
+snapshots; the promotion section records release-package qualification and its limits.
 Code and commands: [research/native-kernel](../../../../research/native-kernel/README.md).
 
 ## Normal-flight integration (2026-10-28)
@@ -57,8 +57,9 @@ import, script parsing, generated-data checks, fleet CLI traces, logger failures
 Its final ground-contact checks passed 21/116 (E5a) and 125 (E5b). The same shared-tree qualification limit applies.
 
 The historical speedups below describe the research adapter. This session integration adds a configuration guard;
-its end-to-end speedup has not yet been measured on an isolated target host. Windows, macOS native execution,
-export delivery and 1080p hardware qualification remain open. Software equivalence is not physical validation.
+at this integration checkpoint its end-to-end speedup had not yet been measured. Later sections record
+production and release-package measurements. Windows/macOS native execution and 1080p target-hardware
+qualification remain open. Software equivalence is not physical validation.
 
 The C++ ownership increment transfers the completed wheel-rate vector into the stage result with `std::move`.
 This removes the explicit copy and its separate destination allocation without changing arithmetic. A production
@@ -101,23 +102,59 @@ are retained under `production_path_hardening` in the [revalidation record](reva
 
 ## Promotion to the default backend
 
-The owner authorized making NK-3 official once ready (2026-10-28). That authorization does not establish
-release readiness. Keep the reference default until the supported delivery route meets these gates:
+The owner requested completion and default promotion on 2026-10-28. NK-3 is now the application's default
+physics request for its supported Linux x86_64 delivery route. Admission remains stock electric Ugly Stik,
+calm weather and the stage's supported capabilities. Other aircraft, unsupported conditions/platforms and
+missing or mismatched installations retain reference. `--physics-backend=gdscript_reference` is the explicit
+opt-out. The low-level `FlightSession` default stays reference for tools, historical tests and replay.
 
-1. Verify the exact descriptor-selected binary before initialization; fresh imports and migrated caches must
-   not auto-load NK-3. Missing, mismatched and unsupported installations must retain a usable reference route.
-2. Complete the exact stage/trajectory, lifecycle and replay gates for the final source, binary and engine.
-   Use production session admission for fleet fallback checks; the research adapter alone does not prove it.
-3. Measure the production session path, including configuration guards, with complete identical input tapes.
-   Retain paired results and source identities. Editor/shared-host timings do not qualify a release template.
-4. Build and verify the supported package: preserve binary/source identity through exported resources, qualify
-   the actual template executable, and test installation, launch, fallback, reset and replay from a clean package.
-   The current editor hash and loose-GDScript source checks are not an export identity scheme.
-5. Qualify the declared target-host performance and platform scope before changing its default. Keep explicit
-   reference selection and fallback; a Linux qualification does not qualify Windows or macOS native execution.
+This promotion is based on the following completed software and delivery checks:
 
-The current native scope remains the stock electric Ugly Stik on Linux x86_64. Packaging and target-host
-qualification are open. The application's separate 1080p display gates also remain distinct from CPU equivalence.
+- Current installed binary/source/engine: 128,565 exact stage comparisons and 155,931 exact trajectory
+  comparisons, covering 49,553 matching ticks; no equation, aircraft-data or golden-flight change.
+- Actual Linux release executable: 88 stage, 118 lifecycle and 53 replay checks, each requiring native execution
+  and a normal completion marker. Native initialization was absent before verified admission in every process.
+- Player workflow: the existing flight-log CLI exactly replays the packaged native recording (65 rows,
+  `complete=true`, `solver_changed=false`), exports it, and refuses a recording bound to another executable.
+  The [native tape](package-native-linux-2026-10-28.orfl) and
+  [reference tape](package-reference-linux-2026-10-28.orfl) retain the final executable identity.
+- Twelve default-route cases pass, including ordinary flight, explicit reference, P-51 fallback, missing library,
+  changed descriptor, changed binary despite a matching external binary receipt, malformed artifact receipt,
+  mismatched executable identity, and invalid/scripted requests. Private fixtures preserve other native sidecars.
+- Nineteen disposable editor loader cases, 53 native tool-policy tests, 21 performance-report tests and 31
+  flight-log tool tests pass. A sparse fresh checkout passes the nine packaging policy tests. The current
+  companion rebind preserves all nine 2,881-row tapes and passes 43 profile checks.
+
+The final exported executable is `df3f0f97…daca0`, with native library `eb415e50…7db6f` and official Linux
+release template `93cdaedf…8ddf3`. The embedded manifest pins source and library provenance; the artifact
+receipt binds the exact executable including its PCK. Runtime checks use those immutable package bytes,
+not loose source files or a mutable sidecar's binary claim. These receipts establish consistency, not signatures.
+CI transfers the verified library/oracle evidence into export, then runs these package, player-replay and default
+checks before archiving. Workflow lint and partition/export policy checks pass locally; remote CI was not run
+in this session. The local package qualifies NK-3; the separate ground-vehicle native release artifacts remain
+owned and gated by their existing CI jobs.
+
+The actual release performance campaign used the fixed embedded production probe, an isolated source snapshot,
+three alternating pairs per case, 600 warmup and 2,400 sampled ticks per process. All 18 processes completed,
+with 27,000 matching ticks per backend and native coverage at every tick. On the shared Linux development VM
+reporting an Intel Core i5-10500 and 12 logical CPUs, medians across the three pairs were:
+
+| Case | Reference mean µs/tick | Native mean µs/tick | Paired speedup | Native p95 µs/tick |
+| --- | ---: | ---: | ---: | ---: |
+| Trim | 852.2 | 438.8 | 1.94× | 644 |
+| Manoeuvre | 852.1 | 407.6 | 2.07× | 575 |
+| Runway idle | 1,929.2 | 673.1 | 2.87× | 1,076 |
+
+These are detached production-session CPU measurements, including the configuration guard, context handoff,
+collision and accepted-step callbacks. They exclude rendering, audio, OS input and scheduling. Fingerprint and
+counter checks run outside each tick stopwatch and can perturb later samples. The relative gain supports
+this scoped default; it does **not** close the 500 µs/Gate P budget, 1080p rendering qualification, physical
+validation, fleet-wide native coverage, or Windows/macOS native delivery. Those remain separate acceptance work.
+
+Exact identities, checked reports, timing summaries/raw-report hashes, replay reports and artifact hashes are retained under
+`official_default_linux` in the [revalidation record](revalidation-linux-2026-10-28.json). Operating commands
+live in the [native guide](../../../../research/native-kernel/README.md#linux-release-packages) and
+[flight logging guide](../../../FLIGHT-LOGGING.md).
 
 ## Verification gate repair (2026-10-28)
 
