@@ -40,7 +40,7 @@ physics checkpoint, including current propulsion, wind RNG and actuator state.
 NK-3 recordings also identify the actual stage backend. Exact native replay requires the same verified library;
 historical logs without this field select reference. Explicit native-to-reference candidate replay reports
 `solver_changed`. If the backend changes during recording, the file ends as an incomplete diagnostic prefix.
-The default native route and its limits are documented in the [NK-3 guide](../research/native-kernel/README.md#optional-normal-flight-backend).
+The default native route and its limits are documented in the [NK-3 guide](../research/native-kernel/README.md#normal-flight-backend-selection).
 
 Verified Linux packages record `solver_identity_kind=packaged-executable-v1` and the complete executable hash.
 Their exact replay uses that same executable and sidecars, including its embedded compiled scripts:
@@ -78,14 +78,14 @@ After [developer setup](TOOLS.md#developer-setup), run from the repository root.
 Select your installed engine, then launch a recording:
 
 ```powershell
-$env:GODOT = 'C:\Tools\Godot_v4.7.2-stable_win64_console.exe' # Set to your installed path.
-python tools/flight_log/flight_log.py record --out "tmp/my-flight.orfl"
+# $GodotWindows is the pinned console executable from developer setup.
+python tools/flight_log/flight_log.py record --godot "$GodotWindows" --out "tmp/my-flight.orfl"
 ```
 
-For Linux/Bash, set `export GODOT="$(app/get-godot.sh)"` and use `python3` in the
-commands below. Engine selection is `--godot <path>`, then `GODOT`, then the pinned
-Windows console executable in `.tools`. A supplied executable name can resolve
-through PATH; the launcher does not automatically search for a Linux engine.
+For Linux/Bash, use `python3` in the commands below; `--godot "$(app/get-godot.sh)"`
+selects the pinned editor explicitly. Engine selection is `--godot <path>`, then
+`GODOT`, then the pinned OS-specific executable in `.tools`. A supplied executable
+name can resolve through PATH.
 `--aircraft gp-extra-300s-60` selects another catalog ID. Record mode waits for normal
 application exit unless an explicit timeout is supplied. Export/replay default to
 300 seconds; increase `--timeout` for long recordings. Never kill the app just to
@@ -94,7 +94,7 @@ stop recording: press F10, then close it normally.
 Equivalent engine command, also usable without Python:
 
 ```powershell
-& $env:GODOT --path app -- --quick-flight --flight-log=C:/captures/roll.orfl
+& $GodotWindows --path app -- --quick-flight --flight-log=C:/captures/roll.orfl
 ```
 
 Use a new file name. Existing recordings and analysis outputs are never overwritten.
@@ -104,8 +104,9 @@ published download packages.
 
 ## Export, inspect and replay
 
-Python 3 and the repository's Godot build are sufficient; no pip packages are needed.
-Run from the repository root. Output directories must not already exist.
+Python 3 and the matching Godot engine or verified release executable are sufficient;
+no pip packages are needed. Run from the repository root. Output directories must
+not already exist.
 
 ```powershell
 python tools/flight_log/flight_log.py export tmp/my-flight.orfl --out tmp/baseline
@@ -124,15 +125,15 @@ Exact replay restores the original accepted aircraft snapshot and environment,
 feeds the recorded commands into the actual fixed-step solver, and checks each
 body/auxiliary/continuous state, discrete mode, force/moment, derived air and live mass sample
 byte for byte. It stops at the first discrepancy. The original engine, timestep and
-solver source fingerprint must match. Different platforms are not presumed to
+applicable solver identity must match. Different platforms are not presumed to
 match: a successful comparison establishes only the run actually checked.
 
 This replay is a numerical research tool. It exports the re-simulated flight for
 analysis; it is not a 3D video player and does not reproduce cameras, smoke or sound.
-Export works independently of current solver identity. Exact replay currently
-requires available solver source fingerprints; compiled packages without source
-fingerprints must be analyzed from a matching source checkout, and compatibility
-is still checked rather than assumed.
+Export does not require replay solver equivalence. Exact source replay requires its
+matching solver fingerprints; verified package recordings instead bind the complete
+executable and use `--release-executable` as described above. Compatibility is
+checked rather than assumed.
 
 ## Debrief marked maneuvers
 

@@ -2,16 +2,16 @@
 
 Tools to capture, compare and measure what the renderer draws. Each entry: purpose · when · command · result · gotchas. Shared runner, suite and flags: [shared](shared.md). [Back to the index](README.md).
 
-Captures on the dev VM and CI use Xvfb with Mesa llvmpipe (software OpenGL, `gl_compatibility`). They prove determinism and image contracts, not target-GPU appearance or performance. Headless runs render nothing.
+The Linux CI capture workflow uses Xvfb with Mesa llvmpipe (software OpenGL, `gl_compatibility`). It checks image contracts, not target-GPU performance. Use the [debug bridge](../../tools/debug/README.md#quick-start) for native 1080p review and report actual viewport dimensions; follow the [resolution policy](../../AGENTS.md#display-resolution-priorities). Headless runs render nothing.
 
 ## Visual capture suite
 
-- **Purpose:** render the reference views, field cases, UI screens and every area checker; check images, readability and a trace.
+- **Purpose:** render the reference views, field cases, UI screens and registered area checks; check images, readability and a trace. The script owns suite membership; additional tools appear below.
 - **When:** before committing a change under `app/render/`, shaders, landscape, scenery or UI layout; CI runs it as "Godot visual captures".
 - **Command:** `app/capture.sh`
 - **Result:** `app/captures/run-manifest.json` exists only when every capture, image check and trace passed. Any failure exits nonzero and prints the failing step; per-area output is under `app/captures/<area>/`.
 - **Gotchas:**
-  - It runs everything (more than 25 steps) and cannot select one case; for a focused check run the [area checker](#area-capture-checkers) or a [single capture](#single-capture).
+  - It cannot select one case; for a focused check run an [area checker](#area-capture-checkers) or a [single capture](#single-capture).
   - It holds a lock on `app/captures/`; a second run exits with "another capture run owns …".
   - It sets `OPENRC_SCENERY=off` and `LP_NUM_THREADS=1` so captures repeat byte for byte.
   - Shaders must not read `TIME`; animation uses the `sim_clock` global uniform (`app/test.sh` enforces this).
@@ -20,7 +20,7 @@ Captures on the dev VM and CI use Xvfb with Mesa llvmpipe (software OpenGL, `gl_
 
 - **Purpose:** render one view to PNG with a fixed simulation time.
 - **When:** to see a change, or to make a before/after pair.
-- **Command:**
+- **Command:** reproduce the suite's 720p reference fixture (not 1080p acceptance):
   ```sh
   OPENRC_SCENERY=off OPENRC_SCENERY_BIRDS=off OPENRC_ENGINE_SHADOWS=off LP_NUM_THREADS=1 \
   xvfb-run -a -s "-screen 0 1280x720x24" "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --audio-driver Dummy \
@@ -43,17 +43,17 @@ Captures on the dev VM and CI use Xvfb with Mesa llvmpipe (software OpenGL, `gl_
 - **Purpose:** decide whether two capture sets differ.
 - **Command:** `"$(app/tests/visual-env.sh)" app/tests/compare_captures.py compare <reference-dir> <test-dir> [--max-bad 50] [--flip 0.1]`. Airplane readability: `… compare_captures.py readability <captures-dir> --require "capture-land-30m.png:-0.40:0.15:30:25"`.
 - **Result:** same renderer: SHA-256 must match exactly. Different renderer: fails when more than `--max-bad` pixels exceed the FLIP threshold.
-- **Gotchas:** byte equality holds only for one Mesa build. Each PNG needs its manifest `.json`. On the same renderer it reports only `sha256 equal` or `differs` per file; no repository tool localizes a difference. To show where an image changed, diff the two PNGs with NumPy and Pillow from the visual venv and inspect the result.
+- **Gotchas:** retain the same engine, renderer, driver and capture configuration for byte comparisons. Each PNG needs its manifest `.json`. A matching image does not establish legibility; inspect the actual captures.
 
 ## Area capture checkers
 
 - **Purpose:** focused, repeatable A/B and contract checks per rendering area.
-- **When:** after changing that area. Each is also a step of `app/capture.sh`.
+- **When:** after changing that area. Check `app/capture.sh` for inclusion; standalone tools are not implied by a passing full capture suite.
 - **Command:** `"$(app/tests/visual-env.sh)" tools/<area>/check_<x>.py --app app --godot "$(app/get-godot.sh)" --out tmp/<new-dir>`. The visual venv (`app/tests/visual-env.sh`) installs pinned CPython 3.12 packages on first use.
 - **Result:** exit 0 and a `summary.json` in `--out`; exit 1 names the failing image or check.
 - **Gotchas:** most need Xvfb (they start it) and a new `--out`. The area READMEs own options and limits; many show PowerShell commands with the Windows engine, so substitute `"$(app/get-godot.sh)"`.
 
-| Area | Checker run by `app/capture.sh` | Contract |
+| Area | Entry point | Contract |
 | --- | --- | --- |
 | Grass placement, seams | `tools/grass/check_grass.py`, `check_grass_seam.py` | [tools/grass](../../tools/grass/README.md) |
 | Ground surfaces, stripes, windsock | `tools/ground/check_surfaces.py`, `check_stripes.py`, `check_windsock.py` | [tools/ground](../../tools/ground/README.md) |
@@ -90,12 +90,14 @@ Layout data generators (`tools/{grass,trees,scenery,terrain,world}/…py --check
 
 For OFF/Classic/Festival aircraft-lighting comparisons, the existing [flight harness's real-time mode](../../tools/trailer/README.md#real-time-lighting-measurements) supplies bounded controls and profile identities to this collector. Its Movie Maker mode remains a separate visual-evidence route.
 
-## Experimental High profile (Forward+)
+## High profile (Forward+)
 
 - **Command:** `python3 tools/graphics/launch.py --profile high [--dry-run]`
-- **Result:** launches the app with the Forward+ trial; probes write `stage-N.json` receipts. [Scope, launcher and native probes](../../tools/graphics/README.md).
-- **Gotchas:** needs a native GPU renderer; unverified on the dev VM.
+- **Result:** starts the selected graphics mode. The separate verification probes write receipts; the launcher itself is not a performance test. [Modes, startup and probes](../../tools/graphics/README.md).
+- **Gotchas:** use a compatible native renderer and the actual target resolution. Available settings do not establish hardware qualification.
+
+The current [Windows NVIDIA application](../../tools/graphics/native/README.md#play-with-dlss-dlaa-and-reflex) has a separate build/package workflow for DLSS, DLAA and Reflex; follow that guide rather than the historical candidate preparation commands.
 
 ## Native performance experiments
 
-[Session performance tools](../../research/performance/README.md) and the research-only native candidates are listed in [TOOLS → Native performance experiments](../TOOLS.md#native-performance-experiments).
+[Session performance tools](../../research/performance/README.md) own CPU/GPU measurement. [Backend tools and older experiments](../TOOLS.md#native-performance-experiments) distinguish current native installation from isolated research candidates.

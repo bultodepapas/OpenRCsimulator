@@ -514,3 +514,44 @@ The driver-controlled flash-trigger path required for NVIDIA's complete Reflex
 verification remains absent. DLSS camera-cut history resets, temporal motion
 quality, long-session behavior and other GPU/driver/platform qualification remain
 open. Frame generation, ray reconstruction and path tracing are still disabled.
+
+## Current-source Windows package and settings promotion — 2026-10-28
+
+The owner requested normal selectable NVIDIA settings, superseding their
+experimental UI status. `product.py` packages the current application, rather
+than the older trial snapshot. The Windows package opens at Home with Forward+;
+DLSS/DLAA are saved reconstruction choices and Reflex offers Off, On and Boost,
+with On as its default request. Unsupported features remain visibly unavailable.
+The [operating guide](../../../../../tools/graphics/native/README.md) owns commands
+and platform limits. Official cross-platform engine selection is unchanged.
+
+The frozen package uses application HEAD `a7b3a79bb185` plus the receipted working
+tree. Its import and export passed; the 17 packager regressions and receipt
+verification passed. The importer rewrote 322 authoring sidecars, so the tool
+restores their pinned bytes and reconciles only checked cache identities. The
+initial export reproduced a source-proof failure; the corrected export passed
+without reimporting or bypassing aircraft/native-kernel plugins. Maple alpha
+coverage remains an explicitly unsupported import option, not equivalent output.
+
+On the RTX 3090, the actual 1920×1080 Settings screen passed DLAA dispatch,
+DLSS Quality, default Reflex On, Boost/Off, Keep and Revert. The screenshot was
+inspected. Quality and Boost survived a process restart, with Boost accepted by
+the SDK. The full-game DLSS mode/resize/Native restoration and Reflex marker
+fixtures passed. Both bridge sessions closed without crashes or ObjectDB leaks.
+
+The release executable produced an inspected 1080p capture with 32 successful
+DLSS dispatches, no fallback, Reflex On accepted and zero expired tokens.
+Ordinary Home and the Compatibility recovery launch both passed checked execution
+and normal window-close shutdown with zero errors/warnings. An earlier
+`--quit-after 180` invocation interrupted asynchronous startup and failed; it is
+excluded from acceptance. An independent empty-project PCK check also loaded the
+reported resources successfully. Do not use frame-limited termination as proof
+that asynchronous Home preparation completed.
+
+[Package identities and verification](verification-product-2026-10-28.json)
+retain the exact artifact hashes, checked runs, UI fixture, smoke results and
+known failed invocation. Raw logs and images remain in ignored `tmp/` paths.
+This is functional verification, not an FPS, latency, temporal-quality or
+cross-device guarantee. The [official NVIDIA/Godot review](../../../advanced-graphics-2026-10-21/nvidia-dlss-reflex-2026-10-28.md)
+prioritizes the remaining camera-history, exposure, accepted-resolution and
+Reflex measurement work.

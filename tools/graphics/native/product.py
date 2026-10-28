@@ -448,8 +448,11 @@ def record_checked_import(report_path: Path) -> None:
             or report.get("process_exit") != 0 or report.get("counts", {}).get("error") != 0
             or not isinstance(command, list) or not all(isinstance(x, str) for x in command)):
         raise RuntimeError("selected import report is not a successful complete checked invocation")
-    cwd = Path(str(report.get("cwd", ""))).resolve()
-    if cwd != ROOT.resolve() or not command or command.count("--path") != 1 or "--import" not in command or "--headless" not in command:
+    cwd_value = report.get("cwd")
+    if not isinstance(cwd_value, str) or not Path(cwd_value).is_absolute():
+        raise RuntimeError("selected import has no absolute working directory")
+    cwd = Path(cwd_value).resolve()
+    if not command or command.count("--path") != 1 or "--import" not in command or "--headless" not in command:
         raise RuntimeError("selected report is not the expected headless project import")
     project_index = command.index("--path") + 1
     if (project_index >= len(command) or (cwd / command[project_index]).resolve() != (SNAPSHOT / "app").resolve()
@@ -547,6 +550,15 @@ def prepare_snapshot() -> dict:
                 if files[baseline_name] != files[name]:
                     raise RuntimeError(f"import baseline differs from source: {name}")
                 import_originals[name] = baseline_name
+        # The retained editor cache keys on source mtimes. Preserve the validated
+        # prior timestamps only for byte-identical files; changed files keep their
+        # new timestamps and will be re-evaluated by Godot.
+        prior_files = dict(previous.get("files", {}))
+        prior_files.update(previous.get("generated_import_files", {}))
+        for name, expected in files.items():
+            if name.startswith("app/") and prior_files.get(name) == expected:
+                info = (SNAPSHOT / name).stat()
+                os.utime(staging / name, ns=(info.st_atime_ns, info.st_mtime_ns))
         status = git("status", "--porcelain=v1", "-z", "--untracked-files=all").decode("utf-8")
         dirty = bool(status)
         describe = git("describe", "--tags", "--always", "--dirty").decode().strip()
@@ -562,8 +574,13 @@ def prepare_snapshot() -> dict:
                    "files": files, "import_originals": import_originals}
         if previous and (SNAPSHOT / "app/.godot").exists():
             origin = previous.get("import") or previous.get("cache_origin")
+            prior_origin = previous.get("cache_origin", {})
             receipt["cache_origin"] = {"editor_sha256": origin["editor_sha256"],
-                                       "snapshot_receipt_sha256": sha(SNAPSHOT / SNAPSHOT_RECEIPT)}
+                                       "snapshot_receipt_sha256": sha(SNAPSHOT / SNAPSHOT_RECEIPT),
+                                       "import": previous.get("import") or prior_origin.get("import"),
+                                       "cache_adjustment": previous.get("import_cache_adjustment") or prior_origin.get("cache_adjustment"),
+                                       "sidecar_rewrites": previous.get("import_sidecar_rewrites") or prior_origin.get("sidecar_rewrites", {}),
+                                       "unsupported_settings": previous.get("unsupported_import_settings") or prior_origin.get("unsupported_settings", [])}
         (staging / SNAPSHOT_RECEIPT).write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         replace_tree(staging, SNAPSHOT, reuse_cache=True)
         print(f"Prepared current-source snapshot: {SNAPSHOT / 'app'} ({len(files)} files, {head[:12]})", flush=True)
@@ -692,7 +709,7 @@ def package_product(snapshot: dict) -> dict:
                 or {path.name: sha(path) for path in final_licenses} != license_hashes):
             raise RuntimeError("engine, runtime or license inputs changed during export")
         # Check every snapshotted source again after running Godot.
-        verify_tree(SNAPSHOT, SNAPSHOT_RECEIPT, SNAPSHOT_FORMAT, ignore_cache=True)
+        final_snapshot = verify_tree(SNAPSHOT, SNAPSHOT_RECEIPT, SNAPSHOT_FORMAT, ignore_cache=True)
         ground_source = SNAPSHOT / "app/native/ground_vehicle/openrc_ground_vehicle.dll"
         ground_output = staging / "openrc_ground_vehicle.dll"
         if ground_output.exists() and sha(ground_output) != sha(ground_source):
@@ -717,7 +734,9 @@ def package_product(snapshot: dict) -> dict:
                    "template_sha256": template["executable_sha256"], "sources": editor["sources"],
                    "integration": editor["integration"], "runtime": editor["runtime"],
                    "snapshot_sha256": files[SNAPSHOT_RECEIPT], "import_report": import_report,
-                   "export_report": result["report"], "files": files}
+                   "export_report": result["report"],
+                   "unsupported_import_settings": final_snapshot.get("unsupported_import_settings", []),
+                   "cache_origin": final_snapshot.get("cache_origin", {}), "files": files}
         (staging / PACKAGE_RECEIPT).write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         if OUTPUT.exists():
             verify_tree(OUTPUT, PACKAGE_RECEIPT, PACKAGE_FORMAT)

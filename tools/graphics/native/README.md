@@ -30,6 +30,10 @@ The fork predates beta1's multi-bounce occlusion, contact shadows and maple-leaf
 alpha-coverage mipmap preservation. Its import cache is therefore distinct;
 restoring pinned authoring sidecars does not establish identical foliage mipmaps.
 Title fitting and Compatibility crash marks use capability-based fallbacks.
+The package tool records the fork's known import-sidecar rewrites, restores the
+exact pinned authoring bytes and reconciles only the corresponding checked cache
+identities. Unknown changes fail packaging. Receipts retain imported/restored
+hashes and unsupported options; aircraft validation and export plugins stay enabled.
 
 ## Engine provenance and historical trial
 

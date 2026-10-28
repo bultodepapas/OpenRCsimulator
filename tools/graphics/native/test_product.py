@@ -5,6 +5,7 @@ import importlib.util
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -180,11 +181,14 @@ class SnapshotTests(unittest.TestCase):
         receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
         receipt["import"] = {"editor_sha256": "editor-hash"}
         receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+        untouched = snapshot / "app/icon.svg"
+        os.utime(untouched, ns=(1_500_000_000_000_000_000, 1_500_000_000_000_000_000))
         (self.root / "app/kept.gd").write_bytes(b"new work")
         with mock.patch.object(product, "verify_engine", return_value=({"executable_sha256": "editor-hash"}, {}, [])):
             refreshed = product.prepare_snapshot()
             self.assertEqual(cache.read_bytes(), b"expensive cache")
             self.assertEqual((snapshot / "app/kept.gd").read_bytes(), b"new work")
+            self.assertEqual(untouched.stat().st_mtime_ns, 1_500_000_000_000_000_000)
             self.assertEqual(refreshed["cache_origin"]["editor_sha256"], "editor-hash")
             product.prepare_snapshot()
             self.assertEqual(cache.read_bytes(), b"expensive cache")

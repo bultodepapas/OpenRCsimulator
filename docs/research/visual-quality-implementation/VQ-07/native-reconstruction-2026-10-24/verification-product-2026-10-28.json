@@ -1,0 +1,349 @@
+{
+  "date": "2026-10-28",
+  "scope": "Current-source Windows NVIDIA product functional verification; no FPS, latency or temporal-quality claim.",
+  "package": {
+    "path": "dist/windows-nvidia/package-receipt.json",
+    "sha256": "8821f8de89af37a84bd4adbb3f3ebf2f3a6a53e7a3e8e196480da5ea213ccbd1",
+    "build_identity": {
+      "commit": "a7b3a79bb185688aac6a91ecb3356e60bc1b8b7a",
+      "commit_date": "2026-10-28T17:03:03-05:00",
+      "describe": "v0.1.8-525-ga7b3a79bb-dirty",
+      "dirty": true,
+      "status_porcelain": [
+        " M tools/graphics/native/README.md",
+        " M tools/graphics/native/product.py",
+        " M tools/graphics/native/test_product.py"
+      ]
+    },
+    "executable": {
+      "path": "dist/windows-nvidia/OpenRC Simulator.exe",
+      "sha256": "33f0f92410749d9f863af233660ea9c48f7de25db0411f2dc6f36050b573fbbd"
+    },
+    "pack": {
+      "path": "dist/windows-nvidia/OpenRC Simulator.pck",
+      "sha256": "f9575455f884d30edde0694fe6b7431c5290a7125ab08391faf1a055dbc12b32"
+    },
+    "managed_files": 33,
+    "engine_version": "4.8.dev.custom_build",
+    "unsupported_import_settings": [
+      {
+        "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png.import",
+        "setting": "mipmaps/preserve_alpha_test_coverage=true"
+      }
+    ],
+    "cache_origin_unsupported_settings": [
+      {
+        "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png.import",
+        "setting": "mipmaps/preserve_alpha_test_coverage=true"
+      }
+    ]
+  },
+  "checked_runs": [
+    {
+      "path": "tmp/godot-checks/nvidia-product/nvidia-product-import-ml0p45r_/report.json",
+      "sha256": "938fdfcce24593df55d0e23d26db51dc8fd1bba86bbf7674157160ac54cc9c1e",
+      "label": "nvidia-product-import",
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "complete": true,
+      "exit_code": 0
+    },
+    {
+      "path": "tmp/godot-checks/nvidia-product/nvidia-product-export-9k2r7k8f/report.json",
+      "sha256": "586d5d45d2678db3a6881d9ed02895b35470b5acf359fbfcf0e040259d1af4f7",
+      "label": "nvidia-product-export",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "exit_code": 0
+    },
+    {
+      "path": "tmp/godot-checks/nvidia-product-release-capture-4yo47z0b/report.json",
+      "sha256": "b9e521bda49f63d9f3675f516e49ccebbb181af99f1835d03e52c18f01355f11",
+      "label": "nvidia-product-release-capture",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "exit_code": 0
+    },
+    {
+      "path": "tmp/godot-checks/nvidia-product-release-home-normal-dvoc9lqe/report.json",
+      "sha256": "29c454d7247de4d50902d6d7f38a1ca57b3537dc07da49850ee4b731d7b83399",
+      "label": "nvidia-product-release-home-normal",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "exit_code": 0
+    },
+    {
+      "path": "tmp/godot-checks/nvidia-product-release-standard-jkuzm4kl/report.json",
+      "sha256": "b2bcf516936b87adda3fe455963833a1739eda0f92e65b6a5d743026745f90a9",
+      "label": "nvidia-product-release-standard",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "exit_code": 0
+    },
+    {
+      "path": "tmp/godot-checks/nvidia-product-pack-resource-check-rfziatd7/report.json",
+      "sha256": "35c2c496ea51a8316d7374ebf2516a8173dde0d03c0e449f67bf5c3bfdf5ca07",
+      "label": "nvidia-product-pack-resource-check",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "exit_code": 0
+    }
+  ],
+  "bridge": {
+    "log": {
+      "path": "tmp/debug-bridge/20261028-170736-47953/engine.log",
+      "sha256": "fbc83ce005b9f01b3b688a6501292977280ba6e4e1d2370a3120233772c9f4bb"
+    },
+    "counts": {
+      "error": 0,
+      "warning": 48
+    },
+    "ui_fixture": {
+      "path": "tmp/nvidia-product-ui.txt",
+      "sha256": "e13f5e2e483426357951fc0e5cdc9f25205304daaa931f16baa8eca7da2ca985"
+    },
+    "settings_screenshot": {
+      "path": "tmp/debug-bridge/20261028-170736-47953/shots/shot-56880-001.png",
+      "sha256": "1ed395a961a0e0624e1382ef4b40d08b15a59bfd6ad7543b6038c1cdf8509267"
+    },
+    "observed_ui_checks": [
+      "default High",
+      "default Reflex On accepted",
+      "DLAA dispatch",
+      "DLSS Quality",
+      "Reflex Boost/Off",
+      "Keep changes",
+      "Revert",
+      "1920x1080 screenshot inspected"
+    ],
+    "reload_session": "tmp/debug-bridge/20261028-170937-47954",
+    "observed_reload": {
+      "reconstruction": "dlss_quality",
+      "nvidia_reflex": "boost",
+      "sdk_accepted": "boost"
+    },
+    "observed_stops": {
+      "crash": null,
+      "leaked_objects": 0
+    }
+  },
+  "smokes": [
+    {
+      "path": "tmp/nvidia-product-dlss-smoke.txt",
+      "sha256": "e179960b01b9b2031f3ab7d85dd713cfef4158646b3bec05f12ae16c4987a6b9",
+      "passed_assertions": 13,
+      "final_status": {
+        "requested": "native",
+        "requested_provider": "native",
+        "effective": "native",
+        "provider": "native",
+        "effective_provider": "native",
+        "provider_available": true,
+        "fallback": false,
+        "fallback_reason": "",
+        "scale": 1.0,
+        "temporal": false,
+        "scaling_3d_mode": 0,
+        "nvidia_reflex": {
+          "requested": "on",
+          "available": true,
+          "accepted": "on",
+          "pending": false,
+          "reason": "",
+          "backend": {
+            "plugin_supported": true,
+            "plugin_ready": true,
+            "pcl_supported": true,
+            "pcl_ready": true,
+            "low_latency_available": true,
+            "available": true,
+            "backend_failed": false,
+            "requested_mode": 1,
+            "applied_mode": 1,
+            "state_result": 0,
+            "set_result": 0,
+            "sleep_result": 0,
+            "failure_result": 0,
+            "pcl_options_result": 0,
+            "pcl_marker_result": 0,
+            "pcl_failure_result": 0,
+            "state_calls": 2851,
+            "set_calls": 6,
+            "sleep_calls": 2851,
+            "sleep_successes": 2851,
+            "sleep_frame_id": 2852,
+            "pcl_marker_calls": 17105,
+            "pcl_marker_successes": 17105,
+            "simulation_start_successes": 2851,
+            "render_start_successes": 2851,
+            "render_end_successes": 2851,
+            "present_start_successes": 2851,
+            "present_end_successes": 2851,
+            "expired_tokens": 0,
+            "simulation_frame_id": 2852,
+            "render_frame_id": 2851,
+            "present_frame_id": 2851
+          }
+        },
+        "msaa_3d": 2,
+        "fsr_sharpness": 0.20000000298023224,
+        "sharpening_strength": 0.8999999985098839,
+        "sharpening_active": false,
+        "texture_mipmap_bias": 0.0,
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "nominal_3d_size": [
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "path": "tmp/nvidia-product-reflex-smoke.txt",
+      "sha256": "72173c2eec2c894c572a5ec0e928e09d57c68074d9271fa4f3cf0ce25f859d33",
+      "passed_assertions": 26,
+      "final_status": {
+        "plugin_supported": true,
+        "plugin_ready": true,
+        "pcl_supported": true,
+        "pcl_ready": true,
+        "low_latency_available": true,
+        "available": true,
+        "backend_failed": false,
+        "requested_mode": 0,
+        "applied_mode": 0,
+        "state_result": 0,
+        "set_result": 0,
+        "sleep_result": 0,
+        "failure_result": 0,
+        "pcl_options_result": 0,
+        "pcl_marker_result": 0,
+        "pcl_failure_result": 0,
+        "state_calls": 3205,
+        "set_calls": 10,
+        "sleep_calls": 3205,
+        "sleep_successes": 3205,
+        "sleep_frame_id": 3206,
+        "pcl_marker_calls": 19229,
+        "pcl_marker_successes": 19229,
+        "simulation_start_successes": 3205,
+        "render_start_successes": 3205,
+        "render_end_successes": 3205,
+        "present_start_successes": 3205,
+        "present_end_successes": 3205,
+        "expired_tokens": 0,
+        "simulation_frame_id": 3206,
+        "render_frame_id": 3205,
+        "present_frame_id": 3205
+      }
+    }
+  ],
+  "release_capture": {
+    "path": "tmp/nvidia-product-validation/release-dlss-1080.json",
+    "sha256": "78c53d754cc35e76a1e3af9be1b61284560a22b5b59e105f9f6cfb2015aef322",
+    "image": {
+      "path": "tmp/nvidia-product-validation/release-dlss-1080.png",
+      "sha256": "d1d3011f26bfab8bfcb5c5f9c0d2f922b541184b3753b66aec65358efd1a2a7b"
+    },
+    "reconstruction": {
+      "backend": {
+        "available": true,
+        "backend_failed": false,
+        "contexts_created": 1,
+        "dispatches": 32,
+        "frame_based_tagging": true,
+        "last_frame_id": 36,
+        "last_return_code": 0
+      },
+      "effective": "dlss_quality",
+      "effective_provider": "dlss",
+      "fallback": false,
+      "fallback_reason": "",
+      "fsr_sharpness": 0.0,
+      "msaa_3d": 0,
+      "nominal_3d_size": [
+        1280,
+        720
+      ],
+      "nvidia_reflex": {
+        "accepted": "on",
+        "available": true,
+        "backend": {
+          "applied_mode": 1,
+          "available": true,
+          "backend_failed": false,
+          "expired_tokens": 0,
+          "failure_result": 0,
+          "low_latency_available": true,
+          "pcl_failure_result": 0,
+          "pcl_marker_calls": 214,
+          "pcl_marker_result": 0,
+          "pcl_marker_successes": 214,
+          "pcl_options_result": 0,
+          "pcl_ready": true,
+          "pcl_supported": true,
+          "plugin_ready": true,
+          "plugin_supported": true,
+          "present_end_successes": 36,
+          "present_frame_id": 36,
+          "present_start_successes": 36,
+          "render_end_successes": 36,
+          "render_frame_id": 36,
+          "render_start_successes": 36,
+          "requested_mode": 1,
+          "set_calls": 1,
+          "set_result": 0,
+          "simulation_frame_id": 36,
+          "simulation_start_successes": 35,
+          "sleep_calls": 35,
+          "sleep_frame_id": 36,
+          "sleep_result": 0,
+          "sleep_successes": 35,
+          "state_calls": 36,
+          "state_result": 0
+        },
+        "pending": false,
+        "reason": "",
+        "requested": "on"
+      },
+      "output_size": [
+        1920.0,
+        1080.0
+      ],
+      "provider": "dlss",
+      "provider_available": true,
+      "requested": "dlss_quality",
+      "requested_provider": "dlss",
+      "scale": 0.666666686534882,
+      "scaling_3d_mode": 6,
+      "sharpening_active": false,
+      "sharpening_strength": 0.0,
+      "temporal": true,
+      "texture_mipmap_bias": 0.0
+    },
+    "visually_inspected": true
+  },
+  "excluded_failed_invocation": {
+    "report": "tmp/godot-checks/nvidia-product-release-home-cc4pox6u/report.json",
+    "reason": "--quit-after 180 interrupted asynchronous startup. Normal Home and independent pack-resource checks passed."
+  }
+}

@@ -8,6 +8,11 @@ The [follow-up ledger contains 25 additional investigations](round-2.md): six do
 
 ## Input and method
 
+The [2026-10-28 NVIDIA/Godot review](nvidia-dlss-reflex-2026-10-28.md) checks
+official DLSS and Reflex guidance against the current pinned integration and
+prioritizes camera history, motion data, accepted SDK dimensions, exposure,
+latency measurement and engine/import compatibility.
+
 The user supplied **OpenRC Simulator — Advanced Graphics and AAA Visual Quality Research**, dated October 20, 2026. The [unaltered supplied brief](supplied-brief.md) is retained as source material, including claims corrected below. It is not accepted implementation evidence. Original attachment SHA-256 at intake:
 
 `635406b2af5adf63ad05b52a1bbe789c7d7098f9cfbb66c2bb50359158f03b90`
