@@ -412,4 +412,6 @@ func _initialize() -> void:
 	_check(not Trajectory._fallback_result_ok(bad_runs), "fallback fingerprint must match")
 
 	print("NK3_TRAJECTORY_POLICY checks=%d failures=%d" % [_checks, _failures])
-	quit(1 if _failures else 0)
+	var passed := _checks > 0 and _failures == 0
+	print("NK3_TRAJECTORY_POLICY verdict=%s" % ["pass" if passed else "fail"])
+	quit(0 if passed else 1)

@@ -118,7 +118,7 @@ jobs:
         if: matrix.part == 'integration'
         run: |
           python3 tools/godot/run_checked.py --timeout 90 --out-dir tmp/godot-checks --label nk3-trajectory-policy \
-            --require-text 'NK3_TRAJECTORY_POLICY checks=69 failures=0' -- \
+            --require-text 'NK3_TRAJECTORY_POLICY verdict=pass' -- \
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
             --script "$PWD/research/native-kernel/test_trajectory.gd"
       - name: Optional process RAM and I/O backend regressions (PT1h-R4)

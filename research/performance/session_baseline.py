@@ -24,9 +24,10 @@ from pathlib import Path
 from typing import Any, Iterable, Sequence
 
 
-FORMAT = "openrc-session-cost v1"
+FORMAT = "openrc-session-cost v2"
+LEGACY_FORMAT = "openrc-session-cost v1"
 BASELINE_FORMAT = "openrc-session-baseline v1"
-REQUIRED_GODOT_VERSION = "4.7.2"
+REQUIRED_GODOT_VERSION = "4.8-beta1"
 DEFAULT_AIRCRAFT = (
     "jensen-das-ugly-stik-60",
     "p51d-mustang-120",
@@ -42,7 +43,8 @@ CODE_SUFFIXES = {
     ".gdextension",
 }
 ENGINE_ERROR_RE = re.compile(r"\b(?:SCRIPT\s+)?ERROR(?:\s*:|\b)", re.IGNORECASE)
-VERSION_RE = re.compile(r"(?<![0-9])v?4\.7\.2(?=$|[.\-\s(])")
+VERSION_RE = re.compile(r"(?<![0-9])v?4\.8[.-]beta1(?=$|[.\-\s(])")
+LEGACY_VERSION_RE = re.compile(r"(?<![0-9])v?4\.7\.2(?=$|[.\-\s(])")
 AIRCRAFT_ID_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
 
 
@@ -112,7 +114,7 @@ def validate_probe_report(
     expected: dict[str, Any] | None = None,
     allow_incomplete: bool = False,
 ) -> list[str]:
-    """Return contract errors for a parsed ``openrc-session-cost v1`` report.
+    """Return contract errors for a parsed session cost report.
 
     Partial reports are structurally checked and retained by the runner, but
     are rejected for paired timing unless ``allow_incomplete`` is explicitly
@@ -122,8 +124,9 @@ def validate_probe_report(
         return ["probe report must be a JSON object"]
 
     errors = _finite_values(report)
-    if report.get("format") != FORMAT:
-        errors.append(f"format must be {FORMAT!r}")
+    report_format = report.get("format")
+    if report_format not in (FORMAT, LEGACY_FORMAT):
+        errors.append(f"format must be {FORMAT!r} or {LEGACY_FORMAT!r}")
 
     aircraft_id = _nonempty_string(report, "aircraft_id", errors)
     case_id = _nonempty_string(report, "case_id", errors)
@@ -226,8 +229,9 @@ def validate_probe_report(
         if not _is_int(cpu_count) or cpu_count < 1:
             errors.append("machine.logical_cpu_count must be a positive integer")
         godot = machine.get("godot")
-        if isinstance(godot, str) and not VERSION_RE.search(godot):
-            errors.append("machine.godot must identify Godot 4.7.2")
+        version_re = LEGACY_VERSION_RE if report_format == LEGACY_FORMAT else VERSION_RE
+        if isinstance(godot, str) and not version_re.search(godot):
+            errors.append("machine.godot must identify the pinned version for this report")
 
     world = report.get("world")
     if not isinstance(world, dict):
@@ -285,12 +289,56 @@ def validate_probe_report(
         if not isinstance(fingerprint, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", fingerprint):
             errors.append("fingerprint must be a 64-digit SHA-256 hex string")
 
+    if report_format == FORMAT:
+        for field in ("solver_sha256", "aircraft_sha256"):
+            value = report.get(field)
+            if complete is True and (not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value)):
+                errors.append(f"complete report requires {field} as a SHA-256 hex string")
+        boundaries = report.get("fingerprint_boundaries")
+        if not _is_int(boundaries) or boundaries < 0:
+            errors.append("fingerprint_boundaries must be a non-negative integer")
+        elif completed is not None and complete is True and boundaries != 1 + sum(completed.values()):
+            errors.append("complete fingerprint must include the initial boundary and every completed tick")
+        backend = report.get("backend")
+        if not isinstance(backend, dict):
+            errors.append("backend must be an object")
+        else:
+            requested_backend = backend.get("requested")
+            actual = backend.get("actual")
+            stats = backend.get("native_stats")
+            if requested_backend not in ("gdscript_reference", "native"):
+                errors.append("backend.requested must identify a supported backend")
+            if not isinstance(actual, dict) or not isinstance(stats, dict):
+                errors.append("backend.actual and backend.native_stats must be objects")
+            elif complete is True:
+                if actual.get("backend") != requested_backend:
+                    errors.append("complete report actual backend must equal the requested backend")
+                if requested_backend == "native":
+                    for field in ("binary_sha256", "source_sha256", "lock_sha256"):
+                        if not isinstance(actual.get(field), str) or not re.fullmatch(r"[0-9a-f]{64}", actual[field]):
+                            errors.append(f"native backend requires a valid {field}")
+                    if not isinstance(actual.get("backend_version"), str) or not actual["backend_version"]:
+                        errors.append("native backend requires backend_version")
+                    if not _is_int(actual.get("abi_version")) or actual["abi_version"] < 1:
+                        errors.append("native backend requires a positive abi_version")
+                    ticks = sum(completed.values()) if completed is not None else 0
+                    for field, minimum in (("context_calls", ticks), ("stage_calls", 4 * ticks)):
+                        if not _is_int(stats.get(field)) or stats[field] < minimum:
+                            errors.append(f"native {field} must cover every completed tick")
+                    if stats.get("timing") is not False:
+                        errors.append("native internal stage timing must be disabled")
+                elif actual != {"backend": "gdscript_reference"} or stats:
+                    errors.append("reference backend identity/stats are invalid")
+
     if expected:
         for key in ("aircraft_id", "case_id", "observer"):
             if key in expected and report.get(key) != expected[key]:
                 errors.append(f"{key} does not match requested run")
         if "requested" in expected and requested is not None and requested != expected["requested"]:
             errors.append("requested tick counts do not match requested run")
+        if "physics_backend" in expected and (report_format != FORMAT or not isinstance(report.get("backend"), dict)
+                                               or report["backend"].get("requested") != expected["physics_backend"]):
+            errors.append("backend does not match requested run")
 
     if complete is False and not allow_incomplete:
         errors.append(f"probe reported incomplete: {failure or 'unspecified failure'}")
@@ -374,7 +422,8 @@ def reduce_pair(on_report: dict[str, Any] | None, off_report: dict[str, Any] | N
         if not machine_equal:
             reasons.append("observer modes reported different machines")
 
-        for key in ("aircraft_id", "case_id", "requested", "completed", "final_tick"):
+        for key in ("format", "aircraft_id", "case_id", "requested", "completed", "final_tick", "backend",
+                    "fingerprint_boundaries", "solver_sha256", "aircraft_sha256"):
             if on_report.get(key) != off_report.get(key):
                 reasons.append(f"observer modes differ in {key}")
 
@@ -392,6 +441,42 @@ def reduce_pair(on_report: dict[str, Any] | None, off_report: dict[str, Any] | N
     }
 
 
+def reduce_backend_pair(reference: dict[str, Any] | None, native: dict[str, Any] | None) -> dict[str, Any]:
+    """Compare production backends only after a complete, identical trajectory."""
+    reasons: list[str] = []
+    for label, report in (("reference", reference), ("native", native)):
+        if not isinstance(report, dict):
+            reasons.append(f"{label} report unavailable")
+        else:
+            reasons.extend(f"{label}: {error}" for error in validate_probe_report(report))
+            if report.get("format") != FORMAT:
+                reasons.append(f"{label}: backend comparisons require v2 fingerprints")
+            if report.get("observer") is not True:
+                reasons.append(f"{label}: callback timings require observer on")
+            expected = "gdscript_reference" if label == "reference" else "native"
+            if not isinstance(report.get("backend"), dict) or report["backend"].get("requested") != expected:
+                reasons.append(f"{label}: requested backend is not {expected}")
+    if isinstance(reference, dict) and isinstance(native, dict):
+        for key in ("fingerprint", "fingerprint_boundaries", "solver_sha256", "aircraft_sha256",
+                    "aircraft_id", "case_id", "requested", "completed", "final_tick", "input_reads",
+                    "world", "machine", "tick_hz"):
+            if reference.get(key) != native.get(key):
+                reasons.append(f"backends differ in {key}")
+    comparable = not reasons
+    result: dict[str, Any] = {"comparable": comparable, "reasons": reasons,
+                              "reference_usec_per_tick": None, "native_usec_per_tick": None,
+                              "reference_over_native": None}
+    if comparable:
+        assert reference is not None and native is not None
+        ticks = reference["requested"]["sample_ticks"]
+        for label, report in (("reference", reference), ("native", native)):
+            result[f"{label}_usec_per_tick"] = sum(report["tick_usec"]) / ticks
+            result[f"{label}_simulation_usec_per_tick"] = sum(report["simulation_usec"]) / ticks
+        if result["native_usec_per_tick"] > 0:
+            result["reference_over_native"] = result["reference_usec_per_tick"] / result["native_usec_per_tick"]
+    return result
+
+
 def alternating_observer_order(repeat_index: int) -> tuple[str, str]:
     """Alternate the first observer mode by one-based repeat number."""
     if not _is_int(repeat_index) or repeat_index < 1:
@@ -404,6 +489,18 @@ def _sha256_file(path: Path) -> str:
     with path.open("rb") as stream:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
+    return digest.hexdigest()
+
+
+def native_source_digest(root: Path) -> str:
+    """Match the native builder's digest, so receipt identity binds the measured sources."""
+    source = root / "research/native-kernel/src"
+    files = sorted([*source.glob("*.cpp"), *source.glob("*.hpp")])
+    if not files:
+        raise RuntimeError("native kernel source files are missing")
+    digest = hashlib.sha256()
+    for path in files:
+        digest.update(path.name.encode() + b"\0" + path.read_bytes() + b"\0")
     return digest.hexdigest()
 
 
@@ -535,6 +632,8 @@ def _run_probe(
     warmup_ticks: int,
     sample_ticks: int,
     timeout: float,
+    physics_backend: str,
+    native_source_sha256: str,
 ) -> dict[str, Any]:
     command = [
         str(godot), "--headless", "--path", str(app_dir), "--script", str(probe), "--",
@@ -544,6 +643,7 @@ def _run_probe(
         f"--warmup-ticks={warmup_ticks}",
         f"--sample-ticks={sample_ticks}",
         f"--observer={'on' if observer else 'off'}",
+        f"--physics-backend={physics_backend}",
     ]
     timed_out = False
     exit_code: int | None = None
@@ -573,12 +673,18 @@ def _run_probe(
         "aircraft_id": aircraft_id,
         "case_id": case_id,
         "observer": observer,
+        "physics_backend": physics_backend,
         "requested": {"warmup_ticks": warmup_ticks, "sample_ticks": sample_ticks},
     }
     report, report_error = parse_probe_file(output_json)
     validation_errors: list[str] = []
     if report is not None:
         validation_errors = validate_probe_report(report, expected=expected)
+        if physics_backend == "native" and report.get("complete") is True:
+            backend = report.get("backend")
+            actual = backend.get("actual", {}) if isinstance(backend, dict) else {}
+            if not isinstance(actual, dict) or actual.get("source_sha256") != native_source_sha256:
+                validation_errors.append("installed native source identity differs from the current C++ sources")
     failures: list[str] = []
     if launch_error:
         failures.append(launch_error)
@@ -621,6 +727,10 @@ def _safe_report_view(run: dict[str, Any]) -> dict[str, Any]:
         "complete": report.get("complete"),
         "failure": report.get("failure"),
         "fingerprint": report.get("fingerprint"),
+        "fingerprint_boundaries": report.get("fingerprint_boundaries"),
+        "backend": report.get("backend"),
+        "solver_sha256": report.get("solver_sha256"),
+        "aircraft_sha256": report.get("aircraft_sha256"),
         "final_tick": report.get("final_tick"),
         "measured_wall_usec": wall,
         "measured_wall_usec_per_sample_tick": wall_per_tick,
@@ -670,7 +780,7 @@ def parse_id_list(values: Sequence[str] | None, defaults: Sequence[str], label: 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--godot", required=True, help="pinned Godot 4.7.2 executable")
+    parser.add_argument("--godot", required=True, help="pinned Godot 4.8-beta1 executable")
     parser.add_argument("--out", type=Path, required=True, help="new or empty output directory")
     parser.add_argument("--probe", type=Path, help="probe script; defaults beside this runner")
     parser.add_argument("--aircraft", action="append", help="catalog ID; repeat or pass comma-separated IDs")
@@ -679,6 +789,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--sample-ticks", type=int, default=14400)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--timeout", type=float, default=1800.0, help="per-probe timeout in seconds")
+    parser.add_argument("--physics-backend", choices=("gdscript_reference", "native"), default="gdscript_reference",
+                        help="backend for the default observer-on/off pairs")
+    parser.add_argument("--compare-backends", action="store_true",
+                        help="alternate observer-on reference/native pairs instead of observer pairs")
     return parser
 
 
@@ -717,6 +831,8 @@ def run_campaign(args: argparse.Namespace) -> int:
         "warmup_ticks": args.warmup_ticks,
         "sample_ticks": args.sample_ticks,
         "repeats": args.repeats,
+        "pair_type": "backends" if args.compare_backends else "observer",
+        "physics_backend": args.physics_backend,
         "timeout_seconds_per_probe": args.timeout,
         "tick_hz": 240,
         "meaning": "simulation ticks; default warmup is 10 simulated seconds and default sample is 60 simulated seconds, not real-time qualification",
@@ -730,6 +846,7 @@ def run_campaign(args: argparse.Namespace) -> int:
             metadata["workspace"] = capture_workspace_identity(root)
             godot = resolve_executable(args.godot)
             metadata["engine"] = inspect_godot(godot, args.timeout)
+            metadata["native_source_sha256"] = native_source_digest(root)
             metadata["probe"] = {
                 "path": str(probe),
                 "sha256": _sha256_file(probe) if probe.is_file() else None,
@@ -751,14 +868,17 @@ def run_campaign(args: argparse.Namespace) -> int:
             for case_id in args.case_ids:
                 case_pairs: list[dict[str, Any]] = []
                 for repeat_index in range(1, args.repeats + 1):
-                    reports: dict[str, dict[str, Any] | None] = {"on": None, "off": None}
+                    modes = ("reference", "native") if args.compare_backends else ("on", "off")
+                    reports: dict[str, dict[str, Any] | None] = {mode: None for mode in modes}
                     runs: dict[str, dict[str, Any]] = {}
-                    order = alternating_observer_order(repeat_index)
+                    order = modes if repeat_index % 2 == 1 else tuple(reversed(modes))
                     run_dir = output_dir / "runs" / aircraft_id / case_id
                     run_dir.mkdir(parents=True, exist_ok=True)
                     for mode in order:
-                        observer = mode == "on"
-                        stem = f"repeat-{repeat_index:02d}-observer-{mode}"
+                        observer = True if args.compare_backends else mode == "on"
+                        physics_backend = ("gdscript_reference" if mode == "reference" else "native") \
+                            if args.compare_backends else args.physics_backend
+                        stem = f"repeat-{repeat_index:02d}-{'backend' if args.compare_backends else 'observer'}-{mode}"
                         json_path = run_dir / f"{stem}.json"
                         log_path = run_dir / f"{stem}.log"
                         run = _run_probe(
@@ -773,6 +893,8 @@ def run_campaign(args: argparse.Namespace) -> int:
                             warmup_ticks=args.warmup_ticks,
                             sample_ticks=args.sample_ticks,
                             timeout=args.timeout,
+                            physics_backend=physics_backend,
+                            native_source_sha256=metadata["native_source_sha256"],
                         )
                         reports[mode] = run["report"] if run["accepted"] else None
                         runs[mode] = _safe_report_view(run)
@@ -780,12 +902,13 @@ def run_campaign(args: argparse.Namespace) -> int:
                         all_run_count += 1
                         for message in run["failures"]:
                             failures.append(f"{aircraft_id}/{case_id}/repeat-{repeat_index:02d}/{mode}: {message}")
-                    reduced = reduce_pair(reports["on"], reports["off"])
+                    reduced = (reduce_backend_pair(reports["reference"], reports["native"]) if args.compare_backends
+                               else reduce_pair(reports["on"], reports["off"]))
                     pair_record = {
                         "aircraft_id": aircraft_id,
                         "case_id": case_id,
                         "repeat": repeat_index,
-                        "observer_order": list(order),
+                        "backend_order" if args.compare_backends else "observer_order": list(order),
                         "runs": runs,
                         **reduced,
                     }
@@ -797,22 +920,25 @@ def run_campaign(args: argparse.Namespace) -> int:
                     pairs.append(pair_record)
                     case_pairs.append(pair_record)
 
-                values = [
-                    pair["observer_overhead_usec_per_tick"]
-                    for pair in case_pairs
-                    if pair["comparable"] and pair["observer_overhead_usec_per_tick"] is not None
-                ]
+                metric = "reference_over_native" if args.compare_backends else "observer_overhead_usec_per_tick"
+                values = [pair[metric] for pair in case_pairs if pair["comparable"] and pair[metric] is not None]
                 summaries.append({
                     "aircraft_id": aircraft_id,
                     "case_id": case_id,
                     "requested_pairs": args.repeats,
                     "comparable_pairs": len(values),
-                    "overhead_usec_per_tick_nearest_rank": {
+                    ("reference_over_native_nearest_rank" if args.compare_backends else "overhead_usec_per_tick_nearest_rank"): {
                         f"p{percentile}": percentile_nearest_rank(values, percentile) if values else None
                         for percentile in (50, 95, 99)
                     },
                 })
 
+        if native_source_digest(root) != metadata["native_source_sha256"]:
+            failures.append("native C++ source changed during the campaign")
+        if _sha256_file(probe) != metadata["probe"]["sha256"]:
+            failures.append("probe changed during the campaign")
+        if _sha256_file(godot) != metadata["engine"]["sha256"]:
+            failures.append("Godot executable changed during the campaign")
         complete = not failures and all(len([p for p in pairs if p["aircraft_id"] == a and p["case_id"] == c and p["comparable"]]) == args.repeats
                                        for a in args.aircraft_ids for c in args.case_ids)
         report = {
@@ -849,6 +975,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise ValueError("sample ticks must be within 1..72000")
         if args.repeats < 1:
             raise ValueError("repeats must be positive")
+        if args.compare_backends and args.physics_backend != "gdscript_reference":
+            raise ValueError("--compare-backends cannot be combined with --physics-backend=native")
         if isinstance(args.timeout, bool) or not math.isfinite(args.timeout) or args.timeout <= 0:
             raise ValueError("timeout must be a positive finite number")
         args.aircraft_ids = parse_id_list(args.aircraft, DEFAULT_AIRCRAFT, "aircraft ID")

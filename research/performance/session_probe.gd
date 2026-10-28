@@ -8,6 +8,7 @@ const FieldLoader := preload("res://data/field_loader.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
 const CollisionSetup := preload("res://scenery/collision_setup.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const FlightLog := preload("res://sim/flight_log.gd")
 
 var _session: Node
 var _case := "trim"
@@ -26,6 +27,12 @@ var _setup_usec: Dictionary = {}
 var _world: Dictionary = {}
 var _lake: Dictionary = {}
 var _input_reads := 0
+var _backend_requested := "gdscript_reference"
+var _backend_identity: Dictionary = {}
+var _backend_stage := Callable()
+var _native: Object = null
+var _native_stats: Dictionary = {}
+var _fingerprint_boundaries := 0
 
 
 func _initialize() -> void:
@@ -47,6 +54,10 @@ func _parse() -> bool:
 			"output": _output = pair[1]
 			"aircraft": _aircraft = pair[1]
 			"case": _case = pair[1]
+			"physics-backend":
+				if pair[1] not in ["gdscript_reference", "native"]:
+					return _fail("physics-backend must be gdscript_reference or native")
+				_backend_requested = pair[1]
 			"observer":
 				if pair[1] not in ["on", "off"]: return _fail("observer must be on or off")
 				_observer = pair[1] == "on"
@@ -82,6 +93,8 @@ func _prepare() -> bool:
 	_world = built.world
 	if _world.get("proxies", []).is_empty(): return _fail("full scenery inventory is required")
 	_session = Session.new()
+	if not _session.setup_stage_backend(_backend_requested):
+		return _fail("backend selection failed: " + str(_session.stage_backend_error))
 	# Never attach to the tree: real devices and scheduler cannot interfere with the declared input sequence.
 	_session.input_enabled = true
 	_session.physics_enabled = true
@@ -106,7 +119,18 @@ func _prepare() -> bool:
 		_session.start.state = state
 	_session.reset()
 	_setup_usec.environment_and_reset = Time.get_ticks_usec() - started
-	return _healthy()
+	if not _healthy(): return false
+	var status: Dictionary = _session.stage_backend_status()
+	_backend_identity = status.identity
+	if status.requested != _backend_requested or _backend_identity.get("backend") != _backend_requested:
+		return _fail("requested %s backend was not installed: %s" % [_backend_requested, status.reason])
+	_backend_stage = _session.sim.model.stage
+	if _backend_requested == "native":
+		_native = _session._native_stage._native
+		if _native == null: return _fail("native backend has no stage object")
+		_native.reset_stage_stats(false)
+		_native_stats = _native.stage_stats()
+	return _backend_healthy()
 
 
 func _read_raw() -> Dictionary:
@@ -127,6 +151,7 @@ func _read_raw() -> Dictionary:
 
 
 func _advance(measure: bool) -> bool:
+	if not _backend_healthy(): return false
 	var tick: int = _session.sim.tick
 	var reads: int = _input_reads
 	if measure and _observer:
@@ -143,7 +168,20 @@ func _advance(measure: bool) -> bool:
 		_session.sim._physics_process(_session.sim.dt())
 	if _session.sim.tick != tick + 1 or _input_reads != reads + 1:
 		return _fail("tick/input did not advance exactly once: " + str(_session.pause_reason))
+	if not _backend_healthy(): return false
+	if _native != null:
+		var current: Dictionary = _native.stage_stats()
+		if int(current.get("context_calls", 0)) - int(_native_stats.get("context_calls", 0)) < 1 \
+				or int(current.get("stage_calls", 0)) - int(_native_stats.get("stage_calls", 0)) < 4:
+			return _fail("native stage or context did not cover tick %d" % _session.sim.tick)
+		_native_stats = current
 	return _healthy()
+
+
+func _backend_healthy() -> bool:
+	if _session.sim.model.stage != _backend_stage or _session.stage_backend_identity() != _backend_identity:
+		return _fail("stage backend changed during the run")
+	return true
 
 
 func _healthy() -> bool:
@@ -154,10 +192,10 @@ func _healthy() -> bool:
 
 
 func _hash_tick(digest: HashingContext) -> void:
-	# Identical work in both observer modes; outside the per-tick cost boundaries.
-	for values: Variant in [_session.sim.state, _session.sim.aux, _session.sim.continuous,
-		_session.sim.inputs, _session.sim.last_loads, _session.sim.modes]:
-		digest.update(values.to_byte_array())
+	# Variant encoding includes each array's type and length, plus the tick; outside each per-tick stopwatch.
+	digest.update(var_to_bytes([_session.sim.tick, _session.sim.state, _session.sim.previous,
+		_session.sim.aux, _session.sim.continuous, _session.sim.inputs, _session.sim.last_loads, _session.sim.modes]))
+	_fingerprint_boundaries += 1
 
 
 func _run() -> void:
@@ -165,11 +203,12 @@ func _run() -> void:
 	digest.start(HashingContext.HASH_SHA256)
 	var elapsed := 0
 	if _prepare():
+		_hash_tick(digest)
 		for index in _warmup:
 			if not _advance(false): break
 			_warmup_done += 1
-		if _failure.is_empty():
 			_hash_tick(digest)
+		if _failure.is_empty():
 			var started: int = Time.get_ticks_usec()
 			for index in _samples:
 				if not _advance(true): break
@@ -177,12 +216,17 @@ func _run() -> void:
 				_hash_tick(digest)
 			elapsed = Time.get_ticks_usec() - started
 	var report := {
-		format = "openrc-session-cost v1", complete = _failure.is_empty(), failure = _failure,
+		format = "openrc-session-cost v2", complete = _failure.is_empty(), failure = _failure,
 		aircraft_id = _aircraft, case_id = _case, observer = _observer,
 		requested = {warmup_ticks = _warmup, sample_ticks = _samples},
 		completed = {warmup_ticks = _warmup_done, sample_ticks = _sample_done},
 		tick_usec = _tick_usec, input_usec = _input_usec, simulation_usec = _simulation_usec,
 		measured_wall_usec = elapsed, fingerprint = digest.finish().hex_encode(),
+		fingerprint_boundaries = _fingerprint_boundaries,
+		backend = {requested = _backend_requested, actual = _backend_identity,
+			native_stats = _native_stats},
+		solver_sha256 = FlightLog.solver_identity(),
+		aircraft_sha256 = str(_session.aircraft.get("input_identity", {}).get("sha256", "")) if _session != null else "",
 		final_tick = _session.sim.tick if _session != null else 0, input_reads = _input_reads,
 		setup_usec = _setup_usec,
 		machine = {os = OS.get_name(), processor = OS.get_processor_name(),
@@ -191,7 +235,7 @@ func _run() -> void:
 		world = {identity = _world.get("identity", ""), proxies = _world.get("proxies", []).size(),
 			lake_identity = _lake.get("identity", ""), field = "default"},
 		tick_hz = Engine.physics_ticks_per_second,
-		scope = "CPU only: deterministic raw-input seam, FlightSession._physics_process then Simulation._physics_process including collision and accepted-step callbacks. Detached session, no render/audio/OS input/scheduler. Durations are simulated ticks, not wall-clock warmup/sample. Total loop includes hashing/checks; per-tick timings exclude them. Fingerprint covers numeric simulation state and effective inputs at sample boundaries, not all Session/event/checkpoint state. No Gate P or native frame qualification claim.",
+		scope = "CPU only: deterministic raw-input seam, FlightSession._physics_process then Simulation._physics_process including collision and accepted-step callbacks. Detached session, no render/audio/OS input/scheduler. Durations are simulated ticks, not wall-clock warmup/sample. Hashing, backend and native counter checks run outside per-tick timing and can perturb later ticks; the sample loop wall time includes them. Fingerprint covers types, shapes and numeric simulation arrays at the initial boundary and every warmup and sample tick, not all Session/event/checkpoint state. No Gate P or native frame qualification claim.",
 	}
 	var file := FileAccess.open(_output, FileAccess.WRITE)
 	if file == null:
