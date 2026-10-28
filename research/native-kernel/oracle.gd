@@ -49,19 +49,9 @@ func _run() -> void:
 		return
 	_rng.seed = _seed
 	_specials = _special_values()
-	# One OpenRCNativeKernel per process: an app install (app/native/kernel, possibly auto-loaded through
-	# .godot/extension_list.cfg) and a tmp research build cannot both register the class.
-	if ClassDB.class_exists("OpenRCNativeKernel") and not GDExtensionManager.is_extension_loaded(_extension):
-		printerr("NK3_ORACLE another OpenRCNativeKernel library is already loaded; run with --app-library " +
-			"(res://native/kernel) or remove the app install")
+	if not _load_native_extension():
 		quit(2)
 		return
-	var status: int = OK if GDExtensionManager.is_extension_loaded(_extension) else GDExtensionManager.load_extension(_extension)
-	if status != OK or not ClassDB.class_exists("OpenRCNativeKernel"):
-		printerr("NK3_ORACLE cannot load extension: %s (status %d)" % [_extension, status])
-		quit(2)
-		return
-	_native = ClassDB.instantiate("OpenRCNativeKernel")
 	var started := Time.get_ticks_msec()
 	_report = {
 		format = "openrc-nk3-oracle v1", seed = _seed, states = _states, variant_states = _variant_states,
@@ -76,6 +66,22 @@ func _run() -> void:
 	_check_literals()
 	_checks()
 	_finish(started)
+
+
+## Production fleet overrides this hook so receipt validation precedes library initialization.
+func _load_native_extension() -> bool:
+	# One OpenRCNativeKernel per process: an app install (app/native/kernel, possibly auto-loaded through
+	# .godot/extension_list.cfg) and a tmp research build cannot both register the class.
+	if ClassDB.class_exists("OpenRCNativeKernel") and not GDExtensionManager.is_extension_loaded(_extension):
+		printerr("NK3_ORACLE another OpenRCNativeKernel library is already loaded; run with --app-library " +
+			"(res://native/kernel) or remove the app install")
+		return false
+	var status: int = OK if GDExtensionManager.is_extension_loaded(_extension) else GDExtensionManager.load_extension(_extension)
+	if status != OK or not ClassDB.class_exists("OpenRCNativeKernel"):
+		printerr("NK3_ORACLE cannot load extension: %s (status %d)" % [_extension, status])
+		return false
+	_native = ClassDB.instantiate("OpenRCNativeKernel")
+	return true
 
 
 ## Milestone-1 component checks; harnesses extending this script (stage_oracle.gd, trajectory.gd) override it.

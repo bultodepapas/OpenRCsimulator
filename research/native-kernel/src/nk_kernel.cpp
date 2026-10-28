@@ -22,6 +22,7 @@
 #include "nk_aero.hpp"
 #include "nk_stage.hpp"
 #include "nk_wheels.hpp"
+#include "nk_weather_binding.hpp"
 
 namespace {
 
@@ -667,6 +668,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	bool aero_ready_ = false;
 	nk::PropModel prop_;
 	bool prop_ready_ = false;
+	nk::WeatherBinding weather_;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
 	bool stage_ready_ = false;
@@ -689,6 +691,10 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("wheels_compressions", "s"), &OpenRCNativeKernel::wheels_compressions);
 		godot::ClassDB::bind_method(D_METHOD("prepare_aero", "model"), &OpenRCNativeKernel::prepare_aero);
 		godot::ClassDB::bind_method(D_METHOD("prepare_propeller", "model"), &OpenRCNativeKernel::prepare_propeller);
+		godot::ClassDB::bind_method(D_METHOD("prepare_weather", "config"), &OpenRCNativeKernel::prepare_weather);
+		godot::ClassDB::bind_method(D_METHOD("weather_component", "position", "time", "aux", "turbulence_index", "dt"),
+			&OpenRCNativeKernel::weather_component);
+		godot::ClassDB::bind_method(D_METHOD("air_component", "down"), &OpenRCNativeKernel::air_component);
 		godot::ClassDB::bind_method(D_METHOD("propeller_component", "s", "air", "rho", "rpm", "local_hub", "explicit_air"),
 			&OpenRCNativeKernel::propeller_component);
 		godot::ClassDB::bind_method(D_METHOD("aero_component", "which", "s", "wind", "rho", "d", "downwash_cl", "ground_up"),
@@ -816,6 +822,13 @@ public:
 		out["error"] = String(dec.error.c_str());
 		return out;
 	}
+
+	Dictionary prepare_weather(const Dictionary &config) { return weather_.prepare_weather(config); }
+	PackedFloat64Array weather_component(const PackedFloat64Array &position, double time, const PackedFloat64Array &aux,
+			int64_t turbulence_index, double dt) const {
+		return weather_.weather_component(position, time, aux, turbulence_index, dt);
+	}
+	PackedFloat64Array air_component(double down) const { return weather_.air_component(down); }
 
 	Dictionary propeller_component(const PackedFloat64Array &s, const PackedFloat64Array &air, double rho,
 			double rpm, bool local_hub, const PackedFloat64Array &explicit_air) const {
