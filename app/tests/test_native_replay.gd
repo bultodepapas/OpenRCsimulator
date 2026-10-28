@@ -15,6 +15,7 @@ class BackendIdentityFlight extends Flight:
 
 var checks := 0
 var failures := 0
+var _native_exercised := false
 var destination := ""
 var reference_only := false
 
@@ -196,6 +197,7 @@ func run_all() -> void:
 	var identity: Variant = native.call("stage_backend_identity") if native.has_method("stage_backend_identity") \
 		else {backend = "gdscript_reference"}
 	if native.is_flyable() and identity.get("backend") == "native":
+		_native_exercised = true
 		var native_run := record(native, "native")
 		if native_run.inspected.get("ok", false):
 			var actual_header: Dictionary = native_run.inspected.header
@@ -214,4 +216,6 @@ func run_all() -> void:
 
 func finish() -> void:
 	print("NK3_NATIVE_REPLAY checks=%d failures=%d out=%s" % [checks, failures, destination])
+	if _native_exercised and checks > 0 and failures == 0:
+		print("NK3_NATIVE_REPLAY_NATIVE verdict=pass")
 	quit(1 if failures else 0)

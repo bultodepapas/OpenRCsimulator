@@ -17,6 +17,7 @@ const TICKS := 960
 
 var checks := 0
 var failures := 0
+var _native_exercised := false
 var field := {}
 var alternate_field := {}
 var lake := {}
@@ -395,6 +396,7 @@ func run_all() -> void:
 		check("eligible native request does not fall back", actual.identity.get("backend") == NativeStage.BACKEND_NATIVE,
 			str(actual))
 		if actual.identity.get("backend") == NativeStage.BACKEND_NATIVE:
+			_native_exercised = true
 			trajectory(native, reference)
 			checkpoints(native, reference)
 			rejected_reset()
@@ -414,4 +416,6 @@ func run_all() -> void:
 
 func finish() -> void:
 	print("NK3_NATIVE_SESSION checks=%d failures=%d" % [checks, failures])
+	if _native_exercised and checks > 0 and failures == 0:
+		print("NK3_NATIVE_SESSION_NATIVE verdict=pass")
 	quit(1 if failures else 0)

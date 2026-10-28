@@ -17,6 +17,7 @@ const TICKS := 960
 
 var checks := 0
 var failures := 0
+var _native_exercised := false
 
 
 func check(label: String, condition: bool, detail := "") -> void:
@@ -109,6 +110,7 @@ func run_all() -> void:
 		finish()
 		return
 	var previous: Callable = stage.install(stik)
+	_native_exercised = true
 	check("install returns the reference stage", previous == reference_stage)
 	check("the native stage is installed", stage.is_installed() and stik.sim.model.stage.get_method() == &"stage")
 	check("a second install is refused", not stage.install(stik).is_valid())
@@ -144,4 +146,6 @@ func run_all() -> void:
 
 func finish() -> void:
 	print("Native stage: %d checks, %d failed" % [checks, failures])
+	if _native_exercised and checks > 0 and failures == 0:
+		print("NK3_NATIVE_STAGE_NATIVE verdict=pass")
 	quit(1 if failures > 0 else 0)
