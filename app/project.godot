@@ -78,4 +78,4 @@ locale/translations=PackedStringArray("res://i18n/es.po", "res://i18n/zh_Hans.po
 [editor_plugins]
 
 ; UI-04a: writes res://build_info.json into exported packs (addons/build_info; excluded from the packs themselves).
-enabled=PackedStringArray("res://addons/build_info/plugin.cfg", "res://addons/aircraft_contract/plugin.cfg")
+enabled=PackedStringArray("res://addons/build_info/plugin.cfg", "res://addons/aircraft_contract/plugin.cfg", "res://addons/native_kernel/plugin.cfg")

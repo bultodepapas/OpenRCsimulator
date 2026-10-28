@@ -16,6 +16,7 @@ class BackendIdentityFlight extends Flight:
 var checks := 0
 var failures := 0
 var _native_exercised := false
+var _finished := false
 var destination := ""
 var reference_only := false
 
@@ -236,6 +237,7 @@ func run_all() -> void:
 
 
 func finish() -> void:
+	_finished = true
 	print("NK3_NATIVE_REPLAY checks=%d failures=%d out=%s" % [checks, failures, destination])
 	if _native_exercised and checks > 0 and failures == 0:
 		print("NK3_NATIVE_REPLAY_NATIVE verdict=pass")

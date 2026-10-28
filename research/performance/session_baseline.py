@@ -716,7 +716,8 @@ def _run_probe(
             actual = backend.get("actual", {}) if isinstance(backend, dict) else {}
             if not isinstance(actual, dict) or actual.get("source_sha256") != native_source_sha256:
                 validation_errors.append("installed native source identity differs from the current C++ sources")
-            if release_executable and (not library_before or actual.get("binary_sha256") != library_before):
+            if release_executable and (not library_before or not isinstance(actual, dict)
+                                       or actual.get("binary_sha256") != library_before):
                 validation_errors.append("native identity differs from the release sibling library")
     failures: list[str] = []
     if launch_error:

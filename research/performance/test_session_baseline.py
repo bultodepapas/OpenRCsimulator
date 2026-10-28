@@ -326,6 +326,8 @@ class ReleaseProbeAdmissionTests(unittest.TestCase):
                     self.assertFalse(run_case(changed, marker)["accepted"])
             self.assertFalse(run_case(report, "")["accepted"])
             self.assertFalse(run_case(report, marker, "0" * 64)["accepted"])
+            malformed = dict(report, backend={"requested": "native", "actual": [], "native_stats": {}})
+            self.assertFalse(run_case(malformed, marker)["accepted"])
             library.write_bytes(b"different native library")
             self.assertFalse(run_case(report, marker)["accepted"])
 

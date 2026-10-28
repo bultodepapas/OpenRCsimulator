@@ -18,6 +18,7 @@ var _warmup := 2400
 var _samples := 14400
 var _observer := true
 var _failure := ""
+var _finished := false
 var _warmup_done := 0
 var _sample_done := 0
 var _tick_usec := PackedInt64Array()
@@ -262,6 +263,7 @@ func _run() -> void:
 		if file.get_error() != OK: _failure = "report write failed"
 		file.close()
 	if _session != null: _session.free()
+	_finished = true
 	print("session probe: %s / %s / %d samples / %s" % [_aircraft, _case, _sample_done, "complete" if _failure.is_empty() else _failure])
 	quit(0 if _failure.is_empty() else 1)
 

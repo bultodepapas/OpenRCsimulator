@@ -18,6 +18,7 @@ const TICKS := 960
 var checks := 0
 var failures := 0
 var _native_exercised := false
+var _finished := false
 var field := {}
 var alternate_field := {}
 var lake := {}
@@ -415,6 +416,7 @@ func run_all() -> void:
 
 
 func finish() -> void:
+	_finished = true
 	print("NK3_NATIVE_SESSION checks=%d failures=%d" % [checks, failures])
 	if _native_exercised and checks > 0 and failures == 0:
 		print("NK3_NATIVE_SESSION_NATIVE verdict=pass")

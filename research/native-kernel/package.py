@@ -39,31 +39,45 @@ DESCRIPTOR = (
 
 
 def sha(path: Path) -> str:
+    # Stream large embedded-PCK executables; keep the toolchain's Python 3.9 minimum.
+    digest = hashlib.sha256()
     with path.open("rb") as stream:
-        return hashlib.file_digest(stream, "sha256").hexdigest()
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def solver_identity() -> str:
     digest = hashlib.sha256()
-    paths = sorted(p for directory in ("physics", "sim", "failures")
-                   for p in (ROOT / "app" / directory).rglob("*.gd"))
+    paths = [("res://" + path.relative_to(ROOT / "app").as_posix(), path)
+             for directory in ("physics", "sim", "failures")
+             for path in (ROOT / "app" / directory).rglob("*.gd")]
+    paths.sort(key=lambda entry: entry[0])
     if not paths:
         raise ValueError("solver source set is empty")
-    for path in paths:
-        digest.update(("res://" + path.relative_to(ROOT / "app").as_posix()).encode())
+    for resource, path in paths:
+        digest.update(resource.encode())
         digest.update(path.read_bytes())
     return digest.hexdigest()
 
 
 def verified_install() -> dict:
     receipt = json.loads((builder.APP_DESTINATION / "build-receipt.json").read_text())
-    if receipt.get("format") != builder.RECEIPT_FORMAT:
-        raise ValueError("native installation receipt format differs")
-    row = receipt["platforms"]["linux"]
+    if not isinstance(receipt, dict) or receipt.get("format") != builder.RECEIPT_FORMAT \
+            or receipt.get("backend") != "native" or receipt.get("backend_version") != builder.BACKEND_VERSION \
+            or type(receipt.get("abi_version")) is not int or receipt["abi_version"] != builder.ABI_VERSION \
+            or not isinstance(receipt.get("platforms"), dict):
+        raise ValueError("native installation receipt envelope is invalid")
+    row = receipt["platforms"].get("linux")
+    if not isinstance(row, dict) or row.get("platform") != "linux" or row.get("architecture") != "x86_64" \
+            or row.get("backend") != "native" or row.get("backend_version") != builder.BACKEND_VERSION \
+            or type(row.get("abi_version")) is not int or row["abi_version"] != builder.ABI_VERSION \
+            or not isinstance(row.get("verification"), dict):
+        raise ValueError("native installation Linux receipt row is invalid")
     library = builder.APP_DESTINATION / f"lib{builder.NAME}.so"
-    if sha(library) != row["binary_sha256"] or builder.source_digest() != row["source_sha256"]:
+    if sha(library) != row.get("binary_sha256") or builder.source_digest() != row.get("source_sha256"):
         raise ValueError("native library or C++ sources differ from the installation receipt")
-    if sha(HERE / "toolchain-lock.json") != row["lock_sha256"]:
+    if sha(HERE / "toolchain-lock.json") != row.get("lock_sha256"):
         raise ValueError("native toolchain lock differs from the installation receipt")
     sources = builder.mirrored_sources()
     if row.get("mirrored_sources") != sources:
@@ -100,13 +114,14 @@ def finalize(executable: Path, template: Path) -> dict:
             name: sha(path) for name, path in QUALIFICATION.items()}:
         raise ValueError("solver or diagnostic sources changed during export")
     destination = executable.parent / "native/kernel"
-    if destination.resolve() == builder.APP_DESTINATION.resolve() or destination.is_symlink():
-        raise ValueError("package output must be separate from the development installation")
-    destination.mkdir(parents=True, exist_ok=True)
-    if (executable.parent / "native").is_symlink() or destination.resolve() != executable.parent / "native/kernel":
+    if destination.exists() or destination.is_symlink() or (executable.parent / "native").is_symlink() \
+            or destination.resolve() != executable.parent / "native/kernel":
         raise ValueError("package sidecar directory must not be redirected")
+    destination.mkdir(parents=True, exist_ok=False)
     library = f"lib{builder.NAME}.so"
     shutil.copy2(builder.APP_DESTINATION / library, destination / library)
+    if sha(destination / library) != manifest["native_receipt"]["platforms"]["linux"]["binary_sha256"]:
+        raise ValueError("native library changed during package staging")
     shutil.copy2(builder.APP_DESTINATION / "LICENSE.godot-cpp.md", destination / "LICENSE.godot-cpp.md")
     (destination / f"{builder.NAME}.gdextension").write_text(DESCRIPTOR)
     artifact = {"format": ARTIFACT_FORMAT, "executable_sha256": sha(executable),

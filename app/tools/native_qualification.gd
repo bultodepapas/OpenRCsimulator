@@ -47,6 +47,10 @@ func start(args: PackedStringArray) -> void:
 		if _backend not in ["gdscript_reference", "native"] or _output.is_empty():
 			_fail("session requires --physics-backend and a new --output")
 			return
+	if ClassDB.class_exists("OpenRCNativeKernel"):
+		_fail("native class was initialized before admission")
+		return
+	print("NATIVE_QUALIFICATION preloaded=false")
 	var path := _script_path(_mode)
 	if path.is_empty():
 		return # _script_path already refused the package or source.
@@ -89,6 +93,9 @@ func _script_path(mode: String) -> String:
 func _finish() -> void:
 	if _harness == null:
 		_fail("diagnostic did not start")
+		return
+	if _harness.get("_finished") != true:
+		_fail("diagnostic did not complete")
 		return
 	if _mode == "session":
 		var failure := str(_harness.get("_failure"))

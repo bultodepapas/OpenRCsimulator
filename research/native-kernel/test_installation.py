@@ -90,6 +90,8 @@ def run(godot: Path, library: Path, stage: Path) -> None:
         base = scratch / "base"
         (base / "sim").mkdir(parents=True)
         shutil.copy2(stage, base / "sim/native_stage.gd")
+        (base / "app_state").mkdir()
+        shutil.copy2(ROOT / "app/app_state/native_package.gd", base / "app_state/native_package.gd")
         shutil.copytree(ROOT / "app/physics", base / "physics")
         (base / "project.godot").write_text('config_version=5\n[application]\nconfig/name="NK3 loader test"\n')
         (base / "test.gd").write_text(TEST_SCRIPT)

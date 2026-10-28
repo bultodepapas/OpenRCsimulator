@@ -5,7 +5,8 @@
 ## copies (any edit since the verified build refuses native until the oracles re-run and the library is reinstalled),
 ## the law identities, and the native D6 refusals of unported aircraft, options and weather.
 ## Without the library every query reports the reference backend and prepare() refuses with a reason; nothing errors.
-## Linux x86_64 only; other platforms and exported builds (scripts as binary tokens) keep the reference.
+## Linux x86_64 only. Release packages bind compiled scripts through the exact executable and embedded identity;
+## unsupported or unverified installations keep the reference.
 ## Lifetime: keep this object alive while installed; the swapped Callable refers to its native instance.
 extends RefCounted
 

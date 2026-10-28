@@ -7,6 +7,7 @@ const MANIFEST_PATH := "res://native/kernel/package.json"
 const MANIFEST_FORMAT := "openrc-native-kernel-package v1"
 const ARTIFACT_FORMAT := "openrc-native-kernel-package-artifact v1"
 const RELATIVE_DIRECTORY := "native/kernel"
+const DIAGNOSTICS := ["session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd"]
 static var _checked := false
 static var _result: Dictionary = {}
 
@@ -31,6 +32,8 @@ static func _inspect() -> Dictionary:
 			or typeof(manifest.get("native_receipt")) != TYPE_DICTIONARY \
 			or not _sha256(manifest.get("solver_sha256")) or typeof(manifest.get("qualification_sources")) != TYPE_DICTIONARY:
 		return _refuse("native package manifest is missing, malformed or for another engine")
+	if not _complete_manifest(manifest):
+		return _refuse("native package manifest has incomplete verification identities")
 	var artifact := _read_object(directory().path_join("package-receipt.json"))
 	if artifact.get("format") != ARTIFACT_FORMAT or not _sha256(artifact.get("executable_sha256")) \
 			or not _sha256(artifact.get("manifest_sha256")):
@@ -41,6 +44,37 @@ static func _inspect() -> Dictionary:
 	if executable_hash != artifact.executable_sha256:
 		return _refuse("native package executable differs from its artifact receipt")
 	return {ok = true, reason = "", manifest = manifest, executable_sha256 = executable_hash}
+
+
+static func _complete_manifest(manifest: Dictionary) -> bool:
+	var receipt: Dictionary = manifest.native_receipt
+	if receipt.get("format") != "openrc-native-kernel-receipt" or not _backend(receipt) \
+			or typeof(receipt.get("platforms")) != TYPE_DICTIONARY:
+		return false
+	var row: Variant = receipt.platforms.get("linux")
+	if typeof(row) != TYPE_DICTIONARY or not _backend(row) or row.get("platform") != "linux" \
+			or row.get("architecture") != "x86_64" or row.get("engine_version") != manifest.engine_version \
+			or typeof(row.get("mirrored_sources")) != TYPE_DICTIONARY or row.mirrored_sources.is_empty():
+		return false
+	for key: String in ["binary_sha256", "source_sha256", "lock_sha256", "engine_sha256"]:
+		if not _sha256(row.get(key)):
+			return false
+	for path: Variant in row.mirrored_sources:
+		if typeof(path) != TYPE_STRING or not path.begins_with("app/") or not _sha256(row.mirrored_sources[path]):
+			return false
+	var diagnostics: Dictionary = manifest.qualification_sources
+	if diagnostics.size() != DIAGNOSTICS.size():
+		return false
+	for name: String in DIAGNOSTICS:
+		if not _sha256(diagnostics.get(name)):
+			return false
+	return true
+
+
+static func _backend(receipt: Dictionary) -> bool:
+	var abi: Variant = receipt.get("abi_version")
+	return receipt.get("backend") == "native" and receipt.get("backend_version") == "openrc-native-kernel-stage-v1" \
+		and (typeof(abi) == TYPE_INT or typeof(abi) == TYPE_FLOAT) and abi == 1
 
 
 static func _sha256(value: Variant) -> bool:
