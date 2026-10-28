@@ -446,6 +446,10 @@ static func _percentiles(values: PackedFloat64Array) -> Dictionary:
 static func write_json(path: String, data: Dictionary) -> Dictionary:
 	if path.strip_edges().is_empty():
 		return { ok = false, error = ERR_INVALID_PARAMETER }
+	# Legacy v2 permits replacement. V3 rechecks at finalization so a report that
+	# appeared after stream startup is not knowingly overwritten.
+	if data.get("format") == STREAM_FORMAT and FileAccess.file_exists(path):
+		return { ok = false, error = ERR_ALREADY_EXISTS }
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return { ok = false, error = FileAccess.get_open_error() }

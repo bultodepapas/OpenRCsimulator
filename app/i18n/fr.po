@@ -6865,18 +6865,8 @@ msgid "The driver or desktop compositor may override VSync."
 msgstr ""
 "Le pilote ou le compositeur du bureau peut remplacer le réglage VSync."
 
-msgid "Try High (restart)"
-msgstr "Essayer Élevé (redémarrage)"
-
 msgid "Restart in Standard"
 msgstr "Redémarrer en mode Standard"
-
-msgid ""
-"High is a temporary experiment. Keep your changes before restarting. A "
-"normal launch returns to Standard."
-msgstr ""
-"Le mode Élevé est une expérience temporaire. Enregistrez vos modifications "
-"avant de redémarrer. Un démarrage normal rétablit le mode Standard."
 
 msgid ""
 "Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ "
@@ -6887,9 +6877,6 @@ msgstr ""
 
 msgid "Graphics mode: %s"
 msgstr "Mode graphique : %s"
-
-msgid "High (experimental)"
-msgstr "Élevé (expérimental)"
 
 msgid "Standard"
 msgstr "Standard"
@@ -7273,9 +7260,6 @@ msgstr "FSR3 · Équilibré"
 
 msgid "FSR3 · Performance"
 msgstr "FSR3 · Performances"
-
-msgid "DLSS · Native AA"
-msgstr "DLSS · Native AA"
 
 msgid "DLSS · Quality"
 msgstr "DLSS · Qualité"

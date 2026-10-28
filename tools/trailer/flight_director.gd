@@ -142,6 +142,12 @@ func _commands_at(t: float) -> Dictionary:
 			c.throttle = 0.94
 			c.roll = 0.9 if t < 3.55 else (-0.45 if t < 3.8 else 0.0)
 			c.pitch = 0.025
+		"corsair-roll": # TRA-09: full-throttle run-up, then one axial roll; identical for every livery take.
+			c.throttle = 1.0
+			c.roll = 1.0 if t >= 7.0 else 0.0 # Aileron held: continuous rolls once top speed is reached.
+			c.pitch = -0.03 if t < 7.0 else 0.04
+		"mini-pass":
+			pass # TRA-09: neutral trimmed flight keeps the 10 % model off the grass.
 		"mustang-pass", "corsair-pass": # TRA-09 reuses the warbird pass for the F4U.
 			c.throttle = 0.9
 			c.roll = 0.16 if t >= 0.9 and t < 2.0 else 0.0
@@ -178,6 +184,8 @@ func _on_sim_stepped(tick: int, time_s: float, state: PackedFloat64Array, _loads
 
 
 func _place_camera(t: float) -> void:
+	if shot == "companions" and _frame_companions():
+		return
 	var aircraft: Node3D = main._airplane.root
 	var body: Basis = aircraft.global_basis.orthonormalized()
 	var center: Vector3 = aircraft.global_position
@@ -185,7 +193,7 @@ func _place_camera(t: float) -> void:
 	var right: Vector3 = Vector3(body.x.x, 0.0, body.x.z).normalized()
 	if right.length_squared() < 0.9:
 		right = Vector3.RIGHT
-	if shot == "extra-roll":
+	if shot == "extra-roll" or shot == "corsair-roll":
 		# Keep the hero camera on a world-horizontal chase rail so the aircraft's axial roll
 		# rotates in frame without dragging the camera around its body axis.
 		forward = Vector3(-body.z.x, 0.0, -body.z.z).normalized()
@@ -203,7 +211,7 @@ func _place_camera(t: float) -> void:
 			height = lerpf(2.0, 1.2, elapsed)
 			lateral = lerpf(-2.5, 1.7, elapsed)
 			fov = 35.0
-		"extra-roll":
+		"extra-roll", "corsair-roll":
 			distance = lerpf(7.0, 4.8, elapsed)
 			height = lerpf(1.9, 1.35, elapsed)
 			lateral = 1.8 * sin(elapsed * PI)
@@ -250,6 +258,36 @@ func _place_camera(t: float) -> void:
 	main._camera.global_position = center - forward * distance + right * lateral + Vector3.UP * height
 	main._camera.look_at(look_target, Vector3.UP)
 	main._camera.fov = fov
+
+
+## TRA-09: chase the first live AI companion and widen until its nearest neighbor shares the frame.
+func _frame_companions() -> bool:
+	var manager: Node = main.get("companions")
+	if manager == null:
+		return false
+	var roots: Array[Node3D] = []
+	for agent: Node in manager.agents:
+		if is_instance_valid(agent) and str(agent.failure).is_empty() and not agent.view.is_empty():
+			roots.append(agent.view.root)
+	roots.append(main._airplane.root)
+	if roots.size() < 2:
+		return false
+	var lead: Node3D = roots[0]
+	var other: Node3D = roots[1]
+	for candidate: Node3D in roots.slice(2):
+		if candidate.global_position.distance_to(lead.global_position) < other.global_position.distance_to(lead.global_position):
+			other = candidate
+	var forward: Vector3 = -lead.global_basis.z
+	forward = Vector3(forward.x, 0.0, forward.z).normalized()
+	if forward.length_squared() < 0.9:
+		forward = Vector3.FORWARD
+	var mid: Vector3 = (lead.global_position + other.global_position) * 0.5
+	var spread: float = minf(lead.global_position.distance_to(other.global_position), 120.0)
+	var distance: float = 9.0 + spread * 0.9
+	main._camera.global_position = lead.global_position - forward * distance + forward.cross(Vector3.UP) * 3.0 + Vector3.UP * (2.5 + spread * 0.15)
+	main._camera.look_at(mid if spread < 120.0 else lead.global_position, Vector3.UP)
+	main._camera.fov = 40.0
+	return true
 
 
 func _smoke_evidence() -> Dictionary:

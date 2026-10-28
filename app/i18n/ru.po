@@ -6621,18 +6621,8 @@ msgstr "Вывод: %d × %d · VSync: %s"
 msgid "The driver or desktop compositor may override VSync."
 msgstr "Драйвер или композитор рабочего стола может переопределить VSync."
 
-msgid "Try High (restart)"
-msgstr "Проверить высокий режим (перезапуск)"
-
 msgid "Restart in Standard"
 msgstr "Перезапустить в стандартном режиме"
-
-msgid ""
-"High is a temporary experiment. Keep your changes before restarting. A "
-"normal launch returns to Standard."
-msgstr ""
-"Высокий режим — временный эксперимент. Сохраните изменения перед "
-"перезапуском. При обычном запуске снова включится Стандартный режим."
 
 msgid ""
 "Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ "
@@ -6643,9 +6633,6 @@ msgstr ""
 
 msgid "Graphics mode: %s"
 msgstr "Режим графики: %s"
-
-msgid "High (experimental)"
-msgstr "Высокий (экспериментальный)"
 
 msgid "Standard"
 msgstr "Стандартный"
@@ -7029,9 +7016,6 @@ msgstr "FSR3 · Баланс"
 
 msgid "FSR3 · Performance"
 msgstr "FSR3 · Скорость"
-
-msgid "DLSS · Native AA"
-msgstr "DLSS · Native AA"
 
 msgid "DLSS · Quality"
 msgstr "DLSS · Качество"

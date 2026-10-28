@@ -88,6 +88,32 @@ a coherent arbitrary concurrent snapshot. The offline `test_build` suite exercis
 the actual C++ generation helper, including omitted success acknowledgement and
 older queued work. This does not inject a real SDK failure or qualify XR.
 
+## FSR temporal-history regression
+
+`fsr_history_reset.gd` checks two independent 1920 × 1080 viewports with FSR2
+or FSR3. It verifies requests deferred while disabled, coalescing, successful
+dispatch progress, one reset per affected viewport, camera/scenario replacement
+and steady rendering without repeated resets. SDK 2.4 runs also require actual
+provider identity. This is an integration check, not a motion-quality benchmark.
+
+Copy the repro project to an isolated directory as above. Set `$Godot` to the
+receipt-matched SDK 2.4 candidate and `$Project` to that copy. With exclusive GPU
+access and the validation environment above:
+
+```powershell
+$env:OPENRC_FSR_IMPLEMENTATION = "analytical"
+$env:OPENRC_FSR_HISTORY_PROVIDER = "fsr3"
+python tools/godot/run_checked.py --label fsr3-history --timeout 150 --require-text 'FSR_HISTORY|COMPLETE|provider=fsr3' -- $Godot --verbose --path $Project --audio-driver Dummy --script res://fsr_history_reset.gd
+$env:OPENRC_FSR_HISTORY_PROVIDER = "fsr2"
+python tools/godot/run_checked.py --label fsr2-history --timeout 150 --require-text 'FSR_HISTORY|COMPLETE|provider=fsr2' -- $Godot --verbose --path $Project --audio-driver Dummy --script res://fsr_history_reset.gd
+```
+
+Repeat with `--render-thread separate` for queued dispatch coverage. Require the
+completion marker and zero engine/Vulkan validation errors; a headless run exits
+2 and cannot qualify this fixture. The fixture has passed parsing and headless
+refusal checks; rendered completion remains pending in the
+[dated evidence](../../../../docs/research/advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md).
+
 ## Canvas buffer synchronization regression
 
 `canvas_waw.gd` isolates a separate native-renderer defect: a ColorRect followed

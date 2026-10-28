@@ -72,6 +72,8 @@ class PrepareResearchTests(unittest.TestCase):
         self.assertEqual((self.destination / "assets" / "author.txt").read_text(), "author asset\n")
         self.assertEqual(receipt["source"]["copied_app_manifest_sha256"],
                          receipt["destination"]["copy_manifest_sha256_before_project_edits"])
+        self.assertNotEqual(receipt["source"]["copied_app_manifest_sha256"],
+                            receipt["destination"]["copied_app_manifest_sha256"])
         self.assertEqual(receipt["source"]["project_sha256"], prepare_research._sha256(self.project))
         self.assertEqual(receipt["destination"]["project_sha256"], prepare_research._sha256(copied_app / "project.godot"))
         self.assertEqual(receipt, json.loads((self.destination / prepare_research.RECEIPT).read_text(encoding="utf-8")))
@@ -133,12 +135,8 @@ class PrepareResearchTests(unittest.TestCase):
             raise OSError("simulated disk failure")
 
         with mock.patch.object(prepare_research.shutil, "copy2", side_effect=failed_copy):
-            try:
-                with self.assertRaisesRegex(prepare_research.PreparationError, "partial destination retained") as error:
-                    prepare_research.prepare(self.source, self.destination)
-            except AssertionError:
-                # Hosts without symlink privileges cannot reach the copy path.
-                raise
+            with self.assertRaisesRegex(prepare_research.PreparationError, "partial destination retained") as error:
+                prepare_research.prepare(self.source, self.destination)
         self.assertTrue(self.destination.is_dir())
         self.assertFalse((self.destination / prepare_research.RECEIPT).exists())
         if "cannot create the sibling assets symlink" in str(error.exception):
@@ -166,6 +164,63 @@ class PrepareResearchTests(unittest.TestCase):
         self.assertIn("source changed or copy verification failed", str(error.exception))
         self.assertFalse((self.destination / prepare_research.RECEIPT).exists())
 
+    def test_source_file_added_during_copy_fails_closed(self) -> None:
+        actual_copy = prepare_research.shutil.copy2
+
+        def adding_copy(src: Path, dst: Path) -> str:
+            result = actual_copy(src, dst)
+            if Path(src).name == "main.gd":
+                (self.app / "late.gd").write_text("# added while copying\n", encoding="utf-8")
+            return str(result)
+
+        with mock.patch.object(prepare_research.shutil, "copy2", side_effect=adding_copy):
+            with self.assertRaises(prepare_research.PreparationError) as error:
+                prepare_research.prepare(self.source, self.destination)
+        if "cannot create the sibling assets symlink" in str(error.exception):
+            self.skipTest(str(error.exception))
+        self.assertIn("source app changed during preparation", str(error.exception))
+        self.assertFalse((self.destination / prepare_research.RECEIPT).exists())
+
+    def test_changed_destination_fails_verification(self) -> None:
+        real_validator = launch._research_project
+
+        def changed_after_validation(*args, **kwargs):
+            result = real_validator(*args, **kwargs)
+            (self.destination / "app" / "main.gd").write_text("# modified copy\n", encoding="utf-8")
+            return result
+
+        with mock.patch.object(launch, "_research_project", side_effect=changed_after_validation):
+            with self.assertRaises(prepare_research.PreparationError) as error:
+                prepare_research.prepare(self.source, self.destination)
+        if "cannot create the sibling assets symlink" in str(error.exception):
+            self.skipTest(str(error.exception))
+        self.assertIn("copied app changed during verification", str(error.exception))
+        self.assertFalse((self.destination / prepare_research.RECEIPT).exists())
+
+    def test_failed_receipt_flush_or_publication_never_creates_complete_receipt(self) -> None:
+        for target in ("fsync", "link"):
+            destination = self.root / "output" / target
+            with self.subTest(target=target), mock.patch.object(
+                    prepare_research.os, target, side_effect=OSError("simulated receipt failure")):
+                with self.assertRaises(prepare_research.PreparationError) as error:
+                    prepare_research.prepare(self.source, destination)
+            if "cannot create the sibling assets symlink" in str(error.exception):
+                self.skipTest(str(error.exception))
+            self.assertIn("simulated receipt failure", str(error.exception))
+            self.assertTrue((destination / "research-preparation.pending.json").exists())
+            self.assertFalse((destination / prepare_research.RECEIPT).exists())
+
+    def test_cli_success_reports_the_prepared_copy(self) -> None:
+        output, errors = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(output), contextlib.redirect_stderr(errors):
+            code = prepare_research.main(["--source", str(self.source), "--dest", str(self.destination)])
+        if "cannot create the sibling assets symlink" in errors.getvalue():
+            self.skipTest(errors.getvalue())
+        self.assertEqual(code, 0, errors.getvalue())
+        receipt = json.loads(output.getvalue())
+        self.assertTrue(receipt["complete"])
+        self.assertEqual(receipt["destination"]["root"], str(self.destination.resolve()))
+
     def test_cli_failure_is_nonzero_and_leaves_existing_contents(self) -> None:
         self.destination.mkdir(parents=True)
         (self.destination / "sentinel").write_text("keep", encoding="utf-8")
@@ -175,6 +230,16 @@ class PrepareResearchTests(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("already exists", errors.getvalue())
         self.assertEqual((self.destination / "sentinel").read_text(), "keep")
+
+    def test_cli_reports_preflight_io_errors_without_a_traceback(self) -> None:
+        errors = io.StringIO()
+        with mock.patch.object(prepare_research, "_preflight", side_effect=OSError("inspection failed")):
+            with contextlib.redirect_stderr(errors):
+                code = prepare_research.main(["--source", str(self.source), "--dest", str(self.destination)])
+        self.assertEqual(code, 1)
+        self.assertIn("cannot inspect source or destination", errors.getvalue())
+        self.assertIn("inspection failed", errors.getvalue())
+        self.assertFalse(self.destination.exists())
 
 
 if __name__ == "__main__":

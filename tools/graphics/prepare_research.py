@@ -65,7 +65,7 @@ def _git_identity(source: Path) -> dict:
         ).stdout
         return {"commit": commit, "app_or_assets_dirty": bool(status),
                 "status_sha256": hashlib.sha256(status.encode("utf-8")).hexdigest()}
-    except (OSError, subprocess.SubprocessError):
+    except (OSError, UnicodeError, subprocess.SubprocessError):
         return {"commit": None, "app_or_assets_dirty": None, "status_sha256": None}
 
 
@@ -107,15 +107,18 @@ def _preflight(source: Path, destination: Path) -> tuple[Path, Path, bytes]:
 
 def prepare(source: Path, destination: Path) -> dict:
     """Create an exclusive copy, validate it, and publish the receipt last."""
-    source = source.expanduser().resolve()
-    raw_destination = destination.expanduser()
-    if os.path.lexists(raw_destination):
-        raise PreparationError(f"destination already exists: {raw_destination}")
-    destination = raw_destination.resolve()
-    if os.path.lexists(destination):
-        raise PreparationError(f"destination already exists: {destination}")
-    source_app, source_assets, original_project = _preflight(source, destination)
-    source_git = _git_identity(source)
+    try:
+        source = source.expanduser().resolve()
+        raw_destination = destination.expanduser()
+        if os.path.lexists(raw_destination):
+            raise PreparationError(f"destination already exists: {raw_destination}")
+        destination = raw_destination.resolve()
+        if os.path.lexists(destination):
+            raise PreparationError(f"destination already exists: {destination}")
+        source_app, source_assets, original_project = _preflight(source, destination)
+        source_git = _git_identity(source)
+    except (OSError, RuntimeError) as error:
+        raise PreparationError(f"cannot inspect source or destination: {error}") from error
     try:
         destination.parent.mkdir(parents=True, exist_ok=True)
         # Re-resolve after creating parents, and create the final component exclusively.
@@ -144,6 +147,8 @@ def prepare(source: Path, destination: Path) -> dict:
 
         def copy_verified(src: str, dst: str) -> str:
             source_file, copied_file = Path(src), Path(dst)
+            if not stat.S_ISREG(source_file.stat().st_mode):
+                raise PreparationError(f"source app contains a non-regular file: {source_file}")
             before = _sha256(source_file)
             shutil.copy2(source_file, copied_file)
             after = _sha256(source_file)
@@ -165,32 +170,76 @@ def prepare(source: Path, destination: Path) -> dict:
         isolated_project = isolated_project.replace(_MULTI_BOUNCE_ON, _MULTI_BOUNCE_OFF, 1)
         project_path.write_bytes(isolated_project)
         entries.sort(key=lambda item: item["path"])
-        manifest = json.dumps(entries, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
-        manifest_sha256 = hashlib.sha256(manifest).hexdigest()
         validated = launch._research_project(str(copied_app), cwd=destination)
         if validated["project_name"] != project_name:
             raise PreparationError("prepared project identity does not match its generated name")
+
+        def inventory(root: Path, *, source_tree: bool) -> list[dict]:
+            found: list[dict] = []
+
+            def fail_walk(error: OSError) -> None:
+                raise PreparationError(f"cannot inspect copied file identities: {error}") from error
+
+            for directory, dirs, files in os.walk(root, followlinks=False, onerror=fail_walk):
+                excluded = ignore(directory, dirs + files) if source_tree else set()
+                dirs[:] = sorted(name for name in dirs if name not in excluded)
+                for name in dirs + files:
+                    if name not in excluded and _is_link(Path(directory) / name):
+                        raise PreparationError(f"link appeared during preparation: {Path(directory) / name}")
+                for name in sorted(name for name in files if name not in excluded):
+                    path = Path(directory) / name
+                    if not stat.S_ISREG(path.stat().st_mode):
+                        raise PreparationError(f"non-regular file appeared during preparation: {path}")
+                    found.append({"path": path.relative_to(root).as_posix(),
+                                  "bytes": path.stat().st_size, "sha256": _sha256(path)})
+            return sorted(found, key=lambda item: item["path"])
+
+        if inventory(source_app, source_tree=True) != entries:
+            raise PreparationError("source app changed during preparation; retry from a frozen snapshot")
+        expected_copy = [dict(item) for item in entries]
+        for item in expected_copy:
+            if item["path"] == "project.godot":
+                item["bytes"] = len(isolated_project)
+                item["sha256"] = hashlib.sha256(isolated_project).hexdigest()
+        verified_copy = inventory(copied_app, source_tree=False)
+        if verified_copy != expected_copy:
+            raise PreparationError("copied app changed during verification; partial destination retained")
+        if _git_identity(source) != source_git:
+            raise PreparationError("source Git identity changed during preparation; retry from a frozen snapshot")
+        manifest = json.dumps(entries, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
+        manifest_sha256 = hashlib.sha256(manifest).hexdigest()
+        destination_manifest = json.dumps(verified_copy, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
+        destination_manifest_sha256 = hashlib.sha256(destination_manifest).hexdigest()
         receipt = {
             "format": FORMAT, "complete": True,
             "source": {"root": str(source), "app": str(source_app), "git": source_git,
                        "project_sha256": hashlib.sha256(original_project).hexdigest(),
                        "copied_app_manifest_sha256": manifest_sha256,
                        "copied_files": len(entries), "copied_bytes": sum(item["bytes"] for item in entries),
-                       "excluded_top_level": sorted(_EXCLUDED_TOP)},
+                       "excluded_top_level": sorted(_EXCLUDED_TOP), "excluded_anywhere": sorted(_EXCLUDED_ANY)},
             "destination": {"root": str(destination), "app": str(copied_app),
                             "project_name": project_name, "project_sha256": validated["project_sha256"],
                             "profile_sha256": validated["profile_sha256"],
+                            "copied_app_manifest_sha256": destination_manifest_sha256,
                             "copy_manifest_sha256_before_project_edits": manifest_sha256,
                             "assets_symlink_target": str(source_assets)},
             "scope": "Per-file copy hashes verified before the two project-setting edits. "
                      "Sibling author assets are linked, not copied or hashed; freeze them separately. "
                      "No import, launch, renderer or hardware qualification was performed.",
         }
-        with (destination / RECEIPT).open("x", encoding="utf-8", newline="\n") as stream:
+        pending = destination / "research-preparation.pending.json"
+        with pending.open("x", encoding="utf-8", newline="\n") as stream:
             json.dump(receipt, stream, indent=2, ensure_ascii=False)
             stream.write("\n")
             stream.flush()
             os.fsync(stream.fileno())
+        # A hard-link publishes exclusively without replacing another receipt.
+        # A failed/interrupted write leaves only a visibly pending artifact.
+        os.link(pending, destination / RECEIPT)
+        try:
+            pending.unlink()
+        except OSError:
+            pass  # The complete receipt is already published; the duplicate is harmless.
         return receipt
     except (OSError, shutil.Error, PreparationError, launch.LaunchError) as error:
         raise PreparationError(f"preparation failed; partial destination retained at {destination}: {error}") from error

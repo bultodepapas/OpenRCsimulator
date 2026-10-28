@@ -1,0 +1,168 @@
+{
+  "format": "openrc-readme-gameplay v1",
+  "purpose": "Current development-build presentation; not physical validation or a performance benchmark",
+  "session_started_utc": "2026-10-28T22:43:23Z",
+  "source_context": {
+    "head_observed_before_launch": "864dd1314c1d14d30539bbcdc8b6e2b4bab18eac",
+    "worktree": "Shared development checkout with uncommitted changes and concurrent commits; not an exact clean-commit reproduction",
+    "studio_receipt": "readme-captures.json"
+  },
+  "engine": {
+    "version": "4.8.beta1.official.4d10419ca",
+    "executable_sha256": "bfd67323e170f4167f0df27369b5e9add66c5d6a827f8bbbb03f7c36b6e08905",
+    "platform": "Windows",
+    "renderer": "gl_compatibility",
+    "driver": "opengl3",
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "driver_version": "617.42"
+  },
+  "viewport": [
+    1920,
+    1080
+  ],
+  "render_scale_3d": 1.0,
+  "profile": "Isolated debug-bridge profile; player preferences not changed",
+  "pixels": "PNG bytes copied from the debug-bridge screenshot without resizing or image editing",
+  "exit": {
+    "stopped": true,
+    "crash": null,
+    "leaked_objects": 0
+  },
+  "engine_log_sha256": "73d90e9deefce9296e4148b905f3e9555d87196b0721aca969eeedf8310a6d41",
+  "captures": {
+    "ui-home.png": {
+      "kind": "Home UI",
+      "aircraft": "skywalker-x8",
+      "landscape": "club_field",
+      "time_of_day": "day",
+      "flight_input": "Keyboard",
+      "file": "ui-home.png",
+      "sha256": "c3c43e9eca0764fe3c9de55d7ebc76533639f3a3187d4cb57664526bf6574b99",
+      "size": [
+        1920,
+        1080
+      ],
+      "captured_utc": "2026-10-28T22:47:38.300109Z"
+    },
+    "ui-workshop-appearance.png": {
+      "kind": "Workshop UI",
+      "page": "appearance",
+      "aircraft": "jensen-das-ugly-stik-60",
+      "recipe_scale": 1.0,
+      "preview": "Day, stock model",
+      "home_backdrop": "evening",
+      "file": "ui-workshop-appearance.png",
+      "sha256": "b6f79aadc9d76d44490ae526f13141d176b58bf66f34ef10596ec8fa672a9e4f",
+      "size": [
+        1920,
+        1080
+      ],
+      "captured_utc": "2026-10-28T22:44:20.330949Z"
+    },
+    "ui-workshop-setup.png": {
+      "kind": "Workshop UI",
+      "page": "setup",
+      "aircraft": "jensen-das-ugly-stik-60",
+      "recipe_scale": 1.0,
+      "preview": "Day, stock model",
+      "home_backdrop": "evening",
+      "file": "ui-workshop-setup.png",
+      "sha256": "493fe9af70053c1636e0318a4cd2d8b8e312c8d6e64f5d768bc136896f03b984",
+      "size": [
+        1920,
+        1080
+      ],
+      "captured_utc": "2026-10-28T22:44:19.269101Z"
+    },
+    "flight-x8.png": {
+      "kind": "Simulated flight, paused for capture",
+      "aircraft": "skywalker-x8",
+      "landscape": "club_field",
+      "time_of_day": "day",
+      "camera": "closeup",
+      "hud": "off",
+      "first_flight_hint": "dismissed",
+      "tick": 429,
+      "time_s": 1.7875,
+      "paused": true,
+      "crashed": false,
+      "fault": "",
+      "physics_backend": "gdscript_reference",
+      "commands": {
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "throttle": 0.5
+      },
+      "file": "flight-x8.png",
+      "sha256": "d1f36295201effb6310e5abafba651e7b90ff5c8daeadc601557de82899724ed",
+      "size": [
+        1920,
+        1080
+      ],
+      "captured_utc": "2026-10-28T22:50:03.700256Z"
+    },
+    "landscape-club-field.png": {
+      "kind": "Elevated in-app landscape overview",
+      "aircraft": "jensen-das-ugly-stik-60",
+      "landscape": "club_field",
+      "time_of_day": "day",
+      "hud": "off",
+      "tick": 43,
+      "paused": true,
+      "crashed": false,
+      "fault": "",
+      "camera": {
+        "pilot_station_ned_m": [
+          -120.0,
+          0.0,
+          0.0
+        ],
+        "look_height_m": 85.0,
+        "look_az_el_deg": [
+          10.0,
+          -25.0
+        ],
+        "fov_vertical_deg": 50.0
+      },
+      "file": "landscape-club-field.png",
+      "sha256": "36a5bb7989bd99580d1dd4ffe47c3afafeee2a72d44f3afb7fddfaaaa2466d41",
+      "size": [
+        1920,
+        1080
+      ],
+      "captured_utc": "2026-10-28T22:49:20.876152Z"
+    },
+    "landscape-green-paradise.png": {
+      "kind": "Elevated in-app landscape overview",
+      "aircraft": "jensen-das-ugly-stik-60",
+      "landscape": "green_paradise",
+      "time_of_day": "day",
+      "hud": "off",
+      "tick": 26,
+      "paused": true,
+      "crashed": false,
+      "fault": "",
+      "camera": {
+        "pilot_station_ned_m": [
+          -120.0,
+          0.0,
+          0.0
+        ],
+        "look_height_m": 85.0,
+        "look_az_el_deg": [
+          10.0,
+          -25.0
+        ],
+        "fov_vertical_deg": 50.0
+      },
+      "file": "landscape-green-paradise.png",
+      "sha256": "5b8ec84e20e5a1370443db26ed49d4f847bea48b1b194b34c1959ca0393f155b",
+      "size": [
+        1920,
+        1080
+      ],
+      "captured_utc": "2026-10-28T22:49:03.554448Z"
+    }
+  }
+}

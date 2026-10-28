@@ -74,6 +74,63 @@ Detached children or Windows children whose parent has already exited are outsid
 the process-tree cleanup guarantee; an inherited output pipe that remains open
 fails the run. Headless success does not qualify graphics, hardware or physics.
 
+## Native Apple Silicon setup and preflight (DT-MAC-02a)
+
+From a native ARM64 macOS shell, with Git, Bash, curl, unzip, `shasum`, `file`
+and Python 3.11 or newer available, run from the repository root:
+
+```sh
+godot_exe="$(app/get-godot.sh)"
+app/get-templates.sh
+python3 tools/godot/macos_preflight.py --godot "$godot_exe"
+```
+
+The editor getter downloads the pinned official 4.8-beta1 ARM64 archive, checks
+its SHA-512 and exact engine version, retains its app bundle and returns the
+executable path. It checks the cached bundle against a local file manifest on
+later runs. It refuses a changed or incomplete editor cache and retains a corrupt
+downloaded archive or incomplete extraction for inspection; it does not silently
+overwrite them. A stale lock from an interrupted getter also needs inspection.
+The template getter verifies the matching official archive and uses macOS's
+`shasum`. It preserves the official macOS ZIP while preparing the separate
+project-local universal debug/release swap required by this beta. An unreceipted
+or changed corrected ZIP is refused. A corrupt downloaded template archive is
+retained without extraction; when the installed template set is incomplete,
+the getter can replace its files from the verified archive. If `python3` is
+older than 3.11, point `OPENRC_GODOT_PYTHON` at an already installed 3.11+
+interpreter before running `app/get-templates.sh`; the prerequisite is checked
+before downloading. Neither getter installs Python.
+
+The preflight writes a new uniquely named JSON receipt under
+`tmp/macos-preflight/`; `--out-dir DIRECTORY` selects another parent. It records
+model, OS build, memory, process and hardware architecture, filtered GPU/display
+inventory, editor executable path and hashes/version, and discovered tool paths.
+It checks Rosetta for the Python process and, where applicable, tries an ARM64
+engine `--version` using `arch`; that forced invocation does not establish the
+architecture of a normal GUI launch. Display dimensions come from the system
+report and do not establish drawable or render pixels. Serial-number fields from
+the display inventory are not written, but the receipt can contain local paths.
+Tool paths indicate discovery, not working SDKs. `--dry-run` prints collection
+scope without inspecting the host or writing a receipt and works on Windows;
+actual collection requires Darwin and `--godot`. Use `--help` for all flags.
+
+Exit 0 means the inventory was collected, not that the machine, renderer or
+package is qualified. Exit 1 writes a partial receipt with reasons; inspect it
+before using the results. Exit 2 indicates invalid setup, a non-Darwin collection
+request or an output failure. Collection has bounded command output and a
+55-second budget; no dependencies are installed. For an initial checked import:
+
+```sh
+python3 tools/godot/run_checked.py --timeout 600 --out-dir tmp/dt-mac-import --label dt-mac-import -- \
+  "$godot_exe" --headless --path app --audio-driver Dummy --import
+```
+
+On 2026-10-28, portable downloader, template, preflight and correction fixtures
+passed on a Windows host with native Python/Git Bash and WSL Linux. Tests requiring
+real beta1 editor exports with macOS templates were skipped, as was the FIFO fixture on Windows.
+These checks do not establish native Mac execution or GPU performance. Linux
+cross-export and its existing release gates still apply.
+
 ## Integration and verification (PT1h-R1)
 
 `app/test.sh` uses this runner for import and every command through its `run` /
@@ -338,6 +395,11 @@ configuration/output errors. Its per-file budget is 64 MiB (`--max-input-bytes`,
 maximum 256 MiB), with 256 MiB total (`--max-total-bytes`, maximum 1 GiB).
 Oversized attachments are omitted with a manifest issue. Stop capture producers
 before packaging so their files form a stable snapshot.
+
+These frame attachments use the v2 report format. A v3 streaming report is
+rejected by the Perfetto exporter; the incident bundler marks it invalid and does
+not include its sidecar. Use the [long-capture reducers](../../research/performance/README.md#long-continuous-captures-dt-mac-02b)
+for v3 evidence.
 
 ## Repeated scene lifecycle checks (PT1h-R6)
 

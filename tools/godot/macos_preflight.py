@@ -264,6 +264,11 @@ def collect(godot: Path) -> dict:
             issues.append("displays:invalid_json")
     if not gpus or not any(gpu["model"] for gpu in gpus):
         issues.append("displays:no_gpu_data")
+    displays = [display for gpu in gpus for display in gpu["displays"]]
+    if not displays:
+        issues.append("displays:none_reported")
+    elif any(display["reported_dimensions"] is None for display in displays):
+        issues.append("displays:resolution_unavailable")
 
     engine_path = godot.expanduser().absolute()
     engine_hash, hash_issue, file_stamp = hash_file(engine_path, deadline)
@@ -289,6 +294,10 @@ def collect(godot: Path) -> dict:
                            seconds=10, required=False)
             if forced is not None and version is not None:
                 engine["forced_arm64_version_succeeded"] = forced.strip() == version
+                if not engine["forced_arm64_version_succeeded"]:
+                    issues.append("engine:forced_arm64_version_mismatch")
+            else:
+                issues.append("engine:forced_arm64_unavailable")
         try:
             current = engine_path.stat()
             current_stamp = (current.st_dev, current.st_ino, current.st_size, current.st_mtime_ns)

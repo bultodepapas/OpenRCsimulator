@@ -103,26 +103,27 @@ static func resolve(requested: String, high_available_or_capabilities: Variant =
 		capabilities: Dictionary = {}) -> Dictionary:
 	var gates := _resolve_capabilities(high_available_or_capabilities, capabilities)
 	var status := option_status(requested, gates)
-	var effective := requested if bool(status.available) else "native"
-	var provider := str(MODE_PROVIDERS.get(effective, "native"))
+	var selected := requested if bool(status.available) else "native"
+	var provider := str(MODE_PROVIDERS.get(selected, "native"))
 	var mode_id: Variant = _scaling_mode_id(provider, gates)
-	var fallback_reason := str(status.reason) if effective != requested else ""
+	var fallback_reason := str(status.reason) if selected != requested else ""
 	if provider != "native" and mode_id == null:
-		effective = "native"
+		selected = "native"
 		provider = "native"
 		mode_id = Viewport.SCALING_3D_MODE_BILINEAR
 		fallback_reason = "engine_mode_missing"
 	return {
 		"requested": requested,
 		"requested_provider": str(MODE_PROVIDERS.get(requested, "unknown")),
-		"effective": effective,
+		"selected": selected,
+		"effective": "unknown" if provider in MetalFX.PROVIDERS else selected,
 		"provider": provider,
 		"effective_provider": "unknown" if provider in MetalFX.PROVIDERS else provider,
 		"execution_status": "unverified_trial" if provider in MetalFX.PROVIDERS else "policy_selected",
 		"provider_available": bool(status.available),
-		"fallback": effective != requested,
+		"fallback": selected != requested,
 		"fallback_reason": fallback_reason,
-		"scale": float(SCALES.get(effective, 1.0)),
+		"scale": float(SCALES.get(selected, 1.0)),
 		"temporal": provider not in ["native", "metalfx_spatial"],
 		"scaling_3d_mode": mode_id,
 	}
@@ -176,17 +177,24 @@ static func capture_settle_frames(mode: int, scale: float, capabilities: Diction
 	return clampi(ceili(8.0 / (input_scale * input_scale)) * 2, 16, 64)
 
 
+## Keep the reset failure visible to both the viewport and its settings controls.
+static func capabilities_for_viewport(viewport: Viewport, capabilities: Dictionary = {}) -> Dictionary:
+	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
+	var failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {}) if is_instance_valid(viewport) else {}
+	# A temporal discontinuity without an engine reset must not resurrect stale history
+	# on a settings reapply. Selecting another provider clears this per-viewport latch.
+	if typeof(failure) == TYPE_DICTIONARY and failure.get("provider", "") == "metalfx_temporal" \
+			and failure.get("reason", "") == "history_reset_unavailable":
+		gates["metalfx_temporal"] = false
+		gates["metalfx_temporal_reason"] = "metalfx_history_reset_unavailable"
+	return gates
+
+
 static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
 	var previous_failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {})
 	NvidiaReflex.apply(str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE)))
-	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
+	var gates := capabilities_for_viewport(viewport, capabilities)
 	var requested := str(config.get("reconstruction", "native"))
-	# A temporal discontinuity without an engine reset must not resurrect stale history
-	# on a settings reapply. Selecting another provider clears this per-viewport latch.
-	if typeof(previous_failure) == TYPE_DICTIONARY and previous_failure.get("reason", "") == "history_reset_unavailable" \
-			and MODE_PROVIDERS.get(requested, "") == "metalfx_temporal":
-		gates["metalfx_temporal"] = false
-		gates["metalfx_temporal_reason"] = "metalfx_history_reset_unavailable"
 	var policy := resolve(requested, gates)
 	viewport.scaling_3d_mode = int(policy.scaling_3d_mode)
 	viewport.scaling_3d_scale = float(policy.scale)
@@ -257,7 +265,11 @@ static func request_history_reset(viewport: Viewport, reason: String, backend: O
 	if supported and target.has_method("get_temporal_history_reset_providers"):
 		var providers: Variant = target.call("get_temporal_history_reset_providers")
 		provider_supported = (typeof(providers) == TYPE_PACKED_STRING_ARRAY or typeof(providers) == TYPE_ARRAY) and provider in providers
-	var submit: bool = supported and provider_supported and viewport.get_viewport_rid().is_valid()
+	# Even a provider-list advertisement only acknowledges API submission, not
+	# that MetalFX reset its history. Until a real acknowledgement contract is
+	# available, fall back on every MetalFX Temporal discontinuity.
+	var submit: bool = supported and provider_supported and provider != "metalfx_temporal" \
+		and viewport.get_viewport_rid().is_valid()
 	if submit:
 		target.call(HISTORY_RESET_METHOD, viewport.get_viewport_rid())
 		receipt.submitted += 1

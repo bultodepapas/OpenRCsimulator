@@ -123,6 +123,12 @@ func _test_stream_precision() -> void:
 	if file != null:
 		file.close()
 	_check("stream and report preserve float64 values", accepted and write_result.ok and records.size() == 3 and parsed is Dictionary and absf(float(records[1].metrics.sim_time_s[0]) - original) < 1e-12 and absf(float(parsed.sample_endpoints.first.sim_time_s) - original) < 1e-12)
+	var before: String = FileAccess.get_file_as_string(report_path)
+	var refused: Dictionary = FrameSamples.write_json(report_path, {format = FrameSamples.STREAM_FORMAT, changed = true})
+	_check("stream report refuses an existing destination", not refused.ok and int(refused.error) == ERR_ALREADY_EXISTS and FileAccess.get_file_as_string(report_path) == before)
+	var legacy: Dictionary = FrameSamples.write_json(report_path, {format = FrameSamples.FORMAT, legacy_replacement = true})
+	var legacy_value: Variant = JSON.parse_string(FileAccess.get_file_as_string(report_path))
+	_check("legacy v2 report replacement remains supported", legacy.ok and legacy_value is Dictionary and legacy_value.get("legacy_replacement") == true)
 	_remove_stream(path)
 	_remove_stream(report_path)
 

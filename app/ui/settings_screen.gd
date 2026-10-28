@@ -58,6 +58,7 @@ var _msaa_picker: OptionButton
 var _reconstruction_picker: OptionButton
 var _reflex_picker: OptionButton
 var _reflex_poll_seconds := 0.0
+var _reconstruction_failure_key := ""
 var _fsr2_sharpness_slider: HSlider
 var _fsr2_sharpness_value: Label
 var _fsr2_sharpness_dragging := false
@@ -111,6 +112,8 @@ func _process(delta: float) -> void:
 	if _reflex_poll_seconds >= 0.5:
 		_reflex_poll_seconds = 0.0
 		_sync_reflex_controls()
+		if _current_reconstruction_failure_key() != _reconstruction_failure_key:
+			_sync_reconstruction_controls()
 		_refresh_graphics_info()
 	if _trial_deadline_msec <= 0:
 		return
@@ -237,6 +240,10 @@ func _build() -> void:
 	_vsync_picker = _choice_picker("VSync", "vsync_mode", DisplayPreferences.VSYNC_MODES)
 	_add_row(graphics_page, "Vertical synchronization", _vsync_picker)
 	_reconstruction_picker = _choice_picker("Reconstruction", "reconstruction", DisplayPreferences.RECONSTRUCTION_MODES)
+	# Long unavailable provider names belong in the popup, not the width budget
+	# for every row on the 1080p Graphics page.
+	_reconstruction_picker.fit_to_longest_item = false
+	_reconstruction_picker.clip_text = true
 	_add_row(graphics_page, "3D reconstruction", _reconstruction_picker)
 	_reflex_picker = _choice_picker("NvidiaReflex", "nvidia_reflex", DisplayPreferences.NVIDIA_REFLEX_MODES)
 	_add_row(graphics_page, "NVIDIA Reflex", _reflex_picker)
@@ -659,14 +666,9 @@ func _refresh_graphics_info() -> void:
 	if HighGraphics.requested() == "high" and not HighGraphics.active():
 		_graphics_info.text += "\n" + tr("High is unavailable with the current renderer. Standard remains active.")
 	var requested := str(_draft.get("reconstruction", "native"))
-	var capabilities := Reconstruction.runtime_capabilities()
-	var active_policy: Dictionary = Reconstruction.resolve(requested, capabilities)
 	var viewport := get_viewport()
-	var receipt := Reconstruction.describe(viewport)
-	# The viewport receipt includes runtime rollback, while this settings draft remains the
-	# user's requested choice. Use it only when it describes the same preview.
-	if str(receipt.get("requested", "")) == requested:
-		active_policy = receipt
+	var capabilities := Reconstruction.capabilities_for_viewport(viewport)
+	var active_policy := _reconstruction_preview_policy(requested, capabilities)
 	var effective := str(active_policy.get("effective", "native"))
 	var output_size := viewport.get_visible_rect().size
 	var scale := float(active_policy.get("scale", 1.0))
@@ -821,15 +823,44 @@ func _sync_controls() -> void:
 	_sync_action_buttons()
 
 
-func _sync_reconstruction_controls() -> void:
-	var capabilities := Reconstruction.runtime_capabilities()
+func _reconstruction_preview_policy(requested: String, capabilities: Dictionary) -> Dictionary:
+	var policy := Reconstruction.resolve(requested, capabilities)
+	if is_inside_tree():
+		var receipt := Reconstruction.describe(get_viewport())
+		# A matching receipt reflects runtime rollback; a different draft has not
+		# yet been previewed and must use its own policy.
+		if str(receipt.get("requested", "")) == requested:
+			return receipt
+	return policy
+
+
+func _current_reconstruction_failure_key() -> String:
+	if not is_inside_tree():
+		return ""
+	var failure: Variant = get_viewport().get_meta(Reconstruction.RUNTIME_FAILURE_META, {})
+	if typeof(failure) != TYPE_DICTIONARY or failure.is_empty():
+		return ""
+	return str(failure.get("provider", "")) + ":" + str(failure.get("reason", ""))
+
+
+func _sync_reconstruction_controls(capabilities_override: Dictionary = {}) -> void:
+	var viewport := get_viewport() if is_inside_tree() else null
+	var capabilities := Reconstruction.capabilities_for_viewport(viewport, capabilities_override)
+	_reconstruction_failure_key = _current_reconstruction_failure_key()
 	var high_active := bool(capabilities.high)
-	_reconstruction_picker.disabled = not Reconstruction.options_available(capabilities)
+	# After a temporal reset failure, allow Native selection even when no other
+	# reconstruction provider is available on this renderer.
+	var reset_latched: bool = capabilities.get("metalfx_temporal_reason", "") == "metalfx_history_reset_unavailable"
+	_reconstruction_picker.disabled = not Reconstruction.options_available(capabilities) and not reset_latched
 	_reconstruction_picker.tooltip_text = tr("Choose a reconstruction option available in High graphics. Check distant aircraft detail in motion.") if high_active \
 		else tr("Restart in High from Home to use reconstruction.")
-	if bool(capabilities.get("metalfx_spatial", false)) or bool(capabilities.get("metalfx_temporal", false)):
+	if reset_latched:
+		_reconstruction_picker.tooltip_text = _reconstruction_unavailable_text("metalfx_temporal", "metalfx_history_reset_unavailable")
+	elif bool(capabilities.get("metalfx_spatial", false)) or bool(capabilities.get("metalfx_temporal", false)):
 		_reconstruction_picker.tooltip_text = tr("MetalFX is an experimental Mac option. Compare distant aircraft detail in motion.")
 	_reconstruction_picker.tooltip_text += "\n" + tr("At 1080p, Quality uses about 1280 × 720 3D input; Performance uses 960 × 540. Quality keeps more input detail than Balanced or Performance. Lower input may soften distant detail; compare while moving.")
+	# The closed picker may clip a long option; keep its full name available.
+	_reconstruction_picker.tooltip_text += "\n" + _choice_caption("reconstruction", _draft.get("reconstruction", "native"))
 	for index: int in _reconstruction_picker.item_count:
 		var mode := str(_reconstruction_picker.get_item_metadata(index))
 		var status := Reconstruction.option_status(mode, capabilities)
@@ -838,7 +869,7 @@ func _sync_reconstruction_controls() -> void:
 		_reconstruction_picker.set_item_text(index, _choice_caption("reconstruction", mode)
 			+ (" — " + tr("Unavailable") if is_unavailable else ""))
 		_reconstruction_picker.set_item_tooltip(index, _reconstruction_option_tooltip(mode, str(status.reason)))
-	var policy := Reconstruction.resolve(str(_draft.get("reconstruction", "native")), capabilities)
+	var policy := _reconstruction_preview_policy(str(_draft.get("reconstruction", "native")), capabilities)
 	var strength := float(_draft.get("fsr2_sharpness", DisplayPreferences.DEFAULTS.fsr2_sharpness))
 	_fsr2_sharpness_slider.set_value_no_signal(strength)
 	_fsr2_sharpness_slider.editable = high_active and policy.provider in ["fsr2", "fsr3"]
@@ -990,7 +1021,9 @@ func _update_layout() -> void:
 	else:
 		_layout_panel.remove_theme_stylebox_override("panel")
 	var available: Vector2 = _surface.size - Vector2(gutter * 2.0, gutter * 2.0)
-	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(880.0, maxf(0.0, available.y)))
+	# Give the full 1080p Graphics page room without shrinking its controls or
+	# text. Smaller viewports still fit within their available height and scroll.
+	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(1000.0, maxf(0.0, available.y)))
 	_refresh_graphics_info()
 	_sync_reconstruction_controls()
 	_sync_reflex_controls()

@@ -302,7 +302,7 @@ the repository root, with a new output directory and the Windows console engine:
 ```powershell
 $run = Join-Path $PWD ('tmp/frame-diagnostics-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $run | Out-Null
-$godot = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64_console.exe').Path
+$godot = (Resolve-Path '.tools/Godot_v4.8-beta1_win64_console.exe').Path
 python tools/godot/run_checked.py --out-dir "$run/checks" --timeout 100 -- $godot --path app --audio-driver Dummy --resolution 1280x720 --max-fps 60 -- --scripted --frametimes="$run/run-1.json" --warmup=10 --t=60 --frame-diagnostics --frametimes-max-frames=60000
 $captureExit = $LASTEXITCODE
 $log = (Get-ChildItem "$run/checks" -Directory | Select-Object -First 1).FullName + '/engine.log'
@@ -321,8 +321,71 @@ do not run this observer together with another owner of viewport timing.
 It requires `--frametimes`, as does `--frame-diagnostics`. Warm-up frames do not
 consume the limit. Hitting the limit writes an incomplete prefix and exits nonzero;
 shorten `--t` or choose a larger limit. Exact completion on the last allowed frame
-succeeds. The existing duration bound remains 300 seconds. Use a fresh frame JSON
-path: the underlying frame writer still accepts replacement of an existing path.
+succeeds. This default v2 mode has a 300-second duration bound. Use a fresh frame
+JSON path: the legacy v2 writer still accepts replacement of an existing path.
+
+### Long continuous captures (DT-MAC-02b)
+
+Add the bare `--frametimes-stream` flag to opt into `openrc-frametimes v3` and
+`<report>.frames.jsonl`. The report and sidecar must both be new; the v3 writer
+checks the report path again at finalization. Use a unique output directory owned
+by one writer. The existence check followed by file creation is not an atomic
+no-overwrite guarantee against a noncooperating concurrent writer, including for
+the sidecar. Warm-up is
+0–3,600 seconds; sample duration is greater than zero and at most 3,600 seconds.
+The stream defaults to 500,000 sampled frames; `--frametimes-max-frames` can set
+1–1,000,000. Its sidecar has a 256 MiB hard cap and holds at most 512 frames per
+chunk. The collector retains two bounded float64 timing series for exact reported
+percentiles, with at most 64 numeric metrics and 128 characters per metric name;
+the report does not embed the full per-frame arrays. Warm-up frames do not consume
+the frame limit. Default v2 options and short-report fields are unchanged.
+
+For example, after installing and identifying the matching native Mac editor,
+use a new empty output directory and the repository's checked runner:
+
+```sh
+run="$PWD/tmp/long-frame-example"
+mkdir "$run"
+godot="/absolute/path/to/Godot.app/Contents/MacOS/Godot"
+python3 tools/godot/run_checked.py --out-dir "$run/checks" --timeout 2100 -- "$godot" --path app --audio-driver Dummy --resolution 1920x1080 --max-fps 60 -- --frametimes="$run/run-1.json" --frametimes-stream --warmup=10 --t=1800 --frame-diagnostics
+capture_status=$?
+cp "$run"/checks/*/engine.log "$run/run-1.log"
+python3 research/performance/frame_diagnose.py --report "$run/run-1.json" --log "$run/run-1.log" --out "$run/diagnosis.json" --max-input-bytes 320MiB --budget-ms 33.3
+python3 research/performance/native_summary.py --input "$run" --out "$run/summary.json"
+```
+
+Retain `capture_status` and the checked runner's report. The summary defaults to
+three individually eligible runs, so one valid run does not pass its campaign
+gate. The command is a direct flight route and bypasses normal Home preference
+selection; record effective settings and test the actual Home-to-flight product
+path separately. Dummy audio does not qualify audio output. A requested 1080p
+window does not prove 1080p drawable pixels on a Retina display. Mac launch,
+rendering, performance, thermal and packaging remain unverified by these changes.
+
+Chunks carry sequence and frame offsets, monotonic wall intervals/endpoints,
+engine deltas and all recorded metrics. Completion writes a trailer; the report
+records the sidecar byte count, SHA-256, chunk/frame counts and first/last
+metric endpoints. `native_summary.py` and `frame_diagnose.py` validate the sidecar,
+continuity, schema, hash and completion before using it. Other report consumers
+and trailer workflows are not qualified for v3. A clean early exit, frame cap, byte cap or write
+failure is incomplete; an abrupt termination can leave only a prefix without a
+trailer or report. Do not treat a recovered prefix as a completed soak. The hash
+detects accidental changes, not who produced the files.
+
+Chunk serialization, synchronous write/flush and hashing occur on the app thread.
+The report's `stream.write_calls`, `write_total_usec`, `write_max_usec` and
+`write_timing_scope` describe that work, not all per-frame observer cost or a
+physical storage measurement. `rejected_frames` and `unstored_frames` identify
+known loss; a complete report requires zero of each. Compare otherwise matched
+observer-on/off runs before drawing performance conclusions. `observer_poll_usec`
+only measures diagnostic polling, separately from chunk writes.
+
+`frame_diagnose.py` applies its existing `--max-input-bytes` limit to report,
+sidecar and log together. Its default is 64 MiB; larger captures need an explicit
+limit, up to 1 GiB. The shared stream reader separately limits retained numeric
+arrays to 128 MiB and rejects oversized inputs rather than dropping data. The
+native summary reads stream chunks under the same stream caps. Historic v2 reports
+remain readable without a sidecar.
 
 The offline diagnosis reuses the native report validator, requires the matching
 process log, and reports budget overruns, contiguous bursts, worst-frame indices
@@ -331,7 +394,7 @@ preserves errors and warnings with log context. `--budget-ms` is an explicit
 investigation threshold, not an automatic performance acceptance gate.
 
 Reducer limits: `--top` defaults to 10 (1–1,000); `--max-input-bytes` defaults to
-`64MiB` combined JSON/log input (maximum `1GiB`, plus one overflow-detection byte).
+`64MiB` combined report/sidecar/log input (maximum `1GiB`, plus one overflow-detection byte).
 It refuses an existing diagnosis destination. Exit 0 means valid source data,
 1 means invalid/missing/incomplete data, engine errors or invalid observer readings,
 and 2 means invalid options or output failure. Warnings remain visible without
@@ -367,7 +430,7 @@ plotting dependency is required.
 Use the existing app logger, with one foreground flight at a time:
 
 ```powershell
-& .tools/Godot_v4.7.2-stable_win64_console.exe --path app `
+& .tools/Godot_v4.8-beta1_win64_console.exe --path app `
   --audio-driver Dummy --resolution 1280x720 --max-fps 0 -- `
   --frametimes=C:/absolute/new/run-1.json --warmup=10 --t=60
 ```

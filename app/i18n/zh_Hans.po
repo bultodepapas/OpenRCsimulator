@@ -6095,16 +6095,8 @@ msgstr "输出：%d × %d · VSync：%s"
 msgid "The driver or desktop compositor may override VSync."
 msgstr "显卡驱动或桌面合成器可能会覆盖 VSync 设置。"
 
-msgid "Try High (restart)"
-msgstr "试用高画质（需重启）"
-
 msgid "Restart in Standard"
 msgstr "以标准模式重启"
-
-msgid ""
-"High is a temporary experiment. Keep your changes before restarting. A "
-"normal launch returns to Standard."
-msgstr "高画质是临时试验模式。重启前请保留你的更改。正常启动时会恢复标准模式。"
 
 msgid ""
 "Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ "
@@ -6113,9 +6105,6 @@ msgstr "更柔和的阴影、环境光遮蔽和天空反射。需要支持 Forwa
 
 msgid "Graphics mode: %s"
 msgstr "图形模式：%s"
-
-msgid "High (experimental)"
-msgstr "高画质（实验性）"
 
 msgid "Standard"
 msgstr "标准"
@@ -6488,9 +6477,6 @@ msgstr "FSR3 · 均衡"
 
 msgid "FSR3 · Performance"
 msgstr "FSR3 · 性能"
-
-msgid "DLSS · Native AA"
-msgstr "DLSS · 原生抗锯齿"
 
 msgid "DLSS · Quality"
 msgstr "DLSS · 质量"

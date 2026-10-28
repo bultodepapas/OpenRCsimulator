@@ -6767,18 +6767,8 @@ msgstr "Saída: %d × %d · VSync: %s"
 msgid "The driver or desktop compositor may override VSync."
 msgstr "O driver ou o compositor da área de trabalho pode substituir o VSync."
 
-msgid "Try High (restart)"
-msgstr "Experimentar Alto (reiniciar)"
-
 msgid "Restart in Standard"
 msgstr "Reiniciar no modo Padrão"
-
-msgid ""
-"High is a temporary experiment. Keep your changes before restarting. A "
-"normal launch returns to Standard."
-msgstr ""
-"Alto é uma experiência temporária. Salve suas alterações antes de reiniciar."
-" Uma inicialização normal volta ao modo Padrão."
 
 msgid ""
 "Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ "
@@ -6789,9 +6779,6 @@ msgstr ""
 
 msgid "Graphics mode: %s"
 msgstr "Modo gráfico: %s"
-
-msgid "High (experimental)"
-msgstr "Alto (experimental)"
 
 msgid "Standard"
 msgstr "Padrão"
@@ -7174,9 +7161,6 @@ msgstr "FSR3 · Equilibrado"
 
 msgid "FSR3 · Performance"
 msgstr "FSR3 · Desempenho"
-
-msgid "DLSS · Native AA"
-msgstr "DLSS · AA nativo"
 
 msgid "DLSS · Quality"
 msgstr "DLSS · Qualidade"

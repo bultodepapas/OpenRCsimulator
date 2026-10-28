@@ -30,9 +30,9 @@
 
 **[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
 
-![The in-app Home screen: Ugly Stik at Club field, with flight, aircraft, practice and Workshop choices](docs/research/menu-investigations/UI-33/captures/en-1920x1080-100-home.webp)
+![Current Home screen with the X8 Flying Wing at Club field](docs/media/ui-home.png)
 
-*An in-app view of Club field. Screenshots and model previews come from recorded builds; [media sources and dates](docs/media/README.md#readme-gallery) identify their scope.*
+*Home with the X8 Flying Wing. All game images below were captured from the development build on **28 October 2026**, at **1920×1080**. [Capture details](docs/media/README.md#readme-gallery).*
 
 > **Early alpha.** The simulator is being built with the RC community. Flight models still need independent measurements and pilot evaluation; automated tests do not establish real-aircraft accuracy.
 
@@ -70,22 +70,32 @@
 
 Current source has **seven fixed-wing airframes and ten airplane configurations**. The Ugly Stik is the reference model; the other configurations are experimental. Click an aircraft for its guide, controls and modeling limits.
 
+### X8 Flying Wing
+
+**2.12 m · 6S electric pusher · elevons · hand launch or airborne start.** The X8 joins the current-source hangar as an experimental flying wing, with no landing gear. [Aircraft guide and asset terms](docs/X8-PLAN.md).
+
+| X8 over Club field | X8 model close-up |
+| --- | --- |
+| ![X8 Flying Wing in a current simulator flight over Club field](docs/media/flight-x8.png) | ![Current X8 Flying Wing model with swept wings, winglets and rear propeller](docs/media/studio-skywalker-x8.png) |
+
+### Sport models, warbirds and jet
+
 <table>
   <tr>
     <td width="33%" align="center" valign="top">
-      <a href="docs/UGLY-STIK-PLAN.md"><img src="docs/media/ugly-stik.png" alt="Red and white Jensen Das Ugly Stik 60, studio model view" width="288"></a><br>
+      <a href="docs/UGLY-STIK-PLAN.md"><img src="docs/media/studio-jensen-das-ugly-stik-60.png" alt="Red and white Jensen Das Ugly Stik 60, studio model view" width="288"></a><br>
       <a href="docs/UGLY-STIK-PLAN.md"><strong>Jensen Das Ugly Stik 60</strong></a><br>
       1.52 m · .61 glow · tricycle gear<br>
       The reference sport model.
     </td>
     <td width="33%" align="center" valign="top">
-      <a href="docs/EXTRA-300-PLAN.md"><img src="docs/media/extra-300s.png" alt="Great Planes Extra 300S, studio model view" width="288"></a><br>
+      <a href="docs/EXTRA-300-PLAN.md"><img src="docs/media/studio-gp-extra-300s-60.png" alt="Great Planes Extra 300S, studio model view" width="288"></a><br>
       <a href="docs/EXTRA-300-PLAN.md"><strong>Extra 300S .60</strong></a><br>
       1.63 m · .61 glow · taildragger<br>
       An aerobatic airframe with finite fuel.
     </td>
     <td width="33%" align="center" valign="top">
-      <a href="docs/TIMBER-INTEGRATION-PLAN.md"><img src="docs/media/turbo-lumber-evolution.png" alt="Turbo Lumber Evolution, studio model view" width="288"></a><br>
+      <a href="docs/TIMBER-INTEGRATION-PLAN.md"><img src="docs/media/studio-turbo-lumber-evolution.png" alt="Turbo Lumber Evolution, studio model view" width="288"></a><br>
       <a href="docs/TIMBER-INTEGRATION-PLAN.md"><strong>Turbo Lumber Evolution</strong></a><br>
       1.55 m · 4S electric · fixed wheels<br>
       Finite battery or optional ideal supply.
@@ -93,19 +103,19 @@ Current source has **seven fixed-wing airframes and ten airplane configurations*
   </tr>
   <tr>
     <td align="center" valign="top">
-      <a href="docs/P51-PLAN.md"><img src="docs/media/p51d-mustang.png" alt="P-51D Mustang warbird, studio model view" width="288"></a><br>
+      <a href="docs/P51-PLAN.md"><img src="docs/media/studio-p51d-mustang-120.png" alt="P-51D Mustang warbird, studio model view" width="288"></a><br>
       <a href="docs/P51-PLAN.md"><strong>P-51D Mustang 1/4</strong></a><br>
       2.82 m · 120 cc gasoline<br>
       Flaps and retractable taildragger gear.
     </td>
     <td align="center" valign="top">
-      <a href="docs/F4U-PLAN.md"><img src="app/assets/ui/liveries/f4u-corsair-250/midnight-9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851.png" alt="F4U Corsair in its Midnight paint scheme, in-app livery thumbnail" width="288"></a><br>
+      <a href="docs/F4U-PLAN.md"><img src="docs/media/studio-f4u-corsair-250.png" alt="F4U Corsair in its Midnight paint scheme, current studio model view" width="288"></a><br>
       <a href="docs/F4U-PLAN.md"><strong>F4U-1D Corsair 1/4.5</strong></a><br>
       2.78 m · Moki S250 radial<br>
       Flaps, retracts, folding wings and 13 paint schemes.
     </td>
     <td align="center" valign="top">
-      <a href="docs/AVANTI-S-PLAN.md"><img src="docs/media/avanti-s.png" alt="Vantage Jet, studio model view" width="288"></a><br>
+      <a href="docs/AVANTI-S-PLAN.md"><img src="docs/media/studio-sebart-avanti-s-a200-p100rx.png" alt="Vantage Jet, studio model view" width="288"></a><br>
       <a href="docs/AVANTI-S-PLAN.md"><strong>Vantage Jet</strong></a><br>
       2.00 m · JetCat P100-RX turbine<br>
       Spooling turbine, flaps and retracts.
@@ -113,13 +123,11 @@ Current source has **seven fixed-wing airframes and ten airplane configurations*
   </tr>
 </table>
 
-**[X8 Flying Wing](docs/X8-PLAN.md) — new in current source:** 2.12 m, 6S electric pusher, elevons and no landing gear. Choose a hand launch or airborne start. This experimental flying wing adds a different control layout to the hangar; its asset redistribution terms remain pending.
-
 **More ways to fly the Stik:** three additional [O.S. glow installations](docs/GLOW-ENGINES.md) — MAX-61FX, MAX-55AX and FS-64V — share its airframe, with finite fuel and engine start, cut and mixture controls.
 
 At **Club field**, geared airplanes offer runway or airborne starts. At **Green paradise**, they start airborne; the X8 retains its hand-launch option. Aircraft equipment varies: use the in-game control guide for the selected model.
 
-[Watch the existing 360° studio tour](docs/media/aircraft-tour.gif) · [Still-image provenance](docs/media/README.md#aircraft-stills). The tour rotates the models, not a flown camera, and predates the Corsair and X8.
+[Full-size model views and capture details](docs/media/README.md#aircraft-stills). Studio views show the current models; the X8 flight image comes from the running simulator.
 
 ## Current features
 
@@ -141,7 +149,7 @@ The experimental **Aircraft Workshop** lets you save local builds, adjust suppor
 
 | Appearance | Flight setup |
 | --- | --- |
-| ![Workshop appearance page with paint and registration controls](docs/research/aircraft-editor/AE-24/native/appearance-en-1080.png) | ![Workshop flight-setup page with airframe scale, weight, power and control travel](docs/research/aircraft-editor/AE-12-13/native/workshop-en-1920x1080.png) |
+| ![Workshop appearance page with paint and registration controls](docs/media/ui-workshop-appearance.png) | ![Workshop flight-setup page with airframe scale and mass settings](docs/media/ui-workshop-setup.png) |
 
 [Workshop guide](docs/AIRCRAFT-WORKSHOP.md) · [Supported adjustments](docs/AIRCRAFT-WORKSHOP.md#supported-adjustments). These tools explore simulated configurations; they do not certify a real build.
 
@@ -151,7 +159,9 @@ The experimental **Aircraft Workshop** lets you save local builds, adjust suppor
 
 | Club field | Green paradise |
 | --- | --- |
-| ![Club field runway and surrounding scenery, captured in the application](docs/research/landscape-upgrade/L21-24/club_field-flight.png) | ![Green paradise flat grass landscape, captured in the application](docs/research/landscape-upgrade/L21-24/green_paradise-flight.png) |
+| ![Club field runway and surrounding scenery, captured in the application](docs/media/landscape-club-field.png) | ![Green paradise flat grass landscape, captured in the application](docs/media/landscape-green-paradise.png) |
+
+*Matching elevated views captured in the running simulator. Green paradise intentionally has no scenery obstacles.*
 
 [Landscape guide](docs/LANDSCAPES.md) · [Weather](docs/WIND-PLAN.md) · [Time of day](docs/TIME-OF-DAY-PLAN.md). Natural Random briefings use Club field; RC-car courses are separate.
 
@@ -172,17 +182,17 @@ Handling, takeoffs/landings, controller compatibility and target-machine perform
 <table>
   <tr>
     <td width="33%" align="center" valign="top">
-      <a href="docs/HELICOPTER.md"><img src="docs/media/helicopter.png" alt="HX-700 visual surrogate used by the X-Cell helicopter research trainer" width="288"></a><br>
+      <a href="docs/HELICOPTER.md"><img src="docs/media/studio-xcell-60-research.png" alt="HX-700 visual surrogate used by the X-Cell helicopter research trainer" width="288"></a><br>
       <a href="docs/HELICOPTER.md"><strong>RC Helicopter Research Trainer</strong></a><br>
       X-Cell .60 reference physics with HX-700 surrogate visuals. Ground-pad or hover starts.
     </td>
     <td width="33%" align="center" valign="top">
-      <a href="research/rc-monster-truck/README.md"><img src="docs/media/bisonte-mt8.png" alt="Bisonte MT8 RC monster truck, studio model view" width="288"></a><br>
+      <a href="research/rc-monster-truck/README.md"><img src="docs/media/studio-mt8-bisonte.png" alt="Bisonte MT8 RC monster truck, studio model view" width="288"></a><br>
       <a href="research/rc-monster-truck/README.md"><strong>Bisonte MT8</strong></a><br>
       A separate RC garage and driving course, with keyboard or gamepad controls.
     </td>
     <td width="33%" align="center" valign="top">
-      <a href="research/rc-monster-truck/README.md"><img src="docs/media/monster-car-2.png" alt="MONSTER CAR 2 RC truck, studio model view" width="288"></a><br>
+      <a href="research/rc-monster-truck/README.md"><img src="docs/media/studio-monster-car-2.png" alt="MONSTER CAR 2 RC truck, studio model view" width="288"></a><br>
       <a href="research/rc-monster-truck/README.md"><strong>MONSTER CAR 2</strong></a><br>
       The second truck adds nitro propulsion and fuel state.
     </td>

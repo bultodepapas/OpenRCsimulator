@@ -3257,6 +3257,8 @@ func _log_frame_time(delta: float) -> void:
 
 
 func _finish_frame_time(exit_code: int = OK) -> void:
+	if exit_code != OK and not _frametime_samples.finished:
+		_frametime_samples.abort("frame collection interrupted by external owner")
 	var sim: Node = session.sim
 	var report: Dictionary = _frametime_samples.report()
 	if _frame_diagnostics != null:

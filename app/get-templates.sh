@@ -24,12 +24,15 @@ present() {
   for f in "${NEEDED[@]}"; do [ -s "$DEST/$f" ] || return 1; done
   [ "$(tr -d '\r\n' < "$DEST/version.txt")" = "$TEMPLATE_DIR_NAME" ]
 }
-prepare_macos() {
+check_python() {
   if ! "$GODOT_TEMPLATES_PYTHON" -c 'import hashlib, sys; sys.exit(0 if hasattr(hashlib, "file_digest") else 1)'; then
     echo "The macOS template correction requires Python 3.11+; set OPENRC_GODOT_PYTHON to its executable." >&2; return 1
   fi
+}
+prepare_macos() {
   "$GODOT_TEMPLATES_PYTHON" "$PROJECT/../tools/godot/macos_universal_template.py" --source "$DEST/macos.zip" --project "$PROJECT" >&2
 }
+check_python
 if present; then prepare_macos; echo "$DEST"; exit 0; fi
 mkdir -p "$TOOLS" "$DEST"
 if [ ! -f "$TOOLS/$FILE" ]; then

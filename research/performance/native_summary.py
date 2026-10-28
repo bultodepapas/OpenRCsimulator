@@ -549,6 +549,9 @@ def _hydrate_stream_report(report: dict[str, Any], report_path: Path, *, include
         raise ValueError("stream report version must be integer 3")
     if not isinstance(report.get("capture_id"), str):
         raise ValueError("stream report capture_id must be a string")
+    if (not _is_number(report.get("sample_s")) or not 0 < report["sample_s"] <= 3600
+            or not _is_number(report.get("warmup_s")) or not 0 <= report["warmup_s"] <= 3600):
+        raise ValueError("stream sample or warm-up duration exceeds the supported bounds")
     if (report.get("raw_metrics") != {} or any(report.get(key) != [] for key in
             ("frame_deltas_s", "frame_wall_usec", "frame_end_monotonic_usec", "engine_frame_deltas_s"))):
         raise ValueError("stream report must not embed conflicting frame arrays")

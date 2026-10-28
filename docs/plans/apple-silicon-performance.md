@@ -1,6 +1,6 @@
 # Apple Silicon, Metal and MetalFX integration plan
 
-Updated 2026-10-28 · **Owner:** desktop/performance maintainer (DT/PT), with VQ for rendering and SF/FL for numerical acceptance. **Prefix:** `DT-MAC-`. **Status:** source audit and implementation design complete; implementation and native Mac qualification open. This is a production integration plan, not a production-readiness claim.
+Updated 2026-10-28 · **Owner:** desktop/performance maintainer (DT/PT), with VQ for rendering and SF/FL for numerical acceptance. **Prefix:** `DT-MAC-`. **Status:** source audit complete; Windows preparation implements native acquisition, bounded capture, isolated renderer trials and guarded MetalFX policy. Native Mac qualification and evidence-dependent engine/optimization work remain open. This is a production integration plan, not a production-readiness claim.
 
 Deliver a shared native ARM64 path that works well across **M1, M2, M3, M4 and M5 Macs**, including their actually released chip/chassis variants. The common performance objective is **1920×1080 / 60 Hz**, with quality scaling to measured headroom. Preserve aircraft readability, controls and simulation behavior. This is an execution subtrack of [Desktop delivery](../DESKTOP-DELIVERY-PLAN.md), not a claim of measured speedup or already-qualified support.
 
@@ -22,6 +22,14 @@ Shared changes require the existing owner: `main.gd` and frame collection (PT/VQ
 - Keep a common distribution and baseline render path; chip-specific native instructions, hardware ray tracing, Metal 4-only features and M5-only GPU facilities cannot become mandatory for M1/M2. Optional paths require engine, OS and actual device support, not a chip-name match.
 
 ## 2. Starting point and decisions to test
+
+The table below retains the pre-implementation audit. The subsequent
+[DT-MAC-02 preparation evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md)
+records the implemented changes and Windows checks. Current instructions live in
+the [native Mac tooling guide](../../tools/godot/README.md#native-apple-silicon-setup-and-preflight-dt-mac-02a),
+[isolated renderer guide](../../tools/graphics/README.md#isolated-mac-renderer-trials-dt-mac)
+and [performance guide](../../research/performance/README.md). No native Mac
+measurement is inferred from this preparation.
 
 | Current source audit, 2026-10-28 | Consequence |
 | --- | --- |
@@ -188,13 +196,13 @@ Temporal review must include distant aircraft, propeller/hinges, wind-driven fol
 | DT-MAC-00-R1 | Twenty internet investigations and M1–M5 plan revision | Done: [I01–I20](../research/desktop-delivery-investigations/DT-MAC-00-R1/README.md); user confirms M1 availability, no hardware tests performed |
 | DT-MAC-00-R2 | Refresh Apple 2026 technologies, audit exact adopted Godot source and map implementation gaps using three Terra 6.1 Max specialists | Done: [research and source audit](../research/desktop-delivery-investigations/DT-MAC-00-R2/README.md); no runtime changes or native qualification |
 | DT-MAC-01 | Inventory the available M1 Air/8 GB; freeze OS/display/power matrix, package identity and budgets; DT-01a | Model family and RAM confirmed by user; GPU variant, OS/build and native ARM64 launch evidence pending |
-| DT-MAC-02 | Native tooling and measurement gaps: driver/pacing metadata, bounded continuous soak, observer controls; PT with DT-02a/10a/10b; after 01 | Open; runner smoke, schema/limit/failure checks and overhead report |
+| DT-MAC-02 | Native tooling and measurement gaps: driver/pacing metadata, bounded continuous soak, observer controls; PT with DT-02a/10a/10b; after 01 | Software prepared: ARM64 getter, template portability, preflight, v3 bounded stream and two reducers. Windows/WSL fixtures passed; native smoke, presentation/resource coverage and paired observer-overhead gate open |
 | DT-MAC-03 | Unmodified 1080p baseline, numerical policy and bottleneck attribution; SF/FL + DT; after 02 | Open; paired short runs, baseline soak, exact local replay and H9 results |
 | DT-MAC-04 | One highest-impact CPU/loading/memory fix if baseline calls for it; owner from §7 with DT-11a | Open/conditional; paired proof and full-workload regression checks |
-| DT-MAC-05 | Isolated Mobile/Metal and Forward+/Metal parity/comparison, MoltenVK control only as needed; VQ + DT-11d; after 03 and a frozen 04 outcome | Open/conditional; effective-backend receipts, visual report and native distributions |
+| DT-MAC-05 | Isolated Mobile/Metal and Forward+/Metal parity/comparison, MoltenVK control only as needed; VQ + DT-11d; after 03 and a frozen 04 outcome | Preparation/launcher and identity fixtures implemented; native parity, effective-backend receipts, visual report and distributions open. Production default unchanged |
 | DT-MAC-06 | One GPU/settings improvement at a time; VQ/LU/FW/SM + DT-11c; after attribution | Open/conditional; native 1080p performance and readability acceptance |
 | DT-MAC-06a | Common capability policy and measured preset selection across M1–M5; VQ/UI; after 05/06 | Open; unsupported/unknown capabilities, saved-preference migration, effective-mode reporting and recovery tests (§9) |
-| DT-MAC-07 | MetalFX capability/integration trial through reconstruction owner; after 05/06 justify it | Open/conditional; supported-method matrix, Native fallback and moving-image proof |
+| DT-MAC-07 | MetalFX capability/integration trial through reconstruction owner; native evaluation after 05/06 justify it | Opt-in Spatial/Temporal policy, settings and fallback fixtures implemented. Stock reset acknowledgement absent: Temporal falls back on camera discontinuity. Actual scaler execution, motion, resize/lifecycle and performance remain unqualified |
 | DT-MAC-08 | Finalist 30-minute AC/battery soaks, lifecycle/input/audio/display recovery and native package checks; DT-10b/12, UI/AUD | Open; final artifact reports; then higher-resolution and lastly 720p compatibility results |
 | DT-MAC-08a | Run the same release matrix on M2, M3, M4 and M5 and feed regressions back to the M1 control | Open; named physical tester artifacts and five-generation ledger, with explicit variant/OS gaps |
 | DT-MAC-09 | Integrate accepted settings/backend policy, document tested M1–M5 configurations and recovery, retain baseline rollback; DT/VQ + DT-13 | Open; 06a/08/08a outcomes, focused/full relevant suites, final Mac package and owner/pilot acceptance |
@@ -203,7 +211,7 @@ Temporal review must include distant aircraft, propeller/hinges, wind-driven fol
 | DT-MAC-12 | Separate optional MetalFX frame interpolation/presentation path; VQ/DT/UI | Open/conditional; real-frame, latency, UI and recovery gates must pass independently |
 | DT-MAC-13 | Conditional advanced GPU/memory/denoising/ML work with a concrete supported consumer | Open/conditional; record trigger absent where current raster application has no use case |
 
-First delivery is **01–03: a reproducible M1 baseline and ranked bottleneck report**. Then select the smallest justified branch. Estimate implementation effort after attribution rather than promising a speedup or fixed delivery date now.
+First native delivery is **01–03: a reproducible M1 baseline and ranked bottleneck report**. The user explicitly requested preparation on the current Windows PC for later Mac execution, so reusable tooling and disabled-by-default reconstruction trials were implemented ahead of those measurements. This does not waive the measurement prerequisites for adopting a renderer or optimization. Select the smallest justified branch after attribution.
 
 Stop a candidate for numerical drift, missing visual features, unresolved leaks/crashes, slower sustained flight or benefit within measurement noise. Record **retain baseline** or **trigger absent** for conditional branches. M1 access is confirmed, so its next action is inventory and execution; M2–M5 coverage stays pending until actual test reports exist.
 
@@ -228,7 +236,7 @@ Keep quality fixed during the initial comparisons. A later automatic-quality exp
 
 ## 10. First test session on the available M1
 
-The immediate deliverable is a local evidence bundle, not another research round. Use the owning tool READMEs for commands and add any necessary Mac adapter there once implemented.
+The immediate native deliverable is a local evidence bundle. The Windows-prepared commands are in the owning tool READMEs linked in §2; run them on the actual Mac before claiming support.
 
 1. **Inventory (01):** record the confirmed M1 Air/8 GB, then obtain GPU core count, exact model identifier, macOS build, display/power modes and free storage. The low-memory/fanless host is available; 7-core GPU coverage depends on identification. Avoid collecting serial numbers or unrelated personal logs.
 2. **Freeze (01/02):** choose one clean revision and matching pinned editor/templates/export; retain hashes and import identity. Verify ARM64 execution and package dependencies. Use new ignored output folders; do not modify the user's normal graphics/controller preferences.
@@ -237,7 +245,7 @@ The immediate deliverable is a local evidence bundle, not another research round
 5. **Sustained baseline (02/03):** once continuous collection is ready, two uninterrupted 30-minute runs with explicit AC/power/thermal conditions; battery cases only on a laptop. Report missing channels and incomplete runs.
 6. **One candidate (04–07):** choose the top attributed fix or common-feature Metal trial, replay the same workload, and accept/reject with the frozen gates. Re-run the baseline after integration before sending the same package/cases to M2–M5 testers.
 
-Completion receipt: host manifest, source/package identities, effective settings, logs, complete timing/resource summaries, replay result, lifecycle result, profiler attribution, actual test exclusions and the next single candidate. Device access/remote transport has not been configured by this documentation task, and no Mac benchmark has run yet.
+Completion receipt: host manifest, source/package identities, effective settings, logs, complete timing/resource summaries, replay result, lifecycle result, profiler attribution, actual test exclusions and the next single candidate. Work to date ran on Windows, including portable WSL fixtures. No Mac benchmark has run yet.
 
 ## 11. Implementation boundaries and reviewable deliveries
 
@@ -272,7 +280,7 @@ Four implementation constraints refine those boundaries:
 
 ## 12. Capability, measurement and reconstruction contracts
 
-Extend the existing diagnostics and reconstruction dictionaries rather than introducing another preferences store, profiler or render loop. These are proposed fields and semantics, not newly implemented APIs.
+Extend the existing diagnostics and reconstruction dictionaries rather than introducing another preferences store, profiler or render loop. This is the complete target contract; the Windows preparation implements a subset, described in DT-MAC-02 evidence. Unknown native command-backend/presentation status remains explicit.
 
 | Contract | Required information / behavior |
 | --- | --- |

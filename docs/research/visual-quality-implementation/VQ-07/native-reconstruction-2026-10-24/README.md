@@ -586,3 +586,32 @@ Global status fields use separate atomics and were sampled after isolated settle
 phases; they are not coherent per-viewport telemetry under arbitrary concurrency.
 Stereo/XR, arbitrary uninstrumented teleports, moving-image quality and hardware
 latency remain outside this evidence. Streamline 2.11.1 and preset K are unchanged.
+
+The frozen application (`b56eb5fa3` plus NVIDIA overlays) passed 177 headless
+checks: camera route 35, camera history 24, reconstruction history 16 and
+reconstruction policy 102. Native API presence omits stock-only assertions. The
+1080p full-game bridge fixture passed pilot-to-chase, steady paused rendering,
+flight restart and orbit: each tested discontinuity caused one successful reset,
+DLSS continued dispatching and Reflex On remained accepted. The session closed
+without a crash or ObjectDB leak. Crash-focus transitions are covered by the
+headless route test, not a rendered crash sequence.
+
+Matching editor and release-template receipts produced the updated Windows
+package. Its 1080p exported capture passed with 32 DLSS evaluations, one initial
+reset, no fallback and Reflex On accepted; the image was inspected. Ordinary
+Home startup and normal window-close shutdown also passed checked execution.
+Both exported checks had zero errors and warnings. The 33-file package passed
+receipt verification before and after promotion to `dist/windows-nvidia`.
+
+The checkout initially changed integration line endings, which package preflight
+correctly rejected. Exact editor input bytes were restored before rebuilding the
+template. Solver source bytes were also restored before the final snapshot to
+preserve the existing physics source identity. The frozen build excludes parallel
+FSR SDK/history changes. No receipt check or authoring export gate was bypassed.
+
+[Verification identities and results](verification-history-2026-10-28.json)
+include the builds, artifact hashes, twelve checked runs, full-game counters,
+shutdown and excluded early fixture/import attempts. Raw logs, captures and the
+previous package remain ignored under `tmp/`. The camera-history source gap from
+the earlier review is addressed for these events; exposure diagnostics and Reflex
+hardware measurement remain open.

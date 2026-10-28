@@ -206,7 +206,7 @@ func _run() -> void:
 		_main.user_args.append("--alt=" + str(_options.alt))
 	if _options.has("sky"):
 		_main.user_args.append("--sky=" + str(_options.sky))
-	for key: String in ["wind-speed", "wind-from", "gust-speed", "gust-up", "gust-duration", "gust-period", "gust-delay", "time_of_day", "landscape"]:
+	for key: String in ["wind-speed", "wind-from", "gust-speed", "gust-up", "gust-duration", "gust-period", "gust-delay", "time_of_day", "landscape", "livery"]:
 		if _options.has(key):
 			_main.user_args.append("--%s=%s" % [key, str(_options[key])])
 	if _realtime:

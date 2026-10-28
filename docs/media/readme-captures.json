@@ -1,0 +1,374 @@
+{
+  "format": "openrc-readme-media v2",
+  "sessions": {
+    "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7": {
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "background": "#111820",
+      "captured_utc": "2026-10-28T22:50:50Z",
+      "driver": "opengl3",
+      "engine": "4.8-beta1 (official)",
+      "format": "openrc-readme-renders v2",
+      "frame_count": 0,
+      "purpose": "Studio model presentation; not gameplay or flight validation",
+      "renderer": "gl_compatibility",
+      "source_changed_during_capture": true,
+      "source_end": {
+        "builder_sha256": "24735c9e8cea8f36a0843e92efd6dbec3b2c06430344c3b03295a7988a1a6968",
+        "capture_tool_sha256": "dc1419147c868395964b1391f941e6d57e436ee42bdc5c1665b49401bd20eefc",
+        "catalog_sha256": "54507e24c06176255e93d59c125e0c76a287a22864edbc7a9dad5a15d9b4a605",
+        "commit": "3bfc7d65320320ceaaa8f174b0c977b618e1a6be",
+        "scope": [
+          "app",
+          "assets",
+          "tools/readme"
+        ],
+        "tracked_diff_sha256": "e65ef49c2023d62a4922f6c56a6d426b257811ff9d6bc780ba02fce29039cf2a",
+        "untracked_contents_hashed": false,
+        "worktree_status": " M app/get-templates.sh\n"
+      },
+      "source_start": {
+        "builder_sha256": "24735c9e8cea8f36a0843e92efd6dbec3b2c06430344c3b03295a7988a1a6968",
+        "capture_tool_sha256": "dc1419147c868395964b1391f941e6d57e436ee42bdc5c1665b49401bd20eefc",
+        "catalog_sha256": "54507e24c06176255e93d59c125e0c76a287a22864edbc7a9dad5a15d9b4a605",
+        "commit": "3bfc7d65320320ceaaa8f174b0c977b618e1a6be",
+        "scope": [
+          "app",
+          "assets",
+          "tools/readme"
+        ],
+        "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "untracked_contents_hashed": false,
+        "worktree_status": ""
+      },
+      "stills_size": [
+        1920,
+        1080
+      ],
+      "tour_size": [
+        800,
+        450
+      ],
+      "capture_manifest_sha256": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7"
+    }
+  },
+  "stills": {
+    "jensen-das-ugly-stik-60": {
+      "aircraft_data_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+      "bounds": {
+        "position": [
+          -0.761171698570251,
+          -0.258100003004074,
+          -0.430226445198059
+        ],
+        "size": [
+          1.5223433971405,
+          0.436286866664886,
+          1.32792448997498
+        ]
+      },
+      "frames": 0,
+      "id": "jensen-das-ugly-stik-60",
+      "model_manifest_sha256": "912bee8177251ecf7ed58cb50ee05439d2806ca181c41f86b397b40555b40e55",
+      "name": "Ugly Stick",
+      "status": "flyable",
+      "visual_family": "jensen-das-ugly-stik-60",
+      "file": "studio-jensen-das-ugly-stik-60.png",
+      "sha256": "11fbdbe28c225b0252d8e3322f17773fc7f7f9af7e2b44ba459d30258af9862b",
+      "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "gp-extra-300s-60": {
+      "aircraft_data_sha256": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+      "bounds": {
+        "position": [
+          -0.811800003051758,
+          -0.268824994564056,
+          -0.445070445537567
+        ],
+        "size": [
+          1.62360000610352,
+          0.551921308040619,
+          1.38627004623413
+        ]
+      },
+      "frames": 0,
+      "id": "gp-extra-300s-60",
+      "model_manifest_sha256": "2a2f1cc898cb8ac3a9f96e8d6331cd80db8f8f95ecdb0956aa9caffa75f25371",
+      "name": "Great Planes Extra 300S .60",
+      "status": "experimental",
+      "visual_family": "gp-extra-300s-60",
+      "file": "studio-gp-extra-300s-60.png",
+      "sha256": "621e6b1919e05caf12efc004b64202b27d4d5ddd39703fe6cfd2abb6dce71e9f",
+      "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "p51d-mustang-120": {
+      "aircraft_data_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+      "bounds": {
+        "position": [
+          -1.41125762462616,
+          -0.510500013828278,
+          -0.671489119529724
+        ],
+        "size": [
+          2.82251524925232,
+          0.950000166893005,
+          2.46078896522522
+        ]
+      },
+      "frames": 0,
+      "id": "p51d-mustang-120",
+      "model_manifest_sha256": "6665f7160b277923d48c16ae345ae269fd5a5b9ad9f8c4a68a034cce367fce83",
+      "name": "P-51D Mustang 1/4",
+      "status": "experimental",
+      "visual_family": "p51d-mustang-120",
+      "file": "studio-p51d-mustang-120.png",
+      "sha256": "97a6c5ab4a549eca79d21785171a257dcd0d46b19eef0e4f309a787f51ca754d",
+      "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "f4u-corsair-250": {
+      "aircraft_data_sha256": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673",
+      "bounds": {
+        "position": [
+          -1.38888895511627,
+          -0.249582171440125,
+          -0.587132632732391
+        ],
+        "size": [
+          2.77777791023254,
+          0.778231084346771,
+          2.38111114501953
+        ]
+      },
+      "frames": 0,
+      "id": "f4u-corsair-250",
+      "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+      "name": "F4U-1D Corsair 1/4.5",
+      "status": "experimental",
+      "visual_family": "f4u-corsair-250",
+      "file": "studio-f4u-corsair-250.png",
+      "sha256": "caa153c33e44d6248ad6cbb63d995dbacd6a23711d339930db984954e503c9a6",
+      "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "aircraft_data_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+      "bounds": {
+        "position": [
+          -0.998200178146362,
+          -0.0784326195716858,
+          -0.938040018081665
+        ],
+        "size": [
+          1.99640011787415,
+          0.675601959228516,
+          2.26121664047241
+        ]
+      },
+      "frames": 0,
+      "id": "sebart-avanti-s-a200-p100rx",
+      "model_manifest_sha256": "b2196e4dfe6b5f7077e3ee5bdab6a435331cb68ea11f78cb69f46263bb10a82c",
+      "name": "Vantage Jet",
+      "status": "experimental",
+      "visual_family": "sebart-avanti-s-a200-p100rx",
+      "file": "studio-sebart-avanti-s-a200-p100rx.png",
+      "sha256": "5afea09bf749d6eefa582a7f63943e52f51db010bb257b36fcc8fc8cd32a3ee7",
+      "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "turbo-lumber-evolution": {
+      "aircraft_data_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+      "bounds": {
+        "position": [
+          -0.772751808166504,
+          -0.256000012159348,
+          -0.291325747966766
+        ],
+        "size": [
+          1.54550361633301,
+          0.434000074863434,
+          1.12332582473755
+        ]
+      },
+      "frames": 0,
+      "id": "turbo-lumber-evolution",
+      "model_manifest_sha256": "b4ac6781aa61ee376d75e41b4b6824f452ff83bd12e5787077bb3f5ff11ae669",
+      "name": "Turbo Lumber Evolution",
+      "status": "experimental",
+      "visual_family": "turbo-lumber-evolution",
+      "file": "studio-turbo-lumber-evolution.png",
+      "sha256": "3e09d90d6fb96e55cd69a9ece47598ea175559513a7e3b392ce1a494e89701d3",
+      "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "skywalker-x8": {
+      "aircraft_data_sha256": "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830",
+      "bounds": {
+        "position": [
+          -1.05862140655518,
+          -0.089095838367939,
+          -0.300727486610413
+        ],
+        "size": [
+          2.11724281311035,
+          0.296138882637024,
+          0.981146335601807
+        ]
+      },
+      "frames": 0,
+      "id": "skywalker-x8",
+      "model_manifest_sha256": "f735c4192228e5863323d7fa72a1d888c1ee98a4a36c4ffc40cff84d19cc7ae1",
+      "name": "X8 Flying Wing",
+      "status": "experimental",
+      "visual_family": "skywalker-x8",
+      "file": "studio-skywalker-x8.png",
+      "sha256": "a9c850a84c013923e24a97687e51a548afd1769009dbf5708cd4b85eadb64ab2",
+      "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "xcell-60-research": {
+      "aircraft_data_sha256": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
+      "bounds": {
+        "position": [
+          -0.664143741130829,
+          0.000199999660253525,
+          -0.448599338531494
+        ],
+        "size": [
+          1.32828748226166,
+          0.362300008535385,
+          1.47987127304077
+        ]
+      },
+      "frames": 0,
+      "id": "xcell-60-research",
+      "model_manifest_sha256": "",
+      "name": "RC Helicopter Research Trainer",
+      "status": "experimental",
+      "visual_family": "hx-700",
+      "file": "studio-xcell-60-research.png",
+      "sha256": "a2237036f015703b4360512a7c62c15f9d0741f356ba96e9c53d78e5a3f1d311",
+      "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "mt8-bisonte": {
+      "aircraft_data_sha256": "",
+      "bounds": {
+        "position": [
+          -0.261676847934723,
+          -0.125416696071625,
+          -0.333499997854233
+        ],
+        "size": [
+          0.523353695869446,
+          0.364916682243347,
+          0.666999995708466
+        ]
+      },
+      "frames": 0,
+      "id": "mt8-bisonte",
+      "model_manifest_sha256": "",
+      "name": "Bisonte MT8",
+      "status": "experimental",
+      "visual_family": "mt8-bisonte",
+      "file": "studio-mt8-bisonte.png",
+      "sha256": "ac103220c6ca1fab7d0b148914fb382585eed1edff447225517650a8fc729cff",
+      "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "monster-car-2": {
+      "aircraft_data_sha256": "",
+      "bounds": {
+        "position": [
+          -0.246332511305809,
+          -0.0870000049471855,
+          -0.326645314693451
+        ],
+        "size": [
+          0.49266505241394,
+          0.366366624832153,
+          0.665645241737366
+        ]
+      },
+      "frames": 0,
+      "id": "monster-car-2",
+      "model_manifest_sha256": "",
+      "name": "MONSTER CAR 2",
+      "status": "experimental",
+      "visual_family": "monster-car-2",
+      "file": "studio-monster-car-2.png",
+      "sha256": "c6e55b1683cd189e2fd01168a9460a91fae2feeb8cb3efc7bd9c9757e4a18e5f",
+      "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    }
+  },
+  "images": {
+    "ui-home.png": {
+      "file": "ui-home.png",
+      "sha256": "c3c43e9eca0764fe3c9de55d7ebc76533639f3a3187d4cb57664526bf6574b99",
+      "size": [
+        1920,
+        1080
+      ],
+      "input_name": "readme-home-final-20261028.png",
+      "provenance": "Supplied separately; studio session does not apply",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "ui-workshop-appearance.png": {
+      "file": "ui-workshop-appearance.png",
+      "sha256": "b6f79aadc9d76d44490ae526f13141d176b58bf66f34ef10596ec8fa672a9e4f",
+      "size": [
+        1920,
+        1080
+      ],
+      "input_name": "readme-workshop-appearance-20261028.png",
+      "provenance": "Supplied separately; studio session does not apply",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "ui-workshop-setup.png": {
+      "file": "ui-workshop-setup.png",
+      "sha256": "493fe9af70053c1636e0318a4cd2d8b8e312c8d6e64f5d768bc136896f03b984",
+      "size": [
+        1920,
+        1080
+      ],
+      "input_name": "readme-workshop-setup-20261028.png",
+      "provenance": "Supplied separately; studio session does not apply",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "landscape-club-field.png": {
+      "file": "landscape-club-field.png",
+      "sha256": "36a5bb7989bd99580d1dd4ffe47c3afafeee2a72d44f3afb7fddfaaaa2466d41",
+      "size": [
+        1920,
+        1080
+      ],
+      "input_name": "readme-club-overview-20261028.png",
+      "provenance": "Supplied separately; studio session does not apply",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "landscape-green-paradise.png": {
+      "file": "landscape-green-paradise.png",
+      "sha256": "5b8ec84e20e5a1370443db26ed49d4f847bea48b1b194b34c1959ca0393f155b",
+      "size": [
+        1920,
+        1080
+      ],
+      "input_name": "readme-green-overview-20261028.png",
+      "provenance": "Supplied separately; studio session does not apply",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "flight-x8.png": {
+      "file": "flight-x8.png",
+      "sha256": "d1f36295201effb6310e5abafba651e7b90ff5c8daeadc601557de82899724ed",
+      "size": [
+        1920,
+        1080
+      ],
+      "input_name": "readme-x8-final-20261028.png",
+      "provenance": "Supplied separately; studio session does not apply",
+      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    }
+  }
+}

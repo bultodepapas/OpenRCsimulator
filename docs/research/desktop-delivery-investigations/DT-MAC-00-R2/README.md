@@ -4,6 +4,9 @@
 
 ## Reports and scope
 
+Subsequent implementation is recorded in [DT-MAC-02 Windows preparation](../DT-MAC-02/README.md).
+This research report retains the pre-implementation audit; native Mac qualification remains open.
+
 | Report | Coverage |
 | --- | --- |
 | [Apple technologies](apple-technologies.md) | Metal/Metal 4; spatial, temporal, neural, interpolation and denoised MetalFX; GPU-family/OS distinctions; M1–M5 and newly documented M6; unified memory, TBDR, tensors, shader compilation, presentation, power and 2026 diagnostic tools |

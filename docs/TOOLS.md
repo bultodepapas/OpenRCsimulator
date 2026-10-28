@@ -4,7 +4,7 @@ Start at the [task index](tools/README.md) to choose a tool. This page owns setu
 
 ## Developer setup
 
-Use the official Godot **4.8-beta1** prerelease pinned by [`app/get-godot.sh`](../app/get-godot.sh), which verifies the archive, exact engine version and cached executable hashes. The downloader supports Linux x86_64 and Windows x86_64 under Git Bash. Install Git, Bash, curl, unzip, GNU coreutils, util-linux and Python 3.
+Use the official Godot **4.8-beta1** prerelease pinned by [`app/get-godot.sh`](../app/get-godot.sh), which verifies the archive, exact engine version and cached executable hashes. The downloader supports Linux x86_64, Windows x86_64 under Git Bash, and native Darwin ARM64. On Linux and Windows install Git, Bash, curl, unzip, GNU coreutils, util-linux and Python 3.
 
 ```sh
 git clone -c core.autocrlf=false https://github.com/bultodepapas/OpenRCsimulator.git
@@ -24,7 +24,7 @@ $GodotWindows = (Resolve-Path '.tools/Godot_v4.8-beta1_win64_console.exe').Path
 python tools/godot/run_checked.py --timeout 90 -- $GodotWindows --headless --path app --audio-driver Dummy --script res://tests/test_simulation.gd
 ```
 
-Use the [checked runner](../tools/godot/README.md) for focused tests: Godot can print script errors and still exit zero. WSL checks establish Linux behavior, not native Windows GPU/device acceptance. On macOS, open `app/project.godot` with the matching engine.
+Use the [checked runner](../tools/godot/README.md) for focused tests: Godot can print script errors and still exit zero. WSL checks establish Linux behavior, not native Windows GPU/device acceptance. For the native Apple Silicon downloader, template prerequisite and hardware inventory, follow the [macOS setup and preflight](../tools/godot/README.md#native-apple-silicon-setup-and-preflight-dt-mac-02a). Native Mac execution remains to be verified; Linux cross-export and release gates are unchanged.
 
 **Linux Wayland:** beta1 can crash while falling back from unavailable X11 to Wayland ([issue #124731](https://github.com/godotengine/godot/issues/124731); [fix #124734](https://github.com/godotengine/godot/pull/124734) postdates this pin). In a working Wayland session, launch with `python3 tools/graphics/launch.py --display-driver wayland`. Imports, tests and exports use `--headless`; these do not qualify desktop Wayland rendering.
 

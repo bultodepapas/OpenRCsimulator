@@ -134,6 +134,17 @@ class CollectionTests(unittest.TestCase):
         self.assertFalse(result["host"]["python_process_native_arm64"])
         self.assertIsNone(result["engine"]["forced_arm64_version_succeeded"])
         self.assertIsNone(result["engine"]["normal_launch_native_arm64"])
+        self.assertIn("engine:forced_arm64_unavailable", result["collection"]["issues"])
+
+    def test_unreported_display_resolution_is_not_a_complete_inventory(self) -> None:
+        self.profile = json.dumps({"SPDisplaysDataType": [{"_name": "Apple M1", "spdisplays_ndrvs": [{}]}]})
+        with mock.patch.object(probe.platform, "machine", return_value="arm64"), \
+             mock.patch.object(probe, "process_translation", return_value=(False, None)), \
+             mock.patch.object(probe, "bounded_command", side_effect=self.command):
+            result = probe.collect(self.engine)
+        self.assertFalse(result["collection"]["complete"])
+        self.assertIn("displays:resolution_unavailable", result["collection"]["issues"])
+        self.assertIsNone(result["gpus"][0]["displays"][0]["reported_dimensions"])
 
     def test_missing_data_stays_unknown_and_marks_receipt_partial(self) -> None:
         def command(args: list[str], **kwargs) -> probe.Outcome:

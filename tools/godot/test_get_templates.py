@@ -125,6 +125,8 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
         self.assertIn("requires Python 3.11+", result.stderr)
         self.assertIn("OPENRC_GODOT_PYTHON", result.stderr)
         self.assertEqual(self.log("helper.log"), [])
+        self.assertEqual(self.log("network.log"), [])
+        self.assertFalse(self.dest.exists())
 
     def test_linux_still_uses_sha512sum(self) -> None:
         result = self.run_getter(TEST_SYSTEM="Linux")

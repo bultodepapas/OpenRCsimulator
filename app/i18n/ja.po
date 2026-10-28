@@ -6201,16 +6201,8 @@ msgstr "出力：%d × %d · VSync：%s"
 msgid "The driver or desktop compositor may override VSync."
 msgstr "ドライバーやデスクトップコンポジターがVSync設定を上書きする場合があります。"
 
-msgid "Try High (restart)"
-msgstr "高画質を試す（再起動）"
-
 msgid "Restart in Standard"
 msgstr "標準で再起動"
-
-msgid ""
-"High is a temporary experiment. Keep your changes before restarting. A "
-"normal launch returns to Standard."
-msgstr "高画質モードは一時的な試験機能です。再起動する前に変更を保存してください。通常起動すると標準モードに戻ります。"
 
 msgid ""
 "Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ "
@@ -6219,9 +6211,6 @@ msgstr "柔らかい影、アンビエントオクルージョン、空の反射
 
 msgid "Graphics mode: %s"
 msgstr "グラフィックモード：%s"
-
-msgid "High (experimental)"
-msgstr "高画質（実験的）"
 
 msgid "Standard"
 msgstr "標準"
@@ -6593,9 +6582,6 @@ msgstr "FSR3 · バランス"
 
 msgid "FSR3 · Performance"
 msgstr "FSR3 · パフォーマンス優先"
-
-msgid "DLSS · Native AA"
-msgstr "DLSS · Native AA"
 
 msgid "DLSS · Quality"
 msgstr "DLSS · 画質優先"
