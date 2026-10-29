@@ -15,6 +15,38 @@ not yet qualified; its [coverage checklist](../../../../research/native-kernel/R
 separates new component work from production admission. Historical "electric Stik" labels below identify the
 same legacy prescribed-RPM baseline; they do not demonstrate coupled electric or battery support.
 
+## Expanded Linux qualification (2026-10-29)
+
+The frozen candidate is source `eef621296`, native library `d023a875…17fc1` and release executable
+`d0ca3640…a82c1`. Its 19 installer gates, 191 admission and 214 wheel-layout checks, UBSan checks,
+five packaged native modes, 18 application routes and exact 65-row player replay passed. The six-file
+Linux candidate ZIP passed streamed CRC, SHA-256 and permission checks. The full 1,238-row fleet campaign
+and final shared-workspace installation remain pending; this candidate is not yet the expanded default.
+
+The corrected release performance campaign completed all 60 probes: three alternating reference/native
+pairs for each aircraft/case, with 600 warmup and 2,400 sampled ticks. Every pair was comparable, with
+matching state fingerprints and actual native execution. Other owned heavy jobs were idle. On the local
+Intel Core i5-10500 host (12 logical CPUs, Linux 6.8, glibc 2.39), median paired tick-cost ratios were:
+
+| Aircraft / propulsion | Trim | Manoeuvre |
+| --- | ---: | ---: |
+| Ugly Stik / legacy prescribed RPM | 1.58× | 1.62× |
+| Stik 61FX / finite two-stroke glow | 1.73× | 1.78× |
+| Turbo Lumber / coupled electric | 2.08× | 2.20× |
+| P-51 / finite liquid combustion | 2.77× | 2.68× |
+| Avanti P100-RX / turbine | 2.20× | 2.17× |
+
+Each ratio is reference mean tick cost divided by native mean tick cost, then the median of three pairs.
+These measure the detached production tick, including input and simulation, with the observer enabled.
+They exclude rendering, audio, OS input and scheduling; they do not qualify 1080p, the 500 µs/Gate P budget,
+physical realism or helicopter performance. Three observations per case are not population confidence bounds.
+The earlier attempt used an incomplete Avanti catalog ID and failed before its turbine simulations; that
+attempt is retained and excluded from qualifying timing evidence.
+
+Exact reports, source identities, the candidate archive and the retained original rollback are indexed under
+`coverage_expansion_components_2026_10_28.abi2_integration_in_progress.native_admission_follow_up` in the
+[revalidation record](revalidation-linux-2026-10-28.json).
+
 ## Normal-flight integration (2026-10-28)
 
 `FlightSession` owns the optional prepared native stage. Reset and restore create a fresh helper and prime its

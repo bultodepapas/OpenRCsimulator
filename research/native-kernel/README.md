@@ -31,9 +31,11 @@ The coupled electric sources belong to Turbo Lumber and X8.
 Research joint stages now cover the coupled electric, finite-liquid gas/turbine, finite glow and helicopter families.
 The [dated component and stage evidence](../../docs/research/native-kernel/NK-3/revalidation-linux-2026-10-28.json)
 records exact comparisons, paired tapes, source lifecycle events and remaining limits. ABI 2 integration and
-capability-based production admission are implemented. The first ABI 2 installation passed native lifecycle,
-catalog replay and application-routing checks; final-source fleet qualification and new default delivery
-remain pending. The existing helicopter reference
+capability-based production admission are implemented. The frozen candidate passed strict installation,
+native admission boundaries, UBSan, actual Linux package/replay/routes and paired release timing;
+[expanded qualification](../../docs/research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29)
+records their scope. The full final-source fleet campaign and new default delivery remain pending.
+The existing helicopter reference
 rejects spatial/OU/column weather, and its hot-high start currently fails hover trim.
 
 Shared pre-tick/discrete supervision may remain GDScript under the existing kernel contract. Continuous laws
