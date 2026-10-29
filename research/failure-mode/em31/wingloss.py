@@ -59,7 +59,7 @@ CONFIG = {
     "timber": dict(file="turbo_lumber_evolution", probe="turbo-lumber-evolution", label="Timber (4S electric)",
                    wing={"wing_main": "both"}, root=0.06, ail=(0.45, 0.97, 0.45, None), flap=None,
                    side_items=[], s_side=0.10, k_lin=0.35, beta_ft05=16.9, ft05_ke=-24.8, rot=1, dihedral_deg=2.0),
-    "x8": dict(file="skywalker_x8", probe="skywalker-x8", label="Skywalker X8 (flying wing)",
+    "x8": dict(file="moonrunner_x99", probe="skywalker-x8", label="Skywalker X8 (flying wing)",
                wing={"wing_left": "left", "wing_right": "right"}, root=0.235, ail=(0.33, 0.90, 0.45, None), flap=None,
                side_items=["servo_elevon_left"], s_side=0.063, k_lin=0.40, beta_ft05=None, ft05_ke=None, rot=None,
                dihedral_deg=0.0),
@@ -124,7 +124,7 @@ def parts_from_inventory(d, cfg, h, chords):
         ys = (np.arange(n) + 0.5) / n * h
         cy = cr + (ct - cr) * ys / h
         w = cy / cy.sum()
-        sweep = 0.30 if cfg["file"] == "skywalker_x8" else 0.0  # X8 quarter-chord sweep ~17 deg (estimate)
+        sweep = 0.30 if cfg["file"] == "moonrunner_x99" else 0.0  # X8 quarter-chord sweep ~17 deg (estimate)
         ybar = float((w * ys).sum())
         dih = math.tan(math.radians(cfg["dihedral_deg"]))
         for s in sides:

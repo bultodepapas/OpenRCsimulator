@@ -1,0 +1,34 @@
+{
+  "format": "openrc-moonrunner-overlay-source-proof",
+  "version": 1,
+  "sources": [
+    {
+      "path": "assets/aircraft/moonrunner-x99-overlay/customization-bindings.json",
+      "sha256": "07cd955d8d194cea5b2db7d2a5d3356c5f968bfc96a275f179172178b96ae4e3"
+    },
+    {
+      "path": "assets/aircraft/moonrunner-x99-overlay/model-bindings.json",
+      "sha256": "f3bdc537a8d5283e5f678ce83dbed79adb3a22b842d91e72191033e6a4903579"
+    },
+    {
+      "path": "res://aircraft/customization_overlay.gd",
+      "sha256": "f7303394011909f99557733fab83d6491313adb0d5a42b220b633cd623a7c885"
+    },
+    {
+      "path": "res://aircraft/model_manifest.gd",
+      "sha256": "6c6a7a0a3f20a862c302088e40c58a547f05abc2a1475f1924d7a30edc0815e4"
+    },
+    {
+      "path": "res://aircraft/model_overlay_registry.gd",
+      "sha256": "f75f4dcedda0b0f748d8635a8d7866a216c5b3f9226081aa368c344949023d10"
+    },
+    {
+      "path": "res://aircraft/model_registry.gd",
+      "sha256": "ac26c21e4c1de02895a26f9b047f5847da5c58ed113990cd25577738b446ca9d"
+    },
+    {
+      "path": "res://aircraft/overlay_source_proof.gd",
+      "sha256": "7dac523bf39cec84f6fae50bb5c5ae75d3e5ae5a8db346c5153d53714a2a9009"
+    }
+  ]
+}

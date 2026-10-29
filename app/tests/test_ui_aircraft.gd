@@ -19,7 +19,7 @@ const GLOW_61FX := "stik-glow-61fx-2t"
 const GLOW_55AX := "stik-glow-55ax-2t"
 const GLOW_FS64V := "stik-glow-fs64v-4t"
 const HELI := "xcell-60-research"
-const X8 := "skywalker-x8"
+const X8 := "moonrunner-x99"
 
 var _failures := 0
 var ui: RefCounted
@@ -225,6 +225,14 @@ func _run() -> void:
 	_check("Spanish: Vantage Jet keeps its name", home.aircraft_name_label.text == "Vantage Jet"
 		and Catalog.entry(AVANTI).name == "Vantage Jet" and Catalog.entry(AVANTI).short_name == "Vantage Jet",
 		home.aircraft_name_label.text)
+	home.set_aircraft("skywalker-x8")
+	_check("Home normalizes the historical stock alias", home.aircraft_id == X8)
+	app.set_aircraft("skywalker-x8")
+	await _preview(app)
+	_check("app selection normalizes the historical stock alias", home.aircraft_id == X8 and app.preferences.aircraft == X8)
+	home._request_aircraft("skywalker-x8")
+	await _preview(app)
+	_check("catalog requests normalize the historical stock alias", home.aircraft_id == X8 and app.preferences.aircraft == X8)
 	app.set_aircraft(X8)
 	await ui.settle()
 	_check("Spanish: MoonRunner X99 retains its name", home.aircraft_name_label.atr(home.aircraft_name_label.text) == "MoonRunner X99"

@@ -3,7 +3,7 @@
   {
    "balance_fuel_state": "as_inventory",
    "catalog_ids": [
-    "skywalker-x8"
+    "moonrunner-x99"
    ],
    "cg_range_check": {
     "aft_x_m": 0.140419,
@@ -14,10 +14,10 @@
    },
    "cg_tolerance_m": 0.001,
    "energy": "pack_ecm",
-   "file": "battery/skywalker_x8_6s_pack.json",
+   "file": "battery/moonrunner_x99_6s_pack.json",
    "flags": [],
    "fuel_items": [],
-   "id": "skywalker-x8",
+   "id": "moonrunner-x99",
    "inventory_identity": {
     "idless_inventory_items": 0,
     "physical_identity_version": 1
@@ -27,7 +27,7 @@
    "neutral_point": {
     "kind": "derived",
     "np_x_m": 0.152481,
-    "register_key": "skywalker-x8"
+    "register_key": "moonrunner-x99"
    },
    "plan_cg_m": [
     0.135419,
@@ -353,6 +353,56 @@
    "variant_kind": "catalog"
   },
   {
+   "balance_fuel_state": "as_inventory",
+   "catalog_ids": [
+    "moonrunner-x99"
+   ],
+   "cg_range_check": {
+    "aft_x_m": 0.140419,
+    "forward_x_m": 0.130419,
+    "plan_cg_x_m": 0.135419,
+    "plan_state": "declared",
+    "status": "within"
+   },
+   "cg_tolerance_m": 0.001,
+   "energy": "fixed_voltage",
+   "file": "moonrunner_x99.json",
+   "flags": [],
+   "fuel_items": [],
+   "id": "moonrunner-x99",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
+   "mac_m": 0.38983,
+   "neutral_donor_items": [],
+   "neutral_point": {
+    "kind": "derived",
+    "np_x_m": 0.152481,
+    "register_key": "moonrunner-x99"
+   },
+   "plan_cg_m": [
+    0.135419,
+    0.0,
+    0.004256
+   ],
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "declared",
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.135419,
+      0.0,
+      0.004256
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 3.131641,
+     "static_margin_pct_mac": 4.377
+    }
+   },
+   "variant_kind": "catalog"
+  },
+  {
    "balance_fuel_state": "empty_tanks",
    "catalog_ids": [
     "p51d-mustang-120"
@@ -520,56 +570,6 @@
      "cg_shift_from_declared_mm": -7.672,
      "mass_kg": 12.734858,
      "static_margin_pct_mac": 13.3
-    }
-   },
-   "variant_kind": "catalog"
-  },
-  {
-   "balance_fuel_state": "as_inventory",
-   "catalog_ids": [
-    "skywalker-x8"
-   ],
-   "cg_range_check": {
-    "aft_x_m": 0.140419,
-    "forward_x_m": 0.130419,
-    "plan_cg_x_m": 0.135419,
-    "plan_state": "declared",
-    "status": "within"
-   },
-   "cg_tolerance_m": 0.001,
-   "energy": "fixed_voltage",
-   "file": "skywalker_x8.json",
-   "flags": [],
-   "fuel_items": [],
-   "id": "skywalker-x8",
-   "inventory_identity": {
-    "idless_inventory_items": 0,
-    "physical_identity_version": 1
-   },
-   "mac_m": 0.38983,
-   "neutral_donor_items": [],
-   "neutral_point": {
-    "kind": "derived",
-    "np_x_m": 0.152481,
-    "register_key": "skywalker-x8"
-   },
-   "plan_cg_m": [
-    0.135419,
-    0.0,
-    0.004256
-   ],
-   "plan_cg_matches_inventory": true,
-   "plan_cg_state": "declared",
-   "states": {
-    "declared": {
-     "cg_m": [
-      0.135419,
-      0.0,
-      0.004256
-     ],
-     "cg_shift_from_declared_mm": 0.0,
-     "mass_kg": 3.131641,
-     "static_margin_pct_mac": 4.377
     }
    },
    "variant_kind": "catalog"
@@ -1380,37 +1380,37 @@
    "f4u-corsair-250",
    "gp-extra-300s-60",
    "jensen-das-ugly-stik-60",
+   "moonrunner-x99",
    "p51d-mustang-120",
    "sebart-avanti-s-a200-p100rx",
-   "skywalker-x8",
    "stik-glow-55ax-2t",
    "stik-glow-61fx-2t",
    "stik-glow-fs64v-4t",
    "turbo-lumber-evolution"
   ],
   "catalog_covered_files": [
-   "battery/skywalker_x8_6s_pack.json",
+   "battery/moonrunner_x99_6s_pack.json",
    "battery/turbo_lumber_evolution_4s_pack.json",
    "f4u_corsair_250.json",
    "gp_extra_300s_60.json",
    "jensen_ugly_stik_60.json",
+   "moonrunner_x99.json",
    "p51d_mustang_120.json",
    "sebart_avanti_s_a200.json",
-   "skywalker_x8.json",
    "stik_glow_55ax_2t.json",
    "stik_glow_61fx_2t.json",
    "stik_glow_fs64v_4t.json",
    "turbo_lumber_evolution.json"
   ],
   "catalog_data_files": [
-   "battery/skywalker_x8_6s_pack.json",
+   "battery/moonrunner_x99_6s_pack.json",
    "battery/turbo_lumber_evolution_4s_pack.json",
    "f4u_corsair_250.json",
    "gp_extra_300s_60.json",
    "jensen_ugly_stik_60.json",
+   "moonrunner_x99.json",
    "p51d_mustang_120.json",
    "sebart_avanti_s_a200.json",
-   "skywalker_x8.json",
    "stik_glow_55ax_2t.json",
    "stik_glow_61fx_2t.json",
    "stik_glow_fs64v_4t.json",
@@ -1419,14 +1419,14 @@
   "catalog_missing_files": [],
   "errors": [],
   "reported_airplane_files": [
-   "battery/skywalker_x8_6s_pack.json",
+   "battery/moonrunner_x99_6s_pack.json",
    "battery/turbo_lumber_evolution_4s_pack.json",
    "f4u_corsair_250.json",
    "gp_extra_300s_60.json",
    "jensen_ugly_stik_60.json",
+   "moonrunner_x99.json",
    "p51d_mustang_120.json",
    "sebart_avanti_s_a200.json",
-   "skywalker_x8.json",
    "stik_glow_55ax_2t.json",
    "stik_glow_55ax_2t_apc_13x6.json",
    "stik_glow_61fx_2t.json",

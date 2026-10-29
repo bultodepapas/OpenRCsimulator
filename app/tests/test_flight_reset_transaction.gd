@@ -223,7 +223,7 @@ func _fallback() -> void:
 		f.free()
 
 func _hand_launch_and_initial_failure() -> void:
-	var f := session(0, "res://data/aircraft/skywalker_x8.json")
+	var f := session(0, "res://data/aircraft/moonrunner_x99.json")
 	f.start_choice = Flight.START_HAND_LAUNCH
 	var b := begin(f, "hand-launch")
 	f.reset()

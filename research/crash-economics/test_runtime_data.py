@@ -146,7 +146,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
             self.assertFalse(dossier["complete"], aircraft_id)
             self.assertTrue(dossier["missing"], aircraft_id)
             if aircraft_id in {"gp-extra-300s-60", "turbo-lumber-evolution", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx",
-                               "f4u-corsair-250", "skywalker-x8"}:
+                               "f4u-corsair-250", "moonrunner-x99"}:
                 continue
             self.assertEqual(dossier["components"], [], aircraft_id)
             self.assertEqual(dossier["propeller_component_id"], "", aircraft_id)
@@ -154,7 +154,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
 
     def test_fleet_part_subtotals_do_not_claim_full_aircraft_prices(self) -> None:
         cases = {"turbo-lumber-evolution": 46587, "p51d-mustang-120": 245671,
-                 "sebart-avanti-s-a200-p100rx": 655912, "skywalker-x8": 109005}
+                 "sebart-avanti-s-a200-p100rx": 655912, "moonrunner-x99": 109005}
         for aircraft_id, subtotal in cases.items():
             dossier = self.dossiers[aircraft_id]
             self.assertFalse(dossier["complete"])

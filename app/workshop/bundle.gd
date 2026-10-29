@@ -176,7 +176,10 @@ static func _resolve_current_profile(payload: Dictionary) -> Dictionary:
 	var physical: Dictionary = Descriptor.verify_presentation(payload["workshop_descriptor"])
 	if not bool(physical.get("ok", false)):
 		return physical
+	var base_id := str(payload["base_id"])
 	if not ResourceLoader.exists("res://render/aircraft_customization.gd"):
+		if base_id == "moonrunner-x99":
+			return _failure("Overlay customization dependency is unavailable.")
 		var legacy: Dictionary = PresentationProfile.validate(payload["presentation_profile"])
 		if not bool(legacy.get("ok", false)) or not bool(legacy.get("available", false)):
 			return _failure("The current customization companion is required for this profile.")
@@ -184,8 +187,22 @@ static func _resolve_current_profile(payload: Dictionary) -> Dictionary:
 			return _failure("The current customization companion is required for this pinned profile.")
 		return {"ok": true, "errors": PackedStringArray(), "profile": legacy["profile"]}
 	var customization: Script = load("res://render/aircraft_customization.gd")
-	var described: Dictionary = customization.describe(str(payload["base_id"]))
+	if customization == null:
+		return _failure("Customization dependency cannot be loaded.")
+	var described: Dictionary
+	if base_id == "moonrunner-x99":
+		var overlay_path := "res://aircraft/customization_overlay.gd"
+		if not ResourceLoader.exists(overlay_path):
+			return _failure("Overlay customization resolver is unavailable.")
+		var overlay: Script = load(overlay_path)
+		if overlay == null or not overlay.has_method("describe"):
+			return _failure("Overlay customization resolver cannot be loaded.")
+		described = overlay.describe(base_id)
+	else:
+		described = customization.describe(base_id)
 	if not bool(described.get("ok", false)) or typeof(described.get("bindings", null)) != TYPE_DICTIONARY:
+		if base_id == "moonrunner-x99":
+			return _failure("The MoonRunner customization overlay is invalid.")
 		var unavailable: Dictionary = PresentationProfile.validate(payload["presentation_profile"])
 		if not bool(unavailable.get("ok", false)) or not bool(unavailable.get("available", false)) \
 				or not _is_unbound_stock_profile(unavailable["profile"]):

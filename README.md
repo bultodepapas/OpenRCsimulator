@@ -64,7 +64,7 @@
 
 [v0.1.8 radio setup](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.1.8/docs/FIRST-LAUNCH.md#radio-setup) starts calibration from Pause or **K** during flight; [current source](docs/FIRST-LAUNCH.md#radio-setup) also offers calibration from Home. [Controls, rates, trims and equipment](docs/FIRST-LAUNCH.md#3-fly). Controller compatibility depends on the device, firmware and operating system.
 
-**The hangar and features below describe current source.** The published ZIP can lag behind: notably, **the X8 is not in v0.1.8**. Use the release notes for what your download includes.
+**The hangar and features below describe current source.** The published ZIP can lag behind: notably, **MoonRunner X99 is not in v0.1.8**. Use the release notes for what your download includes.
 
 ## Aircraft
 
@@ -74,7 +74,7 @@ Current source has **seven fixed-wing airframes and ten airplane configurations*
 
 **2.12 m · 6S electric pusher · elevons · hand launch or airborne start.** MoonRunner X99 joins the current-source hangar as an experimental flying wing, with no landing gear. [Aircraft guide and asset terms](docs/X8-PLAN.md).
 
-| X8 over Club field | X8 model close-up |
+| MoonRunner X99 over Club field | MoonRunner X99 model close-up |
 | --- | --- |
 | ![MoonRunner X99 in a simulator flight over Club field](docs/media/flight-x8.png) | ![MoonRunner X99 model with swept wings, winglets and rear propeller](docs/media/studio-skywalker-x8.png) |
 
@@ -125,9 +125,9 @@ Current source has **seven fixed-wing airframes and ten airplane configurations*
 
 **More ways to fly the Stik:** three additional [O.S. glow installations](docs/GLOW-ENGINES.md) — MAX-61FX, MAX-55AX and FS-64V — share its airframe, with finite fuel and engine start, cut and mixture controls.
 
-At **Club field**, geared airplanes offer runway or airborne starts. At **Green paradise**, they start airborne; the X8 retains its hand-launch option. Aircraft equipment varies: use the in-game control guide for the selected model.
+At **Club field**, geared airplanes offer runway or airborne starts. At **Green paradise**, they start airborne; MoonRunner X99 retains its hand-launch option. Aircraft equipment varies: use the in-game control guide for the selected model.
 
-[Full-size model views and capture details](docs/media/README.md#aircraft-stills). Studio views show the current models; the X8 flight image comes from the running simulator.
+[Full-size model views and capture details](docs/media/README.md#aircraft-stills). Studio views show the current models; the MoonRunner X99 flight image comes from the running simulator.
 
 ## Current features
 

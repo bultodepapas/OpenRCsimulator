@@ -349,12 +349,30 @@ class AircraftModelManifestTests(unittest.TestCase):
         relative_files = {
             ".gitattributes",
             "assets/aircraft/model-bindings.json",
+            "assets/aircraft/customization-bindings.json",
+            "app/data/aircraft_customization.json",
             "research/aircraft-standardization/build_models.py",
+            "research/aircraft-standardization/build_moonrunner_geometry.py",
+            "research/aircraft-standardization/build_overlay_proof.py",
+            "research/aircraft-standardization/build_customization.py",
+            "research/aircraft-standardization/test_customization.py",
+            "assets/aircraft/moonrunner-x99-overlay/model-bindings.json",
+            "assets/aircraft/moonrunner-x99-overlay/customization-bindings.json",
+            "app/data/aircraft_model_overlays/moonrunner-x99.json",
+            "app/data/aircraft_customization_overlays/moonrunner-x99.json",
         }
         relative_files.update(
             path.relative_to(ROOT).as_posix() for path in OUTPUT_DIR.glob("*.json")
         )
-        for manifest in self.manifests.values():
+        overlay = load_json(ROOT / "app/data/aircraft_model_overlays/moonrunner-x99.json")
+        customization_overlay = load_json(ROOT / "app/data/aircraft_customization_overlays/moonrunner-x99.json")
+        for source in customization_overlay["families"][0]["presentation_sources"]:
+            relative_files.add("app/" + source["path"].removeprefix("res://"))
+        proof = load_json(ROOT / "assets/aircraft/moonrunner-x99-overlay/runtime-proof.json")
+        for source in proof["sources"]:
+            path = source["path"]
+            relative_files.add("app/" + path.removeprefix("res://") if path.startswith("res://") else path)
+        for manifest in [*self.manifests.values(), overlay]:
             relative_files.add(manifest["source_registry"]["path"])
             relative_files.add(manifest["geometry"]["source"]["path"])
             relative_files.update(source["path"] for source in manifest["authoring_sources"])
@@ -401,15 +419,34 @@ class AircraftModelManifestTests(unittest.TestCase):
                         self.assertIn(b"\r\n", source_registry, "CRLF clone should exercise normalized text hashes")
                     else:
                         self.assertNotIn(b"\r", source_registry, "LF clone should retain LF source bytes")
-                    for manifest_path in (checkout / "app/data/aircraft_models").glob("*.json"):
+                    manifests = list((checkout / "app/data/aircraft_models").glob("*.json"))
+                    manifests.extend((checkout / "app/data/aircraft_model_overlays").glob("*.json"))
+                    manifests.extend((checkout / "app/data/aircraft_customization_overlays").glob("*.json"))
+                    manifests.append(checkout / "app/data/aircraft_customization.json")
+                    for manifest_path in manifests:
                         self.assertNotIn(b"\r", manifest_path.read_bytes(), f"generated manifest must stay LF: {manifest_path}")
 
+                    result = subprocess.run(
+                        [sys.executable, "research/aircraft-standardization/build_moonrunner_geometry.py", "--check"],
+                        cwd=checkout, capture_output=True, text=True, check=False,
+                    )
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                     result = subprocess.run(
                         [sys.executable, "research/aircraft-standardization/build_models.py", "--check"],
                         cwd=checkout,
                         capture_output=True,
                         text=True,
                         check=False,
+                    )
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                    result = subprocess.run(
+                        [sys.executable, "research/aircraft-standardization/build_customization.py", "--check"],
+                        cwd=checkout, capture_output=True, text=True, check=False,
+                    )
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                    result = subprocess.run(
+                        [sys.executable, "research/aircraft-standardization/test_customization.py"],
+                        cwd=checkout, capture_output=True, text=True, check=False,
                     )
                     self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 

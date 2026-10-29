@@ -255,7 +255,7 @@ func _malformed_queries() -> void:
 
 
 func _stock_unchanged() -> void:
-	for path: String in ["res://data/aircraft/skywalker_x8.json", "res://data/aircraft/battery/skywalker_x8_6s_pack.json"]:
+	for path: String in ["res://data/aircraft/moonrunner_x99.json", "res://data/aircraft/battery/moonrunner_x99_6s_pack.json"]:
 		var loaded := AircraftData.load_file(path)
 		check("stock X8 still loads without intended role", loaded.ok)
 		var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
@@ -266,7 +266,7 @@ func _stock_unchanged() -> void:
 func _v2_pipeline() -> void:
 	# A deliberately synthetic derivative exercises authoring plumbing. These role
 	# choices/tolerances are not stock calibration and never reach a flight session.
-	var original: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/skywalker_x8.json"))
+	var original: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/moonrunner_x99.json"))
 	var source := original.duplicate(true)
 	source.capabilities.landing_support = "authored_hull_v1"
 	source.intended_hull_support = raw_fixture()

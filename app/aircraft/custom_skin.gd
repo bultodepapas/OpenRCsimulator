@@ -5,6 +5,9 @@ const Registry := preload("res://aircraft/model_registry.gd")
 const ModelManifest := preload("res://aircraft/model_manifest.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const KITS := "res://assets/skin-kit/models.json"
+# Exact, reviewed asset pair: historical custom paint uses identical UVs/materials.
+const MOONRUNNER_LEGACY_ASSET_SHA256 := "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac"
+const MOONRUNNER_DERIVATIVE_ASSET_SHA256 := "54d67d9bbfe4ce4abdc4bafa523c3bf812422d6336ba1d0f151a2970e087b0f0"
 const ROOT := "user://skins/"
 const ARCHIVE_LIMIT := 32 * 1024 * 1024
 const MANIFEST_LIMIT := 64 * 1024
@@ -36,7 +39,9 @@ static func kit(aircraft_id: String) -> Dictionary:
 		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(KITS))
 		if parsed is Dictionary and parsed.get("format") == "openrc-skin-kits-v1" and parsed.get("models") is Dictionary:
 			_kit_models = parsed.models
-	return _kit_models.get(family(aircraft_id), {})
+	var visual_family := family(aircraft_id)
+	if visual_family == "skywalker-x8": visual_family = "moonrunner-x99"
+	return _kit_models.get(visual_family, {})
 
 
 static func kit_path(aircraft_id: String) -> String:
@@ -69,16 +74,18 @@ static func import_file(path: String, aircraft_id: String) -> Dictionary:
 	if not inspected.ok: return inspected
 	var digest: String = inspected.sha256
 	var id := ID_PREFIX + digest.substr(0, HASH_PREFIX_LENGTH)
-	var directory := _root + family(aircraft_id)
+	var directory := _root + _storage_families(aircraft_id)[0]
 	var error := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory))
 	if error != OK: return _failure("Could not create the custom paint directory.")
+	var inventory := _inventory(aircraft_id)
+	if not inventory.ok: return _failure("The custom paint directories contain conflicting identifiers.")
 	var destination := _path_for(aircraft_id, id)
+	if destination.is_empty(): return _failure("A different custom paint already uses this identifier.")
 	if FileAccess.file_exists(destination):
 		if FileAccess.get_sha256(destination) != digest:
 			return _failure("A different custom paint already uses this identifier.")
 		return {ok = true, errors = PackedStringArray(), id = id, label = inspected.manifest.label}
-	var inventory := _inventory(aircraft_id)
-	if not inventory.ok or inventory.files.size() >= INSTALLED_LIMIT or inventory.visited >= DIRECTORY_SCAN_LIMIT:
+	if inventory.files.size() >= INSTALLED_LIMIT or inventory.visited >= DIRECTORY_SCAN_LIMIT:
 		return _failure("The custom paint directory is full; remove an installed paint before importing another.")
 	_temp_serial += 1
 	var temporary := directory + "/." + id + "-%d-%d.tmp" % [Time.get_ticks_usec(), _temp_serial]
@@ -120,23 +127,37 @@ static func choices(aircraft_id: String) -> Array:
 	return result
 
 
+static func _storage_families(aircraft_id: String) -> Array[String]:
+	var visual_family := family(aircraft_id)
+	if visual_family in ["skywalker-x8", "moonrunner-x99"]:
+		return ["moonrunner-x99", "skywalker-x8"]
+	return [visual_family]
+
+
 static func _inventory(aircraft_id: String) -> Dictionary:
-	var directory := DirAccess.open(_root + family(aircraft_id))
-	if directory == null: return {ok = true, files = [], visited = 0}
-	var names: Array[String] = []
-	directory.list_dir_begin()
-	var file := directory.get_next()
+	var paths := {}
 	var visited := 0
-	while not file.is_empty():
-		visited += 1
-		if visited > DIRECTORY_SCAN_LIMIT:
-			directory.list_dir_end()
-			return {ok = false, files = [], visited = visited}
-		if not directory.current_is_dir() and file.begins_with("custom-") and file.ends_with(".orskin"):
-			var id := ID_PREFIX + file.trim_prefix("custom-").trim_suffix(".orskin")
-			if is_custom_id(id): names.append(file)
-		file = directory.get_next()
-	directory.list_dir_end()
+	for storage_family: String in _storage_families(aircraft_id):
+		var directory := DirAccess.open(_root + storage_family)
+		if directory == null: continue
+		directory.list_dir_begin()
+		var file := directory.get_next()
+		while not file.is_empty():
+			visited += 1
+			if visited > DIRECTORY_SCAN_LIMIT:
+				directory.list_dir_end()
+				return {ok = false, files = [], visited = visited}
+			if not directory.current_is_dir() and file.begins_with("custom-") and file.ends_with(".orskin"):
+				var id := ID_PREFIX + file.trim_prefix("custom-").trim_suffix(".orskin")
+				if is_custom_id(id):
+					var path := _root + storage_family + "/" + file
+					if paths.has(file) and not _same_archive(paths[file], path):
+						directory.list_dir_end()
+						return {ok = false, files = [], visited = visited}
+					paths[file] = path
+			file = directory.get_next()
+		directory.list_dir_end()
+	var names: Array = paths.keys()
 	names.sort()
 	return {ok = true, files = names, visited = visited}
 
@@ -201,14 +222,35 @@ static func apply(aircraft_id: String, id: String, stock_sha256: String, root: N
 
 
 static func _path_for(aircraft_id: String, id: String) -> String:
-	return _root + family(aircraft_id) + "/custom-" + id.substr(ID_PREFIX.length()) + ".orskin"
+	var filename := "/custom-" + id.substr(ID_PREFIX.length()) + ".orskin"
+	var found := ""
+	var families := _storage_families(aircraft_id)
+	for storage_family: String in families:
+		var candidate := _root + storage_family + filename
+		if not FileAccess.file_exists(candidate): continue
+		if not found.is_empty() and not _same_archive(found, candidate):
+			return ""
+		found = candidate
+	return found if not found.is_empty() else _root + families[0] + filename
 
 
-static func _base(aircraft_id: String = "skywalker-x8") -> Dictionary:
+static func _same_archive(left: String, right: String) -> bool:
+	var a := FileAccess.open(left, FileAccess.READ)
+	var b := FileAccess.open(right, FileAccess.READ)
+	if a == null or b == null or a.get_length() > ARCHIVE_LIMIT or b.get_length() > ARCHIVE_LIMIT:
+		return false
+	return FileAccess.get_sha256(left) == FileAccess.get_sha256(right)
+
+
+static func _base(aircraft_id: String = "moonrunner-x99") -> Dictionary:
 	var spec := kit(aircraft_id)
 	if spec.is_empty(): return _failure("Custom paint is not available for this aircraft.")
 	var visual_family := family(aircraft_id)
 	var sha := str(spec.get("stock_sha256", ""))
+	# Frozen Workshop trials still construct the legacy family, whose verified stock
+	# model remains the original GLB even after the current kit moves to the derivative.
+	if visual_family == "skywalker-x8" and sha == MOONRUNNER_DERIVATIVE_ASSET_SHA256:
+		sha = MOONRUNNER_LEGACY_ASSET_SHA256
 	if sha.is_empty(): return _failure("The stock aircraft asset is unavailable.")
 	if visual_family == "hx-700":
 		var proofs: Dictionary = Registry._read_package_proofs()
@@ -231,7 +273,7 @@ static func _base(aircraft_id: String = "skywalker-x8") -> Dictionary:
 	for group: Dictionary in spec.get("paints", []):
 		for name: String in group.materials: names[name] = true
 	# Earlier X8 Blender exports included the complete original material set.
-	if visual_family == "skywalker-x8":
+	if visual_family in ["skywalker-x8", "moonrunner-x99"]:
 		for name: String in spec.get("material_names", []): names[name] = true
 	if names.is_empty(): return _failure("The stock aircraft has no paintable materials.")
 	return {ok = true, sha256 = sha, names = names, aircraft_id = visual_family}
@@ -327,7 +369,15 @@ static func _validate_manifest(value: Variant, base: Dictionary, entries: Dictio
 		return _failure("The paint manifest has missing or unsupported fields.")
 	if value.format != "openrc-skin" or typeof(value.version) not in [TYPE_INT, TYPE_FLOAT] or value.version != 1:
 		return _failure("Unsupported custom paint format or version.")
-	if value.aircraft_id != base.aircraft_id or value.base_asset_sha256 != base.sha256:
+	var matching_family: bool = value.aircraft_id == base.aircraft_id or (
+		value.aircraft_id in ["skywalker-x8", "moonrunner-x99"] and base.aircraft_id in ["skywalker-x8", "moonrunner-x99"])
+	var exact_identity: bool = matching_family and value.base_asset_sha256 == base.sha256
+	var legacy_moonrunner: bool = (
+		base.aircraft_id == "moonrunner-x99"
+		and base.sha256 == MOONRUNNER_DERIVATIVE_ASSET_SHA256
+		and value.aircraft_id in ["skywalker-x8", "moonrunner-x99"]
+		and value.base_asset_sha256 == MOONRUNNER_LEGACY_ASSET_SHA256)
+	if not exact_identity and not legacy_moonrunner:
 		return _failure("This paint is for a different aircraft or stock model version.")
 	if not value.label is String or value.label.strip_edges().is_empty() or value.label.length() > 48:
 		return _failure("Paint label must contain 1 to 48 printable characters.")

@@ -239,3 +239,29 @@
 /docs/research/ground-physics/GP-12/evidence/stage-factor-reuse/**/*.log -whitespace
 /docs/research/ground-physics/GP-19/evidence/native-continuous-timber/** -text whitespace=cr-at-eol
 /docs/research/ground-physics/GP-19/evidence/native-continuous-timber/**/*.log -whitespace
+
+# MoonRunner overlay outputs pin exact generated LF bytes across checkouts.
+/app/data/aircraft_model_overlays/*.json text eol=lf
+/app/data/aircraft_customization_overlays/*.json text eol=lf
+
+# Generated overlay proof is checked byte-for-byte.
+/assets/aircraft/moonrunner-x99-overlay/runtime-proof.json text eol=lf
+
+# Skin archives embed the LF-normalized packer byte-for-byte.
+/tools/skins/pack_image.py text eol=lf
+/tools/skins/export_openrc_skin.py text eol=lf
+/app/assets/skin-kit/guide.html text eol=lf
+
+# The generated customization registry is checked byte-for-byte.
+/app/data/aircraft_customization.json text eol=lf
+
+# Exact generated MoonRunner geometry and imported asset settings.
+/assets/aircraft/moonrunner-x99-overlay/model-geometry.json text eol=lf
+/app/aircraft/moonrunner_x99_geometry.gd text eol=lf
+/app/assets/aircraft/moonrunner-x99/moonrunner_x99.glb.import text eol=lf
+/app/assets/aircraft/moonrunner-x99/moonrunner_x99_bolido.glb.import text eol=lf
+
+# F4U geometry records the exact source JSON hashes.
+/assets/aircraft/f4u-corsair-250/gear-samples.json text eol=lf
+/assets/aircraft/f4u-corsair-250/wing-fold-r59.json text eol=lf
+/assets/aircraft/f4u-corsair-250/mechanisms-r59.json text eol=lf

@@ -51,6 +51,9 @@ fi
 rm -f "$IMPORT_LOG"
 
 if [[ "$TEST_PART" != units ]]; then
+echo "== GP-12: fixed-brake comparison failure controls"
+python3 -m unittest discover -s "$HERE/../tools/godot" -p test_fixed_brake_legacy.py
+
 echo "== LU-30: downloaded power-line extracts stay current"
 python3 "$HERE/../tools/scenery/bake_power_cable.py" --check
 python3 "$HERE/../tools/scenery/bake_power_insulator.py" --check --godot "$GODOT"
@@ -112,6 +115,10 @@ python3 "$HERE/../research/aircraft-standardization/test_conformance.py"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../research/aircraft-standardization/test_modules.py"
 python3 "$HERE/../research/aircraft-standardization/build_models.py" --check
 python3 "$HERE/../research/aircraft-standardization/test_models.py"
+python3 "$HERE/../research/aircraft-standardization/test_moonrunner_geometry.py"
+python3 "$HERE/../research/aircraft-standardization/test_moonrunner_overlay.py"
+python3 "$HERE/../tools/aircraft/moonrunner/test_lab.py"
+python3 "$HERE/../tools/skins/test_skin_kits.py"
 
 echo "== CR-29: sourced economics catalog and aircraft coverage stay current"
 python3 "$HERE/../research/crash-economics/build_catalog.py" --check
@@ -354,7 +361,11 @@ for t in "$HERE"/tests/test_*.gd; do
     test_rudder_authority.gd) test_args=(-- --allow-known-stik-rudder-sideslip) ;;
     test_yaw_damping.gd) test_args=(-- --allow-known-r02-yaw-alpha11) ;;
   esac
-  run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" "${test_args[@]}" 2>&1 | tee "$LOG"
+  if [ "$(basename "$t")" = "test_fixed_gear_brake_input.gd" ]; then
+    python3 "$HERE/../tools/godot/fixed_brake_legacy.py" --godot "$GODOT" --out-dir "$CHECK_OUT" 2>&1 | tee "$LOG"
+  else
+    run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" "${test_args[@]}" 2>&1 | tee "$LOG"
+  fi
   # run_with_timeout checks every invocation for engine/script/shader errors,
   # including errors printed with a successful process exit.
 done

@@ -266,7 +266,7 @@ func _test_surface_control_overrides(base: Dictionary, base_data: Dictionary) ->
 	_check("surface-control compiler identity composes ahead of legacy transform identities",
 		Compiler.version_for_recipe({"scale": 0.1, "control_multiplier_aileron": 1.1})
 			== Compiler.SURFACE_CONTROLS_COMPILER_VERSION)
-	var x8: Dictionary = _read("res://data/aircraft/skywalker_x8.json")
+	var x8: Dictionary = _read("res://data/aircraft/moonrunner_x99.json")
 	if not x8.is_empty():
 		var x8_capabilities: Dictionary = Compiler.capabilities(x8)
 		if not bool(x8_capabilities.get("control_rudder", false)):

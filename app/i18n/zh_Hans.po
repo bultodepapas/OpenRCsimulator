@@ -6776,6 +6776,9 @@ msgstr "累计记录"
 msgid "Since counter reset"
 msgstr "自计数器重置后"
 
+msgid "Since separate counter resets"
+msgstr "自各计数器分别重置后"
+
 msgid "Airborne time"
 msgstr "空中时间"
 

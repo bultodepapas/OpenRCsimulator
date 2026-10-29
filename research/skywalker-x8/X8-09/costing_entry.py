@@ -2,10 +2,10 @@
 """X8-09: write the Skywalker X8's crash-economics dossier and its dated price observations.
 
 Independent build (no baseline inheritance). The entry binds every physical inventory row of
-app/data/aircraft/skywalker_x8.json to exactly one priced or explicitly unpriced line, maps each crash-hull probe and
+app/data/aircraft/moonrunner_x99.json to exactly one priced or explicitly unpriced line, maps each crash-hull probe and
 the propeller strike to the economic groups a hit inspects, and pins the physics file's current SHA-256
 (`expected_source_sha256`), so a physics change forces a reviewed rebind. The finite-pack variant
-(battery/skywalker_x8_6s_pack.json) is the same airframe: the runtime binds it as the catalog's registered variant
+(battery/moonrunner_x99_6s_pack.json) is the same airframe: the runtime binds it as the catalog's registered variant
 through the physical signature, as for the Turbo Lumber's 4S pack, so it needs no entry of its own.
 
 The 2026-10-25 observations go into research/crash-economics/price-research-fleet.json (replaced by ID, appended
@@ -27,9 +27,10 @@ ROOT = Path(__file__).resolve().parents[3]
 ECON = ROOT / "research/crash-economics"
 COSTING = ECON / "aircraft-costing.json"
 FLEET_PRICES = ECON / "price-research-fleet.json"
-SOURCE = ROOT / "app/data/aircraft/skywalker_x8.json"
-PACK_SOURCE = ROOT / "app/data/aircraft/battery/skywalker_x8_6s_pack.json"
-ID = "skywalker-x8"
+SOURCE = ROOT / "app/data/aircraft/moonrunner_x99.json"
+PACK_SOURCE = ROOT / "app/data/aircraft/battery/moonrunner_x99_6s_pack.json"
+ID = "moonrunner-x99"
+LEGACY_ID = "skywalker-x8"
 OBSERVED = "2026-10-25"
 
 
@@ -285,12 +286,15 @@ def main():
     costing["observed_on"] = max(costing["observed_on"], OBSERVED)
     new = entry(hashlib.sha256(source_bytes).hexdigest())
     fleet = costing["fleet"]
-    index = next((i for i, f in enumerate(fleet) if f["aircraft_id"] == ID), None)
-    if index is None:
+    current = [i for i, f in enumerate(fleet) if f["aircraft_id"] == ID]
+    legacy = [i for i, f in enumerate(fleet) if f["aircraft_id"] == LEGACY_ID]
+    if len(current) > 1 or len(legacy) > 1 or (current and legacy):
+        sys.exit("ambiguous MoonRunner costing entries; resolve the duplicate without discarding records")
+    if current or legacy:
+        fleet[(current or legacy)[0]] = new
+    else:
         index = next(i for i, f in enumerate(fleet) if f["aircraft_id"] == "turbo-lumber-evolution") + 1
         fleet.insert(index, new)
-    else:
-        fleet[index] = new
 
     outputs = {FLEET_PRICES: (prices_text, _render(prices)), COSTING: (costing_text, _render(costing))}
     if "--check" in sys.argv:

@@ -25,7 +25,7 @@ const AVANTI := "sebart-avanti-s-a200-p100rx"
 const AIRBORNE := "airborne"
 const RUNWAY := "runway"
 const HAND_LAUNCH := "hand_launch"
-const X8 := "skywalker-x8"
+const X8 := "moonrunner-x99"
 
 var _failures: int = 0
 var ui: RefCounted

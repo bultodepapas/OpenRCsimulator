@@ -41,7 +41,7 @@ func _checks() -> void:
 	_check_direct_aero(all_models)
 	var wake_models: Array[Dictionary] = []
 	for row: Dictionary in all_models:
-		if row.model.propulsion.has("slipstream") or row.name in [AIRCRAFT, "skywalker-x8"]:
+		if row.model.propulsion.has("slipstream") or row.name in [AIRCRAFT, "moonrunner-x99"]:
 			wake_models.append(row)
 	var smooth: Dictionary = SmoothFixture.combined_raw()
 	smooth.propulsion.propeller.slipstream.swirl_factor.value = 0.4

@@ -59,7 +59,7 @@ func _initialize() -> void:
 		"loaded %d" % configs.size())
 	for mode: String in ["ideal", "pack"]:
 		_check("X8 " + mode + " is covered by uniform parity",
-			not _model_for(configs, "skywalker-x8", mode).is_empty())
+			not _model_for(configs, "moonrunner-x99", mode).is_empty())
 	_check("finite Lumber battery-pack model is normalized",
 		not _model_for(configs, BATTERY_AIRCRAFT, "pack").is_empty())
 	for config: Dictionary in configs:

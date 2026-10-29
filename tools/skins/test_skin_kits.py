@@ -65,6 +65,14 @@ class SkinKits(unittest.TestCase):
         families = {json.loads(path.read_text(encoding="utf-8"))["family_id"]
                     for path in (APP / "data/aircraft_models").glob("*.json")
                     if json.loads(path.read_text(encoding="utf-8")).get("schema") == "openrc-aircraft-model"}
+        # The old wing manifest remains a frozen Workshop binding; only the
+        # explicitly registered overlay is an active skin-kit family.
+        self.assertIn("skywalker-x8", families)
+        families.remove("skywalker-x8")
+        overlay = json.loads((APP / "data/aircraft_model_overlays/moonrunner-x99.json").read_text(encoding="utf-8"))
+        self.assertEqual(overlay["family_id"], "moonrunner-x99")
+        self.assertNotIn(overlay["family_id"], families)
+        families.add(overlay["family_id"])
         families.add("hx-700")
         self.assertEqual(set(self.models), families)
 

@@ -1,6 +1,8 @@
 # X8-06: X8 physics data
 
-2026-10-25. [derive_physics.py](../../../../research/skywalker-x8/X8-06/derive_physics.py) generates `app/data/aircraft/skywalker_x8.json` (ideal 22.2 V bus) and `app/data/aircraft/battery/skywalker_x8_6s_pack.json` (finite 6S 5000 mAh `pack_ecm`, the catalog default). Both are written with the CRLF bytes a checkout produces, so their hashes match any clone. Never hand-edit them; `--check` proves they are current. [probe.gd](../../../../research/skywalker-x8/X8-06/probe.gd) loads both through `AircraftData` and prints the derived tailless law, trims and strip-against-oracle coefficients. Sources: [X8-01](../X8-01/README.md).
+2026-10-25. At the time of this study, [derive_physics.py](../../../../research/skywalker-x8/X8-06/derive_physics.py) generated [skywalker_x8.json](https://github.com/bultodepapas/OpenRCsimulator/blob/e1e9bcf6c117823c2f4357e1d04bfe6de94eeb08/app/data/aircraft/skywalker_x8.json) (ideal 22.2 V bus) and [skywalker_x8_6s_pack.json](https://github.com/bultodepapas/OpenRCsimulator/blob/e1e9bcf6c117823c2f4357e1d04bfe6de94eeb08/app/data/aircraft/battery/skywalker_x8_6s_pack.json) (finite 6S 5000 mAh `pack_ecm`, the catalog default). [probe.gd](../../../../research/skywalker-x8/X8-06/probe.gd) loaded both through `AircraftData` and printed the derived tailless law, trims and strip-against-oracle coefficients. Sources: [X8-01](../X8-01/README.md).
+
+The current generator writes `app/data/aircraft/moonrunner_x99.json` and `app/data/aircraft/battery/moonrunner_x99_6s_pack.json`; `--check` compares the generated CRLF bytes against those files. Do not hand-edit generated aircraft data. The links above preserve the earlier named files, not a claim that the present checkout still contains them.
 
 ## Inputs and choices
 

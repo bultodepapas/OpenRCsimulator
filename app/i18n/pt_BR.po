@@ -7518,6 +7518,9 @@ msgstr "Histórico completo"
 msgid "Since counter reset"
 msgstr "Desde a redefinição dos contadores"
 
+msgid "Since separate counter resets"
+msgstr "Desde as redefinições separadas dos contadores"
+
 msgid "Airborne time"
 msgstr "Tempo no ar"
 

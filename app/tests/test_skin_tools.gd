@@ -24,7 +24,7 @@ func _run() -> void:
 		for scale in [1.0, 2.0]:
 			root.size = Vector2i(1920, 1080)
 			UiTheme.text_scale = scale
-			var dialog := SkinTools.new("skywalker-x8", UiTheme.build())
+			var dialog := SkinTools.new("moonrunner-x99", UiTheme.build())
 			root.add_child(dialog)
 			for frame in 4: await process_frame
 			var labels := dialog._scroll.find_children("*", "Label", true, false)
@@ -57,8 +57,8 @@ func _run() -> void:
 	check("unknown guide locale falls back to English", SkinTools._write_guide(guide_path, "xx") and FileAccess.get_file_as_string(guide_path).contains('data-default-locale="en"'))
 	DirAccess.remove_absolute(guide_path)
 	var output := "user://skin-tool-copy-test.zip"
-	check("bundled template can be saved", SkinTools._copy_resource(SkinTools.CustomSkin.kit_path("skywalker-x8"), output))
-	check("template copy is byte exact", FileAccess.get_sha256(output) == FileAccess.get_sha256(SkinTools.CustomSkin.kit_path("skywalker-x8")))
+	check("bundled template can be saved", SkinTools._copy_resource(SkinTools.CustomSkin.kit_path("moonrunner-x99"), output))
+	check("template copy is byte exact", FileAccess.get_sha256(output) == FileAccess.get_sha256(SkinTools.CustomSkin.kit_path("moonrunner-x99")))
 	DirAccess.remove_absolute(output)
 	for aircraft: String in SkinTools.Catalog.ids():
 		var dialog := SkinTools.new(aircraft, UiTheme.build())

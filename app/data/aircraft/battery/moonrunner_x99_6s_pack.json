@@ -1,14 +1,14 @@
 {
   "format": "openrc-aircraft v2",
   "physical_identity_version": 1,
-  "id": "skywalker-x8",
-  "description": "EPO flying wing inspired by the Skywalker X8 (2.12 m, elevons, winglets, electric pusher, no gear) in the r4 delivery's UAV build. NTNU flight-identified aerodynamics, measured part masses and inertia reference, estimated electric drive. Experimental; not flight validated.",
+  "id": "moonrunner-x99",
+  "description": "EPO flying wing inspired by the Skywalker X8 (2.12 m, elevons, winglets, electric pusher, no gear) in the r4 delivery's UAV build. NTNU flight-identified aerodynamics, measured part masses and inertia reference, estimated electric drive on the finite 6S 5000 mAh class pack (pack_ecm). Experimental; not flight validated.",
   "convention_id": "openrc-le-frd-v1",
   "capabilities": {
     "controls": "elevon",
     "gear": "locked_up",
     "propulsion_layout": "single_pusher",
-    "energy": "fixed_voltage",
+    "energy": "pack_ecm",
     "damage": "tolerant_hull",
     "flaps": "not_simulated",
     "airframe_layout": "tailless"
@@ -1167,17 +1167,101 @@
       }
     },
     "battery": {
-      "kind": "fixed_voltage",
-      "voltage_v": {
-        "value": 22.2,
-        "unit": "V",
+      "kind": "pack_ecm",
+      "pack": {
+        "id": "lipo-6s1p-5000-30c-class",
+        "sha256": "c930ba3bf6283b03b4e2d99471b73e6994670ad2a6322d6ed46701b7acbd5cf9"
+      },
+      "mount_inventory_id": "battery_main",
+      "initial_soc": {
+        "value": 1.0,
+        "unit": "1",
         "kind": "estimated",
-        "source": "6S nominal fixed bus (ideal-bus configuration); no sag or depletion"
+        "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: freshly charged pack at rest; the session may override it"
+      },
+      "auxiliary_current_a": {
+        "value": 0.6,
+        "unit": "A",
+        "kind": "estimated",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: autopilot, GPS, telemetry, FPV camera/transmitter and two servos, about 10 W through an assumed 80 % BEC, referred to a 22 V pack; not measured"
+      },
+      "cooling_airflow_fraction": {
+        "value": 0.1,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: enclosed foam bay under the hatch; ram air past the pack assumed 10 % of airspeed (Turbo Lumber value)"
+      },
+      "weak_cell": {
+        "capacity_factor": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: new balanced pack"
+        },
+        "resistance_factor": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: new balanced pack"
+        },
+        "soc_offset": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: balanced charge"
+        }
       }
     },
     "esc": {
       "kind": "ideal_motoring",
-      "command_mapping": "identity"
+      "command_mapping": "identity",
+      "low_voltage_cutoff": {
+        "mode": "soft",
+        "cell_detection": "auto",
+        "detection_max_cell_v": {
+          "value": 4.3,
+          "unit": "V",
+          "kind": "estimated",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: Betaflight-style 4.30 V/cell auto-detection maximum (BAT-00 F7, fleet value)"
+        },
+        "cutoff_per_cell_v": {
+          "value": 3.2,
+          "unit": "V",
+          "kind": "estimated",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: common 60 A ESC default 3.2 V/cell; installed setting unknown"
+        },
+        "soft_limit": {
+          "value": 0.5,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: soft cutoff to 50 % output (fleet value)"
+        },
+        "soft_ramp_s": {
+          "value": 3.0,
+          "unit": "s",
+          "kind": "estimated",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: soft cutoff ramp (fleet value)"
+        },
+        "debounce_s": {
+          "value": 0.5,
+          "unit": "s",
+          "kind": "estimated",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: brief punch-out sag does not trip (fleet value)"
+        },
+        "recovery": "throttle_reset",
+        "reset_throttle_max": {
+          "value": 0.05,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: app/input/rc_input.gd ARM_THROTTLE 0.05: the same idle-stick threshold"
+        },
+        "voltage_filter_s": {
+          "value": 0.1,
+          "unit": "s",
+          "kind": "estimated",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py pack variant: ESC voltage low-pass (fleet value)"
+        }
+      }
     },
     "propeller": {
       "diameter": {

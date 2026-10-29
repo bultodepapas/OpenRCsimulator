@@ -14,7 +14,7 @@ const VisualCheckpoint := preload("res://app_state/visual_checkpoint.gd")
 const TrimPracticeMenu := preload("res://ui/trim_practice_menu.gd")
 
 const STIK := "jensen-das-ugly-stik-60"
-const X8 := "skywalker-x8"
+const X8 := "moonrunner-x99"
 const PREFS := "user://test_out_of_trim_settings.cfg"
 
 var _checks := 0

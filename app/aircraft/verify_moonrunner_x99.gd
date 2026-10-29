@@ -7,11 +7,11 @@ extends SceneTree
 
 const Registry := preload("res://aircraft/model_registry.gd")
 const Importer := preload("res://aircraft/imported_model.gd")
-const Geometry := preload("res://aircraft/skywalker_x8_geometry.gd")
-const FAMILY := "skywalker-x8"
-const GLB_PATH := "res://assets/aircraft/skywalker-x8/skywalker_x8.glb"
-const CUSTOMIZATION_SOURCE := "res://../assets/aircraft/customization-bindings.json"
-const EXPECTED_SHA256 := "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac"
+const Geometry := preload("res://aircraft/moonrunner_x99_geometry.gd")
+const FAMILY := "moonrunner-x99"
+const GLB_PATH := "res://assets/aircraft/moonrunner-x99/moonrunner_x99.glb"
+const CUSTOMIZATION_SOURCE := "res://../assets/aircraft/moonrunner-x99-overlay/customization-bindings.json"
+const EXPECTED_SHA256 := "54d67d9bbfe4ce4abdc4bafa523c3bf812422d6336ba1d0f151a2970e087b0f0"
 const SECTIONS := ["core", "canopy", "wing_left", "wing_right", "engine", "propeller"]
 const DOORS := ["camera_door_left_hinge", "camera_door_right_hinge"]
 # Full-stick deflections of the delivery's default mix (metadata ranges), app convention: + = trailing edge up.
@@ -33,7 +33,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 func _initialize() -> void:
 	_asset()
 	var described := Registry.describe(FAMILY)
-	_check("registry accepts the checked-in skywalker-x8 manifest", described.ok, str(described.get("errors", [])))
+	_check("registry accepts the checked-in moonrunner-x99 manifest", described.ok, str(described.get("errors", [])))
 	if described.ok:
 		_skins(described.manifest)
 		_controls(described.manifest)
@@ -70,7 +70,7 @@ func _asset() -> void:
 	var context := HashingContext.new()
 	context.start(HashingContext.HASH_SHA256)
 	context.update(FileAccess.get_file_as_bytes(GLB_PATH))
-	_check("runtime GLB is the accepted r4 aircraft.glb (abisal)", context.finish().hex_encode() == EXPECTED_SHA256 and Geometry.DATA.inputs.glb_sha256 == EXPECTED_SHA256)
+	_check("runtime GLB is the verified MoonRunner derivative (abisal)", context.finish().hex_encode() == EXPECTED_SHA256 and Geometry.DATA.inputs.glb_sha256 == EXPECTED_SHA256)
 	var scene: Node3D = (load(GLB_PATH) as PackedScene).instantiate()
 	var meshes := scene.find_children("*", "MeshInstance3D", true, false)
 	var triangles := 0

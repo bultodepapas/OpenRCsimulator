@@ -6886,6 +6886,9 @@ msgstr "累計履歴"
 msgid "Since counter reset"
 msgstr "カウンターのリセット以降"
 
+msgid "Since separate counter resets"
+msgstr "各カウンターを個別にリセットしてから"
+
 msgid "Airborne time"
 msgstr "飛行時間"
 

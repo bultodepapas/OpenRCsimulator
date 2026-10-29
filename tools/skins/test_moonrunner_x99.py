@@ -1,10 +1,11 @@
 """Exercise the extracted starter in Blender, including dirty paint and rejection.
 
 blender --background --factory-startup tmp/skin-kit/roundtrip/Aircraft.blend \
-  --python-exit-code 1 --python tools/skins/test_skywalker_x8.py
+  --python-exit-code 1 --python tools/skins/test_moonrunner_x99.py
 """
 
 import json
+import os
 from pathlib import Path
 import tempfile
 import zipfile
@@ -14,7 +15,7 @@ import bpy
 
 ROOT = Path(__file__).resolve().parents[2]
 EXPORTER = ROOT / "tools/skins/export_openrc_skin.py"
-OUT = ROOT / "tmp/skin-standard-kits/tests"
+OUT = Path(os.environ.get("OPENRC_SKIN_TEST_OUT", str(ROOT / "tmp/skin-standard-kits/tests")))
 LIB = {"__name__": "openrc_export_test"}
 exec(compile(EXPORTER.read_text(encoding="utf-8"), str(EXPORTER), "exec"), LIB)
 
@@ -55,8 +56,8 @@ def main():
         assert set(archive.namelist()) == {"manifest.json", "texture-01.png"}
         manifest = json.loads(archive.read("manifest.json"))
         assert manifest["format"] == "openrc-skin" and manifest["version"] == 1
-        assert manifest["aircraft_id"] == "skywalker-x8"
-        assert manifest["base_asset_sha256"] == "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac"
+        assert manifest["aircraft_id"] == "moonrunner-x99"
+        assert manifest["base_asset_sha256"] == "54d67d9bbfe4ce4abdc4bafa523c3bf812422d6336ba1d0f151a2970e087b0f0"
         assert manifest["label"] == "Painted test"
         assert [entry["name"] for entry in manifest["materials"]] == baseline["export_materials"]
         painted = next(entry for entry in manifest["materials"] if entry["name"] == "x8_livery")
@@ -115,7 +116,9 @@ def main():
     saved = OUT / "reopened-edit.blend"
     bpy.ops.wm.save_as_mainfile(filepath=str(saved), compress=True)
     bpy.ops.wm.open_mainfile(filepath=str(saved))
-    reopened = bpy.data.images["x8_abisal_base_color"]
+    reopened_material = bpy.data.materials["Renamed paint"]
+    reopened_shader = LIB["_shader"](reopened_material)
+    reopened = reopened_shader.inputs["Base Color"].links[0].from_node.image
     assert tuple(reopened.size) == (2048, 2048) and reopened.packed_file is not None
     assert all(abs(a - b) <= 0.01 for a, b in zip(reopened.pixels[:4], (0.9, 0.2, 0.05, 1.0)))
     print(f"OpenRC skin starter checks passed; painted package: {package}")

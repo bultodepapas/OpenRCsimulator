@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Registry := preload("res://aircraft/model_registry.gd")
+const ExportProofs := preload("res://addons/aircraft_contract/export_plugin.gd")
 const PACKAGE_PROOF_PATH := "res://data/aircraft_models/package_proofs.json"
 const PACKAGE_PROOF_FORMAT := "openrc-aircraft-model-package v1"
 const TEMP_ROOT := "user://aircraft-package-proof-tests"
@@ -41,6 +42,9 @@ func _initialize() -> void:
 
 
 func _run_parent() -> void:
+	var families: Array = ExportProofs._model_families_for_export()
+	_check("export includes current and historical MoonRunner families", families.has("moonrunner-x99") and families.has("skywalker-x8"))
+	_check("each export model family is unique", families.count("moonrunner-x99") == 1 and families.count("skywalker-x8") == 1)
 	var temp_dir := TEMP_ROOT + "-" + str(Time.get_ticks_usec())
 	_created_dir = ProjectSettings.globalize_path(temp_dir)
 	var cases: Array[Dictionary] = [

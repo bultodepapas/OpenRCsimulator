@@ -4,7 +4,11 @@ Checked 2026-10-25 · Aircraft/model owner · Prefix **X8-00…12**. MoonRunner 
 
 ## 1. Identity and scope
 
-One configuration: the delivery's UAV build (mapping-camera bay, parachute pack, magnetic hatch, 6S pack), physics from the NTNU Skywalker X8 studies (wind tunnel, CFD and flight identification) and the shared electric, battery and contact laws. The visual model is the author's parametric r4 (`abisal` default skin, `bolido` second skin). Catalog ID and visual family: `skywalker-x8`.
+One configuration: the delivery's UAV build (mapping-camera bay, parachute pack, magnetic hatch, 6S pack), physics from the NTNU Skywalker X8 studies (wind tunnel, CFD and flight identification) and the shared electric, battery and contact laws. The visual model is the author's parametric r4 (`abisal` default skin, `bolido` second skin). Catalog ID and visual family: `moonrunner-x99`. The old `skywalker-x8` identity remains an explicit compatibility alias for saved preferences, skins and frozen Workshop bindings.
+
+Old `.orskin` files remain bound to stock GLB SHA-256 `3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac`. The exact painted derivative `54d67d9bbfe4ce4abdc4bafa523c3bf812422d6336ba1d0f151a2970e087b0f0` has a narrow legacy binding after node, geometry, UV and material equivalence checks; other hashes remain rejected. The original GLB remains available for frozen Workshop variants. The [visual pipeline](../tools/aircraft/moonrunner/README.md) records the reproducible paint change and Bólido copy.
+
+The generated ideal and finite-pack physics files use the `moonrunner_x99` filenames and canonical ID. Their parsed contents otherwise match the earlier data exactly. Each retained 16-tick old-ID reference recording replayed exactly with the same source solver identity; open-loop comparisons against the new data on those same tapes had no differences in the recorded CSV columns. This is bounded software evidence, not physical validation. Existing native receipts pin the earlier catalog and input bytes, so old native exact replay requires its original verified source or package; the new candidate needs fresh native qualification. See [flight logging](FLIGHT-LOGGING.md#export-inspect-and-replay).
 
 ## 2. Gaps found in the shared code
 
@@ -41,6 +45,6 @@ The X8 is the first catalog aircraft outside the conventional wing-tail/tractor/
 
 | ID | Decision | State |
 | --- | --- | --- |
-| D1 | Display name | Owner selected "MoonRunner X99" on 2026-10-29; catalog and source identifiers remain unchanged |
+| D1 | Aircraft identity | Owner selected "MoonRunner X99" on 2026-10-29; the active catalog and visual family use `moonrunner-x99`, with `skywalker-x8` retained as a compatibility alias and in unchanged historical source records |
 | D2 | Asset licence terms (`LICENSE.txt`: not set) | Pending; F4U-13's reasoning may apply, but only the owner can extend it |
 | D3 | Configuration | Delivery UAV build, 6S pack (working choice) |

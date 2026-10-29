@@ -18,6 +18,7 @@ class FakeStatisticsService extends RefCounted:
 	var reset_log: Array = []
 	var deletion_log: Array = []
 	var values: Dictionary = {}
+	var choices: Array = [{"id": "trainer-a", "name": "Trainer A"}, {"id": "trainer-b", "name": "Trainer B"}]
 
 	func _init() -> void:
 		var history: Array = []
@@ -86,7 +87,7 @@ class FakeStatisticsService extends RefCounted:
 		return values.duplicate(true)
 
 	func aircraft_choices() -> Array:
-		return [{"id": "trainer-a", "name": "Trainer A"}, {"id": "trainer-b", "name": "Trainer B"}]
+		return choices.duplicate(true)
 
 	func can_manage() -> bool:
 		return writable
@@ -388,6 +389,65 @@ func _run() -> void:
 	_check("Back pops the statistics layer and restores opener focus", stack.size() == 0 and focus_anchor.has_focus())
 	await process_frame
 	await _test_history_refresh()
+	await _test_aircraft_identity_display()
+
+
+func _test_aircraft_identity_display() -> void:
+	var service := FakeStatisticsService.new()
+	service.choices = [{"id": "skywalker-x8", "name": "MoonRunner X99"},
+		{"id": "workshop:skywalker-x8", "name": "My custom wing"}]
+	var screen: CanvasLayer = StatisticsScreen.new()
+	screen.configure(service, "moonrunner-x99")
+	root.add_child(screen)
+	await process_frame
+	_check("legacy and current aliases share the existing picker scope",
+		screen._selected_aircraft == "skywalker-x8" and screen._aircraft_ids.size() == 3
+		and screen._selected_aircraft_name() == "MoonRunner X99")
+	screen.call("_open_reset", "aircraft", "skywalker-x8", "counters")
+	var dialog: ConfirmationDialog = screen.get("_active_dialog")
+	_check("aircraft reset preview names the selected aircraft",
+		"MoonRunner X99" in dialog.preview_label.text)
+	dialog.call("_on_confirmed")
+	_check("aircraft reset keeps the exact selected scope", service.reset_log.back() == ["aircraft", "skywalker-x8"])
+	await process_frame
+	screen.call("_open_delete", "skywalker-x8")
+	dialog = screen.get("_active_dialog")
+	_check("aircraft deletion preview names the selected aircraft",
+		"MoonRunner X99" in dialog.preview_label.text)
+	service.revision += 1
+	dialog.scope_check.button_pressed = true
+	dialog.call("_on_confirmed")
+	_check("stale deletion preview keeps the name and requires renewed acknowledgement",
+		"MoonRunner X99" in dialog.preview_label.text and not dialog.scope_check.button_pressed
+		and service.deletion_log.is_empty())
+	dialog.scope_check.button_pressed = true
+	dialog.call("_on_confirmed")
+	_check("aircraft deletion sends only the selected scope", service.deletion_log == ["skywalker-x8"])
+	await process_frame
+	var legacy := {"kind": "flight", "aircraft_id": "skywalker-x8", "aircraft_name": "Skywalker X8"}
+	var original := legacy.duplicate(true)
+	var row: VBoxContainer = screen.call("_history_row", legacy, 0)
+	_check("legacy history displays the current catalog name without changing the record",
+		"MoonRunner X99" in (row.get_child(0) as Button).text and legacy == original)
+	row.free()
+	row = screen.call("_history_row", {"kind": "flight", "aircraft_id": "workshop:skywalker-x8",
+		"aircraft_name": "My custom wing"}, 1)
+	_check("unrelated variant retains its own recorded name", "My custom wing" in (row.get_child(0) as Button).text)
+	row.free()
+	row = screen.call("_history_row", {"kind": "flight", "aircraft_id": "stock:skywalker-x8",
+		"aircraft_name": "Old stock name"}, 2)
+	_check("namespaced stock history remains distinguishable", "MoonRunner X99 · stock:skywalker-x8" in (row.get_child(0) as Button).text)
+	row.free()
+	screen.queue_free()
+	await process_frame
+	service.choices = []
+	screen = StatisticsScreen.new()
+	screen.configure(service, "skywalker-x8")
+	root.add_child(screen)
+	await process_frame
+	_check("an aircraft with no history uses its catalog name", screen._selected_aircraft_name() == "MoonRunner X99")
+	screen.queue_free()
+	await process_frame
 
 
 func _test_history_refresh() -> void:

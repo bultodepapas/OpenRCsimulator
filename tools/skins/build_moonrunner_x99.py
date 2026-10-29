@@ -12,4 +12,4 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate the MoonRunner X99 skin starter kit")
     parser.add_argument("--output", help="Output ZIP (default: app/assets/skin-kit/moonrunner-x99.zip)")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
-    build("skywalker-x8", json.loads(REGISTRY.read_text(encoding="utf-8"))["models"]["skywalker-x8"], output=args.output)
+    build("moonrunner-x99", json.loads(REGISTRY.read_text(encoding="utf-8"))["models"]["moonrunner-x99"], output=args.output)

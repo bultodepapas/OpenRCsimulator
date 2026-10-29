@@ -6,6 +6,8 @@ const Widgets := preload("res://ui/widgets.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const ResetDialog := preload("res://ui/statistics_reset_dialog.gd")
 const Units := preload("res://render/overlays/units.gd")
+const AircraftIdentity := preload("res://statistics/aircraft_identity.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 
 signal back_requested
 
@@ -301,15 +303,24 @@ func _build_aircraft_choices() -> void:
 				_aircraft_ids.append(id)
 				_aircraft_names.append(display_name)
 				_scope_picker.add_item(display_name)
-	if not _selected_aircraft.is_empty() and not _aircraft_ids.has(_selected_aircraft):
+	if not _selected_aircraft.is_empty() and _matching_scope(_selected_aircraft).is_empty():
 		_aircraft_ids.append(_selected_aircraft)
-		_aircraft_names.append(_selected_aircraft)
-		_scope_picker.add_item(_selected_aircraft)
+		var display_name := _display_aircraft_name(_selected_aircraft, _selected_aircraft)
+		_aircraft_names.append(display_name)
+		_scope_picker.add_item(display_name)
 	_select_aircraft(_selected_aircraft)
 
 
+func _matching_scope(id: String) -> String:
+	if id.is_empty(): return ""
+	for candidate: String in _aircraft_ids:
+		if not candidate.is_empty() and AircraftIdentity.matches(id, candidate):
+			return candidate
+	return ""
+
+
 func _select_aircraft(id: String) -> void:
-	_selected_aircraft = id if _aircraft_ids.has(id) else ""
+	_selected_aircraft = _matching_scope(id)
 	var index := _aircraft_ids.find(_selected_aircraft)
 	if _scope_picker != null and index >= 0:
 		_scope_picker.select(index)
@@ -601,7 +612,9 @@ func _history_row(record: Dictionary, index: int) -> VBoxContainer:
 	var date := _record_date(record)
 	if date.is_empty():
 		date = (tr("Flight %d") % (index + 1)) if record_kind == "flight" else (tr("Record %d") % (index + 1))
-	var aircraft := str(record.get("aircraft_name", record.get("aircraft_id", _selected_aircraft_name())))
+	var record_aircraft_id := str(record.get("aircraft_id", ""))
+	var aircraft := _display_aircraft_name(record_aircraft_id,
+		str(record.get("aircraft_name", record.get("aircraft_id", _selected_aircraft_name()))))
 	var title_parts: PackedStringArray = [date, aircraft]
 	if record_kind == "flight":
 		title_parts.append(_duration(_number(record.get("airborne_seconds", NAN))))
@@ -781,7 +794,8 @@ func _open_management_dialog(action: String, scope: String, aircraft_id: String,
 			_active_dialog.queue_free()
 		_active_dialog = null
 	)
-	_active_dialog.call("configure", _service, action, scope, aircraft_id, period, preview)
+	_active_dialog.call("configure", _service, action, scope, aircraft_id, period, preview,
+		_aircraft_name_for_id(aircraft_id))
 	_active_dialog.popup_centered()
 
 
@@ -792,6 +806,26 @@ func _request_back() -> void:
 func _selected_aircraft_name() -> String:
 	var index := _aircraft_ids.find(_selected_aircraft)
 	return _aircraft_names[index] if index >= 0 and index < _aircraft_names.size() else _selected_aircraft
+
+
+func _aircraft_name_for_id(id: String) -> String:
+	var index := _aircraft_ids.find(_matching_scope(id))
+	if not id.is_empty() and index > 0 and index < _aircraft_names.size():
+		return _aircraft_names[index]
+	return _display_aircraft_name(id, id)
+
+
+func _display_aircraft_name(id: String, fallback: String) -> String:
+	# Only the two explicitly registered identity pairs share this catalog label.
+	# Other aircraft and Workshop variants keep their recorded names.
+	if not AircraftIdentity.matches("skywalker-x8", id) \
+			and not AircraftIdentity.matches("stock:skywalker-x8", id):
+		return fallback
+	var catalog_id := "moonrunner-x99" if Catalog.has("moonrunner-x99") else "skywalker-x8"
+	var display_name := str(Catalog.entry(catalog_id).get("name", fallback))
+	if id.begins_with("stock:"):
+		display_name += " · " + id
+	return display_name
 
 
 func _record_date(record: Dictionary) -> String:

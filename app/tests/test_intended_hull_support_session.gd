@@ -11,8 +11,8 @@ const Role := preload("res://physics/intended_hull_support.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
-const X8 := "res://data/aircraft/skywalker_x8.json"
-const ID := "skywalker-x8"
+const X8 := "res://data/aircraft/moonrunner_x99.json"
+const ID := "moonrunner-x99"
 var checks := 0
 var failed := 0
 

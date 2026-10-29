@@ -7,7 +7,7 @@ const PackEcm := preload("res://physics/battery/pack_ecm.gd")
 const ElectricDynamics := preload("res://physics/dynamics.gd")
 const RotorCoupling := preload("res://physics/rotor_coupling.gd")
 
-const ELECTRIC_IDS := ["turbo-lumber-evolution", "skywalker-x8"]
+const ELECTRIC_IDS := ["turbo-lumber-evolution", "moonrunner-x99"]
 const ECM_FIELDS := ["kind", "series", "branches", "group_capacity_c", "initial_soc", "weak_capacity_factor",
 	"weak_resistance_factor", "weak_soc_offset", "interconnect_ohm", "auxiliary_current_a",
 	"cooling_airflow_fraction", "thermal_capacity_j_per_k", "h_still_w_per_k",
@@ -20,9 +20,9 @@ func _source_hashes() -> Dictionary:
 			"res://physics/battery/pack_ecm.gd", "res://physics/battery/battery_data.gd",
 			"res://physics/battery/esc_supervisor.gd", "res://physics/aircraft_data.gd",
 			"res://physics/rotor_coupling.gd", "res://physics/rigid_body.gd",
-			"res://data/aircraft/turbo_lumber_evolution.json", "res://data/aircraft/skywalker_x8.json",
+			"res://data/aircraft/turbo_lumber_evolution.json", "res://data/aircraft/moonrunner_x99.json",
 			"res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
-			"res://data/aircraft/battery/skywalker_x8_6s_pack.json",
+			"res://data/aircraft/battery/moonrunner_x99_6s_pack.json",
 			"res://data/batteries/packs/lipo-4s1p-3200-30c-class.json",
 			"res://data/batteries/packs/lipo-6s1p-5000-30c-class.json",
 			"res://data/batteries/cells/lipo-bak503562-galeotti-v1.json"]:

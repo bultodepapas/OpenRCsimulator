@@ -789,12 +789,67 @@ def generate(root: Path, check: bool) -> int:
     return 0
 
 
+# Separately versioned additions must not change the source hashes of existing families.
+OVERLAY_SOURCE = Path("assets/aircraft/moonrunner-x99-overlay/model-bindings.json")
+OVERLAY_OUTPUT_DIR = Path("app/data/aircraft_model_overlays")
+OVERLAY_FAMILY = "moonrunner-x99"
+
+
+def overlay_manifest(root: Path) -> dict[str, Any]:
+    source_path = root / OVERLAY_SOURCE
+    base_registry = json.loads((root / REGISTRY_PATH).read_text(encoding="utf-8"))
+    base_diagnostics = validate_registry(base_registry)
+    if base_diagnostics:
+        raise ModelManifestError(base_diagnostics[0]["message"])
+    if any(family["family_id"] == OVERLAY_FAMILY for family in base_registry["families"]):
+        raise ModelManifestError("overlay family collides with the base model registry")
+    registry = json.loads(source_path.read_text(encoding="utf-8"))
+    diagnostics = validate_registry(registry)
+    if diagnostics:
+        raise ModelManifestError(diagnostics[0]["message"])
+    families = registry["families"]
+    if len(families) != 1 or families[0]["family_id"] != OVERLAY_FAMILY:
+        raise ModelManifestError("model overlay must contain exactly the registered MoonRunner family")
+    return build_manifest(root, source_path, families[0])
+
+
+def generate_overlay(root: Path, check: bool) -> int:
+    try:
+        import build_overlay_proof
+        if build_overlay_proof.generate(root, True):
+            raise ModelManifestError("overlay runtime source proof is stale")
+        manifest = overlay_manifest(root)
+        directory = root / OVERLAY_OUTPUT_DIR
+        output = directory / f"{OVERLAY_FAMILY}.json"
+        unexpected = {p.name for p in directory.iterdir()} - {output.name} if directory.exists() else set()
+        if unexpected:
+            raise ModelManifestError("unregistered overlay model manifests: " + ", ".join(sorted(unexpected)))
+        rendered = (json.dumps(manifest, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+        if check:
+            if not output.is_file() or output.read_bytes() != rendered:
+                raise ModelManifestError(f"stale overlay model manifest: {OVERLAY_OUTPUT_DIR / output.name}")
+            print("MoonRunner model overlay is current")
+        else:
+            directory.mkdir(parents=True, exist_ok=True)
+            if not output.is_file() or output.read_bytes() != rendered:
+                output.write_bytes(rendered)
+            print("generated MoonRunner model overlay")
+        return 0
+    except (OSError, UnicodeError, json.JSONDecodeError, ModelManifestError) as exc:
+        print(f"model overlay generation failed: {exc}", file=sys.stderr)
+        return 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="fail if generated manifests are stale")
     parser.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
+    parser.add_argument("--overlay-only", action="store_true", help="generate or check only the separately registered model overlay")
     args = parser.parse_args(argv)
-    return generate(args.root.resolve(), args.check)
+    root = args.root.resolve()
+    if not args.overlay_only and generate(root, args.check):
+        return 1
+    return generate_overlay(root, args.check)
 
 
 if __name__ == "__main__":

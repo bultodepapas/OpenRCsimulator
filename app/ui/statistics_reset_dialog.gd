@@ -14,6 +14,7 @@ var _service: Object
 var _action := "reset"
 var _scope := "session"
 var _aircraft_id := ""
+var _aircraft_display_name := ""
 var _period := "session"
 var _pinned_revision := -1
 var _preview: Dictionary = {}
@@ -39,11 +40,12 @@ func _init() -> void:
 
 
 func configure(service: Object, action: String, scope: String, aircraft_id: String,
-		period: String, preview: Dictionary) -> void:
+		period: String, preview: Dictionary, aircraft_display_name: String = "") -> void:
 	_service = service
 	_action = "delete" if action == "delete" else "reset"
 	_scope = scope
 	_aircraft_id = aircraft_id
+	_aircraft_display_name = aircraft_display_name
 	_period = period
 	_preview = preview.duplicate(true)
 	_pinned_revision = int(_preview.get("revision", -1))
@@ -187,6 +189,8 @@ func _service_note(fallback: String) -> String:
 
 
 func _aircraft_name(data: Dictionary, fallback: String) -> String:
+	if not _aircraft_display_name.is_empty():
+		return _aircraft_display_name
 	var name_value := str(data.get("aircraft_name", ""))
 	return name_value if not name_value.is_empty() else fallback
 

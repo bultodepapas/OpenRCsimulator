@@ -18,7 +18,7 @@ var _first: Button
 var _scroll: ScrollContainer
 
 
-func _init(aircraft_id := "skywalker-x8", shared_theme: Theme = null) -> void:
+func _init(aircraft_id := "moonrunner-x99", shared_theme: Theme = null) -> void:
 	name = "SkinTools"
 	layer = 12
 	_aircraft_id = aircraft_id

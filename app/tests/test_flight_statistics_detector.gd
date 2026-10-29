@@ -117,7 +117,7 @@ func _test_profiles_for_catalog_fleet() -> void:
 	var ids: PackedStringArray = AircraftCatalog.airplane_flyable_ids()
 	for reviewed_id: String in REVIEWED_WHEEL_IDS:
 		_check("reviewed wheel aircraft remains covered: %s" % reviewed_id, reviewed_id in ids)
-	_check("explicit gearless X8 remains covered", "skywalker-x8" in ids)
+	_check("explicit gearless MoonRunner X99 remains covered", "moonrunner-x99" in ids)
 	for aircraft_id: String in ids:
 		var entry: Dictionary = AircraftCatalog.entry(aircraft_id)
 		var loaded: Dictionary = AircraftData.load_file(str(entry.get("data", "")))
@@ -128,14 +128,14 @@ func _test_profiles_for_catalog_fleet() -> void:
 		var bindings: Dictionary = ContactContract.describe(model, true)
 		var profile: Dictionary = Profiles.resolve(aircraft_id, model, bindings)
 		_check("%s has valid physical contact bindings" % aircraft_id, bool(bindings.get("ok", false)), str(bindings.get("errors", [])))
-		if aircraft_id == "skywalker-x8":
-			_test_x8_unreviewed_hull(str(entry.data), model, bindings, profile)
+		if aircraft_id == "moonrunner-x99":
+			_test_moonrunner_unreviewed_hull(str(entry.data), model, bindings, profile)
 			var pack_path := str(entry.get("battery_data", ""))
 			var pack: Dictionary = AircraftData.load_file(pack_path)
-			_check("X8 default finite-pack data loads for support review", bool(pack.get("ok", false)), str(pack.get("errors", [])))
+			_check("MoonRunner X99 default finite-pack data loads for support review", bool(pack.get("ok", false)), str(pack.get("errors", [])))
 			if bool(pack.get("ok", false)):
 				var pack_bindings := ContactContract.describe(pack.model, true)
-				_test_x8_unreviewed_hull(pack_path, pack.model, pack_bindings,
+				_test_moonrunner_unreviewed_hull(pack_path, pack.model, pack_bindings,
 					Profiles.resolve(aircraft_id, pack.model, pack_bindings))
 			continue
 		_check("%s is an explicitly reviewed wheel profile" % aircraft_id, aircraft_id in REVIEWED_WHEEL_IDS)
@@ -193,7 +193,7 @@ func _check_reviewed_wheel_profile(label: String, aircraft_id: String, model: Di
 			and is_finite(float(profile.get("rest_pitch_rad", NAN))))
 
 
-func _test_x8_unreviewed_hull(path: String, model: Dictionary, bindings: Dictionary, profile: Dictionary) -> void:
+func _test_moonrunner_unreviewed_hull(path: String, model: Dictionary, bindings: Dictionary, profile: Dictionary) -> void:
 	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 	_check("X8 source is readable for authored support coverage: %s" % path, raw is Dictionary)
 	if not raw is Dictionary:

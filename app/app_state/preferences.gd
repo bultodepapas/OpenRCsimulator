@@ -110,7 +110,7 @@ static func load_from(path: String) -> Dictionary:
 		prefs.check_updates = check_updates
 	var aircraft: Variant = cfg.get_value("flight", "aircraft", DEFAULTS.aircraft)
 	if typeof(aircraft) == TYPE_STRING and Catalog.has(aircraft):
-		prefs.aircraft = aircraft
+		prefs.aircraft = Catalog.canonical_id(aircraft)
 	var landscape: Variant = cfg.get_value("flight", "landscape", DEFAULTS.landscape)
 	if typeof(landscape) == TYPE_STRING and Landscapes.has(landscape):
 		prefs.landscape = landscape
@@ -204,7 +204,15 @@ static func load_from(path: String) -> Dictionary:
 		for aircraft_id: String in cfg.get_section_keys("liveries"):
 			var livery: Variant = cfg.get_value("liveries", aircraft_id)
 			if Catalog.has(aircraft_id) and ModelManifest.is_livery_id(livery):
-				prefs.liveries[aircraft_id] = livery
+				var canonical: String = Catalog.canonical_id(aircraft_id)
+				# An explicit valid current-key preference takes precedence over an old alias.
+				if aircraft_id != canonical and cfg.has_section_key("liveries", canonical) \
+						and ModelManifest.is_livery_id(cfg.get_value("liveries", canonical)):
+					# Keep a conflicting old value as compatibility data for later saves.
+					if cfg.get_value("liveries", canonical) != livery:
+						prefs.liveries[aircraft_id] = livery
+					continue
+				prefs.liveries[canonical] = livery
 	return prefs
 
 

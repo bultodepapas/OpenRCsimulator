@@ -64,7 +64,7 @@ def make_family_stage(family):
             row = dict(name=name + "/" + weather, states=500, finite=490, refused=10)
             if family == "electric":
                 row.update(battery_size=0 if name.endswith("/ideal") else 11,
-                           wheel_count=0 if name.startswith("skywalker-x8/") else 3)
+                           wheel_count=0 if name.startswith("moonrunner-x99/") else 3)
             elif family == "liquid":
                 row.update(family="turbine" if name.startswith("sebart-") else "gas",
                            gear_down=1, gear_partial=1, gear_up=1, source_off=1)
@@ -79,7 +79,7 @@ def make_family_stage(family):
         comparisons(data, ("stage_bytes", "stage_loads", "stage_derivative", "stage_rotor_momentum"), len(rows) * 490)
         comparisons(data, ("electric_stage_snapshot_refusal",), 34)
         nominal = {"turbo-lumber-evolution/ideal/calm", "turbo-lumber-evolution/pack/turbulent",
-                   "skywalker-x8/ideal/hot-high", "skywalker-x8/pack/spatial-thermal-soaring-v2"}
+                   "moonrunner-x99/ideal/hot-high", "moonrunner-x99/pack/spatial-thermal-soaring-v2"}
         evidence["trajectories"] = [tape(name) for name in sorted(nominal)]
         events = ({name + "/" + battery + "/rotor-stop-restart" for name in ids for battery in ("ideal", "pack")}
                   | {name + "/pack/" + event for name in ids for event in ("battery-exhaustion", "esc-soft-cut")})

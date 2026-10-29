@@ -30,11 +30,11 @@
       "source": "TT-07 derive_physics.py: generated static_margin=(xnp-cg_x)/c; current estimate 0.260304661 MAC at CG x=0.060 m and c=0.210293891 m gives xnp=0.114740480 m. Estimated aerodynamic neutral point, not flight identified.",
       "applies_to": ["turbo-lumber-evolution"]
     },
-    "skywalker-x8": {
+    "moonrunner-x99": {
       "np_x_m": 0.152481,
       "kind": "derived",
       "source": "X8-06: ARP 425 mm from the nose plus -Cma/CLa = 0.3333/4.3993 of the 0.3571 m S/b chord (Low-Hansen et al. 2026 flight identification, research/skywalker-x8/X8-06/derive_physics.py), 452 mm from the nose, within 1 mm of the transferred tunnel neutral point (docs/research/skywalker-x8/X8-01/README.md); the tailless strip law reproduces it (X8-04). Not flight measured.",
-      "applies_to": ["skywalker-x8"]
+      "applies_to": ["moonrunner-x99"]
     }
   }
 }

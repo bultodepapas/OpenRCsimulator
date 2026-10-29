@@ -360,18 +360,27 @@ def make_priority_fields(default_path: Path, baseline_path: Path, priority_path:
     priority_path.write_text(json.dumps(raw, indent=2) + "\n")
 
 
-def main() -> int:
+def parse_args(argv: list[str] | None = None) -> tuple[argparse.ArgumentParser, argparse.Namespace]:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--app", type=Path, default=APP_DEFAULT, help="candidate Godot project directory")
     parser.add_argument("--godot", type=Path, help="Godot 4.7 executable; defaults to app/get-godot.sh")
     parser.add_argument("--out", type=Path, default=Path("/tmp/l9c-surfaces"), help="new or empty evidence directory")
     parser.add_argument("--timeout", type=int, default=240, help="timeout per renderer process in seconds")
-    args = parser.parse_args()
+    parser.add_argument("--import-timeout", type=int, default=600,
+                        help="timeout per cold mutation-project import in seconds")
+    args = parser.parse_args(argv)
+    if args.timeout <= 0 or args.import_timeout <= 0:
+        parser.error("--timeout and --import-timeout must be positive")
+    return parser, args
+
+
+def main() -> int:
+    parser, args = parse_args()
     app, out = args.app.resolve(), args.out.resolve()
     if not app.is_dir() or not CAPTURE_SCRIPT.is_file():
         parser.error("app project or capture script is missing")
-    if args.timeout <= 0 or shutil.which("xvfb-run") is None or shutil.which("timeout") is None:
-        parser.error("positive --timeout, xvfb-run, and timeout are required")
+    if shutil.which("xvfb-run") is None or shutil.which("timeout") is None:
+        parser.error("xvfb-run and timeout are required")
     if args.godot:
         godot = args.godot.resolve()
     else:
@@ -462,7 +471,7 @@ def main() -> int:
     mutant_app = out / "disabled-surface-app"
     make_mutation_app(app, mutant_app, "disabled")
     commands["disabled_surface_mutation_import"] = import_mutation_project(
-        godot, mutant_app, out / "disabled-surface-import.log", env, args.timeout)
+        godot, mutant_app, out / "disabled-surface-import.log", env, args.import_timeout)
     mutation_run = out / "disabled-surface-run"
     mutation_run.mkdir()
     mutant_base = [*base[:4], str(godot), "--path", str(mutant_app), *base[7:]]
@@ -483,7 +492,7 @@ def main() -> int:
     unfiltered_app = out / "unfiltered-stripe-app"
     make_mutation_app(app, unfiltered_app, "unfiltered")
     commands["unfiltered_stripe_mutation_import"] = import_mutation_project(
-        godot, unfiltered_app, out / "unfiltered-stripe-import.log", env, args.timeout)
+        godot, unfiltered_app, out / "unfiltered-stripe-import.log", env, args.import_timeout)
     unfiltered_run = out / "unfiltered-stripe-run"
     unfiltered_run.mkdir()
     unfiltered_base = [*base[:4], str(godot), "--path", str(unfiltered_app), *base[7:]]
@@ -529,6 +538,7 @@ def main() -> int:
             "tools/ground/check_surfaces.py": sha256(Path(__file__).resolve()),
         },
         "commands": commands,
+        "timeout_seconds": {"renderer": args.timeout, "mutation_import": args.import_timeout},
         "capture_environment": {"LP_NUM_THREADS": "1", "OPENRC_SCENERY": "off",
                                 "OPENRC_SCENERY_AUDIO": "off", "OPENRC_SCENERY_BIRDS": "off"},
         "repeat_processes": 2,

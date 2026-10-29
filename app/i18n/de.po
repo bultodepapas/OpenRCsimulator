@@ -7599,6 +7599,9 @@ msgstr "Gesamter Verlauf"
 msgid "Since counter reset"
 msgstr "Seit dem Zurücksetzen der Zähler"
 
+msgid "Since separate counter resets"
+msgstr "Seit den getrennten Rücksetzungen der Zähler"
+
 msgid "Airborne time"
 msgstr "Zeit in der Luft"
 

@@ -20,7 +20,7 @@ const AVANTI_ID := "sebart-avanti-s-a200-p100rx" # catalog ID; the jet is an imp
 const P51_ID := "p51d-mustang-120"
 const TIMBER_ID := "turbo-lumber-evolution"
 const CORSAIR_ID := "f4u-corsair-250" # F4U-09: imported V2 scene with a sampled retraction rig
-const X8_ID := "skywalker-x8" # X8-09: imported V2 scene with two elevon roles, no gear
+const X8_ID := "moonrunner-x99" # X8-09: imported V2 scene with two elevon roles, no gear
 const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"
 const STIK_GLOW_FS64V_ID := "stik-glow-fs64v-4t"
 const STIK_GLOW_61FX_ID := "stik-glow-61fx-2t"
@@ -114,7 +114,21 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	# visual disc and the prop-strike geometry agree (the P-51's visual and physical propellers are both 26 in).
 	var shaft_diameter: float = float(model.get("propulsion", {}).get("diameter", NAN)) if model.get("propulsion", {}).has("shaft") else NAN
 	airplane._scaled_propeller_visual = not glow.is_empty() or is_finite(shaft_diameter)
-	var customization: Dictionary = AircraftCustomization.describe_for_model(id, str(resolved.manifest_sha256))
+	var customization: Dictionary
+	if family == "moonrunner-x99":
+		var overlay_path := "res://aircraft/customization_overlay.gd"
+		if not ResourceLoader.exists(overlay_path):
+			airplane.root.free()
+			push_warning("Overlay customization resolver is unavailable.")
+			return {}
+		var overlay: Script = load(overlay_path)
+		if overlay == null or not overlay.has_method("describe_for_model"):
+			airplane.root.free()
+			push_warning("Overlay customization resolver cannot be loaded.")
+			return {}
+		customization = overlay.describe_for_model(family, str(resolved.manifest_sha256))
+	else:
+		customization = AircraftCustomization.describe_for_model(id, str(resolved.manifest_sha256))
 	if not customization.get("ok", false):
 		airplane.root.free()
 		push_error("Aircraft customization bindings: " + str(customization.get("errors", [])))
@@ -181,7 +195,7 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 static func livery_choices(id: String) -> Array:
 	var family: String = Catalog.visual_family(id)
 	if family.is_empty(): return []
-	var parsed: Variant = {} if Catalog.is_rotorcraft(id) else JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft_models/" + family + ".json"))
+	var parsed: Variant = {} if Catalog.is_rotorcraft(id) else JSON.parse_string(FileAccess.get_file_as_string(("res://data/aircraft_model_overlays/" if family == "moonrunner-x99" else "res://data/aircraft_models/") + family + ".json"))
 	var choices := []
 	if parsed is Dictionary and parsed.get("liveries") is Array:
 		for record: Variant in parsed.liveries:

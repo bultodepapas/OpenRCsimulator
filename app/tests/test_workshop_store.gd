@@ -17,6 +17,7 @@ func _initialize() -> void:
 	var base_bytes: PackedByteArray = FileAccess.get_file_as_bytes(BASE_PATH)
 	var recipe: Dictionary = _recipe()
 	_check("base fixture read", not base_bytes.is_empty())
+	_test_wing_snapshot_identity()
 	_test_dependency_manifests()
 	_test_first_publication_recovery(base_bytes)
 	_test_interrupted_first_save_retry(base_bytes)
@@ -296,6 +297,23 @@ func _test_interrupted_first_save_retry(base_bytes: PackedByteArray) -> void:
 
 func _deny_publication() -> bool:
 	return false
+
+
+func _test_wing_snapshot_identity() -> void:
+	# The historical pinned snapshot differs from current data only by its old ID.
+	var current := FileAccess.get_file_as_string("res://data/aircraft/moonrunner_x99.json")
+	var bytes := current.replace('"id": "moonrunner-x99"', '"id": "skywalker-x8"').to_utf8_buffer()
+	var historical_hash := "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830"
+	_check("historical wing snapshot retains its original hash", _sha256(bytes) == historical_hash)
+	var saved: Dictionary = Store.save_variant("Wing snapshot", "skywalker-x8", bytes, _recipe(), "", _root)
+	_check("wing variant with the historical ID can be saved", saved.get("ok", false), str(saved.get("errors", [])))
+	if saved.get("ok", false):
+		var loaded: Dictionary = Store.load_variant(saved.variant.id, _root)
+		_check("wing snapshot and descriptor remain readable with their original identity",
+			loaded.get("ok", false) and loaded.variant.base_id == "skywalker-x8" \
+			and loaded.variant.base_bytes == bytes and loaded.variant.base_sha256 == historical_hash \
+			and loaded.variant.workshop_descriptor.base_sha256 == historical_hash)
+		Store.delete_variant(saved.variant.id, _root)
 
 
 func _test_root_guard() -> void:

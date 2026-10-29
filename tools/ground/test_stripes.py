@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 import numpy as np
 from check_stripes import errors, mask_for, SIZE, verify_projection
-from check_surfaces import checked_run, import_mutation_project
+from check_surfaces import checked_run, import_mutation_project, parse_args
 
 
 class StripeMeasurementTests(unittest.TestCase):
@@ -56,6 +56,16 @@ class MutationImportRetryTests(unittest.TestCase):
     COMPLETED_IMPORT = "[ DONE ] reimport\n[ DONE ] loading_editor_layout\n"
     CORE_DUMP = "timeout: the monitored command dumped core\n"
 
+    def test_import_and_render_timeouts_are_independent_and_positive(self):
+        _, args = parse_args([])
+        self.assertEqual((args.timeout, args.import_timeout), (240, 600))
+        _, args = parse_args(["--timeout", "37", "--import-timeout", "901"])
+        self.assertEqual((args.timeout, args.import_timeout), (37, 901))
+        for option in ("--timeout", "--import-timeout"):
+            with self.subTest(option=option), patch("sys.stderr"):
+                with self.assertRaises(SystemExit):
+                    parse_args([option, "0"])
+
     @staticmethod
     def fake_run(responses, calls):
         def run(command, **kwargs):
@@ -93,6 +103,7 @@ class MutationImportRetryTests(unittest.TestCase):
             ("shader error", -6, complete + "SHADER ERROR: bad shader\n" + self.CORE_DUMP),
             ("engine error", -6, complete + "ERROR: import failed\n" + self.CORE_DUMP),
             ("shell-style 134 status", 134, complete + self.CORE_DUMP),
+            ("cold import timeout", 124, "[ 83% ] reimport | example.glb\n"),
         )
         for label, returncode, output in rejected:
             with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:

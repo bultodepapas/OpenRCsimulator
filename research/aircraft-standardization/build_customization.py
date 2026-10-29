@@ -661,12 +661,62 @@ def generate(root: Path, check: bool) -> int:
     return 0
 
 
+# A separate one-family registry allows a future consumer to merge overlays only
+# after verifying unique family IDs and the ordinary manifest/source hashes.
+OVERLAY_SOURCE = Path("assets/aircraft/moonrunner-x99-overlay/customization-bindings.json")
+OVERLAY_OUTPUT_DIR = Path("app/data/aircraft_customization_overlays")
+OVERLAY_FAMILY = "moonrunner-x99"
+
+
+def overlay_registry(root: Path) -> dict[str, Any]:
+    from build_models import OVERLAY_OUTPUT_DIR as MODEL_OVERLAY_DIR, overlay_manifest
+
+    source = json.loads((root / OVERLAY_SOURCE).read_text(encoding="utf-8"))
+    slots = validate_source(source, {OVERLAY_FAMILY})
+    model_path = root / MODEL_OVERLAY_DIR / f"{OVERLAY_FAMILY}.json"
+    model_bytes = model_path.read_bytes()
+    expected = (json.dumps(overlay_manifest(root), indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+    if model_bytes != expected:
+        raise CustomizationError("model overlay is missing or stale")
+    companion = build_companion(OVERLAY_FAMILY, hashlib.sha256(model_bytes).hexdigest(),
+                                slots[OVERLAY_FAMILY], presentation_sources(root))
+    return {"format": REGISTRY_FORMAT, "version": 1, "families": [companion]}
+
+
+def generate_overlay(root: Path, check: bool) -> int:
+    try:
+        registry = overlay_registry(root)
+        directory = root / OVERLAY_OUTPUT_DIR
+        output = directory / f"{OVERLAY_FAMILY}.json"
+        unexpected = {p.name for p in directory.iterdir()} - {output.name} if directory.exists() else set()
+        if unexpected:
+            raise CustomizationError("unregistered overlay customization outputs: " + ", ".join(sorted(unexpected)))
+        rendered = (json.dumps(registry, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+        if check:
+            if not output.is_file() or output.read_bytes() != rendered:
+                raise CustomizationError(f"stale overlay customization registry: {OVERLAY_OUTPUT_DIR / output.name}")
+            print("MoonRunner customization overlay is current")
+        else:
+            directory.mkdir(parents=True, exist_ok=True)
+            if not output.is_file() or output.read_bytes() != rendered:
+                output.write_bytes(rendered)
+            print("generated MoonRunner customization overlay")
+        return 0
+    except (OSError, UnicodeError, json.JSONDecodeError, CustomizationError, ValueError) as exc:
+        print(f"customization overlay generation failed: {exc}", file=sys.stderr)
+        return 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="fail if generated registry is stale")
     parser.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
+    parser.add_argument("--overlay-only", action="store_true", help="generate or check only the separately registered customization overlay")
     args = parser.parse_args(argv)
-    return generate(args.root.resolve(), args.check)
+    root = args.root.resolve()
+    if not args.overlay_only and generate(root, args.check):
+        return 1
+    return generate_overlay(root, args.check)
 
 
 if __name__ == "__main__":

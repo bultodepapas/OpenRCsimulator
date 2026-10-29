@@ -6522,6 +6522,9 @@ msgstr "Historial completo"
 msgid "Since counter reset"
 msgstr "Desde el reinicio de contadores"
 
+msgid "Since separate counter resets"
+msgstr "Desde los reinicios independientes de los contadores"
+
 msgid "Airborne time"
 msgstr "Tiempo en el aire"
 

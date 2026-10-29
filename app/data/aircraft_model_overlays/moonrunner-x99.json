@@ -1,0 +1,195 @@
+{
+  "schema": "openrc-aircraft-model",
+  "version": 2,
+  "family_id": "moonrunner-x99",
+  "builder": {
+    "script": "res://aircraft/imported_model.gd",
+    "adapter": "imported_glb"
+  },
+  "surface_method": "apply_surfaces",
+  "datum": {
+    "model_z_le": 0.0,
+    "model_y_thrust": 0.0
+  },
+  "coordinates": {
+    "units": "m",
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "root_node": "airplane",
+  "source_registry": {
+    "path": "assets/aircraft/moonrunner-x99-overlay/model-bindings.json",
+    "sha256": "f3bdc537a8d5283e5f678ce83dbed79adb3a22b842d91e72191033e6a4903579",
+    "hash_mode": "lf_text"
+  },
+  "geometry": {
+    "script": "res://aircraft/moonrunner_x99_geometry.gd",
+    "source": {
+      "path": "assets/aircraft/moonrunner-x99-overlay/model-geometry.json",
+      "sha256": "ca5c9d892d83d401374f8fbfbefffcf4d134f515391a8fad901fea9c3624c9ee",
+      "hash_mode": "lf_text"
+    },
+    "revision": "moonrunner-x99-54d67d9bbfe4",
+    "datum_source": {
+      "model_z_le": {
+        "value": 0.0
+      },
+      "model_y_thrust": {
+        "value": 0.0
+      }
+    }
+  },
+  "asset": {
+    "kind": "imported_glb",
+    "identity": "MoonRunner X99 visual derivative of Skywalker X8 r4 delivery",
+    "revision": "moonrunner-x99-54d67d9bbfe4",
+    "path": "res://assets/aircraft/moonrunner-x99/moonrunner_x99.glb",
+    "sha256": "54d67d9bbfe4ce4abdc4bafa523c3bf812422d6336ba1d0f151a2970e087b0f0"
+  },
+  "bindings": {
+    "controls": {
+      "elevon_left": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevon_left",
+            "node": "elevon_left_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.elevon_left_hinge"
+          }
+        ]
+      },
+      "elevon_right": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevon_right",
+            "node": "elevon_right_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.elevon_right_hinge"
+          }
+        ]
+      }
+    },
+    "rotor": {
+      "present": true,
+      "node": "propeller",
+      "spin_node": "propeller_spin",
+      "authored_diameter_m": 0.3049,
+      "source": "geometry_articulation",
+      "geometry_ref": "articulations.propeller_spin"
+    },
+    "gear": {
+      "keys": {}
+    },
+    "crash": {
+      "provider": "gltf_extras",
+      "metadata_script": "",
+      "asset_node": ""
+    }
+  },
+  "authoring_sources": [
+    {
+      "path": "assets/aircraft/moonrunner-x99-overlay/model-geometry.json",
+      "sha256": "ca5c9d892d83d401374f8fbfbefffcf4d134f515391a8fad901fea9c3624c9ee",
+      "hash_mode": "lf_text",
+      "role": "geometry"
+    },
+    {
+      "path": "assets/aircraft/skywalker-x8/source-manifest.json",
+      "sha256": "8d176f1b350debdaf82ded28c76b2b1eb87d0aca068fb2e784e3938872960122",
+      "hash_mode": "lf_text",
+      "role": "asset_identity"
+    },
+    {
+      "path": "assets/aircraft/moonrunner-x99-overlay/customization-bindings.json",
+      "sha256": "07cd955d8d194cea5b2db7d2a5d3356c5f968bfc96a275f179172178b96ae4e3",
+      "hash_mode": "lf_text",
+      "role": "overlay_customization_source"
+    },
+    {
+      "path": "assets/aircraft/moonrunner-x99-overlay/runtime-proof.json",
+      "sha256": "bb298d977ea33761072fcb55ce04cbf1454c1581e3d079a19f465f7fad694484",
+      "hash_mode": "lf_text",
+      "role": "overlay_runtime_proof"
+    },
+    {
+      "path": "assets/aircraft/skywalker-x8/model-geometry.json",
+      "sha256": "0fbf3d27b932ec0b477355deabcad724b306e3a5d482d594665b24eb214e6df6",
+      "hash_mode": "lf_text",
+      "role": "historical_geometry_source"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "res://aircraft/imported_model.gd",
+      "sha256": "9c652ba260167d5b89346f051a8e5b5dd01447265928afe34a0d3544a76ea464",
+      "hash_mode": "lf_text",
+      "role": "builder"
+    },
+    {
+      "path": "res://aircraft/imported_model_contract.gd",
+      "sha256": "f209b87b1e4a8b8de5e6b501fab57f5fb4e578a9fd24044b43810ce8cb585d23",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/model_manifest.gd",
+      "sha256": "6c6a7a0a3f20a862c302088e40c58a547f05abc2a1475f1924d7a30edc0815e4",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/moonrunner_x99_geometry.gd",
+      "sha256": "dddb584d46f5b0b278c08d872d675d91633f37e560a6ea07767b0747dd72a72f",
+      "hash_mode": "lf_text",
+      "role": "generated_geometry"
+    },
+    {
+      "path": "res://aircraft/retractable_model.gd",
+      "sha256": "ba6cbf65c686fd244ffe4ce1c3debe9fe0e1a22b7bf32cf5d3ddf99e356cea83",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://assets/aircraft/moonrunner-x99/moonrunner_x99.glb",
+      "sha256": "54d67d9bbfe4ce4abdc4bafa523c3bf812422d6336ba1d0f151a2970e087b0f0",
+      "hash_mode": "raw",
+      "role": "imported_asset"
+    },
+    {
+      "path": "res://assets/aircraft/moonrunner-x99/moonrunner_x99.glb.import",
+      "sha256": "032426682ad0e92f20ff9e6376041008cbda68409035f3383780c746a3bd6254",
+      "hash_mode": "lf_text",
+      "role": "resource_dependency"
+    }
+  ],
+  "construction": {
+    "version": 1,
+    "hinge_axis": "+X",
+    "rotor": {
+      "frame_node": "thrust_frame",
+      "geometry_ref": "thrust",
+      "axis": "+X"
+    },
+    "gear": [],
+    "material_grow": []
+  },
+  "liveries": [
+    {
+      "id": "abisal",
+      "label": "ABISAL - deep-sea anglerfish",
+      "path": "res://assets/aircraft/moonrunner-x99/moonrunner_x99.glb",
+      "sha256": "54d67d9bbfe4ce4abdc4bafa523c3bf812422d6336ba1d0f151a2970e087b0f0",
+      "import_sha256": "032426682ad0e92f20ff9e6376041008cbda68409035f3383780c746a3bd6254"
+    },
+    {
+      "id": "bolido",
+      "label": "BOLIDO - re-entry heat shield",
+      "path": "res://assets/aircraft/moonrunner-x99/moonrunner_x99_bolido.glb",
+      "sha256": "9ecaf7b49aec555bbea178b3b582378bb362bec3f816448932438db2c8da8f93",
+      "import_sha256": "8e2efa9f848198d8b2ec575a6e4be9ecddcf64796537b34d202eedd9f244834d"
+    }
+  ]
+}

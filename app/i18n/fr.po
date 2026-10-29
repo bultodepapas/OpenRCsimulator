@@ -7626,6 +7626,9 @@ msgstr "Historique complet"
 msgid "Since counter reset"
 msgstr "Depuis la réinitialisation des compteurs"
 
+msgid "Since separate counter resets"
+msgstr "Depuis les réinitialisations distinctes des compteurs"
+
 msgid "Airborne time"
 msgstr "Temps en vol"
 

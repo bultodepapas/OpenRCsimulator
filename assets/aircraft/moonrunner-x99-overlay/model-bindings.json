@@ -1,0 +1,106 @@
+{
+  "schema": "openrc-aircraft-model-bindings",
+  "version": 2,
+  "families": [
+    {
+      "family_id": "moonrunner-x99",
+      "builder": {
+        "script": "res://aircraft/imported_model.gd",
+        "adapter": "imported_glb"
+      },
+      "geometry": {
+        "script": "res://aircraft/moonrunner_x99_geometry.gd",
+        "source": "assets/aircraft/moonrunner-x99-overlay/model-geometry.json",
+        "revision_path": "revision",
+        "identity_path": "catalog_id",
+        "datum": {
+          "model_z_le": {
+            "value": 0.0
+          },
+          "model_y_thrust": {
+            "value": 0.0
+          }
+        }
+      },
+      "asset": {
+        "kind": "imported_glb",
+        "path": "res://assets/aircraft/moonrunner-x99/moonrunner_x99.glb",
+        "identity_path": "source_alias",
+        "liveries_path": "liveries"
+      },
+      "bindings": {
+        "controls": {
+          "elevon_left": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "elevon_left",
+                "node": "elevon_left_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.elevon_left_hinge"
+              }
+            ]
+          },
+          "elevon_right": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "elevon_right",
+                "node": "elevon_right_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.elevon_right_hinge"
+              }
+            ]
+          }
+        },
+        "rotor": {
+          "present": true,
+          "node": "propeller",
+          "spin_node": "propeller_spin",
+          "diameter": {
+            "path": "thrust.propeller_diameter.value"
+          },
+          "source": "geometry_articulation",
+          "geometry_ref": "articulations.propeller_spin"
+        },
+        "gear": {
+          "keys": {}
+        },
+        "crash": {
+          "provider": "gltf_extras",
+          "metadata_script": "",
+          "asset_node": ""
+        }
+      },
+      "authoring_sources": [
+        {
+          "path": "assets/aircraft/skywalker-x8/source-manifest.json",
+          "role": "asset_identity"
+        },
+        {
+          "path": "assets/aircraft/moonrunner-x99-overlay/customization-bindings.json",
+          "role": "overlay_customization_source"
+        },
+        {
+          "path": "assets/aircraft/moonrunner-x99-overlay/runtime-proof.json",
+          "role": "overlay_runtime_proof"
+        },
+        {
+          "path": "assets/aircraft/skywalker-x8/model-geometry.json",
+          "role": "historical_geometry_source"
+        }
+      ],
+      "construction": {
+        "version": 1,
+        "hinge_axis": "+X",
+        "rotor": {
+          "frame_node": "thrust_frame",
+          "geometry_ref": "thrust",
+          "axis": "+X"
+        },
+        "gear": [],
+        "material_grow": []
+      }
+    }
+  ]
+}

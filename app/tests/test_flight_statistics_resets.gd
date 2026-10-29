@@ -1,6 +1,10 @@
 extends SceneTree
 ## UI-FS-03 independent account, aircraft, and session reset behavior.
 
+class FakeDetector:
+	extends RefCounted
+	var flight := {}
+
 var _checks: int = 0
 var _failures: int = 0
 
@@ -14,11 +18,100 @@ func _initialize() -> void:
 		return
 	var source: Dictionary = _fixture(schema)
 	_check("reset fixture validates", bool(schema.validate(source).ok))
+	var identity: Script = load("res://statistics/aircraft_identity.gd")
+	_check("non-stock lookalikes remain distinct", not identity.matches("workshop:moonrunner-x99", "workshop:skywalker-x8") and not identity.matches("stock:moonrunner-x99", "moonrunner-x99"))
+	_test_alias_migration(source, reducer, schema)
+	_test_service_alias(source)
 	_test_reducer_rollups(source, reducer, schema)
 	_test_account_and_aircraft_epochs(source, reducer, schema)
 	_test_session_reset(source, reducer, schema)
 	_test_invalid_resets_are_unchanged(source, reducer, schema)
 	_finish()
+
+
+func _test_alias_migration(source: Dictionary, reducer: Script, schema: Script) -> void:
+	for pair: Array in [["skywalker-x8", "moonrunner-x99"], ["stock:skywalker-x8", "stock:moonrunner-x99"]]:
+		var legacy: String = pair[0]
+		var current: String = pair[1]
+		var data: Dictionary = source.duplicate(true)
+		data.records[0].aircraft_id = legacy
+		data.records[1].aircraft_id = legacy
+		data.records[2].aircraft_id = current
+		data.epochs.aircraft[legacy] = 1
+		data.epochs.aircraft[current] = 2
+		data.epochs.aircraft_utc[legacy] = "2026-10-25T12:10:00"
+		data.epochs.aircraft_utc[current] = "2026-10-25T12:20:00"
+		data.records[1].aircraft_epoch = 1
+		data.records[2].aircraft_epoch = 2
+		var original: Dictionary = data.duplicate(true)
+		_check("alias fixture is valid " + legacy, bool(schema.validate(data).ok))
+		var legacy_query: Dictionary = reducer.query(data, legacy, "lifetime")
+		var merged: Dictionary = reducer.query(data, current, "lifetime")
+		_check("both spellings select both histories without duplicates", merged.started == 2 and merged.crashes == 1 and merged == legacy_query.merged({"aircraft_id": current}, true))
+		_check("combined streak follows original event order", merged.current_streak == 1 and merged.best_streak == 1)
+		_check("all-aircraft lifetime stays unchanged", reducer.query(data, "", "lifetime").started == 3)
+		_check("per-source reset epochs survive combined counter query", reducer.query(data, current, "counters").started == 1 and reducer.query(data, current, "counters").crashes == 1)
+		_check("mixed reset dates are described as separate windows", reducer.query(data, current, "counters").period_label == "Since separate counter resets")
+		var missing_date: Dictionary = data.duplicate(true)
+		missing_date.epochs.aircraft_utc.erase(current)
+		_check("undated alias history does not claim the other alias reset date", reducer.query(missing_date, current, "counters").period_label == "Since separate counter resets")
+		var legacy_only: Dictionary = data.duplicate(true)
+		legacy_only.records.remove_at(2)
+		_check("legacy-only history remains discoverable under the new ID", reducer.query(legacy_only, current, "lifetime").started == 1)
+		var current_only: Dictionary = data.duplicate(true)
+		current_only.records.remove_at(1)
+		current_only.records.remove_at(0)
+		_check("new-only history remains discoverable under the legacy ID", reducer.query(current_only, legacy, "lifetime").started == 1)
+		var reset: Dictionary = reducer.reset(data, "aircraft", current, "", "2026-10-25T15:00:00")
+		_check("reset advances each existing epoch", not reset.is_empty() and reset.epochs.aircraft[legacy] == 2 and reset.epochs.aircraft[current] == 3)
+		_check("reset preserves records and empties both counter windows", reset.records == data.records and reducer.query(reset, current, "counters").started == 0 and reducer.query(reset, current, "lifetime").started == 2)
+		_check("reset retains other aircraft", reducer.query(reset, "stock:b", "counters").started == 1)
+		var new_flight: Dictionary = _flight("alias-new-after-reset", 8, 9, "session-old", current, "MoonRunner X99", "completed", 13.0, 1)
+		new_flight.aircraft_epoch = int(reset.epochs.aircraft[current])
+		reset.records.append(new_flight)
+		reset.sequence = 9
+		_check("new post-reset flight is counted once in the combined window", reducer.query(reset, current, "counters").started == 1 and reducer.query(reset, legacy, "counters").started == 1)
+		_check("query and reset do not mutate original", data == original)
+		data.epochs.aircraft[legacy] = schema.MAX_SEQUENCE
+		_check("one exhausted alias prevents partial reset", reducer.reset(data, "aircraft", current).is_empty())
+
+
+func _test_service_alias(source: Dictionary) -> void:
+	var service: Node = load("res://statistics/service.gd").new()
+	service.data = source.duplicate(true)
+	service.data.records[0].aircraft_id = "skywalker-x8"
+	service.data.records[1].aircraft_id = "moonrunner-x99"
+	var choices: Array = service.aircraft_choices()
+	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
+	var installed_id: String = "moonrunner-x99" if catalog.has("moonrunner-x99") else "skywalker-x8"
+	_check("service lists one installed catalog choice for both names", choices.size() == 3 and choices[0].id == installed_id and choices[0].name == "MoonRunner X99")
+	_check("service query groups both histories", service.query("moonrunner-x99", "lifetime").history_count == 2)
+	_check("service summary groups both histories", service.summary("moonrunner-x99", "lifetime").history_count == 2)
+	# Bare and prefixed IDs are distinct entities, even when the display name matches.
+	var prefixed: Dictionary = _flight("prefixed-flight", 8, 9, "session-old", "stock:skywalker-x8", "MoonRunner X99", "completed", 13.0, 1)
+	service.data.records.append(prefixed)
+	service.data.sequence = 9
+	service._query_cache.clear()
+	service._summary_cache.clear()
+	choices = service.aircraft_choices()
+	_check("coexisting namespaces get distinguishable choices", choices.size() == 4 and choices[0].name == "MoonRunner X99" and choices[-1].id == "stock:" + installed_id and choices[-1].name == "MoonRunner X99 · stock:" + installed_id)
+	_check("bare and prefixed groups query independently", service.query("moonrunner-x99", "lifetime").history_count == 2 and service.query("stock:moonrunner-x99", "lifetime").history_count == 1 and service.query("", "lifetime").history_count == 5)
+	var before_reset: Dictionary = service.data.duplicate(true)
+	var reducer: Script = load("res://statistics/reducer.gd")
+	var reset: Dictionary = reducer.reset(before_reset, "aircraft", "moonrunner-x99", "", "2026-10-25T15:00:00")
+	_check("reset of bare group preserves prefixed counter window", reducer.query(reset, "moonrunner-x99", "counters").history_count == 0 and reducer.query(reset, "stock:moonrunner-x99", "counters").history_count == 1 and reset.epochs.aircraft.get("stock:skywalker-x8", 0) == 0)
+	service._summary_cache.clear()
+	service._aircraft_id = "skywalker-x8"
+	service._active_record = service.data.records[0].duplicate(true)
+	var detector := FakeDetector.new()
+	detector.flight = {"airborne_seconds": 45.0, "max_tas_mps": 24.0, "max_groundspeed_mps": 21.0}
+	service.detector = detector
+	var before: Dictionary = service.summary("moonrunner-x99", "lifetime")
+	detector.flight.airborne_seconds = 47.0
+	var after: Dictionary = service.summary("moonrunner-x99", "lifetime")
+	_check("summary tracks active legacy observation under new ID", is_equal_approx(after.airborne_seconds, before.airborne_seconds + 2.0))
+	service.detector = null
+	service.free()
 
 
 func _test_reducer_rollups(source: Dictionary, reducer: Script, schema: Script) -> void:

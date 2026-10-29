@@ -142,6 +142,18 @@ func test_complete_manifest() -> void:
 
 func run_all() -> void:
 	test_complete_manifest()
+	var old_wing_source := "app/data/aircraft/skywalker_x8.json"
+	var new_wing_source := "app/data/aircraft/moonrunner_x99.json"
+	var wing_hash := "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830"
+	check("native source gate refuses the removed historical path",
+		NativeStage._source_error({mirrored_sources = {old_wing_source: wing_hash}}) \
+		== "mirrored source differs from the verified native build: " + old_wing_source)
+	check("native source gate rejects the old data hash for the new path",
+		NativeStage._source_error({mirrored_sources = {new_wing_source: wing_hash}}) \
+		== "mirrored source differs from the verified native build: " + new_wing_source)
+	var new_wing_hash := "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c"
+	check("native source gate accepts the current data hash",
+		NativeStage._source_error({mirrored_sources = {new_wing_source: new_wing_hash}}).is_empty())
 	var status: Dictionary = NativeStage.library_status()
 	check("library status carries a reason when absent", status.ok or not str(status.reason).is_empty(), str(status))
 	var stik := runway(STIK)

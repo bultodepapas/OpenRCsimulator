@@ -9,7 +9,7 @@ const Session := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const AIRCRAFT := ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "gp-extra-300s-60", "p51d-mustang-120",
-	"skywalker-x8", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution"]
+	"moonrunner-x99", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution"]
 
 
 func _initialize() -> void:

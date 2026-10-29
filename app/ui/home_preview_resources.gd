@@ -24,7 +24,7 @@ static func path_for(id: String, livery := "") -> String:
 		return HX700.SCENE_PATH if id == "xcell-60-research" else ""
 	var family := Catalog.visual_family(id)
 	if family.is_empty(): return ""
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft_models/" + family + ".json"))
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(("res://data/aircraft_model_overlays/" if family == "moonrunner-x99" else "res://data/aircraft_models/") + family + ".json"))
 	if not parsed is Dictionary: return ""
 	var asset: Variant = parsed.get("asset", {})
 	if not asset is Dictionary or asset.get("kind") != "imported_glb": return ""

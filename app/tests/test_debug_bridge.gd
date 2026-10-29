@@ -404,13 +404,23 @@ func _threaded() -> void:
 
 
 func _stale_snapshot(bridge: Node) -> void:
+	bridge._net_mutex.lock()
 	bridge._last_request_ms = -bridge.SNAPSHOT_IDLE_MS # idle: the main thread stops publishing snapshots
+	bridge._net_mutex.unlock()
 	for i in 3:
 		await process_frame
 	await create_timer(3.0 * bridge.SNAPSHOT_INTERVAL_MS / 1000.0).timeout # older than the accepted age too
+	bridge._net_mutex.lock()
+	var old_snapshot: Dictionary = bridge._snapshot.duplicate(true)
+	bridge._net_mutex.unlock()
+	var old_age := Time.get_ticks_msec() - int(old_snapshot.get("ms", 0))
+	var request_frame := Engine.get_process_frames()
 	var state: Dictionary = await _call({cmd = "state"})
 	_check("an old snapshot is never served: the main thread answers instead", state.ok
-		and not state.result.has("snapshot_frame") and state.result.frame >= Engine.get_process_frames() - 1, str(state).left(200))
+		and not old_snapshot.is_empty() and int(old_snapshot.frame) < request_frame - 1
+		and old_age > 2 * bridge.SNAPSHOT_INTERVAL_MS
+		and not state.result.has("snapshot_frame") and state.result.frame >= request_frame,
+		"request_frame=%d old_frame=%s old_age=%d reply=%s" % [request_frame, old_snapshot.get("frame"), old_age, str(state).left(200)])
 
 
 func _hardening(session: Node) -> void:

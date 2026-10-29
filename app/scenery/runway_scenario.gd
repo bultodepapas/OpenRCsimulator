@@ -67,7 +67,7 @@ func _fail(message: String) -> void:
 
 func _run() -> void:
 	var out := str(_args.get("out", "/tmp/runway-scenario"))
-	var aircraft := str(_args.get("aircraft", Catalog.DEFAULT_ID))
+	var aircraft := Catalog.canonical_id(str(_args.get("aircraft", Catalog.DEFAULT_ID)))
 	if not Catalog.has(aircraft) or not Catalog.can_fly(aircraft):
 		_fail("aircraft %s cannot fly" % aircraft)
 		return

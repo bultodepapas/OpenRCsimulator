@@ -24,7 +24,7 @@ func _initialize() -> void:
 	if not failed:
 		_fixed_parity()
 		_selector_refusals()
-		for path: String in ["res://data/aircraft/synthetic_stik_electric_4s_battery.json", "res://data/aircraft/battery/skywalker_x8_6s_pack.json"]:
+		for path: String in ["res://data/aircraft/synthetic_stik_electric_4s_battery.json", "res://data/aircraft/battery/moonrunner_x99_6s_pack.json"]:
 			var loaded := Data.load_file(path)
 			check("existing finite pack configuration loads", loaded.ok, str(loaded.get("errors", [])))
 			if not loaded.ok: continue

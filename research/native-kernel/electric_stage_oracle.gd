@@ -7,7 +7,7 @@ const ElectricWeather := preload("res://physics/wind_config.gd")
 const PackEcm := preload("res://physics/battery/pack_ecm.gd")
 const EscSupervisor := preload("res://physics/battery/esc_supervisor.gd")
 
-const ELECTRIC_AIRCRAFT := ["turbo-lumber-evolution", "skywalker-x8"]
+const ELECTRIC_AIRCRAFT := ["turbo-lumber-evolution", "moonrunner-x99"]
 
 
 func _extra_option_names() -> PackedStringArray:
@@ -21,9 +21,9 @@ func _source_hashes() -> Dictionary:
 			"res://physics/battery/esc_supervisor.gd", "res://app_state/aircraft_catalog.gd",
 			"res://tests/test_electric_session.gd", "res://tests/test_electric_battery_session.gd",
 			"res://tests/test_battery_session.gd", "res://tests/test_battery_esc_supervisor.gd",
-			"res://data/aircraft/turbo_lumber_evolution.json", "res://data/aircraft/skywalker_x8.json",
+			"res://data/aircraft/turbo_lumber_evolution.json", "res://data/aircraft/moonrunner_x99.json",
 			"res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
-			"res://data/aircraft/battery/skywalker_x8_6s_pack.json",
+			"res://data/aircraft/battery/moonrunner_x99_6s_pack.json",
 			"res://data/batteries/packs/lipo-4s1p-3200-30c-class.json",
 			"res://data/batteries/packs/lipo-6s1p-5000-30c-class.json",
 			"res://data/batteries/cells/lipo-bak503562-galeotti-v1.json"]:

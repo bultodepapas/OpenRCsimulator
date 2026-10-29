@@ -13,8 +13,8 @@ const HullContact := preload("res://physics/hull_contact.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 
-const X8 := "res://data/aircraft/skywalker_x8.json"
-const X8_PACK := "res://data/aircraft/battery/skywalker_x8_6s_pack.json"
+const X8 := "res://data/aircraft/moonrunner_x99.json"
+const X8_PACK := "res://data/aircraft/battery/moonrunner_x99_6s_pack.json"
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
 
 var _checks := 0

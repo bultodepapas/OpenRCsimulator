@@ -57,11 +57,11 @@ func _initialize() -> void:
 	_check("eleven simulated entries include the experimental helicopter", Catalog.flyable_ids().size() == 11 and Catalog.flyable_ids().has("xcell-60-research")
 		and Catalog.flyable_entries().all(func(e): return e.data != "" and e.status != Catalog.PREVIEW), str(Catalog.flyable_ids()))
 	_check("Extra's finite glow store is exposed to fill selection", Catalog.has_finite_fuel(AirplaneBuilder.EXTRA_ID))
-	var wing_entry: Dictionary = Catalog.entry("skywalker-x8")
-	_check("MoonRunner X99 keeps its stable catalog and visual identity",
+	var wing_entry: Dictionary = Catalog.entry("moonrunner-x99")
+	_check("MoonRunner X99 uses its canonical catalog and visual identity",
 		wing_entry.get("name", "") == "MoonRunner X99" and wing_entry.get("short_name", "") == "MoonRunner X99"
-		and wing_entry.get("id", "") == "skywalker-x8" and wing_entry.get("visual_family", "") == "skywalker-x8"
-		and wing_entry.get("data", "") == "res://data/aircraft/skywalker_x8.json")
+		and wing_entry.get("id", "") == "moonrunner-x99" and wing_entry.get("visual_family", "") == "moonrunner-x99"
+		and wing_entry.get("data", "") == "res://data/aircraft/moonrunner_x99.json")
 	var helicopter_entry: Dictionary = Catalog.entry("xcell-60-research")
 	_check("research helicopter catalog identity and visual family are explicit",
 		helicopter_entry.get("vehicle", "") == "rotorcraft"

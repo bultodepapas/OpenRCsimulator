@@ -30,7 +30,7 @@ identifies its model and follows the browser language.
 A PNG is an image and a `.blend` is an editable project; the simulator imports
 the `.orskin` package. Templates and packages belong to their visual family and
 stock revision. A skin for a different model or revision is rejected. Existing
-X8 packages remain compatible; Ugly Stick variants share installed paints.
+Legacy X8 skin packages remain compatible; Ugly Stick variants share installed paints.
 
 ## Reference mapping
 
@@ -58,7 +58,7 @@ island outlines. The helicopter tail source is reduced proportionally from
 ## Authoring routes and quality
 
 The image route is the standard starting workflow. Image generation remains
-approximate: a generator can shift islands, mirror marks or break seams. The X8
+approximate: a generator can shift islands, mirror marks or break seams. The MoonRunner X99
 shark trial produced a usable skin at 1254 × 1254 from a 2048-square source, with
 visible asymmetric wing bands and panel discontinuities. File validation cannot
 prove visual alignment. Prefer recoloring and broad motifs for early attempts;

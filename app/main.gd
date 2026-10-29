@@ -687,6 +687,9 @@ func _prepare_flight() -> void:
 	_scripted = args.has("scripted")
 	if aircraft_id == "":
 		aircraft_id = str(args.get("aircraft", Catalog.DEFAULT_ID))
+	# Frozen Workshop builds retain their own original base and exact snapshot identity.
+	if workshop_trial.is_empty():
+		aircraft_id = Catalog.canonical_id(aircraft_id)
 	if not Catalog.has(aircraft_id) or (not Catalog.can_fly(aircraft_id) and not _scripted):
 		# Never another airplane in its place, and never a preview "flying" without flight data (it would be a
 		# ballistic throw). A preview may still fly the scripted circle (--scripted): visual only.

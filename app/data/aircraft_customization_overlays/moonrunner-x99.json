@@ -1,0 +1,201 @@
+{
+  "format": "openrc-aircraft-customization-registry",
+  "version": 1,
+  "families": [
+    {
+      "format": "openrc-aircraft-customization-bindings",
+      "version": 4,
+      "source_proof_version": 3,
+      "visual_family": "moonrunner-x99",
+      "model_manifest_sha256": "93803c4fc4d3ada7407532fd4079305572ed67bbd5eef5e60b3c877cc9239149",
+      "paint_slots": [
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "SkywalkerX8/fuselage_core",
+              "surface": 3,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/canopy_hatch",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/camera_door_left_hinge/camera_door_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/camera_door_right_hinge/camera_door_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "SkywalkerX8/wing_left_fixed",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/wing_right_fixed",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/elevon_left_hinge/elevon_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/elevon_right_hinge/elevon_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
+      ],
+      "marking_slots": [],
+      "smoke_slots": [],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [
+          {
+            "id": "nav_tail",
+            "node_path": "SkywalkerX8/wing_right_fixed",
+            "position_m": [
+              1.041819453,
+              0.176201046,
+              0.670886615
+            ],
+            "gear_gated": false
+          }
+        ],
+        "strips": []
+      },
+      "presentation_engine_version": "4.8.0",
+      "presentation_sources": [
+        {
+          "path": "res://audio/mechanical_profile.gd",
+          "sha256": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb"
+        },
+        {
+          "path": "res://render/aircraft_customization.gd",
+          "sha256": "f739cc5226b652e9cf35aa0a148c19d71a2992550cf365c03a3031af9d8023af"
+        },
+        {
+          "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
+          "sha256": "4a41aace683b5dbca42706d7dbf1772f437904f5f5efcdbd37fd530b4f72ac33"
+        },
+        {
+          "path": "res://render/lighting/lighting_patterns.gd",
+          "sha256": "b85510348bcec11e0f730de03cf1ccb4725af4e9b000747da727ba49316fc468"
+        },
+        {
+          "path": "res://render/lighting/lighting_policy.gd",
+          "sha256": "8e1722281534a5ea5e288b57b2a67c892adb6ebc09f02e8ccdd7f6add8cf9d8b"
+        },
+        {
+          "path": "res://render/lighting/lighting_profile.gd",
+          "sha256": "9e4961715a75709072031bf676ee878bd519f17a97ac342d5ff77a6fbdf72dba"
+        },
+        {
+          "path": "res://render/lighting/lighting_scene_budget.gd",
+          "sha256": "09477e9e900b37050e422ae90427e6d5cb54823e562c8f44c94ce316e4ef2d26"
+        },
+        {
+          "path": "res://render/lighting/lighting_skins.gd",
+          "sha256": "236251a7c6a185a168a657c20c998cd0b4bc119d1b745740d95065def71721fa"
+        },
+        {
+          "path": "res://render/lighting/lighting_vfx.gd",
+          "sha256": "9fefdd4e416d2554abbd1f1ff1b59e9a8365b2bd82dd56aa64706353d2f1dfe2"
+        },
+        {
+          "path": "res://render/lighting/rgb_lamp.gdshader",
+          "sha256": "9df65a3e5cd9bb33af72700d914f10d04e9c4179a97895109e13c3fa05e9ba29"
+        },
+        {
+          "path": "res://render/lighting/rgb_patterns.gdshaderinc",
+          "sha256": "bc64f728d3c431f7cb80716f3aad42d4fea0f9b97a83deafa85c90b6397d13f4"
+        },
+        {
+          "path": "res://render/lighting/rgb_skin.gdshader",
+          "sha256": "64cf09b91797bfd09444bbc1c6ab46db3e0fd5b16556bff401931f6be8b3d0f7"
+        },
+        {
+          "path": "res://render/lighting/rgb_strip.gdshader",
+          "sha256": "f25119078acdd2b626ee0c8689639b40e4d251cee97e79ec767d6c90be0a5282"
+        },
+        {
+          "path": "res://render/presentation_sources.gd",
+          "sha256": "3c30f5dea945fce4bb92cea0b2f9c7e6f03bc2bdbd7bead4e68ce11e4ff339da"
+        },
+        {
+          "path": "res://render/smoke/exhaust.gd",
+          "sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34"
+        },
+        {
+          "path": "res://render/smoke/process.gdshader",
+          "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb"
+        },
+        {
+          "path": "res://render/smoke/profile_process.gdshader",
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke.gd",
+          "sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke_schedule.gd",
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
+        },
+        {
+          "path": "res://render/world/aircraft_light_state.gd",
+          "sha256": "fb36c123dc7fce796fe7d35fe92f3fb5536f560783283cc102e063d01eac47ec"
+        },
+        {
+          "path": "res://render/world/aircraft_lights.gd",
+          "sha256": "abb75f55a40583d0bb4842073f7f6dde91c452c366fa6a88f7751f9b6803aee4"
+        },
+        {
+          "path": "res://render/world/engine_srgb.gdshaderinc",
+          "sha256": "ba21c75f2bdd830d2dbcadbfb1b4d6f5202352a06014f79a0e34ec650ee02799"
+        },
+        {
+          "path": "res://render/world/exposure.gd",
+          "sha256": "c25487774ecec2d0957eef4825f43884594b3bfc365fbeefdc4ad6c80a518e19"
+        },
+        {
+          "path": "res://render/world/led_strip.gdshader",
+          "sha256": "d91e18eb224b8636897be40c83f3c2af781964f2d0ff031fca2bb3c2c73430dc"
+        },
+        {
+          "path": "res://render/world/light_sprite.gdshader",
+          "sha256": "28b1a7fdd18009e9243e1a288700a16acaa945f47352b43df2b0ebd2dd33e3d9"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
+        }
+      ],
+      "slots_sha256": "2327c728aef4c9b5fe596f31632e2af60697b665d1f6a79e4c87b87beb2f691a"
+    }
+  ]
+}

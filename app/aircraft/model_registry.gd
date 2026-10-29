@@ -14,6 +14,14 @@ const CRASH_SECTIONS := ["core", "wing_left", "wing_right", "wing_center", "engi
 static func describe(family_id: String) -> Dictionary:
 	if not Manifest._is_slug(family_id):
 		return _failure("MODEL_FAMILY_INVALID", "$.family_id", "requested visual family must be a lowercase stable slug")
+	if family_id == "moonrunner-x99":
+		var overlay_path := "res://aircraft/model_overlay_registry.gd"
+		if not ResourceLoader.exists(overlay_path):
+			return _failure("MODEL_OVERLAY_RESOLVER_MISSING", overlay_path, "overlay model resolver is unavailable")
+		var overlay: Script = load(overlay_path)
+		if overlay == null or not overlay.has_method("describe"):
+			return _failure("MODEL_OVERLAY_RESOLVER_INVALID", overlay_path, "overlay model resolver cannot be loaded")
+		return overlay.describe(family_id)
 	var path := MANIFEST_ROOT + family_id + ".json"
 	if not FileAccess.file_exists(path):
 		return _failure("MODEL_MANIFEST_MISSING", path, "no checked-in model manifest exists for this visual family")

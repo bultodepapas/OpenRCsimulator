@@ -41,7 +41,7 @@ EXPECTED_FLEET = {
     "stik_glow_fs64v_4t",
     "stik_glow_fs64v_4t_apc_13x6",
     "turbo_lumber_evolution",
-    "skywalker_x8",
+    "moonrunner_x99",
 }
 ENGINE_ERROR = re.compile(r"(?:SCRIPT ERROR:|Parse Error:|ERROR:)")
 @dataclass
@@ -453,7 +453,7 @@ def build_cases(app: Path) -> list[Case]:
     # support IDs, thresholds or landing credit.
     def intent_q(value, unit):
         return {"value": value, "unit": unit, "kind": "estimated", "source": "synthetic authoring test; no stock qualification"}
-    intent = deepcopy(fleet["skywalker_x8"])
+    intent = deepcopy(fleet["moonrunner_x99"])
     intent["capabilities"]["landing_support"] = "authored_hull_v1"
     intent["intended_hull_support"] = {
         "format": "openrc-intended-hull-support v1", "role": "belly",

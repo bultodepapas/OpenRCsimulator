@@ -1,6 +1,8 @@
 ## UI-FS: app-owned observation service. No inputs, forces or solver checkpoint mutation.
 extends Node
 
+const AircraftIdentity := preload("res://statistics/aircraft_identity.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Rules := preload("res://statistics/rules.gd")
 const StoreSchema := preload("res://statistics/schema.gd")
 const FlightEvent := preload("res://statistics/flight_event.gd")
@@ -498,7 +500,7 @@ func summary(aircraft_id: String = "", period: String = "session") -> Dictionary
 	if not _summary_cache.has(key):
 		_update_active()
 		var result: Dictionary = load("res://statistics/reducer.gd").query(data, aircraft_id, period, "", false)
-		var included := not _active_record.is_empty() and (aircraft_id.is_empty() or aircraft_id == _aircraft_id)
+		var included := not _active_record.is_empty() and (aircraft_id.is_empty() or AircraftIdentity.matches(aircraft_id, _aircraft_id))
 		_summary_cache[key] = {"result": result, "active_id": str(_active_record.get("id", "")) if included else "",
 			"seconds": float(_active_record.get("airborne_seconds", 0.0)) if included else 0.0}
 	var cached: Dictionary = _summary_cache[key]
@@ -521,9 +523,20 @@ func aircraft_choices() -> Array:
 	var seen: Dictionary = {}
 	for record: Dictionary in data.get("records", []):
 		var id: String = str(record.get("aircraft_id", ""))
+		var related: PackedStringArray = AircraftIdentity.related(id)
+		var display_name: String = str(record.get("aircraft_name", id))
+		if related.size() == 2:
+			# Follow the installed catalog during the staged transition; records keep their IDs.
+			id = related[1] if Catalog.has("moonrunner-x99") else related[0]
+			var catalog_id: String = "moonrunner-x99" if Catalog.has("moonrunner-x99") else "skywalker-x8"
+			display_name = str(Catalog.entry(catalog_id).get("name", display_name))
+			# Bare catalog IDs and stock:-prefixed IDs have no proven shared origin.
+			# Keep their scopes separate and expose the selected namespace in the label.
+			if id.begins_with("stock:"):
+				display_name += " · " + id
 		if not id.is_empty() and not seen.has(id):
 			seen[id] = true
-			choices.append({id = id, name = str(record.get("aircraft_name", id))})
+			choices.append({id = id, name = display_name})
 	return choices
 
 

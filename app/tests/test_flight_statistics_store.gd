@@ -20,6 +20,7 @@ func _initialize() -> void:
 	_test_corrupt_generation_recovery(schema, store_script)
 	_test_future_schema_protection(schema, store_script)
 	_test_commit_interruptions(schema, store_script)
+	_test_alias_delete_recovery(schema, store_script, reducer)
 	_test_delete_fence_recovery(schema, store_script, reducer)
 	_test_malformed_shapes_fail_closed(schema, store_script)
 	_test_completed_deletion_reopens_normally(schema, store_script, reducer)
@@ -152,6 +153,39 @@ func _test_commit_interruptions(schema: Script, store_script: Script) -> void:
 	_check("post-publish generation recovers", after_publish.open(root_uri), after_publish.note)
 	_check("published commit is present exactly once", after_publish.data.current_session == "published-session" and after_publish.data.generation == 2)
 	after_publish.close()
+
+
+func _test_alias_delete_recovery(schema: Script, store_script: Script, reducer: Script) -> void:
+	for stage: String in ["after_deletion_fence_publish", "after_delete_first_snapshot_publish",
+			"after_delete_second_snapshot_publish", "before_delete_purge", "after_delete_purge",
+			"after_deletion_fence_complete"]:
+		_test_alias_delete_stage(schema, store_script, reducer, stage)
+
+
+func _test_alias_delete_stage(schema: Script, store_script: Script, reducer: Script, stage: String) -> void:
+	var root_uri: String = _new_root("alias_delete")
+	var store: RefCounted = store_script.new()
+	_check("alias deletion fixture opens", store.open(root_uri), store.note)
+	var fixture: Dictionary = _fixture_with_aircraft_records(schema, store.data)
+	fixture.records[0].aircraft_id = "stock:skywalker-x8"
+	fixture.records[2].aircraft_id = "stock:moonrunner-x99"
+	fixture.records.append(_flight("bare-wing-flight", 8, 9, "session-delete", "skywalker-x8", "MoonRunner X99", "completed", 13.0, 1, 0, 0, 0, 25.0, 23.0))
+	fixture.sequence = 9
+	_check("alias deletion fixture commits", store.commit(fixture), store.note)
+	var before_bare: Dictionary = reducer.query(store.data, "moonrunner-x99", "lifetime")
+	var before_b: Dictionary = reducer.query(store.data, "stock:b", "lifetime")
+	_stop_stage = stage
+	store.interruption_hook = Callable(self, "_interrupt_at")
+	_check("alias deletion interruption at " + stage, not store.delete_history("stock:moonrunner-x99"))
+	store.close()
+	var recovered: RefCounted = store_script.new()
+	_check("alias deletion recovers", recovered.open(root_uri), recovered.note)
+	_check("fence names both historical identities", recovered._fence.targets.has("stock:skywalker-x8") and recovered._fence.targets.has("stock:moonrunner-x99"))
+	_check("both aliases remain deleted on recovery", reducer.query(recovered.data, "stock:moonrunner-x99", "lifetime").history_count == 0 and reducer.query(recovered.data, "stock:skywalker-x8", "lifetime").history_count == 0)
+	_check("unrelated history is preserved", reducer.query(recovered.data, "stock:b", "lifetime") == before_b)
+	_check("bare namespace survives prefixed deletion and recovery", before_bare.started == 1 and reducer.query(recovered.data, "moonrunner-x99", "lifetime") == before_bare)
+	_check("both survivor slots satisfy the fence", _both_slots_satisfy_fence(recovered, root_uri))
+	recovered.close()
 
 
 func _test_delete_fence_recovery(schema: Script, store_script: Script, reducer: Script) -> void:

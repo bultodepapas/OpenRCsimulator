@@ -21,7 +21,7 @@ const STATION_COUNTS := [1, 8, 32]
 const AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "turbo-lumber-evolution"]
 const SESSION_WEATHER_CASES := ["legacy-v4-steady", "spatial-v5-modes-8", "spatial-v5-modes-24", "spatial-v5-modes-64"]
 
-const EXTRA_AIRCRAFT_IDS := ["skywalker-x8"]
+const EXTRA_AIRCRAFT_IDS := ["moonrunner-x99"]
 const ACTIVE_WEATHER_CASES := ["spatial-v5-gusts-24", "spatial-v5-thermals-24", "spatial-v5-gusts-thermals-24"]
 
 

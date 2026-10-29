@@ -11,7 +11,7 @@ const M := preload("res://physics/math3d.gd")
 const Weather := preload("res://physics/wind_config.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 
-const X8 := "skywalker-x8"
+const X8 := "moonrunner-x99"
 const HANDS_OFF_S := 4.0
 
 var _checks: int = 0

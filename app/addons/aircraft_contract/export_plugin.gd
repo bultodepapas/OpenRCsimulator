@@ -6,6 +6,9 @@ extends EditorExportPlugin
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const AircraftCustomization := preload("res://render/aircraft_customization.gd")
 const PresentationSources := preload("res://render/presentation_sources.gd")
+const OverlayProof := preload("res://aircraft/overlay_source_proof.gd")
+const OverlayModels := preload("res://aircraft/model_overlay_registry.gd")
+const OverlayCustomization := preload("res://aircraft/customization_overlay.gd")
 const RotorcraftModel := preload("res://aircraft/hx700_model.gd")
 const MODEL_MARKER := "res://data/aircraft_models/package_proofs.json"
 const PRESENTATION_MARKER := "res://data/aircraft_customization_package.json"
@@ -33,7 +36,8 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 	var manifests_by_family: Dictionary = {}
 	var presentation_families: Dictionary = {}
 	var presentation_proof_version := 0
-	for family: String in Catalog.airplane_visual_families():
+	var model_families := _model_families_for_export()
+	for family: String in model_families:
 		var result: Dictionary = registry.describe(family)
 		if not result.get("ok", false):
 			_fail_export("Cannot export an invalid aircraft model: " + str(result.get("errors", [])))
@@ -49,15 +53,20 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 			model_sources[str(record.path)] = true
 			model_sources[str(record.path) + ".import"] = true
 		manifests_by_family[family] = result
-	for aircraft_id: String in Catalog.ids():
+	var aircraft_ids := Catalog.ids()
+	if not aircraft_ids.has(OverlayModels.FAMILY):
+		aircraft_ids.append(OverlayModels.FAMILY)
+	if not aircraft_ids.has("skywalker-x8"):
+		aircraft_ids.append("skywalker-x8")
+	for aircraft_id: String in aircraft_ids:
 		if Catalog.is_rotorcraft(aircraft_id):
 			continue
-		var family := Catalog.visual_family(aircraft_id)
+		var family := OverlayModels.FAMILY if aircraft_id == OverlayModels.FAMILY else Catalog.visual_family(aircraft_id)
 		var result: Dictionary = manifests_by_family.get(family, {})
 		if result.is_empty() or not result.get("ok", false):
 			_fail_export("Cannot export presentation bindings without a validated model for " + aircraft_id)
 			return
-		var companion: Dictionary = AircraftCustomization.describe_for_model(aircraft_id, str(result.get("manifest_sha256", "")))
+		var companion: Dictionary = OverlayCustomization.describe_for_model(family, str(result.get("manifest_sha256", ""))) if family == OverlayModels.FAMILY else AircraftCustomization.describe_for_model(aircraft_id, str(result.get("manifest_sha256", "")))
 		if not companion.get("ok", false):
 			_fail_export("Cannot export an invalid presentation companion for " + family + ": " + str(companion.get("errors", [])))
 			return
@@ -74,6 +83,11 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 			return
 		for source_record: Dictionary in bindings.presentation_sources:
 			presentation_families[str(source_record.path)] = true
+	# Overlay script/input proofs are separate from the pinned legacy presentation set.
+	for source: String in OverlayProof.SOURCE_PATHS:
+		model_sources[source] = true
+	add_file(OverlayModels.PATH, FileAccess.get_file_as_bytes(OverlayModels.PATH), false)
+	add_file(OverlayCustomization.PATH, FileAccess.get_file_as_bytes(OverlayCustomization.PATH), false)
 	var model_paths: Array = model_sources.keys()
 	model_paths.sort()
 	var model_files: Dictionary = {}
@@ -93,6 +107,15 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 		return
 	var presentation_marker := {"format": PresentationSources.package_format_for_version(presentation_proof_version), "files": presentation_files.files}
 	add_file(PRESENTATION_MARKER, (JSON.stringify(presentation_marker, "\t", true) + "\n").to_utf8_buffer(), false)
+
+
+# Frozen Workshop snapshots can refer to the historical family after it stops
+# appearing in the stock catalog. Export both separately verified identities.
+static func _model_families_for_export() -> Array:
+	var families := Catalog.airplane_visual_families()
+	for family in [OverlayModels.FAMILY, "skywalker-x8"]:
+		if not families.has(family): families.append(family)
+	return families
 
 
 func _collect_presentation_proofs(family_sources: Dictionary, version: int) -> Dictionary:

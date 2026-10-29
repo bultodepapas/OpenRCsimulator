@@ -1,10 +1,10 @@
 {
   "format": "openrc-skin-kits-v1",
   "models": {
-    "skywalker-x8": {
+    "moonrunner-x99": {
       "display_name": "MoonRunner X99",
-      "stock_sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
-      "source_path": "res://assets/aircraft/skywalker-x8/skywalker_x8.glb",
+      "stock_sha256": "54d67d9bbfe4ce4abdc4bafa523c3bf812422d6336ba1d0f151a2970e087b0f0",
+      "source_path": "res://assets/aircraft/moonrunner-x99/moonrunner_x99.glb",
       "kit": "res://assets/skin-kit/moonrunner-x99.zip",
       "material_names": ["x8_foam_interior", "x8_orange", "x8_black", "x8_glass", "x8_battery", "x8_electronics", "x8_livery", "x8_metal", "x8_motor_bell"],
       "paints": [

@@ -111,11 +111,11 @@ REFERENCE_SOURCES = [
     "app/data/fields/default.json", "app/data/fields/lake.json", "app/data/fuels/openrc-fuel-registry.json",
     "app/data/aircraft/f4u_corsair_250.json", "app/data/aircraft/gp_extra_300s_60.json",
     "app/data/aircraft/hx700_electric_3d_experimental.json", "app/data/aircraft/p51d_mustang_120.json",
-    "app/data/aircraft/sebart_avanti_s_a200.json", "app/data/aircraft/skywalker_x8.json",
+    "app/data/aircraft/sebart_avanti_s_a200.json", "app/data/aircraft/moonrunner_x99.json",
     "app/data/aircraft/stik_glow_55ax_2t.json", "app/data/aircraft/stik_glow_61fx_2t.json",
     "app/data/aircraft/stik_glow_fs64v_4t.json", "app/data/aircraft/turbo_lumber_evolution.json",
     "app/data/aircraft/xcell_60_research.json",
-    "app/data/aircraft/battery/skywalker_x8_6s_pack.json",
+    "app/data/aircraft/battery/moonrunner_x99_6s_pack.json",
     "app/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
     "app/data/batteries/cells/lipo-bak503562-galeotti-v1.json",
     "app/data/batteries/packs/lipo-4s1p-3200-30c-class.json",
@@ -189,7 +189,7 @@ WEATHER_PRESETS = {
 }
 FAMILY_WEATHER = {"calm", "gusty", "turbulent", "hot-high", "standard-column", "spatial-gusty-v1",
                   "spatial-thermal-soaring-v2"}
-ELECTRIC_IDS = {"turbo-lumber-evolution", "skywalker-x8"}
+ELECTRIC_IDS = {"turbo-lumber-evolution", "moonrunner-x99"}
 LIQUID_IDS = {"p51d-mustang-120", "f4u-corsair-250", "sebart-avanti-s-a200-p100rx"}
 GLOW_IDS = {"stik-glow-61fx-2t", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "gp-extra-300s-60"}
 PRESCRIBED_MODES = {"shaft-split", "shaft-coupled", "shaft-split-transport", "shaft-coupled-transport",
@@ -283,7 +283,7 @@ def _family_stage_verification(key: str, data: dict, components: dict) -> None:
                  and row["finite"] + row["refused"] == row["states"], "missing finite/refused stages: " + name)
         if family == "electric":
             _require((row["battery_size"] == 0 if "/ideal/" in name else _positive(row["battery_size"]))
-                     and row["wheel_count"] == (0 if name.startswith("skywalker-x8/") else 3),
+                     and row["wheel_count"] == (0 if name.startswith("moonrunner-x99/") else 3),
                      "wrong electric state layout: " + name)
         elif family == "liquid":
             _require(row["family"] == ("turbine" if name.startswith("sebart-") else "gas")
@@ -301,7 +301,7 @@ def _family_stage_verification(key: str, data: dict, components: dict) -> None:
         _counts(components, ("stage_loads", "stage_derivative", "stage_rotor_momentum"), shaped)
         _require(components["electric_stage_snapshot_refusal"]["count"] >= 34, "missing electric snapshot guards")
         trajectory_names = {"turbo-lumber-evolution/ideal/calm", "turbo-lumber-evolution/pack/turbulent",
-                            "skywalker-x8/ideal/hot-high", "skywalker-x8/pack/spatial-thermal-soaring-v2"}
+                            "moonrunner-x99/ideal/hot-high", "moonrunner-x99/pack/spatial-thermal-soaring-v2"}
         tapes = _named(evidence["trajectories"], trajectory_names)
         _complete_tapes(tapes, "electric_trajectory_tick", components)
         # Event tapes are required separately; nominal exactness cannot establish supervisor behavior.

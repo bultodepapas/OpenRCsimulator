@@ -770,6 +770,7 @@ func _nav_button(label: String, node_name: String, page_index: int) -> Button:
 func _request_aircraft(id: String) -> void:
 	if not Catalog.has(id):
 		return
+	id = Catalog.canonical_id(id)
 	_requested_aircraft_id = id
 	_update_catalog_texts()
 	var selected_index := _catalog_ids.find(id)
@@ -1174,6 +1175,7 @@ func _statistics_time(seconds: float) -> String:
 
 
 func set_aircraft(id: String) -> void:
+	id = Catalog.canonical_id(id)
 	_refresh_statistics_summary(id)
 	var focused_catalog_index := -1
 	for index in _catalog_buttons.size():

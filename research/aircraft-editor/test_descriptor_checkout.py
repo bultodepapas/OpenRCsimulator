@@ -30,6 +30,7 @@ class CheckoutBindings(unittest.TestCase):
             paths.extend(path.relative_to(ROOT) for path in (ROOT / "app/data/aircraft").glob("*.json"))
             paths.extend(path.relative_to(ROOT) for path in (ROOT / "app/data/workshop").glob("*.json"))
             paths.extend(path.relative_to(ROOT) for path in (ROOT / "app/data/aircraft_models").glob("*.json"))
+            paths.extend(path.relative_to(ROOT) for path in (ROOT / "app/data/aircraft_model_overlays").glob("*.json"))
             for relative in paths:
                 target = source / relative
                 target.parent.mkdir(parents=True, exist_ok=True)

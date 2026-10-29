@@ -5,6 +5,8 @@ class_name FlightStatisticsStore
 const DEFAULT_ROOT: String = "user://flight_statistics"
 const STORE_FORMAT: String = "openrc-flight-statistics"
 const CODEC_VERSION: int = 1
+const AircraftIdentity := preload("res://statistics/aircraft_identity.gd")
+
 const FENCE_FORMAT: String = "openrc-flight-statistics-deletion-fence"
 const FENCE_VERSION: int = 1
 const SNAPSHOT_MAGIC: String = "ORFSNP01"
@@ -213,6 +215,7 @@ func delete_history(aircraft_id: String = "") -> bool:
 	var candidate: Dictionary = _schema.canonicalize(data.duplicate(true))
 	var removed_any: bool = false
 	var candidate_records: Array = []
+	var targets: Array = ["*"] if aircraft_id.is_empty() else Array(AircraftIdentity.related(aircraft_id))
 	if aircraft_id.is_empty():
 		candidate.records = []
 		candidate.sessions = []
@@ -226,7 +229,7 @@ func delete_history(aircraft_id: String = "") -> bool:
 	else:
 		for record_value: Variant in data.records:
 			var record: Dictionary = record_value
-			if str(record.aircraft_id) == aircraft_id and str(record.kind) != "gap":
+			if targets.has(str(record.aircraft_id)) and str(record.kind) != "gap":
 				removed_any = true
 				candidate_records.append(_gap_from(record))
 			else:
@@ -255,7 +258,7 @@ func delete_history(aircraft_id: String = "") -> bool:
 	if _interrupt("after_delete_prepare_write"):
 		return false
 	var prepared_readback: Dictionary = _read_snapshot_file(prepared_path)
-	if not bool(prepared_readback.get("ok", false)) or not _snapshot_satisfies_deletion(prepared_readback.data, aircraft_id, int(data.sequence)):
+	if not bool(prepared_readback.get("ok", false)) or not _snapshot_satisfies_deletion(prepared_readback.data, targets, int(data.sequence)):
 		note = "Prepared survivor history failed validation; previous statistics remain usable."
 		return false
 	if _interrupt("after_delete_prepare_readback"):
@@ -265,7 +268,7 @@ func delete_history(aircraft_id: String = "") -> bool:
 		"required_generation": next_generation,
 		"cutoff_sequence": int(data.sequence),
 		"operation_id": _schema.new_id(),
-		"targets": ["*"] if aircraft_id.is_empty() else [aircraft_id],
+		"targets": targets,
 		"phase": "committed",
 	}
 	if not _write_fence(receipt):
@@ -563,10 +566,10 @@ func _snapshot_satisfies_fence(snapshot: Dictionary, receipt: Dictionary) -> boo
 	return true
 
 
-func _snapshot_satisfies_deletion(snapshot: Dictionary, aircraft_id: String, cutoff: int) -> bool:
+func _snapshot_satisfies_deletion(snapshot: Dictionary, targets: Array, cutoff: int) -> bool:
 	for record_value: Variant in snapshot.get("records", []):
 		var record: Dictionary = record_value
-		if int(record.seq) <= cutoff and (aircraft_id.is_empty() or str(record.aircraft_id) == aircraft_id) and str(record.kind) != "gap":
+		if int(record.seq) <= cutoff and (targets.has("*") or targets.has(str(record.aircraft_id))) and str(record.kind) != "gap":
 			return false
 	return true
 

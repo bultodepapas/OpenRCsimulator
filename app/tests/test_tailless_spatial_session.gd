@@ -12,8 +12,8 @@ const M := preload("res://physics/math3d.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 
 const X8_PATHS := [
-	"res://data/aircraft/skywalker_x8.json",
-	"res://data/aircraft/battery/skywalker_x8_6s_pack.json",
+	"res://data/aircraft/moonrunner_x99.json",
+	"res://data/aircraft/battery/moonrunner_x99_6s_pack.json",
 ]
 const RECORD_TICKS := 120 # 0.5 s at 240 Hz.
 const CONTINUE_TICKS := 120 # The source, restored target, and self-replay each advance 0.5 s.

@@ -86,7 +86,8 @@ def presentation_binding(base_id: str) -> dict[str, str]:
     if family_match is None or not ID_RE.fullmatch(family_match.group("family")):
         raise ValueError(f"{base_id}: missing or invalid catalog visual family")
     family = family_match.group("family")
-    manifest_bytes = (ROOT / "app/data/aircraft_models" / f"{family}.json").read_bytes()
+    manifest_dir = "app/data/aircraft_model_overlays" if family == "moonrunner-x99" else "app/data/aircraft_models"
+    manifest_bytes = (ROOT / manifest_dir / f"{family}.json").read_bytes()
     manifest = json.loads(manifest_bytes.decode("utf-8"))
     if manifest.get("schema") != "openrc-aircraft-model" or type(manifest.get("version")) is not int or manifest["version"] not in {1, 2} or manifest.get("family_id") != family:
         raise ValueError(f"{base_id}: invalid model manifest identity")
@@ -181,6 +182,13 @@ def expected_descriptors() -> dict[Path, bytes]:
     for base_id, resource_path in catalog_entries():
         destination = OUTPUT / f"{base_id}.json"
         expected[destination] = descriptor_bytes(build_descriptor(base_id, resource_path))
+    # Historical Workshop snapshots pin this exact legacy descriptor. Keep it as
+    # an explicitly verified compatibility artifact, never as a stock fleet entry.
+    legacy = OUTPUT / "skywalker-x8.json"
+    legacy_bytes = legacy.read_bytes()
+    if sha256(legacy_bytes) != "d34722baf97c52e4c6da903b9a8d31cbb492474cac5116fe0a341cb319f70c73":
+        raise ValueError("legacy Skywalker Workshop descriptor is missing or changed")
+    expected[legacy] = legacy_bytes
     return expected
 
 

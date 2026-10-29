@@ -6,7 +6,7 @@ extends SceneTree
 const Imported := preload("res://aircraft/imported_model.gd")
 const Manifest := preload("res://aircraft/model_manifest.gd")
 const Registry := preload("res://aircraft/model_registry.gd")
-const ELEVON_FAMILY := "skywalker-x8"
+const ELEVON_FAMILY := "moonrunner-x99"
 const CONVENTIONAL_FAMILY := "f4u-corsair-250"
 
 var _checks := 0

@@ -7494,6 +7494,9 @@ msgstr "Storico complessivo"
 msgid "Since counter reset"
 msgstr "Dal ripristino dei contatori"
 
+msgid "Since separate counter resets"
+msgstr "Dai ripristini separati dei contatori"
+
 msgid "Airborne time"
 msgstr "Tempo di volo"
 

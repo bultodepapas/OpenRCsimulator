@@ -148,7 +148,7 @@ func _fixture_hash(fixture: Dictionary) -> String:
 func _check_x8_slots() -> void:
 	for mode: String in ["ideal", "pack"]:
 		var session: Node = FlightSession.new()
-		var path := AircraftCatalog.data_for("skywalker-x8", mode)
+		var path := AircraftCatalog.data_for("moonrunner-x99", mode)
 		check("X8 " + mode + " accepted catalog path", not path.is_empty())
 		session.setup(path)
 		root.add_child(session)

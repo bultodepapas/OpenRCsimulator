@@ -2,8 +2,8 @@
 """X8-06: generate the Skywalker X8 physics data (openrc-aircraft v2) from its sources.
 
 Outputs, never hand-edited:
-  app/data/aircraft/skywalker_x8.json                 ideal 22.2 V bus (catalog battery mode "ideal")
-  app/data/aircraft/battery/skywalker_x8_6s_pack.json the same airframe on the finite 6S 5000 mAh pack_ecm (default)
+  app/data/aircraft/moonrunner_x99.json                 ideal 22.2 V bus (catalog battery mode "ideal")
+  app/data/aircraft/battery/moonrunner_x99_6s_pack.json the same airframe on the finite 6S 5000 mAh pack_ecm (default)
 
 Inputs, all frozen in the repository:
   * the r4 delivery (assets/source-deliveries/skywalker-x8-r4/, identity in assets/aircraft/skywalker-x8/
@@ -41,8 +41,8 @@ trapz = getattr(np, "trapezoid", None) or np.trapz  # numpy 2 renamed trapz
 SCRIPT = "research/skywalker-x8/X8-06/derive_physics.py"
 MANIFEST = ROOT / "assets/aircraft/skywalker-x8/source-manifest.json"
 DELIVERY = ROOT / "assets/source-deliveries/skywalker-x8-r4/skywalker_x8/r4"
-OUTPUT = ROOT / "app/data/aircraft/skywalker_x8.json"
-PACK_OUTPUT = ROOT / "app/data/aircraft/battery/skywalker_x8_6s_pack.json"
+OUTPUT = ROOT / "app/data/aircraft/moonrunner_x99.json"
+PACK_OUTPUT = ROOT / "app/data/aircraft/battery/moonrunner_x99_6s_pack.json"
 PACK_ID = "lipo-6s1p-5000-30c-class"
 PACK_FILE = ROOT / "app/data/batteries/packs" / (PACK_ID + ".json")
 UIUC = ROOT / "references/rc-propellers-12x6/uiuc"
@@ -547,7 +547,7 @@ def build():
     raw = {
         "format": "openrc-aircraft v2",
         "physical_identity_version": 1,
-        "id": "skywalker-x8",
+        "id": "moonrunner-x99",
         "description": "EPO flying wing inspired by the Skywalker X8 (2.12 m, elevons, winglets, electric pusher, no gear) in the r4 delivery's UAV build. NTNU flight-identified aerodynamics, measured part masses and inertia reference, estimated electric drive. Experimental; not flight validated.",
         "convention_id": "openrc-le-frd-v1",
         "capabilities": {"controls": "elevon", "gear": "locked_up", "propulsion_layout": "single_pusher",

@@ -142,7 +142,7 @@ func _initialize() -> void:
 					and meta.flap_input_index == 6
 					and input_layout == ["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake", "flaps"]
 					and meta.recording_start_flap == session.flap_state().actual)
-		elif entry.id in [TIMBER, "skywalker-x8"]:
+		elif entry.id in [TIMBER, "moonrunner-x99"]:
 			_check("%s coupled electric motor" % entry.id, meta.propulsion_model == "electric-fixed-bus-coupled-stop-v1")
 			_check("%s no unmodeled propwash" % entry.id, meta.propwash_model == "none")
 		elif glow_profiled:

@@ -33,6 +33,7 @@ jobs:
   app:
     name: Godot app (${{ matrix.part }} ${{ matrix.shard }})
     runs-on: ubuntu-24.04
+    timeout-minutes: 360
     strategy:
       fail-fast: false
       matrix:
@@ -52,6 +53,38 @@ jobs:
       OPENRC_UNIT_SHARDS: ${{ matrix.shards }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Fetch fixed-brake historical source commits
+        if: matrix.part == 'units'
+        run: |
+          set -euo pipefail
+          index=0
+          found=false
+          for test in app/tests/test_*.gd; do
+            if [[ "${test##*/}" == test_fixed_gear_brake_input.gd ]]; then
+              found=true
+              if (( index % OPENRC_UNIT_SHARDS == OPENRC_UNIT_SHARD )); then
+                base=fa9f387f68f753d988456764f5723932eae64cea
+                r3=20662f264acaed343b210d048f4ee7628ea5ee70
+                timeout 900 git fetch --quiet --no-tags --depth=1 --filter=blob:none origin "$base" "$r3"
+                tree=$(mktemp)
+                wants=$(mktemp)
+                trap 'rm -f "$tree" "$wants"' EXIT
+                git ls-tree -r "$base" -- app > "$tree"
+                [[ $(wc -l < "$tree") -eq 4291 ]] || { echo 'historical app tree differs' >&2; exit 1; }
+                awk '{print $3}' "$tree" > "$wants"
+                attributes=$(git ls-tree "$base" -- .gitattributes | awk '{print $3}')
+                carburetor=$(git ls-tree "$r3" -- app/physics/glow/carburetor.gd | awk '{print $3}')
+                [[ "$attributes" == 2bbe56293730deef6e66a0a3d26c438d2c308db5 ]] || exit 1
+                [[ "$carburetor" == bb06578fabf39c78f04ea91f2b1b4af5408961b4 ]] || exit 1
+                printf '%s\n' "$attributes" "$carburetor" >> "$wants"
+                sort -u "$wants" -o "$wants"
+                timeout 900 git fetch --quiet --no-tags --stdin origin < "$wants"
+              fi
+              break
+            fi
+            index=$((index + 1))
+          done
+          "$found" || { echo 'fixed-brake test missing' >&2; exit 1; }
       - name: Tagged releases require their own notes
         if: startsWith(github.ref, 'refs/tags/v')
         env:
@@ -150,6 +183,13 @@ jobs:
         with:
           name: godot-expected-diagnostics-${{ matrix.part }}-${{ matrix.shard }}
           path: tmp/godot-checks-expected/
+          if-no-files-found: ignore
+          retention-days: 7
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always() && steps.app_check.outcome != 'skipped' && matrix.part == 'units'
+        with:
+          name: fixed-brake-captures-${{ matrix.shard }}
+          path: tmp/fixed-brake-evidence/*/*.json
           if-no-files-found: ignore
           retention-days: 7
 

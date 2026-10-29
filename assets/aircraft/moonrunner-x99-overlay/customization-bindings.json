@@ -1,0 +1,81 @@
+{
+  "format": "openrc-aircraft-customization-source",
+  "version": 3,
+  "families": [
+    {
+      "visual_family": "moonrunner-x99",
+      "paint_slots": [
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "SkywalkerX8/fuselage_core",
+              "surface": 3,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/canopy_hatch",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/camera_door_left_hinge/camera_door_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/camera_door_right_hinge/camera_door_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "SkywalkerX8/wing_left_fixed",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/wing_right_fixed",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/elevon_left_hinge/elevon_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/elevon_right_hinge/elevon_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
+      ],
+      "marking_slots": [],
+      "smoke_slots": [],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [
+          {
+            "id": "nav_tail",
+            "node_path": "SkywalkerX8/wing_right_fixed",
+            "position_m": [
+              1.041819453,
+              0.176201046,
+              0.670886615
+            ],
+            "gear_gated": false
+          }
+        ],
+        "strips": []
+      }
+    }
+  ]
+}

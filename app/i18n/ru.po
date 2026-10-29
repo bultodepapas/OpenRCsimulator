@@ -7377,6 +7377,9 @@ msgstr "За всё время"
 msgid "Since counter reset"
 msgstr "С момента сброса счётчиков"
 
+msgid "Since separate counter resets"
+msgstr "С момента отдельных сбросов счётчиков"
+
 msgid "Airborne time"
 msgstr "Время в воздухе"
 

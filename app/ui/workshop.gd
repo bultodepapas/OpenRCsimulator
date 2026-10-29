@@ -2881,7 +2881,7 @@ func _review_profile_transfer() -> void:
 	if not loaded.ok:
 		set_note(_messages(loaded.errors, "The saved build could not be loaded."))
 		return
-	var described := Customization.describe(str(loaded.variant.base_id))
+	var described := _describe_customization(str(loaded.variant.base_id))
 	if not described.get("ok", false):
 		set_note("The source build has no current presentation bindings.")
 		return
@@ -3023,7 +3023,7 @@ func set_presentation(profile: Dictionary, source_page: String = "") -> void:
 
 
 func _resolve_presentation() -> void:
-	var described := Customization.describe(_base_id)
+	var described := _describe_customization(_base_id)
 	_presentation_bindings = described.get("bindings", {}) if described.get("ok", false) else {}
 	var checked := Presentation.validate(_presentation, _presentation_bindings)
 	_presentation_errors = PackedStringArray(checked.get("errors", []))
@@ -3339,7 +3339,7 @@ func _apply_recovered_draft() -> void:
 			_trial_button.disabled = not _edit_valid()
 			return
 	# Prove every stored selection can be restored before changing the active draft.
-	var described := Customization.describe(str(payload.base_id))
+	var described := _describe_customization(str(payload.base_id))
 	if not described.get("ok", false): return
 	for page: String in state.presentation_buffers:
 		var restorable := false
@@ -3447,3 +3447,15 @@ func _refresh_recovery_after_conflict() -> void:
 		set_note("Another session changed the recovered draft. Review it in Library before automatic recovery resumes.")
 	else:
 		set_note("Another session cleared the recovered draft. Automatic recovery will resume on your next edit.")
+
+
+func _describe_customization(base_id: String) -> Dictionary:
+	if base_id == "moonrunner-x99":
+		var overlay_path := "res://aircraft/customization_overlay.gd"
+		if not ResourceLoader.exists(overlay_path):
+			return {"ok": false, "errors": PackedStringArray(["Overlay customization resolver is unavailable."])}
+		var overlay: Script = load(overlay_path)
+		if overlay == null or not overlay.has_method("describe"):
+			return {"ok": false, "errors": PackedStringArray(["Overlay customization resolver cannot be loaded."])}
+		return overlay.describe(base_id)
+	return Customization.describe(base_id)

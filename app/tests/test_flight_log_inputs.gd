@@ -29,11 +29,15 @@ func check(label: String, condition: bool) -> void:
 
 func _run() -> void:
 	_unit_contracts()
-	for id: String in ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "stik-glow-61fx-2t"]:
+	for id: String in ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "stik-glow-61fx-2t", "moonrunner-x99"]:
 		var entry: Dictionary = Catalog.entry(id)
 		check("catalog identity " + id, not entry.is_empty())
 		if not entry.is_empty():
 			_flight(id, entry.data)
+	var wing_entry: Dictionary = Catalog.entry("moonrunner-x99")
+	check("catalog pack path available", not str(wing_entry.get("battery_data", "")).is_empty())
+	if not str(wing_entry.get("battery_data", "")).is_empty():
+		_flight("moonrunner-x99-pack", wing_entry.battery_data)
 	print("GP-12 flight-log inputs: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
 

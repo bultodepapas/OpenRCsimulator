@@ -65,6 +65,67 @@ exit 0
                            if line.startswith("VISITED "))
         self.assertCountEqual(visited, self.names)
 
+    def test_fixed_brake_gate_failure_is_fatal(self):
+        (self.root / "tests/test_fixed_gear_brake_input.gd").touch()
+        wrapper = self.root.parent / "tools/godot/fixed_brake_legacy.py"
+        wrapper.write_text('import sys\nprint("STRICT_BRAKE_GATE")\nsys.exit(9)\n', encoding="utf-8")
+        result = self.run_partition(0, 1)
+        self.assertEqual(result.returncode, 9, result.stdout)
+        self.assertIn("STRICT_BRAKE_GATE", result.stdout)
+        self.assertNotIn("VISITED test_fixed_gear_brake_input.gd", result.stdout)
+
+    def test_fixed_brake_history_is_fetched_for_its_unit_shard(self):
+        fixed_name = "test_fixed_gear_brake_input.gd"
+        (self.root / "tests" / fixed_name).touch()
+        repository = Path(__file__).resolve().parents[2]
+        workflow = (repository / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        start = workflow.index("      - name: Fetch fixed-brake historical source commits\n")
+        end = workflow.index("      - name: Tagged releases require their own notes", start)
+        script = textwrap.dedent(workflow[start:end].split("        run: |\n", 1)[1])
+        fake_bin = self.root.parent / "fake-bin"
+        fake_bin.mkdir()
+        git = fake_bin / "git"
+        git.write_text('''#!/usr/bin/env bash
+case "$1" in
+  fetch)
+    if [[ "${FAIL_FETCH:-0}" == 1 || ( "${FAIL_FETCH:-0}" == second && " $* " == *" --stdin "* ) ]]; then exit 9; fi
+    printf 'FETCHED\\n' ;;
+  ls-tree)
+    if [[ "$2" == -r ]]; then
+      for ((i=0; i<4291; i++)); do printf '100644 blob %040d\\tapp/%s\\n' "$i" "$i"; done
+    elif [[ "${@: -1}" == .gitattributes ]]; then
+      printf '100644 blob 2bbe56293730deef6e66a0a3d26c438d2c308db5\\t.gitattributes\\n'
+    else
+      printf '100644 blob bb06578fabf39c78f04ea91f2b1b4af5408961b4\\tcarburetor.gd\\n'
+    fi ;;
+  *) exit 1 ;;
+esac
+''', encoding="utf-8")
+        git.chmod(0o755)
+        fetched = []
+        for shard in range(8):
+            env = os.environ.copy()
+            env.update(OPENRC_UNIT_SHARD=str(shard), OPENRC_UNIT_SHARDS="8",
+                       PATH=str(fake_bin) + os.pathsep + env["PATH"])
+            bash = os.environ.get("OPENRC_TEST_BASH", "bash")
+            result = subprocess.run([bash, "-c", script], cwd=self.root.parent, env=env, text=True,
+                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30)
+            self.assertEqual(result.returncode, 0, result.stdout)
+            if "FETCHED" in result.stdout: fetched.append(shard)
+        self.assertEqual(fetched, [sorted([*self.names, fixed_name]).index(fixed_name) % 8])
+        env["OPENRC_UNIT_SHARD"] = str(fetched[0])
+        for failure in ("1", "second"):
+            env["FAIL_FETCH"] = failure
+            result = subprocess.run([bash, "-c", script], cwd=self.root.parent, env=env, text=True,
+                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30)
+            self.assertNotEqual(result.returncode, 0)
+        env.pop("FAIL_FETCH")
+        (self.root / "tests" / fixed_name).unlink()
+        result = subprocess.run([bash, "-c", script], cwd=self.root.parent, env=env, text=True,
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("fixed-brake test missing", result.stdout)
+
     def test_test_failure_is_fatal(self):
         result = self.run_partition(0, 1, PROBE_FAIL=self.names[0])
         self.assertEqual(result.returncode, 7, result.stdout)

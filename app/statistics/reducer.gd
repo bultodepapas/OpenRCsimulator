@@ -1,5 +1,7 @@
 extends RefCounted
 class_name FlightStatisticsReducer
+
+const AircraftIdentity := preload("res://statistics/aircraft_identity.gd")
 ## Pure, rebuildable rollups over canonical statistics records.
 
 ## `include_history=false` keeps history counts/date bounds without copying records.
@@ -44,7 +46,7 @@ static func query(data: Dictionary, aircraft_id: String = "", period: String = "
 		if typeof(record_value) != TYPE_DICTIONARY:
 			continue
 		var record: Dictionary = record_value
-		if not aircraft_id.is_empty() and str(record.get("aircraft_id", "")) != aircraft_id:
+		if not aircraft_id.is_empty() and not AircraftIdentity.matches(aircraft_id, str(record.get("aircraft_id", ""))):
 			continue
 		if resolved_period == "session" and (resolved_session.is_empty() or str(record.get("session_id", "")) != resolved_session):
 			continue
@@ -53,7 +55,7 @@ static func query(data: Dictionary, aircraft_id: String = "", period: String = "
 				if int(record.get("account_epoch", -1)) != account_epoch:
 					continue
 			else:
-				var aircraft_epoch: int = int(aircraft_epochs.get(aircraft_id, 0))
+				var aircraft_epoch: int = int(aircraft_epochs.get(str(record.get("aircraft_id", "")), 0))
 				if int(record.get("aircraft_epoch", -1)) != aircraft_epoch:
 					continue
 		selected.append(record)
@@ -104,16 +106,18 @@ static func reset(data: Dictionary, scope: String, aircraft_id: String = "", new
 		"aircraft":
 			if aircraft_id.is_empty() or not schema_script._safe_id(aircraft_id):
 				return {}
-			var next_epoch: int = int(epochs.aircraft.get(aircraft_id, 0))
-			if next_epoch >= schema_script.MAX_SEQUENCE:
-				return {}
-			epochs.aircraft[aircraft_id] = next_epoch + 1
+			var related_ids: PackedStringArray = AircraftIdentity.related(aircraft_id)
+			for related_id: String in related_ids:
+				if int(epochs.aircraft.get(related_id, 0)) >= schema_script.MAX_SEQUENCE:
+					return {}
 			var aircraft_time: String = opened_utc if not opened_utc.is_empty() else schema_script.utc_now()
 			if not schema_script._valid_utc(aircraft_time):
 				return {}
 			if not epochs.has("aircraft_utc"):
 				epochs.aircraft_utc = {}
-			epochs.aircraft_utc[aircraft_id] = aircraft_time
+			for related_id: String in related_ids:
+				epochs.aircraft[related_id] = int(epochs.aircraft.get(related_id, 0)) + 1
+				epochs.aircraft_utc[related_id] = aircraft_time
 		"session":
 			if not schema_script._safe_id(new_session_id) or not schema_script._valid_utc(opened_utc):
 				return {}
@@ -288,7 +292,21 @@ static func _period_label(data: Dictionary, aircraft_id: String, period: String,
 			if aircraft_id.is_empty():
 				timestamp = str(epochs.get("account_utc", ""))
 			else:
-				timestamp = str(epochs.get("aircraft_utc", {}).get(aircraft_id, ""))
+				var dates: Dictionary = epochs.get("aircraft_utc", {})
+				var seen_dates := PackedStringArray()
+				var undated_history := false
+				for related_id: String in AircraftIdentity.related(aircraft_id):
+					if dates.has(related_id):
+						var value: String = str(dates[related_id])
+						if not seen_dates.has(value): seen_dates.append(value)
+					else:
+						for record: Dictionary in data.get("records", []):
+							if str(record.get("aircraft_id", "")) == related_id:
+								undated_history = true
+								break
+				if seen_dates.size() > 1 or (undated_history and not seen_dates.is_empty()):
+					return "Since separate counter resets"
+				if seen_dates.size() == 1 and not undated_history: timestamp = seen_dates[0]
 			return "Since counter reset" if timestamp.is_empty() else "Since counter reset · " + timestamp
 		"session":
 			var chosen: String = session_id if not session_id.is_empty() else str(data.get("current_session", ""))

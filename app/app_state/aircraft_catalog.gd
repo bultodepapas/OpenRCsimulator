@@ -122,16 +122,16 @@ const ENTRIES := [
 		# X8-09: the author's r4 model (assets/aircraft/skywalker-x8); NTNU Skywalker X8 flight-identified
 		# aerodynamics on the tailless strip law (X8-04), elevon mixing (X8-03), pusher (X8-05), no landing gear, EPO
 		# tolerant hull (X8-08). Display name selected by the owner (docs/X8-PLAN.md D1).
-		id = "skywalker-x8",
-		visual_family = "skywalker-x8",
+		id = "moonrunner-x99",
+		visual_family = "moonrunner-x99",
 		name = "MoonRunner X99",
 		short_name = "MoonRunner X99",
 		summary = "EPO flying wing · 2.12 m · 6S electric pusher",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: NTNU flight-identified aerodynamics with an estimated electric drive; elevons, no landing gear (airborne start), tougher foam airframe. Not flight-validated.",
-		data = "res://data/aircraft/skywalker_x8.json",
+		data = "res://data/aircraft/moonrunner_x99.json",
 		# The finite 6S 5000 mAh class pack is the default battery mode, as on the Turbo Lumber.
-		battery_data = "res://data/aircraft/battery/skywalker_x8_6s_pack.json",
+		battery_data = "res://data/aircraft/battery/moonrunner_x99_6s_pack.json",
 	},
 	{
 		id = "xcell-60-research",
@@ -154,8 +154,13 @@ static func ids() -> PackedStringArray:
 	return out
 
 
+## Historical stock identity remains resolvable for frozen Workshop records.
+static func canonical_id(id: String) -> String:
+	return "moonrunner-x99" if id == "skywalker-x8" else id
+
+
 static func has(id: String) -> bool:
-	return ids().has(id)
+	return ids().has(canonical_id(id))
 
 
 ## Vehicle ownership is explicit where the catalog crosses into aircraft-only systems.
@@ -205,7 +210,12 @@ static func airplane_visual_families() -> PackedStringArray:
 ## The entry for `id`, or {} when unknown (callers must refuse it, never substitute another airplane).
 static func entry(id: String) -> Dictionary:
 	for e in ENTRIES:
-		if e.id == id:
+		if e.id == canonical_id(id):
+			if id == "skywalker-x8":
+				var historical: Dictionary = e.duplicate(true)
+				historical.id = id
+				historical.visual_family = id
+				return historical
 			return e
 	return {}
 
@@ -291,5 +301,5 @@ static func visual_family(id: String) -> String:
 ## The next (step +1) or previous (step -1) ID in menu order, wrapping around.
 static func step(id: String, delta: int) -> String:
 	var list := ids()
-	var i := list.find(id)
+	var i := list.find(canonical_id(id))
 	return list[posmod((i if i >= 0 else 0) + delta, list.size())]

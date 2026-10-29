@@ -408,7 +408,7 @@ static func wants_direct_flight(args: PackedStringArray) -> bool:
 static func aircraft_argument(args: PackedStringArray) -> String:
 	for arg in args:
 		if arg.begins_with("--aircraft="):
-			return arg.trim_prefix("--aircraft=")
+			return Catalog.canonical_id(arg.trim_prefix("--aircraft="))
 	return ""
 
 
@@ -617,6 +617,7 @@ func set_aircraft(id: String) -> void:
 	if _loading_active: return
 	if home == null or not Catalog.has(id):
 		return
+	id = Catalog.canonical_id(id)
 	preferences.aircraft = id
 	home.set_aircraft(id) # shows the start remembered for this vehicle class (UI-32, UI-30 AS-7)
 	# UI-32 (UI-30 AS-3): show and fly a rotorcraft without turbulence; never remove it from the saved weather.

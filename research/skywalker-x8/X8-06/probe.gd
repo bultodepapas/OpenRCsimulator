@@ -10,7 +10,7 @@ const Air := preload("res://physics/air_data.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 
-const FILES := ["res://data/aircraft/skywalker_x8.json", "res://data/aircraft/battery/skywalker_x8_6s_pack.json"]
+const FILES := ["res://data/aircraft/moonrunner_x99.json", "res://data/aircraft/battery/moonrunner_x99_6s_pack.json"]
 
 
 func _init() -> void:

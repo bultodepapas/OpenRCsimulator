@@ -46,10 +46,21 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		return {ok = false, errors = PackedStringArray(["Workshop presentation profile must be an object."])}
 	var customization_script: Script = load("res://render/aircraft_customization.gd") \
 		if ResourceLoader.exists("res://render/aircraft_customization.gd") else null
+	if customization_script == null and base_id == "moonrunner-x99":
+		return {ok = false, errors = PackedStringArray(["Overlay customization dependency is unavailable."])}
 	var customization: Dictionary = {}
 	var presentation_bindings: Dictionary = {}
 	if customization_script != null:
-		customization = customization_script.describe(base_id)
+		if base_id == "moonrunner-x99":
+			var overlay_path := "res://aircraft/customization_overlay.gd"
+			if not ResourceLoader.exists(overlay_path):
+				return {ok = false, errors = PackedStringArray(["Overlay customization resolver is unavailable."])}
+			var overlay: Script = load(overlay_path)
+			if overlay == null or not overlay.has_method("describe"):
+				return {ok = false, errors = PackedStringArray(["Overlay customization resolver cannot be loaded."])}
+			customization = overlay.describe(base_id)
+		else:
+			customization = customization_script.describe(base_id)
 	var checked_profile: Dictionary
 	if bool(customization.get("ok", false)) and typeof(customization.get("bindings", null)) == TYPE_DICTIONARY:
 		var bindings: Dictionary = customization["bindings"]
@@ -61,6 +72,8 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		if bool(checked_profile.get("ok", false)) and not bool(checked_profile.get("available", false)):
 			return {ok = false, errors = PackedStringArray(["Presentation profile is unavailable for the current aircraft binding."])}
 	else:
+		if base_id == "moonrunner-x99":
+			return {ok = false, errors = customization.get("errors", PackedStringArray(["Overlay customization is invalid."]))}
 		checked_profile = profile_script.validate(profile_value)
 		if bool(checked_profile.get("ok", false)):
 			var normalized_profile: Dictionary = checked_profile.get("profile", {})

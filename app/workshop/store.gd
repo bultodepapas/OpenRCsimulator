@@ -1000,13 +1000,23 @@ static func _resolve_workshop_descriptor(
 
 static func _resolve_customization_bindings(base_id: String, descriptor: Dictionary) -> Dictionary:
 	if not ResourceLoader.exists("res://render/aircraft_customization.gd"):
-		return {"ok": false, "missing": true, "errors": PackedStringArray(["Customization companion is unavailable."])}
+		return {"ok": false, "missing": base_id != "moonrunner-x99", "errors": PackedStringArray(["Customization companion is unavailable."])}
 	var customization_script: Script = load("res://render/aircraft_customization.gd")
 	if customization_script == null:
-		return {"ok": false, "missing": true, "errors": PackedStringArray(["Customization companion is unavailable."])}
-	var described: Dictionary = customization_script.describe(base_id)
+		return {"ok": false, "missing": base_id != "moonrunner-x99", "errors": PackedStringArray(["Customization companion is unavailable."])}
+	var described: Dictionary
+	if base_id == "moonrunner-x99":
+		var overlay_path := "res://aircraft/customization_overlay.gd"
+		if not ResourceLoader.exists(overlay_path):
+			return {"ok": false, "missing": false, "errors": PackedStringArray(["Overlay customization resolver is unavailable."])}
+		var overlay: Script = load(overlay_path)
+		if overlay == null or not overlay.has_method("describe"):
+			return {"ok": false, "missing": false, "errors": PackedStringArray(["Overlay customization resolver cannot be loaded."])}
+		described = overlay.describe(base_id)
+	else:
+		described = customization_script.describe(base_id)
 	if not bool(described.get("ok", false)) or typeof(described.get("bindings", null)) != TYPE_DICTIONARY:
-		return {"ok": false, "missing": true,
+		return {"ok": false, "missing": base_id != "moonrunner-x99",
 			"errors": described.get("errors", PackedStringArray(["Customization companion could not describe this aircraft."]))}
 	var bindings: Dictionary = described["bindings"]
 	if not descriptor.is_empty() and typeof(descriptor.get("presentation", null)) == TYPE_DICTIONARY:

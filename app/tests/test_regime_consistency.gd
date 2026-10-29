@@ -31,7 +31,7 @@ const CM_ABS := 0.012 # about half a degree of elevator on these aircraft
 ## X8-04: the X8's oracle Cmq is the 2026 flight identification (−0.80); its swept strips predict −0.87…−0.91 from
 ## geometry (α 0–8°), inside the published spread (2024–25 flight −1.6, XFLR5 −1.30, CFD −2.0) but 12.3 % off at α 8°.
 const EXCEPTIONS := {
-	"skywalker-x8": { Cmq = 0.15 },
+	"moonrunner-x99": { Cmq = 0.15 },
 	"jensen-das-ugly-stik-60": { Cmde = 0.25 },
 	"stik-glow-55ax-2t": { Cmde = 0.25 },
 	"stik-glow-fs64v-4t": { Cmde = 0.25 },

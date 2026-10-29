@@ -64,6 +64,30 @@ func _run() -> void:
 		return
 	var base_hash: String = stock.manifest.asset.sha256
 	var png := _png()
+	# Historical archives stay bound to their exact original asset, even though
+	# the canonical family now displays a separately verified derivative.
+	var legacy_manifest := _manifest(CustomPaint.MOONRUNNER_LEGACY_ASSET_SHA256)
+	var old_archive := _zip("historical-before-derivative", legacy_manifest, {"paint.png": png})
+	var old_archive_bytes := FileAccess.get_file_as_bytes(old_archive)
+	var new_stock: Dictionary = Registry.describe("moonrunner-x99")
+	_check("canonical model is exact reviewed derivative", new_stock.get("ok", false) and new_stock.manifest.asset.sha256 == CustomPaint.MOONRUNNER_DERIVATIVE_ASSET_SHA256)
+	var old_on_new: Dictionary = CustomPaint.import_file(old_archive, "moonrunner-x99")
+	_check("historical paint imports for derivative without changing archive", old_on_new.get("ok", false) and FileAccess.get_file_as_bytes(old_archive) == old_archive_bytes)
+	if old_on_new.get("ok", false):
+		var old_on_new_plane: Dictionary = Builder.build("moonrunner-x99", NAN, {}, old_on_new.id)
+		_check("historical paint builds on derivative", not old_on_new_plane.is_empty() and old_on_new_plane.root.get_meta("asset_sha256") == CustomPaint.MOONRUNNER_DERIVATIVE_ASSET_SHA256 and old_on_new_plane.custom_skin.id == old_on_new.id)
+		if not old_on_new_plane.is_empty():
+			var legacy_paint := _material(old_on_new_plane.root, "x8_livery")
+			_check("historical texture reaches derivative material", not legacy_paint.is_empty() and legacy_paint.node.get_surface_override_material(legacy_paint.surface) != null)
+			_check("wrong target hash remains rejected", not CustomPaint.apply("moonrunner-x99", old_on_new.id, CustomPaint.MOONRUNNER_LEGACY_ASSET_SHA256, old_on_new_plane.root).ok)
+			old_on_new_plane.root.free()
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(CustomPaint._path_for("moonrunner-x99", old_on_new.id)))
+	var foreign_target := {aircraft_id = "moonrunner-x99", sha256 = "1".repeat(64), names = {"x8_livery": true}}
+	_check("unreviewed target hash rejects historical paint", not CustomPaint._validate_manifest(legacy_manifest, foreign_target, {"manifest.json": {}, "paint.png": {}}).ok)
+	var foreign_skin := legacy_manifest.duplicate(true)
+	foreign_skin.aircraft_id = "f4u-corsair-250"
+	var new_target := {aircraft_id = "moonrunner-x99", sha256 = CustomPaint.MOONRUNNER_DERIVATIVE_ASSET_SHA256, names = {"x8_livery": true}}
+	_check("foreign family rejects even the old hash", not CustomPaint._validate_manifest(foreign_skin, new_target, {"manifest.json": {}, "paint.png": {}}).ok)
 	var manifest := _manifest(base_hash)
 	var path := _zip("valid", manifest, {"paint.png": png})
 	var original := FileAccess.get_file_as_bytes(path)
@@ -78,6 +102,16 @@ func _run() -> void:
 	_check("stable ID fits existing preferences", CustomPaint.is_custom_id(id) and Manifest.is_livery_id(id))
 	_check("archive stored with exact source bytes", FileAccess.get_file_as_bytes(stored) == original)
 	_check("reimport is idempotent", CustomPaint.import_file(path, X8).get("id", "") == id)
+	# The legacy and canonical directories share IDs only when full archive hashes agree.
+	var legacy_dir := CustomPaint._root + "skywalker-x8"
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(legacy_dir))
+	var collision := legacy_dir + "/custom-" + id.substr(CustomPaint.ID_PREFIX.length()) + ".orskin"
+	var duplicate := FileAccess.open(collision, FileAccess.WRITE)
+	duplicate.store_buffer("different archive".to_utf8_buffer())
+	duplicate.close()
+	_check("conflicting old/new skin identifiers are rejected", CustomPaint.choices("moonrunner-x99").is_empty() and CustomPaint._path_for("moonrunner-x99", id).is_empty())
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(collision))
+	_check("canonical skin returns after conflict removal", CustomPaint.choices("moonrunner-x99").any(func(row: Dictionary) -> bool: return row.id == id))
 	var choices := Builder.livery_choices(X8)
 	_check("custom paint is available through the existing choices", choices.any(func(row: Dictionary) -> bool: return row.id == id and row.label == manifest.label))
 	_check("custom choice resolves and unknown choice falls back", Builder.resolve_livery_choice(choices, id) == id and Builder.resolve_livery_choice(choices, "missing") == "")
@@ -87,7 +121,7 @@ func _run() -> void:
 	prefs.liveries = {X8: id}
 	var pref_path := "user://skin-test-%s.cfg" % nonce
 	fixtures.append(pref_path)
-	_check("custom selection saves and reloads", Preferences.save_to(pref_path, prefs) == OK and Preferences.load_from(pref_path).liveries.get(X8, "") == id)
+	_check("custom selection saves and reloads", Preferences.save_to(pref_path, prefs) == OK and Preferences.load_from(pref_path).liveries.get("moonrunner-x99", "") == id)
 	var default_plane: Dictionary = Builder.build(X8)
 	var painted_plane: Dictionary = Builder.build(X8, NAN, {}, id)
 	var stock_orange := Color()

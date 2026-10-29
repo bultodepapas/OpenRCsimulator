@@ -78,7 +78,7 @@ func _run() -> void:
 		if stock.get("root") is Node: _free_children_first(stock.root)
 		await process_frame
 	for id: String in packages:
-		var other := "skywalker-x8" if id != "skywalker-x8" else "xcell-60-research"
+		var other := "moonrunner-x99" if id != "moonrunner-x99" else "xcell-60-research"
 		check(id + " rejects wrong family", not Skins.import_file(packages[id], other).get("ok", false))
 	for path: String in paths:
 		DirAccess.remove_absolute(path)

@@ -27,6 +27,27 @@ console executable when diagnosing Godot on Windows, except for the optional
 direct-process [RAM/I/O capture](#process-ram-io-and-storage-pt1h-r4). Standard engine flags are
 documented in the [Godot CLI manual](https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html).
 
+## Fixed-brake legacy gate (GP-12)
+
+`test_fixed_gear_brake_input.gd` requires the strict reference runner. After
+importing the candidate project, run it through `app/test.sh` or directly:
+
+```sh
+python3 tools/godot/fixed_brake_legacy.py --godot "$(app/get-godot.sh)" --out-dir tmp/godot-checks
+```
+
+The runner reconstructs the pinned pre-brake R3 owner, requires all 16 original
+goldens for the current OS, then checks all four candidate outputs exactly against a same-host
+reference with only the pinned fuel and Avanti input identities matched. It
+checks reference pins and candidate source stability, retains full values under
+`tmp/fixed-brake-evidence/`, and runs the candidate unit through the checked
+runner. Missing history, inputs, engine identity, or an oracle fails the gate.
+The two historical commits, their app blobs and root attributes, and the
+repository's `assets/` tree must be available. The CI unit shard fetches only
+those Git objects; the isolated historical checkout forbids lazy network access
+and verifies all 4,291 paths, modes and object IDs. This comparison is software
+verification and does not establish physical validation.
+
 ## Options and evidence
 
 | Option | Behavior |

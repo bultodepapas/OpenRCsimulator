@@ -4,8 +4,8 @@
   "price_date": "2026-10-25",
   "generated_from": {
     "price_catalog_sha256": "a4b6017efc68b5840d68a4701783f5b8b511d4d85aeb8304104a1dd416c06dea",
-    "aircraft_costing_sha256": "3a6e30eceb363d73eaf6dfd0670939754a6bea644032251f62bdffeaf2e87ad0",
-    "aircraft_catalog_sha256": "884cc4ea428b91c863476ef354ee917c30de658e0dfd71715b7846562bf3fd13",
+    "aircraft_costing_sha256": "cf6861afdff0e0c8ca4c20f17f8d5c59373d711f5822f860646763f37f02d658",
+    "aircraft_catalog_sha256": "351cde1629c94a2706fe7f60b7416d85c36e2633cae7cfe511e89c914575ea31",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "c8b34bac1aabf0ce74a9c696e8bb65c888b39021f50e350b01c67dd46a4a9708"
   },
@@ -8461,8 +8461,8 @@
     },
     {
       "format": "openrc-aircraft-economics v1",
-      "aircraft_id": "skywalker-x8",
-      "source_sha256": "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830",
+      "aircraft_id": "moonrunner-x99",
+      "source_sha256": "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",
