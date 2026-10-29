@@ -234,7 +234,7 @@ After installation, run the complete declared fleet matrix before promoting expa
 
 ```bash
 python3 research/native-kernel/fleet_campaign.py --out tmp/nk3-fleet-qualified \
-  --jobs 3 --warmup 600 --samples 2400 --timeout 7200
+  --keep-going --jobs 4 --warmup 600 --samples 2400 --timeout 14400
 ```
 
 The campaign reads the canonical matrix from `fleet.gd`, runs each aircraft through the existing checked runner,
@@ -249,6 +249,11 @@ agreement, actual native ownership and counters, and finite branch evidence from
 Each model has a fixed trial phase and rejecting-call ordinal. The four-stroke also pins its captured aircraft,
 trial, context and seven cause values using the original float64 bytes.
 Neither startup nor runtime refusals count as completed flights. Unknown faults still fail the campaign.
+The observed startup policy also distinguishes bounded runway-support nonconvergence from the X8's
+half-power trim-throttle refusal. Its named aircraft/battery/start/weather/contact combinations require paired
+reset observations, pinned typed setup/outcome/frame bytes and retained reference ownership. These starts
+provide no native-flight coverage and do not establish physical impossibility. A new refusal needs its own
+diagnosis and reviewed evidence; matching error text alone does not admit another combination.
 A scoped report alone does not qualify the whole fleet. `--reuse-report AIRCRAFT=REPORT` accepts
 only a complete, matching full-aircraft report, including one still being produced. Concurrent runs establish
 software equivalence, not timing or physical validation.

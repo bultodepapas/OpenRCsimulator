@@ -17,20 +17,34 @@ same legacy prescribed-RPM baseline; they do not demonstrate coupled electric or
 
 ## Expanded Linux qualification (2026-10-29)
 
-The frozen candidate is source `eef621296`, native library `d023a875…17fc1` and release executable
+The earlier frozen candidate is source `eef621296`, native library `d023a875…17fc1` and release executable
 `d0ca3640…a82c1`. Its 19 installer gates, 191 admission and 214 wheel-layout checks, UBSan checks,
 five packaged native modes, 18 application routes and exact 65-row player replay passed. The six-file
 Linux candidate ZIP passed streamed CRC, SHA-256 and permission checks. The full 1,238-row fleet campaign
-and final shared-workspace installation remain pending; this candidate is not yet the expanded default.
+and final shared-workspace installation remain pending; this candidate was not promoted. Its exact executable
+and sidecar contents are retained losslessly; the superseded ZIP container is no longer retained.
 
 The first full campaign stopped on two FS64V runway/gusty cases at attempted tick 806. Independent paired
 diagnosis reproduced both failures on the reference, with identical accepted prefixes, midpoint trial/context,
 finite reverse-demand cause and rollback. The four-stroke proof now pins that observed boundary; all six
 runtime-domain proofs pass the required native test (264 checks), with 25 Python policy tests, 98 real
-two/four-stroke diagnostic checks and 40 C++ boundary checks. The new declaration has 1,214 flight rows,
+two/four-stroke diagnostic checks and 40 C++ boundary checks. That declaration had 1,214 flight rows,
 18 startup refusals and six runtime refusals. The complete campaign must still be rerun; the shortened
 diagnostic runs and interrupted shards are not full-fleet evidence. No simulation equation, aircraft data or
 native library changed. Fresh installer receipts must bind the updated external test harness.
+
+A subsequent `15ff428` inventory covered all 1,238 row keys: 830 rows from full-length runs and 408 from
+two-tick electric startup checks. It found ten additional shared reset failures: Avanti, P-51 and both Turbo
+Lumber battery modes on runway/crosswind (eight rows), and ideal-battery X8 at half power in hot-high
+conditions (two rows). Both requested backends retained reference ownership at these failures. The owner
+chose to preserve the start contracts and record these limitations separately. The runway outcomes are
+bounded numerical nonconvergence, not proof of physical infeasibility; X8 has a distinct trim-throttle refusal.
+The reviewed exact-case policy expects 1,204 flights, 28 startup refusals and six runtime refusals. Its required
+CI run passed 567 checks, including all ten paired startups and six actual runtime-domain proofs; 32 Python
+policy tests passed. Independent mutations of mass, auxiliary callbacks, trims and live selections were rejected,
+as was a matching but rehashed forged configuration. Neither the short inventory nor pass-status rows in a failed shard qualify
+flight. The merged application at `8e32069aa` also changes rendering, launch and export sources; the earlier
+executable and its timings remain historical evidence for their original bytes, not qualification of that merge.
 
 The corrected release performance campaign completed all 60 probes: three alternating reference/native
 pairs for each aircraft/case, with 600 warmup and 2,400 sampled ticks. Every pair was comparable, with

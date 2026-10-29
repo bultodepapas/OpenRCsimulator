@@ -15,11 +15,62 @@ const HelicopterSession := preload("res://sim/helicopter_flight_session.gd")
 const RuntimeSimulation := preload("res://sim/simulation.gd")
 const GlowFlight := preload("res://physics/glow/flight.gd")
 const FlightPropulsion := preload("res://physics/propulsion.gd")
+const FlightCallbacks := preload("res://sim/aircraft_propulsion_runtime.gd")
 const HELICOPTER_TRIM_REFUSAL := "hover trim line search could not reduce the full-force residual"
 const STIK_RUNWAY_REFUSAL := "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step"
 const STIK_RUNWAY_REFUSAL_AIRCRAFT := ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t",
 	"stik-glow-55ax-2t", "stik-glow-fs64v-4t"]
 const STIK_RUNWAY_REFUSAL_WEATHER := ["crosswind", "spatial-crosswind-v1"]
+# Actual paired reset observations on the named stock runway and trim setups.
+# These are pre-native refusals, not native-flight or physical-limit evidence.
+const RUNWAY_START_BOUNDARIES := {
+	"sebart-avanti-s-a200-p100rx": {
+		weather = "crosswind", batteries = {"ideal": {default_battery = true,
+		aircraft_sha256 = "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+		frame_sha256 = "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+		outcome_sha256 = "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+		live_config_sha256 = {"on": "110962b5c44c080ea60d3c0e88a3a0db426698778ad51fefd2849fcdd172ddf7",
+			"off": "e5ab9b80b14ec1f2098210d56b95b0d1ec6ada9b27f41086637b97211a0ea4d3"},
+		config_sha256 = {"on": "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
+			"off": "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d"}}}},
+	"p51d-mustang-120": {
+		weather = "crosswind", batteries = {"ideal": {default_battery = true,
+		aircraft_sha256 = "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+		frame_sha256 = "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+		outcome_sha256 = "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+		live_config_sha256 = {"on": "347cf6357b720055bd219e6bc9951bdfbde0d42957a4ded40dc1d21a62968f96",
+			"off": "64f069ef1e8308f1b51c10867f207d0adddaa3524dd82c375d80b617e30c6201"},
+		config_sha256 = {"on": "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695",
+			"off": "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef"}}}},
+	"turbo-lumber-evolution": {weather = "crosswind", batteries = {
+		"pack": {default_battery = true,
+			aircraft_sha256 = "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+			frame_sha256 = "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+			outcome_sha256 = "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+			live_config_sha256 = {"on": "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f",
+				"off": "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0"},
+			config_sha256 = {"on": "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf",
+				"off": "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9"}},
+		"ideal": {default_battery = false,
+			aircraft_sha256 = "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+			frame_sha256 = "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+			outcome_sha256 = "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+			live_config_sha256 = {"on": "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26",
+				"off": "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a"},
+			config_sha256 = {"on": "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
+				"off": "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6"}}}},
+}
+const TRIM_START_REFUSAL := "reset failed: trim: reference-speed trim already requires more than the requested throttle"
+const TRIM_START_BOUNDARIES := {
+	"skywalker-x8": {weather = "hot-high", batteries = {"ideal": {default_battery = false,
+		aircraft_sha256 = "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830",
+		frame_sha256 = "399481be84b4a9bafea653c486b13ab2437073dbb75248fa5f49d8623ed99d01",
+		outcome_sha256 = "4d159113222bfeb85fbe717cc2393ee8a6a85b7ce5ac1791c4eade5e3dd6de41",
+		live_config_sha256 = {"on": "4a7fb3ea46ad3a01017b3c79b859bdc93e60968ab8a1f3abae59d8b367b84330",
+			"off": "7ccb66b2850f8181fcab6a7f22da55c85f5cc518bf26b5cf19e1def685d46337"},
+		config_sha256 = {"on": "c80654d5981a9482218352d937839aceaccf32ae14f1e160817c46f20b624edb",
+			"off": "b69b5948fbb8c78e32350796dd734b67cb6cdfe54af512b01790f2950a5bdcb5"}}}},
+}
 # These are source-observed boundaries, not evidence supplied by a report. The
 # four-stroke trial rejects at the RK midpoint; the two-strokes reject at the end.
 # The FS64V hashes are from both real backends on the 2026-10-29 stock ideal,
@@ -100,8 +151,9 @@ static func _fleet_declared_rows() -> Array[Dictionary]:
 					for soft: bool in [true, false]:
 						var row := {aircraft = id, vehicle = "fixed-wing", case = start, battery = battery,
 							default_battery = battery == default_battery, weather = str(preset.id), soft_hull = soft}
-						if id in STIK_RUNWAY_REFUSAL_AIRCRAFT and battery == "ideal" and start == "runway" \
-								and str(preset.id) in STIK_RUNWAY_REFUSAL_WEATHER:
+						if (battery == "ideal" and start == "runway" and id in STIK_RUNWAY_REFUSAL_AIRCRAFT \
+								and str(preset.id) in STIK_RUNWAY_REFUSAL_WEATHER) \
+								or _fleet_is_runway_boundary(row) or _fleet_is_trim_boundary(row):
 							row.expected = "reference-refusal"
 						elif id in GLOW_REVERSE_CASES and battery == "ideal" and start == "runway" \
 								and str(preset.id) == "gusty":
@@ -229,6 +281,20 @@ func _build_fleet_session(row: Dictionary, requested_backend: String) -> Diction
 			_:
 				session.free()
 				return {ok = false, reason = "unknown fixed-wing start"}
+	# Record the already-published reference owner before the real reset.  A
+	# refused reset must retain this exact frame and evaluator set.
+	var boundary := _fleet_is_observed_start(row)
+	var before: Dictionary = {}
+	if boundary:
+		var config_row: Dictionary = row.duplicate(true)
+		config_row.erase("expected") # classification is not part of the observed setup
+		before = {kernel_guard = session.sim._capture_endpoint_guard(), owner_guard = _fleet_owner_snapshot(session),
+			live_configuration = _fleet_live_configuration(session), frame = _fleet_frame(session), model = session.sim.model,
+			callbacks = _fleet_callbacks(session), status = session.stage_backend_status(),
+			reference_callbacks = _fleet_reference_callbacks_match(session),
+			selection_valid = _fleet_start_selection_valid(session, row, weather, field.field),
+			helper = session.get("_native_stage"),
+			configuration = var_to_bytes([config_row, session.aircraft.get("input_identity", {}), weather, field.field])}
 	var reset_ok := true
 	if rotorcraft:
 		reset_ok = session.reset()
@@ -237,8 +303,51 @@ func _build_fleet_session(row: Dictionary, requested_backend: String) -> Diction
 	if not session.is_flyable() or not session.start_error.is_empty() or not session.sim.fault_reason.is_empty() \
 			or session.sim.paused or not session.crash.is_empty() or (rotorcraft and not reset_ok):
 		var reason := str(session.start_error) if not session.start_error.is_empty() else str(session.pause_reason)
+		var result := {ok = false, phase = "reset", reason = "reset failed: " + reason}
+		if boundary:
+			var after_frame := _fleet_frame(session)
+			var after_status: Dictionary = session.stage_backend_status()
+			var outcome: Dictionary = session.runway_start_outcome.duplicate(true)
+			var outcome_bytes := var_to_bytes(outcome)
+			var after_callbacks := _fleet_callbacks(session)
+			var config_row: Dictionary = row.duplicate(true)
+			config_row.erase("expected")
+			var after_config := var_to_bytes([config_row, session.aircraft.get("input_identity", {}), weather, field.field])
+			var after_live_config := _fleet_live_configuration(session)
+			var after_reference_callbacks := _fleet_reference_callbacks_match(session)
+			var after_selection_valid := _fleet_start_selection_valid(session, row, weather, field.field)
+			# These are the same non-mutating guards used by the reset transaction.
+			# reset() intentionally publishes start_error after a refused transaction.
+			var owner_guard_retained: bool = _fleet_owner_matches(session, before.owner_guard) and str(session.start_error) == reason
+			var kernel_guard_retained: bool = session.sim._endpoint_guard_matches(before.kernel_guard)
+			result["startup_proof"] = {
+				requested = requested_backend, before_status = before.status, after_status = after_status,
+				before_helper_absent = before.helper == null, after_helper_absent = session.get("_native_stage") == null,
+				model_retained = before.model == session.sim.model,
+				callbacks_retained = before.callbacks == after_callbacks \
+					and (before.callbacks[0].is_valid() or before.callbacks[1].is_valid()),
+				reference_callbacks_before = before.reference_callbacks,
+				reference_callbacks_after = after_reference_callbacks,
+				kernel_guard_retained = kernel_guard_retained, owner_guard_retained = owner_guard_retained,
+				selection_valid_before = before.selection_valid, selection_valid_after = after_selection_valid,
+				input_configuration_retained = before.configuration == after_config,
+				live_configuration_retained = before.live_configuration == after_live_config,
+				before_live_config_bytes_hex = before.live_configuration.hex_encode(),
+				live_config_bytes_hex = after_live_config.hex_encode(),
+				live_config_sha256 = _fleet_encoded_sha256(after_live_config),
+				aircraft_sha256 = str(session.aircraft.get("input_identity", {}).get("sha256", "")),
+				before_frame_bytes_hex = before.frame.hex_encode(), frame_bytes_hex = after_frame.hex_encode(),
+				frame_sha256 = _fleet_encoded_sha256(after_frame),
+				config_bytes_hex = after_config.hex_encode(), config_sha256 = _fleet_encoded_sha256(after_config),
+				outcome_bytes_hex = outcome_bytes.hex_encode(), outcome_sha256 = _fleet_encoded_sha256(outcome_bytes),
+				outcome_status = str(outcome.get("status", "")), outcome_ok = outcome.get("ok", null),
+				outcome_message = str(outcome.get("message", "")), outcome_dictionary_empty = outcome.is_empty(),
+				outcome_empty = outcome.get("state", PackedFloat64Array()).is_empty() \
+					and outcome.get("rest_state", PackedFloat64Array()).is_empty() \
+					and outcome.get("anchors", PackedFloat64Array()).is_empty(),
+			}
 		session.free()
-		return {ok = false, phase = "reset", reason = "reset failed: " + reason}
+		return result
 	session.read_raw = _reader(session, str(row.case))
 	return {ok = true, session = session}
 
@@ -253,6 +362,70 @@ static func _fleet_frame(session: Node) -> PackedByteArray:
 		frame.append_array([session.commands, session.raw, session.shaft_phase,
 			session.flight_mode, session.trainer_enabled, session.zero_drive_hold, session.power])
 	return var_to_bytes(frame)
+
+
+static func _fleet_callbacks(session: Node) -> Array:
+	var model: Variant = session.sim.model
+	return [model.stage, model.loads, model.rotor_momentum, model.block_loads,
+		model.block_derivative, model.stage_rotor_momentum]
+
+
+static func _fleet_reference_callbacks_match(session: Node) -> bool:
+	var expected: Dictionary = FlightCallbacks.prepare_callbacks(session)
+	if not expected.get("ok", false): return false
+	var model: Variant = session.sim.model
+	for field: String in FlightCallbacks.CALLBACK_FIELDS:
+		if model.get(field) != expected.get(field): return false
+	return RuntimeSimulation._guard_values_equal(model.events, expected.events) \
+		and model.loads == Callable(session, "_loads") and model.rotor_momentum == Callable(session, "rotor_momentum") \
+		and model.pre_tick == Callable(session, "_kernel_pre_step")
+
+
+## Capture exactly the owner fields protected by FlightSession's start transaction.
+static func _fleet_owner_snapshot(session: Node) -> Dictionary:
+	var snapshot := {}
+	for field: String in Session._START_OWNER_FIELDS:
+		snapshot[field] = RuntimeSimulation._guard_copy(session.get(field))
+	return snapshot
+
+
+static func _fleet_owner_matches(session: Node, snapshot: Dictionary) -> bool:
+	for field: String in Session._START_OWNER_FIELDS:
+		if not snapshot.has(field): return false
+		if field != "start_error" and not RuntimeSimulation._guard_values_equal(session.get(field), snapshot[field]):
+			return false
+	return true
+
+
+## Observe live environment and placement inputs, beyond object-identity owner guards.
+static func _fleet_live_configuration(session: Node) -> PackedByteArray:
+	# The detached world can be several MiB; retain its exact typed digest in the
+	# bounded configuration payload instead of duplicating the entire mesh table.
+	var world_sha := _fleet_encoded_sha256(var_to_bytes(session.collision_world()))
+	return var_to_bytes([session.weather_configuration(), session.environment.identity(),
+		session._checkpoint_configuration(), session.get("_runway_field"), session.ground_field_id,
+		session.ground_surfaces, session.airframe_surfaces, world_sha, session.lake_context(),
+		session.start_choice, session.soft_hull_contacts, session.trim_throttle, session.selected_trim_throttle()])
+
+
+static func _fleet_start_selection_valid(session: Node, row: Dictionary, weather: Dictionary, field: Dictionary) -> bool:
+	var normalized: Dictionary = WindConfig.validate(weather)
+	if not normalized.get("ok", false) or not RuntimeSimulation._guard_values_equal(session.weather_configuration(), normalized.config) \
+			or not RuntimeSimulation._guard_values_equal(session.get("_runway_field"), field) \
+			or str(session.ground_field_id) != str(field.get("id", "")) \
+			or typeof(session.soft_hull_contacts) != TYPE_BOOL or session.soft_hull_contacts != row.soft_hull:
+		return false
+	if _fleet_is_trim_boundary(row):
+		return session.start_choice == Session.START_HALF_POWER \
+			and RuntimeSimulation._guard_values_equal(session.selected_trim_throttle(), 0.5)
+	return session.start_choice == Session.START_RUNWAY and is_nan(session.selected_trim_throttle())
+
+
+static func _fleet_encoded_sha256(bytes: PackedByteArray) -> String:
+	var digest := HashingContext.new()
+	digest.start(HashingContext.HASH_SHA256)
+	digest.update(bytes)
+	return digest.finish().hex_encode()
 
 
 static func _fleet_hash_tick(digest: HashingContext, session: Node) -> void:
@@ -484,6 +657,30 @@ func _fleet_execute(row: Dictionary, requested: String, warmup: int, samples: in
 	return result
 
 
+static func _fleet_is_runway_boundary(row: Dictionary) -> bool:
+	var id: Variant = row.get("aircraft")
+	if not RUNWAY_START_BOUNDARIES.has(id) or row.get("vehicle") != "fixed-wing" \
+			or row.get("case") != "runway" or row.get("weather") != RUNWAY_START_BOUNDARIES[id].weather \
+			or typeof(row.get("soft_hull")) != TYPE_BOOL or typeof(row.get("default_battery")) != TYPE_BOOL:
+		return false
+	var batteries: Dictionary = RUNWAY_START_BOUNDARIES[id].batteries
+	return batteries.has(row.get("battery")) and row.default_battery == batteries[row.battery].default_battery
+
+
+static func _fleet_is_trim_boundary(row: Dictionary) -> bool:
+	var id: Variant = row.get("aircraft")
+	if not TRIM_START_BOUNDARIES.has(id) or row.get("vehicle") != "fixed-wing" \
+			or row.get("case") != "airborne_half_power" or row.get("weather") != TRIM_START_BOUNDARIES[id].weather \
+			or typeof(row.get("soft_hull")) != TYPE_BOOL or typeof(row.get("default_battery")) != TYPE_BOOL:
+		return false
+	var batteries: Dictionary = TRIM_START_BOUNDARIES[id].batteries
+	return batteries.has(row.get("battery")) and row.default_battery == batteries[row.battery].default_battery
+
+
+static func _fleet_is_observed_start(row: Dictionary) -> bool:
+	return _fleet_is_runway_boundary(row) or _fleet_is_trim_boundary(row)
+
+
 static func _fleet_expected_refusal(row: Dictionary, built: Dictionary) -> bool:
 	if row.get("expected") != "reference-refusal" or built.get("ok", false) \
 			or built.get("phase") != "reset":
@@ -496,6 +693,10 @@ static func _fleet_expected_refusal(row: Dictionary, built: Dictionary) -> bool:
 			"ground":
 				return built.get("reason") == "reset failed: Ground trainer control reference refused: " + HELICOPTER_TRIM_REFUSAL
 		return false
+	if _fleet_is_runway_boundary(row):
+		return built.get("reason") == STIK_RUNWAY_REFUSAL
+	if _fleet_is_trim_boundary(row):
+		return built.get("reason") == TRIM_START_REFUSAL
 	return row.get("vehicle") == "fixed-wing" and row.get("aircraft") in STIK_RUNWAY_REFUSAL_AIRCRAFT \
 		and row.get("battery") == "ideal" and row.get("case") == "runway" \
 		and row.get("weather") in STIK_RUNWAY_REFUSAL_WEATHER and typeof(row.get("soft_hull")) == TYPE_BOOL \
@@ -503,8 +704,73 @@ static func _fleet_expected_refusal(row: Dictionary, built: Dictionary) -> bool:
 
 
 static func _fleet_expected_refusal_pair(row: Dictionary, reference: Dictionary, native: Dictionary) -> bool:
-	return _fleet_expected_refusal(row, reference) and _fleet_expected_refusal(row, native) \
-		and reference.get("reason") == native.get("reason")
+	if not _fleet_expected_refusal(row, reference) or not _fleet_expected_refusal(row, native) \
+			or reference.get("reason") != native.get("reason"):
+		return false
+	if not _fleet_is_observed_start(row):
+		return true
+	var ref: Variant = reference.get("startup_proof")
+	var nat: Variant = native.get("startup_proof")
+	if not _fleet_start_proof_valid(row, ref, NativeStage.BACKEND_REFERENCE) \
+			or not _fleet_start_proof_valid(row, nat, NativeStage.BACKEND_NATIVE):
+		return false
+	for key: String in ["frame_bytes_hex", "config_bytes_hex", "outcome_bytes_hex", "live_config_bytes_hex"]:
+		if ref.get(key) != nat.get(key): return false
+	return true
+
+
+static func _fleet_start_proof_valid(row: Dictionary, proof: Variant, requested: String) -> bool:
+	if not _fleet_is_observed_start(row) or not proof is Dictionary \
+			or requested not in [NativeStage.BACKEND_REFERENCE, NativeStage.BACKEND_NATIVE]:
+		return false
+	var runway := _fleet_is_runway_boundary(row)
+	var group: Dictionary = RUNWAY_START_BOUNDARIES[row.aircraft] if runway else TRIM_START_BOUNDARIES[row.aircraft]
+	var spec: Dictionary = group.batteries[row.battery]
+	var backend_reason := "" if requested == NativeStage.BACKEND_REFERENCE else "pending configuration requires reset"
+	var expected_status := {requested = requested, identity = NativeStage.reference_identity(), reason = backend_reason}
+	for key: String in ["before_helper_absent", "after_helper_absent", "model_retained", "callbacks_retained",
+			"reference_callbacks_before", "reference_callbacks_after", "kernel_guard_retained", "owner_guard_retained",
+			"selection_valid_before", "selection_valid_after", "input_configuration_retained",
+			"live_configuration_retained", "outcome_empty"]:
+		if typeof(proof.get(key)) != TYPE_BOOL or not proof[key]: return false
+	if typeof(proof.get("outcome_dictionary_empty")) != TYPE_BOOL: return false
+	if proof.get("requested") != requested or proof.get("before_status") != expected_status \
+			or proof.get("after_status") != expected_status \
+			or proof.get("aircraft_sha256") != spec.aircraft_sha256 \
+			or proof.get("before_frame_bytes_hex") != proof.get("frame_bytes_hex") \
+			or proof.get("before_live_config_bytes_hex") != proof.get("live_config_bytes_hex"):
+		return false
+	var live_hex: Variant = proof.get("live_config_bytes_hex")
+	if typeof(live_hex) != TYPE_STRING or live_hex.is_empty() or live_hex.length() > 1048576 \
+			or live_hex.length() % 2 != 0 or not live_hex.is_valid_hex_number() \
+			or proof.get("live_config_sha256") != spec.live_config_sha256["on" if row.soft_hull else "off"] \
+			or proof.live_config_sha256 != _fleet_encoded_sha256(live_hex.hex_decode()):
+		return false
+	var expected_hashes := {frame = spec.frame_sha256,
+		config = spec.config_sha256["on" if row.soft_hull else "off"], outcome = spec.outcome_sha256}
+	for key: String in ["frame", "config", "outcome"]:
+		var encoded: Variant = proof.get(key + "_bytes_hex")
+		if typeof(encoded) != TYPE_STRING or encoded.is_empty() or encoded.length() > 262144 \
+				or encoded.length() % 2 != 0 or not encoded.is_valid_hex_number() \
+				or proof.get(key + "_sha256") != expected_hashes[key] \
+				or _fleet_encoded_sha256(encoded.hex_decode()) != expected_hashes[key]:
+			return false
+	var outcome: Variant = bytes_to_var(str(proof.outcome_bytes_hex).hex_decode())
+	if not outcome is Dictionary: return false
+	if not runway:
+		return outcome.is_empty() and proof.get("outcome_dictionary_empty") == true \
+			and proof.get("outcome_status") == "" and proof.get("outcome_ok") == null \
+			and proof.get("outcome_message") == "" and proof.get("outcome_empty") == true
+	return typeof(outcome.get("ok")) == TYPE_BOOL and not outcome.ok \
+		and typeof(proof.get("outcome_ok")) == TYPE_BOOL and not proof.outcome_ok \
+		and proof.get("outcome_dictionary_empty") == false \
+		and outcome.get("status") == "numerical_unresolved" \
+		and outcome.get("message") == STIK_RUNWAY_REFUSAL.trim_prefix("reset failed: ") \
+		and proof.get("outcome_status") == outcome.status and proof.get("outcome_ok") == false \
+		and proof.get("outcome_message") == outcome.message and proof.get("outcome_empty") == true \
+		and outcome.get("state", PackedFloat64Array()).is_empty() \
+		and outcome.get("rest_state", PackedFloat64Array()).is_empty() \
+		and outcome.get("anchors", PackedFloat64Array()).is_empty()
 
 
 ## Only the six reproduced runway/gusty rows have this source-domain boundary.
@@ -970,6 +1236,9 @@ func _fleet_case(row: Dictionary, warmup: int, samples: int) -> void:
 		result.native = {complete = false, requested = NativeStage.BACKEND_NATIVE,
 			phase = str(native.get("phase", "")), error = native_reason}
 		result.fingerprint_equal = false
+		if _fleet_is_observed_start(row):
+			result.startup_proof = {reference = reference.get("startup_proof", {}),
+				native = native.get("startup_proof", {})}
 		_report.fleet.append(result)
 		_compare("fleet_reference_refusal", PackedFloat64Array([1.0]), PackedFloat64Array([1.0 if expected else 0.0]), row)
 		if not expected:

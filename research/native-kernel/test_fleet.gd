@@ -594,10 +594,23 @@ func _initialize() -> void:
 		and not Fleet._fleet_expected_refusal(rotor_refusals[1], expected_failure),
 		"setup failure, wrong condition, different reset failure and successful start do not masquerade as trim refusal")
 	var stik_refusals: Array[Dictionary] = []
+	var bounded_runway_refusals: Array[Dictionary] = []
+	var bounded_trim_refusals: Array[Dictionary] = []
 	for row: Dictionary in declared:
-		if row.vehicle == "fixed-wing" and row.get("expected") == "reference-refusal":
+		if row.get("expected") == "reference-refusal" and row.get("aircraft") in Fleet.STIK_RUNWAY_REFUSAL_AIRCRAFT:
 			stik_refusals.append(row)
+		elif row.get("expected") == "reference-refusal" and Fleet._fleet_is_runway_boundary(row):
+			bounded_runway_refusals.append(row)
+		elif row.get("expected") == "reference-refusal" and Fleet._fleet_is_trim_boundary(row):
+			bounded_trim_refusals.append(row)
 	_check(stik_refusals.size() == 16, "only the four proven Stik variants and crosswind runway combinations are marked")
+	_check(bounded_runway_refusals.size() == 8, "only eight observed crosswind runway rows are marked")
+	_check(bounded_trim_refusals.size() == 2, "only two observed X8 half-power hot-high rows are marked")
+	for row: Dictionary in declared:
+		if row.get("aircraft") in Fleet.RUNWAY_START_BOUNDARIES and row.get("expected") == "reference-refusal":
+			_check(Fleet._fleet_is_runway_boundary(row), "other weather, battery or start is not classified")
+		if row.get("aircraft") in Fleet.TRIM_START_BOUNDARIES and row.get("expected") == "reference-refusal":
+			_check(Fleet._fleet_is_trim_boundary(row), "other X8 weather, battery or start is not classified")
 	var stik_failure := {ok = false, phase = "reset", reason = Fleet.STIK_RUNWAY_REFUSAL}
 	for row: Dictionary in stik_refusals:
 		_check(Fleet._fleet_expected_refusal_pair(row, stik_failure, stik_failure),
@@ -651,6 +664,51 @@ func _initialize() -> void:
 		_check(Fleet._fleet_expected_refusal(row, built), "actual Stik reference reset refuses: %s/%s/soft=%s %s" \
 			% [row.aircraft, row.weather, row.soft_hull, built.get("reason", "started")])
 		if built.get("ok", false): built.session.free()
+	for row: Dictionary in bounded_runway_refusals + bounded_trim_refusals:
+		var observed: Dictionary = fleet._build_fleet_session(row, NativeStage.BACKEND_REFERENCE)
+		_check(Fleet._fleet_expected_refusal(row, observed) \
+			and Fleet._fleet_start_proof_valid(row, observed.get("startup_proof"), NativeStage.BACKEND_REFERENCE),
+			"actual bounded reference failure retains the observed typed state: %s/soft=%s" % [row.aircraft, row.soft_hull])
+		if observed.get("ok", false):
+			observed.session.free()
+			continue
+		var synthetic_native: Dictionary = observed.duplicate(true)
+		var native_proof: Dictionary = synthetic_native.get("startup_proof", {})
+		if native_proof.is_empty(): continue
+		native_proof.requested = NativeStage.BACKEND_NATIVE
+		for key: String in ["before_status", "after_status"]:
+			native_proof[key].requested = NativeStage.BACKEND_NATIVE
+			native_proof[key].reason = "pending configuration requires reset"
+		_check(Fleet._fleet_expected_refusal_pair(row, observed, synthetic_native),
+			"paired bounded proof requires both reference-owned reset outcomes")
+		var forged_reference: Dictionary = observed.duplicate(true)
+		var forged_native: Dictionary = synthetic_native.duplicate(true)
+		for forged: Dictionary in [forged_reference, forged_native]:
+			forged.startup_proof.before_live_config_bytes_hex = "00"
+			forged.startup_proof.live_config_bytes_hex = "00"
+			forged.startup_proof.live_config_sha256 = Fleet._fleet_encoded_sha256(PackedByteArray([0]))
+		_check(not Fleet._fleet_expected_refusal_pair(row, forged_reference, forged_native),
+			"matching rehashed live configurations cannot replace the pinned observation")
+		for change: Array in [["before_helper_absent", false], ["after_helper_absent", false],
+				["model_retained", false], ["callbacks_retained", false], ["kernel_guard_retained", false],
+				["owner_guard_retained", false], ["input_configuration_retained", false],
+				["selection_valid_before", false], ["selection_valid_after", false],
+				["live_configuration_retained", false], ["live_config_bytes_hex", "00"],
+				["reference_callbacks_before", false], ["reference_callbacks_after", false],
+				["callbacks_retained", 1], ["outcome_dictionary_empty", 1],
+				["outcome_status", "invalid_input"], ["outcome_empty", false],
+				["config_sha256", "0".repeat(64)], ["outcome_bytes_hex", "00"],
+				["before_frame_bytes_hex", "00"]]:
+			var altered: Dictionary = synthetic_native.duplicate(true)
+			altered.startup_proof[change[0]] = change[1]
+			_check(not Fleet._fleet_expected_refusal_pair(row, observed, altered),
+				"bounded proof rejects altered " + str(change[0]))
+		for change: Array in [["aircraft", "f4u-corsair-250"], ["weather", "spatial-crosswind-v1"],
+				["battery", "invalid-battery"], ["case", "trim"], ["soft_hull", null]]:
+			var boundary_changed_row: Dictionary = row.duplicate(true)
+			boundary_changed_row[change[0]] = change[1]
+			_check(not Fleet._fleet_expected_refusal_pair(boundary_changed_row, observed, synthetic_native),
+				"bounded refusal rejects a different " + str(change[0]))
 	# Exercise the real policy when the verified native library is installed. A library-free
 	# policy test still checks the refusal predicate and the reference starts below.
 	var native_available: bool = NativeStage.library_status().get("ok", false)
@@ -667,6 +725,15 @@ func _initialize() -> void:
 				"actual paired reset refusal is recorded without a flight pass: %s/%s/%s/soft=%s" \
 				% [row.aircraft, row.case, row.weather, row.soft_hull])
 		_check(fleet._failures.is_empty(), "actual paired reset refusals leave no policy errors")
+		for row: Dictionary in bounded_runway_refusals + bounded_trim_refusals:
+			fleet._fleet_case(row, 2, 3)
+			var result: Dictionary = fleet._report.fleet.back()
+			_check(result.status == "reference-refused" and not result.fingerprint_equal \
+				and not result.reference.complete and not result.native.complete \
+				and result.reference.phase == "reset" and result.native.phase == "reset" \
+				and result.reference.error == result.native.error and result.has("startup_proof"),
+				"actual paired bounded reset refuses without native-flight credit: %s/soft=%s" % [row.aircraft, row.soft_hull])
+		_check(fleet._failures.is_empty(), "actual paired bounded reset proofs leave no policy errors")
 	else:
 		print("NK3 fleet policy: native reset checks skipped (verified library unavailable)")
 	if OS.get_cmdline_user_args().has("--require-runtime-domain"):

@@ -33,6 +33,56 @@ MIN_SAMPLES = 2400
 MAX_JOBS = 4
 KEY_FIELDS = ("aircraft", "vehicle", "battery", "case", "weather", "soft_hull")
 HEX64 = re.compile(r"[0-9a-f]{64}\Z")
+# Independently pin only the paired source observations for these ten rows.
+RUNWAY_START_REASON = "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step"
+RUNWAY_START_CASES = {
+    "sebart-avanti-s-a200-p100rx": {
+        "weather": "crosswind", "batteries": {"ideal": {"default_battery": True,
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "live_config_sha256": {True: "110962b5c44c080ea60d3c0e88a3a0db426698778ad51fefd2849fcdd172ddf7",
+                               False: "e5ab9b80b14ec1f2098210d56b95b0d1ec6ada9b27f41086637b97211a0ea4d3"},
+        "config_sha256": {True: "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
+                          False: "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d"}}}},
+    "p51d-mustang-120": {
+        "weather": "crosswind", "batteries": {"ideal": {"default_battery": True,
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "live_config_sha256": {True: "347cf6357b720055bd219e6bc9951bdfbde0d42957a4ded40dc1d21a62968f96",
+                               False: "64f069ef1e8308f1b51c10867f207d0adddaa3524dd82c375d80b617e30c6201"},
+        "config_sha256": {True: "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695",
+                          False: "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef"}}}},
+    "turbo-lumber-evolution": {"weather": "crosswind", "batteries": {
+        "pack": {"default_battery": True,
+                 "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+                 "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+                 "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+                 "live_config_sha256": {True: "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f",
+                                        False: "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0"},
+                 "config_sha256": {True: "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf",
+                                   False: "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9"}},
+        "ideal": {"default_battery": False,
+                  "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+                  "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+                  "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+                  "live_config_sha256": {True: "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26",
+                                         False: "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a"},
+                  "config_sha256": {True: "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
+                                    False: "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6"}}}},
+}
+TRIM_START_REASON = "reset failed: trim: reference-speed trim already requires more than the requested throttle"
+TRIM_START_CASES = {
+    "skywalker-x8": {"weather": "hot-high", "batteries": {"ideal": {"default_battery": False,
+        "aircraft_sha256": "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830",
+        "frame_sha256": "399481be84b4a9bafea653c486b13ab2437073dbb75248fa5f49d8623ed99d01",
+        "outcome_sha256": "4d159113222bfeb85fbe717cc2393ee8a6a85b7ce5ac1791c4eade5e3dd6de41",
+        "live_config_sha256": {True: "4a7fb3ea46ad3a01017b3c79b859bdc93e60968ab8a1f3abae59d8b367b84330",
+                               False: "7ccb66b2850f8181fcab6a7f22da55c85f5cc518bf26b5cf19e1def685d46337"},
+        "config_sha256": {True: "c80654d5981a9482218352d937839aceaccf32ae14f1e160817c46f20b624edb",
+                          False: "b69b5948fbb8c78e32350796dd734b67cb6cdfe54af512b01790f2950a5bdcb5"}}}},
+}
 # Independent expectations for the observed source-domain boundaries. A report
 # cannot choose its own RK phase, rejection ordinal, or four-stroke feed factor.
 # FS64V hashes identify the real typed trial and context captured on 2026-10-29
@@ -146,6 +196,8 @@ func _initialize() -> void:
                 reason = "reset failed: Helicopter start refused: " + script.HELICOPTER_TRIM_REFUSAL
             elif row.vehicle == "rotorcraft" and row.case == "ground":
                 reason = "reset failed: Ground trainer control reference refused: " + script.HELICOPTER_TRIM_REFUSAL
+            elif script._fleet_is_trim_boundary(row):
+                reason = script.TRIM_START_REFUSAL
             elif row.vehicle == "fixed-wing":
                 reason = script.STIK_RUNWAY_REFUSAL
             if reason.is_empty() or not script._fleet_expected_refusal(row,
@@ -223,6 +275,23 @@ def row_key(row: dict[str, Any]) -> tuple[Any, ...]:
     return tuple(row[key] for key in KEY_FIELDS)
 
 
+def runway_start_boundary(row: dict[str, Any]) -> bool:
+    return observed_start_boundary(row, RUNWAY_START_CASES, "runway")
+
+
+def trim_start_boundary(row: dict[str, Any]) -> bool:
+    return observed_start_boundary(row, TRIM_START_CASES, "airborne_half_power")
+
+
+def observed_start_boundary(row: dict[str, Any], cases: dict[str, Any], start: str) -> bool:
+    spec = cases.get(row.get("aircraft"))
+    battery = spec["batteries"].get(row.get("battery")) if spec else None
+    return bool(battery and row.get("vehicle") == "fixed-wing" and row.get("case") == start
+                and row.get("weather") == spec["weather"] and type(row.get("soft_hull")) is bool
+                and type(row.get("default_battery")) is bool
+                and row["default_battery"] is battery["default_battery"])
+
+
 def manifest_index(manifest: dict[str, Any]) -> tuple[dict[tuple[Any, ...], dict[str, Any]], list[str]]:
     require(isinstance(manifest, dict) and manifest.get("format") == "openrc-nk3-fleet-manifest v1",
             "invalid fleet manifest format")
@@ -237,9 +306,17 @@ def manifest_index(manifest: dict[str, Any]) -> tuple[dict[tuple[Any, ...], dict
         require(key not in index, "duplicate manifest row")
         expected = row.get("expected", "flight")
         require(expected in ("flight", "reference-refusal", "runtime-domain-refusal"), "invalid manifest expectation")
+        if runway_start_boundary(row) or trim_start_boundary(row):
+            require(expected == "reference-refusal", "observed bounded start row has the wrong expectation")
         if expected == "reference-refusal":
             require(isinstance(row.get("expected_refusal_reason"), str) and bool(row["expected_refusal_reason"]),
                     "expected refusal has no exact reason")
+            if row["aircraft"] in RUNWAY_START_CASES:
+                require(runway_start_boundary(row) and row["expected_refusal_reason"] == RUNWAY_START_REASON,
+                        "invalid bounded runway-start declaration")
+            if row["aircraft"] in TRIM_START_CASES:
+                require(trim_start_boundary(row) and row["expected_refusal_reason"] == TRIM_START_REASON,
+                        "invalid bounded trim-start declaration")
         elif expected == "runtime-domain-refusal":
             require(row["vehicle"] == "fixed-wing" and row["aircraft"] in RUNTIME_CASES
                     and row["battery"] == "ideal" and row["case"] == "runway" and row["weather"] == "gusty"
@@ -322,6 +399,70 @@ def validate_refusal(row: dict[str, Any], expected: dict[str, Any]) -> None:
         require(isinstance(run, dict) and run.get("complete") is False and run.get("requested") == requested
                 and run.get("phase") == "reset" and run.get("error") == expected["expected_refusal_reason"],
                 f"{requested} did not produce the exact expected reset refusal")
+    if runway_start_boundary(expected) or trim_start_boundary(expected):
+        validate_observed_start_proof(row, expected)
+    else:
+        require("startup_proof" not in row, "runway-start proof attached to an undeclared row")
+
+
+def validate_observed_start_proof(row: dict[str, Any], expected: dict[str, Any]) -> None:
+    runway = runway_start_boundary(expected)
+    require((runway or trim_start_boundary(expected)) and row_key(row) == row_key(expected)
+            and expected.get("expected_refusal_reason") == (RUNWAY_START_REASON if runway else TRIM_START_REASON),
+            "start proof is outside its observed row")
+    cases = RUNWAY_START_CASES if runway else TRIM_START_CASES
+    spec = cases[expected["aircraft"]]["batteries"][expected["battery"]]
+    proofs = row.get("startup_proof")
+    require(isinstance(proofs, dict) and set(proofs) == {"reference", "native"}, "missing paired startup proof")
+    for name, requested in (("reference", "gdscript_reference"), ("native", "native")):
+        proof = proofs[name]
+        status = {"requested": requested, "identity": {"backend": "gdscript_reference"},
+                  "reason": "" if requested == "gdscript_reference" else "pending configuration requires reset"}
+        require(isinstance(proof, dict) and proof.get("requested") == requested
+                and proof.get("before_status") == status and proof.get("after_status") == status
+                and all(proof.get(field) is True for field in ("before_helper_absent", "after_helper_absent",
+                    "model_retained", "callbacks_retained", "reference_callbacks_before", "reference_callbacks_after",
+                    "kernel_guard_retained", "owner_guard_retained", "selection_valid_before", "selection_valid_after",
+                    "input_configuration_retained",
+                    "live_configuration_retained", "outcome_empty"))
+                and proof.get("aircraft_sha256") == spec["aircraft_sha256"]
+                and proof.get("before_frame_bytes_hex") == proof.get("frame_bytes_hex")
+                and proof.get("before_live_config_bytes_hex") == proof.get("live_config_bytes_hex"),
+                f"{requested} did not retain the reference owner and failed-start outcome")
+        live = proof.get("live_config_bytes_hex")
+        require(isinstance(live, str) and 0 < len(live) <= 1048576 and len(live) % 2 == 0,
+                f"{requested} has malformed live configuration bytes")
+        try:
+            live_bytes = bytes.fromhex(live)
+        except ValueError as error:
+            raise CampaignError(f"{requested} has malformed live configuration bytes") from error
+        require(live_bytes.hex() == live and proof.get("live_config_sha256") == spec["live_config_sha256"][expected["soft_hull"]]
+                and hashlib.sha256(live_bytes).hexdigest() == proof["live_config_sha256"],
+                f"{requested} live configuration digest differs")
+        if runway:
+            require(proof.get("outcome_dictionary_empty") is False
+                    and proof.get("outcome_status") == "numerical_unresolved" and proof.get("outcome_ok") is False
+                    and proof.get("outcome_message") == RUNWAY_START_REASON.removeprefix("reset failed: "),
+                    f"{requested} did not retain the numerical runway outcome")
+        else:
+            require(proof.get("outcome_dictionary_empty") is True and proof.get("outcome_status") == ""
+                    and "outcome_ok" in proof and proof["outcome_ok"] is None and proof.get("outcome_message") == "",
+                    f"{requested} did not retain the empty runway outcome for the trim refusal")
+        hashes = {"frame": spec["frame_sha256"], "config": spec["config_sha256"][expected["soft_hull"]],
+                  "outcome": spec["outcome_sha256"]}
+        for field, wanted in hashes.items():
+            encoded = proof.get(field + "_bytes_hex")
+            require(isinstance(encoded, str) and 0 < len(encoded) <= 262144 and len(encoded) % 2 == 0,
+                    f"{requested} has malformed {field} bytes")
+            try:
+                payload = bytes.fromhex(encoded)
+            except ValueError as error:
+                raise CampaignError(f"{requested} has malformed {field} bytes") from error
+            require(payload.hex() == encoded and proof.get(field + "_sha256") == wanted
+                    and hashlib.sha256(payload).hexdigest() == wanted,
+                    f"{requested} {field} identity differs from the source observation")
+    require(all(proofs["reference"][field + "_bytes_hex"] == proofs["native"][field + "_bytes_hex"]
+                for field in ("frame", "config", "outcome", "live_config")), "paired startup identities differ")
 
 
 def decode_runtime_payload(encoded: str, shapes: tuple[int | str, ...]) -> list[Any]:
