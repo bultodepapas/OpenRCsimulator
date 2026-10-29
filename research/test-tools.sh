@@ -39,4 +39,7 @@ echo "== PT1h-R1: checked Godot runner failure diagnostics"
 timeout 120 python3 -m unittest discover -s "$ROOT/tools/godot" -p 'test_*.py'
 echo "== PT1h-R7: agent debug bridge client"
 timeout 60 python3 -m unittest discover -s "$ROOT/tools/debug" -p 'test_*.py'
+echo "== DT-LNX-02c/03a: release integrity and Linux ABI inventory"
+timeout 120 python3 -m unittest discover -s "$ROOT/tools/release" -p 'test_*.py'
+
 echo "Offline tool regressions passed; physical validation remains open."

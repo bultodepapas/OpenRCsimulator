@@ -106,6 +106,9 @@ jobs:
           python3 research/skywalker-x8/X8-02/install_assets.py --check
           python3 research/skywalker-x8/X8-02/compile_model.py --check
           python3 research/skywalker-x8/X8-06/derive_physics.py --check
+      - name: Release fixture inspection tools
+        if: matrix.part == 'integration'
+        run: sudo apt-get install -y binutils zip g++
       - name: Offline measurement and validation tool regressions
         if: matrix.part == 'integration'
         run: |
@@ -432,7 +435,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0 # full history and tags: git describe names the packages and the build (UI-04a)
-      - run: sudo apt-get update && sudo apt-get install -y zip libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1
+      - run: sudo apt-get update && sudo apt-get install -y zip binutils libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: .tools
@@ -494,6 +497,8 @@ jobs:
             ${{ steps.packages.outputs.package_dir }}/openrc-simulator-${{ steps.packages.outputs.version }}-linux-x86_64.zip
             ${{ steps.packages.outputs.package_dir }}/openrc-simulator-${{ steps.packages.outputs.version }}-windows-x86_64.zip
             ${{ steps.packages.outputs.package_dir }}/openrc-simulator-${{ steps.packages.outputs.version }}-macos-universal.zip
+            ${{ steps.packages.outputs.package_dir }}/release-manifest.json
+            ${{ steps.packages.outputs.package_dir }}/linux-abi.json
             ${{ steps.packages.outputs.package_dir }}/SHA256SUMS
           if-no-files-found: error
 
@@ -516,12 +521,22 @@ jobs:
           # PT1h: every tag has reviewed notes; never publish a stale first-launch guide as release history.
           NOTES="docs/releases/${GITHUB_REF_NAME}.md"
           test -s "$NOTES"
+          python3 tools/release/manifest.py verify --directory dist \
+            --expected-commit "$GITHUB_SHA" --expected-tag "$GITHUB_REF_NAME" \
+            --expected-run-id "$GITHUB_RUN_ID" --expected-repository "$GITHUB_REPOSITORY"
           (cd dist && sha256sum --check --strict SHA256SUMS)
+          # Refuse a deleted or moved tag; tag protection still owns the publication race.
+          git fetch --no-tags origin "refs/tags/$GITHUB_REF_NAME"
+          test "$(git rev-parse 'FETCH_HEAD^{commit}')" = "$GITHUB_SHA"
           RELEASE_FLAGS=()
           if [[ "$GITHUB_REF_NAME" == *-* ]]; then
             RELEASE_FLAGS+=(--prerelease)
           else
             RELEASE_FLAGS+=(--latest)
           fi
-          gh release create "$GITHUB_REF_NAME" dist/openrc-simulator-*.zip dist/SHA256SUMS \
-            --title "OpenRC Simulator $GITHUB_REF_NAME" --notes-file "$NOTES" "${RELEASE_FLAGS[@]}"
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/openrc-simulator-$GITHUB_REF_NAME-linux-x86_64.zip" \
+            "dist/openrc-simulator-$GITHUB_REF_NAME-windows-x86_64.zip" \
+            "dist/openrc-simulator-$GITHUB_REF_NAME-macos-universal.zip" \
+            dist/release-manifest.json dist/linux-abi.json dist/SHA256SUMS \
+            --verify-tag --title "OpenRC Simulator $GITHUB_REF_NAME" --notes-file "$NOTES" "${RELEASE_FLAGS[@]}"

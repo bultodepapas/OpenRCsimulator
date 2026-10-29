@@ -1,5 +1,7 @@
 # DT-LNX-02a/b — export isolation and template integrity
 
+Continuation: [DT-LNX-02c/03a manifest and ABI implementation](manifest-abi.md). The results below retain the original 02a/b source and test scope.
+
 2026-10-28. Implemented first increment of [DT-LNX-02](../../../plans/linux-support-distribution.md): protect existing outputs, select the successful CI artifact set and authenticate installed templates. Full release manifests and platform acceptance remain open. Current commands live in [TOOLS](../../../TOOLS.md#release-sequence).
 
 ## Delivered behavior

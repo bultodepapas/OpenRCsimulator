@@ -147,6 +147,8 @@ Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [D
 
 [DT-LNX-02a/b](desktop-delivery-investigations/DT-LNX-02/README.md) records implemented export output isolation, checkout locking, exact CI package selection and installed-template integrity checks. Full release manifests and native platform acceptance remain open.
 
+[DT-LNX-02c/03a](desktop-delivery-investigations/DT-LNX-02/manifest-abi.md) extends that foundation with actual input hashes, strict release-manifest/transfer checks, a static final-ZIP ELF inventory and current-tag verification. Source/SBOM/signed provenance and provisioned/native acceptance remain open.
+
 The [Apple/Godot integration audit, 2026-10-28](desktop-delivery-investigations/DT-MAC-00-R2/README.md) supports the [Apple Silicon execution plan](../plans/apple-silicon-performance.md): exact engine compatibility, Metal 4 boundaries, MetalFX integration, 2026 Apple features, repository gaps and native 1080p qualification. It extends the [twenty M1–M5 investigations, 2026-10-24](desktop-delivery-investigations/DT-MAC-00-R1/README.md) and [initial review](apple-silicon-performance-2026-10-24.md). [DT-MAC-02](desktop-delivery-investigations/DT-MAC-02/README.md) records the subsequent Windows preparation: native acquisition, bounded streaming capture, isolated renderer trials and guarded MetalFX policy. Native Mac performance remains unmeasured.
 
 ### Roadmap knowledge base (all phases)

@@ -1,6 +1,6 @@
 # Linux support and distribution plan
 
-2026-10-28 · **DT-LNX-00…13**, desktop-delivery subtrack · **Status: research complete; DT-LNX-02a/b export isolation and template verification implemented; broader release and native acceptance pending.**
+2026-10-28 · **DT-LNX-00…13**, desktop-delivery subtrack · **Status: research complete; DT-LNX-02a–c export/input/artifact safeguards and DT-LNX-03a static ABI tooling implemented; provisioned export and native acceptance pending.**
 
 Make Linux installation predictable before expanding the download catalog. First qualify an x86_64 payload and portable distribution, then add managed installation, native packages and ARM64 through the same evidence gates. Retain Compatibility as the baseline renderer. A Linux export, successful headless test or container run alone does not establish a supported desktop.
 
@@ -10,7 +10,7 @@ This is the authoritative Linux execution plan under [desktop delivery](../DESKT
 
 DT owns packaging, release manifests, Linux compatibility evidence and the installation lifecycle. Coordinate changes to `app/export.sh`, presets, engine acquisition and `.github/workflows/ci.yml` with their maintainers. NK/SF own native evaluator admission and numerical contracts; GDU owns engine upgrades; VQ owns render profiles; UI/D6 own display, update notices and controllers; AE owns Workshop; WEB owns `site/` and translated downloads. No vehicle-specific change belongs in the shared simulation kernel for this work.
 
-Proposed new implementation homes: `tools/release/` for orchestration, manifests and final-artifact checks; `packaging/linux/` for desktop metadata, AppImage recipe, Debian packaging, RPM spec and project-hosted Flatpak material. Follow the existing tool index before adding helpers. Reuse free maintained tools: `appimagetool`, Flatpak Builder, debhelper/dpkg, rpmbuild/Mock, lintian, rpmlint, desktop-file-utils, AppStream, readelf/objdump, diffoscope and existing Godot/debug tools. Select exact versions and hashes in DT-LNX-02; this plan does not invent a current version lock. A future Flathub submission has separate policy and authorship requirements described in the research.
+The implemented [release tools](../../tools/release/README.md) own input capture, manifests, static ABI inventory and final-artifact consistency checks. Proposed `packaging/linux/` owns desktop metadata, AppImage recipe, Debian packaging, RPM spec and project-hosted Flatpak material. Follow the existing tool index before adding helpers. Reuse free maintained tools: `appimagetool`, Flatpak Builder, debhelper/dpkg, rpmbuild/Mock, lintian, rpmlint, desktop-file-utils, AppStream, readelf/objdump, diffoscope and existing Godot/debug tools. Select exact versions and hashes in DT-LNX-02; this plan does not invent a current version lock. A future Flathub submission has separate policy and authorship requirements described in the research.
 
 ## Delivery strategy and support policy
 
@@ -194,7 +194,7 @@ Use direct immutable GitHub asset URLs for project artifacts and the actual Flat
 
 ### Release manifest contract
 
-DT-LNX-02 defines a versioned schema with:
+DT-LNX-02c implements a strict v1 schema for the three current ZIPs, actual input hashes, Git/Actions identity, final Linux ABI report, sizes/checksums and explicit incomplete qualification. The [implementation evidence](../research/desktop-delivery-investigations/DT-LNX-02/manifest-abi.md) limits its scope. Finish the broader DT-LNX-02 contract with:
 
 - Source commit/tag, clean-tree result, source archive identity, application and package versions, channel and build timestamp semantics.
 - Engine/editor/template versions and hashes; native ABI/solver/source/compiler/flags and library/executable/receipt hashes; target ISA and ABI floors.
@@ -267,8 +267,8 @@ Effort sizes are planning estimates for engineering work, excluding hardware pro
 | --- | --- | --- | --- |
 | **00 / done** | Current source audit, primary research and Linux plan; DT | None | This plan + dated research; no new runtime qualification |
 | **01 / P0 / S** | Freeze distro/architecture/renderer/hardware claims, engine release decision and retained evidence; DT + GDU/VQ | 00 | Signed-off test matrix and engine risk decision; every support claim has a gate; pending |
-| **02 / P0 / M** | Isolated staging, exact tool/template/cache verification and release-manifest schema; export/CI + DT | 01 | Partial — 02a output/CI isolation and 02b installed-template hashes implemented and fixture-tested. Full manifest/editor trust, provisioned export and release qualification remain open. |
-| **03 / P0 / L** | ELF/runtime closure and oldest compatible build root, native libm/ISA validation; NK/SF + DT | 01, 02 | Every payload ELF inventoried; proposed floor passes exact native checks or is narrowed explicitly; pending |
+| **02 / P0 / M** | Isolated staging, exact tool/template/cache verification and release-manifest schema; export/CI + DT | 01 | Partial — 02a/b isolation/template hashes and 02c input capture, manifest/transfer validation implemented and fixture-tested. Full source/SBOM/signed provenance, editor trust, provisioned export and release qualification remain open. |
+| **03 / P0 / L** | ELF/runtime closure and oldest compatible build root, native libm/ISA validation; NK/SF + DT | 01, 02 | Partial — 03a inspects every final-ZIP ELF using readelf and binds native payload hashes to receipts. A provisioned application ABI report, compatible runtime floor and native/ISA checks remain pending. |
 | **04 / P0 / M** | Shared desktop/AppStream/license metadata, launcher and user-data/upgrade contract; DT + UI/AE | 02 | Lints, arbitrary-CWD/read-only launch, notices and data preservation; pending |
 | **05 / P0 / M** | Final-package harness using checked runner/shipped qualification routes and native desktop checks; debug bridge only in separate debug builds; DT | 02–04 | Fresh install/extract and tamper/fallback cases on named OS; no source-tree leakage or release debug bridge; pending |
 | **06 / P1 / M** | AppImage + tar.gz and transitional ZIP, FUSE/extraction and integration lifecycle; DT | 03–05 | Same payload hashes in all forms, native launch and clean removal; pending |
@@ -282,4 +282,4 @@ Effort sizes are planning estimates for engineering work, excluding hardware pro
 
 Execution waves: **foundation 01–05 → portable 06 + native campaign 12 → download integration 11 + promotion 13**. In parallel after the foundation, develop Flatpak 07 and native packages 08; introduce their managed repositories 09 only when maintenance ownership and trust tests exist. Start ARM feasibility 10 early enough to expose toolchain issues, but do not delay an honest x86_64 release for an unqualified ARM promise. Each later channel repeats 12/13 for its exact bytes. Reuse verified components; do not create a custom installer framework or force every user through every format.
 
-The first implementation increment delivers **DT-LNX-02a/b** without changing physics: isolated export output and authenticated installed-template validation, preserving existing native qualification checks. Next obtain **DT-LNX-03**'s measured ABI report from a provisioned export before deciding a compatibility floor, while completing 02's manifest/provenance work. No production-ready Linux support claim is closed by these tooling changes.
+Implemented **DT-LNX-02a–c/03a** preserves the existing native qualification checks and adds input/transfer integrity and static ABI reporting. Next run a provisioned export and use its **DT-LNX-03** report before deciding a compatibility floor, while completing 02's source/SBOM/signed provenance work. No production-ready Linux support claim is closed by these tooling changes.

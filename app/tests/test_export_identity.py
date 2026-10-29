@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -326,16 +327,37 @@ class ExportPackaging(unittest.TestCase):
         for platform in ("linux", "windows", "macos"):
             (self.dist / platform).mkdir(parents=True)
         self.linux = self.dist / "linux/openrc-simulator.x86_64"
-        self.linux.write_bytes(b"fixture executable")
+        shutil.copyfile("/bin/true", self.linux)  # Real ELF; it is inventoried, never executed here.
         self.linux.chmod(0o755)
-        sidecar = self.dist / "linux/native/kernel/libopenrc_kernel.so"
+        sidecar = self.dist / "linux/native/kernel/libopenrc_native_kernel.so"
         sidecar.parent.mkdir(parents=True)
-        sidecar.write_bytes(b"fixture native library")
+        sidecar.write_bytes(self.linux.read_bytes())
+        (self.dist / "linux/libopenrc_ground_vehicle.so").write_bytes(self.linux.read_bytes())
         (self.dist / "windows/OpenRC Simulator.exe").write_bytes(b"fixture exe")
         with zipfile.ZipFile(self.dist / "macos/OpenRC Simulator.zip", "w") as archive:
             archive.writestr("OpenRC Simulator.app/Contents/Info.plist", "fixture")
         self.handoff = self.root / "github output"
         self.version = "v1.2.3-rc.2"
+        repo = Path(__file__).resolve().parents[2]
+        sys.path.insert(0, str(repo / "tools/release"))
+        self.addCleanup(sys.path.remove, str(repo / "tools/release"))
+        from test_manifest import prepare_repository
+        import manifest
+        editor, templates, env = prepare_repository(self.root, self.version,
+            hashlib.sha256(self.linux.read_bytes()).hexdigest())
+        self.captured = manifest.capture(self.root, editor, templates, env)
+        manifest.write_new(self.dist / manifest.SNAPSHOT, manifest.json_text(self.captured))
+        embedded_manifest = self.root / "app/native/kernel/package.json"
+        embedded_manifest.write_text('{"fixture": true}\n')
+        receipt = {
+            "format": "openrc-native-kernel-package-artifact v1",
+            "executable_sha256": manifest.file_info(self.linux)["sha256"],
+            "native_binary_sha256": manifest.file_info(sidecar)["sha256"],
+            "editor_sha256": self.captured["inputs"]["editor"]["sha256"],
+            "template_sha256": self.captured["inputs"]["template/linux_release.x86_64"]["sha256"],
+            "manifest_sha256": manifest.file_info(embedded_manifest)["sha256"],
+        }
+        (self.dist / "linux/native/kernel/package-receipt.json").write_text(manifest.json_text(receipt))
         self.names = [f"openrc-simulator-{self.version}-{suffix}.zip" for suffix in
                       ("linux-x86_64", "windows-x86_64", "macos-universal")]
         source = (Path(__file__).parents[1] / "export.sh").read_text(encoding="utf-8")
@@ -343,7 +365,7 @@ class ExportPackaging(unittest.TestCase):
 
     def package(self):
         env = os.environ.copy()
-        env.update(DIST=str(self.dist), VERSION=self.version, GITHUB_OUTPUT=str(self.handoff))
+        env.update(ROOT=str(self.root), DIST=str(self.dist), VERSION=self.version, GITHUB_OUTPUT=str(self.handoff))
         return subprocess.run([os.environ.get("OPENRC_TEST_BASH", "bash"), "-euc", self.commands],
                               cwd=self.root, env=env, text=True, stdout=subprocess.PIPE,
                               stderr=subprocess.STDOUT, timeout=30)
@@ -353,13 +375,24 @@ class ExportPackaging(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertEqual(self.handoff.read_text(), f"package_dir={self.dist}\nversion={self.version}\n")
         sums = (self.dist / "SHA256SUMS").read_text().splitlines()
-        self.assertEqual(len(sums), 3)
-        for name, line in zip(self.names, sums):
+        self.assertEqual(len(sums), 5)
+        for name, line in zip(self.names + ["linux-abi.json", "release-manifest.json"], sums):
             self.assertEqual(line, f"{hashlib.sha256((self.dist / name).read_bytes()).hexdigest()}  {name}")
         with zipfile.ZipFile(self.dist / self.names[0]) as archive:
             self.assertEqual(archive.read("openrc-simulator.x86_64"), self.linux.read_bytes())
-            self.assertEqual(archive.read("native/kernel/libopenrc_kernel.so"), b"fixture native library")
+            self.assertEqual(archive.read("native/kernel/libopenrc_native_kernel.so"), self.linux.read_bytes())
             self.assertEqual((archive.getinfo("openrc-simulator.x86_64").external_attr >> 16) & 0o777, 0o755)
+        # Exercise the actual transfer gate with only the six public deliverables.
+        transferred = self.root / "downloaded"
+        transferred.mkdir()
+        for name in self.names + ["linux-abi.json", "release-manifest.json", "SHA256SUMS"]:
+            shutil.copyfile(self.dist / name, transferred / name)
+        checked = subprocess.run([sys.executable, str(self.root / "tools/release/manifest.py"), "verify",
+                                  "--directory", str(transferred), "--expected-tag", self.version,
+                                  "--expected-commit", self.captured["source"]["commit"],
+                                  "--expected-run-id", "123", "--expected-repository", "owner/project"],
+                                 text=True, capture_output=True, timeout=30)
+        self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
 
     def test_failed_packaging_never_emits_a_success_handle(self):
         (self.dist / "macos/OpenRC Simulator.zip").unlink()
@@ -369,6 +402,23 @@ class ExportPackaging(unittest.TestCase):
         self.assertFalse((self.dist / "SHA256SUMS").exists())
         self.assertTrue(self.linux.exists())
 
+    def test_changed_qualified_executable_rejects_final_manifest_and_handoff(self):
+        # ELF stays valid, but its bytes no longer match the prior package qualification receipt.
+        with self.linux.open("ab") as output:
+            output.write(b"changed after qualification")
+        result = self.package()
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("qualified native package receipt", result.stdout)
+        self.assertFalse(self.handoff.exists())
+        self.assertFalse((self.dist / "release-manifest.json").exists())
+
+    def test_invalid_elf_rejects_final_manifest_and_handoff(self):
+        self.linux.write_bytes(b"\x7fELFbroken")
+        result = self.package()
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertFalse(self.handoff.exists())
+        self.assertFalse((self.dist / "release-manifest.json").exists())
+
     def test_ci_uploads_only_the_run_and_version_returned_by_export(self):
         workflow = (Path(__file__).parents[2] / ".github/workflows/ci.yml").read_text(encoding="utf-8")
         self.assertIn("      - id: packages\n        run: app/export.sh", workflow)
@@ -377,9 +427,15 @@ class ExportPackaging(unittest.TestCase):
             self.assertIn("${{ steps.packages.outputs.package_dir }}/openrc-simulator-"
                           "${{ steps.packages.outputs.version }}-" + suffix + ".zip", artifact)
         self.assertIn("${{ steps.packages.outputs.package_dir }}/SHA256SUMS", artifact)
+        for name in ("release-manifest.json", "linux-abi.json"):
+            self.assertIn("${{ steps.packages.outputs.package_dir }}/" + name, artifact)
         self.assertIn("if-no-files-found: error", artifact)
         self.assertNotIn("*.zip", artifact)
         self.assertIn("(cd dist && sha256sum --check --strict SHA256SUMS)", workflow)
+        self.assertIn("--expected-commit \"$GITHUB_SHA\" --expected-tag \"$GITHUB_REF_NAME\"", workflow)
+        self.assertIn('--verify-tag --title', workflow)
+        self.assertIn('git fetch --no-tags origin "refs/tags/$GITHUB_REF_NAME"', workflow)
+        self.assertNotIn("dist/openrc-simulator-*.zip", workflow)
 
 
 class NativeReceiptIdentity(unittest.TestCase):
