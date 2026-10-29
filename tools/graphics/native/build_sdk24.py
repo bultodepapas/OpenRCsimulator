@@ -27,6 +27,7 @@ import sdk24
 ROOT = native_build.ROOT
 DEFAULT_CACHE = ROOT / ".tools/advanced-rendering-fsr24"
 DEFAULT_INTAKE = ROOT / ".tools/advanced-rendering-sdk24-intake"
+SDK24_ENGINE_PATCHES = ("sdk24_vulkan_features.patch",)
 ADAPTER_FILES = {
     "fsr3.h": "servers/rendering/renderer_rd/effects/fsr3.h",
     "fsr3.cpp": "servers/rendering/renderer_rd/effects/fsr3.cpp",
@@ -46,7 +47,7 @@ IMPORT_IDENTITIES = {
 
 
 def freeze_integration() -> tuple[dict[str, bytes], dict[str, str]]:
-    names = (*native_build.ENGINE_PATCHES, *ADAPTER_FILES, "sdk24.py", "build_sdk24.py", "build.py")
+    names = (*native_build.ENGINE_PATCHES, *SDK24_ENGINE_PATCHES, *ADAPTER_FILES, "sdk24.py", "build_sdk24.py", "build.py")
     if len(set(names)) != len(names):
         raise RuntimeError("Duplicate integration source name")
     frozen = {name: (HERE / name).read_bytes() for name in names}
@@ -65,7 +66,7 @@ def verify_integration(expected: dict[str, str]) -> None:
 
 def patched_paths(frozen: dict[str, bytes]) -> set[str]:
     paths = set()
-    for name in native_build.ENGINE_PATCHES:
+    for name in (*native_build.ENGINE_PATCHES, *SDK24_ENGINE_PATCHES):
         text = frozen[name].decode("utf-8").replace("\r\n", "\n")
         for path in re.findall(r"^\+\+\+ b/(.+)$", text, re.MULTILINE):
             if Path(path).is_absolute() or ".." in Path(path).parts or "\\" in path or ":" in path:
@@ -85,6 +86,7 @@ def apply_frozen_engine_patches(engine: Path, archive: Path, snapshot: Path) -> 
     if (frozen_build.COMMIT != native_build.COMMIT or
             tuple(frozen_build.ENGINE_PATCHES) != tuple(native_build.ENGINE_PATCHES)):
         raise RuntimeError("Native build helper changed after import; restart preparation")
+    frozen_build.ENGINE_PATCHES = (*frozen_build.ENGINE_PATCHES, *SDK24_ENGINE_PATCHES)
     frozen_build.apply_engine_patches(engine, archive)
 
 

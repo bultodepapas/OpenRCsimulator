@@ -5,13 +5,16 @@ import itertools
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest import mock
 
 
+@unittest.skipUnless(sys.platform.startswith("linux"), "export requires a Linux host; use WSL on Windows")
 class ExportIdentity(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="openrc-export-")
@@ -28,10 +31,17 @@ class ExportIdentity(unittest.TestCase):
             "get-templates.sh": "#!/usr/bin/env bash\nexit 0\n",
             "fake-engine.sh": '''#!/usr/bin/env bash
 python3 - <<'PY'
-import json, os
+import json, os, time
 from pathlib import Path
 keys = ("DESCRIBE", "COMMIT", "DIRTY", "DATE")
 Path(os.environ["PROBE_IDENTITY"]).write_text(json.dumps({key: os.environ["OPENRC_BUILD_" + key] for key in keys}))
+if os.environ.get("PROBE_READY"):
+    Path(os.environ["PROBE_READY"]).touch()
+    deadline = time.monotonic() + 20
+    while not Path(os.environ["PROBE_RELEASE"]).exists():
+        if time.monotonic() > deadline:
+            raise SystemExit("fixture release signal timed out")
+        time.sleep(0.01)
 PY
 if [[ "${PROBE_IMPORT_ERROR:-}" == 1 ]]; then
   echo 'SCRIPT ERROR: simulated import failure'
@@ -54,14 +64,111 @@ exit 23
     def git(self, *args):
         return subprocess.check_output(["git", *args], cwd=self.root, text=True).strip()
 
-    def export(self, *args, **overrides):
+    def export_env(self, **overrides):
         env = os.environ.copy()
         env.pop("GITHUB_REF", None)
+        env.pop("GITHUB_OUTPUT", None)
         env.update(PROBE_IDENTITY=str(self.root / "identity.json"))
         env.update(overrides)
+        return env
+
+    def export(self, *args, **overrides):
         return subprocess.run([os.environ.get("OPENRC_TEST_BASH", "bash"), "app/export.sh", *args],
-                              cwd=self.root, env=env, text=True, stdout=subprocess.PIPE,
+                              cwd=self.root, env=self.export_env(**overrides), text=True, stdout=subprocess.PIPE,
                               stderr=subprocess.STDOUT, timeout=30)
+
+    def output_path(self, result):
+        match = re.search(r"^== export output: (.+)$", result.stdout, re.MULTILINE)
+        self.assertIsNotNone(match, result.stdout)
+        return Path(match.group(1))
+
+    def test_default_runs_preserve_previous_outputs_even_on_failure(self):
+        dist = self.root / "dist"
+        dist.mkdir()
+        sentinel = dist / "previous-release.zip"
+        sentinel.write_bytes(b"keep the prior verified release")
+        runs = [self.export(), self.export()]
+        outputs = [self.output_path(result) for result in runs]
+        self.assertNotEqual(outputs[0], outputs[1])
+        for result, output in zip(runs, outputs):
+            self.assertNotEqual(result.returncode, 0, result.stdout)
+            self.assertEqual(output.parent, dist)
+            self.assertTrue((output / "linux").is_dir())
+            self.assertIn("partial output retained", result.stdout)
+        self.assertEqual(sentinel.read_bytes(), b"keep the prior verified release")
+
+    def test_explicit_output_rejects_existing_paths_and_symlinks(self):
+        existing = self.root / "existing"
+        existing.mkdir()
+        sentinel = existing / "previous.zip"
+        sentinel.write_bytes(b"keep")
+        existing_file = self.root / "existing-file"
+        existing_file.write_bytes(b"keep file")
+        dangling = self.root / "dangling"
+        dangling.symlink_to(self.root / "absent-target", target_is_directory=True)
+        for path in (existing, existing_file, dangling):
+            with self.subTest(path=path.name):
+                result = self.export("--output-dir", str(path))
+                self.assertNotEqual(result.returncode, 0, result.stdout)
+                self.assertIn("output already exists", result.stdout)
+                self.assertFalse((self.root / "identity.json").exists())
+        self.assertEqual(sentinel.read_bytes(), b"keep")
+        self.assertEqual(existing_file.read_bytes(), b"keep file")
+        self.assertTrue(dangling.is_symlink())
+        self.assertFalse((self.root / "absent-target").exists())
+
+    def test_explicit_spaced_output_is_retained_without_success_handoff(self):
+        output = self.root / "new parent" / "export with spaces"
+        handoff = self.root / "github-output"
+        handoff.write_text("other_step=value\n", encoding="utf-8")
+        result = self.export("--output-dir", str(output), GITHUB_OUTPUT=str(handoff))
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertEqual(self.output_path(result), output)
+        self.assertTrue((output / "windows").is_dir())
+        self.assertEqual(handoff.read_text(), "other_step=value\n")
+
+    def test_output_cannot_become_a_project_resource_or_git_metadata(self):
+        alias = self.root / "project-alias"
+        alias.symlink_to(self.app, target_is_directory=True)
+        for output in (self.app / "export", alias / "export", self.root / ".git" / "export"):
+            with self.subTest(path=str(output)):
+                result = self.export("--output-dir", str(output))
+                self.assertNotEqual(result.returncode, 0, result.stdout)
+                self.assertIn("outside app/ and Git metadata", result.stdout)
+                self.assertFalse(output.exists())
+                self.assertFalse((self.root / "identity.json").exists())
+
+    def test_same_checkout_export_is_locked_before_engine_work(self):
+        ready, release = self.root / "ready", self.root / "release"
+        first = subprocess.Popen(
+            [os.environ.get("OPENRC_TEST_BASH", "bash"), "app/export.sh"], cwd=self.root,
+            env=self.export_env(PROBE_READY=str(ready), PROBE_RELEASE=str(release)),
+            text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        )
+        try:
+            deadline = time.monotonic() + 10
+            while not ready.exists() and first.poll() is None and time.monotonic() < deadline:
+                time.sleep(0.01)
+            self.assertTrue(ready.exists(), "first export did not enter the import fixture")
+            second = self.export()
+            self.assertNotEqual(second.returncode, 0, second.stdout)
+            self.assertIn("another export is using this checkout", second.stdout)
+            self.assertNotIn("== export output:", second.stdout)
+        finally:
+            release.touch()
+            stdout, _ = first.communicate(timeout=25)
+        self.assertNotEqual(first.returncode, 0, stdout)
+        # The advisory lock releases after failure; a subsequent export reaches import.
+        third = self.export()
+        self.assertIn("== import", third.stdout)
+        self.assertNotIn("another export", third.stdout)
+
+    def test_help_does_not_prepare_an_export(self):
+        result = self.export("--help")
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("--output-dir NEW_DIRECTORY", result.stdout)
+        self.assertFalse((self.root / "dist").exists())
+        self.assertFalse((self.root / "identity.json").exists())
 
     def test_triggering_tag_wins_over_another_annotated_tag(self):
         self.git("tag", "-a", "v1.2.3-rc1", "-m", "annotated candidate")

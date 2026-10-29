@@ -38,8 +38,8 @@ func _init(aircraft_id := "skywalker-x8", shared_theme: Theme = null) -> void:
 	panel.add_child(box)
 	box.add_child(Widgets.label("Create a skin", "TitleLabel", true))
 	box.add_child(Widgets.label(Catalog.short_name(_aircraft_id) + " · PNG → .orskin", "SectionLabel", true, false))
-	box.add_child(Widgets.label("Save the template, follow the guide with Claude or Codex, then load your .orskin file.", "", true))
-	_first = Widgets.button("Save Blender template…", "PrimaryButton", "SaveSkinTemplate")
+	box.add_child(Widgets.label("Save the template, edit its paint images with an AI assistant or Blender, then load your .orskin file.", "", true))
+	_first = Widgets.button("Save skin template…", "PrimaryButton", "SaveSkinTemplate")
 	_first.pressed.connect(save_template)
 	box.add_child(_first)
 	var guide := Widgets.button("Open skin guide", "", "OpenSkinGuide")
@@ -78,7 +78,7 @@ func choose_skin() -> void:
 
 func save_template() -> void:
 	_saving = true
-	_picker.title = tr("Save Blender template…")
+	_picker.title = tr("Save skin template…")
 	_picker.file_mode = FileDialog.FILE_MODE_SAVE_FILE
 	_picker.filters = PackedStringArray(["*.zip ; Blender template"])
 	_picker.current_file = CustomSkin.kit_path(_aircraft_id).get_file()

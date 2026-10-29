@@ -163,27 +163,33 @@ static func apply(aircraft_id: String, id: String, stock_sha256: String, root: N
 		for surface in mesh_node.mesh.get_surface_count():
 			var material := mesh_node.get_active_material(surface)
 			if material == null or not records.has(material.resource_name): continue
-			if not material is StandardMaterial3D or mesh_node.material_override != null:
+			if (not material is StandardMaterial3D and not material is ShaderMaterial) or mesh_node.material_override != null:
 				return _failure("A target material is not a supported stock surface.")
 			var name := material.resource_name
 			seen[name] = true
 			var key := material.get_instance_id()
 			if not copies.has(key):
-				var painted := material.duplicate() as StandardMaterial3D
-				if painted == null: return _failure("Could not copy a stock material.")
 				var record: Dictionary = records[name]
-				var color: Array = record.base_color
-				# glTF/Blender base-color factors are linear; Godot material colors are sRGB.
-				painted.albedo_color = Color(float(color[0]), float(color[1]), float(color[2]), float(color[3])).linear_to_srgb()
-				if float(color[3]) < 1.0: painted.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+				var texture: Texture2D = null
 				if record.has("texture"):
 					var texture_name := str(record.texture)
 					if not textures.has(texture_name):
 						textures[texture_name] = ImageTexture.create_from_image(inspected.images[texture_name])
-					if textures[texture_name] == null: return _failure("Could not create a custom paint texture.")
-					painted.albedo_texture = textures[texture_name]
+					texture = textures[texture_name]
+					if texture == null: return _failure("Could not create a custom paint texture.")
+				var painted: Material
+				if material is ShaderMaterial:
+					var adapter: Script = load("res://aircraft/procedural_skin.gd")
+					painted = adapter.paint(material, record, texture)
 				else:
-					painted.albedo_texture = null
+					var standard := material.duplicate() as StandardMaterial3D
+					var color: Array = record.base_color
+					# glTF/Blender factors are linear; Godot material colors are sRGB.
+					standard.albedo_color = Color(float(color[0]), float(color[1]), float(color[2]), float(color[3])).linear_to_srgb()
+					if float(color[3]) < 1.0: standard.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+					standard.albedo_texture = texture
+					painted = standard
+				if painted == null: return _failure("Could not prepare a stock paint material.")
 				copies[key] = painted
 			changes.append({node = mesh_node, surface = surface, material = copies[key]})
 	for name in records:

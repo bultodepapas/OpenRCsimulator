@@ -72,6 +72,11 @@ requires those artifacts and the selected engine pair to remain available. A
 verified previous candidate is preserved if a new export fails. This is an
 experimental candidate, not a qualified release.
 
+A bounded FSR3 fixture reported analytical 3.1.6 dispatches on the local RTX 3090,
+but failed Vulkan validation with shader-feature and depth/stencil errors and
+storage-format warnings. The package is for investigation, not a qualified FSR3
+player mode; see the dated evidence below for exact build and run identities.
+
 The candidate snapshot sets a separate `OpenRC-FSR24-Candidate` user-data
 directory, including when the executable is started directly. Its launchers use
 the same player profile; `FSR3 Analytical.cmd` requests High and FSR3 Quality,

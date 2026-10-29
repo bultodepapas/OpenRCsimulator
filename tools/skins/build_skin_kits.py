@@ -51,19 +51,6 @@ def local_path(path):
     return result
 
 
-def glb_materials(data):
-    if data[:4] != b"glTF" or struct.unpack_from("<I", data, 4)[0] != 2:
-        raise ValueError("Expected a glTF 2.0 GLB")
-    length, kind = struct.unpack_from("<II", data, 12)
-    if kind != 0x4E4F534A:
-        raise ValueError("GLB JSON chunk is missing")
-    document = json.loads(data[20:20 + length])
-    names = [m.get("name", "") for m in document["materials"]]
-    if not names or len(set(names)) != len(names) or not all(names):
-        raise ValueError("The GLB must have unique named materials")
-    return names
-
-
 def add_zip_file(archive, name, data):
     info = zipfile.ZipInfo(name, (2020, 1, 1, 0, 0, 0))
     info.compress_type = zipfile.ZIP_DEFLATED
@@ -71,37 +58,57 @@ def add_zip_file(archive, name, data):
     archive.writestr(info, data)
 
 
-def blender_glb(data, scratch):
-    """Translate Godot's node-visibility extension for Blender's importer.
+def blender_glb(data, scratch, paint_names):
+    """Prepare import-only identities and translate Godot node visibility.
 
     The source bytes remain unchanged. The returned names must be hidden along
     with their descendants after import, preserving the preview hierarchy.
     """
     length, kind = struct.unpack_from("<II", data, 12)
-    if data[:4] != b"glTF" or kind != 0x4E4F534A:
+    if data[:4] != b"glTF" or struct.unpack_from("<I", data, 4)[0] != 2 or kind != 0x4E4F534A:
         raise ValueError("Expected a glTF JSON chunk")
     document = json.loads(data[20:20 + length])
+    materials = document.get("materials", [])
+    original_names = [m.get("name", "") for m in materials]
+    counts = Counter(original_names)
+    if not materials or any(counts[name] != 1 for name in paint_names):
+        raise ValueError("Every paint material must have a unique source identity")
+    assigned = set(name for name in original_names if name)
+    names = []
+    changed = False
+    for index, material in enumerate(materials):
+        name = original_names[index]
+        if not name or counts[name] > 1:
+            name = f"__openrc_kit_material_{index:04d}"
+            if name in assigned:
+                raise ValueError("Generated preview material name collides with a source material")
+            assigned.add(name)
+            material["name"] = name
+            changed = True
+        names.append(name)
     extension = "KHR_node_visibility"
-    if extension not in document.get("extensionsUsed", []):
-        return None, []
     hidden = []
-    for node in document.get("nodes", []):
-        extensions = node.get("extensions", {})
-        if extension in extensions:
-            state = extensions.pop(extension)
-            if not isinstance(state, dict) or not isinstance(state.get("visible", True), bool):
-                raise ValueError("Unsupported node visibility record")
-            if not state.get("visible", True):
-                if not node.get("name"):
-                    raise ValueError("A hidden source node has no name")
-                hidden.append(node["name"])
-            if not extensions:
-                node.pop("extensions", None)
-    for key in ("extensionsUsed", "extensionsRequired"):
-        if key in document:
-            document[key] = [item for item in document[key] if item != extension]
-            if not document[key]:
-                del document[key]
+    if extension in document.get("extensionsUsed", []):
+        changed = True
+        for node in document.get("nodes", []):
+            extensions = node.get("extensions", {})
+            if extension in extensions:
+                state = extensions.pop(extension)
+                if not isinstance(state, dict) or not isinstance(state.get("visible", True), bool):
+                    raise ValueError("Unsupported node visibility record")
+                if not state.get("visible", True):
+                    if not node.get("name"):
+                        raise ValueError("A hidden source node has no name")
+                    hidden.append(node["name"])
+                if not extensions:
+                    node.pop("extensions", None)
+        for key in ("extensionsUsed", "extensionsRequired"):
+            if key in document:
+                document[key] = [item for item in document[key] if item != extension]
+                if not document[key]:
+                    del document[key]
+    if not changed:
+        return None, hidden, names
     encoded = json.dumps(document, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     encoded += b" " * (-len(encoded) % 4)
     tail = data[20 + length:]
@@ -109,7 +116,7 @@ def blender_glb(data, scratch):
     path = Path(scratch) / "blender-import.glb"
     path.write_bytes(b"glTF" + struct.pack("<II", 2, total) +
                      struct.pack("<II", len(encoded), 0x4E4F534A) + encoded + tail)
-    return path, hidden
+    return path, hidden, names
 
 
 def _clip_line(start, end, tile_x, tile_y):
@@ -230,7 +237,6 @@ def build(family, model, output=None, source_override=None):
     expected = model.get("source_sha256", model["stock_sha256"])
     if digest != expected:
         raise ValueError(f"{family}: source changed ({digest}); review the compatibility contract")
-    names = glb_materials(glb)
     script = EXPORTER.read_text(encoding="utf-8")
     image_packer = IMAGE_PACKER.read_text(encoding="utf-8")
     lib = {"__name__": "openrc_export_library"}
@@ -239,7 +245,8 @@ def build(family, model, output=None, source_override=None):
     exec(compile(image_packer, str(IMAGE_PACKER), "exec"), pnglib)
     bpy.ops.wm.read_factory_settings(use_empty=True)
     with tempfile.TemporaryDirectory(prefix="openrc-blender-import-") as scratch:
-        translated, hidden = blender_glb(glb, scratch)
+        paint_names = [name for group in model["paints"] for name in group["materials"]]
+        translated, hidden, names = blender_glb(glb, scratch, paint_names)
         bpy.ops.import_scene.gltf(filepath=str(translated or source))
     for name in hidden:
         node = bpy.data.objects.get(name)
@@ -275,8 +282,21 @@ def build(family, model, output=None, source_override=None):
             nodes.append(node)
             extensions[mat.name] = node.extension
             colors[mat.name] = group["base_colors"][mat.name]
-        if any(node.image != nodes[0].image for node in nodes):
-            raise ValueError(f"{family}: grouped materials do not share an original image")
+        # Godot's GLB exporter may write the same atlas once per material.
+        # Only merge those image datablocks when their packed source bytes are
+        # identical; unequal images must remain separate paint groups.
+        reference_image = nodes[0].image
+        for node in nodes[1:]:
+            if node.image == reference_image:
+                continue
+            duplicate = node.image
+            if (not reference_image.packed_file or not duplicate.packed_file or
+                    hashlib.sha256(bytes(reference_image.packed_file.data)).digest() !=
+                    hashlib.sha256(bytes(duplicate.packed_file.data)).digest()):
+                raise ValueError(f"{family}: grouped materials do not share identical original images")
+            node.image = reference_image
+            if duplicate.users == 0:
+                bpy.data.images.remove(duplicate)
         if len({node.extension for node in nodes}) != 1 or nodes[0].extension not in {"REPEAT", "EXTEND"}:
             raise ValueError(f"{family}: incompatible texture sampling in paint group")
         image = nodes[0].image
@@ -325,8 +345,11 @@ def build(family, model, output=None, source_override=None):
             break
     output = Path(output).resolve() if output else local_path(model["kit"])
     output.parent.mkdir(parents=True, exist_ok=True)
+    if model.get("template_kind", "stock_atlas") not in {"stock_atlas", "neutral_six_view"}:
+        raise ValueError("Unsupported paint template kind")
     kit = {"format": "openrc-skin-kit-v1", "aircraft_id": family,
-           "display_name": model["display_name"], "stock_sha256": model["stock_sha256"], "paints": model["paints"]}
+           "display_name": model["display_name"], "stock_sha256": model["stock_sha256"],
+           "template_kind": model.get("template_kind", "stock_atlas"), "paints": model["paints"]}
     guide = GUIDE.read_bytes()
     needle = b'data-aircraft-id=""'
     if guide.count(needle) != 1:

@@ -443,7 +443,8 @@ jobs:
           "$godot" --version
           tar -xzf tmp/native-kernel/godot-cpp-pinned.tar.gz -C tmp/native-kernel
           python3 research/native-kernel/build.py --install-app
-      - run: app/export.sh # names the packages with git describe, the same identity the app shows (UI-04a)
+      - id: packages
+        run: app/export.sh # exact successful run path and build identity are step outputs
       - name: Preserve NK-3 package qualification diagnostics
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -464,8 +465,11 @@ jobs:
         with:
           name: release-builds
           path: |
-            dist/openrc-simulator-*.zip
-            dist/SHA256SUMS
+            ${{ steps.packages.outputs.package_dir }}/openrc-simulator-${{ steps.packages.outputs.version }}-linux-x86_64.zip
+            ${{ steps.packages.outputs.package_dir }}/openrc-simulator-${{ steps.packages.outputs.version }}-windows-x86_64.zip
+            ${{ steps.packages.outputs.package_dir }}/openrc-simulator-${{ steps.packages.outputs.version }}-macos-universal.zip
+            ${{ steps.packages.outputs.package_dir }}/SHA256SUMS
+          if-no-files-found: error
 
   release:
     name: GitHub release (v* tags)
@@ -486,6 +490,7 @@ jobs:
           # PT1h: every tag has reviewed notes; never publish a stale first-launch guide as release history.
           NOTES="docs/releases/${GITHUB_REF_NAME}.md"
           test -s "$NOTES"
+          (cd dist && sha256sum --check --strict SHA256SUMS)
           RELEASE_FLAGS=()
           if [[ "$GITHUB_REF_NAME" == *-* ]]; then
             RELEASE_FLAGS+=(--prerelease)

@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
-# Release builds (PT1): Windows, Linux and macOS exports into <repo>/dist, each checked, zipped, with SHA256SUMS.
+# Release builds (PT1/DT-LNX-02a): Windows, Linux and macOS exports into one new output directory per run.
 #   - the exported Linux binary qualifies NK-3 and flies the app-level trimmed-flight check headless;
 #   - the macOS zip is a universal, ad-hoc signed app bundle (tests/check_macos_export.py);
 #   - UI-04a: one build identity (git describe, commit, dirty, commit date), computed here once, names the ZIPs, is
 #     written into every pack as res://build_info.json (addons/build_info) and is checked in the exported binary's
 #     trace header; the .exe and Info.plist carry project.godot's numeric config/version (tests/check_build_versions.py).
 # Needs: app/get-godot.sh, app/get-templates.sh (downloads 1.36 GB once), zip, python3, git. No display or GPU.
-# Usage: app/export.sh   (the version is always git describe: the app and the ZIP names cannot disagree)
+# Usage: app/export.sh [--output-dir NEW_DIRECTORY] (default: <repo>/dist/export-XXXXXXXX).
+# The version is always git describe. Existing outputs are never replaced, including after a failed run.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/.." && pwd)"
-[ $# -eq 0 ] || { echo "export.sh takes no version argument any more: the build identity is git describe (UI-04a)"; exit 1; }
+OUTPUT_ARG=""
+case "$#:${1:-}" in
+  0:) ;;
+  2:--output-dir) OUTPUT_ARG="$2"; [ -n "$OUTPUT_ARG" ] || { echo "--output-dir must name a new directory" >&2; exit 1; } ;;
+  1:--help) echo "Usage: app/export.sh [--output-dir NEW_DIRECTORY] (default: dist/export-XXXXXXXX; Linux host required)"; exit 0 ;;
+  *) echo "export.sh takes no version argument: use [--output-dir NEW_DIRECTORY]; build identity is git describe (UI-04a)" >&2; exit 1 ;;
+esac
 VERSION="$(git -C "$ROOT" describe --tags --always --dirty)"
 # Godot discovers untracked project resources too; git describe only sees
 # tracked changes. Ignored generated native artifacts have their own receipt
@@ -40,15 +47,52 @@ export OPENRC_BUILD_COMMIT="$(git -C "$ROOT" rev-parse HEAD)"
 export OPENRC_BUILD_DIRTY="$([[ "$VERSION" == *-dirty ]] && echo 1 || echo 0)"
 export OPENRC_BUILD_DATE="$(git -C "$ROOT" show -s --format=%cI HEAD)"
 echo "== build identity: $VERSION (commit $OPENRC_BUILD_COMMIT, $OPENRC_BUILD_DATE), numeric $NUMERIC"
+[[ "$(uname -s)" == Linux ]] || { echo "export and native package smoke require a Linux host" >&2; exit 1; }
+# Imports and NK-3 prepare mutate this checkout. Keep independent checkouts parallel,
+# but refuse a second exporter here before it can touch shared source-side caches.
+GIT_DIR="$(git -C "$ROOT" rev-parse --absolute-git-dir)"
+exec 9>"$GIT_DIR/openrc-export.lock"
+flock -n 9 || { echo "another export is using this checkout; use a separate checkout or wait" >&2; exit 1; }
+validate_output_path() {
+  case "$1/" in
+    "$HERE/"*|"$GIT_DIR/"*) echo "export output must be outside app/ and Git metadata: $1" >&2; exit 1 ;;
+  esac
+  [[ "$1" != *$'\n'* && "$1" != *$'\r'* ]] || { echo "export output path must not contain newlines" >&2; exit 1; }
+}
+if [[ -n "$OUTPUT_ARG" ]]; then
+  # Check the requested path before realpath, which otherwise follows dangling symlinks.
+  [[ ! -e "$OUTPUT_ARG" && ! -L "$OUTPUT_ARG" ]] || { echo "export output already exists; choose a new directory: $OUTPUT_ARG" >&2; exit 1; }
+  DIST="$(realpath -m -- "$OUTPUT_ARG")"
+  validate_output_path "$DIST"
+  mkdir -p -- "$(dirname "$DIST")"
+  mkdir -- "$DIST" # Atomic reservation; never reuse or delete a competing run's directory.
+else
+  DIST_PARENT="$(realpath -m -- "$ROOT/dist")"
+  validate_output_path "$DIST_PARENT"
+  mkdir -p -- "$DIST_PARENT"
+  DIST="$(mktemp -d "$DIST_PARENT/export-XXXXXXXX")"
+fi
+echo "== export output: $DIST"
+mkdir -- "$DIST/linux" "$DIST/windows" "$DIST/macos"
+LOG=""
+PACK_PROBE=""
+HOST_PROBE=""
+cleanup() {
+  local export_status=$?
+  [[ -z "$LOG" ]] || rm -f -- "$LOG"
+  [[ -z "$PACK_PROBE" ]] || rm -rf -- "$PACK_PROBE"
+  [[ -z "$HOST_PROBE" ]] || rm -rf -- "$HOST_PROBE"
+  if [[ "$export_status" -ne 0 ]]; then
+    echo "export failed; partial output retained: $DIST" >&2
+  fi
+}
+trap cleanup EXIT
 GODOT="$("$HERE/get-godot.sh")"
 TEMPLATE_DIR="$("$HERE/get-templates.sh")"
-DIST="$ROOT/dist"
-rm -rf "$DIST" && mkdir -p "$DIST/linux" "$DIST/windows" "$DIST/macos"
 run() { timeout 600 "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"; }
 LOG="$(mktemp)"
 PACK_PROBE="$(mktemp -d)"
 HOST_PROBE="$(mktemp -d)"
-trap 'rm -f "$LOG"; rm -rf "$PACK_PROBE" "$HOST_PROBE"' EXIT
 
 echo "== import (a fresh clone has no .godot cache)"
 run --import > "$LOG" 2>&1 || { cat "$LOG"; exit 1; }
@@ -282,4 +326,15 @@ echo "== packages"
 (cd "$DIST/linux" && zip -q -9 -r "$DIST/openrc-simulator-$VERSION-linux-x86_64.zip" .)
 (cd "$DIST/windows" && zip -q -9 -r "$DIST/openrc-simulator-$VERSION-windows-x86_64.zip" .)
 cp "$DIST/macos/OpenRC Simulator.zip" "$DIST/openrc-simulator-$VERSION-macos-universal.zip"
-(cd "$DIST" && sha256sum openrc-simulator-*.zip > SHA256SUMS && cat SHA256SUMS && ls -la openrc-simulator-*.zip)
+PACKAGES=("openrc-simulator-$VERSION-linux-x86_64.zip"
+          "openrc-simulator-$VERSION-windows-x86_64.zip"
+          "openrc-simulator-$VERSION-macos-universal.zip")
+for package in "${PACKAGES[@]}"; do
+  [ -s "$DIST/$package" ] || { echo "missing package: $package" >&2; exit 1; }
+done
+(cd "$DIST" && sha256sum -- "${PACKAGES[@]}" > SHA256SUMS && sha256sum --check --strict SHA256SUMS)
+# CI consumes only this successful run; a failed export must never publish an output handle.
+if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+  printf 'package_dir=%s\nversion=%s\n' "$DIST" "$VERSION" >> "$GITHUB_OUTPUT"
+fi
+echo "== verified packages: $DIST"

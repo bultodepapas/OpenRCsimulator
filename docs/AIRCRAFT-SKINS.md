@@ -1,69 +1,93 @@
 # Create an aircraft skin with AI
 
-The current-source skin kit supports **X8 Wing** (`skywalker-x8`). It changes
-paint while retaining the verified geometry, articulation and physics.
-The complete [offline player tutorial](../app/assets/skin-kit/guide.html) has
-editable prompts in all nine simulator languages: English, Spanish, Simplified
-Chinese, Brazilian Portuguese, German, French, Italian, Russian and Japanese.
-Opening it from the game selects the interface language. The downloaded copy
-follows the browser language; both provide language links.
+Every selectable airplane and the X-Cell helicopter has a model-specific paint
+kit. The four Ugly Stick engine configurations share one visual family and kit.
+Skins change paint, retaining the stock geometry, articulation and physics.
+The [offline player tutorial](../app/assets/skin-kit/guide.html) includes editable
+image and Blender prompts in all nine simulator languages. Opening it from the
+game selects the interface language and aircraft; the downloaded guide also
+identifies its model and follows the browser language.
 
 ## Player flow
 
-1. **Aircraft → X8 Wing → Choose paint → Create a skin → Save Blender template…**
-   saves `skywalker-x8.zip`. Extract it and keep an untouched copy.
-2. Open `guide.html`, choose a workflow, edit the idea and copy its complete prompt.
-3. Produce a real `.orskin` with the supplied tool. A `.blend` is an editable
-   project and a PNG is an image; neither alone replaces that package.
-4. **Choose paint → Load new skin…** imports the package and selects it. Inspect
-   Home and flight views. The choice persists across restarts; built-in paints
-   restore the original appearance. Rejected imports retain the current choice.
+1. **Aircraft → choose a model → Choose paint → Create a skin → Save skin template…**.
+   Extract the ZIP and keep an untouched copy.
+2. Open `guide.html`. For the image route, give the assistant `kit.json`, the
+   matching `Paint-NN.png` and `UV-NN.png` files, your design references and the
+   complete image-edit prompt. Change the idea and selected model as needed.
+3. Replace only the corresponding `Paint-NN.png` files. Preserve canvas shape,
+   island positions, orientation and material mapping. Some models have several
+   paint images; edit and return each separately. Keep original files for groups
+   you do not change. UV lines are reference only, not part of the final paint.
+4. In the extracted folder, run
+   `python pack_image.py --output my-design.orskin --label "My design"`.
+   A coding assistant with Python can package it; Blender is not required.
+5. **Choose paint → Load new skin…** imports the `.orskin` and selects it. Inspect
+   Home, flight, both sides, undersides and moving surfaces. Selection persists
+   across restarts; choosing the original paint restores stock appearance.
+   Rejected imports retain the current choice.
 
-## Authoring routes
+A PNG is an image and a `.blend` is an editable project; the simulator imports
+the `.orskin` package. Templates and packages belong to their visual family and
+stock revision. A skin for a different model or revision is rejected. Existing
+X8 packages remain compatible; Ugly Stick variants share installed paints.
 
-The Blender route uses `Skywalker-X8.blend` and `Export OpenRC Skin.py`, with
-Blender 5.2.2 or a compatible newer version. Claude Desktop controls local Blender
-through its connector; local Codex can use the executable or configured MCP tools.
-Cloud code execution does not guarantee Blender or `bpy`: its prompt requires a
-real template-open check and an explicit local fallback.
+## Reference mapping
 
-The **experimental image-only route** uses `X8-Paint.png`, the original 2048²
-color atlas, and `X8-UV.png`, its boundary reference. Edit the atlas with an image
-editor or image-generation assistant. Run the supplied `pack_image.py` using
-standard-library Python 3 to produce the `.orskin`, without Blender. An assistant
-with Python execution can perform that packaging. The guide includes a separate
-image-edit prompt and the exact command. The simulator still imports `.orskin`,
-not the loose PNG.
+| Visual family | Image references |
+| --- | --- |
+| Ugly Stick (all four configurations) | Existing covering atlas |
+| Extra 300S | Generated six-view paint mapping |
+| P-51D Mustang | Generated six-view paint mapping |
+| Turbo Lumber | Generated six-view exterior paint mapping |
+| Vantage Jet | Four original atlas groups, including repeated UV regions |
+| F4U Corsair | Shared original exterior atlas |
+| X8 Wing | Original livery atlas |
+| X-Cell / HX-700 helicopter | Separate canopy and tail-boom images |
 
-An image generator may move islands, mirror lettering or break seams. A photo or
-perspective image of a shark/aircraft is not an atlas. File validation cannot
-prove visual alignment. Start with recoloring or large motifs; use Blender's 3D
-painting for precise placement and seam repair. Both prompts require references
-with a clear purpose and actual model inspection. See the [dated prompt research](research/aircraft-skin-prompts-2026-10-28.md).
+The kit identifies paint groups and their exact material assignments. Generated
+mappings are applied to an instance-owned copy for custom skins; stock builds
+remain unchanged. The procedural models retain their material finish shaders.
+A six-view mapping can overlap parts: image editing cannot independently paint
+surfaces that share coordinates. Use the supplied reference rather than inventing
+island outlines. The helicopter tail source is reduced proportionally from
+8192 × 880 to 4096 × 440 to fit the runtime limit.
 
-## Limits and submissions
+## Authoring routes and quality
 
-Prefer one **2048 × 2048** sRGB paint PNG. Maximums: 4096 pixels per side,
-16,777,216 pixels across all PNGs, 16 MiB per PNG, 32 MiB per archive and nine
-material/texture records. Review at **1920 × 1080** first; review resolution is
-separate from texture dimensions. The direct image packer changes only
-`x8_livery`; the simulator preserves the other channels. Save changed image data,
-pack dependencies, save the project and reopen it to verify retention.
+The image route is the standard starting workflow. Image generation remains
+approximate: a generator can shift islands, mirror marks or break seams. The X8
+shark trial produced a usable skin at 1254 × 1254 from a 2048-square source, with
+visible asymmetric wing bands and panel discontinuities. File validation cannot
+prove visual alignment. Prefer recoloring and broad motifs for early attempts;
+review every returned image on its actual model.
 
-Up to 32 custom X8 paints may be installed. Identical bytes are deduplicated;
-another aircraft or stock-model hash is rejected. Platform-specific installed
-copy locations and recovery steps are in the player guide.
+For detailed placement, open `Aircraft.blend` and use `Export OpenRC Skin.py`.
+Claude Desktop uses local Blender through a configured connector; local Codex can
+use the executable or configured MCP tools. Cloud execution does not guarantee
+Blender or `bpy`: the prompt requires checking the template can actually open and
+provides a local fallback. Do not edit geometry, names, pivots, UVs or material
+assignments. Save changed image data, pack dependencies and reopen the project
+to verify retention. See the [dated prompt research](research/aircraft-skin-prompts-2026-10-28.md).
+
+Keep each image's reference dimensions and aspect ratio; 2048 × 2048 is a useful
+target for square atlases, not a rule for rectangular images. Maximums: 4096 pixels
+per side, 16,777,216 pixels across all PNGs, 16 MiB per PNG, 32 MiB per archive and
+nine material records. Up to 32 custom paints may be installed per visual family.
+Review at **1920 × 1080** first; screen resolution is separate from texture size.
 
 Want a skin included in the game? Send it to
-[bultodepapas@gmail.com](mailto:bultodepapas@gmail.com?subject=OpenRC%20X8%20skin)
-and it will be added in the next release. Include the `.orskin`, a 1920 × 1080
-preview, skin name and desired author credit, using artwork you may share.
+[bultodepapas@gmail.com](mailto:bultodepapas@gmail.com?subject=OpenRC%20skin)
+and it will be added in the next release. Include the `.orskin`, model and skin
+name, a 1920 × 1080 preview and desired author credit, using artwork you may share.
 These instructions appear in every translation.
 
 ## Maintenance
 
+`app/assets/skin-kit/models.json` owns kit identity and paint groups.
 `tools/skins/locales/*.json` owns player copy and prompts. Run
-`python tools/skins/build_guide.py`, then `--check`; the generator checks coverage
-against `app/i18n/languages.gd` and shared limits. Do not hand-edit the generated
-HTML. Rebuild the ZIP after guide or tool changes; [toolkit instructions](../tools/skins/README.md)
-own the commands and verification results.
+`python tools/skins/build_guide.py`, then `--check`; the generator validates
+coverage against `app/i18n/languages.gd`. Rebuild kits after guide, exporter,
+paint mapping or stock-source changes. [Toolkit instructions](../tools/skins/README.md)
+own generation and verification commands. Do not edit generated ZIPs or the
+stock models by hand. Skin changes never qualify aircraft physics.

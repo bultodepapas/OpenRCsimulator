@@ -77,6 +77,7 @@ class SkinKits(unittest.TestCase):
                     self.assertEqual(kit["format"], "openrc-skin-kit-v1")
                     self.assertEqual(kit["aircraft_id"], family)
                     self.assertEqual(kit["stock_sha256"], model["stock_sha256"])
+                    self.assertEqual(kit["template_kind"], model.get("template_kind", "stock_atlas"))
                     self.assertEqual(kit["paints"], model["paints"])
                     self.assertEqual(archive.read("pack_image.py"), (ROOT / "tools/skins/pack_image.py").read_bytes())
                     self.assertEqual(archive.read("Export OpenRC Skin.py"), (ROOT / "tools/skins/export_openrc_skin.py").read_bytes())

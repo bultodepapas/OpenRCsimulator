@@ -98,8 +98,7 @@ func _compare(id: String, stock: Node3D, painted: Node3D, spec: Dictionary) -> v
 		for surface in original.mesh.get_surface_count():
 			var before: Array = original.mesh.surface_get_arrays(surface)
 			var after: Array = target.mesh.surface_get_arrays(surface)
-			for channel in [Mesh.ARRAY_VERTEX, Mesh.ARRAY_NORMAL, Mesh.ARRAY_INDEX]:
-				geometry_equal = geometry_equal and before[channel] == after[channel]
+			geometry_equal = geometry_equal and _same_triangles(before, after)
 			var material: Material = target.get_active_material(surface)
 			if material != null and names.has(material.resource_name):
 				names[material.resource_name] += 1
@@ -109,3 +108,16 @@ func _compare(id: String, stock: Node3D, painted: Node3D, spec: Dictionary) -> v
 	for material: String in names:
 		check(id + " applies " + material, names[material] > 0)
 
+
+func _same_triangles(before: Array, after: Array) -> bool:
+	var indices_a: PackedInt32Array = before[Mesh.ARRAY_INDEX] if before[Mesh.ARRAY_INDEX] != null else PackedInt32Array()
+	var indices_b: PackedInt32Array = after[Mesh.ARRAY_INDEX] if after[Mesh.ARRAY_INDEX] != null else PackedInt32Array()
+	var count_a: int = indices_a.size() if not indices_a.is_empty() else before[Mesh.ARRAY_VERTEX].size()
+	var count_b: int = indices_b.size() if not indices_b.is_empty() else after[Mesh.ARRAY_VERTEX].size()
+	if count_a != count_b: return false
+	for i in count_a:
+		var a := indices_a[i] if not indices_a.is_empty() else i
+		var b := indices_b[i] if not indices_b.is_empty() else i
+		if before[Mesh.ARRAY_VERTEX][a] != after[Mesh.ARRAY_VERTEX][b]: return false
+		if before[Mesh.ARRAY_NORMAL] != null and before[Mesh.ARRAY_NORMAL][a] != after[Mesh.ARRAY_NORMAL][b]: return false
+	return true

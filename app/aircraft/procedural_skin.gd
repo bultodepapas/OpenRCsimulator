@@ -43,6 +43,8 @@ static func prepare(family: String, root: Node3D) -> Dictionary:
 			var arrays: Array = instance.mesh.surface_get_arrays(surface)
 			if instance.mesh.surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES or arrays[Mesh.ARRAY_VERTEX] == null:
 				return _fail("A paint surface is not a triangle mesh.")
+			if family == STIK and (arrays[Mesh.ARRAY_TEX_UV] == null or (arrays[Mesh.ARRAY_TEX_UV] as PackedVector2Array).size() != (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).size()):
+				return _fail("The Stik covering is missing its stock paint UVs.")
 			if family != STIK:
 				if instance.mesh.get_blend_shape_count() != 0:
 					return _fail("A paint mesh contains unsupported blend shapes.")
@@ -287,6 +289,12 @@ static func paint(material: Material, record: Dictionary, texture: Texture2D) ->
 	elif code.contains("vec3 c = base;"):
 		code = code.replace("vec3 c = base;", "vec3 c = " + painted + ";")
 	else: return null
+	if factor.a < 1.0:
+		var alpha := "openrc_paint_factor.a" + (" * texture(openrc_paint_texture, UV).a" if texture != null else "")
+		if code.contains("ROUGHNESS = roughness_value;"):
+			code = code.replace("ROUGHNESS = roughness_value;", "ROUGHNESS = roughness_value;\n ALPHA = " + alpha + ";")
+		else:
+			code = code.replace("SPECULAR = 0.5;", "SPECULAR = 0.5;\n ALPHA = " + alpha + ";")
 	code = code.replace("shader_type spatial;", "shader_type spatial;\nuniform sampler2D openrc_paint_texture : source_color, filter_linear_mipmap;\nuniform vec4 openrc_paint_factor : source_color;")
 	var copy := original.duplicate() as ShaderMaterial
 	var shader := Shader.new()
