@@ -46,7 +46,25 @@ as was a matching but rehashed forged configuration. Neither the short inventory
 flight. The merged application at `8e32069aa` also changes rendering, launch and export sources; the earlier
 executable and its timings remain historical evidence for their original bytes, not qualification of that merge.
 
-The corrected release performance campaign completed all 60 probes: three alternating reference/native
+The subsequent `4699405` campaign found two further incomplete rows: X8 with pack battery, hand launch and
+`spatial-crosswind-v1`, with either soft-hull setting. Independent paired runs matched all 1,641 typed state
+boundaries through accepted tick 1,640 and the terminal tree-crown collision. Native ownership remained installed
+with 1,640 contexts and 6,560 stage calls; both stopped attempts preserved the terminal state. The measured
+normal contact speed was 23.196 m/s, above the existing 22 m/s foliage-crash threshold. This is a committed
+terminal scenery event, not an RK rejection or rollback. Zero raw throttle input retains full commanded throttle
+because that input is a rate. These results establish shared software behavior, not physical validation.
+
+The original campaign completed with ten passing shards and the failed X8 shard; it remains failed. The separate,
+narrowly pinned physical-terminal classification passed 650 combined checks and 36 Python tests. Independent
+review rejected 146 forged-proof mutations and four live ownership/callback mutations. It does not turn a partial
+trajectory into a completed flight. The revised declaration is 1,202 complete flights, two physical terminals,
+28 startup refusals and six runtime refusals; a fresh complete campaign is still required. No equation, aircraft data, input
+tape or start contract changed. The `a742ad11…` Linux executable passed its functional package checks and ELF
+audit, but remains unpromoted and has no quiet timing result. Its verified ZIP retains all executable and sidecar
+contents after removal of duplicate executable links. Raw diagnosis and artifact identities are recorded under
+`x8_physical_terminal_follow_up` in the revalidation record.
+
+The earlier `d0ca3640…` release performance campaign completed all 60 probes: three alternating reference/native
 pairs for each aircraft/case, with 600 warmup and 2,400 sampled ticks. Every pair was comparable, with
 matching state fingerprints and actual native execution. Other owned heavy jobs were idle. On the local
 Intel Core i5-10500 host (12 logical CPUs, Linux 6.8, glibc 2.39), median paired tick-cost ratios were:

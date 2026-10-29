@@ -112,7 +112,7 @@ def fixtures():
                     "filters": {"aircraft": aircraft, "weather": "", "soft_hull": ""},
                     "declared_aircraft": ["fixed", "heli"], "declared_rows": 3, "selected_rows": len(rows),
                     "matrix_complete": False, "warmup_requested": 2, "samples_requested": 3, "failed": 0,
-                    "flight_passed": flights, "reference_refused": refusals, "runtime_refused": 0},
+                    "flight_passed": flights, "reference_refused": refusals, "runtime_refused": 0, "physical_terminal": 0},
                 "fleet": rows, "components": components,
                 "total": {"compared": count, "identical": count, "mismatched": 0}}
 
@@ -276,7 +276,172 @@ def runtime_fixture(aircraft="stik-glow-61fx-2t", tick=873, stage_fraction=1.0,
     return manifest, {aircraft: report}, guard
 
 
+def terminal_fixture(soft=True):
+    """Small typed-byte stand-ins; the real source pins are exercised by Godot."""
+    row = {"aircraft": "skywalker-x8", "vehicle": "fixed-wing", "battery": "pack", "case": "hand_launch",
+           "weather": "spatial-crosswind-v1", "soft_hull": soft, "default_battery": True,
+           "expected": "physical-terminal", "expected_terminal_tick": 1640}
+    _, reports, guard = fixtures()
+    guard["binary_sha256"] = campaign.TERMINAL_NATIVE_IDENTITY["binary_sha256"]
+    guard["receipt"]["source_sha256"] = campaign.TERMINAL_NATIVE_IDENTITY["source_sha256"]
+    guard["receipt"]["lock_sha256"] = campaign.TERMINAL_NATIVE_IDENTITY["lock_sha256"]
+    view = {"tick": 1640, "paused": True, "fault": "", "raw": {"throttle": 0.0},
+            "commands": {"throttle": 1.0}, "crash": {"impact": {"trigger": "scenery",
+            "obstacle_id": "tree:shade-tree:shade-trees:06:crown", "response_status": "terminal"}}}
+    view_hash = hashlib.sha256(json_bytes(view)).hexdigest()
+    payload_names = tuple(campaign.TERMINAL_IDENTITIES) + tuple(campaign.TERMINAL_CONFIGS[soft])
+    payloads = {name: ("typed-" + name).encode() for name in payload_names}
+    identities = {name: hashlib.sha256(payloads[name]).hexdigest() for name in campaign.TERMINAL_IDENTITIES}
+    configs = {name: hashlib.sha256(payloads[name]).hexdigest() for name in campaign.TERMINAL_CONFIGS[soft]}
+    proof = {"code": campaign.TERMINAL_CODE, "aircraft_sha256": campaign.TERMINAL_AIRCRAFT,
+             "world_identity": campaign.TERMINAL_WORLD, "accepted_ticks": 1640, "requested_ticks": 3000,
+             "warmup_completed": 600, "samples_completed": 1040, "prefix_boundaries": 1641,
+             "terminal_tick": 1640, "stopped_attempts": 2, "reference_input_reads": 1640,
+             "native_input_reads": 1640, "native_context_calls": 1640, "native_stage_calls": 6560,
+             "reference_prefix_sha256": campaign.TERMINAL_PREFIX, "native_prefix_sha256": campaign.TERMINAL_PREFIX,
+             "reference_view_prefix_sha256": campaign.TERMINAL_VIEW_PREFIX,
+             "native_view_prefix_sha256": campaign.TERMINAL_VIEW_PREFIX,
+             "reference_identity": {"backend": "gdscript_reference"},
+             "native_identity": copy.deepcopy(campaign.TERMINAL_NATIVE_IDENTITY), "terminal_view": view}
+    for name in ("prefix_equal_every_tick", "view_equal_every_tick", "native_owner_every_tick",
+                 "reference_owner_every_tick", "model_contract_retained", "native_covered_every_tick",
+                 "physical_configuration_retained", "live_configuration_retained", "no_holds",
+                 "one_input_each_every_tick", "terminal_accepted", "previous_state_retained", "stopped_unchanged"):
+        proof[name] = True
+    for name, raw in payloads.items():
+        proof[name + "_bytes_hex"] = raw.hex()
+        proof[name + "_sha256"] = hashlib.sha256(raw).hexdigest()
+    proof["stopped_frame_bytes_hex"] = proof["terminal_frame_bytes_hex"]
+    proof["stopped_view_bytes_hex"] = proof["terminal_view_bytes_hex"]
+    result = {**row, "status": "physical-terminal", "reason": campaign.TERMINAL_CODE,
+              "fingerprint_equal": False, "reference": {"complete": False, "requested": "gdscript_reference"},
+              "native": {"complete": False, "requested": "native"}, "physical_terminal": proof}
+    report = copy.deepcopy(reports["fixed"])
+    report["binary_sha256_before"] = report["binary_sha256_after"] = guard["binary_sha256"]
+    report["build_receipt"] = copy.deepcopy(guard["receipt"])
+    report["checked_run"]["command"] = ["godot", "--extension=res://native/kernel/openrc_native_kernel.gdextension",
+                                        "--aircraft=skywalker-x8", "--warmup=600", "--samples=2400"]
+    report["fleet_scope"].update(filters={"aircraft": "skywalker-x8", "weather": "", "soft_hull": ""},
+                                 declared_aircraft=["skywalker-x8"], declared_rows=1, selected_rows=1,
+                                 warmup_requested=600, samples_requested=2400, flight_passed=0,
+                                 reference_refused=0, runtime_refused=0, physical_terminal=1)
+    report["fleet"] = [result]
+    report["components"] = {"literals": {"count": 1, "identical": 1},
+                            "fleet_physical_terminal": {"count": 1, "identical": 1}}
+    report["total"] = {"compared": 2, "identical": 2, "mismatched": 0}
+    manifest = {"format": "openrc-nk3-fleet-manifest v1", "aircraft": ["skywalker-x8"], "rows": [row]}
+    return manifest, {"skywalker-x8": report}, guard, identities, configs, view_hash
+
+
+def json_bytes(value):
+    import json
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True, allow_nan=False).encode()
+
+
 class FleetCampaignTests(unittest.TestCase):
+    def test_observed_physical_terminal_is_counted_separately(self):
+        for soft in (True, False):
+            manifest, reports, guard, identities, configs, view_hash = terminal_fixture(soft)
+            with self.subTest(soft=soft), mock.patch.object(campaign, "TERMINAL_IDENTITIES", identities), \
+                    mock.patch.dict(campaign.TERMINAL_CONFIGS, {soft: configs}), \
+                    mock.patch.object(campaign, "TERMINAL_VIEW_JSON", view_hash):
+                self.assertEqual(campaign.validate_reports(manifest, reports, guard, 600, 2400),
+                                 {"declared": 1, "flight_passed": 0, "reference_refused": 0,
+                                  "runtime_refused": 0, "physical_terminal": 1})
+
+    def test_physical_terminal_rejects_other_rows_and_forged_evidence(self):
+        for field, value in (("aircraft", "other"), ("battery", "ideal"), ("case", "trim"),
+                             ("weather", "crosswind"), ("vehicle", "rotorcraft"),
+                             ("soft_hull", 1), ("default_battery", 1), ("expected_terminal_tick", 1639)):
+            with self.subTest(row_field=field):
+                manifest, reports, guard, identities, configs, view_hash = terminal_fixture()
+                manifest["rows"][0][field] = value
+                with self.assertRaises(campaign.CampaignError):
+                    campaign.manifest_index(manifest)
+        mutations = [
+            lambda r: r.update(status="pass"),
+            lambda r: r.update(expected_terminal_tick=1640.0),
+            lambda r: r["native"].update(complete=True),
+            lambda r: r["physical_terminal"].update(terminal_tick=1639),
+            lambda r: r["physical_terminal"].update(terminal_accepted=False),
+            lambda r: r["physical_terminal"].update(previous_state_retained=False),
+            lambda r: r["physical_terminal"].update(stopped_unchanged=False),
+            lambda r: r["physical_terminal"].update(stopped_attempts=1),
+            lambda r: r["physical_terminal"].update(stopped_frame_bytes_hex="00"),
+            lambda r: r["physical_terminal"].update(native_covered_every_tick=False),
+            lambda r: r["physical_terminal"].update(native_owner_every_tick=False),
+            lambda r: r["physical_terminal"].update(model_contract_retained=False),
+            lambda r: r["physical_terminal"].update(physical_configuration_retained=False),
+            lambda r: r["physical_terminal"].update(live_configuration_retained=False),
+            lambda r: r["physical_terminal"].update(no_holds=False),
+            lambda r: r["physical_terminal"].update(native_context_calls=1639),
+            lambda r: r["physical_terminal"].update(native_stage_calls=6559),
+            lambda r: r["physical_terminal"]["native_identity"].update(binary_sha256="0" * 64),
+            lambda r: r["physical_terminal"]["native_identity"].update(backend_version="other"),
+            lambda r: r["physical_terminal"].update(reference_prefix_sha256="0" * 64,
+                                                   native_prefix_sha256="0" * 64),
+            lambda r: r["physical_terminal"]["terminal_view"]["crash"]["impact"].update(obstacle_id="other"),
+            lambda r: r["physical_terminal"]["terminal_view"]["raw"].update(throttle=1.0),
+            lambda r: r["physical_terminal"]["terminal_view"]["commands"].update(throttle=0.0),
+        ]
+        for name in ("terminal_frame", "terminal_view", "contact_event", "impact",
+                     "physical_configuration", "reference_live_configuration", "native_live_configuration"):
+            def forged(r, name=name):
+                p = r["physical_terminal"]
+                p[name + "_bytes_hex"] = "00"
+                p[name + "_sha256"] = hashlib.sha256(b"\0").hexdigest()
+                if name == "terminal_frame": p["stopped_frame_bytes_hex"] = "00"
+                if name == "terminal_view": p["stopped_view_bytes_hex"] = "00"
+            mutations.append(forged)
+        def paired_forged_configs(r):
+            p = r["physical_terminal"]
+            for side in ("reference", "native"):
+                p[side + "_live_configuration_bytes_hex"] = "00"
+                p[side + "_live_configuration_sha256"] = hashlib.sha256(b"\0").hexdigest()
+        mutations.append(paired_forged_configs)
+        for index, mutate in enumerate(mutations):
+            with self.subTest(mutation=index):
+                manifest, reports, guard, identities, configs, view_hash = terminal_fixture()
+                mutate(reports["skywalker-x8"]["fleet"][0])
+                with mock.patch.object(campaign, "TERMINAL_IDENTITIES", identities), \
+                        mock.patch.dict(campaign.TERMINAL_CONFIGS, {True: configs}), \
+                        mock.patch.object(campaign, "TERMINAL_VIEW_JSON", view_hash), \
+                        self.assertRaises(campaign.CampaignError):
+                    campaign.validate_reports(manifest, reports, guard, 600, 2400)
+
+    def test_short_terminal_horizon_is_still_a_healthy_flight(self):
+        manifest, terminal_reports, _, _, _, _ = terminal_fixture()
+        _, reports, guard = fixtures()
+        report = reports["fixed"]
+        flight = report["fleet"][0]
+        flight.update(manifest["rows"][0])
+        report["fleet"] = [flight]
+        report["checked_run"]["command"] = [arg.replace("--aircraft=fixed", "--aircraft=skywalker-x8")
+                                            for arg in report["checked_run"]["command"]]
+        report["fleet_scope"].update(filters={"aircraft": "skywalker-x8", "weather": "", "soft_hull": ""},
+                                     declared_aircraft=["skywalker-x8"], declared_rows=1, selected_rows=1,
+                                     flight_passed=1, reference_refused=0, runtime_refused=0, physical_terminal=0)
+        report["components"] = {"literals": {"count": 1, "identical": 1},
+                                "fleet_pair": {"count": 1, "identical": 1}}
+        report["total"] = {"compared": 2, "identical": 2, "mismatched": 0}
+        self.assertEqual(campaign.validate_reports(manifest, {"skywalker-x8": report}, guard, 2, 3)["flight_passed"], 1)
+        report["fleet"][0] = terminal_reports["skywalker-x8"]["fleet"][0]
+        with self.assertRaises(campaign.CampaignError):
+            campaign.validate_reports(manifest, {"skywalker-x8": report}, guard, 2, 3)
+
+    def test_terminal_at_exact_requested_horizon_is_not_a_healthy_flight(self):
+        manifest, reports, guard, identities, configs, view_hash = terminal_fixture()
+        report = reports["skywalker-x8"]
+        report["checked_run"]["command"][-1] = "--samples=1040"
+        report["fleet_scope"]["samples_requested"] = 1040
+        report["fleet"][0]["physical_terminal"]["requested_ticks"] = 1640
+        with mock.patch.object(campaign, "TERMINAL_IDENTITIES", identities), \
+                mock.patch.dict(campaign.TERMINAL_CONFIGS, {True: configs}), \
+                mock.patch.object(campaign, "TERMINAL_VIEW_JSON", view_hash):
+            totals = campaign.validate_reports(manifest, reports, guard, 600, 1040)
+        self.assertEqual(totals["physical_terminal"], 1)
+        self.assertEqual(totals["flight_passed"], 0)
+
     def test_observed_startup_proofs_count_only_as_refusals(self):
         for aircraft, trim in (("sebart-avanti-s-a200-p100rx", False), ("skywalker-x8", True)):
             with self.subTest(aircraft=aircraft):
@@ -285,7 +450,7 @@ class FleetCampaignTests(unittest.TestCase):
                 cases = campaign.TRIM_START_CASES if trim else campaign.RUNWAY_START_CASES
                 with mock.patch.dict(cases, {aircraft: spec}):
                     self.assertEqual(campaign.validate_reports(manifest, reports, guard, 2, 3),
-                                     {"declared": 1, "flight_passed": 0, "reference_refused": 1, "runtime_refused": 0})
+                                     {"declared": 1, "flight_passed": 0, "reference_refused": 1, "runtime_refused": 0, "physical_terminal": 0})
 
     def test_runway_start_refusals_are_bounded_and_not_flights(self):
         for aircraft in campaign.RUNWAY_START_CASES:
@@ -403,19 +568,19 @@ class FleetCampaignTests(unittest.TestCase):
     def test_complete_union(self):
         manifest, reports, guard = fixtures()
         self.assertEqual(campaign.validate_reports(manifest, reports, guard, 2, 3),
-                         {"declared": 3, "flight_passed": 2, "reference_refused": 1, "runtime_refused": 0})
+                         {"declared": 3, "flight_passed": 2, "reference_refused": 1, "runtime_refused": 0, "physical_terminal": 0})
 
     def test_bounded_runtime_refusal_is_separate_from_flights(self):
         manifest, reports, guard = runtime_fixture()
         self.assertEqual(campaign.validate_reports(manifest, reports, guard, 600, 2400),
-                         {"declared": 1, "flight_passed": 0, "reference_refused": 0, "runtime_refused": 1})
+                         {"declared": 1, "flight_passed": 0, "reference_refused": 0, "runtime_refused": 1, "physical_terminal": 0})
 
     def test_fs64v_midpoint_refusal_is_separate_from_flights(self):
         for soft_hull in (True, False):
             with self.subTest(soft_hull=soft_hull):
                 manifest, reports, guard = runtime_fixture("stik-glow-fs64v-4t", 805, 0.5, 2, soft_hull)
                 self.assertEqual(campaign.validate_reports(manifest, reports, guard, 600, 2400),
-                                 {"declared": 1, "flight_passed": 0, "reference_refused": 0, "runtime_refused": 1})
+                                 {"declared": 1, "flight_passed": 0, "reference_refused": 0, "runtime_refused": 1, "physical_terminal": 0})
 
     def test_fs64v_rejects_wrong_phase_ordinals_and_forged_evidence(self):
         def fixture():

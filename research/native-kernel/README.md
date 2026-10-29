@@ -254,6 +254,14 @@ half-power trim-throttle refusal. Its named aircraft/battery/start/weather/conta
 reset observations, pinned typed setup/outcome/frame bytes and retained reference ownership. These starts
 provide no native-flight coverage and do not establish physical impossibility. A new refusal needs its own
 diagnosis and reviewed evidence; matching error text alone does not admit another combination.
+Two X8 pack/hand-launch/spatial-crosswind rows have an independently observed physical terminal at tick 1,640.
+They require equal typed states through the accepted tree collision, pinned configuration/contact evidence,
+native ownership and coverage on every accepted tick, and unchanged stopped attempts. They count separately
+from completed flights and refusals; other incomplete runs still fail. These pins bind native binary `d023a875…`;
+a different binary requires new reviewed evidence. Run the focused actual-pair regression with
+`test_fleet.gd -- --require-runtime-domain --require-physical-terminal`; the second flag is a local qualification
+gate, not part of the current CI invocation. The complete declaration is 1,202 flight rows, two physical terminals,
+28 startup refusals and six runtime refusals. Declared counts alone do not establish qualification.
 A scoped report alone does not qualify the whole fleet. `--reuse-report AIRCRAFT=REPORT` accepts
 only a complete, matching full-aircraft report, including one still being produced. Concurrent runs establish
 software equivalence, not timing or physical validation.

@@ -23267,6 +23267,126 @@
      },
      "source_merge_requires_new_export": true,
      "original_rollback_archive_unchanged": true
+    },
+    "x8_physical_terminal_follow_up": {
+     "status": "policy_review_passed_fresh_qualification_pending",
+     "source_commit": "4699405f873ccf5fec3bf3e6387ee717c2da5592",
+     "native_binary_sha256": "d023a8758404ad2b95949214af92e6f888f91fb32977b61e0db5ad4220178fc1",
+     "original_campaign": "tmp/nk3-current-isolated/tmp/nk3-current-fleet-qualified",
+     "original_campaign_status": "failed_exit_1_ten_passing_shards_x8_failed_no_passing_aggregate",
+     "evidence_manifest": "tmp/nk3-x8-terminal-audit/evidence-manifest.json",
+     "evidence_manifest_sha256": "d9edaf870e9602c003f2b0513dd975f8e144d8f881b4463f95c76e5a66641dbb",
+     "rows": {
+      "aircraft": "skywalker-x8",
+      "battery": "pack",
+      "case": "hand_launch",
+      "weather": "spatial-crosswind-v1",
+      "soft_hull": [
+       true,
+       false
+      ]
+     },
+     "diagnosis": {
+      "accepted_terminal_tick": 1640,
+      "equal_typed_boundaries": 1641,
+      "native_contexts": 1640,
+      "native_stage_calls": 6560,
+      "contact": "tree:shade-tree:shade-trees:06:crown",
+      "normal_speed_m_s": 23.1960511954225,
+      "existing_foliage_threshold_m_s": 22.0,
+      "stopped_attempts_unchanged": 2,
+      "outcome": "committed terminal scenery collision and pause, not RK rejection or rollback",
+      "controls": "raw throttle zero is a rate input; commanded throttle remains full",
+      "physical_validation": false
+     },
+     "provisional_declared_totals": {
+      "declared": 1238,
+      "completed_flights": 1202,
+      "physical_terminals": 2,
+      "startup_refusals": 28,
+      "runtime_refusals": 6
+     },
+     "policy": "Exact observed physical terminals passed focused review; original failed rows remain failed and no partial trajectory counts as a completed flight.",
+     "equations_data_tapes_start_contracts_changed": false,
+     "unpromoted_package": {
+      "executable_sha256": "a742ad116308ff0b6c2220cc2bb08836ad52c4e200bdf25ed2dcec473bc15bac",
+      "archive": "tmp/nk3-current-package-work/openrc-simulator-v0.1.8-559-g4699405f8-nk3-linux-x86_64.zip",
+      "archive_sha256": "a5abc4ff07996067cb04b277645d784a58433d2b816d0d53a54d57d14273bbce",
+      "readiness": "tmp/nk3-current-package-work/fresh-candidate-readiness-post-elf.json",
+      "duplicate_release": "tmp/nk3-current-package-work/a742-duplicate-release.json",
+      "functional_checks": "five native modes, 18 routes, exact 65-row player replay, 720-tick trimmed smoke, full ZIP ELF audit",
+      "quiet_timing": "not run",
+      "native_glibc_symbol_requirement": "2.38",
+      "distribution_compatibility_qualified": false
+     },
+     "x8_failed_report": {
+      "path": "tmp/nk3-current-isolated/tmp/native-kernel/fleet-20261029T151621098937Z.json",
+      "sha256": "782f2af2ac73fccfebfde0bb9d8b155de9af9234cea53139f0fdec59ff8c4f18",
+      "declared": 204,
+      "status": "fail",
+      "run_valid": false,
+      "full_length_pass_status_rows": 200,
+      "startup_refusals": 2,
+      "physical_terminal_failures": 2,
+      "flight_qualified": false
+     },
+     "original_campaign_diagnostic_index": {
+      "path": "tmp/nk3-current-work/fleet-failed-diagnostic-index.json",
+      "sha256": "610f1f55df321695a0907c0b633defdfeaff44522564009eab40ba2b7bc504a6"
+     },
+     "reviewed_policy_handoff": {
+      "format": "openrc-nk3-x8-policy-handoff-v1",
+      "ok": true,
+      "scope": "Focused policy proofs and tests only; full fleet and Linux artifact must be requalified on these sources.",
+      "sources": {
+       "research/native-kernel/fleet.gd": "890ed3e8ae1caef8728191a943487d3e4b38db00eda5087c8d2a01524eb99a48",
+       "research/native-kernel/fleet_campaign.py": "6c38e4b4cc776763989aa5bd1bfd4b9f9ebd76a27765b630572565f457bb59f4",
+       "research/native-kernel/test_fleet.gd": "6eeb3a6cbc8c378f4020a0fa5dfa6350614cd941436a0ef013a2556786021212",
+       "research/native-kernel/test_fleet_campaign.py": "ce31cf209714f74e26b08153e4332219b888fcee171b6c22cb1141a45938ee3a"
+      },
+      "paired_actual": {
+       "path": "tmp/nk3-x8-policy/actual-pairs-final.json",
+       "sha256": "a7f7c5a176da9cccc9e3b99b97e26db874623f43989583d651685294151bc05a",
+       "validation": "tmp/nk3-x8-policy/actual-final-validation.json",
+       "checked_report": "tmp/nk3-x8-policy/checks/actual-final-mm3fo6sh/report.json",
+       "terminal_tick": 1640,
+       "native_context_calls": 1640,
+       "native_stage_calls": 6560,
+       "rows": 2
+      },
+      "combined": {
+       "checked_report": "tmp/nk3-x8-policy/checks/combined-frozen-a4dcsb0o/report.json",
+       "report_sha256": "9920fffe95552a529e96a2da2afbf89addee8870ee44f033399e0d5d1ac3ba43",
+       "log_sha256": "6ad6ad378afaca0433a50868b3fea36dfc155ae6ba548213e17883931748f4af",
+       "checks_passed": 650,
+       "requested_native_markers": [
+        "NK3_RUNTIME_DOMAIN_NATIVE verdict=pass",
+        "NK3_PHYSICAL_TERMINAL_NATIVE verdict=pass"
+       ]
+      },
+      "python": {
+       "log": "tmp/nk3-x8-policy/python-final2.log",
+       "tests_passed": 36
+      },
+      "independent_review": {
+       "seal": "tmp/nk3-x8-terminal-audit/final-policy-review-seal.json",
+       "sha256": "6cfb4adcb688750b77704c654942c6b7c55df32c9e36bb71ba2af307064ccb70",
+       "python_mutations_rejected": 146,
+       "owner_mutations_report": "tmp/nk3-x8-terminal-audit/checks/owner-mutations-ciy0eaaj/report.json"
+      },
+      "manifest": {
+       "path": "tmp/nk3-x8-policy/manifest-current.json",
+       "sha256": "d9991ac81a57e8aba3f35ba0a4ca7ada0d0663be881d35e2f0062a11958e69fc",
+       "declared_rows": 1238,
+       "expected_counts": {
+        "flight": 1202,
+        "reference-refusal": 28,
+        "runtime-domain-refusal": 6,
+        "physical-terminal": 2
+       },
+       "note": "Declarations only; not evidence of a completed current full fleet campaign."
+      }
+     }
     }
    },
    "general_integration_continuation": {
