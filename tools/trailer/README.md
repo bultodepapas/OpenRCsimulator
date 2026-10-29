@@ -317,6 +317,18 @@ production brand intro as PNG frames for a `frames` shot. `capture_flight.gd` no
 startup (`FLIGHT_CAPTURE_CONTROLLER_DETACHED`): a desk controller otherwise froze takes at tick 3 while the
 manifest still read `complete`. Check that the logged tick advances, not only `complete`.
 
+TRA-10 (revision 9) adds the shot `corsair-orbit`. It is a low pass at `--alt`, with full-throttle altitude hold
+(climb damping and integral trim) and a light left bank, while the camera makes one eased 360° orbit in the
+heading frame. Run it with `--wind-speed=0 --gust-speed=0 --gust-up=0` so the air is calm.
+
+`--livery-cycle=a,b,... --livery-from=<s> --livery-every=<s>` swaps the visual paint scheme in flight. It only
+replaces `MeshInstance3D` resources from each livery GLB of the same airframe, never physics. Every frame record
+carries `presented_livery`; check `meshes_swapped` there.
+
+Crystal cues accept optional `entrance_s`, `kicker_size`, `detail_size` and `scrim`. Without these keys, the
+cues render exactly as in v8. Image shots accept `zoom: {center: [x, y], to: <factor>}`, an eased push-in.
+`capture_brand.gd --frames=600` gives the longer end card.
+
 Output checks cover resolution, 60 fps, the manifest's frame count/duration, full decode and decoded AAC true peak.
 `render-manifest.json` retains source/output hashes and audio measurements. These checks do not
 replace listening review, prove physical realism, or establish exact replay equivalence.

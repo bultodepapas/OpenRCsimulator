@@ -17,6 +17,17 @@ var _post_report_restart := false
 var _last_state := PackedFloat64Array() # TRA-09: latest accepted state for the Corsair run-up hold.
 var _run_up_altitude_m := -1.0
 const CORSAIR_TOP_RUDDER := 1.0 # Sign verified against measured nose drop in knife-edge.
+# TRA-10: presentation-only livery cycle on one flight (--livery-cycle=a,b,... --livery-from=s --livery-every=s).
+# Each livery is another GLB of the same airframe; only MeshInstance3D resources are swapped, never physics.
+const ORBIT_BANK_RAD := -0.17 # Light left bank (about 10 degrees) held through the orbit pass.
+const ORBIT_ALTITUDE_M := 6.0
+var _liveries: Array[Dictionary] = []
+var _livery_from_s := 1.0
+var _livery_every_s := 0.6
+var _livery_active := ""
+var _livery_matched := 0
+var _orbit_previous_altitude_m := NAN
+var _orbit_altitude_integral := 0.0
 
 
 func configure(flight_main: Node, shot_name: String, shot_duration_s: float, output_fps: int) -> void:
@@ -31,6 +42,73 @@ func configure(flight_main: Node, shot_name: String, shot_duration_s: float, out
 	if shot != "lighting-pilot":
 		main._rig.set_view("chase")
 		main._rig.auto_zoom = false
+	_load_livery_cycle()
+
+
+## TRA-10: preload every requested livery scene's meshes, keyed by node name in scene order.
+func _load_livery_cycle() -> void:
+	var ids := PackedStringArray()
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--livery-cycle="):
+			ids = arg.trim_prefix("--livery-cycle=").split(",", false)
+		elif arg.begins_with("--livery-from="):
+			_livery_from_s = arg.trim_prefix("--livery-from=").to_float()
+		elif arg.begins_with("--livery-every="):
+			_livery_every_s = maxf(arg.trim_prefix("--livery-every=").to_float(), 1.0 / 60.0)
+	if ids.is_empty():
+		return
+	var records: Array = main._airplane.get("model_manifest", {}).get("liveries", [])
+	for id: String in ids:
+		var found: Array = records.filter(func(r: Dictionary) -> bool: return str(r.id) == id)
+		var scene: PackedScene = load(str(found[0].path)) as PackedScene if not found.is_empty() else null
+		if scene == null:
+			push_error("TRA-10 livery cycle: unknown livery " + id)
+			_liveries.clear()
+			return
+		var instance: Node = scene.instantiate()
+		_liveries.append({id = id, meshes = _mesh_table(instance)})
+		instance.free()
+	print("FLIGHT_CAPTURE_LIVERY_CYCLE ", ",".join(ids), " from=", _livery_from_s, " every=", _livery_every_s)
+
+
+func _mesh_table(root: Node) -> Dictionary:
+	var table := {}
+	for node: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mesh := node as MeshInstance3D
+		var overrides: Array = []
+		for i: int in mesh.get_surface_override_material_count():
+			overrides.append(mesh.get_surface_override_material(i))
+		var key := str(mesh.name)
+		if not table.has(key):
+			table[key] = []
+		table[key].append({mesh = mesh.mesh, overrides = overrides, material_override = mesh.material_override})
+	return table
+
+
+func _apply_livery_cycle(t: float) -> void:
+	if _liveries.is_empty():
+		return
+	var index := 0 if t < _livery_from_s else 1 + int(floor((t - _livery_from_s) / _livery_every_s))
+	var entry: Dictionary = _liveries[index % _liveries.size()]
+	if entry.id == _livery_active:
+		return
+	var seen := {}
+	_livery_matched = 0
+	for node: Node in main._airplane.root.find_children("*", "MeshInstance3D", true, false):
+		var mesh := node as MeshInstance3D
+		var key := str(mesh.name)
+		var ordinal: int = seen.get(key, 0)
+		seen[key] = ordinal + 1
+		var sources: Array = entry.meshes.get(key, [])
+		if ordinal >= sources.size():
+			continue
+		var source: Dictionary = sources[ordinal]
+		mesh.mesh = source.mesh
+		for i: int in source.overrides.size():
+			mesh.set_surface_override_material(i, source.overrides[i])
+		mesh.material_override = source.material_override
+		_livery_matched += 1
+	_livery_active = entry.id
 
 
 func resume_after_report_restart() -> void:
@@ -55,6 +133,7 @@ func _process(_delta: float) -> void:
 		return # The live CrashDirector owns the camera once the physical incident occurs.
 	if shot == "lighting-pilot":
 		return # Production pilot rig and magnifier own both cameras for this acceptance view.
+	_apply_livery_cycle(float(main.session.sim.time()))
 	_place_camera(float(main.session.sim.time()))
 
 
@@ -109,6 +188,8 @@ func record_presented_frame(frame_index: int, preroll_frames: int) -> void:
 			fov_deg = float(camera.fov),
 		},
 	})
+	if not _liveries.is_empty():
+		frame_records[-1]["presented_livery"] = {id = _livery_active, meshes_swapped = _livery_matched}
 	var lighting: Node = main.get("_rgb_lighting")
 	if is_instance_valid(lighting):
 		frame_records[-1]["aircraft_lighting"] = lighting.budget_info()
@@ -156,6 +237,9 @@ func _commands_at(t: float) -> Dictionary:
 				c.roll = 1.0
 				c.yaw = CORSAIR_TOP_RUDDER * 0.6 * sin(bank)
 				c.pitch = 0.06 * cos(bank)
+		"corsair-orbit": # TRA-10: low pass holding a light left bank and altitude while the camera orbits.
+			c.throttle = 0.85
+			c = _corsair_run_up(c, NAN, ORBIT_BANK_RAD, ORBIT_ALTITUDE_M)
 		"mini-pass":
 			pass # TRA-09: neutral trimmed flight keeps the 10 % model off the grass.
 		"mustang-pass", "corsair-pass": # TRA-09 reuses the warbird pass for the F4U.
@@ -178,7 +262,8 @@ func _commands_at(t: float) -> Dictionary:
 
 ## TRA-09: pilot-like wings-level, altitude-hold stick during the full-throttle run-up.
 ## pitch_override_rad (when finite) replaces altitude hold with a fixed nose-up attitude.
-func _corsair_run_up(c: Dictionary, pitch_override_rad := NAN) -> Dictionary:
+## TRA-10: bank_rad holds a bank instead of wings level; a finite altitude_m eases the hold toward that height.
+func _corsair_run_up(c: Dictionary, pitch_override_rad := NAN, bank_rad := 0.0, altitude_m := NAN) -> Dictionary:
 	c.roll = 0.0
 	c.pitch = 0.0
 	if _last_state.size() < RB.ATT + 4:
@@ -190,10 +275,19 @@ func _corsair_run_up(c: Dictionary, pitch_override_rad := NAN) -> Dictionary:
 	if _run_up_altitude_m < 0.0:
 		_run_up_altitude_m = altitude
 	var pitch_target: float = clampf(0.03 * (_run_up_altitude_m - altitude), -0.08, 0.08)
+	var trim := 0.0
+	if is_finite(altitude_m):
+		# Low pass: altitude error, climb-rate damping and an integral trim hold the height at full speed.
+		var dt: float = main.session.sim.dt()
+		var climb: float = 0.0 if is_nan(_orbit_previous_altitude_m) else (altitude - _orbit_previous_altitude_m) / dt
+		_orbit_previous_altitude_m = altitude
+		_orbit_altitude_integral = clampf(_orbit_altitude_integral + (altitude_m - altitude) * dt, -20.0, 20.0)
+		pitch_target = clampf(0.05 * (altitude_m - altitude) - 0.08 * climb, -0.2, 0.15)
+		trim = 0.02 * _orbit_altitude_integral
 	if is_finite(pitch_override_rad):
 		pitch_target = pitch_override_rad
-	c.roll = clampf(-1.5 * bank, -0.5, 0.5)
-	c.pitch = clampf(2.5 * (pitch_target - pitch), -0.4, 0.4)
+	c.roll = clampf(-1.5 * (bank - bank_rad), -0.5, 0.5)
+	c.pitch = clampf(2.5 * (pitch_target - pitch) + trim, -0.4, 0.4)
 	return c
 
 
@@ -229,6 +323,9 @@ func _on_sim_stepped(tick: int, time_s: float, state: PackedFloat64Array, _loads
 
 func _place_camera(t: float) -> void:
 	if shot == "companions" and _frame_companions():
+		return
+	if shot == "corsair-orbit":
+		_orbit_camera(t)
 		return
 	var aircraft: Node3D = main._airplane.root
 	var body: Basis = aircraft.global_basis.orthonormalized()
@@ -302,6 +399,25 @@ func _place_camera(t: float) -> void:
 	main._camera.global_position = center - forward * distance + right * lateral + Vector3.UP * height
 	main._camera.look_at(look_target, Vector3.UP)
 	main._camera.fov = fov
+
+
+## TRA-10: one full 360-degree orbit in the aircraft's heading frame over the shot, eased at both ends,
+## starting off the front-left quarter and passing the nose, the right side, the tail and back.
+func _orbit_camera(t: float) -> void:
+	var aircraft: Node3D = main._airplane.root
+	var center: Vector3 = aircraft.global_position
+	var forward: Vector3 = -aircraft.global_basis.z
+	forward = Vector3(forward.x, 0.0, forward.z).normalized()
+	if forward.length_squared() < 0.9:
+		forward = Vector3.FORWARD
+	var right: Vector3 = forward.cross(Vector3.UP)
+	var p: float = smoothstep(0.0, 1.0, clampf(t / maxf(duration_s, 0.001), 0.0, 1.0))
+	var angle: float = deg_to_rad(-40.0) + TAU * p # 0 = straight ahead, positive toward the right wing.
+	var radius := 7.0
+	var offset: Vector3 = (forward * cos(angle) + right * sin(angle)) * radius
+	main._camera.global_position = center + offset + Vector3.UP * (0.9 + 0.5 * sin(PI * p))
+	main._camera.look_at(center + Vector3.UP * 0.2, Vector3.UP)
+	main._camera.fov = 34.0
 
 
 ## TRA-09: hero chase of the first live AI companion; the rest of the traffic stays in the scene behind it.

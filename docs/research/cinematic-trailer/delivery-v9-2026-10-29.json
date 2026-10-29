@@ -1,0 +1,34 @@
+{
+  "format": "openrc-trailer-delivery v1",
+  "revision": "9.1",
+  "step": "TRA-10",
+  "date": "2026-10-29",
+  "export_dir": "C:/DEVELOPMENT/OpenRCsimulator-exports/trailer-2026-10-29-v9.1",
+  "film": "OpenRC-Every-Input-Matters-v9.1-90s-1080p60.mp4",
+  "film_sha256": "2082c4e81ab9d87477d9c0a3ae9e8de6883a70a702a96e6247222a03f6a408d3",
+  "frames": 5400,
+  "fps": 60,
+  "duration_s": 90.0,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "decoded_aac": {
+    "integrated_lufs": "-14.01",
+    "true_peak_dbtp": "-2.08"
+  },
+  "timeline_sha256": "cf7d66b32e1134dc5430780b2682675e8c4b8d62a4e6dd3c0b2aa734b0452287",
+  "music_sha256": "e0cc2f1de72190f09b2ac99a44e04ba69841a2b123ef0bb43320c28f70a459fa",
+  "tools": {
+    "godot": "4.8-beta1 official",
+    "ffmpeg": "7.1.1 essentials (gyan.dev)",
+    "ffmpeg_sha256": "b90225987bdd042cca09a1efb5e34e9848f2d1dbf5fbcd388753a44145522997"
+  },
+  "published": false,
+  "title_style": "crystal",
+  "corsair_orbit_manifest_sha256": "e5b325cf5ec1637568dc0b747d505605dae257b3ec54e7b0b30585224eb95c8f",
+  "superseded_revision_9": {
+    "export_dir": "C:/DEVELOPMENT/OpenRCsimulator-exports/trailer-2026-10-29-v9",
+    "film_sha256": "70dc06af30abf6c4ceee4480c5d528b3724de7f29ff4410bae51a8c35d4c02a1"
+  }
+}

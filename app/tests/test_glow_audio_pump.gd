@@ -112,7 +112,7 @@ func _test_worker_queue_and_lifecycle() -> void:
 		int(pump.stats().get("published_revision", 0)) >= 2)
 	_check("primed remains latched while the mixer consumes ordinary buffers", pump.is_primed())
 	player.stream_paused = false
-	await create_timer(0.15).timeout
+	await _wait_wall_msec(150)
 	_drain_capture(capture)
 	var pre_stall_stats: Dictionary = pump.stats()
 	var stall_started_usec: int = Time.get_ticks_usec()
@@ -152,10 +152,34 @@ func _test_worker_queue_and_lifecycle() -> void:
 		else:
 			print("N/A skip-free and native-duration qualification: Dummy driver is a smoke test only")
 	player.stream_paused = true
-	await create_timer(0.1).timeout
-	_check("pause and resume keep the worker primed without an underrun",
-		pump.is_primed() and int(pump.stats().get("skips", 0)) == int(post_stall_stats.get("skips", 0)))
+	# The worker's cached stats can lag the mixer, and the mixer may advance between the
+	# post-stall sample and the pause. Compare playback counters within the paused interval.
+	var paused_skips_before: int = _playback_skips(playback)
+	await _wait_wall_msec(100)
+	var paused_skips_after: int = _playback_skips(playback)
+	_check("paused playback stays primed without an underrun",
+		pump.is_primed() and paused_skips_after == paused_skips_before,
+		"skips=%d->%d" % [paused_skips_before, paused_skips_after])
+	# Discard the paused interval so the next capture cannot pass on pre-pause audio.
+	_drain_capture(capture)
+	if bool(post_stall_stats.get("fallback", false)):
+		pump.update_telemetry(updated) # Production updates refill the synchronous fallback.
 	player.stream_paused = false
+	await _wait_wall_msec(100)
+	var resumed_pcm: PackedVector2Array = _drain_capture(capture)
+	var resumed_rms: float = _stereo_rms(resumed_pcm)
+	var resumed_nonzero: int = _nonzero_frames(resumed_pcm)
+	var resumed_skips: int = _playback_skips(playback)
+	var resumed_stats: Dictionary = pump.stats()
+	_check("resumed playback retains a live primed pump",
+		bool(resumed_stats.get("running", false)) and bool(resumed_stats.get("primed", false)) \
+		and str(resumed_stats.get("worker_error", "")).is_empty(), str(resumed_stats))
+	_check("resumed playback produces audible PCM after the paused capture was drained",
+		resumed_nonzero > 0 and resumed_rms > 1e-5,
+		"frames=%d nonzero=%d RMS=%.7f driver=%s" % [resumed_pcm.size(), resumed_nonzero, resumed_rms, driver_name])
+	if not is_dummy_driver and not bool(resumed_stats.get("fallback", false)):
+		_check("native playback resumes without an underrun", resumed_skips == paused_skips_after,
+			"skips=%d->%d" % [paused_skips_after, resumed_skips])
 	pump.stop()
 	_check("stop joins the worker before playback is stopped", not pump.is_running())
 	player.stop()
@@ -179,7 +203,7 @@ func _test_worker_queue_and_lifecycle() -> void:
 	capture = null
 	pump = null
 	player = null
-	await create_timer(0.1).timeout
+	await _wait_wall_msec(100)
 
 
 func _wait_for_primed(pump, max_frames: int) -> bool:
@@ -190,9 +214,22 @@ func _wait_for_primed(pump, max_frames: int) -> bool:
 	return pump.is_primed()
 
 
+func _wait_wall_msec(duration_msec: int) -> void:
+	var deadline_usec: int = Time.get_ticks_usec() + duration_msec * 1000
+	while Time.get_ticks_usec() < deadline_usec:
+		await process_frame
+
+
 func _drain_capture(capture: AudioEffectCapture) -> PackedVector2Array:
 	var frames: int = capture.get_frames_available()
 	return capture.get_buffer(frames) if frames > 0 else PackedVector2Array()
+
+
+func _playback_skips(playback: AudioStreamGeneratorPlayback) -> int:
+	AudioServer.lock()
+	var skips: int = playback.get_skips()
+	AudioServer.unlock()
+	return skips
 
 
 func _stereo_rms(samples: PackedVector2Array) -> float:

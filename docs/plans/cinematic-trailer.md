@@ -6,6 +6,34 @@ User brief: a **very cinematic, AAA-style game trailer**, entirely in **English*
 
 This plan retains the creative targets and remaining review gates. The [production evidence](../research/cinematic-trailer/production-2026-10-17.md) is authoritative for the delivered film, source identities and deliberate changes from those targets. The [dated investigation](../research/cinematic-trailer/2026-10-17.md) records the earlier source audit at commit `049df2034de017e6fedc649a55194eb5977191cd` and research limits.
 
+## Revision 9 — legibility re-cut (TRA-10, 2026-10-29)
+
+**Owner verdict on v8:** too fast; the titles cannot be read. **Audit of v8 (measured on its timeline):**
+
+- 23 distinct cues and 267 words in 58 s (4.6 words/s), with text on about 90 % of the runtime.
+- Each cue had three text tiers. Its 1.2 s entrance used most of a 1.5–2.25 s shot, so cues held still for a median of 0.65 s.
+- No cue met a 0.5 s + 3 words/s reading budget.
+- Liveries changed every 0.2 s, and UI stills lasted 0.8 s.
+- The 26 px kicker reads as about 13 px on a phone. The jargon (QNH, "flight-identified") was unreadable at that pace.
+- The 60-second slice of the score is all climax, so the film had no build, breath or payoff.
+
+The owner also reported that the Corsair appeared to change place between livery takes.
+
+**v9 rules:**
+
+- 90 s cut from one continuous interval of Uprising, from source 114.939 s to its natural ending. The cue builds, breathes from 6 to 12 s, hits at 12.03 s, and its final chord at 80.9 s lands on the logo.
+- Every cut falls on the measured 0.668 s beat.
+- One cue per shot, and only on some shots: headline of 1–4 words, detail of 6 words or fewer, on screen for at least 2.6 s.
+- Cue entrance 0.55 s; kicker 34 px; detail 40 px; headline 88–96 px; darker sky scrim.
+- Montage beats carry no text.
+- UI stills last 2 s with an eased push-in on the value shown.
+
+**Corsair (owner request):**
+
+- One real low pass in calm air: no wind, gusts or turbulence. Light left bank, altitude hold, and the camera orbits 360°.
+- Eleven paint schemes swap in flight on the beat, presentation only. The aircraft stays in the same place because it is a single take.
+- `luftwaffe` and `japan` remain excluded.
+
 ## Revision 8 — feature-complete re-cut (TRA-09, 2026-10-28)
 
 **Owner brief (2026-10-28):** v7 is outdated. Show every current attribute quickly: realistic physics with real technical terms, NVIDIA DLSS and AMD FSR, the different aircraft, colored show smoke, AI companions, night flight, compatible radios, Workshop, mini and giant aircraft. Keep the multi-aircraft opening, but with **different airframes and colored smoke**.
@@ -280,7 +308,8 @@ Estimates are planning ranges for focused production work, excluding unattended 
 | TRA-06 | Edit, sound, titles, grading and report | Complete local H.264/AAC film; source audio, music, timeline and editor retained. |
 | TRA-07 | Technical review, poster and editable handoff | Full decode, 3,600 frames, 60.000 s and measured audio passed. Sampled visual review complete. Listening and asset release gate remain open. |
 | TRA-08 | Channel adaptation/publication | Not requested; no upload or publication performed. |
-| TRA-09 | Revision 8 feature re-cut | Local 58-second film delivered; [evidence](../research/cinematic-trailer/revision-8-2026-10-28.md). Listening and small-screen review remain open. |
+| TRA-09 | Revision 8 feature re-cut | Local 58-second film delivered; [evidence](../research/cinematic-trailer/revision-8-2026-10-28.md). Superseded by TRA-10 after the owner's legibility review. |
+| TRA-10 | Revision 9 legibility re-cut | Local 90-second film; [evidence](../research/cinematic-trailer/revision-9-2026-10-29.md). Listening and small-screen review remain open. |
 
 The original **27–55 hour** range was a planning estimate, not a measured production duration. The remaining work concerns listening review and release clearance; the movie and editable handoff already exist.
 
