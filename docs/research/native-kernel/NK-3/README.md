@@ -76,7 +76,7 @@ checks, including a complete 64-tick exact recording/replay. A separate imported
 passed 54 fallback checks. The native helper passed 26 checks and trajectory policy passed 105 checks. A normal CLI native trace completed 240 ticks and
 identified the native binary in its metadata. Existing checkpoint, reset-transaction and publication tests passed
 92, 148 and 180 checks. Operational commands and admission limits live in the
-[normal-flight guide](../../../../research/native-kernel/README.md#optional-normal-flight-backend).
+[normal-flight guide](../../../../research/native-kernel/README.md#normal-flight-backend-selection).
 Reports, logs and receipt are retained in the `normal_flight_integration` section of the
 [revalidation record](revalidation-linux-2026-10-28.json).
 The ordinary Main flight route also selected native successfully. The companion source pin was renewed through

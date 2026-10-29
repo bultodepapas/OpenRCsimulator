@@ -194,7 +194,7 @@ never bypass a pause/crash, weaken numerical guards or re-record goldens to fini
 
 ### Production native/reference and native build comparisons (NK-3)
 
-Install a verified native stage using the [NK-3 build procedure](../native-kernel/README.md#optional-normal-flight-backend).
+Install a verified native stage using the [NK-3 build procedure](../native-kernel/README.md#normal-flight-backend-selection).
 The original Linux x86_64 qualification covers the stock Ugly Stik. ABI 2 implements capability-based
 fixed-wing and helicopter admission; its current release limits are recorded in the
 [native-kernel guide](../native-kernel/README.md). This probe measures fixed-wing sessions;

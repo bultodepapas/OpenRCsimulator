@@ -144,7 +144,7 @@ Reproduce and repair an assigned renderer, landscape, camera or effect defect. R
 
 ### 21. Performance Engineer — `performance_engineer`
 
-Attribute an actual bottleneck across CPU/GPU, kernel/observers/rendering, cold/warm loading, spikes and retained memory. Return reproducible matched workloads, source/host/backend identity and before/after distributions with tradeoffs. Preserve numerical/visual correctness; FPS or one component's speedup does not establish the whole-flight gate. Consult [performance tools](tools/README.md), [SF policy](research/simulation-foundation/README.md#6-backend-policy-sf-08) and the actual [backend admission](../research/native-kernel/README.md#optional-normal-flight-backend) before proposing native work.
+Attribute an actual bottleneck across CPU/GPU, kernel/observers/rendering, cold/warm loading, spikes and retained memory. Return reproducible matched workloads, source/host/backend identity and before/after distributions with tradeoffs. Preserve numerical/visual correctness; FPS or one component's speedup does not establish the whole-flight gate. Consult [performance tools](tools/README.md), [SF policy](research/simulation-foundation/README.md#6-backend-policy-sf-08) and the actual [backend admission](../research/native-kernel/README.md#normal-flight-backend-selection) before proposing native work.
 
 ### 22. Product Workflow QA — `product_workflow_qa`
 

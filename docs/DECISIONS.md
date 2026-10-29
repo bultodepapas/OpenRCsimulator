@@ -38,7 +38,7 @@ Curated architecture and product choices, with the reasons worth preserving. Rev
 
 **SF-08 / NK-3.** Keep the GDScript reference selectable and replace only an identified evaluation boundary. Receipts and replay bind the actual backend; unsupported configurations or unverified artifacts retain the reference. Owner-directed NK-3 promotion supersedes the blanket fixed-wing deferral: ordinary application flights request native by default, but admission is limited to verified Linux x86_64 **stock legacy prescribed-RPM Ugly Stik in supported calm configurations**. Low-level sessions remain reference by default; broader coverage is work in progress. This is not evidence of coupled electric/battery coverage, Windows/macOS admission or completed target-host Gate P.
 
-The [NK-3 promotion](research/native-kernel/NK-3/README.md#promotion-to-the-default-backend) records that limited adoption. The original [SF-08 policy](research/simulation-foundation/README.md#6-backend-policy-sf-08) remains the broader qualification reference; its target-host evidence must not be presented as satisfied by the local promotion. Admission and packaging details live in the [native guide](../research/native-kernel/README.md#optional-normal-flight-backend).
+The [NK-3 promotion](research/native-kernel/NK-3/README.md#promotion-to-the-default-backend) records that limited adoption. The original [SF-08 policy](research/simulation-foundation/README.md#6-backend-policy-sf-08) remains the broader qualification reference; its target-host evidence must not be presented as satisfied by the local promotion. Admission and packaging details live in the [native guide](../research/native-kernel/README.md#normal-flight-backend-selection).
 
 ### Preserve each event law's valid continuation
 
