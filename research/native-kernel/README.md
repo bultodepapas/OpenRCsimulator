@@ -240,15 +240,20 @@ python3 research/native-kernel/fleet_campaign.py --out tmp/nk3-fleet-qualified \
 The campaign reads the canonical matrix from `fleet.gd`, runs each aircraft through the existing checked runner,
 and validates the exact union of row keys. All shards must share the same engine, native binary, receipt,
 source and harness identities. Flight rows require every requested tick, matching fingerprints and native call
-coverage. Explicitly known startup refusals require the same reset failure from both backends. Four stopped-glow
-runway/gusty tapes have a separately checked runtime-domain refusal: the 61FX stops after 873 accepted ticks
-and the 55AX after 801, with each contact option. Their next RK trial would require reverse rotation beyond
+coverage. Explicitly known startup refusals require the same reset failure from both backends. Six stopped-glow
+runway/gusty tapes have a separately checked runtime-domain refusal: the 61FX stops after 873 accepted ticks,
+the 55AX after 801, and the FS64V after 805, with each contact option. The two-strokes reject the endpoint
+trial; the four-stroke rejects the midpoint. Their next RK trial would require reverse rotation beyond
 the installation's static hold domain. These outcomes require exact accepted-prefix, rejected-trial and rollback
 agreement, actual native ownership and counters, and finite branch evidence from C++ and the reference.
+Each model has a fixed trial phase and rejecting-call ordinal. The four-stroke also pins its captured aircraft,
+trial, context and seven cause values using the original float64 bytes.
 Neither startup nor runtime refusals count as completed flights. Unknown faults still fail the campaign.
 A scoped report alone does not qualify the whole fleet. `--reuse-report AIRCRAFT=REPORT` accepts
 only a complete, matching full-aircraft report, including one still being produced. Concurrent runs establish
 software equivalence, not timing or physical validation.
+`--keep-going` finishes independent shards after a shard failure, then fails the campaign; source drift still
+stops all work. It does not change row acceptance or permit a partial matrix to pass.
 
 `app/export.sh` prepares the verified identity, exports the ordinary application, stages the exact native
 sidecars, and tests that executable before creating the release archive. The CI export job consumes the

@@ -33,7 +33,20 @@ MIN_SAMPLES = 2400
 MAX_JOBS = 4
 KEY_FIELDS = ("aircraft", "vehicle", "battery", "case", "weather", "soft_hull")
 HEX64 = re.compile(r"[0-9a-f]{64}\Z")
-RUNTIME_TICKS = {"stik-glow-61fx-2t": 873, "stik-glow-55ax-2t": 801}
+# Independent expectations for the observed source-domain boundaries. A report
+# cannot choose its own RK phase, rejection ordinal, or four-stroke feed factor.
+# FS64V hashes identify the real typed trial and context captured on 2026-10-29
+# at tick 805 on both backends and hull settings for the stock ideal/gusty runway tape.
+RUNTIME_CASES = {
+    "stik-glow-61fx-2t": {"tick": 873, "stage_fraction": 1.0, "rejected_stage_calls": 4},
+    "stik-glow-55ax-2t": {"tick": 801, "stage_fraction": 1.0, "rejected_stage_calls": 4},
+    "stik-glow-fs64v-4t": {"tick": 805, "stage_fraction": 0.5, "rejected_stage_calls": 2, "feed_factor": 0.0,
+                            "aircraft_sha256": "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a",
+                            "trial_sha256": "e064ab046fc2119231564b6b6c125fc256c752ebb2fb04d557d7ee7bef0e16c8",
+                            "context_sha256": "e7cc667d8cf303f497701c1079db0c5936303c31da51e236791b13f238cc61b6",
+                            "cause_bytes_hex": "00000000000000000000000000000000acf7f5a16f0d90bf442c89836c0a903f"
+                                               "fb702e7c620d903fd22f068cdc4b333f85580189a0cd453f"},
+}
 RUNTIME_CODE = "glow_stopped_reverse_drive"
 RUNTIME_FAULT = "step rejected: RK joint stage evaluation is nonfinite or malformed"
 
@@ -228,10 +241,10 @@ def manifest_index(manifest: dict[str, Any]) -> tuple[dict[tuple[Any, ...], dict
             require(isinstance(row.get("expected_refusal_reason"), str) and bool(row["expected_refusal_reason"]),
                     "expected refusal has no exact reason")
         elif expected == "runtime-domain-refusal":
-            require(row["vehicle"] == "fixed-wing" and row["aircraft"] in RUNTIME_TICKS
+            require(row["vehicle"] == "fixed-wing" and row["aircraft"] in RUNTIME_CASES
                     and row["battery"] == "ideal" and row["case"] == "runway" and row["weather"] == "gusty"
                     and type(row.get("expected_runtime_tick")) is int
-                    and row["expected_runtime_tick"] == RUNTIME_TICKS[row["aircraft"]]
+                    and row["expected_runtime_tick"] == RUNTIME_CASES[row["aircraft"]]["tick"]
                     and "expected_refusal_reason" not in row, "invalid bounded runtime-domain declaration")
         else:
             require("expected_refusal_reason" not in row, "flight row has a refusal reason")
@@ -348,7 +361,7 @@ def decode_runtime_payload(encoded: str, shapes: tuple[int | str, ...]) -> list[
     return values
 
 
-def validate_runtime_payload(trial_hex: str, context_hex: str, tick: int) -> None:
+def validate_runtime_payload(trial_hex: str, context_hex: str, tick: int, stage_fraction: float) -> None:
     trial = decode_runtime_payload(trial_hex, (13, 22, "float"))
     context = decode_runtime_payload(context_hex, (14, 4, 5, "float", "float", "float", "bool", "bool"))
     body, continuous, stage_time = trial
@@ -356,7 +369,7 @@ def validate_runtime_payload(trial_hex: str, context_hex: str, tick: int) -> Non
     tick_time = float(tick) * (1.0 / 240.0)
     require(math.isfinite(norm_sq) and norm_sq > 1e-24 and continuous[0] == 0.0
             and continuous[7] == 0.0 and continuous[8] == 2.0 and continuous[18] == 1.0
-            and context[3] == tick_time and stage_time == tick_time + (1.0 / 240.0)
+            and context[3] == tick_time and stage_time == tick_time + (1.0 / 240.0) * stage_fraction
             and context[4] == 0.0 and context[5] == 0.0 and context[6] is False and context[7] is False,
             "runtime-domain typed trial or context differs from the stopped-rotor attempt")
 
@@ -364,6 +377,7 @@ def validate_runtime_payload(trial_hex: str, context_hex: str, tick: int) -> Non
 def validate_runtime_refusal(row: dict[str, Any], expected: dict[str, Any], guard: dict[str, Any],
                              warmup: int, samples: int) -> None:
     tick = expected["expected_runtime_tick"]
+    spec = RUNTIME_CASES[expected["aircraft"]]
     require(warmup + samples > tick and row.get("status") == "runtime-domain-refused"
             and row.get("reason") == RUNTIME_CODE and row.get("fingerprint_equal") is False,
             "unexpected runtime-domain status")
@@ -398,18 +412,23 @@ def validate_runtime_refusal(row: dict[str, Any], expected: dict[str, Any], guar
             and hash_string(proof.get("reference_aircraft_sha256"))
             and proof.get("native_aircraft_sha256") == proof["reference_aircraft_sha256"],
             "runtime-domain reference owner or aircraft identity differs")
+    require("aircraft_sha256" not in spec or proof["reference_aircraft_sha256"] == spec["aircraft_sha256"],
+            "runtime-domain aircraft differs from the observed fixture")
     require(isinstance(identity, dict) and identity.get("backend") == "native" and identity.get("abi_version") == 2
             and identity.get("binary_sha256") == guard["binary_sha256"]
             and identity.get("source_sha256") == guard["receipt"].get("source_sha256")
             and identity.get("lock_sha256") == guard["receipt"].get("lock_sha256"),
             "runtime-domain native identity differs")
-    require(positive_int(proof.get("native_stage_calls"), 4 * tick + 1)
+    require(positive_int(proof.get("native_stage_calls"), 4 * tick + spec["rejected_stage_calls"])
             and positive_int(proof.get("native_context_calls"), tick + 1)
-            and positive_int(proof.get("rejected_stage_calls"))
-            and positive_int(proof.get("rejected_context_calls"))
+            and type(proof.get("rejected_stage_calls")) is int
+            and proof["rejected_stage_calls"] == spec["rejected_stage_calls"]
+            and type(proof.get("rejected_context_calls")) is int and proof["rejected_context_calls"] == 1
             and proof["rejected_stage_calls"] <= proof["native_stage_calls"]
             and proof["rejected_context_calls"] <= proof["native_context_calls"]
+            and type(proof.get("native_diagnostic_stage_call")) is int
             and proof.get("native_diagnostic_stage_call") == proof["native_stage_calls"]
+            and type(proof.get("native_diagnostic_context_call")) is int
             and proof.get("native_diagnostic_context_call") == proof["native_context_calls"],
             "runtime-domain native coverage or rejecting call is incomplete")
     for name in ("trial", "context"):
@@ -420,7 +439,9 @@ def validate_runtime_refusal(row: dict[str, Any], expected: dict[str, Any], guar
                 and native_encoded == encoded and native_digest == digest
                 and hashlib.sha256(bytes.fromhex(encoded)).hexdigest() == digest,
                 f"runtime-domain typed {name} evidence is malformed")
-    validate_runtime_payload(proof["trial_bytes_hex"], proof["context_bytes_hex"], tick)
+        require(name + "_sha256" not in spec or digest == spec[name + "_sha256"],
+                f"runtime-domain typed {name} differs from the observed fixture")
+    validate_runtime_payload(proof["trial_bytes_hex"], proof["context_bytes_hex"], tick, spec["stage_fraction"])
     reference_cause, native_cause = proof.get("reference_cause"), proof.get("native_cause")
     require(isinstance(reference_cause, dict) and isinstance(native_cause, dict)
             and reference_cause.get("code") == native_cause.get("code") == RUNTIME_CODE
@@ -428,6 +449,8 @@ def validate_runtime_refusal(row: dict[str, Any], expected: dict[str, Any], guar
             and type(native_cause.get("feed_factor")) in (int, float)
             and native_cause["feed_factor"] in (0.0, 2.0),
             "runtime-domain branch evidence differs")
+    require("feed_factor" not in spec or native_cause["feed_factor"] == spec["feed_factor"],
+            "runtime-domain feed factor differs from the observed branch")
     fields = ("feed_factor", "rpm", "demand_nm", "friction_nm", "prop_load_torque_nm", "axial_acceleration_rad_s2",
               "rotor_inertia_kg_m2")
     for field in fields:
@@ -436,6 +459,9 @@ def validate_runtime_refusal(row: dict[str, Any], expected: dict[str, Any], guar
                 and math.isfinite(left) and math.isfinite(right)
                 and struct.pack("<d", float(left)) == struct.pack("<d", float(right)),
                 f"runtime-domain {field} differs")
+    if "cause_bytes_hex" in spec:
+        require(b"".join(struct.pack("<d", float(reference_cause[field])) for field in fields).hex()
+                == spec["cause_bytes_hex"], "runtime-domain cause differs from the observed fixture")
     require(reference_cause["rpm"] == 0.0 and reference_cause["friction_nm"] > 0.0
             and reference_cause["rotor_inertia_kg_m2"] > 0.0
             and reference_cause["demand_nm"] == -reference_cause["prop_load_torque_nm"]
@@ -646,20 +672,26 @@ async def monitor_snapshot(guard: dict[str, Any], interval: float = 5.0) -> None
 
 async def run_shards(aircraft: list[str], out: Path, jobs: int, warmup: int, samples: int,
                      timeout: int, reused: dict[str, Path] | None = None,
-                     guard: dict[str, Any] | None = None, monitor_interval: float = 5.0) -> dict[str, Path]:
+                     guard: dict[str, Any] | None = None, monitor_interval: float = 5.0,
+                     keep_going: bool = False) -> dict[str, Path]:
     semaphore = asyncio.Semaphore(jobs)
     reused = reused or {}
     tasks = [asyncio.create_task(wait_reused_report(name, reused[name], timeout) if name in reused
                                  else run_shard(name, out, semaphore, warmup, samples, timeout))
              for name in aircraft]
-    collected = asyncio.gather(*tasks)
+    collected = asyncio.gather(*tasks, return_exceptions=keep_going)
     monitor = asyncio.create_task(monitor_snapshot(guard, monitor_interval)) if guard is not None else None
     try:
         if monitor is not None:
             finished, _pending = await asyncio.wait((collected, monitor), return_when=asyncio.FIRST_COMPLETED)
             if monitor in finished:
                 await monitor
-        return dict(await collected)
+        results = await collected
+        failures = [(name, result) for name, result in zip(aircraft, results) if isinstance(result, BaseException)]
+        if failures:
+            raise CampaignError("fleet shards failed after independent work finished: "
+                                + "; ".join(f"{name}: {error}" for name, error in failures))
+        return dict(results)
     except BaseException:
         for task in tasks:
             task.cancel()
@@ -681,6 +713,8 @@ def main() -> int:
     parser.add_argument("--timeout", type=int, default=21600, help="per-shard checked timeout in seconds")
     parser.add_argument("--reuse-report", action="append", default=[], metavar="AIRCRAFT=REPORT",
                         help="reuse a current full-aircraft run.py report, waiting if it is still running")
+    parser.add_argument("--keep-going", action="store_true",
+                        help="finish independent shards after a shard failure; the campaign still fails")
     args = parser.parse_args()
     if not 1 <= args.jobs <= MAX_JOBS or args.warmup < MIN_WARMUP or args.samples < MIN_SAMPLES or args.timeout <= 0:
         parser.error("jobs must be 1–4, warmup >= 600, samples >= 2400, and timeout positive")
@@ -704,7 +738,8 @@ def main() -> int:
         manifest_script_hash = sha256(out / "manifest.gd")
         require(snapshot() == guard, "source, binary or engine changed during manifest generation")
         print(f"Declared fleet: {len(expected)} rows across {len(aircraft)} aircraft", flush=True)
-        paths = asyncio.run(run_shards(aircraft, out, args.jobs, args.warmup, args.samples, args.timeout, reused, guard))
+        paths = asyncio.run(run_shards(aircraft, out, args.jobs, args.warmup, args.samples, args.timeout,
+                                       reused, guard, keep_going=args.keep_going))
         report_hashes = {name: sha256(path) for name, path in paths.items()}
         reports = {name: json.loads(path.read_text(encoding="utf-8")) for name, path in paths.items()}
         totals = validate_reports(manifest, reports, guard, args.warmup, args.samples)
@@ -722,6 +757,7 @@ def main() -> int:
         require(snapshot() == guard, "source, binary or engine changed during the campaign")
         result = {"format": "openrc-nk3-fleet-campaign v1", "verdict": "pass",
                   "scope": "full-declared-matrix", "warmup": args.warmup, "samples": args.samples,
+                  "keep_going": args.keep_going,
                   "manifest_sha256": manifest_hash,
                   "manifest_script_sha256": manifest_script_hash, "guard": guard, "totals": totals,
                   "reports": {name: {"path": str(paths[name]), "sha256": report_hashes[name]}

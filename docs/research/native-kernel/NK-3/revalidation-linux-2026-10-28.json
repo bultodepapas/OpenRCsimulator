@@ -22729,7 +22729,7 @@
     }
    },
    "native_admission_follow_up": {
-    "status": "Nineteen installer gates, installed admission/domain diagnostics, UBSan, actual Linux package checks, 30 quiet release performance pairs and candidate ZIP verification passed; full fleet running, final shared-workspace installation pending.",
+    "status": "Package/performance evidence remains valid for unchanged runtime bytes. First full fleet failed on two previously undeclared four-stroke domain limits; six exact native/reference refusal proofs now pass. Refreshed installer receipts and full fleet requalification pending.",
     "candidate_source_commit": "1c33c0914a0f6f31b5868e645689c303239b9899",
     "candidate_native_sha256": "74ce8abcb021d0687024b887c59866f1d10649d9b860a69078a45564b644dbf7",
     "findings": {
@@ -23040,6 +23040,82 @@
      "files": 6,
      "crc_sha256_and_modes_verified": true,
      "original_rollback_and_retention_artifacts_unchanged": true
+    },
+    "fs64v_runtime_follow_up": {
+     "status": "strict six-row domain proofs passed; full fleet requalification pending",
+     "failed_full_campaign": {
+      "log": {
+       "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-fleet.launch.log",
+       "sha256": "b030aefb92704cbb515a4ce20f5a830d514c75d87fe84725342ac6a4715d11f5"
+      },
+      "manifest": {
+       "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-fleet/manifest.json",
+       "sha256": "24bfeff0cecb60135e2f87778a969e74f3121094d5596029be119a4502412ed2"
+      },
+      "fs64v_report": {
+       "path": "tmp/nk3-admission-isolated/tmp/native-kernel/fleet-20261029T005516216137Z.json",
+       "sha256": "25ab751f59114c66ca24f7600f1b8fa9cb32da11d2666558297d95a35ca50f14"
+      },
+      "exit_code": 1,
+      "completed_passing_shards": 1,
+      "passing_shard_aircraft": "jensen-das-ugly-stik-60",
+      "passing_shard_flights": 98,
+      "passing_shard_startup_refusals": 4,
+      "limit": "Other workers were canceled after the FS64V failure; partial logs do not qualify a shard or aggregate."
+     },
+     "diagnosis": {
+      "comparison": {
+       "path": "tmp/nk3-admission-isolated/tmp/nk3-fs64v-diagnosis/compare.json",
+       "sha256": "8027558c3920b925d8135dd8ec211177175fc73e3116b329d517de9ab5eb4a99"
+      },
+      "trial": {
+       "path": "tmp/nk3-admission-isolated/tmp/nk3-fs64v-diagnosis/trial_bits.json",
+       "sha256": "b1693a9f4b166dcaa086bb31c56e42ff4288138cd173df89ae4791349e0eadc4"
+      },
+      "accepted_ticks": 805,
+      "attempted_tick": 806,
+      "trial_phase": "midpoint",
+      "rejected_stage_calls": 2,
+      "cause": "glow_stopped_reverse_drive",
+      "origin": "feed_endpoint",
+      "feed_factor": 0.0,
+      "native_and_reference_trial_context_cause_bytes_equal": true,
+      "rollback_equal": true
+     },
+     "policy": {
+      "native_ci_checks": 264,
+      "native_ci_report": {
+       "path": "tmp/nk3-fs64v-real-proof/checks/runtime-ci-reviewed-_nchmd18/report.json",
+       "sha256": "5c2beae4cdd328ffca15e612ab1e500af338893c531ac9a2de23d663450ae52c"
+      },
+      "six_real_proofs": {
+       "path": "tmp/nk3-fs64v-real-proof/proofs-reviewed.json",
+       "sha256": "ea052729a1a6de0f41e521b651529b672d7f91aaeeaeb819fb0544da05e9f3b2"
+      },
+      "independent_python_validation": {
+       "path": "tmp/nk3-fs64v-real-proof/python-verify-reviewed.log",
+       "sha256": "7862dcacddb2435eeda75dbd9ccf2bf860ee1c4d5a6b22fedeede3f8b4dee7df"
+      },
+      "source_lock_after": {
+       "path": "tmp/nk3-fs64v-real-proof/reviewed-lock-after.log",
+       "sha256": "c3413d73d06d7342c28bd4725fa803ae06419e4795045392bdda73b903750cbd"
+      },
+      "python_policy_tests": 25,
+      "declared_rows": 1238,
+      "declared_complete_flights": 1214,
+      "declared_startup_refusals": 18,
+      "declared_runtime_refusals": 6,
+      "limit": "Declared expectations and six runtime proofs only; not a completed full fleet."
+     },
+     "rejection_regressions": {
+      "godot_checks": 98,
+      "godot_report": {
+       "path": "tmp/nk3-rejection-coverage/checks/exact-captured-final-ex1ls3rk/report.json",
+       "sha256": "a95a3c1cf0a4b457655f646686b045190dc52581b82795a999cb7893dc2a5235"
+      },
+      "cpp_boundary_checks": 40
+     },
+     "implementation_limit": "Only external research tests and campaign policy changed. Native C++ source/library and all app runtime sources remain unchanged. Existing immutable package/performance evidence retains its original eef621296/d0ca identity; refreshed installer receipts and a full new campaign remain required."
     }
    },
    "general_integration_continuation": {

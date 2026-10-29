@@ -23,6 +23,15 @@ five packaged native modes, 18 application routes and exact 65-row player replay
 Linux candidate ZIP passed streamed CRC, SHA-256 and permission checks. The full 1,238-row fleet campaign
 and final shared-workspace installation remain pending; this candidate is not yet the expanded default.
 
+The first full campaign stopped on two FS64V runway/gusty cases at attempted tick 806. Independent paired
+diagnosis reproduced both failures on the reference, with identical accepted prefixes, midpoint trial/context,
+finite reverse-demand cause and rollback. The four-stroke proof now pins that observed boundary; all six
+runtime-domain proofs pass the required native test (264 checks), with 25 Python policy tests, 98 real
+two/four-stroke diagnostic checks and 40 C++ boundary checks. The new declaration has 1,214 flight rows,
+18 startup refusals and six runtime refusals. The complete campaign must still be rerun; the shortened
+diagnostic runs and interrupted shards are not full-fleet evidence. No simulation equation, aircraft data or
+native library changed. Fresh installer receipts must bind the updated external test harness.
+
 The corrected release performance campaign completed all 60 probes: three alternating reference/native
 pairs for each aircraft/case, with 600 warmup and 2,400 sampled ticks. Every pair was comparable, with
 matching state fingerprints and actual native execution. Other owned heavy jobs were idle. On the local

@@ -20,7 +20,21 @@ const STIK_RUNWAY_REFUSAL := "reset failed: runway start: idle support pose unre
 const STIK_RUNWAY_REFUSAL_AIRCRAFT := ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t",
 	"stik-glow-55ax-2t", "stik-glow-fs64v-4t"]
 const STIK_RUNWAY_REFUSAL_WEATHER := ["crosswind", "spatial-crosswind-v1"]
-const GLOW_REVERSE_TICKS := {"stik-glow-61fx-2t": 873, "stik-glow-55ax-2t": 801}
+# These are source-observed boundaries, not evidence supplied by a report. The
+# four-stroke trial rejects at the RK midpoint; the two-strokes reject at the end.
+# The FS64V hashes are from both real backends on the 2026-10-29 stock ideal,
+# gusty runway tape at tick 805, with both hull settings and typed Variant bytes.
+# A different aircraft, trial, or context needs a new proof, not this fixture.
+const GLOW_REVERSE_CASES := {
+	"stik-glow-61fx-2t": {tick = 873, stage_fraction = 1.0, rejected_stage_calls = 4},
+	"stik-glow-55ax-2t": {tick = 801, stage_fraction = 1.0, rejected_stage_calls = 4},
+	"stik-glow-fs64v-4t": {tick = 805, stage_fraction = 0.5, rejected_stage_calls = 2, feed_factor = 0.0,
+		aircraft_sha256 = "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a",
+		trial_sha256 = "e064ab046fc2119231564b6b6c125fc256c752ebb2fb04d557d7ee7bef0e16c8",
+		context_sha256 = "e7cc667d8cf303f497701c1079db0c5936303c31da51e236791b13f238cc61b6",
+		cause_bytes_hex = "00000000000000000000000000000000acf7f5a16f0d90bf442c89836c0a903f" \
+			+ "fb702e7c620d903fd22f068cdc4b333f85580189a0cd453f"},
+}
 const GLOW_REVERSE_CODE := "glow_stopped_reverse_drive"
 const GLOW_REVERSE_FAULT := "step rejected: RK joint stage evaluation is nonfinite or malformed"
 const GLOW_FEED_ENDPOINT_ERROR := "Glow feed factor endpoint evaluation failed"
@@ -89,10 +103,10 @@ static func _fleet_declared_rows() -> Array[Dictionary]:
 						if id in STIK_RUNWAY_REFUSAL_AIRCRAFT and battery == "ideal" and start == "runway" \
 								and str(preset.id) in STIK_RUNWAY_REFUSAL_WEATHER:
 							row.expected = "reference-refusal"
-						elif id in GLOW_REVERSE_TICKS and battery == "ideal" and start == "runway" \
+						elif id in GLOW_REVERSE_CASES and battery == "ideal" and start == "runway" \
 								and str(preset.id) == "gusty":
 							row.expected = "runtime-domain-refusal"
-							row.expected_runtime_tick = GLOW_REVERSE_TICKS[id]
+							row.expected_runtime_tick = GLOW_REVERSE_CASES[id].tick
 						rows.append(row)
 	return rows
 
@@ -493,14 +507,14 @@ static func _fleet_expected_refusal_pair(row: Dictionary, reference: Dictionary,
 		and reference.get("reason") == native.get("reason")
 
 
-## Only the four reproduced runway/gusty rows have this source-domain boundary.
+## Only the six reproduced runway/gusty rows have this source-domain boundary.
 static func _fleet_runtime_tick(row: Dictionary) -> int:
 	if row.get("expected") != "runtime-domain-refusal" or row.get("vehicle") != "fixed-wing" \
 			or row.get("battery") != "ideal" or row.get("case") != "runway" \
 			or row.get("weather") != "gusty" or typeof(row.get("soft_hull")) != TYPE_BOOL \
-			or not GLOW_REVERSE_TICKS.has(row.get("aircraft")):
+			or not GLOW_REVERSE_CASES.has(row.get("aircraft")):
 		return -1
-	var expected: int = GLOW_REVERSE_TICKS[row.aircraft]
+	var expected: int = GLOW_REVERSE_CASES[row.aircraft].tick
 	return expected if typeof(row.get("expected_runtime_tick")) == TYPE_INT and row.expected_runtime_tick == expected else -1
 
 
@@ -525,7 +539,7 @@ static func _fleet_finite_array(value: Variant, expected_size: int) -> bool:
 	return true
 
 
-static func _fleet_runtime_payload_valid(trial: Variant, context: Variant, tick: int) -> bool:
+static func _fleet_runtime_payload_valid(trial: Variant, context: Variant, tick: int, stage_fraction: float) -> bool:
 	if not trial is Array or trial.size() != 3 or not context is Array or context.size() != 8 \
 			or not _fleet_finite_array(trial[0], RB.SIZE) or not RuntimeSimulation.state_is_valid(trial[0]) \
 			or not _fleet_finite_array(trial[1], GlowFlight.SIZE + 3) or typeof(trial[2]) != TYPE_FLOAT \
@@ -539,7 +553,7 @@ static func _fleet_runtime_payload_valid(trial: Variant, context: Variant, tick:
 	for index: int in [3, 4, 5]:
 		if typeof(context[index]) != TYPE_FLOAT or not is_finite(context[index]): return false
 	var tick_time: float = float(tick) * (1.0 / 240.0)
-	return context[3] == tick_time and trial[2] == tick_time + (1.0 / 240.0) \
+	return context[3] == tick_time and trial[2] == tick_time + (1.0 / 240.0) * stage_fraction \
 		and context[4] == 0.0 and context[5] == 0.0 and context[6] == false and context[7] == false \
 		and typeof(context[6]) == TYPE_BOOL and typeof(context[7]) == TYPE_BOOL
 
@@ -635,6 +649,7 @@ static func _fleet_runtime_proof_error(row: Dictionary, proof: Dictionary, warmu
 	var tick := _fleet_runtime_tick(row)
 	if tick < 0 or warmup <= 0 or samples <= 0 or warmup + samples <= tick:
 		return "undeclared runtime-domain row or horizon"
+	var spec: Dictionary = GLOW_REVERSE_CASES[str(row.aircraft)]
 	for field: String in ["prefix_equal_every_tick", "terminal_equal", "reference_rollback", "native_rollback",
 			"reference_owner_retained", "native_owner_retained", "native_covered_every_tick", "trial_equal",
 			"context_equal", "reference_result_empty"]:
@@ -667,18 +682,24 @@ static func _fleet_runtime_proof_error(row: Dictionary, proof: Dictionary, warmu
 	if typeof(aircraft_hash) != TYPE_STRING or aircraft_hash.length() != 64 or not aircraft_hash.is_valid_hex_number() \
 			or proof.get("native_aircraft_sha256") != aircraft_hash:
 		return "runtime-domain aircraft identities differ"
+	if spec.has("aircraft_sha256") and aircraft_hash != spec.aircraft_sha256:
+		return "runtime-domain aircraft differs from the observed fixture"
 	if not reference_identity is Dictionary or reference_identity.get("backend") != "gdscript_reference" \
 			or not identity is Dictionary or identity.get("backend") != "native" or identity.get("abi_version") != 2 \
 			or proof.get("native_owner_retained") != true or proof.get("native_covered_every_tick") != true \
 			or typeof(proof.get("reference_input_reads")) != TYPE_INT or proof.reference_input_reads != tick + 1 \
 			or typeof(proof.get("native_input_reads")) != TYPE_INT or proof.native_input_reads != tick + 1 \
-			or typeof(proof.get("native_stage_calls")) != TYPE_INT or proof.native_stage_calls < 4 * tick + 1 \
+			or typeof(proof.get("native_stage_calls")) != TYPE_INT \
+			or proof.native_stage_calls < 4 * tick + spec.rejected_stage_calls \
 			or typeof(proof.get("native_context_calls")) != TYPE_INT or proof.native_context_calls < tick + 1 \
-			or typeof(proof.get("rejected_stage_calls")) != TYPE_INT or proof.rejected_stage_calls < 1 \
-			or typeof(proof.get("rejected_context_calls")) != TYPE_INT or proof.rejected_context_calls < 1 \
+			or typeof(proof.get("rejected_stage_calls")) != TYPE_INT \
+			or proof.rejected_stage_calls != spec.rejected_stage_calls \
+			or typeof(proof.get("rejected_context_calls")) != TYPE_INT or proof.rejected_context_calls != 1 \
 			or proof.rejected_stage_calls > proof.native_stage_calls \
 			or proof.rejected_context_calls > proof.native_context_calls \
+			or typeof(proof.get("native_diagnostic_stage_call")) != TYPE_INT \
 			or proof.get("native_diagnostic_stage_call") != proof.native_stage_calls \
+			or typeof(proof.get("native_diagnostic_context_call")) != TYPE_INT \
 			or proof.get("native_diagnostic_context_call") != proof.native_context_calls:
 		return "runtime-domain native ownership, input or stage coverage is incomplete"
 	if proof.get("trial_equal") != true or proof.get("context_equal") != true \
@@ -699,9 +720,11 @@ static func _fleet_runtime_proof_error(row: Dictionary, proof: Dictionary, warmu
 		digest.update(encoded.hex_decode())
 		if digest.finish().hex_encode() != expected_hash:
 			return "runtime-domain typed " + field + " hash differs"
+		if spec.has(field + "_sha256") and expected_hash != spec[field + "_sha256"]:
+			return "runtime-domain typed " + field + " differs from the observed fixture"
 	var trial_payload: Variant = bytes_to_var(str(proof.trial_bytes_hex).hex_decode())
 	var context_payload: Variant = bytes_to_var(str(proof.context_bytes_hex).hex_decode())
-	if not _fleet_runtime_payload_valid(trial_payload, context_payload, tick):
+	if not _fleet_runtime_payload_valid(trial_payload, context_payload, tick, float(spec.stage_fraction)):
 		return "runtime-domain typed trial or context shape differs"
 	var reference: Variant = proof.get("reference_cause")
 	var native: Variant = proof.get("native_cause")
@@ -711,6 +734,8 @@ static func _fleet_runtime_proof_error(row: Dictionary, proof: Dictionary, warmu
 			or typeof(reference.get("feed_factor")) not in [TYPE_FLOAT, TYPE_INT] \
 			or not is_finite(float(native.feed_factor)) or float(native.feed_factor) not in [0.0, 2.0]:
 		return "runtime-domain rejecting branch is missing"
+	if spec.has("feed_factor") and native.feed_factor != spec.feed_factor:
+		return "runtime-domain feed factor differs from the observed branch"
 	var ref_values := PackedFloat64Array()
 	var native_values := PackedFloat64Array()
 	for field: String in ["feed_factor", "rpm", "demand_nm", "friction_nm", "prop_load_torque_nm",
@@ -721,6 +746,8 @@ static func _fleet_runtime_proof_error(row: Dictionary, proof: Dictionary, warmu
 			return "runtime-domain numeric branch evidence is malformed"
 		ref_values.append(float(reference[field]))
 		native_values.append(float(native[field]))
+	if spec.has("cause_bytes_hex") and ref_values.to_byte_array().hex_encode() != spec.cause_bytes_hex:
+		return "runtime-domain cause differs from the observed fixture"
 	var computed_demand: float = -ref_values[4] - ref_values[6] * ref_values[5]
 	if var_to_bytes(ref_values) != var_to_bytes(native_values) or ref_values[1] != 0.0 \
 			or ref_values[2] != computed_demand \

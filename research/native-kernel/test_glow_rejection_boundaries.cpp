@@ -10,12 +10,13 @@ namespace {
 
 int failures = 0;
 int checks = 0;
+const char *family_name = "";
 
 void check(bool condition, const char *name) {
 	++checks;
 	if (!condition) {
 		++failures;
-		std::fprintf(stderr, "FAIL %s\n", name);
+		std::fprintf(stderr, "FAIL %s %s\n", family_name, name);
 	}
 }
 
@@ -30,12 +31,13 @@ struct Fixture {
 	nk::GlowBladePoint blade;
 	nk::LiquidMassProperties mass;
 
-	Fixture() {
+	explicit Fixture(nk::GlowFamily family) {
 		body[6] = 1.0;
 		values[12] = 1.0;
 		prop.rotor_inertia = 0.125;
 		lifecycle.throttle_capacity_m3_s = 1.0;
 		auto &source = lifecycle.source;
+		source.family = family;
 		source.max_rpm = 100.0;
 		source.displacement_m3 = 1.0e-6;
 		source.oil_fraction = 0.0;
@@ -47,6 +49,7 @@ struct Fixture {
 		source.mechanical_torque_nm = {0.0, 0.125, 100.0, 0.125};
 		source.combustion_efficiency = {0.0, 1.0, 2.0, 1.0};
 		source.indicated_efficiency = {0.0, 1.0, 100.0, 1.0};
+		source.valve_torque_nm = {0.0, 0.0625, 100.0, 0.0625};
 		state.air_fraction = 1.0;
 		life.ok = true;
 		life.source.shaft_torque_nm = 0.0;
@@ -104,33 +107,49 @@ FeedObservation exercise_feed(FeedCase which, const nk::GlowStageRejection &actu
 	return out;
 }
 
-} // namespace
-
-int main() {
-	Fixture fixture;
+void run_family(nk::GlowFamily family) {
+	family_name = family == nk::GlowFamily::TwoStroke ? "glow_2t" : "glow_4t";
+	const int before = failures;
+	Fixture fixture(family);
+	const double friction = family == nk::GlowFamily::TwoStroke ? 0.125 : 0.1875;
+	const double valve = family == nk::GlowFamily::TwoStroke ? 0.0 : 0.0625;
+	const double cycle = family == nk::GlowFamily::TwoStroke ? 1.0 : 2.0;
 	const nk::R breathing = nk::glow_source_table_sample(fixture.lifecycle.source.breathing, 0.001);
 	const nk::R admission = nk::glow_carb_admission(fixture.state.air_fraction, 0.001, breathing,
-			fixture.lifecycle.source.displacement_m3, 1.0, fixture.lifecycle.throttle_capacity_m3_s);
+			fixture.lifecycle.source.displacement_m3, cycle, fixture.lifecycle.throttle_capacity_m3_s);
 	const auto coast = nk::glow_source_evaluate(fixture.lifecycle.source, 0.001, admission, 1.0, 1.0, false, 1.0);
-	check(coast.ok && -coast.shaft_torque_nm.v == 0.125, "fixture has exactly representable static friction");
+	check(coast.ok && coast.valve_torque_nm.v == valve && -coast.shaft_torque_nm.v == friction &&
+			coast.cycle_frequency_hz.v == 0.001 / (60.0 * cycle),
+			"fixture uses its family's cycle and exactly representable static friction");
 
-	fixture.blade.torque_nm = 0.125;
+	fixture.blade.torque_nm = friction;
 	nk::GlowStageRejection equality;
 	const auto at = fixture.run(&equality);
 	check(at.ok && equality.code == nk::GlowRejectionCode::None, "demand equals -friction: hold, no refusal");
 
-	fixture.blade.torque_nm = std::nextafter(0.125, 0.0);
+	fixture.blade.torque_nm = std::nextafter(friction, 0.0);
 	nk::GlowStageRejection above;
 	const auto near_above = fixture.run(&above);
 	check(near_above.ok && above.code == nk::GlowRejectionCode::None, "adjacent demand above -friction: hold");
 
-	fixture.blade.torque_nm = std::nextafter(0.125, std::numeric_limits<double>::infinity());
+	fixture.blade.torque_nm = std::nextafter(friction, std::numeric_limits<double>::infinity());
 	nk::GlowStageRejection reverse;
 	const auto near_below = fixture.run(&reverse);
 	check(!near_below.ok && reverse.code == nk::GlowRejectionCode::StoppedReverseDrive && reverse.rpm == 0.0 &&
 			reverse.demand_nm < -reverse.friction_nm, "adjacent demand below -friction: actual reverse refusal");
 	const auto disabled = fixture.run(nullptr);
 	check(!disabled.ok, "disabled diagnostic leaves the actual refusal unchanged");
+	fixture.blade.torque_nm = friction;
+	nk::GlowStageRejection stale = reverse;
+	check(fixture.run(&stale).ok && stale.code == nk::GlowRejectionCode::None,
+			"a subsequent accepted boundary clears a stale refusal");
+	fixture.blade.torque_nm = std::nextafter(friction, std::numeric_limits<double>::infinity());
+	Fixture invalid_source = fixture;
+	if (family == nk::GlowFamily::TwoStroke) invalid_source.lifecycle.source.trapping_efficiency.clear();
+	else invalid_source.lifecycle.source.valve_torque_nm.clear();
+	stale = reverse;
+	check(!invalid_source.run(&stale).ok && stale.code == nk::GlowRejectionCode::None,
+			"a missing family-specific source table cannot retain a stale refusal");
 
 	fixture.values[0] = -0.0;
 	nk::GlowStageRejection signed_zero;
@@ -178,6 +197,14 @@ int main() {
 	const auto speculative = exercise_feed(FeedCase::SpeculativeOnly, reverse);
 	check(speculative.solved && speculative.diagnostic.code == nk::GlowRejectionCode::None,
 			"speculative base failure cannot label a successful solve");
+	if (failures == before) std::printf("NK3_GLOW_REJECTION_BOUNDARY family=%s verdict=pass\n", family_name);
+}
+
+} // namespace
+
+int main() {
+	run_family(nk::GlowFamily::TwoStroke);
+	run_family(nk::GlowFamily::FourStroke);
 	std::printf("NK3 glow rejection boundaries: %d checks, %d failed\n", checks, failures);
 	return failures == 0 ? 0 : 1;
 }
