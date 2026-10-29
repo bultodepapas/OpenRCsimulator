@@ -23317,7 +23317,23 @@
       "functional_checks": "five native modes, 18 routes, exact 65-row player replay, 720-tick trimmed smoke, full ZIP ELF audit",
       "quiet_timing": "not run",
       "native_glibc_symbol_requirement": "2.38",
-      "distribution_compatibility_qualified": false
+      "distribution_compatibility_qualified": false,
+      "archive_storage_update": {
+       "status": "ZIP container removed after verified lossless retention; original archive hash remains historical",
+       "recovery": {
+        "path": "tmp/nk3-admission-work/package-retention/candidate-a742ad11-recover-v2.sh",
+        "sha256": "0d27e0964dc9509a337d61142e5770c471d5f042ff53db83a8f0ddf7f0473df2"
+       },
+       "delta_storage": {
+        "path": "tmp/nk3-admission-work/package-retention/candidate-a742ad11-delta-storage.json",
+        "sha256": "bf2a6012d5b6a31ef8b8648f60ab62b71046858b6c5d2eb33c0cc330ceb5e5f0"
+       },
+       "delta_release": {
+        "path": "tmp/nk3-admission-work/package-retention/candidate-a742ad11-delta-release.json",
+        "sha256": "2f845b95ed751d048e2537580daa1d888d42eb24f2e8bc19a81858a0741ac6ad"
+       },
+       "sidecars": "tmp/nk3-admission-work/package-retention/candidate-a742ad11-sidecars"
+      }
      },
      "x8_failed_report": {
       "path": "tmp/nk3-current-isolated/tmp/native-kernel/fleet-20261029T151621098937Z.json",
@@ -27261,5 +27277,274 @@
   ],
   "scope": "All currently simulatable aircraft and supported conditions on Linux x86_64; Windows/macOS excluded.",
   "status": "in_progress_not_promoted"
+ },
+ "expanded_default_linux": {
+  "status": "qualified_installed_default",
+  "date": "2026-10-29T19:45:54.380908+00:00",
+  "scope": "Current selectable aircraft catalog and admitted flight conditions on the verified Linux x86_64 route; shared kernel and existing start/weather/runtime contracts preserved.",
+  "supersedes": "official_default_linux (original stock legacy prescribed-RPM Ugly Stik scope)",
+  "runtime_and_package_commit": "d94816580ccfcf50694b2817a47d32fd64ad1111",
+  "validator_and_installation_commit": "2e2aa3c55d5cbfc128693fd17296e8f8061690d8",
+  "native_build_commit": "eef621296c0d91b0573da7e44dad02d6c22bc775",
+  "native_build_provenance": "The unchanged native binary was reused after source and dependency identity verification, not rebuilt at the later runtime or validator commits.",
+  "native_binary_sha256": "d023a8758404ad2b95949214af92e6f888f91fb32977b61e0db5ad4220178fc1",
+  "native_source_sha256": "14c124bba22f72760de4deb3c69be5d21b64590c83b2adb4231a7608b4572f03",
+  "installed_receipt": {
+   "path": "app/native/kernel/build-receipt.json",
+   "sha256": "689f0d56aeb085ced538dc8cc765a47ddb86527bb30db79c483486779fe9f74e"
+  },
+  "fleet": {
+   "declared": 1238,
+   "completed_flights": 1202,
+   "startup_refusals": 28,
+   "runtime_refusals": 6,
+   "physical_terminals": 2,
+   "warmup_ticks": 600,
+   "sample_ticks": 2400,
+   "checked_shards": 11,
+   "aggregate": {
+    "path": "/home/bulto/OpenRCsimulator/tmp/nk3-corrected-validation-isolated/tmp/nk3-corrected-fleet-aggregate/campaign.json",
+    "postcheck_path": "/home/bulto/OpenRCsimulator/tmp/nk3-corrected-validation-work/postcheck.json",
+    "postcheck_sha256": "e3924ed7290075b9a65fa2914de971b6de29f24c43746448eaf5c2f66e56b780",
+    "sha256": "5041062f2ef9a1be5b4ed6260fa13430400314b9b3e4b2bb25213032f8b6bedc",
+    "validator_commit": "2e2aa3c55d5cbfc128693fd17296e8f8061690d8"
+   },
+   "postcheck": {
+    "path": "tmp/nk3-corrected-validation-work/postcheck.json",
+    "sha256": "e3924ed7290075b9a65fa2914de971b6de29f24c43746448eaf5c2f66e56b780"
+   },
+   "independent_review": {
+    "path": "tmp/nk3-terminal-json-audit/corrected-aggregate-audit.json",
+    "sha256": "d989d732d51e9c3f24fea8db6b8cbb05bdd5c4e9e8aa1944ef4ca90384b306ca"
+   },
+   "original_failed_coordinator": {
+    "path": "tmp/nk3-final-qualified-work/fleet-failed-diagnostic-index.json",
+    "sha256": "8d24a7bdc517a7c72c99bd553878f6197b9dcb92c53530e9e4aed0306c390c78"
+   },
+   "correction": "The d948 execution produced eleven passing checked shards. The coordinator alone rejected the full-precision JSON projection because its pin came from a reduced-precision diagnostic. Validator 2e2aa revalidated the unchanged reports and checked logs using the existing --reuse-report workflow. Only the validator and its Python tests changed; all report-bound runtime, Godot harness, native, engine and cache inputs remained identical. The original failed aggregate is retained. No tolerance or alternate event was admitted.",
+   "typed_projection_review": {
+    "path": "tmp/nk3-terminal-json-audit/audit.json",
+    "sha256": "d231d305bea4e50e5e4f6f606cc0d89b02a02b216f6649dce6c14ac6f2d1b1e0"
+   },
+   "python_tests": 39,
+   "combined_godot_policy_checks": 650,
+   "classification": "Startup/runtime refusals and terminal collision prefixes are separate outcomes, never completed-flight credit."
+  },
+  "package": {
+   "qualification": {
+    "path": "tmp/nk3-final-package-work/final-package-qualification.json",
+    "sha256": "5dc5f25fc73d8f01e1c8cbe0e8dfe1de90755d949bfc4d3665c7d63d5b6a8adc"
+   },
+   "archive": "tmp/nk3-final-package-work/openrc-simulator-v0.1.8-560-gd94816580-nk3-linux-x86_64.zip",
+   "default_alias": "tmp/openrc-simulator-nk3-default-linux-x86_64.zip",
+   "archive_sha256": "02c5495fcd90c9e4f9a6aae5941c84a96e809ed2383da7c50afdf5511dac91e7",
+   "archive_bytes": 1419038754,
+   "executable_sha256": "f8cd04083c8a09061e9883676445f1814f26931e73fe85834089feab0562b29c",
+   "embedded_manifest_sha256": "a5c523c6169f56e1cf13cf870bcd18d2ae394027f8e70e4e08912729860c42a7",
+   "native_modes": 5,
+   "routes": 18,
+   "exact_player_replay_rows": 65,
+   "trim_smoke_ticks": 720,
+   "full_zip_crc_sha_modes_and_elf_audit": true,
+   "independent_verifier": {
+    "path": "tmp/nk3-final-root-cache-plan/corrected/independent-package-verifier.log",
+    "sha256": "b54d2da089e1c2f004817a1fa09fac2b68af7725ae22219a6bc055fa13e078e8"
+   }
+  },
+  "performance": {
+   "validation": {
+    "path": "tmp/nk3-final-package-work/quiet-campaign-validation.json",
+    "sha256": "6a394f148bce695685d42613ff37954f419c5c79f4de0dda81128ec9dacf13cc"
+   },
+   "campaign": {
+    "path": "tmp/nk3-final-package-work/checkout-d94816580/tmp/nk3-final-package-evidence-d94816580/quiet-performance/session_baseline.json",
+    "sha256": "4bbafc40f492b32483d97cf8ae99c0bc7a0390a99da4f75decf2705b548b79cc"
+   },
+   "pairs": 30,
+   "probes": 60,
+   "ticks_per_probe": 3000,
+   "warmup_ticks": 600,
+   "sample_ticks": 2400,
+   "median_of_30_pair_ratios": 2.1116825987183674,
+   "cases": [
+    {
+     "aircraft": "jensen-das-ugly-stik-60",
+     "case": "trim",
+     "pairs": 3,
+     "median_pair_speedup": 1.6487795574668616,
+     "median_reference_us_per_tick": 948.6766666666666,
+     "median_native_us_per_tick": 517.7766666666666
+    },
+    {
+     "aircraft": "jensen-das-ugly-stik-60",
+     "case": "maneuver",
+     "pairs": 3,
+     "median_pair_speedup": 1.6622150334955041,
+     "median_reference_us_per_tick": 815.71125,
+     "median_native_us_per_tick": 507.12083333333334
+    },
+    {
+     "aircraft": "stik-glow-61fx-2t",
+     "case": "trim",
+     "pairs": 3,
+     "median_pair_speedup": 1.7167352816751795,
+     "median_reference_us_per_tick": 2738.7925,
+     "median_native_us_per_tick": 1567.01625
+    },
+    {
+     "aircraft": "stik-glow-61fx-2t",
+     "case": "maneuver",
+     "pairs": 3,
+     "median_pair_speedup": 1.858364103793137,
+     "median_reference_us_per_tick": 2767.41,
+     "median_native_us_per_tick": 1427.0504166666667
+    },
+    {
+     "aircraft": "turbo-lumber-evolution",
+     "case": "trim",
+     "pairs": 3,
+     "median_pair_speedup": 1.9007869632772387,
+     "median_reference_us_per_tick": 1097.1608333333334,
+     "median_native_us_per_tick": 582.8479166666667
+    },
+    {
+     "aircraft": "turbo-lumber-evolution",
+     "case": "maneuver",
+     "pairs": 3,
+     "median_pair_speedup": 2.1545549647369726,
+     "median_reference_us_per_tick": 1289.14,
+     "median_native_us_per_tick": 585.8945833333333
+    },
+    {
+     "aircraft": "p51d-mustang-120",
+     "case": "trim",
+     "pairs": 3,
+     "median_pair_speedup": 2.7596668680381997,
+     "median_reference_us_per_tick": 2223.150833333333,
+     "median_native_us_per_tick": 805.5866666666667
+    },
+    {
+     "aircraft": "p51d-mustang-120",
+     "case": "maneuver",
+     "pairs": 3,
+     "median_pair_speedup": 2.750075173092646,
+     "median_reference_us_per_tick": 2140.4675,
+     "median_native_us_per_tick": 786.85
+    },
+    {
+     "aircraft": "sebart-avanti-s-a200-p100rx",
+     "case": "trim",
+     "pairs": 3,
+     "median_pair_speedup": 2.200196183588133,
+     "median_reference_us_per_tick": 1313.5404166666667,
+     "median_native_us_per_tick": 602.6541666666667
+    },
+    {
+     "aircraft": "sebart-avanti-s-a200-p100rx",
+     "case": "maneuver",
+     "pairs": 3,
+     "median_pair_speedup": 2.300989898264021,
+     "median_reference_us_per_tick": 1461.60625,
+     "median_native_us_per_tick": 596.4966666666667
+    }
+   ],
+   "scope": "Detached production tick including input and simulation, observer enabled; rendering, audio, OS input and presentation excluded. Three alternating pairs per aircraft/case; not population confidence bounds.",
+   "host": "Intel Core i5-10500, 12 logical CPUs; Linux 6.8.0-142-generic, glibc 2.39",
+   "owned_heavy_interference_detected": 0
+  },
+  "root_installation": {
+   "result": {
+    "path": "tmp/nk3-corrected-root-stage/results.json",
+    "sha256": "011dc62f91f66837832680c62ffadf5e91e4e90574384334da4626e9f4f6ca38"
+   },
+   "native_checks": {
+    "stage": 94,
+    "session": 150,
+    "replay": 152,
+    "helicopter": 234,
+    "helicopter-radio": 80,
+    "admission": 191,
+    "wheel-admission": 214
+   },
+   "total_checks": 1115,
+   "ordinary_default_flight": {
+    "path": "tmp/nk3-installed-default-route/result.json",
+    "sha256": "07206d3e1815bec247cf29ecce8c79dcc1292b91813881a4b6ba13bf9356af01"
+   },
+   "cache_journal": {
+    "path": "tmp/nk3-final-root-cache-plan/corrected/runs/cache-5krbisv2/journal.json",
+    "sha256": "fd8da83ed5a3900f43b3fce10fa32be10adf2e9bed7a2ec60077dfbb483810ff"
+   },
+   "old_cache_content_bridge": {
+    "path": "tmp/nk3-final-root-cache-plan/corrected/runs/cache-5krbisv2/content-equivalence-bridge.json",
+    "sha256": "53b71267cacbb73e468c7baf039c17c7ec2eefee676fbb4ffe35cf5df90e13e4"
+   },
+   "stage_seal": {
+    "path": "tmp/nk3-corrected-root-stage/stage-seal.json",
+    "sha256": "7c02ca63e88e1e60e71d8425f6770caf21884375ae7df3074b6e47db40c5fcab"
+   },
+   "cache_plan_validation": {
+    "path": "tmp/nk3-final-root-cache-plan/corrected/validation-final.json",
+    "sha256": "0789166773ec9b71839c9582bd318a34d50ee3243077d753d045098f530aa69b"
+   },
+   "old_installation_backup_index": {
+    "path": "tmp/nk3-corrected-root-stage/stage-manifest.json",
+    "sha256": "3351f1484ee5adcee54d156f936a5df7625b2d04ad17c57f53c178da53da355b"
+   },
+   "logs": {
+    "stage": {
+     "path": "tmp/nk3-corrected-root-stage/test-logs/stage.log",
+     "sha256": "4a9ec02e54eca4edd4e95133285712a419009033639ca604c8bac237c7be63b8"
+    },
+    "session": {
+     "path": "tmp/nk3-corrected-root-stage/test-logs/session.log",
+     "sha256": "111a12cfa21756761b004b89c1cf1e6a20f5f5a5039df16d030188e0ff867329"
+    },
+    "replay": {
+     "path": "tmp/nk3-corrected-root-stage/test-logs/replay.log",
+     "sha256": "0f9036c551f1e2b7a01fb3afbb29993072d7bcfd10bdc36b06627ba77ec27a8d"
+    },
+    "helicopter": {
+     "path": "tmp/nk3-corrected-root-stage/test-logs/helicopter.log",
+     "sha256": "3e108d61603b9efa2608176a2f48d96bc4bc04ba211547c0eabc99acdead0194"
+    },
+    "helicopter-radio": {
+     "path": "tmp/nk3-corrected-root-stage/test-logs/helicopter-radio.log",
+     "sha256": "482c309f7bce3802a27bc3d0de7a8c682a3af4a43bed4ca9539d01a912b5f50b"
+    },
+    "admission": {
+     "path": "tmp/nk3-corrected-root-stage/test-logs/admission.log",
+     "sha256": "aa55b70f123ef0ffd628cdfb5b6d6b940a5ef72c3c47f9d37cfc93d54b154ecc"
+    },
+    "wheel-admission": {
+     "path": "tmp/nk3-corrected-root-stage/test-logs/wheel-admission.log",
+     "sha256": "d273690d30a2f2e9cf23bb37eec5bf83fc2bd0b28d9c996b8689d2e00e2b4e49"
+    }
+   }
+  },
+  "retention": {
+   "original_rollback_archive": "tmp/openrc-simulator-nk3-linux-x86_64.zip",
+   "original_rollback_sha256": "d0df81109cd53d76a9cc80ba908f7aeb66ab48b6b1daf55f6002c5afb32fb08c",
+   "original_archive_unchanged": true,
+   "historical_editor_same_byte_relink": {
+    "path": "tmp/nk3-final-qualified-work/historical-editor-relink.json",
+    "sha256": "73f0e700498e2772b976a9c703a3c220e3fdaff291d5c81e57e2f03f2b215a3c"
+   },
+   "historical_static_archives_lossless_compression": {
+    "path": "tmp/nk3-admission-work/package-retention/ubsan-static-archive-compression.json",
+    "sha256": "7f294059a80db8ffa8a30aa5bc23bd97f5a31c34e95c9eb0c3ce2100cd30a6e6"
+   }
+  },
+  "limits": [
+   "Linux x86_64 delivery and tested host only; native Windows/macOS, ground-vehicle qualification and broad distribution/driver compatibility are not established.",
+   "Native ELF requires GLIBC 2.38; engine ELF requires GLIBC 2.34. The tested host has glibc 2.39. Static symbol inspection is not distribution qualification.",
+   "Software equivalence is not physical validation; 1080p rendering and target-host Gate P remain separate.",
+   "Performance was measured for five fixed-wing propulsion families, not the helicopter or whole-application FPS.",
+   "Existing helicopter spatial/OU/column weather restrictions and hot-high hover-trim refusal remain unchanged.",
+   "No remote release publication or push was performed.",
+   "The full fleet ran on the frozen source/editor route; exported-executable checks and performance are recorded separately, not an exported full-fleet rerun.",
+   "Workshop admission checks cover representative tested variants and capability boundaries, not every possible user-authored aircraft.",
+   "No whole-application CI pass is claimed; broader historical runs contain unrelated audio/brake failures."
+  ]
  }
 }
