@@ -704,11 +704,8 @@ msgstr ""
 "Экспериментальная оценка электродвигателя и данные винта от другой модели. "
 "Неподвижное шасси, закрылки убраны, ассистенты отключены."
 
-msgid "X8 Flying Wing"
-msgstr "X8 Flying Wing"
-
-msgid "X8 Wing"
-msgstr "X8 Wing"
+msgid "MoonRunner X99"
+msgstr "MoonRunner X99"
 
 msgid "EPO flying wing · 2.12 m · 6S electric pusher"
 msgstr "Летающее крыло из EPO · 2,12 м · толкающий электродвигатель 6S"
@@ -9112,8 +9109,6 @@ msgstr "Лётные компаньоны недоступны в этой ве�
 # Custom aircraft skin tools.
 msgid "Create a skin"
 msgstr "Создать окраску"
-msgid "X8 · Blender → .orskin"
-msgstr "X8 · Blender → .orskin"
 msgid "Save the template, edit its paint images with an AI assistant or Blender, then load your .orskin file."
 msgstr "Сохраните шаблон, измените его изображения окраски с помощью ИИ-ассистента или Blender, затем загрузите файл .orskin."
 msgid "Save skin template…"

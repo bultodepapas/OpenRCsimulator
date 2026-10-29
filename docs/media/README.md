@@ -8,7 +8,7 @@ The [root README](../../README.md) uses **16 fresh images captured on 2026-10-28
 
 | Application view | Capture |
 | --- | --- |
-| Home: X8 selected, Club field, Day | [ui-home.png](ui-home.png) |
+| Home: MoonRunner X99 selected under its former working name, Club field, Day | [ui-home.png](ui-home.png) |
 | Workshop: stock Stik appearance | [ui-workshop-appearance.png](ui-workshop-appearance.png) |
 | Workshop: stock Stik flight setup | [ui-workshop-setup.png](ui-workshop-setup.png) |
 | X8 airborne over Club field | [flight-x8.png](flight-x8.png) |
@@ -31,7 +31,7 @@ Production builders supply the current geometry and materials. A separate studio
 | F4U-1D Corsair 1/4.5 | [View](studio-f4u-corsair-250.png) |
 | Vantage Jet | [View](studio-sebart-avanti-s-a200-p100rx.png) |
 | Turbo Lumber Evolution | [View](studio-turbo-lumber-evolution.png) |
-| X8 Flying Wing | [View](studio-skywalker-x8.png) |
+| MoonRunner X99 | [View](studio-skywalker-x8.png) |
 | X-Cell research trainer, HX-700 visual surrogate | [View](studio-xcell-60-research.png) |
 | Bisonte MT8 | [View](studio-mt8-bisonte.png) |
 | MONSTER CAR 2 | [View](studio-monster-car-2.png) |

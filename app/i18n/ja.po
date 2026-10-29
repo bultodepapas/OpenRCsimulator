@@ -725,11 +725,8 @@ msgid ""
 "wheels, flaps up, assists off."
 msgstr "実験段階：電動モーターは推定値、プロペラは別機種のデータを使用しています。固定脚、フラップ収納、アシスト無効。"
 
-msgid "X8 Flying Wing"
-msgstr "X8 Flying Wing"
-
-msgid "X8 Wing"
-msgstr "X8 Wing"
+msgid "MoonRunner X99"
+msgstr "MoonRunner X99"
 
 msgid "EPO flying wing · 2.12 m · 6S electric pusher"
 msgstr "EPO製全翼機 · 2.12 m · 6Sプッシャー式電動"
@@ -8361,8 +8358,6 @@ msgstr "このゲームビルドでは飛行仲間を利用できません。"
 # Custom aircraft skin tools.
 msgid "Create a skin"
 msgstr "塗装を作成"
-msgid "X8 · Blender → .orskin"
-msgstr "X8 · Blender → .orskin"
 msgid "Save the template, edit its paint images with an AI assistant or Blender, then load your .orskin file."
 msgstr "テンプレートを保存し、AI アシスタントまたは Blender で塗装画像を編集してから、.orskin ファイルを読み込んでください。"
 msgid "Save skin template…"

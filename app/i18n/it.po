@@ -779,11 +779,8 @@ msgstr ""
 "Sperimentale: motore elettrico stimato e dati dell’elica presi da un altro "
 "modello. Ruote fisse, flap alzati, assistenze disattivate."
 
-msgid "X8 Flying Wing"
-msgstr "X8 Flying Wing"
-
-msgid "X8 Wing"
-msgstr "X8 Wing"
+msgid "MoonRunner X99"
+msgstr "MoonRunner X99"
 
 msgid "EPO flying wing · 2.12 m · 6S electric pusher"
 msgstr "Ala volante in EPO · 2,12 m · elettrico 6S propulsivo"
@@ -9137,8 +9134,6 @@ msgstr "I compagni di volo non sono disponibili in questa versione del gioco."
 # Custom aircraft skin tools.
 msgid "Create a skin"
 msgstr "Crea una livrea"
-msgid "X8 · Blender → .orskin"
-msgstr "X8 · Blender → .orskin"
 msgid "Save the template, edit its paint images with an AI assistant or Blender, then load your .orskin file."
 msgstr "Salva il modello, modifica le sue immagini di pittura con un assistente IA o Blender, quindi carica il file .orskin."
 msgid "Save skin template…"

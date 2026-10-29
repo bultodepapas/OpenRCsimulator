@@ -42,7 +42,7 @@ X8 packages remain compatible; Ugly Stick variants share installed paints.
 | Turbo Lumber | Neutral six-view exterior paint mapping |
 | Vantage Jet | Four original atlas groups, including repeated UV regions |
 | F4U Corsair | Shared original exterior atlas |
-| X8 Wing | Original livery atlas |
+| MoonRunner X99 | Original livery atlas |
 | X-Cell / HX-700 helicopter | Separate canopy and tail-boom images |
 
 The kit identifies paint groups and their exact material assignments. Extra, P-51

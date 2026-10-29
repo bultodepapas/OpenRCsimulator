@@ -27,6 +27,8 @@ func _run() -> void:
 			var dialog := SkinTools.new("skywalker-x8", UiTheme.build())
 			root.add_child(dialog)
 			for frame in 4: await process_frame
+			var labels := dialog._scroll.find_children("*", "Label", true, false)
+			check("MoonRunner X99 skin heading in %s" % locale, labels.any(func(label): return label.atr(label.text) == "MoonRunner X99 · PNG → .orskin"))
 			var frame_rect := Rect2(Vector2.ZERO, Vector2(root.size))
 			check("template action fits 1080p %s %s" % [locale, scale], frame_rect.encloses(dialog._first.get_global_rect()))
 			dialog._scroll.ensure_control_visible(dialog._status)

@@ -1,6 +1,6 @@
-# X8 flying wing: integration plan
+# MoonRunner X99 flying wing: integration plan
 
-Checked 2026-10-25 · Aircraft/model owner · Prefix **X8-00…12**. The X8 is a 2.12 m EPO flying wing inspired by the Skywalker X8: two elevons, winglets without rudders, an electric pusher and no landing gear (hand launch, belly landing). The owner delivered its Blender game model r4 on 2026-10-25 and asked for a robust catalog integration that reuses the other aircraft's data and a more crash-tolerant foam airframe. This plan states what is done, what is open and how each step is proven. Implementation, passing software checks and physical validation remain separate claims.
+Checked 2026-10-25 · Aircraft/model owner · Prefix **X8-00…12**. MoonRunner X99 is an original 2.12 m EPO flying wing inspired by multiple flying wings: two elevons, winglets without rudders, an electric pusher and no landing gear (hand launch, belly landing). The owner delivered its Blender game model r4 on 2026-10-25 and asked for a robust catalog integration that reuses the other aircraft's data and a more crash-tolerant foam airframe. This plan states what is done, what is open and how each step is proven. Implementation, passing software checks and physical validation remain separate claims.
 
 ## 1. Identity and scope
 
@@ -41,6 +41,6 @@ The X8 is the first catalog aircraft outside the conventional wing-tail/tractor/
 
 | ID | Decision | State |
 | --- | --- | --- |
-| D1 | Display name: the delivery leaves it to the owner; "Skywalker" and "X8" are Skywalker Technology product names | Pending; working name "X8 Flying Wing" |
+| D1 | Display name | Owner selected "MoonRunner X99" on 2026-10-29; catalog and source identifiers remain unchanged |
 | D2 | Asset licence terms (`LICENSE.txt`: not set) | Pending; F4U-13's reasoning may apply, but only the owner can extend it |
 | D3 | Configuration | Delivery UAV build, 6S pack (working choice) |

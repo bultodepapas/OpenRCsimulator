@@ -325,7 +325,7 @@ heading frame. Run it with `--wind-speed=0 --gust-speed=0 --gust-up=0` so the ai
 replaces `MeshInstance3D` resources from each livery GLB of the same airframe, never physics. Every frame record
 carries `presented_livery`; check `meshes_swapped` there.
 
-Crystal cues accept optional `entrance_s`, `kicker_size`, `detail_size` and `scrim`. Without these keys, the
+Crystal cues accept optional `entrance_s`, `kicker_size`, `detail_size`, `scrim` and `shadow` (drop-shadow alpha). A shot's `grade` may be an FFmpeg filter string instead of true/false. Without these keys, the
 cues render exactly as in v8. Image shots accept `zoom: {center: [x, y], to: <factor>}`, an eased push-in.
 `capture_brand.gd --frames=600` gives the longer end card.
 

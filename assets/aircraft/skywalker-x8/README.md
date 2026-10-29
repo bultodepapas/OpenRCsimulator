@@ -1,6 +1,6 @@
 # Skywalker X8 r4: sources and pipeline
 
-`skywalker-x8` is the visual family of the X8 flying wing ([X8 plan](../../../docs/X8-PLAN.md)): the author's parametric r4 game model of a 2.12 m EPO flying wing with two elevons, winglets, an electric pusher and no landing gear. The delivery is frozen in `assets/source-deliveries/skywalker-x8-r4/` without its images (owner rule) and identified by [source-manifest.json](source-manifest.json). The family builds through the shared imported-scene builder and has experimental physics data and a catalog entry (X8-06, X8-09).
+`skywalker-x8` is the stable visual-family ID of the MoonRunner X99 flying wing ([X8 plan](../../../docs/X8-PLAN.md)): the author's parametric r4 game model of a 2.12 m EPO flying wing with two elevons, winglets, an electric pusher and no landing gear. The delivery is frozen in `assets/source-deliveries/skywalker-x8-r4/` without its images (owner rule) and identified by [source-manifest.json](source-manifest.json). The family builds through the shared imported-scene builder and has experimental physics data and a catalog entry (X8-06, X8-09).
 
 ## Sources
 
