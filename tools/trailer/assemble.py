@@ -322,7 +322,7 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     decoded_loud = json.JSONDecoder().raw_decode(decoded_measure.stderr[decoded_measure.stderr.rfind("{"):])[0]
     assert float(decoded_loud["input_tp"]) <= -1.0, decoded_loud
     (out / "render-manifest.json").write_text(json.dumps({"shots": source_rows, "mix":{"game_gain":game_gain,"music_gain":music_gain,"music_sha256":sha(spec["music"]),"music_ducks":False}, "loudness_first_pass": loud, "decoded_aac_loudness": decoded_loud, "probe": probe, "sha256": sha(final)}, indent=2), encoding="utf-8")
-    (out / "VIDEO-DESCRIPTION.txt").write_text(
+    (out / "VIDEO-DESCRIPTION.txt").write_text(spec.get("video_description") or (
         "OpenRC Simulator — Every Input Matters\n\n"
         "An open-source RC simulator. Development footage with current aircraft, helicopter and RC cars. "
         "The simultaneous four-aircraft sequence is labeled cinematic choreography using the original game models; it does not demonstrate multiplayer.\n\n"
@@ -330,7 +330,7 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
         "'Uprising' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au\n"
         "https://www.scottbuckley.com.au/library/uprising/\n"
         "https://creativecommons.org/licenses/by/4.0/\n"
-        "Music edited for length and mixed with simulator audio.\n",
+        "Music edited for length and mixed with simulator audio.\n"),
         encoding="utf-8")
     print(str(final), flush=True)
 

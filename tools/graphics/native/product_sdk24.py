@@ -16,6 +16,7 @@ import os
 from pathlib import Path
 import re
 import sys
+import tempfile
 import time
 import uuid
 
@@ -279,7 +280,7 @@ def candidate_launchers() -> dict[str, bytes]:
                              "Requires a Vulkan-capable graphics driver and Microsoft Visual C++ v14 x64 redistributable.\r\n"
                              "https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist/\r\n"
                              "Provider support, rendered quality, stability and performance are not qualified.\r\n"
-                             "Frame generation is not integrated. Candidate settings use a separate profile.\r\n").encode("utf-8"),
+                             "Frame generation is not integrated. Candidate player settings use a separate profile.\r\n").encode("utf-8"),
     }
 
 
@@ -381,6 +382,36 @@ def _verify_packager_sources() -> None:
         path = HERE / name
         if not path.is_file() or product.sha(path) != digest:
             raise RuntimeError(f"Packaging source changed after import: {name}")
+
+
+@contextmanager
+def candidate_build_environment():
+    """Give headless editor jobs their own temporary settings, cache and user data."""
+    if not CHECKS.resolve().is_relative_to(ROOT.resolve()):
+        raise RuntimeError("Candidate checks directory is outside the workspace")
+    for path in (CHECKS, *CHECKS.parents):
+        if path == ROOT.parent:
+            break
+        if product.is_link(path):
+            raise RuntimeError(f"Linked candidate checks directory is not accepted: {path}")
+    CHECKS.mkdir(parents=True, exist_ok=True)
+    prefix = "fsr24-editor-profile-"
+    profile = Path(tempfile.mkdtemp(prefix=prefix, dir=CHECKS))
+    keys = ("APPDATA", "LOCALAPPDATA", "TMP", "TEMP")
+    previous = {key: os.environ.get(key) for key in keys}
+    try:
+        for name in ("roaming", "local", "temp"):
+            (profile / name).mkdir()
+        os.environ.update({"APPDATA": str(profile / "roaming"), "LOCALAPPDATA": str(profile / "local"),
+                           "TMP": str(profile / "temp"), "TEMP": str(profile / "temp")})
+        yield profile
+    finally:
+        for key, value in previous.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+        product.remove_owned_tree(profile, CHECKS, prefix)
 
 
 def _snapshot_path(receipt: dict) -> Path:
@@ -567,7 +598,8 @@ def package_candidate(engine: Path, editor_path: Path, template_path: Path) -> d
             verify_candidate_output(OUTPUT, current=False)
             previous_hash = product.sha(OUTPUT / product.PACKAGE_RECEIPT)
         snapshot = product.prepare_snapshot()
-        product.package_product(snapshot)
+        with candidate_build_environment():
+            product.package_product(snapshot)
         _bind_export(pending)
         verify_engine_pair(editor_path, template_path, engine)
         receipt = verify_candidate_output(pending, engine, editor, template)

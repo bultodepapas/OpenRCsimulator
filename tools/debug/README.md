@@ -82,6 +82,11 @@ Launch options:
     the process group it launched.
 - `--app DIR` runs a candidate copy (with its import cache and the sibling folders linked beside it), for
   before/after comparisons without touching the shared tree.
+- To launch a packaged app, set `OPENRC_GODOT` to its executable and use `launch --exported` (for example,
+  `OPENRC_GODOT=/path/to/OpenRC.exe $D launch --exported --headless`). The package must use a Godot debug
+  template: release templates disable the debug bridge. `--exported` does not accept `--app` or `--import`;
+  the executable locates its packaged resources without a project path. A release executable cannot be detected
+  before launch: the launcher stops it if the bridge does not answer by `--timeout`.
 - `--script-profile` adds `-d --profiling --ignore-error-breaks`, so the engine prints its per-function GDScript
   profile about once a second (read it with `profile`). `--verbose` names each object leaked at exit.
 - `stop` reports how the engine ended: `leaked_objects` / `leaked_instances` at exit, and a `crash` with its reason

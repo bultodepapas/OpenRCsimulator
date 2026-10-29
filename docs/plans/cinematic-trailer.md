@@ -280,6 +280,7 @@ Estimates are planning ranges for focused production work, excluding unattended 
 | TRA-06 | Edit, sound, titles, grading and report | Complete local H.264/AAC film; source audio, music, timeline and editor retained. |
 | TRA-07 | Technical review, poster and editable handoff | Full decode, 3,600 frames, 60.000 s and measured audio passed. Sampled visual review complete. Listening and asset release gate remain open. |
 | TRA-08 | Channel adaptation/publication | Not requested; no upload or publication performed. |
+| TRA-09 | Revision 8 feature re-cut | Local 58-second film delivered; [evidence](../research/cinematic-trailer/revision-8-2026-10-28.md). Listening and small-screen review remain open. |
 
 The original **27–55 hour** range was a planning estimate, not a measured production duration. The remaining work concerns listening review and release clearance; the movie and editable handoff already exist.
 

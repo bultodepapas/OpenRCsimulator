@@ -74,6 +74,12 @@ working HEAD. The final per-file manifest is retained with local check output.
 This is not an assertion that the changing shared checkout is one immutable
 release candidate.
 
+A later focused shared-tree check covered concurrent FSR runtime-failure changes:
+reconstruction (118), MetalFX policy (51), FSR history (16), and advanced graphics
+Settings (146) all passed. Reconstruction source stayed unchanged during the run,
+SHA-256 `7ccf7d4bddfbfa2f6a236f73fc2ccf983ea8347e7de71f53771d7acae9615efd`.
+This supplements the frozen snapshot rather than silently changing its identity.
+
 The first full-suite attempt exited during fresh import of the existing
 `f4u_corsair.glb`, process status `4294967295`, without a script error diagnostic.
 The cause was not established. Existing scene import caches were copied into the
@@ -90,8 +96,22 @@ freshness check then passed. Final broad verification uses the existing
 `integration` partition and four `units` shards, each with a separate user-data
 directory; this changes test scheduling, not assertion or acceptance rules.
 
-Two broad unit partitions currently stop on checks outside the edited graphics
-and capture paths:
+The broad unit run is complete under the existing stop-on-first-failure policy:
+
+| Partition | Checked invocations, including import | Result |
+| --- | --- | --- |
+| Unit 0/4 | 217 | All passed; 216 selected unit scripts |
+| Unit 1/4 | 54 | 53 passed, one failed; stopped at engine audio |
+| Unit 2/4 | 62 | 61 passed, one failed; stopped at the fixed-brake reference check |
+| Unit 3/4 | 216 | All passed; 215 selected unit scripts |
+
+Across the four partitions, 545 of the frozen snapshot's 861 unit scripts were
+attempted: 543 passed and two failed; 316 later scripts in the failed partitions
+were not run. The existing named pending-physics policies in `app/test.sh` were
+preserved. The checked-report summarizer validated each collection and wrote
+JUnit output locally. This is **not a full-suite pass**.
+
+The two failures are outside the edited graphics and capture paths:
 
 - `test_engine_audio.gd`: 146 checks, three device-aware queue-target failures.
   A separate run with fresh user data reproduced two failures of the same assertion

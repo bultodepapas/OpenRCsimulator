@@ -1,4 +1,4 @@
-"""Focused stdlib checks for the image-only X8 package prototype."""
+"""Focused stdlib checks for the image-only paint packer."""
 
 import json
 from pathlib import Path
@@ -9,6 +9,10 @@ import zipfile
 import zlib
 
 import pack_image
+
+KIT = {"aircraft_id": "skywalker-x8", "stock_sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+       "paints": [{"image": "Paint-01.png", "materials": ["x8_livery"],
+                   "base_colors": {"x8_livery": [1, 1, 1, 1]}}]}
 
 
 def chunk(kind, data):
@@ -26,8 +30,8 @@ class ImageOnlyTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             source, output = Path(folder) / "paint.png", Path(folder) / "skin.orskin"
             source.write_bytes(data)
-            path, width, height = pack_image.pack_image(source, output, "Test paint")
-            self.assertEqual((path, width, height), (output, 2, 1))
+            path, sizes = pack_image.pack_image(source, output, "Test paint", KIT)
+            self.assertEqual((path, sizes), (output, [(2, 1)]))
             with zipfile.ZipFile(path) as archive:
                 self.assertEqual(set(archive.namelist()), {"manifest.json", "texture-01.png"})
                 self.assertEqual(archive.read("texture-01.png"), data)
@@ -35,9 +39,31 @@ class ImageOnlyTests(unittest.TestCase):
             self.assertEqual(manifest["format"], "openrc-skin")
             self.assertEqual(manifest["version"], 1)
             self.assertEqual(manifest["aircraft_id"], "skywalker-x8")
-            self.assertEqual(manifest["base_asset_sha256"], pack_image.BASE_ASSET_SHA256)
+            self.assertEqual(manifest["base_asset_sha256"], KIT["stock_sha256"])
             self.assertEqual(manifest["label"], "Test paint")
             self.assertEqual(manifest["materials"], [{"name": "x8_livery", "base_color": [1, 1, 1, 1], "texture": "texture-01.png"}])
+
+    def test_multiple_images_and_shared_materials(self):
+        kit = {"aircraft_id": "example", "stock_sha256": "a" * 64, "paints": [
+            {"image": "Paint-01.png", "materials": ["wing", "door"],
+             "base_colors": {"wing": [1, 1, 1, 1], "door": [0.1, 0.1, 0.1, 1]}},
+            {"image": "Paint-02.png", "materials": ["fuselage"],
+             "base_colors": {"fuselage": [1, 1, 1, 1]}},
+        ]}
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "Paint-01.png").write_bytes(png())
+            (root / "Paint-02.png").write_bytes(png(width=1, color=0, raw=b"\0\x7f"))
+            output = root / "paint.orskin"
+            _, sizes = pack_image.pack_image(root, output, "Test", kit)
+            self.assertEqual(sizes, [(2, 1), (1, 1)])
+            with zipfile.ZipFile(output) as archive:
+                manifest = json.loads(archive.read("manifest.json"))
+                self.assertEqual(set(archive.namelist()), {"manifest.json", "texture-01.png", "texture-02.png"})
+            self.assertEqual([m["texture"] for m in manifest["materials"]], ["texture-01.png", "texture-01.png", "texture-02.png"])
+            self.assertEqual(manifest["materials"][1]["base_color"], [0.1, 0.1, 0.1, 1])
+            with self.assertRaises(ValueError):
+                pack_image.pack_image(root / "Paint-01.png", output, "Test", kit)
 
     def test_standard_png_color_modes(self):
         samples = [
@@ -81,12 +107,12 @@ class ImageOnlyTests(unittest.TestCase):
             source.write_bytes(png(raw=b"\0\xff"))
             output.write_bytes(b"keep")
             with self.assertRaises(ValueError):
-                pack_image.pack_image(source, output, "Test")
+                pack_image.pack_image(source, output, "Test", KIT)
             self.assertEqual(output.read_bytes(), b"keep")
             source.write_bytes(png())
             for label in ("", "a" * 49, "line\nbreak"):
                 with self.subTest(label=label), self.assertRaises(ValueError):
-                    pack_image.pack_image(source, output, label)
+                    pack_image.pack_image(source, output, label, KIT)
             self.assertEqual(output.read_bytes(), b"keep")
 
 

@@ -6,9 +6,11 @@ from datetime import datetime, timezone
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -233,6 +235,7 @@ class SDK24ProductTests(unittest.TestCase):
         self.assertEqual(template, self.template)
         self.assertEqual({p.name for p in licenses}, set(self.licenses))
         self.assertEqual(candidate.select_pair(self.engine, None, None), (self.editor_path, self.template_path))
+        self.assertFalse(self.checks.exists())
 
     def test_wrong_or_incomplete_pair_metadata_is_rejected(self) -> None:
         for key, value in (("fidelityfx_sdk", "1.1.4"), ("sdk_intake", {}), ("engine_source", {}),
@@ -420,6 +423,28 @@ class SDK24ProductTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "does not select the isolated"):
             candidate._verify_candidate_project(receipt, snapshot)
 
+    def test_headless_build_environment_is_private_inherited_and_restored(self) -> None:
+        keys = ("APPDATA", "LOCALAPPDATA", "TMP", "TEMP")
+        values = {key: "prior-" + key for key in keys}
+        with mock.patch.dict(os.environ, values):
+            with candidate.candidate_build_environment() as profile:
+                current = {key: os.environ[key] for key in keys}
+                self.assertTrue(profile.is_relative_to(self.checks))
+                self.assertEqual(current["TMP"], current["TEMP"])
+                for value in current.values():
+                    self.assertTrue(Path(value).is_dir())
+                    self.assertTrue(Path(value).is_relative_to(profile))
+                child = subprocess.check_output([sys.executable, "-c",
+                    "import json,os; print(json.dumps({k: os.environ[k] for k in ('APPDATA','LOCALAPPDATA','TMP','TEMP')}))"])
+                self.assertEqual(json.loads(child), current)
+            self.assertFalse(profile.exists())
+            self.assertEqual({key: os.environ.get(key) for key in keys}, values)
+            with self.assertRaisesRegex(RuntimeError, "headless failure"):
+                with candidate.candidate_build_environment() as failed_profile:
+                    raise RuntimeError("headless failure")
+            self.assertFalse(failed_profile.exists())
+            self.assertEqual({key: os.environ.get(key) for key in keys}, values)
+
     def upgrade_current_pair_and_packager(self) -> None:
         self.integration_bytes["fsr3.cpp"] = b"upgraded adapter source\n"
         put(self.here, "fsr3.cpp", self.integration_bytes["fsr3.cpp"])
@@ -445,6 +470,8 @@ class SDK24ProductTests(unittest.TestCase):
         self.assertEqual(candidate.verify_candidate_output(self.output, current=False), old_receipt)
 
         def fake_export(_snapshot: dict) -> None:
+            for key in ("APPDATA", "LOCALAPPDATA", "TMP", "TEMP"):
+                self.assertTrue(Path(os.environ[key]).is_relative_to(self.checks))
             self.make_candidate_output(candidate.product.SNAPSHOT, candidate.product.OUTPUT, with_binding=False)
 
         with (mock.patch.object(candidate.product, "prepare_snapshot", return_value={}),

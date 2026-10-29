@@ -123,7 +123,7 @@ def _shader(mat):
     return surface.links[0].from_node
 
 
-def _material_entry(identity, mat, users, image_number):
+def _material_entry(identity, mat, users, image_number, expected_extension="REPEAT"):
     shader = _shader(mat)
     color_input = shader.inputs["Base Color"]
     alpha_input = shader.inputs["Alpha"]
@@ -137,7 +137,7 @@ def _material_entry(identity, mat, users, image_number):
         if node.type != "TEX_IMAGE" or link.from_socket != node.outputs.get("Color") or node.image is None:
             raise ValueError(f"{identity}: bake procedural or mixed Base Color to one Image Texture connected directly to Principled Base Color.")
         mapping = node.texture_mapping
-        if (node.inputs["Vector"].is_linked or node.extension != "REPEAT" or
+        if (node.inputs["Vector"].is_linked or node.extension != expected_extension or
                 node.interpolation != "Linear" or node.projection != "FLAT" or
                 tuple(mapping.translation) != (0.0, 0.0, 0.0) or
                 tuple(mapping.rotation) != (0.0, 0.0, 0.0) or
@@ -145,7 +145,7 @@ def _material_entry(identity, mat, users, image_number):
                 mapping.use_min or mapping.use_max or
                 (mapping.mapping_x, mapping.mapping_y, mapping.mapping_z) != ("X", "Y", "Z") or
                 mapping.mapping != "FLAT" or mapping.vector_type != "POINT"):
-            raise ValueError(f"{identity}: use the original UV mapping and the image's default Repeat, Linear and Flat settings; bake other mappings to the original UVs.")
+            raise ValueError(f"{identity}: use the original UV mapping and image sampling settings; bake other mappings to the original UVs.")
         image = node.image
         # Packed images are loaded lazily after reopening the .blend.
         _ = image.size[:]
@@ -209,17 +209,30 @@ def export_skin(output, label=None):
         "materials": [],
     }
     textures = {}
+    image_names = {}
     total_pixels = 0
+    selected = baseline.get("export_materials", baseline["materials"])
+    if not isinstance(selected, list) or not 1 <= len(selected) <= 9 or len(set(selected)) != len(selected):
+        raise ValueError("The starter paint material list is invalid.")
+    if any(identity not in materials for identity in selected):
+        raise ValueError("A starter paint material is missing.")
     with tempfile.TemporaryDirectory(prefix="openrc-skin-") as scratch:
-        for identity in baseline["materials"]:
-            entry, image = _material_entry(identity, materials[identity], users[identity], len(textures) + 1)
-            manifest["materials"].append(entry)
+        for identity in selected:
+            extension = baseline.get("image_extensions", {}).get(identity, "REPEAT")
+            entry, image = _material_entry(identity, materials[identity], users[identity], len(textures) + 1, extension)
             if image is not None:
-                data, pixels = _png_bytes(image, identity, scratch)
-                total_pixels += pixels
-                if total_pixels > MAX_TOTAL_PIXELS:
-                    raise ValueError("Paint images exceed the combined 16,777,216-pixel limit.")
-                textures[entry["texture"]] = data
+                if identity in baseline.get("image_base_colors", {}):
+                    entry["base_color"] = baseline["image_base_colors"][identity]
+                if image.as_pointer() in image_names:
+                    entry["texture"] = image_names[image.as_pointer()]
+                else:
+                    data, pixels = _png_bytes(image, identity, scratch)
+                    total_pixels += pixels
+                    if total_pixels > MAX_TOTAL_PIXELS:
+                        raise ValueError("Paint images exceed the combined 16,777,216-pixel limit.")
+                    textures[entry["texture"]] = data
+                    image_names[image.as_pointer()] = entry["texture"]
+            manifest["materials"].append(entry)
         manifest_bytes = json.dumps(manifest, ensure_ascii=True, indent=2).encode("utf-8") + b"\n"
         if len(manifest_bytes) > 64 * 1024:
             raise ValueError("The skin manifest exceeds 64 KiB.")

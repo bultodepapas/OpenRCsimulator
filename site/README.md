@@ -1,6 +1,6 @@
 # OpenRC project website
 
-WEB-01…11 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
+WEB-01…12 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
 
 ## Design
 
@@ -22,7 +22,7 @@ WEB-04 visual thesis: the Vantage Jet leads the site, with wide studio views and
 
 ## Assets and scope
 
-Aircraft renders are from [presentation media](../docs/media/README.md); field captures are from [LU-21](../docs/research/landscape-upgrade/LU-21/README.md). The current hangar uses turntable posters; `prepare_assets.py` generates field WebPs and a black Savox display WebP without changing their sources. Original media and its provenance remain authoritative. Fonts are freely licensed; bundled license files live alongside them. No remote font, analytics, application framework or paid asset dependency.
+Aircraft renders are from [presentation media](../docs/media/README.md); field captures are from [LU-21](../docs/research/landscape-upgrade/LU-21/README.md). The current hangar uses turntable posters; `prepare_assets.py` generates field WebPs and a black Savox display WebP without changing their sources. Original media and its provenance remain authoritative. Fonts are freely licensed; bundled license files live alongside them. Google Tag Manager supplies [website analytics](#website-analytics-web-12); fonts, presentation libraries and model assets remain self-hosted.
 
 The six native model orbits have their own [capture pipeline and source-hashed manifest](TURNTABLES.md). The current Vantage Jet orbit reflects today's purple/orange builder, unlike the earlier blue/white/red still. The Bisonte image is the supplied studio render from `assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/01_tres_cuartos_delantero.png`; its [intake and permission](../research/rc-monster-truck/README.md#rcv-14a-mt8-visual-inspection) remain authoritative. [Brand sources and scope](BRANDS.md) document the official originals and resized Savox display copy. OpenAI support is a ChatGPT Pro subscription for open-source development; Codex is credited as an AI contributor. Savox's role is product-representation permission; catalogue integration remains planned.
 
@@ -44,7 +44,7 @@ WEB-04 makes the jet the initial catalogue selection and adds direct inspector e
 
 WEB-05 keeps the same composition while reducing work: preload the two opening fonts, show the hero poster immediately, cache scroll geometry between layout changes, and defer distant editorial rendering with `content-visibility: auto`. Intrinsic section sizes are estimates until first rendering; the browser then remembers measured sizes. The turntable schedules one animation callback per frame at its existing 125 ms interval, updates only angle UI per frame, cancels obsolete image loads, retries failed selections, and retains a two-sheet LRU cache. Language and theme changes avoid identical HTML/image assignments. Rebuild the black Savox display copy with `python site/prepare_assets.py --brands-only`.
 
-HTML references styles/scripts with a shared release query (`?v=web11-locales-20261026`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
+HTML references styles/scripts with a shared release query (`?v=web12-analytics-20261028`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
 
 WEB-07 official identity, 2026-10-24: the header, hero, footer and README now use derivatives of the refined vector master based on the supplied official SVG. The favicon uses its RC contours, and Open Graph/Twitter metadata uses a 1200×630 PNG. [Source and regeneration](BRANDS.md#openrc-identity). The aircraft opening, navigation, translations and downloads retain their behavior. Local Chrome review covers 1920×1080, 390×844 and 320×740, both languages/themes, reduced motion, image loading and horizontal overflow. This is presentation verification, not a simulator release.
 
@@ -55,6 +55,14 @@ The unpublished v0.1.2 draft refresh keeps download, first-launch and checksum l
 The subsequent P51-22 update labels the Mustang's powered takeoff and loop acceptance as pending in both languages. Local and public aircraft-selection checks show the warning without horizontal overflow. Public HTML/main.js hashes match the local files; the browser reports no warnings or errors. Deployment `2e1475092c4a7a608fb30a63826c98cfda6622dd` passed [Pages](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38926987899). Download links still target v0.1.1.
 
 Publish with `python site/publish.py --message "WEB-step: change; proof: completed checks"` after browser verification, replacing the message with the actual change and checks. It requires Git identity and an authenticated `gh` with repository admin access; it refuses to replace a different existing Pages source. The publisher first rejects stale locale outputs. Only the eleven HTML pages registered in `build_locales.py`, sitemap XML, CSS, JS, favicon, `.nojekyll` and licensed assets are copied into a temporary checkout. No force push or changes to the working branch/index.
+
+## Website analytics (WEB-12)
+
+All eleven pages install the owner's Google Tag Manager container `GTM-N4G2K5K7`: the asynchronous bootstrap is near the start of `<head>`, and the hidden `noscript` iframe is first in `<body>`. Edit these in `index.html`, then run `python site/build_locales.py`; never add a second standalone GA4 snippet. The published container inspected on 2026-10-28 includes GA4 destination `G-4Z11DSB2BV` and enhanced measurement for page views, downloads, outbound clicks and scrolling. Tags and measurement settings are managed in Tag Manager; their live configuration can change independently of this repository.
+
+The integration follows Google's [container installation](https://support.google.com/tagmanager/answer/14847097) and [GA4 configuration](https://support.google.com/tagmanager/answer/9442095) guides. The container ID is public, not a credential. This measures website activity; it does not install telemetry in the simulator or measure GitHub repository-page visits. GitHub [removes scripts from rendered Markdown](https://github.com/github/markup/blob/master/README.md), so do not add tracking snippets to the project README. Repository visits and clones are available through [Insights → Traffic](https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository).
+
+When reviewing local pages, intercept Google Tag Manager and Analytics requests to avoid sending preview traffic to the production property. WEB-12 local verification passed the four static locale tests and 44 Chromium combinations: eleven languages, JavaScript on/off, 1920×1080 and 320×740. Every page requests its container once, or its `noscript` fallback with JavaScript disabled; downloads and the accessible title remain available, with no script errors or horizontal overflow. These local checks stubbed third-party requests and sent no Analytics hits.
 
 ## Search metadata and static languages (WEB-08…11)
 
