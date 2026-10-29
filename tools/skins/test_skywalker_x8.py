@@ -1,6 +1,6 @@
 """Exercise the extracted starter in Blender, including dirty paint and rejection.
 
-blender --background --factory-startup tmp/skin-kit/roundtrip/Skywalker-X8.blend \
+blender --background --factory-startup tmp/skin-kit/roundtrip/Aircraft.blend \
   --python-exit-code 1 --python tools/skins/test_skywalker_x8.py
 """
 
@@ -58,7 +58,7 @@ def main():
         assert manifest["aircraft_id"] == "skywalker-x8"
         assert manifest["base_asset_sha256"] == "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac"
         assert manifest["label"] == "Painted test"
-        assert [entry["name"] for entry in manifest["materials"]] == baseline["materials"]
+        assert [entry["name"] for entry in manifest["materials"]] == baseline["export_materials"]
         painted = next(entry for entry in manifest["materials"] if entry["name"] == "x8_livery")
         assert painted["texture"] == "texture-01.png"
         png = archive.read("texture-01.png")
