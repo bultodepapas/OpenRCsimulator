@@ -5,7 +5,7 @@
 #   - UI-04a: one build identity (git describe, commit, dirty, commit date), computed here once, names the ZIPs, is
 #     written into every pack as res://build_info.json (addons/build_info) and is checked in the exported binary's
 #     trace header; the .exe and Info.plist carry project.godot's numeric config/version (tests/check_build_versions.py).
-# Needs: app/get-godot.sh, app/get-templates.sh (downloads 1.36 GB once), zip, python3, git. No display or GPU.
+# Needs: app/get-godot.sh, app/get-templates.sh (downloads 1.36 GB once), zip, binutils, python3, git. No display or GPU.
 # Usage: app/export.sh [--output-dir NEW_DIRECTORY] (default: <repo>/dist/export-XXXXXXXX).
 # The version is always git describe. Existing outputs are never replaced, including after a failed run.
 set -euo pipefail
@@ -104,6 +104,10 @@ HOST_PROBE="$(mktemp -d)"
 echo "== import (a fresh clone has no .godot cache)"
 run --import > "$LOG" 2>&1 || { cat "$LOG"; exit 1; }
 if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG"; then cat "$LOG"; echo "engine error while importing"; exit 1; fi
+echo "== capture source, tool and native receipt identities before export"
+python3 "$ROOT/tools/release/manifest.py" capture --root "$ROOT" --editor "$GODOT" \
+  --templates "$TEMPLATE_DIR" --output "$DIST/.release-inputs.json"
+
 echo "== prepare verified NK-3 export identity"
 python3 "$ROOT/research/native-kernel/package.py" prepare
 for preset in Linux Windows macOS; do
@@ -339,7 +343,11 @@ PACKAGES=("openrc-simulator-$VERSION-linux-x86_64.zip"
 for package in "${PACKAGES[@]}"; do
   [ -s "$DIST/$package" ] || { echo "missing package: $package" >&2; exit 1; }
 done
-(cd "$DIST" && sha256sum -- "${PACKAGES[@]}" > SHA256SUMS && sha256sum --check --strict SHA256SUMS)
+echo "== final archive ABI inventory and release manifest"
+python3 "$ROOT/tools/release/elf_audit.py" "$DIST/${PACKAGES[0]}" --output "$DIST/linux-abi.json"
+python3 "$ROOT/tools/release/manifest.py" finalize --root "$ROOT" --directory "$DIST" \
+  --inputs "$DIST/.release-inputs.json"
+(cd "$DIST" && sha256sum --check --strict SHA256SUMS)
 # CI consumes only this successful run; a failed export must never publish an output handle.
 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
   printf 'package_dir=%s\nversion=%s\n' "$DIST" "$VERSION" >> "$GITHUB_OUTPUT"

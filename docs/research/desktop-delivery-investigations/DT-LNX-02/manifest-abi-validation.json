@@ -1,0 +1,68 @@
+{
+  "format": "openrc-linux-delivery-checks-v1",
+  "step": "DT-LNX-02c/03a",
+  "date": "2026-10-28",
+  "source_head": "7054b27b75fe66f45b609fc74a915ea7633db43f",
+  "scope": "Fresh shared-object Linux clone with relevant tracked subtrees and exact working-file overlays; LF text hashes. Synthetic receipts, compiler-built fixtures and host ELF; no Godot/native application export.",
+  "sha256_lf": {
+    "app/export.sh": "18470d8c93078885e17df1fb2a133c93114f3e75ec02cde77d7a1ac5e713283b",
+    "app/tests/test_export_identity.py": "6d6bc44e1a00e52ff33fdfa2da6b8effe8fb075825e5f4e435b62d85bd2eb077",
+    ".github/workflows/ci.yml": "f89573ddf73007843cf98753ce6ea139d170c6fc1bee2aac107150e81ceae3a9",
+    "research/test-tools.sh": "4121e929a9398ea63176df102e9556a6f8c0123ecb173019f2d11e026b9b247b",
+    "tools/release/manifest.py": "e0f9b32946b8b18a36987d9c82f8c375748fbaab1a9d0458275b4aade7ff8902",
+    "tools/release/elf_audit.py": "cbe82a1e787a3b620e9f5eedaf60a2e636ce18fcb90f7e37370c8c854ec4a10a",
+    "tools/release/test_manifest.py": "fad542c3ae8af0d450cc11314e9d626fba9e589e958cb7ebeb0a44db87bdc9e0",
+    "tools/release/test_elf_audit.py": "2e944c02aeb657a118d04f74b3e5986343f8232bf712d0c0ba45b07ddb10a09c"
+  },
+  "source_unchanged_during_checks": true,
+  "shell_syntax": [
+    {
+      "path": "app/export.sh",
+      "exit_code": 0
+    },
+    {
+      "path": "research/test-tools.sh",
+      "exit_code": 0
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/release",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "output": ".............................\n----------------------------------------------------------------------\nRan 29 tests in 2.193s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "app/tests/test_export_identity.py"
+      ],
+      "exit_code": 0,
+      "output": "...........................\n----------------------------------------------------------------------\nRan 27 tests in 4.091s\n\nOK\nInstalled Windows and Linux native outputs with receipt and godot-cpp license under /tmp/openrc-native-receipt-e0_ih_v7/app/native/ground_vehicle.\nInstalled Windows and Linux native outputs with receipt and godot-cpp license under /tmp/openrc-native-receipt-e0_ih_v7/app/native/ground_vehicle.\nInstalled Windows and Linux native outputs with receipt and godot-cpp license under /tmp/openrc-native-receipt-e0_ih_v7/app/native/ground_vehicle.\nInstalled Windows and Linux native outputs with receipt and godot-cpp license under /tmp/openrc-native-receipt-e0_ih_v7/app/native/ground_vehicle.\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "app/tests/test_ci_partitions.py"
+      ],
+      "exit_code": 0,
+      "output": ".........\n----------------------------------------------------------------------\nRan 9 tests in 4.792s\n\nOK\n"
+    }
+  ],
+  "limits": [
+    "No provisioned Godot/native application export or GitHub release run",
+    "No final application ABI floor, ARM64 execution or native GPU/controller/performance acceptance",
+    "Manifest unit cases mock ABI/payload checks; packaging-tail fixture invokes real readelf and all finalizers"
+  ]
+}

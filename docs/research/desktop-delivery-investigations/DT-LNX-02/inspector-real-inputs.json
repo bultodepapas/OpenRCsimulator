@@ -1,0 +1,136 @@
+{
+  "step": "DT-LNX-03a",
+  "date": "2026-10-28",
+  "scanner_sha256_lf": "cbe82a1e787a3b620e9f5eedaf60a2e636ce18fcb90f7e37370c8c854ec4a10a",
+  "scope": "Parser coverage against available cached editor/native inputs; not an application export, release receipt qualification or distro floor. ZIP created with Python ZIP_STORED from the recorded member bytes and removed afterward.",
+  "report": {
+    "format": "openrc-linux-abi-v1",
+    "schema_version": 1,
+    "archive": {
+      "path": "inspector-real-inputs.zip",
+      "sha256": "de083f12e2238eca78207a4d82532b24f7e34bc400656ed962e0b8e605ff61f1",
+      "bytes": 137804856
+    },
+    "expected_architecture": "x86_64",
+    "readelf_version": "GNU readelf (GNU Binutils for Ubuntu) 2.42",
+    "elfs": [
+      {
+        "path": "editor/Godot_v4.8-beta1_linux.x86_64",
+        "sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+        "bytes": 136812920,
+        "architecture": "x86_64",
+        "elf_class": "ELF64",
+        "endianness": "little",
+        "os_abi": "UNIX - GNU",
+        "interpreter": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "libm.so.6",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "rpath": [],
+        "runpath": [],
+        "required_versions": {
+          "GLIBC": [
+            "GLIBC_2.14",
+            "GLIBC_2.15",
+            "GLIBC_2.16",
+            "GLIBC_2.17",
+            "GLIBC_2.18",
+            "GLIBC_2.2.5",
+            "GLIBC_2.24",
+            "GLIBC_2.25",
+            "GLIBC_2.27",
+            "GLIBC_2.28",
+            "GLIBC_2.29",
+            "GLIBC_2.3",
+            "GLIBC_2.3.2",
+            "GLIBC_2.3.4",
+            "GLIBC_2.30",
+            "GLIBC_2.32",
+            "GLIBC_2.33",
+            "GLIBC_2.34",
+            "GLIBC_2.4",
+            "GLIBC_2.6",
+            "GLIBC_2.7",
+            "GLIBC_2.9"
+          ],
+          "GLIBCXX": [],
+          "CXXABI": []
+        },
+        "max_required_versions": {
+          "GLIBC": "GLIBC_2.34",
+          "GLIBCXX": null,
+          "CXXABI": null
+        },
+        "gnu_stack": {
+          "present": true,
+          "permissions": "RW",
+          "executable": false
+        },
+        "gnu_properties": [
+          "x86 ISA needed: x86-64-baseline"
+        ],
+        "notes_status": "fdo_dlopen_unsupported"
+      },
+      {
+        "path": "native/ground_vehicle/libopenrc_ground_vehicle.so",
+        "sha256": "08a4c6f7c05c5ef082099cd9158bd2b31814ca3bc4a7663a9ca770895141abcd",
+        "bytes": 991592,
+        "architecture": "x86_64",
+        "elf_class": "ELF64",
+        "endianness": "little",
+        "os_abi": "UNIX - System V",
+        "interpreter": null,
+        "needed": [
+          "libm.so.6",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "rpath": [],
+        "runpath": [
+          "$ORIGIN"
+        ],
+        "required_versions": {
+          "GLIBC": [
+            "GLIBC_2.14",
+            "GLIBC_2.17",
+            "GLIBC_2.2.5",
+            "GLIBC_2.25",
+            "GLIBC_2.3",
+            "GLIBC_2.3.2",
+            "GLIBC_2.3.4",
+            "GLIBC_2.32",
+            "GLIBC_2.34",
+            "GLIBC_2.35",
+            "GLIBC_2.36",
+            "GLIBC_2.38",
+            "GLIBC_2.4"
+          ],
+          "GLIBCXX": [],
+          "CXXABI": []
+        },
+        "max_required_versions": {
+          "GLIBC": "GLIBC_2.38",
+          "GLIBCXX": null,
+          "CXXABI": null
+        },
+        "gnu_stack": {
+          "present": true,
+          "permissions": "RW",
+          "executable": false
+        },
+        "gnu_properties": [
+          "x86 feature: IBT, SHSTK"
+        ],
+        "notes_status": "readelf_ok"
+      }
+    ],
+    "limitations": [
+      "GNU properties do not certify the complete CPU instruction set or hardware compatibility.",
+      "Dependencies loaded dynamically with dlopen and their closure are not certified.",
+      "Graphics, audio, input and other driver closure is not certified.",
+      "Static ELF metadata does not establish distribution support or successful execution."
+    ]
+  }
+}
