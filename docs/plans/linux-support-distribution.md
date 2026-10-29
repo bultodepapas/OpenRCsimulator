@@ -1,6 +1,6 @@
 # Linux support and distribution plan
 
-2026-10-28 · **DT-LNX-00…13**, desktop-delivery subtrack · **Status: research complete; implementation and native acceptance pending.**
+2026-10-28 · **DT-LNX-00…13**, desktop-delivery subtrack · **Status: research complete; DT-LNX-02a/b export isolation and template verification implemented; broader release and native acceptance pending.**
 
 Make Linux installation predictable before expanding the download catalog. First qualify an x86_64 payload and portable distribution, then add managed installation, native packages and ARM64 through the same evidence gates. Retain Compatibility as the baseline renderer. A Linux export, successful headless test or container run alone does not establish a supported desktop.
 
@@ -228,7 +228,7 @@ flowchart TD
 ```
 
 1. **Pull request:** read-only token, no release secrets. Run relevant/full source checks, generated-data freshness, schema/metadata validation and package smoke in isolated jobs. No untrusted PR code or PR-produced executable runs in signing/publishing jobs. Do not combine privileged `pull_request_target` with untrusted checkout.
-2. **Trusted build:** pin Actions by full commit, containers by digest, tool downloads by reviewed hashes. Use per-run staging under the runner's temporary directory with validated cleanup boundaries; remove the current shared `dist/` deletion. Cache only verifiable inputs; keys include engine/template, architecture, toolchain, source/asset changes and import configuration. Do not share PR-writable build caches with trusted releases.
+2. **Trusted build:** pin Actions by full commit, containers by digest, tool downloads by reviewed hashes. DT-LNX-02a now reserves a new output directory (default `dist/export-XXXXXXXX/`, optional `--output-dir`) and locks competing exporters in the checkout. Use isolated source checkouts and verified cleanup boundaries. Cache only verifiable inputs; keys include engine/template, architecture, toolchain, source/asset changes and import configuration. Do not share PR-writable build caches with trusted releases.
 3. **Build/qualify:** generate source receipts, build native modules and import/export with the pinned engine. Run each architecture/backend's required numerical/fallback gates. Build package formats in parallel after payload freeze. For source-built Flatpak, run the same logical gates against its independent payload.
 4. **Package checks:** validate expected asset inventory; inspect every ELF/notices/metadata and compare inner payload hashes. Install/extract the final signed packages on fresh distro roots, then exercise the actual launchers with isolated XDG directories and no repository mounted. Preserve nonzero/error-log failures and checked-run completeness.
 5. **Native acceptance:** use disposable native OS/VM accounts for desktop lifecycle and real GPU/radio hosts for qualification. Never run untrusted fork workflows on persistent hardware runners with secrets or personal data. GPU benchmarks run without competing builds.
@@ -261,13 +261,13 @@ Evidence belongs in `docs/research/desktop-delivery-investigations/DT-LNX-<step>
 
 ## Prioritized implementation roadmap
 
-Effort sizes are planning estimates for engineering work, excluding hardware procurement, upstream fixes and external store review: **S** 1–2 days, **M** 3–5 days, **L** 1–2 weeks. Re-estimate after the initial ABI/native tests. DT-LNX-00 is the only completed step here.
+Effort sizes are planning estimates for engineering work, excluding hardware procurement, upstream fixes and external store review: **S** 1–2 days, **M** 3–5 days, **L** 1–2 weeks. Re-estimate after the initial ABI/native tests. DT-LNX-00 is complete; [DT-LNX-02a/b](../research/desktop-delivery-investigations/DT-LNX-02/README.md) implements the first foundation increment without closing the complete 02 release gate.
 
 | ID / priority | Work, owner and likely files | Dependencies | Proof / status |
 | --- | --- | --- | --- |
 | **00 / done** | Current source audit, primary research and Linux plan; DT | None | This plan + dated research; no new runtime qualification |
 | **01 / P0 / S** | Freeze distro/architecture/renderer/hardware claims, engine release decision and retained evidence; DT + GDU/VQ | 00 | Signed-off test matrix and engine risk decision; every support claim has a gate; pending |
-| **02 / P0 / M** | Isolated staging, exact tool/template/cache verification and release-manifest schema; export/CI + DT | 01 | Two concurrent builds cannot delete/mix outputs; wrong hashes/dirty tags fail; fresh-checkout receipt; pending |
+| **02 / P0 / M** | Isolated staging, exact tool/template/cache verification and release-manifest schema; export/CI + DT | 01 | Partial — 02a output/CI isolation and 02b installed-template hashes implemented and fixture-tested. Full manifest/editor trust, provisioned export and release qualification remain open. |
 | **03 / P0 / L** | ELF/runtime closure and oldest compatible build root, native libm/ISA validation; NK/SF + DT | 01, 02 | Every payload ELF inventoried; proposed floor passes exact native checks or is narrowed explicitly; pending |
 | **04 / P0 / M** | Shared desktop/AppStream/license metadata, launcher and user-data/upgrade contract; DT + UI/AE | 02 | Lints, arbitrary-CWD/read-only launch, notices and data preservation; pending |
 | **05 / P0 / M** | Final-package harness using checked runner/shipped qualification routes and native desktop checks; debug bridge only in separate debug builds; DT | 02–04 | Fresh install/extract and tamper/fallback cases on named OS; no source-tree leakage or release debug bridge; pending |
@@ -282,4 +282,4 @@ Effort sizes are planning estimates for engineering work, excluding hardware pro
 
 Execution waves: **foundation 01–05 → portable 06 + native campaign 12 → download integration 11 + promotion 13**. In parallel after the foundation, develop Flatpak 07 and native packages 08; introduce their managed repositories 09 only when maintenance ownership and trust tests exist. Start ARM feasibility 10 early enough to expose toolchain issues, but do not delay an honest x86_64 release for an unqualified ARM promise. Each later channel repeats 12/13 for its exact bytes. Reuse verified components; do not create a custom installer framework or force every user through every format.
 
-The first implementation PR should address **DT-LNX-02** without changing physics: isolated export output and authenticated input-cache validation, preserving existing native qualification checks. Follow with **DT-LNX-03**'s measured ABI report before deciding a compatibility floor. No production-ready Linux support claim is closed by this planning document.
+The first implementation increment delivers **DT-LNX-02a/b** without changing physics: isolated export output and authenticated installed-template validation, preserving existing native qualification checks. Next obtain **DT-LNX-03**'s measured ABI report from a provisioned export before deciding a compatibility floor, while completing 02's manifest/provenance work. No production-ready Linux support claim is closed by these tooling changes.

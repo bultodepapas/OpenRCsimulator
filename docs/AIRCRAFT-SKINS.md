@@ -37,15 +37,17 @@ X8 packages remain compatible; Ugly Stick variants share installed paints.
 | Visual family | Image references |
 | --- | --- |
 | Ugly Stick (all four configurations) | Existing covering atlas |
-| Extra 300S | Generated six-view paint mapping |
-| P-51D Mustang | Generated six-view paint mapping |
-| Turbo Lumber | Generated six-view exterior paint mapping |
+| Extra 300S | Neutral six-view paint mapping |
+| P-51D Mustang | Neutral six-view paint mapping |
+| Turbo Lumber | Neutral six-view exterior paint mapping |
 | Vantage Jet | Four original atlas groups, including repeated UV regions |
 | F4U Corsair | Shared original exterior atlas |
 | X8 Wing | Original livery atlas |
 | X-Cell / HX-700 helicopter | Separate canopy and tail-boom images |
 
-The kit identifies paint groups and their exact material assignments. Generated
+The kit identifies paint groups and their exact material assignments. Extra, P-51
+and Turbo Lumber use neutral six-view starters, not reproductions of stock paint;
+packaging them without edits produces neutral paint. Generated
 mappings are applied to an instance-owned copy for custom skins; stock builds
 remain unchanged. The procedural models retain their material finish shaders.
 A six-view mapping can overlap parts: image editing cannot independently paint

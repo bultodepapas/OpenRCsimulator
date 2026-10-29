@@ -91,12 +91,15 @@ executable path. It checks the cached bundle against a local file manifest on
 later runs. It refuses a changed or incomplete editor cache and retains a corrupt
 downloaded archive or incomplete extraction for inspection; it does not silently
 overwrite them. A stale lock from an interrupted getter also needs inspection.
-The template getter verifies the matching official archive and uses macOS's
-`shasum`. It preserves the official macOS ZIP while preparing the separate
+The template getter verifies the matching official archive and all four installed
+files against member SHA-512 pins derived from that authenticated archive, including
+on offline warm runs. It uses macOS's `shasum`. It preserves the official macOS ZIP while preparing the separate
 project-local universal debug/release swap required by this beta. An unreceipted
 or changed corrected ZIP is refused. A corrupt downloaded template archive is
-retained without extraction; when the installed template set is incomplete,
-the getter can replace its files from the verified archive. If `python3` is
+retained without extraction. A changed or incomplete installed template set is
+retained and rejected: inspect it and move it aside before retrying. Cold installs
+verify staging and exclusively created destination files under a shared cache lock;
+a stale `.openrc-<version>.lock` directory needs inspection before removal. If `python3` is
 older than 3.11, point `OPENRC_GODOT_PYTHON` at an already installed 3.11+
 interpreter before running `app/get-templates.sh`; the prerequisite is checked
 before downloading. Neither getter installs Python.

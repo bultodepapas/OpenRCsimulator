@@ -2,6 +2,8 @@ extends SceneTree
 
 const Registry := preload("res://aircraft/model_registry.gd")
 const ProceduralSkin := preload("res://aircraft/procedural_skin.gd")
+const TimberDetails := preload("res://aircraft/timber_visual_details.gd")
+const TimberLighting := preload("res://aircraft/timber_visual_lighting.gd")
 var checks := 0
 var failed := 0
 
@@ -27,6 +29,9 @@ func _test_family(family: String) -> void:
 	var builder := load(str(manifest.builder.script))
 	var airplane: Dictionary = builder.call("build", manifest, "") if manifest.version == 2 else builder.call("build")
 	var root: Node3D = airplane.root
+	if family == ProceduralSkin.TIMBER:
+		check(TimberDetails.apply(root), family + " presentation details")
+		TimberLighting.apply(root)
 	var snapshot := {}
 	for node: Node in root.find_children("*", "Node", true, false):
 		var entry := {path = str(root.get_path_to(node)), transform = (node as Node3D).transform if node is Node3D else null}
@@ -85,6 +90,18 @@ func _test_family(family: String) -> void:
 							same_attribute = false
 							break
 				check(same_attribute, family + " original vertex attribute " + str(attribute) + " " + entry.path + "/" + str(surface))
+			if old_arrays[Mesh.ARRAY_TANGENT] != null:
+				var old_tangents: PackedFloat32Array = old_arrays[Mesh.ARRAY_TANGENT]
+				var new_tangents: PackedFloat32Array = new_arrays[Mesh.ARRAY_TANGENT] if new_arrays[Mesh.ARRAY_TANGENT] != null else PackedFloat32Array()
+				var same_tangents := not new_tangents.is_empty() and old_indices.size() == new_indices.size()
+				if same_tangents:
+					for i in old_indices.size():
+						for component in 4:
+							if absf(old_tangents[old_indices[i] * 4 + component] - new_tangents[new_indices[i] * 4 + component]) > 0.0002:
+								same_tangents = false
+								break
+						if not same_tangents: break
+				check(same_tangents, family + " original tangents " + entry.path + "/" + str(surface))
 			if old_mesh != new_mesh:
 				var old_lods: Dictionary = ProceduralSkin._lods(old_mesh.get("_surfaces")[surface]).lods
 				var new_lods: Dictionary = ProceduralSkin._lods(new_mesh.get("_surfaces")[surface]).lods
@@ -120,6 +137,12 @@ func _test_family(family: String) -> void:
 				check(painted != null and painted != current, family + " paint copy " + entry.path)
 				if painted is StandardMaterial3D:
 					check(painted.albedo_texture == texture and painted.roughness == current.roughness and painted.normal_texture == current.normal_texture, family + " material finish " + entry.path)
+				elif painted is ShaderMaterial and family == ProceduralSkin.TIMBER:
+					check(painted.get_shader_parameter("paint_texture") == texture and painted.shader.code.contains("texture(paint_texture, UV)"), family + " atlas sampler " + entry.path)
+					check(painted.get_shader_parameter("foam_normal") == current.normal_texture and painted.get_shader_parameter("foam_roughness") == current.roughness_texture and painted.get_shader_parameter("foam_scale") == current.uv1_scale and painted.get_shader_parameter("foam_offset") == current.uv1_offset and painted.get_shader_parameter("normal_strength") == current.normal_scale and painted.get_shader_parameter("roughness_value") == current.roughness, family + " triplanar finish " + entry.path)
+					check(is_equal_approx(float(painted.get_shader_parameter("grow_amount")), current.grow_amount if current.grow else 0.0), family + " grow " + entry.path)
+					var transparent: Material = ProceduralSkin.paint(current, {base_color = [1.0, 1.0, 1.0, 0.5]}, texture)
+					check(transparent is ShaderMaterial and transparent.shader.code.contains("ALPHA = paint_factor.a * paint.a;"), family + " shader alpha " + entry.path)
 				elif painted is ShaderMaterial:
 					check(painted.get_shader_parameter("openrc_paint_texture") == texture and painted.shader.code.contains("openrc_paint_factor"), family + " shader texture " + entry.path)
 					var transparent: Material = ProceduralSkin.paint(current, {base_color = [1.0, 1.0, 1.0, 0.5]}, texture)

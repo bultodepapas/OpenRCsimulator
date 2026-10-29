@@ -4,12 +4,54 @@ extends RefCounted
 const Registry := preload("res://aircraft/model_registry.gd")
 const REVISION := "openrc-procedural-paint-v1"
 const SCRIPT_PATH := "res://aircraft/procedural_skin.gd"
+const TIMBER_SOURCES := ["res://aircraft/timber_visual_details.gd", "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd", "res://aircraft/timber_visual_lighting.gd"]
 const STIK := "jensen-das-ugly-stik-60"
 const EXTRA := "gp-extra-300s-60"
 const P51 := "p51d-mustang-120"
 const TIMBER := "turbo-lumber-evolution"
 const FAMILIES := [STIK, EXTRA, P51, TIMBER]
 const TIMBER_MESHES := ["aileron_left", "aileron_right", "cowl", "elevator", "fin_fixed", "flap_left", "flap_right", "fuselage_core", "rudder", "stabilizer_fixed", "wing_left_fixed", "wing_right_fixed"]
+const TIMBER_SHADER := """
+shader_type spatial;
+render_mode diffuse_burley, specular_schlick_ggx;
+uniform sampler2D paint_texture : source_color, filter_linear_mipmap, repeat_disable;
+uniform bool paint_enabled;
+uniform vec4 paint_factor : source_color;
+uniform sampler2D foam_normal : hint_normal, filter_linear_mipmap, repeat_enable;
+uniform sampler2D foam_roughness : hint_default_white, filter_linear_mipmap, repeat_enable;
+uniform vec3 foam_scale;
+uniform vec3 foam_offset;
+uniform float foam_sharpness;
+uniform float normal_strength;
+uniform float roughness_value;
+uniform float metallic_value;
+uniform float specular_value;
+uniform float grow_amount;
+varying vec3 projection_weights;
+varying vec3 projection_position;
+void vertex() {
+	vec3 n = abs(NORMAL);
+	TANGENT = normalize(vec3(n.y + n.z, 0.0, -n.x));
+	BINORMAL = normalize(vec3(0.0, n.x + n.z, -n.y));
+	projection_weights = pow(n, vec3(foam_sharpness));
+	projection_weights /= max(dot(projection_weights, vec3(1.0)), 0.000001);
+	projection_position = (VERTEX * foam_scale + foam_offset) * vec3(1.0, -1.0, 1.0);
+	VERTEX += NORMAL * grow_amount;
+}
+vec4 projected(sampler2D image, vec3 weights, vec3 p) {
+	return texture(image, p.xy) * weights.z + texture(image, p.xz) * weights.y + texture(image, p.zy * vec2(-1.0, 1.0)) * weights.x;
+}
+void fragment() {
+	vec4 paint = paint_enabled ? texture(paint_texture, UV) : vec4(1.0);
+	ALBEDO = paint_factor.rgb * paint.rgb;
+	NORMAL_MAP = projected(foam_normal, projection_weights, projection_position).rgb;
+	NORMAL_MAP_DEPTH = normal_strength;
+	ROUGHNESS = projected(foam_roughness, projection_weights, projection_position).r * roughness_value;
+	METALLIC = metallic_value;
+	SPECULAR = specular_value;
+	/* OPENRC_ALPHA */
+}
+"""
 
 
 ## The checked manifest pins the builder closure. Packaged source proofs preserve the adapter identity.
@@ -20,11 +62,22 @@ static func identity(family: String) -> String:
 	var proofs: Dictionary = Registry._read_package_proofs()
 	if not proofs.get("ok", false): return ""
 	var proof_files: Dictionary = proofs.files
-	var path := SCRIPT_PATH if proof_files.is_empty() else str(proof_files.get(SCRIPT_PATH, ""))
+	var adapter_hash := _source_hash(SCRIPT_PATH, proof_files)
+	if adapter_hash.is_empty(): return ""
+	var identity_text := REVISION + "\n" + family + "\n" + str(described.manifest_sha256) + "\n" + adapter_hash + "\n"
+	if family == TIMBER:
+		for source_path: String in TIMBER_SOURCES:
+			var source_hash := _source_hash(source_path, proof_files)
+			if source_hash.is_empty(): return ""
+			identity_text += source_path + "\n" + source_hash + "\n"
+	return identity_text.sha256_text()
+
+
+static func _source_hash(source_path: String, proof_files: Dictionary) -> String:
+	var path := source_path if proof_files.is_empty() else str(proof_files.get(source_path, ""))
 	if path.is_empty() or not FileAccess.file_exists(path): return ""
 	var source := FileAccess.get_file_as_string(path).replace("\r\n", "\n").replace("\r", "\n")
-	if source.is_empty(): return ""
-	return (REVISION + "\n" + family + "\n" + str(described.manifest_sha256) + "\n" + source.sha256_text() + "\n").sha256_text()
+	return source.sha256_text() if not source.is_empty() else ""
 
 
 static func prepare(family: String, root: Node3D) -> Dictionary:
@@ -249,6 +302,7 @@ static func _project(point: Vector3, minimum: Vector3, maximum: Vector3, face: i
 static func _prepare_material(family: String, material: Material) -> Material:
 	if family == TIMBER:
 		var result := material.duplicate() as StandardMaterial3D
+		if result.detail_enabled: return null
 		result.resource_name = "openrc-paint-" + material.resource_name
 		return result
 	if not material is ShaderMaterial: return null
@@ -275,6 +329,8 @@ static func paint(material: Material, record: Dictionary, texture: Texture2D) ->
 	if components.size() != 4: return null
 	var factor := Color(float(components[0]), float(components[1]), float(components[2]), float(components[3])).linear_to_srgb()
 	if material is StandardMaterial3D:
+		if material.resource_name.begins_with("openrc-paint-") and material.uv1_triplanar:
+			return _paint_timber(material, factor, texture)
 		var copy := material.duplicate() as StandardMaterial3D
 		copy.albedo_color = factor
 		copy.albedo_texture = texture
@@ -310,3 +366,35 @@ static func paint(material: Material, record: Dictionary, texture: Texture2D) ->
 
 static func _fail(message: String) -> Dictionary:
 	return {ok = false, errors = PackedStringArray([message])}
+
+
+static func _paint_timber(source: StandardMaterial3D, factor: Color, texture: Texture2D) -> ShaderMaterial:
+	# This is the foam profile authored by TimberVisualDetails. Refuse an
+	# unsupported profile instead of silently dropping its material features.
+	if source.uv1_world_triplanar or source.detail_enabled or source.albedo_texture != null \
+		or not source.normal_enabled or source.normal_texture == null or source.roughness_texture == null \
+		or source.roughness_texture_channel != BaseMaterial3D.TEXTURE_CHANNEL_RED \
+		or source.metallic_texture != null or source.cull_mode != BaseMaterial3D.CULL_BACK \
+		or source.shading_mode != BaseMaterial3D.SHADING_MODE_PER_PIXEL \
+		or source.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+		return null
+	var shader := Shader.new()
+	shader.code = TIMBER_SHADER.replace("/* OPENRC_ALPHA */", "ALPHA = paint_factor.a * paint.a;" if factor.a < 1.0 else "")
+	var result := ShaderMaterial.new()
+	result.shader = shader
+	result.resource_name = source.resource_name
+	result.render_priority = source.render_priority
+	result.set_shader_parameter("paint_texture", texture)
+	result.set_shader_parameter("paint_enabled", texture != null)
+	result.set_shader_parameter("paint_factor", factor)
+	result.set_shader_parameter("foam_normal", source.normal_texture)
+	result.set_shader_parameter("foam_roughness", source.roughness_texture)
+	result.set_shader_parameter("foam_scale", source.uv1_scale)
+	result.set_shader_parameter("foam_offset", source.uv1_offset)
+	result.set_shader_parameter("foam_sharpness", source.uv1_triplanar_sharpness)
+	result.set_shader_parameter("normal_strength", source.normal_scale)
+	result.set_shader_parameter("roughness_value", source.roughness)
+	result.set_shader_parameter("metallic_value", source.metallic)
+	result.set_shader_parameter("specular_value", source.metallic_specular)
+	result.set_shader_parameter("grow_amount", source.grow_amount if source.grow else 0.0)
+	return result

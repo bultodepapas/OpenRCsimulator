@@ -110,8 +110,15 @@ python tools/godot/run_checked.py --label fsr2-history --timeout 150 --require-t
 
 Repeat with `--render-thread separate` for queued dispatch coverage. Require the
 completion marker and zero engine/Vulkan validation errors; a headless run exits
-2 and cannot qualify this fixture. The fixture has passed parsing and headless
-refusal checks; rendered completion remains pending in the
+2 and cannot qualify this fixture. Inspect warnings too: storage-image format
+mismatches can report undefined values without a validation error severity.
+On 2026-10-28, the SDK 2.4 candidate passed the FSR2 fixture on RTX 3090 in both
+default and separate-thread modes. After enabling the queried SDK 2.4 Vulkan
+features, FSR3 completed the reset assertions in both modes with the queried
+3.1.6 provider and zero validation errors. Storage-image format warnings still
+report undefined values: the strict `--warnings-as-errors` checks fail, and the
+candidate is not qualified.
+See the build identities, diagnostics and remaining gates in the
 [dated evidence](../../../../docs/research/advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md).
 
 ## Canvas buffer synchronization regression

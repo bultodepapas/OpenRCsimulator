@@ -5,7 +5,7 @@
   "date": "2026-10-28",
   "export_dir": "C:/DEVELOPMENT/OpenRCsimulator-exports/trailer-2026-10-28-v8",
   "film": "OpenRC-Every-Input-Matters-v8-58s-1080p60.mp4",
-  "film_sha256": "fdb15010e8c78e2e923a00a26d32c88e5ad9b3ad0a7874d4bf266b7ed84fcd3b",
+  "film_sha256": "692ef8361f9925e1712deaa8fee61dd2f2540e7bb62e0d3f731a3ffe14ea0af9",
   "frames": 3480,
   "fps": 60,
   "duration_s": 58.0,
@@ -17,12 +17,13 @@
     "integrated_lufs": "-14.02",
     "true_peak_dbtp": "-1.96"
   },
-  "timeline_sha256": "4a0adc5ba292319424f8cd01050e735ca9539d899f839ec3cbfd8f3cfa845ab4",
+  "timeline_sha256": "b1619183187a80adbb1bdcf5f54562080b29c125b999bc7e8b25a21ec7dbfaf7",
   "music_sha256": "03c948059d191977ec8e624b2598662f529bd1039eafe9af7844c4f1b77deaea",
   "tools": {
     "godot": "4.8-beta1 official",
     "ffmpeg": "7.1.1 essentials (gyan.dev)",
     "ffmpeg_sha256": "b90225987bdd042cca09a1efb5e34e9848f2d1dbf5fbcd388753a44145522997"
   },
-  "published": false
+  "published": false,
+  "title_style": "crystal"
 }

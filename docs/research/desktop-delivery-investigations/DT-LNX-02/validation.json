@@ -1,0 +1,59 @@
+{
+  "format": "openrc-linux-delivery-checks-v1",
+  "step": "DT-LNX-02a/b",
+  "date": "2026-10-28",
+  "source_head": "6099c4e86753186bf758320aab5b5b93de4c32e8",
+  "scope": "Fresh shared-object clone with relevant tracked subtrees and owned working-file overlays; text hashes normalized LF. No Godot runtime or native application export.",
+  "sha256_lf": {
+    "app/export.sh": "3531a7633171c68780cdcc006f35a293bca190079970a7c8cc26f9958e77d27a",
+    "app/get-templates.sh": "c3df729ae7904695115caf15fcaa023a755349e1ebd513f0eda0bc0ffe4c264d",
+    "app/tests/test_export_identity.py": "0db470f21980f66259209384b2187bdf8692f49c6ddc70d67cac1276a10d5c6c",
+    "tools/godot/test_get_templates.py": "5aee58094d5e3b322daacb7d9556a27a19cc06b1e8b0a35e960be161bb4d3fef",
+    ".github/workflows/ci.yml": "eb5cac64ac6971acb47f1bbb0eeaf141343ff31dd49cd03b5665dfe45c9e764c"
+  },
+  "source_unchanged_during_checks": true,
+  "shell_syntax": [
+    {
+      "path": "app/export.sh",
+      "exit_code": 0
+    },
+    {
+      "path": "app/get-templates.sh",
+      "exit_code": 0
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "app/tests/test_export_identity.py"
+      ],
+      "exit_code": 0,
+      "output": ".........................\n----------------------------------------------------------------------\nRan 25 tests in 4.108s\n\nOK\nInstalled Windows and Linux native outputs with receipt and godot-cpp license under /tmp/openrc-native-receipt-ykb0gv9b/app/native/ground_vehicle.\nInstalled Windows and Linux native outputs with receipt and godot-cpp license under /tmp/openrc-native-receipt-ykb0gv9b/app/native/ground_vehicle.\nInstalled Windows and Linux native outputs with receipt and godot-cpp license under /tmp/openrc-native-receipt-ykb0gv9b/app/native/ground_vehicle.\nInstalled Windows and Linux native outputs with receipt and godot-cpp license under /tmp/openrc-native-receipt-ykb0gv9b/app/native/ground_vehicle.\n"
+    },
+    {
+      "command": [
+        "python3",
+        "app/tests/test_ci_partitions.py"
+      ],
+      "exit_code": 0,
+      "output": ".........\n----------------------------------------------------------------------\nRan 9 tests in 5.941s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "tools.godot.test_get_templates",
+        "tools.godot.test_macos_universal_template"
+      ],
+      "exit_code": 0,
+      "output": "...........ssss........\n----------------------------------------------------------------------\nRan 23 tests in 2.201s\n\nOK (skipped=4)\n"
+    }
+  ],
+  "limits": [
+    "Four optional real macOS export controls skipped",
+    "No provisioned full native export or GitHub Actions upload run",
+    "No native GPU/controller/performance acceptance"
+  ]
+}

@@ -86,11 +86,14 @@ fi
 if ! mkdir "$DEST" 2>/dev/null; then
   echo "Template destination appeared during installation; staged files retained at $STAGING" >&2; exit 1
 fi
-# Exclusive links on the same filesystem cannot replace a path that appeared.
-# Retain any partial result on failure so it cannot be mistaken for a valid cache.
-if ! "$GODOT_TEMPLATES_PYTHON" -c 'import os, sys
+# Exclusive creation cannot replace a path that appeared. Retain partial results
+# on failure; copy rather than requiring filesystem hard-link support.
+if ! "$GODOT_TEMPLATES_PYTHON" -c 'import os, shutil, sys
 for name in sys.argv[3:]:
-    os.link(os.path.join(sys.argv[1], name), os.path.join(sys.argv[2], name))' "$STAGING" "$DEST" "${NEEDED[@]}"; then
+    source_path, target_path = (os.path.join(directory, name) for directory in sys.argv[1:3])
+    with open(source_path, "rb") as source, open(target_path, "xb") as target:
+        shutil.copyfileobj(source, target, 1024 * 1024)
+    shutil.copymode(source_path, target_path)' "$STAGING" "$DEST" "${NEEDED[@]}" || ! verify_members "$DEST"; then
   echo "Template installation incomplete; retained at $DEST and $STAGING" >&2; exit 1
 fi
 for f in "${NEEDED[@]}"; do rm "$STAGING/$f"; done

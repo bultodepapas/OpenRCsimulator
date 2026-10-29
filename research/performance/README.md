@@ -346,17 +346,24 @@ use a new empty output directory and the repository's checked runner:
 ```sh
 run="$PWD/tmp/long-frame-example"
 mkdir "$run"
+trial=run-1
 godot="/absolute/path/to/Godot.app/Contents/MacOS/Godot"
-python3 tools/godot/run_checked.py --out-dir "$run/checks" --timeout 2100 -- "$godot" --path app --audio-driver Dummy --resolution 1920x1080 --max-fps 60 -- --scene_detail=medium --frametimes="$run/run-1.json" --frametimes-stream --warmup=30 --t=1800 --frame-diagnostics
+python3 tools/godot/run_checked.py --out-dir "$run/checks/$trial" --timeout 2100 -- "$godot" --path app --audio-driver Dummy --resolution 1920x1080 --max-fps 60 -- --scene_detail=medium --frametimes="$run/$trial.json" --frametimes-stream --warmup=30 --t=1800 --frame-diagnostics
 capture_status=$?
-cp "$run"/checks/*/engine.log "$run/run-1.log"
-python3 research/performance/frame_diagnose.py --report "$run/run-1.json" --log "$run/run-1.log" --out "$run/diagnosis.json" --max-input-bytes 320MiB --budget-ms 16.667
-python3 research/performance/native_summary.py --input "$run" --out "$run/summary.json"
+cp "$run/checks/$trial"/*/engine.log "$run/$trial.log"
+python3 research/performance/frame_diagnose.py --report "$run/$trial.json" --log "$run/$trial.log" --out "$run/diagnosis-$trial.json" --max-input-bytes 320MiB --budget-ms 16.667
+python3 research/performance/native_summary.py --input "$run" --out "$run/summary-$trial.json" --minimum-warmup-s 30 --minimum-sample-s 1800
 ```
 
 Retain `capture_status` and the checked runner's report. The summary defaults to
 three individually eligible runs, so one valid run does not pass its campaign
-gate. The command is a direct flight route and bypasses normal Home preference
+gate. Keep the directory, set `trial=run-2` then `trial=run-3`, and repeat the
+capture/reduction commands under matched conditions. Each trial needs a fresh
+report, log and checked-output parent; do not retry into an earlier trial's paths.
+The explicit duration options enforce 30 seconds of warmup and at least 1,800
+seconds per eligible run. Omitting them retains the historical 10/60-second
+defaults; a short-run campaign cannot establish a 30-minute soak.
+The command is a direct flight route and bypasses normal Home preference
 selection; record effective settings and test the actual Home-to-flight product
 path separately. Dummy audio does not qualify audio output. A requested 1080p
 window does not prove 1080p drawable pixels on a Retina display. Mac launch,

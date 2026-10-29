@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import hashlib
+import contextlib
+import io
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -12,6 +14,7 @@ try:
         DEFAULT_POLICY,
         active_flight_reasons,
         duration_gate,
+        main,
         summarize_directory,
         summarize_run,
         validate_native_report,
@@ -21,6 +24,7 @@ except ImportError:  # Also support direct execution from this directory.
         DEFAULT_POLICY,
         active_flight_reasons,
         duration_gate,
+        main,
         summarize_directory,
         summarize_run,
         validate_native_report,
@@ -526,6 +530,68 @@ class StreamReportTests(unittest.TestCase):
         self.assertFalse(log_result["collection_valid"])
         self.assertTrue(any("byte limit" in reason for reason in report_result["collection_reasons"]))
         self.assertTrue(any("byte limit" in reason for reason in log_result["collection_reasons"]))
+
+
+class DurationCliTests(unittest.TestCase):
+    @staticmethod
+    def _campaign(root: Path) -> None:
+        for index in range(1, 4):
+            write_run(root, f"run-{index}", sustained_report())
+
+    def test_requested_soak_gate_rejects_valid_short_runs_and_records_policy(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            self._campaign(root)
+            output = root / "summary.json"
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                status = main(["--input", str(root), "--out", str(output),
+                               "--minimum-warmup-s", "30", "--minimum-sample-s", "1800"])
+            result = json.loads(output.read_text(encoding="utf-8"))
+        self.assertEqual(status, 1)
+        self.assertEqual(result["policy"]["minimum_warmup_s"], 30.0)
+        self.assertEqual(result["policy"]["minimum_sample_s"], 1800.0)
+        self.assertEqual(result["policy"]["minimum_runs"], 3)
+        self.assertEqual(result["collection_valid_count"], 3)
+        self.assertEqual(result["duration_eligible_count"], 0)
+        for run in result["runs"]:
+            self.assertIn("requested warm-up is shorter than 30 s", run["duration_eligibility"]["reasons"])
+            self.assertIn("requested sample is shorter than 1800 s", run["duration_eligibility"]["reasons"])
+
+    def test_defaults_and_valid_zero_warmup_are_preserved_in_policy(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            self._campaign(root)
+            default_output = root / "default.json"
+            custom_output = root / "custom.json"
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                default_status = main(["--input", str(root), "--out", str(default_output)])
+                custom_status = main(["--input", str(root), "--out", str(custom_output),
+                                      "--minimum-warmup-s", "0", "--minimum-sample-s", "0.1"])
+            default = json.loads(default_output.read_text(encoding="utf-8"))
+            custom = json.loads(custom_output.read_text(encoding="utf-8"))
+        self.assertEqual(default_status, 0)
+        self.assertEqual(default["policy"], DEFAULT_POLICY)
+        self.assertEqual(default["policy"]["minimum_warmup_s"], 10.0)
+        self.assertEqual(default["policy"]["minimum_sample_s"], 60.0)
+        self.assertEqual(custom_status, 0)
+        self.assertEqual(custom["policy"]["minimum_warmup_s"], 0.0)
+        self.assertEqual(custom["policy"]["minimum_sample_s"], 0.1)
+        self.assertEqual(custom["policy"]["minimum_runs"], 3)
+
+    def test_invalid_duration_flags_fail_before_writing_output(self):
+        cases = (("--minimum-sample-s", "0"), ("--minimum-sample-s", "-1"),
+                 ("--minimum-sample-s", "nan"), ("--minimum-sample-s", "inf"),
+                 ("--minimum-warmup-s", "-1"), ("--minimum-warmup-s", "nan"),
+                 ("--minimum-warmup-s", "inf"))
+        for flag, value in cases:
+            with self.subTest(flag=flag, value=value), tempfile.TemporaryDirectory() as temp_dir:
+                root = Path(temp_dir)
+                output = root / "summary.json"
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit) as raised:
+                        main(["--input", str(root), "--out", str(output), flag, value])
+                self.assertEqual(raised.exception.code, 2)
+                self.assertFalse(output.exists())
 
 
 class NativeRunClassificationTests(unittest.TestCase):

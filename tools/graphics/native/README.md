@@ -74,8 +74,10 @@ experimental candidate, not a qualified release.
 
 A bounded FSR3 fixture reported analytical 3.1.6 dispatches on the local RTX 3090,
 but failed Vulkan validation with shader-feature and depth/stencil errors and
-storage-format warnings. The package is for investigation, not a qualified FSR3
-player mode; see the dated evidence below for exact build and run identities.
+storage-format warnings. A later editor build removed the observed feature and
+barrier errors in that fixture; storage-format warnings remain. The package is for
+investigation, not a qualified FSR3 player mode; see the dated evidence below for
+exact build and run identities.
 
 The candidate snapshot sets a separate `OpenRC-FSR24-Candidate` user-data
 directory, including when the executable is started directly. Its launchers use

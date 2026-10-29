@@ -224,7 +224,7 @@ Performance must pass timing/readability against Balanced on named hardware. Pub
 
 ### VQ-06c — integrated delivery
 
-Run required checks once the integrated diff stabilizes, then export from an isolated checkout: the current script recreates `dist/`. DT-08/08a own future staging/provenance changes; do not mix packaging redesign into shader work. Retain/test exact package hashes rather than rebuilding tested bytes.
+Run required checks once the integrated diff stabilizes, then export from an isolated checkout: the script reserves a fresh output directory and locks competing exporters, but import/native preparation still writes checkout-local files. DT-08/08a own staging/provenance changes; do not mix packaging redesign into shader work. Retain/test exact package hashes rather than rebuilding tested bytes.
 
 Fly the accepted ground/trees/clouds/settings together, including night/flash intervals and bright/dark aircraft. Roll back a failing change individually. Run 20-cycle resource checks; DT-12 claims additionally need its 50-cycle/30-minute protocol. Signing/installers/notarization remain separate desktop deliverables, not hidden requirements of this visual slice.
 

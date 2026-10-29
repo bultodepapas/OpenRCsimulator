@@ -310,7 +310,10 @@ recipe) and `--livery=<id>`. `flight_director.gd` adds `corsair-pass`, `x8-pass`
 `companions` (frames the first live AI companion and its nearest neighbor) and `corsair-roll`: wings-level
 altitude hold at full throttle for 9 s, then full aileron held. Identical inputs give the same flight for every
 livery, so the edit can cut between livery takes on one clock. `assemble.py` reads an optional
-`end_card_detail` line. `capture_flight.gd` now detaches any connected gamepad/radio from the session after
+`end_card_detail` line and `video_description`. A timeline with `"style": "crystal"` renders cues with
+`crystal_titles.py`: animated titles in the interface's green palette. Cue keys `align: "center"`,
+`lower: true` (no scrim; lower safe area) and `credit` serve the end card. `capture_brand.gd` renders the
+production brand intro as PNG frames for a `frames` shot. `capture_flight.gd` now detaches any connected gamepad/radio from the session after
 startup (`FLIGHT_CAPTURE_CONTROLLER_DETACHED`): a desk controller otherwise froze takes at tick 3 while the
 manifest still read `complete`. Check that the logged tick advances, not only `complete`.
 

@@ -352,7 +352,16 @@ bool FSR3Effect::is_available() {
 		return false;
 	}
 	RenderingDevice *rd = RD::get_singleton();
-	return rd != nullptr && rd->get_device_api_name().to_lower() == "vulkan" && load_fsr3_api();
+	if (rd == nullptr || rd->get_device_api_name().to_lower() != "vulkan") {
+		return false;
+	}
+#if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
+	const RDD::Capabilities &capabilities = rd->get_device_capabilities();
+	if (!capabilities.fsr24_vulkan_derivative_linear || !capabilities.fsr24_vulkan_separate_depth_stencil) {
+		return false;
+	}
+#endif
+	return load_fsr3_api();
 }
 
 Dictionary FSR3Effect::get_status() {
@@ -381,6 +390,9 @@ Dictionary FSR3Effect::get_status() {
 #if defined(FFX_UPSCALER_VERSION_MAJOR) && FFX_UPSCALER_VERSION_MAJOR >= 4
 	status["fidelityfx_sdk"] = "2.4.0";
 	status["api_version"] = "4.1.2";
+	RenderingDevice *rd = RD::get_singleton();
+	status["vulkan_derivative_linear_enabled"] = rd != nullptr && rd->get_device_capabilities().fsr24_vulkan_derivative_linear;
+	status["vulkan_separate_depth_stencil_enabled"] = rd != nullptr && rd->get_device_capabilities().fsr24_vulkan_separate_depth_stencil;
 #else
 	status["fidelityfx_sdk"] = "1.1.4";
 	status["api_version"] = "3.1.4";

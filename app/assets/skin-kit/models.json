@@ -41,6 +41,53 @@
         {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["Pintura_Carenado"], "base_colors": {"Pintura_Carenado": [1, 1, 1, 1]}, "width": 2048, "height": 1024},
         {"image": "Paint-02.png", "uv": "UV-02.png", "materials": ["Pintura_Botalon"], "base_colors": {"Pintura_Botalon": [1, 1, 1, 1]}, "width": 4096, "height": 440, "source_width": 8192, "source_height": 880}
       ]
+    },
+    "jensen-das-ugly-stik-60": {
+      "display_name": "Ugly Stik",
+      "adapter": "procedural_skin",
+      "stock_sha256": "2ef3a67e9501f9f85c80f795303ac8cd49f3449563dfbc83e351e7e2dfc0d94b",
+      "source_sha256": "e90976fb26835cbb2b913989618ae703552db2a0aa1d5360be6a7185a08daec4",
+      "source_path": "res://data/aircraft_models/jensen-das-ugly-stik-60.json",
+      "kit": "res://assets/skin-kit/jensen-das-ugly-stik-60.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["classic-covering-v4"], "base_colors": {"classic-covering-v4": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
+      ]
+    },
+    "gp-extra-300s-60": {
+      "display_name": "Extra 300S",
+      "adapter": "procedural_skin",
+      "template_kind": "neutral_six_view",
+      "stock_sha256": "7140c5cd31758a880f955bb13016a300847aee448e24692d2dd1b0cea00478d6",
+      "source_sha256": "e31f6b8397622b263c1c6aa4b41387709578b0d111df073a2d6d5a21a3e3d065",
+      "source_path": "res://data/aircraft_models/gp-extra-300s-60.json",
+      "kit": "res://assets/skin-kit/gp-extra-300s-60.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["openrc-paint"], "base_colors": {"openrc-paint": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
+      ]
+    },
+    "p51d-mustang-120": {
+      "display_name": "P-51D Mustang",
+      "adapter": "procedural_skin",
+      "template_kind": "neutral_six_view",
+      "stock_sha256": "8919ba9af951f0028d0ae124f701384775f16450cacda37e14316696e587c696",
+      "source_sha256": "f38b3d0ba75b389665ba1cff3dedc82a4aebcb1193081d2b959820a5431de23f",
+      "source_path": "res://data/aircraft_models/p51d-mustang-120.json",
+      "kit": "res://assets/skin-kit/p51d-mustang-120.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["openrc-paint"], "base_colors": {"openrc-paint": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
+      ]
+    },
+    "turbo-lumber-evolution": {
+      "display_name": "Turbo Lumber Evolution",
+      "adapter": "procedural_skin",
+      "template_kind": "neutral_six_view",
+      "stock_sha256": "be64bbfddee9db0681fa3d8d35ee9494ef19b8a737557d338f3ef357b5f0c39f",
+      "source_sha256": "47a48e03b366deec2a128c2107d00748ebf47d121b00a36df2ad01bf1d08a48b",
+      "source_path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
+      "kit": "res://assets/skin-kit/turbo-lumber-evolution.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["openrc-paint-white", "openrc-paint-red", "openrc-paint-black"], "base_colors": {"openrc-paint-white": [1, 1, 1, 1], "openrc-paint-red": [1, 1, 1, 1], "openrc-paint-black": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
+      ]
     }
   }
 }

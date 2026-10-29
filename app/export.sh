@@ -9,8 +9,8 @@
 # Usage: app/export.sh [--output-dir NEW_DIRECTORY] (default: <repo>/dist/export-XXXXXXXX).
 # The version is always git describe. Existing outputs are never replaced, including after a failed run.
 set -euo pipefail
-HERE="$(cd "$(dirname "$0")" && pwd)"
-ROOT="$(cd "$HERE/.." && pwd)"
+HERE="$(cd "$(dirname "$0")" && pwd -P)"
+ROOT="$(cd "$HERE/.." && pwd -P)"
 OUTPUT_ARG=""
 case "$#:${1:-}" in
   0:) ;;
@@ -50,12 +50,19 @@ echo "== build identity: $VERSION (commit $OPENRC_BUILD_COMMIT, $OPENRC_BUILD_DA
 [[ "$(uname -s)" == Linux ]] || { echo "export and native package smoke require a Linux host" >&2; exit 1; }
 # Imports and NK-3 prepare mutate this checkout. Keep independent checkouts parallel,
 # but refuse a second exporter here before it can touch shared source-side caches.
-GIT_DIR="$(git -C "$ROOT" rev-parse --absolute-git-dir)"
-exec 9>"$GIT_DIR/openrc-export.lock"
+GIT_DIR="$(realpath -- "$(git -C "$ROOT" rev-parse --absolute-git-dir)")"
+GIT_COMMON_DIR="$(git -C "$ROOT" rev-parse --git-common-dir)"
+[[ "$GIT_COMMON_DIR" == /* ]] || GIT_COMMON_DIR="$ROOT/$GIT_COMMON_DIR"
+GIT_COMMON_DIR="$(realpath -- "$GIT_COMMON_DIR")"
+EXPORT_LOCK="$GIT_DIR/openrc-export.lock"
+if [[ -L "$EXPORT_LOCK" || ( -e "$EXPORT_LOCK" && ! -f "$EXPORT_LOCK" ) ]]; then
+  echo "export lock must be a regular file: $EXPORT_LOCK" >&2; exit 1
+fi
+exec 9>>"$EXPORT_LOCK"
 flock -n 9 || { echo "another export is using this checkout; use a separate checkout or wait" >&2; exit 1; }
 validate_output_path() {
   case "$1/" in
-    "$HERE/"*|"$GIT_DIR/"*) echo "export output must be outside app/ and Git metadata: $1" >&2; exit 1 ;;
+    "$HERE/"*|"$GIT_DIR/"*|"$GIT_COMMON_DIR/"*) echo "export output must be outside app/ and Git metadata: $1" >&2; exit 1 ;;
   esac
   [[ "$1" != *$'\n'* && "$1" != *$'\r'* ]] || { echo "export output path must not contain newlines" >&2; exit 1; }
 }

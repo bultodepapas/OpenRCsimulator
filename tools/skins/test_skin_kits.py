@@ -3,6 +3,7 @@
 Run from the repository root: python tools/skins/test_skin_kits.py
 """
 
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -70,6 +71,8 @@ class SkinKits(unittest.TestCase):
     def test_kits_and_roundtrip_image_packages(self):
         for family, model in self.models.items():
             with self.subTest(family=family), tempfile.TemporaryDirectory(prefix="openrc-kit-test-") as scratch:
+                if model.get("adapter") != "procedural_skin":
+                    self.assertEqual(hashlib.sha256(local_path(model["source_path"]).read_bytes()).hexdigest(), model["stock_sha256"])
                 archive_path = local_path(model["kit"])
                 with zipfile.ZipFile(archive_path) as archive:
                     self.assertIsNone(archive.testzip())

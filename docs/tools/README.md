@@ -33,7 +33,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Startup or public logos | [Startup source](../../app/assets/branding/README.md), [public identity](../../site/BRANDS.md#openrc-identity); use their generator `--check` first. |
 | Website languages and metadata | [Website workflow](../../site/README.md#search-metadata-and-static-languages-web-0811). |
 | GitHub visits and release download history | [Local analytics collector and daily task](../../tools/analytics/README.md); country attribution is limited to website requests. |
-| Export or release | [Release sequence](../TOOLS.md#release-sequence); `app/export.sh` recreates `dist/`. |
+| Export or release | [Release sequence](../TOOLS.md#release-sequence); `app/export.sh` reserves a fresh output directory and preserves previous runs. |
 
 ## Rules for every tool
 

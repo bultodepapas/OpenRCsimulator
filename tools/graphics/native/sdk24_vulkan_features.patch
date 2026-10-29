@@ -1,0 +1,149 @@
+--- a/servers/rendering/rendering_device_driver.h
++++ b/servers/rendering/rendering_device_driver.h
+@@ -967,6 +967,9 @@
+ 		DeviceFamily device_family = DEVICE_UNKNOWN;
+ 		uint32_t version_major = 1;
+ 		uint32_t version_minor = 0;
++		// These record enabled device features, not merely hardware support.
++		bool fsr24_vulkan_derivative_linear = false;
++		bool fsr24_vulkan_separate_depth_stencil = false;
+ 	};
+ 
+ 	virtual void set_object_name(ObjectType p_type, ID p_driver_id, const String &p_name) = 0;
+--- a/drivers/vulkan/rendering_device_driver_vulkan.h
++++ b/drivers/vulkan/rendering_device_driver_vulkan.h
+@@ -159,6 +159,8 @@
+ 	TightLocalVector<TightLocalVector<Queue>> queue_families;
+ 	TightLocalVector<VkQueueFamilyProperties> queue_family_properties;
+ 	RDD::Capabilities device_capabilities;
++	bool fsr24_derivative_linear_supported = false;
++	bool fsr24_separate_depth_stencil_supported = false;
+ 	SubgroupCapabilities subgroup_capabilities;
+ 	MultiviewCapabilities multiview_capabilities;
+ 	FragmentShadingRateCapabilities fsr_capabilities;
+--- a/drivers/vulkan/rendering_device_driver_vulkan.cpp
++++ b/drivers/vulkan/rendering_device_driver_vulkan.cpp
+@@ -37,6 +37,8 @@
+ #include "drivers/vulkan/vulkan_hooks.h"
+ 
+ #include <thirdparty/misc/smolv.h>
++
++#include <cstring>
+ 
+ #if defined(STREAMLINE_ENABLED)
+ #include "drivers/streamline/streamline.h"
+@@ -569,6 +571,13 @@
+ 	enabled_device_extension_names.clear();
+ 
+ 	_register_requested_device_extension(VK_KHR_SWAPCHAIN_EXTENSION_NAME, true);
++	// The bundled SDK declares SPV_KHR_compute_shader_derivatives. A Vulkan 1.2
++	// device and Features2 are required by this candidate's conservative gate.
++	VkPhysicalDeviceProperties fsr24_properties = {};
++	vkGetPhysicalDeviceProperties(physical_device, &fsr24_properties);
++	if (fsr24_properties.apiVersion >= VK_API_VERSION_1_2 && context_driver->functions_get().GetPhysicalDeviceFeatures2 != nullptr) {
++		_register_requested_device_extension(VK_KHR_COMPUTE_SHADER_DERIVATIVES_EXTENSION_NAME, false);
++	}
+ 	_register_requested_device_extension(VK_KHR_MULTIVIEW_EXTENSION_NAME, false);
+ 	_register_requested_device_extension(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME, false);
+ 	_register_requested_device_extension(VK_EXT_FRAGMENT_DENSITY_MAP_EXTENSION_NAME, false);
+@@ -891,6 +900,66 @@
+ 	return OK;
+ }
+ 
++// BEGIN SDK24 VULKAN FEATURE HELPERS
++// Query only a supported KHR extension and keep 1.2 aggregate structures unique.
++static void openrc_fsr24_query_features(VkPhysicalDevice p_device, PFN_vkGetPhysicalDeviceFeatures2 p_query,
++		bool p_has_khr, uint32_t p_api_version, bool &r_linear, bool &r_separate) {
++	r_linear = false;
++	r_separate = false;
++	if (p_query == nullptr || !p_has_khr || p_api_version < VK_API_VERSION_1_2) {
++		return;
++	}
++	VkPhysicalDeviceComputeShaderDerivativesFeaturesKHR derivatives = {};
++	derivatives.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_KHR;
++	VkPhysicalDeviceVulkan12Features vulkan12 = {};
++	vulkan12.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
++	vulkan12.pNext = &derivatives;
++	VkPhysicalDeviceFeatures2 features = {};
++	features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
++	features.pNext = &vulkan12;
++	p_query(p_device, &features);
++	r_linear = derivatives.computeDerivativeGroupLinear == VK_TRUE;
++	r_separate = vulkan12.separateDepthStencilLayouts == VK_TRUE;
++}
++
++static void openrc_fsr24_append_device_features(bool p_linear, bool p_separate,
++		VkPhysicalDeviceComputeShaderDerivativesFeaturesKHR &r_derivatives,
++		VkPhysicalDeviceVulkan12Features &r_vulkan12, void *&r_next) {
++	if (p_linear) {
++		r_derivatives.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_KHR;
++		r_derivatives.pNext = r_next;
++		r_derivatives.computeDerivativeGroupLinear = VK_TRUE;
++		r_next = &r_derivatives;
++	}
++	r_vulkan12.separateDepthStencilLayouts = p_separate ? VK_TRUE : VK_FALSE;
++}
++
++// Record what was actually requested, only after vkCreateDevice succeeds.
++static void openrc_fsr24_publish_enabled(const VkDeviceCreateInfo &p_create, RDD::Capabilities &r_capabilities) {
++	bool has_khr = false;
++	for (uint32_t i = 0; i < p_create.enabledExtensionCount; i++) {
++		if (std::strcmp(p_create.ppEnabledExtensionNames[i], VK_KHR_COMPUTE_SHADER_DERIVATIVES_EXTENSION_NAME) == 0) {
++			has_khr = true;
++		}
++	}
++	bool linear = false;
++	bool separate = false;
++	uint32_t derivative_count = 0;
++	uint32_t vulkan12_count = 0;
++	for (const VkBaseInStructure *next = static_cast<const VkBaseInStructure *>(p_create.pNext); next != nullptr; next = next->pNext) {
++		if (next->sType == VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_KHR) {
++			derivative_count++;
++			linear = reinterpret_cast<const VkPhysicalDeviceComputeShaderDerivativesFeaturesKHR *>(next)->computeDerivativeGroupLinear == VK_TRUE;
++		} else if (next->sType == VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES) {
++			vulkan12_count++;
++			separate = reinterpret_cast<const VkPhysicalDeviceVulkan12Features *>(next)->separateDepthStencilLayouts == VK_TRUE;
++		}
++	}
++	r_capabilities.fsr24_vulkan_derivative_linear = has_khr && derivative_count == 1 && linear;
++	r_capabilities.fsr24_vulkan_separate_depth_stencil = vulkan12_count == 1 && separate;
++}
++// END SDK24 VULKAN FEATURE HELPERS
++
+ static uint32_t _align_up(uint32_t size, uint32_t alignment) {
+ 	return (size + (alignment - 1)) & ~(alignment - 1);
+ }
+@@ -913,6 +982,9 @@
+ 	// https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VK_KHR_multiview.html
+ 	// https://www.khronos.org/blog/vulkan-subgroup-tutorial
+ 	const RenderingContextDriverVulkan::Functions &functions = context_driver->functions_get();
++	openrc_fsr24_query_features(physical_device, functions.GetPhysicalDeviceFeatures2,
++			enabled_device_extension_names.has(VK_KHR_COMPUTE_SHADER_DERIVATIVES_EXTENSION_NAME),
++			physical_device_properties.apiVersion, fsr24_derivative_linear_supported, fsr24_separate_depth_stencil_supported);
+ 	if (functions.GetPhysicalDeviceFeatures2 != nullptr) {
+ 		// We must check that the corresponding extension is present before assuming a feature as enabled.
+ 		// See also: https://github.com/godotengine/godot/issues/65409
+@@ -1505,12 +1577,15 @@
+ 
+ 	VkPhysicalDeviceVulkan11Features vulkan_1_1_features = {};
+ 	VkPhysicalDeviceVulkan12Features vulkan_1_2_features = {};
++	VkPhysicalDeviceComputeShaderDerivativesFeaturesKHR fsr24_derivatives = {};
+ 	VkPhysicalDevice16BitStorageFeaturesKHR storage_features = {};
+ 	VkPhysicalDeviceMultiviewFeatures multiview_features = {};
+ 	if (enable_1_2_features) {
+ 		// In Vulkan 1.2 and newer we use a newer struct to enable various features.
+ 		// Enable Vulkan 1.2 features (descriptor indexing, buffer device address, etc.).
+ 		vulkan_1_2_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
++		openrc_fsr24_append_device_features(fsr24_derivative_linear_supported, fsr24_separate_depth_stencil_supported,
++				fsr24_derivatives, vulkan_1_2_features, create_info_next);
+ 		vulkan_1_2_features.pNext = create_info_next;
+ 		vulkan_1_2_features.bufferDeviceAddress = buffer_device_address_support;
+ 		vulkan_1_2_features.vulkanMemoryModel = vulkan_memory_model_support;
+@@ -1585,6 +1660,7 @@
+ 		VkResult err = vkCreateDevice(physical_device, &create_info, VKC::get_allocation_callbacks(VK_OBJECT_TYPE_DEVICE), &vk_device);
+ 		ERR_FAIL_COND_V_MSG(err != VK_SUCCESS, ERR_CANT_CREATE, vformat("Couldn't create Vulkan device (VkResult error %d).", err));
+ 	}
++	openrc_fsr24_publish_enabled(create_info, device_capabilities);
+ 
+ 	for (uint32_t i = 0; i < queue_families.size(); i++) {
+ 		for (uint32_t j = 0; j < queue_families[i].size(); j++) {

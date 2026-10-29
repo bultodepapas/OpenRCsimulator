@@ -15,6 +15,7 @@ var _status: Label
 var _picker: FileDialog
 var _saving := false
 var _first: Button
+var _scroll: ScrollContainer
 
 
 func _init(aircraft_id := "skywalker-x8", shared_theme: Theme = null) -> void:
@@ -33,9 +34,14 @@ func _init(aircraft_id := "skywalker-x8", shared_theme: Theme = null) -> void:
 	panel.theme_type_variation = "Card"
 	panel.custom_minimum_size.x = 640
 	center.add_child(panel)
+	_scroll = ScrollContainer.new()
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_scroll.follow_focus = true
+	panel.add_child(_scroll)
 	var box := VBoxContainer.new()
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.add_theme_constant_override("separation", 16)
-	panel.add_child(box)
+	_scroll.add_child(box)
 	box.add_child(Widgets.label("Create a skin", "TitleLabel", true))
 	box.add_child(Widgets.label(Catalog.short_name(_aircraft_id) + " · PNG → .orskin", "SectionLabel", true, false))
 	box.add_child(Widgets.label("Save the template, edit its paint images with an AI assistant or Blender, then load your .orskin file.", "", true))
@@ -60,7 +66,12 @@ func _init(aircraft_id := "skywalker-x8", shared_theme: Theme = null) -> void:
 	_picker.use_native_dialog = false
 	_picker.file_selected.connect(_file_selected)
 	_screen.add_child(_picker)
-	_screen.resized.connect(func() -> void: panel.custom_minimum_size.x = minf(700, _screen.size.x - 48))
+	var fit := func() -> void:
+		panel.custom_minimum_size = Vector2(minf(700, maxf(200, _screen.size.x - 48)),
+			minf(box.get_combined_minimum_size().y + 40, maxf(200, _screen.size.y - 48)))
+	_screen.resized.connect(fit)
+	box.minimum_size_changed.connect(fit)
+	fit.call_deferred()
 
 
 func _ready() -> void:
@@ -91,12 +102,14 @@ func _file_selected(path: String) -> void:
 			_status.text = tr("Template saved. Extract the ZIP and open the skin guide.")
 		else:
 			_status.text = tr("Could not save the template. Check the destination and try again.")
+		_scroll.ensure_control_visible.call_deferred(_status)
 		return
 	var result := CustomSkin.import_file(path, _aircraft_id)
 	if result.ok:
 		imported.emit(str(result.id))
 	else:
 		_status.text = tr("Skin could not be loaded:") + "\n" + "\n".join(result.get("errors", []))
+		_scroll.ensure_control_visible.call_deferred(_status)
 
 
 func open_guide() -> void:

@@ -53,11 +53,11 @@ fixtures; native Mac qualification is not implied:
 | Check | Result / scope |
 | --- | --- |
 | Editor getter | 10 fixtures on Windows Git Bash and WSL; existing Windows/Linux cache paths and shell syntax checked |
-| Template/preflight/correction | 30 tests; combined with getter, 40 per platform. Windows skips FIFO and four native export cases, WSL skips the four export cases |
+| Template/preflight/correction | Initial combined getter/template/preflight/correction run: 40 tests per platform. Final rerun after shared template-cache hardening: 46 tests per platform, successful with five Windows skips (FIFO and four native export cases) and four WSL skips (native export cases) |
 | Research launcher/profile | 21 Python tests, including actual Windows headless identity; 78 profile assertions |
 | Research preparation | 13 fixtures including identity, path/copy validation, retained partial failure and atomic receipt publication |
 | Stream collector | 112 Godot assertions including 30-minute-equivalent 60/120 Hz streams, bounds, malformed metrics, interruption and late report-path collision |
-| Summary/diagnosis | 71 Python tests including legacy reports, long streams, missing/corrupt/oversized input and completion checks |
+| Summary/diagnosis | 74 Python tests including legacy reports, long streams, missing/corrupt/oversized input, completion checks and explicit CLI soak-duration gates |
 | Real capture | Seven actual headless Main cases: legacy and v3 short captures, frame-cap rejection, external-owner interruption and preservation of a late-created report sentinel |
 | Reconstruction/preferences | MetalFX policy 51, shared reconstruction 118, display preferences 160, diagnostics 26, reconstruction history 16, FSR history 11, camera history 25, advanced graphics 146; Settings 1080p/200% and nine-language checks passed |
 
@@ -80,12 +80,19 @@ Settings (146) all passed. Reconstruction source stayed unchanged during the run
 SHA-256 `7ccf7d4bddfbfa2f6a236f73fc2ccf983ea8347e7de71f53771d7acae9615efd`.
 This supplements the frozen snapshot rather than silently changing its identity.
 
+The reducer subsequently gained optional `--minimum-warmup-s` and
+`--minimum-sample-s` gates. Defaults remain 10/60 seconds and the three-run minimum
+is unchanged; the Mac procedure explicitly requests 30/1800 seconds and three
+independent soaks. CLI tests prove that valid short captures are rejected by that
+soak policy without invalidating their collection. This is a separately verified
+offline-tool change; the running integration snapshot was not mutated.
+
 The first full-suite attempt exited during fresh import of the existing
 `f4u_corsair.glb`, process status `4294967295`, without a script error diagnostic.
 The cause was not established. Existing scene import caches were copied into the
 snapshot and revalidated by Godot before the second attempt. This second run is
 warm-cache software verification, not a successful cold-import qualification.
-Final suite outcome and outstanding failures are recorded here after completion.
+Final partition outcomes and outstanding failures are recorded below.
 
 The refreshed suite next detected byte-pinned customization sources changed by
 the disposable worktree's `core.autocrlf=true` checkout. Twelve presentation files
@@ -95,6 +102,16 @@ files checked, 2,800 copied), without changing the generated registry. Its
 freshness check then passed. Final broad verification uses the existing
 `integration` partition and four `units` shards, each with a separate user-data
 directory; this changes test scheduling, not assertion or acceptance rules.
+
+The complete **integration partition passed**. Its checked collection contains
+**1,578 successful invocations**, including **1,538 script-parse checks**, with
+zero rejected/invalid reports. The existing report summarizer verified the logs
+and emitted JUnit. The suite also completed its Python-driven trace/CLI checks,
+negative controls, model contracts, finite frame reports, numerical sensitivity,
+and fixed-step/hash comparisons at 30/60/144 FPS. The retained integration log's
+SHA-256 is `d8bf7c85e331f2a5f2478b5f8960c8723cb74b30974f9f947927d485d56aaf3e`.
+These are Windows software results, not Mac, graphics-performance or physical
+validation.
 
 The broad unit run is complete under the existing stop-on-first-failure policy:
 

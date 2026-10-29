@@ -4,6 +4,8 @@ extends SceneTree
 
 const Registry := preload("res://aircraft/model_registry.gd")
 const ProceduralSkin := preload("res://aircraft/procedural_skin.gd")
+const TimberDetails := preload("res://aircraft/timber_visual_details.gd")
+const TimberLighting := preload("res://aircraft/timber_visual_lighting.gd")
 
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
@@ -27,6 +29,13 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var root: Node3D = airplane.root
+	if family == ProceduralSkin.TIMBER:
+		if not TimberDetails.apply(root):
+			printerr("Timber presentation details could not be prepared.")
+			root.free()
+			quit(1)
+			return
+		TimberLighting.apply(root)
 	var adapted: Dictionary = ProceduralSkin.prepare(family, root)
 	if not adapted.get("ok", false):
 		printerr("Paint preparation failed: ", adapted.get("errors", []))

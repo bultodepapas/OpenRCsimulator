@@ -943,6 +943,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--p99-max-ms", type=float, default=DEFAULT_POLICY["p99_max_ms"])
     parser.add_argument("--ratio-min", type=float, default=DEFAULT_POLICY["simulation_wall_ratio_min"])
     parser.add_argument("--ratio-max", type=float, default=DEFAULT_POLICY["simulation_wall_ratio_max"])
+    parser.add_argument("--minimum-warmup-s", type=float, default=DEFAULT_POLICY["minimum_warmup_s"],
+                        help="minimum requested and actual warm-up in seconds (default: 10)")
+    parser.add_argument("--minimum-sample-s", type=float, default=DEFAULT_POLICY["minimum_sample_s"],
+                        help="minimum requested sample duration in seconds (default: 60)")
     return parser
 
 
@@ -955,6 +959,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "p99_max_ms": args.p99_max_ms,
         "simulation_wall_ratio_min": args.ratio_min,
         "simulation_wall_ratio_max": args.ratio_max,
+        "minimum_warmup_s": args.minimum_warmup_s,
+        "minimum_sample_s": args.minimum_sample_s,
     }
     for key, value in policy.items():
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):

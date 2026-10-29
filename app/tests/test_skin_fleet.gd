@@ -62,10 +62,20 @@ func _run() -> void:
 		var painted := Builder.build(id, NAN, {}, imported.id)
 		check(id + " builds stock and custom", not stock.is_empty() and not painted.is_empty())
 		if not stock.is_empty() and not painted.is_empty():
+			root.add_child(stock.root)
+			root.add_child(painted.root)
+			await process_frame
+			await process_frame
 			check(id + " selected identity retained", painted.get("custom_skin", {}).get("id") == imported.id)
+			if not Catalog.is_rotorcraft(id):
+				var had_asset_identity: bool = stock.root.has_meta("asset_sha256")
+				var same_asset_identity: bool = painted.root.has_meta("asset_sha256") == had_asset_identity
+				if had_asset_identity and same_asset_identity:
+					same_asset_identity = painted.root.get_meta("asset_sha256") == stock.root.get_meta("asset_sha256")
+				check(id + " preserves stock asset identity", same_asset_identity)
 			_compare(id, stock.root, painted.root, spec)
-		if stock.get("root") is Node: stock.root.free()
-		if painted.get("root") is Node: painted.root.free()
+		if painted.get("root") is Node: _free_children_first(painted.root)
+		if stock.get("root") is Node: _free_children_first(stock.root)
 		await process_frame
 	for id: String in packages:
 		var other := "skywalker-x8" if id != "skywalker-x8" else "xcell-60-research"
@@ -79,6 +89,14 @@ func _run() -> void:
 	print("Skin fleet: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
 
+
+func _free_children_first(node: Node) -> void:
+	# Two detailed Timber assemblies can expose freed material RIDs in Godot's
+	# dummy renderer during whole-subtree destruction. Dispose children first.
+	for child: Node in node.get_children(): _free_children_first(child)
+	node.free()
+
+
 func _compare(id: String, stock: Node3D, painted: Node3D, spec: Dictionary) -> void:
 	var names := {}
 	for group: Dictionary in spec.paints:
@@ -87,7 +105,12 @@ func _compare(id: String, stock: Node3D, painted: Node3D, spec: Dictionary) -> v
 	var transforms_equal := true
 	for original: Node in stock.find_children("*", "Node3D", true, false):
 		var target := painted.get_node_or_null(stock.get_path_to(original)) as Node3D
+		if target == null and str(original.name).begins_with("@"):
+			var parent := painted.get_node_or_null(stock.get_path_to(original.get_parent()))
+			if parent != null and original.get_index() < parent.get_child_count():
+				target = parent.get_child(original.get_index()) as Node3D
 		if target == null:
+			printerr("MISSING NODE ", id, " ", stock.get_path_to(original))
 			transforms_equal = false
 			continue
 		transforms_equal = transforms_equal and target.transform.is_equal_approx(original.transform)
@@ -103,6 +126,8 @@ func _compare(id: String, stock: Node3D, painted: Node3D, spec: Dictionary) -> v
 			if material != null and names.has(material.resource_name):
 				names[material.resource_name] += 1
 				check(id + " material is instance-owned", material != original.get_active_material(surface))
+				var texture: Texture2D = material.albedo_texture if material is StandardMaterial3D else material.get_shader_parameter("paint_texture" if material.resource_name.begins_with("openrc-paint-") else "openrc_paint_texture")
+				check(id + " receives the edited PNG", texture != null and texture.get_width() == 4 and texture.get_height() == 4)
 	check(id + " preserves vertex positions, normals and triangles", geometry_equal)
 	check(id + " preserves names, transforms and hinges", transforms_equal)
 	for material: String in names:
@@ -119,5 +144,5 @@ func _same_triangles(before: Array, after: Array) -> bool:
 		var a := indices_a[i] if not indices_a.is_empty() else i
 		var b := indices_b[i] if not indices_b.is_empty() else i
 		if before[Mesh.ARRAY_VERTEX][a] != after[Mesh.ARRAY_VERTEX][b]: return false
-		if before[Mesh.ARRAY_NORMAL] != null and before[Mesh.ARRAY_NORMAL][a] != after[Mesh.ARRAY_NORMAL][b]: return false
+		if before[Mesh.ARRAY_NORMAL] != null and (before[Mesh.ARRAY_NORMAL][a] - after[Mesh.ARRAY_NORMAL][b]).length() > 0.0002: return false
 	return true

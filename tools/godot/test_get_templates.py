@@ -6,6 +6,7 @@ import io
 import os
 from pathlib import Path
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -45,7 +46,11 @@ class TemplateGetterTests(unittest.TestCase):
         self.data = self.root / "isolated Godot data"
         self.archive = self.root / "template-fixture.tpz"
         with zipfile.ZipFile(self.archive, "w") as z:
-            for name in ("linux_release.x86_64", "windows_release_x86_64.exe", "macos.zip"):
+            linux = zipfile.ZipInfo("templates/linux_release.x86_64")
+            linux.create_system = 3
+            linux.external_attr = 0o100750 << 16
+            z.writestr(linux, "template linux_release.x86_64")
+            for name in ("windows_release_x86_64.exe", "macos.zip"):
                 z.writestr("templates/" + name, "template " + name)
             z.writestr("templates/version.txt", "4.8.beta1\n")
         self.write_getter()
@@ -105,7 +110,7 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
         path.chmod(0o755)
 
     def run_getter(self, **extra: str) -> subprocess.CompletedProcess[str]:
-        command = 'PATH="$(cd "$TEST_FIXTURE_BIN" && pwd -P):$PATH"; export PATH; source "$TEST_GETTER"'
+        command = 'umask 022; PATH="$(cd "$TEST_FIXTURE_BIN" && pwd -P):$PATH"; export PATH; source "$TEST_GETTER"'
         return subprocess.run([BASH, "-c", command, posix_arg(self.app / "get-templates.sh")], cwd=self.root, env=self.env | extra,
                               text=True, capture_output=True, timeout=30, check=False)
 
@@ -117,7 +122,7 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
         first = self.run_getter()
         self.assertEqual(first.returncode, 0, first.stderr)
         self.assertTrue(first.stdout.strip().endswith("/export_templates/4.8.beta1"))
-        self.assertEqual(self.log("checksum.log"), ["shasum", "shasum"])
+        self.assertEqual(self.log("checksum.log"), ["shasum", "shasum", "shasum"])
         self.assertEqual(self.log("network.log"), ["download"])
         self.assertEqual(len(self.log("helper.log")), 1)
         self.assertTrue(self.log("helper.log")[0].endswith("/macos.zip"))
@@ -127,7 +132,7 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
         second = self.run_getter(TEST_CURL_FAIL="1")
         self.assertEqual(second.returncode, 0, second.stderr)
         self.assertEqual(self.log("network.log"), ["download"])
-        self.assertEqual(self.log("checksum.log"), ["shasum", "shasum", "shasum"])
+        self.assertEqual(self.log("checksum.log"), ["shasum", "shasum", "shasum", "shasum"])
         self.assertEqual(len(self.log("helper.log")), 2)
 
     def test_corrupt_archive_is_not_extracted(self) -> None:
@@ -137,6 +142,19 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
         self.assertEqual(len(downloads), 1)
         self.assertEqual(downloads[0].read_bytes(), b"corrupt")
         self.assertFalse((self.dest / "macos.zip").exists())
+        self.assertEqual(self.log("helper.log"), [])
+
+    def test_existing_corrupt_archive_is_retained(self) -> None:
+        tools = self.root / ".tools"
+        tools.mkdir()
+        existing = tools / ARCHIVE_NAME
+        existing.write_bytes(b"existing corrupt archive")
+        result = self.run_getter()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("failed SHA-512", result.stderr)
+        self.assertEqual(existing.read_bytes(), b"existing corrupt archive")
+        self.assertFalse(self.dest.exists())
+        self.assertEqual(self.log("network.log"), [])
         self.assertEqual(self.log("helper.log"), [])
 
     def test_old_python_fails_with_actionable_message(self) -> None:
@@ -151,8 +169,10 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
     def test_linux_still_uses_sha512sum(self) -> None:
         result = self.run_getter(TEST_SYSTEM="Linux")
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(self.log("checksum.log"), ["sha512sum", "sha512sum"])
+        self.assertEqual(self.log("checksum.log"), ["sha512sum", "sha512sum", "sha512sum"])
         self.assertEqual(len(self.log("helper.log")), 1)
+        if sys.platform.startswith("linux"):
+            self.assertEqual(stat.S_IMODE((self.dest / "linux_release.x86_64").stat().st_mode), 0o750)
 
     def test_changed_or_truncated_cache_is_refused_without_overwrite(self) -> None:
         first = self.run_getter()
@@ -230,7 +250,7 @@ fi''')
 
     def test_publication_collision_does_not_overwrite_existing_file(self) -> None:
         self.shim("fixture-python", '''if [ "$1" = -c ]; then
-  case "$2" in *os.link*) printf 'existing' > "$4/linux_release.x86_64" ;; esac
+  case "$2" in *shutil.copyfileobj*) printf 'existing' > "$4/linux_release.x86_64" ;; esac
   exec "$TEST_REAL_PYTHON" "$@"
 fi
 exit 4''')

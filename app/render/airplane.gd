@@ -94,23 +94,6 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 			airplane.root.free()
 		push_error("Aircraft model bindings: " + str(verified.get("errors", [])))
 		return {}
-	if custom_livery:
-		var skin_spec := CustomSkin.kit(id)
-		if manifest.asset.get("kind") == "procedural" or skin_spec.get("adapter", "") == "procedural_skin":
-			var adapter: Script = load("res://aircraft/procedural_skin.gd")
-			var prepared: Dictionary = adapter.prepare(family, airplane.root)
-			if not prepared.get("ok", false):
-				airplane.root.free()
-				push_warning("Custom paint mapping: " + str(prepared.get("errors", [])))
-				return {}
-		var skin_hash := CustomSkin.base_identity(id)
-		airplane.root.set_meta("asset_sha256", skin_hash)
-		var paint: Dictionary = CustomSkin.apply(id, livery_id, skin_hash, airplane.root)
-		if not paint.get("ok", false):
-			airplane.root.free()
-			push_warning("Custom aircraft paint: " + str(paint.get("errors", [])))
-			return {}
-		airplane.custom_skin = {id = paint.id, label = paint.label, sha256 = paint.sha256}
 	var data_path: String = str(Catalog.entry(id).get("data", ""))
 	var model: Dictionary = {}
 	if not data_path.is_empty():
@@ -172,6 +155,23 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	if family == TIMBER_ID:
 		TimberVisualDetails.apply(airplane.root)
 		TimberVisualLighting.apply(airplane.root)
+	if custom_livery:
+		var skin_spec := CustomSkin.kit(id)
+		if manifest.asset.get("kind") == "procedural" or skin_spec.get("adapter", "") == "procedural_skin":
+			var adapter: Script = load("res://aircraft/procedural_skin.gd")
+			var prepared: Dictionary = adapter.prepare(family, airplane.root)
+			if not prepared.get("ok", false):
+				airplane.root.free()
+				push_warning("Custom paint mapping: " + str(prepared.get("errors", [])))
+				return {}
+		var skin_hash := CustomSkin.base_identity(id)
+		airplane.root.set_meta("skin_base_sha256", skin_hash)
+		var paint: Dictionary = CustomSkin.apply(id, livery_id, skin_hash, airplane.root)
+		if not paint.get("ok", false):
+			airplane.root.free()
+			push_warning("Custom aircraft paint: " + str(paint.get("errors", [])))
+			return {}
+		airplane.custom_skin = {id = paint.id, label = paint.label, sha256 = paint.sha256}
 	_accepted_datums[id] = Vector2(float(manifest.datum.model_z_le), float(manifest.datum.model_y_thrust))
 	return airplane
 

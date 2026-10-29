@@ -29,7 +29,11 @@ func _run() -> void:
 			for frame in 4: await process_frame
 			var frame_rect := Rect2(Vector2.ZERO, Vector2(root.size))
 			check("template action fits 1080p %s %s" % [locale, scale], frame_rect.encloses(dialog._first.get_global_rect()))
-			check("status fits 1080p", frame_rect.encloses(dialog._status.get_global_rect()))
+			dialog._scroll.ensure_control_visible(dialog._status)
+			await process_frame
+			check("status is reachable at 1080p", frame_rect.encloses(dialog._status.get_global_rect()))
+			dialog._scroll.ensure_control_visible(dialog._first)
+			await process_frame
 			dialog.choose_skin()
 			check("imports only .orskin", dialog._picker.file_mode == FileDialog.FILE_MODE_OPEN_FILE and dialog._picker.filters[0].begins_with("*.orskin"))
 			dialog._picker.hide()
@@ -54,6 +58,20 @@ func _run() -> void:
 	check("bundled template can be saved", SkinTools._copy_resource(SkinTools.CustomSkin.kit_path("skywalker-x8"), output))
 	check("template copy is byte exact", FileAccess.get_sha256(output) == FileAccess.get_sha256(SkinTools.CustomSkin.kit_path("skywalker-x8")))
 	DirAccess.remove_absolute(output)
+	for aircraft: String in SkinTools.Catalog.ids():
+		var dialog := SkinTools.new(aircraft, UiTheme.build())
+		root.add_child(dialog)
+		await process_frame
+		dialog.save_template()
+		check("correct template filename for " + aircraft, dialog._picker.current_file == SkinTools.CustomSkin.kit_path(aircraft).get_file())
+		dialog._picker.hide()
+		dialog._file_selected(output)
+		check("selected model template saves exactly " + aircraft, FileAccess.get_sha256(output) == FileAccess.get_sha256(SkinTools.CustomSkin.kit_path(aircraft)))
+		DirAccess.remove_absolute(output)
+		check("selected model is included in guide " + aircraft, SkinTools._write_guide(guide_path, "es", aircraft) and FileAccess.get_file_as_string(guide_path).contains('data-aircraft-id="' + SkinTools.CustomSkin.family(aircraft) + '"'))
+		DirAccess.remove_absolute(guide_path)
+		dialog.free()
+		await process_frame
 	var choices := [{id = "abisal", label = "Abisal"}, {id = "bolido", label = "Bolido"}]
 	var picker := Picker.new(choices, "", "X8", {}, UiTheme.build(), true)
 	root.add_child(picker)

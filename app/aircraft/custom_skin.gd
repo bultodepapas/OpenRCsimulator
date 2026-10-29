@@ -146,7 +146,7 @@ static func apply(aircraft_id: String, id: String, stock_sha256: String, root: N
 	if not supports(aircraft_id) or not is_custom_id(id): return _failure("Unknown custom paint.")
 	var base := _base(aircraft_id)
 	if not base.ok: return base
-	if stock_sha256 != base.sha256 or str(root.get_meta("asset_sha256", "")) != base.sha256:
+	if stock_sha256 != base.sha256 or str(root.get_meta("skin_base_sha256", root.get_meta("asset_sha256", ""))) != base.sha256:
 		return _failure("Custom paint requires the verified default aircraft model.")
 	var inspected := _load_id(aircraft_id, id, base)
 	if not inspected.ok: return inspected
@@ -178,7 +178,7 @@ static func apply(aircraft_id: String, id: String, stock_sha256: String, root: N
 					texture = textures[texture_name]
 					if texture == null: return _failure("Could not create a custom paint texture.")
 				var painted: Material
-				if material is ShaderMaterial:
+				if material is ShaderMaterial or kit(aircraft_id).get("adapter", "") == "procedural_skin":
 					var adapter: Script = load("res://aircraft/procedural_skin.gd")
 					painted = adapter.paint(material, record, texture)
 				else:
