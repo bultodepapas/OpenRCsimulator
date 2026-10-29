@@ -1,6 +1,6 @@
 # OpenRC project website
 
-WEB-01…12 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
+WEB-01…13 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
 
 ## Design
 
@@ -65,6 +65,20 @@ The integration follows Google's [container installation](https://support.google
 When reviewing local pages, intercept Google Tag Manager and Analytics requests to avoid sending preview traffic to the production property. WEB-12 local verification passed the four static locale tests and 44 Chromium combinations: eleven languages, JavaScript on/off, 1920×1080 and 320×740. Every page requests its container once, or its `noscript` fallback with JavaScript disabled; downloads and the accessible title remain available, with no script errors or horizontal overflow. These local checks stubbed third-party requests and sent no Analytics hits.
 
 Published on 2026-10-28 (America/Bogota): deployment `c6e602786c6fd01003dfaf5d7cc54c0a94e565e8` passed the [Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/40790661193). All eleven public HTML files returned HTTP 200 and matched local SHA-256 values after normalizing line endings. The publication also refreshes shared asset cache keys for the current website snapshot. A live 1920×1080 Chromium visit loaded the container once (HTTP 200) and received HTTP 204 from Google's `/g/collect` endpoint for `page_view` targeting `G-4Z11DSB2BV`, with no script errors, failed Google requests or horizontal overflow. This verifies browser delivery; the Analytics dashboard was not inspected.
+
+## README download attribution (WEB-13)
+
+The README's three ZIP links enter `en.html?download=windows|linux|macos&release=v0.1.8` with `utm_source=github`, `utm_medium=referral`, `utm_campaign=readme` and a platform-specific `utm_content`, followed by `#download`. General README website links use the same campaign. Update the README release parameter and the website's direct ZIP links together when publishing a release.
+
+`downloads.js` reads the current page's approved GitHub ZIP links; query parameters never provide a destination URL. A matching platform/release starts its download after the Google event callback or an independent two-second timeout. The selected direct link remains visible. With JavaScript disabled, the download section and its direct links remain usable; they do not auto-start. Manual navigation cancels a pending redirect, and history state prevents automatic repeats on reload/back. An invalid platform, mismatched release or untrusted destination does not auto-download.
+
+Automatic requests and manual ZIP clicks send `download_request` to the existing GA4 destination, with `download_platform`, `release_version`, `download_source`, `download_method`, `file_name` and `link_url`. Do not add another Google tag configuration. The event describes a download request, never a completed transfer or installation. Enhanced measurement may separately emit `file_download` for manual clicks; do not add the two event counts together.
+
+In [Google Analytics](https://analytics.google.com/), select this property's **Explore → Free form** report: import **Country**, **Date**, **Hour**, **Event name**, and **Event count**; filter **Event name exactly matches `download_request`**, then use Country as rows and Date/Hour as the desired time breakdown. The built-in country and time dimensions need no custom-dimension registration. To break down the custom platform/source/release fields, register matching event-scoped custom dimensions in Admin first. Campaign `readme` identifies incoming README links in acquisition reports. Match the GA4 property's reporting time zone when comparing with GitHub's UTC buckets.
+
+Country is approximate and covers measured website requests only. Blocked analytics and direct GitHub downloads remain unmeasured by GA4. GitHub does not expose countries of repository readers. The separate [local GitHub history tool](../tools/analytics/README.md) saves repository visits and release counters, with a local HTML/CSV report and a Windows daily task. Its download deltas are collection intervals, not exact calendar-day counts or user conversions.
+
+Verification: `python site/test_locales.py`, `node --test site/test_downloads.cjs`, and `python tools/analytics/test_github_history.py`. Browser coverage includes all eleven languages × three platforms at 1920×1080 with analytics blocked, the three platforms at 320×740, and manual fallback with JavaScript disabled. Requests to Google Analytics and release ZIPs are intercepted during local review. Live Google container code was separately exercised with only collection endpoints intercepted: one `page_view` and one correctly attributed `download_request` were emitted, with one ZIP request and no script errors.
 
 ## Search metadata and static languages (WEB-08…11)
 

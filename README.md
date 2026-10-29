@@ -19,7 +19,7 @@
 ---
 
 <p align="center">
-  <a href="https://bultodepapas.github.io/OpenRCsimulator/">
+  <a href="https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=hero">
     <img src="site/assets/branding/openrc-banner.svg" alt="OpenRC Simulator — ALPHA" width="960">
   </a>
 </p>
@@ -28,7 +28,7 @@
 
 **An open-source flying field for RC pilots.** Connect your USB transmitter, pick an airplane and fly from the pilot's position. A gamepad or keyboard works too. Explore sport flying, warbirds, electric models and jets, with external cameras when you want a closer look.
 
-**[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
+**[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=website)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
 
 ![Current Home screen with the X8 Flying Wing at Club field](docs/media/ui-home.png)
 
@@ -42,11 +42,11 @@
 
 | Platform | Download and launch |
 | --- | --- |
-| **Windows · x86_64** | [Download ZIP](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.8/openrc-simulator-v0.1.8-windows-x86_64.zip)<br>Open `OpenRC Simulator.exe`. |
-| **Linux · x86_64** | [Download ZIP](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.8/openrc-simulator-v0.1.8-linux-x86_64.zip)<br>Run `openrc-simulator.x86_64`. |
-| **macOS · Apple Silicon / Intel** | [Download ZIP](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.8/openrc-simulator-v0.1.8-macos-universal.zip)<br>Open `OpenRC Simulator.app`. |
+| **Windows · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=windows&release=v0.1.8&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_windows#download)<br>Open `OpenRC Simulator.exe`. |
+| **Linux · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=linux&release=v0.1.8&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_linux#download)<br>Run `openrc-simulator.x86_64`. |
+| **macOS · Apple Silicon / Intel** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=macos&release=v0.1.8&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_macos#download)<br>Open `OpenRC Simulator.app`. |
 
-[Checksums](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.8/SHA256SUMS) · [Installation guide for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.1.8/docs/FIRST-LAUNCH.md) · [Release notes](docs/releases/v0.1.8.md). Archives are unsigned; the macOS app is ad-hoc signed, not notarized. The installation guide covers platform launch permissions.
+[Checksums](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.8/SHA256SUMS) · [Installation guide for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.1.8/docs/FIRST-LAUNCH.md) · [Release notes](docs/releases/v0.1.8.md). Archives are unsigned; the macOS app is ad-hoc signed, not notarized. The installation guide covers platform launch permissions. If a download does not start, use the [direct release assets](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.8).
 
 **For your first flight:**
 
