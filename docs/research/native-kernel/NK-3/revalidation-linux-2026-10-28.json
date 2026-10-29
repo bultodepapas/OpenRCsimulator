@@ -22729,7 +22729,7 @@
     }
    },
    "native_admission_follow_up": {
-    "status": "Package/performance evidence remains valid for unchanged runtime bytes. First full fleet failed on two previously undeclared four-stroke domain limits; six exact native/reference refusal proofs now pass. Refreshed installer receipts and full fleet requalification pending.",
+    "status": "Ten shared startup refusals strictly proved and independently reviewed; user elected to preserve start contracts and report these separately. All 19 harness-bound receipts and the full current-source fleet/package must be refreshed before promotion.",
     "candidate_source_commit": "1c33c0914a0f6f31b5868e645689c303239b9899",
     "candidate_native_sha256": "74ce8abcb021d0687024b887c59866f1d10649d9b860a69078a45564b644dbf7",
     "findings": {
@@ -22923,7 +22923,7 @@
      "sha256": "d90e0e0ff4df2569cc132944742450675914b2f92eeb99ab53fee250e31c95b2"
     },
     "linux_release_package": {
-     "status": "passed candidate package checks; full fleet and final shared-workspace installation pending",
+     "status": "Historical actual-package qualification for original eef/d0ca bytes; executable and sidecars recoverable via merged_source_package_retention. Not qualification of merged app.",
      "qualification": {
       "path": "tmp/nk3-admission-linux-package/evidence/qualification.json",
       "sha256": "63e58641710c70ae71fe923965a9239cf30c4a5712906507334420f4dfb1a932"
@@ -23029,7 +23029,7 @@
      ]
     },
     "candidate_archive": {
-     "status": "verified, not promoted",
+     "status": "Historical verified container, subsequently removed after exact executable/sidecar recovery verification; see merged_source_package_retention.",
      "path": "tmp/openrc-simulator-v0.1.8-525-geef621296-nk3-aircraft-candidate-linux-x86_64.zip",
      "bytes": 1318304107,
      "sha256": "7c0fa2112e40a3fdbf651c5ec2eaab121f40c84341b3569e57a90a0dc3c54c25",
@@ -23116,6 +23116,157 @@
       "cpp_boundary_checks": 40
      },
      "implementation_limit": "Only external research tests and campaign policy changed. Native C++ source/library and all app runtime sources remain unchanged. Existing immutable package/performance evidence retains its original eef621296/d0ca identity; refreshed installer receipts and a full new campaign remain required."
+    },
+    "startup_inventory_follow_up": {
+     "status": "strict ten-row startup proof passed independent review and required runtime CI; complete current-source fleet and package pending",
+     "frozen_source_commit": "15ff428ab9f455a198c7d1a99ed7467349b4251e",
+     "merged_root_commit": "8e32069aa5cb1a4690db08316f5b010f57790d4e",
+     "inventory": {
+      "path": "tmp/nk3-fs64v-isolated/tmp/nk3-historical-startup-20261029/startup-inventory.json",
+      "sha256": "6a87e3525a4efd5ea38223a456d6a3f4415ba60829e681d3cb2bddea3fc887da"
+     },
+     "inventory_rows": 1238,
+     "full_length_rows": 830,
+     "two_tick_rows": 408,
+     "observed_unclassified_startup_failures": 10,
+     "cases": [
+      {
+       "aircraft": [
+        "sebart-avanti-s-a200-p100rx",
+        "p51d-mustang-120"
+       ],
+       "battery": [
+        "ideal"
+       ],
+       "start": "runway",
+       "weather": "crosswind",
+       "soft_hull": [
+        true,
+        false
+       ],
+       "rows": 4,
+       "cause": "bounded idle-support numerical nonconvergence"
+      },
+      {
+       "aircraft": [
+        "turbo-lumber-evolution"
+       ],
+       "battery": [
+        "pack",
+        "ideal"
+       ],
+       "start": "runway",
+       "weather": "crosswind",
+       "soft_hull": [
+        true,
+        false
+       ],
+       "rows": 4,
+       "cause": "bounded idle-support numerical nonconvergence"
+      },
+      {
+       "aircraft": [
+        "skywalker-x8"
+       ],
+       "battery": [
+        "ideal"
+       ],
+       "start": "airborne_half_power",
+       "weather": "hot-high",
+       "soft_hull": [
+        true,
+        false
+       ],
+       "rows": 2,
+       "cause": "reference-speed trim requires more than the requested throttle"
+      }
+     ],
+     "paired_evidence": {
+      "avanti": {
+       "path": "tmp/nk3-fs64v-isolated/tmp/nk3-avanti-start-diagnosis/avanti-typed-owner.json",
+       "sha256": "240a89b45a11c29481ceedd2e43932a2a28a29d68c61117f78f3ffae336cbcde"
+      },
+      "mustang": {
+       "path": "tmp/nk3-fs64v-isolated/tmp/nk3-avanti-start-diagnosis/mustang-owner.json",
+       "sha256": "3955f8d9be784a1da40d9573b33539424d47761135551c713ff70b2e4b3214f4"
+      },
+      "lumber": {
+       "path": "tmp/nk3-fs64v-isolated/tmp/nk3-historical-startup-20261029/lumber-owner.json",
+       "sha256": "d197ad0d4c31068c2293045188e8ec29d144d7304fb23376353292f9eb633814"
+      },
+      "skywalker": {
+       "path": "tmp/nk3-fs64v-isolated/tmp/nk3-historical-startup-20261029/x8-owner.json",
+       "sha256": "981f675ff30d827786cf3a0ab11637b9ae2d94e68fcc2e246e7f69e0c874cd9f"
+      }
+     },
+     "actual_owner_at_rejection": "gdscript_reference; no installed native stage",
+     "numerical_diagnosis": {
+      "path": "tmp/nk3-runway-start-audit/continuation-summary.json",
+      "sha256": "ad5a00ea1a7dd048ad32c6ee42253955b9b97bf9005cf79f2f230cd3be8f7f91"
+     },
+     "owner_decision": "Preserve existing start contracts and document these shared refusals separately, without flight or native-execution credit. Do not relax numerical, placement or friction constraints.",
+     "expected_new_declaration": {
+      "rows": 1238,
+      "flight": 1204,
+      "startup_refused": 28,
+      "runtime_refused": 6,
+      "status": "expectations only; complete current-source campaign not run"
+     },
+     "merged_source_audit": {
+      "closure": {
+       "path": "tmp/nk3-merged-source-audit/source-closure.json",
+       "sha256": "3630c01e3dd253250b4d031f7576c3bd878974b2f58381674fdf1ea251436cca"
+      },
+      "strict_selection_before_policy_edit": {
+       "path": "tmp/nk3-merged-source-audit/receipt-selector.json",
+       "sha256": "de32b9044370a266ed0d65ada95611f3de50c1b3b7e9f8f806fa4b3cfa5bd79e"
+      }
+     },
+     "limits": [
+      "Short runs establish startup observations only; pass-status rows within failed shards are not checked-pass qualification.",
+      "Deeper backtracking and alternate seeds did not produce an admissible Avanti/P51 start. Nearby unbounded roots violated existing constraints; this is not proof of physical impossibility.",
+      "The original incomplete rollback observation was rejected by independent mutation controls. The reviewed policy now observes the existing kernel endpoint and session-owner contracts plus pinned live configuration; source-bound required CI and independent negative controls passed.",
+      "Changing fleet.gd invalidates all 19 prior harness-bound reports; they must be refreshed. The merged application needs new actual-package, route, replay and performance evidence."
+     ],
+     "policy_review": {
+      "native_ci_checks": 567,
+      "native_ci_report": {
+       "path": "tmp/nk3-runway-refusal-policy/checks/all10-runtime-domain-final-9v_6pgyu/report.json",
+       "sha256": "72d3ab3f6c3708d1c760f12129888a7a438496dfead9c77165a254c89a366d61"
+      },
+      "actual_paired_start_validation": {
+       "path": "tmp/nk3-runway-refusal-policy/python-validation-guarded-final.json",
+       "sha256": "5d1dc3aa791bbd1b8338ef61b97b403acd5de71c6cfdf89da1d4e5f33151d0df"
+      },
+      "independent_review": {
+       "path": "tmp/nk3-start-policy-review/independent-paired-final-review.json",
+       "sha256": "8057030ff57478daf75a76b5e14275c626a1a7a08cfb53b6e9f9e64670207014"
+      },
+      "python_policy_tests": 32,
+      "native_marker": "NK3_RUNTIME_DOMAIN_NATIVE verdict=pass",
+      "startup_cases": 10,
+      "actual_runtime_domain_cases": 6,
+      "negative_controls": "Actual mass, block_aux, trims, field/weather/start selection, throttle and step_policy mutations were rejected. Independently rehashed paired invalid live-config bytes were also rejected.",
+      "source_sha256": {
+       "research/native-kernel/fleet.gd": "498ca03c3659f57abf20ac998b51e4dffddf73780393b245d00bfe8be0fec165",
+       "research/native-kernel/fleet_campaign.py": "21ae82f94efd0651be36695aa7628f8af3c1879fa05a5be9161f4683a957e4de",
+       "research/native-kernel/test_fleet.gd": "f47de16157246884b09e99424bc43ef60efa002abecd1bf0580c1b07de578611",
+       "research/native-kernel/test_fleet_campaign.py": "ef95e9e9a37122f11ca26e6fc695db579f88e964bc39f405e8058834340d2941"
+      }
+     }
+    },
+    "merged_source_package_retention": {
+     "status": "superseded original eef/d0ca artifact contents recoverable; ZIP container historical and not retained",
+     "manifest": {
+      "path": "tmp/nk3-admission-work/package-retention/candidate-d0ca-retention.json",
+      "sha256": "ae23957b1b73a53806114f5ff694e85064213382654c9aa085b68aa865824d7b"
+     },
+     "recovery": {
+      "path": "tmp/nk3-admission-work/package-retention/candidate-d0ca-recover.sh",
+      "sha256": "4f8d27f8755e180a9bba215816ce4f006f3bfb7e26bd1b93a4c58427cf2af054"
+     },
+     "source_merge_requires_new_export": true,
+     "original_rollback_archive_unchanged": true
     }
    },
    "general_integration_continuation": {

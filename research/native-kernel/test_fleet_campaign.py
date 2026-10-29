@@ -120,6 +120,69 @@ def fixtures():
                       "heli": report("heli", [flight(b)], 1, 0)}, guard
 
 
+def runway_start_fixture(aircraft="sebart-avanti-s-a200-p100rx", soft_hull=True, battery="ideal", trim=False):
+    """Small typed-byte stand-ins; actual source hashes are exercised by the Godot test."""
+    cases = campaign.TRIM_START_CASES if trim else campaign.RUNWAY_START_CASES
+    spec = copy.deepcopy(cases[aircraft])
+    battery_spec = spec["batteries"][battery]
+    payloads = {"frame": b"typed-frame", "config": b"typed-configuration", "outcome": b"typed-outcome",
+                "live_config": b"typed-live-configuration"}
+    for field, payload in payloads.items():
+        if field in ("config", "live_config"):
+            battery_spec[field + "_sha256"][soft_hull] = hashlib.sha256(payload).hexdigest()
+        else:
+            battery_spec[field + "_sha256"] = hashlib.sha256(payload).hexdigest()
+    reason = campaign.TRIM_START_REASON if trim else campaign.RUNWAY_START_REASON
+    expected = {"aircraft": aircraft, "vehicle": "fixed-wing", "battery": battery,
+                "case": "airborne_half_power" if trim else "runway",
+                "weather": spec["weather"], "soft_hull": soft_hull, "default_battery": battery_spec["default_battery"],
+                "expected": "reference-refusal", "expected_refusal_reason": reason}
+
+    def proof(requested):
+        status = {"requested": requested, "identity": {"backend": "gdscript_reference"},
+                  "reason": "" if requested == "gdscript_reference" else "pending configuration requires reset"}
+        result = {"requested": requested, "before_status": copy.deepcopy(status), "after_status": status,
+                  "before_helper_absent": True, "after_helper_absent": True, "model_retained": True,
+                  "callbacks_retained": True, "reference_callbacks_before": True, "reference_callbacks_after": True,
+                  "kernel_guard_retained": True, "owner_guard_retained": True,
+                  "selection_valid_before": True, "selection_valid_after": True,
+                  "input_configuration_retained": True, "live_configuration_retained": True, "outcome_empty": True,
+                  "aircraft_sha256": battery_spec["aircraft_sha256"], "outcome_dictionary_empty": trim,
+                  "outcome_status": "" if trim else "numerical_unresolved", "outcome_ok": None if trim else False,
+                  "outcome_message": "" if trim else reason.removeprefix("reset failed: "),
+                  "before_frame_bytes_hex": payloads["frame"].hex(),
+                  "before_live_config_bytes_hex": payloads["live_config"].hex()}
+        for field, payload in payloads.items():
+            result[field + "_bytes_hex"] = payload.hex()
+            result[field + "_sha256"] = hashlib.sha256(payload).hexdigest()
+        return result
+
+    row = {key: value for key, value in expected.items() if key != "expected_refusal_reason"}
+    row.update(status="reference-refused", reason=reason, fingerprint_equal=False,
+               reference={"complete": False, "requested": "gdscript_reference", "phase": "reset",
+                          "error": reason},
+               native={"complete": False, "requested": "native", "phase": "reset",
+                       "error": reason},
+               startup_proof={"reference": proof("gdscript_reference"), "native": proof("native")})
+    return expected, row, spec
+
+
+def startup_campaign_fixture(expected, row):
+    _, reports, guard = fixtures()
+    report = reports["fixed"]
+    aircraft = expected["aircraft"]
+    report["checked_run"]["command"] = [arg.replace("--aircraft=fixed", "--aircraft=" + aircraft)
+                                        for arg in report["checked_run"]["command"]]
+    report["fleet_scope"].update(filters={"aircraft": aircraft, "weather": "", "soft_hull": ""},
+                                 declared_aircraft=[aircraft], declared_rows=1, selected_rows=1,
+                                 flight_passed=0, reference_refused=1, runtime_refused=0)
+    report["fleet"] = [row]
+    report["components"] = {"literals": {"count": 1, "identical": 1},
+                            "fleet_reference_refusal": {"count": 1, "identical": 1}}
+    report["total"] = {"compared": 2, "identical": 2, "mismatched": 0}
+    return {"format": "openrc-nk3-fleet-manifest v1", "aircraft": [aircraft], "rows": [expected]}, {aircraft: report}, guard
+
+
 def encode_runtime_array(items):
     data = bytearray(struct.pack("<II", 28, len(items)))
     for kind, value in items:
@@ -214,6 +277,129 @@ def runtime_fixture(aircraft="stik-glow-61fx-2t", tick=873, stage_fraction=1.0,
 
 
 class FleetCampaignTests(unittest.TestCase):
+    def test_observed_startup_proofs_count_only_as_refusals(self):
+        for aircraft, trim in (("sebart-avanti-s-a200-p100rx", False), ("skywalker-x8", True)):
+            with self.subTest(aircraft=aircraft):
+                expected, row, spec = runway_start_fixture(aircraft, trim=trim)
+                manifest, reports, guard = startup_campaign_fixture(expected, row)
+                cases = campaign.TRIM_START_CASES if trim else campaign.RUNWAY_START_CASES
+                with mock.patch.dict(cases, {aircraft: spec}):
+                    self.assertEqual(campaign.validate_reports(manifest, reports, guard, 2, 3),
+                                     {"declared": 1, "flight_passed": 0, "reference_refused": 1, "runtime_refused": 0})
+
+    def test_runway_start_refusals_are_bounded_and_not_flights(self):
+        for aircraft in campaign.RUNWAY_START_CASES:
+            for battery in campaign.RUNWAY_START_CASES[aircraft]["batteries"]:
+                for soft in (True, False):
+                    with self.subTest(aircraft=aircraft, battery=battery, soft=soft):
+                        expected, row, spec = runway_start_fixture(aircraft, soft, battery)
+                        with mock.patch.dict(campaign.RUNWAY_START_CASES, {aircraft: spec}):
+                            campaign.validate_refusal(row, expected)
+                            self.assertFalse(row["reference"]["complete"])
+                            self.assertFalse(row["native"]["complete"])
+                            self.assertFalse(row["fingerprint_equal"])
+
+    def test_x8_trim_refusal_is_distinct_from_runway_failures(self):
+        for soft in (True, False):
+            expected, row, spec = runway_start_fixture("skywalker-x8", soft, trim=True)
+            with mock.patch.dict(campaign.TRIM_START_CASES, {"skywalker-x8": spec}):
+                campaign.validate_refusal(row, expected)
+                for field, value in (("outcome_dictionary_empty", False), ("outcome_status", "numerical_unresolved"),
+                                     ("outcome_ok", False), ("outcome_message", "another cause"),
+                                     ("after_helper_absent", False), ("callbacks_retained", False),
+                                     ("config_sha256", "0" * 64), ("outcome_bytes_hex", "00"),
+                                     ("kernel_guard_retained", False), ("owner_guard_retained", False),
+                                     ("live_configuration_retained", False)):
+                    altered = copy.deepcopy(row)
+                    altered["startup_proof"]["native"][field] = value
+                    with self.assertRaises(campaign.CampaignError):
+                        campaign.validate_refusal(altered, expected)
+                altered = copy.deepcopy(row)
+                altered["reason"] = altered["native"]["error"] = campaign.RUNWAY_START_REASON
+                with self.assertRaises(campaign.CampaignError):
+                    campaign.validate_refusal(altered, expected)
+
+    def test_manifest_accepts_only_the_observed_start_rows(self):
+        for cases, trim in ((campaign.RUNWAY_START_CASES, False), (campaign.TRIM_START_CASES, True)):
+            for aircraft, spec in cases.items():
+                for battery in spec["batteries"]:
+                    for soft in (True, False):
+                        with self.subTest(aircraft=aircraft, battery=battery, soft=soft):
+                            expected, _, _ = runway_start_fixture(aircraft, soft, battery, trim)
+                            manifest = {"format": "openrc-nk3-fleet-manifest v1", "aircraft": [aircraft], "rows": [expected]}
+                            campaign.manifest_index(manifest)
+                            for field, value in (("weather", "spatial-crosswind-v1"),
+                                                 ("case", "trim"), ("expected_refusal_reason", "another cause"),
+                                                 ("expected", "flight")):
+                                altered = copy.deepcopy(manifest)
+                                altered["rows"][0][field] = value
+                                with self.assertRaises(campaign.CampaignError):
+                                    campaign.manifest_index(altered)
+
+    def test_matching_rehashed_forged_payloads_still_fail_the_pinned_observation(self):
+        for field in ("frame", "config", "outcome", "live_config"):
+            with self.subTest(field=field):
+                expected, row, spec = runway_start_fixture()
+                for proof in row["startup_proof"].values():
+                    altered = b"different typed " + field.encode()
+                    proof[field + "_bytes_hex"] = altered.hex()
+                    proof[field + "_sha256"] = hashlib.sha256(altered).hexdigest()
+                    if field == "frame":
+                        proof["before_frame_bytes_hex"] = altered.hex()
+                    if field == "live_config":
+                        proof["before_live_config_bytes_hex"] = altered.hex()
+                with mock.patch.dict(campaign.RUNWAY_START_CASES, {expected["aircraft"]: spec}):
+                    with self.assertRaises(campaign.CampaignError):
+                        campaign.validate_refusal(row, expected)
+
+    def test_runway_start_rejects_owner_outcome_and_typed_identity_mutations(self):
+        mutations = [
+            lambda r: r.pop("startup_proof"),
+            lambda r: r["startup_proof"]["native"].update(after_helper_absent=False),
+            lambda r: r["startup_proof"]["native"].update(before_helper_absent=False),
+            lambda r: r["startup_proof"]["native"].update(model_retained=False),
+            lambda r: r["startup_proof"]["native"].update(callbacks_retained=False),
+            lambda r: r["startup_proof"]["native"].update(reference_callbacks_before=False),
+            lambda r: r["startup_proof"]["native"].update(reference_callbacks_after=False),
+            lambda r: r["startup_proof"]["native"].update(kernel_guard_retained=False),
+            lambda r: r["startup_proof"]["native"].update(owner_guard_retained=False),
+            lambda r: r["startup_proof"]["native"].update(selection_valid_before=False),
+            lambda r: r["startup_proof"]["native"].update(selection_valid_after=False),
+            lambda r: r["startup_proof"]["native"].update(input_configuration_retained=False),
+            lambda r: r["startup_proof"]["native"].update(live_configuration_retained=False),
+            lambda r: r["startup_proof"]["native"].update(live_config_bytes_hex="00"),
+            lambda r: r["startup_proof"]["native"].update(before_frame_bytes_hex="00"),
+            lambda r: r["startup_proof"]["native"].update(outcome_status="invalid_input"),
+            lambda r: r["startup_proof"]["native"].update(outcome_dictionary_empty=True),
+            lambda r: r["startup_proof"]["native"].update(outcome_ok=True),
+            lambda r: r["startup_proof"]["native"].update(outcome_empty=False),
+            lambda r: r["startup_proof"]["native"].update(outcome_message="another cause"),
+            lambda r: r["startup_proof"]["native"].update(aircraft_sha256="0" * 64),
+            lambda r: r["startup_proof"]["native"]["after_status"].update(identity={"backend": "native"}),
+            lambda r: r["startup_proof"]["native"].update(config_bytes_hex="00"),
+            lambda r: r["startup_proof"]["native"].update(outcome_sha256="0" * 64),
+            lambda r: r["startup_proof"]["native"].update(frame_bytes_hex="zz"),
+            lambda r: r["startup_proof"]["native"].update(callbacks_retained=1),
+            lambda r: r["native"].update(complete=True),
+        ]
+        for index, mutate in enumerate(mutations):
+            with self.subTest(mutation=index):
+                expected, row, spec = runway_start_fixture()
+                mutate(row)
+                with mock.patch.dict(campaign.RUNWAY_START_CASES, {expected["aircraft"]: spec}):
+                    with self.assertRaises(campaign.CampaignError):
+                        campaign.validate_refusal(row, expected)
+
+    def test_runway_start_rejects_other_rows_even_with_the_same_reason(self):
+        for field, value in (("aircraft", "f4u-corsair-250"), ("weather", "spatial-crosswind-v1"),
+                             ("battery", "pack"), ("case", "trim"), ("soft_hull", None)):
+            with self.subTest(field=field):
+                expected, row, spec = runway_start_fixture()
+                expected[field] = row[field] = value
+                with mock.patch.dict(campaign.RUNWAY_START_CASES, {"sebart-avanti-s-a200-p100rx": spec}):
+                    with self.assertRaises(campaign.CampaignError):
+                        campaign.validate_refusal(row, expected)
+
     def test_complete_union(self):
         manifest, reports, guard = fixtures()
         self.assertEqual(campaign.validate_reports(manifest, reports, guard, 2, 3),
