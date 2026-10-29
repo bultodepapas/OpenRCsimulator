@@ -23,7 +23,7 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 		return
 	add_file(RotorcraftModel.SCENE_PATH, FileAccess.get_file_as_bytes(RotorcraftModel.SCENE_PATH), false)
 	var registry: Script = load("res://aircraft/model_registry.gd")
-	var model_sources: Dictionary = {}
+	var model_sources: Dictionary = {RotorcraftModel.SCENE_PATH: true, "res://aircraft/procedural_skin.gd": true}
 	var manifests_by_family: Dictionary = {}
 	var presentation_families: Dictionary = {}
 	var presentation_proof_version := 0

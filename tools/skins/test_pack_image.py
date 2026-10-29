@@ -5,6 +5,7 @@ from pathlib import Path
 import struct
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 import zlib
 
@@ -64,6 +65,21 @@ class ImageOnlyTests(unittest.TestCase):
             self.assertEqual(manifest["materials"][1]["base_color"], [0.1, 0.1, 0.1, 1])
             with self.assertRaises(ValueError):
                 pack_image.pack_image(root / "Paint-01.png", output, "Test", kit)
+
+    def test_combined_pixel_limit_preserves_existing_output(self):
+        kit = {"aircraft_id": "example", "stock_sha256": "a" * 64, "paints": [
+            {"image": "Paint-01.png", "materials": ["one"], "base_colors": {"one": [1, 1, 1, 1]}},
+            {"image": "Paint-02.png", "materials": ["two"], "base_colors": {"two": [1, 1, 1, 1]}},
+        ]}
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for paint in kit["paints"]:
+                (root / paint["image"]).write_bytes(png())
+            output = root / "keep.orskin"
+            output.write_bytes(b"keep")
+            with patch.object(pack_image, "MAX_PIXELS", 2), self.assertRaises(ValueError):
+                pack_image.pack_image(root, output, "Test", kit)
+            self.assertEqual(output.read_bytes(), b"keep")
 
     def test_standard_png_color_modes(self):
         samples = [

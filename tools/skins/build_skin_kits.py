@@ -71,6 +71,47 @@ def add_zip_file(archive, name, data):
     archive.writestr(info, data)
 
 
+def blender_glb(data, scratch):
+    """Translate Godot's node-visibility extension for Blender's importer.
+
+    The source bytes remain unchanged. The returned names must be hidden along
+    with their descendants after import, preserving the preview hierarchy.
+    """
+    length, kind = struct.unpack_from("<II", data, 12)
+    if data[:4] != b"glTF" or kind != 0x4E4F534A:
+        raise ValueError("Expected a glTF JSON chunk")
+    document = json.loads(data[20:20 + length])
+    extension = "KHR_node_visibility"
+    if extension not in document.get("extensionsUsed", []):
+        return None, []
+    hidden = []
+    for node in document.get("nodes", []):
+        extensions = node.get("extensions", {})
+        if extension in extensions:
+            state = extensions.pop(extension)
+            if not isinstance(state, dict) or not isinstance(state.get("visible", True), bool):
+                raise ValueError("Unsupported node visibility record")
+            if not state.get("visible", True):
+                if not node.get("name"):
+                    raise ValueError("A hidden source node has no name")
+                hidden.append(node["name"])
+            if not extensions:
+                node.pop("extensions", None)
+    for key in ("extensionsUsed", "extensionsRequired"):
+        if key in document:
+            document[key] = [item for item in document[key] if item != extension]
+            if not document[key]:
+                del document[key]
+    encoded = json.dumps(document, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    encoded += b" " * (-len(encoded) % 4)
+    tail = data[20 + length:]
+    total = 20 + len(encoded) + len(tail)
+    path = Path(scratch) / "blender-import.glb"
+    path.write_bytes(b"glTF" + struct.pack("<II", 2, total) +
+                     struct.pack("<II", len(encoded), 0x4E4F534A) + encoded + tail)
+    return path, hidden
+
+
 def _clip_line(start, end, tile_x, tile_y):
     """Clip a UV segment to one repeat tile and map it to the base image."""
     x, y = start
@@ -175,7 +216,14 @@ def uv_boundary_png(materials, width, height, repeat=True):
 
 
 def build(family, model, output=None, source_override=None):
-    source = Path(source_override).resolve() if source_override else local_path(model["source_path"])
+    if not family or any(c not in "abcdefghijklmnopqrstuvwxyz0123456789-" for c in family):
+        raise ValueError("Unsafe aircraft family identity")
+    if source_override:
+        source = Path(source_override).resolve()
+    elif model.get("adapter") == "procedural_skin":
+        source = ROOT / "tmp/skin-standard-procedural" / f"{family}.glb"
+    else:
+        source = local_path(model["source_path"])
     glb = source.read_bytes()
     digest = hashlib.sha256(glb).hexdigest()
     # A prepared runtime adapter may supply a separate generation fingerprint.
@@ -190,7 +238,19 @@ def build(family, model, output=None, source_override=None):
     pnglib = {"__name__": "openrc_image_library"}
     exec(compile(image_packer, str(IMAGE_PACKER), "exec"), pnglib)
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    bpy.ops.import_scene.gltf(filepath=str(source))
+    with tempfile.TemporaryDirectory(prefix="openrc-blender-import-") as scratch:
+        translated, hidden = blender_glb(glb, scratch)
+        bpy.ops.import_scene.gltf(filepath=str(translated or source))
+    for name in hidden:
+        node = bpy.data.objects.get(name)
+        if node is None:
+            raise ValueError(f"Could not restore hidden source node: {name}")
+        todo = [node]
+        while todo:
+            obj = todo.pop()
+            obj.hide_set(True)
+            obj.hide_render = True
+            todo.extend(obj.children)
     for name in names:
         mat = bpy.data.materials.get(name)
         if mat is None:
@@ -223,7 +283,9 @@ def build(family, model, output=None, source_override=None):
         target = (group["width"], group["height"])
         if tuple(image.size) != target:
             original = tuple(image.size)
-            if not (original[0] > 4096 or original[1] > 4096) or original[0] * target[1] != original[1] * target[0]:
+            if (original != (group.get("source_width"), group.get("source_height")) or
+                    not (original[0] > 4096 or original[1] > 4096) or
+                    original[0] * target[1] != original[1] * target[0]):
                 raise ValueError(f"{family}: unexpected paint image size {original}")
             image.scale(*target)
             # The imported FILE image may already be packed: refresh those
@@ -265,6 +327,11 @@ def build(family, model, output=None, source_override=None):
     output.parent.mkdir(parents=True, exist_ok=True)
     kit = {"format": "openrc-skin-kit-v1", "aircraft_id": family,
            "display_name": model["display_name"], "stock_sha256": model["stock_sha256"], "paints": model["paints"]}
+    guide = GUIDE.read_bytes()
+    needle = b'data-aircraft-id=""'
+    if guide.count(needle) != 1:
+        raise ValueError("Guide must contain exactly one empty aircraft identity field")
+    guide = guide.replace(needle, f'data-aircraft-id="{family}"'.encode("ascii"), 1)
     with tempfile.TemporaryDirectory(prefix="openrc-skin-kit-") as scratch:
         files = {}
         for group, materials, image, extension in group_images:
@@ -287,7 +354,7 @@ def build(family, model, output=None, source_override=None):
                 for name, data in files.items():
                     add_zip_file(archive, name, data)
                 add_zip_file(archive, "README.txt", quickstart().encode("utf-8"))
-                add_zip_file(archive, "guide.html", GUIDE.read_bytes())
+                add_zip_file(archive, "guide.html", guide)
             os.replace(temporary, output)
         finally:
             if os.path.exists(temporary):
@@ -299,9 +366,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate OpenRC aircraft skin kits")
     parser.add_argument("families", nargs="*", help="Family IDs (default: every registry entry)")
     parser.add_argument("--output-dir", help="Write kits to this directory instead of the app")
+    parser.add_argument("--prepared-dir", help="Directory containing generated procedural <family>.glb scenes")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
     models = json.loads(REGISTRY.read_text(encoding="utf-8"))["models"]
     for family in args.families or list(models):
         model = models[family]
         destination = Path(args.output_dir) / Path(model["kit"]).name if args.output_dir else None
-        build(family, model, output=destination)
+        prepared = Path(args.prepared_dir) / f"{family}.glb" if args.prepared_dir and model.get("adapter") == "procedural_skin" else None
+        build(family, model, output=destination, source_override=prepared)

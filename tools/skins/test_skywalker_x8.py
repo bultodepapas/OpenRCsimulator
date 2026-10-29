@@ -14,7 +14,7 @@ import bpy
 
 ROOT = Path(__file__).resolve().parents[2]
 EXPORTER = ROOT / "tools/skins/export_openrc_skin.py"
-OUT = ROOT / "tmp/skin-kit/tests"
+OUT = ROOT / "tmp/skin-standard-kits/tests"
 LIB = {"__name__": "openrc_export_test"}
 exec(compile(EXPORTER.read_text(encoding="utf-8"), str(EXPORTER), "exec"), LIB)
 

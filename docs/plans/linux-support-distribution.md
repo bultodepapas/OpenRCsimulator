@@ -250,7 +250,7 @@ Reduce the matrix intelligently: every distro/format/architecture gets structura
 | Desktop | GNOME/KDE; Wayland/XWayland/Xorg; 1080p fullscreen/windowed, focus/display recovery, UTF-8 paths, menus/dialogs, suspend/audio/close; then high DPI and 1440p/4K; 720p fallback last |
 | Devices | Real gamepad and USB RC radio with unprivileged device access, calibration, arming, hotplug/reconnect and focus/suspend safety; Flatpak-specific permission checks |
 | Lifecycle | Fresh install, upgrade from previous supported version, interrupted/failed update, downgrade with schema protection, uninstall/reinstall and optional data deletion; test two users and no network |
-| Security/trust | Invalid checksum/signature, incorrect architecture, absent dependency/portal, tampered native receipt, debug bridge absent in release, no unexpected listening ports; SELinux/AppArmor normal policies |
+| Security/trust | Invalid checksum/signature, incorrect architecture, absent dependency/portal, tampered native receipt, no debug-bridge instance/listener in release, no unexpected listening ports; SELinux/AppArmor normal policies |
 | Sustained use | Cold/warm startup; 30-minute active flight soak and 50 Home/flight cycles; RAM/VRAM growth, shutdown diagnostics, storage and cache growth; artifact/hardware/source identity |
 
 Run native numerical checks across claimed libc/CPU baselines: preserved binaries do not guarantee the same libm behavior on every host. Do not re-record goldens to make a platform green. Cross-architecture reproducibility and physical realism remain separate claims.

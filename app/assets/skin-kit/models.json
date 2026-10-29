@@ -12,7 +12,7 @@
       ]
     },
     "sebart-avanti-s-a200-p100rx": {
-      "display_name": "Avanti S",
+      "display_name": "Vantage Jet",
       "stock_sha256": "803d293d597d88d94cebe1c191e6453e5d108aca4d6e5d5eaabfa0a387cf0f36",
       "source_path": "res://assets/aircraft/avanti-s-a200/avanti_s.glb",
       "kit": "res://assets/skin-kit/sebart-avanti-s-a200-p100rx.zip",
@@ -39,7 +39,7 @@
       "kit": "res://assets/skin-kit/hx-700.zip",
       "paints": [
         {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["Pintura_Carenado"], "base_colors": {"Pintura_Carenado": [1, 1, 1, 1]}, "width": 2048, "height": 1024},
-        {"image": "Paint-02.png", "uv": "UV-02.png", "materials": ["Pintura_Botalon"], "base_colors": {"Pintura_Botalon": [1, 1, 1, 1]}, "width": 4096, "height": 440}
+        {"image": "Paint-02.png", "uv": "UV-02.png", "materials": ["Pintura_Botalon"], "base_colors": {"Pintura_Botalon": [1, 1, 1, 1]}, "width": 4096, "height": 440, "source_width": 8192, "source_height": 880}
       ]
     }
   }

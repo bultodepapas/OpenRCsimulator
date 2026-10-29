@@ -143,6 +143,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [DT-00-R1](desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](desktop-delivery-investigations/DT-00-R2/README.md) for platform, installer, display, performance and native-test research. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) tracks acceptance.
 
+[DT-LNX-00, 2026-10-28](desktop-delivery-investigations/DT-LNX-00/README.md) audits current Linux exports/native sidecars, the pinned Wayland fallback risk, ARM64 gaps, AppImage/Flatpak/DEB/RPM policy, update/removal, GitHub promotion and download UX against primary sources. The [Linux execution plan](../plans/linux-support-distribution.md) assigns DT-LNX-01…13; no new Linux hardware, package or performance acceptance is claimed.
+
 The [Apple/Godot integration audit, 2026-10-28](desktop-delivery-investigations/DT-MAC-00-R2/README.md) supports the [Apple Silicon execution plan](../plans/apple-silicon-performance.md): exact engine compatibility, Metal 4 boundaries, MetalFX integration, 2026 Apple features, repository gaps and native 1080p qualification. It extends the [twenty M1–M5 investigations, 2026-10-24](desktop-delivery-investigations/DT-MAC-00-R1/README.md) and [initial review](apple-silicon-performance-2026-10-24.md). [DT-MAC-02](desktop-delivery-investigations/DT-MAC-02/README.md) records the subsequent Windows preparation: native acquisition, bounded streaming capture, isolated renderer trials and guarded MetalFX policy. Native Mac performance remains unmeasured.
 
 ### Roadmap knowledge base (all phases)

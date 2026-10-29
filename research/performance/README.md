@@ -347,7 +347,7 @@ use a new empty output directory and the repository's checked runner:
 run="$PWD/tmp/long-frame-example"
 mkdir "$run"
 godot="/absolute/path/to/Godot.app/Contents/MacOS/Godot"
-python3 tools/godot/run_checked.py --out-dir "$run/checks" --timeout 2100 -- "$godot" --path app --audio-driver Dummy --resolution 1920x1080 --max-fps 60 -- --frametimes="$run/run-1.json" --frametimes-stream --warmup=30 --t=1800 --frame-diagnostics
+python3 tools/godot/run_checked.py --out-dir "$run/checks" --timeout 2100 -- "$godot" --path app --audio-driver Dummy --resolution 1920x1080 --max-fps 60 -- --scene_detail=medium --frametimes="$run/run-1.json" --frametimes-stream --warmup=30 --t=1800 --frame-diagnostics
 capture_status=$?
 cp "$run"/checks/*/engine.log "$run/run-1.log"
 python3 research/performance/frame_diagnose.py --report "$run/run-1.json" --log "$run/run-1.log" --out "$run/diagnosis.json" --max-input-bytes 320MiB --budget-ms 16.667

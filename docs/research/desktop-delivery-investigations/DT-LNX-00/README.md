@@ -4,7 +4,7 @@
 
 Three specialized **gpt-6.1-terra / max** agents investigated packaging/distributions, Godot/runtime compatibility and CI/downloads in parallel. The lead verified repository evidence, reconciled recommendations and had the specialists review the resulting plan. Sources were read through web tools, official source files and Context7's Godot 4.7 documentation. Indexed code discovery was attempted first; its missing/stale results were checked against current source. No agent agreement is treated as runtime evidence.
 
-The tree was clean at initial inspection, then unrelated graphics, trailer, website and Apple Silicon documentation edits appeared. They were preserved. HEAD remained at the baseline during the audit. Source paths/line locations below identify inspected behavior at that snapshot, not a clean build receipt. This work adds documentation only; subsequent implementation must freeze fresh exact source and artifact identities.
+The tree was clean at initial inspection, then unrelated graphics, trailer, website, skin and Apple Silicon documentation edits appeared. They were preserved. During documentation integration, concurrent commits advanced HEAD through `ff3493da2` to `96e8e7d762e5e275e0136d53242ba7e7540f108f`, including these draft documents. The lead did not commit or publish them. The source comparison retained the baseline identity: export, engine acquisition, native admission and cited runtime files were unchanged; website/debug-tool work remains independently owned. Source paths/line locations below identify inspected behavior, not a clean build receipt. This work adds documentation only; subsequent implementation must freeze fresh exact source and artifact identities.
 
 ## Findings and release consequences
 
@@ -125,4 +125,6 @@ The largest unresolved decisions are the exact production engine, minimum native
 
 ## Validation of this documentation change
 
-Validation is limited to changed-document relative-link/anchor checks, roadmap-ID consistency, whitespace/diff inspection and source-fact review. No full simulator suite is required for this documentation-only task under [CONTRIBUTING](../../../../CONTRIBUTING.md#make-a-change). Existing production behavior and public downloads were not changed. Large logs, screenshots, binaries and downloaded source trees were not added to Git.
+Validation passed for both new documents and the new index/decision links across six documentation files: 39 distinct local targets resolve, referenced Markdown anchors resolve, no linked target is ignored, all 14 roadmap steps and 22 findings are present without duplicate IDs, and `git diff --check` passes. The research contains 52 distinct primary-source URLs; that count is an inventory, not an automated availability guarantee. Source-fact review and the three specialist reviews are recorded above.
+
+No full simulator suite is required for this documentation-only task under [CONTRIBUTING](../../../../CONTRIBUTING.md#make-a-change). This task did not change production behavior or public downloads. Large logs, screenshots, binaries and downloaded source trees were not added to Git.

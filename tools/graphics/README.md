@@ -147,7 +147,7 @@ python3 tools/godot/run_checked.py --timeout 600 --label mac-mobile-import -- \
 python3 tools/graphics/launch.py --godot "$godot_exe" \
   --research-project tmp/mac-renderer-trials/mobile/app \
   --research-method mobile --research-driver metal --resolution 1920x1080 \
-  -- --quick-flight
+  -- --quick-flight --scene_detail=medium
 ```
 
 Use `gl_compatibility` / `opengl3` with the `compat/app` copy, and
@@ -164,6 +164,9 @@ shadows and planar reflections. This is not a complete lighting/workload snapsho
 use the same declared `OPENRC_*` environment, landscape, aircraft, scenery tier,
 wind, time and observer settings in every case. Bare Forward+ launches outside this
 research route still select the existing High profile.
+The example explicitly pins Medium scenery so adapter-name-based Auto selection
+cannot change the workload between drivers; this is a comparison control, not a
+qualified Mac preset.
 
 Runtime graphics receipts distinguish requested and effective driver/method,
 project identity, effects and multi-bounce setting. Verify those receipts and

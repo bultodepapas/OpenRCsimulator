@@ -44,6 +44,10 @@ engine cache or NVIDIA package:
 ```powershell
 python tools/graphics/native/sdk24.py
 python tools/graphics/native/build_sdk24.py --target editor --jobs 4
+python tools/graphics/native/build_sdk24.py --target template_release --jobs 4
+python tools/graphics/native/product_sdk24.py                 # read-only preflight
+python tools/graphics/native/product_sdk24.py --package       # snapshot, import and export
+python tools/graphics/native/product_sdk24.py --verify        # verify the candidate and its evidence
 ```
 
 The destination machine needs a Vulkan-capable graphics driver and the
@@ -55,7 +59,25 @@ The signed AMD DLLs import `MSVCP140.dll`, `VCRUNTIME140.dll` and
 engine cache is `.tools/advanced-rendering-fsr24`; receipts bind the SDK intake,
 patched engine sources, headers, runtime, notices and executable. Changed inputs
 fail verification, and earlier receipts are retained before another preparation.
-This candidate is not yet supported by `product.py` packaging.
+The separate `product_sdk24.py` wrapper uses the shared packaging helpers without
+changing the legacy `product.py` default. It selects a matching editor/template
+pair, including archived receipts; if discovery is ambiguous, supply
+`--editor-receipt` and `--template-receipt`. `--cache` selects another isolated
+engine cache.
+
+The output is `dist/windows-fsr24-candidate/`: the release executable and PCK,
+signed AMD runtime, other runtime DLLs, licenses, launchers and receipts. Its
+snapshot and checked import/export reports are retained under `tmp/`; verification
+requires those artifacts and the selected engine pair to remain available. A
+verified previous candidate is preserved if a new export fails. This is an
+experimental candidate, not a qualified release.
+
+The candidate snapshot sets a separate `OpenRC-FSR24-Candidate` user-data
+directory, including when the executable is started directly. Its launchers use
+the same player profile; `FSR3 Analytical.cmd` requests High and FSR3 Quality,
+while `Standard Graphics.cmd` requests Compatibility. Headless import/export uses
+a disposable, candidate-owned editor profile and temporary directory. Neither
+changes the ordinary product's project import cache or player settings.
 
 For an isolated candidate launch, `OPENRC_FSR_IMPLEMENTATION=analytical` (default)
 pins the bundled FSR 3.1.6 provider; `ml` requests bundled FSR 4.1.2; `auto` allows

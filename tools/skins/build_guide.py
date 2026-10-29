@@ -103,7 +103,7 @@ def build():
         parts.append('<button type="button" class="image-copy">' + esc(s["copy"]) + '</button><p class="image-status" role="status" aria-live="polite"></p>')
         parts.append(paragraph("image_steps") + '<pre><code>' + esc(IMAGE_COMMAND) + '</code></pre>' + paragraph("image_limits") + '</article>')
         parts.append(article("route_title", ["codex_body", "desktop_body", "cloud_body"]))
-        parts.append('<article><h2>' + esc(s["prompt_title"]) + '</h2>')
+        parts.append('<article><h2>' + esc(s["prompt_blender_title"]) + '</h2>')
         parts.append(f'<label for="provider-{code}">{esc(s["provider_label"])}</label><select class="provider" id="provider-{code}">')
         for provider in ["codex", "desktop", "cloud"]:
             parts.append(f'<option value="{provider}">{esc(s["provider_" + provider])}</option>')

@@ -14,6 +14,8 @@ import subprocess
 
 from PIL import Image, ImageDraw, ImageFont
 
+import crystal_titles
+
 HERE = Path(__file__).resolve().parent
 FONT = HERE / "assets/fonts/BarlowCondensed-SemiBold.ttf"
 REGULAR = HERE / "assets/fonts/BarlowCondensed-Regular.ttf"
@@ -40,7 +42,9 @@ def tracked(draw, xy, text, size, spacing, color, regular=False):
     return x
 
 
-def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, title_xy=(88, 795), gradient=True, compact=False):
+def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, title_xy=(88, 795), gradient=True, compact=False, crystal=False):
+    accent = crystal_titles.FOCUS + (255,) if crystal else (255, 178, 91, 255)
+    ink = (6, 14, 8, 165) if crystal else (4, 12, 20, 155)
     im = Image.new("RGBA", (W, H))
     d = ImageDraw.Draw(im)
     if gradient and (label or title) and not compact:
@@ -51,9 +55,10 @@ def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, t
         f = font(29)
         width = d.textlength(label, font=f)
         x = W - 96 - width
-        d.rounded_rectangle((x - 22, 956, W - 76, 1009), radius=4, fill=(4, 12, 20, 155))
-        d.rectangle((x - 20, 966, x - 17, 998), fill=(255, 178, 91, 255))
-        d.text((x, 963), label, font=f, fill=(235, 242, 247, 255))
+        d.rounded_rectangle((x - 22, 956, W - 76, 1009), radius=4, fill=ink,
+                            outline=crystal_titles.FOCUS + (90,) if crystal else None)
+        d.rectangle((x - 20, 966, x - 17, 998), fill=accent)
+        d.text((x, 963), label, font=f, fill=crystal_titles.PRIMARY_TEXT + (255,) if crystal else (235, 242, 247, 255))
     elif label:
         d.rectangle((88, 897, 92, 956), fill=(255, 170, 77, 255))
         d.text((111, 887), label, font=font(43), fill=(245, 246, 248, 255))
@@ -64,8 +69,9 @@ def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, t
                stroke_width=1 if gradient else 2, stroke_fill=(4, 12, 20, 170))
     if cinematic:
         cy = 963 if compact else 72
-        d.rectangle((78, cy - 4, 510, cy + 39), fill=(4, 12, 20, 160))
-        tracked(d, (92, cy), "CINEMATIC FORMATION SEQUENCE", 23, 1.3, (243, 247, 252, 255), True)
+        d.rectangle((78, cy - 4, 510, cy + 39), fill=ink, outline=crystal_titles.FOCUS + (110,) if crystal else None)
+        tracked(d, (92, cy), "CINEMATIC FORMATION SEQUENCE", 23, 1.3,
+                crystal_titles.CRYSTAL + (255,) if crystal else (243, 247, 252, 255), True)
     if brand:
         brand_x = 1640 if cinematic else 88
         d.text((brand_x, 72), "OpenRC", font=font(38), fill=(255, 255, 255, 240))
@@ -178,7 +184,7 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     source_rows = []
     video_clips, audio_clips = [], []
     timeline = 0
-    editor_hash = sha(__file__)
+    editor_hash = sha(__file__) + sha(crystal_titles.__file__) + str(spec.get("style", ""))
     for index, shot in enumerate(shots):
         name = shot["id"]
         frames = shot["frames"]
@@ -222,9 +228,10 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
         filters = [f"[0:v]{vf}[base]"]
         current = "base"
         input_index = 1
+        crystal = spec.get("style") == "crystal"
         if overlay:
             graphic = work / f"{index:02}-graphics.png"
-            plate(graphic, **overlay)
+            plate(graphic, **overlay, crystal=crystal)
             cmd += ["-loop", "1", "-framerate", FPS, "-i", graphic]
             show = float(shot.get("graphics_until", duration))
             fade_start = max(0.2, show - 0.35)
@@ -234,6 +241,16 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
             current = "labels"
             input_index += 1
         for cue_index, cue in enumerate(shot.get("features", [])):
+            if crystal:
+                # TRA-09: per-frame crystal titles carry their own entrance, landing glow and exit.
+                sequence = work / f"{index:02}-crystal-{cue_index}"
+                crystal_titles.render_cue(sequence, cue, frames, duration, bool(cue.get("lower", False)))
+                cmd += ["-framerate", FPS, "-i", sequence / "%05d.png"]
+                next_label = f"featured{cue_index}"
+                filters += [f"[{current}][{input_index}:v]overlay=0:0:shortest=1[{next_label}]"]
+                current = next_label
+                input_index += 1
+                continue
             graphic = work / f"{index:02}-feature-{cue_index}.png"
             feature_plate(graphic, cue)
             cmd += ["-loop", "1", "-framerate", FPS, "-i", graphic]
