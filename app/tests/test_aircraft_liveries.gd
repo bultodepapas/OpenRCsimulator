@@ -107,9 +107,9 @@ func _test_one_paint_home() -> void:
 	await process_frame
 	home.set_livery_preferences({CORSAIR: "spectrum"})
 	home.set_aircraft(CORSAIR)
-	_check("Home shows no paint row for the one-paint Corsair, whatever was saved", not home.livery_button.visible and home.livery_id == "")
+	_check("Home keeps the skin workflow for the one-paint Corsair", home.livery_button.visible and home.livery_id == "")
 	home.set_aircraft(STIK)
-	_check("Home shows no paint row for the Stik", not home.livery_button.visible and home.livery_id == "")
+	_check("Home keeps the skin workflow for the Stik", home.livery_button.visible and home.livery_id == "")
 	home.queue_free()
 	await process_frame
 
@@ -121,7 +121,7 @@ func _test_manifest_contract(manifest: Dictionary) -> void:
 	var choices: Array = AirplaneBuilder.livery_choices(CORSAIR)
 	_check("menus list every scheme with the author's names", choices.size() == ORDER.size() and choices[0].label == "Naval 308 — Midnight"
 		and choices.back().label == "Carbon 12 / Aero Sport", str(choices))
-	_check("a one-paint family lists no schemes", AirplaneBuilder.livery_choices(STIK).is_empty() and AirplaneBuilder.livery_choices("xcell-60-research").is_empty())
+	_check("single-paint families expose their stock choice", AirplaneBuilder.livery_choices(STIK).size() == 1 and AirplaneBuilder.livery_choices("xcell-60-research").size() == 1)
 	_check("resolve: a non-default scheme stays, default and stale ones are the default paint",
 		AirplaneBuilder.resolve_livery(CORSAIR, "scarlet") == "scarlet" and AirplaneBuilder.resolve_livery(CORSAIR, "midnight") == ""
 		and AirplaneBuilder.resolve_livery(CORSAIR, "retired") == "" and AirplaneBuilder.resolve_livery(STIK, "scarlet") == "")
@@ -249,7 +249,7 @@ func _test_home() -> void:
 	await process_frame
 	home.set_livery_preferences({CORSAIR: "spectrum"})
 	home.set_aircraft(STIK)
-	_check("Home shows no paint row for a one-paint aircraft", not home.livery_button.visible and home.livery_id == "")
+	_check("Home offers custom paint for a one-paint aircraft", home.livery_button.visible and home.livery_id == "")
 	home.set_aircraft(CORSAIR)
 	_check("Home shows the Corsair's saved scheme", home.livery_button.visible and home.livery_id == "spectrum"
 		and home.livery_button.text.contains("Spectrum Wings"), home.livery_button.text)
@@ -311,8 +311,8 @@ func _test_paint_layout() -> void:
 				_check("paint hides outside Aircraft: " + label, not button.is_visible_in_tree())
 				home._select_page(1)
 				home.set_aircraft(STIK)
-				_check("single-paint aircraft leaves no pinned paint row: " + label,
-					not home._livery_row.visible)
+				_check("single-paint aircraft keeps the skin workflow reachable: " + label,
+					home._livery_row.visible)
 				home.queue_free()
 				await process_frame
 	root.size = original_size

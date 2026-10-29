@@ -1,7 +1,8 @@
 """Static locale publication checks; run with python3 site/test_locales.py."""
 import json
+import re
 import unittest
-from urllib.parse import unquote, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit
 import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
@@ -81,6 +82,29 @@ class LocalePublicationTests(unittest.TestCase):
                             self.assertTrue(target.exists(), tag[attribute])
                         elif url.fragment:
                             self.assertIn(unquote(url.fragment), ids)
+
+    def test_readme_downloads_route_to_the_published_release(self):
+        readme = (SITE.parent / 'README.md').read_text(encoding='utf-8')
+        routes = re.findall(r'\[Download ZIP\]\(([^)]+)\)', readme)
+        self.assertEqual(len(routes), 3)
+        platforms = set()
+        for route in routes:
+            url = urlsplit(route)
+            self.assertEqual(url.scheme + '://' + url.netloc + url.path,
+                             BASE + 'en.html')
+            self.assertEqual(url.fragment, 'download')
+            query = parse_qs(url.query)
+            platform, release = query['download'][0], query['release'][0]
+            platforms.add(platform)
+            self.assertEqual(query['utm_source'], ['github'])
+            self.assertEqual(query['utm_campaign'], ['readme'])
+            for page in self.pages.values():
+                self.assertEqual(len(page.select('script[src^="downloads.js?"]')), 1)
+                targets = [a['href'] for a in page.select('#download a[href]')
+                           if '/releases/download/' + release + '/' in a['href']
+                           and '-' + platform + '-' in a['href'] and a['href'].endswith('.zip')]
+                self.assertEqual(len(targets), 1)
+        self.assertEqual(platforms, {'windows', 'linux', 'macos'})
 
 
 if __name__ == "__main__":

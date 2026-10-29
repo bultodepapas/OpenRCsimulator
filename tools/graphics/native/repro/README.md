@@ -66,6 +66,61 @@ SDK internally or qualifies other drivers from this comparison.
 
 On 2026-10-25, the same fixture in an isolated working directory completed with Streamline 2.11.1 on the RTX 3090. Native with the shutdown ownership patch exited zero with no engine errors (192 frames). DLSS exited zero after all 384 frames but emitted two `VUID-vkCmdDraw-None-09600` errors, so its checked validation failed. See the [dated evidence](../../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). Generated caches and logs must remain untracked.
 
+## DLSS temporal-history regression
+
+`dlss_history_reset.gd` renders two independent 1920 × 1080 viewports using
+DLAA and preset K. It checks deferred requests while disabled, requests during
+warm-up, coalescing, steady rendering, explicit cuts and camera/scenario replacement.
+The unchanged viewport must keep its history. A replaced World3D is retained until
+the queued viewport attachment has completed; freeing it early invalidates the fixture.
+
+With the same validation environment and `$Godot`/`$Project` above:
+
+```powershell
+python tools/godot/run_checked.py --label dlss-history --timeout 150 --require-text 'DLSS_HISTORY|COMPLETE' -- $Godot --verbose --path $Project --audio-driver Dummy --script res://dlss_history_reset.gd
+python tools/godot/run_checked.py --label dlss-history-separate --timeout 150 --require-text 'DLSS_HISTORY|COMPLETE' -- $Godot --verbose --render-thread separate --fixed-fps 60 --path $Project --audio-driver Dummy --script res://dlss_history_reset.gd
+```
+
+Require completion and zero engine/validation errors. The separate rendering
+thread remains a Godot test configuration, not the product default. Counters are
+sampled after settled, isolated phases; their separate atomics do not guarantee
+a coherent arbitrary concurrent snapshot. The offline `test_build` suite exercises
+the actual C++ generation helper, including omitted success acknowledgement and
+older queued work. This does not inject a real SDK failure or qualify XR.
+
+## FSR temporal-history regression
+
+`fsr_history_reset.gd` checks two independent 1920 × 1080 viewports with FSR2
+or FSR3. It verifies requests deferred while disabled, coalescing, successful
+dispatch progress, one reset per affected viewport, camera/scenario replacement
+and steady rendering without repeated resets. SDK 2.4 runs also require actual
+provider identity. This is an integration check, not a motion-quality benchmark.
+
+Copy the repro project to an isolated directory as above. Set `$Godot` to the
+receipt-matched SDK 2.4 candidate and `$Project` to that copy. With exclusive GPU
+access and the validation environment above:
+
+```powershell
+$env:OPENRC_FSR_IMPLEMENTATION = "analytical"
+$env:OPENRC_FSR_HISTORY_PROVIDER = "fsr3"
+python tools/godot/run_checked.py --label fsr3-history --timeout 150 --require-text 'FSR_HISTORY|COMPLETE|provider=fsr3' -- $Godot --verbose --path $Project --audio-driver Dummy --script res://fsr_history_reset.gd
+$env:OPENRC_FSR_HISTORY_PROVIDER = "fsr2"
+python tools/godot/run_checked.py --label fsr2-history --timeout 150 --require-text 'FSR_HISTORY|COMPLETE|provider=fsr2' -- $Godot --verbose --path $Project --audio-driver Dummy --script res://fsr_history_reset.gd
+```
+
+Repeat with `--render-thread separate` for queued dispatch coverage. Require the
+completion marker and zero engine/Vulkan validation errors; a headless run exits
+2 and cannot qualify this fixture. Inspect warnings too: storage-image format
+mismatches can report undefined values without a validation error severity.
+On 2026-10-28, the SDK 2.4 candidate passed the FSR2 fixture on RTX 3090 in both
+default and separate-thread modes. After enabling the queried SDK 2.4 Vulkan
+features, FSR3 completed the reset assertions in both modes with the queried
+3.1.6 provider and zero validation errors. Storage-image format warnings still
+report undefined values: the strict `--warnings-as-errors` checks fail, and the
+candidate is not qualified.
+See the build identities, diagnostics and remaining gates in the
+[dated evidence](../../../../docs/research/advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md).
+
 ## Canvas buffer synchronization regression
 
 `canvas_waw.gd` isolates a separate native-renderer defect: a ColorRect followed

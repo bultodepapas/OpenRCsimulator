@@ -38,6 +38,13 @@ func _run() -> void:
 	root.size = Vector2i(1280, 720)
 	_remove_file(PREFS)
 	_remove_file(FUTURE_PREFS)
+	if not CompanionConfig.engine_qualified():
+		await _check_unqualified_engine_shell()
+		_remove_file(PREFS)
+		UiInput.isolate_joypads()
+		print("Companions shell: %d failed" % _failures)
+		quit(1 if _failures else 0)
+		return
 
 	var app: Variant = load("res://app_root.tscn").instantiate()
 	app.user_args = PackedStringArray()
@@ -266,6 +273,44 @@ func _run() -> void:
 	UiInput.isolate_joypads()
 	print("Companions shell: %d failed" % _failures)
 	quit(1 if _failures else 0)
+
+
+func _check_unqualified_engine_shell() -> void:
+	var saved := Preferences.load_from(PREFS)
+	saved.first_flight_hint_seen = true
+	saved.companion_config.enabled = true
+	saved.companion_config.count = 2
+	saved.companion_config.seed = 42
+	_check("enabled companion preference fixture saves", Preferences.save_to(PREFS, saved) == OK)
+	var app: Variant = load("res://app_root.tscn").instantiate()
+	app.user_args = PackedStringArray()
+	app.preferences_path = PREFS
+	root.add_child(app)
+	await ui.settle()
+	_check("Home explains that companions are unavailable on this build",
+		app.home.companions_button.disabled and app.home.companions_button.text.contains("Unavailable")
+		and app.home.companions_button.tooltip_text.contains("unavailable in this game build"))
+	app.open_companions_settings()
+	_check("unqualified engine cannot open the companion settings", app.companions_dialog == null)
+	_check("Home retains the requested enabled preference", app.home.companion_config.enabled
+		and app.home.companion_config.count == 2 and app.home.companion_config.seed == 42)
+	app.home.fly_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	var flight: Node = app.flight
+	_check("saved companion request does not block a player flight", flight != null
+		and flight.startup_error.is_empty() and flight.startup_complete and flight.session != null
+		and flight.session.is_flyable() and not flight.companion_config.enabled and flight.companions == null,
+		"no flight" if flight == null else str(flight.startup_error))
+	var after: Dictionary = Preferences.load_from(PREFS)
+	_check("starting the flight preserves the saved companion request", after.companion_config.enabled
+		and after.companion_config.count == 2 and after.companion_config.seed == 42)
+	if flight != null:
+		app.open_pause()
+		await ui.settle()
+		_check("Pause cannot enable an unqualified companion roster", app.pause_menu != null
+			and not app.pause_menu.companions_button.visible)
+	await ui.close_app(app)
 
 
 func _check_capture_shell() -> void:

@@ -1,163 +1,123 @@
 # Physics and flight tools
 
-Tools to change, measure and compare flight behavior. Each entry: purpose · when · command · result · gotchas. Shared runner, suite and flags: [shared](shared.md). [Back to the index](README.md).
-
-Results here are model predictions. They do not establish physical validation.
+Use these tools to change, measure and compare simulated behavior. A software result is not physical validation. The [shared guide](shared.md) owns the engine, checked runner and suite; the [tool index](README.md) routes other tasks.
 
 ## Flight-test battery
 
-- **Purpose:** fly a fixed test card (card `ft-card-v5`, 40 tests: speeds, climb, glide, roll/pitch/yaw response, loop, Immelmann, Split-S, slow/point/snap rolls, stall turn, knife-edge, inverted, spins, stalls, engine-out, takeoff, landing, go-around, throttle steps) through the real session loop for each fixed-wing aircraft, then compare two runs case by case.
-- **When:** after any change to aircraft data, aerodynamics, propulsion, controls or the session loop. Use it to validate a handling change such as roll rate.
-- **Command:**
-  ```sh
-  G="$(app/get-godot.sh)"
-  # 0. Once per checkout or app copy without an import cache (app/.godot/); otherwise every flight reports script errors.
-  "$G" --headless --path app --audio-driver Dummy --import
-  # 1. Candidate copy: the change goes here, not into the working tree. Copying .godot/ (~0.4 GB) skips a re-import.
-  # The app reads res://../assets/, so the copy needs the repository's assets/ beside it.
-  mkdir -p tmp/cand && rsync -a --exclude captures app/ tmp/cand/app/ && ln -s "$PWD/assets" tmp/cand/assets
-  # ...edit tmp/cand/app/data/aircraft/<file>.json...
-  # 2. Baseline (working tree) and candidate (--app), same --aircraft and --only.
-  python3 research/flight-test/run.py --godot "$G" --out tmp/ft-base --aircraft <id> --only trim_sweep,stall_power_off,vmax,roll_rate
-  python3 research/flight-test/run.py --godot "$G" --out tmp/ft-cand --aircraft <id> --only trim_sweep,stall_power_off,vmax,roll_rate --app tmp/cand/app
-  # 3. Compare.
-  python3 research/flight-test/compare.py tmp/ft-base tmp/ft-cand --out tmp/ft-compare.md
-  ```
-  Aircraft IDs: `"$G" --headless --path app --script "$PWD/research/flight-test/flight_test.gd" -- --list` prints `FT-AIRCRAFT <id>` lines. Current fixed-wing IDs: `jensen-das-ugly-stik-60`, `stik-glow-61fx-2t`, `stik-glow-55ax-2t`, `stik-glow-fs64v-4t`, `gp-extra-300s-60`, `p51d-mustang-120`, `sebart-avanti-s-a200-p100rx`, `turbo-lumber-evolution`.
-- **Result:**
-  - `run.py` prints `ok`/`FAIL` per aircraft and exits 1 only on a nonzero engine exit, a `SCRIPT ERROR`/`ERROR` line, a timeout or a missing profile. `FAIL … script errors N` with many errors usually means a missing import cache. Read `<out>/<id>/profile.md` for values and `<out>/run.json` for identities.
-  - Each test has `valid`: whether the pilot flew what the card asks. An invalid test is a result, not a run failure. There are no pass/fail bands for the airplane.
-  - `compare.py` ends with `**N change(s) beyond tolerance.**` (default max(0.01, 1 % of baseline)). Every listed change needs an explanation. `--fail-on-change` makes it exit 1.
-  - Roll rate: test `roll_rate`, cases `1.3Vs_right/left`, `start_right/left`, `0.8Vmax_right/left`; fields `max_roll_rate_dps`, `time_to_360_s`, `height_change_m`, `max_sideslip_deg`. Related: `slow_roll`, `point_roll` (need `knife_edge,inverted_speeds`), `snap_roll`, and `modes` (roll time constant, no flight).
-- **Gotchas:**
-  - `--only` silently skips unknown names; check every name against the list in the [battery README](../../research/flight-test/README.md) (there is no test called `roll`).
-  - Tests placed by Vs and Vmax (`roll_rate`, `power_step` and most figures) need `trim_sweep,stall_power_off,vmax` in the same `--only`, or they fall back to estimates.
-  - Run baseline and candidate with the same `--aircraft` and `--only`. A fleet baseline against a one-aircraft candidate lists every missing aircraft as a change; a full baseline against an `--only` candidate lists every omitted test as removed unless you pass `--shared-tests`.
-  - Runtime: four `--only` tests for one Stik take under a minute; the full card takes about 51 minutes for the fleet with four jobs.
-  - Roll rate is speed dependent: compare all three case speeds, not one number.
-  - Runs are deterministic: two runs of an unchanged tree compare with zero changes. A nonzero diff on identical trees is a bug.
-  - Full workflow, card versions, `--diagnostics`, `spin_state.py` and `polar_fit.py`: [battery README](../../research/flight-test/README.md). Fleet baseline: [FT-05](../research/flight-test/FT-05/README.md).
+The [flight-test card](../../research/flight-test/README.md) exercises fixed-wing session behavior and reports pilot validity and aircraft response. For flight-feel, controls or physics tuning, first preserve an `.orfl` baseline and verify exact replay under the [flight logging workflow](#flight-log-and-replay); the card is complementary evidence, not a replacement for that comparison.
+
+Freeze the baseline source and engine before editing. Use a separate full source checkout for the candidate, starting from the same snapshot, then change one owning source and regenerate its outputs there. Preserve the app, adjacent assets, card/runner files, configuration and identity of both snapshots. A detached checkout at `HEAD` does not include uncommitted changes unless they are deliberately copied into it. Import each app copy before running Godot. The [FT-04 record](../research/flight-test/FT-04/README.md) explains why comparisons on a moving shared tree can attribute unrelated changes to the candidate.
+
+From the frozen baseline checkout, use the same card runner and engine for both flights. Replace the two placeholders and use fresh output paths:
+
+```bash
+FT_GODOT="$(app/get-godot.sh)"
+FT_AIRCRAFT='replace-with-catalog-id'
+FT_CANDIDATE='/absolute/path/to/candidate-checkout'
+FT_TESTS=trim_sweep,stall_power_off,vmax,roll_rate
+python3 research/flight-test/run.py --godot "$FT_GODOT" --out tmp/ft-base \
+  --aircraft "$FT_AIRCRAFT" --only "$FT_TESTS"
+python3 research/flight-test/run.py --godot "$FT_GODOT" --out tmp/ft-candidate \
+  --aircraft "$FT_AIRCRAFT" --only "$FT_TESTS" --app "$FT_CANDIDATE/app"
+python3 research/flight-test/compare.py tmp/ft-base tmp/ft-candidate --out tmp/ft-compare.md
+```
+
+Discover aircraft through the card's `--list` command in the [card guide](../../research/flight-test/README.md#standard-workflow), not a copied catalog. Check that the selected test names all appear in `profile.json`: `--only` silently ignores unknown names, including a typo mixed with valid names. Speed-dependent tests need the trim, stall and maximum-speed tests in the same selection. Inspect each test's `valid` result and explain every comparison change; an invalid pilot or an unchanged model prediction is not a realism verdict. Use matching aircraft and test selections, and `--shared-tests` only when intentionally comparing common tests.
+
+The runner records its own checkout's Git identity and the selected aircraft-data hash; `--app` records the candidate path, not a complete candidate checkout identity. Record the candidate commit, dirty paths and relevant generator/data/model hashes separately. Direct session tests use the reference backend by default; they do not prove the application's backend selection or attached observer performance. See the [native selection contract](../../research/native-kernel/README.md#normal-flight-backend-selection).
 
 ## Aircraft data and generators
 
-- **Purpose:** know whether an aircraft file may be edited by hand.
-- **When:** before you change any value in `app/data/aircraft/*.json`.
-- **Command:** find the owning generator, change its source, regenerate, then run its `--check`:
+Find the aircraft's owning source and generator in the [ownership registry](../README.md#tracks-plans-and-step-ids) and [aircraft authoring contract](../AIRCRAFT_CONTRACT.md#add-an-aircraft-using-supported-laws). Change source inputs and regenerate; never hand-edit generated aircraft geometry or physics data. Some files combine authored fields with generated sections: for example, [GP-07](../research/ground-physics/GP-07/README.md) owns the Stik's generated hull fields. Follow the owner for the field being changed rather than treating the entire JSON as hand-authored.
 
-  | Data file | Generator (edit this, then `--check`) |
-  | --- | --- |
-  | `jensen_ugly_stik_60.json` | Hand-authored. After editing, regenerate the glow variants: `python3 research/glow-engines/build_installations.py` |
-  | `stik_glow_*.json` | `research/glow-engines/build_installations.py` (writes CRLF; honor `.gitattributes`) |
-  | `gp_extra_300s_60.json` | `research/extra-300/ex05/derive_physics.py` |
-  | `p51d_mustang_120.json` | `research/p51/p51-05/derive_physics.py` |
-  | `sebart_avanti_s_a200.json` | `research/avanti-s/av06/derive_physics.py` |
-  | `turbo_lumber_evolution.json` | `research/timber/tt07/derive_physics.py` |
-  | `xcell_60_research.json`, `hx700_electric_3d_experimental.json` | `research/helicopter/xcell/derive.py` (writes both; `hx700/derive.py` also writes the HX-700 file) |
-
-  Unverified rows: confirm in the aircraft guide (`docs/*-PLAN.md`) before regenerating. Then run `python3 research/aircraft-standardization/build_models.py --check` and `python3 research/aircraft-editor/build_descriptors.py --check`.
-- **Result:** each `--check` exits 0 and prints that outputs are current.
-- **Gotchas:**
-  - Quantities are `{value, unit, kind, source}`; a changed value needs a changed `source`. Format: [AIRCRAFT_CONTRACT](../AIRCRAFT_CONTRACT.md).
-  - Roll response depends on aileron maximum throw and servo time (`controls`), and on the roll derivatives. `controls.rates` only shapes pilot input and is not an aerodynamic quantity.
-  - Generators read and write the repository's `app/data`, not an `--app` copy. For a disposable candidate, edit the copy's JSON and fly only the aircraft you changed; regenerate dependents (for example the glow Stik variants) in the working tree when you adopt the change.
-  - Changing a model's physics changes golden flights; see [golden flights](#golden-flights).
+Check baseline freshness before changing a generator, follow its dependency order, run its supported `--check`, then load the generated result through the production validator. Refresh affected variants, model manifests, Workshop descriptors and presentation bindings through their own generators. The [Workshop generation sequence](../TOOLS.md#aircraft-workshop) and each aircraft guide own the commands; preserve their byte and line-ending rules. A reproducible generator does not establish that its physical inputs are measured.
 
 ## Flight log and replay
 
-- **Purpose:** record a flight (`.orfl`), export CSV, replay it exactly, and replay the same input tape against a candidate.
-- **When:** flight-feel, controls or tuning changes (required by AGENTS.md).
-- **Command:**
-  ```sh
-  G="$(app/get-godot.sh)"
-  python3 tools/flight_log/flight_log.py record --godot "$G" --out tmp/flight.orfl      # needs a display; F10 start/stop, F11 marker
-  python3 tools/flight_log/flight_log.py export tmp/flight.orfl --godot "$G" --out tmp/base
-  python3 tools/flight_log/flight_log.py replay tmp/flight.orfl --godot "$G" --out tmp/exact
-  python3 tools/flight_log/flight_log.py compare tmp/base/flight.csv tmp/exact/flight.csv --out tmp/exact.json
-  ```
-- **Result:** check `complete` and `solver_changed` in the reports. Exact replay of the baseline must match before a candidate comparison means anything.
-- **Gotchas:** on Linux always pass `--godot` or set `GODOT` (the default is the Windows binary). Recovered prefixes and candidate runs never prove exact equivalence. Manual: [FLIGHT-LOGGING](../FLIGHT-LOGGING.md).
+The [flight-log manual](../FLIGHT-LOGGING.md) owns recording, export, exact replay, candidate replay and plotting. Preserve the baseline `.orfl`, verify its complete exact replay before making one candidate, and compare the same tick/input tape. Retain markers, source/configuration and solver identities, CSV and reports. Check `complete` and `solver_changed`; a candidate run or recovered prefix is not exact equivalence or physical validation.
+
+For an editor/source recording use the matching engine and backend. A packaged recording must use its matching verified executable for replay/export; see the [package identity rules](../FLIGHT-LOGGING.md#quick-start). The CLI chooses an OS-specific pinned engine unless `--godot` or `GODOT` is supplied.
 
 ## Golden flights
 
-- **Purpose:** replay recorded per-tick inputs and require the recorded state checkpoints; catches accidental physics changes.
-- **When:** runs inside `app/test.sh` (`test_golden.gd`).
-- **Command:** check: `python3 tools/godot/run_checked.py --timeout 300 -- "$(app/get-godot.sh)" --headless --path app --script res://tests/test_golden.gd`. Re-record only after a deliberate, explained physics change: `… --script res://tests/record_golden.gd`.
-- **Result:** one line per golden: `ok   golden <name> replays (<ticks> ticks): …` or `FAIL golden <name> …` with the mismatch message.
-- **Gotchas:** never re-record to make a failure go away; explain the change in the commit and in the owning research report.
+Check existing physics goldens with the [checked runner](shared.md#one-godot-script):
+
+```bash
+python3 tools/godot/run_checked.py --timeout 300 -- "$(app/get-godot.sh)" \
+  --headless --path app --script res://tests/test_golden.gd
+```
+
+A physics change may alter recorded trajectories. Re-record with `res://tests/record_golden.gd` only for an intentional, explained change; do not overwrite goldens to conceal an unexplained failure. Keep the baseline and comparison evidence with the owning track.
 
 ## Headless trace checks
 
-- **Purpose:** validate trace CSVs.
-- **Command:** `python3 app/tests/check_trimmed_flight.py <trace.csv> --duration=1.5`; `python3 app/tests/check_wind_trace.py <trace.csv>`; `python3 app/tests/check_atmosphere_trace.py <trace.csv> [--column]`.
-- **Result:** exit 0 when the trace meets its contract.
+Use the matching trace validator and supply the requested duration, so a truncated run cannot pass solely on valid rows. Replace `3.0` with the actual requested seconds:
+
+```bash
+python3 app/tests/check_trimmed_flight.py tmp/trace.csv --duration 3.0
+python3 app/tests/check_wind_trace.py tmp/wind.csv --duration 3.0
+python3 app/tests/check_atmosphere_trace.py tmp/atmosphere.csv --duration 3.0
+```
+
+For atmosphere v11 standard-column traces, add `--column` only for the calm preset (zero wind, gust and turbulence). Without it, the atmosphere validator uses the custom-atmosphere v6/v10 path. See [launch flags](shared.md#launch-flags), [wind recording](../WIND-PLAN.md#recording-and-evidence) and [trace integrity](../research/trace-integrity/C7-R2/README.md).
 
 ## Benches and probes
 
-| Tool | Command | Notes |
-| --- | --- | --- |
-| Physics cost | `"$(app/get-godot.sh)" --headless --path app --script res://tests/bench_physics.gd -- --aircraft=<id>` | Run alone on the target machine. Unverified on the dev VM. |
-| Other benches | `app/tests/bench_{regimes,wind,radio_events,heli_performance,lake_session_airborne}.gd` | Same pattern. Unverified. |
-| Parameter sensitivity | `"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/sensitivity/sensitivity.gd"` | Ugly Stik only. Unverified. |
-| Part-throttle thrust, neutral points | `… --script "$PWD/research/flight-dynamics/power-climb/part_throttle_probe.gd" -- --out=<csv>`; `python3 research/flight-dynamics/power-climb/fleet_neutral_point.py` | Read-only; [tools](../../research/flight-dynamics/power-climb/README.md). |
-| Modal dashboard | `python3 research/validation/dashboard.py --check` | Currently stale (exits 1). Red reference rows are diagnostics. [Validation tools](../../research/validation/README.md). |
-| Workshop experiment runner | [TOOLS → Aircraft Workshop](../TOOLS.md#aircraft-workshop) | Static, tape and sweep analysis of one aircraft or bundle. |
+Run benchmarks on a quiet target host with frozen sources and recorded conditions. A headless session or component probe does not establish complete-application cost or display performance; include accepted-tick observers and actual rendering for those claims. [Performance tools](../../research/performance/README.md) and the [native backend guide](../../research/native-kernel/README.md#normal-flight-backend-selection) own workload and backend selection.
+
+| Task | Tool / limit |
+| --- | --- |
+| Reference session cost | Run `app/tests/bench_physics.gd` through the [checked runner](shared.md#one-godot-script). It reports best-of-three session timings without product observers, and an unknown `--aircraft` ID silently selects the default; check the ID against the catalog before running it. It is not a Gate P percentile or whole-app benchmark. |
+| Other physics and full-app timings | [Session performance tools](../../research/performance/README.md), including complete callback and observer workloads. |
+| Parameter sensitivity | `research/sensitivity/sensitivity.gd`; [sensitivity evidence](../research/README.md#flight-model-and-simulation). |
+| Part-throttle thrust and neutral points | [Power-climb tools](../../research/flight-dynamics/power-climb/README.md). |
+| Modal dashboard | `research/validation/dashboard.py --check`; it recomputes against the current source and engine. A stale or platform-incompatible snapshot is not a physical failure; see [validation tools](../../research/validation/README.md). |
+| Workshop experiment runner | [Aircraft Workshop tools](../TOOLS.md#aircraft-workshop) for static, tape and sweep analysis. |
 
 ### Spatial wind workload verification and timing
 
-Use `app/tests/bench_spatial_wind.gd` through the [checked runner](shared.md#one-godot-script). Its original provider-only mode remains separate from full aircraft sessions.
+Use `app/tests/bench_spatial_wind.gd` through the checked runner. Its provider-only and full-session workloads answer different questions. Replace the aircraft placeholder and use a fresh output path:
 
 ```bash
-python3 tools/godot/run_checked.py --timeout 600 -- "$(app/get-godot.sh)" --headless --path app \
-  --script res://tests/bench_spatial_wind.gd -- --full-session --verify-only \
-  --aircraft=gp-extra-300s-60 --case=spatial-v5-gusts-thermals-24 --output=tmp/wind-verify-new.json
+python3 tools/godot/run_checked.py --timeout 600 -- "$(app/get-godot.sh)" \
+  --headless --path app --script res://tests/bench_spatial_wind.gd -- \
+  --full-session --verify-only --aircraft=replace-with-catalog-id \
+  --case=spatial-v5-gusts-thermals-24 --output=tmp/wind-verify-new.json
 ```
 
-`--verify-only` runs the same production batches and reset/coverage checks without timing values or ratios. Defaults are three batches of 480 workload ticks, each preceded by 240 warmup ticks and a fixture reset. A separate untimed 480-tick instrumented replay checks actual gust/thermal query coverage and matching final state. The warmup does not advance the measured flight window. Use a fresh output path; invalid arguments and undersized full-session workloads are refused.
-
-Optional case IDs are `spatial-v5-gusts-24`, `spatial-v5-thermals-24` and `spatial-v5-gusts-thermals-24`. These explicitly authored workloads begin inside the gust/thermal lifecycle; they are not unmodified weather presets. Repeat `--case` or `--aircraft` to select multiple cases. `--aircraft=skywalker-x8 --battery` selects the accepted pack variant; omission uses ideal power. Original default aircraft/case lists and original control configurations remain unchanged.
-
-For timing, omit `--verify-only` and run alone on a controlled host with frozen sources. Reports contain actual solver, benchmark, preset and selected aircraft hashes; `--revision` and `--manifest-sha256` are optional caller annotations. Session report v2 distinguishes workload counts from timed counts. Timing arrays and their median/p95 contain **batch means**, not per-tick latency percentiles. The first-tick query count is separate from the full coverage replay count; query demand can change during flight. Headless batch timing does not qualify 1080p performance or the stricter physics budget. [R5 admission evidence and limits](../research/wind-implementation/M5-W05d-R5/README.md).
+`--verify-only` exercises workload and query-coverage checks without timing. For timing, omit it and run paired measurements on a controlled host. The report's median/p95 are batch means, not per-tick latency percentiles; headless timing does not qualify the 1080p presentation path. [Workloads, identities and limits](../research/wind-implementation/M5-W05d-R5/README.md).
 
 ## Aircraft conformance and unchanged behavior
 
-Run the existing authoring verifier with the pinned engine and a new output directory:
+Capture a baseline before a behavior-preserving edit and write each report to a fresh directory: `conformance.py` overwrites existing output files. Use the same engine, platform and verifier source for the before/after comparison.
 
 ```bash
 python3 research/aircraft-standardization/conformance.py --godot "$(app/get-godot.sh)" \
   --out tmp/aircraft-contract-before
-```
-
-For a behavior-preserving change, capture that baseline **before** editing runtime/data, then run:
-
-```bash
+# Apply the intended edit and regenerate its outputs before collecting the after report.
 python3 research/aircraft-standardization/conformance.py --godot "$(app/get-godot.sh)" \
   --out tmp/aircraft-contract-after \
   --baseline tmp/aircraft-contract-before/fleet.json \
   --contact-baseline tmp/aircraft-contract-before/contacts.json
 ```
 
-The v2 fleet probe discovers every catalog airplane and valid battery mode, including finite packs, under both terminal and soft-hull policies. Each case hashes its accepted model, initial state and 240 ticks, then requires 120 per-tick exact replay checks from its checkpoint. The verifier rejects incomplete reports before comparison and inventories nested code/data dependencies to detect drift during each probe. V1 fleet reports lack this coverage and are not accepted as v2 baselines; retain their original tool/source snapshot for historical reproduction.
-
-Require `verification.json.ok`, `complete_fleet`, `baseline_complete` and both exact comparison flags, with no source drift. The separate seven contact fixtures cover hull, scenery and water responses; their controlled sweeps use the installed `VehicleModel` callback interface. Identical reports establish only these tested trajectories on the same engine/platform, not arbitrary-input equivalence or physical validation. A change to the probe itself requires a baseline captured with that same probe against the original runtime.
-
-`--parse-all` also parses every application script; `--package` checks exported resources. `--models-only` omits flight/contact evidence. Use the [flight-log workflow](../FLIGHT-LOGGING.md) for deliberate handling or physics changes. The [aircraft contract](../AIRCRAFT_CONTRACT.md) owns authoring and shared correction rules.
+In the after `verification.json`, require `ok`, `flight_comparison.complete_fleet`, `flight_comparison.baseline_complete`, both `exact_baseline_match` fields, and no source drift. The verifier checks the declared catalog cases and replay/contact fixtures; equality covers only those runs on that engine and platform. V1 reports are not v2 baselines. `--parse-all` adds the parse pass; `--package` checks exported resources; `--models-only` omits flight/contact evidence. The [aircraft contract](../AIRCRAFT_CONTRACT.md) owns admission and [AS-07/14-R1](../research/aircraft-standardization/AS-06-14/README.md#shared-flight-admission-as-0714-r1-2026-10-26) describes coverage.
 
 ## Track verifiers
 
-Use fresh output directories. Fixture equivalence proves software preservation, not physical validity.
+Use the pinned engine, checked runner for Godot scripts, isolated profiles and fresh output directories. Verification establishes the stated software property, not physical fidelity.
 
 | Area | Entrypoint / authoritative contract |
 | --- | --- |
-| Aircraft authoring | `python3 research/aircraft-standardization/conformance.py --godot <godot> --out <fresh-dir> --parse-all`; [aircraft contract](../AIRCRAFT_CONTRACT.md). Optional `--package` checks exports. |
-| Natural Random | `python3 research/natural-random/verify.py --godot <godot> --out <fresh-dir>`; [evidence](../research/natural-random/README.md). |
-| Glow 2T/4T | `python3 research/glow-engines/verify_integration.py --godot <godot> --out <fresh-dir> --parse-all`; [current integration](../GLOW-ENGINES.md), [isolated kernels](../../research/glow-engines/README.md). |
-| Helicopter | `python3 research/helicopter/verify_kernels.py --godot <godot> --out <fresh-dir>`; [session and checks](../HELICOPTER.md). |
-| Bisonte ground vehicle | [runtime/experiments](../../research/rc-monster-truck/README.md), [native builder/parity](../../research/rc-monster-truck/native/README.md). |
-| Electric coupling | [EL2a-P1](../../research/propulsion/el2a-p1/README.md), [EL2a-P2 event qualification](../../research/propulsion/el2a-p2/README.md). Reference runs use their pinned NumPy/SciPy environment. |
-| Crash hull against the drawn model | `godot --headless --path app --script "$PWD/research/ground-physics/gp07/hull_coverage_dump.gd" -- --aircraft=<id> --out=$PWD/tmp/<new>/dump.json`, then `python3 research/ground-physics/gp07/hull_coverage.py tmp/<new>/dump.json`; Stik generator `derive_stik_hull.py --check`. [GP-07](../research/ground-physics/GP-07/README.md). |
-| Taildragger and nose-over | `python3 research/ground-contact/e5a/verify.py --out tmp/e5a-proof --mutations`; analogous `e5b/verify.py`. [E5a](../../research/ground-contact/e5a/README.md), [E5b](../../research/ground-contact/e5b/README.md). |
-| Long-circuit sensitivity | `python3 research/landing/e4b/measure.py --out tmp/e4b-proof`; [E4b limits](../research/ground-contact/E4b/README.md). Completion does not mean every perturbation passed. |
-| Radio calibration | `python3 research/input/d6b-r2/verify.py --out tmp/d6b-r2-proof`; [contract](../research/radio-input/D6b-R2/README.md). |
-| Aircraft generators | Source pipelines in the aircraft guides; examples: [P51-05](../../research/p51/p51-05/derivation.md), [EX-05](../../research/extra-300/ex05/derivation.md), [AV-06](../../research/avanti-s/av06/derivation.md). |
+| Aircraft authoring | [Conformance workflow](#aircraft-conformance-and-unchanged-behavior); [aircraft contract](../AIRCRAFT_CONTRACT.md). |
+| Natural Random | `python3 research/natural-random/verify.py --godot <engine> --out <fresh-dir>`; [evidence](../research/natural-random/README.md). |
+| Glow 2T/4T | `python3 research/glow-engines/verify_integration.py --godot <engine> --out <fresh-dir> --parse-all`; [glow guide](../GLOW-ENGINES.md). |
+| Helicopter | `python3 research/helicopter/verify_kernels.py --godot <engine> --out <fresh-dir>`; [session and limits](../HELICOPTER.md). |
+| Ground vehicle | [Runtime and experiments](../../research/rc-monster-truck/README.md); [native builder and parity](../../research/rc-monster-truck/native/README.md). |
+| Electric coupling | [EL2a-P1](../../research/propulsion/el2a-p1/README.md), [EL2a-P2](../../research/propulsion/el2a-p2/README.md); reference solvers use their pinned Python dependencies. |
+| Crash-hull coverage | [GP-07 tools and generator](../../research/ground-physics/gp07/README.md); dump the built model with the checked runner, then run the coverage sweep. |
+| Taildragger and nose-over | [E5a](../../research/ground-contact/e5a/README.md), [E5b](../../research/ground-contact/e5b/README.md); mutation runs use disposable copies. |
+| Long-circuit sensitivity | [E4b tool](../../research/landing/e4b/README.md), [limits](../research/ground-contact/E4b/README.md); completion does not mean every perturbation passed. |
+| Radio calibration | `python3 research/input/d6b-r2/verify.py --out <fresh-dir>`; [contract](../research/radio-input/D6b-R2/README.md). |
 
-Dated evidence: [research index](../research/README.md); experiment folders and their reports: [tools/input map](../../research/README.md).
+The [research index](../research/README.md) maps dated evidence; the [research tool map](../../research/README.md) pairs experiment folders with their reports.

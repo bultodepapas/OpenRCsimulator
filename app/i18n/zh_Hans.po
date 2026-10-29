@@ -6095,16 +6095,8 @@ msgstr "输出：%d × %d · VSync：%s"
 msgid "The driver or desktop compositor may override VSync."
 msgstr "显卡驱动或桌面合成器可能会覆盖 VSync 设置。"
 
-msgid "Try High (restart)"
-msgstr "试用高画质（需重启）"
-
 msgid "Restart in Standard"
 msgstr "以标准模式重启"
-
-msgid ""
-"High is a temporary experiment. Keep your changes before restarting. A "
-"normal launch returns to Standard."
-msgstr "高画质是临时试验模式。重启前请保留你的更改。正常启动时会恢复标准模式。"
 
 msgid ""
 "Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ "
@@ -6113,9 +6105,6 @@ msgstr "更柔和的阴影、环境光遮蔽和天空反射。需要支持 Forwa
 
 msgid "Graphics mode: %s"
 msgstr "图形模式：%s"
-
-msgid "High (experimental)"
-msgstr "高画质（实验性）"
 
 msgid "Standard"
 msgstr "标准"
@@ -6488,9 +6477,6 @@ msgstr "FSR3 · 均衡"
 
 msgid "FSR3 · Performance"
 msgstr "FSR3 · 性能"
-
-msgid "DLSS · Native AA"
-msgstr "DLSS · 原生抗锯齿"
 
 msgid "DLSS · Quality"
 msgstr "DLSS · 质量"
@@ -8244,3 +8230,104 @@ msgstr "没有已启用的故障类型适用于此飞机。请在“故障”中
 
 msgid "This aircraft has no rudder, so rudder failures cannot occur."
 msgstr "此飞机没有方向舵，因此不会发生方向舵故障。"
+
+# DT-MAC: opt-in MetalFX trials.
+msgid "MetalFX Spatial · 85%"
+msgstr "MetalFX 空间 · 85%"
+
+msgid "MetalFX Spatial · Quality"
+msgstr "MetalFX 空间 · 质量"
+
+msgid "MetalFX Temporal · Native AA"
+msgstr "MetalFX 时间 · 原生抗锯齿"
+
+msgid "MetalFX Temporal · 85%"
+msgstr "MetalFX 时间 · 85%"
+
+msgid "MetalFX Temporal · Quality"
+msgstr "MetalFX 时间 · 质量"
+
+msgid "MetalFX is an experimental Mac option. Compare distant aircraft detail in motion."
+msgstr "MetalFX 是 Mac 的实验性选项。请在运动中比较远处飞机的细节。"
+
+msgid "MetalFX Temporal returned to Native after a camera change. Select Native before retrying."
+msgstr "切换相机后，MetalFX 时间模式已恢复为原生模式。重试前请先选择原生模式。"
+
+msgid "This MetalFX input scale is unavailable on the current device."
+msgstr "当前设备不支持此 MetalFX 输入缩放比例。"
+
+msgid "MetalFX requires an explicitly enabled Metal trial on a supported Mac."
+msgstr "MetalFX 需要在受支持的 Mac 上明确启用 Metal 测试。"
+
+msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
+msgstr "MetalFX 不使用 FSR 锐化。已保存的数值将保留。"
+
+# Complete existing graphics status messages used by the Mac trial UI.
+msgid "Enable High (restart)"
+msgstr "启用高画质（重启）"
+
+msgid "Keep your changes before restarting."
+msgstr "重启前请先保留更改。"
+
+msgid "DLAA · Native AA"
+msgstr "DLAA · 原生抗锯齿"
+
+msgid "NVIDIA Reflex"
+msgstr "NVIDIA Reflex"
+
+msgid "Boost"
+msgstr "增强"
+
+msgid "Unconfirmed"
+msgstr "未确认"
+
+msgid "Reflex: Requested %s → SDK accepted %s"
+msgstr "Reflex：请求 %s → SDK 已接受 %s"
+
+msgid "Reflex mode change is waiting for the next frame."
+msgstr "Reflex 模式更改正在等待下一帧。"
+
+msgid "NVIDIA Reflex can reduce rendering latency on supported NVIDIA hardware. Boost also requests higher GPU clocks."
+msgstr "NVIDIA Reflex 可降低受支持的 NVIDIA 硬件上的渲染延迟。增强模式还会请求更高的 GPU 时钟频率。"
+
+msgid "NVIDIA Reflex is not included in this game build."
+msgstr "此游戏版本不包含 NVIDIA Reflex。"
+
+msgid "NVIDIA Reflex could not continue in this graphics session. Your saved choice is kept."
+msgstr "NVIDIA Reflex 无法在当前图形会话中继续运行。已保存的选择将保留。"
+
+msgid "NVIDIA Reflex status is unavailable. Your saved choice is kept."
+msgstr "NVIDIA Reflex 状态不可用。已保存的选择将保留。"
+
+msgid "The current graphics session does not report NVIDIA Reflex support. Your saved choice is kept."
+msgstr "当前图形会话未报告 NVIDIA Reflex 支持。已保存的选择将保留。"
+
+msgid "Flight companions: Unavailable"
+msgstr "飞行伙伴：不可用"
+
+msgid "Flight companions are unavailable in this game build."
+msgstr "此游戏版本不支持飞行伙伴。"
+
+# Custom aircraft skin tools.
+msgid "Create a skin"
+msgstr "创建涂装"
+msgid "X8 · Blender → .orskin"
+msgstr "X8 · Blender → .orskin"
+msgid "Save the template, edit its paint images with an AI assistant or Blender, then load your .orskin file."
+msgstr "保存模板，使用 AI 助手或 Blender 编辑其涂装图片，然后加载 .orskin 文件。"
+msgid "Save skin template…"
+msgstr "保存涂装模板…"
+msgid "Open skin guide"
+msgstr "打开涂装指南"
+msgid "Load new skin…"
+msgstr "加载新涂装…"
+msgid "Choose an original paint at any time to restore it."
+msgstr "随时选择原始涂装即可恢复。"
+msgid "Template saved. Extract the ZIP and open the skin guide."
+msgstr "模板已保存。解压 ZIP 并打开涂装指南。"
+msgid "Could not save the template. Check the destination and try again."
+msgstr "无法保存模板。请检查目标位置并重试。"
+msgid "Skin could not be loaded:"
+msgstr "无法加载涂装："
+msgid "Could not open the guide. Use guide.html inside the template ZIP."
+msgstr "无法打开指南。请使用模板 ZIP 中的 guide.html。"

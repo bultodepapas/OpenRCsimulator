@@ -29,7 +29,7 @@ The Savox PNGs came from the official [Savox Logos Package](https://www.teamsavo
 | `assets/brands/savox/TeamSavox-Logo-Mono-White.png` | SAVOX wordmark, white |
 | `assets/brands/savox/TeamSavox-Logo-LightBG.png` | SAVOX wordmark, orange and black for light backgrounds |
 
-The README and website use `TeamSavox-Logo-LightBG.webp` on white tiles. `python site/prepare_assets.py --brands-only` crops excess transparent canvas while retaining 5% horizontal and 18% vertical clear space around the visible mark, then resizes to 768×171 with Pillow 12.3.0 and lossless WebP encoding. The official PNGs remain unchanged. This makes Savox visually comparable in scale with the neighboring logos on desktop and mobile.
+The website uses `TeamSavox-Logo-LightBG.webp` on white tiles. The README uses that display asset in light mode and the unchanged `TeamSavox-Logo-Mono-White.png` in dark mode. `python site/prepare_assets.py --brands-only` crops excess transparent canvas while retaining 5% horizontal and 18% vertical clear space around the visible mark, then resizes to 768×171 with Pillow 12.3.0 and lossless WebP encoding. The official PNGs remain unchanged.
 
 The project [README](../README.md#partners) records Savox's authorization to include representations of its products in OpenRC Simulator. The permission record in [D6-SAV-00](../docs/research/servos/D6-SAV-00/README.md) quotes the manufacturer's scope: “You have our permission to use Savox product representations in your project.” Keep the partner acknowledgment within that scope; do not imply manufacturer certification of simulator behavior. SAVOX marks remain Savox's property.
 

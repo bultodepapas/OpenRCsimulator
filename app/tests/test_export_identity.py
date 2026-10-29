@@ -5,13 +5,17 @@ import itertools
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest import mock
+import zipfile
 
 
+@unittest.skipUnless(sys.platform.startswith("linux"), "export requires a Linux host; use WSL on Windows")
 class ExportIdentity(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="openrc-export-")
@@ -28,10 +32,17 @@ class ExportIdentity(unittest.TestCase):
             "get-templates.sh": "#!/usr/bin/env bash\nexit 0\n",
             "fake-engine.sh": '''#!/usr/bin/env bash
 python3 - <<'PY'
-import json, os
+import json, os, time
 from pathlib import Path
 keys = ("DESCRIBE", "COMMIT", "DIRTY", "DATE")
 Path(os.environ["PROBE_IDENTITY"]).write_text(json.dumps({key: os.environ["OPENRC_BUILD_" + key] for key in keys}))
+if os.environ.get("PROBE_READY"):
+    Path(os.environ["PROBE_READY"]).touch()
+    deadline = time.monotonic() + 20
+    while not Path(os.environ["PROBE_RELEASE"]).exists():
+        if time.monotonic() > deadline:
+            raise SystemExit("fixture release signal timed out")
+        time.sleep(0.01)
 PY
 if [[ "${PROBE_IMPORT_ERROR:-}" == 1 ]]; then
   echo 'SCRIPT ERROR: simulated import failure'
@@ -54,14 +65,153 @@ exit 23
     def git(self, *args):
         return subprocess.check_output(["git", *args], cwd=self.root, text=True).strip()
 
-    def export(self, *args, **overrides):
+    def export_env(self, **overrides):
         env = os.environ.copy()
         env.pop("GITHUB_REF", None)
+        env.pop("GITHUB_OUTPUT", None)
         env.update(PROBE_IDENTITY=str(self.root / "identity.json"))
         env.update(overrides)
+        return env
+
+    def export(self, *args, **overrides):
         return subprocess.run([os.environ.get("OPENRC_TEST_BASH", "bash"), "app/export.sh", *args],
-                              cwd=self.root, env=env, text=True, stdout=subprocess.PIPE,
+                              cwd=self.root, env=self.export_env(**overrides), text=True, stdout=subprocess.PIPE,
                               stderr=subprocess.STDOUT, timeout=30)
+
+    def output_path(self, result):
+        match = re.search(r"^== export output: (.+)$", result.stdout, re.MULTILINE)
+        self.assertIsNotNone(match, result.stdout)
+        return Path(match.group(1))
+
+    def test_default_runs_preserve_previous_outputs_even_on_failure(self):
+        dist = self.root / "dist"
+        dist.mkdir()
+        sentinel = dist / "previous-release.zip"
+        sentinel.write_bytes(b"keep the prior verified release")
+        runs = [self.export(), self.export()]
+        outputs = [self.output_path(result) for result in runs]
+        self.assertNotEqual(outputs[0], outputs[1])
+        for result, output in zip(runs, outputs):
+            self.assertNotEqual(result.returncode, 0, result.stdout)
+            self.assertEqual(output.parent, dist)
+            self.assertTrue((output / "linux").is_dir())
+            self.assertIn("partial output retained", result.stdout)
+        self.assertEqual(sentinel.read_bytes(), b"keep the prior verified release")
+
+    def test_explicit_output_rejects_existing_paths_and_symlinks(self):
+        existing = self.root / "existing"
+        existing.mkdir()
+        sentinel = existing / "previous.zip"
+        sentinel.write_bytes(b"keep")
+        existing_file = self.root / "existing-file"
+        existing_file.write_bytes(b"keep file")
+        dangling = self.root / "dangling"
+        dangling.symlink_to(self.root / "absent-target", target_is_directory=True)
+        for path in (existing, existing_file, dangling):
+            with self.subTest(path=path.name):
+                result = self.export("--output-dir", str(path))
+                self.assertNotEqual(result.returncode, 0, result.stdout)
+                self.assertIn("output already exists", result.stdout)
+                self.assertFalse((self.root / "identity.json").exists())
+        self.assertEqual(sentinel.read_bytes(), b"keep")
+        self.assertEqual(existing_file.read_bytes(), b"keep file")
+        self.assertTrue(dangling.is_symlink())
+        self.assertFalse((self.root / "absent-target").exists())
+
+    def test_explicit_spaced_output_is_retained_without_success_handoff(self):
+        output = self.root / "new parent" / "export with spaces"
+        handoff = self.root / "github-output"
+        handoff.write_text("other_step=value\n", encoding="utf-8")
+        result = self.export("--output-dir", str(output), GITHUB_OUTPUT=str(handoff))
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertEqual(self.output_path(result), output)
+        self.assertTrue((output / "windows").is_dir())
+        self.assertEqual(handoff.read_text(), "other_step=value\n")
+
+    def test_output_cannot_become_a_project_resource_or_git_metadata(self):
+        alias = self.root / "project-alias"
+        alias.symlink_to(self.app, target_is_directory=True)
+        for output in (self.app / "export", alias / "export", self.root / ".git" / "export"):
+            with self.subTest(path=str(output)):
+                result = self.export("--output-dir", str(output))
+                self.assertNotEqual(result.returncode, 0, result.stdout)
+                self.assertIn("outside app/ and Git metadata", result.stdout)
+                self.assertFalse(output.exists())
+                self.assertFalse((self.root / "identity.json").exists())
+
+    def test_same_checkout_export_is_locked_before_engine_work(self):
+        ready, release = self.root / "ready", self.root / "release"
+        first = subprocess.Popen(
+            [os.environ.get("OPENRC_TEST_BASH", "bash"), "app/export.sh"], cwd=self.root,
+            env=self.export_env(PROBE_READY=str(ready), PROBE_RELEASE=str(release)),
+            text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        )
+        try:
+            deadline = time.monotonic() + 10
+            while not ready.exists() and first.poll() is None and time.monotonic() < deadline:
+                time.sleep(0.01)
+            self.assertTrue(ready.exists(), "first export did not enter the import fixture")
+            second = self.export()
+            self.assertNotEqual(second.returncode, 0, second.stdout)
+            self.assertIn("another export is using this checkout", second.stdout)
+            self.assertNotIn("== export output:", second.stdout)
+        finally:
+            release.touch()
+            stdout, _ = first.communicate(timeout=25)
+        self.assertNotEqual(first.returncode, 0, stdout)
+        # The advisory lock releases after failure; a subsequent export reaches import.
+        third = self.export()
+        self.assertIn("== import", third.stdout)
+        self.assertNotIn("another export", third.stdout)
+
+    def test_symlinked_checkout_cannot_export_into_its_project(self):
+        alias = self.root / "checkout-alias"
+        alias.symlink_to(self.root, target_is_directory=True)
+        output = self.app / "new-output"
+        result = subprocess.run(
+            [os.environ.get("OPENRC_TEST_BASH", "bash"), str(alias / "app/export.sh"),
+             "--output-dir", str(output)], cwd=self.root, env=self.export_env(), text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30,
+        )
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("outside app/ and Git metadata", result.stdout)
+        self.assertFalse(output.exists())
+        self.assertFalse((self.root / "identity.json").exists())
+
+    def test_worktree_cannot_export_into_shared_git_metadata(self):
+        worktree = self.root / "worktree"
+        self.git("worktree", "add", "--quiet", "--detach", str(worktree))
+        output = self.root / ".git/refs/heads/new-output"
+        result = subprocess.run(
+            [os.environ.get("OPENRC_TEST_BASH", "bash"), str(worktree / "app/export.sh"),
+             "--output-dir", str(output)], cwd=worktree, env=self.export_env(), text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30,
+        )
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("outside app/ and Git metadata", result.stdout)
+        self.assertFalse(output.exists())
+
+    def test_lock_path_preserves_existing_bytes_and_rejects_symlinks(self):
+        lock = self.root / ".git/openrc-export.lock"
+        lock.write_bytes(b"existing lock contents")
+        result = self.export()
+        self.assertIn("== import", result.stdout)
+        self.assertEqual(lock.read_bytes(), b"existing lock contents")
+        lock.unlink()
+        sentinel = self.root / "sentinel"
+        sentinel.write_bytes(b"do not truncate")
+        lock.symlink_to(sentinel)
+        result = self.export()
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("export lock must be a regular file", result.stdout)
+        self.assertEqual(sentinel.read_bytes(), b"do not truncate")
+
+    def test_help_does_not_prepare_an_export(self):
+        result = self.export("--help")
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("--output-dir NEW_DIRECTORY", result.stdout)
+        self.assertFalse((self.root / "dist").exists())
+        self.assertFalse((self.root / "identity.json").exists())
 
     def test_triggering_tag_wins_over_another_annotated_tag(self):
         self.git("tag", "-a", "v1.2.3-rc1", "-m", "annotated candidate")
@@ -162,6 +312,74 @@ exit 23
         self.assertEqual(result.returncode, 1, result.stdout)
         self.assertIn("engine error while importing", result.stdout)
         self.assertNotIn("== export Linux", result.stdout)
+
+
+@unittest.skipUnless(sys.platform.startswith("linux"), "package shell checks require a Linux host")
+class ExportPackaging(unittest.TestCase):
+    """Run the real final packaging/handoff commands on disposable payloads."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix="openrc package fixture ")
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.dist = self.root / "export with spaces"
+        for platform in ("linux", "windows", "macos"):
+            (self.dist / platform).mkdir(parents=True)
+        self.linux = self.dist / "linux/openrc-simulator.x86_64"
+        self.linux.write_bytes(b"fixture executable")
+        self.linux.chmod(0o755)
+        sidecar = self.dist / "linux/native/kernel/libopenrc_kernel.so"
+        sidecar.parent.mkdir(parents=True)
+        sidecar.write_bytes(b"fixture native library")
+        (self.dist / "windows/OpenRC Simulator.exe").write_bytes(b"fixture exe")
+        with zipfile.ZipFile(self.dist / "macos/OpenRC Simulator.zip", "w") as archive:
+            archive.writestr("OpenRC Simulator.app/Contents/Info.plist", "fixture")
+        self.handoff = self.root / "github output"
+        self.version = "v1.2.3-rc.2"
+        self.names = [f"openrc-simulator-{self.version}-{suffix}.zip" for suffix in
+                      ("linux-x86_64", "windows-x86_64", "macos-universal")]
+        source = (Path(__file__).parents[1] / "export.sh").read_text(encoding="utf-8")
+        self.commands = source.split('echo "== packages"\n', 1)[1]
+
+    def package(self):
+        env = os.environ.copy()
+        env.update(DIST=str(self.dist), VERSION=self.version, GITHUB_OUTPUT=str(self.handoff))
+        return subprocess.run([os.environ.get("OPENRC_TEST_BASH", "bash"), "-euc", self.commands],
+                              cwd=self.root, env=env, text=True, stdout=subprocess.PIPE,
+                              stderr=subprocess.STDOUT, timeout=30)
+
+    def test_success_handoff_identifies_exact_checked_package_set(self):
+        result = self.package()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual(self.handoff.read_text(), f"package_dir={self.dist}\nversion={self.version}\n")
+        sums = (self.dist / "SHA256SUMS").read_text().splitlines()
+        self.assertEqual(len(sums), 3)
+        for name, line in zip(self.names, sums):
+            self.assertEqual(line, f"{hashlib.sha256((self.dist / name).read_bytes()).hexdigest()}  {name}")
+        with zipfile.ZipFile(self.dist / self.names[0]) as archive:
+            self.assertEqual(archive.read("openrc-simulator.x86_64"), self.linux.read_bytes())
+            self.assertEqual(archive.read("native/kernel/libopenrc_kernel.so"), b"fixture native library")
+            self.assertEqual((archive.getinfo("openrc-simulator.x86_64").external_attr >> 16) & 0o777, 0o755)
+
+    def test_failed_packaging_never_emits_a_success_handle(self):
+        (self.dist / "macos/OpenRC Simulator.zip").unlink()
+        result = self.package()
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertFalse(self.handoff.exists())
+        self.assertFalse((self.dist / "SHA256SUMS").exists())
+        self.assertTrue(self.linux.exists())
+
+    def test_ci_uploads_only_the_run_and_version_returned_by_export(self):
+        workflow = (Path(__file__).parents[2] / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        self.assertIn("      - id: packages\n        run: app/export.sh", workflow)
+        artifact = workflow.split("          name: release-builds\n", 1)[1].split("\n  release:", 1)[0]
+        for suffix in ("linux-x86_64", "windows-x86_64", "macos-universal"):
+            self.assertIn("${{ steps.packages.outputs.package_dir }}/openrc-simulator-"
+                          "${{ steps.packages.outputs.version }}-" + suffix + ".zip", artifact)
+        self.assertIn("${{ steps.packages.outputs.package_dir }}/SHA256SUMS", artifact)
+        self.assertIn("if-no-files-found: error", artifact)
+        self.assertNotIn("*.zip", artifact)
+        self.assertIn("(cd dist && sha256sum --check --strict SHA256SUMS)", workflow)
 
 
 class NativeReceiptIdentity(unittest.TestCase):

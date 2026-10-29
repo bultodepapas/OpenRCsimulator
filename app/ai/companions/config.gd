@@ -1,5 +1,7 @@
 extends RefCounted
 
+const Profiles := preload("res://ai/companions/profile_loader.gd")
+
 ## The first companion preset is intentionally narrower than the aircraft catalog.
 const AIRCRAFT_ID := "jensen-das-ugly-stik-60"
 const ACTIVITY := "circuits"
@@ -37,6 +39,27 @@ const DEFAULTS := {
 
 static func defaults() -> Dictionary:
 	return DEFAULTS.duplicate(true)
+
+
+## Qualification binds this exact engine build, not just its numeric version.
+static func engine_qualified() -> bool:
+	return Profiles.engine_build_identity(Engine.get_version_info()) == Profiles.QUALIFIED_ENGINE_VERSION
+
+
+## Use for saved Home preferences only. Preserve the request and disable an
+## unqualified fleet for this flight; explicit CLI requests still fail closed.
+static func for_current_engine(raw: Variant) -> Dictionary:
+	var checked := validate(raw)
+	if not checked.ok:
+		return checked
+	var requested: Dictionary = checked.config.duplicate(true)
+	var effective: Dictionary = requested.duplicate(true)
+	var available := engine_qualified()
+	var suppressed := bool(requested.enabled) and not available
+	if suppressed:
+		effective.enabled = false
+	return {"ok": true, "errors": PackedStringArray(), "config": effective,
+		"requested": requested, "available": available, "suppressed": suppressed}
 
 
 ## Accept a partial UI record, fill the fixed MVP choices, and reject unsupported settings.

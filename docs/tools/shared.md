@@ -1,98 +1,109 @@
 # Shared tools
 
-Tools every domain uses: the engine, the test suite, headless runs, flags, traces and CI. Each entry: purpose · when · command · result · gotchas. [Back to the index](README.md).
+Engine, test and trace workflows used across domains. [Task index](README.md) · [Setup and releases](../TOOLS.md).
 
 ## Engine
 
-- **Purpose:** download and verify official Godot `4.8-beta1` (a prerelease) into `.tools/`; print its path. Exact CLI identity: `4.8.beta1.official.4d10419ca`.
-- **When:** in every command that needs Godot. Never call a system `godot`.
-- **Command:** `"$(app/get-godot.sh)"`
-- **Result:** prints the Linux x86_64 editor path or Windows x86_64 console editor path under Git Bash; exits nonzero on an archive hash or version mismatch. Cached executable hashes are checked before reuse.
-- **Gotchas:** a fresh checkout needs `"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import` before standalone scripts; `app/test.sh` and `app/capture.sh` import by themselves. `--headless` selects the headless display and Dummy audio drivers. For beta1's X11/Wayland fallback issue and the existing launcher option, see [developer setup](../TOOLS.md#developer-setup).
+Use `app/get-godot.sh` for the pinned engine; do not substitute a system installation. It prints the verified executable path on supported hosts. [Developer setup](../TOOLS.md#developer-setup) owns dependencies, native Windows commands and the Wayland workaround.
+
+A fresh checkout, worktree or app copy needs an import before standalone scripts:
+
+```sh
+"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import
+```
+
+`app/test.sh` and `app/capture.sh` import automatically. Pass `--godot "$(app/get-godot.sh)"` to Python runners that accept it when recording an explicit engine identity.
 
 ## Full app suite
 
-- **Purpose:** import, generator checks, a parse check of every `.gd`, every `app/tests/test_*.gd` script (851 on 2026-10-27), CLI/trace/replay and frame-rate-independence checks.
-- **When:** before every commit that touches `app/`, and after integrating a script.
-- **Command:** `app/test.sh`. One CI partition: `OPENRC_TEST_PART=units OPENRC_UNIT_SHARDS=8 OPENRC_UNIT_SHARD=0 app/test.sh` (shards 0–7), or `OPENRC_TEST_PART=integration app/test.sh`. Evidence goes to `tmp/godot-checks/`; override with `OPENRC_CHECK_OUT=<dir>`.
-- **Result:** exit 0 means every step passed. Failing Godot calls print `Godot check failed: … report: <dir>/report.json`; open that report and its `engine.log`.
-- **Gotchas:**
-  - It takes over 40 minutes on the dev VM. For a quick check, run the affected scripts with the [checked runner](#one-godot-script) first.
-  - The parse step launches Godot once per script; if your working tree changes during the run (another session pulls or edits), the result is invalid. Run long suites on a snapshot: `git worktree add --detach tmp/suite HEAD`, then run `tmp/suite/app/test.sh` (copy or hard-link the matching `.tools/Godot_*` binaries and generated `.sha512` cache receipt into `tmp/suite/.tools/` to skip the download; Windows needs both executables).
-  - Two named physical checks run in "pending" mode inside the suite (`test_rudder_authority.gd`, `test_yaw_damping.gd`). Pending is not a pass; run alone they are strict. Details: [TOOLS](../TOOLS.md#app-and-release-commands).
-  - The script stops at the first failure (`set -e`), and the integration tail runs after the units. One red unit script hides every later result: run `OPENRC_TEST_PART=integration app/test.sh` for the tail, and loop the remaining `app/tests/test_*.gd` through the [checked runner](#one-godot-script) to see all unit failures.
-  - Parallel runs require isolated `user://` profiles. On Windows, even with separate profiles, concurrent editor imports in one checkout contend for the native extension's hot-reload shadow DLL. Serialize imports; use separate checkouts for parallel full suites. The documented remaining-unit loop can reuse an already successful import.
-  - The integration part needs numpy for the X8 generator check (`pip install -r research/skywalker-x8/X8-06/requirements.txt`); CI installs it into a venv on `PATH`.
-  - On a Windows checkout with `core.autocrlf=true`, a generator `--check` that compares bytes can report a stale file that is only CRLF. Pin such outputs `text eol=lf` in `.gitattributes`, as the D8b-R2 candidates and X8 licence are; a fresh `git worktree` gets CRLF everywhere, so run hash-sensitive integration checks in an LF checkout.
-  - It does not run the CI-only checks below.
+`app/test.sh` runs the repository's app checks: generators, all GDScript parse checks, discovered unit scripts and integration/CLI/trace/replay checks. Use focused checks during development, then the required full suite for app integration. The script stops at the first failure.
+
+```sh
+app/test.sh
+# Reproduce one CI partition; neither command is the complete suite:
+OPENRC_TEST_PART=units OPENRC_UNIT_SHARDS=8 OPENRC_UNIT_SHARD=0 app/test.sh
+OPENRC_TEST_PART=integration app/test.sh
+```
+
+Unit shard indices are 0–7. Without partition variables, the script runs the full suite. Godot diagnostics go under `tmp/godot-checks/` (`OPENRC_CHECK_OUT` overrides the parent); open the failing `report.json` and `engine.log`. Exit zero means the configured software gates passed, including only the [named physical exceptions](../TOOLS.md#app-and-release-commands); pending physical checks are not passes.
+
+- Use a stable checkout for a long run. A detached worktree at `HEAD` **does not contain uncommitted changes**; ensure the snapshot contains the intended edits and generated outputs, then record its identity. Changes during a run invalidate that result.
+- Use separate checkouts and isolated `user://` profiles for concurrent suites. Serialize imports in one checkout; Windows native-extension hot-reload DLLs can contend even with separate profiles.
+- Install integration dependencies from the manifests used by [CI](../../.github/workflows/ci.yml), including the X8 generator's requirements. Use a tool-specific environment; do not reuse an incompatible visual/audio environment.
+- Honor [`.gitattributes`](../../.gitattributes). A byte mismatch may be an EOL mismatch; inspect `git check-attr` and the generator contract before changing data or attributes. Some artifacts deliberately use CRLF or preserve exact bytes.
+- A failed unit hides subsequent results. Run the integration partition or selected remaining scripts separately for diagnosis; do not report that partial set as the full suite.
 
 ## CI-only checks
 
-- **Purpose:** checks the CI integration job runs outside `app/test.sh`.
-- **When:** after changing aircraft data, geometry, schemas or offline tools.
-- **Command:** generator checks are listed in [`ci.yml`](../../.github/workflows/ci.yml) step "Generated geometry and physics data match their sources"; run each with `--check`. Offline tool regressions: `research/test-tools.sh`. Schemas: `pip install -r research/aircraft-data/schema/requirements.txt` into a venv, then `python research/aircraft-data/schema/check.py` and `test_contract.py`.
-- **Result:** exit 0 each. `research/test-tools.sh` ends with `Offline tool regressions passed`.
-- **Gotchas:** on the dev VM `python3 -m venv` cannot bootstrap pip; install with `pip install --target <dir> -r …` and run with `PYTHONPATH=<dir>`.
+[CI](../../.github/workflows/ci.yml) adds schema, selected generator, offline-tool, visual, native-backend and package gates to the app suite; some generator checks also run locally inside `app/test.sh`. Use the workflow's current commands and dependency manifests for the affected area.
+
+`research/test-tools.sh` runs offline regressions and ends with `Offline tool regressions passed`. Schema commands and requirements live in [the schema guide](../../research/aircraft-data/schema/README.md). CI step “Generated geometry and physics data match their sources” lists its generation checks. These checks do not regenerate accepted artifacts.
 
 ## One Godot script
 
-- **Purpose:** run one test or probe and fail on engine errors that exit 0.
-- **When:** whenever you run a single `.gd` script.
-- **Command:** `python3 tools/godot/run_checked.py --timeout 90 -- "$(app/get-godot.sh)" --headless --path app --script res://tests/test_X.gd`. Scripts outside `app/` need an absolute path: `--script "$PWD/research/…/x.gd"`. Parse only: `--check-only --script res://…`.
-- **Result:** exit 0 ok · 1 engine diagnostic or missing `--require-text` marker · 2 bad configuration · 124 timeout · 125 output limit · 127 launch failure. It keeps `engine.log` and `report.json` (`openrc-godot-check v1`) under `tmp/godot-checks/`. Full contract: [tools/godot](../../tools/godot/README.md).
-- **Gotchas:** `complete` in a report means the process finished, not that it passed. `--warnings-as-errors` is opt-in.
+Use the [checked runner](../../tools/godot/README.md) to catch engine, script and shader errors even when Godot exits zero:
+
+```sh
+python3 tools/godot/run_checked.py --timeout 90 -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script res://tests/test_simulation.gd
+```
+
+Replace the script with the affected test. For scripts outside `app/`, use an absolute `--script "$PWD/research/…/probe.gd"`. Parse-only checks add `--check-only`. Choose a timeout appropriate to the script; `--require-text` can enforce its completion marker and `--warnings-as-errors` is opt-in.
+
+The runner retains `engine.log` and `report.json`. Read `ok` for the verdict: `complete` only means process/output collection finished. The runner guide owns exit codes, output limits and process cleanup.
 
 ### Write a test
 
-There is no GUT or GdUnit. A test is `app/tests/test_<topic>.gd` that `extends SceneTree`, counts failures, prints `"%d checks, %d failed"` and ends with `quit(1 if _failures > 0 else 0)`; copy [test_simulation.gd](../../app/tests/test_simulation.gd). `app/test.sh` discovers every `app/tests/test_*.gd` automatically; add a per-file timeout in its unit section only if the script needs more than 60 s. Draft new scripts outside `app/` until they parse.
+There is no GUT or GdUnit. Follow [`test_simulation.gd`](../../app/tests/test_simulation.gd): extend `SceneTree`, count assertions, print the failure count and exit nonzero on failure. `app/test.sh` discovers `app/tests/test_*.gd`; add a per-file timeout only when the default is insufficient. Keep drafts outside `app/` until they parse.
 
 ## Launch flags
 
-- **Purpose:** start a session directly, without Home or preferences.
-- **When:** to reproduce a bug, write a trace or capture a view.
-- **Command:** `"$(app/get-godot.sh)" --path app -- --quick-flight --aircraft=<id> [--start=airborne] [--landscape=green_paradise] [--weather=gusty] [--time-of-day=05:45]`. Headless trace: `"$(app/get-godot.sh)" --headless --path app -- --trace=tmp/t.csv --t=3 [--aircraft=<id>]`.
-- **Result:** a trace CSV with the initial state and every 240 Hz tick ([trace contract](../research/trace-integrity/C7-R2/README.md)).
-- **Gotchas:**
-  - Unknown flags are silently ignored and there is no `--help`: a typo still starts a flight. Confirm a flag exists with `rg -n '"<flag-name>"' app --glob '!captures/**'`.
-  - Any user argument selects the direct English route; `--vehicle=` must be the only argument; rotorcraft IDs route to the helicopter session.
-  - Documented flags: [TOOLS](../TOOLS.md#app-and-release-commands), [FIRST-LAUNCH](../FIRST-LAUNCH.md). Render/inspection flags used by captures: [graphics](graphics.md#single-capture).
-  - In-app keys: F2 overlay presets, F3 developer overlays, F5 reload aircraft data, F10/F11 flight log record/marker, F6–F9 glow engine controls, N rate toggle.
+Engine arguments precede `--`; OpenRC arguments follow it. No user arguments opens Home; any user argument selects the direct route without player preferences. Unknown app flags may be ignored, so verify names against current source and confirm the resulting configuration.
+
+```sh
+"$(app/get-godot.sh)" --path app -- --quick-flight --aircraft=jensen-das-ugly-stik-60 --start=airborne
+# Create a fresh output directory and replace <new-dir>; use an absolute trace path:
+"$(app/get-godot.sh)" --headless --path app -- --trace="$PWD/tmp/<new-dir>/flight.csv" --t=3
+```
+
+| Selection | Behavior / reference |
+| --- | --- |
+| `--quick-flight` | Club runway start and level trim at 50% throttle; gearless aircraft use hand launch. Without it, technical starts retain the reference trim. |
+| `--start=airborne` / `airborne_half_power` | Airborne start; the latter explicitly names the 50% operating point on any route. |
+| `--landscape=green_paradise` / `club_field` | Select landscape; Green paradise uses an airborne start. Unknown IDs are refused. [Landscape guide](../LANDSCAPES.md). |
+| `--battery=ideal`, `--rates=full`, `--hud=overlays` | Explicit technical selections; ideal battery applies to catalog entries with battery data. [Controls and modes](../FIRST-LAUNCH.md). |
+| `--weather=gusty` / `turbulent` / `hot-high` | [Wind](../research/wind-implementation/README.md) and [atmosphere](../research/atmosphere/M5-ATM-2/README.md) contracts. |
+| `--time-of-day=05:45 --date=2026-03-20` | Visual [time of day](../research/time-of-day-investigations/TOD-05/README.md), separate from physical weather. |
+
+Trace output includes initial state and fixed ticks; check identities, completion and expected duration with the relevant [physics trace validator](physics.md#headless-trace-checks). Rendered capture flags live in [graphics tools](graphics.md#single-capture). For input, recording and shortcuts, use [FIRST-LAUNCH](../FIRST-LAUNCH.md) or the [debug bridge](../../tools/debug/README.md), not a duplicated key list.
 
 ## Evidence summary
 
-- **Purpose:** check the integrity of a `tmp/godot-checks` collection and export JUnit.
-- **Command:** `python3 tools/godot/summarize.py tmp/godot-checks --junit tmp/results.xml`
-- **Result:** exit 0 pass · 1 failed or invalid invocation · 2 configuration error; prints `N invocations: P passed, F failed or invalid`.
+`python3 tools/godot/summarize.py tmp/godot-checks --junit tmp/<new-results>.xml` validates the checked-runner collection and writes one JUnit case per invocation. A failed or invalid invocation makes the summary fail; see [the runner contract](../../tools/godot/README.md#integration-and-verification-pt1h-r1).
 
 ## CI
 
-- **Purpose:** find why a GitHub Actions job failed.
-- **Command:** `gh run list --limit 5`, then `gh run view <id> --log-failed | rg -n 'FAIL|Godot check failed'`. Reproduce the Linux app job locally with `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app` (unverified on the dev VM).
-- **Result:** jobs `Godot app (units N)` map to `OPENRC_UNIT_SHARD=N`; `integration 0` to `OPENRC_TEST_PART=integration`.
-- **Gotchas:** a partition result is not a complete app result. Diagnostic artifacts are kept for seven days.
+Use `gh run list --limit 5`, then `gh run view <id> --log-failed`. App jobs map to the unit/integration partitions above; diagnostic artifacts are retained for seven days.
+
+The [workflow](../../.github/workflows/ci.yml) owns the dependency graph. Export depends on Linux/Windows ground-native builds and the Linux NK-3 build. Publication additionally waits for all app partitions, visuals and the frozen prototype job. A green export or a single app partition is not a green release.
 
 ## External tools
 
-| Tool | Status |
-| --- | --- |
-| CodeRabbit GitHub App | Configured by [`.coderabbit.yaml`](../../.coderabbit.yaml); [usage](../TOOLS.md#coderabbit-reviews). |
-| CodeRabbit CLI and agent skills | CLI 0.9.1 in `~/.local/bin` on the dev VM (2026-10-27); Claude Code plugin `coderabbit` at user scope; Codex skills in `.agents/skills/`. Each user signs in once; [setup](../TOOLS.md#local-cli-and-agents). |
-| codebase-memory-mcp | Not configured in this repository or on the dev VM; use `rg`. |
-| `gh`, `act`, `xvfb-run`, `rg`, Node 24 | Installed on the dev VM. Blender, FFmpeg and `just` are not. |
+Use codebase-memory-mcp for code discovery, following [AGENTS](../../AGENTS.md#discover-code); index the repository if needed and verify stored line ranges against current source. Use `rg` for literals, non-code files or insufficient graph results.
+
+[CodeRabbit setup](../TOOLS.md#coderabbit-reviews) owns hosted/CLI review instructions. Other tools and exact dependency versions belong to their own READMEs; availability in one developer's environment is not a repository guarantee.
 
 ## Known broken or stale tools
 
-Checked on the dev VM on 2026-10-22; recheck before relying on an entry. Report changes here; owners are the tracks
-in the [registry](../README.md#tracks-plans-and-step-ids).
+These are operational caveats, not a saved inventory of one machine. Recheck against current source when relevant; report fixes to the [owning track](../README.md#tracks-plans-and-step-ids).
 
-| Tool | Problem | Owner |
-| --- | --- | --- |
-| `research/validation/dashboard.py --check` | Exits 1: "dashboard is stale". Not run by CI. | VAL |
-| `research/flight-test/run.py --only` | Unknown test names are skipped without an error; the run then has an empty profile. | FT |
-| `tools/flight_log/flight_log.py` | Default `--godot` is the Windows `.exe`; on Linux always pass `--godot "$(app/get-godot.sh)"`. | FL |
-| `research/flight-test/{summarize,spin_state,polar_fit}.py`, `research/flight-dynamics/power-climb/fleet_neutral_point.py` | No argparse: `--help` crashes or runs the full job. | FT, D6e |
-| `research/aircraft-standardization/conformance.py` | Overwrites an existing `--out`. | AS |
-| `tools/audio/generate*.py`, audio importers | Require exactly `numpy==2.4.6` / `miniaudio`; no shared venv provides them (the visual venv has numpy 2.5.3). | AUD |
-| `app/tests/test_mass_trace_contract.py` | Passes, but no runner executes it. | FUEL |
-| `app/tests/capture_ground_terrain.gd` | Dead probe; writes to `.tools/gp-work/`. | GP |
-| `tools/night-lighting/build.py --check` | Never run by CI or `app/test.sh`. | FW |
+| Tool | Required care |
+| --- | --- |
+| `research/flight-test/run.py --only` | Unknown names can yield empty or partial results with exit zero. Verify the requested case set against [the card](../../research/flight-test/README.md). |
+| `research/flight-test/{summarize,spin_state,polar_fit}.py`, `research/flight-dynamics/power-climb/fleet_neutral_point.py` | Do not probe with `--help`: these entrypoints lack argparse and may treat it as input or execute the job. Read their source/guide first. |
+| `research/aircraft-standardization/conformance.py` | Can overwrite `--out`; use a fresh path. [Contract](physics.md#aircraft-conformance-and-unchanged-behavior). |
+| `research/validation/dashboard.py --check` | Recomputes a source-bound snapshot, including a Godot collector; stale results need investigation, not an automatic refresh. |
+| Audio generators/importers | Install each tool's requirements from [the audio guide](../../tools/audio/README.md); the visual environment is not interchangeable. |
+| `app/tests/test_mass_trace_contract.py`, `tools/night-lighting/build.py --check` | Run explicitly for their affected area; not covered by `app/test.sh` or `research/test-tools.sh`. |
+| `app/tests/capture_ground_terrain.gd` | Writes `res://../ground_terrain_probe.png` (repository root with `--path app`); prefer [current area checkers](graphics.md#area-capture-checkers) with explicit scratch outputs. |

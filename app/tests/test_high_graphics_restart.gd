@@ -129,8 +129,8 @@ func _run_restart_checks() -> void:
 
 func _check_restart_labels_and_capture(profile: String) -> void:
 	var is_high_active := profile == "standard"
-	var english_label := "Restart in Standard" if is_high_active else "Try High (restart)"
-	var spanish_label := "Reiniciar en Estándar" if is_high_active else "Probar Alta gama (reinicia)"
+	var english_label := "Restart in Standard" if is_high_active else "Enable High (restart)"
+	var spanish_label := "Reiniciar en Estándar" if is_high_active else "Activar Alta gama (reinicia)"
 	for language: String in ["en", "es"]:
 		TranslationServer.set_locale(language)
 		_settings._notification(NOTIFICATION_TRANSLATION_CHANGED)

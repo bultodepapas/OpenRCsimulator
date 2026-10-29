@@ -3,10 +3,11 @@
 Guide: tools/debug/README.md (the "I want to..." table). Task index for every other tool: docs/tools/README.md.
 
 Session
-  launch [--headless] [--resolution WxH] [--port N] [--app DIR] [--script-profile] [--verbose]
+  launch [--headless] [--resolution WxH] [--port N] [--app DIR | --exported] [--script-profile] [--verbose]
          [--profile DIR | --real-profile] [--import] [-- <app args>]
                                                             start the app; prints its port (isolated user:// profile);
                                                             --import first refreshes the import cache (new assets)
+                                                            --exported uses OPENRC_GODOT as the packaged debug executable
   status | ready [--timeout S] | stop [--force]            alive? / wait for it / quit it (prints crash + exit leaks)
   clean [--keep N]                                          delete old run folders (never a live session)
 Drive the app (any bridge command; `help` asks the app for its list)
@@ -240,6 +241,19 @@ def launch(argv: list[str]) -> int:
         split = argv.index("--")
         argv, app_args = argv[:split], argv[split + 1:]
     headless = "--headless" in argv
+    exported = "--exported" in argv
+    exported_exe = None
+    if exported:
+        if "--import" in argv:
+            raise ValueError("--import cannot be used with --exported")
+        if "--app" in argv:
+            raise ValueError("--app cannot be used with --exported; set OPENRC_GODOT to the exported executable")
+        override = os.environ.get("OPENRC_GODOT", "")
+        if not override.strip():
+            raise ValueError("--exported requires OPENRC_GODOT to name the exported executable")
+        exported_exe = Path(override).expanduser().resolve()
+        if not exported_exe.is_file():
+            raise ValueError(f"exported executable does not exist: {exported_exe}")
     # Rendered sessions open at 1920x1080, the primary display target (AGENTS.md); --resolution 1280x720 is faster.
     options = {"--out": None, "--timeout": "180", "--port": None, "--profile": None, "--resolution": "1920x1080",
                "--app": str(REPO / "app")}
@@ -259,8 +273,9 @@ def launch(argv: list[str]) -> int:
             suffix += 1
             out = RUNS / f"{stamp}-{chosen}-{suffix}"
     out.mkdir(parents=True, exist_ok=False)
-    # --app runs a candidate copy (it needs the import cache and the sibling folders, as app/ has them).
-    command = [godot(), "--path", str(Path(options["--app"]).resolve())]
+    # Exported templates can forbid --path; their executable locates its packaged resources itself.
+    # --app runs a source copy (it needs the import cache and sibling folders, as app/ has them).
+    command = [str(exported_exe)] if exported else [godot(), "--path", str(Path(options["--app"]).resolve())]
     if "--import" in argv:  # assets pulled since the last import load as "Unable to open file: …ctex"
         imported = subprocess.run([command[0], "--headless", "--path", command[2], "--audio-driver", "Dummy", "--import"],
                                   capture_output=True, text=True, timeout=1800)
@@ -325,6 +340,8 @@ def launch(argv: list[str]) -> int:
             kill_group(process.pid)  # never leave a 2-3 GB engine behind
             forget_session(chosen, process.pid)
             print(f"{error or 'interrupted'}; the launched app was stopped; see {out / 'engine.log'}", file=sys.stderr)
+            if exported:
+                print("exported bridge sessions require a debug template with the debug bridge enabled", file=sys.stderr)
             tail(out / "engine.log")
             return 2
     session["pid"] = ready["result"]["pid"]

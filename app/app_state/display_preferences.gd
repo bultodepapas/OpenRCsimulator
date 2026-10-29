@@ -14,11 +14,14 @@ const WINDOW_RESOLUTIONS: Array[String] = [
 const MAX_FPS_VALUES: Array[int] = [0, 30, 60, 90, 120, 144, 165, 240]
 const VSYNC_MODES: Array[String] = ["enabled", "disabled"]
 const MSAA_3D_VALUES: Array[int] = [0, 1, 2, 3]
+const NVIDIA_REFLEX_MODES: Array[String] = ["off", "on", "boost"]
 const RECONSTRUCTION_MODES: Array[String] = [
 	"native",
 	"fsr2_native", "fsr2_85", "fsr2_quality", "fsr2_balanced", "fsr2_performance",
 	"fsr3_native", "fsr3_85", "fsr3_quality", "fsr3_balanced", "fsr3_performance",
 	"dlss_native", "dlss_quality", "dlss_balanced", "dlss_performance",
+	"metalfx_spatial_85", "metalfx_spatial_quality",
+	"metalfx_temporal_native", "metalfx_temporal_85", "metalfx_temporal_quality",
 ]
 # VQ-06b: mirrors render/scene_detail.gd LEVELS (test_scene_detail.gd keeps them equal).
 const SCENE_DETAILS: Array[String] = ["auto", "low", "medium", "high", "extreme"]
@@ -32,6 +35,7 @@ const DEFAULTS := {
 	"vsync_mode": "enabled",
 	"msaa_3d": 2,
 	"reconstruction": "native",
+	"nvidia_reflex": "on",
 	"fsr2_sharpness": 0.9,
 	"scene_detail": "auto",
 	"birds": "normal",
@@ -59,7 +63,7 @@ const DEFAULTS := {
 const OPTIONAL_KEYS: Array[String] = [
 	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "reconstruction",
 	"camera_view", "camera_fov", "camera_auto_zoom", "camera_chase_distance", "camera_sensitivity", "camera_invert_y",
-	"fsr2_sharpness",
+	"fsr2_sharpness", "nvidia_reflex",
 	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
 	"aircraft_lighting_quality", "aircraft_lighting_reduced_flashes", "aircraft_lighting_show_vfx",
 ] # schema-1 extensions; older files and callers keep defaults
@@ -137,6 +141,7 @@ static func load_from(file_path: String) -> Dictionary:
 	raw.vsync_mode = cfg.get_value("graphics", "vsync_mode", DEFAULTS.vsync_mode)
 	raw.msaa_3d = cfg.get_value("graphics", "msaa_3d", DEFAULTS.msaa_3d)
 	raw.reconstruction = cfg.get_value("graphics", "reconstruction", DEFAULTS.reconstruction)
+	raw.nvidia_reflex = cfg.get_value("graphics", "nvidia_reflex", DEFAULTS.nvidia_reflex)
 	raw.fsr2_sharpness = cfg.get_value("graphics", "fsr2_sharpness", DEFAULTS.fsr2_sharpness)
 	raw.scene_detail = cfg.get_value("graphics", "scene_detail", DEFAULTS.scene_detail)
 	raw.birds = cfg.get_value("graphics", "birds", DEFAULTS.birds)
@@ -198,6 +203,7 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 	cfg.set_value("graphics", "vsync_mode", checked.config.vsync_mode)
 	cfg.set_value("graphics", "msaa_3d", checked.config.msaa_3d)
 	cfg.set_value("graphics", "reconstruction", checked.config.reconstruction)
+	cfg.set_value("graphics", "nvidia_reflex", checked.config.nvidia_reflex)
 	cfg.set_value("graphics", "fsr2_sharpness", checked.config.fsr2_sharpness)
 	cfg.set_value("graphics", "scene_detail", checked.config.scene_detail)
 	cfg.set_value("graphics", "birds", checked.config.birds)
@@ -238,6 +244,9 @@ static func validate(raw: Variant) -> Dictionary:
 	var reconstruction: Variant = raw.get("reconstruction", DEFAULTS.reconstruction)
 	if typeof(reconstruction) != TYPE_STRING or reconstruction not in RECONSTRUCTION_MODES:
 		errors.append("reconstruction must be a supported reconstruction mode")
+	var reflex: Variant = raw.get("nvidia_reflex", DEFAULTS.nvidia_reflex)
+	if typeof(reflex) != TYPE_STRING or reflex not in NVIDIA_REFLEX_MODES:
+		errors.append("nvidia_reflex must be off, on or boost")
 	var sharpness: Variant = raw.get("fsr2_sharpness", DEFAULTS.fsr2_sharpness)
 	if typeof(sharpness) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(sharpness)) \
 			or float(sharpness) < 0.0 or float(sharpness) > 1.0:
@@ -273,6 +282,7 @@ static func validate(raw: Variant) -> Dictionary:
 		"vsync_mode": vsync_mode,
 		"msaa_3d": msaa_3d,
 		"reconstruction": reconstruction,
+		"nvidia_reflex": reflex,
 		"fsr2_sharpness": float(sharpness),
 		"scene_detail": scene_detail,
 		"birds": birds,

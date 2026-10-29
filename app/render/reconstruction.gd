@@ -2,11 +2,15 @@
 extends RefCounted
 
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
+const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
+const MetalFX := preload("res://render/metalfx_policy.gd")
 const MODES: Array[String] = [
 	"native",
 	"fsr2_native", "fsr2_85", "fsr2_quality", "fsr2_balanced", "fsr2_performance",
 	"fsr3_native", "fsr3_85", "fsr3_quality", "fsr3_balanced", "fsr3_performance",
 	"dlss_native", "dlss_quality", "dlss_balanced", "dlss_performance",
+	"metalfx_spatial_85", "metalfx_spatial_quality",
+	"metalfx_temporal_native", "metalfx_temporal_85", "metalfx_temporal_quality",
 ]
 const MODE_PROVIDERS := {
 	"native": "native",
@@ -16,6 +20,9 @@ const MODE_PROVIDERS := {
 	"fsr3_balanced": "fsr3", "fsr3_performance": "fsr3",
 	"dlss_native": "dlss", "dlss_quality": "dlss", "dlss_balanced": "dlss",
 	"dlss_performance": "dlss",
+	"metalfx_spatial_85": "metalfx_spatial", "metalfx_spatial_quality": "metalfx_spatial",
+	"metalfx_temporal_native": "metalfx_temporal", "metalfx_temporal_85": "metalfx_temporal",
+	"metalfx_temporal_quality": "metalfx_temporal",
 }
 const SCALES := {
 	"native": 1.0,
@@ -25,6 +32,8 @@ const SCALES := {
 	"fsr3_balanced": 1.0 / 1.7, "fsr3_performance": 0.5,
 	"dlss_native": 1.0, "dlss_quality": 2.0 / 3.0, "dlss_balanced": 1.0 / 1.7,
 	"dlss_performance": 0.5,
+	"metalfx_spatial_85": 0.85, "metalfx_spatial_quality": 2.0 / 3.0,
+	"metalfx_temporal_native": 1.0, "metalfx_temporal_85": 0.85, "metalfx_temporal_quality": 2.0 / 3.0,
 }
 const DEFAULT_SHARPNESS := 0.9 # User strength; matches Godot's default fsr_sharpness=0.2.
 const ENVIRONMENT_KEY := "OPENRC_RECONSTRUCTION"
@@ -35,11 +44,18 @@ const DLSS_CAPABILITY := "STREAMLINE_CAPABILITY_DLSS"
 const POLICY_META := &"openrc_reconstruction"
 const CONFIG_META := &"openrc_reconstruction_config"
 const RUNTIME_FAILURE_META := &"openrc_reconstruction_runtime_failure"
+const HISTORY_RESET_META := &"openrc_reconstruction_history_reset"
+const HISTORY_RESET_METHOD := &"viewport_request_temporal_history_reset"
 
 
-## High is the gate for every optional reconstruction provider.
+## MetalFX trials are method/device gated independently of the High effects profile.
 static func available() -> bool:
-	return HighGraphics.active()
+	return options_available(runtime_capabilities())
+
+
+static func options_available(capabilities: Dictionary) -> bool:
+	return bool(capabilities.get("high", false)) or bool(capabilities.get("metalfx_spatial", false)) \
+		or bool(capabilities.get("metalfx_temporal", false))
 
 
 ## Runtime gates are provider-specific. No GPU name or vendor heuristic is used.
@@ -51,6 +67,9 @@ static func runtime_capabilities() -> Dictionary:
 	var fsr3_backend_method := RenderingServer.has_method(FSR3_METHOD)
 	var fsr3_backend := fsr3_backend_method and bool(RenderingServer.call(FSR3_METHOD))
 	var fsr2_reason := "engine_mode_missing" if high and fsr2_mode == null else ""
+	var fsr2_failed := bool(_backend_status("fsr2").get("backend_failed", false))
+	if high and fsr2_mode != null and fsr2_failed:
+		fsr2_reason = "fsr2_runtime_failure"
 	var fsr3_reason := ""
 	if high:
 		if fsr3_mode == null:
@@ -65,9 +84,9 @@ static func runtime_capabilities() -> Dictionary:
 			dlss_reason = "engine_mode_missing"
 		else:
 			dlss_reason = _streamline_dlss_unavailable_reason()
-	return {
+	var result := {
 		"high": high,
-		"fsr2": high and fsr2_mode != null,
+		"fsr2": high and fsr2_mode != null and not fsr2_failed,
 		"fsr3": high and fsr3_mode != null and fsr3_backend,
 		"dlss": high and dlss_mode != null and dlss_reason.is_empty(),
 		"fsr2_reason": fsr2_reason,
@@ -77,6 +96,8 @@ static func runtime_capabilities() -> Dictionary:
 		"fsr3_mode": fsr3_mode,
 		"dlss_mode": dlss_mode,
 	}
+	result.merge(MetalFX.runtime_capabilities())
+	return result
 
 
 ## Preserve old `resolve(mode, high_available)` callers while allowing deterministic
@@ -85,26 +106,28 @@ static func resolve(requested: String, high_available_or_capabilities: Variant =
 		capabilities: Dictionary = {}) -> Dictionary:
 	var gates := _resolve_capabilities(high_available_or_capabilities, capabilities)
 	var status := option_status(requested, gates)
-	var effective := requested if bool(status.available) else "native"
-	var provider := str(MODE_PROVIDERS.get(effective, "native"))
+	var selected := requested if bool(status.available) else "native"
+	var provider := str(MODE_PROVIDERS.get(selected, "native"))
 	var mode_id: Variant = _scaling_mode_id(provider, gates)
-	var fallback_reason := str(status.reason) if effective != requested else ""
+	var fallback_reason := str(status.reason) if selected != requested else ""
 	if provider != "native" and mode_id == null:
-		effective = "native"
+		selected = "native"
 		provider = "native"
 		mode_id = Viewport.SCALING_3D_MODE_BILINEAR
 		fallback_reason = "engine_mode_missing"
 	return {
 		"requested": requested,
 		"requested_provider": str(MODE_PROVIDERS.get(requested, "unknown")),
-		"effective": effective,
+		"selected": selected,
+		"effective": "unknown" if provider in MetalFX.PROVIDERS else selected,
 		"provider": provider,
-		"effective_provider": provider,
+		"effective_provider": "unknown" if provider in MetalFX.PROVIDERS else provider,
+		"execution_status": "unverified_trial" if provider in MetalFX.PROVIDERS else "policy_selected",
 		"provider_available": bool(status.available),
-		"fallback": effective != requested,
+		"fallback": selected != requested,
 		"fallback_reason": fallback_reason,
-		"scale": float(SCALES.get(effective, 1.0)),
-		"temporal": provider != "native",
+		"scale": float(SCALES.get(selected, 1.0)),
+		"temporal": provider not in ["native", "metalfx_spatial"],
 		"scaling_3d_mode": mode_id,
 	}
 
@@ -117,12 +140,14 @@ static func option_status(mode: String, capabilities: Dictionary = {}) -> Dictio
 	var provider := str(MODE_PROVIDERS[mode])
 	if provider == "native":
 		return {"available": true, "reason": ""}
-	if not bool(gates.get("high", false)):
+	if provider not in MetalFX.PROVIDERS and not bool(gates.get("high", false)):
 		return {"available": false, "reason": "high_profile_inactive"}
 	if not bool(gates.get(provider, false)):
 		return {"available": false, "reason": str(gates.get(provider + "_reason", provider + "_unavailable"))}
 	if _scaling_mode_id(provider, gates) == null:
 		return {"available": false, "reason": "engine_mode_missing"}
+	if provider in MetalFX.PROVIDERS and not MetalFX.scale_available(provider, float(SCALES[mode]), gates):
+		return {"available": false, "reason": "metalfx_scale_out_of_range"}
 	return {"available": true, "reason": ""}
 
 
@@ -131,7 +156,8 @@ static func startup_config() -> Dictionary:
 	var strength := OS.get_environment(SHARPNESS_ENVIRONMENT_KEY).strip_edges()
 	return {"reconstruction": OS.get_environment(ENVIRONMENT_KEY).strip_edges().to_lower()
 		if OS.has_environment(ENVIRONMENT_KEY) else "native",
-		"fsr2_sharpness": sharpness_strength(strength.to_float() if strength.is_valid_float() else DEFAULT_SHARPNESS)}
+		"fsr2_sharpness": sharpness_strength(strength.to_float() if strength.is_valid_float() else DEFAULT_SHARPNESS),
+		"nvidia_reflex": NvidiaReflex.startup_mode()}
 
 
 static func sharpness_strength(value: Variant) -> float:
@@ -144,7 +170,7 @@ static func sharpness_strength(value: Variant) -> float:
 static func capture_settle_frames(mode: int, scale: float, capabilities: Dictionary = {}) -> int:
 	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities
 	var temporal_mode := mode == Viewport.SCALING_3D_MODE_FSR2
-	for key: String in ["fsr3_mode", "dlss_mode"]:
+	for key: String in ["fsr3_mode", "dlss_mode", "metalfx_temporal_mode"]:
 		var candidate: Variant = gates.get(key)
 		if typeof(candidate) == TYPE_INT and mode == int(candidate):
 			temporal_mode = true
@@ -154,9 +180,23 @@ static func capture_settle_frames(mode: int, scale: float, capabilities: Diction
 	return clampi(ceili(8.0 / (input_scale * input_scale)) * 2, 16, 64)
 
 
+## Keep the reset failure visible to both the viewport and its settings controls.
+static func capabilities_for_viewport(viewport: Viewport, capabilities: Dictionary = {}) -> Dictionary:
+	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
+	var failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {}) if is_instance_valid(viewport) else {}
+	# A temporal discontinuity without an engine reset must not resurrect stale history
+	# on a settings reapply. Selecting another provider clears this per-viewport latch.
+	if typeof(failure) == TYPE_DICTIONARY and failure.get("provider", "") == "metalfx_temporal" \
+			and failure.get("reason", "") == "history_reset_unavailable":
+		gates["metalfx_temporal"] = false
+		gates["metalfx_temporal_reason"] = "metalfx_history_reset_unavailable"
+	return gates
+
+
 static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
 	var previous_failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {})
-	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
+	NvidiaReflex.apply(str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE)))
+	var gates := capabilities_for_viewport(viewport, capabilities)
 	var requested := str(config.get("reconstruction", "native"))
 	var policy := resolve(requested, gates)
 	viewport.scaling_3d_mode = int(policy.scaling_3d_mode)
@@ -186,7 +226,7 @@ static func guard_runtime_failure(viewport: Viewport, backend_status: Dictionary
 	if typeof(policy) != TYPE_DICTIONARY:
 		return false
 	var provider := str(policy.get("provider", ""))
-	if provider not in ["fsr3", "dlss"]:
+	if provider not in ["fsr2", "fsr3", "dlss"]:
 		return false
 	var status := backend_status.duplicate(true)
 	if status.is_empty():
@@ -211,11 +251,57 @@ static func guard_runtime_failure(viewport: Viewport, backend_status: Dictionary
 	return true
 
 
+## Discontinuities invalidate history; ordinary camera movement must not call this.
+## Submission is not SDK acknowledgement. The native backend reports successful resets.
+static func request_history_reset(viewport: Viewport, reason: String, backend: Object = null) -> bool:
+	if not is_instance_valid(viewport):
+		return false
+	var previous: Dictionary = viewport.get_meta(HISTORY_RESET_META, {})
+	var receipt := {"notifications": int(previous.get("notifications", 0)) + 1,
+		"submitted": int(previous.get("submitted", 0)), "last_reason": reason.left(80)}
+	var target: Object = RenderingServer if backend == null else backend
+	var policy: Dictionary = viewport.get_meta(POLICY_META, {})
+	var supported := is_instance_valid(target) and target.has_method(HISTORY_RESET_METHOD)
+	var provider := str(policy.get("provider", "native"))
+	# Older custom engines wire this API only to DLSS. FSR needs explicit support.
+	var provider_supported := provider == "dlss"
+	if supported and target.has_method("get_temporal_history_reset_providers"):
+		var providers: Variant = target.call("get_temporal_history_reset_providers")
+		provider_supported = (typeof(providers) == TYPE_PACKED_STRING_ARRAY or typeof(providers) == TYPE_ARRAY) and provider in providers
+	# Even a provider-list advertisement only acknowledges API submission, not
+	# that MetalFX reset its history. Until a real acknowledgement contract is
+	# available, fall back on every MetalFX Temporal discontinuity.
+	var submit: bool = supported and provider_supported and provider != "metalfx_temporal" \
+		and viewport.get_viewport_rid().is_valid()
+	if submit:
+		target.call(HISTORY_RESET_METHOD, viewport.get_viewport_rid())
+		receipt.submitted += 1
+	viewport.set_meta(HISTORY_RESET_META, receipt)
+	if provider == "metalfx_temporal" and not submit:
+		# Stock Godot has no public camera-cut reset acknowledgement. Keep a trial
+		# safe across cuts instead of reporting notification as successful SDK reset.
+		var saved: Variant = viewport.get_meta(CONFIG_META, {})
+		if typeof(saved) == TYPE_DICTIONARY and not saved.is_empty():
+			viewport.set_meta(RUNTIME_FAILURE_META, {"provider": provider, "reason": "history_reset_unavailable"})
+			apply(viewport, saved)
+	return submit
+
+
 static func describe(viewport: Viewport) -> Dictionary:
 	var policy: Dictionary = viewport.get_meta(POLICY_META, resolve("native", runtime_capabilities())).duplicate(true)
+	var config: Variant = viewport.get_meta(CONFIG_META, {})
+	var reflex_request := NvidiaReflex.DEFAULT_MODE
+	if typeof(config) == TYPE_DICTIONARY:
+		reflex_request = str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE))
+	policy["nvidia_reflex"] = NvidiaReflex.describe(reflex_request)
+	policy["history_reset"] = viewport.get_meta(HISTORY_RESET_META, {"notifications": 0, "submitted": 0, "last_reason": ""}).duplicate(true)
+	policy.history_reset["api_available"] = RenderingServer.has_method(HISTORY_RESET_METHOD)
 	policy["scaling_3d_mode"] = viewport.scaling_3d_mode
 	policy["scale"] = viewport.scaling_3d_scale
 	policy["msaa_3d"] = viewport.msaa_3d
+	if policy.get("requested_provider", "") in MetalFX.PROVIDERS:
+		policy["viewport_property_scope"] = "requested inputs; internal engine fallback and SDK execution are not observed"
+		policy["metalfx_capabilities"] = MetalFX.runtime_capabilities()
 	policy["fsr_sharpness"] = viewport.fsr_sharpness
 	policy.merge(_sharpening_receipt(str(policy.provider), viewport.fsr_sharpness), true)
 	policy["texture_mipmap_bias"] = viewport.texture_mipmap_bias
@@ -251,17 +337,18 @@ static func _scaling_mode_id(provider: String, capabilities: Dictionary) -> Vari
 		"fsr2": return capabilities.get("fsr2_mode", Viewport.SCALING_3D_MODE_FSR2)
 		"fsr3": return capabilities.get("fsr3_mode")
 		"dlss": return capabilities.get("dlss_mode")
+		"metalfx_spatial", "metalfx_temporal": return capabilities.get(provider + "_mode")
 	return null
 
 
 static func _engine_sharpness_value(provider: String, user_strength: float) -> float:
-	if provider == "dlss":
+	if provider == "dlss" or provider in MetalFX.PROVIDERS:
 		return 0.0
 	return 2.0 * (1.0 - user_strength)
 
 
 static func _sharpening_receipt(provider: String, engine_value: float) -> Dictionary:
-	var strength := 0.0 if provider == "dlss" else 1.0 - engine_value / 2.0
+	var strength := 0.0 if provider == "dlss" or provider in MetalFX.PROVIDERS else 1.0 - engine_value / 2.0
 	return {"sharpening_strength": strength,
 		"sharpening_active": provider in ["fsr2", "fsr3"] and engine_value < 2.0}
 
@@ -295,7 +382,7 @@ static func _streamline_dlss_unavailable_reason() -> String:
 
 
 static func _backend_status(provider: String) -> Dictionary:
-	var backend: Object = RenderingServer if provider == "fsr3" else null
+	var backend: Object = RenderingServer if provider in ["fsr2", "fsr3"] else null
 	if provider == "dlss" and Engine.has_singleton(DLSS_SINGLETON):
 		backend = Engine.get_singleton(DLSS_SINGLETON)
 	var status_method := "get_" + provider + "_status"

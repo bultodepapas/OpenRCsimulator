@@ -1,0 +1,93 @@
+{
+  "format": "openrc-skin-kits-v1",
+  "models": {
+    "skywalker-x8": {
+      "display_name": "X8 Wing",
+      "stock_sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+      "source_path": "res://assets/aircraft/skywalker-x8/skywalker_x8.glb",
+      "kit": "res://assets/skin-kit/skywalker-x8.zip",
+      "material_names": ["x8_foam_interior", "x8_orange", "x8_black", "x8_glass", "x8_battery", "x8_electronics", "x8_livery", "x8_metal", "x8_motor_bell"],
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["x8_livery"], "base_colors": {"x8_livery": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
+      ]
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "display_name": "Vantage Jet",
+      "stock_sha256": "803d293d597d88d94cebe1c191e6453e5d108aca4d6e5d5eaabfa0a387cf0f36",
+      "source_path": "res://assets/aircraft/avanti-s-a200/avanti_s.glb",
+      "kit": "res://assets/skin-kit/sebart-avanti-s-a200-p100rx.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["paint_wing", "paint_doors_ala"], "base_colors": {"paint_wing": [1, 1, 1, 1], "paint_doors_ala": [1, 1, 1, 1]}, "width": 2048, "height": 2048},
+        {"image": "Paint-02.png", "uv": "UV-02.png", "materials": ["paint_fuselage"], "base_colors": {"paint_fuselage": [1, 1, 1, 1]}, "width": 1024, "height": 2048},
+        {"image": "Paint-03.png", "uv": "UV-03.png", "materials": ["paint_stab"], "base_colors": {"paint_stab": [1, 1, 1, 1]}, "width": 2048, "height": 2048},
+        {"image": "Paint-04.png", "uv": "UV-04.png", "materials": ["paint_fin"], "base_colors": {"paint_fin": [1, 1, 1, 1]}, "width": 2048, "height": 1024}
+      ]
+    },
+    "f4u-corsair-250": {
+      "display_name": "F4U Corsair",
+      "stock_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+      "source_path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+      "kit": "res://assets/skin-kit/f4u-corsair-250.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["paint_wing", "paint_body", "paint_tail", "paint_wing_tip"], "base_colors": {"paint_wing": [1, 1, 1, 1], "paint_body": [1, 1, 1, 1], "paint_tail": [1, 1, 1, 1], "paint_wing_tip": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
+      ]
+    },
+    "hx-700": {
+      "display_name": "HX-700",
+      "stock_sha256": "88424432c8cbfbc7c7278aa9c72e2188e138aa3551c2c1cf815494db281ce764",
+      "source_path": "res://assets/aircraft/hx-700/hx-700.glb",
+      "kit": "res://assets/skin-kit/hx-700.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["Pintura_Carenado"], "base_colors": {"Pintura_Carenado": [1, 1, 1, 1]}, "width": 2048, "height": 1024},
+        {"image": "Paint-02.png", "uv": "UV-02.png", "materials": ["Pintura_Botalon"], "base_colors": {"Pintura_Botalon": [1, 1, 1, 1]}, "width": 4096, "height": 440, "source_width": 8192, "source_height": 880}
+      ]
+    },
+    "jensen-das-ugly-stik-60": {
+      "display_name": "Ugly Stik",
+      "adapter": "procedural_skin",
+      "stock_sha256": "2ef3a67e9501f9f85c80f795303ac8cd49f3449563dfbc83e351e7e2dfc0d94b",
+      "source_sha256": "e90976fb26835cbb2b913989618ae703552db2a0aa1d5360be6a7185a08daec4",
+      "source_path": "res://data/aircraft_models/jensen-das-ugly-stik-60.json",
+      "kit": "res://assets/skin-kit/jensen-das-ugly-stik-60.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["classic-covering-v4"], "base_colors": {"classic-covering-v4": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
+      ]
+    },
+    "gp-extra-300s-60": {
+      "display_name": "Extra 300S",
+      "adapter": "procedural_skin",
+      "template_kind": "neutral_six_view",
+      "stock_sha256": "7140c5cd31758a880f955bb13016a300847aee448e24692d2dd1b0cea00478d6",
+      "source_sha256": "e31f6b8397622b263c1c6aa4b41387709578b0d111df073a2d6d5a21a3e3d065",
+      "source_path": "res://data/aircraft_models/gp-extra-300s-60.json",
+      "kit": "res://assets/skin-kit/gp-extra-300s-60.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["openrc-paint"], "base_colors": {"openrc-paint": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
+      ]
+    },
+    "p51d-mustang-120": {
+      "display_name": "P-51D Mustang",
+      "adapter": "procedural_skin",
+      "template_kind": "neutral_six_view",
+      "stock_sha256": "8919ba9af951f0028d0ae124f701384775f16450cacda37e14316696e587c696",
+      "source_sha256": "f38b3d0ba75b389665ba1cff3dedc82a4aebcb1193081d2b959820a5431de23f",
+      "source_path": "res://data/aircraft_models/p51d-mustang-120.json",
+      "kit": "res://assets/skin-kit/p51d-mustang-120.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["openrc-paint"], "base_colors": {"openrc-paint": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
+      ]
+    },
+    "turbo-lumber-evolution": {
+      "display_name": "Turbo Lumber Evolution",
+      "adapter": "procedural_skin",
+      "template_kind": "neutral_six_view",
+      "stock_sha256": "be64bbfddee9db0681fa3d8d35ee9494ef19b8a737557d338f3ef357b5f0c39f",
+      "source_sha256": "47a48e03b366deec2a128c2107d00748ebf47d121b00a36df2ad01bf1d08a48b",
+      "source_path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
+      "kit": "res://assets/skin-kit/turbo-lumber-evolution.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["openrc-paint-white", "openrc-paint-red", "openrc-paint-black"], "base_colors": {"openrc-paint-white": [1, 1, 1, 1], "openrc-paint-red": [1, 1, 1, 1], "openrc-paint-black": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
+      ]
+    }
+  }
+}

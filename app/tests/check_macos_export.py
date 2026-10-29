@@ -1,6 +1,6 @@
 """PT1d: checks a macOS export zip made on Linux: the app bundle's executable is present and executable (0755), it is a
 universal binary (x86_64 + arm64), and every slice carries an ad-hoc code signature (Apple Silicon refuses unsigned
-native code). Usage: python3 check_macos_export.py "dist/macos/OpenRC Simulator.zip"
+native code). Usage: python3 check_macos_export.py "<export-directory>/macos/OpenRC Simulator.zip"
 """
 import struct
 import sys

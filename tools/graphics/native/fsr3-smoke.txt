@@ -1,7 +1,11 @@
 # Run through debugctl on a ready experimental Forward+ flight with FSR3 available.
 # Inspect Vulkan validation output separately: debug bridge errors do not include all layer messages.
+# Pin the primary output; fullscreen uses the monitor's resolution, which may be 4K.
 pause
-window mode=fullscreen
+window mode=windowed
+window size=1920x1080
+wait frames=4
+assert expr="app.get_viewport().get_visible_rect().size == Vector2(1920,1080)" message="Primary output is exactly 1920x1080"
 assert expr="ResourceLoader.load('res://render/reconstruction.gd').runtime_capabilities().fsr3" message="FSR3 backend available"
 eval expr="app.set_meta('fsr3_smoke_start', RenderingServer.get_fsr3_status().dispatches_succeeded)"
 eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'fsr3_native','fsr2_sharpness':0.35,'msaa_3d':2})"
@@ -33,7 +37,10 @@ window mode=windowed
 window size=1600x900
 wait frames=64
 assert expr="not RenderingServer.get_fsr3_status().backend_failed" message="FSR3 resized without backend failure"
-window mode=fullscreen
+window mode=windowed
+window size=1920x1080
+wait frames=4
+assert expr="app.get_viewport().get_visible_rect().size == Vector2(1920,1080)" message="Primary output is exactly 1920x1080"
 wait frames=64
 eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'native','msaa_3d':2})"
 wait frames=32

@@ -171,7 +171,8 @@ func _run() -> void:
 			lighting.selection = "disabled"
 		_lighting_profile_data = lighting.duplicate(true)
 		if _lighting_flight == "workshop":
-			var prepared := freeze_lighting_trial(_main.aircraft_id, lighting, _effective_lighting_smoke_mode())
+			var prepared := freeze_lighting_trial(_main.aircraft_id, lighting, _effective_lighting_smoke_mode(),
+				float(_options.get("workshop-scale", 1.0)))
 			if not prepared.get("ok", false):
 				push_error("Lighting capture trial refused: " + str(prepared.get("errors", [])))
 				_main.free()
@@ -205,7 +206,7 @@ func _run() -> void:
 		_main.user_args.append("--alt=" + str(_options.alt))
 	if _options.has("sky"):
 		_main.user_args.append("--sky=" + str(_options.sky))
-	for key: String in ["wind-speed", "wind-from", "gust-speed", "gust-up", "gust-duration", "gust-period", "gust-delay", "time_of_day", "landscape"]:
+	for key: String in ["wind-speed", "wind-from", "gust-speed", "gust-up", "gust-duration", "gust-period", "gust-delay", "time_of_day", "landscape", "livery"]:
 		if _options.has(key):
 			_main.user_args.append("--%s=%s" % [key, str(_options[key])])
 	if _realtime:
@@ -237,6 +238,7 @@ func _run() -> void:
 			_failure = str(_main.session.start_error)
 		await _abort_live_capture("Production flight startup failed: " + _failure, 1)
 		return
+	_detach_desk_controller(_main.session)
 	if _lighting_flight == "normal":
 		var normal_flight: Dictionary = _validate_normal_flight()
 		if not bool(normal_flight.get("ok", false)):
@@ -1016,8 +1018,20 @@ static func validate_lighting_profile_options(options: Dictionary) -> Dictionary
 	return {"ok": true, "error": ""}
 
 
+## TRA-09: a gamepad plugged into the filming machine must not arm, hold or drive the director's flight.
+static func _detach_desk_controller(session: Node) -> void:
+	if Input.joy_connection_changed.is_connected(session._on_joy_connection_changed):
+		Input.joy_connection_changed.disconnect(session._on_joy_connection_changed)
+	if session.radio.connected:
+		session.radio.disconnect_device()
+		print("FLIGHT_CAPTURE_CONTROLLER_DETACHED")
+	session.set_process_input(false)
+
+
 ## Uses stock authored outlets through the ordinary frozen Workshop profile, without a second smoke system.
-static func freeze_lighting_trial(aircraft_id: String, lighting: Dictionary, smoke_mode := "off") -> Dictionary:
+## TRA-09: workshop_scale != 1 freezes the ordinary Workshop virtual-size recipe (10–500 %).
+static func freeze_lighting_trial(aircraft_id: String, lighting: Dictionary, smoke_mode := "off",
+		workshop_scale := 1.0) -> Dictionary:
 	if smoke_mode not in ["off", "stock"]:
 		return {"ok": false, "errors": ["--lighting-smoke must be off or stock."]}
 	var described := Customization.describe(aircraft_id)
@@ -1027,7 +1041,8 @@ static func freeze_lighting_trial(aircraft_id: String, lighting: Dictionary, smo
 	profile.lighting = lighting.duplicate(true)
 	var payload := {"base_id": aircraft_id,
 		"base_bytes": FileAccess.get_file_as_bytes(Catalog.entry(aircraft_id).data),
-		"recipe": {}, "presentation_profile": profile}
+		"recipe": {} if is_equal_approx(workshop_scale, 1.0) else {"scale": workshop_scale,
+			"size_model": "virtual_similarity_v1"}, "presentation_profile": profile}
 	var frozen := Trial.freeze(payload)
 	if not bool(frozen.get("ok", false)):
 		return frozen

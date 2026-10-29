@@ -350,6 +350,7 @@ var _accident_reload_pending := false
 var _accident_checkpoint_restoring := false
 var _accident_paired_history := false
 var _crash_director: CrashDirector
+var _history_crash_camera_active := false
 var _people_crash_clock_s := 0.0 # SC-HUM-05 presentation time since the player's crash
 ## VQ-01c-R1: the windsock/people and profile-smoke observers advance once per rendered frame.
 const PresentationCadence := preload("res://render/presentation_cadence.gd")
@@ -1193,8 +1194,12 @@ func _prepare_flight() -> void:
 		_frametimes_path = str(frametime_options.path)
 		_frametimes_warmup_s = float(frametime_options.warmup_s)
 		_frametimes_duration = float(frametime_options.sample_s)
+		if not str(frametime_options.get("stream_path", "")).is_empty() and FileAccess.file_exists(_frametimes_path):
+			push_error("Streaming frame-time report already exists: " + _frametimes_path)
+			get_tree().quit(1)
+			return
 		_frametime_samples = FrameSamples.new()
-		if not _frametime_samples.configure(_frametimes_warmup_s, _frametimes_duration, int(frametime_options.max_frames)):
+		if not _frametime_samples.configure(_frametimes_warmup_s, _frametimes_duration, int(frametime_options.max_frames), str(frametime_options.get("stream_path", ""))):
 			push_error("Invalid frame-time options: " + _frametime_samples.failure)
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
@@ -1365,9 +1370,11 @@ func _process(delta: float) -> void:
 			"effects_allowed": not sim.paused and session.crash.is_empty() and sim.fault_reason.is_empty(),
 		})
 	_advance_people_after_crash(dt)
+	var crash_camera_active := false
 	if _crash_director != null:
 		_crash_director.update(dt)
-		if _crash_director.active and is_nan(_look.x):
+		crash_camera_active = _crash_director.active and is_nan(_look.x)
+		if crash_camera_active:
 			# CAM-27: the pilot keeps the director's view of the impact; the other views follow the wreck through the rig.
 			if _rig.view == "pilot":
 				_crash_director.aim(_camera, false)
@@ -1375,6 +1382,9 @@ func _process(delta: float) -> void:
 				_rig.focus(_crash_director.focus_point(), _ground_height, _camera_clearance)
 		if _crash_director.active and diagnostics_visible:
 			_panel.text = _crash_director.description()
+	if crash_camera_active != _history_crash_camera_active:
+		Reconstruction.request_history_reset(get_viewport(), "camera_crash_focus_changed")
+		_history_crash_camera_active = crash_camera_active
 	var performance_visible: bool = _overlays == null or (_overlays.visible and _overlays.frames.performance.visible)
 	_update_hud(diagnostics_visible or _hud.text.is_empty(), performance_visible)
 	if _overlays != null:
@@ -2719,6 +2729,14 @@ func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
 
 
 func _exit_tree() -> void:
+	if _frametimes_active and _frametime_samples != null:
+		_frametime_samples.abort("flight closed before collection completed")
+		var interrupted: Dictionary = _frametime_samples.report()
+		interrupted["interruption"] = "flight closed; session endpoint metadata unavailable"
+		var written: Dictionary = FrameSamples.write_json(_frametimes_path, interrupted)
+		if not written.ok:
+			push_error("Cannot write interrupted frame-time report: " + error_string(int(written.error)))
+		_frametimes_active = false
 	if is_instance_valid(_preparing_session):
 		_preparing_session.free()
 		_preparing_session = null
@@ -2744,6 +2762,7 @@ func _exit_tree() -> void:
 
 ## One file never mixes two flights.
 func _on_resetting() -> void:
+	_history_crash_camera_active = false # rig.reset() below already invalidates this flight's history.
 	if _overlays != null:
 		_overlays.reset_flight()
 	if _companions_initialized and (companions != null or companion_config.enabled) and not _companions_reset_pending:
@@ -3238,6 +3257,8 @@ func _log_frame_time(delta: float) -> void:
 
 
 func _finish_frame_time(exit_code: int = OK) -> void:
+	if exit_code != OK and not _frametime_samples.finished:
+		_frametime_samples.abort("frame collection interrupted by external owner")
 	var sim: Node = session.sim
 	var report: Dictionary = _frametime_samples.report()
 	if _frame_diagnostics != null:
@@ -3250,6 +3271,14 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 	var sample_metrics: Dictionary = report.raw_metrics
 	var sample_times: PackedFloat64Array = sample_metrics.get("sim_time_s", PackedFloat64Array())
 	var sample_ticks: PackedFloat64Array = sample_metrics.get("sim_tick", PackedFloat64Array())
+	if report.get("format", "") == FrameSamples.STREAM_FORMAT:
+		var endpoints: Dictionary = report.get("sample_endpoints", {})
+		var first: Dictionary = endpoints.get("first", {})
+		var last: Dictionary = endpoints.get("last", {})
+		if first.has("sim_time_s") and last.has("sim_time_s"):
+			sample_times = PackedFloat64Array([first.sim_time_s, last.sim_time_s])
+		if first.has("sim_tick") and last.has("sim_tick"):
+			sample_ticks = PackedFloat64Array([first.sim_tick, last.sim_tick])
 	var sample_simulation: Dictionary = {
 		scope = "first sampled frame end through last sampled frame end; excludes the first sampled interval",
 		start_time_s = sample_times[0] if not sample_times.is_empty() else sim_end_s,
@@ -3278,6 +3307,7 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		preset = "high-experimental" if Atmosphere.HighGraphics.active() else "current-default",
 		graphics_profile = Atmosphere.HighGraphics.describe(),
 		backend = RenderingServer.get_current_rendering_method(),
+		rendering_driver = RenderingServer.get_current_rendering_driver_name(),
 		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa,
 			use_hdr_2d = get_viewport().use_hdr_2d,
 			scaling_3d_scale = get_viewport().scaling_3d_scale, scaling_3d_mode = get_viewport().scaling_3d_mode,
@@ -3299,6 +3329,8 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		api = RenderingServer.get_video_adapter_api_version(),
 		godot = Engine.get_version_info().string,
 		os = OS.get_name(),
+		os_version = OS.get_version(),
+		architecture = Engine.get_architecture_name(),
 		pid = OS.get_process_id(),
 		window = "%dx%d" % [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y],
 		vsync = DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED,

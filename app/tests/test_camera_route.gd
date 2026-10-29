@@ -7,6 +7,7 @@ extends SceneTree
 
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const Reconstruction := preload("res://render/reconstruction.gd")
 
 class TestFlight extends "res://main.gd":
 	var options: Dictionary = {}
@@ -186,15 +187,35 @@ func _main_wiring() -> void:
 	var anchor: Vector3 = flight._airplane.root.global_position
 	director.point = anchor + Vector3(9, -0.5, 6)
 	_key(flight, KEY_5)
+	var viewport := flight.get_viewport()
+	var history_before := int(_history(viewport).notifications)
 	_frames(flight, 2)
+	var crash_history := _history(viewport)
+	check("crash focus entry requests history reset once", int(crash_history.notifications) == history_before + 1
+		and crash_history.last_reason == "camera_crash_focus_changed")
+	_frames(flight, 1)
+	check("continued crash focus does not repeat the reset", int(_history(viewport).notifications) == history_before + 1)
 	var forward: Vector3 = -flight._camera.global_basis.z
 	var to_focus: Vector3 = (director.point - flight._camera.global_position).normalized()
 	check("crash aftermath: the orbit looks at the director's focus point", forward.dot(to_focus) > 0.9999, "%.6f" % forward.dot(to_focus))
 	check("crash aftermath: the orbit leaves the pilot aim alone", not director.aimed)
 	_key(flight, KEY_1)
+	var switched_history := int(_history(viewport).notifications)
 	_frames(flight, 1)
 	check("crash aftermath: the pilot view keeps the director's aim", director.aimed)
+	check("view switch is not followed by another crash-focus reset", int(_history(viewport).notifications) == switched_history)
+	director.active = false
+	_frames(flight, 1)
+	var returned_history := _history(viewport)
+	check("leaving crash focus requests one reset", int(returned_history.notifications) == switched_history + 1
+		and returned_history.last_reason == "camera_crash_focus_changed")
+	_frames(flight, 1)
+	check("normal view does not repeat the exit reset", int(_history(viewport).notifications) == switched_history + 1)
 	flight._crash_director = previous
 	director.free()
 	flight.free()
 	await process_frame
+
+
+func _history(viewport: Viewport) -> Dictionary:
+	return viewport.get_meta(Reconstruction.HISTORY_RESET_META, {"notifications": 0, "last_reason": ""})

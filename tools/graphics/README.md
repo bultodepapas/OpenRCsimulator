@@ -1,18 +1,21 @@
-# Experimental High graphics
+# Graphics modes
 
 VQ-07 uses the existing Godot renderer and accepted assets. Standard remains the
-default. High is an opt-in, temporary Forward+ trial, not a qualified hardware
-preset. Current evidence and remaining gates: [VQ-07 trial](../../docs/research/visual-quality-implementation/VQ-07/high-trial-2026-10-21/README.md).
+default in the official-engine build. The [Windows NVIDIA package](native/README.md)
+defaults to High and exposes DLSS, DLAA and Reflex in Settings. High is not a
+hardware performance guarantee. Current evidence and remaining gates: [VQ-07 trial](../../docs/research/visual-quality-implementation/VQ-07/high-trial-2026-10-21/README.md).
 Follow-up: [field-cue colors and Windows menu restart](../../docs/research/visual-quality-implementation/VQ-07/high-followup-2026-10-21/README.md).
 
-From Home, open **Settings → Graphics → Try High (restart)**. Keep pending display
+From Home, open **Settings → Graphics → Enable High (restart)**. Keep pending display
 changes first. **Restart in Standard** returns to Compatibility. Closing the game
-and launching normally also returns to Standard; no renderer preference, retry
+and launching normally returns to the package default; no renderer preference, retry
 marker or automatic restart is saved. Restart is unavailable during a flight or
 Workshop session. If the engine falls back, Settings reports Standard.
 
 High enables short-range SSAO, four blended directional-shadow cascades in an
-8192-pixel atlas, solar-angle PCSS, multi-bounce ambient occlusion, and sky reflections during flowing time of day.
+8192-pixel atlas, solar-angle PCSS, and sky reflections during flowing time of day.
+The official beta1 engine additionally supports multi-bounce ambient occlusion;
+the pinned NVIDIA fork does not implement that newer setting.
 The existing exposure, haze, aircraft, scenery population and simulation are
 retained. High defaults to native rendering; FSR2 is now an explicit optional
 choice (below). It does not enable motion blur, SSR, full GI or volumetric fog.
@@ -34,12 +37,12 @@ removed the leak in matched custom Windows editor controls and preserved six Hig
 1080p captures exactly; it is not the shipping replacement. Full lifecycle and
 platform qualification remain open. Do not suppress the pinned engine's warning.
 
-## Native DLSS and FSR 3.1 experiment
+## NVIDIA DLSS, DLAA, Reflex and FSR 3.1
 
 The [native integration guide](native/README.md) owns the separate Windows/Vulkan
 engine build, SDK pins and runtime requirements. The menu discovers each provider
 through engine capabilities; stock Godot keeps those entries unavailable and uses
-Native for unsupported saved requests. This separate experimental build does not
+Native for unsupported saved requests. This Windows package does not
 replace the standard official Godot 4.8-beta1 pin.
 
 ## Explicit startup
@@ -112,10 +115,114 @@ Use `--godot <path>` or `GODOT` for an explicit engine. Engine arguments precede
 desktop limits can reduce the actual drawable size. Read runtime metadata before
 calling a measurement 1080p. The launcher does not force a platform rendering driver.
 
+## Isolated Mac renderer trials (DT-MAC)
+
+The research launcher separates renderer selection from the High effects preset.
+It is preparation for native Mac testing; Windows headless checks do not establish
+Metal execution, image quality or performance. The
+[Apple Silicon plan](../../docs/plans/apple-silicon-performance.md) owns acceptance.
+
+Prepare one new copy per renderer from the same frozen checkout. Each copy has a
+UUID project/user-data identity, its own import cache, Standard effects and startup
+multi-bounce occlusion disabled. The helper verifies copied file hashes and writes
+`research-preparation.json` only after successful validation. It never replaces an
+existing destination. Failed preparations retain their partial files for inspection.
+Sibling `assets/` is a link to the source, not an immutable copy: freeze that source
+and retain its identity throughout the campaign. Windows requires permission to
+create directory symlinks; Mac preparation remains to be exercised natively.
+
+On a native ARM64 Mac, from the repository root:
+
+```sh
+godot_exe="$(app/get-godot.sh)"
+python3 tools/graphics/prepare_research.py --dest tmp/mac-renderer-trials/compat
+python3 tools/graphics/prepare_research.py --dest tmp/mac-renderer-trials/mobile
+python3 tools/graphics/prepare_research.py --dest tmp/mac-renderer-trials/forward
+
+# Repeat import for each prepared app before its first launch.
+python3 tools/godot/run_checked.py --timeout 600 --label mac-mobile-import -- \
+  "$godot_exe" --headless --path tmp/mac-renderer-trials/mobile/app \
+  --audio-driver Dummy --import
+
+python3 tools/graphics/launch.py --godot "$godot_exe" \
+  --research-project tmp/mac-renderer-trials/mobile/app \
+  --research-method mobile --research-driver metal --resolution 1920x1080 \
+  -- --quick-flight --scene_detail=medium
+```
+
+Use `gl_compatibility` / `opengl3` with the `compat/app` copy, and
+`forward_plus` / `metal` with `forward/app`. Mobile/Forward+ `vulkan` is an optional
+separate MoltenVK control, not native Metal. The launcher rejects incompatible
+pairs and duplicate/contradictory renderer or project switches. `--dry-run` prints
+the arguments and overrides without launching. Research mode requires an editor
+and prepared app copy; it does not modify the production renderer default or
+provide packaged-release qualification.
+
+`--research-reconstruction native` is the default and clears inherited MetalFX
+trial selection. Ordinary research comparisons also explicitly disable contact
+shadows and planar reflections. This is not a complete lighting/workload snapshot:
+use the same declared `OPENRC_*` environment, landscape, aircraft, scenery tier,
+wind, time and observer settings in every case. Bare Forward+ launches outside this
+research route still select the existing High profile.
+The example explicitly pins Medium scenery so adapter-name-based Auto selection
+cannot change the workload between drivers; this is a comparison control, not a
+qualified Mac preset.
+
+Runtime graphics receipts distinguish requested and effective driver/method,
+project identity, effects and multi-bounce setting. Verify those receipts and
+actual rendering dimensions before comparison. A 1920×1080 window request or
+viewport size alone does not prove the Retina drawable's pixel size. Test 1080p
+first, higher resolutions next, and 720p only as the final compatibility case.
+Use the [streaming collector](../../research/performance/README.md) for long runs;
+headless or scripted motion cannot qualify active native flight.
+
+### Explicit MetalFX experiment
+
+Add one of these research switches to the command above:
+
+| Switch value | Required method | Nominal 3D input scale |
+| --- | --- | --- |
+| `metalfx_spatial_85` | Mobile or Forward+ | 0.85 |
+| `metalfx_spatial_quality` | Mobile or Forward+ | 2/3 |
+| `metalfx_temporal_native` | Forward+ | 1.0 |
+| `metalfx_temporal_85` | Forward+ | 0.85 |
+| `metalfx_temporal_quality` | Forward+ | 2/3 |
+
+For example, `--research-reconstruction metalfx_spatial_85` explicitly enables the
+trial in that child process. Runtime admission additionally requires the Metal
+driver, exposed engine enum, a RenderingDevice and the provider's support flag.
+Temporal scales must be within the device-reported range. Names are application
+trial choices, not Apple's quality presets. No GPU-name whitelist is used.
+
+The existing Settings picker includes these choices when the explicitly enabled
+trial supports them. Direct technical launches use the command selection;
+Home uses that isolated project's saved preferences. Spatial preserves saved
+MSAA; Temporal owns antialiasing, and Native restores MSAA. FSR sharpening is
+inactive for either MetalFX provider and its saved value is preserved.
+
+Godot viewport properties describe the requested inputs, not the executed scaler.
+MetalFX receipts therefore mark execution unverified and effective reconstruction
+unconfirmed until native evidence can establish it. The UI must not present a
+successful MetalFX pass from property readback alone. Native GPU capture and moving
+aircraft, foliage, propeller, smoke and disocclusion checks remain required.
+
+The pinned stock engine does not expose an acknowledged MetalFX history-reset
+contract. A temporal camera discontinuity therefore latches Native fallback,
+including startup with a non-pilot view that requests a reset. Select Native before
+retrying the experiment. Method presence or a reset submission alone is not proof
+the SDK cleared its history. Spatial is a separate explicit choice, not an automatic
+substitute. Camera/aircraft changes, resize, Retina/fullscreen transitions, lifecycle
+leaks and normal-flight motion must pass native validation before adoption.
+
+The pinned Godot source uses its MTL3 command backend. These options do not implement
+Metal 4 command submission, frame interpolation, denoising or neural shaders; those
+remain the separate, evidence-gated engine work packages in the plan.
+
 ## Focused verification
 
 ```powershell
 python -m unittest tools.graphics.test_launch -v
+python -m unittest tools.graphics.test_prepare_research -v
 & .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --script res://tests/test_high_graphics_profile.gd
 & .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --script res://tests/test_high_graphics_restart.gd
 ```

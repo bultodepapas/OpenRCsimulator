@@ -15,6 +15,7 @@ import threading
 import unittest
 from unittest.mock import patch
 from pathlib import Path
+from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import debugctl  # noqa: E402
@@ -116,6 +117,109 @@ class DebugctlTests(unittest.TestCase):
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
             status = debugctl.main(list(argv))
         return status, out.getvalue(), err.getvalue()
+
+    def test_exported_launch_uses_packaged_executable_without_project_path(self) -> None:
+        exe = Path(self.tmp.name) / "packaged app.exe"
+        exe.touch()
+        out = Path(self.tmp.name) / "exported-run"
+        os.environ["OPENRC_GODOT"] = str(exe)
+        process = SimpleNamespace(pid=12345)
+        with patch.object(debugctl, "reserve_port", return_value=43210) as reserve, \
+                patch.object(debugctl.subprocess, "run") as run, \
+                patch.object(debugctl.subprocess, "Popen", return_value=process) as popen, \
+                patch.object(debugctl, "wait_ready", return_value={"result": {"pid": 12346}}) as ready, \
+                patch.object(debugctl.secrets, "token_hex", return_value="session-secret"):
+            status, output, err = self.run_cli("launch", "--exported", "--headless", "--port", "43210",
+                                                "--out", str(out), "--", "--quick-flight", "--app")
+        self.assertEqual((status, err), (0, ""))
+        reserve.assert_called_once_with(43210)
+        run.assert_not_called()
+        command = popen.call_args.args[0]
+        self.assertEqual(command, [str(exe.resolve()), "--headless", "--audio-driver", "Dummy",
+                                   "--", "--quick-flight", "--app"])
+        self.assertNotIn("--path", command[:command.index("--")])
+        kwargs = popen.call_args.kwargs
+        self.assertEqual(kwargs["cwd"], debugctl.REPO)
+        self.assertTrue(kwargs["start_new_session"])
+        env = kwargs["env"]
+        self.assertEqual((env["OPENRC_DEBUG_BRIDGE"], env["OPENRC_DEBUG_TOKEN"]), ("43210", "session-secret"))
+        self.assertEqual(env["OPENRC_DEBUG_LOG"], str(out / "log.jsonl"))
+        self.assertEqual(env["OPENRC_DEBUG_OUT"], str(out))
+        self.assertEqual(env["APPDATA"], str(out / "profile"))
+        self.assertEqual(env["XDG_DATA_HOME"], str(out / "profile"))
+        ready.assert_called_once_with(180.0, process, 43210, out / "engine.log")
+        self.assertEqual(json.loads(output)["pid"], 12346)
+        self.assertEqual(json.loads((out / "launch.json").read_text())["command"], command)
+        self.assertEqual(debugctl.session_for(43210)["token"], "session-secret")
+
+    def test_source_launch_keeps_project_path_and_import(self) -> None:
+        os.environ["OPENRC_GODOT"] = "source-godot"
+        process = SimpleNamespace(pid=12345)
+        source_copy = Path(self.tmp.name) / "source copy"
+        for extra, expected_project, imported in (
+                ([], debugctl.REPO / "app", False),
+                (["--app", str(source_copy), "--import"], source_copy, True)):
+            with self.subTest(imported=imported):
+                out = Path(self.tmp.name) / f"source-run-{imported}"
+                with patch.object(debugctl, "reserve_port", return_value=43210), \
+                        patch.object(debugctl.subprocess, "run", return_value=SimpleNamespace(returncode=0)) as run, \
+                        patch.object(debugctl.subprocess, "Popen", return_value=process) as popen, \
+                        patch.object(debugctl, "wait_ready", return_value={"result": {"pid": 12346}}):
+                    status, _, err = self.run_cli("launch", "--headless", "--out", str(out), *extra,
+                                                  "--", "--quick-flight")
+                self.assertEqual((status, err), (0, ""))
+                project = str(expected_project.resolve())
+                self.assertEqual(popen.call_args.args[0], ["source-godot", "--path", project, "--headless",
+                                                          "--audio-driver", "Dummy", "--", "--quick-flight"])
+                if imported:
+                    self.assertEqual(run.call_args.args[0], ["source-godot", "--headless", "--path", project,
+                                                             "--audio-driver", "Dummy", "--import"])
+                else:
+                    run.assert_not_called()
+
+    def test_exported_launch_rejects_invalid_options_before_claiming_port(self) -> None:
+        exe = Path(self.tmp.name) / "packaged.exe"
+        exe.touch()
+        for override, args, message in (
+                (None, [], "requires OPENRC_GODOT"),
+                ("  ", [], "requires OPENRC_GODOT"),
+                (str(exe.parent / "missing.exe"), [], "does not exist"),
+                (str(exe.parent), [], "does not exist"),
+                (str(exe), ["--import"], "--import cannot be used"),
+                (str(exe), ["--app", "app"], "--app cannot be used")):
+            with self.subTest(override=override, args=args):
+                if override is None:
+                    os.environ.pop("OPENRC_GODOT", None)
+                else:
+                    os.environ["OPENRC_GODOT"] = override
+                with patch.object(debugctl, "reserve_port") as reserve, \
+                        patch.object(debugctl.subprocess, "run") as run, \
+                        patch.object(debugctl.subprocess, "Popen") as popen:
+                    status, _, err = self.run_cli("launch", "--exported", "--headless", *args)
+                self.assertEqual(status, 2)
+                self.assertIn(message, err)
+                reserve.assert_not_called()
+                run.assert_not_called()
+                popen.assert_not_called()
+                self.assertFalse(debugctl.SESSIONS.exists())
+
+    def test_failed_exported_launch_stops_only_its_own_process(self) -> None:
+        exe = Path(self.tmp.name) / "packaged.exe"
+        exe.touch()
+        os.environ["OPENRC_GODOT"] = str(exe)
+        out = Path(self.tmp.name) / "failed-run"
+        process = SimpleNamespace(pid=12345)
+        with patch.object(debugctl, "reserve_port", return_value=43210), \
+                patch.object(debugctl.subprocess, "Popen", return_value=process), \
+                patch.object(debugctl, "wait_ready", side_effect=RuntimeError("bridge unavailable")), \
+                patch.object(debugctl, "kill_group") as kill:
+            status, _, err = self.run_cli("launch", "--exported", "--headless", "--out", str(out))
+        self.assertEqual(status, 2)
+        self.assertIn("bridge unavailable", err)
+        self.assertIn("require a debug template", err)
+        kill.assert_called_once_with(12345)
+        self.assertFalse((debugctl.SESSIONS / "43210.json").exists())
+        self.assertFalse(debugctl.CURRENT.exists())
 
     def test_key_values_are_json_when_possible(self) -> None:
         status, out, _ = self.run_cli("sticks", "roll=0.4", "release=true", "text=Fly", 'expr=flight.session.sim.tick > 3')

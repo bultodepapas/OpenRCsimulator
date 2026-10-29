@@ -52,6 +52,13 @@ func start(viewport: Viewport) -> void:
 	_metadata["native_display"] = not _headless
 	_metadata["display_server"] = display_server
 	_metadata["os_name"] = OS.get_name()
+	_metadata["os_version"] = OS.get_version()
+	_metadata["architecture"] = Engine.get_architecture_name()
+	_metadata["vsync_mode"] = DisplayServer.window_get_vsync_mode()
+	_metadata["max_fps"] = Engine.max_fps
+	# A Metal API string or macOS version does not prove MTL3/MTL4 command submission.
+	_metadata["metal_command_backend"] = "not_observed"
+	_metadata["presentation_timing"] = "not_collected; viewport timers and process intervals are not presentation timestamps"
 	_metadata["cpu_model"] = OS.get_processor_name()
 	_metadata["cpu_logical_thread_count"] = OS.get_processor_count()
 	_metadata["adapter_name"] = RenderingServer.get_video_adapter_name()
@@ -60,6 +67,8 @@ func start(viewport: Viewport) -> void:
 	_metadata["rendering_method"] = RenderingServer.get_current_rendering_method()
 	_metadata["rendering_driver"] = RenderingServer.get_current_rendering_driver_name()
 	if is_instance_valid(viewport):
+		_metadata["viewport_size"] = [viewport.get_visible_rect().size.x, viewport.get_visible_rect().size.y]
+		_metadata["viewport_size_scope"] = "viewport coordinates; native drawable pixels require platform verification"
 		_metadata["reconstruction_at_start"] = Reconstruction.describe(viewport)
 	var unavailable_reason: String = _timing_unavailable_reason(display_server, _metadata["os_name"], _metadata["rendering_method"])
 	if not unavailable_reason.is_empty():

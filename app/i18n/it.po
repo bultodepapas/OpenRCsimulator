@@ -6746,18 +6746,8 @@ msgstr "Output: %d × %d · VSync: %s"
 msgid "The driver or desktop compositor may override VSync."
 msgstr "Il driver o il compositore del desktop potrebbero ignorare VSync."
 
-msgid "Try High (restart)"
-msgstr "Prova Alta (riavvia)"
-
 msgid "Restart in Standard"
 msgstr "Riavvia in modalità Standard"
-
-msgid ""
-"High is a temporary experiment. Keep your changes before restarting. A "
-"normal launch returns to Standard."
-msgstr ""
-"Alta è una prova temporanea. Mantieni le modifiche prima di riavviare. Un "
-"normale avvio tornerà alla modalità Standard."
 
 msgid ""
 "Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ "
@@ -6768,9 +6758,6 @@ msgstr ""
 
 msgid "Graphics mode: %s"
 msgstr "Modalità grafica: %s"
-
-msgid "High (experimental)"
-msgstr "Alta (sperimentale)"
 
 msgid "Standard"
 msgstr "Standard"
@@ -7151,9 +7138,6 @@ msgstr "FSR3 · Bilanciato"
 
 msgid "FSR3 · Performance"
 msgstr "FSR3 · Prestazioni"
-
-msgid "DLSS · Native AA"
-msgstr "DLSS · Native AA"
 
 msgid "DLSS · Quality"
 msgstr "DLSS · Qualità"
@@ -9072,3 +9056,104 @@ msgstr "Nessun tipo di avaria attivato è disponibile per questo aereo. Attivane
 
 msgid "This aircraft has no rudder, so rudder failures cannot occur."
 msgstr "Questo aereo non ha timone, quindi non possono verificarsi avarie del timone."
+
+# DT-MAC: opt-in MetalFX trials.
+msgid "MetalFX Spatial · 85%"
+msgstr "MetalFX spaziale · 85%"
+
+msgid "MetalFX Spatial · Quality"
+msgstr "MetalFX spaziale · Qualità"
+
+msgid "MetalFX Temporal · Native AA"
+msgstr "MetalFX temporale · AA nativo"
+
+msgid "MetalFX Temporal · 85%"
+msgstr "MetalFX temporale · 85%"
+
+msgid "MetalFX Temporal · Quality"
+msgstr "MetalFX temporale · Qualità"
+
+msgid "MetalFX is an experimental Mac option. Compare distant aircraft detail in motion."
+msgstr "MetalFX è un’opzione sperimentale per Mac. Confronta i dettagli degli aerei lontani in movimento."
+
+msgid "MetalFX Temporal returned to Native after a camera change. Select Native before retrying."
+msgstr "MetalFX temporale è tornato a Nativo dopo un cambio di telecamera. Seleziona Nativo prima di riprovare."
+
+msgid "This MetalFX input scale is unavailable on the current device."
+msgstr "Questa scala di ingresso MetalFX non è disponibile sul dispositivo attuale."
+
+msgid "MetalFX requires an explicitly enabled Metal trial on a supported Mac."
+msgstr "MetalFX richiede una prova Metal attivata esplicitamente su un Mac compatibile."
+
+msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
+msgstr "MetalFX non usa la nitidezza FSR. Il valore salvato viene conservato."
+
+# Complete existing graphics status messages used by the Mac trial UI.
+msgid "Enable High (restart)"
+msgstr "Attiva Alta (riavvio)"
+
+msgid "Keep your changes before restarting."
+msgstr "Mantieni le modifiche prima di riavviare."
+
+msgid "DLAA · Native AA"
+msgstr "DLAA · AA nativo"
+
+msgid "NVIDIA Reflex"
+msgstr "NVIDIA Reflex"
+
+msgid "Boost"
+msgstr "Boost"
+
+msgid "Unconfirmed"
+msgstr "Non confermato"
+
+msgid "Reflex: Requested %s → SDK accepted %s"
+msgstr "Reflex: Richiesto %s → Accettato dall’SDK %s"
+
+msgid "Reflex mode change is waiting for the next frame."
+msgstr "Il cambio di modalità Reflex attende il prossimo fotogramma."
+
+msgid "NVIDIA Reflex can reduce rendering latency on supported NVIDIA hardware. Boost also requests higher GPU clocks."
+msgstr "NVIDIA Reflex può ridurre la latenza di rendering su hardware NVIDIA supportato. Boost richiede anche frequenze GPU più elevate."
+
+msgid "NVIDIA Reflex is not included in this game build."
+msgstr "NVIDIA Reflex non è incluso in questa versione del gioco."
+
+msgid "NVIDIA Reflex could not continue in this graphics session. Your saved choice is kept."
+msgstr "NVIDIA Reflex non ha potuto continuare in questa sessione grafica. La scelta salvata viene conservata."
+
+msgid "NVIDIA Reflex status is unavailable. Your saved choice is kept."
+msgstr "Lo stato di NVIDIA Reflex non è disponibile. La scelta salvata viene conservata."
+
+msgid "The current graphics session does not report NVIDIA Reflex support. Your saved choice is kept."
+msgstr "La sessione grafica attuale non segnala il supporto per NVIDIA Reflex. La scelta salvata viene conservata."
+
+msgid "Flight companions: Unavailable"
+msgstr "Compagni di volo: Non disponibili"
+
+msgid "Flight companions are unavailable in this game build."
+msgstr "I compagni di volo non sono disponibili in questa versione del gioco."
+
+# Custom aircraft skin tools.
+msgid "Create a skin"
+msgstr "Crea una livrea"
+msgid "X8 · Blender → .orskin"
+msgstr "X8 · Blender → .orskin"
+msgid "Save the template, edit its paint images with an AI assistant or Blender, then load your .orskin file."
+msgstr "Salva il modello, modifica le sue immagini di pittura con un assistente IA o Blender, quindi carica il file .orskin."
+msgid "Save skin template…"
+msgstr "Salva modello livrea…"
+msgid "Open skin guide"
+msgstr "Apri guida alle livree"
+msgid "Load new skin…"
+msgstr "Carica nuova livrea…"
+msgid "Choose an original paint at any time to restore it."
+msgstr "Seleziona una livrea originale in qualsiasi momento per ripristinarla."
+msgid "Template saved. Extract the ZIP and open the skin guide."
+msgstr "Modello salvato. Estrai lo ZIP e apri la guida alle livree."
+msgid "Could not save the template. Check the destination and try again."
+msgstr "Impossibile salvare il modello. Controlla la destinazione e riprova."
+msgid "Skin could not be loaded:"
+msgstr "Impossibile caricare la livrea:"
+msgid "Could not open the guide. Use guide.html inside the template ZIP."
+msgstr "Impossibile aprire la guida. Usa guide.html nello ZIP del modello."

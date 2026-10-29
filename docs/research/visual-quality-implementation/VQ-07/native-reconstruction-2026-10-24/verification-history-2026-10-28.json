@@ -1,0 +1,913 @@
+{
+  "format": "openrc-nvidia-history-verification v1",
+  "date": "2026-10-28",
+  "track": "VQ-07",
+  "scope": "Per-viewport DLSS history generations and application camera/flight discontinuities; Windows Vulkan",
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "617.42",
+    "vulkan": "1.4.351",
+    "primary_output": [
+      1920,
+      1080
+    ]
+  },
+  "source_snapshot": {
+    "head": "b56eb5fa3e08ffdb53860a656be7e431b3e2b547",
+    "describe": "v0.1.8-527-gb56eb5fa3-dirty",
+    "dirty": true,
+    "source_files": 4858,
+    "note": "Frozen worktree b56eb5fa3 plus NVIDIA overlays excludes concurrent FSR SDK/history work. Solver source bytes restored to the original tree; only checkout line endings had differed."
+  },
+  "engine": {
+    "godot_commit": "135dff3887a3d2ccf45cafbd9bdffa7b718e1e76",
+    "engine_version": "4.8.dev.custom_build",
+    "editor_sha256": "f02da394f48b65a87b36c1e5c9057b7e065fd71cebcc568413bb741887dea2b7",
+    "template_sha256": "8cff584770f73709b56c388130e0866bbbd5531669405bc3bdcaeb44732988ee",
+    "sources": {
+      "fidelityfx-1.1.4.zip": "9a19e1f20bf269163f052186ed563209c5a1d0f7b1cf7e567e643dee6cc61179",
+      "godot-nvidia.zip": "8f9d9604270ccca92d14cc57afca142079476cbe050e0486a90b84da17ce907a",
+      "streamline-2.11.1.zip": "0c1d562e59557434cabfb8997157cb8c04fc7d23f077c8bdf5260975b73dfb89"
+    },
+    "integration": {
+      "buffer_write_sync.patch": "d4ed03e2f95878ca226ad2bd0c689ea2294622cb92c3dacc2080f970f812aea6",
+      "build_fidelityfx.py": "49e006c4bc989310f89a0f38fb4cf7b1b4763aa571f3076769abe695fe6d5785",
+      "dlss_failure_paths.patch": "bf81e9af717ceeffed761350c2a8fdf39d64ca37cd350482a8c543ec726f46ee",
+      "dlss_frame_lifecycle.patch": "b17141de6aeec722a6d6af3dabaa8d4619709a33167d93ff07e0949303eea2c5",
+      "dlss_history_reset.patch": "02ed268d7d5317bfa63f1208637d92f3b90133222a02214abfbd31ba1c8cc3b1",
+      "dlss_validation.patch": "9bc70d7b64586a5515ad04e8c2bef9215aafae49b648ee0096d7d4aef550e9ed",
+      "engine.patch": "e3d55e67e352b150da8dc1c3c3ea9caa0cbbabd2542e6f87bcd64285eb637620",
+      "fidelityfx.patch": "b8de4d034d67f681ba554a437ab69f7e95d2b1ac019315aac77555e6fd50d528",
+      "fsr3.cpp": "e5ec7a18ea9961c5f05a5b2f81517d46da731d2489f06a5234c8f81827a5347d",
+      "fsr3.h": "acb7566f1fc05b4b6bc3d83a482b962d23247a3936cdf4f095e96eb92dab9fd4",
+      "fsr3_prepare.glsl": "a6a62b2ba1d5981ed48b326fc55ad5015935b6903ebcd2526a65f5bfdc569035",
+      "load_token_lifetime.patch": "868c518c78d2afe86e4ea29e53ec0d13488fa1c62a0dbd9b079d7ad70e8260a1",
+      "reflection_atlas_lifetime.patch": "86ab87598f732271991332a2be5f4ba1f6e2987fbacc21030e39645ab9b3010f",
+      "reflex_lifecycle.patch": "1dff3a3e323eef0905fa1c501ab085f894a3e0682ca76b9f55035100d182c458",
+      "reflex_sync.patch": "3e0891bc6d0bdda63c77a06b1325bc2e576f702c72ba5bf5991e55b46d0fb5b4",
+      "shutdown_thread.patch": "a253b37bbbf88fed10bbbc6b33ce7823e52c9ffcff84fc5a973059148210d858",
+      "vulkan_validation.patch": "26f91e399e339b4c4725f925a7c779254c9720112acf4ed49e52652480475206"
+    }
+  },
+  "package": {
+    "path": "dist/windows-nvidia",
+    "managed_files": 33,
+    "verification": "product.verify_product passed before and after promotion using frozen integration inputs",
+    "sha256": {
+      "OpenRC Simulator.exe": "8cff584770f73709b56c388130e0866bbbd5531669405bc3bdcaeb44732988ee",
+      "OpenRC Simulator.pck": "73e53ea1e1b74b1304aa8102a31aa7d050c3f750c39c308eefc209c21314574d",
+      "openrc-editor-build.json": "1ee8da44fdda9660dd8e36d6d5b743467d706d592e09afddb71bc1e5069e4e4d",
+      "openrc-template_release-build.json": "537946b556cb7cca6a4503cf59003b78811b3cfd1b61a6db5c202e94d298b17a",
+      "snapshot-receipt.json": "7939abcd1b72a47adb09537f8646fb9128044749d403b68eb342a1bbca1f2d5e",
+      "package-receipt.json": "952cef68099e564839483cddcaeff135a7ebba7c91c76cdbc397ffd86224d898"
+    },
+    "previous_package": "tmp/nvidia-history-previous-package"
+  },
+  "checked_runs": [
+    {
+      "report": "tmp/godot-checks/dlss-history-vulkan-final-fnhyhlxd/report.json",
+      "label": "dlss-history-vulkan-final",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "reason": "passed",
+      "elapsed_seconds": 9.75,
+      "log_sha256": "e5c52d8091aeee559f3a3ad9ac19e670193367da4a29a0f3a465e08e064b6e1d",
+      "required_text": [
+        "DLSS_HISTORY|COMPLETE"
+      ],
+      "missing_required_text": [],
+      "command": [
+        ".tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/godot.windows.editor.x86_64.exe",
+        "--verbose",
+        "--path",
+        "tmp/nvidia-history-repro",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://dlss_history_reset.gd"
+      ]
+    },
+    {
+      "report": "tmp/godot-checks/dlss-history-separate-final-gh4dddkr/report.json",
+      "label": "dlss-history-separate-final",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 3
+      },
+      "reason": "passed",
+      "elapsed_seconds": 7.843,
+      "log_sha256": "1af52dd42417beb2921be258eaf43050d7139c4c7ab32ba291f2cd18910ac340",
+      "required_text": [
+        "DLSS_HISTORY|COMPLETE"
+      ],
+      "missing_required_text": [],
+      "command": [
+        ".tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/godot.windows.editor.x86_64.exe",
+        "--verbose",
+        "--render-thread",
+        "separate",
+        "--fixed-fps",
+        "60",
+        "--path",
+        "tmp/nvidia-history-repro",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://dlss_history_reset.gd"
+      ]
+    },
+    {
+      "report": "tmp/godot-checks/dlss-history-mode-regression-yf_bhnu4/report.json",
+      "label": "dlss-history-mode-regression",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 3
+      },
+      "reason": "passed",
+      "elapsed_seconds": 12.391,
+      "log_sha256": "849afce6f9963e773737fda370ce1b7d4418d8d454150b3e0e0b98f207ca956a",
+      "required_text": [
+        "MINIMAL_DLSS|RUN_COMPLETE|provider=dlss"
+      ],
+      "missing_required_text": [],
+      "command": [
+        ".tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/godot.windows.editor.x86_64.exe",
+        "--verbose",
+        "--render-thread",
+        "separate",
+        "--fixed-fps",
+        "60",
+        "--path",
+        "tmp/nvidia-history-repro",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://minimal.gd",
+        "--",
+        "--preset=K"
+      ]
+    },
+    {
+      "report": "tmp/godot-checks/nvidia-history-app-import-s4x7p5ho/report.json",
+      "label": "nvidia-history-app-import",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 8
+      },
+      "reason": "passed",
+      "elapsed_seconds": 334.968,
+      "log_sha256": "39ff0e0335882230b3555ed50accb5bff1549dccb62c5512f3840364032b117a",
+      "required_text": [],
+      "missing_required_text": [],
+      "command": [
+        ".tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/godot.windows.editor.x86_64.exe",
+        "--headless",
+        "--path",
+        "tmp/nvidia-history-worktree/tmp/nvidia-product/app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ]
+    },
+    {
+      "report": "tmp/godot-checks/nvidia-history-release-capture-rw2bl5tl/report.json",
+      "label": "nvidia-history-release-capture",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 48.704,
+      "log_sha256": "5a7eba83ec01c3d5000a79d7d636195de8134cf9ad2cf9e39f0dc743de086f23",
+      "required_text": [],
+      "missing_required_text": [],
+      "command": [
+        "tmp/nvidia-history-worktree/dist/windows-nvidia/OpenRC Simulator.exe",
+        "--windowed",
+        "--resolution",
+        "1920x1080",
+        "--borderless",
+        "--fixed-fps",
+        "60",
+        "--audio-driver",
+        "Dummy",
+        "--",
+        "--capture",
+        "--t=1.5",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/nvidia-history-release.png"
+      ]
+    },
+    {
+      "report": "tmp/godot-checks/nvidia-history-release-home-lezei5ta/report.json",
+      "label": "nvidia-history-release-home",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 53.016,
+      "log_sha256": "703a1ca108d01294abfad3be8c75b49d74a017fc94ba2c3a1ab22d601c790137",
+      "required_text": [],
+      "missing_required_text": [],
+      "command": [
+        "tmp/nvidia-history-worktree/dist/windows-nvidia/OpenRC Simulator.exe",
+        "--windowed",
+        "--resolution",
+        "1920x1080",
+        "--borderless",
+        "--audio-driver",
+        "Dummy"
+      ]
+    },
+    {
+      "report": "tmp/nvidia-history-final-checks/native-camera-history-w2cjgtz4/report.json",
+      "label": "native-camera-history",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 68.672,
+      "log_sha256": "3a4d1dcaec8287fd6c7e117ae1f6e51d8e259449676c0c7eb087162e8c90352f",
+      "required_text": [],
+      "missing_required_text": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\nvidia-history-worktree\\tmp\\nvidia-product\\app",
+        "--script",
+        "res://tests/test_camera_history.gd"
+      ]
+    },
+    {
+      "report": "tmp/nvidia-history-final-checks/native-camera-route-mimoimf5/report.json",
+      "label": "native-camera-route",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 70.563,
+      "log_sha256": "45832624e2cbc04c06cbda3341d36629882acceb27f2eb98c53e108626619f80",
+      "required_text": [],
+      "missing_required_text": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\nvidia-history-worktree\\tmp\\nvidia-product\\app",
+        "--script",
+        "res://tests/test_camera_route.gd"
+      ]
+    },
+    {
+      "report": "tmp/nvidia-history-final-checks/native-reconstruction-history-xhhk75r6/report.json",
+      "label": "native-reconstruction-history",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 67.532,
+      "log_sha256": "d9dcd610f81392be6e9acedc90777ff3ef9c1d9727d67fd1833328e4a91333db",
+      "required_text": [],
+      "missing_required_text": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\nvidia-history-worktree\\tmp\\nvidia-product\\app",
+        "--script",
+        "res://tests/test_reconstruction_history.gd"
+      ]
+    },
+    {
+      "report": "tmp/nvidia-history-final-checks/native-reconstruction-qokb60du/report.json",
+      "label": "native-reconstruction",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 69.985,
+      "log_sha256": "4b193b69c8d7c98c810c65e25c812983bb3b927035b871e41560eb4b88add1ad",
+      "required_text": [],
+      "missing_required_text": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\nvidia-history-worktree\\tmp\\nvidia-product\\app",
+        "--script",
+        "res://tests/test_reconstruction.gd"
+      ]
+    },
+    {
+      "report": "tmp/nvidia-history-worktree/tmp/godot-checks/nvidia-product/nvidia-product-export-tw5ro3df/report.json",
+      "label": "nvidia-product-export",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 77.454,
+      "log_sha256": "6e60673bf296a34fcbded665d6c794493acfcc4df39710ac1ea2c0c6b8378e11",
+      "required_text": [
+        "[ DONE ] savepack"
+      ],
+      "missing_required_text": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\nvidia-history-worktree\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\nvidia-history-worktree\\tmp\\nvidia-product\\app",
+        "--audio-driver",
+        "Dummy",
+        "--export-pack",
+        "Windows",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\nvidia-history-worktree\\dist\\nvidia-product-export-0azn98l7\\OpenRC Simulator.pck"
+      ]
+    },
+    {
+      "report": "tmp/nvidia-history-worktree/tmp/godot-checks/nvidia-product/nvidia-product-import-so15rl83/report.json",
+      "label": "nvidia-product-import",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 4
+      },
+      "reason": "passed",
+      "elapsed_seconds": 33.563,
+      "log_sha256": "978e8c873018fe948f02c2a2835f496b66dca45fecd1114530d83cf881d318e1",
+      "required_text": [],
+      "missing_required_text": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\nvidia-history-worktree\\.tools\\advanced-rendering\\godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76\\bin\\godot.windows.editor.x86_64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\nvidia-history-worktree\\tmp\\nvidia-product\\app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ]
+    }
+  ],
+  "offline_tests": {
+    "command": "python -m unittest tools.graphics.native.test_build tools.graphics.native.test_product -v",
+    "passed": 25,
+    "log": "tmp/nvidia-history-python-tests.txt",
+    "log_sha256": "8962ea0feb4004586fd4e5fbe590e12943a788d01ceb3c5e3494eaa0092d1c6a",
+    "scope": "Eight engine/build tests including compiled actual C++ generation state; seventeen packaging regressions"
+  },
+  "app_checks": {
+    "camera_route": 35,
+    "camera_history": 24,
+    "reconstruction_history": 16,
+    "reconstruction": 102,
+    "total": 177,
+    "conditional_counts": "Stock-only assertions are omitted when native Streamline/API exists"
+  },
+  "full_game": {
+    "session": "tmp/debug-bridge/20261028-174504-47961",
+    "fixture": "tmp/nvidia-history-flight.txt",
+    "fixture_sha256": "466964271a01b2b0aa0fc5536345d9b0ee64fc348fed1962d5439d08820e29d6",
+    "result": "tmp/nvidia-history-flight-result.txt",
+    "result_sha256": "496433eb44e49ed6ce50f3c08e38202a48580511eee888578a349ec7e4dfdb07",
+    "assertions_passed": true,
+    "scope": "Pilot-to-chase, steady paused rendering, flight restart and orbit; exactly one SDK reset per tested discontinuity",
+    "status": {
+      "requested": "dlss_quality",
+      "requested_provider": "dlss",
+      "effective": "dlss_quality",
+      "provider": "dlss",
+      "effective_provider": "dlss",
+      "provider_available": true,
+      "fallback": false,
+      "fallback_reason": "",
+      "scale": 0.6666666865348816,
+      "temporal": true,
+      "scaling_3d_mode": 6,
+      "nvidia_reflex": {
+        "requested": "on",
+        "available": true,
+        "accepted": "on",
+        "pending": false,
+        "reason": "",
+        "backend": {
+          "plugin_supported": true,
+          "plugin_ready": true,
+          "pcl_supported": true,
+          "pcl_ready": true,
+          "low_latency_available": true,
+          "available": true,
+          "backend_failed": false,
+          "requested_mode": 1,
+          "applied_mode": 1,
+          "state_result": 0,
+          "set_result": 0,
+          "sleep_result": 0,
+          "failure_result": 0,
+          "pcl_options_result": 0,
+          "pcl_marker_result": 0,
+          "pcl_failure_result": 0,
+          "state_calls": 517,
+          "set_calls": 1,
+          "sleep_calls": 517,
+          "sleep_successes": 517,
+          "sleep_frame_id": 518,
+          "pcl_marker_calls": 3101,
+          "pcl_marker_successes": 3101,
+          "simulation_start_successes": 517,
+          "render_start_successes": 517,
+          "render_end_successes": 517,
+          "present_start_successes": 517,
+          "present_end_successes": 517,
+          "expired_tokens": 0,
+          "simulation_frame_id": 518,
+          "render_frame_id": 517,
+          "present_frame_id": 517
+        }
+      },
+      "history_reset": {
+        "notifications": 4,
+        "submitted": 4,
+        "last_reason": "camera_view_changed",
+        "api_available": true
+      },
+      "msaa_3d": 0,
+      "fsr_sharpness": 0.0,
+      "sharpening_strength": 0.0,
+      "sharpening_active": false,
+      "texture_mipmap_bias": 0.0,
+      "backend": {
+        "available": true,
+        "backend_failed": false,
+        "dispatches": 508,
+        "contexts_created": 3,
+        "last_return_code": 0,
+        "last_frame_id": 517,
+        "reset_requests": 22,
+        "reset_dispatches": 5,
+        "last_reset_frame": 283,
+        "last_reset_viewport": 3749506449408,
+        "frame_based_tagging": true
+      },
+      "output_size": [
+        1920.0,
+        1080.0
+      ],
+      "nominal_3d_size": [
+        1280,
+        720
+      ]
+    },
+    "shutdown": {
+      "stopped": true,
+      "pid": 53568,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "log_inspection": {
+      "counts": {
+        "error": 0,
+        "warning": 45
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+          "context": [
+            "\tenv var 'VK_INSTANCE_LAYERS' defined and adding layers \"VK_LAYER_KHRONOS_validation\"",
+            "\tObjects - 1",
+            "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 1910283672496"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 9,
+          "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+          "context": [
+            "\tenv var 'VK_INSTANCE_LAYERS' defined and adding layers \"VK_LAYER_KHRONOS_validation\"",
+            "\tObjects - 1",
+            "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 1910283672496"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 303,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg remapped: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 308,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg' remapped 'res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb remapped: res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 343,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg' remapped 'res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 348,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 356,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg' remapped 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 361,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 369,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 379,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 384,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 392,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 397,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 408,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 413,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 482,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png' remapped 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png' at thread -1",
+            "Completed load for: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf' remapped 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf' at thread -1"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 496,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg' remapped 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg remapped: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 501,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg' remapped 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg remapped: res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 506,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg' remapped 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg' at thread -1",
+            "Shader cache miss for SceneForwardClusteredShaderRD/da3513a3e129e4af69345003ea79f3e630aa4e83e9792af6d5aa771243173832/a496140de1a54a7fd99443fd4b03919305b2f8ae"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 521,
+          "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+          "context": [
+            "   at: RendererRD::TextureStorage::_validate_texture_format (servers\\rendering\\renderer_rd\\storage_rd\\texture_storage.cpp:2895)",
+            "Completed load for: 'res://assets/landscape/windsock/Fabric001_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/windsock/Fabric001_1K-JPG_NormalGL.jpg' at thread -1",
+            "Loading resource: res://assets/landscape/windsock/Fabric001_1K-JPG_Roughness.jpg remapped: res://assets/landscape/windsock/Fabric001_1K-JPG_Roughness.jpg"
+          ]
+        }
+      ],
+      "missing_required_text": []
+    },
+    "log_sha256": "188f21ba05966d5574f59f9a284e6a6c7912c86e7d8d638ecf6020577f3edc01"
+  },
+  "release_capture": {
+    "manifest": "tmp/nvidia-history-release.json",
+    "manifest_sha256": "dad9db0b9cf040e0ff00cc9cd30914ae9613e6ae75e742da7afd410de7e81ef6",
+    "image": "tmp/nvidia-history-release.png",
+    "image_sha256": "32cda0380a58c6f9fb99c70b49b162651dd6c6c8a4d50bc6eb150314b006aed5",
+    "image_inspected": true,
+    "reconstruction": {
+      "backend": {
+        "available": true,
+        "backend_failed": false,
+        "contexts_created": 1,
+        "dispatches": 32,
+        "frame_based_tagging": true,
+        "last_frame_id": 36,
+        "last_reset_frame": 5,
+        "last_reset_viewport": 3715146711040,
+        "last_return_code": 0,
+        "reset_dispatches": 1,
+        "reset_requests": 19
+      },
+      "effective": "dlss_quality",
+      "effective_provider": "dlss",
+      "fallback": false,
+      "fallback_reason": "",
+      "fsr_sharpness": 0.0,
+      "history_reset": {
+        "api_available": true,
+        "last_reason": "camera_flight_reset",
+        "notifications": 1,
+        "submitted": 1
+      },
+      "msaa_3d": 0,
+      "nominal_3d_size": [
+        1280,
+        720
+      ],
+      "nvidia_reflex": {
+        "accepted": "on",
+        "available": true,
+        "backend": {
+          "applied_mode": 1,
+          "available": true,
+          "backend_failed": false,
+          "expired_tokens": 0,
+          "failure_result": 0,
+          "low_latency_available": true,
+          "pcl_failure_result": 0,
+          "pcl_marker_calls": 214,
+          "pcl_marker_result": 0,
+          "pcl_marker_successes": 214,
+          "pcl_options_result": 0,
+          "pcl_ready": true,
+          "pcl_supported": true,
+          "plugin_ready": true,
+          "plugin_supported": true,
+          "present_end_successes": 36,
+          "present_frame_id": 36,
+          "present_start_successes": 36,
+          "render_end_successes": 36,
+          "render_frame_id": 36,
+          "render_start_successes": 36,
+          "requested_mode": 1,
+          "set_calls": 1,
+          "set_result": 0,
+          "simulation_frame_id": 36,
+          "simulation_start_successes": 35,
+          "sleep_calls": 35,
+          "sleep_frame_id": 36,
+          "sleep_result": 0,
+          "sleep_successes": 35,
+          "state_calls": 36,
+          "state_result": 0
+        },
+        "pending": false,
+        "reason": "",
+        "requested": "on"
+      },
+      "output_size": [
+        1920.0,
+        1080.0
+      ],
+      "provider": "dlss",
+      "provider_available": true,
+      "requested": "dlss_quality",
+      "requested_provider": "dlss",
+      "scale": 0.666666686534882,
+      "scaling_3d_mode": 6,
+      "sharpening_active": false,
+      "sharpening_strength": 0.0,
+      "temporal": true,
+      "texture_mipmap_bias": 0.0
+    }
+  },
+  "excluded_attempts": [
+    {
+      "report": {
+        "report": "tmp/godot-checks/dlss-history-vulkan-vcnjwxl6/report.json",
+        "label": "dlss-history-vulkan",
+        "ok": false,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 1,
+          "warning": 2
+        },
+        "reason": "engine_error",
+        "elapsed_seconds": 12.125,
+        "log_sha256": "6c9b3654f041a00a5c2e7a1fe907f999bdcd6a595f6cbeb7a10742368df26c27",
+        "required_text": [
+          "DLSS_HISTORY|COMPLETE"
+        ],
+        "missing_required_text": [],
+        "command": [
+          ".tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/godot.windows.editor.x86_64.exe",
+          "--verbose",
+          "--path",
+          "tmp/nvidia-history-repro",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://dlss_history_reset.gd"
+        ]
+      },
+      "reason": "Fixture released old World3D before queued detach; retained until queue completion for final runs"
+    },
+    {
+      "report": {
+        "report": "tmp/godot-checks/nvidia-history-camera-unit-hn638op7/report.json",
+        "label": "nvidia-history-camera-unit",
+        "ok": false,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 11,
+          "warning": 0
+        },
+        "reason": "engine_error",
+        "elapsed_seconds": 17.828,
+        "log_sha256": "adecc9489adb580b3522310021b1f99c9c6a7ec99215e4d1e2e3b80db468923e",
+        "required_text": [
+          "camera history: 25 checks, 0 failed"
+        ],
+        "missing_required_text": [
+          "camera history: 25 checks, 0 failed"
+        ],
+        "command": [
+          ".tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/godot.windows.editor.x86_64.exe",
+          "--headless",
+          "--path",
+          "tmp/nvidia-history-worktree/tmp/nvidia-product/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_camera_history.gd"
+        ]
+      },
+      "reason": "Test started before asset import completed; final stable-snapshot checks passed"
+    },
+    {
+      "log": "tmp/nvidia-history-product-package.log",
+      "reason": "Preflight correctly rejected CRLF versus LF integration receipt differences; restored exact editor inputs and rebuilt template"
+    },
+    {
+      "reason": "Bridge Home command after quick-flight stayed on pause; excluded from Home acceptance. Normal exported Home launch and window-close checked separately."
+    }
+  ],
+  "limits": [
+    "No moving-image quality, FPS gain, hardware latency reduction or NVIDIA certification claimed",
+    "No stereo/XR or arbitrary uninstrumented teleports qualified",
+    "No real SDK failure injection; helper checks omitted success acknowledgement and older queued generations",
+    "Global status fields are separate atomics, sampled after isolated settled phases",
+    "Frame Generation, Ray Reconstruction and path tracing remain disabled",
+    "Other GPU, driver and platform qualification remains open"
+  ]
+}

@@ -143,7 +143,11 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [DT-00-R1](desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](desktop-delivery-investigations/DT-00-R2/README.md) for platform, installer, display, performance and native-test research. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) tracks acceptance.
 
-The [twenty M1–M5 investigations, 2026-10-24](desktop-delivery-investigations/DT-MAC-00-R1/README.md) extend the [initial Apple Silicon review](apple-silicon-performance-2026-10-24.md) and support the [M1–M5 execution plan](../plans/apple-silicon-performance.md): native tools, capabilities/presets, renderer/MetalFX comparisons and sustained 1080p qualification. An M1 is available for tests; the research contains no native Mac performance result.
+[DT-LNX-00, 2026-10-28](desktop-delivery-investigations/DT-LNX-00/README.md) audits current Linux exports/native sidecars, the pinned Wayland fallback risk, ARM64 gaps, AppImage/Flatpak/DEB/RPM policy, update/removal, GitHub promotion and download UX against primary sources. The [Linux execution plan](../plans/linux-support-distribution.md) assigns DT-LNX-01…13; no new Linux hardware, package or performance acceptance is claimed.
+
+[DT-LNX-02a/b](desktop-delivery-investigations/DT-LNX-02/README.md) records implemented export output isolation, checkout locking, exact CI package selection and installed-template integrity checks. Full release manifests and native platform acceptance remain open.
+
+The [Apple/Godot integration audit, 2026-10-28](desktop-delivery-investigations/DT-MAC-00-R2/README.md) supports the [Apple Silicon execution plan](../plans/apple-silicon-performance.md): exact engine compatibility, Metal 4 boundaries, MetalFX integration, 2026 Apple features, repository gaps and native 1080p qualification. It extends the [twenty M1–M5 investigations, 2026-10-24](desktop-delivery-investigations/DT-MAC-00-R1/README.md) and [initial review](apple-silicon-performance-2026-10-24.md). [DT-MAC-02](desktop-delivery-investigations/DT-MAC-02/README.md) records the subsequent Windows preparation: native acquisition, bounded streaming capture, isolated renderer trials and guarded MetalFX policy. Native Mac performance remains unmeasured.
 
 ### Roadmap knowledge base (all phases)
 
@@ -206,7 +210,7 @@ Use [family research](p51-family-research.md), the [P-51 flight-realism brief](p
 
 ### Visual quality and landscape
 
-DLSS/FSR follow-up: [2026-10-24 integration investigation](advanced-graphics-2026-10-21/dlss-fsr-2026-10-24.md) maps stock FSR2 to the existing High profile, inspects NVIDIA's pinned Godot fork, and distinguishes newer AMD SDK/API limits. The subsequent [optional FSR2 implementation on RTX 3090](visual-quality-implementation/VQ-07/fsr2-2026-10-24/README.md) records bounded software/native evidence and remaining qualification; no DLSS or frame generation is integrated.
+DLSS/FSR follow-up: [2026-10-24 investigation](advanced-graphics-2026-10-21/dlss-fsr-2026-10-24.md), [stock FSR2 evidence](visual-quality-implementation/VQ-07/fsr2-2026-10-24/README.md), and [custom-engine FSR3/DLSS evidence](visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md) retain their build-specific scope. The [2026-10-28 AMD re-audit](advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md) verifies SDK2.4's new Vulkan path and informs the [FSR completion plan](../plans/amd-fsr-completion.md). FSR4 and frame generation remain pending implementation/qualification.
 
 Advanced graphics: [independent source audit, 2026-10-21](advanced-graphics-2026-10-21/README.md) preserves the supplied AAA graphics brief, checks Godot/vendor capabilities and identifies current sky/water migration risks. A [second round of 25 investigations](advanced-graphics-2026-10-21/round-2.md) adds GitHub, Reddit, Godot Forum, tool and documentation evidence with explicit experiment decisions. The [VQ-07 upgrade plan](../plans/advanced-graphics.md) owns the isolated comparison and conditional High-profile proposal; no new runtime or performance result is claimed.
 

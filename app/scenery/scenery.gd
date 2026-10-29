@@ -171,19 +171,27 @@ static func _finite_number(value: Variant) -> bool:
 
 
 ## Called by render/field.gd after it built the field. No-op when the switch is off.
+## Synchronous attach drains the same ordered units used by the field's staged build.
 static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary = {}, lake: Dictionary = {}) -> void:
+	var context := begin_attach(field, lighting, lake)
+	if context == null:
+		return
+	while not build_finished(context):
+		advance_build(context)
+	field_node.add_child(take_build(context))
+
+
+## Resolve the same switch, layout and validation as attach; a null job is a no-op.
+static func begin_attach(field: Dictionary, lighting: Dictionary = {}, lake: Dictionary = {}) -> _SceneryBuild:
 	var opts := options()
-	if not opts.enabled:
-		return
-	# The implicit bundle is only for a matching default spatial layout; explicit files still validate fully.
-	if not layout_file_applies(field, opts):
-		return
+	if not opts.enabled or not layout_file_applies(field, opts):
+		return null
 	var loaded := Loader.load_from(str(opts.file), field)
 	if not loaded.ok:
 		for e: String in loaded.errors:
 			push_error("scenery: " + e)
-		return
-	field_node.add_child(build(field, loaded.scenery, opts, lighting, lake))
+		return null
+	return begin_build(field, loaded.scenery, opts, lighting, lake)
 
 
 static func opaque_material() -> StandardMaterial3D:
@@ -247,9 +255,184 @@ static func _placement_xf(n: float, e: float, heading_deg: float) -> Transform3D
 	return Transform3D(Basis(Vector3.UP, -deg_to_rad(heading_deg)), Frames.ned_to_render([n, e, 0.0]))
 
 
+## A job owns its detached root until take_build(). No node refers back to the job.
+enum _SceneryPhase { SETUP, GROUPS, FLEET, VEGETATION, POPULATION, BOTANICALS, DETAIL, WOODLAND,
+	CELLS, SHELTER_MATERIAL, SHELTERS, SHADOWS, POPULATION_SHADOW, AMBIENCE, BIRDS, FINAL, DONE }
+
+
+class _SceneryBuild:
+	extends RefCounted
+	var field: Dictionary
+	var scenery: Dictionary
+	var opts: Dictionary
+	var lighting: Dictionary
+	var lake: Dictionary
+	var root: Node3D
+	var phase: int = _SceneryPhase.SETUP
+	var work_usec: int = 0
+	var theme: String
+	var quality: String
+	var opaque: StandardMaterial3D
+	var shade: StandardMaterial3D
+	var sun: Vector3
+	var shadow_strength: float
+	var pilot: Vector2
+	var cells: Dictionary
+	var pit_shelter_kits: Dictionary
+	var population_batches: Dictionary
+	var vegetation_batches: Dictionary
+	var vegetation_triangles: int = 0
+	var support_surfaces: Array[Dictionary]
+	var ground_cells: Dictionary
+	var gravel: ShaderMaterial
+	var shadow_cells: Dictionary
+	var population_contact_kit: MeshKit
+	var population_shadow_groups: Array[Dictionary]
+	var shadow_groups: Dictionary
+	var shadow_nodes: Dictionary = {}
+	var population_shadow_node: MeshInstance3D
+	var birds_node: Node3D
+	var birds_build_usec: int = 0
+	var stats: Dictionary
+	var timing: Dictionary
+	var motion_parent: Node3D
+	var roof_parent: Node3D
+	var fleet_parent: Node3D
+	var fleet_batches: Dictionary
+	var group_index: int = 0
+	var placement_index: int = 0
+	var wire_index: int = 0
+	var fence_prepared: bool = false
+	var fence_pieces: Array[Dictionary] = []
+	var fence_index: int = 0
+	var fleet_keys: Array = []
+	var fleet_index: int = 0
+	var cell_keys: Array = []
+	var cell_index: int = 0
+	var cells_prepared: bool = false
+	var shelter_ids: Array = []
+	var shelter_index: int = 0
+	var shelter_material: ShaderMaterial
+	var shadow_keys: Array = []
+	var shadow_index: int = 0
+
+	func _init(field_input: Dictionary, scenery_input: Dictionary, opts_input: Dictionary,
+			lighting_input: Dictionary, lake_input: Dictionary) -> void:
+		# A checkpoint can yield to unrelated callers. Pin the complete job inputs before the first unit.
+		var started := Time.get_ticks_usec()
+		field = field_input.duplicate(true)
+		scenery = scenery_input.duplicate(true)
+		opts = opts_input.duplicate(true)
+		lighting = lighting_input.duplicate(true)
+		lake = lake_input.duplicate(true)
+		work_usec = Time.get_ticks_usec() - started
+
+	func _notification(what: int) -> void:
+		if what == NOTIFICATION_PREDELETE and is_instance_valid(root):
+			root.free()
+
+
+static func begin_build(field: Dictionary, scenery: Dictionary, opts: Dictionary,
+		lighting: Dictionary = {}, lake: Dictionary = {}) -> _SceneryBuild:
+	return _SceneryBuild.new(field, scenery, opts, lighting, lake)
+
+
 static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, lighting: Dictionary = {}, lake: Dictionary = {}) -> Node3D:
-	var t0 := Time.get_ticks_usec()
+	var context := begin_build(field, scenery, opts, lighting, lake)
+	while not build_finished(context):
+		advance_build(context)
+	return take_build(context)
+
+
+static func build_finished(context: _SceneryBuild) -> bool:
+	return context == null or context.phase == _SceneryPhase.DONE
+
+
+## The owner explicitly cancels before freeing its detached field. A dropped job also frees its root.
+static func cancel_build(context: _SceneryBuild) -> void:
+	if context == null: return
+	if is_instance_valid(context.root): context.root.free()
+	context.root = null
+	context.phase = _SceneryPhase.DONE
+
+
+static func take_build(context: _SceneryBuild) -> Node3D:
+	if context == null or context.phase != _SceneryPhase.DONE: return null
+	var root := context.root
+	context.root = null
+	return root
+
+
+static func next_build_stage(context: _SceneryBuild) -> String:
+	if context == null or context.phase == _SceneryPhase.DONE: return ""
+	match context.phase:
+		_SceneryPhase.GROUPS: return "Building scenery placements"
+		_SceneryPhase.FLEET: return "Building parked aircraft"
+		_SceneryPhase.VEGETATION: return "Building scenery trees"
+		_SceneryPhase.POPULATION: return "Building scenery population"
+		_SceneryPhase.BOTANICALS: return "Building scenery botanicals"
+		_SceneryPhase.DETAIL: return "Building scenery detail"
+		_SceneryPhase.WOODLAND: return "Building woodland edges"
+		_SceneryPhase.CELLS: return "Building scenery cells"
+		_SceneryPhase.SHELTER_MATERIAL, _SceneryPhase.SHELTERS: return "Building scenery shelters"
+		_SceneryPhase.SHADOWS, _SceneryPhase.POPULATION_SHADOW: return "Building scenery shadows"
+		_: return "Building field scenery"
+
+
+## One deterministic unit. The caller chooses how many units fit between its existing checkpoints.
+## Timings are sums of work only, so a staged build never counts checkpoint waits.
+static func advance_build(context: _SceneryBuild) -> void:
+	if build_finished(context): return
+	var started := Time.get_ticks_usec()
+	var phase := context.phase
+	var group_type := str(context.scenery.groups[context.group_index].type) if phase == _SceneryPhase.GROUPS else ""
+	match phase:
+		_SceneryPhase.SETUP: _setup_build(context)
+		_SceneryPhase.GROUPS: _advance_group(context)
+		_SceneryPhase.FLEET: _advance_fleet(context)
+		_SceneryPhase.VEGETATION: _build_vegetation(context)
+		_SceneryPhase.POPULATION: _build_population(context)
+		_SceneryPhase.BOTANICALS: _build_botanicals(context)
+		_SceneryPhase.DETAIL: _build_detail(context)
+		_SceneryPhase.WOODLAND: _build_woodland(context)
+		_SceneryPhase.CELLS: _advance_cell(context)
+		_SceneryPhase.SHELTER_MATERIAL: _build_shelter_material(context)
+		_SceneryPhase.SHELTERS: _advance_shelter(context)
+		_SceneryPhase.SHADOWS: _advance_shadow(context)
+		_SceneryPhase.POPULATION_SHADOW: _build_population_shadow(context)
+		_SceneryPhase.AMBIENCE: _build_ambience(context)
+		_SceneryPhase.BIRDS: _build_birds(context)
+		_SceneryPhase.FINAL: _finish_build(context)
+	var elapsed: int = Time.get_ticks_usec() - started
+	var key := ""
+	match phase:
+		_SceneryPhase.GROUPS: key = group_type
+		_SceneryPhase.VEGETATION: key = "vegetation"
+		_SceneryPhase.POPULATION: key = "population"
+		_SceneryPhase.BOTANICALS: key = "botanicals"
+		_SceneryPhase.DETAIL: key = "airfield_detail"
+		_SceneryPhase.WOODLAND: key = "woodland_edges"
+		_SceneryPhase.CELLS: key = "cell_meshes"
+		_SceneryPhase.SHELTER_MATERIAL: key = "shelter_material"
+		_SceneryPhase.SHELTERS: key = "shelter_meshes"
+	if phase == _SceneryPhase.GROUPS or not key.is_empty():
+		context.timing[key] = float(context.timing.get(key, 0.0)) + float(elapsed) / 1000.0
+	if phase >= _SceneryPhase.CELLS and phase <= _SceneryPhase.BIRDS:
+		context.timing["meshes"] = float(context.timing.get("meshes", 0.0)) + float(elapsed) / 1000.0
+	if phase == _SceneryPhase.BIRDS:
+		context.timing["meshes"] += float(context.birds_build_usec) / 1000.0
+	context.work_usec += Time.get_ticks_usec() - started
+	if phase == _SceneryPhase.FINAL:
+		context.stats.build_ms = float(context.work_usec) / 1000.0
+
+
+static func _setup_build(context: _SceneryBuild) -> void:
+	var field := context.field
+	var scenery := context.scenery
+	var opts := context.opts
+	var lighting := context.lighting
 	var root := Node3D.new()
+	context.root = root
 	root.name = "Scenery"
 	root.set_meta("source_definition", scenery.duplicate(true))
 	root.set_meta("grass_exclusions", GrassMask.footprints(scenery))
@@ -260,6 +443,13 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	var sun := Atmosphere.sun_direction(lighting)
 	var shadow_strength: float = Atmosphere.shadow_strength(lighting)
 	shade.albedo_color.a = shadow_strength
+	# Capture birds' atmosphere, cloud and preference state alongside the shadows before any yield.
+	var birds: Node3D = null
+	var birds_started := Time.get_ticks_usec()
+	if opts.get("birds", false):
+		birds = Birds.build(lighting, str(opts.get("quality", "high")))
+		if birds != null: root.add_child(birds)
+	var birds_build_usec: int = Time.get_ticks_usec() - birds_started
 	var pilot := Vector2(float(field.pilot.north), float(field.pilot.east))
 	var cells := {}
 	var pit_shelter_kits := {}
@@ -295,294 +485,430 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	root.add_child(fleet_parent)
 	var fleet_batches := {}
 	var timing := {}
-	for group: Dictionary in scenery.groups:
-		var g0 := Time.get_ticks_usec()
-		match group.type:
-			"instances":
-				for placement_index: int in group.placements.size():
-					var pl: Dictionary = group.placements[placement_index]
-					var damage_id := "prop:%s:%02d" % [group.id, placement_index]
-					var prefab: String = pl.prefab
-					var spec: Dictionary = Prefabs.CATALOG[prefab] if Prefabs.CATALOG.has(prefab) else Models.CATALOG[prefab]
-					if not keep(spec.tier, pl.seed, quality):
-						stats.skipped += 1
-						continue
-					var xf := _placement_xf(pl.north, pl.east, pl.heading)
-					var kit: MeshKit = null
-					if not Population.handles(prefab) and not VegetationPlacement.handles(prefab):
-						if prefab == "pit_shelter":
-							kit = MeshKit.new()
-							pit_shelter_kits[damage_id] = kit
-						else:
-							kit = _kit(cells, _cell(pl.north, pl.east))
-					var damage_first := kit.verts.size() if kit != null else 0
-					if VegetationPlacement.handles(prefab):
-						var plant := VegetationPlacement.spec(prefab, pl.seed, str(group.id))
-						var plant_xf := ImportedVegetation.fit_to_height(plant.asset_id, plant.height, xf)
-						var tone := 0.90 + 0.10 * Palette.hash01(pl.seed, 834)
-						var tint := Color(tone, minf(1.0, tone + 0.035), tone, 1.0)
-						if plant.asset_id == "maple_tree":
-							tint = Color.WHITE # Preserve the supplier's leaf/bark PBR color.
-						ImportedVegetation.queue(vegetation_batches, plant.asset_id, plant_xf, pl.seed, damage_id, tint)
-						vegetation_triangles += int(plant.triangles)
-					elif Population.handles(prefab):
-						var foot_height := SupportSurfaces.height_at(pl.north, pl.east, support_surfaces) if prefab.begins_with("person_") else 0.0
-						if prefab == "person_sitting":
-							foot_height += SupportSurfaces.SEATED_OFFSET_M
-						Population.queue(population_batches, prefab, xf, pl.seed, spec.size, foot_height, str(group.get("zone", "")))
-					elif Prefabs.CATALOG.has(prefab):
-						kit.xf = xf
-						var moving: Array = Prefabs.build(prefab, kit, pl.seed, theme)
-						kit.xf = Transform3D.IDENTITY
-						for roof: MeshInstance3D in BuildingRoofs.create(prefab, xf, pl.seed, damage_id):
-							roof_parent.add_child(roof)
-						for part: Dictionary in moving:
-							var moving_node := _motion_node(part, xf, pl.seed)
-							moving_node.set_meta("damage_motion_id", damage_id)
-							motion_parent.add_child(moving_node)
-							stats.motion += 1
-					else:
-						var arr := Models.arrays(prefab)
-						if arr.is_empty():
-							continue
-						var paint: Variant = Palette.pick(Palette.PAINTS, pl.seed, 17) if spec.get("paint", false) else null
-						kit.xf = Transform3D.IDENTITY
-						kit.append_arrays(arr.pos, arr.nrm, arr.col, xf, paint)
-					if kit != null:
-						kit.tag_damage(damage_first, damage_id)
-					stats.instances += 1
-					var mode: Variant = spec.get("shadow", false)
-					if mode != false and Vector2(pl.north, pl.east).distance_to(pilot) <= SHADOW_RANGE_M:
-						var shadow_cell: Vector2i = _cell(pl.north, pl.east)
-						var shadow_mode: String = "solid" if mode == true else str(mode)
-						var shadow_xf := xf
-						if prefab.begins_with("car_"):
-							shadow_mode = "vehicle"
-						elif prefab.begins_with("person_"):
-							shadow_mode = "person"
-							shadow_xf.origin.y = SupportSurfaces.height_at(pl.north, pl.east, support_surfaces)
-						var shadow_size: Vector3 = spec.size
-						if VegetationPlacement.handles(prefab):
-							var plant := VegetationPlacement.spec(prefab, pl.seed, str(group.id))
-							shadow_size = Vector3(plant.width, plant.height, plant.depth)
-							if plant.asset_id == "maple_tree":
-								shadow_mode = "crown"
-						var shadow_source := {transform = shadow_xf, size = shadow_size, mode = shadow_mode, damage_id = damage_id}
-						var population_shadow := shadow_mode == "person" or shadow_mode == "vehicle"
-						if population_shadow:
-							# These props live in MultiMeshes, outside the static cell mask.
-							# Keep their compact contact/hull shadow in its own batch.
-							population_shadow_groups.append(shadow_source)
-						else:
-							if not shadow_groups.has(shadow_cell):
-								shadow_groups[shadow_cell] = []
-							shadow_groups[shadow_cell].append(shadow_source)
-						if shadow_strength > 0.0:
-							var contact_kit: MeshKit = population_contact_kit if population_shadow else _kit(shadow_cells, shadow_cell)
-							GroundFeatures.contact_shadow(contact_kit, shadow_xf, shadow_size, shadow_mode, sun)
-							stats.shadows += 1
-			"fleet": # Offline material-preserving snapshots, shared resources and automatic mesh LODs.
-				for placement_index: int in group.placements.size():
-					var pl: Dictionary = group.placements[placement_index]
-					# SC-09-R2: below High the Stik engine detail merges into one surface per batch.
-					var mesh := ParkedAircraft.mesh(pl.aircraft, pl.get("configuration", "assembled"), quality)
-					if mesh == null:
-						continue
-					# Batch repeated airframes per shelter, keeping east/west culling independent.
-					var batch_id := "%s_%s_%s" % [pl.aircraft, pl.get("configuration", "assembled"), "west" if pl.east < 0 else "east"]
-					if not fleet_batches.has(batch_id):
-						fleet_batches[batch_id] = {mesh = mesh, placements = []}
-					fleet_batches[batch_id].placements.append(pl)
-					var info := ParkedAircraft.info(pl.aircraft, pl.get("configuration", "assembled"))
-					var size := Vector3(float(info.size[0]), float(info.size[1]), float(info.size[2])) * float(pl.get("scale", 1.0))
-					var contact_xf := _placement_xf(pl.north, pl.east, pl.heading)
-					contact_xf.origin.y = SupportSurfaces.height_at(pl.north, pl.east, support_surfaces)
-					var mode := "aircraft_jet" if pl.aircraft == "sebart-avanti-s-a200-p100rx" else "aircraft_prop"
-					if pl.get("configuration", "assembled") == "service":
-						mode = "aircraft_service"
-					if float(pl.get("elevation", 0.0)) >= 0.90:
-						# The occupied 2.4 x 0.8 m worktops receive the shadow; foam blocks occlude it naturally.
-						contact_xf.origin.y = 0.90
-						mode += "_bench"
-					population_shadow_groups.append({transform = contact_xf, size = size, mode = mode, damage_id = ""})
-					if shadow_strength > 0.0:
-						GroundFeatures.contact_shadow(population_contact_kit, contact_xf, size, mode, sun)
-						stats.shadows += 1
-					stats.fleet += 1
-					stats.fleet_triangles += Population.triangles(mesh)
-					stats.fleet_surfaces += mesh.get_surface_count()
-			"fence":
+	context.theme = theme
+	context.quality = quality
+	context.opaque = opaque
+	context.shade = shade
+	context.sun = sun
+	context.shadow_strength = shadow_strength
+	context.pilot = pilot
+	context.cells = cells
+	context.pit_shelter_kits = pit_shelter_kits
+	context.population_batches = population_batches
+	context.vegetation_batches = vegetation_batches
+	context.vegetation_triangles = vegetation_triangles
+	context.support_surfaces = support_surfaces
+	context.ground_cells = ground_cells
+	context.gravel = gravel
+	context.shadow_cells = shadow_cells
+	context.population_contact_kit = population_contact_kit
+	context.population_shadow_groups = population_shadow_groups
+	context.shadow_groups = shadow_groups
+	context.birds_node = birds
+	context.birds_build_usec = birds_build_usec
+	context.stats = stats
+	context.motion_parent = motion_parent
+	context.roof_parent = roof_parent
+	context.fleet_parent = fleet_parent
+	context.fleet_batches = fleet_batches
+	context.timing = timing
+	if scenery.groups.is_empty():
+		_start_fleet(context)
+	else:
+		context.phase = _SceneryPhase.GROUPS
+
+
+static func _start_fleet(context: _SceneryBuild) -> void:
+	context.stats.fleet_batch_surfaces = 0
+	context.fleet_keys = context.fleet_batches.keys()
+	context.phase = _SceneryPhase.FLEET
+
+
+static func _finish_group(context: _SceneryBuild) -> void:
+	context.group_index += 1
+	context.placement_index = 0
+	context.wire_index = 0
+	context.fence_prepared = false
+	context.fence_pieces = []
+	context.fence_index = 0
+	if context.group_index >= context.scenery.groups.size(): _start_fleet(context)
+
+
+static func _advance_group(context: _SceneryBuild) -> void:
+	var group: Dictionary = context.scenery.groups[context.group_index]
+	match group.type:
+		"instances":
+			if context.placement_index < group.placements.size():
+				_build_instance(context, group, context.placement_index)
+				context.placement_index += 1
+			elif context.wire_index < group.placements.size() - 1:
+				_build_wire(context, group, context.wire_index)
+				context.wire_index += 1
+			else: _finish_group(context)
+		"fleet":
+			if context.placement_index < group.placements.size():
+				_build_fleet_placement(context, group, context.placement_index)
+				context.placement_index += 1
+			else: _finish_group(context)
+		"fence":
+			if not context.fence_prepared:
 				var points := PackedVector2Array()
-				for point: Vector2 in group.points:
-					points.append(_xz(point))
-				for piece: Dictionary in FenceParts.build(points, group.style, group.seed):
-					var center: Vector3 = (piece.a + piece.b) * 0.5
-					var kit := _kit(cells, _cell(-center.z, center.x))
-					var damage_first := kit.verts.size()
-					kit.beam(piece.a, piece.b, piece.width, piece.color)
-					kit.tag_damage(damage_first, "fence:%s:%s" % [group.id, piece.id])
-					kit.damage_ranges.back()["beam"] = piece
-			"hedge":
-				var pts: Array[Vector2] = []
-				for point: Vector2 in group.points:
-					pts.append(_xz(point))
-				var hedge := ImportedHedge.build(pts, group.height, group.width, group.seed, quality)
-				hedge.name = "ImportedHedge_" + str(group.id)
-				root.add_child(hedge)
-			"track", "patch":
-				var poly := PackedVector2Array()
-				for p: Vector2 in group.points:
-					poly.append(_xz(p))
-				var first: Vector2 = group.points[0]
-				var key := _cell(first.x, first.y) + Vector2i(0, 7777)
-				ground_cells[key] = true
-				var kit := _kit(cells, key) # its own cell: flat, drawn once
-				if group.type == "track":
-					GroundFeatures.track(kit, poly, group.width, group.surface, theme)
-				else:
-					GroundFeatures.patch(kit, poly, group.surface, theme, group.seed)
-			"flowers":
-				# The downloaded habitat library owns default meadow flowers; the rejected procedural cushions are retired.
-				pass
-		if group.type == "instances":
-			for i in range(group.placements.size() - 1):
-				var a: Dictionary = group.placements[i]
-				var b: Dictionary = group.placements[i + 1]
-				if a.prefab != "pylon" or b.prefab != "pylon":
-					continue
-				var wire_kit := _kit(cells, _cell((a.north + b.north) * 0.5, (a.east + b.east) * 0.5))
-				wire_kit.xf = Transform3D.IDENTITY
-				var first_wire := wire_kit.verts.size()
-				PowerLines.append_span(wire_kit, _placement_xf(a.north, a.east, a.heading),
-					_placement_xf(b.north, b.east, b.heading))
-				wire_kit.tag_damage(first_wire, "prop:%s:%02d" % [group.id, i])
-		timing[group.type] = float(timing.get(group.type, 0.0)) + (Time.get_ticks_usec() - g0) / 1000.0
-	stats.fleet_batch_surfaces = 0
-	for batch_id: String in fleet_batches:
-		var batch: Dictionary = fleet_batches[batch_id]
-		var multimesh := MultiMesh.new()
-		multimesh.transform_format = MultiMesh.TRANSFORM_3D
-		multimesh.mesh = batch.mesh
-		multimesh.instance_count = batch.placements.size()
-		for index: int in batch.placements.size():
-			multimesh.set_instance_transform(index, ParkedAircraft.transform_for(batch.placements[index]))
-		var parked := MultiMeshInstance3D.new()
-		parked.name = batch_id
-		parked.multimesh = multimesh
-		parked.visibility_range_end = 350.0
-		parked.visibility_range_end_margin = 25.0
-		parked.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		parked.set_meta("placements", batch.placements)
-		fleet_parent.add_child(parked)
-		stats.fleet_batch_surfaces += batch.mesh.get_surface_count()
-	stats.fleet_batches = fleet_batches.size()
-	var vegetation_started := Time.get_ticks_usec()
-	var vegetation := ImportedVegetation.build(vegetation_batches, false, {
-		tree_wind = bool(opts.get("tree_wind", true)),
-		tree_cell_size_m = opts.get("tree_cell_size_m", 0),
+				for point: Vector2 in group.points: points.append(_xz(point))
+				context.fence_pieces = FenceParts.build(points, group.style, group.seed)
+				context.fence_prepared = true
+			elif context.fence_index < context.fence_pieces.size():
+				var piece: Dictionary = context.fence_pieces[context.fence_index]
+				context.fence_index += 1
+				var center: Vector3 = (piece.a + piece.b) * 0.5
+				var kit := _kit(context.cells, _cell(-center.z, center.x))
+				var damage_first := kit.verts.size()
+				kit.beam(piece.a, piece.b, piece.width, piece.color)
+				kit.tag_damage(damage_first, "fence:%s:%s" % [group.id, piece.id])
+				kit.damage_ranges.back()["beam"] = piece
+			else: _finish_group(context)
+		"hedge":
+			var pts: Array[Vector2] = []
+			for point: Vector2 in group.points: pts.append(_xz(point))
+			var hedge := ImportedHedge.build(pts, group.height, group.width, group.seed, context.quality)
+			hedge.name = "ImportedHedge_" + str(group.id)
+			context.root.add_child(hedge)
+			_finish_group(context)
+		"track", "patch":
+			var poly := PackedVector2Array()
+			for p: Vector2 in group.points: poly.append(_xz(p))
+			var first: Vector2 = group.points[0]
+			var key := _cell(first.x, first.y) + Vector2i(0, 7777)
+			context.ground_cells[key] = true
+			var kit := _kit(context.cells, key)
+			if group.type == "track": GroundFeatures.track(kit, poly, group.width, group.surface, context.theme)
+			else: GroundFeatures.patch(kit, poly, group.surface, context.theme, group.seed)
+			_finish_group(context)
+		_: _finish_group(context) # The retired procedural flowers and unknown types are no-ops.
+
+
+static func _build_instance(context: _SceneryBuild, group: Dictionary, placement_index: int) -> void:
+	var quality := context.quality
+	var theme := context.theme
+	var cells := context.cells
+	var pit_shelter_kits := context.pit_shelter_kits
+	var population_batches := context.population_batches
+	var vegetation_batches := context.vegetation_batches
+	var support_surfaces: Array[Dictionary] = context.support_surfaces
+	var shadow_cells := context.shadow_cells
+	var population_contact_kit := context.population_contact_kit
+	var population_shadow_groups := context.population_shadow_groups
+	var shadow_groups := context.shadow_groups
+	var stats := context.stats
+	var motion_parent := context.motion_parent
+	var roof_parent := context.roof_parent
+	var pilot := context.pilot
+	var sun := context.sun
+	var shadow_strength := context.shadow_strength
+	var pl: Dictionary = group.placements[placement_index]
+	var damage_id := "prop:%s:%02d" % [group.id, placement_index]
+	var prefab: String = pl.prefab
+	var spec: Dictionary = Prefabs.CATALOG[prefab] if Prefabs.CATALOG.has(prefab) else Models.CATALOG[prefab]
+	if not keep(spec.tier, pl.seed, quality):
+		stats.skipped += 1
+		return
+	var xf := _placement_xf(pl.north, pl.east, pl.heading)
+	var kit: MeshKit = null
+	if not Population.handles(prefab) and not VegetationPlacement.handles(prefab):
+		if prefab == "pit_shelter":
+			kit = MeshKit.new()
+			pit_shelter_kits[damage_id] = kit
+		else:
+			kit = _kit(cells, _cell(pl.north, pl.east))
+	var damage_first := kit.verts.size() if kit != null else 0
+	if VegetationPlacement.handles(prefab):
+		var plant := VegetationPlacement.spec(prefab, pl.seed, str(group.id))
+		var plant_xf := ImportedVegetation.fit_to_height(plant.asset_id, plant.height, xf)
+		var tone := 0.90 + 0.10 * Palette.hash01(pl.seed, 834)
+		var tint := Color(tone, minf(1.0, tone + 0.035), tone, 1.0)
+		if plant.asset_id == "maple_tree":
+			tint = Color.WHITE # Preserve the supplier's leaf/bark PBR color.
+		ImportedVegetation.queue(vegetation_batches, plant.asset_id, plant_xf, pl.seed, damage_id, tint)
+		context.vegetation_triangles += int(plant.triangles)
+	elif Population.handles(prefab):
+		var foot_height := SupportSurfaces.height_at(pl.north, pl.east, support_surfaces) if prefab.begins_with("person_") else 0.0
+		if prefab == "person_sitting":
+			foot_height += SupportSurfaces.SEATED_OFFSET_M
+		Population.queue(population_batches, prefab, xf, pl.seed, spec.size, foot_height, str(group.get("zone", "")))
+	elif Prefabs.CATALOG.has(prefab):
+		kit.xf = xf
+		var moving: Array = Prefabs.build(prefab, kit, pl.seed, theme)
+		kit.xf = Transform3D.IDENTITY
+		for roof: MeshInstance3D in BuildingRoofs.create(prefab, xf, pl.seed, damage_id):
+			roof_parent.add_child(roof)
+		for part: Dictionary in moving:
+			var moving_node := _motion_node(part, xf, pl.seed)
+			moving_node.set_meta("damage_motion_id", damage_id)
+			motion_parent.add_child(moving_node)
+			stats.motion += 1
+	else:
+		var arr := Models.arrays(prefab)
+		if arr.is_empty():
+			return
+		var paint: Variant = Palette.pick(Palette.PAINTS, pl.seed, 17) if spec.get("paint", false) else null
+		kit.xf = Transform3D.IDENTITY
+		kit.append_arrays(arr.pos, arr.nrm, arr.col, xf, paint)
+	if kit != null:
+		kit.tag_damage(damage_first, damage_id)
+	stats.instances += 1
+	var mode: Variant = spec.get("shadow", false)
+	if mode != false and Vector2(pl.north, pl.east).distance_to(pilot) <= SHADOW_RANGE_M:
+		var shadow_cell: Vector2i = _cell(pl.north, pl.east)
+		var shadow_mode: String = "solid" if mode == true else str(mode)
+		var shadow_xf := xf
+		if prefab.begins_with("car_"):
+			shadow_mode = "vehicle"
+		elif prefab.begins_with("person_"):
+			shadow_mode = "person"
+			shadow_xf.origin.y = SupportSurfaces.height_at(pl.north, pl.east, support_surfaces)
+		var shadow_size: Vector3 = spec.size
+		if VegetationPlacement.handles(prefab):
+			var plant := VegetationPlacement.spec(prefab, pl.seed, str(group.id))
+			shadow_size = Vector3(plant.width, plant.height, plant.depth)
+			if plant.asset_id == "maple_tree":
+				shadow_mode = "crown"
+		var shadow_source := {transform = shadow_xf, size = shadow_size, mode = shadow_mode, damage_id = damage_id}
+		var population_shadow := shadow_mode == "person" or shadow_mode == "vehicle"
+		if population_shadow:
+			# These props live in MultiMeshes, outside the static cell mask.
+			# Keep their compact contact/hull shadow in its own batch.
+			population_shadow_groups.append(shadow_source)
+		else:
+			if not shadow_groups.has(shadow_cell):
+				shadow_groups[shadow_cell] = []
+			shadow_groups[shadow_cell].append(shadow_source)
+		if shadow_strength > 0.0:
+			var contact_kit: MeshKit = population_contact_kit if population_shadow else _kit(shadow_cells, shadow_cell)
+			GroundFeatures.contact_shadow(contact_kit, shadow_xf, shadow_size, shadow_mode, sun)
+			stats.shadows += 1
+
+
+static func _build_wire(context: _SceneryBuild, group: Dictionary, i: int) -> void:
+	var a: Dictionary = group.placements[i]
+	var b: Dictionary = group.placements[i + 1]
+	if a.prefab != "pylon" or b.prefab != "pylon": return
+	var wire_kit := _kit(context.cells, _cell((a.north + b.north) * 0.5, (a.east + b.east) * 0.5))
+	wire_kit.xf = Transform3D.IDENTITY
+	var first_wire := wire_kit.verts.size()
+	PowerLines.append_span(wire_kit, _placement_xf(a.north, a.east, a.heading),
+		_placement_xf(b.north, b.east, b.heading))
+	wire_kit.tag_damage(first_wire, "prop:%s:%02d" % [group.id, i])
+
+
+static func _build_fleet_placement(context: _SceneryBuild, group: Dictionary, placement_index: int) -> void:
+	var quality := context.quality
+	var fleet_batches := context.fleet_batches
+	var support_surfaces: Array[Dictionary] = context.support_surfaces
+	var population_shadow_groups := context.population_shadow_groups
+	var shadow_strength := context.shadow_strength
+	var population_contact_kit := context.population_contact_kit
+	var sun := context.sun
+	var stats := context.stats
+	var pl: Dictionary = group.placements[placement_index]
+	# SC-09-R2: below High the Stik engine detail merges into one surface per batch.
+	var mesh := ParkedAircraft.mesh(pl.aircraft, pl.get("configuration", "assembled"), quality)
+	if mesh == null:
+		return
+	# Batch repeated airframes per shelter, keeping east/west culling independent.
+	var batch_id := "%s_%s_%s" % [pl.aircraft, pl.get("configuration", "assembled"), "west" if pl.east < 0 else "east"]
+	if not fleet_batches.has(batch_id):
+		fleet_batches[batch_id] = {mesh = mesh, placements = []}
+	fleet_batches[batch_id].placements.append(pl)
+	var info := ParkedAircraft.info(pl.aircraft, pl.get("configuration", "assembled"))
+	var size := Vector3(float(info.size[0]), float(info.size[1]), float(info.size[2])) * float(pl.get("scale", 1.0))
+	var contact_xf := _placement_xf(pl.north, pl.east, pl.heading)
+	contact_xf.origin.y = SupportSurfaces.height_at(pl.north, pl.east, support_surfaces)
+	var mode := "aircraft_jet" if pl.aircraft == "sebart-avanti-s-a200-p100rx" else "aircraft_prop"
+	if pl.get("configuration", "assembled") == "service":
+		mode = "aircraft_service"
+	if float(pl.get("elevation", 0.0)) >= 0.90:
+		# The occupied 2.4 x 0.8 m worktops receive the shadow; foam blocks occlude it naturally.
+		contact_xf.origin.y = 0.90
+		mode += "_bench"
+	population_shadow_groups.append({transform = contact_xf, size = size, mode = mode, damage_id = ""})
+	if shadow_strength > 0.0:
+		GroundFeatures.contact_shadow(population_contact_kit, contact_xf, size, mode, sun)
+		stats.shadows += 1
+	stats.fleet += 1
+	stats.fleet_triangles += Population.triangles(mesh)
+	stats.fleet_surfaces += mesh.get_surface_count()
+
+
+static func _advance_fleet(context: _SceneryBuild) -> void:
+	if context.fleet_index >= context.fleet_keys.size():
+		context.stats.fleet_batches = context.fleet_batches.size()
+		context.phase = _SceneryPhase.VEGETATION
+		return
+	var batch_id: String = context.fleet_keys[context.fleet_index]
+	context.fleet_index += 1
+	var batch: Dictionary = context.fleet_batches[batch_id]
+	var multimesh := MultiMesh.new()
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	multimesh.mesh = batch.mesh
+	multimesh.instance_count = batch.placements.size()
+	for index: int in batch.placements.size():
+		multimesh.set_instance_transform(index, ParkedAircraft.transform_for(batch.placements[index]))
+	var parked := MultiMeshInstance3D.new()
+	parked.name = batch_id
+	parked.multimesh = multimesh
+	parked.visibility_range_end = 350.0
+	parked.visibility_range_end_margin = 25.0
+	parked.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parked.set_meta("placements", batch.placements)
+	context.fleet_parent.add_child(parked)
+	context.stats.fleet_batch_surfaces += batch.mesh.get_surface_count()
+
+
+static func _build_vegetation(context: _SceneryBuild) -> void:
+	var vegetation := ImportedVegetation.build(context.vegetation_batches, false, {
+		tree_wind = bool(context.opts.get("tree_wind", true)),
+		tree_cell_size_m = context.opts.get("tree_cell_size_m", 0),
 		bark_lod_error_px = CLUB_BARK_LOD_ERROR_PX,
 	})
-	root.add_child(vegetation)
-	stats.vegetation_triangles = vegetation_triangles
-	stats.vegetation_instances = vegetation_batches.values().reduce(func(total: int, list: Array) -> int: return total + list.size(), 0)
-	timing["vegetation"] = float(Time.get_ticks_usec() - vegetation_started) / 1000.0
-	var population_started := Time.get_ticks_usec()
-	var population := Population.build(population_batches)
-	root.add_child(population)
-	stats.population = population.get_meta("instances", 0)
-	stats.population_triangles = population.get_meta("triangles", 0)
-	stats.moving_people = population.get_meta("moving_people", 0)
-	timing["population"] = float(Time.get_ticks_usec() - population_started) / 1000.0
-	var botanical_started := Time.get_ticks_usec()
-	var habitats := BotanicalHabitats.build(field, scenery, theme, quality, lake)
-	root.add_child(habitats)
-	stats.botanical_plants = habitats.get_meta("plants", []).size()
-	stats.botanical_triangles = habitats.get_meta("triangles", 0)
-	stats.botanical_batches = habitats.get_meta("batches", 0)
-	timing["botanicals"] = float(Time.get_ticks_usec() - botanical_started) / 1000.0
-	var detail_started := Time.get_ticks_usec()
-	var detail := AirfieldDetail.build(field, scenery, quality)
-	root.add_child(detail)
-	stats.airfield_detail_instances = detail.get_meta("instances", 0)
-	stats.airfield_detail_triangles = detail.get_meta("triangles", 0)
-	stats.airfield_detail_batches = detail.get_meta("batches", 0)
-	timing["airfield_detail"] = float(Time.get_ticks_usec() - detail_started) / 1000.0
-	var woodland_started := Time.get_ticks_usec()
-	var woodland := WoodlandEdges.build(field, scenery, quality, lake)
-	root.add_child(woodland)
-	stats.woodland_edge_plants = woodland.get_meta("plants", []).size()
-	stats.woodland_edge_triangles = woodland.get_meta("triangles", 0)
-	stats.woodland_edge_batches = woodland.get_meta("batches", 0)
-	timing["woodland_edges"] = float(Time.get_ticks_usec() - woodland_started) / 1000.0
-	var m0 := Time.get_ticks_usec()
-	var keys := cells.keys()
-	keys.sort()
-	for key: Vector2i in keys:
-		var kit: MeshKit = cells[key]
-		if kit.is_empty():
-			continue
-		var mi := MeshInstance3D.new()
-		mi.name = "cell_%d_%d" % [key.x, key.y]
-		mi.mesh = kit.to_mesh(gravel if ground_cells.has(key) else opaque)
-		DamageBatches.capture(mi, kit.damage_ranges)
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		root.add_child(mi)
-	timing["cell_meshes"] = float(Time.get_ticks_usec() - m0) / 1000.0
-	var shelter_ids := pit_shelter_kits.keys()
-	shelter_ids.sort()
-	var shelter_material_started := Time.get_ticks_usec()
-	var shelter_material := pit_shelter_material() if not shelter_ids.is_empty() else null
-	timing["shelter_material"] = float(Time.get_ticks_usec() - shelter_material_started) / 1000.0
-	var shelter_meshes_started := Time.get_ticks_usec()
-	for shelter_id: String in shelter_ids:
-		var shelter_kit: MeshKit = pit_shelter_kits[shelter_id]
-		var shelter_mesh := MeshInstance3D.new()
-		shelter_mesh.name = "PitShelter_" + shelter_id.replace(":", "_")
-		shelter_mesh.mesh = shelter_kit.to_mesh(shelter_material)
-		DamageBatches.capture(shelter_mesh, shelter_kit.damage_ranges)
-		shelter_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		root.add_child(shelter_mesh)
-	stats.pit_shelter_surfaces = shelter_ids.size()
-	timing["shelter_meshes"] = float(Time.get_ticks_usec() - shelter_meshes_started) / 1000.0
-	var shadow_nodes: Dictionary = {}
-	var skeys: Array = shadow_groups.keys()
-	skeys.sort()
-	for key: Vector2i in skeys:
-		var kit: MeshKit = shadow_cells[key] if shadow_cells.has(key) else MeshKit.new()
-		var mi := MeshInstance3D.new()
-		mi.name = _shadow_batch_name(key)
-		mi.mesh = kit.to_mesh(shade)
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		root.add_child(mi)
-		shadow_nodes[key] = mi
-	var population_shadow_node: MeshInstance3D = null
-	if not population_shadow_groups.is_empty():
-		population_shadow_node = MeshInstance3D.new()
-		population_shadow_node.name = "PopulationContacts"
-		population_shadow_node.mesh = population_contact_kit.to_mesh(shade)
-		population_shadow_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		root.add_child(population_shadow_node)
-	if opts.get("audio", false):
-		root.add_child(Ambience.player())
-	if opts.get("birds", false):
-		var birds: Node3D = Birds.build(lighting, str(opts.get("quality", "high")))
-		if birds != null:
-			root.add_child(birds)
-	timing["meshes"] = (Time.get_ticks_usec() - m0) / 1000.0
-	stats.timing_ms = timing
-	stats.cells = keys.size()
-	stats.build_ms = (Time.get_ticks_usec() - t0) / 1000.0
-	root.set_meta("stats", stats)
-	root.set_meta("directional_shadow_material", shade)
-	root.set_meta("directional_shadow_groups", shadow_groups)
-	root.set_meta("directional_shadow_nodes", shadow_nodes)
-	root.set_meta("directional_population_shadow_groups", population_shadow_groups)
-	root.set_meta("directional_population_shadow_node", population_shadow_node)
-	root.set_meta("directional_shadow_signature", _shadow_signature(sun, shadow_strength))
-	root.set_meta("directional_shadow_strength", shadow_strength)
+	context.root.add_child(vegetation)
+	context.stats.vegetation_triangles = context.vegetation_triangles
+	context.stats.vegetation_instances = context.vegetation_batches.values().reduce(func(total: int, list: Array) -> int: return total + list.size(), 0)
+	context.phase = _SceneryPhase.POPULATION
+
+
+static func _build_population(context: _SceneryBuild) -> void:
+	var population := Population.build(context.population_batches)
+	context.root.add_child(population)
+	context.stats.population = population.get_meta("instances", 0)
+	context.stats.population_triangles = population.get_meta("triangles", 0)
+	context.stats.moving_people = population.get_meta("moving_people", 0)
+	context.phase = _SceneryPhase.BOTANICALS
+
+
+static func _build_botanicals(context: _SceneryBuild) -> void:
+	var habitats := BotanicalHabitats.build(context.field, context.scenery, context.theme, context.quality, context.lake)
+	context.root.add_child(habitats)
+	context.stats.botanical_plants = habitats.get_meta("plants", []).size()
+	context.stats.botanical_triangles = habitats.get_meta("triangles", 0)
+	context.stats.botanical_batches = habitats.get_meta("batches", 0)
+	context.phase = _SceneryPhase.DETAIL
+
+
+static func _build_detail(context: _SceneryBuild) -> void:
+	var detail := AirfieldDetail.build(context.field, context.scenery, context.quality)
+	context.root.add_child(detail)
+	context.stats.airfield_detail_instances = detail.get_meta("instances", 0)
+	context.stats.airfield_detail_triangles = detail.get_meta("triangles", 0)
+	context.stats.airfield_detail_batches = detail.get_meta("batches", 0)
+	context.phase = _SceneryPhase.WOODLAND
+
+
+static func _build_woodland(context: _SceneryBuild) -> void:
+	var woodland := WoodlandEdges.build(context.field, context.scenery, context.quality, context.lake)
+	context.root.add_child(woodland)
+	context.stats.woodland_edge_plants = woodland.get_meta("plants", []).size()
+	context.stats.woodland_edge_triangles = woodland.get_meta("triangles", 0)
+	context.stats.woodland_edge_batches = woodland.get_meta("batches", 0)
+	context.phase = _SceneryPhase.CELLS
+
+
+static func _advance_cell(context: _SceneryBuild) -> void:
+	if not context.cells_prepared:
+		context.cell_keys = context.cells.keys()
+		context.cell_keys.sort()
+		context.cells_prepared = true
+	if context.cell_index >= context.cell_keys.size():
+		context.phase = _SceneryPhase.SHELTER_MATERIAL
+		return
+	var key: Vector2i = context.cell_keys[context.cell_index]
+	context.cell_index += 1
+	var kit: MeshKit = context.cells[key]
+	if kit.is_empty(): return
+	var mi := MeshInstance3D.new()
+	mi.name = "cell_%d_%d" % [key.x, key.y]
+	mi.mesh = kit.to_mesh(context.gravel if context.ground_cells.has(key) else context.opaque)
+	DamageBatches.capture(mi, kit.damage_ranges)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	context.root.add_child(mi)
+
+
+static func _build_shelter_material(context: _SceneryBuild) -> void:
+	context.shelter_ids = context.pit_shelter_kits.keys()
+	context.shelter_ids.sort()
+	context.shelter_material = pit_shelter_material() if not context.shelter_ids.is_empty() else null
+	context.phase = _SceneryPhase.SHELTERS
+
+
+static func _advance_shelter(context: _SceneryBuild) -> void:
+	if context.shelter_index >= context.shelter_ids.size():
+		context.stats.pit_shelter_surfaces = context.shelter_ids.size()
+		context.shadow_keys = context.shadow_groups.keys()
+		context.shadow_keys.sort()
+		context.phase = _SceneryPhase.SHADOWS
+		return
+	var shelter_id: String = context.shelter_ids[context.shelter_index]
+	context.shelter_index += 1
+	var kit: MeshKit = context.pit_shelter_kits[shelter_id]
+	var node := MeshInstance3D.new()
+	node.name = "PitShelter_" + shelter_id.replace(":", "_")
+	node.mesh = kit.to_mesh(context.shelter_material)
+	DamageBatches.capture(node, kit.damage_ranges)
+	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	context.root.add_child(node)
+
+
+static func _advance_shadow(context: _SceneryBuild) -> void:
+	if context.shadow_index >= context.shadow_keys.size():
+		context.phase = _SceneryPhase.POPULATION_SHADOW
+		return
+	var key: Vector2i = context.shadow_keys[context.shadow_index]
+	context.shadow_index += 1
+	var kit: MeshKit = context.shadow_cells[key] if context.shadow_cells.has(key) else MeshKit.new()
+	var mi := MeshInstance3D.new()
+	mi.name = _shadow_batch_name(key)
+	mi.mesh = kit.to_mesh(context.shade)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	context.root.add_child(mi)
+	context.shadow_nodes[key] = mi
+
+
+static func _build_population_shadow(context: _SceneryBuild) -> void:
+	if not context.population_shadow_groups.is_empty():
+		var node := MeshInstance3D.new()
+		node.name = "PopulationContacts"
+		node.mesh = context.population_contact_kit.to_mesh(context.shade)
+		node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		context.root.add_child(node)
+		context.population_shadow_node = node
+	context.phase = _SceneryPhase.AMBIENCE
+
+
+static func _build_ambience(context: _SceneryBuild) -> void:
+	if context.opts.get("audio", false): context.root.add_child(Ambience.player())
+	context.phase = _SceneryPhase.BIRDS
+
+
+static func _build_birds(context: _SceneryBuild) -> void:
+	# It was already built and owned by the detached root; publish its original final position.
+	if is_instance_valid(context.birds_node):
+		context.root.move_child(context.birds_node, context.root.get_child_count() - 1)
+	context.phase = _SceneryPhase.FINAL
+
+
+static func _finish_build(context: _SceneryBuild) -> void:
+	var root := context.root
+	context.stats.timing_ms = context.timing
+	context.stats.cells = context.cell_keys.size()
+	root.set_meta("stats", context.stats)
+	root.set_meta("directional_shadow_material", context.shade)
+	root.set_meta("directional_shadow_groups", context.shadow_groups)
+	root.set_meta("directional_shadow_nodes", context.shadow_nodes)
+	root.set_meta("directional_population_shadow_groups", context.population_shadow_groups)
+	root.set_meta("directional_population_shadow_node", context.population_shadow_node)
+	root.set_meta("directional_shadow_signature", _shadow_signature(context.sun, context.shadow_strength))
+	root.set_meta("directional_shadow_strength", context.shadow_strength)
 	root.set_meta("damage_state", {})
-	root.set_meta("damage_lighting", lighting.duplicate(true))
-	return root
+	root.set_meta("damage_lighting", context.lighting.duplicate(true))
+	context.phase = _SceneryPhase.DONE
 
 
 ## Prepare scene-local scenery shadows from their retained source placements. No live scene resources are changed here,

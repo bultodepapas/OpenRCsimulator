@@ -514,3 +514,104 @@ The driver-controlled flash-trigger path required for NVIDIA's complete Reflex
 verification remains absent. DLSS camera-cut history resets, temporal motion
 quality, long-session behavior and other GPU/driver/platform qualification remain
 open. Frame generation, ray reconstruction and path tracing are still disabled.
+
+## Current-source Windows package and settings promotion — 2026-10-28
+
+The owner requested normal selectable NVIDIA settings, superseding their
+experimental UI status. `product.py` packages the current application, rather
+than the older trial snapshot. The Windows package opens at Home with Forward+;
+DLSS/DLAA are saved reconstruction choices and Reflex offers Off, On and Boost,
+with On as its default request. Unsupported features remain visibly unavailable.
+The [operating guide](../../../../../tools/graphics/native/README.md) owns commands
+and platform limits. Official cross-platform engine selection is unchanged.
+
+The frozen package uses application HEAD `a7b3a79bb185` plus the receipted working
+tree. Its import and export passed; the 17 packager regressions and receipt
+verification passed. The importer rewrote 322 authoring sidecars, so the tool
+restores their pinned bytes and reconciles only checked cache identities. The
+initial export reproduced a source-proof failure; the corrected export passed
+without reimporting or bypassing aircraft/native-kernel plugins. Maple alpha
+coverage remains an explicitly unsupported import option, not equivalent output.
+
+On the RTX 3090, the actual 1920×1080 Settings screen passed DLAA dispatch,
+DLSS Quality, default Reflex On, Boost/Off, Keep and Revert. The screenshot was
+inspected. Quality and Boost survived a process restart, with Boost accepted by
+the SDK. The full-game DLSS mode/resize/Native restoration and Reflex marker
+fixtures passed. Both bridge sessions closed without crashes or ObjectDB leaks.
+
+The release executable produced an inspected 1080p capture with 32 successful
+DLSS dispatches, no fallback, Reflex On accepted and zero expired tokens.
+Ordinary Home and the Compatibility recovery launch both passed checked execution
+and normal window-close shutdown with zero errors/warnings. An earlier
+`--quit-after 180` invocation interrupted asynchronous startup and failed; it is
+excluded from acceptance. An independent empty-project PCK check also loaded the
+reported resources successfully. Do not use frame-limited termination as proof
+that asynchronous Home preparation completed.
+
+[Package identities and verification](verification-product-2026-10-28.json)
+retain the exact artifact hashes, checked runs, UI fixture, smoke results and
+known failed invocation. Raw logs and images remain in ignored `tmp/` paths.
+This is functional verification, not an FPS, latency, temporal-quality or
+cross-device guarantee. The [official NVIDIA/Godot review](../../../advanced-graphics-2026-10-21/nvidia-dlss-reflex-2026-10-28.md)
+prioritizes the remaining camera-history, exposure, accepted-resolution and
+Reflex measurement work.
+
+## DLSS temporal-history follow-up — 2026-10-28
+
+`dlss_history_reset.patch` replaces the constant-false reset input with
+viewport-scoped generations. Requests survive warm-up, multiple requests before
+evaluation coalesce, and only successful SDK evaluation acknowledges the captured
+generation. Camera/scenario RID changes invalidate that viewport. App view/style
+changes, flight reset, fly-by reposition, snap zoom, chase teleport and crash-focus
+entry/exit submit explicit discontinuities; ordinary camera updates retain history.
+The [operating contract](../../../../../tools/graphics/native/README.md#integration-contract)
+and [rendered fixture](../../../../../tools/graphics/native/repro/README.md#dlss-temporal-history-regression)
+own API details and reproduction commands.
+
+On the RTX 3090 / driver 617.42, two independent 1920 × 1080 DLAA viewports
+completed deferred/warm-up requests, coalescing, unchanged attachments and
+camera/scenario changes with exactly five successful reset evaluations. Default
+rendering completed 377 SDK evaluations; separate-thread fixed-60 rendering
+completed 375. Both checked runs had zero engine/Vulkan errors. The six-phase
+DLAA/Quality/Balanced/Performance and resize regression also passed on the new
+editor with separate-thread fixed-60 rendering and validation enabled. Loader
+notifications and Godot's separate-thread warning remain visible; the product
+keeps its ordinary rendering-thread configuration.
+
+The eight build regressions and seventeen product regressions passed, including
+the actual compiled C++ generation helper. That helper checks acknowledgement
+ordering and omitted success; it is not real SDK failure injection. The existing
+backend still latches SDK failures and falls back rather than retrying in process.
+Global status fields use separate atomics and were sampled after isolated settled
+phases; they are not coherent per-viewport telemetry under arbitrary concurrency.
+Stereo/XR, arbitrary uninstrumented teleports, moving-image quality and hardware
+latency remain outside this evidence. Streamline 2.11.1 and preset K are unchanged.
+
+The frozen application (`b56eb5fa3` plus NVIDIA overlays) passed 177 headless
+checks: camera route 35, camera history 24, reconstruction history 16 and
+reconstruction policy 102. Native API presence omits stock-only assertions. The
+1080p full-game bridge fixture passed pilot-to-chase, steady paused rendering,
+flight restart and orbit: each tested discontinuity caused one successful reset,
+DLSS continued dispatching and Reflex On remained accepted. The session closed
+without a crash or ObjectDB leak. Crash-focus transitions are covered by the
+headless route test, not a rendered crash sequence.
+
+Matching editor and release-template receipts produced the updated Windows
+package. Its 1080p exported capture passed with 32 DLSS evaluations, one initial
+reset, no fallback and Reflex On accepted; the image was inspected. Ordinary
+Home startup and normal window-close shutdown also passed checked execution.
+Both exported checks had zero errors and warnings. The 33-file package passed
+receipt verification before and after promotion to `dist/windows-nvidia`.
+
+The checkout initially changed integration line endings, which package preflight
+correctly rejected. Exact editor input bytes were restored before rebuilding the
+template. Solver source bytes were also restored before the final snapshot to
+preserve the existing physics source identity. The frozen build excludes parallel
+FSR SDK/history changes. No receipt check or authoring export gate was bypassed.
+
+[Verification identities and results](verification-history-2026-10-28.json)
+include the builds, artifact hashes, twelve checked runs, full-game counters,
+shutdown and excluded early fixture/import attempts. Raw logs, captures and the
+previous package remain ignored under `tmp/`. The camera-history source gap from
+the earlier review is addressed for these events; exposure diagnostics and Reflex
+hardware measurement remain open.

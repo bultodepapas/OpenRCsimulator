@@ -1,53 +1,45 @@
 # Tool index
 
-Find the tool for your task here before you write ad-hoc test or debug code. Read only the doc your task row names. Run commands from the repository root in Bash. Human setup and the release sequence live in [TOOLS](../TOOLS.md).
+Choose a tool before writing ad-hoc test or debug code. Read the linked contract for its inputs, outputs and side effects. Commands below assume the repository root and Bash; native Windows uses `python`. [Setup and releases](../TOOLS.md) · [Architecture](../STACK.md).
 
 ## Route by task
 
-| Task | Read | First command |
-| --- | --- | --- |
-| Run the tests, or check a change before commit | [shared](shared.md#full-app-suite) | `app/test.sh` |
-| Run or write one test script | [shared](shared.md#one-godot-script) | `python3 tools/godot/run_checked.py --timeout 90 -- "$(app/get-godot.sh)" --headless --path app --script res://tests/test_X.gd` |
-| Launch the app with flags, or write a headless trace | [shared](shared.md#launch-flags) | `"$(app/get-godot.sh)" --headless --path app -- --trace=tmp/t.csv --t=3` |
-| Change aircraft handling (roll rate, throws, aero data) and validate it | [physics](physics.md#flight-test-battery) | `python3 research/flight-test/run.py --out tmp/ft-base --aircraft <id> --only trim_sweep,stall_power_off,vmax,roll_rate` |
-| Edit an aircraft JSON or other generated data | [physics](physics.md#aircraft-data-and-generators) | run the owning generator's `--check` |
-| Compare flight feel before and after a physics change | [physics](physics.md#flight-log-and-replay) | `python3 tools/flight_log/flight_log.py --help` |
-| Develop or diagnose the NK-3 C++ port (ASan/UBSan, compilation database, profiling symbols, exactness/timing) | [Native kernel tools](../../research/native-kernel/README.md#c-development-tools-nk-3) | `python3 research/native-kernel/devtools.py --help` |
-| Change shaders, materials, lighting, landscape or scenery and verify it | [graphics](graphics.md#area-capture-checkers) | `"$(app/tests/visual-env.sh)" tools/<area>/check_*.py --app app --godot "$(app/get-godot.sh)" --out tmp/<new>` |
-| Run the full visual capture set | [graphics](graphics.md#visual-capture-suite) | `app/capture.sh` |
-| Measure frame time or GPU cost | [graphics](graphics.md#frame-diagnosis) | `--frametimes=<json> --frame-diagnostics` |
-| Drive or inspect the running app: menus, settings, keys, controller actions, sticks, state, live log, screenshots | [debug bridge](../../tools/debug/README.md#quick-start) | `python3 tools/debug/debugctl.py launch --headless` (plain `launch` for 1080p pictures), then `ui`, `press text=Fly`, `state`, `logs --follow` |
-| Check the running app before a commit (UI crawl, flow scenarios, random UI walk, leak soak, crash report) | [debug bridge → smoke](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8) | `python3 tools/debug/debugctl.py smoke` (about 3.5 min) |
-| Find a stutter, a slow action or a long loading frame | [debug bridge → stutter](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8) | `frames`; phases inside one frame: `launch --verbose`, then `timeline --hitch`; script CPU: `launch --script-profile`, then `profile seconds=20` |
-| Find a leak or growth over repeated actions | [debug bridge → leaks](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8), [lifecycle check](../../tools/godot/README.md#repeated-scene-lifecycle-checks-pt1h-r6) | `soak scenario.txt --cycles 5`; `objects baseline=true` … `objects diff=true` |
-| Stop a flight at the tick something goes wrong | [debug bridge → watchpoints](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8) | `break expr="-s[2] < 1" wait=true` |
-| Find UI bugs nobody scripted | [debug bridge → monkey](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8) | `monkey --steps 300 --seed 1 --keys` (a failure leaves a replayable script) |
-| Check GDScript compiler warnings | [debug bridge → warnings](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8) | `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'` |
-| A crash or objects leaked at exit | [debug bridge launch options](../../tools/debug/README.md#quick-start), [incident bundles](../../tools/godot/README.md#incident-bundles-and-perfetto-timelines-pt1h-r5) | `debugctl.py stop` / `status` print the crash reason, GDScript backtrace and leaks |
-| Debug any bug | [debugging](debugging.md) | — |
-| Debug a flight, force or trace bug | [debugging-physics](debugging-physics.md) | — |
-| Debug a rendering or visual bug | [debugging-graphics](debugging-graphics.md) | — |
-| Find out why CI failed | [shared](shared.md#ci) | `gh run view <id> --log-failed` |
-| Menus and UI | [shared](shared.md#one-godot-script) for `app/tests/test_ui_*.gd`; UI screenshots run inside `app/capture.sh` | — |
-| Regenerate the official startup logo segments | [Branding source](../../app/assets/branding/README.md) | `python tools/branding/build_logo.py --check` |
-| Build/check website languages and search metadata | [Website guide](../../site/README.md#search-metadata-and-static-languages-web-0811) | `python3 site/build_locales.py --check` then `python3 site/test_locales.py` |
-| Regenerate website, README and sharing logos | [Public identity](../../site/BRANDS.md#openrc-identity) | `python tools/branding/build_public.py --check` |
-| Audio | [tools/audio](../../tools/audio/README.md) | read the requirements caveat in [shared](shared.md#known-broken-or-stale-tools) |
-| Inspect or drive Blender from an agent (scene queries, Python, renders, API and manual search) | [tools/blender](../../tools/blender/README.md) | `tools/blender/mcp-setup.sh`, then `tools/blender/mcp-bridge.sh <file.blend>` |
-| Aircraft Workshop | [TOOLS → Aircraft Workshop](../TOOLS.md#aircraft-workshop) | — |
-| Radio and controller diagnostics | [TOOLS → Radio diagnostics](../TOOLS.md#radio-diagnostics) | — |
-| Helicopter, ground vehicle | [HELICOPTER](../HELICOPTER.md), [RC monster truck](../../research/rc-monster-truck/README.md) | — |
-| Physical measurement reduction (mass, inertia, thrust, video) | [TOOLS → reducers](../TOOLS.md#aircraft-measurement-reducers) | — |
-| Export or release | [TOOLS → Release sequence](../TOOLS.md#release-sequence) | `app/export.sh` |
+| Task | Entry point / contract |
+| --- | --- |
+| Full app checks or a CI partition | `app/test.sh`; [suite and snapshot rules](shared.md#full-app-suite). |
+| One Godot test, probe or parse check | [Checked runner](shared.md#one-godot-script); catches errors even when Godot exits zero. |
+| Direct flight, weather or headless trace | [Launch flags](shared.md#launch-flags) and [trace validation](physics.md#headless-trace-checks). |
+| Aircraft handling comparison | [Flight-test battery](physics.md#flight-test-battery); match baseline/candidate aircraft and case sets. |
+| Aircraft data or generated assets | [Source pipelines](physics.md#aircraft-data-and-generators); edit the owner, regenerate, then `--check`. |
+| Flight feel, exact replay or candidate replay | [Flight logs](../FLIGHT-LOGGING.md); preserve a baseline and the same input tape. |
+| Native flight backend development | [NK-3 C++ tools](../../research/native-kernel/README.md#c-development-tools-nk-3): sanitizers, symbols, exactness and timing. |
+| Rendering, materials, lighting or scenery | [Area checkers](graphics.md#area-capture-checkers); full suite: `app/capture.sh`. |
+| Frame time or GPU cost | [Frame diagnosis](graphics.md#frame-diagnosis); use the target display/GPU and record actual pixels. |
+| High profile or Windows NVIDIA package | [Graphics modes](../../tools/graphics/README.md); [NVIDIA build/launch](../../tools/graphics/native/README.md). |
+| Running-app UI, keys, sticks, state, logs or screenshots | `python3 tools/debug/debugctl.py launch`; [debug bridge](../../tools/debug/README.md#quick-start). Add `--headless` when rendering is unnecessary. |
+| Running-app regression pass | `python3 tools/debug/debugctl.py smoke`; [scenarios and limits](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8). |
+| Stutter, script CPU, leaks, watchpoints or UI fuzzing | [Debug bridge diagnostics](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8): `frames`, `timeline`, `profile`, `objects`, `soak`, `break`, `monkey`. |
+| GDScript compiler warnings | `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'`; [warning baseline](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8). |
+| Crash, exit leaks, process RAM or disk use | [Incident bundles](../../tools/godot/README.md#incident-bundles-and-perfetto-timelines-pt1h-r5), [resource tools](../../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4). |
+| Bug investigation | [General playbook](debugging.md), [physics](debugging-physics.md), [graphics](debugging-graphics.md). |
+| CI failure or evidence summary | [CI](shared.md#ci); [checked-log summary/JUnit](shared.md#evidence-summary). |
+| Aircraft Workshop | [Generation, tests, captures and analysis](../TOOLS.md#aircraft-workshop). |
+| Player skin template and texture-only export | [Skin toolkit](../../tools/skins/README.md); [player tutorial](../AIRCRAFT-SKINS.md). |
+| Radio/controller diagnostics | [Device report, calibration and latency](../TOOLS.md#radio-diagnostics). |
+| Helicopter or ground vehicle | [Helicopter guide](../HELICOPTER.md), [ground-vehicle tools](../../research/rc-monster-truck/README.md). |
+| Physical measurements | [Mass, inertia, thrust and video reducers](../TOOLS.md#aircraft-measurement-reducers). |
+| Audio | [Audio tool contracts and dependencies](../../tools/audio/README.md). |
+| Blender scene inspection or authoring | [Blender bridge and setup](../../tools/blender/README.md); apply `openrc-blender` first. |
+| Startup or public logos | [Startup source](../../app/assets/branding/README.md), [public identity](../../site/BRANDS.md#openrc-identity); use their generator `--check` first. |
+| Website languages and metadata | [Website workflow](../../site/README.md#search-metadata-and-static-languages-web-0811). |
+| GitHub visits and release download history | [Local analytics collector and daily task](../../tools/analytics/README.md); country attribution is limited to website requests. |
+| Export or release | [Release sequence](../TOOLS.md#release-sequence); `app/export.sh` reserves a fresh output directory and preserves previous runs. |
 
 ## Rules for every tool
 
-- In a fresh checkout, worktree or app copy, import once before running any Godot tool: `"$(app/get-godot.sh)" --headless --path <app-dir> --audio-driver Dummy --import` (the form `app/test.sh` uses). Without the import cache, scripts fail with missing `.godot/imported` resources. Pass `--godot "$(app/get-godot.sh)"` to Python runners that accept it.
-- Use a new output directory under ignored `tmp/` for every run. Several tools refuse or silently overwrite existing output.
-- Read the engine log, not only the exit code. Godot can print `SCRIPT ERROR` and still exit 0; `tools/godot/run_checked.py` catches this.
-- A "pending" physical check, a valid flight-test case or a matching capture is software evidence, not physical validation.
-- Search with `rg --glob '!app/captures/**' --glob '!tmp/**'`. `app/captures/` holds stale script copies and `docs/research/**/*.json` holds large manifests that match every path.
-- A tool marked **unverified** in these docs exists but has not been run on the Linux dev VM; check its own README before you rely on it.
-- Other agents may work on this machine at the same time. Run at most one rendered app; give every debug-bridge
-  command after `launch` your session's port: `OPENRC_DEBUG_BRIDGE=<port> python3 tools/debug/debugctl.py …`.
-- Agent skills route here: `openrc-tools` (this index) and `openrc-debug` (the running app).
+- [Import the pinned engine's resources](shared.md#engine) before standalone scripts in a fresh checkout or copy.
+- Use a fresh ignored output directory for each run. Read the contract before invoking generators, `--accept`, exports or cleanup; do not assume `--help` is harmless for legacy scripts.
+- Read the checked verdict and logs, not only the exit code. Verify requested cases and completion; [known caveats](shared.md#known-broken-or-stale-tools) identify partial-result and overwrite risks.
+- Keep long runs on the exact source snapshot being reviewed. Coordinate one rendered app at a time and pass your debug session's port on subsequent commands: `OPENRC_DEBUG_BRIDGE=<port> python3 tools/debug/debugctl.py …`.
+- Report the platform, renderer, actual resolution and evidence limits. Pending physics checks, matching images and software-only timing do not establish physical or target-hardware acceptance.
+- Follow [AGENTS](../../AGENTS.md#discover-code) for code discovery. Agent skills `openrc-tools` and `openrc-debug` route to these guides.

@@ -1,0 +1,12 @@
+{
+  "checked_commit": "ad259fa135beb3509f24ab658adea570424ba8f8",
+  "native_build_py_sha256": "ed13be487ddf35bb0aba7d2ccaef8d865357edd48fc5e1f181dc847f07e0f46e",
+  "reference_sources_count": 130,
+  "own_code_paths": [
+    "app/scenery/scenery.gd",
+    "app/render/field.gd",
+    "app/tests/test_field_staged_build.gd",
+    "research/performance/loading_probe.gd"
+  ],
+  "overlap": []
+}

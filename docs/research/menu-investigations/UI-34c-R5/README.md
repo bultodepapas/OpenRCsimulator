@@ -58,3 +58,5 @@ Main integration `b9b84eb49` preserves the concurrent reconstruction guard. A ch
 Next work remains bounded by the execution plan: investigate the retained refusal, extend integrated lifecycle coverage, then split measured scenery/contact/effects construction. Preserve exact replay/source identities and existing golden recordings. No speculative selection-dwell preparation, persistent disk cache or renderer change is qualified here.
 
 The [2026-10-25 menu-preparation research](menu-prefetch-2026-10-25.md) and [implemented follow-up](menu-preparation-2026-10-25/README.md) retain separate evidence: five paired native comparisons, mode/dwell experiments, a 20-transition soak and branded-startup lifetime repairs. They do not change the scope or results of this earlier cohort.
+
+The [2026-10-28 scenery checkpoint follow-up](scenery-chunks-2026-10-28/README.md) splits the remaining synchronous scenery build and retains independent geometry/material comparisons, cancellation checks and five native 1080p loading pairs. Its shorter scenery blocks do not qualify total loading latency or the other remaining stalls.

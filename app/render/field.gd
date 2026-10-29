@@ -25,6 +25,9 @@ const Countryside = preload("res://render/landscape_upgrade/countryside.gd")
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03, "rotorpad": 0.015}
 const GROUND_SUBDIVISIONS := 63
+## A checkpoint draws a frame, so batch deterministic scenery units into bounded CPU chunks.
+## One indivisible unit may exceed this budget; large subsystems are isolated by stage.
+const SCENERY_BUILD_BUDGET_USEC := 16000
 static var _default_light_exclusions_loaded := false
 static var _default_light_exclusions_cache: Array[Dictionary] = []
 
@@ -65,6 +68,8 @@ class _BuildContext:
 	var tree_half_angle: float = 0.0
 	var flight_cues: Array
 	var scenery_options: Dictionary
+	var scenery_build: Variant
+	var scenery_started: bool = false
 	var lake: Dictionary
 	var scenery_node: Node3D
 	var exclusions: Array
@@ -73,12 +78,14 @@ class _BuildContext:
 	var build_countryside: bool = false
 
 	func _init(field_input: Dictionary, lighting_input: Dictionary, extra_input: Array) -> void:
-		field = field_input
-		lighting = lighting_input
-		extra_grass_exclusions = extra_input
+		var started := Time.get_ticks_usec()
+		field = field_input.duplicate(true)
+		lighting = lighting_input.duplicate(true)
+		extra_grass_exclusions = extra_input.duplicate(true)
 		flight_cues = field.get("flight_cues", [])
 		result = Node3D.new()
 		result.name = "Field"
+		work_usec = Time.get_ticks_usec() - started
 
 
 ## Synchronous builder: drain the exact same ordered steps as build_staged without yielding or workers.
@@ -108,6 +115,9 @@ static func build_staged(field: Dictionary, lighting: Dictionary = {}, extra_gra
 		if checkpoint.is_valid():
 			var keep_going: Variant = await checkpoint.call(stage)
 			if not (keep_going is bool and keep_going):
+				if context.scenery_build != null:
+					Scenery.cancel_build(context.scenery_build)
+					context.scenery_build = null
 				var partial: Node3D = context.result
 				context.result = null
 				partial.free()
@@ -236,9 +246,25 @@ static func _advance_build(context: _BuildContext) -> void:
 							GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			context.phase = _BuildPhase.SCENERY_ATTACH
 		_BuildPhase.SCENERY_ATTACH:
-			# Scenery.attach remains one synchronous chunk; the staged builder cannot preempt inside it.
-			Scenery.attach(context.result, context.field, context.lighting, context.lake)
-			context.phase = _BuildPhase.LAKE_ATTACH
+			var started := Time.get_ticks_usec()
+			if not context.scenery_started:
+				context.scenery_started = true
+				context.scenery_build = Scenery.begin_attach(context.field, context.lighting, context.lake)
+				if context.scenery_build == null:
+					context.phase = _BuildPhase.LAKE_ATTACH
+					return
+				if Time.get_ticks_usec() - started >= SCENERY_BUILD_BUDGET_USEC:
+					return
+			var stage: String = Scenery.next_build_stage(context.scenery_build)
+			while not Scenery.build_finished(context.scenery_build):
+				Scenery.advance_build(context.scenery_build)
+				if Time.get_ticks_usec() - started >= SCENERY_BUILD_BUDGET_USEC \
+						or Scenery.next_build_stage(context.scenery_build) != stage:
+					break
+			if Scenery.build_finished(context.scenery_build):
+				context.result.add_child(Scenery.take_build(context.scenery_build))
+				context.scenery_build = null
+				context.phase = _BuildPhase.LAKE_ATTACH
 		_BuildPhase.LAKE_ATTACH:
 			var lake_node := LakeWorld.attach(context.result, context.field, context.grass, context.lake,
 				context.lighting, bool(context.scenery_options.audio))

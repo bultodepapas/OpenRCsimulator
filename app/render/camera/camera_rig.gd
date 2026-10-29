@@ -13,6 +13,7 @@ const CameraMath := preload("res://render/camera/camera_math.gd")
 const ChaseView := preload("res://render/camera/chase_view.gd")
 const OrbitView := preload("res://render/camera/orbit_view.gd")
 const FlybyView := preload("res://render/camera/flyby_view.gd")
+const Reconstruction := preload("res://render/reconstruction.gd")
 
 ## The C cycle, in order. Number keys select pilot (1), chase (2), fly-by (4) and orbit (5); 3, 6, 7 are reserved
 ## (plan §4.4).
@@ -87,6 +88,7 @@ var _orbit_primed := false
 ## The eye the orbit started from this frame (INF otherwise): focus() re-anchors that start on the wreck (CAM-27).
 var _orbit_entry_eye := Vector3.INF
 var _placed := false # the camera has been placed by a view at least once (orbit can start from it)
+var _history_chase_zoom := NAN
 
 
 func _init(rig_camera: Camera3D, span: float) -> void:
@@ -116,6 +118,8 @@ func set_view(id: String) -> bool:
 	if id == view:
 		return true
 	view = id
+	_history_chase_zoom = NAN
+	_request_history_reset("camera_view_changed")
 	_screen_up = Vector3.ZERO
 	if id == "chase":
 		chase.reset()
@@ -134,6 +138,8 @@ func select_view(id: String) -> bool:
 	if id == "chase" and view == "chase":
 		chase.style = "follow3d" if chase.style == "horizon" else "horizon"
 		chase.reset()
+		_history_chase_zoom = NAN
+		_request_history_reset("camera_chase_style_changed")
 		return true
 	return set_view(id)
 
@@ -175,7 +181,10 @@ func zoom(steps: float) -> void:
 		"orbit":
 			orbit.dolly(factor)
 		"flyby":
+			var previous := flyby.zoom
 			flyby.zoom = clampf(flyby.zoom / factor, 0.25, 4.0)
+			if not is_equal_approx(previous, flyby.zoom):
+				_request_history_reset("camera_flyby_zoom")
 
 
 ## Backspace: the current view's zoom and offsets back to their defaults.
@@ -189,8 +198,12 @@ func reset_view() -> void:
 			chase.zoom = 1.0
 		"orbit":
 			orbit.reset()
+			_request_history_reset("camera_orbit_reset")
 		"flyby":
+			var changed := not is_equal_approx(flyby.zoom, 1.0)
 			flyby.zoom = 1.0
+			if changed:
+				_request_history_reset("camera_flyby_zoom")
 
 
 ## CAM-29: while the right button turns the orbit the cursor is held (hidden, no window edge to run into); it is
@@ -214,6 +227,8 @@ func drag(relative: Vector2) -> void:
 
 ## A restarted flight: views with memory start settled again.
 func reset() -> void:
+	_request_history_reset("camera_flight_reset")
+	_history_chase_zoom = NAN
 	chase.reset()
 	flyby.reset()
 	_screen_up = Vector3.ZERO
@@ -250,9 +265,27 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 		"closeup":
 			PilotCamera.aim(camera, target, airplane, true)
 		"chase":
+			# 3D follow changes its boom at once when zoom changes; horizon chase
+			# eases its zoom through its spring.
+			var primed: bool = chase._primed
+			# ChaseView itself snaps at this boundary instead of following a teleport.
+			var target_cut := primed and not paused and dt > 0.0 \
+					and (target - chase._last_target).length() > ChaseView.TELEPORT_SPEED * dt
+			if target_cut:
+				_request_history_reset("camera_target_teleport")
+			if primed and chase.style == "follow3d" and not paused and dt > 0.0 and not is_nan(_history_chase_zoom) \
+					and not is_equal_approx(_history_chase_zoom, chase.zoom) and not target_cut:
+				_request_history_reset("camera_chase_zoom")
+			if not primed or (not paused and dt > 0.0):
+				_history_chase_zoom = chase.zoom
 			_apply(chase.update(target, body, dt, paused, ground_y, velocity, obstacles))
 		"flyby":
-			_apply(flyby.update(target, body, velocity, dt, paused, ground_y, light_direction, obstacles))
+			var had_placement: bool = flyby._placed
+			var previous_position: Vector3 = flyby.position
+			var placement := flyby.update(target, body, velocity, dt, paused, ground_y, light_direction, obstacles)
+			if had_placement and flyby.position != previous_position:
+				_request_history_reset("camera_flyby_reposition")
+			_apply(placement)
 		"orbit":
 			if not _orbit_primed:
 				if _placed:
@@ -263,6 +296,11 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 				_orbit_primed = true
 			_apply(orbit.update(target, ground_y, dt, obstacles))
 	_placed = true
+
+
+func _request_history_reset(reason: String) -> void:
+	if is_instance_valid(camera) and camera.is_inside_tree():
+		Reconstruction.request_history_reset(camera.get_viewport(), reason)
 
 
 ## CAM-27: a crash aftermath, called after update() in the same frame. Non-pilot views look at `point` (the wreck's

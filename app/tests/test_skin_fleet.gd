@@ -1,0 +1,148 @@
+extends SceneTree
+
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Skins := preload("res://aircraft/custom_skin.gd")
+const Builder := preload("res://render/airplane.gd")
+var checks := 0
+var failures := 0
+var paths: Array[String] = []
+
+func _initialize() -> void:
+	_run.call_deferred()
+
+func check(label: String, value: bool) -> void:
+	checks += 1
+	if not value:
+		failures += 1
+		printerr("FAIL ", label)
+
+func package(id: String, spec: Dictionary) -> String:
+	var image := Image.create(4, 4, false, Image.FORMAT_RGBA8)
+	image.fill(Color(0.1, 0.8, 0.6, 1))
+	var records := []
+	for group: Dictionary in spec.paints:
+		for material: String in group.materials:
+			records.append({name = material, base_color = [1, 1, 1, 1], texture = "paint.png"})
+	var manifest := {format = "openrc-skin", version = 1, aircraft_id = Skins.family(id),
+		base_asset_sha256 = spec.stock_sha256, label = "Fleet paint", materials = records}
+	var path := Skins._root + Skins.family(id) + ".orskin"
+	var zip := ZIPPacker.new()
+	if zip.open(path) != OK: return ""
+	zip.start_file("manifest.json")
+	zip.write_file(JSON.stringify(manifest).to_utf8_buffer())
+	zip.close_file()
+	zip.start_file("paint.png")
+	zip.write_file(image.save_png_to_buffer())
+	zip.close_file()
+	zip.close()
+	paths.append(path)
+	return path
+
+func _run() -> void:
+	Skins._root = "user://skin-fleet-%d/" % Time.get_ticks_usec()
+	DirAccess.make_dir_recursive_absolute(Skins._root)
+	var requested := OS.get_cmdline_user_args()
+	var ids := requested if not requested.is_empty() else Catalog.ids()
+	var packages := {}
+	for id: String in ids:
+		var spec := Skins.kit(id)
+		check(id + " has a kit", not spec.is_empty() and FileAccess.file_exists(Skins.kit_path(id)))
+		if spec.is_empty(): continue
+		check(id + " matches its stock identity", Skins.base_identity(id) == spec.stock_sha256)
+		var path := package(id, spec)
+		var imported := Skins.import_file(path, id)
+		check(id + " imports", imported.get("ok", false))
+		if not imported.get("ok", false):
+			printerr(imported)
+			continue
+		paths.append(Skins._path_for(id, imported.id))
+		packages[id] = path
+		check(id + " resolves after import", Builder.resolve_livery(id, imported.id) == imported.id)
+		var stock := Builder.build(id)
+		var painted := Builder.build(id, NAN, {}, imported.id)
+		check(id + " builds stock and custom", not stock.is_empty() and not painted.is_empty())
+		if not stock.is_empty() and not painted.is_empty():
+			root.add_child(stock.root)
+			root.add_child(painted.root)
+			await process_frame
+			await process_frame
+			check(id + " selected identity retained", painted.get("custom_skin", {}).get("id") == imported.id)
+			if not Catalog.is_rotorcraft(id):
+				var had_asset_identity: bool = stock.root.has_meta("asset_sha256")
+				var same_asset_identity: bool = painted.root.has_meta("asset_sha256") == had_asset_identity
+				if had_asset_identity and same_asset_identity:
+					same_asset_identity = painted.root.get_meta("asset_sha256") == stock.root.get_meta("asset_sha256")
+				check(id + " preserves stock asset identity", same_asset_identity)
+			_compare(id, stock.root, painted.root, spec)
+		if painted.get("root") is Node: _free_children_first(painted.root)
+		if stock.get("root") is Node: _free_children_first(stock.root)
+		await process_frame
+	for id: String in packages:
+		var other := "skywalker-x8" if id != "skywalker-x8" else "xcell-60-research"
+		check(id + " rejects wrong family", not Skins.import_file(packages[id], other).get("ok", false))
+	for path: String in paths:
+		DirAccess.remove_absolute(path)
+	for id: String in ids:
+		DirAccess.remove_absolute(Skins._root + Skins.family(id))
+	DirAccess.remove_absolute(Skins._root)
+	Skins._root = Skins.ROOT
+	print("Skin fleet: %d checks, %d failed" % [checks, failures])
+	quit(1 if failures else 0)
+
+
+func _free_children_first(node: Node) -> void:
+	# Two detailed Timber assemblies can expose freed material RIDs in Godot's
+	# dummy renderer during whole-subtree destruction. Dispose children first.
+	for child: Node in node.get_children(): _free_children_first(child)
+	node.free()
+
+
+func _compare(id: String, stock: Node3D, painted: Node3D, spec: Dictionary) -> void:
+	var names := {}
+	for group: Dictionary in spec.paints:
+		for material: String in group.materials: names[material] = 0
+	var geometry_equal := true
+	var transforms_equal := true
+	for original: Node in stock.find_children("*", "Node3D", true, false):
+		var target := painted.get_node_or_null(stock.get_path_to(original)) as Node3D
+		if target == null and str(original.name).begins_with("@"):
+			var parent := painted.get_node_or_null(stock.get_path_to(original.get_parent()))
+			if parent != null and original.get_index() < parent.get_child_count():
+				target = parent.get_child(original.get_index()) as Node3D
+		if target == null:
+			printerr("MISSING NODE ", id, " ", stock.get_path_to(original))
+			transforms_equal = false
+			continue
+		transforms_equal = transforms_equal and target.transform.is_equal_approx(original.transform)
+		if not original is MeshInstance3D or original.mesh == null: continue
+		if not target is MeshInstance3D or target.mesh == null or target.mesh.get_surface_count() != original.mesh.get_surface_count():
+			geometry_equal = false
+			continue
+		for surface in original.mesh.get_surface_count():
+			var before: Array = original.mesh.surface_get_arrays(surface)
+			var after: Array = target.mesh.surface_get_arrays(surface)
+			geometry_equal = geometry_equal and _same_triangles(before, after)
+			var material: Material = target.get_active_material(surface)
+			if material != null and names.has(material.resource_name):
+				names[material.resource_name] += 1
+				check(id + " material is instance-owned", material != original.get_active_material(surface))
+				var texture: Texture2D = material.albedo_texture if material is StandardMaterial3D else material.get_shader_parameter("paint_texture" if material.resource_name.begins_with("openrc-paint-") else "openrc_paint_texture")
+				check(id + " receives the edited PNG", texture != null and texture.get_width() == 4 and texture.get_height() == 4)
+	check(id + " preserves vertex positions, normals and triangles", geometry_equal)
+	check(id + " preserves names, transforms and hinges", transforms_equal)
+	for material: String in names:
+		check(id + " applies " + material, names[material] > 0)
+
+
+func _same_triangles(before: Array, after: Array) -> bool:
+	var indices_a: PackedInt32Array = before[Mesh.ARRAY_INDEX] if before[Mesh.ARRAY_INDEX] != null else PackedInt32Array()
+	var indices_b: PackedInt32Array = after[Mesh.ARRAY_INDEX] if after[Mesh.ARRAY_INDEX] != null else PackedInt32Array()
+	var count_a: int = indices_a.size() if not indices_a.is_empty() else before[Mesh.ARRAY_VERTEX].size()
+	var count_b: int = indices_b.size() if not indices_b.is_empty() else after[Mesh.ARRAY_VERTEX].size()
+	if count_a != count_b: return false
+	for i in count_a:
+		var a := indices_a[i] if not indices_a.is_empty() else i
+		var b := indices_b[i] if not indices_b.is_empty() else i
+		if before[Mesh.ARRAY_VERTEX][a] != after[Mesh.ARRAY_VERTEX][b]: return false
+		if before[Mesh.ARRAY_NORMAL] != null and (before[Mesh.ARRAY_NORMAL][a] - after[Mesh.ARRAY_NORMAL][b]).length() > 0.0002: return false
+	return true

@@ -8,6 +8,12 @@ VQ-07d/h for immediate work and supersedes their earlier vendor deferral. Keep t
 custom engine and package separate from the official engine; broader performance,
 motion-quality and release gates still apply. [Native integration guide](../../tools/graphics/native/README.md).
 
+**AMD planning request, 2026-10-28:** the [FSR completion plan](amd-fsr-completion.md)
+owns the remaining VQ-07d/h AMD substeps, including SDK2.4 Vulkan upscaling,
+FSR4 and separate frame-generation integration. Its [dated audit](../research/advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md)
+supersedes older SDK2.3 API restrictions. These are pending implementation and
+qualification tasks; RR/radiance caching retain separate renderer prerequisites.
+
 Make OpenRC look substantially more convincing while flying: recognizable aircraft materials, stable vegetation, coherent sunlight and atmosphere, convincing ground contact, and smooth motion. Use modern rendering where it improves those outcomes. “AAA quality” is an ambition, not an acceptance metric or a promise of a particular technology.
 
 **Execution order:** freeze a usable baseline → resolve attributed pacing/loading blockers → prioritize the selected Compatibility work in its owning order. A bounded, isolated Forward+ study may then answer parity/cost questions; only justified candidates advance to combined qualification and accepted settings. Retain Compatibility whenever the renderer study fails its stop/go gates. RTX, neural rendering and frame generation remain deferred.
@@ -200,7 +206,10 @@ Godot documents different shader colour/depth conventions and compositor availab
 
 Owner-requested native-provider follow-up, 2026-10-24: the application now discovers
 optional FSR3/DLSS capabilities, with a separate pinned Windows/Vulkan engine
-experiment. Production uses official 4.8-beta1. See the [implementation evidence](../research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md)
+integration. On 2026-10-28 the owner requested promotion of DLSS, DLAA and Reflex
+to normal selectable settings in the Windows NVIDIA package. The current-source
+package opens at Home with Forward+; the cross-platform build retains official
+4.8-beta1. See the [implementation evidence](../research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md)
 and [build guide](../../tools/graphics/native/README.md). This does not close the
 motion-quality, performance, export or cross-device qualification gates below.
 
@@ -295,7 +304,7 @@ A renderer change always requires broad parity coverage. A one-material edit doe
 | [Visibility runner and packager](../../research/performance/README.md#moving-visibility-reference-vq-01d--cam-22) | Reuse case definitions and metadata validation. Current fixture is Compatibility-only, prescribed poses with frozen shader time; no physics, shadows, moving propeller, HUD or night. It cannot qualify Forward+ temporal history unchanged. |
 | [Shadow tools](../../tools/shadows/README.md), [tree tools](../../tools/trees/README.md), [atmosphere tools](../../tools/atmosphere/README.md) | Reuse relevant oracles, inputs and guards after checking renderer/version and baseline preconditions. Existing Compatibility/static fixtures are not Forward+ or full-flight proof. Do not run an old before-feature verifier against arbitrary snapshots. |
 | [Native frame evidence](../../research/performance/README.md#native-frame-evidence), [loading probe](../../research/performance/README.md#homefly-loading-and-lake-geometry) | Use `--frametimes` for native samples; `--frame-diagnostics` separately for attribution; real Home/Fly route for load cost. CPU callback probes measure different work and cannot replace these. |
-| [App capture/export commands](../TOOLS.md#app-and-release-commands) | `app/capture.sh` is a broad integration check, not a per-knob screen. `app/export.sh` recreates `dist/`: use an isolated checkout. Native execution of exports remains mandatory. Bash workflows on Windows use the documented WSL setup; native GPU trials stay native. |
+| [App capture/export commands](../TOOLS.md#app-and-release-commands) | `app/capture.sh` is a broad integration check, not a per-knob screen. `app/export.sh` reserves a new output directory and locks competing exports: still use an isolated checkout for import/native preparation. Native execution of exports remains mandatory. Bash workflows on Windows use the documented WSL setup; native GPU trials stay native. |
 
 VQ-07a/b must identify the missing Forward+ capture/history coverage and extend only that bounded capability in the isolated experiment, asserting actual renderer, active effects, completion and source identity. Reuse definitions and validators, not historical image artifacts as a new control. Do not claim the current capture suite already covers the experimental renderer.
 

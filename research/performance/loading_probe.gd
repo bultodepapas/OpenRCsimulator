@@ -163,6 +163,8 @@ func _run() -> void:
 			"fly_ready_usec": ready - begin,
 			"fly_first_draw_usec": drawn - begin,
 			"tick_at_first_draw": sim.get("tick"), "paused_at_first_draw": sim.get("paused"),
+			"pause_reason_at_first_draw": str(session.get("pause_reason")),
+			"holds_at_first_draw": session.get("holds").duplicate(),
 			"nodes_in_flight": int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
 			"handoff_frames_usec": handoff.frames_usec,
 		}

@@ -14,6 +14,7 @@ const CAMERA_AIDS: Array[String] = ["off", "horizon", "overhead", "both"]
 const CATEGORIES: Array[String] = ["Display", "Interface", "Sound", "Graphics", "Camera", "Lighting"]
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
+const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 
 signal closed
@@ -55,6 +56,9 @@ var _fps_picker: OptionButton
 var _vsync_picker: OptionButton
 var _msaa_picker: OptionButton
 var _reconstruction_picker: OptionButton
+var _reflex_picker: OptionButton
+var _reflex_poll_seconds := 0.0
+var _reconstruction_failure_key := ""
 var _fsr2_sharpness_slider: HSlider
 var _fsr2_sharpness_value: Label
 var _fsr2_sharpness_dragging := false
@@ -101,7 +105,16 @@ func _init(store: DisplayPreferences = null, initial_language: String = "en") ->
 	_build()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	# The native SDK accepts mode changes at a later frame boundary and can
+	# withdraw support during a session. Refresh the visible receipt in place.
+	_reflex_poll_seconds += delta
+	if _reflex_poll_seconds >= 0.5:
+		_reflex_poll_seconds = 0.0
+		_sync_reflex_controls()
+		if _current_reconstruction_failure_key() != _reconstruction_failure_key:
+			_sync_reconstruction_controls()
+		_refresh_graphics_info()
 	if _trial_deadline_msec <= 0:
 		return
 	var remaining_msec: int = _trial_deadline_msec - Time.get_ticks_msec()
@@ -227,7 +240,13 @@ func _build() -> void:
 	_vsync_picker = _choice_picker("VSync", "vsync_mode", DisplayPreferences.VSYNC_MODES)
 	_add_row(graphics_page, "Vertical synchronization", _vsync_picker)
 	_reconstruction_picker = _choice_picker("Reconstruction", "reconstruction", DisplayPreferences.RECONSTRUCTION_MODES)
+	# Long unavailable provider names belong in the popup, not the width budget
+	# for every row on the 1080p Graphics page.
+	_reconstruction_picker.fit_to_longest_item = false
+	_reconstruction_picker.clip_text = true
 	_add_row(graphics_page, "3D reconstruction", _reconstruction_picker)
+	_reflex_picker = _choice_picker("NvidiaReflex", "nvidia_reflex", DisplayPreferences.NVIDIA_REFLEX_MODES)
+	_add_row(graphics_page, "NVIDIA Reflex", _reflex_picker)
 	var sharpness_control := _volume_control("Fsr2SharpnessControl", "Fsr2Sharpness", "Fsr2SharpnessValue", _fsr2_sharpness_changed)
 	_fsr2_sharpness_slider = sharpness_control.get_node("Fsr2Sharpness")
 	_fsr2_sharpness_value = sharpness_control.get_node("Fsr2SharpnessValue")
@@ -279,7 +298,7 @@ func _build() -> void:
 	var graphics_actions := HFlowContainer.new()
 	graphics_page.add_child(graphics_actions)
 	graphics_actions.add_child(defaults_button)
-	_graphics_restart_button = _button("Restart in Standard" if HighGraphics.active() else "Try High (restart)", "QuietButton", "GraphicsRestart")
+	_graphics_restart_button = _button("Restart in Standard" if HighGraphics.active() else "Enable High (restart)", "QuietButton", "GraphicsRestart")
 	_graphics_restart_button.disabled = true
 	_graphics_restart_button.pressed.connect(func() -> void:
 		_revert()
@@ -567,8 +586,13 @@ func _choice_caption(key: String, value: Variant) -> String:
 			fsr2_balanced = tr("FSR2 · Balanced"), fsr2_performance = tr("FSR2 · Performance"),
 			fsr3_native = tr("FSR3 · Native AA"), fsr3_85 = tr("FSR3 · 85%"), fsr3_quality = tr("FSR3 · Quality"),
 			fsr3_balanced = tr("FSR3 · Balanced"), fsr3_performance = tr("FSR3 · Performance"),
-			dlss_native = tr("DLSS · Native AA"), dlss_quality = tr("DLSS · Quality"),
-			dlss_balanced = tr("DLSS · Balanced"), dlss_performance = tr("DLSS · Performance")}.get(value, str(value))
+			dlss_native = tr("DLAA · Native AA"), dlss_quality = tr("DLSS · Quality"),
+			dlss_balanced = tr("DLSS · Balanced"), dlss_performance = tr("DLSS · Performance"),
+			metalfx_spatial_85 = tr("MetalFX Spatial · 85%"), metalfx_spatial_quality = tr("MetalFX Spatial · Quality"),
+			metalfx_temporal_native = tr("MetalFX Temporal · Native AA"), metalfx_temporal_85 = tr("MetalFX Temporal · 85%"),
+			metalfx_temporal_quality = tr("MetalFX Temporal · Quality")}.get(value, str(value))
+		"nvidia_reflex": return {off = tr("Off"), on = tr("On"), boost = tr("Boost"),
+			unconfirmed = tr("Unconfirmed")}.get(value, str(value))
 		"scene_detail":
 			if value == SceneDetail.AUTO:
 				return tr("Automatic (%s)") % tr(str(SceneDetail.detected().level).capitalize())
@@ -608,7 +632,7 @@ func _fsr2_sharpness_drag_ended(changed: bool) -> void:
 
 func _on_graphics_option_changed() -> void:
 	var changed := false
-	for key: String in ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction", "fsr2_sharpness"]:
+	for key: String in ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]:
 		changed = changed or _draft[key] != _saved[key]
 	if not changed:
 		_trial_deadline_msec = 0
@@ -624,7 +648,7 @@ func _on_graphics_option_changed() -> void:
 
 
 func _restore_graphics_defaults() -> void:
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "reconstruction", "fsr2_sharpness"]:
+	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]:
 		_draft[key] = DisplayPreferences.DEFAULTS[key]
 	_on_graphics_option_changed()
 
@@ -636,32 +660,36 @@ func _refresh_graphics_info() -> void:
 	# at 1080p; it ends with the effective VSync state.
 	_graphics_info.tooltip_text = tr("The driver or desktop compositor may override VSync.") + "\n" \
 		+ tr("Renderer: %s") % RenderingServer.get_current_rendering_method()
-	_graphics_info.text = tr("Graphics mode: %s") % (tr("High (experimental)") if HighGraphics.active() else tr("Standard")) \
+	_graphics_info.text = tr("Graphics mode: %s") % (tr("High") if HighGraphics.active() else tr("Standard")) \
 		+ " · " + tr("Output: %d × %d · VSync: %s") % [get_window().size.x, get_window().size.y,
 		tr("On") if DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED else tr("Off")]
 	if HighGraphics.requested() == "high" and not HighGraphics.active():
 		_graphics_info.text += "\n" + tr("High is unavailable with the current renderer. Standard remains active.")
 	var requested := str(_draft.get("reconstruction", "native"))
-	var capabilities := Reconstruction.runtime_capabilities()
-	var active_policy: Dictionary = Reconstruction.resolve(requested, capabilities)
 	var viewport := get_viewport()
-	var receipt := Reconstruction.describe(viewport)
-	# The viewport receipt includes runtime rollback, while this settings draft remains the
-	# user's requested choice. Use it only when it describes the same preview.
-	if str(receipt.get("requested", "")) == requested:
-		active_policy = receipt
+	var capabilities := Reconstruction.capabilities_for_viewport(viewport)
+	var active_policy := _reconstruction_preview_policy(requested, capabilities)
 	var effective := str(active_policy.get("effective", "native"))
 	var output_size := viewport.get_visible_rect().size
 	var scale := float(active_policy.get("scale", 1.0))
 	var input_width := roundi(output_size.x * scale)
 	var input_height := roundi(output_size.y * scale)
 	_graphics_info.text += "\n" + tr("Reconstruction: Requested %s → Active %s") % [
-		_choice_caption("reconstruction", requested), _choice_caption("reconstruction", effective)]
+		_choice_caption("reconstruction", requested), tr("Unconfirmed") if active_policy.get("execution_status", "") == "unverified_trial" \
+		else _choice_caption("reconstruction", effective)]
 	_graphics_info.text += "\n" + tr("Estimated 3D input: %d × %d → Output: %d × %d") % [
 		input_width, input_height, roundi(output_size.x), roundi(output_size.y)]
 	if bool(active_policy.get("fallback", false)):
 		var reason := str(active_policy.get("fallback_reason", ""))
 		_graphics_info.text += "\n" + _reconstruction_fallback_text(requested, reason)
+	var reflex_requested := str(_draft.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE))
+	var reflex := NvidiaReflex.describe(reflex_requested)
+	_graphics_info.text += "\n" + tr("Reflex: Requested %s → SDK accepted %s") % [
+		_choice_caption("nvidia_reflex", reflex_requested), _choice_caption("nvidia_reflex", reflex.accepted)]
+	if not reflex.available and reflex_requested != "off":
+		_graphics_info.text += "\n" + _reflex_unavailable_text(str(reflex.reason))
+	elif reflex.pending:
+		_graphics_info.text += "\n" + tr("Reflex mode change is waiting for the next frame.")
 
 
 func _refresh_scene_detail_tooltip() -> void:
@@ -672,9 +700,8 @@ func _refresh_scene_detail_tooltip() -> void:
 
 func set_graphics_restart_available(available: bool) -> void:
 	_graphics_restart_button.disabled = not available
-	# VQ-06b: the experiment note moved here from its own label so Scene detail fits the page at 1080p.
 	_graphics_restart_button.tooltip_text = tr("Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ capable GPU.") \
-		+ "\n" + tr("High is a temporary experiment. Keep your changes before restarting. A normal launch returns to Standard.") \
+		+ "\n" + tr("Keep your changes before restarting.") \
 		if available else tr("End your flight and return Home to change graphics mode.")
 
 
@@ -768,6 +795,8 @@ func _sync_controls() -> void:
 	_select_metadata(_msaa_picker, _draft.msaa_3d)
 	_select_metadata(_reconstruction_picker, _draft.get("reconstruction", "native"))
 	_sync_reconstruction_controls()
+	_select_metadata(_reflex_picker, _draft.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE))
+	_sync_reflex_controls()
 	_select_metadata(_scene_detail_picker, _draft.scene_detail)
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
 	_select_metadata(_lighting_quality_picker, _draft.get("aircraft_lighting_quality", "standard"))
@@ -794,13 +823,44 @@ func _sync_controls() -> void:
 	_sync_action_buttons()
 
 
-func _sync_reconstruction_controls() -> void:
-	var capabilities := Reconstruction.runtime_capabilities()
+func _reconstruction_preview_policy(requested: String, capabilities: Dictionary) -> Dictionary:
+	var policy := Reconstruction.resolve(requested, capabilities)
+	if is_inside_tree():
+		var receipt := Reconstruction.describe(get_viewport())
+		# A matching receipt reflects runtime rollback; a different draft has not
+		# yet been previewed and must use its own policy.
+		if str(receipt.get("requested", "")) == requested:
+			return receipt
+	return policy
+
+
+func _current_reconstruction_failure_key() -> String:
+	if not is_inside_tree():
+		return ""
+	var failure: Variant = get_viewport().get_meta(Reconstruction.RUNTIME_FAILURE_META, {})
+	if typeof(failure) != TYPE_DICTIONARY or failure.is_empty():
+		return ""
+	return str(failure.get("provider", "")) + ":" + str(failure.get("reason", ""))
+
+
+func _sync_reconstruction_controls(capabilities_override: Dictionary = {}) -> void:
+	var viewport := get_viewport() if is_inside_tree() else null
+	var capabilities := Reconstruction.capabilities_for_viewport(viewport, capabilities_override)
+	_reconstruction_failure_key = _current_reconstruction_failure_key()
 	var high_active := bool(capabilities.high)
-	_reconstruction_picker.disabled = not high_active
+	# After a temporal reset failure, allow Native selection even when no other
+	# reconstruction provider is available on this renderer.
+	var reset_latched: bool = capabilities.get("metalfx_temporal_reason", "") == "metalfx_history_reset_unavailable"
+	_reconstruction_picker.disabled = not Reconstruction.options_available(capabilities) and not reset_latched
 	_reconstruction_picker.tooltip_text = tr("Choose a reconstruction option available in High graphics. Check distant aircraft detail in motion.") if high_active \
 		else tr("Restart in High from Home to use reconstruction.")
+	if reset_latched:
+		_reconstruction_picker.tooltip_text = _reconstruction_unavailable_text("metalfx_temporal", "metalfx_history_reset_unavailable")
+	elif bool(capabilities.get("metalfx_spatial", false)) or bool(capabilities.get("metalfx_temporal", false)):
+		_reconstruction_picker.tooltip_text = tr("MetalFX is an experimental Mac option. Compare distant aircraft detail in motion.")
 	_reconstruction_picker.tooltip_text += "\n" + tr("At 1080p, Quality uses about 1280 × 720 3D input; Performance uses 960 × 540. Quality keeps more input detail than Balanced or Performance. Lower input may soften distant detail; compare while moving.")
+	# The closed picker may clip a long option; keep its full name available.
+	_reconstruction_picker.tooltip_text += "\n" + _choice_caption("reconstruction", _draft.get("reconstruction", "native"))
 	for index: int in _reconstruction_picker.item_count:
 		var mode := str(_reconstruction_picker.get_item_metadata(index))
 		var status := Reconstruction.option_status(mode, capabilities)
@@ -809,7 +869,7 @@ func _sync_reconstruction_controls() -> void:
 		_reconstruction_picker.set_item_text(index, _choice_caption("reconstruction", mode)
 			+ (" — " + tr("Unavailable") if is_unavailable else ""))
 		_reconstruction_picker.set_item_tooltip(index, _reconstruction_option_tooltip(mode, str(status.reason)))
-	var policy := Reconstruction.resolve(str(_draft.get("reconstruction", "native")), capabilities)
+	var policy := _reconstruction_preview_policy(str(_draft.get("reconstruction", "native")), capabilities)
 	var strength := float(_draft.get("fsr2_sharpness", DisplayPreferences.DEFAULTS.fsr2_sharpness))
 	_fsr2_sharpness_slider.set_value_no_signal(strength)
 	_fsr2_sharpness_slider.editable = high_active and policy.provider in ["fsr2", "fsr3"]
@@ -819,15 +879,43 @@ func _sync_reconstruction_controls() -> void:
 	var requested_provider := str(Reconstruction.MODE_PROVIDERS.get(requested_mode, ""))
 	if policy.provider == "dlss":
 		_fsr2_sharpness_slider.tooltip_text = tr("DLSS controls its own reconstruction sharpness. This saved FSR value is kept for FSR2 or FSR3.")
+	elif policy.provider in Reconstruction.MetalFX.PROVIDERS:
+		_fsr2_sharpness_slider.tooltip_text = tr("MetalFX does not use FSR sharpness. Your saved value is kept.")
 	elif requested_provider == "dlss" and policy.fallback:
 		_fsr2_sharpness_slider.tooltip_text = tr("FSR sharpness is inactive while Native is active. This saved value stays for FSR2 or FSR3. DLSS controls sharpness when it is active.")
 	elif policy.provider in ["fsr2", "fsr3"]:
 		_fsr2_sharpness_slider.tooltip_text = tr("0% disables FSR sharpening. Higher values sharpen edges but can exaggerate halos and shimmer.")
 	else:
 		_fsr2_sharpness_slider.tooltip_text = tr("Native rendering does not use FSR sharpness. This saved value is kept for FSR2 or FSR3.")
-	_msaa_picker.disabled = high_active and bool(policy.temporal)
+	_msaa_picker.disabled = bool(policy.temporal)
 	_msaa_picker.tooltip_text = tr("Temporal reconstruction provides antialiasing. Your MSAA choice returns with Native rendering.") if _msaa_picker.disabled \
 		else tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
+
+
+func _sync_reflex_controls() -> void:
+	if _reflex_picker == null:
+		return
+	var requested := str(_draft.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE))
+	var status := NvidiaReflex.describe(requested)
+	_reflex_picker.tooltip_text = tr("NVIDIA Reflex can reduce rendering latency on supported NVIDIA hardware. Boost also requests higher GPU clocks.")
+	if not status.available:
+		_reflex_picker.tooltip_text += "\n" + _reflex_unavailable_text(str(status.reason))
+	for index: int in _reflex_picker.item_count:
+		var mode := str(_reflex_picker.get_item_metadata(index))
+		var option := NvidiaReflex.option_status(mode, status)
+		var unavailable := not bool(option.available)
+		_reflex_picker.set_item_disabled(index, unavailable)
+		_reflex_picker.set_item_text(index, _choice_caption("nvidia_reflex", mode)
+			+ (" — " + tr("Unavailable") if unavailable else ""))
+		_reflex_picker.set_item_tooltip(index, _reflex_unavailable_text(str(option.reason)) if unavailable else "")
+
+
+func _reflex_unavailable_text(reason: String) -> String:
+	match reason:
+		"support_missing": return tr("NVIDIA Reflex is not included in this game build.")
+		"runtime_failure": return tr("NVIDIA Reflex could not continue in this graphics session. Your saved choice is kept.")
+		"status_invalid": return tr("NVIDIA Reflex status is unavailable. Your saved choice is kept.")
+	return tr("The current graphics session does not report NVIDIA Reflex support. Your saved choice is kept.")
 
 
 func _reconstruction_option_tooltip(mode: String, reason: String) -> String:
@@ -852,6 +940,12 @@ func _reconstruction_option_tooltip(mode: String, reason: String) -> String:
 
 
 func _reconstruction_unavailable_text(provider: String, reason: String) -> String:
+	if provider in Reconstruction.MetalFX.PROVIDERS:
+		if reason == "metalfx_history_reset_unavailable":
+			return tr("MetalFX Temporal returned to Native after a camera change. Select Native before retrying.")
+		if reason in ["metalfx_scale_out_of_range", "metalfx_invalid_scale_limits"]:
+			return tr("This MetalFX input scale is unavailable on the current device.")
+		return tr("MetalFX requires an explicitly enabled Metal trial on a supported Mac.")
 	if reason == "engine_mode_missing":
 		return tr("The current game build does not offer %s reconstruction.") % str({
 			"fsr2": "FSR2", "fsr3": "FSR3", "dlss": "DLSS"}.get(provider, "this"))
@@ -927,9 +1021,12 @@ func _update_layout() -> void:
 	else:
 		_layout_panel.remove_theme_stylebox_override("panel")
 	var available: Vector2 = _surface.size - Vector2(gutter * 2.0, gutter * 2.0)
-	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(880.0, maxf(0.0, available.y)))
+	# Give the full 1080p Graphics page room without shrinking its controls or
+	# text. Smaller viewports still fit within their available height and scroll.
+	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(1000.0, maxf(0.0, available.y)))
 	_refresh_graphics_info()
 	_sync_reconstruction_controls()
+	_sync_reflex_controls()
 	var stack_rows := _should_stack_rows()
 	# Two rows of tabs when stacked, as with four categories: a third row would leave the page no room at 200 % text.
 	_categories.columns = ceili(CATEGORIES.size() / 2.0) if stack_rows else CATEGORIES.size()
@@ -965,7 +1062,7 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_scene_detail_picker, "scene_detail"], [_birds_picker, "birds"],
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_birds_picker, "birds"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],
 			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_zoom_picker, "camera_zoom"], [_camera_magnifier_picker, "camera_magnifier"], [_camera_aids_picker, "camera_aids"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"]]:
 		var picker: OptionButton = entry[0]
@@ -973,6 +1070,7 @@ func _refresh_translated_text() -> void:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))
 	_refresh_graphics_info()
 	_sync_reconstruction_controls()
+	_sync_reflex_controls()
 	for entry: Dictionary in _localized_tooltips:
 		entry.control.tooltip_text = tr(str(entry.source))
 	_refresh_scene_detail_tooltip()

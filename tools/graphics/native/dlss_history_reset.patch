@@ -1,0 +1,312 @@
+diff --git a/servers/rendering/renderer_rd/effects/dlss.cpp b/servers/rendering/renderer_rd/effects/dlss.cpp
+index 884bdb7..85a0b7d 100644
+--- a/servers/rendering/renderer_rd/effects/dlss.cpp
++++ b/servers/rendering/renderer_rd/effects/dlss.cpp
+@@ -38,6 +38,7 @@
+ 
+ #ifdef ENABLE_DLSS
+ #include "drivers/streamline/streamline_context.h"
++#include "servers/rendering/renderer_viewport.h"
+ #include "servers/rendering/renderer_rd/storage_rd/material_storage.h"
+ #include "servers/rendering/renderer_rd/uniform_set_cache_rd.h"
+ #endif
+@@ -51,6 +52,9 @@ static std::atomic<uint64_t> dlss_dispatches{ 0 };
+ static std::atomic<uint64_t> dlss_contexts_created{ 0 };
+ static std::atomic<int> dlss_last_return_code{ 0 };
+ static std::atomic<uint32_t> dlss_last_frame_id{ 0 };
++static std::atomic<uint64_t> dlss_reset_dispatches{ 0 };
++static std::atomic<uint32_t> dlss_last_reset_frame{ 0 };
++static std::atomic<uint64_t> dlss_last_reset_viewport{ 0 };
+ 
+ static void dlss_record_failure(sl::Result p_result) {
+ 	dlss_last_return_code.store(int(p_result), std::memory_order_relaxed);
+@@ -66,6 +70,10 @@ Dictionary DLSSEffect::get_status() {
+ 	status["contexts_created"] = int64_t(dlss_contexts_created.load(std::memory_order_relaxed));
+ 	status["last_return_code"] = dlss_last_return_code.load(std::memory_order_relaxed);
+ 	status["last_frame_id"] = int64_t(dlss_last_frame_id.load(std::memory_order_relaxed));
++	status["reset_requests"] = int64_t(RendererViewport::get_temporal_history_reset_requests());
++	status["reset_dispatches"] = int64_t(dlss_reset_dispatches.load(std::memory_order_relaxed));
++	status["last_reset_frame"] = int64_t(dlss_last_reset_frame.load(std::memory_order_relaxed));
++	status["last_reset_viewport"] = int64_t(dlss_last_reset_viewport.load(std::memory_order_relaxed));
+ 	status["frame_based_tagging"] = true;
+ 	return status;
+ }
+@@ -88,6 +96,7 @@ public:
+ 	sl::DLSSOptions currentDlssOptions;
+ 	sl::DLSSOptimalSettings currentOptimalSettings;
+ 	sl::DLSSDOptions currentDlssDOptions; // DLSS Ray Reconstruction options
++	DLSSHistoryResetState history_reset;
+ 	bool dlss_resources_used = false;
+ 	bool dlss_rr_resources_used = false;
+ 	bool nis_resources_used = false;
+@@ -561,6 +570,10 @@ void DLSSEffect::_upscale_internal(RDD::CommandBufferID cmdid, const DLSSContext
+ 		}
+ 	}
+ 
++	// Decide at callback execution, using the generation captured with this frame's token.
++	// Only a successful evaluation below acknowledges it; delayed or failed work cannot.
++	const bool reset_accumulation = p_params.reset_accumulation || context->history_reset.should_reset(p_params.history_reset_generation);
++
+ 	// Set SL Options
+ 	if (StreamlineContext::get().slSetConstants != nullptr) {
+ 		sl::float4x4 mtxIdentity = sl_make_identity_matrix();
+@@ -588,7 +601,7 @@ void DLSSEffect::_upscale_internal(RDD::CommandBufferID cmdid, const DLSSContext
+ 		context->constants.jitterOffset = sl::float2(p_params.jitter.x, p_params.jitter.y);
+ 		context->constants.mvecScale = sl::float2(1.0f, 1.0f);
+ 		context->constants.orthographicProjection = sl::Boolean::eFalse;
+-		context->constants.reset = p_params.reset_accumulation ? sl::Boolean::eTrue : sl::Boolean::eFalse;
++		context->constants.reset = reset_accumulation ? sl::Boolean::eTrue : sl::Boolean::eFalse;
+ 		sl::Result result = StreamlineContext::get().slSetConstants(context->constants, *frame_token, context->viewport);
+ 		if (result != sl::Result::eOk) {
+ 			dlss_record_failure(result);
+@@ -662,6 +675,7 @@ void DLSSEffect::_upscale_internal(RDD::CommandBufferID cmdid, const DLSSContext
+ 	if (context->currentDlssOptions.mode != sl::DLSSMode::eOff) {
+ 		const sl::BaseStructure *inputs[] = { &context->viewport };
+ 		sl::Result result;
++		bool evaluated = false;
+ 
+ 		if (use_dlss_rr && StreamlineContext::get().streamline_capabilities.dlss_rr_available) {
+ 			// Use DLSS Ray Reconstruction
+@@ -671,6 +685,7 @@ void DLSSEffect::_upscale_internal(RDD::CommandBufferID cmdid, const DLSSContext
+ 				dlss_record_failure(result);
+ 				ERR_FAIL_MSG("Failed to call streamline slEvaluateFeature for DLSS Ray Reconstruction. Result: " + String(StreamlineContext::result_to_string(result)));
+ 			}
++			evaluated = true;
+ 		} else if (StreamlineContext::get().streamline_capabilities.dlss_available) {
+ 			// Use regular DLSS
+ 			context->dlss_resources_used = true;
+@@ -683,6 +698,15 @@ void DLSSEffect::_upscale_internal(RDD::CommandBufferID cmdid, const DLSSContext
+ 				dlss_record_failure(result);
+ 				ERR_FAIL_MSG("Failed to call streamline slEvaluateFeature for DLSS Super Resolution. Result: " + String(StreamlineContext::result_to_string(result)));
+ 			}
++			evaluated = true;
++		}
++		if (evaluated) {
++			context->history_reset.evaluated(p_params.history_reset_generation);
++			if (reset_accumulation) {
++				dlss_last_reset_frame.store(p_params.frame_id, std::memory_order_relaxed);
++				dlss_last_reset_viewport.store(p_params.history_reset_viewport.get_id(), std::memory_order_relaxed);
++				dlss_reset_dispatches.fetch_add(1, std::memory_order_relaxed);
++			}
+ 		}
+ 	}
+ 
+diff --git a/servers/rendering/renderer_rd/effects/dlss.h b/servers/rendering/renderer_rd/effects/dlss.h
+index ae6b6f9..564b859 100644
+--- a/servers/rendering/renderer_rd/effects/dlss.h
++++ b/servers/rendering/renderer_rd/effects/dlss.h
+@@ -34,6 +34,25 @@
+ 
+ namespace RendererRD {
+ 
++// BEGIN DLSS HISTORY RESET STATE
++// Owned by one DLSS context. The render graph serializes its callbacks.
++class DLSSHistoryResetState {
++	bool has_evaluated = false;
++	uint64_t completed_generation = 0;
++
++public:
++	bool should_reset(uint64_t p_generation) const {
++		return !has_evaluated || p_generation > completed_generation;
++	}
++	void evaluated(uint64_t p_generation) {
++		has_evaluated = true;
++		if (p_generation > completed_generation) {
++			completed_generation = p_generation;
++		}
++	}
++};
++// END DLSS HISTORY RESET STATE
++
+ class DLSSEffect;
+ class DLSSContext {
+ public:
+@@ -57,6 +76,8 @@ public:
+ 		float sharpness = 0.0f;
+ 		char preset = '?';
+ 		bool reset_accumulation = false;
++		uint64_t history_reset_generation = 0;
++		RID history_reset_viewport;
+ 		Projection reprojection;
+ 		Projection cam_projection;
+ 		Transform3D cam_transform;
+diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+index 53808d8..e2000ac 100644
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+@@ -1939,7 +1939,8 @@ void RenderForwardClustered::_render_3d_upscaling(const RenderDataRD *p_render_d
+ 			params.fovy = fovy;
+ 			params.jitter = jitter;
+ 			params.delta_time = float(p_time_step);
+-			params.reset_accumulation = false; // FIXME: The engine does not provide a way to reset the accumulation.
++			params.history_reset_generation = rb->get_temporal_history_reset_generation();
++			params.history_reset_viewport = rb->get_temporal_history_viewport();
+ 
+ 			// DLSS Ray Reconstruction guide buffers are supplied by the raytraced path.
+ 			if (p_dlss_rr.active) {
+diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/renderer_viewport.cpp
+index 5603a81..fe9aeb4 100644
+--- a/servers/rendering/renderer_viewport.cpp
++++ b/servers/rendering/renderer_viewport.cpp
+@@ -29,6 +29,8 @@
+ /**************************************************************************/
+ 
+ #include "renderer_viewport.h"
++
++#include <atomic>
+ #ifdef RD_ENABLED
+ #include "servers/rendering/renderer_rd/effects/fsr3.h"
+ #endif
+@@ -58,6 +60,8 @@
+ #include "drivers/streamline/streamline_context.h"
+ #endif
+ 
++static std::atomic<uint64_t> temporal_history_reset_requests{ 0 };
++
+ static Transform2D _canvas_get_transform(RendererViewport::Viewport *p_viewport, RendererCanvasCull::Canvas *p_canvas, RendererViewport::Viewport::CanvasData *p_canvas_data, const Vector2 &p_vp_size) {
+ 	Transform2D xf = p_viewport->global_transform;
+ 
+@@ -143,6 +147,7 @@ Vector<RendererViewport::Viewport *> RendererViewport::_sort_active_viewports()
+ 
+ void RendererViewport::_configure_3d_render_buffers(Viewport *p_viewport) {
+ 	if (p_viewport->render_buffers.is_valid()) {
++		p_viewport->render_buffers->set_temporal_history_reset_state(p_viewport->self, p_viewport->temporal_history_reset_generation);
+ 		if (p_viewport->size.width == 0 || p_viewport->size.height == 0) {
+ 			p_viewport->render_buffers.unref();
+ 		} else {
+@@ -1329,10 +1334,31 @@ void RendererViewport::viewport_set_disable_3d(RID p_viewport, bool p_disable) {
+ 	viewport->disable_3d = p_disable;
+ }
+ 
++uint64_t RendererViewport::get_temporal_history_reset_requests() {
++	return temporal_history_reset_requests.load(std::memory_order_relaxed);
++}
++
++void RendererViewport::_request_temporal_history_reset(Viewport *p_viewport) {
++	++p_viewport->temporal_history_reset_generation;
++	temporal_history_reset_requests.fetch_add(1, std::memory_order_relaxed);
++	if (p_viewport->render_buffers.is_valid()) {
++		p_viewport->render_buffers->set_temporal_history_reset_state(p_viewport->self, p_viewport->temporal_history_reset_generation);
++	}
++}
++
++void RendererViewport::viewport_request_temporal_history_reset(RID p_viewport) {
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	ERR_FAIL_NULL(viewport);
++	_request_temporal_history_reset(viewport);
++}
++
+ void RendererViewport::viewport_attach_camera(RID p_viewport, RID p_camera) {
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
+ 
++	if (viewport->camera != p_camera) {
++		_request_temporal_history_reset(viewport);
++	}
+ 	viewport->camera = p_camera;
+ }
+ 
+@@ -1344,6 +1370,9 @@ void RendererViewport::viewport_set_scenario(RID p_viewport, RID p_scenario) {
+ 		RSG::scene->scenario_remove_viewport_visibility_mask(viewport->scenario, p_viewport);
+ 	}
+ 
++	if (viewport->scenario != p_scenario) {
++		_request_temporal_history_reset(viewport);
++	}
+ 	viewport->scenario = p_scenario;
+ 	if (viewport->use_occlusion_culling) {
+ 		RendererSceneOcclusionCull::get_singleton()->buffer_set_scenario(p_viewport, p_scenario);
+diff --git a/servers/rendering/renderer_viewport.h b/servers/rendering/renderer_viewport.h
+index 21ac8aa..7cb3cc4 100644
+--- a/servers/rendering/renderer_viewport.h
++++ b/servers/rendering/renderer_viewport.h
+@@ -54,6 +54,7 @@ public:
+ 		uint32_t view_count;
+ 		RID camera;
+ 		RID scenario;
++		uint64_t temporal_history_reset_generation = 0;
+ 
+ 		RSE::ViewportScaling3DMode scaling_3d_mode = RSE::VIEWPORT_SCALING_3D_MODE_BILINEAR;
+ 		float scaling_3d_scale = 1.0;
+@@ -210,6 +211,7 @@ private:
+ 	bool _viewport_requires_motion_vectors(Viewport *p_viewport);
+ 	void _viewport_set_force_motion_vectors(Viewport *p_viewport, bool p_force_motion_vectors);
+ 	void _configure_3d_render_buffers(Viewport *p_viewport);
++	void _request_temporal_history_reset(Viewport *p_viewport);
+ 	void _draw_3d(Viewport *p_viewport);
+ 	void _draw_viewport(Viewport *p_viewport);
+ 	DisplayServerEnums::WindowID _get_containing_window(Viewport *p_viewport);
+@@ -260,6 +262,8 @@ public:
+ 
+ 	bool viewport_is_environment_disabled(Viewport *viewport);
+ 
++	static uint64_t get_temporal_history_reset_requests();
++	void viewport_request_temporal_history_reset(RID p_viewport);
+ 	void viewport_attach_camera(RID p_viewport, RID p_camera);
+ 	void viewport_set_scenario(RID p_viewport, RID p_scenario);
+ 	void viewport_attach_canvas(RID p_viewport, RID p_canvas);
+diff --git a/servers/rendering/rendering_server.cpp b/servers/rendering/rendering_server.cpp
+index 5f15afe..072f386 100644
+--- a/servers/rendering/rendering_server.cpp
++++ b/servers/rendering/rendering_server.cpp
+@@ -2883,6 +2883,7 @@ void RenderingServer::_bind_methods() {
+ 	ClassDB::bind_method(D_METHOD("viewport_set_disable_3d", "viewport", "disable"), &RenderingServer::viewport_set_disable_3d);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_disable_2d", "viewport", "disable"), &RenderingServer::viewport_set_disable_2d);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_environment_mode", "viewport", "mode"), &RenderingServer::viewport_set_environment_mode);
++	ClassDB::bind_method(D_METHOD("viewport_request_temporal_history_reset", "viewport"), &RenderingServer::viewport_request_temporal_history_reset);
+ 	ClassDB::bind_method(D_METHOD("viewport_attach_camera", "viewport", "camera"), &RenderingServer::viewport_attach_camera);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_scenario", "viewport", "scenario"), &RenderingServer::viewport_set_scenario);
+ 	ClassDB::bind_method(D_METHOD("viewport_attach_canvas", "viewport", "canvas"), &RenderingServer::viewport_attach_canvas);
+diff --git a/servers/rendering/rendering_server.h b/servers/rendering/rendering_server.h
+index d62ad31..5530d7f 100644
+--- a/servers/rendering/rendering_server.h
++++ b/servers/rendering/rendering_server.h
+@@ -572,6 +572,7 @@ public:
+ 	virtual void viewport_set_disable_3d(RID p_viewport, bool p_disable) = 0;
+ 	virtual void viewport_set_disable_2d(RID p_viewport, bool p_disable) = 0;
+ 
++	virtual void viewport_request_temporal_history_reset(RID p_viewport) = 0;
+ 	virtual void viewport_attach_camera(RID p_viewport, RID p_camera) = 0;
+ 	virtual void viewport_set_scenario(RID p_viewport, RID p_scenario) = 0;
+ 	virtual void viewport_attach_canvas(RID p_viewport, RID p_canvas) = 0;
+diff --git a/servers/rendering/rendering_server_default.h b/servers/rendering/rendering_server_default.h
+index fd80d7f..483ea43 100644
+--- a/servers/rendering/rendering_server_default.h
++++ b/servers/rendering/rendering_server_default.h
+@@ -771,6 +771,7 @@ public:
+ 
+ 	FUNC2(viewport_set_canvas_cull_mask, RID, uint32_t)
+ 
++	FUNC1(viewport_request_temporal_history_reset, RID)
+ 	FUNC2(viewport_attach_camera, RID, RID)
+ 	FUNC2(viewport_set_scenario, RID, RID)
+ 	FUNC2(viewport_attach_canvas, RID, RID)
+diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/rendering/storage/render_scene_buffers.h
+index c571c34..ac4d1a2 100644
+--- a/servers/rendering/storage/render_scene_buffers.h
++++ b/servers/rendering/storage/render_scene_buffers.h
+@@ -104,6 +104,10 @@ public:
+ class RenderSceneBuffers : public RefCounted {
+ 	GDCLASS(RenderSceneBuffers, RefCounted);
+ 
++	// Copied from the owning viewport when buffers are created and on each request.
++	RID temporal_history_viewport;
++	uint64_t temporal_history_reset_generation = 0;
++
+ protected:
+ 	static void _bind_methods();
+ 
+@@ -113,6 +117,13 @@ public:
+ 
+ 	virtual void configure(const RenderSceneBuffersConfiguration *p_config) = 0;
+ 
++	void set_temporal_history_reset_state(RID p_viewport, uint64_t p_generation) {
++		temporal_history_viewport = p_viewport;
++		temporal_history_reset_generation = p_generation;
++	}
++	RID get_temporal_history_viewport() const { return temporal_history_viewport; }
++	uint64_t get_temporal_history_reset_generation() const { return temporal_history_reset_generation; }
++
+ 	// for those settings that are unlikely to require buffers to be recreated, we'll add setters
+ 	virtual void set_fsr_sharpness(float p_fsr_sharpness) = 0;
+ 	virtual void set_texture_mipmap_bias(float p_texture_mipmap_bias) = 0;

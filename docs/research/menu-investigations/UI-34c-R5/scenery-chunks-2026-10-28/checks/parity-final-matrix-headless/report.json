@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9c6244dc-08bb-4fc2-8a9f-585a6d8e90cd",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/roi-scenery-20261028/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/roi-scenery-20261028/drafts/test_field_staged_build.gd",
+    "--",
+    "--reference-field=C:/DEVELOPMENT/OpenRCsimulator/tmp/roi-scenery-20261028/reference_field.gd",
+    "--reference-scenery=C:/DEVELOPMENT/OpenRCsimulator/tmp/roi-scenery-20261028/baseline/app/scenery/scenery.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-28T21:56:32.071962+00:00",
+  "label": "parity-final-matrix-headless",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-scenery-20261028\\checks\\parity-final-matrix-headless-gy1_xqym\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-scenery-20261028\\checks\\parity-final-matrix-headless-gy1_xqym\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 17.312,
+  "log_bytes": 2883,
+  "log_sha256": "ee33d2dbd648e5278463be64fb504eb9718e5948c9ba469bd3035e1dc3fbe68b"
+}

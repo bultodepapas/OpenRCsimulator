@@ -6201,16 +6201,8 @@ msgstr "出力：%d × %d · VSync：%s"
 msgid "The driver or desktop compositor may override VSync."
 msgstr "ドライバーやデスクトップコンポジターがVSync設定を上書きする場合があります。"
 
-msgid "Try High (restart)"
-msgstr "高画質を試す（再起動）"
-
 msgid "Restart in Standard"
 msgstr "標準で再起動"
-
-msgid ""
-"High is a temporary experiment. Keep your changes before restarting. A "
-"normal launch returns to Standard."
-msgstr "高画質モードは一時的な試験機能です。再起動する前に変更を保存してください。通常起動すると標準モードに戻ります。"
 
 msgid ""
 "Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ "
@@ -6219,9 +6211,6 @@ msgstr "柔らかい影、アンビエントオクルージョン、空の反射
 
 msgid "Graphics mode: %s"
 msgstr "グラフィックモード：%s"
-
-msgid "High (experimental)"
-msgstr "高画質（実験的）"
 
 msgid "Standard"
 msgstr "標準"
@@ -6593,9 +6582,6 @@ msgstr "FSR3 · バランス"
 
 msgid "FSR3 · Performance"
 msgstr "FSR3 · パフォーマンス優先"
-
-msgid "DLSS · Native AA"
-msgstr "DLSS · Native AA"
 
 msgid "DLSS · Quality"
 msgstr "DLSS · 画質優先"
@@ -8294,3 +8280,104 @@ msgstr "有効な故障の種類はこの機体では利用できません。「
 
 msgid "This aircraft has no rudder, so rudder failures cannot occur."
 msgstr "この機体にはラダーがないため、ラダーの故障は発生しません。"
+
+# DT-MAC: opt-in MetalFX trials.
+msgid "MetalFX Spatial · 85%"
+msgstr "MetalFX 空間 · 85%"
+
+msgid "MetalFX Spatial · Quality"
+msgstr "MetalFX 空間 · 品質"
+
+msgid "MetalFX Temporal · Native AA"
+msgstr "MetalFX 時間 · ネイティブ AA"
+
+msgid "MetalFX Temporal · 85%"
+msgstr "MetalFX 時間 · 85%"
+
+msgid "MetalFX Temporal · Quality"
+msgstr "MetalFX 時間 · 品質"
+
+msgid "MetalFX is an experimental Mac option. Compare distant aircraft detail in motion."
+msgstr "MetalFX は Mac 向けの実験的なオプションです。動いている遠方の機体の細部を比較してください。"
+
+msgid "MetalFX Temporal returned to Native after a camera change. Select Native before retrying."
+msgstr "カメラ変更後、MetalFX 時間モードはネイティブに戻りました。再試行前にネイティブを選択してください。"
+
+msgid "This MetalFX input scale is unavailable on the current device."
+msgstr "この MetalFX 入力スケールは現在のデバイスでは利用できません。"
+
+msgid "MetalFX requires an explicitly enabled Metal trial on a supported Mac."
+msgstr "MetalFX には、対応する Mac で明示的に有効にした Metal テストが必要です。"
+
+msgid "MetalFX does not use FSR sharpness. Your saved value is kept."
+msgstr "MetalFX は FSR のシャープネスを使用しません。保存された値は維持されます。"
+
+# Complete existing graphics status messages used by the Mac trial UI.
+msgid "Enable High (restart)"
+msgstr "高品質を有効化（再起動）"
+
+msgid "Keep your changes before restarting."
+msgstr "再起動前に変更を保持してください。"
+
+msgid "DLAA · Native AA"
+msgstr "DLAA · ネイティブ AA"
+
+msgid "NVIDIA Reflex"
+msgstr "NVIDIA Reflex"
+
+msgid "Boost"
+msgstr "ブースト"
+
+msgid "Unconfirmed"
+msgstr "未確認"
+
+msgid "Reflex: Requested %s → SDK accepted %s"
+msgstr "Reflex：要求 %s → SDK が受理 %s"
+
+msgid "Reflex mode change is waiting for the next frame."
+msgstr "Reflex モードの変更は次のフレームを待っています。"
+
+msgid "NVIDIA Reflex can reduce rendering latency on supported NVIDIA hardware. Boost also requests higher GPU clocks."
+msgstr "NVIDIA Reflex は対応する NVIDIA ハードウェアで描画遅延を低減できます。ブーストは GPU クロックの引き上げも要求します。"
+
+msgid "NVIDIA Reflex is not included in this game build."
+msgstr "このゲームビルドには NVIDIA Reflex が含まれていません。"
+
+msgid "NVIDIA Reflex could not continue in this graphics session. Your saved choice is kept."
+msgstr "このグラフィックセッションで NVIDIA Reflex を続行できませんでした。保存された選択は維持されます。"
+
+msgid "NVIDIA Reflex status is unavailable. Your saved choice is kept."
+msgstr "NVIDIA Reflex の状態を取得できません。保存された選択は維持されます。"
+
+msgid "The current graphics session does not report NVIDIA Reflex support. Your saved choice is kept."
+msgstr "現在のグラフィックセッションでは NVIDIA Reflex の対応が報告されていません。保存された選択は維持されます。"
+
+msgid "Flight companions: Unavailable"
+msgstr "飛行仲間：利用不可"
+
+msgid "Flight companions are unavailable in this game build."
+msgstr "このゲームビルドでは飛行仲間を利用できません。"
+
+# Custom aircraft skin tools.
+msgid "Create a skin"
+msgstr "塗装を作成"
+msgid "X8 · Blender → .orskin"
+msgstr "X8 · Blender → .orskin"
+msgid "Save the template, edit its paint images with an AI assistant or Blender, then load your .orskin file."
+msgstr "テンプレートを保存し、AI アシスタントまたは Blender で塗装画像を編集してから、.orskin ファイルを読み込んでください。"
+msgid "Save skin template…"
+msgstr "塗装テンプレートを保存…"
+msgid "Open skin guide"
+msgstr "塗装ガイドを開く"
+msgid "Load new skin…"
+msgstr "新しい塗装を読み込む…"
+msgid "Choose an original paint at any time to restore it."
+msgstr "元の塗装は、いつでも選び直して復元できます。"
+msgid "Template saved. Extract the ZIP and open the skin guide."
+msgstr "テンプレートを保存しました。ZIP を展開し、塗装ガイドを開いてください。"
+msgid "Could not save the template. Check the destination and try again."
+msgstr "テンプレートを保存できませんでした。保存先を確認して再試行してください。"
+msgid "Skin could not be loaded:"
+msgstr "塗装を読み込めませんでした："
+msgid "Could not open the guide. Use guide.html inside the template ZIP."
+msgstr "ガイドを開けませんでした。テンプレートの ZIP 内にある guide.html を使用してください。"

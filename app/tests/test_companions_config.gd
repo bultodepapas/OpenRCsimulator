@@ -34,6 +34,18 @@ func _initialize() -> void:
 	_check("valid three-aircraft uint32 config normalizes fixed MVP choices", checked.ok
 		and checked.config.count == 3 and checked.config.seed == 4294967295
 		and checked.config.aircraft_id == STIK_ID and checked.config.incidents_enabled == false)
+	var requested := {"enabled": true, "count": 2, "seed": 17}
+	var original := requested.duplicate(true)
+	var runtime: Dictionary = Config.for_current_engine(requested)
+	_check("engine preflight preserves the requested settings", runtime.ok and requested == original
+		and runtime.requested.enabled and runtime.requested.count == 2 and runtime.requested.seed == 17)
+	_check("unqualified engine suppresses only the effective roster", runtime.available == Config.engine_qualified()
+		and runtime.suppressed == not runtime.available and runtime.config.enabled == runtime.available
+		and runtime.config.count == 2 and runtime.config.seed == 17)
+	var disabled: Dictionary = Config.for_current_engine({"enabled": false, "count": 2})
+	_check("an already disabled roster is never marked suppressed", disabled.ok and not disabled.suppressed
+		and not disabled.config.enabled and not disabled.requested.enabled)
+	_check("invalid settings still fail before engine preflight", not Config.for_current_engine({"enabled": true, "count": 0}).ok)
 	_check("enabled with zero companions is refused", not Config.validate({"enabled": true, "count": 0}).ok)
 	_check("count above the finite fleet cap is refused", not Config.validate({"enabled": false, "count": 4}).ok)
 	_check("fractional count is refused", not Config.validate({"enabled": false, "count": 1.5}).ok)

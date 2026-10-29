@@ -36,10 +36,128 @@ func _initialize() -> void:
 	_test_aggregation_and_write()
 	_test_invalid_samples()
 	_test_frame_limit()
+	_test_stream_options_and_failures()
+	_test_stream_precision()
+	_test_stream_long_run(60)
+	_test_stream_long_run(120)
 	_test_effective_grass_state()
 	_test_production_grass_profile_snapshot()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _stream_path(label: String) -> String:
+	return "user://frame-stream-%d-%s.jsonl" % [OS.get_process_id(), label]
+
+
+func _remove_stream(path: String) -> void:
+	if FileAccess.file_exists(path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+
+func _stream_records(path: String) -> Array:
+	var records: Array = []
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return records
+	while file.get_position() < file.get_length():
+		var line: String = file.get_line()
+		if not line.is_empty():
+			records.append(JSON.parse_string(line))
+	file.close()
+	return records
+
+
+func _test_stream_options_and_failures() -> void:
+	var options: Dictionary = FrameSamples.options({"frametimes": "run.json", "frametimes-stream": true, "t": "1800"})
+	_check("stream option permits a bounded 30-minute run", options.ok and options.stream_path == "run.json.frames.jsonl" and options.max_frames == FrameSamples.STREAM_DEFAULT_MAX_FRAMES, str(options))
+	_check("stream flag requires a report path", not FrameSamples.options({"frametimes-stream": true}).ok)
+	_check("stream flag cannot carry a value", not FrameSamples.options({"frametimes": "run.json", "frametimes-stream": "yes"}).ok)
+	_check("stream duration and frame limits remain bounded", not FrameSamples.options({"frametimes": "run.json", "frametimes-stream": true, "t": "3601"}).ok and not FrameSamples.options({"frametimes": "run.json", "frametimes-stream": true, "frametimes-max-frames": "1000001"}).ok)
+
+	var interrupted_path: String = _stream_path("interrupted")
+	_remove_stream(interrupted_path)
+	var interrupted := FrameSamples.new()
+	_check("stream config accepted", interrupted.configure(0.0, 2.0, 10, interrupted_path), interrupted.failure)
+	_check("stream sample accepted", interrupted.record_frame(0.1, 100000, 100000, {sim_tick = 1.0, sim_time_s = 0.1}))
+	interrupted.abort("window closed")
+	var partial: Dictionary = interrupted.report()
+	var records: Array = _stream_records(interrupted_path)
+	_check("interruption keeps an explicitly incomplete prefix", not partial.complete and partial.failure == "window closed" and partial.stream.frames == 1 and records.size() == 3 and not records[2].complete, str(partial))
+	var second := FrameSamples.new()
+	_check("existing stream is not overwritten", not second.configure(0.0, 1.0, 10, interrupted_path) and _stream_records(interrupted_path).size() == 3)
+	_remove_stream(interrupted_path)
+
+	var capped_path: String = _stream_path("frame-cap")
+	_remove_stream(capped_path)
+	var capped := FrameSamples.new()
+	_check("stream frame-cap config accepted", capped.configure(0.0, 1.0, 2, capped_path))
+	var accepted: bool = capped.record_frame(0.1, 100000, 100000, {sim_tick = 1.0}) and capped.record_frame(0.1, 100000, 200000, {sim_tick = 2.0})
+	_check("frame overflow closes an incomplete stream", accepted and not capped.record_frame(0.1, 100000, 300000, {sim_tick = 3.0}) and not capped.report().complete and capped.report().stream.frames == 2 and capped.report().stream.rejected_frames == 1 and capped.report().stream.unstored_frames == 0 and capped.failure.contains("limit"))
+	_remove_stream(capped_path)
+
+	var bytes_path: String = _stream_path("byte-cap")
+	_remove_stream(bytes_path)
+	var bytes_capped := FrameSamples.new()
+	_check("stream byte-cap config accepted", bytes_capped.configure(0.0, 1.0, 2, bytes_path))
+	bytes_capped._stream_bytes = FrameSamples.STREAM_MAX_BYTES
+	_check("byte-cap fixture accepts a buffered sample", bytes_capped.record_frame(0.1, 100000, 100000, {sim_tick = 1.0}))
+	bytes_capped.abort("interrupt")
+	_check("byte-cap stays incomplete and does not fabricate completion", not bytes_capped.report().complete and not bytes_capped.report().stream.complete and bytes_capped.report().stream.unstored_frames == 1 and _stream_records(bytes_path).size() == 1)
+	_remove_stream(bytes_path)
+
+
+func _test_stream_precision() -> void:
+	var path: String = _stream_path("precision")
+	var report_path: String = _stream_path("precision-report")
+	_remove_stream(path)
+	_remove_stream(report_path)
+	var logger := FrameSamples.new()
+	var original: float = 1234.567891234567
+	var accepted: bool = logger.configure(0.0, 0.1, 10, path) and logger.record_frame(0.1, 100000, 100000, {sim_tick = 1.0, sim_time_s = original})
+	var report: Dictionary = logger.report()
+	var records: Array = _stream_records(path)
+	var write_result: Dictionary = FrameSamples.write_json(report_path, report)
+	var file := FileAccess.open(report_path, FileAccess.READ)
+	var parsed: Variant = JSON.parse_string(file.get_as_text()) if file != null else null
+	if file != null:
+		file.close()
+	_check("stream and report preserve float64 values", accepted and write_result.ok and records.size() == 3 and parsed is Dictionary and absf(float(records[1].metrics.sim_time_s[0]) - original) < 1e-12 and absf(float(parsed.sample_endpoints.first.sim_time_s) - original) < 1e-12)
+	var before: String = FileAccess.get_file_as_string(report_path)
+	var refused: Dictionary = FrameSamples.write_json(report_path, {format = FrameSamples.STREAM_FORMAT, changed = true})
+	_check("stream report refuses an existing destination", not refused.ok and int(refused.error) == ERR_ALREADY_EXISTS and FileAccess.get_file_as_string(report_path) == before)
+	var legacy: Dictionary = FrameSamples.write_json(report_path, {format = FrameSamples.FORMAT, legacy_replacement = true})
+	var legacy_value: Variant = JSON.parse_string(FileAccess.get_file_as_string(report_path))
+	_check("legacy v2 report replacement remains supported", legacy.ok and legacy_value is Dictionary and legacy_value.get("legacy_replacement") == true)
+	_remove_stream(path)
+	_remove_stream(report_path)
+
+
+func _test_stream_long_run(hz: int) -> void:
+	var path: String = _stream_path("%dhz" % hz)
+	_remove_stream(path)
+	var logger := FrameSamples.new()
+	var count: int = hz * 1800
+	_check("%d Hz long stream config accepted" % hz, logger.configure(0.0, 1800.0, count, path), logger.failure)
+	var previous: int = 1000000
+	var accepted: bool = true
+	var max_chunk: int = 0
+	for index in range(count):
+		var endpoint: int = 1000000 + floori(float(index + 1) * 1800000000.0 / float(count))
+		var delta: int = endpoint - previous
+		var tick: int = floori(float(index + 1) * 432000.0 / float(count))
+		if not logger.record_frame(float(delta) / 1000000.0, delta, endpoint, {sim_tick = float(tick), sim_time_s = float(tick) / 240.0}):
+			accepted = false
+			break
+		previous = endpoint
+		max_chunk = maxi(max_chunk, logger._wall_delta_usec.size())
+	var report: Dictionary = logger.report()
+	var records: Array = _stream_records(path)
+	_check("%d Hz stream covers 30 minutes with bounded chunks" % hz, accepted and report.complete and report.frames == count and report.stream.frames == count and max_chunk < FrameSamples.STREAM_CHUNK_FRAMES and is_equal_approx(report.actual_sample_s, 1800.0), logger.failure)
+	_check("%d Hz stream has ordered header, chunks, trailer and hash" % hz, records.size() == report.stream.chunks + 2 and records[0].type == "header" and records[-1].type == "trailer" and records[-1].complete and report.stream.sha256.length() == 64 and report.stream.unstored_frames == 0 and report.stream.rejected_frames == 0, str(report.stream))
+	_check("%d Hz stream records write overhead" % hz, report.stream.write_calls == report.stream.chunks + 2 and report.stream.write_total_usec >= report.stream.write_max_usec)
+	_check("%d Hz stream preserves measured endpoints without embedding raw arrays" % hz, report.raw_metrics.is_empty() and report.frame_wall_usec.is_empty() and report.sample_endpoints.first.sim_tick == 240.0 / hz and report.sample_endpoints.last.sim_tick == 432000.0)
+	_remove_stream(path)
 
 
 func _test_options() -> void:

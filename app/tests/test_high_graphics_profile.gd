@@ -33,7 +33,9 @@ func _initialize() -> void:
 	HighGraphics._reported = false
 	Atmosphere.state = {}
 	OS.unset_environment(PROFILE_ENV)
-	_check("no request selects standard", not HighGraphics.active() and HighGraphics.requested().is_empty())
+	_test_research_profile()
+	_check("default profile follows actual renderer", HighGraphics.active() == native_forward_plus and HighGraphics.requested().is_empty())
+	OS.set_environment(PROFILE_ENV, "standard")
 	_test_standard_integration()
 	_check("Standard never enables contact shadows", not ProjectSettings.get_setting(HighGraphics.CONTACT_SHADOW_SETTING))
 	OS.set_environment(HighGraphics.CONTACT_ENVIRONMENT_KEY, "on")
@@ -84,6 +86,59 @@ func _check(label: String, ok: bool, detail := "") -> void:
 	if not ok:
 		_failures += 1
 		printerr("FAIL %s %s" % [label, detail])
+
+
+func _test_research_profile() -> void:
+	_check("explicit Standard does not enable High effects on Forward+",
+		not HighGraphics._active_for("standard", "forward_plus", "macOS"))
+	_check("bare and High Forward+ retain existing behavior",
+		HighGraphics._active_for("", "forward_plus", "macOS")
+		and HighGraphics._active_for("high", "forward_plus", "macOS"))
+	_check("Mobile, Compatibility and headless never activate High",
+		not HighGraphics._active_for("high", "mobile", "macOS")
+		and not HighGraphics._active_for("high", "gl_compatibility", "macOS")
+		and not HighGraphics._active_for("high", "forward_plus", "headless"))
+	var research_key := HighGraphics.RESEARCH_ENVIRONMENT_KEY
+	var had_research := OS.has_environment(research_key)
+	var previous_research := OS.get_environment(research_key)
+	var had_profile := OS.has_environment(PROFILE_ENV)
+	var previous_profile := OS.get_environment(PROFILE_ENV)
+	var identity := {"requested_method": "forward_plus", "requested_driver": "metal",
+		"requested_effects": "common", "requested_reconstruction": "metalfx_spatial_85",
+		"project_name": "OpenRC-Research-0123456789abcdef0123456789abcdef",
+		"project_sha256": "project-hash", "profile_sha256": "profile-hash"}
+	OS.set_environment(PROFILE_ENV, "standard")
+	OS.set_environment(research_key, JSON.stringify(identity))
+	var receipt: Dictionary = HighGraphics.describe().research
+	_check("research receipt preserves requested identity without claiming shader parity",
+		receipt.requested_method == "forward_plus" and receipt.requested_driver == "metal"
+		and receipt.requested_effects == "common" and receipt.requested_reconstruction == "metalfx_spatial_85")
+	_check("research receipt reads actual method, driver and profile",
+		receipt.effective_method == RenderingServer.get_current_rendering_method()
+		and receipt.effective_driver == RenderingServer.get_current_rendering_driver_name()
+		and receipt.effective_profile == "standard")
+	_check("research receipt exposes mismatch rather than assuming requested backend",
+		receipt.method_matches == (receipt.effective_method == identity.requested_method)
+		and receipt.driver_matches == (receipt.effective_driver == identity.requested_driver))
+	_check("research receipt records settings and isolation without claiming a private path",
+		receipt.effective_project_name == str(ProjectSettings.get_setting("application/config/name", ""))
+		and receipt.user_directory_name_matches == (OS.get_user_data_dir().get_file() == identity.project_name)
+		and receipt.project_sha256_at_launch == "project-hash"
+		and receipt.multi_bounce_occlusion_project_setting == ProjectSettings.get_setting(
+			"rendering/lights_and_shadows/multi_bounce_occlusion/enabled", false))
+	OS.set_environment(research_key, "not json")
+	_check("malformed research identity is reported instead of inventing a backend",
+		HighGraphics.describe().research.error == "invalid launcher research identity")
+	OS.set_environment(research_key, JSON.stringify({"requested_method": "mobile"}))
+	_check("incomplete research identity is reported", HighGraphics.describe().research.error == "incomplete launcher research identity")
+	if had_profile:
+		OS.set_environment(PROFILE_ENV, previous_profile)
+	else:
+		OS.unset_environment(PROFILE_ENV)
+	if had_research:
+		OS.set_environment(research_key, previous_research)
+	else:
+		OS.unset_environment(research_key)
 
 
 func _test_flow_policy(native_high: bool) -> void:
@@ -189,7 +244,7 @@ func _test_high_native_values() -> void:
 	OS.set_environment(HighGraphics.CONTACT_ENVIRONMENT_KEY, " ON ")
 	HighGraphics._configured = false
 	HighGraphics.configure()
-	_check("native High enables the explicit contact experiment", ProjectSettings.get_setting(HighGraphics.CONTACT_SHADOW_SETTING))
+	_check("contact experiment requires engine support", ProjectSettings.get_setting(HighGraphics.CONTACT_SHADOW_SETTING) == HighGraphics.supports_contact_shadows())
 	_check("contact experiment uses nondegenerate surface thickness", _near(ProjectSettings.get_setting(HighGraphics.CONTACT_THICKNESS_SETTING), 0.01))
 	_check("contact experiment bounds ray length", ProjectSettings.get_setting(HighGraphics.CONTACT_LENGTH_SETTING) == 0)
 	OS.unset_environment(HighGraphics.CONTACT_ENVIRONMENT_KEY)
@@ -220,7 +275,8 @@ func _test_high_native_values() -> void:
 	_check("native high uses solar angular size", _near(sun.light_angular_distance, 0.53))
 	_check("native high preserves direct light colour", sun.light_color == Color(0.4, 0.5, 0.6))
 	_check("native high preserves direct light energy", _near(sun.light_energy, 1.7))
-	_check("High sun permits contact shadows without unfiltered stochastic blur", sun.shadow_contact_shadows_allow and _near(sun.shadow_contact_shadows_blur, 0.0))
+	if HighGraphics.supports_contact_shadows():
+		_check("High sun permits contact shadows without unfiltered stochastic blur", sun.get("shadow_contact_shadows_allow") and _near(sun.get("shadow_contact_shadows_blur"), 0.0))
 	sun.free()
 
 

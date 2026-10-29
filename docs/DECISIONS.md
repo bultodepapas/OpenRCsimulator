@@ -128,9 +128,15 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 ## Presentation
 
-### Compatibility baseline; advanced renderers are explicit trials
+### Compatibility baseline and a Windows NVIDIA package
 
-**VQ-07 / GDU-11.** Ordinary launches retain Compatibility. Home's opt-in Forward+ High route is a separate restart-based trial, and full-resolution Native rendering remains the default while FSR/DLSS candidates qualify. Engine support or exposed settings do not prove the feature renders correctly or meets the flight budget. Keep backend-specific behavior and native/pilot gates explicit. [Advanced graphics plan](plans/advanced-graphics.md), [GDU-11 implementation](research/engine-upgrade/GDU-11/implementation.md).
+**VQ-07 / GDU-11.** The official-engine build retains Compatibility. Following the owner's 2026-10-28 request, the current-source Windows NVIDIA package defaults to Forward+ and exposes DLSS, DLAA and Reflex as regular saved settings. This supersedes their experimental UI status, not the remaining performance, motion-quality or cross-device gates. Full-resolution Native reconstruction remains the initial choice; Reflex requests On when supported. Matched binaries, runtime hashes and a separate import cache prevent mixing the NVIDIA fork with official-engine resources. Strict AI companion engine admission remains unchanged, and saved companion requests cannot block player-only flights on the fork. Keep the Standard launcher for recovery. [Native package guide](../tools/graphics/native/README.md), [advanced graphics plan](plans/advanced-graphics.md), [GDU-11 implementation](research/engine-upgrade/GDU-11/implementation.md).
+
+### Apple features follow verified engine boundaries
+
+**DT-MAC-00-R2.** Plan native Metal and MetalFX through the existing Godot renderer/reconstruction owners, with a recoverable Compatibility/Native baseline. The inspected 4.8-beta1 driver constructs MTL3 despite documentation describing automatic Metal 4 selection; OS capability labels cannot establish a different command backend. Metal 4 submission, newer neural inputs and frame interpolation are separate upstream-first workstreams, with their own synchronization, latency and release gates. This avoids a parallel renderer or chip-name feature policy and preserves the float64 simulation contract. [Source reconciliation](research/desktop-delivery-investigations/DT-MAC-00-R2/godot-compatibility.md) and the [execution plan](plans/apple-silicon-performance.md) own evidence, pending work and acceptance; this direction is not implementation or Mac qualification.
+
+**DT-MAC-02/07 preparation.** The user requested implementation on Windows for later Mac testing. Keep MetalFX behind an explicit trial flag and validate engine/device capabilities. Record selected policy separately from unknown effective scaler execution: viewport properties alone cannot prove a GPU pass. An unacknowledged Temporal history reset falls back to Native and restores saved MSAA; method presence or submission is insufficient. This allows testing stock engine integration without promoting an unqualified renderer or changing the simulation. [Implementation and Windows checks](research/desktop-delivery-investigations/DT-MAC-02/README.md); native adoption gates remain in the plan.
 
 ### Scene detail and birds
 
@@ -169,6 +175,8 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 ### Qualify exported artifacts separately from their source tree
 
 **DT / PT1.** Desktop ZIP exports carry one build identity and their actual resources; package inspection, native launch, signing trust and sustained hardware performance are separate checks. Updating remains manual, and installer/web/mobile expansion is not implied by available export templates. Promote the verified artifact bytes rather than rebuilding an assumed equivalent after acceptance. [Delivery contract](DESKTOP-DELIVERY-PLAN.md#current-delivery), [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md).
+
+**DT-LNX-00 planning direction; initial export hardening implemented.** The [Linux plan](plans/linux-support-distribution.md) preserves one qualified payload per architecture/build environment across project package wrappers; byte-changing transformations precede receipt finalization and exact-artifact qualification. Source-built Flatpak output receives independent receipts and evidence. Managed channels own their updates; portable formats retain explicit replacement. This avoids invalidating native admission or mixing package-manager ownership. [DT-LNX-02a/b](research/desktop-delivery-investigations/DT-LNX-02/README.md) implements isolated export outputs, exact CI package selection and installed-template verification. Broader distro/ARM64 and Flathub claims remain conditional on the [dated audit's gates](research/desktop-delivery-investigations/DT-LNX-00/README.md), not on format availability.
 
 ### Preserve Git history and limit future artifact growth
 

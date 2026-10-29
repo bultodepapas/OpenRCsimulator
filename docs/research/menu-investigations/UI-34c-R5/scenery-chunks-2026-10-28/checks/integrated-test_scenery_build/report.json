@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2ada56f5-f001-478f-8f99-74567c271c30",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_scenery_build.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-28T21:58:44.473125+00:00",
+  "label": "integrated-test_scenery_build",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-scenery-20261028\\checks\\integrated-test_scenery_build-y7o64vz9\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\roi-scenery-20261028\\checks\\integrated-test_scenery_build-y7o64vz9\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.609,
+  "log_bytes": 11292,
+  "log_sha256": "63621fd41b44cecd6dc23cb68f5e4506ea08f3e41da57f3c673667143e7ee40c"
+}

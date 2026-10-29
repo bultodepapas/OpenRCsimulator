@@ -1,10 +1,120 @@
-# Native reconstruction experiment (VQ-07d)
+# NVIDIA graphics for Windows (VQ-07d)
+
+## Play with DLSS, DLAA and Reflex
+
+The Windows NVIDIA package uses the current application and opens at Home.
+DLSS, DLAA and Reflex are regular, capability-checked graphics options, following
+the owner's promotion request on 2026-10-28. Build and open it from the repository:
+
+```powershell
+python tools/graphics/native/product.py --package
+python tools/graphics/native/product.py --verify --launch
+```
+
+The output is `dist/windows-nvidia/OpenRC Simulator.exe`. Open **Settings →
+Graphics** and select **3D reconstruction** (DLSS or DLAA) and **NVIDIA Reflex**
+(Off, On, On + Boost), then keep the changes. Requests are saved; unavailable
+features explain their status. Reflex defaults to On on supported hardware.
+Reconstruction defaults to Native until selected. The UI reports SDK acceptance
+separately from the requested Reflex mode; acceptance is not a latency measurement.
+
+The package defaults to Forward+ and includes matched engine/runtime receipts,
+licenses and source hashes. `Standard Graphics.cmd` starts Compatibility for
+recovery. Source snapshots and import caches stay isolated under `tmp/nvidia-product`.
+The official cross-platform engine pin remains unchanged. This Windows build does
+not provide qualified AI companions, AccessKit, D3D12, Frame Generation or Ray
+Reconstruction. Saved companion requests remain saved but player flights run
+without companions, with their unavailability shown on Home.
+
+The fork predates beta1's multi-bounce occlusion, contact shadows and maple-leaf
+alpha-coverage mipmap preservation. Its import cache is therefore distinct;
+restoring pinned authoring sidecars does not establish identical foliage mipmaps.
+Title fitting and Compatibility crash marks use capability-based fallbacks.
+The package tool records the fork's known import-sidecar rewrites, restores the
+exact pinned authoring bytes and reconciles only the corresponding checked cache
+identities. Unknown changes fail packaging. Receipts retain imported/restored
+hashes and unsupported options; aircraft validation and export plugins stay enabled.
+
+## AMD SDK 2.4 candidate
+
+The separate Windows/Vulkan upscaling candidate uses AMD's pinned SDK 2.4.0
+headers and signed loader/effect DLLs. Build it without replacing the existing
+engine cache or NVIDIA package:
+
+```powershell
+python tools/graphics/native/sdk24.py
+python tools/graphics/native/build_sdk24.py --target editor --jobs 4
+python tools/graphics/native/build_sdk24.py --target template_release --jobs 4
+python tools/graphics/native/product_sdk24.py                 # read-only preflight
+python tools/graphics/native/product_sdk24.py --package       # snapshot, import and export
+python tools/graphics/native/product_sdk24.py --verify        # verify the candidate and its evidence
+```
+
+The destination machine needs a Vulkan-capable graphics driver and the
+[Microsoft Visual C++ v14 x64 runtime](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist/).
+The signed AMD DLLs import `MSVCP140.dll`, `VCRUNTIME140.dll` and
+`VCRUNTIME140_1.dll`; the upscaler also imports `vulkan-1.dll`.
+
+`build_sdk24.py --prepare-only` checks staging without compiling. The default
+engine cache is `.tools/advanced-rendering-fsr24`; receipts bind the SDK intake,
+patched engine sources, headers, runtime, notices and executable. Changed inputs
+fail verification, and earlier receipts are retained before another preparation.
+The separate `product_sdk24.py` wrapper uses the shared packaging helpers without
+changing the legacy `product.py` default. It selects a matching editor/template
+pair, including archived receipts; if discovery is ambiguous, supply
+`--editor-receipt` and `--template-receipt`. `--cache` selects another isolated
+engine cache.
+
+The output is `dist/windows-fsr24-candidate/`: the release executable and PCK,
+signed AMD runtime, other runtime DLLs, licenses, launchers and receipts. Its
+snapshot and checked import/export reports are retained under `tmp/`; verification
+requires those artifacts and the selected engine pair to remain available. A
+verified previous candidate is preserved if a new export fails. This is an
+experimental candidate, not a qualified release.
+
+A bounded FSR3 fixture reported analytical 3.1.6 dispatches on the local RTX 3090,
+but failed Vulkan validation with shader-feature and depth/stencil errors and
+storage-format warnings. A later editor build removed the observed feature and
+barrier errors in that fixture; storage-format warnings remain. The package is for
+investigation, not a qualified FSR3 player mode; see the dated evidence below for
+exact build and run identities.
+
+The candidate snapshot sets a separate `OpenRC-FSR24-Candidate` user-data
+directory, including when the executable is started directly. Its launchers use
+the same player profile; `FSR3 Analytical.cmd` requests High and FSR3 Quality,
+while `Standard Graphics.cmd` requests Compatibility. Headless import/export uses
+a disposable, candidate-owned editor profile and temporary directory. Neither
+changes the ordinary product's project import cache or player settings.
+
+For an isolated candidate launch, `OPENRC_FSR_IMPLEMENTATION=analytical` (default)
+pins the bundled FSR 3.1.6 provider; `ml` requests bundled FSR 4.1.2; `auto` allows
+SDK selection. These are developer controls, not qualified player options. The
+adapter queries available implementations, verifies the selected provider after
+context creation and rejects unmet required render resources. Availability of the
+loader alone does not establish ML hardware support. `RenderingServer.get_fsr3_status()`
+reports the actual provider name/ID and requested implementation. SDK success and
+provider identity do not establish visual quality or performance.
+
+The shared reset patch advertises compiled temporal providers through
+`RenderingServer.get_temporal_history_reset_providers()`. FSR2 keeps separate
+history per view; FSR3 supports one view. Both acknowledge a captured history
+generation only after a successful dispatch. The application only submits FSR
+reset requests when this explicit capability is present; older DLSS-only engines
+retain their existing behavior. FSR2 and FSR3 diagnostic counters expose successful
+reset dispatches separately from requests.
+
+See the [completion plan](../../../docs/plans/amd-fsr-completion.md) and
+[dated SDK evidence](../../../docs/research/advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md)
+for completed checks and outstanding rendered gates. FSR4 qualification, frame
+generation, ray regeneration and radiance caching remain pending.
+
+## Engine provenance and historical trial
 
 This opt-in Windows/Vulkan build connects NVIDIA's existing DLSS integration and
 AMD's FSR 3.1.4 upscaler, built from the pinned SDK with Vulkan fixes. It remains separate from the
 standard official Godot 4.8-beta1 build. The upstream NVIDIA commit is based on
 Godot 4.8-dev; run it on a disposable application copy and qualify this distinct
-engine build before shipping it. The GPU used for local checks is not the product support boundary.
+engine build independently. The GPU used for local checks is not the product support boundary.
 
 See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md).
 The current trial pins Streamline 2.11.1 and DLSS **preset K**. On the RTX 3090,
@@ -203,6 +313,16 @@ and path tracing remain disabled; copying their SDK DLLs does not enable them.
   token through queued draws and owns each callback's parameters. It also advances
   tokens in `--fixed-fps` capture mode. `dlss_failure_paths.patch` handles rejected
   callback ownership and output-clear failures. Both enter editor/template receipts.
+- `dlss_history_reset.patch` adds per-viewport temporal-history generations.
+  Camera/scenario replacement and explicit
+  `RenderingServer.viewport_request_temporal_history_reset(viewport_rid)` requests
+  reach DLSS at SDK evaluation. Only a successful evaluation acknowledges that
+  generation; queued older callbacks cannot consume a newer request. New contexts
+  reset on their first evaluation. The app submits cuts for view/style changes,
+  camera snaps, flight restart and crash-focus transitions, while smooth motion
+  retains history. `Reconstruction.describe()` distinguishes notifications from
+  submitted requests; Streamline's `reset_dispatches` counts successful evaluations
+  with reset set. Global diagnostic counters are not an atomic multi-field snapshot.
 - Preferences retain the requested mode across devices. Unsupported requests
   render natively, with the effective mode reported separately. UI options are
   disabled when unavailable. Native remains the default.
@@ -219,14 +339,16 @@ and path tracing remain disabled; copying their SDK DLLs does not enable them.
 - FSR3 uses its internal automatic exposure for HDR normalization. Godot's
   average-luminance texture is not an exposure multiplier and is not passed as
   one. Reverse-Z plane ordering follows the FFX dispatch contract.
-- This adapter handles one view per context. Stereo/XR, temporal-history reset
-  on arbitrary camera cuts, animated shader motion and transparency quality
-  require separate work and evidence.
+- This adapter handles one view per context. Stereo/XR, uninstrumented arbitrary
+  camera teleports, animated shader motion and transparency quality require
+  separate work and evidence. The DLSS reset API does not establish temporal
+  reset support for other providers without the explicit capability query described above.
 
 FSR 3.1 **upscaling** is independent of frame generation. This implementation
 does not enable generated frames, path tracing or ray reconstruction. FSR4 is
-not exposed as an available feature: the public Vulkan SDK required for that
-path was still forthcoming in the [dated research](../../../docs/research/advanced-graphics-2026-10-21/dlss-fsr-2026-10-24.md).
+not exposed as an available player feature. The separate SDK 2.4 candidate above
+supersedes the earlier Vulkan SDK availability limitation, with rendered
+qualification still required.
 Other GPUs, platforms and drivers require their own rendered qualification.
 
 ## Source and license identities

@@ -27,6 +27,7 @@ const OutOfTrim := preload("res://sim/out_of_trim.gd")
 const UpdateNotice := preload("res://ui/update_notice.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
 const FailureConfig := preload("res://failures/config.gd")
+const CustomSkin := preload("res://aircraft/custom_skin.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
@@ -1371,7 +1372,7 @@ func _update_livery() -> void:
 		_livery_choices_aircraft = aircraft_id
 		livery_preview_cache = {}
 	livery_id = AirplaneBuilder.resolve_livery_choice(_livery_choices, str(_livery_preferences.get(aircraft_id, "")))
-	livery_button.visible = _livery_choices.size() > 1
+	livery_button.visible = _livery_choices.size() > 1 or CustomSkin.supports(aircraft_id)
 	_update_livery_row()
 	if not livery_button.visible:
 		return
@@ -1404,6 +1405,11 @@ func _livery_index() -> int:
 
 func livery_choices() -> Array:
 	return _livery_choices.duplicate(true)
+
+
+func refresh_liveries() -> void:
+	_livery_choices_aircraft = ""
+	_update_livery()
 
 
 func _cycle_fuel_fill() -> void:
@@ -1605,14 +1611,18 @@ func _update_companions_text() -> void:
 	var enabled := bool(companion_config.get("enabled", false))
 	var count := int(companion_config.get("count", 1))
 	var seed := int(companion_config.get("seed", 1))
-	var available := not Catalog.is_rotorcraft(aircraft_id) and landscape_id == Landscapes.DEFAULT_ID
+	var engine_qualified := CompanionConfig.engine_qualified()
+	var available := engine_qualified and not Catalog.is_rotorcraft(aircraft_id) and landscape_id == Landscapes.DEFAULT_ID
 	companions_button.text = tr("Flight companions: %s · %d") % [
 		tr("On") if enabled else tr("Off"), count,
 	]
 	companions_button.tooltip_text = tr("Flight companions: %s · %d companions · seed %d") % [
 		tr("On") if enabled else tr("Off"), count, seed,
 	]
-	if not available:
+	if not engine_qualified:
+		companions_button.text = tr("Flight companions: Unavailable")
+		companions_button.tooltip_text = tr("Flight companions are unavailable in this game build.")
+	elif not available:
 		companions_button.tooltip_text += "\n" + tr("Available for airplanes at Club Field.")
 	companions_button.disabled = not available
 

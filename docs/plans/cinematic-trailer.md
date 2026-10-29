@@ -6,6 +6,53 @@ User brief: a **very cinematic, AAA-style game trailer**, entirely in **English*
 
 This plan retains the creative targets and remaining review gates. The [production evidence](../research/cinematic-trailer/production-2026-10-17.md) is authoritative for the delivered film, source identities and deliberate changes from those targets. The [dated investigation](../research/cinematic-trailer/2026-10-17.md) records the earlier source audit at commit `049df2034de017e6fedc649a55194eb5977191cd` and research limits.
 
+## Revision 8 — feature-complete re-cut (TRA-09, 2026-10-28)
+
+**Owner brief (2026-10-28):** v7 is outdated. Show every current attribute quickly: realistic physics with real technical terms, NVIDIA DLSS and AMD FSR, the different aircraft, colored show smoke, AI companions, night flight, compatible radios, Workshop, mini and giant aircraft. Keep the multi-aircraft opening, but with **different airframes and colored smoke**.
+
+### Review of v7
+
+| Keep | Change |
+| --- | --- |
+| Real gameplay, real crash report, licensed score, Barlow typography, honest labels | **Opening:** four identical red Stiks with white smoke read as one model duplicated. Use five distinct airframes and an airshow palette. |
+| Formation as the hook | **Rhythm:** every shot lasts 3–5 s with the same 3/4 rear chase, so the film reads as a slideshow. Alternate 1.5–2 s roll-call cuts with 3 s holds. |
+| Crash → cost payoff | **Copy:** generic slogans (`FEEL EVERY INPUT.`) carry no information. RC pilots respond to engineering: name the modeled effects. |
+| | **Coverage:** missing Corsair, X8, AI companions, Workshop smoke colors, RGB night lighting, Workshop size range, DLSS/FSR/Reflex, nine languages. |
+| | **Repetition:** the same red Stik carries stik-bank, wind, controls and crash. The storm shot has no aircraft. |
+| | **Ending:** the film ends on a repair bill. End on spectacle, then the logo. |
+
+### Storyboard (~66 s, 60 fps)
+
+**G** = gameplay capture, **U** = real application UI, **C** = labeled cinematic choreography, **R** = reused v7 source. Callouts use a small mono data line under the headline; every term must name behavior present in source.
+
+| Time | Shot | Callout (headline / data line) |
+| --- | --- | --- |
+| 0:00–0:06 | **C** five-airframe formation (Stik, Extra, P-51D, F4U, Vantage Jet), red/white/blue/yellow/green smoke, low camera, fan-out | `OpenRC SIMULATOR` cold open; `CINEMATIC FORMATION SEQUENCE` |
+| 0:06–0:09 | **R** Extra two rolls | `FLIGHT PHYSICS.` / `6-DOF RIGID BODY · 240 Hz · 64-BIT SOLVER` |
+| 0:09–0:11.5 | **R** Mustang pass | `P-FACTOR · GYROSCOPIC PRECESSION · PROPWASH` |
+| 0:11.5–0:14 | **R** wind/gust correction | `MEAN WIND · GUSTS · SEEDED TURBULENCE` |
+| 0:14–0:16.5 | **R** jet pass | `SPOOLING TURBINE · DOPPLER · SOUND DELAY` |
+| 0:16.5–0:19 | **R** Stik bank (gear) | `PER-WHEEL SUSPENSION · TIRE SLIP · STALLS & SPINS` |
+| 0:19–0:21 | **G** F4U Corsair: full-throttle level run-up to top speed, then aileron held through two rolls; the edit cuts between eleven livery takes of the identical deterministic flight every 0.2 s | `13 PAINT SCHEMES.` / `Full throttle · aileron held · same flight, every livery` |
+| 0:21–0:23 | **G** X8 flying wing | `X8 FLYING WING` / `FLIGHT-IDENTIFIED AERODYNAMICS` |
+| 0:23–0:25 | **R** Turbo Lumber twilight | `TURBO LUMBER EVOLUTION` / `ELECTRIC` |
+| 0:25–0:27 | **R** helicopter | `RC HELICOPTER` / `COLLECTIVE · CYCLIC · ROTOR SPOOL` |
+| 0:27–0:30 | **R** Bisonte → MONSTER CAR 2 jump | `RC CARS` |
+| 0:30–0:35 | **G** Workshop size trials: Tiny Stik then Giant Stik | `MINI 15 cm → GIANT 7.6 m` / `WORKSHOP SIZE 10–500 %` |
+| 0:35–0:38 | **U** Workshop paint/lighting/smoke pages | `AIRCRAFT WORKSHOP` / `PAINT · LIGHTS · SMOKE · SIZE · POWER` |
+| 0:38–0:41 | **G** AI companions, normal flight | `AI WINGMEN` / `UP TO 3 · TRAFFIC AVOIDANCE · EXPERIMENTAL` |
+| 0:41–0:44 | **G** night RGB lighting + colored smoke | `NIGHT FLIGHT` / `PROGRAMMABLE RGB LIGHTS · COLOR SMOKE` |
+| 0:44–0:46 | **R** storm | `ELECTRICAL STORMS` |
+| 0:46–0:48.5 | **R** controls overlay | `YOUR RADIO.` / `EdgeTX · OpenTX (USB) · GAMEPAD · KEYBOARD` |
+| 0:48.5–0:51 | **U** Settings → upscaler list | `NVIDIA DLSS · DLAA · REFLEX / AMD FSR` / `EXPERIMENTAL` |
+| 0:51–0:55 | **R** crash approach, impact, report | `EVERY MISTAKE HAS A COST.` |
+| 0:55–1:03 | **C** formation reprise (fan-out) | — |
+| 1:03–1:06 | end card | `EVERY INPUT MATTERS.` / `9 LANGUAGES · OPEN SOURCE · EARLY ALPHA` / URL |
+
+The owner added on 2026-10-28: show the Corsair's liveries switching rapidly during a spectacular roll, at full speed, with the aileron held. Liveries are chosen before flight; the switch is editorial and the card says so. `luftwaffe` and `japan` are left out of the public edit. Settings lists DLSS/FSR as unavailable in the standard Compatibility build, so the trailer shows a labeled card, not that screen.
+
+Claims stay inside source scope: aircraft remain experimental and not flight-validated; Workshop size is virtual similarity scaling; companions are an experimental 1–3 roster; DLSS/DLAA/Reflex and FSR are unqualified trials; radios are EdgeTX/OpenTX USB joystick mode, without a brand compatibility list. The score is re-rendered to the new length from the same licensed Uprising source.
+
 Research expansion: **16 internet investigations**, a parallel **five-track music shortlist**, and comparisons of code-video skills and generative-video tools are recorded in the [research ledger](../research/cinematic-trailer/2026-10-17.md#expanded-investigation-16-research-topics). Production selected Scott Buckley's **Uprising**, native Godot capture and a small Python/FFmpeg edit pipeline. Listening review remains open; captures, effects and the full minute have been rendered.
 
 ## 1. Creative direction
@@ -233,6 +280,7 @@ Estimates are planning ranges for focused production work, excluding unattended 
 | TRA-06 | Edit, sound, titles, grading and report | Complete local H.264/AAC film; source audio, music, timeline and editor retained. |
 | TRA-07 | Technical review, poster and editable handoff | Full decode, 3,600 frames, 60.000 s and measured audio passed. Sampled visual review complete. Listening and asset release gate remain open. |
 | TRA-08 | Channel adaptation/publication | Not requested; no upload or publication performed. |
+| TRA-09 | Revision 8 feature re-cut | Local 58-second film delivered; [evidence](../research/cinematic-trailer/revision-8-2026-10-28.md). Listening and small-screen review remain open. |
 
 The original **27–55 hour** range was a planning estimate, not a measured production duration. The remaining work concerns listening review and release clearance; the movie and editable handoff already exist.
 

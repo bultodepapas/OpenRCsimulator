@@ -2,14 +2,37 @@ extends SceneTree
 
 const FieldLoader = preload("res://data/field_loader.gd")
 const FieldBuilder = preload("res://render/field.gd")
+const Scenery = preload("res://scenery/scenery.gd")
+const SceneryLoader = preload("res://scenery/scenery_loader.gd")
+const BirdDirector = preload("res://scenery/birds/bird_director.gd")
 
+var _reference_builder: Script = FieldBuilder
+var _reference_scenery: Script = Scenery
 var _failures: int = 0
 var _checks: int = 0
 var _stages: PackedStringArray = PackedStringArray()
 var _cancel_stages: PackedStringArray = PackedStringArray()
+var _scenery_checkpoints := 0
+var _changing_field: Dictionary
+var _changing_lighting: Dictionary
+var _changing_exclusions: Array
+var _changed_inputs := false
 
 
 func _initialize() -> void:
+	for argument: String in OS.get_cmdline_user_args():
+		if argument.begins_with("--reference-scenery="):
+			_reference_scenery = load(argument.trim_prefix("--reference-scenery="))
+			if _reference_scenery == null:
+				push_error("reference scenery builder could not load")
+				quit(2)
+				return
+		if argument.begins_with("--reference-field="):
+			_reference_builder = load(argument.trim_prefix("--reference-field="))
+			if _reference_builder == null:
+				push_error("reference field builder could not load")
+				quit(2)
+				return
 	_run()
 
 
@@ -21,7 +44,7 @@ func _run() -> void:
 		return
 	var field: Dictionary = loaded.field
 	var lighting: Dictionary = {}
-	var synchronous: Node3D = FieldBuilder.build(field, lighting)
+	var synchronous: Node3D = _reference_builder.build(field, lighting)
 	var synchronous_structure: Dictionary = _node_signature(synchronous, false)
 	var synchronous_metadata: Dictionary = _metadata_tree_signature(synchronous)
 	var staged: Node3D = await FieldBuilder.build_staged(field, lighting, [],
@@ -45,6 +68,16 @@ func _run() -> void:
 		and _stages.has("Flight cue shadows")
 		and _stages.has("Projected shadows")
 		and _stages[_stages.size() - 1] == "Attaching landscape", str(_stages))
+	_changing_field = field.duplicate(true)
+	_changing_lighting = lighting.duplicate(true)
+	_changing_exclusions = []
+	var frozen_field: Node3D = await FieldBuilder.build_staged(_changing_field, _changing_lighting,
+		_changing_exclusions, _change_field_inputs)
+	_check("field input edits at a scenery checkpoint leave completed geometry unchanged",
+		_changed_inputs and frozen_field != null and _node_signature(frozen_field, false) == synchronous_structure)
+	_check("field input edits leave completed metadata unchanged",
+		frozen_field != null and _metadata_tree_signature(frozen_field) == synchronous_metadata)
+	if frozen_field != null: frozen_field.free()
 	if synchronous != null:
 		synchronous.free()
 	if staged != null:
@@ -64,7 +97,140 @@ func _run() -> void:
 	_check("cancelled detached field nodes and resources are disposed",
 		objects_after_cancel <= objects_before_cancel + 1,
 		"objects before=%d after=%d" % [objects_before_cancel, objects_after_cancel])
+	await _scenery_lifecycle(field, lighting)
 	_finish()
+
+
+func _scenery_lifecycle(field: Dictionary, lighting: Dictionary) -> void:
+	var loaded: Dictionary = SceneryLoader.load_from(SceneryLoader.DEFAULT_PATH, field)
+	_check("scenery fixture loads", loaded.get("ok", false))
+	if not loaded.get("ok", false): return
+	_scenery_matrix(field, loaded.scenery, lighting)
+	var opts := {enabled = true, theme = "", quality = "high", audio = true, birds = true}
+	var expected: Node3D = Scenery.build(field, loaded.scenery, opts, lighting)
+	var geometry := _node_signature(expected, false)
+	var metadata := _metadata_tree_signature(expected)
+	expected.free()
+	await process_frame
+	await process_frame
+	for target: String in ["Building scenery placements", "Building parked aircraft", "Building scenery trees",
+			"Building scenery botanicals", "Building scenery cells", "Building scenery shadows"]:
+		var before: int = int(Performance.get_monitor(Performance.OBJECT_COUNT))
+		var job: RefCounted = Scenery.begin_build(field, loaded.scenery, opts, lighting)
+		var units := 0
+		while not Scenery.build_finished(job) and Scenery.next_build_stage(job) != target and units < 10000:
+			Scenery.advance_build(job)
+			units += 1
+		_check("cancellation target is reached: " + target, not Scenery.build_finished(job) and units < 10000)
+		# Exercise owned resources within the phase, not only an empty job before SETUP.
+		Scenery.advance_build(job)
+		var partial: WeakRef = weakref(job.root)
+		Scenery.cancel_build(job)
+		Scenery.cancel_build(job)
+		_check("cancel frees detached scenery and refuses transfer: " + target,
+			partial.get_ref() == null and Scenery.build_finished(job) and Scenery.take_build(job) == null)
+		job = null
+		partial = null
+		await process_frame
+		await process_frame
+		_check("cancel releases scenery resources: " + target,
+			int(Performance.get_monitor(Performance.OBJECT_COUNT)) <= before + 1)
+
+	var abandoned: RefCounted = Scenery.begin_build(field, loaded.scenery, opts, lighting)
+	Scenery.advance_build(abandoned)
+	var abandoned_root: WeakRef = weakref(abandoned.root)
+	abandoned = null
+	_check("dropping an unfinished job frees its detached root", abandoned_root.get_ref() == null)
+
+	var changing_field: Dictionary = field.duplicate(true)
+	var changing_scenery: Dictionary = loaded.scenery.duplicate(true)
+	var changing_options: Dictionary = opts.duplicate(true)
+	var changing_lighting := lighting.duplicate(true)
+	var changing_lake := {}
+	var frozen: RefCounted = Scenery.begin_build(changing_field, changing_scenery, changing_options,
+		changing_lighting, changing_lake)
+	Scenery.advance_build(frozen) # setup samples shadow and bird conditions together
+	var previous_preference: String = BirdDirector.preference
+	var previous_serial: int = BirdDirector.preference_serial
+	BirdDirector.set_preference("off" if previous_preference != "off" else "many")
+	changing_field.pilot.north += 1000.0
+	changing_scenery.groups.clear()
+	changing_options.quality = "low"
+	changing_options.audio = false
+	changing_options.birds = false
+	changing_lighting["sun_elevation_deg"] = -20.0
+	changing_lake["invalid_after_begin"] = true
+	var units := 0
+	while not Scenery.build_finished(frozen) and units < 10000:
+		Scenery.advance_build(frozen)
+		units += 1
+	BirdDirector.preference = previous_preference
+	BirdDirector.preference_serial = previous_serial
+	var completed: Node3D = Scenery.take_build(frozen)
+	frozen = null
+	_check("taken scene survives job release", is_instance_valid(completed) and units < 10000)
+	if is_instance_valid(completed):
+		_check("input and bird-preference edits between chunks cannot alter scenery geometry", _node_signature(completed, false) == geometry)
+		_check("input and bird-preference edits between chunks cannot alter scenery metadata", _metadata_tree_signature(completed) == metadata)
+		completed.free()
+
+	var empty: Dictionary = loaded.scenery.duplicate(true)
+	empty.groups.clear()
+	var empty_root: Node3D = Scenery.build(field, empty, opts, lighting)
+	_check("empty groups complete without an invalid group access", empty_root != null and empty_root.get_meta("stats").instances == 0)
+	if empty_root != null: empty_root.free()
+	await process_frame
+	await process_frame
+	var before_field_cancel: int = int(Performance.get_monitor(Performance.OBJECT_COUNT))
+	_scenery_checkpoints = 0
+	var cancelled: Node3D = await FieldBuilder.build_staged(field, lighting, [], _cancel_inside_scenery)
+	await process_frame
+	await process_frame
+	_check("field cancellation reaches the interior of scenery construction", cancelled == null and _scenery_checkpoints == 3)
+	_check("field cancellation releases its detached scenery job",
+		int(Performance.get_monitor(Performance.OBJECT_COUNT)) <= before_field_cancel + 1)
+	var retried: Node3D = FieldBuilder.build(field, lighting)
+	_check("a cancelled build does not prevent a complete retry", retried != null and retried.get_node_or_null("Scenery") != null)
+	if retried != null: retried.free()
+
+
+func _cancel_inside_scenery(stage: String) -> bool:
+	if stage == "Building field scenery": _scenery_checkpoints += 1
+	await process_frame
+	return _scenery_checkpoints < 3
+
+
+func _scenery_matrix(field: Dictionary, source: Dictionary, lighting: Dictionary) -> void:
+	for tier: String in ["low", "balanced", "high"]:
+		var definition := source.duplicate(true)
+		# The same source identity can describe a different authored group order.
+		if tier == "balanced": definition.groups.reverse()
+		var opts := {theme = "summer" if tier == "low" else "temperate", quality = tier,
+			audio = tier == "high", birds = tier != "low"}
+		var expected: Node3D = _reference_scenery.build(field, definition, opts, lighting)
+		var job: RefCounted = Scenery.begin_build(field, definition, opts, lighting)
+		var units := 0
+		while not Scenery.build_finished(job) and units < 10000:
+			Scenery.advance_build(job)
+			units += 1
+		var actual: Node3D = Scenery.take_build(job)
+		_check(tier + " ordered units preserve geometry, buffers and materials",
+			actual != null and _node_signature(actual, false) == _node_signature(expected, false))
+		_check(tier + " ordered units preserve metadata",
+			actual != null and _metadata_tree_signature(actual) == _metadata_tree_signature(expected))
+		if actual != null: actual.free()
+		expected.free()
+
+
+func _change_field_inputs(stage: String) -> bool:
+	if stage == "Building field scenery" and not _changed_inputs:
+		_changed_inputs = true
+		_changing_field.surfaces.clear()
+		_changing_field.objects.clear()
+		_changing_lighting["sun_elevation_deg"] = -20.0
+		_changing_exclusions.append({center = Vector2.ZERO, radius = 10000.0})
+	await process_frame
+	return true
 
 
 func _continue_at_checkpoint(stage: String) -> bool:
@@ -96,6 +262,19 @@ func _node_signature(node: Node, include_metadata: bool) -> Dictionary:
 		var instance: MeshInstance3D = node as MeshInstance3D
 		signature["mesh"] = _mesh_signature(instance.mesh)
 		signature["material_override"] = _stable_value(instance.material_override)
+	if node is MultiMeshInstance3D:
+		var batch: MultiMesh = (node as MultiMeshInstance3D).multimesh
+		signature["multimesh"] = {} if batch == null else {
+			"format": batch.transform_format, "colors": batch.use_colors, "custom": batch.use_custom_data,
+			"count": batch.instance_count, "visible_count": batch.visible_instance_count,
+			"buffer": batch.buffer, "mesh": _mesh_signature(batch.mesh)}
+	if node is GeometryInstance3D:
+		var geometry: GeometryInstance3D = node as GeometryInstance3D
+		signature["render"] = {"shadow": geometry.cast_shadow, "lod": geometry.lod_bias,
+			"range_begin": geometry.visibility_range_begin, "range_end": geometry.visibility_range_end,
+			"range_begin_margin": geometry.visibility_range_begin_margin,
+			"range_end_margin": geometry.visibility_range_end_margin,
+			"material_override": _stable_value(geometry.material_override)}
 	if include_metadata:
 		signature["metadata"] = _metadata_signature(node)
 	return signature
@@ -139,9 +318,13 @@ func _stable_value(value: Variant) -> Variant:
 	if value is Node:
 		var node: Node = value as Node
 		return {"class": node.get_class(), "name": _stable_node_name(node)}
-	if value is ShaderMaterial:
-		var shader_material: ShaderMaterial = value as ShaderMaterial
-		return {"class": value.get_class(), "shader": _stable_value(shader_material.shader)}
+	if value is Material:
+		var material: Material = value as Material
+		var properties := {}
+		for property: Dictionary in material.get_property_list():
+			if int(property.usage) & PROPERTY_USAGE_STORAGE:
+				properties[str(property.name)] = _stable_value(material.get(property.name))
+		return {"class": material.get_class(), "properties": properties}
 	if value is Shader:
 		var shader: Shader = value as Shader
 		return {"class": value.get_class(), "path": shader.resource_path, "code": shader.code}

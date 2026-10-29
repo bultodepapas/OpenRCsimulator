@@ -1,0 +1,9 @@
+{
+  "commit": "42bd47288cc8d4be6811634494a6bb3fe6bf5fc6",
+  "status": " M tools/graphics/native/product.py\n M tools/graphics/native/test_product.py\n",
+  "own_files": {
+    "app/scenery/scenery.gd": "20b52b02019a00aa9f6f45b7e9da47627bfe3c42073724f6ecc44a7d70613c82",
+    "app/render/field.gd": "e22e63f849361c8d0061efa6d12a7b6642f86f7dc2b0ed14af9522db7e517548",
+    "app/tests/test_field_staged_build.gd": "72206283a868e17f28fd29815770a8e56f02ffcfb5531e4855d771c857e26a10"
+  }
+}
