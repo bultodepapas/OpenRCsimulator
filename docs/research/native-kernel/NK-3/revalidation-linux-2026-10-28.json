@@ -22729,7 +22729,7 @@
     }
    },
    "native_admission_follow_up": {
-    "status": "19 installer gates, actual installed admission and staged UBSan passed; final package, paired performance and full fleet qualification pending",
+    "status": "Nineteen installer gates, installed admission/domain diagnostics, UBSan, actual Linux package checks, 30 quiet release performance pairs and candidate ZIP verification passed; full fleet running, final shared-workspace installation pending.",
     "candidate_source_commit": "1c33c0914a0f6f31b5868e645689c303239b9899",
     "candidate_native_sha256": "74ce8abcb021d0687024b887c59866f1d10649d9b860a69078a45564b644dbf7",
     "findings": {
@@ -22850,7 +22850,7 @@
      "reason": "The valid CT-array fixture exercises the same flat snapshot budget in about eight seconds; the 69906-piece preparatory probe was superseded."
     },
     "qualification_limits": [
-     "Full 1238-row campaign, actual final release and isolated paired timing remain pending; no expanded default promotion.",
+     "Full 1238-row campaign and final shared-workspace installation remain pending; no expanded default promotion.",
      "Synthetic admission fixtures verify software admission and exact behavior, not physical realism. Large CT-table regression qualifies preparation only.",
      "Superseded executable bytes remain recoverable from verified lossless deltas against the retained original accepted rollback ZIP; obsolete materialized executables and the unpromoted 313 ZIP container were removed."
     ],
@@ -22921,7 +22921,145 @@
     "superseded_package_retention": {
      "path": "tmp/nk3-admission-work/package-retention/manifest.json",
      "sha256": "d90e0e0ff4df2569cc132944742450675914b2f92eeb99ab53fee250e31c95b2"
+    },
+    "linux_release_package": {
+     "status": "passed candidate package checks; full fleet and final shared-workspace installation pending",
+     "qualification": {
+      "path": "tmp/nk3-admission-linux-package/evidence/qualification.json",
+      "sha256": "63e58641710c70ae71fe923965a9239cf30c4a5712906507334420f4dfb1a932"
+     },
+     "executable": "tmp/nk3-admission-linux-package/openrc-simulator.x86_64",
+     "executable_sha256": "d0ca364053a807e39bda68a84e77392d48d20c69928ae4ae2f5164adef1a82c1",
+     "native_modes": 5,
+     "default_route_cases": 18,
+     "expected_route_refusals": 5,
+     "exact_replay_rows": 65,
+     "replay_complete": true,
+     "solver_changed": false,
+     "tracked_source_files_unchanged": 4642,
+     "authoring_files_unchanged": 20,
+     "import_cache_entries_unchanged": 1842,
+     "private_cache_removed_and_original_link_restored": true,
+     "limit": "Linux x86_64 aircraft package; no rendering-resolution or other-vehicle qualification."
+    },
+    "excluded_release_performance_attempt": {
+     "status": "failed, not qualifying timing evidence",
+     "report": {
+      "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-release-performance/session_baseline.json",
+      "sha256": "11c6ebbea3dc69f3f4be3d74471d4232859e81a385ad3afa8703f9ef70d998b0"
+     },
+     "reason": "Invocation used nonexistent catalog ID sebart-avanti-s-a200 instead of sebart-avanti-s-a200-p100rx. The turbine diagnostic refused before simulation. A complete new campaign repeats all five correctly selected families without source or binary changes.",
+     "completed_reference_native_pairs_before_bad_id": 24
+    },
+    "release_performance": {
+     "status": "complete",
+     "report": {
+      "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-release-performance-r2/session_baseline.json",
+      "sha256": "0ec349c5f03364a015e97f1fab7ac3ff43c81bd2c5060c52aa41f46938b21542"
+     },
+     "hardware_after": {
+      "path": "tmp/nk3-admission-isolated/tmp/nk3-admission-release-performance-r2/hardware-after.json",
+      "sha256": "7849fee87a3c18e68b065b3abf90d02105eb55552d5652306cf1717112a2140e"
+     },
+     "probes": 60,
+     "paired_runs": 30,
+     "warmup_ticks": 600,
+     "sample_ticks": 2400,
+     "repeats": 3,
+     "cases": [
+      "trim",
+      "maneuver"
+     ],
+     "median_reference_over_native_by_case": [
+      {
+       "aircraft_id": "jensen-das-ugly-stik-60",
+       "case_id": "trim",
+       "ratio": 1.576922431008612
+      },
+      {
+       "aircraft_id": "jensen-das-ugly-stik-60",
+       "case_id": "maneuver",
+       "ratio": 1.6247763109025222
+      },
+      {
+       "aircraft_id": "stik-glow-61fx-2t",
+       "case_id": "trim",
+       "ratio": 1.734434800500456
+      },
+      {
+       "aircraft_id": "stik-glow-61fx-2t",
+       "case_id": "maneuver",
+       "ratio": 1.7810636483575386
+      },
+      {
+       "aircraft_id": "turbo-lumber-evolution",
+       "case_id": "trim",
+       "ratio": 2.079199916117568
+      },
+      {
+       "aircraft_id": "turbo-lumber-evolution",
+       "case_id": "maneuver",
+       "ratio": 2.202100592217538
+      },
+      {
+       "aircraft_id": "p51d-mustang-120",
+       "case_id": "trim",
+       "ratio": 2.7683990602272743
+      },
+      {
+       "aircraft_id": "p51d-mustang-120",
+       "case_id": "maneuver",
+       "ratio": 2.6839800701392513
+      },
+      {
+       "aircraft_id": "sebart-avanti-s-a200-p100rx",
+       "case_id": "trim",
+       "ratio": 2.1951114933990175
+      },
+      {
+       "aircraft_id": "sebart-avanti-s-a200-p100rx",
+       "case_id": "maneuver",
+       "ratio": 2.173017729741038
+      }
+     ],
+     "scope": "Whole detached production tick (input plus simulation), actual release executable, observer enabled, alternating backend order; all native identities, inputs, checkpoints and source checks accepted. Other owned heavy jobs were idle.",
+     "limits": [
+      "Local-host CPU evidence; no rendering, audio, operating-system input, scheduling, 1080p or Gate P qualification.",
+      "Three pairs per case; percentile labels are nearest-rank summaries of those three observations, not broad population confidence estimates."
+     ]
+    },
+    "candidate_archive": {
+     "status": "verified, not promoted",
+     "path": "tmp/openrc-simulator-v0.1.8-525-geef621296-nk3-aircraft-candidate-linux-x86_64.zip",
+     "bytes": 1318304107,
+     "sha256": "7c0fa2112e40a3fdbf651c5ec2eaab121f40c84341b3569e57a90a0dc3c54c25",
+     "verification": {
+      "path": "tmp/nk3-admission-linux-package/evidence/archive-verification.json",
+      "sha256": "79bb507f66af284bd296294f07f2f858486f449a1215fff2a4b71b90a27c5bb7"
+     },
+     "files": 6,
+     "crc_sha256_and_modes_verified": true,
+     "original_rollback_and_retention_artifacts_unchanged": true
     }
+   },
+   "general_integration_continuation": {
+    "status": "completed across original continuation and quiet retry",
+    "outcome": {
+     "path": "tmp/nk3-integration-final/outcome.json",
+     "sha256": "5cc5577d6fa947569c604f0aa03fcc83b7d207f5828e5745f5e9e1d83b7af7d6"
+    },
+    "positive_checked_invocations": 27,
+    "expected_failures_verified": 7,
+    "python_unittest_methods": 88,
+    "e5a_static_checks": 21,
+    "e5a_session_checks": 116,
+    "e5b_checks": 125,
+    "section_headings_reached": 36,
+    "installed_library_sha256": "0d5d9fa2a07fa051f2a6aa2e71c76205eafe7a0576c4567cb479da32e9456378",
+    "limits": [
+     "First continuation exited 1 after E5a exceeded its original 180-second session limit. Quiet E5a/E5b retry exited 0 with unchanged checks and timeouts; timeout cause is not established.",
+     "Results apply to unchanged GDScript integration dependencies and the recorded earlier installed native library. They do not qualify the later native rebuild or constitute a single uninterrupted complete test-suite pass."
+    ]
    }
   },
   "acceptance_limit": "Component and research stage parity only. The scoped fleet run uses the previous accepted Stik binary. This does not qualify all-aircraft production admission, full lifecycle/replay, target performance or physical validation.",
