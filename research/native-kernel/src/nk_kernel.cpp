@@ -15,9 +15,11 @@
 #include <godot_cpp/variant/string_name.hpp>
 
 #include <chrono>
+#include <cmath>
 #include <initializer_list>
 #include <limits>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "nk_aero.hpp"
@@ -49,7 +51,11 @@ using godot::String;
 using godot::Variant;
 
 constexpr int kStateSize = 13;
-constexpr int kMaxContinuousSize = 64;
+// Refusal diagnostics deliberately retain bounded copies; execution is sized
+// to the validated layout and is not subject to this diagnostic limit.
+constexpr int kMaxDiagnosticContinuousSize = 64;
+constexpr int kMaxDiagnosticAuxSize = 4096;
+constexpr int kMaxDiagnosticInputSize = 256;
 constexpr const char *kBackend = "native";
 // Bump on any change to the stage contract (inputs, layout, outputs); the app loader and receipt must agree.
 constexpr const char *kBackendVersion = "openrc-native-kernel-stage-v2";
@@ -102,7 +108,7 @@ struct Decoder {
 		if (size >= 0 && packed.size() != size) {
 			return fail(std::string("unexpected size ") + key);
 		}
-		out.assign(packed.ptr(), packed.ptr() + packed.size());
+		if (!packed.is_empty()) out.assign(packed.ptr(), packed.ptr() + packed.size());
 		return true;
 	}
 
@@ -777,7 +783,7 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 		return dec.fail("surfaces, lake_valid and soft_hull are required");
 	}
 	const PackedFloat64Array surfaces = config["surfaces"];
-	m.ground.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
+	if (!surfaces.is_empty()) m.ground.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 	m.ground.surfaces.valid = nk::surface_table_is_valid(m.ground.surfaces.values);
 	m.ground.lake_valid = static_cast<bool>(config["lake_valid"]);
 	if (!m.ground.lake_valid) m.ground.lake.present = !lake.is_empty();
@@ -819,16 +825,23 @@ bool decode_stage(Decoder &dec, const Dictionary &config, nk::StageModel &m) {
 	if (L.rotor_index != wash_count || L.wheel_index != wash_count + source_count) {
 		return dec.fail("continuous wash layout differs from prepared wake pieces");
 	}
+	const int64_t ground_value_count = int64_t(L.wheel_index) + L.wheel_count;
+	const int64_t continuous_count = ground_value_count + (m.liquid.ready ? 2 : 0);
 	if (m.liquid.ready && (!layout_int(dec, layout, "liquid_index", L.liquid_index) ||
-			int64_t(L.liquid_index) != int64_t(L.wheel_index) + L.wheel_count || int64_t(L.liquid_index) + 2 > kMaxContinuousSize)) {
+			int64_t(L.liquid_index) != ground_value_count)) {
 		return dec.fail("invalid liquid inventory layout");
 	}
+	if (m.ground.gear.contacts.size() > static_cast<size_t>(std::numeric_limits<int>::max())) {
+		return dec.fail("gear contact count exceeds index range");
+	}
 	const int gear_count = static_cast<int>(m.ground.gear.contacts.size());
-	if (L.wheel_count < 0 || L.wheel_count > 16 ||
+	if (L.wheel_count < 0 || L.anchor_count < 0 ||
 			(L.wheel_count != 0 && L.wheel_count != gear_count) ||
-			(L.anchor_count != 0 && L.anchor_count != gear_count) || int64_t(L.anchors) + int64_t(L.anchor_count) * 3 > L.aux_size || int64_t(L.servo) + 2 >= L.aux_size ||
+			(L.anchor_count != 0 && L.anchor_count != gear_count) ||
+			int64_t(L.anchor_count) * 3 > std::numeric_limits<int>::max() ||
+			int64_t(L.anchors) + int64_t(L.anchor_count) * 3 > L.aux_size || int64_t(L.servo) + 2 >= L.aux_size ||
 			L.rpm < 0 || L.rpm >= L.aux_size || L.downwash >= L.aux_size || L.servo < 0 || L.anchors < 0 ||
-			int64_t(L.wheel_index) + L.wheel_count > kMaxContinuousSize) {
+			ground_value_count < 0 || continuous_count > std::numeric_limits<int>::max()) {
 		return dec.fail("unsupported or inconsistent layout");
 	}
 	if (config.has("weather")) {
@@ -900,10 +913,89 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::StageModel stage_;
 	bool stage_ready_ = false;
 	nk::TickContext tick_;
+	// The binding converts Godot arrays once per call, into storage sized at
+	// preparation. The same non-reentrant session owner uses both entry points.
+	mutable std::vector<nk::R> continuous_scratch_;
 	int64_t stage_calls_ = 0;
 	bool stage_timing_ = false;
 	double stage_ns_ = 0.0;
 	int64_t context_calls_ = 0;
+	bool rejection_diagnostics_enabled_ = false;
+	bool rejection_valid_ = false;
+	bool diagnostic_context_ready_ = false;
+	nk::GlowStageRejection rejection_;
+	// These two COW references pin the exact tick handoff without copying its
+	// arrays on every diagnostic tick; detached copies are made only on refusal.
+	PackedFloat64Array diagnostic_context_inputs_, diagnostic_context_deflections_;
+	PackedFloat64Array rejection_body_, rejection_continuous_, rejection_aux_, rejection_inputs_, rejection_deflections_;
+	double rejection_stage_time_ = 0.0, rejection_tick_time_ = 0.0, rejection_brake_ = 0.0, rejection_throttle_ = 0.0;
+	bool rejection_engine_running_ = false, rejection_injected_cut_ = false;
+	int64_t rejection_stage_call_ = 0, rejection_context_call_ = 0;
+
+	void clear_stage_rejection() {
+		if (rejection_valid_) {
+			rejection_body_ = PackedFloat64Array();
+			rejection_continuous_ = PackedFloat64Array();
+			rejection_aux_ = PackedFloat64Array();
+			rejection_inputs_ = PackedFloat64Array();
+			rejection_deflections_ = PackedFloat64Array();
+		}
+		rejection_valid_ = false;
+		rejection_.code = nk::GlowRejectionCode::None;
+	}
+
+	void clear_diagnostic_context() {
+		diagnostic_context_ready_ = false;
+		diagnostic_context_inputs_ = PackedFloat64Array();
+		diagnostic_context_deflections_ = PackedFloat64Array();
+	}
+
+	bool rejection_trial_is_valid(const PackedFloat64Array &body, const PackedFloat64Array &continuous, double t) const {
+		if (!diagnostic_context_ready_ || !stage_ready_ || !stage_.glow.ready || !tick_.ready || !tick_.power_ready ||
+				rejection_.code != nk::GlowRejectionCode::StoppedReverseDrive ||
+				(rejection_.origin != nk::GlowRejectionOrigin::Direct && rejection_.origin != nk::GlowRejectionOrigin::FeedEndpoint) ||
+				!std::isfinite(rejection_.rpm) || rejection_.rpm != 0.0 ||
+				!std::isfinite(rejection_.demand_nm) || !std::isfinite(rejection_.friction_nm) || rejection_.friction_nm < 0.0 ||
+				!(rejection_.demand_nm < -rejection_.friction_nm) || !std::isfinite(rejection_.prop_load_torque_nm) ||
+				!std::isfinite(rejection_.axial_acceleration_rad_s2) || !std::isfinite(rejection_.rotor_inertia_kg_m2) ||
+				rejection_.rotor_inertia_kg_m2 <= 0.0 ||
+				(rejection_.origin == nk::GlowRejectionOrigin::FeedEndpoint &&
+						(!std::isfinite(rejection_.feed_factor) || (rejection_.feed_factor != 0.0 && rejection_.feed_factor != 2.0))) ||
+				body.size() != kStateSize || continuous.size() > kMaxDiagnosticContinuousSize ||
+				continuous.size() != stage_.layout.wheel_index + stage_.layout.wheel_count ||
+				stage_.layout.rotor_index < 0 || stage_.layout.rotor_index >= continuous.size() ||
+				continuous[stage_.layout.rotor_index] != 0.0 || !std::isfinite(t) || t < 0.0 ||
+				static_cast<int64_t>(tick_.aux.size()) != stage_.layout.aux_size ||
+				tick_.aux.size() > static_cast<size_t>(kMaxDiagnosticAuxSize) || diagnostic_context_inputs_.size() != stage_.layout.input_count ||
+				diagnostic_context_inputs_.size() > kMaxDiagnosticInputSize ||
+				(diagnostic_context_deflections_.size() != 4 && diagnostic_context_deflections_.size() != 5) ||
+				!nk::is_finite(tick_.time_now) || tick_.time_now.v < 0.0 || !nk::is_finite(tick_.brake) ||
+				!nk::is_finite(tick_.throttle) || tick_.throttle.v < 0.0 || tick_.throttle.v > 1.0) return false;
+		for (int64_t i = 0; i < body.size(); ++i) if (!std::isfinite(body[i])) return false;
+		for (int64_t i = 0; i < continuous.size(); ++i) if (!std::isfinite(continuous[i])) return false;
+		for (nk::R value : tick_.aux) if (!nk::is_finite(value)) return false;
+		for (int64_t i = 0; i < diagnostic_context_inputs_.size(); ++i) if (!std::isfinite(diagnostic_context_inputs_[i])) return false;
+		for (int64_t i = 0; i < diagnostic_context_deflections_.size(); ++i) if (!std::isfinite(diagnostic_context_deflections_[i])) return false;
+		const double qnorm = body[6] * body[6] + body[7] * body[7] + body[8] * body[8] + body[9] * body[9];
+		return std::isfinite(qnorm) && qnorm > nk::kGd1eMinus24;
+	}
+
+	void capture_stage_rejection(const PackedFloat64Array &body, const PackedFloat64Array &continuous, double t) {
+		rejection_body_ = body.duplicate();
+		rejection_continuous_ = continuous.duplicate();
+		rejection_aux_ = pack(tick_.aux);
+		rejection_inputs_ = diagnostic_context_inputs_.duplicate();
+		rejection_deflections_ = diagnostic_context_deflections_.duplicate();
+		rejection_stage_time_ = t;
+		rejection_tick_time_ = tick_.time_now.v;
+		rejection_brake_ = tick_.brake.v;
+		rejection_throttle_ = tick_.throttle.v;
+		rejection_engine_running_ = tick_.power_enabled;
+		rejection_injected_cut_ = tick_.injected_cut;
+		rejection_stage_call_ = stage_calls_;
+		rejection_context_call_ = context_calls_;
+		rejection_valid_ = true;
+	}
 
 protected:
 	static void _bind_methods() {
@@ -914,6 +1006,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("set_heli_tick_context", "tick"), &OpenRCNativeKernel::set_heli_tick_context);
 		godot::ClassDB::bind_method(D_METHOD("heli_last_failure"), &OpenRCNativeKernel::heli_last_failure);
 		godot::ClassDB::bind_method(D_METHOD("set_glow_context", "throttle", "engine_running", "injected_cut"), &OpenRCNativeKernel::set_glow_context);
+		godot::ClassDB::bind_method(D_METHOD("set_stage_rejection_diagnostics", "enabled"), &OpenRCNativeKernel::set_stage_rejection_diagnostics);
+		godot::ClassDB::bind_method(D_METHOD("stage_rejection_diagnostic"), &OpenRCNativeKernel::stage_rejection_diagnostic);
 		godot::ClassDB::bind_method(D_METHOD("set_preview_context", "body", "continuous", "capture"), &OpenRCNativeKernel::set_preview_context);
 		godot::ClassDB::bind_method(D_METHOD("prepare_weather_guard", "session", "identity"), &OpenRCNativeKernel::prepare_weather_guard);
 		godot::ClassDB::bind_method(D_METHOD("weather_guard_matches", "session"), &OpenRCNativeKernel::weather_guard_matches);
@@ -998,6 +1092,43 @@ protected:
 	}
 
 public:
+	// Diagnostics are explicitly armed before a tick handoff. They do not
+	// alter the stage result, evaluator counters or source/solver policy.
+	void set_stage_rejection_diagnostics(bool enabled) {
+		clear_stage_rejection();
+		clear_diagnostic_context();
+		rejection_diagnostics_enabled_ = enabled;
+	}
+
+	Dictionary stage_rejection_diagnostic() const {
+		Dictionary out;
+		if (!rejection_diagnostics_enabled_ || !rejection_valid_ ||
+				rejection_.code != nk::GlowRejectionCode::StoppedReverseDrive) return out;
+		out["code"] = "glow_stopped_reverse_drive";
+		out["origin"] = rejection_.origin == nk::GlowRejectionOrigin::FeedEndpoint ? "feed_endpoint" : "direct";
+		out["body"] = rejection_body_.duplicate();
+		out["continuous"] = rejection_continuous_.duplicate();
+		out["stage_time"] = rejection_stage_time_;
+		out["aux"] = rejection_aux_.duplicate();
+		out["inputs"] = rejection_inputs_.duplicate();
+		out["deflections"] = rejection_deflections_.duplicate();
+		out["tick_time"] = rejection_tick_time_;
+		out["brake"] = rejection_brake_;
+		out["throttle"] = rejection_throttle_;
+		out["engine_running"] = rejection_engine_running_;
+		out["injected_cut"] = rejection_injected_cut_;
+		out["stage_call"] = rejection_stage_call_;
+		out["context_call"] = rejection_context_call_;
+		out["rpm"] = rejection_.rpm;
+		out["demand_nm"] = rejection_.demand_nm;
+		out["friction_nm"] = rejection_.friction_nm;
+		out["prop_load_torque_nm"] = rejection_.prop_load_torque_nm;
+		out["axial_acceleration_rad_s2"] = rejection_.axial_acceleration_rad_s2;
+		out["rotor_inertia_kg_m2"] = rejection_.rotor_inertia_kg_m2;
+		if (rejection_.origin == nk::GlowRejectionOrigin::FeedEndpoint) out["feed_factor"] = rejection_.feed_factor;
+		return out;
+	}
+
 	Dictionary backend_identity() const {
 		Dictionary out;
 		out["backend"] = kBackend;
@@ -1015,7 +1146,7 @@ public:
 		Decoder dec;
 		nk::GroundContext candidate;
 		Dictionary out;
-		candidate.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
+		if (!surfaces.is_empty()) candidate.surfaces.values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 		candidate.surfaces.valid = nk::surface_table_is_valid(candidate.surfaces.values);
 		candidate.lake_valid = lake_valid;
 		if (!lake_valid) candidate.lake.present = !lake.is_empty();
@@ -1033,7 +1164,8 @@ public:
 	}
 
 	bool surface_table_is_valid(const PackedFloat64Array &surfaces) const {
-		std::vector<double> values(surfaces.ptr(), surfaces.ptr() + surfaces.size());
+		std::vector<double> values;
+		if (!surfaces.is_empty()) values.assign(surfaces.ptr(), surfaces.ptr() + surfaces.size());
 		return nk::surface_table_is_valid(values);
 	}
 
@@ -1185,6 +1317,10 @@ public:
 	Dictionary prepare_configuration_guard(godot::Object *session, godot::Object *identity) { return configuration_guard_.prepare_configuration_guard(session, identity); }
 	bool configuration_guard_matches(godot::Object *session) const { return configuration_guard_.configuration_guard_matches(session); }
 	Dictionary prepare_heli_stage(const Dictionary &snapshot, const Dictionary &weather) {
+		if (rejection_diagnostics_enabled_) {
+			clear_stage_rejection();
+			clear_diagnostic_context();
+		}
 		heli_stage_ready_ = false;
 		stage_ready_ = false;
 		tick_.ready = false;
@@ -1193,6 +1329,10 @@ public:
 		return result;
 	}
 	bool set_heli_tick_context(const Dictionary &tick) {
+		if (rejection_diagnostics_enabled_) {
+			clear_stage_rejection();
+			clear_diagnostic_context();
+		}
 		++context_calls_;
 		return heli_stage_ready_ && helicopter_.set_heli_tick_context(tick);
 	}
@@ -1451,6 +1591,10 @@ public:
 	}
 
 	Dictionary prepare_stage(const Dictionary &config) {
+		if (rejection_diagnostics_enabled_) {
+			clear_stage_rejection();
+			clear_diagnostic_context();
+		}
 		heli_stage_ready_ = false;
 		Decoder dec;
 		nk::StageModel candidate;
@@ -1458,7 +1602,14 @@ public:
 		stage_ready_ = ok;
 		tick_ = nk::TickContext();
 		if (ok) {
-			stage_ = candidate;
+			stage_ = std::move(candidate);
+			const nk::StageLayout &layout = stage_.layout;
+			continuous_scratch_.resize(static_cast<size_t>(layout.wheel_index) + layout.wheel_count + (stage_.liquid.ready ? 2 : 0));
+			tick_.ground_anchors.resize(static_cast<size_t>(layout.anchor_count) * 3);
+			tick_.wheel_speeds.resize(static_cast<size_t>(layout.wheel_count));
+			tick_.preview_values.reserve(continuous_scratch_.size());
+		} else {
+			continuous_scratch_.clear();
 		}
 		Dictionary out;
 		out["ok"] = ok;
@@ -1471,6 +1622,10 @@ public:
 	// _deflections(aux) [elevator, aileron_right, aileron_left, rudder] and sim.time().
 	bool set_tick_context(const PackedFloat64Array &aux, const PackedFloat64Array &inputs,
 			const PackedFloat64Array &deflections, double time_now) {
+		if (rejection_diagnostics_enabled_) {
+			clear_stage_rejection();
+			clear_diagnostic_context();
+		}
 		++context_calls_;
 		tick_.ready = false;
 		tick_.power_ready = false;
@@ -1490,22 +1645,30 @@ public:
 		}
 		tick_.time_now = time_now;
 		tick_.ready = true;
+		if (rejection_diagnostics_enabled_) {
+			diagnostic_context_inputs_ = inputs;
+			diagnostic_context_deflections_ = deflections;
+			diagnostic_context_ready_ = true;
+		}
 		return true;
 	}
 	bool set_preview_context(const PackedFloat64Array &body, const PackedFloat64Array &continuous, bool capture) {
+		if (rejection_diagnostics_enabled_) clear_stage_rejection();
 		tick_.capture_preview = false;
 		if (!stage_ready_ || !tick_.ready) return false;
 		if (!capture) {
 			tick_.preview_values.clear();
 			return true; // initial setup can have no committed body yet
 		}
-		if (!read_state(body) || continuous.size() > kMaxContinuousSize) return false;
+		if (!read_state(body) || continuous.size() != static_cast<int64_t>(continuous_scratch_.size())) return false;
 		for (int i = 0; i < kStateSize; ++i) tick_.preview_body[i] = body[i];
-		tick_.preview_values.assign(continuous.ptr(), continuous.ptr() + continuous.size());
+		if (continuous.is_empty()) tick_.preview_values.clear();
+		else tick_.preview_values.assign(continuous.ptr(), continuous.ptr() + continuous.size());
 		tick_.capture_preview = capture;
 		return true;
 	}
 	bool set_glow_context(double throttle, bool engine_running, bool injected_cut) {
+		if (rejection_diagnostics_enabled_) clear_stage_rejection();
 		tick_.power_ready = false;
 		if (!stage_ready_ || !tick_.ready || !stage_.glow.ready) return false;
 		tick_.throttle = throttle;
@@ -1515,6 +1678,7 @@ public:
 		return true;
 	}
 	bool set_power_context(double throttle, bool enabled) {
+		if (rejection_diagnostics_enabled_) clear_stage_rejection();
 		tick_.power_ready = false;
 		if (!stage_ready_ || !tick_.ready || (!stage_.electric && !stage_.liquid.ready && !stage_.prescribed.ready())) return false;
 		tick_.throttle = throttle;
@@ -1524,6 +1688,7 @@ public:
 	}
 
 	PackedFloat64Array body_loads(const PackedFloat64Array &body, double t) {
+		if (rejection_diagnostics_enabled_) clear_stage_rejection();
 		++stage_calls_;
 		const auto start = stage_timing_ ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point();
 		PackedFloat64Array out;
@@ -1546,19 +1711,19 @@ public:
 	}
 
 	Dictionary stage(const PackedFloat64Array &body, const PackedFloat64Array &continuous, double t) {
+		if (rejection_diagnostics_enabled_) clear_stage_rejection();
 		++stage_calls_;
 		const auto start = stage_timing_ ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point();
 		Dictionary out;
 		if (heli_stage_ready_) out = helicopter_.heli_stage(body, continuous, t);
-		else if (stage_ready_ && read_state(body) && continuous.size() <= kMaxContinuousSize) {
+		else if (stage_ready_ && read_state(body) && continuous.size() == static_cast<int64_t>(continuous_scratch_.size())) {
 			nk::R state[kStateSize];
-			nk::R values[kMaxContinuousSize];
 			load(body, state);
 			for (int64_t i = 0; i < continuous.size(); ++i) {
-				values[i] = continuous[i];
+				continuous_scratch_[static_cast<size_t>(i)] = continuous[i];
 			}
-			const nk::StageResult result = nk::stage_evaluate(state, values, static_cast<int>(continuous.size()), t,
-				stage_, tick_);
+			const nk::StageResult result = nk::stage_evaluate(state, continuous_scratch_.data(), static_cast<int>(continuous.size()), t,
+				stage_, tick_, rejection_diagnostics_enabled_ ? &rejection_ : nullptr);
 			if (result.shaped) {
 				// GDScript's {loads = ...} literal keys are StringNames; keep the reference's exact dictionary bytes.
 				static const godot::StringName kLoads("loads"), kDerivative("derivative"), kRotor("rotor_momentum");
@@ -1595,6 +1760,9 @@ public:
 					context[godot::StringName("wheel_derivative")] = pack(result.preview_wheel_rates);
 					out[godot::StringName("stage_context")] = context;
 				}
+			} else if (rejection_diagnostics_enabled_ && rejection_.code == nk::GlowRejectionCode::StoppedReverseDrive &&
+					rejection_trial_is_valid(body, continuous, t)) {
+				capture_stage_rejection(body, continuous, t);
 			}
 		}
 		if (stage_timing_) {
@@ -1613,6 +1781,7 @@ public:
 	}
 
 	void reset_stage_stats(bool timing) {
+		if (rejection_diagnostics_enabled_) clear_stage_rejection();
 		stage_calls_ = 0;
 		context_calls_ = 0;
 		stage_ns_ = 0.0;
@@ -1653,20 +1822,20 @@ public:
 	// FlightSession._ground_evaluation with the current tick context's aux.
 	Dictionary ground_component(const PackedFloat64Array &s, const PackedFloat64Array &values) const {
 		Dictionary out;
-		if (!stage_ready_ || !tick_.ready || !read_state(s) || values.size() > kMaxContinuousSize) {
+		if (!stage_ready_ || !tick_.ready || !read_state(s) ||
+				values.size() != int64_t(stage_.layout.wheel_index) + stage_.layout.wheel_count) {
 			out["ok"] = false;
 			return out;
 		}
 		nk::R state[kStateSize];
-		nk::R continuous[kMaxContinuousSize];
 		load(s, state);
 		for (int64_t i = 0; i < values.size(); ++i) {
-			continuous[i] = values[i];
+			continuous_scratch_[static_cast<size_t>(i)] = values[i];
 		}
 		std::array<nk::R, 6> loads{};
 		bool has_loads = false;
 		std::vector<nk::R> rates;
-		const bool ok = nk::stage_ground(state, stage_, tick_, continuous, static_cast<int>(values.size()), loads, has_loads, rates);
+		const bool ok = nk::stage_ground(state, stage_, tick_, continuous_scratch_.data(), static_cast<int>(values.size()), loads, has_loads, rates);
 		out["ok"] = ok;
 		if (ok) {
 			out["loads"] = has_loads ? pack(loads.data(), 6) : PackedFloat64Array();

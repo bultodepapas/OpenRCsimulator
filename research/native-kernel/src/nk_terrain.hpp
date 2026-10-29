@@ -5,6 +5,7 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
 #include <vector>
 
 #include "nk_math.hpp"
@@ -54,14 +55,14 @@ inline bool surface_table_is_valid(const std::vector<double> &surfaces) {
 	if (surfaces.size() % kSurfaceStride != 0) {
 		return false;
 	}
-	const int rows = static_cast<int>(surfaces.size()) / kSurfaceStride;
-	const int outside = (rows - 1) * kSurfaceStride;
+	const std::size_t rows = surfaces.size() / kSurfaceStride;
+	const std::size_t outside = (rows - 1) * kSurfaceStride;
 	if (surfaces[outside] != -kInf || surfaces[outside + 1] != kInf || surfaces[outside + 2] != -kInf ||
 			surfaces[outside + 3] != kInf) {
 		return false;
 	}
-	for (int row = 0; row < rows; ++row) {
-		const int i = row * kSurfaceStride;
+	for (std::size_t row = 0; row < rows; ++row) {
+		const std::size_t i = row * kSurfaceStride;
 		const double friction = surfaces[i + 4];
 		const double rolling = surfaces[i + 5];
 		if (!is_finite(friction) || friction < 0.05 || friction > 1.0 || !is_finite(rolling) || rolling < 0.5 ||
@@ -108,13 +109,14 @@ inline Vec3 sample_microrelief_validated(R north, R east, const std::vector<doub
 	if (surfaces.empty()) {
 		return {0.0, 0.0, 0.0};
 	}
-	const int rows = static_cast<int>(surfaces.size()) / kSurfaceStride;
-	const int last = (rows - 1) * kSurfaceStride;
+	const std::size_t rows = surfaces.size() / kSurfaceStride;
+	const std::size_t last = (rows - 1) * kSurfaceStride;
 	R amplitude = amplitude_for_rolling_factor(surfaces[last + 5]);
 	R amplitude_north = 0.0;
 	R amplitude_east = 0.0;
-	for (int row = rows - 2; row > -1; --row) {
-		const int i = row * kSurfaceStride;
+	for (std::size_t row = rows - 1; row > 0;) {
+		--row;
+		const std::size_t i = row * kSurfaceStride;
 		const R north_low_value = north - surfaces[i];
 		const R north_high_value = surfaces[i + 1] - north;
 		const R east_low_value = east - surfaces[i + 2];

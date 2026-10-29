@@ -275,6 +275,32 @@ jobs:
           python3 tools/godot/run_checked.py --timeout 240 --out-dir tmp/nk3-ci/checks --label nk3-native-helicopter-radio \
             --require-text 'NK3_NATIVE_HELICOPTER_RADIO_NATIVE verdict=pass' -- \
             "$godot" --headless --path app --audio-driver Dummy --script res://tests/test_heli_restore_radio.gd
+      - name: Verify native glow rejection provenance and stale-state guards
+        run: |
+          g++-13 -std=c++17 -fexceptions -fno-fast-math -ffp-contract=off -fPIC -m64 -march=x86-64 \
+            -fvisibility=hidden -O3 -DNDEBUG -DLINUX_ENABLED -DUNIX_ENABLED -DTHREADS_ENABLED -DGDEXTENSION \
+            research/native-kernel/test_glow_rejection_boundaries.cpp -o tmp/nk3-ci/glow-rejection-boundaries
+          tmp/nk3-ci/glow-rejection-boundaries
+          python3 tools/godot/run_checked.py --timeout 600 --out-dir tmp/nk3-ci/checks --label nk3-glow-rejection \
+            --require-text 'NK3_GLOW_REJECTION_NATIVE verdict=pass' -- \
+            "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+            --script "$PWD/research/native-kernel/test_glow_rejection.gd"
+      - name: Verify validated native admission boundaries
+        run: |
+          python3 tools/godot/run_checked.py --timeout 600 --out-dir tmp/nk3-ci/checks --label nk3-native-admission \
+            --require-text 'NK3_NATIVE_ADMISSION verdict=pass' -- \
+            "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+            --script "$PWD/research/native-kernel/test_native_admission.gd"
+          python3 tools/godot/run_checked.py --timeout 600 --out-dir tmp/nk3-ci/checks --label nk3-native-wheel-admission \
+            --require-text 'NK3_NATIVE_WHEEL_ADMISSION verdict=pass' -- \
+            "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+            --script "$PWD/research/native-kernel/test_native_wheel_admission.gd"
+      - name: Require paired native runtime-domain refusal proofs
+        run: |
+          python3 tools/godot/run_checked.py --timeout 1200 --out-dir tmp/nk3-ci/checks --label nk3-runtime-domain \
+            --require-text 'NK3_RUNTIME_DOMAIN_NATIVE verdict=pass' -- \
+            "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+            --script "$PWD/research/native-kernel/test_fleet.gd" -- --require-runtime-domain
       - name: Check production reference/native parity (smoke only)
         run: |
           python3 research/performance/session_baseline.py --godot "$(app/get-godot.sh)" \

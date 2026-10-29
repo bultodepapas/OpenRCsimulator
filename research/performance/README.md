@@ -194,9 +194,12 @@ never bypass a pause/crash, weaken numerical guards or re-record goldens to fini
 
 ### Production native/reference and native build comparisons (NK-3)
 
-Install a verified native stage using the [NK-3 build procedure](../native-kernel/README.md#optional-normal-flight-backend).
-The current production route supports the stock Ugly Stik on Linux x86_64. Use a fresh
-output directory, the pinned executable, and a quiet host:
+Install a verified native stage using the [NK-3 build procedure](../native-kernel/README.md#normal-flight-backend-selection).
+The original Linux x86_64 qualification covers the stock Ugly Stik. ABI 2 implements capability-based
+fixed-wing and helicopter admission; its current release limits are recorded in the
+[native-kernel guide](../native-kernel/README.md). This probe measures fixed-wing sessions;
+helicopter coverage requires its separate session checks. Use a fresh output directory, the
+pinned executable, and a quiet host:
 
 ```sh
 python3 research/performance/session_baseline.py --godot "$(app/get-godot.sh)" \

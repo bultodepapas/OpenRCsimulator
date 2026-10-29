@@ -141,7 +141,7 @@ private:
 			out.sidewash_gain < 0.0 || out.sidewash_gain > 1.0)) return dec.fail("invalid segmented sidewash law");
 		if (!ss.has("pieces") || ss["pieces"].get_type() != godot::Variant::ARRAY) return dec.fail("missing or non-array wake pieces");
 		const godot::Array pieces = ss["pieces"];
-		if ((out.smooth && (pieces.is_empty() || pieces.size() > 8)) || pieces.size() > 1024) return dec.fail("invalid wake piece count");
+		if (out.smooth && (pieces.is_empty() || pieces.size() > 8)) return dec.fail("invalid wake piece count");
 		for (int64_t i = 0; i < pieces.size(); ++i) {
 			if (pieces[i].get_type() != godot::Variant::DICTIONARY) return dec.fail("wake piece is not a dictionary");
 			const godot::Dictionary piece = pieces[i];
@@ -156,7 +156,10 @@ private:
 			prepared.vertical = surface == godot::String("vertical");
 			for (int j = 0; j < 3; ++j) { prepared.root[j] = root[j]; prepared.span_dir[j] = direction[j]; }
 			const R direction_norm = sqrt_(direction[0] * direction[0] + direction[1] * direction[1] + direction[2] * direction[2]);
-			if (prepared.area < 0.001 || prepared.area > 1.0 || prepared.span < 0.01 || prepared.span > 2.0 ||
+			// AircraftData has already validated these dimensional quantities. A
+			// Workshop virtual-size model may scale their source bounds; here retain
+			// the law's positive/finite requirements without imposing unscaled bounds.
+			if (prepared.area <= 0.0 || prepared.span <= 0.0 ||
 				absf(direction_norm - 1.0) > 1e-6) return dec.fail("invalid wake piece geometry");
 			if (out.smooth) {
 				if (piece.has("chords") || !dec.packed(piece, "profile", prepared.profile) || prepared.profile.empty() ||
@@ -175,7 +178,7 @@ private:
 				if (absf(area - prepared.area) > 1e-8) return dec.fail("wake profile area mismatch");
 			} else {
 				if (piece.has("profile") || !dec.packed(piece, "chords", chords, 2)) return dec.fail("legacy wake needs chords");
-				if (chords[0] < 0.005 || chords[0] > 1.0 || chords[1] < 0.005 || chords[1] > 1.0) return dec.fail("invalid wake chords");
+				if (chords[0] <= 0.0 || chords[1] <= 0.0) return dec.fail("invalid wake chords");
 				prepared.chords[0] = chords[0]; prepared.chords[1] = chords[1];
 			}
 			out.pieces.push_back(std::move(prepared));

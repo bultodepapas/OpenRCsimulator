@@ -72,10 +72,10 @@ inline HeliSkidResult heli_skids(const R *state, const HeliSkidModel &cfg, const
 		const R world_north = state[0] + offset[0];
 		const R world_east = state[1] + offset[1];
 		bool flat_rotorpad = false;
-		int surface_index = -1;
+		std::size_t surface_index = 0;
 		if (bristles != nullptr && !surfaces.values.empty()) {
 			surface_index = wheel_surface_at(surfaces.values, world_north, world_east);
-			flat_rotorpad = surface_index >= 0 && surface_index + 5 < static_cast<int>(surfaces.values.size())
+			flat_rotorpad = surface_index + 5 < surfaces.values.size()
 				&& surfaces.values[surface_index + 5] == kRollingRotorpad
 				&& absf(terrain[1]) <= 1.0e-12 && absf(terrain[2]) <= 1.0e-12;
 		}

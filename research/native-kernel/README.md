@@ -31,9 +31,11 @@ The coupled electric sources belong to Turbo Lumber and X8.
 Research joint stages now cover the coupled electric, finite-liquid gas/turbine, finite glow and helicopter families.
 The [dated component and stage evidence](../../docs/research/native-kernel/NK-3/revalidation-linux-2026-10-28.json)
 records exact comparisons, paired tapes, source lifecycle events and remaining limits. ABI 2 integration and
-capability-based production admission are implemented. The first ABI 2 installation passed native lifecycle,
-catalog replay and application-routing checks; final-source fleet qualification and new default delivery
-remain pending. The existing helicopter reference
+capability-based production admission are implemented. The frozen candidate passed strict installation,
+native admission boundaries, UBSan, actual Linux package/replay/routes and paired release timing;
+[expanded qualification](../../docs/research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29)
+records their scope. The full final-source fleet campaign and new default delivery remain pending.
+The existing helicopter reference
 rejects spatial/OU/column weather, and its hot-high start currently fails hover trim.
 
 Shared pre-tick/discrete supervision may remain GDScript under the existing kernel contract. Continuous laws
@@ -197,7 +199,36 @@ projects using the built library and pinned editor; it does not change the app i
 runtime tests, and checks a short production reference/native pair. Its diagnostics are retained on failure and
 release publication depends on the job. The export job then qualifies the actual release executable as described below.
 
+The optional `set_stage_rejection_diagnostics(true)` native diagnostic records a bounded, detached rejection
+payload from the actual C++ stage. It is disabled in normal flight, does not alter stage results, and clears
+when a later evaluation or context/preparation transition invalidates the evidence. The stopped-glow diagnostic
+is a model-domain explanation; the application's generic RK fault message remains unchanged. Its actual-library
+regression is required in Linux CI after installation:
+
+```bash
+python3 tools/godot/run_checked.py --timeout 600 --require-text 'NK3_GLOW_REJECTION_NATIVE verdict=pass' -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/native-kernel/test_glow_rejection.gd"
+python3 tools/godot/run_checked.py --timeout 1200 --require-text 'NK3_RUNTIME_DOMAIN_NATIVE verdict=pass' -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/native-kernel/test_fleet.gd" -- --require-runtime-domain
+```
+
 ## Linux release packages
+
+After installation, also run the validated-model admission regressions. They require actual native ownership
+and cover Workshop wake scaling, large wake/field tables, shared configuration data, rotating-wheel layouts
+above the former fixed buffer sizes, empty states, and checkpoint replay. The large prescribed-source table
+case verifies preparation only; it is not a completed flight or physical-validation claim.
+
+```bash
+python3 tools/godot/run_checked.py --timeout 600 --require-text 'NK3_NATIVE_ADMISSION verdict=pass' -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/native-kernel/test_native_admission.gd"
+python3 tools/godot/run_checked.py --timeout 600 --require-text 'NK3_NATIVE_WHEEL_ADMISSION verdict=pass' -- \
+  "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy \
+  --script "$PWD/research/native-kernel/test_native_wheel_admission.gd"
+```
 
 After installation, run the complete declared fleet matrix before promoting expanded coverage:
 
@@ -209,10 +240,20 @@ python3 research/native-kernel/fleet_campaign.py --out tmp/nk3-fleet-qualified \
 The campaign reads the canonical matrix from `fleet.gd`, runs each aircraft through the existing checked runner,
 and validates the exact union of row keys. All shards must share the same engine, native binary, receipt,
 source and harness identities. Flight rows require every requested tick, matching fingerprints and native call
-coverage; explicitly known startup refusals require the same reset failure from both backends and are counted
-separately. A scoped report alone does not qualify the whole fleet. `--reuse-report AIRCRAFT=REPORT` accepts
+coverage. Explicitly known startup refusals require the same reset failure from both backends. Six stopped-glow
+runway/gusty tapes have a separately checked runtime-domain refusal: the 61FX stops after 873 accepted ticks,
+the 55AX after 801, and the FS64V after 805, with each contact option. The two-strokes reject the endpoint
+trial; the four-stroke rejects the midpoint. Their next RK trial would require reverse rotation beyond
+the installation's static hold domain. These outcomes require exact accepted-prefix, rejected-trial and rollback
+agreement, actual native ownership and counters, and finite branch evidence from C++ and the reference.
+Each model has a fixed trial phase and rejecting-call ordinal. The four-stroke also pins its captured aircraft,
+trial, context and seven cause values using the original float64 bytes.
+Neither startup nor runtime refusals count as completed flights. Unknown faults still fail the campaign.
+A scoped report alone does not qualify the whole fleet. `--reuse-report AIRCRAFT=REPORT` accepts
 only a complete, matching full-aircraft report, including one still being produced. Concurrent runs establish
 software equivalence, not timing or physical validation.
+`--keep-going` finishes independent shards after a shard failure, then fails the campaign; source drift still
+stops all work. It does not change row acceptance or permit a partial matrix to pass.
 
 `app/export.sh` prepares the verified identity, exports the ordinary application, stages the exact native
 sidecars, and tests that executable before creating the release archive. The CI export job consumes the

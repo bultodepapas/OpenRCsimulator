@@ -12,6 +12,18 @@
 
 namespace nk {
 
+enum class GlowRejectionCode : unsigned char { None, StoppedReverseDrive };
+enum class GlowRejectionOrigin : unsigned char { Direct, FeedEndpoint };
+
+// Set only by the actual stopped-rotor rejection branch. The scalar members
+// are meaningful only when code is StoppedReverseDrive.
+struct GlowStageRejection {
+	GlowRejectionCode code = GlowRejectionCode::None;
+	GlowRejectionOrigin origin = GlowRejectionOrigin::Direct;
+	double rpm, demand_nm, friction_nm, prop_load_torque_nm;
+	double axial_acceleration_rad_s2, rotor_inertia_kg_m2, feed_factor;
+};
+
 struct GlowCoupledStage {
 	bool ok = false;
 	std::array<R, 6> loads{}; // output loads remain about the fixed datum
@@ -25,7 +37,8 @@ struct GlowCoupledStage {
 inline GlowCoupledStage glow_coupled_stage(const R *body, const R *external, const R *values,
 		const PropModel &prop, const GlowLifecycleModel &model, const GlowLifecycleState &state,
 		const GlowLifecyclePoint &life, const GlowBladePoint &blade, const LiquidMassProperties &mass,
-		R dry_density, R gravity) {
+		R dry_density, R gravity, GlowStageRejection *rejection = nullptr) {
+	if (rejection != nullptr) rejection->code = GlowRejectionCode::None;
 	GlowCoupledStage out;
 	if (body == nullptr || external == nullptr || values == nullptr || !mass.ok || !life.ok || !blade.ok) return out;
 	R axis[3] = {1.0, 0.0, 0.0};
@@ -66,6 +79,41 @@ inline GlowCoupledStage glow_coupled_stage(const R *body, const R *external, con
 		if (values[0].v < 0.0) {
 			drive = -friction;
 		} else if (demand.v < (-friction).v) {
+			if (rejection != nullptr && values[0].v == 0.0 && is_finite(values[0]) && is_finite(demand) &&
+					is_finite(friction) && friction.v >= 0.0 && is_finite(load_torque) &&
+					is_finite(axial_alpha) && is_finite(prop.rotor_inertia) && prop.rotor_inertia.v > 0.0 &&
+					is_finite(mass.mass_kg) && mass.mass_kg.v > 0.0 && is_finite(dry_density) && dry_density.v > 0.0 &&
+					is_finite(gravity) && gravity.v >= 0.0 &&
+					is_finite(life.source.shaft_torque_nm)) {
+				bool finite = true;
+				for (int i = 0; i < 13; ++i) finite = finite && is_finite(body[i]);
+				for (int i = 0; i < 6; ++i) finite = finite && is_finite(external[i]) &&
+						is_finite(mass.inertia[i]) && is_finite(mass.inverse[i]);
+				for (int i = 0; i < 3; ++i) finite = finite && is_finite(axis[i]) && is_finite(mass.cg[i]);
+				if (finite) {
+					// A malformed coupling would also be refused independently of
+					// the static-friction domain; it cannot support this witness.
+					const R axis_norm = axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2];
+					const R inverse_axis_x = inverse[0] * axis[0] + inverse[3] * axis[1] + inverse[4] * axis[2];
+					const R inverse_axis_y = inverse[3] * axis[0] + inverse[1] * axis[1] + inverse[5] * axis[2];
+					const R inverse_axis_z = inverse[4] * axis[0] + inverse[5] * axis[1] + inverse[2] * axis[2];
+					const R axis_inverse_axis = axis[0] * inverse_axis_x + axis[1] * inverse_axis_y + axis[2] * inverse_axis_z;
+					const R denominator = 1.0 - prop.rotor_inertia * axis_inverse_axis;
+					finite = is_finite(axis_norm) && absf(axis_norm - 1.0).v <= 1e-12 &&
+							is_finite(denominator) && denominator.v > 0.0;
+				}
+				if (finite) {
+					rejection->rpm = values[0].v;
+					rejection->demand_nm = demand.v;
+					rejection->friction_nm = friction.v;
+					rejection->prop_load_torque_nm = load_torque.v;
+					rejection->axial_acceleration_rad_s2 = axial_alpha.v;
+					rejection->rotor_inertia_kg_m2 = prop.rotor_inertia.v;
+					rejection->origin = GlowRejectionOrigin::Direct;
+					rejection->feed_factor = 0.0;
+					rejection->code = GlowRejectionCode::StoppedReverseDrive;
+				}
+			}
 			return out;
 		} else if (demand.v <= friction.v) {
 			locked = true;

@@ -16,16 +16,16 @@
 #include <string>
 
 #include "nk_glow_lifecycle.hpp"
+#include "nk_variant_identity.hpp"
 
 namespace nk {
 
 // Godot's numeric == treats +0 and -0 as equal. Snapshot identity must retain
 // IEEE-754 bits (including NaN payloads) and packed-array bytes instead.
-inline bool stage_snapshot_exact_bounded(const godot::Variant &a, const godot::Variant &b,
-		int depth, size_t &budget) {
+inline bool stage_snapshot_exact_at_depth(const godot::Variant &a, const godot::Variant &b,
+		int depth, CompletedVariantPairs &completed) {
 	using godot::Variant;
-	if (depth > 32 || budget == 0) return false;
-	--budget;
+	if (depth > 32) return false;
 	if (a.get_type() != b.get_type()) return false;
 	switch (a.get_type()) {
 		case Variant::NIL: return true;
@@ -39,43 +39,51 @@ inline bool stage_snapshot_exact_bounded(const godot::Variant &a, const godot::V
 		case Variant::STRING_NAME: return a == b;
 		case Variant::PACKED_FLOAT64_ARRAY: {
 			const godot::PackedFloat64Array x = a, y = b;
-			if (x.size() != y.size() || static_cast<size_t>(x.size()) > budget) return false;
-			budget -= static_cast<size_t>(x.size());
+			if (x.size() != y.size()) return false;
 			return x.is_empty() || std::memcmp(x.ptr(), y.ptr(), static_cast<size_t>(x.size()) * sizeof(double)) == 0;
 		}
 		case Variant::PACKED_STRING_ARRAY: {
 			const godot::PackedStringArray x = a, y = b;
-			if (x.size() != y.size() || static_cast<size_t>(x.size()) > budget) return false;
-			budget -= static_cast<size_t>(x.size());
+			if (x.size() != y.size()) return false;
 			for (int64_t i = 0; i < x.size(); ++i) if (x[i] != y[i]) return false;
 			return true;
 		}
 		case Variant::ARRAY: {
 			const godot::Array x = a, y = b;
 			if (x.size() != y.size()) return false;
-			for (int64_t i = 0; i < x.size(); ++i) if (!stage_snapshot_exact_bounded(x[i], y[i], depth + 1, budget)) return false;
+			if (x.is_empty()) return true;
+			VariantPairKey pair;
+			if (!variant_pair_key(a, b, depth, pair)) return false;
+			if (variant_pair_completed(completed, pair, a, b)) return true;
+			for (int64_t i = 0; i < x.size(); ++i) if (!stage_snapshot_exact_at_depth(x[i], y[i], depth + 1, completed)) return false;
+			completed.emplace(pair, std::make_pair(a, b));
 			return true;
 		}
 		case Variant::DICTIONARY: {
 			const godot::Dictionary x = a, y = b;
 			if (x.size() != y.size()) return false;
+			if (x.is_empty()) return true;
+			VariantPairKey pair;
+			if (!variant_pair_key(a, b, depth, pair)) return false;
+			if (variant_pair_completed(completed, pair, a, b)) return true;
 			const godot::Array keys = x.keys();
 			for (int64_t i = 0; i < keys.size(); ++i) {
 				const Variant key = keys[i];
-				if (!y.has(key) || !stage_snapshot_exact_bounded(x[key], y[key], depth + 1, budget)) return false;
+				if (!y.has(key) || !stage_snapshot_exact_at_depth(x[key], y[key], depth + 1, completed)) return false;
 			}
+			completed.emplace(pair, std::make_pair(a, b));
 			return true;
 		}
 		default: return false; // This source schema has no vector, object or arbitrary Variant fields.
 	}
 }
 
-// The bound rejects recursive/cyclic Variants and caps preparation work. Each
-// public comparison has its own budget; normal prepared model arrays are far
-// smaller than one million elements.
+// Bound nesting to reject recursive/cyclic Variants. Memoize completed container
+// pairs so shared acyclic inputs take work proportional to their distinct edges,
+// without a flat-size budget that rejects valid prepared models. Preparation only.
 inline bool stage_snapshot_exact(const godot::Variant &a, const godot::Variant &b) {
-	size_t budget = 1024 * 1024;
-	return stage_snapshot_exact_bounded(a, b, 0, budget);
+	CompletedVariantPairs completed;
+	return stage_snapshot_exact_at_depth(a, b, 0, completed);
 }
 
 struct StageSnapshotGuard {
