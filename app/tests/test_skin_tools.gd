@@ -51,8 +51,8 @@ func _run() -> void:
 	check("unknown guide locale falls back to English", SkinTools._write_guide(guide_path, "xx") and FileAccess.get_file_as_string(guide_path).contains('data-default-locale="en"'))
 	DirAccess.remove_absolute(guide_path)
 	var output := "user://skin-tool-copy-test.zip"
-	check("bundled template can be saved", SkinTools._copy_resource(SkinTools.KIT, output))
-	check("template copy is byte exact", FileAccess.get_sha256(output) == FileAccess.get_sha256(SkinTools.KIT))
+	check("bundled template can be saved", SkinTools._copy_resource(SkinTools.CustomSkin.kit_path("skywalker-x8"), output))
+	check("template copy is byte exact", FileAccess.get_sha256(output) == FileAccess.get_sha256(SkinTools.CustomSkin.kit_path("skywalker-x8")))
 	DirAccess.remove_absolute(output)
 	var choices := [{id = "abisal", label = "Abisal"}, {id = "bolido", label = "Bolido"}]
 	var picker := Picker.new(choices, "", "X8", {}, UiTheme.build(), true)

@@ -82,7 +82,7 @@ func _run() -> void:
 	_check("custom paint is available through the existing choices", choices.any(func(row: Dictionary) -> bool: return row.id == id and row.label == manifest.label))
 	_check("custom choice resolves and unknown choice falls back", Builder.resolve_livery_choice(choices, id) == id and Builder.resolve_livery_choice(choices, "missing") == "")
 	_check("custom preview preloads the verified default asset", Preview.path_for(X8, id) == stock.manifest.asset.path)
-	_check("unrelated aircraft does not support paint", not CustomPaint.supports("f4u-corsair-250") and CustomPaint.choices("f4u-corsair-250").is_empty())
+	_check("unrelated aircraft does not support paint", not CustomPaint.supports("unknown-aircraft") and CustomPaint.choices("unknown-aircraft").is_empty())
 	var prefs := Preferences.DEFAULTS.duplicate(true)
 	prefs.liveries = {X8: id}
 	var pref_path := "user://skin-test-%s.cfg" % nonce

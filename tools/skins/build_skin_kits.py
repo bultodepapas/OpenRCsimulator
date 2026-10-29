@@ -112,9 +112,10 @@ def uv_boundary_png(materials, width, height, repeat=True):
         raise ValueError("Paint surfaces have no usable UV boundaries")
     pixels = bytearray([255]) * width * height
     drawn = 0
+    interior = 0
 
-    def draw_line(start, end):
-        nonlocal drawn
+    def draw_line(start, end, value):
+        nonlocal drawn, interior
         x0 = round(max(0, min(1, start[0])) * (width - 1))
         y0 = round((1 - max(0, min(1, start[1]))) * (height - 1))
         x1 = round(max(0, min(1, end[0])) * (width - 1))
@@ -123,8 +124,10 @@ def uv_boundary_png(materials, width, height, repeat=True):
         sx, sy = (1 if x0 < x1 else -1), (1 if y0 < y1 else -1)
         error = dx + dy
         while True:
-            pixels[y0 * width + x0] = 0
+            pixels[y0 * width + x0] = min(pixels[y0 * width + x0], value)
             drawn += 1
+            if 1 < x0 < width - 2 and 1 < y0 < height - 2:
+                interior += 1
             if x0 == x1 and y0 == y1:
                 return
             twice = 2 * error
@@ -135,9 +138,7 @@ def uv_boundary_png(materials, width, height, repeat=True):
                 error += dx
                 y0 += sy
 
-    for (_, start, end), count in edges.items():
-        if count == 2:
-            continue
+    def rasterize(start, end, value):
         if not repeat:
             start = tuple(max(0, min(1, v)) for v in start)
             end = tuple(max(0, min(1, v)) for v in end)
@@ -149,7 +150,18 @@ def uv_boundary_png(materials, width, height, repeat=True):
             for ty in range(y0, y1 + 1):
                 segment = _clip_line(start, end, tx, ty)
                 if segment:
-                    draw_line(*segment)
+                    draw_line(*segment, value)
+
+    for (_, start, end), count in edges.items():
+        if count != 2:
+            rasterize(start, end, 0)
+    if interior < 20:
+        # A full-tile cylinder can have its entire island boundary on the
+        # image border. Include real internal UV edges so its reference is
+        # useful without inventing islands.
+        for (_, start, end), count in edges.items():
+            if count == 2:
+                rasterize(start, end, 160)
     if not drawn:
         raise ValueError("Paint surfaces produced an empty UV reference")
 
@@ -214,6 +226,9 @@ def build(family, model, output=None, source_override=None):
             if not (original[0] > 4096 or original[1] > 4096) or original[0] * target[1] != original[1] * target[0]:
                 raise ValueError(f"{family}: unexpected paint image size {original}")
             image.scale(*target)
+            # The imported FILE image may already be packed: refresh those
+            # bytes so reopening the starter does not restore its old size.
+            image.pack()
         nodes[0].select = True
         materials[0].node_tree.nodes.active = nodes[0]
         selected.extend(group["materials"])

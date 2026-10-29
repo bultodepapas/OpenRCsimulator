@@ -649,7 +649,7 @@ func set_livery(livery: String) -> void:
 func open_livery_picker(from: Control = null) -> void:
 	if _loading_active or home == null or not screens.is_top("home"): return
 	var choices: Array = home.livery_choices()
-	if choices.size() < 2: return
+	if choices.size() < 2 and not CustomSkin.supports(home.aircraft_id): return
 	var aircraft_id: String = home.aircraft_id
 	var dialog := LiveryPicker.new(choices, home.livery_id, tr(Catalog.short_name(home.aircraft_id)), home.livery_preview_cache, home.theme, CustomSkin.supports(aircraft_id))
 	dialog.close_requested.connect(close_livery_picker)

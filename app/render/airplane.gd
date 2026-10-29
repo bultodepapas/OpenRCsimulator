@@ -44,12 +44,20 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	# airplane manifest, propeller, control hinges, or AircraftData v2 record.
 	# Keep that visual route explicit and out of the airplane model registry.
 	if Catalog.is_rotorcraft(id):
-		if id != X_CELL_ID or family != "hx-700" or not expected_presentation.is_empty() or not livery_id.is_empty():
+		if id != X_CELL_ID or family != "hx-700" or not expected_presentation.is_empty() or (not livery_id.is_empty() and not CustomSkin.is_custom_id(livery_id)): 
 			push_error("render/airplane.gd: unsupported rotorcraft presentation '%s'" % id)
 			return {}
 		var helicopter: Dictionary = HX700.build()
 		if helicopter.is_empty() or not (helicopter.get("root") is Node3D):
 			return {}
+		if CustomSkin.is_custom_id(livery_id):
+			helicopter.root.set_meta("asset_sha256", HX700.GLB_SHA256)
+			var paint := CustomSkin.apply(id, livery_id, HX700.GLB_SHA256, helicopter.root)
+			if not paint.get("ok", false):
+				helicopter.root.free()
+				push_warning("Custom helicopter paint: " + str(paint.get("errors", [])))
+				return {}
+			helicopter.custom_skin = {id = paint.id, label = paint.label, sha256 = paint.sha256}
 		helicopter.aircraft_id = id
 		helicopter.visual_family = family
 		helicopter.root.set_meta("aircraft_id", id)
@@ -87,7 +95,17 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 		push_error("Aircraft model bindings: " + str(verified.get("errors", [])))
 		return {}
 	if custom_livery:
-		var paint: Dictionary = CustomSkin.apply(id, livery_id, str(manifest.asset.sha256), airplane.root)
+		var skin_spec := CustomSkin.kit(id)
+		if manifest.asset.get("kind") == "procedural" or skin_spec.get("adapter", "") == "procedural_skin":
+			var adapter: Script = load("res://aircraft/procedural_skin.gd")
+			var prepared: Dictionary = adapter.prepare(family, airplane.root)
+			if not prepared.get("ok", false):
+				airplane.root.free()
+				push_warning("Custom paint mapping: " + str(prepared.get("errors", [])))
+				return {}
+		var skin_hash := CustomSkin.base_identity(id)
+		airplane.root.set_meta("asset_sha256", skin_hash)
+		var paint: Dictionary = CustomSkin.apply(id, livery_id, skin_hash, airplane.root)
 		if not paint.get("ok", false):
 			airplane.root.free()
 			push_warning("Custom aircraft paint: " + str(paint.get("errors", [])))
@@ -162,8 +180,8 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 ## has one paint. A menu listing read from the generated manifest; build() verifies whichever livery is chosen.
 static func livery_choices(id: String) -> Array:
 	var family: String = Catalog.visual_family(id)
-	if family.is_empty() or Catalog.is_rotorcraft(id): return []
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft_models/" + family + ".json"))
+	if family.is_empty(): return []
+	var parsed: Variant = {} if Catalog.is_rotorcraft(id) else JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft_models/" + family + ".json"))
 	var choices := []
 	if parsed is Dictionary and parsed.get("liveries") is Array:
 		for record: Variant in parsed.liveries:
@@ -174,6 +192,8 @@ static func livery_choices(id: String) -> Array:
 				var thumbnail := "res://assets/ui/liveries/%s/%s-%s.png" % [family, record.id, record.get("sha256", "")]
 				if ResourceLoader.exists(thumbnail): choice.thumbnail = thumbnail
 				choices.append(choice)
+	if choices.is_empty() and CustomSkin.supports(id):
+		choices.append({id = "", label = Catalog.short_name(id)})
 	choices.append_array(CustomSkin.choices(id))
 	return choices
 

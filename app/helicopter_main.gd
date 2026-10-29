@@ -3,6 +3,7 @@ extends Node3D
 var external_controller_selection: bool = false
 const Session = preload("res://sim/helicopter_flight_session.gd")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
+const AirplaneBuilder = preload("res://render/airplane.gd")
 const Builder = preload("res://aircraft/hx700_model.gd")
 const RotorVisual = preload("res://render/rotor/heli_rotor_visual.gd")
 const NightLights = preload("res://render/rotor/heli_night_lights.gd")
@@ -32,6 +33,7 @@ signal pause_requested
 ## UI-31 (UI-30 PS-7): R uses the shell's restart transaction, like the airplane route.
 signal restart_requested
 signal overlay_settings_changed(settings: Dictionary)
+var livery: String=""
 var aircraft_id: String="xcell-60-research"
 var field_path: String=FieldLoader.DEFAULT_PATH
 var landscape_id: String=Landscapes.DEFAULT_ID
@@ -111,7 +113,8 @@ func _ready() -> void:
  var build_field := func() -> void: add_child(Landscapes.build(landscape_id,field,snapshot))
  var world: Dictionary=World.build(self,field,build_field,{},snapshot,night_options)
  _environment=world.environment
- _airplane=Builder.build()
+ livery=str(args.get("livery",livery))
+ _airplane=AirplaneBuilder.build(aircraft_id,NAN,{},livery)
  if _airplane.is_empty(): _refuse("HX-700 visual import failed"); return
  add_child(_airplane.root)
  _camera=PilotCamera.create(self,field.pilot)

@@ -5,7 +5,7 @@ const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const CustomSkin := preload("res://aircraft/custom_skin.gd")
 const Languages := preload("res://i18n/languages.gd")
-const KIT := "res://assets/skin-kit/skywalker-x8.zip"
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const GUIDE := "res://assets/skin-kit/guide.html"
 signal close_requested
 signal imported(id: String)
@@ -37,7 +37,7 @@ func _init(aircraft_id := "skywalker-x8", shared_theme: Theme = null) -> void:
 	box.add_theme_constant_override("separation", 16)
 	panel.add_child(box)
 	box.add_child(Widgets.label("Create a skin", "TitleLabel", true))
-	box.add_child(Widgets.label("X8 · Blender → .orskin", "SectionLabel", true, false))
+	box.add_child(Widgets.label(Catalog.short_name(_aircraft_id) + " · PNG → .orskin", "SectionLabel", true, false))
 	box.add_child(Widgets.label("Save the template, follow the guide with Claude or Codex, then load your .orskin file.", "", true))
 	_first = Widgets.button("Save Blender template…", "PrimaryButton", "SaveSkinTemplate")
 	_first.pressed.connect(save_template)
@@ -81,13 +81,13 @@ func save_template() -> void:
 	_picker.title = tr("Save Blender template…")
 	_picker.file_mode = FileDialog.FILE_MODE_SAVE_FILE
 	_picker.filters = PackedStringArray(["*.zip ; Blender template"])
-	_picker.current_file = "skywalker-x8.zip"
+	_picker.current_file = CustomSkin.kit_path(_aircraft_id).get_file()
 	_picker.popup_centered_clamped(Vector2i(900, 600), 0.9)
 
 
 func _file_selected(path: String) -> void:
 	if _saving:
-		if _copy_resource(KIT, path):
+		if _copy_resource(CustomSkin.kit_path(_aircraft_id), path):
 			_status.text = tr("Template saved. Extract the ZIP and open the skin guide.")
 		else:
 			_status.text = tr("Could not save the template. Check the destination and try again.")
@@ -101,11 +101,11 @@ func _file_selected(path: String) -> void:
 
 func open_guide() -> void:
 	var path := "user://skin-guide.html"
-	if not _write_guide(path, TranslationServer.get_locale()) or OS.shell_open(ProjectSettings.globalize_path(path)) != OK:
+	if not _write_guide(path, TranslationServer.get_locale(), _aircraft_id) or OS.shell_open(ProjectSettings.globalize_path(path)) != OK:
 		_status.text = tr("Could not open the guide. Use guide.html inside the template ZIP.")
 
 
-static func _write_guide(destination: String, locale: String) -> bool:
+static func _write_guide(destination: String, locale: String, aircraft_id := "") -> bool:
 	var input := FileAccess.open(GUIDE, FileAccess.READ)
 	if input == null: return false
 	var source := input.get_as_text()
@@ -113,6 +113,7 @@ static func _write_guide(destination: String, locale: String) -> bool:
 	if not source.contains(marker): return false
 	var code := Languages.supported_locale(locale)
 	source = source.replace(marker, 'data-default-locale="' + code + '"')
+	source = source.replace('data-aircraft-id=""', 'data-aircraft-id="' + CustomSkin.family(aircraft_id).xml_escape(true) + '"')
 	var output := FileAccess.open(destination, FileAccess.WRITE)
 	if output == null: return false
 	output.store_string(source)

@@ -27,6 +27,7 @@ const OutOfTrim := preload("res://sim/out_of_trim.gd")
 const UpdateNotice := preload("res://ui/update_notice.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
 const FailureConfig := preload("res://failures/config.gd")
+const CustomSkin := preload("res://aircraft/custom_skin.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
@@ -1371,7 +1372,7 @@ func _update_livery() -> void:
 		_livery_choices_aircraft = aircraft_id
 		livery_preview_cache = {}
 	livery_id = AirplaneBuilder.resolve_livery_choice(_livery_choices, str(_livery_preferences.get(aircraft_id, "")))
-	livery_button.visible = _livery_choices.size() > 1
+	livery_button.visible = _livery_choices.size() > 1 or CustomSkin.supports(aircraft_id)
 	_update_livery_row()
 	if not livery_button.visible:
 		return

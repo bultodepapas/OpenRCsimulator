@@ -3,7 +3,8 @@ extends RefCounted
 
 const Registry := preload("res://aircraft/model_registry.gd")
 const ModelManifest := preload("res://aircraft/model_manifest.gd")
-const AIRCRAFT := "skywalker-x8"
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const KITS := "res://assets/skin-kit/models.json"
 const ROOT := "user://skins/"
 const ARCHIVE_LIMIT := 32 * 1024 * 1024
 const MANIFEST_LIMIT := 64 * 1024
@@ -16,14 +17,35 @@ const ID_PREFIX := "custom_"
 const HASH_PREFIX_LENGTH := 24
 const PNG_SIGNATURE := [137, 80, 78, 71, 13, 10, 26, 10]
 
-static var _names_by_asset: Dictionary = {}
+static var _kit_models: Dictionary = {}
 static var _temp_serial := 0
 # Kept separate so the regression test can use a private user:// directory.
 static var _root := ROOT
 
 
 static func supports(aircraft_id: String) -> bool:
-	return aircraft_id == AIRCRAFT
+	return not kit(aircraft_id).is_empty()
+
+
+static func family(aircraft_id: String) -> String:
+	return Catalog.visual_family(aircraft_id)
+
+
+static func kit(aircraft_id: String) -> Dictionary:
+	if _kit_models.is_empty():
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(KITS))
+		if parsed is Dictionary and parsed.get("format") == "openrc-skin-kits-v1" and parsed.get("models") is Dictionary:
+			_kit_models = parsed.models
+	return _kit_models.get(family(aircraft_id), {})
+
+
+static func kit_path(aircraft_id: String) -> String:
+	return str(kit(aircraft_id).get("kit", ""))
+
+
+static func base_identity(aircraft_id: String) -> String:
+	var base := _base(aircraft_id)
+	return str(base.get("sha256", "")) if base.get("ok", false) else ""
 
 
 ## The ID fits the existing livery preference contract; the stored file name uses a hyphen.
@@ -39,7 +61,7 @@ static func is_custom_id(value: String) -> bool:
 static func import_file(path: String, aircraft_id: String) -> Dictionary:
 	if not supports(aircraft_id): return _failure("Custom paint is not available for this aircraft.")
 	if not path.to_lower().ends_with(".orskin"): return _failure("Choose an .orskin file.")
-	var base := _base()
+	var base := _base(aircraft_id)
 	if not base.ok: return base
 	var snapshot := _read_snapshot(path)
 	if not snapshot.ok: return snapshot
@@ -47,7 +69,7 @@ static func import_file(path: String, aircraft_id: String) -> Dictionary:
 	if not inspected.ok: return inspected
 	var digest: String = inspected.sha256
 	var id := ID_PREFIX + digest.substr(0, HASH_PREFIX_LENGTH)
-	var directory := _root + aircraft_id
+	var directory := _root + family(aircraft_id)
 	var error := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory))
 	if error != OK: return _failure("Could not create the custom paint directory.")
 	var destination := _path_for(aircraft_id, id)
@@ -86,7 +108,7 @@ static func choices(aircraft_id: String) -> Array:
 	if not supports(aircraft_id): return []
 	var inventory := _inventory(aircraft_id)
 	if not inventory.ok: return []
-	var base := _base()
+	var base := _base(aircraft_id)
 	if not base.ok: return []
 	var result := []
 	for filename: String in inventory.files:
@@ -99,7 +121,7 @@ static func choices(aircraft_id: String) -> Array:
 
 
 static func _inventory(aircraft_id: String) -> Dictionary:
-	var directory := DirAccess.open(_root + aircraft_id)
+	var directory := DirAccess.open(_root + family(aircraft_id))
 	if directory == null: return {ok = true, files = [], visited = 0}
 	var names: Array[String] = []
 	directory.list_dir_begin()
@@ -122,7 +144,7 @@ static func _inventory(aircraft_id: String) -> Dictionary:
 ## Called only on a separately constructed and registry-validated stock scene.
 static func apply(aircraft_id: String, id: String, stock_sha256: String, root: Node3D) -> Dictionary:
 	if not supports(aircraft_id) or not is_custom_id(id): return _failure("Unknown custom paint.")
-	var base := _base()
+	var base := _base(aircraft_id)
 	if not base.ok: return base
 	if stock_sha256 != base.sha256 or str(root.get_meta("asset_sha256", "")) != base.sha256:
 		return _failure("Custom paint requires the verified default aircraft model.")
@@ -173,30 +195,40 @@ static func apply(aircraft_id: String, id: String, stock_sha256: String, root: N
 
 
 static func _path_for(aircraft_id: String, id: String) -> String:
-	return _root + aircraft_id + "/custom-" + id.substr(ID_PREFIX.length()) + ".orskin"
+	return _root + family(aircraft_id) + "/custom-" + id.substr(ID_PREFIX.length()) + ".orskin"
 
 
-static func _base() -> Dictionary:
-	var described: Dictionary = Registry.describe(AIRCRAFT)
-	if not described.get("ok", false): return _failure("The stock aircraft model could not be verified.")
-	var asset: Dictionary = described.manifest.get("asset", {})
-	var sha := str(asset.get("sha256", ""))
-	if asset.get("kind") != "imported_glb" or sha.is_empty(): return _failure("The stock aircraft asset is unavailable.")
-	if not _names_by_asset.has(sha):
-		var scene := load(str(asset.get("path", ""))) as PackedScene
-		if scene == null: return _failure("The stock aircraft scene could not be loaded.")
-		var instance := scene.instantiate()
-		var names := {}
-		for node: Node in instance.find_children("*", "MeshInstance3D", true, false):
-			var mesh_node := node as MeshInstance3D
-			if mesh_node.mesh == null: continue
-			for surface in mesh_node.mesh.get_surface_count():
-				var material := mesh_node.get_active_material(surface)
-				if material is StandardMaterial3D and not material.resource_name.is_empty(): names[material.resource_name] = true
-		instance.free()
-		if names.is_empty(): return _failure("The stock aircraft has no paintable materials.")
-		_names_by_asset[sha] = names
-	return {ok = true, sha256 = sha, names = _names_by_asset[sha]}
+static func _base(aircraft_id: String = "skywalker-x8") -> Dictionary:
+	var spec := kit(aircraft_id)
+	if spec.is_empty(): return _failure("Custom paint is not available for this aircraft.")
+	var visual_family := family(aircraft_id)
+	var sha := str(spec.get("stock_sha256", ""))
+	if sha.is_empty(): return _failure("The stock aircraft asset is unavailable.")
+	if visual_family == "hx-700":
+		var proofs: Dictionary = Registry._read_package_proofs()
+		if not proofs.ok: return proofs
+		var errors := PackedStringArray()
+		var diagnostics: Array[Dictionary] = []
+		Registry._check_resource_record({path = spec.source_path, sha256 = sha, hash_mode = "raw"},
+			"$.skin", proofs.files, errors, diagnostics)
+		if not errors.is_empty(): return _failure("The stock helicopter model could not be verified.")
+	else:
+		var described: Dictionary = Registry.describe(visual_family)
+		if not described.get("ok", false): return _failure("The stock aircraft model could not be verified.")
+		if described.manifest.asset.get("kind") == "procedural" or spec.get("adapter", "") == "procedural_skin":
+			var adapter: Script = load("res://aircraft/procedural_skin.gd")
+			if adapter == null or str(adapter.identity(visual_family)) != sha:
+				return _failure("The paint template no longer matches the stock model.")
+		elif str(described.manifest.asset.get("sha256", "")) != sha:
+			return _failure("The paint template no longer matches the stock model.")
+	var names := {}
+	for group: Dictionary in spec.get("paints", []):
+		for name: String in group.materials: names[name] = true
+	# Earlier X8 Blender exports included the complete original material set.
+	if visual_family == "skywalker-x8":
+		for name: String in spec.get("material_names", []): names[name] = true
+	if names.is_empty(): return _failure("The stock aircraft has no paintable materials.")
+	return {ok = true, sha256 = sha, names = names, aircraft_id = visual_family}
 
 
 static func _load_id(aircraft_id: String, id: String, base: Dictionary, decode_textures := true) -> Dictionary:
@@ -289,7 +321,7 @@ static func _validate_manifest(value: Variant, base: Dictionary, entries: Dictio
 		return _failure("The paint manifest has missing or unsupported fields.")
 	if value.format != "openrc-skin" or typeof(value.version) not in [TYPE_INT, TYPE_FLOAT] or value.version != 1:
 		return _failure("Unsupported custom paint format or version.")
-	if value.aircraft_id != AIRCRAFT or value.base_asset_sha256 != base.sha256:
+	if value.aircraft_id != base.aircraft_id or value.base_asset_sha256 != base.sha256:
 		return _failure("This paint is for a different aircraft or stock model version.")
 	if not value.label is String or value.label.strip_edges().is_empty() or value.label.length() > 48:
 		return _failure("Paint label must contain 1 to 48 printable characters.")
