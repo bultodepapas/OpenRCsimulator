@@ -40,7 +40,7 @@ func _run() -> void:
 			check("imports only .orskin", dialog._picker.file_mode == FileDialog.FILE_MODE_OPEN_FILE and dialog._picker.filters[0].begins_with("*.orskin"))
 			dialog._picker.hide()
 			dialog.save_template()
-			check("template saves ZIP", dialog._picker.file_mode == FileDialog.FILE_MODE_SAVE_FILE and dialog._picker.current_file == "skywalker-x8.zip")
+			check("template saves ZIP", dialog._picker.file_mode == FileDialog.FILE_MODE_SAVE_FILE and dialog._picker.current_file == "moonrunner-x99.zip")
 			dialog._picker.hide()
 			var imported_ids: Array[String] = []
 			dialog.imported.connect(func(id: String) -> void: imported_ids.append(id))

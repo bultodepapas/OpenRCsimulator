@@ -423,12 +423,12 @@ python3 "$HERE/../research/f4u-corsair/F4U-11/costing_entry.py" --check || exit 
 run --script res://aircraft/verify_f4u.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "F4U Corsair model contract failed (see above)"; exit 1; fi
 
-echo "== X8 flying wing identity, generated data and model contract (X8-00/02/06: manifest, assets, model, physics, imported scene)"
+echo "== MoonRunner X99 identity, generated data and model contract (X8-00/02/06: manifest, assets, model, physics, imported scene)"
 python3 "$HERE/../research/skywalker-x8/X8-00/manifest.py" --check || exit 1
 python3 "$HERE/../research/skywalker-x8/X8-02/install_assets.py" --check || exit 1
 python3 "$HERE/../research/skywalker-x8/X8-02/compile_model.py" --check || exit 1
 python3 "$HERE/../research/skywalker-x8/X8-06/derive_physics.py" --check || exit 1
-run --script res://aircraft/verify_skywalker_x8.gd 2>&1 | tee "$LOG" | tail -1
+run --script res://aircraft/verify_moonrunner_x99.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "X8 model contract failed (see above)"; exit 1; fi
 
 echo "== C7-R1: trace completion, finite samples and failure exits"

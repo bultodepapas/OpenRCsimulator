@@ -2,7 +2,7 @@
 
 The registry at `app/assets/skin-kit/models.json` covers eight visual families:
 Ugly Stick (four engine configurations), Extra 300S, P-51D, Corsair, Vantage Jet,
-Turbo Lumber, X8 and HX-700/X-Cell. Kits use the same paint bindings as the runtime.
+Turbo Lumber, MoonRunner X99 and HX-700/X-Cell. Kits use the same paint bindings as the runtime.
 See [the skin contract and player flow](../../docs/AIRCRAFT-SKINS.md).
 
 ## Generate

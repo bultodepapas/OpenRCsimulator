@@ -36,7 +36,7 @@ python3 research/skywalker-x8/X8-02/install_assets.py          # copies GLBs, li
 python3 research/skywalker-x8/X8-02/install_assets.py --check
 python3 research/skywalker-x8/X8-02/compile_model.py           # then --check
 python3 research/aircraft-standardization/build_models.py      # then --check
-python3 tools/godot/run_checked.py --timeout 180 -- "$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_skywalker_x8.gd
+python3 tools/godot/run_checked.py --timeout 180 -- "$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_moonrunner_x99.gd
 ```
 
 After a binding or model change, also run `build_customization.py`, `build_descriptors.py` and the parked-aircraft bake in the order of the [Avanti guide](../avanti-s-a200/README.md#regenerate-and-verify). Evidence: [X8-02](../../../docs/research/skywalker-x8/X8-02/README.md).
