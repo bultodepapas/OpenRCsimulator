@@ -111,7 +111,9 @@ TERMINAL_NATIVE_IDENTITY = {
 }
 TERMINAL_PREFIX = "faeccb6864cda465389cdedc6de5301588b5fd61bebd7fc48a258d8378a0881e"
 TERMINAL_VIEW_PREFIX = "133d124064efe08f10bc0ed6a9664a7541ba1c22a137ca673357a7a147365365"
-TERMINAL_VIEW_JSON = "7b8e59666676db2baeb0e0b873fe14751e90c891305d9eff0365d790c330426d"
+# Canonical Python JSON of the pinned typed view decoded with the full-precision
+# projection used by oracle.gd; reduced-precision diagnostic JSON is different.
+TERMINAL_VIEW_JSON = "3defb1aa5afc96af1ddfa09c3b814d8fcbf94dcc1288d72986058867fd987d4d"
 TERMINAL_IDENTITIES = {
     "initial_frame": "1be46da07149a21cecff884cdc0947b35f2db51fc952a5287b63df24317a8eb3",
     "preceding_frame": "8cff80befa31c0859e2f5e15921a5b066fbe4c8505a5fda89416e86c7e6e8e05",
