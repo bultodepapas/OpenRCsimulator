@@ -28,6 +28,9 @@ var _livery_active := ""
 var _livery_matched := 0
 var _orbit_previous_altitude_m := NAN
 var _orbit_altitude_integral := 0.0
+# TRA-10: presentation-only framing for widget shots; lowers the look target so the aircraft sits higher in frame,
+# clear of bottom-centre instruments (capture_flight.gd --look-drop=<m>). 0 keeps every existing take unchanged.
+var look_drop_m := 0.0
 
 
 func configure(flight_main: Node, shot_name: String, shot_duration_s: float, output_fps: int) -> void:
@@ -395,7 +398,7 @@ func _place_camera(t: float) -> void:
 	height *= size_frame
 	lateral *= size_frame
 	var look_ahead := (0.5 if shot != "crash" else 0.0) * size_frame
-	var look_target: Vector3 = center + forward * look_ahead + Vector3.UP * 0.22 * size_frame
+	var look_target: Vector3 = center + forward * look_ahead + Vector3.UP * (0.22 - look_drop_m) * size_frame
 	main._camera.global_position = center - forward * distance + right * lateral + Vector3.UP * height
 	main._camera.look_at(look_target, Vector3.UP)
 	main._camera.fov = fov

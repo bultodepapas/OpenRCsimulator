@@ -261,6 +261,8 @@ def render_cue(directory, cue, frames, duration, lower=False):
     blank = directory / "blank.png"
     Image.new("RGBA", (W, H)).save(blank, compress_level=1)
     static = directory / "static.png"
+    if static.exists():
+        static.unlink()  # a reused work directory must not keep an older cue's settled frame
     rendered = 0
     for f in range(frames):
         t = f / FPS

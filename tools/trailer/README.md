@@ -351,6 +351,20 @@ Revision 9.6 adds `capture_formation.gd --sizes`, which writes 480 PNG frames.
 Crystal cues accept optional `entrance_s`, `kicker_size`, `detail_size`, `scrim` and `shadow` (drop-shadow alpha). A shot's `grade` may be an FFmpeg filter string instead of true/false. Without these keys, the
 cues render exactly as in v8.
 
+Two capture options serve widget shots:
+
+- `capture_flight.gd --overlay-preset=<id>` shows a production widget preset on any shot, for example `player`, `instruments` or `cockpit` (the classic dials). The manifest records `overlay_preset_applied`.
+- `--look-drop=<m>` lowers the director's look target, so the aircraft sits higher in frame, clear of bottom-centre dials. It is presentation only, and 0 (the default) leaves every existing take unchanged.
+
+`corsair_deck_director.gd` (`--director-script`, `--shot=corsair-deck --start=runway`) films the F4U from parked to climb-out. It uses only the production pilot actions and normal stick and throttle:
+
+- **Actions:** wing fold [O], canopy [U], flaps, and gear.
+  - Gear goes up through `set_gear_down(false)`, retried while airborne. A [G] toggle retry would cycle the gear back down, because `gear_state()` reads the solver one tick late.
+  - Requests are admitted only for the duration of each call, because the director disables live devices.
+- **Camera:** a low orbit around the parked aircraft that becomes an orbiting chase through the takeoff.
+- **Evidence:** events print as `DECK_EVENT`.
+- **Pause retry:** the intermittent pause can also strike mid-take (one froze at 18.4 s). Retry when the manifest ends with `simulation_paused`.
+
 Revision 9.7 adds placement and tracking keys:
 
 - `align: "right"` ends the block at the right title-safe margin.

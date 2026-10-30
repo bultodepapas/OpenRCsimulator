@@ -186,6 +186,10 @@ func _run() -> void:
 		_main.camera_preferences = CameraSettings.normalized({
 			"camera_view": "pilot", "camera_auto_zoom": false, "camera_magnifier": "on"})
 	_main.overlays_enabled = _shot == "controls"
+	# TRA-10: --overlay-preset=<id> shows that production widget preset (e.g. instruments, cockpit) on any shot.
+	if _options.has("overlay-preset"):
+		_main.overlays_enabled = true
+		_main.overlay_settings = {preset = str(_options["overlay-preset"])}
 	if _options.has("sky"):
 		_main.sky_config = SkyConfig.for_preset(str(_options.sky))
 	elif _shot == "storm":
@@ -268,9 +272,9 @@ func _run() -> void:
 		_main._accident_report.visible = false
 		_report_layer_hidden_before_impact = true
 	if _main._panel != null:
-		_main._panel.visible = _shot == "controls"
+		_main._panel.visible = _shot == "controls" or _options.has("overlay-preset")
 	if _main._hud != null:
-		_main._hud.visible = _shot == "controls"
+		_main._hud.visible = _shot == "controls" or _options.has("overlay-preset")
 	if _shot != "lighting-pilot":
 		_main._rig.set_view("chase")
 		_main._rig.auto_zoom = false
@@ -288,6 +292,8 @@ func _run() -> void:
 	_director = director_script.new()
 	if _realtime:
 		_director.record_tick_evidence = false
+	if _options.has("look-drop"):
+		_director.set("look_drop_m", float(_options["look-drop"]))
 	_director.name = "TrailerFlightDirector"
 	_director.configure(_main, _shot, _seconds, _fps)
 	if _director.has_method("configuration_error"):
@@ -860,6 +866,7 @@ func _write_manifest(ok: bool) -> void:
 		measurement_mode = "realtime-director-flight" if _realtime else "offline-movie",
 		complete = ok and _failure.is_empty(),
 		shot = _shot,
+		overlay_preset_applied = str(_main._overlays.settings.preset) if _main != null and _main._overlays != null else "",
 		aircraft_id = str(_main.aircraft_id) if _main != null else "",
 		landscape = {"requested": str(_options.get("landscape", Landscapes.DEFAULT_ID)),
 			"resolved": str(_main.landscape_id) if _main != null else "",
