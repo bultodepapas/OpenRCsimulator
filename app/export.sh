@@ -39,7 +39,10 @@ if [[ "${GITHUB_REF:-}" == refs/tags/v* ]]; then
 fi
 NUMERIC="$(sed -n 's/\r$//; s/^config\/version="\(.*\)"$/\1/p' "$HERE/project.godot")"
 [[ "$NUMERIC" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "project.godot config/version must be x.y.z (found '$NUMERIC')"; exit 1; }
-if [[ "$VERSION" =~ ^v([0-9]+\.[0-9]+\.[0-9]+) ]] && [ "${BASH_REMATCH[1]}" != "$NUMERIC" ]; then
+# An ancestor tag identifies a development build, not its target version.
+# Exact tags (including local exports without GITHUB_REF) must still match.
+if git -C "$ROOT" describe --exact-match --tags HEAD >/dev/null 2>&1 \
+    && [[ "$VERSION" =~ ^v([0-9]+\.[0-9]+\.[0-9]+) ]] && [ "${BASH_REMATCH[1]}" != "$NUMERIC" ]; then
   echo "tag ${BASH_REMATCH[1]} (git describe: $VERSION) does not match project.godot config/version $NUMERIC"; exit 1
 fi
 export OPENRC_BUILD_DESCRIBE="$VERSION"

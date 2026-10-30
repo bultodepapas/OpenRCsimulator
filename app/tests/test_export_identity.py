@@ -241,6 +241,41 @@ exit 23
         self.assertEqual(identity["DESCRIBE"], self.git("describe", "--tags", "--always", "--dirty"))
         self.assertEqual(identity["DIRTY"], "1")
 
+    def test_branch_after_older_tag_accepts_next_project_version(self):
+        self.git("tag", "v1.2.2")
+        (self.app / "project.godot").write_text('config/version="1.2.3"\n# next version\n', encoding="utf-8")
+        self.git("add", "app/project.godot")
+        self.git("commit", "--quiet", "-m", "next version")
+        describe = self.git("describe", "--tags", "--always", "--dirty")
+        result = self.export(GITHUB_REF="refs/heads/main")
+        self.assertIn("numeric 1.2.3", result.stdout)
+        identity = json.loads((self.root / "identity.json").read_text())
+        self.assertEqual(identity["DESCRIBE"], describe)
+        self.assertTrue(describe.startswith("v1.2.2-1-g"), describe)
+        self.assertEqual(identity["DIRTY"], "0")
+
+    def test_local_exact_tag_requires_matching_numeric_version(self):
+        self.git("tag", "v1.2.3")
+        result = self.export()
+        self.assertIn("numeric 1.2.3", result.stdout)
+        self.assertEqual(json.loads((self.root / "identity.json").read_text())["DESCRIBE"], "v1.2.3")
+        (self.root / "identity.json").unlink()
+        self.git("tag", "-d", "v1.2.3")
+        self.git("tag", "v9.8.7")
+        result = self.export()
+        self.assertIn("does not match project.godot", result.stdout)
+        self.assertFalse((self.root / "identity.json").exists())
+
+    def test_exact_mismatched_prerelease_and_branch_tags_are_rejected(self):
+        for tag, ref in (("v9.8.7-rc.1", "refs/tags/v9.8.7-rc.1"),
+                         ("v9.8.7", "refs/heads/main")):
+            with self.subTest(tag=tag, ref=ref):
+                self.git("tag", tag)
+                result = self.export(GITHUB_REF=ref)
+                self.assertIn("does not match project.godot", result.stdout)
+                self.assertFalse((self.root / "identity.json").exists())
+                self.git("tag", "-d", tag)
+
     def test_crlf_project_version_reaches_engine_setup(self):
         (self.app / "project.godot").write_bytes(b'config/version="1.2.3"\r\n')
         result = self.export()
