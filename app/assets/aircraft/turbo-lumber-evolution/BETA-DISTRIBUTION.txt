@@ -2,7 +2,7 @@ Turbo Lumber Evolution — beta distribution notice
 
 On 2026-10-30, the project user confirmed their authority to authorize
 distribution of this model and its sources and authorized publication of this
-OpenRC Simulator beta. The authorization covers distribution of the model and
+OpenRC Simulator v0.1.9-beta.1. The authorization covers distribution of the model and
 its sources as part of this beta, in binary and source form.
 
 The accompanying LICENSE.txt preserves the original delivery's authorship and
