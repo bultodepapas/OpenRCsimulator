@@ -99,20 +99,23 @@ class CrystalCue:
                 row["shadow"] = _glow(row["layer"], 6, (0, 0, 0))
         # Frames after the last line's landing flash has decayed are static.
         self.settle_s = ENTRANCE_S if "entrance_s" not in cue else max(ENTRANCE_S * self.k, self.k * (0.60 + 0.13 * (len(lines) - 1)) + 0.5)
-        if cue.get("align") == "center":
+        if cue.get("align") in ("center", "right"):
+            # TRA-10 "right": the block ends at the right title-safe margin (rows stay left-aligned inside it).
             left = min(r["xy"][0] + 40 for r in self.rows)
             right = max(r["xy"][0] + r["layer"].width - 40 for r in self.rows)
-            dx = int((W - (right - left)) / 2 - left)
+            dx = int((W - (right - left)) / 2 - left) if cue["align"] == "center" else W - 96 - right
             for r in self.rows:
                 r["xy"] = (r["xy"][0] + dx, r["xy"][1])
             self.bar = (self.bar[0] + dx, self.bar[1])
+            x += dx
         self.credit = None
         if cue.get("credit"):
             layer, off = _text_layer(cue["credit"], _font(24, True), (150, 176, 160), 0)
             self.credit = {"layer": layer, "xy": ((W - layer.width) // 2, 1004 + off[1])}
         boxes = [(r["xy"][0] + 40, r["xy"][1] + 40, r["xy"][0] + r["layer"].width - 40, r["xy"][1] + r["layer"].height - 40)
                  for r in self.rows]
-        bottom_limit = H - 64 if lower else 450
+        # TRA-10 "low": a scrimmed cue may sit in the lower frame, inside the 10 % title-safe bottom margin.
+        bottom_limit = H - 64 if lower else (H - 108 if cue.get("low") else 450)
         assert all(72 <= b[0] and b[2] <= W - 72 and 60 <= b[1] and b[3] <= bottom_limit for b in boxes), boxes
         self.bounds = (min(b[0] for b in boxes), min(b[1] for b in boxes), max(b[2] for b in boxes), max(b[3] for b in boxes))
         self.scrim = None if lower else self._scrim(x)
@@ -191,8 +194,64 @@ class CrystalCue:
         return im
 
 
+def _callout_layer(label, value):
+    """One tracked tag: crystal label, green value and a soft dark halo for sky backgrounds."""
+    name, _ = _text_layer(label.upper() + "  ", _font(32, True), CRYSTAL, 0)
+    number, _ = _text_layer(value, _font(42), FOCUS, 0)
+    layer = Image.new("RGBA", (name.width + number.width - 80, max(name.height, number.height)))
+    layer.alpha_composite(name, (0, (layer.height - name.height) // 2 + 2))
+    layer.alpha_composite(number, (name.width - 80, (layer.height - number.height) // 2))
+    halo = _glow(layer, 7, (0, 0, 0))
+    out = Image.new("RGBA", layer.size)
+    out.alpha_composite(_scale_alpha(halo, 0.9))
+    out.alpha_composite(layer)
+    return out
+
+
+def render_callouts(directory, cue, frames, duration):
+    """TRA-10: tags pinned to per-frame screen points recorded by the capture (camera.unproject_position).
+
+    Each callout has a track of [x, y, clear] per shot frame: the leader starts `clear` px from the point,
+    above it (or below with "below"), so it never covers the aircraft. Tags fade in, fade near the title-safe
+    edges and leave with the shot, like the other cues.
+    """
+    directory = Path(directory)
+    directory.mkdir(parents=True, exist_ok=True)
+    start = float(cue.get("start", 0))
+    end = float(cue.get("end", duration))
+    tags = [(c, _callout_layer(c["label"], c["value"])) for c in cue["callouts"]]
+    for f in range(frames):
+        t = f / FPS
+        im = Image.new("RGBA", (W, H))
+        draw = ImageDraw.Draw(im)
+        for i, (c, layer) in enumerate(tags):
+            x, y, clear = c["track"][min(f, len(c["track"]) - 1)]
+            sign = 1 if c.get("below") else -1
+            near, far = y + sign * clear, y + sign * (clear + 40)
+            top = far - layer.height + 36 if sign < 0 else far - 34
+            left = x - layer.width / 2
+            margin = min(left + 40 - 72, W - 72 - (left + layer.width - 40), top + 36 - 64, H - 108 - (top + layer.height - 36))
+            q = _ease_out((t - start - 0.12 * i) / 0.35, 2.0) * min(1.0, max(0.0, margin / 120.0))
+            q *= min(1.0, max(0.0, (end - t) / EXIT_S))
+            if q <= 0.01:
+                continue
+            grow = _ease_out((t - start - 0.12 * i) / 0.30, 3.0)
+            reach = near + (far - near) * grow
+            draw.line((x + 1, near + sign, x + 1, reach + sign), fill=(0, 0, 0, int(140 * q)), width=3)
+            draw.line((x, near, x, reach), fill=PRIMARY_TEXT + (int(235 * q),), width=2)
+            draw.ellipse((x - 3, near - 3, x + 3, near + 3), fill=FOCUS + (int(255 * q),))
+            im.alpha_composite(_scale_alpha(layer, q * grow), (int(round(left)), int(round(top))))
+        target = directory / f"{f:05d}.png"
+        if target.exists():
+            target.unlink()  # never write through a hard link left by a static cue render
+        im.save(target, compress_level=1)
+    return frames
+
+
 def render_cue(directory, cue, frames, duration, lower=False):
     """Write frames 00000..frames-1 for one cue; return the number of distinct renders."""
+    if "callouts" in cue:
+        return render_callouts(directory, cue, frames, duration)
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
     layout = CrystalCue(cue, lower)

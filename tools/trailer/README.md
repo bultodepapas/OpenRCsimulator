@@ -349,7 +349,16 @@ Revision 9.6 adds `capture_formation.gd --sizes`, which writes 480 PNG frames.
 - Encode the frames losslessly: `ffmpeg -framerate 60 -i %05d.png -c:v ffv1 -level 3 -pix_fmt bgr0 sizes-trio.mkv`.
 
 Crystal cues accept optional `entrance_s`, `kicker_size`, `detail_size`, `scrim` and `shadow` (drop-shadow alpha). A shot's `grade` may be an FFmpeg filter string instead of true/false. Without these keys, the
-cues render exactly as in v8. Image shots accept `zoom: {center: [x, y], to: <factor>}`, an eased push-in.
+cues render exactly as in v8.
+
+Revision 9.7 adds placement and tracking keys:
+
+- `align: "right"` ends the block at the right title-safe margin.
+- `low: true` lets a scrimmed cue sit in the lower frame, down to the 10 % title-safe bottom margin.
+- A cue with `callouts` draws tags pinned to tracked screen points: `[{label, value, track: [[x, y, clear], ...], below}]`, one track row per shot frame.
+  - The leader starts `clear` px from the point, so it never covers the subject.
+  - Tags fade in from `start` and fade near the title-safe edges.
+  - Use points the capture recorded, such as the `--sizes` manifest's `poses[].screen` (`camera.unproject_position`). Image shots accept `zoom: {center: [x, y], to: <factor>}`, an eased push-in.
 `capture_brand.gd --frames=600` gives the longer end card.
 
 Output checks cover resolution, 60 fps, the manifest's frame count/duration, full decode and decoded AAC true peak.
