@@ -87,6 +87,19 @@ class RuntimeRouteFleet:
 		return {complete = false, requested = requested, error = "synthetic incomplete run"}
 
 
+class TerminalRouteFleet:
+	extends Fleet
+	var terminal_calls := 0
+	var normal_calls := 0
+
+	func _fleet_terminal_case(_row: Dictionary, _warmup: int, _samples: int) -> void:
+		terminal_calls += 1
+
+	func _fleet_execute(_row: Dictionary, requested: String, _warmup: int, _samples: int) -> Dictionary:
+		normal_calls += 1
+		return {complete = false, requested = requested, error = "synthetic incomplete run"}
+
+
 class FakeSimulation:
 	extends Node
 	var tick := 0
@@ -343,6 +356,28 @@ func _initialize() -> void:
 		_check(not rejected.complete and not Fleet._fleet_pair_error(body_reference, rejected, 2, 3).is_empty(),
 			"body callback %s fails qualification" % failure)
 	var declared := Fleet._fleet_declared_rows()
+	var terminal_rows: Array[Dictionary] = []
+	for candidate: Dictionary in declared:
+		if candidate.get("expected") == "physical-terminal": terminal_rows.append(candidate)
+	_check(terminal_rows.size() == 2, "only the two observed X8 physical terminals are declared")
+	for row: Dictionary in terminal_rows:
+		_check(Fleet._fleet_terminal_tick(row) == 1640, "observed X8 terminal has its exact accepted tick")
+		for change: Array in [["aircraft", "other"], ["battery", "ideal"], ["case", "trim"],
+				["weather", "crosswind"], ["vehicle", "rotorcraft"], ["soft_hull", 1],
+				["default_battery", 1], ["expected_terminal_tick", 1639]]:
+			var changed := row.duplicate(true)
+			changed[change[0]] = change[1]
+			_check(Fleet._fleet_terminal_tick(changed) < 0, "terminal rejects another " + str(change[0]))
+	if not terminal_rows.is_empty():
+		var terminal_route := TerminalRouteFleet.new()
+		terminal_route._report = {fleet = [], components = {}}
+		terminal_route._fleet_case(terminal_rows[0], 1, 1)
+		_check(terminal_route.normal_calls == 1 and terminal_route.terminal_calls == 0,
+			"a shorter horizon remains an ordinary flight")
+		terminal_route._fleet_case(terminal_rows[0], 600, 1040)
+		_check(terminal_route.normal_calls == 1 and terminal_route.terminal_calls == 1,
+			"a horizon ending at the accepted collision requires the physical-terminal proof")
+		terminal_route.free()
 	var fs64v_runway_rows := 0
 	for declared_row: Dictionary in Fleet._fleet_selected_rows(declared, "stik-glow-fs64v-4t", "gusty", ""):
 		if declared_row.case != "runway" or declared_row.battery != "ideal":
@@ -736,6 +771,71 @@ func _initialize() -> void:
 		_check(fleet._failures.is_empty(), "actual paired bounded reset proofs leave no policy errors")
 	else:
 		print("NK3 fleet policy: native reset checks skipped (verified library unavailable)")
+	if OS.get_cmdline_user_args().has("--require-physical-terminal"):
+		_check(native_available, "verified native stage is available for physical-terminal pairs")
+		if native_available:
+			fleet._report = {fleet = [], components = {}}
+			fleet._failures = PackedStringArray()
+			for row: Dictionary in terminal_rows:
+				fleet._fleet_case(row, 2, 3)
+				var short_run: Dictionary = fleet._report.fleet.back()
+				_check(short_run.status == "pass" and short_run.reference.complete and short_run.native.complete \
+					and short_run.native.native_covered_every_tick,
+					"shorter X8 horizon remains a healthy native/reference flight: soft=%s" % row.soft_hull)
+			fleet._report = {fleet = [], components = {}}
+			fleet._failures = PackedStringArray()
+			var actual_terminals := 0
+			for row: Dictionary in terminal_rows:
+				fleet._fleet_terminal_case(row, 600, 2400)
+				var result: Dictionary = fleet._report.fleet.back()
+				var proof: Dictionary = result.get("physical_terminal", {})
+				var accepted: bool = result.status == "physical-terminal" and not result.reference.complete \
+					and not result.native.complete and not result.fingerprint_equal \
+					and Fleet._fleet_terminal_proof_error(row, proof, 600, 2400).is_empty()
+				_check(accepted, "actual paired accepted collision is separate from flights: soft=%s" % row.soft_hull)
+				if not accepted: continue
+				actual_terminals += 1
+				for change: Array in [["terminal_tick", 1639], ["terminal_accepted", false],
+						["previous_state_retained", false], ["stopped_unchanged", false],
+						["native_covered_every_tick", false], ["native_owner_every_tick", false],
+						["model_contract_retained", false], ["physical_configuration_retained", false],
+						["live_configuration_retained", false], ["no_holds", false], ["native_context_calls", 1639],
+						["native_stage_calls", 6559], ["reference_prefix_sha256", "0".repeat(64)]]:
+					var altered: Dictionary = proof.duplicate(true)
+					altered[change[0]] = change[1]
+					_check(not Fleet._fleet_terminal_proof_error(row, altered, 600, 2400).is_empty(),
+						"physical-terminal proof rejects changed " + str(change[0]))
+				for field: String in ["terminal_frame", "terminal_view", "impact", "contact_event",
+						"physical_configuration", "reference_live_configuration", "native_live_configuration"]:
+					var forged: Dictionary = proof.duplicate(true)
+					forged[field + "_bytes_hex"] = "00"
+					forged[field + "_sha256"] = Fleet._fleet_encoded_sha256("00".hex_decode())
+					if field == "terminal_frame": forged.stopped_frame_bytes_hex = "00"
+					if field == "terminal_view": forged.stopped_view_bytes_hex = "00"
+					_check(not Fleet._fleet_terminal_proof_error(row, forged, 600, 2400).is_empty(),
+						"physical-terminal proof rejects rehashed " + field)
+				var forged_view: Dictionary = proof.duplicate(true)
+				forged_view.terminal_view.crash.impact.obstacle_id = "another-tree"
+				forged_view.terminal_view_bytes_hex = var_to_bytes(forged_view.terminal_view).hex_encode()
+				forged_view.terminal_view_sha256 = Fleet._fleet_encoded_sha256(forged_view.terminal_view_bytes_hex.hex_decode())
+				forged_view.stopped_view_bytes_hex = forged_view.terminal_view_bytes_hex
+				_check(not Fleet._fleet_terminal_proof_error(row, forged_view, 600, 2400).is_empty(),
+					"physical-terminal proof rejects coherently rehashed collision metadata")
+				var forged_configs: Dictionary = proof.duplicate(true)
+				for side: String in ["reference", "native"]:
+					forged_configs[side + "_live_configuration_bytes_hex"] = "00"
+					forged_configs[side + "_live_configuration_sha256"] = Fleet._fleet_encoded_sha256("00".hex_decode())
+				_check(not Fleet._fleet_terminal_proof_error(row, forged_configs, 600, 2400).is_empty(),
+					"physical-terminal proof rejects paired rehashed live configurations")
+				for change: Array in [["binary_sha256", "0".repeat(64)], ["abi_version", 3], ["abi_version", 2.0],
+						["backend_version", "other"], ["source_sha256", "0".repeat(64)], ["lock_sha256", "0".repeat(64)]]:
+					var forged_owner: Dictionary = proof.duplicate(true)
+					forged_owner.native_identity[change[0]] = change[1]
+					_check(not Fleet._fleet_terminal_proof_error(row, forged_owner, 600, 2400).is_empty(),
+						"physical-terminal proof rejects changed native " + str(change[0]))
+			_check(actual_terminals == 2 and fleet._failures.is_empty(), "both physical-terminal pairs are proven")
+			if actual_terminals == 2 and fleet._failures.is_empty() and _failures == 0:
+				print("NK3_PHYSICAL_TERMINAL_NATIVE verdict=pass")
 	if OS.get_cmdline_user_args().has("--require-runtime-domain"):
 		var can_probe := native_available and ClassDB.class_has_method("OpenRCNativeKernel", "set_stage_rejection_diagnostics") \
 			and ClassDB.class_has_method("OpenRCNativeKernel", "stage_rejection_diagnostic")

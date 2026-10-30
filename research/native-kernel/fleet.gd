@@ -90,6 +90,42 @@ const GLOW_REVERSE_CODE := "glow_stopped_reverse_drive"
 const GLOW_REVERSE_FAULT := "step rejected: RK joint stage evaluation is nonfinite or malformed"
 const GLOW_FEED_ENDPOINT_ERROR := "Glow feed factor endpoint evaluation failed"
 const HELICOPTER_REPLAY_TICKS := 8
+# Source-observed collision on the stock X8 pack hand-launch tape.  This is a
+# committed physical terminal, never a healthy flight or a rejected RK step.
+const X8_TERMINAL_TICK := 1640
+const X8_TERMINAL_CODE := "scenery_terminal_impact"
+const X8_TERMINAL_AIRCRAFT := "7e3bfa65db9c259133345469c8d4846c1716421b4e8d8b30ad66860549f74b82"
+const X8_TERMINAL_WORLD := "ba184dbc8864dae651ca914ae14b0b1fd36f65d1cf5c52f80a08d0c188c84a6d"
+const X8_TERMINAL_NATIVE_IDENTITY := {backend = "native", abi_version = 2,
+	backend_version = "openrc-native-kernel-stage-v2",
+	binary_sha256 = "d023a8758404ad2b95949214af92e6f888f91fb32977b61e0db5ad4220178fc1",
+	source_sha256 = "14c124bba22f72760de4deb3c69be5d21b64590c83b2adb4231a7608b4572f03",
+	lock_sha256 = "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34"}
+const X8_TERMINAL_PREFIX := "faeccb6864cda465389cdedc6de5301588b5fd61bebd7fc48a258d8378a0881e"
+const X8_TERMINAL_VIEW_PREFIX := "133d124064efe08f10bc0ed6a9664a7541ba1c22a137ca673357a7a147365365"
+const X8_TERMINAL_IDENTITIES := {
+	"initial_frame": "1be46da07149a21cecff884cdc0947b35f2db51fc952a5287b63df24317a8eb3",
+	"preceding_frame": "8cff80befa31c0859e2f5e15921a5b066fbe4c8505a5fda89416e86c7e6e8e05",
+	"terminal_frame": "8b2147bde207f4dc6614c8ee3e2642bcd6319d9cb9a9287da74689427ee3143f",
+	"terminal_view": "8ea0476661dd1495bea9ab2de21d1677683d8f31644c7af79ac0849397e27d15",
+	"impact": "664217d2be2b738472a430551fe6029b5b657ae1a8039f5d77f9ed889ddc00a9",
+	"contact_state": "783b983537310e450a3a6a5306af8d1884aeea6604bd437b5eaa4888e5dfb472",
+	"contact_event": "d5d5a83aa26c443750850f444486a58f9db4bacf237ed9f5de920ac5d99d0360",
+}
+const X8_TERMINAL_CONFIGS := {
+	"on": {physical = "03d4d8e07c7143efdea227bf6ff52da300b75f3f9351d279870e4bdccc31beb4",
+		reference = "75cb2961cc260ebad73d99eed3addfa92e5affa5306a0b073db60c1724c947c3",
+		native = "1e0a64f3594d50f7a002efd857da0ae6df374098c1dd2faea2b6d46d4327f6ce"},
+	"off": {physical = "bfd3a1ad0ab3bbe40fbe89cedf826e610158b3e0d87b157f5a3ec92befabf18e",
+		reference = "9acfe61176ca2bd2fb80fb941a564ad69a2c03150494e333e561d299c89690fa",
+		native = "04e7db73eac1164432118795ccd6cc75c7eaaade443a33f76c682317f68d61aa"},
+}
+const X8_TERMINAL_SNAPSHOT_FIELDS := ["trigger", "tick", "point_index", "component_name", "body_point",
+	"has_kinematics", "point_ned", "velocity_ned", "normal_ned", "speed_mps", "down_speed_mps",
+	"has_compression", "compression_m", "travel_limit_m", "soft_rule", "obstacle_id", "damage_id",
+	"damage_profile", "obstacle_kind", "obstacle_part", "response_class", "response_status", "restitution",
+	"dissipated_energy_j", "time_fraction", "normal_speed_mps", "effective_mass_kg", "impact_energy_j",
+	"terminal", "_state_at_contact", "contact_mass_properties"]
 
 
 ## The production loader must verify the receipt before the class is initialized.
@@ -159,6 +195,9 @@ static func _fleet_declared_rows() -> Array[Dictionary]:
 								and str(preset.id) == "gusty":
 							row.expected = "runtime-domain-refusal"
 							row.expected_runtime_tick = GLOW_REVERSE_CASES[id].tick
+						elif _fleet_is_x8_terminal(row):
+							row.expected = "physical-terminal"
+							row.expected_terminal_tick = X8_TERMINAL_TICK
 						rows.append(row)
 	return rows
 
@@ -193,8 +232,8 @@ func _checks() -> void:
 		filters = {aircraft = aircraft, weather = weather, soft_hull = soft_hull},
 		declared_rows = declared.size(), selected_rows = selected.size(),
 		declared_aircraft = Catalog.flyable_ids(), warmup_requested = warmup, samples_requested = samples,
-		matrix_complete = false, flight_passed = 0, reference_refused = 0, runtime_refused = 0, failed = 0,
-		conditions = "Stock catalog battery/start/contact options and named compatible weather presets; expected startup and runtime-domain refusals are counted separately and do not qualify a completed flight. Custom configurations and arbitrary input histories require separate evidence."}
+		matrix_complete = false, flight_passed = 0, reference_refused = 0, runtime_refused = 0, physical_terminal = 0, failed = 0,
+		conditions = "Stock catalog battery/start/contact options and named compatible weather presets; startup refusals, runtime-domain refusals and observed physical terminals are counted separately from healthy flights. Custom configurations and arbitrary input histories require separate evidence."}
 	if warmup <= 0 or samples <= 0:
 		_failures.append("fleet warmup and samples must be positive")
 		return
@@ -218,6 +257,7 @@ func _checks() -> void:
 			"pass": _report.fleet_scope.flight_passed += 1
 			"reference-refused": _report.fleet_scope.reference_refused += 1
 			"runtime-domain-refused": _report.fleet_scope.runtime_refused += 1
+			"physical-terminal": _report.fleet_scope.physical_terminal += 1
 			_: _report.fleet_scope.failed += 1
 	_report.fleet_scope.matrix_complete = not scoped and _failures.is_empty() \
 		and _report.fleet.size() == declared.size()
@@ -1215,7 +1255,327 @@ func _fleet_runtime_case(row: Dictionary, warmup: int, samples: int) -> void:
 		% [row.aircraft, row.battery, row.case, row.weather, row.soft_hull, result.status, result.reason])
 
 
+static func _fleet_is_x8_terminal(row: Dictionary) -> bool:
+	return row.get("aircraft") == "skywalker-x8" and row.get("vehicle") == "fixed-wing" \
+		and row.get("battery") == "pack" and row.get("case") == "hand_launch" \
+		and row.get("weather") == "spatial-crosswind-v1" \
+		and typeof(row.get("default_battery")) == TYPE_BOOL and row.default_battery \
+		and typeof(row.get("soft_hull")) == TYPE_BOOL
+
+
+static func _fleet_terminal_tick(row: Dictionary) -> int:
+	return X8_TERMINAL_TICK if _fleet_is_x8_terminal(row) and row.get("expected") == "physical-terminal" \
+		and typeof(row.get("expected_terminal_tick")) == TYPE_INT \
+		and row.expected_terminal_tick == X8_TERMINAL_TICK else -1
+
+
+static func _fleet_terminal_snapshot(value: Variant) -> Dictionary:
+	if value == null: return {}
+	var result := {}
+	for property: Dictionary in value.get_property_list():
+		var name := str(property.name)
+		if name in X8_TERMINAL_SNAPSHOT_FIELDS: result[name] = value.get(property.name)
+	return result
+
+
+static func _fleet_terminal_view(session: Node) -> Dictionary:
+	var crash: Dictionary = session.crash.duplicate()
+	if crash.has("impact"): crash.impact = _fleet_terminal_snapshot(crash.impact)
+	return {tick = session.sim.tick, paused = session.sim.paused, fault = session.sim.fault_reason,
+		pause_reason = session.pause_reason, crash = crash, contacts = session.contact_events(),
+		scenery_damage = session.scenery_damage(), last_scenery = _fleet_terminal_snapshot(session.last_scenery_event()),
+		pending_crash = _fleet_terminal_snapshot(session.get("_pending_crash")),
+		pending_scenery = _fleet_terminal_snapshot(session.get("_pending_scenery_event")),
+		pending_damage = session.get("_pending_scenery_damage"), raw = session.raw.duplicate(true),
+		commands = session.commands.duplicate(true)}
+
+
+static func _fleet_terminal_physical(session: Node) -> PackedByteArray:
+	return var_to_bytes([session.aircraft.model, session.aircraft.get("input_identity", {}), session.sim.mass,
+		session.sim.inertia, session.sim.gravity, session.sim.dt(), session.sim.model.state_layout_identity,
+		session.input_enabled, session.physics_enabled, session.crash_auto_restart,
+		session.start_choice, session.soft_hull_contacts, session.start])
+
+
+## Check the live selections every tick without repeatedly serializing the full
+## detached collision world. Its complete typed identity is checked at the
+## initial, committed-terminal and stopped boundaries.
+static func _fleet_terminal_live_guard(session: Node) -> PackedByteArray:
+	var world: Variant = session.get("_collision_world")
+	return var_to_bytes([session.weather_configuration(), session.environment.identity(),
+		session.get("_runway_field"), session.ground_field_id, session.ground_surfaces,
+		session.airframe_surfaces, world.get("identity", "") if world is Dictionary else null,
+		session.lake_context(), session.start_choice, session.soft_hull_contacts,
+		session.trim_throttle, session.selected_trim_throttle()])
+
+
+static func _fleet_terminal_model_snapshot(session: Node) -> Dictionary:
+	var fields := {}
+	for field: String in RuntimeSimulation._ENDPOINT_MODEL_FIELDS:
+		fields[field] = RuntimeSimulation._guard_copy(session.sim.model.get(field))
+	return {model = session.sim.model, fields = fields}
+
+
+static func _fleet_terminal_model_matches(session: Node, snapshot: Dictionary) -> bool:
+	if session.sim.model != snapshot.get("model") or not snapshot.get("fields") is Dictionary: return false
+	for field: String in RuntimeSimulation._ENDPOINT_MODEL_FIELDS:
+		if not snapshot.fields.has(field) \
+				or not RuntimeSimulation._guard_values_equal(session.sim.model.get(field), snapshot.fields[field]):
+			return false
+	return true
+
+
+static func _fleet_terminal_live_parts_match(reference: PackedByteArray, native: PackedByteArray) -> bool:
+	var a: Variant = bytes_to_var(reference)
+	var b: Variant = bytes_to_var(native)
+	if not a is Array or not b is Array or a.size() != 13 or b.size() != a.size(): return false
+	# Checkpoint configuration intentionally includes backend identity.
+	for index: int in a.size():
+		if index != 2 and var_to_bytes(a[index]) != var_to_bytes(b[index]): return false
+	return true
+
+
+static func _fleet_terminal_view_ok(view: Dictionary) -> bool:
+	var crash: Variant = view.get("crash")
+	var contacts: Variant = view.get("contacts")
+	if typeof(view.get("tick")) != TYPE_INT or view.tick != X8_TERMINAL_TICK \
+			or view.get("paused") != true or view.get("fault") != "" \
+			or not crash is Dictionary or not contacts is Dictionary \
+			or not view.get("raw") is Dictionary or not view.get("commands") is Dictionary \
+			or not crash.get("impact") is Dictionary or not contacts.get("events") is Array \
+			or contacts.events.size() != 1 or not contacts.events[0] is Dictionary \
+			or view.get("pending_crash") != {} or view.get("pending_scenery") != {} \
+			or view.get("pending_damage") != {}:
+		return false
+	var impact: Dictionary = crash.impact
+	var event: Dictionary = contacts.events[0]
+	return impact.get("trigger") == "scenery" and impact.get("tick") == X8_TERMINAL_TICK \
+		and impact.get("obstacle_id") == "tree:shade-tree:shade-trees:06:crown" \
+		and impact.get("obstacle_kind") == "tree_foliage" and impact.get("obstacle_part") == "crown" \
+		and impact.get("point_index") == 3 and impact.get("response_status") == "terminal" \
+		and impact.get("terminal") == true and typeof(impact.get("normal_speed_mps")) == TYPE_FLOAT \
+		and is_finite(impact.normal_speed_mps) and impact.normal_speed_mps >= 22.0 \
+		and var_to_bytes(impact) == var_to_bytes(view.get("last_scenery")) \
+		and event.get("contact_id") == impact.obstacle_id and event.get("tick") == X8_TERMINAL_TICK \
+		and event.get("point_index") == 3 and event.get("probe_id") == "probe_nose_left_low" \
+		and event.get("source") == "scenery" and event.get("event_type") == "impact" \
+		and event.get("lifecycle") == "new" and event.get("response") == "terminal" \
+		and event.get("response_status") == "terminal" \
+		and view.get("raw", {}).get("throttle") == 0.0 and view.get("commands", {}).get("throttle") == 1.0
+
+
+## Pinned source observations ensure matching, rehashed forged bytes cannot be
+## admitted as the observed physical event or configuration.
+static func _fleet_terminal_proof_error(row: Dictionary, proof: Dictionary, warmup: int, samples: int) -> String:
+	var tick := _fleet_terminal_tick(row)
+	if tick < 0 or warmup <= 0 or samples <= 0 or warmup + samples < tick:
+		return "undeclared physical-terminal row or horizon"
+	for field: String in ["prefix_equal_every_tick", "view_equal_every_tick", "native_owner_every_tick",
+			"reference_owner_every_tick", "model_contract_retained", "native_covered_every_tick",
+			"physical_configuration_retained", "live_configuration_retained", "no_holds",
+			"one_input_each_every_tick", "terminal_accepted", "previous_state_retained", "stopped_unchanged"]:
+		if typeof(proof.get(field)) != TYPE_BOOL or not proof[field]: return "missing physical-terminal flag: " + field
+	for item: Array in [["accepted_ticks", tick], ["requested_ticks", warmup + samples],
+			["warmup_completed", mini(warmup, tick)], ["samples_completed", maxi(0, tick - warmup)],
+			["prefix_boundaries", tick + 1], ["terminal_tick", tick], ["stopped_attempts", 2],
+			["reference_input_reads", tick], ["native_input_reads", tick],
+			["native_context_calls", tick], ["native_stage_calls", 4 * tick]]:
+		if typeof(proof.get(item[0])) != TYPE_INT or proof[item[0]] != item[1]:
+			return "physical-terminal count differs: " + str(item[0])
+	if proof.get("code") != X8_TERMINAL_CODE or proof.get("aircraft_sha256") != X8_TERMINAL_AIRCRAFT \
+			or proof.get("world_identity") != X8_TERMINAL_WORLD \
+			or proof.get("reference_prefix_sha256") != X8_TERMINAL_PREFIX \
+			or proof.get("native_prefix_sha256") != X8_TERMINAL_PREFIX \
+			or proof.get("reference_view_prefix_sha256") != X8_TERMINAL_VIEW_PREFIX \
+			or proof.get("native_view_prefix_sha256") != X8_TERMINAL_VIEW_PREFIX:
+		return "physical-terminal identity or prefix differs"
+	var config: Dictionary = X8_TERMINAL_CONFIGS["on" if row.soft_hull else "off"]
+	var identities: Dictionary = X8_TERMINAL_IDENTITIES.duplicate()
+	identities.physical_configuration = config.physical
+	identities.reference_live_configuration = config.reference
+	identities.native_live_configuration = config.native
+	for field: String in identities:
+		var value: Variant = proof.get(field + "_bytes_hex")
+		if typeof(value) != TYPE_STRING or value.is_empty() or value.length() % 2 != 0 \
+				or not value.is_valid_hex_number(): return "malformed typed physical-terminal " + field
+		if proof.get(field + "_sha256") != identities[field] \
+				or _fleet_encoded_sha256(value.hex_decode()) != identities[field]:
+			return "physical-terminal typed identity differs: " + field
+	if proof.get("stopped_frame_bytes_hex") != proof.get("terminal_frame_bytes_hex") \
+			or proof.get("stopped_view_bytes_hex") != proof.get("terminal_view_bytes_hex"):
+		return "stopped physical-terminal state changed"
+	var ref_identity: Variant = proof.get("reference_identity")
+	var native_identity: Variant = proof.get("native_identity")
+	if not ref_identity is Dictionary or ref_identity != {backend = NativeStage.BACKEND_REFERENCE} \
+			or not native_identity is Dictionary or native_identity != X8_TERMINAL_NATIVE_IDENTITY:
+		return "physical-terminal backend identity differs"
+	if not proof.get("terminal_view") is Dictionary or not _fleet_terminal_view_ok(proof.terminal_view) \
+			or var_to_bytes(proof.terminal_view).hex_encode() != proof.terminal_view_bytes_hex:
+		return "physical-terminal event or committed state differs"
+	return ""
+
+
+func _fleet_terminal_run(reference: Node, native_session: Node, row: Dictionary,
+		warmup: int, samples: int) -> Dictionary:
+	var tick := _fleet_terminal_tick(row)
+	if tick < 0 or warmup <= 0 or samples <= 0 or warmup + samples < tick:
+		return {error = "undeclared physical-terminal row or horizon"}
+	var rstatus: Dictionary = reference.stage_backend_status()
+	var nstatus: Dictionary = native_session.stage_backend_status()
+	var ridentity: Dictionary = rstatus.get("identity", {})
+	var nidentity: Dictionary = nstatus.get("identity", {})
+	var helper: Variant = native_session.get("_native_stage")
+	var native: Object = helper.get("_native") if helper != null else null
+	if native == null or not native.has_method("stage_stats") or not native.has_method("reset_stage_stats"):
+		return {error = "physical-terminal native stage or counters unavailable"}
+	var rm: Variant = reference.sim.model
+	var nm: Variant = native_session.sim.model
+	var re := {stage = rm.stage, loads = rm.loads, rotor_momentum = rm.rotor_momentum,
+		block_loads = rm.block_loads, block_derivative = rm.block_derivative, stage_rotor_momentum = rm.stage_rotor_momentum}
+	var ne := {stage = nm.stage, loads = nm.loads, rotor_momentum = nm.rotor_momentum,
+		block_loads = nm.block_loads, block_derivative = nm.block_derivative, stage_rotor_momentum = nm.stage_rotor_momentum}
+	var rmodel := _fleet_terminal_model_snapshot(reference)
+	var nmodel := _fleet_terminal_model_snapshot(native_session)
+	var physical := _fleet_terminal_physical(reference)
+	var native_physical := _fleet_terminal_physical(native_session)
+	var rlive := _fleet_live_configuration(reference)
+	var nlive := _fleet_live_configuration(native_session)
+	var rlive_guard := _fleet_terminal_live_guard(reference)
+	var nlive_guard := _fleet_terminal_live_guard(native_session)
+	var rframe := _fleet_frame(reference)
+	var nframe := _fleet_frame(native_session)
+	var rview := _fleet_terminal_view(reference)
+	var nview := _fleet_terminal_view(native_session)
+	if physical != native_physical or not _fleet_terminal_live_parts_match(rlive, nlive) \
+			or rstatus.get("reason") != "" or nstatus.get("reason") != "" \
+			or rframe != nframe or var_to_bytes(rview) != var_to_bytes(nview) \
+			or not _fleet_backend_error(reference, NativeStage.BACKEND_REFERENCE, ridentity, re, null, null).is_empty() \
+			or not _fleet_backend_error(native_session, NativeStage.BACKEND_NATIVE, nidentity, ne, helper, native).is_empty():
+		return {error = "physical-terminal initial configuration, frame or owner differs"}
+	native.reset_stage_stats(false)
+	var prior: Dictionary = helper.stage_stats()
+	if not _fleet_stats_valid(prior) or prior.context_calls != 0 or prior.stage_calls != 0:
+		return {error = "physical-terminal native counters did not reset"}
+	var rd := HashingContext.new(); rd.start(HashingContext.HASH_SHA256)
+	var nd := HashingContext.new(); nd.start(HashingContext.HASH_SHA256)
+	var rv := HashingContext.new(); rv.start(HashingContext.HASH_SHA256)
+	var nv := HashingContext.new(); nv.start(HashingContext.HASH_SHA256)
+	var initial := rframe
+	rd.update(rframe); nd.update(nframe); rv.update(var_to_bytes(rview)); nv.update(var_to_bytes(nview))
+	var preceding := PackedByteArray()
+	var reference_reads := 0
+	var native_reads := 0
+	var previous_retained := false
+	for index: int in tick:
+		var rstate: PackedFloat64Array = reference.sim.state.duplicate()
+		var nstate: PackedFloat64Array = native_session.sim.state.duplicate()
+		preceding = rframe
+		var reads := _input_reads
+		var ra := _advance(reference)
+		var rr := _input_reads - reads
+		reference_reads += rr
+		reads = _input_reads
+		var na := _advance(native_session)
+		var nr := _input_reads - reads
+		native_reads += nr
+		var stats: Dictionary = helper.stage_stats()
+		rframe = _fleet_frame(reference); nframe = _fleet_frame(native_session)
+		rview = _fleet_terminal_view(reference); nview = _fleet_terminal_view(native_session)
+		var final_tick := index + 1 == tick
+		var rerror := _fleet_backend_owner_error(reference, NativeStage.BACKEND_REFERENCE, ridentity, re, null, null) \
+			if final_tick else _fleet_backend_error(reference, NativeStage.BACKEND_REFERENCE, ridentity, re, null, null)
+		var nerror := _fleet_backend_owner_error(native_session, NativeStage.BACKEND_NATIVE, nidentity, ne, helper, native) \
+			if final_tick else _fleet_backend_error(native_session, NativeStage.BACKEND_NATIVE, nidentity, ne, helper, native)
+		if not ra or not na or rr != 1 or nr != 1 or reference.sim.tick != index + 1 \
+				or native_session.sim.tick != index + 1 or not rerror.is_empty() or not nerror.is_empty() \
+				or reference.stage_backend_status().get("reason") != "" \
+				or native_session.stage_backend_status().get("reason") != "" \
+				or _fleet_terminal_physical(reference) != physical or _fleet_terminal_physical(native_session) != physical \
+				or _fleet_terminal_live_guard(reference) != rlive_guard \
+				or _fleet_terminal_live_guard(native_session) != nlive_guard \
+				or not _fleet_terminal_model_matches(reference, rmodel) \
+				or not _fleet_terminal_model_matches(native_session, nmodel) \
+				or not _fleet_stats_valid(stats) or not _native_tick_covered(prior, stats) \
+				or rframe != nframe or var_to_bytes(rview) != var_to_bytes(nview):
+			return {error = "physical-terminal paired boundary failed at tick %d" % (index + 1)}
+		previous_retained = reference.sim.previous == rstate and native_session.sim.previous == nstate
+		prior = stats
+		rd.update(rframe); nd.update(nframe); rv.update(var_to_bytes(rview)); nv.update(var_to_bytes(nview))
+	if not previous_retained or not reference.holds.is_empty() or not native_session.holds.is_empty() \
+			or _fleet_live_configuration(reference) != rlive or _fleet_live_configuration(native_session) != nlive \
+			or not _fleet_terminal_view_ok(rview) or not _fleet_terminal_view_ok(nview):
+		return {error = "physical-terminal committed collision was not observed"}
+	var terminal_frame := rframe
+	var terminal_view := var_to_bytes(rview)
+	for ignored: int in 2:
+		if _advance(reference) or _advance(native_session) or _fleet_frame(reference) != terminal_frame \
+				or _fleet_frame(native_session) != terminal_frame \
+				or var_to_bytes(_fleet_terminal_view(reference)) != terminal_view \
+				or var_to_bytes(_fleet_terminal_view(native_session)) != terminal_view \
+				or _fleet_terminal_physical(reference) != physical or _fleet_terminal_physical(native_session) != physical \
+				or _fleet_live_configuration(reference) != rlive or _fleet_live_configuration(native_session) != nlive \
+				or not reference.holds.is_empty() or not native_session.holds.is_empty() \
+				or reference.stage_backend_status().get("reason") != "" \
+				or native_session.stage_backend_status().get("reason") != "" \
+				or not _fleet_terminal_model_matches(reference, rmodel) \
+				or not _fleet_terminal_model_matches(native_session, nmodel) \
+				or not _fleet_backend_owner_error(reference, NativeStage.BACKEND_REFERENCE, ridentity, re, null, null).is_empty() \
+				or not _fleet_backend_owner_error(native_session, NativeStage.BACKEND_NATIVE, nidentity, ne, helper, native).is_empty() \
+				or helper.stage_stats() != prior:
+			return {error = "physical-terminal changed after a stopped advance"}
+	var payloads := {initial_frame = initial, preceding_frame = preceding, terminal_frame = terminal_frame,
+		terminal_view = terminal_view, impact = var_to_bytes(rview.crash.impact),
+		contact_state = var_to_bytes(rview.contacts), contact_event = var_to_bytes(rview.contacts.events[0]),
+		physical_configuration = physical, reference_live_configuration = rlive, native_live_configuration = nlive}
+	var proof := {code = X8_TERMINAL_CODE, aircraft_sha256 = str(reference.aircraft.get("input_identity", {}).get("sha256", "")),
+		world_identity = str(reference.collision_world().get("identity", "")),
+		accepted_ticks = tick, requested_ticks = warmup + samples, warmup_completed = mini(warmup, tick),
+		samples_completed = maxi(0, tick - warmup), prefix_boundaries = tick + 1, terminal_tick = tick,
+		stopped_attempts = 2, reference_input_reads = reference_reads, native_input_reads = native_reads,
+		native_context_calls = prior.context_calls, native_stage_calls = prior.stage_calls,
+		reference_prefix_sha256 = rd.finish().hex_encode(), native_prefix_sha256 = nd.finish().hex_encode(),
+		reference_view_prefix_sha256 = rv.finish().hex_encode(), native_view_prefix_sha256 = nv.finish().hex_encode(),
+		prefix_equal_every_tick = true, view_equal_every_tick = true, native_owner_every_tick = true,
+		reference_owner_every_tick = true, model_contract_retained = true, native_covered_every_tick = true,
+		physical_configuration_retained = true, live_configuration_retained = true, no_holds = true,
+		one_input_each_every_tick = true, terminal_accepted = true, previous_state_retained = true,
+		stopped_unchanged = true, reference_identity = ridentity, native_identity = nidentity,
+		terminal_view = rview, stopped_frame_bytes_hex = terminal_frame.hex_encode(),
+		stopped_view_bytes_hex = terminal_view.hex_encode()}
+	for field: String in payloads:
+		proof[field + "_bytes_hex"] = payloads[field].hex_encode()
+		proof[field + "_sha256"] = _fleet_encoded_sha256(payloads[field])
+	var error := _fleet_terminal_proof_error(row, proof, warmup, samples)
+	return {error = error, proof = proof}
+
+
+func _fleet_terminal_case(row: Dictionary, warmup: int, samples: int) -> void:
+	var reference := _build_fleet_session(row, NativeStage.BACKEND_REFERENCE)
+	var native := _build_fleet_session(row, NativeStage.BACKEND_NATIVE)
+	var outcome := {error = "physical-terminal setup failed"}
+	if reference.get("ok", false) and native.get("ok", false):
+		outcome = _fleet_terminal_run(reference.session, native.session, row, warmup, samples)
+	if reference.get("ok", false): reference.session.free()
+	if native.get("ok", false): native.session.free()
+	var error: String = str(outcome.get("error", "physical-terminal proof missing"))
+	var result: Dictionary = row.duplicate(true)
+	result.status = "physical-terminal" if error.is_empty() else "fail"
+	result.reason = X8_TERMINAL_CODE if error.is_empty() else error
+	result.reference = {complete = false, requested = NativeStage.BACKEND_REFERENCE}
+	result.native = {complete = false, requested = NativeStage.BACKEND_NATIVE}
+	result.fingerprint_equal = false
+	result.physical_terminal = outcome.get("proof", {})
+	_report.fleet.append(result)
+	_compare("fleet_physical_terminal", PackedFloat64Array([1.0]), PackedFloat64Array([1.0 if error.is_empty() else 0.0]), row)
+	if not error.is_empty(): _failures.append("fleet physical terminal: " + error)
+	print("NK3_FLEET aircraft=%s case=%s weather=%s soft_hull=%s status=%s reason=%s" % [
+		row.aircraft, row.case, row.weather, row.soft_hull, result.status, result.reason])
+
+
 func _fleet_case(row: Dictionary, warmup: int, samples: int) -> void:
+	if row.get("expected") == "physical-terminal" and warmup + samples >= _fleet_terminal_tick(row):
+		_fleet_terminal_case(row, warmup, samples)
+		return
 	if row.get("expected") == "runtime-domain-refusal" and warmup + samples > _fleet_runtime_tick(row):
 		_fleet_runtime_case(row, warmup, samples)
 		return

@@ -1,42 +1,42 @@
 # NK-3 native stage evaluator
 
 Step NK-3 of the [native-kernel scoping](../../docs/research/native-kernel-scoping-2026-10-27.md#phases-r-research-i-implementation):
-a GDExtension (godot-cpp) port of continuous aircraft evaluation. The accepted baseline is the legacy
-prescribed-RPM Ugly Stik (`jensen-das-ugly-stik-60`); ABI 2 expands propulsion, weather and vehicle coverage
-under the qualification work below. Build outputs stay in the ignored `tmp/native-kernel/`; `--install-app` can stage a verified Linux
-library in ignored `app/native/kernel/`. The application requests native physics by default.
+a GDExtension (godot-cpp) port of continuous aircraft evaluation. ABI 2 is the qualified Linux x86_64
+default for the current aircraft catalog and admitted flight conditions. The original legacy prescribed-RPM
+Ugly Stik delivery remains the rollback baseline. Build outputs stay in the ignored `tmp/native-kernel/`;
+`--install-app` can stage a verified Linux library in ignored `app/native/kernel/`. The application requests native physics by default.
 Unsupported or unverified configurations report a reference fallback; `--physics-backend=gdscript_reference`
 selects the reference explicitly. The low-level `FlightSession` default remains reference for tools and replay.
 Evidence and timings: [docs/research/native-kernel/NK-3](../../docs/research/native-kernel/NK-3/README.md).
-The [promotion record](../../docs/research/native-kernel/NK-3/README.md#promotion-to-the-default-backend)
+The [promotion record](../../docs/research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29)
 defines the supported Linux scope and separates backend qualification from display and hardware acceptance.
 
-## Coverage expansion in progress (NK-3)
+## Qualified aircraft coverage (NK-3)
 
 The owner expanded the goal on 2026-10-28 to every currently simulatable aircraft and supported flight condition
-on Linux x86_64. The accepted Stik package remains the rollback baseline; new C++ headers are unqualified until
-their component, stage, lifecycle and replay gates pass. A committed header is not production support.
+on Linux x86_64. The expanded delivery preserves the shared kernel, float64 state and existing admission,
+start, lifecycle and replay contracts. Future changes still require qualification against the reference.
 Earlier references to the baseline as "electric Stik" were imprecise: its source uses legacy prescribed RPM.
 The coupled electric sources belong to Turbo Lumber and X8.
 
-| Required coverage | Integration and acceptance still required |
+| Coverage | Qualified implementation |
 | --- | --- |
-| Ten fixed-wing catalog aircraft, default battery and ideal variants, validated workshop models | Prepared flaps, wing polars, elevons, propeller axes; capability-based admission after exact oracles |
+| Ten fixed-wing catalog aircraft, default battery and ideal variants; representative tested Workshop variants | Prepared flaps, wing polars, elevons, propeller axes; capability-based admission after exact oracles, not exhaustive user-authored model qualification |
 | Legacy, coupled electric, finite glow two/four-stroke, liquid combustion and turbine | Same-stage shaft/source rates, batteries, live fuel mass, events and stop projections |
 | X-Cell helicopter | Prepared controls, drive, rotors, skid memory, body derivative; independent vehicle gates |
-| Every validated weather configuration | Stage-time gusts/OU, vertical atmosphere, spatial profiles/modes/thermals and local point flow |
-| Every supported start/contact and flight lifecycle | Retractable gear, soft contacts, transported wake, failures, resets, rollback and exact replay |
-| Default delivery | Strict complete native fleet coverage, source-bound receipt, package tests and paired measurements |
+| Admitted weather configurations | Stage-time gusts/OU, vertical atmosphere, spatial profiles/modes/thermals and local point flow |
+| Supported start/contact and flight lifecycle | Retractable gear, soft contacts, transported wake, failures, resets, rollback and exact replay |
+| Default delivery | Source-bound fleet qualification, separately classified refusals and terminals, package/replay checks and paired measurements |
 
-Research joint stages now cover the coupled electric, finite-liquid gas/turbine, finite glow and helicopter families.
+Native joint stages cover the coupled electric, finite-liquid gas/turbine, finite glow and helicopter families.
 The [dated component and stage evidence](../../docs/research/native-kernel/NK-3/revalidation-linux-2026-10-28.json)
-records exact comparisons, paired tapes, source lifecycle events and remaining limits. ABI 2 integration and
-capability-based production admission are implemented. The frozen candidate passed strict installation,
-native admission boundaries, UBSan, actual Linux package/replay/routes and paired release timing;
-[expanded qualification](../../docs/research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29)
-records their scope. The full final-source fleet campaign and new default delivery remain pending.
-The existing helicopter reference
-rejects spatial/OU/column weather, and its hot-high start currently fails hover trim.
+records exact comparisons, paired tapes, source lifecycle events and remaining limits. The completed fleet
+qualification covers 1,238 declared cases: 1,202 completed flights, 28 startup refusals, six runtime refusals
+and two terminal scenery collisions. Refusals and terminal prefixes are not counted as completed flights.
+Strict installation, native admission boundaries, UBSan, Linux package/replay/routes and paired release
+measurements are recorded in the
+[expanded qualification](../../docs/research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29).
+The existing helicopter reference rejects spatial/OU/column weather, and its hot-high start currently fails hover trim.
 
 Shared pre-tick/discrete supervision may remain GDScript under the existing kernel contract. Continuous laws
 claimed as native must execute in C++; matching reference fallbacks cannot establish native coverage.
@@ -51,8 +51,8 @@ After verification and installation below:
 
 Selection is launch-time only. ABI 2 selects a stage from the validated model's propulsion and vehicle
 capabilities, with native weather and configuration guards. This replaces the baseline stock-aircraft restriction;
-the expansion still requires the gates above before delivery. Unsupported or unverified configurations report
-reference fallback. The interactive flight console prints requested/actual backend and refusal reason.
+unsupported or unverified configurations report reference fallback. The interactive flight console prints
+requested/actual backend and refusal reason.
 Native traces record the identity in metadata; its absence denotes reference and preserves pre-integration
 reference CSV bytes. In source builds, the exact verified Godot executable, binary and mirrored source/data hashes must match.
 Release packages instead verify the complete executable and embedded manifest before loading their pinned sidecar.
@@ -254,6 +254,14 @@ half-power trim-throttle refusal. Its named aircraft/battery/start/weather/conta
 reset observations, pinned typed setup/outcome/frame bytes and retained reference ownership. These starts
 provide no native-flight coverage and do not establish physical impossibility. A new refusal needs its own
 diagnosis and reviewed evidence; matching error text alone does not admit another combination.
+Two X8 pack/hand-launch/spatial-crosswind rows have an independently observed physical terminal at tick 1,640.
+They require equal typed states through the accepted tree collision, pinned configuration/contact evidence,
+native ownership and coverage on every accepted tick, and unchanged stopped attempts. They count separately
+from completed flights and refusals; other incomplete runs still fail. These pins bind native binary `d023a875…`;
+a different binary requires new reviewed evidence. Run the focused actual-pair regression with
+`test_fleet.gd -- --require-runtime-domain --require-physical-terminal`; the second flag is a local qualification
+gate, not part of the current CI invocation. The complete declaration is 1,202 flight rows, two physical terminals,
+28 startup refusals and six runtime refusals. Declared counts alone do not establish qualification.
 A scoped report alone does not qualify the whole fleet. `--reuse-report AIRCRAFT=REPORT` accepts
 only a complete, matching full-aircraft report, including one still being produced. Concurrent runs establish
 software equivalence, not timing or physical validation.

@@ -3,14 +3,17 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import copy
 import hashlib
 import importlib.util
+import json
 import math
 from pathlib import Path
 import struct
 import tempfile
 import unittest
+import zlib
 from unittest import mock
 
 HERE = Path(__file__).resolve().parent
@@ -39,6 +42,79 @@ FS64V_CONTEXT_HEX = (
 )
 FS64V_AIRCRAFT_SHA = "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a"
 FS64V_CAUSE_BYTES_HEX = "210000000700000000000000000000000000000000000000acf7f5a16f0d90bf442c89836c0a903ffb702e7c620d903fd22f068cdc4b333f85580189a0cd453f"
+
+
+# Actual terminal Variant and its full-precision oracle JSON projection,
+# decoded independently from the recorded collision on both hull settings.
+TERMINAL_FULL_VIEW_JSON = (
+    '{"commands":{"pitch":0.0,"roll":0.0,"throttle":1.0,"yaw":0.0},"contacts":{"active_hull_ids":[],"even'
+    'ts":[{"contact_id":"tree:shade-tree:shade-trees:06:crown","event_id":"as13:impact:scenery:1640:new:3'
+    '6:tree:shade-tree:shade-trees:06:crown","event_type":"impact","format":"openrc-aircraft-contact-even'
+    'ts v1","lifecycle":"new","measure":{"dissipated_energy_j":0.0,"down_speed_mps":23.196051195422534,"e'
+    'ffective_mass_kg":1.237544184741614,"impact_energy_j":332.93452641892867,"normal_speed_mps":23.19605'
+    '1195422534,"restitution":0.0,"speed_mps":33.718832120605505},"normal_ned":[0.0,0.0,-1.0],"obstacle_k'
+    'ind":"tree_foliage","obstacle_part":"crown","point_index":3,"point_ned":[-33.506406908787525,16.5172'
+    '53178905257,-14.000002969226014],"policy":"scenery-response-v1:cr-17a-scenery-damage-v1","probe_id":'
+    '"probe_nose_left_low","probe_source":"hull","response":"terminal","response_class":"soft_foliage_imp'
+    'ulse","response_status":"terminal","source":"scenery","tick":1640,"time_fraction":0.5195759183769976'
+    ',"velocity_ned":[-8.595895357007315,22.913171572881275,23.196051195422534]}],"format":"openrc-aircra'
+    'ft-contact-state v1","prop_strike":{},"tick":1640},"crash":{"impact":{"_state_at_contact":[-33.51765'
+    '521744055,16.23473532549036,-14.30887007169522,33.33829465400774,4.5978074842349494,2.53483512851945'
+    '44,-0.6475687732405211,-0.16051344560067352,0.3758021464008154,-0.6431662805726884,0.204718954197765'
+    '37,1.2172174283273376,-0.03417532498064766],"body_point":[0.4141190000001411,-0.0616,0.0072555339101'
+    '6595],"component_name":"","compression_m":0.0,"contact_mass_properties":{},"damage_id":"prop:shade-t'
+    'rees:06:crown","damage_profile":"foliage_mark","dissipated_energy_j":0.0,"down_speed_mps":23.1960511'
+    '95422534,"effective_mass_kg":1.237544184741614,"has_compression":false,"has_kinematics":true,"impact'
+    '_energy_j":332.93452641892867,"normal_ned":[0.0,0.0,-1.0],"normal_speed_mps":23.196051195422534,"obs'
+    'tacle_id":"tree:shade-tree:shade-trees:06:crown","obstacle_kind":"tree_foliage","obstacle_part":"cro'
+    'wn","point_index":3,"point_ned":[-33.506406908787525,16.517253178905257,-14.000002969226014],"respon'
+    'se_class":"soft_foliage_impulse","response_status":"terminal","restitution":0.0,"soft_rule":"","spee'
+    'd_mps":33.718832120605505,"terminal":true,"tick":1640,"time_fraction":0.5195759183769976,"travel_lim'
+    'it_m":0.0,"trigger":"scenery","velocity_ned":[-8.595895357007315,22.913171572881275,23.1960511954225'
+    '34]},"sink":23.531199679319815,"speed":33.74917944525917,"ticks_left":360,"why":"tree foliage impact'
+    ' (tree:shade-tree:shade-trees:06:crown), normal speed 23.2 m/s"},"fault":"","last_scenery":{"_state_'
+    'at_contact":[-33.51765521744055,16.23473532549036,-14.30887007169522,33.33829465400774,4.59780748423'
+    '49494,2.5348351285194544,-0.6475687732405211,-0.16051344560067352,0.3758021464008154,-0.643166280572'
+    '6884,0.20471895419776537,1.2172174283273376,-0.03417532498064766],"body_point":[0.4141190000001411,-'
+    '0.0616,0.00725553391016595],"component_name":"","compression_m":0.0,"contact_mass_properties":{},"da'
+    'mage_id":"prop:shade-trees:06:crown","damage_profile":"foliage_mark","dissipated_energy_j":0.0,"down'
+    '_speed_mps":23.196051195422534,"effective_mass_kg":1.237544184741614,"has_compression":false,"has_ki'
+    'nematics":true,"impact_energy_j":332.93452641892867,"normal_ned":[0.0,0.0,-1.0],"normal_speed_mps":2'
+    '3.196051195422534,"obstacle_id":"tree:shade-tree:shade-trees:06:crown","obstacle_kind":"tree_foliage'
+    '","obstacle_part":"crown","point_index":3,"point_ned":[-33.506406908787525,16.517253178905257,-14.00'
+    '0002969226014],"response_class":"soft_foliage_impulse","response_status":"terminal","restitution":0.'
+    '0,"soft_rule":"","speed_mps":33.718832120605505,"terminal":true,"tick":1640,"time_fraction":0.519575'
+    '9183769976,"travel_limit_m":0.0,"trigger":"scenery","velocity_ned":[-8.595895357007315,22.9131715728'
+    '81275,23.196051195422534]},"pause_reason":"CRASH at 33.7 m/s (sink 23.5 m/s, tree foliage impact (tr'
+    'ee:shade-tree:shade-trees:06:crown), normal speed 23.2 m/s) - [R] restart","paused":true,"pending_cr'
+    'ash":{},"pending_damage":{},"pending_scenery":{},"raw":{"pitch":0.0,"roll":0.0,"throttle":0.0,"yaw":'
+    '0.0},"scenery_damage":{"prop:shade-trees:06:crown":{"energy_j":332.93452641892867,"normal_ned":[0.0,'
+    '0.0,-1.0],"obstacle_id":"tree:shade-tree:shade-trees:06:crown","point_ned":[-33.506406908787525,16.5'
+    '17253178905257,-14.000002969226014],"profile":"foliage_mark","state":"marked","tick":1640,"velocity_'
+    'ned":[-8.595895357007315,22.913171572881275,23.196051195422534]}},"tick":1640}'
+)
+
+TERMINAL_TYPED_VIEW_ZLIB_B64 = (
+    'eNrtWFtoXEUYPumm95tal1JS6InGmki25tImsLbusQpeQKTtgw8Sh+nZ2ew058bM7MZ9KBYRBbVPCiposIggiLbVovVpY1EEMUJ8'
+    'kiK2aH0QRCx5qW0Q/7ntnm6TtqQqCikMmzPz3//v//+ZdjiOsxZWFlY7LEH9sSXwW16m9+DHSXCFk6LjtDl6yf2lsEq4EgjD55j9'
+    'NZYeMYJ5HMmzZ2Ddv/e+fQ+5WLiDg9uG3fBu7nZzGo25A4PbdsjPXlcwQtxSHFA8SlwaJtgXbrfczPMyLpJcy5883zeU91k8HvX0'
+    'ulHMQhy4PCGkKEUOSJE9bs59Yu+IywgXmImm3T7DvAy/Hebb7it2+M2AlxObj23++Yzn2bhIY+X+0n2nPpp9fljtrzLx4iggJZCv'
+    '4tam5WVgjZdrinePpPu7vXOa+dHitD9bjL2rYcX7wXE/IIgW1V6XseNaKiXtSlhFHIK1klvL3CRzy+JkTiZDs67JB6QlGhC9L3Fh'
+    '3EchZmPtBncNG8doZPWsMXYiw3AFbaLSqWh1Pi/XDwlP4ggg6AeYc71/q8xhXBJWJoKgVQKuZK9P84AKUeGKZ4W0g7CQRjiwMZVg'
+    'oqIiaBypHDtG7wbpN+WcJliQIiIRYaM1dOAymrUKLyH4xSBfUoLG2k+zW98feetsQdLcBEvnG6l8ozDhkqb6gUf7BoY9SXMzLFIq'
+    'EZBRldHkHI2NGlmvbznceenrmYL1S2MjbU+bUy//MT3zjfBafbT1bXWoWBCEBfLjSCiIOZ3Gj9JnHz63+5Q3GQ/sfnPjzj5v6uHp'
+    '4a6J3snZo7t2Pfqe52HU/c6dxVu84+en3n78wXbvwt4zd/x48lx95K6P0YkXP69nTt7OutZ+V3jVn+DTr5yr//bIy+vu2f5VYctr'
+    'waWTtZnC1MF7J8Knj9SlLRtljrUF2lsJQsIEJVxh3sZ3ucINHR0lrPHNfem6rsPW/mZzmsQ0EgjwR55SNZxJYcmPQ8AFgfMIh6TZ'
+    '69pN/e+PizWkBOjYSN4LX9KLvx46XfjW+WHJyheO1tGO+uGLnxwsWJllzCXcSYjBGt7sq7butD2R6kVW5p+nV5+fnvQmo62PnTjw'
+    'bJ+3rnLEd5zeSVsvVRLEPhU1yWZ5Xnpy58Cm/s7Jas+nb3zxy5CXxtCqJs6UIssz97/f69a2BigN3va8e/bYku89r1H7UIooRdSK'
+    '3fXGfxlXqCUuq6CtpUZSZyhM2WV1CIbBXRTQkApJkD5faeucVWTruWw2rWjiiKd7/zLVmyAWQtO7stckJGJ+DlMG06IkcoYvp0rC'
+    'rfbPNy+lf1gXZrkSBNA8uXNbygapi1QBTxCbzeB5h8l9R2oGt9rTeRV7tCwwKIVJtYdELSFNeXZG2JrXNLQovx+QNvP+wbwmypua'
+    'yfcPbe/LR2Q8PziUv965MVeNLVM5qTCfOHPW5apUfcths5BZFVDohzW/kXOJCTC9oT+Btu/X9FlvU3/O9v1ctR8E5vqHcc4e6TEG'
+    'BzZmlna+2TBfH1mj5+Z+GC4qCjZOEiBWlj7X+djQ+I5imEjycoGCePw/3x9kXkO49VUYUXhenq7JG+wb//ZcvJ55frX7wP/tbnOt'
+    'u0nWYhxGL8hhdIw0Zm/W2GYKB+nCcRq97Xrujh3GpqzBjb08znV3bNzXZS9O9Ux5JrE6X29Wfc8kMp3v7ALqKruAGskuoBazN3iX'
+    'tzoBLQKZBC2+ExbfCYvvhMV3wuI7Ye53gpQN1+0ijUZR+v+K7Pn61LnFTesstOfpWWjPpR0Mj6u99tS9n8VBkEnRyZ6VUOGXU75Z'
+    '/hrwZ1reNqLMYiECkrnizROGOCryf1bfocJfAgG/rw=='
+)
 
 
 def fixtures():
@@ -112,7 +188,7 @@ def fixtures():
                     "filters": {"aircraft": aircraft, "weather": "", "soft_hull": ""},
                     "declared_aircraft": ["fixed", "heli"], "declared_rows": 3, "selected_rows": len(rows),
                     "matrix_complete": False, "warmup_requested": 2, "samples_requested": 3, "failed": 0,
-                    "flight_passed": flights, "reference_refused": refusals, "runtime_refused": 0},
+                    "flight_passed": flights, "reference_refused": refusals, "runtime_refused": 0, "physical_terminal": 0},
                 "fleet": rows, "components": components,
                 "total": {"compared": count, "identical": count, "mismatched": 0}}
 
@@ -276,7 +352,222 @@ def runtime_fixture(aircraft="stik-glow-61fx-2t", tick=873, stage_fraction=1.0,
     return manifest, {aircraft: report}, guard
 
 
+def terminal_fixture(soft=True):
+    """Use the real typed terminal view; other typed payloads are bounded stand-ins."""
+    row = {"aircraft": "skywalker-x8", "vehicle": "fixed-wing", "battery": "pack", "case": "hand_launch",
+           "weather": "spatial-crosswind-v1", "soft_hull": soft, "default_battery": True,
+           "expected": "physical-terminal", "expected_terminal_tick": 1640}
+    _, reports, guard = fixtures()
+    guard["binary_sha256"] = campaign.TERMINAL_NATIVE_IDENTITY["binary_sha256"]
+    guard["receipt"]["source_sha256"] = campaign.TERMINAL_NATIVE_IDENTITY["source_sha256"]
+    guard["receipt"]["lock_sha256"] = campaign.TERMINAL_NATIVE_IDENTITY["lock_sha256"]
+    view = json.loads(TERMINAL_FULL_VIEW_JSON)
+    payload_names = tuple(campaign.TERMINAL_IDENTITIES) + tuple(campaign.TERMINAL_CONFIGS[soft])
+    payloads = {name: ("typed-" + name).encode() for name in payload_names}
+    payloads["terminal_view"] = zlib.decompress(base64.b64decode(TERMINAL_TYPED_VIEW_ZLIB_B64, validate=True))
+    identities = {name: hashlib.sha256(payloads[name]).hexdigest() for name in campaign.TERMINAL_IDENTITIES}
+    configs = {name: hashlib.sha256(payloads[name]).hexdigest() for name in campaign.TERMINAL_CONFIGS[soft]}
+    proof = {"code": campaign.TERMINAL_CODE, "aircraft_sha256": campaign.TERMINAL_AIRCRAFT,
+             "world_identity": campaign.TERMINAL_WORLD, "accepted_ticks": 1640, "requested_ticks": 3000,
+             "warmup_completed": 600, "samples_completed": 1040, "prefix_boundaries": 1641,
+             "terminal_tick": 1640, "stopped_attempts": 2, "reference_input_reads": 1640,
+             "native_input_reads": 1640, "native_context_calls": 1640, "native_stage_calls": 6560,
+             "reference_prefix_sha256": campaign.TERMINAL_PREFIX, "native_prefix_sha256": campaign.TERMINAL_PREFIX,
+             "reference_view_prefix_sha256": campaign.TERMINAL_VIEW_PREFIX,
+             "native_view_prefix_sha256": campaign.TERMINAL_VIEW_PREFIX,
+             "reference_identity": {"backend": "gdscript_reference"},
+             "native_identity": copy.deepcopy(campaign.TERMINAL_NATIVE_IDENTITY), "terminal_view": view}
+    for name in ("prefix_equal_every_tick", "view_equal_every_tick", "native_owner_every_tick",
+                 "reference_owner_every_tick", "model_contract_retained", "native_covered_every_tick",
+                 "physical_configuration_retained", "live_configuration_retained", "no_holds",
+                 "one_input_each_every_tick", "terminal_accepted", "previous_state_retained", "stopped_unchanged"):
+        proof[name] = True
+    for name, raw in payloads.items():
+        proof[name + "_bytes_hex"] = raw.hex()
+        proof[name + "_sha256"] = hashlib.sha256(raw).hexdigest()
+    proof["stopped_frame_bytes_hex"] = proof["terminal_frame_bytes_hex"]
+    proof["stopped_view_bytes_hex"] = proof["terminal_view_bytes_hex"]
+    result = {**row, "status": "physical-terminal", "reason": campaign.TERMINAL_CODE,
+              "fingerprint_equal": False, "reference": {"complete": False, "requested": "gdscript_reference"},
+              "native": {"complete": False, "requested": "native"}, "physical_terminal": proof}
+    report = copy.deepcopy(reports["fixed"])
+    report["binary_sha256_before"] = report["binary_sha256_after"] = guard["binary_sha256"]
+    report["build_receipt"] = copy.deepcopy(guard["receipt"])
+    report["checked_run"]["command"] = ["godot", "--extension=res://native/kernel/openrc_native_kernel.gdextension",
+                                        "--aircraft=skywalker-x8", "--warmup=600", "--samples=2400"]
+    report["fleet_scope"].update(filters={"aircraft": "skywalker-x8", "weather": "", "soft_hull": ""},
+                                 declared_aircraft=["skywalker-x8"], declared_rows=1, selected_rows=1,
+                                 warmup_requested=600, samples_requested=2400, flight_passed=0,
+                                 reference_refused=0, runtime_refused=0, physical_terminal=1)
+    report["fleet"] = [result]
+    report["components"] = {"literals": {"count": 1, "identical": 1},
+                            "fleet_physical_terminal": {"count": 1, "identical": 1}}
+    report["total"] = {"compared": 2, "identical": 2, "mismatched": 0}
+    manifest = {"format": "openrc-nk3-fleet-manifest v1", "aircraft": ["skywalker-x8"], "rows": [row]}
+    return manifest, {"skywalker-x8": report}, guard, identities, configs
+
+
+def json_bytes(value):
+    import json
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True, allow_nan=False).encode()
+
+
 class FleetCampaignTests(unittest.TestCase):
+    def test_terminal_view_uses_the_full_precision_typed_projection(self):
+        for soft in (True, False):
+            _, reports, _, identities, _ = terminal_fixture(soft)
+            proof = reports["skywalker-x8"]["fleet"][0]["physical_terminal"]
+            with self.subTest(soft=soft):
+                self.assertEqual(identities["terminal_view"], campaign.TERMINAL_IDENTITIES["terminal_view"])
+                self.assertEqual(hashlib.sha256(json_bytes(proof["terminal_view"])).hexdigest(),
+                                 campaign.TERMINAL_VIEW_JSON)
+
+    def test_terminal_view_rejects_the_recorded_reduced_precision_projection(self):
+        def reduced(value):
+            if isinstance(value, float):
+                return float(format(value, ".15g"))
+            if isinstance(value, list):
+                return [reduced(item) for item in value]
+            if isinstance(value, dict):
+                return {key: reduced(item) for key, item in value.items()}
+            return value
+
+        for soft in (True, False):
+            manifest, reports, guard, identities, configs = terminal_fixture(soft)
+            proof = reports["skywalker-x8"]["fleet"][0]["physical_terminal"]
+            proof["terminal_view"] = reduced(proof["terminal_view"])
+            # This is the exact old diagnostic projection, not a tolerance case.
+            self.assertEqual(hashlib.sha256(json_bytes(proof["terminal_view"])).hexdigest(),
+                             "7b8e59666676db2baeb0e0b873fe14751e90c891305d9eff0365d790c330426d")
+            with self.subTest(soft=soft), mock.patch.object(campaign, "TERMINAL_IDENTITIES", identities), \
+                    mock.patch.dict(campaign.TERMINAL_CONFIGS, {soft: configs}), \
+                    self.assertRaisesRegex(campaign.CampaignError, "JSON metadata differs"):
+                campaign.validate_reports(manifest, reports, guard, 600, 2400)
+
+    def test_terminal_view_rejects_single_ulp_and_coherently_rehashed_typed_mutation(self):
+        for soft in (True, False):
+            for mutate_typed in (False, True):
+                manifest, reports, guard, identities, configs = terminal_fixture(soft)
+                proof = reports["skywalker-x8"]["fleet"][0]["physical_terminal"]
+                impact = proof["terminal_view"]["crash"]["impact"]
+                before = impact["time_fraction"]
+                after = math.nextafter(before, math.inf)
+                impact["time_fraction"] = after
+                if mutate_typed:
+                    raw = bytes.fromhex(proof["terminal_view_bytes_hex"])
+                    old, new = struct.pack("<d", before), struct.pack("<d", after)
+                    self.assertEqual(raw.count(old), 3)
+                    forged = raw.replace(old, new, 1)  # First occurrence is crash.impact.time_fraction.
+                    proof["terminal_view_bytes_hex"] = forged.hex()
+                    proof["terminal_view_sha256"] = hashlib.sha256(forged).hexdigest()
+                    proof["stopped_view_bytes_hex"] = forged.hex()
+                reason = "terminal_view differs" if mutate_typed else "JSON metadata differs"
+                with self.subTest(soft=soft, mutate_typed=mutate_typed), \
+                        mock.patch.object(campaign, "TERMINAL_IDENTITIES", identities), \
+                        mock.patch.dict(campaign.TERMINAL_CONFIGS, {soft: configs}), \
+                        self.assertRaisesRegex(campaign.CampaignError, reason):
+                    campaign.validate_reports(manifest, reports, guard, 600, 2400)
+
+    def test_observed_physical_terminal_is_counted_separately(self):
+        for soft in (True, False):
+            manifest, reports, guard, identities, configs = terminal_fixture(soft)
+            with self.subTest(soft=soft), mock.patch.object(campaign, "TERMINAL_IDENTITIES", identities), \
+                    mock.patch.dict(campaign.TERMINAL_CONFIGS, {soft: configs}):
+                self.assertEqual(campaign.validate_reports(manifest, reports, guard, 600, 2400),
+                                 {"declared": 1, "flight_passed": 0, "reference_refused": 0,
+                                  "runtime_refused": 0, "physical_terminal": 1})
+
+    def test_physical_terminal_rejects_other_rows_and_forged_evidence(self):
+        for field, value in (("aircraft", "other"), ("battery", "ideal"), ("case", "trim"),
+                             ("weather", "crosswind"), ("vehicle", "rotorcraft"),
+                             ("soft_hull", 1), ("default_battery", 1), ("expected_terminal_tick", 1639)):
+            with self.subTest(row_field=field):
+                manifest, reports, guard, identities, configs = terminal_fixture()
+                manifest["rows"][0][field] = value
+                with self.assertRaises(campaign.CampaignError):
+                    campaign.manifest_index(manifest)
+        mutations = [
+            lambda r: r.update(status="pass"),
+            lambda r: r.update(expected_terminal_tick=1640.0),
+            lambda r: r["native"].update(complete=True),
+            lambda r: r["physical_terminal"].update(terminal_tick=1639),
+            lambda r: r["physical_terminal"].update(terminal_accepted=False),
+            lambda r: r["physical_terminal"].update(previous_state_retained=False),
+            lambda r: r["physical_terminal"].update(stopped_unchanged=False),
+            lambda r: r["physical_terminal"].update(stopped_attempts=1),
+            lambda r: r["physical_terminal"].update(stopped_frame_bytes_hex="00"),
+            lambda r: r["physical_terminal"].update(native_covered_every_tick=False),
+            lambda r: r["physical_terminal"].update(native_owner_every_tick=False),
+            lambda r: r["physical_terminal"].update(model_contract_retained=False),
+            lambda r: r["physical_terminal"].update(physical_configuration_retained=False),
+            lambda r: r["physical_terminal"].update(live_configuration_retained=False),
+            lambda r: r["physical_terminal"].update(no_holds=False),
+            lambda r: r["physical_terminal"].update(native_context_calls=1639),
+            lambda r: r["physical_terminal"].update(native_stage_calls=6559),
+            lambda r: r["physical_terminal"]["native_identity"].update(binary_sha256="0" * 64),
+            lambda r: r["physical_terminal"]["native_identity"].update(backend_version="other"),
+            lambda r: r["physical_terminal"].update(reference_prefix_sha256="0" * 64,
+                                                   native_prefix_sha256="0" * 64),
+            lambda r: r["physical_terminal"]["terminal_view"]["crash"]["impact"].update(obstacle_id="other"),
+            lambda r: r["physical_terminal"]["terminal_view"]["raw"].update(throttle=1.0),
+            lambda r: r["physical_terminal"]["terminal_view"]["commands"].update(throttle=0.0),
+        ]
+        for name in ("terminal_frame", "terminal_view", "contact_event", "impact",
+                     "physical_configuration", "reference_live_configuration", "native_live_configuration"):
+            def forged(r, name=name):
+                p = r["physical_terminal"]
+                p[name + "_bytes_hex"] = "00"
+                p[name + "_sha256"] = hashlib.sha256(b"\0").hexdigest()
+                if name == "terminal_frame": p["stopped_frame_bytes_hex"] = "00"
+                if name == "terminal_view": p["stopped_view_bytes_hex"] = "00"
+            mutations.append(forged)
+        def paired_forged_configs(r):
+            p = r["physical_terminal"]
+            for side in ("reference", "native"):
+                p[side + "_live_configuration_bytes_hex"] = "00"
+                p[side + "_live_configuration_sha256"] = hashlib.sha256(b"\0").hexdigest()
+        mutations.append(paired_forged_configs)
+        for index, mutate in enumerate(mutations):
+            with self.subTest(mutation=index):
+                manifest, reports, guard, identities, configs = terminal_fixture()
+                mutate(reports["skywalker-x8"]["fleet"][0])
+                with mock.patch.object(campaign, "TERMINAL_IDENTITIES", identities), \
+                        mock.patch.dict(campaign.TERMINAL_CONFIGS, {True: configs}), \
+                        self.assertRaises(campaign.CampaignError):
+                    campaign.validate_reports(manifest, reports, guard, 600, 2400)
+
+    def test_short_terminal_horizon_is_still_a_healthy_flight(self):
+        manifest, terminal_reports, _, _, _ = terminal_fixture()
+        _, reports, guard = fixtures()
+        report = reports["fixed"]
+        flight = report["fleet"][0]
+        flight.update(manifest["rows"][0])
+        report["fleet"] = [flight]
+        report["checked_run"]["command"] = [arg.replace("--aircraft=fixed", "--aircraft=skywalker-x8")
+                                            for arg in report["checked_run"]["command"]]
+        report["fleet_scope"].update(filters={"aircraft": "skywalker-x8", "weather": "", "soft_hull": ""},
+                                     declared_aircraft=["skywalker-x8"], declared_rows=1, selected_rows=1,
+                                     flight_passed=1, reference_refused=0, runtime_refused=0, physical_terminal=0)
+        report["components"] = {"literals": {"count": 1, "identical": 1},
+                                "fleet_pair": {"count": 1, "identical": 1}}
+        report["total"] = {"compared": 2, "identical": 2, "mismatched": 0}
+        self.assertEqual(campaign.validate_reports(manifest, {"skywalker-x8": report}, guard, 2, 3)["flight_passed"], 1)
+        report["fleet"][0] = terminal_reports["skywalker-x8"]["fleet"][0]
+        with self.assertRaises(campaign.CampaignError):
+            campaign.validate_reports(manifest, {"skywalker-x8": report}, guard, 2, 3)
+
+    def test_terminal_at_exact_requested_horizon_is_not_a_healthy_flight(self):
+        manifest, reports, guard, identities, configs = terminal_fixture()
+        report = reports["skywalker-x8"]
+        report["checked_run"]["command"][-1] = "--samples=1040"
+        report["fleet_scope"]["samples_requested"] = 1040
+        report["fleet"][0]["physical_terminal"]["requested_ticks"] = 1640
+        with mock.patch.object(campaign, "TERMINAL_IDENTITIES", identities), \
+                mock.patch.dict(campaign.TERMINAL_CONFIGS, {True: configs}):
+            totals = campaign.validate_reports(manifest, reports, guard, 600, 1040)
+        self.assertEqual(totals["physical_terminal"], 1)
+        self.assertEqual(totals["flight_passed"], 0)
+
     def test_observed_startup_proofs_count_only_as_refusals(self):
         for aircraft, trim in (("sebart-avanti-s-a200-p100rx", False), ("skywalker-x8", True)):
             with self.subTest(aircraft=aircraft):
@@ -285,7 +576,7 @@ class FleetCampaignTests(unittest.TestCase):
                 cases = campaign.TRIM_START_CASES if trim else campaign.RUNWAY_START_CASES
                 with mock.patch.dict(cases, {aircraft: spec}):
                     self.assertEqual(campaign.validate_reports(manifest, reports, guard, 2, 3),
-                                     {"declared": 1, "flight_passed": 0, "reference_refused": 1, "runtime_refused": 0})
+                                     {"declared": 1, "flight_passed": 0, "reference_refused": 1, "runtime_refused": 0, "physical_terminal": 0})
 
     def test_runway_start_refusals_are_bounded_and_not_flights(self):
         for aircraft in campaign.RUNWAY_START_CASES:
@@ -403,19 +694,19 @@ class FleetCampaignTests(unittest.TestCase):
     def test_complete_union(self):
         manifest, reports, guard = fixtures()
         self.assertEqual(campaign.validate_reports(manifest, reports, guard, 2, 3),
-                         {"declared": 3, "flight_passed": 2, "reference_refused": 1, "runtime_refused": 0})
+                         {"declared": 3, "flight_passed": 2, "reference_refused": 1, "runtime_refused": 0, "physical_terminal": 0})
 
     def test_bounded_runtime_refusal_is_separate_from_flights(self):
         manifest, reports, guard = runtime_fixture()
         self.assertEqual(campaign.validate_reports(manifest, reports, guard, 600, 2400),
-                         {"declared": 1, "flight_passed": 0, "reference_refused": 0, "runtime_refused": 1})
+                         {"declared": 1, "flight_passed": 0, "reference_refused": 0, "runtime_refused": 1, "physical_terminal": 0})
 
     def test_fs64v_midpoint_refusal_is_separate_from_flights(self):
         for soft_hull in (True, False):
             with self.subTest(soft_hull=soft_hull):
                 manifest, reports, guard = runtime_fixture("stik-glow-fs64v-4t", 805, 0.5, 2, soft_hull)
                 self.assertEqual(campaign.validate_reports(manifest, reports, guard, 600, 2400),
-                                 {"declared": 1, "flight_passed": 0, "reference_refused": 0, "runtime_refused": 1})
+                                 {"declared": 1, "flight_passed": 0, "reference_refused": 0, "runtime_refused": 1, "physical_terminal": 0})
 
     def test_fs64v_rejects_wrong_phase_ordinals_and_forged_evidence(self):
         def fixture():

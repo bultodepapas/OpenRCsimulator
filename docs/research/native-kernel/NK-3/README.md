@@ -1,27 +1,79 @@
-# NK-3 — native stage evaluator, Ugly Stik baseline (2026-10-27)
+# NK-3 — native aircraft evaluation
 
-Step NK-3 of the [native-kernel scoping](../../native-kernel-scoping-2026-10-27.md#phases-r-research-i-implementation),
-option (b): one `VehicleModel.stage` boundary on a prepared model. The owner approved NK-3 on 2026-10-27 and
-delegated D1–D8 to the lead (port now; no SF-08 amendment; Linux bit-exact fingerprints, Windows later; backend
-identity pinned in checkpoints; macOS reference-only; native refuses unknown laws; Stik first; reference always
-available). The application now requests native physics by default for the verified Linux x86_64 route, with
-reference fallback for unsupported configurations and explicit reference selection. The current supported scope
-is the stock legacy prescribed-RPM Ugly Stik in calm conditions. Milestones 1 and 2 below remain the original research
-snapshots; the promotion section records release-package qualification and its limits.
+Step NK-3 of the [native-kernel scoping](../../native-kernel-scoping-2026-10-27.md#phases-r-research-i-implementation)
+implements continuous aircraft evaluation through one prepared `VehicleModel.stage` boundary. The qualified
+Linux x86_64 delivery requests native physics by default for the current aircraft catalog and admitted flight
+conditions, preserving the shared kernel and float64 state. Unsupported or unverified configurations retain
+reference fallback; explicit reference selection remains available.
 Code and commands: [research/native-kernel](../../../../research/native-kernel/README.md).
 
-The owner subsequently requested all simulatable aircraft and supported conditions. That expansion is active,
-not yet qualified; its [coverage checklist](../../../../research/native-kernel/README.md#coverage-expansion-in-progress-nk-3)
-separates new component work from production admission. Historical "electric Stik" labels below identify the
-same legacy prescribed-RPM baseline; they do not demonstrate coupled electric or battery support.
+The original 2026-10-27 milestones and first promotion below cover the legacy prescribed-RPM Ugly Stik only.
+The owner subsequently requested every simulatable aircraft and supported condition; the
+[current coverage](../../../../research/native-kernel/README.md#qualified-aircraft-coverage-nk-3) and expanded
+qualification below supersede that delivery scope. Historical “electric Stik” labels refer to the legacy
+prescribed-RPM baseline, not coupled electric or battery support.
 
 ## Expanded Linux qualification (2026-10-29)
+
+The expanded delivery is installed as the application default, with native library `d023a875…17fc1` and
+receipt `689f0d56…f74e`. An ordinary source-application flight, with no backend override, selected native.
+The [local default Linux ZIP](../../../../tmp/openrc-simulator-nk3-default-linux-x86_64.zip) is
+`02c5495f…ac91e7`; its executable is `f8cd0408…b29c`. The original rollback ZIP and previous local
+installation/cache remain preserved. No remote release has been published.
+
+| Verification | Completed evidence |
+| --- | --- |
+| Full declared fleet | 11 checked shards; 1,202 completed flights, 28 startup refusals, six runtime refusals and two terminal scenery collisions |
+| Native installation | 19 source-bound installer gates; seven installed native scripts, 1,115 checks; ordinary default flight selected C++ |
+| Linux package | Five native modes, 18 routes, exact 65-row player replay, 720-tick trim smoke, streamed ZIP CRC/SHA/mode checks and full ELF audit |
+| Policy | 650 combined Godot checks and 39 Python tests; strict typed-state, owner, prefix and metadata checks |
+| Paired release timing | 60 complete probes / 30 comparable pairs, with matching state fingerprints and actual native execution |
+
+Completed-flight cases ran 600 warmup and 2,400 sample ticks. Refused starts, runtime-domain rejections and
+terminal collision prefixes have separate classifications and never receive completed-flight credit.
+The existing start contracts and physical event thresholds were preserved.
+
+The full runtime campaign and package bind commit `d94816580`. Its eleven Godot shards passed; the original
+Python coordinator rejected their full-precision JSON because its metadata pin came from a reduced-precision
+diagnostic. Independent decoding of the unchanged typed bytes established the exact production projection.
+Commit `2e2aa3c55` corrects only that Python pin and its tests. The supported report-reuse workflow revalidated
+all eleven unchanged reports and checked logs, with the same runtime inputs, manifest, engine, native binary
+and cache contents. The corrected aggregate is `5041062f…b6bedc`; the original coordinator failure remains
+retained. This correction adds no rounding tolerance. The C++ binary was built at `eef621296` and reused after
+exact input verification; its source digest remains `14c124bb…72f03`.
+
+The final package's median paired tick-cost ratios on the Intel Core i5-10500 Linux host were:
+
+| Aircraft / propulsion | Trim | Manoeuvre |
+| --- | ---: | ---: |
+| Ugly Stik / legacy prescribed RPM | 1.65× | 1.66× |
+| Stik 61FX / finite two-stroke glow | 1.72× | 1.86× |
+| Turbo Lumber / coupled electric | 1.90× | 2.15× |
+| P-51 / finite liquid combustion | 2.76× | 2.75× |
+| Avanti P100-RX / turbine | 2.20× | 2.30× |
+
+Each cell is the median of three alternating reference/native mean tick-cost ratios. The median across all
+30 pairs is 2.11×. The workload includes production input/simulation and its observer, excluding rendering,
+audio, OS input and presentation. All 60 probes completed 3,000 ticks each; the monitor recorded no competing
+owned heavy work. These measurements do not establish helicopter performance, whole-application FPS,
+1080p qualification, Gate P or physical realism. Three pairs per case are not population confidence bounds.
+
+This delivery is Linux x86_64, tested with Linux 6.8 and glibc 2.39. The native ELF requires GLIBC 2.38 and
+the engine GLIBC 2.34; static inspection does not qualify every distribution or driver. Native Windows/macOS,
+ground-vehicle qualification and physical validation remain separate. Existing helicopter spatial/OU/column
+weather restrictions and hot-high hover-trim refusal remain unchanged.
+
+`expanded_default_linux` in the [canonical evidence record](revalidation-linux-2026-10-28.json) owns the
+complete identities, corrected aggregation, timing, installed checks and recovery references. Earlier records
+below retain their original scope and results.
+
+### Earlier qualification attempts
 
 The earlier frozen candidate is source `eef621296`, native library `d023a875…17fc1` and release executable
 `d0ca3640…a82c1`. Its 19 installer gates, 191 admission and 214 wheel-layout checks, UBSan checks,
 five packaged native modes, 18 application routes and exact 65-row player replay passed. The six-file
-Linux candidate ZIP passed streamed CRC, SHA-256 and permission checks. The full 1,238-row fleet campaign
-and final shared-workspace installation remain pending; this candidate was not promoted. Its exact executable
+Linux candidate ZIP passed streamed CRC, SHA-256 and permission checks. At that snapshot, the full 1,238-row fleet campaign
+and shared-workspace installation were pending; that candidate was not promoted. Its exact executable
 and sidecar contents are retained losslessly; the superseded ZIP container is no longer retained.
 
 The first full campaign stopped on two FS64V runway/gusty cases at attempted tick 806. Independent paired
@@ -29,7 +81,7 @@ diagnosis reproduced both failures on the reference, with identical accepted pre
 finite reverse-demand cause and rollback. The four-stroke proof now pins that observed boundary; all six
 runtime-domain proofs pass the required native test (264 checks), with 25 Python policy tests, 98 real
 two/four-stroke diagnostic checks and 40 C++ boundary checks. That declaration had 1,214 flight rows,
-18 startup refusals and six runtime refusals. The complete campaign must still be rerun; the shortened
+18 startup refusals and six runtime refusals. A complete rerun was required at that snapshot; the shortened
 diagnostic runs and interrupted shards are not full-fleet evidence. No simulation equation, aircraft data or
 native library changed. Fresh installer receipts must bind the updated external test harness.
 
@@ -46,7 +98,25 @@ as was a matching but rehashed forged configuration. Neither the short inventory
 flight. The merged application at `8e32069aa` also changes rendering, launch and export sources; the earlier
 executable and its timings remain historical evidence for their original bytes, not qualification of that merge.
 
-The corrected release performance campaign completed all 60 probes: three alternating reference/native
+The subsequent `4699405` campaign found two further incomplete rows: X8 with pack battery, hand launch and
+`spatial-crosswind-v1`, with either soft-hull setting. Independent paired runs matched all 1,641 typed state
+boundaries through accepted tick 1,640 and the terminal tree-crown collision. Native ownership remained installed
+with 1,640 contexts and 6,560 stage calls; both stopped attempts preserved the terminal state. The measured
+normal contact speed was 23.196 m/s, above the existing 22 m/s foliage-crash threshold. This is a committed
+terminal scenery event, not an RK rejection or rollback. Zero raw throttle input retains full commanded throttle
+because that input is a rate. These results establish shared software behavior, not physical validation.
+
+The original campaign completed with ten passing shards and the failed X8 shard; it remains failed. The separate,
+narrowly pinned physical-terminal classification passed 650 combined checks and 36 Python tests. Independent
+review rejected 146 forged-proof mutations and four live ownership/callback mutations. It does not turn a partial
+trajectory into a completed flight. The revised declaration is 1,202 complete flights, two physical terminals,
+28 startup refusals and six runtime refusals; this policy change required the subsequent fresh campaign. No equation, aircraft data, input
+tape or start contract changed. The `a742ad11…` Linux executable passed its functional package checks and ELF
+audit, but remains unpromoted and has no quiet timing result. Its executable is retained losslessly through verified VCDIFF recovery, with five independent sidecars;
+the duplicate executable links and ZIP container were removed after verification. Raw diagnosis and artifact identities are recorded under
+`x8_physical_terminal_follow_up` in the revalidation record.
+
+The earlier `d0ca3640…` release performance campaign completed all 60 probes: three alternating reference/native
 pairs for each aircraft/case, with 600 warmup and 2,400 sampled ticks. Every pair was comparable, with
 matching state fingerprints and actual native execution. Other owned heavy jobs were idle. On the local
 Intel Core i5-10500 host (12 logical CPUs, Linux 6.8, glibc 2.39), median paired tick-cost ratios were:
@@ -162,15 +232,15 @@ are retained under `production_path_hardening` in the [revalidation record](reva
 
 ## Promotion to the default backend
 
-The owner requested completion and default promotion on 2026-10-28. NK-3 is now the application's default
-physics request for its supported Linux x86_64 delivery route. Admission remains stock electric Ugly Stik,
-calm weather and the stage's supported capabilities. Other aircraft, unsupported conditions/platforms and
-missing or mismatched installations retain reference. `--physics-backend=gdscript_reference` is the explicit
+The owner requested completion and default promotion on 2026-10-28. This original promotion made NK-3 the
+application's default physics request for its supported Linux x86_64 delivery route. Admission then covered
+stock legacy prescribed-RPM Ugly Stik, calm weather and the stage's supported capabilities. Other aircraft,
+unsupported conditions/platforms and missing or mismatched installations retained reference. `--physics-backend=gdscript_reference` is the explicit
 opt-out. The low-level `FlightSession` default stays reference for tools, historical tests and replay.
 
-This promotion is based on the following completed software and delivery checks:
+This original promotion was based on the following completed software and delivery checks:
 
-- Current installed binary/source/engine: 128,565 exact stage comparisons and 155,931 exact trajectory
+- Installed binary/source/engine at that promotion: 128,565 exact stage comparisons and 155,931 exact trajectory
   comparisons, covering 49,553 matching ticks; no equation, aircraft-data or golden-flight change.
 - Actual Linux release executable: 88 stage, 118 lifecycle and 53 replay checks, each requiring native execution
   and a normal completion marker. Native initialization was absent before verified admission in every process.

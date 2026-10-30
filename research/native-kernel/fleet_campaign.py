@@ -99,6 +99,38 @@ RUNTIME_CASES = {
 }
 RUNTIME_CODE = "glow_stopped_reverse_drive"
 RUNTIME_FAULT = "step rejected: RK joint stage evaluation is nonfinite or malformed"
+TERMINAL_TICK = 1640
+TERMINAL_CODE = "scenery_terminal_impact"
+TERMINAL_AIRCRAFT = "7e3bfa65db9c259133345469c8d4846c1716421b4e8d8b30ad66860549f74b82"
+TERMINAL_WORLD = "ba184dbc8864dae651ca914ae14b0b1fd36f65d1cf5c52f80a08d0c188c84a6d"
+TERMINAL_NATIVE_IDENTITY = {
+    "backend": "native", "abi_version": 2, "backend_version": "openrc-native-kernel-stage-v2",
+    "binary_sha256": "d023a8758404ad2b95949214af92e6f888f91fb32977b61e0db5ad4220178fc1",
+    "source_sha256": "14c124bba22f72760de4deb3c69be5d21b64590c83b2adb4231a7608b4572f03",
+    "lock_sha256": "850f6cf3ffb8cdad0312ddc4db12804c7b753a353132056c86934016e244fa34",
+}
+TERMINAL_PREFIX = "faeccb6864cda465389cdedc6de5301588b5fd61bebd7fc48a258d8378a0881e"
+TERMINAL_VIEW_PREFIX = "133d124064efe08f10bc0ed6a9664a7541ba1c22a137ca673357a7a147365365"
+# Canonical Python JSON of the pinned typed view decoded with the full-precision
+# projection used by oracle.gd; reduced-precision diagnostic JSON is different.
+TERMINAL_VIEW_JSON = "3defb1aa5afc96af1ddfa09c3b814d8fcbf94dcc1288d72986058867fd987d4d"
+TERMINAL_IDENTITIES = {
+    "initial_frame": "1be46da07149a21cecff884cdc0947b35f2db51fc952a5287b63df24317a8eb3",
+    "preceding_frame": "8cff80befa31c0859e2f5e15921a5b066fbe4c8505a5fda89416e86c7e6e8e05",
+    "terminal_frame": "8b2147bde207f4dc6614c8ee3e2642bcd6319d9cb9a9287da74689427ee3143f",
+    "terminal_view": "8ea0476661dd1495bea9ab2de21d1677683d8f31644c7af79ac0849397e27d15",
+    "impact": "664217d2be2b738472a430551fe6029b5b657ae1a8039f5d77f9ed889ddc00a9",
+    "contact_state": "783b983537310e450a3a6a5306af8d1884aeea6604bd437b5eaa4888e5dfb472",
+    "contact_event": "d5d5a83aa26c443750850f444486a58f9db4bacf237ed9f5de920ac5d99d0360",
+}
+TERMINAL_CONFIGS = {
+    True: {"physical_configuration": "03d4d8e07c7143efdea227bf6ff52da300b75f3f9351d279870e4bdccc31beb4",
+           "reference_live_configuration": "75cb2961cc260ebad73d99eed3addfa92e5affa5306a0b073db60c1724c947c3",
+           "native_live_configuration": "1e0a64f3594d50f7a002efd857da0ae6df374098c1dd2faea2b6d46d4327f6ce"},
+    False: {"physical_configuration": "bfd3a1ad0ab3bbe40fbe89cedf826e610158b3e0d87b157f5a3ec92befabf18e",
+            "reference_live_configuration": "9acfe61176ca2bd2fb80fb941a564ad69a2c03150494e333e561d299c89690fa",
+            "native_live_configuration": "04e7db73eac1164432118795ccd6cc75c7eaaade443a33f76c682317f68d61aa"},
+}
 
 
 class CampaignError(ValueError):
@@ -213,6 +245,12 @@ func _initialize() -> void:
                 fleet.free()
                 quit(1)
                 return
+        elif row.get("expected", "flight") == "physical-terminal":
+            if script._fleet_terminal_tick(row) < 0:
+                printerr("physical-terminal declaration is not one of the observed rows")
+                fleet.free()
+                quit(1)
+                return
     var file := FileAccess.open(OUTPUT_PATH, FileAccess.WRITE)
     if file == null:
         printerr("cannot write fleet manifest")
@@ -283,6 +321,14 @@ def trim_start_boundary(row: dict[str, Any]) -> bool:
     return observed_start_boundary(row, TRIM_START_CASES, "airborne_half_power")
 
 
+def physical_terminal_boundary(row: dict[str, Any]) -> bool:
+    return (row.get("aircraft") == "skywalker-x8" and row.get("vehicle") == "fixed-wing"
+            and row.get("battery") == "pack" and row.get("case") == "hand_launch"
+            and row.get("weather") == "spatial-crosswind-v1"
+            and type(row.get("default_battery")) is bool and row["default_battery"] is True
+            and type(row.get("soft_hull")) is bool)
+
+
 def observed_start_boundary(row: dict[str, Any], cases: dict[str, Any], start: str) -> bool:
     spec = cases.get(row.get("aircraft"))
     battery = spec["batteries"].get(row.get("battery")) if spec else None
@@ -305,9 +351,12 @@ def manifest_index(manifest: dict[str, Any]) -> tuple[dict[tuple[Any, ...], dict
         key = row_key(row)
         require(key not in index, "duplicate manifest row")
         expected = row.get("expected", "flight")
-        require(expected in ("flight", "reference-refusal", "runtime-domain-refusal"), "invalid manifest expectation")
+        require(expected in ("flight", "reference-refusal", "runtime-domain-refusal", "physical-terminal"),
+                "invalid manifest expectation")
         if runway_start_boundary(row) or trim_start_boundary(row):
             require(expected == "reference-refusal", "observed bounded start row has the wrong expectation")
+        if physical_terminal_boundary(row):
+            require(expected == "physical-terminal", "observed physical-terminal row has the wrong expectation")
         if expected == "reference-refusal":
             require(isinstance(row.get("expected_refusal_reason"), str) and bool(row["expected_refusal_reason"]),
                     "expected refusal has no exact reason")
@@ -323,8 +372,15 @@ def manifest_index(manifest: dict[str, Any]) -> tuple[dict[tuple[Any, ...], dict
                     and type(row.get("expected_runtime_tick")) is int
                     and row["expected_runtime_tick"] == RUNTIME_CASES[row["aircraft"]]["tick"]
                     and "expected_refusal_reason" not in row, "invalid bounded runtime-domain declaration")
+        elif expected == "physical-terminal":
+            require(physical_terminal_boundary(row) and type(row.get("expected_terminal_tick")) is int
+                    and row["expected_terminal_tick"] == TERMINAL_TICK
+                    and "expected_refusal_reason" not in row and "expected_runtime_tick" not in row,
+                    "invalid observed physical-terminal declaration")
         else:
             require("expected_refusal_reason" not in row, "flight row has a refusal reason")
+        if expected != "physical-terminal":
+            require("expected_terminal_tick" not in row, "non-terminal row carries a terminal tick")
         index[key] = row
         if row["aircraft"] not in encountered:
             encountered.append(row["aircraft"])
@@ -332,7 +388,8 @@ def manifest_index(manifest: dict[str, Any]) -> tuple[dict[tuple[Any, ...], dict
     return index, aircraft
 
 
-def validate_components(report: dict[str, Any], flights: int, refusals: int, runtime_refusals: int = 0) -> None:
+def validate_components(report: dict[str, Any], flights: int, refusals: int, runtime_refusals: int = 0,
+                        terminals: int = 0) -> None:
     components = report.get("components")
     require(isinstance(components, dict) and components, "missing oracle comparisons")
     count = 0
@@ -344,7 +401,8 @@ def validate_components(report: dict[str, Any], flights: int, refusals: int, run
     require(report.get("total") == {"compared": count, "identical": count, "mismatched": 0},
             "oracle comparison totals differ")
     for name, expected in (("fleet_pair", flights), ("fleet_reference_refusal", refusals),
-                           ("fleet_runtime_domain_refusal", runtime_refusals)):
+                           ("fleet_runtime_domain_refusal", runtime_refusals),
+                           ("fleet_physical_terminal", terminals)):
         require(components.get(name, {}).get("count", 0) == expected, f"wrong {name} comparison count")
 
 
@@ -611,6 +669,70 @@ def validate_runtime_refusal(row: dict[str, Any], expected: dict[str, Any], guar
             "runtime-domain finite reverse-demand condition is absent")
 
 
+def validate_physical_terminal(row: dict[str, Any], expected: dict[str, Any], guard: dict[str, Any],
+                               warmup: int, samples: int) -> None:
+    require(physical_terminal_boundary(expected) and physical_terminal_boundary(row)
+            and row_key(row) == row_key(expected) and expected.get("expected_terminal_tick") == TERMINAL_TICK
+            and type(expected.get("expected_terminal_tick")) is int
+            and type(row.get("expected_terminal_tick")) is int and row["expected_terminal_tick"] == TERMINAL_TICK
+            and expected.get("expected") == "physical-terminal" and row.get("expected") == "physical-terminal"
+            and warmup + samples >= TERMINAL_TICK
+            and row.get("status") == "physical-terminal" and row.get("reason") == TERMINAL_CODE
+            and row.get("fingerprint_equal") is False, "unexpected physical-terminal row or horizon")
+    for name, requested in (("reference", "gdscript_reference"), ("native", "native")):
+        run = row.get(name)
+        require(isinstance(run, dict) and run.get("complete") is False and run.get("requested") == requested,
+                f"{requested} was incorrectly credited with a completed flight")
+    proof = row.get("physical_terminal")
+    require(isinstance(proof, dict) and proof.get("code") == TERMINAL_CODE,
+            "missing physical-terminal proof")
+    for name, value in (("accepted_ticks", TERMINAL_TICK), ("requested_ticks", warmup + samples),
+                        ("warmup_completed", min(warmup, TERMINAL_TICK)),
+                        ("samples_completed", max(0, TERMINAL_TICK - warmup)),
+                        ("prefix_boundaries", TERMINAL_TICK + 1), ("terminal_tick", TERMINAL_TICK),
+                        ("stopped_attempts", 2), ("reference_input_reads", TERMINAL_TICK),
+                        ("native_input_reads", TERMINAL_TICK), ("native_context_calls", TERMINAL_TICK),
+                        ("native_stage_calls", 4 * TERMINAL_TICK)):
+        require(type(proof.get(name)) is int and proof[name] == value, f"physical-terminal {name} differs")
+    for name in ("prefix_equal_every_tick", "view_equal_every_tick", "native_owner_every_tick",
+                 "reference_owner_every_tick", "model_contract_retained", "native_covered_every_tick",
+                 "physical_configuration_retained", "live_configuration_retained", "no_holds",
+                 "one_input_each_every_tick", "terminal_accepted", "previous_state_retained", "stopped_unchanged"):
+        require(proof.get(name) is True, f"physical-terminal {name} missing")
+    require(proof.get("aircraft_sha256") == TERMINAL_AIRCRAFT and proof.get("world_identity") == TERMINAL_WORLD
+            and proof.get("reference_prefix_sha256") == proof.get("native_prefix_sha256") == TERMINAL_PREFIX
+            and proof.get("reference_view_prefix_sha256") == proof.get("native_view_prefix_sha256")
+            == TERMINAL_VIEW_PREFIX, "physical-terminal aircraft, world or prefix differs")
+    identities = {**TERMINAL_IDENTITIES, **TERMINAL_CONFIGS[expected["soft_hull"]]}
+    for name, expected_hash in identities.items():
+        raw = proof.get(name + "_bytes_hex")
+        require(isinstance(raw, str) and bool(raw) and len(raw) % 2 == 0
+                and re.fullmatch(r"[0-9a-f]+", raw) is not None, f"malformed physical-terminal {name} bytes")
+        require(proof.get(name + "_sha256") == expected_hash
+                and hashlib.sha256(bytes.fromhex(raw)).hexdigest() == expected_hash,
+                f"physical-terminal {name} differs from the observed typed bytes")
+    require(proof.get("stopped_frame_bytes_hex") == proof["terminal_frame_bytes_hex"]
+            and proof.get("stopped_view_bytes_hex") == proof["terminal_view_bytes_hex"],
+            "physical-terminal changed after a stopped advance")
+    reference_identity, native_identity = proof.get("reference_identity"), proof.get("native_identity")
+    require(reference_identity == {"backend": "gdscript_reference"}
+            and isinstance(native_identity, dict) and native_identity == TERMINAL_NATIVE_IDENTITY
+            and type(native_identity.get("abi_version")) is int and native_identity["abi_version"] == 2
+            and native_identity.get("binary_sha256") == guard["binary_sha256"]
+            and native_identity.get("source_sha256") == guard["receipt"].get("source_sha256")
+            and native_identity.get("lock_sha256") == guard["receipt"].get("lock_sha256"),
+            "physical-terminal backend owner differs")
+    view = proof.get("terminal_view")
+    require(isinstance(view, dict), "physical-terminal view is missing")
+    try:
+        encoded = json.dumps(view, sort_keys=True, separators=(",", ":"), ensure_ascii=True,
+                             allow_nan=False).encode("utf-8")
+    except (TypeError, ValueError) as error:
+        raise CampaignError("physical-terminal view is malformed") from error
+    require(hashlib.sha256(encoded).hexdigest() == TERMINAL_VIEW_JSON,
+            "physical-terminal JSON metadata differs from the observed event")
+
+
 def validate_reports(manifest: dict[str, Any], reports: dict[str, dict[str, Any]], guard: dict[str, Any],
                      warmup: int, samples: int) -> dict[str, int]:
     """Reject incomplete or inconsistent shards; callers must also verify files and snapshots."""
@@ -618,7 +740,8 @@ def validate_reports(manifest: dict[str, Any], reports: dict[str, dict[str, Any]
     expected, aircraft = manifest_index(manifest)
     require(isinstance(reports, dict) and set(reports) == set(aircraft), "missing or unexpected aircraft shard")
     seen: set[tuple[Any, ...]] = set()
-    totals = {"declared": len(expected), "flight_passed": 0, "reference_refused": 0, "runtime_refused": 0}
+    totals = {"declared": len(expected), "flight_passed": 0, "reference_refused": 0,
+              "runtime_refused": 0, "physical_terminal": 0}
     baseline: dict[str, Any] | None = None
     for aircraft_id in aircraft:
         report = reports[aircraft_id]
@@ -679,7 +802,7 @@ def validate_reports(manifest: dict[str, Any], reports: dict[str, dict[str, Any]
                 and type(scope.get("failed")) is int and scope["failed"] == 0
                 and isinstance(rows, list) and len(rows) == len(shard_keys),
                 f"{aircraft_id}: shard scope is incomplete or incorrect")
-        flights = refusals = runtime_refusals = 0
+        flights = refusals = runtime_refusals = terminals = 0
         local: set[tuple[Any, ...]] = set()
         for row in rows:
             key = row_key(row)
@@ -688,7 +811,8 @@ def validate_reports(manifest: dict[str, Any], reports: dict[str, dict[str, Any]
             declared = expected[key]
             require(row["default_battery"] == declared["default_battery"]
                     and row.get("expected", "flight") == declared.get("expected", "flight")
-                    and row.get("expected_runtime_tick") == declared.get("expected_runtime_tick"),
+                    and row.get("expected_runtime_tick") == declared.get("expected_runtime_tick")
+                    and row.get("expected_terminal_tick") == declared.get("expected_terminal_tick"),
                     f"{aircraft_id}: declared row metadata differs")
             if declared.get("expected", "flight") == "reference-refusal":
                 validate_refusal(row, declared)
@@ -697,6 +821,10 @@ def validate_reports(manifest: dict[str, Any], reports: dict[str, dict[str, Any]
                     and warmup + samples > declared["expected_runtime_tick"]:
                 validate_runtime_refusal(row, declared, guard, warmup, samples)
                 runtime_refusals += 1
+            elif declared.get("expected", "flight") == "physical-terminal" \
+                    and warmup + samples >= declared["expected_terminal_tick"]:
+                validate_physical_terminal(row, declared, guard, warmup, samples)
+                terminals += 1
             else:
                 validate_flight(row, warmup, samples, guard)
                 flights += 1
@@ -704,12 +832,14 @@ def validate_reports(manifest: dict[str, Any], reports: dict[str, dict[str, Any]
             seen.add(key)
         require(local == shard_keys and type(scope.get("flight_passed")) is int and scope["flight_passed"] == flights
                 and type(scope.get("reference_refused")) is int and scope["reference_refused"] == refusals
-                and type(scope.get("runtime_refused")) is int and scope["runtime_refused"] == runtime_refusals,
+                and type(scope.get("runtime_refused")) is int and scope["runtime_refused"] == runtime_refusals
+                and type(scope.get("physical_terminal")) is int and scope["physical_terminal"] == terminals,
                 f"{aircraft_id}: incomplete row totals")
-        validate_components(report, flights, refusals, runtime_refusals)
+        validate_components(report, flights, refusals, runtime_refusals, terminals)
         totals["flight_passed"] += flights
         totals["reference_refused"] += refusals
         totals["runtime_refused"] += runtime_refusals
+        totals["physical_terminal"] += terminals
     require(seen == set(expected), "aggregate does not cover the exact declared fleet")
     return totals
 
@@ -906,6 +1036,7 @@ def main() -> int:
         (out / "campaign.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         print(f"NK3_FLEET_CAMPAIGN verdict=pass rows={totals['declared']} flights={totals['flight_passed']} "
               f"reference_refused={totals['reference_refused']} runtime_refused={totals['runtime_refused']} "
+              f"physical_terminal={totals['physical_terminal']} "
               f"evidence={out / 'campaign.json'}", flush=True)
         return 0
     except (CampaignError, OSError, ValueError, KeyError, TypeError) as error:
