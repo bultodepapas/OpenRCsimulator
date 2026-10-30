@@ -254,14 +254,19 @@ half-power trim-throttle refusal. Its named aircraft/battery/start/weather/conta
 reset observations, pinned typed setup/outcome/frame bytes and retained reference ownership. These starts
 provide no native-flight coverage and do not establish physical impossibility. A new refusal needs its own
 diagnosis and reviewed evidence; matching error text alone does not admit another combination.
-Two X8 pack/hand-launch/spatial-crosswind rows have an independently observed physical terminal at tick 1,640.
-They require equal typed states through the accepted tree collision, pinned configuration/contact evidence,
-native ownership and coverage on every accepted tick, and unchanged stopped attempts. They count separately
-from completed flights and refusals; other incomplete runs still fail. These pins bind native binary `d023a875…`;
-a different binary requires new reviewed evidence. Run the focused actual-pair regression with
-`test_fleet.gd -- --require-runtime-domain --require-physical-terminal`; the second flag is a local qualification
-gate, not part of the current CI invocation. The complete declaration is 1,202 flight rows, two physical terminals,
-28 startup refusals and six runtime refusals. Declared counts alone do not establish qualification.
+Historical X8 pack/hand-launch/spatial-crosswind evidence records a physical terminal at tick 1,640, with
+matched typed states, configuration and contact evidence, native coverage, and unchanged stopped attempts.
+Those pins bind the original X8 input and native binary `d023a875…`; they do not qualify the canonical
+MoonRunner X99. The historical declaration counts and observations remain in the
+[NK-3 evidence record](../../docs/research/native-kernel/NK-3/README.md).
+
+Four canonical MoonRunner rows are unqualified: ideal battery with half-power airborne start in hot-high,
+and default pack with hand launch in spatial-crosswind-v1, each with soft-hull contacts on and off. A full
+campaign rejects these rows until new paired evidence is reviewed; a scoped run that excludes them can
+still run but cannot qualify the full fleet. The library-free and `--require-runtime-domain` CI checks verify
+policy and the named runtime-domain proofs, not MoonRunner or full-fleet qualification. The optional
+`--require-physical-terminal` check remains unsatisfied for the current catalog until a current terminal
+is separately observed and qualified. Unknown faults and incomplete runs still fail.
 A scoped report alone does not qualify the whole fleet. `--reuse-report AIRCRAFT=REPORT` accepts
 only a complete, matching full-aircraft report, including one still being produced. Concurrent runs establish
 software equivalence, not timing or physical validation.

@@ -357,10 +357,39 @@ func _initialize() -> void:
 			"body callback %s fails qualification" % failure)
 	var declared := Fleet._fleet_declared_rows()
 	var terminal_rows: Array[Dictionary] = []
+	var unqualified_rows: Array[Dictionary] = []
 	for candidate: Dictionary in declared:
 		if candidate.get("expected") == "physical-terminal": terminal_rows.append(candidate)
-	_check(terminal_rows.size() == 2, "only the two observed X8 physical terminals are declared")
-	for row: Dictionary in terminal_rows:
+		if candidate.get("expected") == "unqualified": unqualified_rows.append(candidate)
+	_check(terminal_rows.is_empty(), "historical X8 terminals are not attributed to the canonical catalog")
+	_check(unqualified_rows.size() == 4, "four canonical MoonRunner rows require fresh evidence")
+	for start: String in ["airborne_half_power", "hand_launch"]:
+		for soft: bool in [true, false]:
+			var matching := 0
+			for row: Dictionary in unqualified_rows:
+				if row.case == start and row.soft_hull == soft and Fleet._fleet_moonrunner_unqualified(row):
+					matching += 1
+			_check(matching == 1, "one pending MoonRunner row for %s/soft=%s" % [start, soft])
+	for row: Dictionary in unqualified_rows:
+		for expectation: String in ["unqualified", "flight", "physical-terminal", "reference-refusal"]:
+			for horizon: Array in [[1, 1], [600, 2400]]:
+				var spoofed := row.duplicate(true)
+				spoofed.expected = expectation
+				var pending_route := TerminalRouteFleet.new()
+				pending_route._report = {fleet = [], components = {}}
+				pending_route._fleet_case(spoofed, horizon[0], horizon[1])
+				_check(pending_route.normal_calls == 0 and pending_route.terminal_calls == 0 \
+					and pending_route._report.fleet.back().status == "fail" \
+					and pending_route._report.fleet.back().reason == Fleet.MOONRUNNER_UNQUALIFIED_REASON \
+					and not pending_route._failures.is_empty(), "pending MoonRunner cannot qualify")
+				pending_route.free()
+	# Exercise historical policy without resolving its legacy ID through the current catalog.
+	var historical_terminal_rows: Array[Dictionary] = []
+	for soft: bool in [true, false]:
+		historical_terminal_rows.append({aircraft = "skywalker-x8", vehicle = "fixed-wing", battery = "pack",
+			case = "hand_launch", weather = "spatial-crosswind-v1", default_battery = true,
+			soft_hull = soft, expected = "physical-terminal", expected_terminal_tick = 1640})
+	for row: Dictionary in historical_terminal_rows:
 		_check(Fleet._fleet_terminal_tick(row) == 1640, "observed X8 terminal has its exact accepted tick")
 		for change: Array in [["aircraft", "other"], ["battery", "ideal"], ["case", "trim"],
 				["weather", "crosswind"], ["vehicle", "rotorcraft"], ["soft_hull", 1],
@@ -368,13 +397,13 @@ func _initialize() -> void:
 			var changed := row.duplicate(true)
 			changed[change[0]] = change[1]
 			_check(Fleet._fleet_terminal_tick(changed) < 0, "terminal rejects another " + str(change[0]))
-	if not terminal_rows.is_empty():
+	if not historical_terminal_rows.is_empty():
 		var terminal_route := TerminalRouteFleet.new()
 		terminal_route._report = {fleet = [], components = {}}
-		terminal_route._fleet_case(terminal_rows[0], 1, 1)
+		terminal_route._fleet_case(historical_terminal_rows[0], 1, 1)
 		_check(terminal_route.normal_calls == 1 and terminal_route.terminal_calls == 0,
 			"a shorter horizon remains an ordinary flight")
-		terminal_route._fleet_case(terminal_rows[0], 600, 1040)
+		terminal_route._fleet_case(historical_terminal_rows[0], 600, 1040)
 		_check(terminal_route.normal_calls == 1 and terminal_route.terminal_calls == 1,
 			"a horizon ending at the accepted collision requires the physical-terminal proof")
 		terminal_route.free()
@@ -640,7 +669,13 @@ func _initialize() -> void:
 			bounded_trim_refusals.append(row)
 	_check(stik_refusals.size() == 16, "only the four proven Stik variants and crosswind runway combinations are marked")
 	_check(bounded_runway_refusals.size() == 8, "only eight observed crosswind runway rows are marked")
-	_check(bounded_trim_refusals.size() == 2, "only two observed X8 half-power hot-high rows are marked")
+	_check(bounded_trim_refusals.is_empty(), "historic X8 trim refusals are not attributed to MoonRunner")
+	for soft: bool in [true, false]:
+		var old_trim := {aircraft = "skywalker-x8", vehicle = "fixed-wing", battery = "ideal",
+			case = "airborne_half_power", weather = "hot-high", default_battery = false, soft_hull = soft}
+		_check(Fleet._fleet_is_trim_boundary(old_trim), "historic trim predicate retains its original identity")
+		old_trim.aircraft = "moonrunner-x99"
+		_check(not Fleet._fleet_is_trim_boundary(old_trim), "historic trim proof does not match MoonRunner")
 	for row: Dictionary in declared:
 		if row.get("aircraft") in Fleet.RUNWAY_START_BOUNDARIES and row.get("expected") == "reference-refusal":
 			_check(Fleet._fleet_is_runway_boundary(row), "other weather, battery or start is not classified")

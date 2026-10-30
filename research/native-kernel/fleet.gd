@@ -90,6 +90,7 @@ const GLOW_REVERSE_CODE := "glow_stopped_reverse_drive"
 const GLOW_REVERSE_FAULT := "step rejected: RK joint stage evaluation is nonfinite or malformed"
 const GLOW_FEED_ENDPOINT_ERROR := "Glow feed factor endpoint evaluation failed"
 const HELICOPTER_REPLAY_TICKS := 8
+const MOONRUNNER_UNQUALIFIED_REASON := "MoonRunner requalification required: historical X8 evidence is not applicable"
 # Source-observed collision on the stock X8 pack hand-launch tape.  This is a
 # committed physical terminal, never a healthy flight or a rejected RK step.
 const X8_TERMINAL_TICK := 1640
@@ -187,7 +188,9 @@ static func _fleet_declared_rows() -> Array[Dictionary]:
 					for soft: bool in [true, false]:
 						var row := {aircraft = id, vehicle = "fixed-wing", case = start, battery = battery,
 							default_battery = battery == default_battery, weather = str(preset.id), soft_hull = soft}
-						if (battery == "ideal" and start == "runway" and id in STIK_RUNWAY_REFUSAL_AIRCRAFT \
+						if _fleet_moonrunner_unqualified(row):
+							row.expected = "unqualified"
+						elif (battery == "ideal" and start == "runway" and id in STIK_RUNWAY_REFUSAL_AIRCRAFT \
 								and str(preset.id) in STIK_RUNWAY_REFUSAL_WEATHER) \
 								or _fleet_is_runway_boundary(row) or _fleet_is_trim_boundary(row):
 							row.expected = "reference-refusal"
@@ -1255,6 +1258,15 @@ func _fleet_runtime_case(row: Dictionary, warmup: int, samples: int) -> void:
 		% [row.aircraft, row.battery, row.case, row.weather, row.soft_hull, result.status, result.reason])
 
 
+static func _fleet_moonrunner_unqualified(row: Dictionary) -> bool:
+	if row.get("aircraft") != "moonrunner-x99" or row.get("vehicle") != "fixed-wing":
+		return false
+	return (row.get("battery") == "ideal" and row.get("case") == "airborne_half_power" \
+			and row.get("weather") == "hot-high") \
+		or (row.get("battery") == "pack" and row.get("case") == "hand_launch" \
+			and row.get("weather") == "spatial-crosswind-v1")
+
+
 static func _fleet_is_x8_terminal(row: Dictionary) -> bool:
 	return row.get("aircraft") == "skywalker-x8" and row.get("vehicle") == "fixed-wing" \
 		and row.get("battery") == "pack" and row.get("case") == "hand_launch" \
@@ -1573,6 +1585,16 @@ func _fleet_terminal_case(row: Dictionary, warmup: int, samples: int) -> void:
 
 
 func _fleet_case(row: Dictionary, warmup: int, samples: int) -> void:
+	# Do not transfer the old X8 observation to the canonical aircraft, even if a
+	# caller changes the row expectation or requests a shorter horizon.
+	if _fleet_moonrunner_unqualified(row) or row.get("expected") == "unqualified":
+		var result: Dictionary = row.duplicate(true)
+		result.status = "fail"
+		result.reason = MOONRUNNER_UNQUALIFIED_REASON
+		result.fingerprint_equal = false
+		_report.fleet.append(result)
+		_failures.append(MOONRUNNER_UNQUALIFIED_REASON)
+		return
 	if row.get("expected") == "physical-terminal" and warmup + samples >= _fleet_terminal_tick(row):
 		_fleet_terminal_case(row, warmup, samples)
 		return

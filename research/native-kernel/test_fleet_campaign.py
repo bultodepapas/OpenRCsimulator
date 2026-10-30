@@ -22,6 +22,39 @@ assert SPEC is not None and SPEC.loader is not None
 campaign = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(campaign)
 
+
+class MoonRunnerQualificationTests(unittest.TestCase):
+    def test_pending_rows_fail_manifest_and_aggregate_for_every_claim(self):
+        for battery, start, weather, default in (
+                ("ideal", "airborne_half_power", "hot-high", False),
+                ("pack", "hand_launch", "spatial-crosswind-v1", True)):
+            for soft in (True, False):
+                for expected in (None, "unqualified", "flight", "reference-refusal", "physical-terminal"):
+                    with self.subTest(start=start, soft=soft, expected=expected):
+                        row = {"aircraft": "moonrunner-x99", "vehicle": "fixed-wing", "battery": battery,
+                               "case": start, "weather": weather, "default_battery": default, "soft_hull": soft}
+                        if expected is not None:
+                            row["expected"] = expected
+                        manifest = {"format": "openrc-nk3-fleet-manifest v1",
+                                    "aircraft": ["moonrunner-x99"], "rows": [row]}
+                        with self.assertRaisesRegex(campaign.CampaignError, "MoonRunner requalification required"):
+                            campaign.manifest_index(manifest)
+                        for warmup, samples in ((1, 1), (600, 2400)):
+                            with self.assertRaisesRegex(campaign.CampaignError, "MoonRunner requalification required"):
+                                campaign.validate_reports(manifest, {}, {}, warmup, samples)
+
+    def test_adjacent_rows_and_historical_identity_are_not_pending(self):
+        row = {"aircraft": "moonrunner-x99", "vehicle": "fixed-wing", "battery": "pack",
+               "case": "hand_launch", "weather": "spatial-crosswind-v1", "default_battery": True,
+               "soft_hull": True}
+        for field, value in (("aircraft", "skywalker-x8"), ("vehicle", "rotorcraft"),
+                             ("battery", "ideal"), ("case", "trim"), ("weather", "calm")):
+            with self.subTest(field=field):
+                changed = dict(row, **{field: value})
+                self.assertFalse(campaign.moonrunner_unqualified(changed))
+        self.assertFalse(campaign.physical_terminal_boundary(row))
+        self.assertTrue(campaign.physical_terminal_boundary(dict(row, aircraft="skywalker-x8")))
+
 # Real FS64V midpoint encoded Variants; bytes avoid lossy decimal materialization.
 FS64V_TRIAL_HEX = (
     "1c00000003000000210000000d0000002dfb4a651b002e40b2f619ab5f7f47c08db512ad9628cebf8864e81a45a9773f67b2"

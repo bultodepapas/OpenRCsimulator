@@ -321,6 +321,18 @@ def trim_start_boundary(row: dict[str, Any]) -> bool:
     return observed_start_boundary(row, TRIM_START_CASES, "airborne_half_power")
 
 
+MOONRUNNER_UNQUALIFIED_REASON = "MoonRunner requalification required: historical X8 evidence is not applicable"
+
+
+def moonrunner_unqualified(row: dict[str, Any]) -> bool:
+    if row.get("aircraft") != "moonrunner-x99" or row.get("vehicle") != "fixed-wing":
+        return False
+    return ((row.get("battery") == "ideal" and row.get("case") == "airborne_half_power"
+             and row.get("weather") == "hot-high")
+            or (row.get("battery") == "pack" and row.get("case") == "hand_launch"
+                and row.get("weather") == "spatial-crosswind-v1"))
+
+
 def physical_terminal_boundary(row: dict[str, Any]) -> bool:
     return (row.get("aircraft") == "skywalker-x8" and row.get("vehicle") == "fixed-wing"
             and row.get("battery") == "pack" and row.get("case") == "hand_launch"
@@ -350,6 +362,9 @@ def manifest_index(manifest: dict[str, Any]) -> tuple[dict[tuple[Any, ...], dict
     for row in rows:
         key = row_key(row)
         require(key not in index, "duplicate manifest row")
+        # Classify independently of supplied expectation, report, or horizon.
+        require(not moonrunner_unqualified(row) and row.get("expected") != "unqualified",
+                MOONRUNNER_UNQUALIFIED_REASON)
         expected = row.get("expected", "flight")
         require(expected in ("flight", "reference-refusal", "runtime-domain-refusal", "physical-terminal"),
                 "invalid manifest expectation")
