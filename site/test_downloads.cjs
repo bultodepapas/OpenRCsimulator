@@ -7,14 +7,16 @@ const source = fs.readFileSync(`${__dirname}/downloads.js`, 'utf8');
 
 function fixture(search = '?download=windows&release=v0.1.8', options = {}) {
   const navigation = [], timers = new Map(), listeners = {}, inserted = [];
+  const version = options.version || 'v0.1.8';
   const links = ['windows-x86_64', 'linux-x86_64', 'macos-universal'].map(platform => ({
-    href: `https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.8/openrc-simulator-v0.1.8-${platform}.zip`,
+    href: `https://github.com/bultodepapas/OpenRCsimulator/releases/download/${version}/openrc-simulator-${version}-${platform}.zip`,
     parentElement: {before: element => inserted.push(element)},
     style: {},
     focus() {},
     addEventListener(name, callback) { this[name] = callback; },
   }));
   if (options.untrusted) links[0].href = links[0].href.replace('https://github.com', 'https://example.com');
+  if (options.windowsHref) links[0].href = options.windowsHref;
   const window = {addEventListener: (name, callback) => listeners[name] = callback};
   const history = {state: options.state || null, replaceState(state) { this.state = state; }};
   const document = {
@@ -34,6 +36,33 @@ function fixture(search = '?download=windows&release=v0.1.8', options = {}) {
     expire: () => [...timers.keys()].forEach(callback => callback()),
   };
 }
+
+test('prerelease links dispatch all platforms and attribute manual clicks', () => {
+  for (const [platform, index] of [['windows', 0], ['linux', 1], ['macos', 2]]) {
+    const f = fixture(`?download=${platform}&release=v0.1.9-beta.1`, {version: 'v0.1.9-beta.1'});
+    assert.equal(f.events()[0][2].release_version, 'v0.1.9-beta.1');
+    f.expire();
+    assert.deepEqual(f.navigation, [f.links[index].href]);
+    f.links[index].click();
+    assert.equal(f.events().at(-1)[2].download_method, 'manual');
+  }
+});
+
+test('prerelease destinations must have an approved origin, tag and matching asset', () => {
+  const base = 'https://github.com/bultodepapas/OpenRCsimulator/releases/download/';
+  for (const href of [
+    base + 'v0.1.9-beta.1/openrc-simulator-v0.1.9-beta.2-windows-x86_64.zip',
+    base + 'v0.1.9-beta..1/openrc-simulator-v0.1.9-beta..1-windows-x86_64.zip',
+    base + 'v0.1.9-beta.1/openrc-simulator-v0.1.9-beta.1-windows-arm64.zip',
+    base + 'v0.1.9-beta.1/openrc-simulator-v0.1.9-beta.1-windows-x86_64.zip?redirect=1',
+    base.replace('github.com', 'example.com') + 'v0.1.9-beta.1/openrc-simulator-v0.1.9-beta.1-windows-x86_64.zip',
+  ]) {
+    const f = fixture('?download=windows&release=v0.1.9-beta.1', {windowsHref: href});
+    f.expire();
+    assert.equal(f.events().length, 0, href);
+    assert.equal(f.navigation.length, 0, href);
+  }
+});
 
 test('blocked analytics still downloads once; late callbacks cannot restart it', () => {
   const f = fixture('?download=windows&release=v0.1.8&utm_source=github&utm_campaign=readme');
