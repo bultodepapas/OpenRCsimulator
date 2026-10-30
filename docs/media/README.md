@@ -8,7 +8,7 @@ The [root README](../../README.md) uses **16 images captured on 2026-10-28 and 2
 
 | Application view | Capture |
 | --- | --- |
-| Home: MoonRunner X99 selected, Club field, Day | [ui-home.png](ui-home.png) |
+| Home: MoonRunner X99 selected, Club field, Day | [ui-home-moonrunner-x99.png](ui-home-moonrunner-x99.png) |
 | Workshop: stock Stik appearance | [ui-workshop-appearance.png](ui-workshop-appearance.png) |
 | Workshop: stock Stik flight setup | [ui-workshop-setup.png](ui-workshop-setup.png) |
 | MoonRunner X99 airborne over Club field | [flight-moonrunner-x99.png](flight-moonrunner-x99.png) |
@@ -70,7 +70,7 @@ For the matching landscape overview, after entering a flight and hiding overlays
 Package the selected studio run and separately captured application images:
 
 ```powershell
-python tools/readme/package_media.py $ReadmeOutput docs/media --image tmp/readme-home-new.png=ui-home.png
+python tools/readme/package_media.py $ReadmeOutput docs/media --image tmp/readme-home-new.png=ui-home-moonrunner-x99.png
 ```
 
 Repeat `--image SOURCE=NAME` for other screenshots. The packager preserves PNG bytes, verifies capture hashes and dimensions, and writes `studio-<catalog-id>.png` plus `readme-captures.json`. Supplied screenshots do not inherit studio-session provenance; update their separate `readme-gameplay.json` receipt. Selective runs retain separate studio sessions. If animation frames exist, the new GIF is `aircraft-tour-current.gif`; the historical GIF and manifest remain unchanged. Pillow is provided by the existing [visual environment](../../app/tests/visual-env.sh).

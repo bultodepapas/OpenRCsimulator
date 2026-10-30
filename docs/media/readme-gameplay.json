@@ -30,13 +30,13 @@
   },
   "engine_log_sha256": "73d90e9deefce9296e4148b905f3e9555d87196b0721aca969eeedf8310a6d41",
   "captures": {
-    "ui-home.png": {
+    "ui-home-moonrunner-x99.png": {
       "kind": "Home UI",
       "aircraft": "moonrunner-x99",
       "landscape": "club_field",
       "time_of_day": "day",
       "flight_input": "Keyboard",
-      "file": "ui-home.png",
+      "file": "ui-home-moonrunner-x99.png",
       "sha256": "69e4746b62ac57f7449998621fe44fd4ad4684c9ad1e75dc5f54c43fcea3885d",
       "size": [
         1920,

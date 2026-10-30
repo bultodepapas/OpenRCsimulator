@@ -30,7 +30,7 @@
 
 **[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=website)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
 
-![Home screen with MoonRunner X99 at Club field](docs/media/ui-home.png)
+![Home screen with MoonRunner X99 at Club field](docs/media/ui-home-moonrunner-x99.png)
 
 *Home with MoonRunner X99. Game images below were captured from development builds on **28–29 October 2026**, at **1920×1080**. [Capture details](docs/media/README.md#readme-gallery).*
 
