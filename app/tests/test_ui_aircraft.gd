@@ -176,6 +176,8 @@ func _run() -> void:
 	_check("X8: shown, experimental, Fly enabled, starts by hand", home.aircraft_id == X8 and not home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Experimental") and home.start_choice == "hand_launch"
 		and app.home_scene.airplane.aircraft_id == X8, "%s / %s / %s" % [home.aircraft_id, home.start_choice, home.aircraft_status_label.text])
+	_check("MoonRunner X99: Home card and tooltip use the selected name",
+		home.aircraft_name_label.text == "MoonRunner X99" and home.aircraft_name_label.tooltip_text == "MoonRunner X99", home.aircraft_name_label.text)
 	_check("X8: catalog counter", home.aircraft_count_label.text == _aircraft_counter(X8), home.aircraft_count_label.text)
 	# The experimental helicopter is last; next wraps to the Stik. Previous crosses the helicopter before the X8.
 	await ui.tap(KEY_ENTER)
@@ -223,6 +225,11 @@ func _run() -> void:
 	_check("Spanish: Vantage Jet keeps its name", home.aircraft_name_label.text == "Vantage Jet"
 		and Catalog.entry(AVANTI).name == "Vantage Jet" and Catalog.entry(AVANTI).short_name == "Vantage Jet",
 		home.aircraft_name_label.text)
+	app.set_aircraft(X8)
+	await ui.settle()
+	_check("Spanish: MoonRunner X99 retains its name", home.aircraft_name_label.atr(home.aircraft_name_label.text) == "MoonRunner X99"
+		and home.aircraft_name_label.tooltip_text == "MoonRunner X99", home.aircraft_name_label.text)
+	app.set_aircraft(AVANTI)
 	app.set_language("en")
 	await ui.settle()
 	_check("English: the Lumber card shows its full name", Catalog.entry(TIMBER).name == "Turbo Lumber Evolution" and tr(Catalog.entry(TIMBER).name) == "Turbo Lumber Evolution")

@@ -1,6 +1,7 @@
 """Release input drift, metadata validation and exact transfer inventory regressions."""
 import copy
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -52,7 +53,10 @@ def prepare_repository(root, version="v1.2.3-rc.2", native_digest="0" * 64):
     git("config", "user.name", "Release fixture")
     git("config", "core.autocrlf", "false")
     git("add", ".")
-    git("commit", "--quiet", "-m", "fixture")
+    # Fix the commit timezone; Git versions render UTC as either Z or +00:00.
+    with mock.patch.dict(os.environ, {"GIT_AUTHOR_DATE": "2026-10-29T13:00:00+00:00",
+                                      "GIT_COMMITTER_DATE": "2026-10-29T13:00:00+00:00"}):
+        git("commit", "--quiet", "-m", "fixture")
     git("tag", version)
     env = {"OPENRC_BUILD_DESCRIBE": version, "OPENRC_BUILD_COMMIT": git("rev-parse", "HEAD"),
            "OPENRC_BUILD_DATE": git("show", "-s", "--format=%cI", "HEAD"), "OPENRC_BUILD_DIRTY": "0",
@@ -115,6 +119,7 @@ class ManifestTests(unittest.TestCase):
                                expected_tag=self.env["OPENRC_BUILD_DESCRIBE"], expected_run_id="123",
                                expected_repository="owner/project")
         self.assertEqual(data["source"]["channel"], "preview")
+        self.assertIn(data["source"]["commit_date"], ("2026-10-29T13:00:00Z", "2026-10-29T13:00:00+00:00"))
         self.assertNotIn(str(self.root), (target / manifest.MANIFEST).read_text())
         lines = (target / manifest.CHECKSUMS).read_text().splitlines()
         self.assertEqual(len(lines), 5)
@@ -229,6 +234,26 @@ class ManifestTests(unittest.TestCase):
         result = manifest.capture(self.root, self.editor, self.templates, env)
         self.assertTrue(result["source"]["dirty"])
         self.assertEqual(result["source"]["channel"], "development")
+
+
+class TimestampValidationTests(unittest.TestCase):
+    def test_utc_and_offsets_are_accepted_and_malformed_values_rejected(self):
+        # An invalid later field proves the validator reached it after the timestamp.
+        source = {"version": "v1.2.3", "commit": "a" * 40, "tree": "b" * 40,
+                  "commit_date": "", "application_version": None, "dirty": False,
+                  "tag": "v1.2.3", "channel": "stable", "worktree_sha256": "c" * 64}
+        data = {"format": manifest.FORMAT, "source": source, "build": None, "engine_version": None,
+                "inputs": None, "artifacts": None, "reports": None, "qualification": None}
+        for timestamp in ("2026-10-29T13:00:00Z", "2026-10-29T08:00:00-05:00",
+                          "2026-10-29T14:00:00+01:00"):
+            source["commit_date"] = timestamp
+            with self.subTest(timestamp=timestamp), self.assertRaisesRegex(ValueError, "invalid application version"):
+                manifest.validate_metadata(data)
+        for timestamp in ("2026-10-29T13:00:00", "2026-10-29T13:00:00z",
+                          "2026-10-29T13:00:00+0000", "2026-10-29T13:00:00Zextra", None):
+            source["commit_date"] = timestamp
+            with self.subTest(timestamp=timestamp), self.assertRaisesRegex(ValueError, "invalid source timestamp"):
+                manifest.validate_metadata(data)
 
 
 if __name__ == "__main__":

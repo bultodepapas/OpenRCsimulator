@@ -217,11 +217,20 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
             assert source.exists(), source
             input_args = ["-ss", shot.get("start", 0), "-i", source]
         vf = "fps=60,scale=1920:1080:flags=lanczos,setsar=1,setpts=PTS-STARTPTS"
+        if kind == "image" and shot.get("zoom"):
+            # TRA-10: slow eased push-in on the interface value that matters; supersampled to avoid stair-stepping.
+            (cx, cy), z = shot["zoom"]["center"], float(shot["zoom"]["to"])
+            ease = f"(3*pow(on/{frames},2)-2*pow(on/{frames},3))"
+            vf = (f"scale=3840:2160:flags=lanczos,zoompan=z='1+{z - 1}*{ease}':"
+                  f"x='max(0,min(iw-iw/zoom,{2 * cx}-iw/zoom/2))':y='max(0,min(ih-ih/zoom,{2 * cy}-ih/zoom/2))':"
+                  f"d=1:s=1920x1080:fps=60,setsar=1,setpts=PTS-STARTPTS")
         if shot.get("remove_empty_ui_marker", False):
             # Hidden overlays leave a 20x16 empty panel at (8,8) in this build.
             # Remove only that non-informative panel, never gameplay/report data.
             vf += ",delogo=x=6:y=6:w=24:h=20:show=0"
-        if shot.get("grade", True):
+        if isinstance(shot.get("grade"), str):
+            vf += "," + shot["grade"]  # TRA-10: an explicit per-shot grade, e.g. the cool night look
+        elif shot.get("grade", True):
             vf += ",eq=contrast=1.035:brightness=-0.012:saturation=1.025:gamma=0.985"
         overlay = shot.get("graphics", {})
         cmd = [ffmpeg, "-y", "-hide_banner", "-loglevel", "warning", *input_args]

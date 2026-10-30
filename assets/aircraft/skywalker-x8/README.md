@@ -1,6 +1,6 @@
 # Skywalker X8 r4: sources and pipeline
 
-`skywalker-x8` is the visual family of the X8 flying wing ([X8 plan](../../../docs/X8-PLAN.md)): the author's parametric r4 game model of a 2.12 m EPO flying wing with two elevons, winglets, an electric pusher and no landing gear. The delivery is frozen in `assets/source-deliveries/skywalker-x8-r4/` without its images (owner rule) and identified by [source-manifest.json](source-manifest.json). The family builds through the shared imported-scene builder and has experimental physics data and a catalog entry (X8-06, X8-09).
+`skywalker-x8` is the stable visual-family ID of the MoonRunner X99 flying wing ([X8 plan](../../../docs/X8-PLAN.md)): the author's parametric r4 game model of a 2.12 m EPO flying wing with two elevons, winglets, an electric pusher and no landing gear. The delivery is frozen in `assets/source-deliveries/skywalker-x8-r4/` without its images (owner rule) and identified by [source-manifest.json](source-manifest.json). The family builds through the shared imported-scene builder and has experimental physics data and a catalog entry (X8-06, X8-09).
 
 ## Sources
 
@@ -36,7 +36,7 @@ python3 research/skywalker-x8/X8-02/install_assets.py          # copies GLBs, li
 python3 research/skywalker-x8/X8-02/install_assets.py --check
 python3 research/skywalker-x8/X8-02/compile_model.py           # then --check
 python3 research/aircraft-standardization/build_models.py      # then --check
-python3 tools/godot/run_checked.py --timeout 180 -- "$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_skywalker_x8.gd
+python3 tools/godot/run_checked.py --timeout 180 -- "$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_moonrunner_x99.gd
 ```
 
 After a binding or model change, also run `build_customization.py`, `build_descriptors.py` and the parked-aircraft bake in the order of the [Avanti guide](../avanti-s-a200/README.md#regenerate-and-verify). Evidence: [X8-02](../../../docs/research/skywalker-x8/X8-02/README.md).

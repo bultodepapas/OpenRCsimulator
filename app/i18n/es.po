@@ -657,12 +657,9 @@ msgstr "STOL de ala alta · 1,55 m · eléctrico 4S"
 msgid "Experimental: estimated electric motor and borrowed propeller data. Fixed wheels, flaps up, assists off."
 msgstr "Experimental: motor eléctrico estimado y datos de otra hélice. Tren fijo, flaps arriba y asistencias desactivadas."
 
-# X8-09: the X8's working name is descriptive (owner decision D1 pending), so it follows translated aircraft descriptions.
-msgid "X8 Flying Wing"
-msgstr "Ala volante X8"
-
-msgid "X8 Wing"
-msgstr "Ala X8"
+# X8-09: the owner-selected aircraft name remains unchanged in every locale.
+msgid "MoonRunner X99"
+msgstr "MoonRunner X99"
 
 msgid "EPO flying wing · 2.12 m · 6S electric pusher"
 msgstr "Ala volante de EPO · 2,12 m · eléctrico propulsor 6S"
@@ -7906,8 +7903,6 @@ msgstr "MetalFX no usa la nitidez de FSR. Se conserva tu valor guardado."
 # Custom aircraft skin tools.
 msgid "Create a skin"
 msgstr "Crear una skin"
-msgid "X8 · Blender → .orskin"
-msgstr "X8 · Blender → .orskin"
 msgid "Save the template, edit its paint images with an AI assistant or Blender, then load your .orskin file."
 msgstr "Guarda la plantilla, edita sus imágenes de pintura con un asistente de IA o Blender y luego carga tu archivo .orskin."
 msgid "Save skin template…"

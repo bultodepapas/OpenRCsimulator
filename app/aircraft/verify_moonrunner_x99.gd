@@ -1,8 +1,8 @@
-# X8-02 contract checks for the Skywalker X8 r4 imported model (headless).
+# X8-02 contract checks for the MoonRunner X99 imported model (headless).
 # Proves that the scene Godot imports is the frozen r4 asset (hash, counts, section tags, pivots against the compiled
 # geometry), that the production model registry builds both skins by visual family (no catalog entry yet), and that the
 # elevons, propeller, static camera doors, default-skin paint targets and independent instances behave as the session
-# expects. Run: python3 tools/godot/run_checked.py --timeout 120 -- "$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_skywalker_x8.gd
+# expects. Run: python3 tools/godot/run_checked.py --timeout 120 -- "$(app/get-godot.sh)" --headless --path app --script res://aircraft/verify_moonrunner_x99.gd
 extends SceneTree
 
 const Registry := preload("res://aircraft/model_registry.gd")
@@ -38,7 +38,7 @@ func _initialize() -> void:
 		_skins(described.manifest)
 		_controls(described.manifest)
 		_instances(described.manifest)
-	print("X8-02 Skywalker X8 imported model %s: %d checks, %d failures" % [Geometry.DATA.revision, checks, failures])
+	print("X8-02 MoonRunner X99 imported model %s: %d checks, %d failures" % [Geometry.DATA.revision, checks, failures])
 	print("PASS X8-02 %d checks" % checks if failures == 0 else "FAIL X8-02 %d of %d checks" % [failures, checks])
 	quit(1 if failures else 0)
 

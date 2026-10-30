@@ -178,7 +178,7 @@ def validate_metadata(data):
         require(isinstance(source[field], str) and re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", source[field]), "invalid Git identity")
     require(isinstance(source["worktree_sha256"], str) and HEX.fullmatch(source["worktree_sha256"]), "invalid worktree digest")
     require(type(source["dirty"]) is bool, "source dirty must be a boolean")
-    require(isinstance(source["commit_date"], str) and re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d[+-]\d\d:\d\d", source["commit_date"]), "invalid source timestamp")
+    require(isinstance(source["commit_date"], str) and re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:Z|[+-]\d\d:\d\d)", source["commit_date"]), "invalid source timestamp")
     require(isinstance(source["application_version"], str) and re.fullmatch(r"\d+\.\d+\.\d+", source["application_version"]), "invalid application version")
     if source["tag"] is None:
         require(source["channel"] == "development", "untagged artifacts must use development channel")

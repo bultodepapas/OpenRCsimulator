@@ -14,7 +14,7 @@ var checks := 0
 var failures := 0
 
 ## X8-04: the frozen references describe the wing-tail strip law; the tailless law (X8) has no frozen predecessor and
-## is covered by test_x8_flying_wing.gd. Skipped flights are freed here.
+## is covered by test_moonrunner_x99.gd. Skipped flights are freed here.
 func _tailless(flight: Node) -> bool:
 	if not flight.aircraft.model.get("surfaces", {}).has("tailless"):
 		return false

@@ -65,13 +65,19 @@ class CrystalCue:
     def __init__(self, cue, lower=False):
         x, y = cue.get("xy", [96, 88])
         size = cue.get("size", 84)
+        # TRA-10: optional per-cue tempo and legibility; defaults reproduce the v8 cues exactly.
+        self.k = float(cue.get("entrance_s", ENTRANCE_S)) / ENTRANCE_S
+        kicker_size = int(cue.get("kicker_size", 26))
+        detail_size = int(cue.get("detail_size", 31))
+        self.scrim_alpha = int(cue.get("scrim", 130))
+        self.shadow = int(cue.get("shadow", 0))  # TRA-10: soft drop shadow alpha; 0 keeps v8 output
         self.rows = []
         kicker = cue.get("kicker", "")
         if kicker:
-            layer, off = _text_layer(kicker.upper(), _font(26, True), CRYSTAL, 0)
+            layer, off = _text_layer(kicker.upper(), _font(kicker_size, True), CRYSTAL, 0)
             self.rows.append({"kind": "kicker", "layer": layer, "xy": (x + 54 + off[0], y + 2 + off[1])})
-        self.bar = (x, y + 18)
-        title_y = y + 42
+        self.bar = (x, y + 18 + (kicker_size - 26) // 2)
+        title_y = y + 42 + (kicker_size - 26 if kicker else 0)
         lines = cue["headline"]
         assert 1 <= len(lines) <= 2
         for i, line in enumerate(lines):
@@ -84,10 +90,15 @@ class CrystalCue:
             self.rows.append(row)
         detail = cue.get("detail", "")
         if detail:
-            layer, off = _text_layer(detail, _font(31, True), PRIMARY_TEXT, 0)
+            layer, off = _text_layer(detail, _font(detail_size, True), PRIMARY_TEXT, 0)
             self.rows.append({"kind": "detail", "layer": layer,
                               "xy": (x + 2 + off[0], title_y + len(lines) * (size - 2) + 18 + off[1])})
         self.line_count = len(lines)
+        if self.shadow:
+            for row in self.rows:
+                row["shadow"] = _glow(row["layer"], 6, (0, 0, 0))
+        # Frames after the last line's landing flash has decayed are static.
+        self.settle_s = ENTRANCE_S if "entrance_s" not in cue else max(ENTRANCE_S * self.k, self.k * (0.60 + 0.13 * (len(lines) - 1)) + 0.5)
         if cue.get("align") == "center":
             left = min(r["xy"][0] + 40 for r in self.rows)
             right = max(r["xy"][0] + r["layer"].width - 40 for r in self.rows)
@@ -116,7 +127,7 @@ class CrystalCue:
             for qx in range(min(W // 4, (right + 380) // 4)):
                 xx = qx * 4
                 fx = math.exp(-((xx - (x + right) / 2) / (right - x + 200)) ** 2) * min(1.0, max(0.0, (right + 380 - xx) / 160))
-                px[qx, py] = int(130 * fx * fy)
+                px[qx, py] = int(self.scrim_alpha * fx * fy)
         scrim = Image.new("RGBA", (W, H), SCRIM + (0,))
         scrim.putalpha(mask.resize((W, H), Image.Resampling.BICUBIC))
         return scrim
@@ -124,10 +135,11 @@ class CrystalCue:
     def frame(self, tau, exit_q=1.0):
         im = Image.new("RGBA", (W, H))
         if self.scrim is not None:
-            im.alpha_composite(_scale_alpha(self.scrim, _ease_out(tau / 0.35, 2.0) * exit_q))
+            im.alpha_composite(_scale_alpha(self.scrim, _ease_out(tau / (0.35 * self.k), 2.0) * exit_q))
         drift = int(round(-36 * (1.0 - exit_q) ** 2))
         draw = ImageDraw.Draw(im)
-        bar_p = _ease_out(tau / 0.28, 3.0)
+        k = self.k
+        bar_p = _ease_out(tau / (0.28 * k), 3.0)
         if bar_p > 0 and any(r["kind"] == "kicker" for r in self.rows):
             bx, by = self.bar
             length = int(36 * bar_p)
@@ -140,21 +152,21 @@ class CrystalCue:
             rx, ry = row["xy"]
             rx += drift
             if row["kind"] == "kicker":
-                p = _ease_out((tau - 0.05) / 0.35, 3.0)
+                p = _ease_out((tau - 0.05 * k) / (0.35 * k), 3.0)
                 lift = 0
             elif row["kind"] == "line":
-                start = 0.10 + 0.13 * row["index"]
-                p = _ease_out((tau - start) / 0.50, 5.0)
+                start = k * (0.10 + 0.13 * row["index"])
+                p = _ease_out((tau - start) / (0.50 * k), 5.0)
                 lift = int(round(24 * (1.0 - p)))
             else:
-                p = _ease_out((tau - 0.50) / 0.35, 2.0)
+                p = _ease_out((tau - 0.50 * k) / (0.35 * k), 2.0)
                 lift = int(round(10 * (1.0 - p)))
             if p <= 0.0:
                 continue
             reveal = layer.width if row["kind"] == "detail" else max(1, int(layer.width * p))
             alpha = (min(1.0, p * 1.8) if row["kind"] != "detail" else p * 0.9) * exit_q
             if row["kind"] == "line":
-                land = start + 0.50
+                land = start + 0.50 * k
                 flash = 1.0 + (1.6 if row["last"] else 0.6) * math.exp(-((tau - land) / 0.16) ** 2)
                 gain = min(1.0, row["glow_gain"] * flash)
                 halo = _scale_alpha(row["glow"].crop((0, 0, reveal, layer.height)), gain * alpha)
@@ -162,6 +174,9 @@ class CrystalCue:
                 if flash > 1.05:
                     halo2 = _scale_alpha(row["glow"].crop((0, 0, reveal, layer.height)), (flash - 1.0) * 0.6 * alpha)
                     im.alpha_composite(halo2, (rx, ry + lift))
+            if "shadow" in row:
+                shade = _scale_alpha(row["shadow"].crop((0, 0, reveal, layer.height)), alpha * self.shadow / 255)
+                im.alpha_composite(shade, (rx + 2, ry + lift + 3))
             im.alpha_composite(_scale_alpha(layer.crop((0, 0, reveal, layer.height)), alpha), (rx, ry + lift))
             if row["kind"] in ("line", "kicker") and p < 0.995:
                 # Crystal scan edge leading the wipe.
@@ -170,7 +185,7 @@ class CrystalCue:
                 ImageDraw.Draw(edge).rectangle((10, 34, 13, layer.height - 34), fill=CRYSTAL + (int(230 * (1 - p) ** 0.5 * exit_q),))
                 im.alpha_composite(edge.filter(ImageFilter.GaussianBlur(3)), (edge_x - 12, ry + lift))
         if self.credit is not None:
-            p = _ease_out((tau - 0.7) / 0.5, 2.0) * exit_q
+            p = _ease_out((tau - 0.7 * k) / (0.5 * k), 2.0) * exit_q
             if p > 0:
                 im.alpha_composite(_scale_alpha(self.credit["layer"], p * 0.85), self.credit["xy"])
         return im
@@ -198,9 +213,9 @@ def render_cue(directory, cue, frames, duration, lower=False):
             os.link(blank, target)
             continue
         exit_q = min(1.0, max(0.0, (end - t) / EXIT_S)) if exits else 1.0
-        if tau >= ENTRANCE_S and exit_q >= 1.0:
+        if tau >= layout.settle_s and exit_q >= 1.0:
             if not static.exists():
-                layout.frame(ENTRANCE_S + 1.0).save(static, compress_level=1)
+                layout.frame(layout.settle_s + 1.0).save(static, compress_level=1)
                 rendered += 1
             os.link(static, target)
             continue

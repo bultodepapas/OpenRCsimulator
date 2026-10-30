@@ -30,9 +30,9 @@
 
 **[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=website)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
 
-![Current Home screen with the X8 Flying Wing at Club field](docs/media/ui-home.png)
+![Home screen with MoonRunner X99 under its former working name at Club field](docs/media/ui-home.png)
 
-*Home with the X8 Flying Wing. All game images below were captured from the development build on **28 October 2026**, at **1920×1080**. [Capture details](docs/media/README.md#readme-gallery).*
+*Home with MoonRunner X99 under its former working name. All game images below were captured from the development build on **28 October 2026**, at **1920×1080**. [Capture details](docs/media/README.md#readme-gallery).*
 
 > **Early alpha.** The simulator is being built with the RC community. Flight models still need independent measurements and pilot evaluation; automated tests do not establish real-aircraft accuracy.
 
@@ -70,13 +70,13 @@
 
 Current source has **seven fixed-wing airframes and ten airplane configurations**. The Ugly Stik is the reference model; the other configurations are experimental. Click an aircraft for its guide, controls and modeling limits.
 
-### X8 Flying Wing
+### MoonRunner X99
 
-**2.12 m · 6S electric pusher · elevons · hand launch or airborne start.** The X8 joins the current-source hangar as an experimental flying wing, with no landing gear. [Aircraft guide and asset terms](docs/X8-PLAN.md).
+**2.12 m · 6S electric pusher · elevons · hand launch or airborne start.** MoonRunner X99 joins the current-source hangar as an experimental flying wing, with no landing gear. [Aircraft guide and asset terms](docs/X8-PLAN.md).
 
 | X8 over Club field | X8 model close-up |
 | --- | --- |
-| ![X8 Flying Wing in a current simulator flight over Club field](docs/media/flight-x8.png) | ![Current X8 Flying Wing model with swept wings, winglets and rear propeller](docs/media/studio-skywalker-x8.png) |
+| ![MoonRunner X99 in a simulator flight over Club field](docs/media/flight-x8.png) | ![MoonRunner X99 model with swept wings, winglets and rear propeller](docs/media/studio-skywalker-x8.png) |
 
 ### Sport models, warbirds and jet
 

@@ -150,9 +150,17 @@ func transition() -> void:
 	var expected: Array = signature(grove)
 	var old_id: int = grove.get_child(0).multimesh.get_instance_id()
 	await ui.tap(KEY_ENTER)
+	# Rendered Home launches are staged and may first drain background preparation.
+	# Wait for the transaction to finish, not merely for a candidate flight to appear.
+	var deadline_usec := Time.get_ticks_usec() + 90 * 1000000
+	while (app.get("_home_preparation_route_pending") or app.get("_loading_active")) and Time.get_ticks_usec() < deadline_usec:
+		await process_frame
+	var settled: bool = not app.get("_home_preparation_route_pending") and not app.get("_loading_active")
 	var flight: Node = app.get("flight")
-	check("real Fly route creates flight", flight != null)
-	if flight != null:
+	check("real Fly route creates flight", settled and flight != null)
+	if not settled or flight == null:
+		printerr("Fly transition: settled=%s loading=%s" % [settled, app.get("last_flight_loading")])
+	if settled and flight != null:
 		var active: Node3D = flight.get_node("Field/treeline")
 		check("Home and flight use identical identities, positions and bounds", signature(active) == expected)
 		check("transition owns a fresh multimesh", active.get_child(0).multimesh.get_instance_id() != old_id)

@@ -783,11 +783,8 @@ msgstr ""
 "Experimental: motor elétrico estimado e dados de hélice de outra aeronave. "
 "Trem de pouso fixo, flaps recolhidos e assistências desativadas."
 
-msgid "X8 Flying Wing"
-msgstr "X8 Flying Wing"
-
-msgid "X8 Wing"
-msgstr "X8 Wing"
+msgid "MoonRunner X99"
+msgstr "MoonRunner X99"
 
 msgid "EPO flying wing · 2.12 m · 6S electric pusher"
 msgstr "Asa voadora de EPO · 2,12 m · elétrica 6S com hélice propulsora"
@@ -9152,8 +9149,6 @@ msgstr "Companheiros de voo estão indisponíveis nesta versão do jogo."
 # Custom aircraft skin tools.
 msgid "Create a skin"
 msgstr "Criar uma pintura"
-msgid "X8 · Blender → .orskin"
-msgstr "X8 · Blender → .orskin"
 msgid "Save the template, edit its paint images with an AI assistant or Blender, then load your .orskin file."
 msgstr "Salve o modelo, edite suas imagens de pintura com um assistente de IA ou o Blender e carregue seu arquivo .orskin."
 msgid "Save skin template…"

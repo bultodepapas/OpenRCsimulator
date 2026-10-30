@@ -53,7 +53,7 @@ func _initialize() -> void:
 		_tailless(loaded.model)
 		_trim(loaded.model)
 		_hull(loaded.model)
-	print("X8 flying wing: %d checks, %d failures" % [_checks, _failures])
+	print("MoonRunner X99 flying wing: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
 
