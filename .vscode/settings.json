@@ -1,3 +1,4 @@
 {
-  "git.useEditorAsCommitInput": false
+  "git.useEditorAsCommitInput": false,
+  "git.ignoreLimitWarning": true
 }
