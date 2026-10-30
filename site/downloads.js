@@ -11,7 +11,7 @@
   for (const link of document.querySelectorAll('#download a[href]')) {
     const url = new URL(link.href);
     const match = url.pathname.match(/^\/bultodepapas\/OpenRCsimulator\/releases\/download\/(v\d+\.\d+\.\d+(?:-[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?)\/openrc-simulator-\1-(windows-x86_64|linux-x86_64|macos-universal)\.zip$/);
-    if (url.origin !== 'https://github.com' || !match || url.search || url.hash) continue;
+    if (url.origin !== 'https://github.com' || !match || match[1].length > 160 || url.search || url.hash) continue;
     const platform = match[2].split('-')[0];
     links.set(platform, {link, release: match[1]});
   }

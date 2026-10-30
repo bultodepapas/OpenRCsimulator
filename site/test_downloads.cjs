@@ -48,6 +48,22 @@ test('prerelease links dispatch all platforms and attribute manual clicks', () =
   }
 });
 
+test('release tag length matches the manifest limit', () => {
+  const prefix = 'v0.1.9-';
+  const tag160 = prefix + 'a'.repeat(160 - prefix.length);
+  const tag161 = tag160 + 'a';
+  const accepted = fixture(`?download=windows&release=${tag160}`, {version: tag160});
+  accepted.expire();
+  assert.equal(accepted.events()[0][2].release_version, tag160);
+  assert.deepEqual(accepted.navigation, [accepted.links[0].href]);
+
+  const rejected = fixture(`?download=windows&release=${tag161}`, {version: tag161});
+  rejected.expire();
+  assert.equal(rejected.events().length, 0);
+  assert.equal(rejected.navigation.length, 0);
+  assert.equal(rejected.links[0].click, undefined);
+});
+
 test('prerelease destinations must have an approved origin, tag and matching asset', () => {
   const base = 'https://github.com/bultodepapas/OpenRCsimulator/releases/download/';
   for (const href of [
