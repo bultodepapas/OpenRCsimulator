@@ -99,7 +99,7 @@ class SkinKits(unittest.TestCase):
                     if family in ASSET_RIGHTS:
                         rights = ASSET_RIGHTS[family]
                         self.assertEqual(archive.read("ASSET-LICENSE.txt"), (rights / "LICENSE.txt").read_bytes())
-                        self.assertEqual(archive.read("BETA-DISTRIBUTION.txt"), (rights / "BETA-DISTRIBUTION.txt").read_bytes())
+                        self.assertEqual(archive.read("BETA-DISTRIBUTION.txt"), (APP / "assets/aircraft-notices" / f"{family}.txt").read_bytes())
                         self.assertIn(b"does not establish permission to modify the asset or distribute modifications", archive.read("README.txt"))
                     guide = (APP / "assets/skin-kit/guide.html").read_bytes()
                     stamped = guide.replace(b'data-aircraft-id=""', f'data-aircraft-id="{family}"'.encode("ascii"), 1)

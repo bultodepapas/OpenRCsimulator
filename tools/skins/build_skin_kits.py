@@ -30,6 +30,7 @@ ASSET_RIGHTS = {
     "moonrunner-x99": ROOT / "app/assets/aircraft/skywalker-x8",
     "turbo-lumber-evolution": ROOT / "app/assets/aircraft/turbo-lumber-evolution",
 }
+ASSET_NOTICES = ROOT / "app/assets/aircraft-notices"
 RIGHTS_WARNING = ("This kit is technically editable. Its beta distribution notice does not "
                   "establish permission to modify the asset or distribute modifications. "
                   "See BETA-DISTRIBUTION.txt and ASSET-LICENSE.txt.\n")
@@ -388,7 +389,7 @@ def build(family, model, output=None, source_override=None):
                     readme += "\n" + RIGHTS_WARNING
                     rights = ASSET_RIGHTS[family]
                     add_zip_file(archive, "ASSET-LICENSE.txt", (rights / "LICENSE.txt").read_bytes())
-                    add_zip_file(archive, "BETA-DISTRIBUTION.txt", (rights / "BETA-DISTRIBUTION.txt").read_bytes())
+                    add_zip_file(archive, "BETA-DISTRIBUTION.txt", (ASSET_NOTICES / f"{family}.txt").read_bytes())
                 add_zip_file(archive, "README.txt", readme.encode("utf-8"))
                 add_zip_file(archive, "guide.html", guide)
             os.replace(temporary, output)

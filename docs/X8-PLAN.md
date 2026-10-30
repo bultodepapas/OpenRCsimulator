@@ -46,5 +46,5 @@ The X8 is the first catalog aircraft outside the conventional wing-tail/tractor/
 | ID | Decision | State |
 | --- | --- | --- |
 | D1 | Aircraft identity | Owner selected "MoonRunner X99" on 2026-10-29; the active catalog and visual family use `moonrunner-x99`, with `skywalker-x8` retained as a compatibility alias and in unchanged historical source records |
-| D2 | Asset distribution | On 2026-10-30 the user confirmed authority to authorize binary and source distribution with this beta. The [notice](../app/assets/aircraft/skywalker-x8/BETA-DISTRIBUTION.txt) records the limited scope; the original delivery's `LICENSE.txt` remains unchanged. Other terms are not established. |
+| D2 | Asset distribution | On 2026-10-30 the user confirmed authority to authorize binary and source distribution with this beta. The [notice](../app/assets/aircraft-notices/moonrunner-x99.txt) records the limited scope; the original delivery's `LICENSE.txt` remains unchanged. Other terms are not established. |
 | D3 | Configuration | Delivery UAV build, 6S pack (working choice) |

@@ -1,12 +1,12 @@
-Turbo Lumber Evolution — beta distribution notice
+MoonRunner X99 — beta distribution notice
 
 On 2026-10-30, the project user confirmed their authority to authorize
 distribution of this model and its sources and authorized publication of this
 OpenRC Simulator v0.1.9-beta.1. The authorization covers distribution of the model and
 its sources as part of this beta, in binary and source form.
 
-The accompanying LICENSE.txt preserves the original delivery's authorship and
-terms as received. Its earlier internal-evaluation statement predates this
+The original delivery's LICENSE.txt, also included in this beta, preserves its authorship and
+terms as received. Its statement that asset terms were not set predates this
 beta-specific authorization. Rights and attributions are retained. This notice
 does not establish terms for other uses, later releases, modifications,
 sublicensing or distribution outside this beta, and does not apply the

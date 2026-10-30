@@ -67,9 +67,9 @@ func _initialize() -> void:
 	# Beta asset notices and the original attribution must travel with every pack.
 	for notice: String in [
 		"res://assets/aircraft/turbo-lumber-evolution/LICENSE.txt",
-		"res://assets/aircraft/turbo-lumber-evolution/BETA-DISTRIBUTION.txt",
+		"res://assets/aircraft-notices/turbo-lumber-evolution.txt",
 		"res://assets/aircraft/skywalker-x8/LICENSE.txt",
-		"res://assets/aircraft/skywalker-x8/BETA-DISTRIBUTION.txt",
+		"res://assets/aircraft-notices/moonrunner-x99.txt",
 	]:
 		if not FileAccess.file_exists(notice) or FileAccess.get_file_as_string(notice).is_empty():
 			printerr("Pack missing or empty aircraft rights notice: ", notice)
