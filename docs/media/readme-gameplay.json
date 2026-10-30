@@ -32,17 +32,39 @@
   "captures": {
     "ui-home.png": {
       "kind": "Home UI",
-      "aircraft": "skywalker-x8",
+      "aircraft": "moonrunner-x99",
       "landscape": "club_field",
       "time_of_day": "day",
       "flight_input": "Keyboard",
       "file": "ui-home.png",
-      "sha256": "c3c43e9eca0764fe3c9de55d7ebc76533639f3a3187d4cb57664526bf6574b99",
+      "sha256": "69e4746b62ac57f7449998621fe44fd4ad4684c9ad1e75dc5f54c43fcea3885d",
       "size": [
         1920,
         1080
       ],
-      "captured_utc": "2026-10-28T22:47:38.300109Z"
+      "captured_utc": "2026-10-30T01:57:43Z",
+      "capture_session": {
+        "session_started_utc": "2026-10-30T01:56:58Z",
+        "source_commit": "2ae9c5ad473859f73dd7570f665504ddb2b119f9",
+        "worktree": "Development checkout; README media changes in progress",
+        "engine": "4.8.beta1.official.4d10419ca",
+        "platform": "Windows",
+        "renderer": "gl_compatibility",
+        "driver": "opengl3",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "driver_version": "617.42",
+        "viewport": [
+          1920,
+          1080
+        ],
+        "render_scale_3d": 1.0,
+        "profile": "Isolated debug-bridge profile",
+        "exit": {
+          "stopped": true,
+          "crash": null,
+          "leaked_objects": 0
+        }
+      }
     },
     "ui-workshop-appearance.png": {
       "kind": "Workshop UI",
@@ -73,34 +95,6 @@
         1080
       ],
       "captured_utc": "2026-10-28T22:44:19.269101Z"
-    },
-    "flight-x8.png": {
-      "kind": "Simulated flight, paused for capture",
-      "aircraft": "skywalker-x8",
-      "landscape": "club_field",
-      "time_of_day": "day",
-      "camera": "closeup",
-      "hud": "off",
-      "first_flight_hint": "dismissed",
-      "tick": 429,
-      "time_s": 1.7875,
-      "paused": true,
-      "crashed": false,
-      "fault": "",
-      "physics_backend": "gdscript_reference",
-      "commands": {
-        "roll": 0,
-        "pitch": 0,
-        "yaw": 0,
-        "throttle": 0.5
-      },
-      "file": "flight-x8.png",
-      "sha256": "d1f36295201effb6310e5abafba651e7b90ff5c8daeadc601557de82899724ed",
-      "size": [
-        1920,
-        1080
-      ],
-      "captured_utc": "2026-10-28T22:50:03.700256Z"
     },
     "landscape-club-field.png": {
       "kind": "Elevated in-app landscape overview",
@@ -163,6 +157,54 @@
         1080
       ],
       "captured_utc": "2026-10-28T22:49:03.554448Z"
+    },
+    "flight-moonrunner-x99.png": {
+      "kind": "Simulated flight, paused for capture",
+      "aircraft": "moonrunner-x99",
+      "landscape": "club_field",
+      "time_of_day": "day",
+      "camera": "closeup",
+      "hud": "off",
+      "tick": 4667,
+      "time_s": 19.445833333333333,
+      "paused": true,
+      "crashed": false,
+      "fault": "",
+      "commands": {
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "throttle": 0.5
+      },
+      "file": "flight-moonrunner-x99.png",
+      "sha256": "f9b80c609fec4c7f155ec4453ef7fcf2e0610dd36399a026f7329db466562175",
+      "size": [
+        1920,
+        1080
+      ],
+      "captured_utc": "2026-10-30T01:59:17Z",
+      "capture_session": {
+        "session_started_utc": "2026-10-30T01:56:58Z",
+        "source_commit": "2ae9c5ad473859f73dd7570f665504ddb2b119f9",
+        "worktree": "Development checkout; README media changes in progress",
+        "engine": "4.8.beta1.official.4d10419ca",
+        "platform": "Windows",
+        "renderer": "gl_compatibility",
+        "driver": "opengl3",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "driver_version": "617.42",
+        "viewport": [
+          1920,
+          1080
+        ],
+        "render_scale_3d": 1.0,
+        "profile": "Isolated debug-bridge profile",
+        "exit": {
+          "stopped": true,
+          "crash": null,
+          "leaked_objects": 0
+        }
+      }
     }
   }
 }

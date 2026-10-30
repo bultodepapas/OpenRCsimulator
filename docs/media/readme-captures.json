@@ -49,6 +49,55 @@
         450
       ],
       "capture_manifest_sha256": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7"
+    },
+    "076c3f760a46b3a520b07b5a5ed15ce0101c4fffcbad35924e3cd5b4a87fc32b": {
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "background": "#111820",
+      "captured_utc": "2026-10-30T01:56:52Z",
+      "driver": "opengl3",
+      "engine": "4.8-beta1 (official)",
+      "format": "openrc-readme-renders v2",
+      "frame_count": 0,
+      "purpose": "Studio model presentation; not gameplay or flight validation",
+      "renderer": "gl_compatibility",
+      "source_changed_during_capture": false,
+      "source_end": {
+        "builder_sha256": "ca8129f738e7909d7471af07f1fe6c7e2ac1942e585933d14b66f159ec5b428e",
+        "capture_tool_sha256": "fe8bdd84c6a96ad81d10760a5fe0c490b6920b0f070ba4944ef425d126b69615",
+        "catalog_sha256": "eec6a281efcc9476adc0ae1b880e3aa92ca6cccf1640be83f2e1b2a22a35350a",
+        "commit": "2ae9c5ad473859f73dd7570f665504ddb2b119f9",
+        "scope": [
+          "app",
+          "assets",
+          "tools/readme"
+        ],
+        "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "untracked_contents_hashed": false,
+        "worktree_status": ""
+      },
+      "source_start": {
+        "builder_sha256": "ca8129f738e7909d7471af07f1fe6c7e2ac1942e585933d14b66f159ec5b428e",
+        "capture_tool_sha256": "fe8bdd84c6a96ad81d10760a5fe0c490b6920b0f070ba4944ef425d126b69615",
+        "catalog_sha256": "eec6a281efcc9476adc0ae1b880e3aa92ca6cccf1640be83f2e1b2a22a35350a",
+        "commit": "2ae9c5ad473859f73dd7570f665504ddb2b119f9",
+        "scope": [
+          "app",
+          "assets",
+          "tools/readme"
+        ],
+        "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "untracked_contents_hashed": false,
+        "worktree_status": ""
+      },
+      "stills_size": [
+        1920,
+        1080
+      ],
+      "tour_size": [
+        800,
+        450
+      ],
+      "capture_manifest_sha256": "076c3f760a46b3a520b07b5a5ed15ce0101c4fffcbad35924e3cd5b4a87fc32b"
     }
   },
   "stills": {
@@ -202,31 +251,6 @@
       "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
       "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
     },
-    "skywalker-x8": {
-      "aircraft_data_sha256": "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830",
-      "bounds": {
-        "position": [
-          -1.05862140655518,
-          -0.089095838367939,
-          -0.300727486610413
-        ],
-        "size": [
-          2.11724281311035,
-          0.296138882637024,
-          0.981146335601807
-        ]
-      },
-      "frames": 0,
-      "id": "skywalker-x8",
-      "model_manifest_sha256": "f735c4192228e5863323d7fa72a1d888c1ee98a4a36c4ffc40cff84d19cc7ae1",
-      "name": "X8 Flying Wing",
-      "status": "experimental",
-      "visual_family": "skywalker-x8",
-      "file": "studio-skywalker-x8.png",
-      "sha256": "a9c850a84c013923e24a97687e51a548afd1769009dbf5708cd4b85eadb64ab2",
-      "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
-      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
-    },
     "xcell-60-research": {
       "aircraft_data_sha256": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
       "bounds": {
@@ -301,19 +325,44 @@
       "sha256": "c6e55b1683cd189e2fd01168a9460a91fae2feeb8cb3efc7bd9c9757e4a18e5f",
       "session": "9719633b5dda09c845fe0a22b9ac3dc590bb64ed3ea58f8bd1facec32fdb4dd7",
       "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+    },
+    "moonrunner-x99": {
+      "aircraft_data_sha256": "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c",
+      "bounds": {
+        "position": [
+          -1.05862140655518,
+          -0.089095838367939,
+          -0.300727486610413
+        ],
+        "size": [
+          2.11724281311035,
+          0.296138882637024,
+          0.981146335601807
+        ]
+      },
+      "frames": 0,
+      "id": "moonrunner-x99",
+      "model_manifest_sha256": "93803c4fc4d3ada7407532fd4079305572ed67bbd5eef5e60b3c877cc9239149",
+      "name": "MoonRunner X99",
+      "status": "experimental",
+      "visual_family": "moonrunner-x99",
+      "file": "studio-moonrunner-x99.png",
+      "sha256": "4b1ee3602c06d47e9f9adb64d05586131172ed2adda7e9684b992cfeaafa4747",
+      "session": "076c3f760a46b3a520b07b5a5ed15ce0101c4fffcbad35924e3cd5b4a87fc32b",
+      "packager_sha256": "9c8b59089c4d7b8ddb96e6bc50e983ad03d6b51a713ac4f884432c5fe1b4438b"
     }
   },
   "images": {
     "ui-home.png": {
       "file": "ui-home.png",
-      "sha256": "c3c43e9eca0764fe3c9de55d7ebc76533639f3a3187d4cb57664526bf6574b99",
+      "sha256": "69e4746b62ac57f7449998621fe44fd4ad4684c9ad1e75dc5f54c43fcea3885d",
       "size": [
         1920,
         1080
       ],
-      "input_name": "readme-home-final-20261028.png",
+      "input_name": "readme-x99-home.png",
       "provenance": "Supplied separately; studio session does not apply",
-      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+      "packager_sha256": "9c8b59089c4d7b8ddb96e6bc50e983ad03d6b51a713ac4f884432c5fe1b4438b"
     },
     "ui-workshop-appearance.png": {
       "file": "ui-workshop-appearance.png",
@@ -359,16 +408,16 @@
       "provenance": "Supplied separately; studio session does not apply",
       "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
     },
-    "flight-x8.png": {
-      "file": "flight-x8.png",
-      "sha256": "d1f36295201effb6310e5abafba651e7b90ff5c8daeadc601557de82899724ed",
+    "flight-moonrunner-x99.png": {
+      "file": "flight-moonrunner-x99.png",
+      "sha256": "f9b80c609fec4c7f155ec4453ef7fcf2e0610dd36399a026f7329db466562175",
       "size": [
         1920,
         1080
       ],
-      "input_name": "readme-x8-final-20261028.png",
+      "input_name": "readme-x99-flight-final.png",
       "provenance": "Supplied separately; studio session does not apply",
-      "packager_sha256": "0d52d71783aa386f2184432df4e6ec62f20c1e7980df8c2135aa723ef21618c0"
+      "packager_sha256": "9c8b59089c4d7b8ddb96e6bc50e983ad03d6b51a713ac4f884432c5fe1b4438b"
     }
   }
 }

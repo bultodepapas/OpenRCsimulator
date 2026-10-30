@@ -30,9 +30,9 @@
 
 **[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=website)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
 
-![Home screen with MoonRunner X99 under its former working name at Club field](docs/media/ui-home.png)
+![Home screen with MoonRunner X99 at Club field](docs/media/ui-home.png)
 
-*Home with MoonRunner X99 under its former working name. All game images below were captured from the development build on **28 October 2026**, at **1920×1080**. [Capture details](docs/media/README.md#readme-gallery).*
+*Home with MoonRunner X99. Game images below were captured from development builds on **28–29 October 2026**, at **1920×1080**. [Capture details](docs/media/README.md#readme-gallery).*
 
 > **Early alpha.** The simulator is being built with the RC community. Flight models still need independent measurements and pilot evaluation; automated tests do not establish real-aircraft accuracy.
 
@@ -72,11 +72,11 @@ Current source has **seven fixed-wing airframes and ten airplane configurations*
 
 ### MoonRunner X99
 
-**2.12 m · 6S electric pusher · elevons · hand launch or airborne start.** MoonRunner X99 joins the current-source hangar as an experimental flying wing, with no landing gear. [Aircraft guide and asset terms](docs/X8-PLAN.md).
+**2.12 m · 6S electric pusher · elevons · hand launch or airborne start.** MoonRunner X99 joins the current-source hangar as an experimental flying wing, with no landing gear. [Model and asset pipeline](tools/aircraft/moonrunner/README.md) · [Aircraft asset terms](docs/AIRCRAFT-LICENSING.md).
 
 | MoonRunner X99 over Club field | MoonRunner X99 model close-up |
 | --- | --- |
-| ![MoonRunner X99 in a simulator flight over Club field](docs/media/flight-x8.png) | ![MoonRunner X99 model with swept wings, winglets and rear propeller](docs/media/studio-skywalker-x8.png) |
+| ![MoonRunner X99 in a simulator flight over Club field](docs/media/flight-moonrunner-x99.png) | ![MoonRunner X99 model with swept wings, winglets and rear propeller](docs/media/studio-moonrunner-x99.png) |
 
 ### Sport models, warbirds and jet
 

@@ -315,7 +315,9 @@ livery, so the edit can cut between livery takes on one clock. `assemble.py` rea
 `lower: true` (no scrim; lower safe area) and `credit` serve the end card. `capture_brand.gd` renders the
 production brand intro as PNG frames for a `frames` shot. `capture_flight.gd` now detaches any connected gamepad/radio from the session after
 startup (`FLIGHT_CAPTURE_CONTROLLER_DETACHED`): a desk controller otherwise froze takes at tick 3 while the
-manifest still read `complete`. Check that the logged tick advances, not only `complete`.
+manifest still read `complete`. Check that the logged tick advances, not only `complete`. The same tick-3 pause
+also occurs intermittently with no controller attached (two of eight TRA-10 revision 9.3 takes); an identical
+rerun advances, so retry when `FLIGHT_CAPTURE_FRAME 60` still logs `tick=3`.
 
 TRA-10 (revision 9) adds the shot `corsair-orbit`. It is a low pass at `--alt`, with full-throttle altitude hold
 (climb damping and integral trim) and a light left bank, while the camera makes one eased 360° orbit in the
