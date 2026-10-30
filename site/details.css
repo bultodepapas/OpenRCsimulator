@@ -65,6 +65,8 @@ html[dir=rtl] .hero-aircraft { right:auto; left:0; }
 html[dir=rtl] .hero-scene-caption { right:auto; left:var(--pad); }
 html[dir=rtl] .hero-scene-caption .aircraft-note { text-align:start; }
 html[dir=rtl] .field-shade { background:linear-gradient(270deg,#071e16d9,#0a20173d 70%,#0a201710),linear-gradient(0deg,#0819129c,transparent 30%); }
+/* Download instructions, release copy and dispatch status must not overlap. */
+.download .download-intro { position: static; max-width: 65ch; margin: 0 0 1em; }
 html[dir=rtl] .download-intro { left:auto; right:61%; }
 html[dir=rtl] .download-links a { padding:30px 60px 30px 20px; }
 html[dir=rtl] .download-links a+a { border-left:0; border-right:1px solid #ffffff40; padding-right:75px; }
