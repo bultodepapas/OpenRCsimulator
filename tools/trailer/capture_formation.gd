@@ -1,6 +1,8 @@
 # TRA-05. Presentation-only four-ship choreography using unmodified production models.
 # Run with --path app --script <this file> -- --out-dir=<absolute> [--preview] [--mix]
 # TRA-09 --mix: five distinct airframes with colored show-smoke tints (presentation only).
+# TRA-10 --sizes: three Ugly Stiks at the Workshop's 500 %, 100 % and 10 % sizes, flying together at one depth
+# so the size difference reads in a single frame (presentation-scaled models, not Workshop flight physics).
 # This scene does not create a Simulation or imply interacting multiplayer physics.
 extends SceneTree
 
@@ -23,9 +25,18 @@ const MIX_ROSTER: Array[Dictionary] = [
 	{id = "jensen-das-ugly-stik-60", tint = Vector3(0.15, 0.85, 0.30)},
 ]
 
+# TRA-10 size trio: the Workshop presets Giant, Original and Tiny of the same airframe (left to right).
+const SIZE_ROSTER: Array[Dictionary] = [
+	{id = "jensen-das-ugly-stik-60", scale = 5.0},
+	{id = "jensen-das-ugly-stik-60", scale = 1.0},
+	{id = "jensen-das-ugly-stik-60", scale = 0.1},
+]
+const SIZE_FRAMES := 480
+
 var output := ""
 var preview := false
 var mix := false
+var sizes := false
 var frames := FRAMES
 var stage: Node3D
 var camera: Camera3D
@@ -48,6 +59,9 @@ func _run() -> void:
 		if arg == "--mix":
 			mix = true
 			frames = MIX_FRAMES
+		if arg == "--sizes":
+			sizes = true
+			frames = SIZE_FRAMES
 	if output.is_empty():
 		quit(2)
 		return
@@ -76,8 +90,8 @@ func _run() -> void:
 	fill.light_color = Color("cad9e5")
 	fill.light_energy = 0.35
 	stage.add_child(fill)
-	var roster: Array[Dictionary] = MIX_ROSTER if mix else [{id = "jensen-das-ugly-stik-60"}, {id = "jensen-das-ugly-stik-60"},
-		{id = "jensen-das-ugly-stik-60"}, {id = "jensen-das-ugly-stik-60"}]
+	var roster: Array[Dictionary] = MIX_ROSTER if mix else (SIZE_ROSTER if sizes else [{id = "jensen-das-ugly-stik-60"},
+		{id = "jensen-das-ugly-stik-60"}, {id = "jensen-das-ugly-stik-60"}, {id = "jensen-das-ugly-stik-60"}])
 	for entry: Dictionary in roster:
 		var model: Dictionary = Builder.build(str(entry.id))
 		if model.is_empty():
@@ -87,6 +101,8 @@ func _run() -> void:
 		var smoke: Node3D = EngineSmoke.new()
 		stage.add_child(smoke)
 		var bounds: AABB = _bounds(model.root, Transform3D.IDENTITY)
+		if sizes: # after the unscaled bounds: screen checks apply the root's global (scaled) transform
+			model.root.scale = Vector3.ONE * float(entry.scale)
 		var anchors: Array = model.get("exhausts", [])
 		var anchor: Dictionary = anchors[0] if not anchors.is_empty() else {}
 		if mix:
@@ -97,15 +113,16 @@ func _run() -> void:
 			anchor = anchor.duplicate()
 			anchor.direction = Vector3.BACK
 			anchor.pump = true
-		if not anchor.is_empty():
+		if not anchor.is_empty() and not sizes: # smoke volume does not scale, so the size trio flies clean
 			smoke.configure(anchor)
 		if mix and smoke.pump != null:
 			(smoke.pump.process_material as ShaderMaterial).set_shader_parameter("tint", entry.tint)
 		var blur: Node3D = PropBlur.attach(model, null, stage)
 		if blur != null:
 			blur.set_process(false)
-		maximum_model_radius = maxf(maximum_model_radius, bounds.size.length() * 0.5)
-		actors.append({model = model, smoke = smoke, blur = blur, bounds = bounds})
+		var size_scale: float = float(entry.get("scale", 1.0))
+		maximum_model_radius = maxf(maximum_model_radius, bounds.size.length() * 0.5 * size_scale)
+		actors.append({model = model, smoke = smoke, blur = blur, bounds = bounds, scale = size_scale})
 	await process_frame
 	# Warm up real smoke history on the same presentation clock.
 	for f: int in range(-120, 0):
@@ -128,7 +145,8 @@ func _run() -> void:
 		format = "openrc-trailer-formation v1", frames = frames, fps = FPS,
 		width = 1920, height = 1080, classification = "cinematic choreography; not gameplay",
 		model = ",".join(roster.map(func(e: Dictionary) -> String: return str(e.id))), actors = roster.size(),
-		smoke = "colored cinematic show-smoke tints" if mix else "stock Stik pump",
+		smoke = "colored cinematic show-smoke tints" if mix else ("none" if sizes else "stock Stik pump"),
+		scales = roster.map(func(e: Dictionary) -> float: return float(e.get("scale", 1.0))),
 		minimum_center_separation_m = minimum_separation,
 		maximum_model_radius_m = maximum_model_radius,
 		minimum_screen_margin_px = minimum_screen_margin,
@@ -144,6 +162,9 @@ func _run() -> void:
 func _pose(t: float) -> void:
 	if mix:
 		_pose_mix(t)
+		return
+	if sizes:
+		_pose_sizes(t)
 		return
 	var split: float = maxf(0.0, t - 4.0)
 	var ease: float = smoothstep(0.0, 3.0, split)
@@ -188,6 +209,50 @@ func _pose(t: float) -> void:
 			minimum_separation = minf(minimum_separation, positions[i].distance_to(positions[j]))
 	if t >= 0.0:
 		frame_records.append(record)
+
+# Size trio line abreast at one depth (Giant left, Original centre, Tiny right), seen from a low front quarter
+# against the sky; the camera then closes on the Original wingtip and the Tiny so the 15 cm model reads beside it.
+func _pose_sizes(t: float) -> void:
+	var push: float = smoothstep(3.0, 7.2, t)
+	var center := Vector3(6.0 * sin(t * 0.12), 18.0 + 0.5 * t, -40.0 - 16.0 * t)
+	var base_yaw: float = -0.04 - 0.04 * sin(t * 0.3)
+	var heading := Basis(Vector3.UP, base_yaw)
+	# Tight wingtip gaps so the sizes compare directly: Giant (7.62 m span) to Original 0.43 m, Original (1.52 m)
+	# to Tiny (0.15 m) 0.15 m, almost on its wingtip. The Giant flies 0.8 m higher so the tips never cross.
+	var offsets: Array[Vector3] = [Vector3(-5.0, 0.8, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(0.99, 0.08, 0.0)]
+	var positions: Array[Vector3] = []
+	var record: Dictionary = {time_s = t, positions = [], screen = []}
+	for i: int in range(actors.size()):
+		var actor: Dictionary = actors[i]
+		var bob := Vector3(0, 0.12 * sin(t * 1.1 + i * 1.7), 0)
+		var p: Vector3 = center + heading * offsets[i] + bob
+		var bank: float = -0.05 * sin(clampf(t, 0.0, 8.0) * PI / 8.0) + 0.03 * sin(t * 0.9 + i)
+		actor.model.root.position = p
+		actor.model.root.basis = Basis.from_euler(Vector3(0.04, base_yaw, bank)).scaled(Vector3.ONE * float(actor.scale))
+		if actor.model.get("propeller") != null:
+			actor.model.propeller.rotation.z = t * 210.0
+		if actor.blur != null:
+			actor.blur.update(9000.0)
+		positions.append(p)
+		record.positions.append([p.x, p.y, p.z])
+	# Framing: the whole trio first, then the Original/Tiny pair.
+	# A near-frontal eye keeps all three at one depth, so size reads as size rather than distance.
+	var trio: Vector3 = center + heading * Vector3(-3.75, 0.35, 0.0)
+	# End between the Original's right wingtip and the Tiny, close enough (1.9 m) for the 15 cm model to read.
+	var pair: Vector3 = center + heading * Vector3(0.8, 0.05, 0.0)
+	var focus: Vector3 = trio.lerp(pair, push)
+	var distance: float = lerpf(17.0, 1.9, push)
+	var eye: Vector3 = focus + heading * Vector3(0.12 * distance, -0.07 * distance, -0.99 * distance)
+	camera.look_at_from_position(eye, focus)
+	World.update(scene.environment, t + 2.0, Vector3(0.8, 0, 0.1), center, camera)
+	for i: int in range(actors.size()):
+		var screen: Vector2 = camera.unproject_position(positions[i])
+		record.screen.append([screen.x, screen.y])
+		for j: int in range(i):
+			minimum_separation = minf(minimum_separation, positions[i].distance_to(positions[j]))
+	if t >= 0.0:
+		frame_records.append(record)
+
 
 # Five-ship arrowhead: low camera ahead of the formation, tilting up as it passes, then a fan-out.
 func _pose_mix(t: float) -> void:

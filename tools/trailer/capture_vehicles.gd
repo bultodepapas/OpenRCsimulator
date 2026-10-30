@@ -12,6 +12,8 @@ const AppRootScene := preload("res://app_root.tscn")
 var output_dir := ""
 var vehicle_id := ""
 var pilot := false
+## TRA-10: --heli-shot=flight replaces the hover turn with a forward flight and a tracking orbit camera.
+var heli_flight := false
 var pressed: Dictionary = {}
 var app
 var activity
@@ -34,12 +36,14 @@ func _run() -> void:
 			output_dir = requested if requested.is_absolute_path() else current_dir.path_join(requested)
 		elif arg == "--pilot":
 			pilot = true
+		elif arg == "--heli-shot=flight":
+			heli_flight = true
 	if vehicle_id not in ["xcell-60-research", "mt8-bisonte", "monster-car-2"] or output_dir.is_empty():
 		push_error("Expected --vehicle=xcell-60-research|mt8-bisonte|monster-car-2 and --out-dir=<absolute-or-project-relative-path>.")
 		quit(2)
 		return
 	var heli := vehicle_id == "xcell-60-research"
-	var frames := (2 * FPS if heli else 60) if pilot else (5 * FPS if heli else 4 * FPS)
+	var frames := (2 * FPS if heli else 60) if pilot else ((7 if heli_flight else 5) * FPS if heli else 4 * FPS)
 	# Keep pilot and final captures at the requested production canvas. The Movie
 	# Maker reads the project viewport before this SceneTree script starts.
 	var width := WIDTH
@@ -144,7 +148,8 @@ func _run() -> void:
 		"width": width,
 		"height": height,
 		"engine": Engine.get_version_info().string,
-		"camera": "production orbit view, low 2.55 m boom" if heli else "production ground chase view, low 1.75 m boom",
+		"camera": ("production orbit view tracking the heading, 3.4 to 2.3 m boom" if heli_flight else "production orbit view, low 2.55 m boom") if heli else "production ground chase view, low 1.75 m boom",
+		"heli_shot": "flight" if heli_flight else "hover-turn",
 		"input": "Godot InputEventKey sent through Input.parse_input_event; no scripted_controls or session-state keyframes",
 		"movie_writer_path": movie_path,
 		"movie_writer_start_process_frame": movie_start_process_frame,
@@ -159,6 +164,8 @@ func _run() -> void:
 	}
 	for frame: int in range(frames):
 		_set_shot_input(frame, heli)
+		if heli_flight:
+			_track_heli(float(frame) / frames)
 		await process_frame
 		await RenderingServer.frame_post_draw
 		var image: Image = root.get_texture().get_image()
@@ -207,9 +214,29 @@ func _setup_audio_recording() -> void:
 	audio_record.set_recording_active(false)
 
 
+## TRA-10: keep the production orbit boom at a fixed angle to the nose, sweeping from a front quarter to
+## the side while it closes in; the orbit's own easing smooths the move.
+func _track_heli(elapsed: float) -> void:
+	var rig = activity.get("_rig")
+	var nose: Vector3 = -(activity._airplane.root.global_basis.z as Vector3)
+	var heading_deg := rad_to_deg(atan2(nose.x, -nose.z))
+	var sweep := smoothstep(0.0, 1.0, elapsed)
+	rig.orbit.azimuth_deg = wrapf(heading_deg + lerpf(35.0, 105.0, sweep), -180.0, 180.0)
+	rig.orbit.distance = lerpf(3.4, 2.3, sweep)
+	rig.orbit.elevation_deg = lerpf(6.0, 10.0, sweep)
+
+
 func _set_shot_input(frame: int, heli: bool) -> void:
 	var desired: Dictionary = {}
-	if heli:
+	if heli and heli_flight:
+		# Forward cyclic to build speed, a banked turn right, then a flare (stick back).
+		if frame >= FPS * 0.4 and frame < FPS * 2.2:
+			desired[KEY_UP] = true
+		if frame >= FPS * 3.0 and frame < FPS * 3.6:
+			desired[KEY_RIGHT] = true
+		if frame >= FPS * 5.2 and frame < FPS * 5.8:
+			desired[KEY_DOWN] = true
+	elif heli:
 		# Preserve the hover trim, apply a measured yaw turn, then a short forward cyclic input.
 		if frame >= FPS * 1.25 and frame < FPS * 1.9:
 			desired[KEY_D] = true
@@ -233,7 +260,7 @@ func _set_shot_input(frame: int, heli: bool) -> void:
 			desired[KEY_D] = true
 		elif frame >= FPS * 2.45 and frame < FPS * 2.8:
 			desired[KEY_A] = true
-	for code: int in [KEY_W, KEY_A, KEY_D, KEY_UP]:
+	for code: int in [KEY_W, KEY_A, KEY_D, KEY_UP, KEY_DOWN, KEY_RIGHT]:
 		_set_key(code, bool(desired.get(code, false)))
 
 

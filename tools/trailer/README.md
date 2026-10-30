@@ -327,6 +327,27 @@ heading frame. Run it with `--wind-speed=0 --gust-speed=0 --gust-up=0` so the ai
 replaces `MeshInstance3D` resources from each livery GLB of the same airframe, never physics. Every frame record
 carries `presented_livery`; check `meshes_swapped` there.
 
+Revision 9.4 splits the helicopter into two shots:
+
+- `capture_hx700_mechanism.gd` films the advanced HX-700 inspection mechanism: servos, swash, nine rods and grips.
+  - Scripted demand: collective rise, a 7° cyclic circle inside the 10° ring, then a tail kick.
+  - Presentation: canopy hidden, imported materials, rotor at the inspector's 12 rpm. A macro camera stays under the
+    blade plane.
+  - It is presentation-only inspection kinematics, not the flight session. The manifest counts rejected steps
+    (must be 0).
+- `capture_vehicles.gd --vehicle=xcell-60-research --heli-shot=flight` records 7 s of the playable route.
+  - Keyboard input: forward cyclic, a right bank, then a flare.
+  - Each frame sets the production orbit boom at a fixed angle to the nose. It sweeps from a front quarter to
+    the side, closing from 3.4 m to 2.3 m.
+  - Without the flag, the original hover-turn shot is unchanged.
+
+Revision 9.6 adds `capture_formation.gd --sizes`, which writes 480 PNG frames.
+
+- Three Ugly Stiks at the Workshop's Giant, Original and Tiny sizes (500 %, 100 %, 10 %) fly line abreast at one depth, with tight wingtip gaps.
+- A near-frontal camera starts wide on all three, then closes to 1.9 m between the Original's wingtip and the Tiny.
+- The models are presentation-scaled with no smoke. The scene is labeled cinematic choreography, not Workshop flight physics.
+- Encode the frames losslessly: `ffmpeg -framerate 60 -i %05d.png -c:v ffv1 -level 3 -pix_fmt bgr0 sizes-trio.mkv`.
+
 Crystal cues accept optional `entrance_s`, `kicker_size`, `detail_size`, `scrim` and `shadow` (drop-shadow alpha). A shot's `grade` may be an FFmpeg filter string instead of true/false. Without these keys, the
 cues render exactly as in v8. Image shots accept `zoom: {center: [x, y], to: <factor>}`, an eased push-in.
 `capture_brand.gd --frames=600` gives the longer end card.
