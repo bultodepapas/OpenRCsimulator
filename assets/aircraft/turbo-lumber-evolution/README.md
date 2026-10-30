@@ -11,7 +11,7 @@ Checked 2026-10-20. The catalog airplane `turbo-lumber-evolution` uses the autho
 | Runtime identity | `r2-d75ae605aa3a`; exact GLB hash in the manifest and generated [model manifest](../../../app/data/aircraft_models/turbo-lumber-evolution.json). |
 | Name | Fictional in-app name “Turbo Lumber Evolution” (“Turbo Tronco Evolución” in Spanish); source alias `eflite_turbo_timber_evolution`. “Timber” is the track codename. |
 | Hardware reference | E-flite Turbo Timber Evolution 1.5 m, B revision: 800 Kv motor, 70 A ESC, 11×7.3 three-blade propeller and 4S 3200 mAh pack class. [Manual anchors](manual.json), [primary sources](../../../docs/research/timber-integration/TT-00/sources.md). This does not identify measured installed hardware. |
-| Terms | The supplied LICENSE is copied verbatim to the runtime asset directory and still says redistribution terms are not set. The owner deferred the naming/terms decision on 2026-10-12; D1/TT-17 remains tracked in the plan and source manifest. |
+| Terms | The supplied LICENSE remains unchanged in the runtime asset directory. The [beta distribution notice](../../../app/assets/aircraft/turbo-lumber-evolution/BETA-DISTRIBUTION.txt) records the 2026-10-30 authorization for this beta's binary and source distribution; other terms are not established. The source manifest describes the original delivery. |
 
 ## Frames and datum
 

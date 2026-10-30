@@ -44,6 +44,6 @@ After a binding or model change, also run `build_customization.py`, `build_descr
 ## Open items
 
 - Camera doors: a mechanism role and its flight trigger are undecided; until then they are static.
-- Asset licence terms are **not set** by the owner (`LICENSE.txt`); no redistribution terms are implied ([X8 plan D2](../../../docs/X8-PLAN.md#4-owner-decisions)).
+- The original delivery's `LICENSE.txt` remains unchanged. The [beta distribution notice](../../../app/assets/aircraft/skywalker-x8/BETA-DISTRIBUTION.txt) records authorization for this beta's binary and source distribution; other terms are not established ([X8 plan D2](../../../docs/X8-PLAN.md#4-owner-decisions)).
 - Runtime textures are 2048² per skin; the closest Workshop view magnifies them about 2.5× at 1080p (3.4× at 1440p). The 4096 sources were not copied; choosing them is open.
 - Godot import memory and rendered frame cost are not measured yet. The display name is a working name pending the owner's decision.
