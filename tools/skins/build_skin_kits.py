@@ -26,6 +26,13 @@ EXPORTER = ROOT / "tools/skins/export_openrc_skin.py"
 IMAGE_PACKER = ROOT / "tools/skins/pack_image.py"
 GUIDE = ROOT / "app/assets/skin-kit/guide.html"
 LOCALES = ROOT / "tools/skins/locales"
+ASSET_RIGHTS = {
+    "moonrunner-x99": ROOT / "app/assets/aircraft/skywalker-x8",
+    "turbo-lumber-evolution": ROOT / "app/assets/aircraft/turbo-lumber-evolution",
+}
+RIGHTS_WARNING = ("This kit is technically editable. Its beta distribution notice does not "
+                  "establish permission to modify the asset or distribute modifications. "
+                  "See BETA-DISTRIBUTION.txt and ASSET-LICENSE.txt.\n")
 LANGUAGES = (("en", "English"), ("es", "Español"), ("de", "Deutsch"),
              ("fr", "Français"), ("it", "Italiano"), ("ja", "日本語"),
              ("pt_BR", "Português (Brasil)"), ("ru", "Русский"), ("zh_Hans", "简体中文"))
@@ -376,7 +383,13 @@ def build(family, model, output=None, source_override=None):
                 add_zip_file(archive, "kit.json", (json.dumps(kit, ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
                 for name, data in files.items():
                     add_zip_file(archive, name, data)
-                add_zip_file(archive, "README.txt", quickstart().encode("utf-8"))
+                readme = quickstart()
+                if family in ASSET_RIGHTS:
+                    readme += "\n" + RIGHTS_WARNING
+                    rights = ASSET_RIGHTS[family]
+                    add_zip_file(archive, "ASSET-LICENSE.txt", (rights / "LICENSE.txt").read_bytes())
+                    add_zip_file(archive, "BETA-DISTRIBUTION.txt", (rights / "BETA-DISTRIBUTION.txt").read_bytes())
+                add_zip_file(archive, "README.txt", readme.encode("utf-8"))
                 add_zip_file(archive, "guide.html", guide)
             os.replace(temporary, output)
         finally:

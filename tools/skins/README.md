@@ -43,6 +43,9 @@ Each kit contains `Aircraft.blend`, `Export OpenRC Skin.py`, `pack_image.py`,
 The guide is stamped with its aircraft family. `kit.json` records material groups,
 base-color factors, source dimensions, template kind and stock compatibility hash.
 The HX boom is proportionally reduced from 8192 × 880 to 4096 × 440.
+The Turbo Lumber and MoonRunner kits also include the original asset attribution
+and beta-specific distribution notice. Their technical paint-editing workflow
+does not itself establish permission to modify or redistribute the asset.
 
 ## Export and check
 

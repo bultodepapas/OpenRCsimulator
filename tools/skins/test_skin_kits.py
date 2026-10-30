@@ -19,6 +19,10 @@ import pack_image
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = ROOT / "app/assets/skin-kit/models.json"
 APP = ROOT / "app"
+ASSET_RIGHTS = {
+    "moonrunner-x99": APP / "assets/aircraft/skywalker-x8",
+    "turbo-lumber-evolution": APP / "assets/aircraft/turbo-lumber-evolution",
+}
 
 
 def local_path(resource):
@@ -92,6 +96,11 @@ class SkinKits(unittest.TestCase):
                     self.assertEqual(kit["paints"], model["paints"])
                     self.assertEqual(archive.read("pack_image.py"), (ROOT / "tools/skins/pack_image.py").read_bytes())
                     self.assertEqual(archive.read("Export OpenRC Skin.py"), (ROOT / "tools/skins/export_openrc_skin.py").read_bytes())
+                    if family in ASSET_RIGHTS:
+                        rights = ASSET_RIGHTS[family]
+                        self.assertEqual(archive.read("ASSET-LICENSE.txt"), (rights / "LICENSE.txt").read_bytes())
+                        self.assertEqual(archive.read("BETA-DISTRIBUTION.txt"), (rights / "BETA-DISTRIBUTION.txt").read_bytes())
+                        self.assertIn(b"does not establish permission to modify the asset or distribute modifications", archive.read("README.txt"))
                     guide = (APP / "assets/skin-kit/guide.html").read_bytes()
                     stamped = guide.replace(b'data-aircraft-id=""', f'data-aircraft-id="{family}"'.encode("ascii"), 1)
                     self.assertEqual(archive.read("guide.html"), stamped)
