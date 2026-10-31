@@ -4,7 +4,7 @@
 
 ## Estado real del repositorio
 
-La auditoría [viento en Godot](../wind-godot-integration.md) confirma que la sesión aún pasa `[0,0,0]` a la física. [shader_clock.gd](../../../app/render/shader_clock.gd) registra `sim_clock` y `wind_vec`, pero el viento sigue a cero. El reloj de simulación se envuelve a 1024 s y los shaders del proyecto no deben leer `TIME`. Por tanto, v1 queda en calma; la deriva de árboles/nubes no sustituye al viento físico.
+La auditoría [viento en Godot](../../WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-godot-integration) confirma que la sesión aún pasa `[0,0,0]` a la física. [shader_clock.gd](../../../app/render/shader_clock.gd) registra `sim_clock` y `wind_vec`, pero el viento sigue a cero. El reloj de simulación se envuelve a 1024 s y los shaders del proyecto no deben leer `TIME`. Por tanto, v1 queda en calma; la deriva de árboles/nubes no sustituye al viento físico.
 
 ## Qué aporta Godot
 

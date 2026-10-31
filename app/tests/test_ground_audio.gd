@@ -26,6 +26,19 @@ class ContactCountingFlightAudio extends "res://audio/flight_audio.gd":
 		contact_snapshot_calls += 1
 		return []
 
+
+class ContactCountingHelicopterAudio extends "res://audio/helicopter_audio.gd":
+	var paused_snapshot := true
+	var contact_snapshot_calls := 0
+
+	func snapshot() -> Dictionary:
+		return {"paused": paused_snapshot, "listener": Vector3.ZERO, "running": false, "throttle": 0.0}
+
+	func contact_snapshot() -> Array:
+		contact_snapshot_calls += 1
+		return []
+
+
 var _checks: int = 0
 var _failures: int = 0
 
@@ -46,6 +59,7 @@ func _run() -> void:
 	_test_real_session_snapshot()
 	_test_contact_audio_state_machine()
 	_test_flight_audio_skips_paused_contact_snapshot()
+	_test_helicopter_audio_skips_paused_contact_snapshot()
 	_test_reattachment()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -224,6 +238,36 @@ func _test_flight_audio_skips_paused_contact_snapshot() -> void:
 	session.sim["tick"] = 1
 	audio._process(1.0 / 60.0)
 	_check("FlightAudio refreshes contacts after resume", audio.contact_snapshot_calls == 1)
+	audio.ground_audio.free()
+	audio.soundscape.free()
+	audio.free()
+	flight.free()
+	session.free()
+
+
+func _test_helicopter_audio_skips_paused_contact_snapshot() -> void:
+	var session := AudioSessionStub.new()
+	session.sim["state"] = PackedFloat64Array([0.0])
+	var flight := AudioFlightStub.new()
+	flight.session = session
+	var audio := ContactCountingHelicopterAudio.new()
+	audio.flight = flight
+	audio.soundscape = Soundscape.new()
+	audio.ground_audio = GroundAudio.new()
+	audio._process(0.04)
+	audio._process(0.04)
+	_check("HelicopterAudio skips skid snapshots throughout pause", audio.contact_snapshot_calls == 0,
+		"calls=%d" % audio.contact_snapshot_calls)
+	_check("HelicopterAudio continues the ground-audio pause fade",
+		bool(audio.ground_audio.get("_was_paused")) and float(audio.ground_audio.get("_scene_gain")) <= 0.001)
+	var before_resume := audio.contact_snapshot_calls
+	audio.paused_snapshot = false
+	session.sim["tick"] = 1
+	audio._process(0.04)
+	_check("HelicopterAudio refreshes skid contacts immediately after resume",
+		audio.contact_snapshot_calls == before_resume + 1)
+	_check("HelicopterAudio resumes the ground-audio fade",
+		not bool(audio.ground_audio.get("_was_paused")) and float(audio.ground_audio.get("_scene_gain")) > 0.0)
 	audio.ground_audio.free()
 	audio.soundscape.free()
 	audio.free()

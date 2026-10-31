@@ -113,3 +113,9 @@ The production powertrain test reports 43/43 checks, including the four bank fam
 The legacy `test_engine_audio.gd` remains an unrelated open failure: four queue-target assertions fail among 146 checks because its refill target changes while queued samples are draining; the legacy adapter and test were not changed for AUD-15.
 
 These checks establish software behavior and captured PCM properties only. They do not establish real-aircraft acoustic fidelity, physical flight validity, or a complete uninterrupted flight. The corrected fleet recapture is stored under ignored `tmp/audio-aud15/fleet-final/`; per-aircraft JSON reports contain WAV metrics, stage epochs, capture source hashes, and route failure detail. A clean audio capture is not a successful flight gate, and fixture resets are never counted as continuous flight.
+
+## AUD-15-R1: paused helicopter contact work (2026-10-31)
+
+Against source baseline `da4cff78021a59488ffedee7e0b0d5c3e31d1a13`, the helicopter audio adapter recomputed skid contacts on every paused frame even though `GroundAudio.update_contacts()` discarded them. The adapter now skips that snapshot while continuing the ground-audio fade and samples contacts on the first resumed frame. The skid law and simulation are unchanged.
+
+The added `test_ground_audio.gd` regression failed on the original adapter with two snapshot calls over two paused frames, then passed with zero calls after the repair. It also checks fade progression and immediate contact sampling on resume. Godot 4.8-beta1, Linux headless/Dummy: ground audio passed 37 checks and powertrain audio passed 47, including its production helicopter scene check; the checked runner reported no engine errors. Reproduce with the [focused checked runner](../../../../tools/godot/README.md) and those two scripts. Local red/green reports are under ignored `tmp/bughunt-ui-20261031/`. This establishes removal of discarded work, not an FPS gain or audible qualification.

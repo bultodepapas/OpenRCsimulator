@@ -133,7 +133,7 @@ L10a flight-cue captures use the same pinned rendering environment:
 "$(app/tests/visual-env.sh)" tools/ground/check_windsock.py --app app --godot "$(app/get-godot.sh)" --out /tmp/l10a-windsock
 ```
 
-The L10a–d harness uses `--field-shadows=off` to isolate each cue mesh ablation; production projected shadows are checked by `app/tests/test_field_projected_shadows.gd`. Three production-field views isolate the calm windsock with visibility on/off at shader time zero. Default captures repeat exactly; a third run exercises the scenery-enabled field. Pixel changes must stay within current deformed cue bounds, whites must not clip, and the cue must add three draws and fewer than 6,000 triangles. The checker rejects an invisible-feature control. [Original L10a evidence](../../docs/research/visual-quality-implementation/L10a/README.md), [current motion evidence](../../docs/research/wind-implementation/M5-W04b-R1/README.md).
+The L10a–d harness uses `--field-shadows=off` to isolate each cue mesh ablation; production projected shadows are checked by `app/tests/test_field_projected_shadows.gd`. Three production-field views isolate the calm windsock with visibility on/off at shader time zero. Default captures repeat exactly; a third run exercises the scenery-enabled field. Pixel changes must stay within current deformed cue bounds, whites must not clip, and the cue must add three draws and fewer than 6,000 triangles. The checker rejects an invisible-feature control. [Original L10a evidence](../../docs/research/visual-quality-implementation/L10a/README.md), [current motion evidence](../../docs/WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-implementation-m5-w04b-r1).
 
 ## Windsock motion (M5-W04b-R1)
 

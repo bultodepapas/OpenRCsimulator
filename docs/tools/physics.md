@@ -59,7 +59,7 @@ python3 app/tests/check_wind_trace.py tmp/wind.csv --duration 3.0
 python3 app/tests/check_atmosphere_trace.py tmp/atmosphere.csv --duration 3.0
 ```
 
-For atmosphere v11 standard-column traces, add `--column` only for the calm preset (zero wind, gust and turbulence). Without it, the atmosphere validator uses the custom-atmosphere v6/v10 path. See [launch flags](shared.md#launch-flags), [wind recording](../WIND-PLAN.md#recording-and-evidence) and [trace integrity](../research/trace-integrity/C7-R2/README.md).
+For atmosphere v11 standard-column traces, add `--column` only for the calm preset (zero wind, gust and turbulence). Without it, the atmosphere validator uses the custom-atmosphere v6/v10 path. See [launch flags](shared.md#launch-flags), [wind recording](../WIND-ATMOSPHERE-REFERENCE.md) and [trace integrity](../research/trace-integrity/C7-R2/README.md).
 
 ## Benches and probes
 
@@ -85,7 +85,7 @@ python3 tools/godot/run_checked.py --timeout 600 -- "$(app/get-godot.sh)" \
   --case=spatial-v5-gusts-thermals-24 --output=tmp/wind-verify-new.json
 ```
 
-`--verify-only` exercises workload and query-coverage checks without timing. For timing, omit it and run paired measurements on a controlled host. The report's median/p95 are batch means, not per-tick latency percentiles; headless timing does not qualify the 1080p presentation path. [Workloads, identities and limits](../research/wind-implementation/M5-W05d-R5/README.md).
+`--verify-only` exercises workload and query-coverage checks without timing. For timing, omit it and run paired measurements on a controlled host. The report's median/p95 are batch means, not per-tick latency percentiles; headless timing does not qualify the 1080p presentation path. [Workloads, identities and limits](../WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-implementation-m5-w05d-r5).
 
 ## Aircraft conformance and unchanged behavior
 

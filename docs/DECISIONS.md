@@ -68,7 +68,7 @@ The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualif
 
 ### Version physical weather separately from visual atmosphere
 
-**M5 / VAL-AUD-R09.** The common environment supplies density and wind to each physical consumer at its declared stage and position, while preserving ground velocity. Telemetry retains its declared sample timing, including the distinction between stage loads and accepted endpoint state. Spatial weather uses an explicit versioned, hashed experimental configuration and matched surface-load differences; visual clouds, sky and lighting do not create a second force system. This preserves reference scenarios and makes unsupported domains rejectable. [Wind guide](WIND-PLAN.md), [spatial weather scope](research/wind-implementation/M5-W05d-R1/README.md), [bounded ISA integration](research/physics-audit-2026-10-14/remediation/R09/integration.md).
+**M5 / VAL-AUD-R09.** The common environment supplies density and wind to each physical consumer at its declared stage and position, while preserving ground velocity. Telemetry retains its declared sample timing, including the distinction between stage loads and accepted endpoint state. Spatial weather uses an explicit versioned, hashed experimental configuration and matched surface-load differences; visual clouds, sky and lighting do not create a second force system. This preserves reference scenarios and makes unsupported domains rejectable. [Wind guide](WIND-ATMOSPHERE-REFERENCE.md), [spatial weather scope](WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-implementation-m5-w05d-r1), [bounded ISA integration](research/physics-audit-2026-10-14/remediation/R09/integration.md).
 
 ### Ground support follows authored geometry and actual surfaces
 

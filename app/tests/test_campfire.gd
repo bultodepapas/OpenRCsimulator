@@ -3,6 +3,27 @@ extends SceneTree
 
 const Campfire := preload("res://render/world/campfire.gd")
 
+
+## Count the groups that submit visual changes; repeated identical paused frames must not call them.
+class CountingCampfire extends Campfire:
+	var effect_updates: Array[int] = [0, 0, 0, 0]
+
+	func _update_exposure_materials() -> void:
+		effect_updates[0] += 1
+		super._update_exposure_materials()
+
+	func _update_flames() -> void:
+		effect_updates[1] += 1
+		super._update_flames()
+
+	func _update_embers() -> void:
+		effect_updates[2] += 1
+		super._update_embers()
+
+	func _update_light() -> void:
+		effect_updates[3] += 1
+		super._update_light()
+
 var _checks := 0
 var _failures := 0
 
@@ -12,6 +33,17 @@ func _check(label: String, ok: bool, detail := "") -> void:
 	if not ok:
 		_failures += 1
 		printerr("FAIL %s %s" % [label, detail])
+
+
+## Read the rendered state through the effect nodes to compare hidden updates and resumed presentation.
+func _effect_snapshot(flames: Node3D, embers: MultiMeshInstance3D) -> Array:
+	var state: Array = []
+	for child: Node in flames.get_children():
+		var sprite := child as Sprite3D
+		state.append([sprite.region_rect, sprite.transform, sprite.modulate])
+	for index in embers.multimesh.instance_count:
+		state.append([embers.multimesh.get_instance_transform(index), embers.multimesh.get_instance_color(index)])
+	return state
 
 
 func _initialize() -> void:
@@ -73,7 +105,34 @@ func _run() -> void:
 	_check("same clock and wind reproduce sprite state", first_sprite != null and first_sprite.region_rect == first_region and first_sprite.transform == first_transform)
 	var saved_children := fire.get_child_count()
 	fire.set_enabled(false)
+	var hidden_state := _effect_snapshot(flames, embers)
+	var hidden_exposure: Variant = first_material.get_shader_parameter("exposure_value")
+	var resumed_wind := Vector3(-4.0, 0.0, 7.0)
+	environment.tonemap_exposure = 1.5
+	fire.update_visual(13.25, resumed_wind)
+	_check("disabled effects do not rewrite hidden visual state", _effect_snapshot(flames, embers) == hidden_state)
+	_check("disabled effects do not rewrite their exposure", first_material.get_shader_parameter("exposure_value") == hidden_exposure)
+	environment.tonemap_exposure = 2.5 # The clock is paused; no new visual update follows before enabling.
 	fire.set_enabled(true)
+	var reference: Node3D = Campfire.build()
+	reference.configure(true, environment, 1000.0)
+	reference.update_visual(13.25, resumed_wind)
+	var reference_flames := reference.get_node("ScaledVisuals/FlameSprites") as Node3D
+	var reference_embers := reference.get_node("ScaledVisuals/Embers") as MultiMeshInstance3D
+	var reference_light := reference.get_node("WarmFireLight") as OmniLight3D
+	_check("enabling immediately presents the latest clock and wind", _effect_snapshot(flames, embers) == _effect_snapshot(reference_flames, reference_embers))
+	_check("enabling immediately applies current exposure and light", is_equal_approx(float(first_material.get_shader_parameter("exposure_value")), 2.5) and is_equal_approx(light.light_energy, reference_light.light_energy))
+	reference.free()
+	var counted := CountingCampfire.new()
+	counted._build_nodes()
+	counted.configure(false, environment, 1000.0)
+	var before_disabled_frames: Array = counted.effect_updates.duplicate()
+	for frame in 16:
+		var clock := 25.0 if frame < 8 else 25.0 + float(frame - 7) * 0.125
+		var wind := Vector3.ZERO if frame < 8 else Vector3(float(frame), 0.0, -float(frame))
+		counted.update_visual(clock, wind)
+	_check("disabled frames skip visual and light updates", counted.effect_updates == before_disabled_frames)
+	counted.free()
 	_check("on/off transition reuses nodes", fire.get_child_count() == saved_children)
 	_check("helper has no autonomous process", not fire.is_processing())
 	fire.free()

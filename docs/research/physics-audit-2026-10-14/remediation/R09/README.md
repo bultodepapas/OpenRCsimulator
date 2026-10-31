@@ -4,7 +4,7 @@
 
 ## Model and bounds
 
-The kernel uses the same standard-atmosphere constants and geopotential conversion already recorded in [M5-ATM-1 source evidence](../../../atmosphere/M5-ATM-1/sources/README.md) and the [M5-ATM-1 kernel notes](../../../atmosphere/M5-ATM-1/kernel/README.md):
+The kernel uses the same standard-atmosphere constants and geopotential conversion already recorded in [M5-ATM-1 source evidence](../../../../WIND-ATMOSPHERE-REFERENCE.md#evidence-atmosphere-m5-atm-1-sources) and the [M5-ATM-1 kernel notes](../../../../WIND-ATMOSPHERE-REFERENCE.md#evidence-atmosphere-m5-atm-1-kernel):
 
 ```text
 h = Re·z/(Re+z)
