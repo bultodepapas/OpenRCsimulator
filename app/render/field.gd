@@ -490,7 +490,7 @@ static func commit_lighting(field_node: Node3D, prepared: Dictionary) -> bool:
 	if cues != null and cues.mesh.get_surface_count() > 0:
 		var material: StandardMaterial3D = cues.mesh.surface_get_material(0) as StandardMaterial3D
 		material.albedo_color = Color.BLACK if lighting.has("solar") else Color.WHITE
-	var policy: Node = field_node.get_meta("shadow_field_policy", null)
+	var policy: Node = field_node.get_meta("shadow_field_policy") if field_node.has_meta("shadow_field_policy") else null
 	if is_instance_valid(policy):
 		policy.apply_lighting(lighting)
 	else:

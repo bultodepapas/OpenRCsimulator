@@ -6,8 +6,11 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
+
+import capture_groups as receipts
 
 ROOT = Path(__file__).resolve().parents[2]
 GROUPS = ("core", "ui", "quality", "terrain-atmosphere", "ground", "vegetation", "scenario")
@@ -46,6 +49,10 @@ with open(env['FAKE_LOG'], 'a') as stream:
     stream.write(json.dumps([normalize(x) for x in entry]) + '\n')
 if env.get('FAKE_FAIL') and any(env['FAKE_FAIL'] in a for a in args):
     sys.exit(12)
+if env.get('FAKE_MUTATE') and any(env['FAKE_MUTATE'] in a for a in args):
+    Path(app, 'tests/capture_runner.py').write_text('changed during run')
+if name == 'python3' and args and Path(args[0]).name == 'capture_groups.py':
+    os.execv('/usr/bin/python3', ['/usr/bin/python3', *args])
 def write(path, data='{}'):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -58,9 +65,10 @@ if name == 'godot':
             write(arg.split('=', 1)[1], 'trace')
     target = next((a.split('=', 1)[1] for a in args if a.startswith('--out=')), '')
     if target and 'capture_aircraft_lights.gd' in ' '.join(args):
-        write(Path(target) / 'summary.json')
+        write(Path(target) / 'summary.json', '{"ok": true}')
     if target and 'capture_landscape_upgrade.gd' in ' '.join(args):
         write(Path(target) / 'report.json')
+        write(Path(target) / 'sun_alignment.png', 'synthetic alignment')
 elif args and args[0] == '-':
     # Execute the real inline manifest code, against synthetic files.
     sys.argv = ['-'] + args[1:]
@@ -82,9 +90,30 @@ elif args:
           'check_windsock.py': 'summary.json', 'check_grass.py': 'capture-summary.json',
           'check_wind.py': 'capture-summary.json', 'treeline_readability.py': 'l6c-run-manifest.json'}
         if target and script in summaries:
-            write(Path(target) / summaries[script])
+            if script in ('visual_quality_cases.py', 'treeline_readability.py'):
+                count = 66 if script == 'visual_quality_cases.py' else 64
+                ids = [f'case-{i}' for i in range(count)]
+                captures = []
+                for case in ids:
+                    image, sidecar = Path(target) / f'{case}.png', Path(target) / f'{case}.json'
+                    write(image, case)
+                    write(sidecar)
+                    captures.append({'case_id': case, 'image': image.name,
+                        'sha256': hashlib.sha256(image.read_bytes()).hexdigest(),
+                        'capture_manifest': sidecar.name,
+                        'capture_manifest_sha256': hashlib.sha256(sidecar.read_bytes()).hexdigest()})
+                data = {'complete': True, 'inventory': {'expected_case_ids': ids, 'capture_count': count},
+                        'captures': captures}
+                write(Path(target) / summaries[script], json.dumps(data))
+            else:
+                write(Path(target) / summaries[script])
         if target and script == 'check_grass_seam.py':
             write(target)
+        if script == 'scenario.sh':
+            latest = Path(args[1]) / 'latest'
+            write(latest / 'scenario.json')
+            write(latest / 'sync.json', '[{"ok": true}]')
+            write(latest / 'report.html', '<html>synthetic</html>')
 '''
 
 
@@ -119,7 +148,7 @@ class CaptureGroupsTests(unittest.TestCase):
         path.write_text(content, encoding="utf-8")
         path.chmod(0o755)
 
-    def run_capture(self, content, group=None, failure=None):
+    def run_capture(self, content, group=None, failure=None, run_id=None, mutation=None):
         self.executable(self.app / "capture.sh", content)
         if (self.app / "captures").exists():
             shutil.rmtree(self.app / "captures")
@@ -130,9 +159,13 @@ class CaptureGroupsTests(unittest.TestCase):
         env = dict(self.env, FAKE_OUT=str(output))
         if failure:
             env["FAKE_FAIL"] = failure
+        if mutation:
+            env["FAKE_MUTATE"] = mutation
         command = ["bash", str(self.app / "capture.sh")]
         if group:
             command += ["--group", group, "--out", str(output)]
+        if run_id is not None:
+            command += ["--run-id", run_id]
         result = subprocess.run(command, env=env, capture_output=True, text=True)
         calls = [json.loads(line) for line in self.log.read_text().splitlines()] if self.log.exists() else []
         return result, output, calls
@@ -198,6 +231,121 @@ class CaptureGroupsTests(unittest.TestCase):
             result = subprocess.run(['bash', str(self.app / 'capture.sh'), *args], env=self.env, capture_output=True)
             self.assertNotEqual(result.returncode, 0, args)
         self.assertFalse(self.log.exists())
+
+    def prepare_receipts(self):
+        for name in receipts.DIRECT_SOURCES:
+            path = self.root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if not path.exists():
+                path.write_text('fixture source\n')
+        shutil.copyfile(ROOT / 'tools/ci/capture_groups.py', self.root / 'tools/ci/capture_groups.py')
+        self.executable(self.app / 'capture.sh', self.current)
+        (self.root / '.gitignore').write_text('/out-*\n/bin/\n/commands.jsonl\n/app/captures/\n/results/\n')
+        for command in (['git', 'init', '-q'], ['git', 'add', '.'],
+                        ['git', '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+                         'commit', '-qm', 'fixture']):
+            subprocess.run(command, cwd=self.root, check=True, capture_output=True)
+        return subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=self.root, text=True).strip()
+
+    def reduce(self, parts, commit, output, run_id='run-1', godot=None, visual_python=None):
+        return subprocess.run([sys.executable, str(self.root / 'tools/ci/capture_groups.py'), 'reduce',
+            '--repo', str(self.root), '--run-id', run_id, '--expect-commit', commit,
+            '--godot', str(godot or self.bin / 'godot'),
+            '--visual-python', str(visual_python or self.bin / 'python3'),
+            '--out', str(output), '--parts', *map(str, parts)], capture_output=True, text=True)
+
+    def test_receipts_reduce_and_reject_incomplete_stale_or_changed_evidence(self):
+        commit = self.prepare_receipts()
+        self.env['OPENRC_CODE_REVISION'] = 'forged-override'
+        parts = []
+        for group in GROUPS:
+            result, output, _ = self.run_capture(self.current, group, run_id='run-1')
+            self.assertEqual(result.returncode, 0, f'{group}: {result.stderr}{result.stdout}')
+            self.assertFalse((output / 'run-manifest.json').exists())
+            receipt = json.loads((output / receipts.RECEIPT).read_text())
+            self.assertEqual(receipt['start']['source']['commit'], commit)
+            self.assertNotEqual(receipt['start']['source']['commit'], 'forged-override')
+            parts.append(output)
+
+        results = self.root / 'results'
+        accepted = results / 'accepted.json'
+        result = self.reduce(parts, commit, accepted)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(json.loads(accepted.read_text())['production_qualified'])
+        self.assertFalse((results / 'run-manifest.json').exists())
+
+        def reject(label, selected=None, expected_commit=commit, run_id='run-1', godot=None):
+            destination = results / f'{label}.json'
+            result = self.reduce(parts if selected is None else selected, expected_commit, destination,
+                                 run_id=run_id, godot=godot)
+            self.assertNotEqual(result.returncode, 0, label)
+            self.assertFalse(destination.exists(), label)
+
+        reject('missing', parts[:-1])
+        reject('duplicate', parts + [parts[0]])
+        reject('stale-run', run_id='run-2')
+        reject('wrong-commit', expected_commit='0' * 40)
+        other_engine = self.bin / 'different-godot'
+        other_engine.write_text('different engine')
+        reject('wrong-engine', godot=other_engine)
+
+        receipt_path = parts[1] / receipts.RECEIPT
+        original_receipt = receipt_path.read_text()
+        data = json.loads(original_receipt)
+        data['start']['config']['environment']['LP_NUM_THREADS'] = '2'
+        receipt_path.write_text(json.dumps(data))
+        reject('wrong-config')
+        data = json.loads(original_receipt)
+        data['status'] = 'failed'
+        receipt_path.write_text(json.dumps(data))
+        reject('failed-group')
+        receipt_path.unlink()
+        reject('missing-receipt')
+        receipt_path.write_text(original_receipt)
+
+        image = parts[0] / receipts.CORE_IMAGES[0]
+        original_image = image.read_bytes()
+        image.write_bytes(b'corrupt')
+        reject('corrupt-image')
+        image.write_bytes(original_image)
+        sidecar = image.with_suffix('.json')
+        original_sidecar = sidecar.read_bytes()
+        sidecar.unlink()
+        reject('missing-sidecar')
+        sidecar.write_bytes(original_sidecar)
+        extra = parts[2] / 'unexpected.txt'
+        extra.write_text('unexpected')
+        reject('extra-output')
+        extra.unlink()
+        matrix_image = parts[2] / 'vq01b/case-0.png'
+        original_matrix_image = matrix_image.read_bytes()
+        matrix_image.write_bytes(b'changed')
+        reject('corrupt-matrix-image')
+        matrix_image.write_bytes(original_matrix_image)
+        checks = parts[4] / receipts.CHECKS
+        original_checks = checks.read_text()
+        checks.write_text(original_checks + 'ground:surfaces\n')
+        reject('duplicate-check')
+        checks.write_text(original_checks)
+        source = self.root / 'app/tests/compare_captures.py'
+        original_source = source.read_text()
+        source.write_text('changed source\n')
+        reject('source-drift')
+        source.write_text(original_source)
+        reserved = results / 'run-manifest.json'
+        result = self.reduce(parts, commit, reserved)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(reserved.exists())
+        final = self.reduce(parts, commit, results / 'restored.json')
+        self.assertEqual(final.returncode, 0, final.stderr)
+
+    def test_failed_checker_or_source_drift_never_emits_receipt(self):
+        self.prepare_receipts()
+        for kwargs in ({'failure': 'check_stripes.py'}, {'mutation': 'check_stripes.py'}):
+            result, output, _ = self.run_capture(self.current, 'ground', run_id='failure', **kwargs)
+            self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertFalse((output / receipts.RECEIPT).exists())
+            self.assertFalse((output / 'run-manifest.json').exists())
 
 
 if __name__ == '__main__':
