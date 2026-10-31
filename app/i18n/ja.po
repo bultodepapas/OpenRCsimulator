@@ -8444,8 +8444,8 @@ msgstr "ウルトラ"
 msgid "Active technique: %s · Quality: %s"
 msgstr "有効な方式: %s · 品質: %s"
 
-msgid "Active cue: %s · Maximum distance: %s · Softness: %s"
-msgstr "有効な目印: %s · 最大距離: %s · 柔らかさ: %s"
+msgid "Configured cue: %s · Distance limit: %s · Softness: %s"
+msgstr "設定した目印: %s · 距離の上限: %s · 柔らかさ: %s"
 
 msgid "%.0f m"
 msgstr "%.0f m"
@@ -8455,3 +8455,9 @@ msgstr "無効"
 
 msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
 msgstr "このグラフィックセッションではネイティブ影を使えないため、投影影が有効です。"
+
+msgid "Native shadow coverage is experimental; some objects do not cast shadows."
+msgstr "ネイティブ影の対応範囲は試験段階で、一部の物体は影を落としません。"
+
+msgid "Activities may use a shorter range."
+msgstr "アクティビティによっては、より短い距離を使用します。"

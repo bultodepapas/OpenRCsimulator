@@ -179,6 +179,25 @@ func _collect_population(scenery: Node3D, selected_cells: Dictionary) -> void:
 	var population := scenery.get_node_or_null("Population") as Node3D
 	if population == null:
 		return
+	var eligible_batches: Array[MultiMeshInstance3D] = []
+	for child: Node in population.get_children():
+		if not child is MultiMeshInstance3D or not (child as MultiMeshInstance3D).visible:
+			continue
+		var batch := child as MultiMeshInstance3D
+		var asset := str(batch.get_meta("source_asset", ""))
+		if asset not in ["standing", "sitting", "pilot"] or batch.multimesh == null or batch.multimesh.mesh == null:
+			continue
+		var count := batch.multimesh.instance_count
+		var placements: Array = batch.get_meta("placements", [])
+		var transforms: Array = batch.get_meta("instance_transforms", [])
+		if count == 0 or placements.size() < count or transforms.size() < count:
+			continue
+		if not _opaque_mesh(batch, batch.multimesh.mesh):
+			_diagnostics.skipped_material += 1
+			continue
+		eligible_batches.append(batch)
+	if eligible_batches.is_empty():
+		return
 	var pilot := Vector2(float(_pilot.east), -float(_pilot.north))
 	var candidates: Array[MeshInstance3D] = []
 	for child: Node in scenery.get_children():
@@ -192,19 +211,14 @@ func _collect_population(scenery: Node3D, selected_cells: Dictionary) -> void:
 		if box.size.y >= 0.08 and Vector2(center.x, center.z).distance_to(pilot) <= FieldShadows.MAX_SCENERY_RANGE:
 			candidates.append(cell)
 	var owners: Dictionary = FieldShadows.population_cell_owners(candidates, population, pilot)
-	for child: Node in population.get_children():
-		if not child is MultiMeshInstance3D or not (child as MultiMeshInstance3D).visible:
-			continue
-		var batch := child as MultiMeshInstance3D
+	for batch in eligible_batches:
 		var asset := str(batch.get_meta("source_asset", ""))
-		if asset not in ["standing", "sitting", "pilot"] or batch.multimesh == null or batch.multimesh.mesh == null:
-			continue
 		var mesh := batch.multimesh.mesh
 		var placements: Array = batch.get_meta("placements", [])
 		var transforms: Array = batch.get_meta("instance_transforms", [])
 		var count := batch.multimesh.instance_count
 		var faces := mesh.get_faces()
-		if count == 0 or placements.size() < count or transforms.size() < count or faces.is_empty():
+		if faces.is_empty():
 			continue
 		var eligible := true
 		for index in count:
@@ -228,10 +242,8 @@ func _collect_population(scenery: Node3D, selected_cells: Dictionary) -> void:
 				break
 		if not eligible:
 			_diagnostics.skipped_population_range += 1
-		elif _opaque_mesh(batch, mesh):
-			_add_caster(batch, true)
 		else:
-			_diagnostics.skipped_material += 1
+			_add_caster(batch, true)
 
 
 func _opaque_mesh(node: GeometryInstance3D, mesh: Mesh) -> bool:

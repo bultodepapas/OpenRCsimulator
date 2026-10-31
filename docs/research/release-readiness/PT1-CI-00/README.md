@@ -99,6 +99,10 @@ V2 phase receipts bind the complete phase roster and runner inputs, declare the 
 
 An independent source review of the combined runner, workflow, local wrapper and verifier found no concrete lost coverage or gate bypass. Final WSL quick validation passed **116 tests**: 13 partitions, 30 export identity and 73 CI tools, including the additional wrong-subset and duplicate-shard controls. Those controls and documentation appeared in concurrent commit `6d30cf96a9cbacd4802faf615a66bce6232cd59d`; the production CI/runner code remains identical to `4b89082c1`. Release-tool fixtures were rerun separately: **40 passed**. Workflow validation with `actionlint` 1.7.12, individual `bash -n` checks of the four changed shell entrypoints and whitespace checks scoped to this task passed. These checks do not replace a completed full app run.
 
+### Hosted implementation observation
+
+At 14:07 UTC on 2026-10-31, read-only inspection found a new main-push [run 41208201712](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41208201712) at `6d30cf96a9cbacd4802faf615a66bce6232cd59d`. This session did not push or dispatch it. The new selection/preflight job succeeded, including orchestration regressions, source/version/notes checks, the shadow selection receipt and document-link validation. The Linux and Windows ground-native jobs, website job and same-workflow prototype also succeeded. All eight unit jobs, integration, visuals and NK-3 qualification were still in progress; the final aggregate and export were not complete. This is initial hosted wiring evidence, not a completed shadow run or full release qualification.
+
 ### Interrupted full-suite qualification
 
 A disposable clean snapshot at `ce789cae7e570b91776cebc47c1ffc9cf16dadfb` ran the pinned Linux engine with isolated profiles. The cold import completed in 201.273 seconds; a restart's warm import completed in 5.666 seconds. These are separate setup observations, not a paired full-suite performance result.

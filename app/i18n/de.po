@@ -9339,8 +9339,8 @@ msgstr "Ultra"
 msgid "Active technique: %s · Quality: %s"
 msgstr "Aktive Technik: %s · Qualität: %s"
 
-msgid "Active cue: %s · Maximum distance: %s · Softness: %s"
-msgstr "Aktive Hilfe: %s · Maximale Reichweite: %s · Weichheit: %s"
+msgid "Configured cue: %s · Distance limit: %s · Softness: %s"
+msgstr "Konfigurierte Hilfe: %s · Reichweitengrenze: %s · Weichheit: %s"
 
 msgid "%.0f m"
 msgstr "%.0f m"
@@ -9350,3 +9350,9 @@ msgstr "Nicht aktiv"
 
 msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
 msgstr "Native Schatten sind in dieser Grafiksitzung nicht verfügbar; projizierte Schatten sind aktiv."
+
+msgid "Native shadow coverage is experimental; some objects do not cast shadows."
+msgstr "Die Abdeckung nativer Schatten ist experimentell; manche Objekte werfen keine Schatten."
+
+msgid "Activities may use a shorter range."
+msgstr "Einzelne Aktivitäten können eine kürzere Reichweite verwenden."

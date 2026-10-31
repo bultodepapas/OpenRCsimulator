@@ -17,6 +17,7 @@ const Reconstruction := preload("res://render/reconstruction.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
+const NATIVE_SHADOW_LIMITATION := "Native shadow coverage is experimental; some objects do not cast shadows."
 
 signal closed
 signal presentation_changed(config: Dictionary)
@@ -303,11 +304,13 @@ func _build() -> void:
 	_shadow_technique_picker = _shadow_picker("ShadowTechnique", "shadow_technique", ShadowSettings.TECHNIQUES)
 	_add_row(_shadow_group, "Shadow technique", _shadow_technique_picker)
 	_set_localized_tooltip(_shadow_technique_picker, "Automatic keeps the current mix of native and projected shadows. Native hides projected field shadows and the aircraft cue.")
+	_refresh_shadow_technique_tooltip()
 	_shadow_cue_picker = _shadow_picker("ShadowAircraftCue", "shadow_aircraft_cue", ShadowSettings.AIRCRAFT_CUES)
 	_add_row(_shadow_group, "Aircraft shadow cue", _shadow_cue_picker)
 	_set_localized_tooltip(_shadow_cue_picker, "The projected cue helps show the aircraft's height. Native shadows do not use this cue.")
 	_shadow_distance_picker = _shadow_picker("ShadowDistance", "shadow_distance", ShadowSettings.DISTANCES)
 	_add_row(_shadow_group, "Shadow distance", _shadow_distance_picker)
+	_set_localized_tooltip(_shadow_distance_picker, "Activities may use a shorter range.")
 	_shadow_softness_picker = _shadow_picker("ShadowSoftness", "shadow_softness", ShadowSettings.SOFTNESS)
 	_add_row(_shadow_group, "Shadow softness", _shadow_softness_picker)
 	_set_localized_tooltip(_shadow_softness_picker, "Softness changes native shadows; the projected blur stays the same.")
@@ -729,6 +732,14 @@ func _refresh_shadow_group_button() -> void:
 		_shadow_group_button.text = tr("Shadows") + ("  −" if _shadow_group_button.button_pressed else "  +")
 
 
+func _refresh_shadow_technique_tooltip() -> void:
+	if _shadow_technique_picker == null:
+		return
+	for index: int in _shadow_technique_picker.item_count:
+		if _shadow_technique_picker.get_item_metadata(index) == "native":
+			_shadow_technique_picker.set_item_tooltip(index, tr(NATIVE_SHADOW_LIMITATION))
+
+
 func _refresh_shadow_info() -> void:
 	if _shadow_info == null:
 		return
@@ -750,9 +761,13 @@ func _refresh_shadow_info() -> void:
 	_shadow_info.text = tr("Active technique: %s · Quality: %s") % [
 		_choice_caption("shadow_technique", effective.get("technique", "auto")),
 		quality]
-	_shadow_info.text += "\n" + tr("Active cue: %s · Maximum distance: %s · Softness: %s") % [
-		_choice_caption("shadow_aircraft_cue", effective.get("aircraft_cue", "auto")), distance,
+	_shadow_info.text += "\n" + tr("Configured cue: %s · Distance limit: %s · Softness: %s") % [
+		_choice_caption("shadow_aircraft_cue", requested.get("shadow_aircraft_cue", "auto")), distance,
 		softness]
+	if native:
+		_shadow_info.text += "\n" + tr("Activities may use a shorter range.")
+	if effective.get("technique", "") == "native":
+		_shadow_info.text += "\n" + tr(NATIVE_SHADOW_LIMITATION)
 	if requested.shadow_technique in ["auto", "native"] and not native and bool(effective.get("projected", false)):
 		_shadow_info.text += "\n" + tr("Native shadows are unavailable in this graphics session; projected shadows are active.")
 
@@ -1183,6 +1198,7 @@ func _refresh_translated_text() -> void:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))
 	_refresh_graphics_info()
 	_refresh_shadow_group_button()
+	_refresh_shadow_technique_tooltip()
 	_refresh_shadow_info()
 	_sync_reconstruction_controls()
 	_sync_reflex_controls()

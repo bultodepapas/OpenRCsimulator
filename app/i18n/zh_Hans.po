@@ -8394,8 +8394,8 @@ msgstr "超高"
 msgid "Active technique: %s · Quality: %s"
 msgstr "当前技术：%s · 质量：%s"
 
-msgid "Active cue: %s · Maximum distance: %s · Softness: %s"
-msgstr "当前提示：%s · 最大距离：%s · 柔和度：%s"
+msgid "Configured cue: %s · Distance limit: %s · Softness: %s"
+msgstr "设定提示：%s · 距离上限：%s · 柔和度：%s"
 
 msgid "%.0f m"
 msgstr "%.0f m"
@@ -8405,3 +8405,9 @@ msgstr "未启用"
 
 msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
 msgstr "当前图形会话不支持原生阴影；投影阴影已启用。"
+
+msgid "Native shadow coverage is experimental; some objects do not cast shadows."
+msgstr "原生阴影覆盖仍处于试验阶段；部分物体不会投射阴影。"
+
+msgid "Activities may use a shorter range."
+msgstr "某些活动可能使用更短的距离。"

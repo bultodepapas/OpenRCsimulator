@@ -2,7 +2,11 @@
 
 2026-10-31 · Owner: VQ with UI, FW/TOD/SUN, L/LU/SC, CAM, GDU and vehicle visual owners · Steps: **VQ-04b-S00…S12**.
 
-**Status: researched proposal; no runtime changes or new performance qualification.** Build on the existing projected shadows and optional High renderer. Deliver convincing contact, detailed silhouettes and stable motion before increasing range or adding expensive effects. Primary acceptance is **1920×1080**, then 1440p/4K and above, then 720p compatibility.
+**Status: first configuration/settings slice implemented; broader visual and performance qualification remains open.**
+The [implementation record](../research/visual-quality-implementation/VQ-04b/S01-S03-2026-10-31/README.md)
+owns checks, captures and limits. Current defaults are preserved; Native is an opt-in, bounded comparison.
+Deliver convincing contact, detailed silhouettes and stable motion before increasing range or adding expensive effects.
+Primary acceptance is **1920×1080**, then 1440p/4K and above, then 720p compatibility.
 
 This is the detailed shadow subplan of [VQ-04b](../VISUAL-QUALITY-PLAN.md#open-work). The [advanced graphics plan](advanced-graphics.md) retains VQ-07e renderer/effect promotion, VQ-06a/b retains settings integration, and [GDU-11](godot-4.8-upgrade.md#phase-11-owner-authorized-48-improvements) retains engine opportunity work. The [dated source audit](../research/shadows-2026-10-31.md) records the inspected implementation and internet references. Parent acceptance gates remain in their existing homes; this document owns the shadow-specific sequence.
 
@@ -214,14 +218,16 @@ The [18-investigation follow-up](../research/shadows-2026-10-31.md#decisions-fro
 
 ## 9. Implementation sequence
 
-All implementation rows are pending. S00's source research is complete; its rendered baseline is not. Slice evidence should live beneath the existing VQ evidence home, with large captures in a fresh ignored/external directory and compact reports linking identities and reproduction instructions.
+S01/S02 and candidate S03 controls are implemented in the first slice. This does not complete the full
+coverage or promotion gates below. Slice evidence lives beneath the existing VQ evidence home, with
+large captures in ignored/external directories and compact reports linking identities and reproduction instructions.
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| VQ-04b-S00 | Inventory actual caster/receiver/light paths, renderers, cameras, existing settings and concurrent shadow contributions. Freeze present Standard and High baselines. | Source audit complete in the dated research; **native baseline pending**. Include known contact rejection, source/engine/settings identity, 1080p stills and motion. |
-| VQ-04b-S01 | Define effective shadow configuration, capability reporting and direct-shadow ownership. Compare projected/native routes without unrelated visual changes. | Pending. No duplicate coverage, no unoccluded color change, explicit unsupported-path behavior and unchanged simulation samples. |
-| VQ-04b-S02 | Integrate a small first settings slice: quality/technique, aircraft cue, distance and restore defaults; advanced groups expand with accepted features. | Pending with VQ-06a/b + UI. Persistence/migration, malformed input, Apply/Revert/restart, real 1080p menu and effective-state evidence. |
-| VQ-04b-S03 | Tune directional distance, atlas, cascade allocation, blending and bias at fixed filter/AA. | Pending with VQ-07e. Low-sun gear/fence detail and camera-motion matrix; select the cheapest candidate meeting the visible gate. |
+| VQ-04b-S00 | Inventory actual caster/receiver/light paths, renderers, cameras, existing settings and concurrent shadow contributions. Freeze present Standard and High baselines. | Source audit and native 1080p static baselines recorded. Motion and broader activity baseline pending. |
+| VQ-04b-S01 | Define effective shadow configuration, capability reporting and direct-shadow ownership. Compare projected/native routes without unrelated visual changes. | Implemented global allocation owner, route suppression/restoration and bounded opaque Native casters. Current/Auto intentionally retains legacy combined coverage. Complete Native coverage and promotion remain open. |
+| VQ-04b-S02 | Integrate a small first settings slice: quality/technique, aircraft cue, distance and restore defaults; advanced groups expand with accepted features. | Implemented additive persistence, malformed-value recovery, live preview/Revert, five controls and eight translations; focused UI checks and native menu inspection recorded. Wider package/restart qualification remains open. |
+| VQ-04b-S03 | Tune directional distance, atlas, cascade allocation, blending and bias at fixed filter/AA. | Candidate 2048/4096/8192 atlases, two/four cascades, 100/300/600 m limits and hard/soft filtering implemented as opt-in controls. Bias unchanged. No cheapest acceptable preset or new default selected. |
 | VQ-04b-S04 | Improve aircraft self-shadow and animated control/gear coverage; compare adaptive projected detail only where it helps. | Pending with aircraft/AS. Source bindings stable; matching poses, scale variants, stopped/fast rotor controls and no per-frame geometry rebuild. |
 | VQ-04b-S05 | Refine penumbrae and natural-versus-assisted cue behavior; separately compare AO/contact candidates. | Pending. Contact default remains off unless the previously failed scene and expanded motion matrix pass. Preserve marks/paint and direct-light energy. |
 | VQ-04b-S06 | Coordinate vegetation, people and structure caster coverage, alpha, wind, LOD and bounds. | Pending with L/LU/SC. Stable moving foliage and actors; measured near-grass tradeoff; no stale poses or lost fence gaps. |
@@ -281,7 +287,7 @@ The selected scope is complete when its settings are truthful and persistent, it
 
 ## 13. Targeted C++ efficiency work
 
-The [C01–C06 investigations](../research/shadows-2026-10-31.md#third-round-six-c-efficiency-investigations) assess where native code could help. **No new helper or engine patch is implemented or benchmarked.** Keep this work under S00/S04/S06/S10/S11 with DT-11a construction/performance ownership. Rendering-native helpers remain separate from the existing physics evaluator and its ABI, qualification and float64 simulation contracts.
+The [C01–C06 investigations](../research/shadows-2026-10-31.md#third-round-six-c-efficiency-investigations) assess where native code could help. **No new C++ helper or engine patch is implemented or benchmarked.** The first implementation instead resumes the existing ordered field bounds scan after its already-scanned static prefix; exact-output checks are in the implementation record. No speedup is claimed without uncontended current measurements. Keep this work under S00/S04/S06/S10/S11 with DT-11a construction/performance ownership. Rendering-native helpers remain separate from the existing physics evaluator and its ABI, qualification and float64 simulation contracts.
 
 ### First candidate: packed geometry preparation
 

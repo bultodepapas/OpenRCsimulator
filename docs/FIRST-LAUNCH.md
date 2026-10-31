@@ -169,6 +169,17 @@ thermals, kites, swallows and evening swifts, chosen by time of day and weather.
 halves it, Many keeps full flocks at every level and Off sends them all away. The change applies at once, also from
 the Pause menu: in flight the birds fly off or arrive over a minute or two. [Birds plan](plans/birds-sky-life.md).
 Workshop's separate preview images do not use the main-view MSAA setting.
+
+**Graphics → Shadows** adds quality, technique, aircraft cue, distance and softness controls.
+Changes preview live; **Keep changes** saves them, while **Revert** or Close restores the saved choices.
+**Restore shadow defaults** affects only these controls. Current quality and Automatic technique preserve
+the existing renderer behavior. Native is an experimental comparison with a bounded set of nearby opaque
+casters; some people, foliage and other objects do not cast shadows in this mode. Projected uses the existing
+flat-ground silhouettes; Off disables these direct-shadow routes. Ambient occlusion and cloud shading are separate.
+Native suppresses the projected aircraft cue. **V** still cycles the flight-local cue; changing the saved cue
+applies that choice again. Distance limits are 100/300/600 m, with shorter limits in close activities. Hard also
+disables High's solar penumbra. These options change presentation only, and higher quality is not a performance
+recommendation. [Implementation and remaining qualification](research/visual-quality-implementation/VQ-04b/S01-S03-2026-10-31/README.md).
 **Settings → Camera** sets the **First view** of flights from Home (pilot, chase, fly-by or orbit), the **Pilot field of view**
 (30–70°, default 50°; about 30° shows the model at its real size on a 24–27-inch screen at arm's length), **Auto zoom**,
 **Chase distance**, **Orbit sensitivity** and **Invert orbit up/down**. Changes apply at once, also from Pause; first view

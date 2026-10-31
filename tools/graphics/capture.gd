@@ -235,6 +235,7 @@ func run() -> void:
 	var sun_params: Dictionary = Atmosphere.parameters(lighting)
 	var report := {"format": "openrc-graphics-capture v1", "engine": Engine.get_version_info(),
 		"shadows": ShadowSettings.describe(),
+		"native_field_casters": field_node.get_meta("shadow_native_casters", {}),
 		"renderer": RenderingServer.get_current_rendering_method(), "profile": profile,
 		"gpu": {"name": RenderingServer.get_video_adapter_name(), "api": RenderingServer.get_video_adapter_api_version()},
 		"viewport": [size.x, size.y], "msaa_3d": viewport.msaa_3d, "offscreen": true,

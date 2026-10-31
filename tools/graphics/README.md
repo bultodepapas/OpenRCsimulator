@@ -246,6 +246,14 @@ adapter at full resolution with sharpening off. Reports record the actual MSAA,
 TAA, scaling, sharpness and mip-bias values. Stills allow 90 drawn settling frames;
 this is not a convergence or motion-quality guarantee. Compare contact on/off
 within each AA mode before attributing a change to either effect.
+
+The same producer accepts `--shadow-technique=auto|native|projected|off`,
+`--shadow-quality=current|low|medium|high|ultra`, `--shadow-distance=auto|near|field|far`,
+`--shadow-softness=auto|hard|soft` and `--shadow-cue=auto|sun|vertical|off`.
+It uses the production settings resolver and records requested/effective values and the bounded
+native-field caster inventory in `report.json`. Unknown choices fail. These static fixture views do not
+exercise the flight's V-key override or establish complete Native coverage. Default options preserve
+the prior capture configuration; contact experiments remain independent.
 `--seconds=<duration>` requires one view and measures after 10 s warmup without
 image readback. These offscreen static timings do not qualify flight performance.
 Use the existing native flight collector separately, without concurrent tests,

@@ -139,16 +139,24 @@ func _settings_cases() -> void:
 	var info: Label = settings.find_child("ShadowInfo", true, false)
 	var effective: Dictionary = ShadowSettings.describe().effective
 	var expected_technique := "Native" if effective.technique == "native" else "Projected"
-	var expected_cue := "Off" if not effective.projected else "Vertical"
-	_check("receipt shows the active technique and cue", info != null
-		and info.text.contains("Active technique: " + expected_technique) and info.text.contains("Active cue: " + expected_cue))
+	_check("receipt distinguishes the active technique from the configured cue", info != null
+		and info.text.contains("Active technique: " + expected_technique) and info.text.contains("Configured cue: Vertical"))
+	var technique_picker: OptionButton = settings.find_child("ShadowTechnique", true, false)
+	var distance_picker: OptionButton = settings.find_child("ShadowDistance", true, false)
+	_check("Native option explains its experimental coverage", technique_picker.get_item_tooltip(1) ==
+		"Native shadow coverage is experimental; some objects do not cast shadows.")
+	_check("distance tooltip explains activity-specific limits", distance_picker.tooltip_text == "Activities may use a shorter range.")
+	if bool(effective.native):
+		_check("native receipt explains limited coverage and shorter activity ranges",
+			info.text.contains("Native shadow coverage is experimental; some objects do not cast shadows.")
+			and info.text.contains("Activities may use a shorter range."))
 	settings.keep_changes()
 	var kept := DisplayPreferences.load_from(PREFS)
 	_check("Keep persists every shadow setting", kept.shadow_quality == "high" and kept.shadow_technique == "native"
 		and kept.shadow_aircraft_cue == "vertical" and kept.shadow_distance == "far" and kept.shadow_softness == "hard")
 	_select(settings, "ShadowTechnique", "projected")
 	_check("projected mode marks native-only options inactive", info.text.contains("Quality: Not active")
-		and info.text.contains("Maximum distance: Not active") and info.text.contains("Softness: Not active"))
+		and info.text.contains("Distance limit: Not active") and info.text.contains("Softness: Not active"))
 	settings._revert()
 	_check("Revert restores the saved choice and active receipt", settings._draft.shadow_technique == "native"
 		and ShadowSettings.describe().requested.shadow_technique == "native"
@@ -179,12 +187,13 @@ func _settings_cases() -> void:
 	var toggle: Button = reopened.find_child("ShadowGroupToggle", true, false)
 	_check("reopened settings retain the saved selection in Spanish", technique != null
 		and technique.get_item_metadata(technique.selected) == "native" and technique.get_item_text(2) == "Proyectada"
-		and toggle.text.begins_with("Sombras"))
+		and toggle.text.begins_with("Sombras") and technique.get_item_tooltip(1).contains("experimental"))
 	TranslationServer.set_locale("en")
 	await process_frame
 	_check("open shadow controls follow language changes without losing the selection",
 		technique.get_item_metadata(technique.selected) == "native" and technique.get_item_text(2) == "Projected"
-		and toggle.text.begins_with("Shadows"))
+		and toggle.text.begins_with("Shadows") and technique.get_item_tooltip(1) ==
+		"Native shadow coverage is experimental; some objects do not cast shadows.")
 	reopened.queue_free()
 	await process_frame
 

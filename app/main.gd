@@ -2885,18 +2885,6 @@ func _restart_companions() -> void:
 	session.resume()
 
 
-## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,
-## --alt=4 (start altitude, m), --autozoom=0, --view=pilot|chase|orbit|closeup (CAM-04), --look_az=90 --look_el=10 --look_alt=30 (fixed landscape review view),
-## --hide_airplane (readability reference), --hide_treeline (L6c tree-mask reference; refused without field objects),
-## --visual_pose=level --visual_distance=100 [--visual_elevation=1.6 --visual_azimuth=0] (synthetic inspection,
-## with --scripted and an explicit --autozoom), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
-## --aircraft=<catalog id> (default the Ugly Stik; a preview aircraft only with --scripted),
-## --quick-flight (runway default; every airplane trimmed for 50 % throttle like Home, D6e-R4),
-## --start=runway|airborne|airborne_half_power|hand_launch (explicit launch override; without --quick-flight the reference trim;
-## hand_launch only for airplanes without landing gear, X8-07),
-## --rates=normal|sport|full (D6e-R5: low rates, full roll with normal pitch/yaw, or all maximum throws),
-## --field-lighting=club|airfield|off, --field-activation=auto|on|off, --campfire=on|off (FW-71 visual options; direct routes ignore saved preferences),
-## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)
 ## Saved preferences establish a flight-local cue. V may then change it without
 ## unrelated graphics settings resetting the pilot's choice.
 func _initialize_shadow_mode(args: Dictionary) -> void:
@@ -2924,6 +2912,18 @@ func _cycle_shadow_mode() -> void:
 	_shadow_mode = SHADOW_MODES[(SHADOW_MODES.find(_shadow_mode) + 1) % SHADOW_MODES.size()]
 
 
+## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,
+## --alt=4 (start altitude, m), --autozoom=0, --view=pilot|chase|orbit|closeup (CAM-04), --look_az=90 --look_el=10 --look_alt=30 (fixed landscape review view),
+## --hide_airplane (readability reference), --hide_treeline (L6c tree-mask reference; refused without field objects),
+## --visual_pose=level --visual_distance=100 [--visual_elevation=1.6 --visual_azimuth=0] (synthetic inspection,
+## with --scripted and an explicit --autozoom), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
+## --aircraft=<catalog id> (default the Ugly Stik; a preview aircraft only with --scripted),
+## --quick-flight (runway default; every airplane trimmed for 50 % throttle like Home, D6e-R4),
+## --start=runway|airborne|airborne_half_power|hand_launch (explicit launch override; without --quick-flight the reference trim;
+## hand_launch only for airplanes without landing gear, X8-07),
+## --rates=normal|sport|full (D6e-R5: low rates, full roll with normal pitch/yaw, or all maximum throws),
+## --field-lighting=club|airfield|off, --field-activation=auto|on|off, --campfire=on|off (FW-71 visual options; direct routes ignore saved preferences),
+## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)
 func _user_args() -> Dictionary:
 	var args := {}
 	for a in user_args:
@@ -3107,6 +3107,18 @@ func _surface_rotations_for_render(c: Dictionary) -> Dictionary:
 	return ControlSurfaces.hinge_rotations_from_surfaces(session.surface_angles_deg())
 
 
+## Apply the current flight-local cue to the presentation carrier.
+func _update_aircraft_shadow(pose: Dictionary, snapshot_lighting: bool) -> Vector3:
+	_sync_shadow_preference()
+	# FW-MOON-03: field-world time passes no lighting dictionary; its strength fades the moon's shadow with the phase.
+	var strength: float = (Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()) \
+		if _shadow_mode == "sun" else 1.0
+	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
+	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
+	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, direction, strength, _shadow_mode)
+	return direction
+
+
 func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_last_render_pose = pose
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
@@ -3129,14 +3141,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 		mechanisms.tailhook = AirplaneBuilder.ground_limited_fraction(_airplane, "tailhook", _mechanisms.tailhook, _ground_height)
 	AirplaneBuilder.apply_mechanisms(_airplane, mechanisms)
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
-	# FW-MOON-03: field-world time passes no lighting dictionary; its strength fades the moon's shadow with the phase.
-	_sync_shadow_preference()
-	var strength: float = (Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()) \
-		if _shadow_mode == "sun" else 1.0
-	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
-	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
-	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y,
-		direction, strength, _shadow_mode)
+	var direction := _update_aircraft_shadow(pose, snapshot_lighting)
 	var paused: bool = session != null and session.sim.paused and not _scripted
 	_rig.light_direction = direction # CAM-14: the fly-by stands with the sun behind it
 	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF),

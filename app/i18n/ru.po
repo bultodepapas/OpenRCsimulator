@@ -9195,8 +9195,8 @@ msgstr "Ультра"
 msgid "Active technique: %s · Quality: %s"
 msgstr "Активный способ: %s · Качество: %s"
 
-msgid "Active cue: %s · Maximum distance: %s · Softness: %s"
-msgstr "Активная подсказка: %s · Макс. дальность: %s · Мягкость: %s"
+msgid "Configured cue: %s · Distance limit: %s · Softness: %s"
+msgstr "Настроенная подсказка: %s · Предел дальности: %s · Мягкость: %s"
 
 msgid "%.0f m"
 msgstr "%.0f м"
@@ -9206,3 +9206,9 @@ msgstr "Не активно"
 
 msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
 msgstr "Встроенные тени недоступны в этой графической сессии; активны проецируемые тени."
+
+msgid "Native shadow coverage is experimental; some objects do not cast shadows."
+msgstr "Покрытие встроенных теней экспериментально; некоторые объекты не отбрасывают тени."
+
+msgid "Activities may use a shorter range."
+msgstr "В некоторых занятиях дальность может быть меньше."

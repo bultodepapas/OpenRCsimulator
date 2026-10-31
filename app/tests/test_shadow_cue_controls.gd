@@ -96,6 +96,41 @@ func _model(name: String) -> Node3D:
 	return model
 
 
+func _main_shadow_presentation() -> void:
+	_select("auto", "sun")
+	var host := Node3D.new()
+	root.add_child(host)
+	var model := _model("FlightAircraft")
+	host.add_child(model)
+	var carrier := Shadow.create(host)
+	Shadow.bind_model(carrier, model)
+	var projected: Node = carrier.get_node("ProjectedShadow")
+	var receiver: MeshInstance3D = projected.get("receiver")
+	var mask: ShaderMaterial = projected.get("mask_material")
+	var flight := Main.new()
+	flight.interactive_start = true
+	flight._initialize_shadow_mode({})
+	flight._airplane = {"root": model}
+	flight._shadow = carrier
+	var pose := {"basis": Basis.IDENTITY, "pos": Vector3(1, 3, 2)}
+	var sun: Vector3 = flight._update_aircraft_shadow(pose, false)
+	_check("Main sends the current sun direction to the projected cue", receiver.visible
+		and (mask.get_shader_parameter("light_direction") as Vector3).is_equal_approx(sun.normalized()))
+	_press_v(flight)
+	flight._update_aircraft_shadow(pose, false)
+	_check("Main renders the Vertical cue selected by V", flight._shadow_mode == "vertical" and receiver.visible
+		and mask.get_shader_parameter("light_direction") == Vector3.UP)
+	_select("auto", "off")
+	flight._update_aircraft_shadow(pose, false)
+	_check("Main applies a changed Off preference", flight._shadow_mode == "off" and not receiver.visible)
+	_press_v(flight)
+	sun = flight._update_aircraft_shadow(pose, false)
+	_check("Main renders Sun when V follows saved Off", flight._shadow_mode == "sun" and receiver.visible
+		and (mask.get_shader_parameter("light_direction") as Vector3).is_equal_approx(sun.normalized()))
+	flight.free()
+	host.free()
+
+
 func _projector_lifecycle() -> void:
 	_select("auto", "off")
 	var host := Node3D.new()
@@ -151,6 +186,13 @@ func _projector_lifecycle() -> void:
 		and viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
 	carrier.visible = true
 	_check("showing the carrier restores its cue", receiver.visible)
+	host.remove_child(model)
+	_select("native", "sun", "high")
+	host.add_child(model)
+	_check("reattaching during Native mode does not revive projection", not receiver.visible
+		and viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	_select("projected", "sun", "high")
+	_check("projection returns when the global route permits it again", receiver.visible)
 	model.free()
 	_select("auto", "sun")
 	_check("a freed source cannot be revived by a policy update", not receiver.visible
@@ -172,6 +214,7 @@ func _projector_lifecycle() -> void:
 
 func _run() -> void:
 	_flight_modes()
+	_main_shadow_presentation()
 	_projector_lifecycle()
 	_select("auto", "auto")
 	await process_frame
