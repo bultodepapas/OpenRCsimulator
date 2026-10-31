@@ -67,6 +67,7 @@ const HELICOPTER_MAIN_SCRIPT := "res://helicopter_main.gd"
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const AircraftLightingPolicy := preload("res://render/lighting/lighting_policy.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
+const ShadowSettings := preload("res://render/shadow_settings.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const BirdDirector := preload("res://scenery/birds/bird_director.gd")
@@ -1399,6 +1400,7 @@ static func apply_master_volume(level: float) -> void:
 
 
 func _apply_presentation(config: Dictionary) -> void:
+	ShadowSettings.apply(config)
 	AircraftLightingPolicy.apply(config)
 	if is_instance_valid(menu_audio):
 		menu_audio.set_volume(float(config.get("menu_volume", DisplayPreferences.DEFAULTS.menu_volume)))

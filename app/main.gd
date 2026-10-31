@@ -3104,7 +3104,9 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 		if _shadow_mode == "sun" else 1.0
 	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
 	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
-	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, direction if _shadow_mode == "sun" else Vector3.UP, strength)
+	var cue := Atmosphere.ShadowSettings.aircraft_cue()
+	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y,
+		direction if _shadow_mode == "sun" or cue == "sun" else Vector3.UP, strength)
 	var paused: bool = session != null and session.sim.paused and not _scripted
 	_rig.light_direction = direction # CAM-14: the fly-by stands with the sun behind it
 	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF),
@@ -3309,6 +3311,7 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		route = route_name,
 		preset = "high-experimental" if Atmosphere.HighGraphics.active() else "current-default",
 		graphics_profile = Atmosphere.HighGraphics.describe(),
+		shadows = Atmosphere.ShadowSettings.describe(),
 		backend = RenderingServer.get_current_rendering_method(),
 		rendering_driver = RenderingServer.get_current_rendering_driver_name(),
 		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa,

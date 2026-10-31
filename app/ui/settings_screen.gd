@@ -16,6 +16,7 @@ const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
+const ShadowSettings := preload("res://render/shadow_settings.gd")
 
 signal closed
 signal presentation_changed(config: Dictionary)
@@ -64,6 +65,14 @@ var _fsr2_sharpness_value: Label
 var _fsr2_sharpness_dragging := false
 var _scene_detail_picker: OptionButton
 var _birds_picker: OptionButton
+var _shadow_group_button: Button
+var _shadow_group: VBoxContainer
+var _shadow_quality_picker: OptionButton
+var _shadow_technique_picker: OptionButton
+var _shadow_cue_picker: OptionButton
+var _shadow_distance_picker: OptionButton
+var _shadow_softness_picker: OptionButton
+var _shadow_info: Label
 var _lighting_quality_picker: OptionButton
 var _lighting_vfx_toggle: CheckButton
 var _lighting_flashes_toggle: CheckButton
@@ -136,6 +145,7 @@ func _notification(what: int) -> void:
 func _ready() -> void:
 	_surface.resized.connect(_update_layout)
 	_update_layout()
+	_refresh_shadow_info()
 	# UI-35a (UI-30 AL-4): start on the first category, so a pad or keyboard moves straight into the settings.
 	(_category_picker if _category_picker.visible else _category_buttons[0]).grab_focus.call_deferred()
 
@@ -274,6 +284,39 @@ func _build() -> void:
 	_birds_picker.item_selected.connect(_birds_selected)
 	_add_row(graphics_page, "Birds", _birds_picker)
 	_set_localized_tooltip(_birds_picker, "Vultures and storks in thermals, kites, swallows and evening swifts, by time of day and weather. Changes apply at once: birds fly away or arrive. Normal follows Scene detail; Many keeps full flocks at every level.")
+	# A collapsed group preserves room for the existing 1080p graphics controls.
+	_shadow_group_button = _button("Shadows", "QuietButton", "ShadowGroupToggle")
+	_shadow_group_button.toggle_mode = true
+	_shadow_group_button.toggled.connect(func(expanded: bool) -> void:
+		_shadow_group.visible = expanded
+		_refresh_shadow_group_button())
+	graphics_page.add_child(_shadow_group_button)
+	_shadow_group = VBoxContainer.new()
+	_shadow_group.name = "ShadowGroup"
+	_shadow_group.add_theme_constant_override("separation", 10)
+	graphics_page.add_child(_shadow_group)
+	_shadow_group.hide()
+	_refresh_shadow_group_button()
+	_shadow_quality_picker = _shadow_picker("ShadowQuality", "shadow_quality", ShadowSettings.QUALITY)
+	_add_row(_shadow_group, "Shadow quality", _shadow_quality_picker)
+	_set_localized_tooltip(_shadow_quality_picker, "Higher shadow quality can increase GPU cost.")
+	_shadow_technique_picker = _shadow_picker("ShadowTechnique", "shadow_technique", ShadowSettings.TECHNIQUES)
+	_add_row(_shadow_group, "Shadow technique", _shadow_technique_picker)
+	_set_localized_tooltip(_shadow_technique_picker, "Automatic keeps the current mix of native and projected shadows. Native hides projected field shadows and the aircraft cue.")
+	_shadow_cue_picker = _shadow_picker("ShadowAircraftCue", "shadow_aircraft_cue", ShadowSettings.AIRCRAFT_CUES)
+	_add_row(_shadow_group, "Aircraft shadow cue", _shadow_cue_picker)
+	_set_localized_tooltip(_shadow_cue_picker, "The projected cue helps show the aircraft's height. Native shadows do not use this cue.")
+	_shadow_distance_picker = _shadow_picker("ShadowDistance", "shadow_distance", ShadowSettings.DISTANCES)
+	_add_row(_shadow_group, "Shadow distance", _shadow_distance_picker)
+	_shadow_softness_picker = _shadow_picker("ShadowSoftness", "shadow_softness", ShadowSettings.SOFTNESS)
+	_add_row(_shadow_group, "Shadow softness", _shadow_softness_picker)
+	_set_localized_tooltip(_shadow_softness_picker, "Softness changes native shadows; the projected blur stays the same.")
+	_shadow_info = _label("", "SecondaryLabel", true)
+	_shadow_info.name = "ShadowInfo"
+	_shadow_group.add_child(_shadow_info)
+	var shadow_defaults := _button("Restore shadow defaults", "QuietButton", "ShadowDefaults")
+	shadow_defaults.pressed.connect(_restore_shadow_defaults)
+	_shadow_group.add_child(shadow_defaults)
 	_graphics_info = _label("", "SecondaryLabel", true)
 	_lighting_quality_picker = OptionButton.new()
 	_lighting_quality_picker.name = "AircraftLightingQuality"
@@ -564,6 +607,18 @@ func _camera_picker(node_name: String, key: String, values: Array) -> OptionButt
 	return picker
 
 
+func _shadow_picker(node_name: String, key: String, values: Array) -> OptionButton:
+	var picker := OptionButton.new()
+	picker.name = node_name
+	for value: String in values:
+		picker.add_item(_choice_caption(key, value))
+		picker.set_item_metadata(picker.item_count - 1, value)
+	picker.item_selected.connect(func(index: int) -> void:
+		_draft[key] = picker.get_item_metadata(index)
+		_on_presentation_option_changed())
+	return picker
+
+
 func _camera_toggle(node_name: String, key: String, tooltip: String) -> CheckButton:
 	var toggle := CheckButton.new()
 	toggle.name = node_name
@@ -598,6 +653,15 @@ func _choice_caption(key: String, value: Variant) -> String:
 				return tr("Automatic (%s)") % tr(str(SceneDetail.detected().level).capitalize())
 			return tr(str(value).capitalize())
 		"birds": return {off = tr("Off"), few = tr("Few"), normal = tr("Normal"), many = tr("Many")}.get(value, str(value))
+		"shadow_quality": return {current = tr("Current"), low = tr("Low"), medium = tr("Medium"),
+			high = tr("High"), ultra = tr("Ultra")}.get(value, str(value))
+		"shadow_technique": return {auto = tr("Automatic"), native = tr("Native"), projected = tr("Projected"),
+			off = tr("Off")}.get(value, str(value))
+		"shadow_aircraft_cue": return {auto = tr("Automatic"), sun = tr("Sun"), vertical = tr("Vertical"),
+			off = tr("Off")}.get(value, str(value))
+		"shadow_distance": return {auto = tr("Automatic"), near = tr("Near (100 m)"), field = tr("Field (300 m)"),
+			far = tr("Far (600 m)")}.get(value, str(value))
+		"shadow_softness": return {auto = tr("Automatic"), hard = tr("Hard"), soft = tr("Soft")}.get(value, str(value))
 		"aircraft_lighting_quality": return {low = tr("Low"), standard = tr("Standard"), high = tr("High")}.get(value, str(value))
 		"camera_magnifier": return {off = tr("Off"), auto = tr("Automatic"), on = tr("On")}.get(value, str(value))
 		"camera_aids": return {off = tr("Off"), horizon = tr("Keep the horizon in view"), overhead = tr("Smooth overhead passes"),
@@ -648,9 +712,49 @@ func _on_graphics_option_changed() -> void:
 
 
 func _restore_graphics_defaults() -> void:
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]:
+	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
 		_draft[key] = DisplayPreferences.DEFAULTS[key]
 	_on_graphics_option_changed()
+
+
+func _restore_shadow_defaults() -> void:
+	for key: String in DisplayPreferences.SHADOW_FILE_KEYS:
+		_draft[key] = DisplayPreferences.DEFAULTS[key]
+	_on_presentation_option_changed()
+	_sync_controls()
+
+
+func _refresh_shadow_group_button() -> void:
+	if _shadow_group_button != null:
+		_shadow_group_button.text = tr("Shadows") + ("  −" if _shadow_group_button.button_pressed else "  +")
+
+
+func _refresh_shadow_info() -> void:
+	if _shadow_info == null:
+		return
+	var receipt := ShadowSettings.describe()
+	var requested: Dictionary = receipt.get("requested", {})
+	for key: String in DisplayPreferences.SHADOW_FILE_KEYS:
+		if requested.get(key) != _draft.get(key):
+			_shadow_info.text = ""
+			return # a standalone settings screen has not applied this draft
+	var effective: Dictionary = receipt.get("effective", {})
+	if effective.is_empty():
+		_shadow_info.text = ""
+		return
+	var native := bool(effective.get("native", false))
+	var inactive := tr("Not active")
+	var quality := _choice_caption("shadow_quality", effective.get("quality", "current")) if native else inactive
+	var distance := tr("%.0f m") % float(effective.get("distance_m", 0.0)) if native else inactive
+	var softness := _choice_caption("shadow_softness", effective.get("softness", "auto")) if native else inactive
+	_shadow_info.text = tr("Active technique: %s · Quality: %s") % [
+		_choice_caption("shadow_technique", effective.get("technique", "auto")),
+		quality]
+	_shadow_info.text += "\n" + tr("Active cue: %s · Maximum distance: %s · Softness: %s") % [
+		_choice_caption("shadow_aircraft_cue", effective.get("aircraft_cue", "auto")), distance,
+		softness]
+	if requested.shadow_technique in ["auto", "native"] and not native and bool(effective.get("projected", false)):
+		_shadow_info.text += "\n" + tr("Native shadows are unavailable in this graphics session; projected shadows are active.")
 
 
 func _refresh_graphics_info() -> void:
@@ -740,6 +844,7 @@ func _language_selected(index: int) -> void:
 
 func _on_presentation_option_changed() -> void:
 	_emit_presentation()
+	_refresh_shadow_info()
 	_sync_action_buttons()
 	call_deferred("_refresh_shared_theme")
 
@@ -799,6 +904,12 @@ func _sync_controls() -> void:
 	_sync_reflex_controls()
 	_select_metadata(_scene_detail_picker, _draft.scene_detail)
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
+	_select_metadata(_shadow_quality_picker, _draft.get("shadow_quality", DisplayPreferences.DEFAULTS.shadow_quality))
+	_select_metadata(_shadow_technique_picker, _draft.get("shadow_technique", DisplayPreferences.DEFAULTS.shadow_technique))
+	_select_metadata(_shadow_cue_picker, _draft.get("shadow_aircraft_cue", DisplayPreferences.DEFAULTS.shadow_aircraft_cue))
+	_select_metadata(_shadow_distance_picker, _draft.get("shadow_distance", DisplayPreferences.DEFAULTS.shadow_distance))
+	_select_metadata(_shadow_softness_picker, _draft.get("shadow_softness", DisplayPreferences.DEFAULTS.shadow_softness))
+	_refresh_shadow_info()
 	_select_metadata(_lighting_quality_picker, _draft.get("aircraft_lighting_quality", "standard"))
 	_lighting_vfx_toggle.set_pressed_no_signal(bool(_draft.get("aircraft_lighting_show_vfx", true)))
 	_lighting_flashes_toggle.set_pressed_no_signal(bool(_draft.get("aircraft_lighting_reduced_flashes", false)))
@@ -1063,12 +1174,16 @@ func _refresh_translated_text() -> void:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
 	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_birds_picker, "birds"],
+			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
+			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],
 			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_zoom_picker, "camera_zoom"], [_camera_magnifier_picker, "camera_magnifier"], [_camera_aids_picker, "camera_aids"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))
 	_refresh_graphics_info()
+	_refresh_shadow_group_button()
+	_refresh_shadow_info()
 	_sync_reconstruction_controls()
 	_sync_reflex_controls()
 	for entry: Dictionary in _localized_tooltips:

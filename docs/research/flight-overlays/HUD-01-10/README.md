@@ -614,3 +614,44 @@ and German views were reviewed. Final geometry and imperial legend clearance are
 crashes or leaked objects. Independent Terra Max Good Enemy review confirmed the two fixes and found no further
 issue in those static views. This is focused visual/software evidence, not motion readability, a complete capture
 suite or hardware performance qualification. No images are added to Git.
+
+## Open classic dials and lower titles (2026-10-31, HUD-13-R13)
+
+User review rejected the black rectangular surround and small instrument inside it. Classic widgets now omit
+the outer card border/shadow and the R12 mounting plate/fasteners, retaining the circular bezel, ivory scales
+and counterweighted hands. At the same widget width, normal dial diameter grows from about 218 to 259 px;
+small/compact grows from about 152 to 202 px. The single name, drag grip and close button sit below the circle,
+followed by the numerical readout and optional detail footer. There is no duplicate title above the dial.
+
+The existing lazy crystal underlay is parented to the title handle and sized in its local coordinates. This keeps
+the surroundings transparent through layout, hide/reveal and density changes without forced container sorting,
+new nodes/materials, shaders or frame callbacks. Subtitle/footer backgrounds follow the existing opacity setting,
+with 85%/90% contrast floors and fully opaque backgrounds at 100%. Existing style/material instances are reused.
+
+Final classic source SHA-256: `3198b8fc4f2184482df8377de7c4add30b121a25ca26fd0cc725d22794767504`.
+Final classic/efficiency test SHA-256 values are
+`439444f09e50e36b76b52a7d2ccb1217b9b783e3cbabf37b4b11fabb3158f002` and
+`c4743b487e278f4f0801911a82c5f8d74dcc62fbca68f33b89b583833bbad88c`.
+Concurrent commits incorporated the working source; these hashes identify the reviewed files independently of
+the moving repository HEAD. Checked tests passed **73/73 classic headless, 74/74 classic rendered, 92/92 widget
+efficiency and 153/153 base player checks**, with no engine diagnostics. The rendered extra assertion checks
+background pixels beside the dial. Coverage includes lower-title layout, compact bounds, opacity, first-draw
+underlay ownership and hidden/reparented lifecycle behavior. Receipts remain under ignored
+`tmp/classic-r13-bottom-agent/checks/`, `tmp/classic-r13-agent/checks/` and `tmp/classic-r13-root/checks/`.
+
+Windows, Godot 4.8-beta1, RTX 3090 driver 617.42, OpenGL Compatibility, **1920×1080**: the final normal Spanish
+view is `tmp/debug-bridge/20261031-083805-47870/shots/shot-51760-001.png`; small/compact is `shot-51760-002.png`
+in the same directory. German compact readouts were also inspected. The final app process has stopped and its
+engine log contains no crash or leaked-object diagnostics. This is focused static visual and software evidence;
+no FPS gain, complete-suite pass, motion readability or other-hardware qualification is claimed. No images are
+added to Git.
+
+Independent Terra 6.1 Max Good Enemy review found no concrete regression in the final source and the two
+Spanish captures. It identified routed pointer input as a gap in handler-level tests, prompting an additional
+native debug-bridge interaction check. Session `20261031-085207-47870` confirmed that a pointer press on the
+lower classic title starts dragging, then delivered move/release events. A CLI expression quoting error stopped
+the script before release/position/close assertions; it is not a product failure. The session stopped with no
+crash or leaked objects. Receipts are `tmp/classic-r13-root/pointer-final-result.txt` and `pointer-final-stop.txt`.
+A retry in `20261031-085401-47870` encountered a translation load error at `app/i18n/fr.po:8364` while that file
+was modified by concurrent work, and was stopped (no crash, nine exit-leak objects reported). End-to-end pointer release/close remains unverified by this
+additional run; the handler-level checks and earlier visual evidence above remain the bounded evidence.

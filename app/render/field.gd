@@ -15,6 +15,7 @@ const Horizon = preload("res://render/horizon.gd")
 const PilotStation = preload("res://render/pilot_station.gd")
 const FlightlineBarrier = preload("res://render/flightline_barrier.gd")
 const FieldProjectedShadows = preload("res://render/field_projected_shadows.gd")
+const ShadowFieldPolicy = preload("res://render/shadow_field_policy.gd")
 const FlightCueShadows = preload("res://render/flight_cue_shadows.gd")
 const Windsock = preload("res://render/windsock.gd")
 const Scenery = preload("res://scenery/scenery.gd") # SC-02a: on by default; explicit scenery-off remains a no-op.
@@ -317,6 +318,7 @@ static func _advance_build(context: _BuildContext) -> void:
 			context.phase = _BuildPhase.PROJECTED_SHADOWS
 		_BuildPhase.PROJECTED_SHADOWS:
 			FieldProjectedShadows.attach(context.result, context.field, context.lighting)
+			ShadowFieldPolicy.attach(context.result)
 			context.result.set_meta("lighting_materials", context.materials)
 			context.result.set_meta("lighting_snapshot", context.lighting.duplicate(true))
 			context.phase = _BuildPhase.FIELD_READY
@@ -488,7 +490,11 @@ static func commit_lighting(field_node: Node3D, prepared: Dictionary) -> bool:
 	if cues != null and cues.mesh.get_surface_count() > 0:
 		var material: StandardMaterial3D = cues.mesh.surface_get_material(0) as StandardMaterial3D
 		material.albedo_color = Color.BLACK if lighting.has("solar") else Color.WHITE
-	FieldProjectedShadows.apply_lighting(field_node, lighting)
+	var policy := field_node.get_node_or_null("ShadowFieldPolicy")
+	if policy != null:
+		policy.apply_lighting(lighting)
+	else:
+		FieldProjectedShadows.apply_lighting(field_node, lighting)
 	field_node.set_meta("lighting_snapshot", lighting.duplicate(true))
 	return true
 

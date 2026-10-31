@@ -3,6 +3,7 @@
 extends RefCounted
 
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
+const ShadowSettings := preload("res://render/shadow_settings.gd")
 
 const DEFAULT_PATH := "user://display.cfg"
 const SCHEMA := 1
@@ -39,6 +40,11 @@ const DEFAULTS := {
 	"fsr2_sharpness": 0.9,
 	"scene_detail": "auto",
 	"birds": "normal",
+	"shadow_quality": ShadowSettings.DEFAULTS.shadow_quality,
+	"shadow_technique": ShadowSettings.DEFAULTS.shadow_technique,
+	"shadow_aircraft_cue": ShadowSettings.DEFAULTS.shadow_aircraft_cue,
+	"shadow_distance": ShadowSettings.DEFAULTS.shadow_distance,
+	"shadow_softness": ShadowSettings.DEFAULTS.shadow_softness,
 	"ui_scale": 1.0,
 	"opaque_panels": false,
 	"reduced_motion": false,
@@ -66,6 +72,7 @@ const OPTIONAL_KEYS: Array[String] = [
 	"fsr2_sharpness", "nvidia_reflex",
 	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
 	"aircraft_lighting_quality", "aircraft_lighting_reduced_flashes", "aircraft_lighting_show_vfx",
+	"shadow_quality", "shadow_technique", "shadow_aircraft_cue", "shadow_distance", "shadow_softness",
 ] # schema-1 extensions; older files and callers keep defaults
 ## CAM-17: display.cfg [camera] key for each preference.
 const CAMERA_FILE_KEYS := {
@@ -79,6 +86,14 @@ const AIRCRAFT_LIGHTING_FILE_KEYS := {
 	"aircraft_lighting_quality": "quality",
 	"aircraft_lighting_reduced_flashes": "reduced_flashes",
 	"aircraft_lighting_show_vfx": "show_vfx",
+}
+## VQ-04b: additive choices retain old behavior when absent from a schema-1 file.
+const SHADOW_FILE_KEYS := {
+	"shadow_quality": "quality",
+	"shadow_technique": "technique",
+	"shadow_aircraft_cue": "aircraft_cue",
+	"shadow_distance": "distance",
+	"shadow_softness": "softness",
 }
 const AUDIO_LEVEL_KEYS: Array[String] = ["menu_volume", "master_volume"]
 
@@ -161,11 +176,16 @@ static func load_from(file_path: String) -> Dictionary:
 		if not _valid_aircraft_lighting_value(key, raw[key]):
 			raw[key] = DEFAULTS[key]
 			result.note = _append_note(result.note, "invalid aircraft lighting %s replaced with its default" % AIRCRAFT_LIGHTING_FILE_KEYS[key])
+	for key: String in SHADOW_FILE_KEYS:
+		raw[key] = cfg.get_value("shadows", SHADOW_FILE_KEYS[key], DEFAULTS[key])
+		if not _valid_shadow_value(key, raw[key]):
+			raw[key] = DEFAULTS[key]
+			result.note = _append_note(result.note, "invalid shadow %s replaced with its default" % SHADOW_FILE_KEYS[key])
 	# Apply the same isolation to base display, graphics, accessibility and audio
 	# values. Reuse the save validator so the accepted values cannot drift apart.
 	var recovered_base := false
 	for key: String in raw:
-		if CAMERA_FILE_KEYS.has(key) or AIRCRAFT_LIGHTING_FILE_KEYS.has(key):
+		if CAMERA_FILE_KEYS.has(key) or AIRCRAFT_LIGHTING_FILE_KEYS.has(key) or SHADOW_FILE_KEYS.has(key):
 			continue
 		var single := DEFAULTS.duplicate(true)
 		single[key] = raw[key]
@@ -215,6 +235,8 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 		cfg.set_value("camera", CAMERA_FILE_KEYS[key], checked.config[key])
 	for key: String in AIRCRAFT_LIGHTING_FILE_KEYS:
 		cfg.set_value("aircraft_lighting", AIRCRAFT_LIGHTING_FILE_KEYS[key], checked.config[key])
+	for key: String in SHADOW_FILE_KEYS:
+		cfg.set_value("shadows", SHADOW_FILE_KEYS[key], checked.config[key])
 	return cfg.save(file_path)
 
 
@@ -259,6 +281,9 @@ static func validate(raw: Variant) -> Dictionary:
 	for key: String in AIRCRAFT_LIGHTING_FILE_KEYS:
 		if not _valid_aircraft_lighting_value(key, raw.get(key, DEFAULTS[key])):
 			errors.append("%s has an invalid aircraft lighting value" % key)
+	for key: String in SHADOW_FILE_KEYS:
+		if not _valid_shadow_value(key, raw.get(key, DEFAULTS[key])):
+			errors.append("%s has an invalid shadow value" % key)
 	var scale: Variant = raw.get("ui_scale")
 	if typeof(scale) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(scale)) \
 			or float(scale) < 1.0 or float(scale) > 2.0 \
@@ -295,6 +320,8 @@ static func validate(raw: Variant) -> Dictionary:
 		"aircraft_lighting_reduced_flashes": raw.get("aircraft_lighting_reduced_flashes", DEFAULTS.aircraft_lighting_reduced_flashes),
 		"aircraft_lighting_show_vfx": raw.get("aircraft_lighting_show_vfx", DEFAULTS.aircraft_lighting_show_vfx),
 	}
+	for key: String in SHADOW_FILE_KEYS:
+		normalized[key] = raw.get(key, DEFAULTS[key])
 	normalized.merge(CameraSettings.normalized(raw))
 	return {"ok": true, "config": normalized, "errors": errors}
 
@@ -323,6 +350,18 @@ static func _valid_aircraft_lighting_value(key: String, value: Variant) -> bool:
 			return typeof(value) == TYPE_BOOL
 		_:
 			return false
+
+
+static func _valid_shadow_value(key: String, value: Variant) -> bool:
+	if typeof(value) != TYPE_STRING:
+		return false
+	match key:
+		"shadow_quality": return value in ShadowSettings.QUALITY
+		"shadow_technique": return value in ShadowSettings.TECHNIQUES
+		"shadow_aircraft_cue": return value in ShadowSettings.AIRCRAFT_CUES
+		"shadow_distance": return value in ShadowSettings.DISTANCES
+		"shadow_softness": return value in ShadowSettings.SOFTNESS
+	return false
 
 
 static func _config_only(loaded: Dictionary) -> Dictionary:

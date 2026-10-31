@@ -182,6 +182,8 @@ func _ready() -> void:
 		add_child(environment)
 		var sun := Atmosphere.create_sun(self, _lighting)
 		sun.directional_shadow_max_distance = 35.0
+		# Keep the close-course cap when global shadow preferences are previewed or reverted.
+		Atmosphere.ShadowSettings.set_distance_cap(sun, 35.0)
 		if enable_course_visual: CourseView.build(self, _course)
 	if _vehicle_entry.get("nitro", false) and enable_vehicle_effects:
 		GroundEffects.NitroLights.configure_environment(_environment)

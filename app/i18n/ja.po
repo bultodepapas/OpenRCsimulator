@@ -8379,3 +8379,80 @@ msgid "Skin could not be loaded:"
 msgstr "塗装を読み込めませんでした："
 msgid "Could not open the guide. Use guide.html inside the template ZIP."
 msgstr "ガイドを開けませんでした。テンプレートの ZIP 内にある guide.html を使用してください。"
+
+# VQ-04b shadow settings.
+msgid "Shadows"
+msgstr "影"
+
+msgid "Shadow quality"
+msgstr "影の品質"
+
+msgid "Shadow technique"
+msgstr "影の方式"
+
+msgid "Aircraft shadow cue"
+msgstr "機体の影の目印"
+
+msgid "Shadow distance"
+msgstr "影の距離"
+
+msgid "Shadow softness"
+msgstr "影の柔らかさ"
+
+msgid "Restore shadow defaults"
+msgstr "影を初期設定に戻す"
+
+msgid "Higher shadow quality can increase GPU cost."
+msgstr "影の品質を上げると GPU の負荷が増える場合があります。"
+
+msgid "Automatic keeps the current mix of native and projected shadows. Native hides projected field shadows and the aircraft cue."
+msgstr "自動は現在のネイティブ影と投影影の組み合わせを維持します。ネイティブでは飛行場の投影影と機体の目印を非表示にします。"
+
+msgid "The projected cue helps show the aircraft's height. Native shadows do not use this cue."
+msgstr "投影された目印は機体の高さを把握する助けになります。ネイティブ影ではこの目印を使いません。"
+
+msgid "Softness changes native shadows; the projected blur stays the same."
+msgstr "柔らかさはネイティブ影に適用され、投影のぼかしは変わりません。"
+
+msgid "Projected"
+msgstr "投影"
+
+msgid "Sun"
+msgstr "太陽"
+
+msgid "Vertical"
+msgstr "真下"
+
+msgid "Near (100 m)"
+msgstr "近く (100 m)"
+
+msgid "Field (300 m)"
+msgstr "飛行場 (300 m)"
+
+msgid "Far (600 m)"
+msgstr "遠く (600 m)"
+
+msgid "Hard"
+msgstr "硬い"
+
+msgid "Soft"
+msgstr "柔らかい"
+
+msgid "Ultra"
+msgstr "ウルトラ"
+
+msgid "Active technique: %s · Quality: %s"
+msgstr "有効な方式: %s · 品質: %s"
+
+msgid "Active cue: %s · Maximum distance: %s · Softness: %s"
+msgstr "有効な目印: %s · 最大距離: %s · 柔らかさ: %s"
+
+msgid "%.0f m"
+msgstr "%.0f m"
+
+msgid "Not active"
+msgstr "無効"
+
+msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
+msgstr "このグラフィックセッションではネイティブ影を使えないため、投影影が有効です。"
+

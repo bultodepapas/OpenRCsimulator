@@ -8329,3 +8329,80 @@ msgid "Skin could not be loaded:"
 msgstr "无法加载涂装："
 msgid "Could not open the guide. Use guide.html inside the template ZIP."
 msgstr "无法打开指南。请使用模板 ZIP 中的 guide.html。"
+
+# VQ-04b shadow settings.
+msgid "Shadows"
+msgstr "阴影"
+
+msgid "Shadow quality"
+msgstr "阴影质量"
+
+msgid "Shadow technique"
+msgstr "阴影技术"
+
+msgid "Aircraft shadow cue"
+msgstr "飞机阴影提示"
+
+msgid "Shadow distance"
+msgstr "阴影距离"
+
+msgid "Shadow softness"
+msgstr "阴影柔和度"
+
+msgid "Restore shadow defaults"
+msgstr "恢复阴影默认设置"
+
+msgid "Higher shadow quality can increase GPU cost."
+msgstr "提高阴影质量可能增加 GPU 负载。"
+
+msgid "Automatic keeps the current mix of native and projected shadows. Native hides projected field shadows and the aircraft cue."
+msgstr "自动保留当前原生阴影与投影阴影的组合。原生模式会隐藏场地投影阴影和飞机提示。"
+
+msgid "The projected cue helps show the aircraft's height. Native shadows do not use this cue."
+msgstr "投影提示有助于显示飞机高度。原生阴影不使用此提示。"
+
+msgid "Softness changes native shadows; the projected blur stays the same."
+msgstr "柔和度会改变原生阴影；投影模糊保持不变。"
+
+msgid "Projected"
+msgstr "投影"
+
+msgid "Sun"
+msgstr "太阳"
+
+msgid "Vertical"
+msgstr "垂直"
+
+msgid "Near (100 m)"
+msgstr "近 (100 m)"
+
+msgid "Field (300 m)"
+msgstr "场地 (300 m)"
+
+msgid "Far (600 m)"
+msgstr "远 (600 m)"
+
+msgid "Hard"
+msgstr "硬"
+
+msgid "Soft"
+msgstr "柔和"
+
+msgid "Ultra"
+msgstr "超高"
+
+msgid "Active technique: %s · Quality: %s"
+msgstr "当前技术：%s · 质量：%s"
+
+msgid "Active cue: %s · Maximum distance: %s · Softness: %s"
+msgstr "当前提示：%s · 最大距离：%s · 柔和度：%s"
+
+msgid "%.0f m"
+msgstr "%.0f m"
+
+msgid "Not active"
+msgstr "未启用"
+
+msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
+msgstr "当前图形会话不支持原生阴影；投影阴影已启用。"
+

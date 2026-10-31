@@ -264,6 +264,17 @@ class PhaseRouting(unittest.TestCase):
         receipt.write_text(json.dumps(data))
         with self.assertRaises(ValueError): phase_roster.validate_ci(self.app, reports)
         receipt.write_text(original)
+        data = json.loads(original)
+        data["expected"][0] = "tests/" + self.fixture.names[1]
+        data["completed"][0] = data["expected"][0]
+        receipt.write_text(json.dumps(data))
+        with self.assertRaises(ValueError): phase_roster.validate_ci(self.app, reports)
+        receipt.write_text(original)
+        data = json.loads(original)
+        data["shard"] = 1
+        receipt.write_text(json.dumps(data))
+        with self.assertRaises(ValueError): phase_roster.validate_ci(self.app, reports)
+        receipt.write_text(original)
         (self.app / "tests" / self.fixture.names[0]).write_text("# changed\n")
         with self.assertRaises(ValueError): phase_roster.validate_ci(self.app, reports)
         (self.app / "tests" / self.fixture.names[0]).write_text("")

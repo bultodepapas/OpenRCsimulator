@@ -5,6 +5,7 @@ extends "res://render/crash/wreck.gd"
 
 const ImpactSeverity := preload("res://render/crash/severity.gd")
 const Frames := preload("res://render/frames.gd")
+const ShadowRouteSettings := preload("res://render/shadow_settings.gd")
 
 const MAX_ROTOR_RELEASE_SPEED_MPS := 120.0
 const ROTOR_CONTACT_MIN_TIP_SPEED_MPS := 20.0
@@ -319,7 +320,7 @@ func _update_contact_shadow(index: int) -> void:
 		return
 	var body := _bodies[index]
 	var shadow := _shadows[index]
-	if not body.visible:
+	if not ShadowRouteSettings.projected_enabled() or not body.visible:
 		shadow.visible = false
 		return
 	var normal := _ground_normal.normalized()

@@ -1,6 +1,6 @@
 # PT1-CI-00 — release and test-efficiency audit
 
-2026-10-31. Read-only source/history and GitHub Actions inspection; documentation changes only. [Execution plan](../../../plans/release-ci-efficiency.md).
+2026-10-31. Initial source/history audit followed by implementation and verification records below. [Execution plan](../../../plans/release-ci-efficiency.md).
 
 ## Source identity and recovered proposal
 
@@ -68,7 +68,7 @@ Validation on WSL Ubuntu (disposable fixtures unless stated otherwise):
 
 Failure controls include missing/duplicate/changed/partial roster receipts, missing history, code renamed to Markdown, hashed README input, mixed domains, tag/manual selection, failed/cancelled/unexpectedly skipped jobs, generator failures, partial capture outputs, source/tag/version mismatches, invalid or changed release files and incomplete release retries. The review caught and repaired repeated-local-run receipt collisions and the preflight tag-length mismatch.
 
-No Godot/full app run, rendered pixel comparison, cold full checkout, native build, simulator export or public release was performed. The new cache path has not been cold/warm measured. Complete heterogeneous integration-case inventory, five representative shadow runs, full package rehearsal, scope activation and measured savings remain open in the plan. Fixture scheduling agreement is not visual equivalence or physical qualification. Nine duplicate invocations are removed by construction; no percentage speedup is claimed.
+At this first implementation checkpoint, no Godot/full app run, rendered pixel comparison, cold full checkout, native build, simulator export or public release had been performed. Subsequent checks are recorded below. The new cache path has not been cold/warm measured. Complete heterogeneous integration-case inventory, five representative shadow runs, full package rehearsal, scope activation and measured savings remain open in the plan. Fixture scheduling agreement is not visual equivalence or physical qualification. Nine duplicate invocations are removed by construction; no percentage speedup is claimed.
 
 ### Scope validation and local isolation follow-up
 
@@ -86,6 +86,24 @@ Validation of these changes:
 - `actionlint` 1.7.12, shell syntax and `git diff --check` passed. A separate bounded source review found no concrete new selection or aggregate defect; it is not hosted Actions evidence.
 
 The Windows backing volume filled during preparation of disposable verification copies, despite Linux reporting virtual free space. Truncated copies and downloaded inputs were not used as verification evidence: tracked files were restored from the pinned Git snapshot, inputs were downloaded again and verified, and WSL was restarted with owner authorization. The incomplete capture copy was removed. Verify physical host storage before WSL preparation. Shadow mode remains enabled; these fixture results do not establish runtime equivalence, measured savings or publication readiness.
+
+### Unit-backed parse coverage
+
+The implementation at `4b89082c1eabf1e84766de827ec5992daeb61dfc` removes duplicate standalone parsing only where the full run requires execution of the same unit script. At that source, 1,552 discovered GDScript files comprise 867 unit scripts and 685 other scripts. All 867 unit executions remain; 685 explicit parse invocations cover the complement. Rosters are discovered at execution time rather than hard-coded to these counts. Ordinary standalone integration and parse phases still parse all scripts.
+
+The pinned Godot source loads the script before testing `check_only` in [Main::start](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/main/main.cpp#L4082-L4099). Reload parses, analyzes and compiles the script; the [compiler also visits member functions and inner classes](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/modules/gdscript/gdscript_compiler.cpp#L2770-L2789). Thus required execution covers compilation of unused functions too; it does not establish that their runtime branches execute.
+
+Eight real-engine controls used the pinned `4.8.beta1.official.4d10419ca` and checked runner in disposable projects: valid source passed both `--check-only --script` and `--script`; syntax errors in an unused function, type errors in an unused function, and type errors in an unused inner-class function each failed both modes. All eight reports are complete. Local artifacts: `D:/OpenRC-ci-recovery-20261031/review-unique/parse-semantics-qbmp5b4d/results`. Expected failures are separate from positive suite evidence. The fixed-brake wrapper still executes its exact unit script through the checked runner with the required markers.
+
+V2 phase receipts bind the complete phase roster and runner inputs, declare the parse coverage mode, and reject source drift before completion. The CI aggregate independently checks one parse receipt and eight exact, disjoint modulo unit receipts against its checkout; their union must cover every script. Failure controls include missing units, wrong unit subsets, duplicate shards, altered coverage and changed source. The opt-in flag is restricted to the combined CI integration mode; the full local wrapper clears inherited selectors.
+
+### Interrupted full-suite qualification
+
+A disposable clean snapshot at `ce789cae7e570b91776cebc47c1ffc9cf16dadfb` ran the pinned Linux engine with isolated profiles. The cold import completed in 201.273 seconds; a restart's warm import completed in 5.666 seconds. These are separate setup observations, not a paired full-suite performance result.
+
+The restarted run completed 820 checked reports, including 807 of 1,552 explicit parse invocations. A further invocation was interrupted and has no complete report. No unit scripts had started. The task stopped its own processes when free space on the Windows backing volume fell below 1 GiB; C: subsequently reached zero. **The full suite did not pass or complete.** These results predate the unit-backed parse optimization and do not qualify the latest concurrent UI changes. Battery input hash verification also explicitly skipped absent `references/battery-energy`; only fit-result consistency ran for that check.
+
+Local evidence remains under `/home/bulto/openrc-ci-validation-ce789-20261031/tmp/full-suite-ce789-restart-20261031/` (`suite.log`, `partial-results.xml`, `disk-observations.txt`, `checks/`). WSL later failed to start and was restarted with owner authorization; focused verification resumed with disposable outputs on D:. The storage failure's root cause was not established. Full optimized runtime and rendered qualification remain open.
 
 ### Unit invocation timing inventory
 

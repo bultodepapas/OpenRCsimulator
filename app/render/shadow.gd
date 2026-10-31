@@ -5,6 +5,7 @@
 extends RefCounted
 
 const Projected = preload("res://render/projected_shadow.gd")
+const ShadowSettings = preload("res://render/shadow_settings.gd")
 
 const Spec := preload("res://spec.gd")
 
@@ -17,6 +18,43 @@ const STAB := Rect2(0.30, 0.85, 0.40, 0.13)
 const WING_CENTER_V := 0.335
 ## One immutable CPU mip chain; returned images and carrier GPU textures stay independent.
 static var _silhouette_bytes := PackedByteArray()
+
+
+class _CuePolicy:
+	extends Node
+	var carrier: MeshInstance3D
+	var shadow_api: Script
+	var last_update: Array = []
+	var revision := -1
+
+	func _ready() -> void:
+		add_to_group("shadow_policy_consumers")
+		apply_shadow_policy()
+
+	func _process(_delta: float) -> void:
+		if not is_instance_valid(carrier):
+			queue_free()
+			return
+		if revision != ShadowSettings.revision:
+			apply_shadow_policy()
+
+	func apply_shadow_policy() -> void:
+		ShadowSettings.aircraft_cue() # initialize before reading the revision
+		revision = ShadowSettings.revision
+		if not last_update.is_empty() and is_instance_valid(carrier):
+			shadow_api.call("update", carrier, last_update[0], last_update[1], last_update[2],
+				last_update[3], last_update[4], last_update[5])
+		elif is_instance_valid(carrier) and (not ShadowSettings.projected_enabled() or ShadowSettings.aircraft_cue() == "off"):
+			(carrier.material_override as StandardMaterial3D).albedo_color.a = 0.0
+			var projected := carrier.get_node_or_null("ProjectedShadow")
+			if projected != null:
+				projected.refresh(0.0, Vector3.UP, 0.0, false)
+
+	func visibility_changed() -> void:
+		# Projectors remember their last request and also react to source visibility.
+		# Update that request when the carrier hides, even if its owner does not tick.
+		if not last_update.is_empty():
+			apply_shadow_policy()
 
 
 static func create(parent: Node3D) -> MeshInstance3D:
@@ -33,7 +71,16 @@ static func create(parent: Node3D) -> MeshInstance3D:
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	m.material_override = mat
 	m.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var policy := _CuePolicy.new()
+	policy.name = "ShadowCuePolicy"
+	policy.carrier = m
+	policy.shadow_api = load("res://render/shadow.gd")
+	m.set_meta("shadow_cue_policy", policy)
+	m.visibility_changed.connect(policy.visibility_changed)
+	if not ShadowSettings.projected_enabled() or ShadowSettings.aircraft_cue() == "off":
+		mat.albedo_color.a = 0.0
 	parent.add_child(m)
+	parent.add_child(policy)
 	return m
 
 
@@ -54,6 +101,8 @@ static func bind_model(shadow: MeshInstance3D, model: Node3D, shape: Dictionary 
 	projected.name = "ProjectedShadow"
 	shadow.add_child(projected)
 	projected.setup(model, shape)
+	# A source visibility change must never replay an unqualified request after bind.
+	projected.refresh(0.0, Vector3.UP, 0.0, false)
 	shadow.mesh = null # carrier keeps the public transform/visibility contract
 
 
@@ -103,12 +152,22 @@ static func _relative(root: Node3D, node: Node3D) -> Transform3D:
 
 
 static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, length: float, along := Vector3.UP, strength: float = 1.0) -> void:
-	shadow.transform = footprint(b, pos, span, length, along)
-	var opacity := alpha(pos.y) * clampf(strength, 0.0, 1.0)
+	var cue := ShadowSettings.aircraft_cue()
+	var enabled := ShadowSettings.projected_enabled() and cue != "off"
+	var policy := shadow.get_meta("shadow_cue_policy", null) as _CuePolicy
+	if policy != null:
+		policy.last_update = [b, pos, span, length, along, strength]
+		policy.revision = ShadowSettings.revision
+	var direction: Vector3 = along
+	if cue == "vertical":
+		direction = Vector3.UP
+	shadow.transform = footprint(b, pos, span, length, direction)
+	var opacity := alpha(pos.y) * clampf(strength, 0.0, 1.0) if enabled else 0.0
 	(shadow.material_override as StandardMaterial3D).albedo_color.a = opacity
 	var projected := shadow.get_node_or_null("ProjectedShadow")
 	if projected != null:
-		projected.refresh(pos.y, along.normalized(), opacity, shadow.visible and opacity > 0.0)
+		var shown := shadow.is_visible_in_tree() if shadow.is_inside_tree() else shadow.visible
+		projected.refresh(pos.y, direction.normalized(), opacity, enabled and shown and opacity > 0.0)
 
 
 ## White silhouette with soft edges in the alpha channel (deterministic; a 2-pass box blur).

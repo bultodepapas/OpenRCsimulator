@@ -12,6 +12,10 @@ const Lighting := preload("res://render/time_of_day_lighting.gd")
 const TimeConfig := preload("res://environment/time_of_day_config.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
+const ShadowSettings := preload("res://render/shadow_settings.gd")
+
+const SHADOW_ARGUMENTS := {"--shadow-technique": "shadow_technique", "--shadow-quality": "shadow_quality",
+	"--shadow-distance": "shadow_distance", "--shadow-softness": "shadow_softness", "--shadow-cue": "shadow_aircraft_cue"}
 
 const DEFAULT_AIRCRAFT := "jensen-das-ugly-stik-60"
 const P51_AIRCRAFT := "p51d-mustang-120"
@@ -39,6 +43,7 @@ func _initialize() -> void:
 func _parse_args(raw: PackedStringArray) -> Dictionary:
 	var values := {}
 	var allowed := ["--out", "--width", "--aircraft", "--hour", "--view", "--seconds", "--contact-shadows", "--aa"]
+	allowed.append_array(SHADOW_ARGUMENTS.keys())
 	var i := 0
 	while i < raw.size():
 		var token: String = raw[i]
@@ -62,6 +67,13 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 		i += 1
 	if not values.has("--out"):
 		return {ok = false, error = "--out is required"}
+	var shadows := ShadowSettings.DEFAULTS.duplicate(true)
+	for flag: String in SHADOW_ARGUMENTS:
+		if values.has(flag):
+			var key: String = SHADOW_ARGUMENTS[flag]
+			if not ShadowSettings.CHOICES[key].has(values[flag]):
+				return {ok = false, error = "%s must be one of %s" % [flag, str(ShadowSettings.CHOICES[key])]}
+			shadows[key] = values[flag]
 	var width := DEFAULT_WIDTH
 	if values.has("--width"):
 		if not str(values["--width"]).is_valid_int():
@@ -97,10 +109,11 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 		if view == "all":
 			return {ok = false, error = "--seconds profiling requires one named --view"}
 	return {ok = true, help = false, values = {out = str(values["--out"]), width = width,
-		aircraft = aircraft, hour = float(values.get("--hour", "-1")), view = view, seconds = seconds, contact_shadows = contact_shadows, aa = aa}}
+		aircraft = aircraft, hour = float(values.get("--hour", "-1")), view = view, seconds = seconds, contact_shadows = contact_shadows, aa = aa, shadows = shadows}}
 
 
 func run() -> void:
+	ShadowSettings.apply(_values.shadows)
 	if _values.aa in ["taa", "fsr2_native"] and not HighGraphics.active():
 		_fail("temporal AA comparisons require native High")
 		return
@@ -221,6 +234,7 @@ func run() -> void:
 
 	var sun_params: Dictionary = Atmosphere.parameters(lighting)
 	var report := {"format": "openrc-graphics-capture v1", "engine": Engine.get_version_info(),
+		"shadows": ShadowSettings.describe(),
 		"renderer": RenderingServer.get_current_rendering_method(), "profile": profile,
 		"gpu": {"name": RenderingServer.get_video_adapter_name(), "api": RenderingServer.get_video_adapter_api_version()},
 		"viewport": [size.x, size.y], "msaa_3d": viewport.msaa_3d, "offscreen": true,

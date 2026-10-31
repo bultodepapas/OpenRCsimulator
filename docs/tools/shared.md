@@ -16,7 +16,7 @@ A fresh checkout, worktree or app copy needs an import before standalone scripts
 
 ## Full app suite
 
-`app/test.sh` runs the repository's app checks: generators, all GDScript parse checks, discovered unit scripts and integration/CLI/trace/replay checks. Use focused checks during development, then the required full suite for app integration. The script stops at the first failure.
+`app/test.sh` runs the repository's app checks: generators, parse/compilation coverage for every GDScript, every discovered unit script and integration/CLI/trace/replay checks. Full runs obtain unit-script parsing from their required execution; other scripts receive separate parse checks. Use focused checks during development, then the required full suite for app integration. The script stops at the first failure.
 
 ```sh
 app/test.sh

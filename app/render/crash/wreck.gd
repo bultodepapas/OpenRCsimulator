@@ -7,6 +7,7 @@ signal secondary_impact(position: Vector3, strength: float)
 const SectionSplitter = preload("res://render/crash/section_splitter.gd")
 const PropBreak = preload("res://render/crash/prop_break.gd")
 const Severity = preload("res://render/crash/severity.gd")
+const ShadowSettings = preload("res://render/shadow_settings.gd")
 
 const MAX_BODIES := 24
 const DEBRIS_LAYER := 1 << 19
@@ -110,6 +111,8 @@ var _shadow_cache_transforms: Array[Transform3D] = []
 var _shadow_cache_shape_sizes: Array[Vector3] = []
 var _shadow_shader: Shader
 var _shadow_mesh: PlaneMesh
+var _shadow_policy_revision := -1
+var _shadow_policy_enabled := true
 var _groups: Array[Dictionary] = []
 var _prepared_groups: Array[Dictionary] = []
 var _member_records: Array[Dictionary] = []
@@ -166,6 +169,24 @@ var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
 	_ensure_pool()
+	add_to_group("shadow_policy_consumers")
+	apply_shadow_policy()
+
+
+func apply_shadow_policy() -> void:
+	var enabled := ShadowSettings.projected_enabled()
+	if _shadow_policy_revision == ShadowSettings.revision:
+		return
+	_shadow_policy_revision = ShadowSettings.revision
+	if not enabled:
+		for shadow in _shadows:
+			shadow.visible = false
+		_invalidate_all_shadow_cache()
+	elif not _shadow_policy_enabled:
+		# Paused wrecks must restore immediately, even when their normal process is idle.
+		for index in _shadows.size():
+			_update_contact_shadow(index)
+	_shadow_policy_enabled = enabled
 
 
 ## Make a hidden, shared-mesh copy and precompute natural separation groups before flight.
@@ -506,6 +527,8 @@ func core_position() -> Variant:
 
 
 func _process(delta: float) -> void:
+	if _shadow_policy_revision != ShadowSettings.revision:
+		apply_shadow_policy()
 	if not _started or _paused:
 		return
 	var dt := maxf(_finite_number(delta, 0.0), 0.0)
@@ -1155,7 +1178,7 @@ func _update_contact_shadow(index: int) -> void:
 		return
 	var body := _bodies[index]
 	var shadow := _shadows[index]
-	if not body.visible:
+	if not ShadowSettings.projected_enabled() or not body.visible:
 		if shadow.visible:
 			shadow.visible = false
 		if _shadow_cache_valid[index] != 0:

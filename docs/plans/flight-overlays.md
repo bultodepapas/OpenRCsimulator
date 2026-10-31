@@ -156,6 +156,12 @@ counterweighted hands. It also separates VSI units from the scale and preserves 
 lines. The shared crystal shell and telemetry mappings remain intact; see the
 [references and verification](../research/flight-overlays/HUD-01-10/README.md#mechanical-classic-detailing-2026-10-31-hud-13-r12).
 
+HUD-13-R13 replaces the classic rectangular card and mounting plate with an exposed circular bezel. The larger
+dial retains the pale scales and counterweighted hands. Its single name/drag/close strip now sits below the
+circle, followed by the readouts; the existing green crystal surface belongs only to that strip. Readout opacity
+tracks the appearance setting with contrast floors. Reused materials and cached drawing retain the allocation
+and update behavior; see the [focused verification](../research/flight-overlays/HUD-01-10/README.md#open-classic-dials-and-lower-titles-2026-10-31-hud-13-r13).
+
 The presentation reads existing telemetry only: TAS, pitch/bank, height above datum plus AGL, true heading and instantaneous vertical speed. No pressure setting, magnetic correction, pitot system, calibrated airspeed arcs, gyro dynamics or slip-ball indication is implied. Fixed needle scales mark overflow without discarding the numeric reading; missing values suppress the indication. The horizon clips the ground half-plane to a disc and handles inverted/vertical attitudes without a shader. Static faces have their own cached draw commands; only visible, changed values redraw the foreground at the existing 10 Hz rate. Unit/language changes invalidate the face. Research, source applicability and verification live in the [HUD-13-R3 evidence](../research/flight-overlays/HUD-01-10/README.md#classic-cockpit-2026-10-24-hud-13-r3).
 
 See the [player instructions](../FIRST-LAUNCH.md#4-settings-and-flight-options) and [verification](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13). Layout bounds are checked at 1080p, 1440p, 4K and the 720p fallback; native visual review is at 1080p. This does not qualify GPU performance or pilot readability on other hardware.

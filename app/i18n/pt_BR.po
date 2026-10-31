@@ -9170,3 +9170,80 @@ msgid "Skin could not be loaded:"
 msgstr "Não foi possível carregar a pintura:"
 msgid "Could not open the guide. Use guide.html inside the template ZIP."
 msgstr "Não foi possível abrir o guia. Use o guide.html dentro do ZIP do modelo."
+
+# VQ-04b shadow settings.
+msgid "Shadows"
+msgstr "Sombras"
+
+msgid "Shadow quality"
+msgstr "Qualidade das sombras"
+
+msgid "Shadow technique"
+msgstr "Técnica de sombras"
+
+msgid "Aircraft shadow cue"
+msgstr "Indicador de sombra da aeronave"
+
+msgid "Shadow distance"
+msgstr "Distância das sombras"
+
+msgid "Shadow softness"
+msgstr "Suavidade das sombras"
+
+msgid "Restore shadow defaults"
+msgstr "Restaurar sombras"
+
+msgid "Higher shadow quality can increase GPU cost."
+msgstr "Uma qualidade de sombras maior pode aumentar o uso da GPU."
+
+msgid "Automatic keeps the current mix of native and projected shadows. Native hides projected field shadows and the aircraft cue."
+msgstr "Automático mantém a combinação atual de sombras nativas e projetadas. Nativo oculta as sombras projetadas do campo e o indicador da aeronave."
+
+msgid "The projected cue helps show the aircraft's height. Native shadows do not use this cue."
+msgstr "O indicador projetado ajuda a mostrar a altura da aeronave. Sombras nativas não usam esse indicador."
+
+msgid "Softness changes native shadows; the projected blur stays the same."
+msgstr "A suavidade altera as sombras nativas; o desfoque projetado permanece igual."
+
+msgid "Projected"
+msgstr "Projetada"
+
+msgid "Sun"
+msgstr "Sol"
+
+msgid "Vertical"
+msgstr "Vertical"
+
+msgid "Near (100 m)"
+msgstr "Perto (100 m)"
+
+msgid "Field (300 m)"
+msgstr "Campo (300 m)"
+
+msgid "Far (600 m)"
+msgstr "Longe (600 m)"
+
+msgid "Hard"
+msgstr "Dura"
+
+msgid "Soft"
+msgstr "Suave"
+
+msgid "Ultra"
+msgstr "Ultra"
+
+msgid "Active technique: %s · Quality: %s"
+msgstr "Técnica ativa: %s · Qualidade: %s"
+
+msgid "Active cue: %s · Maximum distance: %s · Softness: %s"
+msgstr "Indicador ativo: %s · Distância máxima: %s · Suavidade: %s"
+
+msgid "%.0f m"
+msgstr "%.0f m"
+
+msgid "Not active"
+msgstr "Inativo"
+
+msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
+msgstr "Sombras nativas não estão disponíveis nesta sessão gráfica; as sombras projetadas estão ativas."
+

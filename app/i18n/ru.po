@@ -9130,3 +9130,80 @@ msgid "Skin could not be loaded:"
 msgstr "Не удалось загрузить окраску:"
 msgid "Could not open the guide. Use guide.html inside the template ZIP."
 msgstr "Не удалось открыть руководство. Используйте guide.html из ZIP-файла шаблона."
+
+# VQ-04b shadow settings.
+msgid "Shadows"
+msgstr "Тени"
+
+msgid "Shadow quality"
+msgstr "Качество теней"
+
+msgid "Shadow technique"
+msgstr "Способ теней"
+
+msgid "Aircraft shadow cue"
+msgstr "Подсказка тени самолёта"
+
+msgid "Shadow distance"
+msgstr "Дальность теней"
+
+msgid "Shadow softness"
+msgstr "Мягкость теней"
+
+msgid "Restore shadow defaults"
+msgstr "Сбросить настройки теней"
+
+msgid "Higher shadow quality can increase GPU cost."
+msgstr "Повышение качества теней может увеличить нагрузку на GPU."
+
+msgid "Automatic keeps the current mix of native and projected shadows. Native hides projected field shadows and the aircraft cue."
+msgstr "Автоматический режим сохраняет текущее сочетание встроенных и проецируемых теней. Встроенный режим скрывает проецируемые тени поля и подсказку самолёта."
+
+msgid "The projected cue helps show the aircraft's height. Native shadows do not use this cue."
+msgstr "Проецируемая подсказка помогает оценить высоту самолёта. Встроенные тени её не используют."
+
+msgid "Softness changes native shadows; the projected blur stays the same."
+msgstr "Мягкость меняет встроенные тени; размытие проекции остаётся прежним."
+
+msgid "Projected"
+msgstr "Проекция"
+
+msgid "Sun"
+msgstr "Солнце"
+
+msgid "Vertical"
+msgstr "Вертикально"
+
+msgid "Near (100 m)"
+msgstr "Близко (100 м)"
+
+msgid "Field (300 m)"
+msgstr "Поле (300 м)"
+
+msgid "Far (600 m)"
+msgstr "Далеко (600 м)"
+
+msgid "Hard"
+msgstr "Резкие"
+
+msgid "Soft"
+msgstr "Мягкие"
+
+msgid "Ultra"
+msgstr "Ультра"
+
+msgid "Active technique: %s · Quality: %s"
+msgstr "Активный способ: %s · Качество: %s"
+
+msgid "Active cue: %s · Maximum distance: %s · Softness: %s"
+msgstr "Активная подсказка: %s · Макс. дальность: %s · Мягкость: %s"
+
+msgid "%.0f m"
+msgstr "%.0f м"
+
+msgid "Not active"
+msgstr "Не активно"
+
+msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
+msgstr "Встроенные тени недоступны в этой графической сессии; активны проецируемые тени."
+

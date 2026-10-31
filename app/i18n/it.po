@@ -9155,3 +9155,80 @@ msgid "Skin could not be loaded:"
 msgstr "Impossibile caricare la livrea:"
 msgid "Could not open the guide. Use guide.html inside the template ZIP."
 msgstr "Impossibile aprire la guida. Usa guide.html nello ZIP del modello."
+
+# VQ-04b shadow settings.
+msgid "Shadows"
+msgstr "Ombre"
+
+msgid "Shadow quality"
+msgstr "Qualità delle ombre"
+
+msgid "Shadow technique"
+msgstr "Tecnica delle ombre"
+
+msgid "Aircraft shadow cue"
+msgstr "Indicatore d’ombra dell’aereo"
+
+msgid "Shadow distance"
+msgstr "Distanza delle ombre"
+
+msgid "Shadow softness"
+msgstr "Morbidezza delle ombre"
+
+msgid "Restore shadow defaults"
+msgstr "Ripristina ombre"
+
+msgid "Higher shadow quality can increase GPU cost."
+msgstr "Una qualità delle ombre maggiore può aumentare il carico sulla GPU."
+
+msgid "Automatic keeps the current mix of native and projected shadows. Native hides projected field shadows and the aircraft cue."
+msgstr "Automatico mantiene la combinazione attuale di ombre native e proiettate. Nativo nasconde le ombre proiettate del campo e l’indicatore dell’aereo."
+
+msgid "The projected cue helps show the aircraft's height. Native shadows do not use this cue."
+msgstr "L’indicatore proiettato aiuta a mostrare l’altezza dell’aereo. Le ombre native non lo usano."
+
+msgid "Softness changes native shadows; the projected blur stays the same."
+msgstr "La morbidezza cambia le ombre native; la sfocatura proiettata rimane invariata."
+
+msgid "Projected"
+msgstr "Proiettata"
+
+msgid "Sun"
+msgstr "Sole"
+
+msgid "Vertical"
+msgstr "Verticale"
+
+msgid "Near (100 m)"
+msgstr "Vicino (100 m)"
+
+msgid "Field (300 m)"
+msgstr "Campo (300 m)"
+
+msgid "Far (600 m)"
+msgstr "Lontano (600 m)"
+
+msgid "Hard"
+msgstr "Netta"
+
+msgid "Soft"
+msgstr "Morbida"
+
+msgid "Ultra"
+msgstr "Ultra"
+
+msgid "Active technique: %s · Quality: %s"
+msgstr "Tecnica attiva: %s · Qualità: %s"
+
+msgid "Active cue: %s · Maximum distance: %s · Softness: %s"
+msgstr "Indicatore attivo: %s · Distanza massima: %s · Morbidezza: %s"
+
+msgid "%.0f m"
+msgstr "%.0f m"
+
+msgid "Not active"
+msgstr "Non attivo"
+
+msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
+msgstr "Le ombre native non sono disponibili in questa sessione grafica; sono attive le ombre proiettate."
+

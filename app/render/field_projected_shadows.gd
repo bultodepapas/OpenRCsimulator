@@ -162,6 +162,7 @@ static func collect_cell_shape(cell: MeshInstance3D, population: Node3D, pilot_x
 		return shape
 	var cell_key := Vector2i(int(cell_parts[1]), int(cell_parts[2]))
 	var vertices: PackedVector3Array = shape.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].duplicate()
+	var static_vertex_count := vertices.size()
 	var selected: Dictionary = {}
 	var elevated: Dictionary = {}
 	var extra_triangles := 0
@@ -208,9 +209,10 @@ static func collect_cell_shape(cell: MeshInstance3D, population: Node3D, pilot_x
 	arrays[Mesh.ARRAY_VERTEX] = vertices
 	var merged := ArrayMesh.new()
 	merged.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var bounds := AABB(vertices[0], Vector3.ZERO)
-	for vertex in vertices:
-		bounds = bounds.expand(vertex)
+	# Continue the ordered static scan with only the appended population vertices.
+	var bounds: AABB = shape.bounds
+	for i in range(static_vertex_count, vertices.size()):
+		bounds = bounds.expand(vertices[i])
 	return {
 		mesh = merged,
 		bounds = bounds,

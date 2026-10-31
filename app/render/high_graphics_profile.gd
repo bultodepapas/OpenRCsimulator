@@ -2,6 +2,8 @@
 ## The launcher selects the renderer before engine initialization; inspect the actual result.
 extends RefCounted
 
+const ShadowSettings := preload("res://render/shadow_settings.gd")
+
 const ENVIRONMENT_KEY := "OPENRC_GRAPHICS_PROFILE"
 const RESEARCH_ENVIRONMENT_KEY := "OPENRC_GRAPHICS_RESEARCH"
 const CONTACT_ENVIRONMENT_KEY := "OPENRC_CONTACT_SHADOWS"
@@ -73,14 +75,13 @@ static func restart_arguments(profile: String, editor_binary: bool, project_path
 	return args
 
 static func configure() -> void:
+	ShadowSettings.ensure_configured(active())
 	if not _reported and not requested().is_empty():
 		print("Graphics profile: ", JSON.stringify(describe()))
 		_reported = true
 	if not active() or _configured:
 		return
-	# Four cascades share the atlas. Preserve distant field coverage while improving near detail.
-	RenderingServer.directional_shadow_atlas_set_size(8192, false)
-	RenderingServer.directional_soft_shadow_filter_set_quality(RenderingServer.SHADOW_QUALITY_SOFT_MEDIUM)
+	# Global directional allocation belongs to ShadowSettings, including live preview/revert.
 	# Beta1 produces visible surface artifacts with Native AA. Keep this explicit
 	# experiment off by default until paired visual acceptance improves.
 	ProjectSettings.set_setting(CONTACT_SHADOW_SETTING, contact_shadows_requested())

@@ -42,6 +42,7 @@ func _initialize() -> void:
 		_make_child(flat_mesh, placement, Transform3D.IDENTITY), owners)
 	_test_append_above()
 	_expect_added(cell, base_mesh, person_mesh, placement, offset)
+	_test_added_bounds_after_mesh_roundtrip()
 	cell.free()
 	print("field population collection: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed else 0)
@@ -169,6 +170,48 @@ func _expect_added(cell: MeshInstance3D, base: ArrayMesh, person: ArrayMesh,
 		shape.mesh != base and shape.mesh != person
 			and base_before == _mesh_bytes(base) and person_before == _mesh_bytes(person))
 	population.free()
+
+
+## Compare with the original complete ordered scan, including the static mesh
+## readback that precedes population appends in collect_cell_shape().
+func _test_added_bounds_after_mesh_roundtrip() -> void:
+	var cell := MeshInstance3D.new()
+	cell.name = "cell_0_0"
+	var base := _triangle_mesh(PackedVector3Array([
+		Vector3(-40000.125, 1.234567, -901.875), Vector3(0.000123, 2.345678, 3.456789),
+		Vector3(40000.625, 0.456789, 902.375), Vector3(-40000.0, 2.111111, 900.25),
+		Vector3(0.000234, 1.987654, -900.5), Vector3(40000.0, 0.654321, 0.123456),
+	]))
+	cell.mesh = base
+	var person := _triangle_mesh(_join([_face(0, 0.2, 0.7, 1.2), _face(3, 1.5, 1.8, 2.1)]))
+	var population := Node3D.new()
+	var instance := Transform3D(Basis.from_euler(Vector3(0.37, -0.83, 0.12)).scaled(
+		Vector3(-2.0, 0.5, 3.0)), Vector3(40000.75, 3.125, -903.25))
+	var child := _make_child(person, _placement(Vector3.ZERO, 0.2), instance)
+	population.add_child(child)
+	var before_cell := _mesh_bytes(base)
+	var before_person := _mesh_bytes(person)
+	var static_shape: Dictionary = Projected.collect(cell, 0.04)
+	var expected: PackedVector3Array = static_shape.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].duplicate()
+	var placed: PackedVector3Array = instance * person.get_faces()
+	var accepted := _scalar_above(placed, 0.04)
+	expected.append_array(accepted)
+	var actual: Dictionary = FieldShadows.collect_cell_shape(cell, population, Vector2.ZERO,
+		100.0, 0.04, {"standing:0": CELL_KEY})
+	var actual_vertices: PackedVector3Array = actual.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	_check("large asymmetric base and transformed population preserve face order and counts",
+		actual_vertices.to_byte_array() == expected.to_byte_array()
+			and int(actual.triangles) == expected.size() / 3
+			and int(actual.population_triangles) == accepted.size() / 3
+			and int(actual.population_placements) == 1
+			and int(actual.population_elevated_placements) == 1)
+	_check("population bounds equal a complete scan of the round-tripped base and appended faces",
+		var_to_bytes(actual.bounds) == var_to_bytes(_bounds(expected)))
+	_check("bounds fixture preserves independent source meshes",
+		actual.mesh != cell.mesh and actual.mesh != person
+			and before_cell == _mesh_bytes(base) and before_person == _mesh_bytes(person))
+	population.free()
+	cell.free()
 
 
 func _make_child(mesh: Mesh, placement: Dictionary, local_offset: Transform3D,
