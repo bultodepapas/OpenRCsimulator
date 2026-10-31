@@ -1,0 +1,42 @@
+# PT1-CI-00 — release and test-efficiency audit
+
+2026-10-31. Read-only source/history and GitHub Actions inspection; documentation changes only. [Execution plan](../../../plans/release-ci-efficiency.md).
+
+## Source identity and recovered proposal
+
+- Reviewed working source: `c4dc202d0eae01efa951e467b784453eeaf02a47`; clean at the start.
+- Located the earlier proposal in local remote-tracking ref `origin/ci/local-checks`, tip `d48dbeb9f3fc5ec3d798bf04760d6e90fc17f6c3`. `git merge-base --is-ancestor f1fbc4805 HEAD` returned 1: it is not integrated into this reviewed main.
+- [Original change f1fbc4805](https://github.com/bultodepapas/OpenRCsimulator/commit/f1fbc4805fef35f4489f0e5a4fc31617a67df810) introduces `tools/ci/{scope.py,test_scope.py,check-sources.sh,check-local.sh}`, scoped CI and a separate prototype workflow. `2d8c2dd3b` clarifies WSL checkout placement; `d48dbeb9f` links the pinned Linux toolchain.
+- The original commit reports 15 scope regressions and Linux preflight results. Those are historical author evidence, **not tests rerun against current main**. No old code was restored or executed in this review.
+
+## Retained findings
+
+| Inspected source | Finding and implication |
+| --- | --- |
+| Old `scope.py`, via `git show origin/ci/local-checks:tools/ci/scope.py` | All changed `.md` files are treated as safe. Current [Timber manifest](../../../../research/timber/tt01/manifest.py) and [X8 manifest](../../../../research/skywalker-x8/X8-00/manifest.py) hash source-delivery `README.md`; this shortcut can miss a mandatory freshness failure. Preserve NUL paths and conservative event/error handling, replace the extension exclusion. |
+| Old `check-local.sh` / `check-sources.sh` | Predate current checked pre-schema import, added schemas/generators, and release native prerequisites. The old release mode builds only Linux ground-native before export. It cannot certify today's Windows/Linux ground and Linux NK-3 package inputs. |
+| [Current workflow](../../../../.github/workflows/ci.yml) | Unrestricted push and PR triggers; no concurrency control. Eight unit jobs plus one integration job; prototype remains a release dependency. Export already runs alongside app/visual checks after native builds, and publication waits for all listed dependencies. |
+| [App runner](../../../../app/test.sh) and CI generator step | P-51 physics, Timber and X8 checks repeat inside the same integration job. Import also runs before CI schema probes and again at app-runner entry. Remove duplicates only with matching command/input/environment contracts; preserve safe standalone defaults. |
+| App runner helicopter calls | `--oracle` integration calls and ordinary discovered unit calls differ. Filename equality does not imply equal independent-reference coverage. |
+| [Partition regressions](../../../../app/tests/test_ci_partitions.py) | Fixed-brake historical-source prefetch repeats the unit modulo assignment. Any balancing change must update both through one assignment source and preserve failure/empty/exact-once checks. |
+| [Diagnostic runner guide](../../../../tools/godot/README.md) | Validating present reports does not prove every intended invocation was launched. A required roster and final coverage reconciliation are needed for skipped/partitioned work. |
+| [Capture runner](../../../../app/capture.sh) | Shared output lock and a final complete-set manifest prevent naïvely parallelizing several copies. Partition ownership, comparison dependencies and aggregation must be explicit. |
+| [Release contract](../../../../tools/release/README.md) | Exactly six final files, source/input drift checking and commit/tag/run/repository verification already exist. Same-run build-once promotion is implemented; cross-run reuse must not impersonate the consumer run. |
+
+## Observed Actions execution times
+
+Retrieved with `gh run list --workflow ci.yml` and `gh run view <id> --json jobs,headSha,url`. Job duration is `completedAt - startedAt`; only successful executed jobs contribute to totals, excluding skipped publication. Values are minutes, rounded to two decimals. No new workflow run was started.
+
+| Successful run (2026-10-30 UTC) | Source | Visual job | Integration job | Unit-job min–max | Export job | Sum of successful job minutes |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| [41108674992](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41108674992) | `b060041fd39944d0179c112d17e643931a819f59` | 122.95 | 86.68 | 16.10–32.30 | 23.62 | 437.88 |
+| [41084585940](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41084585940) | `c1084681e0d9f144587cf127f270e626e00298ac` | 100.30 | 99.13 | 13.40–26.45 | 22.97 | 437.33 |
+| [41048644689](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41048644689) | `3c2394a8755c010b677d63a28782ac40fe799105` | 101.37 | 77.85 | 14.18–34.25 | 19.77 | 406.50 |
+
+In run 41108674992, `app/capture.sh` accounts for 119.47 visual-job minutes; integration's `app/test.sh` takes 76.02 minutes and the preceding import 6.45. This supports investigating visual and integration phases before simply adding unit shards. It does not identify individual slow capture cases or establish an optimization result.
+
+The first two sampled histories include the same source commit in another run, but event/ref/build/cache conditions were not normalized. These three observations are not a paired experiment, a billing calculation or a p95 estimate. Current-HEAD run 41200545486 was still in progress when inspected and was excluded. Case-level costs, artifact transfer costs, branch-protection configuration and matched full-suite baseline/candidate runs remain PT1-CI-00/07 work.
+
+## Scope and verification
+
+The review inspected the earlier branch, current scripts/contracts and existing remote results. It did not run Godot, build native binaries, export, publish, change repository settings, remove tests or validate physical/native-GPU behavior. The accompanying plan requires meaningful selector, roster, aggregation and release-negative fixtures during implementation. Documentation verification consists of relative-link target checks and `git diff --check`; no simulation run is warranted for this documentation-only update.

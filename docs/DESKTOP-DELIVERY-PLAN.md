@@ -50,6 +50,8 @@ CI itself runs on Ubuntu; its cross-exports do not prove that Windows or macOS l
 
 Display preferences and recovery belong to [MENU-PLAN](MENU-PLAN.md) (UI-07/09); build identity remains UI-04. DT records desktop-package acceptance and coordinates changes to shared export, preset and CI files with their maintainers. Export success alone is not platform support.
 
+Release/test orchestration follow-up: [PT1-CI efficiency plan](plans/release-ci-efficiency.md) recovers the unmerged `ci/local-checks` proposal and updates it for current test partitions, native gates and six-file promotion. It supplies scheduling and verification work to DT-08/08a/12; it does not close desktop acceptance or change current CI behavior.
+
 ## Accepted step register
 
 | ID | Deliverable and minimum proof | Status |

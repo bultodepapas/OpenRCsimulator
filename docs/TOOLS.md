@@ -71,6 +71,8 @@ Local review: `coderabbit review --agent --base main` or `--uncommitted`. Read P
 
 ## Release sequence
 
+Planned changes to test scheduling, local preflight and release orchestration live in the [PT1-CI efficiency plan](plans/release-ci-efficiency.md). Its recovered `ci/local-checks` commands are not installed on current main; the sequence below remains the operating contract.
+
 1. Review the selected diff and retain proof with the owning track. Run applicable schema/generator, offline, full app and visual checks on the exact source intended for release; [CI](../.github/workflows/ci.yml) defines the publication dependencies.
 2. After the last edit under `app/physics`, `app/sim` or `app/failures`, follow the [companion rebind workflow](../tools/companions/README.md) and commit the pin, qualification record and receipt together. A stale pin disables exported companions; changed behavior requires requalification.
 3. Prepare an isolated Linux export checkout. Install matching Windows/Linux ground-vehicle artifacts through [their builder](../research/rc-monster-truck/native/README.md#installing-and-exporting) and qualified Linux NK-3 artifacts through [its installation and package workflow](../research/native-kernel/README.md#linux-release-packages). Export checks source/ABI/solver identities, receipts and binary hashes; keep required native libraries beside the executables.
