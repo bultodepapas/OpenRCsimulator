@@ -86,3 +86,22 @@ Validation of these changes:
 - `actionlint` 1.7.12, shell syntax and `git diff --check` passed. A separate bounded source review found no concrete new selection or aggregate defect; it is not hosted Actions evidence.
 
 The Windows backing volume filled during preparation of disposable verification copies, despite Linux reporting virtual free space. Truncated copies and downloaded inputs were not used as verification evidence: tracked files were restored from the pinned Git snapshot, inputs were downloaded again and verified, and WSL was restarted with owner authorization. The incomplete capture copy was removed. Verify physical host storage before WSL preparation. Shadow mode remains enabled; these fixture results do not establish runtime equivalence, measured savings or publication readiness.
+
+### Unit invocation timing inventory
+
+The [retained observation](unit-timings-41200545486.json) covers the eight completed unit jobs in [run 41200545486](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41200545486), source `c4dc202d0eae01efa951e467b784453eeaf02a47`. Download sizes and SHA-256 match GitHub artifact metadata; the existing checked-log summarizer accepted all 880 reports. The pinned source roster reconciles exactly: 867 distinct unit scripts, each once in its expected modulo shard, plus eight imports and five fixed-brake support invocations. These are invocation counts, not assertion counts.
+
+| Shard | Unit scripts | Sum of unit invocation seconds | Full job seconds |
+| --- | ---: | ---: | ---: |
+| 0 | 109 | 514.336 | 1,030 |
+| 1 | 109 | 745.330 | 1,199 |
+| 2 | 109 | 912.071 | 1,380 |
+| 3 | 108 | 966.520 | 1,926 |
+| 4 | 108 | 782.649 | 1,302 |
+| 5 | 108 | 831.177 | 1,416 |
+| 6 | 108 | 636.823 | 1,164 |
+| 7 | 108 | 532.144 | 989 |
+
+The slowest unit job is 1.481 times the mean. Ordinary imports take 344.9–450.7 seconds each. Fixed-brake support adds 416.864 seconds to shard 3, including a 402.784-second historical-reference bootstrap; its unit report alone is only 7.741 seconds. Future balancing must group that support cost with the test and its history-prefetch assignment. Counting filenames or timing only the direct test would misclassify this work.
+
+The five slowest direct unit reports are `test_ui_modal_responsive.gd` (208.619 s), `test_half_power_start.gd` (140.031 s), `test_latency_patch_cli.gd` (106.845 s), `test_input_report_cli.gd` (102.042 s) and `test_ui_home_layout.gd` (101.916 s). At the 13:19:57 UTC snapshot, integration and visuals were each still running after at least 60.95 minutes, exceeding the slowest completed unit job's 32.10 minutes. Unit balancing alone cannot shorten that run's overall path. This is one observed run, not a paired speedup, p95 or billing result; no test or acceptance threshold was removed based on these timings.

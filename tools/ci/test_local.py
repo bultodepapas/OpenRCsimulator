@@ -23,7 +23,7 @@ class LocalPreflight(unittest.TestCase):
         fake = '''#!/bin/bash
 printf '%s %s\n' "${0##*/}" "$*" >> "$CALL_LOG"
 if [[ -n "${PROFILE_LOG:-}" ]]; then
-  printf '%s|%s|%s|%s|%s|%s|%s\n' "$*" "$XDG_DATA_HOME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "${OPENRC_TEST_PART:-}" "${OPENRC_UNIT_SHARDS:-}" "${OPENRC_UNIT_SHARD:-}" >> "$PROFILE_LOG"
+  printf '%s|%s|%s|%s|%s|%s|%s|%s\n' "$*" "$XDG_DATA_HOME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "${OPENRC_TEST_PART:-}" "${OPENRC_UNIT_SHARDS:-}" "${OPENRC_UNIT_SHARD:-}" "${OPENRC_PARSE_WITH_UNITS-__unset__}" >> "$PROFILE_LOG"
 fi
 case "${0##*/} $*" in *"${FAIL_MATCH:-__not_a_command__}"*) exit 9;; esac
 exit 0
@@ -86,7 +86,7 @@ exit 0
         result = self.run_mode("full", PROFILE_LOG=str(profile_log),
                                XDG_DATA_HOME="/developer/data", XDG_CONFIG_HOME="/developer/config",
                                XDG_CACHE_HOME="/developer/cache", OPENRC_TEST_PART="units",
-                               OPENRC_UNIT_SHARDS="8", OPENRC_UNIT_SHARD="4")
+                               OPENRC_UNIT_SHARDS="8", OPENRC_UNIT_SHARD="4", OPENRC_PARSE_WITH_UNITS="1")
         self.assertEqual(result.returncode, 0, result.stdout)
         rows = [line.split("|") for line in profile_log.read_text().splitlines()]
         selected = [row for row in rows if row[0] in
@@ -101,7 +101,8 @@ exit 0
         self.assertEqual(data.parent.parent.parent, self.root / "tmp")
         self.assertTrue(all(path.is_dir() for path in (data, config, cache)))
         unit_row = next(row for row in selected if row[0] == "app/test.sh")
-        self.assertEqual(unit_row[4:], ["all", "1", "0"])
+        self.assertEqual(unit_row[4:7], ["all", "1", "0"])
+        self.assertEqual(unit_row[7], "__unset__")
         prototype_row = next(row for row in rows if row[0] == "run e2e")
         self.assertEqual(prototype_row[1:4], ["/developer/data", "/developer/config", "/developer/cache"])
         # A second full run must allocate another profile rather than reuse settings.

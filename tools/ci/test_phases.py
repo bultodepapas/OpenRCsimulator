@@ -1,4 +1,5 @@
 """Exercise phase routing and the shared generator contract in disposable trees."""
+import argparse
 import importlib.util
 import json
 import os
@@ -55,9 +56,11 @@ class PhaseRouting(unittest.TestCase):
         (self.app / "simulation").mkdir()
         (self.app / "simulation/non_unit.gd").write_text("# parse me\n", encoding="utf-8")
         (self.app / "simulation/non unit á.gd").write_text("# parse me too\n", encoding="utf-8")
+        (self.app / "tests/nested").mkdir()
+        (self.app / "tests/nested/test_helper.gd").write_text("# not a discovered unit\n", encoding="utf-8")
 
-    def run_part(self, part, **extra):
-        output = self.app.parent / "outputs" / part
+    def run_part(self, part, output_name=None, **extra):
+        output = self.app.parent / "outputs" / (output_name or part)
         return self.fixture.run_partition(0, 1, OPENRC_TEST_PART=part,
                                           OPENRC_CHECK_OUT=str(output), **extra)
 
@@ -82,9 +85,52 @@ class PhaseRouting(unittest.TestCase):
                 self.assertEqual(actual, wanted, result.stdout)
                 if actual[1]:
                     receipt = json.loads(parse_receipts[0].read_text())
+                    self.assertEqual(receipt["format"], "openrc-phase-roster v2")
+                    self.assertEqual(receipt["coverage"], "excluding-units" if part == "all" else "full")
                     self.assertIn("simulation/non_unit.gd", receipt["completed"])
                     self.assertIn("simulation/non unit á.gd", receipt["completed"])
+                    self.assertIn("tests/nested/test_helper.gd", receipt["completed"])
+                    for name in self.fixture.names:
+                        self.assertEqual("tests/" + name in receipt["completed"], part != "all")
                     self.assertEqual(receipt["expected"], receipt["completed"])
+
+    def test_opt_in_omits_only_units_and_all_keeps_the_same_unit_invocations(self):
+        for name in ("test_rudder_authority.gd", "test_yaw_damping.gd"):
+            (self.app / "tests" / name).touch()
+        for part, output, extra in (("integration", "combined", {"OPENRC_PARSE_WITH_UNITS": "1"}),
+                                    ("all", "all", {}), ("units", "units", {})):
+            result = self.run_part(part, output, **extra)
+            self.assertEqual(result.returncode, 0, result.stdout)
+        reports = self.app.parent / "outputs"
+        full = phase_roster.checkout_roster(self.app, "parse")
+        units = phase_roster.checkout_roster(self.app, "units")
+        unit_set = set(units)
+        expected_parse = [name for name in full if name not in unit_set]
+        for output in ("combined", "all"):
+            receipt = json.loads(next((reports / output).glob("roster-parse-*.json")).read_text())
+            self.assertEqual(receipt["coverage"], "excluding-units")
+            self.assertEqual(receipt["completed"], expected_parse)
+            commands = [json.loads(path.read_text())["command"]
+                        for path in (reports / output).glob("*/report.json")]
+            parsed = [arg.removeprefix("res://") for command in commands if "--check-only" in command
+                      for arg in command if arg.startswith("res://")]
+            self.assertCountEqual(parsed, expected_parse)
+        def unit_commands(output):
+            commands = [json.loads(path.read_text())["command"]
+                        for path in (reports / output).glob("*/report.json")]
+            return sorted(command for command in commands if "--script" in command
+                          and "--check-only" not in command)
+        self.assertEqual(unit_commands("all"), unit_commands("units"))
+        self.assertEqual(len(unit_commands("all")), len(units))
+
+    def test_parse_opt_in_rejects_invalid_values_and_modes(self):
+        for part, value in (("integration", ""), ("integration", "0"), ("integration", "true"),
+                            ("integration-parse", "1"), ("all", "1"), ("units", "1"),
+                            ("integration-source", "1"), ("integration-runtime", "1")):
+            with self.subTest(part=part, value=value):
+                result = self.run_part(part, OPENRC_PARSE_WITH_UNITS=value)
+                self.assertEqual(result.returncode, 2, result.stdout)
+                self.assertIn("OPENRC_PARSE_WITH_UNITS=1 requires", result.stdout)
 
     def test_phase_failures_and_no_false_success_receipts(self):
         for part, failure in (("integration-source", {"FAIL_SOURCE": "1"}),
@@ -104,7 +150,7 @@ class PhaseRouting(unittest.TestCase):
 
     def test_unset_selector_remains_the_complete_local_default(self):
         env = os.environ.copy()
-        for name in ("OPENRC_TEST_PART", "OPENRC_UNIT_SHARDS", "OPENRC_UNIT_SHARD"):
+        for name in ("OPENRC_TEST_PART", "OPENRC_UNIT_SHARDS", "OPENRC_UNIT_SHARD", "OPENRC_PARSE_WITH_UNITS"):
             env.pop(name, None)
         output = self.app.parent / "outputs/default"
         env["OPENRC_CHECK_OUT"] = str(output)
@@ -115,6 +161,47 @@ class PhaseRouting(unittest.TestCase):
         self.assertIn("RUNTIME_PHASE", result.stdout)
         self.assertEqual(len(list(output.glob("roster-parse-*.json"))), 1)
         self.assertEqual(len(list(output.glob("roster-units-0-of-1-*.json"))), 1)
+
+    def test_begin_finish_refuse_selection_mode_and_source_drift(self):
+        root = self.app.parent
+        roster, state, receipt = (root / name for name in ("roster", "state", "receipt"))
+        full, selected = phase_roster.checkout_selection(self.app, "parse", "excluding-units")
+        roster.write_bytes(b"".join(name.encode() + b"\0" for name in selected))
+        completed = root / "completed"
+        completed.write_bytes(roster.read_bytes())
+        start = argparse.Namespace(app=self.app, phase="parse", coverage="excluding-units",
+                                   roster=roster, state=state, receipt=receipt, shard=0, shards=1)
+        end = argparse.Namespace(app=self.app, coverage="excluding-units", roster=roster,
+                                 completed=completed, state=state, receipt=receipt)
+        roster.write_bytes(roster.read_bytes() + b"tests/" + self.fixture.names[0].encode() + b"\0")
+        with self.assertRaises(ValueError):
+            phase_roster.begin(start)
+        roster.write_bytes(completed.read_bytes())
+        phase_roster.begin(start)
+        end.coverage = "full"
+        with self.assertRaises(ValueError):
+            phase_roster.finish(end)
+        end.coverage = "excluding-units"
+        original_state = state.read_text()
+        altered = json.loads(original_state)
+        altered["expected"].pop()
+        state.write_text(json.dumps(altered))
+        with self.assertRaises(ValueError):
+            phase_roster.finish(end)
+        state.write_text(original_state)
+        changed = self.app / "tests" / self.fixture.names[0]
+        changed.write_text("# changed excluded source\n")
+        with self.assertRaises(ValueError):
+            phase_roster.finish(end)
+        changed.write_text("")
+        added = self.app / "tests/test_added.gd"
+        added.touch()
+        with self.assertRaises(ValueError):
+            phase_roster.finish(end)
+        added.unlink()
+        phase_roster.finish(end)
+        data = json.loads(receipt.read_text())
+        self.assertEqual(data["roster_source_sha256"], phase_roster.digest(self.app, full))
 
     def test_ci_verifier_rejects_missing_duplicate_changed_and_partial(self):
         root = self.app.parent
@@ -129,6 +216,34 @@ class PhaseRouting(unittest.TestCase):
             result = self.fixture.run_partition(shard, 8, OPENRC_CHECK_OUT=str(reports / str(shard)))
             self.assertEqual(result.returncode, 0, result.stdout)
         phase_roster.validate_ci(self.app, reports)
+        optimized = self.fixture.run_partition(0, 1, OPENRC_TEST_PART="integration",
+                                               OPENRC_PARSE_WITH_UNITS="1",
+                                               OPENRC_CHECK_OUT=str(root / "optimized"))
+        self.assertEqual(optimized.returncode, 0, optimized.stdout)
+        parse_receipt = next((reports / "parse").glob("roster-parse-*.json"))
+        full_receipt = parse_receipt.read_text()
+        partial_receipt = next((root / "optimized").glob("roster-parse-*.json")).read_text()
+        parse_receipt.write_text(partial_receipt)
+        phase_roster.validate_ci(self.app, reports)
+        for change in ("missing-nonunit", "includes-unit", "coverage-full", "coverage-invalid", "wrong-shard"):
+            with self.subTest(change=change):
+                data = json.loads(partial_receipt)
+                if change == "missing-nonunit":
+                    data["expected"].pop()
+                    data["completed"].pop()
+                elif change == "includes-unit":
+                    data["expected"].append("tests/" + self.fixture.names[0])
+                    data["completed"].append("tests/" + self.fixture.names[0])
+                elif change == "coverage-full":
+                    data["coverage"] = "full"
+                elif change == "coverage-invalid":
+                    data["coverage"] = "invented"
+                else:
+                    data["shard"] = 1
+                parse_receipt.write_text(json.dumps(data))
+                with self.assertRaises(ValueError):
+                    phase_roster.validate_ci(self.app, reports)
+        parse_receipt.write_text(partial_receipt)
         receipt = next((reports / "0").glob("roster-units-0-of-8-*.json"))
         original = receipt.read_text()
         receipt.unlink()
@@ -144,11 +259,19 @@ class PhaseRouting(unittest.TestCase):
         receipt.write_text(json.dumps(data))
         with self.assertRaises(ValueError): phase_roster.validate_ci(self.app, reports)
         receipt.write_text(original)
+        data = json.loads(original)
+        data["coverage"] = "full"
+        receipt.write_text(json.dumps(data))
+        with self.assertRaises(ValueError): phase_roster.validate_ci(self.app, reports)
+        receipt.write_text(original)
         (self.app / "tests" / self.fixture.names[0]).write_text("# changed\n")
         with self.assertRaises(ValueError): phase_roster.validate_ci(self.app, reports)
         (self.app / "tests" / self.fixture.names[0]).write_text("")
         (self.app / "tests/test_new.gd").touch()
         with self.assertRaises(ValueError): phase_roster.validate_ci(self.app, reports)
+        (self.app / "tests/test_new.gd").unlink()
+        parse_receipt.write_text(full_receipt)
+        phase_roster.validate_ci(self.app, reports)
 
 
 class GeneratorContract(unittest.TestCase):

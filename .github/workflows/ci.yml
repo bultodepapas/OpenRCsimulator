@@ -203,7 +203,13 @@ jobs:
           python3 -m venv "$RUNNER_TEMP/godot-resources-venv"
           "$RUNNER_TEMP/godot-resources-venv/bin/python" -m pip install -r tools/godot/requirements-resources.txt
           "$RUNNER_TEMP/godot-resources-venv/bin/python" -m unittest discover -s tools/godot -p 'test_resource*.py'
-      - run: app/test.sh
+      - name: Run app checks with unit-backed parse coverage
+        run: |
+          if [[ "$OPENRC_TEST_PART" == integration ]]; then
+            OPENRC_PARSE_WITH_UNITS=1 app/test.sh
+          else
+            app/test.sh
+          fi
         id: app_check
       - name: Upload discovered-script coverage receipts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

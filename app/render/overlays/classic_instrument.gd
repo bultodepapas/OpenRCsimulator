@@ -12,8 +12,10 @@ const BEZEL_HIGHLIGHT := Color("727272")
 const DIAL_INK := Color("f2eee2")
 const DIAL_MINOR := Color("b8b5aa")
 const DIAL_LEGEND := Color("cbc7bb")
+const HEADER_PADDING := Vector2(8, 2)
 var _horizon_disc := PackedVector2Array()
 var _face: Control
+var _readout_style: StyleBoxFlat
 var _dial_value := NAN
 var _pitch := NAN
 var _bank := NAN
@@ -22,14 +24,30 @@ var _unit := ""
 var _maximum := 240.0
 var _available := false
 var _over_range := false
+var _header_highlighted := false
 
 
 func _init(instrument_id: String) -> void:
 	super(instrument_id, DIAL_TITLES[instrument_id], DIAL_ICONS[instrument_id])
+	# Keep the shared widget layout and hit targets, but give only the title a
+	# crystal surface. The dial and readouts have their own independent shapes.
+	_style.set_border_width_all(0)
+	_style.shadow_size = 0
+	_style.content_margin_left = 8
+	_style.content_margin_right = 8
+	_footer_style.bg_color = Color("0b0b0b", 0.9)
 	if id == "attitude": _horizon_disc = _make_horizon_disc()
 	value_label.get_parent().hide()
-	graphic.custom_minimum_size = Vector2(240, 236)
+	graphic.custom_minimum_size = Vector2(240, 270)
 	body.move_child(graphic, 0)
+	# Keep the existing drag and close controls, placing their only title below the dial.
+	handle.get_parent().remove_child(handle)
+	body.add_child(handle)
+	body.move_child(handle, 1)
+	handle.resized.connect(_resize_glass)
+	handle.resized.connect(handle.queue_redraw)
+	handle.draw.connect(_draw_header_chrome)
+	_header_icon.item_rect_changed.connect(handle.queue_redraw)
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.add_theme_font_size_override("font_size", 13)
 	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -42,6 +60,7 @@ func _init(instrument_id: String) -> void:
 	readout.content_margin_left = 6
 	readout.content_margin_right = 6
 	subtitle.add_theme_stylebox_override("normal", readout)
+	_readout_style = readout
 	_face = Control.new()
 	_face.name = "DialFace"
 	_face.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -55,13 +74,76 @@ func _init(instrument_id: String) -> void:
 	_apply_density()
 
 
+func set_appearance(size_name: String, opacity: float, compact: bool) -> void:
+	super(size_name, opacity, compact)
+	var alpha := clampf(opacity, 0.80, 1.0)
+	if _readout_style != null:
+		var readout_color := _readout_style.bg_color
+		var readout_alpha := maxf(0.85, alpha)
+		if not is_equal_approx(readout_color.a, readout_alpha):
+			readout_color.a = readout_alpha
+			_readout_style.bg_color = readout_color
+			subtitle.queue_redraw()
+	var footer_color := _footer_style.bg_color
+	var footer_alpha := maxf(0.90, alpha)
+	if not is_equal_approx(footer_color.a, footer_alpha):
+		footer_color.a = footer_alpha
+		_footer_style.bg_color = footer_color
+		queue_redraw()
+
+
 func _apply_density() -> void:
 	super()
 	graphic.show()
-	graphic.custom_minimum_size.y = 196 if _compact else 236
+	graphic.custom_minimum_size.y = 248 if _compact else 270
 	_separator.hide()
 	if _footer != null: _footer.visible = not _compact
 	if _face != null: _face.queue_redraw()
+
+
+func _build_glass() -> void:
+	super()
+	# Reuse the lazy underlay as a child of the title so its position follows
+	# container layout without synchronizing global coordinates.
+	var underlay := _glass.get_parent()
+	remove_child(underlay)
+	handle.add_child(underlay, false, Node.INTERNAL_MODE_BACK)
+	_resize_glass()
+
+
+func _resize_glass() -> void:
+	if _glass == null or _glass_material == null: return
+	var header_size: Vector2 = handle.size + HEADER_PADDING * 2
+	if not _glass.position.is_equal_approx(-HEADER_PADDING) or not _glass.size.is_equal_approx(header_size):
+		_glass.position = -HEADER_PADDING
+		_glass.size = header_size
+		_glass_material.set_shader_parameter("rect_size", header_size)
+
+
+func _draw_chrome() -> void:
+	if _footer != null and _footer.is_visible_in_tree():
+		var footer_origin := (get_global_transform().affine_inverse() * _footer.get_global_transform()).origin
+		var box := Rect2(footer_origin - Vector2(8, 5), _footer.size + Vector2(16, 10))
+		draw_style_box(_footer_style, box)
+		var centre := box.get_center().x
+		draw_line(Vector2(centre, box.position.y + 8), Vector2(centre, box.end.y - 8), Color(TRACK, 0.8), 1)
+
+
+func _draw_header_chrome() -> void:
+	var header := Rect2(-HEADER_PADDING, handle.size + HEADER_PADDING * 2)
+	handle.draw_line(header.position + Vector2(14, 1), Vector2(header.end.x - 14, header.position.y + 1), Color("e0e0e0", 0.2), 1, true)
+	handle.draw_line(Vector2(header.position.x + 14, header.end.y - 1), header.end - Vector2(14, 1), Color(TRACK, 0.62), 1, true)
+	var accent_end := header.end.x - 14 if _header_highlighted else header.position.x + 40
+	handle.draw_line(Vector2(header.position.x + 14, header.end.y - 1), Vector2(accent_end, header.end.y - 1), Color(CHROME_ACCENT, 0.95 if _header_highlighted else 0.8), 2, true)
+	if _header_icon != null:
+		var icon_origin := (handle.get_global_transform().affine_inverse() * _header_icon.get_global_transform()).origin
+		handle.draw_style_box(_icon_style, Rect2(icon_origin - Vector2(4, 4), _header_icon.size + Vector2(8, 8)))
+
+
+func _highlight(on: bool) -> void:
+	_header_highlighted = on and not layout_locked
+	if _grip != null: _grip.queue_redraw()
+	handle.queue_redraw()
 
 
 func refresh(t: Dictionary, system: String, peak: float, _battery: Dictionary, _fuel: Dictionary, _trims: Dictionary = {}, _rpm: float = NAN) -> void:
@@ -128,28 +210,13 @@ func refresh(t: Dictionary, system: String, peak: float, _battery: Dictionary, _
 
 
 func _transform(canvas: Control) -> void:
-	canvas.draw_set_transform(graphic.size * 0.5, 0.0, Vector2.ONE * (minf(graphic.size.x, graphic.size.y) - 12.0) / 224.0)
+	canvas.draw_set_transform(graphic.size * 0.5, 0.0, Vector2.ONE * (minf(graphic.size.x, graphic.size.y) - 4.0) / 224.0)
 
 
 func _draw_face() -> void:
 	_transform(_face)
-	# A chamfered mounting plate gives the corner screws a physical seat without
-	# reducing the dial aperture. All of this housing is cached with the face.
-	var plate := PackedVector2Array([
-		Vector2(-110, -90), Vector2(-90, -110), Vector2(90, -110), Vector2(110, -90),
-		Vector2(110, 90), Vector2(90, 110), Vector2(-90, 110), Vector2(-110, 90)])
-	var shadow := PackedVector2Array()
-	for point: Vector2 in plate: shadow.append(point + Vector2(0, 3))
-	_face.draw_colored_polygon(shadow, Color(0, 0, 0, 0.52))
-	_face.draw_colored_polygon(plate, Color("0a0a0a"))
-	_face.draw_colored_polygon(PackedVector2Array([
-		Vector2(-107, -89), Vector2(-89, -107), Vector2(89, -107), Vector2(107, -89),
-		Vector2(107, 89), Vector2(89, 107), Vector2(-89, 107), Vector2(-107, 89)]), Color("242424"))
-	_face.draw_polyline(PackedVector2Array([
-		Vector2(-108, 88), Vector2(-108, -89), Vector2(-89, -108), Vector2(89, -108)]), Color("777777", 0.45), 1, true)
-	_face.draw_polyline(PackedVector2Array([
-		Vector2(90, -108), Vector2(108, -89), Vector2(108, 89), Vector2(89, 108), Vector2(-89, 108)]), Color("050505", 0.9), 2, true)
-	# Nested rings and short directional reflections suggest a machined, recessed rim.
+	# A circular shadow and restrained rim leave the dial silhouette unobstructed.
+	_face.draw_circle(Vector2(0, 2), 111, Color(0, 0, 0, 0.5))
 	_face.draw_circle(Vector2.ZERO, 109, Color("080808"))
 	_face.draw_circle(Vector2.ZERO, 107, BEZEL_OUTER)
 	_face.draw_circle(Vector2.ZERO, 105, BEZEL_INNER)
@@ -160,9 +227,6 @@ func _draw_face() -> void:
 	_face.draw_arc(Vector2.ZERO, 106, PI * 0.1, PI * 0.9, 32, Color("050505", 0.88), 1.5, true)
 	_face.draw_arc(Vector2.ZERO, 103, 0, TAU, 90, Color("b0b0b0", 0.38), 1, true)
 	_face.draw_arc(Vector2.ZERO, 100, PI * 1.08, PI * 1.92, 40, Color("c0c0c0", 0.16), 1, true)
-	for x: float in [-96.0, 96.0]:
-		for y: float in [-96.0, 96.0]:
-			_draw_fastener(Vector2(x, y), x * y > 0)
 	match id:
 		"airspeed_dial":
 			var limit := 160.0 if _system == "imperial" else (70.0 if _system == "si" else 240.0)
@@ -187,17 +251,6 @@ func _draw_face() -> void:
 		_:
 			pass
 	_face.draw_set_transform(Vector2.ZERO)
-
-
-func _draw_fastener(at: Vector2, rising: bool) -> void:
-	# Dark well, bevel, screw head, then a slotted recess with a lower lip.
-	_face.draw_circle(at, 5, Color("070707"), true, -1, true)
-	_face.draw_circle(at, 4, Color("595959"), true, -1, true)
-	_face.draw_circle(at + Vector2(0, 0.4), 3.2, Color("343434"), true, -1, true)
-	_face.draw_arc(at, 3.8, PI * 1.05, PI * 1.9, 12, Color("c0c0c0", 0.55), 0.8, true)
-	var slot := Vector2(2.2, -1.2 if rising else 1.2)
-	_face.draw_line(at - slot + Vector2(0, 0.6), at + slot + Vector2(0, 0.6), Color("999999", 0.55), 1, true)
-	_face.draw_line(at - slot, at + slot, Color("080808"), 1.5, true)
 
 
 func _dial_legend(text: String, center: Vector2, font_size: int) -> void:

@@ -9,6 +9,15 @@ UNIT_SHARD="${OPENRC_UNIT_SHARD:-0}"
 CHECK_OUT="${OPENRC_CHECK_OUT:-$HERE/../tmp/godot-checks}"
 EXPECTED_CHECK_OUT="${OPENRC_EXPECTED_CHECK_OUT:-$HERE/../tmp/godot-checks-expected}"
 case "$TEST_PART" in all|integration|integration-source|integration-parse|integration-runtime|units) ;; *) echo "invalid OPENRC_TEST_PART" >&2; exit 2 ;; esac
+PARSE_COVERAGE=full
+if [[ "${OPENRC_PARSE_WITH_UNITS+x}" ]]; then
+  [[ "$OPENRC_PARSE_WITH_UNITS" == 1 && "$TEST_PART" == integration ]] || {
+    echo "OPENRC_PARSE_WITH_UNITS=1 requires OPENRC_TEST_PART=integration" >&2; exit 2
+  }
+  PARSE_COVERAGE=excluding-units
+elif [[ "$TEST_PART" == all ]]; then
+  PARSE_COVERAGE=excluding-units
+fi
 [[ "$UNIT_SHARDS" =~ ^[1-9][0-9]*$ && "$UNIT_SHARD" =~ ^(0|[1-9][0-9]*)$ ]] || { echo "invalid unit shard numbers" >&2; exit 2; }
 (( UNIT_SHARDS <= 128 && UNIT_SHARD < UNIT_SHARDS )) || { echo "unit shard out of range" >&2; exit 2; }
 if [[ "$TEST_PART" != units && ( "$UNIT_SHARDS" != 1 || "$UNIT_SHARD" != 0 ) ]]; then
@@ -59,12 +68,10 @@ ROSTER="$(mktemp)"; ROSTER_CURRENT="$(mktemp)"; ROSTER_DONE="$(mktemp)"; ROSTER_
 trap 'rm -f "$LOG" "$ROSTER" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE"' EXIT
 ROSTER_HELPER="$HERE/../tools/ci/phase_roster.py"
 collect_parse_roster() {
-  (cd "$HERE" && find . -name '*.gd' -not -path './.godot/*' -not -path './captures/*' -print0) |
-    python3 -c 'import sys; items = sys.stdin.buffer.read().split(b"\0"); sys.stdout.buffer.write(b"".join(x + b"\0" for x in sorted(items) if x))'
+  python3 "$ROSTER_HELPER" collect "$HERE" parse "$PARSE_COVERAGE"
 }
 collect_unit_roster() {
-  local t
-  for t in "$HERE"/tests/test_*.gd; do printf '%s\0' "${t#"$HERE"/}"; done
+  python3 "$ROSTER_HELPER" collect "$HERE" units units
 }
 
 if [[ "$TEST_PART" == all || "$TEST_PART" == integration || "$TEST_PART" == integration-source ]]; then
@@ -282,17 +289,17 @@ done
 fi # offline generators and references
 
 if [[ "$TEST_PART" == all || "$TEST_PART" == integration || "$TEST_PART" == integration-parse ]]; then
-echo "== parse check: every script"
+echo "== parse check: $PARSE_COVERAGE"
 collect_parse_roster > "$ROSTER"
 : > "$ROSTER_DONE"
 PARSE_RECEIPT="$CHECK_OUT/roster-parse-$RUN_SUFFIX.json"
-python3 "$ROSTER_HELPER" begin "$HERE" parse "$ROSTER" "$ROSTER_STATE" "$PARSE_RECEIPT" 0 1
+python3 "$ROSTER_HELPER" begin "$HERE" parse "$ROSTER" "$ROSTER_STATE" "$PARSE_RECEIPT" 0 1 "$PARSE_COVERAGE"
 while IFS= read -r -d '' f; do
   run --check-only --script "res://${f#./}" > /dev/null || { echo "parse error in $f"; exit 1; }
   printf '%s\0' "$f" >> "$ROSTER_DONE"
 done < "$ROSTER"
 collect_parse_roster > "$ROSTER_CURRENT"
-python3 "$ROSTER_HELPER" finish "$HERE" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE" "$PARSE_RECEIPT"
+python3 "$ROSTER_HELPER" finish "$HERE" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE" "$PARSE_RECEIPT" "$PARSE_COVERAGE"
 fi
 
 expected_failure() {
@@ -339,15 +346,16 @@ PY
   python3 "$HERE/tests/check_expected_cli_failure.py" "$run_dir" "$EXPECTED_CHECK_OUT" "$expected_exit" "$expected_error"
 }
 if [[ "$TEST_PART" == all || "$TEST_PART" == units ]]; then
-unit_tests=("$HERE"/tests/test_*.gd)
-(( ${#unit_tests[@]} > UNIT_SHARD )) || { echo "empty unit partition" >&2; exit 2; }
 collect_unit_roster > "$ROSTER"
+mapfile -d '' -t unit_tests < "$ROSTER"
+(( ${#unit_tests[@]} > UNIT_SHARD )) || { echo "empty unit partition" >&2; exit 2; }
 : > "$ROSTER_DONE"
 UNIT_RECEIPT="$CHECK_OUT/roster-units-$UNIT_SHARD-of-$UNIT_SHARDS-$RUN_SUFFIX.json"
-python3 "$ROSTER_HELPER" begin "$HERE" units "$ROSTER" "$ROSTER_STATE" "$UNIT_RECEIPT" "$UNIT_SHARD" "$UNIT_SHARDS"
+python3 "$ROSTER_HELPER" begin "$HERE" units "$ROSTER" "$ROSTER_STATE" "$UNIT_RECEIPT" "$UNIT_SHARD" "$UNIT_SHARDS" units
 unit_index=0
 selected_units=0
-for t in "$HERE"/tests/test_*.gd; do
+for t in "${unit_tests[@]}"; do
+  t="$HERE/$t"
   shard_for_test=$((unit_index % UNIT_SHARDS))
   unit_index=$((unit_index + 1))
   [[ "$shard_for_test" == "$UNIT_SHARD" ]] || continue
@@ -408,7 +416,7 @@ done
 echo "== unit partition $UNIT_SHARD/$UNIT_SHARDS: $selected_units of $unit_index scripts"
 (( selected_units > 0 )) || { echo "empty unit partition" >&2; exit 2; }
 collect_unit_roster > "$ROSTER_CURRENT"
-python3 "$ROSTER_HELPER" finish "$HERE" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE" "$UNIT_RECEIPT"
+python3 "$ROSTER_HELPER" finish "$HERE" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE" "$UNIT_RECEIPT" units
 fi
 if [[ "$TEST_PART" != all && "$TEST_PART" != integration && "$TEST_PART" != integration-runtime ]]; then exit 0; fi
 

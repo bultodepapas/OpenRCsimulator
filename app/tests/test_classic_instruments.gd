@@ -12,6 +12,7 @@ func _initialize() -> void:
 	TranslationServer.set_locale("en")
 	await process_frame
 	root.size = Vector2i(1920, 1080)
+	if DisplayServer.get_name() != "headless": RenderingServer.set_default_clear_color(Color("e4edf2"))
 	var manager := Manager.new({preset = "cockpit", units = "metric"}, "en")
 	root.add_child(manager)
 	await process_frame
@@ -26,6 +27,10 @@ func _initialize() -> void:
 	var t := {airspeed = 30.0, pitch_deg = 10.0, bank_deg = 30.0, height_datum = 1234.0, height_agl = 200.0, heading_deg = 359.8, vertical_speed = -2.0}
 	for id: String in Settings.CLASSIC_IDS:
 		manager.frames[id].refresh(t, "metric", 40.0, {}, {})
+	if DisplayServer.get_name() != "headless":
+		await process_frame
+		RenderingServer.force_draw(false)
+		_check("classic dial has a transparent side gap while header and face remain drawn", _visible_dial_gap(manager))
 	_check("TAS converts to km/h and keeps flight maximum", manager.frames.airspeed_dial.left_value.text == "108 km/h" and manager.frames.airspeed_dial.right_value.text == "144 km/h")
 	_check("altimeter distinguishes datum from terrain", manager.frames.altimeter.left_value.text == "1234 m" and manager.frames.altimeter.right_value.text == "200 m")
 	_check("heading rounds through north without displaying 360", manager.frames.heading.subtitle.text.begins_with("0°"))
@@ -76,6 +81,7 @@ func _initialize() -> void:
 			await process_frame
 			_check("five dials fit without overlap at 1080p: " + size_name + str(compact), _separate(manager))
 			_check("compact keeps the horizon visible", manager.frames.attitude.graphic.visible)
+			_check("classic header and footer stay bounded: " + size_name + str(compact), _bounded_classic_surfaces(manager))
 	manager.set_widget_option("widget_size", "normal")
 	manager.set_widget_option("widget_compact", false)
 	for resolution: Vector2i in [Vector2i(2560, 1440), Vector2i(3840, 2160), Vector2i(1280, 720)]:
@@ -157,6 +163,60 @@ func _separate(manager: CanvasLayer) -> bool:
 		if not Rect2(0, 0, 1920, 1080).encloses(box): return false
 		for j in range(i + 1, Settings.CLASSIC_IDS.size()):
 			if box.intersects(manager.frames[Settings.CLASSIC_IDS[j]].get_global_rect()): return false
+	return true
+
+
+func _visible_dial_gap(manager: CanvasLayer) -> bool:
+	var captured: Image = root.get_texture().get_image()
+	if captured == null or captured.is_empty(): return false
+	var widget: Control = manager.frames.airspeed_dial
+	var graphic_at: Vector2 = widget.get_global_transform().affine_inverse() * widget.graphic.get_global_transform().origin
+	var graphic_mid: float = graphic_at.y + widget.graphic.size.y * 0.5
+	var to_view := widget.get_global_transform()
+	var header_origin: Vector2 = widget.get_global_transform().affine_inverse() * widget._glass.get_global_transform().origin
+	var header_sample: Vector2 = header_origin + Vector2(widget._glass.size.x * 0.5, 3)
+	var samples: Array[Vector2i] = [Vector2i(2, 2), Vector2i((to_view * Vector2(3, graphic_mid)).round()),
+		Vector2i((to_view * header_sample).round()),
+		Vector2i((to_view * Vector2(widget.size.x * 0.5, graphic_mid)).round())]
+	var bounds := Rect2i(Vector2i.ZERO, captured.get_size())
+	if not samples.all(func(point: Vector2i) -> bool: return bounds.has_point(point)): return false
+	var background := captured.get_pixelv(samples[0])
+	var gap := captured.get_pixelv(samples[1])
+	var header := captured.get_pixelv(samples[2])
+	var dial := captured.get_pixelv(samples[3])
+	var ok := _color_distance(background, gap) < 0.03 and _color_distance(background, header) > 0.3 and _color_distance(background, dial) > 0.3
+	if not ok: print("classic pixel samples background/gap/header/dial=", [background, gap, header, dial], " at ", samples)
+	return ok
+
+
+func _color_distance(a: Color, b: Color) -> float:
+	return absf(a.r - b.r) + absf(a.g - b.g) + absf(a.b - b.b)
+
+
+func _bounded_classic_surfaces(manager: CanvasLayer) -> bool:
+	for id: String in Settings.CLASSIC_IDS:
+		var widget: Control = manager.frames[id]
+		if widget._glass == null: return false
+		var local_from_global := widget.get_global_transform().affine_inverse()
+		var handle_at: Vector2 = local_from_global * widget.handle.get_global_transform().origin
+		var graphic_at: Vector2 = local_from_global * widget.graphic.get_global_transform().origin
+		var subtitle_at: Vector2 = local_from_global * widget.subtitle.get_global_transform().origin
+		var header := Rect2(local_from_global * widget._glass.get_global_transform().origin, widget._glass.size)
+		if widget.handle.get_parent() != widget.body or widget.handle.get_index() <= widget.graphic.get_index() \
+			or widget.handle.get_index() >= widget.subtitle.get_index(): return false
+		if not header.grow(0.01).encloses(Rect2(handle_at, widget.handle.size)) \
+			or header.position.y < graphic_at.y + widget.graphic.size.y - 0.01 or header.end.y > subtitle_at.y + 0.01:
+			print("classic header bounds ", id, " header=", header, " handle=", Rect2(handle_at, widget.handle.size), " graphic=", graphic_at, " subtitle=", subtitle_at)
+			return false
+		if not is_equal_approx(header.size.x, widget.size.x) or header.size.y > widget.handle.size.y + 4.01:
+			print("classic header size ", id, " header=", header, " widget=", widget.size)
+			return false
+		if widget._footer.visible:
+			var footer_at: Vector2 = local_from_global * widget._footer.get_global_transform().origin
+			var footer_box := Rect2(footer_at - Vector2(8, 5), widget._footer.size + Vector2(16, 10))
+			if not Rect2(Vector2.ZERO, widget.size).grow(0.01).encloses(footer_box) or widget._footer_style.bg_color.a < 0.84:
+				print("classic footer bounds ", id, " footer=", footer_box, " widget=", widget.size, " alpha=", widget._footer_style.bg_color.a)
+				return false
 	return true
 
 

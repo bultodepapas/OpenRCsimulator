@@ -53,6 +53,7 @@ exit 0
 
     def run_partition(self, shard=0, count=8, **overrides):
         env = os.environ.copy()
+        env.pop("OPENRC_PARSE_WITH_UNITS", None)
         env.update(OPENRC_TEST_PART="units", OPENRC_UNIT_SHARD=str(shard), OPENRC_UNIT_SHARDS=str(count))
         env["OPENRC_CHECK_OUT"] = str(self.root.parent / "tmp/godot-checks")
         env.update(overrides)

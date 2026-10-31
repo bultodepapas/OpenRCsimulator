@@ -113,7 +113,7 @@ python3 tools/godot/run_checked.py --timeout 90 --out-dir "$OPENRC_CHECK_OUT" --
 python3 tools/godot/run_checked.py --timeout 90 --out-dir "$OPENRC_CHECK_OUT" --label nk3-fleet-policy \
   --require-text 'NK3 fleet policy:' --require-text 'checks, 0 failed' -- \
   "$GODOT" --headless --path app --audio-driver Dummy --script "$ROOT/research/native-kernel/test_fleet.gd"
-OPENRC_TEST_PART=all OPENRC_UNIT_SHARDS=1 OPENRC_UNIT_SHARD=0 bash app/test.sh
+env -u OPENRC_PARSE_WITH_UNITS OPENRC_TEST_PART=all OPENRC_UNIT_SHARDS=1 OPENRC_UNIT_SHARD=0 bash app/test.sh
 python3 tools/godot/summarize.py "$OPENRC_CHECK_OUT" --junit "$OUT/results.xml"
 bash app/capture.sh
 )

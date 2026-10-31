@@ -6,6 +6,8 @@
 
 This is the detailed shadow subplan of [VQ-04b](../VISUAL-QUALITY-PLAN.md#open-work). The [advanced graphics plan](advanced-graphics.md) retains VQ-07e renderer/effect promotion, VQ-06a/b retains settings integration, and [GDU-11](godot-4.8-upgrade.md#phase-11-owner-authorized-48-improvements) retains engine opportunity work. The [dated source audit](../research/shadows-2026-10-31.md) records the inspected implementation and internet references. Parent acceptance gates remain in their existing homes; this document owns the shadow-specific sequence.
 
+[Section 13](#13-targeted-c-efficiency-work) incorporates six additional internet investigations into C++ efficiency. It selects a small optional geometry-preparation helper for consideration after current profiling, while reusing Godot's existing native rendering/import operations.
+
 ## 1. The visual result
 
 During a landing, wheels should visibly meet the runway, the wing should shade the fuselage, and the aircraft's shadow should separate and soften as it climbs. A low afternoon sun should reveal fence gaps, bench legs, landing gear and foliage without crawling edges or sudden cascade transitions. Pavilion shade should retain readable color and detail. Night lamps should place useful shadows behind nearby obstacles; moon shadows should follow the existing moon illumination rather than resemble daylight with a blue tint.
@@ -46,11 +48,14 @@ Introduce one small resolved shadow configuration at the presentation boundary i
 
 The resolved configuration should describe technique, sun atlas/filter/cascades/range, projected-map budgets, caster groups, local-light budget, contact status and AO status. Each world consumes the same result in Home, Workshop, fixed-wing, helicopter and ground activity. Diagnostics record requested and effective values independently.
 
+The [second research round](../research/shadows-2026-10-31.md#second-round-18-internet-investigations) refines this boundary: directional atlas size/depth and both native shadow-filter qualities are global, while positional atlas allocation is per viewport. One presentation owner must commit global changes; a preview or retained world must not overwrite flight's configuration. Keep requested preferences separate from this global effective state, and measure map reconstruction on Apply.
+
 Preserve these contracts:
 
 - Shadows observe interpolated presentation transforms and existing visual time. They never write forces, collision, simulation state, physical weather or flight-log identity. Do not change the 240 Hz kernel or re-record golden flights.
 - A caster/receiver/light combination has one direct-shadow owner. Audit simultaneous engine and projected coverage before changing anything. If a hybrid is needed, require a proven receiver mask or coverage partition; otherwise select one route.
 - Engine self-shadowing and ground projection cannot be combined by merely enabling both. Demonstrate how aircraft-to-ground duplication is prevented while retaining aircraft-to-aircraft self-occlusion; reject the hybrid if the engine's supported masks cannot express the partition safely.
+- `light_cull_mask` selects recipients of the whole light; `shadow_caster_mask` selects casters. Neither is an arbitrary caster-to-receiver shadow matrix. Turning off shadow reception on the runway also removes other useful shadows. A split-light workaround is research only: it can lose aircraft-to-building shadows, change lighting and reduce each light's share of the directional atlas.
 - Keep atmosphere exposure and sunlight energy fixed during shadow comparisons. Preserve Standard's existing compensation until a separate color oracle justifies changing it; never transfer that compensation to High.
 - Heavy map/geometry changes apply at a declared safe boundary. Light scalar updates may apply live when tested. Do not allocate a new map on every slider event or collect triangles every frame.
 - Cache invalidation includes mesh/material/alpha revision, pose, sun/moon direction, receiver changes and world lifecycle. Pause, reset, source destruction and retained-world reattachment must not leave stale masks.
@@ -85,11 +90,15 @@ Start with the current two-split Standard and four-split High configurations. Sw
 
 Camera FOV and pilot autozoom strongly affect texel allocation. Compare fixed pilot, autozoom, chase, orbit, overhead and Workshop views. Do not move the physics camera or force a zoom change to conceal a shadow defect. Prefer per-view-class qualified allocation over continuous retuning that causes resolution pumping. Split blending and distant fade must be tested in motion. Godot's [shadow guide](https://docs.godotengine.org/en/stable/tutorials/3d/lights_and_shadows.html) motivates distance/split tuning; engine-pin behavior still needs native verification.
 
+At the pin, orthographic cameras bypass the maximum-shadow-distance clamp; apply that caveat only after identifying an actual orthographic view. FOV, source angle and light orientation can change cascade footprints despite grid snapping. Separate these motions in the first experiment. Native PSSM split diagnostics are available in Forward+/Mobile, but their debug material suppresses custom vertex deformation: pair diagnostics with normal rendering, particularly for foliage. [Investigations I06–I07](../research/shadows-2026-10-31.md#i06--global-settings-viewport-settings-and-live-apply).
+
 Tune depth bias and normal bias against thin RC geometry and low sun. Use per-category evidence if needed, not a giant global bias that makes wheels float. Diagnose clipped/large casters and pancake settings separately. Keep precision settings fixed until a measured defect warrants a comparison.
 
 ### 5.2 Filtering, penumbrae and contact
 
 PCF filters sampled visibility; PCSS estimates widening softness with blocker/receiver separation. High already has directional PCSS. Compare hard/PCF and PCSS at fixed atlas/cascade allocation to learn whether missing detail comes from resolution, filter width or bias. Natural softness starts from the current **0.53°** sun size; an optional bounded artistic multiplier must not alter the rendered sun disc accidentally. Directional PCSS is Forward+ only at this pin. [Light3D source](https://github.com/godotengine/godot/blob/4d10419ca/doc/classes/Light3D.xml).
+
+Record source angle, quality enum and effective filter path together. A “Hard” quality enum alone does not turn off High PCSS when source size remains nonzero. Conversely, changing the angle to zero changes both the filtering path and cascade expansion; label that comparison as coupled. Standard groups quality enums into fewer shader sampling branches, so six UI labels need not represent six useful quality tiers. Test thin-blocker coverage, softness and temporal noise independently. [Investigations I01 and I08](../research/shadows-2026-10-31.md#i01--which-quality-options-have-distinct-native-behavior).
 
 Preserve a crisp near-contact region and widening penumbra with height. Do not blur every shadow equally. The projected path's present blur clamp is an artistic flight cue; a more physical profile should remain distinguishable from that cue and be checked at low sun and high altitude.
 
@@ -111,9 +120,15 @@ Godot's alpha-scissor/hash paths support casting, whereas ordinary alpha blend d
 
 A shadow LOD must be coordinated with the visible tree LOD and object scale. Preserve meaningful trunk/canopy coverage beyond leaf detail range. Use hysteresis and test fades to prevent popping; do not assume a visual mesh's distance fade also gives correct shadow behavior.
 
+Match the texture import's alpha-test threshold to the intended material test before assessing mip coverage; these values are independent. Check whether camera-dependent wind/billboard code uses the current rendering-pass view or the main camera. Native shadow passes use a different view. `SHADOWS_ONLY` permits a separate native caster proxy, but that proxy cannot supply missing screen-space contact depth. [Investigations I05 and I10](../research/shadows-2026-10-31.md#i05--animated-casters-invisible-proxies-and-custom-clocks).
+
+Inspect existing imported shadow meshes before generating another asset. Godot already vendors meshoptimizer and normally requests optimized shadow meshes at import. `ArrayMesh.shadow_mesh` requires identical positions, including LODs; it is not the attachment point for a silhouette-simplified proxy. The native importer skips that optimization for blend shapes and bone/weight data. Genuine reduced geometry needs a separate qualified caster path and source ownership. [Investigation I18](../research/shadows-2026-10-31.md#i18--meshoptimizer-and-godots-existing-import-pipeline).
+
 ### 5.5 Local lights, clouds and long-range shadows
 
 Rank eligible local shadow lights by visible contribution, distance and gameplay relevance. Start with one landing or field spotlight, then test a budget of two and four. Keep a stable selection with hysteresis; map allocation changes cannot flicker during approach. Emissive LEDs are not automatically shadow-casting lights. Omni and spot atlas allocation is separate from the directional atlas; multiple omnidirectional shadows can be expensive. [Godot light/shadow reference](https://docs.godotengine.org/en/stable/tutorials/3d/lights_and_shadows.html).
+
+Test shadow-only distance fade before fading the useful light itself. Measure slot transitions and cache invalidation with the camera fixed and moving. In particular, the pin's material-animation detection recognizes certain built-in `TIME` paths; that does not establish correct local-shadow refresh for OpenRC's `sim_clock` uniforms. Test stopped/advancing wind under a fixed local light and use a forced-refresh diagnostic control if needed. Preserve the project's deterministic clock rule; changing shaders to `TIME` is not the remedy. [Investigations I03 and I05](../research/shadows-2026-10-31.md#i03--local-light-atlases-fade-and-cache-behavior).
 
 Reuse world-space cloud transport and existing sky settings. Audit every relevant receiver before claiming a universal cloud-shadow solution: ground darkening alone does not establish aircraft/material/light coherence. Do not change physical wind to align a visual texture. Baked fixed-sun lightmaps are unsuitable as the sole solution for flowing outdoor time; consider static local-light baking only for a separate justified, invariant case.
 
@@ -186,10 +201,16 @@ Record wall/CPU/GPU p50/p95/p99, worst-frame bursts, shadow draw calls/primitive
 | [RenderDoc](https://github.com/baldurk/renderdoc) | Inspect actual passes, atlas occupancy, caster draws and duplicate work | Free MIT tool; use on supported graphics APIs. It is not the normal benchmark run and does not cover Metal. |
 | [NVIDIA FLIP](https://github.com/NVlabs/flip) and existing capture comparators | Perceptual A/B image differences and regression localization | Reuse existing tooling; BSD-3-Clause project. Difference magnitude does not score realism or motion stability. |
 | [Intel XeGTAO](https://github.com/GameTechDev/XeGTAO) | Read its AO sampling/denoising design if stock AO has an attributed shortcoming | MIT, discontinued by Intel; a port requires HLSL/API adaptation and a maintenance owner. Defer until stock paths fail a defined gate. |
+| [AMD FidelityFX CACAO](https://gpuopen.com/manuals/fidelityfx_sdk/techniques/combined-adaptive-compute-ambient-occlusion/) | Compare its AO design with stock SSAO only after an attributed gap | MIT code; SDK 1 maintenance/version scope and RD integration need review. Defer a port; it does not replace direct shadows. |
+| Godot's vendored meshoptimizer and native shadow-mesh importer | Reduce redundant static shadow vertices using existing import paths | Inspect the actual imported resource first. Preserve positions/LODs and alpha/deformation semantics; no extra library needed initially. |
+| Nsight Graphics / Radeon GPU Profiler / Xcode Metal tools | Attribute native GPU work on the corresponding supported device/API | Use the [I14 tool matrix](../research/shadows-2026-10-31.md#i14--choosing-a-profiler-for-the-actual-gpu-and-api); vendor capture/counters are separate from normal-flight timing. |
+| Official Godot light demo / GodotFarShadow experiment | Isolated reference comparisons and distant-shadow feasibility | The [I17 source review](../research/shadows-2026-10-31.md#i17--free-godot-examples-and-distant-shadow-add-ons) favors the pinned official example; the C#/two-world far-shadow experiment remains deferred. |
 | Existing asset-source catalog, licensed field/aircraft materials and generators | Suitable AO maps, foliage alpha textures or reusable caster meshes | Search available free assets first; record redistribution rights and provenance. No new asset pack is needed for the initial slices. |
 | Existing shadow, tree, graphics, capture, debug and frame-diagnosis tools | Oracles, scripted views, lifecycle interaction and timing | Extend the smallest missing capability; do not write a replacement harness. |
 
 Technique inspiration and exact source applicability are retained in the [research ledger](../research/shadows-2026-10-31.md#external-sources-and-applicability). These are reuse candidates; the planning task installs no dependencies. When a dependency is selected for implementation, pin its exact version/commit and retain its license.
+
+The [18-investigation follow-up](../research/shadows-2026-10-31.md#decisions-from-the-second-round) adds concrete decisions under the existing stages: prioritize mask ownership, global-setting scope and native diagnostics; then motion/bias/filter experiments; then imported coverage and animated/local-light refresh. External AO, variance/moment maps, virtual shadow maps and ray tracing remain conditional renderer projects. A free download is useful only when its integration and maintenance fit this application.
 
 ## 9. Implementation sequence
 
@@ -242,6 +263,8 @@ Performance protocol:
 4. Inspect shutdown and long lifecycle resource behavior. Changing world/light/renderer configuration cannot accumulate maps, stale visibility or retained caster resources.
 5. Keep accepted/rejected candidates identifiable. Change one independent variable per initial comparison; test the final combined preset again because individually acceptable effects may exceed the combined budget.
 
+For temporal artifacts, first capture baseline A twice and candidate B with a fixed camera and stationary shadow region. Compare exploratory luminance-change distributions against the A–A noise floor and a deliberate flicker/jitter control; retain paired still differences and normal-speed video. Moving-camera numerical comparisons require reliable motion alignment and disocclusion handling. FLIP per frame is not a temporal-perception metric, and diagnostic ROI masks must not silently replace the existing full-image acceptance checks. [Investigation I15](../research/shadows-2026-10-31.md#i15--image-differences-versus-temporal-shadow-stability).
+
 ## 11. Verification tools and first implementation packet
 
 Use [graphics tools](../tools/graphics.md), [shadow tools](../../tools/shadows/README.md), [High/contact probes](../../tools/graphics/README.md), [debug bridge](../../tools/debug/README.md) and [performance collection](../../research/performance/README.md) as the command authorities. The legacy `vq04a_verify.py` requires its documented pre-feature baseline; do not point it at arbitrary modern snapshots and call that a valid comparison.
@@ -255,3 +278,52 @@ The first implementation packet should contain: the S00 caster/receiver inventor
 Revisit custom GTAO, screen-space shadow addons, temporal shadow accumulation, cached far-shadow engines, virtual shadow maps, hardware ray tracing, colored glass transmission or volumetric smoke/cloud self-shadowing only after a reproducible shortcoming in the native/bounded paths. Require license/maintenance/renderer/version evidence and an isolated prototype. Do not convert an interesting paper or impressive screenshot into an engine dependency.
 
 The selected scope is complete when its settings are truthful and persistent, its moving shadows improve the stated details without reducing flight readability, its named hardware/package gates pass, and its fallback remains usable. Optional features may be explicitly rejected with evidence. “All options enabled” is never the completion condition.
+
+## 13. Targeted C++ efficiency work
+
+The [C01–C06 investigations](../research/shadows-2026-10-31.md#third-round-six-c-efficiency-investigations) assess where native code could help. **No new helper or engine patch is implemented or benchmarked.** Keep this work under S00/S04/S06/S10/S11 with DT-11a construction/performance ownership. Rendering-native helpers remain separate from the existing physics evaluator and its ABI, qualification and float64 simulation contracts.
+
+### First candidate: packed geometry preparation
+
+`Projected.collect()` already uses native bulk transforms and packed appends. Its remaining per-triangle cutoff and ordered bounds work, together with field population collection, is the strongest *conditional* CPU candidate identified by source inspection. Re-profile it on the current engine before selecting a port. The target is faster shadow binding/field construction; a steady-state FPS benefit needs separate evidence.
+
+Proposed optional helper boundary:
+
+| Stage | Responsibility |
+| --- | --- |
+| Existing GDScript owner | Traverse/select sources, honor visibility/propeller exclusions and placement ownership, snapshot accepted transforms/geometry and retain world/source identity. |
+| Existing native bulk APIs | Continue transforming packed face streams; compare any later fusion against this accepted path. |
+| One coarse C++ operation per meaningful batch | Process immutable transformed faces and cutoff parameters; preserve triangle ordering, original cutoff semantics and ordered AABB expansion. Avoid engine/property calls inside the vertex loop. |
+| Returned data | Independently owned packed faces, exact bounds/counts and explicit status; no borrowed pointers or mutation of the caller's mesh arrays. |
+| Existing presentation owner | Build/install meshes and receivers, apply renderer/material settings and discard stale results. Preserve the GDScript reference path. |
+
+Use pre-sized output and direct packed-array access with correct copy-on-write/lifetime handling. Preserve the distinction between GDScript's 64-bit scalar cutoff/accumulation and ordinary 32-bit rendering vectors. Keep compiler reassociation/contraction controlled until exact-output tests justify otherwise. Existing nonfinite-cutoff behavior and boundary equality belong in the comparison; silently changing them is not a pure optimization.
+
+Do not start with the fallback blur: its completed mip bytes are already cached after the first call. Any remaining benefit concerns first generation. The eight-corner framing calculation and cached per-frame refresh also need attribution before a native port. These smaller candidates cannot inherit the historical collection timings.
+
+### Other opportunities and their triggers
+
+| Investigation | Candidate / reusable path | Trigger and acceptance |
+| --- | --- | --- |
+| C01/C02 | Optional pure GDExtension geometry helper | Current collection is a material CPU cost; complete snapshot → call → output → binding beats current bulk GDScript beyond run variability, with exact reference output. |
+| C03 | One bounded worker job over immutable geometry | Construction causes a visible main-thread hitch after synchronous optimization. Improve first usable frame/pacing, not merely worker throughput. Cap jobs/bytes; use generation checks and reap every task. |
+| C04 | Whole MultiMesh buffer preparation/submission | Profiling identifies repeated CPU instance preparation. Compare current per-instance work, script bulk and native bulk; retain spatial partitioning and measure extra GPU shadow draws. |
+| C05 | Native import optimization / bounded immutable geometry cache | The actual imported resource or repeated static collection is wasteful. Reuse the engine's existing meshoptimizer/import path first; prove identity/invalidation and regenerate through owning pipelines. |
+| C06 | Independently packaged optional GDExtension | A small public-API helper produces meaningful application-level benefit. Match engine API/precision and release toolchain; verify platform packages and missing/incompatible-library refusal. |
+| C04/C06 | Compute implementation, engine module or private-renderer patch | A measured requirement cannot be met through supported APIs. Separate renderer, portability and upgrade-maintenance evidence is required; no initial adoption. |
+
+Godot's renderer is already native. C++ cannot eliminate GPU PCSS sampling, alpha overdraw or cascade passes simply by replacing the GDScript caller. RenderingDevice compute is a separate modern-renderer route and does not supply a Compatibility implementation or an automatic hook into private shadow passes.
+
+If asynchronous preparation is justified, snapshot on the owning thread, compute over CPU data only, and install on the main thread if the source/world generation remains valid. Reset and teardown must discard obsolete results and eventually join/reap submitted tasks. Do not capture live scene nodes, perform direct GPU work from the worker or immediately wait after submission on the frame-critical path. A thread pool is an optional scheduling improvement, not a default architecture change.
+
+For a native package, reuse the existing native tooling's pin/receipt/fallback patterns without adding shadow work to the physics library. Its current OS/RefCounted-only binding profile is not sufficient evidence for a RenderingServer-based helper. Record API description, precision, compiler/flags, library/source hashes, OS and architecture; qualify Windows/Linux/macOS individually where intended. A module/fork additionally needs matching editor/export builds and recurring upgrade ownership. Preserve a normal reference launch when the optional library is unavailable; that fallback cannot recover an arbitrary in-process native crash.
+
+### Measurement and promotion
+
+1. Use the current source and engine as baseline, including native transforms, run batching and the mask cache. Separate source traversal, input packing, cutoff/bounds, allocations, mesh creation/upload and GPU work before choosing a C++ boundary.
+2. Compare release builds, starting with a boundary-overhead control and realistic small/large geometry batches. Report kernel time and complete binding/loading time separately; retain at least three valid alternating native process pairs and the existing exclusion rules.
+3. Reuse the collection/population/blur oracles as applicable: exact faces/order, counts, AABB, cutoff boundaries, source isolation and image/mip bytes. Test absent/incompatible helper, reset, repeated scene replacement, teardown and peak/residual memory.
+4. Verify actual 1080p Standard and High shadows, including masks and full scenes; only then expand resolution coverage. Account for subviewport GPU work separately from root-viewport timing. No shader/quality change may be bundled into a pure CPU comparison.
+5. Set a useful absolute improvement target for the affected user action before measuring. The gain must exceed the observed noise and improve that action without worsening whole-frame/load/resource gates. An inner-loop percentage alone is insufficient. Do not add overlapping CPU/GPU/wall measurements or multiply a first-load saving into an FPS claim.
+
+Only after this evidence should a candidate become the default on its qualified platforms. Until then, the concrete next action is **current construction attribution followed, if warranted, by one pure face-filter/bounds prototype**. The [shadow tools](../../tools/shadows/README.md) and [performance tools](../../research/performance/README.md) remain the command authorities.

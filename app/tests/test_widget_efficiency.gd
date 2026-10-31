@@ -124,8 +124,12 @@ func _glass_matches(widget: Control, opacity: float) -> bool:
 	if glass == null or material == null: return false
 	var base: Color = material.get_shader_parameter("base_color")
 	var rect: Vector2 = material.get_shader_parameter("rect_size")
-	return glass.visible and glass.material == material and is_equal_approx(base.a, opacity) \
-		and rect.is_equal_approx(widget.size) and glass.size.is_equal_approx(widget.size)
+	if not glass.visible or glass.material != material or not is_equal_approx(base.a, opacity) or not rect.is_equal_approx(glass.size): return false
+	if widget.id not in Settings.CLASSIC_IDS:
+		return glass.position.is_equal_approx(Vector2.ZERO) and glass.size.is_equal_approx(widget.size)
+	var header := Rect2(glass.position, glass.size)
+	return glass.get_parent().get_parent() == widget.handle and header.grow(0.01).encloses(Rect2(Vector2.ZERO, widget.handle.size)) \
+		and header.size.x <= widget.handle.size.x + 16.01 and header.size.y <= widget.handle.size.y + 4.01
 
 
 func _test_glass_lifecycle() -> void:
@@ -150,11 +154,39 @@ func _test_glass_lifecycle() -> void:
 	# A saved cockpit preset and appearance are applied before entering the tree.
 	var manager := CountingManager.new({preset = "cockpit", widget_opacity = 0.8, widget_size = "large", widget_compact = true})
 	_check("saved detached preset defers glass", _glass_counts(manager) == [0, 0, 0])
+	var saved_horizon: Control = manager.frames.attitude
+	var first_classic_draw := [0, false]
+	saved_horizon.draw.connect(func() -> void:
+		if first_classic_draw[0] == 0: first_classic_draw[1] = _glass_matches(saved_horizon, 0.8)
+		first_classic_draw[0] += 1)
 	first_host.add_child(manager)
 	await process_frame
+	RenderingServer.force_draw(false)
+	_check("first classic draw uses only the current title strip", first_classic_draw[0] > 0 and first_classic_draw[1])
 	await process_frame
 	var saved_ready := Settings.CLASSIC_IDS.all(func(id: String) -> bool: return _glass_matches(manager.frames[id], 0.8))
 	_check("saved cockpit restores appearance on first attachment", _glass_counts(manager) == [5, 5, 5] and saved_ready)
+	saved_horizon.handle.mouse_entered.emit()
+	_check("classic hover highlights the strip without restoring a card", saved_horizon._header_highlighted and _no_outer_card(saved_horizon))
+	saved_horizon.set_locked(true)
+	_check("locking removes the strip highlight without restoring a card", not saved_horizon._header_highlighted and _no_outer_card(saved_horizon))
+	saved_horizon.set_locked(false)
+	saved_horizon.handle.mouse_exited.emit()
+	_check("leaving the classic header clears its highlight", not saved_horizon._header_highlighted and _no_outer_card(saved_horizon))
+	first_host.remove_child(manager)
+	manager.set_widget_option("widget_size", "small")
+	manager.set_widget_option("widget_compact", false)
+	var first_returned_classic := [0, false]
+	saved_horizon.draw.connect(func() -> void:
+		if first_returned_classic[0] == 0: first_returned_classic[1] = _glass_matches(saved_horizon, 0.8)
+		first_returned_classic[0] += 1)
+	second_host.add_child(manager)
+	await process_frame
+	RenderingServer.force_draw(false)
+	_check("first classic draw after detached density change keeps the title strip aligned", first_returned_classic[0] > 0 and first_returned_classic[1])
+	second_host.remove_child(manager)
+	first_host.add_child(manager)
+	await process_frame
 
 	manager.preview(false)
 	manager.set_preset("navigation")
@@ -233,9 +265,35 @@ func _test_glass_lifecycle() -> void:
 		await process_frame
 		_check("hidden appearance is restored on reopen " + str(opacity), _glass_matches(manager.frames.speed, opacity)
 			and material_ids.get("speed", 0) == manager.frames.speed._glass_material.get_instance_id())
+	var classic_styles := {}
+	for id: String in Settings.CLASSIC_IDS:
+		var classic: Control = manager.frames[id]
+		classic_styles[id] = [classic.subtitle.get_theme_stylebox("normal").get_instance_id(), classic._footer_style.get_instance_id()]
+	for expected: Array in [[0.8, 0.85, 0.90], [0.94, 0.94, 0.94], [1.0, 1.0, 1.0]]:
+		for id: String in Settings.CLASSIC_IDS: manager.set_overlay_visible(id, false)
+		manager.set_widget_option("widget_opacity", expected[0])
+		_check("hidden classic backings update at " + str(expected[0]), Settings.CLASSIC_IDS.all(
+			func(id: String) -> bool: return _classic_backings_match(manager.frames[id], expected, classic_styles[id])))
+		for id: String in Settings.CLASSIC_IDS: manager.set_overlay_visible(id, true)
+		await process_frame
+		_check("reopened classic backings and glass retain opacity and identity at " + str(expected[0]), Settings.CLASSIC_IDS.all(
+			func(id: String) -> bool: return (_classic_backings_match(manager.frames[id], expected, classic_styles[id])
+				and _glass_matches(manager.frames[id], expected[0]) and material_ids[id] == manager.frames[id]._glass_material.get_instance_id())))
 	first_host.queue_free()
 	second_host.queue_free()
 	await process_frame
+
+
+func _classic_backings_match(widget: Control, expected: Array, identities: Array) -> bool:
+	var readout: StyleBoxFlat = widget.subtitle.get_theme_stylebox("normal")
+	return readout.get_instance_id() == identities[0] and widget._footer_style.get_instance_id() == identities[1] \
+		and is_equal_approx(readout.bg_color.a, expected[1]) and is_equal_approx(widget._footer_style.bg_color.a, expected[2])
+
+
+func _no_outer_card(widget: Control) -> bool:
+	return not widget._style.draw_center and widget._style.shadow_size == 0 \
+		and widget._style.border_width_left == 0 and widget._style.border_width_top == 0 \
+		and widget._style.border_width_right == 0 and widget._style.border_width_bottom == 0
 
 
 func _measure_glass_creation() -> void:
