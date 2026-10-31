@@ -43,7 +43,7 @@ class _CuePolicy:
 		revision = ShadowSettings.revision
 		if not last_update.is_empty() and is_instance_valid(carrier):
 			shadow_api.call("update", carrier, last_update[0], last_update[1], last_update[2],
-				last_update[3], last_update[4], last_update[5])
+				last_update[3], last_update[4], last_update[5], last_update[6])
 		elif is_instance_valid(carrier) and (not ShadowSettings.projected_enabled() or ShadowSettings.aircraft_cue() == "off"):
 			(carrier.material_override as StandardMaterial3D).albedo_color.a = 0.0
 			var projected := carrier.get_node_or_null("ProjectedShadow")
@@ -151,12 +151,15 @@ static func _relative(root: Node3D, node: Node3D) -> Transform3D:
 	return t
 
 
-static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, length: float, along := Vector3.UP, strength: float = 1.0) -> void:
-	var cue := ShadowSettings.aircraft_cue()
+## The flight's local cue can override the saved cue; the global projected route
+## still decides whether any cue may be drawn. Other callers use the saved policy.
+static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, length: float,
+		along := Vector3.UP, strength: float = 1.0, cue_override: String = "auto") -> void:
+	var cue := cue_override if cue_override in ["sun", "vertical", "off"] else ShadowSettings.aircraft_cue()
 	var enabled := ShadowSettings.projected_enabled() and cue != "off"
 	var policy := shadow.get_meta("shadow_cue_policy", null) as _CuePolicy
 	if policy != null:
-		policy.last_update = [b, pos, span, length, along, strength]
+		policy.last_update = [b, pos, span, length, along, strength, cue_override]
 		policy.revision = ShadowSettings.revision
 	var direction: Vector3 = along
 	if cue == "vertical":

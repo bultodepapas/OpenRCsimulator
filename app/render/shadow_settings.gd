@@ -37,6 +37,7 @@ static var _requested: Dictionary = DEFAULTS.duplicate(true)
 static var _receipt: Dictionary = {}
 static var _global_signature: Array = []
 static var _lights: Array[WeakRef] = []
+static var _lighting_refresh := Callable()
 
 
 static func normalize(raw: Dictionary) -> Dictionary:
@@ -126,6 +127,7 @@ static func _commit(high_profile: bool) -> void:
 	receipt["rendering_available"] = DisplayServer.get_name() != "headless"
 	if receipt == _receipt:
 		return
+	var previous_native := bool(_receipt.effective.native) if not _receipt.is_empty() else bool(receipt.effective.native)
 	_receipt = receipt
 	revision += 1
 	var state: Dictionary = _receipt.effective
@@ -142,6 +144,8 @@ static func _commit(high_profile: bool) -> void:
 			alive.append(reference)
 			_apply_light(light, bool(light.get_meta(LIGHT_REQUEST, light.shadow_enabled)))
 	_lights = alive
+	if previous_native != bool(state.native) and _lighting_refresh.is_valid():
+		_lighting_refresh.call(bool(state.native))
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree != null:
 		tree.call_group(&"shadow_policy_consumers", &"apply_shadow_policy")
@@ -159,6 +163,17 @@ static func describe() -> Dictionary:
 static func effective() -> Dictionary:
 	ensure_configured(_high_active())
 	return _receipt.effective.duplicate(true)
+
+
+## Atmosphere registers the owner of existing light/fog/material compensation.
+static func set_lighting_refresh(callback: Callable) -> void:
+	_lighting_refresh = callback
+
+
+static func native_enabled() -> bool:
+	if _receipt.is_empty():
+		ensure_configured(_high_active())
+	return bool(_receipt.effective.native)
 
 
 static func projected_enabled() -> bool:

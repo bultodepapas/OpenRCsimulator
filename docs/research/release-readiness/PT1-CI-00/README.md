@@ -97,7 +97,7 @@ Eight real-engine controls used the pinned `4.8.beta1.official.4d10419ca` and ch
 
 V2 phase receipts bind the complete phase roster and runner inputs, declare the parse coverage mode, and reject source drift before completion. The CI aggregate independently checks one parse receipt and eight exact, disjoint modulo unit receipts against its checkout; their union must cover every script. Failure controls include missing units, wrong unit subsets, duplicate shards, altered coverage and changed source. The opt-in flag is restricted to the combined CI integration mode; the full local wrapper clears inherited selectors.
 
-An independent source review of the combined runner, workflow, local wrapper and verifier found no concrete lost coverage or gate bypass. Release-tool fixtures were rerun: 40 passed. Workflow validation with `actionlint` 1.7.12 and individual `bash -n` checks of the four changed shell entrypoints passed. These checks do not replace a completed full app run.
+An independent source review of the combined runner, workflow, local wrapper and verifier found no concrete lost coverage or gate bypass. Final WSL quick validation passed **116 tests**: 13 partitions, 30 export identity and 73 CI tools, including the additional wrong-subset and duplicate-shard controls. Those controls and documentation appeared in concurrent commit `6d30cf96a9cbacd4802faf615a66bce6232cd59d`; the production CI/runner code remains identical to `4b89082c1`. Release-tool fixtures were rerun separately: **40 passed**. Workflow validation with `actionlint` 1.7.12, individual `bash -n` checks of the four changed shell entrypoints and whitespace checks scoped to this task passed. These checks do not replace a completed full app run.
 
 ### Interrupted full-suite qualification
 
@@ -107,7 +107,7 @@ The restarted run completed 820 checked reports, including 807 of 1,552 explicit
 
 Local evidence remains under `/home/bulto/openrc-ci-validation-ce789-20261031/tmp/full-suite-ce789-restart-20261031/` (`suite.log`, `partial-results.xml`, `disk-observations.txt`, `checks/`). WSL later failed to start and was restarted with owner authorization; focused verification resumed with disposable outputs on D:. The storage failure's root cause was not established. Full optimized runtime and rendered qualification remain open.
 
-The first focused retry on ordinary `/mnt/d` passed the 13 partition tests but failed one of 30 export-identity fixtures: the packaged Linux executable had mode `0777` rather than required `0755`. DrvFS without metadata did not preserve the requested `chmod`. A temporary second D: mount with POSIX metadata support preserved `0755`; subsequent verification uses that mount. No permission assertion or package gate was weakened, and no persistent WSL configuration was changed.
+The first focused retry on ordinary `/mnt/d` passed the 13 partition tests but failed one of 30 export-identity fixtures: the packaged Linux executable had mode `0777` rather than required `0755`. DrvFS without metadata did not preserve the requested `chmod`. A temporary second D: mount with POSIX metadata support preserved `0755`; all 13 partition and 30 export-identity fixtures passed on that mount. No permission assertion or package gate was weakened, and no persistent WSL configuration was changed.
 
 ### Unit invocation timing inventory
 

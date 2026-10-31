@@ -121,6 +121,7 @@ static func runway_material() -> StandardMaterial3D:
 ## into the rough grass inside a noisy border with no colour seam; the runway adds mowing stripes and touchdown wear.
 static func surface_material(grass: ShaderMaterial, type: String, center: Vector2, half: Vector2) -> ShaderMaterial:
 	var mat := grass.duplicate() as ShaderMaterial
+	Atmosphere.track_shadow_material_copy(mat, grass)
 	mat.set_shader_parameter("surface_kind", SURFACE_KIND[type])
 	mat.set_shader_parameter("rect_center", center)
 	mat.set_shader_parameter("rect_half", half)

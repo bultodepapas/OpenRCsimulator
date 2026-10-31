@@ -75,6 +75,12 @@ static var state: Dictionary = {}
 ## The existing Compatibility cost/color limitations remain (L3); reference captures select off explicitly.
 static var engine_shadows: bool = engine_shadows_enabled()
 
+## Resources retain their own lighting inputs: Workshop may keep another world
+## alive while the current world's global time/appearance state changes.
+const SHADOW_LIGHTING_SWEEP_INTERVAL := 64
+static var _shadow_lighting_resources: Dictionary = {}
+static var _shadow_lighting_registrations := 0
+
 
 static func engine_shadows_enabled(args: Dictionary = {}, interactive: bool = true) -> bool:
 	var fallback := OS.get_environment("OPENRC_ENGINE_SHADOWS")
@@ -381,7 +387,103 @@ static func shadow_compensation() -> float:
 	# Forward+ blends lighting in linear HDR: applying the GLES3 correction there
 	# dims even unoccluded surfaces when shadow maps are enabled (VQ-07).
 	return Spec.ATMOSPHERE.shadow_energy_compat \
-		if engine_shadows and RenderingServer.get_current_rendering_method() == "gl_compatibility" else 1.0
+		if engine_shadows and RenderingServer.get_current_rendering_method() == "gl_compatibility" \
+		and ShadowSettings.native_enabled() else 1.0
+
+
+## Cache the original inputs, not a ratio of previously rounded output values.
+static func _shadow_energy_source(lighting: Dictionary) -> Dictionary:
+	var flowing := _uses_flow_state(lighting)
+	var a: Dictionary = parameters(lighting)
+	return {
+		"engine_shadows": engine_shadows,
+		"energy": float(state.light_energy if flowing else a.sun_energy),
+		"intensity": float(_appearance.sun_intensity) if _appearance_enabled else 1.0,
+	}
+
+
+static func _shadow_scatter_source(lighting: Dictionary) -> Dictionary:
+	return {"engine_shadows": engine_shadows,
+		"scatter": 0.0 if _uses_flow_state(lighting) else float(parameters(lighting).sun_scatter)}
+
+
+static func _shadow_material_source(lighting: Dictionary) -> Dictionary:
+	var source := _shadow_energy_source(lighting)
+	var color := light_color(lighting).srgb_to_linear()
+	source["color"] = Vector3(color.r, color.g, color.b)
+	source["scatter"] = _shadow_scatter_source(lighting).scatter
+	return source
+
+
+static func _remember_shadow_lighting(resource: Object, entry: Dictionary) -> void:
+	if RenderingServer.get_current_rendering_method() != "gl_compatibility":
+		return
+	var id := resource.get_instance_id()
+	var old: Dictionary = _shadow_lighting_resources.get(id, {})
+	if old.is_empty() or old.reference.get_ref() != resource:
+		_shadow_lighting_registrations += 1
+		if _shadow_lighting_registrations >= SHADOW_LIGHTING_SWEEP_INTERVAL:
+			_prune_shadow_lighting()
+	entry["reference"] = weakref(resource)
+	_shadow_lighting_resources[id] = entry
+	ShadowSettings.set_lighting_refresh(_refresh_shadow_lighting)
+
+
+static func _prune_shadow_lighting() -> void:
+	for id: int in _shadow_lighting_resources.keys():
+		if _shadow_lighting_resources[id].reference.get_ref() == null:
+			_shadow_lighting_resources.erase(id)
+	_shadow_lighting_registrations = 0
+
+
+static func _track_shadow_material(material: ShaderMaterial, lighting: Dictionary) -> void:
+	if RenderingServer.get_current_rendering_method() != "gl_compatibility":
+		return
+	var previous: Dictionary = _shadow_lighting_resources.get(material.get_instance_id(), {})
+	var entry := {"kind": "material", "source": _shadow_material_source(lighting)}
+	if not previous.is_empty() and previous.reference.get_ref() == material and previous.has("aureole"):
+		entry["aureole"] = previous.aureole
+	_remember_shadow_lighting(material, entry)
+
+
+## Adapters that set the same haze uniforms directly register their local snapshot.
+static func track_shadow_material(material: ShaderMaterial, lighting: Dictionary = {}) -> void:
+	_track_shadow_material(material, lighting)
+
+
+## A duplicated field surface inherits its source's already-applied lighting.
+static func track_shadow_material_copy(material: ShaderMaterial, source: ShaderMaterial) -> void:
+	var entry: Dictionary = _shadow_lighting_resources.get(source.get_instance_id(), {})
+	if not entry.is_empty() and entry.reference.get_ref() == source:
+		_remember_shadow_lighting(material, entry.duplicate(true))
+
+
+static func _refresh_shadow_lighting(native_enabled: bool) -> void:
+	var compatibility := RenderingServer.get_current_rendering_method() == "gl_compatibility"
+	for id: int in _shadow_lighting_resources.keys():
+		var entry: Dictionary = _shadow_lighting_resources[id]
+		var resource: Variant = entry.reference.get_ref()
+		if resource == null:
+			_shadow_lighting_resources.erase(id)
+			continue
+		var source: Dictionary = entry.source
+		var compensation: float = Spec.ATMOSPHERE.shadow_energy_compat \
+			if compatibility and bool(source.engine_shadows) and native_enabled else 1.0
+		match entry.kind:
+			"light":
+				(resource as DirectionalLight3D).light_energy = float(source.energy) * compensation * float(source.intensity)
+			"environment":
+				(resource as Environment).fog_sun_scatter = float(source.scatter) / compensation
+			"material":
+				var material := resource as ShaderMaterial
+				var energy := float(source.energy) * compensation * float(source.intensity)
+				var solar: Vector3 = (source.color as Vector3) * energy * PI
+				material.set_shader_parameter("sun_lin", solar)
+				material.set_shader_parameter("sun_scatter", float(source.scatter) / compensation)
+				if entry.has("aureole"):
+					material.set_shader_parameter("sun_aureole_lin", SunOptics.aureole_lin(
+						solar / compensation, float(entry.aureole.aerosol), float(entry.aureole.disc)))
+	_shadow_lighting_registrations = 0
 
 
 ## The light's actual energy.
@@ -432,6 +534,7 @@ static func _set_haze_uniforms(mat: ShaderMaterial, lighting: Dictionary = {}) -
 	mat.set_shader_parameter("sun_dir", sun_direction(lighting))
 	mat.set_shader_parameter("sun_lin", sun_linear(lighting))
 	mat.set_shader_parameter("sun_scatter", sun_scatter(lighting))
+	_track_shadow_material(mat, lighting)
 	mat.set_shader_parameter("lobe_lin", state.lobe_lin if _uses_flow_state(lighting) else lighting.get("lobe_lin", Vector3.ZERO))
 	mat.set_shader_parameter("lobe_dir", state.lobe_dir if _uses_flow_state(lighting) else lighting.get("lobe_dir", Vector3(1.0, 0.0, 0.0)))
 	mat.set_shader_parameter("lobe_k", state.lobe_k if _uses_flow_state(lighting) else lighting.get("lobe_k", 8.0))
@@ -452,6 +555,9 @@ static func _set_sun_uniforms(mat: ShaderMaterial, lighting: Dictionary = {}) ->
 	# The aureole is sky light: the Compatibility shadow compensation in sun_linear() is divided out (like haze()).
 	mat.set_shader_parameter("sun_aureole_lin", SunOptics.aureole_lin(sun_linear(lighting) / shadow_compensation(), aureole_aerosol_factor(), disc))
 	mat.set_shader_parameter("sun_aureole_k", SunOptics.AUREOLE_K)
+	var tracked: Dictionary = _shadow_lighting_resources.get(mat.get_instance_id(), {})
+	if not tracked.is_empty() and tracked.reference.get_ref() == mat:
+		tracked["aureole"] = {"aerosol": aureole_aerosol_factor(), "disc": disc}
 
 
 static func _set_sky_uniform_if_changed(mat: ShaderMaterial, uniform_name: StringName, value: Variant) -> bool:
@@ -653,6 +759,7 @@ static func apply_state_to_environment(env: Environment) -> void:
 	env.fog_light_color = Color(h.x, h.y, h.z).linear_to_srgb()
 	env.fog_light_energy = 1.0
 	env.fog_sun_scatter = sun_scatter()
+	_remember_shadow_lighting(env, {"kind": "environment", "source": _shadow_scatter_source({})})
 	var amb: Vector3 = state.ambient_lin
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(amb.x, amb.y, amb.z).linear_to_srgb()
@@ -667,6 +774,7 @@ static func apply_state_to_environment(env: Environment) -> void:
 static func apply_light(light: DirectionalLight3D) -> void:
 	light.light_color = light_color()
 	light.light_energy = light_energy()
+	_remember_shadow_lighting(light, {"kind": "light", "source": _shadow_energy_source({})})
 	_apply_shadow(light)
 	# The light shines along its −Z: toward the origin from the sun's side. Built directly (no scene tree needed).
 	var d := sun_direction()
@@ -809,6 +917,7 @@ static func _update_environment_parameters(env: Environment, lighting: Dictionar
 	env.fog_light_color = a.haze
 	env.fog_light_energy = a.haze_energy
 	env.fog_sun_scatter = sun_scatter(lighting)
+	_remember_shadow_lighting(env, {"kind": "environment", "source": _shadow_scatter_source(lighting)})
 
 
 ## Engine shadows follow the shadow strength. FW-MOON-06b: with time flowing (every step, not only at build) the
@@ -825,6 +934,7 @@ static func _apply_shadow(light: DirectionalLight3D, lighting: Dictionary = {}) 
 static func update_sun(sun: DirectionalLight3D, lighting: Dictionary = {}) -> void:
 	sun.light_color = light_color(lighting)
 	sun.light_energy = light_energy(lighting)
+	_remember_shadow_lighting(sun, {"kind": "light", "source": _shadow_energy_source(lighting)})
 	_apply_shadow(sun, lighting)
 	# The light shines along its -Z. Choose a stable up axis for the zenith case.
 	var direction: Vector3 = sun_direction(lighting)

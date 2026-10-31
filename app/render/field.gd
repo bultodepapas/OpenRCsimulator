@@ -318,7 +318,7 @@ static func _advance_build(context: _BuildContext) -> void:
 			context.phase = _BuildPhase.PROJECTED_SHADOWS
 		_BuildPhase.PROJECTED_SHADOWS:
 			FieldProjectedShadows.attach(context.result, context.field, context.lighting)
-			ShadowFieldPolicy.attach(context.result)
+			ShadowFieldPolicy.attach(context.result, context.field)
 			context.result.set_meta("lighting_materials", context.materials)
 			context.result.set_meta("lighting_snapshot", context.lighting.duplicate(true))
 			context.phase = _BuildPhase.FIELD_READY

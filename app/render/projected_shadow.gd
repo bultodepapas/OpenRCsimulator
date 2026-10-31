@@ -16,6 +16,7 @@ var bounds: AABB
 var triangle_count := 0
 var _last_signature: Array = []
 var _last_request: Array = []
+var _desired_shown := false
 # The remaining frame inputs; basis/direction/frame already live in _last_signature.
 var _frame_bounds := AABB()
 var _frame_blur := 0.0
@@ -146,23 +147,37 @@ func setup(model: Node3D, shape: Dictionary, resolution: int = RESOLUTION, antia
 	add_child(receiver)
 	source.visibility_changed.connect(_source_visibility_changed)
 	source.tree_exiting.connect(_source_exiting)
+	source.tree_entered.connect(_source_entered)
 
 
 func _source_visibility_changed() -> void:
 	if not _last_request.is_empty():
-		refresh(_last_request[0], _last_request[1], _last_request[2], _last_request[3])
+		refresh(_last_request[0], _last_request[1], _last_request[2], _desired_shown)
 
 
 func _source_exiting() -> void:
 	receiver.visible = false
 	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	_last_signature.clear()
+	if not _last_request.is_empty():
+		_last_request[3] = false # stop animated projectors while their source is absent
+
+
+func _source_entered() -> void:
+	if not _last_request.is_empty():
+		refresh(_last_request[0], _last_request[1], _last_request[2], _desired_shown)
 
 
 func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> void:
+	_desired_shown = shown
 	_last_request = [height, direction, opacity, shown]
-	if not is_instance_valid(source):
+	# Both nodes may be detached during construction. A live projector must not
+	# draw a still-valid source that has left its scene.
+	if not is_instance_valid(source) or (is_inside_tree() and not source.is_inside_tree()):
+		_last_request[3] = false
 		receiver.visible = false
 		viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+		_last_signature.clear()
 		return
 	shown = shown and (source.is_visible_in_tree() if source.is_inside_tree() else source.visible)
 	receiver.visible = shown

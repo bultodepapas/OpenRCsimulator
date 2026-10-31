@@ -5,6 +5,7 @@ const Shadow := preload("res://render/shadow.gd")
 const FieldShadows := preload("res://render/field_projected_shadows.gd")
 const FieldPolicy := preload("res://render/shadow_field_policy.gd")
 const FieldBuilder := preload("res://render/field.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
 const WreckScript := preload("res://render/crash/wreck.gd")
 const HeliWreckScript := preload("res://render/rotor/heli_wreck.gd")
 const Spec := preload("res://spec.gd")
@@ -37,6 +38,35 @@ func _box_node(node_name: String) -> MeshInstance3D:
 	return node
 
 
+func _population_batch(node_name: String, xs: Array[float], alpha_cut: bool = false) -> MultiMeshInstance3D:
+	var node := MultiMeshInstance3D.new()
+	node.name = node_name
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(1.0, 2.0, 1.0)
+	if alpha_cut:
+		var material := ShaderMaterial.new()
+		material.shader = load("res://scenery/population_person.gdshader")
+		mesh.material = material
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.mesh = mesh
+	mm.instance_count = xs.size()
+	var placements: Array = []
+	var transforms: Array[Transform3D] = []
+	for index in xs.size():
+		var transform := Transform3D(Basis.IDENTITY, Vector3(xs[index], 0.0, 0.0))
+		placements.append({"transform": transform})
+		transforms.append(transform)
+		mm.set_instance_transform(index, transform)
+	node.multimesh = mm
+	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	node.set_meta("source_asset", "pilot")
+	node.set_meta("asset_key", node_name)
+	node.set_meta("placements", placements)
+	node.set_meta("instance_transforms", transforms)
+	return node
+
+
 func _field_policy() -> void:
 	_set_route("auto")
 	var empty_field := Node3D.new()
@@ -47,7 +77,24 @@ func _field_policy() -> void:
 	field.name = "Field"
 	var cue := Node3D.new()
 	cue.name = "station"
-	cue.add_child(_box_node("model"))
+	var cue_mesh := _box_node("model")
+	cue_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	cue.add_child(cue_mesh)
+	var preexisting := _box_node("preexisting")
+	preexisting.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+	cue.add_child(preexisting)
+	var translucent := _box_node("translucent")
+	var transparent_material := StandardMaterial3D.new()
+	transparent_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	translucent.material_override = transparent_material
+	translucent.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	cue.add_child(translucent)
+	var decoration := _box_node("unshaded_decoration")
+	var decoration_material := StandardMaterial3D.new()
+	decoration_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	decoration.material_override = decoration_material
+	decoration.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	cue.add_child(decoration)
 	field.add_child(cue)
 	var cue_plane := _box_node("FlightCueShadows")
 	(cue_plane.mesh as BoxMesh).material = StandardMaterial3D.new()
@@ -59,7 +106,32 @@ func _field_policy() -> void:
 	scenery.name = "Scenery"
 	field.add_child(scenery)
 	var caster := _box_node("cell_0_0")
+	caster.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	scenery.add_child(caster)
+	var far_caster := _box_node("cell_5_5")
+	far_caster.position.x = 220.0
+	far_caster.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	# The manager budgets cells using local mesh bounds, so give this distant mesh distant bounds.
+	var far_mesh := ArrayMesh.new()
+	var far_box := BoxMesh.new()
+	var far_arrays := far_box.surface_get_arrays(0)
+	var far_verts: PackedVector3Array = far_arrays[Mesh.ARRAY_VERTEX]
+	for index in far_verts.size():
+		far_verts[index].x += 220.0
+	far_arrays[Mesh.ARRAY_VERTEX] = far_verts
+	far_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, far_arrays)
+	far_caster.mesh = far_mesh
+	far_caster.position = Vector3.ZERO
+	scenery.add_child(far_caster)
+	var people := Node3D.new()
+	people.name = "Population"
+	scenery.add_child(people)
+	var near_person := _population_batch("near_person", [0.0])
+	var mixed_person := _population_batch("mixed_person", [0.0, 220.0])
+	var cut_person := _population_batch("cut_person", [0.0], true)
+	people.add_child(near_person)
+	people.add_child(mixed_person)
+	people.add_child(cut_person)
 	var near_plane := _box_node("shadows_0_0")
 	scenery.add_child(near_plane)
 	var far_plane := _box_node("shadows_1_1")
@@ -79,7 +151,7 @@ func _field_policy() -> void:
 	if manager == null or manager.projectors.size() != 2:
 		field.free()
 		return
-	FieldPolicy.attach(field)
+	FieldPolicy.attach(field, data)
 	field.set_meta("lighting_materials", [])
 	field.set_meta("lighting_snapshot", lighting.duplicate(true))
 	root.add_child(field)
@@ -94,6 +166,21 @@ func _field_policy() -> void:
 		and far_plane.visible and not already_hidden.visible and population.visible and first_receiver.visible)
 	_set_route("native")
 	_check("native is available for the headless test renderer", not ShadowSettings.projected_enabled())
+	_check("native enables selected opaque cue, cell and complete population batches",
+		cue_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		and caster.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		and near_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON)
+	_check("native preserves prior modes and skips transparent or unrelated sources",
+		preexisting.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+		and translucent.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and decoration.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and far_caster.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and mixed_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and cut_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+	var stats: Dictionary = field.get_meta("shadow_native_casters")
+	_check("field diagnostics report bounded active candidates and exclusions", bool(stats.active)
+		and int(stats.source_meshes) == 3 and int(stats.population_batches) == 1
+		and int(stats.skipped_material) >= 3 and int(stats.skipped_population_range) == 1)
 	_check("native suppresses every planar field batch", not cue_plane.visible and not near_plane.visible
 		and not far_plane.visible and not already_hidden.visible and not population.visible)
 	_check("native suppresses receivers and offscreen mask work", _all_projectors_disabled(projectors) and not manager.is_processing())
@@ -112,6 +199,29 @@ func _field_policy() -> void:
 	_check("restore reuses projectors with the latest lighting", manager.projectors[0] == first_projector
 		and first_projector.get("viewport") == first_viewport and first_receiver.visible and manager.snapshot == newer_lighting)
 	_check("native caster setting is untouched", caster.cast_shadow == native_casting)
+	_check("revert restores original casting settings without disturbing preexisting modes",
+		cue_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and near_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and preexisting.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY)
+	_set_route("native")
+	field.remove_child(manager)
+	manager.free()
+	FieldShadows.attach(field, data, lighting)
+	var replacement := field.get_node_or_null("ProjectedFieldShadows")
+	var rebound_lighting := newer_lighting.duplicate(true)
+	rebound_lighting.sun_azimuth_deg += 20.0
+	_check("field refreshes a replaced projector manager while native is active",
+		FieldBuilder.update_lighting(field, rebound_lighting) and replacement != null
+		and policy.get("_manager") == replacement and _all_projectors_disabled(replacement.projectors)
+		and cue_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON)
+	_set_route("auto")
+	_check("replacement restores current manager's fallback ownership",
+		not cue_plane.visible and not near_plane.visible and far_plane.visible
+		and cue_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+	manager = replacement
+	projectors = manager.projectors
+	first_projector = projectors[0]
+	first_receiver = first_projector.get("receiver") as MeshInstance3D
 	_set_route("off")
 	root.remove_child(field)
 	_set_route("auto")
@@ -131,6 +241,53 @@ func _all_projectors_disabled(projectors: Array) -> bool:
 				or request.size() != 4 or bool(request[3]):
 			return false
 	return true
+
+
+func _production_field() -> void:
+	var original_scenery := OS.get_environment("OPENRC_SCENERY")
+	var had_scenery := OS.has_environment("OPENRC_SCENERY")
+	OS.set_environment("OPENRC_SCENERY", "on")
+	_set_route("auto")
+	var loaded := FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
+	_check("default field data loads for native caster ownership", bool(loaded.get("ok", false)))
+	if not bool(loaded.get("ok", false)):
+		if had_scenery:
+			OS.set_environment("OPENRC_SCENERY", original_scenery)
+		else:
+			OS.unset_environment("OPENRC_SCENERY")
+		return
+	var field: Node3D = FieldBuilder.build(loaded.field, Spec.ATMOSPHERE.duplicate(true))
+	root.add_child(field)
+	await process_frame
+	var policy: Node = field.get_meta("shadow_field_policy", null)
+	_check("default field owns bounded Native candidates", policy != null
+		and int((field.get_meta("shadow_native_casters", {}) as Dictionary).get("source_meshes", 0)) > 0)
+	if policy != null:
+		var casters: Array = policy.get("_native_casters")
+		var initial: Array[int] = []
+		for caster: GeometryInstance3D in casters:
+			initial.append(int(caster.cast_shadow))
+		_set_route("native")
+		var changed := 0
+		for index in casters.size():
+			var caster := casters[index] as GeometryInstance3D
+			if initial[index] == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF \
+					and caster.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON:
+				changed += 1
+		var stats: Dictionary = field.get_meta("shadow_native_casters")
+		_check("default field promotes existing opaque sources", changed > 0 and int(stats.enabled_from_off) == changed)
+		var active_stats := stats.duplicate(true)
+		_set_route("auto")
+		var restored := true
+		for index in casters.size():
+			restored = restored and int((casters[index] as GeometryInstance3D).cast_shadow) == initial[index]
+		_check("default field restores every source mode", restored and not bool(stats.active))
+		print("Native field source inventory: %s" % str(active_stats))
+	field.free()
+	if had_scenery:
+		OS.set_environment("OPENRC_SCENERY", original_scenery)
+	else:
+		OS.unset_environment("OPENRC_SCENERY")
 
 
 func _aircraft_policy() -> void:
@@ -220,6 +377,7 @@ func _wreck_policy() -> void:
 
 func _run() -> void:
 	await _field_policy()
+	await _production_field()
 	_aircraft_policy()
 	await _wreck_policy()
 	_set_route("auto")

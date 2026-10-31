@@ -367,6 +367,9 @@ var _shadow: MeshInstance3D
 ## [V] cycles; Gate L decides the default.
 const SHADOW_MODES := ["sun", "vertical", "off"]
 var _shadow_mode := "sun"
+var _shadow_cli_override := false
+var _shadow_preference := ""
+var _shadow_settings_revision := -1
 var _night_kit: Node3D # FW-35c: lazy presentation kit; state belongs to this flight.
 var _rgb_lighting: Node3D
 var _lighting_reacts_to_airspeed := false
@@ -816,7 +819,7 @@ func _prepare_flight() -> void:
 	_rig.look_height = _look_height
 	if not camera_preferences.is_empty():
 		CameraSettings.apply_at_start(_rig, camera_preferences)
-	_shadow_mode = str(args.get("shadow", "sun"))
+	_initialize_shadow_mode(args)
 	if args.has("hide_airplane"):
 		# L0c readability: the same view without the airplane (and its pilot-aid shadow) is the background reference.
 		_airplane.root.visible = false
@@ -2087,7 +2090,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_Z:
 				_rig.toggle_auto_zoom()
 			KEY_V:
-				_shadow_mode = SHADOW_MODES[(SHADOW_MODES.find(_shadow_mode) + 1) % SHADOW_MODES.size()]
+				_cycle_shadow_mode()
 			KEY_L:
 				_cycle_night_lights()
 			KEY_F3:
@@ -2894,6 +2897,33 @@ func _restart_companions() -> void:
 ## --rates=normal|sport|full (D6e-R5: low rates, full roll with normal pitch/yaw, or all maximum throws),
 ## --field-lighting=club|airfield|off, --field-activation=auto|on|off, --campfire=on|off (FW-71 visual options; direct routes ignore saved preferences),
 ## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)
+## Saved preferences establish a flight-local cue. V may then change it without
+## unrelated graphics settings resetting the pilot's choice.
+func _initialize_shadow_mode(args: Dictionary) -> void:
+	_shadow_cli_override = args.has("shadow")
+	_shadow_mode = str(args.get("shadow", "sun"))
+	_shadow_preference = ""
+	_shadow_settings_revision = -1
+	_sync_shadow_preference()
+
+
+func _sync_shadow_preference() -> void:
+	if not interactive_start or _shadow_cli_override or _shadow_settings_revision == Atmosphere.ShadowSettings.revision:
+		return
+	var receipt: Dictionary = Atmosphere.ShadowSettings.describe()
+	_shadow_settings_revision = Atmosphere.ShadowSettings.revision
+	var selected := str(receipt.requested.get("shadow_aircraft_cue", "auto"))
+	if selected == _shadow_preference:
+		return
+	_shadow_preference = selected
+	_shadow_mode = "sun" if selected == "auto" else selected
+
+
+func _cycle_shadow_mode() -> void:
+	_sync_shadow_preference()
+	_shadow_mode = SHADOW_MODES[(SHADOW_MODES.find(_shadow_mode) + 1) % SHADOW_MODES.size()]
+
+
 func _user_args() -> Dictionary:
 	var args := {}
 	for a in user_args:
@@ -3100,16 +3130,13 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	AirplaneBuilder.apply_mechanisms(_airplane, mechanisms)
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	# FW-MOON-03: field-world time passes no lighting dictionary; its strength fades the moon's shadow with the phase.
-	var cue := Atmosphere.ShadowSettings.aircraft_cue()
-	var cue_mode := _shadow_mode if cue == "auto" else cue
-	if _shadow_mode == "off":
-		cue_mode = "off" # V / explicit launch-off remains an immediate pilot control.
+	_sync_shadow_preference()
 	var strength: float = (Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()) \
-		if cue_mode == "sun" else 1.0
-	_shadow.visible = cue_mode != "off" and _airplane.root.visible and strength > 0.0
+		if _shadow_mode == "sun" else 1.0
+	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
 	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y,
-		direction if cue_mode == "sun" else Vector3.UP, strength)
+		direction, strength, _shadow_mode)
 	var paused: bool = session != null and session.sim.paused and not _scripted
 	_rig.light_direction = direction # CAM-14: the fly-by stands with the sun behind it
 	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF),
