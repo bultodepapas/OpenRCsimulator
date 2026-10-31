@@ -27,6 +27,8 @@ OPENRC_TEST_PART=integration app/test.sh
 
 Unit shard indices are 0–7. Without partition variables, the script runs the full suite. Godot diagnostics go under `tmp/godot-checks/` (`OPENRC_CHECK_OUT` overrides the parent); open the failing `report.json` and `engine.log`. Exit zero means the configured software gates passed, including only the [named physical exceptions](../TOOLS.md#app-and-release-commands); pending physical checks are not passes.
 
+For focused diagnosis, `OPENRC_TEST_PART=integration-source`, `integration-parse` or `integration-runtime` selects one integration phase. Each imports safely and is incomplete on its own; CI still uses the combined `integration` partition. Parse/unit runs retain unique source-bound roster receipts, reconciled by the final CI gate. [Local preflight and receipt contracts](../../tools/ci/README.md).
+
 - Use a stable checkout for a long run. A detached worktree at `HEAD` **does not contain uncommitted changes**; ensure the snapshot contains the intended edits and generated outputs, then record its identity. Changes during a run invalidate that result.
 - Use separate checkouts and isolated `user://` profiles for concurrent suites. Serialize imports in one checkout; Windows native-extension hot-reload DLLs can contend even with separate profiles.
 - Install integration dependencies from the manifests used by [CI](../../.github/workflows/ci.yml), including the X8 generator's requirements. Use a tool-specific environment; do not reuse an incompatible visual/audio environment.
@@ -86,7 +88,7 @@ Trace output includes initial state and fixed ticks; check identities, completio
 
 Use `gh run list --limit 5`, then `gh run view <id> --log-failed`. App jobs map to the unit/integration partitions above; diagnostic artifacts are retained for seven days.
 
-The [workflow](../../.github/workflows/ci.yml) owns the dependency graph. Export depends on Linux/Windows ground-native builds and the Linux NK-3 build. Publication additionally waits for all app partitions, visuals and the frozen prototype job. A green export or a single app partition is not a green release.
+The [workflow](../../.github/workflows/ci.yml) owns the dependency graph. Its central source/release preflight precedes expensive work. Export depends on Linux/Windows ground-native builds and the Linux NK-3 build. Publication requires export and `CI required`, which checks the selected job results and parse/unit rosters. Shadow selection keeps all app partitions, visuals and the frozen prototype required; website checks are included when selected. A green export or a single app partition is not a green release. [Orchestration and rollout limits](../../tools/ci/README.md).
 
 ## External tools
 

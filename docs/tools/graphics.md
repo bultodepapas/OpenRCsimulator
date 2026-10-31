@@ -11,10 +11,12 @@ The Linux CI capture workflow uses Xvfb with Mesa llvmpipe (software OpenGL, `gl
 - **Command:** `app/capture.sh`
 - **Result:** `app/captures/run-manifest.json` exists only when every capture, image check and trace passed. Any failure exits nonzero and prints the failing step; per-area output is under `app/captures/<area>/`.
 - **Gotchas:**
-  - It cannot select one case; for a focused check run an [area checker](#area-capture-checkers) or a [single capture](#single-capture).
+  - For one case use an [area checker](#area-capture-checkers) or a [single capture](#single-capture). Experimental checker groups are described below.
   - It holds a lock on `app/captures/`; a second run exits with "another capture run owns …".
   - It sets `OPENRC_SCENERY=off` and `LP_NUM_THREADS=1` so captures repeat byte for byte.
   - Shaders must not read `TIME`; animation uses the `sim_clock` global uniform (`app/test.sh` enforces this).
+
+The full suite also writes `app/captures/timings.tsv` with phase durations and pass/failure. These are wall-clock diagnostics, not a GPU benchmark. For a partial local investigation, use `bash app/capture.sh --group GROUP --out /absolute/new/output`; groups are `core`, `ui`, `quality`, `terrain-atmosphere`, `ground`, `vegetation` and `scenario`. Output must be fresh and outside `app/`; grouped runs isolate settings and preserve the checkout capture lock. They produce no `run-manifest.json` and cannot be aggregated into a complete pass. CI still runs the full suite. Real rendered group equivalence and performance qualification remain pending; fixture tests only establish command/manifest scheduling.
 
 ## Single capture
 

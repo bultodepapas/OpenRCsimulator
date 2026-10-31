@@ -7,6 +7,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Task | Entry point / contract |
 | --- | --- |
 | Full app checks or a CI partition | `app/test.sh`; [suite and snapshot rules](shared.md#full-app-suite). |
+| Local quick/full/release preflight | [CI tools](../../tools/ci/README.md); Linux/WSL, no branch creation or publication. |
 | One Godot test, probe or parse check | [Checked runner](shared.md#one-godot-script); catches errors even when Godot exits zero. |
 | Direct flight, weather or headless trace | [Launch flags](shared.md#launch-flags) and [trace validation](physics.md#headless-trace-checks). |
 | Aircraft handling comparison | [Flight-test battery](physics.md#flight-test-battery); match baseline/candidate aircraft and case sets. |
