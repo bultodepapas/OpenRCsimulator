@@ -258,13 +258,9 @@ The [audio guide](../AUDIO-PLAN.md) owns the current soundscape. Read [AUD-01 so
 
 The [smoke guide](../SMOKE.md) owns current behavior; the [remaining plan](../SMOKE-PLAN.md) owns qualification and proposed customization. The [SM-00…09 evidence](smoke-investigations/SM-00-09/README.md) separates the original GPU campaign from current headless rechecks. Research entry points are [exhaust smoke](rc-exhaust-smoke.md), [smoke investigations](smoke-investigations/README.md), and the [Godot emission probe](smoke-investigations/godot-evidence/README.md).
 
-### Wind
+### Wind and atmosphere
 
-The [wind guide](../WIND-ATMOSPHERE-REFERENCE.md) tracks physical wind and visual response. Begin with [primary sources](../WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-physics-primary-sources), [implementation evidence](../WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-implementation), [M5-W04a turbulence](../WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-implementation-m5-w04a), and the [investigation index](../WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-investigations). Atmospheric density research is in [M5-ATM-1](../WIND-ATMOSPHERE-REFERENCE.md#evidence-atmosphere-m5-atm-1-kernel) and [M5-ATM-2/3](../WIND-ATMOSPHERE-REFERENCE.md#evidence-atmosphere-m5-atm-2).
-
-The [2026-10-19 wind, thermals and vortices source collection](../WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-source-collection) adds acquired atmospheric studies, terrain benchmarks, selected UAV/lidar numeric files and Earth dust-devil observations, with measured, inferred and modeled evidence kept explicit.
-
-The earlier [Godot integration review](../WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-godot-integration) records its own source/API snapshot; the wind guide owns current integration.
+The [technical reference](../WIND-ATMOSPHERE-REFERENCE.md) owns implemented environmental physics, source-grounded findings and the consolidated [historical evidence index](../WIND-ATMOSPHERE-REFERENCE.md#historical-evidence), including the acquired wind/thermal/terrain source collection. The [phased engineering roadmap](../WIND-ATMOSPHERE-ROADMAP.md) owns remaining work. Earlier dedicated narratives were consolidated; their data, source overlays, recordings and provenance remain at their original paths.
 
 ### Helicopter and shared rotor foundations
 

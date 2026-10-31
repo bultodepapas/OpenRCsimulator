@@ -90,7 +90,7 @@ EL1b…e and EL2a provide synthetic fixed-bus and OCV/resistance/SOC fixtures, s
 
 ### M5 — Atmosphere and advanced flight envelopes
 
-M5-W uniform wind/repeating gusts/temporal turbulence and M5-ATM-1/2 with the first shaft-charge correction are implemented. Their [wind](docs/WIND-ATMOSPHERE-REFERENCE.md) and [atmosphere](docs/WIND-ATMOSPHERE-REFERENCE.md#atmosphere) guides own the remaining spatial/spectral/calibration work. M5-GE-1 wing/tail ground effect is implemented as the opt-in `aero.ground_effect` module, declared by the Stik only ([evidence](docs/research/ground-effect/M5-GE-1/README.md); fitted generic constants, flare/liftoff validation open). Other advanced-envelope and receiver-assistance ideas are research inputs, not implemented features or prerequisites for the current circuit.
+The [wind/atmosphere technical reference](docs/WIND-ATMOSPHERE-REFERENCE.md) owns implemented uniform/OU and opt-in spatial/thermal airflow, atmosphere and source-grounded findings. The [engineering roadmap](docs/WIND-ATMOSPHERE-ROADMAP.md) owns remediation, numerical/performance/physical qualification and remaining extensions. M5-GE-1 wing/tail ground effect is implemented as the opt-in `aero.ground_effect` module, declared by the Stik only ([evidence](docs/research/ground-effect/M5-GE-1/README.md); fitted generic constants, flare/liftoff validation open). Other advanced-envelope and receiver-assistance ideas are research inputs, not implemented features or prerequisites for the current circuit.
 
 ## Validation and aircraft-data work
 

@@ -1,5 +1,7 @@
 # 09. Advección del humo, viento y herramientas de Godot
 
+Historical smoke research: descriptions of zero physical wind below belong to the original pre-weather snapshot. Current wind and consumer behavior are documented in the [technical reference](../../WIND-ATMOSPHERE-REFERENCE.md#ui-scenarios-companions-and-presentation).
+
 **Fecha:** 2026-10-05. **Pregunta:** ¿cómo mover la estela ya emitida cuando exista viento, y qué coste añade frente a simular fluidos? **Evidencia:** documentación Godot 4.7, auditoría local del sistema de viento y lectura comparativa de FlightGear/SimGear y CRRCSim. No se implementó un emisor ni se ejecutó un benchmark.
 
 ## Estado real del repositorio
