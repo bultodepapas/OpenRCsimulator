@@ -16,7 +16,24 @@ The Linux CI capture workflow uses Xvfb with Mesa llvmpipe (software OpenGL, `gl
   - It sets `OPENRC_SCENERY=off` and `LP_NUM_THREADS=1` so captures repeat byte for byte.
   - Shaders must not read `TIME`; animation uses the `sim_clock` global uniform (`app/test.sh` enforces this).
 
-The full suite also writes `app/captures/timings.tsv` with phase durations and pass/failure. These are wall-clock diagnostics, not a GPU benchmark. For a partial local investigation, use `bash app/capture.sh --group GROUP --out /absolute/new/output`; groups are `core`, `ui`, `quality`, `terrain-atmosphere`, `ground`, `vegetation` and `scenario`. Output must be fresh and outside `app/`; grouped runs isolate settings and preserve the checkout capture lock. They produce no `run-manifest.json` and cannot be aggregated into a complete pass. CI still runs the full suite. Real rendered group equivalence and performance qualification remain pending; fixture tests only establish command/manifest scheduling.
+The full suite also writes `app/captures/timings.tsv` with phase durations and pass/failure. These are wall-clock diagnostics, not a GPU benchmark. For a partial local investigation, use `bash app/capture.sh --group GROUP --out /absolute/new/output`; groups are `core`, `ui`, `quality`, `terrain-atmosphere`, `ground`, `vegetation` and `scenario`. Output must be fresh and outside `app/`; grouped runs isolate settings and preserve the checkout capture lock. CI still runs the full suite.
+
+For an experimental coordinated run, add `--run-id UNIQUE_RUN_ID` to every group invocation. Use one fresh ID for all seven groups (1–128 ASCII letters, digits, dots, underscores or hyphens, starting with a letter or digit). Each successful group writes `capture-group-receipt.json`; a failed or interrupted group cannot finish its receipt. Use independent checkouts with identical source and inputs for concurrent jobs, and only one rendered process per host. Output inside a checkout must be Git-ignored. Keep source and imported configuration unchanged throughout the run; a changed commit or input requires a new run.
+
+After all seven groups finish, supply the expected commit and run ID independently to the reducer, using the producing engine and visual interpreter:
+
+```sh
+python3 tools/ci/capture_groups.py reduce --repo "$PWD" \
+  --run-id UNIQUE_RUN_ID --expect-commit FULL_COMMIT_SHA \
+  --godot /absolute/pinned/godot --visual-python /absolute/visual-venv/bin/python \
+  --out /absolute/new/experimental-result.json \
+  --parts /absolute/core /absolute/ui /absolute/quality /absolute/terrain-atmosphere \
+          /absolute/ground /absolute/vegetation /absolute/scenario
+```
+
+The reducer checks all seven distinct groups, ordered checker milestones, expected image IDs, output hashes and matching source/engine/configuration. It refuses stale or changed outputs and existing result files. Its result is explicitly `groups-recorded` with `production_qualified: false`; it never writes the legacy `run-manifest.json` or substitutes for CI acceptance. Receipt mode rejects unsupported rendering environment overrides.
+
+Real rendered group equivalence, complete assertion inventory and performance qualification remain pending. Fixtures establish scheduling and rejection behavior. Receipts bind the Python executable and requirements source, but do not independently inventory installed Python packages or qualify the GPU/driver. Fresh scenario groups have no prior-run comparison history; the default full suite retains that history behavior. Historical 720p fixtures do not establish 1080p product qualification.
 
 ## Single capture
 

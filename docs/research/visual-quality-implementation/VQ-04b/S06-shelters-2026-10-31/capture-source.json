@@ -1,0 +1,15 @@
+{
+  "base": "d27406a8f76f6ffb0a24dd6a963863b1bf9b7249",
+  "files": {
+    "app/render/projected_shadow.gd": "94ed22fb511e2b9b5461104f33edb537ca1c4bb1fdf89432d4babecda48f3ac3",
+    "app/render/field_projected_shadows.gd": "191780e8af7dae4316f3868865cefc2c709c54b0431cfd37c3f7b9550d07285a",
+    "app/render/shadow_field_policy.gd": "62551eaa6fdbab05218b385e1e7f068db963922e81d258dd5b9d39c48108e154",
+    "app/tests/test_shadow_cue_controls.gd": "e72b2902a28080336fe397c9b15da63690bb92a92339be686c3817c31385d0f6",
+    "app/tests/test_shadow_ownership.gd": "fdb747d1e7c9640e1d45a882889a7dfc7e2955feed6ac60359d40dfbc969d189",
+    "tools/graphics/capture.gd": "1a8e4124b6848c218f3f3d775a7a748404baf8589158ad1b6d019bbc8ab504d6",
+    "app/render/field.gd": "8c81b681a24d6eb87555bbc6a81e49ad18d8e91e7e6d5fbcf84a5555ef477d00",
+    "app/ui/settings_screen.gd": "fe4763332983b336ec4fabf467f645b0f0a01c698d24d1dae13134c10c85041e",
+    "app/test.sh": "41ce5cf738ac282636da295ba6a2c5c8d26fdf0af831da78e2387c89ba0d611f",
+    "app/capture.sh": "01780e066d26f4416ad89d08e0683db22958f6e5c8bd832bacc4809d5a76bd87"
+  }
+}

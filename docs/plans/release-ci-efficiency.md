@@ -74,6 +74,8 @@ Profile the existing capture families before dividing them: core atmosphere/fiel
 
 Partition by existing checker boundaries into independent checkouts and output roots. Keep one rendered process at a time per host. Each partition produces a source/engine/config-bound manifest with expected case IDs, verified image/trace hashes and completion. A final reducer rejects missing, duplicate, stale or mismatched parts and validates cross-family dependencies before writing the complete-set result. Local default capture remains the complete suite. Retain failure diagnostics even when aggregation fails; partial captures cannot become a success marker.
 
+The delivered [experimental group receipts and reducer](../tools/graphics.md#visual-capture-suite) implement identity, milestone and artifact checks without producing a complete-set success. Their `production_qualified: false` result is preparation for this target, not activation. Next, compare all seven rendered groups with an unchanged full run on stable source and matching engine/renderer inputs, including scenario-history differences and current 1080p acceptance. Only then propose the CI scheduling change and measure both elapsed time and runner minutes.
+
 Preserve historical pixel baselines at their declared resolution. **1080p remains the primary product target**; include explicit current 1080p smoke/readability coverage using existing checkers, with higher resolutions secondary and 720p fallback. Changing the historical image size or reducing frame counts to obtain speed is not part of this scheduling work. Xvfb/llvmpipe results do not qualify GPU performance.
 
 ## 4. Release improvements

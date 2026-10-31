@@ -1,0 +1,741 @@
+{
+  "focused": [
+    {
+      "label": "test_field_projected_shadows",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_field_projected_shadows.gd"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.422,
+      "log_sha256": "752072d9cd0338490b948467f1884887f535ccbae1e6fa8e502907b41e5beed5",
+      "report_sha256": "0e50f5b273de6f9094edaf923bac1d3165445649ad5f1b58257d37fc4f4361bc",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\focused\\test_field_projected_shadows-ihmx6ubx\\report.json"
+    },
+    {
+      "label": "test_projected_shadow",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_projected_shadow.gd"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.063,
+      "log_sha256": "93f509a4f833b3bbce729980fcbdf7938641fd129f48201649d592b73e4cbd50",
+      "report_sha256": "56cc973e4621d67a09f9f8072e9363a7a1894860e140e85bf9b2a923d39096ef",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\focused\\test_projected_shadow-8smwsq45\\report.json"
+    },
+    {
+      "label": "test_shadow_cue_controls",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shadow_cue_controls.gd"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 10.438,
+      "log_sha256": "35d67457f4837ba65228a35d9c1d5a8774f12314aaadd988b893b4a700a4903f",
+      "report_sha256": "618a6bee21fa10de209a19ed8ea1d5f06950741ba7d3aaddb09a27738e379c84",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\focused\\test_shadow_cue_controls-xu43ydmf\\report.json"
+    },
+    {
+      "label": "test_shadow_ownership",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shadow_ownership.gd"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.328,
+      "log_sha256": "33811cd9a400dd3fbf11973f5abdde11ea1f2d3ee6d32d1daa702abf1aa68643",
+      "report_sha256": "47a91465b750a0261e208856adf3fb97a079e9cbb3ada088370ae3373240e966",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\focused\\test_shadow_ownership-3ljzxp26\\report.json"
+    },
+    {
+      "label": "test_shadow_settings",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shadow_settings.gd"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.797,
+      "log_sha256": "b20c6ec2b6208259c7b78ca2bae899b9e80610b0c929a58f14464ed90649cdcb",
+      "report_sha256": "2135d5f7ba8fbc720d832c03fb1649d6403ae60605607d94cd5435dac502d76b",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\focused\\test_shadow_settings-1sko98bg\\report.json"
+    },
+    {
+      "label": "test_windsock_shadow",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_windsock_shadow.gd"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.063,
+      "log_sha256": "3fb8a749e7492f532b79298176bd5ea196008043859f236d621e5d6b2109edab",
+      "report_sha256": "d8ae080c0c5cd75de93e7d2e749eafca8d9ad649f9c9340868d1db7a137062f9",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\focused\\test_windsock_shadow-7vz009r8\\report.json"
+    }
+  ],
+  "render-checks": [
+    {
+      "label": "auto-after-high",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "forward_plus",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/auto-after-high",
+        "--width=1920",
+        "--view=all",
+        "--shadow-technique=auto"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "elapsed_seconds": 14.391,
+      "log_sha256": "060de9e38589fc32c4bdd9d5c6f5f24b7c11962e23b6b6c6ef045d9254f03883",
+      "report_sha256": "83c8706c7bcd054782bfa1e802eb80f3aeac62bb3b1c775b9bc62652e1c232fa",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\render-checks\\auto-after-high-wjwctpjq\\report.json"
+    },
+    {
+      "label": "auto-after-standard",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/auto-after-standard",
+        "--width=1920",
+        "--view=all",
+        "--shadow-technique=auto"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 16.453,
+      "log_sha256": "ae7fedede5af41168ce574e5429b39ea9cafa9d8656ed9a0c8ca16857b84c6f0",
+      "report_sha256": "df4d95cf68992480d2867246864ca5372b3ee816f9647cc2a4d84d5c5ecfc655",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\render-checks\\auto-after-standard-_744z1mg\\report.json"
+    },
+    {
+      "label": "shelter-after-high",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "forward_plus",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-after-high",
+        "--width=1920",
+        "--view=all",
+        "--shadow-technique=native"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "elapsed_seconds": 17.562,
+      "log_sha256": "060de9e38589fc32c4bdd9d5c6f5f24b7c11962e23b6b6c6ef045d9254f03883",
+      "report_sha256": "f77071990f80def62a93aec1ef6c9a2577b599e82b714c99404a8b367b09f128",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\render-checks\\shelter-after-high-s2f_bfn2\\report.json"
+    },
+    {
+      "label": "shelter-after-morning-high",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "forward_plus",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-after-morning-high",
+        "--width=1920",
+        "--view=pavilion",
+        "--shadow-technique=native",
+        "--hour=8"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 10.781,
+      "log_sha256": "c10ad4bba34b38a63eb4f7a9a3c0864ae19c9d2187261ae9b8599580d16b52c9",
+      "report_sha256": "46d3d31f92eb39fa6760c9fb2740b4aa921edf3637db10dd142a792010a044e0",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\render-checks\\shelter-after-morning-high-hg_z514x\\report.json"
+    },
+    {
+      "label": "shelter-after-morning-standard",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-after-morning-standard",
+        "--width=1920",
+        "--view=pavilion",
+        "--shadow-technique=native",
+        "--hour=8"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.969,
+      "log_sha256": "1106f71abcc977f25187fa409462ee676cbb7db7b0bb8c9d33c414d99a0438c1",
+      "report_sha256": "bf018bf54775d4f30717ae4d0fda3881945572d4c9df0cacc1ed8dd7289d125a",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\render-checks\\shelter-after-morning-standard-d1z5bmej\\report.json"
+    },
+    {
+      "label": "shelter-after-standard",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-after-standard",
+        "--width=1920",
+        "--view=all",
+        "--shadow-technique=native"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 17.578,
+      "log_sha256": "ae7fedede5af41168ce574e5429b39ea9cafa9d8656ed9a0c8ca16857b84c6f0",
+      "report_sha256": "ad5176233e712b73edd7179e889fa8f265eae75af5233cc643579310a40f61d3",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\render-checks\\shelter-after-standard-az6lmllr\\report.json"
+    },
+    {
+      "label": "shelter-before-high",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "forward_plus",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-before-high",
+        "--width=1920",
+        "--view=all",
+        "--shadow-technique=native"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "elapsed_seconds": 13.016,
+      "log_sha256": "060de9e38589fc32c4bdd9d5c6f5f24b7c11962e23b6b6c6ef045d9254f03883",
+      "report_sha256": "22ebb63b5fa9b6151e2bd991fab8f763b465b8ad57cd299f662d80794ff0e7c6",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\render-checks\\shelter-before-high-n_z2t6wn\\report.json"
+    },
+    {
+      "label": "shelter-before-morning-high",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "forward_plus",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-before-morning-high",
+        "--width=1920",
+        "--view=pavilion",
+        "--shadow-technique=native",
+        "--hour=8"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 12.968,
+      "log_sha256": "c10ad4bba34b38a63eb4f7a9a3c0864ae19c9d2187261ae9b8599580d16b52c9",
+      "report_sha256": "9f7c6cfa793073d0db7dd5e845f52079fa3949a96de922b62c8396da63c4ae1c",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\render-checks\\shelter-before-morning-high-boroxa02\\report.json"
+    },
+    {
+      "label": "shelter-before-morning-standard",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-before-morning-standard",
+        "--width=1920",
+        "--view=pavilion",
+        "--shadow-technique=native",
+        "--hour=8"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.812,
+      "log_sha256": "1106f71abcc977f25187fa409462ee676cbb7db7b0bb8c9d33c414d99a0438c1",
+      "report_sha256": "544e357d33249251822bbc894da8f3a72acad73f25b036dc73c60d05e895c584",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\render-checks\\shelter-before-morning-standard-99on0hq3\\report.json"
+    },
+    {
+      "label": "shelter-before-standard",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-before-standard",
+        "--width=1920",
+        "--view=all",
+        "--shadow-technique=native"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 15.671,
+      "log_sha256": "ae7fedede5af41168ce574e5429b39ea9cafa9d8656ed9a0c8ca16857b84c6f0",
+      "report_sha256": "44dc63884734b6ec5ded2a4dadd2b790481fd3e461ff63e2434c8a8a11ef839f",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\render-checks\\shelter-before-standard-_yp7mok5\\report.json"
+    }
+  ],
+  "expected-failures": [
+    {
+      "label": "lifecycle-missing-ready-replay-control",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\drafts\\test_shadow_cue_controls.gd"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "counts": {
+        "error": 3,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.234,
+      "log_sha256": "beee041bc63d3db696fd21504c5ef170e21d3b0161a9436872f4176ddfb4d4fe",
+      "report_sha256": "8fec8202cd5c6b6e68562f4a2fa591c1cb8b3ad865f7022f774b61569e58fe08",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\expected-failures\\lifecycle-missing-ready-replay-control-nk0fla6h\\report.json"
+    }
+  ],
+  "checks": [
+    {
+      "label": "entry-order-diagnostic",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/entry-order-diagnostic",
+        "--width=1920",
+        "--view=flightline"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.265,
+      "log_sha256": "5a29c40292fcf80e7f79a6ef2f328c14bb3aa4dcb49c158d9a8da57fec31b15e",
+      "report_sha256": "d8cb713a223a48c8a5d41e52eb2e8c544afdf75734989ad44c9cf2209af2d938",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\checks\\entry-order-diagnostic-y0uzxkmu\\report.json"
+    },
+    {
+      "label": "field-entry-lifecycle",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/drafts/test_shadow_cue_controls.gd"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.61,
+      "log_sha256": "35d67457f4837ba65228a35d9c1d5a8774f12314aaadd988b893b4a700a4903f",
+      "report_sha256": "186b3934d0d9c9db33e4a5e399dd2fcdc59293f14c43c8b2ecb3e2f067f60b2f",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\checks\\field-entry-lifecycle-xvsnsdht\\report.json"
+    },
+    {
+      "label": "field-entry-standard",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/field-entry-standard",
+        "--width=1920",
+        "--view=flightline"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 8.437,
+      "log_sha256": "08550592ebba701077ca73098ed6d6baa59b2e876f7e23f3102e52da3068d495",
+      "report_sha256": "5cc134d4576692f0fcd171e43cb1ca2fe8e9debd20f8845931e00a0895542fc1",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\checks\\field-entry-standard-w3p_mm5x\\report.json"
+    },
+    {
+      "label": "import",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 3221225725,
+      "counts": {
+        "error": 6,
+        "warning": 0
+      },
+      "elapsed_seconds": 150.234,
+      "log_sha256": "69afe8b53ce15c9d9beeae237fd59c9becc4ce646ac8050b475ab79438c63e08",
+      "report_sha256": "61fcf4d841428fde76f40157394a007e9e658d75e94bc96668cb9cae1d4531e9",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\checks\\import-_zh7q77u\\report.json"
+    },
+    {
+      "label": "import-final",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.469,
+      "log_sha256": "78c00f0ea4cb70a497c1df2885653e2fbb11e4539f5dcbe5ffc23d60c0d2ad14",
+      "report_sha256": "f3423ebe2fd4544d2921443bdc3c17d754dfd51929b68ecdda8df9b2dcdc0729",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\checks\\import-final-6yzpi_id\\report.json"
+    },
+    {
+      "label": "import-retry",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "counts": {
+        "error": 3,
+        "warning": 0
+      },
+      "elapsed_seconds": 98.172,
+      "log_sha256": "432634adba066faf33a396dcf28a35ee9b65a7786193feef42c8fad1206048ab",
+      "report_sha256": "196de43d52f404e357f12010ed601bd0717e673414ad27eb525ad826486bd84d",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\checks\\import-retry-4nji8247\\report.json"
+    },
+    {
+      "label": "lifecycle-draft",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/drafts/test_shadow_cue_controls.gd"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.547,
+      "log_sha256": "35d67457f4837ba65228a35d9c1d5a8774f12314aaadd988b893b4a700a4903f",
+      "report_sha256": "3e67e8abdfde3d0b982e55230f5d4bd30bac6e65829f81f7a5b1b94b9c686016",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\checks\\lifecycle-draft-llkcwqyn\\report.json"
+    },
+    {
+      "label": "no-entry-control",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/no-entry-control",
+        "--width=1920",
+        "--view=flightline"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 8.766,
+      "log_sha256": "08550592ebba701077ca73098ed6d6baa59b2e876f7e23f3102e52da3068d495",
+      "report_sha256": "889e475432544b56eca06327665736e24fc42796fd8f5a591a0c16589b6eae5b",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\checks\\no-entry-control-231k0gkt\\report.json"
+    },
+    {
+      "label": "ready-replay-standard",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRC-shadow-followup-20261031/tools/graphics/capture.gd",
+        "--",
+        "--out=D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/ready-replay-standard",
+        "--width=1920",
+        "--view=flightline"
+      ],
+      "cwd": "D:\\OpenRC-shadow-followup-20261031",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.328,
+      "log_sha256": "08550592ebba701077ca73098ed6d6baa59b2e876f7e23f3102e52da3068d495",
+      "report_sha256": "03f8d77df66823e152a3972b67462d0854c5c1f4385038112545c35b4b92e333",
+      "path": "D:\\OpenRC-shadow-followup-20261031\\tmp\\shadow-followup\\checks\\ready-replay-standard-boowdun6\\report.json"
+    }
+  ]
+}

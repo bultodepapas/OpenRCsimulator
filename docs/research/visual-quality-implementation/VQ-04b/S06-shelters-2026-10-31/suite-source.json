@@ -1,0 +1,34 @@
+{
+  "base": "d27406a8f76f6ffb0a24dd6a963863b1bf9b7249",
+  "overlay": {
+    "app/render/field.gd": "3f38a522efb5a184a6707966468b8404b0c4860015d477fcb48b91637ff3d2b4",
+    "app/ui/settings_screen.gd": "910895017cb7346d542f17902eb8236d9633132ffd93ef6773383c21a5e73d95",
+    "app/tests/test_shadow_cue_controls.gd": "e72b2902a28080336fe397c9b15da63690bb92a92339be686c3817c31385d0f6"
+  },
+  "linux_sync_paths": [
+    "app/export.sh",
+    "app/i18n/de.po",
+    "app/i18n/es.po",
+    "app/i18n/fr.po",
+    "app/i18n/it.po",
+    "app/i18n/ja.po",
+    "app/i18n/pt_BR.po",
+    "app/i18n/ru.po",
+    "app/i18n/zh_Hans.po",
+    "app/main.gd",
+    "app/render/shadow_field_policy.gd",
+    "app/render/shadow_field_policy.gd.uid",
+    "app/render/shadow_settings.gd.uid",
+    "app/tests/test_export_identity.py",
+    "app/tests/test_shadow_cue_controls.gd",
+    "app/tests/test_shadow_cue_controls.gd.uid",
+    "app/tests/test_shadow_ownership.gd",
+    "app/tests/test_shadow_ownership.gd.uid",
+    "app/tests/test_shadow_settings.gd.uid",
+    "app/tests/test_shadow_settings_ui.gd",
+    "app/tests/test_shadow_settings_ui.gd.uid",
+    "app/ui/settings_screen.gd",
+    "tools/graphics/capture.gd",
+    "app/render/field.gd"
+  ]
+}
