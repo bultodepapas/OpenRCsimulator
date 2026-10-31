@@ -140,7 +140,8 @@ func _aircraft_policy() -> void:
 	var mask := projected.get("mask_material") as ShaderMaterial
 	var sunlight := Vector3(0.4, 0.8, -0.3).normalized()
 	Shadow.update(carrier, Basis.IDENTITY, Vector3(1.0, 3.0, 2.0), 2.0, 2.0, sunlight)
-	_check("auto uses the owner's sunlight direction", receiver.visible and mask.get_shader_parameter("light_direction") == sunlight)
+	_check("auto uses the owner's sunlight direction", receiver.visible
+		and (mask.get_shader_parameter("light_direction") as Vector3).is_equal_approx(sunlight))
 	_set_route("auto", "off")
 	_check("cue off suppresses a static preview immediately", not receiver.visible
 		and viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED
@@ -154,7 +155,8 @@ func _aircraft_policy() -> void:
 		and carrier.get_node("ProjectedShadow") == projected and projected.get("viewport") == viewport
 		and mask.get_shader_parameter("light_direction") == Vector3.UP)
 	_set_route("auto", "sun")
-	_check("sun cue retains the caller's snapshot direction", receiver.visible and mask.get_shader_parameter("light_direction") == sunlight)
+	_check("sun cue retains the caller's snapshot direction", receiver.visible
+		and (mask.get_shader_parameter("light_direction") as Vector3).is_equal_approx(sunlight))
 	carrier.visible = false
 	model.visible = false
 	model.visible = true
