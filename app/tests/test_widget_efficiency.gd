@@ -189,8 +189,15 @@ func _test_glass_lifecycle() -> void:
 	manager.set_overlay_visible("session_stats", true)
 	manager.set_widget_option("widget_opacity", 0.8)
 	_check("detached settings do not create more glass", _glass_counts(manager) == [11, 11, 11])
+	var speed: Control = manager.frames.speed
+	var first_reattached_draw := [0, false]
+	speed.draw.connect(func() -> void:
+		if first_reattached_draw[0] == 0: first_reattached_draw[1] = _glass_matches(speed, 0.8)
+		first_reattached_draw[0] += 1)
 	second_host.add_child(manager)
 	await process_frame
+	RenderingServer.force_draw(false)
+	_check("first draw after reparenting has current glass", first_reattached_draw[0] > 0 and first_reattached_draw[1])
 	await process_frame
 	_check("reparenting restores current settings and selected glass", _glass_counts(manager) == [16, 16, 16]
 		and ["speed", "height", "power", "weather", "session_stats"].all(func(id: String) -> bool: return _glass_matches(manager.frames[id], 0.8)))

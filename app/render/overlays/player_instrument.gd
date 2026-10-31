@@ -39,7 +39,6 @@ var _last_sample_time := -INF
 var _style: StyleBoxFlat
 var _glass: ColorRect
 var _glass_material: ShaderMaterial
-var _glass_tree_ready := false
 var _compact := false
 var _separator: HSeparator
 var _trim_values := [NAN, NAN, NAN]
@@ -214,22 +213,12 @@ static func _surface_style(color: Color, radius: int) -> StyleBoxFlat:
 
 
 func _enter_tree() -> void:
-	# Re-entry does not call _ready again. Defer until the ancestor tree is stable.
-	_arm_glass.call_deferred()
-
-
-func _exit_tree() -> void:
-	_glass_tree_ready = false
-
-
-func _arm_glass() -> void:
-	if not is_inside_tree(): return
-	_glass_tree_ready = true
+	# Re-entry does not call _ready again.
 	_request_glass()
 
 
 func _request_glass() -> void:
-	if _glass != null or not _glass_tree_ready or not is_visible_in_tree(): return
+	if _glass != null or not is_visible_in_tree(): return
 	_build_glass()
 	# Once built, the retained underlay needs no visibility observer.
 	visibility_changed.disconnect(_request_glass)
@@ -366,7 +355,7 @@ func _ready() -> void:
 	# Only a live drag needs global release events; idle/hidden widgets use header GUI input.
 	set_process_input(false)
 	get_window().focus_exited.connect(_finish_drag)
-	_arm_glass()
+	_request_glass()
 
 
 func set_locked(on: bool) -> void:

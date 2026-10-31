@@ -22,6 +22,9 @@ class LocalPreflight(unittest.TestCase):
         self.log = self.root / "calls"
         fake = '''#!/bin/bash
 printf '%s %s\n' "${0##*/}" "$*" >> "$CALL_LOG"
+if [[ -n "${PROFILE_LOG:-}" ]]; then
+  printf '%s|%s|%s|%s|%s|%s|%s\n' "$*" "$XDG_DATA_HOME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "${OPENRC_TEST_PART:-}" "${OPENRC_UNIT_SHARDS:-}" "${OPENRC_UNIT_SHARD:-}" >> "$PROFILE_LOG"
+fi
 case "${0##*/} $*" in *"${FAIL_MATCH:-__not_a_command__}"*) exit 9;; esac
 exit 0
 '''
@@ -77,6 +80,36 @@ exit 0
                 result = self.run_mode("full", FAIL_MATCH=command)
                 self.assertNotEqual(result.returncode, 0, result.stdout)
                 self.assertNotIn("checks completed", result.stdout)
+
+    def test_full_isolates_preferences_and_resets_inherited_partition(self):
+        profile_log = self.root / "profiles"
+        result = self.run_mode("full", PROFILE_LOG=str(profile_log),
+                               XDG_DATA_HOME="/developer/data", XDG_CONFIG_HOME="/developer/config",
+                               XDG_CACHE_HOME="/developer/cache", OPENRC_TEST_PART="units",
+                               OPENRC_UNIT_SHARDS="8", OPENRC_UNIT_SHARD="4")
+        self.assertEqual(result.returncode, 0, result.stdout)
+        rows = [line.split("|") for line in profile_log.read_text().splitlines()]
+        selected = [row for row in rows if row[0] in
+                    {"app/test.sh", "app/capture.sh", "research/aircraft-data/schema/test_contract.py"}]
+        self.assertEqual(len(selected), 3)
+        homes = {tuple(row[1:4]) for row in selected}
+        self.assertEqual(len(homes), 1)
+        data, config, cache = map(Path, homes.pop())
+        self.assertEqual({data.name, config.name, cache.name}, {"data", "config", "cache"})
+        self.assertEqual(data.parent, config.parent)
+        self.assertEqual(data.parent, cache.parent)
+        self.assertEqual(data.parent.parent.parent, self.root / "tmp")
+        self.assertTrue(all(path.is_dir() for path in (data, config, cache)))
+        unit_row = next(row for row in selected if row[0] == "app/test.sh")
+        self.assertEqual(unit_row[4:], ["all", "1", "0"])
+        prototype_row = next(row for row in rows if row[0] == "run e2e")
+        self.assertEqual(prototype_row[1:4], ["/developer/data", "/developer/config", "/developer/cache"])
+        # A second full run must allocate another profile rather than reuse settings.
+        profile_log.unlink()
+        self.assertEqual(self.run_mode("full", PROFILE_LOG=str(profile_log)).returncode, 0)
+        next_row = next(line.split("|") for line in profile_log.read_text().splitlines()
+                        if line.startswith("app/test.sh|"))
+        self.assertNotEqual(next_row[1], str(data))
 
     def test_release_refuses_missing_native_receipts_before_quick(self):
         result = self.run_mode("release")

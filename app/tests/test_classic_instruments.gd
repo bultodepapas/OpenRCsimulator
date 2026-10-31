@@ -93,6 +93,38 @@ func _initialize() -> void:
 		manager.set_overlay_visible(id, true)
 		_check(id + " reopens individually", widget.visible)
 	var horizon: Control = manager.frames.attitude
+	TranslationServer.set_locale("de")
+	manager.set_widget_option("widget_size", "small")
+	manager.set_widget_option("widget_compact", true)
+	horizon.refresh({}, "metric", 40, {}, {})
+	for i in 4: await process_frame
+	var missing_height: float = horizon.size.y
+	horizon.refresh({pitch_deg = 2.0, bank_deg = 34.0}, "metric", 40, {}, {})
+	for i in 4: await process_frame
+	RenderingServer.force_draw(false)
+	var attitude_readout: Label = horizon.subtitle
+	_check("German compact attitude shows both values on two visible lines", attitude_readout.text.contains("Nicklage der Nase\u00a0+2°")
+		and attitude_readout.text.contains("Querneigung\u00a0+34°") and attitude_readout.get_line_count() == 2
+		and attitude_readout.get_visible_line_count() == 2 and attitude_readout.size.y >= attitude_readout.get_combined_minimum_size().y)
+	_check("wrapped attitude expands within the cockpit layout", horizon.size.y > missing_height and _separate(manager))
+	TranslationServer.set_locale("en")
+	horizon.refresh({pitch_deg = 2.0, bank_deg = 34.0}, "metric", 40, {}, {})
+	for i in 4: await process_frame
+	_check("short English compact attitude stays on one visible line", attitude_readout.get_line_count() == 1
+		and attitude_readout.get_visible_line_count() == 1)
+	TranslationServer.set_locale("de")
+	horizon.refresh({}, "metric", 40, {}, {})
+	for i in 4: await process_frame
+	_check("attitude shrinks again when its readout returns to one line", horizon.size.y < missing_height + 1.0)
+	manager.frames.airspeed_dial.refresh({airspeed = 100.0}, "si", 100, {}, {})
+	manager.frames.variometer.refresh({vertical_speed = 50.0}, "si", 40, {}, {})
+	for i in 4: await process_frame
+	for id: String in ["airspeed_dial", "variometer"]:
+		var overrange_readout: Label = manager.frames[id].subtitle
+		_check("German compact " + id + " keeps units and scale warning visible", overrange_readout.text.contains("m/s")
+			and overrange_readout.text.contains("Skalenbereich überschritten") and overrange_readout.get_line_count() <= 2
+			and overrange_readout.get_visible_line_count() == overrange_readout.get_line_count()
+			and overrange_readout.size.y >= overrange_readout.get_combined_minimum_size().y)
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true

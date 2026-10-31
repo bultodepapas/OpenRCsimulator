@@ -9,6 +9,9 @@ const DIAL := Color("101010")
 const BEZEL_OUTER := Color("414141")
 const BEZEL_INNER := Color("181818")
 const BEZEL_HIGHLIGHT := Color("727272")
+const DIAL_INK := Color("f2eee2")
+const DIAL_MINOR := Color("b8b5aa")
+const DIAL_LEGEND := Color("cbc7bb")
 var _horizon_disc := PackedVector2Array()
 var _face: Control
 var _dial_value := NAN
@@ -29,6 +32,8 @@ func _init(instrument_id: String) -> void:
 	body.move_child(graphic, 0)
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.add_theme_font_size_override("font_size", 13)
+	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle.max_lines_visible = 2
 	var readout := _surface_style(Color("090909", 0.85), 6)
 	readout.border_color = Color("858585", 0.25)
 	readout.set_border_width_all(1)
@@ -81,7 +86,7 @@ func refresh(t: Dictionary, system: String, peak: float, _battery: Dictionary, _
 			_pitch = float(t.get("pitch_deg", NAN))
 			_bank = float(t.get("bank_deg", NAN))
 			_available = is_finite(_pitch) and is_finite(_bank)
-			subtitle.text = "%s %s · %s %s" % [tr("Nose pitch"), Units.angle(_pitch, 0), tr("Bank"), Units.angle(_bank, 0)] if _available else tr("No attitude data")
+			subtitle.text = "%s\u00a0%s · %s\u00a0%s" % [tr("Nose pitch"), Units.angle(_pitch, 0), tr("Bank"), Units.angle(_bank, 0)] if _available else tr("No attitude data")
 			_details(tr("Nose pitch"), Units.angle(_pitch, 1), tr("Bank"), Units.angle(_bank, 1))
 		"heading":
 			_dial_value = float(t.get("heading_deg", NAN))
@@ -128,47 +133,76 @@ func _transform(canvas: Control) -> void:
 
 func _draw_face() -> void:
 	_transform(_face)
-	_face.draw_circle(Vector2(0, 3), 111, Color(0, 0, 0, 0.5))
-	_face.draw_circle(Vector2.ZERO, 109, BEZEL_OUTER)
-	_face.draw_circle(Vector2.ZERO, 106, BEZEL_INNER)
-	_face.draw_circle(Vector2.ZERO, 104, BEZEL_HIGHLIGHT)
+	# A chamfered mounting plate gives the corner screws a physical seat without
+	# reducing the dial aperture. All of this housing is cached with the face.
+	var plate := PackedVector2Array([
+		Vector2(-110, -90), Vector2(-90, -110), Vector2(90, -110), Vector2(110, -90),
+		Vector2(110, 90), Vector2(90, 110), Vector2(-90, 110), Vector2(-110, 90)])
+	var shadow := PackedVector2Array()
+	for point: Vector2 in plate: shadow.append(point + Vector2(0, 3))
+	_face.draw_colored_polygon(shadow, Color(0, 0, 0, 0.52))
+	_face.draw_colored_polygon(plate, Color("0a0a0a"))
+	_face.draw_colored_polygon(PackedVector2Array([
+		Vector2(-107, -89), Vector2(-89, -107), Vector2(89, -107), Vector2(107, -89),
+		Vector2(107, 89), Vector2(89, 107), Vector2(-89, 107), Vector2(-107, 89)]), Color("242424"))
+	_face.draw_polyline(PackedVector2Array([
+		Vector2(-108, 88), Vector2(-108, -89), Vector2(-89, -108), Vector2(89, -108)]), Color("777777", 0.45), 1, true)
+	_face.draw_polyline(PackedVector2Array([
+		Vector2(90, -108), Vector2(108, -89), Vector2(108, 89), Vector2(89, 108), Vector2(-89, 108)]), Color("050505", 0.9), 2, true)
+	# Nested rings and short directional reflections suggest a machined, recessed rim.
+	_face.draw_circle(Vector2.ZERO, 109, Color("080808"))
+	_face.draw_circle(Vector2.ZERO, 107, BEZEL_OUTER)
+	_face.draw_circle(Vector2.ZERO, 105, BEZEL_INNER)
+	_face.draw_circle(Vector2.ZERO, 103.5, Color(BEZEL_HIGHLIGHT, 0.75))
 	_face.draw_circle(Vector2.ZERO, 102, Color("080808"))
-	_face.draw_circle(Vector2.ZERO, 101, DIAL)
-	_face.draw_arc(Vector2.ZERO, 108, PI * 1.08, PI * 1.92, 40, Color("b0b0b0", 0.5), 1.5, true)
-	_face.draw_arc(Vector2.ZERO, 103, 0, TAU, 90, Color("858585", 0.5), 1, true)
-	_face.draw_arc(Vector2.ZERO, 106, 0.12 * PI, 0.88 * PI, 32, Color("050505", 0.9), 2, true)
-	_face.draw_arc(Vector2.ZERO, 99, PI * 1.08, PI * 1.92, 40, Color("a0a0a0", 0.12), 1, true)
-	# Small recessed fasteners stay on the static face, outside the scale and readout.
-	for x: float in [-99.0, 99.0]:
-		for y: float in [-99.0, 99.0]:
-			var at := Vector2(x, y)
-			_face.draw_circle(at + Vector2(0, 1), 4, Color("080808"), true, -1, true)
-			_face.draw_circle(at, 2.8, Color("484848"), true, -1, true)
-			_face.draw_line(at - Vector2(1.4, 1.4), at + Vector2(1.4, 1.4), Color("101010"), 1, true)
+	_face.draw_circle(Vector2.ZERO, 100.5, DIAL)
+	_face.draw_arc(Vector2.ZERO, 107, PI * 1.08, PI * 1.92, 40, Color("d2d2d2", 0.48), 1.2, true)
+	_face.draw_arc(Vector2.ZERO, 106, PI * 0.1, PI * 0.9, 32, Color("050505", 0.88), 1.5, true)
+	_face.draw_arc(Vector2.ZERO, 103, 0, TAU, 90, Color("b0b0b0", 0.38), 1, true)
+	_face.draw_arc(Vector2.ZERO, 100, PI * 1.08, PI * 1.92, 40, Color("c0c0c0", 0.16), 1, true)
+	for x: float in [-96.0, 96.0]:
+		for y: float in [-96.0, 96.0]:
+			_draw_fastener(Vector2(x, y), x * y > 0)
 	match id:
 		"airspeed_dial":
 			var limit := 160.0 if _system == "imperial" else (70.0 if _system == "si" else 240.0)
 			_scale(_face, 0.0, limit, 32 if _system == "imperial" else (28 if _system == "si" else 48), 6 if _system == "metric" else 4, -225.0, 45.0)
-			_text(_face, "TAS", Vector2(0, -35), 13, MUTED)
-			_text(_face, str(Units.speed(0, _system)[1]), Vector2(0, 51), 13, MUTED)
+			_dial_legend("TAS", Vector2(0, -35), 13)
+			_dial_legend(str(Units.speed(0, _system)[1]), Vector2(0, 51), 13)
 		"altimeter":
 			_scale(_face, 0, 10, 50, 5, -90, 270, true)
-			_text(_face, tr("Datum").to_upper(), Vector2(0, -34), 12, MUTED)
-			_text(_face, "×100 / ×1000", Vector2(0, 40), 12, MUTED)
-			_text(_face, str(Units.length(0, _system)[1]), Vector2(0, 57), 13, MUTED)
+			_dial_legend(tr("Datum").to_upper(), Vector2(0, -34), 12)
+			_dial_legend("×100 / ×1000", Vector2(0, 40), 12)
+			_dial_legend(str(Units.length(0, _system)[1]), Vector2(0, 57), 13)
 		"variometer":
 			var limit := 2.0 if _system == "imperial" else 10.0
 			_scale(_face, -limit, limit, 40, 10, 45, 315)
-			_text(_face, "+ ↑", Vector2(0, -34), 14, MUTED)
-			_text(_face, "− ↓", Vector2(0, 42), 14, MUTED)
-			_text(_face, "×1000 ft/min" if _system == "imperial" else "m/s", Vector2(0, 62), 12, MUTED)
+			_dial_legend("+ ↑", Vector2(0, -34), 14)
+			_dial_legend("− ↓", Vector2(0, 42), 14)
+			_dial_legend("×1000 ft/min" if _system == "imperial" else "m/s", Vector2(0, 26), 12)
 		"attitude":
 			for angle: float in [-60.0, -45.0, -30.0, -20.0, -10.0, 0.0, 10.0, 20.0, 30.0, 45.0, 60.0]:
 				var dir := Vector2.UP.rotated(deg_to_rad(angle))
-				_face.draw_line(dir * 94, dir * (103 if fmod(angle, 30.0) == 0 else 99), INK, 2, true)
+				_face.draw_line(dir * 94, dir * (103 if fmod(angle, 30.0) == 0 else 99), DIAL_INK, 2, true)
 		_:
 			pass
 	_face.draw_set_transform(Vector2.ZERO)
+
+
+func _draw_fastener(at: Vector2, rising: bool) -> void:
+	# Dark well, bevel, screw head, then a slotted recess with a lower lip.
+	_face.draw_circle(at, 5, Color("070707"), true, -1, true)
+	_face.draw_circle(at, 4, Color("595959"), true, -1, true)
+	_face.draw_circle(at + Vector2(0, 0.4), 3.2, Color("343434"), true, -1, true)
+	_face.draw_arc(at, 3.8, PI * 1.05, PI * 1.9, 12, Color("c0c0c0", 0.55), 0.8, true)
+	var slot := Vector2(2.2, -1.2 if rising else 1.2)
+	_face.draw_line(at - slot + Vector2(0, 0.6), at + slot + Vector2(0, 0.6), Color("999999", 0.55), 1, true)
+	_face.draw_line(at - slot, at + slot, Color("080808"), 1.5, true)
+
+
+func _dial_legend(text: String, center: Vector2, font_size: int) -> void:
+	_text(_face, text, center + Vector2(0, 0.8), font_size, Color("050505"))
+	_text(_face, text, center, font_size, DIAL_LEGEND)
 
 
 func _scale(canvas: Control, low: float, high: float, divisions: int, major: int, start: float, end: float, wrap := false) -> void:
@@ -176,9 +210,9 @@ func _scale(canvas: Control, low: float, high: float, divisions: int, major: int
 		var fraction := float(tick) / divisions
 		var direction := Vector2.RIGHT.rotated(deg_to_rad(lerpf(start, end, fraction)))
 		var bold := tick % major == 0
-		canvas.draw_line(direction * (83 if bold else 90), direction * 97, INK if bold else Color(MUTED, 0.65), 2 if bold else 1, true)
-		if bold: canvas.draw_line(direction * 98, direction * 100, Color(INK, 0.65), 1.5, true)
-		if bold: _text(canvas, String.num(lerpf(low, high, fraction), 0), direction * 70, 16, INK)
+		canvas.draw_line(direction * (83 if bold else 90), direction * 97, DIAL_INK if bold else Color(DIAL_MINOR, 0.8), 2 if bold else 1, true)
+		if bold: canvas.draw_line(direction * 98, direction * 100, Color(DIAL_INK, 0.65), 1.5, true)
+		if bold: _text(canvas, String.num(lerpf(low, high, fraction), 0), direction * 70, 16, DIAL_INK)
 
 
 func _draw_instrument() -> void:
@@ -191,17 +225,13 @@ func _draw_instrument() -> void:
 		match id:
 			"attitude": _draw_horizon()
 			"heading": _draw_heading()
-			"airspeed_dial": _needle(deg_to_rad(lerpf(-225, 45, clampf(_dial_value / _maximum, 0, 1))), 78, 3, INK)
+			"airspeed_dial": _needle(deg_to_rad(lerpf(-225, 45, clampf(_dial_value / _maximum, 0, 1))), 78, 3, DIAL_INK)
 			"altimeter":
 				_needle(altimeter_angles(_dial_value).y, 48, 6, MUTED)
-				_needle(altimeter_angles(_dial_value).x, 81, 3, INK)
-			"variometer": _needle(PI + clampf(_dial_value / _maximum, -1, 1) * PI * 0.75, 78, 3, INK)
+				_needle(altimeter_angles(_dial_value).x, 81, 3, DIAL_INK)
+			"variometer": _needle(PI + clampf(_dial_value / _maximum, -1, 1) * PI * 0.75, 78, 3, DIAL_INK)
 		if id not in ["attitude", "heading"]:
-			graphic.draw_circle(Vector2(1, 2), 10, Color(0, 0, 0, 0.45), true, -1, true)
-			graphic.draw_circle(Vector2.ZERO, 8, Color("858585"), true, -1, true)
-			graphic.draw_circle(Vector2.ZERO, 6, DIAL, true, -1, true)
-			graphic.draw_arc(Vector2.ZERO, 6, PI, TAU, 18, Color("c6c6c6", 0.65), 1, true)
-			graphic.draw_circle(Vector2.ZERO, 2, INK, true, -1, true)
+			_draw_pivot()
 	graphic.draw_set_transform(Vector2.ZERO)
 
 
@@ -212,13 +242,34 @@ static func altimeter_angles(altitude: float) -> Vector2:
 func _needle(angle: float, length: float, width: float, color: Color) -> void:
 	var dir := Vector2.RIGHT.rotated(angle)
 	var side := dir.orthogonal() * width
-	var points := PackedVector2Array([-dir * 17 - side, dir * (length - 9) - side * 0.4, dir * length, dir * (length - 9) + side * 0.4, -dir * 17 + side])
+	var tail := PackedVector2Array([
+		-dir * 22 - side * 1.1, -dir * 15 - side * 1.1, -dir * 8 - side * 0.55,
+		dir * 3 - side * 0.55, dir * 3 + side * 0.55, -dir * 8 + side * 0.55,
+		-dir * 15 + side * 1.1, -dir * 22 + side * 1.1])
+	var points := PackedVector2Array([
+		-dir * 5 - side, dir * (length - 10) - side * 0.4, dir * length,
+		dir * (length - 10) + side * 0.4, -dir * 5 + side])
 	var shadow := PackedVector2Array()
+	for point: Vector2 in tail: shadow.append(point + Vector2(1.5, 2.5))
+	graphic.draw_colored_polygon(shadow, Color(0, 0, 0, 0.5))
+	shadow.clear()
 	for point: Vector2 in points: shadow.append(point + Vector2(1.5, 2.5))
 	graphic.draw_colored_polygon(shadow, Color(0, 0, 0, 0.5))
+	graphic.draw_colored_polygon(tail, Color("464646"))
+	graphic.draw_polyline(PackedVector2Array([-dir * 22 - side * 1.1, -dir * 15 - side * 1.1, -dir * 8 - side * 0.55]), Color("909090", 0.55), 0.8, true)
 	graphic.draw_colored_polygon(points, color)
-	graphic.draw_colored_polygon(PackedVector2Array([-dir * 17, dir * length, dir * (length - 9) + side * 0.4, -dir * 17 + side]), color.darkened(0.25))
-	graphic.draw_line(dir * (length - 12), dir * (length - 2), INK, 1.5, true)
+	graphic.draw_colored_polygon(PackedVector2Array([-dir * 5, dir * length, dir * (length - 10) + side * 0.4, -dir * 5 + side]), color.darkened(0.22))
+	graphic.draw_line(-dir * 3 - side * 0.72, dir * (length - 11) - side * 0.32, color.lightened(0.1), 0.8, true)
+
+
+func _draw_pivot() -> void:
+	graphic.draw_circle(Vector2(1, 2), 10, Color(0, 0, 0, 0.48), true, -1, true)
+	graphic.draw_circle(Vector2.ZERO, 9, Color("111111"), true, -1, true)
+	graphic.draw_circle(Vector2.ZERO, 7.5, Color("777777"), true, -1, true)
+	graphic.draw_circle(Vector2.ZERO, 5.8, Color("262626"), true, -1, true)
+	graphic.draw_arc(Vector2.ZERO, 7, PI * 1.05, PI * 1.9, 18, Color("eeeeee", 0.7), 1, true)
+	graphic.draw_arc(Vector2.ZERO, 5.5, PI * 0.08, PI * 0.9, 16, Color("080808", 0.8), 1, true)
+	graphic.draw_circle(Vector2.ZERO, 2, Color("aaa9a5"), true, -1, true)
 
 
 func _draw_heading() -> void:
@@ -226,11 +277,15 @@ func _draw_heading() -> void:
 		var bearing := tick * 5.0
 		var direction := Vector2.UP.rotated(deg_to_rad(bearing - _dial_value))
 		var major := tick % 6 == 0
-		graphic.draw_line(direction * (84 if major else 92), direction * 98, INK if major else MUTED, 2 if major else 1, true)
+		var middle := tick % 3 == 0
+		graphic.draw_line(direction * (84 if major else (89 if middle else 92)), direction * 98, DIAL_INK if major else DIAL_MINOR, 2 if major else 1, true)
 		if major:
 			var caption: String = {0: "N", 90: "E", 180: "S", 270: "W"}.get(int(bearing), "%02d" % int(bearing / 10))
-			_text(graphic, caption, direction * 70, 17, ACCENT if tick % 18 == 0 else INK)
+			_text(graphic, caption, direction * 70, 17, ACCENT if tick % 18 == 0 else DIAL_INK)
 	graphic.draw_colored_polygon(PackedVector2Array([Vector2(-6, -104), Vector2(6, -104), Vector2(0, -94)]), ACCENT)
+	graphic.draw_line(Vector2(0, -32), Vector2(0, 32), Color("181818"), 6, true)
+	graphic.draw_polyline(PackedVector2Array([Vector2(-30, 9), Vector2(0, -7), Vector2(30, 9)]), Color("181818"), 6, true)
+	graphic.draw_line(Vector2(-12, 27), Vector2(12, 27), Color("181818"), 6, true)
 	graphic.draw_line(Vector2(0, -32), Vector2(0, 32), ACCENT, 3, true)
 	graphic.draw_polyline(PackedVector2Array([Vector2(-30, 9), Vector2(0, -7), Vector2(30, 9)]), ACCENT, 3, true)
 	graphic.draw_line(Vector2(-12, 27), Vector2(12, 27), ACCENT, 3, true)
@@ -283,6 +338,7 @@ func _draw_horizon() -> void:
 				var label_position := horizon_point(Vector2(width + 13, -angle * 2.0), _pitch, _bank)
 				if label_position.length() < 73: _text(graphic, str(absi(angle)), label_position, 11, INK)
 	graphic.draw_arc(Vector2.ZERO, 91, 0, TAU, 96, Color("080808", 0.65), 3, true)
+	graphic.draw_arc(Vector2.ZERO, 90, PI * 1.12, PI * 1.88, 36, Color("050505", 0.48), 2, true)
 	var bank_tip := Vector2.UP.rotated(deg_to_rad(-_bank))
 	var bank_side := bank_tip.orthogonal() * 5
 	graphic.draw_colored_polygon(PackedVector2Array([bank_tip * 92, bank_tip * 82 + bank_side, bank_tip * 82 - bank_side]), INK)

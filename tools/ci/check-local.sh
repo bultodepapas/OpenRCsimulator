@@ -88,6 +88,12 @@ mkdir -p tmp
 OUT="$(mktemp -d "$ROOT/tmp/local-checks.XXXXXXXX")"
 export OPENRC_CHECK_OUT="$OUT/godot-checks"
 export OPENRC_EXPECTED_CHECK_OUT="$OUT/godot-checks-expected"
+# Tests must not consume or overwrite the developer's simulator preferences.
+# Preserve the caller's export-template and Playwright download cache locations.
+(
+export XDG_DATA_HOME="$OUT/profile/data" XDG_CONFIG_HOME="$OUT/profile/config"
+export XDG_CACHE_HOME="$OUT/profile/cache"
+mkdir -p "$XDG_DATA_HOME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
 GODOT="$(app/get-godot.sh)"
 echo "== import before schema probes; checked evidence: $OUT"
 python3 tools/godot/run_checked.py --timeout 600 --out-dir "$OPENRC_CHECK_OUT" --label local-resource-import -- \
@@ -110,6 +116,7 @@ python3 tools/godot/run_checked.py --timeout 90 --out-dir "$OPENRC_CHECK_OUT" --
 OPENRC_TEST_PART=all OPENRC_UNIT_SHARDS=1 OPENRC_UNIT_SHARD=0 bash app/test.sh
 python3 tools/godot/summarize.py "$OPENRC_CHECK_OUT" --junit "$OUT/results.xml"
 bash app/capture.sh
+)
 echo "== website source and download checks"
 python3 site/build_locales.py --check
 python3 site/test_locales.py

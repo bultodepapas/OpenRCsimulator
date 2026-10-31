@@ -539,3 +539,43 @@ size 1048576` / `terminate called without an active exception` (engine exit 3; r
 the reported lock-owner text is secondary to that missing command. Neither complete suite is claimed passed.
 The underlay adds material/node and GPU work despite having no GDScript processing loop; no performance gain or
 full hardware/pilot-readability qualification is claimed.
+
+## Lazy glass allocation (2026-10-31, HUD-13-R11)
+
+Player instruments now create their crystal underlay on first tree visibility and retain it until teardown.
+Hidden appearance changes update the stored style; first display applies the current opacity and size. The
+visibility listener disconnects after creation. No shader, drawing style or recurring process callback changed.
+
+Fresh presets previously allocated 19 ShaderMaterials, 19 ColorRects and 19 Node2D underlays each. Controlled
+lifecycle checks now measure **0/0/0 for Pilot, 4/4/4 for Player and 5/5/5 for Classic**; detached managers allocate
+none. Visiting every widget remains bounded at 19 independent surfaces, and reopening preserves material identity.
+This reduces initial allocations by deferring work to first use; it does not reduce the eventual maximum.
+
+The baseline is `ce789cae7`; the final player frame SHA-256 is
+`a440f40704c4e45e216256d0cb12ab55ac4844a4a25fe93ec036c706ee5ded25`.
+Concurrent commit `70709ff4b` included an intermediate candidate; final verification uses the working-tree hashes
+and receipts, not that commit alone. Other tracks' edits were preserved. Terra Max implementation and independent
+Good Enemy review found no blocking defect in the final HUD change.
+
+Checked Godot 4.8-beta1 results: efficiency/lifecycle 81, headless player 153, classic 61, navigation 57, training
+59, redraw 17, settings 27 and overlay manager 213 checks, all passing. Lifecycle coverage includes saved settings,
+hidden CanvasLayer/Control ancestors, reparenting, first draw and repeated reopening. The rendered player suite
+passed 160 checks. Its baseline and candidate PNGs are byte-identical (SHA-256
+`ef121b41cc413c94faed5f833225f3d1b0b4950d13af392e2cc1573a69de5ce0`), with minimum sampled contrast still 5.6977:1.
+An initial deferred-construction draft failed first-draw checks; the final synchronous visibility handler fixes it.
+
+Receipts, baseline source copies and captures remain under ignored `tmp/widget-efficiency-r11/`. Seven-trial
+headless synchronous median times (baseline → candidate, microseconds) were construction 31,694 → 41,692;
+attachment 75,712 → 92,676; first single-widget reveal 282 → 461; warm reveal 95 → 140. These separate runs were
+not controlled enough to establish a timing improvement or regression. They exclude frame/GPU time and do not
+measure a whole preset's first-use latency. The native profile was dominated by debug logging and did not establish
+a HUD frame-time hotspot. **No startup-speed, interaction-latency or FPS improvement is claimed.**
+
+Native Windows/RTX 3090 driver 617.42, OpenGL Compatibility, 1920×1080: the fresh Pilot census had 1,775 nodes
+versus 1,813 in the baseline, consistent with avoiding 38 underlay nodes. The existing widget-presets scenario
+passed. A later third flight load in that same session failed allocating projected-shadow mesh data
+(`alloc_static`/`cowdata`, `projected_shadow.gd:45`, native signal 11); retain
+`tmp/debug-bridge/20261031-075525-47870/engine.log`. Its cause and relationship to the candidate remain unproven;
+the successful scenario is not a clean-exit or repeated-flight stability qualification. A fresh session at
+`tmp/debug-bridge/20261031-075729-47870/` loaded Classic, supported a 1080p visual review and stopped with no crash
+or leaked objects. The full-suite import and Git Bash capture limitations recorded in R10 remain unresolved.

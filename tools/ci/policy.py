@@ -14,11 +14,12 @@ import re
 import subprocess
 import sys
 
-FORMAT = "openrc-ci-selection-v1"
+FORMAT = "openrc-ci-selection-v2"
 SHADOW = True
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 SAFE_DOCS = frozenset({"docs/README.md", "docs/TOOLS.md",
-                       "docs/DESKTOP-DELIVERY-PLAN.md", "CONTRIBUTING.md", "AGENTS.md"})
+                       "docs/DESKTOP-DELIVERY-PLAN.md", "CONTRIBUTING.md", "AGENTS.md",
+                       "docs/plans/release-ci-efficiency.md"})
 PRODUCTION = ("app", "visuals", "native-linux", "native-windows", "native-kernel-linux")
 JOBS = (*PRODUCTION, "three", "site", "export")
 
@@ -47,28 +48,40 @@ def recommend(paths: list[str], *, force: bool = False) -> dict[str, bool]:
 
 
 def changed_paths(root: Path, event: str, ref: str, sha: str,
-                  payload: dict, fetch: bool) -> tuple[str, list[str], str]:
+                  payload: dict, fetch: bool) -> tuple[str, str, list[str], str]:
     if not SHA.fullmatch(sha) or git(root, "rev-parse", "HEAD").strip() != sha:
         raise ValueError("checked-out source does not match the event SHA")
     if ref.startswith("refs/tags/") or event not in {"push", "pull_request"}:
-        return "", [], "tag/manual/other event requires full checks"
+        return "", sha, [], "tag/manual/other event requires full checks"
+    if not isinstance(payload, dict):
+        raise ValueError("event payload must be an object")
+    head = sha
     base = payload.get("before", "")
     if event == "pull_request":
         pr = payload.get("pull_request", {})
-        base = pr.get("base", {}).get("sha", "")
-        head = pr.get("head", {}).get("sha", "")
-        if not SHA.fullmatch(head) or not SHA.fullmatch(base):
-            return "", [], "missing PR identities"
+        if not isinstance(pr, dict):
+            return "", "", [], "missing PR identities"
+        base_data, head_data = pr.get("base"), pr.get("head")
+        if not isinstance(base_data, dict) or not isinstance(head_data, dict):
+            return "", "", [], "missing PR identities"
+        base = base_data.get("sha", "")
+        head = head_data.get("sha", "")
+        number = payload.get("number")
+        if (not isinstance(head, str) or not SHA.fullmatch(head) or
+                not isinstance(base, str) or not SHA.fullmatch(base) or
+                type(number) is not int or number < 1 or ref != f"refs/pull/{number}/merge"):
+            return "", "", [], "missing PR identities"
         try:
             parents = git(root, "show", "-s", "--format=%P", sha).strip().split()
         except subprocess.CalledProcessError:
-            return "", [], "merge identity unavailable"
+            return "", head, [], "merge identity unavailable"
         if parents != [base, head]:
-            return "", [], "PR merge parents do not match the event"
-    elif payload.get("after") != sha:
-        return "", [], "push after SHA does not match the event"
+            return "", head, [], "PR merge parents do not match the event"
+    elif (ref != "refs/heads/main" or payload.get("ref") != ref or
+          payload.get("after") != sha or payload.get("deleted") is not False):
+        return "", head, [], "push metadata does not match the event"
     if not isinstance(base, str) or not SHA.fullmatch(base) or base == "0" * 40:
-        return "", [], "missing comparison base"
+        return "", head, [], "missing comparison base"
     try:
         git(root, "cat-file", "-e", base + "^{commit}")
     except subprocess.CalledProcessError:
@@ -76,18 +89,37 @@ def changed_paths(root: Path, event: str, ref: str, sha: str,
             try:
                 git(root, "fetch", "--no-tags", "--depth=1", "origin", base)
             except subprocess.CalledProcessError:
-                return base, [], "comparison fetch unavailable"
+                return base, head, [], "comparison history unavailable"
         else:
-            return base, [], "comparison history unavailable"
-    # Any execution or decoding error here is fatal, not a docs-only result.
-    paths = git(root, "diff", "--no-renames", "--name-only", "-z", base, sha).split("\0")
-    return base, sorted(p for p in paths if p), "changed paths" if any(paths) else "empty comparison"
+            return base, head, [], "comparison history unavailable"
+    # Any execution, decoding or malformed diff is fatal, not a docs-only result.
+    raw = git(root, "diff", "--no-renames", "--no-ext-diff", "--no-textconv",
+              "--ignore-submodules=none", "--raw", "-z", base, sha)
+    if not raw:
+        return base, head, [], "empty comparison"
+    parts = raw.split("\0")
+    if parts[-1] != "" or len(parts) % 2 != 1:
+        raise ValueError("invalid Git diff inventory")
+    paths, regular_changes = [], True
+    for index in range(0, len(parts) - 1, 2):
+        metadata, name = parts[index:index + 2]
+        match = re.fullmatch(r":(\d{6}) (\d{6}) [0-9a-f]+ [0-9a-f]+ ([A-Z])", metadata)
+        if not match or not name or name.startswith("/") or any(
+                part in {"", ".", ".."} for part in name.split("/")):
+            raise ValueError("invalid Git diff entry")
+        old_mode, new_mode, status = match.groups()
+        regular_changes &= status in {"A", "M"} and new_mode == "100644" and old_mode in {"000000", "100644"}
+        paths.append(name)
+    if len(paths) != len(set(paths)):
+        raise ValueError("duplicate Git diff entry")
+    reason = "changed paths" if regular_changes else "deletion or non-regular change requires full checks"
+    return base, head, sorted(paths), reason
 
 
 def selection(root: Path, event: str, ref: str, sha: str, payload: dict,
               fetch: bool = False) -> dict:
-    base, paths, reason = changed_paths(root, event, ref, sha, payload, fetch)
-    proposed = recommend(paths)
+    base, head, paths, reason = changed_paths(root, event, ref, sha, payload, fetch)
+    proposed = recommend(paths, force=reason != "changed paths")
     effective = {**proposed}
     if SHADOW:
         effective.update(production=True, prototype=True)
@@ -97,14 +129,15 @@ def selection(root: Path, event: str, ref: str, sha: str, payload: dict,
     required = {job: effective["production"] for job in PRODUCTION}
     required.update(three=effective["prototype"], site=effective["site"], export=export)
     return {"format": FORMAT, "mode": "shadow" if SHADOW else "active",
-            "sha": sha, "event": event, "ref": ref, "base": base,
+            "sha": sha, "event": event, "ref": ref, "base": base, "head": head,
             "paths": paths, "reason": reason, "recommended": proposed,
             "required": required,
             "policy_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
 
 
-def validate(receipt: dict, sha: str, event: str, ref: str) -> None:
-    fields = {"format", "mode", "sha", "event", "ref", "base", "paths", "reason",
+def validate(receipt: dict, root: Path, sha: str, event: str, ref: str,
+             payload: dict, fetch: bool = False) -> None:
+    fields = {"format", "mode", "sha", "event", "ref", "base", "head", "paths", "reason",
               "recommended", "required", "policy_sha256"}
     if not isinstance(receipt, dict) or set(receipt) != fields:
         raise ValueError("invalid selection receipt fields")
@@ -119,23 +152,20 @@ def validate(receipt: dict, sha: str, event: str, ref: str) -> None:
     if (not isinstance(paths, list) or any(not isinstance(p, str) or not p for p in paths)
             or paths != sorted(set(paths))):
         raise ValueError("invalid changed-path inventory")
-    proposed = recommend(paths, force=ref.startswith("refs/tags/") or event not in {"push", "pull_request"})
-    if receipt["recommended"] != proposed:
-        raise ValueError("invalid recommended selection")
-    effective = dict(proposed)
-    if SHADOW:
-        effective.update(production=True, prototype=True)
-    expected = {job: effective["production"] for job in PRODUCTION}
-    expected.update(three=effective["prototype"], site=effective["site"],
-                    export=effective["production"] and (ref == "refs/heads/main" or
-                        ref.startswith("refs/tags/v") or event == "workflow_dispatch"))
-    if receipt["required"] != expected or any(type(v) is not bool for v in receipt["required"].values()):
-        raise ValueError("invalid required-job selection")
+    for key in ("recommended", "required"):
+        if not isinstance(receipt[key], dict) or any(type(v) is not bool for v in receipt[key].values()):
+            raise ValueError(f"invalid {key} selection")
+    # Recompute from the event and checkout, never from a receipt-controlled base.
+    if receipt != selection(root, event, ref, sha, payload, fetch=fetch):
+        raise ValueError("selection receipt differs from event and Git history")
 
 
-def verify(receipt: dict, needs: dict, sha: str, event: str, ref: str) -> None:
-    validate(receipt, sha, event, ref)
-    if set(needs) != {"scope", *JOBS} or needs["scope"].get("result") != "success":
+def verify(receipt: dict, needs: dict, root: Path, sha: str, event: str, ref: str,
+           payload: dict, fetch: bool = False) -> None:
+    validate(receipt, root, sha, event, ref, payload, fetch=fetch)
+    if (not isinstance(needs, dict) or set(needs) != {"scope", *JOBS} or
+            any(not isinstance(row, dict) for row in needs.values()) or
+            needs["scope"].get("result") != "success"):
         raise ValueError("scope failed or required job inventory differs")
     for job, required in receipt["required"].items():
         result = needs[job].get("result")
@@ -151,8 +181,8 @@ def main() -> int:
     parser.add_argument("--receipt", type=Path, required=True)
     args = parser.parse_args()
     sha, event, ref = (os.environ[k] for k in ("GITHUB_SHA", "GITHUB_EVENT_NAME", "GITHUB_REF"))
+    payload = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
     if args.command == "scope":
-        payload = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
         receipt = selection(args.root, event, ref, sha, payload, fetch=True)
         args.receipt.parent.mkdir(parents=True, exist_ok=True)
         with args.receipt.open("x", encoding="utf-8", newline="\n") as out:
@@ -166,7 +196,7 @@ def main() -> int:
         if git(args.root, "rev-parse", "HEAD").strip() != sha:
             raise ValueError("gate checkout does not match source")
         verify(json.loads(args.receipt.read_text(encoding="utf-8")),
-               json.loads(os.environ["CI_NEEDS"]), sha, event, ref)
+               json.loads(os.environ["CI_NEEDS"]), args.root, sha, event, ref, payload, fetch=True)
         print("Required CI jobs passed; selection receipt verified.")
     return 0
 
