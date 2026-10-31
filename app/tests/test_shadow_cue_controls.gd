@@ -4,6 +4,7 @@ extends SceneTree
 const Main := preload("res://main.gd")
 const Shadow := preload("res://render/shadow.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
+const Projected := preload("res://render/projected_shadow.gd")
 
 var _checks := 0
 var _failures := 0
@@ -212,10 +213,86 @@ func _projector_lifecycle() -> void:
 	detached.free()
 
 
+func _standalone_projector_entry() -> void:
+	# No carrier/field owner can repair this fixture's pose or visibility for it.
+	var host := Node3D.new()
+	var branch := Node3D.new()
+	branch.position = Vector3(9.0, 4.0, -3.0)
+	branch.rotation.y = 0.7
+	branch.scale = Vector3(1.4, 0.8, 1.1)
+	host.add_child(branch)
+	var model := _model("StandaloneSource")
+	model.position = Vector3(2.0, 1.0, -1.0)
+	branch.add_child(model)
+	var projected := Projected.new()
+	host.add_child(projected)
+	projected.setup(model, Projected.collect(model))
+	var sun := Vector3(0.4, 0.8, -0.3).normalized()
+	projected.refresh(2.0, sun, 0.4, true)
+	root.add_child(host)
+	_check_projector_pose("first entry", projected, model, sun)
+	root.remove_child(host)
+	_check("whole subtree exit disables its projector", not projected.receiver.visible
+		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	host.position = Vector3(-5.0, 2.0, 8.0)
+	host.rotation.y = -0.3
+	root.add_child(host)
+	_check_projector_pose("whole subtree reentry", projected, model, sun)
+	root.remove_child(host)
+	branch.visible = false
+	root.add_child(host)
+	_check("hidden ancestor survives whole subtree reentry", not projected.receiver.visible
+		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	branch.visible = true
+	_check("showing the ancestor restores the requested projection", projected.receiver.visible)
+	host.free()
+
+	var hidden_host := Node3D.new()
+	var hidden_branch := Node3D.new()
+	hidden_branch.visible = false
+	hidden_host.add_child(hidden_branch)
+	var hidden_model := _model("InitiallyHiddenSource")
+	hidden_branch.add_child(hidden_model)
+	var hidden_projected := Projected.new()
+	hidden_host.add_child(hidden_projected)
+	hidden_projected.setup(hidden_model, Projected.collect(hidden_model))
+	hidden_projected.refresh(1.0, sun, 0.4, true)
+	root.add_child(hidden_host)
+	_check("first entry respects a hidden source ancestor", not hidden_projected.receiver.visible
+		and hidden_projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	hidden_host.free()
+
+	var late_host := Node3D.new()
+	root.add_child(late_host)
+	var late_model := _model("LateSource")
+	late_model.position = Vector3(-7.0, 3.0, 4.0)
+	var late_projected := Projected.new()
+	late_host.add_child(late_projected)
+	late_projected.setup(late_model, Projected.collect(late_model))
+	late_projected.refresh(3.0, sun, 0.4, true)
+	_check("a live projector waits for its source's first entry", not late_projected.receiver.visible)
+	late_host.add_child(late_model)
+	_check_projector_pose("late source first entry", late_projected, late_model, sun)
+	late_host.free()
+
+
+func _check_projector_pose(label: String, projected: Node, model: Node3D, sun: Vector3) -> void:
+	# The symmetric box is centered on the source. Intersect its center ray with
+	# the receiver plane independently of the projector's framing helper.
+	var center := model.global_position
+	var expected := center - sun * ((center.y - Projected.HEIGHT) / sun.y)
+	_check(label + " restores a visible projection", projected.receiver.visible
+		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
+	_check(label + " uses the global source origin", projected.receiver.global_position.distance_to(expected) < 0.0001)
+	var actual: Basis = projected.mask_material.get_shader_parameter("aircraft_basis")
+	_check(label + " uses the global source basis", actual.is_equal_approx(model.global_basis))
+
+
 func _run() -> void:
 	_flight_modes()
 	_main_shadow_presentation()
 	_projector_lifecycle()
+	_standalone_projector_entry()
 	_select("auto", "auto")
 	await process_frame
 	print("Shadow cue controls: %d checks, %d failed" % [_checks, _failures])

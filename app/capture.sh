@@ -20,7 +20,7 @@ while (($#)); do
   case "$1" in
     --group) (($# >= 2)) || { usage >&2; exit 2; }; GROUP="$2"; shift 2 ;;
     --out) (($# >= 2)) || { usage >&2; exit 2; }; OUTPUT="$2"; shift 2 ;;
-    --run-id) (($# >= 2)) || { usage >&2; exit 2; }; RUN_ID="$2"; shift 2 ;;
+    --run-id) (($# >= 2)) && [[ "$2" =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$ ]] || { usage >&2; exit 2; }; RUN_ID="$2"; shift 2 ;;
     --help) usage; exit 0 ;;
     *) usage >&2; exit 2 ;;
   esac

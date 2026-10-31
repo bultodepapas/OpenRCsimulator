@@ -55,6 +55,8 @@ DIRECT_SOURCES = (
     "tools/grass/check_grass_seam.py", "tools/scenery/scenario.sh",
     "tools/scenery/scenario_report.py", "app/scenery/runway_scenario.gd",
 )
+SOURCE_SUFFIXES = {".gd", ".gdshader", ".gdextension", ".tscn", ".tres", ".py", ".sh",
+                   ".json", ".cfg", ".toml", ".ini", ".uid", ".import", ".csv"}
 
 CORE_IMAGES = [f"capture{suffix}.png" for suffix in (
     "", "-inspect", "-inspect-deflected", "-physics", "-physics-inspect", "-physics-nozoom",
@@ -66,6 +68,18 @@ CORE_IMAGES += [f"capture-land-{name}.png" for name in ("30m", "low3m", "sun", "
 CORE_IMAGES += [f"field/capture-land-az{az}-el{el}.png" for az in (0, 90, 180, 270) for el in (0, 10)]
 CORE_IMAGES += ["field/capture-land-top.png"]
 UI_IMAGES = [f"ui-{screen}-{lang}.png" for lang in ("en", "es") for screen in ("home", "pause", "help", "hint")]
+POSES = ("level", "inverted", "knife_left", "knife_right", "climb", "dive")
+VQ_CASES = [f"pilot-{distance}-autozoom-{zoom}{hidden}"
+            for distance in ("30m", "3m") for zoom in ("on", "off") for hidden in ("", "-noplane")]
+VQ_CASES += [f"field-az{az}-el{el}-repeat{repeat}" for az in (0, 90, 180, 270)
+             for el in (0, 10) for repeat in (1, 2)]
+VQ_CASES += [f"field-top30m-repeat{repeat}" for repeat in (1, 2)]
+VQ_CASES += [f"synthetic-{plane}-{distance}m-{pose}" for plane in ("stik", "extra")
+             for distance in (20, 50, 100) for pose in POSES]
+VQ_CASES += [f"ui-{screen}-{lang}" for screen in ("home", "flight") for lang in ("en", "es")]
+TREELINE_CASES = [f"l6c-{view}-{background}-{case}" for view in ("game", "fixed")
+                  for background in ("sky", "horizon", "trees", "ground")
+                  for case in ("noplane", "notrees", *POSES)]
 REQUIRED_OUTPUTS = {
     "core": ["trace-physics.csv", "landscape-counters.txt", "field/landscape-counters.txt",
              "sun-alignment/report.json", "sun-alignment/sun_alignment.png"],
@@ -102,6 +116,9 @@ def source_identity(repo: Path) -> dict:
     commit = subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip()
     if not re.fullmatch(r"[0-9a-f]{40}", commit):
         fail("cannot identify full source commit")
+    index = subprocess.check_output(["git", "-C", str(root), "ls-files", "-v", "-z"])
+    if any(record[:2] != b"H " for record in index.split(b"\0") if record):
+        fail("assume-unchanged, sparse or unmerged index entries cannot establish source identity")
     status = subprocess.check_output(["git", "-C", str(root), "status", "--porcelain=v1", "-z",
                                       "--untracked-files=all", "--no-renames"])
     changes = []
@@ -122,16 +139,54 @@ def source_identity(repo: Path) -> dict:
             fail(f"unsupported changed source path: {name}")
         changes.append({"status": os.fsdecode(record[:2]), "path": name, **value})
     sources = {name: digest(root / name) for name in DIRECT_SOURCES}
-    return {"commit": commit, "changes": changes, "direct_sources": sources}
+    tracked = subprocess.check_output(["git", "-C", str(root), "ls-files", "-z", "--", "app", "tools"])
+    tracked_source = {}
+    for record in tracked.split(b"\0"):
+        if not record:
+            continue
+        name = os.fsdecode(record)
+        if Path(name).suffix.lower() in SOURCE_SUFFIXES:
+            tracked_source[name] = digest(root / name)
+    # Ignored import/runtime caches and capture outputs are not authoring input.
+    # Other ignored files in runtime/checker roots may be loaded dynamically,
+    # including local native libraries, and therefore bind their actual bytes.
+    ignored = subprocess.check_output(["git", "-C", str(root), "ls-files", "--others", "--ignored",
+                                       "--exclude-standard", "-z", "--", "app", "tools", "assets"])
+    ignored_inputs = {}
+    for record in ignored.split(b"\0"):
+        if not record:
+            continue
+        name = os.fsdecode(record)
+        parts = Path(name).parts
+        if any(part in {".godot", "captures", ".capture-profile", "__pycache__"} for part in parts):
+            continue
+        if Path(name).suffix.lower() in {".tmp", ".log", ".pyc"}:
+            continue
+        path = root / name
+        if path.is_symlink():
+            fail(f"ignored source input is a symlink: {name}")
+        ignored_inputs[name] = digest(path)
+    return {"commit": commit, "changes": changes, "direct_sources": sources,
+            "tracked_runtime_sources": tracked_source,
+            "ignored_runtime_inputs": dict(sorted(ignored_inputs.items()))}
 
 
-def configuration(check_environment: bool = False) -> dict:
+def configuration(check_environment: bool = False, revision: str | None = None) -> dict:
     expected = {"OPENRC_SCENERY": "off", "OPENRC_SCENERY_BIRDS": "off",
                 "OPENRC_ENGINE_SHADOWS": "off", "LP_NUM_THREADS": "1"}
     if check_environment:
         actual = {key: os.environ.get(key, "1" if key == "LP_NUM_THREADS" else "") for key in expected}
         if actual != expected:
             fail(f"experimental receipts require the fixed capture environment: {actual}")
+        prefixes = ("OPENRC_", "GODOT_", "MESA_", "LIBGL_", "GALLIUM_", "LP_", "VK_")
+        allowed = set(expected)
+        if revision is not None:
+            allowed.add("OPENRC_CODE_REVISION")
+            if os.environ.get("OPENRC_CODE_REVISION") != revision:
+                fail("capture revision metadata does not match the independently inspected checkout")
+        unexpected = sorted(key for key in os.environ if key.startswith(prefixes) and key not in allowed)
+        if unexpected:
+            fail(f"unsupported capture environment overrides: {unexpected}")
     return {"environment": expected, "driver": "opengl3", "audio": "Dummy",
             "historical_viewport": [1280, 720], "large_xvfb_screen": [1920, 1080],
             "system": platform.system(), "machine": platform.machine(),
@@ -144,8 +199,24 @@ def valid_run_id(run_id: str) -> None:
 
 
 def read_json(path: Path):
+    def unique_object(pairs):
+        value = {}
+        for key, item in pairs:
+            if key in value:
+                fail(f"duplicate JSON key in {path}: {key}")
+            value[key] = item
+        return value
+
+    def invalid_constant(value):
+        fail(f"invalid JSON constant in {path}: {value}")
+
     with path.open(encoding="utf-8") as stream:
-        return json.load(stream)
+        return json.load(stream, object_pairs_hook=unique_object, parse_constant=invalid_constant)
+
+
+def same_json(left, right) -> bool:
+    # Python considers True == 1 and 720.0 == 720, but evidence schemas do not.
+    return json.dumps(left, sort_keys=True, allow_nan=False) == json.dumps(right, sort_keys=True, allow_nan=False)
 
 
 def atomic_new_json(path: Path, value: dict) -> None:
@@ -186,21 +257,34 @@ def local_file(root: Path, name: str) -> Path:
     return result
 
 
-def verify_matrix(root: Path, relative: str, count: int) -> None:
+def verify_matrix(root: Path, relative: str, expected_ids: list[str]) -> None:
     folder = root / relative
+    count = len(expected_ids)
     name = "visual-quality-run-manifest.json" if count == 66 else "l6c-run-manifest.json"
     data = read_json(local_file(folder, name))
+    if not isinstance(data, dict) or not isinstance(data.get("inventory"), dict):
+        fail(f"{relative}: invalid matrix manifest")
     inventory, captures = data.get("inventory", {}), data.get("captures", [])
     ids = inventory.get("expected_case_ids")
-    if (data.get("complete") is not True or inventory.get("capture_count") != count
-            or not isinstance(ids, list) or len(ids) != count or len(set(ids)) != count
+    if (data.get("complete") is not True or type(inventory.get("capture_count")) is not int
+            or inventory.get("capture_count") != count
+            or ids != expected_ids
             or not isinstance(captures, list) or len(captures) != count
+            or any(not isinstance(capture, dict) for capture in captures)
             or [c.get("case_id") for c in captures] != ids):
         fail(f"{relative}: incomplete or inconsistent fixed capture inventory")
     for capture in captures:
         image = local_file(folder, capture.get("image", ""))
         sidecar = local_file(folder, capture.get("capture_manifest", ""))
-        if digest(image) != capture.get("sha256") or digest(sidecar) != capture.get("capture_manifest_sha256"):
+        case_id = capture["case_id"]
+        metadata = read_json(sidecar)
+        if not isinstance(metadata, dict):
+            fail(f"{relative}: invalid matrix sidecar")
+        scene = case_id.split("-")[1] if case_id.startswith("ui-") else "field"
+        if (image.name != f"{case_id}.png" or sidecar.name != f"{case_id}.json"
+                or digest(image) != capture.get("sha256") or digest(sidecar) != capture.get("capture_manifest_sha256")
+                or metadata.get("image") != image.name or metadata.get("sha256") != capture.get("sha256")
+                or metadata.get("capture_scene") != scene):
             fail(f"{relative}: matrix image or sidecar hash mismatch")
 
 
@@ -219,18 +303,22 @@ def verify_outputs(root: Path, group: str) -> dict[str, str]:
         image = local_file(root, name)
         sidecar = local_file(root, str(Path(name).with_suffix(".json")))
         data = read_json(sidecar)
+        if not isinstance(data, dict):
+            fail(f"{group}: invalid image sidecar: {name}")
         scene = ("field" if name.startswith("field/") else "atmosphere") if group == "core" else name.split("-")[1]
         if data.get("image") != image.name or data.get("sha256") != digest(image) or data.get("capture_scene") != scene:
             fail(f"{group}: image/sidecar mismatch: {name}")
     if group == "quality":
-        verify_matrix(root, "vq01b", 66)
-        if read_json(root / "aircraft-lights/summary.json").get("ok") is not True:
+        verify_matrix(root, "vq01b", VQ_CASES)
+        light_summary = read_json(root / "aircraft-lights/summary.json")
+        if not isinstance(light_summary, dict) or light_summary.get("ok") is not True:
             fail("aircraft lights summary did not pass")
     if group == "vegetation":
-        verify_matrix(root, "l6c", 64)
+        verify_matrix(root, "l6c", TREELINE_CASES)
     if group == "scenario":
         checks = read_json(root / "scenario/latest/sync.json")
-        if not isinstance(checks, list) or not checks or any(c.get("ok") is not True for c in checks):
+        if (not isinstance(checks, list) or not checks
+                or any(not isinstance(c, dict) or c.get("ok") is not True for c in checks)):
             fail("scenario sync checks are missing or failed")
     files = {}
     for directory, dirs, names in os.walk(root, followlinks=False):
@@ -252,6 +340,11 @@ def verify_outputs(root: Path, group: str) -> dict[str, str]:
 def begin(args) -> None:
     valid_run_id(args.run_id)
     config = configuration(check_environment=True)
+    resolved_out = args.out.resolve()
+    if resolved_out.is_relative_to(args.repo.resolve()):
+        ignored = subprocess.run(["git", "-C", str(args.repo), "check-ignore", "-q", str(resolved_out)], check=False)
+        if ignored.returncode != 0:
+            fail("group output inside the checkout must be Git-ignored")
     start = {"format": "openrc-experimental-capture-start v1", "group": args.group,
              "run_id": args.run_id, "source": source_identity(args.repo),
              "engine_sha256": digest(args.godot), "config": config}
@@ -261,10 +354,12 @@ def begin(args) -> None:
 def finish(args) -> None:
     valid_run_id(args.run_id)
     start = read_json(args.out / START)
+    source = source_identity(args.repo)
+    revision = source["commit"] + ("-dirty" if source["changes"] else "")
     expected = {"format": "openrc-experimental-capture-start v1", "group": args.group,
-                "run_id": args.run_id, "source": source_identity(args.repo),
-                "engine_sha256": digest(args.godot), "config": configuration(check_environment=True)}
-    if start != expected:
+                "run_id": args.run_id, "source": source,
+                "engine_sha256": digest(args.godot), "config": configuration(check_environment=True, revision=revision)}
+    if not same_json(start, expected):
         fail("group source, engine, configuration or run identity changed")
     visual_python = digest(args.visual_python)
     files = verify_outputs(args.out, args.group)
@@ -291,10 +386,16 @@ def reduce_groups(args) -> None:
         if raw.is_symlink() or not raw.is_dir():
             fail(f"invalid group directory: {raw}")
         root = raw.resolve()
-        if root in directories:
-            fail("duplicate group directory")
+        if any(root.is_relative_to(other) or other.is_relative_to(root) for other in directories):
+            fail("duplicate or nested group directory")
+        if args.out.resolve().is_relative_to(root):
+            fail("the reducer output must be outside every group directory")
         directories.add(root)
         receipt = read_json(local_file(root, RECEIPT))
+        if (not isinstance(receipt, dict)
+                or set(receipt) != {"format", "status", "start", "visual_python_sha256", "outputs"}
+                or not isinstance(receipt.get("start"), dict) or not isinstance(receipt.get("outputs"), dict)):
+            fail("invalid capture group receipt schema")
         start = receipt.get("start", {})
         group = start.get("group")
         if group not in GROUP_CHECKS or group in groups:
@@ -302,8 +403,8 @@ def reduce_groups(args) -> None:
         expected_start = {"format": "openrc-experimental-capture-start v1", "group": group,
                           "run_id": args.run_id, "source": source, "engine_sha256": engine, "config": config}
         if (receipt.get("format") != "openrc-experimental-capture-group v1"
-                or receipt.get("status") != "passed" or start != expected_start
-                or read_json(local_file(root, START)) != expected_start
+                or receipt.get("status") != "passed" or not same_json(start, expected_start)
+                or not same_json(read_json(local_file(root, START)), expected_start)
                 or receipt.get("visual_python_sha256") != visual_python):
             fail(f"{group}: wrong run, source, engine, configuration or completion")
         if receipt.get("outputs") != verify_outputs(root, group):
