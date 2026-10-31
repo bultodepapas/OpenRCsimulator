@@ -8405,4 +8405,3 @@ msgstr "未启用"
 
 msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
 msgstr "当前图形会话不支持原生阴影；投影阴影已启用。"
-

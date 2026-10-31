@@ -23,7 +23,11 @@ static func attach(field: Node3D) -> void:
 		for child: Node in scenery.get_children():
 			if child is MeshInstance3D and (str(child.name).begins_with("shadows_") or child.name == "PopulationContacts"):
 				policy._planes.append(child as MeshInstance3D)
+	if policy._manager == null and policy._planes.is_empty():
+		policy.free()
+		return
 	field.add_child(policy)
+	field.set_meta("shadow_field_policy", policy)
 	policy.apply_shadow_policy()
 
 

@@ -9206,4 +9206,3 @@ msgstr "Не активно"
 
 msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
 msgstr "Встроенные тени недоступны в этой графической сессии; активны проецируемые тени."
-

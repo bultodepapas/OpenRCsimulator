@@ -90,6 +90,12 @@ func run() -> void:
 	var another := Atmosphere.create_sun(holder)
 	check("new worlds use selected tier without resetting allocation", another.directional_shadow_mode == DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS and Settings.effective().atlas_size == 2048)
 	holder.free()
+	for cycle in 30:
+		var temporary := Node3D.new()
+		root.add_child(temporary)
+		Atmosphere.create_sun(temporary)
+		temporary.free()
+	check("unchanged-preference world churn keeps weak registry bounded", Settings._lights.size() <= 1)
 	Settings.apply({})
 	check("destroyed lights are not retained", Settings._lights.is_empty())
 	check("atmosphere spec remains byte-identical", Spec.ATMOSPHERE == original_spec)

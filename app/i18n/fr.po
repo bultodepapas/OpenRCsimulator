@@ -9378,4 +9378,3 @@ msgstr "Inactif"
 
 msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
 msgstr "Les ombres natives ne sont pas disponibles dans cette session graphique ; les ombres projetées sont actives."
-

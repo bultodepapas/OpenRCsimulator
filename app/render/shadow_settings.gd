@@ -149,7 +149,11 @@ static func _commit(high_profile: bool) -> void:
 
 static func describe() -> Dictionary:
 	ensure_configured(_high_active())
-	return _receipt.duplicate(true)
+	var result := _receipt.duplicate(true)
+	# Research tools may explicitly enable this outside the user settings; report the actual state.
+	result.effective.contact_shadows = _high_active() and bool(ProjectSettings.get_setting(
+		"rendering/lights_and_shadows/contact_shadow/enabled", false))
+	return result
 
 
 static func effective() -> Dictionary:
@@ -173,6 +177,12 @@ static func aircraft_cue() -> String:
 static func apply_sun(light: DirectionalLight3D, source_enabled: bool) -> void:
 	ensure_configured(_high_active())
 	if not light.has_meta(LIGHT_BASE):
+		# World churn must remain bounded even when the user never changes a setting.
+		var alive: Array[WeakRef] = []
+		for reference in _lights:
+			if reference.get_ref() != null:
+				alive.append(reference)
+		_lights = alive
 		light.set_meta(LIGHT_BASE, {"mode": light.directional_shadow_mode,
 			"blend": light.directional_shadow_blend_splits, "split_1": light.directional_shadow_split_1,
 			"split_2": light.directional_shadow_split_2, "split_3": light.directional_shadow_split_3,

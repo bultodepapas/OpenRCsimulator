@@ -4,6 +4,7 @@ const ShadowSettings := preload("res://render/shadow_settings.gd")
 const Shadow := preload("res://render/shadow.gd")
 const FieldShadows := preload("res://render/field_projected_shadows.gd")
 const FieldPolicy := preload("res://render/shadow_field_policy.gd")
+const FieldBuilder := preload("res://render/field.gd")
 const WreckScript := preload("res://render/crash/wreck.gd")
 const HeliWreckScript := preload("res://render/rotor/heli_wreck.gd")
 const Spec := preload("res://spec.gd")
@@ -38,6 +39,10 @@ func _box_node(node_name: String) -> MeshInstance3D:
 
 func _field_policy() -> void:
 	_set_route("auto")
+	var empty_field := Node3D.new()
+	FieldPolicy.attach(empty_field)
+	_check("a field with no shadow routes adds no policy node", empty_field.get_child_count() == 0)
+	empty_field.free()
 	var field := Node3D.new()
 	field.name = "Field"
 	var cue := Node3D.new()
@@ -45,7 +50,11 @@ func _field_policy() -> void:
 	cue.add_child(_box_node("model"))
 	field.add_child(cue)
 	var cue_plane := _box_node("FlightCueShadows")
+	(cue_plane.mesh as BoxMesh).material = StandardMaterial3D.new()
 	field.add_child(cue_plane)
+	var matching_name := Node3D.new()
+	matching_name.name = "ShadowFieldPolicy"
+	field.add_child(matching_name)
 	var scenery := Node3D.new()
 	scenery.name = "Scenery"
 	field.add_child(scenery)
@@ -71,9 +80,12 @@ func _field_policy() -> void:
 		field.free()
 		return
 	FieldPolicy.attach(field)
+	field.set_meta("lighting_materials", [])
+	field.set_meta("lighting_snapshot", lighting.duplicate(true))
 	root.add_child(field)
 	await process_frame
-	var policy := field.get_node("ShadowFieldPolicy")
+	var policy: Node = field.get_meta("shadow_field_policy")
+	_check("authored node names cannot replace the policy owner", policy != matching_name)
 	var projectors: Array = manager.projectors
 	var first_projector: Node = projectors[0]
 	var first_viewport := first_projector.get("viewport") as SubViewport
@@ -91,9 +103,9 @@ func _field_policy() -> void:
 		and first_viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
 	var newer_lighting := lighting.duplicate(true)
 	newer_lighting.sun_azimuth_deg = float(lighting.sun_azimuth_deg) + 45.0
-	policy.apply_lighting(newer_lighting)
+	var committed := FieldBuilder.update_lighting(field, newer_lighting)
 	_check("suppressed field retains newer lighting without scheduling masks", manager.snapshot == newer_lighting
-		and _all_projectors_disabled(projectors))
+		and committed and _all_projectors_disabled(projectors))
 	_set_route("auto")
 	_check("restore preserves both hidden and visible original batches", not cue_plane.visible and not near_plane.visible
 		and far_plane.visible and not already_hidden.visible and population.visible)

@@ -9246,4 +9246,3 @@ msgstr "Inativo"
 
 msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
 msgstr "Sombras nativas não estão disponíveis nesta sessão gráfica; as sombras projetadas estão ativas."
-

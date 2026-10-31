@@ -97,6 +97,8 @@ Eight real-engine controls used the pinned `4.8.beta1.official.4d10419ca` and ch
 
 V2 phase receipts bind the complete phase roster and runner inputs, declare the parse coverage mode, and reject source drift before completion. The CI aggregate independently checks one parse receipt and eight exact, disjoint modulo unit receipts against its checkout; their union must cover every script. Failure controls include missing units, wrong unit subsets, duplicate shards, altered coverage and changed source. The opt-in flag is restricted to the combined CI integration mode; the full local wrapper clears inherited selectors.
 
+An independent source review of the combined runner, workflow, local wrapper and verifier found no concrete lost coverage or gate bypass. Release-tool fixtures were rerun: 40 passed. Workflow validation with `actionlint` 1.7.12 and individual `bash -n` checks of the four changed shell entrypoints passed. These checks do not replace a completed full app run.
+
 ### Interrupted full-suite qualification
 
 A disposable clean snapshot at `ce789cae7e570b91776cebc47c1ffc9cf16dadfb` ran the pinned Linux engine with isolated profiles. The cold import completed in 201.273 seconds; a restart's warm import completed in 5.666 seconds. These are separate setup observations, not a paired full-suite performance result.
@@ -104,6 +106,8 @@ A disposable clean snapshot at `ce789cae7e570b91776cebc47c1ffc9cf16dadfb` ran th
 The restarted run completed 820 checked reports, including 807 of 1,552 explicit parse invocations. A further invocation was interrupted and has no complete report. No unit scripts had started. The task stopped its own processes when free space on the Windows backing volume fell below 1 GiB; C: subsequently reached zero. **The full suite did not pass or complete.** These results predate the unit-backed parse optimization and do not qualify the latest concurrent UI changes. Battery input hash verification also explicitly skipped absent `references/battery-energy`; only fit-result consistency ran for that check.
 
 Local evidence remains under `/home/bulto/openrc-ci-validation-ce789-20261031/tmp/full-suite-ce789-restart-20261031/` (`suite.log`, `partial-results.xml`, `disk-observations.txt`, `checks/`). WSL later failed to start and was restarted with owner authorization; focused verification resumed with disposable outputs on D:. The storage failure's root cause was not established. Full optimized runtime and rendered qualification remain open.
+
+The first focused retry on ordinary `/mnt/d` passed the 13 partition tests but failed one of 30 export-identity fixtures: the packaged Linux executable had mode `0777` rather than required `0755`. DrvFS without metadata did not preserve the requested `chmod`. A temporary second D: mount with POSIX metadata support preserved `0755`; subsequent verification uses that mount. No permission assertion or package gate was weakened, and no persistent WSL configuration was changed.
 
 ### Unit invocation timing inventory
 

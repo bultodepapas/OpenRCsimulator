@@ -3100,13 +3100,16 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	AirplaneBuilder.apply_mechanisms(_airplane, mechanisms)
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	# FW-MOON-03: field-world time passes no lighting dictionary; its strength fades the moon's shadow with the phase.
-	var strength: float = (Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()) \
-		if _shadow_mode == "sun" else 1.0
-	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
-	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	var cue := Atmosphere.ShadowSettings.aircraft_cue()
+	var cue_mode := _shadow_mode if cue == "auto" else cue
+	if _shadow_mode == "off":
+		cue_mode = "off" # V / explicit launch-off remains an immediate pilot control.
+	var strength: float = (Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()) \
+		if cue_mode == "sun" else 1.0
+	_shadow.visible = cue_mode != "off" and _airplane.root.visible and strength > 0.0
+	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y,
-		direction if _shadow_mode == "sun" or cue == "sun" else Vector3.UP, strength)
+		direction if cue_mode == "sun" else Vector3.UP, strength)
 	var paused: bool = session != null and session.sim.paused and not _scripted
 	_rig.light_direction = direction # CAM-14: the fly-by stands with the sun behind it
 	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF),

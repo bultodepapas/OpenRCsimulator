@@ -8455,4 +8455,3 @@ msgstr "無効"
 
 msgid "Native shadows are unavailable in this graphics session; projected shadows are active."
 msgstr "このグラフィックセッションではネイティブ影を使えないため、投影影が有効です。"
-
