@@ -8,6 +8,7 @@ const Descriptor := preload("res://workshop/descriptor.gd")
 const Store := preload("res://workshop/store.gd")
 const Workshop := preload("res://ui/workshop.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
 
 class CompileCountingWorkshop extends Workshop:
 	var compile_count := 0
@@ -338,6 +339,9 @@ func _run() -> void:
 	workshop.call("_set_page", "setup")
 	await _ui.settle()
 	var setup_tab: Button = _find(workshop, "PageSetup")
+	_check("selected Workshop page keeps its green marker while hovered", setup_tab.button_pressed
+		and setup_tab.get_theme_stylebox("pressed").border_color == UiTheme.FOCUS
+		and setup_tab.get_theme_stylebox("hover_pressed").border_color == UiTheme.FOCUS)
 	setup_tab.grab_focus()
 	await _ui.tap(KEY_TAB)
 	_check("Tab from the active page reaches its first setting", _ui.focus_name() == "StartingPreset", _ui.focus_name())

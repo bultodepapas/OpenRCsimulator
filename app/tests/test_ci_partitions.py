@@ -24,6 +24,9 @@ class Partitions(unittest.TestCase):
         runner = self.root.parent / "tools" / "godot"
         runner.mkdir(parents=True)
         shutil.copyfile(Path(__file__).parents[2] / "tools/godot/run_checked.py", runner / "run_checked.py")
+        ci_tools = self.root.parent / "tools" / "ci"
+        ci_tools.mkdir(parents=True)
+        shutil.copyfile(Path(__file__).parents[2] / "tools/ci/phase_roster.py", ci_tools / "phase_roster.py")
         scripts = {
             "get-godot.sh": '#!/usr/bin/env bash\nprintf "%s/fake-engine.sh\\n" "$(cd "$(dirname "$0")" && pwd)"\n',
             "fake-engine.sh": '''#!/usr/bin/env bash
@@ -34,6 +37,7 @@ for arg in "$@"; do
       ;;
     res://tests/*)
       echo "VISITED ${arg##*/}"
+      if [[ -n "${PROBE_ADD:-}" ]]; then touch "$PROBE_ADD"; fi
       [[ "${PROBE_FAIL:-}" != "${arg##*/}" ]] || exit 7
       if [[ "${PROBE_ERROR:-}" == "${arg##*/}" ]]; then printf '\\033[31m  %s: simulated engine error\\033[0m\\n' "${PROBE_KIND:-ERROR}"; fi
       ;;
@@ -64,6 +68,15 @@ exit 0
             visited.extend(line.removeprefix("VISITED ") for line in result.stdout.splitlines()
                            if line.startswith("VISITED "))
         self.assertCountEqual(visited, self.names)
+        receipts = list((self.root.parent / "tmp/godot-checks").glob("roster-units-*-of-8-*.json"))
+        self.assertEqual(len(receipts), 8)
+        receipt_cases = []
+        for path in receipts:
+            receipt = json.loads(path.read_text(encoding="utf-8"))
+            self.assertIs(receipt["complete"], True)
+            self.assertEqual(receipt["expected"], receipt["completed"])
+            receipt_cases.extend(Path(name).name for name in receipt["completed"])
+        self.assertCountEqual(receipt_cases, self.names)
 
     def test_fixed_brake_gate_failure_is_fatal(self):
         (self.root / "tests/test_fixed_gear_brake_input.gd").touch()
@@ -73,6 +86,7 @@ exit 0
         self.assertEqual(result.returncode, 9, result.stdout)
         self.assertIn("STRICT_BRAKE_GATE", result.stdout)
         self.assertNotIn("VISITED test_fixed_gear_brake_input.gd", result.stdout)
+        self.assertFalse(list((self.root.parent / "tmp/godot-checks").glob("roster-units-*.json")))
 
     def test_fixed_brake_history_is_fetched_for_its_unit_shard(self):
         fixed_name = "test_fixed_gear_brake_input.gd"
@@ -80,7 +94,10 @@ exit 0
         repository = Path(__file__).resolve().parents[2]
         workflow = (repository / ".github/workflows/ci.yml").read_text(encoding="utf-8")
         start = workflow.index("      - name: Fetch fixed-brake historical source commits\n")
-        end = workflow.index("      - name: Tagged releases require their own notes", start)
+        # The release-note step may move to a separate preflight; bound the
+        # fetch script at whichever following step is present first.
+        markers = ("      - name: Tagged releases require their own notes", "      - run: sudo apt-get update")
+        end = min(workflow.index(marker, start) for marker in markers if marker in workflow[start:])
         script = textwrap.dedent(workflow[start:end].split("        run: |\n", 1)[1])
         fake_bin = self.root.parent / "fake-bin"
         fake_bin.mkdir()
@@ -222,6 +239,29 @@ esac
         for part in ["unknown", "all", "integration"]:
             result = self.run_partition(0, 8, OPENRC_TEST_PART=part)
             self.assertEqual(result.returncode, 2, result.stdout)
+
+    def test_rerun_preserves_the_prior_receipt(self):
+        self.assertEqual(self.run_partition(0, 1).returncode, 0)
+        result = self.run_partition(0, 1)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        receipts = list((self.root.parent / "tmp/godot-checks").glob("roster-units-0-of-1-*.json"))
+        self.assertEqual(len(receipts), 2)
+        self.assertEqual(json.loads(receipts[0].read_text()), json.loads(receipts[1].read_text()))
+
+    def test_only_named_physical_exceptions_get_their_matching_flags(self):
+        for name in ("test_rudder_authority.gd", "test_yaw_damping.gd"):
+            (self.root / "tests" / name).touch()
+        result = self.run_partition(0, 1)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        arguments = {}
+        for path in (self.root.parent / "tmp/godot-checks").glob("*/report.json"):
+            command = json.loads(path.read_text())["command"]
+            for arg in command:
+                if arg.startswith("res://tests/"):
+                    arguments[arg.rsplit("/", 1)[-1]] = command[command.index(arg) + 1:]
+        self.assertEqual(arguments["test_rudder_authority.gd"], ["--", "--allow-known-stik-rudder-sideslip"])
+        self.assertEqual(arguments["test_yaw_damping.gd"], ["--", "--allow-known-r02-yaw-alpha11"])
+        self.assertEqual(arguments[self.names[0]], [])
 
 
 if __name__ == "__main__":

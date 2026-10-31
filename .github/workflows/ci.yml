@@ -2,11 +2,68 @@ name: CI
 
 on:
   push:
+    branches: [main]
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+# One developer can push directly to main. Only superseded PR runs are cancelled;
+# main/tag/manual runs never cancel each other or lose pending verification.
+concurrency:
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
+  scope:
+    name: CI selection and release preflight
+    runs-on: ubuntu-24.04
+    outputs:
+      app: ${{ steps.select.outputs.app }}
+      three: ${{ steps.select.outputs.three }}
+      site: ${{ steps.select.outputs.site }}
+      export: ${{ steps.select.outputs.export }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0 # Tag/version preflight and multi-commit push comparison.
+      - name: CI orchestration regressions
+        run: python3 -m unittest discover -s tools/ci -p 'test_*.py'
+      - name: Check release source, version and notes before expensive jobs
+        run: python3 tools/ci/release_preflight.py --root . --event "$GITHUB_EVENT_NAME" --ref "$GITHUB_REF" --sha "$GITHUB_SHA"
+      - name: Record conservative selection (shadow mode keeps full production)
+        id: select
+        run: python3 tools/ci/policy.py scope --receipt tmp/ci-selection.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ci-selection
+          path: tmp/ci-selection.json
+          if-no-files-found: error
+          retention-days: 7
+
+  site:
+    name: Website source and download checks
+    needs: scope
+    if: needs.scope.outputs.site == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+      - name: Isolated website checker dependencies
+        run: |
+          python3 -m venv "$RUNNER_TEMP/site-venv"
+          "$RUNNER_TEMP/site-venv/bin/python" -m pip install -r site/requirements-seo.txt
+      - run: '"$RUNNER_TEMP/site-venv/bin/python" site/build_locales.py --check'
+      - run: '"$RUNNER_TEMP/site-venv/bin/python" site/test_locales.py'
+      - run: node --test site/test_downloads.cjs
+      - run: python3 tools/analytics/test_github_history.py
   three:
+    needs: scope
+    if: needs.scope.outputs.three == 'true'
     name: three.js prototype (archived bake-off build)
     runs-on: ubuntu-24.04
     defaults:
@@ -31,6 +88,8 @@ jobs:
           path: prototypes/stage0/capture-three*.png
 
   app:
+    needs: scope
+    if: needs.scope.outputs.app == 'true'
     name: Godot app (${{ matrix.part }} ${{ matrix.shard }})
     runs-on: ubuntu-24.04
     timeout-minutes: 360
@@ -85,19 +144,14 @@ jobs:
             index=$((index + 1))
           done
           "$found" || { echo 'fixed-brake test missing' >&2; exit 1; }
-      - name: Tagged releases require their own notes
-        if: startsWith(github.ref, 'refs/tags/v')
-        env:
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: |
-          test -s "docs/releases/$RELEASE_TAG.md"
-          # Stable software may include explicitly documented experimental aircraft/features.
-          # app/test.sh keeps the named physical pending checks separate; software failures remain fatal.
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: .tools
-          key: godot-${{ hashFiles('app/get-godot.sh') }}
+          path: |
+            .tools/Godot_v*_linux.x86_64
+            .tools/Godot_v*_linux.x86_64.sha512
+            .tools/Godot_v*_linux.x86_64.zip
+          key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
       - name: Import resources before schema probes
         id: resource_import
         if: matrix.part == 'integration'
@@ -119,26 +173,6 @@ jobs:
           python3 -m venv --system-site-packages "$RUNNER_TEMP/generator-venv"
           "$RUNNER_TEMP/generator-venv/bin/python" -m pip install -r research/skywalker-x8/X8-06/requirements.txt
           echo "$RUNNER_TEMP/generator-venv/bin" >> "$GITHUB_PATH"
-      - name: Generated geometry and physics data match their sources
-        if: matrix.part == 'integration'
-        run: |
-          python3 assets/aircraft/ugly-stik-60/compile_geometry.py --check
-          python3 assets/aircraft/extra-300s-60/compile_geometry.py --check
-          python3 assets/aircraft/extra-300s-60/compile_appearance.py --check
-          python3 assets/aircraft/avanti-s-a200/compile_geometry.py --check
-          python3 assets/aircraft/p51d-mustang-120/build_geometry.py --check
-          python3 assets/aircraft/p51d-mustang-120/compile_geometry.py --check
-          python3 research/extra-300/ex14/ground_effect_vlm.py --check
-          python3 research/extra-300/ex05/derive_physics.py --check
-          python3 research/p51/p51-05/derive_physics.py --check
-          python3 research/timber/tt01/manifest.py --check
-          python3 assets/aircraft/turbo-lumber-evolution/build_geometry.py --check
-          python3 assets/aircraft/turbo-lumber-evolution/compile_geometry.py --check
-          python3 research/timber/tt07/derive_physics.py --check
-          python3 research/skywalker-x8/X8-00/manifest.py --check
-          python3 research/skywalker-x8/X8-02/install_assets.py --check
-          python3 research/skywalker-x8/X8-02/compile_model.py --check
-          python3 research/skywalker-x8/X8-06/derive_physics.py --check
       - name: Release fixture inspection tools
         if: matrix.part == 'integration'
         run: sudo apt-get install -y binutils zip g++
@@ -169,6 +203,13 @@ jobs:
           "$RUNNER_TEMP/godot-resources-venv/bin/python" -m unittest discover -s tools/godot -p 'test_resource*.py'
       - run: app/test.sh
         id: app_check
+      - name: Upload discovered-script coverage receipts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: app-rosters-${{ matrix.part }}-${{ matrix.shard }}
+          path: tmp/godot-checks/roster-*.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Validate diagnostic evidence and export JUnit
         if: always() && (steps.resource_import.outcome != 'skipped' || steps.app_check.outcome != 'skipped')
         run: python3 tools/godot/summarize.py tmp/godot-checks --junit tmp/godot-checks/results.xml
@@ -194,6 +235,8 @@ jobs:
           retention-days: 7
 
   native-linux:
+    needs: scope
+    if: needs.scope.outputs.app == 'true'
     name: RC native Linux build
     runs-on: ubuntu-24.04
     steps:
@@ -201,8 +244,11 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: .tools
-          key: godot-${{ hashFiles('app/get-godot.sh') }}
+          path: |
+            .tools/Godot_v*_linux.x86_64
+            .tools/Godot_v*_linux.x86_64.sha512
+            .tools/Godot_v*_linux.x86_64.zip
+          key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
       - name: RC native Linux build, float64 loading and reference parity
         # This verifies the Linux host artifact. App installation requires the
         # separately qualified Windows artifact as well; macOS uses GDScript.
@@ -219,6 +265,8 @@ jobs:
             .tools/native-ground-vehicle/godot-cpp/LICENSE.md
 
   native-kernel-linux:
+    needs: scope
+    if: needs.scope.outputs.app == 'true'
     name: NK-3 native kernel qualification (Linux)
     runs-on: ubuntu-24.04
     timeout-minutes: 180
@@ -237,8 +285,11 @@ jobs:
           echo "$RUNNER_TEMP/nk3-toolchain" >> "$GITHUB_PATH"
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: .tools
-          key: godot-${{ hashFiles('app/get-godot.sh') }}
+          path: |
+            .tools/Godot_v*_linux.x86_64
+            .tools/Godot_v*_linux.x86_64.sha512
+            .tools/Godot_v*_linux.x86_64.zip
+          key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
       - name: Import project resources with checked diagnostics
         run: |
           python3 tools/godot/run_checked.py --timeout 600 --out-dir tmp/nk3-ci/checks --label nk3-import -- \
@@ -374,6 +425,8 @@ jobs:
           retention-days: 7
 
   visuals:
+    needs: scope
+    if: needs.scope.outputs.app == 'true'
     name: Godot visual captures
     runs-on: ubuntu-24.04
     steps:
@@ -381,8 +434,11 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: .tools
-          key: godot-${{ hashFiles('app/get-godot.sh') }}
+          path: |
+            .tools/Godot_v*_linux.x86_64
+            .tools/Godot_v*_linux.x86_64.sha512
+            .tools/Godot_v*_linux.x86_64.zip
+          key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
       - run: app/capture.sh
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always() # Preserve diagnostics when a capture gate fails.
@@ -391,6 +447,8 @@ jobs:
           path: app/captures/*
 
   native-windows:
+    needs: scope
+    if: needs.scope.outputs.app == 'true'
     name: RC native Windows build
     runs-on: windows-2025-vs2026
     steps:
@@ -467,9 +525,9 @@ jobs:
   # trimmed-flight check, or the macOS bundle is not universal and ad-hoc signed (app/export.sh).
   export:
     name: Release builds (Windows, Linux, macOS)
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    if: needs.scope.outputs.export == 'true'
     # Package in parallel with app/visual checks; publication below still requires every check.
-    needs: [native-linux, native-windows, native-kernel-linux]
+    needs: [scope, native-linux, native-windows, native-kernel-linux]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -478,12 +536,15 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y zip binutils libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: .tools
-          key: godot-${{ hashFiles('app/get-godot.sh') }}
+          path: |
+            .tools/Godot_v*_linux.x86_64
+            .tools/Godot_v*_linux.x86_64.sha512
+            .tools/Godot_v*_linux.x86_64.zip
+          key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.local/share/godot/export_templates
-          key: godot-templates-${{ hashFiles('app/get-templates.sh') }}
+          key: godot-templates-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-templates.sh') }}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: rc-native-linux
@@ -542,10 +603,37 @@ jobs:
             ${{ steps.packages.outputs.package_dir }}/SHA256SUMS
           if-no-files-found: error
 
+  required:
+    name: CI required
+    if: always()
+    needs: [scope, three, site, app, visuals, native-linux, native-windows, native-kernel-linux, export]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ci-selection
+          path: tmp
+      - name: Reject failed, cancelled, missing or unexpected skipped jobs
+        env:
+          CI_NEEDS: ${{ toJSON(needs) }}
+        run: python3 tools/ci/policy.py verify --receipt tmp/ci-selection.json
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        if: needs.scope.outputs.app == 'true'
+        with:
+          pattern: app-rosters-*
+          path: tmp/ci-rosters
+      - name: Reconcile every discovered unit and parse script
+        if: needs.scope.outputs.app == 'true'
+        run: python3 tools/ci/phase_roster.py verify-ci --app app --directory tmp/ci-rosters
+
   release:
     name: GitHub release (v* tags)
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [three, app, visuals, native-linux, native-windows, native-kernel-linux, export]
+    if: startsWith(github.ref, 'refs/tags/v') && needs.required.result == 'success' && needs.export.result == 'success'
+    needs: [required, export]
+    concurrency:
+      group: publish-${{ github.ref }}
+      cancel-in-progress: false
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -558,25 +646,7 @@ jobs:
       - env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # PT1h: every tag has reviewed notes; never publish a stale first-launch guide as release history.
-          NOTES="docs/releases/${GITHUB_REF_NAME}.md"
-          test -s "$NOTES"
-          python3 tools/release/manifest.py verify --directory dist \
+          python3 tools/release/publish.py --directory dist \
+            --notes "docs/releases/$GITHUB_REF_NAME.md" \
             --expected-commit "$GITHUB_SHA" --expected-tag "$GITHUB_REF_NAME" \
             --expected-run-id "$GITHUB_RUN_ID" --expected-repository "$GITHUB_REPOSITORY"
-          (cd dist && sha256sum --check --strict SHA256SUMS)
-          # Refuse a deleted or moved tag; tag protection still owns the publication race.
-          git fetch --no-tags origin "refs/tags/$GITHUB_REF_NAME"
-          test "$(git rev-parse 'FETCH_HEAD^{commit}')" = "$GITHUB_SHA"
-          RELEASE_FLAGS=()
-          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
-            RELEASE_FLAGS+=(--prerelease)
-          else
-            RELEASE_FLAGS+=(--latest)
-          fi
-          gh release create "$GITHUB_REF_NAME" \
-            "dist/openrc-simulator-$GITHUB_REF_NAME-linux-x86_64.zip" \
-            "dist/openrc-simulator-$GITHUB_REF_NAME-windows-x86_64.zip" \
-            "dist/openrc-simulator-$GITHUB_REF_NAME-macos-universal.zip" \
-            dist/release-manifest.json dist/linux-abi.json dist/SHA256SUMS \
-            --verify-tag --title "OpenRC Simulator $GITHUB_REF_NAME" --notes-file "$NOTES" "${RELEASE_FLAGS[@]}"

@@ -3,6 +3,7 @@ extends VBoxContainer
 
 const Profile := preload("res://render/lighting/lighting_profile.gd")
 const Widgets := preload("res://ui/widgets.gd")
+const Crystal := preload("res://ui/crystal_surface.gd")
 const Presentation := preload("res://workshop/presentation.gd")
 const Sequence := preload("res://workshop/lighting_sequence.gd")
 const SequenceEditor := preload("res://ui/workshop_lighting_sequence.gd")
@@ -772,6 +773,7 @@ func _add_palette_row(index: int, raw_color: String) -> void:
 	var row := HBoxContainer.new()
 	row.name = "LightingPaletteColor%d" % index
 	var picker := ColorPickerButton.new()
+	Crystal.attach(picker)
 	Widgets.fit_color_picker_popup(picker)
 	picker.name = "LightingPalettePicker%d" % index
 	picker.custom_minimum_size = Vector2(42, 32)
@@ -789,9 +791,7 @@ func _add_palette_row(index: int, raw_color: String) -> void:
 	hex.text_changed.connect(func(value: String) -> void: _on_zone_hex_changed(value, index))
 	hex.text_submitted.connect(func(_value: String) -> void: hex.release_focus())
 	row.add_child(hex)
-	var remove := Button.new()
-	remove.name = "RemoveLightingColor%d" % index
-	remove.text = "−"
+	var remove := Widgets.button("−", "", "RemoveLightingColor%d" % index)
 	remove.tooltip_text = tr("Remove this palette color")
 	remove.disabled = _zone_draft.get("pattern", {}).get("palette", []).size() <= 1
 	remove.pressed.connect(func() -> void: _remove_palette_color(index))
@@ -1195,6 +1195,7 @@ func _rebuild_effect_controls() -> void:
 			_effects_controls.add_child(HSeparator.new())
 		var row := VBoxContainer.new()
 		var toggle := CheckButton.new()
+		Crystal.attach(toggle)
 		toggle.text = tr("%s effect") % tr(_effect_anchor_label(anchor))
 		toggle.button_pressed = bool(entry.get("enabled", false))
 		toggle.toggled.connect(func(value: bool) -> void: _set_effect_value(anchor, "enabled", value))
@@ -1210,6 +1211,7 @@ func _rebuild_effect_controls() -> void:
 		kind_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		kind_row.add_child(kind_label)
 		var kind_selector := OptionButton.new()
+		Crystal.attach(kind_selector)
 		kind_selector.name = "EffectKind_" + anchor
 		for kind_id: String in EFFECT_KIND_IDS:
 			kind_selector.add_item(tr(kind_id.capitalize()))

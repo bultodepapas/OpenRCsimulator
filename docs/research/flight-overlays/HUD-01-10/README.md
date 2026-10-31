@@ -492,3 +492,50 @@ was dominated by debug logging and exposed the idle input calls; profiler wall-f
 an FPS claim. The snapshot LSP check was inconclusive (`NO_DIAGNOSTICS` for battery_panel.gd after 30 s,
 `tmp/widget-r9/compiler.json`); direct engine parsing and executable checks passed. Existing aircraft inertia
 warnings remain. No physics code changed and the full physics suite was not rerun.
+
+## Shared glass and classic faces (2026-10-31, HUD-13-R10 / UI-22-R12)
+
+The player frame now reuses the existing shell crystal shader with a neutral center, pale static reflection and
+green decorative header/hover details. Its native panel draws only the border and shadow, avoiding a second
+translucent fill. The underlay ignores input, follows widget opacity and has no process callback, screen copy or
+animation clock. Classic dials retain their geometry with graphite bezels and pale needles/scale marks; horizon
+sky/earth and amber heading/navigation indications remain semantic. Green focus and amber caution are separate
+tokens, including battery bars and fuel-reserve chips.
+
+Conditions uses the shared slider thumbs. Controller sections and the flight guide use green selection;
+Workshop selection survives hover, and rebuilt lighting/sequence controls attach the existing crystal feedback.
+These changes preserve the shared decorator's reduced-motion and screen-owned-style behavior.
+
+Source review began at `c4dc202d`; the unrelated documentation/CI commit `3bf7ba2af` arrived during the work and
+did not change these UI paths. Other concurrent CI/release edits were preserved. A separate Good Enemy review
+found no blocking defect in the combined UI patch. No physics, telemetry contracts or downloaded assets changed.
+
+Checked Godot 4.8-beta1 verification:
+
+- Player widgets: 153 headless checks and 157 rendered checks; classic: 61; navigation: 57; training: 59;
+  widget settings: 27; redraw suppression: 17; widget efficiency: 22; legacy efficiency: 14; battery: 138;
+  overlay manager: 213.
+- Weather sliders, controller sections (115), Workshop UI, Workshop lighting and lighting-sequence UI (39)
+  passed. The rebuilt palette-action test exercises actual keyboard-focus feedback.
+- Native `test_ui_crystal.gd` passed, including reduced motion, disabled states, native focus/activation,
+  screen-owned overrides, rendered primary contrast and teardown.
+- The HUD rendered test samples the actual surface over white and black at 80% and 100% opacity. The minimum
+  sampled secondary-text contrast was **5.6977:1**. Opaque interior samples matched across both backgrounds;
+  the static reflection was brighter than the lower interior. This bounds sampled pixels, not every scene.
+
+Receipts are under ignored `tmp/widget-glass-{root,menu,hud}-20261031/`. An initial Workshop test assertion had
+a syntax error, fixed before its passing rerun. The first rendered highlight test sampled outside the shader's
+diagonal reflection; the final test samples the actual reflection and requires a larger brightness difference.
+No implementation change was needed for that sampling correction.
+
+Native Windows, NVIDIA RTX 3090 driver 617.42, OpenGL Compatibility: production review at **1920×1080** covered
+Player, Classic at 80% and Classic at 100% in Spanish, plus Conditions and Controls. The existing
+`tools/debug/scenarios/widget_presets.txt` passed with `--fail-on-error`. The debug session stopped with no crash
+or leaked objects. Captures remain in `tmp/debug-bridge/20261031-073854-47870/shots/`; none are added to Git.
+
+Full-suite limits: `app/test.sh` stopped during unrelated F4U resource import with `vector::resize failed, new
+size 1048576` / `terminate called without an active exception` (engine exit 3; receipt
+`tmp/godot-checks/godot-25mka2vb/`). `app/capture.sh` could not acquire its lock because Git Bash lacks `flock`;
+the reported lock-owner text is secondary to that missing command. Neither complete suite is claimed passed.
+The underlay adds material/node and GPU work despite having no GDScript processing loop; no performance gain or
+full hardware/pilot-readability qualification is claimed.

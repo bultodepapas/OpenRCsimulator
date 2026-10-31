@@ -54,6 +54,7 @@ func _tab(caption: String, parent: HBoxContainer, controller: bool) -> Button:
 	var button := Button.new()
 	button.text = caption
 	button.toggle_mode = true
+	button.theme_type_variation = "HomeTab"
 	button.focus_mode = Control.FOCUS_NONE
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.add_theme_font_size_override("font_size", 13)

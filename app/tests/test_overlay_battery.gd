@@ -376,7 +376,14 @@ func _settings_and_texts() -> void:
 			missing.append(text)
 	_check("every new text has a Spanish translation", missing.is_empty(), str(missing))
 	var backplate := Color(UiTheme.PANEL, Frame.BACKPLATE_ALPHA)
-	for color: Color in [BatteryPanel.VOLT_COLOR, BatteryPanel.AMP_COLOR, UiTheme.ERROR]:
+	_check("remaining-capacity caution is amber, independent of current-trace green",
+		BatteryPanel.alarm_color(["cell_warning"]) == UiTheme.CAUTION
+		and BatteryPanel.alarm_color(["used_capacity"]) == UiTheme.CAUTION
+		and UiTheme.CAUTION != BatteryPanel.AMP_COLOR)
+	_check("danger wins over simultaneous caution; no alarm stays neutral",
+		BatteryPanel.alarm_color(["cell_warning", "lvc"]) == UiTheme.ERROR
+		and BatteryPanel.alarm_color([]) == UiTheme.TEXT)
+	for color: Color in [BatteryPanel.VOLT_COLOR, BatteryPanel.AMP_COLOR, UiTheme.CAUTION, UiTheme.ERROR]:
 		_check("trace/bar colour %s ≥ 3:1 on the backplate over any sky" % color.to_html(false), UiTheme.contrast(color, backplate) >= 3.0,
 			"%.2f" % UiTheme.contrast(color, backplate))
 
@@ -429,7 +436,7 @@ func _panel() -> void:
 		"%s | %s | %s | %s | %s | %s | %s | %s" % [panel.values.pack_v.text, panel.values.cell_avg.text, panel.values.cell_min.text,
 			panel.values.current.text, panel.values.power.text, panel.values.temperature.text, panel.values.used.text, panel.values.percent.text])
 	_check("ESC soft cut shows the LVC chip in caution amber", panel.lvc_chip.visible
-		and (panel.lvc_chip.get_theme_stylebox("panel") as StyleBoxFlat).bg_color == UiTheme.FOCUS)
+		and (panel.lvc_chip.get_theme_stylebox("panel") as StyleBoxFlat).bg_color == UiTheme.CAUTION)
 	panel.refresh(Sensors.new().update(0.0, _ecm({ esc_state = "hard_cut" })), "metric")
 	_check("hard cut turns the chip danger red", (panel.lvc_chip.get_theme_stylebox("panel") as StyleBoxFlat).bg_color == UiTheme.DANGER.pressed)
 	_check("sparklines and the bar are drawn", panel.spark_v.is_visible_in_tree() and panel.spark_a.is_visible_in_tree() and panel.bar.is_visible_in_tree())

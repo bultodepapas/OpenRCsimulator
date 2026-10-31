@@ -17,6 +17,12 @@ func _initialize() -> void:
 	await process_frame
 	await process_frame
 	_check("cockpit is opt-in and contains exactly five classic instruments", Settings.DEFAULTS.preset == "pilot" and manager.settings.visible.size() == 6 and Settings.CLASSIC_IDS.all(func(id: String) -> bool: return manager.frames[id].visible))
+	_check("classic face and bezels use neutral graphite", _neutral(Classic.DIAL) and _neutral(Classic.BEZEL_OUTER)
+		and _neutral(Classic.BEZEL_INNER) and _neutral(Classic.BEZEL_HIGHLIGHT))
+	_check("horizon retains distinct sky and earth colors", Classic.SKY == Color("35789e") and Classic.EARTH == Color("78513b"))
+	_check("classic widgets share the glass exterior and retain amber indications", Settings.CLASSIC_IDS.all(
+		func(id: String) -> bool: return manager.frames[id]._glass_material.shader == Classic.GLASS)
+		and Classic.ACCENT == Color("f1ca7d"))
 	var t := {airspeed = 30.0, pitch_deg = 10.0, bank_deg = 30.0, height_datum = 1234.0, height_agl = 200.0, heading_deg = 359.8, vertical_speed = -2.0}
 	for id: String in Settings.CLASSIC_IDS:
 		manager.frames[id].refresh(t, "metric", 40.0, {}, {})
@@ -120,6 +126,10 @@ func _separate(manager: CanvasLayer) -> bool:
 		for j in range(i + 1, Settings.CLASSIC_IDS.size()):
 			if box.intersects(manager.frames[Settings.CLASSIC_IDS[j]].get_global_rect()): return false
 	return true
+
+
+func _neutral(color: Color) -> bool:
+	return is_equal_approx(color.r, color.g) and is_equal_approx(color.g, color.b)
 
 
 func _check(label: String, ok: bool) -> void:

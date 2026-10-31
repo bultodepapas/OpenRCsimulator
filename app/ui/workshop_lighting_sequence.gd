@@ -3,6 +3,7 @@ extends VBoxContainer
 
 const Profile := preload("res://render/lighting/lighting_profile.gd")
 const Widgets := preload("res://ui/widgets.gd")
+const Crystal := preload("res://ui/crystal_surface.gd")
 const Sequence := preload("res://workshop/lighting_sequence.gd")
 
 signal profile_changed(lighting: Dictionary)
@@ -645,6 +646,7 @@ func _add_palette_row(index: int, color_text: String) -> void:
 	row.add_theme_constant_override("h_separation", 6)
 	row.add_theme_constant_override("v_separation", 4)
 	var picker := ColorPickerButton.new()
+	Crystal.attach(picker)
 	Widgets.fit_color_picker_popup(picker)
 	picker.name = "SequencePalettePicker%d" % index
 	picker.custom_minimum_size = Vector2(42, 32)
@@ -663,9 +665,7 @@ func _add_palette_row(index: int, color_text: String) -> void:
 	hex.text_changed.connect(func(value: String) -> void: _on_color_text_changed(value, index))
 	hex.text_submitted.connect(func(_value: String) -> void: hex.release_focus())
 	row.add_child(hex)
-	var remove := Button.new()
-	remove.name = "SequencePaletteRemove%d" % index
-	remove.text = tr("Remove")
+	var remove := Widgets.button(tr("Remove"), "", "SequencePaletteRemove%d" % index)
 	remove.pressed.connect(func() -> void: _remove_palette_color(index))
 	row.add_child(remove)
 	_palette_list.add_child(row)
@@ -688,6 +688,7 @@ func _rebuild_target_controls(state: Dictionary) -> void:
 		if zone_id.is_empty():
 			continue
 		var checkbox := CheckButton.new()
+		Crystal.attach(checkbox)
 		checkbox.name = "SequenceZone_" + zone_id
 		checkbox.text = tr(_zone_label(zone_id))
 		checkbox.set_pressed_no_signal(selected_zones.has(zone_id))
@@ -706,6 +707,7 @@ func _rebuild_target_controls(state: Dictionary) -> void:
 		if anchor_id.is_empty():
 			continue
 		var checkbox := CheckButton.new()
+		Crystal.attach(checkbox)
 		checkbox.name = "SequenceEffect_" + anchor_id
 		checkbox.text = tr(_effect_label(anchor_id))
 		checkbox.set_pressed_no_signal(selected_effects.has(anchor_id))

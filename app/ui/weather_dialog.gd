@@ -12,7 +12,6 @@ const SkyControls := preload("res://ui/sky_controls.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
-const SLIDER_GRABBER: Texture2D = preload("res://ui/slider_grabber.svg")
 
 signal applied(config: Dictionary)
 signal cancelled
@@ -1011,8 +1010,6 @@ func _add_number_field(grid: GridContainer, key: String, label_text: String, inp
 
 
 func _style_slider(slider: HSlider) -> void:
-	slider.add_theme_icon_override("grabber", SLIDER_GRABBER)
-	slider.add_theme_icon_override("grabber_highlight", SLIDER_GRABBER)
 	var track: StyleBoxLine = StyleBoxLine.new()
 	track.color = UiTheme.EDGE
 	track.thickness = 6

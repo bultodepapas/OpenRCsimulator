@@ -95,7 +95,7 @@ func _chip(code: String) -> PanelContainer:
 	elif code in INFO:
 		box.bg_color = Color(UiTheme.PANEL, Frame.BACKPLATE_ALPHA)
 	else:
-		box.bg_color = UiTheme.FOCUS # amber caution, dark text
+		box.bg_color = UiTheme.CAUTION # amber caution, dark text
 		text_color = UiTheme.PANEL
 	box.set_corner_radius_all(UiTheme.RADIUS)
 	box.content_margin_left = 12

@@ -898,7 +898,7 @@ func _make_section(section_id: String, caption: String) -> VBoxContainer:
 	button.toggle_mode = true
 	var active_style := _screen.get_theme_stylebox("normal", "Button").duplicate() as StyleBoxFlat
 	active_style.border_width_bottom = 3
-	active_style.border_color = Color("f5c65d")
+	active_style.border_color = ScreenTheme.FOCUS
 	button.add_theme_stylebox_override("pressed", active_style)
 	button.add_theme_stylebox_override("hover_pressed", active_style)
 	button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN

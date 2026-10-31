@@ -4,6 +4,7 @@ const ControllerSetup := preload("res://ui/controller_setup.gd")
 const ControllerProfile := preload("res://input/controller_profile.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const UiInput := preload("res://ui/ui_input.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
 
 class FixtureRegistry extends RefCounted:
 	signal devices_changed
@@ -65,6 +66,10 @@ func _run() -> void:
 		for section in ["devices", "profile", "axes", "aux", "buttons"]:
 			setup.select_section(section, true)
 			await _settle()
+			var selected: Button = setup._section_buttons[section]
+			_check("%s/%s selected section keeps the shared green marker on hover" % [locale, section],
+				selected.button_pressed and selected.get_theme_stylebox("pressed").border_color == UiTheme.FOCUS
+				and selected.get_theme_stylebox("hover_pressed").border_color == UiTheme.FOCUS)
 			var view := Rect2(Vector2.ZERO, Vector2(root.size))
 			var panel := setup._settings_panel.get_global_rect()
 			var footer := (setup.find_child("ControllerSetupFooter", true, false) as Control).get_global_rect()

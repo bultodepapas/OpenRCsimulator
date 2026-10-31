@@ -8,7 +8,7 @@ UNIT_SHARDS="${OPENRC_UNIT_SHARDS:-1}"
 UNIT_SHARD="${OPENRC_UNIT_SHARD:-0}"
 CHECK_OUT="${OPENRC_CHECK_OUT:-$HERE/../tmp/godot-checks}"
 EXPECTED_CHECK_OUT="${OPENRC_EXPECTED_CHECK_OUT:-$HERE/../tmp/godot-checks-expected}"
-case "$TEST_PART" in all|integration|units) ;; *) echo "invalid OPENRC_TEST_PART" >&2; exit 2 ;; esac
+case "$TEST_PART" in all|integration|integration-source|integration-parse|integration-runtime|units) ;; *) echo "invalid OPENRC_TEST_PART" >&2; exit 2 ;; esac
 [[ "$UNIT_SHARDS" =~ ^[1-9][0-9]*$ && "$UNIT_SHARD" =~ ^(0|[1-9][0-9]*)$ ]] || { echo "invalid unit shard numbers" >&2; exit 2; }
 (( UNIT_SHARDS <= 128 && UNIT_SHARD < UNIT_SHARDS )) || { echo "unit shard out of range" >&2; exit 2; }
 if [[ "$TEST_PART" != units && ( "$UNIT_SHARDS" != 1 || "$UNIT_SHARD" != 0 ) ]]; then
@@ -50,7 +50,26 @@ if ! run_with_timeout 600 --import > "$IMPORT_LOG" 2>&1; then
 fi
 rm -f "$IMPORT_LOG"
 
-if [[ "$TEST_PART" != units ]]; then
+# The receipt records only successful, individually executed parse and unit scripts.
+# Give each run fresh receipt filenames; checked diagnostic directories remain separate.
+mkdir -p "$CHECK_OUT"
+LOG="$(mktemp)"
+RUN_SUFFIX="${LOG##*/}"
+ROSTER="$(mktemp)"; ROSTER_CURRENT="$(mktemp)"; ROSTER_DONE="$(mktemp)"; ROSTER_STATE="$(mktemp)"
+trap 'rm -f "$LOG" "$ROSTER" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE"' EXIT
+ROSTER_HELPER="$HERE/../tools/ci/phase_roster.py"
+collect_parse_roster() {
+  (cd "$HERE" && find . -name '*.gd' -not -path './.godot/*' -not -path './captures/*' -print0) |
+    python3 -c 'import sys; items = sys.stdin.buffer.read().split(b"\0"); sys.stdout.buffer.write(b"".join(x + b"\0" for x in sorted(items) if x))'
+}
+collect_unit_roster() {
+  local t
+  for t in "$HERE"/tests/test_*.gd; do printf '%s\0' "${t#"$HERE"/}"; done
+}
+
+if [[ "$TEST_PART" == all || "$TEST_PART" == integration || "$TEST_PART" == integration-source ]]; then
+echo "== CI and local generated source checks"
+bash "$HERE/../tools/ci/check-sources.sh"
 echo "== GP-12: fixed-brake comparison failure controls"
 python3 -m unittest discover -s "$HERE/../tools/godot" -p test_fixed_brake_legacy.py
 
@@ -260,14 +279,22 @@ for f in $SHADER_FILES; do
   if grep -nE '^\s*[^/#[:space:]].*\bTIME\b' "$HERE/$f"; then echo "TIME used in $f (use the sim_clock global uniform)"; exit 1; fi
 done
 
+fi # offline generators and references
+
+if [[ "$TEST_PART" == all || "$TEST_PART" == integration || "$TEST_PART" == integration-parse ]]; then
 echo "== parse check: every script"
-(cd "$HERE" && find . -name '*.gd' -not -path './.godot/*' -not -path './captures/*' | sort) | while read -r f; do
+collect_parse_roster > "$ROSTER"
+: > "$ROSTER_DONE"
+PARSE_RECEIPT="$CHECK_OUT/roster-parse-$RUN_SUFFIX.json"
+python3 "$ROSTER_HELPER" begin "$HERE" parse "$ROSTER" "$ROSTER_STATE" "$PARSE_RECEIPT" 0 1
+while IFS= read -r -d '' f; do
   run --check-only --script "res://${f#./}" > /dev/null || { echo "parse error in $f"; exit 1; }
-done
+  printf '%s\0' "$f" >> "$ROSTER_DONE"
+done < "$ROSTER"
+collect_parse_roster > "$ROSTER_CURRENT"
+python3 "$ROSTER_HELPER" finish "$HERE" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE" "$PARSE_RECEIPT"
+fi
 
-fi # offline generators, references and complete parse checks
-
-LOG="$(mktemp)"; trap 'rm -f "$LOG"' EXIT
 expected_failure() {
   local label="$1" expected_exit="$2" expected_error="$3"
   shift 3
@@ -311,7 +338,13 @@ PY
   fi
   python3 "$HERE/tests/check_expected_cli_failure.py" "$run_dir" "$EXPECTED_CHECK_OUT" "$expected_exit" "$expected_error"
 }
-if [[ "$TEST_PART" != integration ]]; then
+if [[ "$TEST_PART" == all || "$TEST_PART" == units ]]; then
+unit_tests=("$HERE"/tests/test_*.gd)
+(( ${#unit_tests[@]} > UNIT_SHARD )) || { echo "empty unit partition" >&2; exit 2; }
+collect_unit_roster > "$ROSTER"
+: > "$ROSTER_DONE"
+UNIT_RECEIPT="$CHECK_OUT/roster-units-$UNIT_SHARD-of-$UNIT_SHARDS-$RUN_SUFFIX.json"
+python3 "$ROSTER_HELPER" begin "$HERE" units "$ROSTER" "$ROSTER_STATE" "$UNIT_RECEIPT" "$UNIT_SHARD" "$UNIT_SHARDS"
 unit_index=0
 selected_units=0
 for t in "$HERE"/tests/test_*.gd; do
@@ -367,14 +400,17 @@ for t in "$HERE"/tests/test_*.gd; do
   else
     run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" "${test_args[@]}" 2>&1 | tee "$LOG"
   fi
+  printf '%s\0' "${t#"$HERE"/}" >> "$ROSTER_DONE"
   # run_with_timeout checks every invocation for engine/script/shader errors,
   # including errors printed with a successful process exit.
 done
 
 echo "== unit partition $UNIT_SHARD/$UNIT_SHARDS: $selected_units of $unit_index scripts"
 (( selected_units > 0 )) || { echo "empty unit partition" >&2; exit 2; }
+collect_unit_roster > "$ROSTER_CURRENT"
+python3 "$ROSTER_HELPER" finish "$HERE" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE" "$UNIT_RECEIPT"
 fi
-[[ "$TEST_PART" != units ]] || exit 0
+if [[ "$TEST_PART" != all && "$TEST_PART" != integration && "$TEST_PART" != integration-runtime ]]; then exit 0; fi
 
 echo "== H7: exact one-ulp math sensitivity and golden branch signatures"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/check_math_sensitivity.py"
@@ -392,9 +428,8 @@ if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Extra preview contract f
 
 echo "== P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)"
 python3 "$HERE/../assets/aircraft/p51d-mustang-120/compile_appearance.py" --check || exit 1
-echo "== P-51D physics data and ground-effect table are not stale (research/p51/p51-05/derive_physics.py, p51-20/ground_effect_vlm.py --check)"
+echo "== P-51D ground-effect table is not stale (p51-20/ground_effect_vlm.py --check)"
 python3 "$HERE/../research/p51/p51-20/ground_effect_vlm.py" --check || exit 1
-python3 "$HERE/../research/p51/p51-05/derive_physics.py" --check || exit 1
 
 echo "== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)"
 run --script res://aircraft/verify_p51.gd 2>&1 | tee "$LOG" | tail -1
@@ -410,13 +445,9 @@ run --script res://aircraft/verify_avanti.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Vantage Jet visual contract failed (see above)"; exit 1; fi
 
 echo "== Turbo Lumber Evolution asset identity and generated geometry (TT-01/02/03: manifest, mesh measurements, geometry, constants)"
-python3 "$HERE/../research/timber/tt01/manifest.py" --check || exit 1
 run --script "$HERE/../research/timber/tt02/measure_mesh.gd" -- --out="$HERE/../assets/aircraft/turbo-lumber-evolution/mesh-measurements.json" --check 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|differ" "$LOG"; then echo "Lumber mesh measurements are stale or the importer changed (see above)"; exit 1; fi
-python3 "$HERE/../assets/aircraft/turbo-lumber-evolution/build_geometry.py" --check || exit 1
-python3 "$HERE/../assets/aircraft/turbo-lumber-evolution/compile_geometry.py" --check || exit 1
 python3 "$HERE/../research/timber/tt03/check_asset.py" --check || exit 1
-python3 "$HERE/../research/timber/tt07/derive_physics.py" --check
 python3 "$HERE/../research/timber/tt07/sensitivity.py" --check
 python3 "$HERE/../research/timber/tt07/test_derive.py"
 
@@ -436,10 +467,6 @@ run --script res://aircraft/verify_f4u.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "F4U Corsair model contract failed (see above)"; exit 1; fi
 
 echo "== MoonRunner X99 identity, generated data and model contract (X8-00/02/06: manifest, assets, model, physics, imported scene)"
-python3 "$HERE/../research/skywalker-x8/X8-00/manifest.py" --check || exit 1
-python3 "$HERE/../research/skywalker-x8/X8-02/install_assets.py" --check || exit 1
-python3 "$HERE/../research/skywalker-x8/X8-02/compile_model.py" --check || exit 1
-python3 "$HERE/../research/skywalker-x8/X8-06/derive_physics.py" --check || exit 1
 run --script res://aircraft/verify_moonrunner_x99.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "X8 model contract failed (see above)"; exit 1; fi
 

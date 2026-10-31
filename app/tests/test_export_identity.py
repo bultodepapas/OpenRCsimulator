@@ -466,10 +466,14 @@ class ExportPackaging(unittest.TestCase):
             self.assertIn("${{ steps.packages.outputs.package_dir }}/" + name, artifact)
         self.assertIn("if-no-files-found: error", artifact)
         self.assertNotIn("*.zip", artifact)
-        self.assertIn("(cd dist && sha256sum --check --strict SHA256SUMS)", workflow)
+        # Publication verification and identical-retry behavior now live in the
+        # tested helper; the workflow must pass independent producer identities.
+        self.assertIn("python3 tools/release/publish.py --directory dist", workflow)
         self.assertIn("--expected-commit \"$GITHUB_SHA\" --expected-tag \"$GITHUB_REF_NAME\"", workflow)
-        self.assertIn('--verify-tag --title', workflow)
-        self.assertIn('git fetch --no-tags origin "refs/tags/$GITHUB_REF_NAME"', workflow)
+        self.assertIn('--expected-run-id "$GITHUB_RUN_ID" --expected-repository "$GITHUB_REPOSITORY"', workflow)
+        self.assertIn('--notes "docs/releases/$GITHUB_REF_NAME.md"', workflow)
+        self.assertIn('needs: [required, export]', workflow)
+        self.assertIn("needs.required.result == 'success' && needs.export.result == 'success'", workflow)
         self.assertNotIn("dist/openrc-simulator-*.zip", workflow)
 
 

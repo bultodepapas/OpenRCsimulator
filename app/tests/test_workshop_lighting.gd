@@ -112,6 +112,19 @@ func _run() -> void:
 	first_hex = lighting.find_child("LightingPaletteHex0", true, false) as LineEdit
 	_check("cancel restores accepted palette text and launch validity", editor.call("_edit_valid")
 		and first_hex.text == str(_zone(before_invalid.lighting, "nav_left").pattern.palette[0]))
+	lighting.call("_add_palette_color")
+	var rebuilt_picker := lighting.find_child("LightingPalettePicker1", true, false) as ColorPickerButton
+	var rebuilt_remove := lighting.find_child("RemoveLightingColor1", true, false) as Button
+	_check("rebuilt zone palette controls retain crystal feedback", rebuilt_picker != null and rebuilt_remove != null
+		and rebuilt_picker.get_node_or_null("CrystalSurface") != null
+		and rebuilt_remove.get_node_or_null("CrystalSurface") != null)
+	if rebuilt_remove != null:
+		rebuilt_remove.grab_focus()
+		await _settle()
+		var feedback: Node = rebuilt_remove.get_node_or_null("CrystalSurface")
+		_check("rebuilt palette action shows crystal feedback on keyboard focus", feedback != null
+			and feedback.get("_engaged") and feedback.get("_glass").visible)
+	lighting.call("cancel_pending_edit")
 
 	var palette_picker := lighting.find_child("LightingPalettePicker0", true, false) as ColorPickerButton
 	var before_palette := editor.get_presentation()
@@ -177,6 +190,11 @@ func _run() -> void:
 	_select_preset(lighting, preset, custom_index)
 	lighting.call("_toggle_effects", true)
 	var effect_controls: Dictionary = lighting.get("_effects_controls_by_anchor")
+	var effects_decorated := not effect_controls.is_empty()
+	for controls: Dictionary in effect_controls.values():
+		effects_decorated = effects_decorated and controls.enabled.get_node_or_null("CrystalSurface") != null \
+			and controls.kind.get_node_or_null("CrystalSurface") != null
+	_check("rebuilt effect toggles and selectors retain crystal feedback", effects_decorated)
 	var left_effect: Dictionary = effect_controls.get("vfx_tip_left", {})
 	var kind_selector := left_effect.get("kind") as OptionButton
 	var lifetime := left_effect.get("lifetime") as SpinBox

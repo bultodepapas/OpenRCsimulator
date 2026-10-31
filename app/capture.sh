@@ -6,13 +6,57 @@ export PYTHONDONTWRITEBYTECODE=1
 export OPENRC_SCENERY=off
 export OPENRC_SCENERY_BIRDS=off OPENRC_ENGINE_SHADOWS=off
 HERE="$(cd "$(dirname "$0")" && pwd)"
-mkdir -p "$HERE/captures/field" # untracked in git: a fresh clone does not have it
-# Captures are outputs, not game textures: keep the editor from importing and duplicating every PNG.
-touch "$HERE/captures/.gdignore"
+GROUP=all
+OUTPUT=""
+usage() {
+  echo "Usage: app/capture.sh [--group GROUP --out NEW_ABSOLUTE_DIRECTORY]"
+  echo "Groups: core, ui, quality, terrain-atmosphere, ground, vegetation, scenario"
+  echo "Groups are experimental partial checks, not complete capture-set evidence."
+  echo "Use independent checkouts and run only one rendered capture per host."
+}
+while (($#)); do
+  case "$1" in
+    --group) (($# >= 2)) || { usage >&2; exit 2; }; GROUP="$2"; shift 2 ;;
+    --out) (($# >= 2)) || { usage >&2; exit 2; }; OUTPUT="$2"; shift 2 ;;
+    --help) usage; exit 0 ;;
+    *) usage >&2; exit 2 ;;
+  esac
+done
+case "$GROUP" in all|core|ui|quality|terrain-atmosphere|ground|vegetation|scenario) ;; *) usage >&2; exit 2 ;; esac
+if [[ "$GROUP" == all ]]; then
+  [[ -z "$OUTPUT" ]] || { echo "--out requires a partial --group" >&2; exit 2; }
+  CAPTURES="$HERE/captures"
+else
+  [[ "$OUTPUT" == /* ]] || { echo "--group requires an absolute --out" >&2; exit 2; }
+  [[ ! -e "$OUTPUT" && ! -L "$OUTPUT" ]] || { echo "group output must be new: $OUTPUT" >&2; exit 2; }
+  CAPTURES="$(realpath -m "$OUTPUT")"
+  APP_REAL="$(cd "$HERE" && pwd -P)"
+  case "$CAPTURES" in "$APP_REAL"|"$APP_REAL"/*) echo "group output must be outside app/" >&2; exit 2 ;; esac
+  [[ ! -e "$CAPTURES" && ! -L "$CAPTURES" ]] || { echo "group output must be new: $CAPTURES" >&2; exit 2; }
+fi
+mkdir -p "$HERE/captures" # untracked in git: a fresh clone does not have it
 exec 9> "$HERE/captures/.capture.lock"
 flock -n 9 || { echo "another capture run owns $HERE/captures" >&2; exit 1; }
 # The complete-set marker only exists after every capture, image check and trace succeeds.
-rm -f "$HERE/captures/run-manifest.json"
+rm -f "$CAPTURES/run-manifest.json"
+if [[ "$GROUP" != all ]]; then
+  mkdir -p "$(dirname "$CAPTURES")"
+  mkdir "$CAPTURES"
+  # Separate Godot settings and caches; a separate checkout is still needed for parallel hosts.
+  export XDG_DATA_HOME="$CAPTURES/.capture-profile/data" XDG_CONFIG_HOME="$CAPTURES/.capture-profile/config"
+  export XDG_CACHE_HOME="$CAPTURES/.capture-profile/cache"
+fi
+mkdir -p "$CAPTURES/field"
+# Captures are outputs, not game textures: keep the editor from importing and duplicating every PNG.
+touch "$CAPTURES/.gdignore"
+includes() { [[ "$GROUP" == all || "$GROUP" == "$1" ]]; }
+PHASE=""
+PHASE_START=0
+printf 'phase\tseconds\tresult\n' > "$CAPTURES/timings.tsv"
+start_phase() { PHASE="$1"; PHASE_START=$SECONDS; }
+finish_phase() { printf '%s\t%d\tpass\n' "$PHASE" "$((SECONDS - PHASE_START))" >> "$CAPTURES/timings.tsv"; PHASE=""; }
+trap 'status=$?; if [[ -n "$PHASE" ]]; then printf "%s\t%d\tfail (%d)\n" "$PHASE" "$((SECONDS - PHASE_START))" "$status" >> "$CAPTURES/timings.tsv"; fi' EXIT
+start_phase setup
 GODOT="$("$HERE/get-godot.sh")"
 # L6b: fresh checkouts have no imported tree atlas. Import before hashing/rendering any scene.
 IMPORT_LOG="$(mktemp)"
@@ -23,6 +67,7 @@ fi
 rm -f "$IMPORT_LOG"
 VPY="$("$HERE/tests/visual-env.sh")"
 "$VPY" "$HERE/tests/test_capture_runner.py"
+finish_phase
 # A dirty checkout is identified by revision plus per-file hashes in native evidence.
 if [ -z "${OPENRC_CODE_REVISION:-}" ]; then
   OPENRC_CODE_REVISION="$(git -C "$HERE" rev-parse HEAD 2>/dev/null || echo unavailable)"
@@ -33,26 +78,28 @@ CAPTURE_NAMES=()
 # L0b: llvmpipe thread count pinned. 1 and 12 threads gave byte-identical captures on Mesa 25.2.8 (2026-10-05), so
 # this is cheap insurance for machines with other core counts (CI runners); 1 thread costs ~5 s per run.
 export LP_NUM_THREADS="${LP_NUM_THREADS:-1}"
-COUNTERS="$HERE/captures/landscape-counters.txt"
+COUNTERS="$CAPTURES/landscape-counters.txt"
 : > "$COUNTERS"
 # VQ-01a: reference captures run the legacy atmosphere fixture. Production field cases use the real app.
 shot() { # shot <file suffix> <user args...>
-  local name="capture$1" out="$HERE/captures/capture$1.png"; shift
+  local name="capture$1" out="$CAPTURES/capture$1.png"; shift
   local scene="atmosphere" counters="$COUNTERS"
   local entry=("res://tests/fixtures/atmosphere_field.tscn")
   if [[ "$name" == capture-field-* ]]; then
     scene="field"
     name="${name/capture-field-/capture-land-}"
-    out="$HERE/captures/field/$name.png"
-    counters="$HERE/captures/field/landscape-counters.txt"
+    out="$CAPTURES/field/$name.png"
+    counters="$CAPTURES/field/landscape-counters.txt"
     entry=()
   fi
   "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind flight --scene "$scene" -- \
     xvfb-run -a -s "-screen 0 1280x720x24" \
     "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy "${entry[@]}" -- --capture "$@" --out="$out"
   sed -n "s|^saved .* (error 0) \(draw_calls=.*\)|$name \1|p" "${out%.png}.log" >> "$counters"
-  CAPTURE_NAMES+=("${out#"$HERE/captures/"}")
+  CAPTURE_NAMES+=("${out#"$CAPTURES/"}")
 }
+if includes core; then
+start_phase core-render
 # Stage 0/1 views on the scripted circle (stable references).
 shot "" --scripted
 shot "-inspect" --scripted --inspect
@@ -84,7 +131,7 @@ shot "-land-low3m" --t=1.5 --alt=3 --autozoom=0 --shadow=off
 shot "-land-sun" --t=1.5 --look_az=225 --look_el=25
 # The review image above keeps full glare/cloud appearance. L1's alignment gate uses a separate, cloud/aureole/glare-
 # free view of the same solar direction so it can measure the disc itself instead of the clipped light field.
-SUN_ALIGNMENT="$HERE/captures/sun-alignment"
+SUN_ALIGNMENT="$CAPTURES/sun-alignment"
 mkdir -p "$SUN_ALIGNMENT"
 rm -f "$SUN_ALIGNMENT/sun_alignment.png" "$SUN_ALIGNMENT/report.json"
 if ! timeout 120 xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" \
@@ -99,15 +146,19 @@ shot "-land-low3m-noplane" --t=1.5 --alt=3 --autozoom=0 --hide_airplane --shadow
 # L0b: straight down from 30 m over the pilot station: ground tiling must be judged from above (investigation 06).
 shot "-land-top" --t=1.5 --look_az=0 --look_el=-90 --look_alt=30
 # Real field, separate from the fixed sky/ground reference; future trees must appear in these views.
-: > "$HERE/captures/field/landscape-counters.txt"
+: > "$CAPTURES/field/landscape-counters.txt"
 for az in 0 90 180 270; do
   for el in 0 10; do shot "-field-az${az}-el${el}" --t=1.5 --look_az=$az --look_el=$el --hide_airplane; done
 done
 shot "-field-top" --t=1.5 --look_az=0 --look_el=-90 --look_alt=30 --hide_airplane
+finish_phase
+fi
+if includes ui; then
+start_phase ui
 # UI uses the same process/file guards. Its sidecar is harness metadata, not engine render telemetry.
 for lang in en es; do
   for screen in home pause help hint; do
-    out="$HERE/captures/ui-$screen-$lang.png"
+    out="$CAPTURES/ui-$screen-$lang.png"
     # Flight-backed Pause/Hint captures rebuild the Club field under llvmpipe.
     # The old 60 s bound expired on CI; a Linux/Xvfb pause run took 76.65 s.
     ui_timeout=60
@@ -115,76 +166,106 @@ for lang in en es; do
     "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind ui --scene "$screen" --timeout "$ui_timeout" -- \
       xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy \
       --script res://tests/capture_ui.gd -- --out="$out" --lang="$lang" --screen="$screen"
-    CAPTURE_NAMES+=("${out#"$HERE/captures/"}")
+    CAPTURE_NAMES+=("${out#"$CAPTURES/"}")
   done
 done
+finish_phase
+fi
+if includes core; then
+start_phase core-checks
 echo "render counters per view (draw calls and primitives): $COUNTERS"
 cat "$COUNTERS"
 # Image checks run in the pinned, hashed Python environment (.tools/visual-venv: Pillow, numpy, FLIP), never on the
 # system Python: GitHub's runner has no Pillow (CI failure 2026-10-05, invisible locally and under act).
-"$VPY" "$HERE/tests/check_landscape_captures.py" "$HERE/captures"
+"$VPY" "$HERE/tests/check_landscape_captures.py" "$CAPTURES"
 # L0c: airplane readability against its background.
 # Readability (L1b thresholds, investigation 09): contrast ≤ −0.40, ≤ 15 % nearly invisible, ΔE ≥ 30. Background
 # saturation ≥ 25 ("not a greyed sky") at 30 m; at 3 m the airplane sits against the pale horizon haze (~21 by
 # physics), so ≥ 18 there. (Until L3 the metric also counted the D7 pilot shadow as airplane: LANDSCAPE-PLAN L3 log.)
-"$VPY" "$HERE/tests/compare_captures.py" readability "$HERE/captures" \
+"$VPY" "$HERE/tests/compare_captures.py" readability "$CAPTURES" \
   --require "capture-land-low3m.png:-0.40:0.15:30:18" --require "capture-land-30m.png:-0.40:0.15:30:25"
 # C7: flight trace of the same throw, headless (no display needed).
-rm -f "$HERE/captures/trace-physics.csv"
-if timeout 60 "$GODOT" --headless --path "$HERE" --audio-driver Dummy -- --trace="$HERE/captures/trace-physics.csv" --t=1.5 > "$HERE/captures/trace-physics.log" 2>&1; then
-  if grep -qE "^[[:space:]]*(SCRIPT |SHADER )?ERROR:" "$HERE/captures/trace-physics.log"; then
-    cat "$HERE/captures/trace-physics.log"; exit 1
+rm -f "$CAPTURES/trace-physics.csv"
+if timeout 60 "$GODOT" --headless --path "$HERE" --audio-driver Dummy -- --trace="$CAPTURES/trace-physics.csv" --t=1.5 > "$CAPTURES/trace-physics.log" 2>&1; then
+  if grep -qE "^[[:space:]]*(SCRIPT |SHADER )?ERROR:" "$CAPTURES/trace-physics.log"; then
+    cat "$CAPTURES/trace-physics.log"; exit 1
   fi
 else
   status=$?
-  cat "$HERE/captures/trace-physics.log"; exit "$status"
+  cat "$CAPTURES/trace-physics.log"; exit "$status"
 fi
-python3 "$HERE/tests/check_trimmed_flight.py" "$HERE/captures/trace-physics.csv" --duration=1.5
+python3 "$HERE/tests/check_trimmed_flight.py" "$CAPTURES/trace-physics.csv" --duration=1.5
+finish_phase
+fi
+if includes quality; then
+start_phase quality
 # VQ-01b extends this same guarded producer: 66 fixed images, metadata/parity/readability checks.
 "$VPY" "$HERE/tests/test_visual_quality_cases.py"
-"$VPY" "$HERE/tests/visual_quality_cases.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/vq01b"
+"$VPY" "$HERE/tests/visual_quality_cases.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/vq01b"
 # FW-62-R1: the night kit must add light, retain its underside cue, and stay bounded under camera zoom.
-mkdir -p "$HERE/captures/aircraft-lights"
+mkdir -p "$CAPTURES/aircraft-lights"
 if ! timeout 120 xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$HERE" \
   --rendering-driver opengl3 --audio-driver Dummy --script res://tests/capture_aircraft_lights.gd \
-  -- --out="$HERE/captures/aircraft-lights" > "$HERE/captures/aircraft-lights/run.log" 2>&1 \
-  || grep -qE "^[[:space:]]*(SCRIPT |SHADER )?ERROR:" "$HERE/captures/aircraft-lights/run.log"; then
-  cat "$HERE/captures/aircraft-lights/run.log"; exit 1
+  -- --out="$CAPTURES/aircraft-lights" > "$CAPTURES/aircraft-lights/run.log" 2>&1 \
+  || grep -qE "^[[:space:]]*(SCRIPT |SHADER )?ERROR:" "$CAPTURES/aircraft-lights/run.log"; then
+  cat "$CAPTURES/aircraft-lights/run.log"; exit 1
 fi
 # L5: both interactive error routes must show a usable error instead of starting an invalid field.
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFailureRoutes.test_interactive_routes_show_a_focused_localized_error_panel
+finish_phase
+fi
+if includes terrain-atmosphere; then
+start_phase terrain-atmosphere
 # L6b real GPU path: custom-data packing, sector bounds/draws and deterministic tree views.
-python3 "$HERE/../tools/trees/check_review.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l6b"
+python3 "$HERE/../tools/trees/check_review.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l6b"
 # The guarded landscape tools require fresh outputs. Replace only these generated directories under the capture lock.
-rm -rf "$HERE/captures/l7" "$HERE/captures/l4b" "$HERE/captures/l9c" "$HERE/captures/l10a" "$HERE/captures/l10b" "$HERE/captures/l10c" "$HERE/captures/l10d" "$HERE/captures/l11a" "$HERE/captures/l15b"
+rm -rf "$CAPTURES/l7" "$CAPTURES/l4b" "$CAPTURES/l9c" "$CAPTURES/l10a" "$CAPTURES/l10b" "$CAPTURES/l10c" "$CAPTURES/l10d" "$CAPTURES/l11a" "$CAPTURES/l15b"
 # L7: combined forest/hill A/B at three heights, repeated bytes and all visibility-preset rim checks.
-"$VPY" "$HERE/../tools/terrain/check_horizon.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l7"
+"$VPY" "$HERE/../tools/terrain/check_horizon.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l7"
 # L4b/L15d: production sky/shadow A/B, sim-time drift, repeated bytes and periodic cloud projection.
-"$VPY" "$HERE/../tools/atmosphere/check_phase6.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l4b"
-"$VPY" "$HERE/../tools/atmosphere/check_cloud_probe.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l15d"
+"$VPY" "$HERE/../tools/atmosphere/check_phase6.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l4b"
+"$VPY" "$HERE/../tools/atmosphere/check_cloud_probe.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l15d"
+finish_phase
+fi
+if includes ground; then
+start_phase ground
 # L9c: ground-pass runway/mown coverage, repeated frames, overlap priority and filtering controls.
-"$VPY" "$HERE/../tools/ground/check_surfaces.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l9c"
+"$VPY" "$HERE/../tools/ground/check_surfaces.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l9c"
 "$VPY" "$HERE/../tools/ground/test_stripes.py"
-"$VPY" "$HERE/../tools/ground/check_stripes.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l9c/stripes"
-"$VPY" "$HERE/../tools/ground/check_windsock.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l10a"
-"$VPY" "$HERE/../tools/ground/check_windsock.py" --cue pilot_station --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l10b"
-"$VPY" "$HERE/../tools/ground/check_windsock.py" --cue flightline_barrier --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l10c"
-"$VPY" "$HERE/../tools/ground/check_windsock.py" --cue contact_shadows --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l10d"
+"$VPY" "$HERE/../tools/ground/check_stripes.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l9c/stripes"
+"$VPY" "$HERE/../tools/ground/check_windsock.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l10a"
+"$VPY" "$HERE/../tools/ground/check_windsock.py" --cue pilot_station --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l10b"
+"$VPY" "$HERE/../tools/ground/check_windsock.py" --cue flightline_barrier --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l10c"
+"$VPY" "$HERE/../tools/ground/check_windsock.py" --cue contact_shadows --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l10d"
+finish_phase
+fi
+if includes vegetation; then
+start_phase vegetation
 # L11a: grass budget, seam, wind wrap and reuse of existing opt-in scenery flowers.
-"$VPY" "$HERE/../tools/grass/check_grass.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l11a" --timeout 600
-"$VPY" "$HERE/../tools/grass/check_grass_seam.py" --captures "$HERE/captures/l11a/candidate-repeat-1" --out "$HERE/captures/l11a/seam-summary.json" --self-test
+"$VPY" "$HERE/../tools/grass/check_grass.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l11a" --timeout 600
+"$VPY" "$HERE/../tools/grass/check_grass_seam.py" --captures "$CAPTURES/l11a/candidate-repeat-1" --out "$CAPTURES/l11a/seam-summary.json" --self-test
 # L15b: rooted tree sway, calm parity, fixed-clock repeats and GPU geometry readback.
-"$VPY" "$HERE/../tools/trees/check_wind.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l15b" --timeout 1200
+"$VPY" "$HERE/../tools/trees/check_wind.py" --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l15b" --timeout 1200
 # L6c: the airplane against trees, treetop edge, sky and grass at 100 m (numbers recorded for Gate L, case guards
 # only) and the blinded 24-image attitude kit for the human playtest (captures/l6c/kit).
 "$VPY" "$HERE/tests/test_treeline_readability.py"
-"$VPY" "$HERE/tests/treeline_readability.py" capture --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l6c"
+"$VPY" "$HERE/tests/treeline_readability.py" capture --app "$HERE" --godot "$GODOT" --out "$CAPTURES/l6c"
+finish_phase
+fi
+if includes scenario; then
+start_phase scenario
 # Runway scenario (SCENERY-PLAN): the airplane at the runway threshold, a scripted takeoff from five cameras at fixed
 # times, automatic physics-render sync checks, and a frame-by-frame comparison with the previous run
 # (captures/scenario/latest/report.html; history in captures/scenario/history/index.html).
-"$HERE/../tools/scenery/scenario.sh" "$HERE/captures/scenario"
+"$HERE/../tools/scenery/scenario.sh" "$CAPTURES/scenario"
+finish_phase
+fi
+if [[ "$GROUP" != all ]]; then
+  echo "partial capture group '$GROUP' passed; no complete-set manifest was produced"
+  exit 0
+fi
 # Publish exactly this run's inventory, never a glob that can silently include old outputs.
-"$VPY" - "$HERE/captures" "${CAPTURE_NAMES[@]}" <<'PYMANIFEST'
+"$VPY" - "$CAPTURES" "${CAPTURE_NAMES[@]}" <<'PYMANIFEST'
 import hashlib, json, sys
 from pathlib import Path
 root = Path(sys.argv[1])

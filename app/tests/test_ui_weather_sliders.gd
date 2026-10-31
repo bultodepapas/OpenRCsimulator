@@ -6,6 +6,7 @@ const Preferences := preload("res://app_state/preferences.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const WeatherDialog := preload("res://ui/weather_dialog.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
 
 const PREFS: String = "user://test_ui_weather_sliders_settings.cfg"
 
@@ -99,6 +100,13 @@ func _run() -> void:
 		and not dialog.turbulence_sliders.has("seed") and dialog.turbulence_inputs.size() == 5)
 	_check("Atmosphere has one linked slider for each custom field", dialog.atmosphere_sliders.size() == 4
 		and dialog.atmosphere_inputs.size() == 4)
+	var theme := UiTheme.build()
+	var shared_icons := true
+	for sliders: Dictionary in [dialog.field_sliders, dialog.turbulence_sliders, dialog.atmosphere_sliders]:
+		for slider: HSlider in sliders.values():
+			for state: String in ["grabber", "grabber_highlight", "grabber_disabled"]:
+				shared_icons = shared_icons and slider.get_theme_icon(state) == theme.get_icon(state, "HSlider")
+	_check("all Conditions sliders use shared normal, hover and disabled thumbs", shared_icons)
 	_check("wind slider uses its displayed range and precision",
 		is_equal_approx(dialog.field_sliders["speed_mps"].min_value, 0.0)
 		and is_equal_approx(dialog.field_sliders["speed_mps"].max_value, 15.0)

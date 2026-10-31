@@ -8,6 +8,8 @@ const CARD := Color("#202020")
 const TEXT := Color("#F2F2F2")
 const TEXT_2 := Color("#C4C4C4")
 const FOCUS := Color("#66FF16")
+## Caution is semantic amber; it must not follow the decorative/focus accent.
+const CAUTION := Color("#F1CA7D")
 const CRYSTAL := Color("#C4FFB3")
 const GLASS_EMISSION := Color("#3DFF0A")
 const SURFACE_LIGHT := Color("#F0F0F0")

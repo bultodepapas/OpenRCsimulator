@@ -4,12 +4,15 @@ extends "res://render/overlays/overlay_frame.gd"
 const Units := preload("res://render/overlays/units.gd")
 const FlightData := preload("res://render/overlays/flight_data.gd")
 const InstrumentSettings := preload("res://render/overlays/overlay_settings.gd")
+const GLASS := preload("res://ui/shaders/crystal.gdshader")
+# Amber remains the data accent shared by navigation and other instruments.
 const ACCENT := Color("f1ca7d")
-const INK := Color("f3f5f6")
-const MUTED := Color("b6c4cf")
-const TRACK := Color("344653")
-const SURFACE := Color("101c27")
-const BORDER := Color("627888", 0.48)
+const CHROME_ACCENT := UiTheme.FOCUS
+const INK := UiTheme.TEXT
+const MUTED := UiTheme.TEXT_2
+const TRACK := Color("4a4a4a")
+const SURFACE := UiTheme.PANEL
+const BORDER := Color("858585", 0.48)
 const TITLES := {speed = "Airspeed", height = "Height & flight", power = "Energy", weather = "Wind conditions", fuel = "Fuel tank", trims = "Trims", engine = "Engine"}
 
 signal moved(id: String, normalized: Vector2)
@@ -34,6 +37,8 @@ var _graphic_color := ACCENT
 var _samples := PackedFloat32Array()
 var _last_sample_time := -INF
 var _style: StyleBoxFlat
+var _glass: ColorRect
+var _glass_material: ShaderMaterial
 var _compact := false
 var _separator: HSeparator
 var _trim_values := [NAN, NAN, NAN]
@@ -62,10 +67,11 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 	custom_minimum_size = Vector2(286, 0)
 	_style = backplate()
 	_style.bg_color = Color(SURFACE, 0.94)
+	_style.draw_center = false # The shared crystal shader supplies the translucent center.
 	_style.border_color = BORDER
 	_style.set_border_width_all(1)
 	_style.set_corner_radius_all(14)
-	_style.shadow_color = Color(0.015, 0.025, 0.04, 0.22)
+	_style.shadow_color = Color(0, 0, 0, 0.22)
 	_style.shadow_size = 6
 	_style.shadow_offset = Vector2(0, 3)
 	_style.content_margin_left = 16
@@ -73,15 +79,16 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 	_style.content_margin_top = 10
 	_style.content_margin_bottom = 16
 	add_theme_stylebox_override("panel", _style)
+	_build_glass()
 	draw.connect(_draw_chrome)
 	resized.connect(queue_redraw)
-	_footer_style = _surface_style(Color("0a141e", 0.62), 8)
-	_footer_style.border_color = Color("627888", 0.18)
+	_footer_style = _surface_style(Color("0b0b0b", 0.62), 8)
+	_footer_style.border_color = Color("858585", 0.18)
 	_footer_style.border_width_top = 1
-	_icon_style = _surface_style(Color(ACCENT, 0.07), 6)
-	_icon_style.border_color = Color(ACCENT, 0.13)
+	_icon_style = _surface_style(Color(CHROME_ACCENT, 0.07), 6)
+	_icon_style.border_color = Color(CHROME_ACCENT, 0.13)
 	_icon_style.set_border_width_all(1)
-	_gauge_track = _surface_style(Color("0b141d", 0.8), 4)
+	_gauge_track = _surface_style(Color("0b0b0b", 0.8), 4)
 	_gauge_track.border_color = Color(TRACK, 0.8)
 	_gauge_track.set_border_width_all(1)
 	_gauge_fill = _surface_style(ACCENT, 3)
@@ -95,7 +102,7 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 	_header_icon.custom_minimum_size = Vector2(18, 18)
 	_header_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_header_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_header_icon.modulate = ACCENT
+	_header_icon.modulate = CHROME_ACCENT
 	header.add_child(_header_icon)
 	header.move_child(_header_icon, 0)
 	title_label.text = tr(heading).to_upper()
@@ -118,11 +125,11 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 	close_button.flat = false
 	close_button.add_theme_font_size_override("font_size", 18)
 	for state: String in ["normal", "hover", "pressed"]:
-		var close_style := _surface_style(Color("283b48", 0.75) if state == "normal" else Color(ACCENT, 0.18 if state == "hover" else 0.3), 8)
+		var close_style := _surface_style(Color("303030", 0.75) if state == "normal" else Color(CHROME_ACCENT, 0.18 if state == "hover" else 0.3), 8)
 		close_style.set_border_width_all(1)
-		close_style.border_color = Color(ACCENT, 0.38) if state != "normal" else Color(MUTED, 0.08)
+		close_style.border_color = Color(CHROME_ACCENT, 0.38) if state != "normal" else Color(MUTED, 0.08)
 		close_button.add_theme_stylebox_override(state, close_style)
-	close_button.add_theme_color_override("font_hover_color", ACCENT)
+	close_button.add_theme_color_override("font_hover_color", CHROME_ACCENT)
 	_grip = Control.new()
 	_grip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_grip.custom_minimum_size = Vector2(12, 28)
@@ -137,7 +144,7 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 	value_label = text_label("—", 52, INK)
 	value_label.name = "Reading"
 	reading.add_child(value_label)
-	unit_label = text_label("", 14, ACCENT)
+	unit_label = text_label("", 14, MUTED)
 	unit_label.name = "Unit"
 	unit_label.size_flags_vertical = Control.SIZE_SHRINK_END
 	unit_label.custom_minimum_size.y = 32
@@ -205,11 +212,40 @@ static func _surface_style(color: Color, radius: int) -> StyleBoxFlat:
 	return style
 
 
+func _build_glass() -> void:
+	# The general decorator intentionally skips custom panel overrides. This static
+	# underlay uses the same neutral-panel shader while the panel retains its margins,
+	# border and shadow. It never reads the screen or schedules animation.
+	var underlay := Node2D.new()
+	underlay.name = "HudCrystalSurface"
+	underlay.show_behind_parent = true
+	add_child(underlay, false, Node.INTERNAL_MODE_BACK)
+	_glass_material = ShaderMaterial.new()
+	_glass_material.shader = GLASS
+	_glass_material.set_shader_parameter("primary", 0.0)
+	_glass_material.set_shader_parameter("crystal_color", UiTheme.CRYSTAL)
+	_glass_material.set_shader_parameter("corner_radius", 14.0)
+	_glass_material.set_shader_parameter("base_color", _style.bg_color)
+	_glass = ColorRect.new()
+	_glass.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_glass.focus_mode = Control.FOCUS_NONE
+	_glass.material = _glass_material
+	underlay.add_child(_glass)
+	resized.connect(_resize_glass)
+	_resize_glass()
+
+
+func _resize_glass() -> void:
+	_glass.size = size
+	_glass_material.set_shader_parameter("rect_size", size)
+
+
 func _draw_chrome() -> void:
 	# Light, static edge detailing: no blur shader, texture animation or frame callback.
-	draw_line(Vector2(18, 1), Vector2(size.x - 18, 1), Color("93a9b8", 0.22), 1, true)
+	draw_line(Vector2(18, 1), Vector2(size.x - 18, 1), Color("e0e0e0", 0.22), 1, true)
+	draw_line(Vector2(18, 2), Vector2(78, 2), Color(CHROME_ACCENT, 0.38), 1, true)
 	draw_line(Vector2(16, 44), Vector2(size.x - 16, 44), Color(TRACK, 0.62), 1)
-	draw_line(Vector2(16, 44), Vector2(42, 44), Color(ACCENT, 0.8), 2)
+	draw_line(Vector2(16, 44), Vector2(42, 44), Color(CHROME_ACCENT, 0.8), 2)
 	if _header_icon != null:
 		var icon_origin := (get_global_transform().affine_inverse() * _header_icon.get_global_transform()).origin
 		draw_style_box(_icon_style, Rect2(icon_origin - Vector2(4, 4), _header_icon.size + Vector2(8, 8)))
@@ -222,7 +258,7 @@ func _draw_chrome() -> void:
 
 
 func _draw_grip() -> void:
-	var color := Color(ACCENT, 0.9) if _header_hovered and not layout_locked else Color(MUTED, 0.35)
+	var color := Color(CHROME_ACCENT, 0.9) if _header_hovered and not layout_locked else Color(MUTED, 0.35)
 	if layout_locked:
 		_grip.draw_arc(Vector2(6, 12), 3, PI, TAU, 12, Color(MUTED, 0.7), 1.2, true)
 		_grip.draw_rect(Rect2(2, 12, 8, 7), Color(MUTED, 0.7), false, 1)
@@ -264,7 +300,9 @@ func set_appearance(size_name: String, opacity: float, compact: bool) -> void:
 		_finish_drag()
 		scale = next_scale
 	var background := Color(SURFACE, clampf(opacity, 0.80, 1.0))
-	if _style.bg_color != background: _style.bg_color = background
+	if _style.bg_color != background:
+		_style.bg_color = background
+		_glass_material.set_shader_parameter("base_color", background)
 	if _compact != compact:
 		_compact = compact
 		_apply_density()
@@ -378,7 +416,7 @@ func _cancel_drag_without_save() -> void:
 
 
 func _highlight(on: bool) -> void:
-	_style.border_color = Color(ACCENT, 0.8) if on and not layout_locked else BORDER
+	_style.border_color = Color(CHROME_ACCENT, 0.8) if on and not layout_locked else BORDER
 	if _grip != null: _grip.queue_redraw()
 
 
@@ -640,7 +678,7 @@ func _draw_instrument() -> void:
 		"weather":
 			var c := Vector2(w / 2, h / 2)
 			var r := h / 2 - 16
-			graphic.draw_circle(c, r - 8, Color("0b141d", 0.6), true, -1, true)
+			graphic.draw_circle(c, r - 8, Color("0b0b0b", 0.6), true, -1, true)
 			graphic.draw_arc(c, r - 8, 0, TAU, 64, Color(TRACK, 0.65), 1, true)
 			graphic.draw_arc(c, r + 2, 0, TAU, 64, Color(TRACK, 0.5), 1, true)
 			for axis: Vector2 in [Vector2.RIGHT, Vector2.DOWN]:

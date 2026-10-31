@@ -100,7 +100,19 @@ func _contrast() -> void:
 	_check("secondary text ≥ 4.5:1 on the backplate over any sky", UiTheme.contrast(UiTheme.TEXT_2, backplate) >= 4.5, "%.2f" % UiTheme.contrast(UiTheme.TEXT_2, backplate))
 	_check("values ≥ 4.5:1 on the backplate over any sky", UiTheme.contrast(UiTheme.TEXT, backplate) >= 4.5)
 	_check("danger chip text ≥ 4.5:1", UiTheme.contrast(UiTheme.TEXT, UiTheme.DANGER.pressed) >= 4.5, "%.2f" % UiTheme.contrast(UiTheme.TEXT, UiTheme.DANGER.pressed))
-	_check("caution chip text ≥ 4.5:1", UiTheme.contrast(UiTheme.PANEL, UiTheme.FOCUS) >= 4.5)
+	_check("caution chip text ≥ 4.5:1", UiTheme.contrast(UiTheme.PANEL, UiTheme.CAUTION) >= 4.5)
+	_check("amber caution remains distinct from green interaction", UiTheme.CAUTION.r > UiTheme.CAUTION.g
+		and UiTheme.CAUTION.g > UiTheme.CAUTION.b and UiTheme.CAUTION != UiTheme.FOCUS)
+	var warnings := WarningsBar.new()
+	for code: String in ["battery", "battery_hot", "fuel_reserve", "fuel_reserve_estimated", "stall", "experimental"]:
+		var chip: PanelContainer = warnings._chip(code)
+		var background: Color = (chip.get_theme_stylebox("panel") as StyleBoxFlat).bg_color
+		var expected := UiTheme.CAUTION
+		if code == "stall": expected = UiTheme.DANGER.pressed
+		if code == "experimental": expected = backplate
+		_check("warning retains its semantic surface: " + code, background == expected)
+		chip.free()
+	warnings.free()
 
 
 func _preferences() -> void:
@@ -575,6 +587,8 @@ func _controls_guide() -> void:
 	guide.refresh(context)
 	await process_frame
 	_check("selected gamepad automatically opens its guide", guide.controller_button.button_pressed and guide.source_label.text == "DualSense")
+	_check("selected controller tab retains green on hover", guide.controller_button.get_theme_stylebox("pressed").border_color == UiTheme.FOCUS
+		and guide.controller_button.get_theme_stylebox("hover_pressed").border_color == UiTheme.FOCUS)
 	_check("controller guide reflects a remapped camera button", _guide_text(guide).contains("R1") and not _guide_text(guide).contains("Triangle"))
 	_check("Mode 1 shows the actual pitch axis", Guide.axis_text(profile.pitch, true, "playstation", {}) == "Left stick ↕")
 	_check("Mode 1 shows the actual throttle axis", Guide.axis_text(profile.throttle, true, "playstation", {}) == "Right stick ↕")
@@ -582,6 +596,8 @@ func _controls_guide() -> void:
 	guide.keyboard_button.pressed.emit()
 	guide.refresh(context)
 	_check("refresh preserves a manual keyboard-tab choice", guide.keyboard_button.button_pressed and _guide_text(guide).contains("Flight axes use the selected controller."))
+	_check("selected keyboard tab retains green on hover", guide.keyboard_button.get_theme_stylebox("pressed").border_color == UiTheme.FOCUS
+		and guide.keyboard_button.get_theme_stylebox("hover_pressed").border_color == UiTheme.FOCUS)
 	profile.actions.camera_cycle = { type = "unbound" }
 	guide.refresh(context)
 	guide.controller_button.pressed.emit()

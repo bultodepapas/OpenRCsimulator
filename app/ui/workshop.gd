@@ -417,6 +417,7 @@ func _build_ui() -> void:
 		selected_style.border_color = UiTheme.FOCUS
 		selected_style.border_width_bottom = 3
 		tab.add_theme_stylebox_override("pressed", selected_style)
+		tab.add_theme_stylebox_override("hover_pressed", selected_style)
 		tab.pressed.connect(_set_page.bind(spec[0]))
 		_identity_line.add_child(tab)
 		_page_buttons[spec[0]] = tab

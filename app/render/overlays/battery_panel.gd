@@ -287,7 +287,7 @@ static func alarm_color(alarms: Array) -> Color:
 	if alarms.any(func(a: String) -> bool: return a in DANGER_ALARMS):
 		return UiTheme.ERROR
 	if alarms.any(func(a: String) -> bool: return a in CAUTION_ALARMS):
-		return UiTheme.FOCUS
+		return UiTheme.CAUTION
 	return UiTheme.TEXT
 
 
@@ -311,7 +311,7 @@ func _draw_spark(canvas: Control, key: String, color: Color, min_span: float) ->
 func _style_chip(hard: bool) -> void:
 	_chip_hard = int(hard)
 	var box := StyleBoxFlat.new()
-	box.bg_color = UiTheme.DANGER.pressed if hard else UiTheme.FOCUS
+	box.bg_color = UiTheme.DANGER.pressed if hard else UiTheme.CAUTION
 	box.set_corner_radius_all(4)
 	box.content_margin_left = 6
 	box.content_margin_right = 6

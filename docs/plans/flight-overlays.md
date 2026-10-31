@@ -89,7 +89,7 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 
 ### HUD-13 — Player instruments (2026-10-24)
 
-Visual thesis: restrained dark-blue instruments with large white readings, a warm accent, and a clear central flight view. Reuse the existing Godot theme, telemetry, unit conversions and battery sensors. HUD-13-R2 uses seven small, pinned Lucide SVG icons with their [license and provenance](../../app/assets/ui/instruments/LICENSE.txt); no replacement UI framework is needed.
+Visual thesis: neutral dark crystal surfaces with large white readings, fluorescent green interaction details and a separate amber data accent. Classic instruments retain graphite bezels, pale scale marks and needles, and meaningful horizon/navigation colors. Reuse the existing Godot theme, telemetry, unit conversions and battery sensors. HUD-13-R2 uses seven small, pinned Lucide SVG icons with their [license and provenance](../../app/assets/ui/instruments/LICENSE.txt); no replacement UI framework is needed.
 
 Content: four core instruments — airspeed with sampled flight maximum and ground speed; height above terrain with climb, distance and flight time; estimated battery remaining or accepted finite-fuel level; wind speed and a north-referenced direction dial. HUD-13-R1 adds fuel percentage/volume/mass/reserve, three signed trim axes, and engine RPM/throttle command/flight load. Unknown/unavailable readings stay explicit. Existing diagnostic overlays remain separate.
 
@@ -139,6 +139,12 @@ compare stably. All 18 player widgets disable global input in `_ready`, after Go
 only active drags enable it. Help text is shorter, legacy close buttons identify their panel, and tooltips supply
 their measured height before popup placement. Checked-runner draw counts, native script profiling and repeated
 preset-switch object censuses support the changes; see the R9 section of the existing evidence report.
+
+HUD-13-R10 shares the shell's existing crystal shader through a static, noninteractive underlay. The native
+frame keeps its border, shadow and layout; its center is drawn once by the shader at the selected 80/94/100%
+opacity. Decorative header and hover accents are green, while telemetry accents remain amber. Classic faces
+use neutral graphite and white without recoloring sky/earth or the heading reference. Caution chips and battery
+bars use a separate amber token instead of the green focus token. [Verification and limits](../research/flight-overlays/HUD-01-10/README.md#shared-glass-and-classic-faces-2026-10-31-hud-13-r10--ui-22-r12).
 
 The presentation reads existing telemetry only: TAS, pitch/bank, height above datum plus AGL, true heading and instantaneous vertical speed. No pressure setting, magnetic correction, pitot system, calibrated airspeed arcs, gyro dynamics or slip-ball indication is implied. Fixed needle scales mark overflow without discarding the numeric reading; missing values suppress the indication. The horizon clips the ground half-plane to a disc and handles inverted/vertical attitudes without a shader. Static faces have their own cached draw commands; only visible, changed values redraw the foreground at the existing 10 Hz rate. Unit/language changes invalidate the face. Research, source applicability and verification live in the [HUD-13-R3 evidence](../research/flight-overlays/HUD-01-10/README.md#classic-cockpit-2026-10-24-hud-13-r3).
 

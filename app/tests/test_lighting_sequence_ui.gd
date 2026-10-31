@@ -123,6 +123,13 @@ func _run() -> void:
 		add_color.pressed.emit()
 	_check("palette supports eight colors and blocks a ninth", editor.get("_color_fields").size() == 8
 		and add_color.disabled)
+	var rebuilt_picker := editor.find_child("SequencePalettePicker7", true, false) as ColorPickerButton
+	var rebuilt_remove := editor.find_child("SequencePaletteRemove7", true, false) as Button
+	var zone_controls: Dictionary = editor.get("_zone_controls")
+	_check("rebuilt sequence controls retain crystal feedback", rebuilt_picker != null and rebuilt_remove != null
+		and rebuilt_picker.get_node_or_null("CrystalSurface") != null
+		and rebuilt_remove.get_node_or_null("CrystalSurface") != null and not zone_controls.is_empty()
+		and zone_controls.values().all(func(control: Control) -> bool: return control.get_node_or_null("CrystalSurface") != null))
 	_press(editor, "ApplyLightingCue")
 	_check("eight-color palette applies as one cue edit", editor.get("_profile").sequence[0].pattern.palette.size() == 8)
 	var remove_color := editor.find_child("SequencePaletteRemove0", true, false) as Button

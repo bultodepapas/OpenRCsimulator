@@ -3,6 +3,8 @@ extends SceneTree
 const Settings := preload("res://render/overlays/overlay_settings.gd")
 const Manager := preload("res://render/overlays/overlay_manager.gd")
 const Dialog := preload("res://ui/overlays_dialog.gd")
+const Instrument := preload("res://render/overlays/player_instrument.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
 const DEFAULT_PLAYER_POSITIONS := {
 	"speed": Vector2(0, 1), "height": Vector2(1, 1), "power": Vector2(0, 0), "weather": Vector2(1, 0),
 	"fuel": Vector2(0, 0.5), "trims": Vector2(0.5, 0.82), "engine": Vector2(1, 0.53),
@@ -30,6 +32,9 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	_test_player_preset(manager)
+	_test_glass_surface(manager)
+	if DisplayServer.get_name() != "headless":
+		await _test_rendered_glass()
 	_test_speed_extrema(manager)
 	_test_missing_numbers(manager)
 	_test_energy(manager)
@@ -49,6 +54,82 @@ func _test_player_preset(manager: CanvasLayer) -> void:
 		and CORE_IDS.all(func(id: String) -> bool: return manager.frames[id].visible))
 	_check("metric airspeed shows 30 m/s as 108 km/h", manager.frames.speed.value_label.text == "108"
 		and manager.frames.speed.unit_label.text == "km/h", "%s %s" % [manager.frames.speed.value_label.text, manager.frames.speed.unit_label.text])
+
+
+func _test_glass_surface(manager: CanvasLayer) -> void:
+	for id: String in Settings.PLAYER_IDS:
+		var widget: Control = manager.frames[id]
+		var glass: ColorRect = widget._glass
+		var material: ShaderMaterial = widget._glass_material
+		_check(id + " uses a noninteractive shared crystal underlay", material.shader == Instrument.GLASS
+			and glass.material == material and glass.get_parent().show_behind_parent
+			and glass.mouse_filter == Control.MOUSE_FILTER_IGNORE and glass.focus_mode == Control.FOCUS_NONE
+			and not widget._style.draw_center and not glass.get_parent().is_processing()
+			and not glass.get_parent().is_physics_processing())
+	_check("chrome uses the shared green while navigation keeps its amber data key",
+		Instrument.CHROME_ACCENT == UiTheme.FOCUS and Instrument.ACCENT == Color("f1ca7d")
+		and manager.frames.wind_track.graphic.tooltip_text.contains("amber: ground track"))
+	_check("each widget owns its glass parameters", manager.frames.speed._glass_material != manager.frames.height._glass_material)
+	for opacity: float in Settings.WIDGET_OPACITY_STEPS:
+		manager.set_widget_option("widget_opacity", opacity)
+		for id: String in Settings.PLAYER_IDS:
+			var widget: Control = manager.frames[id]
+			var background: Color = widget._glass_material.get_shader_parameter("base_color")
+			_check(id + " glass follows opacity " + str(opacity), is_equal_approx(background.a, opacity)
+				and background == widget._style.bg_color and widget.modulate.a == 1.0)
+	manager.set_widget_option("widget_opacity", 0.94)
+
+
+func _test_rendered_glass() -> void:
+	# One real widget on controlled backgrounds; keep its surface geometry while
+	# hiding glyphs so the shader's composited pixels can be sampled directly.
+	var layer := CanvasLayer.new()
+	layer.layer = 100
+	root.add_child(layer)
+	var backdrop := ColorRect.new()
+	backdrop.color = Color.WHITE
+	backdrop.size = Vector2(root.size)
+	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(backdrop)
+	var widget := Instrument.new("speed")
+	widget.position = Vector2(300, 200)
+	widget.size = Vector2(320, 240)
+	layer.add_child(widget)
+	widget.body.get_parent().hide()
+	widget.set_appearance("normal", 0.8, false)
+	await process_frame
+	await RenderingServer.frame_post_draw
+	var origin := Vector2i(widget.global_position)
+	var point := origin + Vector2i(160, 140)
+	var white_image := root.get_texture().get_image()
+	var white_eighty := white_image.get_pixelv(point)
+	var worst_contrast := INF
+	for x in range(40, 281, 40):
+		for y in range(60, 201, 20):
+			worst_contrast = minf(worst_contrast, UiTheme.contrast(Instrument.MUTED, white_image.get_pixelv(origin + Vector2i(x, y))))
+	backdrop.color = Color.BLACK
+	await RenderingServer.frame_post_draw
+	var black_eighty := root.get_texture().get_image().get_pixelv(point)
+	widget.set_appearance("normal", 1.0, false)
+	backdrop.color = Color.WHITE
+	await RenderingServer.frame_post_draw
+	var opaque_image := root.get_texture().get_image()
+	var white_opaque := opaque_image.get_pixelv(point)
+	# UV (0.25, 0.05) is on the shader's fixed diagonal reflection, away from
+	# the header icon and top-edge strokes; the lower point is outside it.
+	var upper := opaque_image.get_pixelv(origin + Vector2i(80, 12))
+	var lower := opaque_image.get_pixelv(origin + Vector2i(80, 192))
+	backdrop.color = Color.BLACK
+	await RenderingServer.frame_post_draw
+	var black_opaque := root.get_texture().get_image().get_pixelv(point)
+	var samples := "80%% white=%s black=%s; opaque white=%s black=%s" % [white_eighty, black_eighty, white_opaque, black_opaque]
+	_check("80% glass transmits the scene without a duplicate fill", white_eighty.r - black_eighty.r > 0.10, samples)
+	_check("opaque glass blocks the scene", absf(white_opaque.r - black_opaque.r) < 0.02, samples)
+	_check("80% glass supports secondary text over white", worst_contrast >= 4.5, "%.2f" % worst_contrast)
+	_check("shared material has a visible static highlight", upper.g > lower.g + 0.01, "%s / %s" % [upper, lower])
+	print("rendered HUD glass: ", samples, "; worst contrast=", worst_contrast, "; highlight=", upper, "/", lower)
+	layer.queue_free()
+	await process_frame
 
 
 func _test_speed_extrema(manager: CanvasLayer) -> void:
@@ -202,6 +283,8 @@ func _test_extended_instruments(manager: CanvasLayer) -> void:
 	_check("compact mode reduces height and keeps data and trim bars", manager.frames.speed.size.y < normal_height
 		and not manager.frames.speed.graphic.visible and manager.frames.speed.left_value.is_visible_in_tree()
 		and manager.frames.trims._trim_tracks[0].is_visible_in_tree(), "%s -> %s" % [normal_height, manager.frames.speed.size.y])
+	_check("glass follows compact widget resizing", manager.frames.speed._glass.size.is_equal_approx(manager.frames.speed.size)
+		and manager.frames.speed._glass_material.get_shader_parameter("rect_size").is_equal_approx(manager.frames.speed.size))
 	manager.set_widget_option("widget_opacity", 0.8)
 	_check("opacity adjusts only the backdrop", is_equal_approx(manager.frames.speed._style.bg_color.a, 0.8)
 		and manager.frames.speed.modulate.a == 1.0)
