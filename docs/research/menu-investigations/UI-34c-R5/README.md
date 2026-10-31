@@ -60,3 +60,19 @@ Next work remains bounded by the execution plan: investigate the retained refusa
 The [2026-10-25 menu-preparation research](menu-prefetch-2026-10-25.md) and [implemented follow-up](menu-preparation-2026-10-25/README.md) retain separate evidence: five paired native comparisons, mode/dwell experiments, a 20-transition soak and branded-startup lifetime repairs. They do not change the scope or results of this earlier cohort.
 
 The [2026-10-28 scenery checkpoint follow-up](scenery-chunks-2026-10-28/README.md) splits the remaining synchronous scenery build and retains independent geometry/material comparisons, cancellation checks and five native 1080p loading pairs. Its shorter scenery blocks do not qualify total loading latency or the other remaining stalls.
+
+## 2026-10-31 repeated preparation and ambience follow-up
+
+UI-34c / DT-11a and SC-19a, baseline `da4cff78021a59488ffedee7e0b0d5c3e31d1a13`, Linux development host, pinned Godot 4.8-beta1. Unrelated audio/campfire working-tree changes were preserved. These changes affect presentation preparation, not simulation laws or recorded flights.
+
+- `CustomSkin.choices()` now returns immediately for a valid empty installed-skin inventory. Previously it verified the stock model and its dependency hashes despite having no archives to inspect, including before the loading surface appeared. Nonempty inventories retain all existing verification. Twelve warmed headless calls per model measured median lookup time of 100.074 → 0.026 ms (Ugly Stik) and 57.798 → 0.048 ms (MoonRunner). These isolated calls do not measure total loading or rendering.
+- `AmbiencePlayer` retains one completed seed/loop under a short mutex and duplicates the WAV for each player. PCM and loop settings remain exact; player mutations cannot alter the retained copy. The default retained PCM is 1,058,400 bytes. Concurrent cold misses may still synthesize twice, and scene exit still joins an unfinished worker.
+- A detached Home can return before its audio has ever played. Joining that worker on exit previously lost its completion notification, leaving Home silent after cancellation. Re-entry now publishes the completed WAV without starting another worker.
+
+Focused checked tests pass: custom skins 47 checks, including installed and tampered archives; ambience 29 checks, including exact PCM, independent resources, eviction, worker joins and re-entry. Cache reuse and cold re-entry assertions both failed before their respective fixes. The live cancellation scenario is `tools/debug/scenarios/home_ambience_cancel.txt`.
+
+Local receipts are under `tmp/fluidness-ui/`; ambience red controls are `tmp/godot-checks/godot-spapjbdu/` and `godot-y3agll2u/`, and the clean 29-check run is `godot-dq3e60px/`. A separate five-pair worker microbenchmark reported 297.341 ms cold and 1.311 ms warm medians, but emitted an unexplained ObjectDB exit warning; those timings are informational and excluded from performance acceptance. The clean lifecycle regression reported no engine errors or warnings.
+
+The extended debug-bridge smoke passes all 52 steps, including the cancellation scenario, seeded UI walk and six flight/Home cycles: no growing counters, engine errors or exit leaks. Nodes/resources remain 830/1,323 throughout the soak. The default three-cycle soak initially flagged +16 objects per cycle; the existing shadow-light weak-reference registry prunes every 64 registrations, and the longer run includes that sweep. Earlier same-day evidence reproduces the pattern before these changes. No threshold was weakened. The first draft of the new cancellation scenario also failed because it omitted the headless staged-loading opt-in; the corrected scenario and cleanup pass. Logs: `tmp/fluidness-integration/smoke-extended.log`, with runtime output in `tmp/debug-bridge/20261031-223006-47870/`.
+
+The primary 1080p frame-time, total-loading and native-hardware gates remain open.

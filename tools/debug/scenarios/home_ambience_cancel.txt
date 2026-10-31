@@ -1,0 +1,12 @@
+# UI-34c / SC-19a: cancellation reattaches the retained Home and its ambience.
+assert expr="flight == null and screens.is_top('home')" message="starts at Home"
+eval expr="app.set_meta('ambience_test_loading',app.flight_loading_enabled)"
+set node=AppRoot prop=flight_loading_enabled value=true
+call node=AppRoot method=set_aircraft args=["jensen-das-ugly-stik-60"]
+# CONNECT_ONE_SHOT (4): cancel precisely after Home detaches, including headless runs.
+eval expr="app.home_scene.tree_exited.connect(app.cancel_flight_loading,4)"
+call node=AppRoot method=start_flight
+wait until="not app._loading_active" timeout_s=120
+assert expr="app.last_flight_loading.get('status','') == 'cancelled' and app.home_scene.is_inside_tree() and screens.is_top('home')" message="cancellation restores the retained Home"
+wait until="app.home_scene.find_child('Ambience',true,false).playing" timeout_s=15
+assert expr="flight == null" message="no flight was published"
