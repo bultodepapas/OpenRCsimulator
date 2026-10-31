@@ -1,0 +1,17 @@
+{
+  "test_failure_observed": false,
+  "threshold_gib": 8.5,
+  "termination_exit": 1,
+  "terminated_root_pid": 56872,
+  "verdict": "interrupted",
+  "recorded_utc": "2026-10-31T14:43:55.2717843Z",
+  "next_check": "RCV-14a test_asset_intake.py, not completed",
+  "observed_before_stop_gib": 8.492,
+  "observed_after_stop_gib": 8.368,
+  "termination_note": "Some child processes had already exited or could not be signalled; root Bash was terminated and no matching snapshot suite processes remained on inspection.",
+  "last_completed_stage": "RCV-14a: asset_intake.py --check (intake manifest matches)",
+  "termination_command": "taskkill.exe /PID 56872 /T /F",
+  "complete": false,
+  "reason": "C: free space crossed the 8.5 GiB stop threshold",
+  "parse_and_unit_rosters_reached": false
+}

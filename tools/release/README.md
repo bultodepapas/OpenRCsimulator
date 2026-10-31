@@ -15,6 +15,8 @@ Each successful export produces exactly six public files at its output root:
 
 CI transfers only the six named files. Its verifier takes independent commit, tag, Actions run and repository expectations before publication. It then fetches the remote tag, checks the peeled commit and uses `gh release create --verify-tag`; protection against tag changes during publication still requires repository tag protection/immutability policy.
 
+After reserving an output directory, a failed export retains the latest engine log as `export-failure.log` and a pathname-only source inventory as `export-source-status.txt` there. Diagnostic collection is best effort and does not change the failure result. CI retains these two files separately for seven days; they are not release assets. Keep generated `.uid` sidecars tracked with application scripts and shaders so a fresh import does not change the selected source identity; the early CI preflight checks their presence.
+
 The workflow invokes `tools/release/publish.py` for this same-run handoff. It also checks the checkout/origin and tagged notes. If the release exists, it verifies published/draft and prerelease state, title/notes, the exact six assets and their downloaded bytes; an identical retry is a no-op. Incomplete drafts or different files/metadata fail without overwriting assets. Newly created downloads are verified too. All credentials remain in the environment. Publication tests use disposable Git remotes and mocked GitHub calls; a passing fixture is not a real package/publication rehearsal.
 
 To inspect a downloaded set, put exactly the six files into an otherwise empty directory:

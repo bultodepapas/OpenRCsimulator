@@ -20,9 +20,9 @@ Detail has three useful scales: small contact and self-shadow detail around the 
 
 The first visible release should offer a dedicated **Shadows** settings group, a reliable Standard fallback, improved landing contact, and a measured native-shadow option. Later slices add foliage, local lights and atmospheric coherence. Each slice remains independently reviewable.
 
-## 2. What exists and what needs work
+## 2. Pre-implementation inventory
 
-The audit examined HEAD `70709ff4b600fbce361b0bea9f88726c60bcff86` plus the working files on 2026-10-31. The engine pin is official **Godot 4.8-beta1**, `4d10419ca`. Unrelated overlay/CI edits were present. This is source inspection, not a new rendered baseline.
+The planning audit examined HEAD `70709ff4b600fbce361b0bea9f88726c60bcff86` plus the working files on 2026-10-31. The engine pin is official **Godot 4.8-beta1**, `4d10419ca`. Unrelated overlay/CI edits were present. The table below preserves that source inventory; the later [implementation record](../research/visual-quality-implementation/VQ-04b/S01-S03-2026-10-31/README.md) owns the added controls and rendered baselines.
 
 | Existing implementation | Implication for this plan |
 | --- | --- |
@@ -142,9 +142,15 @@ Native directional maps handle ordinary terrain receivers. Extremely long landsc
 
 Add a collapsible **Shadows** group within Graphics; place AO in a neighboring **Ambient shading** group and retain current sky/night ownership. Show concise visual explanations and an estimated cost category, not unmeasured FPS promises. The renderer profile **High** and shadow quality **High** must be visibly distinct.
 
+The implemented first group exposes Current/Low/Medium/High/Ultra allocation candidates, technique,
+aircraft cue, distance, softness and restore defaults. Current remains the default; the other allocations
+are comparison options, including Ultra, without target-hardware or motion qualification. Off belongs to
+the technique control. The table below remains the proposed expanded interface after the corresponding
+features pass their gates; it is not a list of controls already shipped.
+
 | Player control | Proposed choices | Behavior / dependency |
 | --- | --- | --- |
-| Shadow quality | Off / Low / Medium / High / Custom; Ultra only after qualification | Presets resolve to validated combinations; individual edits select Custom. Off disables cast-shadow paths including projected cues, but does not make surfaces unlit or disable separate material AO. |
+| Shadow quality | Low / Medium / High / Custom; Ultra as a qualified recommendation only after its gates | Future presets resolve to validated combinations; individual edits select Custom. Current implementation exposes Ultra only as an allocation candidate. Technique Off disables direct-shadow paths including projected cues, but does not make surfaces unlit or disable separate material AO. |
 | Shadow technique | Automatic / Projected / Native, where qualified | Automatic resolves from actual renderer and qualified profile. Hybrid remains a developer experiment until ownership is proven. |
 | Aircraft shadows | On / Off | Governs aircraft cast shadows; explain if a selected technique cannot provide separate self/ground controls. |
 | Aircraft height cue | Natural / Assisted / Off | Natural follows the selected light path; Assisted explicitly enables the bounded training cue. Prevent duplication. Master Off takes precedence. |
@@ -275,7 +281,10 @@ For temporal artifacts, first capture baseline A twice and candidate B with a fi
 
 Use [graphics tools](../tools/graphics.md), [shadow tools](../../tools/shadows/README.md), [High/contact probes](../../tools/graphics/README.md), [debug bridge](../../tools/debug/README.md) and [performance collection](../../research/performance/README.md) as the command authorities. The legacy `vq04a_verify.py` requires its documented pre-feature baseline; do not point it at arbitrary modern snapshots and call that a valid comparison.
 
-Relevant existing checks include projected/field/windsock/collection/blur/wreck-shadow tests, High profile/restart tests, display preferences, advanced graphics settings and affected landscape/material tests. Extend focused checks for resolved settings and ownership only when implementing those contracts. Rendered changes also require applicable capture checks and actual image review; follow repository requirements for the final runtime suite. This documentation-only delivery needs link/content checks, not a flight-suite rerun.
+Relevant checks include projected/field/windsock/collection/blur/wreck-shadow tests, High profile/restart tests,
+display preferences, advanced graphics settings and affected landscape/material tests. The first slice adds
+resolver, ownership, cue-control and shadow-settings regressions. Rendered changes also require applicable
+capture checks and actual image review; the implementation record distinguishes focused, native and full-suite results.
 
 The first implementation packet should contain: the S00 caster/receiver inventory, matched current Standard/High 1080p landing and pavilion clips, clear requested/effective shadow diagnostics, a minimal S01 ownership decision and one S03 allocation comparison. It should answer **which specific detail improves, at what measured cost, on which hardware**, before default settings change.
 

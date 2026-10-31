@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -49,6 +50,12 @@ if [[ "${PROBE_IMPORT_ERROR:-}" == 1 ]]; then
   echo 'SCRIPT ERROR: simulated import failure'
   exit 0
 fi
+if [[ "${PROBE_IMPORT_UID:-}" == 1 ]]; then
+  printf '%s\\n' 'uid://generatedfixture' > "$(dirname "$0")/test_generated.gd.uid"
+  echo 'fake import completed'
+  exit 0
+fi
+echo 'fake engine exited 23'
 exit 23
 ''',
         }
@@ -348,6 +355,92 @@ exit 23
         self.assertEqual(result.returncode, 1, result.stdout)
         self.assertIn("engine error while importing", result.stdout)
         self.assertNotIn("== export Linux", result.stdout)
+        output = self.output_path(result)
+        self.assertIn("SCRIPT ERROR: simulated import failure", (output / "export-failure.log").read_text())
+        self.assertTrue((output / "export-source-status.txt").is_file())
+
+    def test_import_generated_uid_is_reported_on_metadata_refusal(self):
+        (self.app / "test_generated.gd").write_text("extends Node\n", encoding="utf-8")
+        release = self.root / "tools/release"
+        release.mkdir(parents=True)
+        repo = Path(__file__).resolve().parents[2]
+        for name in ("manifest.py", "elf_audit.py"):
+            shutil.copyfile(repo / "tools/release" / name, release / name)
+        self.git("add", "app/test_generated.gd", "tools/release")
+        self.git("commit", "--quiet", "-m", "tracked script and metadata tools")
+        handoff = self.root / "github-output"
+        handoff.write_text("other_step=unchanged\n", encoding="utf-8")
+
+        result = self.export(PROBE_IMPORT_UID="1", GITHUB_OUTPUT=str(handoff))
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn("source cleanliness changed since export identity was selected", result.stdout)
+        output = self.output_path(result)
+        self.assertEqual((output / "export-failure.log").read_text(), "fake import completed\n")
+        status = (output / "export-source-status.txt").read_text()
+        self.assertIn("== tracked changes in all paths (names only) ==", status)
+        self.assertIn("== untracked app paths (excluding ignored; names only) ==", status)
+        self.assertIn("app/test_generated.gd.uid\n", status)
+        self.assertNotIn("uid://generatedfixture", status)
+        self.assertFalse((output / ".release-inputs.json").exists())
+        self.assertFalse((output / "release-manifest.json").exists())
+        self.assertFalse(list(output.glob("openrc-simulator-*.zip")))
+        self.assertEqual(handoff.read_text(), "other_step=unchanged\n")
+
+    def test_failure_status_lists_tracked_changes_and_only_untracked_app_paths(self):
+        tracked = self.root / "tracked-note.txt"
+        tracked.write_text("original\n", encoding="utf-8")
+        self.git("add", "tracked-note.txt")
+        self.git("commit", "--quiet", "-m", "tracked note")
+        tracked.write_text("private tracked content\n", encoding="utf-8")
+        (self.app / "untracked.gd").write_text("private app content\n", encoding="utf-8")
+        (self.root / "untracked-note.txt").write_text("private outside content\n", encoding="utf-8")
+        result = self.export()
+        self.assertEqual(result.returncode, 1, result.stdout)
+        output = self.output_path(result)
+        self.assertEqual((output / "export-failure.log").read_text(), "fake engine exited 23\n")
+        status = (output / "export-source-status.txt").read_text()
+        tracked_section, untracked_section = status.split("== untracked app paths (excluding ignored; names only) ==\n")
+        self.assertIn("tracked-note.txt\n", tracked_section)
+        self.assertIn("app/untracked.gd\n", untracked_section)
+        self.assertNotIn("untracked-note.txt", status)
+        self.assertNotIn("private ", status)
+
+    def test_diagnostic_failures_do_not_replace_export_failure(self):
+        fake_bin = self.root / "fake-bin"
+        fake_bin.mkdir()
+        git = fake_bin / "git"
+        git.write_text('#!/usr/bin/env bash\n'
+                       'for arg in "$@"; do [[ "$arg" != --name-only ]] || exit 42; done\n'
+                       f'exec {shlex.quote(shutil.which("git"))} "$@"\n', encoding="utf-8")
+        cp = fake_bin / "cp"
+        cp.write_text("#!/usr/bin/env bash\nexit 43\n", encoding="utf-8")
+        python = fake_bin / "python3"
+        python.write_text('#!/usr/bin/env bash\n'
+                          'if [[ "$1" == */tools/release/manifest.py && "$2" == capture ]]; then exit 37; fi\n'
+                          f'exec {shlex.quote(shutil.which("python3"))} "$@"\n', encoding="utf-8")
+        for executable in (git, cp, python):
+            executable.chmod(0o755)
+        result = self.export(PROBE_IMPORT_UID="1", PATH=str(fake_bin) + os.pathsep + os.environ["PATH"])
+        self.assertEqual(result.returncode, 37, result.stdout)
+        output = self.output_path(result)
+        self.assertFalse((output / "export-failure.log").exists())
+        status = (output / "export-source-status.txt").read_text()
+        self.assertIn("[tracked changes unavailable or timed out]", status)
+        self.assertIn("app/test_generated.gd.uid\n", status)
+
+    def test_failure_after_reserving_output_keeps_status_before_engine_setup(self):
+        fake_bin = self.root / "fake-bin"
+        fake_bin.mkdir()
+        mkdir = fake_bin / "mkdir"
+        mkdir.write_text('#!/usr/bin/env bash\n'
+                         'if [[ "$1" == -- && "$2" == */linux ]]; then exit 39; fi\n'
+                         f'exec {shlex.quote(shutil.which("mkdir"))} "$@"\n', encoding="utf-8")
+        mkdir.chmod(0o755)
+        result = self.export(PATH=str(fake_bin) + os.pathsep + os.environ["PATH"])
+        self.assertEqual(result.returncode, 39, result.stdout)
+        output = self.output_path(result)
+        self.assertTrue((output / "export-source-status.txt").is_file())
+        self.assertFalse((output / "export-failure.log").exists())
 
 
 @unittest.skipUnless(sys.platform.startswith("linux"), "package shell checks require a Linux host")
@@ -396,11 +489,17 @@ class ExportPackaging(unittest.TestCase):
         self.names = [f"openrc-simulator-{self.version}-{suffix}.zip" for suffix in
                       ("linux-x86_64", "windows-x86_64", "macos-universal")]
         source = (Path(__file__).parents[1] / "export.sh").read_text(encoding="utf-8")
-        self.commands = source.split('echo "== packages"\n', 1)[1]
+        cleanup = source.split("cleanup() {\n", 1)[1].split("\n}\ntrap cleanup EXIT\n", 1)[0]
+        self.commands = "cleanup() {\n" + cleanup + "\n}\ntrap cleanup EXIT\n" \
+            + source.split('echo "== packages"\n', 1)[1]
+        self.engine_log = self.root / "fake-engine.log"
+        self.engine_log.write_text("last engine output\n", encoding="utf-8")
 
-    def package(self):
+    def package(self, **overrides):
         env = os.environ.copy()
-        env.update(ROOT=str(self.root), DIST=str(self.dist), VERSION=self.version, GITHUB_OUTPUT=str(self.handoff))
+        env.update(ROOT=str(self.root), DIST=str(self.dist), VERSION=self.version, GITHUB_OUTPUT=str(self.handoff),
+                   LOG=str(self.engine_log), PACK_PROBE="", HOST_PROBE="")
+        env.update(overrides)
         return subprocess.run([os.environ.get("OPENRC_TEST_BASH", "bash"), "-euc", self.commands],
                               cwd=self.root, env=env, text=True, stdout=subprocess.PIPE,
                               stderr=subprocess.STDOUT, timeout=30)
@@ -409,6 +508,9 @@ class ExportPackaging(unittest.TestCase):
         result = self.package()
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertEqual(self.handoff.read_text(), f"package_dir={self.dist}\nversion={self.version}\n")
+        self.assertFalse(self.engine_log.exists()) # The real success cleanup ran.
+        self.assertEqual({path.name for path in self.dist.iterdir() if path.is_file()},
+                         set(self.names + ["linux-abi.json", "release-manifest.json", "SHA256SUMS", ".release-inputs.json"]))
         sums = (self.dist / "SHA256SUMS").read_text().splitlines()
         self.assertEqual(len(sums), 5)
         for name, line in zip(self.names + ["linux-abi.json", "release-manifest.json"], sums):
@@ -428,6 +530,15 @@ class ExportPackaging(unittest.TestCase):
                                   "--expected-run-id", "123", "--expected-repository", "owner/project"],
                                  text=True, capture_output=True, timeout=30)
         self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+
+    def test_success_cleanup_failure_still_fails_the_export(self):
+        fake_bin = self.root / "fake-bin"
+        fake_bin.mkdir()
+        remove = fake_bin / "rm"
+        remove.write_text("#!/usr/bin/env bash\nexit 38\n", encoding="utf-8")
+        remove.chmod(0o755)
+        result = self.package(PATH=str(fake_bin) + os.pathsep + os.environ["PATH"])
+        self.assertEqual(result.returncode, 38, result.stdout)
 
     def test_failed_packaging_never_emits_a_success_handle(self):
         (self.dist / "macos/OpenRC Simulator.zip").unlink()

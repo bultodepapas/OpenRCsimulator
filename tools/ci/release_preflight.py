@@ -37,6 +37,26 @@ def single(pattern, text, label):
     return matches[0]
 
 
+def godot_uid_sidecars(root):
+    # Import generates missing sidecars and would invalidate the selected clean
+    # export identity. Catch that source omission before native builds or import.
+    tracked = {name.decode("utf-8") for name in
+               git(root, "ls-files", "-z", "--", "app/").stdout.split(b"\0") if name}
+    invalid = []
+    for name in sorted(tracked):
+        if not name.endswith((".gd", ".gdshader")):
+            continue
+        sidecar = name + ".uid"
+        path = root / sidecar
+        if (sidecar not in tracked or not path.is_file() or path.is_symlink()
+                or path.stat().st_size == 0):
+            invalid.append(sidecar)
+    require(not invalid,
+            f"missing or invalid tracked Godot UID sidecars ({len(invalid)}): "
+            + json.dumps(invalid[:20]) + (" ..." if len(invalid) > 20 else "")
+            + "; generate with the pinned editor and commit them with their scripts/shaders")
+
+
 def pinned_prerequisites(root):
     for name in REQUIRED_FILES:
         path = root / name
@@ -91,6 +111,7 @@ def preflight(root, event, ref, sha):
     require(not git(root, "ls-files", "--others", "--exclude-standard", "-z", "--", "app/").stdout,
             "untracked application source")
     pinned_prerequisites(root)
+    godot_uid_sidecars(root)
     project = (root / "app/project.godot").read_text(encoding="utf-8")
     numeric = single(r'^config/version="([0-9]+\.[0-9]+\.[0-9]+)"$', project, "project version")
     tag = None

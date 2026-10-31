@@ -180,6 +180,7 @@ Native suppresses the projected aircraft cue. **V** still cycles the flight-loca
 applies that choice again. Distance limits are 100/300/600 m, with shorter limits in close activities. Hard also
 disables High's solar penumbra. These options change presentation only, and higher quality is not a performance
 recommendation. [Implementation and remaining qualification](research/visual-quality-implementation/VQ-04b/S01-S03-2026-10-31/README.md).
+
 **Settings → Camera** sets the **First view** of flights from Home (pilot, chase, fly-by or orbit), the **Pilot field of view**
 (30–70°, default 50°; about 30° shows the model at its real size on a 24–27-inch screen at arm's length), **Auto zoom**,
 **Chase distance**, **Orbit sensitivity** and **Invert orbit up/down**. Changes apply at once, also from Pause; first view

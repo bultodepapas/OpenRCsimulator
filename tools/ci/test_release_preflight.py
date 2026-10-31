@@ -118,6 +118,28 @@ class PreflightTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "versions differ"):
             preflight.preflight(self.root, "push", f"refs/tags/{TAG}", sha)
 
+    def test_requires_committed_uid_sidecars_before_import(self):
+        names = ("shadow policy á.gd", "shadow.gdshader")
+        for name in names:
+            (self.root / "app" / name).write_text("# source\n", encoding="utf-8")
+        sha = self.commit(notes=None, tag=None)
+        with self.assertRaisesRegex(ValueError, "tracked Godot UID sidecars") as failure:
+            preflight.preflight(self.root, "push", "refs/heads/main", sha)
+        self.assertIn("shadow.gdshader.uid", str(failure.exception))
+        for index, name in enumerate(names):
+            (self.root / "app" / (name + ".uid")).write_text(f"uid://b{index + 1}2345\n", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "untracked application source"):
+            preflight.preflight(self.root, "push", "refs/heads/main", sha)
+        sha = self.commit(notes=None, tag=None)
+        self.assertEqual(preflight.preflight(self.root, "push", "refs/heads/main", sha)["source"], sha)
+
+    def test_rejects_empty_committed_uid_sidecar(self):
+        (self.root / "app/new.gd").write_text("# source\n", encoding="utf-8")
+        (self.root / "app/new.gd.uid").touch()
+        sha = self.commit(notes=None, tag=None)
+        with self.assertRaisesRegex(ValueError, "new.gd.uid"):
+            preflight.preflight(self.root, "push", "refs/heads/main", sha)
+
 
 if __name__ == "__main__":
     unittest.main()

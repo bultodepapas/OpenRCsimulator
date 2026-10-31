@@ -583,6 +583,16 @@ jobs:
           python3 research/native-kernel/build.py --install-app
       - id: packages
         run: app/export.sh # exact successful run path and build identity are step outputs
+      - name: Preserve failed export log and changed source paths
+        if: always() && steps.packages.outcome == 'failure'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: export-failure-diagnostics
+          path: |
+            dist/export-*/export-failure.log
+            dist/export-*/export-source-status.txt
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Preserve NK-3 package qualification diagnostics
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

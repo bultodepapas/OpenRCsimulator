@@ -82,21 +82,37 @@ else
   mkdir -p -- "$DIST_PARENT"
   DIST="$(mktemp -d "$DIST_PARENT/export-XXXXXXXX")"
 fi
-echo "== export output: $DIST"
-mkdir -- "$DIST/linux" "$DIST/windows" "$DIST/macos"
 LOG=""
 PACK_PROBE=""
 HOST_PROBE=""
 cleanup() {
   local export_status=$?
+  trap - EXIT
+  if [[ "$export_status" -ne 0 ]]; then
+    if [[ -n "$LOG" && -f "$LOG" ]]; then
+      cp -- "$LOG" "$DIST/export-failure.log" || true
+    fi
+    {
+      printf '%s\n' '== tracked changes in all paths (names only) =='
+      timeout -k 2s 30s git -C "$ROOT" diff --name-only --no-ext-diff --no-textconv --no-renames HEAD -- 2>/dev/null ||
+        printf '%s\n' '[tracked changes unavailable or timed out]'
+      printf '%s\n' '== untracked app paths (excluding ignored; names only) =='
+      timeout -k 2s 30s git -C "$ROOT" ls-files --others --exclude-standard -- app/ 2>/dev/null ||
+        printf '%s\n' '[untracked app paths unavailable or timed out]'
+    } > "$DIST/export-source-status.txt" || true
+    [[ -z "$LOG" ]] || rm -f -- "$LOG" || true
+    [[ -z "$PACK_PROBE" ]] || rm -rf -- "$PACK_PROBE" || true
+    [[ -z "$HOST_PROBE" ]] || rm -rf -- "$HOST_PROBE" || true
+    echo "export failed; partial output retained: $DIST" >&2 || true
+    exit "$export_status"
+  fi
   [[ -z "$LOG" ]] || rm -f -- "$LOG"
   [[ -z "$PACK_PROBE" ]] || rm -rf -- "$PACK_PROBE"
   [[ -z "$HOST_PROBE" ]] || rm -rf -- "$HOST_PROBE"
-  if [[ "$export_status" -ne 0 ]]; then
-    echo "export failed; partial output retained: $DIST" >&2
-  fi
 }
 trap cleanup EXIT
+echo "== export output: $DIST"
+mkdir -- "$DIST/linux" "$DIST/windows" "$DIST/macos"
 GODOT="$("$HERE/get-godot.sh")"
 TEMPLATE_DIR="$("$HERE/get-templates.sh")"
 run() { timeout 600 "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"; }
