@@ -144,6 +144,14 @@ Read-only inspection on 2026-10-31 found completed [run 41211622610](https://git
 
 The [real export job](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41211622610/job/124573121995) succeeded: all three platform exports, native/package checks, final ABI inventory, manifest finalization and checksums completed. It uploaded exactly six files as [artifact 13047573278](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41211622610/artifacts/13047573278), 4,421,087,873 bytes, with reported archive SHA-256 `8809644fc0458b0f9c212971eb62f60f7e8a5725c1cc7bce713732e9fe2eb8a6`. This is hosted packaging evidence on the implemented source, separate from the incomplete local rehearsal. A successful export does not override the failed application suite or qualify Windows/macOS desktop execution.
 
+Independent Windows download verification subsequently matched both the artifact byte count and GitHub's archive SHA-256 before extraction. Exactly six files were extracted to `D:/OpenRC-ci-release-verification-41211622610`; the unmodified manifest verifier passed with independent expectations:
+
+```sh
+python tools/release/manifest.py verify --directory D:/OpenRC-ci-release-verification-41211622610 --expected-commit 28d6a4b77b41cd193bce6d904ad237b9fc3c05d3 --expected-run-id 41211622610 --expected-repository bultodepapas/OpenRCsimulator
+```
+
+The manifest identifies clean source (`dirty=false`), application version `0.1.9`, development channel and no tag. This completes the hosted candidate packaging/transfer rehearsal, not full release qualification or public promotion. The archive is retained outside the repository under `D:/OpenRC-ci-release-verification-41211622610-temp`. Its interrupted download resumed from the existing byte offset and was accepted only after the complete archive hash matched; partial bytes were never treated as verified evidence.
+
 The later main-push run `41244529532` at `d27406a8f76f6ffb0a24dd6a963863b1bf9b7249` still reproduced both application failures: missing optional `shadow_field_policy` metadata in the landscape check and a Graphics-page height of 749 against a 700-pixel body at 1920×1080. Other long jobs were still running when inspected. These failures remain visible; scope skipping and split CI scheduling stay inactive.
 
 Completed Actions job timestamps provide the following observations (execution duration, excluding queue time):
@@ -155,6 +163,8 @@ Completed Actions job timestamps provide the following observations (execution d
 | Export | 16.83 min | 15.70 min |
 
 Both integration jobs passed. The candidate's unit-backed app-check step took 44.20 minutes, while its preliminary schema import took 5.75 minutes. Its visual command alone took 153.00 minutes, so visuals still dominate elapsed verification time. These sources differ in application changes and setup/cache conditions; the numbers are observations, not a controlled attribution, five-run median, billing result or acceptance of the plan's performance targets. Keep PT1-CI-03's complete visual inventory/reducer and rendered-equivalence proof ahead of unit rebalancing.
+
+The workflow now prints available `timings.tsv` to the visual job log and step summary, including after a failed capture; absent output is reported explicitly. This makes phase durations accessible without downloading the 3.12 GB capture artifact. The change passed `actionlint` 1.7.12 (official archive checksum verified; shellcheck disabled), all 13 existing partition regressions under WSL and task-scoped whitespace checks. It appeared in concurrent commit `1340fb83864f3d4ddb28895f6cd2c9ac2db2e348`; this task issued no commit, push or publication. No capture schedule or acceptance gate changed, and the new reporting step has not yet supplied hosted phase-timing evidence.
 
 ### Unit invocation timing inventory
 
