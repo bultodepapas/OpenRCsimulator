@@ -140,6 +140,7 @@ func run() -> void:
 	await settle()
 	await test_clean_recovery()
 	await test_legacy_surface_override_recovery()
+	await test_empty_recovery_discard()
 	_remove_tree(ProjectSettings.globalize_path(scratch))
 	print("Workshop recovery UI: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
@@ -300,6 +301,65 @@ func test_legacy_surface_override_recovery() -> void:
 	fresh_editor.free()
 	await settle()
 	DraftStore.discard_snapshot(recovery_path)
+
+func test_empty_recovery_discard() -> void:
+	# A truncated file must be discardable without disabling future recovery.
+	for backup: bool in [false, true]:
+		var recovery_path := scratch + ("/empty_backup" if backup else "/empty_primary")
+		var directory := ProjectSettings.globalize_path(recovery_path + "/_workshop_recovery")
+		var filename := "snapshot.json.bak" if backup else "snapshot.json"
+		var snapshot_path := directory.path_join(filename)
+		check("empty %s fixture directory creates" % filename, DirAccess.make_dir_recursive_absolute(directory) == OK)
+		var file := FileAccess.open(snapshot_path, FileAccess.WRITE)
+		check("empty %s fixture opens" % filename, file != null)
+		if file == null: return
+		file.close()
+		var editor := make_editor("", recovery_path)
+		await settle()
+		check("empty %s is shown as unavailable for restore" % filename, editor.get("_recovery_pending")
+			and editor.get("_recovery_dialog").visible and editor.get("_recovery_dialog").get_ok_button().disabled)
+		check("empty %s has its exact-byte SHA-256 identity" % filename,
+			editor.get("_recovery_digest") == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
+		editor.call("_discard_pending_recovery")
+		check("explicit discard clears the reviewed empty %s" % filename, not editor.get("_recovery_pending")
+			and not FileAccess.file_exists(snapshot_path) and DraftStore.load_snapshot(recovery_path).digest == "missing")
+		editor.set_recipe({"control_multiplier": 1.07})
+		check("automatic recovery resumes after discarding empty %s" % filename, editor.call("_autosave_draft")
+			and DraftStore.load_snapshot(recovery_path).get("ok", false))
+		editor.free()
+		await settle()
+
+	# A different corrupt file arriving after review must not be discarded as the empty one.
+	var stale_path := scratch + "/empty_recovery_stale"
+	var stale_directory := ProjectSettings.globalize_path(stale_path + "/_workshop_recovery")
+	var stale_primary := stale_directory.path_join("snapshot.json")
+	check("stale empty recovery fixture directory creates", DirAccess.make_dir_recursive_absolute(stale_directory) == OK)
+	var file := FileAccess.open(stale_primary, FileAccess.WRITE)
+	check("stale empty recovery fixture opens", file != null)
+	if file == null: return
+	file.close()
+	var reviewer := make_editor("", stale_path)
+	await settle()
+	var replacement := "new corrupt recovery".to_utf8_buffer()
+	file = FileAccess.open(stale_primary, FileAccess.WRITE)
+	check("concurrent replacement fixture opens", file != null)
+	if file == null:
+		reviewer.free()
+		return
+	file.store_buffer(replacement)
+	file.close()
+	reviewer.call("_discard_pending_recovery")
+	var refreshed := DraftStore.load_snapshot(stale_path)
+	check("stale discard preserves the changed file and refreshes the review identity",
+		reviewer.get("_recovery_pending") and FileAccess.get_file_as_bytes(stale_primary) == replacement
+		and not str(refreshed.get("digest", "")).is_empty()
+		and reviewer.get("_recovery_digest") == refreshed.digest)
+	reviewer.call("_show_recovery")
+	reviewer.call("_discard_pending_recovery")
+	check("discard after renewed review clears the replacement", not reviewer.get("_recovery_pending")
+		and not DraftStore.load_snapshot(stale_path).exists)
+	reviewer.free()
+	await settle()
 
 func _remove_tree(path: String) -> void:
 	var directory := DirAccess.open(path)

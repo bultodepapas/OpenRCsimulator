@@ -3,6 +3,7 @@
 # Every value is validated by type and range: ConfigFile returns whatever type the file holds, not the default's.
 extends RefCounted
 
+const BadSettingsBackup := preload("res://app_state/bad_settings_backup.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Landscapes := preload("res://landscapes/catalog.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
@@ -88,10 +89,9 @@ static func load_from(path: String) -> Dictionary:
 	var cfg := ConfigFile.new()
 	var schema: Variant = cfg.get_value("meta", "schema", -1) if cfg.load(path) == OK else -1
 	if typeof(schema) != TYPE_INT or schema < 1:
-		# Unreadable or not ours: keep it for inspection, start from defaults.
-		var backup := path + ".bad"
-		DirAccess.remove_absolute(backup)
-		var err := DirAccess.rename_absolute(path, backup)
+		var preserved := BadSettingsBackup.preserve(path)
+		var backup: String = preserved.backup
+		var err: int = preserved.error
 		if err != OK:
 			prefs.writable = false
 		prefs.note = "settings file unreadable: %s" % ("kept as " + backup.get_file() if err == OK else "could not keep a copy (error %d); original will not be overwritten" % err)

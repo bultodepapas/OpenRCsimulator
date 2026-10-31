@@ -62,6 +62,7 @@ var _neutral_release_pending := false
 var _focus_rearm_pending := false
 var _profile_ready := false
 var _profile_snapshot: Dictionary = {}
+var _verified_gamepad_poll_used := false
 
 
 func _init() -> void:
@@ -72,6 +73,7 @@ func _init() -> void:
 ## info: {guid,name,vendor_id,product_id,known}; saved may be a V2 or legacy profile.
 func connect_device(id: int, info: Dictionary, saved: Dictionary = {}) -> void:
 	connected = true
+	_verified_gamepad_poll_used = false
 	device_id = id
 	device_name = str(info.get("name", "joystick %d" % id))
 	device_key = key_for(id, info)
@@ -134,6 +136,7 @@ func use_profile(candidate: Dictionary, source: String) -> bool:
 
 func disconnect_device() -> void:
 	connected = false
+	_verified_gamepad_poll_used = false
 	device_id = -1
 	smoke_aux.disconnect_device()
 	for channel in _extra_aux.values(): channel.disconnect_device()
@@ -276,6 +279,22 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 			_invalidate_input("Non-finite polled axis sample; controls require fresh neutral evidence.")
 			return
 		axes[axis] = clampf(value, -1.0, 1.0)
+	# A callback can also be bound for a user-configured raw device that must use
+	# event evidence, so an initial refusal alone cannot reject that device.
+	# Once this mapping has relied on verified live polling, a verifier refusal
+	# cannot fall back to the axis history that polling itself just established.
+	# In an active flight report lost continuity to the session; during a hold,
+	# retain the staged rate throttle but require proof again before Continue.
+	var confirmed_poll := can_confirm_gamepad_poll()
+	if _verified_gamepad_poll_used and not confirmed_poll:
+		if integrate:
+			_invalidate_input("Gamepad connection or focus could not be verified.")
+		else:
+			armed = false
+			_neutral_elapsed = 0.0
+			_seen.clear()
+			axes.fill(0.0)
+		return
 	if read_button.is_valid():
 		var held_buttons: Array[int] = []
 		for button in 128:
@@ -285,8 +304,9 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 	# A verified standard gamepad is ready from its live sample. Do not require
 	# a stick gesture, centered dwell or button release to enable flight controls.
 	# Session pause/Continue still owns when the simulation may advance.
-	var live_gamepad := input_error.is_empty() and read_button.is_valid() and can_confirm_gamepad_poll()
+	var live_gamepad := input_error.is_empty() and read_button.is_valid() and confirmed_poll
 	if live_gamepad:
+		_verified_gamepad_poll_used = true
 		for channel_name in ["roll", "pitch", "yaw", "throttle"]:
 			var axis: int = int(profile[channel_name].axis)
 			_seen[axis] = true
@@ -445,6 +465,7 @@ func _activate_profile(candidate: Dictionary, source: String, preserve_rate: boo
 	var previous_seen: Dictionary = _seen.duplicate(true)
 	profile = upgraded
 	_profile_ready = true
+	_verified_gamepad_poll_used = false
 	_profile_snapshot = profile.duplicate(true)
 	profile_source = source
 	input_error = ""

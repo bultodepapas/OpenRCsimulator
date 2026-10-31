@@ -228,6 +228,11 @@ func _publish_committed_boundary(notification: Callable, publish_sample: bool, k
 			reset_observer_fault = "%s publication observer mutated protected state or model" % kind
 	if publish_sample:
 		stepped.emit(tick, time(), state, last_loads, inputs, aux)
+		# Tick-zero observers share the same protected publication boundary.
+		# They may pause the accepted flight, but may not edit its frame/model.
+		committed_guard.owner.paused = paused
+		if not _endpoint_guard_unchanged(committed_guard):
+			reset_observer_fault = "%s publication observer mutated protected state or model" % kind
 	if _reset_publication_reentry:
 		reset_observer_fault = "%s publication observer attempted transition reentry" % kind
 	if not reset_observer_fault.is_empty():

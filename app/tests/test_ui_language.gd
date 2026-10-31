@@ -33,7 +33,7 @@ func _run() -> void:
 	await _catalog()
 	await _default_and_switch()
 	await _direct_route()
-	for f in [PREFS, PREFS + ".bad"]:
+	for f in [PREFS, PREFS + ".bad", PREFS + ".bad.1", PREFS + ".bad.2"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(f))
 	print("all UI language checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)
@@ -95,7 +95,7 @@ func _write(text: String) -> void:
 
 
 func _reset() -> void:
-	for f in [PREFS, PREFS + ".bad"]:
+	for f in [PREFS, PREFS + ".bad", PREFS + ".bad.1", PREFS + ".bad.2"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(f))
 
 
@@ -120,6 +120,27 @@ func _preferences_file() -> void:
 	_check("unreadable file -> defaults, kept as .bad", p.language == "en" and FileAccess.file_exists(PREFS + ".bad")
 		and not FileAccess.file_exists(PREFS) and "kept as" in p.note, p.note)
 	_check("preserved unreadable settings allow a new file", p.writable and Preferences.save_to(PREFS, p) == OK)
+	# Later damaged files must not replace the first retained copy; each successful recovery can save again.
+	var first_bad := FileAccess.get_file_as_string(PREFS + ".bad")
+	var second_bad := "[ui]\nlanguage=\"es\"\n"
+	_write(second_bad)
+	p = Preferences.load_from(PREFS)
+	_check("second unreadable settings preserve the first backup and receive a distinct backup",
+		p.writable and FileAccess.file_exists(PREFS + ".bad") and FileAccess.file_exists(PREFS + ".bad.1")
+		and FileAccess.get_file_as_string(PREFS + ".bad") == first_bad
+		and FileAccess.get_file_as_string(PREFS + ".bad.1") == second_bad
+		and not FileAccess.file_exists(PREFS) and "kept as" in p.note, p.note)
+	_check("second recovery allows a new file", Preferences.save_to(PREFS, p) == OK)
+	var third_bad := "[ui]\nlanguage=\"fr\"\n"
+	_write(third_bad)
+	p = Preferences.load_from(PREFS)
+	_check("third unreadable settings preserve both earlier backups",
+		p.writable and FileAccess.file_exists(PREFS + ".bad") and FileAccess.file_exists(PREFS + ".bad.1")
+		and FileAccess.file_exists(PREFS + ".bad.2")
+		and FileAccess.get_file_as_string(PREFS + ".bad") == first_bad
+		and FileAccess.get_file_as_string(PREFS + ".bad.1") == second_bad
+		and FileAccess.get_file_as_string(PREFS + ".bad.2") == third_bad
+		and not FileAccess.file_exists(PREFS), p.note)
 	_reset()
 	var backup := ProjectSettings.globalize_path(PREFS + ".bad")
 	_check("create blocked backup directory", DirAccess.make_dir_absolute(backup) == OK)

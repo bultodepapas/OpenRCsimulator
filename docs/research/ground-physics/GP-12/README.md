@@ -166,6 +166,16 @@ The [742-check evaluation cohort](evidence/finite-source-evaluation/README.md) p
 
 Legacy Trace v17 names its underlying format and adds `cmd_wheel_brake`. Its focused inspector checks roles and bounded samples; earlier physical validators remain fail-closed. [Installed evidence](evidence/fixed-brake-input/README.md) records 256 focused assertions, 3,247 existing flight-log assertions and 13 Python tests. Six unchanged historical ORFL tapes also pass 96 candidate ticks with `solver_changed=true`; that comparison is not exact-source replay. The [import followup](evidence/fixed-brake-import/README.md) keeps numerical CSV fixtures as raw files and passes both normal application import and a cold fixture-clone import. Stock brake authoring, differential/airborne braking and Workshop controls are outside this input slice.
 
+2026-10-31 runway-start correction: fixed landing gear with admitted brakes now
+receives its zero-demand brake channel before the optional flap channel. The
+runway initializer previously omitted that input, so a valid five- or six-channel
+aircraft was rejected for a malformed input array despite an accepted airborne
+start. `test_ground_start_integrity.gd` reproduced both failures and now passes
+**286 checks** on Linux with Godot 4.8-beta1. Synthetic, validated wheel profiles
+cover fixed gear with and without brakes/flaps, an accepted command tick, and the
+unchanged retractable layout. The runway transaction suite passes **32/32**.
+No stock fixed-brake installation or physical braking calibration is inferred.
+
 ## Remaining integration gates
 
 The [recorded input-role guard](evidence/input-role-replay/README.md) now validates

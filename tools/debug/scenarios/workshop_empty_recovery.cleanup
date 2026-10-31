@@ -1,0 +1,5 @@
+# Remove owned empty directories only. Failed fixtures retain their file for diagnosis.
+eval expr="ClassDB.class_call_static('DirAccess', 'remove_absolute', app.get_meta('empty_recovery_root') + '/_workshop_recovery') if app.has_meta('empty_recovery_owned') and ClassDB.class_call_static('DirAccess', 'dir_exists_absolute', app.get_meta('empty_recovery_root') + '/_workshop_recovery') else 0"
+eval expr="ClassDB.class_call_static('DirAccess', 'remove_absolute', app.get_meta('empty_recovery_root')) if app.has_meta('empty_recovery_owned') and ClassDB.class_call_static('DirAccess', 'dir_exists_absolute', app.get_meta('empty_recovery_root')) else 0"
+eval expr="app.remove_meta('empty_recovery_owned') if app.has_meta('empty_recovery_owned') else null"
+eval expr="app.remove_meta('empty_recovery_root') if app.has_meta('empty_recovery_root') else null"

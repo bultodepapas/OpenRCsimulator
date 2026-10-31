@@ -426,7 +426,10 @@ func _snapshot_state_is_valid(source: Dictionary, resolved: Dictionary, tick: in
 	var onset_ticks := int(resolved.onset_airborne_ticks)
 	if airborne_ticks < 0 or airborne_ticks > tick:
 		return false
-	if not _inputs_are_valid(source.last_inputs):
+	if source.last_inputs.size() != 4 or not _inputs_are_valid(source.last_inputs):
+		return false
+	# An unselected plan uses the fast path and never tracks airborne time or input.
+	if not selected and (airborne_ticks != 0 or not _float_array_is_zero(source.last_inputs)):
 		return false
 	if not _held_inputs_are_valid(source.held_inputs) or not _jam_positions_are_valid(source.jam_positions):
 		return false
@@ -434,6 +437,10 @@ func _snapshot_state_is_valid(source: Dictionary, resolved: Dictionary, tick: in
 		return false
 	if active:
 		if not selected or activation_tick < onset_ticks or activation_tick > tick or airborne_ticks < onset_ticks:
+			return false
+		# The event fires on the onset-th airborne tick. Each later airborne tick must fit
+		# in the committed ticks after activation, including any grounded intervals.
+		if airborne_ticks - onset_ticks > tick - activation_tick:
 			return false
 	else:
 		if activation_tick != -1 or int(source.jam_mask) != 0:

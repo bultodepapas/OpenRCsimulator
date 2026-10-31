@@ -149,6 +149,22 @@ Configuration publication remains open.
 It does not activate advanced aircraft ground physics or qualify physical behavior,
 native audio, whole-suite coverage or target-host performance.
 
+2026-10-31 correction: the guarded reset publication now also checks protected
+state after the tick-zero `stepped` notification. Previously a sample listener
+could double `Simulation.mass` without a fault, leaving the accepted reset pose
+unchanged but changing the next physics tick. The committed frame is now restored
+and the accepted reset reports an observer fault and pauses. Legal observer pauses,
+the empty-hook path and ordinary tick integration retain their existing behavior.
+The extended [reset publication test](../../../../app/tests/test_reset_publication.gd)
+passes **215 checks** on Linux with Godot 4.8-beta1, covering mass, state and model
+mutation, step reentry and actual runway-session receipts in both layout modes.
+Its initial regression failed ten assertions before the guard was added. All four
+golden flights passed before and after the fix without re-recording. These are
+software checks, not physical validation. The full `app/test.sh` attempt stopped
+in `research/aircraft-standardization/test_models.py`: the fresh CRLF clone could
+not write aircraft assets because the filesystem ran out of space. Whole-suite
+acceptance remains unverified.
+
 
 ## Common start and reload transactions (GP-14e)
 

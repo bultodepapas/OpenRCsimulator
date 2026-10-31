@@ -1940,7 +1940,7 @@ func _has_gear_aux_binding() -> bool:
 	if typeof(binding_value) != TYPE_DICTIONARY:
 		return false
 	var binding: Dictionary = binding_value
-	return str(binding.get("type", "")) in ["axis", "button"]
+	return str(binding.get("type", "")) in ["axis", "button", "switch"]
 
 
 func _clear_wheel_brake() -> void:

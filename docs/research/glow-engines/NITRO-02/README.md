@@ -16,6 +16,21 @@ The ground solver correctly refused stationary idle starts when calculated idle 
 
 ## Retained software evidence
 
+2026-10-31 starter correction: `glow_start()` now refuses the existing broken-propeller
+latch before priming, crank impulse or ignition changes. Previously F7 could restart
+combustion and consume fuel after a nonterminal propeller strike. The extended
+`test_aircraft_contact_session.gd` reproduced six failures across the two-stroke and
+four-stroke fixtures and now passes **83/83** on Linux with Godot 4.8-beta1. It covers
+the production strike path, byte-preserving refusal, a subsequent stopped tick with
+zero combustion/fuel burn, intact restart and reset clearing the damage latch.
+Related lifecycle (**52/52**), failure-power (**111/111**), propulsion-runtime
+(**246/246**) and four-installation glow-session (**140/140**) checks pass, as do
+all four unchanged golden flights. This enforces the existing damage lifecycle without
+changing engine profiles, force laws or golden flights; it is not physical validation.
+Whole-suite acceptance remains unverified: the earlier same-host `app/test.sh`
+attempt exhausted disk space during the aircraft model's fresh-clone check, and
+available space remains insufficient for that check.
+
 - Historical [verification manifest](verification.json) and [test output](verification.log): **632/632 commands passed** on an earlier working-tree snapshot, including 566 GDScript parses, independent source/installation checks, both families and legacy/electric/turbine regression coverage. The later isolated [optimized integration snapshot](verification-optimized.json) passed **82/82 commands** with unchanged declared sources, including aircraft/runway UI and both catalog CLI starts. Both snapshots precede the momentum-bound correction below. The earlier installed-session proof passed 132 checks across four engine/propeller configurations; legacy propulsion retained 25,001 byte-exact comparisons. Existing flight goldens were not re-recorded. The `app/test.sh` float64 state guard and `git diff --check` also passed on the earlier snapshot.
 - The corrected [physics integration snapshot](verification-momentum.json) passes **79/79 commands** with unchanged declared sources: both families, all four installations, flight/energy/replay/trace checks, legacy goldens and electric/turbine regressions. Its explicit `physics` scope omits the four scene/catalog UI fixtures and app CLI smoke, which are named in the manifest. The [momentum regression log](momentum-bound.log) records 63 passing checks, including rejection of the two previous 4T estimates. The later report-only screening/terminology checks are [recorded separately](final-focused-checks.json); they do not change the runtime or installation data in this integration snapshot.
 - The current hub-v2 [physics integration manifest](verification-hub-v2.json) and [summary log](verification-hub-v2.log) pass **651/651 commands**, including all 579 GDScript parses, all glow tests, legacy goldens and electric/turbine regressions, with unchanged declared sources. It uses the frozen app also bound by the current native exports. Its research snapshot precedes the later citation-only oracle correction and v3 lifecycle-event report observer; those do not change the frozen runtime.
