@@ -2,6 +2,16 @@
 
 **Date:** 2026-10-27. **Scope:** software implementation and verification. The [plan checkpoint](../../../plans/failure-mode.md#implementation-checkpoint--current-scope) owns the current behavior. Severity bands and onset windows are **training-policy estimates**, not measured RC failure statistics. Nothing here is physical or pilot validation.
 
+## Checkpoint validation repair (2026-10-31, EM-29)
+
+Against `28d6a4b7`, the extended `test_failure_profiles.gd` exposed five accepted corrupt checkpoints: two impossible activation/airborne timelines, an extra input channel, and airborne/input state on an unselected failure. Restore now rejects these states before changing the live runtime. The post-onset airborne count must fit between activation and the committed tick; valid ground intervals before and after activation remain accepted. No failure law, seed mapping or golden flight changed.
+
+The regression failed **5 of 178** checks before the repair, then passed **178/0**. Checked Godot 4.8-beta1 runs also passed `test_failures` **5150/0**, `test_failure_selection` **252/0**, and `test_failure_session` **111/0**. The combined app snapshot independently passed the 178-check regression. Local red/green logs are under `tmp/bughunt-scenarios-20261031/`; the lead rerun is under `tmp/bughunt-lead-20261031/focused/`. This verifies atomic checkpoint rejection and accepted-state compatibility in software.
+
+**Integration remains pending:** the broader run passed its source checks and all 688 non-unit parses, but `test_companions_profiles.gd` correctly refused the changed solver identity. The [companion re-bind workflow](../../../../tools/companions/README.md) requires committed solver directories before renewing the profile. Other sessions also changed `flight_session.gd` and `simulation.gd`; this repair did not commit or alter those edits. The [read-only parity report](checkpoint-validation-companion-parity.json) covers that combined working tree (`90fb5ae1…59724`): all nine retained tapes produced identical 2,881-row CSVs against the accepted solver. It is not an accepted re-bind receipt or a complete app-suite pass; commit the combined solver changes and rerun the workflow before claiming companion availability.
+
+The broad attempts also encountered shared-disk exhaustion and a parallel timeout in `test_aircraft_ground_damage.gd`. After reclaiming only disposable test copies, the H7 mutation check passed, and the ground-damage test passed **125/0** alone with its unchanged 60-second limit. The remaining partitions were stopped after the qualification failure; no complete unit or runtime-partition pass is claimed. Local evidence remains under `tmp/bughunt-lead-20261031/`.
+
 ## What changed
 
 **EM-29 — request and plan contracts**

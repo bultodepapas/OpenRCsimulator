@@ -114,7 +114,7 @@ static func import_file(path: String, aircraft_id: String) -> Dictionary:
 static func choices(aircraft_id: String) -> Array:
 	if not supports(aircraft_id): return []
 	var inventory := _inventory(aircraft_id)
-	if not inventory.ok: return []
+	if not inventory.ok or inventory.files.is_empty(): return []
 	var base := _base(aircraft_id)
 	if not base.ok: return []
 	var result := []

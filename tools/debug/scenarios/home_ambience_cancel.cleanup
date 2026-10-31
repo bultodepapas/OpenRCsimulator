@@ -1,0 +1,4 @@
+call node=AppRoot method=cancel_flight_loading
+wait until="not app._loading_active" timeout_s=120
+eval expr="app.set('flight_loading_enabled',app.get_meta('ambience_test_loading'))"
+eval expr="app.remove_meta('ambience_test_loading')"

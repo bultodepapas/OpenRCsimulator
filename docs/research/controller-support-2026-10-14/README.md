@@ -2,6 +2,16 @@
 
 2026-10-14. Source snapshot: `22b3e4825ec97289b76666ca9e942eaa7a8f703d` plus the existing working tree. Scope: Xbox, PlayStation DualSense and other controllers, with Windows prioritized by the owner. The [implementation plan](../../plans/controller-support.md) owns proposed work and acceptance; this report owns the dated findings and sources.
 
+## Verified gamepad continuity (2026-10-31, F3-GP-02)
+
+On `28d6a4b7` plus this repair, `test_controller_verifier_loss.gd` reproduces loss of connection/focus verification after a successful live poll. Before the repair, the actual `FlightSession` remained unpaused with a 0.75 throttle command; paused readers could also reuse polling-derived axis history to remain ready or rearm. The regression failed twice before the fix.
+
+The reader now remembers whether the current connection/mapping used verified polling. Losing that proof during flight invokes the existing controller-loss hold; during a menu hold it revokes readiness while retaining staged rate throttle until verification returns. Raw devices and nonstandard axis mappings retain their event-based gate, because a bound verifier can legitimately decline those devices.
+
+Checked Godot 4.8-beta1 results: verifier-loss regression **15/0**; `test_rc_input` **41/0**, `test_rc_rearm` **368/0**, `test_rc_fault_boundaries` **26/0**, `test_controller_conditioning` **30/0**, `test_controller_integration` **27/0**, `test_controller_pause_recovery` **59/0**, `test_controller_menu` **53/0**, and `test_controller_aux_runtime` **38/0**. The combined app snapshot independently passed the new regression. Local logs are under `tmp/bughunt-controls-20261031/checks/` and `tmp/bughunt-lead-20261031/focused/`. These are synthetic-device checks; physical controller and OS focus qualification remain open.
+
+The final headless debug-bridge smoke passed all **50 stages** with seed 31, 160 requested random actions and three fly/Home cycles: no growing counters or exit leaks. Log: `tmp/bughunt-lead-20261031/final-smoke-retry.log`. An earlier attempt encountered shared-disk exhaustion; its failure logs remain separate. The successful headless run is behavioral evidence, not rendered 1080p or hardware qualification.
+
 
 ## GameSir and advanced inspection (2026-10-16, F1 / HELI-26a)
 

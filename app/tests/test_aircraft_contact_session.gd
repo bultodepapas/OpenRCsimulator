@@ -37,6 +37,7 @@ func _initialize() -> void:
 	_rejected_collision()
 	_rejected_projection()
 	_strike_checkpoint()
+	_glow_starter_after_strike()
 	_failed_reload()
 	_water_transaction()
 	print("AS-13 contact session: %d checks, %d failures" % [checks, failures])
@@ -221,6 +222,51 @@ func _strike_checkpoint() -> void:
 		check("restore preserves the broken propeller latch", s.restore_checkpoint(saved)
 			and var_to_bytes(s.contact_events()) == exact and not s.prop_strike.is_empty())
 	s.free()
+
+func _glow_starter_after_strike() -> void:
+	for id: String in ["55ax_2t", "fs64v_4t"]:
+		var s := Session.new()
+		s.input_enabled = false
+		s.soft_hull_contacts = true
+		s.crash_auto_restart = false
+		s.setup("res://data/aircraft/stik_glow_" + id + ".json")
+		check(id + " glow flight begins with an intact running propeller", s.is_flyable() and s.glow_is_active() \
+			and s.engine_running and s.prop_strike.is_empty())
+		if not s.is_flyable():
+			s.free()
+			continue
+		check(id + " intact engine can be cut and restarted", s.glow_cut() and s.glow_start())
+		# Place the level body at the first prop-disc contact, with no hull or collapsed-gear contact.
+		var body := _state(-10.0, 0.0)
+		var depth: Dictionary = Hull.prop_disc_depth(body, s._prop_disc)
+		body[RB.POS + 2] += -float(depth.depth) + 0.001
+		check(id + " strike fixture leaves hull and gear clear", not s.gear_collapsed(body) \
+			and Hull.contacts(body, body, s._hull_contact).is_empty())
+		check(id + " strike fixture installs", s.sim.reset(body))
+		s._physics_process(s.sim.dt())
+		check(id + " session guard records a nonterminal strike and cuts the engine", not s.prop_strike.is_empty() \
+			and s.crash.is_empty() and not s.engine_running)
+		s.sim.step()
+		var stopped: Dictionary = s.glow_state()
+		check(id + " coast commits a stopped glow source", s.sim.tick == 1 and s.sim.fault_reason.is_empty() \
+			and s.crash.is_empty() and stopped.get("ok", false) and not stopped.get("running", true))
+		var before := var_to_bytes([s.sim.state, s.sim.aux, s.sim.continuous, s.sim.modes, s.sim.tick, s.prop_strike])
+		var accepted: bool = s.glow_start()
+		check(id + " starter refuses a broken propeller", not accepted)
+		check(id + " refused starter leaves state, fuel and strike unchanged", \
+			before == var_to_bytes([s.sim.state, s.sim.aux, s.sim.continuous, s.sim.modes, s.sim.tick, s.prop_strike]))
+		s._physics_process(s.sim.dt())
+		s.sim.step()
+		var after: Dictionary = s.glow_state()
+		check(id + " next accepted tick stays stopped without consuming fuel", s.sim.tick == 2 \
+			and s.sim.fault_reason.is_empty() and s.crash.is_empty() and not s.engine_running \
+			and after.get("ok", false) and not after.get("running", true) \
+			and float(after.get("chemical_power_w", NAN)) == 0.0 and after.get("fuel_kg") == stopped.get("fuel_kg"))
+		s.reset()
+		check(id + " reset clears the broken propeller and allows starting", s.is_flyable() \
+			and s.prop_strike.is_empty() and s.glow_cut() and s.glow_start())
+		s.free()
+
 
 func _rejected_projection() -> void:
 	var s := _session()

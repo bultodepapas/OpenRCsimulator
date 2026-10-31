@@ -87,6 +87,49 @@ func _run() -> void:
 	_check("G does not override an assigned gear AUX input", bool(session.gear_state().target_down) == aux_target
 		and str(flight.get("_note")).contains("AUX"))
 
+	# A maintained switch owns the same gear request as an axis or button AUX.
+	profile.aux.gear = {"type": "switch", "buttons": [7, 8], "invert": false}
+	_check("radio fixture accepts a maintained gear switch", Profile.validate(profile).ok)
+	session.radio.connect_device(RADIO_ID, {"known": false, "name": "EdgeTX gear test"}, profile)
+	var held := {7: false, 8: true}
+	session.read_axis = func(_id: int, _axis: int) -> float: return 0.0
+	session.read_button = func(_id: int, button: int) -> bool: return bool(held.get(button, false))
+	session._poll_controller() # baseline at the up position
+	held[7] = true
+	held[8] = false
+	session.radio.on_button(RADIO_ID, 8, false)
+	session.radio.on_button(RADIO_ID, 7, true)
+	session._poll_controller() # deliberate down position arms the switch
+	held[7] = false
+	held[8] = true
+	session.radio.on_button(RADIO_ID, 7, false)
+	session.radio.on_button(RADIO_ID, 8, true)
+	session._physics_process(0.0)
+	_step_gear_command(session)
+	_check("maintained gear switch commands up", session.radio.auxiliary_amount("gear") == 1.0
+		and not bool(session.gear_state().target_down))
+
+	await ui.tap(KEY_G)
+	_step_gear_command(session)
+	_check("G leaves switch-owned gear up and explains AUX ownership", not bool(session.gear_state().target_down)
+		and str(flight.get("_note")).contains("AUX"))
+	# Sample the unchanged physical switch again, so the controller action has an independent starting state.
+	session._physics_process(0.0)
+	_step_gear_command(session)
+	flight.call("controller_action", "gear_toggle")
+	_step_gear_command(session)
+	_check("controller gear action leaves switch-owned gear up and explains AUX ownership", not bool(session.gear_state().target_down)
+		and str(flight.get("_note")).contains("AUX"))
+
+	held[7] = true
+	held[8] = false
+	session.radio.on_button(RADIO_ID, 8, false)
+	session.radio.on_button(RADIO_ID, 7, true)
+	session._physics_process(0.0)
+	_step_gear_command(session)
+	_check("maintained switch still commands gear down", session.radio.auxiliary_amount("gear") == 0.0
+		and bool(session.gear_state().target_down))
+
 	root.remove_child(flight)
 	flight.free()
 	# Main._exit_tree() already freed the injected, unattached session on removal.

@@ -491,10 +491,10 @@ func _unhandled_input(event: InputEvent) -> void:
    KEY_MINUS: _rig.zoom(-1)
    KEY_BACKSPACE: _rig.reset_view()
    KEY_Z: _rig.toggle_auto_zoom()
-   KEY_G: session.trainer_enabled=not session.trainer_enabled
+   KEY_G: controller_action("helicopter_trainer")
    KEY_H: session.set_drive_hold(not session.zero_drive_hold)
    KEY_B: session.toggle_motor_arm()
-   KEY_I: session.request_flight_mode()
+   KEY_I: controller_action("helicopter_mode")
    KEY_L: _cycle_night_lights()
    KEY_K: session.start_calibration()
    KEY_ENTER,KEY_KP_ENTER:

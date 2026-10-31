@@ -60,6 +60,16 @@ For the four desktop captures, run `test_jeti_setup.gd` without `--headless`, wi
 | English | [1280×720](captures/jeti-setup-en-1280x720.png) | [1920×1080](captures/jeti-setup-en-1920x1080.png) |
 | Spanish | [1280×720](captures/jeti-setup-es-1280x720.png) | [1920×1080](captures/jeti-setup-es-1920x1080.png) |
 
+2026-10-31 routing correction: maintained `switch` gear AUX bindings now retain
+command ownership when the pilot presses **G** or invokes `gear_toggle`, matching
+axis and button bindings. Previously either shortcut briefly changed the request
+before the next radio sample overwrote it. The
+[gear input regression](../../../../app/tests/test_retractable_gear_input.gd)
+failed both shortcut checks before the fix and now passes **13/13**. Related
+switch AUX (**75/75**), controller flight actions (**32/32**) and controller AUX
+runtime (**38/38**) checks also pass on Linux with Godot 4.8-beta1. The tests use
+injected device samples; no physical radio or flight-model qualification is claimed.
+
 ## Remaining acceptance
 
 F1 still needs a physical DC-16II report with build/OS/firmware/mode/switch metadata and observed axis/button transitions. F4 requires actual startup, capture, recovery, two-device and exported-Windows-package checks. Other models/platforms and filmed latency have independent gates. The optional branded 3D representation remains separate, subject to free-asset/license review and JETI permission. No device, latency or physical-flight qualification is inferred from these fixtures.

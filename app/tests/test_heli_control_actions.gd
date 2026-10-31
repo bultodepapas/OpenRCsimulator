@@ -72,6 +72,7 @@ func run() -> void:
  flight.controller_action("helicopter_mode")
  flight.controller_action("helicopter_trainer")
  check("paused semantic mode and trainer do not queue",session.flight_mode==paused_mode and session.pending_mode.is_empty() and session.trainer_enabled==paused_trainer)
+ keyboard_mode_guards(flight,session)
  flight.controller_action("helicopter_arm")
  check("disarm always latches hold",not session.power.armed and session.zero_drive_hold)
  session.sim.set_paused(false)
@@ -86,3 +87,42 @@ func run() -> void:
  flight.free(); session.free()
  print("HELI-20 controller actions: %d checks, %d failed"%[checks,failures])
  quit(0 if failures==0 else 1)
+
+func key(flight: Node,code: Key) -> void:
+ var event:=InputEventKey.new()
+ event.physical_keycode=code
+ event.pressed=true
+ flight._unhandled_input(event)
+
+func keyboard_mode_guards(flight: Node,session: Node) -> void:
+ var saved_mode: String=session.flight_mode
+ var saved_trainer: bool=session.trainer_enabled
+ # Isolate each refusal guard; these blocked fixtures do not advance physics.
+ for blocked: String in ["pause","hold","controller_loss"]:
+  session.flight_mode="normal"
+  session.pending_mode=""
+  session.trainer_enabled=true
+  session.sim.set_paused(blocked=="pause")
+  if blocked=="hold": session.holds["test-modal"]=true
+  session._controller_lost=blocked=="controller_loss"
+  key(flight,KEY_I)
+  check(blocked+" keyboard mode cannot queue a pitch change",session.pending_mode.is_empty())
+  key(flight,KEY_I)
+  check(blocked+" repeated keyboard mode cannot change the curve",session.flight_mode=="normal")
+  key(flight,KEY_G)
+  check(blocked+" keyboard trainer cannot change assistance",session.trainer_enabled)
+  session.holds.erase("test-modal")
+  session._controller_lost=false
+ session.sim.set_paused(false)
+ session.flight_mode="normal"
+ session.pending_mode=""
+ session.trainer_enabled=true
+ key(flight,KEY_I)
+ check("active keyboard mode previews the pitch jump",session.flight_mode=="normal" and session.pending_mode=="idle_up")
+ key(flight,KEY_I)
+ check("active keyboard mode confirms the pitch curve",session.flight_mode=="idle_up" and session.pending_mode.is_empty())
+ key(flight,KEY_G)
+ check("active keyboard trainer toggles assistance",not session.trainer_enabled)
+ session.flight_mode=saved_mode
+ session.trainer_enabled=saved_trainer
+ session.sim.set_paused(true)

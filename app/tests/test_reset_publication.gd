@@ -72,6 +72,7 @@ func _run() -> void:
 	output = ProjectSettings.globalize_path("res://../tmp/reset-publication-%d" % Time.get_ticks_usec())
 	DirAccess.make_dir_recursive_absolute(output)
 	_generic()
+	_sample_publication()
 	_rejection()
 	_prepare_owner_reentry()
 	_commit_validation_owner_reentry()
@@ -146,6 +147,56 @@ func _generic() -> void:
 			and sim.mass == 1.0 and sim.model == original_model and sim.model.input_size == 4
 			and sim.paused and not sim.fault_reason.is_empty() and not sim.reset_observer_fault.is_empty())
 		sim.free()
+
+func _sample_publication() -> void:
+	for endpoint: bool in [false, true]:
+		for mutation: String in ["mass", "state", "model", "step"]:
+			var sim := new_sim(endpoint)
+			var target := body(11.0)
+			var candidate: Dictionary = sim.prepare_reset(target)
+			var original_model: RefCounted = sim.model
+			var core := sim
+			var faults := [0]
+			sim.faulted.connect(func(_reason): faults[0] += 1)
+			var mutation_callback := func(_k, _t, _s, _l, _i, _a):
+				match mutation:
+					"mass": core.mass = 2.0
+					"state": core.state[0] = 99.0
+					"model": core.model.input_size = 8
+					"step": core.step()
+			sim.stepped.connect(mutation_callback)
+			check("sample observer cannot veto accepted reset " + str(endpoint) + "/" + mutation,
+				sim.commit_prepared_reset(candidate, func(): pass))
+			check("sample mutation restores committed frame and faults " + str(endpoint) + "/" + mutation,
+				sim.state.to_byte_array() == target.to_byte_array() and sim.tick == 0 and sim.mass == 1.0 \
+				and sim.model == original_model and sim.model.input_size == 4 and sim.paused \
+				and not sim.fault_reason.is_empty() and not sim.reset_observer_fault.is_empty() and faults[0] == 1)
+			sim.free()
+		var paused_sim := new_sim(endpoint)
+		paused_sim.stepped.connect(func(_k, _t, _s, _l, _i, _a): paused_sim.set_paused(true))
+		check("sample observer may pause accepted reset " + str(endpoint),
+			paused_sim.commit_prepared_reset(paused_sim.prepare_reset(body(7.0)), func(): pass) \
+			and paused_sim.paused and paused_sim.fault_reason.is_empty() and paused_sim.reset_observer_fault.is_empty())
+		paused_sim.free()
+	for endpoint: bool in [false, true]:
+		var f := new_flight(endpoint)
+		var original_mass: float = f.sim.mass
+		var generation: int = f.statistics_generation
+		var samples := [0]
+		f.start_choice = Flight.START_RUNWAY
+		f.sim.stepped.connect(func(k, _t, _s, _l, _i, _a):
+			if k == 0:
+				samples[0] += 1
+				f.sim.mass = original_mass * 2.0)
+		f.reset()
+		check("sample mutation reports accepted session observer fault " + str(endpoint),
+			f.runway_start_outcome.ok and f.runway_start_outcome.status == "observer_fault" \
+			and f.runway_start_outcome.committed and not f.runway_start_outcome.ready and not f.start_error.is_empty())
+		check("sample fault keeps one committed paused runway frame " + str(endpoint),
+			f.sim.mass == original_mass and f.sim.tick == 0 and f.sim.paused and not f.sim.fault_reason.is_empty() \
+			and samples[0] == 1 and f.statistics_generation == generation + 1)
+		f.free()
+
 
 func _rejection() -> void:
 	var f := RejectingFlight.new()

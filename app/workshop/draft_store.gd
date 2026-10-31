@@ -416,7 +416,12 @@ static func _read_record(path: String) -> Dictionary:
 	if file == null:
 		return {"ok": false, "exists": true, "errors": PackedStringArray(["Recovery snapshot could not be opened."])}
 	var length: int = file.get_length()
-	if length <= 0 or length > MAX_SNAPSHOT_BYTES:
+	if length == 0:
+		file.close()
+		# Empty data is invalid, but still has an exact identity for safe discard.
+		return {"ok": false, "exists": true, "digest": _sha256(PackedByteArray()),
+			"errors": PackedStringArray(["Recovery snapshot is empty or exceeds its byte limit."])}
+	if length < 0 or length > MAX_SNAPSHOT_BYTES:
 		file.close()
 		return {"ok": false, "exists": true, "errors": PackedStringArray(["Recovery snapshot is empty or exceeds its byte limit."])}
 	var bytes: PackedByteArray = file.get_buffer(length)
@@ -831,7 +836,8 @@ static func _sha256(bytes: PackedByteArray) -> String:
 	var context := HashingContext.new()
 	if context.start(HashingContext.HASH_SHA256) != OK:
 		return ""
-	context.update(bytes)
+	if not bytes.is_empty():
+		context.update(bytes)
 	return context.finish().hex_encode()
 
 

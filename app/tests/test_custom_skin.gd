@@ -57,6 +57,11 @@ func _material(root_node: Node, name: String) -> Dictionary:
 func _run() -> void:
 	nonce = "%d-%d" % [Time.get_ticks_usec(), randi()]
 	CustomPaint._root = "user://skin-test-%s/" % nonce
+	_check("empty skin directories offer no custom paints", CustomPaint.choices("jensen-das-ugly-stik-60").is_empty()
+		and CustomPaint.choices("moonrunner-x99").is_empty())
+	var empty_stock_choices := Builder.livery_choices("jensen-das-ugly-stik-60")
+	_check("empty skin directories retain the stock paint choice", empty_stock_choices.size() == 1
+		and empty_stock_choices[0].id == "")
 	var stock: Dictionary = Registry.describe(X8)
 	_check("stock model is verified", stock.get("ok", false))
 	if not stock.get("ok", false):

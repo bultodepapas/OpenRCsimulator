@@ -399,7 +399,7 @@ func glow_set_mixture(value: float) -> bool:
 ## Simplified external starter action; crank impulse conserves aircraft/rotor momentum.
 ## A metered priming dose leaves the finite tank. Hot engines refuse restart.
 func glow_start() -> bool:
-	if not glow_is_active() or not _flight_ready() or failure_power_cut_active(): return false
+	if not glow_is_active() or not _flight_ready() or failure_power_cut_active() or not prop_strike.is_empty(): return false
 	var install: Dictionary=aircraft.model.propulsion.glow
 	if not GlowFlight.valid(sim.continuous,install): return false
 	var current: Dictionary=GlowFlight.unpack(sim.continuous,install)
@@ -3613,6 +3613,8 @@ func _apply_runway_start(north: float, east: float, heading: float, supplied_tra
 	var inputs := PackedFloat64Array([clampf(trims.roll, -1.0, 1.0), clampf(trims.pitch, -1.0, 1.0), clampf(trims.yaw, -1.0, 1.0), 0.0])
 	if gear_is_retractable():
 		inputs.append_array(PackedFloat64Array([1.0, 0.0]))
+	elif wheel_brake_available():
+		inputs.append(0.0)
 	if flaps_available(): inputs.append(0.0)
 	var aux := PackedFloat64Array([rpm, inputs[0], inputs[1], inputs[2]])
 	# Solve first, without changing commands, modes, weather, crash state, or observers.

@@ -45,6 +45,15 @@ The shared tree changed during the long runs: another track added an unconnected
 
 ## State, replay and verification
 
+2026-10-31 keyboard correction: **I** and **G** now use the same guarded mode and
+trainer actions as controller buttons. The keyboard previously bypassed pause,
+modal-hold and controller-loss checks, allowing a pitch-curve change or disabling
+assistance before resuming. The extended `test_heli_control_actions.gd` failed nine
+assertions before the fix and passes **40/40** afterward on Linux with Godot
+4.8-beta1. It also preserves the active-flight pitch-jump confirmation and trainer
+toggle. The state audit passes **50/50**. These injected-input software checks do
+not qualify hardware or change the rotor/controller laws.
+
 Checkpoint v3 includes the selected pad/start, power/ramp, all 14 continuous ground states and accepted-tick main/tail phases. Restore validates before committing and pauses. Trace v2 contains 46 columns, including all eight bristle strains; metadata declares the selected layout and control reference. Airborne records use zero bristle columns. Historical checkpoints are explicitly refused rather than guessed.
 
 [Native regression batch](checks/verification.json): **38 suites passed**, including every then-current `test_heli_*.gd` and nine input/UI/field suites; 8,051 explicitly numbered checks, plus suites using other reporting formats. [Follow-up checks](followup-checks/verification.json) cover the expanded 32-check render/replay audit, controller actions/profiles, RC input and unchanged airplane goldens/replay. The [17-check helicopter action test](controller-lifecycle.log) exercises the real scene action dispatcher and lifecycle refusal paths. The earlier render batch's 26-check result is superseded by the 32-check follow-up.

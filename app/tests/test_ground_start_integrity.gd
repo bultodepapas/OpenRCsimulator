@@ -2,6 +2,7 @@
 extends SceneTree
 const GS = preload("res://physics/ground_start.gd")
 const AD = preload("res://physics/aircraft_data.gd")
+const Wheels = preload("res://physics/wheel_profiles.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const Surfaces = preload("res://physics/ground_surfaces.gd")
 const Session = preload("res://sim/flight_session.gd")
@@ -162,9 +163,87 @@ func public_checks() -> void:
 	check("valid runway reset after refusals", session.reset_on_runway(15, -47, PI/2))
 	session.free()
 
+func _fixed_gear_fixture(flaps: bool, brakes: bool) -> Dictionary:
+	var path := "res://data/aircraft/sebart_avanti_s_a200.json" if flaps else Scenarios.AIRCRAFT
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if flaps:
+		raw.capabilities.gear = "fixed_tricycle"
+		raw.landing_gear.erase("retraction")
+		for contact: Dictionary in raw.landing_gear.contacts:
+			contact.erase("retraction_path")
+	var derived: Dictionary = AD.validate_and_derive(raw)
+	if not derived.ok: return derived
+	var table: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Wheels.DEFAULT_PATH))
+	var profile: Dictionary = table.profiles[raw.id].duplicate(true)
+	for name: String in profile.contacts:
+		var contact: Dictionary = profile.contacts[name]
+		# Synthetic hardware tests the shared contract without claiming a stock installation.
+		contact.brake_availability = "available" if brakes else "none"
+		contact.brake_torque = {value = 0.2 if brakes else 0.0, unit = "N·m", kind = "estimated",
+			source = "Ground-start software fixture only; synthetic wheel-brake hardware"}
+	var profile_path := "user://ground-start-profile-%d-%d-%d.json" % [OS.get_process_id(), int(flaps), int(brakes)]
+	var file := FileAccess.open(profile_path, FileAccess.WRITE)
+	if file == null: return {ok = false, errors = ["cannot write synthetic profile"]}
+	file.store_string(JSON.stringify({format = Wheels.FORMAT, profiles = {raw.id: profile}}))
+	file.close()
+	var applied: Dictionary = Wheels.apply_to_model(derived.model, profile_path)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(profile_path))
+	if not applied.ok: return applied
+	derived.model = applied.model
+	derived.wheel_profile_identity = applied.identity
+	return derived
+
+
+func fixed_brake_runway_checks() -> void:
+	var loaded: Dictionary = FieldLoader.load_from()
+	check("fixed-brake runway field loads", loaded.ok)
+	if not loaded.ok: return
+	var spot: Dictionary = GS.threshold(loaded.field)
+	check("fixed-brake runway threshold exists", spot.ok)
+	if not spot.ok: return
+	for flaps: bool in [false, true]:
+		for brakes: bool in [false, true]:
+			var case_name := "flaps=%s brakes=%s" % [flaps, brakes]
+			var data: Dictionary = _fixed_gear_fixture(flaps, brakes)
+			check("fixed-gear aircraft and profile validate " + case_name, bool(data.get("ok", false)))
+			if not data.get("ok", false): continue
+			var session: Node = Session.new()
+			session.setup("fixture://fixed-brake-runway", "", data)
+			check("fixed-gear airborne start admits declared equipment " + case_name,
+				session.is_flyable() and not session.gear_is_retractable()
+				and session.wheel_brake_available() == brakes and session.flaps_available() == flaps)
+			check("fixed-gear field installed " + case_name, session.set_field(loaded.field))
+			var result: Dictionary = session.try_runway_start(spot.north, spot.east, spot.heading)
+			check("fixed-gear runway start accepts installed brake layout " + case_name, result.ok)
+			if result.ok:
+				var inputs: PackedFloat64Array = session.sim.inputs
+				check("runway starts optional brake and flaps at zero " + case_name,
+					inputs.size() == 4 + int(brakes) + int(flaps)
+					and (not brakes or inputs[4] == 0.0)
+					and (not flaps or inputs[inputs.size() - 1] == 0.0))
+				if brakes: check("runway brake demand is accepted " + case_name, session.set_wheel_brake(0.7))
+				if flaps: check("runway flap demand is accepted " + case_name, session.set_flaps(0.4))
+				session.sim.inputs = session._inputs()
+				session.sim.step()
+				check("runway brake and flap inputs reach the next accepted tick " + case_name,
+					session.sim.tick == 1 and session.sim.fault_reason.is_empty()
+					and (not brakes or session.sim.inputs[4] == 0.7)
+					and (not flaps or session.sim.inputs[session.flap_input_index()] == 0.4))
+			session.free()
+	var retractable: Node = Session.new()
+	retractable.setup("res://data/aircraft/sebart_avanti_s_a200.json", "sebart-avanti-s-a200-p100rx")
+	check("retractable control field installed", retractable.set_field(loaded.field))
+	var result: Dictionary = retractable.try_runway_start(spot.north, spot.east, spot.heading)
+	check("retractable runway layout remains gear, brake, flaps", result.ok
+		and retractable.sim.inputs.size() == 7 and retractable.sim.inputs[4] == 1.0
+		and retractable.sim.inputs[5] == 0.0 and retractable.sim.inputs[6] == 0.0)
+	retractable.free()
+
+
 func _initialize() -> void:
 	newton_checks()
 	linear_checks()
 	public_checks()
+	fixed_brake_runway_checks()
 	print("E3b2-R1: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

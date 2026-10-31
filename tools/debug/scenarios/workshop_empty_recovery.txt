@@ -1,0 +1,20 @@
+# Empty interrupted recovery files must be discardable through the real dialog.
+# Reserve a private fixture even when run manually against an existing player profile.
+open screen=workshop
+wait frames=3
+assert expr="not screens.top()._recovery_pending and not screens.top().has_unsaved_changes()" message="fixture requires a clean editor without pending recovery"
+eval expr="app.set_meta('empty_recovery_root', 'user://debug_empty_recovery_%d' % Time.get_ticks_usec())"
+assert expr="ClassDB.class_call_static('DirAccess', 'make_dir_absolute', app.get_meta('empty_recovery_root')) == 0" message="reserve a new fixture directory"
+eval expr="app.set_meta('empty_recovery_owned', true)"
+assert expr="ClassDB.class_call_static('DirAccess', 'make_dir_absolute', app.get_meta('empty_recovery_root') + '/_workshop_recovery') == 0" message="create fixture recovery directory"
+eval expr="ClassDB.class_call_static('FileAccess', 'open', app.get_meta('empty_recovery_root') + '/_workshop_recovery/snapshot.json', 2).close()"
+eval expr="screens.top().set('recovery_root', app.get_meta('empty_recovery_root'))"
+call node=AppRoot/Workshop method=_refresh_recovery_after_conflict
+call node=AppRoot/Workshop method=_show_recovery
+assert expr="screens.top()._recovery_pending and screens.top()._recovery_dialog.visible" message="empty recovery opens review"
+assert expr="screens.top()._recovery_dialog.get_ok_button().disabled" message="empty recovery cannot be restored"
+press text="Discard recovered draft"
+assert expr="not screens.top()._recovery_pending and not screens.top()._recovery_dialog.visible" message="explicit discard clears empty recovery"
+assert expr="not ClassDB.class_call_static('FileAccess', 'file_exists', app.get_meta('empty_recovery_root') + '/_workshop_recovery/snapshot.json')" message="empty file was removed"
+press text="Back to Home"
+assert expr="screens.is_top('home')" message="discard returns to normal navigation"

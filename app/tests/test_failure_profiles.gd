@@ -17,6 +17,7 @@ func _initialize() -> void:
 	_test_config_and_catalog_profiles()
 	_test_versioned_plans()
 	_test_restore_contract()
+	_test_snapshot_clock_and_shape()
 	print("Failure profile contract: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -246,3 +247,55 @@ func _check_restore_refused_atomically(label: String, runtime: FailureRuntime, s
 	var accepted: bool = runtime.restore(snapshot, int(snapshot.get("tick", 0)))
 	_check(label, not accepted and var_to_bytes(runtime.snapshot()) == live_before,
 		{"accepted": accepted, "unchanged": var_to_bytes(runtime.snapshot()) == live_before})
+
+
+func _test_snapshot_clock_and_shape() -> void:
+	var source := FailureRuntime.new()
+	_check("clock fixture begins with a selected failure", source.begin(_config(100), 158, 1.0))
+	var onset := int(source.plan().onset_airborne_ticks)
+	var inputs := PackedFloat64Array([0.0, 0.0, 0.0, 0.5])
+	var servo := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	var tick := 0
+	var steps_ok := true
+	# Two grounded ticks before activation and another on each side of two airborne ticks afterwards.
+	var airborne_history: Array[bool] = [false, false]
+	for _index in onset:
+		airborne_history.append(true)
+	airborne_history.append_array([false, true, true, false])
+	for airborne: bool in airborne_history:
+		tick += 1
+		var prepared: Dictionary = source.prepare(inputs, servo, airborne)
+		var activated: bool = source.commit(tick)
+		steps_ok = steps_ok and bool(prepared.get("ok", false)) and (activated == (tick == onset + 2))
+	var good: Dictionary = source.snapshot()
+	_check("fixture records grounded and airborne ticks around one activation", steps_ok
+		and good.active and good.activation_tick == onset + 2 and good.airborne_ticks == onset + 2)
+	var target := FailureRuntime.new()
+	_check("mixed ground and airborne checkpoint restores", target.restore(good, tick))
+	var before: PackedByteArray = var_to_bytes(target.snapshot())
+	var bad: Dictionary = good.duplicate(true)
+	bad.activation_tick = tick - 1
+	_check_restore_refused_atomically("impossible late activation is rejected", target, bad, before)
+	bad = good.duplicate(true)
+	bad.airborne_ticks = onset + 5
+	_check_restore_refused_atomically("impossible post-onset airborne clock is rejected", target, bad, before)
+	bad = good.duplicate(true)
+	var extra_inputs: PackedFloat64Array = bad.last_inputs.duplicate()
+	extra_inputs.append(0.0)
+	bad.last_inputs = extra_inputs
+	_check_restore_refused_atomically("extra last-input channel is rejected", target, bad, before)
+
+	var disabled := FailureRuntime.new()
+	_check("unselected failure fixture begins", disabled.begin(_config(0), 10, 1.0))
+	disabled.commit(1)
+	disabled.commit(2)
+	var disabled_snapshot: Dictionary = disabled.snapshot()
+	_check("unselected checkpoint restores", FailureRuntime.new().restore(disabled_snapshot, 2))
+	bad = disabled_snapshot.duplicate(true)
+	bad.airborne_ticks = 1
+	_check_restore_refused_atomically("unselected failure cannot accrue airborne ticks", target, bad, before)
+	bad = disabled_snapshot.duplicate(true)
+	var disabled_inputs: PackedFloat64Array = bad.last_inputs.duplicate()
+	disabled_inputs[3] = 0.5
+	bad.last_inputs = disabled_inputs
+	_check_restore_refused_atomically("unselected failure cannot capture inputs", target, bad, before)

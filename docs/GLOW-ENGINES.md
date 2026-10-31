@@ -10,7 +10,7 @@ Select a finite-glow Stik or the Extra in the catalog. For direct launch, append
 -- --quick-flight --aircraft=stik-glow-61fx-2t
 ```
 
-Use `stik-glow-55ax-2t` or `stik-glow-fs64v-4t` for the other engine families. Airborne starts use a warm trimmed engine. Runway starts leave the warm engine stopped; press **F7** to start it. **F6** cuts combustion, **F8/F9** lean or richen the mixture, and zero throttle requests idle. Opening the throttle does not restart a cut or stalled engine. The HUD shows RPM, remaining fuel, head-temperature proxy and engine status.
+Use `stik-glow-55ax-2t` or `stik-glow-fs64v-4t` for the other engine families. Airborne starts use a warm trimmed engine. Runway starts leave the warm engine stopped; press **F7** to start it. **F6** cuts combustion, **F8/F9** lean or richen the mixture, and zero throttle requests idle. Opening the throttle does not restart a cut or stalled engine. A propeller strike prevents starter use until the flight is reset. The HUD shows RPM, remaining fuel, head-temperature proxy and engine status.
 
 Start fill, reset/checkpoint policy, live mass/CG and remaining-fuel diagnostics follow the [shared fuel guide](FUEL-SYSTEM.md#launch-restoration-and-observation). Fuel burn can change trim as the tank empties. Selecting a fill does not enable consumption in an aircraft without a finite-fuel adapter.
 

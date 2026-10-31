@@ -186,6 +186,8 @@ func _run() -> void:
 	_check("future-schema file remains readable after rejected save", preserved.load(PREFS) == OK
 		and preserved.get_value("meta", "schema", -1) == DisplayPreferences.SCHEMA + 1)
 	_bad_file_preservation()
+	_exhausted_backup_slots()
+	_relative_backup_symlink()
 
 
 func _bad_file_preservation() -> void:
@@ -197,6 +199,27 @@ func _bad_file_preservation() -> void:
 	var store := DisplayPreferences.new(PREFS)
 	_check("preserved unreadable display settings remain writable", store.writable and FileAccess.get_file_as_string(PREFS + ".bad") == broken
 		and store.save(store.config) == OK)
+	var second_bad := "[display]\nwindow_mode=\"borderless\"\n"
+	file = FileAccess.open(PREFS, FileAccess.WRITE)
+	file.store_string(second_bad)
+	file.close()
+	store = DisplayPreferences.new(PREFS)
+	_check("second unreadable display settings preserve the first backup and receive a distinct backup",
+		store.writable and FileAccess.file_exists(PREFS + ".bad") and FileAccess.file_exists(PREFS + ".bad.1")
+		and FileAccess.get_file_as_string(PREFS + ".bad") == broken
+		and FileAccess.get_file_as_string(PREFS + ".bad.1") == second_bad and not FileAccess.file_exists(PREFS))
+	_check("second display recovery allows a new file", store.save(store.config) == OK)
+	var third_bad := "[display]\nwindow_mode=\"windowed\"\n"
+	file = FileAccess.open(PREFS, FileAccess.WRITE)
+	file.store_string(third_bad)
+	file.close()
+	store = DisplayPreferences.new(PREFS)
+	_check("third unreadable display settings preserve both earlier backups",
+		store.writable and FileAccess.file_exists(PREFS + ".bad") and FileAccess.file_exists(PREFS + ".bad.1")
+		and FileAccess.file_exists(PREFS + ".bad.2")
+		and FileAccess.get_file_as_string(PREFS + ".bad") == broken
+		and FileAccess.get_file_as_string(PREFS + ".bad.1") == second_bad
+		and FileAccess.get_file_as_string(PREFS + ".bad.2") == third_bad and not FileAccess.file_exists(PREFS))
 	_reset()
 	var backup := ProjectSettings.globalize_path(PREFS + ".bad")
 	_check("create blocked display backup directory", DirAccess.make_dir_absolute(backup) == OK)
@@ -215,6 +238,62 @@ func _bad_file_preservation() -> void:
 		and candidate.opaque_panels and FileAccess.get_file_as_string(PREFS) == broken)
 	DirAccess.remove_absolute(backup.path_join("marker"))
 	DirAccess.remove_absolute(backup)
+
+
+func _exhausted_backup_slots() -> void:
+	# A separate directory contains all 1000 slots, without touching player settings.
+	var root := "user://test_display_preferences_exhausted"
+	var path := root.path_join("settings.cfg")
+	_check("create exhausted-backup fixture directory", DirAccess.make_dir_recursive_absolute(root) == OK)
+	for index in range(1000):
+		var backup := path + ".bad" + ("" if index == 0 else ".%d" % index)
+		var f := FileAccess.open(backup, FileAccess.WRITE)
+		f.store_string("retained-%d" % index)
+		f.close()
+	var broken := "[display]\nwindow_mode=\"windowed\"\n"
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(broken)
+	f.close()
+	var store := DisplayPreferences.new(path)
+	_check("exhausted backup slots protect both original and retained files",
+		not store.writable and FileAccess.file_exists(path) and FileAccess.get_file_as_string(path) == broken
+		and FileAccess.get_file_as_string(path + ".bad") == "retained-0"
+		and FileAccess.get_file_as_string(path + ".bad.999") == "retained-999")
+	_check("exhausted backup slots refuse later saves", store.save(store.config) == ERR_FILE_NO_PERMISSION)
+	for index in range(1000):
+		DirAccess.remove_absolute(path + ".bad" + ("" if index == 0 else ".%d" % index))
+	DirAccess.remove_absolute(path)
+	DirAccess.remove_absolute(root)
+
+
+func _relative_backup_symlink() -> void:
+	var relative_root := "../tmp/test_display_preferences_relative_%d" % OS.get_process_id()
+	var root := DirAccess.open(".").get_current_dir().path_join(relative_root).simplify_path()
+	_check("create relative-path fixture directory", DirAccess.make_dir_recursive_absolute(root) == OK)
+	var absolute := root.path_join("settings.cfg")
+	var relative := relative_root.path_join("settings.cfg")
+	var backup := absolute + ".bad"
+	var parent := DirAccess.open(root)
+	DirAccess.remove_absolute(backup)
+	DirAccess.remove_absolute(absolute + ".bad.1")
+	var broken := "[display]\nwindow_mode=\"windowed\"\n"
+	var f := FileAccess.open(relative, FileAccess.WRITE)
+	if f == null:
+		_check("relative-path fixture can be written", false)
+	else:
+		f.store_string(broken)
+		f.close()
+		if parent.create_link(root.path_join("missing-target"), backup) == OK:
+			var store := DisplayPreferences.new(relative)
+			_check("relative backup skips a dangling symlink", store.writable and parent.is_link("settings.cfg.bad")
+				and FileAccess.file_exists(absolute + ".bad.1")
+				and FileAccess.get_file_as_string(absolute + ".bad.1") == broken)
+		else:
+			print("skip relative backup symlink: this host cannot create symbolic links")
+	DirAccess.remove_absolute(backup)
+	DirAccess.remove_absolute(absolute + ".bad.1")
+	DirAccess.remove_absolute(absolute)
+	DirAccess.remove_absolute(root)
 
 
 func _independent_recovery() -> void:
@@ -264,7 +343,7 @@ func _independent_recovery() -> void:
 
 
 func _reset() -> void:
-	for path: String in [PREFS, PREFS + ".bad"]:
+	for path: String in [PREFS, PREFS + ".bad", PREFS + ".bad.1", PREFS + ".bad.2"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 

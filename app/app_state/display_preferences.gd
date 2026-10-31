@@ -2,6 +2,7 @@
 # flight/profile contents and controller calibration remain untouched.
 extends RefCounted
 
+const BadSettingsBackup := preload("res://app_state/bad_settings_backup.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 
@@ -327,11 +328,9 @@ static func validate(raw: Variant) -> Dictionary:
 
 
 static func _preserve_bad_file(file_path: String, result: Dictionary, reason: String) -> Dictionary:
-	var backup := file_path + ".bad"
-	var absolute_path := ProjectSettings.globalize_path(file_path)
-	var absolute_backup := ProjectSettings.globalize_path(backup)
-	DirAccess.remove_absolute(absolute_backup)
-	var err := DirAccess.rename_absolute(absolute_path, absolute_backup)
+	var preserved := BadSettingsBackup.preserve(file_path)
+	var backup: String = preserved.backup
+	var err: int = preserved.error
 	if err != OK:
 		result.writable = false
 	result.note = "%s; %s" % [reason, "kept as " + backup.get_file() if err == OK else "could not keep a copy (error %d); original will not be overwritten" % err]
