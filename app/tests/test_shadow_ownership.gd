@@ -38,6 +38,16 @@ func _box_node(node_name: String) -> MeshInstance3D:
 	return node
 
 
+func _shelter_node(node_name: String, x: float) -> MeshInstance3D:
+	var node := _box_node(node_name)
+	var material := ShaderMaterial.new()
+	material.shader = load("res://scenery/pit_shelter_roof.gdshader")
+	(node.mesh as BoxMesh).material = material
+	node.position.x = x
+	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return node
+
+
 func _population_batch(node_name: String, xs: Array[float], alpha_cut: bool = false) -> MultiMeshInstance3D:
 	var node := MultiMeshInstance3D.new()
 	node.name = node_name
@@ -105,6 +115,31 @@ func _field_policy() -> void:
 	var scenery := Node3D.new()
 	scenery.name = "Scenery"
 	field.add_child(scenery)
+	var near_shelter := _shelter_node("PitShelter_near", 0.0)
+	var prior_shelter := _shelter_node("PitShelter_prior", 10.0)
+	prior_shelter.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+	var tied_shelter := _shelter_node("PitShelter_tied", -10.0)
+	var excess_shelter := _shelter_node("PitShelter_excess", 20.0)
+	var far_shelter := _shelter_node("PitShelter_far", 150.0)
+	var straddling_shelter := _shelter_node("PitShelter_straddling", 99.0)
+	straddling_shelter.scale.x = 2.0
+	var hidden_shelter := _shelter_node("PitShelter_hidden", 0.0)
+	hidden_shelter.visible = false
+	var overridden_shelter := _shelter_node("PitShelter_overridden", 0.0)
+	overridden_shelter.material_override = StandardMaterial3D.new()
+	var overlay_shelter := _shelter_node("PitShelter_overlay", 0.0)
+	overlay_shelter.material_overlay = StandardMaterial3D.new()
+	var alpha_shelter := _shelter_node("PitShelter_alpha", 0.0)
+	var alpha_material := ShaderMaterial.new()
+	alpha_material.shader = load("res://scenery/population_person.gdshader")
+	alpha_shelter.material_override = alpha_material
+	var next_pass_shelter := _shelter_node("PitShelter_next_pass", 0.0)
+	(next_pass_shelter.get_active_material(0) as ShaderMaterial).next_pass = StandardMaterial3D.new()
+	# The tied candidate precedes the lexicographically smaller name in scene order.
+	for shelter in [near_shelter, tied_shelter, prior_shelter, excess_shelter, far_shelter,
+			straddling_shelter, hidden_shelter, overridden_shelter, overlay_shelter,
+			alpha_shelter, next_pass_shelter]:
+		scenery.add_child(shelter)
 	var caster := _box_node("cell_0_0")
 	caster.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	scenery.add_child(caster)
@@ -178,9 +213,24 @@ func _field_policy() -> void:
 		and mixed_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		and cut_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
 	var stats: Dictionary = field.get_meta("shadow_native_casters")
+	_check("native promotes only the nearest two eligible shelter meshes",
+		near_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		and prior_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+		and tied_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and excess_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+	_check("shelter bounds, visibility and effective materials restrict admission",
+		far_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and straddling_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and hidden_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and overridden_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and overlay_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and alpha_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and next_pass_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
 	_check("field diagnostics report bounded active candidates and exclusions", bool(stats.active)
-		and int(stats.source_meshes) == 3 and int(stats.population_batches) == 1
-		and int(stats.skipped_material) >= 3 and int(stats.skipped_population_range) == 1)
+		and int(stats.source_meshes) == 5 and int(stats.population_batches) == 1
+		and int(stats.shelter_meshes) == 2 and int(stats.max_shelter_meshes) == 2
+		and int(stats.skipped_shelter_range) == 2 and int(stats.skipped_shelter_budget) == 2
+		and int(stats.skipped_material) >= 7 and int(stats.skipped_population_range) == 1)
 	_check("native suppresses every planar field batch", not cue_plane.visible and not near_plane.visible
 		and not far_plane.visible and not already_hidden.visible and not population.visible)
 	_check("native suppresses receivers and offscreen mask work", _all_projectors_disabled(projectors) and not manager.is_processing())
@@ -202,7 +252,19 @@ func _field_policy() -> void:
 	_check("revert restores original casting settings without disturbing preexisting modes",
 		cue_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		and near_person.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		and preexisting.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY)
+		and preexisting.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+		and near_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and prior_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY)
+	_set_route("native")
+	_set_route("projected")
+	_check("projected restores both shelter casting modes",
+		near_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and prior_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY)
+	_set_route("native")
+	_set_route("off")
+	_check("off restores both shelter casting modes",
+		near_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and prior_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY)
 	_set_route("native")
 	field.remove_child(manager)
 	manager.free()
@@ -213,11 +275,15 @@ func _field_policy() -> void:
 	_check("field refreshes a replaced projector manager while native is active",
 		FieldBuilder.update_lighting(field, rebound_lighting) and replacement != null
 		and policy.get("_manager") == replacement and _all_projectors_disabled(replacement.projectors)
-		and cue_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON)
+		and cue_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		and near_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		and prior_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY)
 	_set_route("auto")
 	_check("replacement restores current manager's fallback ownership",
 		not cue_plane.visible and not near_plane.visible and far_plane.visible
-		and cue_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+		and cue_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and near_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		and prior_shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY)
 	manager = replacement
 	projectors = manager.projectors
 	first_projector = projectors[0]
@@ -232,6 +298,32 @@ func _field_policy() -> void:
 	field.free()
 
 
+func _shelter_transformed_bounds() -> void:
+	var field := Node3D.new()
+	var scenery := Node3D.new()
+	scenery.name = "Scenery"
+	scenery.position.x = 90.0
+	field.add_child(scenery)
+	var inside := _shelter_node("PitShelter_inside", 7.0)
+	var straddling := _shelter_node("PitShelter_straddling", 9.0)
+	straddling.scale.x = 2.0
+	var diagonal := _shelter_node("PitShelter_diagonal", -10.0)
+	diagonal.position.z = 58.0
+	scenery.add_child(inside)
+	scenery.add_child(straddling)
+	scenery.add_child(diagonal)
+	var policy := FieldPolicy.new()
+	policy.set("_pilot", {"east": 0.0, "north": 0.0})
+	policy._capture(field, null)
+	var casters: Array = policy.get("_native_casters")
+	var stats: Dictionary = policy.get("_diagnostics")
+	_check("shelter admission includes scenery transform and all horizontal corners",
+		casters.size() == 1 and casters.has(inside) and not casters.has(straddling)
+		and not casters.has(diagonal) and int(stats.skipped_shelter_range) == 2)
+	policy.free()
+	field.free()
+
+
 func _all_projectors_disabled(projectors: Array) -> bool:
 	for projector: Node in projectors:
 		var viewport := projector.get("viewport") as SubViewport
@@ -241,6 +333,25 @@ func _all_projectors_disabled(projectors: Array) -> bool:
 				or request.size() != 4 or bool(request[3]):
 			return false
 	return true
+
+
+func _shelter_only_field() -> void:
+	_set_route("auto")
+	var field := Node3D.new()
+	var scenery := Node3D.new()
+	scenery.name = "Scenery"
+	field.add_child(scenery)
+	var shelter := _shelter_node("PitShelter_only", 0.0)
+	scenery.add_child(shelter)
+	root.add_child(field)
+	FieldPolicy.attach(field, {"pilot": {"east": 0.0, "north": 0.0}})
+	_check("shelter-only field keeps native ownership without a projection manager",
+		field.has_meta("shadow_field_policy") and field.has_meta("shadow_native_casters"))
+	_set_route("native")
+	_check("shelter-only field responds to Native", shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON)
+	_set_route("auto")
+	_check("shelter-only field restores its original casting mode", shelter.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+	field.free()
 
 
 func _production_field() -> void:
@@ -276,6 +387,15 @@ func _production_field() -> void:
 				changed += 1
 		var stats: Dictionary = field.get_meta("shadow_native_casters")
 		_check("default field promotes existing opaque sources", changed > 0 and int(stats.enabled_from_off) == changed)
+		var shelters: Array[MeshInstance3D] = []
+		var scenery := field.get_node("Scenery")
+		for child: Node in scenery.get_children():
+			if child is MeshInstance3D and str(child.name).begins_with("PitShelter_"):
+				shelters.append(child as MeshInstance3D)
+		_check("default field promotes both bounded opaque shelters", shelters.size() == 2
+			and int(stats.shelter_meshes) == 2 and casters.has(shelters[0]) and casters.has(shelters[1])
+			and shelters[0].cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+			and shelters[1].cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON)
 		var active_stats := stats.duplicate(true)
 		_set_route("auto")
 		var restored := true
@@ -377,6 +497,8 @@ func _wreck_policy() -> void:
 
 func _run() -> void:
 	await _field_policy()
+	_shelter_transformed_bounds()
+	_shelter_only_field()
 	await _production_field()
 	_aircraft_policy()
 	await _wreck_policy()

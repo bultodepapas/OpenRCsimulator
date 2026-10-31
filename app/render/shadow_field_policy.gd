@@ -4,6 +4,8 @@ extends Node
 
 const ShadowSettings = preload("res://render/shadow_settings.gd")
 const FieldShadows = preload("res://render/field_projected_shadows.gd")
+const OPAQUE_SHELTER_SHADER := "res://scenery/pit_shelter_roof.gdshader"
+const MAX_SHELTER_MESHES := 2
 const OPAQUE_CUE_SHADERS := [
 	"res://render/pilot_station.gdshader", "res://render/flightline_barrier.gdshader",
 	"res://render/windsock_support.gdshader", "res://render/windsock_fabric.gdshader",
@@ -26,7 +28,7 @@ static func attach(field: Node3D, field_data: Dictionary = {}) -> void:
 	policy.name = "ShadowFieldPolicy"
 	policy._pilot = (field_data.get("pilot", {}) as Dictionary).duplicate(true)
 	policy._capture(field, field.get_node_or_null("ProjectedFieldShadows"))
-	if policy._manager == null and policy._planes.is_empty():
+	if policy._manager == null and policy._planes.is_empty() and policy._native_casters.is_empty():
 		policy.free()
 		return
 	field.add_child(policy)
@@ -107,7 +109,9 @@ func _capture(field: Node3D, manager: Node) -> void:
 	_native_prior.clear()
 	_diagnostics = {"active": false, "source_meshes": 0, "population_batches": 0,
 		"skipped_material": 0, "skipped_population_range": 0, "selected_cells": 0,
+		"shelter_meshes": 0, "skipped_shelter_range": 0, "skipped_shelter_budget": 0,
 		"enabled_from_off": 0, "already_casting": 0,
+		"max_shelter_meshes": MAX_SHELTER_MESHES,
 		"max_scenery_range_m": FieldShadows.MAX_SCENERY_RANGE}
 	var cues := field.get_node_or_null("FlightCueShadows") as MeshInstance3D
 	if cues != null:
@@ -130,7 +134,8 @@ func _capture(field: Node3D, manager: Node) -> void:
 					selected_cells[Vector2i(int(parts[1]), int(parts[2]))] = projector
 		_diagnostics.selected_cells = selected_cells.size()
 		_collect_population(scenery, selected_cells)
-	if _manager != null or not _planes.is_empty():
+	_collect_shelters(scenery)
+	if _manager != null or not _planes.is_empty() or not _native_casters.is_empty():
 		field.set_meta("shadow_native_casters", _diagnostics)
 
 
@@ -246,7 +251,51 @@ func _collect_population(scenery: Node3D, selected_cells: Dictionary) -> void:
 			_add_caster(batch, true)
 
 
-func _opaque_mesh(node: GeometryInstance3D, mesh: Mesh) -> bool:
+## Separate shelter meshes are baked in scenery coordinates. Admit at most two whose
+## complete transformed horizontal bounds fit within the existing near-field radius.
+func _collect_shelters(scenery: Node3D) -> void:
+	if scenery == null or _pilot.is_empty():
+		return
+	var pilot := Vector2(float(_pilot.east), -float(_pilot.north))
+	var candidates: Array[Dictionary] = []
+	for child: Node in scenery.get_children():
+		if not child is MeshInstance3D or not str(child.name).begins_with("PitShelter_"):
+			continue
+		var shelter := child as MeshInstance3D
+		if not shelter.visible:
+			continue
+		if shelter.mesh == null or shelter.mesh.get_surface_count() != 1:
+			_diagnostics.skipped_material += 1
+			continue
+		var material: Material = shelter.material_override if shelter.material_override != null else shelter.get_active_material(0)
+		var shader: Shader = (material as ShaderMaterial).shader if material is ShaderMaterial else null
+		if shader == null or shader.resource_path != OPAQUE_SHELTER_SHADER or not _opaque_mesh(shelter, shelter.mesh, true):
+			_diagnostics.skipped_material += 1
+			continue
+		var bounds: AABB = (scenery.transform * shelter.transform) * shelter.mesh.get_aabb()
+		var center := bounds.get_center()
+		var furthest := Vector2(absf(center.x - pilot.x) + bounds.size.x * 0.5,
+			absf(center.z - pilot.y) + bounds.size.z * 0.5)
+		if not is_finite(furthest.x) or not is_finite(furthest.y) \
+				or furthest.length_squared() > FieldShadows.MAX_SCENERY_RANGE * FieldShadows.MAX_SCENERY_RANGE:
+			_diagnostics.skipped_shelter_range += 1
+			continue
+		candidates.append({"node": shelter, "distance_squared": Vector2(center.x, center.z).distance_squared_to(pilot)})
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if a.distance_squared != b.distance_squared:
+			return float(a.distance_squared) < float(b.distance_squared)
+		return str((a.node as Node).name) < str((b.node as Node).name))
+	for index in candidates.size():
+		if index >= MAX_SHELTER_MESHES:
+			_diagnostics.skipped_shelter_budget += 1
+			continue
+		var shelter := candidates[index].node as MeshInstance3D
+		if not _native_casters.has(shelter):
+			_add_caster(shelter, false)
+			_diagnostics.shelter_meshes += 1
+
+
+func _opaque_mesh(node: GeometryInstance3D, mesh: Mesh, allow_shelter_shader: bool = false) -> bool:
 	if node.material_overlay != null:
 		return false
 	for index in mesh.get_surface_count():
@@ -262,7 +311,11 @@ func _opaque_mesh(node: GeometryInstance3D, mesh: Mesh) -> bool:
 					or material.shading_mode == BaseMaterial3D.SHADING_MODE_UNSHADED:
 				return false
 		elif material is ShaderMaterial:
-			if material.shader == null or material.shader.resource_path not in OPAQUE_CUE_SHADERS:
+			if material.shader == null:
+				return false
+			var shader_path: String = material.shader.resource_path
+			if shader_path not in OPAQUE_CUE_SHADERS \
+					and not (allow_shelter_shader and shader_path == OPAQUE_SHELTER_SHADER):
 				return false
 		else:
 			return false

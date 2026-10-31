@@ -24,6 +24,8 @@ The scope job runs `check_docs.py` against the selected Git revisions. It checks
 
 The `CI required` job independently recomputes the selection from the event and Git history, verifies every selected job result, then reconciles exactly eight unit and one parse receipt against the checkout. It checks PR merge parents and fetches a missing comparison base only from the event's validated SHA. A receipt cannot choose its own comparison history. Failed, cancelled, missing or unexpectedly skipped jobs/receipts fail. Publication additionally requires export success. This job is not automatically a branch-protection setting: main had no branch protection or repository rulesets when inspected on 2026-10-31; this implementation changes neither. Release files are transferred and published by the [verified same-run helper](../release/README.md).
 
+The UID preflight checks tracked presence and nonempty regular files. It does not validate UID contents or uniqueness; fresh import and source-drift validation remain required.
+
 ## App phases and coverage
 
 The [shared app-suite guide](../../docs/tools/shared.md#full-app-suite) owns commands. Full/integration source checks call `check-sources.sh` once; its 17 generator commands include nine previously repeated in the same CI integration job. Independent oracle calls and real-engine diagnostic checks are distinct and remain required.
