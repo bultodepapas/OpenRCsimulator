@@ -1,11 +1,11 @@
 {
   "format": "openrc-trailer-delivery v1",
-  "revision": "9.12",
+  "revision": "9.13",
   "step": "TRA-10",
   "date": "2026-10-30",
-  "export_dir": "C:/DEVELOPMENT/OpenRCsimulator-exports/trailer-2026-10-30-v9.12",
-  "film": "OpenRC-Every-Input-Matters-v9.12-90s-1080p60.mp4",
-  "film_sha256": "7c6ab8502f18d96e3e59755d6fd0a1dd85edf1a287aee529653804e36e7f8fd0",
+  "export_dir": "C:/DEVELOPMENT/OpenRCsimulator-exports/trailer-2026-10-30-v9.13",
+  "film": "OpenRC-Every-Input-Matters-v9.13-90s-1080p60.mp4",
+  "film_sha256": "4a0e5edb7730b47b0b271c687242478c876e690be965fae8432792f9b01de68e",
   "frames": 5400,
   "fps": 60,
   "duration_s": 90.0,
@@ -15,9 +15,9 @@
   ],
   "decoded_aac": {
     "integrated_lufs": "-14.03",
-    "true_peak_dbtp": "-3.37"
+    "true_peak_dbtp": "-2.70"
   },
-  "timeline_sha256": "42237face1e0331127a986fbde0dc57eed943da876b2f99d24529185ee4b01bc",
+  "timeline_sha256": "3a47676d3667ee35ba6bd648c62d4a96311247266b99458088d54394021cb481",
   "music_sha256": "e0cc2f1de72190f09b2ac99a44e04ba69841a2b123ef0bb43320c28f70a459fa",
   "tools": {
     "godot": "4.8-beta1 official",
