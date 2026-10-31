@@ -32,7 +32,7 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	_test_player_preset(manager)
-	_test_glass_surface(manager)
+	await _test_glass_surface(manager)
 	if DisplayServer.get_name() != "headless":
 		await _test_rendered_glass()
 	_test_speed_extrema(manager)
@@ -58,10 +58,14 @@ func _test_player_preset(manager: CanvasLayer) -> void:
 
 func _test_glass_surface(manager: CanvasLayer) -> void:
 	for id: String in Settings.PLAYER_IDS:
+		# Visit every widget so lazy creation is covered for all subclasses.
+		manager.set_overlay_visible(id, true)
+		await process_frame
 		var widget: Control = manager.frames[id]
 		var glass: ColorRect = widget._glass
 		var material: ShaderMaterial = widget._glass_material
-		_check(id + " uses a noninteractive shared crystal underlay", material.shader == Instrument.GLASS
+		_check(id + " uses a noninteractive shared crystal underlay", material != null and glass != null
+			and material.shader == Instrument.GLASS
 			and glass.material == material and glass.get_parent().show_behind_parent
 			and glass.mouse_filter == Control.MOUSE_FILTER_IGNORE and glass.focus_mode == Control.FOCUS_NONE
 			and not widget._style.draw_center and not glass.get_parent().is_processing()
@@ -74,10 +78,12 @@ func _test_glass_surface(manager: CanvasLayer) -> void:
 		manager.set_widget_option("widget_opacity", opacity)
 		for id: String in Settings.PLAYER_IDS:
 			var widget: Control = manager.frames[id]
-			var background: Color = widget._glass_material.get_shader_parameter("base_color")
-			_check(id + " glass follows opacity " + str(opacity), is_equal_approx(background.a, opacity)
+			var material: ShaderMaterial = widget._glass_material
+			var background: Color = material.get_shader_parameter("base_color") if material != null else Color.TRANSPARENT
+			_check(id + " glass follows opacity " + str(opacity), material != null and is_equal_approx(background.a, opacity)
 				and background == widget._style.bg_color and widget.modulate.a == 1.0)
 	manager.set_widget_option("widget_opacity", 0.94)
+	manager.set_preset("player")
 
 
 func _test_rendered_glass() -> void:
@@ -94,15 +100,26 @@ func _test_rendered_glass() -> void:
 	var widget := Instrument.new("speed")
 	widget.position = Vector2(300, 200)
 	widget.size = Vector2(320, 240)
+	widget.hide()
 	layer.add_child(widget)
 	widget.body.get_parent().hide()
 	widget.set_appearance("normal", 0.8, false)
 	await process_frame
 	await RenderingServer.frame_post_draw
+	# The first frame after reveal must already contain the glass fill.
+	widget.show()
+	await RenderingServer.frame_post_draw
 	var origin := Vector2i(widget.global_position)
 	var point := origin + Vector2i(160, 140)
 	var white_image := root.get_texture().get_image()
 	var white_eighty := white_image.get_pixelv(point)
+	_check("first revealed frame contains the glass fill", white_eighty.r < 0.5, str(white_eighty))
+	for argument: String in OS.get_cmdline_user_args():
+		if argument.begins_with("--glass-capture="):
+			var path := argument.trim_prefix("--glass-capture=")
+			_check("glass capture uses a fresh output path", not path.is_empty() and not FileAccess.file_exists(path))
+			if not path.is_empty() and not FileAccess.file_exists(path):
+				_check("first revealed glass frame was saved", white_image.save_png(path) == OK, path)
 	var worst_contrast := INF
 	for x in range(40, 281, 40):
 		for y in range(60, 201, 20):

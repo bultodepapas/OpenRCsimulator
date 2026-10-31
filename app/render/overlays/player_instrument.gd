@@ -39,6 +39,7 @@ var _last_sample_time := -INF
 var _style: StyleBoxFlat
 var _glass: ColorRect
 var _glass_material: ShaderMaterial
+var _glass_tree_ready := false
 var _compact := false
 var _separator: HSeparator
 var _trim_values := [NAN, NAN, NAN]
@@ -79,7 +80,6 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 	_style.content_margin_top = 10
 	_style.content_margin_bottom = 16
 	add_theme_stylebox_override("panel", _style)
-	_build_glass()
 	draw.connect(_draw_chrome)
 	resized.connect(queue_redraw)
 	_footer_style = _surface_style(Color("0b0b0b", 0.62), 8)
@@ -119,6 +119,7 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 	handle.mouse_entered.connect(func() -> void: _header_hovered = true; _highlight(true))
 	handle.mouse_exited.connect(func() -> void: _header_hovered = false; _highlight(dragging))
 	visibility_changed.connect(_cancel_drag)
+	visibility_changed.connect(_request_glass)
 	close_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	close_button.tooltip_text = "%s %s" % [tr("Close"), title_label.text]
 	(body.get_parent() as VBoxContainer).add_theme_constant_override("separation", 8)
@@ -212,6 +213,28 @@ static func _surface_style(color: Color, radius: int) -> StyleBoxFlat:
 	return style
 
 
+func _enter_tree() -> void:
+	# Re-entry does not call _ready again. Defer until the ancestor tree is stable.
+	_arm_glass.call_deferred()
+
+
+func _exit_tree() -> void:
+	_glass_tree_ready = false
+
+
+func _arm_glass() -> void:
+	if not is_inside_tree(): return
+	_glass_tree_ready = true
+	_request_glass()
+
+
+func _request_glass() -> void:
+	if _glass != null or not _glass_tree_ready or not is_visible_in_tree(): return
+	_build_glass()
+	# Once built, the retained underlay needs no visibility observer.
+	visibility_changed.disconnect(_request_glass)
+
+
 func _build_glass() -> void:
 	# The general decorator intentionally skips custom panel overrides. This static
 	# underlay uses the same neutral-panel shader while the panel retains its margins,
@@ -302,7 +325,7 @@ func set_appearance(size_name: String, opacity: float, compact: bool) -> void:
 	var background := Color(SURFACE, clampf(opacity, 0.80, 1.0))
 	if _style.bg_color != background:
 		_style.bg_color = background
-		_glass_material.set_shader_parameter("base_color", background)
+		if _glass_material != null: _glass_material.set_shader_parameter("base_color", background)
 	if _compact != compact:
 		_compact = compact
 		_apply_density()
@@ -343,6 +366,7 @@ func _ready() -> void:
 	# Only a live drag needs global release events; idle/hidden widgets use header GUI input.
 	set_process_input(false)
 	get_window().focus_exited.connect(_finish_drag)
+	_arm_glass()
 
 
 func set_locked(on: bool) -> void:

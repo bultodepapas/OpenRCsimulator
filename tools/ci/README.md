@@ -1,6 +1,6 @@
 # Local checks and CI orchestration
 
-PT1-CI. Work directly on the current checkout; these tools create no branches, PRs or commits. Commands below use Linux or WSL, preferably a checkout on the Linux filesystem. [Developer setup](../../docs/TOOLS.md#developer-setup) owns the pinned engine and dependencies.
+PT1-CI. Work directly on the current checkout; these tools create no working-repository branches, PRs or commits. Tests create disposable Git fixtures only. Commands below use Linux or WSL, preferably a checkout on the Linux filesystem. [Developer setup](../../docs/TOOLS.md#developer-setup) owns the pinned engine and dependencies.
 
 ## Local entrypoint
 

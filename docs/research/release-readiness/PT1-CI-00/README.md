@@ -40,3 +40,32 @@ The first two sampled histories include the same source commit in another run, b
 ## Scope and verification
 
 The review inspected the earlier branch, current scripts/contracts and existing remote results. It did not run Godot, build native binaries, export, publish, change repository settings, remove tests or validate physical/native-GPU behavior. The accompanying plan requires meaningful selector, roster, aggregation and release-negative fixtures during implementation. Documentation verification consists of relative-link target checks and `git diff --check`; no simulation run is warranted for this documentation-only update.
+
+## Implementation follow-up
+
+2026-10-31. Implemented directly on `main`, without creating a task branch or PR. The implementation files under test match commit `aa58bad845bb36283d58d858c43a2f4faa2dfdfd`; the subsequent documentation commit is `ce789cae7e570b91776cebc47c1ffc9cf16dadfb`. These commits appeared concurrently in the shared tree; this implementation session issued no commit, push, repository-settings or publication command. Unrelated runtime/UI edits were preserved.
+
+Delivered behavior:
+
+- One workflow, with early source/tag/version/notes preflight, main/tag/manual support, PR-only cancellation, a conservative selection receipt and a final required-job/parse/unit-roster check. Main has no branch protection (API returned `Branch not protected`) and the repository ruleset list was empty; settings remain unchanged. Scope skipping stays disabled in shadow mode.
+- All 17 original generator checks are in `tools/ci/check-sources.sh`. Nine repeated commands were removed from the integration path: P-51 derive, four Timber and four X8 checks. The commands and arguments remain unchanged; oracle-specific and physical-pending policies are preserved.
+- Local quick/full/release commands; optional source/parse/runtime phase selectors; exact parse/unit completion receipts. Unique receipt filenames preserve repeated local runs. CI retains the combined integration job and eight modulo unit shards.
+- Optional capture groups and `timings.tsv`; default complete capture commands and 46 manifest entries retain the tested fixture schedule. Partial groups have no complete-set marker. No new visual matrix/reducer or parallel renderer is enabled.
+- Editor caches now contain verified editor download/binary/receipt paths rather than the whole `.tools` tree. Import reuse and dependency pins are unchanged.
+- Same-run publication helper with six-file and remote-tag verification, exact downloaded-byte checks, identical-retry no-op and rejection of partial/different releases. Tag preflight includes the manifest's 160-character boundary.
+
+Validation on WSL Ubuntu (disposable fixtures unless stated otherwise):
+
+| Check | Result |
+| --- | --- |
+| `bash tools/ci/check-local.sh quick` | Passed: 13 CI-partition tests, 30 export-identity tests and 39 CI-tool tests; final run after the unique-receipt repair |
+| Release-tool discovery | 40 tests passed; GitHub operations mocked, fixture Git fetch limited to a disposable local remote |
+| Website locale checks with the existing pinned requirements in an isolated venv | 5 tests passed; all eleven generated languages/dictionaries/sitemap match |
+| Website download tests | 8 passed |
+| Analytics history tests | 12 run, 2 platform cases skipped; remaining 10 passed |
+| Workflow validation | `actionlint` 1.7.12 passed; official downloaded archive SHA-256 verified against its published checksum file; shellcheck integration disabled |
+| Shell syntax, relevant diff whitespace and documentation link targets | Passed |
+
+Failure controls include missing/duplicate/changed/partial roster receipts, missing history, code renamed to Markdown, hashed README input, mixed domains, tag/manual selection, failed/cancelled/unexpectedly skipped jobs, generator failures, partial capture outputs, source/tag/version mismatches, invalid or changed release files and incomplete release retries. The review caught and repaired repeated-local-run receipt collisions and the preflight tag-length mismatch.
+
+No Godot/full app run, rendered pixel comparison, cold full checkout, native build, simulator export or public release was performed. The new cache path has not been cold/warm measured. Complete heterogeneous integration-case inventory, five representative shadow runs, full package rehearsal, scope activation and measured savings remain open in the plan. Fixture scheduling agreement is not visual equivalence or physical qualification. Nine duplicate invocations are removed by construction; no percentage speedup is claimed.
