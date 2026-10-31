@@ -579,3 +579,38 @@ passed. A later third flight load in that same session failed allocating project
 the successful scenario is not a clean-exit or repeated-flight stability qualification. A fresh session at
 `tmp/debug-bridge/20261031-075729-47870/` loaded Classic, supported a 1080p visual review and stopped with no crash
 or leaked objects. The full-suite import and Git Bash capture limitations recorded in R10 remain unresolved.
+
+## Mechanical classic detailing (2026-10-31, HUD-13-R12)
+
+Reference review used the [UMA airspeed photographs](https://umainstruments.com/aviation-instruments/non-tso-flight-instruments/airspeed-indicators-2/)
+and [RC Allen attitude indicator photographed by Mid-Continent](https://www.mcico.com/102-0080-04): dark mounting
+plates, recessed circular bezels, clear pale markings and visible needle counterweights. The
+[Smith Mark IVA museum record](https://collection.sciencemuseumgroup.org.uk/objects/co29169/smith-air-speed-indicator-mark-iva)
+supplied historical context. These are visual references; the implementation reuses the existing vector instrument
+renderer and embeds no external photographs, branding or replacement textures.
+
+The five classic faces now have chamfered mounting plates, countersunk slotted fasteners, layered rim lighting,
+ivory markings and sculpted hands with dark counterweights and machined pivots. The green crystal shell, semantic
+amber references, horizon colors, dial ranges and telemetry transforms are retained. Static housing remains cached;
+there are no added nodes, materials, processing callbacks or screen-reading shaders. The extra moving-needle
+primitives still draw on the existing change-driven path; no performance improvement is claimed.
+
+Native review caught two inherited legibility defects: the imperial VSI unit legend intersected the −1 scale
+mark, and German small/compact attitude text hid the bank value. The legend moved inward without shrinking its
+font. Classic readouts now wrap to at most two lines, with nonbreaking spaces keeping attitude labels beside
+their values. A regression reproduced the old line-count/height failure and verifies growth, shrinkage, both
+German attitude values, unit/overflow messages and a short English readout remaining on one line.
+
+Final classic source SHA-256: `1db07c0eb113c2978abe7013de8122edc4f49c47a60c933b36e68604da312538`.
+Source review began at `70709ff4b`; concurrent commit `fabc7ef8a` incorporated these working files. Draft parses
+passed before integration. Final checked classic tests passed **67/67 both headless and rendered** on Godot
+4.8-beta1; the preceding refit passed all 81 widget-efficiency/lifecycle checks. Receipts are under ignored
+`tmp/classic-r12-agent/checks/` and `tmp/classic-r12-root/checks/`.
+
+Windows, RTX 3090 driver 617.42, OpenGL Compatibility, **1920×1080**: normal imperial and small/compact Spanish
+and German views were reviewed. Final geometry and imperial legend clearance are in
+`tmp/debug-bridge/20261031-081207-47870/shots/shot-5804-001.png`; final German/SI label pairing is in
+`tmp/debug-bridge/20261031-081442-47870/shots/shot-32200-001.png`. All three R12 live sessions stopped without
+crashes or leaked objects. Independent Terra Max Good Enemy review confirmed the two fixes and found no further
+issue in those static views. This is focused visual/software evidence, not motion readability, a complete capture
+suite or hardware performance qualification. No images are added to Git.

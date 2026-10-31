@@ -4,7 +4,7 @@
 
 **Status: researched proposal; no runtime changes or new performance qualification.** Build on the existing projected shadows and optional High renderer. Deliver convincing contact, detailed silhouettes and stable motion before increasing range or adding expensive effects. Primary acceptance is **1920×1080**, then 1440p/4K and above, then 720p compatibility.
 
-This is the detailed shadow subplan of [VQ-04b](../VISUAL-QUALITY-PLAN.md#open-work). The [advanced graphics plan](advanced-graphics.md) retains VQ-07e renderer/effect promotion, VQ-06a/b retains settings integration, and [GDU-11](godot-4.8-upgrade.md#opportunity-adoption-gdu-11) retains engine opportunity work. The [dated source audit](../research/shadows-2026-10-31.md) records the inspected implementation and internet references. Parent acceptance gates remain in their existing homes; this document owns the shadow-specific sequence.
+This is the detailed shadow subplan of [VQ-04b](../VISUAL-QUALITY-PLAN.md#open-work). The [advanced graphics plan](advanced-graphics.md) retains VQ-07e renderer/effect promotion, VQ-06a/b retains settings integration, and [GDU-11](godot-4.8-upgrade.md#phase-11-owner-authorized-48-improvements) retains engine opportunity work. The [dated source audit](../research/shadows-2026-10-31.md) records the inspected implementation and internet references. Parent acceptance gates remain in their existing homes; this document owns the shadow-specific sequence.
 
 ## 1. The visual result
 
@@ -182,14 +182,14 @@ Record wall/CPU/GPU p50/p95/p99, worst-frame bursts, shadow draw calls/primitive
 
 | Resource | Intended use | Adoption decision |
 | --- | --- | --- |
-| Godot native shadows, SSAO and existing projectors | Directional/local maps, PCSS, ambient grounding and bounded fallback | First choice. Avoid replacing available engine functionality. Pin remains unchanged in this plan. |
+| Godot native shadows, SSAO and OpenRC's existing projected-mask code | Directional/local maps, PCSS, ambient grounding and bounded fallback | First choice, subject to renderer capabilities. OpenRC's silhouette projection is separate from Godot light projector textures, which are unavailable in Compatibility at this pin. |
 | [RenderDoc](https://github.com/baldurk/renderdoc) | Inspect actual passes, atlas occupancy, caster draws and duplicate work | Free MIT tool; use on supported graphics APIs. It is not the normal benchmark run and does not cover Metal. |
 | [NVIDIA FLIP](https://github.com/NVlabs/flip) and existing capture comparators | Perceptual A/B image differences and regression localization | Reuse existing tooling; BSD-3-Clause project. Difference magnitude does not score realism or motion stability. |
-| [Intel XeGTAO](https://github.com/GameTechDev/XeGTAO) | Read its AO sampling/denoising design if stock AO has an attributed shortcoming | MIT source reference; HLSL/API integration is not a ready Godot addon. Defer a port until stock paths fail a defined gate. |
+| [Intel XeGTAO](https://github.com/GameTechDev/XeGTAO) | Read its AO sampling/denoising design if stock AO has an attributed shortcoming | MIT, discontinued by Intel; a port requires HLSL/API adaptation and a maintenance owner. Defer until stock paths fail a defined gate. |
 | Existing asset-source catalog, licensed field/aircraft materials and generators | Suitable AO maps, foliage alpha textures or reusable caster meshes | Search available free assets first; record redistribution rights and provenance. No new asset pack is needed for the initial slices. |
 | Existing shadow, tree, graphics, capture, debug and frame-diagnosis tools | Oracles, scripted views, lifecycle interaction and timing | Extend the smallest missing capability; do not write a replacement harness. |
 
-Technique inspiration and exact source applicability are retained in the [research ledger](../research/shadows-2026-10-31.md#external-sources-and-applicability). No downloads, addon installs or vendored libraries are authorized merely by being listed here. When a dependency is selected for implementation, pin its exact version/commit and retain its license.
+Technique inspiration and exact source applicability are retained in the [research ledger](../research/shadows-2026-10-31.md#external-sources-and-applicability). These are reuse candidates; the planning task installs no dependencies. When a dependency is selected for implementation, pin its exact version/commit and retain its license.
 
 ## 9. Implementation sequence
 

@@ -212,6 +212,8 @@ Use [family research](p51-family-research.md), the [P-51 flight-realism brief](p
 
 ### Visual quality and landscape
 
+Shadow follow-up: [runtime and primary-source audit, 2026-10-31](shadows-2026-10-31.md) checks current projection/native paths, engine-pin capabilities, free tools and negative contact-shadow evidence. The [VQ-04b shadow plan](../plans/shadows.md) covers detailed aircraft/field/night shadows, settings and 1080p-first qualification; implementation remains pending.
+
 DLSS/FSR follow-up: [2026-10-24 investigation](advanced-graphics-2026-10-21/dlss-fsr-2026-10-24.md), [stock FSR2 evidence](visual-quality-implementation/VQ-07/fsr2-2026-10-24/README.md), and [custom-engine FSR3/DLSS evidence](visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md) retain their build-specific scope. The [2026-10-28 AMD re-audit](advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md) verifies SDK2.4's new Vulkan path and informs the [FSR completion plan](../plans/amd-fsr-completion.md). FSR4 and frame generation remain pending implementation/qualification.
 
 Advanced graphics: [independent source audit, 2026-10-21](advanced-graphics-2026-10-21/README.md) preserves the supplied AAA graphics brief, checks Godot/vendor capabilities and identifies current sky/water migration risks. A [second round of 25 investigations](advanced-graphics-2026-10-21/round-2.md) adds GitHub, Reddit, Godot Forum, tool and documentation evidence with explicit experiment decisions. The [VQ-07 upgrade plan](../plans/advanced-graphics.md) owns the isolated comparison and conditional High-profile proposal; no new runtime or performance result is claimed.

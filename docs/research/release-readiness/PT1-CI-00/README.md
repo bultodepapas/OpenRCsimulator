@@ -69,3 +69,20 @@ Validation on WSL Ubuntu (disposable fixtures unless stated otherwise):
 Failure controls include missing/duplicate/changed/partial roster receipts, missing history, code renamed to Markdown, hashed README input, mixed domains, tag/manual selection, failed/cancelled/unexpectedly skipped jobs, generator failures, partial capture outputs, source/tag/version mismatches, invalid or changed release files and incomplete release retries. The review caught and repaired repeated-local-run receipt collisions and the preflight tag-length mismatch.
 
 No Godot/full app run, rendered pixel comparison, cold full checkout, native build, simulator export or public release was performed. The new cache path has not been cold/warm measured. Complete heterogeneous integration-case inventory, five representative shadow runs, full package rehearsal, scope activation and measured savings remain open in the plan. Fixture scheduling agreement is not visual equivalence or physical qualification. Nine duplicate invocations are removed by construction; no percentage speedup is claimed.
+
+### Scope validation and local isolation follow-up
+
+2026-10-31. Continued on the shared `main` checkout based on `70709ff4b600fbce361b0bea9f88726c60bcff86`, preserving concurrent UI work. The tested code subsequently appeared in concurrent commit `fabc7ef8a7adbe8553eab9365966c9cfc99bf6ba`; this session issued no commit or push. The v2 selection receipt now records the PR head and independently recomputes event identities, changed paths and required jobs from Git in the aggregate. Deletions, mode changes and non-regular files force full scope. The aggregate uses a depth-two checkout for merge parents and fetches a missing base only from the validated event; receipt fields cannot choose a network ref.
+
+The scope job now checks new local document links and previously valid links broken by changed targets within six audited guides. This includes inbound references from another guide in that set, but not a whole-repository backlink scan or external URL checks. Unrelated inherited broken links remain excluded. Markdown handling is bounded to the documented guide syntax. A blanket plans exemption was rejected: `research/fuel-systems/FUEL-00-R1/build_document.py` reads and hashes `docs/plans/fuel-mass-balance.md`.
+
+Full local checks now isolate Godot preferences and caches per invocation, while retaining the caller's export-template and Playwright download locations. A regression verifies fresh profiles, complete app selection despite inherited shard variables, and prototype cache preservation.
+
+Validation of these changes:
+
+- WSL `bash tools/ci/check-local.sh quick`: **113 tests passed** (13 partitions, 30 export identity, 70 CI tools), including 25 selector and 20 document cases.
+- Real committed-document smoke from `ce789cae7e570b91776cebc47c1ffc9cf16dadfb` to `70709ff4b600fbce361b0bea9f88726c60bcff86`: 15 new or potentially affected local links checked successfully.
+- End-to-end scope/document CLI smoke on `fabc7ef8a7adbe8553eab9365966c9cfc99bf6ba`, using its real parent and a synthetic main-push event: 11 new or potentially affected links checked successfully. This checks local CLI wiring, not a hosted event.
+- `actionlint` 1.7.12, shell syntax and `git diff --check` passed. A separate bounded source review found no concrete new selection or aggregate defect; it is not hosted Actions evidence.
+
+The Windows backing volume filled during preparation of disposable verification copies, despite Linux reporting virtual free space. Truncated copies and downloaded inputs were not used as verification evidence: tracked files were restored from the pinned Git snapshot, inputs were downloaded again and verified, and WSL was restarted with owner authorization. The incomplete capture copy was removed. Verify physical host storage before WSL preparation. Shadow mode remains enabled; these fixture results do not establish runtime equivalence, measured savings or publication readiness.

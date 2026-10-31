@@ -151,6 +151,11 @@ Classic layouts allocate 0, 4 and 5 surfaces respectively, down from 19 each. Fi
 and the controlled rendered image is unchanged. This establishes fewer initial allocations, not faster frames;
 see the [measurement and stability limits](../research/flight-overlays/HUD-01-10/README.md#lazy-glass-allocation-2026-10-31-hud-13-r11).
 
+HUD-13-R12 refines classic faces with reference-led mounting plates, recessed fasteners, ivory scales and
+counterweighted hands. It also separates VSI units from the scale and preserves long compact readouts on two
+lines. The shared crystal shell and telemetry mappings remain intact; see the
+[references and verification](../research/flight-overlays/HUD-01-10/README.md#mechanical-classic-detailing-2026-10-31-hud-13-r12).
+
 The presentation reads existing telemetry only: TAS, pitch/bank, height above datum plus AGL, true heading and instantaneous vertical speed. No pressure setting, magnetic correction, pitot system, calibrated airspeed arcs, gyro dynamics or slip-ball indication is implied. Fixed needle scales mark overflow without discarding the numeric reading; missing values suppress the indication. The horizon clips the ground half-plane to a disc and handles inverted/vertical attitudes without a shader. Static faces have their own cached draw commands; only visible, changed values redraw the foreground at the existing 10 Hz rate. Unit/language changes invalidate the face. Research, source applicability and verification live in the [HUD-13-R3 evidence](../research/flight-overlays/HUD-01-10/README.md#classic-cockpit-2026-10-24-hud-13-r3).
 
 See the [player instructions](../FIRST-LAUNCH.md#4-settings-and-flight-options) and [verification](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13). Layout bounds are checked at 1080p, 1440p, 4K and the 720p fallback; native visual review is at 1080p. This does not qualify GPU performance or pilot readability on other hardware.
