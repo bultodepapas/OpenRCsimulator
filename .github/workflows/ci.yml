@@ -448,6 +448,18 @@ jobs:
             .tools/Godot_v*_linux.x86_64.zip
           key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
       - run: app/capture.sh
+      - name: Report visual phase timings
+        if: always()
+        run: |
+          if [[ -f app/captures/timings.tsv ]]; then
+            {
+              printf '### Visual phase timings\n\n```text\n'
+              cat app/captures/timings.tsv
+              printf '```\n'
+            } | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Visual phase timings unavailable; capture did not produce the report.'
+          fi
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always() # Preserve diagnostics when a capture gate fails.
         with:

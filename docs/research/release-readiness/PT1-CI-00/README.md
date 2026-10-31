@@ -136,6 +136,26 @@ The first exporter attempt exceeded its unchanged 600-second import limit and re
 
 Global status also exposed a historical research filename through DrvFS as `console.log` followed by a carriage return. The Windows name ends in U+F00D and its content matches tracked blob `0bcf738ebc2d3a5e130e5efeb7eb5778e20c8c5b`; it predates import. The file was not removed or renamed. The exporter checks tracked changes throughout the repository and untracked application files; an outside-application untracked alias alone is not its source-drift criterion. A complete scoped identity check is required before the single warm retry; an interrupted check is not accepted merely because a partial diff file is empty.
 
+The completed scoped check subsequently confirmed the expected commit, an empty tracked binary diff and no untracked application files. The single unmodified warm retry passed import, metadata capture, Linux export/native identity and Windows export; its last observed phase was macOS ZIP creation. On resumption at 17:00 America/Bogota on 2026-10-31, the process session and `D:/OpenRC-ci-recovery-20261031` directory were unavailable. Their disappearance was not performed by this task and its cause was not established. The local retry has **no verified final outcome**. Earlier paths under that directory are historical observations, no longer retained local artifacts; no local package success or reconstructable raw evidence is claimed.
+
+### Completed hosted candidate
+
+Read-only inspection on 2026-10-31 found completed [run 41211622610](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41211622610), source `28d6a4b77b41cd193bce6d904ad237b9fc3c05d3`. Preflight, both ground-native builds, NK-3 qualification, website, prototype, full integration, visual captures and six unit shards succeeded. Unit shards 1 and 6 failed. The always-running [aggregate](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41211622610/job/124605427853) rejected the required app failure; publication was skipped on this main-push event. This is not a successful full shadow run or tag-publication rehearsal.
+
+The [real export job](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41211622610/job/124573121995) succeeded: all three platform exports, native/package checks, final ABI inventory, manifest finalization and checksums completed. It uploaded exactly six files as [artifact 13047573278](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41211622610/artifacts/13047573278), 4,421,087,873 bytes, with reported archive SHA-256 `8809644fc0458b0f9c212971eb62f60f7e8a5725c1cc7bce713732e9fe2eb8a6`. This is hosted packaging evidence on the implemented source, separate from the incomplete local rehearsal. A successful export does not override the failed application suite or qualify Windows/macOS desktop execution.
+
+The later main-push run `41244529532` at `d27406a8f76f6ffb0a24dd6a963863b1bf9b7249` still reproduced both application failures: missing optional `shadow_field_policy` metadata in the landscape check and a Graphics-page height of 749 against a 700-pixel body at 1920×1080. Other long jobs were still running when inspected. These failures remain visible; scope skipping and split CI scheduling stay inactive.
+
+Completed Actions job timestamps provide the following observations (execution duration, excluding queue time):
+
+| Job | Baseline run 41200545486 (`c4dc202d0`) | Candidate run 41211622610 (`28d6a4b77`) |
+| --- | ---: | ---: |
+| Integration | 95.65 min | 54.07 min |
+| Visual captures | 162.10 min | 156.90 min |
+| Export | 16.83 min | 15.70 min |
+
+Both integration jobs passed. The candidate's unit-backed app-check step took 44.20 minutes, while its preliminary schema import took 5.75 minutes. Its visual command alone took 153.00 minutes, so visuals still dominate elapsed verification time. These sources differ in application changes and setup/cache conditions; the numbers are observations, not a controlled attribution, five-run median, billing result or acceptance of the plan's performance targets. Keep PT1-CI-03's complete visual inventory/reducer and rendered-equivalence proof ahead of unit rebalancing.
+
 ### Unit invocation timing inventory
 
 The [retained observation](unit-timings-41200545486.json) covers the eight completed unit jobs in [run 41200545486](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41200545486), source `c4dc202d0eae01efa951e467b784453eeaf02a47`. Download sizes and SHA-256 match GitHub artifact metadata; the existing checked-log summarizer accepted all 880 reports. The pinned source roster reconciles exactly: 867 distinct unit scripts, each once in its expected modulo shard, plus eight imports and five fixed-brake support invocations. These are invocation counts, not assertion counts.
