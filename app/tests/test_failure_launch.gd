@@ -5,7 +5,9 @@ const Config := preload("res://failures/config.gd")
 
 class NoticeSession extends Node:
 	var observed: Dictionary = {active = false}
+	var queries := 0
 	func failure_status() -> Dictionary:
+		queries += 1
 		return observed.duplicate(true)
 
 var checks := 0
@@ -32,21 +34,58 @@ func _initialize() -> void:
 	var session := NoticeSession.new()
 	main.session = session
 	main._update_failure_notice()
-	check("healthy flight allocates no notice", main._failure_notice == null)
+	check("healthy flight allocates no notice", main._failure_notice == null and session.queries == 1)
 	session.observed = {active = true, label = "Ailerons jammed.", hint = "Use gentle inputs."}
 	main.failure_notifications = false
-	main._update_failure_notice()
-	check("hidden notices do not allocate card", main._failure_notice == null)
+	var before := session.queries
+	for i in 3:
+		main._update_failure_notice()
+	check("disabled notices skip status queries and card allocation", session.queries == before and main._failure_notice == null)
 	main.failure_notifications = true
+	main.set_overlays_visible(false)
+	before = session.queries
+	for i in 3:
+		main._update_failure_notice()
+	check("menu-hidden notices skip status queries and card allocation", session.queries == before and main._failure_notice == null)
+	main.set_overlays_visible(true)
 	main._update_failure_notice()
 	check("committed event presents label", main._failure_notice != null and main._failure_notice.visible and main._failure_label.text.contains("Ailerons jammed."))
-	main._failure_overlays_visible = false
+	session.observed.label = "Rudder jammed."
 	main._update_failure_notice()
-	check("menu hides incident card", not main._failure_notice.visible)
-	main._failure_overlays_visible = true
+	check("visible notice refreshes changed status", main._failure_label.text.contains("Rudder jammed."))
+	main.set_overlays_visible(false)
+	session.observed.label = "Elevator jammed."
+	before = session.queries
+	for i in 3:
+		main._update_failure_notice()
+	check("menu hides an existing card without repeated queries", not main._failure_notice.visible and session.queries == before)
+	main.set_overlays_visible(true) # May query status once to establish immediate visibility.
+	main._update_failure_notice()
+	check("revealing the card refreshes the latest label", main._failure_notice.visible and main._failure_label.text.contains("Elevator jammed."))
+	main.failure_notifications = false
+	session.observed.label = "Throttle limited."
+	before = session.queries
+	for i in 3:
+		main._update_failure_notice()
+	check("disabling an existing card hides it without repeated queries", not main._failure_notice.visible and session.queries == before)
+	main.failure_notifications = true
+	main._update_failure_notice()
+	check("re-enabled notice refreshes the latest label", main._failure_notice.visible and main._failure_label.text.contains("Throttle limited."))
+	main.set_overlays_visible(false)
 	session.observed.active = false
+	before = session.queries
+	for i in 3:
+		main._update_failure_notice()
+	check("hidden reset skips status queries", session.queries == before and not main._failure_notice.visible)
+	main.set_overlays_visible(true)
 	main._update_failure_notice()
-	check("reset hides old incident", not main._failure_notice.visible)
+	check("reset while hidden keeps the card hidden when revealed", not main._failure_notice.visible)
+	session.observed.active = true
+	main._update_failure_notice()
+	check("a later active event is visible", main._failure_notice.visible)
+	main.session = null
+	main._update_failure_notice()
+	check("missing session hides an old incident", not main._failure_notice.visible)
 	main.free()
 	session.free()
 	print("failure launch/notice: %d checks, %d failed" % [checks, failed])

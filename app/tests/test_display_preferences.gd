@@ -1,6 +1,7 @@
 extends SceneTree
 
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const Preferences := preload("res://app_state/preferences.gd")
 const PREFS := "user://test_display_preferences.cfg"
 
 var _checks := 0
@@ -188,6 +189,7 @@ func _run() -> void:
 	_bad_file_preservation()
 	_exhausted_backup_slots()
 	_relative_backup_symlink()
+	_directory_backup_symlinks()
 
 
 func _bad_file_preservation() -> void:
@@ -293,6 +295,49 @@ func _relative_backup_symlink() -> void:
 	DirAccess.remove_absolute(backup)
 	DirAccess.remove_absolute(absolute + ".bad.1")
 	DirAccess.remove_absolute(absolute)
+	DirAccess.remove_absolute(root)
+
+
+func _directory_backup_symlinks() -> void:
+	# Both stores share the backup policy; the link's target must remain untouched.
+	var relative_root := "../tmp/test_settings_directory_link_%d" % OS.get_process_id()
+	var root := DirAccess.open(".").get_current_dir().path_join(relative_root).simplify_path()
+	var target := root.path_join("target")
+	_check("create directory symlink fixture", DirAccess.make_dir_recursive_absolute(target) == OK)
+	var marker_path := target.path_join("marker")
+	var marker := FileAccess.open(marker_path, FileAccess.WRITE)
+	if marker == null:
+		_check("directory symlink marker can be written", false)
+		return
+	marker.store_string("target remains intact")
+	marker.close()
+	var parent := DirAccess.open(root)
+	var broken := "this is not [a config file\n"
+	for kind: String in ["display", "preferences"]:
+		var relative := relative_root.path_join(kind + ".cfg")
+		var absolute := root.path_join(kind + ".cfg")
+		var backup := absolute + ".bad"
+		var f := FileAccess.open(relative, FileAccess.WRITE)
+		if f == null:
+			_check(kind + " directory symlink fixture can be written", false)
+			continue
+		f.store_string(broken)
+		f.close()
+		if parent.create_link(target, backup) == OK:
+			var loaded: Dictionary = DisplayPreferences.load_from(relative) if kind == "display" else Preferences.load_from(relative)
+			_check(kind + " skips a directory symlink and preserves the original bytes",
+				loaded.writable and parent.is_link(backup.get_file())
+				and FileAccess.file_exists(absolute + ".bad.1")
+				and FileAccess.get_file_as_bytes(absolute + ".bad.1") == broken.to_utf8_buffer()
+				and not FileAccess.file_exists(absolute)
+				and FileAccess.get_file_as_string(marker_path) == "target remains intact")
+		else:
+			print("skip %s directory backup symlink: this host cannot create symbolic links" % kind)
+		DirAccess.remove_absolute(backup)
+		DirAccess.remove_absolute(absolute + ".bad.1")
+		DirAccess.remove_absolute(absolute)
+	DirAccess.remove_absolute(marker_path)
+	DirAccess.remove_absolute(target)
 	DirAccess.remove_absolute(root)
 
 

@@ -1572,9 +1572,12 @@ func _update_hud(telemetry_visible: bool = true, performance_visible: bool = tru
 
 ## An optional incident card, independent of the ordinary telemetry HUD and its preset.
 func _update_failure_notice() -> void:
+	if not failure_notifications or not _failure_overlays_visible:
+		if _failure_notice != null:
+			_failure_notice.visible = false
+		return
 	var status: Dictionary = session.failure_status() if session != null else {}
-	var show_notice: bool = failure_notifications and _failure_overlays_visible and bool(status.get("active", false))
-	if not show_notice:
+	if not bool(status.get("active", false)):
 		if _failure_notice != null:
 			_failure_notice.visible = false
 		return
