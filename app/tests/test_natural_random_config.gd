@@ -32,6 +32,7 @@ func _run() -> void:
 	_check("current field, aircraft data and model sources match the record", bool(sources.get("ok", false)), str(sources.get("errors", [])))
 	_test_runtime_default_aircraft_sources()
 	_test_strict_mutations(scenario)
+	_test_small_gust_identities(scenario)
 	_test_custom_lighting(scenario)
 	_finish()
 
@@ -147,12 +148,118 @@ func _test_custom_lighting(scenario: Dictionary) -> void:
 	_check("invalid lighting customization fails closed", ScenarioConfig.customize_lighting(scenario, invalid_lighting).is_empty())
 
 
+func _test_small_gust_identities(scenario: Dictionary) -> void:
+	var negative_zero := PackedByteArray([0, 0, 0, 0, 0, 0, 0, 128]).decode_double(0)
+	var negative_zero_bits := PackedByteArray()
+	negative_zero_bits.resize(8)
+	negative_zero_bits.encode_double(0, negative_zero)
+	_check("signed-zero fixture preserves the negative bit", negative_zero_bits[7] == 128)
+	var reference := {"values": [0.0, 0.0, 1.25, 1.0e-13, 4294967295]}
+	var reference_identity := ScenarioConfig.identity_for(reference)
+	_check("ordinary numeric identity remains compatible",
+		reference_identity == "a972eb16366cafaae3f28423ffc52a8834aa6e69c1a8c93c7a2a4f083125ff9f", reference_identity)
+	var signed_reference := {"values": [0.0, negative_zero, 1.25, 1.0e-13, 4294967295]}
+	_check("signed zero retains its existing identity",
+		ScenarioConfig.identity_for(signed_reference) == "3cd8a6e195c4b2ea15d3f657211bbd39287baa0fc36165b7ef23f6e040f33c5f"
+		and ScenarioConfig.identity_for({"value": 0.0}) != ScenarioConfig.identity_for({"value": negative_zero}))
+	var zero: Dictionary = scenario.duplicate(true)
+	zero.weather_config.gust_up_mps = 0.0
+	_reseal(zero)
+	var tiny: Dictionary = scenario.duplicate(true)
+	tiny.weather_config.gust_up_mps = 1.0e-200
+	_reseal(tiny)
+	var other_tiny: Dictionary = scenario.duplicate(true)
+	other_tiny.weather_config.gust_up_mps = 2.0e-200
+	_reseal(other_tiny)
+	_check("zero and tiny vertical gusts are accepted scenario values",
+		_valid(zero) and _valid(tiny) and _valid(other_tiny))
+	_check("zero and a tiny vertical gust have distinct identities", zero.identity != tiny.identity)
+	_check("distinct tiny vertical gusts have distinct identities", tiny.identity != other_tiny.identity)
+	_check("tiny vertical gust identities survive JSON round trips",
+		_json_round_trip_is_valid(tiny) and _json_round_trip_is_valid(other_tiny))
+	var stale: Dictionary = tiny.duplicate(true)
+	stale.weather_config.gust_up_mps = other_tiny.weather_config.gust_up_mps
+	_check("changing a tiny gust without resealing fails validation", not _valid(stale))
+	var rounding_low: Dictionary = scenario.duplicate(true)
+	rounding_low.weather_config.gust_up_mps = 1.2345678901231e-200
+	_reseal(rounding_low)
+	var rounding_same: Dictionary = rounding_low.duplicate(true)
+	rounding_same.weather_config.gust_up_mps = 1.2345678901234e-200
+	_reseal(rounding_same)
+	var rounding_high: Dictionary = rounding_low.duplicate(true)
+	rounding_high.weather_config.gust_up_mps = 1.2345678901251e-200
+	_reseal(rounding_high)
+	_check("tiny values retain the published 12-significant-digit precision",
+		_valid(rounding_low) and _valid(rounding_same) and _valid(rounding_high)
+		and rounding_low.identity == rounding_same.identity and rounding_low.identity != rounding_high.identity)
+	var negative: Dictionary = scenario.duplicate(true)
+	negative.weather_config.gust_up_mps = -1.0e-200
+	_reseal(negative)
+	_check("negative tiny gusts are distinct and survive JSON", _valid(negative)
+		and negative.identity != tiny.identity and _json_round_trip_is_valid(negative))
+	var boundary: Dictionary = scenario.duplicate(true)
+	boundary.weather_config.gust_up_mps = 1.0e-13
+	_reseal(boundary)
+	var boundary_low: Dictionary = boundary.duplicate(true)
+	boundary_low.weather_config.gust_up_mps = 9.999999999999e-14
+	_reseal(boundary_low)
+	_check("rounding across the decimal and scientific boundary preserves identity", _valid(boundary)
+		and _valid(boundary_low) and boundary.identity == boundary_low.identity)
+	var subnormal: Dictionary = scenario.duplicate(true)
+	subnormal.weather_config.gust_up_mps = PackedByteArray([1, 0, 0, 0, 0, 0, 0, 0]).decode_double(0)
+	_reseal(subnormal)
+	var other_subnormal: Dictionary = scenario.duplicate(true)
+	other_subnormal.weather_config.gust_up_mps = PackedByteArray([2, 0, 0, 0, 0, 0, 0, 0]).decode_double(0)
+	_reseal(other_subnormal)
+	_check("subnormal gusts are nonzero and valid", subnormal.weather_config.gust_up_mps != 0.0
+		and other_subnormal.weather_config.gust_up_mps != 0.0 and _valid(subnormal) and _valid(other_subnormal))
+	_check("distinct subnormal gusts have distinct identities", subnormal.identity != other_subnormal.identity,
+		"%s %s" % [String.num_scientific(subnormal.weather_config.gust_up_mps), String.num_scientific(other_subnormal.weather_config.gust_up_mps)])
+	var subnormal_json: String = JSON.stringify(subnormal, "", true, true)
+	var subnormal_decoded: Variant = JSON.parse_string(subnormal_json)
+	# Godot can underflow this value while decoding JSON. A changed value must fail validation;
+	# an engine that preserves the value may instead validate the round trip.
+	var decoded_subnormal: float = subnormal_decoded.weather_config.gust_up_mps
+	_check("subnormal JSON either preserves the value or fails validation on underflow",
+		(decoded_subnormal == subnormal.weather_config.gust_up_mps and _valid(subnormal_decoded))
+		or (decoded_subnormal == 0.0 and not _valid(subnormal_decoded)))
+
+
 func _json_round_trip_is_valid(scenario: Dictionary) -> bool:
 	var parser := JSON.new()
 	if parser.parse(JSON.stringify(scenario, "", true, true)) != OK:
 		return false
 	var checked: Dictionary = ScenarioConfig.validate(parser.data)
-	return bool(checked.get("ok", false)) and checked.scenario.identity == scenario.identity
+	# Decoding may move a float by one ULP; validation must retain decoded values even when the
+	# 12-significant-digit identity deliberately treats that transport difference as equivalent.
+	return bool(checked.get("ok", false)) and checked.scenario.identity == scenario.identity \
+			and _same_full_precision_value(checked.scenario, parser.data)
+
+
+func _same_full_precision_value(actual: Variant, expected: Variant) -> bool:
+	var actual_type := typeof(actual)
+	var expected_type := typeof(expected)
+	var actual_is_number := actual_type in [TYPE_INT, TYPE_FLOAT]
+	var expected_is_number := expected_type in [TYPE_INT, TYPE_FLOAT]
+	if actual_is_number or expected_is_number:
+		return actual_is_number and expected_is_number and float(actual) == float(expected)
+	if actual_type != expected_type:
+		return false
+	if actual_type == TYPE_DICTIONARY:
+		if actual.size() != expected.size():
+			return false
+		for key: Variant in actual:
+			if not expected.has(key) or not _same_full_precision_value(actual[key], expected[key]):
+				return false
+		return true
+	if actual_type == TYPE_ARRAY:
+		if actual.size() != expected.size():
+			return false
+		for index: int in actual.size():
+			if not _same_full_precision_value(actual[index], expected[index]):
+				return false
+		return true
+	return actual == expected
 
 
 func _has_exact_scenario_keys(scenario: Dictionary) -> bool:

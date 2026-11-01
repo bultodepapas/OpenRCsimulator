@@ -799,6 +799,16 @@ func _trace_integrity() -> void:
 		wash.sim.continuous, wash.mass_properties())
 	_check("coupled trace accepts finite negative wash increments with positive RPM", not signed_trace.to_csv().is_empty())
 	wash.free()
+	# Construct -0.0 by its float64 representation so the parser cannot fold the sign away.
+	var negative_zero_bits := PackedByteArray([0, 0, 0, 0, 0, 0, 0, 0x80])
+	var negative_zero := negative_zero_bits.decode_double(0)
+	var encoded_zero := PackedByteArray()
+	encoded_zero.resize(8)
+	encoded_zero.encode_double(0, negative_zero)
+	_check("signed-zero RPM fixture retains its sign bit", encoded_zero == negative_zero_bits)
+	_check("RPM metadata guard treats signed zeros as exact equality",
+		Trace._positive_float64_within_one_ulp(0.0, negative_zero)
+		and Trace._positive_float64_within_one_ulp(negative_zero, 0.0))
 
 
 func _pending_restore() -> void:

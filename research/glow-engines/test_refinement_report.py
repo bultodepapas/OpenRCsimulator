@@ -53,6 +53,13 @@ class ProvenanceTests(unittest.TestCase):
         with self.fixture(), self.assertRaisesRegex(ValueError, "identical.*source snapshots"):
             report.read_runs()
 
+    def test_stale_aircraft_input_hash_is_rejected(self):
+        run = self.runs[report.RUNS[240]]["runs"][0]
+        self.assertNotEqual(run["configuration"]["aircraft_input_sha256"], "0" * 64)
+        run["configuration"]["aircraft_input_sha256"] = "0" * 64
+        with self.fixture(), self.assertRaisesRegex(ValueError, "benchmark aircraft hash does not match"):
+            report.read_runs()
+
     def test_missing_or_malformed_hash_is_rejected(self):
         original = copy.deepcopy(self.runs)
         for invalid in ("", "not-a-sha", "G" * 64):

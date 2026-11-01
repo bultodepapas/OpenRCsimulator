@@ -641,6 +641,20 @@ static func _sorted_value(value: Variant) -> Variant:
 	# Normalize integer and float variants before the 12-significant-digit digest serialization.
 	if typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT:
 		var number := float(value)
+		if number != 0.0 and absf(number) < 1.0e-13:
+			# Fixed decimal formatting caps at 24 places, which loses significant digits here.
+			# Preserve the existing representation for ordinary values and signed zero.
+			var representation := String.num_scientific(number)
+			var exponent_index := representation.find("e")
+			var significand := representation.substr(0, exponent_index).to_float()
+			var exponent := representation.substr(exponent_index + 1).to_int()
+			var rounded := String.num(significand, 11)
+			if absf(rounded.to_float()) >= 10.0:
+				exponent += 1
+				rounded = String.num(-1.0 if number < 0.0 else 1.0, 11)
+				if exponent == -13:
+					return {"number": String.num(-1.0e-13 if number < 0.0 else 1.0e-13, 24)}
+			return {"number": rounded + "e" + str(exponent)}
 		var decimals: int = 0 if number == 0.0 else clampi(11 - int(floor(log(absf(number)) / log(10.0))), 0, 24)
 		# Keep the canonical decimal as text: parsing it again would reintroduce float rounding.
 		return {"number": String.num(number, decimals)}

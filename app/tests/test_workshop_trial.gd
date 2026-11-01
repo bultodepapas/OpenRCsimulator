@@ -145,6 +145,15 @@ func _initialize() -> void:
 	payload.workshop_descriptor.presentation.model_manifest_sha256 = "0".repeat(64)
 	check("changed presentation dependency cannot freeze a trial", not Trial.freeze(payload).get("ok", false))
 	payload.workshop_descriptor = descriptor.duplicate(true)
+	var incompatible_legacy: Dictionary = payload.duplicate(true)
+	incompatible_legacy.workshop_descriptor.format = Descriptor.LEGACY_FORMAT
+	incompatible_legacy.workshop_descriptor.presentation = {"visual_id": Catalog.DEFAULT_ID, "scale_root": "airplane"}
+	incompatible_legacy.workshop_descriptor.inventory_bindings = _legacy_inventory_bindings(base)
+	var legacy_rejection: Dictionary = Trial.freeze(incompatible_legacy)
+	check("v1 adapter refuses a source with stable physical identities", _has_physical_identity_metadata(base)
+		and not legacy_rejection.get("ok", false)
+		and legacy_rejection.get("errors", PackedStringArray()).has(
+			"Stable physical identities require an openrc-aircraft-workshop v3 descriptor."))
 	var historical_base: Dictionary = base.duplicate(true)
 	_strip_physical_identity(historical_base)
 	var historical_validation: Dictionary = AircraftData.validate_and_derive(historical_base)
