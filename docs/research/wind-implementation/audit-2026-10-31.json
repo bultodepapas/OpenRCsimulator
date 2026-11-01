@@ -1367,5 +1367,33 @@
     "docs/research/ground-physics/GP-14/evidence/weather-publication/README.md",
     "docs/research/landscape-upgrade/LU-06/atmosphere-baseline.md",
     "docs/research/flight-dynamics/rc-validation-library-2026-10-18/wind-weather/README.md"
-  ]
+  ],
+  "documentation_verification": {
+    "working_tree_links": {
+      "checked": 1480,
+      "errors": []
+    },
+    "fresh_clone": {
+      "clone": "/tmp/openrc-wind-audit-clone-ucy5mvl0/repo",
+      "baseline": "a73e6f32f388eda1778f2dd27866d6aca146f5d8",
+      "checked_new_links": 524,
+      "retired_documents_absent": 37,
+      "errors": [],
+      "checkout": "Sparse local shared-object clone; canonical documents and source HTML checked out; all link targets/anchors checked directly in cloned Git objects.",
+      "snapshot_tree": "2505c71886907c4fcacae6dca16cbb4d332d5aac",
+      "scope_note": "Final document/link contents; this receipt metadata was updated after the check."
+    },
+    "site_generation_check": "11 static languages, runtime dictionaries and sitemap match their sources",
+    "site_unit_tests": {
+      "tests": 5,
+      "failures": 0
+    },
+    "diff_check": "pass",
+    "shared_tree_commit_at_final_review": "c207b5f22aa7e726198a6ed30e6ea4bab4da122e",
+    "source_hashes_still_match": true,
+    "checker_unit_tests": {
+      "tests": 20,
+      "failures": 0
+    }
+  }
 }

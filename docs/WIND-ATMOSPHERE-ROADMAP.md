@@ -96,7 +96,7 @@ Owner: performance/NK with M5-W and aircraft. Finding F14. The current code alre
 
 Do not lower modes, omit stations, alter weather by aircraft type, reduce physics frequency or change field interpolation to claim a same-law optimization. Any grid cache/interpolant is a numerical law with error/continuity/identity requirements. A native port is not a substitute for bounded query ownership.
 
-The code's benchmark budgets are targets, not current hardware claims. Retain the 500 µs whole-physics target where the existing benchmark reports it; also report the 4166.67 µs 240 Hz interval separately. A field-only timing or batch mean cannot establish either a per-tick tail guarantee or 1080p qualification. Higher resolutions follow 1080p; 720p is a final compatibility check.
+The [physics benchmark](../app/tests/bench_physics.gd) prints a 500 µs target while measuring the best of three batch means; this is not a measured tail bound or current hardware claim. Retain that whole-physics target; also report the 4166.67 µs 240 Hz interval separately. A field-only timing or batch mean cannot establish either a per-tick tail guarantee or 1080p qualification. Higher resolutions follow 1080p; 720p is a final compatibility check.
 
 ## Phase 5 — Validate physical claims and release presets
 

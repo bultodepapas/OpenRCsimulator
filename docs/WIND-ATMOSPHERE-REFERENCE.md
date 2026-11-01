@@ -324,6 +324,8 @@ The 2026-10-31 audit ran **24 distinct focused GDScript programs: 4,579 checks, 
 | [test_wind_turbulence](../app/tests/test_wind_turbulence.gd) | 29 | Pass |
 | [test_wind_world_consumers](../app/tests/test_wind_world_consumers.gd) | 14 | Pass |
 
+Documentation verification checked 1,480 new/affected destinations against the initial baseline in the working tree, then 524 new destinations/anchors against the final snapshot in a fresh sparse local clone using cloned Git objects. All 37 retired narratives are absent; retained artifact links resolve. Website generation matches all 11 locales and its five static tests and the 20 documentation-checker tests pass; `git diff --check` passes. Shared-tree commits landed during the audit; all 255 selected source hashes still match the reviewed/tested bytes. The receipt identifies the exact checked tree and limits.
+
 Three first attempts used the wrong required completion text (`0 failed` instead of the programs' `0 failures`); the runner correctly rejected those attempts despite process exit zero. All three were rerun with their correct marker and completed successfully. Both attempts remain in the receipt. Duplicate specialist runs are not double-counted.
 
 The source audit also checked the F07 binary64 endpoint arithmetic and derived F01's one-sided thermal derivative. New defect-specific engine reproductions were not added in this documentation change. Existing passes therefore do **not** close the findings. In particular, thermal-response refinement reports maximum mixed-body-component differences of about 0.00124135 for 240/480 Hz and 0.000619432 for 480/960 Hz: this is a software trend, approximately first order in that diagnostic, not a fourth-order full-flight or physical validation claim.
@@ -356,7 +358,7 @@ The following artifacts retain earlier implementation and research evidence. The
 
 **wind-implementation/M5-W01a**
 
-[artifact directory](research/wind-implementation/M5-W01a) · [app-test.log](../research/wind/M5-W01a/app-test.log) · [baseline.json](../research/wind/M5-W01a/baseline.json) · [compare_core.py](../research/wind/M5-W01a/compare_core.py) · [core-calm.json](../research/wind/M5-W01a/core-calm.json) · [core-comparison.txt](../research/wind/M5-W01a/core-comparison.txt) · [core-gusty.json](../research/wind/M5-W01a/core-gusty.json) · [core-source-manifest.json](../research/wind/M5-W01a/core-source-manifest.json) · [core-steady.json](../research/wind/M5-W01a/core-steady.json)
+[artifact directory](../research/wind/M5-W01a) · [app-test.log](../research/wind/M5-W01a/app-test.log) · [baseline.json](../research/wind/M5-W01a/baseline.json) · [compare_core.py](../research/wind/M5-W01a/compare_core.py) · [core-calm.json](../research/wind/M5-W01a/core-calm.json) · [core-comparison.txt](../research/wind/M5-W01a/core-comparison.txt) · [core-gusty.json](../research/wind/M5-W01a/core-gusty.json) · [core-source-manifest.json](../research/wind/M5-W01a/core-source-manifest.json) · [core-steady.json](../research/wind/M5-W01a/core-steady.json)
 
 <a id="evidence-wind-implementation-m5-w04a"></a>
 
@@ -386,7 +388,7 @@ The following artifacts retain earlier implementation and research evidence. The
 
 **wind-implementation/M5-W03b**
 
-[artifact directory](research/wind-implementation/M5-W03b) · [capture.gd](../research/wind/M5-W03b/capture.gd) · [home-es-1280x720.json](../research/wind/M5-W03b/captures/home-es-1280x720.json) · [flight-gusty-en-1280x720.json](../research/wind/M5-W03b/captures/release/flight-gusty-en-1280x720.json) · [flight-gusty-es-1280x720.json](../research/wind/M5-W03b/captures/release/flight-gusty-es-1280x720.json) · [home-en-1280x720.json](../research/wind/M5-W03b/captures/release/home-en-1280x720.json) · [home-es-1280x720.json](../research/wind/M5-W03b/captures/release/home-es-1280x720.json) · [modal-gusty-en-1024x720.json](../research/wind/M5-W03b/captures/release/modal-gusty-en-1024x720.json) · [modal-gusty-en-1920x1080.json](../research/wind/M5-W03b/captures/release/modal-gusty-en-1920x1080.json) · [modal-gusty-es-1280x720.json](../research/wind/M5-W03b/captures/release/modal-gusty-es-1280x720.json) · [modal-steady-en-1280x720.json](../research/wind/M5-W03b/captures/release/modal-steady-en-1280x720.json) · [modal-steady-es-1024x720.json](../research/wind/M5-W03b/captures/release/modal-steady-es-1024x720.json) · [source-manifest.json](../research/wind/M5-W03b/captures/release/source-manifest.json)
+[artifact directory](../research/wind/M5-W03b) · [capture.gd](../research/wind/M5-W03b/capture.gd) · [home-es-1280x720.json](../research/wind/M5-W03b/captures/home-es-1280x720.json) · [flight-gusty-en-1280x720.json](../research/wind/M5-W03b/captures/release/flight-gusty-en-1280x720.json) · [flight-gusty-es-1280x720.json](../research/wind/M5-W03b/captures/release/flight-gusty-es-1280x720.json) · [home-en-1280x720.json](../research/wind/M5-W03b/captures/release/home-en-1280x720.json) · [home-es-1280x720.json](../research/wind/M5-W03b/captures/release/home-es-1280x720.json) · [modal-gusty-en-1024x720.json](../research/wind/M5-W03b/captures/release/modal-gusty-en-1024x720.json) · [modal-gusty-en-1920x1080.json](../research/wind/M5-W03b/captures/release/modal-gusty-en-1920x1080.json) · [modal-gusty-es-1280x720.json](../research/wind/M5-W03b/captures/release/modal-gusty-es-1280x720.json) · [modal-steady-en-1280x720.json](../research/wind/M5-W03b/captures/release/modal-steady-en-1280x720.json) · [modal-steady-es-1024x720.json](../research/wind/M5-W03b/captures/release/modal-steady-es-1024x720.json) · [source-manifest.json](../research/wind/M5-W03b/captures/release/source-manifest.json)
 
 <a id="evidence-wind-implementation-m5-w05d-r4"></a>
 
@@ -434,7 +436,7 @@ The following artifacts retain earlier implementation and research evidence. The
 
 **atmosphere/M5-ATM-1/sources**
 
-[reference_check.py](research/atmosphere/M5-ATM-1/kernel/reference_check.py) · [reference_results.json](research/atmosphere/M5-ATM-1/kernel/reference_results.json) · [artifact directory](research/atmosphere/M5-ATM-1/sources)
+[reference_check.py](research/atmosphere/M5-ATM-1/kernel/reference_check.py) · [reference_results.json](research/atmosphere/M5-ATM-1/kernel/reference_results.json)
 
 <a id="evidence-atmosphere-m5-atm-1-kernel"></a>
 
@@ -554,3 +556,95 @@ Historical Godot 4.7.2 native/WSL comparison diagnosed a platform-sensitive extr
 The 2026-10-19 acquired collection distinguishes measured atmospheric flow, generated turbulence and inferred UAV wind. Catalog/provenance files retain acquisition outcomes, original references and applicability limits; terrain or full-scale datasets do not automatically calibrate RC presets.
 
 [sources.json](research/flight-dynamics/rc-validation-library-2026-10-18/wind-weather/sources.json) · [doi.org](https://doi.org/10.1007/BF00122351) · [doi.org](https://doi.org/10.1175/1520-0469%281988%29045%3C0727%3Atsotcb%3E2.0.co%3B2) · [doi.org](https://doi.org/10.1175/1520-0469%281988%29045%3C2039%3Atsotcb%3E2.0.co%3B2) · [elib.dlr.de](https://elib.dlr.de/210473/) · [doi.org](https://doi.org/10.5194/essd-14-19-2022) · [doi.org](https://doi.org/10.25921/jhnd-8e58) · [doi.org](https://doi.org/10.5194/essd-16-2525-2024) · [arxiv.org](https://arxiv.org/abs/2608.00241) · [ntrs.nasa.gov](https://ntrs.nasa.gov/citations/20070022339) · [doi.org](https://doi.org/10.1038/s41586-018-0533-0) · [arxiv.org](https://arxiv.org/abs/1802.08215) · [ntrs.nasa.gov](https://ntrs.nasa.gov/citations/20060004052) · [doi.org](https://doi.org/10.1038/s41467-024-48670-x) · [ntrs.nasa.gov](https://ntrs.nasa.gov/citations/19780004071) · [ntrs.nasa.gov](https://ntrs.nasa.gov/citations/19770025195) · [ntrs.nasa.gov](https://ntrs.nasa.gov/citations/19880000625) · [orbit.dtu.dk](https://orbit.dtu.dk/en/publications/the-great-belt-coherence-experiment-a-study-of-atmospheric-turbul/) · [doi.org](https://doi.org/10.1016/j.egypro.2016.09.199) · [www.datacommons.psu.edu](https://www.datacommons.psu.edu/commonswizard/MetadataDisplay.aspx?Dataset=6506) · [doi.org](https://doi.org/10.3390/atmos8100195) · [doi.org](https://doi.org/10.1594/PANGAEA.946960) · [doi.org](https://doi.org/10.3390/atmos10030124) · [doi.org](https://doi.org/10.5194/amt-18-2103-2025) · [ntrs.nasa.gov](https://ntrs.nasa.gov/citations/20200003206) · [doi.org](https://doi.org/10.1029/2003JE002161) · [faculty.washington.edu](https://faculty.washington.edu/dcatling/Tratt_etal2003.pdf) · [repository.library.noaa.gov](https://repository.library.noaa.gov/view/noaa/32477) · [doi.org](https://doi.org/10.1175/2009JTECHA1260.1) · [www.pa.op.dlr.de](https://www.pa.op.dlr.de/trex/publications/WeissmannEtAl_2009_TREX_Vorticity.pdf) · [doi.org](https://doi.org/10.3390/geosciences16070262) · [www.mdpi.com](https://www.mdpi.com/article/10.3390/geosciences16070262/s1) · [www.yorku.ca](https://www.yorku.ca/pat/research/Askervein/ASK83.pdf) · [doi.org](https://doi.org/10.1175/BAMS-D-17-0227.1) · [doi.org](https://doi.org/10.5194/acp-19-3797-2019) · [doi.org](https://doi.org/10.5194/acp-19-2713-2019) · [doi.org](https://doi.org/10.1175/BAMS-D-13-00131.1) · [arxiv.org](https://arxiv.org/abs/1501.02297v1) · [doi.org](https://doi.org/10.1007/s10546-015-0034-8) · [doi.org](https://doi.org/10.1016/j.agrformet.2025.110745) · [zenodo.org](https://zenodo.org/records/4095052) · [wemep.readthedocs.io](https://wemep.readthedocs.io/en/latest/windconditions/benchmarks/askervein.html) · [www.eol.ucar.edu](https://www.eol.ucar.edu/content/isfs-netcdf-files) · [www.eol.ucar.edu](https://www.eol.ucar.edu/content/perdig%C3%A3o-isfs-data-report) · [doi.org](https://doi.org/10.26023/ZDMJ-D1TY-FG14) · [doi.org](https://doi.org/10.5194/essd-12-3357-2020) · [doi.org](https://doi.org/10.5194/essd-13-3539-2021) · [doi.org](https://doi.org/10.5281/zenodo.4399967) · [catalog.py](../research/reference-library/catalog.py) · [artifact directory](research/flight-dynamics/rc-validation-library-2026-10-18/wind-weather)
+
+### Additional retained references
+
+Further links preserved from the earlier implementation/research notes; provenance only, not evidence of current runtime behavior.
+
+- [Fung et al., 1992](https://doi.org/10.1017/S0022112092001423)
+- [NASA Dryden verification, 20190000875](https://ntrs.nasa.gov/citations/20190000875)
+- [20060024599](https://ntrs.nasa.gov/citations/20060024599)
+- [FAA Glider Flying Handbook](https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/glider_handbook)
+- [Godot 4.7 `RandomNumberGenerator` docs](https://docs.godotengine.org/en/4.7/classes/class_randomnumbergenerator.html)
+- [Godot 4.7.2 `random_number_generator.h`](https://github.com/godotengine/godot/blob/4.7.2-stable/core/math/random_number_generator.h)
+- [Godot 4.7.2 `random_pcg.h`](https://github.com/godotengine/godot/blob/4.7.2-stable/core/math/random_pcg.h)
+- [`random_pcg.cpp`](https://github.com/godotengine/godot/blob/4.7.2-stable/core/math/random_pcg.cpp)
+- [Godot 4.7.2 `pcg.h`](https://github.com/godotengine/godot/blob/4.7.2-stable/thirdparty/misc/pcg.h)
+- [`pcg.cpp`](https://github.com/godotengine/godot/blob/4.7.2-stable/thirdparty/misc/pcg.cpp)
+- [Welch](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.welch.html)
+- [guía de análisis espectral](https://docs.scipy.org/doc/scipy/tutorial/signal.html)
+- [CSD](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.csd.html)
+- [coherencia](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.coherence.html)
+- [Notas de SciPy 1.18](https://docs.scipy.org/doc/scipy/release/1.18.0-notes.html)
+- [licencia](https://github.com/scipy/scipy/blob/main/LICENSE.txt)
+- [cont2discrete](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.cont2discrete.html)
+- [expm](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.expm.html)
+- [Van Loan, “Computing Integrals Involving the Matrix Exponential”](https://doi.org/10.1109/TAC.1978.1101743)
+- [README oficial](https://github.com/JSBSim-Team/jsbsim)
+- [API Python](https://jsbsim-team.github.io/jsbsim/python/FGFDMExec.html)
+- [notas 1.3.1](https://github.com/JSBSim-Team/jsbsim/releases/tag/v1.3.1)
+- [PyPI 1.3.1](https://pypi.org/project/jsbsim/1.3.1/)
+- [Guía TurbSim v2.00](https://openfast.readthedocs.io/en/main/_downloads/cb14d3e2d3533d76e405d730fea19846/TurbSim_v2.00.pdf)
+- [InflowWind](https://openfast.readthedocs.io/en/main/_downloads/a231262e7763b4d61759ebe4e0fc30b2/InflowWind_Manual.pdf)
+- [Repositorio y licencia OpenFAST](https://github.com/OpenFAST/openfast)
+- [Propósito y límites 0.4.8](https://lkilcher.github.io/pyTurbSim/about.html)
+- [licencia en el repo](https://raw.githubusercontent.com/lkilcher/pyTurbSim/master/LICENSE.txt)
+- [Node 4.7](https://docs.godotengine.org/en/4.7/classes/class_node.html#class-node)
+- [Engine 4.7](https://docs.godotengine.org/en/4.7/classes/class_engine.html#class-engine)
+- [SceneTree 4.7](https://docs.godotengine.org/en/4.7/classes/class_scenetree.html#class-scenetree)
+- [Node process modes 4.7](https://docs.godotengine.org/en/4.7/classes/class_node.html#enum-node-processmode)
+- [RandomNumberGenerator 4.7](https://docs.godotengine.org/en/4.7/classes/class_randomnumbergenerator.html#class-randomnumbergenerator)
+- [RNG C++ 4.7.2](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/core/math/random_number_generator.h)
+- [PCG 4.7.2](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/core/math/random_pcg.h)
+- [inicialización PCG 4.7.2](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/core/math/random_pcg.cpp)
+- [math_defs.h 4.7.2](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/core/math/math_defs.h)
+- [Profiler Godot 4.7](https://docs.godotengine.org/en/4.7/tutorials/scripting/debug/the_profiler.html)
+- [Performance 4.7](https://docs.godotengine.org/en/4.7/classes/class_performance.html#class-performance)
+- [API Performance 4.7.2](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/doc/classes/Performance.xml)
+- [CLI 4.7](https://docs.godotengine.org/en/4.7/tutorials/editor/command_line_tutorial.html)
+- [Engine.xml 4.7.2](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/doc/classes/Engine.xml)
+- [GUT oficial](https://github.com/bitwes/Gut)
+- [GdUnit4 oficial/compatibilidad](https://github.com/godot-gdunit-labs/gdUnit4)
+- [licencia GdUnit4](https://github.com/godot-gdunit-labs/gdUnit4/blob/master/LICENSE)
+- [Node 4.7](https://docs.godotengine.org/en/4.7/classes/class_node.html)
+- [SceneTree 4.7](https://docs.godotengine.org/en/4.7/classes/class_scenetree.html)
+- [Engine 4.7](https://docs.godotengine.org/en/4.7/classes/class_engine.html)
+- [Performance API 4.7](https://docs.godotengine.org/en/4.7/classes/class_performance.html)
+- [Referencia JSON](https://docs.godotengine.org/en/stable/classes/class_json.html)
+- [contrato del tag 4.7.2](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/doc/classes/JSON.xml)
+- [ConfigFile](https://docs.godotengine.org/en/stable/classes/class_configfile.html)
+- [API jsonschema](https://python-jsonschema.readthedocs.io/en/stable/validate/)
+- [licencia v4.26.0](https://raw.githubusercontent.com/python-jsonschema/jsonschema/v4.26.0/COPYING)
+- [condicionales del estándar](https://json-schema.org/understanding-json-schema/reference/conditionals)
+- [Range](https://docs.godotengine.org/en/stable/classes/class_range.html)
+- [SpinBox](https://docs.godotengine.org/en/stable/classes/class_spinbox.html)
+- [Range 4.7.2](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/scene/gui/range.cpp)
+- [SpinBox 4.7.2](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/scene/gui/spin_box.cpp)
+- [ImmediateMesh](https://docs.godotengine.org/en/stable/classes/class_immediatemesh.html)
+- [MultiMesh](https://docs.godotengine.org/en/stable/classes/class_multimesh.html)
+- [guía de optimización](https://docs.godotengine.org/en/stable/tutorials/performance/using_multimesh.html)
+- [Referencia de particle shaders](https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/particle_shader.html)
+- [Código GLES3 fijado](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/drivers/gles3/shaders/particles.glsl)
+- [ParticleProcessMaterial](https://docs.godotengine.org/en/stable/classes/class_particleprocessmaterial.html)
+- [New Equations for Computing Vapor Pressure and Enhancement Factor](https://doi.org/10.1175/1520-0450(1981)
+- [Area3D, XML de 4.7.2](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/doc/classes/Area3D.xml)
+- [Interpolación física](https://docs.godotengine.org/en/stable/tutorials/physics/interpolation/physics_interpolation_introduction.html)
+- [float](https://docs.godotengine.org/en/stable/classes/class_float.html)
+- [FastNoiseLite, interfaz 4.7.2](https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/modules/noise/fastnoise_lite.h)
+- [RandomNumberGenerator](https://docs.godotengine.org/en/stable/classes/class_randomnumbergenerator.html)
+- [Global uniforms](https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html#global-uniforms)
+- [FAA AC 150/5345-27E, §§3.2.2 y 3.5](https://www.faa.gov/documentlibrary/media/advisory_circular/150_5345_27e.pdf)
+- [NOAA boundary-layer training](https://www.weather.gov/source/zhu/ZHU_Training_Page/clouds/planetary_boundary_layer/PBL.html)
+- [NOAA stability computation](https://ready.arl.noaa.gov/documents/Tutorial/html/parm_stab.html)
+- [TurbSim user guide](https://www.nrel.gov/docs/libraries/wind-docs/turbsim_v2-00-pdf.pdf?sfvrsn=5a0a30f8_1)
+- [Businger et al.](https://doi.org/10.1175/1520-0469(1971)
+- [Mann's spatial-tensor model](https://doi.org/10.1017/S0022112094001886)
+- [surface-layer Taylor-hypothesis study](https://doi.org/10.1007/s10546-024-00861-1)
+- [Allen's updraft/sink research](https://ntrs.nasa.gov/api/citations/20060004052/downloads/20060004052.pdf)
+- [Doyle and Durran](https://doi.org/10.1175/1520-0469(2002)
+- [FAA crosswind techniques](https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf)
+- [AMA RC landing approach](https://www.amaflightschool.org/getstarted/how-do-i-master-landing-approach)
+- [NOAA turbulence guidance](https://www.weather.gov/source/zhu/ZHU_Training_Page/turbulence_stuff/turbulence/turbulence.htm?lv=true)
+- [UIUC low-speed airfoil/propeller data](https://m-selig.ae.illinois.edu/pd.html)
+- [official float reference](https://docs.godotengine.org/en/latest/classes/class_float.html)
+- [physics interpolation guidance](https://docs.godotengine.org/en/latest/tutorials/physics/interpolation/physics_interpolation_introduction.html)

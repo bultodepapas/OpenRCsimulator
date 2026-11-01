@@ -145,7 +145,7 @@ The first delivery needs no new hotkey or HUD panel. The final challenge may use
 | Domain | Proposed contract | Owner and invariant |
 | --- | --- | --- |
 | Sky appearance | Versioned `openrc-sky-appearance v1`: stable preset ID, seed, supported layer parameters, motion mode, optional wind-aloft vector, visual quality | FW/TOD; may change pixels but never physical density, forces, trim or RNG |
-| Physical weather | Existing `openrc-weather` variants; a separately versioned spatial extension when M5-W05 is ready | M5; SI/float64 values, fail-closed validation, complete replay identity |
+| Physical weather | Existing `openrc-weather` v1–v5; current behavior and extension gates in the [technical reference](../WIND-ATMOSPHERE-REFERENCE.md) | M5; SI/float64 values, fail-closed validation, complete replay identity |
 | Scenario | Versioned authored recipe resolving sky, weather, lighting request, start and storm/vortex parameters | Scenario/UI coordination; expands once into explicit validated inputs; no hidden continuously mutating presets |
 
 Do not add arbitrary dictionaries to the weather-v3 validator or silently reinterpret its existing wind limits. Treat the fields above as a proposed schema, finalized in FW-77; unsupported future modes must be rejected. Resolve missing sky input to an exact classic configuration for old saves/traces and technical launches. An unknown/corrupt user preference falls back to classic with a concise notice; an invalid explicit scenario or CLI sky input refuses that request.
@@ -186,7 +186,7 @@ For overcast/storm appearance, resolve direct-light attenuation, cloud ambient f
 | Follow wind | Transport follows a declared mean wind mapping. Zero mean with gust/turbulence disabled produces no translation or shape evolution. More mean wind moves the field faster in the correct direction. |
 | Wind aloft | Explicit layer speed/direction; can differ from the windsock. Surface calm does not imply upper-air calm. Display a simple explanation. |
 
-For the first Follow wind implementation, use the configured mean wind as an **authored proxy for wind aloft**, not instantaneous OU turbulence measured at the aircraft. The current field does not model altitude-dependent wind. Avoid an entire sky vibrating at the turbulence rate. Later M5 shear can provide actual layer-height samples. Formation/dissipation is a separate optional evolution parameter; the player's Still and fully calm choices keep it zero. [NWS wind-profile reference](../research/field-world/FW-76/README.md#meteorology-and-flight-physics)
+For the first Follow wind implementation, use the configured mean wind as an **authored proxy for wind aloft**, not instantaneous OU turbulence measured at the aircraft. V5 now models bounded flat-site height variation, but default cloud altitudes can exceed its domain and the current follow-wind adapter reads only legacy mean speed (reference finding F02). Fix that adapter under M5-W-AUD-05; do not assume arbitrary cloud-height samples are admitted. Avoid an entire sky vibrating at the turbulence rate. Formation/dissipation is a separate optional evolution parameter; the player's Still and fully calm choices keep it zero. [NWS wind-profile reference](../research/field-world/FW-76/README.md#meteorology-and-flight-physics)
 
 ### Coordinate and time requirements
 
@@ -254,30 +254,11 @@ For actual thunder, audition Emulius's CC0 [Thunder 08](https://freesound.org/pe
 
 Proposed FW-owned files are `app/environment/storm_events.gd`, `app/render/weather/lightning.gd` and scene-local cloud-flash materials under `app/render/weather/`; AUD owns `app/audio/storm_audio.gd` and thunder derivatives under its existing asset/provenance layout. These are proposed files, not existing APIs. Share event records through the resolved visual snapshot; keep shared `main.gd`, world, audio-adapter and UI edits narrow. No new renderer, autoload, physics force or independent weather clock is required.
 
-### Spatial wind prerequisites
+### Physical-weather dependency
 
-M5-W05 must supply a pure position/time query, conceptually `sample_ned(position_f64, time_s, accepted_weather_state)`. Preserve the old uniform route exactly. Each RK stage samples at its own position/time; debug probes and rendering cannot mutate the field. Turbulence still advances only at the committed transaction boundary and rolls back on failure.
+Physical field equations, sampling contracts, force ownership, numerical gates and extensions have one home in the [technical reference](../WIND-ATMOSPHERE-REFERENCE.md) and [phased engineering roadmap](../WIND-ATMOSPHERE-ROADMAP.md). V5 spatial fields already exist, but they do not implement storm/vortex physics. FW-86/FW-87 depend on a separately admitted M5 scenario; this visual plan does not define another solver or repeat its engineering roadmap.
 
-The broad storm field can combine independently bounded background flow, shear, inflow, updraft/downdraft and a smooth gust-front region. Start with separately verified analytic components, not CFD. Coordinate the scope under M5-W05/W08; a real thunderstorm circulation is far more complex than their sum. Label these authored experimental conditions.
-
-Feed the resulting wind through the existing relative-air calculations. For a local component at offset `r`, use its ground-relative velocity including `omega × r`, subtract wind at that component's stage position, and reuse the accepted aerodynamic/propeller laws. Whole-aircraft center sampling is an intermediate test, not acceptance of tornado-induced wing/tail differential loads. Avoid an extra “tornado force”, position advection or invented `-dW/dt` acceleration.
-
-Coordinate aero stations, tail, propeller inflow, downwash/wake and all active powerplants. Ambient wind must not duplicate induced flow. Ground contact remains ground-relative. Publish the new environment identity, recorded sample positions/times and checkpoint state through versioned trace readers before exposing the scenario.
-
-### Bounded vortex prototype
-
-Compare smooth finite-core analytical profiles using [Wood and White](https://ams.confex.com/ams/pdfpapers/141522.pdf) as a source, including its discussion of the ideal Rankine cusp and Burgers–Rott behavior. Select an equation only after checking the typeset formula and an independent numerical oracle. The downloadable paper is a model reference, not validation of our aircraft in a tornado.
-
-Requirements for the chosen practice model:
-
-- Tangential velocity is zero and finite at the center, peaks near a configured core radius, and decays outward; evaluate the Cartesian center limit without division by zero.
-- Radial inflow and vertical velocity have documented units, sign and vertical boundary behavior. Near the ground there is no downward/upward flow through the surface boundary implied by the model. Independently added components do not constitute a mass-conserving atmospheric solution; disclose that limitation or derive a coupled field.
-- Smooth radial, vertical and lifecycle envelopes limit the affected volume. Verify values **and derivatives** at the core, taper and start/stop joins. Prefer at least C2 joins for the candidate, then measure actual integration convergence rather than assuming smoothness is enough.
-- Choose maximum speed, core size, gradients and traversal time from a numerically qualified aircraft envelope. Do not simply raise the current 15 m/s UI limit, use EF numbers as force settings, or silently clamp an invalid field after producing huge loads.
-- Translation/tilt of the vortex center is explicit scenario state. A moving visual funnel alone cannot relocate the wind. Cosmetic detail can vary; center, orientation and influence envelope cannot drift apart.
-- A bounded seeded perturbation is separate from the mean swirl. It must not reset/advance when a particle is spawned or a camera changes. Existing temporal OU turbulence must not be counted twice.
-
-The NWS EF scale is a damage-based estimate; it is unsuitable as an unqualified “EF5 wind” knob. Use a plain challenge intensity with explicit internal SI parameters and an Experimental label. Cloud darkness, condensed funnel width and particle opacity are not measurements of wind strength. [NWS scale](https://www.weather.gov/oun/efscale)
+A future funnel must consume an accepted field's center, orientation and influence region. Until the physical scenario passes its own gates, a distant decorative storm remains visual and cannot claim interactive tornado loads. The retained [FW-76 sources](../research/field-world/FW-76/README.md#meteorology-and-flight-physics) are research inputs, not proof of an implemented field.
 
 ### Tornado presentation and play
 
@@ -304,8 +285,8 @@ Each row is an independently reviewable phase. Status reflects the 2026-10-14 im
 | 4 · FW-83 | Reused distant storm assets, thunderhead/rainband composition and camera qualification | **Partial:** downloaded CC0 cloud lobes form a world-anchored tower, broad cap and rain curtain; transport/checkpoints, scene isolation, remote-camera wrapping and night exposure are tested. Native day/dusk/moonlit views cover two camera positions and FOVs. Tropical bands, overhead/close and flown views, minimum-hardware budget and full release qualification remain open. |
 | 4 · FW-84 | Electrical-storm preset and night showcase, delivered as FW-84a–e below | **Partial:** deterministic events, licensed branch mesh adaptation, internally lit world-anchored bank/rain, bounded delayed thunder and UI exist. Static day/dusk/moonlit/moonless frames are recorded. Full camera/occlusion review, audio audition, flown night circuit and peak/performance gates remain open. |
 | 5 · FW-85 | Isolated POM/volumetric backend comparison, including a separate Forward+ experiment if justified | Same scenes/cameras/resolution; image, timing, memory and lifecycle comparison. Record accept/reject decision. Production renderer change is a separate project-level decision. **Conditional.** |
-| 6 · FW-86 | Integrate M5-W05 spatial weather and distributed aircraft samples into the sky/scenario boundary | Uniform zero-feature parity, independent field oracle, correct RK stage positions/times, wing/tail/propeller response, versioned trace and rollback tests. **Pending prerequisite for interactive storm.** |
-| 6 · FW-87 | Authored bounded storm/vortex field prototype and scenario contract, with M5 owners | Core/taper/join checks, finite forces, step refinement, seed replay, valid starts and measured whole-tick cost. No physical validation claim. **Pending.** |
+| 6 · FW-86 | Integrate M5-W05 spatial weather and distributed aircraft samples into the sky/scenario boundary | Consume an explicitly admitted provider/scenario under the [weather roadmap](../WIND-ATMOSPHERE-ROADMAP.md); the existing v5 field/local-load path is implemented. **Storm-specific binding and qualification pending.** |
+| 6 · FW-87 | Authored bounded storm/vortex field prototype and scenario contract, with M5 owners | Physical-model work and gates belong to the [weather roadmap](../WIND-ATMOSPHERE-ROADMAP.md#phase-6--extend-only-demonstrated-missing-capabilities); FW owns appearance/scenario binding. **Pending; no storm/vortex law is admitted.** |
 | 7 · FW-88 | Tornado funnel/dust presentation aligned with accepted storm state | World anchoring, core motion alignment, view/LOD/occlusion checks, pause/reset/rewind behavior and invisible-VFX physics parity. **Pending.** |
 | 7 · FW-89 | Experimental tornado challenge with briefing, aircraft restrictions and restart/recovery flow | Actual flown entry/exit, expected distributed disturbance, crash/reset and failure handling, enabled-aircraft matrix, owner play review. **Pending.** |
 | 8 · FW-90 | Release qualification for each delivered slice and documentation consolidation | Native Windows/Linux/macOS exports, licensed assets packaged, settings migration, regression/capture/performance records and owner sky/flight review. **Pending; repeat only for newly changed scope.** |
