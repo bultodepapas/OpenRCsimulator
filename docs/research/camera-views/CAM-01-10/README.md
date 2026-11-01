@@ -39,6 +39,23 @@ Captures reviewed: the chase at t = 1.5 s shows the Stik centred, slightly below
 
 ## Limits and open items
 
+**2026-10-31 projection-write repair (CAM-02).** Relative to `cfad9b9fc`, the rig
+computes the final pilot FOV before assigning it, and skips unchanged FOV/near-plane
+writes. Comparisons use the engine's `real_t` precision and read the current camera
+properties, preserving native rounding and restoring external projection changes.
+No zoom law, camera trajectory or physics behavior is intentionally changed.
+Native Windows Godot 4.8-beta1 passes **152/152 camera-view**, **45/45 settings** and
+**25/25 history** checks, plus 647 exact baseline comparisons and 786 independent
+edge-case comparisons. Valid settings preserve transform, FOV, near plane and
+projection. An invalid zero-degree base FOV behaves differently because the former
+intermediate native setter rejected it; player settings admit only 30–70 degrees.
+Avoided projection writes do not establish a frame-time improvement.
+Matched native **1920×1080** captures at 1.5 s are byte-identical for pilot, chase,
+orbit and close-up against the baseline checkout: Godot 4.8-beta1, Compatibility,
+RTX 3090, NVIDIA 617.42, scenery/birds/engine shadows disabled. Images remain in
+ignored scratch output. The full capture runner could not start under Git Bash
+because `flock` was unavailable; these four comparisons do not replace that suite.
+
 - The audio listener follows the camera (FlightAudio reads `_camera.global_position`): in chase and orbit the engine is heard from the camera. CAM-16 (cut signal, per-view listener) is not done, and the audio owner has not reviewed it.
 - The crash director still writes the camera (CAM-03 partial): non-pilot views get its fixed wreck view. `request_focus` waits for the crash track.
 - No onboard/FPV, fly-by, field cameras, PiP, natural FOV, zoom-law family, vertical shift or near-plane change yet (CAM-02b, 06, 07, 11–22).
