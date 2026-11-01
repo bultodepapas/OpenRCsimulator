@@ -117,6 +117,45 @@ The [2026-10-23 runtime audit](runtime-audit-2026-10-23/README.md) retains two s
 CPU optimizations with component measurements and native 1080p verification; it
 does not establish a whole-game FPS improvement or close these acceptance gaps.
 
+The **2026-10-31 fluidness audit** adopted bounded
+[audio-history compaction](../../audio/AUD-11/README.md) and removed redundant
+[camera projection writes](../../camera-views/CAM-01-10/README.md), relative to
+`cfad9b9fc`, now in `ec01b2bf2`. Three specialist agents investigated audio,
+rendering and lifecycle behavior. The audio fixture reduced compactions from
+1,054 to 3 with exact output parity; four matched native 1920×1080 camera captures
+were byte-identical. These establish avoided work and preserved output, not an FPS
+gain or performance qualification.
+
+On native Windows Godot 4.8-beta1, `app/test.sh` completed source checks, non-unit
+parsing and all **871 unit scripts**; the checked-runner collection contains
+**1,570 passed invocations, zero failed/invalid**. The command nevertheless exited
+1 at the unit receipt: HEAD changed from `cfad9b9fc` to `ec01b2bf2` during the run.
+The retained parse receipt's aggregate GDScript/runner digest still matches the
+current tree exactly (`6b2fb1eabfec6cba9fc208cfa278b886eff38fde34c67dffb4065de007e71a6f`).
+No unit receipt was fabricated and no clean full-suite pass is claimed. Local logs,
+JUnit summary and source comparison remain under ignored
+`tmp/bughunt-20261031/`. The full capture runner was blocked by missing `flock` in
+Git Bash; the four direct captures do not replace it.
+
+The remaining phase was run separately with
+`OPENRC_TEST_PART=integration-runtime bash app/test.sh` and **passed (exit 0)**:
+aircraft model contracts, trace/CLI failure handling, atmosphere/weather/time
+comparisons, trimmed flights, logger contracts, identical complete flight states
+at 30/60/144 FPS, and ground-contact integration. The local log is
+`tmp/bughunt-20261031/integration-runtime.log`. No physics goldens were re-recorded.
+
+`python tools/debug/debugctl.py smoke --cycles 7` passed on the final candidate:
+all scripted navigation/crawl scenarios, 144 seeded UI actions (seed 20261024),
+one warm-up plus a baseline and six compared lifecycle cycles, zero growing
+counters/errors, and zero leaked objects at exit. Nodes stayed at 830, resources
+at 1,327 and orphans at zero after the full UI walk. The earlier three-cycle run
+had flagged object growth; isolated follow-up cycles showed a periodic return to
+baseline and expired flight-audio playback weak references. No lifecycle patch
+was adopted from that alert. This bounded check does not prove indefinite memory
+stability. The smoke ran headlessly alongside CLI integration checks, reported
+116 hitches, and is not frame-pacing evidence. Its local session is
+`tmp/debug-bridge/20261031-230726-47870/`.
+
 ## Artifact identity
 
 [Evidence manifest](evidence-manifest.json) records source commit, runtime diff, both
