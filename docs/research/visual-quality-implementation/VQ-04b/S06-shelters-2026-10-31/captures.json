@@ -1,0 +1,1184 @@
+{
+  "inventory": {
+    "shelter-before-standard": {
+      "renderer": "gl_compatibility",
+      "gpu": {
+        "api": "3.3.0 NVIDIA 617.42",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      "viewport": [
+        1920,
+        1080
+      ],
+      "aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "msaa4",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "arguments": {
+        "aa": "msaa4",
+        "aircraft": "default",
+        "contact_shadows": "profile",
+        "hour": -1.0,
+        "out": "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-before-standard",
+        "seconds": 0.0,
+        "shadows": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        },
+        "view": "all",
+        "width": 1920
+      },
+      "shadows": {
+        "effective": {
+          "aircraft_cue": "off",
+          "angular_distance": 0.0,
+          "atlas_size": 4096,
+          "cascades": 2,
+          "contact_shadows": false,
+          "distance_m": 300.0,
+          "filter_quality": 2,
+          "filter_technique": "pcf",
+          "high_profile": false,
+          "native": true,
+          "projected": false,
+          "quality": "current",
+          "renderer": "gl_compatibility",
+          "softness": "soft",
+          "technique": "native",
+          "use_16_bits": true
+        },
+        "reasons": [
+          "The selected technique suppresses the planar aircraft cue.",
+          "This profile uses PCF filtering; solar PCSS requires High."
+        ],
+        "rendering_available": true,
+        "requested": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        }
+      },
+      "native_field_casters": {
+        "active": true,
+        "already_casting": 0,
+        "enabled_from_off": 8,
+        "max_scenery_range_m": 100.0,
+        "population_batches": 0,
+        "selected_cells": 3,
+        "skipped_material": 8,
+        "skipped_population_range": 0,
+        "source_meshes": 8
+      },
+      "report_sha256": "e504553ba301a7b0aab97d56da9da8ace7d429080bebfabb01e14ace7c31e710",
+      "images": {
+        "aircraftground.png": "b65400ace27770661b54f52cf42527d35421ef094179bebb3b868e8d7cc3151c",
+        "flightline.png": "7ee0ce59fff2806810216ebe531286cfa6506063600ad826837a6f078bde9470",
+        "lake.png": "ffb585a05212e3b3d8aa3ec4f882f9f7ea2e65cc46c4245801a0168884c7d9d6",
+        "pavilion.png": "89f661a0330cd5b50fc09f389d62029a9b440c7210e316fa46d76ddd7422a5d0",
+        "pilot.png": "3f971c2bceba53cb68f9c02f33550cc3e66d8114f5226fceed57c150489c9ed9",
+        "windsock.png": "d1cc5d0ba3d81aa24461b70002dd7e34a2677baf67293efd5e1087b4d433cd62"
+      }
+    },
+    "shelter-before-morning-standard": {
+      "renderer": "gl_compatibility",
+      "gpu": {
+        "api": "3.3.0 NVIDIA 617.42",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      "viewport": [
+        1920,
+        1080
+      ],
+      "aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "msaa4",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "arguments": {
+        "aa": "msaa4",
+        "aircraft": "default",
+        "contact_shadows": "profile",
+        "hour": 8.0,
+        "out": "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-before-morning-standard",
+        "seconds": 0.0,
+        "shadows": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        },
+        "view": "pavilion",
+        "width": 1920
+      },
+      "shadows": {
+        "effective": {
+          "aircraft_cue": "off",
+          "angular_distance": 0.0,
+          "atlas_size": 4096,
+          "cascades": 2,
+          "contact_shadows": false,
+          "distance_m": 300.0,
+          "filter_quality": 2,
+          "filter_technique": "pcf",
+          "high_profile": false,
+          "native": true,
+          "projected": false,
+          "quality": "current",
+          "renderer": "gl_compatibility",
+          "softness": "soft",
+          "technique": "native",
+          "use_16_bits": true
+        },
+        "reasons": [
+          "The selected technique suppresses the planar aircraft cue.",
+          "This profile uses PCF filtering; solar PCSS requires High."
+        ],
+        "rendering_available": true,
+        "requested": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        }
+      },
+      "native_field_casters": {
+        "active": true,
+        "already_casting": 0,
+        "enabled_from_off": 8,
+        "max_scenery_range_m": 100.0,
+        "population_batches": 0,
+        "selected_cells": 3,
+        "skipped_material": 8,
+        "skipped_population_range": 0,
+        "source_meshes": 8
+      },
+      "report_sha256": "0df3d5620381a9634263732074246ee2618c40ab6ef88e56a3c6fc2fd7327570",
+      "images": {
+        "pavilion.png": "e52f10497c05475caa6ab7fc46c13d8e4ba2a6f22c8a442f0a19058e1e5baba9"
+      }
+    },
+    "shelter-after-standard": {
+      "renderer": "gl_compatibility",
+      "gpu": {
+        "api": "3.3.0 NVIDIA 617.42",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      "viewport": [
+        1920,
+        1080
+      ],
+      "aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "msaa4",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "arguments": {
+        "aa": "msaa4",
+        "aircraft": "default",
+        "contact_shadows": "profile",
+        "hour": -1.0,
+        "out": "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-after-standard",
+        "seconds": 0.0,
+        "shadows": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        },
+        "view": "all",
+        "width": 1920
+      },
+      "shadows": {
+        "effective": {
+          "aircraft_cue": "off",
+          "angular_distance": 0.0,
+          "atlas_size": 4096,
+          "cascades": 2,
+          "contact_shadows": false,
+          "distance_m": 300.0,
+          "filter_quality": 2,
+          "filter_technique": "pcf",
+          "high_profile": false,
+          "native": true,
+          "projected": false,
+          "quality": "current",
+          "renderer": "gl_compatibility",
+          "softness": "soft",
+          "technique": "native",
+          "use_16_bits": true
+        },
+        "reasons": [
+          "The selected technique suppresses the planar aircraft cue.",
+          "This profile uses PCF filtering; solar PCSS requires High."
+        ],
+        "rendering_available": true,
+        "requested": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        }
+      },
+      "native_field_casters": {
+        "active": true,
+        "already_casting": 0,
+        "enabled_from_off": 10,
+        "max_scenery_range_m": 100.0,
+        "max_shelter_meshes": 2,
+        "population_batches": 0,
+        "selected_cells": 3,
+        "shelter_meshes": 2,
+        "skipped_material": 8,
+        "skipped_population_range": 0,
+        "skipped_shelter_budget": 0,
+        "skipped_shelter_range": 0,
+        "source_meshes": 10
+      },
+      "report_sha256": "87e60c6e7234e8529a238e2887601d6e57c96242cd505d7c04a8b334831e3c95",
+      "images": {
+        "aircraftground.png": "3f357bb9ab6adfe655029bf4ff5691348e015a3ca73d2f5187fdf05bdefce11d",
+        "flightline.png": "e85f9f21e251beea348762b77283af8d29d9a1c9d6832c0c2eb0d71b808fde64",
+        "lake.png": "781a0618351164053ba6e7a9fa586352be953cb150cdf50c95268af14ca6c8e4",
+        "pavilion.png": "5a8c27c9353d1eaee632a3601d73af89e031c9a0326822c94b7dd84584104564",
+        "pilot.png": "3f971c2bceba53cb68f9c02f33550cc3e66d8114f5226fceed57c150489c9ed9",
+        "windsock.png": "4b8b34ed9178d9e018706da7664963e5e34ede842e6ec73cb6d1d8c261481802"
+      }
+    },
+    "shelter-after-morning-standard": {
+      "renderer": "gl_compatibility",
+      "gpu": {
+        "api": "3.3.0 NVIDIA 617.42",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      "viewport": [
+        1920,
+        1080
+      ],
+      "aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "msaa4",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "arguments": {
+        "aa": "msaa4",
+        "aircraft": "default",
+        "contact_shadows": "profile",
+        "hour": 8.0,
+        "out": "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-after-morning-standard",
+        "seconds": 0.0,
+        "shadows": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        },
+        "view": "pavilion",
+        "width": 1920
+      },
+      "shadows": {
+        "effective": {
+          "aircraft_cue": "off",
+          "angular_distance": 0.0,
+          "atlas_size": 4096,
+          "cascades": 2,
+          "contact_shadows": false,
+          "distance_m": 300.0,
+          "filter_quality": 2,
+          "filter_technique": "pcf",
+          "high_profile": false,
+          "native": true,
+          "projected": false,
+          "quality": "current",
+          "renderer": "gl_compatibility",
+          "softness": "soft",
+          "technique": "native",
+          "use_16_bits": true
+        },
+        "reasons": [
+          "The selected technique suppresses the planar aircraft cue.",
+          "This profile uses PCF filtering; solar PCSS requires High."
+        ],
+        "rendering_available": true,
+        "requested": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        }
+      },
+      "native_field_casters": {
+        "active": true,
+        "already_casting": 0,
+        "enabled_from_off": 10,
+        "max_scenery_range_m": 100.0,
+        "max_shelter_meshes": 2,
+        "population_batches": 0,
+        "selected_cells": 3,
+        "shelter_meshes": 2,
+        "skipped_material": 8,
+        "skipped_population_range": 0,
+        "skipped_shelter_budget": 0,
+        "skipped_shelter_range": 0,
+        "source_meshes": 10
+      },
+      "report_sha256": "8ccd65b086fc517c50a1e7d5946fdb88961f261d96df6328b5c3614997202c4d",
+      "images": {
+        "pavilion.png": "41013dfa5ae36fc3f764ce6e2ae1861f78b536e07a87aa9e23d45eb254916d10"
+      }
+    },
+    "auto-after-standard": {
+      "renderer": "gl_compatibility",
+      "gpu": {
+        "api": "3.3.0 NVIDIA 617.42",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      "viewport": [
+        1920,
+        1080
+      ],
+      "aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "msaa4",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "arguments": {
+        "aa": "msaa4",
+        "aircraft": "default",
+        "contact_shadows": "profile",
+        "hour": -1.0,
+        "out": "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/auto-after-standard",
+        "seconds": 0.0,
+        "shadows": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "auto"
+        },
+        "view": "all",
+        "width": 1920
+      },
+      "shadows": {
+        "effective": {
+          "aircraft_cue": "auto",
+          "angular_distance": 0.0,
+          "atlas_size": 4096,
+          "cascades": 2,
+          "contact_shadows": false,
+          "distance_m": 300.0,
+          "filter_quality": 2,
+          "filter_technique": "pcf",
+          "high_profile": false,
+          "native": true,
+          "projected": true,
+          "quality": "current",
+          "renderer": "gl_compatibility",
+          "softness": "soft",
+          "technique": "auto",
+          "use_16_bits": true
+        },
+        "reasons": [
+          "Current coverage retains both native and projected shadows.",
+          "This profile uses PCF filtering; solar PCSS requires High."
+        ],
+        "rendering_available": true,
+        "requested": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "auto"
+        }
+      },
+      "native_field_casters": {
+        "active": false,
+        "already_casting": 0,
+        "enabled_from_off": 0,
+        "max_scenery_range_m": 100.0,
+        "max_shelter_meshes": 2,
+        "population_batches": 0,
+        "selected_cells": 3,
+        "shelter_meshes": 2,
+        "skipped_material": 8,
+        "skipped_population_range": 0,
+        "skipped_shelter_budget": 0,
+        "skipped_shelter_range": 0,
+        "source_meshes": 10
+      },
+      "report_sha256": "09f98211fa33e00ce64d2ab32bf1216812166112d0d1522768aeaf4cb5c14141",
+      "images": {
+        "aircraftground.png": "7557ba6fdd35faf72d0c1bf43080ba7672d44c6e133676e7440ec8f779223966",
+        "flightline.png": "12331ffe82e619a7f492b429a1fa2f0d5df184e9cf2523b790256441771909b6",
+        "lake.png": "541ccf78ade670c2a3c6d99b716cab34982889da869e0962008c0c9c683bf628",
+        "pavilion.png": "90c92299313c3613d302286ffd81c20f6615d1d724fbebcf5f0e35ea63e06594",
+        "pilot.png": "8742065235954eef2cddd036b8b6ae3d6706f41f07bc2287886816a53de44254",
+        "windsock.png": "c195388afae1cfc552890e50fdda783ce8f37dc624eb771c94f19dfa92763929"
+      }
+    },
+    "shelter-before-high": {
+      "renderer": "forward_plus",
+      "gpu": {
+        "api": "1.4.351",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      "viewport": [
+        1920,
+        1080
+      ],
+      "aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "msaa4",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "arguments": {
+        "aa": "msaa4",
+        "aircraft": "default",
+        "contact_shadows": "profile",
+        "hour": -1.0,
+        "out": "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-before-high",
+        "seconds": 0.0,
+        "shadows": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        },
+        "view": "all",
+        "width": 1920
+      },
+      "shadows": {
+        "effective": {
+          "aircraft_cue": "off",
+          "angular_distance": 0.53,
+          "atlas_size": 8192,
+          "cascades": 4,
+          "contact_shadows": false,
+          "distance_m": 300.0,
+          "filter_quality": 3,
+          "filter_technique": "pcss",
+          "high_profile": true,
+          "native": true,
+          "projected": false,
+          "quality": "current",
+          "renderer": "forward_plus",
+          "softness": "soft",
+          "technique": "native",
+          "use_16_bits": false
+        },
+        "reasons": [
+          "The selected technique suppresses the planar aircraft cue."
+        ],
+        "rendering_available": true,
+        "requested": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        }
+      },
+      "native_field_casters": {
+        "active": true,
+        "already_casting": 0,
+        "enabled_from_off": 8,
+        "max_scenery_range_m": 100.0,
+        "population_batches": 0,
+        "selected_cells": 3,
+        "skipped_material": 8,
+        "skipped_population_range": 0,
+        "source_meshes": 8
+      },
+      "report_sha256": "7c097f0308c68c2df250122fda1e1d9b92c81c6db2e81aeb173d31b0f2726837",
+      "images": {
+        "aircraftground.png": "0656943a1a69aaf237f4075ab528e888bd3168e7ade4f168919dd5aa206f0f12",
+        "flightline.png": "fde4fffb0c562d6f3a5bce4b769eee7bd840c786b55973c7569c527c171eb57f",
+        "lake.png": "01fff7c04b7f29c5b24d652ffb0e14233b6203af227616e77d4ace2d59b1746f",
+        "pavilion.png": "6268fc37edb6babfa6af732e47b7a73a28571ae7372de1f36c51838598c194ff",
+        "pilot.png": "7c2232df28a6793cc6d7745d56e1bdda659b7890f963db2d067bb10925f87c79",
+        "windsock.png": "f62b90f53162b048fc8b045b92cbcf87e16d2775c85bcd54f18d5187d5a0e892"
+      }
+    },
+    "shelter-before-morning-high": {
+      "renderer": "forward_plus",
+      "gpu": {
+        "api": "1.4.351",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      "viewport": [
+        1920,
+        1080
+      ],
+      "aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "msaa4",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "arguments": {
+        "aa": "msaa4",
+        "aircraft": "default",
+        "contact_shadows": "profile",
+        "hour": 8.0,
+        "out": "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-before-morning-high",
+        "seconds": 0.0,
+        "shadows": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        },
+        "view": "pavilion",
+        "width": 1920
+      },
+      "shadows": {
+        "effective": {
+          "aircraft_cue": "off",
+          "angular_distance": 0.53,
+          "atlas_size": 8192,
+          "cascades": 4,
+          "contact_shadows": false,
+          "distance_m": 300.0,
+          "filter_quality": 3,
+          "filter_technique": "pcss",
+          "high_profile": true,
+          "native": true,
+          "projected": false,
+          "quality": "current",
+          "renderer": "forward_plus",
+          "softness": "soft",
+          "technique": "native",
+          "use_16_bits": false
+        },
+        "reasons": [
+          "The selected technique suppresses the planar aircraft cue."
+        ],
+        "rendering_available": true,
+        "requested": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        }
+      },
+      "native_field_casters": {
+        "active": true,
+        "already_casting": 0,
+        "enabled_from_off": 8,
+        "max_scenery_range_m": 100.0,
+        "population_batches": 0,
+        "selected_cells": 3,
+        "skipped_material": 8,
+        "skipped_population_range": 0,
+        "source_meshes": 8
+      },
+      "report_sha256": "f478d367d7077fe8fdb4079ded0fe40d4d4f94a75c3e7a5cc2a1e01a91e104f9",
+      "images": {
+        "pavilion.png": "ece0a9f548ffdee7088b5ddc23399429fdfef1b95b8b0b2621ab8ba9bade36e6"
+      }
+    },
+    "shelter-after-high": {
+      "renderer": "forward_plus",
+      "gpu": {
+        "api": "1.4.351",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      "viewport": [
+        1920,
+        1080
+      ],
+      "aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "msaa4",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "arguments": {
+        "aa": "msaa4",
+        "aircraft": "default",
+        "contact_shadows": "profile",
+        "hour": -1.0,
+        "out": "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-after-high",
+        "seconds": 0.0,
+        "shadows": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        },
+        "view": "all",
+        "width": 1920
+      },
+      "shadows": {
+        "effective": {
+          "aircraft_cue": "off",
+          "angular_distance": 0.53,
+          "atlas_size": 8192,
+          "cascades": 4,
+          "contact_shadows": false,
+          "distance_m": 300.0,
+          "filter_quality": 3,
+          "filter_technique": "pcss",
+          "high_profile": true,
+          "native": true,
+          "projected": false,
+          "quality": "current",
+          "renderer": "forward_plus",
+          "softness": "soft",
+          "technique": "native",
+          "use_16_bits": false
+        },
+        "reasons": [
+          "The selected technique suppresses the planar aircraft cue."
+        ],
+        "rendering_available": true,
+        "requested": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        }
+      },
+      "native_field_casters": {
+        "active": true,
+        "already_casting": 0,
+        "enabled_from_off": 10,
+        "max_scenery_range_m": 100.0,
+        "max_shelter_meshes": 2,
+        "population_batches": 0,
+        "selected_cells": 3,
+        "shelter_meshes": 2,
+        "skipped_material": 8,
+        "skipped_population_range": 0,
+        "skipped_shelter_budget": 0,
+        "skipped_shelter_range": 0,
+        "source_meshes": 10
+      },
+      "report_sha256": "b71e542b536219d7e3aba908255803cb7112a59fb10ecff750601a4dbca9876c",
+      "images": {
+        "aircraftground.png": "c3c00c54727afbe821cec9bc90dee7137f683646604ecc8740222164ae3dae70",
+        "flightline.png": "a82dc00e65e9b9ad7eab2fc33d5e9ccdb63d53547437c80b3f0889cc1c1b7d8a",
+        "lake.png": "01fff7c04b7f29c5b24d652ffb0e14233b6203af227616e77d4ace2d59b1746f",
+        "pavilion.png": "6e80ced727f5eeb02507e71845f4f930b902cb3b7f7cc48d03671e27f3728972",
+        "pilot.png": "7c2232df28a6793cc6d7745d56e1bdda659b7890f963db2d067bb10925f87c79",
+        "windsock.png": "5b8afa0f95b3e1e1669af66ef308a820af9942c596a1d63be0d132c8f5d89ee4"
+      }
+    },
+    "shelter-after-morning-high": {
+      "renderer": "forward_plus",
+      "gpu": {
+        "api": "1.4.351",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      "viewport": [
+        1920,
+        1080
+      ],
+      "aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "msaa4",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "arguments": {
+        "aa": "msaa4",
+        "aircraft": "default",
+        "contact_shadows": "profile",
+        "hour": 8.0,
+        "out": "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/shelter-after-morning-high",
+        "seconds": 0.0,
+        "shadows": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        },
+        "view": "pavilion",
+        "width": 1920
+      },
+      "shadows": {
+        "effective": {
+          "aircraft_cue": "off",
+          "angular_distance": 0.53,
+          "atlas_size": 8192,
+          "cascades": 4,
+          "contact_shadows": false,
+          "distance_m": 300.0,
+          "filter_quality": 3,
+          "filter_technique": "pcss",
+          "high_profile": true,
+          "native": true,
+          "projected": false,
+          "quality": "current",
+          "renderer": "forward_plus",
+          "softness": "soft",
+          "technique": "native",
+          "use_16_bits": false
+        },
+        "reasons": [
+          "The selected technique suppresses the planar aircraft cue."
+        ],
+        "rendering_available": true,
+        "requested": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "native"
+        }
+      },
+      "native_field_casters": {
+        "active": true,
+        "already_casting": 0,
+        "enabled_from_off": 10,
+        "max_scenery_range_m": 100.0,
+        "max_shelter_meshes": 2,
+        "population_batches": 0,
+        "selected_cells": 3,
+        "shelter_meshes": 2,
+        "skipped_material": 8,
+        "skipped_population_range": 0,
+        "skipped_shelter_budget": 0,
+        "skipped_shelter_range": 0,
+        "source_meshes": 10
+      },
+      "report_sha256": "87cfae056de2965fb6b01f2b12f471a997d33ef5a4e6e9fd63fc04a71099198f",
+      "images": {
+        "pavilion.png": "b7917e1b48bc7c390c7aa68f2ae14fcbf9ac3627c4b832d0ade276087742d903"
+      }
+    },
+    "auto-after-high": {
+      "renderer": "forward_plus",
+      "gpu": {
+        "api": "1.4.351",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      "viewport": [
+        1920,
+        1080
+      ],
+      "aa": {
+        "fsr_sharpness": 0.200000002980232,
+        "requested": "msaa4",
+        "scaling_3d_mode": 0,
+        "scaling_3d_scale": 1.0,
+        "texture_mipmap_bias": 0.0,
+        "use_taa": false
+      },
+      "arguments": {
+        "aa": "msaa4",
+        "aircraft": "default",
+        "contact_shadows": "profile",
+        "hour": -1.0,
+        "out": "D:/OpenRC-shadow-followup-20261031/tmp/shadow-followup/auto-after-high",
+        "seconds": 0.0,
+        "shadows": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "auto"
+        },
+        "view": "all",
+        "width": 1920
+      },
+      "shadows": {
+        "effective": {
+          "aircraft_cue": "auto",
+          "angular_distance": 0.53,
+          "atlas_size": 8192,
+          "cascades": 4,
+          "contact_shadows": false,
+          "distance_m": 300.0,
+          "filter_quality": 3,
+          "filter_technique": "pcss",
+          "high_profile": true,
+          "native": true,
+          "projected": true,
+          "quality": "current",
+          "renderer": "forward_plus",
+          "softness": "soft",
+          "technique": "auto",
+          "use_16_bits": false
+        },
+        "reasons": [
+          "Current coverage retains both native and projected shadows."
+        ],
+        "rendering_available": true,
+        "requested": {
+          "shadow_aircraft_cue": "auto",
+          "shadow_distance": "auto",
+          "shadow_quality": "current",
+          "shadow_softness": "auto",
+          "shadow_technique": "auto"
+        }
+      },
+      "native_field_casters": {
+        "active": false,
+        "already_casting": 0,
+        "enabled_from_off": 0,
+        "max_scenery_range_m": 100.0,
+        "max_shelter_meshes": 2,
+        "population_batches": 0,
+        "selected_cells": 3,
+        "shelter_meshes": 2,
+        "skipped_material": 8,
+        "skipped_population_range": 0,
+        "skipped_shelter_budget": 0,
+        "skipped_shelter_range": 0,
+        "source_meshes": 10
+      },
+      "report_sha256": "c00923737556c5874389e10f65cd932c1cdeea8701dcc4d1f81a427a6c811de6",
+      "images": {
+        "aircraftground.png": "bbefc3ce6d9f04c1ff106c4965362a2e43384b562bb5d0c10ab204f7d8849f83",
+        "flightline.png": "81b68116996622f340e359e8a09c8294fb36f1c89ce7c01b63d9c91d3344cac5",
+        "lake.png": "c70f267472e4c71a1c2c710f2da3fc1e1a949d6af767c8bdb3368f92a3e15727",
+        "pavilion.png": "30004f0dc6a10e2522c1729de001f7fd4f2a246a15fee0e864e7578819489c11",
+        "pilot.png": "043898cbbe3412d4c114ea7b099c84654f1917e9037a76af820b8d9090c90417",
+        "windsock.png": "cc726adb1a23538441b6b418216b88bb5cc7347c78fcdf86074b6a7dafb870b8"
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "label": "native-standard",
+      "view": "aircraftground.png",
+      "before_sha256": "b65400ace27770661b54f52cf42527d35421ef094179bebb3b868e8d7cc3151c",
+      "after_sha256": "3f357bb9ab6adfe655029bf4ff5691348e015a3ca73d2f5187fdf05bdefce11d",
+      "changed_pixels": 31825,
+      "max_channel_step": 192,
+      "bbox": [
+        1011,
+        265,
+        1920,
+        502
+      ]
+    },
+    {
+      "label": "native-standard",
+      "view": "flightline.png",
+      "before_sha256": "7ee0ce59fff2806810216ebe531286cfa6506063600ad826837a6f078bde9470",
+      "after_sha256": "e85f9f21e251beea348762b77283af8d29d9a1c9d6832c0c2eb0d71b808fde64",
+      "changed_pixels": 13470,
+      "max_channel_step": 170,
+      "bbox": [
+        314,
+        213,
+        1327,
+        400
+      ]
+    },
+    {
+      "label": "native-standard",
+      "view": "lake.png",
+      "before_sha256": "ffb585a05212e3b3d8aa3ec4f882f9f7ea2e65cc46c4245801a0168884c7d9d6",
+      "after_sha256": "781a0618351164053ba6e7a9fa586352be953cb150cdf50c95268af14ca6c8e4",
+      "changed_pixels": 920,
+      "max_channel_step": 1,
+      "bbox": [
+        14,
+        496,
+        1745,
+        928
+      ]
+    },
+    {
+      "label": "native-standard",
+      "view": "pavilion.png",
+      "before_sha256": "89f661a0330cd5b50fc09f389d62029a9b440c7210e316fa46d76ddd7422a5d0",
+      "after_sha256": "5a8c27c9353d1eaee632a3601d73af89e031c9a0326822c94b7dd84584104564",
+      "changed_pixels": 27571,
+      "max_channel_step": 182,
+      "bbox": [
+        0,
+        439,
+        466,
+        592
+      ]
+    },
+    {
+      "label": "native-standard",
+      "view": "pilot.png",
+      "before_sha256": "3f971c2bceba53cb68f9c02f33550cc3e66d8114f5226fceed57c150489c9ed9",
+      "after_sha256": "3f971c2bceba53cb68f9c02f33550cc3e66d8114f5226fceed57c150489c9ed9",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "native-standard",
+      "view": "windsock.png",
+      "before_sha256": "d1cc5d0ba3d81aa24461b70002dd7e34a2677baf67293efd5e1087b4d433cd62",
+      "after_sha256": "4b8b34ed9178d9e018706da7664963e5e34ede842e6ec73cb6d1d8c261481802",
+      "changed_pixels": 80537,
+      "max_channel_step": 176,
+      "bbox": [
+        736,
+        485,
+        1920,
+        784
+      ]
+    },
+    {
+      "label": "native-morning-standard",
+      "view": "pavilion.png",
+      "before_sha256": "e52f10497c05475caa6ab7fc46c13d8e4ba2a6f22c8a442f0a19058e1e5baba9",
+      "after_sha256": "41013dfa5ae36fc3f764ce6e2ae1861f78b536e07a87aa9e23d45eb254916d10",
+      "changed_pixels": 13525,
+      "max_channel_step": 177,
+      "bbox": [
+        3,
+        443,
+        582,
+        615
+      ]
+    },
+    {
+      "label": "auto-vs-original-standard",
+      "view": "aircraftground.png",
+      "before_sha256": "7557ba6fdd35faf72d0c1bf43080ba7672d44c6e133676e7440ec8f779223966",
+      "after_sha256": "7557ba6fdd35faf72d0c1bf43080ba7672d44c6e133676e7440ec8f779223966",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "auto-vs-original-standard",
+      "view": "flightline.png",
+      "before_sha256": "903471a6a3ea526ee36bcd91d8e06d66bfe02c664b3716e4852db8d4704398c2",
+      "after_sha256": "12331ffe82e619a7f492b429a1fa2f0d5df184e9cf2523b790256441771909b6",
+      "changed_pixels": 26,
+      "max_channel_step": 4,
+      "bbox": [
+        513,
+        504,
+        1520,
+        724
+      ]
+    },
+    {
+      "label": "auto-vs-original-standard",
+      "view": "lake.png",
+      "before_sha256": "f5e8ec7e4b28cdb51d6f642e14db87cff253e36043ebb7b9965fcc0f9d61c4de",
+      "after_sha256": "541ccf78ade670c2a3c6d99b716cab34982889da869e0962008c0c9c683bf628",
+      "changed_pixels": 658,
+      "max_channel_step": 1,
+      "bbox": [
+        12,
+        497,
+        1753,
+        997
+      ]
+    },
+    {
+      "label": "auto-vs-original-standard",
+      "view": "pavilion.png",
+      "before_sha256": "90c92299313c3613d302286ffd81c20f6615d1d724fbebcf5f0e35ea63e06594",
+      "after_sha256": "90c92299313c3613d302286ffd81c20f6615d1d724fbebcf5f0e35ea63e06594",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "auto-vs-original-standard",
+      "view": "pilot.png",
+      "before_sha256": "8742065235954eef2cddd036b8b6ae3d6706f41f07bc2287886816a53de44254",
+      "after_sha256": "8742065235954eef2cddd036b8b6ae3d6706f41f07bc2287886816a53de44254",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "auto-vs-original-standard",
+      "view": "windsock.png",
+      "before_sha256": "c195388afae1cfc552890e50fdda783ce8f37dc624eb771c94f19dfa92763929",
+      "after_sha256": "c195388afae1cfc552890e50fdda783ce8f37dc624eb771c94f19dfa92763929",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "native-high",
+      "view": "aircraftground.png",
+      "before_sha256": "0656943a1a69aaf237f4075ab528e888bd3168e7ade4f168919dd5aa206f0f12",
+      "after_sha256": "c3c00c54727afbe821cec9bc90dee7137f683646604ecc8740222164ae3dae70",
+      "changed_pixels": 30977,
+      "max_channel_step": 187,
+      "bbox": [
+        1012,
+        278,
+        1920,
+        502
+      ]
+    },
+    {
+      "label": "native-high",
+      "view": "flightline.png",
+      "before_sha256": "fde4fffb0c562d6f3a5bce4b769eee7bd840c786b55973c7569c527c171eb57f",
+      "after_sha256": "a82dc00e65e9b9ad7eab2fc33d5e9ccdb63d53547437c80b3f0889cc1c1b7d8a",
+      "changed_pixels": 13112,
+      "max_channel_step": 179,
+      "bbox": [
+        234,
+        190,
+        1322,
+        400
+      ]
+    },
+    {
+      "label": "native-high",
+      "view": "lake.png",
+      "before_sha256": "01fff7c04b7f29c5b24d652ffb0e14233b6203af227616e77d4ace2d59b1746f",
+      "after_sha256": "01fff7c04b7f29c5b24d652ffb0e14233b6203af227616e77d4ace2d59b1746f",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "native-high",
+      "view": "pavilion.png",
+      "before_sha256": "6268fc37edb6babfa6af732e47b7a73a28571ae7372de1f36c51838598c194ff",
+      "after_sha256": "6e80ced727f5eeb02507e71845f4f930b902cb3b7f7cc48d03671e27f3728972",
+      "changed_pixels": 25967,
+      "max_channel_step": 237,
+      "bbox": [
+        0,
+        102,
+        895,
+        592
+      ]
+    },
+    {
+      "label": "native-high",
+      "view": "pilot.png",
+      "before_sha256": "7c2232df28a6793cc6d7745d56e1bdda659b7890f963db2d067bb10925f87c79",
+      "after_sha256": "7c2232df28a6793cc6d7745d56e1bdda659b7890f963db2d067bb10925f87c79",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "native-high",
+      "view": "windsock.png",
+      "before_sha256": "f62b90f53162b048fc8b045b92cbcf87e16d2775c85bcd54f18d5187d5a0e892",
+      "after_sha256": "5b8afa0f95b3e1e1669af66ef308a820af9942c596a1d63be0d132c8f5d89ee4",
+      "changed_pixels": 77985,
+      "max_channel_step": 139,
+      "bbox": [
+        730,
+        354,
+        1920,
+        784
+      ]
+    },
+    {
+      "label": "native-morning-high",
+      "view": "pavilion.png",
+      "before_sha256": "ece0a9f548ffdee7088b5ddc23399429fdfef1b95b8b0b2621ab8ba9bade36e6",
+      "after_sha256": "b7917e1b48bc7c390c7aa68f2ae14fcbf9ac3627c4b832d0ade276087742d903",
+      "changed_pixels": 14535,
+      "max_channel_step": 174,
+      "bbox": [
+        10,
+        443,
+        579,
+        630
+      ]
+    },
+    {
+      "label": "auto-vs-original-high",
+      "view": "aircraftground.png",
+      "before_sha256": "bbefc3ce6d9f04c1ff106c4965362a2e43384b562bb5d0c10ab204f7d8849f83",
+      "after_sha256": "bbefc3ce6d9f04c1ff106c4965362a2e43384b562bb5d0c10ab204f7d8849f83",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "auto-vs-original-high",
+      "view": "flightline.png",
+      "before_sha256": "81b68116996622f340e359e8a09c8294fb36f1c89ce7c01b63d9c91d3344cac5",
+      "after_sha256": "81b68116996622f340e359e8a09c8294fb36f1c89ce7c01b63d9c91d3344cac5",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "auto-vs-original-high",
+      "view": "lake.png",
+      "before_sha256": "c70f267472e4c71a1c2c710f2da3fc1e1a949d6af767c8bdb3368f92a3e15727",
+      "after_sha256": "c70f267472e4c71a1c2c710f2da3fc1e1a949d6af767c8bdb3368f92a3e15727",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "auto-vs-original-high",
+      "view": "pavilion.png",
+      "before_sha256": "30004f0dc6a10e2522c1729de001f7fd4f2a246a15fee0e864e7578819489c11",
+      "after_sha256": "30004f0dc6a10e2522c1729de001f7fd4f2a246a15fee0e864e7578819489c11",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "auto-vs-original-high",
+      "view": "pilot.png",
+      "before_sha256": "043898cbbe3412d4c114ea7b099c84654f1917e9037a76af820b8d9090c90417",
+      "after_sha256": "043898cbbe3412d4c114ea7b099c84654f1917e9037a76af820b8d9090c90417",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    },
+    {
+      "label": "auto-vs-original-high",
+      "view": "windsock.png",
+      "before_sha256": "cc726adb1a23538441b6b418216b88bb5cc7347c78fcdf86074b6a7dafb870b8",
+      "after_sha256": "cc726adb1a23538441b6b418216b88bb5cc7347c78fcdf86074b6a7dafb870b8",
+      "changed_pixels": 0,
+      "max_channel_step": 0,
+      "bbox": null
+    }
+  ]
+}

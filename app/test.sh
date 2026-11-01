@@ -50,6 +50,13 @@ run_with_timeout() {
     -- "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"
 }
 run() { run_with_timeout 60 "$@"; }
+run_reference_unit() {
+  # Full runs (and CI integration paired with every unit shard) execute the
+  # stronger oracle-enabled form once in the unit phase. Standalone source /
+  # integration checks must retain their runtime reference comparisons.
+  if [[ "$PARSE_COVERAGE" == excluding-units ]]; then return 0; fi
+  run "$@"
+}
 
 # L6a imports the runtime PNG before tests; a clean checkout has no editor cache.
 IMPORT_LOG="$(mktemp)"
@@ -92,26 +99,26 @@ OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_lifecycle_probe.py
 echo "== HELI-03a/04: independent mean-inflow reference stays current"
 python3 "$HERE/../research/helicopter/reference/test_johnson_inflow.py"
 python3 "$HERE/../research/helicopter/reference/make_oracle.py" --check
-run --script res://tests/test_heli_inflow.gd -- --oracle="$HERE/../research/helicopter/reference/oracle.json"
+run_reference_unit --script res://tests/test_heli_inflow.gd -- --oracle="$HERE/../research/helicopter/reference/oracle.json"
 
 echo "== HELI-04-R1/05: transient flow and main-rotor references stay current"
 python3 "$HERE/../research/helicopter/reference/test_dynamic_inflow.py"
 python3 "$HERE/../research/helicopter/reference/test_main_rotor.py"
 python3 "$HERE/../research/helicopter/reference/make_dynamic_oracle.py" --check
 python3 "$HERE/../research/helicopter/reference/make_main_rotor_oracle.py" --check
-run --script res://tests/test_heli_dynamic_inflow.gd -- --oracle="$HERE/../research/helicopter/reference/dynamic_oracle.json"
-run --script res://tests/test_heli_main_rotor.gd -- --oracle="$HERE/../research/helicopter/reference/main_rotor_oracle.json"
+run_reference_unit --script res://tests/test_heli_dynamic_inflow.gd -- --oracle="$HERE/../research/helicopter/reference/dynamic_oracle.json"
+run_reference_unit --script res://tests/test_heli_main_rotor.gd -- --oracle="$HERE/../research/helicopter/reference/main_rotor_oracle.json"
 
 echo "== HELI-06a: linearized tail-rotor reference stays current"
 python3 "$HERE/../research/helicopter/reference/test_tail_rotor.py"
 python3 "$HERE/../research/helicopter/reference/make_tail_rotor_oracle.py" --check
-run --script res://tests/test_heli_tail_rotor.gd -- --oracle="$HERE/../research/helicopter/reference/tail_rotor_oracle.json"
+run_reference_unit --script res://tests/test_heli_tail_rotor.gd -- --oracle="$HERE/../research/helicopter/reference/tail_rotor_oracle.json"
 
 echo "== HELI-06b/c: passive airframe and joint aerodynamic stage"
 python3 "$HERE/../research/helicopter/reference/test_airframe.py"
 python3 "$HERE/../research/helicopter/reference/make_airframe_oracle.py" --check
-run --script res://tests/test_heli_airframe.gd -- --oracle="$HERE/../research/helicopter/reference/airframe_oracle.json"
-run --script res://tests/test_heli_aerodynamic_stage.gd
+run_reference_unit --script res://tests/test_heli_airframe.gd -- --oracle="$HERE/../research/helicopter/reference/airframe_oracle.json"
+run_reference_unit --script res://tests/test_heli_aerodynamic_stage.gd
 
 echo "== HELI-16: generated experimental rotorcraft quantities stay current"
 python3 "$HERE/../research/helicopter/xcell/derive.py" --check
@@ -396,6 +403,15 @@ for t in "${unit_tests[@]}"; do
     test_aircraft_catalog.gd|test_aircraft_light_control.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_landscapes.gd|test_runway_cli.gd|test_runway_fleet.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
   esac
   test_args=()
+  # Include independent references in the one required unit execution, rather
+  # than repeating all of its ordinary assertions in the integration phase.
+  case "$(basename "$t")" in
+    test_heli_inflow.gd) test_args=(-- --oracle="$HERE/../research/helicopter/reference/oracle.json") ;;
+    test_heli_dynamic_inflow.gd) test_args=(-- --oracle="$HERE/../research/helicopter/reference/dynamic_oracle.json") ;;
+    test_heli_main_rotor.gd) test_args=(-- --oracle="$HERE/../research/helicopter/reference/main_rotor_oracle.json") ;;
+    test_heli_tail_rotor.gd) test_args=(-- --oracle="$HERE/../research/helicopter/reference/tail_rotor_oracle.json") ;;
+    test_heli_airframe.gd) test_args=(-- --oracle="$HERE/../research/helicopter/reference/airframe_oracle.json") ;;
+  esac
   # Only these two named physical gates are pending for explicitly experimental aircraft behavior.
   # Stable software releases may include these disclosed experimental limits (release policy, 2026-10-16).
   # Direct script invocation without its matching flag remains strict; all other checks stay mandatory.

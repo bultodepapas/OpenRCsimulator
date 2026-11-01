@@ -1,0 +1,57 @@
+{
+  "scope": "Exploratory rejected runtime variants; complete run-time variant source receipts were not retained. These comparisons verify retained images, not reproducible source attribution.",
+  "comparisons": [
+    {
+      "case": "ready-replay-standard",
+      "reference_sha256": "903471a6a3ea526ee36bcd91d8e06d66bfe02c664b3716e4852db8d4704398c2",
+      "image_sha256": "12331ffe82e619a7f492b429a1fa2f0d5df184e9cf2523b790256441771909b6",
+      "changed_pixels": 26,
+      "max_channel_step": 4,
+      "bbox": [
+        513,
+        504,
+        1520,
+        724
+      ]
+    },
+    {
+      "case": "field-entry-standard",
+      "reference_sha256": "903471a6a3ea526ee36bcd91d8e06d66bfe02c664b3716e4852db8d4704398c2",
+      "image_sha256": "b8847ef33cf2f0752b68b793e45b4f0de92ed056b6d1b512bec7f243a5161bab",
+      "changed_pixels": 21,
+      "max_channel_step": 4,
+      "bbox": [
+        513,
+        544,
+        1343,
+        724
+      ]
+    },
+    {
+      "case": "entry-order-diagnostic",
+      "reference_sha256": "903471a6a3ea526ee36bcd91d8e06d66bfe02c664b3716e4852db8d4704398c2",
+      "image_sha256": "12331ffe82e619a7f492b429a1fa2f0d5df184e9cf2523b790256441771909b6",
+      "changed_pixels": 26,
+      "max_channel_step": 4,
+      "bbox": [
+        513,
+        504,
+        1520,
+        724
+      ]
+    },
+    {
+      "case": "no-entry-control",
+      "reference_sha256": "903471a6a3ea526ee36bcd91d8e06d66bfe02c664b3716e4852db8d4704398c2",
+      "image_sha256": "46cd96cee3067e41043ba03de35ddb4d1eef44d5e694e747691ae8205cf33a07",
+      "changed_pixels": 1,
+      "max_channel_step": 1,
+      "bbox": [
+        1753,
+        458,
+        1754,
+        459
+      ]
+    }
+  ]
+}

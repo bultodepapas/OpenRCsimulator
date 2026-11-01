@@ -162,6 +162,10 @@ attribution and end-to-end native-helper gates remain open.
 
 ## Remaining work
 
+The [S06 follow-up](../S06-shelters-2026-10-31/README.md) adds bounded Native pit-shelter coverage,
+new paired 1080p captures and standalone projector lifecycle checks. It also records that the earlier
+Windows verification snapshots are no longer available; compact committed receipts remain historical evidence.
+
 Complete the required suites after adequate disk headroom is available, and resolve the Standard repeatability
 investigation; retain the failed and interrupted tool evidence.
 Then qualify actual moving flight/landing, low sun, fences and animated surfaces before selecting a new

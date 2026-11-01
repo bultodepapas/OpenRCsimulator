@@ -2,9 +2,11 @@
 
 2026-10-31 · Owner: VQ with UI, FW/TOD/SUN, L/LU/SC, CAM, GDU and vehicle visual owners · Steps: **VQ-04b-S00…S12**.
 
-**Status: first configuration/settings slice implemented; broader visual and performance qualification remains open.**
+**Status: configuration/settings slice and bounded Native shelter coverage implemented; broader visual and performance qualification remains open.**
 The [implementation record](../research/visual-quality-implementation/VQ-04b/S01-S03-2026-10-31/README.md)
 owns checks, captures and limits. Current defaults are preserved; Native is an opt-in, bounded comparison.
+The [S06 shelter follow-up](../research/visual-quality-implementation/VQ-04b/S06-shelters-2026-10-31/README.md)
+records paired 1080p Standard/High captures, range/ownership checks and the remaining startup-image investigation.
 Deliver convincing contact, detailed silhouettes and stable motion before increasing range or adding expensive effects.
 Primary acceptance is **1920×1080**, then 1440p/4K and above, then 720p compatibility.
 
@@ -236,7 +238,7 @@ large captures in ignored/external directories and compact reports linking ident
 | VQ-04b-S03 | Tune directional distance, atlas, cascade allocation, blending and bias at fixed filter/AA. | Candidate 2048/4096/8192 atlases, two/four cascades, 100/300/600 m limits and hard/soft filtering implemented as opt-in controls. Bias unchanged. No cheapest acceptable preset or new default selected. |
 | VQ-04b-S04 | Improve aircraft self-shadow and animated control/gear coverage; compare adaptive projected detail only where it helps. | Pending with aircraft/AS. Source bindings stable; matching poses, scale variants, stopped/fast rotor controls and no per-frame geometry rebuild. |
 | VQ-04b-S05 | Refine penumbrae and natural-versus-assisted cue behavior; separately compare AO/contact candidates. | Pending. Contact default remains off unless the previously failed scene and expanded motion matrix pass. Preserve marks/paint and direct-light energy. |
-| VQ-04b-S06 | Coordinate vegetation, people and structure caster coverage, alpha, wind, LOD and bounds. | Pending with L/LU/SC. Stable moving foliage and actors; measured near-grass tradeoff; no stale poses or lost fence gaps. |
+| VQ-04b-S06 | Coordinate vegetation, people and structure caster coverage, alpha, wind, LOD and bounds. | Partial: Native admits up to two opaque pit shelters wholly within 100 m; matched 1080p Standard/High and morning captures recorded. Vegetation, people, alpha/wind/LOD coverage and performance qualification remain pending with L/LU/SC. |
 | VQ-04b-S07 | Qualify non-planar receivers and distant fade for both landscapes and activity cameras. | Pending with L/LU. Slopes, shoreline, roofs, offscreen casters and landscape switches; projections cannot masquerade as valid terrain shadows. |
 | VQ-04b-S08 | Introduce bounded field/landing-light shadow selection and local atlas allocation. | Pending with FW/FW-RGB. Start with one light, then budget tiers; no popping, unbounded lights or emission changes. |
 | VQ-04b-S09 | Align cloud, sun/moon and twilight shadow behavior with existing world state. | Pending with FW/TOD/SUN. Flowing and frozen time, low horizon, pause/reset, lake/aircraft/terrain consistency. |

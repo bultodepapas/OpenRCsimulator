@@ -285,17 +285,15 @@ func _build() -> void:
 	_birds_picker.item_selected.connect(_birds_selected)
 	_add_row(graphics_page, "Birds", _birds_picker)
 	_set_localized_tooltip(_birds_picker, "Vultures and storks in thermals, kites, swallows and evening swifts, by time of day and weather. Changes apply at once: birds fly away or arrive. Normal follows Scene detail; Many keeps full flocks at every level.")
-	# A collapsed group preserves room for the existing 1080p graphics controls.
+	# The collapsed toggle shares the actions row to preserve the 1080p height budget.
 	_shadow_group_button = _button("Shadows", "QuietButton", "ShadowGroupToggle")
 	_shadow_group_button.toggle_mode = true
 	_shadow_group_button.toggled.connect(func(expanded: bool) -> void:
 		_shadow_group.visible = expanded
 		_refresh_shadow_group_button())
-	graphics_page.add_child(_shadow_group_button)
 	_shadow_group = VBoxContainer.new()
 	_shadow_group.name = "ShadowGroup"
 	_shadow_group.add_theme_constant_override("separation", 10)
-	graphics_page.add_child(_shadow_group)
 	_shadow_group.hide()
 	_refresh_shadow_group_button()
 	_shadow_quality_picker = _shadow_picker("ShadowQuality", "shadow_quality", ShadowSettings.QUALITY)
@@ -343,6 +341,7 @@ func _build() -> void:
 	defaults_button.pressed.connect(_restore_graphics_defaults)
 	var graphics_actions := HFlowContainer.new()
 	graphics_page.add_child(graphics_actions)
+	graphics_actions.add_child(_shadow_group_button)
 	graphics_actions.add_child(defaults_button)
 	_graphics_restart_button = _button("Restart in Standard" if HighGraphics.active() else "Enable High (restart)", "QuietButton", "GraphicsRestart")
 	_graphics_restart_button.disabled = true
@@ -350,6 +349,7 @@ func _build() -> void:
 		_revert()
 		graphics_restart_requested.emit("standard" if HighGraphics.active() else "high"))
 	graphics_actions.add_child(_graphics_restart_button)
+	graphics_page.add_child(_shadow_group)
 
 	# CAM-17: camera preferences; presentation only, applied to a Home flight at once.
 	_camera_view_picker = _camera_picker("CameraView", "camera_view", CameraSettings.VIEWS)
