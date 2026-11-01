@@ -24,6 +24,21 @@ class CountingCampfire extends Campfire:
 		effect_updates[3] += 1
 		super._update_light()
 
+## Independent reference for the original enabled-frame behavior.
+class UncachedCampfire extends CountingCampfire:
+	func update_visual(clock_s: float, wind: Vector3 = Vector3.ZERO) -> void:
+		if not is_finite(clock_s):
+			return
+		_clock_s = clock_s
+		_wind = wind if _vector_is_finite(wind) else Vector3.ZERO
+		if not _enabled:
+			return
+		_update_exposure_materials()
+		_update_flames()
+		_update_embers()
+		_update_light()
+
+
 var _checks := 0
 var _failures := 0
 
@@ -44,6 +59,98 @@ func _effect_snapshot(flames: Node3D, embers: MultiMeshInstance3D) -> Array:
 	for index in embers.multimesh.instance_count:
 		state.append([embers.multimesh.get_instance_transform(index), embers.multimesh.get_instance_color(index)])
 	return state
+
+
+## Capture every value written by the fire, including materials and its light.
+func _full_fire_snapshot(fire: Node3D) -> Array:
+	var flames := fire.get_node("ScaledVisuals/FlameSprites") as Node3D
+	var embers := fire.get_node("ScaledVisuals/Embers") as MultiMeshInstance3D
+	var light := fire.get_node("WarmFireLight") as OmniLight3D
+	var state := _effect_snapshot(flames, embers)
+	for child: Node in flames.get_children():
+		var material := (child as Sprite3D).material_override as ShaderMaterial
+		state.append([material.get_shader_parameter("exposure_value"), material.get_shader_parameter("base_gain"),
+			material.get_shader_parameter("display_cap")])
+	var ember_material := embers.multimesh.mesh.surface_get_material(0) as StandardMaterial3D
+	state.append([flames.visible, embers.visible, ember_material.albedo_color, light.visible, light.light_energy])
+	return state
+
+
+func _fire_case(counted: CountingCampfire, reference: UncachedCampfire, clock_s: float, wind: Vector3,
+		expected_updates: Array[int], label: String) -> void:
+	var before := counted.effect_updates.duplicate()
+	counted.update_visual(clock_s, wind)
+	reference.update_visual(clock_s, wind)
+	var actual_updates: Array[int] = []
+	for index in 4:
+		actual_updates.append(counted.effect_updates[index] - before[index])
+	_check(label + " updates only dependent groups", actual_updates == expected_updates, str(actual_updates))
+	_check(label + " matches original visual and light state", _full_fire_snapshot(counted) == _full_fire_snapshot(reference))
+
+
+func _test_enabled_frame_cache() -> void:
+	var sky_material := ShaderMaterial.new()
+	sky_material.shader = load("res://render/sky.gdshader")
+	sky_material.set_shader_parameter("disc_dir", Vector3(0.0, -1.0, 0.0))
+	var sky := Sky.new()
+	sky.sky_material = sky_material
+	var env := Environment.new()
+	env.sky = sky
+	env.tonemap_exposure = 0.5
+	var counted := CountingCampfire.new()
+	var reference := UncachedCampfire.new()
+	for fire: CountingCampfire in [counted, reference]:
+		fire._build_nodes()
+		fire.configure(true, env, 0.2)
+	var wind := Vector3(2.0, 3.0, 4.0)
+	_fire_case(counted, reference, 12.375, wind, [1, 1, 1, 1], "first enabled frame")
+	var before := counted.effect_updates.duplicate()
+	for frame in 16:
+		counted.update_visual(12.375, wind)
+		reference.update_visual(12.375, wind)
+	_check("identical enabled frames submit no effect updates", counted.effect_updates == before, str(counted.effect_updates))
+	_check("identical enabled frames match the original outputs", _full_fire_snapshot(counted) == _full_fire_snapshot(reference))
+	_fire_case(counted, reference, 12.5, wind, [0, 1, 1, 1], "clock change")
+	for axis: int in 3:
+		wind[axis] += 1.0
+		_fire_case(counted, reference, 12.5, wind, [0, 1, 1, 0], "wind component %d" % axis)
+	env.tonemap_exposure = 2.5
+	_fire_case(counted, reference, 12.5, wind, [1, 0, 0, 1], "mutable exposure change")
+	sky_material.set_shader_parameter("disc_dir", Vector3(0.0, 0.0, 1.0))
+	_fire_case(counted, reference, 12.5, wind, [0, 0, 0, 1], "mutable sky-light change")
+	var fallback_shader := Shader.new()
+	fallback_shader.code = "shader_type sky; uniform vec3 sun_dir; void sky() { COLOR = vec3(0.0); }"
+	var fallback_material := ShaderMaterial.new()
+	fallback_material.shader = fallback_shader
+	fallback_material.set_shader_parameter("sun_dir", Vector3(0.0, -1.0, 0.0))
+	sky.sky_material = fallback_material
+	_fire_case(counted, reference, 12.5, wind, [0, 0, 0, 1], "mutable fallback sun change")
+	counted._local_gain = 0.4
+	reference._local_gain = 0.4
+	_fire_case(counted, reference, 12.5, wind, [0, 0, 0, 1], "local gain change")
+	_fire_case(counted, reference, 12.5, Vector3(NAN, 0.0, 0.0), [0, 1, 1, 0], "invalid wind sanitization")
+	_fire_case(counted, reference, 12.5, Vector3(INF, 0.0, 0.0), [0, 0, 0, 0], "same sanitized wind")
+	for fire: CountingCampfire in [counted, reference]:
+		fire.set_enabled(false)
+		fire.update_visual(19.0, Vector3(-3.0, 0.0, 1.0))
+	env.tonemap_exposure = 0.9
+	for fire: CountingCampfire in [counted, reference]: fire.set_enabled(true)
+	_check("re-enable immediately matches original clock, wind, exposure, and light",
+		_full_fire_snapshot(counted) == _full_fire_snapshot(reference))
+	_fire_case(counted, reference, 19.0, Vector3(-3.0, 0.0, 1.0), [1, 1, 1, 1], "first frame after enabling")
+	var replacement := Environment.new()
+	replacement.tonemap_exposure = 1.3
+	for fire: CountingCampfire in [counted, reference]: fire.configure(true, replacement, 0.1)
+	_check("reconfigure immediately matches the original output", _full_fire_snapshot(counted) == _full_fire_snapshot(reference))
+	_fire_case(counted, reference, 19.0, Vector3(-3.0, 0.0, 1.0), [1, 1, 1, 1], "first frame after reconfigure")
+	# Explicit public reassertion invalidates the cache even if outside code changed owned nodes.
+	for fire: CountingCampfire in [counted, reference]:
+		fire._flames[0].position = Vector3(99.0, 99.0, 99.0)
+		fire._flame_materials[0].set_shader_parameter("base_gain", 0.01)
+		fire.set_enabled(true)
+	_fire_case(counted, reference, 19.0, Vector3(-3.0, 0.0, 1.0), [1, 1, 1, 1], "enabled reassertion after external edits")
+	counted.free()
+	reference.free()
 
 
 func _initialize() -> void:
@@ -136,5 +243,6 @@ func _run() -> void:
 	_check("on/off transition reuses nodes", fire.get_child_count() == saved_children)
 	_check("helper has no autonomous process", not fire.is_processing())
 	fire.free()
+	_test_enabled_frame_cache()
 	print("FW-67 campfire: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)

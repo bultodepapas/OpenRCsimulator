@@ -43,6 +43,54 @@ func _peak_db() -> float:
 	return maxf(AudioServer.get_bus_peak_volume_left_db(0, 0), AudioServer.get_bus_peak_volume_right_db(0, 0))
 
 
+## The live scene must retain shaft phase through the float32 Node3D boundary even after long flights.
+func _test_propeller_phase(main: Node) -> void:
+	var sim: Node = main.session.sim
+	var propeller: Node3D = main._airplane.propeller
+	var saved_phase: float = main._prop_angle
+	var saved_rpm: float = sim.aux[0]
+	var saved_rotation: Vector3 = propeller.rotation
+	var had_sign: bool = main._airplane.has("propeller_spin_sign")
+	var saved_sign: Variant = main._airplane.get("propeller_spin_sign")
+	var was_paused: bool = sim.paused
+	var cases: Array[Dictionary] = [
+		{label = "long flight", start = 4194304.125, rpm = 0.0, dt = 0.0},
+		{label = "forward wrap", start = TAU - 0.1, rpm = 60.0, dt = 0.05},
+		{label = "reverse wrap", start = 0.1, rpm = -60.0, dt = 0.05},
+	]
+	for sign_value: float in [1.0, -1.0]:
+		main._airplane["propeller_spin_sign"] = sign_value
+		for sample: Dictionary in cases:
+			main._prop_angle = float(sample.start)
+			sim.aux[0] = float(sample.rpm)
+			main._process(float(sample.dt))
+			var expected: float = fposmod(float(sample.start) + TAU * float(sample.rpm) / 60.0 * float(sample.dt), TAU)
+			var actual: float = propeller.rotation.z
+			_check("propeller %s, spin sign %+.0f keeps a bounded phase" % [sample.label, sign_value],
+				main._prop_angle >= 0.0 and main._prop_angle < TAU
+				and absf(main._prop_angle - expected) < 1e-9,
+				"phase=%.9f expected=%.9f" % [main._prop_angle, expected])
+			_check("propeller %s, spin sign %+.0f renders the expected phase" % [sample.label, sign_value],
+				absf(sin(actual) - sin(expected * sign_value)) < 1e-5
+				and absf(cos(actual) - cos(expected * sign_value)) < 1e-5,
+				"rendered=%.9f expected=%.9f" % [actual, expected * sign_value])
+	sim.set_paused(true)
+	var paused_phase: float = main._prop_angle
+	var paused_rotation: Vector3 = propeller.rotation
+	sim.aux[0] = 60.0
+	main._process(0.05)
+	_check("manual pause freezes bounded propeller phase and real node rotation",
+		main._prop_angle == paused_phase and propeller.rotation.is_equal_approx(paused_rotation))
+	sim.aux[0] = saved_rpm
+	main._prop_angle = saved_phase
+	propeller.rotation = saved_rotation
+	if had_sign:
+		main._airplane["propeller_spin_sign"] = saved_sign
+	else:
+		main._airplane.erase("propeller_spin_sign")
+	sim.set_paused(was_paused)
+
+
 func _run() -> void:
 	TranslationServer.set_locale("en")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
@@ -56,6 +104,7 @@ func _run() -> void:
 	var main: Node = app.flight
 	var session: Node = main.session
 	_check("flying with engine sound", not session.sim.paused and _peak_db() > -100.0, "%.1f dB" % _peak_db())
+	_test_propeller_phase(main)
 
 	# --- UI-02: Esc opens the pause menu and freezes everything, including the large Spanish text case.
 	var default_presentation: Dictionary = app.display_preferences.config.duplicate(true)

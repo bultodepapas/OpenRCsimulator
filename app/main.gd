@@ -1341,7 +1341,7 @@ func _process(delta: float) -> void:
 	if _frametimes_scripted_fixed:
 		_prop_angle = fposmod(TAU * (sim.aux[0] / 60.0) * _frametimes_elapsed, TAU)
 	elif not frozen:
-		_prop_angle += TAU * (sim.aux[0] / 60.0) * dt
+		_prop_angle = fposmod(_prop_angle + TAU * (sim.aux[0] / 60.0) * dt, TAU)
 	if _engine_audio != null and _soundscape_audio == null:
 		_engine_audio.stream_paused = frozen
 		if not frozen:

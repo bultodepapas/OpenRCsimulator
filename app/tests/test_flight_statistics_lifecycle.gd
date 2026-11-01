@@ -27,6 +27,42 @@ class RejectReloadSession extends "res://sim/flight_session.gd":
 		return super._wheel_evaluate(s, x, t)
 
 
+class CheckpointClock extends Node:
+	var tick := 0
+	var elapsed := 0.0
+	func time() -> float: return elapsed
+
+
+class CheckpointSession extends Node:
+	var sim := CheckpointClock.new()
+
+
+class CheckpointDetector extends RefCounted:
+	var flight := {airborne_seconds = 1.0}
+	func observe(_sample: Dictionary) -> Array[Dictionary]: return []
+	func snapshot() -> Dictionary: return {}
+
+
+## Deterministic completion control, so accepted ticks can arrive while a write is in flight.
+class CheckpointWriter extends RefCounted:
+	var snapshots: Array[Dictionary] = []
+	var in_flight := false
+	var result := {}
+	func start(_store: Variant, candidate: Dictionary) -> bool:
+		if in_flight: return false
+		snapshots.append(candidate.duplicate(true))
+		in_flight = true
+		return true
+	func pending() -> bool: return in_flight
+	func poll() -> Dictionary:
+		if result.is_empty(): return {}
+		var completed := result
+		result = {}
+		in_flight = false
+		return completed
+	func finish() -> Dictionary: return poll()
+
+
 func _initialize() -> void:
 	var service: Node = load("res://statistics/service.gd").new()
 	check("in-memory service opens without player files", service.setup("", false))
@@ -102,6 +138,7 @@ func _initialize() -> void:
 	player.free()
 	reference.free()
 	_test_durable_service()
+	_test_checkpoint_scheduler()
 	print("Flight statistics lifecycle: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -170,6 +207,121 @@ func _test_durable_service() -> void:
 	var user_root := ProjectSettings.globalize_path("user://")
 	if absolute.begins_with(user_root) and absolute != user_root:
 		_remove_fixture(absolute)
+
+
+func _scheduler_fixture() -> Dictionary:
+	var service: Node = load("res://statistics/service.gd").new()
+	var session := CheckpointSession.new()
+	var writer := CheckpointWriter.new()
+	service.data = {generation = 0, records = [], sessions = [], epochs = {}, active_context = {}}
+	service.store = RefCounted.new()
+	service.persistent = true
+	service._session = session
+	service.detector = CheckpointDetector.new()
+	service._writer = writer
+	service._dirty = true
+	service._active_record = {id = "scheduler-flight", metadata = {events = []}}
+	return {service = service, session = session, writer = writer}
+
+
+func _scheduler_tick(fixture: Dictionary, tick: int) -> void:
+	fixture.session.sim.tick = tick
+	fixture.session.sim.elapsed = float(tick) / 240.0
+	fixture.service._observe({tick = tick})
+
+
+func _scheduler_dispose(fixture: Dictionary) -> void:
+	fixture.service.free()
+	fixture.session.sim.free()
+	fixture.session.free()
+
+
+func _test_checkpoint_scheduler() -> void:
+	var fixture := _scheduler_fixture()
+	_scheduler_tick(fixture, 1200)
+	fixture.service._process(0.0)
+	check("five simulated seconds request one background checkpoint", fixture.writer.snapshots.size() == 1 and fixture.writer.pending())
+	for tick in range(1201, 1231): _scheduler_tick(fixture, tick)
+	check("ticks during the in-flight interval do not request a duplicate checkpoint", not fixture.service._flush_requested)
+	fixture.writer.result = {ok = true, generation = 1}
+	fixture.service._process(0.0)
+	check("successful receipt does not start a duplicate write", fixture.writer.snapshots.size() == 1 and not fixture.writer.pending())
+	check("successful receipt retains the scheduled durable cursor", fixture.service._durable_tick == 1200 and fixture.service._last_flush_time == 5.0)
+	_scheduler_tick(fixture, 2400)
+	fixture.service._process(0.0)
+	check("the next checkpoint is due five seconds after the durable snapshot", fixture.writer.snapshots.size() == 2 and fixture.writer.pending())
+	_scheduler_dispose(fixture)
+
+	fixture = _scheduler_fixture()
+	_scheduler_tick(fixture, 1200)
+	fixture.service._process(0.0)
+	_scheduler_tick(fixture, 1201)
+	fixture.service._paused(true)
+	fixture.writer.result = {ok = true, generation = 1}
+	fixture.service._process(0.0)
+	check("pause during a pending write still requests a separate checkpoint", fixture.writer.snapshots.size() == 2 and fixture.writer.pending())
+	_scheduler_dispose(fixture)
+
+	fixture = _scheduler_fixture()
+	_scheduler_tick(fixture, 1200)
+	fixture.service._process(0.0)
+	_scheduler_tick(fixture, 1201)
+	fixture.service._ingest([{type = "landing", tick = 1201}])
+	fixture.writer.result = {ok = true, generation = 1}
+	fixture.service._process(0.0)
+	var event_snapshot: Dictionary = fixture.writer.snapshots.back()
+	check("event during a pending write is included in a subsequent checkpoint", fixture.writer.snapshots.size() == 2 \
+		and fixture.writer.pending() and event_snapshot.records[0].metadata.events[0].type == "landing")
+	_scheduler_dispose(fixture)
+
+	fixture = _scheduler_fixture()
+	_scheduler_tick(fixture, 1200)
+	fixture.service._process(0.0)
+	_scheduler_tick(fixture, 2399)
+	check("a slow write does not queue the next period early", not fixture.service._flush_requested)
+	_scheduler_tick(fixture, 2400)
+	check("a pending write does not hide another elapsed five-second interval", fixture.service._flush_requested)
+	fixture.writer.result = {ok = true, generation = 1}
+	fixture.service._process(0.0)
+	check("a delayed checkpoint is started after the older write finishes", fixture.writer.snapshots.size() == 2 and fixture.writer.pending())
+	_scheduler_dispose(fixture)
+
+	# A write from before Restart can acknowledge an older generation at a larger
+	# simulation time. A new-generation write must still get its own five-second clock.
+	fixture = _scheduler_fixture()
+	fixture.service._last_flush_time = 20.0
+	fixture.session.sim.tick = 240
+	fixture.session.sim.elapsed = 1.0
+	fixture.service._flush_requested = true
+	fixture.service._process(0.0)
+	_scheduler_tick(fixture, 1439)
+	check("a new-generation pending write does not checkpoint early", not fixture.service._flush_requested)
+	_scheduler_tick(fixture, 1440)
+	check("a pending new-generation write uses its own clock after restart", fixture.service._flush_requested)
+	fixture.writer.result = {ok = true, generation = 1}
+	fixture.service._process(0.0)
+	check("elapsed new-generation checkpoint follows the pending write", fixture.writer.snapshots.size() == 2 and fixture.writer.pending())
+	_scheduler_dispose(fixture)
+
+	fixture = _scheduler_fixture()
+	_scheduler_tick(fixture, 1200)
+	fixture.service._process(0.0)
+	_scheduler_tick(fixture, 1201)
+	fixture.writer.result = {ok = false, note = "injected write failure"}
+	fixture.service._process(0.0)
+	check("failed checkpoint retains its retry and prior durable cursor", fixture.service._flush_requested \
+		and fixture.service._dirty and fixture.service._durable_tick == 0 and fixture.service._last_flush_time == 0.0 \
+		and fixture.writer.snapshots.size() == 1)
+	fixture.service._process(0.0)
+	check("failed checkpoint respects its retry delay", fixture.writer.snapshots.size() == 1)
+	fixture.service._retry_after_msec = 0
+	fixture.service._process(0.0)
+	check("failed checkpoint retries after the delay", fixture.writer.snapshots.size() == 2 and fixture.writer.pending())
+	fixture.writer.result = {ok = true, generation = 1}
+	fixture.service._process(0.0)
+	check("successful retry records its actual new durable cursor", fixture.service._durable_tick == 1201 \
+		and fixture.service._last_flush_time == 1201.0 / 240.0 and not fixture.service._flush_requested)
+	_scheduler_dispose(fixture)
 
 
 func _remove_fixture(path: String) -> void:

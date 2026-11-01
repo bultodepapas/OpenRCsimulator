@@ -466,6 +466,64 @@ func _test_propagation_model() -> void:
 	_check("a source at the listener has no delay", int(here.index) == 0 and float(here.delay) == 0.0)
 
 
+## The bounded solver must match the original full search followed by the owner's prefix clamp.
+## Compare bytes so even signed zero and nonfinite results retain their original representation.
+func _same_emission(a: Dictionary, b: Dictionary) -> bool:
+	return int(a.index) == int(b.index) and bool(a.truncated) == bool(b.truncated) \
+		and PackedFloat64Array([float(a.alpha)]).to_byte_array() == PackedFloat64Array([float(b.alpha)]).to_byte_array() \
+		and PackedFloat64Array([float(a.delay)]).to_byte_array() == PackedFloat64Array([float(b.delay)]).to_byte_array()
+
+
+func _bounded_emission_matches(times: PackedFloat64Array, positions: PackedVector3Array,
+		now: float, start: int) -> bool:
+	var expected: Dictionary = Model.retarded_emission(times, positions, Vector3.ZERO, now, 343.0)
+	if not times.is_empty() and int(expected.index) < start:
+		expected = {index = start, alpha = 0.0, delay = now - times[start], truncated = true}
+	var actual: Dictionary = Model.retarded_emission(times, positions, Vector3.ZERO, now, 343.0, start)
+	if not times.is_empty() and int(actual.index) < start:
+		actual = {index = start, alpha = 0.0, delay = now - times[start], truncated = true}
+	return _same_emission(expected, actual)
+
+
+func _test_bounded_emission() -> void:
+	var times := PackedFloat64Array([0.0, 1.0, 2.0, 3.0, 4.0])
+	var boundaries_match := true
+	for distance: float in [0.0, 343.0, 686.0, 1029.0, 1372.0, 1715.0]:
+		var positions := PackedVector3Array()
+		for i in times.size(): positions.append(Vector3(distance, 0.0, 0.0))
+		for start in times.size():
+			boundaries_match = _bounded_emission_matches(times, positions, 4.0, start) and boundaries_match
+	_check("bounded propagation matches the full search at and around the expiry boundary", boundaries_match)
+	var unusual: Array = [
+		# Several crossings: the newest crossing must win even for a teleport.
+		[times, PackedVector3Array([Vector3.ZERO, Vector3(2000, 0, 0), Vector3.ZERO, Vector3(2000, 0, 0), Vector3(2000, 0, 0)])],
+		[PackedFloat64Array([0, 1, 1, 2, 2]), PackedVector3Array([Vector3(300, 0, 0), Vector3(900, 0, 0), Vector3(400, 0, 0), Vector3.ZERO, Vector3(700, 0, 0)])],
+		[PackedFloat64Array([1, 4, 2, 3, 5]), PackedVector3Array([Vector3(900, 0, 0), Vector3(300, 0, 0), Vector3(1500, 0, 0), Vector3.ZERO])],
+		[PackedFloat64Array([1, 4, 2, 3, 5]), PackedVector3Array()],
+		[PackedFloat64Array([0, NAN, INF, -INF, 4]), PackedVector3Array([Vector3(NAN, 0, 0), Vector3(INF, 0, 0), Vector3.ZERO, Vector3(10, 0, 0), Vector3(10, 0, 0)])],
+	]
+	var unusual_match := true
+	for fixture: Array in unusual:
+		for start in fixture[0].size():
+			for now: float in [4.0, NAN, INF, -INF]:
+				unusual_match = _bounded_emission_matches(fixture[0], fixture[1], now, start) and unusual_match
+	_check("bounded propagation retains full-search behavior for irregular and nonfinite histories", unusual_match)
+	_check("empty histories remain empty with a bound", _bounded_emission_matches(PackedFloat64Array(), PackedVector3Array(), 1.0, 0))
+
+
+func _test_delay_short_position_guard() -> void:
+	var rig: Variant = SoundscapeScript.new()
+	rig._history_times = PackedFloat64Array([0.0, 1.0, 2.0])
+	rig._history_positions = PackedVector3Array()
+	for rpm: float in [1000.0, 2000.0, 3000.0]:
+		rig._history.append({rpm = rpm})
+	rig._history_start = 2
+	var heard: Dictionary = rig.heard_snapshot({time = 2.1, source = Vector3(1000, 0, 0), listener = Vector3.ZERO, rpm = 9000.0})
+	_check("a short position history still clamps the heard sample to the logical start",
+		float(heard.rpm) == 3000.0 and rig.last_delay_s == 2.1 - 2.0)
+	rig.free()
+
+
 func _test_propagation_runtime(field: Dictionary) -> void:
 	var rig: Variant = SoundscapeScript.new()
 	root.add_child(rig)
@@ -648,6 +706,8 @@ func _test_absorption_runtime(field: Dictionary) -> void:
 
 func _test_model_contracts() -> void:
 	_test_propagation_model()
+	_test_bounded_emission()
+	_test_delay_short_position_guard()
 	_test_absorption_model()
 	var source: Vector3 = Vector3(100.0, 0.0, 0.0)
 	var listener: Vector3 = Vector3.ZERO

@@ -145,8 +145,14 @@ func _observe(sample: Dictionary) -> void:
 	if bucket != _query_bucket:
 		_query_cache.clear()
 		_query_bucket = bucket
-	if is_instance_valid(_session) and float(_session.sim.time()) - _last_flush_time >= 5.0:
-		_flush_requested = true
+	if is_instance_valid(_session):
+		var observed_time: float = float(_session.sim.time())
+		# An in-flight snapshot already covers its scheduled time. A later event
+		# or pause keeps its independent request, and a long write can still
+		# accumulate another five simulated seconds before it completes.
+		var checkpoint_time: float = _write_time if _writer != null and _writer.pending() else _last_flush_time
+		if observed_time - checkpoint_time >= 5.0:
+			_flush_requested = true
 
 
 func _record(kind: String) -> Dictionary:

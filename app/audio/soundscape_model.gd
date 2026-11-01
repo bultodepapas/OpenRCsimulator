@@ -12,17 +12,20 @@ static func doppler(source: Vector3, listener: Vector3, source_velocity: Vector3
 ## AUD-11: emission point heard now. Solves now - t_e = |x(t_e) - listener| / c over a time-ordered pose history,
 ## linear between samples. Returns {index, alpha, delay}: emission lies alpha of the way from sample index to
 ## index + 1. A history too short for the delay returns its oldest sample with truncated = true.
+## min_index excludes an expired prefix without copying the packed arrays. The caller must
+## retain at least one sample; an out-of-range index is clamped to the available range.
 static func retarded_emission(times: PackedFloat64Array, positions: PackedVector3Array, listener: Vector3,
-		now: float, sound_speed: float = 343.0) -> Dictionary:
+		now: float, sound_speed: float = 343.0, min_index: int = 0) -> Dictionary:
 	var count: int = mini(times.size(), positions.size())
 	if count == 0:
 		return {index = -1, alpha = 0.0, delay = 0.0, truncated = true}
+	var first: int = clampi(min_index, 0, count - 1)
 	var c: float = clampf(sound_speed, 300.0, 380.0)
 	# g = elapsed - travel time; negative at the newest sample, increasing into the past for any subsonic source.
 	var newer_g: float = (now - times[count - 1]) - positions[count - 1].distance_to(listener) / c
 	if newer_g >= 0.0:
 		return {index = count - 1, alpha = 0.0, delay = now - times[count - 1], truncated = false}
-	for k: int in range(count - 2, -1, -1):
+	for k: int in range(count - 2, first - 1, -1):
 		var g: float = (now - times[k]) - positions[k].distance_to(listener) / c
 		if g >= 0.0:
 			var low: float = 0.0 # g >= 0 at alpha 0 (older sample), g < 0 at alpha 1
@@ -36,7 +39,7 @@ static func retarded_emission(times: PackedFloat64Array, positions: PackedVector
 					high = mid
 			var alpha: float = 0.5 * (low + high)
 			return {index = k, alpha = alpha, delay = now - lerpf(times[k], times[k + 1], alpha), truncated = false}
-	return {index = 0, alpha = 0.0, delay = now - times[0], truncated = true}
+	return {index = first, alpha = 0.0, delay = now - times[first], truncated = true}
 
 
 ## AUD-11b: ISO 9613-1:1993 pure-tone atmospheric absorption. Presentation use only: one low-pass per aircraft

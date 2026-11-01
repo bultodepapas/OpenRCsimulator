@@ -46,6 +46,14 @@ var _enabled := false
 var _local_gain := 1.0
 var _clock_s := 0.0
 var _wind := Vector3.ZERO
+## Scene-owned effect nodes are written through configure(), set_enabled() and update_visual().
+## Cache the inputs actually consumed by each group; the live Environment remains externally mutable.
+var _visual_cache_valid := false
+var _presented_clock := 0.0
+var _presented_wind := Vector3.ZERO
+var _presented_exposure := 0.0
+var _presented_dusk := 0.0
+var _presented_gain := 0.0
 
 
 ## Creates the persistent log base and effect nodes once. The effects remain deterministic because all animation
@@ -150,6 +158,7 @@ func configure(enabled: bool, environment: Environment, local_gain: float) -> vo
 
 ## Idempotent; enabling/disabling never creates or removes scene nodes.
 func set_enabled(enabled: bool) -> void:
+	_visual_cache_valid = false
 	var was_enabled := _enabled
 	_enabled = enabled
 	if enabled and not was_enabled:
@@ -178,10 +187,25 @@ func update_visual(clock_s: float, wind: Vector3 = Vector3.ZERO) -> void:
 	_wind = wind if _vector_is_finite(wind) else Vector3.ZERO
 	if not _enabled:
 		return
-	_update_exposure_materials()
-	_update_flames()
-	_update_embers()
-	_update_light()
+	var exposure := _current_exposure()
+	var dusk := _dusk_factor()
+	var motion_changed := not _visual_cache_valid or _clock_s != _presented_clock or _wind != _presented_wind
+	var exposure_changed := not _visual_cache_valid or exposure != _presented_exposure
+	var light_changed := not _visual_cache_valid or _clock_s != _presented_clock or exposure_changed \
+		or dusk != _presented_dusk or _local_gain != _presented_gain
+	if exposure_changed:
+		_update_exposure_materials()
+	if motion_changed:
+		_update_flames()
+		_update_embers()
+	if light_changed:
+		_update_light()
+	_presented_clock = _clock_s
+	_presented_wind = _wind
+	_presented_exposure = exposure
+	_presented_dusk = dusk
+	_presented_gain = _local_gain
+	_visual_cache_valid = true
 
 
 func particle_count() -> int:

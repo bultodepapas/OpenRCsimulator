@@ -114,3 +114,15 @@ The [2026-10-22 VQ-07b diagnostic](../VQ-07/propeller-repeat-2026-10-22/README.m
 The [2026-10-23 reattachment repair](../VQ-07/propeller-reattach-2026-10-23/README.md) invalidates cached presentation after detachment restores original blades. The expanded suite passes 146 checks; High is pixel-identical across reattachment at 1080p. Standard retains the separate strict repeat failure.
 
 The [source-first destruction follow-up](../VQ-07/propeller-reattach-2026-10-23/README.md#source-first-destruction) guards borrowed mesh references so cleanup hides owned copies even after the aircraft is freed. All 154 checks pass; native retirement matches an empty reference in both renderers at 1080p.
+
+## Long-session propeller phase — 2026-11-01
+
+Live fixed-wing flight now wraps the presentation phase each frame before assigning the propeller's `Node3D` rotation. The scripted benchmark and paused phase keep their existing behavior; the simulation state is unchanged.
+
+On Windows with the official Godot 4.8-beta1 console build and Dummy audio, the expanded `test_ui_pause.gd` ran against baseline `cb5257c3` and reported eight expected phase failures. A seeded 4,194,304.125 rad phase reached the node as 4,194,304.0 rad instead of the float64 phase modulo one turn (1.472304110 rad). With the repair, all UI pause checks passed, including real-node comparisons for both spin signs, forward and reverse wrap, and pause. The separate propeller-blur test passed 154 checks. These headless checks establish the precision and pause contracts, not rendered frame-time or GPU qualification.
+
+A separate native Compatibility smoke run on the RTX 3090 confirmed a 1920×1080 viewport, active flight at realtime factor 1.0, no engine errors, and clean shutdown with zero leaked objects. The flight image was inspected and retained only under ignored `tmp/debug-bridge/20261101-081329-47870/`. The short run still recorded a catch-up hitch; it is not sustained pacing qualification or a before/after FPS comparison.
+
+Combined verification with the AUD-11 retained-window repair completed 52 debug-smoke steps with one failed short Fly/Home object-count trend (+16 per cycle); node, resource and orphan counts stayed flat. A separate seven-cycle run with a one-second Home dwell after each return reported no growing counters or errors, ended 16 objects below its baseline, and shut down with zero leaked objects. This does not attribute the transient objects or establish indefinite leak freedom. Local logs are under `tmp/bughunt-20261101-verification/`.
+
+The complete `app/test.sh` attempt stopped during source/tool checks with a Python `MemoryError` and Windows process-allocation failures; it did not complete the full suite. The affected companion rebind test passed all nine checks when retried alone. `app/capture.sh` could not start in native Git Bash because `flock` was unavailable; the separate native 1080p inspection above is not a complete capture-suite pass.

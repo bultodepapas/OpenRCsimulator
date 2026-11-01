@@ -86,6 +86,12 @@ Listen: [jet flyby, AUD-11a](jet-flyby-aud11a.wav), [AUD-11b](jet-flyby-aud11b.w
 
 Source identities (SHA-256 prefixes): `flight_audio.gd` 5f0f2fb17350a42d, `soundscape.gd` 49e042a0b038c5e3, `soundscape_model.gd` cb2fe28e64c86abc (bench and parity); the `--audio-absorption=off` switch was added afterwards and changes no default path.
 
+## 2026-11-01: retained propagation window
+
+The search now stops at the first logically retained sample instead of scanning the expired prefix awaiting compaction. It still scans newest to oldest and keeps the existing caller guard for mismatched arrays. The checked soundscape test passed 178 checks and recorded-audio passed 47 checks; a separate 2,131-case comparison against the previous solver included expiry boundaries, multiple crossings, irregular and nonfinite times, and mismatched histories.
+
+On Windows with Godot 4.8-beta1 headless/Dummy and a Ryzen 9 5900X, nine alternating batches of 300 calls measured a median **56.17 → 39.34 µs/call** for a 144 Hz history with 790 expired samples and a 2,500 m source. At 1,000 m the same history measured **26.28 → 26.36 µs/call**. The model SHA-256 prefixes were `b90e7ea7b1c0` and `4a20a75b18a5`; the latter is the bounded version. The more distant case is beyond the normal 1,500 m aircraft-audio range. These are isolated script timings, not rendered-frame, mixer or audible-performance results.
+
 ## Open
 
 - Owner listening of both A/B pairs (AUD-13).

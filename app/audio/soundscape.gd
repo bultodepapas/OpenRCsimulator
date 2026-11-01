@@ -510,9 +510,8 @@ func heard_snapshot(snapshot: Dictionary) -> Dictionary:
 		_history = _history.slice(_history_start)
 		_history_start = 0
 	var emission: Dictionary = Model.retarded_emission(_history_times, _history_positions,
-		snapshot.get("listener", Vector3.ZERO), now, float(snapshot.get("sound_speed", 343.0)))
-	# The solver scans newest to oldest. If its first crossing lies before the logical window,
-	# the old sliced history would instead return its oldest sample as truncated.
+		snapshot.get("listener", Vector3.ZERO), now, float(snapshot.get("sound_speed", 343.0)), _history_start)
+	# Keep the original guard for malformed or mismatched history arrays.
 	if int(emission.index) < _history_start:
 		emission = {index = _history_start, alpha = 0.0, delay = now - _history_times[_history_start], truncated = true}
 	last_delay_s = float(emission.delay)
