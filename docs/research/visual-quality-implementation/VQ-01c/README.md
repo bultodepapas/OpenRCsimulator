@@ -156,6 +156,13 @@ stability. The smoke ran headlessly alongside CLI integration checks, reported
 116 hitches, and is not frame-pacing evidence. Its local session is
 `tmp/debug-bridge/20261031-230726-47870/`.
 
+After syncing remote main `ab26357b7`, merge `53ce9ceaa` passed 174 soundscape,
+47 recorded-audio and 152 camera-view checks, plus the expanded seven-cycle debug
+smoke (52 scripted steps, 144 seeded actions, zero growing counters/errors and
+zero exit leaks). Local integration logs: `tmp/bughunt-sync-20261101/`; session
+`tmp/debug-bridge/20261031-233312-47870/`. The earlier full-suite evidence remains
+bound to its recorded source identity.
+
 ## Artifact identity
 
 [Evidence manifest](evidence-manifest.json) records source commit, runtime diff, both
