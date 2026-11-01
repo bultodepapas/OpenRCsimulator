@@ -49,7 +49,10 @@ class PhaseRouting(unittest.TestCase):
         # replace only the expensive integration blocks in this disposable copy.
         start = script.index('echo "== CI and local generated source checks"')
         end = script.index("fi # offline generators and references", start)
-        script = script[:start] + 'echo SOURCE_PHASE\n[[ "${FAIL_SOURCE:-}" != 1 ]]\n' + script[end:]
+        # Retain the actual reference-unit calls to exercise their routing too.
+        references = "\n".join(line for line in script[start:end].splitlines()
+                               if line.startswith("run_reference_unit "))
+        script = script[:start] + 'echo SOURCE_PHASE\n[[ "${FAIL_SOURCE:-}" != 1 ]]\n' + references + "\n" + script[end:]
         start = script.index('echo "== H7:')
         script = script[:start] + 'echo RUNTIME_PHASE\n[[ "${FAIL_RUNTIME:-}" != 1 ]]\n'
         (self.app / "test.sh").write_text(script, encoding="utf-8", newline="\n")
@@ -131,6 +134,45 @@ class PhaseRouting(unittest.TestCase):
                 result = self.run_part(part, OPENRC_PARSE_WITH_UNITS=value)
                 self.assertEqual(result.returncode, 2, result.stdout)
                 self.assertIn("OPENRC_PARSE_WITH_UNITS=1 requires", result.stdout)
+
+    def test_reference_units_run_once_with_oracles_and_standalone_keeps_coverage(self):
+        references = {
+            "test_heli_inflow.gd": "oracle.json",
+            "test_heli_dynamic_inflow.gd": "dynamic_oracle.json",
+            "test_heli_main_rotor.gd": "main_rotor_oracle.json",
+            "test_heli_tail_rotor.gd": "tail_rotor_oracle.json",
+            "test_heli_airframe.gd": "airframe_oracle.json",
+            "test_heli_aerodynamic_stage.gd": None,
+        }
+        for name in references:
+            (self.app / "tests" / name).touch()
+        for part, output, extra in (("all", "reference-all", {}),
+                                    ("units", "reference-units", {}),
+                                    ("integration-source", "reference-source", {}),
+                                    ("integration", "reference-integration", {}),
+                                    ("integration", "reference-ci", {"OPENRC_PARSE_WITH_UNITS": "1"})):
+            with self.subTest(part=output):
+                result = self.run_part(part, output, **extra)
+                self.assertEqual(result.returncode, 0, result.stdout)
+                invocations = []
+                for path in (self.app.parent / "outputs" / output).glob("*/report.json"):
+                    command = json.loads(path.read_text())["command"]
+                    if "--script" not in command or "--check-only" in command:
+                        continue
+                    script_index = command.index("--script") + 1
+                    name = command[script_index].rsplit("/", 1)[-1]
+                    if name in references:
+                        invocations.append(name)
+                        oracle = references[name]
+                        expected = (["--", f"--oracle={self.app}/../research/helicopter/reference/{oracle}"]
+                                    if oracle else [])
+                        self.assertEqual(command[script_index + 1:], expected)
+                self.assertCountEqual(invocations, [] if output == "reference-ci" else references)
+        # Moving a reference must not let failure produce a successful unit receipt.
+        for part in ("all", "units", "integration-source"):
+            result = self.run_part(part, f"reference-failed-{part}", PROBE_FAIL="test_heli_main_rotor.gd")
+            self.assertNotEqual(result.returncode, 0, result.stdout)
+            self.assertFalse(list((self.app.parent / "outputs" / f"reference-failed-{part}").glob("roster-units-*.json")))
 
     def test_phase_failures_and_no_false_success_receipts(self):
         for part, failure in (("integration-source", {"FAIL_SOURCE": "1"}),
