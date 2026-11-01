@@ -27,6 +27,7 @@ const AIRCRAFT_TRIM_DB: float = 12.0
 ## undelayed. The explicit glow-cycle voice keeps its accepted phase-anchored telemetry; only its position is delayed.
 const HISTORY_SECONDS: float = 5.5 # beyond max_distance 1500 m at the 300 m/s minimum sound speed
 const HISTORY_GAP_S: float = 0.5 # a larger clock jump (restore, load stall) is a discontinuity, not motion
+const HISTORY_COMPACT_MIN: int = 128 # amortize copies while keeping the inactive prefix bounded
 const DELAYED_CONTINUOUS: Array[String] = ["source", "source_velocity", "exhaust_direction", "rpm", "load",
 	"throttle", "airspeed", "jet_velocity", "jet_velocity_max"]
 const DELAYED_DISCRETE: Array[String] = ["running", "blades", "max_rpm"]
@@ -54,6 +55,7 @@ var last_delay_s: float = 0.0
 var _history_times: PackedFloat64Array = PackedFloat64Array()
 var _history_positions: PackedVector3Array = PackedVector3Array()
 var _history: Array[Dictionary] = []
+var _history_start: int = 0 # first logically retained sample; earlier backing entries await compaction
 var voices: Array[AudioStreamPlayer3D] = []
 var trees: Array[Vector3] = []
 var canopies: Array[AABB] = []
@@ -500,15 +502,19 @@ func heard_snapshot(snapshot: Dictionary) -> Dictionary:
 		_history_times.append(now)
 		_history_positions.append(position)
 		_history.append(sample)
-	var keep_from: int = 0
-	while keep_from + 1 < _history_times.size() and _history_times[keep_from + 1] < now - HISTORY_SECONDS:
-		keep_from += 1
-	if keep_from > 0:
-		_history_times = _history_times.slice(keep_from)
-		_history_positions = _history_positions.slice(keep_from)
-		_history = _history.slice(keep_from)
+	while _history_start + 1 < _history_times.size() and _history_times[_history_start + 1] < now - HISTORY_SECONDS:
+		_history_start += 1
+	if _history_start >= HISTORY_COMPACT_MIN and _history_start * 2 >= _history_times.size():
+		_history_times = _history_times.slice(_history_start)
+		_history_positions = _history_positions.slice(_history_start)
+		_history = _history.slice(_history_start)
+		_history_start = 0
 	var emission: Dictionary = Model.retarded_emission(_history_times, _history_positions,
 		snapshot.get("listener", Vector3.ZERO), now, float(snapshot.get("sound_speed", 343.0)))
+	# The solver scans newest to oldest. If its first crossing lies before the logical window,
+	# the old sliced history would instead return its oldest sample as truncated.
+	if int(emission.index) < _history_start:
+		emission = {index = _history_start, alpha = 0.0, delay = now - _history_times[_history_start], truncated = true}
 	last_delay_s = float(emission.delay)
 	var alpha: float = float(emission.alpha)
 	var older: Dictionary = _history[int(emission.index)]
@@ -555,6 +561,7 @@ func _clear_history() -> void:
 	_history_times = PackedFloat64Array()
 	_history_positions = PackedVector3Array()
 	_history.clear()
+	_history_start = 0
 	last_delay_s = 0.0
 
 

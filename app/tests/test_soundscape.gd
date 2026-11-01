@@ -32,6 +32,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_test_model_contracts()
+	_test_delay_history_equivalence()
 	var field: Dictionary = _small_decoded_field()
 	if field.is_empty():
 		print("%d checks, %d failed" % [_checks, _failures])
@@ -301,6 +302,137 @@ func _run() -> void:
 	quit(1 if _failures > 0 else 0)
 
 
+## The original history algorithm is an oracle for the batched-expiry implementation.
+class LegacyDelayHistory:
+	var times := PackedFloat64Array()
+	var positions := PackedVector3Array()
+	var samples: Array[Dictionary] = []
+	var last_delay := 0.0
+
+	func heard(snapshot: Dictionary) -> Dictionary:
+		if not snapshot.has("time"):
+			last_delay = 0.0
+			return snapshot
+		var now := float(snapshot.time)
+		var count := times.size()
+		if count > 0 and (now < times[count - 1] or now - times[count - 1] > SoundscapeScript.HISTORY_GAP_S):
+			times.clear()
+			positions.clear()
+			samples.clear()
+			count = 0
+		var sample := {}
+		for key: String in SoundscapeScript.DELAYED_CONTINUOUS + SoundscapeScript.DELAYED_DISCRETE:
+			if snapshot.has(key):
+				sample[key] = snapshot[key]
+		var position: Vector3 = snapshot.get("source", Vector3.ZERO)
+		if count > 0 and now == times[count - 1]:
+			samples[count - 1] = sample
+			positions[count - 1] = position
+		else:
+			times.append(now)
+			positions.append(position)
+			samples.append(sample)
+		var keep_from := 0
+		while keep_from + 1 < times.size() and times[keep_from + 1] < now - SoundscapeScript.HISTORY_SECONDS:
+			keep_from += 1
+		if keep_from > 0:
+			times = times.slice(keep_from)
+			positions = positions.slice(keep_from)
+			samples = samples.slice(keep_from)
+		var emission := Model.retarded_emission(times, positions, snapshot.get("listener", Vector3.ZERO), now,
+			float(snapshot.get("sound_speed", 343.0)))
+		last_delay = float(emission.delay)
+		var alpha := float(emission.alpha)
+		var older: Dictionary = samples[int(emission.index)]
+		var newer: Dictionary = samples[mini(int(emission.index) + 1, samples.size() - 1)]
+		var result := snapshot.duplicate()
+		for key: String in SoundscapeScript.DELAYED_CONTINUOUS:
+			if older.has(key) and newer.has(key):
+				var from: Variant = older[key]
+				result[key] = (from as Vector3).lerp(newer[key], alpha) if from is Vector3 else lerpf(float(from), float(newer[key]), alpha)
+			elif older.has(key):
+				result[key] = older[key]
+		var nearest: Dictionary = newer if alpha >= 0.5 else older
+		for key: String in SoundscapeScript.DELAYED_DISCRETE:
+			if nearest.has(key):
+				result[key] = nearest[key]
+		return result
+
+
+func _delay_sample(time_s: float, i: int, distance: float) -> Dictionary:
+	return {
+		time = time_s, source = Vector3(distance + sin(float(i) * 0.02) * 8.0, 20.0, -10.0),
+		source_velocity = Vector3(2.0 * sin(float(i) * 0.01), 0.5, 0.0),
+		exhaust_direction = Vector3(-1.0, 0.0, 0.0), listener = Vector3(4.0, 1.0, 5.0),
+		rpm = 5000.0 + float(i % 220), load = float(i % 11) / 10.0,
+		throttle = float(i % 17) / 16.0, airspeed = 8.0 + float(i % 9),
+		jet_velocity = float(i % 30), jet_velocity_max = 300.0,
+		running = i % 7 != 0, blades = 2 + i % 2, max_rpm = 16000.0,
+		sound_speed = 330.0 + float(i % 21), wind_speed = float(i % 3),
+	}
+
+
+func _delay_history_start(rig: Variant) -> int:
+	var start: Variant = rig.get("_history_start")
+	return start if start is int else 0
+
+
+func _compare_delay_sample(rig: Variant, old: LegacyDelayHistory, snapshot: Dictionary) -> bool:
+	var actual: Dictionary = rig.heard_snapshot(snapshot)
+	var expected := old.heard(snapshot)
+	var start := _delay_history_start(rig)
+	return actual == expected and rig.last_delay_s == old.last_delay \
+		and rig._history_times.slice(start) == old.times \
+		and rig._history_positions.slice(start) == old.positions \
+		and rig._history.slice(start) == old.samples
+
+
+func _test_delay_history_equivalence() -> void:
+	var rig: Variant = SoundscapeScript.new()
+	var old := LegacyDelayHistory.new()
+	var matches := true
+	for i: int in 24: # At t=5.75, the next-oldest sample is exactly on the 5.5 s boundary.
+		matches = _compare_delay_sample(rig, old, _delay_sample(float(i) * 0.25, i, 3500.0)) and matches
+	var start := _delay_history_start(rig)
+	_check("expiry retains the predecessor when a sample is exactly on the boundary",
+		matches and rig._history_times[start] == 0.0 and rig._history_times[start + 1] == 0.25)
+	matches = _compare_delay_sample(rig, old, _delay_sample(6.0, 24, 3500.0))
+	matches = _compare_delay_sample(rig, old, _delay_sample(6.0, 25, 3500.0)) and matches
+	_check("truncated delay and same-tick replacement match the original", matches
+		and rig._history_times.size() - _delay_history_start(rig) == old.times.size())
+	matches = _compare_delay_sample(rig, old, _delay_sample(2.0, 26, 20.0))
+	_check("rewind discards expired and retained history", matches and rig._history_times.size() == 1
+		and _delay_history_start(rig) == 0)
+	matches = _compare_delay_sample(rig, old, _delay_sample(2.5, 27, 20.0))
+	var kept_exact_gap := old.times.size() == 2
+	matches = _compare_delay_sample(rig, old, _delay_sample(3.000001, 28, 20.0)) and matches
+	_check("the exact gap is retained and a longer gap resets", matches and kept_exact_gap and old.times.size() == 1)
+
+	var clock := 3.000001
+	var previous_start := _delay_history_start(rig)
+	var compactions := 0
+	var saw_expired_prefix := false
+	var storage_bounded := true
+	var long_run_matches := true
+	for i: int in 1600:
+		if i % 17 != 0: # Include repeated accepted ticks and uneven frame intervals.
+			clock += [1.0 / 120.0, 1.0 / 60.0, 1.0 / 40.0][i % 3]
+		var distance: float = [20.0, 500.0, 3500.0, 1200.0][int(i / 100) % 4]
+		long_run_matches = _compare_delay_sample(rig, old, _delay_sample(clock, i, distance)) and long_run_matches
+		start = _delay_history_start(rig)
+		var live: int = rig._history.size() - start
+		if start < previous_start:
+			compactions += 1
+		previous_start = start
+		saw_expired_prefix = saw_expired_prefix or start > 0
+		storage_bounded = storage_bounded and rig._history.size() <= 2 * live + 128 \
+			and rig._history_times.size() == rig._history.size() and rig._history_positions.size() == rig._history.size()
+	_check("variable-cadence near, far and truncated snapshots equal the original through repeated expirations", long_run_matches)
+	_check("expired history is compacted in batches and backing storage stays bounded", saw_expired_prefix
+		and compactions > 0 and storage_bounded, "compactions=%d" % compactions)
+	rig.free()
+
+
 ## AUD-11: a linear pass has an exact retarded time; compare with the closed-form root.
 func _test_propagation_model() -> void:
 	var c: float = 343.0
@@ -396,7 +528,8 @@ func _test_propagation_runtime(field: Dictionary) -> void:
 		long_run.time = 1.0 + float(i) / 60.0
 		rig.heard_snapshot(long_run)
 	_check("the pose history stays bounded by its time window",
-		rig._history.size() <= ceili(SoundscapeScript.HISTORY_SECONDS * 60.0) + 2, "samples=%d" % rig._history.size())
+		rig._history.size() - _delay_history_start(rig) <= ceili(SoundscapeScript.HISTORY_SECONDS * 60.0) + 2,
+		"samples=%d" % (rig._history.size() - _delay_history_start(rig)))
 	var detached: Dictionary = _flight_snapshot()
 	_check("a snapshot without the accepted clock plays undelayed", rig.heard_snapshot(detached) == detached)
 	rig.free()

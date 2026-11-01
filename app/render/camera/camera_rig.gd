@@ -248,16 +248,19 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 	# SUN-04: the pilot's eyes see the sun as an eye (veil, afterimage); the other views are camera lenses (flares).
 	camera.set_meta(&"openrc_optics", "eye" if view == "pilot" or not is_nan(look.x) else "lens")
 	_orbit_entry_eye = Vector3.INF
-	camera.near = near_plane()
+	var near_value := PilotCamera.projection_value(near_plane())
+	if camera.near != near_value:
+		camera.near = near_value
 	if not is_nan(look.x):
 		PilotCamera.look(camera, look.x, look.y, look_height)
 		return
 	match view:
 		"pilot":
-			PilotCamera.aim(camera, target, airplane, false, _span if auto_zoom and zoom_law == "constant" else 0.0, base_fov)
+			var law := PilotCamera.aim(camera, target, airplane, false,
+				_span if auto_zoom and zoom_law == "constant" else 0.0, base_fov, false)
 			if auto_zoom and zoom_law != "constant":
-				camera.fov = PilotCamera.law_fov(zoom_law, _span, camera.position.distance_to(target), base_fov)
-			_apply_pilot_zoom(dt)
+				law = PilotCamera.projection_value(PilotCamera.law_fov(zoom_law, _span, camera.position.distance_to(target), base_fov))
+			PilotCamera.set_fov_if_changed(camera, _pilot_zoom_fov(law, dt))
 			_bias_amount = CameraMath.damp(_bias_amount, 1.0 if horizon_bias else 0.0, dt, HORIZON_EASE_HALF_LIFE)
 			if _bias_amount > 1e-4:
 				_tilt_to_horizon(target)
@@ -319,15 +322,15 @@ func focus(point: Vector3, ground_y: Callable, obstacles := Callable()) -> void:
 		"chase", "flyby":
 			camera.basis = CameraMath.look_basis(camera.position, point)
 			var away := maxf(camera.position.distance_to(point), 0.1)
-			camera.fov = clampf(rad_to_deg(2.0 * atan(_span / (2.0 * away * WRECK_FRAME_SHARE))), WRECK_CHASE_MIN_FOV,
-				ChaseView.FOV_DEG)
+			PilotCamera.set_fov_if_changed(camera, clampf(rad_to_deg(2.0 * atan(_span / (2.0 * away * WRECK_FRAME_SHARE))),
+				WRECK_CHASE_MIN_FOV, ChaseView.FOV_DEG))
 		"closeup":
 			var eye := point + WRECK_CLOSEUP_OFFSET
 			if ground_y.is_valid():
 				var y: float = ground_y.call(eye.x, eye.z)
 				eye.y = maxf(eye.y, (y if is_finite(y) else 0.0) + WRECK_CLEARANCE_M)
 			camera.transform = Transform3D(CameraMath.look_basis(eye, point), eye)
-			camera.fov = WRECK_CLOSEUP_FOV
+			PilotCamera.set_fov_if_changed(camera, WRECK_CLOSEUP_FOV)
 
 
 ## The current view's near plane (m); the landscape look views stand at the pilot's eye.
@@ -346,13 +349,12 @@ func evidence() -> Dictionary:
 
 func _apply(placed: Dictionary) -> void:
 	camera.transform = Transform3D(placed.basis, placed.position)
-	camera.fov = placed.fov
+	PilotCamera.set_fov_if_changed(camera, placed.fov)
 
 
-## The law's FOV (set by PilotCamera.aim) times the manual factor, with any recent jump blended out in ln(tan)
+## The law's FOV times the manual factor, with any recent jump blended out in ln(tan)
 ## space. With no factor and no pending jump the law's FOV is left exactly as PilotCamera computed it.
-func _apply_pilot_zoom(dt: float) -> void:
-	var law := camera.fov
+func _pilot_zoom_fov(law: float, dt: float) -> float:
 	var wanted := law if pilot_zoom == 1.0 else CameraMath.zoomed_fov(law, pilot_zoom)
 	if not is_nan(_absorb_from):
 		_fov_offset = CameraMath.log_tan(_absorb_from) - CameraMath.log_tan(wanted)
@@ -363,8 +365,7 @@ func _apply_pilot_zoom(dt: float) -> void:
 			_fov_offset = 0.0
 	if _fov_offset != 0.0:
 		wanted = CameraMath.from_log_tan(CameraMath.log_tan(wanted) + _fov_offset)
-	if wanted != law:
-		camera.fov = clampf(wanted, PILOT_FOV_MIN, PILOT_FOV_MAX)
+	return clampf(wanted, PILOT_FOV_MIN, PILOT_FOV_MAX) if wanted != law else law
 
 
 ## CAM-06b: tilt the pilot's look down toward the horizon as far as keeps the aircraft within HORIZON_KEEP of the

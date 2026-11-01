@@ -73,7 +73,7 @@ static func law_fov(law: String, span: float, distance: float, base_fov := float
 ## azimuth (deg from north, clockwise) and an elevation (deg above the horizon; −90 = straight down), base FOV.
 ## Independent of the airplane.
 static func look(camera: Camera3D, azimuth_deg: float, elevation_deg: float, height: float = NAN) -> void:
-	camera.fov = Spec.CAMERA.fov_deg
+	set_fov_if_changed(camera, Spec.CAMERA.fov_deg)
 	var station: Array = camera.get_meta("pilot_station", [0.0, 0.0, 0.0])
 	var eye_height: float = float(camera.get_meta("pilot_eye_height", Spec.CAMERA.eye_height)) if is_nan(height) else height
 	camera.position = Frames.ned_to_render([station[0], station[1], float(station[2]) - eye_height])
@@ -87,10 +87,11 @@ static func look(camera: Camera3D, azimuth_deg: float, elevation_deg: float, hei
 
 ## target: airplane position (render axes); airplane: its root transform (for the inspect offset).
 ## auto_zoom_span > 0: the pilot view narrows its FOV for an airplane of that span. base_fov: the pilot view's widest
-## vertical FOV (CAM-17 player setting; the close-up keeps the default).
+## vertical FOV (CAM-17 player setting; the close-up keeps the default). The rig can defer the FOV write until its
+## manual zoom is applied; other callers get the same final projection immediately.
 static func aim(camera: Camera3D, target: Vector3, airplane: Transform3D, inspect: bool, auto_zoom_span := 0.0,
-		base_fov := float(Spec.CAMERA.fov_deg)) -> void:
-	camera.fov = Spec.CAMERA.fov_deg if inspect else base_fov
+		base_fov := float(Spec.CAMERA.fov_deg), apply_fov := true) -> float:
+	var fov: float = Spec.CAMERA.fov_deg if inspect else base_fov
 	if inspect:
 		# Inspection view: camera fixed to the airplane (left, above, behind), to check geometry.
 		camera.position = airplane * Spec.INSPECT_OFFSET
@@ -99,12 +100,16 @@ static func aim(camera: Camera3D, target: Vector3, airplane: Transform3D, inspec
 		var eye_height: float = float(camera.get_meta("pilot_eye_height", Spec.CAMERA.eye_height))
 		camera.position = Frames.ned_to_render([station[0], station[1], float(station[2]) - eye_height])
 		if auto_zoom_span > 0.0:
-			camera.fov = auto_fov(auto_zoom_span, camera.position.distance_to(target), float(Spec.AUTO_ZOOM.target_px),
+			fov = auto_fov(auto_zoom_span, camera.position.distance_to(target), float(Spec.AUTO_ZOOM.target_px),
 				float(Spec.AUTO_ZOOM.reference_height_px), base_fov)
+	# Camera3D stores projection values as real_t. Match that conversion before the rig applies its zoom math.
+	fov = projection_value(fov)
+	if apply_fov:
+		set_fov_if_changed(camera, fov)
 	var direction := target - camera.global_position
 	# An eye-coincident target has no viewing direction. Preserve the last pose.
 	if direction.length_squared() < 1e-12:
-		return
+		return fov
 	direction = direction.normalized()
 	if direction.cross(Vector3.UP).is_zero_approx():
 		# World-up cannot define roll at the pole. Preserve screen-right there;
@@ -117,3 +122,16 @@ static func aim(camera: Camera3D, target: Vector3, airplane: Transform3D, inspec
 		camera.look_at(target, up)
 	else:
 		camera.look_at(target, Vector3.UP)
+	return fov
+
+
+## Vector2 components use the same real_t precision as Camera3D projection properties. Compare at that precision,
+## otherwise a float64 calculation can differ from its stored value every frame even when the projection is unchanged.
+static func projection_value(value: float) -> float:
+	return Vector2(value, 0.0).x
+
+
+static func set_fov_if_changed(camera: Camera3D, value: float) -> void:
+	var next := projection_value(value)
+	if camera.fov != next:
+		camera.fov = next

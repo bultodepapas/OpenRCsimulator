@@ -15,6 +15,22 @@ Limit: the explicit glow-cycle voice (`glow_2t`/`glow_4t` profiles) keeps its ac
 
 ## Evidence
 
+**2026-10-31 allocation repair (AUD-11a).** Relative to `cfad9b9fc`, delayed audio now
+advances a logical history start and compacts the three backing arrays in batches.
+The 5.5-second window, retained predecessor, interpolation, repeated-tick replacement
+and rewind/gap rules remain unchanged. Backing storage is bounded by twice the live
+sample count plus 128 entries. The unchanged emission solver scans from newest to
+oldest; a result before the live window is clamped to the same truncated sample as
+the former sliced history.
+
+Native Windows Godot 4.8-beta1 with Dummy audio passes **174/174 soundscape** and
+**47/47 recorded-audio** checks. The soundscape regression compares exact snapshots,
+delay and live history against the original algorithm across variable cadence,
+expiry boundaries, near/far paths, rewinds and clock gaps. Its 1,600-sample fixture
+reduces whole-history compactions from **1,054 to 3**, and copied entries per array
+from **349,395 to 994**; maximum backing storage is 663 samples. These are operation
+counts, not measured FPS, mixer latency or acoustic qualification.
+
 **Unit checks** (`test_soundscape.gd`, 136/136): a source 343 m away is heard 1.000 000 s late; a 60 m/s straight pass matches the closed-form root within 1 µs (presentation `Vector3` is single precision); short and empty histories; a level pass 40 m overhead drops pitch below 1 at 3.450 s against 3.333 + 40/343 = 3.450 s, and at 3.350 s with the delay off (visual pass 3.333 s); an rpm step 343 m away is heard after 1 s and not at 0.9 s; wind stays current; rewind restarts the history; the history stays bounded; snapshots without a clock are unchanged.
 
 Deliberate mutations on disposable copies, each detected: delay disabled (3 failures), 1 ms bisection bias, no rewind reset, listener-side wind delayed, no history trimming, runtime ignoring the heard snapshot (1 failure each).

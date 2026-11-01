@@ -72,6 +72,7 @@ func _run() -> void:
 	_pilot_singularities()
 	_pilot_fov_reference()
 	_pilot_zoom()
+	_projection_precision()
 	_zoom_laws()
 	_horizon_tilt()
 	_overhead_smoothing()
@@ -273,6 +274,48 @@ func _pilot_zoom() -> void:
 		rig.update(airplane.origin, airplane, airplane.basis, dt, false, _flat)
 	_check("Backspace: back to the law's exact FOV", cam.fov == law_on and rig.pilot_zoom == 1.0, "%.6f" % cam.fov)
 	cam.queue_free()
+
+
+## Native Camera3D stores the law at real_t precision before manual zoom. The rig must retain that rounding and
+## restore its projection after another consumer changes the camera, including non-integer FOVs and orbit near planes.
+func _projection_precision() -> void:
+	var cam := _camera()
+	var reference := _camera()
+	var rig := CameraRig.new(cam, SPAN)
+	var airplane := Transform3D(Basis.IDENTITY, Vector3(19, 31, -113))
+	var distance := cam.position.distance_to(airplane.origin)
+	for law: String in PilotCamera.ZOOM_LAWS:
+		for enabled: bool in [false, true]:
+			for factor: float in [0.33, 1.0, 1.8]:
+				rig.reset()
+				rig.zoom_law = law
+				rig.auto_zoom = enabled
+				rig.pilot_zoom = factor
+				rig.base_fov = 43.3
+				reference.fov = PilotCamera.law_fov(law, SPAN, distance, rig.base_fov) if enabled else rig.base_fov
+				var stored_law := reference.fov
+				var wanted := stored_law if factor == 1.0 else CameraMath.zoomed_fov(stored_law, factor)
+				if wanted != stored_law:
+					reference.fov = clampf(wanted, CameraRig.PILOT_FOV_MIN, CameraRig.PILOT_FOV_MAX)
+				rig.update(airplane.origin, airplane, airplane.basis, 1.0 / 60.0, false, _flat)
+				_check("projection precision %s auto=%s factor=%s" % [law, enabled, factor], cam.fov == reference.fov,
+					"%.9f vs %.9f" % [cam.fov, reference.fov])
+				# A separate consumer may have changed the camera since the rig last ran.
+				cam.fov = 77.125
+				cam.near = 0.8125
+				rig.update(airplane.origin, airplane, airplane.basis, 1.0 / 60.0, true, _flat)
+				_check("projection restores external FOV and near changes", cam.fov == reference.fov and cam.near == 0.5)
+	rig.set_view("orbit")
+	rig.update(airplane.origin, airplane, airplane.basis, 1.0 / 60.0, false, _flat)
+	rig.orbit.distance = 0.9 * SPAN # interior to near-plane bounds, not just 0.05 or 0.25
+	reference.near = rig.near_plane()
+	rig.update(airplane.origin, airplane, airplane.basis, 0.0, true, _flat)
+	_check("orbit preserves fractional near-plane precision", cam.near == reference.near)
+	cam.near = 0.7
+	rig.update(airplane.origin, airplane, airplane.basis, 0.0, true, _flat)
+	_check("orbit restores an externally changed near plane", cam.near == reference.near)
+	cam.free()
+	reference.free()
 
 
 func _cycle() -> void:
