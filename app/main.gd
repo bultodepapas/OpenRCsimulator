@@ -372,6 +372,9 @@ var _shadow_preference := ""
 var _shadow_settings_revision := -1
 var _night_kit: Node3D # FW-35c: lazy presentation kit; state belongs to this flight.
 var _rgb_lighting: Node3D
+var _rgb_applied_rig_id := 0
+var _rgb_applied_mode := ""
+var _rgb_applied_gain := -1.0
 var _lighting_reacts_to_airspeed := false
 var _aircraft_lights := World.AircraftLightState.new()
 var _aircraft_lights_hud_dirty := true
@@ -1318,7 +1321,7 @@ func _process(delta: float) -> void:
 	if _frametimes_scripted_fixed:
 		visual_clock_s = _frametimes_elapsed
 	World.update(_env, visual_clock_s, _render_wind(visual_clock_s), _last_render_pose.get("pos"), _camera) # deterministic wind and field-world adaptation
-	_update_aircraft_lights(visual_clock_s)
+	_update_aircraft_lights(visual_clock_s, false)
 	_frame_times.append(delta)
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times.remove_at(0)
@@ -2130,7 +2133,7 @@ func _aircraft_lights_text() -> String:
 	return text + " · " + tr("Night lights: auto") if _aircraft_lights.selection == "auto" else text
 
 
-func _update_aircraft_lights(clock_s: float = -1.0) -> void:
+func _update_aircraft_lights(clock_s: float = -1.0, force_rgb := true) -> void:
 	if _airplane.is_empty():
 		return
 	if clock_s < 0.0:
@@ -2140,7 +2143,7 @@ func _update_aircraft_lights(clock_s: float = -1.0) -> void:
 			1.0 if elevation < World.NIGHT_KIT_BELOW_SUN_DEG else 0.0):
 		_aircraft_lights_hud_dirty = true
 	if is_instance_valid(_rgb_lighting):
-		_rgb_lighting.set_mode(_aircraft_lights.active_mode, _aircraft_lights.gain)
+		_apply_rgb_lighting_mode(force_rgb)
 		return
 	if not is_instance_valid(_night_kit) and _aircraft_lights.active_mode != "off":
 		_night_kit = World.AircraftLights.attach(_airplane.root)
@@ -2150,6 +2153,19 @@ func _update_aircraft_lights(clock_s: float = -1.0) -> void:
 		World.AircraftLights.set_mode(_night_kit, _aircraft_lights.active_mode)
 	World.AircraftLights.set_emission_mode(World.AircraftLights.prepare_emission(_airplane.root),
 		_aircraft_lights.active_mode, _aircraft_lights.gain)
+
+
+## Explicit calls remain synchronous reconciliation points. The frame loop can
+## skip an unchanged mode; advance() still updates telemetry, gates and effects.
+func _apply_rgb_lighting_mode(force: bool) -> void:
+	var changed := force or _rgb_applied_rig_id != _rgb_lighting.get_instance_id() \
+		or _rgb_applied_mode != _aircraft_lights.active_mode or _rgb_applied_gain != _aircraft_lights.gain
+	if not changed:
+		return
+	_rgb_lighting.set_mode(_aircraft_lights.active_mode, _aircraft_lights.gain)
+	_rgb_applied_rig_id = _rgb_lighting.get_instance_id()
+	_rgb_applied_mode = _aircraft_lights.active_mode
+	_rgb_applied_gain = _aircraft_lights.gain
 
 
 ## CAM-17: Settings changed during a Home flight; the rig applies what changed (direct routes keep their arguments).

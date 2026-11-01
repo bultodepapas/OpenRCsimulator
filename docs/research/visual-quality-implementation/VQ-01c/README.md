@@ -163,6 +163,28 @@ zero exit leaks). Local integration logs: `tmp/bughunt-sync-20261101/`; session
 `tmp/debug-bridge/20261031-233312-47870/`. The earlier full-suite evidence remains
 bound to its recorded source identity.
 
+### Follow-up on synchronized main (2026-11-01)
+
+Relative to `f04e59139`, the follow-up removes redundant
+[flight lighting mode dispatch](../../night-flight-lighting/implementation.md#repeated-flight-mode-dispatch-2026-11-01)
+and [hidden controller preview polling](../../controller-support-2026-10-14/README.md#visible-tab-preview-polling-2026-11-01).
+Their focused regressions pass; the lighting flight check passes 29 checks twice,
+and controller sections pass 135. Six native 1080p sample comparisons and their
+pixel limits are retained in the lighting evidence. No whole-game speedup is claimed.
+
+An inherited main-branch CI failure also exposed a stale companion solver pin.
+The official rebind tool compared all nine retained tapes byte-for-byte before
+renewing it; [generated receipt](../../ai-companions/AFC-02/rebinds/2026-10-31-f4a7f0a4-to-90fb5ae1.json).
+Profile validation passes 43 checks and the rebind tool passes nine tests.
+
+The combined candidate passes `debugctl.py smoke --cycles 7`: 52 scripted steps,
+144 seeded actions, zero growing counters/errors and zero leaked objects at exit.
+Local evidence: `tmp/bughunt-round2-20261101/smoke-final.log` and
+`tmp/debug-bridge/20261101-072919-47870/`. The source is being published on main for
+the complete CI partitions; this follow-up does not inherit the preceding
+snapshot's full-suite result. The Windows full capture runner remains blocked by
+missing `flock`; targeted native captures completed instead.
+
 ## Artifact identity
 
 [Evidence manifest](evidence-manifest.json) records source commit, runtime diff, both

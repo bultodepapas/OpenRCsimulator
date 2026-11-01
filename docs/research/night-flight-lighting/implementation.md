@@ -2,6 +2,39 @@
 
 2026-10-25. The user approved implementation after the [masterplan](../../night-flight-lighting-masterplan.md). This record covers the integrated RGB renderer, profile and Workshop implementation. It does not close pilot gate FW-N or establish hardware performance.
 
+## Repeated flight mode dispatch (2026-11-01)
+
+Relative to `f04e59139`, Main reapplied the unchanged lighting mode every frame.
+For a reactive imported lens, `advance(0.5, throttle=1)` produced emission 4;
+the redundant `set_mode` reset it to 2 with empty telemetry before the next
+`advance` restored 4. This also repeated material and scene-budget work while
+the simulation clock was paused.
+
+The flight frame loop now dispatches a mode only when rig identity, requested
+mode or gain changes. Explicit updates remain forced reconciliation points for
+initial setup, controls, lighting edits and session resets. The rig API and its
+per-frame telemetry, gear gates and effects updates remain unchanged. The real
+flight regression verifies 30 unchanged update calls produce zero mode calls,
+and separately exercises the actual frame loop. The final flight regression
+passes **29/29 twice**, including AUTO crossing 17:30 through the non-forced
+frame path with exactly one dispatch. Rig (30), budget (18), scene
+integration (24) and aircraft-light control (195) checks pass. No FPS gain is
+claimed from these operation counts.
+
+The existing trailer harness completed matched one-second Classic RC and Festival
+flights on native Godot 4.8-beta1, Compatibility, RTX 3090 / NVIDIA 617.42. Each
+take saved three **1920×1080** samples. All per-frame flight/lighting records
+match exactly; images differ at 8–28 lake-region pixels per frame by at most one
+8-bit channel level, so byte-identical images are not claimed. Captures were
+visually inspected; they do not replace long motion or hardware qualification.
+Local evidence: `tmp/bughunt-render-round2-20261101/` and
+`tmp/bughunt-round2-20261101/capture-comparison.json`. Two initial baseline attempts
+reported a missing native-extension artifact; copying the existing runtime
+artifacts into the disposable checkout resolved that setup error. A separate
+optional test draft hit a native allocation failure before reaching the new
+assertions; its failure remains retained. The full capture runner still fails at
+startup because Git Bash lacks `flock`.
+
 ## Boundaries and decisions
 
 - Extend the existing `AircraftLights`/`NightKit`; retain `AircraftLightState` AUTO/ALL/NAV/OFF, 17:30 local-time behavior and session reset policy. Historical profiles use the old lazy path.
