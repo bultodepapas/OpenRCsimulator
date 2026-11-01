@@ -82,7 +82,7 @@ Sustituciones exactas que fallan si el texto no coincide; nada confirmado ni pre
 | `docs/MENU-PLAN.md` | Línea de estado real (UI-00…05); cuatro aviones; L5 hecho; nota de que las anclas de código son de `bc078ef` y los defectos se corrigieron; primer cambio marcado hecho |
 | `docs/VISUAL-QUALITY-PLAN.md` | Extra vuela como experimental; Kenney → Quaternius en L6a; «siguiente L6a» → hecho |
 | `docs/LANDSCAPE-PLAN.md` | `treeline.*` en vez de `vegetation.gd`; ACES 0,6 frente al spike Filmic; rutas de assets fuente/derivados; `tools/terrain/` futuro; nota de viento variable en la deriva `sim_clock`; fecha |
-| `docs/WIND-PLAN.md` | Nota: la auditoría de código es anterior a D9-R2; releer antes de W01, rediseñar W05c |
+| `docs/WIND-ATMOSPHERE-REFERENCE.md` | Nota: la auditoría de código es anterior a D9-R2; releer antes de W01, rediseñar W05c |
 | `docs/FLIGHT-MODEL-ROBUSTNESS-PLAN.md`, `docs/RUDDER-REPAIR-PLAN.md` | Líneas de estado y frases «pendiente» actualizadas a implementado; D8b-R1 señalado como abierto |
 | `docs/UGLY-STIK-PLAN.md`, `docs/UGLY-STIK-VISUAL-PLAN.md` | Coste v4 junto al v3; propiedad acotada a `ugly-stik-60`; nota de que la especificación visual se lee como registro de lo construido |
 | `app/app_state/aircraft_catalog.gd` | Comentario: FLYABLE = modelo de referencia (trim, goldens, contraste independiente; validación con piloto pendiente en Gate 2); cita P51-03. Solo comentarios; `--check-only` en verde |

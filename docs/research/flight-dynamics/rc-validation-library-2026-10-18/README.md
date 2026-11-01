@@ -20,7 +20,7 @@ Verified holdings at completion: **416 topic records, 399 BibTeX entries and 318
 | [Further Stik studies and comparable RC aircraft](stik-analogues/README.md) | Extended Ugly Stik flight instrumentation, further Giant Big Stik studies, gust sensing and additional trainer/Ultra Stick campaigns |
 | [Stik family and conventional RC aircraft](conventional/README.md) | Ugly Stik/Big Stik studies, Ultra Stick analogues, trainers and complete-airframe identification |
 | [Flying wings and tailless aircraft](flying-wings/README.md) | X8/Zagi and other wing studies, elevon effectiveness, stability, flight/tunnel/CFD distinctions |
-| [Wind, thermals, turbulence and vortices](wind-weather/README.md) | Atmospheric measurements, soaring studies, sonic/lidar/UAS data, terrain wakes, dust devils, microbursts and spatial gust models |
+| [Wind, thermals, turbulence and vortices](../../../WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-source-collection) | Atmospheric measurements, soaring studies, sonic/lidar/UAS data, terrain wakes, dust devils, microbursts and spatial gust models |
 | [Measured flight data and logs](flight-data/README.md) | Actual maneuver time histories, dataset descriptions, sensor channels and access limits |
 | [Low-Reynolds aerodynamics, stall and controls](low-reynolds/README.md) | Experimental polars, seven books/theses with data ZIPs, large flaps, finite-wing and post-stall studies |
 | [Propellers and slipstream](propulsion/README.md) | Complete UIUC propeller database, thrust/power experiments, wing/slipstream interaction |

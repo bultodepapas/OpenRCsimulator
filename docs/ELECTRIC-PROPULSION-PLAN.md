@@ -4,7 +4,7 @@
 
 **Status:** Synthetic EL1b–e and EL2a routes and the BAT-10 `pack_ecm` Turbo Lumber Evolution variant are software verified. EL2a-P1/P2 reduce measured battery/event tick costs, but the 500 µs target and original-target remeasurement remain open. Turbo Lumber Evolution hardware identification, physical validation and pilot acceptance are open; the shipped Turbo Lumber Evolution pack and powertrain parameters are estimates, not measurements.
 
-This guide owns the electric motor, ESC power stage, supply/stop integration and remaining EL work. Battery fields/laws, pack integration, telemetry and BAT status live in the [battery guide](plans/battery-realism.md); EL2b, EL3-battery, EL4-pack and EL6 continue there. Loader, trim, flight session and trace changes are shared main-line work. Aircraft/model data follows the model owner. Related plans: [coupled shaft](PROPULSION-CORE-PLAN.md), [Turbo Lumber Evolution integration](TIMBER-INTEGRATION-PLAN.md), [atmosphere](ATMOSPHERE-PLAN.md), [ROADMAP](../ROADMAP.md).
+This guide owns the electric motor, ESC power stage, supply/stop integration and remaining EL work. Battery fields/laws, pack integration, telemetry and BAT status live in the [battery guide](plans/battery-realism.md); EL2b, EL3-battery, EL4-pack and EL6 continue there. Loader, trim, flight session and trace changes are shared main-line work. Aircraft/model data follows the model owner. Related plans: [coupled shaft](PROPULSION-CORE-PLAN.md), [Turbo Lumber Evolution integration](TIMBER-INTEGRATION-PLAN.md), [atmosphere](WIND-ATMOSPHERE-REFERENCE.md#atmosphere), [ROADMAP](../ROADMAP.md).
 
 ## Current software contract
 

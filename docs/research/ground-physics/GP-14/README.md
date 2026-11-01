@@ -254,7 +254,7 @@ pauses without a tick or statistics generation. The separate `reset()` call stil
 owns the physical start and readiness. Pre-setup selection has no installed flight
 to notify. Rejected selection preserves the existing flight and recording.
 
-The [cohort](evidence/weather-publication/README.md) contains **3915 passing
+The [cohort](../../../WIND-ATMOSPHERE-REFERENCE.md#evidence-weather-publication) contains **3915 passing
 production checks** across seven scripts and **19 independent review checks**.
 Four frozen 25-endpoint traces preserve motion exactly; actual recording footers,
 successive pending selections, explicit-reset recovery, and callback mutation or

@@ -66,7 +66,7 @@ Folder names can differ between tools and reports. Use this map rather than rena
 | [camera-views](camera-views/) | [Camera audit](../docs/research/camera-views/CAM-AUD-2026-10-24/README.md), [CAM-23…27 fixes](../docs/research/camera-views/CAM-23-27/README.md), [CAM-02b/17/29](../docs/research/camera-views/CAM-02b-17-29/README.md), [CAM-06/06b/28](../docs/research/camera-views/CAM-06-28/README.md), [CAM-09](../docs/research/camera-views/CAM-09/README.md), [remaining plan](../docs/plans/camera-views.md) |
 | [field-world](field-world/) | [World evidence](../docs/research/field-world/), [current guide](../docs/FIELD-WORLD-PLAN.md) |
 | [time-of-day](time-of-day/) | [TOD evidence](../docs/research/time-of-day-investigations/), [current guide](../docs/TIME-OF-DAY-PLAN.md) |
-| [wind](wind/) | [Wind evidence](../docs/research/wind-implementation/README.md), [current guide](../docs/WIND-PLAN.md) |
+| [wind](wind/) | [Wind evidence](../docs/WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-implementation), [current guide](../docs/WIND-ATMOSPHERE-REFERENCE.md) |
 | [sun](sun/) | [SUN evidence](../docs/research/sun/), [remaining plan](../docs/plans/sun.md) |
 | [scenery](scenery/) | [Scenery evidence](../docs/research/scenery-implementation/), [current guide](../docs/SCENERY-PLAN.md) |
 | [visual-quality](visual-quality/) | [Visual evidence](../docs/research/visual-quality-implementation/), [current guide](../docs/VISUAL-QUALITY-PLAN.md) |

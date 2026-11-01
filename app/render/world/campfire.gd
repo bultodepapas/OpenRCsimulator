@@ -150,7 +150,13 @@ func configure(enabled: bool, environment: Environment, local_gain: float) -> vo
 
 ## Idempotent; enabling/disabling never creates or removes scene nodes.
 func set_enabled(enabled: bool) -> void:
+	var was_enabled := _enabled
 	_enabled = enabled
+	if enabled and not was_enabled:
+		# Catch up before showing the effects, including a paused exposure change.
+		_update_exposure_materials()
+		_update_flames()
+		_update_embers()
 	if _flame_group != null:
 		_flame_group.visible = _enabled
 	if _ember_instance != null:
@@ -170,6 +176,8 @@ func update_visual(clock_s: float, wind: Vector3 = Vector3.ZERO) -> void:
 		return
 	_clock_s = clock_s
 	_wind = wind if _vector_is_finite(wind) else Vector3.ZERO
+	if not _enabled:
+		return
 	_update_exposure_materials()
 	_update_flames()
 	_update_embers()

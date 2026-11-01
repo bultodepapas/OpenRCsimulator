@@ -75,7 +75,7 @@ Engine arguments precede `--`; OpenRC arguments follow it. No user arguments ope
 | `--start=airborne` / `airborne_half_power` | Airborne start; the latter explicitly names the 50% operating point on any route. |
 | `--landscape=green_paradise` / `club_field` | Select landscape; Green paradise uses an airborne start. Unknown IDs are refused. [Landscape guide](../LANDSCAPES.md). |
 | `--battery=ideal`, `--rates=full`, `--hud=overlays` | Explicit technical selections; ideal battery applies to catalog entries with battery data. [Controls and modes](../FIRST-LAUNCH.md). |
-| `--weather=gusty` / `turbulent` / `hot-high` | [Wind](../research/wind-implementation/README.md) and [atmosphere](../research/atmosphere/M5-ATM-2/README.md) contracts. |
+| `--weather=gusty` / `turbulent` / `hot-high` | [Wind](../WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-implementation) and [atmosphere](../WIND-ATMOSPHERE-REFERENCE.md#evidence-atmosphere-m5-atm-2) contracts. |
 | `--time-of-day=05:45 --date=2026-03-20` | Visual [time of day](../research/time-of-day-investigations/TOD-05/README.md), separate from physical weather. |
 
 Trace output includes initial state and fixed ticks; check identities, completion and expected duration with the relevant [physics trace validator](physics.md#headless-trace-checks). Rendered capture flags live in [graphics tools](graphics.md#single-capture). For input, recording and shortcuts, use [FIRST-LAUNCH](../FIRST-LAUNCH.md) or the [debug bridge](../../tools/debug/README.md), not a duplicated key list.

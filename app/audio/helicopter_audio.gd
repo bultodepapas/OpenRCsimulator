@@ -65,7 +65,9 @@ func _process(delta: float) -> void:
 		return
 	var accepted: Dictionary = snapshot()
 	soundscape.update_sound(accepted, delta)
-	ground_audio.update_contacts(int(flight.session.sim.tick), bool(accepted.paused), contact_snapshot(),
+	var paused: bool = bool(accepted.paused)
+	var contacts: Array = [] if paused else contact_snapshot()
+	ground_audio.update_contacts(int(flight.session.sim.tick), paused, contacts,
 		float(accepted.throttle) if bool(accepted.running) else 0.0, delta, accepted.listener)
 
 

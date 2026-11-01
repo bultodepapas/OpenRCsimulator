@@ -163,7 +163,7 @@ The experimental **Aircraft Workshop** lets you save local builds, adjust suppor
 
 *Matching elevated views captured in the running simulator. Green paradise intentionally has no scenery obstacles.*
 
-[Landscape guide](docs/LANDSCAPES.md) · [Weather](docs/WIND-PLAN.md) · [Time of day](docs/TIME-OF-DAY-PLAN.md). Natural Random briefings use Club field; RC-car courses are separate.
+[Landscape guide](docs/LANDSCAPES.md) · [Weather](docs/WIND-ATMOSPHERE-REFERENCE.md) · [Time of day](docs/TIME-OF-DAY-PLAN.md). Natural Random briefings use Club field; RC-car courses are separate.
 
 ### Display targets
 

@@ -126,7 +126,7 @@ Assess inflow, rotor orientation, torque, mixing, control allocation and actuato
 
 ### 17. Weather and Environment Engineer — `weather_environment_engineer`
 
-Check frames, units, spatial/time samples, seed/state identity, query purity and physical coupling for wind or atmosphere changes. Return the query/identity map and controlled reproducibility cases. Consumers use their declared sample timing; visual lighting/clouds can consume weather without changing it. Coordinate M5, FW/TOD, landscape and session ownership. Start with the [wind](WIND-PLAN.md) and [atmosphere](ATMOSPHERE-PLAN.md) guides.
+Check frames, units, spatial/time samples, seed/state identity, query purity and physical coupling for wind or atmosphere changes. Return the query/identity map and controlled reproducibility cases. Consumers use their declared sample timing; visual lighting/clouds can consume weather without changing it. Coordinate M5, FW/TOD, landscape and session ownership. Start with the [wind](WIND-ATMOSPHERE-REFERENCE.md) and [atmosphere](WIND-ATMOSPHERE-REFERENCE.md#atmosphere) guides.
 
 ## Assets, presentation and product specialists
 

@@ -1,6 +1,6 @@
 # VQ-04a-F2: moving windsock shadows
 
-2026-10-19. Local follow-up to [projected field shadows](../README.md) and [windsock motion](../../../wind-implementation/M5-W04b-R1/README.md).
+2026-10-19. Local follow-up to [projected field shadows](../README.md) and [windsock motion](../../../../WIND-ATMOSPHERE-REFERENCE.md#evidence-wind-implementation-m5-w04b-r1).
 
 The previous field caster deliberately included only the fixed mast. This delivery adds the swivelling basket and deforming sleeve to that same ground shadow. It retains the existing Compatibility projection, opacity, height-based softness, lighting controls and flat-ground receiver.
 
