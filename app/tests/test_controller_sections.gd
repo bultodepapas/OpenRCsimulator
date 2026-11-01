@@ -5,6 +5,8 @@ const ControllerProfile := preload("res://input/controller_profile.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
+const ScreenStack := preload("res://ui/screen_stack.gd")
+const RadioCalibration := preload("res://ui/radio_calibration_setup.gd")
 
 class FixtureRegistry extends RefCounted:
 	signal devices_changed
@@ -16,8 +18,20 @@ class FixtureStore extends RefCounted:
 	func load_all() -> Dictionary: return {"ok": true, "profiles": [], "errors": []}
 	func match_profile(_device: Dictionary, _devices: Array) -> Dictionary: return {}
 
+class RadioRegistry extends RefCounted:
+	signal devices_changed
+	var devices: Array[Dictionary] = [{"id": 5, "name": "Fixture radio", "kind": "radio", "connected": true}]
+	func get_devices() -> Array[Dictionary]: return devices.duplicate(true)
+	func selected_device_id(role: String) -> int: return 5 if role == "flight" else -1
+	func device_for_id(id: int) -> Dictionary: return devices[0].duplicate(true) if id == 5 else {}
+	func connection_generation(id: int) -> int: return 1 if id == 5 else 0
+
 var failures := 0
 var checks := 0
+var _axis_reads := 0
+var _button_reads := 0
+var _axis_value := 0.25
+var _pressed_button := -1
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -49,6 +63,125 @@ func _visible_actions(setup: Node) -> PackedStringArray:
 			ids.append(str(ControllerActions.ACTIONS[index].id))
 	ids.sort()
 	return ids
+
+func _preview_axis(_device: int, _axis: int) -> float:
+	_axis_reads += 1
+	return _axis_value
+
+func _preview_button(_device: int, button: int) -> bool:
+	_button_reads += 1
+	return button == _pressed_button
+
+func _reset_reads() -> void:
+	_axis_reads = 0
+	_button_reads = 0
+
+func _preview_tick(setup: Node) -> void:
+	setup._preview_clock = 0.0
+	setup._process(0.08)
+
+func _test_preview_lifecycle() -> void:
+	TranslationServer.set_locale("en")
+	var host := Node.new()
+	root.add_child(host)
+	var screens := ScreenStack.new(host)
+	var registry := RadioRegistry.new()
+	var setup := ControllerSetup.new()
+	setup.axis_preview_provider = _preview_axis
+	setup.button_preview_provider = _preview_button
+	setup.configure(registry, FixtureStore.new(), 5, -1)
+	_check("preview fixture opens Controls", screens.push("controls", setup))
+	await _settle()
+	setup.set_process(false) # Tick explicitly below; input and device signals stay active.
+	var profile: Dictionary = setup.current_profile()
+	profile.aux = {
+		"smoke": {"type": "axis", "axis": 4, "off": -1.0, "on": 1.0, "invert": false},
+		"gear": {"type": "switch", "buttons": [20, 21, 22], "invert": false},
+	}
+	setup._set_draft_profile(profile)
+	for section: String in ["devices", "profile", "buttons"]:
+		setup.select_section(section)
+		_reset_reads()
+		_preview_tick(setup)
+		_check(section + " does not poll hidden previews", _axis_reads == 0 and _button_reads == 0)
+	_axis_value = 0.25
+	_reset_reads()
+	setup.select_section("axes")
+	_check("opening axes immediately refreshes only flight axes", _axis_reads == 4 and _button_reads == 0
+		and setup._preview_labels.roll.text.contains("+0.25"))
+	_reset_reads()
+	_preview_tick(setup)
+	_check("axes periodic refresh excludes AUX", _axis_reads == 4 and _button_reads == 0)
+	_axis_value = 0.60
+	_pressed_button = 22
+	_reset_reads()
+	setup.select_section("aux")
+	_check("opening AUX immediately refreshes only its assignments", _axis_reads == 1 and _button_reads == 3
+		and setup._aux_controls.smoke.preview.text.contains("+0.60") and setup._aux_controls.gear.preview.text.contains("Button 22"))
+	_reset_reads()
+	_preview_tick(setup)
+	_check("AUX periodic refresh excludes flight axes", _axis_reads == 1 and _button_reads == 3)
+	setup.select_section("axes")
+	var before: String = setup._preview_labels.roll.text
+	var wizard := RadioCalibration.new()
+	_check("calibration accepts the connected radio", wizard.configure(registry, 5, setup.current_profile()))
+	setup.set_process(true)
+	_check("calibration covers Controls", screens.push("radio_calibration", wizard) and not setup._screen.visible and setup.is_processing())
+	setup.set_process(false)
+	_axis_value = 0.75
+	_reset_reads()
+	_preview_tick(setup)
+	_check("covered Controls does not poll or update its preview", _axis_reads == 0 and _button_reads == 0
+		and setup._preview_labels.roll.text == before)
+	screens.pop()
+	_check("returning from calibration immediately refreshes the visible axes", setup._screen.visible
+		and _axis_reads == 4 and _button_reads == 0 and setup._preview_labels.roll.text.contains("+0.75"))
+	setup.visible = false
+	_axis_value = 0.45
+	_reset_reads()
+	_preview_tick(setup)
+	_check("hidden Controls layer does not poll", _axis_reads == 0 and _button_reads == 0)
+	setup.visible = true
+	_check("revealing the Controls layer immediately refreshes its current tab", _axis_reads == 4 and _button_reads == 0
+		and setup._preview_labels.roll.text.contains("+0.45"))
+	setup.select_section("buttons")
+	var remap := setup.find_child("Remap_camera_cycle", true, false) as Button
+	setup._start_capture("camera_cycle", remap)
+	var pressed := InputEventJoypadButton.new()
+	pressed.device = 5
+	pressed.button_index = 100
+	pressed.pressed = true
+	setup._input(pressed)
+	_check("capture still accepts the selected controller while preview polling is off", not setup._is_capture_active()
+		and setup.current_profile().actions.get("camera_cycle", {}).get("button", -1) == 100)
+	var released := pressed.duplicate() as InputEventJoypadButton
+	released.pressed = false
+	setup._input(released)
+	_check("captured release is still consumed", setup._capture_release_tokens.is_empty())
+	setup._start_capture("camera_previous", setup.find_child("Remap_camera_previous", true, false) as Button)
+	registry.devices[0].connected = false
+	registry.devices_changed.emit()
+	_check("disconnect still cancels an active capture", not setup._is_capture_active()
+		and setup.status_label.text.contains("disconnected"))
+	registry.devices[0].connected = true
+	registry.devices_changed.emit()
+	setup.select_section("axes")
+	var lost := RadioCalibration.new()
+	var cancelled: Array[String] = []
+	lost.cancelled.connect(func(reason: String) -> void: cancelled.append(reason))
+	_check("second calibration starts while connected", lost.configure(registry, 5, setup.current_profile())
+		and screens.push("radio_calibration", lost))
+	registry.devices[0].connected = false
+	_reset_reads()
+	registry.devices_changed.emit()
+	_check("disconnect still cancels covered calibration", cancelled.size() == 1 and not lost.connection_is_current())
+	_reset_reads()
+	screens.pop()
+	_check("return after disconnect shows no stale axis or device polling", setup._preview_labels.roll.text.contains("—")
+		and _axis_reads == 0 and _button_reads == 0)
+	screens.pop()
+	await _settle()
+	host.free()
 
 func _run() -> void:
 	InputMap.load_from_project_settings()
@@ -162,5 +295,6 @@ func _run() -> void:
 	_check("no flight commands or bindings were changed by navigation", setup.current_profile() == original)
 	setup.free()
 	UiInput.isolate_joypads()
+	await _test_preview_lifecycle()
 	print("Controller sections: %d/%d checks passed" % [checks - failures, checks])
 	quit(1 if failures else 0)

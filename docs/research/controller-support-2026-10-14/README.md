@@ -2,6 +2,22 @@
 
 2026-10-14. Source snapshot: `22b3e4825ec97289b76666ca9e942eaa7a8f703d` plus the existing working tree. Scope: Xbox, PlayStation DualSense and other controllers, with Windows prioritized by the owner. The [implementation plan](../../plans/controller-support.md) owns proposed work and acceptance; this report owns the dated findings and sources.
 
+## Visible-tab preview polling (2026-11-01)
+
+Relative to `f04e59139`, Controls polled four flight axes plus configured AUX
+inputs every 80 ms even on Devices/Profile/Buttons or behind Calibration. The
+fixture observed five axis and three button reads per hidden update. Periodic
+preview reads now cover only the visible Axes or AUX tab; opening or revealing
+that tab refreshes immediately. Capture, device-change and disconnect handling
+remain active, including when the preview is covered.
+
+`test_controller_sections.gd` passes **135/135** checks; the original code failed
+nine new hidden-polling/freshness checks. Six related setup, AUX, capture-scroll,
+safety, responsive and JETI suites pass without engine errors or warnings.
+Local evidence: `tmp/bughunt-lifecycle-round2-20261101/checks/`. These are
+synthetic-provider call counts and lifecycle checks, not measured FPS gains or
+physical-controller qualification.
+
 ## Verified gamepad continuity (2026-10-31, F3-GP-02)
 
 On `28d6a4b7` plus this repair, `test_controller_verifier_loss.gd` reproduces loss of connection/focus verification after a successful live poll. Before the repair, the actual `FlightSession` remained unpaused with a 0.75 throttle command; paused readers could also reuse polling-derived axis history to remain ready or rearm. The regression failed twice before the fix.

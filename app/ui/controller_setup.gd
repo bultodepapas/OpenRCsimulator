@@ -146,6 +146,8 @@ func _init() -> void:
 	name = "ControllerSetup"
 	layer = LAYER
 	_build()
+	_screen.visibility_changed.connect(_refresh_visible_preview)
+	visibility_changed.connect(_refresh_visible_preview)
 
 
 ## The owner injects shared objects before adding this CanvasLayer to the tree.
@@ -948,12 +950,15 @@ func _keep_mapping_focus_visible() -> void:
 func select_section(section_id: String, focus_content := false) -> void:
 	if not _section_pages.has(section_id):
 		return
-	if section_id != _selected_section and _is_capture_active():
+	var section_changed := section_id != _selected_section
+	if section_changed and _is_capture_active():
 		_cancel_capture()
 	_selected_section = section_id
 	for key in _section_pages:
 		_section_pages[key].visible = key == section_id
 		_section_buttons[key].set_pressed_no_signal(key == section_id)
+	if section_changed:
+		_refresh_visible_preview()
 	var scroll := _section_body.get_parent() as ScrollContainer
 	scroll.scroll_vertical = 0
 	if not is_inside_tree():
@@ -1083,10 +1088,21 @@ func _process(delta: float) -> void:
 		_initial_focus_wait_frames -= 1
 		if _initial_focus_wait_frames == 0:
 			close_button_focus()
-	_preview_clock += delta
-	if _preview_clock >= 0.08:
-		_preview_clock = 0.0
-		_update_preview()
+	if visible and _screen.is_visible_in_tree() and _selected_section in ["axes", "aux"]:
+		_preview_clock += delta
+		if _preview_clock >= 0.08:
+			_refresh_visible_preview()
+
+
+## Preview values are presentation only. Keep capture and device-change handling active when covered.
+func _refresh_visible_preview() -> void:
+	if not is_inside_tree() or not visible or not _screen.is_visible_in_tree():
+		return
+	match _selected_section:
+		"axes": _update_axis_preview()
+		"aux": _update_aux_preview()
+		_: return
+	_preview_clock = 0.0
 
 
 func _input(event: InputEvent) -> void:
@@ -2095,6 +2111,11 @@ func _on_joystick_enabled(enabled: bool) -> void:
 
 
 func _update_preview() -> void:
+	_update_axis_preview()
+	_update_aux_preview()
+
+
+func _update_axis_preview() -> void:
 	if _preview_labels.is_empty() or _draft_profile.is_empty():
 		return
 	var device := _device_for_id(_draft_flight_device_id)
@@ -2119,7 +2140,6 @@ func _update_preview() -> void:
 	else:
 		axis_label = tr("Select a connected flight controller to preview mapped channels.")
 	preview_label.text = axis_label
-	_update_aux_preview()
 
 
 func _update_action_controls() -> void:
