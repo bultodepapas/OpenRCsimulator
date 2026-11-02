@@ -72,7 +72,7 @@ identify completed checks only.
 | [Native Windows headless checks](verification/native-headless/README.md) | Crash integration passed 244 assertions with WASAPI, including playback and mute checks for ten aircraft; RCV session passed 168 assertions with its installed native backend and no conditional skips |
 | [Frozen numerical comparison](numerical-comparison.json) | 20 current fixed-wing cases, 960 ticks / 961 rows each, byte-identical across beta1/beta2; five PCG and five OU streams identical, independent PCG recurrence passed |
 | Companion matrix and replay | 148 checks per engine; sampled trajectories and scenario metrics identical; nine fresh beta2 tapes exact-replayed with 2,881 rows each, complete and `solver_changed=false` |
-| Windows brake gate | All 16 original beta1 goldens, beta2 reference/candidate full-value comparisons, and 258 unit checks passed |
+| [Final Windows brake gate](verification/final-brake-post-fix/README.md) | All 16 original beta1 goldens, beta2 reference/candidate full-value comparisons, and 258 unit checks passed; the final 1,679-entry input manifest matches the root |
 | [Native Windows 1080p comparison](paired-render-comparison.json) | RTX 3090, driver 617.42: six High images identical; four Standard images identical, flightline/lake differ by at most one channel byte in 3/148 pixels |
 | [Native Windows renderer checks](verification/native-rendering/README.md) | All 16 checked invocations passed across Compatibility, Forward+ and Mobile on RTX 3090, including lighting pixels, High profile and scene readbacks; no engine errors or warnings |
 | High capture lifecycle | Beta1 reports seven leaked Texture RIDs; the matching beta2 capture exits without that warning. This is one bounded world/capture control |

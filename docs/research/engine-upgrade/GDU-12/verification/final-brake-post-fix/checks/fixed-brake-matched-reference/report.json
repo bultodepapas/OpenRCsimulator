@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "43716a5f-61a2-4209-b0e8-80b7a7711bb4",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-gdu12-final-brake-current\\fixed-brake-vs2msjg5\\reference\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\release-readiness\\PT1-v0.1.9\\capture_fixed_brake_values.gd",
+    "--",
+    "--out=C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-gdu12-final-brake-current\\fixed-brake-vs2msjg5\\matched-reference.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-02T00:35:25.242493+00:00",
+  "label": "fixed-brake-matched-reference",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-brake-current\\checks\\fixed-brake-matched-reference-ibav73o7\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-brake-current\\checks\\fixed-brake-matched-reference-ibav73o7\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.14,
+  "log_bytes": 705,
+  "log_sha256": "b29b438b562cd030979989596374a4e8ad7d9eb0931a0431910b6a0f341b3da1"
+}
