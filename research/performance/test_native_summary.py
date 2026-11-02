@@ -74,6 +74,7 @@ def valid_report(
         "aircraft_id": "jensen-das-ugly-stik-60",
         "preset": "current-default",
         "backend": "gl_compatibility",
+        "display_server": "fixture-native",
         "input_enabled": input_enabled,
         "frames": frame_count,
         "frame_deltas_s": deltas_s,
@@ -95,6 +96,19 @@ def valid_report(
             "fps_monitor": [80.0] * frame_count,
             "sim_tick": [float(tick) for tick in ticks],
             "sim_time_s": times,
+            "render_frames_drawn": [float(100 + index) for index in range(frame_count)],
+            "render_interval_draws": [1.0] * frame_count,
+            "render_interval_counter_reset": [0.0] * frame_count,
+            "render_window_drawable": [1.0] * frame_count,
+            "render_counter_resets": [0.0] * frame_count,
+            "render_no_draw_intervals": [0.0] * frame_count,
+            "render_undrawable_samples": [0.0] * frame_count,
+        },
+        "render_progress": {
+            "status": "observed", "sample_intervals": frame_count, "frames_drawn_at_start": 99,
+            "frames_drawn_first": 100, "frames_drawn_last": 100 + frame_count - 1,
+            "frames_drawn_delta": frame_count, "undrawable_samples": 0, "counter_resets": 0,
+            "no_draw_intervals": 0,
         },
         "measured_simulation": {
             "scope": "first sampled frame end through last sampled frame end; excludes the first sampled interval",
@@ -595,6 +609,65 @@ class DurationCliTests(unittest.TestCase):
 
 
 class NativeRunClassificationTests(unittest.TestCase):
+    def test_non_drawing_native_report_keeps_complete_data_but_cannot_qualify(self):
+        report = valid_report()
+        report["raw_metrics"]["render_frames_drawn"] = [100.0] * report["frames"]
+        report["raw_metrics"]["render_interval_draws"] = [0.0] * report["frames"]
+        report["raw_metrics"]["render_no_draw_intervals"] = [float(index + 1) for index in range(report["frames"])]
+        report["render_progress"].update(status="no_draw", frames_drawn_at_start=100,
+                                         frames_drawn_last=100, frames_drawn_delta=0,
+                                         no_draw_intervals=report["frames"])
+        for streamed in (False, True):
+            with self.subTest(streamed=streamed), tempfile.TemporaryDirectory() as temp_dir:
+                root = Path(temp_dir)
+                path = write_stream_run(root, "run-1", report)[0] if streamed else write_run(root, "run-1", report)
+                result = summarize_run(path, SHORT_POLICY)
+            self.assertTrue(result["collection_valid"], result["collection_reasons"])
+            self.assertTrue(result["active_flight_qualifier"])
+            self.assertFalse(result["rendering_eligibility"]["eligible"])
+            self.assertEqual(result["rendering_eligibility"]["status"], "no_draw")
+            self.assertFalse(result["performance_pass"])
+
+    def test_missing_legacy_and_headless_render_progress_remain_explicit(self):
+        for status in ("legacy", "headless"):
+            report = valid_report()
+            if status == "legacy":
+                report.pop("render_progress")
+            else:
+                report["render_progress"]["status"] = "headless"
+                report["display_server"] = "headless"
+            with self.subTest(status=status), tempfile.TemporaryDirectory() as temp_dir:
+                result = summarize_run(write_run(Path(temp_dir), "run-1", report), SHORT_POLICY)
+            self.assertTrue(result["collection_valid"])
+            self.assertEqual(result["rendering_eligibility"]["status"], "unknown" if status == "legacy" else "headless")
+            self.assertFalse(result["performance_pass"])
+
+    def test_claimed_progress_requires_continuous_consistent_draw_samples(self):
+        for fault in ("missing", "counter", "hidden", "reset", "gap", "first_gap", "first_reset"):
+            report = valid_report()
+            if fault == "missing":
+                del report["raw_metrics"]["render_frames_drawn"]
+            elif fault == "counter":
+                report["render_progress"]["frames_drawn_delta"] = 999
+            elif fault == "hidden":
+                report["raw_metrics"]["render_window_drawable"][1] = 0
+            elif fault == "reset":
+                report["raw_metrics"]["render_counter_resets"][1] = 1
+            elif fault == "gap":
+                report["raw_metrics"]["render_frames_drawn"][1] = 100
+            elif fault == "first_gap":
+                report["raw_metrics"]["render_interval_draws"][0] = 0
+            else:
+                report["raw_metrics"]["render_interval_counter_reset"][0] = 1
+            for streamed in (False, True):
+                with self.subTest(fault=fault, streamed=streamed), tempfile.TemporaryDirectory() as temp_dir:
+                    root = Path(temp_dir)
+                    path = write_stream_run(root, "run-1", report)[0] if streamed else write_run(root, "run-1", report)
+                    result = summarize_run(path, SHORT_POLICY)
+                self.assertTrue(result["collection_valid"], result["collection_reasons"])
+                self.assertEqual(result["rendering_eligibility"]["status"], "invalid")
+                self.assertFalse(result["performance_pass"])
+
     def test_endpoint_context_is_retained_without_inventing_history(self):
         for paused in (False, True):
             report = valid_report(paused=paused)

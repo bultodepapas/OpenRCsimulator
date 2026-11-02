@@ -395,7 +395,7 @@ def _require_ground_texture_binding(
 def run_rejection_reasons(
     run: dict[str, Any], summary: dict[str, Any], report_errors: Sequence[str] = (),
 ) -> list[str]:
-    """Reject collection or active-flight failures, but retain eligible pacing misses."""
+    """Reject collection, activity, or render failures while retaining pacing misses."""
     reasons: list[str] = []
     if run.get("timed_out"):
         reasons.append("process timed out")
@@ -419,6 +419,10 @@ def run_rejection_reasons(
             if isinstance(active_reasons, list) and active_reasons
             else ["run is not active-flight eligible"]
         )
+    rendering = summary.get("rendering_eligibility")
+    if not isinstance(rendering, dict) or rendering.get("eligible") is not True:
+        reason = rendering.get("reason") if isinstance(rendering, dict) else None
+        reasons.append(str(reason) if isinstance(reason, str) and reason else "render progress is unavailable")
     duration = summary.get("duration_eligibility")
     if not isinstance(duration, dict) or not duration.get("eligible"):
         duration_reasons = duration.get("reasons") if isinstance(duration, dict) else None

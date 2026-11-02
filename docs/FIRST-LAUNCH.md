@@ -18,6 +18,11 @@ Download the latest stable release, [v0.1.8](https://github.com/bultodepapas/Ope
 | macOS Apple Silicon / Intel | Move `OpenRC Simulator.app` to Applications and open it |
 | Linux x86_64 | Run `chmod +x openrc-simulator.x86_64`, then `./openrc-simulator.x86_64`; requires OpenGL 3.3 graphics |
 
+Current-source Mac ZIPs also contain `OpenRC Simulator.app.openrc-reference-receipt`.
+Move that file together with the app and keep it beside the app for flight-log
+recording and exact replay. This packaging change is separate from v0.1.8;
+downloaded/quarantined launch with the receipt still awaits native verification.
+
 These test builds have no trusted developer signing/notarization. If macOS refuses an unidentified developer, Apple's [opening-app guidance](https://support.apple.com/en-us/102445) explains the Privacy & Security override. Windows may show a reputation warning; platform policy can prevent launch. Native-platform and graphics acceptance remain separate from package checks.
 
 ## 3. Fly

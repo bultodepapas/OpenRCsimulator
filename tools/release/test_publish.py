@@ -11,9 +11,11 @@ from unittest import mock
 
 if __package__:
     from . import manifest, publish
+    from .test_macos_reference_receipt import write_fixture_zip
 else:
     import manifest
     import publish
+    from test_macos_reference_receipt import write_fixture_zip
 
 TAG = "v1.2.3-rc.2"
 REPO = "owner/project"
@@ -81,9 +83,25 @@ class PublishTests(unittest.TestCase):
                                                "bytes": linux["bytes"]}, "ABI binding differs")
 
     def make_transfer(self):
+        source = {"version": TAG, "commit": self.commit, "tree": self.git("rev-parse", "HEAD^{tree}"),
+                  "commit_date": "2026-10-31T12:00:00Z", "application_version": "1.2.3", "dirty": False,
+                  "tag": TAG, "channel": "preview", "worktree_sha256": "0" * 64}
+        source_zip = self.directory.parent / "fixture-macos.zip"
+        snapshot = self.directory.parent / "fixture-inputs.json"
+        probe = self.root / "research/performance/session_probe.gd"
+        probe.parent.mkdir(parents=True)
+        probe.write_bytes(b"fixture probe")
+        snapshot.write_bytes(b"fixture inputs")
+        write_fixture_zip(source_zip)
         artifacts = []
+        mac_identity = None
         for name, (system, arch) in zip(self.names, manifest.TARGETS):
-            (self.directory / name).write_bytes(("archive " + name).encode())
+            if system == "macos":
+                with mock.patch.object(manifest.macos_reference_receipt, "_source_snapshot", return_value=source):
+                    mac_identity = manifest.macos_reference_receipt.package_zip(source_zip, self.directory / name,
+                                                                                 snapshot, self.root)
+            else:
+                (self.directory / name).write_bytes(("archive " + name).encode())
             artifacts.append({"filename": name, "platform": system, "architecture": arch,
                               "format": "zip", **manifest.file_info(self.directory / name)})
         report = {"archive": {"path": artifacts[0]["filename"], "sha256": artifacts[0]["sha256"],
@@ -95,12 +113,12 @@ class PublishTests(unittest.TestCase):
         ci = {key: None for key in manifest.CI_KEYS}
         ci.update(GITHUB_RUN_ID="123", GITHUB_REPOSITORY=REPO)
         data = {"format": manifest.FORMAT,
-                "source": {"version": TAG, "commit": self.commit, "tree": self.git("rev-parse", "HEAD^{tree}"),
-                           "commit_date": "2026-10-31T12:00:00Z", "application_version": "1.2.3", "dirty": False,
-                           "tag": TAG, "channel": "preview", "worktree_sha256": "0" * 64},
+                "source": source,
                 "build": {"host": "fixture", "python": "fixture", "ci": ci}, "engine_version": "fixture",
                 "inputs": {name: {"sha256": "0" * 64, "bytes": 1} for name in input_names},
                 "artifacts": artifacts, "reports": reports,
+                "macos_reference": {key: mac_identity[key] for key in
+                                    ("receipt_sha256", "source_receipt_sha256", "probe_sha256")},
                 "qualification": {"status": "not_platform_qualified", "pending": manifest.PENDING}}
         (self.directory / manifest.MANIFEST).write_text(manifest.json_text(data), encoding="utf-8", newline="\n")
         records = artifacts + reports + [{"filename": manifest.MANIFEST,
@@ -112,6 +130,17 @@ class PublishTests(unittest.TestCase):
         return {"id": 42, "tag_name": TAG, "name": f"OpenRC Simulator {TAG}", "body": "Release notes\n",
                 "draft": False, "prerelease": True, "published_at": "2026-10-31T12:00:00Z",
                 "assets": [{"name": name, "state": "uploaded"} for name in self.names]}
+
+    def downgrade_to_legacy(self, directory):
+        metadata_path = directory / manifest.MANIFEST
+        metadata = json.loads(metadata_path.read_text())
+        metadata["format"] = manifest.LEGACY_FORMAT
+        metadata.pop("macos_reference")
+        metadata_path.write_text(manifest.json_text(metadata))
+        records = metadata["artifacts"] + metadata["reports"] + [{"filename": manifest.MANIFEST,
+                    **manifest.file_info(metadata_path)}]
+        (directory / manifest.CHECKSUMS).write_text(
+            "".join(f'{row["sha256"]}  {row["filename"]}\n' for row in records))
 
     def run_command(self, command, *, root, timeout=1800):
         self.commands.append(command)
@@ -234,6 +263,18 @@ class PublishTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "mismatch"):
             self.invoke()
         self.assertFalse(any(command[0] == "gh" or command[1:2] == ["fetch"] for command in self.commands))
+
+    def test_legacy_manifest_is_refused_for_new_publication_and_download(self):
+        originals = {name: (self.directory / name).read_bytes() for name in (manifest.MANIFEST, manifest.CHECKSUMS)}
+        self.downgrade_to_legacy(self.directory)
+        with self.assertRaisesRegex(ValueError, "publication requires the current release manifest format"):
+            self.invoke()
+        self.assertFalse(any(command[0] == "gh" or command[1:2] == ["fetch"] for command in self.commands))
+        for name, data in originals.items():
+            (self.directory / name).write_bytes(data)
+        self.downgrade_to_legacy(self.remote_assets)
+        with self.assertRaisesRegex(ValueError, "published download verification failed.*current release manifest"):
+            self.invoke()
 
     def test_stable_channel_requires_published_non_prerelease(self):
         stable = self.make_release()

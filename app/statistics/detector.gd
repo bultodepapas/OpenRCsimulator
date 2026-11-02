@@ -44,6 +44,9 @@ var _hop_seconds := 0.0
 var _accepted_component_events: Array[Dictionary] = [] # Derived per-call facts, never historical state.
 var _accepted_observation_edge := false
 var _speed_window: Array[Dictionary] = []
+## Chronological derived values for the effective window, never part of a snapshot.
+var _speed_tas_values := PackedFloat64Array()
+var _speed_ground_values := PackedFloat64Array()
 var _speed_head := 0
 var _speed_window_s := 0.0
 var _pending_speed: Array[Dictionary] = []
@@ -275,11 +278,15 @@ func restore(value: Dictionary) -> bool:
 	_continuity_lost = bool(copy.continuity_lost)
 	flight = copy.flight
 	_speed_window = []
+	_speed_tas_values.clear()
+	_speed_ground_values.clear()
 	_speed_window_s = 0.0
 	for entry_value: Variant in copy.speed_window:
 		var entry: Dictionary = entry_value.duplicate(true)
 		entry.tick = int(entry.tick)
 		_speed_window.append(entry)
+		_speed_tas_values.append(float(entry.tas))
+		_speed_ground_values.append(float(entry.groundspeed))
 		_speed_window_s += float(entry.dt)
 	_speed_head = 0
 	_pending_speed = []
@@ -640,6 +647,8 @@ func _collect_speed(sample: Dictionary, dt: float, tick: int) -> void:
 	_previous_speed = {"tick": tick, "tas": tas, "groundspeed": ground_speed,
 		"position": position, "velocity": velocity}
 	_speed_window.append({"tick": tick, "dt": dt, "tas": tas, "groundspeed": ground_speed})
+	_speed_tas_values.append(tas)
+	_speed_ground_values.append(ground_speed)
 	_speed_window_s += dt
 	_trim_speed_window()
 	if _speed_window_s + 1e-12 >= float(_thresholds.speed_window_s):
@@ -661,6 +670,7 @@ func _position_discontinuous(position: Array, velocity: Array, dt: float, speed:
 
 
 func _trim_speed_window() -> void:
+	var first_head := _speed_head
 	var window_s := float(_thresholds.speed_window_s)
 	while _speed_window.size() - _speed_head > 1:
 		var oldest: Dictionary = _speed_window[_speed_head]
@@ -673,23 +683,23 @@ func _trim_speed_window() -> void:
 		var oldest: Dictionary = _speed_window[_speed_head]
 		_speed_window_s -= float(oldest.dt)
 		_speed_head += 1
+	var removed := _speed_head - first_head
+	if removed == 1:
+		_speed_tas_values.remove_at(0)
+		_speed_ground_values.remove_at(0)
+	elif removed > 1:
+		_speed_tas_values = _speed_tas_values.slice(removed)
+		_speed_ground_values = _speed_ground_values.slice(removed)
 	if _speed_head > 32 and _speed_head * 2 > _speed_window.size():
 		_speed_window = _speed_window.slice(_speed_head)
 		_speed_head = 0
 
 
 func _add_speed_candidate(tick: int) -> void:
-	# Runs every accepted tick (UI-FS-08-R1): packed copies sort natively, and the sorted
-	# extremes decide stability exactly (|v − median| is monotonic on each side of the median).
-	var count: int = _speed_window.size() - _speed_head
-	var tas_values := PackedFloat64Array()
-	var ground_values := PackedFloat64Array()
-	tas_values.resize(count)
-	ground_values.resize(count)
-	for i in count:
-		var entry: Dictionary = _speed_window[_speed_head + i]
-		tas_values[i] = float(entry.tas)
-		ground_values[i] = float(entry.groundspeed)
+	# Preserve the original chronological input and native sort, including duplicate
+	# and signed-zero ordering. Sorted copies cannot mutate the retained window.
+	var tas_values := _speed_tas_values.duplicate()
+	var ground_values := _speed_ground_values.duplicate()
 	tas_values.sort()
 	ground_values.sort()
 	var median_tas := _sorted_median(tas_values)
@@ -752,6 +762,8 @@ func _record_speed_rejection(reason: String) -> void:
 
 func _clear_speed_state() -> void:
 	_speed_window.clear()
+	_speed_tas_values.clear()
+	_speed_ground_values.clear()
 	_speed_head = 0
 	_speed_window_s = 0.0
 	_pending_speed.clear()

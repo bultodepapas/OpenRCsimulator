@@ -13,6 +13,11 @@ Each successful export produces exactly six public files at its output root:
 
 `manifest.py capture` runs after import and before the first export. Its private `.release-inputs.json` records the source identity, tracked diff and untracked project content identity, actual editor and templates (including the corrected macOS ZIP), native receipt hashes, tool scripts, toolchain locks, packer and readelf executable hashes. `finalize` rejects source/input drift, binds the Linux executable and two required native libraries to the package/build receipts, writes new metadata exclusively, and verifies the resulting set. Source commit date is the timestamp; the tool does not claim a reproducible build timestamp or source archive identity. Private input paths and staging directories are excluded from published assets.
 
+Worktree hashing streams the binary Git diff with the same digest convention,
+rather than retaining the complete patch in RAM. Stderr is drained concurrently
+and retained up to 64 KiB for failures. Untracked app paths are still collected
+and sorted in memory; this does not bound Git's own memory or execution time.
+
 CI transfers only the six named files. Its verifier takes independent commit, tag, Actions run and repository expectations before publication. It then fetches the remote tag, checks the peeled commit and uses `gh release create --verify-tag`; protection against tag changes during publication still requires repository tag protection/immutability policy.
 
 After reserving an output directory, a failed export retains the latest engine log as `export-failure.log` and a pathname-only source inventory as `export-source-status.txt` there. Diagnostic collection is best effort and does not change the failure result. CI retains these two files separately for seven days; they are not release assets. Keep generated `.uid` sidecars tracked with application scripts and shaders so a fresh import does not change the selected source identity; the early CI preflight checks their presence.
@@ -28,7 +33,7 @@ python3 tools/release/manifest.py verify --directory /path/to/downloaded-release
 
 Use `--expected-run-id` and `--expected-repository` when independently known. For a local exporter output with its three working directories and private input snapshot, add `--allow-staging`. The default rejects extra files/directories, symlinks, missing or changed bytes, duplicate JSON keys, unexpected schema fields, incorrect platform/architecture filenames and noncanonical checksum inventory. Existing metadata is never overwritten.
 
-The schemas are versioned by `openrc-release-manifest-v1` and `openrc-linux-abi-v1`; their executable validators are `manifest.validate_metadata` and `elf_audit.validate_report`. Unknown versions fail. The release schema currently fixes the three existing ZIP targets. It provides hashes and sizes for downloads; new formats/architectures require an explicit schema/consumer change. There are no speculative ARM64 or installer assets.
+New exports write `openrc-release-manifest-v2`; the Linux inventory remains `openrc-linux-abi-v1`. Their executable validators are `manifest.validate_metadata` and `elf_audit.validate_report`. Generic verification still accepts historical manifest v1 sets for integrity checks, without a Mac reference-identity claim. Current publication and downloaded retry verification require v2. Unknown versions fail. The release schema fixes the three existing ZIP targets; new formats/architectures require an explicit schema/consumer change.
 
 ## Mac reference bundle identity (DT-MAC-02h)
 
@@ -51,9 +56,29 @@ source drift, missing/changed PCK, unsafe bundle entries and unsupported Mach-O
 architecture, then writes a new external receipt without changing signed bytes.
 The receipt binds every regular bundle file and the declared source/probe inputs;
 it proves artifact consistency, not signing trust or source-to-binary
-reproducibility. The current six-file release ZIP/manifest contract has **not**
-been changed to distribute this sibling receipt. Final-package integration,
-signature checks and exact package replay remain open in the
+reproducibility.
+
+`app/export.sh` now invokes `package-zip` on the staged Godot Mac archive. It copies
+that archive to a new output and adds one sibling
+`OpenRC Simulator.app.openrc-reference-receipt`, leaving the signed app files
+unchanged. Finalization compares bundle content, architectures, creator and
+permission attributes against the staged archive. It does not independently
+compare timestamps or ZIP extra fields. Manifest v2 binds the receipt, private
+input-snapshot and probe hashes; transfer verification checks the archived bundle
+and these public digests. The private input snapshot is not published. The
+receipt travels inside the Mac ZIP, so the public set still has six files.
+
+Keep the matching receipt beside the `.app` when extracting or moving it.
+Downloaded/quarantined launch needs native testing: macOS path translocation may
+prevent access to sibling files ([Apple distribution guidance](https://developer.apple.com/documentation/xcode/packaging-mac-software-for-distribution)).
+Moving both files before launch is the intended installation route, not a verified
+quarantine workaround. A missing receipt cannot establish exact package replay.
+
+ZIP verification streams member contents without extracting another app, but
+member-count and expanded-size limits apply after Python parses the central
+directory. Source fixtures and an M1 development export passed ZIP preservation,
+strict signature verification, the packaged session probe and exact flight replay.
+The complete release pipeline and downloaded/quarantined launch remain open in the
 [Apple Silicon plan](../../docs/plans/apple-silicon-performance.md#dt-mac-02h--reference-release-identity-independent-of-nk-3).
 
 ## Static Linux inspection

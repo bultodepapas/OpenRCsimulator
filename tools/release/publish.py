@@ -84,12 +84,18 @@ def check_metadata(release, tag, notes, names):
                      "release asset names differ")
 
 
+def verify_current_release(directory, *, commit, tag, run_id, repository):
+    data = manifest.verify(directory, expected_commit=commit, expected_tag=tag,
+                           expected_run_id=run_id, expected_repository=repository)
+    manifest.require(data["format"] == manifest.FORMAT, "publication requires the current release manifest format")
+    return data
+
+
 def verify_download(root, directory, tag, commit, run_id, repository, names):
     staged = Path(tempfile.mkdtemp(prefix="openrc-published-check-"))
     try:
         run(["gh", "release", "download", tag, "--repo", repository, "--dir", str(staged)], root=root)
-        manifest.verify(staged, expected_commit=commit, expected_tag=tag,
-                        expected_run_id=run_id, expected_repository=repository)
+        verify_current_release(staged, commit=commit, tag=tag, run_id=run_id, repository=repository)
         for name in names:
             manifest.require(manifest.file_info(staged / name) == manifest.file_info(directory / name),
                              f"published asset differs from this run: {name}")
@@ -116,8 +122,7 @@ def publish(root, directory, notes, commit, tag, run_id, repository):
                      "GitHub token must be supplied through the environment")
     head = run(["git", "rev-parse", "HEAD^{commit}"], root=root).decode("ascii").strip()
     manifest.require(head == commit, "publication checkout differs from expected commit")
-    manifest.verify(directory, expected_commit=commit, expected_tag=tag,
-                    expected_run_id=run_id, expected_repository=repository)
+    verify_current_release(directory, commit=commit, tag=tag, run_id=run_id, repository=repository)
     names = manifest.artifact_names(tag) + [manifest.MANIFEST, manifest.ABI_REPORT, manifest.CHECKSUMS]
     body = check_notes(root, notes, tag, commit)
     check_tag(root, tag, commit, repository)
@@ -126,8 +131,7 @@ def publish(root, directory, notes, commit, tag, run_id, repository):
     if release is None:
         # Recheck all local/remote inputs immediately before the only mutation.
         check_tag(root, tag, commit, repository)
-        manifest.verify(directory, expected_commit=commit, expected_tag=tag,
-                        expected_run_id=run_id, expected_repository=repository)
+        verify_current_release(directory, commit=commit, tag=tag, run_id=run_id, repository=repository)
         manifest.require(check_notes(root, notes, tag, commit) == body, "release notes changed")
         command = ["gh", "release", "create", tag, *[str(directory / name) for name in names],
                    "--repo", repository, "--verify-tag", "--title", f"OpenRC Simulator {tag}",

@@ -300,7 +300,11 @@ void fragment() {
 	}
 	float dist_pilot = distance(world_pos.xz, pilot_xz);
 	float far = smoothstep(fields_start_m, fields_full_m, dist_pilot) * (1.0 - smoothstep(fields_fade_start_m, fields_fade_end_m, dist_pilot));
-	col *= mix(vec3(1.0), parcel(world_pos.xz), far * parcel_strength);
+	float parcel_weight = far * parcel_strength;
+	// The parcel has no effect at zero weight; its nine-site search needs no derivatives.
+	if (parcel_weight != 0.0) {
+		col *= mix(vec3(1.0), parcel(world_pos.xz), parcel_weight);
+	}
 	// Derivatives must be evaluated before spatially varying branches/loops (including the bounds early-out).
 	// Explicit derivatives outside divergent surface/LOD branches.
 	vec2 turf_dx = dFdx(world_pos.xz);
@@ -350,14 +354,15 @@ void fragment() {
 	METALLIC = 0.0;
 	SPECULAR = 0.0;
 	rc_soil_specular = 0.0;
-	if (rc_surface_enabled || grass_photo_enabled) {
+	float dirt_weight = (rc_surface_enabled && rc_track_surface) ? smoothstep(0.0, 1.0, clamp(rc_coverage, 0.0, 1.0)) : 0.0;
+	// Far-away photo detail and absent dirt contribute nothing to the surface.
+	if (photo_weight > 0.0 || dirt_weight > 0.0) {
 		vec2 uv_a;
 		vec2 uv_b;
 		float uv_blend;
-		rc_uvs(world_pos.xz, 1.4, uv_a, uv_b, uv_blend);
 		vec3 base_normal = normalize(NORMAL);
-		float dirt_weight = (rc_surface_enabled && rc_track_surface) ? smoothstep(0.0, 1.0, clamp(rc_coverage, 0.0, 1.0)) : 0.0;
 		if (photo_weight > 0.0 && dirt_weight < 1.0) {
+			rc_uvs(world_pos.xz, 1.4, uv_a, uv_b, uv_blend);
 			vec3 grass_color;
 			vec3 grass_normal;
 			float grass_roughness;

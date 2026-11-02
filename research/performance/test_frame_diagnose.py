@@ -269,6 +269,7 @@ class FrameDiagnoseTests(unittest.TestCase):
 
     def test_older_gpu_report_without_capability_metadata_has_unknown_scope(self):
         report = report_with_intervals([12_000, 12_500, 13_000, 14_000])
+        report.pop("render_progress")
         report["raw_metrics"]["render_gpu_ms"] = [0.0, 1.4, 0.0, 0.8]
         result = diagnose_dict(report)
 
@@ -276,7 +277,50 @@ class FrameDiagnoseTests(unittest.TestCase):
         gpu = result["observations"]["render_gpu_ms_status"]
         self.assertEqual(gpu["scope"], "unknown")
         self.assertIsNone(gpu["timing_available"])
-        self.assertEqual(gpu["measured_positive_samples"], 2)
+        self.assertEqual(gpu["measured_positive_samples"], 0)
+        self.assertEqual(gpu["unverified_positive_samples"], 2)
+        self.assertEqual(gpu["render_progress"]["status"], "unknown")
+        self.assertEqual(gpu["interpretation"], "positive_samples_with_render_progress_unverified")
+        by_index = {item["frame_index"]: item["context"] for item in result["observations"]["top_frames"]}
+        self.assertEqual(by_index[1]["render_gpu_ms_reported"], 1.4)
+        self.assertIsNone(by_index[1]["render_gpu_ms"])
+        self.assertEqual(by_index[1]["render_gpu_ms_interpretation"], "unverified_render_progress")
+
+    def test_positive_gpu_poll_does_not_establish_progress_even_when_timer_is_enabled(self):
+        for streamed in (False, True):
+            report = report_with_intervals([12_000, 12_500, 13_000, 14_000])
+            report["render_progress"]["status"] = "no_draw"
+            report["frame_diagnostics"] = {"render_timing_available": True}
+            report["raw_metrics"]["render_gpu_ms"] = [2.0] * report["frames"]
+            if streamed:
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    path, _ = write_stream_run(Path(temp_dir), "run", report)
+                    result = diagnose(path, path.with_suffix(".log"))
+            else:
+                result = diagnose_dict(report)
+            with self.subTest(streamed=streamed):
+                self.assertTrue(result["valid"], result["validity_reasons"])
+                gpu = result["observations"]["render_gpu_ms_status"]
+                self.assertEqual(gpu["render_progress"]["status"], "no_draw")
+                self.assertEqual(gpu["measured_positive_samples"], 0)
+                self.assertEqual(gpu["unverified_positive_samples"], 4)
+
+    def test_positive_stale_poll_is_unavailable_after_no_draw(self):
+        report = report_with_intervals([12_000, 12_500, 13_000, 14_000])
+        report["render_progress"]["status"] = "no_draw"
+        report["frame_diagnostics"] = {"render_timing_available": False}
+        report["raw_metrics"]["render_gpu_ms"] = [2.0] * report["frames"]
+        result = diagnose_dict(report)
+        self.assertFalse(result["valid"])
+        self.assertTrue(any("unavailable without verified render progress" in issue
+                            for issue in result["measurement_issues"]))
+        gpu = result["observations"]["render_gpu_ms_status"]
+        self.assertEqual(gpu["measured_positive_samples"], 0)
+        self.assertEqual(gpu["interpretation"], "positive_samples_unavailable_without_render_progress")
+        context = result["observations"]["top_frames"][0]["context"]
+        self.assertEqual(context["render_gpu_ms_reported"], 2.0)
+        self.assertIsNone(context["render_gpu_ms"])
+        self.assertEqual(context["render_gpu_ms_interpretation"], "unavailable_without_render_progress")
 
     def test_positive_gpu_timers_are_counted_but_zeros_remain_explicit_sentinels(self):
         report = report_with_intervals([12_000, 12_500, 13_000, 14_000])

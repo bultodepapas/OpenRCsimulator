@@ -397,6 +397,10 @@ var _frametimes_scripted_fixed: bool = false
 var _frametimes_last_usec: int = 0
 var _frametimes_sim_start_s: float = 0.0
 var _frametimes_sim_start_tick: int = 0
+var _frametimes_previous_drawn: int = -1
+var _frametimes_draw_counter_resets: int = 0
+var _frametimes_no_draw_intervals: int = 0
+var _frametimes_undrawable_samples: int = 0
 ## Last one-off message (reload result), shown in the panel.
 var _note := ""
 var _wheel_brake_key_held := false
@@ -1313,6 +1317,7 @@ func _process(delta: float) -> void:
 		if not _frametimes_clock_primed:
 			_frametimes_last_usec = Time.get_ticks_usec()
 			_frametimes_clock_primed = true
+			_frametimes_previous_drawn = Engine.get_frames_drawn()
 			_frametimes_sim_start_s = session.sim.time()
 			_frametimes_sim_start_tick = session.sim.tick
 		else:
@@ -3287,6 +3292,18 @@ func _log_frame_time(delta: float) -> void:
 	var wall_delta_usec: int = now_usec - _frametimes_last_usec
 	_frametimes_last_usec = now_usec
 	var sim: Node = session.sim
+	var drawn: int = Engine.get_frames_drawn()
+	var draw_reset := _frametimes_previous_drawn >= 0 and drawn < _frametimes_previous_drawn
+	var interval_draws := drawn - _frametimes_previous_drawn if _frametimes_previous_drawn >= 0 and not draw_reset else 0
+	if draw_reset:
+		_frametimes_draw_counter_resets += 1
+	elif _frametimes_previous_drawn >= 0 and drawn == _frametimes_previous_drawn:
+		_frametimes_no_draw_intervals += 1
+	_frametimes_previous_drawn = drawn
+	var native_display := DisplayServer.get_name() != "headless"
+	var window_drawable := native_display and DisplayServer.window_can_draw()
+	if native_display and not window_drawable:
+		_frametimes_undrawable_samples += 1
 	var raw_metrics: Dictionary = {
 		sim_time_s = sim.time(),
 		sim_tick = sim.tick,
@@ -3300,6 +3317,13 @@ func _log_frame_time(delta: float) -> void:
 		primitives = Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
 		physics_3d_active_objects = Performance.get_monitor(Performance.PHYSICS_3D_ACTIVE_OBJECTS),
 		physics_3d_collision_pairs = Performance.get_monitor(Performance.PHYSICS_3D_COLLISION_PAIRS),
+		render_frames_drawn = drawn,
+		render_interval_draws = interval_draws,
+		render_interval_counter_reset = int(draw_reset),
+		render_window_drawable = int(window_drawable),
+		render_counter_resets = _frametimes_draw_counter_resets,
+		render_no_draw_intervals = _frametimes_no_draw_intervals,
+		render_undrawable_samples = _frametimes_undrawable_samples,
 	}
 	if _frame_diagnostics != null:
 		var poll_start_usec: int = Time.get_ticks_usec()
@@ -3320,9 +3344,14 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		_frametime_samples.abort("frame collection interrupted by external owner")
 	var sim: Node = session.sim
 	var report: Dictionary = _frametime_samples.report()
+	report.render_progress = _render_progress(report, DisplayServer.get_name())
 	if _frame_diagnostics != null:
 		_frame_diagnostics.stop()
 		report.frame_diagnostics = _frame_diagnostics.metadata()
+		if report.render_progress.status not in ["observed", "headless"]:
+			report.frame_diagnostics.render_timing_available = false
+			report.frame_diagnostics.render_timing_unavailable_reason = \
+				"Render progress is %s; recorded viewport timings may be stale." % report.render_progress.status
 	else:
 		report.frame_diagnostics = {enabled = false}
 	var sim_end_s: float = sim.time()
@@ -3442,6 +3471,62 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 	frame_time_report_written.emit(final_exit_code)
 	if frametimes_auto_quit:
 		get_tree().quit(final_exit_code)
+
+
+## Render-server calls are not presentation timestamps. The first interval begins at
+## the priming observation, before the first retained frame (including after warmup).
+static func _render_progress(report: Dictionary, display: String) -> Dictionary:
+	var result := {status = "insufficient_samples", sample_intervals = maxi(0, int(report.get("frames", 0))),
+		frames_drawn_at_start = -1, frames_drawn_first = -1, frames_drawn_last = -1, frames_drawn_delta = -1,
+		undrawable_samples = -1, counter_resets = -1, no_draw_intervals = -1,
+		scope = "render-server draw calls and main-window drawability; not GPU completion or presentation"}
+	if display == "headless":
+		result.status = "headless"
+		return result
+	var first: Dictionary = {}
+	var last: Dictionary = {}
+	if report.get("format", "") == FrameSamples.STREAM_FORMAT:
+		var endpoints: Dictionary = report.get("sample_endpoints", {})
+		first = endpoints.get("first", {})
+		last = endpoints.get("last", {})
+	else:
+		var metrics: Dictionary = report.get("raw_metrics", {})
+		for key in ["render_frames_drawn", "render_interval_draws", "render_interval_counter_reset", "render_window_drawable", "render_counter_resets", "render_no_draw_intervals", "render_undrawable_samples"]:
+			var values: Variant = metrics.get(key, PackedFloat64Array())
+			if not values is PackedFloat64Array or values.is_empty():
+				return result
+			first[key] = values[0]
+			last[key] = values[values.size() - 1]
+	if result.sample_intervals < 1:
+		return result
+	for key in ["render_frames_drawn", "render_interval_draws", "render_interval_counter_reset", "render_window_drawable", "render_counter_resets", "render_no_draw_intervals", "render_undrawable_samples"]:
+		if not first.has(key) or not last.has(key):
+			return result
+	result.frames_drawn_first = int(first.render_frames_drawn)
+	result.frames_drawn_last = int(last.render_frames_drawn)
+	result.frames_drawn_at_start = result.frames_drawn_first - int(first.render_interval_draws)
+	result.counter_resets = int(last.render_counter_resets) - int(first.render_counter_resets) \
+		+ int(first.render_interval_counter_reset)
+	result.no_draw_intervals = int(last.render_no_draw_intervals) - int(first.render_no_draw_intervals) \
+		+ (1 if int(first.render_interval_draws) == 0 and int(first.render_interval_counter_reset) == 0 else 0)
+	result.undrawable_samples = int(last.render_undrawable_samples) - int(first.render_undrawable_samples) \
+		+ (1 if int(first.render_window_drawable) == 0 else 0)
+	if result.counter_resets != 0 or result.frames_drawn_last < result.frames_drawn_first \
+			or result.frames_drawn_at_start < 0:
+		result.status = "counter_reset"
+		return result
+	result.frames_drawn_delta = result.frames_drawn_last - result.frames_drawn_at_start
+	if result.undrawable_samples > 0:
+		result.status = "window_not_drawable"
+	elif result.undrawable_samples < 0 or result.no_draw_intervals < 0:
+		result.status = "counter_reset"
+	elif result.frames_drawn_delta == 0:
+		result.status = "no_draw"
+	elif result.no_draw_intervals > 0 or result.frames_drawn_delta < result.sample_intervals:
+		result.status = "partial_draw"
+	else:
+		result.status = "observed"
+	return result
 
 
 ## Actual rendered state, not just the requested CLI flags. Shared with the UI transition fixture.

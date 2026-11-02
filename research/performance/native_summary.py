@@ -472,6 +472,65 @@ def active_flight_reasons(report: dict[str, Any], derived: dict[str, Any], polic
     return reasons
 
 
+def rendering_gate(report: dict[str, Any]) -> dict[str, Any]:
+    """Keep collection integrity separate from evidence that rendering progressed."""
+    observation = report.get("render_progress")
+    if not isinstance(observation, dict):
+        return {"status": "unknown", "eligible": False, "reason": "render progress was not recorded"}
+    status = observation.get("status")
+    if status != "observed":
+        return {"status": status if isinstance(status, str) else "unknown", "eligible": False,
+                "reason": "render progress was not established"}
+    fields = ("sample_intervals", "frames_drawn_at_start", "frames_drawn_first", "frames_drawn_last", "frames_drawn_delta",
+              "undrawable_samples", "counter_resets", "no_draw_intervals")
+    if (any(not _is_int(observation.get(key)) or observation[key] < 0 for key in fields)
+            or not _is_int(report.get("frames")) or report["frames"] < 1
+            or report.get("display_server") in (None, "", "headless")):
+        return {"status": "invalid", "eligible": False, "reason": "render progress evidence is malformed"}
+    intervals = report["frames"]
+    before_first = observation["frames_drawn_at_start"]
+    first = observation["frames_drawn_first"]
+    last = observation["frames_drawn_last"]
+    if (observation["sample_intervals"] != intervals or last < first or first < before_first
+            or observation["frames_drawn_delta"] != last - before_first
+            or last - before_first < intervals or observation["undrawable_samples"] != 0
+            or observation["counter_resets"] != 0 or observation["no_draw_intervals"] != 0):
+        return {"status": "invalid", "eligible": False, "reason": "render progress counters are inconsistent"}
+    # A v3 report retains all endpoint metrics even when the stream reader only
+    # materializes simulation arrays. A v2 report has the arrays themselves.
+    metrics = report.get("raw_metrics")
+    keys = ("render_frames_drawn", "render_interval_draws", "render_interval_counter_reset", "render_window_drawable",
+            "render_counter_resets", "render_no_draw_intervals", "render_undrawable_samples")
+    if (not isinstance(metrics, dict) or any(not isinstance(metrics.get(key), (list, array))
+            or len(metrics[key]) != report["frames"] for key in keys)):
+        return {"status": "invalid", "eligible": False, "reason": "render progress samples are missing"}
+    start = {key: metrics[key][0] for key in keys}
+    end = {key: metrics[key][-1] for key in keys}
+    if (any(not _is_number(point.get(key)) or not float(point[key]).is_integer() or point[key] < 0
+            for point in (start, end) for key in keys)
+            or int(start["render_frames_drawn"]) != first or int(end["render_frames_drawn"]) != last
+            or first - int(start["render_interval_draws"]) != before_first
+            or start["render_window_drawable"] != 1 or end["render_window_drawable"] != 1
+            or start["render_counter_resets"] != end["render_counter_resets"]
+            or start["render_no_draw_intervals"] != end["render_no_draw_intervals"]
+            or start["render_undrawable_samples"] != end["render_undrawable_samples"]):
+        return {"status": "invalid", "eligible": False, "reason": "render progress does not match sample endpoints"}
+    draws = metrics["render_frames_drawn"]
+    if (any(not _is_number(value) or value < 0 or not float(value).is_integer()
+            for key in keys for value in metrics[key])
+            or any(value != 1 for value in metrics["render_window_drawable"])
+            or any(value <= 0 for value in metrics["render_interval_draws"])
+            or any(value != 0 for value in metrics["render_interval_counter_reset"])
+            or any(value != start["render_counter_resets"] for value in metrics["render_counter_resets"])
+            or any(value != start["render_no_draw_intervals"] for value in metrics["render_no_draw_intervals"])
+            or any(value != start["render_undrawable_samples"] for value in metrics["render_undrawable_samples"])
+            or any(right - left != interval for left, right, interval in
+                   zip(draws, draws[1:], metrics["render_interval_draws"][1:]))):
+        return {"status": "invalid", "eligible": False, "reason": "render progress did not continue throughout the sample"}
+    return {"status": status, "eligible": True,
+            "reason": "render-server progress observed; actual presentation is not measured"}
+
+
 def pacing_gate(derived: dict[str, Any], policy: dict[str, Any]) -> dict[str, Any]:
     values = derived["frame_ms"]
     ratio = derived["simulation_wall_ratio"]
@@ -682,11 +741,17 @@ def _hydrate_stream_report(report: dict[str, Any], report_path: Path, *, include
                 raise ValueError("stream metric names are invalid or omit simulation metrics")
             if names is None:
                 names = keys
-                retained_count = len(keys) if include_metrics else 2
+                progress_keys = {"render_frames_drawn", "render_interval_draws", "render_interval_counter_reset",
+                                 "render_window_drawable", "render_counter_resets", "render_no_draw_intervals",
+                                 "render_undrawable_samples"} & keys
+                retained_count = len(keys) if include_metrics else 2 + len(progress_keys)
                 if expected_frames * (3 + retained_count) * 8 > STREAM_MAX_RETAINED_ARRAY_BYTES:
                     raise ValueError("stream would exceed the retained numeric-array memory limit")
                 if include_metrics:
                     for key in keys - retained_metrics.keys():
+                        retained_metrics[key] = array("d")
+                else:
+                    for key in progress_keys:
                         retained_metrics[key] = array("d")
             elif keys != names:
                 raise ValueError("stream metric schema changed between chunks")
@@ -813,9 +878,11 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
     active_qualifier = collection_valid and not active_reasons
     if not collection_valid and "collection is invalid" not in active_reasons:
         active_reasons.append("collection is invalid")
+    rendering = rendering_gate(hydrated if report_format == STREAM_FORMAT and stream_evidence is not None else report) if report is not None else {
+        "status": "unknown", "eligible": False, "reason": "report is unavailable"}
     performance_pass = bool(
         collection_valid and active_qualifier and duration and duration["eligible"]
-        and pacing and pacing["pass"]
+        and pacing and pacing["pass"] and rendering["eligible"]
     )
     return {
         "report": report_path.name,
@@ -831,6 +898,7 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "active_flight_reasons": active_reasons,
         "session_at_report": report.get("session_at_report") if report is not None else None,
         "duration_eligibility": duration,
+        "rendering_eligibility": rendering,
         "metrics": derived,
         "pacing_gate": pacing,
         "pacing_configuration": {

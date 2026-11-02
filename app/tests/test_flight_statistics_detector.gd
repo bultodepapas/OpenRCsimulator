@@ -38,6 +38,7 @@ func _initialize() -> void:
 	_test_duplicate_terminal_and_ground_crash()
 	_test_gap_marks_partial_and_freezes_time()
 	_test_speed_window_filters_spikes()
+	_test_speed_window_restore_and_eviction()
 	_test_json_safe_snapshot_restore()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -414,6 +415,117 @@ func _test_speed_window_filters_spikes() -> void:
 	var encoded := JSON.stringify(detector.snapshot())
 	_check("snapshot remains JSON-safe after a non-finite speed sample",
 		not encoded.contains("NaN") and typeof(JSON.parse_string(encoded)) == TYPE_DICTIONARY)
+
+
+## Keep speed observations identical across a restore, including duplicate values,
+## signed zero and both count- and time-driven eviction. A frozen pre-change script
+## can be supplied for bytewise event/snapshot comparison on the same samples.
+func _test_speed_window_restore_and_eviction() -> void:
+	var reference_path := ""
+	for argument: String in OS.get_cmdline_user_args():
+		if argument.begins_with("--reference="):
+			reference_path = argument.trim_prefix("--reference=")
+	var reference: RefCounted
+	var reference_script: GDScript
+	if not reference_path.is_empty():
+		reference_script = GDScript.new()
+		reference_script.source_code = FileAccess.get_file_as_string(reference_path)
+		var loaded := not reference_script.source_code.is_empty() and reference_script.reload() == OK
+		_check("frozen speed detector loads", loaded)
+		if loaded: reference = reference_script.new()
+	var profile := _profile()
+	profile.rules = {liftoff_clearance_s = 0.03125, speed_exclusion_after_activation_s = 0.03125,
+		speed_window_s = 0.5, max_speed_samples = 16}
+	var live: RefCounted = Detector.new()
+	live.configure(profile, true)
+	if reference != null: reference.configure(profile, true)
+	var resumed: RefCounted
+	var reference_resumed: RefCounted
+	var reference_matches := true
+	var restore_matches := true
+	var seen_full := false
+	var seen_count_eviction := false
+	var seen_multi_eviction := false
+	var seen_candidate := false
+	var seen_negative_zero := false
+	var seen_positive_zero := false
+	var seen_reset := false
+	var first_difference := -1
+	var negative_zero_bytes := PackedFloat64Array([0.0]).to_byte_array()
+	negative_zero_bytes[7] = 0x80 # Packed float64 bytes use little-endian order.
+	var negative_zero: float = negative_zero_bytes.to_float64_array()[0]
+	_check("signed-zero fixture retains distinct float64 bits",
+		PackedFloat64Array([negative_zero]).to_byte_array() != PackedFloat64Array([0.0]).to_byte_array())
+	for tick in range(1, 401):
+		var dt := 0.125 if tick in [160, 161, 162] else 1.0 / 64.0
+		var speed := 0.125 if tick % 4 == 0 else (negative_zero if tick % 2 == 0 else 0.0)
+		var sample := _sample(tick, {"dt": dt, "clearance_ok": true,
+			"tas": NAN if tick == 300 else speed, "groundspeed": speed})
+		var previous_size: int = live.snapshot().speed_window.size()
+		var events: Array = live.observe(sample)
+		var current: Dictionary = live.snapshot()
+		var live_bytes := var_to_bytes([events, current])
+		seen_full = seen_full or current.speed_window.size() == 16
+		seen_count_eviction = seen_count_eviction or (tick < 160 and previous_size == 16 \
+			and current.speed_window.size() == 16 and float(current.speed_window_s) < 0.5)
+		seen_candidate = seen_candidate or not current.pending_speed.is_empty() \
+			or (not current.flight.is_empty() and float(current.flight.max_tas_mps) >= 0.0)
+		for entry: Dictionary in current.speed_window:
+			var bits := PackedFloat64Array([float(entry.tas)]).to_byte_array()
+			seen_negative_zero = seen_negative_zero or bits == negative_zero_bytes
+			seen_positive_zero = seen_positive_zero or bits == PackedFloat64Array([0.0]).to_byte_array()
+		if tick in [160, 161, 162] and previous_size - current.speed_window.size() > 1:
+			seen_multi_eviction = true
+		if tick == 300: seen_reset = current.speed_window.is_empty()
+		if reference != null:
+			var prior_events: Array = reference.observe(sample)
+			if var_to_bytes([prior_events, reference.snapshot()]) != live_bytes:
+				reference_matches = false
+				if first_difference < 0: first_difference = tick
+		if resumed != null:
+			var resumed_events: Array = resumed.observe(sample)
+			if var_to_bytes([resumed_events, resumed.snapshot()]) != live_bytes:
+				restore_matches = false
+				if first_difference < 0: first_difference = tick
+		if reference_resumed != null:
+			var prior_resumed_events: Array = reference_resumed.observe(sample)
+			if var_to_bytes([prior_resumed_events, reference_resumed.snapshot()]) != live_bytes:
+				reference_matches = false
+				if first_difference < 0: first_difference = tick
+		if tick == 120 and resumed != null:
+			var before_rejection := var_to_bytes(resumed.snapshot())
+			var invalid := current.duplicate(true)
+			invalid.speed_window[0].tas = NAN
+			_check("invalid restore preserves populated speed history",
+				not resumed.restore(invalid) and var_to_bytes(resumed.snapshot()) == before_rejection)
+			if reference_resumed != null:
+				var reference_before := var_to_bytes(reference_resumed.snapshot())
+				_check("frozen detector also rejects the populated invalid restore",
+					not reference_resumed.restore(invalid) and var_to_bytes(reference_resumed.snapshot()) == reference_before)
+		if tick == 90:
+			resumed = Detector.new()
+			var restored: bool = resumed.restore(current)
+			_check("full speed window restores", current.speed_window.size() == 16 and restored)
+			if restored:
+				_check("restore preserves the public snapshot", var_to_bytes(resumed.snapshot()) == var_to_bytes(current))
+			else:
+				resumed = null
+			if reference != null:
+				reference_resumed = reference_script.new()
+				if not reference_resumed.restore(current):
+					_check("frozen detector restores the same speed window", false)
+					reference_resumed = null
+				else:
+					_check("frozen detector restores the same speed window", true)
+	_check("speed window hits the sample cap", seen_full)
+	_check("sample cap evicts older samples", seen_count_eviction)
+	_check("window retains both signed zeros", seen_negative_zero and seen_positive_zero)
+	_check("full window produces a speed candidate", seen_candidate)
+	_check("one observation evicts multiple expired samples", seen_multi_eviction)
+	_check("invalid speed clears the effective window", seen_reset)
+	_check("restored detector preserves each event and snapshot", restore_matches, "first mismatch tick %d" % first_difference)
+	if reference != null:
+		_check("frozen detector preserves each event and snapshot", reference_matches, "first mismatch tick %d" % first_difference)
 
 
 func _test_json_safe_snapshot_restore() -> void:

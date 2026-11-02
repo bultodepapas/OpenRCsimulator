@@ -1,6 +1,6 @@
 # Apple Silicon optimization — master implementation plan
 
-Updated 2026-11-02 · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Source audited:** `46b004c7b469448c29ef96168da4f03cee2c6d23`. **Status:** audit complete; DT-MAC-02c/d source repairs and DT-MAC-02h reference identity implemented with focused tests; native Mac qualification open.
+Updated 2026-11-02 · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Source audited:** `46b004c7b469448c29ef96168da4f03cee2c6d23`. **Status:** portable capture/identity repairs and bounded observer/ground optimization candidates implemented; native development ZIP, signature and exact replay checks passed; sustained Mac qualification open.
 
 This plan and the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) are the two authoritative Apple optimization documents. The background contains implementation facts, research and limitations; this document contains the execution sequence and gates. Existing research remains dated evidence and tool READMEs remain command authorities. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) retains release ownership. No optimization or new platform support is authorized as completed by this plan.
 
@@ -26,13 +26,13 @@ The objective is the maximum practical **sustained performance with readable air
 | DT-MAC-00 / 00-R1 / 00-R2 | Completed historical investigations; retained in background provenance. This consolidation is DT-MAC-00-R3. |
 | DT-MAC-01 | M1 Air/8 GB ARM64 native inventory and editor import recorded; complete baseline manifest and qualification open — phase 3. |
 | DT-MAC-02a/b | Getter/template/preflight and bounded v3 capture implemented; native execution/overhead and coverage gaps open — phases 1–3. |
-| DT-MAC-02c/d/e/f/g/h | 02c Aqua/resource repair and 02d v3 incident/Perfetto handling implemented and checked on Mac; short native Aqua/resource/frame checks passed. 02h Mac reference bundle identity has focused Linux/Mac tests; final-package integration/replay is open. Host diagnostics, app-route observation and voluntary share bundle remain open — phases 1, 2 and 8. |
+| DT-MAC-02c/d/e/f/g/h | 02c Aqua/resource repair and 02d v3 incident/Perfetto handling implemented and checked on Mac; short native Aqua/resource/frame checks passed. 02h final-ZIP/manifest-v2 integration has focused tests; native development export, strict signature, exact package replay and fixed session probe passed. Full release/trust/quarantine remain open. Host diagnostics, app-route observation and voluntary share bundle remain open — phases 1, 2 and 8. |
 | DT-MAC-03a/b | Short source-build reference replay was exact on M1; complete baseline manifest, sustained runs and attribution remain open — phase 3. |
-| DT-MAC-04a–d | Conditional CPU/observer/loading/memory work — phase 4. |
+| DT-MAC-04a–d | 04b statistics-window and recorder-copy candidates implemented with frozen-reference checks; partial native CPU comparisons establish no gain. Other work remains conditional — phase 4. |
 | DT-MAC-04n1–n4 | Conditional ARM64 NK-3 feasibility, evaluator parity, admission and package work — phase 10, under SF/NK policy. |
 | DT-MAC-05a | Isolated renderer tools implemented; native parity/comparison open — phase 5. |
 | DT-MAC-05b/c | Product restart/recovery and renderer decision — phases 8 and 5 respectively. |
-| DT-MAC-06a/b–d | Capability policy and attributed GPU/pipeline/resource work — phases 8 and 6. |
+| DT-MAC-06a/b–d | Ground shader candidate has five byte-identical M1 Compatibility views; performance/motion gates remain open. Capability policy and other work — phases 8 and 6. |
 | DT-MAC-07a–c | MetalFX policy/Settings prepared; real execution, failure/reset, motion/lifecycle and benefit open — phase 7. |
 | DT-MAC-08 / 08a / 08b / 09 | Sustained M1, community coverage, native package and promotion — phase 9. |
 | DT-MAC-10 / 11 / 12 / 13 | Conditional engine-level Metal/new reconstruction/presentation work — phase 12. |
@@ -126,6 +126,14 @@ Each receipt includes source commit/dirty patch and relevant input hashes; engin
 
 **Completion:** reference-only Mac release identity is verifiable without an installed NK-3 solver; final executable and loaded solver contents are bound, missing identity fails closed, and package replay/benchmark validation accepts only the correct artifact. Editor/source replay is labeled separately until this native gate passes.
 
+**2026-11-02 implementation:** the exporter adds a sibling receipt inside the Mac
+ZIP and checks bundle bytes/permissions against the staged Godot archive.
+Manifest v2 binds receipt/input/probe digests; generic v1 verification remains
+available for historical integrity checks, while current publication requires v2.
+Synthetic package and identity fixtures pass. Native final export, signature
+verification, downloaded/quarantined launch and exact package replay are still
+required. [Contract and installation limits](../../tools/release/README.md#mac-reference-bundle-identity-dt-mac-02h).
+
 ## 4. Phase 2 — bounded Apple diagnostics, only where needed
 
 **Priority/size:** P0 for required missing host context, otherwise P1/medium. **Dependency:** phase-1 schema decisions. **Benefit:** explain sustained thermal/memory/power behavior and make community reports useful. **Scope:** existing tools plus minimal native glue; no profiler or network service.
@@ -209,6 +217,12 @@ Run diagnostic-off, frame-only, frame+resource and helper-enabled controls. Choo
 If disk stalls are demonstrated, propose a bounded transport at the recorder owner with copied immutable data, ordered publication, backpressure/drop policy consistent with exact logging, drain/cancel/error handling and explicit incomplete status. Do not silently drop exact-replay ticks or defer durability without a contract decision.
 
 **Validation:** T6 affected observer/audio/recorder cases plus T7 exact replay, marker/hash/row order and fault/reset tests; forced slow/full disk/cancel tests only if transport changes. Native log-on/off and full callback A/B. **Exit:** measured stall/CPU reduction without lost samples, changed cues, unbounded queue, modified physics or concealed write errors.
+
+Current 04b candidates reuse packed statistics values and independent recorder
+boundary bytes. They preserve the original event/snapshot and recording packet
+contracts in frozen-reference checks. The [dated evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-04b--06b-optimization-candidates-2026-11-02)
+owns source hashes and native comparisons. This does not close the full active-session,
+log-on/off, release or sustained gates.
 
 ### DT-MAC-04c — loading and first-interactive frame
 
@@ -433,4 +447,18 @@ Retain compact dated evidence under existing DT-MAC/owning-track homes; raw trac
 
 **Mandatory core finish:** native M1 and claimed-package gates pass, selected settings are recoverable, required tests/replay/visual/control evidence is complete, and source/artifact identity is reconciled. **Broader claims:** only named device/OS/profile rows actually qualified may be advertised. **Optional finish:** each branch either passes its own gates or records an evidence-based deferred/trigger-absent decision; optional failure cannot waive a mandatory core target.
 
-DT-MAC-02c/d now have source repairs, focused fixtures and short native Mac checks. DT-MAC-02h has a tested Mac reference bundle identity, while final-package integration and exact package replay remain open. Short Compatibility captures at the requested 1920×1080 window and the built-in panel's 2560×1600 dimensions missed the proposed pacing and sim/wall budgets; a Mobile/Metal capture timed out before producing a frame stream. The 2560×1600 AC run's frame/resource interval and incident pair were checked, but sustained coverage, host diagnostics, attribution and final package gates remain on the critical path. No Apple hardware speedup, thermal result, iOS support or signed-release acceptance is claimed. [Dated M1 evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#first-m1-native-screening-2026-11-02).
+DT-MAC-02c/d have source repairs, focused fixtures and short native Mac checks.
+DT-MAC-02h final-ZIP integration passed native development export, strict signature,
+fixed session-probe and exact packaged replay checks. Full release and downloaded
+trust/quarantine remain open. Three bounded runtime candidates preserve numerical
+contracts; five M1 static ground-shader views match byte for byte and the RC view
+passed with background variability isolated by a same-shader repeat. Partial CPU
+comparisons establish no gain. The corrected collector passed 60-second Metal
+and Compatibility screens, but both miss the pacing budget. The optional Spatial
+85% screen also misses it and leaves actual scaler execution unverified.
+The integrated parse gate passed all 1,561 scripts; full CI, attribution, moving
+visual/control coverage and sustained qualification remain open. Low free disk
+space prevents the four-copy local mutation prelude and undermines a sustained
+memory/swap campaign until adequate headroom is available. No renderer default,
+thermal result, iOS support or distributed-release acceptance is promoted.
+[Dated candidate and M1 evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-04b--06b-optimization-candidates-2026-11-02).

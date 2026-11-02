@@ -320,6 +320,22 @@ report render timing unavailable. macOS Compatibility timing is conservatively
 disabled. Observer timing is disabled when collection ends or the scene exits;
 do not run this observer together with another owner of viewport timing.
 
+Every new frame report also records render-server draw progress and main-window
+drawability, including the first measured interval, without requiring
+`--frame-diagnostics`. `render_progress` is separate from `complete`: a complete
+headless or non-drawing stream remains valid data but cannot qualify rendered
+performance. The native reducer and grass profiler require progress through all
+sampled intervals; counter resets, skipped draws and hidden-window samples refuse
+that gate. Historical reports without these fields remain readable as unknown.
+These counters do not establish GPU completion, main-viewport pixels or actual
+presentation. The diagnoser preserves raw GPU polls while marking them unverified
+when render-progress evidence is missing.
+
+For a bounded Mac campaign, the existing `/usr/bin/caffeinate -di <runner-command>`
+can hold idle display/system-sleep assertions for that command's lifetime. Record
+its use and keep the test window visible; an assertion does not establish drawing
+or presentation. This avoids changing persistent power settings. [Apple implementation](https://github.com/apple-oss-distributions/PowerManagement/blob/main/caffeinate/caffeinate.c).
+
 `--frametimes-max-frames` bounds retained samples: default 60,000, range 1–120,000.
 It requires `--frametimes`, as does `--frame-diagnostics`. Warm-up frames do not
 consume the limit. Hitting the limit writes an incomplete prefix and exits nonzero;
@@ -716,9 +732,10 @@ run it alone for timing comparisons. [Dated evidence and limits](../../docs/rese
 
 ## Whole-app tick CPU (VQ-01c)
 
-`app_cpu_per_sim.py` launches one headless debug-bridge session, flies a scripted
-Stik case (`airborne` climb or `runway` taxi) and reports main-thread and whole-process
-CPU per simulated second. Unlike the session probes, this includes every accepted-tick
+`app_cpu_per_sim.py` launches one headless debug-bridge session, explicitly selects the
+default Stik, flies a scripted case (`airborne` climb or `runway` idle) and reports
+process CPU per simulated second. Both endpoint states must identify that Stik. Unlike
+the session probes, this includes every accepted-tick
 observer (audio, statistics, crash presentation, windsock, people) that `Simulation.step_usec`
 excludes. Through the bridge it caps frames at 30, because uncapped headless frames
 absorb saved time. It also halves `Engine.time_scale`: ticks still arrive at 240 per
@@ -730,6 +747,27 @@ identical settings.
 python3 research/performance/app_cpu_per_sim.py <label> airborne 10 40
 ```
 
+Linux also reports main-thread CPU. On macOS the direct process is sampled using the
+[pinned psutil resource backend](../../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4);
+run the benchmark with the Python environment containing that dependency. The JSON
+sets `main_ms_per_sim_s` to `null` and `main_thread_cpu_scope` to `unsupported on darwin`.
+Process CPU includes user and system time for the launched PID, excluding descendants.
+The output identifies the backend, PID, wall and simulation intervals, and frame progress.
+Unavailable or decreasing CPU counters, changed PID identity, and invalid intervals fail
+the run. `boundary_timing` records the state-call and CPU-sample brackets, cached snapshot
+ages, and signed wall-time offset bounds. The bounds assume comparable clock rates and no
+discontinuity; they do not bound simulation-time error. A missing or invalid snapshot age
+leaves the corresponding bound `null`. A cached final state can predate the final CPU sample.
+
+On macOS, set `OPENRC_APP_DIR` to a separate
+[prepared research app](../../tools/graphics/README.md#isolated-mac-renderer-trials-dt-mac).
+The tool refuses to launch unless the existing research-project validator confirms a
+unique project-name `user://` identity, separate cache and required research settings.
+It records the validated project name and settings hashes before launch. This protects
+the regular profile when selecting the aircraft and start; it does not verify all source
+or asset contents. The debug bridge cannot isolate that profile with its usual environment
+variables alone.
+
 `OPENRC_DETACH_PRESENTATION=1` disconnects the six presentation observers from
 `Simulation.stepped` after the flight starts, keeping the session's contact commit and
 the recorder, and refuses an unexpected connection set. Use it only to measure what the
@@ -737,8 +775,8 @@ observers cost; audio, statistics and crash presentation stop working in that se
 
 Run one session at a time on an idle host and alternate baseline/candidate runs.
 Swapping scripts in a shared working tree is unsafe while others commit: restore the
-candidate on disk as soon as the flight has loaded its scripts. The numbers are dev-VM
-CPU attribution, not FPS, GPU or target-hardware qualification.
+candidate on disk as soon as the flight has loaded its scripts. The numbers are headless
+CPU attribution on the measured host, not FPS, GPU or target-hardware qualification.
 [Tick attribution and paired results](../../docs/research/visual-quality-implementation/VQ-01c/tick-observers-2026-10-27/README.md).
 
 ## Lake polygon edge walk (LU-25-R3)
@@ -947,12 +985,19 @@ python3 tools/godot/run_checked.py --timeout 2400 -- "$(app/get-godot.sh)" --hea
 ```
 
 `observer_cadence_bench.py` alternates `app_cpu_per_sim.py` runs of a baseline app copy and a candidate
-app copy at each cadence, rotating the order every pair, and appends JSON lines. Freeze both copies
-first (scripts copied, not hard-linked), so later edits cannot reach a run.
+app copy at each cadence, and appends JSON lines. Two roles alternate their order every pair. With
+three or more roles, reversed rotations balance pairwise order and, over `2 × role count` pairs,
+place each role twice in each position. Freeze both copies first (scripts copied, not hard-linked),
+so later edits cannot reach a run. Choose a new output path to keep runs separate.
+
+The baseline clears `OPENRC_PRESENTATION_CADENCE` and uses its snapshot's default; each candidate
+uses the requested cadence. Verify those settings match when measuring a code change rather than a
+cadence change. On macOS invoke this harness with the same psutil-enabled Python: it passes its
+interpreter to `app_cpu_per_sim.py`.
 
 ```sh
 python3 research/performance/observer_cadence_bench.py tmp/ab-snap-<base>/app tmp/ab-snap-<cand>/app \
   tmp/cadence-airborne.jsonl airborne 3 1,2,3,4
 ```
 
-[Observer cadence evidence](../../docs/research/visual-quality-implementation/VQ-01c/observer-cadence-2026-10-27/README.md).
+[Retained audio observer comparison](../../docs/research/visual-quality-implementation/VQ-01c/observer-cadence-2026-10-27/audio-pair.json).

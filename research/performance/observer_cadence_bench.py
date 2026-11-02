@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """VQ-01c-R1: alternating whole-app CPU pairs for the presentation cadence.
 
-Runs app_cpu_per_sim.py for a baseline app copy (per-tick observers) and a candidate app copy at
-each requested cadence (OPENRC_PRESENTATION_CADENCE), rotating the role order every pair so drift
-is shared. Appends one JSON line per run to <out.jsonl>. Freeze both app copies first (hard-linked
+Runs app_cpu_per_sim.py for a baseline app copy (its default observer cadence) and a candidate app copy at
+each requested cadence (OPENRC_PRESENTATION_CADENCE). Reversals balance pairwise order and rotations
+balance positions over a complete cycle. Appends one JSON line per run to <out.jsonl>. Freeze both app copies first (hard-linked
 snapshots whose scripts are real copies), so later edits cannot change a run.
 Usage: observer_cadence_bench.py <base_app> <cand_app> <out.jsonl> <scenario> <pairs> <cadences,…>
        [warmup_s=10] [sample_s=40] [max_fps=60] [time_scale=0.5] [pause_s=20]
@@ -28,16 +28,24 @@ def run(app_dir, cadence, label, scenario, warm, sample, fps, scale):
     return json.loads(lines[-1])
 
 
-def main():
-    base, cand, path, scenario, pairs, cadences = sys.argv[1:7]
-    warm, sample, fps, scale, pause = (sys.argv[7:12] + ["10", "40", "60", "0.5", "20"][len(sys.argv[7:12]):])
+def role_order(roles, pair):
+    """Alternate two roles, or balance positions and precedence over 2*N pairs."""
+    count = len(roles)
+    if count <= 2:
+        # Rotating and reversing simultaneously cancel for two roles.
+        return roles[:] if pair % 2 == 0 else roles[::-1]
+    offset = (pair // 2) % count
+    order = roles[offset:] + roles[:offset]
+    return order if pair % 2 == 0 else order[::-1]
+
+
+def main(argv=None):
+    args = sys.argv[1:] if argv is None else argv
+    base, cand, path, scenario, pairs, cadences = args[:6]
+    warm, sample, fps, scale, pause = (args[6:11] + ["10", "40", "60", "0.5", "20"][len(args[6:11]):])
     roles = [("base", base, None)] + [(f"cadence{c}", cand, int(c)) for c in cadences.split(",")]
     for pair in range(int(pairs)):
-        # Rotate the order each pair (and reverse odd pairs) so no role always runs first or last.
-        order = roles[pair % len(roles):] + roles[:pair % len(roles)]
-        if pair % 2:
-            order.reverse()
-        for name, app_dir, cadence in order:
+        for name, app_dir, cadence in role_order(roles, pair):
             result = run(app_dir, cadence, name, scenario, warm, sample, fps, scale)
             result["pair"] = pair + 1
             with open(path, "a") as handle:
@@ -46,4 +54,5 @@ def main():
             time.sleep(float(pause))  # the bridge port may sit in TIME_WAIT after a stop
 
 
-main()
+if __name__ == "__main__":
+    main()

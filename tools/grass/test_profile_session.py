@@ -369,6 +369,30 @@ class RunEligibilityTests(unittest.TestCase):
         self.assertFalse(summary["pacing_gate"]["pass"])
         self.assertEqual(profile_session.run_rejection_reasons(run, summary), [])
 
+    def test_render_progress_is_required_in_legacy_and_streamed_pairs(self):
+        run = {"return_code": 0, "timed_out": False, "interrupted": False, "launch_error": ""}
+        for status in ("no_draw", "headless", "unknown"):
+            for streamed in (False, True):
+                report = test_native_summary.sustained_report()
+                if status == "unknown":
+                    report.pop("render_progress")
+                else:
+                    report["render_progress"]["status"] = status
+                    if status == "headless":
+                        report["display_server"] = "headless"
+                with self.subTest(status=status, streamed=streamed), tempfile.TemporaryDirectory() as temp_dir:
+                    root = Path(temp_dir)
+                    if streamed:
+                        path, _ = test_native_summary.write_stream_run(root, "run-1", report)
+                        summary = profile_session.native_summary.summarize_run(path, profile_session.native_summary.DEFAULT_POLICY)
+                    else:
+                        summary = reduce_fixture(root, report)
+                    reasons = profile_session.run_rejection_reasons(run, summary)
+                self.assertTrue(summary["collection_valid"], summary["collection_reasons"])
+                self.assertTrue(summary["active_flight_qualifier"])
+                self.assertFalse(summary["rendering_eligibility"]["eligible"])
+                self.assertTrue(reasons)
+
 
 class CampaignFailureTests(unittest.TestCase):
     @staticmethod

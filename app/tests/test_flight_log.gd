@@ -9,12 +9,14 @@ var checks := 0
 var failures := 0
 var destination := ""
 var measurements: Array = []
+var reference_path := ""
 
 
 func _initialize() -> void:
 	destination = ProjectSettings.globalize_path("res://../tmp/flight-log-%d" % Time.get_ticks_usec())
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--out="): destination = argument.trim_prefix("--out=")
+		if argument.begins_with("--reference="): reference_path = argument.trim_prefix("--reference=")
 	DirAccess.make_dir_recursive_absolute(destination)
 	call_deferred("_run")
 
@@ -28,6 +30,7 @@ func check(label: String, passed: bool) -> void:
 
 func _run() -> void:
 	_mac_identity_tests()
+	_boundary_snapshot_tests()
 	for path in ["res://data/aircraft/jensen_ugly_stik_60.json", "res://data/aircraft/gp_extra_300s_60.json", "res://data/aircraft/p51d_mustang_120.json", "res://data/aircraft/sebart_avanti_s_a200.json", "res://data/aircraft/turbo_lumber_evolution.json", "res://data/aircraft/stik_glow_61fx_2t.json"]:
 		if not FileAccess.file_exists(path):
 			# Catalog paths are checked below by the caller; never silently invent a specimen.
@@ -39,6 +42,107 @@ func _run() -> void:
 	file.close()
 	print("FL-04 flight logs: %d checks, %d failures; %s" % [checks, failures, destination])
 	quit(1 if failures else 0)
+
+
+## A logger's accepted arrays and intervention guard must survive later edits to the
+## live simulation. The optional frozen writer makes block bytes an independent oracle.
+func _boundary_snapshot_tests() -> void:
+	var flight := Flight.new()
+	flight.input_enabled = false
+	flight.crash_auto_restart = false
+	flight.setup("res://data/aircraft/jensen_ugly_stik_60.json")
+	check("boundary fixture prepared", flight.is_flyable())
+	if not flight.is_flyable():
+		flight.free()
+		return
+	var logger := Log.new(flight)
+	var path := destination.path_join("boundary-ownership.orfl")
+	check("boundary fixture starts", logger.start(path) == OK)
+	var reference: RefCounted
+	var reference_file := destination.path_join("boundary-reference.orfl")
+	if not reference_path.is_empty():
+		var source := FileAccess.get_file_as_string(reference_path)
+		var script := GDScript.new()
+		script.source_code = source
+		var loaded := not source.is_empty() and script.reload() == OK
+		check("frozen reference writer loads", loaded)
+		if loaded:
+			reference = script.new(flight)
+			check("frozen reference writer starts", reference.start(reference_file) == OK)
+
+	flight.sim.step()
+	check("first accepted row buffered", logger._rows.size() == 1)
+	if logger._rows.size() != 1:
+		if reference != null: reference.stop()
+		logger.stop()
+		flight.free()
+		return
+	var retained_row: Dictionary = logger._rows[0]
+	var retained_bytes := var_to_bytes(retained_row)
+	var retained_tick: int = retained_row.tick
+	check("rows omit the previous-state boundary", not retained_row.has("previous"))
+	for key: String in ["state", "previous", "aux", "continuous", "modes"]:
+		var changed: Variant = flight.sim.get(key).duplicate()
+		check("intervention array available: " + key, not changed.is_empty())
+		if changed.is_empty(): continue
+		if key == "modes": changed[0] = 0 if changed[0] == 1 else 1
+		else: changed[0] += 0.001
+		flight.sim.set(key, changed)
+		check("prior row detached from edited " + key, var_to_bytes(retained_row) == retained_bytes)
+		var expected: PackedByteArray = changed.to_byte_array()
+		flight.sim.step()
+		var row: Dictionary = logger._rows.back()
+		check("one accepted tick after edit: " + key, row.tick == flight.sim.tick)
+		check("intervention captured exactly: " + key,
+			row.intervention.size() == 1 and row.intervention.has(key) \
+				and row.intervention[key].to_byte_array() == expected)
+	logger.mark("boundary marker")
+	if reference != null: reference.mark("boundary marker")
+	flight.sim.set_paused(true)
+	flight.sim.set_paused(false)
+	check("prior row survives event flush", var_to_bytes(retained_row) == retained_bytes)
+	for tick in Log.CHUNK_TICKS:
+		_controls(flight, tick)
+		flight.sim.step()
+	check("chunk flush completed", logger.recording and logger.rows_written >= Log.CHUNK_TICKS + 1)
+	check("prior row survives later ticks", var_to_bytes(retained_row) == retained_bytes)
+	check("boundary recording stops", logger.stop() == OK)
+	if reference != null: check("reference recording stops", reference.stop() == OK)
+	var read: Dictionary = Reader.inspect(path)
+	check("boundary recording complete", read.ok and read.complete and read.rows == 1 + 1 + 5 + Log.CHUNK_TICKS)
+	var actual_blocks := _block_digests(path, retained_tick, retained_bytes)
+	check("flushed row exactly matches its earlier bytes", actual_blocks.get("retained", false))
+	if reference != null:
+		var reference_blocks := _block_digests(reference_file, retained_tick, retained_bytes)
+		check("every reference block and event is byte identical", actual_blocks.get("valid", false) \
+			and reference_blocks.get("valid", false) and actual_blocks.digests == reference_blocks.digests)
+	flight.free()
+
+
+func _block_digests(path: String, retained_tick: int, retained_bytes: PackedByteArray) -> Dictionary:
+	var stream := FileAccess.open(path, FileAccess.READ)
+	if stream == null: return {valid = false}
+	stream.seek(8)
+	var header := Log.read_packet(stream)
+	if not header.ok:
+		stream.close()
+		return {valid = false}
+	var digests: Array = []
+	var found := false
+	var complete := false
+	while stream.get_position() < stream.get_length():
+		var packet := Log.read_packet(stream)
+		if not packet.ok: break
+		var block: Dictionary = packet.value
+		if block.kind == "footer":
+			complete = true
+			break
+		digests.append(packet.digest)
+		for row: Dictionary in block.rows:
+			if row.tick == retained_tick:
+				found = var_to_bytes(row) == retained_bytes
+	stream.close()
+	return {valid = complete, retained = found, digests = digests}
 
 
 func _mac_identity_tests() -> void:

@@ -355,7 +355,11 @@ echo "== packages"
 # Include exporter-managed GDExtension libraries beside the executable, preserving their relative paths.
 (cd "$DIST/linux" && zip -q -9 -r "$DIST/openrc-simulator-$VERSION-linux-x86_64.zip" .)
 (cd "$DIST/windows" && zip -q -9 -r "$DIST/openrc-simulator-$VERSION-windows-x86_64.zip" .)
-cp "$DIST/macos/OpenRC Simulator.zip" "$DIST/openrc-simulator-$VERSION-macos-universal.zip"
+python3 "$ROOT/tools/release/macos_reference_receipt.py" package-zip \
+  "$DIST/macos/OpenRC Simulator.zip" --output "$DIST/openrc-simulator-$VERSION-macos-universal.zip" \
+  --inputs "$DIST/.release-inputs.json" --root "$ROOT"
+echo "== final macOS archive: universal and ad-hoc signed"
+python3 "$HERE/tests/check_macos_export.py" "$DIST/openrc-simulator-$VERSION-macos-universal.zip"
 PACKAGES=("openrc-simulator-$VERSION-linux-x86_64.zip"
           "openrc-simulator-$VERSION-windows-x86_64.zip"
           "openrc-simulator-$VERSION-macos-universal.zip")

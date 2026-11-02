@@ -25,9 +25,9 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 try:
-    from .native_summary import STREAM_FORMAT, STREAM_MAX_BYTES, _hydrate_stream_report, validate_native_report
+    from .native_summary import STREAM_FORMAT, STREAM_MAX_BYTES, _hydrate_stream_report, rendering_gate, validate_native_report
 except ImportError:  # Direct execution puts this directory, not its parent, on sys.path.
-    from native_summary import STREAM_FORMAT, STREAM_MAX_BYTES, _hydrate_stream_report, validate_native_report
+    from native_summary import STREAM_FORMAT, STREAM_MAX_BYTES, _hydrate_stream_report, rendering_gate, validate_native_report
 
 from tools.godot.run_checked import inspect_log
 
@@ -80,6 +80,7 @@ IDENTITY_FIELDS = (
 GENERAL_HINTS = [
     "Frame-budget observations describe wall intervals and do not qualify active flight.",
     "When present, render_cpu_ms and render_gpu_ms are root-viewport context. Render timing may be delayed or describe a previous render frame, so same-index values do not prove the cause of a wall-frame hitch.",
+    "A positive GPU poll has unverified freshness unless render-server progress is observed throughout the sample; progress still does not prove presentation or GPU completion.",
     "A render_gpu_ms value of zero is unavailable_or_zero, not evidence of zero GPU cost.",
     "Observer-reported invalid numeric readings are preserved as an explicit measurement issue; sanitized zero values must not be treated as valid measurements.",
     "Memory start/end/max deltas describe this sample only and do not establish a memory leak.",
@@ -199,7 +200,7 @@ def _source_metadata(report: dict[str, Any]) -> dict[str, Any]:
 
 
 def _frame_context(raw_metrics: dict[str, Any], index: int,
-                   render_timing_available: bool | None) -> dict[str, Any]:
+                   render_timing_available: bool | None, render_progress: dict[str, Any]) -> dict[str, Any]:
     context = {key: raw_metrics[key][index] for key in CONTEXT_METRICS if key in raw_metrics}
     ticks = raw_metrics.get("sim_tick", [])
     times = raw_metrics.get("sim_time_s", [])
@@ -217,9 +218,15 @@ def _frame_context(raw_metrics: dict[str, Any], index: int,
         gpu_value = float(gpu_values[index])
         context["render_gpu_ms_reported"] = gpu_value
         contradictory = gpu_value > 0.0 and render_timing_available is False
-        context["render_gpu_ms"] = gpu_value if gpu_value > 0.0 and not contradictory else None
-        if contradictory:
+        known_no_progress = render_progress["status"] not in ("observed", "unknown", "headless")
+        unverified = gpu_value > 0.0 and not contradictory and not render_progress["eligible"]
+        context["render_gpu_ms"] = gpu_value if gpu_value > 0.0 and not contradictory and not unverified else None
+        if contradictory and known_no_progress:
+            context["render_gpu_ms_interpretation"] = "unavailable_without_render_progress"
+        elif contradictory:
             context["render_gpu_ms_interpretation"] = "contradictory_timing_unavailable"
+        elif unverified:
+            context["render_gpu_ms_interpretation"] = "unverified_render_progress"
         else:
             context["render_gpu_ms_interpretation"] = "positive_sample" if gpu_value > 0.0 else "unavailable_or_zero"
     return context
@@ -304,6 +311,7 @@ def analyze_frames(report: dict[str, Any], derived: dict[str, Any], budget_ms: f
         and type(frame_diagnostics.get("render_timing_available")) is bool
         else None
     )
+    render_progress = rendering_gate(report)
     top_frames = []
     for index in top_indices:
         start_usec = frame_ends[index] - wall_usec[index]
@@ -314,26 +322,31 @@ def analyze_frames(report: dict[str, Any], derived: dict[str, Any], budget_ms: f
             "end_ms": (frame_ends[index] - origin_usec) / 1000.0,
             "frame_ms": frame_ms[index],
             "over_budget": over[index],
-            "context": _frame_context(raw_metrics, index, render_timing_available),
+            "context": _frame_context(raw_metrics, index, render_timing_available, render_progress),
         })
 
     burst_items = [item for _rank, item in sorted(burst_heap, key=lambda entry: entry[0], reverse=True)]
     gpu_values = raw_metrics.get("render_gpu_ms")
     if gpu_values is None:
         gpu_status = {"reported": False, "measured_positive_samples": 0, "zero_samples": 0,
-                      "contradictory_positive_samples": 0, "interpretation": "not_reported"}
+                      "contradictory_positive_samples": 0, "unverified_positive_samples": 0,
+                      "interpretation": "not_reported"}
     else:
         positive_count = sum(float(value) > 0.0 for value in gpu_values)
         zero_count = sum(float(value) == 0.0 for value in gpu_values)
         contradictory_count = positive_count if render_timing_available is False else 0
-        available_positive_count = positive_count - contradictory_count
+        unverified_count = positive_count - contradictory_count if not render_progress["eligible"] else 0
+        available_positive_count = positive_count - contradictory_count - unverified_count
         gpu_status = {
             "reported": True,
             "measured_positive_samples": available_positive_count,
             "zero_samples": zero_count,
             "contradictory_positive_samples": contradictory_count,
+            "unverified_positive_samples": unverified_count,
             "interpretation": (
-                "invalid_positive_samples_with_timing_unavailable" if contradictory_count
+                "positive_samples_unavailable_without_render_progress" if contradictory_count and render_progress["status"] not in ("observed", "unknown", "headless")
+                else "invalid_positive_samples_with_timing_unavailable" if contradictory_count
+                else "positive_samples_with_render_progress_unverified" if unverified_count
                 else "positive_samples_with_zero_sentinels" if available_positive_count
                 else "unavailable_or_zero"
             ),
@@ -343,6 +356,7 @@ def analyze_frames(report: dict[str, Any], derived: dict[str, Any], budget_ms: f
         if isinstance(frame_diagnostics, dict) else "unknown"
     )
     gpu_status["timing_available"] = render_timing_available
+    gpu_status["render_progress"] = render_progress
 
     return {
         "budget_ms": budget_ms,
@@ -421,7 +435,11 @@ def _measurement_issues(report: dict[str, Any]) -> list[str]:
     timing_available = metadata.get("render_timing_available") if isinstance(metadata, dict) else None
     if (isinstance(gpu_values, (list, array)) and timing_available is False
             and any(type(value) in (int, float) and value > 0.0 for value in gpu_values)):
-        issues.append("positive render_gpu_ms samples contradict frame_diagnostics.render_timing_available=false")
+        progress = rendering_gate(report)
+        if progress["status"] not in ("observed", "unknown", "headless"):
+            issues.append("positive render_gpu_ms samples are unavailable without verified render progress")
+        else:
+            issues.append("positive render_gpu_ms samples contradict frame_diagnostics.render_timing_available=false")
     return issues
 
 

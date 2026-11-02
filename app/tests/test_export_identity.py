@@ -364,7 +364,7 @@ exit 23
         release = self.root / "tools/release"
         release.mkdir(parents=True)
         repo = Path(__file__).resolve().parents[2]
-        for name in ("manifest.py", "elf_audit.py"):
+        for name in ("manifest.py", "elf_audit.py", "macos_reference_receipt.py"):
             shutil.copyfile(repo / "tools/release" / name, release / name)
         self.git("add", "app/test_generated.gd", "tools/release")
         self.git("commit", "--quiet", "-m", "tracked script and metadata tools")
@@ -462,15 +462,15 @@ class ExportPackaging(unittest.TestCase):
         sidecar.write_bytes(self.linux.read_bytes())
         (self.dist / "linux/libopenrc_ground_vehicle.so").write_bytes(self.linux.read_bytes())
         (self.dist / "windows/OpenRC Simulator.exe").write_bytes(b"fixture exe")
-        with zipfile.ZipFile(self.dist / "macos/OpenRC Simulator.zip", "w") as archive:
-            archive.writestr("OpenRC Simulator.app/Contents/Info.plist", "fixture")
         self.handoff = self.root / "github output"
         self.version = "v1.2.3-rc.2"
         repo = Path(__file__).resolve().parents[2]
         sys.path.insert(0, str(repo / "tools/release"))
         self.addCleanup(sys.path.remove, str(repo / "tools/release"))
         from test_manifest import prepare_repository
+        from test_macos_reference_receipt import write_fixture_zip
         import manifest
+        self.mac_payload = write_fixture_zip(self.dist / "macos/OpenRC Simulator.zip")
         editor, templates, env = prepare_repository(self.root, self.version,
             hashlib.sha256(self.linux.read_bytes()).hexdigest())
         self.captured = manifest.capture(self.root, editor, templates, env)
@@ -497,7 +497,7 @@ class ExportPackaging(unittest.TestCase):
 
     def package(self, **overrides):
         env = os.environ.copy()
-        env.update(ROOT=str(self.root), DIST=str(self.dist), VERSION=self.version, GITHUB_OUTPUT=str(self.handoff),
+        env.update(ROOT=str(self.root), HERE=str(self.root / "app"), DIST=str(self.dist), VERSION=self.version, GITHUB_OUTPUT=str(self.handoff),
                    LOG=str(self.engine_log), PACK_PROBE="", HOST_PROBE="")
         env.update(overrides)
         return subprocess.run([os.environ.get("OPENRC_TEST_BASH", "bash"), "-euc", self.commands],
@@ -519,6 +519,11 @@ class ExportPackaging(unittest.TestCase):
             self.assertEqual(archive.read("openrc-simulator.x86_64"), self.linux.read_bytes())
             self.assertEqual(archive.read("native/kernel/libopenrc_native_kernel.so"), self.linux.read_bytes())
             self.assertEqual((archive.getinfo("openrc-simulator.x86_64").external_attr >> 16) & 0o777, 0o755)
+        with zipfile.ZipFile(self.dist / self.names[2]) as archive:
+            receipt_name = "OpenRC Simulator.app.openrc-reference-receipt"
+            self.assertEqual(set(archive.namelist()), set(self.mac_payload) | {receipt_name})
+            for name, payload in self.mac_payload.items():
+                self.assertEqual(archive.read(name), payload)
         # Exercise the actual transfer gate with only the six public deliverables.
         transferred = self.root / "downloaded"
         transferred.mkdir()

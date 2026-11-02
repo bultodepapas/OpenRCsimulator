@@ -69,6 +69,17 @@ These are source observations, not new measurements on Apple hardware.
 
 The dominant unresolved opportunity is **selection based on a complete workload**, not a missing generic optimization checklist. CPU allocation, immutable preparation, resource reuse and optional presentation work are plausible targets, but no large new production win was proven by this source audit.
 
+### Current bounded optimization candidates
+
+The 2026-11-02 implementation retains chronological packed speed-window values
+for statistics, independent byte snapshots for flight-log intervention guards,
+and zero-contribution rejection in the ground shader. Accepted-tick cadence,
+recording durability, float64 physics and visual settings are unchanged.
+Frozen-reference checks and five native M1 Compatibility views passed;
+the views are byte-identical. Native performance claims and renderer decisions
+remain separate from this parity result. Exact source identities, checks and
+native outcomes live in the [DT-MAC-02 evidence](research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-04b--06b-optimization-candidates-2026-11-02).
+
 ## 4. Rendering research tied to OpenRC
 
 ### 4.1 Mobile, Forward+ and Apple GPU memory traffic
@@ -78,6 +89,13 @@ Apple GPUs use tile-based rendering; keeping attachments in tile storage can red
 Mobile/Metal is a sensible first efficiency candidate, while Forward+/Metal offers different features and temporal reconstruction. Neither is assumed faster. There is a specific OpenRC caveat: [water](../app/render/lake/water.gdshader) reads screen and depth; sun glare/afterimage use depth/screen inputs. In the pinned Mobile renderer, visible screen/depth consumers can disable merged subpasses and cause copies/resolves. This is a source-proven conditional path, **not a measured bottleneck**. Inspect actual pass cost and retain water/visibility functions unless an accepted alternative preserves them. [Pinned Mobile source](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/servers/rendering/renderer_rd/forward_mobile/render_forward_mobile.cpp#L916-L942).
 
 First compare common effects, fixed scenery, Native reconstruction and identical output/internal pixels. Then test one cost at a time: MSAA 4× versus 2×, reflection size/update cadence, shadow maps/casters, transparent coverage, texture residency or bounded geometry. Screen-space effects, smoke and foliage need moving images; a faster static frame can hide loss of distant-aircraft attitude cues. Open terrain may not justify CPU occlusion culling. Preserve collision populations even when rendering less detail.
+
+A default renderer change also needs platform-policy care: the Mac package is
+universal, so a `.macos` setting applies to Intel Macs too. Pinned Godot registers
+each dot-separated override tag independently and selects a matching tag;
+`.macos.arm64` does not express an AND condition. Use the planned explicit
+capability/recovery policy, not a presumed compound feature filter.
+[ProjectSettings implementation](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/core/config/project_settings.cpp).
 
 ### 4.2 Pipeline and loading behavior
 
@@ -153,13 +171,13 @@ Before a native port, profile the M1 reference workload: evaluator stages, scene
 | [Research preparation](../tools/graphics/prepare_research.py), [launcher](../tools/graphics/launch.py) | Hashed private app copies, isolated user/import identity, explicit method/driver pairs and controlled profile. | Linked sibling assets are not immutable; freeze/hash them. Source-copy success does not qualify exported release selection/recovery. |
 | [frame_samples.gd](../app/render/frame_samples.gd) | v2 short arrays; v3 512-frame chunk stream, up to 3,600 s, bounded frame/file size, sequence/hash/completion and synchronous write-cost receipts. | Long-stream support already exists. Disk writes can cause hitches; measure overhead before deciding on buffering/worker changes. Interrupted/capped output cannot qualify a soak. |
 | [frame_diagnostics.gd](../app/render/frame_diagnostics.gd) | Method/driver/architecture/VSync/cap, reconstruction receipts, viewport timing, engine memory counters and scope notes. | macOS Compatibility viewport timing is explicitly disabled. Viewport coordinates are not verified drawable/internal pixels; presentation is uncollected. Missing GPU channels cannot be treated as zero cost. |
-| [native_summary.py](../research/performance/native_summary.py), [frame_diagnose.py](../research/performance/frame_diagnose.py) | v2/v3 validation, sample integrity and explicit duration gates. | Default 10/60 s summary minima are not the Mac 30/1,800 s soak protocol. Qualify completeness and each required channel separately. |
+| [native_summary.py](../research/performance/native_summary.py), [frame_diagnose.py](../research/performance/frame_diagnose.py) | v2/v3 validation, sample integrity, duration gates and per-interval render-progress eligibility from Main. Historical progress is unknown; stale GPU polls cannot establish rendering. | Render-server calls and window drawability are not presentation. Default 10/60 s minima are not the Mac 30/1,800 s soak protocol. Qualify completeness and each required channel separately. |
 | [resource_samples.py](../tools/godot/resource_samples.py), [checked runner](../tools/godot/run_checked.py) | psutil process CPU/RSS, system memory/swap, availability, clock anchors and bounded output. DT-MAC-02c raises the 1 Hz default to 2,100 samples, probes unsupported process I/O once, and adds required-channel coverage while retaining v1 legacy coverage. A short native M1 reference run had complete required coverage. | Sustained frame-interval alignment and measurement overhead remain unverified. Unsupported optional Darwin I/O remains visible as null/status and can still make a legacy Perfetto trace partial. |
 | [Incident bundle](../tools/godot/incident_bundle.py), [Perfetto export](../tools/godot/perfetto_export.py) | DT-MAC-02d preserves valid v3 manifest/sidecar pairs, old v2 input and explicit selected-window/track timeline scope; interrupted sidecars are labeled unverified. Focused Linux/Mac fixtures and long synthetic streams passed. | Hashes do not sanitize personal data; full native soak and consumer overhead remain open. |
 | [Debug bridge](../tools/debug/debugctl.py) | Local authenticated control, state, smoke, lifecycle, hitches, scripts and diagnostics. DT-MAC-02c routes Aqua launches without Xvfb and samples Mac RSS through the existing optional psutil sampler. A short native Aqua Home launch passed. | Package behavior and sustained lifecycle checks remain open. |
 | [Loading probe](../research/performance/loading_probe.gd) | Actual Home/Fly route, readiness/draw boundaries, private preferences and bounded transition cycles. | Paused first draw is not interactive readiness; observer screenshots stall and belong outside timing. |
 
-The psutil Darwin counter limitation is confirmed in the pinned [7.2.2 platform implementation](https://github.com/giampaolo/psutil/blob/release-7.2.2/psutil/_psosx.py). Expected partial-resource status is a code-path deduction requiring native confirmation, not a measured failure report.
+The psutil Darwin counter limitation is confirmed in the pinned [7.2.2 platform implementation](https://github.com/giampaolo/psutil/blob/release-7.2.2/psutil/_psosx.py). Short native M1 checks confirmed unsupported process I/O and complete required CPU/RSS/system-memory coverage; this does not establish sustained coverage or diagnostic overhead.
 
 ### Native tools to reuse
 

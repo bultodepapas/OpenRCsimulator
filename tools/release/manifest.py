@@ -11,14 +11,17 @@ import platform
 import re
 import shutil
 import subprocess
+import threading
 import zipfile
 
 if __package__:
-    from . import elf_audit
+    from . import elf_audit, macos_reference_receipt
 else:
     import elf_audit
+    import macos_reference_receipt
 
-FORMAT = "openrc-release-manifest-v1"
+FORMAT = "openrc-release-manifest-v2"
+LEGACY_FORMAT = "openrc-release-manifest-v1"
 MANIFEST = "release-manifest.json"
 ABI_REPORT = "linux-abi.json"
 CHECKSUMS = "SHA256SUMS"
@@ -90,14 +93,47 @@ def git(root, *args):
     return subprocess.check_output(["git", "-C", str(root), *args], stderr=subprocess.PIPE)
 
 
+def git_diff_identity(root):
+    command = ["git", "-C", str(root), "diff", "HEAD", "--binary", "--no-ext-diff", "--no-textconv"]
+    digest = hashlib.sha256()
+    changed = False
+    stderr = bytearray()
+    stderr_errors = []
+    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+        def drain_stderr():
+            try:
+                for chunk in iter(lambda: process.stderr.read(65536), b""):
+                    stderr.extend(chunk[:max(0, 65536 - len(stderr))])
+            except OSError as error:
+                stderr_errors.append(error)
+                process.kill()
+
+        reader = threading.Thread(target=drain_stderr, daemon=True)
+        reader.start()
+        try:
+            for chunk in iter(lambda: process.stdout.read(1024 * 1024), b""):
+                changed = True
+                digest.update(chunk)
+            code = process.wait()
+        except BaseException:
+            process.kill()
+            raise
+        finally:
+            reader.join()
+        if stderr_errors:
+            raise stderr_errors[0]
+        if code:
+            raise subprocess.CalledProcessError(code, command, stderr=bytes(stderr))
+    return changed, digest
+
+
 def worktree_identity(root):
-    changes = git(root, "diff", "HEAD", "--binary", "--no-ext-diff", "--no-textconv")
+    changed, digest = git_diff_identity(root)
     untracked = git(root, "ls-files", "--others", "--exclude-standard", "-z", "--", "app/")
-    digest = hashlib.sha256(changes)
     for raw in sorted(filter(None, untracked.split(b"\0"))):
         path = root / os.fsdecode(raw)
         digest.update(b"\0" + raw + b"\0" + file_info(path, allow_empty=True)["sha256"].encode("ascii"))
-    return bool(changes or untracked), digest.hexdigest()
+    return bool(changed or untracked), digest.hexdigest()
 
 
 def source_identity(root, env):
@@ -169,8 +205,10 @@ def validate_digest(value):
 
 
 def validate_metadata(data):
-    keys(data, ("format", "source", "build", "engine_version", "inputs", "artifacts", "reports", "qualification"), "manifest")
-    require(data["format"] == FORMAT, "unsupported release manifest format")
+    require(isinstance(data, dict) and data.get("format") in (FORMAT, LEGACY_FORMAT),
+            "unsupported release manifest format")
+    fields = ("format", "source", "build", "engine_version", "inputs", "artifacts", "reports", "qualification")
+    keys(data, fields + (("macos_reference",) if data["format"] == FORMAT else ()), "manifest")
     source = data["source"]
     keys(source, ("version", "commit", "commit_date", "tree", "application_version", "dirty", "tag", "channel", "worktree_sha256"), "source")
     names = artifact_names(source["version"])
@@ -212,6 +250,11 @@ def validate_metadata(data):
     validate_digest(row)
     require(data["qualification"] == {"status": "not_platform_qualified", "pending": PENDING},
             "this schema does not certify platform qualification")
+    if data["format"] == FORMAT:
+        reference = data["macos_reference"]
+        keys(reference, ("receipt_sha256", "source_receipt_sha256", "probe_sha256"), "Mac reference")
+        require(all(isinstance(value, str) and HEX.fullmatch(value) for value in reference.values()),
+                "invalid Mac reference digest")
 
 
 def validate_abi(report, linux):
@@ -248,6 +291,16 @@ def validate_linux_payload(directory, root, captured, report):
                 f"final Linux native library differs from captured build receipt: {member}")
 
 
+def validate_macos_payload(directory, artifact, source, *, snapshot_hash=None, probe_hash=None, staged_zip=None):
+    path = directory / artifact["filename"]
+    identity = macos_reference_receipt.verify_zip(path, source=source, snapshot_hash=snapshot_hash,
+                                                   probe_hash=probe_hash, staged_zip=staged_zip)
+    require(identity["architectures"] == ["arm64", "x86_64"], "final Mac ZIP is not universal")
+    require(file_info(path) == {key: artifact[key] for key in ("sha256", "bytes")},
+            "final Mac ZIP changed while validating its receipt")
+    return identity
+
+
 def finalize(directory, root, snapshot):
     captured = read_json(snapshot)
     require(captured.get("format") == "openrc-release-inputs-v1", "invalid input snapshot")
@@ -266,10 +319,15 @@ def finalize(directory, root, snapshot):
     report = read_json(directory / ABI_REPORT)
     validate_abi(report, artifacts[0])
     validate_linux_payload(directory, root, captured, report)
+    mac_identity = validate_macos_payload(directory, artifacts[2], source, snapshot_hash=file_info(snapshot)["sha256"],
+                                          probe_hash=file_info(root / "research/performance/session_probe.gd")["sha256"],
+                                          staged_zip=directory / "macos/OpenRC Simulator.zip")
     data = {key: captured[key] for key in ("source", "build", "engine_version", "inputs")}
     data.update(format=FORMAT, artifacts=artifacts,
                 reports=[{"filename": ABI_REPORT, **file_info(directory / ABI_REPORT)}],
-                qualification={"status": "not_platform_qualified", "pending": PENDING})
+                qualification={"status": "not_platform_qualified", "pending": PENDING},
+                macos_reference={key: mac_identity[key] for key in
+                                 ("receipt_sha256", "source_receipt_sha256", "probe_sha256")})
     validate_metadata(data)
     write_new(directory / MANIFEST, json_text(data))
     records = artifacts + data["reports"] + [{"filename": MANIFEST, **file_info(directory / MANIFEST)}]
@@ -293,6 +351,11 @@ def verify(directory, *, expected_commit=None, expected_tag=None, expected_run_i
         require(file_info(directory / row["filename"]) == {key: row[key] for key in ("sha256", "bytes")},
                 f"artifact digest/size mismatch: {row['filename']}")
     validate_abi(read_json(directory / ABI_REPORT), data["artifacts"][0])
+    # v1 predates the Mac receipt; retain its original integrity-only policy.
+    if data["format"] == FORMAT:
+        mac_identity = validate_macos_payload(directory, data["artifacts"][2], source)
+        require(all(mac_identity[key] == expected for key, expected in data["macos_reference"].items()),
+                "Mac receipt differs from the manifest reference digests")
     records = rows + [{"filename": MANIFEST, **file_info(directory / MANIFEST)}]
     expected_sums = "".join(f'{row["sha256"]}  {row["filename"]}\n' for row in records)
     checksum_path = directory / CHECKSUMS
@@ -339,7 +402,7 @@ def main():
                    expected_run_id=args.expected_run_id, expected_repository=args.expected_repository,
                    allow_staging=args.allow_staging)
         print(f"Release metadata {args.command}: passed")
-    except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
+    except (OSError, ValueError, KeyError, TypeError, zipfile.BadZipFile, subprocess.SubprocessError) as error:
         parser.exit(1, f"Release metadata {args.command}: {error}\n")
 
 

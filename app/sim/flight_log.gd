@@ -105,7 +105,7 @@ func start(destination := "") -> Error:
 	if not _write_packet(header):
 		return ERR_FILE_CANT_WRITE
 	recording = true
-	_expected = _boundary()
+	_expected = _boundary_bytes()
 	_rows.append(_sample({}))
 	peak_buffer_rows = 1
 	_session.sim.before_step.connect(_before_step)
@@ -164,10 +164,13 @@ func _disconnect() -> void:
 			pair[0].disconnect(pair[1])
 
 
-func _boundary() -> Dictionary:
+## Immutable byte snapshots stay private to the intervention guard. The rows own their
+## own packed arrays, and never share buffers with the live simulation or this guard.
+func _boundary_bytes() -> Dictionary:
 	var result := {}
 	for key in ["state", "previous", "aux", "continuous", "modes"]:
-		result[key] = _session.sim.get(key).duplicate()
+		var current: Variant = _session.sim.get(key)
+		result[key] = current.to_byte_array()
 	return result
 
 
@@ -182,14 +185,15 @@ func _before_step(_tick: int) -> void:
 	# Starter, engine cut and other out-of-tick edits are sparse interventions, never lost inputs.
 	for key in _expected:
 		var current: Variant = _session.sim.get(key)
-		if current.to_byte_array() != _expected[key].to_byte_array():
+		if current.to_byte_array() != _expected[key]:
 			_pending[key] = current.duplicate()
 	observer_usec += Time.get_ticks_usec() - started
 
 
 func _sample(intervention: Dictionary) -> Dictionary:
-	var sample := _boundary()
-	sample.erase("previous")
+	var sample := {}
+	for key in ["state", "aux", "continuous", "modes"]:
+		sample[key] = _session.sim.get(key).duplicate()
 	sample.kind = "sample"
 	sample.tick = _session.sim.tick
 	sample.inputs = _session.sim.inputs.duplicate()
@@ -224,7 +228,7 @@ func _stepped(tick: int, _t: float, _s: PackedFloat64Array, _l: PackedFloat64Arr
 		_disconnect()
 		return
 	_rows.append(_sample(_pending))
-	_expected = _boundary()
+	_expected = _boundary_bytes()
 	_last_tick = tick
 	peak_buffer_rows = maxi(peak_buffer_rows, _rows.size())
 	if _rows.size() >= CHUNK_TICKS:

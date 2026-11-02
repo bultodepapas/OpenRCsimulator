@@ -10,6 +10,8 @@ for test in \
   native-kernel/test_package.py \
   native-kernel/test_devtools.py \
   performance/test_session_baseline.py \
+  performance/test_app_cpu_per_sim.py \
+  performance/test_observer_cadence_bench.py \
   performance/test_native_summary.py \
   performance/test_frame_diagnose.py \
   performance/test_texture_inventory.py \
