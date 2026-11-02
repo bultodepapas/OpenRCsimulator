@@ -70,6 +70,11 @@ const translations = {
   gameLanguages: 'The simulator interface in current source is available in nine languages: <bdi dir="ltr">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. See the beta release notes for included languages.',
   candidateKicker: 'BETA PREVIEW · v0.1.9-beta.1', candidateTitle: 'v0.1.9-beta.1 is available', candidateIntro: 'Download v0.1.9-beta.1 for Windows, Linux or macOS. This beta preview is an early-alpha simulator; aircraft and ground-vehicle models remain experimental.', candidateLimitsNote: 'Independent evaluation of some experimental aircraft remains open:', candidateStikLimit: 'The Stik’s 240 Hz sideslip-limit check remains open; it is an estimated boundary check.', candidateYawLimit: 'The R02 yaw-damping comparison remains open; its model comparison is not a physical measurement.', candidateRelease: 'v0.1.9-beta.1 release notes ↗',
   communityKicker: 'AN OPEN PROJECT. A SHARED EFFORT.', communityHeading: 'The next improvement<br>could start with you.', communityCopy: 'A test with your transmitter. A real measurement. A code improvement. Every contribution helps build the next flight.', contribute: 'Contribute on GitHub', feedback: 'Share your experience',
+  donateHero: 'Donate', donateKicker: 'NEXT STEP / STEAM', donateHeading: 'Help bring OpenRC to Steam.',
+  donateGoal: 'The first goal is to cover Steam’s <a href="https://partner.steamgames.com/doc/gettingstarted/appfee">US$100 app fee</a>. If donations exceed that goal, the rest will fund AI model tokens to keep improving the simulator.',
+  donateWhy: 'Steam could make updates and distribution easier, help grow the community and give the developer better usage analytics. It could also make future online multiplayer easier to build.',
+  donateRoadmap: 'For now, the priorities are robustness, efficiency and controller and platform compatibility across Windows, Linux, macOS and ARM. ArduPilot/Mission Planner SITL integration is on the roadmap; it is not available yet.',
+  donateCta: 'Donate with PayPal',
   thanks: 'With OpenAI’s support for development.<br>Thanks to the participating manufacturers and RC community.', license: 'MIT CODE · ASSETS RETAIN THEIR OWN LICENSES', credits: 'Project imagery & credits ↗', sitemap: 'Sitemap', backTop: 'Back to top ↑'
 };
 
