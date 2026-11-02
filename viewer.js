@@ -205,7 +205,10 @@
     if(!drag || drag.id !== event.pointerId) return;
     const dx=event.clientX-drag.x;
     if(event.pointerType==='touch' && Math.abs(event.clientY-drag.y)>Math.abs(dx)+8) return;
-    frame=drag.frame+Math.round(dx/(canvas.clientWidth/metadata.frame_count));draw();
+    const count=metadata.frame_count;
+    const next=((drag.frame+Math.round(dx/(canvas.clientWidth/count)))%count+count)%count;
+    if(next===frame) return;
+    frame=next;draw();
   });
   const endDrag=()=>{drag=null;canvas.classList.remove('is-dragging');};
   canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);canvas.addEventListener('lostpointercapture',endDrag);
