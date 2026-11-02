@@ -226,7 +226,14 @@
     "worldDetail3": "水体不模拟浮力；飞行中飞机结构破坏尚未实现。",
     "worldLink": "世界与场景 ↗",
     "worldTitle": "看得见、听得到的飞行场",
-    "gameLanguages": "当前源代码中的模拟器界面提供九种语言：<bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. 请参阅 Beta 发行说明了解包含的语言。"
+    "gameLanguages": "当前源代码中的模拟器界面提供九种语言：<bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. 请参阅 Beta 发行说明了解包含的语言。",
+    "donateHero": "捐助",
+    "donateKicker": "下一步 / STEAM",
+    "donateHeading": "帮助 OpenRC 登上 Steam。",
+    "donateGoal": "首个目标是支付 Steam <a href=\"https://partner.steamgames.com/doc/gettingstarted/appfee\">100 美元的应用提交费</a>。如果捐款超过这一目标，余款将用于购买 AI 模型 token，继续改进模拟器。",
+    "donateWhy": "Steam 有望让更新和分发更方便，帮助社区成长，并为开发者提供更好的使用数据。它也可能让未来的在线多人模式更容易实现。",
+    "donateRoadmap": "目前我们优先提升稳定性、效率，以及控制器和 Windows、Linux、macOS、ARM 平台的兼容性。ArduPilot/Mission Planner SITL 集成已列入路线图，目前尚不可用。",
+    "donateCta": "通过 PayPal 捐助"
   },
   "labels": {
     "navigation": "主导航",

@@ -226,7 +226,14 @@
     "worldDetail3": "A água não simula flutuabilidade; a ruptura estrutural da aeronave durante o voo não está implementada.",
     "worldLink": "Mundo e cenário ↗",
     "worldTitle": "Um campo que você pode ver e ouvir",
-    "gameLanguages": "A versão atual do código oferece nove idiomas para a interface do simulador: <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. Consulte as notas da versão beta para conhecer os idiomas incluídos."
+    "gameLanguages": "A versão atual do código oferece nove idiomas para a interface do simulador: <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. Consulte as notas da versão beta para conhecer os idiomas incluídos.",
+    "donateHero": "Doar",
+    "donateKicker": "PRÓXIMO PASSO / STEAM",
+    "donateHeading": "Ajude a levar o OpenRC ao Steam.",
+    "donateGoal": "A primeira meta é cobrir a <a href=\"https://partner.steamgames.com/doc/gettingstarted/appfee\">taxa de US$ 100 do Steam</a>. Se as doações superarem essa meta, o restante financiará tokens de modelos de IA para continuar melhorando o simulador.",
+    "donateWhy": "O Steam pode facilitar atualizações e distribuição, ajudar a ampliar a comunidade e oferecer ao desenvolvedor melhores dados de uso. Também pode facilitar a criação de multiplayer online no futuro.",
+    "donateRoadmap": "Por enquanto, as prioridades são robustez, eficiência e compatibilidade com controles e com Windows, Linux, macOS e ARM. A integração ArduPilot/Mission Planner SITL está no roteiro; ainda não está disponível.",
+    "donateCta": "Doar pelo PayPal"
   },
   "labels": {
     "navigation": "Navegação principal",

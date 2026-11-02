@@ -226,7 +226,14 @@
     "worldDetail3": "L’eau ne simule pas la flottabilité ; la rupture structurelle des avions en vol n’est pas implémentée.",
     "worldLink": "Monde et décor ↗",
     "worldTitle": "Un terrain à voir et à entendre",
-    "gameLanguages": "Dans le code source actuel, l’interface du simulateur est disponible en neuf langues : <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. Consultez les notes de la bêta pour connaître les langues incluses."
+    "gameLanguages": "Dans le code source actuel, l’interface du simulateur est disponible en neuf langues : <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. Consultez les notes de la bêta pour connaître les langues incluses.",
+    "donateHero": "Faire un don",
+    "donateKicker": "PROCHAINE ÉTAPE / STEAM",
+    "donateHeading": "Aidez OpenRC à arriver sur Steam.",
+    "donateGoal": "Le premier objectif est de couvrir les <a href=\"https://partner.steamgames.com/doc/gettingstarted/appfee\">frais Steam de 100 $ US</a>. Si les dons dépassent cet objectif, le reste financera des tokens de modèles d’IA pour continuer à améliorer le simulateur.",
+    "donateWhy": "Steam pourrait simplifier les mises à jour et la distribution, élargir la communauté et fournir au développeur de meilleures données d’utilisation. Il pourrait aussi faciliter un futur mode multijoueur en ligne.",
+    "donateRoadmap": "Pour l’instant, les priorités sont la robustesse, l’efficacité et la compatibilité des manettes et des plateformes Windows, Linux, macOS et ARM. L’intégration ArduPilot/Mission Planner SITL figure sur la feuille de route, mais n’est pas encore disponible.",
+    "donateCta": "Faire un don via PayPal"
   },
   "labels": {
     "navigation": "Navigation principale",

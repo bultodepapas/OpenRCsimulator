@@ -226,7 +226,14 @@
     "worldDetail3": "물의 부력은 시뮬레이션하지 않습니다. 비행 중 기체 구조 파손은 구현되지 않았습니다.",
     "worldLink": "세계와 풍경 ↗",
     "worldTitle": "보고 들을 수 있는 비행장",
-    "gameLanguages": "현재 소스 코드의 시뮬레이터 인터페이스는 다음 9개 언어를 지원합니다: <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. 포함된 언어는 베타 릴리스 노트를 확인하세요."
+    "gameLanguages": "현재 소스 코드의 시뮬레이터 인터페이스는 다음 9개 언어를 지원합니다: <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. 포함된 언어는 베타 릴리스 노트를 확인하세요.",
+    "donateHero": "후원",
+    "donateKicker": "다음 단계 / STEAM",
+    "donateHeading": "OpenRC의 Steam 출시를 도와주세요.",
+    "donateGoal": "첫 목표는 Steam의 <a href=\"https://partner.steamgames.com/doc/gettingstarted/appfee\">앱 등록비 미화 100달러</a>를 마련하는 것입니다. 후원금이 이 목표를 넘으면 나머지는 시뮬레이터 개선을 위한 AI 모델 토큰에 사용됩니다.",
+    "donateWhy": "Steam은 업데이트와 배포를 쉽게 하고 커뮤니티를 키우며 개발자에게 더 나은 사용 데이터를 제공할 수 있습니다. 향후 온라인 멀티플레이어 구현에도 도움이 될 수 있습니다.",
+    "donateRoadmap": "현재는 안정성, 효율성, 컨트롤러 및 Windows, Linux, macOS, ARM 호환성을 우선합니다. ArduPilot/Mission Planner SITL 연동은 로드맵에 있지만 아직 사용할 수 없습니다.",
+    "donateCta": "PayPal로 후원하기"
   },
   "labels": {
     "navigation": "주 탐색 메뉴",

@@ -98,3 +98,24 @@ html[dir=rtl] .model-inspector model-viewer { direction:ltr; }
 }
 html[dir=rtl] #aircraft-name,html[dir=rtl] #inspector-title { text-align:right; }
 html[dir=rtl] .product-credit>span:last-child { margin-left:0; margin-right:auto; }
+
+/* Direct support links keep the funding goal visible without competing with downloads. */
+.hero-donate { display:inline-flex; align-items:center; gap:16px; padding:13px 16px; border:1px solid var(--lime); color:var(--lime); background:#101820bb; font-size:12px; font-weight:600; transition:background .2s,color .2s; }
+.hero-donate:hover { background:var(--lime); color:var(--ink); }
+.donation-panel { grid-column:1/-1; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:24px 8vw; margin-top:35px; padding:42px; border-top:3px solid var(--green); background:#e6e7dc; }
+.donation-panel-title .eyebrow { color:#566a4a; font-size:10px; }
+.donation-panel h3 { max-width:520px; margin-top:18px; font-size:clamp(30px,3.4vw,48px); font-weight:500; line-height:1.12; letter-spacing:-.045em; }
+.donation-panel-body p { max-width:68ch; margin:0 0 16px; font-size:13px; line-height:1.75; color:#445047; }
+.donation-panel-body p a { text-decoration:underline; text-underline-offset:3px; }
+.donation-button { margin-top:10px; background:var(--green); color:white; }
+html[data-theme=night] .donation-panel { background:#24352f; border-color:var(--lime); }
+html[data-theme=night] .donation-panel-title .eyebrow { color:var(--lime); }
+html[data-theme=night] .donation-panel-body p { color:#d0d8ce; }
+html[data-theme=night] .donation-button { background:var(--lime); color:var(--ink); }
+@media(max-width:700px) {
+  .hero-donate { padding:12px 14px; font-size:11px; }
+  .donation-panel { display:block; margin-top:42px; padding:28px 23px; }
+  .donation-panel h3 { margin-bottom:22px; font-size:34px; }
+  .donation-button { width:100%; margin-top:12px; }
+}
+@media(prefers-reduced-motion:reduce) { .hero-donate { transition:none; } }

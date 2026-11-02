@@ -1,12 +1,16 @@
 # OpenRC project website
 
-WEB-01…13 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
+WEB-01…14 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
 
 ## Design
 
 Visual thesis: an RC club's aircraft catalogue, combining oversized workshop typography, original dark studio renders, ivory paper and field green.
 
-Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and manufacturer introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → manufacturer partner details → development status and contribution paths. Spanish is served at the project root; English, Portuguese, Simplified Chinese, German, Russian, French, Italian, Japanese, Korean and Arabic use `en.html`, `pt.html`, `zh-Hans.html`, `de.html`, `ru.html`, `fr.html`, `it.html`, `ja.html`, `ko.html` and `ar.html`. A native language menu links all eleven versions, including without JavaScript. The page-wide night theme is saved locally. Downloads target the v0.1.9-beta.1 beta snapshot; the simulator remains early alpha and aircraft and vehicle models remain experimental.
+Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and manufacturer introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → manufacturer partner details → development status, donation goal and contribution paths. Spanish is served at the project root; English, Portuguese, Simplified Chinese, German, Russian, French, Italian, Japanese, Korean and Arabic use `en.html`, `pt.html`, `zh-Hans.html`, `de.html`, `ru.html`, `fr.html`, `it.html`, `ja.html`, `ko.html` and `ar.html`. A native language menu links all eleven versions, including without JavaScript. The page-wide night theme is saved locally. Downloads target the v0.1.9-beta.1 beta snapshot; the simulator remains early alpha and aircraft and vehicle models remain experimental.
+
+WEB-14 adds a PayPal link beside the opening download action and a community-section explanation of the [US$100 Steam app fee](https://partner.steamgames.com/doc/gettingstarted/appfee), the intended use of donations beyond that goal, current platform/controller priorities and planned SITL integration. The links and funding copy are present in all eleven static languages without JavaScript. The source is `index.html`, `content.js`, `locales/*.json`, `details.css` and `cinema.css`; regenerate localized pages with `build_locales.py`.
+
+Verification, 2026-11-02: the locale generator check and six static tests pass. Local Chromium checks found no horizontal overflow at 320 px in all eleven languages, or at 390 px and 1920 px in Spanish and English. The Arabic page also kept its PayPal link and layout in night mode without JavaScript. The isolated `gh-pages` commit `ffd7c2aa0cf1ae1f638b44d54631f1e23a7e24cb` built successfully; public Spanish and English HTML matched the local files byte for byte.
 
 Interaction thesis: a short hero entrance, restrained section reveals and real aircraft turntables with drag, angle slider and play/pause controls. Reduced-motion preference disables autoplay and offers deliberate single-frame steps; core content, technical disclosures and downloads work without JavaScript. The viewer loads only near the hangar, pauses offscreen/when hidden, and retains at most two decoded sheets.
 

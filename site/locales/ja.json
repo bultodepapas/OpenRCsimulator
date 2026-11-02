@@ -226,7 +226,14 @@
     "worldDetail3": "水上の浮力はシミュレーションしません。飛行中の機体構造破壊は未実装です。",
     "worldLink": "世界と風景 ↗",
     "worldTitle": "見て、音を聞いて楽しめる飛行場",
-    "gameLanguages": "現在のソースコードでは、シミュレーターの画面を次の9言語で利用できます：<bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. 収録言語はベータのリリースノートをご確認ください。"
+    "gameLanguages": "現在のソースコードでは、シミュレーターの画面を次の9言語で利用できます：<bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. 収録言語はベータのリリースノートをご確認ください。",
+    "donateHero": "寄付する",
+    "donateKicker": "次の目標 / STEAM",
+    "donateHeading": "OpenRC の Steam 公開を支援してください。",
+    "donateGoal": "最初の目標は Steam の<a href=\"https://partner.steamgames.com/doc/gettingstarted/appfee\">登録料 100 米ドル</a>を賄うことです。寄付がこの目標を超えた場合、残額はシミュレーターの改良を続けるための AI モデルのトークンに充てます。",
+    "donateWhy": "Steam により更新と配布が簡単になり、コミュニティの拡大や開発者の利用状況の把握に役立つと考えています。将来のオンラインマルチプレイの実装にも役立つ可能性があります。",
+    "donateRoadmap": "現在は堅牢性、効率、コントローラーと Windows・Linux・macOS・ARM への対応を優先しています。ArduPilot/Mission Planner SITL 連携はロードマップにありますが、まだ利用できません。",
+    "donateCta": "PayPal で寄付する"
   },
   "labels": {
     "navigation": "メインナビゲーション",

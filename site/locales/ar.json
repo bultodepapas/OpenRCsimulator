@@ -226,7 +226,14 @@
     "worldDetail3": "لا تحاكي المياه الطفو؛ ولم يُنفّذ الانهيار البنيوي للطائرة أثناء الطيران.",
     "worldLink": "العالم والمشهد ↗",
     "worldTitle": "ميدان تراه وتسمع أجواءه",
-    "gameLanguages": "تتوفر واجهة المحاكي في الشيفرة المصدرية الحالية بتسع لغات: <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. راجع ملاحظات إصدار بيتا لمعرفة اللغات المضمنة."
+    "gameLanguages": "تتوفر واجهة المحاكي في الشيفرة المصدرية الحالية بتسع لغات: <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. راجع ملاحظات إصدار بيتا لمعرفة اللغات المضمنة.",
+    "donateHero": "تبرّع",
+    "donateKicker": "الخطوة التالية / STEAM",
+    "donateHeading": "ساعد OpenRC على الوصول إلى Steam.",
+    "donateGoal": "هدفنا الأول تغطية <a href=\"https://partner.steamgames.com/doc/gettingstarted/appfee\">رسوم Steam البالغة 100 دولار أمريكي</a>. وإذا تجاوزت التبرعات هذا الهدف، فسيُستخدم المبلغ المتبقي لشراء رموز نماذج الذكاء الاصطناعي لمواصلة تحسين المحاكي.",
+    "donateWhy": "قد يسهّل Steam التحديثات والتوزيع، ويساعد في تنمية المجتمع، ويوفر للمطوّر بيانات أفضل عن الاستخدام. وقد يسهّل أيضاً تطوير اللعب الجماعي عبر الإنترنت مستقبلاً.",
+    "donateRoadmap": "نركّز حالياً على المتانة والكفاءة والتوافق مع وحدات التحكم وأنظمة Windows وLinux وmacOS وARM. تكامل ArduPilot/Mission Planner SITL مدرج في خطة التطوير، لكنه غير متاح بعد.",
+    "donateCta": "تبرّع عبر PayPal"
   },
   "labels": {
     "navigation": "التنقل الرئيسي",

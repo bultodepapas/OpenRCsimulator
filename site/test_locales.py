@@ -64,6 +64,17 @@ class LocalePublicationTests(unittest.TestCase):
         for links in downloads[1:]:
             self.assertEqual(downloads[0], links)
 
+    def test_donation_links_and_funding_goal_are_available_in_every_language(self):
+        paypal = 'https://www.paypal.com/paypalme/bultodepapas'
+        steam_fee = 'https://partner.steamgames.com/doc/gettingstarted/appfee'
+        for lang, page in self.pages.items():
+            with self.subTest(lang=lang):
+                self.assertEqual(page.select_one('.hero-donate')['href'], paypal)
+                self.assertEqual(page.select_one('.donation-button')['href'], paypal)
+                self.assertEqual(page.select_one('[data-i18n="donateGoal"] a')['href'], steam_fee)
+                for key in ('donateHero', 'donateHeading', 'donateGoal', 'donateWhy', 'donateRoadmap', 'donateCta'):
+                    self.assertTrue(page.select_one(f'[data-i18n="{key}"]').get_text(strip=True))
+
     def test_assets_and_internal_links_resolve_in_project_subdirectory(self):
         for lang, page in self.pages.items():
             with self.subTest(lang=lang):

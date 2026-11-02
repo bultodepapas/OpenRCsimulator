@@ -3,7 +3,7 @@
 /* Keep distant editorial sections out of the initial layout/paint work. */
 .project,.inventory,.partners,.development,.community { content-visibility:auto; contain-intrinsic-block-size:auto 900px; }
 .partners { contain-intrinsic-block-size:auto 430px; }
-.community { contain-intrinsic-block-size:auto 280px; }
+.community { contain-intrinsic-block-size:auto 650px; }
 .hero-actions { display:flex; gap:24px; align-items:center; flex-wrap:wrap; }
 .hero-inspect { background:none; border:0; border-bottom:1px solid #81928b; color:#dce8ab; font-size:12px; padding:13px 0; display:inline-flex; gap:18px; }
 .hero-inspect>span:last-child { transition:transform .3s var(--ease-out); }
@@ -130,7 +130,7 @@ html[data-theme=night] .inspect-launch:hover .inspect-symbol { color:#101820; }
   .inventory { contain-intrinsic-block-size:auto 1500px; }
   .partners { contain-intrinsic-block-size:auto 640px; }
   .development { contain-intrinsic-block-size:auto 960px; }
-  .community { contain-intrinsic-block-size:auto 350px; }
+  .community { contain-intrinsic-block-size:auto 900px; }
   .hero-actions { gap:12px 20px; }
   .hero-inspect { font-size:11px; }
   .hero-copy .button { gap:25px; }
