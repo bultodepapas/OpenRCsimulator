@@ -420,11 +420,15 @@ static func _remember_shadow_lighting(resource: Object, entry: Dictionary) -> vo
 		return
 	var id := resource.get_instance_id()
 	var old: Dictionary = _shadow_lighting_resources.get(id, {})
-	if old.is_empty() or old.reference.get_ref() != resource:
+	var reference: WeakRef
+	if not old.is_empty() and old.reference.get_ref() == resource:
+		reference = old.reference
+	else:
 		_shadow_lighting_registrations += 1
 		if _shadow_lighting_registrations >= SHADOW_LIGHTING_SWEEP_INTERVAL:
 			_prune_shadow_lighting()
-	entry["reference"] = weakref(resource)
+		reference = weakref(resource)
+	entry["reference"] = reference
 	_shadow_lighting_resources[id] = entry
 	ShadowSettings.set_lighting_refresh(_refresh_shadow_lighting)
 

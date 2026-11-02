@@ -160,11 +160,32 @@ func _test_lighting_compensation() -> void:
 	var updated: Dictionary = first.duplicate(true)
 	updated.sun_energy = 0.81
 	updated.sun_color = Color(0.5, 0.7, 0.8)
+	var compatibility := RenderingServer.get_current_rendering_method() == "gl_compatibility"
+	var tracked_resources: Array = [a.sun, a.environment, a.environment.sky.sky_material, a.ground, a.surface, a.water]
+	var references: Array[WeakRef] = []
+	var surface_source: Dictionary = {}
+	if compatibility:
+		for resource: Object in tracked_resources:
+			references.append(Atmosphere._shadow_lighting_resources[resource.get_instance_id()].reference)
+		surface_source = Atmosphere._shadow_lighting_resources[a.surface.get_instance_id()].source.duplicate(true)
+		check("copied surface has its own weak reference", not is_same(references[3], references[4])
+			and references[3].get_ref() == a.ground and references[4].get_ref() == a.surface)
 	Atmosphere.update_sun(a.sun, updated)
 	Atmosphere.update_environment(a.environment, updated)
 	Atmosphere.update_ground_material(a.ground, updated)
+	if compatibility:
+		check("updating the source preserves the copied surface snapshot",
+			Atmosphere._shadow_lighting_resources[a.surface.get_instance_id()].source == surface_source
+			and is_equal_approx(Atmosphere._shadow_lighting_resources[a.ground.get_instance_id()].source.energy, 0.81))
 	Atmosphere.update_ground_material(a.surface, updated)
 	Water.update_lighting(a.water, updated)
+	if compatibility:
+		var reused := true
+		for index in tracked_resources.size():
+			var resource: Object = tracked_resources[index]
+			reused = reused and is_same(references[index],
+				Atmosphere._shadow_lighting_resources[resource.get_instance_id()].reference)
+		check("lighting updates reuse each live resource's weak reference", reused)
 	# Keep this fixture's exposure as an independent owner would after an update.
 	a.environment.tonemap_exposure = 0.43
 	Settings.apply({})
@@ -181,6 +202,41 @@ func _test_lighting_compensation() -> void:
 	check("native baseline differs only when Compatibility compensation applies",
 		RenderingServer.get_current_rendering_method() != "gl_compatibility"
 		or baseline_a != projected_a)
+	if compatibility:
+		var temporary := Node3D.new()
+		root.add_child(temporary)
+		var temporary_sun := Atmosphere.create_sun(temporary)
+		var stale_entry: Dictionary = Atmosphere._shadow_lighting_resources[temporary_sun.get_instance_id()].duplicate(true)
+		var reference: WeakRef = stale_entry.reference
+		temporary.free()
+		check("tracked references do not retain a destroyed light", reference.get_ref() == null)
+		# Simulate a stale ID slot without relying on the engine to recycle IDs.
+		Atmosphere._prune_shadow_lighting()
+		var replacement := DirectionalLight3D.new()
+		holder.add_child(replacement)
+		var replacement_id := replacement.get_instance_id()
+		Atmosphere._shadow_lighting_resources[replacement_id] = stale_entry
+		var registrations_before := Atmosphere._shadow_lighting_registrations
+		Atmosphere.update_sun(replacement, updated)
+		var replacement_entry: Dictionary = Atmosphere._shadow_lighting_resources[replacement_id]
+		check("a dead reference is replaced with the new light and snapshot",
+			not is_same(reference, replacement_entry.reference) and replacement_entry.reference.get_ref() == replacement
+			and is_equal_approx(replacement_entry.source.energy, 0.81)
+			and Atmosphere._shadow_lighting_registrations == registrations_before + 1)
+		# Also reject a live reference to a different object occupying the slot.
+		var foreign_entry: Dictionary = Atmosphere._shadow_lighting_resources[a.ground.get_instance_id()].duplicate(true)
+		var foreign_reference: WeakRef = foreign_entry.reference
+		var other := DirectionalLight3D.new()
+		holder.add_child(other)
+		var other_id := other.get_instance_id()
+		Atmosphere._shadow_lighting_resources[other_id] = foreign_entry
+		registrations_before = Atmosphere._shadow_lighting_registrations
+		Atmosphere.update_sun(other, updated)
+		var other_entry: Dictionary = Atmosphere._shadow_lighting_resources[other_id]
+		check("a different live resource is replaced with the new light and snapshot",
+			not is_same(foreign_reference, other_entry.reference) and other_entry.reference.get_ref() == other
+			and other_entry.kind == "light" and is_equal_approx(other_entry.source.energy, 0.81)
+			and Atmosphere._shadow_lighting_registrations == registrations_before + 1)
 	var tracked_before := Atmosphere._shadow_lighting_resources.size()
 	for cycle in 130:
 		var temporary := Node3D.new()

@@ -6,6 +6,58 @@ The [Apple Silicon plan](../../../plans/apple-silicon-performance.md) owns statu
 and remaining acceptance. The [preceding research](../DT-MAC-00-R2/README.md) owns
 the dated primary references and pinned-engine audit.
 
+## DT-MAC-04d lighting reference reuse (2026-11-02)
+
+Baseline `1624fe85b`: the short Fly/Home soak's object growth came from the
+bounded Compatibility lighting registry, already described in
+[FW-67–74](../../field-world/FW-67-74/README.md#fw-67-r1-disabled-campfire-updates-2026-10-31).
+On Linux, the controlled Sunset sequence produced registry sizes
+`8, 24, 40, 56, 16, 32, 48`; object counts fell at the existing 64-registration
+sweep, with unchanged nodes/resources/orphans. This explains the short-window
+warning, not all RSS/static-memory variation. The unchanged M1 baseline passed
+the full 52-step smoke with `--cycles 12`, zero growing counters, exit zero and
+zero reported exit leaks. No leak threshold or sweep policy was weakened.
+
+The investigation found separate per-update work: `_remember_shadow_lighting`
+allocated a new `WeakRef` even when the same live resource was already tracked.
+It now reuses that wrapper while replacing the lighting snapshot as before.
+New resources, dead references and mismatched references still get fresh wrappers;
+copied materials keep independent references and source snapshots. Metal's
+non-Compatibility path is unchanged. This is an allocation reduction, not a
+claim of a measured frame-rate gain.
+
+Source identities: baseline `atmosphere.gd`
+`92a122da4aeb834e80befe9d59776c765423eded3e58c17ce2ead958437b5a73`;
+candidate `a5a668645b4c8c93a2c9b2823da597d68a158cca3b72e55d6ef5b6829a72ab56`.
+The new regression failed against the baseline. Candidate Linux checks passed:
+shadow settings 60, world flow 26, presentation context 37 and time-of-day
+render updates 94. Native M1 shadow settings passed all 60 checks. Independent
+review found no remaining defect in the assigned diff.
+
+The existing M1 GDScript profiler observed seven registry updates per sampled
+flight frame (98 calls over 14 sampled frames) during live Ugly Stik/Moonrise
+flight. Baseline helper self time was only 0.012 ms per sampled frame: this was
+not the dominant script cost. Sampling, profiler overhead and headless execution
+prevent a GPU or sustained-performance claim. Raw checks, profiles and the
+controlled registry sequence are retained under ignored `tmp/apple-round4/`.
+
+The candidate profile also contained 14 sampled frames, with live physics/input
+and no flight fault; the helper fell outside the requested top 60, so its time
+is unreported, not zero. No throughput effect is inferred from this single pair.
+The existing native Compatibility `flow_probe.gd` completed both versions at
+1920×1080, 4× MSAA: all 12 moon/twilight PNGs were byte-identical, and all
+non-timing report fields matched, including the moving-clock and paused samples.
+This offscreen World diagnostic contains no aircraft and does not qualify
+display presentation or flight FPS. The research source-editor copy was tested;
+the previously exported package has not been rebuilt for this change.
+
+Final candidate M1 smoke passed all 52 steps with `--cycles 20`: one warm-up,
+baseline plus 19 compared cycles, zero growing counters, zero engine errors,
+launcher exit zero and zero reported exit leaks. Nodes/resources/orphans remained
+830/1,326/0 across those compared cycles. This is a headless lifecycle check;
+sustained rendered performance and whole-process memory qualification remain open.
+The isolated research profile was restored and no Godot process was left running.
+
 ## DT-MAC-02e preflight host snapshot (2026-11-02)
 
 The existing `macos_preflight.py` now reads one optional Foundation `NSProcessInfo`
@@ -86,8 +138,8 @@ The initial smoke's separate object-growth failure remains evidence:
 logged errors. A fresh verbose headless five-cycle flight/Home soak then reported
 zero growing counters, zero errors and no shutdown leak warning. These different
 session histories do not establish a leak fix or justify weakening the check.
-The clean-profile broad repeat reproduced the growth; its non-Node type, owner
-and lifetime still need attribution. The broad regression gate remains open.
+The clean-profile broad repeat reproduced the growth. Its subsequent attribution
+and longer native smoke are recorded in [DT-MAC-04d above](#dt-mac-04d-lighting-reference-reuse-2026-11-02).
 
 ## DT-MAC-02c/d/h implementation (2026-11-02)
 

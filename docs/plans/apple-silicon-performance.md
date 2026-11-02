@@ -28,7 +28,7 @@ The objective is the maximum practical **sustained performance with readable air
 | DT-MAC-02a/b | Getter/template/preflight and bounded v3 capture implemented; native execution/overhead and coverage gaps open — phases 1–3. |
 | DT-MAC-02c/d/e/f/g/h | 02c Aqua/resource repair and 02d v3 incident/Perfetto handling implemented and checked on Mac; short native Aqua/resource/frame checks passed. 02h final-ZIP/manifest-v2 integration has focused tests; native development export, strict signature, exact package replay and fixed session probe passed. Full release/trust/quarantine remain open. 02e adds a native-checked optional preflight thermal/power snapshot; host-state series, app-route observation and voluntary share bundle remain open — phases 1, 2 and 8. |
 | DT-MAC-03a/b | Short source-build reference replay was exact on M1; complete baseline manifest, sustained runs and attribution remain open — phase 3. |
-| DT-MAC-04a–d | 04b statistics-window and recorder-copy candidates implemented with frozen-reference checks; partial native CPU comparisons establish no gain. Other work remains conditional — phase 4. |
+| DT-MAC-04a–d | 04b statistics-window and recorder-copy candidates implemented with frozen-reference checks; partial native CPU comparisons establish no gain. 04d reuses lighting WeakRefs with focused checks and native image parity; the short object-count warning is bounded registry retention. Sustained gain and remaining work stay open — phase 4. |
 | DT-MAC-04n1–n4 | Conditional ARM64 NK-3 feasibility, evaluator parity, admission and package work — phase 10, under SF/NK policy. |
 | DT-MAC-05a | Isolated renderer tools implemented; native parity/comparison open — phase 5. |
 | DT-MAC-05b/c | Product restart/recovery and renderer decision — phases 8 and 5 respectively. |
@@ -244,6 +244,14 @@ log-on/off, release or sustained gates.
 **Validation:** T6 cache/preparation/loading/failure/cancel/late-result tests; five process-cold and five warm trials; first drawn versus interactive-ready checks; 20 warm lifecycle cycles if ownership changes. T7 if session preparation changes. **Exit:** improved declared phase and full load time, no readiness regression, bounded retention and preserved direct/headless/capture/Workshop semantics. Do not add all four strategies to fix one phase.
 
 ### DT-MAC-04d — retained resources and imported textures
+
+**Incremental implementation (2026-11-02):** Compatibility lighting updates reuse
+existing weak-reference wrappers while preserving fresh lighting snapshots. The
+short-soak object warning was attributed to the existing bounded registry;
+the unchanged M1 baseline passed a 12-cycle full smoke. The candidate passed
+20 cycles, focused lifecycle/render checks and 12 byte-identical native offscreen
+captures. Sustained rendered benefit remains unqualified.
+[Evidence and native limits](../research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-04d-lighting-reference-reuse-2026-11-02).
 
 **Scope/tasks:** inspect world/preview/aircraft/audio/reflection lifetimes and current VQ-02a texture inventory. Measure actual GPU formats, mip/filter/color-space behavior, source/import identities and resident estimates. Fix one leak, duplicate resource or demonstrated import problem via its source pipeline. Preserve generated aircraft names/hinges and visual/collision contracts. Do not assume ASTC flag means every Mac resource uses ASTC or sum RSS with GPU estimates.
 

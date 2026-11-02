@@ -92,6 +92,13 @@ remain open.
 This does not promote Metal or change production quality settings. Exact identities and
 limits are in the [second-batch evidence](research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-06b-shader-work-reduction-second-batch-2026-11-02).
 
+Compatibility lighting now reuses tracked resources' weak-reference wrappers
+instead of allocating replacements on each update. Lighting snapshots and the
+bounded cleanup policy remain intact. The short Fly/Home object-count warning
+was traced to that periodic cleanup; it did not persist across a longer M1 smoke.
+This removes allocation work without establishing an FPS gain.
+[Implementation and checks](research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-04d-lighting-reference-reuse-2026-11-02).
+
 ## 4. Rendering research tied to OpenRC
 
 ### 4.1 Mobile, Forward+ and Apple GPU memory traffic
