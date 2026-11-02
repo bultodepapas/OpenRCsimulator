@@ -8,7 +8,7 @@ project scripts; the wrapper does not change engine options or project settings.
 From the repository root, PowerShell:
 
 ```powershell
-$GodotWindows = (Resolve-Path '.tools/Godot_v4.8-beta1_win64_console.exe').Path
+$GodotWindows = (Resolve-Path '.tools/Godot_v4.8-beta2_win64_console.exe').Path
 python tools/godot/run_checked.py --label simulation --timeout 90 --require-text '11 checks, 0 failed' -- $GodotWindows --headless --path app --audio-driver Dummy --script res://tests/test_simulation.gd
 if ($LASTEXITCODE -ne 0) { throw 'Simulation check failed; inspect the reported log and JSON.' }
 ```
@@ -36,11 +36,23 @@ importing the candidate project, run it through `app/test.sh` or directly:
 python3 tools/godot/fixed_brake_legacy.py --godot "$(app/get-godot.sh)" --out-dir tmp/godot-checks
 ```
 
-The runner reconstructs the pinned pre-brake R3 owner, requires all 16 original
-goldens for the current OS, then checks all four candidate outputs exactly against a same-host
-reference with only the pinned fuel and Avanti input identities matched. It
-checks reference pins and candidate source stability, retains full values under
-`tmp/fixed-brake-evidence/`, and runs the candidate unit through the checked
+The runner reconstructs the pinned pre-brake R3 owner and requires all 16
+original goldens for the current OS using the verified historical beta1 editor.
+It then imports the same source with the current beta2 editor and compares all
+four candidate outputs exactly against a same-host beta2 reference with only
+the pinned fuel and Avanti input identities matched. Engine metadata is checked
+as captured; no numerical values are normalized. The original goldens are not
+rewritten, and the two runs do not claim cross-engine equivalence.
+
+The historical editor is obtained automatically in `.tools/` on Linux and
+Windows x86-64 when absent, with the official archive, executable hashes and
+engine version verified. An incomplete or changed cache is retained and fails
+closed; a stale `.fixed-brake-beta1.lock` must be inspected before removal.
+Use `--historical-godot PATH` to select an already installed beta1 editor.
+Both engines are checked against their exact pins before and after the gate.
+The runner checks reference pins and candidate source stability, retains full
+values and input and engine identities under `tmp/fixed-brake-evidence/`
+(`--scratch-dir` overrides this), and runs the candidate unit through the checked
 runner. Missing history, inputs, engine identity, or an oracle fails the gate.
 The two historical commits, their app blobs and root attributes, and the
 repository's `assets/` tree must be available. The CI unit shard fetches only
@@ -106,7 +118,7 @@ app/get-templates.sh
 python3 tools/godot/macos_preflight.py --godot "$godot_exe"
 ```
 
-The editor getter downloads the pinned official 4.8-beta1 ARM64 archive, checks
+The editor getter downloads the pinned official 4.8-beta2 ARM64 archive, checks
 its SHA-512 and exact engine version, retains its app bundle and returns the
 executable path. It checks the cached bundle against a local file manifest on
 later runs. It refuses a changed or incomplete editor cache and retains a corrupt
@@ -114,16 +126,14 @@ downloaded archive or incomplete extraction for inspection; it does not silently
 overwrite them. A stale lock from an interrupted getter also needs inspection.
 The template getter verifies the matching official archive and all four installed
 files against member SHA-512 pins derived from that authenticated archive, including
-on offline warm runs. It uses macOS's `shasum`. It preserves the official macOS ZIP while preparing the separate
-project-local universal debug/release swap required by this beta. An unreceipted
-or changed corrected ZIP is refused. A corrupt downloaded template archive is
+on offline warm runs. It uses macOS's `shasum`. Beta2 uses the unmodified official
+macOS ZIP; the beta1 universal debug/release swap is retained only for historical
+reproduction and is not used by the current presets. A corrupt downloaded template archive is
 retained without extraction. A changed or incomplete installed template set is
 retained and rejected: inspect it and move it aside before retrying. Cold installs
 verify staging and exclusively created destination files under a shared cache lock;
-a stale `.openrc-<version>.lock` directory needs inspection before removal. If `python3` is
-older than 3.11, point `OPENRC_GODOT_PYTHON` at an already installed 3.11+
-interpreter before running `app/get-templates.sh`; the prerequisite is checked
-before downloading. Neither getter installs Python.
+a stale `.openrc-<version>.lock` directory needs inspection before removal.
+Neither getter installs Python.
 
 The preflight writes a new uniquely named JSON receipt under
 `tmp/macos-preflight/`; `--out-dir DIRECTORY` selects another parent. It records
@@ -276,7 +286,7 @@ only for this optional feature. Install it in an isolated environment:
 ```powershell
 python -m venv .tools/godot-diagnostics-venv
 .tools/godot-diagnostics-venv/Scripts/python.exe -m pip install -r tools/godot/requirements-resources.txt
-$GodotDirect = (Resolve-Path '.tools/Godot_v4.8-beta1_win64.exe').Path
+$GodotDirect = (Resolve-Path '.tools/Godot_v4.8-beta2_win64.exe').Path
 .tools/godot-diagnostics-venv/Scripts/python.exe tools/godot/run_checked.py --resources --resource-interval 1 --resource-disk-path . --timeout 300 -- $GodotDirect --path app
 ```
 
@@ -361,7 +371,7 @@ separate regressions. Real Godot test classes additionally require
 Capture frame diagnostics and OS counters in the **same checked invocation**:
 
 ```powershell
-$GodotDirect = (Resolve-Path '.tools/Godot_v4.8-beta1_win64.exe').Path
+$GodotDirect = (Resolve-Path '.tools/Godot_v4.8-beta2_win64.exe').Path
 $Frames = Join-Path (Get-Location) 'tmp/incident-frames.json'
 .tools/godot-diagnostics-venv/Scripts/python.exe tools/godot/run_checked.py --resources --resource-interval 1 --timeout 180 -- $GodotDirect --headless --path app --audio-driver Dummy --max-fps 60 -- --scripted "--frametimes=$Frames" --frame-diagnostics --warmup=1 --t=10
 ```
@@ -431,7 +441,7 @@ After importing the project, run a fresh-process, headless Home → flight → H
 and Workshop open/close check:
 
 ```powershell
-python tools/godot/lifecycle_check.py --godot .tools/Godot_v4.8-beta1_win64.exe --scenario both --cycles 3
+python tools/godot/lifecycle_check.py --godot .tools/Godot_v4.8-beta2_win64.exe --scenario both --cycles 3
 ```
 
 Linux: use `python3` and `--godot "$(app/get-godot.sh)"`. Add `--resources` using
@@ -486,7 +496,7 @@ invalid options and output preservation. Run them directly with
 `OPENRC_TEST_GODOT` set to the direct engine executable:
 
 ```powershell
-$env:OPENRC_TEST_GODOT = (Resolve-Path '.tools/Godot_v4.8-beta1_win64.exe').Path
+$env:OPENRC_TEST_GODOT = (Resolve-Path '.tools/Godot_v4.8-beta2_win64.exe').Path
 python -m unittest discover -s tools/godot -p 'test_lifecycle*.py'
 ```
 

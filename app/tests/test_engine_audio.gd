@@ -32,6 +32,39 @@ func _flight(path: String) -> Node:
 	return flight
 
 
+func _long_gap_queue_control() -> void:
+	# A target can fall while samples queued at the previous target are still
+	# playing. The adapter must add nothing to that backlog and it must drain.
+	var parent := Node3D.new()
+	root.add_child(parent)
+	var player: AudioStreamPlayer3D = Sound.create(parent)
+	var playback := player.get_stream_playback() as AudioStreamGeneratorPlayback
+	Sound.update(player, 0.0, 6000.0, 12000.0)
+	var observed := false
+	var no_push := false
+	var drained := false
+	for _attempt in 6:
+		await create_timer(player._mix_period + 0.05).timeout
+		Sound.update(player, 0.0, 6000.0, 12000.0)
+		var previous_target: int = player.target_frames
+		var previous_pushed: int = player.pushed_frames
+		var previous_queue: int = player.capacity - playback.get_frames_available()
+		Sound.update(player, 0.0, 6000.0, 12000.0)
+		var current_queue: int = player.capacity - playback.get_frames_available()
+		if previous_target > player.target_frames and previous_queue > player.target_frames \
+				and player.queued_frames > player.target_frames and current_queue > player.target_frames:
+			observed = true
+			no_push = player.pushed_frames == previous_pushed and current_queue <= previous_queue
+			var deadline: int = Time.get_ticks_usec() + ceili((5.0 * player._mix_period + 0.5) * 1000000.0)
+			while current_queue > player.target_frames and Time.get_ticks_usec() < deadline:
+				await create_timer(0.01).timeout
+				current_queue = player.capacity - playback.get_frames_available()
+			drained = current_queue <= player.target_frames
+			break
+	_check("long-gap queue adds nothing above the target and drains", observed and no_push and drained)
+	parent.free()
+
+
 func _run() -> void:
 	# An outstanding playback can outlive its node while the mixer finishes a fade.
 	# This is a lifetime oracle, not a check against a production helper's return value.
@@ -44,6 +77,7 @@ func _run() -> void:
 	_check("playback retains its source after node removal", source_weak.get_ref() != null)
 	retained_playback = null
 	_check("source releases without a reference cycle", source_weak.get_ref() == null)
+	await _long_gap_queue_control()
 	for path in MODELS:
 		for fps in [30, 60, 144]:
 			var quiet := _flight(path)
@@ -56,6 +90,8 @@ func _run() -> void:
 			var restore_point: Dictionary = audible.sim.checkpoint()
 			var snapshot_ok: bool = player.snapshot_tick == 0 and player.snapshot_rpm == audible.sim.aux[0]
 			var state_ok := true
+			var queue_ok := true
+			var playback := player.get_stream_playback() as AudioStreamGeneratorPlayback
 			for tick in 480:
 				# A shared deterministic stick/throttle tape, sampled at actual physics ticks.
 				for flight in [quiet, audible]:
@@ -67,11 +103,17 @@ func _run() -> void:
 				snapshot_ok = snapshot_ok and player.snapshot_tick == audible.sim.tick \
 					and player.snapshot_time == audible.sim.time() and player.snapshot_rpm == audible.sim.aux[0]
 				if int((tick + 1) * fps / 240.0) != int(tick * fps / 240.0):
+					var before_queue: int = maxi(0, player.capacity - playback.get_frames_available())
+					var before_pushed: int = player.pushed_frames
 					Sound.update(player, 0.0, -1.0, audible.aircraft.model.propulsion.max_rpm)
+					var after_queue: int = player.capacity - playback.get_frames_available()
+					queue_ok = queue_ok and after_queue <= maxi(before_queue, player.target_frames)
+					if player.queued_frames > player.target_frames:
+						queue_ok = queue_ok and player.pushed_frames == before_pushed
 				state_ok = state_ok and var_to_bytes(quiet.sim.checkpoint()) == var_to_bytes(audible.sim.checkpoint())
 			_check("%s/%d exact full simulation state with audio" % [path.get_file(), fps], state_ok)
 			_check("%s/%d observes every accepted endpoint" % [path.get_file(), fps], snapshot_ok)
-			_check("queue remains within device-aware target", player.queued_frames <= player.target_frames)
+			_check("queue refills respect the device-aware target", queue_ok)
 			_check("observer uses detached RPM rather than caller argument", player.voice.frequency > 0.0)
 
 			var original_playback := player.get_stream_playback()

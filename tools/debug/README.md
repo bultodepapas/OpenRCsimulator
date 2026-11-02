@@ -173,6 +173,10 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
   - `soak scenario.txt --cycles N` runs a script repeatedly. After warm-up it diffs every cycle against the first
     measured one, and reports counters that grow in every cycle and any new errors. It also prints process RSS from
     `/proc` on Linux.
+  - The `smoke` fly/Home scenario waits for deferred teardown and explicitly sweeps dead shadow-lighting weak
+    references before each census. That registry otherwise sweeps every 64 registrations, which can make a short
+    soak report bounded bookkeeping as growth. Live references and zero-tolerance growth checks remain in scope;
+    `soak` itself does not sweep caches. `test_shadow_settings.gd` checks the registry's ordinary bound.
 - **Script CPU: `profile`.**
   - Launch with `--script-profile`. Read `profile seconds=20` (the last 20 s), or `profile since=<log_seq>` with the
     sequence `ping` gave before the action you want to measure. The engine prints a sample about every 1–3 s, so use
@@ -428,7 +432,7 @@ to the bridge on a stand-in AppRoot. It covers:
   new orphan `Node`s; `profile` parses the engine's profile format, and 5,000 profile lines evict no warning from
   the main log.
 
-**Client tests.** These run in `research/test-tools.sh`, with 35 tests, mostly against a fake server. They cover:
+**Client tests.** These run in `research/test-tools.sh`, with 37 tests, mostly against a fake server. They cover:
 
 - argument and JSON parsing, and quoted values that stay strings;
 - the token, exit codes, and the `ui` table with its short paths;

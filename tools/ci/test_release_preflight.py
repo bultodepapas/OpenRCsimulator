@@ -113,7 +113,7 @@ class PreflightTests(unittest.TestCase):
 
     def test_rejects_committed_inconsistent_pin(self):
         script = self.root / "app/get-templates.sh"
-        script.write_text(script.read_text().replace("VERSION=4.8-beta1", "VERSION=9.9-stable", 1))
+        script.write_text(script.read_text().replace("VERSION=4.8-beta2", "VERSION=9.9-stable", 1))
         sha = self.commit()
         with self.assertRaisesRegex(ValueError, "versions differ"):
             preflight.preflight(self.root, "push", f"refs/tags/{TAG}", sha)

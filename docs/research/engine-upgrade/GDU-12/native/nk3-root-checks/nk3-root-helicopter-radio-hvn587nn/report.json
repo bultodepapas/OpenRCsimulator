@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6702320d-ba0c-4868-9425-1ce78c8daaf8",
+  "command": [
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_heli_restore_radio.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-01T23:01:58.405851+00:00",
+  "label": "nk3-root-helicopter-radio",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-lf-requalification/root-checks/nk3-root-helicopter-radio-hvn587nn/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-lf-requalification/root-checks/nk3-root-helicopter-radio-hvn587nn/report.json",
+  "timeout_seconds": 600.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_NATIVE_HELICOPTER_RADIO_NATIVE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 26.668357,
+  "log_bytes": 158,
+  "log_sha256": "d57aa75f0bbd164eb17182525de3f47496dc3ca8b32ad6dc2dd06965eb55f785"
+}

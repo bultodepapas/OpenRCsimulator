@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import configparser
 import hashlib
 import json
 import os
@@ -33,6 +34,8 @@ SOURCE_INPUTS = (
     "app/native/kernel/build-receipt.json", "app/native/ground_vehicle/build-receipt.json",
 )
 TEMPLATES = ("linux_release.x86_64", "windows_release_x86_64.exe", "macos.zip", "version.txt")
+MACOS_OFFICIAL = "template/macos-selected.zip"
+MACOS_CUSTOM = {"template/macos-derived.zip", "template/macos-derived.receipt.json"}
 CI_KEYS = ("GITHUB_REPOSITORY", "GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT", "GITHUB_WORKFLOW_REF",
            "GITHUB_WORKFLOW_SHA", "GITHUB_REF", "GITHUB_SHA", "RUNNER_OS", "RUNNER_ARCH")
 PENDING = ["native_desktop_gpu_controller_acceptance", "distro_and_isa_qualification",
@@ -125,19 +128,40 @@ def source_identity(root, env):
             "worktree_sha256": worktree_sha}
 
 
+def macos_template_inputs(root, templates):
+    """Identify the macOS preset's actual release template without accepting ambiguous settings."""
+    config = configparser.ConfigParser(interpolation=None, delimiters=("=",), strict=True)
+    try:
+        config.read_string((root / "app/export_presets.cfg").read_text(encoding="utf-8"))
+        presets = [section for section in config.sections() if re.fullmatch(r"preset\.\d+", section)
+                   and json.loads(config.get(section, "name", fallback='""')) == "macOS"]
+        require(len(presets) == 1, "expected exactly one macOS export preset")
+        preset = presets[0]
+        require(json.loads(config.get(preset, "platform", fallback='""')) == "macOS",
+                "macOS export preset has the wrong platform")
+        options = preset + ".options"
+        setting = config.get(options, "custom_template/release", fallback='""')
+        custom = json.loads(setting)
+    except (configparser.Error, json.JSONDecodeError) as error:
+        raise ValueError(f"invalid export preset configuration: {error}") from error
+    require(isinstance(custom, str), "macOS release template must be a string")
+    if not custom:
+        return {MACOS_OFFICIAL: templates / "macos.zip"}
+    require(custom.startswith("res://") and len(custom) > len("res://"),
+            "custom macOS release template must be a project resource")
+    derived = root / "app" / custom.removeprefix("res://")
+    require(derived.resolve().is_relative_to((root / "app/.godot/export_templates").resolve()),
+            "derived template must stay in the project template cache")
+    return {"template/macos-derived.zip": derived,
+            "template/macos-derived.receipt.json": derived.with_suffix(".zip.receipt.json")}
+
+
 def capture(root, editor, templates, env=None):
     env = os.environ if env is None else env
     source = source_identity(root, env)
     paths = {name: root / name for name in SOURCE_INPUTS}
     paths.update({"template/" + name: templates / name for name in TEMPLATES})
-    custom = re.findall(r'^custom_template/release="res://([^"\r\n]+)"$',
-                        (root / "app/export_presets.cfg").read_text(encoding="utf-8"), re.MULTILINE)
-    require(len(custom) == 1, "expected one project-local macOS release template")
-    derived = root / "app" / custom[0]
-    require(derived.resolve().is_relative_to((root / "app/.godot/export_templates").resolve()),
-            "derived template must stay in the project template cache")
-    paths["template/macos-derived.zip"] = derived
-    paths["template/macos-derived.receipt.json"] = derived.with_suffix(".zip.receipt.json")
+    paths.update(macos_template_inputs(root, templates))
     paths["editor"] = editor
     for tool in ("zip", "readelf"):
         executable = shutil.which(tool)
@@ -194,11 +218,15 @@ def validate_metadata(data):
     require(all(isinstance(data["build"][key], str) and data["build"][key] for key in ("host", "python")), "invalid build host")
     require(isinstance(data["engine_version"], str) and bool(data["engine_version"]), "missing engine version")
     input_names = set(SOURCE_INPUTS) | {"template/" + name for name in TEMPLATES} | {
-        "template/macos-derived.zip", "template/macos-derived.receipt.json", "editor", "tool/zip", "tool/readelf"}
-    keys(data["inputs"], input_names, "export inputs")
+        "editor", "tool/zip", "tool/readelf"}
+    require(isinstance(data["inputs"], dict) and set(data["inputs"]) in
+            (input_names | {MACOS_OFFICIAL}, input_names | MACOS_CUSTOM), "incorrect export inputs")
     for row in data["inputs"].values():
         keys(row, ("sha256", "bytes"), "input")
         validate_digest(row)
+    if MACOS_OFFICIAL in data["inputs"]:
+        require(data["inputs"][MACOS_OFFICIAL] == data["inputs"]["template/macos.zip"],
+                "selected official macOS template differs from the installed template")
     require(isinstance(data["artifacts"], list) and len(data["artifacts"]) == len(TARGETS), "incorrect package inventory")
     for row, name, (system, architecture) in zip(data["artifacts"], names, TARGETS):
         keys(row, ("filename", "platform", "architecture", "format", "sha256", "bytes"), "artifact")

@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2f7260a1-4bba-467e-bef0-e230cfce7693",
+  "command": [
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-beta2-audio-probe/source-app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_engine_audio.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-01T23:30:49.753722+00:00",
+  "label": "audio-beta2-excess-push-mutant",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-audio-investigation/checks/audio-beta2-excess-push-mutant-guo4tsai/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-audio-investigation/checks/audio-beta2-excess-push-mutant-guo4tsai/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 22.433946,
+  "log_bytes": 3747,
+  "log_sha256": "ab9246a60242259851e66c08329231fbf36b14ee12fc15df2f0d53cfb212b21c"
+}

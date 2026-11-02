@@ -1109,7 +1109,8 @@ class FleetCampaignTests(unittest.TestCase):
         asyncio.run(scenario())
 
     def test_live_drift_names_changed_mirrored_source(self):
-        with tempfile.TemporaryDirectory(dir=campaign.ROOT / "tmp") as temporary:
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(campaign, "ROOT", Path(temporary)):
             source = Path(temporary) / "source.gd"
             source.write_text("before", encoding="utf-8")
             name = str(source.relative_to(campaign.ROOT))

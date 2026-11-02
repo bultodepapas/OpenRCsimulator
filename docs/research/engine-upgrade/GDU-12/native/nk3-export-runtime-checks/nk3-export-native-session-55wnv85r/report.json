@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b6c1ea83-728e-4262-a02e-1557ec146c4e",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_native_session.gd"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "started_utc": "2026-11-01T23:04:27.018266+00:00",
+  "label": "nk3-export-native-session",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-export-requalification/fixture-runtime-checks/nk3-export-native-session-55wnv85r/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-export-requalification/fixture-runtime-checks/nk3-export-native-session-55wnv85r/report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_NATIVE_SESSION_NATIVE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.25054,
+  "log_bytes": 1266,
+  "log_sha256": "c64eccbb17ae6a2598c01903c44010d964302c9c54b840142b7eb0c82d3c5fd3"
+}

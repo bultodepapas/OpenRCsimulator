@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "01c89b05-4d1d-4e9e-9ac5-67dcee5e109c",
+  "command": [
+    "/dev/shm/openrc-beta2-suite/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-beta2-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_engine_audio.gd"
+  ],
+  "cwd": "/dev/shm/openrc-beta2-suite",
+  "started_utc": "2026-11-01T23:18:34.643739+00:00",
+  "label": "godot",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2/suite-ram/checks/godot-m7yuge73/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2/suite-ram/checks/godot-m7yuge73/report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 23.815703,
+  "log_bytes": 3119,
+  "log_sha256": "1fba7cb941d750f155d550830fe582d9f878688b568549e1311b6193628a02c8"
+}

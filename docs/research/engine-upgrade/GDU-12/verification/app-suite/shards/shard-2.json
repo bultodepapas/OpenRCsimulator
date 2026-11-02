@@ -1,0 +1,81 @@
+{
+  "shard": 2,
+  "exit_code": 0,
+  "source_commit": "46b004c7b469448c29ef96168da4f03cee2c6d23",
+  "roster_source_sha256": "b5fb469c466f69097781df0e9894522c8d38d3bf169c27335a9961a886c002dd",
+  "scripts_completed": 109,
+  "checked_invocations": 110,
+  "passed": 110,
+  "failed_or_invalid": 0,
+  "junit_reported_skipped": 0,
+  "junit_sha256": "60d4568b9f721c1ceed38927b88c88ed037683160d9b4d4ba438fd8b7c407ac5",
+  "console_sha256": "9677533bc31ff13e66a70d44a3a725b59500e97a6ed471739e39f891d500c367",
+  "roster_sha256": "ce23f7172ef80c5f690f04116a88d1817e1092334882242f112037345ccfbb8e",
+  "summarizer_sha256": "f6b2dfbebbc2caccea71f95d17d2919d5e2b8248426f669d3f5335a9de030c4c",
+  "checked_collection_sha256": "587de64038e4725bf7bc0466b5618d1395e281263722a1251ff23025ac40a75c",
+  "raw_collection": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-units\\shard-2",
+  "inline_skips": [
+    {
+      "line": 868,
+      "test": "test_crash_integration.gd",
+      "text": "skip jensen-das-ugly-stik-60: Dummy has no playback; native integration covers audio"
+    },
+    {
+      "line": 900,
+      "test": "test_crash_integration.gd",
+      "text": "skip stik-glow-61fx-2t: Dummy has no playback; native integration covers audio"
+    },
+    {
+      "line": 932,
+      "test": "test_crash_integration.gd",
+      "text": "skip stik-glow-55ax-2t: Dummy has no playback; native integration covers audio"
+    },
+    {
+      "line": 964,
+      "test": "test_crash_integration.gd",
+      "text": "skip stik-glow-fs64v-4t: Dummy has no playback; native integration covers audio"
+    },
+    {
+      "line": 998,
+      "test": "test_crash_integration.gd",
+      "text": "skip gp-extra-300s-60: Dummy has no playback; native integration covers audio"
+    },
+    {
+      "line": 1027,
+      "test": "test_crash_integration.gd",
+      "text": "skip p51d-mustang-120: Dummy has no playback; native integration covers audio"
+    },
+    {
+      "line": 1056,
+      "test": "test_crash_integration.gd",
+      "text": "skip f4u-corsair-250: Dummy has no playback; native integration covers audio"
+    },
+    {
+      "line": 1087,
+      "test": "test_crash_integration.gd",
+      "text": "skip sebart-avanti-s-a200-p100rx: Dummy has no playback; native integration covers audio"
+    },
+    {
+      "line": 1116,
+      "test": "test_crash_integration.gd",
+      "text": "skip turbo-lumber-evolution: Dummy has no playback; native integration covers audio"
+    },
+    {
+      "line": 1145,
+      "test": "test_crash_integration.gd",
+      "text": "skip moonrunner-x99: Dummy has no playback; native integration covers audio"
+    },
+    {
+      "line": 2009,
+      "test": "test_lighting_segment_filter.gd",
+      "text": "Lighting segment pixels SKIPPED: native rendering required at 1920x1080."
+    }
+  ],
+  "native_fallback_occurrences": 43,
+  "native_fallback_sample": {
+    "line": 142,
+    "text": "physics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage library not installed\",\"requested\":\"native\"}"
+  },
+  "external_reference_mentions": [],
+  "checkout_variant": "ram"
+}

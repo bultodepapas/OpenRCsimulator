@@ -1,4 +1,5 @@
 """Exercise the real shell runner's CI partitions with a disposable fake engine."""
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -83,11 +84,26 @@ exit 0
         (self.root / "tests/test_fixed_gear_brake_input.gd").touch()
         wrapper = self.root.parent / "tools/godot/fixed_brake_legacy.py"
         wrapper.write_text('import sys\nprint("STRICT_BRAKE_GATE")\nsys.exit(9)\n', encoding="utf-8")
+        wrapper.with_name("get_historical_godot.py").touch()
         result = self.run_partition(0, 1)
         self.assertEqual(result.returncode, 9, result.stdout)
         self.assertIn("STRICT_BRAKE_GATE", result.stdout)
         self.assertNotIn("VISITED test_fixed_gear_brake_input.gd", result.stdout)
         self.assertFalse(list((self.root.parent / "tmp/godot-checks").glob("roster-units-*.json")))
+
+    def test_fixed_brake_roster_tracks_historical_getter(self):
+        script = "tests/test_fixed_gear_brake_input.gd"
+        (self.root / script).touch()
+        wrapper = self.root.parent / "tools/godot/fixed_brake_legacy.py"
+        wrapper.touch()
+        helper = wrapper.with_name("get_historical_godot.py")
+        helper.write_text("before", encoding="utf-8")
+        spec = importlib.util.spec_from_file_location("phase_roster", self.root.parent / "tools/ci/phase_roster.py")
+        roster = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(roster)
+        before = roster.digest(self.root, [script])
+        helper.write_text("after", encoding="utf-8")
+        self.assertNotEqual(before, roster.digest(self.root, [script]))
 
     def test_fixed_brake_history_is_fetched_for_its_unit_shard(self):
         fixed_name = "test_fixed_gear_brake_input.gd"

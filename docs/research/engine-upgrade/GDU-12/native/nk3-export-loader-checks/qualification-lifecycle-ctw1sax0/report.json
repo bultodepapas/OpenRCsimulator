@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "555e34ea-2f52-475b-b1a5-94e8ef8f85c1",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-2yg_p40j/engine/Godot",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-2yg_p40j/base",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-2yg_p40j/base/qualification_host.gd",
+    "--",
+    "lifecycle"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "started_utc": "2026-11-01T23:00:01.842945+00:00",
+  "label": "qualification-lifecycle",
+  "log": "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-2yg_p40j/checks/qualification-lifecycle-ctw1sax0/engine.log",
+  "report": "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-2yg_p40j/checks/qualification-lifecycle-ctw1sax0/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NATIVE_QUALIFICATION preloaded=false",
+    "NATIVE_QUALIFICATION mode=lifecycle verdict=pass",
+    "NK3_NATIVE_SESSION_NATIVE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.295239,
+  "log_bytes": 1352,
+  "log_sha256": "7c7055a18da25798da86681032a5ce3ffaa2b9cd073a9cee2ea0f1cf01573f7f"
+}

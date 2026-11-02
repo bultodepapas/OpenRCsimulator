@@ -22,7 +22,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 TOOL_ROOT = ROOT / "tmp/native-kernel"
-GODOT = ROOT / ".tools/Godot_v4.8-beta1_linux.x86_64"
+GODOT = ROOT / ".tools/Godot_v4.8-beta2_linux.x86_64"
 HARNESS_OPTIONS = {
     "oracle.gd": set(), "stage_oracle.gd": set(),
     "propeller_oracle.gd": set(),

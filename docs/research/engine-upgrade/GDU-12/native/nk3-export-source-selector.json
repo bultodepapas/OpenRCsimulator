@@ -1,0 +1,121 @@
+{
+  "accepted": {
+    "electric": {
+      "compared": 32010,
+      "results": "electric-20261101T230020508963Z.json",
+      "results_sha256": "3c1dfc6ef087581e4943c59492bee1cca74650b9bcb7268214c948a94df33254",
+      "verdict": "pass"
+    },
+    "electric_stage": {
+      "compared": 66988,
+      "results": "electric-stage-20261101T230025516917Z.json",
+      "results_sha256": "7c8e1591090214186e705fdfbb39d8785ab873c4fed8f5041696e762d721bde9",
+      "verdict": "pass"
+    },
+    "gear": {
+      "compared": 35452,
+      "results": "gear-20261101T230232633711Z.json",
+      "results_sha256": "addce2737423bd43d41adfe23f6bae433496e4098c8e05e170d0cbd35da9fcb8",
+      "verdict": "pass"
+    },
+    "glow": {
+      "compared": 49606,
+      "results": "glow-20261101T230108043526Z.json",
+      "results_sha256": "fb481b1ec1bc8e4c85475d37e96baac076a98cf166e217d80d1a99b6ebbf64fe",
+      "verdict": "pass"
+    },
+    "glow_stage": {
+      "compared": 79767,
+      "results": "glow-stage-20261101T230112196797Z.json",
+      "results_sha256": "a9e8b0a773651d69cb5289f22611d3efdfef19600ccd9a2acdc07c9e84084a55",
+      "verdict": "pass"
+    },
+    "helicopter": {
+      "compared": 50336,
+      "results": "helicopter-20261101T230146155682Z.json",
+      "results_sha256": "2981e52403d6910830915c81d7715bf6c8b04bb18b28a02e352a293243a5813b",
+      "verdict": "pass"
+    },
+    "helicopter_stage": {
+      "compared": 61281,
+      "results": "helicopter-stage-20261101T230153431206Z.json",
+      "results_sha256": "500062c1391522f2ba3cceb4d111e1cfb2b1cbb9aa6df7f22201b16c887b970a",
+      "verdict": "pass"
+    },
+    "legacy_ground": {
+      "compared": 14806,
+      "results": "legacy-ground-20261101T230307132087Z.json",
+      "results_sha256": "acd8dbad1fdd35c786469dd84b4995221fe31313203206bcb9131dfdcfabece4",
+      "verdict": "pass"
+    },
+    "liquid": {
+      "compared": 15572,
+      "results": "liquid-20261101T230044247846Z.json",
+      "results_sha256": "2b8d83adf9db41eaf0a4a325e30b6751a88e7979ecf419f094edbcb185d75e2c",
+      "verdict": "pass"
+    },
+    "liquid_stage": {
+      "compared": 64136,
+      "results": "liquid-stage-20261101T230048497172Z.json",
+      "results_sha256": "99afc2a2d8107723bb43e1b9325e9dc17afa22b05ae7a9fd0f23bda1547f3bd1",
+      "verdict": "pass"
+    },
+    "negative_control": {
+      "compared": 128664,
+      "results": "stage_mutant-20261101T230323320722Z.json",
+      "results_sha256": "2033bf1a010db428ced8ba74d4a9a782417e5ae61723be5e64cbc6e697849480",
+      "verdict": "fail"
+    },
+    "prescribed_stage": {
+      "compared": 49571,
+      "results": "prescribed-stage-20261101T230249906029Z.json",
+      "results_sha256": "921be1c6776e01d48c11254b2735276df163ad50ffef4c963a6c82204c845e38",
+      "verdict": "pass"
+    },
+    "propeller": {
+      "compared": 41958,
+      "results": "propeller-20261101T230015459029Z.json",
+      "results_sha256": "f00e39df02f11a5e445563adedfa5ad40794e0a1bbe985272c3da5b18d968441",
+      "verdict": "pass"
+    },
+    "stage_oracle": {
+      "compared": 128664,
+      "results": "stage-20261101T225949143261Z.json",
+      "results_sha256": "be49e245e2807fbd428480f8b235cf75e3553754ce455e0d74960d08def1c5ca",
+      "verdict": "pass"
+    },
+    "trajectory": {
+      "compared": 156030,
+      "results": "trajectory-20261101T225949080507Z.json",
+      "results_sha256": "1e67a3244a915a794984025a8fdfa437c6334f0b44283533f79ff8211e362ce7",
+      "verdict": "pass"
+    },
+    "wake": {
+      "compared": 19138,
+      "results": "wake-20261101T230222906236Z.json",
+      "results_sha256": "53f2ae336458e8f70e1bfe6defaf3deb6b4d0cdecd4f5cfac9d7f23a308d0107",
+      "verdict": "pass"
+    },
+    "wake_spatial": {
+      "compared": 20204,
+      "results": "wake-spatial-20261101T230227627213Z.json",
+      "results_sha256": "782077e03f80e352aa00fab0e92615e3b5bc5632df2ed1610419b3bcb08b52d1",
+      "verdict": "pass"
+    },
+    "weather": {
+      "compared": 21549,
+      "results": "weather-20261101T230203796198Z.json",
+      "results_sha256": "ee07b7b044f6fa3f84e9aa7a1ef0d37dc716626d96954306669bced59d0cacde",
+      "verdict": "pass"
+    },
+    "weather_stage": {
+      "compared": 59340,
+      "results": "weather-stage-20261101T230206164221Z.json",
+      "results_sha256": "99189f546fccc9b565a997fe1de14405c6b5f7be9eb275644bcb9336e844c21e",
+      "verdict": "pass"
+    }
+  },
+  "binary_sha256": "7cf8e920cdcc0846aff1ab35c0db8dcdf66d7454078e3d1717ba31ae0171b5cc",
+  "mirrored_source_count": 130,
+  "source": "/mnt/gdu12-export-stage/source"
+}

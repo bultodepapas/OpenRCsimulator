@@ -1,0 +1,26 @@
+Retained disposable installation fixture: /dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu
+PASS native stage qualification host
+PASS native lifecycle qualification host
+PASS native replay qualification host
+PASS native helicopter qualification host
+PASS native helicopter-radio qualification host
+PASS valid
+PASS missing-receipt
+PASS invalid-receipt
+PASS invalid-json-receipt
+PASS invalid-envelope-abi
+PASS invalid-platform-abi
+PASS invalid-source-digest
+PASS invalid-source-path
+PASS missing-binary
+PASS wrong-binary-with-matching-alternate
+PASS wrong-engine
+PASS wrong-source
+PASS alternate-descriptor-path
+PASS extra-feature-key
+PASS extra-dependencies
+PASS wrong-entry-symbol
+PASS malformed-descriptor
+PASS preloaded-class
+PASS migrated-cache
+NK3 installation: 19 checked loader cases passed

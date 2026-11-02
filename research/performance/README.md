@@ -44,7 +44,7 @@ renderer; headless execution is rejected. It preserves normal callbacks and focu
 safety, records pause/tick state, and never forces a pose or advances physics manually.
 
 ```powershell
-& .tools/Godot_v4.8-beta1_win64_console.exe --path app --audio-driver Dummy `
+& .tools/Godot_v4.8-beta2_win64_console.exe --path app --audio-driver Dummy `
   --resolution 1920x1080 --windowed `
   --script "$PWD/research/performance/loading_probe.gd" -- `
   --output="$PWD/tmp/loading-new.json" --cycles=3
@@ -130,7 +130,7 @@ From the repository root, after importing the app with the pinned Godot build:
 
 ```powershell
 python research/performance/session_baseline.py `
-  --godot .tools/Godot_v4.8-beta1_win64_console.exe `
+  --godot .tools/Godot_v4.8-beta2_win64_console.exe `
   --out tmp/session-baseline-new --case trim
 ```
 
@@ -305,7 +305,7 @@ the repository root, with a new output directory and the Windows console engine:
 ```powershell
 $run = Join-Path $PWD ('tmp/frame-diagnostics-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $run | Out-Null
-$godot = (Resolve-Path '.tools/Godot_v4.8-beta1_win64_console.exe').Path
+$godot = (Resolve-Path '.tools/Godot_v4.8-beta2_win64_console.exe').Path
 python tools/godot/run_checked.py --out-dir "$run/checks" --timeout 100 -- $godot --path app --audio-driver Dummy --resolution 1280x720 --max-fps 60 -- --scripted --frametimes="$run/run-1.json" --warmup=10 --t=60 --frame-diagnostics --frametimes-max-frames=60000
 $captureExit = $LASTEXITCODE
 $log = (Get-ChildItem "$run/checks" -Directory | Select-Object -First 1).FullName + '/engine.log'
@@ -440,7 +440,7 @@ plotting dependency is required.
 Use the existing app logger, with one foreground flight at a time:
 
 ```powershell
-& .tools/Godot_v4.8-beta1_win64_console.exe --path app `
+& .tools/Godot_v4.8-beta2_win64_console.exe --path app `
   --audio-driver Dummy --resolution 1280x720 --max-fps 0 -- `
   --frametimes=C:/absolute/new/run-1.json --warmup=10 --t=60
 ```
@@ -489,7 +489,7 @@ are separate results. No native reduction closes hardware, pilot or physical gat
 
 ```powershell
 python -m unittest discover -s research/performance -p "test_*.py"
-& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app `
+& .tools/Godot_v4.8-beta2_win64_console.exe --headless --path app `
   --check-only --script ../research/performance/session_probe.gd
 ```
 
@@ -503,7 +503,7 @@ Run the real guard verification with a fresh output directory:
 
 ```powershell
 python research/performance/verify_session_probe.py `
-  --godot .tools/Godot_v4.8-beta1_win64_console.exe --out tmp/probe-guards-new
+  --godot .tools/Godot_v4.8-beta2_win64_console.exe --out tmp/probe-guards-new
 python research/performance/native_summary.py `
   --input tmp/native-runs --out tmp/native-summary-new.json
 python research/performance/texture_inventory.py `

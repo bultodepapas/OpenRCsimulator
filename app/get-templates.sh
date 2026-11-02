@@ -2,23 +2,21 @@
 # Download the pinned Godot export templates and verify the archive and installed
 # release templates (Linux x86_64, Windows x86_64, macOS universal).
 # Prints the install folder. The official installed templates stay unchanged.
-# A pinned project-local ZIP works around beta1's universal macOS debug/release inversion.
 set -euo pipefail
-VERSION=4.8-beta1
-TEMPLATE_DIR_NAME=4.8.beta1 # Godot reads the folder name from version.txt, not the archive suffix.
+VERSION=4.8-beta2
+TEMPLATE_DIR_NAME=4.8.beta2 # Godot reads the folder name from version.txt, not the archive suffix.
 FILE=Godot_v${VERSION}_export_templates.tpz
-SHA512=fa53ad6883ae6c78ee9d2f8d14ca4d34852fa21c462d1f4b0f599138d7de40897cc058f15083a1fa80c7d4b7590b2222dea6f056be7b49e3a584eb64fc30b0b7
+SHA512=260de4173d9bb366110dab4f35e42e39f2eace62f29e082d6630bc5c6ea790ef92f51a9145ffbca2c0ffe97a60da46019c6780d7f88569932cd3237284085c0e
 NEEDED=(linux_release.x86_64 windows_release_x86_64.exe macos.zip version.txt)
 # SHA-512 of these members streamed from the archive verified against SHA512 above.
 MEMBER_SHA512=(
-  f2176272e4ca833cbfe2cb0464b47a7e23e4751344e6fbcf6d6fd0144bbffbaf60eef30cf2539151c7a8c153999709e26d4aeb219cbefca96f8d6499e089d7c9
-  cb55c2c37f649d4abf9d6263b9cc0bd27d2214084fae9421d5082aa7a6831bc78af5a72e6942387f109c1b399cb1127eff95816ca5a9c379c9f11c05380e2645
-  a36d2fd593a591b19358274ad8100684740fff83cf13ad04c5a3d593c3f4bd08a266f0725bda33344d00f30a56942e726d50b74109e8d50ed4794bbd917e0363
-  7b7788794a94f66b6c473d4bec4e4864a548e191cbd4b7bcb99ea88c2c1e1dac5ae60079c16ed3b9e6776e82be3a80ddf9827369a3d18351acafed2d40a8b194
+  c0702f8d2e43f9a8168db71d404b35bc7c3b1d8a69a516b4bee8946b70faf16afd3b046dd8d9c5255da0b7fe71385cff473050dcdc874f4ac72b55868b91bc9a
+  345862e92c5f1d94596ba64e9ad46dcea323280fb2ed760abdc7e0586f71921d07d049d3e5953b493e09c401cf6c7acf97718ec4cc377f028910ba5bd738fe46
+  a307324eec2db7db8eef26be10c7c4b91c923c8f91fe9144aee4c5812cd17f4e65e7b03e33021d29f8ff9384fc51a8a9b2d3ea81c461b966dc795edad42a09c7
+  19e82db58a24133a12f2f9514c6112bfcb9e8a3a4c2247986a24cd47548dc355eb28d10bd496b7f492df8fc711c7a9eae2f18779bc932ef6bf3215f4eec6edf7
 )
 
 TOOLS="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)/.tools"
-PROJECT="$(cd "$(dirname "$0")" && pwd)"
 CHECKSUM=(sha512sum)
 GODOT_TEMPLATES_PYTHON="${OPENRC_GODOT_PYTHON:-python3}"
 case "$(uname -s)" in
@@ -43,11 +41,8 @@ verify_members() {
 }
 check_python() {
   if ! "$GODOT_TEMPLATES_PYTHON" -c 'import hashlib, sys; sys.exit(0 if hasattr(hashlib, "file_digest") else 1)'; then
-    echo "The macOS template correction requires Python 3.11+; set OPENRC_GODOT_PYTHON to its executable." >&2; return 1
+    echo "The template installer requires Python 3.11+; set OPENRC_GODOT_PYTHON to its executable." >&2; return 1
   fi
-}
-prepare_macos() {
-  "$GODOT_TEMPLATES_PYTHON" "$PROJECT/../tools/godot/macos_universal_template.py" --source "$DEST/macos.zip" --project "$PROJECT" >&2
 }
 check_python
 mkdir -p "$TOOLS" "$TEMPLATE_ROOT"
@@ -61,7 +56,7 @@ if [ -e "$DEST" ] || [ -L "$DEST" ]; then
   if [ ! -d "$DEST" ] || [ -L "$DEST" ] || ! verify_members "$DEST"; then
     echo "Installed template cache is changed or incomplete; retained at $DEST. Move it aside before retrying." >&2; exit 1
   fi
-  prepare_macos; echo "$DEST"; exit 0
+  echo "$DEST"; exit 0
 fi
 
 ARCHIVE="$TOOLS/$FILE"
@@ -99,5 +94,4 @@ fi
 for f in "${NEEDED[@]}"; do rm "$STAGING/$f"; done
 rmdir "$STAGING"
 if [ -n "$DOWNLOAD_DIR" ]; then rm "$ARCHIVE"; rmdir "$DOWNLOAD_DIR"; fi
-prepare_macos
 echo "$DEST"

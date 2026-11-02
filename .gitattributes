@@ -92,6 +92,8 @@
 /app/data/glow/extra_61fx_2t.json text eol=crlf
 /app/data/aircraft/stik_glow_61fx_2t.json text eol=crlf
 
+# Fuel registry identity hashes exact bytes; keep checkpoint identities stable.
+/app/data/fuels/openrc-fuel-registry.json text eol=lf
 # Fuel replay and export receipts preserve the bytes used by their recorded hashes.
 /research/fuel-systems/FUEL-12/** -text whitespace=cr-at-eol
 /docs/research/fuel-systems/FUEL-12/evidence/** -text whitespace=cr-at-eol
@@ -193,6 +195,7 @@
 /docs/research/ai-companions/**/*.json -text
 /docs/research/ai-companions/**/*.csv -text
 /docs/research/ai-companions/**/*.log -text -whitespace
+/docs/research/ai-companions/**/*.orfl -text
 /docs/research/ai-companions/**/sources/** -text
 # Frozen AFC differential inputs retain their exact tested source bytes.
 /research/ai-companions/performance/reachable_clear_baseline.gd -text
@@ -203,6 +206,11 @@
 /docs/research/engine-upgrade/GDU-03/**/*.json -text
 /docs/research/engine-upgrade/GDU-03/**/*.csv -text
 /docs/research/engine-upgrade/GDU-03/**/*.log -text -whitespace
+
+# GDU-12 checked reports and logs retain their recorded byte hashes.
+/docs/research/engine-upgrade/GDU-12/**/*.json -text
+/docs/research/engine-upgrade/GDU-12/**/*.log -text -whitespace
+/docs/research/engine-upgrade/GDU-12/native/fuel-eol-probe.gd -text
 
 # SC-HUM-07 source manifests bind the original LF outfit-spec bytes.
 /tools/scenery/population/outfits/*.json text eol=lf

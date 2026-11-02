@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b5f649e1-15ff-4717-a113-5938f434f3c0",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/engine/Godot",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/base",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/base/qualification_host.gd",
+    "--",
+    "helicopter"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "started_utc": "2026-11-01T22:46:28.805772+00:00",
+  "label": "qualification-helicopter",
+  "log": "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/checks/qualification-helicopter-lmza9s68/engine.log",
+  "report": "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/checks/qualification-helicopter-lmza9s68/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NATIVE_QUALIFICATION preloaded=false",
+    "NATIVE_QUALIFICATION mode=helicopter verdict=pass",
+    "NK3_NATIVE_HELICOPTER_NATIVE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.360717,
+  "log_bytes": 277,
+  "log_sha256": "1e80addb448f196fa987d471052b4daa4fc8a04afd7d331eda42ef0bcea953bd"
+}

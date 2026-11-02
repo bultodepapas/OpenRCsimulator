@@ -1,0 +1,396 @@
+{
+	"ai_planning_hz": 60,
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"artifacts": {
+		"first_recorded_scenario": "selected-crossings",
+		"recorded_logs": {
+			"seed-20261020-crossing-right": {
+				"ai": {
+					"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261020-crossing-right-ai.orfl",
+					"rows_written": 2881,
+					"sha256": "618fb5888b7cecc1a8945eea5e6a4495e20af9c7b9f83f084e725f30fba200db",
+					"stop_error": 0,
+					"verified": true
+				},
+				"player": {
+					"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261020-crossing-right-player-coupled.orfl",
+					"rows_written": 2881,
+					"sha256": "b702d7c72dac4d9969754bb6458880b45bfe3aabe9c1e0d6932f8ee65bcda00b",
+					"stop_error": 0,
+					"verified": true
+				}
+			},
+			"seed-20261020-crossing-right-exogenous": {
+				"player-exogenous": {
+					"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261020-crossing-right-player-exogenous.orfl",
+					"rows_written": 2881,
+					"sha256": "7ec3cede8ea49a8b84d0848d0d44eaaea3129a970a34c036abec1cb205a41b15",
+					"stop_error": 0,
+					"verified": true
+				}
+			},
+			"seed-20261021-crossing-left": {
+				"ai": {
+					"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261021-crossing-left-ai.orfl",
+					"rows_written": 2881,
+					"sha256": "5fcd3a7c212437cb6020a0e1f0e0e1871c36e2ffb0c4deb40f605312677c614c",
+					"stop_error": 0,
+					"verified": true
+				},
+				"player": {
+					"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261021-crossing-left-player-coupled.orfl",
+					"rows_written": 2881,
+					"sha256": "9e5e230eb9ca3e02aa25cdf31f1153c35949334816d6c8796745a434fe4b6e7c",
+					"stop_error": 0,
+					"verified": true
+				}
+			},
+			"seed-20261021-crossing-left-exogenous": {
+				"player-exogenous": {
+					"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261021-crossing-left-player-exogenous.orfl",
+					"rows_written": 2881,
+					"sha256": "14c31b28619abe4e1a39cbd1b1ce9753178e080aeab0b40b7227654659c861ea",
+					"stop_error": 0,
+					"verified": true
+				}
+			}
+		},
+		"trajectory_csv": {
+			"bytes": 102492,
+			"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/trajectory.csv",
+			"sha256": "f5c0b32b6f0b9a5a2e519653b8249e663d2ef15a6cb38692af9914c6e4b939f3",
+			"write_error": "",
+			"write_verified": true
+		}
+	},
+	"cases": [
+		{
+			"ai_crash": {},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 720,
+			"case": "crossing-right",
+			"case_id": "seed-20261020-crossing-right",
+			"circuit_direction": "increasing",
+			"complete": true,
+			"exogenous_player": {
+				"case_id": "seed-20261020-crossing-right",
+				"complete": true,
+				"crash": {},
+				"failure_reason": "",
+				"fault": "",
+				"finite_metrics": true,
+				"flight_logs": {
+					"player-exogenous": {
+						"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261020-crossing-right-player-exogenous.orfl",
+						"rows_written": 2881,
+						"sha256": "7ec3cede8ea49a8b84d0848d0d44eaaea3129a970a34c036abec1cb205a41b15",
+						"stop_error": 0,
+						"verified": true
+					}
+				},
+				"initial_spawn_matches_coupled_spec": true,
+				"min_agl_m": 34.9930181145764,
+				"peak_bank_deg": 0.00000000000236432101898666,
+				"player_initial_spawn_spec": {
+					"altitude_m": 35.0,
+					"east": -9.14649575368902,
+					"heading_rad": 1.15464021246239,
+					"north": 194.957523602079
+				},
+				"refusal": "",
+				"requested_ticks": 2880,
+				"role": "player-exogenous",
+				"state_command_sha256": "74e65e46d937b685559b952416aa4152c1e73b18b8d09e8200a5f02d2f8c5dcf",
+				"ticks": 2880,
+				"valid_run": true
+			},
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "",
+			"finite_metrics": true,
+			"first_avoidance_tick": 0,
+			"fixture_parameters": {},
+			"flight_logs": {
+				"ai": {
+					"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261020-crossing-right-ai.orfl",
+					"rows_written": 2881,
+					"sha256": "618fb5888b7cecc1a8945eea5e6a4495e20af9c7b9f83f084e725f30fba200db",
+					"stop_error": 0,
+					"verified": true
+				},
+				"player": {
+					"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261020-crossing-right-player-coupled.orfl",
+					"rows_written": 2881,
+					"sha256": "b702d7c72dac4d9969754bb6458880b45bfe3aabe9c1e0d6932f8ee65bcda00b",
+					"stop_error": 0,
+					"verified": true
+				}
+			},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0021910623372,
+			"initial_target_height_error_m": 0.00219106233716104,
+			"initial_target_height_matches_nominal": false,
+			"intruder_heading_offset_rad": -1.5707963267949,
+			"intruder_heading_rad": 1.15464021246239,
+			"intruder_start_east_m": -9.14649575368902,
+			"intruder_start_north_m": 194.957523602079,
+			"min_agl_m_by_role": {
+				"ai": 34.9719524442923,
+				"player": 34.9930181145764
+			},
+			"min_center_separation_m": 59.8198811975726,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 59.8198811975726,
+			"nominal_intercept_east_m": 73.1719660295122,
+			"nominal_intercept_north_m": 231.339811183368,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 0.00212630968363748,
+				"roll": 0.15707963267949,
+				"throttle": 0.282642995667027,
+				"yaw": 0.032914161276278
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 5.27319689768698,
+				"player": 0.00000000000236432101898666
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 720,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": -9.14649575368902,
+				"heading_rad": 1.15464021246239,
+				"north": 194.957523602079
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 2880,
+			"route_radius_m": 80.0,
+			"seed": 20261020,
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": true,
+			"state_command_sha256": "5867be7e111ef8d62660ca18019a2985efb7ad36e01fee52c5bbe2f376ba5d8a",
+			"ticks": 2880,
+			"valid_run": true
+		},
+		{
+			"ai_crash": {},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 720,
+			"case": "crossing-left",
+			"case_id": "seed-20261021-crossing-left",
+			"circuit_direction": "decreasing",
+			"complete": true,
+			"exogenous_player": {
+				"case_id": "seed-20261021-crossing-left",
+				"complete": true,
+				"crash": {},
+				"failure_reason": "",
+				"fault": "",
+				"finite_metrics": true,
+				"flight_logs": {
+					"player-exogenous": {
+						"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261021-crossing-left-player-exogenous.orfl",
+						"rows_written": 2881,
+						"sha256": "14c31b28619abe4e1a39cbd1b1ce9753178e080aeab0b40b7227654659c861ea",
+						"stop_error": 0,
+						"verified": true
+					}
+				},
+				"initial_spawn_matches_coupled_spec": true,
+				"min_agl_m": 34.9931294964052,
+				"peak_bank_deg": 0.00000000000237468560278258,
+				"player_initial_spawn_spec": {
+					"altitude_m": 35.0,
+					"east": 8.8909299003912,
+					"heading_rad": -1.09535978607469,
+					"north": 194.422733839252
+				},
+				"refusal": "",
+				"requested_ticks": 2880,
+				"role": "player-exogenous",
+				"state_command_sha256": "339b8949f7441f92df5a3afb583ec52d4685e598f9df4e9c807260710641fa92",
+				"ticks": 2880,
+				"valid_run": true
+			},
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "",
+			"finite_metrics": true,
+			"first_avoidance_tick": 0,
+			"fixture_parameters": {},
+			"flight_logs": {
+				"ai": {
+					"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261021-crossing-left-ai.orfl",
+					"rows_written": 2881,
+					"sha256": "5fcd3a7c212437cb6020a0e1f0e0e1871c36e2ffb0c4deb40f605312677c614c",
+					"stop_error": 0,
+					"verified": true
+				},
+				"player": {
+					"path": "D:/OpenRCsimulator-experiments/gdu-beta2-identities/crossings/seed-20261021-crossing-left-player-coupled.orfl",
+					"rows_written": 2881,
+					"sha256": "9e5e230eb9ca3e02aa25cdf31f1153c35949334816d6c8796745a434fe4b6e7c",
+					"stop_error": 0,
+					"verified": true
+				}
+			},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0021910625166,
+			"initial_target_height_error_m": 0.00219106251655887,
+			"initial_target_height_matches_nominal": false,
+			"intruder_heading_offset_rad": 1.5707963267949,
+			"intruder_heading_rad": -1.09535978607469,
+			"intruder_start_east_m": 8.8909299003912,
+			"intruder_start_north_m": 194.422733839252,
+			"min_agl_m_by_role": {
+				"ai": 34.9488028868918,
+				"player": 34.9931294964052
+			},
+			"min_center_separation_m": 58.4649428355137,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 58.4649428355137,
+			"nominal_intercept_east_m": -71.1274392031297,
+			"nominal_intercept_north_m": 235.618129285985,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 0.00450991233878184,
+				"roll": 0.15707963267949,
+				"throttle": 0.283361692464643,
+				"yaw": 0.0287191161260601
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 5.14378702120218,
+				"player": 0.00000000000237468560278258
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 720,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": 8.8909299003912,
+				"heading_rad": -1.09535978607469,
+				"north": 194.422733839252
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 2880,
+			"route_radius_m": 80.0,
+			"seed": 20261021,
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": true,
+			"state_command_sha256": "fb1aa355324737882ba9d3bcde2975719dd24989d76c0060c3f6adb3ae0a153e",
+			"ticks": 2880,
+			"valid_run": true
+		}
+	],
+	"classification": "encounter_survey",
+	"collision_identity": "4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f",
+	"deterministic_repeat": {
+		"case": "crossing-right",
+		"exact_state_command_match": true,
+		"first_sha256": "5867be7e111ef8d62660ca18019a2985efb7ad36e01fee52c5bbe2f376ba5d8a",
+		"repeat_complete": true,
+		"repeat_run": {
+			"ai_crash": {},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 720,
+			"case": "crossing-right",
+			"case_id": "seed-20261020-crossing-right",
+			"circuit_direction": "increasing",
+			"complete": true,
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "",
+			"finite_metrics": true,
+			"first_avoidance_tick": 0,
+			"fixture_parameters": {},
+			"flight_logs": {},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0021910623372,
+			"initial_target_height_error_m": 0.00219106233716104,
+			"initial_target_height_matches_nominal": false,
+			"intruder_heading_offset_rad": -1.5707963267949,
+			"intruder_heading_rad": 1.15464021246239,
+			"intruder_start_east_m": -9.14649575368902,
+			"intruder_start_north_m": 194.957523602079,
+			"min_agl_m_by_role": {
+				"ai": 34.9719524442923,
+				"player": 34.9930181145764
+			},
+			"min_center_separation_m": 59.8198811975726,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 59.8198811975726,
+			"nominal_intercept_east_m": 73.1719660295122,
+			"nominal_intercept_north_m": 231.339811183368,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 0.00212630968363748,
+				"roll": 0.15707963267949,
+				"throttle": 0.282642995667027,
+				"yaw": 0.032914161276278
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 5.27319689768698,
+				"player": 0.00000000000236432101898666
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 720,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": -9.14649575368902,
+				"heading_rad": 1.15464021246239,
+				"north": 194.957523602079
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 2880,
+			"route_radius_m": 80.0,
+			"seed": 20261020,
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": true,
+			"state_command_sha256": "5867be7e111ef8d62660ca18019a2985efb7ad36e01fee52c5bbe2f376ba5d8a",
+			"ticks": 2880,
+			"valid_run": true
+		},
+		"repeat_sha256": "5867be7e111ef8d62660ca18019a2985efb7ad36e01fee52c5bbe2f376ba5d8a"
+	},
+	"engine": "4.8-beta2 (official)",
+	"failed_validity_cases": [],
+	"field_id": "default",
+	"format": "openrc-companion-encounter-survey v1",
+	"geometry_note": "The six intruders are placed to meet the nominal circular route at 6 s from initial_pose and the field-derived circuit radius. Actual trimmed trajectories may miss that intercept.",
+	"lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+	"physics_hz": 240,
+	"pilot_resource": "res://ai/companions/pilot.gd",
+	"pilot_source_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+	"probe_resource": "C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/encounter_probe.gd",
+	"probe_source_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+	"process_success": true,
+	"purpose": "Survey of actual fixed-step FlightSession encounters; not qualification or physical validation.",
+	"qualification_claimed": false,
+	"recording_mode": "crossings",
+	"requested_ticks": 2880,
+	"scope": "Two selected nominal crossing geometries with coupled and independent full-duration trim-neutral player sessions.",
+	"seconds": 12,
+	"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m; peer distances are reported separately",
+	"separation_gate_m": 30.0,
+	"separation_gate_passed_for_all_cases": true,
+	"title": "Companion Encounter Survey",
+	"valid_complete_runs": true,
+	"weather": "calm"
+}

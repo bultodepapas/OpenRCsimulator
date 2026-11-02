@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+NK3_ORACLE verdict=fail compared=128664 identical=100359 failures=0 output=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/stage_mutant-20261101T223016030714Z.json

@@ -1,0 +1,17 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+Vulkan 1.4.351 - Forward Mobile - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok   steady pixels match Patterns.sample — max linear RGB error=0.00004
+ok   breath pixels match Patterns.sample — max linear RGB error=0.00003
+ok   pulse pixels match Patterns.sample — max linear RGB error=0.00001
+ok   chase pixels match Patterns.sample — max linear RGB error=0.00119
+ok   wave pixels match Patterns.sample — max linear RGB error=0.00051
+ok   rainbow pixels match Patterns.sample — max linear RGB error=0.00038
+ok   segments pixels match Patterns.sample — max linear RGB error=0.00002
+ok   wave has spatial contrast within one frame — linear RGB distance=0.28595
+ok   wave phase advances match bounded presentation time — early=0.00034 later=0.00032
+ok   wave phase advance changes the sampled color — linear RGB distance=0.20335
+ok   negative span_uv_range mirrors root-to-tip sampling — max linear RGB error=0.00028
+ok   negative span reverses the same spatial pattern — linear RGB distance=0.30652
+ok   49131 exposure with inverse energy avoids double gain — reference error=0.00198 baseline delta=0.00247
+Lighting skin patterns: 13 checks, 0 failed

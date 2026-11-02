@@ -1,0 +1,56 @@
+{
+  "verdict": "pass",
+  "host": "Windows",
+  "historical_golden_digests_matched": 16,
+  "beta2_candidate_digest_comparisons_matched": 16,
+  "beta2_candidate_full_value_comparisons_matched": 12,
+  "unit_checks": 258,
+  "unit_failures": 0,
+  "verified_input_count": 400,
+  "candidate_manifest_paths": 1679,
+  "candidate_manifest_matches_current_root": true,
+  "historical_engine_getter_sha256": "d9d109cec59267aff7aec61f2d43bdce44274e2c344ad1c0eac38b98a60c2f80",
+  "checked_reports": [
+    {
+      "label": "fixed-brake-candidate-capture",
+      "log_sha256": "9231db78eb4e827aecf04c3da6b4d1b13b7ed9a5d67bf25f4afc10056c0bb799",
+      "report_sha256": "b92e965924e2a5b28cdfd6bc0f8876c22e4f4c92a836b5eebb29eabcdcdc4d90"
+    },
+    {
+      "label": "fixed-brake-current-reference-import",
+      "log_sha256": "efad6d6a373a3c495cb278ccf97af4fa4a81ce01297c3e8258aa89555ddad916",
+      "report_sha256": "1250836e10d5ea216c7fac10a5462d024a961f9bafb2a3bfc18c488951de2faf"
+    },
+    {
+      "label": "fixed-brake-historical-goldens",
+      "log_sha256": "b377111abb06c4e2b7c8eacb6e3b51c08b7f60202ca6a7a7971d72c4b8f83a9c",
+      "report_sha256": "22907055c52bfe6e77efeb2459624a086d94c02f4e2d95d1d8fe83ba95a4fa5e"
+    },
+    {
+      "label": "fixed-brake-input",
+      "log_sha256": "9168df8bbed3faa26a7926a8132b124810d11378209eea8b067fffdf3f39e555",
+      "report_sha256": "4edf002a6d8d760a6ccbb48ee304ba536db8737a5dbd959e82160c78a1039bfd"
+    },
+    {
+      "label": "fixed-brake-matched-reference",
+      "log_sha256": "3fc39b20319378e183d9d5a0f09febd861d6d97c21620f952cf9cc5661669835",
+      "report_sha256": "2d47f80beebed44f7c3b54d14715b8bac38e1196eff16692ab9b2ec37dda86dc"
+    },
+    {
+      "label": "fixed-brake-reference-bootstrap",
+      "log_sha256": "77afbdc5690ccedc70fd170696091a885cde1381d467ba9218504493dd1e4d61",
+      "report_sha256": "7894f92aea674445dc7f3440308d4d6e798a05c05ec31d4d7204e96f9675c427"
+    },
+    {
+      "label": "fixed-brake-reference-import",
+      "log_sha256": "92d9fd0f512a1880ae3dc3448c4024971056526224d4d604a59b6e62c22027e5",
+      "report_sha256": "816cee2066a5999bea9bf450b8d459d2961028cecb38a9d6553a0dc2b804b9d8"
+    }
+  ],
+  "evidence_sha256": {
+    "historical-goldens.json": "32a503487a1493c320fe3cfef58e47b0ed9da35d7ea38e93dc83ffa19f233403",
+    "matched-reference.json": "97ffc09a66f10a9cf9c7d436321efecee68a9d83c621ed4954d1110f8a632fb5",
+    "candidate.json": "bba3059a36fbcaf517dc2c28924c4255d57b644418e20c283e87248275d18bac",
+    "input-identities.json": "1805bd91323a511d358561ea6ac2b6b1765ba6242b025070aa71234000eca8f2"
+  }
+}

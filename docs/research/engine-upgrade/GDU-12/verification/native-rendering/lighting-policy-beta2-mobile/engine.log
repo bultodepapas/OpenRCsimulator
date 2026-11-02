@@ -1,0 +1,22 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+Vulkan 1.4.351 - Forward Mobile - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok   full quality configures the accepted Festival profile
+ok   High emits 64 particles across two tips
+ok   Standard emits 32 particles across two tips
+ok   disabling VFX clears existing particles at a paused clock
+ok   reenabling VFX does not replay the current cue
+ok   Low hides decorative spill and show effects
+ok   Low preserves navigation and orientation equipment
+ok   Reduced flashes turns animated strip patterns into steady colors
+ok   Reduced flashes suppresses VFX and reactive intensity
+ok   Reduced flashes preserves static segmented colors
+ok   legacy aircraft material carries accessibility scope
+ok   restoring preferences resumes the authored animated pattern
+ok   preferences never rewrite the accepted profile
+ok   native legacy and RGB strobes have a dark interval
+ok   native Reduced flashes keeps legacy and RGB aircraft lamps lit
+ok   native aircraft accessibility does not rewrite unrelated field strobes
+ok   native turning Reduced flashes off restores the dark interval
+ok   native original strobe pulse remains visible
+Lighting policy: 18 checks, 0 failed

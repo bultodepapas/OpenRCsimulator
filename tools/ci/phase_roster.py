@@ -46,6 +46,7 @@ def digest(root: Path, scripts: list[str]) -> str:
               ("tools/godot/run_checked.py", root.parent / "tools/godot/run_checked.py")]
     if "tests/test_fixed_gear_brake_input.gd" in scripts:
         inputs.append(("tools/godot/fixed_brake_legacy.py", root.parent / "tools/godot/fixed_brake_legacy.py"))
+        inputs.append(("tools/godot/get_historical_godot.py", root.parent / "tools/godot/get_historical_godot.py"))
     inputs.extend(("app/" + name, root / name) for name in scripts)
     for name, path in inputs:
         data = path.read_bytes()

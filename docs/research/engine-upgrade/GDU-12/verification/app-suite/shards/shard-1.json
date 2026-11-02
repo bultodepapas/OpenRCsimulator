@@ -1,0 +1,36 @@
+{
+  "shard": 1,
+  "exit_code": 0,
+  "source_commit": "46b004c7b469448c29ef96168da4f03cee2c6d23",
+  "roster_source_sha256": "b5fb469c466f69097781df0e9894522c8d38d3bf169c27335a9961a886c002dd",
+  "scripts_completed": 109,
+  "checked_invocations": 110,
+  "passed": 110,
+  "failed_or_invalid": 0,
+  "junit_reported_skipped": 0,
+  "junit_sha256": "f1a68d22c51d2917daa326cc808423ad1999552eaff2e59dd58d691bd9470e07",
+  "console_sha256": "a19a38e428508a695b7997d7b795ff413d0b34940dd9de3ab882c32d3d4ea78d",
+  "roster_sha256": "d4a06302626c832e8ec892585c7b7876932bd81a8b693111ffdae45ec58b9370",
+  "summarizer_sha256": "f6b2dfbebbc2caccea71f95d17d2919d5e2b8248426f669d3f5335a9de030c4c",
+  "checked_collection_sha256": "75b5601955e308fce606a310d9f124708f2c09cde3f6ac957237244741432b00",
+  "raw_collection": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-units\\shard-1",
+  "inline_skips": [
+    {
+      "line": 6164,
+      "test": "test_high_graphics_profile.gd",
+      "text": "SKIP high native values: renderer=gl_compatibility display=headless"
+    },
+    {
+      "line": 7514,
+      "test": "test_woodland_edge_habitat.gd",
+      "text": "skip impostor view-frame readback: the Dummy renderer draws nothing"
+    }
+  ],
+  "native_fallback_occurrences": 35,
+  "native_fallback_sample": {
+    "line": 5791,
+    "text": "physics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage library not installed\",\"requested\":\"native\"}"
+  },
+  "external_reference_mentions": [],
+  "checkout_variant": "ram"
+}

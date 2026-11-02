@@ -4,7 +4,7 @@
 
 ## Contract and integration
 
-Mechanical audio is a read-only presentation consumer. It does not change aircraft data, servo rates, flight commands, solver state, checkpoints or random numbers. Godot is the repository's pinned **4.8.beta1.official.4d10419ca**.
+Mechanical audio is a read-only presentation consumer. It does not change aircraft data, servo rates, flight commands, solver state, checkpoints or random numbers. Godot is the repository's pinned **4.8.beta2.official.cafc17a19**.
 
 `app/audio/flight_audio.gd` observes every accepted `Simulation.stepped` endpoint after FlightSession's existing handler. It reads actual surface angles from `FlightSession.surface_angles_deg()`, the accepted flap fraction and maximum angle, and `gear_state()`. Simulation `dt()` supplies the clock. Render updates separately supply source/listener positions and the smoothed engine mask. A changed stick or gear target alone cannot produce motion audio.
 

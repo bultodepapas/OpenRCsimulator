@@ -20,7 +20,7 @@ from typing import Any, Iterator, Sequence
 
 ROOT = Path(__file__).resolve().parents[2]
 APP = ROOT / "app"
-GODOT_DEFAULT = ROOT / ".tools" / ("Godot_v4.8-beta1_win64_console.exe" if os.name == "nt" else "Godot_v4.8-beta1_linux.x86_64")
+GODOT_DEFAULT = ROOT / ".tools" / ("Godot_v4.8-beta2_win64_console.exe" if os.name == "nt" else "Godot_v4.8-beta2_linux.x86_64")
 GODOT_SCRIPT = "res://tools/flight_log_cli.gd"
 
 INT64_MIN = -(1 << 63)

@@ -1,0 +1,41 @@
+{
+  "shard": 0,
+  "exit_code": 0,
+  "source_commit": "46b004c7b469448c29ef96168da4f03cee2c6d23",
+  "roster_source_sha256": "b5fb469c466f69097781df0e9894522c8d38d3bf169c27335a9961a886c002dd",
+  "scripts_completed": 109,
+  "checked_invocations": 110,
+  "passed": 110,
+  "failed_or_invalid": 0,
+  "junit_reported_skipped": 0,
+  "junit_sha256": "e5eb26fa934233b27f1f1e6b4f1471315887f4215393b30b55e3cd6287eacefc",
+  "console_sha256": "2f6a968ebb9183d7476ada3f1099939258c31db97ae2f3e5822e1958d5876e89",
+  "roster_sha256": "8268797d3923fe018df86f539db259e677e3cf577d3cbd7422ecd69bd2d9f843",
+  "summarizer_sha256": "f6b2dfbebbc2caccea71f95d17d2919d5e2b8248426f669d3f5335a9de030c4c",
+  "checked_collection_sha256": "207e98e9265177350ce05ff8d298ccda0da0f29b894eb38f011164cfd14738da",
+  "raw_collection": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-units\\shard-0",
+  "inline_skips": [
+    {
+      "line": 1866,
+      "test": "test_lighting_path.gd",
+      "text": "Native pixel checks skipped: headless renderer; run without --headless for 1080p shader evidence."
+    },
+    {
+      "line": 1890,
+      "test": "test_native_session.gd",
+      "text": "NK3_NATIVE_SESSION_SKIP native unavailable or stale: native stage library not installed"
+    },
+    {
+      "line": 2016,
+      "test": "test_rcv_session.gd",
+      "text": "SKIP native Session backend-switch guard: pinned native backend is not staged"
+    }
+  ],
+  "native_fallback_occurrences": 19,
+  "native_fallback_sample": {
+    "line": 6,
+    "text": "physics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage library not installed\",\"requested\":\"native\"}"
+  },
+  "external_reference_mentions": [],
+  "checkout_variant": "ram"
+}

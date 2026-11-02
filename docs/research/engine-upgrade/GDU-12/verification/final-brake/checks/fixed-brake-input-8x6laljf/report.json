@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "aa18bad9-b7c6-4278-b6da-03d8ce9f0a4d",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_fixed_gear_brake_input.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-01T23:19:12.987173+00:00",
+  "label": "fixed-brake-input",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu-beta2-final-brake\\checks\\fixed-brake-input-8x6laljf\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu-beta2-final-brake\\checks\\fixed-brake-input-8x6laljf\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Fixed brake candidate:",
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.203,
+  "log_bytes": 2195,
+  "log_sha256": "9168df8bbed3faa26a7926a8132b124810d11378209eea8b067fffdf3f39e555"
+}

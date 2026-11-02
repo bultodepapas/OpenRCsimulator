@@ -1,0 +1,267 @@
+{
+  "binary_sha256": "7cf8e920cdcc0846aff1ab35c0db8dcdf66d7454078e3d1717ba31ae0171b5cc",
+  "builder_sha256": "b983442005ab7365077e8a89f595c70081969245146e622f16a8139c08dcab48",
+  "engine": [
+    "4.8-beta2 (official)",
+    "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  ],
+  "format": "openrc-gdu12-native-verification-index-v1",
+  "lock_sha256": "4cf3c592b0161174f2521aad8d312d44706c18b73a154e5f10e853a6428e4687",
+  "mirrored_source_count": 130,
+  "negative_control_total": {
+    "compared": 128664,
+    "identical": 100359,
+    "mismatched": 28305
+  },
+  "recorded_utc": "2026-11-01T22:30:52.679915+00:00",
+  "repository_head": "46b004c7b469448c29ef96168da4f03cee2c6d23",
+  "source_sha256": "5f3fbed878ecff294e266857b430868c4deab3234ff2ddb589c3b1453999b817",
+  "trajectory_rows": {
+    "lake": {
+      "completion_ok": true,
+      "first_divergence_tick": -1,
+      "native_context_calls": 3846,
+      "native_end": {
+        "crashed": true,
+        "fault": "",
+        "pause_reason": "CRASH at 8.4 m/s (sink 8.7 m/s, airframe contact (hull point 25), point speed 7.4 m/s at detected tick) - [R] restart",
+        "paused": true,
+        "tick": 3846
+      },
+      "native_fingerprint": "64e0d6d0da8f240467c3aef441d5ae0d4a52ecd90e1bf950332592edb186acb1",
+      "native_lost_install_ticks": 0,
+      "native_stage_calls": 15384,
+      "native_uncovered_ticks": 0,
+      "reference_end": {
+        "crashed": true,
+        "fault": "",
+        "pause_reason": "CRASH at 8.4 m/s (sink 8.7 m/s, airframe contact (hull point 25), point speed 7.4 m/s at detected tick) - [R] restart",
+        "paused": true,
+        "tick": 3846
+      },
+      "reference_fingerprint": "64e0d6d0da8f240467c3aef441d5ae0d4a52ecd90e1bf950332592edb186acb1",
+      "ticks_requested": 14400,
+      "ticks_run": 3846
+    },
+    "maneuver": {
+      "completion_ok": true,
+      "first_divergence_tick": -1,
+      "native_context_calls": 14400,
+      "native_end": {
+        "crashed": false,
+        "fault": "",
+        "pause_reason": "",
+        "paused": false,
+        "tick": 14400
+      },
+      "native_fingerprint": "8676b495cda9ce9acae66b398fc89191366ffa39e96365b420062a39c5820e3f",
+      "native_lost_install_ticks": 0,
+      "native_stage_calls": 57600,
+      "native_uncovered_ticks": 0,
+      "reference_end": {
+        "crashed": false,
+        "fault": "",
+        "pause_reason": "",
+        "paused": false,
+        "tick": 14400
+      },
+      "reference_fingerprint": "8676b495cda9ce9acae66b398fc89191366ffa39e96365b420062a39c5820e3f",
+      "ticks_requested": 14400,
+      "ticks_run": 14400
+    },
+    "runway": {
+      "completion_ok": true,
+      "first_divergence_tick": -1,
+      "native_context_calls": 14400,
+      "native_end": {
+        "crashed": false,
+        "fault": "",
+        "pause_reason": "",
+        "paused": false,
+        "tick": 14400
+      },
+      "native_fingerprint": "85637b42b1c0e117ec56cd408be43fd2a3e9d2a832566537e92167288dddef17",
+      "native_lost_install_ticks": 0,
+      "native_stage_calls": 57600,
+      "native_uncovered_ticks": 0,
+      "reference_end": {
+        "crashed": false,
+        "fault": "",
+        "pause_reason": "",
+        "paused": false,
+        "tick": 14400
+      },
+      "reference_fingerprint": "85637b42b1c0e117ec56cd408be43fd2a3e9d2a832566537e92167288dddef17",
+      "ticks_requested": 14400,
+      "ticks_run": 14400
+    },
+    "takeoff": {
+      "completion_ok": true,
+      "first_divergence_tick": -1,
+      "native_context_calls": 2507,
+      "native_end": {
+        "crashed": true,
+        "fault": "",
+        "pause_reason": "CRASH at 37.4 m/s (sink 35.3 m/s, airframe contact (hull point 25), point speed 37.4 m/s at detected tick) - [R] restart",
+        "paused": true,
+        "tick": 2507
+      },
+      "native_fingerprint": "d011d6a12f2593b0a451b7fa3007b56e8ec78f426809dff23fba2489a542def4",
+      "native_lost_install_ticks": 0,
+      "native_stage_calls": 10028,
+      "native_uncovered_ticks": 0,
+      "reference_end": {
+        "crashed": true,
+        "fault": "",
+        "pause_reason": "CRASH at 37.4 m/s (sink 35.3 m/s, airframe contact (hull point 25), point speed 37.4 m/s at detected tick) - [R] restart",
+        "paused": true,
+        "tick": 2507
+      },
+      "reference_fingerprint": "d011d6a12f2593b0a451b7fa3007b56e8ec78f426809dff23fba2489a542def4",
+      "ticks_requested": 14400,
+      "ticks_run": 2507
+    },
+    "trim": {
+      "completion_ok": true,
+      "first_divergence_tick": -1,
+      "native_context_calls": 14400,
+      "native_end": {
+        "crashed": false,
+        "fault": "",
+        "pause_reason": "",
+        "paused": false,
+        "tick": 14400
+      },
+      "native_fingerprint": "32f76875fb8433748b795e2aa98a3475fb8556ebcaf7562ddec6204289c794e9",
+      "native_lost_install_ticks": 0,
+      "native_stage_calls": 57600,
+      "native_uncovered_ticks": 0,
+      "reference_end": {
+        "crashed": false,
+        "fault": "",
+        "pause_reason": "",
+        "paused": false,
+        "tick": 14400
+      },
+      "reference_fingerprint": "32f76875fb8433748b795e2aa98a3475fb8556ebcaf7562ddec6204289c794e9",
+      "ticks_requested": 14400,
+      "ticks_run": 14400
+    }
+  },
+  "verification": {
+    "electric": {
+      "compared": 32010,
+      "results": "electric-20261101T222711583457Z.json",
+      "results_sha256": "aa09de34b6eac7689ef0a667afa053910efd79bf5b0edc11e41cf172122c99b7",
+      "verdict": "pass"
+    },
+    "electric_stage": {
+      "compared": 66988,
+      "results": "electric-stage-20261101T222716357620Z.json",
+      "results_sha256": "69319ff0a15853644aa78cbc1307ded83804446248179240019ab3f04467caf2",
+      "verdict": "pass"
+    },
+    "gear": {
+      "compared": 35452,
+      "results": "gear-20261101T222921384958Z.json",
+      "results_sha256": "05bdff41e74e328de9252390d0cb40525c776da40c18b9e60de0644e0deca313",
+      "verdict": "pass"
+    },
+    "glow": {
+      "compared": 49606,
+      "results": "glow-20261101T222757445290Z.json",
+      "results_sha256": "7ad3123107502e11211db88f47b853e801ff794f2a4bae23e69d115351a854a7",
+      "verdict": "pass"
+    },
+    "glow_stage": {
+      "compared": 79767,
+      "results": "glow-stage-20261101T222801387708Z.json",
+      "results_sha256": "547f4926f7423d6c49bee0b0ad453f8f7c1473972e0d50bd87a20acd514b4e65",
+      "verdict": "pass"
+    },
+    "helicopter": {
+      "compared": 50336,
+      "results": "helicopter-20261101T222834891129Z.json",
+      "results_sha256": "af83ef2f215b77ff4ea49ca7daaa40175bc6d968435d3c77833aa2ec63e5f5e4",
+      "verdict": "pass"
+    },
+    "helicopter_stage": {
+      "compared": 61281,
+      "results": "helicopter-stage-20261101T222841872402Z.json",
+      "results_sha256": "7294a2d5f6359895725e98d120b8a05cd81ca4a66f59cbee6abab42afae331e2",
+      "verdict": "pass"
+    },
+    "legacy_ground": {
+      "compared": 14806,
+      "results": "legacy-ground-20261101T222959863173Z.json",
+      "results_sha256": "e890161d994fc71280ae108005a18fd541cce507ae33b501a1bd0900731bbbd8",
+      "verdict": "pass"
+    },
+    "liquid": {
+      "compared": 15572,
+      "results": "liquid-20261101T222733965485Z.json",
+      "results_sha256": "e0ab57f2229768de667109978576511c1455549a89058a515a6b6b704729ae0f",
+      "verdict": "pass"
+    },
+    "liquid_stage": {
+      "compared": 64136,
+      "results": "liquid-stage-20261101T222737983374Z.json",
+      "results_sha256": "c9fb986637f16e555a9f59985df5f72f83131026783492cf345aeae53400e2fa",
+      "verdict": "pass"
+    },
+    "negative_control": {
+      "compared": 128664,
+      "results": "stage_mutant-20261101T223016030714Z.json",
+      "results_sha256": "3e8115d57a201b78260e5e4bde2dbc3954068160735c2336a5fc2cdabb976e14",
+      "verdict": "fail"
+    },
+    "prescribed_stage": {
+      "compared": 49571,
+      "results": "prescribed-stage-20261101T222941738550Z.json",
+      "results_sha256": "d07ad8f550cb7d5d6eae0551aac8e10ca73ad80f18594b504e0466e87c7d5b30",
+      "verdict": "pass"
+    },
+    "propeller": {
+      "compared": 41958,
+      "results": "propeller-20261101T222706904673Z.json",
+      "results_sha256": "0431d958f1395d915167e505cf7eacd08b2d2ab3a8b92281ec8db56a2c400329",
+      "verdict": "pass"
+    },
+    "stage_oracle": {
+      "compared": 128664,
+      "results": "stage-20261101T222640742942Z.json",
+      "results_sha256": "839592ebab83b9eaf883074cbbef2a8c295497d285d8cab585ee4f4d77ec8855",
+      "verdict": "pass"
+    },
+    "trajectory": {
+      "compared": 156030,
+      "results": "trajectory-20261101T222703126819Z.json",
+      "results_sha256": "39f005fb48672b6feed2c0fa9e1cec9094d7efb040207b6f31872ccb1731cc37",
+      "verdict": "pass"
+    },
+    "wake": {
+      "compared": 19138,
+      "results": "wake-20261101T222912875362Z.json",
+      "results_sha256": "d78b0833dcc97b61aa4bf0ea13bf5df6ad73ad7d604591d26a7ac6c9ee838e5c",
+      "verdict": "pass"
+    },
+    "wake_spatial": {
+      "compared": 20204,
+      "results": "wake-spatial-20261101T222917335116Z.json",
+      "results_sha256": "08c23d415e13ffb4852b8e0e2fff68cbffbb64d0bbb4765e25401efd0ce0a183",
+      "verdict": "pass"
+    },
+    "weather": {
+      "compared": 21549,
+      "results": "weather-20261101T222852549010Z.json",
+      "results_sha256": "9b168924ac9c1eaa694f20fbfa4b4bec1d0532de7c4691a5cc7f3b7aecf10d14",
+      "verdict": "pass"
+    },
+    "weather_stage": {
+      "compared": 59340,
+      "results": "weather-stage-20261101T222855784514Z.json",
+      "results_sha256": "5957db7953396004c79b466f1f08ca386312889f6fe88fcc4bf52650c4dd07f3",
+      "verdict": "pass"
+    }
+  }
+}

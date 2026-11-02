@@ -1,6 +1,6 @@
 # Architecture and stack
 
-Status: current implementation, checked 2026-10-19. Runtime settings live in [project.godot](../app/project.godot); Godot's exact version and SHA-512 are pinned by [get-godot.sh](../app/get-godot.sh). Setup and commands: [TOOLS](TOOLS.md).
+Status: current implementation, checked 2026-11-01. Runtime settings live in [project.godot](../app/project.godot); Godot's exact version and SHA-512 are pinned by [get-godot.sh](../app/get-godot.sh). Setup and commands: [TOOLS](TOOLS.md).
 
 Display development follows the [shared resolution policy](../AGENTS.md#display-resolution-priorities): **1080p primary → above-1080p resolutions (including 4K) secondary desirable → 720p tertiary, last**. The configured default viewport below describes current implementation, not product priority or performance qualification.
 
@@ -8,7 +8,7 @@ Display development follows the [shared resolution policy](../AGENTS.md#display-
 
 | Layer | Implementation |
 | --- | --- |
-| Engine/language | Official Godot 4.8-beta1; GDScript. Owner-authorized adoption with [local verification](research/engine-upgrade/GDU-03/README.md); broader [platform/release gates](plans/godot-4.8-upgrade.md) remain open |
+| Engine/language | Official Godot 4.8-beta2; GDScript. Owner-authorized adoption with [beta 2 verification](research/engine-upgrade/GDU-12/README.md); broader [platform/release gates](plans/godot-4.8-upgrade.md) remain open |
 | Rendering | Compatibility renderer (`gl_compatibility`); 1280×720 default viewport; 4× 3D MSAA |
 | Simulation | Shared float64 rigid-body kernel, RK4 and fixed 240 Hz ticks; Godot rigid-body nodes do not solve flight |
 | Aircraft data | Strict `openrc-aircraft v2` validation, unit-tagged quantities and derived mass/CG/inertia; v1 is an explicit historical path; [contract](AIRCRAFT_CONTRACT.md) |

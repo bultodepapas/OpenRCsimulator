@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Prepare a project-local universal-only workaround for Godot 4.8-beta1 #124744.
+"""Reproduce the historical Godot 4.8-beta1 workaround for #124744.
 
 The official editor selects the opposite debug/release payload for universal
 exports. Swap those four payloads in a separate ZIP; never modify installed
-templates. Remove the custom preset paths and this preparation when upgrading
-to an engine containing upstream PR #124757.
+templates. Beta2 contains upstream PR #124757, so its getter and export preset
+do not use this historical preparation.
 """
 from __future__ import annotations
 

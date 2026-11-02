@@ -1,0 +1,10 @@
+electric propulsion requires coupled-rk4
+EL1d electric session: 98 checks, 0 failed
+== test_engine_smoke.gd
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage library not installed","requested":"native"}
+radio connected: sm-gamepad|0000:0000|SM fake gamepad (gamepad profile)
+SM engine smoke: 62 checks, 0 failures
+== test_extra_runway.gd

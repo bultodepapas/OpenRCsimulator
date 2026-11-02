@@ -241,7 +241,7 @@ The production application is in **`app/`**. Start with [developer setup](docs/T
 
 | Layer | Current source |
 | --- | --- |
-| **Engine and application** | Pinned official **Godot 4.8-beta1** prerelease; **GDScript** for the application and reference simulation. See the release notes for the packaged engine version. |
+| **Engine and application** | Pinned official **Godot 4.8-beta2** prerelease; **GDScript** for the application and reference simulation. See the release notes for the packaged engine version. |
 | **Flight dynamics** | Custom **float64**, six-degree-of-freedom rigid-body kernel, **RK4** and fixed **240 Hz** ticks. Vehicle-specific laws enter through `VehicleModel`. |
 | **Native evaluation** | In-house **C++ / GDExtension** backends with GDScript reference/fallback paths. [NK-3 selection and qualification](research/native-kernel/README.md#normal-flight-backend-selection) |
 | **Rendering** | Godot Compatibility/OpenGL and optional Forward+; [graphics modes](tools/graphics/README.md) own reconstruction options and platform limits. |

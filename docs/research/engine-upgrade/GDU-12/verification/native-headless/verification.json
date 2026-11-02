@@ -1,0 +1,25 @@
+{
+  "engine": "4.8.beta2.official.cafc17a19",
+  "platform": "Windows",
+  "runs": [
+    {
+      "name": "final-native-audio",
+      "test": "test_crash_integration.gd",
+      "checks": 244,
+      "test_sha256": "2616ab8286d94879f4866b58bc3ce132376743f63eb2b840fe71dbfd13b90864",
+      "log_sha256": "ef8d91ce717b03d3aaf8b92e2152744edfd2ee056b4bf3e54cbe2669edf380da",
+      "report_sha256": "b848234e71f3c5cb56e614490ad9fd658469e60ac653f6fb2e19a7258485f46a",
+      "explicit_skips": 0
+    },
+    {
+      "name": "final-native-rcv",
+      "test": "test_rcv_session.gd",
+      "checks": 168,
+      "test_sha256": "e2253f16e7f9dd8b8001095caca95bb13638941dd358c00ceafce181b50c71fc",
+      "log_sha256": "8feca523d5980c288dcd7bc20267c04050446a53496a5e19e0eae1913c634699",
+      "report_sha256": "1fd281df363c8f57f82ad2244a96fd824bd8ccb1c4201d3b74513e144b06adf2",
+      "explicit_skips": 0
+    }
+  ],
+  "limits": "Headless software checks; no perceptual audio or physical-device qualification."
+}

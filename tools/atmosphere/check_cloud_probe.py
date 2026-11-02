@@ -20,7 +20,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[2]
 CHECKED_RUNNER = ROOT / "tools" / "godot" / "run_checked.py"
 CAPTURE_SCRIPT = Path(__file__).with_name("probe_clouds.gd")
-PINNED_ENGINE_BUILD = "4.8.beta1.official.4d10419ca"
+PINNED_ENGINE_BUILD = "4.8.beta2.official.cafc17a19"
 FORMAT = "openrc-cloud-density-probe v1"
 SUMMARY_FORMAT = "openrc-cloud-density-probe-review v1"
 PANEL_SIZE = 256
@@ -95,8 +95,8 @@ def read_run(folder: Path, include: Path) -> tuple[dict[str, Any], np.ndarray]:
     width = len(PANEL_IDS) * PANEL_SIZE
     if metadata.get("format") != FORMAT or metadata.get("complete") is not True:
         raise RuntimeError(f"{metadata_path}: unexpected or incomplete probe metadata")
-    if metadata.get("godot") != "4.8-beta1 (official)" or not metadata.get("renderer"):
-        raise RuntimeError(f"{metadata_path}: missing pinned Godot 4.8-beta1 / renderer metadata")
+    if metadata.get("godot") != "4.8-beta2 (official)" or not metadata.get("renderer"):
+        raise RuntimeError(f"{metadata_path}: missing pinned Godot 4.8-beta2 / renderer metadata")
     if metadata.get("panels") != list(PANEL_IDS):
         raise RuntimeError(f"{metadata_path}: panel inventory mismatch")
     if (metadata.get("width"), metadata.get("height"), metadata.get("panel_size")) != (width, PANEL_SIZE, PANEL_SIZE):

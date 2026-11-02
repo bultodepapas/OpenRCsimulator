@@ -1,0 +1,24 @@
+{
+  "attributes": [
+    "app/data/fuels/openrc-fuel-registry.json: text: set",
+    "app/data/fuels/openrc-fuel-registry.json: eol: lf",
+    "docs/research/engine-upgrade/GDU-12/native/nk3-oracles/verification-index.json: text: unset",
+    "docs/research/engine-upgrade/GDU-12/native/nk3-lf-loader.log: text: unset",
+    "docs/research/engine-upgrade/GDU-12/native/nk3-lf-loader.log: whitespace: unset",
+    "docs/research/engine-upgrade/GDU-12/native/fuel-eol-probe.gd: text: unset",
+    "docs/research/ai-companions/AFC-02-R5/matrix/scenario_metrics.csv: text: unset",
+    "docs/research/ai-companions/AFC-02-R5/matrix/checked.json: text: unset",
+    "docs/research/ai-companions/AFC-02-R5/tapes/parallel-two-threats-ai.orfl: text: unset"
+  ],
+  "autocrlf": true,
+  "registry_sha256": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043",
+  "sample_count": 6,
+  "unchanged_evidence_sha256": {
+    "docs/research/ai-companions/AFC-02-R5/matrix/checked.json": "06cf97227435a5f5de2590cf1efa89412543f4414024f6a3e1279cb3a3103207",
+    "docs/research/ai-companions/AFC-02-R5/matrix/scenario_metrics.csv": "29cab4ba7a47da1afd10e39249b7080eb5537d5004c558995e9e0c301a6e2d56",
+    "docs/research/ai-companions/AFC-02-R5/tapes/parallel-two-threats-ai.orfl": "15396a469f15e7a80a901d8b61ed7ff137087b7dc0bdf0cba9f40a9cfdf20ab1",
+    "docs/research/engine-upgrade/GDU-12/native/fuel-eol-probe.gd": "7e31e22a4de8e3f4eeba42f9d7671a9a569ef86095b467bbe70540e127785044",
+    "docs/research/engine-upgrade/GDU-12/native/nk3-lf-loader.log": "0efab39d220e033f6464adea150e90651325f123fcb363ec55cfd647e884169d",
+    "docs/research/engine-upgrade/GDU-12/native/nk3-oracles/verification-index.json": "7f7b6929a0953e7a0d6c2fc28fd5d379775654b7b5f7b32db312ddc7a401572b"
+  }
+}

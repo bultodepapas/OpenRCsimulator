@@ -69,12 +69,15 @@ def default_godot() -> str:
     return result.stdout.strip().splitlines()[-1]
 
 
-def solver_identity(godot: str, app: Path) -> str:
-    result = run([godot, "--headless", "--path", str(app), "--audio-driver", "Dummy", "--script", str(IDENTITY_SCRIPT)])
+def solver_identity(godot: str, app: Path, tapes: tuple[Path, ...] = ()) -> str:
+    command = [godot, "--headless", "--path", str(app), "--audio-driver", "Dummy", "--script", str(IDENTITY_SCRIPT)]
+    if tapes:
+        command += ["--", *(f"--tape={tape}" for tape in tapes)]
+    result = run(command)
     for line in result.stdout.splitlines():
         if line.startswith("SOLVER_IDENTITY "):
             identity = json.loads(line.removeprefix("SOLVER_IDENTITY "))
-            if identity.get("ok"):
+            if result.returncode == 0 and identity.get("ok") and identity.get("inspected_tapes", 0) == len(tapes):
                 return str(identity["sha256"])
             raise SetupError(f"solver identity unavailable in {app}: {identity.get('errors')}")
     raise SetupError(f"no solver identity from {app}:\n{result.stdout[-2000:]}{result.stderr[-2000:]}")
@@ -82,6 +85,29 @@ def solver_identity(godot: str, app: Path) -> str:
 
 def pinned_identity(profile: Path) -> str:
     return str(json.loads(profile.read_text(encoding="utf-8"))["solver"]["sha256"])
+
+
+def validate_engine(godot: str, profile: Path) -> None:
+    expected = json.loads(profile.read_text(encoding="utf-8")).get("engine_version")
+    if not isinstance(expected, str) or not expected:
+        raise SetupError("profile has no exact qualified engine identity")
+    result = run([godot, "--version"], timeout=30)
+    actual = result.stdout.strip()
+    if result.returncode or actual != expected:
+        raise SetupError(f"engine build differs: profile requires {expected}, got {actual or 'no version'}")
+
+
+def qualified_tapes(qualification: dict) -> tuple[Path, ...]:
+    entries = qualification.get("tapes")
+    if not isinstance(entries, list) or not entries or any(not isinstance(item, str) or not item for item in entries):
+        raise SetupError("qualification must list its retained tapes")
+    tapes = tuple((ROOT / item).resolve() for item in entries)
+    if len(set(tapes)) != len(tapes):
+        raise SetupError("qualification contains duplicate tapes")
+    missing = [str(tape) for tape in tapes if not tape.is_file()]
+    if missing:
+        raise SetupError(f"missing tapes: {missing}")
+    return tapes
 
 
 def build_baseline(workspace: Path, rev: str, directories: list[str]) -> Path:
@@ -216,7 +242,9 @@ def main() -> int:
         if pinned != qualification["accepted"]["solver_sha256"]:
             raise SetupError(f"profile pins {pinned[:8]} but qualification.json accepts "
                              f"{qualification['accepted']['solver_sha256'][:8]}; they must agree")
-        current = solver_identity(godot, ROOT / "app")
+        validate_engine(godot, profile)
+        tapes = qualified_tapes(qualification)
+        current = solver_identity(godot, ROOT / "app", tapes)
         if current == pinned:
             print(f"Companion qualification is current ({current[:8]}); nothing to re-bind.")
             return 0

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "purpose": "NK-1 math identity spike; pins mirror research/rc-monster-truck/native/toolchain-lock.json",
   "godot": {
-    "version": "4.8.beta1.official.4d10419ca",
+    "version": "4.8.beta2.official.cafc17a19",
     "extension_api": "4.7"
   },
   "godot_cpp": {

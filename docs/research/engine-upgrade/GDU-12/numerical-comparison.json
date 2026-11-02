@@ -1,0 +1,220 @@
+{
+  "format": "openrc-gdu04-comparison v1",
+  "complete": true,
+  "identical": true,
+  "engines": {
+    "baseline": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+      "sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+      "version": "4.8.beta1.official.4d10419ca"
+    },
+    "candidate": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+      "sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+      "version": "4.8.beta2.official.cafc17a19"
+    }
+  },
+  "source_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+  "source_files": 301,
+  "source_manifest_sha256": "535c4aa26ce3d2d4a2ad5f9faa02bc0c603dfff2f5a3653691cb13e42e7bd557",
+  "probe_sha256": "0b98cda921ef0e32eca5ffb8d9895d3ae4168cba22210791e996ed87b91b489b",
+  "runner_sha256": "63fe7bf21e04c258ee5c8019b3acfed3cef9effa823e6ab604d3f3ead5128967",
+  "cases": {
+    "jensen-das-ugly-stik-60-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 415152,
+      "baseline_sha256": "fc6c36b6f92570f38b7d4f332bbafe16dbe5a0debd3337a52333d9a6f78e8a4e",
+      "candidate_sha256": "fc6c36b6f92570f38b7d4f332bbafe16dbe5a0debd3337a52333d9a6f78e8a4e"
+    },
+    "jensen-das-ugly-stik-60-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 476656,
+      "baseline_sha256": "7bb7d14379749c7520b2bd7b649b4f01496f65c4d2f65adbfc6d6f20f1011f59",
+      "candidate_sha256": "7bb7d14379749c7520b2bd7b649b4f01496f65c4d2f65adbfc6d6f20f1011f59"
+    },
+    "stik-glow-61fx-2t-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "2fb3bc32b7a22eca3470b6f8f80e16753500522797dbcbdd5dedb8313a56e035",
+      "candidate_sha256": "2fb3bc32b7a22eca3470b6f8f80e16753500522797dbcbdd5dedb8313a56e035"
+    },
+    "stik-glow-61fx-2t-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "6c7ec4fd9244cca75d0ed9f293fc8a9a4b155ad063d1ddb7725ba673bb9fef74",
+      "candidate_sha256": "6c7ec4fd9244cca75d0ed9f293fc8a9a4b155ad063d1ddb7725ba673bb9fef74"
+    },
+    "stik-glow-55ax-2t-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "57a0e4eec63bd68dcc5d0a13b66dda568b69905f1507da65ee73cd3674e20be0",
+      "candidate_sha256": "57a0e4eec63bd68dcc5d0a13b66dda568b69905f1507da65ee73cd3674e20be0"
+    },
+    "stik-glow-55ax-2t-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "483f09930edcb389a283086e0482f4e4103d1297165a97014e9625227887b56d",
+      "candidate_sha256": "483f09930edcb389a283086e0482f4e4103d1297165a97014e9625227887b56d"
+    },
+    "stik-glow-fs64v-4t-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "aefc1d02ed1208c79dff9ee683965505280f3c038636c9cbd02a6c797409d425",
+      "candidate_sha256": "aefc1d02ed1208c79dff9ee683965505280f3c038636c9cbd02a6c797409d425"
+    },
+    "stik-glow-fs64v-4t-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "d4797524b5c8ff8af1a7d922e77c523bb28ad086b67179c4f37706c8b3ba1284",
+      "candidate_sha256": "d4797524b5c8ff8af1a7d922e77c523bb28ad086b67179c4f37706c8b3ba1284"
+    },
+    "gp-extra-300s-60-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "142fe246b4c0ab68f84fb0f2b26d056f3a940f239bbc6dfbcbaa6c998d66ef68",
+      "candidate_sha256": "142fe246b4c0ab68f84fb0f2b26d056f3a940f239bbc6dfbcbaa6c998d66ef68"
+    },
+    "gp-extra-300s-60-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "fee55ab0b866eded89296303f2388af578ee95f26afa7a9280542308f81a0486",
+      "candidate_sha256": "fee55ab0b866eded89296303f2388af578ee95f26afa7a9280542308f81a0486"
+    },
+    "p51d-mustang-120-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "dadcc41624bcf858df2ecfed6d99574dab946e639c336b7bfc7d50e1849d7eaf",
+      "candidate_sha256": "dadcc41624bcf858df2ecfed6d99574dab946e639c336b7bfc7d50e1849d7eaf"
+    },
+    "p51d-mustang-120-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 545848,
+      "baseline_sha256": "91901daf508d2114b75c8189e51a1b9819dffd077ea8bac6ce0956e1db9547e6",
+      "candidate_sha256": "91901daf508d2114b75c8189e51a1b9819dffd077ea8bac6ce0956e1db9547e6"
+    },
+    "f4u-corsair-250-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "7f278e4a9afce1e2cb1fb39ce655adf18bd4e0c6fadeff726ad545dc6a14e24f",
+      "candidate_sha256": "7f278e4a9afce1e2cb1fb39ce655adf18bd4e0c6fadeff726ad545dc6a14e24f"
+    },
+    "f4u-corsair-250-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 545848,
+      "baseline_sha256": "49dd5900b4f78cf013664947d3092cbf6f74de11e5434631609f51ea6f4cef06",
+      "candidate_sha256": "49dd5900b4f78cf013664947d3092cbf6f74de11e5434631609f51ea6f4cef06"
+    },
+    "sebart-avanti-s-a200-p100rx-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "d84ce3b563d2e85303e585298c2ed133433c4cd9e384c013650b88df76a430f0",
+      "candidate_sha256": "d84ce3b563d2e85303e585298c2ed133433c4cd9e384c013650b88df76a430f0"
+    },
+    "sebart-avanti-s-a200-p100rx-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 545848,
+      "baseline_sha256": "a9e8f2106ba92e16915228c143c5c8b7daa9bc66246f1a53f9592861e210a2e7",
+      "candidate_sha256": "a9e8f2106ba92e16915228c143c5c8b7daa9bc66246f1a53f9592861e210a2e7"
+    },
+    "turbo-lumber-evolution-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 422840,
+      "baseline_sha256": "c6cfd26d95c4c6ca0d2d4b7e2f1cb9ff932516b4daa100622b4f088b94b81a22",
+      "candidate_sha256": "c6cfd26d95c4c6ca0d2d4b7e2f1cb9ff932516b4daa100622b4f088b94b81a22"
+    },
+    "turbo-lumber-evolution-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "10f0e80744df25fe4dc6f89f488eecf71fef0e05ac01e0ba3b7bb7f321eafcd7",
+      "candidate_sha256": "10f0e80744df25fe4dc6f89f488eecf71fef0e05ac01e0ba3b7bb7f321eafcd7"
+    },
+    "moonrunner-x99-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 322896,
+      "baseline_sha256": "31dd16c7b0e3c0308e6bea2630874e2c582237e97cea47e63f5b3b8e3d26c34b",
+      "candidate_sha256": "31dd16c7b0e3c0308e6bea2630874e2c582237e97cea47e63f5b3b8e3d26c34b"
+    },
+    "moonrunner-x99-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 384400,
+      "baseline_sha256": "faaab5c0468938faf6da0a35a5794dbc70386950b4446fe980b61fa54b9c42c5",
+      "candidate_sha256": "faaab5c0468938faf6da0a35a5794dbc70386950b4446fe980b61fa54b9c42c5"
+    }
+  },
+  "wind": {
+    "wind-0.bin": {
+      "identical": true,
+      "baseline_sha256": "c2251b373bf3b7827e51e74cda99f04a70ce976d4293e60ac9cf8f75a0a4c2e2",
+      "candidate_sha256": "c2251b373bf3b7827e51e74cda99f04a70ce976d4293e60ac9cf8f75a0a4c2e2"
+    },
+    "ou-0.bin": {
+      "identical": true,
+      "baseline_sha256": "4d21ef977b14ac6a06e37d175cf2988f6a7a774aae152939f3e1cd2cf90179cc",
+      "candidate_sha256": "4d21ef977b14ac6a06e37d175cf2988f6a7a774aae152939f3e1cd2cf90179cc"
+    },
+    "wind-1.bin": {
+      "identical": true,
+      "baseline_sha256": "5f0542cf384ad10fd2b55b30b0fdb67d3a9b36d92afe2090c163ef96e1f2de9f",
+      "candidate_sha256": "5f0542cf384ad10fd2b55b30b0fdb67d3a9b36d92afe2090c163ef96e1f2de9f"
+    },
+    "ou-1.bin": {
+      "identical": true,
+      "baseline_sha256": "71d0950073b668d8bfa22619c859e307c90fa98c5e514ae5732a5a2c42988104",
+      "candidate_sha256": "71d0950073b668d8bfa22619c859e307c90fa98c5e514ae5732a5a2c42988104"
+    },
+    "wind-12345.bin": {
+      "identical": true,
+      "baseline_sha256": "8f98531ebdf5894c6c5983abe1e31f6afe3aed599e094c3bb668d5b20d0f144f",
+      "candidate_sha256": "8f98531ebdf5894c6c5983abe1e31f6afe3aed599e094c3bb668d5b20d0f144f"
+    },
+    "ou-12345.bin": {
+      "identical": true,
+      "baseline_sha256": "99dcad0ce892a28ede790f228a64512d5f89e0ce1532480fdde1d31792ed66b7",
+      "candidate_sha256": "99dcad0ce892a28ede790f228a64512d5f89e0ce1532480fdde1d31792ed66b7"
+    },
+    "wind-20261011.bin": {
+      "identical": true,
+      "baseline_sha256": "1212fbba5202cf33b45272d29ab863a28bf586481d2f2fa55757c5e906619bd3",
+      "candidate_sha256": "1212fbba5202cf33b45272d29ab863a28bf586481d2f2fa55757c5e906619bd3"
+    },
+    "ou-20261011.bin": {
+      "identical": true,
+      "baseline_sha256": "7290607afc1995efab04cb5b3d9b4e9ac1de798a7cef876892f1613e42e2d6a6",
+      "candidate_sha256": "7290607afc1995efab04cb5b3d9b4e9ac1de798a7cef876892f1613e42e2d6a6"
+    },
+    "wind-4294967295.bin": {
+      "identical": true,
+      "baseline_sha256": "e7f860261c35920ddba4758bde17cfebc726bd75bde6e25ca11a821886bb396b",
+      "candidate_sha256": "e7f860261c35920ddba4758bde17cfebc726bd75bde6e25ca11a821886bb396b"
+    },
+    "ou-4294967295.bin": {
+      "identical": true,
+      "baseline_sha256": "f6fa2ae67f3c40848f6242cf73b502473ea32a6dc863b6617f2a3bb5697f2223",
+      "candidate_sha256": "f6fa2ae67f3c40848f6242cf73b502473ea32a6dc863b6617f2a3bb5697f2223"
+    }
+  },
+  "engine_hash_capture": "before execution",
+  "pcg32_oracle_sha256": "5fe474aeb6274db74fb5726bbb35cbcc5d68b676f5b635437e3d557d53e3fa4a",
+  "independent_pcg32_oracle": "all raw words and states match app/tests/check_wind_trace.py",
+  "limits": "Frozen-source research comparison only; not ORFL exact replay, physical validation, all-platform equivalence or performance qualification."
+}

@@ -1,0 +1,240 @@
+{
+  "build_output": "Cloning into '/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp'...\nNote: switching to '507ed9d840c01a3c5b2a39af8bb4000bfac30bf5'.\n\nYou are in 'detached HEAD' state. You can look around, make experimental\nchanges and commit them, and you can discard any commits you make in this\nstate without impacting any branches by switching back to a branch.\n\nIf you want to create a new branch to retain commits you create, you may\ndo so (now or later) by using -c with the switch command. Example:\n\n  git switch -c <new-branch-name>\n\nOr undo this operation with:\n\n  git switch -\n\nTurn off this advice by setting config variable advice.detachedHead to false\n\nUpdating files:  22% (45/198)\nUpdating files:  23% (46/198)\nUpdating files:  24% (48/198)\nUpdating files:  25% (50/198)\nUpdating files:  26% (52/198)\nUpdating files:  27% (54/198)\nUpdating files:  28% (56/198)\nUpdating files:  29% (58/198)\nUpdating files:  30% (60/198)\nUpdating files:  31% (62/198)\nUpdating files:  32% (64/198)\nUpdating files:  33% (66/198)\nUpdating files:  34% (68/198)\nUpdating files:  35% (70/198)\nUpdating files:  36% (72/198)\nUpdating files:  37% (74/198)\nUpdating files:  38% (76/198)\nUpdating files:  39% (78/198)\nUpdating files:  40% (80/198)\nUpdating files:  41% (82/198)\nUpdating files:  42% (84/198)\nUpdating files:  43% (86/198)\nUpdating files:  44% (88/198)\nUpdating files:  45% (90/198)\nUpdating files:  46% (92/198)\nUpdating files:  47% (94/198)\nUpdating files:  48% (96/198)\nUpdating files:  49% (98/198)\nUpdating files:  50% (99/198)\nUpdating files:  51% (101/198)\nUpdating files:  52% (103/198)\nUpdating files:  53% (105/198)\nUpdating files:  54% (107/198)\nUpdating files:  55% (109/198)\nUpdating files:  56% (111/198)\nUpdating files:  57% (113/198)\nUpdating files:  58% (115/198)\nUpdating files:  59% (117/198)\nUpdating files:  60% (119/198)\nUpdating files:  61% (121/198)\nUpdating files:  62% (123/198)\nUpdating files:  63% (125/198)\nUpdating files:  64% (127/198)\nUpdating files:  65% (129/198)\nUpdating files:  66% (131/198)\nUpdating files:  67% (133/198)\nUpdating files:  68% (135/198)\nUpdating files:  69% (137/198)\nUpdating files:  70% (139/198)\nUpdating files:  71% (141/198)\nUpdating files:  72% (143/198)\nUpdating files:  73% (145/198)\nUpdating files:  74% (147/198)\nUpdating files:  75% (149/198)\nUpdating files:  76% (151/198)\nUpdating files:  77% (153/198)\nUpdating files:  78% (155/198)\nUpdating files:  79% (157/198)\nUpdating files:  80% (159/198)\nUpdating files:  81% (161/198)\nUpdating files:  82% (163/198)\nUpdating files:  83% (165/198)\nUpdating files:  84% (167/198)\nUpdating files:  85% (169/198)\nUpdating files:  86% (171/198)\nUpdating files:  87% (173/198)\nUpdating files:  88% (175/198)\nUpdating files:  89% (177/198)\nUpdating files:  90% (179/198)\nUpdating files:  91% (181/198)\nUpdating files:  92% (183/198)\nUpdating files:  93% (185/198)\nUpdating files:  94% (187/198)\nUpdating files:  95% (189/198)\nUpdating files:  96% (191/198)\nUpdating files:  97% (193/198)\nUpdating files:  98% (195/198)\nUpdating files:  99% (197/198)\nUpdating files: 100% (198/198)\nUpdating files: 100% (198/198), done.\nscons: Entering directory `/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/build/linux-x86_64-template_release'\nscons: Reading SConscript files ...\nBuilding for architecture x86_64 on platform linux\nscons: done reading SConscript files.\nscons: Building targets ...\nGenerating /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/include/gdextension_interface.h ...\nBuilt-in type config: float_64\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/packed_float64_array.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/node_path.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/packed_vector3_array.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/classes/class_db_singleton.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/string_name.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/packed_float32_array.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/classes/image.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/packed_vector2_array.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/classes/object.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/callable.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/classes/ref_counted.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/classes/json.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/classes/file_access.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/gdextension_interface_loader.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/array.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/classes/os.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/rid.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/core/print_string.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/classes/resource.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/dictionary.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/classes/xml_parser.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/classes/worker_thread_pool.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/signal.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/packed_int64_array.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/packed_vector4_array.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/string.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/utility_functions.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/packed_int32_array.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/packed_string_array.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/packed_color_array.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/templates/hashfuncs.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/quaternion.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/callable_custom.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/classes/low_level.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/transform2d.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/core/memory.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/color.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/core/error_macros.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/variant_internal.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/vector4.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/vector3i.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/projection.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/vector3.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/basis.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/classes/editor_plugin_registration.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/rect2i.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/char_string.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/plane.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/vector2i.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/aabb.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/vector4i.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/rect2.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/transform3d.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/vector2.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/packed_arrays.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/godot.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/variant.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/core/class_db.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/variant/callable_method_pointer.cpp ...\nCompiling shared /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/research/rc-monster-truck/native/src/ground_vehicle_native.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/core/object.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/classes/wrapped.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/src/core/method_bind.cpp ...\nCompiling /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/gen/src/variant/packed_byte_array.cpp ...\nLinking Static Library /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/bin/libgodot-cpp.linux.template_release.x86_64.a ...\nRanlib Library /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/godot-cpp/bin/libgodot-cpp.linux.template_release.x86_64.a ...\nLinking Shared Library lib/libopenrc_ground_vehicle.so ...\nscons: done building targets.\nBuilt research-only /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-evidence/libopenrc_ground_vehicle.so (linux/x86_64, ['-fno-fast-math', '-ffp-contract=off']).\nVerified GDExtension load and PackedFloat64Array round-trip.\nOPENRC_NATIVE_LAKE_PARITY points=669 channels=2676 bit_exact=2676 max_abs_error=0.0\nOPENRC_NATIVE_LAKE_PROFILE points=669 rounds=3 gdscript_ms_per_sample=0.07749975087195 native_ms_per_sample=0.00902441454908 speedup=8.5877871024735 check=-10120.7657219458\nOPENRC_NATIVE_EVAL_PROFILE engine_debug=true extension_target=template_release gdscript_ms=0.8347 native_ms=0.1267 speedup=6.59x iterations=50\nOPENRC_NATIVE_PARITY_OK checks=733\nRetained parity stdout and build hashes at /mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/.tools/native-ground-vehicle/parity-linux-latest.log.\n",
+  "command": [
+    "/usr/bin/python3",
+    "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace/research/rc-monster-truck/native/build.py",
+    "--jobs",
+    "2",
+    "--output",
+    "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-evidence/libopenrc_ground_vehicle.so",
+    "--godot",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64"
+  ],
+  "engine_errors": [],
+  "exit_code": 0,
+  "finished_utc": "2026-11-01T18:48:47.104615+00:00",
+  "format": "openrc-rcv-linux-native-verification-v1",
+  "host": {
+    "architecture": "x86_64",
+    "distribution": "Ubuntu 24.04",
+    "godot": "4.8.beta2.official.cafc17a19",
+    "godot_path": "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "gxx_banner": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "gxx_version": "13.3.0",
+    "kernel": "Linux Devil 6.18.54.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Tue Oct  6 19:13:07 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+    "python": "3.12.3"
+  },
+  "isolated_build_receipt": {
+    "abi_version": 1,
+    "architecture": "x86_64",
+    "backend": "native",
+    "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
+    "binary_sha256": "ea9896ecf7c5030501dcaae0fdce2db70529a204d7f4948fe1a917a2d17de884",
+    "exception_flags": [
+      "-fexceptions"
+    ],
+    "floating_point_flags": [
+      "-fno-fast-math",
+      "-ffp-contract=off"
+    ],
+    "platform": "linux",
+    "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+    "source_sha256": "6d4c5eabeb2f8565cf84d08fb6825ab5b1cacc47a7ebc26f215ac97b88ae1c2b",
+    "toolchain": {
+      "compiler_version": "13.3.0"
+    },
+    "toolchain_sha256": "d28287007eee3edad3ed7ed982e12f04de51007c80666e476972896bbf8bf907"
+  },
+  "library_path": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-evidence/libopenrc_ground_vehicle.so",
+  "library_sha256": "ea9896ecf7c5030501dcaae0fdce2db70529a204d7f4948fe1a917a2d17de884",
+  "lock": {
+    "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+    "godot_version": "4.8.beta2.official.cafc17a19",
+    "linux_compiler_version": "13.3.0",
+    "linux_floating_point_flags": [
+      "-fno-fast-math",
+      "-ffp-contract=off"
+    ],
+    "scons_version": "4.10.1",
+    "sha256": "1595c15c8a3a67b63b27931f6e24744e6d79ce440f841be08ec9b6cee30f6bbe"
+  },
+  "parity_passed": true,
+  "scope": "WSL Ubuntu x86_64 build from a sparse git archive of HEAD paths plus exact working-file overlays in an isolated workspace; not a full repository clone or CI run.",
+  "smoke_passed": true,
+  "snapshot_input_sha256": "933ff81cd9373a50d9fb3532df69dd620f9fe6aea285588433935647bf2a184a",
+  "snapshot_inputs": {
+    "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "app/data/ground_vehicle/practice.json": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+    "app/data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+    "app/data/vehicles/ground/mt8_bisonte.json": "795dd4cbadc57d4a176f853c95d22e78c141ecf96435a331b9cc199ca05c9a96",
+    "app/physics/generalized_coordinates.gd": "8f626b6aa7874e83ed4169d834e3a3bb7fe513660f11b18fa9be2f865bd01665",
+    "app/physics/ground_terrain.gd": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc",
+    "app/physics/ground_vehicle/course.gd": "9df352cd279a3c1a4a7b094314367bb92b4d263e045ebe15a553317595013e3d",
+    "app/physics/ground_vehicle/vehicle_data.gd": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae",
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": "0cf8806ded96b3397d75f1456b06710f71a051a504792234eb7e5ca8449cedbf",
+    "app/physics/ground_vehicle/vehicle_environment.gd": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+    "app/physics/integrator.gd": "69d75732b95b2307a276d468ff5989be1db34755de98c1aac56f8b1808368cde",
+    "app/physics/lake_surface.gd": "a78e20ea259479e6e9a479f568b1fa902e1cf79bed50fc0b77d1810e007ff245",
+    "app/physics/math3d.gd": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf",
+    "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+    "research/native-slipstream/build.py": "2d8664208756fb7421bf408c2a20f8787c0b37a0108a3bc189750dd1dc41cbfc",
+    "research/rc-monster-truck/native/build.py": "9d83bbe5cb2ca0e0d18e2231465a869f382388014d05d4e063ab1f56d8f59b41",
+    "research/rc-monster-truck/native/parity_harness.gd": "d703bb50996108f928fb09fbcb8a93b8d0e8cc4ed0dfbaaa03cadeacf3ff98e9",
+    "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp": "e48b3163f201887dd3b0c2b59bba95f0ee36f75ab64ef841f11dca8695e29933",
+    "research/rc-monster-truck/native/src/ground_vehicle_native.cpp": "55d123a0aa748db95fe3456559121ebe940e8ecacd4098bb6b94125a47d642ec",
+    "research/rc-monster-truck/native/toolchain-lock.json": "1595c15c8a3a67b63b27931f6e24744e6d79ce440f841be08ec9b6cee30f6bbe"
+  },
+  "source_git": {
+    "head": "46b004c7b469448c29ef96168da4f03cee2c6d23"
+  },
+  "source_root": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "source_snapshot": {
+    "baseline_commit": "46b004c7b469448c29ef96168da4f03cee2c6d23",
+    "overlays": [
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "105afe9b2a1a21027f54239a30548b7b9f24b8d81733e0597763ad3ba5dc80dc",
+        "path": "research/rc-monster-truck/native/build.py",
+        "working_sha256": "9d83bbe5cb2ca0e0d18e2231465a869f382388014d05d4e063ab1f56d8f59b41"
+      },
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "783f822ac8cdb41b89b23da1d1225265aaa4e3d0a00979603023a868f99d92b5",
+        "path": "research/rc-monster-truck/native/toolchain-lock.json",
+        "working_sha256": "1595c15c8a3a67b63b27931f6e24744e6d79ce440f841be08ec9b6cee30f6bbe"
+      },
+      {
+        "changed_or_untracked": false,
+        "head_sha256": "d703bb50996108f928fb09fbcb8a93b8d0e8cc4ed0dfbaaa03cadeacf3ff98e9",
+        "path": "research/rc-monster-truck/native/parity_harness.gd",
+        "working_sha256": "d703bb50996108f928fb09fbcb8a93b8d0e8cc4ed0dfbaaa03cadeacf3ff98e9"
+      },
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+        "path": "research/native-slipstream/build.py",
+        "working_sha256": "2d8664208756fb7421bf408c2a20f8787c0b37a0108a3bc189750dd1dc41cbfc"
+      },
+      {
+        "changed_or_untracked": false,
+        "head_sha256": "55d123a0aa748db95fe3456559121ebe940e8ecacd4098bb6b94125a47d642ec",
+        "path": "research/rc-monster-truck/native/src/ground_vehicle_native.cpp",
+        "working_sha256": "55d123a0aa748db95fe3456559121ebe940e8ecacd4098bb6b94125a47d642ec"
+      },
+      {
+        "changed_or_untracked": false,
+        "head_sha256": "e48b3163f201887dd3b0c2b59bba95f0ee36f75ab64ef841f11dca8695e29933",
+        "path": "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp",
+        "working_sha256": "e48b3163f201887dd3b0c2b59bba95f0ee36f75ab64ef841f11dca8695e29933"
+      },
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+        "path": "app/physics/math3d.gd",
+        "working_sha256": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf"
+      },
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+        "path": "app/physics/rigid_body.gd",
+        "working_sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+      },
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "6bac447d3744c59813c3fabc567e0edc21f24680138a12ea317a441e1a5de11d",
+        "path": "app/physics/integrator.gd",
+        "working_sha256": "69d75732b95b2307a276d468ff5989be1db34755de98c1aac56f8b1808368cde"
+      },
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "dfc38f8a268930683538b182c4c3d07c3aca48bec16bd2ea6bd4aeb4cbaef47d",
+        "path": "app/physics/generalized_coordinates.gd",
+        "working_sha256": "8f626b6aa7874e83ed4169d834e3a3bb7fe513660f11b18fa9be2f865bd01665"
+      },
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+        "path": "app/physics/ground_terrain.gd",
+        "working_sha256": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc"
+      },
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+        "path": "app/physics/lake_surface.gd",
+        "working_sha256": "a78e20ea259479e6e9a479f568b1fa902e1cf79bed50fc0b77d1810e007ff245"
+      },
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "52045d11b7d620dfb5d8168ebdd653d4072997b0975a259c53f461774793abb2",
+        "path": "app/physics/ground_vehicle/vehicle_dynamics.gd",
+        "working_sha256": "0cf8806ded96b3397d75f1456b06710f71a051a504792234eb7e5ca8449cedbf"
+      },
+      {
+        "changed_or_untracked": false,
+        "head_sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+        "path": "app/physics/ground_vehicle/vehicle_environment.gd",
+        "working_sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"
+      },
+      {
+        "changed_or_untracked": false,
+        "head_sha256": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae",
+        "path": "app/physics/ground_vehicle/vehicle_data.gd",
+        "working_sha256": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae"
+      },
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "e2b47e8f339311647342c25018e71093f1cf200071a2d92d4396974a2dc7747e",
+        "path": "app/physics/ground_vehicle/course.gd",
+        "working_sha256": "9df352cd279a3c1a4a7b094314367bb92b4d263e045ebe15a553317595013e3d"
+      },
+      {
+        "changed_or_untracked": false,
+        "head_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+        "path": "app/data/lake_loader.gd",
+        "working_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6"
+      },
+      {
+        "changed_or_untracked": false,
+        "head_sha256": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+        "path": "app/data/fields/lake.json",
+        "working_sha256": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74"
+      },
+      {
+        "changed_or_untracked": false,
+        "head_sha256": "795dd4cbadc57d4a176f853c95d22e78c141ecf96435a331b9cc199ca05c9a96",
+        "path": "app/data/vehicles/ground/mt8_bisonte.json",
+        "working_sha256": "795dd4cbadc57d4a176f853c95d22e78c141ecf96435a331b9cc199ca05c9a96"
+      },
+      {
+        "changed_or_untracked": true,
+        "head_sha256": "e73d770799791cf8dafeb22c77c78cfd4d4adca3450093c140cb485233141d1c",
+        "path": "app/data/ground_vehicle/practice.json",
+        "working_sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5"
+      }
+    ],
+    "tracked_head_paths": [
+      "research/rc-monster-truck/native/build.py",
+      "research/rc-monster-truck/native/toolchain-lock.json",
+      "research/rc-monster-truck/native/parity_harness.gd",
+      "research/native-slipstream/build.py",
+      "research/rc-monster-truck/native/src/ground_vehicle_native.cpp",
+      "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp",
+      "app/physics/math3d.gd",
+      "app/physics/rigid_body.gd",
+      "app/physics/integrator.gd",
+      "app/physics/generalized_coordinates.gd",
+      "app/physics/ground_terrain.gd",
+      "app/physics/lake_surface.gd",
+      "app/physics/ground_vehicle/vehicle_dynamics.gd",
+      "app/physics/ground_vehicle/vehicle_environment.gd",
+      "app/physics/ground_vehicle/vehicle_data.gd",
+      "app/physics/ground_vehicle/course.gd",
+      "app/data/lake_loader.gd",
+      "app/data/fields/lake.json",
+      "app/data/vehicles/ground/mt8_bisonte.json",
+      "app/data/ground_vehicle/practice.json"
+    ]
+  },
+  "started_utc": "2026-11-01T18:47:10.456914+00:00",
+  "workspace": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/rcv-linux-workspace"
+}

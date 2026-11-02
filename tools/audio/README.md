@@ -43,7 +43,7 @@ Focused routing checks: `test_menu_audio.gd`, `test_ui_settings_integration.gd`,
 
 ## Flight soundscape
 
-2026-10-11 · **Status: implemented.** Scope and results: [AUDIO-PLAN](../../docs/AUDIO-PLAN.md), [AUD-04](../../docs/research/audio/AUD-04/README.md), [AUD-05 wildlife](../../docs/research/audio/AUD-05/README.md). Godot is pinned to official 4.8-beta1; [GDU-06 native compatibility checks](../../docs/research/engine-upgrade/GDU-03/audio/README.md) record the bounded WASAPI evidence. Python generator/checker dependency is `numpy==2.4.6`.
+2026-10-11 · **Status: implemented.** Scope and results: [AUDIO-PLAN](../../docs/AUDIO-PLAN.md), [AUD-04](../../docs/research/audio/AUD-04/README.md), [AUD-05 wildlife](../../docs/research/audio/AUD-05/README.md). Godot is pinned to official 4.8-beta2; [GDU-06 native compatibility checks](../../docs/research/engine-upgrade/GDU-03/audio/README.md) record the bounded WASAPI evidence. Python generator/checker dependency is `numpy==2.4.6`.
 
 Run from the repository root. Replace `godot` below with the pinned binary. Windows native output uses WASAPI. Bare `--headless` selects Dummy; explicitly request a native driver and verify the report's actual driver. The capture matrix uses `--display-driver headless --audio-driver WASAPI` for audio without graphics; the Windows profiler uses `--headless` followed by the explicit WASAPI override.
 

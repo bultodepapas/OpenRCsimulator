@@ -1,0 +1,194 @@
+[
+  {
+    "profile": "standard",
+    "image": "aircraftground.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_channel_delta": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "beta1_sha256": "7557ba6fdd35faf72d0c1bf43080ba7672d44c6e133676e7440ec8f779223966",
+    "beta2_sha256": "7557ba6fdd35faf72d0c1bf43080ba7672d44c6e133676e7440ec8f779223966"
+  },
+  {
+    "profile": "standard",
+    "image": "flightline.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": false,
+    "changed_pixels": 3,
+    "max_channel_delta": 1,
+    "mean_channel_delta": [
+      4.822530864197531e-07,
+      4.822530864197531e-07,
+      4.822530864197531e-07
+    ],
+    "beta1_sha256": "12331ffe82e619a7f492b429a1fa2f0d5df184e9cf2523b790256441771909b6",
+    "beta2_sha256": "342a35eb943e4b4929effebe6a50200855608237819246153012bdefaa505c5a"
+  },
+  {
+    "profile": "standard",
+    "image": "lake.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": false,
+    "changed_pixels": 148,
+    "max_channel_delta": 1,
+    "mean_channel_delta": [
+      2.604166666666667e-05,
+      2.797067901234568e-05,
+      2.4112654320987653e-05
+    ],
+    "beta1_sha256": "b5476f789a83978371a56d0358b7a1c377f1c78b4c30b1eb5abccca5114be024",
+    "beta2_sha256": "48b2460605a24bd30b7722fcd0494936652327c00ea9488d9f203782a78022d3"
+  },
+  {
+    "profile": "standard",
+    "image": "pavilion.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_channel_delta": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "beta1_sha256": "90c92299313c3613d302286ffd81c20f6615d1d724fbebcf5f0e35ea63e06594",
+    "beta2_sha256": "90c92299313c3613d302286ffd81c20f6615d1d724fbebcf5f0e35ea63e06594"
+  },
+  {
+    "profile": "standard",
+    "image": "pilot.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_channel_delta": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "beta1_sha256": "8742065235954eef2cddd036b8b6ae3d6706f41f07bc2287886816a53de44254",
+    "beta2_sha256": "8742065235954eef2cddd036b8b6ae3d6706f41f07bc2287886816a53de44254"
+  },
+  {
+    "profile": "standard",
+    "image": "windsock.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_channel_delta": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "beta1_sha256": "c195388afae1cfc552890e50fdda783ce8f37dc624eb771c94f19dfa92763929",
+    "beta2_sha256": "c195388afae1cfc552890e50fdda783ce8f37dc624eb771c94f19dfa92763929"
+  },
+  {
+    "profile": "high",
+    "image": "aircraftground.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_channel_delta": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "beta1_sha256": "bbefc3ce6d9f04c1ff106c4965362a2e43384b562bb5d0c10ab204f7d8849f83",
+    "beta2_sha256": "bbefc3ce6d9f04c1ff106c4965362a2e43384b562bb5d0c10ab204f7d8849f83"
+  },
+  {
+    "profile": "high",
+    "image": "flightline.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_channel_delta": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "beta1_sha256": "81b68116996622f340e359e8a09c8294fb36f1c89ce7c01b63d9c91d3344cac5",
+    "beta2_sha256": "81b68116996622f340e359e8a09c8294fb36f1c89ce7c01b63d9c91d3344cac5"
+  },
+  {
+    "profile": "high",
+    "image": "lake.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_channel_delta": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "beta1_sha256": "c70f267472e4c71a1c2c710f2da3fc1e1a949d6af767c8bdb3368f92a3e15727",
+    "beta2_sha256": "c70f267472e4c71a1c2c710f2da3fc1e1a949d6af767c8bdb3368f92a3e15727"
+  },
+  {
+    "profile": "high",
+    "image": "pavilion.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_channel_delta": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "beta1_sha256": "30004f0dc6a10e2522c1729de001f7fd4f2a246a15fee0e864e7578819489c11",
+    "beta2_sha256": "30004f0dc6a10e2522c1729de001f7fd4f2a246a15fee0e864e7578819489c11"
+  },
+  {
+    "profile": "high",
+    "image": "pilot.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_channel_delta": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "beta1_sha256": "043898cbbe3412d4c114ea7b099c84654f1917e9037a76af820b8d9090c90417",
+    "beta2_sha256": "043898cbbe3412d4c114ea7b099c84654f1917e9037a76af820b8d9090c90417"
+  },
+  {
+    "profile": "high",
+    "image": "windsock.png",
+    "width": 1920,
+    "height": 1080,
+    "identical": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_channel_delta": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "beta1_sha256": "cc726adb1a23538441b6b418216b88bb5cc7347c78fcdf86074b6a7dafb870b8",
+    "beta2_sha256": "cc726adb1a23538441b6b418216b88bb5cc7347c78fcdf86074b6a7dafb870b8"
+  }
+]

@@ -147,6 +147,9 @@ func _run() -> void:
 		and not _validate(drifted_profile, field_profile_copy).get("ok", false))
 
 	bad_aircraft = profile_copy.duplicate(true)
+	bad_aircraft.engine_version = "4.8.beta1.official.4d10419ca"
+	_check("the beta1 qualification cannot be reused on beta2", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
+	bad_aircraft = profile_copy.duplicate(true)
 	bad_aircraft.engine_version = "4.8.stable.official.4d10419ca"
 	_check("an unqualified engine version fails closed", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
 	_check("runtime engine identity includes the qualified prerelease and revision",

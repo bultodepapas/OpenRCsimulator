@@ -1,8 +1,8 @@
 """Disposable shell fixtures for the pinned Godot template getter."""
 from __future__ import annotations
 
+import configparser
 import hashlib
-import io
 import os
 from pathlib import Path
 import shutil
@@ -14,21 +14,20 @@ import unittest
 import zipfile
 
 from tools.godot.test_get_godot import BASH, CHECKSUM, CHECKSUM_KIND, SHELL_PATH, posix_arg
-from tools.godot import macos_universal_template as correction
 
 
 ROOT = Path(__file__).resolve().parents[2]
 GETTER = ROOT / "app/get-templates.sh"
 ARCHIVE_HASH = (
-    "fa53ad6883ae6c78ee9d2f8d14ca4d34852fa21c462d1f4b0f599138d7de40"
-    "897cc058f15083a1fa80c7d4b7590b2222dea6f056be7b49e3a584eb64fc30b0b7"
+    "260de4173d9bb366110dab4f35e42e39f2eace62f29e082d6630bc5c6ea790e"
+    "f92f51a9145ffbca2c0ffe97a60da46019c6780d7f88569932cd3237284085c0e"
 )
-ARCHIVE_NAME = "Godot_v4.8-beta1_export_templates.tpz"
+ARCHIVE_NAME = "Godot_v4.8-beta2_export_templates.tpz"
 MEMBER_HASHES = {
-    "linux_release.x86_64": "f2176272e4ca833cbfe2cb0464b47a7e23e4751344e6fbcf6d6fd0144bbffbaf60eef30cf2539151c7a8c153999709e26d4aeb219cbefca96f8d6499e089d7c9",
-    "windows_release_x86_64.exe": "cb55c2c37f649d4abf9d6263b9cc0bd27d2214084fae9421d5082aa7a6831bc78af5a72e6942387f109c1b399cb1127eff95816ca5a9c379c9f11c05380e2645",
-    "macos.zip": "a36d2fd593a591b19358274ad8100684740fff83cf13ad04c5a3d593c3f4bd08a266f0725bda33344d00f30a56942e726d50b74109e8d50ed4794bbd917e0363",
-    "version.txt": "7b7788794a94f66b6c473d4bec4e4864a548e191cbd4b7bcb99ea88c2c1e1dac5ae60079c16ed3b9e6776e82be3a80ddf9827369a3d18351acafed2d40a8b194",
+    "linux_release.x86_64": "c0702f8d2e43f9a8168db71d404b35bc7c3b1d8a69a516b4bee8946b70faf16afd3b046dd8d9c5255da0b7fe71385cff473050dcdc874f4ac72b55868b91bc9a",
+    "windows_release_x86_64.exe": "345862e92c5f1d94596ba64e9ad46dcea323280fb2ed760abdc7e0586f71921d07d049d3e5953b493e09c401cf6c7acf97718ec4cc377f028910ba5bd738fe46",
+    "macos.zip": "a307324eec2db7db8eef26be10c7c4b91c923c8f91fe9144aee4c5812cd17f4e65e7b03e33021d29f8ff9384fc51a8a9b2d3ea81c461b966dc795edad42a09c7",
+    "version.txt": "19e82db58a24133a12f2f9514c6112bfcb9e8a3a4c2247986a24cd47548dc355eb28d10bd496b7f492df8fc711c7a9eae2f18779bc932ef6bf3215f4eec6edf7",
 }
 
 
@@ -52,7 +51,7 @@ class TemplateGetterTests(unittest.TestCase):
             z.writestr(linux, "template linux_release.x86_64")
             for name in ("windows_release_x86_64.exe", "macos.zip"):
                 z.writestr("templates/" + name, "template " + name)
-            z.writestr("templates/version.txt", "4.8.beta1\n")
+            z.writestr("templates/version.txt", "4.8.beta2\n")
         self.write_getter()
         self.shim("git", 'printf "%s\\n" "$TEST_REPO_ROOT"')
         self.shim("uname", 'printf "%s\\n" "${TEST_SYSTEM:-Darwin}"')
@@ -88,7 +87,7 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
             "TEST_NETWORK_LOG": posix_arg(self.root / "network.log"),
             "TEST_HELPER_LOG": posix_arg(self.root / "helper.log"),
         })
-        self.dest = self.data / "export_templates/4.8.beta1"
+        self.dest = self.data / "export_templates/4.8.beta2"
 
     def write_getter(self) -> None:
         source = GETTER.read_text(encoding="utf-8")
@@ -118,14 +117,13 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
         path = self.root / name
         return path.read_text(encoding="utf-8").splitlines() if path.exists() else []
 
-    def test_darwin_download_uses_shasum_and_prepares_mac_workaround(self) -> None:
+    def test_darwin_download_uses_shasum_and_verified_cache(self) -> None:
         first = self.run_getter()
         self.assertEqual(first.returncode, 0, first.stderr)
-        self.assertTrue(first.stdout.strip().endswith("/export_templates/4.8.beta1"))
+        self.assertTrue(first.stdout.strip().endswith("/export_templates/4.8.beta2"))
         self.assertEqual(self.log("checksum.log"), ["shasum", "shasum", "shasum"])
         self.assertEqual(self.log("network.log"), ["download"])
-        self.assertEqual(len(self.log("helper.log")), 1)
-        self.assertTrue(self.log("helper.log")[0].endswith("/macos.zip"))
+        self.assertEqual(self.log("helper.log"), [])
         self.assertTrue((self.dest / "linux_release.x86_64").is_file())
         self.assertTrue((self.dest / "windows_release_x86_64.exe").is_file())
         self.assertFalse((self.root / ".tools" / ARCHIVE_NAME).exists())
@@ -133,7 +131,7 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
         self.assertEqual(second.returncode, 0, second.stderr)
         self.assertEqual(self.log("network.log"), ["download"])
         self.assertEqual(self.log("checksum.log"), ["shasum", "shasum", "shasum", "shasum"])
-        self.assertEqual(len(self.log("helper.log")), 2)
+        self.assertEqual(self.log("helper.log"), [])
 
     def test_corrupt_archive_is_not_extracted(self) -> None:
         result = self.run_getter(TEST_CORRUPT="1")
@@ -170,7 +168,7 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
         result = self.run_getter(TEST_SYSTEM="Linux")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.log("checksum.log"), ["sha512sum", "sha512sum", "sha512sum"])
-        self.assertEqual(len(self.log("helper.log")), 1)
+        self.assertEqual(self.log("helper.log"), [])
         if sys.platform.startswith("linux"):
             self.assertEqual(stat.S_IMODE((self.dest / "linux_release.x86_64").stat().st_mode), 0o750)
 
@@ -193,7 +191,7 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
                             self.assertEqual((self.dest / other).read_bytes(), expected)
                     (self.dest / name).write_bytes(original)
         self.assertEqual(self.log("network.log"), ["download"])
-        self.assertEqual(len(self.log("helper.log")), 1)
+        self.assertEqual(self.log("helper.log"), [])
 
     def test_partial_cache_and_locked_cache_are_not_replaced(self) -> None:
         first = self.run_getter()
@@ -206,13 +204,13 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
         self.assertIn("changed or incomplete", result.stderr)
         self.assertFalse(windows.exists())
         self.assertEqual((self.dest / "linux_release.x86_64").read_bytes(), before)
-        lock = self.dest.parent / ".openrc-4.8.beta1.lock"
+        lock = self.dest.parent / ".openrc-4.8.beta2.lock"
         lock.mkdir()
         result = self.run_getter()
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("locked", result.stderr)
         self.assertEqual(self.log("network.log"), ["download"])
-        self.assertEqual(len(self.log("helper.log")), 1)
+        self.assertEqual(self.log("helper.log"), [])
 
     def test_verified_archive_with_wrong_member_is_not_published(self) -> None:
         original_hash = hashlib.sha512(self.archive.read_bytes()).hexdigest()
@@ -231,7 +229,7 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("extraction failed verification", result.stderr)
         self.assertFalse(self.dest.exists())
-        self.assertEqual(len(list(self.dest.parent.glob(".openrc-4.8.beta1.*"))), 1)
+        self.assertEqual(len(list(self.dest.parent.glob(".openrc-4.8.beta2.*"))), 1)
         self.assertEqual(self.log("helper.log"), [])
 
     def test_destination_appearing_during_staging_is_preserved(self) -> None:
@@ -239,8 +237,8 @@ printf '%s\\n' "$3" >> "$TEST_HELPER_LOG"''')
 if [ "$TEST_CHECKSUM_KIND" = gnu ]; then shift 2; fi
 "$TEST_CHECKSUM" "$@" || exit
 if [ "$(wc -l < "$TEST_CHECKSUM_LOG")" -eq 2 ]; then
-  mkdir "$TEST_DATA_ROOT/export_templates/4.8.beta1"
-  printf 'existing' > "$TEST_DATA_ROOT/export_templates/4.8.beta1/sentinel"
+  mkdir "$TEST_DATA_ROOT/export_templates/4.8.beta2"
+  printf 'existing' > "$TEST_DATA_ROOT/export_templates/4.8.beta2/sentinel"
 fi''')
         result = self.run_getter()
         self.assertNotEqual(result.returncode, 0)
@@ -261,44 +259,31 @@ exit 4''')
         self.assertFalse((self.dest / "windows_release_x86_64.exe").exists())
         self.assertEqual(self.log("helper.log"), [])
 
-    def test_real_workaround_is_invoked_and_cached(self) -> None:
-        original = io.BytesIO()
-        payloads = {name: ("payload " + name).encode() for name in correction.SWAPS}
-        with zipfile.ZipFile(original, "w") as mac:
-            for name, payload in payloads.items():
-                mac.writestr(name, payload)
-            mac.writestr("macos_template.app/Contents/Info.plist", b"plist")
-        mac_bytes = original.getvalue()
-        with zipfile.ZipFile(self.archive, "w") as archive:
-            archive.writestr("templates/linux_release.x86_64", b"linux")
-            archive.writestr("templates/windows_release_x86_64.exe", b"windows")
-            archive.writestr("templates/macos.zip", mac_bytes)
-            archive.writestr("templates/version.txt", "4.8.beta1\n")
-        self.write_getter()
-        helper_dir = self.root / "tools/godot"
-        helper_dir.mkdir(parents=True)
-        helper_source = (ROOT / "tools/godot/macos_universal_template.py").read_text(encoding="utf-8")
-        self.assertEqual(helper_source.count(correction.MACOS_ZIP_SHA512), 1)
-        helper_source = helper_source.replace(correction.MACOS_ZIP_SHA512, hashlib.sha512(mac_bytes).hexdigest())
-        (helper_dir / "macos_universal_template.py").write_text(helper_source, encoding="utf-8")
-        (self.app / "export_presets.cfg").write_text(
-            '[preset.0]\nplatform="macOS"\n[preset.0.options]\nbinary_format/architecture="universal"\n'
-            'custom_template/debug="res://.godot/export_templates/macos-universal-4.8-beta1.zip"\n'
-            'custom_template/release="res://.godot/export_templates/macos-universal-4.8-beta1.zip"\n',
-            encoding="utf-8")
-        self.shim("fixture-python", 'exec "$TEST_REAL_PYTHON" "$@"')
-        first = self.run_getter(TEST_REAL_PYTHON=posix_arg(sys.executable))
+    def test_official_macos_template_is_installed_unchanged(self) -> None:
+        with zipfile.ZipFile(self.archive) as archive:
+            official = archive.read("templates/macos.zip")
+        first = self.run_getter()
         self.assertEqual(first.returncode, 0, first.stderr)
-        corrected = self.app / ".godot/export_templates/macos-universal-4.8-beta1.zip"
-        self.assertEqual((self.dest / "macos.zip").read_bytes(), mac_bytes)
-        with zipfile.ZipFile(corrected) as archive:
-            for output_name, original_name in correction.SWAPS.items():
-                self.assertEqual(archive.read(output_name), payloads[original_name])
-        before = corrected.read_bytes()
-        second = self.run_getter(TEST_REAL_PYTHON=posix_arg(sys.executable), TEST_CURL_FAIL="1")
+        self.assertEqual((self.dest / "macos.zip").read_bytes(), official)
+        self.assertFalse((self.app / ".godot").exists())
+        second = self.run_getter(TEST_CURL_FAIL="1")
         self.assertEqual(second.returncode, 0, second.stderr)
-        self.assertEqual(corrected.read_bytes(), before)
+        self.assertEqual((self.dest / "macos.zip").read_bytes(), official)
+        self.assertEqual(self.log("helper.log"), [])
         self.assertEqual(self.log("network.log"), ["download"])
+
+
+class CurrentPresetTests(unittest.TestCase):
+    def test_universal_macos_preset_uses_the_official_default_template(self) -> None:
+        presets = configparser.ConfigParser(interpolation=None)
+        presets.read(ROOT / "app/export_presets.cfg", encoding="utf-8")
+        matches = [section for section in presets.sections()
+                   if presets[section].get("platform") == '"macOS"']
+        self.assertEqual(len(matches), 1)
+        options = presets[matches[0] + ".options"]
+        self.assertEqual(options.get("binary_format/architecture"), '"universal"')
+        for mode in ("debug", "release"):
+            self.assertIn(options.get("custom_template/" + mode), (None, '""'))
 
 
 if __name__ == "__main__":

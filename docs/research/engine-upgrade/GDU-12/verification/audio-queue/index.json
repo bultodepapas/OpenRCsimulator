@@ -1,0 +1,121 @@
+{
+  "format": "openrc-audio-queue-evidence v1",
+  "scope": "reduced source fixture with minimal project settings; not a full-application suite",
+  "test_sha256": "20a731d35683d0244067e3fa2ff2d8ba3a06b5e400bb348ce2a0211070ebc99b",
+  "adapter_sha256": "82d221f39818bec1c3b2fd3bec72f5a3798cb8c6ab6936f5181f285517df8ec8",
+  "fixture_gd_json_files": 1728,
+  "fixture_inventory_sha256": "c0999713777eed328d369e3014def181117959318e0c414e22cbd7149f3368ad",
+  "gap_probe_lf_sha256": "0e4a7c8f398934bb65d69a3ab74006d53b54fa63b2df3949614d5a167f43c0c6",
+  "gap_observation": {
+    "old_target_and_queue": 2926,
+    "new_target": 2176,
+    "new_pushes": 0,
+    "engines": [
+      "beta1",
+      "beta2"
+    ]
+  },
+  "focused_checks": 147,
+  "mutant_failures": 13,
+  "reports": [
+    {
+      "label": "original-suite-failure",
+      "report": "original-suite-failure/report.json",
+      "report_sha256": "e364ef6ea26db5353a1951d989fd43a9812a9a544b990b637ee9de7c532c2d05",
+      "log": "original-suite-failure/engine.log",
+      "log_sha256": "1fba7cb941d750f155d550830fe582d9f878688b568549e1311b6193628a02c8",
+      "ok": false,
+      "process_exit": 1
+    },
+    {
+      "label": "beta1-gap",
+      "report": "beta1-gap/report.json",
+      "report_sha256": "fd1bc3c9887f2fc69ce1a76b18f7ea7403adfdfc84fb2199f83e502a66f91b5c",
+      "log": "beta1-gap/engine.log",
+      "log_sha256": "a09667a6d520b4618c579d52b39e1841fdabbd76ff6d06b72869d3c6020d5d03",
+      "ok": true,
+      "process_exit": 0
+    },
+    {
+      "label": "beta2-gap",
+      "report": "beta2-gap/report.json",
+      "report_sha256": "e8e29ae6af2547fac35231dbb9d4ba3060a485a15323cbc0f9234e40f07e2bd3",
+      "log": "beta2-gap/engine.log",
+      "log_sha256": "5200125610e37a97089a6a648e0c436db6b941a9c3949edc69513956b5b6a3a5",
+      "ok": true,
+      "process_exit": 0
+    },
+    {
+      "label": "beta2-drain-diagnostic",
+      "report": "beta2-drain-diagnostic/report.json",
+      "report_sha256": "d24950ce63659ce0372bdb79962b3eae14aa2e6c0dcea51391e694439420938e",
+      "log": "beta2-drain-diagnostic/engine.log",
+      "log_sha256": "eee2cab17c1df36c5f85529249c8078cdcde85a3b3d0dc5b49dab67463bdf991",
+      "ok": true,
+      "process_exit": 0
+    },
+    {
+      "label": "beta1-focused",
+      "report": "beta1-focused/report.json",
+      "report_sha256": "74c21dd150e5618ecb95192346693823295ad3a702caf2173a4600b235135433",
+      "log": "beta1-focused/engine.log",
+      "log_sha256": "79d810ac4e115bc43bc01a4d0c61fa1917cbd448dd67b79ee205da2519220428",
+      "ok": true,
+      "process_exit": 0
+    },
+    {
+      "label": "beta2-focused",
+      "report": "beta2-focused/report.json",
+      "report_sha256": "19120c527a01310d517e5bd10269b630bf3eaf62f7970351678835addf2be960",
+      "log": "beta2-focused/engine.log",
+      "log_sha256": "3f8bd4fd705ec775e04b341b225ecb4e14f48df57b7d8dbf4f2bafe1911e7f1c",
+      "ok": true,
+      "process_exit": 0
+    },
+    {
+      "label": "beta2-nice15",
+      "report": "beta2-nice15/report.json",
+      "report_sha256": "0dbe081dd616aa06b50a67f8087aaba6b36413adffa356afe2603605633a370d",
+      "log": "beta2-nice15/engine.log",
+      "log_sha256": "3f8bd4fd705ec775e04b341b225ecb4e14f48df57b7d8dbf4f2bafe1911e7f1c",
+      "ok": true,
+      "process_exit": 0
+    },
+    {
+      "label": "beta2-excess-push-mutant",
+      "report": "beta2-excess-push-mutant/report.json",
+      "report_sha256": "abdf3970c914f70e0afd727553b593a8bf6d9ed5b9c8c3abb4810a6d3eeab09a",
+      "log": "beta2-excess-push-mutant/engine.log",
+      "log_sha256": "ab9246a60242259851e66c08329231fbf36b14ee12fc15df2f0d53cfb212b21c",
+      "ok": false,
+      "process_exit": 1
+    },
+    {
+      "label": "windows-beta2",
+      "report": "windows-beta2/report.json",
+      "report_sha256": "7094cf54881f9c81bd4ea44cadd7ed6f8511ba6dc5061e69a753eec3a8eb49d6",
+      "log": "windows-beta2/engine.log",
+      "log_sha256": "2eb3d3b956de8728be4a4620dec522d8fe54651523903ee070f2ba0bf812f380",
+      "ok": true,
+      "process_exit": 0
+    }
+  ],
+  "linux_editors": {
+    "beta1": {
+      "version": "4.8.beta1.official.4d10419ca",
+      "sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82"
+    },
+    "beta2": {
+      "version": "4.8.beta2.official.cafc17a19",
+      "sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+    }
+  },
+  "windows_editor": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha256": {
+      "Godot_v4.8-beta2_win64.exe": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+      "Godot_v4.8-beta2_win64_console.exe": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b"
+    }
+  },
+  "windows_profile": "D:/OpenRCsimulator-experiments/gdu-beta2-audio-windows/profile"
+}

@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+NK3_TIMING case=trim reference_median=1 native_median=2 reference_p95=1 native_p95=2 load=5.05 5.19 5.14 4/1924 65128
+NK3_TRAJECTORY_POLICY checks=130 failures=0
+NK3_TRAJECTORY_POLICY verdict=pass

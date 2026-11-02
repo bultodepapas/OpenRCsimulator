@@ -101,8 +101,8 @@ class CollectionTests(unittest.TestCase):
             ("/usr/bin/sw_vers", "-buildVersion"): "25B78\n",
             ("/usr/sbin/system_profiler", "SPDisplaysDataType", "-json", "-detailLevel", "basic"): self.profile,
             ("/usr/bin/file", "-b", str(self.engine.absolute())): "Mach-O 64-bit executable arm64\n",
-            (str(self.engine.absolute()), "--version"): "4.8.beta1.official.4d10419ca\n",
-            ("/usr/bin/arch", "-arm64", str(self.engine.absolute()), "--version"): "4.8.beta1.official.4d10419ca\n",
+            (str(self.engine.absolute()), "--version"): "4.8.beta2.official.cafc17a19\n",
+            ("/usr/bin/arch", "-arm64", str(self.engine.absolute()), "--version"): "4.8.beta2.official.cafc17a19\n",
             ("/usr/bin/xcode-select", "-p"): "/Applications/Xcode.app/Contents/Developer\n",
         }
         text = outputs.get(tuple(command))

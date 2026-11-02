@@ -1,0 +1,47 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "22587275-a1d9-4d6d-97fe-ac8034d00699",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/app",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/research/native-kernel/weather_stage_oracle.gd",
+    "--",
+    "--extension=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/openrc_native_kernel.gdextension",
+    "--output=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/weather-stage-20261101T224821985335Z.json",
+    "--seed=20261027",
+    "--states=12000",
+    "--variant-states=1500",
+    "--timing-rounds=15",
+    "--ticks=64",
+    "--include-spatial=true"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "started_utc": "2026-11-01T22:48:22.044443+00:00",
+  "label": "nk3-weather-stage",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-lf-requalification/tool/checks/weather-stage-yysvj0zk/nk3-weather-stage-6t9h2l5s/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-lf-requalification/tool/checks/weather-stage-yysvj0zk/nk3-weather-stage-6t9h2l5s/report.json",
+  "timeout_seconds": 2400.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_ORACLE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 17.190741,
+  "log_bytes": 4337,
+  "log_sha256": "a7f17e2ee39a2d3a41e95e9fc2c3cf15ad7206332145c59fe745a9aca98ef70a"
+}

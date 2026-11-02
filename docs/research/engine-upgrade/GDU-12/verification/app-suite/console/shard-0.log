@@ -1,0 +1,6 @@
+== unit partition 0/8: 109 of 872 scripts
+== units roster receipt: /mnt/d/OpenRCsimulator-experiments/gdu-beta2/final-units/shard-0/checks/roster-units-0-of-8-tmp.vaHCgWWipz.json
+inline skip test_lighting_path.gd line 1866: Native pixel checks skipped: headless renderer; run without --headless for 1080p shader evidence.
+inline skip test_native_session.gd line 1890: NK3_NATIVE_SESSION_SKIP native unavailable or stale: native stage library not installed
+inline skip test_rcv_session.gd line 2016: SKIP native Session backend-switch guard: pinned native backend is not staged
+native fallback: 19 occurrences; first line 6: physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage library not installed","requested":"native"}
