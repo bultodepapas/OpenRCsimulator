@@ -32,6 +32,7 @@ class FakeProcess:
                                           read_count=3, write_count=4)]
         self.thread_values = [2]
         self.num_thread_calls = 0
+        self.io_calls = 0
         self.oneshot_calls = 0
         self.terminate_calls = 0
 
@@ -63,6 +64,7 @@ class FakeProcess:
         return self._next(self.thread_values)
 
     def io_counters(self):
+        self.io_calls += 1
         return self._next(self.io_values)
 
 
@@ -172,6 +174,7 @@ class ResourceSamplerTests(unittest.TestCase):
                 self.assertTrue(sampler.poll())
                 report = sampler.finish()
         self.assertEqual(report["coverage"], "sampled")
+        self.assertEqual(report["required_coverage"], "complete")
         self.assertEqual(report["sample_count"], 2)
         sample = report["samples"][1]
         self.assertAlmostEqual(sample["cpu_percent"], 75.0)
@@ -210,6 +213,7 @@ class ResourceSamplerTests(unittest.TestCase):
         self.assertFalse(sampler.poll())
         report = sampler.finish()
         self.assertEqual(report["coverage"], "no_samples")
+        self.assertEqual(report["required_coverage"], "unavailable")
         self.assertEqual(report["stop_reason"], "pid_reused")
         self.assertTrue(any(error["code"] == "pid_reused" for error in report["errors"]))
 
@@ -251,6 +255,52 @@ class ResourceSamplerTests(unittest.TestCase):
         self.assertEqual(sample["field_status"]["virtual_memory_total_bytes"], "unsupported")
         self.assertEqual(sample["field_status"]["volume[0].free_bytes"], "denied")
         self.assertTrue(any(error["code"] == "denied" for error in sampler.finish()["errors"]))
+        self.assertEqual(sampler.finish()["required_coverage"], "partial")
+
+    def test_darwin_unsupported_io_is_probed_once_without_losing_required_coverage(self):
+        process = FakeProcess()
+        process.io_values = [UnsupportedOperation("no process I/O API")]
+        clock = FakeClock()
+        with mock.patch("resource_samples.sys.platform", "darwin"), \
+                mock.patch("resource_samples.time.perf_counter", side_effect=clock.perf_counter):
+            sampler = ResourceSampler(47, interval=1.0, max_samples=3, backend=FakeBackend(process))
+            self.assertTrue(sampler.poll())
+            clock.value = 11.0
+            self.assertTrue(sampler.poll())
+            report = sampler.finish()
+        self.assertEqual(process.io_calls, 1)
+        self.assertEqual(report["coverage"], "sampled")
+        self.assertEqual(report["required_coverage"], "complete")
+        self.assertEqual(report["error_count"], 0)
+        self.assertEqual([sample["field_status"]["io_read_bytes"] for sample in report["samples"]],
+                         ["unsupported", "unsupported"])
+        self.assertEqual(report["required_field_counts"]["rss_bytes"], 2)
+
+    def test_denied_optional_io_does_not_hide_required_channel_result(self):
+        process = FakeProcess()
+        process.io_values = [AccessDenied("I/O permission denied")]
+        sampler = ResourceSampler(56, backend=FakeBackend(process))
+        self.assertTrue(sampler.poll())
+        report = sampler.finish()
+        self.assertEqual(report["coverage"], "partial")
+        self.assertEqual(report["measurement_status"], "partial")
+        self.assertEqual(report["required_coverage"], "complete")
+        self.assertEqual(report["samples"][0]["field_status"]["io_read_bytes"], "denied")
+
+    def test_process_exit_after_samples_keeps_required_coverage_partial(self):
+        process = FakeProcess()
+        backend = FakeBackend(process)
+        clock = FakeClock()
+        with mock.patch("resource_samples.time.perf_counter", side_effect=clock.perf_counter):
+            sampler = ResourceSampler(57, interval=1.0, backend=backend)
+            self.assertTrue(sampler.poll())
+            process.running = False
+            clock.value = 11.0
+            self.assertFalse(sampler.poll())
+            report = sampler.finish()
+        self.assertEqual(report["sample_count"], 1)
+        self.assertEqual(report["required_coverage"], "partial")
+        self.assertEqual(report["stop_reason"], "process_exited")
 
     def test_linux_unknown_minus_one_and_missing_counters_remain_null(self):
         process = FakeProcess()
@@ -273,6 +323,7 @@ class ResourceSamplerTests(unittest.TestCase):
         self.assertFalse(sampler.poll())
         report = sampler.finish()
         self.assertEqual(report["coverage"], "capped")
+        self.assertEqual(report["required_coverage"], "capped")
         self.assertTrue(report["capped"])
         self.assertEqual(report["stop_reason"], "sample_limit")
         self.assertTrue(process.running)
@@ -289,7 +340,7 @@ class ResourceSamplerTests(unittest.TestCase):
         backend = FakeBackend(process)
         clock = FakeClock()
         with mock.patch("resource_samples.time.perf_counter", side_effect=clock.perf_counter):
-            sampler = ResourceSampler(49, interval=1.0, max_samples=2, backend=backend)
+            sampler = ResourceSampler(49, interval=1.0, max_samples=3, backend=backend)
             sampler.poll()
             clock.value = 11.0
             sampler.poll()
@@ -298,6 +349,7 @@ class ResourceSamplerTests(unittest.TestCase):
         self.assertIsNone(report["summary"]["counter_deltas"]["io_read_bytes"])
         self.assertIn("cpu_user_seconds", report["summary"]["counter_resets"])
         self.assertIn("io_read_bytes", report["summary"]["counter_resets"])
+        self.assertEqual(report["required_coverage"], "partial")
         self.assertTrue(any(error["code"] == "counter_reset" for error in report["errors"]))
 
     def test_backend_failures_degrade_to_diagnostics(self):

@@ -2,11 +2,15 @@
 from __future__ import annotations
 
 import contextlib
+import copy
+import hashlib
 import io
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from perfetto_export import (
     BudgetError,
@@ -14,8 +18,10 @@ from perfetto_export import (
     build_trace,
     main,
     read_sources,
+    _write_new_trace,
 )
 from research.performance.session_baseline import percentile_nearest_rank
+from research.performance.test_native_summary import valid_report, write_stream_fixture, write_stream_run
 
 
 UNIX_BASE = 1_700_000_000_000_000
@@ -330,6 +336,177 @@ class PerfettoExportTests(unittest.TestCase):
         self.assertTrue(partial)
         metadata = next(event["args"] for event in events if event.get("name") == "capture_metadata")
         self.assertIn("vms_bytes", metadata["sources"]["resources"]["partial_fields"])
+
+    def test_required_coverage_is_preserved_without_relabeling_legacy_partial(self):
+        report = resource_report()
+        report["required_coverage"] = "complete"
+        for sample in report["samples"]:
+            sample["io_read_bytes"] = None
+            sample["field_status"]["io_read_bytes"] = "unsupported"
+        events, partial = build_trace(resources=report)
+        self.assertTrue(partial)
+        metadata = next(event["args"] for event in events if event.get("name") == "capture_metadata")
+        self.assertEqual(metadata["sources"]["resources"]["required_coverage"], "complete")
+        self.assertFalse(metadata["sources"]["resources"]["required_coverage_validated"])
+        report["required_coverage"] = "invented"
+        with self.assertRaisesRegex(SourceError, "required_coverage is unsupported"):
+            build_trace(resources=report)
+
+    def test_required_channel_claims_are_checked_against_samples_and_stop(self):
+        report = resource_report()
+        fields = ("rss_bytes", "cpu_user_seconds", "cpu_system_seconds", "virtual_memory_available_bytes")
+        report["required_coverage"] = "complete"
+        report["required_field_counts"] = {field: 2 for field in fields}
+        report["summary"] = {"counter_resets": []}
+        events, partial = build_trace(resources=report)
+        self.assertFalse(partial)
+        metadata = next(event["args"] for event in events if event.get("name") == "capture_metadata")
+        self.assertTrue(metadata["sources"]["resources"]["required_coverage_validated"])
+        inconsistent = copy.deepcopy(report)
+        inconsistent["required_field_counts"]["rss_bytes"] = 1
+        with self.assertRaisesRegex(SourceError, "do not match sample statuses"):
+            build_trace(resources=inconsistent)
+        missing = copy.deepcopy(report)
+        missing["samples"][1]["rss_bytes"] = None
+        missing["samples"][1]["field_status"]["rss_bytes"] = "denied"
+        missing["required_field_counts"]["rss_bytes"] = 1
+        with self.assertRaisesRegex(SourceError, "expected partial"):
+            build_trace(resources=missing)
+        stopped = copy.deepcopy(report)
+        stopped["stop_reason"] = "process_exited"
+        with self.assertRaisesRegex(SourceError, "expected partial"):
+            build_trace(resources=stopped)
+        stopped["stop_reason"] = "sample_limit"
+        with self.assertRaisesRegex(SourceError, "cap and stop reason disagree"):
+            build_trace(resources=stopped)
+        reset = copy.deepcopy(report)
+        reset["summary"]["counter_resets"] = ["cpu_user_seconds"]
+        with self.assertRaisesRegex(SourceError, "expected partial"):
+            build_trace(resources=reset)
+
+    def test_v3_stream_rejects_bad_sequences_nonfinite_values_and_versions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = valid_report(ticks=[240 + 3 * index for index in range(600)])
+            frames, records = write_stream_run(root, "frames", source)
+            report = json.loads(frames.read_text(encoding="utf-8"))
+            for label, mutate in (
+                    ("duplicate", lambda rows: rows[2].update(sequence=0)),
+                    ("reorder", lambda rows: rows.__setitem__(slice(1, 3), [rows[2], rows[1]])),
+                    ("missing", lambda rows: rows.pop(1)),
+                    ("nonfinite", lambda rows: rows[1]["metrics"]["fps_monitor"].__setitem__(0, float("nan"))),
+                    ("incomplete", lambda rows: rows[-1].update(complete=False)),
+            ):
+                with self.subTest(case=label):
+                    variant = copy.deepcopy(records)
+                    mutate(variant)
+                    if label == "nonfinite":
+                        payload = b"".join((json.dumps(record, separators=(",", ":"), allow_nan=True) + "\n").encode()
+                                           for record in variant)
+                        report["stream"].update(bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest())
+                        frames.with_name(report["stream"]["file"]).write_bytes(payload)
+                        frames.write_text(json.dumps(report), encoding="utf-8")
+                    else:
+                        write_stream_fixture(frames, report, variant)
+                    with self.assertRaises(SourceError):
+                        read_sources(frames_path=frames)
+            write_stream_fixture(frames, report, records)
+            report["version"] = 4
+            frames.write_text(json.dumps(report), encoding="utf-8")
+            with self.assertRaisesRegex(SourceError, "version must be integer 3"):
+                read_sources(frames_path=frames)
+            report["version"] = 3
+            report["stream"]["complete"] = False
+            frames.write_text(json.dumps(report), encoding="utf-8")
+            with self.assertRaisesRegex(SourceError, "marked incomplete"):
+                read_sources(frames_path=frames)
+
+    def test_selected_frames_keep_original_indices_and_single_source_clock(self):
+        report = frame_report(clock=frame_clock(), raw_extra={"draw_calls": [10, 11]})
+        events, partial = build_trace(frames=report, start_frame=1, end_frame=2,
+                                      selected_frame_metrics=["draw_calls"])
+        self.assertFalse(partial)
+        metadata = next(event["args"] for event in events if event.get("name") == "capture_metadata")
+        self.assertEqual(metadata["clock"]["frame_clock"]["start"]["uncertainty_usec"], 1000)
+        self.assertFalse(metadata["complete"])
+        self.assertTrue(metadata["source_data_complete"])
+        self.assertEqual(metadata["sources"]["frames"]["selection"]["start_monotonic_usec"], 1_020_000)
+        frames = [event for event in events if event.get("ph") == "X"]
+        self.assertEqual([(event["args"]["frame_index"], event["ts"], event["dur"]) for event in frames],
+                         [(1, 20_000, 100_000)])
+        with self.assertRaisesRegex(BudgetError, "start < end"):
+            build_trace(frames=report, start_frame=2, end_frame=2)
+        with self.assertRaisesRegex(BudgetError, "distinct known metrics"):
+            build_trace(frames=report, selected_frame_metrics=["draw_calls", "draw_calls"])
+        with self.assertRaisesRegex(BudgetError, "requires a frame source"):
+            build_trace(resources=resource_report(), start_frame=0)
+
+    def test_v3_cli_selection_and_late_output_collision(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            frames, _records = write_stream_run(root, "frames", frame_report(clock=frame_clock()))
+            output = root / "timeline.json"
+            sidecar = frames.with_name(frames.name + ".frames.jsonl")
+            with self.assertRaisesRegex(BudgetError, "combined source input"):
+                read_sources(frames_path=frames,
+                             max_input_bytes=frames.stat().st_size + sidecar.stat().st_size - 1)
+            arguments = ["--frames", str(frames), "--out", str(output),
+                         "--start-frame", "1", "--end-frame", "2", "--frame-metric", "sim_tick"]
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                status = main(arguments)
+            self.assertEqual(status, 0)
+            events = json.loads(output.read_text(encoding="utf-8"))
+            metadata = next(event["args"] for event in events if event.get("name") == "capture_metadata")
+            self.assertEqual(metadata["sources"]["frames"]["format"], "openrc-frametimes v3")
+            self.assertFalse(metadata["full_session_timeline"])
+            self.assertEqual(metadata["sources"]["frames"]["selection"]["end_frame_exclusive"], 2)
+            output.write_text("preserve existing trace", encoding="utf-8")
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                status = main(arguments)
+            self.assertEqual(status, 2)
+            self.assertEqual(output.read_text(encoding="utf-8"), "preserve existing trace")
+            no_output = root / "over-cap.json"
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                status = main(["--frames", str(frames), "--out", str(no_output), "--max-events", "2"])
+            self.assertEqual(status, 2)
+            self.assertFalse(no_output.exists())
+
+    def test_v3_selection_preserves_resource_scope_and_clock_uncertainty(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            frames, _records = write_stream_run(root, "combined", frame_report(clock=frame_clock()))
+            resources = root / "resources.json"
+            resources.write_text(json.dumps(resource_report(capture_id="fixture", clock=resource_clock())),
+                                 encoding="utf-8")
+            loaded_frames, loaded_resources = read_sources(frames_path=frames, resources_path=resources)
+            events, partial = build_trace(frames=loaded_frames, resources=loaded_resources,
+                                          start_frame=1, end_frame=2, selected_frame_metrics=["sim_tick"])
+            self.assertFalse(partial)
+            metadata = next(event["args"] for event in events if event.get("name") == "capture_metadata")
+            self.assertEqual(metadata["clock"]["mode"], "aligned_utc")
+            self.assertEqual(metadata["clock"]["frame_clock"]["start"]["uncertainty_usec"], 1000)
+            self.assertFalse(metadata["clock"]["resource_timestamps_bracket_full_frame_window"])
+            self.assertFalse(metadata["clock"]["resource_timestamps_bracket_selected_frame_window"])
+            self.assertEqual(metadata["sources"]["frames"]["selection"]["resource_scope"],
+                             "all retained resource samples")
+            rss = [event for event in events if event.get("name") == "resource.process.rss_bytes [bytes]"]
+            self.assertEqual([event["ts"] for event in rss], [0, 100_000])
+
+    @unittest.skipIf(os.name == "nt", "Windows does not permit replacing an open output file")
+    def test_failed_output_does_not_remove_an_unrelated_replacement(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "timeline.json"
+
+            def swap_and_fail(*_args, **_kwargs):
+                output.rename(root / "displaced-partial.json")
+                output.write_text("replacement", encoding="utf-8")
+                raise OSError("injected write failure")
+
+            with mock.patch("perfetto_export.json.dump", side_effect=swap_and_fail):
+                with self.assertRaises(BudgetError):
+                    _write_new_trace(output, [])
+            self.assertEqual(output.read_text(encoding="utf-8"), "replacement")
 
     def test_resource_elapsed_time_must_be_finite_and_strictly_increasing(self):
         with self.assertRaisesRegex(SourceError, "strictly increasing"):

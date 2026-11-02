@@ -28,7 +28,13 @@
 
 **An open-source flying field for RC pilots.** Connect your USB transmitter, pick an airplane and fly from the pilot's position. A gamepad or keyboard works too. Explore sport flying, warbirds, electric models and jets, with external cameras when you want a closer look.
 
-**[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=website)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
+**[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=website)** · **[Roadmap and donations](#roadmap-and-donations)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
+
+<p align="center">
+  <a href="https://www.paypal.com/paypalme/bultodepapas">
+    <img src="https://img.shields.io/badge/Donate%20via-PayPal-0070BA?logo=paypal&amp;logoColor=white&amp;style=for-the-badge" alt="Donate via PayPal">
+  </a>
+</p>
 
 ![Home screen with MoonRunner X99 at Club field](docs/media/ui-home-moonrunner-x99.png)
 
@@ -200,6 +206,14 @@ Handling, takeoffs/landings, controller compatibility and target-machine perform
 </table>
 
 The advanced HX-700 helicopter candidate remains a laboratory project. [FPV drone racing](docs/plans/drone-racing.md) is also a research track; a playable drone and race mode are not yet available.
+
+## Roadmap and donations
+
+**ArduPilot / Mission Planner SITL integration is on the roadmap.** The current priority is to make OpenRC Simulator more robust and efficient, and to improve controller and platform compatibility across Windows, Linux, macOS and ARM. SITL integration is planned, not available in the current download.
+
+We also want to bring OpenRC Simulator to **Steam**. Steam could make updates and installation easier, help more pilots discover the project, grow the community and give the developer better usage analytics. Its services could also help with a future online multiplayer implementation; multiplayer is not available yet.
+
+The first donation goal is Steam's [**US$100 app submission fee**](https://partner.steamgames.com/doc/gettingstarted/appfee). If donations exceed that goal, the remaining funds will pay for AI model tokens to help develop and improve the simulator. **[Donate via PayPal](https://www.paypal.com/paypalme/bultodepapas).** Every contribution helps; thank you for supporting the project.
 
 ## Sponsors and supporters
 

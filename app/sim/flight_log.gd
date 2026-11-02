@@ -53,6 +53,11 @@ func start(destination := "") -> Error:
 	var stage_backend: Variant = _stage_backend_identity()
 	if not stage_backend is Dictionary:
 		return _failed("Flight log requires a valid stage backend identity.", ERR_INVALID_DATA)
+	var replay_identity := _replay_identity()
+	if OS.has_feature("template_release") and OS.get_name() == "macOS" and replay_identity.kind == "unavailable":
+		return _failed("Flight log requires a verified Mac reference bundle receipt.", ERR_INVALID_DATA)
+	if replay_identity.kind == NativePackage.MAC_IDENTITY_KIND and stage_backend != {backend = "gdscript_reference"}:
+		return _failed("Mac reference bundle identity requires the reference stage backend.", ERR_INVALID_DATA)
 	path = destination
 	if path.is_empty():
 		path = "user://flight_logs/flight-%s-%d.orfl" % [Time.get_datetime_string_from_system(true).replace(":", "-"), Time.get_ticks_usec()]
@@ -74,7 +79,6 @@ func start(destination := "") -> Error:
 	peak_buffer_rows = 0
 	_start_tick = _session.sim.tick
 	_last_tick = _start_tick
-	var replay_identity := _replay_identity()
 	header = {
 		kind = "header", format = FORMAT, created_utc = Time.get_datetime_string_from_system(true),
 		dt_s = _session.sim.dt(), engine = Engine.get_version_info().string,
@@ -95,7 +99,7 @@ func start(destination := "") -> Error:
 		mass_boundary = "FUEL-06: live mass kg and CG offset [x, y, z] m body FRD from the fixed datum O, accepted tick end",
 	}
 	# Source-built headers remain byte-compatible with historical logs.
-	if replay_identity.kind == "packaged-executable-v1":
+	if replay_identity.kind in ["packaged-executable-v1", NativePackage.MAC_IDENTITY_KIND]:
 		header.solver_identity_kind = replay_identity.kind
 	_file.store_buffer(MAGIC.to_ascii_buffer())
 	if not _write_packet(header):
@@ -132,6 +136,10 @@ func stop(reason := "stopped") -> Error:
 	_stopping = true
 	_event("stop", reason)
 	_flush_rows()
+	if recording and header.get("solver_identity_kind") == NativePackage.MAC_IDENTITY_KIND:
+		var final_identity := _replay_identity()
+		if final_identity.kind != NativePackage.MAC_IDENTITY_KIND or final_identity.sha256 != header.solver_sha256:
+			return _failed("Flight log stopped: the Mac reference bundle changed; file is incomplete.", ERR_INVALID_DATA)
 	if recording:
 		var footer := {kind = "footer", rows = rows_written, final_tick = _last_tick,
 			reason = reason, chain_sha256 = _chain.hex_encode(), observer_usec = observer_usec,
@@ -360,8 +368,20 @@ static func replay_identity_kind() -> String:
 	return str(_replay_identity().kind)
 
 
+static func replay_identity() -> Dictionary:
+	return _replay_identity()
+
+
 static func _replay_identity() -> Dictionary:
 	if OS.has_feature("template_release"):
+		if OS.get_name() == "macOS":
+			var mac: Dictionary = NativePackage.mac_reference_identity(OS.get_executable_path(),
+				Engine.get_architecture_name(), OS.get_cmdline_args())
+			var packaged_probe := "res://native/kernel/qualification/session_probe.gd"
+			if mac.get("ok", false) and FileAccess.file_exists(packaged_probe) \
+					and FileAccess.get_sha256(packaged_probe) == mac.get("probe_sha256", ""):
+				return {kind = mac.kind, sha256 = mac.sha256}
+			return {kind = "unavailable", sha256 = "unavailable-export"}
 		var package: Dictionary = NativePackage.identity()
 		if package.get("ok", false):
 			return {kind = "packaged-executable-v1", sha256 = str(package.executable_sha256)}

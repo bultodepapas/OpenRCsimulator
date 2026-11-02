@@ -7,6 +7,8 @@ not turn frame intervals into CPU slices or infer missing measurements.
 from __future__ import annotations
 
 import argparse
+from array import array
+import hashlib
 import json
 import math
 import os
@@ -21,13 +23,20 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 try:
-    from research.performance.native_summary import validate_native_report
+    from research.performance.native_summary import (
+        STREAM_FORMAT, STREAM_MAX_BYTES, STREAM_MAX_FRAMES,
+        _hydrate_stream_report, validate_native_report,
+    )
 except ImportError:  # Direct execution from a source checkout.
-    from native_summary import validate_native_report  # type: ignore[no-redef]
+    from native_summary import (  # type: ignore[no-redef]
+        STREAM_FORMAT, STREAM_MAX_BYTES, STREAM_MAX_FRAMES,
+        _hydrate_stream_report, validate_native_report,
+    )
 
 
-DEFAULT_MAX_INPUT_BYTES = 64 * 1024 * 1024
-MAX_INPUT_BYTES = 256 * 1024 * 1024
+DEFAULT_MAX_INPUT_BYTES = 320 * 1024 * 1024
+MAX_INPUT_BYTES = 1024 * 1024 * 1024
+MAX_JSON_BYTES = 256 * 1024 * 1024
 DEFAULT_MAX_EVENTS = 500_000
 MAX_EVENTS = 1_000_000
 MAX_FRAME_SAMPLES = 120_000
@@ -52,6 +61,14 @@ class SourceError(ExportError):
 class BudgetError(ExportError):
     def __init__(self, message: str):
         super().__init__(message, exit_code=2)
+
+
+class _StreamFrames(dict):
+    """A strictly validated v3 pair, hydrated as compact arrays for export."""
+
+    def __init__(self, report: dict[str, Any], stream_info: dict[str, Any]):
+        super().__init__(report)
+        self.stream_info = stream_info
 
 
 _FRAME_METRICS: dict[str, str] = {
@@ -112,6 +129,8 @@ _ALLOWED_FIELD_STATUSES = {
     "invalid", "denied", "process_unavailable", "unavailable", "error",
 }
 _ENGINE_FRAME_METRICS = {"fps_monitor", "sim_tick", "sim_time_s", "invalid_value_count"}
+_REQUIRED_RESOURCE_FIELDS = ("rss_bytes", "cpu_user_seconds", "cpu_system_seconds",
+                             "virtual_memory_available_bytes")
 
 
 def _strict_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -127,7 +146,10 @@ def _reject_constant(value: str) -> None:
     raise ValueError(f"non-finite JSON value {value} is forbidden")
 
 
-def _read_json(path: Path, byte_limit: int) -> tuple[dict[str, Any], int]:
+def _read_json(path: Path, byte_limit: int) -> tuple[dict[str, Any], int, str]:
+    # The larger aggregate allowance is for a streamed sidecar, not an
+    # unbounded JSON document that would expand dramatically when parsed.
+    byte_limit = min(byte_limit, MAX_JSON_BYTES)
     try:
         before = path.stat()
         if not stat.S_ISREG(before.st_mode):
@@ -159,7 +181,7 @@ def _read_json(path: Path, byte_limit: int) -> tuple[dict[str, Any], int]:
         raise SourceError(f"source {path} is unreadable or malformed: {error}") from error
     if not isinstance(value, dict):
         raise SourceError(f"source {path} must contain a JSON object")
-    return value, len(data)
+    return value, len(data), hashlib.sha256(data).hexdigest()
 
 
 def read_sources(*, frames_path: Path | None = None, resources_path: Path | None = None,
@@ -179,9 +201,27 @@ def read_sources(*, frames_path: Path | None = None, resources_path: Path | None
     frames = resources = None
     consumed = 0
     if frames_path is not None:
-        frames, consumed = _read_json(Path(frames_path), max_input_bytes)
+        report_path = Path(frames_path)
+        frames, consumed, report_sha256 = _read_json(report_path, max_input_bytes)
+        if frames.get("format") == STREAM_FORMAT:
+            stream = frames.get("stream")
+            if not isinstance(stream, dict) or stream.get("file") != report_path.name + ".frames.jsonl":
+                raise SourceError("stream file must be the report's same-directory sibling")
+            remaining = max_input_bytes - consumed
+            expected_bytes = stream.get("bytes")
+            if type(expected_bytes) is int and expected_bytes > remaining:
+                raise BudgetError(f"combined source input exceeds the {max_input_bytes}-byte limit")
+            try:
+                hydrated, stream_info = _hydrate_stream_report(
+                    frames, report_path, include_metrics=True,
+                    max_input_bytes=min(remaining, STREAM_MAX_BYTES),
+                )
+            except (OSError, UnicodeError, ValueError, TypeError, OverflowError, RecursionError, RuntimeError) as error:
+                raise SourceError(f"frame stream failed validation: {error}") from error
+            consumed += stream_info["bytes"]
+            frames = _StreamFrames(hydrated, {**stream_info, "report_sha256": report_sha256})
     if resources_path is not None:
-        resources, read = _read_json(Path(resources_path), max_input_bytes - consumed)
+        resources, read, _resource_sha256 = _read_json(Path(resources_path), max_input_bytes - consumed)
         consumed += read
     return frames, resources
 
@@ -265,17 +305,20 @@ def _validate_frames(report: dict[str, Any]) -> tuple[dict[str, Any], bool, dict
     if report.get("format") != "openrc-frametimes v2":
         raise SourceError("frame source format must be 'openrc-frametimes v2'")
     count = report.get("frames")
-    if type(count) is not int or not 1 <= count <= MAX_FRAME_SAMPLES:
-        raise SourceError(f"frames must be an integer between 1 and {MAX_FRAME_SAMPLES}")
+    stream = isinstance(report, _StreamFrames)
+    max_frames = STREAM_MAX_FRAMES if stream else MAX_FRAME_SAMPLES
+    if type(count) is not int or not 1 <= count <= max_frames:
+        raise SourceError(f"frames must be an integer between 1 and {max_frames}")
+    array_types = (list, array) if stream else (list,)
     for key in ("frame_deltas_s", "frame_wall_usec", "frame_end_monotonic_usec"):
         values = report.get(key)
-        if not isinstance(values, list) or len(values) != count:
+        if not isinstance(values, array_types) or len(values) != count:
             raise SourceError(f"{key} must contain exactly {count} samples")
     raw_metrics = report.get("raw_metrics")
     if not isinstance(raw_metrics, dict):
         raise SourceError("raw_metrics must be an object")
     for key, values in raw_metrics.items():
-        if not isinstance(key, str) or not isinstance(values, list) or len(values) != count:
+        if not isinstance(key, str) or not isinstance(values, array_types) or len(values) != count:
             raise SourceError(f"raw_metrics.{key} must contain exactly {count} samples")
         if key in _FRAME_METRICS:
             for index, value in enumerate(values):
@@ -311,6 +354,67 @@ def _finite_nonnegative(value: Any, label: str) -> int | float:
     return value
 
 
+def validate_required_coverage(report: dict[str, Any]) -> tuple[bool, list[str]]:
+    """Check the additive required-channel receipt without upgrading legacy data."""
+    if "required_field_counts" not in report:
+        return False, []
+    errors: list[str] = []
+    counts = report.get("required_field_counts")
+    samples = report.get("samples")
+    if not isinstance(samples, list) or len(samples) > MAX_RESOURCE_SAMPLES:
+        return False, ["required coverage samples must be a bounded array"]
+    if type(report.get("sample_count")) is not int or report["sample_count"] != len(samples):
+        errors.append("required coverage sample_count must match samples")
+    if not isinstance(counts, dict) or set(counts) != set(_REQUIRED_RESOURCE_FIELDS):
+        errors.append("required_field_counts must contain exactly the required channels")
+        counts = {}
+    summary = report.get("summary")
+    resets = summary.get("counter_resets") if isinstance(summary, dict) else None
+    if (not isinstance(resets, list) or len(resets) > 16
+            or any(not isinstance(field, str) for field in resets)):
+        errors.append("required coverage needs bounded counter_resets")
+        resets = []
+    actual = {field: 0 for field in _REQUIRED_RESOURCE_FIELDS}
+    for index, sample in enumerate(samples):
+        statuses = sample.get("field_status") if isinstance(sample, dict) else None
+        if not isinstance(statuses, dict):
+            errors.append(f"samples[{index}] has no required-channel statuses")
+            break
+        for field in _REQUIRED_RESOURCE_FIELDS:
+            status = statuses.get(field)
+            value = sample.get(field)
+            if not isinstance(status, str) or status not in _ALLOWED_FIELD_STATUSES or field not in sample:
+                errors.append(f"samples[{index}] has invalid {field} status or value")
+                break
+            if status == "ok":
+                if not _is_number(value) or value < 0 or (field in _INTEGER_RESOURCE_FIELDS and type(value) is not int):
+                    errors.append(f"samples[{index}] has invalid {field} value")
+                    break
+                actual[field] += 1
+            elif value is not None:
+                errors.append(f"samples[{index}] has a value for unavailable {field}")
+                break
+        if errors:
+            break
+    if not errors and any(type(counts.get(field)) is not int or counts[field] != actual[field]
+                          for field in _REQUIRED_RESOURCE_FIELDS):
+        errors.append("required_field_counts do not match sample statuses")
+    capped = report.get("capped")
+    stop_reason = report.get("stop_reason")
+    if type(capped) is not bool or not isinstance(stop_reason, str) or not stop_reason:
+        errors.append("required coverage needs capped and stop_reason")
+    elif capped != (stop_reason == "sample_limit"):
+        errors.append("required coverage cap and stop reason disagree")
+    elif not errors:
+        expected = ("capped" if capped else "unavailable" if not samples else
+                    "complete" if (stop_reason == "caller_finished"
+                    and not {"cpu_user_seconds", "cpu_system_seconds"}.intersection(resets) and all(
+                        count == len(samples) for count in actual.values())) else "partial")
+        if report.get("required_coverage") != expected:
+            errors.append(f"required_coverage contradicts samples, cap or stop reason (expected {expected})")
+    return not errors, errors
+
+
 def _validate_resources(report: dict[str, Any]) -> tuple[dict[str, Any], bool, dict[str, Any]]:
     if report.get("format") != "openrc-resource-samples v1":
         raise SourceError("resource source format must be 'openrc-resource-samples v1'")
@@ -328,6 +432,13 @@ def _validate_resources(report: dict[str, Any]) -> tuple[dict[str, Any], bool, d
     measurement_status = report.get("measurement_status")
     if not isinstance(measurement_status, str) or measurement_status not in _ALLOWED_MEASUREMENT_STATUS:
         raise SourceError("resource measurement_status must be ok, partial, or unavailable")
+    required_coverage = report.get("required_coverage")
+    if required_coverage is not None and (not isinstance(required_coverage, str) or required_coverage not in {
+            "complete", "partial", "capped", "unavailable"}):
+        raise SourceError("resource required_coverage is unsupported")
+    required_verified, required_errors = validate_required_coverage(report)
+    if required_errors:
+        raise SourceError("resource required coverage is invalid: " + "; ".join(required_errors[:8]))
     if (coverage == "no_samples") != (sample_count == 0):
         raise SourceError("no_samples coverage must agree with an empty samples array")
     if coverage == "capped" and report.get("capped") is not True:
@@ -368,6 +479,7 @@ def _validate_resources(report: dict[str, Any]) -> tuple[dict[str, Any], bool, d
     status_counts: dict[str, dict[str, int]] = {}
     normalized_samples: list[dict[str, Any]] = []
     partial = coverage != "sampled" or measurement_status != "ok" or report["error_count"] > 0
+    partial = partial or (required_verified and required_coverage != "complete")
     for index, sample in enumerate(samples):
         if not isinstance(sample, dict):
             raise SourceError(f"samples[{index}] must be an object")
@@ -456,6 +568,8 @@ def _validate_resources(report: dict[str, Any]) -> tuple[dict[str, Any], bool, d
     return report, partial, {
         "coverage": coverage,
         "measurement_status": measurement_status,
+        "required_coverage": required_coverage,
+        "required_coverage_validated": required_verified,
         "sample_count": sample_count,
         "error_count": report["error_count"],
         "capped": report["capped"],
@@ -554,7 +668,9 @@ def _metadata_event(args: dict[str, Any]) -> dict[str, Any]:
 
 def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, Any] | None = None,
                 frame_source: str = "frames.json", resource_source: str = "resources.json",
-                max_events: int = DEFAULT_MAX_EVENTS, max_clock_drift_ms: float = 50.0) -> tuple[list[dict[str, Any]], bool]:
+                max_events: int = DEFAULT_MAX_EVENTS, max_clock_drift_ms: float = 50.0,
+                start_frame: int | None = None, end_frame: int | None = None,
+                selected_frame_metrics: list[str] | None = None) -> tuple[list[dict[str, Any]], bool]:
     """Validate sources and build Chrome JSON events; return events and partial flag."""
     if frames is None and resources is None:
         raise BudgetError("provide at least one source")
@@ -569,6 +685,26 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
     frame_derived = None
     if frames is not None:
         normalized_frames, frame_partial, frame_derived = _validate_frames(frames)
+    elif start_frame is not None or end_frame is not None or selected_frame_metrics is not None:
+        raise BudgetError("frame selection requires a frame source")
+    selection_start = 0
+    selection_end = 0
+    selected_scope = False
+    if normalized_frames is not None:
+        frame_count = normalized_frames["frames"]
+        selection_start = 0 if start_frame is None else start_frame
+        selection_end = frame_count if end_frame is None else end_frame
+        if (type(selection_start) is not int or type(selection_end) is not int
+                or not 0 <= selection_start < selection_end <= frame_count):
+            raise BudgetError(f"frame selection must satisfy 0 <= start < end <= {frame_count}")
+        if selected_frame_metrics is not None:
+            available = {key for key in normalized_frames["raw_metrics"] if key in _FRAME_METRICS}
+            if (not isinstance(selected_frame_metrics, list)
+                    or any(not isinstance(key, str) or key not in available for key in selected_frame_metrics)
+                    or len(set(selected_frame_metrics)) != len(selected_frame_metrics)):
+                raise BudgetError("selected frame metrics must be distinct known metrics present in the source")
+            selected_scope = set(selected_frame_metrics) != available
+        selected_scope = selected_scope or selection_start != 0 or selection_end != frame_count
     normalized_resources = None
     resource_partial = False
     resource_info = None
@@ -619,6 +755,16 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
             clock_metadata["data_window_overlap_usec"] = max(
                 0, min(frame_last_utc, resource_last_utc) - max(frame_first_utc, resource_first_utc)
             )
+            selected_first_utc = (int(normalized_frames["frame_end_monotonic_usec"][selection_start])
+                                  - int(normalized_frames["frame_wall_usec"][selection_start]) + frame_offset)
+            selected_last_utc = int(normalized_frames["frame_end_monotonic_usec"][selection_end - 1]) + frame_offset
+            clock_metadata["selected_frame_data_utc_bounds_usec"] = [selected_first_utc, selected_last_utc]
+            clock_metadata["resource_timestamps_bracket_full_frame_window"] = (
+                resource_first_utc <= frame_first_utc and resource_last_utc >= frame_last_utc)
+            clock_metadata["resource_timestamps_bracket_selected_frame_window"] = (
+                resource_first_utc <= selected_first_utc and resource_last_utc >= selected_last_utc)
+            clock_metadata["resource_time_scope"] = (
+                "estimated timestamp endpoints only; uncertainty applies and discrete samples do not prove coverage between samples")
         else:
             resource_first_utc = None
         zero_utc = min(frame_first_utc, resource_first_utc) if resource_first_utc is not None else frame_first_utc
@@ -635,6 +781,7 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
             "mode": "relative_frame_timeline",
             "origin": "first frame interval start",
             "source_clock_anchors_present": frame_clock is not None,
+            "frame_clock": frame_clock,
         }
     else:
         capture_id = _capture_id(normalized_resources, "resources")
@@ -643,6 +790,7 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
             "mode": "relative_resource_timeline",
             "origin": "resource sampler elapsed_seconds",
             "source_clock_anchors_present": resource_clock is not None,
+            "resource_clock": resource_clock,
         }
 
     events: list[dict[str, Any]] = []
@@ -672,11 +820,13 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
         valid_gpu_values = [
             value for index, value in enumerate(gpu_values)
             if index not in invalid_frame_indexes
-        ] if isinstance(gpu_values, list) else []
+        ] if isinstance(gpu_values, (list, array)) else []
         gpu_zero_count = sum(value == 0 for value in valid_gpu_values)
         gpu_positive_count = sum(value > 0 for value in valid_gpu_values)
         gpu_contradictory = gpu_available is False and gpu_positive_count > 0
-        frame_metrics = [key for key in raw_metrics if key in _FRAME_METRICS]
+        available_frame_metrics = [key for key in raw_metrics if key in _FRAME_METRICS]
+        frame_metrics = [key for key in available_frame_metrics
+                         if selected_frame_metrics is None or key in selected_frame_metrics]
         unknown_metrics = [key for key in raw_metrics if key not in _FRAME_METRICS]
         unknown_metric_names = [str(key)[:128] for key in unknown_metrics[:32]]
         observer_samples_omitted = 0
@@ -702,13 +852,14 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
                 diagnostics_metadata["viewport_scope"] = frame_diagnostics["viewport_scope"][:256]
         sources["frames"] = {
             "file": Path(frame_source).name,
-            "format": normalized_frames["format"],
+            "format": STREAM_FORMAT if isinstance(normalized_frames, _StreamFrames) else normalized_frames["format"],
             "complete": normalized_frames["complete"],
             "frame_count": normalized_frames["frames"],
             "route": _metadata_string(normalized_frames.get("route")),
             "case_id": _metadata_string(normalized_frames.get("case_id")),
             "backend": _metadata_string(normalized_frames.get("backend")),
             "raw_metric_names": frame_metrics,
+            "available_metric_names": available_frame_metrics,
             "unknown_metric_names": unknown_metric_names,
             "unknown_metric_count": len(unknown_metrics),
             "invalid_observer_frame_count": len(invalid_frame_indexes),
@@ -727,17 +878,51 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
                 "invalid_frames_omitted": len(invalid_frame_indexes),
             },
             "frame_diagnostics": diagnostics_metadata,
+            "selection": {
+                "kind": "selected" if selected_scope else "full_session",
+                "start_frame_inclusive": selection_start,
+                "end_frame_exclusive": selection_end,
+                "frame_count": selection_end - selection_start,
+                "start_monotonic_usec": int(normalized_frames["frame_end_monotonic_usec"][selection_start])
+                    - int(normalized_frames["frame_wall_usec"][selection_start]),
+                "end_monotonic_usec": int(normalized_frames["frame_end_monotonic_usec"][selection_end - 1]),
+                "metric_names": frame_metrics,
+                "omitted_metric_names": [key for key in available_frame_metrics if key not in frame_metrics],
+                "resource_scope": "all retained resource samples" if normalized_resources is not None else "none",
+            },
         }
+        if isinstance(normalized_frames, _StreamFrames):
+            sources["frames"]["stream"] = normalized_frames.stream_info
         if isinstance(frame_diagnostics, dict):
             for issue in frame_diagnostics.get("issues", []) if isinstance(frame_diagnostics.get("issues"), list) else []:
                 if isinstance(issue, str) and issue:
                     issues.append("frame diagnostic: " + issue[:500])
 
-        frame_starts = [int(end) - int(wall) for end, wall in zip(
-            normalized_frames["frame_end_monotonic_usec"], normalized_frames["frame_wall_usec"]
-        )]
-        for index, (start, end, wall) in enumerate(zip(
-                frame_starts, normalized_frames["frame_end_monotonic_usec"], normalized_frames["frame_wall_usec"])):
+        # Count events before materializing any frame slices. A long capture can
+        # exceed the cap by millions; callers must explicitly choose a scope.
+        estimated_events = len(events) + 1 + selection_end - selection_start
+        selected_invalid = sum(selection_start <= index < selection_end for index in invalid_frame_indexes)
+        for key in frame_metrics:
+            if key == "render_gpu_ms" and (gpu_contradictory or gpu_positive_count == 0):
+                continue
+            if key == "render_gpu_ms":
+                estimated_events += sum(
+                    raw_metrics[key][index] != 0 and index not in invalid_frame_indexes
+                    for index in range(selection_start, selection_end))
+            else:
+                estimated_events += (selection_end - selection_start
+                                     - (selected_invalid if key not in _ENGINE_FRAME_METRICS else 0))
+        if resource_info is not None:
+            estimated_events += sum(len(sample["values"]) + sum(len(volume["values"]) for volume in sample["volumes"])
+                                    for sample in resource_info["samples"])
+        if estimated_events > max_events:
+            raise BudgetError(f"trace would contain {estimated_events} events, exceeding the {max_events}-event limit; "
+                              "select a frame window or metrics")
+
+        for index in range(selection_start, selection_end):
+            end = normalized_frames["frame_end_monotonic_usec"][index]
+            wall = normalized_frames["frame_wall_usec"][index]
+            start = int(end) - int(wall)
             if normalized_resources is not None:
                 start_utc = start + frame_offset
                 base = clock_metadata["zero_utc_usec"]
@@ -761,7 +946,8 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
                 continue
             unit = _FRAME_METRICS[key]
             track = f"frame.{key} [{unit}]"
-            for index, value in enumerate(values):
+            for index in range(selection_start, selection_end):
+                value = values[index]
                 if index in invalid_frame_indexes and key not in _ENGINE_FRAME_METRICS:
                     observer_samples_omitted += 1
                     continue
@@ -833,6 +1019,8 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
             "scope": report.get("scope", {}),
             "coverage": resource_info["coverage"],
             "measurement_status": resource_info["measurement_status"],
+            "required_coverage": resource_info["required_coverage"],
+            "required_coverage_validated": resource_info["required_coverage_validated"],
             "sample_count": resource_info["sample_count"],
             "error_count": resource_info["error_count"],
             "capped": resource_info["capped"],
@@ -854,8 +1042,11 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
     partial = frame_partial or resource_partial or frame_metric_partial
     metadata = {
         "capture_id": capture_id,
-        "complete": not partial,
-        "partial": partial,
+        "complete": not partial and not selected_scope,
+        "partial": partial or selected_scope,
+        "source_data_complete": not partial,
+        "selected_scope_complete": not partial,
+        "full_session_timeline": not selected_scope,
         "sources": sources,
         "source_issues": issues[:64],
         "clock": clock_metadata,
@@ -881,15 +1072,20 @@ def _validate_cli_budgets(max_input_bytes: int, max_events: int, max_clock_drift
 
 def _write_new_trace(path: Path, events: list[dict[str, Any]]) -> None:
     created = False
+    identity = None
     try:
         with path.open("x", encoding="utf-8", newline="\n") as stream:
             created = True
+            info = os.fstat(stream.fileno())
+            identity = (info.st_dev, info.st_ino)
             json.dump(events, stream, ensure_ascii=False, allow_nan=False, separators=(",", ":"))
             stream.write("\n")
     except (OSError, TypeError, ValueError, OverflowError, RecursionError) as error:
-        if created:
+        if created and identity is not None:
             try:
-                path.unlink(missing_ok=True)
+                current = os.lstat(path)
+                if (current.st_dev, current.st_ino) == identity:
+                    path.unlink()
             except OSError:
                 pass
         raise BudgetError(f"cannot create trace output {path}: {error}") from error
@@ -897,15 +1093,19 @@ def _write_new_trace(path: Path, events: list[dict[str, Any]]) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--frames", type=Path, help="openrc-frametimes v2 JSON report")
+    parser.add_argument("--frames", type=Path, help="openrc-frametimes v2 report or v3 report with sibling sidecar")
     parser.add_argument("--resources", type=Path, help="openrc-resource-samples v1 JSON report")
     parser.add_argument("--out", type=Path, required=True, help="new Perfetto-compatible Chrome JSON trace path")
     parser.add_argument("--max-input-bytes", type=int, default=DEFAULT_MAX_INPUT_BYTES,
-                        help="combined input byte budget (default 64 MiB, maximum 256 MiB)")
+                        help="combined input byte budget (default 320 MiB, maximum 1 GiB)")
     parser.add_argument("--max-events", type=int, default=DEFAULT_MAX_EVENTS,
                         help="trace event budget (default 500000, maximum 1000000)")
     parser.add_argument("--max-clock-drift-ms", type=float, default=50.0,
                         help="maximum combined anchor drift allowance (0–1000 ms; default 50)")
+    parser.add_argument("--start-frame", type=int, help="first frame index to export, inclusive (default 0)")
+    parser.add_argument("--end-frame", type=int, help="last frame index to export, exclusive (default source count)")
+    parser.add_argument("--frame-metric", action="append", choices=sorted(_FRAME_METRICS),
+                        help="export this frame metric; repeat to select tracks (default: all known metrics)")
     return parser
 
 
@@ -928,6 +1128,9 @@ def main(argv: list[str] | None = None) -> int:
             resource_source=str(args.resources) if args.resources else "resources.json",
             max_events=args.max_events,
             max_clock_drift_ms=args.max_clock_drift_ms,
+            start_frame=args.start_frame,
+            end_frame=args.end_frame,
+            selected_frame_metrics=args.frame_metric,
         )
         _write_new_trace(args.out, events)
     except ExportError as error:

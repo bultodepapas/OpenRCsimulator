@@ -295,7 +295,8 @@ def launch(argv: list[str]) -> int:
             print("--resolution must look like 1920x1080", file=sys.stderr)
             return 2
         command += ["--resolution", f"{width}x{height}"]
-        if not os.environ.get("DISPLAY") and not os.environ.get("WAYLAND_DISPLAY") and os.name != "nt":
+        if (sys.platform.startswith("linux") and not os.environ.get("DISPLAY")
+                and not os.environ.get("WAYLAND_DISPLAY")):
             xvfb = shutil.which("xvfb-run")
             if xvfb is None:
                 print("no display and no xvfb-run: use --headless (no screenshots)", file=sys.stderr)
@@ -923,6 +924,28 @@ def soak(argv: list[str]) -> int:
 
 
 def rss_mib(pid) -> float | None:
+    if sys.platform == "darwin":
+        # Use the same PID-identity-checked sampler as the checked runner. psutil
+        # is optional for this debug-only display; missing support stays unknown.
+        if type(pid) is not int or pid <= 0:
+            return None
+        path = str(REPO / "tools" / "godot")
+        inserted = path not in sys.path
+        try:
+            if inserted:
+                sys.path.insert(0, path)
+            from resource_samples import ResourceSampler, load_backend
+            sampler = ResourceSampler(pid, max_samples=2, backend=load_backend())
+            sampler.poll()
+            report = sampler.finish()
+            sample = report["samples"][0] if report["samples"] else {}
+            value = sample.get("rss_bytes") if sample.get("field_status", {}).get("rss_bytes") == "ok" else None
+            return round(value / 1048576, 1) if value is not None else None
+        except (ImportError, ValueError, OSError):
+            return None
+        finally:
+            if inserted:
+                sys.path.remove(path)
     try:
         for line in Path(f"/proc/{pid}/status").read_text().splitlines():
             if line.startswith("VmRSS:"):

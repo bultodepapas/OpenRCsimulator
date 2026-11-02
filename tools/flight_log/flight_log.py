@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import importlib.util
 import json
 import math
 import os
@@ -20,8 +21,14 @@ from typing import Any, Iterator, Sequence
 
 ROOT = Path(__file__).resolve().parents[2]
 APP = ROOT / "app"
-GODOT_DEFAULT = ROOT / ".tools" / ("Godot_v4.8-beta1_win64_console.exe" if os.name == "nt" else "Godot_v4.8-beta1_linux.x86_64")
+GODOT_DEFAULT = (ROOT / ".tools" / "Godot_v4.8-beta1_macos.arm64/Godot.app/Contents/MacOS/Godot"
+                 if sys.platform == "darwin" else ROOT / ".tools" /
+                 ("Godot_v4.8-beta1_win64_console.exe" if os.name == "nt" else "Godot_v4.8-beta1_linux.x86_64"))
 GODOT_SCRIPT = "res://tools/flight_log_cli.gd"
+_MAC_SPEC = importlib.util.spec_from_file_location("openrc_macos_reference_receipt", ROOT / "tools/release/macos_reference_receipt.py")
+assert _MAC_SPEC is not None and _MAC_SPEC.loader is not None
+MAC_RECEIPT = importlib.util.module_from_spec(_MAC_SPEC)
+_MAC_SPEC.loader.exec_module(MAC_RECEIPT)
 
 INT64_MIN = -(1 << 63)
 INT64_MAX = (1 << 63) - 1
@@ -551,6 +558,10 @@ def _validate_exact_replay_report(report: dict[str, Any], log_path: Path) -> tup
             raise FlightLogError(f"exact replay report must include a SHA-256 {key}")
     if report["baseline_solver_sha256"].lower() != report["current_solver_sha256"].lower():
         raise FlightLogError("exact replay solver identities differ")
+    kinds = (report.get("baseline_solver_identity_kind"), report.get("current_solver_identity_kind"))
+    if kinds != (None, None) and (kinds[0] != kinds[1] or kinds[0] not in
+                                  ("source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1")):
+        raise FlightLogError("exact replay solver identity kinds differ or are unsupported")
     if report["source_sha256"].lower() != _sha256_file(log_path):
         raise FlightLogError("flight log changed during replay")
     for key in ("first_tick", "final_tick", "rows"):
@@ -1052,6 +1063,21 @@ def _check_godot_report(
                 raise FlightLogError(f"candidate replay report must include a SHA-256 {key}")
         if type(document.get("solver_changed")) is not bool:
             raise FlightLogError("candidate replay report must include boolean solver_changed")
+        baseline_kind = document.get("baseline_solver_identity_kind", "source-tree-v1")
+        current_kind = document.get("current_solver_identity_kind", "source-tree-v1")
+        allowed_kinds = ("source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1")
+        if baseline_kind not in allowed_kinds or current_kind not in allowed_kinds:
+            raise FlightLogError("candidate replay report contains an unsupported solver identity kind")
+        if (baseline_kind != current_kind or document["baseline_solver_sha256"] != document["current_solver_sha256"]) \
+                and document["solver_changed"] is not True:
+            raise FlightLogError("candidate replay must disclose changed solver identities")
+        baseline_backend = document.get("baseline_stage_backend")
+        current_backend = document.get("current_stage_backend")
+        if (baseline_backend is not None or current_backend is not None) and \
+                (not isinstance(baseline_backend, dict) or not isinstance(current_backend, dict)):
+            raise FlightLogError("candidate replay stage backend identities are invalid")
+        if baseline_backend != current_backend and document["solver_changed"] is not True:
+            raise FlightLogError("candidate replay must disclose a changed stage backend")
         method = document.get("comparison_method")
         if not isinstance(method, str) or not method.strip():
             raise FlightLogError("candidate replay report must include comparison_method")
@@ -1084,6 +1110,12 @@ def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = Fal
     using_release = release_value is not None
     godot = _resolve_release_executable(release_value) if using_release else _resolve_godot(args.godot)
     executable_sha256 = _sha256_file(Path(godot)) if using_release else ""
+    mac_identity = None
+    if using_release and MAC_RECEIPT.looks_like_bundle_executable(Path(godot)):
+        try:
+            mac_identity = MAC_RECEIPT.verify_for_launch(Path(godot))
+        except (OSError, ValueError) as error:
+            raise FlightLogError(f"Mac release bundle identity refused: {error}") from error
     timeout = _check_timeout(args.timeout)
     candidate: Path | None = None
     candidate_value = getattr(args, "candidate", None)
@@ -1112,6 +1144,12 @@ def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = Fal
     _run_godot(command, timeout, output_dir / "godot.log")
     if using_release and _sha256_file(Path(godot)) != executable_sha256:
         raise FlightLogError("release executable changed during export/replay")
+    if mac_identity is not None:
+        try:
+            if MAC_RECEIPT.verify_for_launch(Path(godot)) != mac_identity:
+                raise FlightLogError("Mac release bundle changed during export/replay")
+        except (OSError, ValueError) as error:
+            raise FlightLogError(f"Mac release bundle changed during export/replay: {error}") from error
     report = _check_godot_report(
         report_path,
         recover=recover,
@@ -1119,10 +1157,16 @@ def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = Fal
     )
     if using_release and replay and candidate is None:
         _validate_exact_replay_report(report, log_path)
-        if report.get("baseline_solver_identity_kind") != "packaged-executable-v1" \
-                or report.get("current_solver_identity_kind") != "packaged-executable-v1" \
-                or report.get("current_solver_sha256") != executable_sha256:
-            raise FlightLogError("exact replay did not identify the selected release executable")
+        kind = MAC_RECEIPT.KIND if mac_identity is not None else "packaged-executable-v1"
+        allowed = set(mac_identity["identities"].values()) if mac_identity is not None else {executable_sha256}
+        if report.get("baseline_solver_identity_kind") != kind \
+                or report.get("current_solver_identity_kind") != kind \
+                or report.get("current_solver_sha256") not in allowed:
+            raise FlightLogError("exact replay did not identify the selected release artifact")
+    if mac_identity is not None and replay and candidate is not None:
+        if report.get("current_solver_identity_kind") != MAC_RECEIPT.KIND \
+                or report.get("current_solver_sha256") not in mac_identity["identities"].values():
+            raise FlightLogError("candidate replay did not identify the selected Mac release artifact")
     # Validate the output now so a successful exit never advertises a malformed
     # or incomplete CSV as an export/replay result.
     csv_summary = _check_exported_csv(csv_path, report)

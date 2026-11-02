@@ -16,14 +16,18 @@ import incident_bundle
 from incident_bundle import SnapshotFailure, create_bundle, main
 from run_checked import run_checked
 
-from research.performance.test_native_summary import valid_report
+from research.performance.native_summary import (
+    DEFAULT_POLICY, _hydrate_stream_report, summarize_run, validate_native_report,
+)
+from research.performance.test_native_summary import valid_report, write_stream_fixture, write_stream_run
+from perfetto_export import BudgetError, build_trace, read_sources
 
 
 class IncidentBundleTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="openrc incident bundle ")
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()  # macOS /var is a symlink to /private/var.
         self.runs = self.root / "runs"
         self.runs.mkdir()
 
@@ -72,6 +76,52 @@ class IncidentBundleTests(unittest.TestCase):
         self.write_receipt(run_dir, report)
         return content
 
+    def test_required_coverage_receipt_is_checked_without_rejecting_old_reports(self):
+        run_dir, _checked = self.make_run()
+        self.add_resource_report(run_dir)
+        run = self.read_receipt(run_dir)
+        resource = json.loads((run_dir / "resources.json").read_text(encoding="utf-8"))
+        self.assertEqual(incident_bundle._validate_resource_receipt(resource, run, run["resources"]), [])
+        resource["required_coverage"] = "complete"
+        run["resources"]["required_coverage"] = "partial"
+        errors = incident_bundle._validate_resource_receipt(resource, run, run["resources"])
+        self.assertTrue(any("required_coverage does not match" in error for error in errors))
+        run["resources"]["required_coverage"] = "complete"
+        self.assertEqual(incident_bundle._validate_resource_receipt(resource, run, run["resources"]), [])
+
+    def test_required_coverage_is_verified_against_samples_before_manifest_claim(self):
+        run_dir, _checked = self.make_run()
+        self.add_resource_report(run_dir)
+        run = self.read_receipt(run_dir)
+        resource_path = run_dir / "resources.json"
+        resource = json.loads(resource_path.read_text(encoding="utf-8"))
+        fields = ("rss_bytes", "cpu_user_seconds", "cpu_system_seconds", "virtual_memory_available_bytes")
+        sample = {field: 1 for field in fields}
+        sample["field_status"] = {field: "ok" for field in fields}
+        resource.update(samples=[sample], required_coverage="complete",
+                        required_field_counts={field: 1 for field in fields},
+                        capped=False, stop_reason="caller_finished",
+                        summary={"counter_resets": []})
+        content = json.dumps(resource).encode()
+        resource_path.write_bytes(content)
+        run["resources"].update(bytes=len(content), sha256=hashlib.sha256(content).hexdigest(),
+                                required_coverage="complete")
+        self.write_receipt(run_dir, run)
+        manifest = create_bundle(run_dir, self.root / "required-valid.zip")
+        entry = next(item for item in manifest["attachments"] if item["role"] == "resource_report")
+        self.assertTrue(entry["required_coverage_validated"])
+        self.assertTrue(manifest["bundle_complete"])
+        resource["required_field_counts"]["rss_bytes"] = 0
+        content = json.dumps(resource).encode()
+        resource_path.write_bytes(content)
+        run["resources"].update(bytes=len(content), sha256=hashlib.sha256(content).hexdigest())
+        self.write_receipt(run_dir, run)
+        manifest = create_bundle(run_dir, self.root / "required-invalid.zip")
+        entry = next(item for item in manifest["attachments"] if item["role"] == "resource_report")
+        self.assertFalse(entry["required_coverage_validated"])
+        self.assertFalse(manifest["bundle_complete"])
+        self.assertTrue(any("required_field_counts" in issue["message"] for issue in manifest["issues"]))
+
     def make_frames(self, path: Path, capture_id: str) -> Path:
         report = valid_report()
         report["capture_id"] = capture_id
@@ -118,6 +168,150 @@ class IncidentBundleTests(unittest.TestCase):
         self.assertEqual(by_role["flight_log"]["validation"], "caller_supplied_unverified")
         self.assertEqual(by_role["flight_log"]["sha256"], hashlib.sha256(flight_log.read_bytes()).hexdigest())
         self.assertFalse(manifest["claims"]["orfl_replay_validated"])
+
+    def test_long_v3_pairs_round_trip_and_selected_timelines_declare_scope(self):
+        run_dir, _checked = self.make_run()
+        run = self.read_receipt(run_dir)
+        run["capture_id"] = "fixture"
+        self.write_receipt(run_dir, run)
+        for hz, count, interval, step in ((60, 108_001, 16_667, 4), (120, 216_001, 8_334, 2)):
+            with self.subTest(hz=hz):
+                ticks = [240 + step * index for index in range(count)]
+                source = valid_report(interval_usec=interval, ticks=ticks,
+                                      sample_s=(count - 1) * interval / 1_000_000.0)
+                for name in ("physics_step_usec", "draw_calls", "primitives", "object_count", "node_count",
+                             "render_cpu_ms", "frame_setup_cpu_ms", "memory_static_bytes", "observer_poll_usec"):
+                    source["raw_metrics"][name] = [1.0] * count
+                frames, _records = write_stream_run(self.root, f"flight-{hz}", source)
+                sidecar = frames.with_name(frames.name + ".frames.jsonl")
+                output = self.root / f"long-{hz}.zip"
+                manifest = create_bundle(run_dir, output, frames_path=frames)
+                self.assertTrue(manifest["bundle_complete"], manifest["issues"])
+                with zipfile.ZipFile(output) as archive:
+                    frame_name = "frames/" + frames.name
+                    sidecar_name = frame_name + ".frames.jsonl"
+                    self.assertEqual(hashlib.sha256(archive.read(sidecar_name)).hexdigest(),
+                                     hashlib.sha256(sidecar.read_bytes()).hexdigest())
+                    archive.extract(frame_name, self.root / f"extract-{hz}")
+                    archive.extract(sidecar_name, self.root / f"extract-{hz}")
+                    log = archive.read("engine.log")
+                extracted = self.root / f"extract-{hz}" / frame_name
+                extracted.with_suffix(".log").write_bytes(log)
+                report = json.loads(extracted.read_text(encoding="utf-8"))
+                hydrated, receipt = _hydrate_stream_report(report, extracted)
+                errors, _derived = validate_native_report(hydrated)
+                self.assertEqual(errors, [])
+                self.assertEqual(receipt["frames"], count)
+                reduced = summarize_run(extracted, DEFAULT_POLICY)
+                self.assertTrue(reduced["collection_valid"], reduced["collection_reasons"])
+                self.assertEqual(reduced["stream"]["sha256"], receipt["sha256"])
+                loaded, _resources = read_sources(frames_path=extracted)
+                with self.assertRaisesRegex(BudgetError, "select a frame window or metrics"):
+                    build_trace(frames=loaded, max_events=1_000_000)
+                events, partial = build_trace(frames=loaded, frame_source=str(extracted),
+                                              start_frame=count - 5, end_frame=count,
+                                              selected_frame_metrics=["draw_calls"])
+                self.assertFalse(partial)
+                metadata = next(event["args"] for event in events if event.get("name") == "capture_metadata")
+                self.assertFalse(metadata["full_session_timeline"])
+                self.assertFalse(metadata["complete"])
+                self.assertTrue(metadata["selected_scope_complete"])
+                selected = metadata["sources"]["frames"]["selection"]
+                self.assertEqual((selected["start_frame_inclusive"], selected["end_frame_exclusive"]),
+                                 (count - 5, count))
+                self.assertEqual(selected["metric_names"], ["draw_calls"])
+                self.assertEqual(metadata["sources"]["frames"]["stream"]["sha256"], receipt["sha256"])
+                self.assertEqual([event["args"]["frame_index"] for event in events if event.get("ph") == "X"],
+                                 list(range(count - 5, count)))
+
+    def test_orphan_and_damaged_v3_streams_are_retained_as_incomplete(self):
+        run_dir, _checked = self.make_run()
+        run = self.read_receipt(run_dir)
+        run["capture_id"] = "fixture"
+        self.write_receipt(run_dir, run)
+        frames, records = write_stream_run(self.root, "damaged", valid_report())
+        report = json.loads(frames.read_text(encoding="utf-8"))
+        sidecar = frames.with_name(report["stream"]["file"])
+        report["stream"]["sha256"] = "0" * 64
+        frames.write_text(json.dumps(report), encoding="utf-8")
+        manifest = create_bundle(run_dir, self.root / "bad-hash.zip", frames_path=frames)
+        self.assertFalse(manifest["bundle_complete"])
+        self.assertEqual(manifest["run"]["capture_identity"], "unverified_evidence_invalid")
+        entries = {entry["role"]: entry for entry in manifest["attachments"]}
+        self.assertTrue(entries["frame_stream"]["included"])
+        self.assertEqual(entries["frame_stream"]["validation"], "invalid_stream_pair")
+        self.assertIsNone(entries["frame_stream"]["source_complete"])
+        with zipfile.ZipFile(self.root / "bad-hash.zip") as archive:
+            self.assertEqual(archive.read(entries["frame_stream"]["archive_path"]), sidecar.read_bytes())
+        with self.assertRaisesRegex(ValueError, "SHA-256"):
+            read_sources(frames_path=frames)
+
+        # A cleanly written prefix has a valid file hash but no completion trailer.
+        write_stream_fixture(frames, report, records[:-1])
+        manifest = create_bundle(run_dir, self.root / "no-trailer.zip", frames_path=frames)
+        self.assertFalse(manifest["bundle_complete"])
+        self.assertTrue(any("completion trailer" in issue["message"] for issue in manifest["issues"]))
+        self.assertTrue(next(entry for entry in manifest["attachments"] if entry["role"] == "frame_stream")["included"])
+        with self.assertRaisesRegex(ValueError, "completion trailer"):
+            read_sources(frames_path=frames)
+
+        frames.unlink()
+        manifest = create_bundle(run_dir, self.root / "orphan.zip", frame_stream_path=sidecar)
+        self.assertFalse(manifest["bundle_complete"])
+        stream = next(entry for entry in manifest["attachments"] if entry["role"] == "frame_stream")
+        self.assertEqual(stream["validation"], "opaque_unverified")
+        self.assertIsNone(stream["source_complete"])
+        self.assertIsNone(stream["verified_frame_range"])
+        with zipfile.ZipFile(self.root / "orphan.zip") as archive:
+            self.assertEqual(archive.read(stream["archive_path"]), sidecar.read_bytes())
+        manifest = create_bundle(run_dir, self.root / "missing-report-and-orphan.zip",
+                                 frames_path=frames, frame_stream_path=sidecar)
+        self.assertFalse(manifest["bundle_complete"])
+        roles = {entry["role"]: entry for entry in manifest["attachments"]}
+        self.assertEqual(roles["frame_report"]["status"], "missing")
+        self.assertTrue(roles["frame_stream"]["included"])
+        self.assertEqual(roles["frame_stream"]["validation"], "opaque_unverified")
+
+    def test_v3_completion_and_run_association_are_independent(self):
+        run_dir, _checked = self.make_run()
+        frames, _records = write_stream_run(self.root, "other-capture", valid_report())
+        manifest = create_bundle(run_dir, self.root / "other-capture.zip", frames_path=frames)
+        entries = {entry["role"]: entry for entry in manifest["attachments"]}
+        self.assertFalse(manifest["bundle_complete"])
+        self.assertEqual(manifest["run"]["capture_identity"], "mismatch_or_unverified")
+        self.assertEqual(entries["frame_report"]["validation"], "invalid")
+        self.assertTrue(entries["frame_report"]["source_complete"])
+        self.assertEqual(entries["frame_stream"]["validation"], "valid_stream_pair")
+        self.assertTrue(entries["frame_stream"]["source_complete"])
+
+    def test_v3_unsafe_paths_missing_sidecar_and_input_budget_fail_explicitly(self):
+        run_dir, _checked = self.make_run()
+        frames, _records = write_stream_run(
+            self.root, "unsafe", valid_report(ticks=[240 + 3 * index for index in range(600)]))
+        report = json.loads(frames.read_text(encoding="utf-8"))
+        sidecar = frames.with_name(report["stream"]["file"])
+        outside = self.root / "outside.jsonl"
+        outside.write_text("private", encoding="utf-8")
+        report["stream"]["file"] = "../outside.jsonl"
+        frames.write_text(json.dumps(report), encoding="utf-8")
+        manifest = create_bundle(run_dir, self.root / "unsafe.zip", frames_path=frames)
+        self.assertFalse(manifest["bundle_complete"])
+        self.assertFalse(any(entry["role"] == "frame_stream" for entry in manifest["attachments"]))
+        with zipfile.ZipFile(self.root / "unsafe.zip") as archive:
+            self.assertNotIn("outside.jsonl", archive.namelist())
+        with self.assertRaisesRegex(ValueError, "same-directory sibling"):
+            read_sources(frames_path=frames)
+        report["stream"]["file"] = sidecar.name
+        frames.write_text(json.dumps(report), encoding="utf-8")
+        manifest = create_bundle(run_dir, self.root / "budget.zip", frames_path=frames,
+                                 max_input_bytes=frames.stat().st_size, max_total_bytes=10_000_000)
+        self.assertFalse(manifest["bundle_complete"])
+        self.assertTrue(any(issue["code"] == "file_size_limit" for issue in manifest["issues"]))
+        sidecar.unlink()
+        manifest = create_bundle(run_dir, self.root / "missing.zip", frames_path=frames)
+        self.assertFalse(manifest["bundle_complete"])
+        self.assertEqual(next(entry for entry in manifest["attachments"] if entry["role"] == "frame_stream")["status"],
+                         "missing")
 
     def test_valid_failed_engine_capture_is_packaged_successfully_but_run_ok_false(self):
         run_dir, checked = self.make_run("print('SCRIPT ERROR: intentional fixture failure')")

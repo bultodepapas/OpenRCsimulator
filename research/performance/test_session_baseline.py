@@ -11,6 +11,7 @@ try:
         alternating_observer_order,
         _run_probe,
         _sha256_file,
+        MAC_RECEIPT,
         parse_probe_file,
         percentile_nearest_rank,
         reduce_backend_pair,
@@ -22,6 +23,7 @@ except ImportError:  # Also support direct execution from this directory.
         alternating_observer_order,
         _run_probe,
         _sha256_file,
+        MAC_RECEIPT,
         parse_probe_file,
         percentile_nearest_rank,
         reduce_backend_pair,
@@ -277,6 +279,49 @@ class ReducerTests(unittest.TestCase):
 
 
 class ReleaseProbeAdmissionTests(unittest.TestCase):
+    def test_mac_release_probe_requires_bundle_architecture_probe_and_stability(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            executable, probe = root / "release", root / "probe.gd"
+            executable.write_bytes(b"release executable")
+            probe.write_bytes(b"probe source")
+            exe_hash, probe_hash = _sha256_file(executable), _sha256_file(probe)
+            output, log = root / "report.json", root / "run.log"
+            mac = {"identities": {"arm64": "1" * 64, "x86_64": "2" * 64}, "probe_sha256": probe_hash}
+            report = valid_current_report()
+            report["machine"].update({"os": "macOS", "architecture": "arm64"})
+            report.update({"template_release": True, "solver_identity_kind": "macos-reference-bundle-v1",
+                           "solver_sha256": "1" * 64, "probe_sha256": probe_hash})
+            marker = "NATIVE_QUALIFICATION mode=session verdict=pass\n"
+
+            def run_case(candidate, verify_results=None, backend="gdscript_reference"):
+                class Process:
+                    returncode = 0
+                    def __init__(self, command, **kwargs):
+                        output.write_text(json.dumps(candidate), encoding="utf-8")
+                        kwargs["stdout"].write(marker)
+                    def wait(self, timeout):
+                        return 0
+                results = verify_results or [mac, mac]
+                with patch("subprocess.Popen", Process), \
+                        patch.object(MAC_RECEIPT, "verify_for_launch", side_effect=results):
+                    return _run_probe(godot=executable, app_dir=root, probe=probe, output_json=output,
+                                      log_path=log, aircraft_id=report["aircraft_id"], case_id="trim", observer=True,
+                                      warmup_ticks=4, sample_ticks=5, timeout=5, physics_backend=backend,
+                                      native_source_sha256="c" * 64, release_executable=True,
+                                      executable_sha256=exe_hash, probe_sha256=probe_hash, mac_identity=mac)
+
+            good = run_case(report)
+            self.assertTrue(good["accepted"], good["failures"])
+            for changes in ({"solver_sha256": "2" * 64}, {"solver_identity_kind": "packaged-executable-v1"},
+                            {"probe_sha256": "f" * 64}, {"machine": dict(report["machine"], architecture="riscv64")},
+                            {"machine": dict(report["machine"], os="Linux")}):
+                with self.subTest(changes=changes):
+                    self.assertFalse(run_case(dict(report, **changes))["accepted"])
+            self.assertFalse(run_case(report, [mac, dict(mac, probe_sha256="f" * 64)])["accepted"])
+            self.assertFalse(run_case(report, [ValueError("receipt changed")])["accepted"])
+            self.assertFalse(run_case(report, backend="native")["accepted"])
+
     def test_release_probe_requires_exact_host_executable_and_embedded_probe(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

@@ -18,6 +18,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "godot"))
 import debugctl  # noqa: E402
 
 
@@ -142,12 +143,13 @@ class DebugctlTests(unittest.TestCase):
         self.assertEqual(kwargs["cwd"], debugctl.REPO)
         self.assertTrue(kwargs["start_new_session"])
         env = kwargs["env"]
+        resolved_out = out.resolve()  # macOS maps /var to /private/var.
         self.assertEqual((env["OPENRC_DEBUG_BRIDGE"], env["OPENRC_DEBUG_TOKEN"]), ("43210", "session-secret"))
-        self.assertEqual(env["OPENRC_DEBUG_LOG"], str(out / "log.jsonl"))
-        self.assertEqual(env["OPENRC_DEBUG_OUT"], str(out))
-        self.assertEqual(env["APPDATA"], str(out / "profile"))
-        self.assertEqual(env["XDG_DATA_HOME"], str(out / "profile"))
-        ready.assert_called_once_with(180.0, process, 43210, out / "engine.log")
+        self.assertEqual(env["OPENRC_DEBUG_LOG"], str(resolved_out / "log.jsonl"))
+        self.assertEqual(env["OPENRC_DEBUG_OUT"], str(resolved_out))
+        self.assertEqual(env["APPDATA"], str(resolved_out / "profile"))
+        self.assertEqual(env["XDG_DATA_HOME"], str(resolved_out / "profile"))
+        ready.assert_called_once_with(180.0, process, 43210, resolved_out / "engine.log")
         self.assertEqual(json.loads(output)["pid"], 12346)
         self.assertEqual(json.loads((out / "launch.json").read_text())["command"], command)
         self.assertEqual(debugctl.session_for(43210)["token"], "session-secret")
@@ -176,6 +178,47 @@ class DebugctlTests(unittest.TestCase):
                                                              "--audio-driver", "Dummy", "--import"])
                 else:
                     run.assert_not_called()
+
+    def test_rendered_aqua_launch_does_not_require_xvfb_or_display_environment(self) -> None:
+        os.environ["OPENRC_GODOT"] = "source-godot"
+        os.environ.pop("DISPLAY", None)
+        os.environ.pop("WAYLAND_DISPLAY", None)
+        out = Path(self.tmp.name) / "aqua-run"
+        process = SimpleNamespace(pid=12345)
+        with patch.object(debugctl.sys, "platform", "darwin"), \
+                patch.object(debugctl, "reserve_port", return_value=43210), \
+                patch.object(debugctl.shutil, "which", side_effect=AssertionError("xvfb probed")), \
+                patch.object(debugctl.subprocess, "Popen", return_value=process) as popen, \
+                patch.object(debugctl, "wait_ready", return_value={"result": {"pid": 12346}}):
+            status, _, err = self.run_cli("launch", "--out", str(out), "--resolution", "1920x1080")
+        self.assertEqual((status, err), (0, ""))
+        self.assertEqual(popen.call_args.args[0], ["source-godot", "--path", str(debugctl.REPO / "app"),
+                                                   "--resolution", "1920x1080"])
+
+    def test_aqua_rss_uses_resource_sampler(self) -> None:
+        report = {"samples": [{"rss_bytes": 10485760, "field_status": {"rss_bytes": "ok"}}]}
+        with patch.object(debugctl.sys, "platform", "darwin"), \
+                patch("resource_samples.load_backend", return_value=object()) as backend, \
+                patch("resource_samples.ResourceSampler") as sampler:
+            sampler.return_value.finish.return_value = report
+            self.assertEqual(debugctl.rss_mib(12345), 10.0)
+        backend.assert_called_once()
+        sampler.assert_called_once()
+
+    def test_rendered_linux_without_display_keeps_xvfb_path(self) -> None:
+        os.environ["OPENRC_GODOT"] = "source-godot"
+        os.environ.pop("DISPLAY", None)
+        os.environ.pop("WAYLAND_DISPLAY", None)
+        out = Path(self.tmp.name) / "xvfb-run"
+        with patch.object(debugctl.sys, "platform", "linux"), \
+                patch.object(debugctl, "reserve_port", return_value=43210), \
+                patch.object(debugctl.shutil, "which", return_value="/usr/bin/xvfb-run"), \
+                patch.object(debugctl.subprocess, "Popen", return_value=SimpleNamespace(pid=12345)) as popen, \
+                patch.object(debugctl, "wait_ready", return_value={"result": {"pid": 12346}}):
+            status, _, err = self.run_cli("launch", "--out", str(out))
+        self.assertEqual((status, err), (0, ""))
+        self.assertEqual(popen.call_args.args[0][:4],
+                         ["/usr/bin/xvfb-run", "-a", "-s", "-screen 0 1920x1080x24"])
 
     def test_exported_launch_rejects_invalid_options_before_claiming_port(self) -> None:
         exe = Path(self.tmp.name) / "packaged.exe"

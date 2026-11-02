@@ -96,3 +96,155 @@ static func _read_object(path: String) -> Dictionary:
 
 static func _refuse(reason: String) -> Dictionary:
 	return {ok = false, reason = reason, manifest = {}, executable_sha256 = ""}
+
+
+## A separate, reference-only Mac identity. The external receipt is made after
+## signing, and covers every regular file inside the .app, including its PCK and
+## any sidecars. It establishes consistency, not signature or publisher trust.
+const MAC_RECEIPT_FORMAT := "openrc-macos-reference-bundle-v1"
+const MAC_IDENTITY_KIND := "macos-reference-bundle-v1"
+const MAC_RECEIPT_SUFFIX := ".openrc-reference-receipt"
+const MAC_MAX_RECEIPT := 4 * 1024 * 1024
+const MAC_MAX_FILES := 10000
+
+
+static func mac_reference_identity(executable: String, architecture: String, arguments := PackedStringArray()) -> Dictionary:
+	for arg: String in arguments:
+		var option := arg.split("=", true, 1)[0]
+		if option in ["--main-pack", "--path", "--script", "-s", "--editor", "-e", "--project-manager", "--remote-fs"]:
+			return _refuse("Mac bundle identity refuses resource or script overrides")
+	var macos := executable.get_base_dir()
+	var contents := macos.get_base_dir()
+	var bundle := contents.get_base_dir()
+	if macos.get_file() != "MacOS" or contents.get_file() != "Contents" or not bundle.get_file().ends_with(".app"):
+		return _refuse("executable is not in a Mac app bundle")
+	var settings_override := str(ProjectSettings.get_setting("application/config/project_settings_override", ""))
+	if not settings_override.is_empty() and not settings_override.begins_with("res://"):
+		return _refuse("external project settings override is not bound to the Mac bundle")
+	var parent := DirAccess.open(bundle.get_base_dir())
+	var receipt_path := bundle + MAC_RECEIPT_SUFFIX
+	if parent == null or parent.is_link(bundle.get_file()) or parent.is_link(receipt_path.get_file()):
+		return _refuse("Mac bundle or receipt is redirected")
+	var file := FileAccess.open(receipt_path, FileAccess.READ)
+	if file == null or file.get_length() <= 0 or file.get_length() > MAC_MAX_RECEIPT:
+		return _refuse("Mac bundle receipt is missing or oversized")
+	var raw := file.get_buffer(file.get_length())
+	var text := raw.get_string_from_utf8()
+	if text.to_utf8_buffer() != raw or not text.ends_with("\n") or text.contains("\r"):
+		return _refuse("Mac bundle receipt is malformed")
+	var lines := text.trim_suffix("\n").split("\n")
+	var fields := ["bundle", "architectures", "executable", "pack", "source_commit", "source_tree",
+		"source_worktree_sha256", "source_receipt_sha256", "probe_sha256"]
+	if lines.size() < 11 or lines[0] != MAC_RECEIPT_FORMAT:
+		return _refuse("Mac bundle receipt version or fields are invalid")
+	var values := {}
+	for index in fields.size():
+		var row := lines[index + 1].split("\t")
+		if row.size() != 2 or row[0] != fields[index] or not _mac_text(row[1]):
+			return _refuse("Mac bundle receipt field is invalid")
+		values[fields[index]] = row[1]
+	var architectures: PackedStringArray = values.architectures.split(",")
+	if architectures not in [PackedStringArray(["arm64"]), PackedStringArray(["x86_64"]), PackedStringArray(["arm64", "x86_64"])] \
+			or architecture not in architectures:
+		return _refuse("Mac bundle receipt does not admit this architecture")
+	if values.bundle != bundle.get_file() or values.executable != "Contents/MacOS/" + executable.get_file():
+		return _refuse("Mac bundle receipt identifies a different app or executable")
+	for key: String in ["source_commit", "source_tree"]:
+		var value: String = values[key]
+		if value.length() not in [40, 64] or not value.is_valid_hex_number() or value != value.to_lower():
+			return _refuse("Mac bundle source identity is invalid")
+	for key: String in ["source_worktree_sha256", "source_receipt_sha256", "probe_sha256"]:
+		if not _sha256(values[key]) or values[key] != values[key].to_lower():
+			return _refuse("Mac bundle receipt digest is invalid")
+	var expected := {}
+	var previous := ""
+	for index in range(10, lines.size()):
+		var row := lines[index].split("\t")
+		if row.size() != 3 or row[0] != "file" or not _sha256(row[1]) or row[1] != row[1].to_lower() \
+				or not _mac_relative(row[2]) or (not previous.is_empty() and row[2] <= previous):
+			return _refuse("Mac bundle file inventory is malformed")
+		previous = row[2]
+		expected[row[2]] = row[1]
+		if expected.size() > MAC_MAX_FILES:
+			return _refuse("Mac bundle inventory is too large")
+	var packs: Array[String] = []
+	var executables: Array[String] = []
+	for path: String in expected:
+		if path.to_lower().ends_with(".pck"): packs.append(path)
+		if path.begins_with("Contents/MacOS/") and path.count("/") == 2: executables.append(path)
+	var pack_names := ["Contents/Resources/" + executable.get_file().get_basename() + ".pck",
+		"Contents/Resources/" + executable.get_file() + ".pck"]
+	if executables != [values.executable] or packs != [values.pack] or values.pack not in pack_names:
+		return _refuse("Mac bundle must contain the identified executable and one Resources PCK")
+	var actual := {}
+	if not _mac_inventory(bundle, "", actual, 0, {count = 0}) or actual != expected:
+		return _refuse("Mac bundle contents differ from the receipt")
+	if not _mac_pack_header(bundle.path_join(values.pack)):
+		return _refuse("Mac bundle PCK is invalid, encrypted or sparse")
+	var binary := FileAccess.open(executable, FileAccess.READ)
+	if binary == null or binary.get_length() < 32:
+		return _refuse("Mac executable is unreadable")
+	binary.seek(binary.get_length() - 4)
+	if binary.get_buffer(4) == "GDPC".to_ascii_buffer():
+		return _refuse("Mac executable has an embedded PCK marker")
+	var receipt_hash := FileAccess.get_sha256(receipt_path)
+	if not _sha256(receipt_hash) or receipt_hash != text.sha256_text():
+		return _refuse("Mac bundle receipt could not be hashed")
+	return {ok = true, reason = "", kind = MAC_IDENTITY_KIND,
+		sha256 = (receipt_hash + "\n" + architecture).sha256_text(), receipt_sha256 = receipt_hash,
+		executable_sha256 = expected[values.executable], pack_sha256 = expected[values.pack],
+		probe_sha256 = values.probe_sha256, architecture = architecture}
+
+
+static func _mac_text(value: String) -> bool:
+	return not value.is_empty() and not value.contains("\t") and not value.contains("\r") \
+		and not value.contains("\n") and not value.contains("\\")
+
+
+static func _mac_pack_header(path: String) -> bool:
+	var pack := FileAccess.open(path, FileAccess.READ)
+	if pack == null or pack.get_length() < 40 or pack.get_buffer(4) != "GDPC".to_ascii_buffer(): return false
+	var version := pack.get_32()
+	var major := pack.get_32()
+	var minor := pack.get_32()
+	pack.get_32() # patch version
+	var flags := pack.get_32()
+	pack.get_64() # file base
+	var directory := pack.get_64() if version in [3, 4] else 96
+	if version not in [2, 3, 4] or major != 4 or minor > 8 or (flags & ~2) != 0 \
+			or directory < 40 or directory > pack.get_length() - 4:
+		return false
+	pack.seek(directory)
+	var count := pack.get_32()
+	return count > 0 and count <= 200000
+
+
+static func _mac_relative(value: String) -> bool:
+	if not _mac_text(value) or value.begins_with("/"): return false
+	for part: String in value.split("/"):
+		if part in ["", ".", ".."]: return false
+	return true
+
+
+static func _mac_inventory(bundle: String, relative: String, files: Dictionary, depth: int, entries: Dictionary) -> bool:
+	if depth > 32: return false
+	var directory := DirAccess.open(bundle.path_join(relative))
+	if directory == null: return false
+	directory.include_hidden = true
+	if directory.list_dir_begin() != OK: return false
+	var name := directory.get_next()
+	while not name.is_empty():
+		entries["count"] += 1
+		if entries["count"] > MAC_MAX_FILES: return false
+		var path := name if relative.is_empty() else relative.path_join(name)
+		if not _mac_relative(path) or directory.is_link(name): return false
+		if directory.current_is_dir():
+			if not _mac_inventory(bundle, path, files, depth + 1, entries): return false
+		else:
+			var digest := FileAccess.get_sha256(bundle.path_join(path))
+			if not _sha256(digest): return false
+			files[path] = digest
+			if files.size() > MAC_MAX_FILES: return false
+		name = directory.get_next()
+	directory.list_dir_end()
+	return true

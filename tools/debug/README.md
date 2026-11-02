@@ -21,7 +21,7 @@ finds "FLY"); `fly` without `aircraft=` flies Home's selection, the Ugly Stik in
 
 | Task | Commands |
 | --- | --- |
-| Start / stop the app | `$D launch --headless` (no pictures, light) or `$D launch` (1920×1080 under Xvfb); add `--import` after pulling new assets; `$D status`; `$D stop` (prints `"crash": null, "leaked_objects": 0` on a clean exit) |
+| Start / stop the app | `$D launch --headless` (no pictures, light) or `$D launch` (1920×1080 on the native display, with Xvfb only on displayless Linux); add `--import` after pulling new assets; `$D status`; `$D stop` (prints `"crash": null, "leaked_objects": 0` on a clean exit) |
 | See what is on screen and click it | `$D ui`, `$D press text="Fly"`, `$D select text=Language item="Español"`, `$D close` |
 | Open a menu or setting directly | `$D open screen=settings` (no screen: list them) |
 | Fly, restart, go back | `$D fly aircraft=<id> start=airborne`, `$D restart`, `$D home` |
@@ -45,7 +45,7 @@ From the repository root, Bash:
 
 ```sh
 D="python3 tools/debug/debugctl.py"
-$D launch                       # Home at 1920x1080 under Xvfb (or your display), isolated profile; prints the run folder
+$D launch                       # Home at 1920x1080 on the display (Xvfb on displayless Linux); prints the run folder
 $D ui                           # controls of the top dialog/menu; * marks keyboard focus
 $D fly aircraft=p51d-mustang-120 start=airborne
 $D state                        # route, screens, focus; flight tick, pause/holds/crash, pose, commands, log counts
@@ -69,9 +69,10 @@ Launch options:
   - `engine.log` (stdout and stderr);
   - `log.jsonl` (one flushed record per line, so `tail -f` works);
   - `shots/`, `launch.json` and `profile/`.
-- `profile/` holds `user://` (preferences, flight logs, caches), so a session never edits the player's settings.
-  `--profile DIR` reuses a profile between launches. `--real-profile` uses the real one: Home's Fly then saves the
-  selection like a person would.
+- On Linux and Windows, `profile/` holds `user://` (preferences, flight logs, caches), so a session does not edit
+  the player's settings. `--profile DIR` reuses a profile between launches. `--real-profile` uses the real one:
+  Home's Fly then saves the selection like a person would. On macOS, Godot's `~/Library` user directory is not
+  redirected by these environment variables; use an isolated project copy for Mac smoke until that path is verified.
 - **Several agents on one machine.**
   - Each launch claims its own port atomically, in `tmp/debug-bridge/sessions/<port>.json` (0600, with its token),
     and skips ports held by a live session.

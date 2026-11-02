@@ -6,15 +6,100 @@ The [Apple Silicon plan](../../../plans/apple-silicon-performance.md) owns statu
 and remaining acceptance. The [preceding research](../DT-MAC-00-R2/README.md) owns
 the dated primary references and pinned-engine audit.
 
+## DT-MAC-02c/d/h implementation (2026-11-02)
+
+The debug bridge now constructs native Aqua rendered launches without Xvfb and
+reads Mac RSS through the existing optional, PID-checked resource sampler. The
+sampler probes unsupported process I/O once, retains null/status, and reports
+required RSS/CPU/system-memory coverage separately from the v1 legacy receipt.
+The default 1 Hz cap is 2,100 samples. DT-MAC-02d uses the shared v3 validator
+to keep completed report/sidecar pairs together in incidents, preserve an abrupt
+crash sidecar as explicitly unverified, and require an explicit scope for large
+Perfetto timelines. Old v2 reports remain accepted. DT-MAC-02h adds a versioned
+Mac reference-release bundle receipt covering executable, PCK and bundle contents,
+independent of Linux NK-3 admission. Its GDScript and Python identities agree on
+a PCK fixture. Final signed-package integration and exact package replay are open.
+
+Focused Linux fixtures passed: debug bridge 39, sampler 17 (one optional
+real-child test skipped without psutil), runner 9, incident 26, Perfetto 25,
+release receipt 8, flight-log 32 and session baseline 22. Mac fixtures passed:
+debug bridge 39 (one skip), sampler 17 including real child, runner 9, incident
+26, Perfetto 25, release receipt 8, flight-log 32, session baseline 22;
+GDScript flight-log 3,275 and replay integrity 153 assertions passed. These
+checks establish source contracts, not final-release acceptance.
+
+## First M1 native screening (2026-11-02)
+
+The isolated test copy ran on a MacBookAir10,1 (Apple M1, 8 GB), macOS 27.0.1
+(26A434), ARM64, official Godot 4.8.beta1.official.4d10419ca. Its built-in
+Retina panel is 2560×1600 physical pixels and currently 1440×900 logical pixels.
+The user authorized this display for M1 testing. Neither the system inventory
+nor the Godot viewport report proves actual drawable pixels. The global 1080p
+product target remains a separate output case. The scratch copy used a distinct
+project name and linked the existing assets; key aircraft asset hashes matched
+the Linux source. Raw reports and frame sidecars remain in ignored local `tmp/`.
+
+Native preflight completed without issues. A fresh import completed in 214 s,
+with eight ambient OBJ material warnings and no engine errors. The rendered Aqua
+debug bridge reached Home and stopped cleanly; headless bridge smoke also passed.
+A 10 s reference flight completed 2,401 trace rows with truthful GDScript
+fallback, 12 resource samples, complete required RSS/CPU/system-memory coverage,
+peak RSS 862.9 MiB and minimum system available memory 1,571.4 MiB. Optional
+process I/O counters were unsupported on Darwin, explicitly null. This is a
+short availability check, not a sustained memory or timing result.
+
+One battery-powered Compatibility screen at requested 1920×1080, medium detail,
+60 FPS cap and native reconstruction produced a complete v3 pair: 1,206 sample
+frames over 30.017 s, p50 24.319 ms, p95 26.855 ms, p99 29.537 ms and maximum
+253.679 ms; sim/wall ratio was 0.9818. Required OS resource coverage was complete.
+The requested Godot window/viewport was 1920×1080, but the Mac's logical display
+was 1440×900 and actual drawable pixels were unverified; it is not 1080p output
+qualification. The short run misses the proposed p95 ≤18 ms and sim/wall
+0.99–1.01 budgets. Compatibility GPU timing was unavailable. A Mobile/Metal
+viability run timed out after 100 s before producing a frame stream and capped
+its resource samples; it supplies no renderer comparison or performance claim.
+The Mac was subsequently connected to AC for separate built-in-display screens.
+
+On AC, fullscreen at the current 1440×900 logical display mode made Godot
+report a **2880×1800** native reconstruction target. That 30.009 s capture
+completed 615 frames with p50 48.393 ms, p95 54.149 ms and p99 57.466 ms.
+It had no companion resource capture, so it is a separate screen only. A second
+AC windowed run requested **2560×1600**, matching the panel's physical pixel
+count, and Godot reported a 2560×1600 viewport and reconstruction target.
+Its 30.021 s stream completed 610 frames with p50 40.132 ms, p95 62.695 ms,
+p99 249.984 ms, maximum 601.782 ms and derived sim/wall ratio 0.8473.
+The existing frame diagnoser found all 610 intervals over its 16.667 ms
+screen, including three intervals above 470 ms; GPU timing was unavailable.
+The checked runner passed with 52 resource samples, complete required-channel
+coverage, peak RSS 956.3 MiB and minimum available system RAM 1,535.9 MiB.
+The resource sampler ran from before the frame interval until after it; its
+last 1 Hz point preceded the final frame by about 0.4 s. All 665 captured
+source hashes matched this working tree except the deliberately renamed
+scratch `project.godot`. The v3 validator found no stream errors, and the
+native incident bundle retained both report and sidecar as a validated pair.
+This one short AC run misses the proposed pacing and sim/wall budgets; it
+does not establish a steady-state rate, drawable-pixel identity or GPU cause.
+The Mac-specific 1080p output and the three 30-minute AC soaks remain open.
+
+An isolated headless debug-bridge flight then recorded a complete 5,738-tick
+Ugly Stik `.orfl` and stopped cleanly with no leaked objects. The native Mac
+editor exactly replayed every recorded numeric sample: `complete=true`,
+`mode=exact`, `solver_changed=false`, identical `source-tree-v1` hashes and
+GDScript reference stage identities. The retained `.orfl`, CSV and report are
+in ignored `tmp/apple-m1-access/replay/`; the source log SHA-256 is
+`6a1735ec5e27b315bc602e306a2661874e780302a8929b89fd12394937beba71`.
+This source-build replay has no maneuver markers and is not an exported-package
+replay, physical handling validation or a native-solver parity result.
+
 ## Implemented preparation
 
 | Delivery | Implementation | Evidence boundary |
 | --- | --- | --- |
-| DT-MAC-02a: native editor | `app/get-godot.sh` downloads the exact official 4.8-beta1 ARM64 archive, verifies SHA-512, preserves the app bundle, checks Mach-O architecture/version and verifies a complete cached-file manifest | Official archive downloaded and inspected on Windows; mocked Darwin/cache/failure paths run on Windows/WSL. Actual Mac launch, signature/trust behavior and import remain pending |
-| DT-MAC-02a: templates/preflight | Darwin `shasum` support, Python 3.11 prerequisite/override for the existing beta-template correction, bounded serial-filtered host/GPU/display/tool/engine inventory with unique JSON receipts | Fixture validation only. Forced ARM64 `--version` status is distinct from normal app execution. System display dimensions are not drawable pixels. Linux export/NK gates remain intact |
-| DT-MAC-02b: long capture | Opt-in `openrc-frametimes v3` chunk stream, bounded memory/file/duration/frame counts, sequence/hash/completion/failure receipts, interruption handling, synchronous write timing; v2 short reports retained | Synthetic 30-minute 60/120 Hz streams and real short Windows headless captures. No 30-minute native flight, observer-cost acceptance, power or thermal evidence |
-| DT-MAC-02b: readers/identity | Existing native summary and frame diagnosis validate streams. Diagnostics include OS/architecture, method/driver, VSync/FPS cap, explicit timing/viewport scope and unknown command backend | Missing presentation/GPU observations stay unverified. Existing v2-only incident/Perfetto routes are not v3-qualified |
-| DT-MAC-05a: isolated experiments | Preparation helper copies/hashes app sources, assigns a UUID user-data identity, isolates import cache, disables startup multi-bounce and links sibling assets. Launcher validates method/driver pairs and records requested/effective identity | Windows fixtures and headless identity checks. Shared linked assets must remain frozen. Compatibility/Mobile/Forward+ native parity, pixel dimensions and performance untested |
+| DT-MAC-02a: native editor | `app/get-godot.sh` downloads the exact official 4.8-beta1 ARM64 archive, verifies SHA-512, preserves the app bundle, checks Mach-O architecture/version and verifies a complete cached-file manifest | Official editor installed and native ARM64 import/launch screened on M1; final exported package, signature/trust and template identity remain open |
+| DT-MAC-02a: templates/preflight | Darwin `shasum` support, Python 3.11 prerequisite/override for the existing beta-template correction, bounded serial-filtered host/GPU/display/tool/engine inventory with unique JSON receipts | Native M1 preflight completed. Host Python 3.9 lacks the 3.11 prerequisite for the template getter; export remains open. System display dimensions are not drawable pixels. Linux export/NK gates remain intact |
+| DT-MAC-02b: long capture | Opt-in `openrc-frametimes v3` chunk stream, bounded memory/file/duration/frame counts, sequence/hash/completion/failure receipts, interruption handling, synchronous write timing; v2 short reports retained | Synthetic 30-minute 60/120 Hz streams and short native M1 rendered captures. No 30-minute native flight, observer-cost acceptance, power or thermal evidence |
+| DT-MAC-02b: readers/identity | Existing native summary and frame diagnosis validate streams. Diagnostics include OS/architecture, method/driver, VSync/FPS cap, explicit timing/viewport scope and unknown command backend | Missing presentation/GPU observations stay unverified; DT-MAC-02d now accepts validated v3 streams in incident/Perfetto routes |
+| DT-MAC-05a: isolated experiments | Preparation helper copies/hashes app sources, assigns a UUID user-data identity, isolates import cache, disables startup multi-bounce and links sibling assets. Launcher validates method/driver pairs and records requested/effective identity | Windows fixtures and headless identity checks. M1 Compatibility viewport sizes were observed; drawable identity and renderer parity remain open. Mobile/Metal timed out before a usable capture; Forward+ untested |
 | DT-MAC-07a–c: guarded MetalFX | Five opt-in Spatial/Temporal choices, runtime method/driver/RD/enum/feature/scale checks, provider-specific AA/sharpening, localized UI, explicit unknown execution and Native recovery | Injected capability fixtures do not execute MetalFX. Temporal requires Forward+ and falls back on history discontinuity without verified reset acknowledgement. Native motion, reset, resize, leaks and actual scaler-pass evidence remain open |
 
 The shipped renderer default, engine pin and simulation physics are unchanged by
@@ -38,12 +123,13 @@ evidence, never successful sustained runs. `--scripted` is a rendering fixture;
 headless captures do not establish active native graphics performance. The direct
 technical route does not exercise Home preference loading or packaged launch.
 
-Start with Compatibility at 1920×1080 on the actual M1 Air/8 GB. Record OS, power,
-display, engine and source identities; run exact local replay and normal
+Start with Compatibility on the M1's actual built-in display. Record OS, power,
+logical/physical/drawable display dimensions, engine and source identities; run exact local replay and normal
 Home/Fly/Workshop checks. Then compare prepared Mobile/Metal and Forward+/Metal
 copies with fixed effects/workload. Only evaluate MetalFX after the native
-bottleneck and moving-aircraft readability checks justify it. Higher resolutions
-follow 1080p; 720p remains the last compatibility target.
+bottleneck and moving-aircraft readability checks justify it. Test actual 1080p
+output separately when a suitable display is available; 720p remains the last
+compatibility target.
 
 ## Windows verification
 

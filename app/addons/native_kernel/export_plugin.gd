@@ -13,6 +13,7 @@ const SOURCES := {
 	"test_heli_restore_radio.gd": "tests/test_heli_restore_radio.gd",
 }
 var _manifest: Dictionary = {}
+var _mac_probe_sha256 := ""
 
 
 func _get_name() -> String:
@@ -21,6 +22,16 @@ func _get_name() -> String:
 
 func _export_begin(features: PackedStringArray, is_debug: bool, _path: String, _flags: int) -> void:
 	_manifest = {}
+	_mac_probe_sha256 = ""
+	if features.has("macos") and not is_debug:
+		# The Mac reference benchmark needs only this fixed probe, not an NK-3 receipt.
+		var probe := ProjectSettings.globalize_path("res://").path_join(SOURCES["session_probe.gd"])
+		_mac_probe_sha256 = FileAccess.get_sha256(probe)
+		if _mac_probe_sha256.length() != 64:
+			push_error("Cannot read the Mac reference session probe")
+			return
+		add_file("res://native/kernel/qualification/session_probe.gd", FileAccess.get_file_as_bytes(probe), false)
+		return
 	if not features.has("linux") or not features.has("x86_64") or is_debug:
 		return
 	var parser := JSON.new()
@@ -67,6 +78,9 @@ func _inputs_match() -> bool:
 
 
 func _export_end() -> void:
+	if not _mac_probe_sha256.is_empty() and FileAccess.get_sha256(ProjectSettings.globalize_path("res://").path_join(SOURCES["session_probe.gd"])) != _mac_probe_sha256:
+		push_error("Mac reference session probe changed during export")
+	_mac_probe_sha256 = ""
 	if not _manifest.is_empty() and not _inputs_match():
 		_fail("NK-3 source or binary changed during export")
 	_manifest = {}

@@ -48,9 +48,11 @@ _PROCESS_FIELDS = (
     "cpu_percent", "num_threads", "io_read_bytes", "io_write_bytes",
     "io_read_count", "io_write_count",
 )
+_REQUIRED_FIELDS = ("rss_bytes", "cpu_user_seconds", "cpu_system_seconds",
+                    "virtual_memory_available_bytes")
 
 
-def validate_options(*, interval: float = 1.0, max_samples: int = 600,
+def validate_options(*, interval: float = 1.0, max_samples: int = 2100,
                      disk_paths=(), include_threads: bool = False) -> tuple[str, ...]:
     """Validate monitor options without importing psutil or inspecting a PID.
 
@@ -113,7 +115,7 @@ class ResourceSampler:
     for tests. Sampling never follows children or terminates the monitored PID.
     """
 
-    def __init__(self, pid, *, interval: float = 1.0, max_samples: int = 600,
+    def __init__(self, pid, *, interval: float = 1.0, max_samples: int = 2100,
                  disk_paths=(), include_threads: bool = False, backend=None):
         paths = validate_options(interval=interval, max_samples=max_samples,
                                  disk_paths=disk_paths, include_threads=include_threads)
@@ -141,6 +143,7 @@ class ResourceSampler:
         self._error_count = 0
         self._previous_counters = {}
         self._counter_resets = set()
+        self._io_unavailable = False
 
         try:
             self._process = self.backend.Process(pid)
@@ -249,7 +252,8 @@ class ResourceSampler:
         statuses[field] = "ok"
 
     def _object_fields(self, sample: dict, statuses: dict, source,
-                       specs: tuple[tuple[str, str, str, bool], ...], *, label: str) -> None:
+                       specs: tuple[tuple[str, str, str, bool], ...], *, label: str,
+                       stable_optional: bool = False) -> None:
         try:
             obj = source()
         except Exception as error:
@@ -257,7 +261,8 @@ class ResourceSampler:
             for field, _attribute, _kind, _counter in specs:
                 sample[field] = None
                 statuses[field] = status
-            self._record_error(status, label, error)
+            if not (stable_optional and status == "unsupported"):
+                self._record_error(status, label, error)
             if status == "process_unavailable":
                 sample["_process_exited"] = True
             return
@@ -281,11 +286,24 @@ class ResourceSampler:
             else:
                 sample["num_threads"] = None
                 statuses["num_threads"] = "disabled"
-            self._object_fields(sample, statuses, lambda: process.io_counters(),
-                                (("io_read_bytes", "read_bytes", "integer", True),
-                                 ("io_write_bytes", "write_bytes", "integer", True),
-                                 ("io_read_count", "read_count", "integer", True),
-                                 ("io_write_count", "write_count", "integer", True)), label="io_counters")
+            io_specs = (("io_read_bytes", "read_bytes", "integer", True),
+                        ("io_write_bytes", "write_bytes", "integer", True),
+                        ("io_read_count", "read_count", "integer", True),
+                        ("io_write_count", "write_count", "integer", True))
+            if self._io_unavailable:
+                for field, _attribute, _kind, _counter in io_specs:
+                    sample[field] = None
+                    statuses[field] = "unsupported"
+            else:
+                def read_io():
+                    try:
+                        return process.io_counters()
+                    except Exception as error:
+                        if self._failure_status(error) == "unsupported":
+                            self._io_unavailable = True
+                        raise
+                self._object_fields(sample, statuses, read_io, io_specs,
+                                    label="io_counters", stable_optional=True)
 
         try:
             oneshot = getattr(process, "oneshot", None)
@@ -557,6 +575,13 @@ class ResourceSampler:
             coverage = "partial"
         else:
             coverage = "sampled"
+        required_complete = bool(self._samples) and not self._capped and self._stop_reason == "caller_finished"
+        if {"cpu_user_seconds", "cpu_system_seconds"} & self._counter_resets:
+            required_complete = False
+        required_counts = {field: sum(sample.get("field_status", {}).get(field) == "ok"
+                                       for sample in self._samples) for field in _REQUIRED_FIELDS}
+        if any(count != len(self._samples) for count in required_counts.values()):
+            required_complete = False
         try:
             psutil_version = getattr(self.backend, "__version__", None)
         except Exception:
@@ -585,6 +610,9 @@ class ResourceSampler:
             "include_threads": self.include_threads,
             "disk_paths": list(self.disk_paths),
             "coverage": coverage,
+            "required_coverage": "complete" if required_complete else (
+                "capped" if self._capped else "partial" if self._samples else "unavailable"),
+            "required_field_counts": required_counts,
             "measurement_status": "unavailable" if not self._samples else ("partial" if self._error_count else "ok"),
             "stop_reason": self._stop_reason,
             "capped": self._capped,

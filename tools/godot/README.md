@@ -290,7 +290,7 @@ options fail before launch.
 | --- | --- |
 | `--resources` | Off. Monitor only the directly launched PID; child processes are excluded. |
 | `--resource-interval SECONDS` | 1; finite range 0.1–60. Shorter intervals cost more and still miss brief peaks. |
-| `--resource-max-samples COUNT` | 600; range 1–10,000. Reaching it stops sampling, not the game. |
+| `--resource-max-samples COUNT` | 2,100; range 1–10,000. At 1 Hz this allows launch, 30 s warmup, 1,800 s flight and stop margin. Reaching it stops sampling, not the game; verify actual timestamp coverage against the frame stream. |
 | `--resource-disk-path DIRECTORY` | None. Repeat up to eight times for volume free/total capacity; directories must exist. |
 | `--resource-threads` | Off. Include thread counts; Windows process enumeration makes this substantially more expensive. |
 
@@ -302,6 +302,14 @@ and `no_samples` require reviewing the retained coverage/errors. Telemetry failu
 does not change the engine verdict; failed resource publication is explicitly
 reported as `unavailable`. `summarize.py` validates engine/log verdicts only and
 does not validate this optional resource attachment.
+
+`required_coverage` separately reports whether every retained sample includes
+process RSS, user/system CPU time and system available memory, with a verified PID
+and no cap or sampler stop. Optional process I/O may be `null`/`unsupported` on
+macOS. The v1 `coverage` and `measurement_status` fields keep their legacy meaning;
+incident and Perfetto reports preserve both. A `complete` required-channel result
+does not establish a full flight: compare first/last sample timestamps with the
+actual frame capture interval, including launch, warmup and stop margin.
 
 Interpret the counters separately:
 
@@ -393,15 +401,35 @@ beyond the allowance rejects the merge. `--max-clock-drift-ms` defaults to 50
 to attribute individual short frames to OS samples. Older reports can be viewed
 one at a time with just `--frames` or `--resources`.
 
-The exporter validates source structure and emits explicit partial status for
-retained incomplete prefixes. Unknown measurements are never converted to zero.
-It exports a fixed set of known counters; unsupported metric names are listed in
-trace metadata and omitted from tracks.
-The combined input budget defaults to 64 MiB (`--max-input-bytes`, maximum
-256 MiB); the event budget defaults to 500,000 (`--max-events`, maximum 1,000,000).
-It exits 0 for a complete export, 1 for partial evidence or invalid sources, and
-2 for configuration, budget or output errors. Inspect the message: invalid
-sources produce no trace. All output paths must be new.
+The exporter validates v2 reports and complete v3 report/sidecar pairs. A v2
+retained prefix is marked partial; incomplete or damaged v3 streams are rejected
+by the same strict reader used by the long-capture reducers. Unknown values are
+never converted to zero; unknown metric names are listed in trace metadata.
+The combined input budget defaults to 320 MiB (`--max-input-bytes`, maximum
+1 GiB); each JSON document is limited to 256 MiB. The sidecar separately has
+the shared reader's 256 MiB limit, and retained numeric arrays have a 128 MiB
+limit. The event budget defaults to
+500,000 (`--max-events`, maximum 1,000,000). If a timeline would exceed that
+budget, choose a frame window and/or counters; nothing is silently sampled:
+
+```powershell
+python tools/godot/perfetto_export.py --frames tmp/long-frames.json --out tmp/window.json --start-frame 60000 --end-frame 90000 --frame-metric draw_calls --frame-metric physics_step_usec
+```
+
+Frame indexes are zero-based, start inclusive and end exclusive. Slices retain
+their original indexes and timestamps; selected counters are exact for that
+window. Trace metadata records the full source frame count, selected indexes,
+monotonic bounds, selected/omitted tracks, clock anchors and uncertainty. For v3
+it also records the report and sidecar hashes. Resource tracks retain all their
+samples and declare that scope. For combined sources, estimated timestamp
+bounds show whether resource samples bracket the full and selected frame windows;
+uncertainty applies and discrete samples do not prove coverage between them.
+Metadata marks a selected timeline as incomplete
+for the full session while recording whether its scope and source are complete.
+Requested metric names must exist in the source. The exporter exits 0 for a
+successful complete or explicitly selected scope, 1 for partial v2/resource
+evidence or invalid sources, and 2 for configuration, budget or output errors.
+Invalid sources and budget failures produce no trace. All output paths must be new.
 
 An incident ZIP contains only the checked receipt, engine log, declared resource
 attachment and explicitly selected frame/flight-log attachments. It includes a
@@ -415,15 +443,28 @@ verbatim; the tool does not upload them.
 Bundle completeness and the engine verdict are separate: successfully preserving
 a failed run does not make the run pass. Review the manifest and console summary.
 The bundle exits 0 when complete, 1 when evidence is partial, and 2 on
-configuration/output errors. Its per-file budget is 64 MiB (`--max-input-bytes`,
-maximum 256 MiB), with 256 MiB total (`--max-total-bytes`, maximum 1 GiB).
+configuration/output errors. Its per-file budget is 256 MiB (`--max-input-bytes`,
+maximum 256 MiB), with 512 MiB total (`--max-total-bytes`, maximum 1 GiB).
 Oversized attachments are omitted with a manifest issue. Stop capture producers
 before packaging so their files form a stable snapshot.
 
-These frame attachments use the v2 report format. A v3 streaming report is
-rejected by the Perfetto exporter; the incident bundler marks it invalid and does
-not include its sidecar. Use the [long-capture reducers](../../research/performance/README.md#long-continuous-captures-dt-mac-02b)
-for v3 evidence.
+A v3 `--frames` report and its declared same-directory sidecar are copied into
+`frames/` under their original sibling names. The shared reader validates their
+counts, sequence, hash, values, endpoints and completion before the bundle marks
+the pair valid. A damaged or incomplete pair is retained when readable and within
+budget, with an explicit invalid/partial status. To retain an abrupt-crash sidecar
+when no report exists, use `--frame-stream PATH.frames.jsonl`. It may accompany
+`--frames` to preserve a missing or malformed report receipt as well, but never
+replaces the declared sidecar of a valid v3 pair.
+That attachment is opaque: its frame range, validity, capture association and
+completion are unverified, regardless of its file hash. It is never accepted as
+a complete stream by the reducers or timeline exporter. See the
+[long-capture reducers](../../research/performance/README.md#long-continuous-captures-dt-mac-02b)
+for capture and soak rules. After extracting a bundle, place a copy of its
+`engine.log` next to the frame report with the report's basename and `.log`
+extension for reducers that require the matching log. Required-resource coverage is checked against its
+channel counts, sample statuses and stop reason when those fields are present;
+older declarations without counts are retained as unverified.
 
 ## Repeated scene lifecycle checks (PT1h-R6)
 

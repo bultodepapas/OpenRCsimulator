@@ -54,6 +54,14 @@ Use the same option with `export` to inspect a package recording. A different ex
 identity cannot establish exact package replay. Source-built recordings retain their existing source-tree identity
 and `--godot` workflow. This package-specific identity does not change companion or Workshop source pinning.
 
+On macOS, a final reference-only `.app` can use the separate
+`macos-reference-bundle-v1` identity. Its external receipt binds the executable,
+PCK and bundle contents after signing; [receipt creation and verification](../tools/release/README.md#mac-reference-bundle-identity-dt-mac-02h)
+must precede `replay --release-executable /path/to/OpenRC.app/Contents/MacOS/OpenRC`.
+Missing or changed bundle bytes refuse exact replay. The final distributed Mac
+ZIP and actual package replay remain unqualified; source-built M1 replay is a
+separate result.
+
 For prepared runway, airborne/half-power, hand-launch and reload routes, rejected
 reset candidates leave the old flight and recording intact.
 After physical commit, the reset notification closes the old recording before the

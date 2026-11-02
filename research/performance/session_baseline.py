@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import math
 import os
@@ -46,6 +47,11 @@ ENGINE_ERROR_RE = re.compile(r"\b(?:SCRIPT\s+)?ERROR(?:\s*:|\b)", re.IGNORECASE)
 VERSION_RE = re.compile(r"(?<![0-9])v?4\.8[.-]beta1(?=$|[.\-\s(])")
 LEGACY_VERSION_RE = re.compile(r"(?<![0-9])v?4\.7\.2(?=$|[.\-\s(])")
 AIRCRAFT_ID_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
+_MAC_SPEC = importlib.util.spec_from_file_location(
+    "openrc_macos_reference_receipt", Path(__file__).resolve().parents[2] / "tools/release/macos_reference_receipt.py")
+assert _MAC_SPEC is not None and _MAC_SPEC.loader is not None
+MAC_RECEIPT = importlib.util.module_from_spec(_MAC_SPEC)
+_MAC_SPEC.loader.exec_module(MAC_RECEIPT)
 
 
 class ProbeReportError(ValueError):
@@ -290,6 +296,11 @@ def validate_probe_report(
             errors.append("fingerprint must be a 64-digit SHA-256 hex string")
 
     if report_format == FORMAT:
+        kind = report.get("solver_identity_kind")
+        if kind is not None and kind not in ("source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1"):
+            errors.append("solver_identity_kind is unsupported")
+        if report.get("template_release") is True and kind not in ("packaged-executable-v1", "macos-reference-bundle-v1"):
+            errors.append("release report requires a supported package identity")
         for field in ("solver_sha256", "aircraft_sha256"):
             value = report.get(field)
             if complete is True and (not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value)):
@@ -651,6 +662,7 @@ def _run_probe(
     release_executable: bool = False,
     executable_sha256: str = "",
     probe_sha256: str = "",
+    mac_identity: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     command = ([str(godot), "--headless", "--audio-driver", "Dummy", "--", "--quick-flight",
                 "--native-qualification=session"] if release_executable else
@@ -668,6 +680,14 @@ def _run_probe(
     exit_code: int | None = None
     launch_error: str | None = None
     executable_before = _sha256_file(godot) if release_executable else ""
+    if mac_identity is not None:
+        try:
+            if physics_backend != "gdscript_reference" or MAC_RECEIPT.verify_for_launch(godot) != mac_identity:
+                raise ValueError("Mac release requires the unchanged reference bundle")
+        except (OSError, ValueError) as error:
+            return {"observer": "on" if observer else "off", "command": command, "exit_code": None,
+                    "timed_out": False, "engine_errors": [], "log": str(log_path), "report_file": str(output_json),
+                    "report": None, "validation_errors": [], "failures": [str(error)], "accepted": False}
     native_library = godot.parent / "native/kernel/libopenrc_native_kernel.so"
     library_before = (_sha256_file(native_library) if release_executable and physics_backend == "native"
                       and native_library.is_file() else "")
@@ -706,7 +726,17 @@ def _run_probe(
         if release_executable:
             if report.get("template_release") is not True:
                 validation_errors.append("session did not run in a release template")
-            if report.get("solver_identity_kind") != "packaged-executable-v1" \
+            if mac_identity is not None:
+                machine = report.get("machine")
+                architecture = machine.get("architecture") if isinstance(machine, dict) else None
+                if report.get("solver_identity_kind") != MAC_RECEIPT.KIND \
+                        or not isinstance(machine, dict) or machine.get("os") != "macOS" \
+                        or architecture not in mac_identity["identities"] \
+                        or report.get("solver_sha256") != mac_identity["identities"].get(architecture):
+                    validation_errors.append("session did not identify the verified Mac bundle and architecture")
+                if mac_identity["probe_sha256"] != probe_sha256:
+                    validation_errors.append("Mac receipt probe differs from the recorded source")
+            elif report.get("solver_identity_kind") != "packaged-executable-v1" \
                     or report.get("solver_sha256") != executable_sha256:
                 validation_errors.append("session did not identify the verified release executable")
             if report.get("probe_sha256") != probe_sha256:
@@ -724,6 +754,12 @@ def _run_probe(
         failures.append(launch_error)
     if release_executable and (executable_before != executable_sha256 or _sha256_file(godot) != executable_sha256):
         failures.append("release executable changed before or during the probe")
+    if mac_identity is not None:
+        try:
+            if MAC_RECEIPT.verify_for_launch(godot) != mac_identity:
+                failures.append("Mac release bundle changed during the probe")
+        except (OSError, ValueError) as error:
+            failures.append(f"Mac release bundle changed during the probe: {error}")
     if release_executable and physics_backend == "native" and (not library_before or not native_library.is_file()
                                                                   or _sha256_file(native_library) != library_before):
         failures.append("release native library is missing or changed during the probe")
@@ -823,7 +859,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--godot", help="pinned Godot 4.8-beta1 executable")
     parser.add_argument("--release-executable", action="store_true",
-                        help="use --godot as the actual exported Linux release executable")
+                        help="use --godot as the actual exported Linux or verified Mac release executable")
     parser.add_argument("--out", type=Path, required=True, help="new or empty output directory")
     parser.add_argument("--probe", type=Path, help="probe script; defaults beside this runner")
     parser.add_argument("--aircraft", action="append", help="catalog ID; repeat or pass comma-separated IDs")
@@ -893,6 +929,13 @@ def run_campaign(args: argparse.Namespace) -> int:
         try:
             metadata["workspace"] = capture_workspace_identity(root)
             godot = resolve_executable(args.godot)
+            if args.release_executable and MAC_RECEIPT.looks_like_bundle_executable(godot):
+                if args.physics_backend != "gdscript_reference" or args.compare_backends:
+                    raise RuntimeError("Mac release benchmarks support the reference backend only")
+                try:
+                    metadata["mac_reference_bundle"] = MAC_RECEIPT.verify_for_launch(godot)
+                except (OSError, ValueError) as error:
+                    raise RuntimeError(f"Mac release bundle identity refused: {error}") from error
             metadata["engine"] = inspect_godot(godot, args.timeout)
             metadata["native_source_sha256"] = native_source_digest(root)
             metadata["app_source_sha256"] = app_source_digest(app_dir)
@@ -947,6 +990,7 @@ def run_campaign(args: argparse.Namespace) -> int:
                             release_executable=args.release_executable,
                             executable_sha256=metadata["engine"]["sha256"],
                             probe_sha256=metadata["probe"]["sha256"],
+                            mac_identity=metadata.get("mac_reference_bundle"),
                         )
                         reports[mode] = run["report"] if run["accepted"] else None
                         if run["accepted"] and isinstance(run["report"], dict):

@@ -8,6 +8,7 @@ import hashlib
 import io
 import json
 import math
+import struct
 import tempfile
 import tracemalloc
 import unittest
@@ -449,6 +450,72 @@ class FlightLogCommandTests(unittest.TestCase):
         for mutation in ("identity", "kind", "changed", "executable"):
             with self.subTest(mutation=mutation):
                 self.assertNotEqual(run_case("bad-" + mutation, mutation), 0)
+
+    def test_mac_release_replay_verifies_bundle_and_discloses_candidate_changes(self) -> None:
+        root = self.directory
+        bundle = root / "OpenRC.app"
+        exe = bundle / "Contents/MacOS/OpenRC"
+        pack = bundle / "Contents/Resources/OpenRC.pck"
+        sidecar = bundle / "Contents/Frameworks/native.dylib"
+        for path in (exe, pack, sidecar):
+            path.parent.mkdir(parents=True, exist_ok=True)
+        exe.write_bytes(struct.pack("<II", 0xFEEDFACF, 0x0100000C) + bytes(56))
+        pack_bytes = struct.pack("<4sIIIIIQQI", b"GDPC", 4, 4, 8, 0, 2, 0, 40, 1) + b"fixture data"
+        pack.write_bytes(pack_bytes)
+        sidecar.write_bytes(b"native contents")
+        probe = root / "research/performance/session_probe.gd"
+        probe.parent.mkdir(parents=True)
+        probe.write_text("probe")
+        snapshot = root / "source.json"
+        snapshot.write_text("source receipt")
+        source_info = {"commit": "a" * 40, "tree": "b" * 40, "worktree_sha256": "c" * 64}
+        with mock.patch.object(flight_log.MAC_RECEIPT, "_source_snapshot", return_value=source_info):
+            receipt_path = flight_log.MAC_RECEIPT.create(bundle, snapshot, root)
+        identity = flight_log.MAC_RECEIPT.verify_for_launch(exe)["identities"]["arm64"]
+        source = root / "mac.orfl"
+        source.write_bytes(b"orfl")
+        candidate = root / "candidate.json"
+        candidate.write_text("{}")
+
+        def run_case(name: str, mutation: str = "", is_candidate: bool = False) -> int:
+            output = root / name
+            def fake_run(command: list[str], **_kwargs: object) -> object:
+                write_debrief_csv(output / "flight.csv", 0, 2, 0.1)
+                report = exact_replay_report(source, row_count=2)
+                report.update({"baseline_solver_sha256": identity, "current_solver_sha256": identity,
+                               "baseline_solver_identity_kind": "macos-reference-bundle-v1",
+                               "current_solver_identity_kind": "macos-reference-bundle-v1"})
+                if is_candidate:
+                    report.update({"mode": "candidate", "comparison_method": "open loop",
+                                   "baseline_solver_sha256": "f" * 64, "solver_changed": True})
+                if mutation == "hidden-change":
+                    report["solver_changed"] = False
+                elif mutation == "unknown-kind":
+                    report["current_solver_identity_kind"] = "unrecognized"
+                elif mutation == "pack":
+                    pack.write_bytes(b"changed while running")
+                elif mutation == "sidecar":
+                    sidecar.write_bytes(b"changed while running")
+                elif mutation == "receipt":
+                    receipt_path.write_bytes(receipt_path.read_bytes() + b"changed")
+                (output / "replay.json").write_text(json.dumps(report), encoding="utf-8")
+                return type("Result", (), {"returncode": 0})()
+            args = ["replay", str(source), "--out", str(output), "--release-executable", str(exe)]
+            if is_candidate:
+                args += ["--candidate", str(candidate)]
+            with mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run), \
+                    contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
+                return flight_log.main(args)
+
+        self.assertEqual(run_case("mac-exact"), 0)
+        self.assertEqual(run_case("mac-candidate", is_candidate=True), 0)
+        self.assertNotEqual(run_case("mac-hidden-change", "hidden-change", True), 0)
+        self.assertNotEqual(run_case("mac-unknown-kind", "unknown-kind"), 0)
+        self.assertNotEqual(run_case("mac-pack-change", "pack"), 0)
+        pack.write_bytes(pack_bytes)
+        self.assertNotEqual(run_case("mac-sidecar-change", "sidecar"), 0)
+        sidecar.write_bytes(b"native contents")
+        self.assertNotEqual(run_case("mac-receipt-change", "receipt"), 0)
 
     def test_release_executable_and_editor_options_are_mutually_exclusive(self) -> None:
         source = self.directory / "flight.orfl"

@@ -1,10 +1,10 @@
 # Apple Silicon optimization — master implementation plan
 
-Updated 2026-11-02 · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Source audited:** `46b004c7b469448c29ef96168da4f03cee2c6d23`. **Status:** audit complete; existing preparation partially implemented and fixture-checked; native Mac qualification open. This task changes documentation only.
+Updated 2026-11-02 · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Source audited:** `46b004c7b469448c29ef96168da4f03cee2c6d23`. **Status:** audit complete; DT-MAC-02c/d source repairs and DT-MAC-02h reference identity implemented with focused tests; native Mac qualification open.
 
 This plan and the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) are the two authoritative Apple optimization documents. The background contains implementation facts, research and limitations; this document contains the execution sequence and gates. Existing research remains dated evidence and tool READMEs remain command authorities. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) retains release ownership. No optimization or new platform support is authorized as completed by this plan.
 
-The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**, starting at native 1920×1080/60 Hz on the available M1. Higher resolutions follow, then 720p compatibility. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
+The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**. The product priority remains 1920×1080/60 Hz, then higher resolutions, then 720p compatibility. The available M1 has only its built-in 2560×1600 Retina panel, currently set to 1440×900 logical pixels; the user authorizes this native display for the M1 campaign. Record measured viewport, drawable and internal pixels separately. A built-in-display run can qualify that named M1 configuration but cannot establish 1080p output. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
 
 ## 1. Priorities, invariants and decision rules
 
@@ -24,10 +24,10 @@ The objective is the maximum practical **sustained performance with readable air
 | Existing step | Current status and destination |
 | --- | --- |
 | DT-MAC-00 / 00-R1 / 00-R2 | Completed historical investigations; retained in background provenance. This consolidation is DT-MAC-00-R3. |
-| DT-MAC-01 | M1 availability confirmed; native inventory and baseline manifest open — phase 3. |
+| DT-MAC-01 | M1 Air/8 GB ARM64 native inventory and editor import recorded; complete baseline manifest and qualification open — phase 3. |
 | DT-MAC-02a/b | Getter/template/preflight and bounded v3 capture implemented; native execution/overhead and coverage gaps open — phases 1–3. |
-| DT-MAC-02c/d/e/f/g/h | Substeps registered here: portable tool repairs, stream/report compatibility, native host diagnostics, app-route observation, voluntary share bundle, Mac reference-release identity — phases 1, 2 and 8. |
-| DT-MAC-03a/b | Reference baseline and attribution — phase 3. |
+| DT-MAC-02c/d/e/f/g/h | 02c Aqua/resource repair and 02d v3 incident/Perfetto handling implemented and checked on Mac; short native Aqua/resource/frame checks passed. 02h Mac reference bundle identity has focused Linux/Mac tests; final-package integration/replay is open. Host diagnostics, app-route observation and voluntary share bundle remain open — phases 1, 2 and 8. |
+| DT-MAC-03a/b | Short source-build reference replay was exact on M1; complete baseline manifest, sustained runs and attribution remain open — phase 3. |
 | DT-MAC-04a–d | Conditional CPU/observer/loading/memory work — phase 4. |
 | DT-MAC-04n1–n4 | Conditional ARM64 NK-3 feasibility, evaluator parity, admission and package work — phase 10, under SF/NK policy. |
 | DT-MAC-05a | Isolated renderer tools implemented; native parity/comparison open — phase 5. |
@@ -71,7 +71,7 @@ Freeze these targets before A/B runs. They are proposed/existing owning-track bu
 
 | Metric | Required method and acceptance |
 | --- | --- |
-| Frame pacing | Native 1080p, declared 60 Hz/cap/VSync. Existing DT process-loop proposal: p95 ≤18 ms, p99 ≤25 ms; report maxima, >33.3 ms and >50 ms events and consecutive bursts. Presentation evidence is separate. |
+| Frame pacing | On the named actual display/output, declare 60 Hz/cap/VSync and measured viewport/drawable/internal pixels. Evaluate 1080p separately when a suitable display is available. Existing DT process-loop proposal: p95 ≤18 ms, p99 ≤25 ms; report maxima, >33.3 ms and >50 ms events and consecutive bursts. Presentation evidence is separate. |
 | Throughput | Separate uncapped experiment with the same visible workload; do not use VSync-clamped FPS to claim CPU/GPU savings. Never sum overlapping CPU/GPU timers as frame time. |
 | Physics | Preserve the owning Gate P ≤500 µs/tick target and its regime/statistic definition. Also report individual complete-session p50/p95/p99 and tail cases; a batch mean does not establish a per-tick tail gate. Unpaused sim/wall ratio 0.99–1.01. |
 | Adoption | Improvement beyond run variation and observer uncertainty; predeclared practical screen is ≥5% in the affected complete workload or removal of a reproducible hitch/leak/gate failure. Reject unexplained >5% required-case regression. A smaller proven defect repair can be justified explicitly. |
@@ -104,7 +104,7 @@ Each receipt includes source commit/dirty patch and relevant input hashes; engin
 
 **Tests:** T1 debug launch fixtures and T2 sampler/runner/consumer fixtures, including Darwin backend with no `io_counters`, access denied, missing RSS, PID reuse, early exit, counter resets, cap and Linux/Windows compatibility. Synthetic clock tests replace real 30-minute waits here.
 
-**Completion:** Aqua command construction needs no Xvfb; unsupported optional channels are explicit without hiding missing required coverage; old reports remain readable; no host privileges or simulator behavior changed. Native launch/sampling remains an open phase-3 check.
+**Completion:** Aqua command construction needs no Xvfb; unsupported optional channels are explicit without hiding missing required coverage; old reports remain readable; no host privileges or simulator behavior changed. Short native launch/sampling checks passed; sustained interval alignment remains open.
 
 ### DT-MAC-02d — preserve long-stream evidence end to end
 
@@ -152,7 +152,7 @@ Use existing engine signposts and external Instruments first. If attribution sti
 
 **Tests:** T2 collector and T6 ownership/loading fixtures; proposed cases for cancel/return Home/free owner/late callback/no helper/collector off, unchanged saved preferences, failed setup, multiple intervals and exact replay. T1/T3 only if launch identity changes.
 
-**Completion:** required before normal-product-route sustained acceptance, but not before the first explicitly technical direct-flight attribution. One collector can observe both technical and product routes with honest labels; teardown is bounded, report interruption explicit, output/UI pixels distinguished, normal input retained. Same source later needs a native 1080p short capture and measured overhead. An injected fixture is not release-route execution proof.
+**Completion:** required before normal-product-route sustained acceptance, but not before the first explicitly technical direct-flight attribution. One collector can observe both technical and product routes with honest labels; teardown is bounded, report interruption explicit, output/UI pixels distinguished, normal input retained. Same source later needs a short capture on the named actual M1 display and measured overhead; 1080p output remains a separate product target. An injected fixture is not release-route execution proof.
 
 ## 5. Phase 3 — establish the M1 reference and choose the first candidate
 
@@ -163,7 +163,7 @@ Use existing engine signposts and external Instruments first. If attribution sti
 1. Inventory actual M1 model, CPU/GPU variant, RAM, cooling class, macOS/build, monitor/refresh, power modes, free storage and relevant SDK/tool versions. Verify the retained Air/8 GB description; do not silently assume a 7-core or 8-core GPU.
 2. Freeze source and import/config/assets identities. Verify official ARM64 getter, native execution, resource import and exact template/export identity. On universal packages inspect actual release payload/UUID and dependency slices; Rosetta is a separate result. Keep personal preferences and radio calibration isolated during experiments.
 3. Run platform-launch/preflight/resource smoke and focused reference replay/H9 checks. Keep explicit `gdscript_reference` control; verify native refusal/fallback is truthful. Do not demand an absent Mac NK-3 library.
-4. Verify actual **1920×1080 output**, native internal scale, 60 Hz/cap/VSync, UI scale, MSAA and fixed scene detail. A request rejected by display bounds is not a 1080p run. Native Retina size and 4K are later cases.
+4. On the available M1, verify the actual built-in display output, drawable and internal pixels, 60 Hz/cap/VSync, UI scale, MSAA and fixed scene detail. Its 2560×1600 panel currently uses 1440×900 logical pixels; a 1920×1080 window request does not prove 1080p drawable output. Test actual 1080p separately when available, without blocking this named built-in-display M1 result.
 5. Record the unmodified technical baseline with complete live physics/input and separately exercise normal Home/Fly. A sustained normal-product-route claim requires DT-MAC-02f; exact release replay/reference benchmarks require DT-MAC-02h. Source-editor exact replay can support provisional attribution while those gates remain open. Retain an exact-replay baseline `.orfl` with source/config identity, complete flag, markers and CSV/report; log-on/off runs remain separate workloads.
 
 **Tests:** native T1 smoke; focused T7 reference replay and H9 policy; T8 initial Home/Fly/Workshop and short performance checks. Recheck historical audio/reference failures on the selected snapshot only when they intersect required baseline gates; record all inherited failures, no golden rewriting.
@@ -338,7 +338,7 @@ Developer sidecars can require local tooling, but the eventual user flow must no
 
 Freeze final source/configuration and release export. Repeat three uninterrupted 30-minute active-flight runs with 30 s warmup, comparable initial conditions, complete v3/resources/required host-state coverage and minimal observers. Compare baseline/finalist early and final windows; report pacing tails/bursts, sim/wall, memory/pressure, thermal and native errors. Run 50 warm Home/flight cycles with relevant Workshop/world transitions, power/focus/sleep/wake/display changes and actual audio/controller reconnect. Perform owner pilot orientation/control acceptance independently of scripted/replayed evidence.
 
-Qualify AC first; battery/Low Power and 120 Hz/VRR are distinct profiles. Then 1440p/Retina/4K as available; lastly 720p fallback. No failure at 1080p can be hidden by a 720p default. Do not claim energy improvement from a short battery slope or relative Energy Impact.
+Qualify AC first on the M1 built-in display; battery/Low Power and 120 Hz/VRR are distinct profiles. Then test actual 1080p and higher outputs when available; lastly 720p fallback. A built-in-display result does not establish 1080p qualification, and no failure at 1080p can be hidden by a 720p default. Do not claim energy improvement from a short battery slope or relative Energy Impact.
 
 **Tests:** T8 final required workload, lifecycle and physical-device matrix; T7 final integrated same-host replay and applicable cross-platform policy. **Exit:** required targets met through the final window and visual/control gates accepted, or named limitation/failure retained without a broad support claim.
 
@@ -433,4 +433,4 @@ Retain compact dated evidence under existing DT-MAC/owning-track homes; raw trac
 
 **Mandatory core finish:** native M1 and claimed-package gates pass, selected settings are recoverable, required tests/replay/visual/control evidence is complete, and source/artifact identity is reconciled. **Broader claims:** only named device/OS/profile rows actually qualified may be advertised. **Optional finish:** each branch either passes its own gates or records an evidence-based deferred/trigger-absent decision; optional failure cannot waive a mandatory core target.
 
-The recommended first implementation deliverable after this planning task is **DT-MAC-02c**: the bounded Aqua-launch/resource-availability repairs with focused fixtures, followed by current-tool native smoke and baseline. No optimization has been implemented by this audit, and no Apple hardware speedup, thermal result, iOS support or signed-release acceptance is claimed.
+DT-MAC-02c/d now have source repairs, focused fixtures and short native Mac checks. DT-MAC-02h has a tested Mac reference bundle identity, while final-package integration and exact package replay remain open. Short Compatibility captures at the requested 1920×1080 window and the built-in panel's 2560×1600 dimensions missed the proposed pacing and sim/wall budgets; a Mobile/Metal capture timed out before producing a frame stream. The 2560×1600 AC run's frame/resource interval and incident pair were checked, but sustained coverage, host diagnostics, attribution and final package gates remain on the critical path. No Apple hardware speedup, thermal result, iOS support or signed-release acceptance is claimed. [Dated M1 evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#first-m1-native-screening-2026-11-02).

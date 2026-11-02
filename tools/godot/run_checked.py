@@ -105,7 +105,7 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                 max_log_bytes: int = 8 * 1024 * 1024, warnings_as_errors: bool = False,
                 required: list[str] | None = None, label: str = "godot",
                 resources: bool = False, resource_interval: float = 1.0,
-                resource_max_samples: int = 600, resource_disk_paths=(),
+                resource_max_samples: int = 2100, resource_disk_paths=(),
                 resource_threads: bool = False) -> dict:
     required = required or []
     if type(resources) is not bool:
@@ -132,7 +132,7 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
         resource_source_hashes = {
             name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
             for name in ("run_checked.py", "resource_samples.py")}
-    elif resource_interval != 1.0 or resource_max_samples != 600 or resource_disk_paths or resource_threads:
+    elif resource_interval != 1.0 or resource_max_samples != 2100 or resource_disk_paths or resource_threads:
         raise ValueError("resource options require --resources")
     out_dir = Path(out_dir).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -272,6 +272,7 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
             resource_report = sampler.finish()
             if resource_failure:
                 resource_report["coverage"] = "partial"
+                resource_report["required_coverage"] = "partial"
                 resource_report["runner_sampler_error"] = resource_failure
             resource_report["capture_id"] = capture_id
             resource_report["invocation"] = {
@@ -285,6 +286,7 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                 stream.write(resource_bytes)
             report["resources"] = {"file": "resources.json", "published": True,
                                    "coverage": resource_report["coverage"],
+                                   "required_coverage": resource_report.get("required_coverage", "unknown"),
                                    "bytes": len(resource_bytes),
                                    "sha256": hashlib.sha256(resource_bytes).hexdigest(),
                                    "sample_count": resource_report.get("sample_count", 0),
@@ -316,7 +318,7 @@ def main() -> int:
                         help="require this literal completion text; repeat for multiple markers")
     parser.add_argument("--resources", action="store_true", help="sample direct-process RAM/CPU/I/O with optional psutil")
     parser.add_argument("--resource-interval", type=float, default=1.0, help="sample interval, 0.1–60 seconds")
-    parser.add_argument("--resource-max-samples", type=int, default=600, help="bounded sample count, 1–10000")
+    parser.add_argument("--resource-max-samples", type=int, default=2100, help="bounded sample count, 1–10000")
     parser.add_argument("--resource-disk-path", action="append", default=[], type=Path,
                         help="sample volume capacity for this existing directory; repeat up to eight times")
     parser.add_argument("--resource-threads", action="store_true",
@@ -354,7 +356,7 @@ def main() -> int:
     if "resources" in result:
         status = result["resources"]
         location = f"; {Path(result['report']).parent / status['file']}" if status["published"] else "; no usable artifact published"
-        print(f"Resource capture: {status['coverage']}{location}", file=sys.stderr)
+        print(f"Resource capture: {status['coverage']}; required channels: {status.get('required_coverage', 'unknown')}{location}", file=sys.stderr)
         if "error" in status:
             print(status["error"], file=sys.stderr)
         summary = status.get("summary", {})

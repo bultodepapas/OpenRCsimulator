@@ -18,6 +18,7 @@ var _harness: Object
 var _mode := ""
 var _backend := ""
 var _output := ""
+var _mac_identity := {}
 
 
 ## Called once after this host is added to the real application's tree.
@@ -74,6 +75,19 @@ func start(args: PackedStringArray) -> void:
 func _script_path(mode: String) -> String:
 	var filename: String = SCRIPTS[mode]
 	if OS.has_feature("template_release"):
+		if OS.get_name() == "macOS":
+			if mode != "session" or _backend != "gdscript_reference":
+				_fail("Mac release permits only the reference session probe")
+				return ""
+			var mac: Dictionary = NativePackage.mac_reference_identity(OS.get_executable_path(),
+				Engine.get_architecture_name(), OS.get_cmdline_args())
+			var probe := PACKAGE_DIR.path_join(filename)
+			if not mac.get("ok", false) or not FileAccess.file_exists(probe) \
+					or FileAccess.get_sha256(probe) != mac.get("probe_sha256", ""):
+				_fail("Mac reference package or its fixed probe differs from the receipt")
+				return ""
+			_mac_identity = mac
+			return probe
 		var package: Dictionary = NativePackage.identity()
 		if not package.get("ok", false):
 			_fail("package identity refused: " + str(package.get("reason", "unknown")))
@@ -109,6 +123,13 @@ func _finish() -> void:
 				or report_value.backend.actual.get("backend") != _backend:
 			_fail("session probe failed or the requested backend was not installed: " + failure)
 			return
+		if not _mac_identity.is_empty():
+			var final_mac := NativePackage.mac_reference_identity(OS.get_executable_path(),
+				Engine.get_architecture_name(), OS.get_cmdline_args())
+			if final_mac != _mac_identity or report_value.get("solver_identity_kind") != NativePackage.MAC_IDENTITY_KIND \
+					or report_value.get("solver_sha256") != _mac_identity.sha256:
+				_fail("Mac bundle changed during the reference session")
+				return
 	else:
 		if int(_harness.get("checks")) < 1 or int(_harness.get("failures")) != 0 \
 				or _harness.get("_native_exercised") != true:

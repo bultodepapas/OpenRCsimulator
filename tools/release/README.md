@@ -1,4 +1,4 @@
-# Release metadata and Linux ABI inventory
+# Release metadata, Linux ABI inventory and Mac reference identity
 
 DT-LNX-02c/03a. `app/export.sh` invokes these tools after the existing native/package checks. They use Python 3.11+, Git, ZIP and GNU `readelf` (binutils); no Python packages are required. Use an isolated Linux checkout. See [release preparation](../../docs/TOOLS.md#release-sequence).
 
@@ -29,6 +29,32 @@ python3 tools/release/manifest.py verify --directory /path/to/downloaded-release
 Use `--expected-run-id` and `--expected-repository` when independently known. For a local exporter output with its three working directories and private input snapshot, add `--allow-staging`. The default rejects extra files/directories, symlinks, missing or changed bytes, duplicate JSON keys, unexpected schema fields, incorrect platform/architecture filenames and noncanonical checksum inventory. Existing metadata is never overwritten.
 
 The schemas are versioned by `openrc-release-manifest-v1` and `openrc-linux-abi-v1`; their executable validators are `manifest.validate_metadata` and `elf_audit.validate_report`. Unknown versions fail. The release schema currently fixes the three existing ZIP targets. It provides hashes and sizes for downloads; new formats/architectures require an explicit schema/consumer change. There are no speculative ARM64 or installer assets.
+
+## Mac reference bundle identity (DT-MAC-02h)
+
+`macos_reference_receipt.py` provides a separate, reference-only identity for a
+Mac `.app` with one executable and one separate Godot PCK. Capture its private
+build-input snapshot before export, then create the receipt beside the final
+`.app` **after** signing/notarization/stapling:
+
+```sh
+python3 tools/release/macos_reference_receipt.py capture --editor /path/to/Godot \
+  --template /path/to/macos-template.zip --output /new/path/mac-inputs.json
+python3 tools/release/macos_reference_receipt.py finalize \
+  --inputs /path/to/mac-inputs.json /path/to/OpenRC.app
+python3 tools/release/macos_reference_receipt.py verify \
+  /path/to/OpenRC.app/Contents/MacOS/OpenRC
+```
+
+`capture` checks the current Git source and selected inputs. `finalize` refuses
+source drift, missing/changed PCK, unsafe bundle entries and unsupported Mach-O
+architecture, then writes a new external receipt without changing signed bytes.
+The receipt binds every regular bundle file and the declared source/probe inputs;
+it proves artifact consistency, not signing trust or source-to-binary
+reproducibility. The current six-file release ZIP/manifest contract has **not**
+been changed to distribute this sibling receipt. Final-package integration,
+signature checks and exact package replay remain open in the
+[Apple Silicon plan](../../docs/plans/apple-silicon-performance.md#dt-mac-02h--reference-release-identity-independent-of-nk-3).
 
 ## Static Linux inspection
 

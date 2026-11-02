@@ -21,13 +21,16 @@ for _import_path in (str(REPO_ROOT), str(GODOT_TOOLS)):
         sys.path.insert(0, _import_path)
 
 from summarize import read_run
-from research.performance.native_summary import validate_native_report
+from perfetto_export import validate_required_coverage
+from research.performance.native_summary import (
+    STREAM_FORMAT, _hydrate_stream_report, validate_native_report,
+)
 
 
 FORMAT = "openrc-incident-bundle v1"
-DEFAULT_MAX_INPUT_BYTES = 64 * 1024 * 1024
+DEFAULT_MAX_INPUT_BYTES = 256 * 1024 * 1024
 MAX_INPUT_BYTES = 256 * 1024 * 1024
-DEFAULT_MAX_TOTAL_BYTES = 256 * 1024 * 1024
+DEFAULT_MAX_TOTAL_BYTES = 512 * 1024 * 1024
 MAX_TOTAL_BYTES = 1024 * 1024 * 1024
 MAX_NOTE_CHARS = 4096
 MAX_REPORT_BYTES = 256 * 1024
@@ -285,7 +288,13 @@ def _validate_resource_receipt(resource_report: dict, run_report: dict,
         errors.append("resource measurement_status is missing or unsupported")
     if coverage == "sampled" and sample_count == 0:
         errors.append("sampled resource coverage must contain at least one sample")
-    for field in ("coverage", "sample_count", "measurement_status"):
+    required_coverage = resource_report.get("required_coverage")
+    if required_coverage is not None and (not isinstance(required_coverage, str) or required_coverage not in {
+            "complete", "partial", "capped", "unavailable"}):
+        errors.append("resource required_coverage is unsupported")
+    _verified, required_errors = validate_required_coverage(resource_report)
+    errors.extend(required_errors)
+    for field in ("coverage", "sample_count", "measurement_status", "required_coverage"):
         if field in aggregate_receipt and resource_report.get(field) != aggregate_receipt.get(field):
             errors.append(f"resource {field} does not match report.json receipt")
 
@@ -307,8 +316,9 @@ def _validate_resource_receipt(resource_report: dict, run_report: dict,
     return errors
 
 
-def _validate_frames(frame_report: dict, run_capture_id: str | None) -> tuple[list[str], str]:
+def _validate_frames(frame_report: dict, run_capture_id: str | None) -> tuple[list[str], str, bool]:
     errors, _derived = validate_native_report(frame_report)
+    native_valid = not errors
     bounded_errors = [str(error)[:MAX_ISSUE_TEXT] for error in errors[:MAX_FRAME_VALIDATION_ERRORS]]
     if len(errors) > MAX_FRAME_VALIDATION_ERRORS:
         bounded_errors.append(f"{len(errors) - MAX_FRAME_VALIDATION_ERRORS} additional validation errors omitted")
@@ -322,7 +332,16 @@ def _validate_frames(frame_report: dict, run_capture_id: str | None) -> tuple[li
             bounded_errors.append("frame report capture_id is missing; association cannot be verified")
         elif frame_capture_id != run_capture_id:
             bounded_errors.append("frame report capture_id does not match report.json")
-    return bounded_errors, frame_capture_id if isinstance(frame_capture_id, str) else ""
+    return bounded_errors, frame_capture_id if isinstance(frame_capture_id, str) else "", native_valid
+
+
+def _portable_frame_name(name: str) -> bool:
+    # Archive members must be safe on both POSIX and Windows extractors.
+    reserved = {"CON", "PRN", "AUX", "NUL"} | {f"COM{i}" for i in range(1, 10)} | {f"LPT{i}" for i in range(1, 10)}
+    return (bool(name) and len(name.encode("utf-8")) <= 255 and name not in {".", ".."}
+            and name.split(".", 1)[0].upper() not in reserved
+            and name[-1] not in {".", " "}
+            and not any(ord(char) < 32 or char in '<>:"/\\|?*' for char in name))
 
 
 def _write_bundle(path: Path, manifest: dict, attachments: list[tuple[str, bytes]]) -> None:
@@ -356,6 +375,7 @@ def _write_bundle(path: Path, manifest: dict, attachments: list[tuple[str, bytes
 
 
 def create_bundle(run_dir: Path, output_path: Path, *, frames_path: Path | None = None,
+                  frame_stream_path: Path | None = None,
                   flight_log_path: Path | None = None, note: str = "",
                   max_input_bytes: int = DEFAULT_MAX_INPUT_BYTES,
                   max_total_bytes: int = DEFAULT_MAX_TOTAL_BYTES) -> dict:
@@ -365,7 +385,6 @@ def create_bundle(run_dir: Path, output_path: Path, *, frames_path: Path | None 
         raise BundleConfigurationError("--out must have a .zip extension")
     if flight_log_path is not None and Path(flight_log_path).suffix.lower() != ".orfl":
         raise BundleConfigurationError("--flight-log must name a .orfl file")
-
     issues: list[dict] = []
     omitted_issues = [0]
     partial = [False]
@@ -524,8 +543,12 @@ def create_bundle(run_dir: Path, output_path: Path, *, frames_path: Path | None 
                         resource_entry["measurement_values_validated"] = False
                         resource_entry["measurement_coverage"] = _manifest_text(resource_report.get("coverage"))
                         resource_entry["measurement_status"] = _manifest_text(resource_report.get("measurement_status"))
+                        resource_entry["required_coverage"] = _manifest_text(resource_report.get("required_coverage"))
+                        required_verified, _required_errors = validate_required_coverage(resource_report)
+                        resource_entry["required_coverage_validated"] = required_verified
                         if (resource_report.get("coverage") != "sampled"
-                                or resource_report.get("measurement_status") != "ok"):
+                                or resource_report.get("measurement_status") != "ok"
+                                or (required_verified and resource_report.get("required_coverage") != "complete")):
                             issue("resource_measurement_incomplete",
                                   "resource samples are partial, capped, absent or otherwise unavailable",
                                   "resources.json")
@@ -544,20 +567,74 @@ def create_bundle(run_dir: Path, output_path: Path, *, frames_path: Path | None 
                 frame_entry["validation"] = "invalid_json"
                 issue("frame_json_invalid", parse_error, "frames.json")
             else:
+                sidecar_entry = None
                 try:
-                    frame_errors, frame_capture = _validate_frames(frame_report, capture_id)
-                except (ValueError, TypeError, RecursionError, OverflowError, RuntimeError) as error:
+                    validation_report = frame_report
+                    if frame_report.get("format") == STREAM_FORMAT:
+                        frame_entry["attachment_unit"] = "frame_stream_pair"
+                        source_name = Path(frames_path).name
+                        stream = frame_report.get("stream")
+                        expected_name = source_name + ".frames.jsonl"
+                        if not _portable_frame_name(source_name) or not _portable_frame_name(expected_name):
+                            raise ValueError("frame report and sidecar need portable, safe basenames")
+                        if not isinstance(stream, dict) or stream.get("file") != expected_name:
+                            raise ValueError("stream file must be the report's same-directory sibling")
+                        # Keep the names in the report unchanged so extracting this
+                        # pair works with the same shared v3 reader and reducers.
+                        frame_archive_path = "frames/" + source_name
+                        frame_entry["archive_path"] = frame_archive_path
+                        zip_attachments[-1] = (frame_archive_path, frame_bytes)
+                        sidecar_entry = _attachment("frame_stream", "frames/" + expected_name,
+                                                    "frame report's declared sibling", source_name=expected_name)
+                        frame_entry["sidecar_archive_path"] = sidecar_entry["archive_path"]
+                        sidecar_entry.update(attachment_unit="frame_stream_pair",
+                                             report_archive_path=frame_archive_path)
+                        attachments.append(sidecar_entry)
+                        sidecar_bytes = snapshot(sidecar_entry, Path(frames_path).with_name(expected_name))
+                        if sidecar_bytes is None:
+                            sidecar_entry["validation"] = "not_verified"
+                            raise ValueError("frame stream sidecar was not captured")
+                        with tempfile.TemporaryDirectory(prefix="openrc-frame-pair-") as temporary:
+                            snapshot_report = Path(temporary) / source_name
+                            snapshot_report.write_bytes(frame_bytes)
+                            snapshot_report.with_name(expected_name).write_bytes(sidecar_bytes)
+                            validation_report, stream_info = _hydrate_stream_report(frame_report, snapshot_report)
+                        frame_entry["stream"] = stream_info
+                        sidecar_entry["validation"] = "valid_stream_pair"
+                        sidecar_entry["source_complete"] = True
+                    frame_errors, frame_capture, native_valid = _validate_frames(validation_report, capture_id)
+                    if frame_report.get("format") == STREAM_FORMAT and not native_valid:
+                        sidecar_entry["validation"] = "invalid_stream_pair"
+                except (OSError, UnicodeError, ValueError, TypeError, RecursionError, OverflowError, RuntimeError) as error:
                     frame_errors = [f"native frame validation failed: {type(error).__name__}: {error}"]
                     frame_capture = frame_report.get("capture_id") if isinstance(frame_report.get("capture_id"), str) else ""
+                    native_valid = False
+                    if sidecar_entry is not None:
+                        sidecar_entry["validation"] = "invalid_stream_pair" if sidecar_entry["included"] else "not_verified"
+                        stream = frame_report.get("stream")
+                        sidecar_entry["source_complete"] = False if (
+                            isinstance(stream, dict) and stream.get("complete") is False) else None
                 frame_entry["validation"] = "valid" if not frame_errors else "invalid"
+                frame_entry["source_complete"] = (True if native_valid else
+                                                  False if frame_report.get("complete") is False else None)
                 frame_entry["validation_errors"] = frame_errors[:MAX_FRAME_VALIDATION_ERRORS]
                 if frame_errors:
                     for error in frame_errors[:MAX_FRAME_VALIDATION_ERRORS]:
-                        issue("frame_report_invalid", error, "frames.json")
+                        issue("frame_report_invalid", error, frame_entry["archive_path"])
                     if len(frame_errors) > MAX_FRAME_VALIDATION_ERRORS:
                         issue("frame_validation_truncated",
                               f"{len(frame_errors) - MAX_FRAME_VALIDATION_ERRORS} additional errors omitted",
                               "frames.json")
+
+    if frame_stream_path is not None:
+        sidecar_entry = _attachment("frame_stream", "frame-stream-unverified.jsonl",
+                                    "explicit --frame-stream input", source_name=Path(frame_stream_path).name)
+        attachments.append(sidecar_entry)
+        if snapshot(sidecar_entry, Path(frame_stream_path)) is not None:
+            sidecar_entry.update(validation="opaque_unverified", source_complete=None,
+                                 verified_frame_range=None)
+            issue("frame_stream_unverified", "orphan sidecar retained without a report or completion proof; "
+                  "its frame range and contents are unverified", sidecar_entry["archive_path"])
 
     if flight_log_path is not None:
         flight_entry = _attachment("flight_log", "flight-log.orfl",
@@ -580,7 +657,12 @@ def create_bundle(run_dir: Path, output_path: Path, *, frames_path: Path | None 
                 identity_status = "mismatch_or_unverified"
         if frames_path is not None and frame_capture != capture_id:
             identity_status = "mismatch_or_unverified"
-    if identity_status == "verified" and not run_evidence["evidence_valid"]:
+        if frame_stream_path is not None:
+            identity_status = "mismatch_or_unverified"
+    if identity_status == "verified" and (
+            not run_evidence["evidence_valid"]
+            or (resource_entry is not None and resource_entry.get("validation") != "receipt_and_invocation_integrity_only")
+            or (frames_path is not None and frame_entry.get("validation") != "valid")):
         identity_status = "unverified_evidence_invalid"
     if identity_status in {"mismatch_or_unverified", "invalid"}:
         issue("capture_id_mismatch", "one or more attachments cannot be tied to report.json capture_id",
@@ -605,6 +687,7 @@ def create_bundle(run_dir: Path, output_path: Path, *, frames_path: Path | None 
             "run_directory_name": root.name,
             "resources_declared": resource_entry is not None,
             "frame_report_supplied": frames_path is not None,
+            "orphan_frame_stream_supplied": frame_stream_path is not None,
             "flight_log_supplied": flight_log_path is not None,
             "note": note,
         },
@@ -630,12 +713,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("run_dir", type=Path, help="one checked Godot run directory")
     parser.add_argument("--out", type=Path, required=True, help="new .zip path; existing files are never replaced")
     parser.add_argument("--frames", type=Path, help="explicit native frame report to attach and validate")
+    parser.add_argument("--frame-stream", type=Path, help="orphan frame sidecar to retain as incomplete, unverified evidence")
     parser.add_argument("--flight-log", type=Path, help="explicit .orfl to attach as unverified caller input")
     parser.add_argument("--note", default="", help=f"optional incident note (at most {MAX_NOTE_CHARS} characters)")
     parser.add_argument("--max-input-bytes", type=int, default=DEFAULT_MAX_INPUT_BYTES,
-                        help=f"maximum bytes per input file (1..{MAX_INPUT_BYTES}; default 64 MiB)")
+                        help=f"maximum bytes per input file (1..{MAX_INPUT_BYTES}; default 256 MiB)")
     parser.add_argument("--max-total-bytes", type=int, default=DEFAULT_MAX_TOTAL_BYTES,
-                        help=f"combined input-byte budget (1..{MAX_TOTAL_BYTES}; default 256 MiB)")
+                        help=f"combined input-byte budget (1..{MAX_TOTAL_BYTES}; default 512 MiB)")
     return parser
 
 
@@ -649,7 +733,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         manifest = create_bundle(
-            args.run_dir, args.out, frames_path=args.frames, flight_log_path=args.flight_log,
+            args.run_dir, args.out, frames_path=args.frames, frame_stream_path=args.frame_stream,
+            flight_log_path=args.flight_log,
             note=args.note, max_input_bytes=args.max_input_bytes,
             max_total_bytes=args.max_total_bytes)
     except (BundleConfigurationError, OutputFailure, OSError, ValueError, TypeError,

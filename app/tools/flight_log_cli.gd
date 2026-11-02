@@ -41,6 +41,8 @@ static func recorded_stage_backend(header: Dictionary) -> Dictionary:
 	var identity: Variant = header.get("stage_backend", {backend = REFERENCE_STAGE_BACKEND})
 	if not _valid_stage_backend(identity):
 		return {ok = false, error = "Invalid recorded stage backend identity."}
+	if header.get("solver_identity_kind") == "macos-reference-bundle-v1" and identity.backend != REFERENCE_STAGE_BACKEND:
+		return {ok = false, error = "Mac reference bundle cannot identify a native stage backend."}
 	var checkpoint: Variant = header.get("checkpoint")
 	if not checkpoint is Dictionary:
 		return {ok = false, error = "Missing stage checkpoint."}
@@ -69,6 +71,12 @@ static func solver_changed(recorded_solver: String, current_solver: String,
 ## package replay identities. Their historical source fingerprint still works.
 static func _current_replay_identity() -> Dictionary:
 	var script: Script = Log
+	if script.has_method("replay_identity"):
+		var identity: Variant = script.call("replay_identity")
+		if identity is Dictionary and typeof(identity.get("sha256")) == TYPE_STRING \
+				and typeof(identity.get("kind")) == TYPE_STRING:
+			return identity
+		return {sha256 = "unavailable-export", kind = "unavailable"}
 	if script.has_method("replay_solver_identity") and script.has_method("replay_identity_kind"):
 		var digest: Variant = script.call("replay_solver_identity")
 		var kind: Variant = script.call("replay_identity_kind")
@@ -82,7 +90,7 @@ static func _current_replay_identity() -> Dictionary:
 static func recorded_replay_identity(header: Dictionary) -> Dictionary:
 	var kind: Variant = header.get("solver_identity_kind", "source-tree-v1")
 	var digest: Variant = header.get("solver_sha256")
-	if typeof(kind) != TYPE_STRING or kind not in ["source-tree-v1", "packaged-executable-v1"] \
+	if typeof(kind) != TYPE_STRING or kind not in ["source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1"] \
 			or typeof(digest) != TYPE_STRING:
 		return {ok = false, error = "Invalid recorded solver identity."}
 	if digest == "unavailable-export":
@@ -211,6 +219,9 @@ func _run() -> void:
 	if flight != null: flight.free()
 	if error.is_empty() and FileAccess.get_sha256(options.log) != report.source_sha256:
 		error = "Source changed during export/replay. Discard CSV."
+	if error.is_empty() and options.has("replay") and current_identity.kind == "macos-reference-bundle-v1" \
+			and _current_replay_identity() != current_identity:
+		error = "Mac reference bundle changed during replay. Discard CSV."
 	_finish(error)
 
 
@@ -343,9 +354,10 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 	if header.engine != Engine.get_version_info().string:
 		return {ok = false, error = "Engine version differs; use the recorded engine."}
 	var current_identity := _current_replay_identity()
-	if candidate.is_empty() and (recorded_identity.sha256 == "unavailable-export" \
-			or current_identity.sha256 == "unavailable-export" or current_identity.kind == "unavailable"):
-		return {ok = false, error = "Solver fingerprint unavailable. Exact replay requires the recorded verified source or package."}
+	if recorded_identity.sha256 == "unavailable-export" or current_identity.sha256 == "unavailable-export" \
+			or current_identity.kind not in ["source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1"] \
+			or current_identity.sha256.length() != 64 or not current_identity.sha256.is_valid_hex_number():
+		return {ok = false, error = "Solver fingerprint unavailable. Replay requires the recorded and current verified source or package."}
 	if candidate.is_empty() and (recorded_identity.kind != current_identity.kind \
 			or recorded_identity.sha256 != current_identity.sha256):
 		return {ok = false, error = "Solver identity differs. Exact replay refused; use explicit --candidate for an experiment."}

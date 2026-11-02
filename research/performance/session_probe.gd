@@ -224,10 +224,14 @@ func _run() -> void:
 				_hash_tick(digest)
 			elapsed = Time.get_ticks_usec() - started
 	var log_script: Script = FlightLog
-	var solver_identity: String = str(log_script.call("replay_solver_identity")) \
-		if log_script.has_method("replay_solver_identity") else FlightLog.solver_identity()
-	var solver_kind: String = str(log_script.call("replay_identity_kind")) \
-		if log_script.has_method("replay_identity_kind") else "source-tree-v1"
+	var replay_identity: Dictionary = log_script.call("replay_identity") if log_script.has_method("replay_identity") else {
+		sha256 = str(log_script.call("replay_solver_identity")) if log_script.has_method("replay_solver_identity") else FlightLog.solver_identity(),
+		kind = str(log_script.call("replay_identity_kind")) if log_script.has_method("replay_identity_kind") else "source-tree-v1"}
+	var solver_identity: String = str(replay_identity.get("sha256", "unavailable-export"))
+	var solver_kind: String = str(replay_identity.get("kind", "unavailable"))
+	if solver_kind not in ["source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1"] \
+			or solver_identity.length() != 64 or not solver_identity.is_valid_hex_number():
+		_failure = "verified solver identity unavailable"
 	var own_script: Script = get_script()
 	var probe_sha256 := FileAccess.get_sha256(own_script.resource_path) if own_script != null \
 		and FileAccess.file_exists(own_script.resource_path) else ""
