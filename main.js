@@ -66,6 +66,62 @@ document.addEventListener('click', event => {
   if (!languageMenu.contains(event.target)) languageMenu.open = false;
 });
 updateLanguageLinks();
+// Offer a language route only on the Spanish landing URL. The URL and any
+// explicit choice remain authoritative; do not redirect a shared link.
+const languageChoiceKey = 'openrc-language-choice';
+const languageDismissedKey = 'openrc-language-suggestion-dismissed';
+function preferredSiteLocale(preferences) {
+  const supported = new Set(['es','en','pt','de','ru','fr','it','ja','ko','ar']);
+  for (const preference of preferences) {
+    const tag = String(preference).toLowerCase().replaceAll('_','-');
+    if (tag === 'zh-hans' || tag.startsWith('zh-hans-') || /^zh-(cn|sg)(-|$)/.test(tag)) return 'zh-Hans';
+    const base = tag.split('-')[0];
+    if (supported.has(base)) return base;
+  }
+  return null;
+}
+document.querySelectorAll('[data-locale]').forEach(link => link.addEventListener('click', () => {
+  try { localStorage.setItem(languageChoiceKey, link.dataset.locale); } catch {}
+}));
+function offerLanguage() {
+  if (language !== 'es' || location.search) return;
+  if (!/(?:\/|\/index\.html)$/.test(location.pathname)) return;
+  try {
+    if (localStorage.getItem(languageChoiceKey) || localStorage.getItem(languageDismissedKey)) return;
+  } catch {}
+  const preferred = preferredSiteLocale(navigator.languages?.length ? navigator.languages : [navigator.language]);
+  if (!preferred || preferred === 'es') return;
+  const route = document.querySelector(`.language-options [data-locale="${preferred}"]`);
+  if (!route) return;
+  const notice = document.createElement('aside');
+  notice.className = 'language-suggestion';
+  notice.setAttribute('aria-label', siteText.languageMenu);
+  const symbol = document.createElement('span');
+  symbol.textContent = '🌐';
+  symbol.setAttribute('aria-hidden', 'true');
+  const link = document.createElement('a');
+  link.href = route.href;
+  link.lang = preferred;
+  link.dir = preferred === 'ar' ? 'rtl' : 'auto';
+  link.textContent = `${route.textContent.trim()} →`;
+  link.addEventListener('click', () => {
+    // The visitor may have changed sections since this notice was created.
+    link.href = route.href;
+    try { localStorage.setItem(languageChoiceKey, preferred); } catch {}
+  });
+  window.addEventListener('hashchange', () => { link.href = route.href; });
+  const dismiss = document.createElement('button');
+  dismiss.type = 'button';
+  dismiss.textContent = '×';
+  dismiss.setAttribute('aria-label', 'Cerrar sugerencia de idioma');
+  dismiss.addEventListener('click', () => {
+    try { localStorage.setItem(languageDismissedKey, '1'); } catch {}
+    notice.remove();
+  });
+  notice.append(symbol, link, dismiss);
+  document.body.append(notice);
+}
+offerLanguage();
 renderAircraft();
 document.dispatchEvent(new CustomEvent('openrc-language'));
 

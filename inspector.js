@@ -17,9 +17,12 @@
   let returnFocus = launch;
   let viewer = null, ready = false, failed = false, generation = 0, runtime = null, timeout = 0;
 
+  function compactCamera() {
+    return mount.clientWidth < 900 || mount.clientWidth / Math.max(1,mount.clientHeight) < .9;
+  }
   function cameraOrbit(key) {
-    const portrait = mount.clientWidth / Math.max(1,mount.clientHeight) < .9;
-    return {perspective:`140deg 68deg ${portrait ? 110 : 75}%`,side:`90deg 78deg ${portrait ? 110 : 85}%`,top:`180deg 0deg ${portrait ? 115 : 100}%`}[key];
+    const compact = compactCamera();
+    return {perspective:`140deg 68deg ${compact ? 110 : 75}%`,side:`90deg 78deg ${compact ? 125 : 85}%`,top:`180deg 0deg ${compact ? 115 : 100}%`}[key];
   }
 
   function loadViews() {
@@ -126,11 +129,11 @@
     if(!ready || !viewer || select.value !== 'jet') return;
     const view = jetViews?.[key];
     if(!view) {setCamera('perspective');return;}
-    const portrait = mount.clientWidth / Math.max(1,mount.clientHeight) < .9;
+    const compact = compactCamera();
     viewer.interpolationDecay = reduced.matches ? 0 : 125;
     viewer.fieldOfView = `${Number.isFinite(view.fov) ? view.fov : 38}deg`;
     viewer.cameraTarget = view.target.map(value => `${value}m`).join(' ');
-    viewer.cameraOrbit = `${view.orbit[0]}deg ${view.orbit[1]}deg ${view.orbit[2] * (portrait ? 1.55 : 1)}m`;
+    viewer.cameraOrbit = `${view.orbit[0]}deg ${view.orbit[1]}deg ${view.orbit[2] * (compact ? 1.55 : 1)}m`;
     if(reduced.matches) viewer.jumpCameraToGoal();
     document.querySelectorAll('[data-camera]').forEach(button => button.setAttribute('aria-pressed','false'));
     document.querySelectorAll('[data-jet-focus]').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.jetFocus === key)));

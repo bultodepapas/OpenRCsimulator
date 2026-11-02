@@ -10,7 +10,9 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const connection = navigator.connection;
   const slowConnection = () => /^(slow-2g|2g|3g)$/.test(connection?.effectiveType);
-  let visible = false, started = false, allowed = !reduced.matches && !connection?.saveData && !slowConnection();
+  // Unknown connection information is a reason to leave the poster in place.
+  // The visitor can still start the film with the existing play button.
+  let visible = false, started = false, allowed = !reduced.matches && !!connection && !connection.saveData && !slowConnection();
   let requested = 0, playback = 0, inspection = false;
   let pageReady = document.readyState === 'complete', explicitPlayback = false;
   let geometry = null, measureRequested = 0;
