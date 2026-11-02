@@ -14,9 +14,19 @@ A fresh checkout, worktree or app copy needs an import before standalone scripts
 
 `app/test.sh` and `app/capture.sh` import automatically. Pass `--godot "$(app/get-godot.sh)"` to Python runners that accept it when recording an explicit engine identity.
 
+## Verification scope
+
+Choose checks by the behavior and contracts a change can affect, using the [task index](README.md) and owning track guide.
+
+1. **While editing:** run the smallest existing reproducer, checked script, generator check or area checker that exercises the change. Parse modified GDScript before integration. Add a focused regression check for an uncovered failure mode when its recurrence would matter. Documentation-only edits need content and link review.
+2. **On a stable candidate:** verify affected consumers and boundaries, including relevant replay, visual or device checks. Keep the source, data, engine and configuration identities with the result. Repeat a local check when its inputs change, it fails or its evidence remains inconclusive. Use a local full suite for broad shared changes, release preparation or when the required CI run cannot cover the candidate.
+3. **At the CI gate:** inspect the required jobs for the final source. Current CI runs the full app and visual suites in shadow mode even for documentation-only changes; [CI scope and rollout](../../tools/ci/README.md#current-ci-behavior) owns any future skip policy. A focused pass does not establish full-suite coverage. Fix failed required jobs before claiming automated verification complete.
+
+Flight-feel, controls and aircraft-physics tuning still require the [flight-log baseline and candidate workflow](physics.md#flight-log-and-replay). Generated data and new aircraft configurations retain their owning generator and acceptance checks. Full software checks do not establish physical or target-hardware qualification.
+
 ## Full app suite
 
-`app/test.sh` runs the repository's app checks: generators, parse/compilation coverage for every GDScript, every discovered unit script and integration/CLI/trace/replay checks. Full runs obtain unit-script parsing from their required execution; other scripts receive separate parse checks. Use focused checks during development, then the required full suite for app integration. The script stops at the first failure.
+`app/test.sh` runs the repository's app checks: generators, parse/compilation coverage for every GDScript, every discovered unit script and integration/CLI/trace/replay checks. Full runs obtain unit-script parsing from their required execution; other scripts receive separate parse checks. Use it locally according to the [verification scope](#verification-scope); CI runs it as a required gate. The script stops at the first failure.
 
 ```sh
 app/test.sh

@@ -31,7 +31,7 @@ $D stop
   `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'`.
 - Discover anything else with `$D methods node=AppRoot`, `$D find name=*Camera*`, `$D get node=... `, then `call`/`set`/`eval`.
 - It is software inspection, not flight evidence: exact replays use flight logs (`record action=start`).
-- Regression pass in one command: `$D smoke` (own headless session; add a `tools/debug/scenarios/*.txt` file for
-  each flow bug you fix). Load phases inside one long frame: `launch --verbose`, then `$D timeline --since <seq>`.
+- Regression pass in one command: `$D smoke` (own headless session; add a `tools/debug/scenarios/*.txt` file when
+  existing checks cannot reproduce an important flow regression). Load phases inside one long frame: `launch --verbose`, then `$D timeline --since <seq>`.
 - Other agents may share this machine: put `OPENRC_DEBUG_BRIDGE=<your port>` on every command after `launch`.
 - Run one rendered app at a time on the shared VM; always `stop` it.

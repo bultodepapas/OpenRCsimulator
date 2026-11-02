@@ -25,7 +25,7 @@ Extends the [shared playbook](debugging.md). Tools: [physics](physics.md). [Back
 ## Verify
 
 1. The reproducing trace or test changes as intended.
-2. Battery: baseline and candidate with the same `--aircraft` and `--only`, then `compare.py`. Explain every change beyond tolerance; unexpected changes in other tests are regressions until explained.
+2. For flight-feel, control or aircraft-physics tuning, follow the [flight-log baseline and candidate workflow](physics.md#flight-log-and-replay). Run affected battery cases with the same `--aircraft` and `--only` when flight response changes, then `compare.py`. Explain every change beyond tolerance; unexpected changes in other tests are regressions until explained.
 3. Golden flights: an intended physics change fails `test_golden.gd`; re-record with `record_golden.gd` only with the explanation in the commit and the owning research report.
 4. Generated aircraft data: the owning generator's `--check` passes.
-5. `app/test.sh` passes, including the parse check and the float64 guard.
+5. Follow the [verification scope](shared.md#verification-scope) for focused and full runs. CI's required app gate includes parsing and the float64 guard.

@@ -7,7 +7,7 @@ The Linux CI capture workflow uses Xvfb with Mesa llvmpipe (software OpenGL, `gl
 ## Visual capture suite
 
 - **Purpose:** render the reference views, field cases, UI screens and registered area checks; check images, readability and a trace. The script owns suite membership; additional tools appear below.
-- **When:** before committing a change under `app/render/`, shaders, landscape, scenery or UI layout; CI runs it as "Godot visual captures".
+- **When:** CI's complete visual gate, or local verification of a broad visual change or release candidate. During development use the affected [area checker](#area-capture-checkers) or [single capture](#single-capture), and inspect affected 1080p rendering when readability or presentation changes.
 - **Command:** `app/capture.sh`
 - **Result:** `app/captures/run-manifest.json` exists only when every capture, image check and trace passed. Any failure exits nonzero and prints the failing step; per-area output is under `app/captures/<area>/`.
 - **Gotchas:**
@@ -16,7 +16,7 @@ The Linux CI capture workflow uses Xvfb with Mesa llvmpipe (software OpenGL, `gl
   - It sets `OPENRC_SCENERY=off` and `LP_NUM_THREADS=1` so captures repeat byte for byte.
   - Shaders must not read `TIME`; animation uses the `sim_clock` global uniform (`app/test.sh` enforces this).
 
-The full suite also writes `app/captures/timings.tsv` with phase durations and pass/failure. These are wall-clock diagnostics, not a GPU benchmark. For a partial local investigation, use `bash app/capture.sh --group GROUP --out /absolute/new/output`; groups are `core`, `ui`, `quality`, `terrain-atmosphere`, `ground`, `vegetation` and `scenario`. Output must be fresh and outside `app/`; grouped runs isolate settings and preserve the checkout capture lock. CI still runs the full suite.
+The full suite also writes `app/captures/timings.tsv` with phase durations and pass/failure. These are wall-clock diagnostics, not a GPU benchmark. For a partial local investigation, use `bash app/capture.sh --group GROUP --out /absolute/new/output`; groups are `core`, `ui`, `quality`, `terrain-atmosphere`, `ground`, `vegetation` and `scenario`. Output must be fresh and outside `app/`; grouped runs isolate settings and preserve the checkout capture lock. CI still runs the full suite. Follow the shared [verification scope](shared.md#verification-scope) for when to repeat local checks.
 
 For an experimental coordinated run, add `--run-id UNIQUE_RUN_ID` to every group invocation. Use one fresh ID for all seven groups (1–128 ASCII letters, digits, dots, underscores or hyphens, starting with a letter or digit). Each successful group writes `capture-group-receipt.json`; a failed or interrupted group cannot finish its receipt. Use independent checkouts with identical source and inputs for concurrent jobs, and only one rendered process per host. Output inside a checkout must be Git-ignored. Keep source and imported configuration unchanged throughout the run; a changed commit or input requires a new run.
 

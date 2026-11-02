@@ -1,342 +1,436 @@
-# Apple Silicon, Metal and MetalFX integration plan
+# Apple Silicon optimization — master implementation plan
 
-Updated 2026-10-28 · **Owner:** desktop/performance maintainer (DT/PT), with VQ for rendering and SF/FL for numerical acceptance. **Prefix:** `DT-MAC-`. **Status:** source audit complete; Windows preparation implements native acquisition, bounded capture, isolated renderer trials and guarded MetalFX policy. Native Mac qualification and evidence-dependent engine/optimization work remain open. This is a production integration plan, not a production-readiness claim.
+Updated 2026-11-02 · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Source audited:** `46b004c7b469448c29ef96168da4f03cee2c6d23`. **Status:** audit complete; existing preparation partially implemented and fixture-checked; native Mac qualification open. This task changes documentation only.
 
-Deliver a shared native ARM64 path that works well across **M1, M2, M3, M4 and M5 Macs**, including their actually released chip/chassis variants. The common performance objective is **1920×1080 / 60 Hz**, with quality scaling to measured headroom. Preserve aircraft readability, controls and simulation behavior. This is an execution subtrack of [Desktop delivery](../DESKTOP-DELIVERY-PLAN.md), not a claim of measured speedup or already-qualified support.
+This plan and the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) are the two authoritative Apple optimization documents. The background contains implementation facts, research and limitations; this document contains the execution sequence and gates. Existing research remains dated evidence and tool READMEs remain command authorities. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) retains release ownership. No optimization or new platform support is authorized as completed by this plan.
 
-**Hardware available:** the user confirmed a **MacBook Air M1 with 8 GB unified memory** on 2026-10-24. This is the intended low-memory/fanless baseline host. GPU core count (7 or 8), exact model identifier and macOS build remain to be recorded. Use it for DT-MAC-01–03; hardware availability is confirmed, but native performance qualification has not run.
+The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**, starting at native 1920×1080/60 Hz on the available M1. Higher resolutions follow, then 720p compatibility. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
 
-The [2026-10-28 audit and primary-source refresh](../research/desktop-delivery-investigations/DT-MAC-00-R2/README.md) is the current research baseline, including Metal 4, 2026 MetalFX changes and newer hardware. The [initial source review](../research/apple-silicon-performance-2026-10-24.md) and [20 investigations, I01–I20](../research/desktop-delivery-investigations/DT-MAC-00-R1/README.md) retain the earlier findings. Existing [DT-00-R2 investigations](../research/desktop-delivery-investigations/DT-00-R2/README.md) retain packaging, input, audio and ARM64 numerical evidence. This plan owns `DT-MAC` status; parent DT gates retain their authority.
+## 1. Priorities, invariants and decision rules
 
-## 1. Scope and ownership
+1. Prefer a source-proven correctness/tooling repair before requiring hardware. Do not repeat completed acquisition, streaming, renderer-isolation, culling, caching or MetalFX-policy work.
+2. Do not invent performance gains from source inspection. Prepare workloads, fixtures, receipts, reducers and bounded failure behavior off-Mac; require native evidence before promoting a renderer, preset, native solver or performance claim.
+3. Keep one hypothesis and mechanism per candidate. If a baseline miss is CPU/observer-bound, reconstruction is not its repair. If it is GPU/pixel-bound, an ARM64 evaluator port is not its first repair. Estimate engineering effort after attribution, not from advertised GPU throughput.
+4. Preserve float64 state, 240 Hz, RK4 order, validation, accepted-tick transactions, input sampling, collision identity, exact replay policies and the vehicle-independent kernel. Never weaken a guard, lower physics rate, loosen tolerance or re-record goldens to pass a performance gate.
+5. Keep the current exact Godot 4.8-beta1 pin for the baseline. Engine upgrades, Apple Clang changes, shader changes, SDK changes and backend changes are independent candidates. Preserve the beta1 universal-template workaround only where applicable.
+6. Reuse official Godot, Apple tools, existing repository collectors, free plotting tools and retained licensed assets. Build only missing glue with a demonstrable contract; no replacement profiler, telemetry backend, asset library, renderer or GPU flight solver.
+7. A failed optional path must leave a usable reference/Native/Standard route. No chip-name-only feature gates, global App Nap disabling, forced CPU affinity, automatic privilege escalation or surprise launch-time stress tests.
+8. Timing runs are serial on an otherwise idle host. Independent developers may work on separate files, but shared app interaction, imports, engine builds and benchmark CPU/GPU load cannot overlap a campaign.
 
-Owned documentation: this plan and its dated research. Future measurement scripts and evidence belong under `research/performance/` and `docs/research/desktop-delivery-investigations/`, using the step ID in each evidence directory. Create those outputs only when work executes.
+**Priority definitions:** P0 unlocks reliable evidence or fixes a source-proven fault; P1 addresses a measured user-facing limit with existing architecture; P2 introduces a new native/platform/engine boundary and requires stronger evidence. Relative size is small (bounded module/tool), medium (several existing owners) or large (platform/compiler/engine qualification); these are planning classes, not calendar promises.
 
-Shared changes require the existing owner: `main.gd` and frame collection (PT/VQ), `app/render/` and graphics tooling (VQ/FW/LU/SM), display/preferences (UI), exports and engine pins (DT/GDU), simulation and replay (SF/FL). Keep implementation to one measured mechanism per change. Recheck Git status before integration; these paths already have parallel work.
+### Status and owner map
 
-- Preserve float64 state, 240 Hz ticks, RK4 order, the shared `VehicleModel` boundary, collision identity and input sampling. Never lower physics frequency or precision to meet a graphics target.
-- Use the currently adopted **official Godot 4.8-beta1**, exact editor/template hashes and source commit `4d10419ca`, for the first comparison. [GDU-03](godot-4.8-upgrade.md) records the owner's beta adoption. Godot's current stable release remains 4.7.2; beta adoption does not close Mac release gates. Any newer engine or upstream patch is a separate, pinned candidate; do not silently downgrade or advance the shared project. [Official beta release](https://godotengine.org/article/dev-snapshot-godot-4-8-beta-1/), [release policy](https://docs.godotengine.org/en/stable/about/release_policy.html).
-- Use official Godot binaries, Xcode/Instruments, existing project tooling and existing licensed assets. Download available free tools rather than building a profiler, renderer or asset replacement.
-- Follow [resolution priority](../../AGENTS.md#display-resolution-priorities): 1080p first, above 1080p second, 720p last. A reconstructed 1080p output must disclose its lower internal resolution.
-- Native ARM64, Intel under Rosetta, native Intel and hosted CI are separate results. This track qualifies named Apple Silicon configurations only.
-- Keep a common distribution and baseline render path; chip-specific native instructions, hardware ray tracing, Metal 4-only features and M5-only GPU facilities cannot become mandatory for M1/M2. Optional paths require engine, OS and actual device support, not a chip-name match.
-
-## 2. Starting point and decisions to test
-
-The table below retains the pre-implementation audit. The subsequent
-[DT-MAC-02 preparation evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md)
-records the implemented changes and Windows checks. Current instructions live in
-the [native Mac tooling guide](../../tools/godot/README.md#native-apple-silicon-setup-and-preflight-dt-mac-02a),
-[isolated renderer guide](../../tools/graphics/README.md#isolated-mac-renderer-trials-dt-mac)
-and [performance guide](../../research/performance/README.md). No native Mac
-measurement is inferred from this preparation.
-
-| Current source audit, 2026-10-28 | Consequence |
+| Existing step | Current status and destination |
 | --- | --- |
-| [Project settings](../../app/project.godot) select Compatibility, a 1280×720 default viewport and 4× MSAA | Explicitly set and verify 1080p backing/render pixels; the default is not the target |
-| [Engine downloader](../../app/get-godot.sh) supports Linux/Windows x86_64, rejects Darwin; [export preset](../../app/export_presets.cfg) is macOS universal | Add pinned native Mac acquisition and verify exported execution; an export preset is not a working Mac developer/CI path |
-| [High trial](../../tools/graphics/README.md) changes renderer, SSAO, shadow atlas/cascades and reflections | Standard versus High is a product-profile comparison, not an isolated Metal benchmark |
-| [Frame diagnosis](../../research/performance/README.md#cpu-gpu-and-memory-diagnosis) has a 300 s bound; Mac Compatibility viewport timing is disabled | Fix continuous soak collection first; missing GPU timing is not zero GPU cost |
-| [Frame diagnostics](../../app/render/frame_diagnostics.gd) already report effective method/driver/adapter/API when enabled; top-level pacing identity and platform coverage remain incomplete | Preserve those fields; add requested-versus-effective selection, OS/API generation evidence, numeric VSync mode and present timing without treating callback intervals as displayed frames |
-| Current [reconstruction adapter](../../app/render/reconstruction.gd) has Native/FSR2 and experimental FSR3/DLSS modes, no MetalFX mode | Engine support does not mean OpenRC exposes or qualifies MetalFX |
-| [Scene detail Auto](../../app/render/scene_detail.gd) classifies `apple m` as integrated/Medium and unknown GPUs as High | Replace or retain this heuristic explicitly after measurement; the proposed capability policy is not existing behavior |
-| [High guide](../../tools/graphics/README.md) retains version-specific reflection-resource investigations and a Windows custom-engine experiment | Revalidate the exact 4.8-beta1 Mac build; world-switch memory growth blocks adoption. Historical 4.7.2 defects are not automatically current Mac defects |
+| DT-MAC-00 / 00-R1 / 00-R2 | Completed historical investigations; retained in background provenance. This consolidation is DT-MAC-00-R3. |
+| DT-MAC-01 | M1 availability confirmed; native inventory and baseline manifest open — phase 3. |
+| DT-MAC-02a/b | Getter/template/preflight and bounded v3 capture implemented; native execution/overhead and coverage gaps open — phases 1–3. |
+| DT-MAC-02c/d/e/f/g/h | Substeps registered here: portable tool repairs, stream/report compatibility, native host diagnostics, app-route observation, voluntary share bundle, Mac reference-release identity — phases 1, 2 and 8. |
+| DT-MAC-03a/b | Reference baseline and attribution — phase 3. |
+| DT-MAC-04a–d | Conditional CPU/observer/loading/memory work — phase 4. |
+| DT-MAC-04n1–n4 | Conditional ARM64 NK-3 feasibility, evaluator parity, admission and package work — phase 10, under SF/NK policy. |
+| DT-MAC-05a | Isolated renderer tools implemented; native parity/comparison open — phase 5. |
+| DT-MAC-05b/c | Product restart/recovery and renderer decision — phases 8 and 5 respectively. |
+| DT-MAC-06a/b–d | Capability policy and attributed GPU/pipeline/resource work — phases 8 and 6. |
+| DT-MAC-07a–c | MetalFX policy/Settings prepared; real execution, failure/reset, motion/lifecycle and benefit open — phase 7. |
+| DT-MAC-08 / 08a / 08b / 09 | Sustained M1, community coverage, native package and promotion — phase 9. |
+| DT-MAC-10 / 11 / 12 / 13 | Conditional engine-level Metal/new reconstruction/presentation work — phase 12. |
+| DT-MAC-13i1–i4 | iOS feasibility/delivery/lifecycle/qualification branch — phase 11; does not declare a shipped mobile product. |
 
-**Working hypothesis:** Mobile/Metal deserves the first renderer experiment for the M1 floor; Forward+/Metal remains a serious comparison for feature coverage and higher tiers. Compatibility remains the control and recovery path. The winner is determined by whole-session timing, power, memory and visual acceptance, not API reputation.
+Shared code retains its existing owners: DT/GDU exports and pins, PT measurement, VQ reconstruction/profile, LU/FW/SM landscape effects, UI preferences/routes, AUD audio, SF/FL kernel/recording and each vehicle's validation. Register an implemented cross-track decision in the existing decision log when that decision is actually adopted; this plan does not silently change NK-3's Mac reference-only policy.
 
-Godot supports both Mobile and Forward+ on native Metal; Vulkan on macOS uses MoltenVK. **The pinned 4.8-beta1 source constructs an `MTL3::RenderingDeviceDriverMetal` and its MetalFX callbacks use MTL3 command buffers.** This contradicts the earlier plan's inference from 4.7 documentation that macOS 26 automatically gives this build a Metal 4 command backend. OS/API labels are insufficient: record the actual engine implementation. MetalFX integration can proceed through this existing Metal path; full Metal 4 command submission is separate upstream work. [Pinned driver factory](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/drivers/metal/rendering_context_driver_metal.cpp), [pinned MetalFX callbacks](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/servers/rendering/renderer_rd/effects/metal_fx.cpp). The published Apple Silicon engine floor is macOS 13; OpenRC's product floor still needs final-package and hardware tests. [System requirements](https://docs.godotengine.org/en/4.7/about/system_requirements.html).
+## 2. Execution graph and strategic testing
 
-## 3. Hardware and workload matrix
+**Critical path:** phase 1 portable launch/resource correctness → phase 3 M1 reference/attribution → selected phase 4 or 5/6 → phase 8 safe product integration → phase 9 final qualification. Phase 2 diagnostics preparation can run beside source-only phase 1; only required missing channels must block baseline evidence. The first technical attribution can use direct-flight v3 with live physics/input, existing v3 reducers and separate Home/Fly smoke. Defer optional Perfetto migration and product-route collection until needed; product-route collection and bundle-aware release identity are mandatory before claiming final normal-product/release qualification. Phase 7 requires a verified GPU-pixel bottleneck and working renderer. Phases 10–12 are independent conditional projects and must not delay a qualified baseline without evidence that they are necessary.
 
-| Priority | Host/profile | Purpose |
+A branch may finish with **retain baseline / trigger absent**, with a concrete reason. This is valid for optional tuning, MetalFX, NK-3, iOS and advanced APIs. Mandatory correctness, package, pilot or performance failures remain open; they cannot be relabeled optional.
+
+### Test catalogue
+
+Use the [tool index](../tools/README.md) and owning READMEs for invocation. Godot tests use the checked runner and a fresh import when required; inspect engine diagnostics, not just exit status. Names below are existing files unless explicitly called a proposed case. Add cases to the existing family rather than a parallel harness.
+
+| ID | Exact checks / purpose | When needed |
 | --- | --- | --- |
-| Available floor host | User's MacBook Air M1, 8 GB; GPU core count and macOS pending inventory | First native ARM64 baseline, memory-pressure tests and fanless thermal run; availability is confirmed, measurements are not |
-| GPU variant coverage | Identify whether the available Air has 7 or 8 GPU cores | If it has 8 cores, retain the 7-core GPU coverage gap; the 8 GB/fanless host requirement is already met |
-| Comparison | Actively cooled M1 Mac mini or 13-inch MacBook Pro; record RAM/GPU | Distinguish chassis/cooling effects; different RAM remains a confounder |
-| Cross-generation coverage | At least one named M2, M3, M4 and M5 host, with available Pro/Max/Ultra variants recorded separately | Same release/reference cases on each generation; request shared tester reports when local hardware is unavailable, without assuming access |
-| OS coverage | Oldest proposed OS actually supported by each Mac model and selected backend, plus a named newer OS build | Do not try macOS 13 on hardware that cannot install it. Metal 3/4 and OS changes are separate factors; Metal 4 is not the common-path requirement |
-| Display | 1080p at 60 Hz first; then 1440p, Retina panel resolution and 4K; 720p last | Record window points, drawable pixels, internal 3D size, UI scale, refresh, VSync and cap separately |
-| Power | AC normal mode baseline; battery normal and available Low Power Mode separate | Record battery state, thermal state, display brightness, ambient conditions and external displays |
+| T0 documentation | Existing `tools/ci/check_docs.py` link/anchor logic, targeted local-link checking of these documents, `git diff --check`, current source/path verification. CI's guide allowlist does not automatically cover every new Markdown file. | This audit and documentation-only edits; no game run required. |
+| T1 acquisition/platform tools | `tools/godot/test_macos_preflight.py`, `test_macos_universal_template.py`; `tools/debug/test_debugctl.py`; relevant getter/template fixtures named in tool guides. | Only changed getter/template/preflight/launch paths, plus native smoke in phase 3. |
+| T2 measurement/data integrity | `tools/godot/test_resource_samples.py`, `test_resource_runner.py`, `test_frame_capture.py`, `test_incident_bundle.py`, `test_perfetto_export.py`; `research/performance/test_native_summary.py`, `test_frame_diagnose.py`; checked `test_frame_samples.gd`, `test_frame_diagnostics.gd`. | Collector/schema/reader/helper change; run the affected producer and downstream consumers together. |
+| T3 renderer policy | `tools/graphics/test_launch.py`, `test_prepare_research.py`; checked `test_high_graphics_profile.gd`, `test_high_graphics_restart.gd`, `test_scene_detail.gd`. | Trial selection, effects identity, policy or restart change. |
+| T4 reconstruction/settings | Checked `test_metalfx_policy.gd`, `test_reconstruction.gd`, `test_reconstruction_history.gd`, `test_camera_history.gd`, `test_display_preferences.gd`, `test_advanced_graphics_settings.gd`; affected provider failure/history tests. | Reconstruction, camera reset seam, AA ownership, preference or effective-mode change. |
+| T5 local visual/lifecycle | Lake: `test_lake_planar_reflection.gd`, `test_lake_probe_ambient.gd`, `test_world_sky.gd`, `test_water_director.gd`. Foliage: `test_treeline.gd`, `test_field_tree_detail.gd`, `test_near_grass.gd`, `test_imported_tree_rendering.gd`. Existing area capture checkers and native moving clips. | Only the changed effect and shared consumers; static tests cannot close motion/readability. |
+| T6 loading/observers | `research/performance/test_loading_probe.py`; checked `test_flight_loading.gd`, `test_flight_loading_surface.gd`, `test_launch_trim_cache.gd`, `test_launch_trim_async.gd`, `test_ui_preview_resources.gd`; relevant audio/statistics/recorder checks selected from the actual changed callbacks. | Loading, worker/cache, ownership, observers or recording; add focused cancellation/alias/stale-generation tests only if behavior is introduced. |
+| T7 numerics/native | Existing exact `.orfl` replay and candidate comparisons; checked `test_golden.gd`, `test_replay_integrity.gd`, `test_replay_policy.gd`; native `test_native_stage.gd`, `test_native_session.gd`, `test_native_replay.gd`, helicopter equivalents; NK-3 stage/trajectory/family/weather/fleet and mutation controls. | Same-host unchanged physics for integrated changes; full native acceptance only when changing/admitting native code. H9 cross-platform policy is a different gate. |
+| T8 native performance/product | Existing frame reducers, session baseline, loading probe, debug smoke on a suitable debug build, native developer captures, release control runs and named pilot cases. | After fixtures pass; smallest affected cases during iteration, full required matrix for finalists. |
+| T9 integrated release | Required repository source/parse/unit/integration checks using `app/test.sh` partitions and current CI policy; relevant visual suite, resource/package/export checks and final downloaded Mac artifact. | Once per final frozen integration candidate; full requalification after an engine/kernel/ABI-wide change. New changes invalidate affected results. |
 
-### Generation coverage ledger
+Do not run the 40+ minute full suite for each documentation edit, JSON fixture or MSAA hypothesis. Use focused checks to reject candidates cheaply. Do not suppress required CI checks: current scope policy remains authoritative. Reuse a previous result only if relevant source, data, configuration, engine and artifact identities match; list exclusions. A baseline failure stays in the failure ledger with owner and scope. The old DT-MAC-02 partial suite is historical evidence, not a current green baseline.
 
-These are coverage requirements, not performance rankings. M1 Max versus base M5, for example, is not a controlled generational comparison. Metal families describe API features; memory, chassis and actual workload still determine quality. The [hardware investigations](../research/desktop-delivery-investigations/DT-MAC-00-R1/01-hardware-memory.md) retain primary evidence.
+### Campaign protocol and acceptance budgets
 
-| Generation | Apple GPU family | Coverage emphasis | Current evidence |
-| --- | --- | --- | --- |
-| M1 | Apple7 | Common baseline, smallest memory configuration, older GPU feature path | Air with 8 GB available; GPU variant, macOS and results pending |
-| M2 | Apple8 | Common-path regression and memory/chassis scaling | Hardware test pending |
-| M3 | Apple9 | Newer GPU architecture/format paths without making them baseline requirements | Hardware test pending |
-| M4 | Apple9 | Same family does not imply identical throughput; verify presets and display behavior | Hardware test pending |
-| M5 | Apple10 | Optional neural/GPU capabilities, import formats and quality headroom | Hardware test pending |
-| M6, separate latest-hardware extension | Not established by the retained May 2026 feature table; query the device | Follow the [dated availability/variant evidence](../research/desktop-delivery-investigations/DT-MAC-00-R2/apple-technologies.md); separate released from announced models and qualify a named host | Hardware test pending; no result inferred from M5 |
+Freeze these targets before A/B runs. They are proposed/existing owning-track budgets, **not achieved measurements**. If a target must change, explain and freeze the revision before comparing a candidate.
 
-For each row retain model identifier, base/Pro/Max/Ultra suffix where applicable, CPU/GPU cores, memory, cooling class, OS/build, display, package hash, effective backend/preset and pass/fail/untested. Track three claims separately: **launches**, **passes software/visual checks**, **meets sustained performance/readability gates**. Initial acceptance is the available M1; completion of the M1–M5 release objective requires evidence for the other rows, not extrapolation.
-
-Apple lists the M1 Air's 4 performance + 4 efficiency CPU cores, 7/8 GPU variants, 8/16 GB unified memory and 2560×1600 display. The panel has about **1.98×** the pixels of 1080p; 4K has **4×**. These are pixel-count ratios, not predicted frame-time ratios. [Apple specifications](https://support.apple.com/en-us/111883).
-
-Freeze the aircraft, landscape, camera, weather/time, scenery tier, smoke and companion count for each case:
-
-1. Cold process launch → Home → Fly; repeat warm and after a controlled fresh import/cache condition, labeling each separately.
-2. Active normal circuit, low approach over grass/trees, distant aircraft against sky and terrain, and a detailed aircraft near the pilot.
-3. Lake/reflection view, smoke-heavy maneuver and dusk/night lights. Include Club field and Green paradise.
-4. Home ↔ flight ↔ Workshop transitions, aircraft/landscape changes and repeated world destruction; exercise at least 10 cycles after cache warmup.
-5. Continuous 30-minute active flight, followed by separate minimize, focus-loss, display-change and sleep/resume cases. Paused time never counts as sustained flight.
-6. Qualify helicopter/ground activities separately if included in the Mac release; do not generalize fixed-wing measurements. Companion-disabled and a declared companion workload are separate cases.
-
-Reuse [flight logs](../FLIGHT-LOGGING.md) for physics comparisons and existing camera/capture cases for rendering. `--scripted` is a controlled rendering workload, **not** an exact replay or proof of active physics. Real pilot circuits remain a distinct acceptance task.
-
-## 4. Tools and instrumentation
-
-The [tool index](../tools/README.md) and linked READMEs own commands. Verify Mac compatibility of each runner before use; adapt the existing entry point instead of making a second harness.
-
-| Tool | Use and limitation |
+| Metric | Required method and acceptance |
 | --- | --- |
-| [Debug bridge](../../tools/debug/README.md) | Launch/inspect the app, drive repeatable transitions, inspect frames/hitches, profile scripts and run smoke. Use its controls instead of mouse automation |
-| [Frame diagnosis and reducers](../../research/performance/README.md#cpu-gpu-and-memory-diagnosis) | Existing CPU/GPU/counter schema and raw frame intervals; extend metadata/soak support here. Root-viewport timing excludes other viewports and can lag |
-| [Process resource tools](../../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4) | Process RAM/CPU/I/O and system memory context; verify supported Mac fields. Engine allocation estimates are not RSS or total unified-memory pressure |
-| Godot Profiler / Visual Profiler | Attribute GDScript, render passes and pipeline compilation during diagnostic runs; final timing uses release exports with expensive observers off |
-| Instruments: Time Profiler, Allocations, Game Performance / Metal System Trace | CPU stacks, allocation churn, CPU/GPU overlap, stalls and presentation. Attach to the actual native app with matching symbols where available. [Apple workflow](https://developer.apple.com/documentation/xcode/analyzing-the-performance-of-your-metal-app) |
-| Xcode Metal debugger, GPU capture and counters | Inspect expensive passes, attachments, bandwidth and shader limiters. API/Shader Validation belongs in correctness runs, not timed acceptance. [Apple tools](https://developer.apple.com/documentation/xcode/metal-developer-workflows) |
-| Metal Performance HUD | Quick Metal workload/interval/memory observations; `MTL_HUD_ENABLED=1` and optional `MTL_HUD_LOG_ENABLED=1` are diagnostic settings. Record overhead and remove them for final control runs. Not an OpenGL profiler. [Apple HUD](https://developer.apple.com/documentation/xcode/monitoring-your-metal-apps-graphics-performance) |
-| Activity Monitor and available macOS power diagnostics | Memory pressure, swap, Energy Impact, App Nap and process architecture; use `powermetrics` only where its host help/permissions expose the needed counters. Relative Energy Impact is not watts or battery-life proof |
-| Newer Instruments / `metalperftrace` workflows | Optional local JSON/trace analysis when installed OS/Xcode support it; preserve a working M1/older-OS tool path. Do not raise the product OS floor or add telemetry just to use newer diagnostics. [Tool investigation I18](../research/desktop-delivery-investigations/DT-MAC-00-R1/03-runtime-validation.md#i18--free-profiling-tools-and-their-coverage-boundaries) |
-| Existing capture/readability and lifecycle checks | Compare materials, aircraft orientation, temporal artifacts and resource recovery. Linux llvmpipe and headless checks cannot qualify M1 graphics |
+| Frame pacing | Native 1080p, declared 60 Hz/cap/VSync. Existing DT process-loop proposal: p95 ≤18 ms, p99 ≤25 ms; report maxima, >33.3 ms and >50 ms events and consecutive bursts. Presentation evidence is separate. |
+| Throughput | Separate uncapped experiment with the same visible workload; do not use VSync-clamped FPS to claim CPU/GPU savings. Never sum overlapping CPU/GPU timers as frame time. |
+| Physics | Preserve the owning Gate P ≤500 µs/tick target and its regime/statistic definition. Also report individual complete-session p50/p95/p99 and tail cases; a batch mean does not establish a per-tick tail gate. Unpaused sim/wall ratio 0.99–1.01. |
+| Adoption | Improvement beyond run variation and observer uncertainty; predeclared practical screen is ≥5% in the affected complete workload or removal of a reproducible hitch/leak/gate failure. Reject unexplained >5% required-case regression. A smaller proven defect repair can be justified explicitly. |
+| Loading | Existing DT goals Home ≤5 s process-cold / ≤3 s warm; Fly ≤2 s. Record request, validated ready, first draw and interactive-ready events separately. A paused first draw does not pass interaction. |
+| Memory | Before candidate tests, record a justified working ceiling on the actual floor host with OS headroom. No sustained candidate-attributable pressure/swap increase or unexplained retained growth through warm lifecycle cycles. No arbitrary “VRAM fraction” or additive RSS+GPU budget. |
+| Correctness | Required local checks, same-host exact replay where promised, current H9 cross-platform policy, unchanged collision/physics identity. No golden rewriting or tolerance widening. |
+| Visual/control | No repeatable loss of orientation, silhouette, landing cues, smoke cues, UI readability or control response; fixed-camera moving comparisons and owner pilot acceptance. |
+| Diagnostic overhead | Proposed screen: ≤1% relative increase in combined app+helper CPU-seconds per active wall-second (not one percentage point of psutil CPU%) and ≤0.2 ms frame-p95 increase, without new repeatable >50 ms hitches; also report p99, helper CPU/RSS, disk cost and repeat variation. Use both uncapped cost and 60 Hz pacing so VSync cannot hide cost; for a near-zero CPU baseline report absolute CPU-ms/s and freeze an absolute ceiling before the trial. If noise prevents this bound, state unresolved, use a lower rate or external short traces, and do not subtract overhead to manufacture a pass. |
 
-Use bounded local traces, existing CSV reducers and free plotting tools. Keep raw traces/captures in ignored `tmp/`; retain compact reports, identities and regeneration instructions in evidence. No unnecessary images or new telemetry service.
+For short candidate decisions use at least **five independent alternating baseline/candidate pairs**, initially 30 s warmup + 120 s measured, with comparable initial thermal/power conditions. Report per-run distributions and paired differences; correlated frames are not independent trials. Use pilot, render-fixture and active-physics results as distinct groups. A one-off capture diagnoses; it does not establish a speedup.
 
-## 5. Experiment protocol and acceptance
+For loading use at least five fresh-process and five warm in-process trials with cache state recorded. For an initial lifecycle screen use 10 warm transitions, then 20 for changes affecting resource ownership; the final DT campaign retains **50 Home/flight cycles**. For baseline/finalist sustained qualification use **three independent 30-minute active-flight runs**, with 30 s warmup excluded and explicit reducer minima of 30/1,800 s. Short rejected candidates do not need three soaks each. Repeat AC and battery as separate claims where applicable, after the core AC pass; unchanged binary/settings with multiple claimed power profiles still need profile-specific evidence.
 
-Before testing candidates, DT-MAC-01/02 freeze the workload manifest, numerical policy, timing definitions and a measured memory ceiling for the available 8 GB M1 Air plus OS headroom. Measure real memory pressure and swap on this host. An unavailable channel is explicitly unavailable; never substitute a zero.
+Each receipt includes source commit/dirty patch and relevant input hashes; engine/templates/package/native/SDK identities; host model/RAM/GPU/OS; actual output and internal dimensions; renderer, driver, effects, AA, reconstruction, scenery and camera; aircraft/field/weather/seed/input identity; observers, power/cache/focus state; sample scope/unit/availability/completeness; failures/exclusions; per-run and paired results; visual/replay result; accept/reject decision and rollback. A timed-out, capped, paused, recovered-prefix or substituted-backend run cannot count as a complete intended workload.
 
-- Record Git commit and dirty diff identity, package/editor/template hashes, import/config identities, architecture, macOS/Xcode versions, requested/effective renderer and driver, adapter/API, display/power state and cache conditions.
-- Use one rendered application, no competing benchmark. Run at least five independent paired trials per short case, alternating A/B order with comparable initial thermal state. Use 30 s warmup and 120 s measured windows as the initial short-run protocol. Report per-run p50/p95/p99, worst frame, sample counts, exclusions and paired differences; do not treat correlated frames as independent trials.
-- Separate uncapped throughput diagnosis from **60 Hz paced release acceptance**. Record frame intervals and presented-frame information separately. CPU and GPU overlap; do not add their times to estimate total frame time. A callback clock is not input-to-photon latency.
-- Measure observer-on/off controls. Accept a speed claim only beyond observed run variation and instrumentation uncertainty. Proposed practical screening threshold: at least 5% improvement in the predeclared bottleneck metric, with no unexplained >5% regression in another required case; a proven gate repair can justify a smaller gain.
-- Run at least three 30-minute release soaks per baseline/finalist on the floor machine, beginning from comparable conditions. This matches the existing summary tool's three-run campaign minimum; use its explicit 30/1800-second warmup/sample gates. Compare early and final five-minute windows, hitch bursts, memory/swap and thermal state. Do not concatenate six process restarts and call them one soak.
-- Extend the existing collector with bounded streaming/chunks, continuity and completion metadata before that soak. At 60 Hz, 30 minutes already yields 108,000 frames; higher refresh exceeds the current 120,000-frame ceiling. Test truncation, interrupted writes and cleanup; preserve normal launch/exit behavior outside soak mode.
-- Record effective Game Mode independently from fullscreen, power mode and focus; compare it on/off only as a separate experiment. Keep a supported baseline without relying on Game Mode. ProMotion/120 Hz and buffer-count changes require their own pacing/latency evidence after 60 Hz qualification. [Runtime/display investigations I16–I17](../research/desktop-delivery-investigations/DT-MAC-00-R1/03-runtime-validation.md).
+## 3. Phase 1 — repair portable measurement prerequisites
 
-| Gate | Required evidence / proposed target |
+**Priority/size:** P0, small-to-medium. **Dependency:** source audit only; can start without M1. **Benefit:** usable, truthful native evidence and less wasted hardware time. **Scope:** PT/DT tools and tests, no runtime optimization or engine change.
+
+### DT-MAC-02c — native launch and resource availability
+
+**Files:** `tools/debug/debugctl.py`, its tests; `tools/godot/resource_samples.py`, `run_checked.py` and affected consumer tests.
+
+**Tasks:**
+
+1. Make rendered launch platform-aware: native Aqua on Darwin without DISPLAY/WAYLAND; retain Linux display/Xvfb, Windows, explicit headless, exported-binary and wrong-port/PID safeguards. Route Mac memory observations through the existing resource sampler instead of the Linux `/proc` helper.
+2. Distinguish stable unsupported optional process-I/O fields from denied/failed required channels. Probe capability once; retain null/reason. Preserve PID identity, counter reset, sampling coverage and process-disappearance failures.
+3. Preserve old resource schema meaning or version it and migrate both incident and Perfetto consumers in the same change. A new required-channel completeness result may coexist with a partial legacy receipt; do not relabel lost samples complete.
+4. Validate horizon and capacity together: initially 1 Hz, 2,100 OS samples, covering launch + 30 s warmup + 1,800 s flight + stop margin. Compare timestamps against the actual frame interval; counts alone cannot prove coverage.
+
+**Tests:** T1 debug launch fixtures and T2 sampler/runner/consumer fixtures, including Darwin backend with no `io_counters`, access denied, missing RSS, PID reuse, early exit, counter resets, cap and Linux/Windows compatibility. Synthetic clock tests replace real 30-minute waits here.
+
+**Completion:** Aqua command construction needs no Xvfb; unsupported optional channels are explicit without hiding missing required coverage; old reports remain readable; no host privileges or simulator behavior changed. Native launch/sampling remains an open phase-3 check.
+
+### DT-MAC-02d — preserve long-stream evidence end to end
+
+**Files:** existing frame stream reader/reducers; `incident_bundle.py`, `perfetto_export.py`, their tests and owning guides.
+
+**Tasks:** reuse the v3 validator rather than implement another JSONL reader; include manifest and sidecar as one attachment unit; preserve v2. Validate basename/path containment, count/sequence/hash, finite metrics, duplicate/reordered/missing chunks, interruption and unsupported version. Reconcile producer 256 MiB allowance with downstream combined-input/event caps; stream or bound conversion instead of loading arbitrary data. The current shared reader rejects incomplete streams: preserve that strict acceptance path. If incidents must retain an interrupted prefix, add an explicit diagnostic-only reader mode with independent validity/completeness fields and no route into soak acceptance. Preserve an abrupt-crash sidecar even if no summary/trailer exists, labeling unverified/incomplete ranges; a file hash never proves completion. Retain clock anchor uncertainty and scopes. At 60 Hz a 30-minute stream has 108,000 frame slices; twelve metric tracks can produce about 1.4 million timeline events, exceeding the current one-million-event hard cap (about twice that at 120 Hz). Keep complete raw v3 data and use explicit time-window/track selection or segmented traces with interval/coverage manifests. Never silently downsample or label a selected window a complete-session timeline. Until this is complete, use v3-aware reducers and keep the raw pair separate from the old incident route.
+
+**Tests:** T2 targeted producer/reader/bundle/timeline tests with 60/120 Hz 30-minute-equivalent streams, old v2 fixtures, bad hash, oversized file, path traversal, late output collision, absent terminator and stop failure. No full game run.
+
+**Completion:** valid long streams round-trip through the bundle/reducers with preserved identity/completeness; any selected/segmented timeline declares its exact scope and caps; damaged or oversized streams fail explicitly; no sidecar loss or silent timeline truncation. A timeline with uncertain clock alignment cannot claim exact per-frame OS causality.
+
+### DT-MAC-02h — reference-release identity independent of NK-3
+
+**Priority/dependency:** mandatory for final Mac release replay/benchmark evidence; source-editor investigation can proceed while this is open. **Owners/files:** SF/FL/DT; `app/sim/flight_log.gd`, `app/app_state/native_package.gd` or a separated generic artifact-identity owner, `app/tools/flight_log_cli.gd`, `tools/flight_log/flight_log.py`, `research/performance/session_probe.gd`, `session_baseline.py` and release receipt tools.
+
+**Tasks:** separate generic verified release identity from Linux NK-3 admission. Introduce a versioned Mac bundle identity covering the final executable, separate PCK, solver-relevant resources and any actual native sidecars. Define hash/receipt publication around signing without circular self-hashes or post-signing mutation; artifact consistency is distinct from trust/signature verification. Do not enable the Linux OS guard or label a Mach-O-only hash `packaged-executable-v1` and call it complete. Preserve existing Linux exact-replay identities and refuse unknown kinds. Update log/replay and release benchmark validators that currently assume solver identity equals executable SHA; explicit native Godot selection fixes the Python tool's Linux default during development.
+
+**Tests:** T7 plus `tools/flight_log/test_flight_log.py`, checked `test_flight_log.gd`, `test_flight_log_inputs.gd`, `test_flight_log_report_write.gd`, relevant release manifest and package tests. Add fixtures for missing/changed/substituted PCK, executable, sidecar, receipt, wrong bundle/architecture and signed-byte drift; Linux legacy logs continue to verify. On the Mac, record and exactly replay a complete reference flight from the actual package and run its reference release session probe. Check candidate identity changes remain explicit and cannot be passed as exact replay.
+
+**Completion:** reference-only Mac release identity is verifiable without an installed NK-3 solver; final executable and loaded solver contents are bound, missing identity fails closed, and package replay/benchmark validation accepts only the correct artifact. Editor/source replay is labeled separately until this native gate passes.
+
+## 4. Phase 2 — bounded Apple diagnostics, only where needed
+
+**Priority/size:** P0 for required missing host context, otherwise P1/medium. **Dependency:** phase-1 schema decisions. **Benefit:** explain sustained thermal/memory/power behavior and make community reports useful. **Scope:** existing tools plus minimal native glue; no profiler or network service.
+
+### DT-MAC-02e — optional native host-state companion
+
+**Tasks:** first test whether installed free tools supply adequate bounded observations. If not, add a developer-invoked Foundation/Dispatch/IOKit companion under the existing tooling owner. Pin its source, compiler, SDK, deployment floor and ARM64 build identity. It reports host thermal category, low-power boolean, AC/battery source and memory-pressure events; existing psutil retains process CPU/RSS/system memory. Do not query an unrelated MTLDevice and label it game allocation.
+
+Read thermal state **before** subscribing to change notifications, register, then re-read to detect a transition during initialization; record the interval/uncertainty when snapshots differ. Apply the same read/register/re-read race handling to low-power state and record later changes. Initial memory-pressure state is unknown until observed; an event stream with no event does not prove no pressure. Collection completeness describes the observation interval, separately from whether the pressure value is known. If the campaign requires a known initial state, obtain an independently verified public/manual observation or keep that gate open. Keep unsupported/denied/error distinct. Do not request private temperature, clock or per-process GPU APIs.
+
+Use the same fresh capture ID supplied by the owning session/runner, monotonic timestamps, paired clock anchors with uncertainty, typed units/scope, sequence and final hash/count/status. Proposed bounds: ≤3,600 s, 1 Hz snapshots with 4,096 capacity, a separate 1,024-event cap and explicit byte limit. Coalescing/drop counts are visible. Use fresh single-writer output, no user paths in shareable rows, no network, daemon or startup registration. Supervise stop/cancel/timeout/helper death and reap the child. Failure marks relevant diagnostics incomplete without stopping healthy flight.
+
+**Tests:** T2 injected native-source/protocol fixtures for initial query order, unsupported OS/API, unknown enum, events before readiness or during registration, floods, write failure/full disk, death/stop race, malformed/duplicate time and mismatched capture IDs; Linux/Windows no-helper path; complete no-event pressure stream with unknown value remains distinct from missing observations. Native compile/API smoke in phase 3; diagnostic on/off timing there.
+
+**Completion:** bounded host-only series, clear availability and lifetime, unchanged non-Apple startup, reproducible tool build and all failure tests pass. If free tools suffice, record that choice and omit the helper. Native numerical/kernel code is not a dependency.
+
+### DT-MAC-02f — observe the real app route and coarse phases
+
+**Files:** existing frame collector and its owning Main/AppRoot lifecycle, loading probe and optional narrow platform bridge only if necessary.
+
+**Tasks:** give the existing collector an explicit bounded owner for Home → Fly → Home/Workshop with saved settings and active input, preserving direct-flight captures. Start/stop without auto-quitting the game; include pause/focus/transition markers and phase ownership. Generate one fresh capture ID in the normal packaged session owner and pass it to frame, resource and helper collectors; retain existing runner IDs for direct captures. Reject mismatched/absent association rather than inventing a join. Keep release data collection independent of the debug-only authenticated bridge. Record requested/effective renderer, output/drawable/internal pixels, unknown fields and reconstruction changes; do not infer drawable pixels from window points.
+
+Use existing engine signposts and external Instruments first. If attribution still lacks required application phase boundaries, add opt-in coarse signposts for load, flight construction, world switch and capture lifecycle with paired IDs and cancellation. Avoid per-tick/native calls and dynamic personal strings. Any Apple bridge must have explicit absent/no-op behavior on other platforms and matched package/signature identity; no second preferences store or rendering queue.
+
+**Tests:** T2 collector and T6 ownership/loading fixtures; proposed cases for cancel/return Home/free owner/late callback/no helper/collector off, unchanged saved preferences, failed setup, multiple intervals and exact replay. T1/T3 only if launch identity changes.
+
+**Completion:** required before normal-product-route sustained acceptance, but not before the first explicitly technical direct-flight attribution. One collector can observe both technical and product routes with honest labels; teardown is bounded, report interruption explicit, output/UI pixels distinguished, normal input retained. Same source later needs a native 1080p short capture and measured overhead. An injected fixture is not release-route execution proof.
+
+## 5. Phase 3 — establish the M1 reference and choose the first candidate
+
+**Priority/size:** P0/medium. **Dependency:** usable phase-1 tools and required phase-2 channels, or documented external equivalents. **Benefit:** identifies the limiting subsystem and avoids expensive wrong work. **Owner:** DT/PT + SF/FL/VQ.
+
+### DT-MAC-01 / 03a — identity, baseline and software admission
+
+1. Inventory actual M1 model, CPU/GPU variant, RAM, cooling class, macOS/build, monitor/refresh, power modes, free storage and relevant SDK/tool versions. Verify the retained Air/8 GB description; do not silently assume a 7-core or 8-core GPU.
+2. Freeze source and import/config/assets identities. Verify official ARM64 getter, native execution, resource import and exact template/export identity. On universal packages inspect actual release payload/UUID and dependency slices; Rosetta is a separate result. Keep personal preferences and radio calibration isolated during experiments.
+3. Run platform-launch/preflight/resource smoke and focused reference replay/H9 checks. Keep explicit `gdscript_reference` control; verify native refusal/fallback is truthful. Do not demand an absent Mac NK-3 library.
+4. Verify actual **1920×1080 output**, native internal scale, 60 Hz/cap/VSync, UI scale, MSAA and fixed scene detail. A request rejected by display bounds is not a 1080p run. Native Retina size and 4K are later cases.
+5. Record the unmodified technical baseline with complete live physics/input and separately exercise normal Home/Fly. A sustained normal-product-route claim requires DT-MAC-02f; exact release replay/reference benchmarks require DT-MAC-02h. Source-editor exact replay can support provisional attribution while those gates remain open. Retain an exact-replay baseline `.orfl` with source/config identity, complete flag, markers and CSV/report; log-on/off runs remain separate workloads.
+
+**Tests:** native T1 smoke; focused T7 reference replay and H9 policy; T8 initial Home/Fly/Workshop and short performance checks. Recheck historical audio/reference failures on the selected snapshot only when they intersect required baseline gates; record all inherited failures, no golden rewriting.
+
+**Completion:** another developer can reproduce the named baseline from its manifest; actual architecture/pixels/backend and required data coverage are known; launch/flight failures are explicit. No renderer winner or tuning claim yet.
+
+### DT-MAC-03b — attribution and baseline soak
+
+Use a bounded 30-second CPU profile and, on a Metal candidate only, appropriate GPU trace/capture. With Compatibility, report GPU timing unavailable and use supported external evidence rather than calling it CPU-bound by subtraction. Compare full live callback time with detached session/evaluator probes; include input, collision, publication, observer, audio, recording and scenery scopes. Do not reinterpret `step_usec` as complete frame or callback cost.
+
+Minimum workload manifest:
+
+| Case | Purpose and fixed controls |
 | --- | --- |
-| 1080p flight pacing | Existing DT proposal: process-loop interval p95 ≤18 ms, p99 ≤25 ms at declared 60 Hz; report >33.3 ms and >50 ms events, maxima and burst lengths. Presentation trace and pilot review remain separate |
-| Physics | Existing ≤500 µs tick budget on the target host; report sampling unit and distribution, not just best batch mean. Unpaused simulation/wall ratio 0.99–1.01 |
-| Numerics | Same-host before/after exact replay/fingerprints for presentation-only changes; cross-platform agreement uses the existing [H9 policy](../research/simulation-state/H9/README.md). No golden re-record or tolerance widening |
-| Loading | Existing DT proposals: Home ≤5 s cold / ≤3 s warm, Fly ≤2 s; state cache condition and end event, and retain first-use hitch evidence |
-| Memory | Frozen floor-host ceiling; no sustained pressure/swap growth attributable to the candidate, no monotonic retained-resource growth across warm lifecycle cycles, and no unresolved resource leak. RSS and GPU allocations can overlap; do not sum them blindly |
-| Visual/control | Aircraft orientation, ground obstacles, landing cues, UI text and smoke remain legible in motion/day/night. Camera changes, exposure and FOV are fixed unless separately accepted |
-| Thermal/energy | Meet pacing and real-time gates through the final soak window. Publish AC/battery results separately; fixed-workload energy gain must use comparable measurements |
-| Shipping | Same final exported bytes launch natively, recover safely and pass relevant tests/smoke. DT retains signing/notarization and downloaded-artifact acceptance; profiling entitlements/builds cannot substitute for final release checks |
-| M1–M5 coverage | Complete the five generation rows with exact tested configurations and remaining SKU/OS gaps. No newly required optional feature may remove the M1/M2 baseline; repeat common-path tests when a newer-device optimization lands |
+| Stik normal circuit, approach, ground contact | Baseline flight/control, fixed pilot camera and input tape where applicable. |
+| P-51 plus an electric aircraft | Different evaluator/visual/propulsion load; use current catalog/data identity, not historical X8 eligibility. |
+| Club field and Green paradise | Vegetation/terrain/water differences; same weather/time/scenery tier per pair. |
+| Lake/reflection view, smoke maneuver, dusk/night | Exercise actual expensive effects independently before a combined worst required scene. |
+| Distant aircraft against sky/cloud/trees and close pass | Orientation/readability; fixed FOV, zoom/aid, trajectory and projected size. |
+| Home/Fly/Workshop, aircraft/landscape change | Cold/warm loading and lifecycle/retention; paused periods are labeled. |
+| Helicopter/ground activity if offered in the release | Independent route/software/performance gate; fixed-wing success does not qualify them. |
 
-These are acceptance proposals/existing owner budgets, not measured results. Freeze any revisions before comparing candidates. Failed hardware or pilot gates stay open.
+Run diagnostic-off, frame-only, frame+resource and helper-enabled controls. Choose the lightest collection satisfying required evidence. Execute the three baseline soaks once the short runs are valid; compare early/final five-minute windows, pacing, active sim/wall, memory/pressure, thermal/power and recorded pauses. Do not create a long soak out of restarted short processes.
 
-## 6. Renderer comparison
+**Tests:** T8 matched short cases, existing session baseline/load probe, targeted native trace and three baseline soaks; T2 synthetic tests need not repeat unless collector changes.
 
-Run disposable project copies with separate import caches and the required sibling `assets/`. First establish shader/scene correctness, then time the candidates.
+**Completion:** ranked bottleneck report with affected budget, scope, measurement uncertainty, reproducible trigger and one recommended candidate. Freeze the floor-host memory ceiling with observed OS headroom. If evidence cannot attribute a miss, next work is a discriminating measurement, not speculative tuning.
 
-| Candidate | Role |
+## 6. Phase 4 — highest-ROI CPU, loading, observer or memory repair
+
+**Priority/size:** P1/small per candidate. **Dependency:** phase-3 attribution, or an independently reproduced source correctness defect. **Benefit:** remove demonstrated work/stalls without changing graphics API or numerical contracts. Select only matching subphases; do not implement all rows by default.
+
+### DT-MAC-04a — script/session and collision cost
+
+**Scope/tasks:** profile `FlightSession`, `Simulation`, collision queries and accepted-state consumers; distinguish array/Dictionary allocation, repeated immutable decoding and stage work. Existing tick facts, deflection reuse, prepared configuration and spatial rejection are already implemented. Try one bounded reuse/rejection only if cost is material. Preserve invalid input, mutable configuration guards, ordering, alias isolation, earliest collision and stable-ID ties; caches need byte/count bounds and explicit reset/restore/config invalidation.
+
+**Validation:** relevant local unit/oracle and T7 same-host exact fingerprints/replay; affected collision oracle cases for bins, grazing, rotation, ties and shoreline; detached attribution plus full active-session A/B. **Exit:** unchanged semantics and positive whole-workload result beyond noise, including ground/event worst cases. Otherwise retain baseline. Native port is phase 10, not a hidden extension of this patch.
+
+### DT-MAC-04b — live observers, audio and recording
+
+**Scope/tasks:** trace actual `stepped` subscribers and per-frame work. Optimize duplicated read-only derivation or presentation updates only when consumer timing contracts allow. Keep physical contact commits, statistics credit and audio cue/event ordering. Compare `.orfl` off/on: it synchronously flushes bounded 240-tick chunks/events; separately inspect CSV Trace's accumulated rows and whole-file save. Do not assume both recorders have the same boundedness/durability.
+
+If disk stalls are demonstrated, propose a bounded transport at the recorder owner with copied immutable data, ordered publication, backpressure/drop policy consistent with exact logging, drain/cancel/error handling and explicit incomplete status. Do not silently drop exact-replay ticks or defer durability without a contract decision.
+
+**Validation:** T6 affected observer/audio/recorder cases plus T7 exact replay, marker/hash/row order and fault/reset tests; forced slow/full disk/cancel tests only if transport changes. Native log-on/off and full callback A/B. **Exit:** measured stall/CPU reduction without lost samples, changed cues, unbounded queue, modified physics or concealed write errors.
+
+### DT-MAC-04c — loading and first-interactive frame
+
+**Scope/tasks:** use existing Home/Fly loading probe to separate import/I/O, validated data, scene building, shader first-use, trim preparation and teardown. Inspect current caches/async trim work before adding more. Select one dominant phase: immutable resource reuse, existing threaded resource request, detached pure-data preparation or bounded render warmup. Workers never mutate the active SceneTree or installed model; adoption uses generation/cancellation ownership and main-thread attachment. No flight before validation/readiness.
+
+**Validation:** T6 cache/preparation/loading/failure/cancel/late-result tests; five process-cold and five warm trials; first drawn versus interactive-ready checks; 20 warm lifecycle cycles if ownership changes. T7 if session preparation changes. **Exit:** improved declared phase and full load time, no readiness regression, bounded retention and preserved direct/headless/capture/Workshop semantics. Do not add all four strategies to fix one phase.
+
+### DT-MAC-04d — retained resources and imported textures
+
+**Scope/tasks:** inspect world/preview/aircraft/audio/reflection lifetimes and current VQ-02a texture inventory. Measure actual GPU formats, mip/filter/color-space behavior, source/import identities and resident estimates. Fix one leak, duplicate resource or demonstrated import problem via its source pipeline. Preserve generated aircraft names/hinges and visual/collision contracts. Do not assume ASTC flag means every Mac resource uses ASTC or sum RSS with GPU estimates.
+
+**Validation:** affected resource/import/generator checks, T5 motion/color/normal/marking cases, 20 warm transitions with weak-reference/resource evidence and process context; T8 matched memory/pressure/load timing. **Exit:** bounded retention or verified format/residency improvement without readable-detail loss or a newer-family-only dependency. Full 50-cycle/soak test waits for phase 9 finalist.
+
+## 7. Phase 5 — choose a renderer with common features
+
+**Priority/size:** P1/medium. **Dependency:** phase-3 baseline and fixed outcome of any shared phase-4 changes. **Benefit:** potentially lower CPU/GPU/power cost through existing Godot Metal; amount unknown. **Owner:** VQ/DT/GDU.
+
+### DT-MAC-05a — native parity using prepared trials
+
+Reuse `prepare_research.py` and `launch.py`; do not rebuild them. Freeze linked assets and separate imports/user profiles. Pin Standard/common effects, scenery tier and Native AA/reconstruction; explicit environment manifest prevents accidental High effects or startup multi-bounce. Confirm actual effective method/driver and shader behavior before timing.
+
+| Candidate | Experiment |
 | --- | --- |
-| A: Compatibility / OpenGL | Unmodified reference and recovery path |
-| B: Mobile / native Metal | First M1 efficiency candidate, with the accepted common visual feature set |
-| C: Forward+ / native Metal | Same common feature set before enabling additional High effects |
-| D: same Mobile or Forward+ / Vulkan via MoltenVK | Conditional control to isolate native driver behavior or a Metal-specific regression; not a second OS comparison |
-| E: High / native Metal | Separate product-quality trial after C; account for its effects and larger render targets |
+| A Compatibility/OpenGL | Reference and recovery. |
+| B Mobile/native Metal | First lower-complexity candidate; verify screen/depth effect costs. |
+| C Forward+/native Metal | Common feature set first; no silent SSAO/shadow/reflection additions. |
+| D Mobile or Forward+/Vulkan-MoltenVK | Conditional same-OS control for a Metal-specific issue; skip absent a discriminating question. |
+| E High/native Metal | Separate product-quality cost, only after common-feature C. |
 
-Godot exposes method and driver separately. Candidate arguments include `--rendering-method mobile --rendering-driver metal` or `--rendering-method forward_plus --rendering-driver metal`; engine arguments precede the app's `--`. These are experiment definitions, not a claim that today's wrapper accepts them. The current [graphics launcher](../../tools/graphics/launch.py) only exposes Standard/High and rejects driver/method overrides: add a scoped research path through its owner, retaining truthful profile metadata and its normal safeguards.
+Parity cases: sky/exposure, reversed-Z water/depth/refraction, lake/planar/probe paths, sun glare, alpha/scissor foliage/MSAA, smoke/particles, shader globals/instancing, shadows and all secondary viewports; day/dusk/night and moving thin aircraft. Unsupported features must be an explicitly reviewed product tradeoff, not invisible benchmark removal.
 
-Before benchmarking, compare sky/exposure, lake depth/refraction and reversed-Z handling, alpha foliage/MSAA, shadows, smoke/particles, global shader parameters, instancing, night lighting and all secondary viewports. Unsupported effects must be declared and reviewed, not silently disabled to win the benchmark. Reuse [VQ-07](advanced-graphics.md) parity work. Renderer selection happens before initialization; any shipped selection must reuse the existing restart/recovery UI, not add a second preference store.
+**Tests:** T3 fixtures only if trial policy changed; T5 affected shader/feature checks and native 1080p matched images/motion; short lifecycle transitions. API/Shader Validation belongs in separate correctness runs. **Exit:** actual shader/feature matrix and backend identity, required look preserved or candidate rejected. No timing promotion from a headless launch.
 
-If B/C cannot preserve the required look or outperform A's relevant gates, retain A and optimize the measured bottleneck. Native Metal support alone does not close DT-11d.
+### DT-MAC-05c — measured renderer decision
 
-## 7. Optimization backlog, ordered by evidence
+Run five short alternating A/B and A/C pairs for the representative baseline cases; use uninstrumented release-equivalent controls and separately instrument attribution. Compare CPU callback, GPU when available, frame/presentation cadence, pipeline events, memory and energy/thermal context. Treat High separately. Preserve a negative result and keep Compatibility if it wins or optional routes cannot meet correctness.
 
-Choose only the row supported by the profiler, then remeasure the whole session. Apple GPU guidance motivates bandwidth/pass experiments; it does not justify rewriting Godot's render graph in this track. [Apple GPU optimization](https://developer.apple.com/videos/play/wwdc2021/10148/).
+**Tests:** T8 matched short campaign and replay check on integrated presentation configuration. **Exit:** selected candidate or retain-baseline receipt with quantified tradeoffs and remaining native package gate. A source-copy experiment does not yet authorize persistent renderer selection in the product.
 
-| Order / trigger | Bounded change to try | Proof and constraints |
-| --- | --- | --- |
-| 1. Accidental pixel load / poor pacing | Correct Retina backing size, render scale, display refresh and cap; compare windowed/fullscreen presentation | Same output/readability; 1080p native baseline retained. Do not mistake logical window points for GPU pixels |
-| 2. GPU fill/bandwidth | Compare native 4×/2× MSAA, then one shadow/reflection resolution or update policy; reduce needless full-screen/secondary passes | Drawn GPU cost and memory plus moving-edge/shadow checks. Preserve existing reflection/radiance contracts |
-| 3. Foliage/smoke overdraw | Profile the existing opaque near grass, alpha-scissored tree cards and blended GPU smoke; test one justified distance/coverage/geometry change | Preserve canopy density, wind, silhouette and smoke cues; benchmark actual overlap. Do not replace opaque grass with blended cards or convert smoke to cutouts |
-| 4. Submission/geometry | Existing LOD/visibility ranges and spatially bounded MultiMesh groups; reduce duplicate material/surface state | Measure CPU submission and GPU vertex cost together. Giant MultiMeshes can defeat fine culling; occlusion must earn its CPU cost in open terrain |
-| 5. Unified-memory pressure | Audit texture residency/mips/compression, retained worlds, duplicate resources, reflection buffers and temporary allocations | Inspect actual imported GPU format on M1 and newer families; never distribute a newer-family-only format without the baseline alternative. The ASTC import flag alone proves no memory saving. Retain color/normal/mask semantics and generated provenance |
-| 6. First-use hitch | Reuse resources and reduce material variants; prepare required pipelines during bounded loading | Separate fresh-import, process-cold and warm-cache cases. Godot's pipeline precompilation path differs between Compatibility and Mobile/Forward+ |
-| 7. CPU scripts / loading | Cache immutable validated data, eliminate demonstrated allocations/repeated work, batch presentation updates; use existing threaded loading only when attributed | Full callback/loading and invalid-input/lifecycle tests; do not block early on a pending resource, mutate the active tree from a worker or hide data changes |
-| 8. CPU simulation / audio | Profile scenery queries, evaluators and audio on Mac; optimize the existing algorithm/allocation path first | Preserve evaluation order and exact same-host outcomes. [SF native-backend policy](../STACK.md#boundaries-and-data-flow) still governs any C++ proposal; no fast-math, GPU physics or blanket thread migration |
-| 9. Sustained heat / idle power | After meeting flight gates, test sensible menu/occluded rendering limits and remove redundant background presentation work | Preserve focus-pause, audio and resume contracts; avoid global App Nap disabling or P/E-core affinity hacks |
+## 8. Phase 6 — one attributed GPU or pipeline change at a time
 
-Reuse Godot's existing LOD, MultiMesh, material and pipeline facilities. [3D performance](https://docs.godotengine.org/en/4.7/tutorials/performance/optimizing_3d_performance.html), [pipeline compilation](https://docs.godotengine.org/en/4.7/tutorials/performance/pipeline_compilations.html).
+**Priority/size:** P1/small-to-medium per change. **Dependency:** actual render-pass/counter evidence and phase-5 parity; can also optimize retained Compatibility where relevant. **Benefit:** reduce the measured limiter with existing controls. **Owner:** VQ plus owning effect/import track.
 
-### Conditional MetalFX trial
+### DT-MAC-06b — pixel/attachment/pass cost
 
-The pinned **4.8-beta1** API declares MetalFX Spatial and Temporal, restricted to Metal. Query the actual RenderingDevice feature and temporal scale limits; enum presence alone proves neither build support nor device availability. [Pinned capability/scale source](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/drivers/metal/rendering_device_driver_metal.cpp), [current compatibility audit](../research/desktop-delivery-investigations/DT-MAC-00-R2/godot-compatibility.md).
+Try 4× versus 2× native MSAA first only if resolves/fill/bandwidth are material; then one shadow atlas/caster, reflection resolution/update or optional pass change. On Mobile inspect water/sun screen/depth reads and resulting copy/resolve/subpass boundaries before proposing an effect-preserving alternative. Depth/history/material outputs cannot be made memoryless if later sampled. Engine graph or queue changes belong in phase 12.
 
-The current source audit confirms this method matrix; [I10](../research/desktop-delivery-investigations/DT-MAC-00-R1/02-rendering.md#i10--metalfx-support-in-godot-472-and-m1m5) retains the historical 4.7.2 investigation:
+**Tests:** T5 relevant lake/sky/foliage checks; matched moving aircraft/leaf edges/propeller/night/smoke; T8 GPU pass and full-frame A/B with memory. **Exit:** net relevant workload gain, required quality retained, no extra leak/resize issue. Reject a faster screenshot with worse flight cues.
 
-| Effective method / driver | Spatial | Temporal |
-| --- | --- | --- |
-| Compatibility / OpenGL | Unavailable | Unavailable |
-| Mobile / Metal | Shared RD spatial path; require device/OS/build support | No Forward+ temporal path; keep unavailable |
-| Forward+ / Metal | Require actual support | Require actual support and enabled engine build path; respect device scale limits |
-| Mobile or Forward+ / Vulkan via MoltenVK | Not native MetalFX through this driver | Not native MetalFX through this driver |
+### DT-MAC-06c — geometry, transparency and material residency
 
-Read `RenderingServer.get_rendering_device()` only on a supported RD path, then `has_feature(SUPPORTS_METALFX_SPATIAL / SUPPORTS_METALFX_TEMPORAL)`. Probe constants/methods dynamically for compatibility with other engine builds. Read `LIMIT_METALFX_TEMPORAL_SCALER_MIN_SCALE` and `MAX_SCALE` using `limit_get()` and divide by **1,000,000**; these are input/output scales, not Apple's inverse upscale ratios. Reject absent, nonfinite, zero or inverted ranges. Temporal is also engine-build-gated. The existing adapter gates every provider through High; Mobile spatial must gain its own eligibility without pretending to enable High effects.
+If submission/vertices dominate, inspect current bounded MultiMesh cell size, LOD thresholds, shadow participation and material/surface duplication. If transparent overlap dominates, inspect actual smoke/card coverage, not draw count alone. Near grass is already opaque; do not replace it with blended cards. Open-terrain occlusion must earn its CPU cost. Texture work follows current import/provenance pipeline and actual supported GPU formats.
 
-The engine can substitute FSR1, FSR2, spatial scaling or bilinear when a MetalFX request is unsupported or out of range. OpenRC's policy remains explicit **Native at scale 1.0** on an unavailable request: preflight support and range, restore AA and record the reason. **Viewport mode/scale/MSAA/TAA getters describe requested inputs, not necessarily the effective render-buffer configuration.** A getter can still report Temporal while the engine privately selects Spatial or FSR2. Qualification therefore requires an engine-observed effective-pass diagnostic plus native capture; absent that seam, report effective execution as unknown and keep the unqualified candidate disabled. Do not promise automatic runtime-substitution detection from property readback or once-only warnings. [Pinned viewport fallback logic](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/servers/rendering/renderer_viewport.cpp), [property storage/getters](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/scene/main/viewport.cpp).
+**Tests:** T5 relevant geometry/material/import cases; collision-world identity, silhouettes/wind/coverage and distant orientation; T8 drawn primitives/draws, CPU submission, GPU and memory together. **Exit:** meaningful net gain with stable physical obstacles and bounded batches. A giant MultiMesh that breaks culling is not an accepted batching improvement.
 
-After native 1080p baseline and renderer parity, extend the existing reconstruction adapter only if GPU pixel work remains limiting. Verify the pinned engine's actual method/device support, effective mode and fallback. Compare Native against spatial reconstruction first, then temporal on supported Forward+; start at 0.85 scale only if allowed by the device, considering lower scales only if attitude/readability passes. Keep output/UI at 1080p and report internal dimensions. Repeat at higher output resolutions only after the primary gate.
+### DT-MAC-06d — first-use pipeline stalls
 
-Temporal review must include distant aircraft, propeller/hinges, wind-driven foliage, smoke, thin markings, camera cuts, reset/teleport, pause/resume and disocclusion. Account for history buffers, motion vectors, AA ownership and reconstruction overhead. Unsupported requests must resolve to Native with an honest effective-mode report. Keep FSR2 as a supported-method comparison; the Windows/Vulkan FSR3/DLSS engine experiment is not a Mac solution. Frame interpolation and newer neural inputs have separate conditional work packages below; neither blocks the supported baseline.
+Attribute shader versus pipeline work with existing counters and short native traces. Investigate mixed 4× main/2× planar viewport MSAA only when planar High and compilation events reproduce the hitch. Compare fixed-resource reuse, needed material variants and bounded warmup before export-pipeline work. If Metal shader baking is justified, add a separate exact Mac-native non-headless build stage; retain Linux cross-export gates and inspect final package contents. Intermediate baking does not remove final hardware-specific compilation.
 
-## 8. Execution steps and stop rules
+**Tests:** affected T3/T5 checks, cold/warm first-appearance cases, corrupted/invalidated cache and changed settings where applicable; package/resource tests only when baking/export changes. **Exit:** reproduced stalls reduced without unacceptable startup/package/memory cost; cache identity and unsupported-host fallback documented. No global cache deletion or universal distribution of machine-specific cache blobs.
 
-| ID | Work / owner and dependency | Proof/status |
-| --- | --- | --- |
-| DT-MAC-00 | Research and repository audit; DT/VQ | Done: [2026-10-24 source review](../research/apple-silicon-performance-2026-10-24.md); no native measurements |
-| DT-MAC-00-R1 | Twenty internet investigations and M1–M5 plan revision | Done: [I01–I20](../research/desktop-delivery-investigations/DT-MAC-00-R1/README.md); user confirms M1 availability, no hardware tests performed |
-| DT-MAC-00-R2 | Refresh Apple 2026 technologies, audit exact adopted Godot source and map implementation gaps using three Terra 6.1 Max specialists | Done: [research and source audit](../research/desktop-delivery-investigations/DT-MAC-00-R2/README.md); no runtime changes or native qualification |
-| DT-MAC-01 | Inventory the available M1 Air/8 GB; freeze OS/display/power matrix, package identity and budgets; DT-01a | Model family and RAM confirmed by user; GPU variant, OS/build and native ARM64 launch evidence pending |
-| DT-MAC-02 | Native tooling and measurement gaps: driver/pacing metadata, bounded continuous soak, observer controls; PT with DT-02a/10a/10b; after 01 | Software prepared: ARM64 getter, template portability, preflight, v3 bounded stream and two reducers. Windows/WSL fixtures passed; native smoke, presentation/resource coverage and paired observer-overhead gate open |
-| DT-MAC-03 | Unmodified 1080p baseline, numerical policy and bottleneck attribution; SF/FL + DT; after 02 | Open; paired short runs, baseline soak, exact local replay and H9 results |
-| DT-MAC-04 | One highest-impact CPU/loading/memory fix if baseline calls for it; owner from §7 with DT-11a | Open/conditional; paired proof and full-workload regression checks |
-| DT-MAC-05 | Isolated Mobile/Metal and Forward+/Metal parity/comparison, MoltenVK control only as needed; VQ + DT-11d; after 03 and a frozen 04 outcome | Preparation/launcher and identity fixtures implemented; native parity, effective-backend receipts, visual report and distributions open. Production default unchanged |
-| DT-MAC-06 | One GPU/settings improvement at a time; VQ/LU/FW/SM + DT-11c; after attribution | Open/conditional; native 1080p performance and readability acceptance |
-| DT-MAC-06a | Common capability policy and measured preset selection across M1–M5; VQ/UI; after 05/06 | Open; unsupported/unknown capabilities, saved-preference migration, effective-mode reporting and recovery tests (§9) |
-| DT-MAC-07 | MetalFX capability/integration trial through reconstruction owner; native evaluation after 05/06 justify it | Opt-in Spatial/Temporal policy, settings and fallback fixtures implemented. Stock reset acknowledgement absent: Temporal falls back on camera discontinuity. Actual scaler execution, motion, resize/lifecycle and performance remain unqualified |
-| DT-MAC-08 | Finalist 30-minute AC/battery soaks, lifecycle/input/audio/display recovery and native package checks; DT-10b/12, UI/AUD | Open; final artifact reports; then higher-resolution and lastly 720p compatibility results |
-| DT-MAC-08a | Run the same release matrix on M2, M3, M4 and M5 and feed regressions back to the M1 control | Open; named physical tester artifacts and five-generation ledger, with explicit variant/OS gaps |
-| DT-MAC-09 | Integrate accepted settings/backend policy, document tested M1–M5 configurations and recovery, retain baseline rollback; DT/VQ + DT-13 | Open; 06a/08/08a outcomes, focused/full relevant suites, final Mac package and owner/pilot acceptance |
-| DT-MAC-10 | Upstream-first Metal 4 command backend, exact candidate engine and MTL3 recovery; GDU/VQ, after §11/13 prerequisites | Open/conditional; inspected current pin uses MTL3; no Metal 4 execution claim |
-| DT-MAC-11 | Newer MetalFX temporal inputs/neural implementation exposure; VQ/GDU, after 07b | Open/conditional; exact SDK/OS/device integration and benefit unverified |
-| DT-MAC-12 | Separate optional MetalFX frame interpolation/presentation path; VQ/DT/UI | Open/conditional; real-frame, latency, UI and recovery gates must pass independently |
-| DT-MAC-13 | Conditional advanced GPU/memory/denoising/ML work with a concrete supported consumer | Open/conditional; record trigger absent where current raster application has no use case |
+## 9. Phase 7 — qualify existing MetalFX trials conditionally
 
-First native delivery is **01–03: a reproducible M1 baseline and ranked bottleneck report**. The user explicitly requested preparation on the current Windows PC for later Mac execution, so reusable tooling and disabled-by-default reconstruction trials were implemented ahead of those measurements. This does not waive the measurement prerequisites for adopting a renderer or optimization. Select the smallest justified branch after attribution.
+**Priority/size:** P1 for Spatial when pixel-bound; P2 for missing engine reset/failure seams. **Dependency:** verified Metal renderer/parity, actual GPU-pixel limit and Native 1080p baseline. **Benefit:** less internal pixel work only if scaler/history overhead and visual cost permit it. Existing policy, options and localization are already implemented.
 
-Stop a candidate for numerical drift, missing visual features, unresolved leaks/crashes, slower sustained flight or benefit within measurement noise. Record **retain baseline** or **trigger absent** for conditional branches. M1 access is confirmed, so its next action is inventory and execution; M2–M5 coverage stays pending until actual test reports exist.
+### DT-MAC-07a — effective execution and creation/failure contract
 
-Each accepted change retains a before/after receipt: exact identities, single hypothesis/change, commands from the owning tool guide, complete raw-data location/hash, per-run statistics, visual/numerical checks, failures/exclusions, conclusion and rollback. Keep old renderer/settings recoverable until the final package passes. Consolidate completed rationale into the desktop/graphics guides when this plan is retired.
+Inspect exact engine creation/substitution paths, optional scaler allocation results and failure reporting. Add only a narrow upstream-first engine status/null-handling seam if needed; no private queue or application-side scaler competing with Godot. Receipt separates requested provider, validated inputs/property readback, observed effect, substitution/failure reason and unknown. A once-only warning or mode enum is insufficient.
 
-## 9. Shared capabilities and quality policy
+**Tests:** T4 policy fixtures covering missing RD/constants, invalid bounds, unsupported method/driver, corrupted preference, rejected request → identical retry → Native → valid retry; engine failure-injection for scaler creation/substitution when engine code changes. Native capture of actual pass and a supported failure/recovery case. **Exit:** honest effective mode and safe observed failure behavior; otherwise leave trial unqualified/off by default. Do not claim current Native policy handles all SDK failures.
 
-One common ARM64 application should scale with the Mac rather than maintaining five chip-specific forks. Reuse existing graphics, scene-detail and reconstruction preferences. The policy names below are engineering labels, not a new menu or preferences store. [Capability/preset investigation I20](../research/desktop-delivery-investigations/DT-MAC-00-R1/03-runtime-validation.md#i20--capability-based-presets-and-a-defensible-m1m5-claim).
+### DT-MAC-07b — Spatial first, then Temporal
 
-| Policy | Eligibility and behavior | Qualification |
-| --- | --- | --- |
-| Baseline 60 | Required path for every requested generation; conservative accepted effects, unchanged physics/collisions, Native reconstruction initially | Start on M1 at native 1080p; measured quality reductions must retain attitude, obstacle and landing cues |
-| Higher quality | Supported effects plus measured CPU/GPU/memory headroom; any generation may qualify | Full-frame and 30-minute acceptance; no automatic `M5 = High` or `M1 = Low` assignment |
-| Reconstructed output | Actual driver/method/scaler support and lower pixel work yielding net benefit | Internal/output resolution reported; moving aircraft/propeller/smoke checks; unsupported request resolves to Native |
-| Recovery | Known-good Standard configuration and safe restart through existing UI | Failed backend launch, unknown saved mode and capability changes recover without restart loops or lost calibration |
+Spatial: start at 0.85 input scale on supported Mobile/Forward+; retain accepted native AA and full-output UI. Report actual internal dimensions or clearly labeled nominal estimate. Compare full GPU time and whole-session pacing/memory against Native; lower scale only after readability passes.
 
-At launch, record platform/architecture, effective method/driver, relevant engine capability results and usable memory context. GPU names are diagnostic labels, not feature gates. Do not add direct Metal queries in GDScript where Godot already owns the decision. If a necessary capability is unavailable through the engine, retain the baseline and resolve that single gap with the renderer owner.
+Temporal: require Forward+, actual features and valid engine-queried scale range; decode millionths correctly. Let Godot own depth/motion/jitter/AA. Add an engine-consumed reset acknowledgement or verified safe context recreation for actual discontinuities; the current return-to-Native latch remains the fallback until then. Never reset ordinary motion every frame, and do not copy FSR sharpening controls into MetalFX.
 
-This is the target policy: today's `scene_detail.gd` Auto still uses adapter-name heuristics, including `apple m → medium` and unknown → High. DT-MAC-06a must migrate that behavior explicitly with tests for existing saved Auto/manual settings and unknown devices. Keep manual overrides, avoid a universal preset based solely on unified memory, and do not confuse a provisional conservative default with a measured recommendation.
+**Tests:** T4 plus moving distant markings, propellers/hinges, wind foliage, smoke, thin geometry/disocclusion and close/ground cues; separate Native/Spatial/Temporal A/B. **Exit:** effect executed, required motion accepted and net gain beyond noise; no provider advertised as qualified from an injected capability fixture.
 
-Keep quality fixed during the initial comparisons. A later automatic-quality experiment is conditional on sustained-load evidence: adjust only existing presentation controls, use hysteresis/cooldowns, preserve user override and record every transition. Prefer less costly effects before reducing aircraft visibility; exclude physics, collision populations and control sampling. Never auto-upgrade the renderer mid-flight. Reset adaptation after a hardware/backend change instead of trusting stale calibration. Do not collect cloud telemetry or run a surprise stress test at every launch.
+### DT-MAC-07c — lifecycle and recovery
 
+Exercise camera switch, crash focus, teleport/reset, scene/aircraft/landscape replacement, resize/fullscreen/Retina scale, output/provider change, minimization and resume after discontinuity. Verify requested/submitted/acknowledged reset separately; context/resources retire through engine-owned GPU completion. Repeated provider switches restore saved Native MSAA and maintain full-resolution UI.
+
+**Tests:** T4 ownership/retry/history/settings tests; native allocation/lifetime and 20 transition cycles; T8 short active-physics/replay check. **Exit:** no stale history, progressive allocation, wrong AA or false provider label; Native recovery remains reachable. Final long-soak acceptance occurs in phase 9. If the trigger is absent or qualification fails, retain Native and record why.
+
+<a id="10-first-test-session-on-the-available-m1"></a>
 ## 10. First test session on the available M1
 
-The immediate native deliverable is a local evidence bundle. The Windows-prepared commands are in the owning tool READMEs linked in §2; run them on the actual Mac before claiming support.
+This checklist preserves the existing incoming link. It executes phase 3, not an additional campaign.
 
-1. **Inventory (01):** record the confirmed M1 Air/8 GB, then obtain GPU core count, exact model identifier, macOS build, display/power modes and free storage. The low-memory/fanless host is available; 7-core GPU coverage depends on identification. Avoid collecting serial numbers or unrelated personal logs.
-2. **Freeze (01/02):** choose one clean revision and matching pinned editor/templates/export; retain hashes and import identity. Verify ARM64 execution and package dependencies. Use new ignored output folders; do not modify the user's normal graphics/controller preferences.
-3. **Compatibility control (03):** native 1080p/60 Hz, fixed landscape/aircraft/weather; run software/replay checks, short timing pairs and a Home/Fly/Workshop lifecycle pass. Verify active physics and readable controls before a long run.
-4. **Attribution (03):** one short CPU profile and one supported GPU/timeline capture; prove the observer cost and identify the dominant missed budget. Preserve the uninstrumented reference.
-5. **Sustained baseline (02/03):** three uninterrupted 30-minute runs with explicit AC/power/thermal conditions and the summary's 30/1800-second gates; battery cases only on a laptop. Report missing channels and incomplete runs.
-6. **One candidate (04–07):** choose the top attributed fix or common-feature Metal trial, replay the same workload, and accept/reject with the frozen gates. Re-run the baseline after integration before sending the same package/cases to M2–M5 testers.
+1. Inventory actual host; freeze source/editor/templates/import/package and private settings. Confirm ARM64 and the expected Mac reference backend.
+2. Exercise native tool/preflight/bridge/resource smoke. Confirm sample horizon, required channels and no Xvfb route on Aqua. Record unsupported channels.
+3. Establish actual native 1080p/60 Hz Compatibility output, fixed detail/aircraft/weather/camera, interactive controls and Home/Fly/Workshop behavior. Capture exact local replay separately from pilot flight.
+4. Run short release controls and bounded attribution, including observer-on/off. Stop and fix malformed evidence before a long run.
+5. Run the three baseline active-flight soaks once; retain summary+stream, hashes and coverage. Classify real bottleneck, memory ceiling and untested gates.
+6. Select one candidate from phase 4 or common-feature phase 5. Keep community packages and optional native solver work off the critical path until the reference is reproducible.
 
-Completion receipt: host manifest, source/package identities, effective settings, logs, complete timing/resource summaries, replay result, lifecycle result, profiler attribution, actual test exclusions and the next single candidate. Work to date ran on Windows, including portable WSL fixtures. No Mac benchmark has run yet.
+Commands live in the [Mac tooling guide](../../tools/godot/README.md#native-apple-silicon-setup-and-preflight-dt-mac-02a), [renderer trials](../../tools/graphics/README.md#isolated-mac-renderer-trials-dt-mac) and [performance tools](../../research/performance/README.md). Their existing commands must be run on the Mac, not counted as already executed here.
 
-## 11. Implementation boundaries and reviewable deliveries
+## 11. Phase 8 — safe product policy and voluntary sharing
 
-Priority means execution order, not predicted speedup: **P0** makes results trustworthy and enables native measurement/qualification; **P1** integrates and qualifies engine-supported rendering; **P2** adds optional engine capabilities only after their prerequisite exists. Each row is a separate reviewable change or evidence delivery. Detailed source locations and current limitations are in the [repository audit](../research/desktop-delivery-investigations/DT-MAC-00-R2/repository-audit.md).
+**Priority/size:** P1/medium. **Dependency:** a selected short-run candidate plus proven collection semantics; final default promotion waits for phase 9. **Benefit:** make gains usable and recoverable without sacrificing cross-platform behavior. **Owner:** UI/VQ/DT/PT.
 
-| ID / priority / owner | Concrete work and file boundary | Dependency / acceptance / rollback |
+### DT-MAC-05b / 06a — persistent selection and recovery
+
+Renderer initialization precedes GDScript preferences. The existing temporary High restart and 15-second settings confirmation cannot recover a process that never initializes. Design an existing-owner pre-engine bootstrap or bounded two-stage restart with requested choice, last-known-good configuration, attempt marker, initialization acknowledgement and failed/hung-start recovery. Keep a direct Standard launch route, bounded retries and stale-attempt handling; preserve calibration and unrelated saved preferences.
+
+Replace the Auto adapter-name assumption only with a tested capability/measurement policy. Keep manual choices, unknown-hardware conservative behavior, versioned migration and explanation of temporary fallback. One shared application, no M1/M2/M3 forks. Keep quality fixed in qualification; later adaptive quality is conditional, with hysteresis/cooldowns, recorded transitions and presentation-only controls. Never auto-change renderer in flight or reduce physical collisions/control sampling.
+
+**Tests:** T3/T4 preference, restart and unsupported-driver fixtures; proposed killed-before-init, hung-init, stale marker, success-then-crash distinction and failed retry cases; native external-display/Retina/fullscreen/minimize/resume paths; Windows/Linux existing-provider regression tests. **Exit:** real failed initialization recovers without a loop or lost calibration, requested/effective state is truthful, unknown device remains usable. Default selection remains provisional until the final artifact passes.
+
+### DT-MAC-02g — share-safe community diagnostic bundle
+
+Reuse the existing bundle/stream infrastructure, adding an explicit allowlist export mode. Keep raw developer data local. Product collection is off by default and provides start/stop, bounded destination/retention, delete, field preview and explicit manual sharing through an existing support channel. No automatic upload or new telemetry service; no tester contact is performed by this planning task.
+
+Include version/capture ID, release/source identity, model/RAM/OS and public GPU label, requested/effective graphics/backend, actual pixel/refresh/power context, fixed workload ID, validated metrics and completeness/availability. Omit raw commands, absolute paths, environment, hostname/account/serial/UUID, radio serials, arbitrary notes/logs, screenshots and flight/input recordings by default. Optional crash/GPU traces require separate explicit attachment review and must not be advertised as safely redacted by a regex. Sanitized output gets its own hash; raw hash is not anonymity.
+
+Developer sidecars can require local tooling, but the eventual user flow must not require Xcode, Python, root, shell commands, debugger attachment or an open debug endpoint. Package any necessary helper with the app, verify architecture/signature/lifetime, and keep collection functional or explicitly unavailable on unsupported systems. Do not add MetricKit until delayed field diagnostics solve a demonstrated problem; if selected later, account for OS availability, historical/delayed payloads, opt-out and no-report behavior separately from frame capture.
+
+**Tests:** T2 bundle/parser tests plus proposed allowlist sentinels for usernames/paths/serials/tokens, wrong IDs, malformed/untrusted archives, traversal, quotas, cancel/delete, missing helper, offline/no-network and explicit user-choice persistence. Native packaged flow on M1; collector-overhead controls from phase 3. **Exit:** a user can inspect exactly what leaves the machine and voluntarily share a bounded usable bundle; default/off path adds no background process or network activity.
+
+## 12. Phase 9 — sustained qualification, package and community coverage
+
+**Priority/size:** P0 for release claims/medium. **Dependency:** selected integrated candidate and required local tests. **Benefit:** prevents a short benchmark win from becoming a hot, unstable or unreadable release. **Owner:** DT with UI/AUD/VQ/SF and vehicle owners.
+
+### DT-MAC-08 — M1 finalist
+
+Freeze final source/configuration and release export. Repeat three uninterrupted 30-minute active-flight runs with 30 s warmup, comparable initial conditions, complete v3/resources/required host-state coverage and minimal observers. Compare baseline/finalist early and final windows; report pacing tails/bursts, sim/wall, memory/pressure, thermal and native errors. Run 50 warm Home/flight cycles with relevant Workshop/world transitions, power/focus/sleep/wake/display changes and actual audio/controller reconnect. Perform owner pilot orientation/control acceptance independently of scripted/replayed evidence.
+
+Qualify AC first; battery/Low Power and 120 Hz/VRR are distinct profiles. Then 1440p/Retina/4K as available; lastly 720p fallback. No failure at 1080p can be hidden by a 720p default. Do not claim energy improvement from a short battery slope or relative Energy Impact.
+
+**Tests:** T8 final required workload, lifecycle and physical-device matrix; T7 final integrated same-host replay and applicable cross-platform policy. **Exit:** required targets met through the final window and visual/control gates accepted, or named limitation/failure retained without a broad support claim.
+
+### DT-MAC-08b — exact native package and release checks
+
+Keep Linux export/NK gates intact; introduce explicit native-Mac stages only as needed. Require DT-MAC-02h bundle-aware identity and final reference-release exact replay even when Mac NK-3 is absent. Verify universal/single-slice policy, actual ARM64 execution, dynamic dependencies, resources, beta workaround, UUID/symbol identity, sign/notarize/staple requirements under DT and downloaded/quarantined behavior. Test the final distributed bytes, not just an editor project. Diagnostic builds with attach entitlements are separate from final release; never leave `get-task-allow` or disable library validation merely to make profiling convenient.
+
+**Tests:** T9 once on the frozen final integration; existing package/resource/version/manifest checks; actual downloaded native launch, recovery and representative flight on oldest claimed OS compatible with that hardware plus a named newer OS. Hosted CI can qualify automated launch/software checks, not physical GPU/radio/thermal behavior. **Exit:** exact bytes and each claimed architecture/OS route have evidence; source, package and native sidecars agree. Signing/trust or unsupported OS gaps remain explicit.
+
+### DT-MAC-08a / 09 — community coverage and promotion
+
+Publish a reproducible optional tester procedure and sanitized local report schema through normal project documentation when implemented. Begin with named M2–M5 configurations as access permits; newer actual devices get additional rows. Record chip variant, GPU cores, RAM, cooling/chassis, OS, power and display separately. Announced models are not tested hardware; a base/newer chip is not equivalent to an older Max/Ultra. Retain the M1 control after any newer-device optimization.
+
+Use three separate ledger columns: **launch**, **software/visual correctness**, **sustained performance/control**. Short volunteer logs are screening evidence; only complete required runs close the relevant row. Validate untrusted bundles before analysis, group comparable workloads and disclose selection bias/missing configurations. Do not require every chip/SKU to finish the first M1-qualified release, but do require evidence for every generation/profile named in a broad performance claim. The earlier M1–M5 objective remains five open rows until measured, not a blanket promise inferred from M1.
+
+**Tests:** required common-path smoke/performance/readability on each claimed host; full suite reruns only for changes or platform-specific coverage needs, not for every incoming JSON report. **Exit:** selected default/manual presets match measured coverage, rollback available, release notes name supported/untested configurations and optional branches. Core completion requires mandatory M1 and claimed-package gates; optional feature completion requires that feature's own gates.
+
+## 13. Phase 10 — conditional NK-3 ARM64 project
+
+**Priority/size:** P2/large. **Entry:** M1 reference still misses the relevant budget after justified script/observer work, the evaluator is a material limiter, and SF/NK owners explicitly select a port under existing backend policy. **Benefit:** possible evaluator cost reduction; no extrapolation from Linux ratios. This branch can stay deferred while renderer and diagnostics ship.
+
+### DT-MAC-04n1 — math/toolchain feasibility, outside app
+
+Inspect `nk_math.hpp`, build/devtools/run scripts, actual Apple Clang flags/SDK/libm and the pinned ARM64 Godot. Current x86 SSE2 left-first arithmetic and glibc assumptions cannot be reused blindly. Build a disposable math/literal oracle for finite values, signed zeros, NaN sign/payload/class, Inf, subnormals, overflow, comparisons/clamps, transcendental functions, constants and dictionary encoding. Keep `-fno-fast-math` and explicit `-ffp-contract=off`; verify compilation database and conflicting flags. Pin exact inputs and match dSYM UUIDs.
+
+**Tests:** existing math/literal oracle extended for actual target, valid and malformed cases, deliberate negative control and ABI smoke; native sanitizer loader positive controls before trusting a report. No expensive full fleet yet. **Exit:** same-host ARM64 reference exactness is achievable without changing kernel policy; otherwise stop port and retain reference. H9 tolerance does not replace same-host native exactness.
+
+### DT-MAC-04n2 — evaluator and harness portability
+
+Adapt existing stage/family interfaces, not RK4/kernel ownership. Add target-specific dylib/descriptors/tool receipts and Mach-O inspections; preserve Linux build behavior. Adapt `session_baseline.py`'s Linux `.so` package assumption and source/runner identities deliberately. Reuse isolated devtools; do not copy Linux `RTLD_DEEPBIND`/preload assumptions to Mac.
+
+**Tests:** ≥10,000 actual stage inputs across air/ground/hull and malformed cases; all five trajectory cases with ≥960 accepted ticks: trim/runway/maneuver must finish the full requested tape without fault/pause/crash; only takeoff/lake may terminate in a matching crash after that minimum. Complete every fault/restore/pending-weather prerequisite; exact negative mutation must fail with comparisons, not a timeout. Run intended family/weather/source oracles and actual native coverage counters. **Exit:** no hidden reference fallback counted as native, source-bound exactness and lifecycle pass; report refused configurations honestly.
+
+### DT-MAC-04n3 — admission, replay and fleet
+
+Extend loader/package identity only after target gates exist. Keep missing/corrupt/stale/wrong-ABI/wrong-slice/already-loaded refusal and reference recovery. Preserve prepared configuration mutation guards, atomic reset/restore and backend-pinned checkpoint/log identities. Execute a current-source fleet declaration; historical X8 terminals cannot qualify MoonRunner X99 or unknown Workshop variants. The four currently excluded MoonRunner rows block a full-fleet claim until fresh evidence resolves them. A narrowed qualified surface must be enforced in actual runtime admission with reference fallback outside it, not merely documented in a report. Helicopter and ground vehicle remain separate.
+
+**Tests:** T7 native loader/session/replay/fallback and actual current fleet/family gates; current verifier/mutant/toolchain/installation tests. **Exit:** exact candidate's admitted surface is explicit; all required rows classified as completed/refused/terminal with intended policy and no missing cases. Incomplete prefixes are not successful flights.
+
+### DT-MAC-04n4 — native release performance and package
+
+Build optimized ARM64 sidecar with exact engine/source/data/harness receipt. Validate each delivered universal slice or safe reference fallback for absent slices, dependencies, final signatures and downloaded package. Run five reference/native paired complete live-session cases, not only research-stage timing; check p95/tails, input/audio/render observers and sim/wall. Reuse phase-9 campaign results only when they cover the same final signed artifact and configuration. If this port changes a previously qualified artifact, rerun affected final gates. A reference-to-native `.orfl` comparison is a candidate with `solver_changed`, never an exact replay: preserve each backend's own exact replay and compare the candidate on the same tick/input tape.
+
+**Tests:** T9 for the ABI/platform integration plus exact package replay/fallback; T8 final 1080p/thermal acceptance. **Exit:** material complete-workload benefit, same-host exactness, stable package and no cross-platform regressions. Only then consider automatic Mac admission through a recorded owner decision. No catalog item may require NK-3 to fly.
+
+## 14. Phase 11 — separate iOS/iPadOS feasibility and delivery
+
+**Priority/size:** P2/large, independent of Mac optimization completion. **Entry:** explicit platform/product scope and physical target devices. **Benefit:** establish whether a sustainable compatible port is feasible; there is no existing iOS export to tune. **Owner:** DT/UI/VQ/SF/AUD with a named mobile integrator.
+
+### DT-MAC-13i1 — export and reference feasibility
+
+Select exact Godot/templates, Xcode/SDK, deployment floor, device classes, architecture and distribution path. Verify pinned engine iOS capabilities from source/toolchain, not current stable docs. Prepare minimal native reference flight in a disposable export with real app assets and package identity. Define signing/provisioning/development-device prerequisites; iOS simulator evidence is separately labeled.
+
+**Tests:** export/import/resource/architecture checks and actual development-signed physical-device launch with GDScript reference. **Exit:** reproducible supported package plus initial whole-session timing/memory data; no iOS support claim from Mac success or simulator-only execution.
+
+### DT-MAC-13i2 — lifecycle, input and resource limits
+
+Define usable touch/controller route, safe areas/orientation/text, disconnect/reconnect/lost-input safety and RC hardware limitations. Handle foreground/background, lock, suspend, memory warning/jetsam diagnosis, save/restore, audio interruptions/route changes and thermal behavior. Do not let diagnostics callbacks advance physics or count suspended time as flight. Use existing session boundaries and fixed 240 Hz/float64; if budgets cannot be met, report feasibility failure rather than silently reducing simulation fidelity.
+
+**Tests:** focused platform lifecycle/input/audio/session fixtures plus actual device interruption/controller/UI checks. **Exit:** safe usable flight route, bounded resource recovery and explicit supported controls/device requirements.
+
+### DT-MAC-13i3 — shared diagnostics with an iOS adapter
+
+Reuse versioned schema, availability, retention and consent; use a supported iOS platform integration for public host/app APIs. Do not spawn macOS CLI helpers, rely on `/proc`, expose the debug bridge to pilots or assume desktop dylib loading. Export/delete through platform UI. MetricKit remains optional delayed diagnostics with availability, no-report, multiple/historical payload and opt-out semantics.
+
+**Tests:** common T2 schema/redaction fixtures; iOS plugin packaging, unsupported API, memory warning, suspend/cancel and sharing UI on physical device. **Exit:** bounded local voluntary collection without Xcode for users, unchanged non-iOS behavior and no automatic transmission.
+
+### DT-MAC-13i4 — actual mobile qualification
+
+Compare eligible Mobile/Metal and other supported paths at fixed features and actual output/aspect ratio, prioritizing 1080p where supported; then higher and finally disclosed 720p fallback. Use short pairs before finalist sustained tests, native thermal/memory evidence, moving aircraft/control review and battery context. Qualify phone/tablet/chassis/OS separately; desktop M1 acceptance is not an iPad pass.
+
+**Tests:** focused mobile changes followed by one complete platform integration release pass and physical sustained/control/lifecycle campaign. **Exit:** named device/OS/control/performance coverage or an explicit unfulfilled feasibility gate. Any mobile default must preserve desktop behavior and the shared kernel contract.
+
+## 15. Phase 12 — upstream-first advanced engine opportunities
+
+**Priority/size:** P2/large. **Entry:** a supported consumer and attributed bottleneck that app-level work cannot adequately solve. **Benefit:** uncertain until a prototype proves it. These are independent optional branches, not prerequisites for first Metal or MetalFX qualification.
+
+| Subphase | Concrete work | Validation and completion |
 | --- | --- | --- |
-| DT-MAC-02a / P0 / DT | Extend `app/get-godot.sh` for Darwin with the official **`Godot_v4.8-beta1_macos.arm64.zip` editor**, exact independently verified checksum, executable/version verification and portable checksum/archive handling. The editor is architecture-specific; the universal export template is separate. Inspect `get-templates.sh`, export scripts and CI host assumptions; reuse existing tools | After 01 inventory. Native ARM64 editor/import/test invocation, cache hit, corrupt download, interrupted download and unsupported-host checks; no Rosetta substitution. Roll back downloader change independently |
-| DT-MAC-02b / P0 / PT | Extend `app/render/frame_samples.gd` (duration/cap/continuity owner), `app/main.gd`, `app/render/frame_diagnostics.gd`, existing reducers and `tools/godot/` resource collection for bounded continuous recording and §12 metadata. Extend `app/tests/test_frame_samples.gd`, `tools/godot/test_frame_capture.py` and reducer tests; preserve existing effective-driver fields | Before any soak. Test cap reached, partial write, cancellation, viewport destruction, missing counters and monotonic timestamps; demonstrate observer overhead. No sample cap silently becomes a successful complete run |
-| DT-MAC-03a / P0 / DT/SF/FL | Freeze the current Mac artifact and generate native launch, package, software/numerical and unmodified 1080p baseline receipts. Check GDU's pinned-template workaround and Compatibility shader-global regression | After 02a/b. Final exported bytes, same-host exact replay and H9 policy; engine errors invalidate a run even at exit 0. Missing GPU/physical data remains unqualified |
-| DT-MAC-05a / P1 / VQ/PT | Add isolated method/driver experiments to `tools/graphics/launch.py` and its tests; keep import caches/preferences separate. Hold effects constant across Compatibility, Mobile/Metal and Forward+/Metal | After 03. Reject conflicting switches, preserve asset lookup, report actual method/driver, match native output size, audit all shader/viewports. Existing Standard/High product behavior remains the rollback |
-| DT-MAC-05b / P1 / VQ/UI | After selecting a renderer, wire its allowed startup/restart/recovery policy through existing graphics preferences, shell and display menu. Renderer/backend selection and effect preset are separate concepts | Requires 05a native parity/performance. Failed initialization, malformed/obsolete preference, backend disappearance and repeated restart cannot trap the user. Safe Standard recovery preserves radio calibration |
-| DT-MAC-06a / P1 / VQ/UI | Replace the Apple Auto name heuristic with a documented capability/default policy and measured quality decisions using `app/render/scene_detail.gd` and existing settings | After 05/06 evidence. Test M1 floor, unknown/new hardware, headless, changed driver and explicit user selection. No forced upgrade from a chip string; retain old manual settings |
-| DT-MAC-07a / P1 / VQ | Add provider-specific capability, scale and AA policy to `app/render/reconstruction.gd`: MetalFX Spatial first, through stock engine APIs. Extend existing menu, settings normalization, labels/localization and adapter tests | After GPU-bound 05/06 result. Mobile/Metal and Forward+/Metal capability checks; unsupported enum/device/build/driver/scale → Native, honest reason. Spatial is **not temporal** and must not inherit temporal history or AA behavior |
-| DT-MAC-07b / P1 / VQ/CAM | Add MetalFX Temporal with runtime scale range and correct history lifecycle. Extend existing camera discontinuity notifications and engine support only where the pinned API lacks a working reset | After 07a and Forward+ parity. Inspect actual depth, motion vectors, jitter, exposure and history reset in a native capture. The audited `b56eb5f` reset submission is DLSS-only; concurrent provider-advertisement/FSR work remains separate and proves no MetalFX reset. Failed/unqualified Temporal falls back automatically to Native; supported Spatial remains a separate user choice |
-| DT-MAC-07c / P1 / VQ/UI/PT | Finish live availability/failure reporting, effective-mode verification, resize/fullscreen/Retina transitions and resource cleanup. Test repeat provider switches and restore saved native AA when leaving temporal | After 07a/b. No stale scaler textures, progressive allocation growth, fallback mislabeled as MetalFX or UI downscaling. All other providers retain their own capability and sharpening semantics |
-| DT-MAC-06b / P1 / VQ/LU/SM | Apply one measured GPU change from §7: MSAA, shadows/probes, texture format/mips, bounded MultiMeshes or transparent coverage. Preserve generated-source ownership | Each change follows a capture identifying the limiter; paired native 1080p and moving-image acceptance plus lifecycle checks. Revert any unexplained >5% required-case regression |
-| DT-MAC-08b / P1 / DT | Add native Mac CI/package checks and manual physical-host qualification to the existing export workflow. Verify ARM64 Mach-O slice, linked libraries, universal template swap workaround, signatures/notarization as applicable and packaged resources | After candidate selection. Run downloaded/quarantined final artifact on the floor and named newer OS; hosted/headless CI cannot qualify GPU, radio or thermals. Preserve current artifact and recovery recipe |
-| DT-MAC-10 / P2 / GDU/VQ | Adopt or contribute a complete upstream Metal 4 command backend under §13; use an isolated exact engine revision, patch hashes, matching templates and symbols | After 05 attribution identifies a relevant engine limitation, or upstream provides a supported implementation worth evaluating. Full render-graph/queue correctness, MTL3 recovery and M1/newer-host regression required; never bundle with initial MetalFX |
-| DT-MAC-11 / P2 / VQ/GDU | Evaluate 2026 MetalFX temporal inputs and neural path: OS-available descriptors, subrectangles and motion-vector conventions | After 07b and verified upstream/API support. Native SDK evidence on eligible hardware; source exposure and OS availability alone do not prove neural execution or benefit. Retain legacy Temporal and Native |
-| DT-MAC-12 / P2 / VQ/DT/UI | Optional MetalFX frame interpolation feasibility and implementation under §13; independent of upscaling. Evaluate macOS 27 distortion-texture inputs only for this interpolator API | Requires real-frame pacing already meeting its gate, correct temporal inputs and engine presentation integration. End-to-end control latency, separate rendered/presented rates, UI composition and disable/recovery proof. Remains off until qualified |
-| DT-MAC-13 / P2 / VQ | Conditional denoising, ray tracing, tensor/ML or engine memory/submission experiments from §13 | Only with a concrete supported renderer consumer and measured need. Record `trigger absent` for currently inapplicable techniques; do not create a ray tracer or ML workload merely to use an API |
+| DT-MAC-10 Metal 4 | Inspect latest upstream source/issues; pin one implementation/patch set with editor/templates/symbols. Review allocator reuse after GPU completion, residency, barriers, cross-queue events, native callbacks, drawable/presentation and teardown. Name maintainer/upstream removal path before accepting a fork. | Engine correctness/API validation and resource/barrier tests; all OpenRC shaders/lifecycle; same OS/hardware/common-effect MTL3/MTL4 pairs, then uninstrumented M1/newer-host release. Keep MTL3 when unsupported/no meaningful benefit. |
+| DT-MAC-11 newer temporal APIs | Check exact SDK/runtime/device descriptor support and engine exposure for new neural/input/subrectangle/motion conventions. | Compare identical inputs, verify actual scaler path, motion/reset/failure and net cost. No feature claim from enum, OS, chip label or marketing demonstration. |
+| DT-MAC-12 interpolation | Separate engine presentation feasibility: correct depth/motion/history, UI composition, drawable scheduling, VRR, cut/reset bypass and queue depth. | Real rendered rate remains independently qualified; measure control-to-photon/latency by a valid method, presented/generated counts separately, plus fallback and sustained power. Generated frames never advance simulation or inflate the real-frame gate. |
+| DT-MAC-13 advanced memory/rendering | One measured engine consumer for memoryless attachments, loading/submission, tile/mesh/indirect work, ray-traced denoising or ML; reuse supported implementation first. | Prove lifetime/synchronization/visibility/quality and whole-frame gain on supported hardware, preserving M1/M2 baseline. If current raster app has no consumer, record trigger absent and do not create one. |
 
-First implement **02a → 02b → 03a**, with independent native-delivery and instrumentation work reviewable separately. Then **05a → 05b/06 → 07a → 07b/07c → 08/08b → 08a → 09**. P2 branches can be evaluated independently after their prerequisites, but cannot delay a qualified common baseline. Estimates remain relative: tooling/policy changes are bounded; Metal 4 command-backend and presentation work are engine projects. Estimate engineering days only after the baseline exposes the defect and the exact upstream delta is known.
+**Tests:** changed engine/API focused tests first; T3–T7 relevant app checks; T9 once after a chosen engine candidate integrates; T8 full final hardware qualification. No full app campaign for every abandoned engine prototype. A custom engine with no maintenance/update owner is not an accepted performance strategy.
 
-Four implementation constraints refine those boundaries:
+## 16. Review, evidence handoff and completion
 
-- **02a/08b delivery:** `app/export.sh` explicitly requires Linux and runs Linux x86_64/NK-3 acceptance. Retain those gates and split cross-export from Mac-native artifact checks, or introduce host-specific stages under DT. Replacing GNU `timeout` or checksum utilities alone does not make the complete exporter a Mac workflow. `app/test.sh` already uses the checked Python runner; inspect each script's actual host requirements.
-- **02b/03a product coverage:** `--frametimes` selects direct flight, bypassing Home/display preferences, and `--scripted` disables input. Use explicitly matched effective settings for technical benchmarks and a separate real Home → Fly recording/soak route for product acceptance. Extend the existing collector into the shell route if necessary; do not count a scripted run as a pilot/input/preference test.
-- **05b cold start:** GDScript reads `display.cfg` after renderer initialization; the current High restart is temporary and persists no backend. A durable choice needs a pre-engine launcher/bootstrap or an explicitly guarded two-stage restart with last-known-good choice, attempt marker, success acknowledgement and recovery from failed/hung initialization. Keep a direct Standard launch path, bound retries, clear stale attempts and preserve calibration. A settings-picker edit or 15-second display confirmation cannot recover a process that never initializes.
-- **05a common effects:** an empty graphics-profile environment on Forward+ currently activates High. Define and test an explicit common-effects selection; simply clearing the environment would enable extra SSAO/shadow/reflection work and confound the comparison. Record effective effects for every candidate.
+Every implementation PR states the trigger, exact files/owner, one changed mechanism, expected metric and why, results and limits, and how to recover the previous configuration. Scope tests to that mechanism; broaden only for changed shared contracts, failures or final integration. Keep generated artifacts tied to source pipelines. Run deliberate mutations in disposable copies and never hand-edit physics/generated data.
 
-## 12. Capability, measurement and reconstruction contracts
+Retain compact dated evidence under existing DT-MAC/owning-track homes; raw traces and unnecessary images stay in ignored output. Evidence carries actual tested source/package hashes rather than assuming a moving checkout is immutable. The source identity above is the inspected baseline; recheck relevant runtime/tool inputs against it before executing the plan, and retain any later dirty-patch identity. Concurrent unrelated documentation/asset cleanup is not Apple optimization evidence.
 
-Extend the existing diagnostics and reconstruction dictionaries rather than introducing another preferences store, profiler or render loop. This is the complete target contract; the Windows preparation implements a subset, described in DT-MAC-02 evidence. Unknown native command-backend/presentation status remains explicit.
+**Mandatory core finish:** native M1 and claimed-package gates pass, selected settings are recoverable, required tests/replay/visual/control evidence is complete, and source/artifact identity is reconciled. **Broader claims:** only named device/OS/profile rows actually qualified may be advertised. **Optional finish:** each branch either passes its own gates or records an evidence-based deferred/trigger-absent decision; optional failure cannot waive a mandatory core target.
 
-| Contract | Required information / behavior |
-| --- | --- |
-| Identity | Source commit plus dirty patch hash, engine source/build/patch identity, editor/template/export hashes, import/config hashes, native architecture, host/model/CPU/GPU/RAM, macOS build, Xcode/tool versions |
-| Backend | Requested/effective method and driver, fallback reason, adapter/API string, **verified command backend** (`MTL3`, `MTL4`, or unknown), capability source and query success. An OS advertising Metal 4 must not populate `MTL4` without implementation evidence |
-| Display | Window points, drawable/output pixels, actual internal 3D dimensions when measurable (nominal estimate labeled otherwise), scale, display/refresh, VSync enum, FPS cap, fullscreen, UI scale, display changes |
-| Provider | Requested/effective provider, availability and reason, engine enum, supported min/max scale, requested/applied scale, AA owner, provider-specific sharpening, engine substitution/failure, reset requested/submitted/acknowledged if supported |
-| Performance | Frame-loop intervals, presented-frame evidence separately, viewport GPU/CPU scope and lag, tick time/unit and sim/wall ratio, pipeline-compilation counters, per-run distributions, hitch count/bursts, warm/cold/cache condition |
-| Resources and power | Process RSS, engine texture/buffer estimates, system memory pressure/compression/swap with attribution limits, thermal/power state where available, AC/battery and Game Mode. Unavailable is null with reason, never zero; overlapping memory channels are not summed |
-| Collection | Schema version, monotonic time origin and clock alignment uncertainty, sample capacity/drop count, chunks/sequence, start/end/expected duration, complete/interrupted/capped status, data hashes, diagnostic overhead and native trace references |
-
-The existing frame collector and v2 reducers require stable finite numeric arrays. Preserve that format for old short-run reports; put missing-channel availability/reasons in separate metadata, or version and migrate readers before introducing nullable samples/chunks. Exercise 30-minute-equivalent synthetic streams at 60/120 Hz, missing/duplicate/out-of-order chunks, interrupted publication and old-format readers. At 1 Hz, configure more than 1,800 process-resource samples for a 30-minute run plus warmup and verify actual coverage/stop reason rather than accepting the default 600-sample cap.
-
-Provider resolution is deterministic: normalize saved request → query actual capabilities → validate method/driver/scale → select a provider-specific AA and sharpening policy → apply → read back applied **inputs** → obtain engine-observed pass evidence → publish receipt. Keep requested policy, property readback and verified effective execution separate. The stock API does not guarantee visibility of every internal substitution or SDK failure; add a narrow upstream diagnostic if needed, or report unknown and disable the unqualified candidate. Preserve the saved request on temporary unavailability so the UI can explain the fallback; retain manual Native selection across restarts. Fail closed when the RD is absent or limits are invalid. Revalidate/recreate contexts when output size, backend or provider changes; resource retirement must wait for engine-owned GPU completion.
-
-**Spatial:** preserve the accepted native AA policy and feed a resolved source texture; compare at 0.85 input scale first. **Temporal:** let the engine own jitter, velocity/depth conventions and its AA, while OpenRC signals real discontinuities and verifies their consumption. Do not apply FSR sharpness or DLSS-specific settings to MetalFX without a corresponding API. **History:** camera switch, teleport/reset, world/aircraft replacement, resize/scale change and resume after a discontinuity need a defined reset or context recreation. Ordinary camera movement must not reset every frame. Minimize/pause alone does not justify clearing valid history repeatedly.
-
-Test injected policy fixtures for every supported/unsupported method-driver combination, absent RD/constants, invalid limits, persisted unknown values and engine substitution. Include rejected request → identical retry → restore Native → valid retry: a cached setter can skip an identical request after rejection. An absent RD disables optional providers while Native/Compatibility remains usable. Native Metal tests then establish allocation, SDK execution, motion and presentation correctness. A GPU capture qualifies its frozen configuration, not continuous runtime failure detection; that requires a tested engine status seam or an explicitly unobservable status. Use the existing checked GDScript tests, debug smoke, graphics checkers, frame reducers, lifecycle probe and flight-log workflow named by the [tool index](../tools/README.md); add focused cases to those tools. Fake capability tests do not close hardware gates.
-
-## 13. Metal 4 and newest Apple features: integration decisions
-
-The [Apple technology report](../research/desktop-delivery-investigations/DT-MAC-00-R2/apple-technologies.md) records dated API/device availability and sources. The [Godot compatibility report](../research/desktop-delivery-investigations/DT-MAC-00-R2/godot-compatibility.md) records what the exact engine implements. This separation is mandatory for every new feature.
-
-| Technology | OpenRC action and implementation level | Entry and exit gates |
-| --- | --- | --- |
-| Native Metal rasterization | **Integrate/qualify now through stock Godot** after baseline; compare Mobile and Forward+ | Correct shaders, viewport parity, sustained cost and package recovery. Existing Metal support does not mean the default Compatibility renderer uses it |
-| MetalFX Spatial / Temporal | **Implement application adapter**, reuse stock SDK integration | §7/§12. M1 remains a supported candidate; temporal requires Forward+, actual device feature and range |
-| Metal 4 command allocators, argument tables, explicit synchronization and residency | **Engine-owned, upstream-first**, DT-MAC-10 | Driver must cover allocation reuse only after GPU completion, resource residency across in-flight frames, barriers and cross-queue events, native callbacks, presentation, shutdown/device errors and old-OS fallback. No direct GDScript implementation or second queue secretly sharing Godot resources |
-| Metal 4 compiler, pipeline serialization and shader specialization | Prefer existing Godot caches/precompilation; expose newer paths only with upstream support and measured cold/first-use stalls | Version caches by engine/compiler/device/OS/config; test corruption, invalidation, cold and warm loads. Ship matching templates; do not distribute machine-specific cache blobs as universal binaries |
-| 2026 neural MetalFX temporal scaler and new inputs | **Conditional engine exposure**, DT-MAC-11 | Apple documents newer neural behavior on M5 Pro/Max and macOS 27 inputs. Verify exact supported descriptors/hardware and compare legacy/scaler behavior with identical source frames. Do not generalize to every M5 or assume the pinned engine supplies the new inputs |
-| MetalFX frame interpolation | **Separate optional presentation project**, DT-MAC-12 | Correct real-frame history/depth/motion, UI placement, drawable scheduling and variable refresh; cut/reset bypass, queue-depth/latency measurement, lower-power/unsupported fallback. Generated frames do not advance physics, sample controls or count toward the real-frame performance gate |
-| MetalFX denoised upscaling / hardware ray tracing | **Defer until a rendering consumer exists**, DT-MAC-13 | Denoising needs appropriate noisy lighting/ray-tracing inputs and a matching renderer integration; it cannot be attached as a generic filter to the current raster image. Preserve M1/M2 raster baseline |
-| GPU tensors, Metal ML and M5 Neural Accelerators | **No current simulator consumer**; use only if a future presentation workload justifies it | No flight-law migration, float64 reduction, fast-math policy change or inferred Neural Engine access from a Metal shader. Reuse supported models/tools rather than creating speculative neural effects |
-| TBDR, memoryless attachments, heaps, residency, async compute and fast resource loading | Start with render-target/pass/texture savings exposed by Godot; engine patches only after bandwidth, synchronization or loading evidence | Track pass lifetime and store/resolve requirements, CPU/GPU hazards, upload rings and shared-memory pressure. Unified memory does not eliminate synchronization or make all storage modes equivalent |
-| Mesh shading, indirect draws, tile shaders, raster-rate maps | Existing LOD/MultiMesh/culling first; engine work only for a proven compatible bottleneck | Correct visibility/velocity/shadows and hardware query; a feature in Apple's table is not an exposed Godot setting. No blanket foveation or variable-rate shading that harms distant-aircraft visibility |
-| Metal display link / direct presentation, Game Mode, ProMotion and HDR | Profile Godot's current platform path; use supported pacing/window integration; investigate missing engine behavior upstream | 60 Hz/SDR baseline first, then 120 Hz/VRR/HDR as distinct display gates. Measure latency/color correctness and resume/monitor transitions; a fullscreen flag does not prove Game Mode or direct presentation |
-| Xcode/Instruments, HUD, `gpucapture`/`gpudebug`, `metalperftrace`, GPTK 4 | **Reuse installed free tooling** with version/OS checks; integrate receipts into existing diagnosis workflow | New macOS 27 command-line GPU tools are optional developer aids, not a product OS requirement. Preserve older-host Instruments path; disable validation/HUD for final timings. GPTK is guidance/tooling, not a replacement runtime or D3D translation layer for this native Godot app |
-
-Apple's 2026 guide introduces neural scaling, quantized tensor formats and newer MetalFX inputs; it does not establish OpenRC compatibility or speedups. [WWDC26 Metal guide](https://developer.apple.com/wwdc26/guides/metal/). The new capture/debug tools and porting workflows are described in [Apple's GPTK 4 session](https://developer.apple.com/videos/play/wwdc2026/357/). Use primary SDK availability and actual device queries over marketing family names.
-
-**DT-MAC-10 sequence:** inspect the latest upstream implementation and open defects → pin one candidate/patch set → build native ARM64 editor/templates with symbols → run API/Shader Validation and resource/barrier tests → verify all OpenRC shaders/effects and lifecycle routes → pair MTL3/MTL4 at common features on the same OS/hardware → repeat uninstrumented floor/newer-host acceptance → promote only after DT/GDU/VQ review. If upstream lacks a maintainable implementation or no meaningful benefit is measured, record the unmet prerequisite and keep MTL3. An engine fork must name its maintainer, patch removal/upstream path, build inputs and security/update responsibility before adoption.
-
-## 14. Release readiness, risks and completion definition
-
-| Risk / severity | Mitigation / blocking evidence |
-| --- | --- |
-| Wrong claim of Metal 4 support / critical | Bind report to the actual command-backend source and native trace. Current pin is MTL3; OS capability labels cannot close DT-MAC-10 |
-| Beta engine and stale historical assumptions / high | Recheck GDU issues against the exact binary. An upstream fix merged after the beta tag is absent unless explicitly patched; use tested template workaround and preserve release rollback |
-| Small-aircraft temporal artifacts or added control latency / high | Moving-image pilot review plus native capture and latency evidence; reject faster output if orientation/landing cues degrade |
-| M1/8 GB pressure or fanless throttling / high | Three uninterrupted 30-minute runs, warm transition cycles and pressure/swap attribution; keep common baseline and compare final five-minute windows |
-| Native extension/package mismatch / high | Verify every delivered architecture and dynamic dependency; current NK-3 Mac admission is separate from universal engine packaging. Explicit GDScript fallback remains valid; no silent claim of native-solver parity |
-| New API availability or SDK/OS mismatch / high | Runtime availability checks and actual support queries, weak-linking where an engine patch requires it, oldest-supported-host launch, missing-feature recovery |
-| Render and presentation ownership violated / high | Engine owns queues, resources, frame graph and swapchain; use supported rendering boundaries or upstream code. A native texture handle alone is not a synchronization contract |
-| Confounded measurements / medium | Freeze feature set, pixels, input/workload, cache/power state and engine separately; alternate paired runs and retain distributions/exclusions |
-| Regressions from parallel renderer work / medium | Freeze commit plus dirty diff immediately before implementation/test; rerun provider policy and native checks after combined changes |
-
-Release evidence is a matrix, not a single green checkbox: **build/import → native launch → software/numerical checks → shader/visual correctness → sustained performance → lifecycle/input/audio → final distribution trust**. All required stages must pass on each claimed host/OS/backend. The M1–M5 commitment remains explicit; newly released M6 hardware enters a separate coverage row with actual family/API/device queries and named results, without extrapolating from M5 or delaying the first M1 baseline. Do not claim unreleased variants or infer a GPU family absent from Apple's current table.
-
-Completion of core integration means 02–09 accepted, Native fallback recoverable and final package evidence linked to its exact bytes. For conditional MetalFX work, either the trigger is present and its options are truthfully reported/tested, or the evidence records `trigger absent` and retains Native; the full MetalFX feature claim requires the former. Completion of an optional feature means its own 10–13 gates pass; otherwise publish it as unsupported/experimental/deferred with the missing prerequisite. Broad research is complete for this dated decision; implementation may reveal new defects. No Mac execution, speedup, thermal result, signed distribution or hardware qualification was produced by this documentation task.
+The recommended first implementation deliverable after this planning task is **DT-MAC-02c**: the bounded Aqua-launch/resource-availability repairs with focused fixtures, followed by current-tool native smoke and baseline. No optimization has been implemented by this audit, and no Apple hardware speedup, thermal result, iOS support or signed-release acceptance is claimed.

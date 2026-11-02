@@ -34,7 +34,7 @@ Latest VQ-01d slice: [moving visibility references](../research/visual-quality-i
 
 | Topic | Decision for this delivery | Reason / reopening condition |
 | --- | --- | --- |
-| Engine and renderer | Keep 4.7.2 and Compatibility; no dependency upgrade | Preserve export, shader and numerical baselines. VQ-07 remains outside this delivery. |
+| Engine and renderer | Preserve the adopted engine pin and Compatibility for this delivery; upgrades remain with GDU | The earlier 4.7.2 restriction is superseded by the [4.8-beta1 adoption](godot-4.8-upgrade.md). Preserve current export, shader and numerical baselines; Apple experiments follow the [master plan](apple-silicon-performance.md). VQ-07 remains outside this delivery. |
 | Performance target | Qualify the primary 60 Hz profile at 1920×1080 first; above-1080p resolutions (1440p, 4K and higher) are secondary desirable targets; 1280×720 is tertiary and last ([policy](../../AGENTS.md#display-resolution-priorities)) | DT-01 names actual hardware before any support claim. RTX 3090 evidence is a reference, not a minimum-GPU claim. |
 | Ground blending | Try **one Laplacian blend** against current dual-sample detiling, using retained turf | Smaller preprocessing scope than histogram/LUT authoring. If it fails, retain current blending; a second algorithm needs a new finding. |
 | Vegetation | Test the existing atlas and alpha-to-coverage first | No replacement library, octahedral addon or custom mip importer in the initial slice. |

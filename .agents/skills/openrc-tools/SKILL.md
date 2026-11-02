@@ -13,17 +13,18 @@ Most-used commands (repository root, Bash):
 | Task | Command |
 | --- | --- |
 | One test script, failing on engine errors that exit 0 | `python3 tools/godot/run_checked.py --timeout 90 -- "$(app/get-godot.sh)" --headless --path app --script res://tests/test_X.gd` |
-| Full suite before a commit (40+ min) | `app/test.sh` (on a `git worktree` snapshot when other sessions edit the tree) |
+| Full local app verification for broad changes or release preparation (40+ min); CI runs it as a required gate | `app/test.sh` (on a stable snapshot when other sessions edit the tree) |
 | Headless flight trace | `"$(app/get-godot.sh)" --headless --path app -- --trace=tmp/t.csv --t=3 --aircraft=<id>` |
 | Handling change: before/after | `python3 research/flight-test/run.py --out tmp/ft-base --aircraft <id> --only trim_sweep,vmax,roll_rate`, then `compare.py` |
 | The running app, any interaction | `python3 tools/debug/debugctl.py launch --headless`, then `ui`, `press text=…`, `state`, `logs --follow` (skill `openrc-debug`) |
 | Running-app regression pass | `python3 tools/debug/debugctl.py smoke` |
 | GDScript compiler warnings | `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'` |
-| Visual change | the area checker in [docs/tools/graphics.md](../../../docs/tools/graphics.md#area-capture-checkers), or `app/capture.sh` |
+| Visual change during development | the affected [area checker or capture](../../../docs/tools/graphics.md#area-capture-checkers); CI runs `app/capture.sh` |
 
 Rules that save hours:
 
 - Use a new output directory under `tmp/` for every run; read the engine log, not only the exit code.
+- Follow the [verification scope](../../../docs/tools/shared.md#verification-scope); repeat a check when its inputs change, it fails or evidence remains inconclusive.
 - A fresh checkout or copy needs `"$(app/get-godot.sh)" --headless --path <app> --audio-driver Dummy --import` once.
 - Other agents may share this machine: one rendered app at a time; never `git stash`; stage only your own paths.
 - Known broken tools are listed in [docs/tools/shared.md](../../../docs/tools/shared.md#known-broken-or-stale-tools).
