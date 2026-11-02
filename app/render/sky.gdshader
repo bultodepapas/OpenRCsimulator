@@ -79,6 +79,8 @@ uniform float appearance_cloud_density = 1.0;
 // FW-61/FW-22: the twilight arch toward the brighter source, azimuth exponent `lobe_k`, vertical e-folding
 // `lobe_height` (radians): it hugs the horizon. Zero lobe_lin (the calibrated fixed sun) adds exactly nothing.
 vec3 lobe_term(vec3 d) {
+	// Fixed-day lighting has no twilight lobe; this uniform branch skips inactive angular work.
+	if (all(equal(lobe_lin, vec3(0.0))) && all(equal(lobe2_lin, vec3(0.0)))) return vec3(0.0);
 	float h = max(length(d.xz), 1e-4);
 	float az = max(dot(d.xz / h, normalize(lobe_dir.xz + vec2(1e-6, 0.0))), 0.0);
 	vec3 term = lobe_lin * pow(az, lobe_k) * exp(-max(asin(clamp(d.y, -1.0, 1.0)), 0.0) / lobe_height);

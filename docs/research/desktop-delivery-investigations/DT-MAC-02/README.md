@@ -131,6 +131,197 @@ qualification needs adequate storage headroom; these constrained hosts do not
 establish that gate. The complete release export/publish pipeline was not run.
 SSH keys remain installed as requested.
 
+## DT-MAC-06b shader work reduction, second batch (2026-11-02)
+
+Baseline: `734bfb26a`. Six shader sources change; engine, simulation, renderer
+selection, resolution, scenery and quality settings stay fixed. This batch removes
+work whose existing contribution is zero, plus redundant cloud lattice wrapping:
+
+- Grass noise returns the existing mean once its footprint is fully filtered.
+  Derivatives execute before the selection, and control flow reconverges before
+  later octave derivatives. A conditional early return was rejected in review.
+- Grass skips pilot-anchor noise once the existing pin weight reaches one. The
+  remaining anchor uses the original arithmetic order; its uniform coordinates
+  have zero derivatives.
+- Cloud value noise derives neighboring lattice indices from the already wrapped
+  first corner. Positive, non-power-of-two production periods remain supported;
+  a general bitmask replacement would be incorrect.
+- Ground, near grass, sky and water skip angular twilight calculations only when
+  their contributing color uniforms are exactly zero. Sky checks both lobes.
+
+These algebraic equivalence arguments assume finite production inputs, not arbitrary NaNs,
+invalid lattice periods or malformed lighting uniforms. No new CPU optimization
+was retained: the interrupted debug profile cannot establish steady `_vehicle()`
+cost, and proposed gear/weather shortcuts lacked a complete-workload justification.
+
+Frozen candidate SHA-256 identities:
+
+| Source under `app/render/` | SHA-256 |
+| --- | --- |
+| `cloud_field.gdshaderinc` | `7b8a726cd67faa3b14e5980debceb547730522b042898e6e2837496d5f9dbbc7` |
+| `grass_surface.gdshaderinc` | `fb97b71db59196c4267f23cbf57ebc3fc08854754337f39736cc3524f91c4127` |
+| `ground.gdshader` | `9c85b53c2834ec90adb90c244fa80f7f432a59c27b968eed702e933ad61c2079` |
+| `lake/water.gdshader` | `b6d9ff136f48a79c8ce164ce298adb92583b7ca97a32a4c411dc8c3a0bc3a32c` |
+| `near_grass.gdshader` | `4957650d6fd2a6f7ce7d5c038f7d853417c2eb440d1a32944e245e8f318a1f27` |
+| `sky.gdshader` | `bfee011046e194cda59939cf00ba40f1d940df7b19de0a84b15290b1c3840f33` |
+
+### Focused checks and native static images
+
+On the final frozen sources, checked Linux tests passed for atmosphere (149 assertions), world sky (38), sky
+rendering (46), near grass (48), lake surface and moon lighting (33). Disposable
+llvmpipe reference comparisons passed the final combined grass implementation in
+352 cases / 1,441,792 fragments and cloud value noise in 432 cases / 1,769,472
+fragments, with zero mismatches. Both exercised their branch/wrap paths and each
+wrong-value control produced 4,096 mismatches. The cloud check covers the changed
+helper after floating-point coordinate wrapping, including negative upstream
+offsets; it does not establish all complete-cloud or Metal paths. An earlier
+incorrect anchor fixture and an unfinished larger cloud run are excluded.
+
+Native Compatibility captures used the M1/8 GB, pinned ARM64 4.8-beta1 editor,
+2560×1600, medium scenery and disabled bird/tree-wind animation. Six day views and
+three each at twilight and night completed through the existing production
+landscape capture. Five of twelve baseline/candidate PNGs are byte-identical,
+including all night views and all lake-shore views. The other seven differ at a
+total of 31 pixels, each by one level in one 8-bit color channel. An unchanged
+candidate repeat is byte-identical in all twelve views: the tiny differences are
+repeatable, not demonstrated fixture variability. This is static Compatibility
+evidence, not motion, pilot-readability or Metal color qualification.
+Independent visual review of the nine locally retained day/twilight pairs found
+no visible change. The twilight foreground is dark in both versions; these
+scenery views cannot establish aircraft attitude readability. Night image hashes
+were recomputed on the Mac, where the original and repeat PNGs remain retained.
+
+Source identity for these image captures comes from the external frozen-input
+swap/check orchestration, not an embedded source receipt in the landscape report.
+Its manifest SHA-256 is
+`8a3bf9e9ee885f254557d5d01c77ed4936055c3216393f228ef32179086916c0`;
+the capture orchestrator is
+`df82658f1e36407f880bba9fca874d38171718e51cf4fc52e8b71f16af41967c`.
+Raw fixtures, checked logs and images stay outside Git under `tmp/apple-round2/`;
+native images are retained in the Mac scratch's
+`tmp/apple-round2/production-captures-native/` and
+`production-candidate-repeat/`.
+
+Native follow-up used the existing `tools/graphics/flow_probe.gd`: both roles
+completed moon and twilight cases, each with 481 moving-clock draws and 120
+paused-clock draws. All twelve replayed stills are byte-identical, and the clock,
+moon/star angular changes and zenith-change series match. This is a 1920×1080
+offscreen World diagnostic, not actual 1080p output or moving-aircraft acceptance.
+The production Mobile/Metal 2560×1600 screenshot pair differs at twelve pixels,
+each by one level in one 8-bit channel. Visual inspection found no visible change;
+embedded provenance identifies exactly the expected six source differences.
+
+Cloud value noise passed all 432 sampled cases on M1 Compatibility and Metal,
+including nonzero wrap counts and the 4,096-pixel wrong-value control. The initial
+Metal helper timed out waiting for `frame_post_draw`; the retry reused the flow
+probe's always-updating SubViewport and `force_draw(false)` pattern. Its llvmpipe
+control also passed. This tests offscreen correctness, not window presentation.
+
+Grass is **not bit-exact on M1**: the 352-case helper reports 115,263 unequal
+fragments on Compatibility and 115,259 on Metal. A bounded diagnostic adapted
+from that helper compared baseline-self, filter-only, anchor-only and combined
+paths at four representative inputs. On both renderers its controls passed,
+baseline-self was exact, no non-finite values occurred, and sampled absolute RGB
+differences were at most `1e-6` per channel. These are bounds for those inputs,
+not exact maxima or all-input proof. The pattern is consistent with arithmetic or
+code-generation differences; their precise cause is unproven. Acceptance of this
+render-only change rests on these bounded samples plus production pixel and
+motion comparisons, not a claim of exact shader arithmetic.
+
+### Preliminary native render screen
+
+One sequential baseline/candidate Mobile/Metal screen used 30 seconds warmup and
+60 seconds measured, Native scale 1.0, 4× MSAA, medium scenery, fixed camera and
+2560×1600 viewport. Both ran on AC power, uncapped with VSync disabled. The
+scripted route disables physics/input: these are render-loop measurements, not
+active flight or actual presentation. Collection, duration and global draw
+progress checks passed. Recorded source identities differ at exactly the six
+expected shader files; other recorded sources and camera/settings match.
+This scene uses imported near grass with StandardMaterial3D bindings, so the
+edited procedural near-grass shader is not exercised by this timing screen.
+
+| Role | p50 ms | p95 ms | p99 ms | Maximum ms |
+| --- | ---: | ---: | ---: | ---: |
+| Baseline | 35.432 | 37.291 | 47.770 | 100.940 |
+| Candidate | 29.483 | 30.939 | 41.518 | 71.121 |
+
+The observed p95 reduction is 17.0% in this single pair. It is a promising screen,
+not an established repeatable gain, a per-mechanism attribution or a 60 FPS pass.
+Both roles reported the known seven Texture RID shutdown warnings; baseline also
+reported four ObjectDB instances.
+
+A first complete Compatibility pair used the same fixture with 30 seconds
+warmup and 120 seconds measured. Baseline p50/p95/p99/max were
+44.288/47.959/51.680/71.158 ms; candidate values were
+31.254/34.243/38.318/102.347 ms. The p95 reduction was 28.6%; the candidate's
+maximum was worse. Frames above 50 ms fell from 70/2,701 to 6/3,802, and frames
+above 33.3 ms from 100% to 10.18%. This remains one render-only pair, not a
+60 FPS or active-flight pass.
+
+The requested five-pair campaign was interrupted by connectivity and window
+visibility. A later candidate run and the resumed candidate were complete data
+collections but failed rendering eligibility (`window_not_drawable`); their
+artificially short intervals are excluded. The follow-up was narrowed to two
+fresh pairs with Godot's `--always-on-top` flag on both
+roles. Its first baseline also lost drawability and was excluded; no complete
+pair came from that attempt. The [pinned Godot macOS implementation](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/platform/macos/godot_window_delegate.mm)
+derives this status from AppKit window visibility/occlusion; the particular
+desktop event is unidentified. A sleeping process sample and post-draw wait explain a plausible
+helper stall, not proof of its cause. Investigation and raw exclusions remain in
+`tmp/apple-round2/native-investigation.md` and the native campaign directories.
+Repeated performance, actual presentation, sustained flight and pilot control
+gates remain open. The earlier package and replay evidence below apply to the
+first batch.
+
+### Second-batch native development package
+
+The new ZIP is retained on the M1 at
+`/Users/gius/OpenRC-m1-package-check/tmp/round2-final-20261102/OpenRC-M1-round2.zip`.
+Checked import/export, archive validation, strict native signature verification
+and external reference-receipt verification passed. Both ARM64 and x86_64 slices
+are present; only ARM64 was executed. This is an isolated research development
+package, not a notarized or downloaded release qualification.
+
+The actual Mac clone remains based on dirty `cfad9b9fc787aab1512200abca9640133d0a81a9`.
+The build stamp now records that identity and dirty state instead of
+`export-manual`. All 4,488 listed app files match the frozen Linux candidate except
+the tested research `project.godot`: its isolated application name and disabled
+multi-bounce setting are preserved (SHA-256
+`2a3577ec4e756d8798635701ea5819acf248fe59ce1b58353b73fea8d3f3a949`).
+Six extra Linux native-kernel files sit beneath the existing `.gdignore`;
+Mac archive checks passed. This is declared source closure, not proof of a
+reproducible build or a clean checkout of `734bfb26a`.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Final ZIP | `d76684d110813cea80e5bf1f1283fa2c4f554ab0d975908e9e4ceb2c958ad2e9` |
+| PCK | `cbe2e13e945e0884c2d8a4da22d401afd31249f93084aed6b87e0266b5de1a88` |
+| Private input snapshot | `9206d7745a9eeb9af0dd73ea11c69b2d8a8240c0d5a4be3989e47d03ccca4bd6` |
+| ARM64 reference identity | `f406bc459ea099c133b686510c688ac4143d77c52c8644ab9a0bd738c80ad8dc` |
+
+The actual exported executable passed the 240-warmup/960-measured-tick detached
+reference session probe. A fresh recording replayed exactly through tick 2,657
+(2,658 rows), `complete=true`, `solver_changed=false`, with the same package
+identity. Runtime PCK provenance verified all six candidate shader hashes and the
+truthful build stamp. A native Compatibility capture completed at 2560×1600;
+its shutdown reported the existing four-ObjectDB-instance warning. These checks
+do not establish full CI, pilot acceptance, sustained frame pacing or release
+trust. Reports, recording and replay are retained outside Git in
+`tmp/apple-round2/native/package/` and beside the Mac ZIP.
+
+The initial cleanup removed two confirmed redundant Mac copies: the
+checksum-identical `clone-probe.pck` and `tmp/original-app`, whose files, symlinks
+and extended attributes matched the retained checkout. APFS sharing means the
+logical sizes do not establish reclaimed storage; immediate free-space readings
+changed negligibly. Original sources, deliveries, baselines, active evidence and
+SSH keys were preserved. Detailed receipts remain in `tmp/apple-round2/cleanup/`.
+After package testing, the new redundant extracted test bundle was also removed
+after its complete receipt identity matched the retained ZIP and strict signature
+verification passed. Recorded available space rose from 966,700 to 2,749,988 KiB
+(about 1.70 GiB; concurrent filesystem activity can affect that delta). The final
+ZIP, prior delivery, test evidence and keys remain. The extracted app can be
+recreated with `ditto -x -k` into a fresh directory.
+
 ## DT-MAC-04b / 06b optimization candidates (2026-11-02)
 
 The source baseline is `85c9fd35f83a3f2b2aa3fdbaf67e9a73a8bcdb6e`.

@@ -1,6 +1,6 @@
 # Apple Silicon optimization — master implementation plan
 
-Updated 2026-11-02 · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Source audited:** `46b004c7b469448c29ef96168da4f03cee2c6d23`. **Status:** portable capture/identity repairs and bounded observer/ground optimization candidates implemented; native development ZIP, signature and exact replay checks passed; sustained Mac qualification open.
+Updated 2026-11-02 · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Source audited:** `46b004c7b469448c29ef96168da4f03cee2c6d23`. **Status:** portable capture/identity repairs and bounded observer/shader optimizations implemented; native development ZIP, signature and exact replay checks passed; repeated and sustained Mac qualification open.
 
 This plan and the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) are the two authoritative Apple optimization documents. The background contains implementation facts, research and limitations; this document contains the execution sequence and gates. Existing research remains dated evidence and tool READMEs remain command authorities. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) retains release ownership. No optimization or new platform support is authorized as completed by this plan.
 
@@ -32,7 +32,7 @@ The objective is the maximum practical **sustained performance with readable air
 | DT-MAC-04n1–n4 | Conditional ARM64 NK-3 feasibility, evaluator parity, admission and package work — phase 10, under SF/NK policy. |
 | DT-MAC-05a | Isolated renderer tools implemented; native parity/comparison open — phase 5. |
 | DT-MAC-05b/c | Product restart/recovery and renderer decision — phases 8 and 5 respectively. |
-| DT-MAC-06a/b–d | Ground shader candidate has five byte-identical M1 Compatibility views; performance/motion gates remain open. Capability policy and other work — phases 8 and 6. |
+| DT-MAC-06a/b–d | Second shader batch removes inactive grass/twilight work and redundant cloud wrapping. Native Compatibility/Metal images and offscreen moon/twilight motion checks passed with quantified tiny differences. Single-pair render screens are promising; repeated timing lost window drawability. Sustained performance and moving-aircraft gates remain open — phases 8 and 6. |
 | DT-MAC-07a–c | MetalFX policy/Settings prepared; real execution, failure/reset, motion/lifecycle and benefit open — phase 7. |
 | DT-MAC-08 / 08a / 08b / 09 | Sustained M1, community coverage, native package and promotion — phase 9. |
 | DT-MAC-10 / 11 / 12 / 13 | Conditional engine-level Metal/new reconstruction/presentation work — phase 12. |
@@ -462,3 +462,13 @@ space prevents the four-copy local mutation prelude and undermines a sustained
 memory/swap campaign until adequate headroom is available. No renderer default,
 thermal result, iOS support or distributed-release acceptance is promoted.
 [Dated candidate and M1 evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-04b--06b-optimization-candidates-2026-11-02).
+
+The subsequent six-shader batch has focused checks, native sampled cloud parity,
+bounded grass differences, Compatibility/Metal static views and exact offscreen
+moon/twilight stills. Single 2560×1600 render-only pairs measured p95
+37.291 → 30.939 ms on Metal and 47.959 → 34.243 ms on Compatibility. Repeated
+attempts lost window drawability and were excluded. A new native development ZIP
+passed signature, packaged-source, session, rendered-capture and exact replay
+checks; its actual dirty Mac source identity is recorded. Repeated/sustained
+performance, moving-aircraft acceptance and full release/CI gates remain open.
+[Second-batch identities and evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-06b-shader-work-reduction-second-batch-2026-11-02).

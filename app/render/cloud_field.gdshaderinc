@@ -23,9 +23,12 @@ float cloud_field_value_noise(vec2 p, ivec2 period, uint seed) {
 	vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
 	ivec2 c = ivec2(i);
 	int x0 = cloud_field_wrap(c.x, period.x);
-	int x1 = cloud_field_wrap(c.x + 1, period.x);
+	// Callers use positive lattice periods. Reuse the wrapped corner for its neighbor.
+	int x1 = x0 + 1;
+	if (x1 >= period.x) x1 = 0;
 	int y0 = cloud_field_wrap(c.y, period.y);
-	int y1 = cloud_field_wrap(c.y + 1, period.y);
+	int y1 = y0 + 1;
+	if (y1 >= period.y) y1 = 0;
 	float a = cloud_field_hash2(ivec2(x0, y0), seed);
 	float b = cloud_field_hash2(ivec2(x1, y0), seed);
 	float d = cloud_field_hash2(ivec2(x0, y1), seed);

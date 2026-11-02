@@ -44,7 +44,13 @@ vec3 untiled(vec2 uv) {
 // to prevent distant grazing-angle horizontal bands and shimmer; close detail stays unchanged.
 float filtered_vnoise(vec2 p) {
 	float footprint = max(length(dFdx(p)), length(dFdy(p)));
-	return mix(vnoise(p), 0.5, smoothstep(0.25, 0.9, footprint));
+	// Once the filter reaches its mean, the noise has zero contribution.
+	// Keep derivatives before the branch and reconverge before later octave derivatives.
+	float value = 0.5;
+	if (footprint < 0.9) {
+		value = mix(vnoise(p), 0.5, smoothstep(0.25, 0.9, footprint));
+	}
+	return value;
 }
 
 vec2 macro(vec2 p) {
@@ -63,8 +69,13 @@ vec3 rough_grass_colour(vec2 p) {
 	// variation itself ramps in over the first pilot_pin_m. Dry patches, one-sided, fade in from pilot_pin_m.
 	float dist_pilot = distance(p, pilot_xz);
 	float pin = smoothstep(pilot_pin_m, 4.0 * pilot_pin_m, dist_pilot);
-	vec2 mc0 = macro(pilot_xz);
-	float tone = 1.0 + macro_amp * (mc.x - mc0.x * (1.0 - pin)) * smoothstep(0.0, pilot_pin_m, dist_pilot);
+	float anchor = 0.0;
+	if (pin != 1.0) {
+		// pilot_xz is uniform, so each original filtered octave has zero footprint.
+		float anchor_noise = 0.5 * vnoise(pilot_xz / 37.0) + 0.35 * vnoise(pilot_xz / 160.0 + 17.0) + 0.15 * vnoise(pilot_xz / 9.0 + 5.0);
+		anchor = anchor_noise * 2.0 - 1.0;
+	}
+	float tone = 1.0 + macro_amp * (mc.x - anchor * (1.0 - pin)) * smoothstep(0.0, pilot_pin_m, dist_pilot);
 	vec3 dry_tint = mix(vec3(1.0), vec3(1.18, 1.04, 0.80), dry_amount * mc.y * pin); // no dry patch in the pilot box
 	return base * tone * dry_tint;
 }

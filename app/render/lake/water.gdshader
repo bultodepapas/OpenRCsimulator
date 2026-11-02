@@ -93,6 +93,8 @@ float wave_height_raw(vec2 north_east, out vec2 gradient_ne) {
 
 
 vec3 lobe_term(vec3 direction_to_camera) {
+	// Fixed-day lighting has no twilight lobe; this uniform branch skips inactive angular work.
+	if (all(equal(lobe_lin, vec3(0.0)))) return vec3(0.0);
 	float horizontal_length = max(length(direction_to_camera.xz), 1e-4);
 	float azimuth_weight = max(dot(direction_to_camera.xz / horizontal_length,
 		normalize(lobe_dir.xz + vec2(1e-6, 0.0))), 0.0);

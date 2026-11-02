@@ -80,6 +80,18 @@ the views are byte-identical. Native performance claims and renderer decisions
 remain separate from this parity result. Exact source identities, checks and
 native outcomes live in the [DT-MAC-02 evidence](research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-04b--06b-optimization-candidates-2026-11-02).
 
+A second shader batch skips fully filtered grass noise, inactive pilot-anchor and
+twilight terms, and redundant cloud lattice wrapping. Focused checks passed, and
+twelve native Compatibility views have quantified, tiny static pixel differences.
+Single render-only pairs measured p95 37.291 → 30.939 ms on Mobile/Metal and
+47.959 → 34.243 ms on Compatibility at 2560×1600. Native offscreen motion and
+bounded shader comparisons, a new development package, signature verification
+and exact packaged replay passed. Repeated timing attempts lost window
+drawability and were excluded; active-flight benefit and sustained qualification
+remain open.
+This does not promote Metal or change production quality settings. Exact identities and
+limits are in the [second-batch evidence](research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-06b-shader-work-reduction-second-batch-2026-11-02).
+
 ## 4. Rendering research tied to OpenRC
 
 ### 4.1 Mobile, Forward+ and Apple GPU memory traffic
