@@ -30,10 +30,32 @@ DEFAULT_OUT = ROOT / "tmp" / "macos-preflight"
 MAX_ENGINE_BYTES = 512 * 1024 * 1024
 MAX_OUTPUT_BYTES = 1024 * 1024
 TOTAL_SECONDS = 55.0
+FOUNDATION_SECONDS = 3.0
+FOUNDATION_OUTPUT_BYTES = 4096
 MAX_GPUS = 16
 MAX_DISPLAYS = 32
 TOOLS = ("python3", "git", "shasum", "unzip", "file", "codesign", "spctl",
          "xcrun", "xcode-select", "xcodebuild", "clang", "instruments")
+
+# JXA bridges thermalState as a string on some macOS versions. Keep the two
+# property reads independent so one unavailable selector does not hide the other.
+FOUNDATION_SCRIPT = """
+ObjC.import('Foundation');
+var host = $.NSProcessInfo.processInfo;
+var snapshot = {};
+try {
+    var thermal = host.thermalState;
+    snapshot.thermal_state = typeof thermal === 'undefined' ?
+        {status: 'unsupported'} : {status: 'available', value: thermal};
+} catch (error) { snapshot.thermal_state = {status: 'error'}; }
+try {
+    var lowPower = host.isLowPowerModeEnabled;
+    snapshot.low_power_mode = typeof lowPower === 'undefined' ?
+        {status: 'unsupported'} : {status: 'available', value: lowPower};
+} catch (error) { snapshot.low_power_mode = {status: 'error'}; }
+JSON.stringify(snapshot);
+"""
+THERMAL_STATES = ("nominal", "fair", "serious", "critical")
 
 
 @dataclass
@@ -112,6 +134,77 @@ def bounded_command(command: list[str], *, timeout: float, max_bytes: int) -> Ou
         return Outcome(buffer.decode("utf-8"), None, child.returncode)
     except UnicodeDecodeError:
         return Outcome(None, "invalid_utf8", child.returncode)
+
+
+def foundation_state(deadline: float) -> dict:
+    """Read one optional, bounded NSProcessInfo snapshot, with no fallback values."""
+    def field(status: str, reason: str | None, value: object = None, *, thermal: bool = False) -> dict:
+        result = {"status": status, "value": value, "reason": reason}
+        if thermal:
+            result["enum"] = None
+        return result
+
+    def decode(raw: object, *, thermal: bool = False) -> dict:
+        if not isinstance(raw, dict):
+            return field("error", "invalid_field", thermal=thermal)
+        status = raw.get("status")
+        if status == "unsupported":
+            return field("unsupported", "selector_unavailable", thermal=thermal)
+        if status == "error":
+            return field("error", "property_query_failed", thermal=thermal)
+        if status != "available":
+            return field("error", "invalid_field_status", thermal=thermal)
+        if "value" not in raw or raw["value"] is None:
+            return field("unknown", "value_unavailable", thermal=thermal)
+        value = raw["value"]
+        if thermal:
+            # The JXA bridge can report the public enum as a canonical digit
+            # string. Do not coerce booleans, floats, or other strings.
+            if type(value) is int and 0 <= value < len(THERMAL_STATES):
+                code = value
+            elif type(value) is str and value in ("0", "1", "2", "3"):
+                code = int(value)
+            else:
+                return field("unknown", "invalid_thermal_enum", thermal=True)
+            result = field("available", None, THERMAL_STATES[code], thermal=True)
+            result["enum"] = code
+            return result
+        if type(value) is not bool:
+            return field("unknown", "invalid_boolean")
+        return field("available", None, value)
+
+    started = time.monotonic()
+    timeout = max(0.0, min(FOUNDATION_SECONDS, deadline - started))
+    result = (bounded_command(["/usr/bin/osascript", "-l", "JavaScript", "-e", FOUNDATION_SCRIPT],
+                              timeout=timeout, max_bytes=FOUNDATION_OUTPUT_BYTES)
+              if timeout > 0 else Outcome(None, "budget_exhausted", None))
+    elapsed = max(0.0, time.monotonic() - started)
+    reason = result.reason
+    data = None
+    if reason is None:
+        try:
+            data = json.loads(result.text) if result.text is not None else None
+            if not isinstance(data, dict):
+                reason = "invalid_output"
+        except (ValueError, RecursionError):
+            reason = "invalid_json"
+
+    if reason is not None:
+        thermal_state = field("error", reason, thermal=True)
+        low_power_mode = field("error", reason)
+    else:
+        thermal_state = decode(data.get("thermal_state"), thermal=True)
+        low_power_mode = decode(data.get("low_power_mode"))
+    return {
+        "source": "Foundation NSProcessInfo via osascript",
+        "scope": "single API-reported snapshot; no time series, events, or memory pressure observed",
+        "interpretation_note": "Foundation can report nominal when thermal state is unknown or unsupported; "
+                               "nominal does not prove thermal sensor availability.",
+        "query": {"timeout_seconds": timeout, "elapsed_seconds": elapsed, "reason": reason},
+        "thermal_state": thermal_state,
+        "low_power_mode": low_power_mode,
+        "memory_pressure": field("unknown", "not_collected"),
+    }
 
 
 def process_translation() -> tuple[bool | None, str | None]:
@@ -308,6 +401,7 @@ def collect(godot: Path) -> dict:
             issues.append("engine:changed_after_hash")
 
     selected_xcode = clean_text(query("xcode_selection", ["/usr/bin/xcode-select", "-p"], required=False), limit=512)
+    host_state = foundation_state(deadline)
     report = {
         "format": "openrc-macos-preflight-v1", "captured_utc": datetime.now(timezone.utc).isoformat(),
         "collection": {"complete": not issues, "issues": issues, "time_budget_seconds": TOTAL_SECONDS,
@@ -318,6 +412,7 @@ def collect(godot: Path) -> dict:
                  "os_version": os_version, "os_build": os_build, "hardware_arm64": hardware_arm64,
                  "python_process_architecture": host_arch, "python_process_rosetta": translated,
                  "python_process_native_arm64": native_arm64},
+        "host_state": host_state,
         "gpus": gpus, "display_entries_truncated": truncated, "engine": engine,
         "tooling": {"path_found": {tool: shutil.which(tool) for tool in TOOLS},
                     "xcode_selection": selected_xcode, "python_version": platform.python_version(),
@@ -335,7 +430,7 @@ def main() -> int:
     if args.dry_run:
         print(json.dumps({"collection_started": False, "requires": "Darwin and --godot",
                           "collects": ["model and memory", "OS and process architecture", "filtered GPU/display data",
-                                       "engine path/hash/version", "tool paths"],
+                                       "engine path/hash/version", "tool paths", "Foundation thermal and low-power snapshot"],
                           "serial_numbers": "discarded from system output in memory; never written",
                           "output_directory": str(args.out_dir)}))
         return 0

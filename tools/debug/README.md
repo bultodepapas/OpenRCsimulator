@@ -73,6 +73,8 @@ Launch options:
   the player's settings. `--profile DIR` reuses a profile between launches. `--real-profile` uses the real one:
   Home's Fly then saves the selection like a person would. On macOS, Godot's `~/Library` user directory is not
   redirected by these environment variables; use an isolated project copy for Mac smoke until that path is verified.
+  Mac smoke scenarios also assume fresh English preferences; the seeded monkey can persist another language.
+  Preserve the isolated research profile and use a fresh one for another full smoke; never reset the player's profile.
 - **Several agents on one machine.**
   - Each launch claims its own port atomically, in `tmp/debug-bridge/sessions/<port>.json` (0600, with its token),
     and skips ports held by a live session.
@@ -92,6 +94,8 @@ Launch options:
   profile about once a second (read it with `profile`). `--verbose` names each object leaked at exit.
 - `stop` reports how the engine ended: `leaked_objects` / `leaked_instances` at exit, and a `crash` with its reason
   and GDScript backtrace, taken from `engine.log` (exit 1 after a crash). `status` shows the same when the app died.
+  `launcher_exit_code` is numeric only when the current client owns and reaps the launcher; a separate CLI
+  invocation reports null. An empty crash/leak log alone does not prove a zero OS exit status.
 - If the engine cannot listen (the port is still being released), `launch` retries once on a free port. It accepts
   an answer only from its own process group, and it stops what it launched whenever it fails.
 - Run one rendered app at a time on the shared VM (about 2–3 GB RSS).
@@ -194,6 +198,8 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
   - Before each scenario and the pause-menu test flight, it returns to a bare Home: it ends flights and the truck,
     closes dialogs and discards unsaved Workshop edits. A failed reset skips that dependent scenario and remains
     a failure in the verdict. It also resets Home after the random walk and soak.
+  - It reaps its own launcher, including on macOS, and requires a confirmed zero exit code. Failed shutdown or
+    forced cleanup remains a failure; missing exit/leak data stays null in the verdict.
   - It prints one JSON verdict and exits 1 when any step failed or the engine crashed. It takes about 3.5 minutes
     on the VM.
   - Add a scenario file for every UI or flow bug you fix. Each must start and end at Home.

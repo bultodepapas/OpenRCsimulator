@@ -138,6 +138,13 @@ Tool paths indicate discovery, not working SDKs. `--dry-run` prints collection
 scope without inspecting the host or writing a receipt and works on Windows;
 actual collection requires Darwin and `--godot`. Use `--help` for all flags.
 
+The optional `host_state` field reads Foundation thermal state and Low Power Mode
+once through the installed `osascript`, capped at 3 seconds and 4 KiB within the
+overall budget. Each field distinguishes available, unsupported, unknown and
+error; optional failure does not invalidate the core inventory. Memory pressure
+remains unknown. This is a preflight snapshot, not a sustained observation or
+throttling test; no background sampler or helper is installed.
+
 Exit 0 means the inventory was collected, not that the machine, renderer or
 package is qualified. Exit 1 writes a partial receipt with reasons; inspect it
 before using the results. Exit 2 indicates invalid setup, a non-Darwin collection

@@ -13,7 +13,7 @@ import socket
 import sys
 import threading
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -102,12 +102,15 @@ class DebugctlTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.saved_current = debugctl.CURRENT
         self.saved_sessions = debugctl.SESSIONS
+        self.saved_owned_processes = debugctl._OWNED_PROCESSES
+        debugctl._OWNED_PROCESSES = {}
         debugctl.CURRENT = Path(self.tmp.name) / "current.json"
         debugctl.SESSIONS = Path(self.tmp.name) / "sessions"
 
     def tearDown(self) -> None:
         debugctl.CURRENT = self.saved_current
         debugctl.SESSIONS = self.saved_sessions
+        debugctl._OWNED_PROCESSES = self.saved_owned_processes
         self.tmp.cleanup()
         self.bridge.close()
         os.environ.clear()
@@ -173,6 +176,7 @@ class DebugctlTests(unittest.TestCase):
                 project = str(expected_project.resolve())
                 self.assertEqual(popen.call_args.args[0], ["source-godot", "--path", project, "--headless",
                                                           "--audio-driver", "Dummy", "--", "--quick-flight"])
+                self.assertIs(debugctl._OWNED_PROCESSES[process.pid], process)
                 if imported:
                     self.assertEqual(run.call_args.args[0], ["source-godot", "--headless", "--path", project,
                                                              "--audio-driver", "Dummy", "--import"])
@@ -560,7 +564,7 @@ class DebugctlTests(unittest.TestCase):
                     return 0
 
                 def fake_stop(_args):
-                    print(json.dumps({"crash": None, "leaked_objects": 0}))
+                    print(json.dumps({"stopped": True, "launcher_exit_code": 0, "crash": None, "leaked_objects": 0}))
                     return 0
 
                 def reset(_args=None):
@@ -631,6 +635,216 @@ class DebugctlTests(unittest.TestCase):
             time.sleep(0.05)  # never reaped by wait() here: it stays a zombie
         self.assertFalse(debugctl.alive(child.pid))
         child.wait()
+
+    def test_owned_child_is_reaped_without_proc_or_ps(self) -> None:
+        import subprocess
+        child = subprocess.Popen([sys.executable, "-c", "pass"])
+        debugctl._OWNED_PROCESSES[child.pid] = child
+        try:
+            with patch.object(debugctl.sys, "platform", "darwin"), \
+                    patch.object(debugctl.subprocess, "run", side_effect=AssertionError("ps queried for own child")):
+                deadline = time.monotonic() + 10
+                while debugctl.alive(child.pid) and time.monotonic() < deadline:
+                    time.sleep(0.01)
+                self.assertFalse(debugctl.alive(child.pid))
+                self.assertEqual(child.returncode, 0)
+        finally:
+            child.wait()
+
+    def test_macos_unowned_zombie_and_unavailable_state(self) -> None:
+        for result, expected in ((SimpleNamespace(returncode=0, stdout=" Z+\n"), False),
+                                 (SimpleNamespace(returncode=0, stdout=" S\n"), True),
+                                 (SimpleNamespace(returncode=1, stdout=""), True)):
+            with self.subTest(result=result), patch.object(debugctl.sys, "platform", "darwin"), \
+                    patch.object(debugctl.os, "name", "posix"), patch.object(debugctl.os, "kill"), \
+                    patch.object(debugctl.subprocess, "run", return_value=result) as ps:
+                self.assertEqual(debugctl.alive(123456789), expected)
+                ps.assert_called_once_with(["/bin/ps", "-p", "123456789", "-o", "stat="],
+                                           capture_output=True, text=True, timeout=1.0)
+        for failure in (OSError("ps unavailable"), debugctl.subprocess.TimeoutExpired("ps", 1.0)):
+            with self.subTest(failure=failure), patch.object(debugctl.sys, "platform", "darwin"), \
+                    patch.object(debugctl.os, "name", "posix"), patch.object(debugctl.os, "kill"), \
+                    patch.object(debugctl.subprocess, "run", side_effect=failure):
+                self.assertTrue(debugctl.alive(123456789))
+
+    def test_windows_open_process_errors_fail_closed(self) -> None:
+        import ctypes
+        for error, expected in ((87, False), (5, True), (6, True), (0, True)):
+            with self.subTest(error=error):
+                kernel = SimpleNamespace(OpenProcess=Mock(return_value=None),
+                                         GetExitCodeProcess=Mock(), CloseHandle=Mock())
+                with patch.object(debugctl.os, "name", "nt"), \
+                        patch.object(ctypes, "WinDLL", return_value=kernel, create=True) as dll, \
+                        patch.object(ctypes, "get_last_error", return_value=error, create=True):
+                    self.assertEqual(debugctl.alive(123456789), expected)
+                dll.assert_called_once_with("kernel32", use_last_error=True)
+                kernel.OpenProcess.assert_called_once_with(0x1000, False, 123456789)
+                kernel.GetExitCodeProcess.assert_not_called()
+                kernel.CloseHandle.assert_not_called()
+        with patch.object(debugctl.os, "name", "nt"), \
+                patch.object(ctypes, "WinDLL", side_effect=OSError("kernel32 unavailable"), create=True):
+            self.assertTrue(debugctl.alive(123456789))
+
+    def test_windows_process_query_status_and_handle_width(self) -> None:
+        import ctypes
+        from ctypes import wintypes
+        handle = 0x100000010  # would be truncated by ctypes' default 32-bit result type
+        for query_ok, exit_code, expected in ((False, 0, True), (True, 259, True),
+                                              (True, 0, False), (True, 7, False)):
+            with self.subTest(query_ok=query_ok, exit_code=exit_code):
+                def query(_handle, output):
+                    output._obj.value = exit_code
+                    return int(query_ok)
+                kernel = SimpleNamespace(OpenProcess=Mock(return_value=handle),
+                                         GetExitCodeProcess=Mock(side_effect=query), CloseHandle=Mock())
+                with patch.object(debugctl.os, "name", "nt"), \
+                        patch.object(ctypes, "WinDLL", return_value=kernel, create=True):
+                    self.assertEqual(debugctl.alive(123456789), expected)
+                self.assertIs(kernel.OpenProcess.restype, wintypes.HANDLE)
+                self.assertEqual(kernel.GetExitCodeProcess.argtypes[0], wintypes.HANDLE)
+                self.assertEqual(kernel.CloseHandle.argtypes, [wintypes.HANDLE])
+                self.assertEqual(kernel.GetExitCodeProcess.call_args.args[0], handle)
+                kernel.CloseHandle.assert_called_once_with(handle)
+
+    def test_windows_unknown_process_is_not_forgotten_on_stop(self) -> None:
+        import ctypes
+        session = {"port": self.bridge.port, "pid": 123456789, "launcher_pid": 123456789}
+        kernel = SimpleNamespace(OpenProcess=Mock(return_value=None), GetExitCodeProcess=Mock(), CloseHandle=Mock())
+        with patch.object(debugctl.os, "name", "nt"), \
+                patch.object(ctypes, "WinDLL", return_value=kernel, create=True), \
+                patch.object(ctypes, "get_last_error", return_value=5, create=True), \
+                patch.object(debugctl, "ambiguous_target", return_value=[]), \
+                patch.object(debugctl, "current_session", return_value=session), \
+                patch.object(debugctl, "result_of", side_effect=OSError("bridge unavailable")), \
+                patch.object(debugctl, "forget_session") as forget:
+            status, output, error = self.run_cli("stop")
+        self.assertEqual(status, 2)
+        self.assertEqual(output, "")
+        self.assertIn("no bridge answered", error)
+        forget.assert_not_called()
+
+    def test_stop_reports_and_reaps_already_exited_owned_child(self) -> None:
+        import subprocess
+        for exit_code in (0, 7):
+            with self.subTest(exit_code=exit_code):
+                child = subprocess.Popen([sys.executable, "-c", f"raise SystemExit({exit_code})"])
+                debugctl._OWNED_PROCESSES[child.pid] = child
+                try:
+                    deadline = time.monotonic() + 10
+                    while debugctl.alive(child.pid) and time.monotonic() < deadline:
+                        time.sleep(0.01)
+                    self.assertIsNotNone(child.returncode)
+                    session = {"port": self.bridge.port, "pid": child.pid, "launcher_pid": child.pid,
+                               "out": self.tmp.name}
+                    debugctl.write_private(debugctl.SESSIONS / f"{self.bridge.port}.json", session)
+                    (Path(self.tmp.name) / "engine.log").write_text("engine exited\n")
+                    with patch.object(debugctl, "result_of", side_effect=AssertionError("contacted reused bridge")), \
+                            patch.object(debugctl, "kill_group", side_effect=AssertionError("killed exited child")):
+                        status, output, _err = self.run_cli("stop")
+                    self.assertEqual(status, 0 if exit_code == 0 else 1)
+                    report = json.loads(output)
+                    self.assertTrue(report["stopped"])
+                    self.assertEqual(report["launcher_exit_code"], exit_code)
+                    self.assertNotIn(child.pid, debugctl._OWNED_PROCESSES)
+                finally:
+                    child.wait()
+
+    def test_stop_keeps_unowned_live_launcher_after_engine_exit(self) -> None:
+        session = {"port": self.bridge.port, "pid": 111, "launcher_pid": 222, "out": self.tmp.name}
+        claim = debugctl.SESSIONS / f"{self.bridge.port}.json"
+        for bridge_missing in (True, False):
+            with self.subTest(bridge_missing=bridge_missing):
+                debugctl.write_private(claim, session)
+                quit_result = OSError("bridge unavailable") if bridge_missing else None
+                with patch.object(debugctl, "alive", side_effect=lambda pid: pid == 222), \
+                        patch.object(debugctl, "result_of", side_effect=quit_result) as quit_request, \
+                        patch.object(debugctl, "kill_group", side_effect=AssertionError("unexpected force")), \
+                        patch.object(debugctl.time, "monotonic", side_effect=[0.0, 61.0]):
+                    status, output, error = self.run_cli("stop")
+                self.assertEqual(status, 2 if bridge_missing else 1)
+                self.assertEqual(output, "")
+                self.assertIn("no bridge answered" if bridge_missing else "still running", error)
+                self.assertTrue(claim.exists(), "a live launcher must retain its session claim")
+                quit_request.assert_called_once_with("quit", timeout=5.0)
+
+    def test_force_stop_succeeds_after_killing_owned_child(self) -> None:
+        import subprocess
+        child = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
+        debugctl._OWNED_PROCESSES[child.pid] = child
+        try:
+            session = {"port": self.bridge.port, "pid": child.pid, "launcher_pid": child.pid,
+                       "out": self.tmp.name}
+            debugctl.write_private(debugctl.SESSIONS / f"{self.bridge.port}.json", session)
+            (Path(self.tmp.name) / "engine.log").write_text("engine terminated\n")
+            with patch.object(debugctl, "result_of", side_effect=OSError("bridge unavailable")), \
+                    patch.object(debugctl, "kill_group", side_effect=lambda _pid: child.kill()) as kill, \
+                    patch.object(debugctl.time, "monotonic", side_effect=[0.0, 61.0]):
+                status, output, _err = self.run_cli("stop", "--force")
+            report = json.loads(output)
+            self.assertEqual(status, 0)
+            self.assertTrue(report["stopped"])
+            self.assertTrue(report["forced"])
+            self.assertNotIn(report["launcher_exit_code"], (None, 0))
+            kill.assert_called_once_with(child.pid)
+        finally:
+            if child.poll() is None:
+                child.kill()
+            child.wait()
+
+    def test_smoke_reports_shutdown_failure_after_forced_cleanup(self) -> None:
+        scenarios = Path(self.tmp.name) / "empty-scenarios"
+        scenarios.mkdir()
+        calls = []
+
+        def fake_launch(_args):
+            print(json.dumps({"port": self.bridge.port, "out": self.tmp.name, "launcher_pid": 12345}))
+            return 0
+
+        def fake_stop(args):
+            calls.append(args)
+            if args:
+                print(json.dumps({"stopped": True, "launcher_exit_code": -9, "crash": None, "leaked_objects": 0}))
+            return 1
+
+        output = io.StringIO()
+        with patch.multiple(debugctl, SCENARIOS=scenarios, launch=fake_launch, stop=fake_stop,
+                            alive=lambda _pid: True, home_reset=lambda *_: 0, crawl=lambda _: 0,
+                            run_lines=lambda _: 0, monkey=lambda _: 0, soak=lambda _: 0,
+                            result_of=lambda _: {"hitch_total": 0}), contextlib.redirect_stdout(output):
+            status = debugctl.smoke([])
+        report = json.loads(output.getvalue().strip().splitlines()[-1])
+        self.assertEqual(status, 1)
+        self.assertFalse(report["ok"])
+        self.assertIn("engine exit (shutdown)", report["failed"])
+        self.assertEqual(report["launcher_exit_code"], -9)
+        self.assertEqual(calls, [[], ["--force"]])
+
+    def test_smoke_does_not_invent_exit_or_leak_data_when_both_stops_fail(self) -> None:
+        scenarios = Path(self.tmp.name) / "empty-scenarios"
+        scenarios.mkdir()
+        calls = []
+
+        def fake_launch(_args):
+            print(json.dumps({"port": self.bridge.port, "out": self.tmp.name, "launcher_pid": 12345}))
+            return 0
+
+        def fake_stop(args):
+            calls.append(args)
+            return 1
+
+        output = io.StringIO()
+        with patch.multiple(debugctl, SCENARIOS=scenarios, launch=fake_launch, stop=fake_stop,
+                            alive=lambda _pid: True, home_reset=lambda *_: 0, crawl=lambda _: 0,
+                            run_lines=lambda _: 0, monkey=lambda _: 0, soak=lambda _: 0,
+                            result_of=lambda _: {"hitch_total": 0}), contextlib.redirect_stdout(output):
+            status = debugctl.smoke([])
+        report = json.loads(output.getvalue().strip().splitlines()[-1])
+        self.assertEqual(status, 1)
+        self.assertFalse(report["ok"])
+        self.assertIn("engine exit (shutdown)", report["failed"])
+        self.assertIsNone(report["launcher_exit_code"])
+        self.assertIsNone(report["leaked_objects_at_exit"])
+        self.assertEqual(calls, [[], ["--force"]])
 
 
 if __name__ == "__main__":

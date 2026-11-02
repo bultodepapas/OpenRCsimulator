@@ -34,6 +34,106 @@ class BoundedCommandTests(unittest.TestCase):
         self.assertLess(time.monotonic() - start, 4)
 
 
+class FoundationStateTests(unittest.TestCase):
+    def snapshot(self, data: object) -> dict:
+        outcome = probe.Outcome(json.dumps(data), None, 0)
+        with mock.patch.object(probe, "bounded_command", return_value=outcome):
+            return probe.foundation_state(time.monotonic() + 10)
+
+    def test_valid_thermal_enums_and_boolean_are_strict(self) -> None:
+        for code, name in enumerate(("nominal", "fair", "serious", "critical")):
+            for value in (code, str(code)):
+                with self.subTest(thermal=value):
+                    result = self.snapshot({"thermal_state": {"status": "available", "value": value},
+                                            "low_power_mode": {"status": "available", "value": False}})
+                    self.assertEqual(result["thermal_state"],
+                                     {"status": "available", "value": name, "enum": code, "reason": None})
+                    self.assertEqual(result["low_power_mode"],
+                                     {"status": "available", "value": False, "reason": None})
+                    self.assertEqual(result["memory_pressure"]["status"], "unknown")
+        result = self.snapshot({"thermal_state": {"status": "available", "value": "0"},
+                                "low_power_mode": {"status": "available", "value": True}})
+        self.assertIs(result["low_power_mode"]["value"], True)
+        self.assertIn("NSProcessInfo", result["source"])
+        self.assertIn("single", result["scope"])
+
+    def test_unknown_values_are_never_coerced_to_nominal_or_false(self) -> None:
+        for value in (-1, 4, True, False, 0.0, "01", " 0", "nominal", None):
+            with self.subTest(thermal=value):
+                result = self.snapshot({"thermal_state": {"status": "available", "value": value},
+                                        "low_power_mode": {"status": "available", "value": False}})
+                self.assertEqual(result["thermal_state"]["status"], "unknown")
+                self.assertIsNone(result["thermal_state"]["value"])
+                self.assertIsNone(result["thermal_state"]["enum"])
+                self.assertIs(result["low_power_mode"]["value"], False)
+        for value in (0, 1, "false", "true", None, []):
+            with self.subTest(low_power=value):
+                result = self.snapshot({"thermal_state": {"status": "available", "value": "2"},
+                                        "low_power_mode": {"status": "available", "value": value}})
+                self.assertEqual(result["low_power_mode"]["status"], "unknown")
+                self.assertIsNone(result["low_power_mode"]["value"])
+                self.assertEqual(result["thermal_state"]["value"], "serious")
+
+    def test_independent_unsupported_error_and_malformed_fields(self) -> None:
+        cases = (
+            ({"status": "unsupported"}, "unsupported", "selector_unavailable"),
+            ({"status": "error"}, "error", "property_query_failed"),
+            ({"status": "available"}, "unknown", "value_unavailable"),
+            ({"status": "unexpected"}, "error", "invalid_field_status"),
+            (None, "error", "invalid_field"),
+        )
+        for raw, status, reason in cases:
+            with self.subTest(raw=raw):
+                result = self.snapshot({"thermal_state": raw,
+                                        "low_power_mode": {"status": "available", "value": True}})
+                self.assertEqual(result["thermal_state"]["status"], status)
+                self.assertEqual(result["thermal_state"]["reason"], reason)
+                self.assertIsNone(result["thermal_state"]["value"])
+                self.assertIs(result["low_power_mode"]["value"], True)
+        result = self.snapshot({"thermal_state": {"status": "available", "value": "1"},
+                                "low_power_mode": {"status": "unsupported"}})
+        self.assertEqual(result["thermal_state"]["value"], "fair")
+        self.assertEqual(result["low_power_mode"]["status"], "unsupported")
+        self.assertIsNone(result["low_power_mode"]["value"])
+
+    def test_failed_or_malformed_command_reports_reason(self) -> None:
+        for outcome, reason in ((probe.Outcome(None, "timeout", None), "timeout"),
+                                (probe.Outcome(None, "nonzero_exit", 1), "nonzero_exit"),
+                                (probe.Outcome(None, "launch_failed", None), "launch_failed"),
+                                (probe.Outcome("not json", None, 0), "invalid_json"),
+                                (probe.Outcome("[]", None, 0), "invalid_output")):
+            with self.subTest(reason=reason), \
+                 mock.patch.object(probe, "bounded_command", return_value=outcome):
+                result = probe.foundation_state(time.monotonic() + 10)
+                self.assertEqual(result["query"]["reason"], reason)
+                for name in ("thermal_state", "low_power_mode"):
+                    self.assertEqual(result[name]["status"], "error")
+                    self.assertEqual(result[name]["reason"], reason)
+                    self.assertIsNone(result[name]["value"])
+
+    def test_query_respects_remaining_deadline_and_does_not_start_after_it(self) -> None:
+        output = probe.Outcome('{"thermal_state":{"status":"unsupported"},'
+                               '"low_power_mode":{"status":"unsupported"}}', None, 0)
+        with mock.patch.object(probe.time, "monotonic", return_value=100.0), \
+             mock.patch.object(probe, "bounded_command", return_value=output) as command:
+            result = probe.foundation_state(100.25)
+            self.assertEqual(result["query"]["timeout_seconds"], 0.25)
+            args, kwargs = command.call_args
+            self.assertEqual(args[0][:4], ["/usr/bin/osascript", "-l", "JavaScript", "-e"])
+            self.assertEqual(kwargs, {"timeout": 0.25, "max_bytes": probe.FOUNDATION_OUTPUT_BYTES})
+            self.assertNotIn("System Events", args[0][4])
+            command.reset_mock()
+            result = probe.foundation_state(1000.0)
+            self.assertEqual(result["query"]["timeout_seconds"], probe.FOUNDATION_SECONDS)
+            self.assertEqual(command.call_args.kwargs["timeout"], probe.FOUNDATION_SECONDS)
+            command.reset_mock()
+            result = probe.foundation_state(100.0)
+            command.assert_not_called()
+            self.assertEqual(result["query"]["reason"], "budget_exhausted")
+            self.assertEqual(result["thermal_state"]["status"], "error")
+            self.assertIsNone(result["low_power_mode"]["value"])
+
+
 class FilteringTests(unittest.TestCase):
     def test_display_profile_does_not_retain_names_or_serials(self) -> None:
         data = {"SPDisplaysDataType": [{"_name": "Apple M1", "serial_number": "GPU-SECRET-123",
@@ -119,7 +219,23 @@ class CollectionTests(unittest.TestCase):
         self.assertTrue(result["engine"]["forced_arm64_version_succeeded"])
         self.assertIsNone(result["engine"]["normal_launch_native_arm64"])
         self.assertTrue(result["engine"]["identity_stable_across_version_checks"])
+        self.assertEqual(result["host_state"]["query"]["reason"], "launch_failed")
+        self.assertEqual(result["host_state"]["thermal_state"]["status"], "error")
         self.assertNotIn("SECRET", json.dumps(result))
+
+    def test_optional_host_state_is_collected_without_changing_inventory_success(self) -> None:
+        def command(args: list[str], **kwargs) -> probe.Outcome:
+            if args[0] == "/usr/bin/osascript":
+                return probe.Outcome('{"thermal_state":{"status":"available","value":"3"},'
+                                     '"low_power_mode":{"status":"available","value":false}}', None, 0)
+            return self.command(args, **kwargs)
+        with mock.patch.object(probe.platform, "machine", return_value="arm64"), \
+             mock.patch.object(probe, "process_translation", return_value=(False, None)), \
+             mock.patch.object(probe, "bounded_command", side_effect=command):
+            result = probe.collect(self.engine)
+        self.assertTrue(result["collection"]["complete"], result["collection"]["issues"])
+        self.assertEqual(result["host_state"]["thermal_state"]["value"], "critical")
+        self.assertIs(result["host_state"]["low_power_mode"]["value"], False)
 
     def test_rosetta_and_unknown_forced_probe_are_not_native_success(self) -> None:
         def command(args: list[str], **kwargs) -> probe.Outcome:
@@ -177,7 +293,9 @@ class CollectionTests(unittest.TestCase):
         command = [sys.executable, str(ROOT_SCRIPT), "--dry-run", "--out-dir", str(out)]
         dry = subprocess.run(command, text=True, capture_output=True, timeout=10, check=False)
         self.assertEqual(dry.returncode, 0, dry.stderr)
-        self.assertFalse(json.loads(dry.stdout)["collection_started"])
+        dry_result = json.loads(dry.stdout)
+        self.assertFalse(dry_result["collection_started"])
+        self.assertIn("Foundation thermal and low-power snapshot", dry_result["collects"])
         self.assertFalse(out.exists())
         with mock.patch.object(probe.platform, "system", return_value="Linux"), \
              mock.patch.object(sys, "argv", ["macos_preflight.py", "--godot", str(self.engine), "--out-dir", str(out)]), \

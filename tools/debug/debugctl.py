@@ -56,6 +56,9 @@ REPO = Path(__file__).resolve().parents[2]
 RUNS = REPO / "tmp" / "debug-bridge"
 CURRENT = RUNS / "current.json"  # the last launch on this machine (any agent): the default target
 SESSIONS = RUNS / "sessions"  # one 0600 file per live session, by port, holding its token and process ids
+# A long-lived caller such as smoke must reap the children it launched itself.
+# Other CLI invocations discover sessions through the files above instead.
+_OWNED_PROCESSES: dict[int, subprocess.Popen] = {}
 
 
 class Refused(Exception):
@@ -203,21 +206,49 @@ def free_port() -> int:
 def alive(pid: int | None) -> bool:
     if not pid:
         return False
+    owned = _OWNED_PROCESSES.get(pid)
+    if owned is not None:
+        return owned.poll() is None  # poll also reaps an exited child on POSIX
     if os.name == "nt":  # os.kill(pid, 0) would terminate the process on Windows
         import ctypes
-        handle = ctypes.windll.kernel32.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
+        from ctypes import wintypes
+        try:
+            kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        except (AttributeError, OSError):
+            return True  # unavailable status is not proof that the process exited
+        kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel32.OpenProcess.restype = wintypes.HANDLE
+        kernel32.GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+        kernel32.GetExitCodeProcess.restype = wintypes.BOOL
+        kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+        kernel32.CloseHandle.restype = wintypes.BOOL
+        handle = kernel32.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
         if not handle:
-            return False
-        code = ctypes.c_ulong()
-        ctypes.windll.kernel32.GetExitCodeProcess(handle, ctypes.byref(code))
-        ctypes.windll.kernel32.CloseHandle(handle)
-        return code.value == 259  # STILL_ACTIVE
+            return ctypes.get_last_error() != 87  # ERROR_INVALID_PARAMETER: no such PID
+        code = wintypes.DWORD()
+        try:
+            if not kernel32.GetExitCodeProcess(handle, ctypes.byref(code)):
+                return True  # access or query failure leaves liveness unknown
+            return code.value == 259  # STILL_ACTIVE
+        finally:
+            kernel32.CloseHandle(handle)
     try:
         os.kill(pid, 0)
     except ProcessLookupError:
         return False
     except PermissionError:
         return True
+    if sys.platform == "darwin":
+        # macOS has no /proc; kill(pid, 0) also succeeds for zombies. An
+        # unrelated CLI process cannot reap the child, so query its state.
+        try:
+            state = subprocess.run(["/bin/ps", "-p", str(pid), "-o", "stat="],
+                                   capture_output=True, text=True, timeout=1.0)
+            if state.returncode == 0 and state.stdout.strip():
+                return not state.stdout.strip().startswith("Z")
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        return True  # a failed state query does not prove the process has exited
     try:  # an exited child that its parent (e.g. this process, under smoke) has not reaped yet is a zombie: gone
         return Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[0] != "Z"
     except (OSError, IndexError):
@@ -345,6 +376,7 @@ def launch(argv: list[str]) -> int:
                 print("exported bridge sessions require a debug template with the debug bridge enabled", file=sys.stderr)
             tail(out / "engine.log")
             return 2
+    _OWNED_PROCESSES[process.pid] = process
     session["pid"] = ready["result"]["pid"]
     write_private(SESSIONS / f"{chosen}.json", session)
     write_private(CURRENT, session)
@@ -497,26 +529,40 @@ def stop(argv: list[str]) -> int:
     if not pid and env_port() is None:
         print("debugctl: no launched session to stop (tmp/debug-bridge/current.json is missing)", file=sys.stderr)
         return 1
-    try:
-        result_of("quit", timeout=5.0)
-    except (OSError, Refused) as error:
-        if "--force" not in argv:
-            print(f"debugctl: no bridge answered ({error}); use stop --force to kill the launched process", file=sys.stderr)
-            return 2
+    launcher_pid = session.get("launcher_pid")
+    owned = _OWNED_PROCESSES.get(launcher_pid)
+
+    def running() -> bool:
+        return alive(pid) or (launcher_pid != pid and alive(launcher_pid))
+
+    # An already exited child can be reaped and reported without contacting a
+    # port that may since have been reused by another session.
+    if not pid or running():
+        try:
+            result_of("quit", timeout=5.0)
+        except (OSError, Refused) as error:
+            if "--force" not in argv and (not pid or running()):
+                print(f"debugctl: no bridge answered ({error}); use stop --force to kill the launched process", file=sys.stderr)
+                return 2
     deadline = time.monotonic() + 60.0  # saving an active trace or flight log can take a while
-    while alive(pid) and time.monotonic() < deadline:
+    while running() and time.monotonic() < deadline:
         time.sleep(0.2)
-    if alive(pid) and "--force" in argv:
-        kill_group(session.get("launcher_pid"))
+    forced = False
+    if running() and "--force" in argv:
+        kill_group(launcher_pid)
+        forced = True
         time.sleep(0.5)
-    if alive(pid):
+    if running():
         print(f"debugctl: pid {pid} still running; use stop --force", file=sys.stderr)
         return 1
+    launcher_exit_code = owned.poll() if owned is not None else None
+    if launcher_exit_code is not None:
+        _OWNED_PROCESSES.pop(launcher_pid, None)
     if session:
-        forget_session(int(session.get("port", port())), session.get("launcher_pid"))
+        forget_session(int(session.get("port", port())), launcher_pid)
     report = exit_report(Path(session["out"]) / "engine.log") if session.get("out") else {}
-    print(json.dumps({"stopped": True, "pid": pid, **report}))  # crash null and leaked_objects 0 mean a clean exit
-    return 1 if report.get("crash") else 0
+    print(json.dumps({"stopped": True, "pid": pid, "forced": forced, "launcher_exit_code": launcher_exit_code, **report}))
+    return 1 if report.get("crash") or (not forced and launcher_exit_code not in (None, 0)) else 0
 
 
 def exit_report(path: Path) -> dict:
@@ -1100,14 +1146,18 @@ def smoke(argv: list[str]) -> int:
     finally:
         capture = io.StringIO()
         with contextlib.redirect_stdout(capture):
-            if stop([]) != 0 and alive(session.get("launcher_pid")):
+            stop_status = stop([])
+            if stop_status != 0 and alive(session.get("launcher_pid")):
                 stop(["--force"])  # this smoke's own session only
         ended = json.loads(capture.getvalue().strip().splitlines()[-1]) if capture.getvalue().strip() else {}
+        if stop_status != 0 or ended.get("stopped") is not True or ended.get("launcher_exit_code") != 0:
+            results.append(("engine exit (shutdown)", stop_status or 1))
     if ended.get("crash"):
         results.append(("engine exit (crash)", 1))
     failed = [name for name, code in results if code != 0]
     print(json.dumps({"ok": not failed, "failed": failed, "steps": len(results), "hitches": hitches,
-                      "leaked_objects_at_exit": ended.get("leaked_objects", 0), "out": session["out"]}))
+                      "launcher_exit_code": ended.get("launcher_exit_code"),
+                      "leaked_objects_at_exit": ended.get("leaked_objects"), "out": session["out"]}))
     return 1 if failed else 0
 
 

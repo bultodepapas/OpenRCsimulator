@@ -201,6 +201,12 @@ Timing layers remain separate: process callback interval, whole active-flight ca
 
 ## 7. Native diagnostics and voluntary community reports
 
+**Implementation increment (2026-11-02):** the existing Mac preflight now obtains
+a single optional Foundation thermal/Low Power Mode snapshot through installed
+JXA, without a compiled helper. Portable fixtures and native M1 collection pass.
+This provides initial context only; event streams, pressure observations and
+sustained coverage remain open. [Dated evidence](research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-02e-preflight-host-snapshot-2026-11-02).
+
 **Recommended minimum:** extend existing capture/resource/bundle tools, with a small optional native macOS companion only for missing public OS channels. Do not build a profiler, uploader service or second render loop. Separate developer collection from the eventual packaged user flow.
 
 | Channel | Proposed collection boundary | Required caveat |

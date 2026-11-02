@@ -26,7 +26,7 @@ The objective is the maximum practical **sustained performance with readable air
 | DT-MAC-00 / 00-R1 / 00-R2 | Completed historical investigations; retained in background provenance. This consolidation is DT-MAC-00-R3. |
 | DT-MAC-01 | M1 Air/8 GB ARM64 native inventory and editor import recorded; complete baseline manifest and qualification open — phase 3. |
 | DT-MAC-02a/b | Getter/template/preflight and bounded v3 capture implemented; native execution/overhead and coverage gaps open — phases 1–3. |
-| DT-MAC-02c/d/e/f/g/h | 02c Aqua/resource repair and 02d v3 incident/Perfetto handling implemented and checked on Mac; short native Aqua/resource/frame checks passed. 02h final-ZIP/manifest-v2 integration has focused tests; native development export, strict signature, exact package replay and fixed session probe passed. Full release/trust/quarantine remain open. Host diagnostics, app-route observation and voluntary share bundle remain open — phases 1, 2 and 8. |
+| DT-MAC-02c/d/e/f/g/h | 02c Aqua/resource repair and 02d v3 incident/Perfetto handling implemented and checked on Mac; short native Aqua/resource/frame checks passed. 02h final-ZIP/manifest-v2 integration has focused tests; native development export, strict signature, exact package replay and fixed session probe passed. Full release/trust/quarantine remain open. 02e adds a native-checked optional preflight thermal/power snapshot; host-state series, app-route observation and voluntary share bundle remain open — phases 1, 2 and 8. |
 | DT-MAC-03a/b | Short source-build reference replay was exact on M1; complete baseline manifest, sustained runs and attribution remain open — phase 3. |
 | DT-MAC-04a–d | 04b statistics-window and recorder-copy candidates implemented with frozen-reference checks; partial native CPU comparisons establish no gain. Other work remains conditional — phase 4. |
 | DT-MAC-04n1–n4 | Conditional ARM64 NK-3 feasibility, evaluator parity, admission and package work — phase 10, under SF/NK policy. |
@@ -140,6 +140,12 @@ required. [Contract and installation limits](../../tools/release/README.md#mac-r
 
 ### DT-MAC-02e — optional native host-state companion
 
+**Incremental implementation (2026-11-02):** the existing preflight now uses
+installed Foundation/JXA for one bounded thermal/Low Power Mode snapshot. Portable
+fixtures and native M1 collection pass. This avoids a compiled helper for initial
+context; change notifications, memory-pressure observations, capture association
+and sustained coverage remain open. [Evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-02e-preflight-host-snapshot-2026-11-02).
+
 **Tasks:** first test whether installed free tools supply adequate bounded observations. If not, add a developer-invoked Foundation/Dispatch/IOKit companion under the existing tooling owner. Pin its source, compiler, SDK, deployment floor and ARM64 build identity. It reports host thermal category, low-power boolean, AC/battery source and memory-pressure events; existing psutil retains process CPU/RSS/system memory. Do not query an unrelated MTLDevice and label it game allocation.
 
 Read thermal state **before** subscribing to change notifications, register, then re-read to detect a transition during initialization; record the interval/uncertainty when snapshots differ. Apply the same read/register/re-read race handling to low-power state and record later changes. Initial memory-pressure state is unknown until observed; an event stream with no event does not prove no pressure. Collection completeness describes the observation interval, separately from whether the pressure value is known. If the campaign requires a known initial state, obtain an independently verified public/manual observation or keep that gate open. Keep unsupported/denied/error distinct. Do not request private temperature, clock or per-process GPU APIs.
@@ -151,6 +157,13 @@ Use the same fresh capture ID supplied by the owning session/runner, monotonic t
 **Completion:** bounded host-only series, clear availability and lifetime, unchanged non-Apple startup, reproducible tool build and all failure tests pass. If free tools suffice, record that choice and omit the helper. Native numerical/kernel code is not a dependency.
 
 ### DT-MAC-02f — observe the real app route and coarse phases
+
+**Source constraints checked (2026-11-02):** user arguments bypass normal Home
+startup. Use an explicit app action or environment opt-in for product capture.
+The current frame schema assumes one monotonic simulation timeline; Home and
+flight resets require explicit phase/epoch validity. Early stop remains incomplete
+until a versioned stop contract exists. Reuse the writer and diagnostics rather
+than inventing ticks or relabeling interrupted captures complete.
 
 **Files:** existing frame collector and its owning Main/AppRoot lifecycle, loading probe and optional narrow platform bridge only if necessary.
 

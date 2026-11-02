@@ -6,6 +6,89 @@ The [Apple Silicon plan](../../../plans/apple-silicon-performance.md) owns statu
 and remaining acceptance. The [preceding research](../DT-MAC-00-R2/README.md) owns
 the dated primary references and pinned-engine audit.
 
+## DT-MAC-02e preflight host snapshot (2026-11-02)
+
+The existing `macos_preflight.py` now reads one optional Foundation `NSProcessInfo`
+snapshot through installed JXA/`osascript`. The query is limited to 3 seconds,
+4 KiB and the remaining inventory deadline. Thermal enum and Low Power Mode
+boolean are decoded independently; invalid, unavailable and failed observations
+remain explicit. Optional failure leaves the core inventory result intact. No
+compiled helper or periodic subprocess was added. Memory pressure remains unknown.
+
+Installed-tool scouting found that `pmset` provides power snapshots and event
+streams with different scopes; an empty warning log is not a thermal-state or
+pressure observation. The installed `memory_pressure` manual documents
+pressure-generating operations, so it was not invoked. Private pressure sysctls
+were not adopted. The [Apple thermal guide](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/power_efficiency_guidelines_osx/RespondToThermalStateChanges.html)
+documents nominal fallback on unknown/unsupported systems; nominal alone cannot
+prove sensor availability. [Low Power Mode](https://developer.apple.com/documentation/foundation/processinfo/islowpowermodeenabled)
+is a separate Foundation property. This snapshot does not implement notifications,
+capture-ID association, memory-pressure events or the sustained DT-MAC-02e gate.
+
+Preflight fixtures passed on Linux and M1: 19 tests, including strict values, independent
+field failures, bounded deadlines and unchanged core-inventory success. Initial
+M1 collection completed with no inventory issues: API-reported nominal, Low Power
+Mode false, query wall time 0.109 seconds. That one elapsed value includes a
+subprocess launch and is not a periodic-sampler overhead qualification. The final
+wording-corrected source (`cf8b64d646701125e4a78bbda291af46cea89582a0e83430a057d17e559d7e3d`)
+also passed natively, reporting the same values in 0.062 seconds; receipt
+`macos-preflight-20261102T231755Z-9b873ffa7d9a4324933ece5a31eb2ece.json`.
+Raw scout outputs and receipts are under ignored `tmp/apple-round3/`.
+
+The existing debug bridge also exercised the real Home Fly button, loading,
+active flight, a one-second pitch/throttle input and return Home on this M1.
+The source-editor research copy used its isolated saved settings (Turbo Lumber,
+moonrise/time lapse), requested 2560×1600 window/viewport, and the reference
+physics fallback. Flight tick advanced 2,210→5,194 with no fault, hold or crash;
+the sampled realtime factor was 0.999→0.999. Two observations reported drawable
+true, with advancing drawn-frame count and physics/input enabled. A 960×600
+screenshot was visually inspected. This is short functional evidence, not a
+continuous product-route capture, physical-controller test or performance result.
+The full headless smoke separately exposed growing object counts and Mac child
+shutdown detection trouble; it was not a passing regression run.
+
+### DT-MAC-02c native smoke shutdown repair
+
+The first broad smoke left Godot as a zombie owned by the Python smoke process.
+The client checked Linux `/proc`, which is absent on macOS, and treated successful
+`kill(pid, 0)` as a live process. It waited twice and could omit failed shutdown
+from the final verdict. The client now retains/reaps its own launcher, uses a
+bounded `ps` state query for unowned Mac processes, and requires confirmed zero
+launcher exit for smoke success. Standalone stop cannot recover another parent's
+exit status and records it as unknown.
+
+The native full-smoke rerun confirmed launcher exit zero without zombie waits.
+That rerun did not pass the entire smoke: ten scenarios could not find their
+English labels in the research profile's saved Chinese locale, and shutdown
+reported four ObjectDB instances. The client used for the fresh-profile smoke had SHA-256
+`60a567f23a9051d39662342725f99d0d0c6342ef6bdc2ddb491b6c9c62241ff2`.
+Its fresh-profile full smoke completed all 52 steps with only the soak failing:
+`+16` objects per compared cycle again, launcher exit zero, four shutdown ObjectDB
+instances. The existing research profile was restored; the clean test profile
+and both failed run logs remain under `tmp/apple-round3/`. No player profile or
+SSH key was removed.
+
+Final review also caught a separate-client wrapper edge case: a live launcher
+must prevent success even after its engine PID exits. The guard and regression
+fixture now cover both PIDs. Final client SHA-256:
+`6d9d000af13eb34946b3c49185ab01b1d83cd29ee684246c36f785faefd2789c`.
+The shared Windows path also preserves unknown liveness on access/status-query
+failure and uses pointer-width handles, following the
+[OpenProcess](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess)
+and [GetExitCodeProcess](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess)
+contracts. These guards do not change the Mac smoke's same-PID graceful shutdown
+path. Windows branches have injected fixtures; native Windows verification remains open.
+Final client suites passed on Linux (49 tests) and M1 (49 tests, one Linux-only
+skip). The independent reviewer confirmed both shutdown findings were addressed.
+
+The initial smoke's separate object-growth failure remains evidence:
+`+16` objects per compared cycle, with unchanged nodes/resources/orphans and zero
+logged errors. A fresh verbose headless five-cycle flight/Home soak then reported
+zero growing counters, zero errors and no shutdown leak warning. These different
+session histories do not establish a leak fix or justify weakening the check.
+The clean-profile broad repeat reproduced the growth; its non-Node type, owner
+and lifetime still need attribution. The broad regression gate remains open.
+
 ## DT-MAC-02c/d/h implementation (2026-11-02)
 
 The debug bridge now constructs native Aqua rendered launches without Xvfb and
