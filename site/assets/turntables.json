@@ -74,6 +74,17 @@
           0.436286866664886,
           1.32597398757935
         ]
+      },
+      "variants": {
+        "small": {
+          "src": "assets/turntables/stik-320.webp",
+          "frame_width": 320,
+          "frame_height": 180,
+          "width": 1920,
+          "height": 1080,
+          "sha256": "1f1d2c2e9812ea2f27ee57841b9f22eabd6d901c342d5e89fadbd24451ac5524",
+          "bytes": 147784
+        }
       }
     },
     "extra": {
@@ -101,6 +112,17 @@
           0.551921308040619,
           1.38627004623413
         ]
+      },
+      "variants": {
+        "small": {
+          "src": "assets/turntables/extra-320.webp",
+          "frame_width": 320,
+          "frame_height": 180,
+          "width": 1920,
+          "height": 1080,
+          "sha256": "0939c8e9bb654f55336a1869d05161c5fa5fb1cf2697246c6c6f00c22fb1b5af",
+          "bytes": 174302
+        }
       }
     },
     "mustang": {
@@ -128,6 +150,17 @@
           0.950000166893005,
           2.4607892036438
         ]
+      },
+      "variants": {
+        "small": {
+          "src": "assets/turntables/mustang-320.webp",
+          "frame_width": 320,
+          "frame_height": 180,
+          "width": 1920,
+          "height": 1080,
+          "sha256": "89ff2a361242fe67a07f764e72d72327acaf82dab1944f57c1123467b3ffad16",
+          "bytes": 125174
+        }
       }
     },
     "jet": {
@@ -155,6 +188,17 @@
           0.675601959228516,
           2.26121664047241
         ]
+      },
+      "variants": {
+        "small": {
+          "src": "assets/turntables/jet-320.webp",
+          "frame_width": 320,
+          "frame_height": 180,
+          "width": 1920,
+          "height": 1080,
+          "sha256": "71ab53e18501643b717574e7427abccdda2ebbd1c8e6b200a3f1d10487a1ed21",
+          "bytes": 175702
+        }
       }
     },
     "timber": {
@@ -182,6 +226,17 @@
           0.434000074863434,
           1.12332582473755
         ]
+      },
+      "variants": {
+        "small": {
+          "src": "assets/turntables/timber-320.webp",
+          "frame_width": 320,
+          "frame_height": 180,
+          "width": 1920,
+          "height": 1080,
+          "sha256": "8723719ea958c5158cd0ccaea1b8dd0d4fa5ffba8edb930e67bbb1d0c278a9dd",
+          "bytes": 152200
+        }
       }
     },
     "heli": {
@@ -209,6 +264,17 @@
           0.362300008535385,
           1.47987127304077
         ]
+      },
+      "variants": {
+        "small": {
+          "src": "assets/turntables/heli-320.webp",
+          "frame_width": 320,
+          "frame_height": 180,
+          "width": 1920,
+          "height": 1080,
+          "sha256": "55c76daa7e2d4627f3f42840b8c8413e9a53d4e1f3307f214d6d7db0dab15989",
+          "bytes": 125636
+        }
       }
     }
   },
@@ -360,5 +426,13 @@
       "site/capture_turntables.gd": "3dc8cf329ff81036d0b13d28253db59c500ef45e35fc1e1177b9cfb44592d5b4",
       "site/package_turntables.py": "2a9c408ac1e4d1b859185e00472865049e3be048c7fa64098fb2fbe1595e00cd"
     }
+  },
+  "derivative_provenance": {
+    "source": "SHA-256 verified original 640x360-per-frame WebP atlases",
+    "source_manifest_sha256": "e59f68e9828e092645dc84285844773060c3d0c7b942878f60fa512ff4b057ec",
+    "package_script_sha256": "afc64142539f6b2bec1134c5a8052fc9a4b3d38427217eee45a97cbc8958e3a3",
+    "pillow": "12.3.0",
+    "resampling": "Lanczos, independently per frame",
+    "webp_quality": 95
   }
 }

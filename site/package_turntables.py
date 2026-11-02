@@ -14,6 +14,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 
 from PIL import Image, __version__ as pillow_version
 
@@ -21,6 +22,8 @@ from PIL import Image, __version__ as pillow_version
 PINNED_PILLOW_VERSION = "12.3.0"
 FRAME_WIDTH = 640
 FRAME_HEIGHT = 360
+SMALL_FRAME_WIDTH = 320
+SMALL_FRAME_HEIGHT = 180
 COLUMNS = 6
 ROWS = 6
 FRAME_COUNT = COLUMNS * ROWS
@@ -43,11 +46,16 @@ SOURCE_DIRECTORIES = (
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
+    sources = parser.add_mutually_exclusive_group(required=True)
+    sources.add_argument(
         "--capture-dir",
-        required=True,
         type=Path,
         help="Directory produced by site/capture_turntables.gd",
+    )
+    sources.add_argument(
+        "--source-manifest",
+        type=Path,
+        help="Accepted manifest whose original sheets are used to create derivatives",
     )
     parser.add_argument(
         "--project-root",
@@ -59,7 +67,7 @@ def parse_args() -> argparse.Namespace:
         "--asset-dir",
         type=Path,
         default=DEFAULT_ASSET_DIR,
-        help="Output directory for the six WebP sprite sheets",
+        help="Output directory for the WebP sprite sheets",
     )
     parser.add_argument(
         "--manifest",
@@ -237,6 +245,95 @@ def package_sheet(
     }
 
 
+def verified_atlases(manifest: dict, source_dir: Path, local_output: bool = False) -> dict[str, Path]:
+    """Validate every input before writing any derivative assets."""
+    if manifest.get("format") != "openrc-turntables-v1":
+        raise ValueError("Unsupported source turntable manifest format.")
+    expected = {
+        "frame_width": FRAME_WIDTH, "frame_height": FRAME_HEIGHT,
+        "columns": COLUMNS, "rows": ROWS, "frame_count": FRAME_COUNT,
+    }
+    if any(manifest.get(key) != value for key, value in expected.items()):
+        raise ValueError("Unexpected source atlas layout.")
+    models = manifest.get("models")
+    if not isinstance(models, dict) or set(models) != set(MODEL_KEYS):
+        raise ValueError("Source manifest must contain the six website models.")
+
+    root = source_dir.resolve()
+    paths: dict[str, Path] = {}
+    for key in MODEL_KEYS:
+        model = models[key]
+        if not isinstance(model, dict):
+            raise ValueError(f"{key}: invalid model record.")
+        entries = [
+            ("src", "sha256", (FRAME_WIDTH * COLUMNS, FRAME_HEIGHT * ROWS)),
+            ("poster", "poster_sha256", (FRAME_WIDTH, FRAME_HEIGHT)),
+        ]
+        for path_key, digest_key, dimensions in entries:
+            relative = model.get(path_key)
+            if not isinstance(relative, str):
+                raise ValueError(f"{key}: missing {path_key} path.")
+            path = (root / (Path(relative).name if local_output else relative)).resolve()
+            try:
+                path.relative_to(root)
+            except ValueError as error:
+                raise ValueError(f"{key}: {path_key} escapes the source directory.") from error
+            if sha256_file(path) != model.get(digest_key):
+                raise ValueError(f"{key}: {path_key} does not match the accepted SHA-256.")
+            with Image.open(path) as image:
+                image.load()
+                if image.size != dimensions:
+                    raise ValueError(f"{key}: unexpected {path_key} dimensions {image.size}.")
+            if path_key == "src":
+                paths[key] = path
+    return paths
+
+
+def package_small_sheets(manifest: dict, sources: dict[str, Path], asset_dir: Path) -> None:
+    """Downsample each frame separately so filtering cannot cross frame borders."""
+    asset_dir.mkdir(parents=True, exist_ok=True)
+    variants = {}
+    with tempfile.TemporaryDirectory(prefix="turntables-", dir=asset_dir) as temporary:
+        staging = Path(temporary)
+        for key in MODEL_KEYS:
+            sheet = Image.new("RGB", (SMALL_FRAME_WIDTH * COLUMNS, SMALL_FRAME_HEIGHT * ROWS))
+            with Image.open(sources[key]) as original:
+                original.load()
+                for index in range(FRAME_COUNT):
+                    column, row = index % COLUMNS, index // COLUMNS
+                    left, top = column * FRAME_WIDTH, row * FRAME_HEIGHT
+                    frame = original.crop((left, top, left + FRAME_WIDTH, top + FRAME_HEIGHT))
+                    frame = frame.resize((SMALL_FRAME_WIDTH, SMALL_FRAME_HEIGHT), Image.Resampling.LANCZOS)
+                    sheet.paste(frame, (column * SMALL_FRAME_WIDTH, row * SMALL_FRAME_HEIGHT))
+            name = f"{key}-320.webp"
+            path = staging / name
+            sheet.save(path, format="WEBP", quality=95, method=6)
+            variants[key] = {
+                "src": f"assets/turntables/{name}",
+                "frame_width": SMALL_FRAME_WIDTH,
+                "frame_height": SMALL_FRAME_HEIGHT,
+                "width": sheet.width,
+                "height": sheet.height,
+                "sha256": sha256_file(path),
+                "bytes": path.stat().st_size,
+            }
+        for key in MODEL_KEYS:
+            (staging / f"{key}-320.webp").replace(asset_dir / f"{key}-320.webp")
+            manifest["models"][key].setdefault("variants", {})["small"] = variants[key]
+            print(f"{key}-320.webp: {variants[key]['bytes']:,} bytes, 1920x1080")
+
+
+def add_derivative_provenance(manifest: dict, project_root: Path, source_manifest: Path | None) -> None:
+    manifest["derivative_provenance"] = {
+        "source": "SHA-256 verified original 640x360-per-frame WebP atlases",
+        "source_manifest_sha256": sha256_file(source_manifest) if source_manifest else None,
+        "package_script_sha256": sha256_file(project_root / "site" / "package_turntables.py"),
+        "pillow": pillow_version,
+        "resampling": "Lanczos, independently per frame",
+        "webp_quality": 95,
+    }
+
+
 def main() -> int:
     if pillow_version != PINNED_PILLOW_VERSION:
         print(
@@ -251,9 +348,20 @@ def main() -> int:
 
     args = parse_args()
     project_root = args.project_root.resolve()
-    capture_dir = args.capture_dir.resolve()
     asset_dir = args.asset_dir.resolve()
     manifest_path = args.manifest.resolve()
+    if args.source_manifest:
+        source_manifest = args.source_manifest.resolve()
+        output_manifest = json.loads(source_manifest.read_text(encoding="utf-8"))
+        sources = verified_atlases(output_manifest, project_root / "site")
+        add_derivative_provenance(output_manifest, project_root, source_manifest)
+        package_small_sheets(output_manifest, sources, asset_dir)
+        manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        manifest_path.write_text(json.dumps(output_manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"{manifest_path}: original capture provenance retained")
+        return 0
+
+    capture_dir = args.capture_dir.resolve()
     capture_manifest_path = capture_dir / "manifest.json"
     if not capture_manifest_path.is_file():
         raise FileNotFoundError(f"Missing Godot capture manifest: {capture_manifest_path}")
@@ -318,6 +426,11 @@ def main() -> int:
             "source_files": hashes,
         },
     }
+    # Capture mode also emits the responsive derivatives. Its freshly written
+    # originals live in asset_dir, which may be a disposable output directory.
+    sources = verified_atlases(output_manifest, asset_dir, local_output=True)
+    add_derivative_provenance(output_manifest, project_root, None)
+    package_small_sheets(output_manifest, sources, asset_dir)
     manifest_path.write_text(
         json.dumps(output_manifest, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",

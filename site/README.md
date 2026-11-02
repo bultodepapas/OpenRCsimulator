@@ -1,6 +1,6 @@
 # OpenRC project website
 
-WEB-01…14 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
+WEB-01…15 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
 
 ## Design
 
@@ -48,7 +48,7 @@ WEB-04 makes the jet the initial catalogue selection and adds direct inspector e
 
 WEB-05 keeps the same composition while reducing work: preload the two opening fonts, show the hero poster immediately, cache scroll geometry between layout changes, and defer distant editorial rendering with `content-visibility: auto`. Intrinsic section sizes are estimates until first rendering; the browser then remembers measured sizes. The turntable schedules one animation callback per frame at its existing 125 ms interval, updates only angle UI per frame, cancels obsolete image loads, retries failed selections, and retains a two-sheet LRU cache. Language and theme changes avoid identical HTML/image assignments. Rebuild the black Savox display copy with `python site/prepare_assets.py --brands-only`.
 
-HTML references styles/scripts with a shared release query (`?v=web12-analytics-20261028`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
+HTML references changed styles/scripts with a release query (`?v=web15-platform-20261102`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup. The turntable manifest has its own release query; atlas URLs use their manifest SHA-256.
 
 WEB-07 official identity, 2026-10-24: the header, hero, footer and README now use derivatives of the refined vector master based on the supplied official SVG. The favicon uses its RC contours, and Open Graph/Twitter metadata uses a 1200×630 PNG. [Source and regeneration](BRANDS.md#openrc-identity). The aircraft opening, navigation, translations and downloads retain their behavior. Local Chrome review covers 1920×1080, 390×844 and 320×740, both languages/themes, reduced motion, image loading and horizontal overflow. This is presentation verification, not a simulator release.
 
@@ -69,6 +69,22 @@ The integration follows Google's [container installation](https://support.google
 When reviewing local pages, intercept Google Tag Manager and Analytics requests to avoid sending preview traffic to the production property. WEB-12 local verification passed the four static locale tests and 44 Chromium combinations: eleven languages, JavaScript on/off, 1920×1080 and 320×740. Every page requests its container once, or its `noscript` fallback with JavaScript disabled; downloads and the accessible title remain available, with no script errors or horizontal overflow. These local checks stubbed third-party requests and sent no Analytics hits.
 
 Published on 2026-10-28 (America/Bogota): deployment `c6e602786c6fd01003dfaf5d7cc54c0a94e565e8` passed the [Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/40790661193). All eleven public HTML files returned HTTP 200 and matched local SHA-256 values after normalizing line endings. The publication also refreshes shared asset cache keys for the current website snapshot. A live 1920×1080 Chromium visit loaded the container once (HTTP 200) and received HTTP 204 from Google's `/g/collect` endpoint for `page_view` targeting `G-4Z11DSB2BV`, with no script errors, failed Google requests or horizontal overflow. This verifies browser delivery; the Analytics dashboard was not inspected.
+
+## Website platform (WEB-15)
+
+The Spanish root offers a dismissible link to an available language when the browser prefers one. It never redirects, changes an explicit locale URL, or processes download-query visits. A manual language choice or dismissal is remembered locally. Regional variants use the matching static page; Traditional Chinese does not imply Simplified Chinese. The existing language menu and static pages remain usable without JavaScript.
+
+The hangar selector and partner cards respond to their container widths, and coarse-pointer controls meet a 44 px minimum. The 3D inspector uses wider camera framing on compact layouts and a dark native select color scheme. The opening film retains its poster unless the browser supplies usable network information permitting automatic playback; manual playback remains available. Responsive turntable sheets and their source hashes are described in [the asset guide](TURNTABLES.md).
+
+`vitals.js` samples about 10% of visits on the public GitHub Pages host. It dynamically loads the pinned, self-hosted `web-vitals` 6.2.3 attribution module and sends LCP, INP and CLS as `web_vital` events through the existing GTM `dataLayer` to `G-4Z11DSB2BV`. Values and available timing phases are rounded; the event includes only the page locale and navigation type, never a URL, email, form value or device ID. CLS uses a `milli_score` integer; LCP and INP use milliseconds. No field percentile or improvement is claimed until enough production events are collected. Review mobile and desktop p75 separately, with LCP ≤2.5 s, INP ≤200 ms and CLS ≤0.1 as investigation thresholds.
+
+The dated [platform research](../docs/research/website-platform-technology-2026-11-02.md) records technology options and adoption gates. Meshopt/KTX2 and native scroll or view transitions remain experiments until matched transfer, rendering and compatibility evidence supports them.
+
+Local verification, 2026-11-02: `build_locales.py --check`, six locale tests, eight download tests, JavaScript syntax and diff whitespace checks passed. Playwright 1.62.1 checked Chromium 151, Firefox 153 and WebKit 26.5 at 1920×1080, 768×1024 and 1024×768. The selector, 3D modal, compact jet framing, focus return, language offer and media fallbacks worked in those nine cases; 42 language-route cases covered preferences, direct URLs, storage and download-query behavior. A separate Chromium 2560×1440 check found no horizontal overflow. At 320 px/DPR 1 all three engines chose the small jet atlas; at DPR 2 and all tested tablet/desktop sizes they retained the original for sharpness. The six small sheets total 900,798 bytes versus 2,383,002 bytes for their originals, a 62.2% transfer reduction only where selected; decoded-pixel arithmetic is 75% lower for one small sheet. These are asset sizes, not a field speedup or browser memory measurement.
+
+An isolated public-host mapping with GA4 requests intercepted forced the sample and observed LCP, INP and CLS events with no URL/form markers; missing `crypto` produced no script error. It was synthetic, not a field percentile. Firefox's manual video test on a simulated 3G link had intermittent failures in initial automation with auto-scroll, followed by eight successful instrumented repeats; no stable direct-click defect was established. The browser builds run on Linux with software WebGL, so they do not establish native Safari/Firefox or physical tablet behavior. Browser results and screenshots are under ignored `tmp/web-browser-qa/`, outside the repository deliverable.
+
+Published WEB-15 as isolated `gh-pages` commit `11dde82271c24d91e123670a9b78e845a0371a04`; the [Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41484858726) completed successfully. All eleven public HTML pages, sitemap, `vitals.js`, its vendored module, the turntable manifest, the small jet atlas and `viewer.js` returned HTTP 200 and matched local SHA-256 values after text line-ending normalization (17 resources). This verifies deployment bytes, not field Web Vitals or device performance.
 
 ## README download attribution (WEB-13)
 

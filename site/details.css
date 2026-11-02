@@ -29,6 +29,28 @@ html[data-theme=night]{color-scheme:dark}html[data-theme=night] body{background:
 .faq-list a { text-decoration:underline; text-underline-offset:3px; }
 @media(max-width:700px) { .faq-list { grid-template-columns:1fr; gap:28px; } }
 
+/* First-visit language route: a small fixed notice avoids layout shift. */
+.language-suggestion{position:fixed;z-index:40;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:10px;width:max-content;max-width:calc(100vw - 28px);padding:7px 8px 7px 17px;background:#101820;color:#f1f0e8;border:1px solid #85988a;box-shadow:0 12px 36px #0005;font-size:14px}
+.language-suggestion a{padding:11px 8px;color:#dce8ab;text-decoration:underline;text-underline-offset:4px;overflow-wrap:anywhere}
+.language-suggestion button{width:44px;height:44px;flex:none;background:transparent;color:#f1f0e8;border:0;font-size:25px;line-height:1}
+.language-suggestion a:focus-visible,.language-suggestion button:focus-visible{outline:3px solid #dce8ab;outline-offset:1px}
+
+/* Tablet layouts respond to the available section width, not only the viewport. */
+.hangar,.partners{container-type:inline-size}
+@container (max-width:1200px){
+  .aircraft-selector{overflow-x:auto;overscroll-behavior-inline:contain}
+  .aircraft-selector button{flex:0 0 auto;min-width:max-content;padding-inline:18px}
+}
+@container (max-width:1050px){.partner-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container (max-width:850px){.hangar-display{display:block}.aircraft-info{padding-top:30px;max-width:650px}}
+@container (max-width:700px){.partner-list{grid-template-columns:1fr}}
+@media (pointer:coarse){
+  .language-menu summary,.camera-presets button,.inspector-details button{min-height:44px}
+  #film-toggle,.inspector-zoom button{min-width:44px;min-height:44px}
+}
+/* Match WebKit's native select popup to the inspector's dark surface. */
+.model-inspector{color-scheme:dark}
+
 /* Native links remain usable with scripting disabled in every locale. */
 .language-menu { position:relative; flex:none; font-size:11px; }
 .language-menu summary { cursor:pointer; list-style:none; padding:14px 2px; white-space:nowrap; }
