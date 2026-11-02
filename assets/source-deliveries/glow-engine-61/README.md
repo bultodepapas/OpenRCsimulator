@@ -1,6 +1,6 @@
 # O.S. MAX 61 SF Blender scene copies
 
-Copied on 2026-10-28 from [`glow_engine_61_trabajo_completo/glow_engine_61/`](../../../glow_engine_61_trabajo_completo/LEEME.txt), preserving the eight `.blend` files' names, relative layout and bytes. The original package remains the complete source, including generators, textures and other deliverables. These copies are for discovery and recovery only; they are not new build inputs or runtime assets.
+Copied on 2026-10-28 from the [complete owner package](owner-package/LEEME.txt), preserving the eight `.blend` files' names, relative layout and bytes. The package now lives beside these discovery copies and remains the build input, including generators, textures and other deliverables. These copies are for discovery and recovery only; they are not new build inputs or runtime assets.
 
 | Scene | File |
 | --- | --- |

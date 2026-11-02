@@ -1,6 +1,6 @@
 # Smoke checks and native comparison tools
 
-Checked 2026-10-20. [SMOKE](../../docs/SMOKE.md) owns the runtime/authoring contract; [SM-16–25](../../SMOKE_SYSTEM_MASTER_PLAN.md) owns execution and remaining acceptance. Keep overhaul receipts in [SM-16–23 evidence](../../docs/research/smoke-investigations/SM-16-23/README.md); earlier campaigns remain [historical evidence](../../docs/research/smoke-investigations/SM-00-09/README.md).
+Checked 2026-10-20. [SMOKE](../../docs/SMOKE.md) owns the runtime/authoring contract; [SM-16–25](../../docs/plans/smoke-system-overhaul.md) owns execution and remaining acceptance. Keep overhaul receipts in [SM-16–23 evidence](../../docs/research/smoke-investigations/SM-16-23/README.md); earlier campaigns remain [historical evidence](../../docs/research/smoke-investigations/SM-00-09/README.md).
 
 Use pinned official Godot 4.8-beta1 and [developer setup](../../docs/TOOLS.md#developer-setup). Import resources on fresh checkouts. Use fresh output directories outside `app/`. Native captures require OpenGL and a display or Xvfb. Headless checks establish software behavior, not native plume quality or measured emissions.
 

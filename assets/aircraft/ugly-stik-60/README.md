@@ -53,7 +53,7 @@ Commit the image and regenerated identities together. The finish helper has a pr
 
 ## O.S. 61 SF engine (US-V13)
 
-The engine is the owner's Blender model of an O.S. MAX 61 SF Special Edition on an O.S. 905 radial mount, delivered in the untracked `glow_engine_61_trabajo_completo/` folder at the repository root. [engine/source-manifest.json](engine/source-manifest.json) pins its real-time engine GLB and its aircraft-mount GLB by SHA-256. The generator keeps the delivered meshes and baked textures, then:
+The engine is the owner's Blender model of an O.S. MAX 61 SF Special Edition on an O.S. 905 radial mount, kept in the [complete source package](../../source-deliveries/glow-engine-61/owner-package/LEEME.txt). [engine/source-manifest.json](engine/source-manifest.json) pins its real-time engine GLB and its aircraft-mount GLB by SHA-256. The generator keeps the delivered meshes and baked textures, then:
 
 - splits off the carburettor lever and the propeller drive;
 - decimates the screws and silicone lines;

@@ -1,6 +1,6 @@
 # Smoke overhaul implementation evidence — SM-16–23
 
-2026-10-20 · Windows / Godot **4.7.2.stable.official.ed1daf0bf**, OpenGL Compatibility. Core implementation is integrated; rollout qualification remains open. [Current contract](../../../SMOKE.md), [execution plan](../../../../SMOKE_SYSTEM_MASTER_PLAN.md) and [commands](../../../../tools/smoke/README.md) remain authoritative. This record describes software and rendering evidence, not measured aerosol physics or aircraft flight validation.
+2026-10-20 · Windows / Godot **4.7.2.stable.official.ed1daf0bf**, OpenGL Compatibility. Core implementation is integrated; rollout qualification remains open. [Current contract](../../../SMOKE.md), [execution plan](../../../plans/smoke-system-overhaul.md) and [commands](../../../../tools/smoke/README.md) remain authoritative. This record describes software and rendering evidence, not measured aerosol physics or aircraft flight validation.
 
 ## Baseline and implemented scope
 

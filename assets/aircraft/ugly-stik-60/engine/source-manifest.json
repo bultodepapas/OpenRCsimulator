@@ -1,9 +1,9 @@
 {
   "format": "openrc-stik-engine-source v1",
   "step": "US-V13",
-  "description": "O.S. MAX 61 SF Special Edition modelled in Blender by the owner's engine track (glow_engine_61_trabajo_completo/LEEME.txt). Owner instruction 2026-10-25: use it on the Ugly Stik.",
-  "provenance": "Owner-supplied original work; no third-party mesh. Delivery kept untracked at the repository root; only the generated runtime GLB is bundled.",
-  "delivery_root": "glow_engine_61_trabajo_completo",
+  "description": "O.S. MAX 61 SF Special Edition modelled in Blender by the owner's engine track (assets/source-deliveries/glow-engine-61/owner-package/LEEME.txt). Owner instruction 2026-10-25: use it on the Ugly Stik.",
+  "provenance": "Owner-supplied original work; no third-party mesh. The complete source package is under assets/source-deliveries/glow-engine-61/owner-package; only the generated runtime GLB is bundled.",
+  "delivery_root": "assets/source-deliveries/glow-engine-61/owner-package",
   "inputs": {
     "engine_realtime": {
       "path": "glow_engine_61/tiempo_real/glow_engine_61_SE_realtime.glb",

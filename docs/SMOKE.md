@@ -1,6 +1,6 @@
 # Aircraft smoke: runtime and authoring contract
 
-Checked 2026-10-20. This guide owns current smoke behavior and onboarding. [Aircraft Workshop](AIRCRAFT-WORKSHOP.md) owns the editor flow; [tools](../tools/smoke/README.md) owns commands. The [SM-16–25 execution plan](../SMOKE_SYSTEM_MASTER_PLAN.md) and [remaining qualification](SMOKE-PLAN.md) retain open gates. The [SM-16–23 evidence record](research/smoke-investigations/SM-16-23/README.md) records overhaul checks and limitations, not physical emissions or complete native/platform acceptance.
+Checked 2026-10-20. This guide owns current smoke behavior and onboarding. [Aircraft Workshop](AIRCRAFT-WORKSHOP.md) owns the editor flow; [tools](../tools/smoke/README.md) owns commands. The [SM-16–25 execution plan](plans/smoke-system-overhaul.md) and [remaining qualification](SMOKE-PLAN.md) retain open gates. The [SM-16–23 evidence record](research/smoke-investigations/SM-16-23/README.md) records overhaul checks and limitations, not physical emissions or complete native/platform acceptance.
 
 <a id="avanti--ventage-jet-show-smoke-sm-11-r1"></a>
 

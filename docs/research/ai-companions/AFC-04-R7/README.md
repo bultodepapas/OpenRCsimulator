@@ -60,7 +60,7 @@ These are research fixtures, not admitted production fleets or decision replays.
 The measured improvements do not establish hull clearance, contact response,
 physical realism or safety in arbitrary encounters. Aircraft-to-aircraft contact
 remains disabled. Real midair/player/taxi contact belongs to the existing
-[AFC-23 paired-contact gate](../../../../AI_FLIGHT_COMPANIONS_PLAN.md); avoiding
+[AFC-23 paired-contact gate](../../../plans/ai-flight-companions.md); avoiding
 traffic must not become artificial collision immunity.
 
 Six 1920×1080 research-scene captures show the candidate banking past the stopped

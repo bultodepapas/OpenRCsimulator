@@ -1,5 +1,7 @@
 # FUEL-04 — One fixed-datum resource kernel (2026-10-19)
 
+The [retained Windows resource check](fuel-mass-reference-final/fuel-mass-reference-final-xull376e/report.json) records 49 passing checks from 2026-10-23. Its original command and output paths remain in the report as historical evidence; the files now live beside this record.
+
 **FUEL-04-R1, 2026-10-23:** [reference-inertia numerical repair and independent audit](../../physics-audit-2026-10-23/README.md)
 screens raw inversion before assertions and reuses scaled inversion for extreme
 finite tensors. Ordinary historical equality checks and isolated fuel-flight

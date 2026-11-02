@@ -59,7 +59,7 @@ A native backend may replace one evaluator boundary, never the kernel's tick tra
 | `app/data/` | Aircraft, schemas, ground-vehicle, field, scenery and sky data |
 | `app/aircraft/`, `app/render/`, `app/environment/`, `app/scenery/`, `app/audio/` | Vehicle visuals, presentation, lighting, field life and sound |
 | `app/assets/`, `app/tests/` | Runtime assets/licenses; tests, trace/capture checks and benchmarks |
-| `assets/`, `assets/source-deliveries/` | Authored geometry, generators and provenance; [source-delivery index](../assets/source-deliveries/README.md) |
+| `assets/`, `assets/source-deliveries/` | Authored geometry, generators, complete owner packages and provenance; [source-delivery index](../assets/source-deliveries/README.md) |
 | `tools/`, `research/` | Reusable workflows, experiments, data generators and measurement reducers |
 | `docs/`, `site/` | Current guides, plans, dated evidence and project website; [documentation map](README.md), [site guide](../site/README.md) |
 | `tmp/`, `output/`, browser scratch folders | Ignored local outputs; accepted evidence belongs under `docs/research/` or `docs/media/` |

@@ -1,7 +1,7 @@
 # AI flight companions
 
 Status: experimental airborne slice, 2026-10-25. The remaining work and release
-gates live in [the implementation plan](../AI_FLIGHT_COMPANIONS_PLAN.md).
+gates live in [the implementation plan](plans/ai-flight-companions.md).
 [Verification and measured limits](research/ai-companions/AFC-00-06/README.md).
 Follow-up evidence: [qualified profiles](research/ai-companions/AFC-02/README.md),
 [cost attribution and equivalence](research/ai-companions/AFC-00-R1/README.md),
