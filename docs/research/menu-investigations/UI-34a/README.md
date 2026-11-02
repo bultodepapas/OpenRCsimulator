@@ -1,6 +1,6 @@
 # UI-34a — switch aircraft from Pause
 
-2026-10-20. This step repairs [UI-30](../UI-30/README.md) finding AS-1 and follows the [redesign plan §11](../../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs).
+2026-10-20. This step repairs [UI-30](../UI-30/README.md) finding AS-1 and follows the [redesign plan §11](../../../plans/menu-redesign.md#11-ui-30-audit-repairs).
 
 ## Behaviour
 

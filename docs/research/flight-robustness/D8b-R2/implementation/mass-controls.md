@@ -2,7 +2,7 @@
 
 2026-10-11 · **Status: mathematical and provenance contracts pass; aircraft-specific flight bounds remain unsupported.**
 
-[Owning plan](../../../../UGLY-STIK-PULLUP-PLAN.md) · [D8b-R2 evidence](../README.md) · [contract test](../../../../../app/tests/test_pullup_invariants.gd)
+[Owning plan](../../../../plans/ugly-stik-pullup.md) · [D8b-R2 evidence](../README.md) · [contract test](../../../../../app/tests/test_pullup_invariants.gd)
 
 ## Current source audit
 

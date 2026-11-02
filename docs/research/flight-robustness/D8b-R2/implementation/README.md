@@ -2,7 +2,7 @@
 
 2026-10-11 · **Status: software verification passed, including the full app suite. No production polar selected or physical acceptance claimed.**
 
-[Owning plan, revision 3](../../../../UGLY-STIK-PULLUP-PLAN.md) · [Original diagnosis](../README.md) · [18 investigations](../research-index.md) · [Matrix and provenance](matrix/README.md)
+[Owning plan, revision 3](../../../../plans/ugly-stik-pullup.md) · [Original diagnosis](../README.md) · [18 investigations](../research-index.md) · [Matrix and provenance](matrix/README.md)
 
 ## Delivered behavior
 

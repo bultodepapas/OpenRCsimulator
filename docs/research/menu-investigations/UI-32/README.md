@@ -1,6 +1,6 @@
 # UI-32 — preserve choices
 
-2026-10-20. This step repairs [UI-30](../UI-30/README.md) findings AS-3, AS-4, AS-7 and F8. It follows the [redesign plan §11](../../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs). The rule it enforces: browsing never overwrites a saved choice as a side effect.
+2026-10-20. This step repairs [UI-30](../UI-30/README.md) findings AS-3, AS-4, AS-7 and F8. It follows the [redesign plan §11](../../../plans/menu-redesign.md#11-ui-30-audit-repairs). The rule it enforces: browsing never overwrites a saved choice as a side effect.
 
 ## Behaviour
 

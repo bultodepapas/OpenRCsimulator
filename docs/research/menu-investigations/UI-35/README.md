@@ -1,6 +1,6 @@
 # UI-35 — shared dialog states (first slice)
 
-2026-10-20. This slice repairs [UI-30](../UI-30/README.md) findings VC-3, VC-5, SP-3 (Conditions), SC-5 (Escape), AL-3 (error colour) and AL-4 (Settings focus), plus the Conditions part of VC-1. It follows the [redesign plan §11](../../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs). The rail fade (AL-3) and the ultrawide span (SP-5, UI-35c) are delivered by the parallel UI-34 session in its own files.
+2026-10-20. This slice repairs [UI-30](../UI-30/README.md) findings VC-3, VC-5, SP-3 (Conditions), SC-5 (Escape), AL-3 (error colour) and AL-4 (Settings focus), plus the Conditions part of VC-1. It follows the [redesign plan §11](../../../plans/menu-redesign.md#11-ui-30-audit-repairs). The rail fade (AL-3) and the ultrawide span (SP-5, UI-35c) are delivered by the parallel UI-34 session in its own files.
 
 ## Behaviour
 

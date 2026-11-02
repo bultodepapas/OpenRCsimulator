@@ -1,6 +1,6 @@
 # GP-16/17: persistent attached-gear damage transactions
 
-2026-10-25/26 software foundation. [GearDamage](../../../../app/physics/gear_damage.gd) implements the explicitly experimental `experimental-brittle-normal-capacity-attached-v1` law. It does not yet change stock aircraft support geometry or provide measured breaking loads. The [GP-11 integration record](../GP-11/README.md) and [masterplan](../../../advanced-ground-flight-physics-masterplan.md) retain those gates.
+2026-10-25/26 software foundation. [GearDamage](../../../../app/physics/gear_damage.gd) implements the explicitly experimental `experimental-brittle-normal-capacity-attached-v1` law. It does not yet change stock aircraft support geometry or provide measured breaking loads. The [GP-11 integration record](../GP-11/README.md) and [masterplan](../../../plans/advanced-ground-flight-physics.md) retain those gates.
 
 ## Component and failure ownership
 

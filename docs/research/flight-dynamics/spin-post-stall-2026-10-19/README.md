@@ -53,7 +53,7 @@ With `retained`, the right spin's nose rises to the Extra 260's −55°, sink fa
   - Candidates that hold the measured post-stall lift remove it and the Stik stops spinning.
   - The FASER airframe has both high post-stall lift and a spin, at α 30°.
   - A fuselage side force is not the main lever: NACA TN 3551 measures it at about CY 0.015 at 20° for a Stik-like square body.
-- **Next.** Separated-flow dynamics (per-strip separation states with time lags, D8b-R2d-v3) is the mechanism that can keep the static lift and still autorotate ([D8b-R2d analog](../../flight-robustness/D8b-R2/analog/README.md#conclusions)). This probe is its held-out test. Promotion still needs the [pull-up plan](../../../UGLY-STIK-PULLUP-PLAN.md)'s gates, including the owner's flight review (D8b-R2h). Normal flights keep the legacy blend.
+- **Next.** Separated-flow dynamics (per-strip separation states with time lags, D8b-R2d-v3) is the mechanism that can keep the static lift and still autorotate ([D8b-R2d analog](../../flight-robustness/D8b-R2/analog/README.md#conclusions)). This probe is its held-out test. Promotion still needs the [pull-up plan](../../../plans/ugly-stik-pullup.md)'s gates, including the owner's flight review (D8b-R2h). Normal flights keep the legacy blend.
 - **Measurements that would close it.** A filmed spin of the owner's Jensen Stik with a stopwatch: turns, height lost per turn and nose attitude. Each closes a quantity in this report without new tooling.
 
 ## Reproduction

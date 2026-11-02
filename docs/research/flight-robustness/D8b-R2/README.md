@@ -2,7 +2,7 @@
 
 2026-10-11 · **Status: completed synthetic diagnosis; production correction and physical validation pending.**
 
-The [owning plan](../../../UGLY-STIK-PULLUP-PLAN.md) contains the findings, sources, limitations and next steps. User input confirmed keyboard use; original throttle, exact entry speed and recording were unavailable.
+The [owning plan](../../../plans/ugly-stik-pullup.md) contains the findings, sources, limitations and next steps. User input confirmed keyboard use; original throttle, exact entry speed and recording were unavailable.
 
 Revision 2 adds [18 source-based investigations](research-index.md): six Godot, six aerodynamics/airframe, and six computational-simulation/validation studies. [Four additional numerical investigations](research-experiments.md) test stall-width sensitivity, strip refinement, finite-difference robustness and the wing stall-weight contribution. No replacement coefficients or production correction are adopted.
 

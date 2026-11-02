@@ -1,6 +1,6 @@
 # UI-21 · Shared screen lifecycle and navigation
 
-**Date:** 2026-10-11. **Status:** implemented and software-verified. **Plan:** [MENU-REDESIGN-PLAN](../../../MENU-REDESIGN-PLAN.md). **Baseline:** `38847b4f8d65af8c1fb2424b2f7eda3e007e950d`; isolated snapshots retain identical physics, aircraft data and rendering. This step changes menu architecture; the visual redesign starts at UI-22.
+**Date:** 2026-10-11. **Status:** implemented and software-verified. **Plan:** [MENU-REDESIGN-PLAN](../../../plans/menu-redesign.md). **Baseline:** `38847b4f8d65af8c1fb2424b2f7eda3e007e950d`; isolated snapshots retain identical physics, aircraft data and rendering. This step changes menu architecture; the visual redesign starts at UI-22.
 
 ## Change
 

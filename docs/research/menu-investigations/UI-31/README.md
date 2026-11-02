@@ -1,6 +1,6 @@
 # UI-31 — recovery dead ends
 
-2026-10-20. This step repairs [UI-30](../UI-30/README.md) findings PS-1–PS-4, PS-7 and PS-10–PS-12. It follows the [redesign plan §11](../../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs). The rule it enforces: no reachable flight state may hold the simulation without a visible next action.
+2026-10-20. This step repairs [UI-30](../UI-30/README.md) findings PS-1–PS-4, PS-7 and PS-10–PS-12. It follows the [redesign plan §11](../../../plans/menu-redesign.md#11-ui-30-audit-repairs). The rule it enforces: no reachable flight state may hold the simulation without a visible next action.
 
 ## Behaviour
 

@@ -2,7 +2,7 @@
 
 2026-10-11 · **Status: four synthetic investigations executed; no candidate adopted.**
 
-[Plan](../../../UGLY-STIK-PULLUP-PLAN.md) · [Data](supplement.json) · [Independent force reduction](decomposition.json) · [Fingerprints](supplement-manifest.json)
+[Plan](../../../plans/ugly-stik-pullup.md) · [Data](supplement.json) · [Independent force reduction](decomposition.json) · [Fingerprints](supplement-manifest.json)
 
 These experiments complement the 18 source-based investigations in the Godot, aerodynamics and simulation reports. They distinguish parameter sensitivity, discretization sensitivity and numerical differentiation from physical validation. All use the current Stik, 25 m/s, calm air, neutral controls and zero nominal body rates. Wing downwash is instantaneous in these static calls. Production files are unchanged.
 

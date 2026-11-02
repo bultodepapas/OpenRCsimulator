@@ -1,6 +1,6 @@
 # D8b-R2 A01–A06 — aerodynamic evidence for the Jensen Ugly Stik pull-up
 
-2026-10-11 · **Status: research synthesis; physical-aircraft measurements and the proposed follow-up tests remain open.** This note supports D8b-R2d/e in the [pull-up plan](../../../UGLY-STIK-PULLUP-PLAN.md). It uses the Jensen 60-inch model identity, current simulation code and data, the completed D8b-R2 diagnosis, and the separate synthetic sweep in [supplement.json](supplement.json). It does not select new aircraft coefficients.
+2026-10-11 · **Status: research synthesis; physical-aircraft measurements and the proposed follow-up tests remain open.** This note supports D8b-R2d/e in the [pull-up plan](../../../plans/ugly-stik-pullup.md). It uses the Jensen 60-inch model identity, current simulation code and data, the completed D8b-R2 diagnosis, and the separate synthetic sweep in [supplement.json](supplement.json). It does not select new aircraft coefficients.
 
 ## A01 — Identify the exact airframe and its evidence
 

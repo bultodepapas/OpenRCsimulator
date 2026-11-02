@@ -1,6 +1,6 @@
 # UI-22–26-R2 — bounded menus and grounded Home presentation
 
-2026-10-15. Implementation evidence for the [active redesign](../../../MENU-REDESIGN-PLAN.md). Visual references and resource decisions remain in [UI-20-R2](../UI-20-R2/README.md).
+2026-10-15. Implementation evidence for the [active redesign](../../../plans/menu-redesign.md). Visual references and resource decisions remain in [UI-20-R2](../UI-20-R2/README.md).
 
 ## Delivered behavior
 

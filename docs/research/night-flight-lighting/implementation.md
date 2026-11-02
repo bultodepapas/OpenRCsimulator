@@ -1,6 +1,6 @@
 # FW-RGB implementation and qualification
 
-2026-10-25. The user approved implementation after the [masterplan](../../night-flight-lighting-masterplan.md). This record covers the integrated RGB renderer, profile and Workshop implementation. It does not close pilot gate FW-N or establish hardware performance.
+2026-10-25. The user approved implementation after the [masterplan](../../plans/night-flight-lighting.md). This record covers the integrated RGB renderer, profile and Workshop implementation. It does not close pilot gate FW-N or establish hardware performance.
 
 ## Repeated flight mode dispatch (2026-11-01)
 

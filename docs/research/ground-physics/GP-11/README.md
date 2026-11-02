@@ -1,6 +1,6 @@
 # GP-11: compliant support and coupled ground implementation
 
-2026-10-25/26 development record. Owner: GP, with SF and AS contracts retained. This record covers the common integration cohort after GP-10a/b. **These are executable foundations, not a completed stock-fleet rollout or measured RC calibration.** The [masterplan](../../../advanced-ground-flight-physics-masterplan.md) retains the open gates.
+2026-10-25/26 development record. Owner: GP, with SF and AS contracts retained. This record covers the common integration cohort after GP-10a/b. **These are executable foundations, not a completed stock-fleet rollout or measured RC calibration.** The [masterplan](../../../plans/advanced-ground-flight-physics.md) retains the open gates.
 
 ## Effective suspension law
 

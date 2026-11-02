@@ -1,6 +1,6 @@
 # UI-30 — menu system audit at 1080p and above
 
-2026-10-20, source `9a55ea7a`. This is a visual and functional audit of Home, the aircraft catalog, Settings, Controls, Conditions, Help, Practice, Workshop entry, Pause, in-flight menu states, the helicopter route and the RC garage. It covers 1920×1080 through 5120×1440. It builds on [UI-29-R3](../UI-29-R3/README.md); current code supersedes this snapshot. The repair steps live in the [active redesign plan](../../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs).
+2026-10-20, source `9a55ea7a`. This is a visual and functional audit of Home, the aircraft catalog, Settings, Controls, Conditions, Help, Practice, Workshop entry, Pause, in-flight menu states, the helicopter route and the RC garage. It covers 1920×1080 through 5120×1440. It builds on [UI-29-R3](../UI-29-R3/README.md); current code supersedes this snapshot. The repair steps live in the [active redesign plan](../../../plans/menu-redesign.md#11-ui-30-audit-repairs).
 
 ## 1. Verdict
 
@@ -78,7 +78,7 @@ It also measures simulation ticks while paused. [`metrics.json`](metrics.json) s
 
 ## 4. Findings
 
-Each row gives the evidence, the impact and the smallest fix. Plan step IDs refer to [§11 of the redesign plan](../../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs).
+Each row gives the evidence, the impact and the smallest fix. Plan step IDs refer to [§11 of the redesign plan](../../../plans/menu-redesign.md#11-ui-30-audit-repairs).
 
 ### 4.1 Screen space and scaling
 

@@ -6,7 +6,7 @@
 - Candidates that meet both make the Stik stop spinning, although the real airframe spins with the same inputs.
 - The quasi-steady strip law therefore trades realistic post-stall lift against autorotation. The missing piece is separated-flow dynamics.
 
-Owning step: D8b-R2d in the [pull-up plan](../../../../UGLY-STIK-PULLUP-PLAN.md); method: [polar method review](../implementation/polar-method.md). Sources and caveats: [RC-class aerodynamic data sources](../../../flight-dynamics/rc-aero-data-sources.md).
+Owning step: D8b-R2d in the [pull-up plan](../../../../plans/ugly-stik-pullup.md); method: [polar method review](../implementation/polar-method.md). Sources and caveats: [RC-class aerodynamic data sources](../../../flight-dynamics/rc-aero-data-sources.md).
 
 ## Measured targets
 
@@ -81,7 +81,7 @@ All results come from the [bench output](sweep-production-law.md) on the product
    - Fit its two time constants to Hoe's measured frequency trend.
    - Then fly the held-out FASER and Extra 260 spins and the D8b-R2 pull-up matrix.
    - It adds simulation state, so it needs a kernel and layout review with the simulation-foundation boundary before integration.
-4. **Production stays on the legacy blend.** Promotion of any law needs the [pull-up plan](../../../../UGLY-STIK-PULLUP-PLAN.md) gates, including the owner's flight (D8b-R2h). The CLI `--experimental-aircraft-data` route already accepts these candidates, `spanwise_progression` included.
+4. **Production stays on the legacy blend.** Promotion of any law needs the [pull-up plan](../../../../plans/ugly-stik-pullup.md) gates, including the owner's flight (D8b-R2h). The CLI `--experimental-aircraft-data` route already accepts these candidates, `spanwise_progression` included.
 
 ## Reproduction
 

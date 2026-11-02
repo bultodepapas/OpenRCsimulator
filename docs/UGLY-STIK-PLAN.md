@@ -44,4 +44,4 @@ Current geometry/reference data use 720 in²; an older drawing/decision records 
 
 Score the existing orientation cases with resolution, camera and target-GPU timing recorded. Preserve measured geometry and comparable views when responding to review. Mini/giant variants, full internal structure, LOD and an identified commercial installation remain future work.
 
-The active [pull-up plan](UGLY-STIK-PULLUP-PLAN.md) owns D8b-R2 physics diagnosis, research polars and remaining physical/owner gates. Its opt-in experiments are separate from this visual delivery and do not establish Jensen-specific calibration. Preserve a baseline and exact replay before flight-model changes using [flight logging](FLIGHT-LOGGING.md).
+The active [pull-up plan](plans/ugly-stik-pullup.md) owns D8b-R2 physics diagnosis, research polars and remaining physical/owner gates. Its opt-in experiments are separate from this visual delivery and do not establish Jensen-specific calibration. Preserve a baseline and exact replay before flight-model changes using [flight logging](FLIGHT-LOGGING.md).

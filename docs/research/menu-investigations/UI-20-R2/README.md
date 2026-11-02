@@ -2,7 +2,7 @@
 
 2026-10-15 · Product shell · Research and proposal; no runtime changes in this revision.
 
-The owner rejected the oversized Home/sidebar and Settings controls, including fullscreen 4K. The later direction asks for a stronger relationship between the interface, aircraft, runway and club scenery. The authoritative delivery plan is [MENU-REDESIGN-PLAN](../../../MENU-REDESIGN-PLAN.md). This report records the evidence and source selection behind it.
+The owner rejected the oversized Home/sidebar and Settings controls, including fullscreen 4K. The later direction asks for a stronger relationship between the interface, aircraft, runway and club scenery. The authoritative delivery plan is [MENU-REDESIGN-PLAN](../../../plans/menu-redesign.md). This report records the evidence and source selection behind it.
 
 ## What the current evidence actually shows
 

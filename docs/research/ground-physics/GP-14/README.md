@@ -1,6 +1,6 @@
 # GP-14a — survivable accident classification
 
-2026-10-25 · **Status: bounded P0 classifier slice implemented and unit-checked; complete GP-14 remains open.** Owner: ground physics / UI-FS. Scope follows [masterplan §8.5](../../../advanced-ground-flight-physics-masterplan.md#85-shared-accepted-event-model). Software evidence only; no physical landing, damage or pilot-intent validation is claimed.
+2026-10-25 · **Status: bounded P0 classifier slice implemented and unit-checked; complete GP-14 remains open.** Owner: ground physics / UI-FS. Scope follows [masterplan §8.5](../../../plans/advanced-ground-flight-physics.md#85-shared-accepted-event-model). Software evidence only; no physical landing, damage or pilot-intent validation is claimed.
 
 ## Behavior and boundary
 

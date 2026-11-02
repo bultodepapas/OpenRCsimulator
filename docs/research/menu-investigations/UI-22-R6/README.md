@@ -1,6 +1,6 @@
 # UI-22-R6 — twenty investigations for restrained crystal UI
 
-2026-10-24. Owner: product shell. Baseline: `8c10ee55`; verified UI source also present in `16b87e98` at completion. Godot 4.7.2, native Windows, Compatibility renderer. This is the owner's requested research and implemented refinement of the radioactive lime accent. The [menu guide](../../../MENU-REDESIGN-PLAN.md#color-and-surfaces) owns current behavior.
+2026-10-24. Owner: product shell. Baseline: `8c10ee55`; verified UI source also present in `16b87e98` at completion. Godot 4.7.2, native Windows, Compatibility renderer. This is the owner's requested research and implemented refinement of the radioactive lime accent. The [menu guide](../../../plans/menu-redesign.md#color-and-surfaces) owns current behavior.
 
 ## Direction and method
 

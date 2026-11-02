@@ -1,6 +1,6 @@
 # UI-34c-R2/R3/R4 — staged Home-to-flight preparation
 
-2026-10-24. Source implementation and exploratory native verification. Owner: UI-34c / DT-11a. [Execution plan](../../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a); [preceding audit](../UI-34c-R1/README.md).
+2026-10-24. Source implementation and exploratory native verification. Owner: UI-34c / DT-11a. [Execution plan](../../../plans/menu-redesign.md#12-home-to-flight-loading-ui-34c-and-dt-11a); [preceding audit](../UI-34c-R1/README.md).
 
 ## Implemented behavior
 

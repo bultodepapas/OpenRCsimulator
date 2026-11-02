@@ -1,6 +1,6 @@
 # UI-36 — Settings and content (first slice)
 
-2026-10-20. This slice repairs [UI-30](../UI-30/README.md) findings SC-1, SC-4, SC-6 and SC-8. It follows the [redesign plan §11](../../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs).
+2026-10-20. This slice repairs [UI-30](../UI-30/README.md) findings SC-1, SC-4, SC-6 and SC-8. It follows the [redesign plan §11](../../../plans/menu-redesign.md#11-ui-30-audit-repairs).
 
 ## Behaviour
 

@@ -2,7 +2,7 @@
 
 2026-10-11 · **Status: 18 source-based investigations and four numerical investigations completed. Repair implementation and physical validation remain open.**
 
-Owning step: **D8b-R2i**, within the [Ugly Stik pull-up plan, revision 2](../../../UGLY-STIK-PULLUP-PLAN.md). G/A/S/E labels below are local investigation IDs, not new roadmap tracks. The plan owns implementation status.
+Owning step: **D8b-R2i**, within the [Ugly Stik pull-up plan, revision 2](../../../plans/ugly-stik-pullup.md). G/A/S/E labels below are local investigation IDs, not new roadmap tracks. The plan owns implementation status.
 
 The research combines official Godot documentation, the original Jensen drawing archived by Outerzone, FAA guidance, NASA reports, UIUC experimental-airfoil resources, and JSBSim/OpenFAST/SciPy references. Each detailed investigation states its question, findings, local applicability, proposed change and limits. Sources were reviewed on 2026-10-11 and are linked beside the claims they support. These are 18 distinct engineering questions, not 18 physical experiments or 18 independent validations of the aircraft.
 

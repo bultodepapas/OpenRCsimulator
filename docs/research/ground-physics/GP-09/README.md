@@ -33,7 +33,7 @@ The tested `h_other` case is constant in body components. If a caller prescribes
 
 ## Executed evidence
 
-The regression executes the existing `GroundWheels.evaluate` at a flat, zero-slip contact, then passes its loads to `RigidBody.derivative` with an added pure carrier moment. It reproduces the [masterplan counterexample](../../../advanced-ground-flight-physics-masterplan.md#44-wheel-rotation-inertia-and-generalized-energy): `a=-y`, `I_yy=1`, `J=0.1 kg m^2`, `R=0.2 m`, `q=1 rad/s`, `u=3 m/s`, `M_y=-1 N m`. The declared residual carrier inertia is `0.9 kg m^2`.
+The regression executes the existing `GroundWheels.evaluate` at a flat, zero-slip contact, then passes its loads to `RigidBody.derivative` with an added pure carrier moment. It reproduces the [masterplan counterexample](../../../plans/advanced-ground-flight-physics.md#44-wheel-rotation-inertia-and-generalized-energy): `a=-y`, `I_yy=1`, `J=0.1 kg m^2`, `R=0.2 m`, `q=1 rad/s`, `u=3 m/s`, `M_y=-1 N m`. The declared residual carrier inertia is `0.9 kg m^2`.
 
 | Instantaneous quantity | Existing source | Coupled reference |
 | --- | --- | --- |

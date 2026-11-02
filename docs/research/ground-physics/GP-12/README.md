@@ -1,6 +1,6 @@
 # GP-12: wheel contact integration
 
-2026-10-25/26 development record. These modules extend the [GP-11 frozen integration cohort](../GP-11/evidence/README.md). They do not yet enable the advanced law on stock aircraft. The [masterplan](../../../advanced-ground-flight-physics-masterplan.md) owns fleet, source-event, damage and presentation gates.
+2026-10-25/26 development record. These modules extend the [GP-11 frozen integration cohort](../GP-11/evidence/README.md). They do not yet enable the advanced law on stock aircraft. The [masterplan](../../../plans/advanced-ground-flight-physics.md) owns fleet, source-event, damage and presentation gates.
 
 ## Wheel and material assembly
 

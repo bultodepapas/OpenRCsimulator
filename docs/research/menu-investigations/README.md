@@ -12,7 +12,7 @@ focus and reading position, with explicit limits and separately reproduced exist
 
 ## UI-34c-R2/R3/R4/R5 — Home/Fly implementation, 2026-10-24
 
-[Implementation and verification](UI-34c-R2/README.md): owned EN/ES loading surface, rendered acknowledgement, cancellation/rollback, shared World/Field stages, selected-resource handoff and bounded exact trim reuse. Native 1080p samples, 20-cycle lifecycle results, software parity and focused checks are retained with explicit limits. The [execution plan](../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a) keeps unresolved cold-loading and package qualification gates open.
+[Implementation and verification](UI-34c-R2/README.md): owned EN/ES loading surface, rendered acknowledgement, cancellation/rollback, shared World/Field stages, selected-resource handoff and bounded exact trim reuse. Native 1080p samples, 20-cycle lifecycle results, software parity and focused checks are retained with explicit limits. The [execution plan](../../plans/menu-redesign.md#12-home-to-flight-loading-ui-34c-and-dt-11a) keeps unresolved cold-loading and package qualification gates open.
 
 [R5 research and implementation](UI-34c-R5/README.md) adds dedicated scene loading and exact fused electric evaluation. Five completed native 1080p pairs have cold readiness medians of 14.666 and 12.971 s and median maximum loading frames of 3414 and 583 ms. The report retains the host-condition change across the interrupted collection, an unexplained refused attempt, engine-loader experiments and cancellation/quit checks; no two-second or full-platform qualification is claimed.
 
@@ -41,7 +41,7 @@ Checked-runner verification: `test_ui_crystal.gd` passed 43 native and 36 headle
 
 ## UI-22-R10 — hover, focus and activation feedback, 2026-10-24
 
-The owner requested better pointer, controller-navigation and selection feedback while retaining R9's thin glass. Supported standard Button subclasses now use interruptible state-color transitions, with a separate neutral shader branch for secondary actions. Native focus/selection markers, glyphs, activation, layout and hit areas retain ownership. Primary glass adds pointer-local edge light; hover and focus acquisition share one sweep. Native activation has a bounded rim pulse, separate from press/release shading so a cancelled click never confirms. [Current timings and behavior](../../MENU-REDESIGN-PLAN.md#color-and-surfaces).
+The owner requested better pointer, controller-navigation and selection feedback while retaining R9's thin glass. Supported standard Button subclasses now use interruptible state-color transitions, with a separate neutral shader branch for secondary actions. Native focus/selection markers, glyphs, activation, layout and hit areas retain ownership. Primary glass adds pointer-local edge light; hover and focus acquisition share one sweep. Native activation has a bounded rim pulse, separate from press/release shading so a cancelled click never confirms. [Current timings and behavior](../../plans/menu-redesign.md#color-and-surfaces).
 
 Implementation uses the existing [Button styles](https://docs.godotengine.org/en/4.7/classes/class_button.html), [BaseButton signals](https://docs.godotengine.org/en/4.7/classes/class_basebutton.html) and [node-bound Tween cancellation](https://docs.godotengine.org/en/4.7/classes/class_tween.html). One tween owns each animated parameter; interruption starts at its current value. No new assets, dependencies, automatic shader clock or per-frame effect processing were added. Destructive actions keep a red response. A read-only review identified invisible-surface animation, which was fixed by settling unsupported/flat styles and gating animation on visibility; the follow-up found no remaining concrete defect.
 
@@ -82,7 +82,7 @@ Ignored local evidence: `tmp/glass-r9-variants/` contains `variants.csv`, the re
 
 ## UI-22-R8 — rounded glass wall and offset reflections, 2026-10-24
 
-The owner requested further experimentation against the same fluorescent-glass photographs. Starting from `c62e7348`, two native material candidates were inspected: a broad rounded wall (its soft edge remained too uniform), then an offset rear contour and curved face reflections. The selected refinement strengthens the green body slightly, reduces the exterior halo and uses a sharper grazing catch over the broad wall. The displaced contour follows the overlapping rims in the supplied bowls. These are art-direction judgments, not measured similarity or physical refraction. [Current material specification](../../MENU-REDESIGN-PLAN.md#color-and-surfaces).
+The owner requested further experimentation against the same fluorescent-glass photographs. Starting from `c62e7348`, two native material candidates were inspected: a broad rounded wall (its soft edge remained too uniform), then an offset rear contour and curved face reflections. The selected refinement strengthens the green body slightly, reduces the exterior halo and uses a sharper grazing catch over the broad wall. The displaced contour follows the overlapping rims in the supplied bowls. These are art-direction judgments, not measured similarity or physical refraction. [Current material specification](../../plans/menu-redesign.md#color-and-surfaces).
 
 Primary actions have a 12-pixel radius, separate purer green emission, 86/88/92% normal/hover/pressed interior alpha and a constrained text-well brightness. Native three-pixel side brackets sit nine pixels inside the button, beyond the luminous wall; this replaces the complete pale frame that visually obscured the material. Black panels remain neutral and skip the additional wall/reflection calculations. Disabled actions, opaque mode, finite motion and live reduced-motion cancellation retain their contracts. No new asset, runtime dependency or continuous animation was introduced.
 
@@ -92,7 +92,7 @@ Ignored evidence: candidate A `tmp/debug-bridge/20261024-162338-47870/`, candida
 
 ## UI-22-R7 — fluorescent glass from owner references, 2026-10-24
 
-The owner supplied three photographs of intensely green fluorescent glass: dark transparent interiors, saturated luminous rims, layered edges and narrow reflections. The implementation transfers these material cues to primary actions while retaining neutral black menu backgrounds. This is a visual interpretation, not a physical glass/fluorescence simulation. The photos were inspected in the conversation and are not copied into the repository. [Current palette and behavior](../../MENU-REDESIGN-PLAN.md#color-and-surfaces).
+The owner supplied three photographs of intensely green fluorescent glass: dark transparent interiors, saturated luminous rims, layered edges and narrow reflections. The implementation transfers these material cues to primary actions while retaining neutral black menu backgrounds. This is a visual interpretation, not a physical glass/fluorescence simulation. The photos were inspected in the conversation and are not copied into the repository. [Current palette and behavior](../../plans/menu-redesign.md#color-and-surfaces).
 
 The shared accent is now `#66FF16`. Primary actions use dark translucent green, pale text/icons, a rounded double contour with directional light falloff, a faint folded reflection and edge-weighted finite sheen. The outer edge becomes more opaque; opaque mode also makes the interior opaque. Focus remains a separate pale native inset outline. `ACCENT_INK` separates the dark toggle/check marks from light primary text; disabled labels/icons remain muted. Layout, input, panel neutrality and motion cancellation retain their existing contracts. No downloaded assets, new dependencies or continuous animation were added.
 
@@ -106,13 +106,13 @@ Native Windows / NVIDIA RTX 3090 / OpenGL Compatibility captures were inspected 
 
 ## UI-22-R5 — neutral black glass, lime actions, 2026-10-24
 
-Owner refinement: keep radioactive green on buttons and selection accents, with neutral black translucent backgrounds. Panel/card/secondary-control fills, borders, shadows and text are now neutral grays. Crystal panel reflections use `SURFACE_LIGHT`; primary buttons retain `CRYSTAL` and the existing motion. Opacity preferences and transparency amounts are unchanged. The [current palette](../../MENU-REDESIGN-PLAN.md#color-and-surfaces) owns the tokens.
+Owner refinement: keep radioactive green on buttons and selection accents, with neutral black translucent backgrounds. Panel/card/secondary-control fills, borders, shadows and text are now neutral grays. Crystal panel reflections use `SURFACE_LIGHT`; primary buttons retain `CRYSTAL` and the existing motion. Opacity preferences and transparency amounts are unchanged. The [current palette](../../plans/menu-redesign.md#color-and-surfaces) owns the tokens.
 
 Checked-runner passes: `test_ui_scale.gd` and `test_ui_crystal.gd` (15 assertions). Native Windows / RTX 3090 / Compatibility Home and Settings captures were inspected at 1920×1080 through the debug bridge, with no engine/script/shader errors and no crash or leaked objects at exit. Local evidence: ignored `tmp/neutral-glass-checks/` and `tmp/debug-bridge/20261024-152943-47870/`. No image assets or animation behavior changed.
 
 ## UI-22-R4 — crystal lighting and finite motion, 2026-10-24
 
-The follow-up owner request adds glass, shadow and motion to the lime theme. The [current guide](../../MENU-REDESIGN-PLAN.md#color-and-surfaces) owns behavior. The implementation reuses free shader techniques rather than introducing a UI library or texture pack.
+The follow-up owner request adds glass, shadow and motion to the lime theme. The [current guide](../../plans/menu-redesign.md#color-and-surfaces) owns behavior. The implementation reuses free shader techniques rather than introducing a UI library or texture pack.
 
 | Primary source, checked 2026-10-24 | Use and scope |
 | --- | --- |
@@ -129,7 +129,7 @@ The production app compiled and rendered the shader through the debug bridge on 
 
 ## UI-22-R3 — radioactive lime theme, 2026-10-24
 
-The owner's requested lime/crystal direction replaces the amber accent in the shared theme. Current tokens and effects live in the [redesign guide](../../MENU-REDESIGN-PLAN.md#color-and-surfaces). Changes are presentation-only; no flight law, aircraft data or saved-setting schema changes.
+The owner's requested lime/crystal direction replaces the amber accent in the shared theme. Current tokens and effects live in the [redesign guide](../../plans/menu-redesign.md#color-and-surfaces). Changes are presentation-only; no flight law, aircraft data or saved-setting schema changes.
 
 Native Windows Godot 4.7.2 checked-runner verification passed `test_ui_scale.gd`, `test_ui_home.gd`, `test_ui_modal_consistency.gd`, `test_settings_ui.gd` and `test_ui_settings_integration.gd`; the theme also passed `--check-only`. Home initially encountered missing imported population scenes; refreshing the import cache resolved the errors before the successful rerun. Primary-action text contrast measured 14.46:1 normal, 15.28:1 hover and 10.57:1 pressed. Primary focus is checked against its bright fill, and secondary focus against the dark panel. Scale checks cover 1080p, 1440p and 4K plus compact fallback sizes and 200% text.
 
@@ -137,7 +137,7 @@ The [debug bridge](../../../tools/debug/README.md) drove the production app on N
 
 2026-10-20: UI-30 repairs: [UI-31 recovery dead ends](UI-31/README.md), [UI-32 preserved choices](UI-32/README.md), [UI-33 interaction and words](UI-33/README.md), [UI-34a switch from Pause](UI-34a/README.md), [UI-34b–d aircraft flow](UI-34b-d/README.md), [UI-35 shared dialog states](UI-35/README.md), [UI-35c wide canvases and opaque fades](UI-35c/README.md), [UI-36 Settings and content](UI-36/README.md). Each lists its tests, captures and the findings that remain open.
 
-2026-10-20: [UI-30 — menu system audit at 1080p and above](UI-30/README.md). Software-rendered (Xvfb/llvmpipe) captures of the production app from 1920×1080 to 5120×1440 (16:9, 16:10, 21:9, 32:9; EN/ES; 150% text), code review of pause, aircraft switching, theme and chrome, and 62 graded findings. The repair order is UI-31…38 in [the redesign plan](../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs).
+2026-10-20: [UI-30 — menu system audit at 1080p and above](UI-30/README.md). Software-rendered (Xvfb/llvmpipe) captures of the production app from 1920×1080 to 5120×1440 (16:9, 16:10, 21:9, 32:9; EN/ES; 150% text), code review of pause, aircraft switching, theme and chrome, and 62 graded findings. The repair order is UI-31…38 in [the redesign plan](../../plans/menu-redesign.md#11-ui-30-audit-repairs).
 
 2026-10-19: [UI-03-R1 — window-close trace preservation and runtime audit](../visual-quality-implementation/VQ-01c/runtime-audit-2026-10-19/README.md). Actual Windows close reproduction, save-failure/Workshop regressions, scoped verification and explicit remaining golden/performance gates.
 
@@ -182,11 +182,11 @@ The [neutral-input recording script](UI-06b/pause-restart-2026-10-17/record_neut
 
 2026-10-15 implementation: [UI-22–26-R2 — grounded Home, bounded menus and native 720p–4K evidence](UI-25-R2/README.md). Includes the new scene/scale/theme, compact Home/Pause, Settings/Conditions and EN/ES behavior checks.
 
-2026-10-15 direction revision: [UI-20-R2 — cinematic composition, Godot feasibility and free-resource research](UI-20-R2/README.md). Documents the owner's rejection of the oversized composition, current camera/scale causes, inspected commercial references and implementation options. [Redesign plan revision 7](../../MENU-REDESIGN-PLAN.md) tracks the delivered core slice and remaining acceptance gates.
+2026-10-15 direction revision: [UI-20-R2 — cinematic composition, Godot feasibility and free-resource research](UI-20-R2/README.md). Documents the owner's rejection of the oversized composition, current camera/scale causes, inspected commercial references and implementation options. [Redesign plan revision 7](../../plans/menu-redesign.md) tracks the delivered core slice and remaining acceptance gates.
 
 2026-10-15 implementation follow-up: [UI-22–26-R1 — scalable shell, Settings and compact Pause](UI-22-26-R1/README.md). Native EN/ES captures, 200% text, aspect ratios and display recovery checks.
 
-2026-10-15 visual follow-up: [UI-20-R1 — native Windows menu audit, EN/ES, 720p–4K](UI-20-R1/README.md). Includes 78 native captures, measured text/scale findings, sampled navigation evidence and modern game references. The phased response is [redesign plan](../../MENU-REDESIGN-PLAN.md).
+2026-10-15 visual follow-up: [UI-20-R1 — native Windows menu audit, EN/ES, 720p–4K](UI-20-R1/README.md). Includes 78 native captures, measured text/scale findings, sampled navigation evidence and modern game references. The phased response is [redesign plan](../../plans/menu-redesign.md).
 
 2026-10-14 implementation follow-up: [UI-05-R3 — responsive selection and bounded resource loading](UI-05-R3/README.md). Latest-selection ownership, background loading of selected scenes, headless/native lifecycle checks, five-process comparisons and explicit remaining first-visit stalls.
 

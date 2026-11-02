@@ -1,11 +1,11 @@
 from pathlib import Path
-path = Path('docs/advanced-ground-flight-physics-masterplan.md')
+path = Path('docs/plans/advanced-ground-flight-physics.md')
 raw = path.read_bytes()
 needle = b'| GP-12 recorded input roles (2026-10-26) |'
 assert raw.count(needle) == 1
 row = ('| GP-12 fixed-gear brake input (2026-10-26) | '
        '[256 focused and 3,247 existing production assertions plus 13 Python tests]'
-       '(research/ground-physics/GP-12/evidence/fixed-brake-input/README.md): '
+       '(../research/ground-physics/GP-12/evidence/fixed-brake-input/README.md): '
        'Session/Main admit a shared brake channel only for explicit profile hardware; '
        'checkpoint, replay, reset and release preserve role identity. Legacy Trace v17 '
        'declares its extra command while older physical validators refuse it. '

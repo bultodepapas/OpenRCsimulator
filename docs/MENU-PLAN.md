@@ -1,6 +1,6 @@
 # Product shell and menus
 
-Status: current shell, UI-00…06, UI-06d-R1 and UI-16 delivery checked 2026-10-12. Owner: menu track; prefix UI-. The shared-screen refactor UI-20/21 is delivered; active UI-22…29 work lives in [MENU-REDESIGN-PLAN](MENU-REDESIGN-PLAN.md). Core cinematic shell implementation and native EN/ES 720p–4K evidence were added on 2026-10-15 in [UI-22–26-R2](research/menu-investigations/UI-25-R2/README.md). Pilot, extended accessibility and release acceptance remain open.
+Status: current shell, UI-00…06, UI-06d-R1 and UI-16 delivery checked 2026-10-12. Owner: menu track; prefix UI-. The shared-screen refactor UI-20/21 is delivered; active UI-22…29 work lives in [MENU-REDESIGN-PLAN](plans/menu-redesign.md). Core cinematic shell implementation and native EN/ES 720p–4K evidence were added on 2026-10-15 in [UI-22–26-R2](research/menu-investigations/UI-25-R2/README.md). Pilot, extended accessibility and release acceptance remain open.
 
 Owns `app/app_root.*`, `app/ui/`, `app/app_state/`, `app/i18n/`, build-info export integration and UI tests. Coordinate simulation holds/recording with physics, world construction with rendering, weather with M5-W/ATM, lighting with TOD/FW and display settings with DT.
 
@@ -37,7 +37,7 @@ UI-05 responsiveness work follows [investigation 26](research/menu-investigation
 
 ## Architecture and saved state
 
-Home Fly owns a persistent loading surface through resource preparation, staged construction, cancellation and the first complete flight draw. Private cold-trim work and bounded reuse reduce preparation costs; indivisible main-thread calls can still block. Performance acceptance remains open. [UI-34c / DT-11a implementation, evidence and remaining work](MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a).
+Home Fly owns a persistent loading surface through resource preparation, staged construction, cancellation and the first complete flight draw. Private cold-trim work and bounded reuse reduce preparation costs; indivisible main-thread calls can still block. Performance acceptance remains open. [UI-34c / DT-11a implementation, evidence and remaining work](plans/menu-redesign.md#12-home-to-flight-loading-ui-34c-and-dt-11a).
 
 Airplane Fly resumes the accepted session directly when its controls are ready, including a live mapped gamepad. It samples readiness without advancing incremental throttle and retains the configured launch power. Unready controls open Pause for recovery; a user pause or a newer route takes precedence over the deferred launch. Helicopters keep their existing startup flow. [UI-01-R1 checks](research/menu-investigations/README.md#ui-01-r1--fly-directly-into-flight-2026-10-19).
 
@@ -75,7 +75,7 @@ Original research and executed engine probes: [menu investigations](research/men
 
 ## Remaining work and acceptance
 
-UI-22…29 own theme, scaling/display, Settings, Home/Hangar, pause/conditions polish, HUD, motion and delivery proof. UI-07/08/09 are superseded by that [active redesign plan](MENU-REDESIGN-PLAN.md).
+UI-22…29 own theme, scaling/display, Settings, Home/Hangar, pause/conditions polish, HUD, motion and delivery proof. UI-07/08/09 are superseded by that [active redesign plan](plans/menu-redesign.md).
 
 Further UI-06 scenario selection, UI-14 model inspection and general UI-15 key remapping remain separate work. Settings and menu gamepad navigation exist; fullscreen-by-default and screen-reader acceptance remain open. Controller setup/profile status belongs to the controller track rather than this menu acceptance claim.
 

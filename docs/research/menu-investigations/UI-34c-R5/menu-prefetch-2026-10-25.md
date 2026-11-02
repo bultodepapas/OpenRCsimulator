@@ -1,6 +1,6 @@
 # UI-34c / DT-11a — preparation while Home is visible
 
-2026-10-25. Internet research and source inspection at `ede383b569798b28e50fe8ec184d097826948ef6`, using Godot 4.7 documentation. No runtime change or new engine experiment in this follow-up. The [execution plan](../../../MENU-REDESIGN-PLAN.md#selected-preparation-while-home-is-visible) owns the proposed implementation; the [R5 report](README.md) owns existing measurements.
+2026-10-25. Internet research and source inspection at `ede383b569798b28e50fe8ec184d097826948ef6`, using Godot 4.7 documentation. No runtime change or new engine experiment in this follow-up. The [execution plan](../../../plans/menu-redesign.md#selected-preparation-while-home-is-visible) owns the proposed implementation; the [R5 report](README.md) owns existing measurements.
 
 ## What is worth advancing
 

@@ -1,6 +1,6 @@
 # UI-34c-R1 — Home/Fly loading audit
 
-2026-10-24. **Audit and plan only; no loading optimization implemented.** Owner: UI-34c with DT-11a construction/performance coordination. [Execution plan](../../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a). The current flow acknowledges Fly with a changed button caption, then blocks the main thread for seconds. It needs both persistent loading feedback and less synchronous construction.
+2026-10-24. **Audit and plan only; no loading optimization implemented.** Owner: UI-34c with DT-11a construction/performance coordination. [Execution plan](../../../plans/menu-redesign.md#12-home-to-flight-loading-ui-34c-and-dt-11a). The current flow acknowledges Fly with a changed button caption, then blocks the main thread for seconds. It needs both persistent loading feedback and less synchronous construction.
 
 ## Method and limits
 
@@ -65,7 +65,7 @@ Graph discovery was used first; stored line ranges were stale, so the following 
 
 The [2026-10-21 whole-scene warmup experiment](../../visual-quality-implementation/VQ-01c/loading/scene-warmup-2026-10-21/README.md) already rejected preloading `main.tscn` before Home: Home slowed about 26%, combined gain missed its gate, and candidates added shutdown warnings. [Release attribution](../../visual-quality-implementation/VQ-01c/loading/package-attribution-2026-10-21/README.md) also shows source/editor and exported first-load costs differ. Neither historical 720p campaign is today's 1080p qualification; both prevent an unsupported blanket-preload recommendation.
 
-The [canonical plan](../../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a) owns the proposed phases, cache policy, cancellation/identity rules, renderer constraints and acceptance matrix. No physics, generated geometry, dependencies or golden recordings were changed for this audit. No new UI artwork or screenshots are committed.
+The [canonical plan](../../../plans/menu-redesign.md#12-home-to-flight-loading-ui-34c-and-dt-11a) owns the proposed phases, cache policy, cancellation/identity rules, renderer constraints and acceptance matrix. No physics, generated geometry, dependencies or golden recordings were changed for this audit. No new UI artwork or screenshots are committed.
 
 ## Reproduction
 

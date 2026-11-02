@@ -2,7 +2,7 @@
 
 2026-10-11 · **Status: design review complete; no Stik coefficient or production change selected.**
 
-Owning steps: [D8b-R2d and D8b-R2e](../../../../UGLY-STIK-PULLUP-PLAN.md). This note reviews the smallest defensible quasi-steady candidate for the [D8b-R2 diagnosis](../README.md). It is a method recommendation, not aircraft calibration.
+Owning steps: [D8b-R2d and D8b-R2e](../../../../plans/ugly-stik-pullup.md). This note reviews the smallest defensible quasi-steady candidate for the [D8b-R2 diagnosis](../README.md). It is a method recommendation, not aircraft calibration.
 
 The [implemented experimental path](README.md) accepts explicit finite-wing reference tables. Its three sensitivity fixtures use constructed knots; they do not implement a measured Viterna fit. The continuation formulas below describe a possible future data-preparation step once supported post-peak anchors exist.
 

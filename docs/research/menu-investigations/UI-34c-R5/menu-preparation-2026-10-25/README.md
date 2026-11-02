@@ -1,6 +1,6 @@
 # UI-34c / DT-11a — selected flight preparation in Home
 
-2026-10-25. Runtime `73086db4d`, frozen control `25bb32b5c`, companion rebind `cf21cea5a`. Follow-up `1edaa833f` enables native preparation and repairs branded startup. The [execution plan](../../../../MENU-REDESIGN-PLAN.md#selected-preparation-while-home-is-visible) owns remaining acceptance; [primary-source research](../menu-prefetch-2026-10-25.md) explains the approach.
+2026-10-25. Runtime `73086db4d`, frozen control `25bb32b5c`, companion rebind `cf21cea5a`. Follow-up `1edaa833f` enables native preparation and repairs branded startup. The [execution plan](../../../../plans/menu-redesign.md#selected-preparation-while-home-is-visible) owns remaining acceptance; [primary-source research](../menu-prefetch-2026-10-25.md) explains the approach.
 
 ## Implemented behavior
 

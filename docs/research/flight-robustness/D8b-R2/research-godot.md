@@ -2,7 +2,7 @@
 
 2026-10-11 · **Status: six official-documentation investigations complete; no new runtime or physical-keyboard experiment.**
 
-Step ID: D8b-R2 (G01–G06). This supplements the [Ugly Stik pull-up plan](../../../UGLY-STIK-PULLUP-PLAN.md) and the [D8b-R2 evidence report](README.md). It checks whether Godot’s numeric, scheduling, input, display, replay, or profiling seams could change the interpretation of the high-speed keyboard pull-up. Sources are linked inline; no third-party code, images, or datasets are reproduced.
+Step ID: D8b-R2 (G01–G06). This supplements the [Ugly Stik pull-up plan](../../../plans/ugly-stik-pullup.md) and the [D8b-R2 evidence report](README.md). It checks whether Godot’s numeric, scheduling, input, display, replay, or profiling seams could change the interpretation of the high-speed keyboard pull-up. Sources are linked inline; no third-party code, images, or datasets are reproduced.
 
 ## G01 — Simulation precision and the render boundary
 

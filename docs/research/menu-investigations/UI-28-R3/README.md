@@ -18,7 +18,7 @@ Quit now uses an absolute wall-clock deadline. A timer following simulation spee
 
 The [review evidence](audio/review-2026-10-24.json) retains five passing checked suites (`test_menu_audio`, `test_settings_ui`, `test_ui_settings_integration`, `test_ui_pause`, `test_ui_quit`) and the before/after native measurements. The probe now stops capture at the actual quit callback and checks its timestamp and trailing silence. The final native run also passes through the checked runner: all four mixer cases reached Quit in 399–400 ms with 58.7–69.3 ms of trailing silence, covering normal speed, time scales 0/16, and a completed 100 ms main-thread stall immediately before Quit. Sequence peaks remain 0.14731/0.42093 at 35%/100%; mute is digitally silent. An intermediate run rejected during concurrent landscape compilation is retained separately and is not counted as a pass.
 
-2026-10-15. Implemented in `app/`, following the [revision 7 plan](../../../MENU-REDESIGN-PLAN.md). This is a local-source result, not an exported-release or human usability acceptance claim.
+2026-10-15. Implemented in `app/`, following the [revision 7 plan](../../../plans/menu-redesign.md). This is a local-source result, not an exported-release or human usability acceptance claim.
 
 ## Delivered behavior
 
@@ -62,4 +62,4 @@ From the repository root, import resources first with the pinned engine, then ru
 & .tools/Godot_v4.7.2-stable_win64_console.exe --path app --script ../docs/research/menu-investigations/UI-28-R3/audio_probe.gd
 ```
 
-[Source identity](source-identity.json) records the relevant UI hashes and HEAD at evidence collection. Other tracks were active in the shared working tree; captures establish this menu composition rather than freezing unrelated scenery/vehicle work. The broader [redesign acceptance gates](../../../MENU-REDESIGN-PLAN.md#10-acceptance-and-completion) remain open.
+[Source identity](source-identity.json) records the relevant UI hashes and HEAD at evidence collection. Other tracks were active in the shared working tree; captures establish this menu composition rather than freezing unrelated scenery/vehicle work. The broader [redesign acceptance gates](../../../plans/menu-redesign.md#10-acceptance-and-completion) remain open.

@@ -1,6 +1,6 @@
 # UI-34c / DT-11a: repeated contact preparation
 
-2026-10-24. This continuation of [R3](../UI-34c-R3/README.md) reuses the immutable scenery collision inventory. The [execution plan](../../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a) owns remaining work. Physics equations, aircraft data, session validation and golden recordings are unchanged.
+2026-10-24. This continuation of [R3](../UI-34c-R3/README.md) reuses the immutable scenery collision inventory. The [execution plan](../../../plans/menu-redesign.md#12-home-to-flight-loading-ui-34c-and-dt-11a) owns remaining work. Physics equations, aircraft data, session validation and golden recordings are unchanged.
 
 ## Implementation and ownership
 

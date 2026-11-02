@@ -1,6 +1,6 @@
 # UI-22–26-R1: scalable menus and reversible Settings
 
-Date: 2026-10-15. First implementation milestone for the [menu redesign](../../../MENU-REDESIGN-PLAN.md). Baseline: [UI-20-R1](../UI-20-R1/README.md). This is menu software and visual evidence, not physical-flight validation or completion of UI-29.
+Date: 2026-10-15. First implementation milestone for the [menu redesign](../../../plans/menu-redesign.md). Baseline: [UI-20-R1](../UI-20-R1/README.md). This is menu software and visual evidence, not physical-flight validation or completion of UI-29.
 
 ## Delivered behavior
 

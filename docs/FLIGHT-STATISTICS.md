@@ -1,6 +1,6 @@
 # Flight statistics
 
-Current-source feature, 2026-10-25. This guide describes the implementation; the [design and remaining acceptance gates](flight-statistics-plan.md) retain the UI-FS requirements and test matrix. Statistics are local to this installation's pilot profile, with no login or cloud synchronization.
+Current-source feature, 2026-10-25. This guide describes the implementation; the [design and remaining acceptance gates](plans/flight-statistics.md) retain the UI-FS requirements and test matrix. Statistics are local to this installation's pilot profile, with no login or cloud synchronization.
 
 ## Using statistics
 
@@ -16,7 +16,7 @@ Returning to Home and switching aircraft retain the session. A clean application
 
 Production Home fixed-wing routes are recorded, including air starts, Natural Random and failure practice. Catalog IDs identify aircraft; names and configuration hashes are captured with records. Rotorcraft, RC cars, companions, direct technical/replay routes and Workshop trials do not contribute. Entering a Workshop trial detaches the observer while preserving the paused parent flight; returning reattaches it once. Saved Workshop variants and optional practice goals are not enabled in this slice.
 
-The observer lives outside the simulation kernel. `fixed_wing_adapter.gd` reads accepted 240 Hz state, gear compression, terrain, air data and session contact evidence. `profiles.gd` explicitly maps the reviewed fleet's main and stop supports and checks their accepted geometry. Changed or unknown support geometry disables landing credit instead of guessing. The pure detector applies the [metric and event rules](flight-statistics-plan.md#4-flight-event-rules): takeoff confirmation/backfill, support hysteresis, controlled contact, stop dwell, touch-and-go rearm, generation-wide incident latches and one crash per generation. Unsupported ticks alone contribute airborne time; pause/ground time does not.
+The observer lives outside the simulation kernel. `fixed_wing_adapter.gd` reads accepted 240 Hz state, gear compression, terrain, air data and session contact evidence. `profiles.gd` explicitly maps the reviewed fleet's main and stop supports and checks their accepted geometry. Changed or unknown support geometry disables landing credit instead of guessing. The pure detector applies the [metric and event rules](plans/flight-statistics.md#4-flight-event-rules): takeoff confirmation/backfill, support hysteresis, controlled contact, stop dwell, touch-and-go rearm, generation-wide incident latches and one crash per generation. Unsupported ticks alone contribute airborne time; pause/ground time does not.
 
 **Rules v2 includes survivable gear-up accidents in the crash count.** Accepted hull contact with installed retractable gear short of its fully-down endpoint records an accident even when the airplane keeps sliding or flying. Repeated scraping and brief bounce recontacts share one incident; a later terminal escalation does not add another crash. A quiet damaged hull stop can close the flight as `damaged_stop`, without a successful landing. The counter remains limited to one crash per activity generation; distinct later semantic incidents are not extra M7 counts. Cause (pilot choice, failure or incomplete extension) and structural damage are not inferred from contact configuration. [GP-14a implementation and checks](research/ground-physics/GP-14/README.md).
 
@@ -48,7 +48,7 @@ Implementation bounds: 100,000 ledger records, 10,000 sessions, a 64 MiB snapsho
 
 ## Verification and remaining qualification
 
-Focused checks cover pure flight detection, scoped formulas, reset isolation, snapshot corruption, future schemas, writer contention, deletion fencing, background writes, lifecycle rollback/recovery, exact physics-state noninterference and repeated attachment. UI tests cover scope/period filters, paged history, safe confirmations and the optional HUD. Final run counts and integration evidence belong in the [implementation phases](flight-statistics-plan.md#8-implementation-phases).
+Focused checks cover pure flight detection, scoped formulas, reset isolation, snapshot corruption, future schemas, writer contention, deletion fencing, background writes, lifecycle rollback/recovery, exact physics-state noninterference and repeated attachment. UI tests cover scope/period filters, paged history, safe confirmations and the optional HUD. Final run counts and integration evidence belong in the [implementation phases](plans/flight-statistics.md#8-implementation-phases).
 
 Large-history performance is **not qualified**. On the development Windows host (Ryzen 9 5900X, Godot 4.8-beta1), five 10,000-record synchronous commits took 3.118–5.802 seconds, p50 3.764 seconds and nearest-rank p95/p99 5.802 seconds. This motivated the background automatic writer. Explicit final saves, resets/deletion, initial reads and full-history queries still do work proportional to retained history; they do not meet the plan's 2 ms stall gate. Incremental indexing/pagination and asynchronous management transactions remain necessary before claiming A10 at that size.
 

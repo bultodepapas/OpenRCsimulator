@@ -1,6 +1,6 @@
 # UI-20 · Shell audit: code and captures (2026-10-11)
 
-**Step:** UI-20 of [MENU-REDESIGN-PLAN](../../../MENU-REDESIGN-PLAN.md). **Base:** `7267b26` (branch `work/pt2-trial-preparation`, clean tree). **Question:** what in the current menus reads as unfinished, what limits growth, and what is already sound and must be kept.
+**Step:** UI-20 of [MENU-REDESIGN-PLAN](../../../plans/menu-redesign.md). **Base:** `7267b26` (branch `work/pt2-trial-preparation`, clean tree). **Question:** what in the current menus reads as unfinished, what limits growth, and what is already sound and must be kept.
 
 ## What was done
 

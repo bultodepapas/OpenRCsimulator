@@ -94,7 +94,7 @@ request, or preceded the final teardown correction; those runs are excluded abov
 Software and loading evidence does not establish physical validation. The full fleet,
 landscape/day/night/route/input matrix, release-package checks, RSS/VRAM measurement,
 above-1080p coverage and DT-12's 50-cycle/30-minute gate remain open in the
-[owning plan](../../../../MENU-REDESIGN-PLAN.md#acceptance-and-stop-conditions).
+[owning plan](../../../../plans/menu-redesign.md#acceptance-and-stop-conditions).
 
 ## Reproduction
 

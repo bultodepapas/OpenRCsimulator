@@ -1,6 +1,6 @@
 # UI-23-R4 — resolution and live reflow
 
-2026-10-16. Source implementation following [revision 8](../../../MENU-REDESIGN-PLAN.md). This extends the existing compact shell; it does not change simulation state or aircraft data.
+2026-10-16. Source implementation following [revision 8](../../../plans/menu-redesign.md). This extends the existing compact shell; it does not change simulation state or aircraft data.
 
 ## Changes
 

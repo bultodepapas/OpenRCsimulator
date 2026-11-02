@@ -76,7 +76,7 @@ The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualif
 
 ### Advanced contact and structural failure remain gated foundations
 
-**GP-09/11/12/16/17/20.** The newer foundation couples body, wheels and shaft under one authority; it does not silently layer a new response over legacy contact. Damage state and event evidence commit only on accepted paths, never from rejected integrator trials, and absent strength data remains unknown. A parsed resource or numerical bench does not admit stock-aircraft collapse, moving-hub handling or calibrated fracture. [Ground-physics masterplan](advanced-ground-flight-physics-masterplan.md), [coupled foundation](research/ground-physics/GP-11/README.md), [accepted damage contract](research/ground-physics/GP-16/README.md).
+**GP-09/11/12/16/17/20.** The newer foundation couples body, wheels and shaft under one authority; it does not silently layer a new response over legacy contact. Damage state and event evidence commit only on accepted paths, never from rejected integrator trials, and absent strength data remains unknown. A parsed resource or numerical bench does not admit stock-aircraft collapse, moving-hub handling or calibrated fracture. [Ground-physics masterplan](plans/advanced-ground-flight-physics.md), [coupled foundation](research/ground-physics/GP-11/README.md), [accepted damage contract](research/ground-physics/GP-16/README.md).
 
 ## Authoring and identity
 
@@ -162,11 +162,11 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 ### Native controls own interaction; styling follows a shared shell
 
-**UI-21/22.** Keep native focus/input and named session pause holds while laying out the shell from a bounded 1080p reference with compact reflow and localization. Theme and finite motion stay beneath controls, with reduced-motion support and explicit preference rollback. Successive color/glass experiments are consolidated in the current visual system instead of remaining competing directives. [Shell contract](MENU-PLAN.md), [color and surfaces](MENU-REDESIGN-PLAN.md#color-and-surfaces).
+**UI-21/22.** Keep native focus/input and named session pause holds while laying out the shell from a bounded 1080p reference with compact reflow and localization. Theme and finite motion stay beneath controls, with reduced-motion support and explicit preference rollback. Successive color/glass experiments are consolidated in the current visual system instead of remaining competing directives. [Shell contract](MENU-PLAN.md), [color and surfaces](plans/menu-redesign.md#color-and-surfaces).
 
 ### Prepare selected work privately and drain cancellation
 
-**UI-05-R3 / UI-34c / DT-11a.** Bounded selected scene and numeric preparation may run after Home's first draw and stable intent; Fly can adopt matching work. Keep outputs private until validation, live-tree construction on main, and cancellation under an owner that drains outstanding jobs. This replaces stale no-prefetch wording without authorizing unbounded speculative work. The dedicated resource-load workaround came from a Godot 4.7.2 fixture, not a demonstrated universal engine defect. [Current preparation policy](MENU-REDESIGN-PLAN.md#selected-preparation-while-home-is-visible), [loader evidence](research/menu-investigations/UI-34c-R5/README.md).
+**UI-05-R3 / UI-34c / DT-11a.** Bounded selected scene and numeric preparation may run after Home's first draw and stable intent; Fly can adopt matching work. Keep outputs private until validation, live-tree construction on main, and cancellation under an owner that drains outstanding jobs. This replaces stale no-prefetch wording without authorizing unbounded speculative work. The dedicated resource-load workaround came from a Godot 4.7.2 fixture, not a demonstrated universal engine defect. [Current preparation policy](plans/menu-redesign.md#selected-preparation-while-home-is-visible), [loader evidence](research/menu-investigations/UI-34c-R5/README.md).
 
 ### Use the debug bridge and engine diagnostics for agent work
 

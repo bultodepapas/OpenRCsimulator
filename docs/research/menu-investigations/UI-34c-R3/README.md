@@ -1,6 +1,6 @@
 # UI-34c / DT-11a: cold trim preparation
 
-2026-10-24. Continuation of [R2](../UI-34c-R2/README.md). The [execution plan](../../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a) owns remaining work. This slice reduces repeated electric-source work and moves cold cruise trim onto a private numeric worker. It does not change aircraft data, solver tolerances, integration laws or golden recordings.
+2026-10-24. Continuation of [R2](../UI-34c-R2/README.md). The [execution plan](../../../plans/menu-redesign.md#12-home-to-flight-loading-ui-34c-and-dt-11a) owns remaining work. This slice reduces repeated electric-source work and moves cold cruise trim onto a private numeric worker. It does not change aircraft data, solver tolerances, integration laws or golden recordings.
 
 ## Scope and source
 

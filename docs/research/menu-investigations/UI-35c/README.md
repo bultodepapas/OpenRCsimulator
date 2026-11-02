@@ -1,6 +1,6 @@
 # UI-35c — wide canvases, and opaque fades
 
-2026-10-20. This step repairs [UI-30](../UI-30/README.md) finding SP-5 and the remaining part of AL-3. It follows the [redesign plan §11](../../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs). UI-35a/b live in [UI-35](../UI-35/README.md).
+2026-10-20. This step repairs [UI-30](../UI-30/README.md) finding SP-5 and the remaining part of AL-3. It follows the [redesign plan §11](../../../plans/menu-redesign.md#11-ui-30-audit-repairs). UI-35a/b live in [UI-35](../UI-35/README.md).
 
 ## Behaviour
 

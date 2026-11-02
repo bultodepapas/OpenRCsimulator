@@ -1,6 +1,6 @@
 # UI-34c / DT-11a R5 — scene preparation and electric root probes
 
-2026-10-24. Continuation of [R3](../UI-34c-R3/README.md) and [R4](../UI-34c-R4/README.md). The [execution plan](../../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a) owns acceptance. **Dedicated scene loading removes the observed multi-second main-thread scene-load block; fused electric probes reduce repeated computation. Cold Fly and remaining construction-frame targets are still missed.**
+2026-10-24. Continuation of [R3](../UI-34c-R3/README.md) and [R4](../UI-34c-R4/README.md). The [execution plan](../../../plans/menu-redesign.md#12-home-to-flight-loading-ui-34c-and-dt-11a) owns acceptance. **Dedicated scene loading removes the observed multi-second main-thread scene-load block; fused electric probes reduce repeated computation. Cold Fly and remaining construction-frame targets are still missed.**
 
 ## Source and mechanism
 

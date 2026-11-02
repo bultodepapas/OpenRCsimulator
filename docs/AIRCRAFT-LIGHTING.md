@@ -14,7 +14,7 @@ The override belongs to one flight. The existing session `resetting` boundary cl
 
 ## Programmable RGB builds (FW-RGB)
 
-The Workshop lighting extension provides programmable fitted strips, lamp colors, bounded show effects and saved per-build settings. Its [implementation record](research/night-flight-lighting/implementation.md) identifies the checked behavior and open visual/performance gates; the [masterplan](night-flight-lighting-masterplan.md) remains the specification for later authoring and quality work.
+The Workshop lighting extension provides programmable fitted strips, lamp colors, bounded show effects and saved per-build settings. Its [implementation record](research/night-flight-lighting/implementation.md) identifies the checked behavior and open visual/performance gates; the [masterplan](plans/night-flight-lighting.md) remains the specification for later authoring and quality work.
 
 The data contract is `openrc-aircraft-lighting` v1 inside presentation envelope v3 (also retained by later envelopes). Historical v1/v2 presentations inherit the original kit. The six materialized presets are Classic RC, Night Radian, Neon RGB, Night Aerobatics, Festival / Fireworks and Custom. Custom starts with every semantic zone available for editing and its optional effects disabled. Profiles can also explicitly inherit the aircraft equipment or disable lighting.
 

@@ -2,7 +2,7 @@
 
 2026-10-11 · **Status: literature review complete; aircraft-specific validation remains open.**
 
-This note develops the numerical and validation work proposed in the [Ugly Stik pull-up plan](../../../UGLY-STIK-PULLUP-PLAN.md), using the reproduced mechanism documented in [D8b-R2 evidence](README.md). Sources were reviewed on 2026-10-11. The literature supports methods and test design; it does not provide calibrated Ugly Stik coefficients. No new flight or application checks are claimed here. The separate [executed static experiments](research-experiments.md) supply the numerical evidence cited in S04 and S05.
+This note develops the numerical and validation work proposed in the [Ugly Stik pull-up plan](../../../plans/ugly-stik-pullup.md), using the reproduced mechanism documented in [D8b-R2 evidence](README.md). Sources were reviewed on 2026-10-11. The literature supports methods and test design; it does not provide calibrated Ugly Stik coefficients. No new flight or application checks are claimed here. The separate [executed static experiments](research-experiments.md) supply the numerical evidence cited in S04 and S05.
 
 ## S01 — Can mass balance establish the full inertia tensor?
 

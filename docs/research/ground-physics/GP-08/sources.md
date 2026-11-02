@@ -1,6 +1,6 @@
 # GP-08 — advanced ground/flight audit and source ledger
 
-Date: **2026-10-25**. Status: **planning research only; GP-08 implementation/qualification remains pending**. Authoritative proposal: [advanced ground-flight physics masterplan](../../../advanced-ground-flight-physics-masterplan.md). Existing GP results remain in the [ground evidence index](../README.md).
+Date: **2026-10-25**. Status: **planning research only; GP-08 implementation/qualification remains pending**. Authoritative proposal: [advanced ground-flight physics masterplan](../../../plans/advanced-ground-flight-physics.md). Existing GP results remain in the [ground evidence index](../README.md).
 
 ## Scope and execution truth
 
