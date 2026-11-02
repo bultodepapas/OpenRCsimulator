@@ -1,6 +1,6 @@
 # OpenRC project website
 
-WEB-01…15 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
+WEB-01…16 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
 
 ## Design
 
@@ -48,7 +48,7 @@ WEB-04 makes the jet the initial catalogue selection and adds direct inspector e
 
 WEB-05 keeps the same composition while reducing work: preload the two opening fonts, show the hero poster immediately, cache scroll geometry between layout changes, and defer distant editorial rendering with `content-visibility: auto`. Intrinsic section sizes are estimates until first rendering; the browser then remembers measured sizes. The turntable schedules one animation callback per frame at its existing 125 ms interval, updates only angle UI per frame, cancels obsolete image loads, retries failed selections, and retains a two-sheet LRU cache. Language and theme changes avoid identical HTML/image assignments. Rebuild the black Savox display copy with `python site/prepare_assets.py --brands-only`.
 
-HTML references changed styles/scripts with a release query (`?v=web15-platform-20261102`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup. The turntable manifest has its own release query; atlas URLs use their manifest SHA-256.
+HTML references changed styles/scripts with a release query. The latest viewer script uses `?v=web16-efficiency-20261102`; other WEB-15 files retain `?v=web15-platform-20261102`. Bump the relevant query when a file changes so returning visitors do not combine cached JavaScript with new markup. The turntable manifest has its own release query; atlas URLs use their manifest SHA-256.
 
 WEB-07 official identity, 2026-10-24: the header, hero, footer and README now use derivatives of the refined vector master based on the supplied official SVG. The favicon uses its RC contours, and Open Graph/Twitter metadata uses a 1200×630 PNG. [Source and regeneration](BRANDS.md#openrc-identity). The aircraft opening, navigation, translations and downloads retain their behavior. Local Chrome review covers 1920×1080, 390×844 and 320×740, both languages/themes, reduced motion, image loading and horizontal overflow. This is presentation verification, not a simulator release.
 
@@ -85,6 +85,14 @@ Local verification, 2026-11-02: `build_locales.py --check`, six locale tests, ei
 An isolated public-host mapping with GA4 requests intercepted forced the sample and observed LCP, INP and CLS events with no URL/form markers; missing `crypto` produced no script error. It was synthetic, not a field percentile. Firefox's manual video test on a simulated 3G link had intermittent failures in initial automation with auto-scroll, followed by eight successful instrumented repeats; no stable direct-click defect was established. The browser builds run on Linux with software WebGL, so they do not establish native Safari/Firefox or physical tablet behavior. Browser results and screenshots are under ignored `tmp/web-browser-qa/`, outside the repository deliverable.
 
 Published WEB-15 as isolated `gh-pages` commit `11dde82271c24d91e123670a9b78e845a0371a04`; the [Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41484858726) completed successfully. All eleven public HTML pages, sitemap, `vitals.js`, its vendored module, the turntable manifest, the small jet atlas and `viewer.js` returned HTTP 200 and matched local SHA-256 values after text line-ending normalization (17 resources). This verifies deployment bytes, not field Web Vitals or device performance.
+
+## Turntable efficiency (WEB-16)
+
+The turntable redraws only when the discrete angle changes during a drag. The frame is normalized before comparison, so crossing 0°/350° retains the same wrap behavior. The stage width is still read for each movement, preserving response to resizing during a gesture. On a single local Chromium 151 software-rendered trace with 500 synthetic pointer moves over 125 px, draws fell from 500 to 4 at 1920×1080 and from 500 to 6 at 768×1024. The measured handler loop fell from 31.9 to 5.9 ms at 1080p and 17.2 to 3.5 ms in tablet portrait; layouts stayed at 4 and 6 respectively. These are diagnostic single samples, not an FPS or field-speed claim. The six models, both wrap directions, keyboard slider, reduced motion, horizontal touch, vertical-touch rejection and a resize during an active drag passed focused checks in those two viewports.
+
+The cold public 1080p baseline was 281,585 response-body bytes without video and 1,037,635 with automatic playback, excluding blocked Google requests; the optional MP4 accounts for 756,050 bytes. Disabling that film would change the approved opening, while current reduced-motion, save-data and slow-link rules already avoid it. Removing the Barlow preload did not avoid the font request. An exploratory `content-visibility` rule on the jet study produced no reproducible initial-image saving and introduced layout shifts of 0.01647 at 1080p and 0.18852 in tablet portrait on entry, so it was not adopted. Meshopt remains at the [measured adoption gate](../docs/research/website-platform-technology-2026-11-02.md#follow-up-experiment--2026-11-02). Scratch traces live under ignored `tmp/web-perf-audit/` and `tmp/web-transfer-audit/`.
+
+Published WEB-16 as isolated `gh-pages` commit `49df6b39c544570df3f8c3e30fafdebe48ddd47f`; the [Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/41486743579) completed successfully. All eleven public HTML pages and `viewer.js` returned HTTP 200 and matched local SHA-256 values after text line-ending normalization. Public file identity does not substitute for device-performance or field Web Vitals evidence.
 
 ## README download attribution (WEB-13)
 
