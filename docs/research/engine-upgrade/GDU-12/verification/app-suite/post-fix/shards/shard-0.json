@@ -1,0 +1,43 @@
+{
+  "shard": 0,
+  "exit_code": 0,
+  "source_commit": "46b004c7b469448c29ef96168da4f03cee2c6d23",
+  "roster_source_sha256": "0237cf8841bf9afe50d7a5a369854d2d9e6bb3cd3a249fe39665acf267ddd374",
+  "scripts_completed": 109,
+  "checked_invocations": 110,
+  "passed": 110,
+  "failed_or_invalid": 0,
+  "junit_reported_skipped": 0,
+  "independent_junit_sha256": "22b3e69c860ba51310203c970e1dcf31c971483266cf29274f9fa72341a37ef7",
+  "console_sha256": "b683d2699958ebda6669ae57fd3f43f76811c52c860493272bc4dce67313f83e",
+  "roster_sha256": "4978d231cf72e4a0abeae882ec929de880a20e213deb0be08812b1cb63a809e0",
+  "summarizer_sha256": "f6b2dfbebbc2caccea71f95d17d2919d5e2b8248426f669d3f5335a9de030c4c",
+  "checked_collection_sha256": "7148eac35dda320ebf6849e310dbc0fd4ff3301f3d9701e5882ea2078c749f5c",
+  "raw_collection": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-units-popfix-ram\\shard-0",
+  "checkout_variant": "ram-isolated-app-shared-docs",
+  "skip_mentions_case_insensitive": [
+    {
+      "line": 1867,
+      "test": "test_lighting_path.gd",
+      "text": "Native pixel checks skipped: headless renderer; run without --headless for 1080p shader evidence."
+    },
+    {
+      "line": 2736,
+      "test": "test_update_check.gd",
+      "text": "ok   drafts and unparsable tags are skipped; a prerelease build sees the newest prerelease"
+    }
+  ],
+  "native_fallback_occurrences": 0,
+  "native_fallback_sample": null,
+  "native_branch_evidence": [
+    {
+      "test": "test_native_session.gd",
+      "text": "NK3_NATIVE_SESSION checks=150 failures=0; NK3_NATIVE_SESSION_NATIVE verdict=pass"
+    },
+    {
+      "test": "test_rcv_session.gd",
+      "text": "RCV session: 168 checks, 0 failed; native backend-switch guard emitted no SKIP"
+    }
+  ],
+  "external_reference_mentions": []
+}

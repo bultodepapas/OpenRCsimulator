@@ -19,7 +19,7 @@ Use the owner-authorized official 4.8-beta2 as the development engine, preservin
 2. [#124742](https://github.com/godotengine/godot/issues/124742) (Compatibility globals) and [#124744](https://github.com/godotengine/godot/issues/124744) (macOS universal template swap) are fixed in that build, or have an accepted local workaround with a test.
 3. The GDU-02 triage has no unexplained failure.
 
-Rollback must restore the matching engine, generated identities and resources together. Once the migration is committed, revert its scoped GDU-03 commits; CI cache keys follow `get-godot.sh` and `get-templates.sh`. The current root has an unrelated pending merge, which this work preserves. The local companion qualification branch contains only its core/admission commits, not the complete migration, so reverting that branch alone is not an engine rollback.
+Rollback must restore the matching engine, generated identities and resources together. Review the migration diff before reverting a shared commit so unrelated track changes are preserved. CI cache keys follow `get-godot.sh` and `get-templates.sh`. The earlier companion qualification branch contains only its core/admission commits, not the complete migration, so reverting that branch alone is not an engine rollback.
 
 ## Phases
 

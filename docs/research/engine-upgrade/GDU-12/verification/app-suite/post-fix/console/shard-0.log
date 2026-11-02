@@ -1,0 +1,6 @@
+shard 0: 109 scripts, 110 passing checked invocations
+native stage library not installed: 0 occurrences
+test_native_session.gd: NK3_NATIVE_SESSION checks=150 failures=0; NK3_NATIVE_SESSION_NATIVE verdict=pass
+test_rcv_session.gd: RCV session: 168 checks, 0 failed; native backend-switch guard emitted no SKIP
+line 1867 test_lighting_path.gd: Native pixel checks skipped: headless renderer; run without --headless for 1080p shader evidence.
+line 2736 test_update_check.gd: ok   drafts and unparsable tags are skipped; a prerelease build sees the newest prerelease

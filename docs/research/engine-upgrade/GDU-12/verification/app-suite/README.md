@@ -10,6 +10,8 @@ JUnit files remain under `D:/OpenRCsimulator-experiments/gdu-beta2/final-units/`
 A fresh post-fix suite is being collected from a common frozen source: eight
 unit shards and a separate integration run with the parse complement. The old
 receipts are excluded because each is bound to the pre-fix roster digest.
+The [source comparison](post-fix/source-comparison.md) records the newer Windows
+checkout, line-ending differences and the four explicit EOL-rule exceptions.
 
 The checked-run summarizer validates each run's report, diagnostics and log
 hash. Its JUnit `skipped` count does not count conditional skips printed inside
