@@ -8,6 +8,16 @@ This audit used three independent Terra 6.1 Max specialists: Godot/Metal renderi
 
 **Later implementation update (2026-11-02):** DT-MAC-02c/d portable evidence repairs and DT-MAC-02h Mac reference bundle identity now have focused tests. Native preflight verified a MacBookAir10,1 M1/8 GB, and short Aqua/resource/frame screening ran on its built-in panel. This does not revise the historical audit claim above. Results and open gates are in the [dated DT-MAC-02 evidence](research/desktop-delivery-investigations/DT-MAC-02/README.md#first-m1-native-screening-2026-11-02).
 
+**Later implementation update (2026-11-03):** five valid paired technical flights
+on the M1 measured 23.8–24.5% higher process-loop FPS for the seven-file shader
+and lighting optimization bundle, using Mobile/Metal and a reported 2560×1600
+viewport. After repairing clock correlation with bounded raw-uptime anchors,
+three fresh 30-minute runs per role measured **17.6–23.2% higher sustained FPS**;
+final-five-minute gains remained 15.1–22.6%. All 73 shared physics/input hash
+windows matched. These are instrumented source-editor results; whole-observer
+uncertainty, product-route, presentation and release gates remain separate, and
+the 60 Hz pacing target was not met. [Sustained comparison and scope](research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison).
+
 Audit verification: the two deliverables and new routing links passed 79 local link/anchor checks using the repository's existing checker logic; all 47 named test scripts exist. Whitespace checks passed. Runtime/tool code was rechecked against the audited baseline after concurrent documentation commits. These are documentation/source checks; no app suite or target-device test was run.
 
 ## 1. Audit coverage and reconciliation
@@ -25,7 +35,7 @@ Audit verification: the two deliverables and new routing links passed 79 local l
 | [Performance tools](../research/performance/README.md), [debug tools](../tools/debug/README.md), [native diagnostic tools](../tools/godot/README.md) | Reuse their collectors, reducers and commands; this audit identifies remaining platform and schema gaps. |
 | iOS/iPadOS | Searches of plans, desktop investigations, exports, workflows and native tooling found incidental API references but no iOS export preset, release workflow or dedicated optimization implementation. Treat this as a separate platform prerequisite branch. |
 
-Historical evidence and raw source identities are preserved. New implementation receipts should use the existing DT-MAC evidence area, not another archive or independent performance plan. No existing evidence establishes an M1 speedup, a five-generation performance guarantee, or iOS readiness.
+Historical evidence and raw source identities are preserved. New implementation receipts use the existing DT-MAC evidence area. The later named M1 comparison does not establish a five-generation performance guarantee or iOS readiness.
 
 ## 2. Actual runtime and package architecture
 
@@ -86,9 +96,9 @@ twelve native Compatibility views have quantified, tiny static pixel differences
 Single render-only pairs measured p95 37.291 → 30.939 ms on Mobile/Metal and
 47.959 → 34.243 ms on Compatibility at 2560×1600. Native offscreen motion and
 bounded shader comparisons, a new development package, signature verification
-and exact packaged replay passed. Repeated timing attempts lost window
-drawability and were excluded; active-flight benefit and sustained qualification
-remain open.
+and exact packaged replay passed. Initial repeated timing attempts lost window
+drawability and were excluded. The later five-pair technical circuit measured
+an active-flight gain; three later 30-minute pairs established a 17.6–23.2% sustained gain for that instrumented circuit. Broader workload and observer qualification remain open.
 This does not promote Metal or change production quality settings. Exact identities and
 limits are in the [second-batch evidence](research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-06b-shader-work-reduction-second-batch-2026-11-02).
 
@@ -191,12 +201,12 @@ Before a native port, profile the M1 reference workload: evaluator stages, scene
 | [frame_samples.gd](../app/render/frame_samples.gd) | v2 short arrays; v3 512-frame chunk stream, up to 3,600 s, bounded frame/file size, sequence/hash/completion and synchronous write-cost receipts. | Long-stream support already exists. Disk writes can cause hitches; measure overhead before deciding on buffering/worker changes. Interrupted/capped output cannot qualify a soak. |
 | [frame_diagnostics.gd](../app/render/frame_diagnostics.gd) | Method/driver/architecture/VSync/cap, reconstruction receipts, viewport timing, engine memory counters and scope notes. | macOS Compatibility viewport timing is explicitly disabled. Viewport coordinates are not verified drawable/internal pixels; presentation is uncollected. Missing GPU channels cannot be treated as zero cost. |
 | [native_summary.py](../research/performance/native_summary.py), [frame_diagnose.py](../research/performance/frame_diagnose.py) | v2/v3 validation, sample integrity, duration gates and per-interval render-progress eligibility from Main. Historical progress is unknown; stale GPU polls cannot establish rendering. | Render-server calls and window drawability are not presentation. Default 10/60 s minima are not the Mac 30/1,800 s soak protocol. Qualify completeness and each required channel separately. |
-| [resource_samples.py](../tools/godot/resource_samples.py), [checked runner](../tools/godot/run_checked.py) | psutil process CPU/RSS, system memory/swap, availability, clock anchors and bounded output. DT-MAC-02c raises the 1 Hz default to 2,100 samples, probes unsupported process I/O once, and adds required-channel coverage while retaining v1 legacy coverage. A short native M1 reference run had complete required coverage. | Sustained frame-interval alignment and measurement overhead remain unverified. Unsupported optional Darwin I/O remains visible as null/status and can still make a legacy Perfetto trace partial. |
-| [Incident bundle](../tools/godot/incident_bundle.py), [Perfetto export](../tools/godot/perfetto_export.py) | DT-MAC-02d preserves valid v3 manifest/sidecar pairs, old v2 input and explicit selected-window/track timeline scope; interrupted sidecars are labeled unverified. Focused Linux/Mac fixtures and long synthetic streams passed. | Hashes do not sanitize personal data; full native soak and consumer overhead remain open. |
+| [resource_samples.py](../tools/godot/resource_samples.py), [checked runner](../tools/godot/run_checked.py) | psutil process CPU/RSS, system memory/swap, availability, clock anchors and bounded output. DT-MAC-02c raises the 1 Hz default to 2,100 samples, probes unsupported process I/O once, and adds required-channel coverage while retaining v1 legacy coverage. A short native M1 reference run had complete required coverage. | Six later 30-minute technical flights passed bounded raw-clock alignment; whole-observer overhead remains unqualified. Unsupported optional Darwin I/O remains visible as null/status and can still make a legacy Perfetto trace partial. |
+| [Incident bundle](../tools/godot/incident_bundle.py), [Perfetto export](../tools/godot/perfetto_export.py) | DT-MAC-02d preserves valid v3 manifest/sidecar pairs, old v2 input and explicit selected-window/track timeline scope; interrupted sidecars are labeled unverified. Focused Linux/Mac fixtures and long synthetic streams passed. | Hashes do not sanitize personal data; six later technical soaks passed raw-stream/resource validation, while consumer overhead and product-route qualification remain open. |
 | [Debug bridge](../tools/debug/debugctl.py) | Local authenticated control, state, smoke, lifecycle, hitches, scripts and diagnostics. DT-MAC-02c routes Aqua launches without Xvfb and samples Mac RSS through the existing optional psutil sampler. A short native Aqua Home launch passed. | Package behavior and sustained lifecycle checks remain open. |
 | [Loading probe](../research/performance/loading_probe.gd) | Actual Home/Fly route, readiness/draw boundaries, private preferences and bounded transition cycles. | Paused first draw is not interactive readiness; observer screenshots stall and belong outside timing. |
 
-The psutil Darwin counter limitation is confirmed in the pinned [7.2.2 platform implementation](https://github.com/giampaolo/psutil/blob/release-7.2.2/psutil/_psosx.py). Short native M1 checks confirmed unsupported process I/O and complete required CPU/RSS/system-memory coverage; this does not establish sustained coverage or diagnostic overhead.
+The psutil Darwin counter limitation is confirmed in the pinned [7.2.2 platform implementation](https://github.com/giampaolo/psutil/blob/release-7.2.2/psutil/_psosx.py). Native M1 checks confirmed unsupported process I/O and complete required CPU/RSS/system-memory coverage; the later six technical soaks also passed required coverage. Whole-observer overhead remains separate.
 
 ### Native tools to reuse
 
@@ -212,7 +222,7 @@ Timing layers remain separate: process callback interval, whole active-flight ca
 a single optional Foundation thermal/Low Power Mode snapshot through installed
 JXA, without a compiled helper. Portable fixtures and native M1 collection pass.
 This provides initial context only; event streams, pressure observations and
-sustained coverage remain open. [Dated evidence](research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-02e-preflight-host-snapshot-2026-11-02).
+sustained coverage were open at this increment. The later opt-in native companion and raw-clock join passed six 30-minute technical flights; initial pressure knowledge and whole-observer overhead remain unresolved. [Current evidence](research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison).
 
 **Recommended minimum:** extend existing capture/resource/bundle tools, with a small optional native macOS companion only for missing public OS channels. Do not build a profiler, uploader service or second render loop. Separate developer collection from the eventual packaged user flow.
 

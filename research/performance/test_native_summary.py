@@ -6,11 +6,16 @@ import contextlib
 import io
 import tempfile
 import unittest
+import uuid
 from unittest.mock import patch
 from pathlib import Path
 
 try:
     from .native_summary import (
+        BENCHMARK_FORCED_OPTIONS,
+        BENCHMARK_PROVENANCE_SOURCES,
+        BENCHMARK_REQUIRED_SOURCES,
+        BENCHMARK_VIOLATIONS,
         DEFAULT_POLICY,
         active_flight_reasons,
         duration_gate,
@@ -21,6 +26,10 @@ try:
     )
 except ImportError:  # Also support direct execution from this directory.
     from native_summary import (
+        BENCHMARK_FORCED_OPTIONS,
+        BENCHMARK_PROVENANCE_SOURCES,
+        BENCHMARK_REQUIRED_SOURCES,
+        BENCHMARK_VIOLATIONS,
         DEFAULT_POLICY,
         active_flight_reasons,
         duration_gate,
@@ -155,8 +164,9 @@ def write_stream_run(directory: Path, name: str, source: dict) -> tuple[Path, li
     metrics = source["raw_metrics"]
     count = source["frames"]
     max_frames = count
+    capture_id = source.get("capture_id", "fixture")
     report.update(
-        format="openrc-frametimes v3", version=3, capture_id="fixture", max_frames=max_frames,
+        format="openrc-frametimes v3", version=3, capture_id=capture_id, max_frames=max_frames,
         actual_sample_start_monotonic_usec=source["frame_end_monotonic_usec"][0] - source["frame_wall_usec"][0],
         actual_sample_end_monotonic_usec=source["frame_end_monotonic_usec"][-1],
         sample_endpoints={"first": {key: values[0] for key, values in metrics.items()},
@@ -165,7 +175,7 @@ def write_stream_run(directory: Path, name: str, source: dict) -> tuple[Path, li
         engine_frame_deltas_s=[], raw_metrics={},
     )
     records = [{"type": "header", "format": "openrc-frame-stream v1", "version": 1,
-                "capture_id": "fixture", "chunk_frames": 512, "max_frames": max_frames,
+                "capture_id": capture_id, "chunk_frames": 512, "max_frames": max_frames,
                 "max_bytes": 268_435_456, "warmup_s": report["warmup_s"], "sample_s": report["sample_s"]}]
     for start in range(0, count, 512):
         end = min(start + 512, count)
@@ -192,6 +202,82 @@ def write_stream_fixture(report_path: Path, report: dict, records: list[dict]) -
     report["stream"].update(bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest())
     report_path.with_name(report["stream"]["file"]).write_bytes(payload)
     report_path.write_text(json.dumps(report, allow_nan=False), encoding="utf-8")
+
+
+def write_benchmark_run(directory: Path, name: str = "run-1") -> tuple[Path, Path, dict]:
+    """An independently constructed complete v3 capture and its health receipt."""
+    report = valid_report(route="benchmark-input-circuit")
+    capture_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, name))
+    report["capture_id"] = capture_id
+    sources = {key: hashlib.sha256(key.encode("ascii")).hexdigest() for key in BENCHMARK_REQUIRED_SOURCES}
+    identity = "".join(f"{key}:{sources[key]}\n" for key in sorted(sources))
+    report["case_id"] = "benchmark-input-circuit-" + hashlib.sha256(identity.encode("ascii")).hexdigest()
+    report["code_provenance"] = {"source_sha256": {key: sources[key] for key in BENCHMARK_PROVENANCE_SOURCES}}
+    report["clock"] = {"start": {"monotonic_usec": 900_000}, "end": {"monotonic_usec": 1_100_000}}
+    report["simulation"].update(start_tick=240, end_tick=249)
+    report["session_at_report"] = {
+        "scope": "end of collection only", "crashed": False, "holds": [],
+        "pause_reason": "", "window_focused": True,
+    }
+    report_path, _ = write_stream_run(directory, name, report)
+    sealed = json.loads(report_path.read_text())
+    report_hash = hashlib.sha256(report_path.read_bytes()).hexdigest()
+    samples = [{"tick": tick, "time_s": tick / 240.0, "north_m": 2.0, "east_m": -1.0,
+                "altitude_m": 25.0, "ground_clearance_m": 24.0, "radius_error_m": 0.5}
+               for tick in (0, 240, 249)]
+    receipt = {
+        "format": "openrc-benchmark-health v1", "route": "benchmark-input-circuit",
+        "capture_id": capture_id, "report": report_path.name, "frame_report": "/evidence/" + report_path.name,
+        "report_sha256": report_hash, "frame_report_sha256": report_hash,
+        "frame_stream_sha256": sealed["stream"]["sha256"], "frame_capture_id_matches": True,
+        "complete": True, "timing_complete": True, "diagnostic_complete": False,
+        "frame_collection_complete": True, "frame_exit_code": 0, "observer_off_control_complete": False,
+        "timing_eligible": True, "failure": "", "source_unchanged": True,
+        "dwell_after_frame_seal_s": 2.5,
+        "source_sha256": sources,
+        "scenario": {
+            "aircraft_id": "jensen-das-ugly-stik-60", "field_id": "default", "seed": 20261021,
+            "start_choice": "airborne", "trim_speed_m_s": 15.0, "trim_throttle": 0.28,
+            "rate_profile": "full", "weather": {"format": "openrc-weather v1", "speed_mps": 0.0,
+                                                     "gust_mps": 0.0, "gust_up_mps": 0.0},
+            "stage_backend": {"requested": "gdscript_reference", "reason": "",
+                              "identity": {"backend": "gdscript_reference"}},
+            "physics_hz": 240, "control_update_ticks": 4,
+            "initial_checkpoint_sha256": "a" * 64,
+            "solver_identity": {"kind": "source-tree-v1", "sha256": "b" * 64},
+            "input_enabled": True, "physics_enabled": True, "external_driver_enabled": False,
+            "fixed_fps_diagnostic": False, "observation_mode": "on", "state_input_hashing": False,
+            "arguments": ["--view=pilot", "--scene_detail=medium", "--frametimes=/evidence/" + report_path.name,
+                          "--frametimes-stream", "--case=" + report["case_id"], "--t=0.0375", "--warmup=0.0"]
+                         + [f"--{key}={value}" for key, value in BENCHMARK_FORCED_OPTIONS.items()],
+        },
+        "observation": {
+            "start_monotonic_usec": 800_000, "end_monotonic_usec": 1_200_000,
+            "start_tick": 0, "end_tick": 249, "accepted_ticks": 249,
+            "input_reads": 249, "observer_calls": 249,
+            "physics_enabled_throughout": True, "input_enabled_throughout": True,
+            "external_driver_disabled_throughout": True, "automatic_callbacks_throughout": True,
+        },
+        "violations": {key: 0 for key in BENCHMARK_VIOLATIONS},
+        "health": {"samples_1hz": samples, "accepted_ticks": 249, "input_reads": 249,
+                   "observer_calls": 249, "last_read_tick": 248, "pilot_updates": 63, "pilot_failure": "",
+                   "min_altitude_m": 25.0, "min_ground_clearance_m": 24.0, "max_abs_radius_error_m": 0.5},
+        "checkpoints": [],
+    }
+    health_path = report_path.with_name("health-" + report_path.name)
+    health_path.write_text(json.dumps(receipt, allow_nan=False), encoding="utf-8")
+    check = {
+        "format": "openrc-godot-check v1", "capture_id": capture_id, "complete": True,
+        "ok": True, "reason": "passed", "exit_code": 0, "process_exit": 0,
+        "log_sha256": hashlib.sha256(report_path.with_suffix(".log").read_bytes()).hexdigest(),
+        "command": ["/Applications/Godot", "--path", "/frozen/app", "--script",
+                    "/frozen/research/performance/sustained_flight.gd", "--",
+                    "--warmup=0", "--t=0.0375", "--view=pilot", "--scene_detail=medium",
+                    "--frametimes=/evidence/" + report_path.name,
+                    "--sustained-receipt=/evidence/" + health_path.name],
+    }
+    report_path.with_name("checked-" + report_path.name).write_text(json.dumps(check), encoding="utf-8")
+    return report_path, health_path, receipt
 
 
 def lake_reflection_settings(
@@ -1017,6 +1103,395 @@ class NativeRunClassificationTests(unittest.TestCase):
             self.assertEqual(status, 1)  # duration and run-count gates still fail
             with self.assertRaises(ValueError):
                 summarize_directory(root, output)
+
+
+class BenchmarkHealthTests(unittest.TestCase):
+    def test_complete_technical_circuit_is_admitted_without_product_claim(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            path, health_path, _ = write_benchmark_run(root)
+            result = summarize_run(path, SHORT_POLICY)
+            self.assertTrue(result["collection_valid"], result["collection_reasons"])
+            self.assertTrue(result["benchmark_health"]["eligible"], result["benchmark_health"]["reasons"])
+            self.assertTrue(result["active_flight_qualifier"])
+            self.assertTrue(result["performance_pass"])
+            self.assertEqual(result["workload_scope"], "technical-benchmark-circuit")
+            self.assertFalse(result["normal_product_route_qualified"])
+            self.assertEqual(result["benchmark_health"]["receipt_sha256"],
+                             hashlib.sha256(health_path.read_bytes()).hexdigest())
+            campaign, status = summarize_directory(root, root / "summary.json", SHORT_POLICY)
+            self.assertEqual(campaign["run_count"], 1)  # health-run-1.json is not a run
+            self.assertEqual(status, 0)
+
+    def test_missing_malformed_duplicate_and_oversize_receipts_are_refused(self):
+        for kind in ("missing", "malformed", "duplicate", "nonfinite", "oversize"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, _ = write_benchmark_run(Path(temp_dir))
+                if kind == "missing":
+                    health_path.unlink()
+                elif kind == "malformed":
+                    health_path.write_text("{", encoding="utf-8")
+                elif kind == "duplicate":
+                    health_path.write_text('{"format":"x","format":"y"}', encoding="utf-8")
+                elif kind == "nonfinite":
+                    health_path.write_text('{"value":NaN}', encoding="utf-8")
+                else:
+                    health_path.write_bytes(b"x" * 100)
+                with patch(f"{summarize_run.__module__}.MAX_BENCHMARK_HEALTH_BYTES", 50 if kind == "oversize" else 4 * 1024 * 1024):
+                    result = summarize_run(path, SHORT_POLICY)
+                self.assertTrue(result["collection_valid"])
+                self.assertFalse(result["benchmark_health"]["eligible"])
+                self.assertFalse(result["active_flight_qualifier"])
+                self.assertFalse(result["performance_pass"])
+
+    def test_sealed_frame_and_stream_identities_are_required(self):
+        mutations = {
+            "capture ID": lambda r: r.update(capture_id="other"),
+            "capture ID assertion": lambda r: r.update(frame_capture_id_matches=False),
+            "frame name": lambda r: r.update(frame_report="run-2.json"),
+            "report hash": lambda r: r.update(report_sha256="0" * 64),
+            "frame report hash": lambda r: r.update(frame_report_sha256="0" * 64),
+            "stream hash": lambda r: r.update(frame_stream_sha256="0" * 64),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                mutate(receipt)
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertFalse(result["benchmark_health"]["eligible"])
+                self.assertFalse(result["performance_pass"])
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, _, _ = write_benchmark_run(Path(temp_dir))
+            with path.open("ab") as stream:
+                stream.write(b" ")  # Still valid JSON, but no longer the sealed report.
+            result = summarize_run(path, SHORT_POLICY)
+            self.assertTrue(result["collection_valid"])
+            self.assertIn("health frame report SHA-256 does not match", result["benchmark_health"]["reasons"])
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, _, _ = write_benchmark_run(Path(temp_dir))
+            sidecar = path.with_name(path.name + ".frames.jsonl")
+            with sidecar.open("ab") as stream:
+                stream.write(b"bad\n")
+            result = summarize_run(path, SHORT_POLICY)
+            self.assertFalse(result["collection_valid"])
+            self.assertFalse(result["benchmark_health"]["eligible"])
+
+    def test_completion_and_all_automatic_driver_guards_are_required(self):
+        mutations = {
+            "incomplete": lambda r: r.update(complete=False),
+            "timing incomplete": lambda r: r.update(timing_complete=False),
+            "frame collection incomplete": lambda r: r.update(frame_collection_complete=False),
+            "frame exit failed": lambda r: r.update(frame_exit_code=1),
+            "frame exit is boolean": lambda r: r.update(frame_exit_code=False),
+            "observer-off receipt": lambda r: r.update(observer_off_control_complete=True),
+            "diagnostic mode": lambda r: r.update(diagnostic_complete=True),
+            "not timing eligible": lambda r: r.update(timing_eligible=False),
+            "source changed": lambda r: r.update(source_unchanged=False),
+            "failure": lambda r: r.update(failure="pilot refused"),
+            "early exit after sealing": lambda r: r.update(dwell_after_frame_seal_s=2.49),
+        }
+        for flag in ("physics_enabled_throughout", "input_enabled_throughout",
+                     "external_driver_disabled_throughout", "automatic_callbacks_throughout"):
+            mutations[flag] = lambda r, flag=flag: r["observation"].update({flag: False})
+        for name, mutate in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                mutate(receipt)
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertFalse(result["benchmark_health"]["eligible"])
+                self.assertFalse(result["performance_pass"])
+
+    def test_checked_launch_must_match_report_log_and_succeed(self):
+        for difference in ("missing", "invalid", "capture", "log", "failed", "frame", "frame_directory",
+                           "health", "health_directory", "script"):
+            with self.subTest(difference=difference), tempfile.TemporaryDirectory() as temp_dir:
+                path, _, _ = write_benchmark_run(Path(temp_dir))
+                check_path = path.with_name("checked-" + path.name)
+                check = json.loads(check_path.read_text())
+                if difference == "missing":
+                    check_path.unlink()
+                elif difference == "invalid":
+                    check_path.write_text("{}x", encoding="utf-8")
+                else:
+                    if difference == "capture":
+                        check["capture_id"] = "different"
+                    elif difference == "log":
+                        check["log_sha256"] = "0" * 64
+                    elif difference == "failed":
+                        check["ok"] = False
+                    elif difference == "frame":
+                        check["command"][-2] = "--frametimes=/other/run-2.json"
+                    elif difference == "frame_directory":
+                        check["command"][-2] = "--frametimes=/other/run-1.json"
+                    elif difference == "health":
+                        check["command"][-1] = "--sustained-receipt=/other/health-run-2.json"
+                    elif difference == "health_directory":
+                        check["command"][-1] = "--sustained-receipt=/other/health-run-1.json"
+                    elif difference == "script":
+                        check["command"][4] = "/different.gd"
+                    check_path.write_text(json.dumps(check), encoding="utf-8")
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertTrue(result["benchmark_health"]["eligible"])
+                self.assertFalse(result["benchmark_checked_runner"]["eligible"])
+                self.assertFalse(result["active_flight_qualifier"])
+                self.assertFalse(result["performance_pass"])
+
+    def test_checked_launch_rejects_engine_time_control_but_not_user_text(self):
+        for option in ("--fixed-fps", "--fixed-fps=60", "--write-movie", "--time-scale=2",
+                       "--frame-delay", "--disable-render-loop"):
+            with self.subTest(option=option), tempfile.TemporaryDirectory() as temp_dir:
+                path, _, _ = write_benchmark_run(Path(temp_dir))
+                check_path = path.with_name("checked-" + path.name)
+                check = json.loads(check_path.read_text())
+                check["command"].insert(check["command"].index("--"), option)
+                check_path.write_text(json.dumps(check), encoding="utf-8")
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertFalse(result["benchmark_checked_runner"]["eligible"])
+                self.assertFalse(result["performance_pass"])
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+            check_path = path.with_name("checked-" + path.name)
+            check = json.loads(check_path.read_text())
+            check["command"][2] = "/frozen/--fixed-fps/app"
+            check["command"].extend(["--note=--fixed-fps", "--fixed-fps=60"])
+            check_path.write_text(json.dumps(check), encoding="utf-8")
+            receipt["scenario"]["arguments"].extend(["--note=--fixed-fps", "--fixed-fps=60"])
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertTrue(summarize_run(path, SHORT_POLICY)["benchmark_checked_runner"]["eligible"])
+
+    def test_checked_launch_rejects_headless_engine_options(self):
+        for flags in (["--headless"], ["--headless=1"], ["--display-driver", "headless"],
+                      ["--display-driver=headless"], ["--rendering-driver", "dummy"], ["--rendering-driver=dummy"]):
+            with self.subTest(flags=flags), tempfile.TemporaryDirectory() as temp_dir:
+                path, _, _ = write_benchmark_run(Path(temp_dir))
+                check_path = path.with_name("checked-" + path.name)
+                check = json.loads(check_path.read_text())
+                index = check["command"].index("--")
+                check["command"][index:index] = flags
+                check_path.write_text(json.dumps(check), encoding="utf-8")
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertTrue(result["benchmark_health"]["eligible"])
+                self.assertFalse(result["benchmark_checked_runner"]["eligible"])
+                self.assertFalse(result["performance_pass"])
+
+    def test_checked_workload_must_match_scenario_and_harness_modes(self):
+        mutations = {
+            "observer disabled": lambda c: c.append("--sustained-observation=off"),
+            "diagnostic mode": lambda c: c.append("--sustained-diagnostic-ticks=2400"),
+            "unrecorded hashing": lambda c: c.append("--sustained-hash"),
+            "invalid hashing flag": lambda c: c.append("--sustained-hash=1"),
+            "different camera": lambda c: c.__setitem__(c.index("--view=pilot"), "--view=chase"),
+            "different scene detail": lambda c: c.__setitem__(c.index("--scene_detail=medium"), "--scene_detail=low"),
+            "duplicate option": lambda c: c.append("--view=pilot"),
+            "different duration": lambda c: c.__setitem__(c.index("--t=0.0375"), "--t=0.05"),
+            "bare duration": lambda c: c.__setitem__(c.index("--t=0.0375"), "--t"),
+            "different warmup": lambda c: c.__setitem__(c.index("--warmup=0"), "--warmup=30"),
+            "conflicting forced option": lambda c: c.append("--aircraft=other"),
+            "scripted": lambda c: c.append("--scripted"),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                path, _, _ = write_benchmark_run(Path(temp_dir))
+                check_path = path.with_name("checked-" + path.name)
+                check = json.loads(check_path.read_text())
+                mutate(check["command"])
+                check_path.write_text(json.dumps(check), encoding="utf-8")
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertTrue(result["benchmark_health"]["eligible"])
+                self.assertFalse(result["benchmark_checked_runner"]["eligible"])
+                self.assertFalse(result["performance_pass"])
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, _, _ = write_benchmark_run(Path(temp_dir))
+            check_path = path.with_name("checked-" + path.name)
+            check = json.loads(check_path.read_text())
+            check["command"].extend(["--sustained-observation=on", "--aircraft=jensen-das-ugly-stik-60"])
+            check_path.write_text(json.dumps(check), encoding="utf-8")
+            self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
+
+    def test_each_violation_and_missing_counter_is_rejected(self):
+        for key in sorted(BENCHMARK_VIOLATIONS):
+            for value in (1, None, False):
+                with self.subTest(counter=key, value=value), tempfile.TemporaryDirectory() as temp_dir:
+                    path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                    if value is None:
+                        del receipt["violations"][key]
+                    else:
+                        receipt["violations"][key] = value
+                    health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                    result = summarize_run(path, SHORT_POLICY)
+                    self.assertFalse(result["benchmark_health"]["eligible"])
+                    self.assertFalse(result["active_flight_qualifier"])
+
+    def test_source_map_is_required_and_bound_to_report_and_case(self):
+        mutations = {
+            "missing adapter": lambda r: r["source_sha256"].pop("research/performance/sustained_flight.gd"),
+            "missing pilot airdata": lambda r: r["source_sha256"].pop("res://ai/companions/observation_airdata.gd"),
+            "missing input laws": lambda r: r["source_sha256"].pop("res://input/commands.gd"),
+            "missing aircraft data": lambda r: r["source_sha256"].pop("res://data/aircraft/jensen_ugly_stik_60.json"),
+            "missing field data": lambda r: r["source_sha256"].pop("res://data/fields/default.json"),
+            "missing lake data": lambda r: r["source_sha256"].pop("res://data/fields/lake.json"),
+            "missing contact helper": lambda r: r["source_sha256"].pop("res://statistics/fixed_wing_adapter.gd"),
+            "missing terrain source": lambda r: r["source_sha256"].pop("res://physics/ground_terrain.gd"),
+            "malformed hash": lambda r: r["source_sha256"].update({"res://main.gd": "x"}),
+            "runtime disagreement": lambda r: r["source_sha256"].update({"res://main.gd": "0" * 64}),
+            "unbound pilot change": lambda r: r["source_sha256"].update({"res://ai/companions/pilot.gd": "0" * 64}),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                mutate(receipt)
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                self.assertFalse(summarize_run(path, SHORT_POLICY)["benchmark_health"]["eligible"])
+
+    def test_scenario_and_solver_identity_are_required(self):
+        mutations = {
+            "wrong aircraft": lambda r: r["scenario"].update(aircraft_id="other"),
+            "wrong seed": lambda r: r["scenario"].update(seed=1),
+            "external driver": lambda r: r["scenario"].update(external_driver_enabled=True),
+            "physics disabled": lambda r: r["scenario"].update(physics_enabled=False),
+            "input disabled": lambda r: r["scenario"].update(input_enabled=False),
+            "fixed fps": lambda r: r["scenario"].update(fixed_fps_diagnostic=True),
+            "observation disabled": lambda r: r["scenario"].update(observation_mode="off"),
+            "missing weather": lambda r: r["scenario"].update(weather={}),
+            "not calm": lambda r: r["scenario"]["weather"].update(speed_mps=3.0),
+            "nonfinite weather": lambda r: r["scenario"].update(weather={"wind": float("inf")}),
+            "huge integer throttle": lambda r: r["scenario"].update(trim_throttle=10**400),
+            "backend substituted": lambda r: r["scenario"]["stage_backend"]["identity"].update(backend="native"),
+            "missing solver identity": lambda r: r["scenario"].update(solver_identity={}),
+            "missing checkpoint": lambda r: r["scenario"].pop("initial_checkpoint_sha256"),
+            "wrong scene frame path": lambda r: r["scenario"]["arguments"].__setitem__(2, "--frametimes=/other/run-1.json"),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                mutate(receipt)
+                health_path.write_text(json.dumps(receipt, allow_nan=True), encoding="utf-8")
+                self.assertFalse(summarize_run(path, SHORT_POLICY)["benchmark_health"]["eligible"])
+
+    def test_optional_checkpoint_hashes_must_cover_all_accepted_ticks(self):
+        for difference in ("none", "gap", "bad_hash", "disabled"):
+            with self.subTest(difference=difference), tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                receipt["scenario"]["state_input_hashing"] = difference != "disabled"
+                receipt["checkpoints"] = [{"start_tick": 1, "end_tick": 249, "sha256": "d" * 64, "partial": True}]
+                if difference == "gap":
+                    receipt["checkpoints"][0]["end_tick"] = 248
+                elif difference == "bad_hash":
+                    receipt["checkpoints"][0]["sha256"] = "invalid"
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                if difference != "disabled":
+                    checked_path = path.with_name("checked-" + path.name)
+                    checked = json.loads(checked_path.read_text())
+                    checked["command"].append("--sustained-hash")
+                    checked_path.write_text(json.dumps(checked), encoding="utf-8")
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertEqual(result["benchmark_health"]["eligible"], difference == "none")
+                self.assertEqual(result["performance_pass"], difference == "none")
+
+    def test_clock_tick_and_diagnostic_coverage_are_required(self):
+        mutations = {
+            "late observation despite bracketing sample": lambda r: r["observation"].update(start_monotonic_usec=950_000),
+            "early observation end": lambda r: r["observation"].update(end_monotonic_usec=1_050_000),
+            "tick reset": lambda r: r["observation"].update(start_tick=1),
+            "unobserved end": lambda r: r["observation"].update(end_tick=248),
+            "lost input": lambda r: r["observation"].update(input_reads=248),
+            "missed tick": lambda r: r["observation"].update(observer_calls=248),
+            "incomplete pilot": lambda r: r["health"].update(pilot_updates=62),
+            "pilot refused": lambda r: r["health"].update(pilot_failure="refused"),
+            "contact between diagnostic samples": lambda r: r["health"].update(min_ground_clearance_m=0.0),
+            "claimed but missing checkpoints": lambda r: r["scenario"].update(state_input_hashing=True),
+            "missing samples": lambda r: r["health"].pop("samples_1hz"),
+            "sample gap": lambda r: r["health"].update(samples_1hz=[r["health"]["samples_1hz"][0], r["health"]["samples_1hz"][-1]]),
+            "missing endpoint": lambda r: r["health"]["samples_1hz"].pop(),
+            "contact sample": lambda r: r["health"]["samples_1hz"][1].update(ground_clearance_m=0.0),
+            "bad sample time": lambda r: r["health"]["samples_1hz"][1].update(time_s=2.0),
+            "nonfinite position": lambda r: r["health"]["samples_1hz"][1].update(north_m=float("nan")),
+            "huge sample tick": lambda r: r["health"]["samples_1hz"][1].update(tick=10**400),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                mutate(receipt)
+                health_path.write_text(json.dumps(receipt, allow_nan=True), encoding="utf-8")
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertFalse(result["benchmark_health"]["eligible"])
+                self.assertFalse(result["active_flight_qualifier"])
+
+    def test_existing_live_input_does_not_require_a_benchmark_receipt(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = write_run(Path(temp_dir), "run-1", valid_report())
+            result = summarize_run(path, SHORT_POLICY)
+            self.assertTrue(result["active_flight_qualifier"])
+            self.assertTrue(result["performance_pass"])
+            self.assertIsNone(result["benchmark_health"])
+            self.assertEqual(result["workload_scope"], "direct-live-input")
+
+    def test_campaign_refuses_mixed_workloads_or_benchmark_identities(self):
+        for difference in ("none", "live_input", "scenario", "arguments", "source"):
+            with self.subTest(difference=difference), tempfile.TemporaryDirectory() as temp_dir:
+                root = Path(temp_dir)
+                write_benchmark_run(root, "run-1")
+                if difference == "live_input":
+                    second = write_run(root, "run-2", valid_report())
+                else:
+                    second, health_path, receipt = write_benchmark_run(root, "run-2")
+                    if difference == "scenario":
+                        receipt["scenario"]["trim_throttle"] = 0.3
+                    elif difference == "arguments":
+                        receipt["scenario"]["arguments"][1] = "--scene_detail=low"
+                        checked_path = second.with_name("checked-" + second.name)
+                        checked = json.loads(checked_path.read_text())
+                        checked["command"][checked["command"].index("--scene_detail=medium")] = "--scene_detail=low"
+                        checked_path.write_text(json.dumps(checked), encoding="utf-8")
+                    elif difference == "source":
+                        receipt["source_sha256"]["research/performance/sustained_input.gd"] = "c" * 64
+                        sources = receipt["source_sha256"]
+                        identity = "".join(f"{key}:{sources[key]}\n" for key in sorted(sources))
+                        report = json.loads(second.read_text())
+                        report["case_id"] = "benchmark-input-circuit-" + hashlib.sha256(identity.encode("ascii")).hexdigest()
+                        case_index = next(i for i, arg in enumerate(receipt["scenario"]["arguments"]) if arg.startswith("--case="))
+                        receipt["scenario"]["arguments"][case_index] = "--case=" + report["case_id"]
+                        second.write_text(json.dumps(report), encoding="utf-8")
+                        report_hash = hashlib.sha256(second.read_bytes()).hexdigest()
+                        receipt.update(report_sha256=report_hash, frame_report_sha256=report_hash)
+                    health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                self.assertTrue(summarize_run(second, SHORT_POLICY)["performance_pass"])
+                campaign, status = summarize_directory(root, root / "summary.json", SHORT_POLICY)
+                self.assertEqual(status, 0 if difference == "none" else 1)
+                self.assertEqual(campaign["performance_pass"], difference == "none")
+                if difference == "live_input":
+                    self.assertFalse(campaign["workload_scope_consistent"])
+                elif difference != "none":
+                    self.assertFalse(campaign["benchmark_identity_consistent"])
+
+    def test_campaign_refuses_reused_capture_id_even_if_each_run_is_valid(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            first, _, _ = write_benchmark_run(root, "run-1")
+            second, health_path, receipt = write_benchmark_run(root, "run-2")
+            capture_id = json.loads(first.read_text())["capture_id"]
+            report = json.loads(second.read_text())
+            report["capture_id"] = capture_id
+            stream_path = second.with_name(second.name + ".frames.jsonl")
+            records = [json.loads(line) for line in stream_path.read_text().splitlines()]
+            records[0]["capture_id"] = capture_id
+            write_stream_fixture(second, report, records)
+            report_hash = hashlib.sha256(second.read_bytes()).hexdigest()
+            receipt.update(capture_id=capture_id, report_sha256=report_hash, frame_report_sha256=report_hash,
+                           frame_stream_sha256=report["stream"]["sha256"])
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            checked_path = second.with_name("checked-" + second.name)
+            checked = json.loads(checked_path.read_text())
+            checked["capture_id"] = capture_id
+            checked_path.write_text(json.dumps(checked), encoding="utf-8")
+            self.assertTrue(summarize_run(first, SHORT_POLICY)["performance_pass"])
+            self.assertTrue(summarize_run(second, SHORT_POLICY)["performance_pass"])
+            summary, status = summarize_directory(root, root / "summary.json", SHORT_POLICY)
+            self.assertEqual(status, 1)
+            self.assertFalse(summary["benchmark_capture_ids_distinct"])
+            self.assertIn("benchmark capture IDs are missing or repeated", summary["campaign_reasons"])
 
 
 if __name__ == "__main__":

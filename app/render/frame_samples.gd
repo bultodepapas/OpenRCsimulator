@@ -18,6 +18,14 @@ const STREAM_MAX_BYTES := 268435456
 const STREAM_MAX_METRICS := 64
 const STREAM_MAX_METRIC_NAME := 128
 const MICROSECONDS_PER_SECOND := 1000000
+const RAW_CLOCK_DOMAIN := "darwin_mach_absolute_time"
+const RAW_CLOCK_MAX_BRACKET_USEC := 100000
+const RAW_CLOCK_MAX_OUTPUT_BYTES := 4096
+const RAW_CLOCK_MAX_HELPER_BYTES := 67108864
+const RAW_CLOCK_MAX_EXACT_INTEGER := 9007199254740991
+const RAW_CLOCK_GODOT_COMMIT := "4d10419cacd6d3009976e8f9fd3abd970fd58018"
+const RAW_CLOCK_HELPER_ENV := "OPENRC_RAW_CLOCK_HELPER"
+const RAW_CLOCK_SHA_ENV := "OPENRC_RAW_CLOCK_HELPER_SHA256"
 const GrassSceneSnapshot := preload("res://render/grass_scene_snapshot.gd")
 
 var warmup_s: float = 1.0
@@ -44,6 +52,7 @@ var _metric_names := PackedStringArray()
 var _raw_metrics: Dictionary = {}
 var _capture_id: String = ""
 var _clock_start: Dictionary = {}
+var _raw_clock_configuration: Dictionary = {}
 var _stream_path: String = ""
 var _stream_file: FileAccess = null
 var _stream_hash: HashingContext = null
@@ -150,7 +159,8 @@ func configure(warmup_seconds: float, sample_seconds: float, frame_limit: int = 
 	max_frames = frame_limit
 	_warmup_usec = roundi(warmup_s * MICROSECONDS_PER_SECOND)
 	_capture_id = OS.get_environment("OPENRC_DIAGNOSTIC_CAPTURE_ID")
-	_clock_start = _clock_anchor()
+	_raw_clock_configuration = _raw_clock_config()
+	_clock_start = _clock_anchor(_raw_clock_configuration)
 	if streaming and not _start_stream(stream_path):
 		failure = _stream_error
 		return false
@@ -358,15 +368,177 @@ static func effective_grass_state(field_root: Node) -> Dictionary:
 
 ## UTC is only for approximate cross-process correlation, never frame durations.
 ## The 20 ms uncertainty floor is an estimate, not a system-clock guarantee.
-static func _clock_anchor() -> Dictionary:
+static func _clock_anchor(raw_config: Dictionary = {}) -> Dictionary:
 	var before: int = Time.get_ticks_usec()
 	var unix_usec: int = roundi(Time.get_unix_time_from_system() * MICROSECONDS_PER_SECOND)
 	var after: int = Time.get_ticks_usec()
-	return {
+	var anchor := {
 		monotonic_usec = before + ((after - before) >> 1),
 		unix_usec = unix_usec,
 		uncertainty_usec = maxi(20000, (after - before + 1) >> 1),
 	}
+	if not raw_config.is_empty():
+		anchor.raw_uptime = _raw_clock_anchor(raw_config)
+	return anchor
+
+
+## Absence preserves the legacy clock object. A partially specified opt-in is
+## retained so that it produces an explicit error instead of falling back.
+static func _raw_clock_config() -> Dictionary:
+	if not OS.has_environment(RAW_CLOCK_HELPER_ENV) and not OS.has_environment(RAW_CLOCK_SHA_ENV):
+		return {}
+	return {path = OS.get_environment(RAW_CLOCK_HELPER_ENV), sha256 = OS.get_environment(RAW_CLOCK_SHA_ENV)}
+
+
+static func _raw_clock_error(reason: String) -> Dictionary:
+	return {status = "error", reason = reason}
+
+
+static func _raw_clock_valid_sha(value: String) -> bool:
+	if value.length() != 64: return false
+	for index in value.length():
+		if "0123456789abcdef".find(value.substr(index, 1)) < 0: return false
+	return true
+
+
+static func _raw_clock_helper_hash(path: String) -> String:
+	if not FileAccess.file_exists(path): return ""
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null: return ""
+	var length := file.get_length()
+	file.close()
+	if length < 1 or length > RAW_CLOCK_MAX_HELPER_BYTES: return ""
+	return FileAccess.get_sha256(path)
+
+
+## The pinned helper is invoked only on macOS. Hash and environment identity
+## are checked on both sides of every invocation, including the final anchor.
+static func _raw_clock_anchor(config: Dictionary) -> Dictionary:
+	if OS.get_name() != "macOS":
+		return _raw_clock_error("raw uptime helper requires macOS")
+	if not _raw_clock_supported_engine(Engine.get_version_info()):
+		return _raw_clock_error("raw uptime helper requires the vetted Godot build")
+	return _raw_clock_checked_call(config)
+
+
+## The consumer also verifies the actual executable hash; version metadata
+## alone is not a cryptographic identity for the running engine.
+static func _raw_clock_supported_engine(version: Dictionary) -> bool:
+	return version.get("major") == 4 and version.get("minor") == 8 and version.get("patch") == 0 \
+		and version.get("status") == "beta1" and version.get("build") == "official" \
+		and version.get("hash") == RAW_CLOCK_GODOT_COMMIT
+
+
+static func _raw_clock_checked_call(config: Dictionary) -> Dictionary:
+	var path: String = config.get("path", "")
+	var expected: String = config.get("sha256", "")
+	if not path.begins_with("/") or path != path.strip_edges() or not _raw_clock_valid_sha(expected):
+		return _raw_clock_error("absolute helper path and lowercase SHA-256 are required")
+	if _raw_clock_config() != config:
+		return _raw_clock_error("raw uptime helper configuration changed")
+	if _raw_clock_helper_hash(path) != expected:
+		return _raw_clock_error("raw uptime helper identity unavailable or mismatched before call")
+	var call: Dictionary = _raw_clock_call(path)
+	var after_hash := _raw_clock_helper_hash(path)
+	if _raw_clock_config() != config or after_hash != expected:
+		return _raw_clock_error("raw uptime helper identity or configuration changed during call")
+	if not call.ok:
+		return _raw_clock_error(str(call.reason))
+	return _raw_clock_interval(call.output, call.before_usec, call.after_usec, expected)
+
+
+## The child's stdout is bounded and nonblocking; no shell or player input is
+## involved. A timed-out or noisy child is killed and cannot qualify a run.
+static func _raw_clock_call(path: String) -> Dictionary:
+	var before := Time.get_ticks_usec()
+	var child: Dictionary = OS.execute_with_pipe(path, PackedStringArray(["--clock-sample"]), false)
+	if child.is_empty() or not child.has_all(["pid", "stdio", "stderr"]):
+		return {ok = false, reason = "raw uptime helper could not start"}
+	var pid: int = child.pid
+	var output: FileAccess = child.stdio
+	var errors: FileAccess = child.stderr
+	var bytes := PackedByteArray()
+	var reason := ""
+	var exit_code := -1
+	while true:
+		var running := OS.is_process_running(pid)
+		var available := output.get_length()
+		var error_available := errors.get_length()
+		if error_available > 0:
+			reason = "raw uptime helper wrote to stderr"
+			break
+		if available < 0 or available + bytes.size() > RAW_CLOCK_MAX_OUTPUT_BYTES:
+			reason = "raw uptime helper output exceeded its bound"
+			break
+		if available > 0:
+			var chunk := output.get_buffer(available)
+			if chunk.size() != available:
+				reason = "raw uptime helper output could not be read"
+				break
+			bytes.append_array(chunk)
+		if not running:
+			exit_code = OS.get_process_exit_code(pid)
+			break
+		if Time.get_ticks_usec() - before + 2 >= RAW_CLOCK_MAX_BRACKET_USEC:
+			reason = "raw uptime helper exceeded its time bound"
+			break
+		OS.delay_usec(500)
+	var after := Time.get_ticks_usec()
+	if not reason.is_empty() and OS.is_process_running(pid):
+		OS.kill(pid)
+	output.close()
+	errors.close()
+	if not reason.is_empty(): return {ok = false, reason = reason}
+	if exit_code != 0: return {ok = false, reason = "raw uptime helper exited unsuccessfully"}
+	return {ok = true, output = bytes, before_usec = before, after_usec = after}
+
+
+## Parse the one-line protocol strictly; Godot's JSON reader represents JSON
+## numbers as floats, so also validate the timestamp's decimal integer token.
+static func _raw_clock_parse(bytes: PackedByteArray) -> Dictionary:
+	if bytes.is_empty() or bytes.size() > RAW_CLOCK_MAX_OUTPUT_BYTES:
+		return {ok = false, reason = "raw uptime output length is invalid"}
+	for byte in bytes:
+		if byte > 126 or byte == 92 or (byte < 32 and byte not in [9, 10, 13]):
+			return {ok = false, reason = "raw uptime output is not plain JSON"}
+	var text := bytes.get_string_from_ascii()
+	if not text.ends_with("\n") or text.count("\n") != 1:
+		return {ok = false, reason = "raw uptime output must be one terminated line"}
+	var parser := JSON.new()
+	if parser.parse(text) != OK:
+		return {ok = false, reason = "raw uptime output is not valid JSON"}
+	var result: Variant = parser.data
+	if not result is Dictionary or result.size() != 3 \
+			or result.get("format") != "openrc-raw-clock-v1" or result.get("clock") != "CLOCK_UPTIME_RAW" \
+			or typeof(result.get("raw_uptime_usec")) not in [TYPE_INT, TYPE_FLOAT]:
+		return {ok = false, reason = "raw uptime output has an invalid schema"}
+	for key: String in ["format", "clock", "raw_uptime_usec"]:
+		if text.count('"' + key + '"') != 1:
+			return {ok = false, reason = "raw uptime output has duplicate keys"}
+	var integer_pattern := RegEx.new()
+	if integer_pattern.compile('"raw_uptime_usec"\\s*:\\s*(0|[1-9][0-9]*)\\s*[,}]') != OK:
+		return {ok = false, reason = "raw uptime integer validator failed"}
+	var integer_match := integer_pattern.search(text)
+	if integer_match == null:
+		return {ok = false, reason = "raw uptime is not a decimal integer"}
+	var digits := integer_match.get_string(1)
+	if digits.length() > 16 or not digits.is_valid_int():
+		return {ok = false, reason = "raw uptime integer exceeds its bound"}
+	var raw := digits.to_int()
+	if raw < 0 or raw > RAW_CLOCK_MAX_EXACT_INTEGER or float(result.raw_uptime_usec) != float(raw):
+		return {ok = false, reason = "raw uptime integer is out of range"}
+	return {ok = true, raw_usec = raw}
+
+
+static func _raw_clock_interval(bytes: PackedByteArray, before: int, after: int, helper_sha256: String) -> Dictionary:
+	if before < 0 or after < before or after > RAW_CLOCK_MAX_EXACT_INTEGER \
+			or after - before + 2 > RAW_CLOCK_MAX_BRACKET_USEC or not _raw_clock_valid_sha(helper_sha256):
+		return _raw_clock_error("raw uptime bracket or helper identity is invalid")
+	var parsed := _raw_clock_parse(bytes)
+	if not parsed.ok: return _raw_clock_error(str(parsed.reason))
+	var raw: int = parsed.raw_usec
+	return {status = "available", domain = RAW_CLOCK_DOMAIN, helper_sha256 = helper_sha256,
+		offset_lower_usec = raw - after - 1, offset_upper_usec = raw - before + 1}
 
 
 func report() -> Dictionary:
@@ -384,7 +556,7 @@ func report() -> Dictionary:
 		format = FORMAT,
 		capture_id = _capture_id,
 		clock = { source = "godot_ticks_usec", origin_usec = 0,
-			start = _clock_start.duplicate(), end = _clock_anchor() },
+			start = _clock_start.duplicate(), end = _clock_anchor(_raw_clock_configuration) },
 		version = VERSION,
 		warmup_s = warmup_s,
 		sample_s = sample_s,

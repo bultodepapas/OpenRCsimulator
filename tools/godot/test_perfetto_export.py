@@ -18,6 +18,7 @@ from perfetto_export import (
     build_trace,
     main,
     read_sources,
+    _combined_clock,
     _write_new_trace,
 )
 from research.performance.session_baseline import percentile_nearest_rank
@@ -122,6 +123,17 @@ def resource_clock(*, offset_drift_usec: int = 0) -> dict:
             "uncertainty_usec": 1_000,
         },
     }
+
+
+def raw_clock(clock: dict, start: tuple[int, int], end: tuple[int, int]) -> dict:
+    clock = copy.deepcopy(clock)
+    for endpoint, (lower, upper) in (("start", start), ("end", end)):
+        anchor = {"status": "available", "domain": "darwin_mach_absolute_time",
+                  "offset_lower_usec": lower, "offset_upper_usec": upper}
+        if clock["source"] == "godot_ticks_usec":
+            anchor["helper_sha256"] = "a" * 64
+        clock[endpoint]["raw_uptime"] = anchor
+    return clock
 
 
 def resource_report(*, capture_id: str | None = None, clock: dict | None = None,
@@ -287,6 +299,90 @@ class PerfettoExportTests(unittest.TestCase):
                 frames=frame_report(capture_id="same", clock=frame_clock()),
                 resources=resource_report(capture_id="same", clock=resource_clock(offset_drift_usec=200_000)),
             )
+
+    def test_raw_offsets_align_independently_of_utc_slew_and_backward_step(self):
+        fc = raw_clock(frame_clock(offset_drift_usec=200_000),
+                       (49_999_999, 50_000_003), (50_000_000, 50_000_004))
+        rc = raw_clock(resource_clock(), (50_949_998, 50_950_002), (50_949_999, 50_950_003))
+        rc["end"]["unix_usec"] = rc["start"]["unix_usec"] - 200_000
+        events, partial = build_trace(frames=frame_report(capture_id="same", clock=fc),
+                                      resources=resource_report(capture_id="same", clock=rc))
+        self.assertFalse(partial)
+        clock = next(event["args"]["clock"] for event in events if event.get("name") == "capture_metadata")
+        self.assertEqual(clock["mode"], "aligned_raw_uptime")
+        self.assertFalse(clock["utc_used_for_alignment"])
+        self.assertEqual(clock["combined_uncertainty_usec"], 4)
+        self.assertEqual(clock["frame_raw_offset"]["helper_sha256"], "a" * 64)
+        self.assertEqual(clock["max_clock_drift_usec"], 0)
+        self.assertEqual(clock["frame_data_raw_uptime_bounds_usec"], [51_000_001, 51_120_001])
+        self.assertNotIn("zero_utc_usec", clock)
+        self.assertNotIn("frame_data_utc_bounds_usec", clock)
+        self.assertEqual([e["ts"] for e in events if e.get("ph") == "X"], [1, 20_001])
+        self.assertEqual([e["ts"] for e in events if e.get("name") == "resource.process.rss_bytes [bytes]"],
+                         [0, 100_000])
+
+    def test_raw_join_rejects_missing_or_failed_anchors_without_fallback(self):
+        fc = raw_clock(frame_clock(), (100, 104), (101, 105))
+        rc = raw_clock(resource_clock(), (200, 204), (201, 205))
+        cases = []
+        missing_endpoint = copy.deepcopy(fc)
+        del missing_endpoint["end"]["raw_uptime"]
+        cases.append((missing_endpoint, rc))
+        cases.append((fc, resource_clock()))
+        failed = copy.deepcopy(rc)
+        failed["start"]["raw_uptime"] = {"status": "error", "reason": "unsupported"}
+        cases.append((fc, failed))
+        wrong_domain = copy.deepcopy(rc)
+        wrong_domain["end"]["raw_uptime"]["domain"] = "different-clock"
+        cases.append((fc, wrong_domain))
+        missing_helper = copy.deepcopy(fc)
+        del missing_helper["start"]["raw_uptime"]["helper_sha256"]
+        cases.append((missing_helper, rc))
+        changed_helper = copy.deepcopy(fc)
+        changed_helper["end"]["raw_uptime"]["helper_sha256"] = "b" * 64
+        cases.append((changed_helper, rc))
+        for frame, resource in cases:
+            with self.subTest(frame=frame, resource=resource), self.assertRaises(SourceError):
+                build_trace(frames=frame_report(capture_id="same", clock=frame),
+                            resources=resource_report(capture_id="same", clock=resource))
+
+    def test_raw_join_rejects_incompatible_overwide_and_invalid_intervals(self):
+        fc = raw_clock(frame_clock(), (100, 104), (101, 105))
+        rc = raw_clock(resource_clock(), (200, 204), (201, 205))
+        variants = []
+        disjoint = copy.deepcopy(fc)
+        disjoint["end"]["raw_uptime"].update(offset_lower_usec=105, offset_upper_usec=110)
+        variants.append(disjoint)
+        wide = copy.deepcopy(fc)
+        wide["start"]["raw_uptime"].update(offset_lower_usec=0, offset_upper_usec=100_001)
+        variants.append(wide)
+        reverse = copy.deepcopy(fc)
+        reverse["start"]["raw_uptime"].update(offset_lower_usec=2, offset_upper_usec=1)
+        variants.append(reverse)
+        boolean = copy.deepcopy(fc)
+        boolean["start"]["raw_uptime"]["offset_lower_usec"] = True
+        variants.append(boolean)
+        for frame in variants:
+            with self.subTest(frame=frame), self.assertRaises(SourceError):
+                build_trace(frames=frame_report(capture_id="same", clock=frame),
+                            resources=resource_report(capture_id="same", clock=rc))
+        host = copy.deepcopy(rc)
+        host["source"] = "clock_gettime(CLOCK_MONOTONIC)"
+        with self.assertRaisesRegex(SourceError, "incompatible"):
+            _combined_clock(fc, host, 50.0)
+        host["source"] = "clock_gettime(CLOCK_UPTIME_RAW)"
+        with self.assertRaisesRegex(SourceError, "zero offset"):
+            _combined_clock(fc, host, 50.0)
+
+    def test_raw_host_offset_is_zero_and_midpoint_errors_are_conservative(self):
+        fc = raw_clock(frame_clock(), (-3, 2), (-2, 3))
+        host = raw_clock({"source": "clock_gettime(CLOCK_UPTIME_RAW)",
+                          "start": resource_clock()["start"], "end": resource_clock()["end"]}, (0, 0), (0, 0))
+        meta, frame_offset, host_offset = _combined_clock(fc, host, 50.0)
+        self.assertEqual((frame_offset, host_offset), (0, 0))
+        self.assertEqual(meta["combined_uncertainty_usec"], 2)
+        self.assertEqual(meta["frame_raw_offset"]["lower_usec"], -2)
+        self.assertEqual(meta["frame_raw_offset"]["upper_usec"], 2)
 
     def test_combined_source_samples_must_fit_their_monotonic_anchor_bounds(self):
         shifted_resource_clock = resource_clock()

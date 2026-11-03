@@ -343,6 +343,72 @@ shorten `--t` or choose a larger limit. Exact completion on the last allowed fra
 succeeds. This default v2 mode has a 300-second duration bound. Use a fresh frame
 JSON path: the legacy v2 writer still accepts replacement of an existing path.
 
+### Repeatable active flight (DT-MAC-03)
+
+`sustained_flight.gd` reuses the existing companion circuit pilot through the
+player session's normal rate-limited keyboard input. It runs the reference Stik
+at Club in calm weather, starting from the accepted 15 m/s airborne trim with
+seed 20261021. The production session retains automatic 240 Hz physics; the
+fixture does not reposition the aircraft or manually step the solver. It selects
+native reconstruction and 4x MSAA, redirects accident/controller files beside
+its receipt, and labels the route `benchmark-input-circuit`.
+
+For the named M1 built-in-display campaign, after importing and freezing the
+source, authoring inputs and imported resources, use a fresh directory:
+
+```sh
+run="$PWD/tmp/sustained-new"
+mkdir "$run"
+godot="/absolute/path/to/Godot.app/Contents/MacOS/Godot"
+/usr/bin/caffeinate -dis python3 tools/godot/run_checked.py \
+  --resources --resource-interval 1 --resource-max-samples 2500 \
+  --out-dir "$run/checks" --timeout 2100 -- "$godot" --path app \
+  --resolution 2560x1600 --windowed --always-on-top --disable-vsync --max-fps 0 \
+  --rendering-method gl_compatibility --rendering-driver opengl3 \
+  --script "$PWD/research/performance/sustained_flight.gd" -- \
+  --frametimes="$run/run-1.json" --sustained-receipt="$run/health-run-1.json" \
+  --warmup=30 --t=1800 --view=pilot --autozoom=0 --scene_detail=medium --sustained-hash
+capture_status=$?
+cp "$run/checks"/*/engine.log "$run/run-1.log"
+cp "$run/checks"/*/report.json "$run/checked-run-1.json"
+```
+
+Use the resource tool's pinned Python environment. Optional
+`--host-state-helper <frozen binary>` belongs before the runner's `--`; follow
+the [native helper build and observation contract](../../tools/godot/README.md#optional-macos-host-state-companion-dt-mac-02e).
+Keep the window visible and focused. The viewport request does not independently
+prove physical presentation pixels. Preserve the checked exit status and all
+sidecars, then apply the long-capture reducer minima below. Three independent
+runs per role and matched settings remain required; a short preflight is not a
+sustained result. Uncapped throughput and the separate 60 Hz pacing target are
+different claims.
+
+The bounded health receipt binds the frame report, stream, source and scenario
+identities. It rejects observed crashes, contacts, pauses, holds, faults, lost
+focus, changed input/physics ownership and missing accepted ticks. The frame
+collector separately checks drawability and render progress. The fixture stays
+alive for at least 2.5 seconds after sealing the frame report so the 1 Hz resource
+sampler can bracket its endpoint; verify the actual clock alignment afterward.
+Predeclare the circuit envelope and inspect the retained 1 Hz trajectory over
+the measured interval. Endpoint health alone cannot establish the whole flight.
+
+`--sustained-hash` retains independent 6,000-tick hashes of accepted state,
+inputs, auxiliary state and modes. Compare identical tick windows and full
+scenario/collision identities on the same host; matching partial windows with
+different endpoints is invalid. Hashing and health observation have a cost.
+`--sustained-observation=off` retains the same pilot and normal input path but
+disables the accepted-tick audit; it refuses hashing and is always ineligible
+for flight qualification. Use it only as a separately checked overhead control.
+Embedded elapsed counters do not establish whole-observer overhead.
+
+`--sustained-diagnostic-ticks=<1..432000>` is an explicitly non-timing trajectory
+check, normally with headless Godot `--fixed-fps 30`. Its wall-time frame stream
+is deliberately incomplete. It cannot qualify FPS even when the trajectory
+receipt completes. Native timing admission additionally checks the matching
+runner command, because Godot consumes some engine flags before exposing them
+to GDScript. This technical fixture does not establish normal Home/Fly routing,
+package delivery, physical fuel endurance or pilot acceptance.
+
 ### Long continuous captures (DT-MAC-02b)
 
 Add the bare `--frametimes-stream` flag to opt into `openrc-frametimes v3` and

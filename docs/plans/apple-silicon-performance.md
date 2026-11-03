@@ -1,10 +1,12 @@
 # Apple Silicon optimization — master implementation plan
 
-Updated 2026-11-02 · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Source audited:** `46b004c7b469448c29ef96168da4f03cee2c6d23`. **Status:** portable capture/identity repairs and bounded observer/shader optimizations implemented; native development ZIP, signature and exact replay checks passed; repeated and sustained Mac qualification open.
+Updated 2026-11-03 · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Current source baseline:** `9de47723282b5c4126418b58ceeac273d66c3122`, with the common clock-instrumentation patch identified in dated evidence. **Status:** bounded observer/shader optimizations and native measurement repairs implemented. Three 30-minute M1 runs per role establish 17.6–23.2% higher sustained process-loop FPS for the named instrumented Metal circuit. Whole-observer and full product/release qualification remain open.
 
 This plan and the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) are the two authoritative Apple optimization documents. The background contains implementation facts, research and limitations; this document contains the execution sequence and gates. Existing research remains dated evidence and tool READMEs remain command authorities. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) retains release ownership. No optimization or new platform support is authorized as completed by this plan.
 
 The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**. The product priority remains 1920×1080/60 Hz, then higher resolutions, then 720p compatibility. The available M1 has only its built-in 2560×1600 Retina panel, currently set to 1440×900 logical pixels; the user authorizes this native display for the M1 campaign. Record measured viewport, drawable and internal pixels separately. A built-in-display run can qualify that named M1 configuration but cannot establish 1080p output. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
+
+The [completed technical soak](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison) retains all six raw captures and exact identities. Final-five-minute gains were 15.1–22.6%; 73 shared state/input hash windows matched. The separate 60 Hz pacing target was not met.
 
 ## 1. Priorities, invariants and decision rules
 
@@ -25,16 +27,16 @@ The objective is the maximum practical **sustained performance with readable air
 | --- | --- |
 | DT-MAC-00 / 00-R1 / 00-R2 | Completed historical investigations; retained in background provenance. This consolidation is DT-MAC-00-R3. |
 | DT-MAC-01 | M1 Air/8 GB ARM64 native inventory and editor import recorded; complete baseline manifest and qualification open — phase 3. |
-| DT-MAC-02a/b | Getter/template/preflight and bounded v3 capture implemented; native execution/overhead and coverage gaps open — phases 1–3. |
-| DT-MAC-02c/d/e/f/g/h | 02c Aqua/resource repair and 02d v3 incident/Perfetto handling implemented and checked on Mac; short native Aqua/resource/frame checks passed. 02h final-ZIP/manifest-v2 integration has focused tests; native development export, strict signature, exact package replay and fixed session probe passed. Full release/trust/quarantine remain open. 02e adds a native-checked optional preflight thermal/power snapshot; host-state series, app-route observation and voluntary share bundle remain open — phases 1, 2 and 8. |
-| DT-MAC-03a/b | Short source-build reference replay was exact on M1; complete baseline manifest, sustained runs and attribution remain open — phase 3. |
-| DT-MAC-04a–d | 04b statistics-window and recorder-copy candidates implemented with frozen-reference checks; partial native CPU comparisons establish no gain. 04d reuses lighting WeakRefs with focused checks and native image parity; the short object-count warning is bounded registry retention. Sustained gain and remaining work stay open — phase 4. |
+| DT-MAC-02a/b | Getter/template/preflight and bounded v3 capture implemented and exercised natively; whole-observer overhead and remaining workload coverage stay open — phases 1–3. |
+| DT-MAC-02c/d/e/f/g/h | 02c Aqua/resource repair and 02d v3 incident/Perfetto handling implemented and checked on Mac. 02e adds bounded host series, raw-clock correlation and a sleep check, with native tests. 02h native development export, strict signature, exact package replay and fixed session probe passed. Full release/trust/quarantine, app-route observation and voluntary share bundle remain open — phases 1, 2 and 8. |
+| DT-MAC-03a/b | Source-build reference replay was exact on M1; a frozen technical circuit and five valid short pairs show 23.8–24.5% more process-loop FPS. Three fresh 30-minute runs per role show 17.6–23.2% higher sustained FPS, with matching physics/input hashes and valid raw-clock joins; other cases, observer uncertainty and broader attribution remain open — phase 3. |
+| DT-MAC-04a–d | 04b statistics-window and recorder-copy candidates implemented with frozen-reference checks; partial native CPU comparisons establish no gain. 04d reuses lighting WeakRefs with focused checks and native image parity; the short object-count warning is bounded registry retention. The combined seven-file Metal bundle has a measured sustained gain; the WeakRef contribution is not isolated and remaining work stays open — phase 4. |
 | DT-MAC-04n1–n4 | Conditional ARM64 NK-3 feasibility, evaluator parity, admission and package work — phase 10, under SF/NK policy. |
 | DT-MAC-05a | Isolated renderer tools implemented; native parity/comparison open — phase 5. |
 | DT-MAC-05b/c | Product restart/recovery and renderer decision — phases 8 and 5 respectively. |
-| DT-MAC-06a/b–d | Second shader batch removes inactive grass/twilight work and redundant cloud wrapping. Native Compatibility/Metal images and offscreen moon/twilight motion checks passed with quantified tiny differences. Single-pair render screens are promising; repeated timing lost window drawability. Sustained performance and moving-aircraft gates remain open — phases 8 and 6. |
+| DT-MAC-06a/b–d | Second shader batch removes inactive grass/twilight work and redundant cloud wrapping. Native images and offscreen moon/twilight motion checks passed with quantified tiny differences. Five valid short pairs and three 30-minute pairs establish a sustained gain for that instrumented Metal circuit; observer uncertainty, moving-aircraft readability and broader qualification remain open — phases 8 and 6. |
 | DT-MAC-07a–c | MetalFX policy/Settings prepared; real execution, failure/reset, motion/lifecycle and benefit open — phase 7. |
-| DT-MAC-08 / 08a / 08b / 09 | Sustained M1, community coverage, native package and promotion — phase 9. |
+| DT-MAC-08 / 08a / 08b / 09 | The named technical circuit has three accepted 30-minute runs per role. Final product-route/package sustained qualification, community coverage and promotion remain open — phase 9. |
 | DT-MAC-10 / 11 / 12 / 13 | Conditional engine-level Metal/new reconstruction/presentation work — phase 12. |
 | DT-MAC-13i1–i4 | iOS feasibility/delivery/lifecycle/qualification branch — phase 11; does not declare a shipped mobile product. |
 
@@ -104,7 +106,7 @@ Each receipt includes source commit/dirty patch and relevant input hashes; engin
 
 **Tests:** T1 debug launch fixtures and T2 sampler/runner/consumer fixtures, including Darwin backend with no `io_counters`, access denied, missing RSS, PID reuse, early exit, counter resets, cap and Linux/Windows compatibility. Synthetic clock tests replace real 30-minute waits here.
 
-**Completion:** Aqua command construction needs no Xvfb; unsupported optional channels are explicit without hiding missing required coverage; old reports remain readable; no host privileges or simulator behavior changed. Short native launch/sampling checks passed; sustained interval alignment remains open.
+**Completion:** Aqua command construction needs no Xvfb; unsupported optional channels are explicit without hiding missing required coverage; old reports remain readable; no host privileges or simulator behavior changed. Short native launch/sampling checks and all six later 30-minute raw-clock joins passed; broader workload and observer gates remain open.
 
 ### DT-MAC-02d — preserve long-stream evidence end to end
 
@@ -140,11 +142,17 @@ required. [Contract and installation limits](../../tools/release/README.md#mac-r
 
 ### DT-MAC-02e — optional native host-state companion
 
-**Incremental implementation (2026-11-02):** the existing preflight now uses
-installed Foundation/JXA for one bounded thermal/Low Power Mode snapshot. Portable
-fixtures and native M1 collection pass. This avoids a compiled helper for initial
-context; change notifications, memory-pressure observations, capture association
-and sustained coverage remain open. [Evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-02e-preflight-host-snapshot-2026-11-02).
+**Implementation (2026-11-03):** the preflight retains its bounded Foundation/JXA
+snapshot. An optional Foundation/Dispatch/IOKit companion now supplies bounded
+host series and notifications, capture association, process-lifetime supervision
+and helper/source identity checks. Native M1 compile, smoke and 18 host tests
+pass, including notification flooding. The opt-in v2 path joins bounded direct
+raw-uptime anchors and checks sleep independently; legacy UTC validation remains
+unchanged. Frame, resource and Perfetto integration also passed natively.
+Initial memory-pressure knowledge and whole-observer overhead remain separate
+gates. All six later 30-minute technical flights passed required host/resource
+coverage and raw-clock/sleep checks.
+[Evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-02e--03-active-flight-campaign-preparation-2026-11-03).
 
 **Tasks:** first test whether installed free tools supply adequate bounded observations. If not, add a developer-invoked Foundation/Dispatch/IOKit companion under the existing tooling owner. Pin its source, compiler, SDK, deployment floor and ARM64 build identity. It reports host thermal category, low-power boolean, AC/battery source and memory-pressure events; existing psutil retains process CPU/RSS/system memory. Do not query an unrelated MTLDevice and label it game allocation.
 
@@ -250,7 +258,7 @@ existing weak-reference wrappers while preserving fresh lighting snapshots. The
 short-soak object warning was attributed to the existing bounded registry;
 the unchanged M1 baseline passed a 12-cycle full smoke. The candidate passed
 20 cycles, focused lifecycle/render checks and 12 byte-identical native offscreen
-captures. Sustained rendered benefit remains unqualified.
+captures. The later seven-file Metal comparison shows 17.6–23.2% higher sustained FPS over three 30-minute pairs; it does not isolate this Compatibility-only WeakRef change.
 [Evidence and native limits](../research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-04d-lighting-reference-reuse-2026-11-02).
 
 **Scope/tasks:** inspect world/preview/aircraft/audio/reflection lifetimes and current VQ-02a texture inventory. Measure actual GPU formats, mip/filter/color-space behavior, source/import identities and resident estimates. Fix one leak, duplicate resource or demonstrated import problem via its source pipeline. Preserve generated aircraft names/hinges and visual/collision contracts. Do not assume ASTC flag means every Mac resource uses ASTC or sum RSS with GPU estimates.
@@ -493,3 +501,5 @@ passed signature, packaged-source, session, rendered-capture and exact replay
 checks; its actual dirty Mac source identity is recorded. Repeated/sustained
 performance, moving-aircraft acceptance and full release/CI gates remain open.
 [Second-batch identities and evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-06b-shader-work-reduction-second-batch-2026-11-02).
+
+**2026-11-03 evidence update:** the later controlled seven-file Metal campaign supersedes the missing repeated/sustained timing evidence above for its instrumented technical circuit. All six 30-minute captures passed; measured gains were 17.6–23.2%, with 15.1–22.6% retained in the final five minutes. This advances DT-MAC-02/03 and the combined DT-MAC-06 bundle, while whole-observer uncertainty, normal-product routing, physical controls/readability, the absolute pacing budget and full release/CI stay open. [Complete scope and receipts](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison).

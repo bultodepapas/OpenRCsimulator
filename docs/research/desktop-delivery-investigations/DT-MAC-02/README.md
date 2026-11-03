@@ -6,6 +6,262 @@ The [Apple Silicon plan](../../../plans/apple-silicon-performance.md) owns statu
 and remaining acceptance. The [preceding research](../DT-MAC-00-R2/README.md) owns
 the dated primary references and pinned-engine audit.
 
+## DT-MAC-02e / 03 active-flight campaign preparation (2026-11-03)
+
+Source baseline `9de47723282b5c4126418b58ceeac273d66c3122`. The M1 comparison
+uses separate frozen application copies: the candidate contains the six shaders
+from the second optimization batch and lighting WeakRef reuse; the controlled
+baseline restores those seven files. All other application and authoring bytes
+match. Imported resources, engine, fixture and collection tools are identified
+separately. This is source-editor technical evidence, not the Home/Fly or final
+package qualification.
+
+The [sustained-flight fixture](../../../../research/performance/README.md#repeatable-active-flight-dt-mac-03)
+reuses the existing circuit pilot through normal rate-limited keyboard input.
+Original and optimized health observers each completed 432,000 automatic ticks
+on Linux. All 72 accepted state/input hash windows, 1,801 one-second trajectory
+rows and the initial checkpoint matched exactly. All health violations were
+zero. After the initial 30 seconds, maximum sampled radius error was 0.294 m
+and ground clearance was 34.47–34.59 m. These fixed-fps headless runs establish
+trajectory and observer equivalence, not FPS or physical fuel endurance.
+The final native fixture waits for 500 ms of observed focus and drawability,
+within a five-second deadline, before Main starts. Focus-out notifications reset
+that interval; loss during flight still invalidates collection. It makes one
+focus request and preserves the CLI window mode and size.
+
+Two native startup attempts lost focus at zero or twelve physics ticks and were
+excluded. The pinned engine's [macOS borderless setter](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/platform/macos/display_server_macos.mm#L2376-L2426)
+orders a visible window out and back. The fixture removed its unnecessary
+borderless/resize mutation and added the bounded readiness check. This is a
+startup hypothesis checked by three consecutive native 5-second-warmup /
+10-second-sample launches. All three passed focus, active-flight, viewport and
+attachment gates. The in-flight focus gate remains mandatory.
+
+The health observer reuses the existing statistics adapter's conservative
+no-wheel-contact shortcut. All 97 focused fixture checks pass, including
+63 contact-sign comparisons covering altitude, bank, terrain and lake cases,
+and 19 focus-readiness boundary checks.
+The final reducer checks the frame/stream hashes, 16 source identities, complete
+health coverage, actual checked command and independent capture IDs. Its affected
+reducer and downstream consumer suite passed 146 tests. The campaign separately
+checks actual rendering settings, source/import/engine stability, circuit bounds,
+power profile and resource/host timestamp coverage.
+
+The [optional host companion](../../../../tools/godot/README.md#optional-macos-host-state-companion-dt-mac-02e)
+uses public Foundation, Dispatch and IOKit APIs. The M1 build used Apple clang
+21.0.0 (`clang-2100.3.34.2`), SDK 27.0, ARM64, `-O2` and a macOS 12.0 deployment
+floor. Source SHA-256 is
+`f4fa8eebbd91548f6e0af45cd053794514762f6ec84fa0608f01b9a2780e5f53`;
+binary SHA-256 is
+`613a3a6331ea16a4c6decec1cc313d54086efcb79f52fafd3b10342f831280b0`.
+All 15 host tests passed on the M1, including bounded notification flooding and
+helper/source identity changes. The normal runner smoke completed with matching
+capture/PID identities and bracketed observations. Initial memory pressure stays
+unknown when no event is delivered; stream completeness does not establish its
+value or a temperature measurement.
+
+A preliminary GL observer-off/on pair used 30 seconds of warmup and 120 seconds
+of measured active flight at 2560×1600, native reconstruction, 4x MSAA and AC
+power. Nearest-sample app-plus-helper CPU rates were 529.061 and 530.100 CPU-ms/s
+(+0.20%). Conditional clock/sample-boundary brackets allow −2.40% to +1.82%;
+one pair does not establish the ≤1% overhead target. Frame p95 was
+37.009 → 36.909 ms. Both resource and host timelines bracketed the measured
+intervals. These runs measured the health/hash addition; both already included
+resource and host sampling. They do not qualify all diagnostic overhead.
+
+The first fully collected old-shader GL screen had p50 51.882 ms, p95 54.086 ms
+and sim/wall ratio 0.961998, failing the frozen 0.99 floor. The campaign therefore
+tests native Mobile/Metal with the same sources, viewport and quality. Its first
+baseline screen passed collection, drawability, route, power and clock coverage:
+p95 38.091 ms and sim/wall 0.999728. Failed focus/startup attempts remain excluded
+and retained. Repeated and sustained results belong below when collected; these
+short screens do not establish the speedup or the 60 Hz target.
+
+Raw evidence and frozen manifests are retained outside Git in
+`tmp/apple-round5/` locally and `/Users/gius/OpenRC-m1-check/tmp/apple-round5/`
+on the M1. `observer-analysis.json` records the preliminary calculation;
+`protocol-metal.json` preserves the revised renderer decision and unchanged
+acceptance thresholds. SSH keys are retained.
+
+### Repeated Metal active-flight comparison
+
+All ten fresh short runs passed: five alternating pairs, each with 30 seconds
+of warmup and 120 measured seconds. The frozen research configuration uses
+Mobile/Metal, a requested and reported 2560×1600 viewport, nominal native scale,
+4× MSAA, Medium scenery, uncapped frames and AC power. These viewport fields
+do not independently measure macOS backing pixels or presentation timestamps.
+The shared research `project.godot` differs from HEAD in its isolated name and
+disabled Forward+-only multi-bounce setting; it is identical between roles.
+
+| Across five runs per role | Baseline | Optimized |
+| --- | ---: | ---: |
+| Mean process-loop FPS | 30.30–30.43 | 37.59–37.80 |
+| Frame p95, ms | 37.363–38.866 | 29.482–31.064 |
+| Frame p99, ms | 48.025–48.543 | 40.497–41.538 |
+| Largest frame interval, ms | 72.784–104.629 | 76.681–105.919 |
+
+Paired mean-FPS gains were 23.77–24.55%, median 24.08%. Even the lowest
+candidate mean exceeded the highest baseline mean by 23.56%. Five complete
+6,000-tick state/input windows matched across all ten runs; differing partial
+tails were excluded. Sim/wall ratios were 0.99918–0.99993. Every run passed
+the declared route and working-memory screens, with complete required host and
+resource coverage. Host snapshots reported AC, Low Power Mode false and nominal
+thermal state. Initial memory pressure remains unknown; unrelated background
+GPU activity was not independently sampled.
+
+This establishes a repeated short comparison for the instrumented technical
+flight and seven-file bundle. It does not isolate an individual shader's effect
+or meet the separate 18/25 ms pacing limits. All runs retained the previously
+observed seven-Texture-RID warning at Metal shutdown. Raw runs are
+`tmp/apple-round5/metal-final-short-{baseline,candidate}-{1..5}`; the initial
+complete reductions are `analysis/short-complete-r1.json` and
+`analysis/short-final.json` in that evidence root. The latter uses the retained
+original tool snapshot and includes both separate health/hash-off controls.
+That single off-control pair measured 30.330 → 37.572 FPS (+23.88%); p95 was
+39.507 → 29.740 ms. It supports the observed difference surviving removal of
+the health/hash observer, but lacks repeated controls and per-tick health proof.
+It does not establish whole-observer overhead ≤1%.
+
+### First sustained attempt: clock-correlation rejection
+
+`metal-long-baseline-1` completed its 30-second warmup and 1,800-second sample
+with active flight, rendering progress, valid route/power settings and sim/wall
+0.999334. Frame p95 was 37.766 ms. Its combined evidence gate nevertheless
+failed: the frame and resource UTC-minus-monotonic offsets drifted by 115.902
+and 116.041 ms, exceeding the legacy 90 ms allowance. The host offset drifted
+by 51.287 ms. The failed receipt and raw streams are retained unchanged; this
+run does not count toward sustained qualification.
+
+The [pinned Godot clock](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/drivers/unix/os_unix.cpp#L330)
+and [CPython 3.9.6 clock](https://github.com/python/cpython/blob/v3.9.6/Python/pytime.c#L771)
+share a `mach_absolute_time` rate with different process epochs. Their UTC
+anchors occur at different instants. Similar endpoint drift therefore cannot
+prove the relative offset or exclude an intervening wall-clock step. The
+original host's `CLOCK_MONOTONIC` is a distinct clock. The remedy is direct,
+bounded correlation with Apple's raw uptime clock, with a separate
+sleep-inclusive clock check; increasing the legacy allowance would not repair
+the missing evidence. [Apple clock implementation](https://github.com/apple-oss-distributions/Libc/blob/main/gen/clock_gettime.c#L70).
+
+The replacement path is opt-in with the host helper. Before warmup and after
+sealing, the frame collector brackets a bounded one-shot helper call and verifies
+its executable SHA on both sides. Python records its own direct raw-clock
+brackets. The join requires matching domains and intersecting start/end offset
+intervals, with a maximum 100 ms bracket; missing, invalid or incompatible raw
+anchors cannot fall back to UTC. Legacy captures retain their original rule.
+The host v2 stream uses raw uptime and separately compares sleep-inclusive and
+sleep-exclusive clocks, including uncertainty, against a declared 50 ms tolerance.
+UTC drift remains diagnostic. No measured frame duration is corrected or
+replaced, and the default collector path adds no helper process.
+
+Native M1 checks passed: frame collector 152, host companion 18, resource sampler
+19, checked resource runner 14 and Perfetto 29. The first native unit attempt
+found a cold shell-fixture launch taking 271 ms; the real native helper took
+9–14 ms in three diagnostic calls. Test fixtures now warm through a separate
+bounded branch and assert each negative case's specific reason. The production
+100 ms limit is unchanged. A complete native 5/10-second flight smoke then
+passed direct frame/resource/host joins, helper identity and conservative endpoint
+coverage. The combined frame/resource bound was 14.068 ms; the host sleep-delta
+interval was −2 to +2 µs. This is clock-path integration evidence, not a soak.
+
+The corrected collector SHA-256 is
+`69d8a0c778e73f17652cb78e46f6b212f18d6684bfdd3f88f6a4748d99c982da`;
+host source `c928cc782d87c2eed3c6697906675df154d10270ace968ee8b1a202392da0cb4`,
+native helper `f7761409da71c0638173ff60cdb7a537cbedbe01ab41731ab72cd25f65cb9092`,
+and Perfetto reader `11f329c3b6e11c02da685a1edd5b5d9dcaac4633aab40083742a2cc1f005f164`.
+Fresh role copies in `tmp/apple-round6/` retain the same seven-file optimization;
+both share the clock collector and its tests. Manifest SHA-256 is
+`d127e3c815391143d9ae7b1817fdb5a5e4f4f886af5287d6e8f43120e07c6fee`.
+The earlier five-pair result remains candidate-selection evidence with its own
+measurement identity; revision 4 requires a fresh short integration pair and
+three fresh 30-minute runs per role. Original round-5 sources, tools and failed
+records remain intact.
+
+### Repeated 30-minute Metal comparison
+
+The fresh round-6 campaign completed on 2026-11-03, 02:42–05:49 UTC:
+**three 30-minute measured flights per role**, each after 30 seconds of warmup,
+in B1/C1/C2/B2/B3/C3 order. All six passed collection and offline acceptance.
+The seven-file optimization produced **17.64–23.17% higher sustained
+process-loop FPS**, median 22.81%, on the instrumented technical circuit.
+The slowest candidate exceeded the fastest baseline by 15.76%, passing the
+predeclared observed ≥5% screen; all paired p95/p99 intervals improved.
+This closes the missing sustained measurement for this named configuration.
+
+The host was the AC-powered MacBookAir10,1, M1/8 GiB, macOS 27.0.1, running
+the pinned ARM64 Godot 4.8-beta1 editor. Settings remained Mobile/Metal,
+Standard effects, Medium scenery, native scale, 4× MSAA, pilot camera,
+native audio and uncapped frames. The built-in-display exception applies to
+the requested/reported 2560×1600 viewport; independent drawable pixels,
+presentation timing and 1080p output remain unmeasured.
+
+| Run | Mean FPS | p50 ms | p95 ms | p99 ms | Max ms | Frames >33.3 ms | Frames >50 ms |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| B1 | 30.659 | 32.244 | 37.879 | 48.360 | 148.982 | 15,895 | 293 |
+| C1 | 36.067 | 27.342 | 31.221 | 43.755 | 122.337 | 2,360 | 167 |
+| C2 | 35.492 | 27.842 | 31.831 | 44.374 | 150.232 | 2,478 | 182 |
+| B2 | 28.899 | 33.951 | 42.951 | 52.148 | 146.212 | 32,368 | 959 |
+| B3 | 28.831 | 34.029 | 42.843 | 52.159 | 159.366 | 32,920 | 965 |
+| C3 | 35.510 | 27.777 | 31.735 | 44.326 | 143.852 | 2,460 | 201 |
+
+Paired FPS gains were 17.64%, 22.81% and 23.17%. In the final 300 seconds
+they were still 15.08%, 22.02% and 22.61%; candidate rates were
+35.639–35.709 FPS against baseline 29.124–30.973 FPS. C1 slowed 5.06%
+from its opening to closing 300 seconds; C2/C3 slowed 0.55%/0.20%.
+The benefit therefore persisted after warming, without implying a constant
+initial rate. Burst counts and window distributions are retained in the full
+analysis. The absolute p95 ≤18 ms / p99 ≤25 ms screen failed in every run;
+this is a relative gain, not a 60 FPS qualification.
+
+All 73 common complete 6,000-tick state/input hash windows matched across
+the six captures; unequal partial tails were excluded. Automatic 240 Hz
+reference physics and normal rate-limited input remained active. Sim/wall
+ratios were 0.997935–0.998936. All measured-interval sampled circuit radius errors were ≤0.294 m
+and clearance was 34.468–34.582 m, inside the declared envelope. Source,
+import, authoring, fixture, engine and tool identities were checked before and
+after each run. This is software/workload equivalence, not physical validation.
+
+Required resource and host coverage bracketed all measured windows, using
+direct raw-uptime joins. Frame/resource uncertainty was 7.927–10.193 ms.
+Every host sleep check passed, with observed sleep-offset change bounded by
+−2 to +2 µs against the declared 50 ms tolerance. Every run reported AC and
+Low Power Mode off. B1 began nominal and transitioned to fair at +1,182.676 s;
+the other five runs reported fair throughout. Initial thermal categories were
+therefore not matched. All final 300-second windows reported fair and retained
+the gains above. These categories do not measure temperature, establish equal
+hardware clocks or explain the timing differences.
+All working-memory screens passed: peak sampled RSS was below 840 MiB and
+minimum available system memory exceeded 1.11 GiB. RSS medians decreased
+between early/final windows in every run; sampled swap never increased within
+a run. These observations do not establish a lifecycle leak test. Initial
+memory pressure remained unknown, with zero delivered pressure callbacks;
+unrelated background GPU activity was not independently sampled.
+
+The final analyzer additionally pins the exact vetted engine and helper binaries
+and includes every memory poll that could overlap the sample within clock and
+rounding uncertainty. Nine focused checks passed, including substituted binary
+identities and an ambiguous boundary poll. The integrated affected reader suite
+passed 150 tests. Independent workload/host reviews found no unresolved runtime
+regression; final evidence review is recorded with the raw analysis.
+
+Raw captures are retained locally as
+`tmp/apple-round6/metal-long-{baseline,candidate}-{1..3}` and on the Mac under
+`/Users/gius/OpenRC-m1-check/tmp/apple-round6/runs/`. Protocol revision 4,
+source manifests, native build/test receipts and the serial console are retained
+in that evidence root. `analysis/long-final.json` SHA-256 is
+`48c10dda7d947eb97d5a836734bd862777ab0e34dc4c1e8e94d5cf6812b199bb`;
+analyzer SHA-256 is
+`dddb8ddeb0e219c64d8e2ebb335ef6c0ab11ca8433774cf7febb6de84b55dd9c`.
+The fresh short clock-integration pair also passed (+24.31% FPS); it is separate
+from both the earlier five-pair selection and this sustained cohort.
+
+**Remaining scope:** the observed instrumented sustained gain is supported.
+Whole-observer overhead/uncertainty, Home→Fly product routing, moving-aircraft
+readability, controls/audio/lifecycle, other workloads and final release/CI
+qualification remain open. The experiment measures the seven-file bundle,
+not individual shader or WeakRef contributions, and does not promote a renderer
+default. All six runs retained the pre-existing seven-Texture-RID shutdown
+warning. The original rejected clock-correlation run remains excluded.
+
 ## DT-MAC-04d lighting reference reuse (2026-11-02)
 
 Baseline `1624fe85b`: the short Fly/Home soak's object growth came from the
@@ -737,6 +993,9 @@ This source-build replay has no maneuver markers and is not an exported-package
 replay, physical handling validation or a native-solver parity result.
 
 ## Implemented preparation
+
+This table records preparation through 2026-11-02. The later 2026-11-03
+native comparisons and host evidence are recorded above.
 
 | Delivery | Implementation | Evidence boundary |
 | --- | --- | --- |

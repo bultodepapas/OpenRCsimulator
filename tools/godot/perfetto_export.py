@@ -13,6 +13,7 @@ import json
 import math
 import os
 from pathlib import Path
+import re
 import stat
 import sys
 from typing import Any
@@ -43,6 +44,8 @@ MAX_FRAME_SAMPLES = 120_000
 MAX_RESOURCE_SAMPLES = 10_000
 MAX_SAFE_INTEGER = (1 << 53) - 1
 UNCERTAINTY_FLOOR_USEC = 20_000
+RAW_UPTIME_DOMAIN = "darwin_mach_absolute_time"
+RAW_UPTIME_MAX_INTERVAL_USEC = 100_000
 
 
 class ExportError(ValueError):
@@ -252,6 +255,56 @@ def _metadata_string(value: Any, limit: int = 256) -> str | None:
     return value[:limit] if isinstance(value, str) else None
 
 
+def _raw_uptime_interval(clock: dict[str, Any], label: str) -> dict[str, Any] | None:
+    """Validate the two opt-in offset brackets for one producer clock.
+
+    The bounds map producer monotonic microseconds to Darwin raw uptime. The
+    same offset must be possible at both endpoints; UTC is not used here.
+    """
+    start, end = clock.get("start"), clock.get("end")
+    if not isinstance(start, dict) or not isinstance(end, dict):
+        raise SourceError(f"{label} clock anchors are missing")
+    present = ["raw_uptime" in anchor for anchor in (start, end)]
+    if not any(present):
+        return None
+    if not all(present):
+        raise SourceError(f"{label} raw uptime anchors are incomplete")
+    source = clock.get("source")
+    if source not in ("godot_ticks_usec", "python_perf_counter", "clock_gettime(CLOCK_UPTIME_RAW)"):
+        raise SourceError(f"{label} raw uptime clock source is incompatible")
+    bounds: list[tuple[int, int]] = []
+    helpers: list[str] = []
+    for endpoint, anchor in (("start", start), ("end", end)):
+        raw = anchor["raw_uptime"]
+        if not isinstance(raw, dict) or raw.get("status") != "available" or raw.get("domain") != RAW_UPTIME_DOMAIN:
+            raise SourceError(f"{label} {endpoint} raw uptime anchor is unavailable or has an incompatible domain")
+        lower, upper = raw.get("offset_lower_usec"), raw.get("offset_upper_usec")
+        if (type(lower) is not int or type(upper) is not int
+                or not -MAX_SAFE_INTEGER <= lower <= upper <= MAX_SAFE_INTEGER
+                or upper - lower > RAW_UPTIME_MAX_INTERVAL_USEC):
+            raise SourceError(f"{label} {endpoint} raw uptime offset interval is invalid or too wide")
+        if source == "clock_gettime(CLOCK_UPTIME_RAW)" and (lower != 0 or upper != 0):
+            raise SourceError(f"{label} raw uptime clock must have zero offset")
+        if source == "godot_ticks_usec":
+            digest = raw.get("helper_sha256")
+            if not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
+                raise SourceError(f"{label} {endpoint} raw uptime helper identity is missing or invalid")
+            helpers.append(digest)
+        bounds.append((lower, upper))
+    if helpers and helpers[0] != helpers[1]:
+        raise SourceError(f"{label} raw uptime helper identity changed between anchors")
+    lower = max(bound[0] for bound in bounds)
+    upper = min(bound[1] for bound in bounds)
+    if lower > upper:
+        raise SourceError(f"{label} raw uptime offset intervals do not overlap")
+    midpoint = (lower + upper) // 2
+    result = {"lower_usec": lower, "upper_usec": upper, "offset_usec": midpoint,
+              "uncertainty_usec": max(midpoint - lower, upper - midpoint)}
+    if helpers:
+        result["helper_sha256"] = helpers[0]
+    return result
+
+
 def _validate_clock(value: Any, expected_source: str, label: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise SourceError(f"{label}.clock must be an object")
@@ -259,7 +312,7 @@ def _validate_clock(value: Any, expected_source: str, label: str) -> dict[str, A
     if source != expected_source:
         raise SourceError(f"{label}.clock.source must be {expected_source!r}")
     origin = _safe_integer(value.get("origin_usec"), f"{label}.clock.origin_usec")
-    anchors: dict[str, dict[str, int]] = {}
+    anchors: dict[str, dict[str, Any]] = {}
     for endpoint in ("start", "end"):
         raw = value.get(endpoint)
         if not isinstance(raw, dict):
@@ -272,11 +325,15 @@ def _validate_clock(value: Any, expected_source: str, label: str) -> dict[str, A
             "unix_usec": unix,
             "uncertainty_usec": uncertainty,
         }
+        if "raw_uptime" in raw:
+            anchors[endpoint]["raw_uptime"] = raw["raw_uptime"]
     if anchors["end"]["monotonic_usec"] <= anchors["start"]["monotonic_usec"]:
         raise SourceError(f"{label}.clock monotonic anchors must increase")
-    if anchors["end"]["unix_usec"] <= anchors["start"]["unix_usec"]:
+    normalized = {"source": source, "origin_usec": origin, **anchors}
+    raw_interval = _raw_uptime_interval(normalized, f"{label}.clock")
+    if raw_interval is None and anchors["end"]["unix_usec"] <= anchors["start"]["unix_usec"]:
         raise SourceError(f"{label}.clock wall-clock anchors must increase")
-    return {"source": source, "origin_usec": origin, **anchors}
+    return normalized
 
 
 def _frame_clock(report: dict[str, Any]) -> dict[str, Any] | None:
@@ -597,12 +654,35 @@ def _effective_uncertainty(anchor: dict[str, int]) -> int:
 def _combined_clock(frame_clock: dict[str, Any], resource_clock: dict[str, Any],
                     max_clock_drift_ms: float) -> tuple[dict[str, Any], int, int]:
     max_drift_usec = int(round(max_clock_drift_ms * 1000.0))
+    frame_raw = _raw_uptime_interval(frame_clock, "frame")
+    resource_raw = _raw_uptime_interval(resource_clock, "resource")
+    if (frame_raw is None) != (resource_raw is None):
+        raise SourceError("combined raw uptime alignment requires valid anchors from both sources")
     frame_offset_start = frame_clock["start"]["unix_usec"] - frame_clock["start"]["monotonic_usec"]
     resource_offset_start = resource_clock["start"]["unix_usec"] - resource_clock["start"]["monotonic_usec"]
     frame_offset_end = frame_clock["end"]["unix_usec"] - frame_clock["end"]["monotonic_usec"]
     resource_offset_end = resource_clock["end"]["unix_usec"] - resource_clock["end"]["monotonic_usec"]
     frame_drift = abs(frame_offset_end - frame_offset_start)
     resource_drift = abs(resource_offset_end - resource_offset_start)
+    if frame_raw is not None and resource_raw is not None:
+        if (frame_clock.get("source") != "godot_ticks_usec"
+                or resource_clock.get("source") not in ("python_perf_counter", "clock_gettime(CLOCK_UPTIME_RAW)")):
+            raise SourceError("combined raw uptime clock sources are incompatible")
+        metadata = {
+            "mode": "aligned_raw_uptime",
+            "domain": RAW_UPTIME_DOMAIN,
+            "alignment": "producer monotonic timestamps plus the midpoint of their intersected raw uptime offset intervals",
+            "combined_uncertainty_usec": frame_raw["uncertainty_usec"] + resource_raw["uncertainty_usec"],
+            "uncertainty_semantics": "sum of conservative integer midpoint errors within endpoint offset intersections",
+            "frame_raw_offset": frame_raw,
+            "resource_raw_offset": resource_raw,
+            "max_clock_drift_usec": 0,
+            "utc_offset_drift_diagnostic_usec": {"frame": frame_drift, "resources": resource_drift},
+            "utc_used_for_alignment": False,
+            "identity_scope": ("offsets are producer declarations; callers must verify the frame helper and engine, "
+                               "the resource clock implementation, and any host sleep check"),
+        }
+        return metadata, frame_raw["offset_usec"], resource_raw["offset_usec"]
     combined_uncertainty = max(
         _effective_uncertainty(frame_clock["start"]) + _effective_uncertainty(resource_clock["start"]),
         _effective_uncertainty(frame_clock["end"]) + _effective_uncertainty(resource_clock["end"]),
@@ -716,6 +796,7 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
     resource_clock = _resource_clock(normalized_resources) if normalized_resources is not None else None
     clock_metadata: dict[str, Any]
     frame_offset = resource_offset = 0
+    trace_zero = 0
     if normalized_frames is not None and normalized_resources is not None:
         frame_id = _capture_id(normalized_frames, "frames")
         resource_id = _capture_id(normalized_resources, "resources")
@@ -742,33 +823,36 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
                 resource_clock, resource_first_monotonic, resource_last_monotonic,
                 "resource", float(max_clock_drift_ms),
             )
-        frame_first_utc = frame_frame_starts[0] + frame_offset
+        timeline = "raw_uptime" if clock_metadata["mode"] == "aligned_raw_uptime" else "utc"
+        frame_first_aligned = frame_frame_starts[0] + frame_offset
         if resource_samples:
-            resource_first_utc = resource_clock["origin_usec"] + int(round(resource_samples[0]["elapsed_seconds"] * 1_000_000)) + resource_offset
-            frame_last_utc = int(normalized_frames["frame_end_monotonic_usec"][-1]) + frame_offset
-            resource_last_utc = resource_clock["origin_usec"] + int(round(resource_samples[-1]["elapsed_seconds"] * 1_000_000)) + resource_offset
+            resource_first_aligned = resource_clock["origin_usec"] + int(round(resource_samples[0]["elapsed_seconds"] * 1_000_000)) + resource_offset
+            frame_last_aligned = int(normalized_frames["frame_end_monotonic_usec"][-1]) + frame_offset
+            resource_last_aligned = resource_clock["origin_usec"] + int(round(resource_samples[-1]["elapsed_seconds"] * 1_000_000)) + resource_offset
             overlap_allowance = clock_metadata["combined_uncertainty_usec"] + clock_metadata["max_clock_drift_usec"]
-            if frame_last_utc + overlap_allowance < resource_first_utc or resource_last_utc + overlap_allowance < frame_first_utc:
+            if frame_last_aligned + overlap_allowance < resource_first_aligned or resource_last_aligned + overlap_allowance < frame_first_aligned:
                 raise SourceError("clock-aligned frame and resource data windows do not overlap within the clock uncertainty allowance")
-            clock_metadata["frame_data_utc_bounds_usec"] = [frame_first_utc, frame_last_utc]
-            clock_metadata["resource_data_utc_bounds_usec"] = [resource_first_utc, resource_last_utc]
+            clock_metadata[f"frame_data_{timeline}_bounds_usec"] = [frame_first_aligned, frame_last_aligned]
+            clock_metadata[f"resource_data_{timeline}_bounds_usec"] = [resource_first_aligned, resource_last_aligned]
             clock_metadata["data_window_overlap_usec"] = max(
-                0, min(frame_last_utc, resource_last_utc) - max(frame_first_utc, resource_first_utc)
+                0, min(frame_last_aligned, resource_last_aligned) - max(frame_first_aligned, resource_first_aligned)
             )
-            selected_first_utc = (int(normalized_frames["frame_end_monotonic_usec"][selection_start])
-                                  - int(normalized_frames["frame_wall_usec"][selection_start]) + frame_offset)
-            selected_last_utc = int(normalized_frames["frame_end_monotonic_usec"][selection_end - 1]) + frame_offset
-            clock_metadata["selected_frame_data_utc_bounds_usec"] = [selected_first_utc, selected_last_utc]
+            selected_first_aligned = (int(normalized_frames["frame_end_monotonic_usec"][selection_start])
+                                      - int(normalized_frames["frame_wall_usec"][selection_start]) + frame_offset)
+            selected_last_aligned = int(normalized_frames["frame_end_monotonic_usec"][selection_end - 1]) + frame_offset
+            clock_metadata[f"selected_frame_data_{timeline}_bounds_usec"] = [selected_first_aligned, selected_last_aligned]
             clock_metadata["resource_timestamps_bracket_full_frame_window"] = (
-                resource_first_utc <= frame_first_utc and resource_last_utc >= frame_last_utc)
+                resource_first_aligned <= frame_first_aligned and resource_last_aligned >= frame_last_aligned)
             clock_metadata["resource_timestamps_bracket_selected_frame_window"] = (
-                resource_first_utc <= selected_first_utc and resource_last_utc >= selected_last_utc)
+                resource_first_aligned <= selected_first_aligned and resource_last_aligned >= selected_last_aligned)
             clock_metadata["resource_time_scope"] = (
                 "estimated timestamp endpoints only; uncertainty applies and discrete samples do not prove coverage between samples")
         else:
-            resource_first_utc = None
-        zero_utc = min(frame_first_utc, resource_first_utc) if resource_first_utc is not None else frame_first_utc
-        clock_metadata["zero_utc_usec"] = _safe_integer(zero_utc, "combined trace zero_utc_usec")
+            resource_first_aligned = None
+        trace_zero = (min(frame_first_aligned, resource_first_aligned)
+                      if resource_first_aligned is not None else frame_first_aligned)
+        trace_zero = _safe_integer(trace_zero, f"combined trace zero_{timeline}_usec")
+        clock_metadata[f"zero_{timeline}_usec"] = trace_zero
         clock_metadata["frame_clock"] = frame_clock
         clock_metadata["resource_clock"] = resource_clock
     elif normalized_frames is not None:
@@ -924,9 +1008,7 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
             wall = normalized_frames["frame_wall_usec"][index]
             start = int(end) - int(wall)
             if normalized_resources is not None:
-                start_utc = start + frame_offset
-                base = clock_metadata["zero_utc_usec"]
-                ts = _chrome_timestamp(start_utc - base, f"frames[{index}].ts")
+                ts = _chrome_timestamp(start + frame_offset - trace_zero, f"frames[{index}].ts")
             else:
                 ts = _chrome_timestamp(start + frame_offset, f"frames[{index}].ts")
             duration = _safe_integer(int(wall), f"frames[{index}].dur", positive=True)
@@ -955,8 +1037,7 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
                     continue
                 end = int(normalized_frames["frame_end_monotonic_usec"][index])
                 if normalized_resources is not None:
-                    base = clock_metadata["zero_utc_usec"]
-                    timestamp = end + frame_offset - base
+                    timestamp = end + frame_offset - trace_zero
                 else:
                     timestamp = end + frame_offset
                 _make_event(events, {
@@ -982,7 +1063,7 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
                 elapsed_usec = int(round(sample["elapsed_seconds"] * 1_000_000))
                 if normalized_frames is not None:
                     monotonic = resource_clock["origin_usec"] + elapsed_usec
-                    timestamp = monotonic + resource_offset - clock_metadata["zero_utc_usec"]
+                    timestamp = monotonic + resource_offset - trace_zero
                 else:
                     timestamp = elapsed_usec
                 track = f"resource.{scope}.{field} [{unit}]"
@@ -1002,7 +1083,7 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
                     elapsed_usec = int(round(sample["elapsed_seconds"] * 1_000_000))
                     if normalized_frames is not None:
                         monotonic = resource_clock["origin_usec"] + elapsed_usec
-                        timestamp = monotonic + resource_offset - clock_metadata["zero_utc_usec"]
+                        timestamp = monotonic + resource_offset - trace_zero
                     else:
                         timestamp = elapsed_usec
                     _make_event(events, {
@@ -1101,7 +1182,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-events", type=int, default=DEFAULT_MAX_EVENTS,
                         help="trace event budget (default 500000, maximum 1000000)")
     parser.add_argument("--max-clock-drift-ms", type=float, default=50.0,
-                        help="maximum combined anchor drift allowance (0–1000 ms; default 50)")
+                        help="UTC anchor drift allowance for legacy joins (0–1000 ms; default 50); raw uptime uses offset bounds")
     parser.add_argument("--start-frame", type=int, help="first frame index to export, inclusive (default 0)")
     parser.add_argument("--end-frame", type=int, help="last frame index to export, exclusive (default source count)")
     parser.add_argument("--frame-metric", action="append", choices=sorted(_FRAME_METRICS),

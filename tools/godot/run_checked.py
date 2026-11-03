@@ -106,7 +106,7 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                 required: list[str] | None = None, label: str = "godot",
                 resources: bool = False, resource_interval: float = 1.0,
                 resource_max_samples: int = 2100, resource_disk_paths=(),
-                resource_threads: bool = False) -> dict:
+                resource_threads: bool = False, host_state_helper: Path | None = None) -> dict:
     required = required or []
     if type(resources) is not bool:
         raise ValueError("resources must be a boolean")
@@ -115,6 +115,8 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
         raise ValueError("command, finite positive timeout and positive integer log limit required")
     if any(not s or len(s) > 4096 or "\n" in s or "\r" in s for s in required):
         raise ValueError("required text must be a nonempty single-line literal of at most 4096 characters")
+    if host_state_helper is not None and not resources:
+        raise ValueError("host-state capture requires --resources to measure helper and runner overhead")
     resource_backend = None
     resource_source_hashes = {}
     if resources:
@@ -156,6 +158,33 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
     reader = None
     sampler = None
     resource_failure = ""
+    host = None
+    host_failure = ""
+    helper_sampler = None
+    runner_sampler = None
+    host_overhead_failure = ""
+    child_env = {**os.environ, "OPENRC_DIAGNOSTIC_CAPTURE_ID": capture_id}
+    raw_helper_identity = None
+    raw_helper_error = ""
+    if host_state_helper is not None:
+        # A caller's stale environment must not impersonate this run's helper.
+        child_env.pop("OPENRC_RAW_CLOCK_HELPER", None)
+        child_env.pop("OPENRC_RAW_CLOCK_HELPER_SHA256", None)
+        if sys.platform == "darwin":
+            try:
+                if __package__:
+                    from .macos_host_state import _file_identity
+                else:
+                    from macos_host_state import _file_identity
+                helper_path = Path(host_state_helper).absolute()
+                raw_helper_identity = _file_identity(helper_path)
+                if not os.access(helper_path, os.X_OK):
+                    raise ValueError("helper is not executable")
+                child_env["OPENRC_RAW_CLOCK_HELPER"] = os.fspath(helper_path)
+                child_env["OPENRC_RAW_CLOCK_HELPER_SHA256"] = raw_helper_identity[0]
+            except (OSError, ValueError) as error:
+                raw_helper_identity = None
+                raw_helper_error = f"raw helper identity unavailable: {error}"[:500]
 
     def collect(source, destination):
         remaining = max_log_bytes
@@ -184,7 +213,7 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
             try:
                 process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                            stdin=subprocess.DEVNULL, start_new_session=os.name != "nt",
-                                           env={**os.environ, "OPENRC_DIAGNOSTIC_CAPTURE_ID": capture_id})
+                                           env=child_env)
             except OSError as error:
                 reason, detail = "launch_error", str(error)
             if process is not None:
@@ -195,9 +224,33 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                         sampler = ResourceSampler(process.pid, interval=resource_interval,
                                                   max_samples=resource_max_samples,
                                                   disk_paths=resource_disk_paths, backend=resource_backend,
-                                                  include_threads=resource_threads)
+                                                  include_threads=resource_threads,
+                                                  raw_uptime=raw_helper_identity is not None)
                     except Exception as error:
                         resource_failure = f"{type(error).__name__}: {error}"[:1000]
+                if host_state_helper is not None:
+                    try:
+                        if __package__:
+                            from .macos_host_state import HostStateCapture
+                        else:
+                            from macos_host_state import HostStateCapture
+                        host = HostStateCapture(Path(host_state_helper), capture_id, process.pid,
+                                                min(3600, max(1, math.ceil(timeout))),
+                                                directory / "host-state.jsonl")
+                        if raw_helper_identity is not None and host.helper_identity != raw_helper_identity:
+                            host.identity_errors.append("helper_identity_changed_between_game_and_host_launch")
+                        if raw_helper_error:
+                            host_failure = raw_helper_error
+                        helper_sampler = ResourceSampler(host.process.pid, interval=resource_interval,
+                                                         max_samples=resource_max_samples,
+                                                         backend=resource_backend,
+                                                         raw_uptime=raw_helper_identity is not None)
+                        runner_sampler = ResourceSampler(os.getpid(), interval=resource_interval,
+                                                         max_samples=resource_max_samples,
+                                                         backend=resource_backend,
+                                                         raw_uptime=raw_helper_identity is not None)
+                    except Exception as error:
+                        host_failure = f"{type(error).__name__}: {error}"[:1000]
                 while process.poll() is None or reader.is_alive():
                     if overflow.is_set():
                         reason = "log_limit"
@@ -214,6 +267,14 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                         except Exception as error:
                             # A telemetry failure does not terminate a healthy game.
                             resource_failure = f"{type(error).__name__}: {error}"[:1000]
+                    if host is not None and not host_overhead_failure and process.poll() is None:
+                        try:
+                            if helper_sampler is not None:
+                                helper_sampler.poll()
+                            if runner_sampler is not None:
+                                runner_sampler.poll()
+                        except Exception as error:
+                            host_overhead_failure = f"{type(error).__name__}: {error}"[:1000]
                     time.sleep(0.02)
                 if reason:
                     detail = stop_process(process) or detail
@@ -298,6 +359,37 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
             report["resources"] = {"file": None, "published": False, "attempted_file": "resources.json",
                                    "coverage": "unavailable",
                                    "error": f"{type(error).__name__}: {error}"[:1000]}
+    if host_state_helper is not None:
+        # Finish resource samplers while the helper is still alive. A missing
+        # sampler never converts the game result to a failure.
+        overhead_path = directory / "host-overhead.json"
+        try:
+            if helper_sampler is None or runner_sampler is None or host_failure:
+                raise RuntimeError(host_overhead_failure or host_failure or "overhead samplers unavailable")
+            overhead = {"format": "openrc-host-overhead-v1", "capture_id": capture_id,
+                        "helper": helper_sampler.finish(), "runner": runner_sampler.finish(),
+                        "error": host_overhead_failure or None}
+            raw_overhead = (json.dumps(overhead, indent=2, allow_nan=False) + "\n").encode("utf-8")
+            with overhead_path.open("xb") as stream:
+                stream.write(raw_overhead)
+            overhead_status = {"file": overhead_path.name, "bytes": len(raw_overhead),
+                               "sha256": hashlib.sha256(raw_overhead).hexdigest(),
+                               "error": host_overhead_failure or None}
+        except Exception as error:
+            overhead_status = {"file": None, "error": f"{type(error).__name__}: {error}"[:1000]}
+        if host is not None:
+            try:
+                host_status = host.finish()
+                if host_failure:
+                    host_status["coverage"] = "partial"
+                    host_status["error"] = host_failure
+            except Exception as error:
+                host_status = {"coverage": "partial", "error": f"{type(error).__name__}: {error}"[:1000]}
+        else:
+            host_status = {"coverage": "unavailable", "error": host_failure or "helper not started"}
+        host_status["capture_id"] = capture_id
+        host_status["overhead"] = overhead_status
+        report["host_state"] = host_status
     report_path.write_text(json.dumps(report, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
     return report
 
@@ -323,6 +415,8 @@ def main() -> int:
                         help="sample volume capacity for this existing directory; repeat up to eight times")
     parser.add_argument("--resource-threads", action="store_true",
                         help="also count threads; this can be expensive on Windows")
+    parser.add_argument("--host-state-helper", type=Path,
+                        help="opt in to a prebuilt macOS host-state companion; requires --resources")
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
@@ -333,7 +427,7 @@ def main() -> int:
                              resource_interval=args.resource_interval,
                              resource_max_samples=args.resource_max_samples,
                              resource_disk_paths=args.resource_disk_path,
-                             resource_threads=args.resource_threads)
+                             resource_threads=args.resource_threads, host_state_helper=args.host_state_helper)
     except (OSError, ValueError) as error:
         print(f"Godot check configuration/output error: {error}", file=sys.stderr)
         return 2
@@ -370,6 +464,12 @@ def main() -> int:
         for path, volume in summary.get("volume_free_capacity_minima", {}).items():
             if volume.get("free_bytes") is not None:
                 print(f"  Lowest sampled volume free space ({path}): {volume['free_bytes'] / 1073741824:.2f} GiB", file=sys.stderr)
+    if "host_state" in result:
+        status = result["host_state"]
+        print(f"Host-state capture: {status['coverage']}; pressure initially unknown; "
+              f"report: {result['report']}", file=sys.stderr)
+        if status.get("error"):
+            print(status["error"], file=sys.stderr)
     return result["exit_code"]
 
 

@@ -31,6 +31,7 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 
 
 func _initialize() -> void:
+	_test_raw_clock()
 	_test_options()
 	_test_warmup_boundary_and_stall()
 	_test_aggregation_and_write()
@@ -44,6 +45,135 @@ func _initialize() -> void:
 	_test_production_grass_profile_snapshot()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _test_raw_clock() -> void:
+	var good := '{"format":"openrc-raw-clock-v1","clock":"CLOCK_UPTIME_RAW","raw_uptime_usec":123456789}\n'
+	var digest := "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+	var supported := {major = 4, minor = 8, patch = 0, status = "beta1", build = "official", hash = FrameSamples.RAW_CLOCK_GODOT_COMMIT}
+	_check("vetted engine metadata is accepted", FrameSamples._raw_clock_supported_engine(supported))
+	var wrong_engine: Dictionary = supported.duplicate()
+	wrong_engine.hash = "other"
+	_check("different engine commit is refused", not FrameSamples._raw_clock_supported_engine(wrong_engine))
+	wrong_engine = supported.duplicate()
+	wrong_engine.status = "stable"
+	_check("different engine release is refused", not FrameSamples._raw_clock_supported_engine(wrong_engine))
+	var parsed: Dictionary = FrameSamples._raw_clock_parse(good.to_ascii_buffer())
+	_check("raw uptime integer parses exactly", parsed.ok and parsed.raw_usec == 123456789)
+	var interval: Dictionary = FrameSamples._raw_clock_interval(good.to_ascii_buffer(), 1000, 2000, digest)
+	_check("raw uptime offset conservatively brackets both tick reads", interval.status == "available" \
+		and interval.domain == "darwin_mach_absolute_time" and interval.offset_lower_usec == 123454788 \
+		and interval.offset_upper_usec == 123455790 and interval.helper_sha256 == digest)
+	_check("100 ms widened bracket is accepted", FrameSamples._raw_clock_interval(good.to_ascii_buffer(), 1, 99999, digest).status == "available")
+	_check("too-wide and reversed brackets are refused", FrameSamples._raw_clock_interval(good.to_ascii_buffer(), 1, 100000, digest).status == "error" \
+		and FrameSamples._raw_clock_interval(good.to_ascii_buffer(), 3, 2, digest).status == "error")
+	_check("negative tick and malformed identity are refused", FrameSamples._raw_clock_interval(good.to_ascii_buffer(), -1, 2, digest).status == "error" \
+		and FrameSamples._raw_clock_interval(good.to_ascii_buffer(), 1, 2, "BAD").status == "error")
+	var invalid := [
+		"", "garbage\n", good.strip_edges(), good + "extra\n", good.replace("CLOCK_UPTIME_RAW", "CLOCK_MONOTONIC"),
+		good.replace("123456789", "123.0"), good.replace("123456789", "1e3"), good.replace("123456789", "-1"),
+		good.replace("123456789", '"123"'), good.replace("123456789", "9007199254740992"),
+		good.replace("123456789", "true"), good.replace("123456789}", '123456789,"clock":"CLOCK_UPTIME_RAW"}'),
+		good.replace("123456789}", '123456789,"extra":1}'), good.replace("raw_uptime_usec", "raw_time_usec"),
+	]
+	for text: String in invalid:
+		_check("malformed raw uptime response is refused", not FrameSamples._raw_clock_parse(text.to_utf8_buffer()).ok, text.left(40))
+
+	var had_path := OS.has_environment(FrameSamples.RAW_CLOCK_HELPER_ENV)
+	var old_path := OS.get_environment(FrameSamples.RAW_CLOCK_HELPER_ENV)
+	var had_sha := OS.has_environment(FrameSamples.RAW_CLOCK_SHA_ENV)
+	var old_sha := OS.get_environment(FrameSamples.RAW_CLOCK_SHA_ENV)
+	OS.unset_environment(FrameSamples.RAW_CLOCK_HELPER_ENV)
+	OS.unset_environment(FrameSamples.RAW_CLOCK_SHA_ENV)
+	var logger := FrameSamples.new()
+	var configured: bool = logger.configure(0.0, 1.0)
+	var legacy: Dictionary = logger.report()
+	_check("default collector keeps legacy anchors without spawning a helper", configured \
+		and not legacy.clock.start.has("raw_uptime") and not legacy.clock.end.has("raw_uptime"))
+	OS.set_environment(FrameSamples.RAW_CLOCK_HELPER_ENV, "/missing")
+	var partial: Dictionary = FrameSamples._raw_clock_config()
+	_check("partial raw clock opt-in does not silently fall back", not partial.is_empty() \
+		and FrameSamples._raw_clock_checked_call(partial).status == "error")
+	var error_anchor: Dictionary = FrameSamples._clock_anchor(partial)
+	_check("failed opt-in retains an explicit error in the clock anchor", error_anchor.get("raw_uptime", {}).get("status") == "error" \
+		and not str(error_anchor.get("raw_uptime", {}).get("reason", "")).is_empty())
+	_check("helper digests require lowercase hexadecimal SHA-256", FrameSamples._raw_clock_valid_sha(digest) \
+		and not FrameSamples._raw_clock_valid_sha(digest.to_upper()) and not FrameSamples._raw_clock_valid_sha("x".repeat(64)))
+	if OS.get_name() != "macOS":
+		_check("raw clock opt-in fails closed on unsupported platforms", FrameSamples._raw_clock_anchor(partial).status == "error")
+	if OS.get_name() in ["Linux", "macOS"]:
+		_test_raw_clock_child(good, digest)
+	if had_path: OS.set_environment(FrameSamples.RAW_CLOCK_HELPER_ENV, old_path)
+	else: OS.unset_environment(FrameSamples.RAW_CLOCK_HELPER_ENV)
+	if had_sha: OS.set_environment(FrameSamples.RAW_CLOCK_SHA_ENV, old_sha)
+	else: OS.unset_environment(FrameSamples.RAW_CLOCK_SHA_ENV)
+
+
+func _test_raw_clock_child(good: String, other_digest: String) -> void:
+	var directory := ProjectSettings.globalize_path("user://raw-clock-test-%d" % OS.get_process_id())
+	if DirAccess.make_dir_recursive_absolute(directory) != OK:
+		_check("raw clock child test directory", false)
+		return
+	var script := directory.path_join("clock helper.sh")
+	var cases := [
+		["success", "#!/bin/sh\n[ \"$1\" = \"--clock-sample\" ] || exit 8\nprintf '%s\\n' '" + good.strip_edges() + "'\n", "available", ""],
+		["nonzero exit", "#!/bin/sh\nprintf '%s\\n' '" + good.strip_edges() + "'\nexit 4\n", "error", "raw uptime helper exited unsuccessfully"],
+		["stderr", "#!/bin/sh\nprintf 'failure' >&2\nprintf '%s\\n' '" + good.strip_edges() + "'\n", "error", "raw uptime helper wrote to stderr"],
+		["oversize", "#!/bin/sh\nprintf '%05000d\\n' 0\n", "error", "raw uptime helper output exceeded its bound"],
+		["timeout", "#!/bin/sh\nwhile :; do :; done\n", "error", "raw uptime helper exceeded its time bound"],
+		["changed helper", "#!/bin/sh\nprintf '%s\\n' '" + good.strip_edges() + "'\nprintf '#' >> \"$0\"\n", "error", "raw uptime helper identity or configuration changed during call"],
+	]
+	for item: Array in cases:
+		var file := FileAccess.open(script, FileAccess.WRITE)
+		if file == null:
+			_check("raw clock child fixture writes", false)
+			break
+		# Warm only the shell/interpreter path, never the tested fixture body.
+		var body: String = item[1]
+		file.store_string(body.replace("#!/bin/sh\n", "#!/bin/sh\nif [ \"$1\" = \"--warm\" ]; then exit 0; fi\n"))
+		file.close()
+		var output := []
+		var mode := OS.execute("/bin/chmod", PackedStringArray(["u+x", script]), output)
+		var sha := FileAccess.get_sha256(script)
+		var warmed := mode == 0 and _warm_raw_clock_child(script)
+		_check("raw clock child warm mode leaves fixture unchanged: " + str(item[0]), warmed \
+			and FileAccess.get_sha256(script) == sha)
+		OS.set_environment(FrameSamples.RAW_CLOCK_HELPER_ENV, script)
+		OS.set_environment(FrameSamples.RAW_CLOCK_SHA_ENV, sha)
+		var sample: Dictionary = FrameSamples._raw_clock_checked_call(FrameSamples._raw_clock_config())
+		_check("bounded raw clock child: " + str(item[0]), mode == 0 and sample.status == item[2] \
+			and (item[2] == "available" or sample.get("reason") == item[3]), str(sample))
+		if item[0] == "success" and sample.status == "available":
+			_check("raw clock child retains pinned helper and bounded bracket", sample.helper_sha256 == sha \
+				and sample.offset_upper_usec - sample.offset_lower_usec <= FrameSamples.RAW_CLOCK_MAX_BRACKET_USEC)
+	var changed: Dictionary = FrameSamples._raw_clock_config()
+	changed.sha256 = other_digest
+	_check("changed raw clock environment identity is refused", FrameSamples._raw_clock_checked_call(changed).status == "error")
+	DirAccess.remove_absolute(script)
+	DirAccess.remove_absolute(directory)
+
+
+## The tested helper retains its strict 100 ms bracket. This separate test-only
+## warm dispatch is bounded and cannot execute or mutate a fixture's body.
+func _warm_raw_clock_child(path: String) -> bool:
+	var child: Dictionary = OS.execute_with_pipe(path, PackedStringArray(["--warm"]), false)
+	if child.is_empty() or not child.has_all(["pid", "stdio", "stderr"]): return false
+	var pid: int = child.pid
+	var output: FileAccess = child.stdio
+	var errors: FileAccess = child.stderr
+	var deadline := Time.get_ticks_usec() + 5_000_000
+	var timed_out := false
+	while OS.is_process_running(pid):
+		if Time.get_ticks_usec() >= deadline:
+			timed_out = true
+			OS.kill(pid)
+			break
+		OS.delay_usec(1000)
+	var ok := not timed_out and OS.get_process_exit_code(pid) == 0 \
+		and output.get_length() == 0 and errors.get_length() == 0
+	output.close()
+	errors.close()
+	return ok
 
 
 func _stream_path(label: String) -> String:

@@ -16,6 +16,7 @@ import json
 import math
 import re
 import sys
+import uuid
 from pathlib import Path
 from typing import Any, Sequence
 
@@ -36,6 +37,47 @@ STREAM_MAX_RETAINED_ARRAY_BYTES = 128 * 1024 * 1024
 MAX_REPORT_BYTES = 128 * 1024 * 1024
 MAX_LOG_BYTES = 64 * 1024 * 1024
 SUMMARY_FORMAT = "openrc-native-frame-summary v1"
+BENCHMARK_ROUTE = "benchmark-input-circuit"
+BENCHMARK_HEALTH_FORMAT = "openrc-benchmark-health v1"
+MAX_BENCHMARK_HEALTH_BYTES = 4 * 1024 * 1024
+MAX_BENCHMARK_CHECK_BYTES = 1024 * 1024
+MAX_BENCHMARK_SOURCES = 8192
+MAX_BENCHMARK_SAMPLES = 4096
+BENCHMARK_REQUIRED_SOURCES = frozenset({
+    "research/performance/sustained_flight.gd", "research/performance/sustained_input.gd",
+    "res://ai/companions/pilot.gd", "res://ai/companions/circuit_controller.gd",
+    "res://ai/companions/observation_airdata.gd", "res://input/commands.gd", "res://spec.gd",
+    "res://data/aircraft/jensen_ugly_stik_60.json", "res://data/fields/default.json", "res://data/fields/lake.json",
+    "res://statistics/fixed_wing_adapter.gd", "res://physics/ground_terrain.gd",
+    "res://main.gd", "res://sim/flight_session.gd", "res://sim/simulation.gd",
+    "res://render/frame_samples.gd",
+})
+BENCHMARK_PROVENANCE_SOURCES = frozenset({
+    "res://main.gd", "res://sim/flight_session.gd", "res://sim/simulation.gd",
+    "res://render/frame_samples.gd", "res://input/commands.gd", "res://spec.gd",
+    "res://data/aircraft/jensen_ugly_stik_60.json", "res://data/fields/default.json", "res://data/fields/lake.json",
+    "res://physics/ground_terrain.gd",
+})
+BENCHMARK_VIOLATIONS = frozenset({
+    "tick_discontinuity", "nonfinite", "input_ownership", "crash", "fault", "pause",
+    "hold", "contact", "prop_strike", "pilot_failure", "focus_loss", "observation_overflow",
+})
+BENCHMARK_FORCED_OPTIONS = {
+    "aircraft": "jensen-das-ugly-stik-60", "start": "airborne", "rates": "full",
+    "weather": "calm", "landscape": "club_field", "companions": "0",
+    "physics-backend": "gdscript_reference",
+}
+BENCHMARK_INTERNAL_OPTIONS = frozenset({
+    "frametimes", "frametimes-stream", "t", "warmup", "case", "sustained-receipt",
+    "sustained-hash", "sustained-observation", "sustained-diagnostic-ticks",
+})
+BENCHMARK_REJECTED_OPTIONS = frozenset({
+    "quick-flight", "scripted", "trace", "capture", "visual_pose", "visual_distance", "visual_elevation",
+    "visual_azimuth", "hide_airplane", "experimental-aircraft-data", "electric-demo", "weather-file", "wind-speed",
+    "wind-from", "gust-speed", "gust-up", "gust-duration", "gust-period", "gust-delay", "alt", "fuel",
+    "flight-log", "shaft-integrator", "failure-seed", "failures", "catastrophic", "out-of-trim", "battery",
+    "companions-seed", "native-qualification", "flight-log-cli", "case",
+})
 DEFAULT_POLICY = {
     "p95_max_ms": 18.0,
     "p99_max_ms": 25.0,
@@ -50,7 +92,12 @@ ENGINE_ERROR_RE = re.compile(r"\b(?:SCRIPT\s+)?ERROR(?:\s*:|\b)", re.IGNORECASE)
 
 
 def _is_number(value: Any) -> bool:
-    return type(value) in (int, float) and math.isfinite(float(value))
+    if type(value) not in (int, float):
+        return False
+    try:
+        return math.isfinite(float(value))
+    except OverflowError:
+        return False
 
 
 def _is_int(value: Any) -> bool:
@@ -449,9 +496,12 @@ def validate_native_report(report: Any) -> tuple[list[str], dict[str, Any] | Non
     return errors, derived
 
 
-def active_flight_reasons(report: dict[str, Any], derived: dict[str, Any], policy: dict[str, Any]) -> list[str]:
+def active_flight_reasons(report: dict[str, Any], derived: dict[str, Any], policy: dict[str, Any],
+                          *, benchmark_eligible: bool = False) -> list[str]:
     reasons: list[str] = []
-    if report.get("route") != "live-input":
+    if report.get("route") != "live-input" and not (
+        report.get("route") == BENCHMARK_ROUTE and benchmark_eligible
+    ):
         reasons.append("route is not live-input")
     if report.get("input_enabled") is not True:
         reasons.append("input is disabled")
@@ -803,6 +853,406 @@ def _hydrate_stream_report(report: dict[str, Any], report_path: Path, *, include
                       "write_max_usec": stream["write_max_usec"], "write_timing_scope": stream["write_timing_scope"]}
 
 
+def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict[str, Any],
+                     stream: dict[str, Any] | None) -> dict[str, Any]:
+    """Validate the separate, bounded circuit observer receipt for this frame stream.
+
+    A receipt is evidence from the benchmark owner, not a signature or evidence
+    of a pilot, the Home-to-Fly route, a release package or physical validation.
+    """
+    path = report_path.with_name("health-" + report_path.name)
+    reasons: list[str] = []
+    receipt_bytes: bytes | None = None
+    receipt: Any = None
+    try:
+        if path.is_symlink():
+            raise ValueError("health receipt must not be a symbolic link")
+        receipt_bytes = _read_bounded(path, MAX_BENCHMARK_HEALTH_BYTES)
+        receipt = json.loads(receipt_bytes.decode("utf-8"), parse_constant=_reject_constant,
+                             object_pairs_hook=_unique_object)
+        if not isinstance(receipt, dict):
+            raise ValueError("health receipt must be an object")
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError, RecursionError) as error:
+        reasons.append(f"health receipt is unreadable or malformed: {error}")
+
+    if isinstance(receipt, dict):
+        pending = [receipt]
+        while pending:
+            item = pending.pop()
+            if isinstance(item, float) and not math.isfinite(item):
+                reasons.append("health receipt contains a non-finite number")
+                break
+            if isinstance(item, dict):
+                pending.extend(item.values())
+            elif isinstance(item, list):
+                pending.extend(item)
+        if receipt.get("format") != BENCHMARK_HEALTH_FORMAT or receipt.get("route") != BENCHMARK_ROUTE:
+            reasons.append("health format or route is incorrect")
+        for key in ("complete", "timing_complete", "frame_collection_complete", "timing_eligible", "source_unchanged",
+                    "frame_capture_id_matches"):
+            if receipt.get(key) is not True:
+                reasons.append(f"health {key} must be true")
+        if (receipt.get("diagnostic_complete") is not False or receipt.get("observer_off_control_complete") is not False
+                or type(receipt.get("frame_exit_code")) is not int or receipt["frame_exit_code"] != 0
+                or receipt.get("failure") != ""):
+            reasons.append("health must describe a successful timing run without a failure")
+        dwell = receipt.get("dwell_after_frame_seal_s")
+        if not _is_number(dwell) or dwell < 2.5:
+            reasons.append("health must retain the process for at least 2.5 seconds after frame seal")
+        capture_id = report.get("capture_id")
+        if (not isinstance(capture_id, str) or not capture_id.strip() or len(capture_id) > 128
+                or receipt.get("capture_id") != capture_id):
+            reasons.append("health capture ID does not match the frame report")
+        else:
+            try:
+                if str(uuid.UUID(capture_id)) != capture_id:
+                    raise ValueError("noncanonical UUID")
+            except ValueError:
+                reasons.append("health capture ID is not a canonical UUID")
+        expected_report_hash = _sha256_bytes(report_bytes) if report_bytes is not None else None
+        declared_frame = receipt.get("frame_report")
+        if (receipt.get("report") != report_path.name or not isinstance(declared_frame, str)
+                or not declared_frame or declared_frame.replace("\\", "/").rsplit("/", 1)[-1] != report_path.name):
+            reasons.append("health frame report name does not match")
+        if (expected_report_hash is None or receipt.get("report_sha256") != expected_report_hash
+                or receipt.get("frame_report_sha256") != expected_report_hash):
+            reasons.append("health frame report SHA-256 does not match")
+        if (report.get("format") != STREAM_FORMAT or stream is None
+                or receipt.get("frame_stream_sha256") != stream.get("sha256")):
+            reasons.append("health requires the matching validated v3 frame stream")
+
+        sources = receipt.get("source_sha256")
+        provenance = report.get("code_provenance")
+        provenance = provenance.get("source_sha256") if isinstance(provenance, dict) else None
+        valid_sources = isinstance(sources, dict) and 1 <= len(sources) <= MAX_BENCHMARK_SOURCES
+        if valid_sources:
+            valid_sources = all(
+                isinstance(key, str) and 1 <= len(key) <= 512 and key.isascii()
+                and all(33 <= ord(char) <= 126 for char in key)
+                and isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+                for key, value in sources.items()
+            )
+        if not valid_sources:
+            reasons.append("health source identities are missing, malformed or exceed their bounds")
+        else:
+            if not BENCHMARK_REQUIRED_SOURCES.issubset(sources):
+                reasons.append("health omits required benchmark or runtime source identities")
+            if (not isinstance(provenance, dict)
+                    or not BENCHMARK_PROVENANCE_SOURCES.issubset(provenance)
+                    or any(sources.get(key) != provenance.get(key) for key in BENCHMARK_PROVENANCE_SOURCES)
+                    or any(value != provenance[key] for key, value in sources.items() if key in provenance)):
+                reasons.append("health runtime source identities do not match frame provenance")
+            identity = "".join(f"{key}:{sources[key]}\n" for key in sorted(sources))
+            identity_hash = hashlib.sha256(identity.encode("ascii")).hexdigest()
+            if report.get("case_id") != f"{BENCHMARK_ROUTE}-{identity_hash}":
+                reasons.append("health source identities are not bound to the frame case ID")
+
+        scenario = receipt.get("scenario")
+        if not isinstance(scenario, dict):
+            reasons.append("health scenario identity is missing")
+            scenario = {}
+        if (scenario.get("aircraft_id") != report.get("aircraft_id")
+                or scenario.get("aircraft_id") != "jensen-das-ugly-stik-60"
+                or scenario.get("field_id") != "default" or scenario.get("seed") != 20261021
+                or type(scenario.get("seed")) is not int or scenario.get("start_choice") != "airborne"
+                or not _is_number(scenario.get("trim_speed_m_s"))
+                or scenario.get("trim_speed_m_s") != 15.0 or scenario.get("rate_profile") != "full"
+                or not _is_number(scenario.get("trim_throttle")) or not 0 <= scenario.get("trim_throttle", -1) <= 1
+                or type(scenario.get("physics_hz")) is not int or scenario.get("physics_hz") != 240
+                or type(scenario.get("control_update_ticks")) is not int or scenario.get("control_update_ticks") != 4
+                or scenario.get("input_enabled") is not True or scenario.get("physics_enabled") is not True
+                or scenario.get("external_driver_enabled") is not False
+                or scenario.get("fixed_fps_diagnostic") is not False
+                or scenario.get("observation_mode") != "on"
+                or type(scenario.get("state_input_hashing")) is not bool
+                or not isinstance(scenario.get("weather"), dict) or not scenario["weather"]):
+            reasons.append("health scenario does not identify the declared automatic circuit workload")
+        arguments = scenario.get("arguments")
+        if (not isinstance(arguments, list) or not 1 <= len(arguments) <= 128
+                or any(not isinstance(arg, str) or not arg.startswith("--") or len(arg) > 4096 for arg in arguments)):
+            reasons.append("health scenario arguments are missing or malformed")
+            arguments = []
+        if ([arg for arg in arguments if arg.startswith("--case=")] != ["--case=" + str(report.get("case_id", ""))]
+                or [arg for arg in arguments if arg.startswith("--frametimes=")] != ["--frametimes=" + str(declared_frame)]
+                or arguments.count("--frametimes-stream") != 1):
+            reasons.append("health scenario arguments do not match the frame capture")
+        weather = scenario.get("weather")
+        if (not isinstance(weather, dict) or weather.get("format") != "openrc-weather v1"
+                or any(not _is_number(weather.get(key)) or weather[key] != 0
+                       for key in ("speed_mps", "gust_mps", "gust_up_mps"))):
+            reasons.append("health scenario does not identify calm weather")
+        stage = scenario.get("stage_backend")
+        stage_identity = stage.get("identity") if isinstance(stage, dict) else None
+        if (not isinstance(stage, dict) or stage.get("requested") != "gdscript_reference"
+                or stage.get("reason") != "" or not isinstance(stage_identity, dict)
+                or stage_identity.get("backend") != "gdscript_reference"):
+            reasons.append("health scenario does not identify the reference physics backend")
+        solver = scenario.get("solver_identity")
+        checkpoint = scenario.get("initial_checkpoint_sha256")
+        if (not isinstance(solver, dict) or solver.get("kind") != "source-tree-v1"
+                or not isinstance(solver.get("sha256"), str)
+                or re.fullmatch(r"[0-9a-f]{64}", solver["sha256"]) is None
+                or not isinstance(checkpoint, str) or re.fullmatch(r"[0-9a-f]{64}", checkpoint) is None):
+            reasons.append("health scenario lacks source-tree solver or initial checkpoint identity")
+
+        observation = receipt.get("observation")
+        if not isinstance(observation, dict):
+            reasons.append("health observation is missing")
+            observation = {}
+        for key in ("physics_enabled_throughout", "input_enabled_throughout",
+                    "external_driver_disabled_throughout", "automatic_callbacks_throughout"):
+            if observation.get(key) is not True:
+                reasons.append(f"health observation.{key} must be true")
+        for key in ("start_monotonic_usec", "end_monotonic_usec", "start_tick", "end_tick",
+                    "accepted_ticks", "input_reads", "observer_calls"):
+            value = observation.get(key)
+            if not _is_int(value) or value < 0:
+                reasons.append(f"health observation.{key} must be a non-negative integer")
+        start_tick, end_tick = observation.get("start_tick"), observation.get("end_tick")
+        if (_is_int(start_tick) and _is_int(end_tick)
+                and (start_tick != 0 or end_tick <= start_tick
+                     or any(observation.get(key) != end_tick - start_tick
+                            for key in ("accepted_ticks", "input_reads", "observer_calls")))):
+            reasons.append("health must observe every accepted tick and input from tick zero")
+        start_usec, end_usec = observation.get("start_monotonic_usec"), observation.get("end_monotonic_usec")
+        sample_start = report.get("actual_sample_start_monotonic_usec")
+        sample_end = report.get("actual_sample_end_monotonic_usec")
+        clock = report.get("clock")
+        clock_start = clock.get("start", {}).get("monotonic_usec") if isinstance(clock, dict) and isinstance(clock.get("start"), dict) else None
+        clock_end = clock.get("end", {}).get("monotonic_usec") if isinstance(clock, dict) and isinstance(clock.get("end"), dict) else None
+        if (not all(_is_int(value) for value in (start_usec, end_usec, clock_start, clock_end,
+                                                 sample_start, sample_end))
+                or not 0 <= start_usec <= clock_start <= sample_start < sample_end <= clock_end <= end_usec):
+            reasons.append("health observation does not bracket the full frame capture clock")
+        simulation, measured = report.get("simulation"), report.get("measured_simulation")
+        if (not isinstance(simulation, dict) or not isinstance(measured, dict)
+                or not all(_is_int(value) for value in (start_tick, end_tick, simulation.get("start_tick"),
+                                                        simulation.get("end_tick"), measured.get("start_tick"),
+                                                        measured.get("end_tick")))
+                or not start_tick <= simulation["start_tick"] <= measured["start_tick"]
+                <= measured["end_tick"] <= simulation["end_tick"] <= end_tick):
+            reasons.append("health observation does not bracket the full frame capture ticks")
+
+        violations = receipt.get("violations")
+        if (not isinstance(violations, dict) or set(violations) != BENCHMARK_VIOLATIONS
+                or any(not _is_int(value) or value != 0 for value in violations.values())):
+            reasons.append("health violation counters must all be present and zero")
+        endpoint = report.get("session_at_report")
+        if (not isinstance(endpoint, dict) or endpoint.get("crashed") is not False
+                or endpoint.get("holds") != [] or endpoint.get("pause_reason") != ""
+                or endpoint.get("window_focused") is not True):
+            reasons.append("frame report endpoint is crashed, held, paused, unfocused or unavailable")
+
+        health = receipt.get("health")
+        if (not isinstance(health, dict) or not _is_int(end_tick)
+                or any(type(health.get(key)) is not int or health.get(key) != end_tick
+                       for key in ("accepted_ticks", "input_reads", "observer_calls"))
+                or type(health.get("last_read_tick")) is not int or health.get("last_read_tick") != end_tick - 1
+                or type(health.get("pilot_updates")) is not int or health.get("pilot_updates") != (end_tick + 3) // 4
+                or health.get("pilot_failure") != ""
+                or not _is_number(health.get("min_altitude_m"))
+                or not _is_number(health.get("min_ground_clearance_m")) or health["min_ground_clearance_m"] <= 0
+                or not _is_number(health.get("max_abs_radius_error_m")) or health["max_abs_radius_error_m"] < 0):
+            reasons.append("health input, pilot or sampled route coverage is inconsistent")
+
+        checkpoints = receipt.get("checkpoints")
+        if scenario.get("state_input_hashing") is True:
+            if not isinstance(checkpoints, list) or not 1 <= len(checkpoints) <= 1000 or not _is_int(end_tick):
+                reasons.append("health state/input checkpoint coverage is missing or exceeds its bound")
+            else:
+                next_tick = 1
+                for point in checkpoints:
+                    if (not isinstance(point, dict) or point.get("start_tick") != next_tick
+                            or not _is_int(point.get("start_tick")) or not _is_int(point.get("end_tick"))
+                            or point["end_tick"] < next_tick or point["end_tick"] > end_tick
+                            or point["end_tick"] - next_tick + 1 > 6000
+                            or not isinstance(point.get("sha256"), str)
+                            or re.fullmatch(r"[0-9a-f]{64}", point["sha256"]) is None
+                            or (point["end_tick"] - next_tick + 1 < 6000 and point.get("partial") is not True)
+                            or (point["end_tick"] - next_tick + 1 == 6000 and point.get("partial", False) is not False)
+                            or (point["end_tick"] < end_tick and point["end_tick"] - next_tick + 1 != 6000)):
+                        reasons.append("health state/input checkpoint coverage is invalid")
+                        break
+                    next_tick = point["end_tick"] + 1
+                else:
+                    if next_tick != end_tick + 1:
+                        reasons.append("health state/input checkpoints do not cover all accepted ticks")
+        elif checkpoints != []:
+            reasons.append("health must not claim checkpoints when state/input hashing is disabled")
+        samples = health.get("samples_1hz") if isinstance(health, dict) else None
+        if not isinstance(samples, list) or not 2 <= len(samples) <= MAX_BENCHMARK_SAMPLES:
+            reasons.append("health diagnostic samples are missing or exceed their bound")
+        else:
+            previous_tick: int | None = None
+            for sample in samples:
+                if not isinstance(sample, dict):
+                    reasons.append("health diagnostic sample must be an object")
+                    break
+                tick = sample.get("tick")
+                values = [sample.get(key) for key in ("time_s", "north_m", "east_m", "altitude_m",
+                                                        "ground_clearance_m", "radius_error_m")]
+                if (not _is_int(tick) or tick < 0 or not _is_number(tick) or not all(_is_number(value) for value in values)
+                        or values[4] <= 0 or not _close(float(values[0]), tick / 240.0, tolerance=1e-6)
+                        or (previous_tick is not None and not 0 < tick - previous_tick <= 240)):
+                    reasons.append("health diagnostic samples have invalid values or tick coverage")
+                    break
+                previous_tick = tick
+            else:
+                if samples[0]["tick"] != start_tick or samples[-1]["tick"] != end_tick:
+                    reasons.append("health diagnostic samples do not cover observation endpoints")
+
+    return {
+        "receipt": path.name,
+        "receipt_sha256": _sha256_bytes(receipt_bytes) if receipt_bytes is not None else None,
+        "eligible": not reasons,
+        "reasons": reasons,
+        "source_identity_sha256": identity_hash if isinstance(receipt, dict) and valid_sources else None,
+        "declared_frame_path": declared_frame if isinstance(receipt, dict) and isinstance(declared_frame, str) else None,
+        "scenario": ({**{key: scenario.get(key) for key in (
+            "aircraft_id", "field_id", "seed", "start_choice", "trim_speed_m_s", "trim_throttle", "rate_profile",
+            "weather", "stage_backend", "physics_hz", "control_update_ticks", "initial_checkpoint_sha256",
+            "solver_identity", "input_enabled", "physics_enabled", "external_driver_enabled", "fixed_fps_diagnostic",
+            "observation_mode", "state_input_hashing",
+            "collision_world_identity", "lake_identity", "checkpoint_configuration",
+        )}, "arguments": [arg for arg in arguments if not arg.startswith(("--frametimes=", "--case="))]}
+            if isinstance(receipt, dict) and not reasons else None),
+        "scope": "technical benchmark circuit; not normal product-route, package or pilot acceptance",
+    }
+
+
+def _benchmark_arguments_match(user: list[str], scenario: dict[str, Any], report: dict[str, Any]) -> bool:
+    """Reconcile the checked command with the options forwarded by the fixture."""
+    def parse(arguments: list[str]) -> tuple[dict[str, str | None], list[tuple[str, str]]] | None:
+        options: dict[str, str | None] = {}
+        ordered: list[tuple[str, str]] = []
+        for argument in arguments:
+            if not isinstance(argument, str) or not argument.startswith("--"):
+                return None
+            key, separator, value = argument[2:].partition("=")
+            if not key or key in options:
+                return None
+            options[key] = value if separator else None
+            ordered.append((key, argument))
+        return options, ordered
+
+    scene_arguments = scenario.get("arguments")
+    if not isinstance(scene_arguments, list):
+        return False
+    parsed_user, parsed_scene = parse(user), parse(scene_arguments)
+    if parsed_user is None or parsed_scene is None:
+        return False
+    requested, user_order = parsed_user
+    effective, scene_order = parsed_scene
+    for key, expected in BENCHMARK_FORCED_OPTIONS.items():
+        if effective.get(key) != expected or (key in requested and requested[key] != expected):
+            return False
+    if (any(key in requested for key in BENCHMARK_REJECTED_OPTIONS | {"sustained-diagnostic-ticks"})
+            or any(key in effective for key in ("case", "frametimes", "sustained-receipt", "sustained-hash",
+                                               "sustained-observation", "sustained-diagnostic-ticks"))
+            or ("sustained-observation" in requested and requested["sustained-observation"] != "on")
+            or ("sustained-hash" in requested and requested["sustained-hash"] is not None)
+            or scenario.get("state_input_hashing") is not ("sustained-hash" in requested)
+            or ("frametimes-stream" in requested and requested["frametimes-stream"] is not None)
+            or "frametimes-stream" not in effective or effective["frametimes-stream"] is not None):
+        return False
+    for option, default, report_key in (("t", 1800.0, "sample_s"), ("warmup", 30.0, "warmup_s")):
+        try:
+            if option in requested and requested[option] is None:
+                return False
+            actual = float(requested[option]) if option in requested else default
+            planned = float(effective[option]) if option in effective and effective[option] is not None else math.nan
+        except (TypeError, ValueError, OverflowError):
+            return False
+        if (not math.isfinite(actual) or not math.isfinite(planned)
+                or not _is_number(report.get(report_key)) or not _close(actual, planned, tolerance=1e-9)
+                or not _close(actual, float(report[report_key]), tolerance=1e-9)):
+            return False
+    ignore = BENCHMARK_INTERNAL_OPTIONS | BENCHMARK_FORCED_OPTIONS.keys()
+    return ([raw for key, raw in user_order if key not in ignore]
+            == [raw for key, raw in scene_order if key not in ignore])
+
+
+def benchmark_checked_runner(report_path: Path, report: dict[str, Any], log_bytes: bytes | None,
+                             declared_frame_path: str | None, scenario: dict[str, Any] | None) -> dict[str, Any]:
+    """Verify the owning checked launch, including options hidden from Godot scripts."""
+    path = report_path.with_name("checked-" + report_path.name)
+    reasons: list[str] = []
+    receipt_bytes: bytes | None = None
+    receipt: Any = None
+    try:
+        if path.is_symlink():
+            raise ValueError("checked receipt must not be a symbolic link")
+        receipt_bytes = _read_bounded(path, MAX_BENCHMARK_CHECK_BYTES)
+        receipt = json.loads(receipt_bytes.decode("utf-8"), parse_constant=_reject_constant,
+                             object_pairs_hook=_unique_object)
+        if not isinstance(receipt, dict):
+            raise ValueError("checked receipt must be an object")
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError, RecursionError) as error:
+        reasons.append(f"checked receipt is unreadable or malformed: {error}")
+
+    if isinstance(receipt, dict):
+        if (receipt.get("format") != "openrc-godot-check v1" or receipt.get("complete") is not True
+                or receipt.get("ok") is not True or receipt.get("reason") != "passed"
+                or type(receipt.get("exit_code")) is not int or receipt["exit_code"] != 0
+                or type(receipt.get("process_exit")) is not int or receipt["process_exit"] != 0):
+            reasons.append("checked invocation did not complete successfully")
+        capture_id = report.get("capture_id")
+        if not isinstance(capture_id, str) or not capture_id or receipt.get("capture_id") != capture_id:
+            reasons.append("checked invocation capture ID does not match")
+        if log_bytes is None or receipt.get("log_sha256") != _sha256_bytes(log_bytes):
+            reasons.append("checked invocation log SHA-256 does not match")
+        command = receipt.get("command")
+        if (not isinstance(command, list) or not 1 <= len(command) <= 256
+                or any(not isinstance(token, str) or not token or len(token) > 4096 for token in command)
+                or "--" not in command):
+            reasons.append("checked invocation command is missing or malformed")
+        else:
+            split = command.index("--")
+            engine, user = command[:split], command[split + 1:]
+            forbidden = {"--fixed-fps", "--write-movie", "--time-scale", "--frame-delay", "--disable-render-loop"}
+            if any(token.partition("=")[0] in forbidden for token in engine):
+                reasons.append("checked invocation uses a non-real-time or artificial engine option")
+            if any(token.partition("=")[0] == "--headless"
+                   or token in ("--display-driver=headless", "--rendering-driver=dummy")
+                   or (token in ("--display-driver", "--rendering-driver") and index + 1 < len(engine)
+                       and engine[index + 1] == ("headless" if token == "--display-driver" else "dummy"))
+                   for index, token in enumerate(engine)):
+                reasons.append("checked invocation uses a headless display")
+            script_paths = []
+            for index, token in enumerate(engine):
+                if token == "--script" and index + 1 < len(engine):
+                    script_paths.append(engine[index + 1])
+                elif token.startswith("--script="):
+                    script_paths.append(token.partition("=")[2])
+            script_path = script_paths[0].replace("\\", "/") if len(script_paths) == 1 else ""
+            script_suffix = "research/performance/sustained_flight.gd"
+            if script_path != script_suffix and not script_path.endswith("/" + script_suffix):
+                reasons.append("checked invocation did not use the benchmark script")
+
+            def targets(option: str) -> list[str]:
+                return [token[len(option):].replace("\\", "/") for token in user if token.startswith(option)]
+
+            frame_targets = targets("--frametimes=")
+            if (not isinstance(declared_frame_path, str) or len(frame_targets) != 1
+                    or frame_targets[0] != declared_frame_path.replace("\\", "/")
+                    or frame_targets[0].rsplit("/", 1)[-1] != report_path.name):
+                reasons.append("checked invocation frame output does not match the report")
+            health_targets = targets("--sustained-receipt=")
+            frame_directory = frame_targets[0].rpartition("/")[0] if len(frame_targets) == 1 else ""
+            expected_health = (frame_directory + "/" if frame_directory else "") + "health-" + report_path.name
+            if health_targets != [expected_health]:
+                reasons.append("checked invocation health output does not match the report")
+            if not isinstance(scenario, dict) or not _benchmark_arguments_match(user, scenario, report):
+                reasons.append("checked invocation workload arguments do not match the benchmark scenario")
+
+    return {
+        "receipt": path.name,
+        "receipt_sha256": _sha256_bytes(receipt_bytes) if receipt_bytes is not None else None,
+        "eligible": not reasons,
+        "reasons": reasons,
+    }
+
+
 def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
     report_bytes: bytes | None = None
     log_bytes: bytes | None = None
@@ -855,11 +1305,25 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
             errors.extend(schema_errors)
 
     collection_valid = not errors
+    benchmark: dict[str, Any] | None = None
+    checked_benchmark: dict[str, Any] | None = None
+    if report is not None and report.get("route") == BENCHMARK_ROUTE:
+        benchmark = benchmark_health(report_path, report_bytes, report, stream_evidence)
+        checked_benchmark = benchmark_checked_runner(report_path, report, log_bytes, benchmark["declared_frame_path"],
+                                                       benchmark["scenario"])
     active_reasons: list[str] = []
     pacing: dict[str, Any] | None = None
     duration: dict[str, Any] | None = None
     if report is not None and derived is not None:
-        active_reasons = active_flight_reasons(report, derived, policy)
+        active_reasons = active_flight_reasons(
+            report, derived, policy,
+            benchmark_eligible=bool(benchmark and benchmark["eligible"]
+                                    and checked_benchmark and checked_benchmark["eligible"]),
+        )
+        if benchmark is not None and not benchmark["eligible"]:
+            active_reasons.append("benchmark health receipt is ineligible")
+        if checked_benchmark is not None and not checked_benchmark["eligible"]:
+            active_reasons.append("benchmark checked-runner receipt is ineligible")
         pacing = pacing_gate(derived, policy)
         duration = duration_gate(report, policy)
     else:
@@ -888,6 +1352,7 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "report": report_path.name,
         "report_format": report_format,
         "report_sha256": _sha256_bytes(report_bytes) if report_bytes is not None else None,
+        "capture_id": report.get("capture_id") if report is not None else None,
         "stream": stream_evidence,
         "log": log_path.name,
         "log_sha256": _sha256_bytes(log_bytes) if log_bytes is not None else None,
@@ -896,6 +1361,12 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "collection_reasons": errors,
         "active_flight_qualifier": active_qualifier,
         "active_flight_reasons": active_reasons,
+        "benchmark_health": benchmark,
+        "benchmark_checked_runner": checked_benchmark,
+        "workload_scope": ("technical-benchmark-circuit" if benchmark is not None else
+                           "direct-live-input" if report is not None and report.get("route") == "live-input"
+                           else "other-or-unknown"),
+        "normal_product_route_qualified": False,
         "session_at_report": report.get("session_at_report") if report is not None else None,
         "duration_eligibility": duration,
         "rendering_eligibility": rendering,
@@ -942,6 +1413,30 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
         campaign_reasons.append(f"campaign has fewer than {minimum_runs} runs")
     if runs and not all(run["performance_pass"] for run in runs):
         campaign_reasons.append("one or more runs failed an individual performance gate")
+    scopes = [run["workload_scope"] for run in runs]
+    workload_scope_consistent = bool(scopes) and all(scope == scopes[0] for scope in scopes)
+    if scopes and not workload_scope_consistent:
+        campaign_reasons.append("runs use different workload routes")
+    benchmarks = [run["benchmark_health"] for run in runs]
+    benchmark_identity_consistent: bool | None = None
+    benchmark_capture_ids_distinct: bool | None = None
+    if any(item is not None for item in benchmarks):
+        identities = [
+            (item.get("source_identity_sha256"), item.get("scenario")) if item is not None else None
+            for item in benchmarks
+        ]
+        benchmark_identity_consistent = bool(identities) and all(
+            item is not None and item[0] is not None and item[1] is not None and item == identities[0]
+            for item in identities
+        )
+        if not benchmark_identity_consistent:
+            campaign_reasons.append("benchmark source or scenario identities differ or are incomplete")
+        capture_ids = [run["capture_id"] for run in runs]
+        benchmark_capture_ids_distinct = bool(capture_ids) and all(
+            isinstance(capture_id, str) and capture_id for capture_id in capture_ids
+        ) and len(set(capture_ids)) == len(capture_ids)
+        if not benchmark_capture_ids_distinct:
+            campaign_reasons.append("benchmark capture IDs are missing or repeated")
     configurations = [run["pacing_configuration"] for run in runs]
     configuration_consistent = bool(configurations) and all(item == configurations[0] for item in configurations)
     configuration_complete = bool(configurations) and all(
@@ -971,6 +1466,8 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
         )
     performance_pass = (
         len(runs) >= minimum_runs and all(run["performance_pass"] for run in runs)
+        and workload_scope_consistent and benchmark_identity_consistent is not False
+        and benchmark_capture_ids_distinct is not False
         and configuration_consistent and (configuration_complete or legacy_configuration)
         and lake_reflection_configuration_consistent
         and (lake_reflection_configuration_complete or legacy_lake_reflection_configuration)
@@ -986,6 +1483,9 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
         "active_flight_qualifier_count": sum(run["active_flight_qualifier"] for run in runs),
         "duration_eligible_count": sum(bool(run["duration_eligibility"] and run["duration_eligibility"]["eligible"]) for run in runs),
         "performance_pass": performance_pass,
+        "workload_scope_consistent": workload_scope_consistent,
+        "benchmark_identity_consistent": benchmark_identity_consistent,
+        "benchmark_capture_ids_distinct": benchmark_capture_ids_distinct,
         "pacing_configuration_consistent": configuration_consistent,
         "pacing_configuration_complete": configuration_complete,
         "lake_reflection_configuration_consistent": lake_reflection_configuration_consistent,

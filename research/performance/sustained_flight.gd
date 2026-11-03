@@ -1,0 +1,588 @@
+extends SceneTree
+## Bounded unattended player-flight workload for native frame collection.
+## The scene owns all physics ticks. No state is repositioned or manually stepped.
+## Required: --frametimes=<new absolute JSON> --sustained-receipt=<new absolute JSON>.
+## Optional: --warmup=<wall seconds> --t=<wall seconds> --sustained-hash.
+## --sustained-observation=off is an ineligible observer-cost control.
+## Headless fixed-fps diagnostics may add --sustained-diagnostic-ticks=<1..432000>.
+
+const Simulation := preload("res://sim/simulation.gd")
+const FlightLog := preload("res://sim/flight_log.gd")
+const Reconstruction := preload("res://render/reconstruction.gd")
+const FixedWingContactObserver := preload("res://statistics/fixed_wing_adapter.gd")
+const ROUTE := "benchmark-input-circuit"
+const SEED := 20261021
+const PHYSICS_HZ := 240
+const MAX_ROWS := 4096
+const MAX_DIAGNOSTIC_TICKS := 432000
+const CHECKPOINT_TICKS := 6000
+const DWELL_USEC := 2_500_000
+const FORCED_OPTIONS := {"aircraft": "jensen-das-ugly-stik-60", "start": "airborne",
+	"rates": "full", "weather": "calm", "landscape": "club_field", "companions": "0",
+	"physics-backend": "gdscript_reference"}
+const REJECTED_OPTIONS := ["quick-flight", "scripted", "trace", "capture", "visual_pose", "visual_distance",
+	"visual_elevation", "visual_azimuth", "hide_airplane", "experimental-aircraft-data", "electric-demo",
+	"weather-file", "wind-speed", "wind-from", "gust-speed", "gust-up", "gust-duration", "gust-period",
+	"gust-delay", "alt", "fuel", "flight-log", "shaft-integrator", "failure-seed", "failures",
+	"catastrophic", "out-of-trim", "battery", "companions-seed", "native-qualification", "flight-log-cli", "case"]
+
+class Observer extends Node:
+	var host: Object
+	func _process(_delta: float) -> void:
+		if is_instance_valid(host): host.call("_observe_frame")
+	func _notification(what: int) -> void:
+		if is_instance_valid(host) and what in [NOTIFICATION_WM_WINDOW_FOCUS_OUT, NOTIFICATION_APPLICATION_FOCUS_OUT]:
+			host.call("_focus_lost")
+
+
+class FocusReadiness extends Node:
+	const STABLE_USEC := 500_000
+	const TIMEOUT_USEC := 5_000_000
+	var deadline_usec := 0
+	var stable_since_usec := -1
+	var losses := 0
+	var observed_losses := 0
+	func _notification(what: int) -> void:
+		if what in [NOTIFICATION_WM_WINDOW_FOCUS_OUT, NOTIFICATION_APPLICATION_FOCUS_OUT]:
+			losses += 1
+	func begin(now_usec: int) -> void:
+		deadline_usec = now_usec + TIMEOUT_USEC
+		stable_since_usec = -1
+		observed_losses = losses
+	func observe(now_usec: int, focused: bool, drawable: bool) -> int:
+		if now_usec > deadline_usec: return -1
+		if losses != observed_losses:
+			stable_since_usec = -1
+			observed_losses = losses
+		if not focused or not drawable:
+			stable_since_usec = -1
+		elif stable_since_usec < 0:
+			stable_since_usec = now_usec
+		if stable_since_usec >= 0 and now_usec - stable_since_usec >= STABLE_USEC: return 1
+		return -1 if now_usec >= deadline_usec else 0
+
+var scene: Node
+var adapter: RefCounted
+var observer: Observer
+var contact_observer: RefCounted
+var frame_path := ""
+var receipt_path := ""
+var capture_id := ""
+var diagnostic_ticks := 0
+var hashes_enabled := false
+var observation_enabled := true
+var failure := ""
+var sealed := false
+var seal_exit_code := -1
+var seal_usec := 0
+var last_tick := 0
+var sealed_tick := 0
+var samples: Array[Dictionary] = []
+var checkpoints: Array[Dictionary] = []
+var checkpoint_hash: HashingContext
+var checkpoint_start_tick := 1
+var source_hashes: Dictionary = {}
+var input_script_path := ""
+var source_digest := ""
+var sealed_input: Dictionary = {}
+var scenario: Dictionary = {}
+var initial_state: Array = []
+var min_altitude_m := INF
+var observer_usec := 0
+var observer_calls := 0
+var abort_pending := false
+var diagnostic_reached := false
+var observation_start_usec := 0
+var observation_end_usec := 0
+var physics_enabled_throughout := true
+var input_enabled_throughout := true
+var external_driver_disabled_throughout := true
+var automatic_callbacks_throughout := true
+var violations := {tick_discontinuity = 0, nonfinite = 0, input_ownership = 0, crash = 0,
+	fault = 0, pause = 0, hold = 0, contact = 0, prop_strike = 0, pilot_failure = 0,
+	focus_loss = 0, observation_overflow = 0}
+
+
+func _initialize() -> void:
+	_run.call_deferred()
+
+
+func _run() -> void:
+	var parsed := _options(OS.get_cmdline_user_args())
+	if not parsed.ok:
+		printerr("Sustained flight refused: ", parsed.reason)
+		quit(2)
+		return
+	frame_path = parsed.frame_path
+	receipt_path = parsed.receipt_path
+	diagnostic_ticks = parsed.diagnostic_ticks
+	hashes_enabled = parsed.hashes_enabled
+	observation_enabled = parsed.observation_enabled
+	if Engine.physics_ticks_per_second != PHYSICS_HZ or Engine.time_scale != 1.0:
+		_fail_start("requires the normal 240 Hz and time_scale=1")
+		return
+	# Godot consumes known engine flags before exposing cmdline args to scripts.
+	# The checked-runner command must independently rule out --fixed-fps or
+	# other non-normal clocks for a timing claim; do not infer their absence.
+	capture_id = OS.get_environment("OPENRC_DIAGNOSTIC_CAPTURE_ID")
+	if capture_id.is_empty():
+		capture_id = "sustained-%d-%d" % [OS.get_process_id(), Time.get_ticks_usec()]
+		OS.set_environment("OPENRC_DIAGNOSTIC_CAPTURE_ID", capture_id)
+	var focus_readiness: FocusReadiness
+	if DisplayServer.get_name() != "headless":
+		focus_readiness = FocusReadiness.new()
+		root.add_child(focus_readiness)
+		root.grab_focus()
+		# Native activation can emit asynchronous focus events. Require a
+		# continuous visible, focused interval before Main starts.
+		focus_readiness.begin(Time.get_ticks_usec())
+		var readiness := focus_readiness.observe(Time.get_ticks_usec(), root.has_focus(), root.can_draw())
+		while readiness == 0:
+			await process_frame
+			readiness = focus_readiness.observe(Time.get_ticks_usec(), root.has_focus(), root.can_draw())
+		if readiness < 0:
+			focus_readiness.free()
+			_fail_start("native window did not remain focused and drawable for startup")
+			return
+	input_script_path = get_script().resource_path.get_base_dir().path_join("sustained_input.gd")
+	var input_script: Script = load(input_script_path)
+	if input_script == null:
+		_fail_start("cannot load sustained_input.gd")
+		return
+	adapter = input_script.new()
+	source_hashes = _source_hashes(input_script_path)
+	for path: String in source_hashes:
+		if str(source_hashes[path]).length() != 64:
+			_fail_start("source identity unavailable: " + path)
+			return
+	source_digest = _source_digest(source_hashes)
+	var scene_args: PackedStringArray = parsed.scene_args
+	scene_args.append("--case=" + ROUTE + "-" + source_digest)
+	TranslationServer.set_locale("en")
+	Reconstruction.apply(root, {reconstruction = "native", msaa_3d = Viewport.MSAA_4X})
+	scene = load("res://main.tscn").instantiate()
+	if scene == null:
+		_fail_start("cannot instantiate the production Main scene")
+		return
+	scene.external_controller_selection = true
+	scene.frametimes_auto_quit = false
+	scene.frametimes_route = ROUTE
+	scene.accident_archive_path = receipt_path + ".accident.json"
+	scene.set_user_args(scene_args)
+	# Starts before Main configures FrameSamples; the adapter and observers are
+	# bound synchronously before the first automatic physics callback.
+	observation_start_usec = Time.get_ticks_usec()
+	root.add_child(scene)
+	if not scene.startup_complete or not str(scene.startup_error).is_empty() or scene.session == null \
+			or scene.session.sim == null or scene.session.sim.tick != 0 or not scene._frametimes_active:
+		_fail_start("Main did not finish a valid frame-collecting flight at tick zero: " + str(scene.startup_error))
+		return
+	var session: Node = scene.session
+	contact_observer = FixedWingContactObserver.new()
+	contact_observer.session = session
+	# This route selects no device; keep even a later accidental profile access
+	# inside the run-owned directory instead of the player's calibration path.
+	session.profiles_path = receipt_path + ".controls.cfg"
+	if session.stage_backend_identity().get("backend") != "gdscript_reference" \
+			or not session.sim.is_physics_processing() or not session.is_physics_processing():
+		_fail_start("reference backend and automatic physics callbacks are required")
+		return
+	if not adapter.configure(session, scene.field, SEED):
+		_fail_start("input adapter refused launch: " + adapter.failure)
+		return
+	adapter.failed.connect(_on_input_failure)
+	session.read_raw = adapter.read_raw
+	# Prevent desktop shortcuts from changing the route, while retaining normal
+	# session input processing and the production keyboard sample callback.
+	_disable_live_events(scene)
+	if observation_enabled: session.sim.stepped.connect(_on_stepped)
+	session.sim.faulted.connect(_on_faulted)
+	session.sim.paused_changed.connect(_on_paused)
+	scene.frame_time_report_written.connect(_on_sealed)
+	initial_state = Array(session.sim.state)
+	min_altitude_m = -float(session.sim.state[2])
+	var initial_checkpoint: Dictionary = session.checkpoint()
+	if initial_checkpoint.is_empty() or int(initial_checkpoint.get("simulation", {}).get("tick", -1)) != 0 \
+			or str(initial_checkpoint.get("configuration", "")).length() != 64 \
+			or str(initial_checkpoint.get("collision_world_identity", "")).length() != 64 \
+			or str(initial_checkpoint.get("lake_identity", "")).length() != 64:
+		_fail_start("validated tick-zero checkpoint, collision world and lake identities are required")
+		return
+	scenario = {aircraft_id = scene.aircraft_id, field_id = scene.field.id, seed = SEED,
+		start_choice = session.start_choice, trim_speed_m_s = float(session.start.V),
+		trim_throttle = float(session.start.throttle), rate_profile = session.rate_profile,
+		weather = session.weather_configuration(), stage_backend = session.stage_backend_status(),
+		input_semantics = "circuit demands to keyboard targets and rate-throttle; normal session rate limits",
+		physics_hz = PHYSICS_HZ, control_update_ticks = 4,
+		initial_checkpoint_sha256 = _hash_bytes(var_to_bytes(initial_checkpoint)),
+		checkpoint_configuration = initial_checkpoint.configuration,
+		collision_world_identity = initial_checkpoint.collision_world_identity,
+		lake_identity = initial_checkpoint.lake_identity,
+		solver_identity = FlightLog.replay_identity(),
+		input_enabled = session.input_enabled, physics_enabled = session.physics_enabled,
+		external_driver_enabled = session.external_driver_enabled,
+		arguments = Array(scene_args), fixed_fps_diagnostic = diagnostic_ticks > 0,
+		engine_clock_scope = "engine fixed-fps flag is not exposed to scripts; verify checked-runner command",
+		observation_mode = "on" if observation_enabled else "off",
+		state_input_hashing = hashes_enabled,
+		settings_scope = "direct technical Main; native reconstruction, 4x MSAA; private accident archive",
+		accident_archive_path = scene.accident_archive_path, controller_profile_path = session.profiles_path}
+	if absf(float(session.start.V) - 15.0) > 1e-9:
+		_fail_start("reference Stik trim must be 15 m/s")
+		return
+	if hashes_enabled: _new_checkpoint()
+	if observation_enabled and not _record_sample(0):
+		_fail_start("cannot record initial route health")
+		return
+	observer = Observer.new()
+	observer.host = self
+	root.add_child(observer)
+	# Cover the synchronous handoff from settled window to flight observer.
+	if focus_readiness != null:
+		if focus_readiness.losses != focus_readiness.observed_losses or not root.has_focus() or not root.can_draw():
+			focus_readiness.free()
+			_fail_start("native window lost focus or visibility during flight startup")
+			return
+		focus_readiness.free()
+	print("SUSTAINED_FLIGHT_READY capture_id=", capture_id, " route=", ROUTE,
+		" start=", initial_state.slice(0, 3), " seed=", SEED)
+
+
+func _options(arguments: PackedStringArray) -> Dictionary:
+	var seen := {}
+	var forwarded := PackedStringArray()
+	var path := ""
+	var receipt := ""
+	var duration := 1800.0
+	var warmup := 30.0
+	var requested_ticks := 0
+	var use_hash := false
+	var use_observation := true
+	for arg: String in arguments:
+		if not arg.begins_with("--"): return {ok = false, reason = "unexpected positional argument"}
+		var pair := arg.trim_prefix("--").split("=", true, 1)
+		var key: String = pair[0]
+		if seen.has(key): return {ok = false, reason = "duplicate option --" + key}
+		seen[key] = true
+		var value: String = pair[1] if pair.size() == 2 else ""
+		if REJECTED_OPTIONS.has(key): return {ok = false, reason = "unsupported workload option --" + key}
+		if FORCED_OPTIONS.has(key):
+			if value != str(FORCED_OPTIONS[key]): return {ok = false, reason = "conflicting workload option --" + key}
+			continue
+		match key:
+			"sustained-receipt": receipt = value
+			"sustained-diagnostic-ticks":
+				if not value.is_valid_int(): return {ok = false, reason = "diagnostic ticks must be an integer"}
+				requested_ticks = value.to_int()
+				if requested_ticks < 1 or requested_ticks > MAX_DIAGNOSTIC_TICKS:
+					return {ok = false, reason = "diagnostic ticks exceed bounds"}
+			"sustained-hash":
+				if pair.size() != 1: return {ok = false, reason = "--sustained-hash is a flag"}
+				use_hash = true
+			"sustained-observation":
+				if value not in ["on", "off"]: return {ok = false, reason = "observation must be on or off"}
+				use_observation = value == "on"
+			"frametimes": path = value
+			"t":
+				if not value.is_valid_float(): return {ok = false, reason = "--t requires finite seconds"}
+				duration = value.to_float()
+			"warmup":
+				if not value.is_valid_float(): return {ok = false, reason = "--warmup requires finite seconds"}
+				warmup = value.to_float()
+			"frametimes-stream":
+				if pair.size() != 1: return {ok = false, reason = "--frametimes-stream is a flag"}
+			_: forwarded.append(arg)
+	if not path.is_absolute_path() or not receipt.is_absolute_path() or path == receipt \
+			or FileAccess.file_exists(path) or FileAccess.file_exists(path + ".frames.jsonl") \
+			or FileAccess.file_exists(receipt) or FileAccess.file_exists(receipt + ".accident.json") \
+			or FileAccess.file_exists(receipt + ".controls.cfg"):
+		return {ok = false, reason = "new, distinct absolute frame and receipt paths are required"}
+	if not DirAccess.dir_exists_absolute(path.get_base_dir()) or not DirAccess.dir_exists_absolute(receipt.get_base_dir()):
+		return {ok = false, reason = "output directories must already exist"}
+	if not is_finite(duration) or duration <= 0.0 or duration > 1800.0 \
+			or not is_finite(warmup) or warmup < 0.0 or warmup > 300.0:
+		return {ok = false, reason = "duration must be (0,1800] and warmup [0,300] seconds"}
+	if not use_observation and (use_hash or requested_ticks > 0):
+		return {ok = false, reason = "observer-off control cannot request hashes or diagnostic tick stopping"}
+	for key: String in FORCED_OPTIONS: forwarded.append("--%s=%s" % [key, FORCED_OPTIONS[key]])
+	forwarded.append("--frametimes=" + path)
+	forwarded.append("--frametimes-stream")
+	forwarded.append("--t=" + str(duration))
+	forwarded.append("--warmup=" + str(warmup))
+	return {ok = true, frame_path = path, receipt_path = receipt, scene_args = forwarded,
+		diagnostic_ticks = requested_ticks, hashes_enabled = use_hash, observation_enabled = use_observation}
+
+
+func _disable_live_events(node: Node) -> void:
+	node.set_process_input(false)
+	node.set_process_unhandled_input(false)
+	node.set_process_unhandled_key_input(false)
+	node.set_process_shortcut_input(false)
+	for child: Node in node.get_children(): _disable_live_events(child)
+
+
+func _on_stepped(tick: int, _time: float, state: PackedFloat64Array, _loads: PackedFloat64Array,
+		inputs: PackedFloat64Array, aux: PackedFloat64Array) -> void:
+	if sealed: return
+	var began := Time.get_ticks_usec()
+	observer_calls += 1
+	if tick != last_tick + 1:
+		_mark_failure("tick_discontinuity", "accepted tick discontinuity: %d after %d" % [tick, last_tick])
+	last_tick = tick
+	var session: Node = scene.session
+	if not Simulation.state_is_valid(state) or not _finite(inputs) or not _finite(aux) \
+			or not _finite(session.sim.continuous):
+		_mark_failure("nonfinite", "nonfinite or invalid accepted state")
+	physics_enabled_throughout = physics_enabled_throughout and session.physics_enabled
+	input_enabled_throughout = input_enabled_throughout and session.input_enabled
+	external_driver_disabled_throughout = external_driver_disabled_throughout and not session.external_driver_enabled
+	automatic_callbacks_throughout = automatic_callbacks_throughout \
+		and session.is_physics_processing() and session.sim.is_physics_processing()
+	if not physics_enabled_throughout or not input_enabled_throughout or not external_driver_disabled_throughout \
+			or not automatic_callbacks_throughout or session.radio.connected or session.read_raw != adapter.read_raw:
+		_mark_failure("input_ownership", "automatic keyboard input ownership changed")
+	if not session.crash.is_empty(): _mark_failure("crash", "flight crashed")
+	if not session.sim.fault_reason.is_empty(): _mark_failure("fault", "simulation fault")
+	if session.sim.paused or not session.pause_reason.is_empty(): _mark_failure("pause", "simulation paused")
+	if not session.holds.is_empty(): _mark_failure("hold", "session acquired a hold")
+	if not session.prop_strike.is_empty(): _mark_failure("prop_strike", "propeller strike")
+	var contacts: Dictionary = session.contact_events()
+	if not contacts.get("events", []).is_empty() or not contacts.get("active_hull_ids", []).is_empty():
+		_mark_failure("contact", "accepted hull, scenery, lake or propeller contact")
+	# Existing statistics helper preserves each wheel's positive-contact flag;
+	# near the terrain envelope it falls back to session.gear_compressions.
+	for compression: float in contact_observer._compressions(state):
+		if not is_finite(compression): _mark_failure("nonfinite", "invalid gear clearance")
+		elif compression > 0.0: _mark_failure("contact", "landing gear touched the ground")
+	min_altitude_m = minf(min_altitude_m, -state[2])
+	if hashes_enabled: _update_checkpoint(tick, state, inputs, aux, session.sim.continuous, session.sim.modes)
+	if tick % PHYSICS_HZ == 0 and not _record_sample(tick):
+		_mark_failure("observation_overflow", "bounded health sample limit or observation failed")
+	if diagnostic_ticks > 0 and tick >= diagnostic_ticks and not diagnostic_reached:
+		diagnostic_reached = true
+		_finish_diagnostic.call_deferred()
+	observer_usec += Time.get_ticks_usec() - began
+
+
+func _record_sample(tick: int) -> bool:
+	if samples.size() >= MAX_ROWS: return false
+	var state: PackedFloat64Array = scene.session.sim.state
+	var terrain: PackedFloat64Array = scene.session.environment.ground(state[0], state[1])
+	if terrain.is_empty() or not is_finite(terrain[0]): return false
+	var clearance := -state[2] - terrain[0]
+	if not is_finite(clearance): return false
+	var north_error: float = state[0] - float(adapter.pilot.get("_center_north_m"))
+	var east_error: float = state[1] - float(adapter.pilot.get("_center_east_m"))
+	var radius_error: float = sqrt(north_error * north_error + east_error * east_error) - float(adapter.pilot.get("_radius_m"))
+	if not is_finite(radius_error): return false
+	samples.append({tick = tick, time_s = scene.session.sim.time(), north_m = state[0], east_m = state[1],
+		altitude_m = -state[2], ground_clearance_m = clearance, radius_error_m = radius_error})
+	return true
+
+
+func _finite(values: PackedFloat64Array) -> bool:
+	for value: float in values:
+		if not is_finite(value): return false
+	return true
+
+
+func _new_checkpoint() -> void:
+	checkpoint_hash = HashingContext.new()
+	checkpoint_hash.start(HashingContext.HASH_SHA256)
+
+
+func _update_checkpoint(tick: int, state: PackedFloat64Array, inputs: PackedFloat64Array,
+		aux: PackedFloat64Array, continuous: PackedFloat64Array, modes: PackedInt64Array) -> void:
+	checkpoint_hash.update(PackedInt64Array([tick]).to_byte_array())
+	for values: PackedFloat64Array in [state, inputs, aux, continuous]: checkpoint_hash.update(values.to_byte_array())
+	checkpoint_hash.update(modes.to_byte_array())
+	if tick % CHECKPOINT_TICKS == 0:
+		checkpoints.append({start_tick = checkpoint_start_tick, end_tick = tick,
+			sha256 = checkpoint_hash.finish().hex_encode()})
+		checkpoint_start_tick = tick + 1
+		_new_checkpoint()
+
+
+func _observe_frame() -> void:
+	if not sealed:
+		if not is_instance_valid(scene) or scene.session == null:
+			_mark_failure("input_ownership", "flight scene disappeared")
+		elif DisplayServer.get_name() != "headless" and not root.has_focus():
+			_mark_failure("focus_loss", "native flight window lost focus")
+		elif observation_enabled:
+			# A disabled physics callback cannot report its own disappearance via
+			# stepped; check ownership independently from the render loop as well.
+			var session: Node = scene.session
+			physics_enabled_throughout = physics_enabled_throughout and session.physics_enabled
+			input_enabled_throughout = input_enabled_throughout and session.input_enabled
+			external_driver_disabled_throughout = external_driver_disabled_throughout and not session.external_driver_enabled
+			automatic_callbacks_throughout = automatic_callbacks_throughout and session.is_physics_processing() \
+				and session.sim.is_physics_processing() and session.can_process() and session.sim.can_process()
+			if not physics_enabled_throughout or not input_enabled_throughout or not external_driver_disabled_throughout \
+					or not automatic_callbacks_throughout or session.radio.connected or session.read_raw != adapter.read_raw \
+					or Engine.physics_ticks_per_second != PHYSICS_HZ or Engine.time_scale != 1.0:
+				_mark_failure("input_ownership", "automatic physics or keyboard input ownership changed")
+	elif Time.get_ticks_usec() - seal_usec >= DWELL_USEC:
+		_write_receipt_and_exit()
+
+
+func _focus_lost() -> void:
+	if DisplayServer.get_name() != "headless":
+		_mark_failure("focus_loss", "native flight window lost focus")
+
+
+func _on_input_failure(reason: String) -> void:
+	_mark_failure("pilot_failure", "input adapter: " + reason)
+
+
+func _on_faulted(reason: String) -> void:
+	_mark_failure("fault", "simulation fault: " + reason)
+
+
+func _on_paused(paused: bool) -> void:
+	if paused: _mark_failure("pause", "simulation paused during flight")
+
+
+func _mark_failure(category: String, reason: String) -> void:
+	if sealed: return
+	violations[category] = int(violations.get(category, 0)) + 1
+	if failure.is_empty(): failure = reason
+	if not abort_pending:
+		abort_pending = true
+		_abort_collection.call_deferred()
+
+
+func _abort_collection() -> void:
+	if not sealed and is_instance_valid(scene) and scene._frametimes_active:
+		scene._finish_frame_time(1)
+	elif not sealed:
+		_fail_start(failure)
+
+
+func _finish_diagnostic() -> void:
+	if not sealed and failure.is_empty() and is_instance_valid(scene) and scene._frametimes_active:
+		# A deliberately incomplete wall-time stream: this validates trajectory,
+		# never native FPS or a complete timed capture.
+		scene._finish_frame_time(1)
+
+
+func _on_sealed(exit_code: int) -> void:
+	if sealed: return
+	if not observation_enabled:
+		last_tick = int(scene.session.sim.tick)
+	elif samples.is_empty() or int(samples[-1].tick) != last_tick:
+		if not _record_sample(last_tick):
+			_mark_failure("observation_overflow", "cannot record final route health")
+	observation_end_usec = Time.get_ticks_usec()
+	sealed_input = {input_reads = adapter.input_reads, last_read_tick = adapter.last_read_tick,
+		pilot_updates = adapter.pilot_updates, pilot_failure = adapter.failure,
+		input_elapsed_usec = adapter.input_elapsed_usec, pilot_elapsed_usec = adapter.pilot_elapsed_usec,
+		min_ground_clearance_m = adapter.min_clearance_m, max_abs_radius_error_m = adapter.max_abs_radius_error_m}
+	sealed = true
+	seal_exit_code = exit_code
+	sealed_tick = last_tick
+	seal_usec = Time.get_ticks_usec()
+	if hashes_enabled and checkpoint_start_tick <= sealed_tick:
+		checkpoints.append({start_tick = checkpoint_start_tick, end_tick = sealed_tick,
+			sha256 = checkpoint_hash.finish().hex_encode(), partial = true})
+
+
+func _source_hashes(input_path: String) -> Dictionary:
+	var paths := ["res://ai/companions/pilot.gd", "res://ai/companions/circuit_controller.gd",
+		"res://statistics/fixed_wing_adapter.gd", "res://physics/ground_terrain.gd",
+		"res://ai/companions/observation_airdata.gd", "res://input/commands.gd", "res://spec.gd",
+		"res://sim/flight_session.gd", "res://sim/simulation.gd", "res://render/frame_samples.gd",
+		"res://main.gd", "res://data/aircraft/jensen_ugly_stik_60.json", "res://data/fields/default.json",
+		"res://data/fields/lake.json"]
+	var out := {}
+	for path: String in paths: out[path] = FileAccess.get_sha256(path)
+	out["research/performance/sustained_input.gd"] = FileAccess.get_sha256(input_path)
+	out["research/performance/sustained_flight.gd"] = FileAccess.get_sha256(get_script().resource_path)
+	return out
+
+
+func _hash_bytes(bytes: PackedByteArray) -> String:
+	var context := HashingContext.new()
+	context.start(HashingContext.HASH_SHA256)
+	context.update(bytes)
+	return context.finish().hex_encode()
+
+
+func _source_digest(hashes: Dictionary) -> String:
+	var names: Array = hashes.keys()
+	names.sort()
+	var canonical := ""
+	for path: String in names:
+		canonical += path + ":" + str(hashes[path]) + "\n"
+	return _hash_bytes(canonical.to_utf8_buffer())
+
+
+func _write_receipt_and_exit() -> void:
+	var frame: Variant = JSON.parse_string(FileAccess.get_file_as_string(frame_path)) if FileAccess.file_exists(frame_path) else null
+	var report_valid: bool = frame is Dictionary and frame.get("capture_id") == capture_id \
+		and frame.get("route") == ROUTE and frame.get("case_id") == ROUTE + "-" + source_digest
+	var frame_collection_complete: bool = report_valid and bool(frame.get("complete", false)) and seal_exit_code == 0 and diagnostic_ticks == 0
+	var timing_complete: bool = frame_collection_complete and observation_enabled
+	var diagnostic_complete: bool = diagnostic_ticks > 0 and diagnostic_reached and sealed_tick >= diagnostic_ticks \
+			and report_valid and not bool(frame.get("complete", true))
+	var input_coverage_ok: bool = int(sealed_input.get("input_reads", -1)) == sealed_tick \
+		and int(sealed_input.get("last_read_tick", -1)) == sealed_tick - 1 and observation_start_usec > 0 \
+		and observation_end_usec >= observation_start_usec
+	var coverage_ok: bool = observation_enabled and observer_calls == sealed_tick and input_coverage_ok
+	var source_unchanged: bool = _source_hashes(input_script_path) == source_hashes
+	var valid: bool = failure.is_empty() and coverage_ok and source_unchanged and (timing_complete or diagnostic_complete)
+	var control_complete: bool = not observation_enabled and frame_collection_complete and input_coverage_ok \
+		and source_unchanged and failure.is_empty()
+	var report := {format = "openrc-benchmark-health v1", capture_id = capture_id, route = ROUTE,
+		complete = valid, timing_complete = timing_complete, diagnostic_complete = diagnostic_complete,
+		frame_collection_complete = frame_collection_complete, observer_off_control_complete = control_complete,
+		timing_eligible = valid and timing_complete and DisplayServer.get_name() != "headless",
+		timing_eligibility_scope = "fixture checks only; checked runner must separately establish the engine command and normal clocks",
+		failure = failure if not failure.is_empty() else ("incomplete tick observation" if not coverage_ok and not control_complete else ("source changed" if not source_unchanged else "")),
+		report = frame_path.get_file(), report_sha256 = FileAccess.get_sha256(frame_path),
+		frame_report = frame_path, frame_report_sha256 = FileAccess.get_sha256(frame_path),
+		frame_stream_sha256 = str(frame.get("stream", {}).get("sha256", "")) if frame is Dictionary else "",
+		frame_capture_id_matches = report_valid, frame_exit_code = seal_exit_code,
+		scenario = scenario, source_sha256 = source_hashes, source_digest = source_digest,
+		source_unchanged = source_unchanged, initial_state = initial_state,
+		observation = {start_monotonic_usec = observation_start_usec, end_monotonic_usec = observation_end_usec,
+			start_tick = 0, end_tick = sealed_tick, accepted_ticks = sealed_tick, input_reads = sealed_input.input_reads,
+			observer_calls = observer_calls, physics_enabled_throughout = observation_enabled and physics_enabled_throughout,
+			input_enabled_throughout = observation_enabled and input_enabled_throughout,
+			external_driver_disabled_throughout = observation_enabled and external_driver_disabled_throughout,
+			automatic_callbacks_throughout = observation_enabled and automatic_callbacks_throughout},
+		violations = violations,
+		health = {scope = "accepted endpoints through frame seal; ground clearance and radial error sampled at 60 Hz",
+			accepted_ticks = sealed_tick, last_read_tick = sealed_input.last_read_tick, input_reads = sealed_input.input_reads,
+			pilot_updates = sealed_input.pilot_updates, pilot_failure = sealed_input.pilot_failure,
+			input_elapsed_usec = sealed_input.input_elapsed_usec, pilot_elapsed_usec = sealed_input.pilot_elapsed_usec,
+			input_timing_scope = "whole read_raw callback including its nested pilot; no cost subtraction",
+			min_altitude_m = min_altitude_m if is_finite(min_altitude_m) else null,
+			min_ground_clearance_m = sealed_input.min_ground_clearance_m if is_finite(sealed_input.min_ground_clearance_m) else null,
+			max_abs_radius_error_m = sealed_input.max_abs_radius_error_m, samples_1hz = samples,
+			observer_calls = observer_calls, observer_usec = observer_usec,
+			observer_scope = "accepted-tick health checks and optional state/input hashing; excludes input adapter and receipt finalization"},
+		checkpoints = checkpoints, hash_scope = "independent 6000-tick accepted state/input/aux/mode windows" if hashes_enabled else "disabled",
+		dwell_after_frame_seal_s = float(Time.get_ticks_usec() - seal_usec) / 1000000.0,
+		note = "Rate-limited synthetic keyboard input; complete physics flight is not physical validation. Compare observer overhead separately."}
+	if FileAccess.file_exists(receipt_path):
+		printerr("Sustained receipt appeared during capture; refusing overwrite")
+		quit(1)
+		return
+	var file := FileAccess.open(receipt_path, FileAccess.WRITE)
+	if file == null:
+		printerr("Cannot write sustained receipt: ", receipt_path)
+		quit(1)
+		return
+	file.store_string(JSON.stringify(report, "\t", true, true) + "\n")
+	file.flush()
+	var error := file.get_error()
+	file.close()
+	print("SUSTAINED_FLIGHT_COMPLETE complete=", valid, " timing=", timing_complete, " observer_off_control=", control_complete,
+		" ticks=", sealed_tick, " receipt=", receipt_path)
+	quit(0 if (valid or control_complete) and error == OK else 1)
+
+
+func _fail_start(reason: String) -> void:
+	printerr("Sustained flight failed: ", reason)
+	quit(1)

@@ -105,6 +105,32 @@ class FakeClock:
 
 
 class ResourceSamplerTests(unittest.TestCase):
+    def test_opt_in_raw_uptime_brackets_same_process_perf_clock(self):
+        with mock.patch("resource_samples.sys.platform", "darwin"), \
+                mock.patch("resource_samples.time.CLOCK_UPTIME_RAW", 8, create=True), \
+                mock.patch("resource_samples.time.get_clock_info", return_value=SimpleNamespace(implementation="mach_absolute_time()")), \
+                mock.patch("resource_samples.time.perf_counter_ns", side_effect=[2_000_000_000, 2_000_008_000]), \
+                mock.patch("resource_samples.time.clock_gettime_ns", return_value=42_000_005_000):
+            anchor = clock_anchor(raw_uptime=True)["raw_uptime"]
+        self.assertEqual(anchor, {"status": "available", "domain": "darwin_mach_absolute_time",
+                                  "offset_lower_usec": 39_999_995, "offset_upper_usec": 40_000_007})
+
+    def test_raw_uptime_fails_closed_if_source_unknown_or_bracket_bad(self):
+        cases = [
+            ("clock_gettime(CLOCK_MONOTONIC)", [1, 2], 10),
+            ("mach_absolute_time()", [2, 1], 10),
+            ("mach_absolute_time()", [1, 100_000_001], 10),
+        ]
+        for implementation, pair, raw in cases:
+            with self.subTest(implementation=implementation, pair=pair), \
+                    mock.patch("resource_samples.sys.platform", "darwin"), \
+                    mock.patch("resource_samples.time.CLOCK_UPTIME_RAW", 8, create=True), \
+                    mock.patch("resource_samples.time.get_clock_info", return_value=SimpleNamespace(implementation=implementation)), \
+                    mock.patch("resource_samples.time.perf_counter_ns", side_effect=pair), \
+                    mock.patch("resource_samples.time.clock_gettime_ns", return_value=raw):
+                self.assertEqual(clock_anchor(raw_uptime=True)["raw_uptime"]["status"], "error")
+        self.assertNotIn("raw_uptime", clock_anchor())
+
     def test_clock_anchor_brackets_wall_read_and_preserves_finish(self):
         with mock.patch("resource_samples.time.perf_counter", side_effect=[10.0, 10.1]), \
                 mock.patch("resource_samples.time.time_ns", return_value=1000000000000):

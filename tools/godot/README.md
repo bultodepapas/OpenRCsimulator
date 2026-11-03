@@ -371,6 +371,87 @@ counter resets, bounded samples, scan errors and failed report writes have
 separate regressions. Real Godot test classes additionally require
 `OPENRC_TEST_GODOT`; a passing resource fixture does not establish a leak-free game.
 
+### Optional macOS host-state companion (DT-MAC-02e)
+
+Build this developer-only companion before timing, using the installed Apple SDK:
+
+```sh
+mkdir -p tmp/macos-host-build
+xcrun --sdk macosx --show-sdk-version
+xcrun clang --version
+xcrun --sdk macosx clang -arch arm64 -fobjc-arc -fblocks -O2 -mmacosx-version-min=12.0 \
+  -framework Foundation -framework IOKit -framework CoreFoundation \
+  tools/godot/macos_host_state.m -o tmp/macos-host-build/host-state
+shasum -a 256 tools/godot/macos_host_state.m tmp/macos-host-build/host-state
+file tmp/macos-host-build/host-state
+```
+
+Record the compiler, SDK, command, deployment floor and source/binary hashes as
+the build receipt. The helper is not installed or started by default. Add
+`--resources --host-state-helper "$PWD/tmp/macos-host-build/host-state"` to the
+same checked-runner command used for a direct Godot launch. Use the pinned psutil
+environment above and the [long capture](../../research/performance/README.md#long-continuous-captures-dt-mac-02b)
+workload for a sustained run. Timeout must leave room for launch, warmup and the
+entire capture; the companion itself is limited to 3,600 s. Launching a shell or
+another wrapper instead of the game makes process resource attribution invalid.
+
+The runner supervises the companion and writes `host-state.jsonl` plus
+`host-overhead.json` in its unique run directory. The checked report contains the
+capture ID, byte/hash and coverage of the host stream, helper binary hash, local
+source hash and overhead receipt. The local source hash does not establish what
+the binary was compiled from; retain the build receipt. Helper and local source
+hashes and file identities are checked before launch, immediately after launch
+and after stop; detected drift or an unreadable file makes host coverage partial.
+These checks cannot detect every transient replacement or attest the executed
+bytes: use a frozen, run-owned helper path and do not rebuild it during capture.
+`host-overhead.json` uses
+the same resource sampler for helper and runner CPU/RSS, separately from the game.
+They cover their sampled intervals, not necessarily the full frame interval.
+Failure or non-Darwin unavailability is reported without stopping a healthy game.
+
+The helper reads Foundation thermal and Low Power Mode before and after
+subscription, records later notifications and takes one-second snapshots along
+with the IOKit power source. Initial reads, callback observations and snapshot
+query brackets are retained. Nominal may be Foundation's fallback for unavailable
+thermal awareness; AC snapshots can miss short transitions. Memory pressure is a
+Dispatch **event stream** with an initially unknown value. No event does not mean
+no pressure; OS coalescing/loss count is unavailable rather than zero. Event
+coverage and the last known pressure value are different facts. The helper caps
+output at 4 MiB, 4,096 snapshots, 1,024 events and 3,600 s; loss, missing trailer,
+failed channels, a two-second snapshot gap or a sleep-clock mismatch make the
+receipt partial.
+Foundation notification ingress allows one pending callback per type; suppressed
+or pending-at-stop callbacks are counted as local drops and make it incomplete.
+The native fixture can test this without inducing system pressure:
+
+```sh
+OPENRC_TEST_MAC_HOST_HELPER="$PWD/tmp/macos-host-build/host-state" \
+  python3 -m unittest discover -s tools/godot -p 'test_macos_host_state.py'
+```
+
+This injects notifications only into the helper process. Its `--test-flood` run
+is explicitly marked as test mode and the measurement validator refuses it.
+
+The current host stream uses macOS `CLOCK_UPTIME_RAW`, the same underlying clock
+as the supported Godot and CPython 3.9 macOS monotonic implementations. The
+runner passes the verified helper path and SHA-256 to Godot and opts all three
+resource samplers into bounded raw-uptime anchors. The companion also exposes
+`--clock-sample` for the frame collector's bounded, pre-warmup and post-seal
+anchors. Unsupported clock APIs or failed probes leave alignment unavailable;
+the healthy game keeps running. UTC anchors remain approximate annotations, and
+their drift does not validate the direct raw clock. Host v2 separately brackets
+the difference between sleep-inclusive `CLOCK_MONOTONIC_RAW` and raw uptime;
+more than 50 ms of possible change makes coverage partial. Host v1 retains its
+original UTC-drift rule and does not acquire new clock evidence retroactively.
+
+All streams share the runner capture ID. Compare helper readiness and endpoint,
+and first/last process-resource samples, to the entire actual frame capture
+interval using their bounded raw-offset intervals. `coverage=complete` describes the
+helper's own observations and does not establish that they covered the flight,
+that pressure began normal, or that instrumentation was inexpensive. Run the
+documented diagnostic-on/off controls before using the results for performance
+claims. The generic incident/Perfetto reducers do not ingest this host stream.
+
 ## Incident bundles and Perfetto timelines (PT1h-R5)
 
 Capture frame diagnostics and OS counters in the **same checked invocation**:

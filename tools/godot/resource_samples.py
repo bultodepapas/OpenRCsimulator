@@ -19,7 +19,32 @@ MAX_DISK_PATHS = 8
 _MISSING = object()
 
 
-def clock_anchor() -> dict:
+def _raw_uptime_offset() -> dict:
+    """Bound perf_counter's offset from macOS raw uptime, without using UTC."""
+    try:
+        if sys.platform != "darwin":
+            raise ValueError("unsupported_platform")
+        if time.get_clock_info("perf_counter").implementation != "mach_absolute_time()":
+            raise ValueError("unsupported_perf_counter")
+        clock = getattr(time, "CLOCK_UPTIME_RAW", None)
+        if type(clock) is not int or not hasattr(time, "clock_gettime_ns"):
+            raise ValueError("raw_uptime_unavailable")
+        before = time.perf_counter_ns()
+        raw = time.clock_gettime_ns(clock)
+        after = time.perf_counter_ns()
+        if (type(before) is not int or type(after) is not int or type(raw) is not int
+                or before < 0 or raw <= 0 or after < before or after - before > 99_996_000):
+            raise ValueError("invalid_or_wide_raw_bracket")
+        # An extra 2 us covers integer/floating-point conversion in the sample
+        # report as well as truncation of the nanosecond-to-microsecond offset.
+        return {"status": "available", "domain": "darwin_mach_absolute_time",
+                "offset_lower_usec": (raw - after) // 1000 - 2,
+                "offset_upper_usec": -((before - raw) // 1000) + 2}
+    except (AttributeError, OSError, TypeError, ValueError, OverflowError) as error:
+        return {"status": "error", "reason": str(error)[:160] or type(error).__name__}
+
+
+def clock_anchor(*, raw_uptime: bool = False) -> dict:
     """Approximate UTC correlation; durations always retain their monotonic clock.
 
     The 20 ms floor accommodates coarse system-clock APIs. This is an estimate,
@@ -28,9 +53,12 @@ def clock_anchor() -> dict:
     before = time.perf_counter()
     unix_usec = time.time_ns() // 1000
     after = time.perf_counter()
-    return {"monotonic_usec": round((before + after) * 500000),
-            "unix_usec": unix_usec,
-            "uncertainty_usec": max(20000, math.ceil((after - before) * 500000))}
+    result = {"monotonic_usec": round((before + after) * 500000),
+              "unix_usec": unix_usec,
+              "uncertainty_usec": max(20000, math.ceil((after - before) * 500000))}
+    if raw_uptime:
+        result["raw_uptime"] = _raw_uptime_offset()
+    return result
 
 _INTEGER_FIELDS = {
     "rss_bytes", "vms_bytes", "num_threads",
@@ -116,20 +144,24 @@ class ResourceSampler:
     """
 
     def __init__(self, pid, *, interval: float = 1.0, max_samples: int = 2100,
-                 disk_paths=(), include_threads: bool = False, backend=None):
+                 disk_paths=(), include_threads: bool = False, backend=None,
+                 raw_uptime: bool = False):
         paths = validate_options(interval=interval, max_samples=max_samples,
                                  disk_paths=disk_paths, include_threads=include_threads)
         if type(pid) is not int or pid <= 0:
             raise ValueError("resource sampler pid must be a positive integer")
+        if type(raw_uptime) is not bool:
+            raise ValueError("raw_uptime must be a boolean")
 
         self.pid = pid
         self.interval = float(interval)
         self.max_samples = max_samples
         self.disk_paths = paths
         self.include_threads = include_threads
+        self._raw_uptime = raw_uptime
         self.backend = load_backend() if backend is None else backend
         self._started_at = time.perf_counter()
-        self._clock_start = clock_anchor()
+        self._clock_start = clock_anchor(raw_uptime=True) if raw_uptime else clock_anchor()
         self._clock_end = None
         self._next_due = None
         self._process = None
@@ -562,7 +594,7 @@ class ResourceSampler:
     def finish(self) -> dict:
         """Stop future polling and return a bounded JSON-serializable report."""
         if not self._finished:
-            self._clock_end = clock_anchor()
+            self._clock_end = clock_anchor(raw_uptime=True) if self._raw_uptime else clock_anchor()
             self._finished = True
             if self._stop_reason is None:
                 self._stop_reason = "caller_finished"
