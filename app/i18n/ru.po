@@ -3963,6 +3963,9 @@ msgstr "Ось %d"
 msgid "%s · raw %+.2f · conditioned %+.2f"
 msgstr "%s · исходное %+.2f · обработанное %+.2f"
 
+msgid "%s · in %+.2f → out %+.2f"
+msgstr "%s · вх. %+.2f → вых. %+.2f"
+
 msgid "Flight: %s   ·   Menus: %s"
 msgstr "Полёт: %s   ·   Меню: %s"
 
@@ -9212,3 +9215,24 @@ msgstr "Покрытие встроенных теней эксперимент�
 
 msgid "Activities may use a shorter range."
 msgstr "В некоторых занятиях дальность может быть меньше."
+
+msgid "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
+msgstr "Двигалось больше одной оси. Двигайте только указанный стик, проверьте микширование на передатчике и повторите попытку."
+
+msgid "Return throttle to LOW before continuing; then try again."
+msgstr "Перед продолжением верните газ в МИНИМУМ и повторите попытку."
+
+msgid "An already assigned axis moved. Restart calibration and check each requested stick."
+msgstr "Двигалась уже назначенная ось. Начните калибровку заново и проверьте каждый указанный стик."
+
+msgid "Mapped axes: throttle %d, roll %d, pitch %d, yaw %d. Throttle now: %.0f%%."
+msgstr "Назначенные оси: газ %d, крен %d, тангаж %d, рыскание %d. Газ сейчас: %.0f%%."
+
+msgid "%s: %.0f%% · raw %+.2f"
+msgstr "%s: %.0f%% · исходное %+.2f"
+
+msgid "Draft: throttle LOW should read 0%. Then Use calibration and Save."
+msgstr "Черновик: при минимальном газе должно быть 0%. Затем примените калибровку и сохраните."
+
+msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
+msgstr "Проверьте газ: переведите его на МАКСИМУМ (100%), затем верните на МИНИМУМ (0%) перед применением калибровки."

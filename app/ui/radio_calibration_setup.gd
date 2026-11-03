@@ -23,6 +23,10 @@ var _step_label: Label
 var _device_label: Label
 var _error_label: Label
 var _axes_label: Label
+var _result_label: Label
+var _last_axes: PackedFloat64Array = PackedFloat64Array()
+var _verify_full_seen := false
+var _verify_low_after_full := false
 var _finished: bool = false
 
 
@@ -53,6 +57,8 @@ func _init() -> void:
 	column.add_child(_error_label)
 	_axes_label = Widgets.label("", "SecondaryLabel", true, false)
 	column.add_child(_axes_label)
+	_result_label = Widgets.label("", "SecondaryLabel", true, false)
+	column.add_child(_result_label)
 	column.add_child(Widgets.label("Calibration stays in the draft until you Save controller settings.", "SecondaryLabel", true))
 	var buttons: HBoxContainer = Widgets.button_row()
 	column.add_child(buttons)
@@ -109,6 +115,8 @@ func _process(delta: float) -> void:
 		_cancel(tr("Calibration was interrupted. Start again; the draft is unchanged."))
 		return
 	_sample()
+	if not _finished and _wizard.done():
+		_refresh()
 
 
 func _sample() -> PackedFloat64Array:
@@ -122,6 +130,16 @@ func _sample() -> PackedFloat64Array:
 			return PackedFloat64Array()
 		axes.append(float(value))
 	_wizard.sample(axes)
+	_last_axes = axes
+	if _wizard.done():
+		var throttle: Dictionary = _wizard.profile.throttle
+		var amount: float = RcInput.normalize_throttle(axes[int(throttle.axis)], throttle)
+		if amount >= 0.95:
+			_verify_full_seen = true
+		elif _verify_full_seen and amount <= RcInput.ARM_THROTTLE:
+			_verify_low_after_full = true
+		if _verify_low_after_full and amount <= RcInput.ARM_THROTTLE:
+			_wizard.error = ""
 	_axes_label.text = tr("Radio axes: %s") % " ".join(Array(axes).map(func(value: float) -> String: return "%+.2f" % value))
 	return axes
 
@@ -133,6 +151,15 @@ func advance() -> void:
 	if axes.is_empty():
 		return
 	if _wizard.done():
+		if not _verify_low_after_full:
+			_wizard.error = "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
+			_refresh()
+			return
+		var throttle: Dictionary = _wizard.profile.throttle
+		if RcInput.normalize_throttle(axes[int(throttle.axis)], throttle) > RcInput.ARM_THROTTLE:
+			_wizard.error = "Return throttle to LOW before continuing; then try again."
+			_refresh()
+			return
 		_finished = true
 		completed.emit(_wizard.profile.duplicate(true), str(_wizard.aux_warning))
 		return
@@ -154,9 +181,22 @@ func _cancel(reason: String) -> void:
 func _refresh() -> void:
 	if _wizard.done():
 		_step_label.text = tr("Calibration complete")
-		_prompt.text = tr("Use these ranges, then Save controller settings. Lower the throttle before flying.")
+		var mapping: Dictionary = _wizard.profile
+		var throttle: Dictionary = mapping.throttle
+		var current: float = RcInput.normalize_throttle(_last_axes[int(throttle.axis)], throttle)
+		if not _verify_low_after_full:
+			_prompt.text = tr("Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration.")
+		elif current > RcInput.ARM_THROTTLE:
+			_prompt.text = tr("Return throttle to LOW before continuing; then try again.")
+		else:
+			_prompt.text = tr("Use these ranges, then Save controller settings. Lower the throttle before flying.")
+		_result_label.text = tr("Mapped axes: throttle %d, roll %d, pitch %d, yaw %d. Throttle now: %.0f%%.") % [
+			int(throttle.axis), int(mapping.roll.axis), int(mapping.pitch.axis), int(mapping.yaw.axis), current * 100.0]
 		next_button.text = tr("Use calibration")
+		next_button.disabled = not _verify_low_after_full or current > RcInput.ARM_THROTTLE
 	else:
+		_result_label.text = ""
+		next_button.disabled = false
 		var step: int = int(_wizard.step)
 		_step_label.text = tr("Step %d of %d") % [step + 1, Calibration.STEPS.size()]
 		_prompt.text = tr(Calibration.PROMPTS[Calibration.STEPS[step]])

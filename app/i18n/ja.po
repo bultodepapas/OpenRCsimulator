@@ -3758,6 +3758,9 @@ msgstr "軸 %d"
 msgid "%s · raw %+.2f · conditioned %+.2f"
 msgstr "%s · 生値 %+.2f · 補正後 %+.2f"
 
+msgid "%s · in %+.2f → out %+.2f"
+msgstr "%s · 入力 %+.2f → 出力 %+.2f"
+
 msgid "Flight: %s   ·   Menus: %s"
 msgstr "フライト：%s   ·   メニュー：%s"
 
@@ -8461,3 +8464,24 @@ msgstr "ネイティブ影の対応範囲は試験段階で、一部の物体は
 
 msgid "Activities may use a shorter range."
 msgstr "アクティビティによっては、より短い距離を使用します。"
+
+msgid "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
+msgstr "複数の軸が動きました。指定されたスティックだけを動かし、送信機のミキシングを確認して再試行してください。"
+
+msgid "Return throttle to LOW before continuing; then try again."
+msgstr "続ける前にスロットルを最低位置に戻し、再試行してください。"
+
+msgid "An already assigned axis moved. Restart calibration and check each requested stick."
+msgstr "割り当て済みの軸が動きました。キャリブレーションをやり直し、指定された各スティックを確認してください。"
+
+msgid "Mapped axes: throttle %d, roll %d, pitch %d, yaw %d. Throttle now: %.0f%%."
+msgstr "軸の割り当て：スロットル %d、ロール %d、ピッチ %d、ヨー %d。現在のスロットル：%.0f%%。"
+
+msgid "%s: %.0f%% · raw %+.2f"
+msgstr "%s：%.0f%% · 生値 %+.2f"
+
+msgid "Draft: throttle LOW should read 0%. Then Use calibration and Save."
+msgstr "下書き：スロットル最低位置で 0% を確認し、「キャリブレーションを使用」、「保存」を選んでください。"
+
+msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
+msgstr "スロットルを確認：最大（100%）まで上げ、最低（0%）まで戻してからキャリブレーションを使用してください。"

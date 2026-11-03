@@ -18,6 +18,10 @@ const PROMPTS := {
 }
 ## An axis must sweep at least this much (of the −1…+1 range) to count as moved.
 const MIN_SWEEP := 0.5
+## A second moving channel or a stick left away from its starting position makes an assignment ambiguous.
+const OTHER_AXIS_THRESHOLD := 0.25
+const THROTTLE_RETURN_FRACTION := 0.05
+const CENTER_RETURN_FRACTION := 0.1
 ## A deflection beyond this from rest decides the direction (the first one the prompt asked for).
 const DIRECTION_THRESHOLD := 0.25
 
@@ -65,7 +69,6 @@ func sample(axes: PackedFloat64Array) -> void:
 		error = "invalid axis sample; calibration needs ten finite axes in the -1…+1 range"
 		_reset_sweep()
 		return
-	error = ""
 	for i in RcInput.AXES:
 		_lo[i] = minf(_lo[i], axes[i])
 		_hi[i] = maxf(_hi[i], axes[i])
@@ -89,22 +92,34 @@ func advance(axes: PackedFloat64Array) -> bool:
 		_next()
 		return false
 	var name: String = STEPS[step]
+	# Include the Enter sample even when a caller has not sampled this frame.
+	sample(axes)
 	var best := -1
 	for i in RcInput.AXES:
 		if not _used.has(i) and (best < 0 or _hi[i] - _lo[i] > _hi[best] - _lo[best]):
 			best = i
 	if best < 0 or _hi[best] - _lo[best] < MIN_SWEEP:
-		error = "no stick moved enough (need a full sweep); try again"
+		error = "An already assigned axis moved. Restart calibration and check each requested stick." if _assigned_axis_moved() else "no stick moved enough (need a full sweep); try again"
 		_reset_sweep()
 		return false
+	for i in RcInput.AXES:
+		if i != best and (_hi[i] - _lo[i] >= OTHER_AXIS_THRESHOLD or absf(axes[i] - _rest[i]) >= OTHER_AXIS_THRESHOLD):
+			error = "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
+			_reset_sweep()
+			return false
 	var lo := _lo[best]
 	var hi := _hi[best]
 	if name == "throttle":
 		# The pilot started at LOW (the rest reading): whichever end is nearer rest is idle.
+		var return_tolerance: float = THROTTLE_RETURN_FRACTION * (hi - lo)
+		if absf(axes[best] - _rest[best]) > return_tolerance or minf(absf(_rest[best] - lo), absf(_rest[best] - hi)) > return_tolerance:
+			error = "Return throttle to LOW before continuing; then try again."
+			_reset_sweep()
+			return false
 		profile.throttle = { axis = best, invert = absf(_rest[best] - hi) < absf(_rest[best] - lo), min = lo, center = lo, max = hi }
 	else:
 		var c := _rest[best]
-		if c - lo < 0.2 * (hi - lo) or hi - c < 0.2 * (hi - lo):
+		if c - lo < 0.2 * (hi - lo) or hi - c < 0.2 * (hi - lo) or absf(axes[best] - c) > CENTER_RETURN_FRACTION * minf(c - lo, hi - c):
 			error = "the stick did not return to centre before Enter (or moved only one way); try again"
 			_reset_sweep()
 			return false
@@ -113,6 +128,13 @@ func advance(axes: PackedFloat64Array) -> bool:
 	_used[best] = true
 	_next()
 	return done()
+
+
+func _assigned_axis_moved() -> bool:
+	for axis in _used:
+		if _hi[axis] - _lo[axis] >= MIN_SWEEP:
+			return true
+	return false
 
 
 func _next() -> void:

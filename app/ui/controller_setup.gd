@@ -433,7 +433,7 @@ func _build() -> void:
 	axis_grid = GridContainer.new()
 	axis_grid.name = "AxisMapping"
 	axis_grid.columns = 5
-	axis_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	axis_grid.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	axis_grid.add_theme_constant_override("h_separation", 14)
 	axis_grid.add_theme_constant_override("v_separation", 5)
 	axis_grid.visible = false
@@ -455,7 +455,7 @@ func _build() -> void:
 		channel_block.add_child(compact_label)
 		var row_label := _label(str(CHANNEL_LABELS[channel]), "SecondaryLabel")
 		row_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		row_label.custom_minimum_size.x = 120.0
+		row_label.custom_minimum_size.x = 140.0
 		row_label.name = "AxisTableChannel_%s" % channel
 		_axis_channel_labels[channel] = row_label
 		axis_grid.add_child(row_label)
@@ -683,18 +683,20 @@ func _build() -> void:
 	_preview_grid = GridContainer.new()
 	_preview_grid.name = "AxisLivePreview"
 	_preview_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_preview_grid.columns = 2
+	_preview_grid.columns = 1
 	_preview_grid.add_theme_constant_override("h_separation", 12)
 	_preview_grid.add_theme_constant_override("v_separation", 4)
 	preview_column.add_child(_preview_grid)
 	for channel in CHANNELS:
 		var live_row := VBoxContainer.new()
 		live_row.custom_minimum_size.y = 40.0
+		live_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		live_row.add_theme_constant_override("separation", 3)
 		_preview_grid.add_child(live_row)
-		var current := _label(tr("%s · raw — · conditioned —") % tr(str(CHANNEL_LABELS[channel])), "SecondaryLabel", false)
+		var current := _label("%s · — → —" % tr(str(CHANNEL_LABELS[channel])), "SecondaryLabel", false)
 		current.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		current.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		current.autowrap_mode = TextServer.AUTOWRAP_OFF
+		current.custom_minimum_size.y = 22.0
 		live_row.add_child(current)
 		var meter_row := HBoxContainer.new()
 		live_row.add_child(meter_row)
@@ -850,7 +852,9 @@ func _resize_panel() -> void:
 	for row in _aux_channel_rows:
 		row.vertical = effective_width < 820.0
 		(row.get_parent() as VBoxContainer).add_theme_constant_override("separation", 1 if effective_width >= 1100.0 else 3)
-	_preview_grid.columns = 1 if effective_width < 1100.0 else 2
+	# The panel tops out at 1160 px even on a wide display. One preview column
+	# leaves room for a readable channel label beside the axis table.
+	_preview_grid.columns = 1
 	# Reparenting navigation or axis fields removes native focus. Keep the same
 	# control through reflow; follow its final bounds after containers have settled.
 	if is_instance_valid(focused) and _screen.is_ancestor_of(focused) and focused.is_visible_in_tree() \
@@ -2127,8 +2131,12 @@ func _update_axis_preview() -> void:
 		var raw := _read_axis_preview(_draft_flight_device_id, axis) if connected else 0.0
 		var conditioned := ControllerProfile.conditioned_axis(raw, channel, kind) if connected else 0.0
 		var current: Label = _preview_labels[channel_name]
-		current.text = tr("%s · raw %+.2f · conditioned %+.2f") % [tr(str(CHANNEL_LABELS[channel_name])), raw, conditioned] if connected else "%s · —" % tr(str(CHANNEL_LABELS[channel_name]))
-		current.tooltip_text = current.text
+		if connected and channel_name == "throttle" and str(_draft_profile.get("throttle_mode", "")) == "radio_absolute":
+			current.text = tr("%s: %.0f%% · raw %+.2f") % [tr(str(CHANNEL_LABELS[channel_name])), conditioned * 100.0, raw]
+			current.tooltip_text = current.text
+		else:
+			current.text = tr("%s · in %+.2f → out %+.2f") % [tr(str(CHANNEL_LABELS[channel_name])), raw, conditioned] if connected else "%s · —" % tr(str(CHANNEL_LABELS[channel_name]))
+			current.tooltip_text = tr("%s · raw %+.2f · conditioned %+.2f") % [tr(str(CHANNEL_LABELS[channel_name])), raw, conditioned] if connected else current.text
 		_preview_axis_labels[channel_name].text = tr("Axis %d") % axis
 		var meter: ProgressBar = _preview_bars[channel_name]
 		var absolute := str(channel.get("range_kind", "centered")) == "absolute"
@@ -2136,7 +2144,7 @@ func _update_axis_preview() -> void:
 		meter.value = conditioned
 	var axis_label: String
 	if connected:
-		axis_label = tr("Live values are read only. No controller input reaches the aircraft from this screen.")
+			axis_label = tr("Draft: throttle LOW should read 0%. Then Use calibration and Save.") if kind == "radio" else tr("Live values are read only. No controller input reaches the aircraft from this screen.")
 	else:
 		axis_label = tr("Select a connected flight controller to preview mapped channels.")
 	preview_label.text = axis_label

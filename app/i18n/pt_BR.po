@@ -4078,6 +4078,9 @@ msgstr "Eixo %d"
 msgid "%s · raw %+.2f · conditioned %+.2f"
 msgstr "%s · bruto %+.2f · condicionado %+.2f"
 
+msgid "%s · in %+.2f → out %+.2f"
+msgstr "%s · ent. %+.2f → saída %+.2f"
+
 msgid "Flight: %s   ·   Menus: %s"
 msgstr "Voo: %s   ·   Menus: %s"
 
@@ -9252,3 +9255,24 @@ msgstr "A cobertura de sombras nativas é experimental; alguns objetos não proj
 
 msgid "Activities may use a shorter range."
 msgstr "Algumas atividades podem usar uma distância menor."
+
+msgid "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
+msgstr "Mais de um eixo se moveu. Mova apenas o manche solicitado; verifique as mixagens do transmissor e tente novamente."
+
+msgid "Return throttle to LOW before continuing; then try again."
+msgstr "Volte o acelerador ao MÍNIMO antes de continuar e tente novamente."
+
+msgid "An already assigned axis moved. Restart calibration and check each requested stick."
+msgstr "Um eixo já atribuído se moveu. Reinicie a calibração e confira cada manche solicitado."
+
+msgid "Mapped axes: throttle %d, roll %d, pitch %d, yaw %d. Throttle now: %.0f%%."
+msgstr "Eixos mapeados: acelerador %d, rolagem %d, arfagem %d, guinada %d. Acelerador agora: %.0f%%."
+
+msgid "%s: %.0f%% · raw %+.2f"
+msgstr "%s: %.0f%% · bruto %+.2f"
+
+msgid "Draft: throttle LOW should read 0%. Then Use calibration and Save."
+msgstr "Rascunho: acelerador no MÍNIMO deve marcar 0%. Depois, Usar calibração e Salvar."
+
+msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
+msgstr "Verifique o acelerador: leve ao MÁXIMO (100%) e depois volte ao MÍNIMO (0%) antes de usar a calibração."

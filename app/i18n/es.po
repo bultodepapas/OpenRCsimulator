@@ -3498,6 +3498,9 @@ msgstr "Eje %d"
 msgid "%s · raw %+.2f · conditioned %+.2f"
 msgstr "%s · entrada %+.2f · salida %+.2f"
 
+msgid "%s · in %+.2f → out %+.2f"
+msgstr "%s · ent. %+.2f → sal. %+.2f"
+
 msgid "Flight: %s   ·   Menus: %s"
 msgstr "Vuelo: %s   ·   Menús: %s"
 
@@ -5446,6 +5449,15 @@ msgstr "Centra las palancas, acelerador al MÍNIMO, sin tocar. Pulsa Intro"
 
 msgid "Move the THROTTLE to FULL and back to LOW. Press Enter"
 msgstr "Lleva el ACELERADOR al MÁXIMO y vuelve al MÍNIMO. Pulsa Intro"
+
+msgid "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
+msgstr "Se movió más de un eje. Mueve solo la palanca solicitada; revisa las mezclas de la emisora e inténtalo de nuevo."
+
+msgid "Return throttle to LOW before continuing; then try again."
+msgstr "Vuelve a poner el acelerador al MÍNIMO antes de continuar e inténtalo de nuevo."
+
+msgid "An already assigned axis moved. Restart calibration and check each requested stick."
+msgstr "Se movió un eje ya asignado. Reinicia la calibración y comprueba cada palanca solicitada."
 
 msgid "Move the AILERON stick fully RIGHT, then LEFT, then centre. Press Enter"
 msgstr "Mueve la palanca de ALERONES a fondo a la DERECHA, luego a la IZQUIERDA y al centro. Pulsa Intro"
@@ -7537,6 +7549,18 @@ msgstr "Usa estos rangos y guarda los ajustes del mando. Baja el acelerador ante
 
 msgid "Use calibration"
 msgstr "Usar calibración"
+
+msgid "Mapped axes: throttle %d, roll %d, pitch %d, yaw %d. Throttle now: %.0f%%."
+msgstr "Ejes asignados: acelerador %d, alabeo %d, cabeceo %d, guiñada %d. Acelerador ahora: %.0f%%."
+
+msgid "%s: %.0f%% · raw %+.2f"
+msgstr "%s: %.0f%% · bruto %+.2f"
+
+msgid "Draft: throttle LOW should read 0%. Then Use calibration and Save."
+msgstr "Borrador: acelerador al MÍNIMO debe marcar 0%. Luego, Usar calibración y Guardar."
+
+msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
+msgstr "Comprueba el acelerador: llévalo al MÁXIMO (100%) y vuelve al MÍNIMO (0%) antes de usar la calibración."
 
 msgid "Finish or cancel remapping before calibrating."
 msgstr "Termina o cancela la reasignación antes de calibrar."

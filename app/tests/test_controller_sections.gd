@@ -220,6 +220,15 @@ func _run() -> void:
 			var view := Rect2(Vector2.ZERO, Vector2(root.size))
 			_check("%s/%s keeps the panel and Save within the viewport" % [dimensions, section], view.encloses(setup._settings_panel.get_global_rect()) and view.encloses(setup.save_button.get_global_rect()))
 		_check("%s axis layout adapts without squeezing preview values" % dimensions, setup._axis_columns.vertical == (dimensions.x < 1100))
+	root.size = Vector2i(1920, 1080)
+	setup.select_section("axes")
+	await _settle()
+	var preview_scroll := setup.find_child("ControllerSetupScroll", true, false) as ScrollContainer
+	for channel: String in ["roll", "pitch", "yaw", "throttle"]:
+		var value_label: Label = setup._preview_labels[channel]
+		_check("1080p %s live value has readable width inside the panel" % channel,
+			value_label.is_visible_in_tree() and value_label.size.x >= 300.0 and value_label.size.y >= 20.0
+			and preview_scroll.get_global_rect().grow(1.0).encloses(value_label.get_global_rect()))
 	root.size = Vector2i(1280, 720)
 	setup.select_section("axes")
 	await _settle()

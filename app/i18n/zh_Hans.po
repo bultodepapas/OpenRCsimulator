@@ -3660,6 +3660,9 @@ msgstr "轴 %d"
 msgid "%s · raw %+.2f · conditioned %+.2f"
 msgstr "%s · 原始值 %+.2f · 处理后 %+.2f"
 
+msgid "%s · in %+.2f → out %+.2f"
+msgstr "%s · 输入 %+.2f → 输出 %+.2f"
+
 msgid "Flight: %s   ·   Menus: %s"
 msgstr "飞行：%s   ·   菜单：%s"
 
@@ -8411,3 +8414,24 @@ msgstr "原生阴影覆盖仍处于试验阶段；部分物体不会投射阴影
 
 msgid "Activities may use a shorter range."
 msgstr "某些活动可能使用更短的距离。"
+
+msgid "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
+msgstr "多个轴同时移动。请只移动指定摇杆，检查遥控器混控后重试。"
+
+msgid "Return throttle to LOW before continuing; then try again."
+msgstr "继续前请将油门拨回最低位，然后重试。"
+
+msgid "An already assigned axis moved. Restart calibration and check each requested stick."
+msgstr "已分配的轴发生移动。请重新开始校准并逐一检查指定摇杆。"
+
+msgid "Mapped axes: throttle %d, roll %d, pitch %d, yaw %d. Throttle now: %.0f%%."
+msgstr "轴映射：油门 %d、横滚 %d、俯仰 %d、偏航 %d。当前油门：%.0f%%。"
+
+msgid "%s: %.0f%% · raw %+.2f"
+msgstr "%s：%.0f%% · 原始 %+.2f"
+
+msgid "Draft: throttle LOW should read 0%. Then Use calibration and Save."
+msgstr "草稿：油门最低位应显示 0%。然后选择“使用校准”和“保存”。"
+
+msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
+msgstr "验证油门：将油门推到最大（100%），再降回最低（0%），然后使用校准结果。"

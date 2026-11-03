@@ -4067,6 +4067,9 @@ msgstr "Asse %d"
 msgid "%s · raw %+.2f · conditioned %+.2f"
 msgstr "%s · grezzo %+.2f · elaborato %+.2f"
 
+msgid "%s · in %+.2f → out %+.2f"
+msgstr "%s · ing. %+.2f → usc. %+.2f"
+
 msgid "Flight: %s   ·   Menus: %s"
 msgstr "Volo: %s   ·   Menu: %s"
 
@@ -9237,3 +9240,24 @@ msgstr "La copertura delle ombre native è sperimentale; alcuni oggetti non proi
 
 msgid "Activities may use a shorter range."
 msgstr "Alcune attività possono usare una distanza minore."
+
+msgid "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
+msgstr "Si è mosso più di un asse. Muovi solo lo stick richiesto, controlla le miscelazioni della trasmittente e riprova."
+
+msgid "Return throttle to LOW before continuing; then try again."
+msgstr "Riporta il gas al MINIMO prima di continuare, poi riprova."
+
+msgid "An already assigned axis moved. Restart calibration and check each requested stick."
+msgstr "Si è mosso un asse già assegnato. Riavvia la calibrazione e controlla ogni stick richiesto."
+
+msgid "Mapped axes: throttle %d, roll %d, pitch %d, yaw %d. Throttle now: %.0f%%."
+msgstr "Assi assegnati: gas %d, rollio %d, beccheggio %d, imbardata %d. Gas ora: %.0f%%."
+
+msgid "%s: %.0f%% · raw %+.2f"
+msgstr "%s: %.0f%% · grezzo %+.2f"
+
+msgid "Draft: throttle LOW should read 0%. Then Use calibration and Save."
+msgstr "Bozza: il gas al MINIMO deve segnare 0%. Poi seleziona Usa calibrazione e Salva."
+
+msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
+msgstr "Verifica il gas: portalo al MASSIMO (100%) e poi di nuovo al MINIMO (0%) prima di usare la calibrazione."

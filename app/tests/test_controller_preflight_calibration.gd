@@ -191,6 +191,7 @@ func _open_wizard(inverted: bool = false) -> void:
 	if not app.screens.is_top("radio_calibration"):
 		return
 	app.screens.top().read_axis = func(id: int, axis: int) -> float: return raw[axis] if id == 15 else NAN
+	setup.axis_preview_provider = func(id: int, axis: int) -> float: return raw[axis] if id == 15 else NAN
 	await ui.settle()
 
 
@@ -208,8 +209,28 @@ func _complete_wizard(inverted: bool = false) -> void:
 	await _sweep(1, [-0.7, 0.7, 0.0])
 	await _sweep(0, [0.8, -0.8, 0.0])
 	check("finished wizard still requires explicit Use calibration", app.screens.is_top("radio_calibration"))
+	check("completion shows the assigned throttle axis and idle percent", "throttle 4" in app.screens.top()._result_label.text and "0%" in app.screens.top()._result_label.text)
+	check("completion requires a separate full-to-low verification", app.screens.top().next_button.disabled)
+	app.screens.top().advance()
+	check("direct completion cannot skip throttle verification", app.screens.is_top("radio_calibration") and "Verify throttle" in app.screens.top()._error_label.text)
+	raw[4] = -0.6 if inverted else 0.6
+	await ui.settle()
+	check("completion throttle percentage follows the live stick", "100%" in app.screens.top()._result_label.text and app.screens.top().next_button.disabled)
+	raw[4] = 0.6 if inverted else -0.6
+	await ui.settle()
+	check("full-to-low verification enables Use calibration and clears the error", not app.screens.top().next_button.disabled and app.screens.top()._error_label.text.is_empty())
+	raw[4] = -0.6 if inverted else 0.6
+	await ui.settle()
+	check("Use calibration disables while throttle is raised", app.screens.top().next_button.disabled and "LOW" in app.screens.top()._prompt.text)
+	app.screens.top().advance()
+	check("direct completion refuses raised throttle", app.screens.is_top("radio_calibration") and "LOW" in app.screens.top()._error_label.text)
+	raw[4] = 0.6 if inverted else -0.6
+	await ui.settle()
+	check("returning to LOW clears the warning", app.screens.top()._error_label.text.is_empty() and not app.screens.top().next_button.disabled)
 	await ui.tap(KEY_ENTER)
 	check("using calibration does not commit device selection", app.controllers.registry.selected_device_id("flight") == selection_at_start)
+	setup._update_preview()
+	check("draft preview shows zero throttle and Save instruction", "Throttle: 0%" in setup._preview_labels.throttle.text and "Save" in setup.preview_label.text)
 
 
 func _check_arming(calibrated: Dictionary, inverted: bool) -> void:

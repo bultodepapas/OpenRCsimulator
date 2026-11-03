@@ -4120,6 +4120,9 @@ msgstr "Axe %d"
 msgid "%s · raw %+.2f · conditioned %+.2f"
 msgstr "%s · brute %+.2f · conditionnée %+.2f"
 
+msgid "%s · in %+.2f → out %+.2f"
+msgstr "%s · ent. %+.2f → sort. %+.2f"
+
 msgid "Flight: %s   ·   Menus: %s"
 msgstr "Vol : %s   ·   Menus : %s"
 
@@ -9384,3 +9387,24 @@ msgstr "La couverture des ombres natives est expérimentale ; certains objets ne
 
 msgid "Activities may use a shorter range."
 msgstr "Certaines activités peuvent utiliser une portée plus courte."
+
+msgid "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
+msgstr "Plusieurs axes ont bougé. Déplacez uniquement le manche demandé, vérifiez les mixages de la radiocommande, puis réessayez."
+
+msgid "Return throttle to LOW before continuing; then try again."
+msgstr "Ramenez les gaz au MINIMUM avant de continuer, puis réessayez."
+
+msgid "An already assigned axis moved. Restart calibration and check each requested stick."
+msgstr "Un axe déjà attribué a bougé. Recommencez le calibrage et vérifiez chaque manche demandé."
+
+msgid "Mapped axes: throttle %d, roll %d, pitch %d, yaw %d. Throttle now: %.0f%%."
+msgstr "Axes attribués : gaz %d, roulis %d, tangage %d, lacet %d. Gaz actuellement : %.0f%%."
+
+msgid "%s: %.0f%% · raw %+.2f"
+msgstr "%s : %.0f%% · brut %+.2f"
+
+msgid "Draft: throttle LOW should read 0%. Then Use calibration and Save."
+msgstr "Brouillon : gaz au MINIMUM doit afficher 0 %. Choisissez ensuite Utiliser le calibrage puis Enregistrer."
+
+msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
+msgstr "Vérifiez les gaz : montez au MAXIMUM (100 %), puis redescendez au MINIMUM (0 %) avant d'utiliser le calibrage."

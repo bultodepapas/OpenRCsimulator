@@ -4114,6 +4114,9 @@ msgstr "Achse %d"
 msgid "%s · raw %+.2f · conditioned %+.2f"
 msgstr "%s · roh %+.2f · aufbereitet %+.2f"
 
+msgid "%s · in %+.2f → out %+.2f"
+msgstr "%s · ein %+.2f → aus %+.2f"
+
 msgid "Flight: %s   ·   Menus: %s"
 msgstr "Flug: %s   ·   Menüs: %s"
 
@@ -9356,3 +9359,24 @@ msgstr "Die Abdeckung nativer Schatten ist experimentell; manche Objekte werfen 
 
 msgid "Activities may use a shorter range."
 msgstr "Einzelne Aktivitäten können eine kürzere Reichweite verwenden."
+
+msgid "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
+msgstr "Mehr als eine Achse wurde bewegt. Bewege nur den angeforderten Steuerknüppel, prüfe die Mischer des Senders und versuche es erneut."
+
+msgid "Return throttle to LOW before continuing; then try again."
+msgstr "Stelle das Gas vor dem Fortfahren auf MINIMUM und versuche es erneut."
+
+msgid "An already assigned axis moved. Restart calibration and check each requested stick."
+msgstr "Eine bereits zugewiesene Achse wurde bewegt. Starte die Kalibrierung neu und prüfe jeden angeforderten Steuerknüppel."
+
+msgid "Mapped axes: throttle %d, roll %d, pitch %d, yaw %d. Throttle now: %.0f%%."
+msgstr "Zugewiesene Achsen: Gas %d, Rollen %d, Nicken %d, Gieren %d. Gas jetzt: %.0f%%."
+
+msgid "%s: %.0f%% · raw %+.2f"
+msgstr "%s: %.0f%% · Rohwert %+.2f"
+
+msgid "Draft: throttle LOW should read 0%. Then Use calibration and Save."
+msgstr "Entwurf: Gas auf MINIMUM sollte 0% anzeigen. Danach Kalibrierung übernehmen und Speichern."
+
+msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
+msgstr "Prüfe das Gas: Bewege es auf MAXIMUM (100%) und dann zurück auf MINIMUM (0%), bevor du die Kalibrierung übernimmst."
