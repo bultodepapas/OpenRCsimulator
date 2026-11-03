@@ -379,5 +379,11 @@ Output checks cover resolution, 60 fps, the manifest's frame count/duration, ful
 `render-manifest.json` retains source/output hashes and audio measurements. These checks do not
 replace listening review, prove physical realism, or establish exact replay equivalence.
 
+For a localized edit, translate the timeline's feature text, callout labels and
+`video_description`; translate `end_card_detail` when using a generated still end card.
+`graphics.cinematic_label` replaces the formation disclosure text;
+top-level `title` and `metadata_comment` set MP4 metadata. The source footage can retain
+in-simulator UI in its original language; state that limit in the localized delivery.
+
 Keep `VIDEO-DESCRIPTION.txt` with the film: it includes the required Scott Buckley music attribution,
 license link, edit note and formation disclosure. Delivery does not upload or publish the film.

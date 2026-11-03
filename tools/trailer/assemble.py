@@ -42,7 +42,7 @@ def tracked(draw, xy, text, size, spacing, color, regular=False):
     return x
 
 
-def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, title_xy=(88, 795), gradient=True, compact=False, crystal=False):
+def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, title_xy=(88, 795), gradient=True, compact=False, crystal=False, cinematic_label="CINEMATIC FORMATION SEQUENCE"):
     accent = crystal_titles.FOCUS + (255,) if crystal else (255, 178, 91, 255)
     ink = (6, 14, 8, 165) if crystal else (4, 12, 20, 155)
     im = Image.new("RGBA", (W, H))
@@ -69,8 +69,10 @@ def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, t
                stroke_width=1 if gradient else 2, stroke_fill=(4, 12, 20, 170))
     if cinematic:
         cy = 963 if compact else 72
-        d.rectangle((78, cy - 4, 510, cy + 39), fill=ink, outline=crystal_titles.FOCUS + (110,) if crystal else None)
-        tracked(d, (92, cy), "CINEMATIC FORMATION SEQUENCE", 23, 1.3,
+        caption_font = font(23, True)
+        label_width = sum(d.textlength(letter, font=caption_font) + 1.3 for letter in cinematic_label)
+        d.rectangle((78, cy - 4, max(510, int(92 + label_width + 14)), cy + 39), fill=ink, outline=crystal_titles.FOCUS + (110,) if crystal else None)
+        tracked(d, (92, cy), cinematic_label, 23, 1.3,
                 crystal_titles.CRYSTAL + (255,) if crystal else (243, 247, 252, 255), True)
     if brand:
         brand_x = 1640 if cinematic else 88
@@ -338,7 +340,7 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     final = out / spec.get("output_filename", f"OpenRC-Every-Input-Matters-{total_duration:g}s-1080p60.mp4")
     run([ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-i", picture, "-i", mixed, "-map", "0:v:0", "-map", "1:a:0",
          "-c:v", "copy", "-af", normalizer, "-ar", 48000, "-c:a", "aac", "-b:a", "320k", "-t", total_duration, "-movflags", "+faststart",
-         "-metadata", "title=OpenRC Simulator — Every Input Matters", "-metadata", "comment=Actual simulator captures and labeled cinematic formation. Music: Uprising by Scott Buckley, CC BY 4.0.", final])
+         "-metadata", "title=" + spec.get("title", "OpenRC Simulator — Every Input Matters"), "-metadata", "comment=" + spec.get("metadata_comment", "Actual simulator captures and labeled cinematic formation. Music: Uprising by Scott Buckley, CC BY 4.0."), final])
     probe = json.loads(run([ffprobe, "-v", "error", "-show_streams", "-show_format", "-of", "json", final]).stdout)
     v = next(s for s in probe["streams"] if s["codec_type"] == "video")
     assert (v["width"], v["height"], v["r_frame_rate"], int(v["nb_frames"])) == (1920, 1080, "60/1", total_frames), v
