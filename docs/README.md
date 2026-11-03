@@ -20,6 +20,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Performance/visual implementation order, gates and idea decisions | [Global implementation plan](plans/global-performance-visual-quality.md); [dated research and sources](research/godot-global-review-2026-10-14.md) |
 | Measured optimization opportunities and follow-up priorities | [Optimization priorities](plans/optimization-priorities.md); the global plan owns acceptance gates |
 | Apple Silicon performance, Metal/MetalFX integration and sustained 1080p qualification | [Technical background](APPLE-SILICON-TECHNICAL-BACKGROUND.md); [master implementation plan](plans/apple-silicon-performance.md) |
+| Connect to the shared M1 and run native development checks | [M1 access and workflow](tools/macos-m1.md) |
 | Linux support, packages, downloads and release qualification | [Linux execution plan](plans/linux-support-distribution.md); [repository audit and primary sources, 2026-10-28](research/desktop-delivery-investigations/DT-LNX-00/README.md) |
 | Advanced graphics, isolated Forward+ comparison and proposed High profile | [VQ-07 upgrade plan](plans/advanced-graphics.md); [source audit, 2026-10-21](research/advanced-graphics-2026-10-21/README.md) |
 | Detailed shadows, grounding and shadow settings | [VQ-04b shadow plan](plans/shadows.md); [runtime and primary-source audit, 2026-10-31](research/shadows-2026-10-31.md) |

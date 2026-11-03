@@ -97,6 +97,10 @@ fails the run. Headless success does not qualify graphics, hardware or physics.
 
 ## Native Apple Silicon setup and preflight (DT-MAC-02a)
 
+For the existing shared M1, start with the [access and workflow guide](../../docs/tools/macos-m1.md)
+for SSH, installed engine/Python paths, isolated workspaces and retained evidence.
+The setup below describes acquiring tools in a new native checkout.
+
 From a native ARM64 macOS shell, with Git, Bash, curl, unzip, `shasum`, `file`
 and Python 3.11 or newer available, run from the repository root:
 

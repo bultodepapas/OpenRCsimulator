@@ -129,7 +129,9 @@ multi-bounce occlusion disabled. The helper verifies copied file hashes and writ
 existing destination. Failed preparations retain their partial files for inspection.
 Sibling `assets/` is a link to the source, not an immutable copy: freeze that source
 and retain its identity throughout the campaign. Windows requires permission to
-create directory symlinks; Mac preparation remains to be exercised natively.
+create directory symlinks. Native M1 research copies were exercised in the
+[dated campaign](../../docs/research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison);
+use the [shared M1 guide](../../docs/tools/macos-m1.md) for access and new task workspaces.
 
 On a native ARM64 Mac, from the repository root:
 

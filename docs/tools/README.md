@@ -6,6 +6,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 
 | Task | Entry point / contract |
 | --- | --- |
+| Connect to the shared M1, prepare a Mac workspace or run native checks | [M1 access and workflow](macos-m1.md): SSH, paths, installed tools, desktop requirements and retained evidence. |
 | Full app checks or a CI partition | `app/test.sh`; [suite and snapshot rules](shared.md#full-app-suite). |
 | Local quick/full/release preflight | [CI tools](../../tools/ci/README.md); Linux/WSL, no branch creation or publication. |
 | One Godot test, probe or parse check | [Checked runner](shared.md#one-godot-script); catches errors even when Godot exits zero. |

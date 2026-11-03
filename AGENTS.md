@@ -17,6 +17,7 @@ Use this order for planning, optimization and acceptance evidence. A 720p viewpo
 ## Tools
 
 - Find the tool for your task in the [tool index](docs/tools/README.md) before writing ad-hoc test, probe or debug code.
+- For M1 access, native Mac tests or captures, read the [shared M1 guide](docs/tools/macos-m1.md): SSH, installed tools, isolated workspaces and evidence retention. Preserve its existing SSH keys and frozen campaigns.
 - To inspect or drive a running app (state, live log, menus, keys, sticks, pause/step, screenshots, hitches, leaks,
   watchpoints, UI fuzzing), use the [debug bridge](tools/debug/README.md) instead of ad-hoc probes or mouse automation.
   `python3 tools/debug/debugctl.py smoke` is the one-command regression pass for the running app.
