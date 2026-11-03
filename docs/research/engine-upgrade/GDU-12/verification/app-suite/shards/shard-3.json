@@ -1,0 +1,53 @@
+{
+  "shard": 3,
+  "exit_code": 0,
+  "source_commit": "46b004c7b469448c29ef96168da4f03cee2c6d23",
+  "roster_source_sha256": "b5fb469c466f69097781df0e9894522c8d38d3bf169c27335a9961a886c002dd",
+  "scripts_completed": 109,
+  "checked_invocations": 110,
+  "passed": 110,
+  "failed_or_invalid": 0,
+  "junit_reported_skipped": 0,
+  "junit_sha256": "5149a53d3dafd7e334e2b5376ac16e0a544f042749930b2113aca988a9f40046",
+  "console_sha256": "976ff277a3d16e62ddc5756682c3aab14030d4aed5e7de0e3fe3bd45be143079",
+  "roster_sha256": "97738cf8d3cb0e2464026d25c75daf5287d22bdba37842bbf50a7aa88ab4b088",
+  "summarizer_sha256": "f6b2dfbebbc2caccea71f95d17d2919d5e2b8248426f669d3f5335a9de030c4c",
+  "checked_collection_sha256": "802023998c87a0998e2790f5257403bd8da257787658a98e84f5ab06316695bb",
+  "raw_collection": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-units\\shard-3",
+  "checkout_variant": "ram",
+  "inline_skips": [
+    {
+      "line": 1012,
+      "test": "test_field_people_gaze.gd",
+      "text": "skip MultiMesh readback under the headless dummy renderer"
+    },
+    {
+      "line": 1801,
+      "test": "test_landscape_population_assets.gd",
+      "text": "skip production population readback; asset is not staged yet: res://assets/scenery/population/standing.glb"
+    },
+    {
+      "line": 1832,
+      "test": "test_lighting_policy.gd",
+      "text": "Native flash pixels skipped: headless renderer."
+    },
+    {
+      "line": 3043,
+      "test": "test_sun_skyline.gd",
+      "text": "skipped: this renderer keeps no MultiMesh instance data (headless); tree checks need opengl3"
+    }
+  ],
+  "native_fallback_occurrences": 30,
+  "native_fallback_sample": {
+    "line": 213,
+    "text": "physics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage library not installed\",\"requested\":\"native\"}"
+  },
+  "qualification_limits": [
+    {
+      "line": 1188,
+      "test": "test_glow_audio_pump.gd",
+      "text": "N/A skip-free and native-duration qualification: Dummy driver is a smoke test only"
+    }
+  ],
+  "external_reference_mentions": []
+}

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="7" failures="0" errors="0" skipped="0" time="247.592000"><testcase classname="OpenRC.GodotCommand" name="C:\DEVELOPMENT\OpenRCsimulator\docs\research\release-readiness\PT1-v0.1.9\capture_fixed_brake_values.gd [fixed-brake-candidate-capture-gw85h0f_]" time="3.953000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: fixed-brake-candidate-capture-gw85h0f_/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="resource import [fixed-brake-current-reference-import-gh8657gu]" time="6.421000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: fixed-brake-current-reference-import-gh8657gu/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:\DEVELOPMENT\OpenRCsimulator\docs\research\release-readiness\PT1-v0.1.9\capture_fixed_brake_values.gd [fixed-brake-historical-goldens-9_aesfe6]" time="4.203000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: fixed-brake-historical-goldens-9_aesfe6/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_fixed_gear_brake_input.gd [fixed-brake-input-klygagau]" time="8.813000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: fixed-brake-input-klygagau/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:\DEVELOPMENT\OpenRCsimulator\docs\research\release-readiness\PT1-v0.1.9\capture_fixed_brake_values.gd [fixed-brake-matched-reference-ibav73o7]" time="4.140000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: fixed-brake-matched-reference-ibav73o7/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="resource import [fixed-brake-reference-bootstrap-4rasjb7t]" time="214.031000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=8
+
+Evidence: fixed-brake-reference-bootstrap-4rasjb7t/report.json and engine.log
+log:2687 WARNING: OBJ: Ambient light for material 'Yellow' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+[  80% ] reimport | Corn_4.obj
+log:2690 WARNING: OBJ: Ambient light for material 'DarkGreen2' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+log:2692 WARNING: OBJ: Ambient light for material 'Green' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="resource import [fixed-brake-reference-import-ict6bymy]" time="6.031000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: fixed-brake-reference-import-ict6bymy/report.json and engine.log</system-out></testcase></testsuite>

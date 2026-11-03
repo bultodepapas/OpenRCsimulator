@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "71332600-0126-4d80-96be-f10c013deb37",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/engine/Godot",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/wrong-binary-with-matching-alternate",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/wrong-binary-with-matching-alternate/test.gd",
+    "--",
+    "refuse",
+    "binary"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-loader",
+  "started_utc": "2026-11-01T19:06:46.163688+00:00",
+  "label": "wrong-binary-with-matching-alternate",
+  "log": "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/checks/wrong-binary-with-matching-alternate-20axt568/engine.log",
+  "report": "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/checks/wrong-binary-with-matching-alternate-20axt568/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_LOADER_TEST ok=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.550508,
+  "log_bytes": 206,
+  "log_sha256": "c83bedce94d36920e701e07d8dda8b1aca95e25e71b6cc996df82c915363f2e7"
+}

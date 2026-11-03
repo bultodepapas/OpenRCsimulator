@@ -1,0 +1,248 @@
+{
+  "engine": "4.8.beta2.official.cafc17a19",
+  "platform": "Windows",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "requested_window": "1920x1080",
+  "runs": [
+    {
+      "label": "high-profile-beta2-forward",
+      "renderer": "forward_plus",
+      "test": "res://tests/test_high_graphics_profile.gd",
+      "test_sha256": "32052504ddee9e299f26f1416f2a3ec6989a0b99044632506e77e64277798d23",
+      "completion_lines": [
+        "96 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "434feb36c2e753caa46b13d647268c7dccc9c4e1e329aef059bb0ff3b2c1cf1f",
+      "log_sha256": "0450d8f22e5cf4b5dd01c1ccddea28088439ebd2afb5bc6e082ef96a18f99998"
+    },
+    {
+      "label": "lighting-policy-beta2-forward_plus",
+      "renderer": "forward_plus",
+      "test": "res://tests/test_lighting_policy.gd",
+      "test_sha256": "8b83c15ff8d0e00810a8274d6bdd5e7503e4029086868d2e8bb1b45c940b4754",
+      "completion_lines": [
+        "Lighting policy: 18 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "5b5c02372b51238df022fa33a320e08854ce85b319f7bd289d7321505e7d2cfc",
+      "log_sha256": "273f7f9ee3b97332fc83c38d7c1ea42fdb15bad26d35f51f98843b57d33fbd74"
+    },
+    {
+      "label": "lighting-policy-beta2-gl_compatibility",
+      "renderer": "gl_compatibility",
+      "test": "res://tests/test_lighting_policy.gd",
+      "test_sha256": "8b83c15ff8d0e00810a8274d6bdd5e7503e4029086868d2e8bb1b45c940b4754",
+      "completion_lines": [
+        "Lighting policy: 18 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "e96ca567a189b40e7ed175e79819deb17b4aa5879ca0cda556d0e5b24de72624",
+      "log_sha256": "5e291d7b564875617249391ee39c6b2ccd8b2b43932f3d7ac1fed0d3a4f10c01"
+    },
+    {
+      "label": "lighting-policy-beta2-mobile",
+      "renderer": "mobile",
+      "test": "res://tests/test_lighting_policy.gd",
+      "test_sha256": "8b83c15ff8d0e00810a8274d6bdd5e7503e4029086868d2e8bb1b45c940b4754",
+      "completion_lines": [
+        "Lighting policy: 18 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "bb558eb4e2a0097c186271c75c69a7fe71c1817c20895b9c02587f324f3d4182",
+      "log_sha256": "9f45eedd39fd1c7025e5b7174dda27d35e5df722444aa52c4a56b1fba8b5003d"
+    },
+    {
+      "label": "people-gaze-beta2-opengl3",
+      "renderer": "gl_compatibility",
+      "test": "res://tests/test_field_people_gaze.gd",
+      "test_sha256": "3b2aa54f28d22c2ebf745621dbb2ada7e4b5198ee1a5f257613839d8a3ef7993",
+      "completion_lines": [
+        "people gaze: PASS"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "70b159d3e94f180b42d43c739f40fd68926fde1c4956cb43eaed0c8229de1997",
+      "log_sha256": "7be2b0fa36975ce91e13a7859bd13e331deccc5e5086a7d908efa6f06277d3ed"
+    },
+    {
+      "label": "rgb-filter-beta2-forward_plus",
+      "renderer": "forward_plus",
+      "test": "res://tests/test_lighting_segment_filter.gd",
+      "test_sha256": "ad2824811128e79c5908a8e9f95b0a32ac39a05d8e211b0f5d5ab52ffd000ea9",
+      "completion_lines": [
+        "Lighting segment filter: 12 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "56da9e36fd1b943a760c4edab36618a2e46510ef637bdc0fcf3d99287d1f9b7d",
+      "log_sha256": "7cc47fd991749e197d8fc68d585c335e398cc371be81703fa3abff9b75dd4e11"
+    },
+    {
+      "label": "rgb-filter-beta2-gl_compatibility",
+      "renderer": "gl_compatibility",
+      "test": "res://tests/test_lighting_segment_filter.gd",
+      "test_sha256": "ad2824811128e79c5908a8e9f95b0a32ac39a05d8e211b0f5d5ab52ffd000ea9",
+      "completion_lines": [
+        "Lighting segment filter: 12 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "a7dff5fa96f0158ad54a21b94700e8f7c62f63d409c81b6f1881899290917188",
+      "log_sha256": "e8c2f53cf19ea0de9eecd3df1d2c4aa03cc08be49cb9c5586c23cb9384737950"
+    },
+    {
+      "label": "rgb-filter-beta2-mobile",
+      "renderer": "mobile",
+      "test": "res://tests/test_lighting_segment_filter.gd",
+      "test_sha256": "ad2824811128e79c5908a8e9f95b0a32ac39a05d8e211b0f5d5ab52ffd000ea9",
+      "completion_lines": [
+        "Lighting segment filter: 12 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "8b0fa5b01362e7c5e808e684f73cc7b7a1d8e6a40a25fa9dd2e1ba703de54d7e",
+      "log_sha256": "47acc895fabd3af9589871a62afb6f689a80edb86369c15c7aae6aa73638ab13"
+    },
+    {
+      "label": "rgb-path-beta2-forward_plus",
+      "renderer": "forward_plus",
+      "test": "res://tests/test_lighting_path.gd",
+      "test_sha256": "fdc468b615edc85d9faf64d2e285f9edc8e0e2395440c19dab0f7047cc82f276",
+      "completion_lines": [
+        "Lighting paths: 9 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "c2e21fcc43a3f6e5e207729341c99476df19b9080f0163c2ba4a417586f98f80",
+      "log_sha256": "c4e7541957356b096583ebba0f59ff23195fd1551b8d193e0588e66aa077b5ce"
+    },
+    {
+      "label": "rgb-path-beta2-gl_compatibility",
+      "renderer": "gl_compatibility",
+      "test": "res://tests/test_lighting_path.gd",
+      "test_sha256": "fdc468b615edc85d9faf64d2e285f9edc8e0e2395440c19dab0f7047cc82f276",
+      "completion_lines": [
+        "Lighting paths: 9 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "37a4846659a99488ed2629c2241fd16604ab61fed17d0be0d6b053dd74f385fa",
+      "log_sha256": "762ee50576cc6e25d3b1408ae4092c1bbb077cb1380905f42985789bdda0fd55"
+    },
+    {
+      "label": "rgb-path-beta2-mobile",
+      "renderer": "mobile",
+      "test": "res://tests/test_lighting_path.gd",
+      "test_sha256": "fdc468b615edc85d9faf64d2e285f9edc8e0e2395440c19dab0f7047cc82f276",
+      "completion_lines": [
+        "Lighting paths: 9 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "f845f8f3701a4fbafd0bae348f7a130c7495dbb9776d75e79937a5ec050db43b",
+      "log_sha256": "7d7cfecbe7f5b72b19c53b6337f55b629a4103023e377f82f3f4dc1fbb226ca1"
+    },
+    {
+      "label": "rgb-skin-beta2-forward_plus",
+      "renderer": "forward_plus",
+      "test": "res://tests/test_lighting_skin_patterns.gd",
+      "test_sha256": "f8ac30494b6b9fdd8a41546eb4269ef56f049a9aac6b6909d44da9b5f97b6444",
+      "completion_lines": [
+        "Lighting skin patterns: 13 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "27954bfad66c72c9601d33eff4049946b7dab790de089817d2e9165b70f748c7",
+      "log_sha256": "f7dde0ded2f8585aa6f7f4dca10a3f433dbed11b5d79e8aa7424e0b4661399b4"
+    },
+    {
+      "label": "rgb-skin-beta2-gl_compatibility",
+      "renderer": "gl_compatibility",
+      "test": "res://tests/test_lighting_skin_patterns.gd",
+      "test_sha256": "f8ac30494b6b9fdd8a41546eb4269ef56f049a9aac6b6909d44da9b5f97b6444",
+      "completion_lines": [
+        "Lighting skin patterns: 13 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "b597f6b55157998a6b26ef43b9b8067419f5c032f9614e5d9f060dd101b6aee0",
+      "log_sha256": "8dae02a533d08cfbf2f489997ec2400f8952cb4ff620581a81fa852e64605efb"
+    },
+    {
+      "label": "rgb-skin-beta2-mobile",
+      "renderer": "mobile",
+      "test": "res://tests/test_lighting_skin_patterns.gd",
+      "test_sha256": "f8ac30494b6b9fdd8a41546eb4269ef56f049a9aac6b6909d44da9b5f97b6444",
+      "completion_lines": [
+        "Lighting skin patterns: 13 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "8b3a6f825fb2593ac083a14ccc881383a643679358a0f8265ffef081974c65b3",
+      "log_sha256": "7c270c97c69dc625ebf9de13e1c9d401c43e569401b1777f1b0a1ce65e8cc817"
+    },
+    {
+      "label": "sun-skyline-beta2-opengl3",
+      "renderer": "gl_compatibility",
+      "test": "res://tests/test_sun_skyline.gd",
+      "test_sha256": "1cff3617b587c07f1b3fbd9680aa072c353523298f11c2abf5f69cab444fbb93",
+      "completion_lines": [
+        "SUN skyline: 14 checks, 0 failed"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "73d2ebbe449005b263ec017bb92080f1b9deddf0e0a5b81f61bc5dc55a482ca3",
+      "log_sha256": "b6ecf3c717466bcdcc50e028bba062ff9ff541983ad1d96a22d9dcb0bd9ad774"
+    },
+    {
+      "label": "woodland-habitat-beta2-opengl3",
+      "renderer": "gl_compatibility",
+      "test": "res://tests/test_woodland_edge_habitat.gd",
+      "test_sha256": "ee97d5152af913c1d5a09711d46d55960d10b1922f568d87d98963b18e4624ff",
+      "completion_lines": [
+        "woodland-edge habitat: 33 checks, 0 failures"
+      ],
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "report_sha256": "99d8aa39dfd8f27c68adbbc592ffc4c916007458c5b302db8ddfa3bb257208a1",
+      "log_sha256": "f040d6c4dc5bdc373400d7be7d04418496536794e99f946d68a168d733845f4e"
+    }
+  ]
+}

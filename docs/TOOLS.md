@@ -4,7 +4,7 @@ Start at the [task index](tools/README.md) to choose a tool. This page owns setu
 
 ## Developer setup
 
-Use the official Godot **4.8-beta1** prerelease pinned by [`app/get-godot.sh`](../app/get-godot.sh), which verifies the archive, exact engine version and cached executable hashes. The downloader supports Linux x86_64, Windows x86_64 under Git Bash, and native Darwin ARM64. On Linux and Windows install Git, Bash, curl, unzip, GNU coreutils, util-linux and Python 3.
+Use the official Godot **4.8-beta2** prerelease pinned by [`app/get-godot.sh`](../app/get-godot.sh), which verifies the archive, exact engine version and cached executable hashes. The downloader supports Linux x86_64, Windows x86_64 under Git Bash, and native Darwin ARM64. On Linux and Windows install Git, Bash, curl, unzip, GNU coreutils, util-linux and Python 3.
 
 ```sh
 git clone -c core.autocrlf=false https://github.com/bultodepapas/OpenRCsimulator.git
@@ -13,12 +13,12 @@ cd OpenRCsimulator
 "$(app/get-godot.sh)" --path app
 ```
 
-Import before standalone scripts on a fresh checkout; the test and capture runners import automatically. For captures, install Xvfb, Mesa/OpenGL, Python venv support and pip 22.3+; `app/tests/visual-env.sh` supplies the pinned CPython 3.12 packages. Exports need `zip`, GNU binutils (`readelf`), Python 3.11+ and `app/get-templates.sh`, which verifies the matching official templates and prepares the project-local macOS template.
+Import before standalone scripts on a fresh checkout; the test and capture runners import automatically. For captures, install Xvfb, Mesa/OpenGL, Python venv support and pip 22.3+; `app/tests/visual-env.sh` supplies the pinned CPython 3.12 packages. Exports need `zip`, GNU binutils (`readelf`), Python 3.11+ and `app/get-templates.sh`, which verifies and installs the matching official templates, including the unmodified macOS template.
 
 **Windows:** run `bash app/get-godot.sh` in Git Bash first. Use WSL2 Ubuntu on its Linux filesystem for the Linux CI/capture/export workflow, keeping Windows and Linux checkouts and import caches separate. Native PowerShell:
 
 ```powershell
-$GodotWindows = (Resolve-Path '.tools/Godot_v4.8-beta1_win64_console.exe').Path
+$GodotWindows = (Resolve-Path '.tools/Godot_v4.8-beta2_win64_console.exe').Path
 & $GodotWindows --headless --path app --audio-driver Dummy --import
 & $GodotWindows --path app
 python tools/godot/run_checked.py --timeout 90 -- $GodotWindows --headless --path app --audio-driver Dummy --script res://tests/test_simulation.gd
@@ -26,7 +26,7 @@ python tools/godot/run_checked.py --timeout 90 -- $GodotWindows --headless --pat
 
 Use the [checked runner](../tools/godot/README.md) for focused tests: Godot can print script errors and still exit zero. WSL checks establish Linux behavior, not native Windows GPU/device acceptance. For the native Apple Silicon downloader, template prerequisite and hardware inventory, follow the [macOS setup and preflight](../tools/godot/README.md#native-apple-silicon-setup-and-preflight-dt-mac-02a). For the existing host, use the [shared M1 access and workflow guide](tools/macos-m1.md). Focused native checks and technical sustained comparisons are recorded in the dated evidence; full release qualification and Linux cross-export gates remain separate.
 
-**Linux Wayland:** beta1 can crash while falling back from unavailable X11 to Wayland ([issue #124731](https://github.com/godotengine/godot/issues/124731); [fix #124734](https://github.com/godotengine/godot/pull/124734) postdates this pin). In a working Wayland session, launch with `python3 tools/graphics/launch.py --display-driver wayland`. Imports, tests and exports use `--headless`; these do not qualify desktop Wayland rendering.
+**Linux Wayland:** select Wayland explicitly with `python3 tools/graphics/launch.py --display-driver wayland` when required by the desktop session. The beta1 fallback-crash investigation is retained in [GDU-02](research/engine-upgrade/GDU-02/README.md). Imports, tests and exports use `--headless`; these do not qualify desktop Wayland rendering.
 
 Node's version is pinned in [`.nvmrc`](../.nvmrc) for tree authoring and the frozen three.js prototype; the production app and static site do not need Node. [CI](../.github/workflows/ci.yml) owns the Linux package prerequisites and job commands.
 

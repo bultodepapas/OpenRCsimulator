@@ -1,27 +1,29 @@
 #!/usr/bin/env bash
 # Download the pinned Godot editor into <repo>/.tools and verify its official SHA-512.
 set -euo pipefail
-VERSION=4.8-beta1
-ENGINE_VERSION=4.8.beta1.official.4d10419ca
+VERSION=4.8-beta2
+ENGINE_VERSION=4.8.beta2.official.cafc17a19
 GODOT_GETTER_PLATFORM=other
 case "$(uname -s):$(uname -m)" in
   Linux:x86_64)
     FILE=Godot_v${VERSION}_linux.x86_64
     EXECUTABLE=$FILE
-    SHA512=aee4cbf3c5f86eee875c0f2f77cc9d816a3fbb220774e6ffc95fd5a557a6c5ec917f2b6118c0aa2008bd10f4b2a021225dc78ba7b7c54745411e0f2721f70a67
+    SHA512=77470f53a9039cd22837935380230220167e098324e82ec448ee4b1f943f00afc424885f7d6631f385123d7a630a9399b3cc1b0e1dad1a4ac45c6356b3a0aa45
     BINARIES=("$EXECUTABLE")
+    BINARY_SHA512=(428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9)
     ;;
   MINGW*:x86_64|MSYS*:x86_64|CYGWIN*:x86_64)
     FILE=Godot_v${VERSION}_win64.exe
     EXECUTABLE=Godot_v${VERSION}_win64_console.exe
-    SHA512=bdc79f8ef47c3794c6984751bbac2c1934cf1c7c9ceebc2d0e87db0846766411b7bbbb6fecf90f3485f951a1289c3171b1c7bebca18dcdd8e08bd81de95b6cc0
+    SHA512=23d6dc2561f95cf296ca88c18d843867dffe978ac23608e3e4eb3fd67c0745cf48a259d51c83650f47e9e42f23154e0f907a6a162ea6b0e47dddbb3d88aa4579
     BINARIES=("$FILE" "$EXECUTABLE")
+    BINARY_SHA512=(e83c615fb181c6e1c83f204801e8c73a9340ea500d0da3d7e598f6c4213051de5df8073041c27790838b9e4eff4770c483d7dbb75545da7ad4382c53e23f6a55 dd05e00ff13faac6b863aa1e4c51599cfaa973c9b8d2e31158d717b499a4ee0b08d46661c0c91215dcce77ce1edfb33595b8af476b2862a47465ec27545962ea)
     ;;
   Darwin:arm64)
     GODOT_GETTER_PLATFORM=macos-arm64
     FILE=Godot_v${VERSION}_macos.arm64
     EXECUTABLE="$FILE/Godot.app/Contents/MacOS/Godot"
-    SHA512=eaddf5418249373d6b7c78badc36beaaba1d2ef5972320cf68862d49f3e8cce75d3f8219f4b711c88de4656ecca62c833f2d2f91b489456cdd7157d5a81cc08f
+    SHA512=91e14126ad880dc31983b11fe03817771acfb20286a7543f8cde0db1c8c63c1845bcf38cb2252318165b65ddd166b362aadf874892555f4eb5e37dbc486b171e
     ;;
   *) echo "Unsupported Godot downloader host: $(uname -s) $(uname -m); install official $VERSION explicitly." >&2; exit 1 ;;
 esac
@@ -105,19 +107,83 @@ if [ "$GODOT_GETTER_PLATFORM" = macos-arm64 ]; then
   mv "$LOCK/manifest" "$RECEIPT"
   echo "$TOOLS/$EXECUTABLE"; exit 0
 fi
-if [ -s "$RECEIPT" ] && (cd "$TOOLS" && sha512sum --status -c "$RECEIPT"); then
+verify_executables() {
+  local dir="$1" i actual_version
+  for i in "${!BINARIES[@]}"; do
+    [ -f "$dir/${BINARIES[$i]}" ] && [ ! -L "$dir/${BINARIES[$i]}" ] \
+      && [ -x "$dir/${BINARIES[$i]}" ] || return 1
+  done
+  (cd "$dir" && for i in "${!BINARIES[@]}"; do
+    printf '%s  %s\n' "${BINARY_SHA512[$i]}" "${BINARIES[$i]}"
+  done | sha512sum --status -c -) || return 1
+  actual_version="$("$dir/$EXECUTABLE" --version | tr -d '\r')" || return 1
+  [ "$actual_version" = "$ENGINE_VERSION" ]
+}
+
+# A local receipt is only a cache marker, never an authority for executable bytes.
+# Older valid receipts remain usable; a missing receipt does not block verified files.
+if [ ! -L "$RECEIPT" ] && { [ ! -e "$RECEIPT" ] || [ -f "$RECEIPT" ]; } \
+    && verify_executables "$TOOLS"; then
   echo "$TOOLS/$EXECUTABLE"; exit 0
 fi
-if [ ! -f "$TOOLS/$FILE.zip" ]; then
-  curl -sSfL -o "$TOOLS/$FILE.zip.part" \
-    "https://github.com/godotengine/godot-builds/releases/download/$VERSION/$FILE.zip"
-  mv "$TOOLS/$FILE.zip.part" "$TOOLS/$FILE.zip"
+
+# Only cold publication and diagnosis of an invalid cache need the lock.
+LOCK="$TOOLS/.$FILE.lock"
+STAGING=""
+if ! mkdir "$LOCK" 2>/dev/null; then
+  echo "Godot editor cache is locked: $LOCK (inspect a stale lock before removing it)." >&2; exit 1
 fi
-echo "$SHA512  $TOOLS/$FILE.zip" | sha512sum -c - >&2
-unzip -q -o "$TOOLS/$FILE.zip" -d "$TOOLS"
-chmod +x "${BINARIES[@]/#/$TOOLS/}"
-ACTUAL_VERSION="$("$TOOLS/$EXECUTABLE" --version | tr -d '\r')"
-[ "$ACTUAL_VERSION" = "$ENGINE_VERSION" ] || { echo "Unexpected Godot version: $ACTUAL_VERSION" >&2; exit 1; }
-(cd "$TOOLS" && sha512sum "${BINARIES[@]}") > "$RECEIPT"
-rm "$TOOLS/$FILE.zip"
+cleanup_editor_getter() {
+  rmdir "$LOCK" 2>/dev/null || true
+  if [ -n "$STAGING" ] && [ -d "$STAGING" ]; then
+    echo "Incomplete editor installation retained for inspection: $STAGING" >&2
+  fi
+}
+trap cleanup_editor_getter EXIT
+CACHE_PRESENT=false
+if [ -e "$RECEIPT" ] || [ -L "$RECEIPT" ]; then CACHE_PRESENT=true; fi
+for binary in "${BINARIES[@]}"; do
+  if [ -e "$TOOLS/$binary" ] || [ -L "$TOOLS/$binary" ]; then CACHE_PRESENT=true; fi
+done
+if "$CACHE_PRESENT"; then
+  if [ -L "$RECEIPT" ] || { [ -e "$RECEIPT" ] && [ ! -f "$RECEIPT" ]; } || ! verify_executables "$TOOLS"; then
+    echo "Godot editor cache is incomplete, changed or has the wrong version; retained for inspection: $TOOLS/$FILE" >&2; exit 1
+  fi
+  echo "$TOOLS/$EXECUTABLE"; exit 0
+fi
+ARCHIVE="$TOOLS/$FILE.zip"
+if [ -L "$ARCHIVE" ] || { [ -e "$ARCHIVE" ] && [ ! -f "$ARCHIVE" ]; }; then
+  echo "Godot editor archive path is not a regular file; retained for inspection: $ARCHIVE" >&2; exit 1
+fi
+STAGING="$(mktemp -d "$TOOLS/.$FILE.XXXXXXXX")"
+case "$STAGING" in "$TOOLS/.$FILE."*) ;; *) echo "Unexpected editor extraction path: $STAGING" >&2; exit 1 ;; esac
+if [ ! -f "$ARCHIVE" ]; then
+  ARCHIVE="$STAGING/$FILE.zip"
+  curl -sSfL -o "$ARCHIVE" \
+    "https://github.com/godotengine/godot-builds/releases/download/$VERSION/$FILE.zip"
+fi
+printf '%s  %s\n' "$SHA512" "$ARCHIVE" | sha512sum -c - >&2
+unzip -q "$ARCHIVE" -d "$STAGING"
+chmod +x "${BINARIES[@]/#/$STAGING/}"
+if ! verify_executables "$STAGING"; then
+  echo "Extracted Godot binaries failed official SHA-512 or version verification." >&2; exit 1
+fi
+# noclobber creates each destination exclusively, even if a non-cooperating
+# process creates a file while download or verification is in progress.
+for binary in "${BINARIES[@]}"; do
+  if ! (set -o noclobber; cat "$STAGING/$binary" > "$TOOLS/$binary"); then
+    echo "Godot editor destination appeared during installation; retained for inspection: $TOOLS/$binary" >&2; exit 1
+  fi
+  chmod +x "$TOOLS/$binary"
+done
+if ! verify_executables "$TOOLS"; then
+  echo "Published Godot binaries failed official SHA-512 or version verification." >&2; exit 1
+fi
+if ! (set -o noclobber; cd "$TOOLS" && sha512sum "${BINARIES[@]}" > "$RECEIPT"); then
+  echo "Godot editor receipt appeared during installation; retained for inspection: $RECEIPT" >&2; exit 1
+fi
+for binary in "${BINARIES[@]}"; do rm "$STAGING/$binary"; done
+if [ "$ARCHIVE" = "$STAGING/$FILE.zip" ]; then rm "$ARCHIVE"; fi
+rmdir "$STAGING"
+STAGING=""
 echo "$TOOLS/$EXECUTABLE"

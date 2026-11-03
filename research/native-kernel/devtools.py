@@ -452,7 +452,7 @@ def main() -> int:
     checker.add_argument("--build", type=Path, required=True)
     checker.add_argument("--out", type=Path, required=True)
     checker.add_argument("--app", type=Path, default=ROOT / "app")
-    checker.add_argument("--godot", type=Path, default=ROOT / ".tools/Godot_v4.8-beta1_linux.x86_64")
+    checker.add_argument("--godot", type=Path, default=ROOT / ".tools/Godot_v4.8-beta2_linux.x86_64")
     checker.add_argument("--script", choices=("stage_oracle.gd", "trajectory.gd", "all"), default="stage_oracle.gd",
                          help="all freezes/imports once and checks stage then trajectory; stops on the first failure")
     checker.add_argument("--states", type=int, default=12000)

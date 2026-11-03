@@ -1,0 +1,3 @@
+NK3_GLOW_REJECTION_BOUNDARY family=glow_2t verdict=pass
+NK3_GLOW_REJECTION_BOUNDARY family=glow_4t verdict=pass
+NK3 glow rejection boundaries: 40 checks, 0 failed

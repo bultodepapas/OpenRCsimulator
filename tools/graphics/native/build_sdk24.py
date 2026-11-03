@@ -252,7 +252,7 @@ def prepare(cache: Path, intake: Path) -> tuple[Path, dict]:
         engine_paths.update(p.relative_to(engine).as_posix() for p in directory.rglob("*") if p.is_file())
     engine_source = {rel: native_build.sha256(engine / rel) for rel in sorted(engine_paths)}
     receipt = {
-        "experimental": True, "production_engine_unchanged": "4.8-beta1",
+        "experimental": True, "production_engine_unchanged": "4.8-beta2",
         "godot_repository": "https://github.com/NVIDIA-RTX/godot", "godot_commit": native_build.COMMIT,
         "fidelityfx_sdk": "2.4.0", "fsr_upscaler": "runtime_queried",
         "bundled_upscalers": ["3.1.6", "4.1.2"], "streamline": "2.11.1",

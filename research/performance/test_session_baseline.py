@@ -4,6 +4,7 @@ import tempfile
 import unittest
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 try:
@@ -12,6 +13,7 @@ try:
         _run_probe,
         _sha256_file,
         MAC_RECEIPT,
+        inspect_godot,
         parse_probe_file,
         percentile_nearest_rank,
         reduce_backend_pair,
@@ -24,6 +26,7 @@ except ImportError:  # Also support direct execution from this directory.
         _run_probe,
         _sha256_file,
         MAC_RECEIPT,
+        inspect_godot,
         parse_probe_file,
         percentile_nearest_rank,
         reduce_backend_pair,
@@ -75,11 +78,21 @@ def valid_current_report(backend: str = "gdscript_reference", observer: bool = T
     report.update({"format": "openrc-session-cost v2", "backend": {"requested": backend, "actual": actual,
                    "native_stats": stats}, "fingerprint_boundaries": 10,
                    "solver_sha256": "e" * 64, "aircraft_sha256": "f" * 64})
-    report["machine"]["godot"] = "4.8-beta1 (official)"
+    report["machine"]["godot"] = "4.8-beta2 (official)"
     return report
 
 
 class ProbeReportValidationTests(unittest.TestCase):
+    def test_v2_beta1_reports_remain_readable_but_live_runs_require_beta2(self):
+        report = valid_current_report()
+        report["machine"]["godot"] = "4.8-beta1 (official)"
+        self.assertEqual(validate_probe_report(report), [])
+        self.assertIn("machine.godot does not match requested run",
+                      validate_probe_report(report, expected={"godot": "4.8-beta2 (official)"}))
+        report["machine"]["godot"] = "4.8-beta3 (official)"
+        self.assertIn("machine.godot must identify the pinned version for this report",
+                      validate_probe_report(report))
+
     def test_complete_observer_on_and_off_reports_validate(self):
         for observer in (True, False):
             with self.subTest(observer=observer):
@@ -185,6 +198,19 @@ class ProbeReportValidationTests(unittest.TestCase):
 
 
 class ReducerTests(unittest.TestCase):
+    def test_current_and_historical_engine_reports_cannot_be_paired(self):
+        on, off = valid_current_report(), valid_current_report(observer=False)
+        on["machine"]["godot"] = off["machine"]["godot"] = "4.8-beta1 (official)"
+        self.assertTrue(reduce_pair(on, off)["comparable"])
+        off["machine"]["godot"] = "4.8-beta2 (official)"
+        self.assertFalse(reduce_pair(on, off)["comparable"])
+
+        reference, native = valid_current_report(), valid_current_report("native")
+        reference["machine"]["godot"] = native["machine"]["godot"] = "4.8-beta1 (official)"
+        self.assertTrue(reduce_backend_pair(reference, native)["comparable"])
+        native["machine"]["godot"] = "4.8-beta2 (official)"
+        self.assertFalse(reduce_backend_pair(reference, native)["comparable"])
+
     def test_current_backend_pair_requires_identity_and_complete_trajectory(self):
         reference, native = valid_current_report(), valid_current_report("native")
         self.assertEqual(validate_probe_report(reference), [])
@@ -278,6 +304,24 @@ class ReducerTests(unittest.TestCase):
             alternating_observer_order(0)
 
 
+class EngineInspectionTests(unittest.TestCase):
+    def test_only_exact_current_official_build_can_run_a_new_campaign(self):
+        with tempfile.TemporaryDirectory() as directory:
+            executable = Path(directory) / "godot"
+            executable.write_bytes(b"engine fixture")
+            for version, accepted in (("4.8.beta2.official.cafc17a19", True),
+                                      ("4.8.beta1.official.4d10419ca", False),
+                                      ("4.8.beta2.custom.cafc17a19", False),
+                                      ("4.8.beta2.official.different", False)):
+                with self.subTest(version=version), patch("subprocess.run", return_value=SimpleNamespace(
+                        stdout=version + "\n", returncode=0)):
+                    if accepted:
+                        self.assertEqual(inspect_godot(executable, 30)["version"], version)
+                    else:
+                        with self.assertRaisesRegex(RuntimeError, "expected Godot"):
+                            inspect_godot(executable, 30)
+
+
 class ReleaseProbeAdmissionTests(unittest.TestCase):
     def test_mac_release_probe_requires_bundle_architecture_probe_and_stability(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -364,6 +408,8 @@ class ReleaseProbeAdmissionTests(unittest.TestCase):
             self.assertIn("--native-qualification=session", accepted["command"])
             self.assertNotIn("--path", accepted["command"])
             self.assertNotIn("--script", accepted["command"])
+            historical = dict(report, machine=dict(report["machine"], godot="4.8-beta1 (official)"))
+            self.assertFalse(run_case(historical, marker)["accepted"])
             for field, value in (("template_release", False), ("solver_sha256", "1" * 64),
                                  ("solver_identity_kind", "source-tree-v1"), ("probe_sha256", "2" * 64)):
                 changed = dict(report, **{field: value})

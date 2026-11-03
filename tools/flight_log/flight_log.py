@@ -21,9 +21,9 @@ from typing import Any, Iterator, Sequence
 
 ROOT = Path(__file__).resolve().parents[2]
 APP = ROOT / "app"
-GODOT_DEFAULT = (ROOT / ".tools" / "Godot_v4.8-beta1_macos.arm64/Godot.app/Contents/MacOS/Godot"
+GODOT_DEFAULT = (ROOT / ".tools" / "Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot"
                  if sys.platform == "darwin" else ROOT / ".tools" /
-                 ("Godot_v4.8-beta1_win64_console.exe" if os.name == "nt" else "Godot_v4.8-beta1_linux.x86_64"))
+                 ("Godot_v4.8-beta2_win64_console.exe" if os.name == "nt" else "Godot_v4.8-beta2_linux.x86_64"))
 GODOT_SCRIPT = "res://tools/flight_log_cli.gd"
 _MAC_SPEC = importlib.util.spec_from_file_location("openrc_macos_reference_receipt", ROOT / "tools/release/macos_reference_receipt.py")
 assert _MAC_SPEC is not None and _MAC_SPEC.loader is not None

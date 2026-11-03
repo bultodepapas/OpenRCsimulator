@@ -1,0 +1,17 @@
+PASS f4u_corsair_250.json
+PASS gp_extra_300s_60.json
+PASS jensen_ugly_stik_60.json
+PASS moonrunner_x99.json
+PASS p51d_mustang_120.json
+PASS sebart_avanti_s_a200.json
+PASS stik_glow_55ax_2t.json
+PASS stik_glow_55ax_2t_apc_13x6.json
+PASS stik_glow_61fx_2t.json
+PASS stik_glow_fs64v_4t.json
+PASS stik_glow_fs64v_4t_apc_13x6.json
+PASS synthetic_stik_electric_4s.json
+PASS synthetic_stik_electric_4s_battery.json
+PASS synthetic_stik_electric_6s.json
+PASS synthetic_stik_electric_6s_battery.json
+PASS turbo_lumber_evolution.json
+16 aircraft, 0 failed structural preflight

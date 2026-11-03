@@ -1,0 +1,12 @@
+{
+  "overall_exit_code": 1,
+  "verdict": "failed: disk space exhausted during H7; partial parse receipt excluded from final coverage",
+  "partial_parse_scripts_completed": 688,
+  "partial_parse_source_sha256": "8046c150870703481e4bfe9322f29ed12a09aa2e2de0efe329d09e2727dfaa0f",
+  "console_sha256": "aaba7b55938fe4356bf3da018578ee0341f97343562209537fd05f24696a38a3",
+  "exit_file_sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+  "partial_parse_receipt_sha256": "7f08b48146f9203483cd422a16e8536bf4a64396cd213d00104e0f4bbe018a58",
+  "disk_error_line": 1218,
+  "battery_reference_line": 260,
+  "raw_console": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\integration-export-console.log"
+}

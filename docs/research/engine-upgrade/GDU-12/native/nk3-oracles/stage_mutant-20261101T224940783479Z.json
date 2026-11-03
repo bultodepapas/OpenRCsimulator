@@ -1,0 +1,3127 @@
+{
+ "binary_sha256_after": "3ee1e3b2a359fbda4a59871738c1c5a7cb5734d97c5edd235fb959fc2b482cc4",
+ "binary_sha256_before": "3ee1e3b2a359fbda4a59871738c1c5a7cb5734d97c5edd235fb959fc2b482cc4",
+ "build_receipt": {
+  "abi_version": 2,
+  "backend_version": "openrc-native-kernel-stage-v2",
+  "binary_sha256": "3ee1e3b2a359fbda4a59871738c1c5a7cb5734d97c5edd235fb959fc2b482cc4",
+  "builder_sha256": "b983442005ab7365077e8a89f595c70081969245146e622f16a8139c08dcab48",
+  "compiler_version": "13.3.0",
+  "cxxflags_appended": [
+   "-fno-fast-math",
+   "-ffp-contract=off",
+   "-fexceptions",
+   "-std=c++17",
+   "-DNK_MUTATION=1"
+  ],
+  "descriptor": "tmp/native-kernel/openrc_native_kernel_mutant.gdextension",
+  "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+  "libm_imports": [
+   "acos@GLIBC_2.2.5",
+   "asin@GLIBC_2.2.5",
+   "atan2@GLIBC_2.2.5",
+   "cos@GLIBC_2.2.5",
+   "exp@GLIBC_2.29",
+   "floor@GLIBC_2.2.5",
+   "fmod@GLIBC_2.38",
+   "log@GLIBC_2.29",
+   "pow@GLIBC_2.29",
+   "sin@GLIBC_2.2.5",
+   "sincos@GLIBC_2.2.5",
+   "sqrt@GLIBC_2.2.5",
+   "tanh@GLIBC_2.2.5"
+  ],
+  "library": "tmp/native-kernel/lib/libopenrc_native_kernel_mutant.so",
+  "lock_sha256": "4cf3c592b0161174f2521aad8d312d44706c18b73a154e5f10e853a6428e4687",
+  "mutant": true,
+  "reference_sources_sha256": {
+   "app/app_state/aircraft_catalog.gd": "eec6a281efcc9476adc0ae1b880e3aa92ca6cccf1640be83f2e1b2a22a35350a",
+   "app/app_state/native_package.gd": "710e33d256c2f4a4c14389b965805baedbd1cae89f0b919b2516ef7614961622",
+   "app/data/aircraft/battery/moonrunner_x99_6s_pack.json": "2df4233db38a2f964fe87db0bba11d91463918dd5d0823c5db37f90062d6d3c0",
+   "app/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+   "app/data/aircraft/f4u_corsair_250.json": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673",
+   "app/data/aircraft/gp_extra_300s_60.json": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+   "app/data/aircraft/hx700_electric_3d_experimental.json": "6805ea966fbcd07111d89743946b4dd7a46d58ad6057085c15bb21cfd0e0731e",
+   "app/data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+   "app/data/aircraft/moonrunner_x99.json": "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c",
+   "app/data/aircraft/p51d_mustang_120.json": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+   "app/data/aircraft/sebart_avanti_s_a200.json": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+   "app/data/aircraft/stik_glow_55ax_2t.json": "66d13e8d7d3a44d371f26d75f5e08fbd75b1088430de7a4fabbc852a4c2ca298",
+   "app/data/aircraft/stik_glow_61fx_2t.json": "babf709c6f8eda13af2bcb8dfc2753b98ae82aafaef048dee45610eeb799d458",
+   "app/data/aircraft/stik_glow_fs64v_4t.json": "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a",
+   "app/data/aircraft/turbo_lumber_evolution.json": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+   "app/data/aircraft/xcell_60_research.json": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
+   "app/data/batteries/cells/lipo-bak503562-galeotti-v1.json": "d291e8222c4664b44179e04c60efa8a14f372bb211f51c78856d1c7420c86633",
+   "app/data/batteries/packs/lipo-4s1p-3200-30c-class.json": "cdf90adb42613419665d7a6976c94a8b937abb4984c366610181026be9c20b09",
+   "app/data/batteries/packs/lipo-6s1p-5000-30c-class.json": "c930ba3bf6283b03b4e2d99471b73e6994670ad2a6322d6ed46701b7acbd5cf9",
+   "app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+   "app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+   "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+   "app/data/fuels/openrc-fuel-registry.json": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043",
+   "app/data/glow/extra_61fx_2t.json": "84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8",
+   "app/data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+   "app/data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+   "app/data/glow/os_max_61fx_candidate.json": "5e6fec165cf5b5a122a9dc1672436dac5004714cc3534cb075e94aad86ef4df4",
+   "app/data/glow/os_max_61fx_installed_candidate.json": "462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e",
+   "app/data/glow/profile_contract.json": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+   "app/data/glow/stik_55ax_2t.json": "0da0ff8f8dcaf8e877009819916a2c84f62863afafc130f4b4b0811a5aa0814d",
+   "app/data/glow/stik_61fx_2t.json": "03d8412fa7dd579b4853264d3987a164a7c34cb558332f621ae90c98fe035c0e",
+   "app/data/glow/stik_fs64v_4t.json": "d143392e35da1149c58d06e9f5b45afeaaba0140f2fba52efd3367d4a940657e",
+   "app/data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+   "app/physics/aero.gd": "65ed27963f2f86ff3710e77e877dd1e4cb0efa025ef5b064c3eb60fb0b996449",
+   "app/physics/air_data.gd": "88d81227be27ee4ceeb695f30e24b2208b7a8d22463840d85fba68df06e02361",
+   "app/physics/aircraft_data.gd": "a10f1ac1a967c6c392b9b12cbb6046fcb5814eb0b814b784f86112a55e770872",
+   "app/physics/atmosphere.gd": "9e1be6def471318dceb55b561c13d0c043a7f132f78bd125f0a570dfb003f369",
+   "app/physics/battery/battery_data.gd": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+   "app/physics/battery/esc_supervisor.gd": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+   "app/physics/battery/pack_ecm.gd": "212187bf6a4665280a657bed62b2b1fa866a49e6ae104213f56c30aad7a51a4c",
+   "app/physics/dynamics.gd": "769ec77b3d1013da33dfac21b3a74440fd08d60c48c08a93567de0d61e2b4592",
+   "app/physics/effective_mass.gd": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+   "app/physics/electric_motor.gd": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+   "app/physics/electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+   "app/physics/event_step.gd": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+   "app/physics/fixed_datum_body.gd": "df186bd36a6b60c01a82ca8aa52943600929219e43ba5d411bf9997da90bc34d",
+   "app/physics/flaps.gd": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+   "app/physics/glow/carburetor.gd": "bd22ef5070be76512470119563861f0fde2d7acf7f19451d9bf590d45cca024e",
+   "app/physics/glow/flight.gd": "d28abb904ed61ac01eb78555387d2c00a054e45671f1ede344e0b753317a1724",
+   "app/physics/glow/four_stroke.gd": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+   "app/physics/glow/fuel_feed.gd": "17194b2f01644a6e1eb202d23314f444f6146c3be1b3f462c165dcbcc9bc62df",
+   "app/physics/glow/fuel_mass.gd": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+   "app/physics/glow/installation.gd": "f5b0eecb34f100d9832ed04e65df0ae8be81a725f32d43eb47c7fc252a30e262",
+   "app/physics/glow/lifecycle.gd": "a2fe9b02aa06acf61ed8534fc6d89e1244e1c96c30ba9c4df271f06805569d14",
+   "app/physics/glow/operating_point.gd": "107fe300480853bb7c7007cfaa9eee82938feb02335cc5b68bc5aef31351933d",
+   "app/physics/glow/profile.gd": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+   "app/physics/glow/propeller.gd": "86828a6bb4fbf52777d328d300a56eeb1632b596b577bb1cf0676df3b586b97d",
+   "app/physics/glow/source.gd": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+   "app/physics/glow/thermal.gd": "46aab9a1c172e3bfc7b2a18402b635e9faa02462b9f38af70a0cc85edfae1bd8",
+   "app/physics/glow/two_stroke.gd": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+   "app/physics/glow/vibration.gd": "e7e2c6b5b9b87cf42fd2138274f6382c7ec6c42389e54624132bb74bd144e9b5",
+   "app/physics/ground_contact.gd": "24841713e285911017c4da06d3664b1d732c030a6f8b51874a945a36952f33a2",
+   "app/physics/ground_effect.gd": "e4c4c86033811649491343cca1aa6363ec02d045a1cd2ded40ac13b3f0541dd3",
+   "app/physics/ground_support.gd": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+   "app/physics/ground_surfaces.gd": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e",
+   "app/physics/ground_terrain.gd": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc",
+   "app/physics/ground_wheels.gd": "14267d31098965584a0f04bb1aca339ddc57f30f895978147281c7f92ebbfe0b",
+   "app/physics/hull_contact.gd": "e964af826d62fd47d1b669669400be85cb2e52b946be0859123c3e596b266380",
+   "app/physics/integrator.gd": "69d75732b95b2307a276d468ff5989be1db34755de98c1aac56f8b1808368cde",
+   "app/physics/lake_surface.gd": "a78e20ea259479e6e9a479f568b1fa902e1cf79bed50fc0b77d1810e007ff245",
+   "app/physics/liquid_fuel.gd": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+   "app/physics/mass_inventory.gd": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+   "app/physics/math3d.gd": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf",
+   "app/physics/propulsion.gd": "db058a49fd586a723e5c8d693843bdecfbf642fc749843b00ccee45263f32d18",
+   "app/physics/retractable_gear.gd": "3a08b68085e2aab67dca9a591bf7bdb3d85d51a209353e1d96415af1576123a4",
+   "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+   "app/physics/rotor_coupling.gd": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+   "app/physics/rotorcraft/aerodynamic_stage.gd": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd",
+   "app/physics/rotorcraft/airframe.gd": "7bb1bad8f99d8e9e1741536b8a31d62ac9d2affa474c1cf0394fe20542b4a9f6",
+   "app/physics/rotorcraft/drive.gd": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e",
+   "app/physics/rotorcraft/dynamic_inflow.gd": "5ba1a1722f1f8c51df0b40d9c538cb602c865b00f2d9cf6173a86b2ae0daa2fc",
+   "app/physics/rotorcraft/electronics.gd": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f",
+   "app/physics/rotorcraft/flight_dynamics.gd": "6c8c5d5b5a91d401df1a1023a0c3826374a7e4430c3d00ef7737f4b4daf2af23",
+   "app/physics/rotorcraft/geared_coupling.gd": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1",
+   "app/physics/rotorcraft/ground_start.gd": "1822c74a19e589844e25755029f46de946fbef8265a201122da13ee5a5591f1b",
+   "app/physics/rotorcraft/hx700_flex_bench.gd": "d7a7a78bf9a6fa1334050bb3a6238fde929862ac373bde88b5e77477ecb246df",
+   "app/physics/rotorcraft/impact_detector.gd": "6d86495352a3389c7ab5ceb65368469e792e354e7b0034fc8d330c2a93cb67f8",
+   "app/physics/rotorcraft/inflow.gd": "85289be30fe94c07a4ba10f3725c4d18581cab3d5d24fcecd92a1bd517725224",
+   "app/physics/rotorcraft/lifecycle.gd": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c",
+   "app/physics/rotorcraft/main_rotor.gd": "e3447d0d73529806d4a4e82af63703d5b7cc5c08fb0abc0da624504c03908658",
+   "app/physics/rotorcraft/main_rotor_stage.gd": "d6bcc6661dc4a2f777d908bc7e44777b0b0b2be6819f0dd3fd0b6c3d52216dbc",
+   "app/physics/rotorcraft/performance_context.gd": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0",
+   "app/physics/rotorcraft/simulation_step_adapter.gd": "88c852f1d5eb6fd066efbffffa3ac42d6cf2e9fa4464579dbe1c420ed6f8c81c",
+   "app/physics/rotorcraft/skid_contact.gd": "3101654efe3ea6f88fa1280ad12a1ff7a8f5379932149b4934878dba269d2f6a",
+   "app/physics/rotorcraft/swash.gd": "8eb592c3908d30bd7ba2f700660b5487756c546c717e7d69cace47c1a6fc0246",
+   "app/physics/rotorcraft/tail_rotor.gd": "b8e08d7461914b3ce337a485bb44e6d830ae05309f32004b88b7ecc1c41d6c81",
+   "app/physics/rotorcraft/trim.gd": "575506c05ac4d097705afcfbcdc76309191f90c382872605f3a870046fb27e0d",
+   "app/physics/rotorcraft_data.gd": "372c5c58e7b87a07b9d4c1d6addb13cff873cf657871c5f63e04f7ae38365cf2",
+   "app/physics/slipstream.gd": "ffdf117cc8ff0d83ba248b70703fbed3228ff110a95ce4adf2644d82bb815931",
+   "app/physics/swirl_loads.gd": "5017f323f1fb0a99c6d731eee582bd47c262cc45fed4067b99b80697e59002bc",
+   "app/physics/turbine.gd": "39cdb286bcdb124ae5c4d885760d85f588fbedf207ad0f62da8f3a822bfbdee7",
+   "app/physics/wash_transport.gd": "5cfae8de20432d66f2d5629716b1cf96cd3425dae083e362e4d3c415546f6e8a",
+   "app/physics/wheel_profiles.gd": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+   "app/physics/wind_aircraft_flow.gd": "0ef03aedf2f199c6ebf7190e3c1d7b051978cbb74eb5b36ad45b3c2f97c0a36d",
+   "app/physics/wind_config.gd": "8abf4d7247f92369db79f866b30c4add37dcc53173d5991ae88c5ae498aa31a9",
+   "app/physics/wind_field.gd": "949fbd5c5927df4f5213e08b3a72f164c7bb02b9c038601ff4a5f152c968ef79",
+   "app/physics/wind_spatial_config.gd": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d",
+   "app/physics/wind_spatial_field.gd": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644",
+   "app/physics/wind_spatial_presets.gd": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72",
+   "app/physics/wind_thermal_field.gd": "1d3545cbeaa04a1426bbbd1817ad2f4f00712a73bcf604c16c04698a98e2b9a4",
+   "app/physics/wind_turbulence.gd": "1ce2ba5dbe9094870e87ef1083dec3ec61d24381baaa97860ac79d11c046569c",
+   "app/physics/wing_polar.gd": "b67b2a4120c71cc6f32d732fa52dd56f911a950e354cdd8c3874a246e7f36bb3",
+   "app/sim/aircraft_propulsion_runtime.gd": "9fce4984366708ce7433e6501460dbf479deb9960f1839082541cb86c8e10444",
+   "app/sim/environment.gd": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42",
+   "app/sim/flight_session.gd": "03b9e0ee7e71fa2ef9904429de426e60d10e8a73d300ff73383f067205e2f295",
+   "app/sim/fuel_sample.gd": "5b35b612ba1f4c3258916327586cbf8683dd7669b5886236d0366cc04e2cb5cd",
+   "app/sim/helicopter_flight_session.gd": "a2e40f81a88a1c7d032385f87d4deee3a636c71a11a83fe0b594c36b6bbf56ec",
+   "app/sim/liquid_fuel_flight.gd": "26397c12a5af6ccf45c442c796c397be9ff6068be293f0e92bc71fc257cc2e53",
+   "app/sim/native/electric_stage_adapter.gd": "4b653336c56e734e7d88533bcb353a076fefb3b511217734414809392e12491e",
+   "app/sim/native/glow_stage_adapter.gd": "1e64f1c99fd719596dd549c91702b3980bc21dd5e9a980025d519e876a6b1622",
+   "app/sim/native/helicopter_stage_adapter.gd": "23af0b81af2ffa4ca7cf16cf8ef04bbc8a4391447a16e483f7fcf205910cfad5",
+   "app/sim/native/liquid_stage_adapter.gd": "c0dbd0f51c5b39f37a201a040490298db730e86c5a82cab90bd570a428ec4ce5",
+   "app/sim/native/native_configuration.gd": "118b4f599eb86bc05d5218e8c434eac58204c9afe4650ba6fdd1d320143b47db",
+   "app/sim/native/native_weather.gd": "a7924ba7359483fc893c37fcf0b6b346d6b0673c7c9b8a48f44726fac04b97fd",
+   "app/sim/native/prescribed_stage_adapter.gd": "73e65b27e5c5b77aac8107f1bebcf726bf6f37a3fcd82caba8dfdd078df4a735",
+   "app/sim/native/stage_config.gd": "d201c6eb5f257c00decdb2cca4529c8667d768b88d5b6f0aea36f56a4105c437",
+   "app/sim/native/weather_adapter.gd": "893608e8d386ee26868ef602439b8ea260240b66e770a8075c7a7ee320087921",
+   "app/sim/native_stage.gd": "d9a303155da9903726f3568797b66f63ea03b14e4a0a06f50e648e1a5f9a0abb",
+   "app/sim/simulation.gd": "06a8f2c46240ea90e3390d58392066338ead99134a260436b71bc9dc6afb85ff",
+   "app/sim/vehicle_model.gd": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2"
+  },
+  "repository_head": "46b004c7b469448c29ef96168da4f03cee2c6d23",
+  "scons_wheel_sha256": "bd9d1c52f908d874eba92a8c0c0a8dcf2ed9f3b88ab956d0fce1da479c4e7126",
+  "shared_builder_sha256": "2d8664208756fb7421bf408c2a20f8787c0b37a0108a3bc189750dd1dc41cbfc",
+  "source_sha256": "5f3fbed878ecff294e266857b430868c4deab3234ff2ddb589c3b1453999b817",
+  "target": "template_release"
+ },
+ "checked_run": {
+  "capture_id": "7e8c2217-1ee8-4a20-9b2d-77586ac5cb23",
+  "command": [
+   "/dev/shm/openrc-gdu-beta2-oracles-resumed/.tools/Godot_v4.8-beta2_linux.x86_64",
+   "--headless",
+   "--path",
+   "/dev/shm/openrc-gdu-beta2-oracles-resumed/app",
+   "--script",
+   "/dev/shm/openrc-gdu-beta2-oracles-resumed/research/native-kernel/stage_oracle.gd",
+   "--",
+   "--extension=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/openrc_native_kernel_mutant.gdextension",
+   "--output=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/stage_mutant-20261101T224940783479Z.json",
+   "--seed=20261027",
+   "--states=12000",
+   "--variant-states=1500",
+   "--timing-rounds=15"
+  ],
+  "complete": true,
+  "counts": {
+   "error": 0,
+   "warning": 0
+  },
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "detail": "",
+  "diagnostics": [],
+  "elapsed_seconds": 25.542296,
+  "exit_code": 1,
+  "format": "openrc-godot-check v1",
+  "label": "nk3-stage_mutant",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-lf-requalification/tool/checks/stage_mutant-oajlznyc/nk3-stage_mutant-ku36lsii/engine.log",
+  "log_bytes": 339,
+  "log_sha256": "b1e389af024afde8667016d5e0845f194d29a3b783c9ee119be4e8d5819d48ee",
+  "max_log_bytes": 8388608,
+  "missing_required_text": [],
+  "ok": false,
+  "process_exit": 1,
+  "reason": "process_exit",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-lf-requalification/tool/checks/stage_mutant-oajlznyc/nk3-stage_mutant-ku36lsii/report.json",
+  "required_text": [
+   "NK3_ORACLE verdict=fail"
+  ],
+  "started_utc": "2026-11-01T22:49:40.840195+00:00",
+  "timeout_seconds": 2400.0,
+  "warnings_as_errors": false
+ },
+ "components": {
+  "ground_evaluation_derivative": {
+   "class_mismatch": 0,
+   "count": 11421,
+   "examples": [
+    {
+     "inputs": [
+      [
+       "40538d1360000000",
+       "40610b1fa0000000",
+       "-404f2cd3316dc67a",
+       "403b020e00000000",
+       "402766c300000000",
+       "-3fe33eb400000000",
+       "3fec5f2af9e27c5b",
+       "3fd8adc705a41d0c",
+       "-403f7a259e5e8b40",
+       "-4033cb8777017af4",
+       "-3fd65a3fc0000000",
+       "-3fe468a980000000",
+       "-3fdac11780000000"
+      ],
+      [
+       "40a9332bc0000000",
+       "-4043f96c00000000",
+       "3fe142e280000000",
+       "-401f50ffc0000000",
+       "40537dbc3b9b1fbd",
+       "4061046cd6fe1010",
+       "3ff0000000000000",
+       "4053842a6f80a723",
+       "40610b36e98ce804",
+       "0000000000000000",
+       "4053939843955ac2",
+       "40610221b52f5814",
+       "0000000000000000",
+       "-3ff49431c0000000"
+      ],
+      [
+       "-4059f59780000000",
+       "403118e5c0000000",
+       "402be51880000000"
+      ],
+      "4037b88888888888"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "0000000000000000",
+      "40717003292a5c40",
+      "407033f4a25dbb56"
+     ],
+     "reference": [
+      "0000000000000000",
+      "40717003292a5c3c",
+      "407033f4a25dbb59"
+     ],
+     "ulp": 4
+    },
+    {
+     "inputs": [
+      [
+       "-3f91a43120000000",
+       "-3f96437780000000",
+       "-4030978963886c11",
+       "3ff97e3000000000",
+       "3ff251a140000000",
+       "3fe7231c00000000",
+       "3feff193a33b530e",
+       "3f5a8e621afd9ede",
+       "-406bb74f63d9231b",
+       "-405362f4c6a070f5",
+       "3fc52e2200000000",
+       "3fce1ed100000000",
+       "-4030db0a00000000"
+      ],
+      [
+       "0000000000000000",
+       "-4032058680000000",
+       "-401e969b40000000",
+       "-402ab20540000000",
+       "-3f91a06a0b7d585a",
+       "-3f963de083494409",
+       "3ff0000000000000",
+       "-3f91a0fa99afe120",
+       "-3f96499b921f09dd",
+       "0000000000000000",
+       "-3f91ab19aa60977a",
+       "-3f964200f07609e7",
+       "3ff0000000000000",
+       "4024f66b40000000"
+      ],
+      [
+       "3ffcc6a400000000",
+       "-407dd54580000000",
+       "-405f37a580000000"
+      ],
+      "40394ccccccccccd"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3fe3c3f032c9bd98",
+      "40477518ad334310",
+      "4045a9a192e0e699"
+     ],
+     "reference": [
+      "-3fe3c3f032c9bd8f",
+      "40477518ad334310",
+      "4045a9a192e0e699"
+     ],
+     "ulp": 9
+    },
+    {
+     "inputs": [
+      [
+       "4035a94800000000",
+       "4045344900000000",
+       "-403895c40475638d",
+       "3f820078c0000000",
+       "3f8d06f0c0000000",
+       "-4068919080000000",
+       "-401ab27a6c4877ad",
+       "3fa735f877b45106",
+       "-404e478735b084d6",
+       "3fe7bb3c5e7979f2",
+       "-40224fdc00000000",
+       "3fd533ddc0000000",
+       "3fd2e3fb80000000"
+      ],
+      [
+       "40a30c5000000000",
+       "3fc65ca800000000",
+       "3fef91f2c0000000",
+       "0000000000000000",
+       "403584bfc6f48e57",
+       "404544640f0fff09",
+       "0000000000000000",
+       "4035e22d2fc1bdcd",
+       "40453f1a405f289d",
+       "0000000000000000",
+       "4035a7aab6c19d19",
+       "40451560640070f5",
+       "0000000000000000",
+       "402ef74080000000"
+      ],
+      [
+       "-406f275300000000",
+       "402b594780000000",
+       "-3fdc5f6a80000000"
+      ],
+      "4056637777777777"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "40131a26d84de20e",
+      "-3f8397bae852817b",
+      "406e26f65d8b3b9c"
+     ],
+     "reference": [
+      "40131a26d84de210",
+      "-3f8397bae852817b",
+      "406e26f65d8b3b9c"
+     ],
+     "ulp": 2
+    },
+    {
+     "inputs": [
+      [
+       "405c80ad00000000",
+       "40656cc700000000",
+       "3fc6071de116c760",
+       "3f6b1d1d00000000",
+       "-406f41c320000000",
+       "3f96b0e5a0000000",
+       "3fe777b40252d466",
+       "-404b394c42439644",
+       "-40947ed45b0a0bb2",
+       "3fe599570b1af66a",
+       "-40333e4180000000",
+       "-40429aee00000000",
+       "3fce2a5f80000000"
+      ],
+      [
+       "40a7859760000000",
+       "0000000000000000",
+       "3fd1d90d80000000",
+       "3faee66000000000",
+       "405c889ce6329d9b",
+       "4065698bd9757d4d",
+       "0000000000000000",
+       "405c72ed0f7aa241",
+       "40656a6b90dddc07",
+       "0000000000000000",
+       "405c7ffd73fa1e22",
+       "4065757ae9abaa74",
+       "3ff0000000000000",
+       "4033d57200000000"
+      ],
+      [
+       "402aa9f980000000",
+       "-3fefb15f80000000",
+       "-3ff2078100000000"
+      ],
+      "4034180000000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3f8442a450406ad8",
+      "4060b343f5db67e4",
+      "405d9ffa7e907526"
+     ],
+     "reference": [
+      "-3f8442a450406ad8",
+      "4060b343f5db67e4",
+      "405d9ffa7e907525"
+     ],
+     "ulp": 1
+    },
+    {
+     "inputs": [
+      [
+       "40618506e0000000",
+       "4061af3b80000000",
+       "3fb3627111d68dc0",
+       "3f7ac40a80000000",
+       "3f994ed1e0000000",
+       "3f801539c0000000",
+       "-4054bc8bff1db82a",
+       "-408691f2b1ccf352",
+       "3f98e6847c135617",
+       "3feff1cb347ad2f2",
+       "3fdde8bc40000000",
+       "3fd85c25c0000000",
+       "3fc1bb7c80000000"
+      ],
+      [
+       "4080408500000000",
+       "3fe0104000000000",
+       "3fd8fd9400000000",
+       "-4024afeb00000000",
+       "40618734f454dd20",
+       "4061b54342cee529",
+       "0000000000000000",
+       "406188f081ed6714",
+       "4061aae46383ba05",
+       "3ff0000000000000",
+       "40617caf5a7f8302",
+       "4061ae3659a2b508",
+       "3ff0000000000000",
+       "40160ef380000000"
+      ],
+      [
+       "3fa0b900a0000000",
+       "-405cd0e980000000",
+       "-3fc95199a0000000"
+      ],
+      "4052cdbbbbbbbbbc"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "4004aa1f3ac4767d",
+      "400fb3f01c2691ae",
+      "40615651231c4c3c"
+     ],
+     "reference": [
+      "4004aa1f3ac4767d",
+      "400fb3f01c2691ae",
+      "40615651231c4c3a"
+     ],
+     "ulp": 2
+    },
+    {
+     "inputs": [
+      [
+       "405b006700000000",
+       "-3f9d42ed00000000",
+       "-40395dc6402aaa57",
+       "-3fd78cde00000000",
+       "-3fbe990a40000000",
+       "-3fdb03a940000000",
+       "-401a9003e5cda568",
+       "3fe09f04efd5ee2d",
+       "-4044cd8029fa7ad7",
+       "-401f5e456f3b06d6",
+       "-3fd7949f80000000",
+       "401a541080000000",
+       "4013d86080000000"
+      ],
+      [
+       "40c79f9b20000000",
+       "3fd8ecae00000000",
+       "-401d4cb280000000",
+       "-401a9cfc00000000",
+       "405b0175f2181875",
+       "-3f9d489115164937",
+       "0000000000000000",
+       "405aecb8c308eba1",
+       "-3f9d4733dff09945",
+       "0000000000000000",
+       "405b021df90b7523",
+       "-3f9d4d9fbdb97389",
+       "3ff0000000000000",
+       "403145b4a0000000"
+      ],
+      [
+       "-3fd51004c0000000",
+       "-3fe4ccfc00000000",
+       "402456c700000000"
+      ],
+      "40475aaaaaaaaaab"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "4083a5a902f2d4bd",
+      "0000000000000000",
+      "0000000000000000"
+     ],
+     "reference": [
+      "4083a5a902f2d4d0",
+      "0000000000000000",
+      "0000000000000000"
+     ],
+     "ulp": 19
+    }
+   ],
+   "finite_ulp": 2079,
+   "identical": 9342,
+   "max_ulp": 98856264788600,
+   "nan_bits": 0,
+   "shape": 0,
+   "zero_sign": 0
+  },
+  "ground_evaluation_loads": {
+   "class_mismatch": 0,
+   "count": 11421,
+   "examples": [
+    {
+     "inputs": [
+      [
+       "40538d1360000000",
+       "40610b1fa0000000",
+       "-404f2cd3316dc67a",
+       "403b020e00000000",
+       "402766c300000000",
+       "-3fe33eb400000000",
+       "3fec5f2af9e27c5b",
+       "3fd8adc705a41d0c",
+       "-403f7a259e5e8b40",
+       "-4033cb8777017af4",
+       "-3fd65a3fc0000000",
+       "-3fe468a980000000",
+       "-3fdac11780000000"
+      ],
+      [
+       "40a9332bc0000000",
+       "-4043f96c00000000",
+       "3fe142e280000000",
+       "-401f50ffc0000000",
+       "40537dbc3b9b1fbd",
+       "4061046cd6fe1010",
+       "3ff0000000000000",
+       "4053842a6f80a723",
+       "40610b36e98ce804",
+       "0000000000000000",
+       "4053939843955ac2",
+       "40610221b52f5814",
+       "0000000000000000",
+       "-3ff49431c0000000"
+      ],
+      [
+       "-4059f59780000000",
+       "403118e5c0000000",
+       "402be51880000000"
+      ],
+      "4037b88888888888"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3f68ff0cc48bc0f1",
+      "-3f5a06e794a2173f",
+      "-3f697450220c620a",
+      "-3f7bf2bb577e1c75",
+      "-404f00cfcc175200",
+      "40862f5111daae24"
+     ],
+     "reference": [
+      "-3f68ff0cc48bc0f0",
+      "-3f5a06e794a2173f",
+      "-3f697450220c6209",
+      "-3f7bf2bb577e1c75",
+      "-404f00cfcc173a00",
+      "40862f5111daae24"
+     ],
+     "ulp": 6144
+    },
+    {
+     "inputs": [
+      [
+       "-3f91a43120000000",
+       "-3f96437780000000",
+       "-4030978963886c11",
+       "3ff97e3000000000",
+       "3ff251a140000000",
+       "3fe7231c00000000",
+       "3feff193a33b530e",
+       "3f5a8e621afd9ede",
+       "-406bb74f63d9231b",
+       "-405362f4c6a070f5",
+       "3fc52e2200000000",
+       "3fce1ed100000000",
+       "-4030db0a00000000"
+      ],
+      [
+       "0000000000000000",
+       "-4032058680000000",
+       "-401e969b40000000",
+       "-402ab20540000000",
+       "-3f91a06a0b7d585a",
+       "-3f963de083494409",
+       "3ff0000000000000",
+       "-3f91a0fa99afe120",
+       "-3f96499b921f09dd",
+       "0000000000000000",
+       "-3f91ab19aa60977a",
+       "-3f964200f07609e7",
+       "3ff0000000000000",
+       "4024f66b40000000"
+      ],
+      [
+       "3ffcc6a400000000",
+       "-407dd54580000000",
+       "-405f37a580000000"
+      ],
+      "40394ccccccccccd"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3fce47390b20177a",
+      "-3fc7c2d8c0817dd1",
+      "-3fb6dead01bf79d2",
+      "4017c1b534087499",
+      "-3ff98ab930ca6b96",
+      "-40269b82db53c9b8"
+     ],
+     "reference": [
+      "-3fce47390b2017a8",
+      "-3fc7c2d8c0817e1c",
+      "-3fb6dead01bf7a19",
+      "4017c1b5340873e7",
+      "-3ff98ab930ca6c6e",
+      "-40269b82db53c9d0"
+     ],
+     "ulp": 216
+    },
+    {
+     "inputs": [
+      [
+       "402cf648e0000000",
+       "-3fd2000d00000000",
+       "-40328baf4b0ae659",
+       "4030b2fa40000000",
+       "3fdb84ef00000000",
+       "-403f399000000000",
+       "3fe220b97e06992a",
+       "3f86ea7c29c47489",
+       "3f800eb8c035a8eb",
+       "3fea5dd0cffa0362",
+       "-4046c35200000000",
+       "3fc69bc500000000",
+       "-40243c8ec0000000"
+      ],
+      [
+       "40c5e3a060000000",
+       "3fc8c9f000000000",
+       "-4019532240000000",
+       "-401b735c40000000",
+       "402d683341981907",
+       "-3fd1f7ab23b7931d",
+       "3ff0000000000000",
+       "402cc0a10f56c275",
+       "-3fd1a85f50cd36a1",
+       "3ff0000000000000",
+       "402cc91c81451f0d",
+       "-3fd27515da052957",
+       "3ff0000000000000",
+       "-3ff8a32f80000000"
+      ],
+      [
+       "3f6a6dc000000000",
+       "40345bce40000000",
+       "3fa0aa70e0000000"
+      ],
+      "40430d9999999999"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3fd455865ea42374",
+      "-3fe0082fc232d91e",
+      "-3fbc1b949a000bd1",
+      "3ff3a1b9b9231e2d",
+      "-3fefe13311ccd762",
+      "-400676e6bdd51e46"
+     ],
+     "reference": [
+      "-3fd455865ea42374",
+      "-3fe0082fc232d920",
+      "-3fbc1b949a000bd0",
+      "3ff3a1b9b9231e2b",
+      "-3fefe13311ccd760",
+      "-400676e6bdd51e43"
+     ],
+     "ulp": 3
+    },
+    {
+     "inputs": [
+      [
+       "4035a94800000000",
+       "4045344900000000",
+       "-403895c40475638d",
+       "3f820078c0000000",
+       "3f8d06f0c0000000",
+       "-4068919080000000",
+       "-401ab27a6c4877ad",
+       "3fa735f877b45106",
+       "-404e478735b084d6",
+       "3fe7bb3c5e7979f2",
+       "-40224fdc00000000",
+       "3fd533ddc0000000",
+       "3fd2e3fb80000000"
+      ],
+      [
+       "40a30c5000000000",
+       "3fc65ca800000000",
+       "3fef91f2c0000000",
+       "0000000000000000",
+       "403584bfc6f48e57",
+       "404544640f0fff09",
+       "0000000000000000",
+       "4035e22d2fc1bdcd",
+       "40453f1a405f289d",
+       "0000000000000000",
+       "4035a7aab6c19d19",
+       "40451560640070f5",
+       "0000000000000000",
+       "402ef74080000000"
+      ],
+      [
+       "-406f275300000000",
+       "402b594780000000",
+       "-3fdc5f6a80000000"
+      ],
+      "4056637777777777"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3fcc8c1156921c3f",
+      "-3fc25f5781df68fc",
+      "-3fa594ca15a6fcbe",
+      "402cb3a67d1548e7",
+      "-3fe20ae12d33a276",
+      "-4001f673de7ea6a5"
+     ],
+     "reference": [
+      "-3fcc8c1156921c40",
+      "-3fc25f5781df6904",
+      "-3fa594ca15a6fcbc",
+      "402cb3a67d1548ed",
+      "-3fe20ae12d33a274",
+      "-4001f673de7ea694"
+     ],
+     "ulp": 17
+    },
+    {
+     "inputs": [
+      [
+       "4029f24160000000",
+       "-3fd98fea80000000",
+       "-403c39e8b26fabc2",
+       "4023dfe420000000",
+       "-401cb9c240000000",
+       "-400725e4a0000000",
+       "3fd06ad11a9dd6f2",
+       "3fa359ab734f6acc",
+       "-405fe9cf51690f70",
+       "3feee3a50780b1c1",
+       "3fdbac5900000000",
+       "-402c4fa980000000",
+       "-40235de1e0000000"
+      ],
+      [
+       "409b98e140000000",
+       "-4013535180000000",
+       "3fd32c3480000000",
+       "-401ec53280000000",
+       "402a51217929b398",
+       "-3fd9c0d866e51fef",
+       "0000000000000000",
+       "4029f35c16b602d0",
+       "-3fd91e3da2a1e5d9",
+       "0000000000000000",
+       "402994f0281ab823",
+       "-3fd9c342d03ee925",
+       "0000000000000000",
+       "403dd69c80000000"
+      ],
+      [
+       "-405adcaa80000000",
+       "-3fd83016e0000000",
+       "-3fc831a4a0000000"
+      ],
+      "4013888888888888"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3fb332cf569dd90f",
+      "4032e2c06b7595b0",
+      "-3fa4a1ac3be344ca",
+      "-3ff2ec88657641b8",
+      "-3fdadfbb05079cb4",
+      "-3fe6833aa44b0b60"
+     ],
+     "reference": [
+      "-3fb332cf569dd90f",
+      "4032e2c06b7595b4",
+      "-3fa4a1ac3be344ca",
+      "-3ff2ec88657641b4",
+      "-3fdadfbb05079cb4",
+      "-3fe6833aa44b0b60"
+     ],
+     "ulp": 4
+    },
+    {
+     "inputs": [
+      [
+       "402cf306a0000000",
+       "40426b0b80000000",
+       "-40393b19f884a8ec",
+       "3f8a4e63c0000000",
+       "-406cc28e00000000",
+       "-40730ecdc0000000",
+       "3fe69ee2625bdb9b",
+       "3f87c750592fb39a",
+       "-4071c7f3ba357031",
+       "3fe6a04f95131ff0",
+       "3fcd796f80000000",
+       "-4023ca7920000000",
+       "3fd0100cc0000000"
+      ],
+      [
+       "4080826880000000",
+       "-402ee46b00000000",
+       "3fcfda7200000000",
+       "-402e535440000000",
+       "402d57112c175a8d",
+       "40425c9b63dcd779",
+       "3ff0000000000000",
+       "402c8c6b957527ad",
+       "40425c6b51336b5d",
+       "0000000000000000",
+       "402cf816a6abf53f",
+       "4042899056938563",
+       "0000000000000000",
+       "40334dee80000000"
+      ],
+      [
+       "3f99bb90c0000000",
+       "400ac3a900000000",
+       "-3fcb444820000000"
+      ],
+      "401ed77777777777"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-402e11170f21d1c0",
+      "404ba1b8c758a64b",
+      "-3fa35cc2943f2cc2",
+      "-3fd415ca3e3b4437",
+      "3ff22ce1f9154634",
+      "-3fefa98f8d45f5ea"
+     ],
+     "reference": [
+      "-402e11170f21d1b0",
+      "404ba1b8c758a64b",
+      "-3fa35cc2943f2cc2",
+      "-3fd415ca3e3b4437",
+      "3ff22ce1f9154628",
+      "-3fefa98f8d45f5ea"
+     ],
+     "ulp": 16
+    }
+   ],
+   "finite_ulp": 3063,
+   "identical": 8358,
+   "max_ulp": 71293116970255,
+   "nan_bits": 0,
+   "shape": 0,
+   "zero_sign": 0
+  },
+  "ground_evaluation_ok": {
+   "class_mismatch": 0,
+   "count": 12000,
+   "examples": [],
+   "finite_ulp": 0,
+   "identical": 12000,
+   "max_ulp": 0,
+   "nan_bits": 0,
+   "shape": 0,
+   "zero_sign": 0
+  },
+  "ground_up": {
+   "class_mismatch": 0,
+   "count": 12000,
+   "examples": [
+    {
+     "inputs": [
+      "40538d1360000000",
+      "40610b1fa0000000",
+      "-404f2cd3316dc67a",
+      "403b020e00000000",
+      "402766c300000000",
+      "-3fe33eb400000000",
+      "3fec5f2af9e27c5b",
+      "3fd8adc705a41d0c",
+      "-403f7a259e5e8b40",
+      "-4033cb8777017af4",
+      "-3fd65a3fc0000000",
+      "-3fe468a980000000",
+      "-3fdac11780000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "3f5926aba48e5e23"
+     ],
+     "reference": [
+      "3f5926aba48e6171"
+     ],
+     "ulp": 846
+    },
+    {
+     "inputs": [
+      "-3f91a43120000000",
+      "-3f96437780000000",
+      "-4030978963886c11",
+      "3ff97e3000000000",
+      "3ff251a140000000",
+      "3fe7231c00000000",
+      "3feff193a33b530e",
+      "3f5a8e621afd9ede",
+      "-406bb74f63d9231b",
+      "-405362f4c6a070f5",
+      "3fc52e2200000000",
+      "3fce1ed100000000",
+      "-4030db0a00000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "3f6279c9c09ca8a3"
+     ],
+     "reference": [
+      "3f6279c9c09cabcb"
+     ],
+     "ulp": 808
+    },
+    {
+     "inputs": [
+      "40420bad00000000",
+      "405c7db400000000",
+      "-3ffc5e92ce9fb1ef",
+      "403c5505f41ee53e",
+      "-3ffffc9403df6d26",
+      "400480534942c576",
+      "-403b43f5674ffaaa",
+      "-40568eb13a5be2d0",
+      "3fd37ca2170e2669",
+      "0000000000000001",
+      "-4036ae56c0000000",
+      "-40311348e0000000",
+      "-4030cf13a0000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "3f74e0a2c09c219e"
+     ],
+     "reference": [
+      "3f74e0a2c09c223c"
+     ],
+     "ulp": 158
+    },
+    {
+     "inputs": [
+      "402cf648e0000000",
+      "-3fd2000d00000000",
+      "-40328baf4b0ae659",
+      "4030b2fa40000000",
+      "3fdb84ef00000000",
+      "-403f399000000000",
+      "3fe220b97e06992a",
+      "3f86ea7c29c47489",
+      "3f800eb8c035a8eb",
+      "3fea5dd0cffa0362",
+      "-4046c35200000000",
+      "3fc69bc500000000",
+      "-40243c8ec0000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "3f4ccf277ff8669b"
+     ],
+     "reference": [
+      "3f4ccf277ff866d3"
+     ],
+     "ulp": 56
+    },
+    {
+     "inputs": [
+      "40327031c0000000",
+      "-3fbdd57dc0000000",
+      "-402e2c3328c7e29d",
+      "3f77697380000000",
+      "3f590ae200000000",
+      "-4071118d60000000",
+      "3fed2be705ae204c",
+      "3f9cde9bf1e2b261",
+      "3fb5fd9ec339c8c6",
+      "-402656244e3c9eab",
+      "3fc522fa00000000",
+      "-402cfa70c0000000",
+      "3fc256a680000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-4106ad1f6330c7df"
+     ],
+     "reference": [
+      "-4106ad1f6330b7be"
+     ],
+     "ulp": 4129
+    },
+    {
+     "inputs": [
+      "4035a94800000000",
+      "4045344900000000",
+      "-403895c40475638d",
+      "3f820078c0000000",
+      "3f8d06f0c0000000",
+      "-4068919080000000",
+      "-401ab27a6c4877ad",
+      "3fa735f877b45106",
+      "-404e478735b084d6",
+      "3fe7bb3c5e7979f2",
+      "-40224fdc00000000",
+      "3fd533ddc0000000",
+      "3fd2e3fb80000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-409ce473855ecc8a"
+     ],
+     "reference": [
+      "-409ce473855eccb6"
+     ],
+     "ulp": 44
+    }
+   ],
+   "finite_ulp": 6014,
+   "identical": 5986,
+   "max_ulp": 91762190,
+   "nan_bits": 0,
+   "shape": 0,
+   "zero_sign": 0
+  },
+  "hull_loads": {
+   "class_mismatch": 0,
+   "count": 12000,
+   "examples": [
+    {
+     "inputs": [
+      "405b006700000000",
+      "-3f9d42ed00000000",
+      "-40395dc6402aaa57",
+      "-3fd78cde00000000",
+      "-3fbe990a40000000",
+      "-3fdb03a940000000",
+      "-401a9003e5cda568",
+      "3fe09f04efd5ee2d",
+      "-4044cd8029fa7ad7",
+      "-401f5e456f3b06d6",
+      "-3fd7949f80000000",
+      "401a541080000000",
+      "4013d86080000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "40c309c161f09e96",
+      "40c2717e379e7cd7",
+      "-3f493b0a6d821b1b",
+      "409979410247cccf",
+      "-3f4f79eeebc07890",
+      "-3f4fc14280a903b1"
+     ],
+     "reference": [
+      "40c309c161f09e96",
+      "40c2717e379e7cd7",
+      "-3f493b0a6d821b1b",
+      "409979410247cccf",
+      "-3f4f79eeebc07890",
+      "-3f4fc14280a903b2"
+     ],
+     "ulp": 1
+    },
+    {
+     "inputs": [
+      "4056e2a200000000",
+      "406617dd60000000",
+      "-4035e390db9aff1e",
+      "4025ea1fa0000000",
+      "3ffe863200000000",
+      "3ff21502c0000000",
+      "3fe1b5d4aa55144b",
+      "-401b967d7be4b5a4",
+      "-402909b405e65259",
+      "3fd97232e917d2f9",
+      "3fddd47f80000000",
+      "-402299fc60000000",
+      "3f9e07fc00000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3fb2faf7f052941c",
+      "40a05ccfdaef52ba",
+      "4060c1a79ee9b5ff",
+      "405611ab9778947a",
+      "401cdcda113f6710",
+      "-3f9a8442361a2450"
+     ],
+     "reference": [
+      "-3fb2faf7f052941c",
+      "40a05ccfdaef52ba",
+      "4060c1a79ee9b5ff",
+      "405611ab9778947a",
+      "401cdcda113f6712",
+      "-3f9a8442361a2451"
+     ],
+     "ulp": 2
+    },
+    {
+     "inputs": [
+      "4039d8a800000000",
+      "-3f9c2fa080000000",
+      "-40439e05f3609661",
+      "-40089c4f20000000",
+      "-4006eaf800000000",
+      "-403579a600000000",
+      "-40170964d93a2f9d",
+      "-402fdb7da19be849",
+      "3fc235887bf2da9d",
+      "-401e40b58a7d5296",
+      "-4026c1d8c0000000",
+      "3fd43a5bc0000000",
+      "-405f307400000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3f8241a0b2b1fda1",
+      "-3f9dbc005d00d86c",
+      "-3f719b2de19616f0",
+      "-40075d810ed13f78",
+      "4074d392c46be4d6",
+      "-3fb6623c631bb1c5"
+     ],
+     "reference": [
+      "-3f8241a0b2b1fda3",
+      "-3f9dbc005d00d86c",
+      "-3f719b2de19616f0",
+      "-40075d810ed13f78",
+      "4074d392c46be4d6",
+      "-3fb6623c631bb1c5"
+     ],
+     "ulp": 2
+    },
+    {
+     "inputs": [
+      "4054883d60000000",
+      "4058cd7120000000",
+      "3fafa63d2c60a499",
+      "402f583000000000",
+      "3fddc9d900000000",
+      "-40031cb880000000",
+      "-4020f2a1f44ee574",
+      "3fa58c6554756abd",
+      "-402628855351b44a",
+      "3fe8c858e916695f",
+      "3fde597200000000",
+      "-4062ce0000000000",
+      "3fd5ce2c00000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "4081d478c11f7170",
+      "40a15265e7954536",
+      "-3f5f1d1c93710cee",
+      "408bde6c2ccbbf04",
+      "-3f6f820a66f3e3a0",
+      "-3f76ce836ef64d9c"
+     ],
+     "reference": [
+      "4081d478c11f7171",
+      "40a15265e7954536",
+      "-3f5f1d1c93710cee",
+      "408bde6c2ccbbf04",
+      "-3f6f820a66f3e3a0",
+      "-3f76ce836ef64d9c"
+     ],
+     "ulp": 1
+    },
+    {
+     "inputs": [
+      "4033d81600000000",
+      "406ca036c0000000",
+      "-40324c0824502530",
+      "402cd37200000000",
+      "3fd8aab700000000",
+      "-4004913fc0000000",
+      "3fea60930ff0f4e6",
+      "-4029d0daaf9a1c33",
+      "-40468e2f54348441",
+      "-402410a59f401e66",
+      "-40268df340000000",
+      "3fd462a840000000",
+      "-406eb09400000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3f7eb4b2b99204fe",
+      "406abe8f31c94751",
+      "-3f8cf2e1b5d9b0b8",
+      "406d62bb23ce3fcc",
+      "4051a08e90fbaeaa",
+      "-3f8869564a95b3c6"
+     ],
+     "reference": [
+      "-3f7eb4b2b99204fe",
+      "406abe8f31c94752",
+      "-3f8cf2e1b5d9b0b8",
+      "406d62bb23ce3fcc",
+      "4051a08e90fbaeaa",
+      "-3f8869564a95b3c6"
+     ],
+     "ulp": 1
+    },
+    {
+     "inputs": [
+      "-3f950167e0000000",
+      "-3f9dd54500000000",
+      "-401e04ecb7abdbce",
+      "402ced4540000000",
+      "-400e1da3a0000000",
+      "-40102bbcc0000000",
+      "3fd8f1935f6eaf94",
+      "-401b124209503a84",
+      "-403f61f19bb88c0d",
+      "3fe453b38c67921c",
+      "-403f05c640000000",
+      "-402c864c60000000",
+      "3fb52cf100000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "400c95608b9f49c9",
+      "40259c16de1713de",
+      "-400f2fecfee80ce3",
+      "-403d241c0adc660e",
+      "-4018aa5eeb2c81e6",
+      "-3fe0010329251e91"
+     ],
+     "reference": [
+      "400c95608b9f499d",
+      "40259c16de1713bc",
+      "-400f2fecfee80cfd",
+      "-403d241c0adc662c",
+      "-4018aa5eeb2c820a",
+      "-3fe0010329251ec3"
+     ],
+     "ulp": 50
+    }
+   ],
+   "finite_ulp": 590,
+   "identical": 11410,
+   "max_ulp": 13312,
+   "nan_bits": 0,
+   "shape": 0,
+   "zero_sign": 0
+  },
+  "literals": {
+   "class_mismatch": 0,
+   "count": 138,
+   "examples": [],
+   "finite_ulp": 0,
+   "identical": 138,
+   "max_ulp": 0,
+   "nan_bits": 0,
+   "shape": 0,
+   "zero_sign": 0
+  },
+  "prop_loads": {
+   "class_mismatch": 0,
+   "count": 12000,
+   "examples": [
+    {
+     "inputs": [
+      [
+       "40304111e0000000",
+       "4043d43600000000",
+       "-402e5fdbdaecd249",
+       "403110a7a0000000",
+       "-400a9c2e00000000",
+       "3ffb03b240000000",
+       "-401c4be253a881c7",
+       "-406265d4797d0628",
+       "-404b3c9aaac43fc6",
+       "3fe9103f0b1d2258",
+       "-40321c0900000000",
+       "-4038ec3680000000",
+       "3fddbd8fc0000000"
+      ],
+      [
+       "0000000000000000",
+       "0000000000000000",
+       "0000000000000000"
+      ],
+      "3ff399999999999a",
+      "40af0b3560000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-40191c11af6a06b9",
+      "0000000000000000",
+      "0000000000000000",
+      "-409147cccb23676f",
+      "-40dc76809aaf3b0b",
+      "0000000000000000"
+     ],
+     "reference": [
+      "-40191c11af6a06ba",
+      "0000000000000000",
+      "0000000000000000",
+      "-409147cccb23676f",
+      "-40dc76809aaf3b0b",
+      "0000000000000000"
+     ],
+     "ulp": 1
+    },
+    {
+     "inputs": [
+      [
+       "40327031c0000000",
+       "-3fbdd57dc0000000",
+       "-402e2c3328c7e29d",
+       "3f77697380000000",
+       "3f590ae200000000",
+       "-4071118d60000000",
+       "3fed2be705ae204c",
+       "3f9cde9bf1e2b261",
+       "3fb5fd9ec339c8c6",
+       "-402656244e3c9eab",
+       "3fc522fa00000000",
+       "-402cfa70c0000000",
+       "3fc256a680000000"
+      ],
+      [
+       "400cf1b700000000",
+       "400a0c7500000000",
+       "-4066e00800000000"
+      ],
+      "3ff399999999999a",
+      "40c3a51ae0000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "4040c992a5628cfd",
+      "0000000000000000",
+      "0000000000000000",
+      "-401a46a498ed49cb",
+      "3f7ca806728ad9a6",
+      "0000000000000000"
+     ],
+     "reference": [
+      "4040c992a5628cfc",
+      "0000000000000000",
+      "0000000000000000",
+      "-401a46a498ed49cb",
+      "3f7ca806728ad9a4",
+      "0000000000000000"
+     ],
+     "ulp": 2
+    },
+    {
+     "inputs": [
+      [
+       "402204c9e0000000",
+       "-3fbc66b1e0000000",
+       "-402f1a6baa01a82e",
+       "402a98a600000000",
+       "-3fef8df100000000",
+       "-400a05a400000000",
+       "3fa11ccfd7ce14b9",
+       "3f93bacabb87a0bb",
+       "-4061fae3530d99e4",
+       "3feff660bd0ffc5f",
+       "402dfd2f80000000",
+       "-3ff0078400000000",
+       "-3feefee3c0000000"
+      ],
+      [
+       "4012ee3f00000000",
+       "-401e2ca800000000",
+       "3fef45a200000000"
+      ],
+      "3ff399999999999a",
+      "40ae512ee0000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-400af1e044172491",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "-40ce077c805b0ab7",
+      "0000000000000000"
+     ],
+     "reference": [
+      "-400af1e044172490",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "-40ce077c805b0ab6",
+      "0000000000000000"
+     ],
+     "ulp": 1
+    },
+    {
+     "inputs": [
+      [
+       "40601de600000000",
+       "405c60c440000000",
+       "-010000000000000",
+       "3fe361d380000000",
+       "3fef754380000000",
+       "3ff3262b00000000",
+       "-401d3196549d8e70",
+       "-40273780082c6b9c",
+       "-4053fc00252196c4",
+       "3fe6aa4201646b2e",
+       "-40297dc800000000",
+       "3fd9e9c740000000",
+       "3fcd204500000000"
+      ],
+      [
+       "4006ce6500000000",
+       "-4006361f00000000",
+       "-4019b8b500000000"
+      ],
+      "3feccd3460000000",
+      "409dae3fc0000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "3fec27bd904ef6f9",
+      "0000000000000000",
+      "0000000000000000",
+      "-406dc8579966348b",
+      "3f2807dd2380fb36",
+      "0000000000000000"
+     ],
+     "reference": [
+      "3fec27bd904ef6fa",
+      "0000000000000000",
+      "0000000000000000",
+      "-406dc8579966348b",
+      "3f2807dd2380fb37",
+      "0000000000000000"
+     ],
+     "ulp": 1
+    },
+    {
+     "inputs": [
+      [
+       "-3fa9005c80000000",
+       "-3fb8f77140000000",
+       "-40050c4bee7fe2e2",
+       "4038da35f34e3081",
+       "-4000235f86d1e5f4",
+       "-40049af5c1e41606",
+       "3fe7431f8029358a",
+       "-4092f57498736c34",
+       "-4069bd152cd767aa",
+       "-401a097900af96e8",
+       "-403b32d5a0000000",
+       "3fbdf0d480000000",
+       "3fbd309380000000"
+      ],
+      [
+       "400554fa00000000",
+       "40035eb680000000",
+       "-4025f96e80000000"
+      ],
+      "3ff399999999999a",
+      "40a331fb20000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-4003a1ee7f184862",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "-40c7c9c452f5c613",
+      "0000000000000000"
+     ],
+     "reference": [
+      "-4003a1ee7f184861",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "-40c7c9c452f5c612",
+      "0000000000000000"
+     ],
+     "ulp": 1
+    },
+    {
+     "inputs": [
+      [
+       "40555c76a0000000",
+       "40610c7580000000",
+       "-404f8d950b85bd90",
+       "-3fbcb1b7e0000000",
+       "-3fe2286e00000000",
+       "4040df8780000000",
+       "-402e10ff540ac9a0",
+       "-4031fcf0c31d86e7",
+       "-401406e67719b1f8",
+       "3fd479b2c81b09fe",
+       "401068e480000000",
+       "3ff167d800000000",
+       "4007e1d000000000"
+      ],
+      [
+       "-4004a64200000000",
+       "-401978ed00000000",
+       "3fdd878900000000"
+      ],
+      "3fece6bbe0000000",
+      "40a680ef20000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "40003dc19c912c9d",
+      "0000000000000000",
+      "0000000000000000",
+      "-405afb93439f3bcd",
+      "3f3bb95b2b180b1f",
+      "0000000000000000"
+     ],
+     "reference": [
+      "40003dc19c912c9c",
+      "0000000000000000",
+      "0000000000000000",
+      "-405afb93439f3bcd",
+      "3f3bb95b2b180b1d",
+      "0000000000000000"
+     ],
+     "ulp": 2
+    }
+   ],
+   "finite_ulp": 4465,
+   "identical": 7535,
+   "max_ulp": 4,
+   "nan_bits": 0,
+   "shape": 0,
+   "zero_sign": 0
+  },
+  "stage_bytes": {
+   "class_mismatch": 0,
+   "count": 11421,
+   "examples": [
+    {
+     "inputs": [
+      [
+       "40538d1360000000",
+       "40610b1fa0000000",
+       "-404f2cd3316dc67a",
+       "403b020e00000000",
+       "402766c300000000",
+       "-3fe33eb400000000",
+       "3fec5f2af9e27c5b",
+       "3fd8adc705a41d0c",
+       "-403f7a259e5e8b40",
+       "-4033cb8777017af4",
+       "-3fd65a3fc0000000",
+       "-3fe468a980000000",
+       "-3fdac11780000000"
+      ],
+      [
+       "40a9332bc0000000",
+       "-4043f96c00000000",
+       "3fe142e280000000",
+       "-401f50ffc0000000",
+       "40537dbc3b9b1fbd",
+       "4061046cd6fe1010",
+       "3ff0000000000000",
+       "4053842a6f80a723",
+       "40610b36e98ce804",
+       "0000000000000000",
+       "4053939843955ac2",
+       "40610221b52f5814",
+       "0000000000000000",
+       "-3ff49431c0000000"
+      ],
+      [
+       "-4059f59780000000",
+       "403118e5c0000000",
+       "402be51880000000"
+      ],
+      "4037b88888888888"
+     ],
+     "kind": "shape",
+     "native": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 234, 95, 116, 73, 27, 46, 151, 192, 68, 246, 144, 19, 211, 29, 166, 192, 127, 182, 99, 106, 81, 129, 148, 192, 21, 60, 187, 207, 184, 62, 131, 192, 100, 203, 82, 225, 46, 17, 52, 64, 5, 226, 172, 115, 114, 164, 134, 64, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 92, 42, 41, 3, 112, 113, 64, 86, 187, 93, 162, 244, 51, 112, 64, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 164, 151, 84, 152, 235, 67, 190, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "reference": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 235, 95, 116, 73, 27, 46, 151, 192, 68, 246, 144, 19, 211, 29, 166, 192, 128, 182, 99, 106, 81, 129, 148, 192, 21, 60, 187, 207, 184, 62, 131, 192, 76, 203, 82, 225, 46, 17, 52, 64, 5, 226, 172, 115, 114, 164, 134, 64, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 92, 42, 41, 3, 112, 113, 64, 89, 187, 93, 162, 244, 51, 112, 64, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 164, 151, 84, 152, 235, 67, 190, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "ulp": 0
+    },
+    {
+     "inputs": [
+      [
+       "-3f91a43120000000",
+       "-3f96437780000000",
+       "-4030978963886c11",
+       "3ff97e3000000000",
+       "3ff251a140000000",
+       "3fe7231c00000000",
+       "3feff193a33b530e",
+       "3f5a8e621afd9ede",
+       "-406bb74f63d9231b",
+       "-405362f4c6a070f5",
+       "3fc52e2200000000",
+       "3fce1ed100000000",
+       "-4030db0a00000000"
+      ],
+      [
+       "0000000000000000",
+       "-4032058680000000",
+       "-401e969b40000000",
+       "-402ab20540000000",
+       "-3f91a06a0b7d585a",
+       "-3f963de083494409",
+       "3ff0000000000000",
+       "-3f91a0fa99afe120",
+       "-3f96499b921f09dd",
+       "0000000000000000",
+       "-3f91ab19aa60977a",
+       "-3f964200f07609e7",
+       "3ff0000000000000",
+       "4024f66b40000000"
+      ],
+      [
+       "3ffcc6a400000000",
+       "-407dd54580000000",
+       "-405f37a580000000"
+      ],
+      "40394ccccccccccd"
+     ],
+     "kind": "shape",
+     "native": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 126, 190, 151, 162, 149, 185, 49, 192, 202, 54, 118, 233, 172, 84, 56, 192, 105, 163, 242, 123, 221, 105, 73, 192, 227, 44, 7, 62, 133, 146, 23, 64, 20, 98, 145, 245, 66, 14, 7, 192, 148, 169, 21, 140, 93, 168, 212, 191, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 104, 66, 54, 205, 15, 60, 28, 192, 16, 67, 51, 173, 24, 117, 71, 64, 153, 230, 224, 146, 161, 169, 69, 64, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "reference": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 80, 190, 151, 162, 149, 185, 49, 192, 127, 54, 118, 233, 172, 84, 56, 192, 34, 163, 242, 123, 221, 105, 73, 192, 49, 44, 7, 62, 133, 146, 23, 64, 59, 97, 145, 245, 66, 14, 7, 192, 124, 169, 21, 140, 93, 168, 212, 191, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 113, 66, 54, 205, 15, 60, 28, 192, 16, 67, 51, 173, 24, 117, 71, 64, 153, 230, 224, 146, 161, 169, 69, 64, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "ulp": 0
+    },
+    {
+     "inputs": [
+      [
+       "402cf648e0000000",
+       "-3fd2000d00000000",
+       "-40328baf4b0ae659",
+       "4030b2fa40000000",
+       "3fdb84ef00000000",
+       "-403f399000000000",
+       "3fe220b97e06992a",
+       "3f86ea7c29c47489",
+       "3f800eb8c035a8eb",
+       "3fea5dd0cffa0362",
+       "-4046c35200000000",
+       "3fc69bc500000000",
+       "-40243c8ec0000000"
+      ],
+      [
+       "40c5e3a060000000",
+       "3fc8c9f000000000",
+       "-4019532240000000",
+       "-401b735c40000000",
+       "402d683341981907",
+       "-3fd1f7ab23b7931d",
+       "3ff0000000000000",
+       "402cc0a10f56c275",
+       "-3fd1a85f50cd36a1",
+       "3ff0000000000000",
+       "402cc91c81451f0d",
+       "-3fd27515da052957",
+       "3ff0000000000000",
+       "-3ff8a32f80000000"
+      ],
+      [
+       "3f6a6dc000000000",
+       "40345bce40000000",
+       "3fa0aa70e0000000"
+      ],
+      "40430d9999999999"
+     ],
+     "kind": "shape",
+     "native": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 8, 38, 119, 40, 142, 216, 41, 64, 67, 179, 62, 107, 105, 175, 23, 192, 226, 164, 221, 40, 141, 12, 75, 192, 190, 53, 20, 199, 144, 72, 1, 64, 41, 29, 46, 230, 168, 154, 37, 192, 202, 7, 167, 148, 209, 115, 11, 192, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 242, 233, 116, 252, 174, 240, 118, 64, 18, 4, 240, 134, 28, 121, 93, 192, 198, 73, 153, 101, 173, 215, 114, 64, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 2, 122, 214, 209, 2, 74, 218, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "reference": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 16, 38, 119, 40, 142, 216, 41, 64, 65, 179, 62, 107, 105, 175, 23, 192, 227, 164, 221, 40, 141, 12, 75, 192, 189, 53, 20, 199, 144, 72, 1, 64, 42, 29, 46, 230, 168, 154, 37, 192, 204, 7, 167, 148, 209, 115, 11, 192, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 242, 233, 116, 252, 174, 240, 118, 64, 18, 4, 240, 134, 28, 121, 93, 192, 198, 73, 153, 101, 173, 215, 114, 64, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 2, 122, 214, 209, 2, 74, 218, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "ulp": 0
+    },
+    {
+     "inputs": [
+      [
+       "4035a94800000000",
+       "4045344900000000",
+       "-403895c40475638d",
+       "3f820078c0000000",
+       "3f8d06f0c0000000",
+       "-4068919080000000",
+       "-401ab27a6c4877ad",
+       "3fa735f877b45106",
+       "-404e478735b084d6",
+       "3fe7bb3c5e7979f2",
+       "-40224fdc00000000",
+       "3fd533ddc0000000",
+       "3fd2e3fb80000000"
+      ],
+      [
+       "40a30c5000000000",
+       "3fc65ca800000000",
+       "3fef91f2c0000000",
+       "0000000000000000",
+       "403584bfc6f48e57",
+       "404544640f0fff09",
+       "0000000000000000",
+       "4035e22d2fc1bdcd",
+       "40453f1a405f289d",
+       "0000000000000000",
+       "4035a7aab6c19d19",
+       "40451560640070f5",
+       "0000000000000000",
+       "402ef74080000000"
+      ],
+      [
+       "-406f275300000000",
+       "402b594780000000",
+       "-3fdc5f6a80000000"
+      ],
+      "4056637777777777"
+     ],
+     "kind": "shape",
+     "native": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 26, 64, 123, 182, 53, 123, 49, 192, 85, 110, 29, 217, 29, 160, 61, 192, 242, 19, 188, 12, 240, 106, 90, 192, 241, 86, 149, 110, 50, 164, 44, 64, 58, 200, 78, 22, 211, 244, 29, 192, 85, 66, 88, 36, 209, 16, 254, 191, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 14, 226, 77, 216, 38, 26, 19, 64, 133, 126, 173, 23, 69, 104, 124, 192, 156, 59, 139, 93, 246, 38, 110, 64, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 55, 210, 202, 237, 127, 224, 182, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "reference": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 25, 64, 123, 182, 53, 123, 49, 192, 77, 110, 29, 217, 29, 160, 61, 192, 244, 19, 188, 12, 240, 106, 90, 192, 247, 86, 149, 110, 50, 164, 44, 64, 60, 200, 78, 22, 211, 244, 29, 192, 102, 66, 88, 36, 209, 16, 254, 191, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 16, 226, 77, 216, 38, 26, 19, 64, 133, 126, 173, 23, 69, 104, 124, 192, 156, 59, 139, 93, 246, 38, 110, 64, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 55, 210, 202, 237, 127, 224, 182, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "ulp": 0
+    },
+    {
+     "inputs": [
+      [
+       "402926af40000000",
+       "-3fbe6b5940000000",
+       "-401d021556964104",
+       "3f8aa1cfc0000000",
+       "-4067ee2f40000000",
+       "-40670c45c0000000",
+       "3f9ddf77032a342f",
+       "-40162eb4c7406a1c",
+       "3fe1e385b7d33ab2",
+       "-4037cf26a7d5714d",
+       "3fdead4e00000000",
+       "3fdca5b680000000",
+       "3fc0c71780000000"
+      ],
+      [
+       "40b89c4180000000",
+       "3fe0bf8fc0000000",
+       "0000000000000000",
+       "-401aa21780000000",
+       "4029995b6e29d6e7",
+       "-3fbe7a6e8e38c187",
+       "0000000000000000",
+       "4028f54f83f0c6fd",
+       "-3fbe69da029f30db",
+       "0000000000000000",
+       "40296e0045a6f65a",
+       "-3fbe4a70c4300c48",
+       "0000000000000000",
+       "-4005886900000000"
+      ],
+      [
+       "-3fe3053800000000",
+       "-3fd61045e0000000",
+       "40342659c0000000"
+      ],
+      "40514c2222222222"
+     ],
+     "kind": "shape",
+     "native": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 141, 28, 4, 243, 102, 85, 42, 64, 221, 233, 110, 0, 255, 15, 49, 63, 16, 142, 133, 165, 163, 145, 89, 191, 173, 36, 124, 5, 44, 159, 209, 191, 168, 252, 207, 157, 151, 166, 91, 191, 101, 101, 39, 209, 170, 83, 42, 191, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 81, 247, 44, 122, 171, 142, 205, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "reference": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 140, 28, 4, 243, 102, 85, 42, 64, 221, 233, 110, 0, 255, 15, 49, 63, 16, 142, 133, 165, 163, 145, 89, 191, 173, 36, 124, 5, 44, 159, 209, 191, 170, 252, 207, 157, 151, 166, 91, 191, 101, 101, 39, 209, 170, 83, 42, 191, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 81, 247, 44, 122, 171, 142, 205, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "ulp": 0
+    },
+    {
+     "inputs": [
+      [
+       "4029f24160000000",
+       "-3fd98fea80000000",
+       "-403c39e8b26fabc2",
+       "4023dfe420000000",
+       "-401cb9c240000000",
+       "-400725e4a0000000",
+       "3fd06ad11a9dd6f2",
+       "3fa359ab734f6acc",
+       "-405fe9cf51690f70",
+       "3feee3a50780b1c1",
+       "3fdbac5900000000",
+       "-402c4fa980000000",
+       "-40235de1e0000000"
+      ],
+      [
+       "409b98e140000000",
+       "-4013535180000000",
+       "3fd32c3480000000",
+       "-401ec53280000000",
+       "402a51217929b398",
+       "-3fd9c0d866e51fef",
+       "0000000000000000",
+       "4029f35c16b602d0",
+       "-3fd91e3da2a1e5d9",
+       "0000000000000000",
+       "402994f0281ab823",
+       "-3fd9c342d03ee925",
+       "0000000000000000",
+       "403dd69c80000000"
+      ],
+      [
+       "-405adcaa80000000",
+       "-3fd83016e0000000",
+       "-3fc831a4a0000000"
+      ],
+      "4013888888888888"
+     ],
+     "kind": "shape",
+     "native": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 146, 242, 194, 58, 189, 116, 77, 192, 1, 51, 89, 140, 154, 247, 51, 64, 137, 228, 132, 93, 173, 73, 87, 192, 44, 109, 123, 30, 243, 47, 21, 192, 115, 154, 210, 16, 177, 37, 32, 192, 36, 114, 108, 39, 66, 124, 27, 192, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 216, 149, 18, 235, 47, 174, 116, 64, 176, 249, 198, 118, 182, 9, 133, 64, 37, 216, 63, 34, 165, 103, 140, 64, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 79, 19, 6, 213, 126, 146, 176, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "reference": "PackedByteArray(27, 0, 0, 0, 3, 0, 0, 0, 21, 0, 0, 0, 5, 0, 0, 0, 108, 111, 97, 100, 115, 0, 0, 0, 33, 0, 0, 0, 6, 0, 0, 0, 146, 242, 194, 58, 189, 116, 77, 192, 5, 51, 89, 140, 154, 247, 51, 64, 137, 228, 132, 93, 173, 73, 87, 192, 46, 109, 123, 30, 243, 47, 21, 192, 115, 154, 210, 16, 177, 37, 32, 192, 36, 114, 108, 39, 66, 124, 27, 192, 21, 0, 0, 0, 10, 0, 0, 0, 100, 101, 114, 105, 118, 97, 116, 105, 118, 101, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 216, 149, 18, 235, 47, 174, 116, 64, 176, 249, 198, 118, 182, 9, 133, 64, 37, 216, 63, 34, 165, 103, 140, 64, 21, 0, 0, 0, 14, 0, 0, 0, 114, 111, 116, 111, 114, 95, 109, 111, 109, 101, 110, 116, 117, 109, 0, 0, 33, 0, 0, 0, 3, 0, 0, 0, 79, 19, 6, 213, 126, 146, 176, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+     "ulp": 0
+    }
+   ],
+   "finite_ulp": 0,
+   "identical": 6349,
+   "max_ulp": 0,
+   "nan_bits": 0,
+   "shape": 5072,
+   "zero_sign": 0
+  },
+  "stage_derivative": {
+   "class_mismatch": 0,
+   "count": 11421,
+   "examples": [
+    {
+     "inputs": [
+      [
+       "40538d1360000000",
+       "40610b1fa0000000",
+       "-404f2cd3316dc67a",
+       "403b020e00000000",
+       "402766c300000000",
+       "-3fe33eb400000000",
+       "3fec5f2af9e27c5b",
+       "3fd8adc705a41d0c",
+       "-403f7a259e5e8b40",
+       "-4033cb8777017af4",
+       "-3fd65a3fc0000000",
+       "-3fe468a980000000",
+       "-3fdac11780000000"
+      ],
+      [
+       "40a9332bc0000000",
+       "-4043f96c00000000",
+       "3fe142e280000000",
+       "-401f50ffc0000000",
+       "40537dbc3b9b1fbd",
+       "4061046cd6fe1010",
+       "3ff0000000000000",
+       "4053842a6f80a723",
+       "40610b36e98ce804",
+       "0000000000000000",
+       "4053939843955ac2",
+       "40610221b52f5814",
+       "0000000000000000",
+       "-3ff49431c0000000"
+      ],
+      [
+       "-4059f59780000000",
+       "403118e5c0000000",
+       "402be51880000000"
+      ],
+      "4037b88888888888"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "0000000000000000",
+      "40717003292a5c40",
+      "407033f4a25dbb56"
+     ],
+     "reference": [
+      "0000000000000000",
+      "40717003292a5c3c",
+      "407033f4a25dbb59"
+     ],
+     "ulp": 4
+    },
+    {
+     "inputs": [
+      [
+       "-3f91a43120000000",
+       "-3f96437780000000",
+       "-4030978963886c11",
+       "3ff97e3000000000",
+       "3ff251a140000000",
+       "3fe7231c00000000",
+       "3feff193a33b530e",
+       "3f5a8e621afd9ede",
+       "-406bb74f63d9231b",
+       "-405362f4c6a070f5",
+       "3fc52e2200000000",
+       "3fce1ed100000000",
+       "-4030db0a00000000"
+      ],
+      [
+       "0000000000000000",
+       "-4032058680000000",
+       "-401e969b40000000",
+       "-402ab20540000000",
+       "-3f91a06a0b7d585a",
+       "-3f963de083494409",
+       "3ff0000000000000",
+       "-3f91a0fa99afe120",
+       "-3f96499b921f09dd",
+       "0000000000000000",
+       "-3f91ab19aa60977a",
+       "-3f964200f07609e7",
+       "3ff0000000000000",
+       "4024f66b40000000"
+      ],
+      [
+       "3ffcc6a400000000",
+       "-407dd54580000000",
+       "-405f37a580000000"
+      ],
+      "40394ccccccccccd"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3fe3c3f032c9bd98",
+      "40477518ad334310",
+      "4045a9a192e0e699"
+     ],
+     "reference": [
+      "-3fe3c3f032c9bd8f",
+      "40477518ad334310",
+      "4045a9a192e0e699"
+     ],
+     "ulp": 9
+    },
+    {
+     "inputs": [
+      [
+       "4035a94800000000",
+       "4045344900000000",
+       "-403895c40475638d",
+       "3f820078c0000000",
+       "3f8d06f0c0000000",
+       "-4068919080000000",
+       "-401ab27a6c4877ad",
+       "3fa735f877b45106",
+       "-404e478735b084d6",
+       "3fe7bb3c5e7979f2",
+       "-40224fdc00000000",
+       "3fd533ddc0000000",
+       "3fd2e3fb80000000"
+      ],
+      [
+       "40a30c5000000000",
+       "3fc65ca800000000",
+       "3fef91f2c0000000",
+       "0000000000000000",
+       "403584bfc6f48e57",
+       "404544640f0fff09",
+       "0000000000000000",
+       "4035e22d2fc1bdcd",
+       "40453f1a405f289d",
+       "0000000000000000",
+       "4035a7aab6c19d19",
+       "40451560640070f5",
+       "0000000000000000",
+       "402ef74080000000"
+      ],
+      [
+       "-406f275300000000",
+       "402b594780000000",
+       "-3fdc5f6a80000000"
+      ],
+      "4056637777777777"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "40131a26d84de20e",
+      "-3f8397bae852817b",
+      "406e26f65d8b3b9c"
+     ],
+     "reference": [
+      "40131a26d84de210",
+      "-3f8397bae852817b",
+      "406e26f65d8b3b9c"
+     ],
+     "ulp": 2
+    },
+    {
+     "inputs": [
+      [
+       "405c80ad00000000",
+       "40656cc700000000",
+       "3fc6071de116c760",
+       "3f6b1d1d00000000",
+       "-406f41c320000000",
+       "3f96b0e5a0000000",
+       "3fe777b40252d466",
+       "-404b394c42439644",
+       "-40947ed45b0a0bb2",
+       "3fe599570b1af66a",
+       "-40333e4180000000",
+       "-40429aee00000000",
+       "3fce2a5f80000000"
+      ],
+      [
+       "40a7859760000000",
+       "0000000000000000",
+       "3fd1d90d80000000",
+       "3faee66000000000",
+       "405c889ce6329d9b",
+       "4065698bd9757d4d",
+       "0000000000000000",
+       "405c72ed0f7aa241",
+       "40656a6b90dddc07",
+       "0000000000000000",
+       "405c7ffd73fa1e22",
+       "4065757ae9abaa74",
+       "3ff0000000000000",
+       "4033d57200000000"
+      ],
+      [
+       "402aa9f980000000",
+       "-3fefb15f80000000",
+       "-3ff2078100000000"
+      ],
+      "4034180000000000"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3f8442a450406ad8",
+      "4060b343f5db67e4",
+      "405d9ffa7e907526"
+     ],
+     "reference": [
+      "-3f8442a450406ad8",
+      "4060b343f5db67e4",
+      "405d9ffa7e907525"
+     ],
+     "ulp": 1
+    },
+    {
+     "inputs": [
+      [
+       "40618506e0000000",
+       "4061af3b80000000",
+       "3fb3627111d68dc0",
+       "3f7ac40a80000000",
+       "3f994ed1e0000000",
+       "3f801539c0000000",
+       "-4054bc8bff1db82a",
+       "-408691f2b1ccf352",
+       "3f98e6847c135617",
+       "3feff1cb347ad2f2",
+       "3fdde8bc40000000",
+       "3fd85c25c0000000",
+       "3fc1bb7c80000000"
+      ],
+      [
+       "4080408500000000",
+       "3fe0104000000000",
+       "3fd8fd9400000000",
+       "-4024afeb00000000",
+       "40618734f454dd20",
+       "4061b54342cee529",
+       "0000000000000000",
+       "406188f081ed6714",
+       "4061aae46383ba05",
+       "3ff0000000000000",
+       "40617caf5a7f8302",
+       "4061ae3659a2b508",
+       "3ff0000000000000",
+       "40160ef380000000"
+      ],
+      [
+       "3fa0b900a0000000",
+       "-405cd0e980000000",
+       "-3fc95199a0000000"
+      ],
+      "4052cdbbbbbbbbbc"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "4004aa1f3ac4767d",
+      "400fb3f01c2691ae",
+      "40615651231c4c3c"
+     ],
+     "reference": [
+      "4004aa1f3ac4767d",
+      "400fb3f01c2691ae",
+      "40615651231c4c3a"
+     ],
+     "ulp": 2
+    },
+    {
+     "inputs": [
+      [
+       "405b006700000000",
+       "-3f9d42ed00000000",
+       "-40395dc6402aaa57",
+       "-3fd78cde00000000",
+       "-3fbe990a40000000",
+       "-3fdb03a940000000",
+       "-401a9003e5cda568",
+       "3fe09f04efd5ee2d",
+       "-4044cd8029fa7ad7",
+       "-401f5e456f3b06d6",
+       "-3fd7949f80000000",
+       "401a541080000000",
+       "4013d86080000000"
+      ],
+      [
+       "40c79f9b20000000",
+       "3fd8ecae00000000",
+       "-401d4cb280000000",
+       "-401a9cfc00000000",
+       "405b0175f2181875",
+       "-3f9d489115164937",
+       "0000000000000000",
+       "405aecb8c308eba1",
+       "-3f9d4733dff09945",
+       "0000000000000000",
+       "405b021df90b7523",
+       "-3f9d4d9fbdb97389",
+       "3ff0000000000000",
+       "403145b4a0000000"
+      ],
+      [
+       "-3fd51004c0000000",
+       "-3fe4ccfc00000000",
+       "402456c700000000"
+      ],
+      "40475aaaaaaaaaab"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "4083a5a902f2d4bd",
+      "0000000000000000",
+      "0000000000000000"
+     ],
+     "reference": [
+      "4083a5a902f2d4d0",
+      "0000000000000000",
+      "0000000000000000"
+     ],
+     "ulp": 19
+    }
+   ],
+   "finite_ulp": 2079,
+   "identical": 9342,
+   "max_ulp": 98856264788600,
+   "nan_bits": 0,
+   "shape": 0,
+   "zero_sign": 0
+  },
+  "stage_loads": {
+   "class_mismatch": 0,
+   "count": 11421,
+   "examples": [
+    {
+     "inputs": [
+      [
+       "40538d1360000000",
+       "40610b1fa0000000",
+       "-404f2cd3316dc67a",
+       "403b020e00000000",
+       "402766c300000000",
+       "-3fe33eb400000000",
+       "3fec5f2af9e27c5b",
+       "3fd8adc705a41d0c",
+       "-403f7a259e5e8b40",
+       "-4033cb8777017af4",
+       "-3fd65a3fc0000000",
+       "-3fe468a980000000",
+       "-3fdac11780000000"
+      ],
+      [
+       "40a9332bc0000000",
+       "-4043f96c00000000",
+       "3fe142e280000000",
+       "-401f50ffc0000000",
+       "40537dbc3b9b1fbd",
+       "4061046cd6fe1010",
+       "3ff0000000000000",
+       "4053842a6f80a723",
+       "40610b36e98ce804",
+       "0000000000000000",
+       "4053939843955ac2",
+       "40610221b52f5814",
+       "0000000000000000",
+       "-3ff49431c0000000"
+      ],
+      [
+       "-4059f59780000000",
+       "403118e5c0000000",
+       "402be51880000000"
+      ],
+      "4037b88888888888"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3f68d1e4b68ba016",
+      "-3f59e22cec6f09bc",
+      "-3f6b7eae959c4981",
+      "-3f7cc1473044c3eb",
+      "4034112ee152cb64",
+      "4086a47273ace205"
+     ],
+     "reference": [
+      "-3f68d1e4b68ba015",
+      "-3f59e22cec6f09bc",
+      "-3f6b7eae959c4980",
+      "-3f7cc1473044c3eb",
+      "4034112ee152cb4c",
+      "4086a47273ace205"
+     ],
+     "ulp": 24
+    },
+    {
+     "inputs": [
+      [
+       "-3f91a43120000000",
+       "-3f96437780000000",
+       "-4030978963886c11",
+       "3ff97e3000000000",
+       "3ff251a140000000",
+       "3fe7231c00000000",
+       "3feff193a33b530e",
+       "3f5a8e621afd9ede",
+       "-406bb74f63d9231b",
+       "-405362f4c6a070f5",
+       "3fc52e2200000000",
+       "3fce1ed100000000",
+       "-4030db0a00000000"
+      ],
+      [
+       "0000000000000000",
+       "-4032058680000000",
+       "-401e969b40000000",
+       "-402ab20540000000",
+       "-3f91a06a0b7d585a",
+       "-3f963de083494409",
+       "3ff0000000000000",
+       "-3f91a0fa99afe120",
+       "-3f96499b921f09dd",
+       "0000000000000000",
+       "-3f91ab19aa60977a",
+       "-3f964200f07609e7",
+       "3ff0000000000000",
+       "4024f66b40000000"
+      ],
+      [
+       "3ffcc6a400000000",
+       "-407dd54580000000",
+       "-405f37a580000000"
+      ],
+      "40394ccccccccccd"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3fce466a5d684182",
+      "-3fc7ab531689c936",
+      "-3fb69622840d5c97",
+      "401792853e072ce3",
+      "-3ff8f1bd0a6e9dec",
+      "-402b57a273ea566c"
+     ],
+     "reference": [
+      "-3fce466a5d6841b0",
+      "-3fc7ab531689c981",
+      "-3fb69622840d5cde",
+      "401792853e072c31",
+      "-3ff8f1bd0a6e9ec5",
+      "-402b57a273ea5684"
+     ],
+     "ulp": 217
+    },
+    {
+     "inputs": [
+      [
+       "402cf648e0000000",
+       "-3fd2000d00000000",
+       "-40328baf4b0ae659",
+       "4030b2fa40000000",
+       "3fdb84ef00000000",
+       "-403f399000000000",
+       "3fe220b97e06992a",
+       "3f86ea7c29c47489",
+       "3f800eb8c035a8eb",
+       "3fea5dd0cffa0362",
+       "-4046c35200000000",
+       "3fc69bc500000000",
+       "-40243c8ec0000000"
+      ],
+      [
+       "40c5e3a060000000",
+       "3fc8c9f000000000",
+       "-4019532240000000",
+       "-401b735c40000000",
+       "402d683341981907",
+       "-3fd1f7ab23b7931d",
+       "3ff0000000000000",
+       "402cc0a10f56c275",
+       "-3fd1a85f50cd36a1",
+       "3ff0000000000000",
+       "402cc91c81451f0d",
+       "-3fd27515da052957",
+       "3ff0000000000000",
+       "-3ff8a32f80000000"
+      ],
+      [
+       "3f6a6dc000000000",
+       "40345bce40000000",
+       "3fa0aa70e0000000"
+      ],
+      "40430d9999999999"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "4029d88e28772608",
+      "-3fe8509694c14cbd",
+      "-3fb4f372d7225b1e",
+      "40014890c71435be",
+      "-3fda655719d1e2d7",
+      "-3ff48c2e6b58f836"
+     ],
+     "reference": [
+      "4029d88e28772610",
+      "-3fe8509694c14cbf",
+      "-3fb4f372d7225b1d",
+      "40014890c71435bd",
+      "-3fda655719d1e2d6",
+      "-3ff48c2e6b58f834"
+     ],
+     "ulp": 8
+    },
+    {
+     "inputs": [
+      [
+       "4035a94800000000",
+       "4045344900000000",
+       "-403895c40475638d",
+       "3f820078c0000000",
+       "3f8d06f0c0000000",
+       "-4068919080000000",
+       "-401ab27a6c4877ad",
+       "3fa735f877b45106",
+       "-404e478735b084d6",
+       "3fe7bb3c5e7979f2",
+       "-40224fdc00000000",
+       "3fd533ddc0000000",
+       "3fd2e3fb80000000"
+      ],
+      [
+       "40a30c5000000000",
+       "3fc65ca800000000",
+       "3fef91f2c0000000",
+       "0000000000000000",
+       "403584bfc6f48e57",
+       "404544640f0fff09",
+       "0000000000000000",
+       "4035e22d2fc1bdcd",
+       "40453f1a405f289d",
+       "0000000000000000",
+       "4035a7aab6c19d19",
+       "40451560640070f5",
+       "0000000000000000",
+       "402ef74080000000"
+      ],
+      [
+       "-406f275300000000",
+       "402b594780000000",
+       "-3fdc5f6a80000000"
+      ],
+      "4056637777777777"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3fce84ca4984bfe6",
+      "-3fc25fe226e291ab",
+      "-3fa5950ff343ec0e",
+      "402ca4326e9556f1",
+      "-3fe20b2ce9b137c6",
+      "-4001ef2edba7bdab"
+     ],
+     "reference": [
+      "-3fce84ca4984bfe7",
+      "-3fc25fe226e291b3",
+      "-3fa5950ff343ec0c",
+      "402ca4326e9556f7",
+      "-3fe20b2ce9b137c4",
+      "-4001ef2edba7bd9a"
+     ],
+     "ulp": 17
+    },
+    {
+     "inputs": [
+      [
+       "402926af40000000",
+       "-3fbe6b5940000000",
+       "-401d021556964104",
+       "3f8aa1cfc0000000",
+       "-4067ee2f40000000",
+       "-40670c45c0000000",
+       "3f9ddf77032a342f",
+       "-40162eb4c7406a1c",
+       "3fe1e385b7d33ab2",
+       "-4037cf26a7d5714d",
+       "3fdead4e00000000",
+       "3fdca5b680000000",
+       "3fc0c71780000000"
+      ],
+      [
+       "40b89c4180000000",
+       "3fe0bf8fc0000000",
+       "0000000000000000",
+       "-401aa21780000000",
+       "4029995b6e29d6e7",
+       "-3fbe7a6e8e38c187",
+       "0000000000000000",
+       "4028f54f83f0c6fd",
+       "-3fbe69da029f30db",
+       "0000000000000000",
+       "40296e0045a6f65a",
+       "-3fbe4a70c4300c48",
+       "0000000000000000",
+       "-4005886900000000"
+      ],
+      [
+       "-3fe3053800000000",
+       "-3fd61045e0000000",
+       "40342659c0000000"
+      ],
+      "40514c2222222222"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "402a5566f3041c8d",
+      "3f310fff006ee9dd",
+      "-40a66e5c5a7a71f0",
+      "-402e60d3fa83db53",
+      "-40a4596862300358",
+      "-40d5ac552ed89a9b"
+     ],
+     "reference": [
+      "402a5566f3041c8c",
+      "3f310fff006ee9dd",
+      "-40a66e5c5a7a71f0",
+      "-402e60d3fa83db53",
+      "-40a4596862300356",
+      "-40d5ac552ed89a9b"
+     ],
+     "ulp": 2
+    },
+    {
+     "inputs": [
+      [
+       "4029f24160000000",
+       "-3fd98fea80000000",
+       "-403c39e8b26fabc2",
+       "4023dfe420000000",
+       "-401cb9c240000000",
+       "-400725e4a0000000",
+       "3fd06ad11a9dd6f2",
+       "3fa359ab734f6acc",
+       "-405fe9cf51690f70",
+       "3feee3a50780b1c1",
+       "3fdbac5900000000",
+       "-402c4fa980000000",
+       "-40235de1e0000000"
+      ],
+      [
+       "409b98e140000000",
+       "-4013535180000000",
+       "3fd32c3480000000",
+       "-401ec53280000000",
+       "402a51217929b398",
+       "-3fd9c0d866e51fef",
+       "0000000000000000",
+       "4029f35c16b602d0",
+       "-3fd91e3da2a1e5d9",
+       "0000000000000000",
+       "402994f0281ab823",
+       "-3fd9c342d03ee925",
+       "0000000000000000",
+       "403dd69c80000000"
+      ],
+      [
+       "-405adcaa80000000",
+       "-3fd83016e0000000",
+       "-3fc831a4a0000000"
+      ],
+      "4013888888888888"
+     ],
+     "kind": "finite_ulp",
+     "native": [
+      "-3fb28b42c53d0d6e",
+      "4033f79a8c593301",
+      "-3fa8b652a27b1b77",
+      "-3fead00ce18492d4",
+      "-3fdfda4eef2d658d",
+      "-3fe483bdd8938ddc"
+     ],
+     "reference": [
+      "-3fb28b42c53d0d6e",
+      "4033f79a8c593305",
+      "-3fa8b652a27b1b77",
+      "-3fead00ce18492d2",
+      "-3fdfda4eef2d658d",
+      "-3fe483bdd8938ddc"
+     ],
+     "ulp": 4
+    }
+   ],
+   "finite_ulp": 4943,
+   "identical": 6478,
+   "max_ulp": 71293116970255,
+   "nan_bits": 0,
+   "shape": 0,
+   "zero_sign": 0
+  },
+  "stage_rotor_momentum": {
+   "class_mismatch": 0,
+   "count": 11421,
+   "examples": [],
+   "finite_ulp": 0,
+   "identical": 11421,
+   "max_ulp": 0,
+   "nan_bits": 0,
+   "shape": 0,
+   "zero_sign": 0
+  },
+  "stage_shape": {
+   "class_mismatch": 0,
+   "count": 12000,
+   "examples": [],
+   "finite_ulp": 0,
+   "identical": 12000,
+   "max_ulp": 0,
+   "nan_bits": 0,
+   "shape": 0,
+   "zero_sign": 0
+  }
+ },
+ "coverage": {
+  "stage_air": {
+   "ground_loaded": 161,
+   "hull_loaded": 156,
+   "hull_near_lake": 407,
+   "hull_points_lake_covered": 5318,
+   "malformed": 306,
+   "propeller_turning": 3718,
+   "stage_nonfinite_loads": 167,
+   "stage_shaped": 3992,
+   "stage_valid": 3825,
+   "states": 4138
+  },
+  "stage_ground": {
+   "ground_loaded": 3407,
+   "hull_loaded": 816,
+   "hull_near_lake": 1060,
+   "hull_points_lake_covered": 16867,
+   "malformed": 385,
+   "propeller_turning": 4413,
+   "stage_nonfinite_loads": 61,
+   "stage_shaped": 4608,
+   "stage_valid": 4547,
+   "states": 4888
+  },
+  "stage_hull": {
+   "ground_loaded": 2181,
+   "hull_loaded": 2294,
+   "hull_near_lake": 668,
+   "hull_points_lake_covered": 10423,
+   "malformed": 227,
+   "propeller_turning": 2688,
+   "stage_nonfinite_loads": 43,
+   "stage_shaped": 2821,
+   "stage_valid": 2778,
+   "states": 2974
+  }
+ },
+ "engine": "4.8-beta2 (official)",
+ "engine_sha256_after": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+ "engine_sha256_before": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+ "failures": [],
+ "format": "openrc-nk3-stage-oracle v1",
+ "harness_sources": {
+  "app/sim/native/electric_stage_adapter.gd": "4b653336c56e734e7d88533bcb353a076fefb3b511217734414809392e12491e",
+  "app/sim/native/glow_stage_adapter.gd": "1e64f1c99fd719596dd549c91702b3980bc21dd5e9a980025d519e876a6b1622",
+  "app/sim/native/helicopter_stage_adapter.gd": "23af0b81af2ffa4ca7cf16cf8ef04bbc8a4391447a16e483f7fcf205910cfad5",
+  "app/sim/native/liquid_stage_adapter.gd": "c0dbd0f51c5b39f37a201a040490298db730e86c5a82cab90bd570a428ec4ce5",
+  "app/sim/native/native_configuration.gd": "118b4f599eb86bc05d5218e8c434eac58204c9afe4650ba6fdd1d320143b47db",
+  "app/sim/native/native_weather.gd": "a7924ba7359483fc893c37fcf0b6b346d6b0673c7c9b8a48f44726fac04b97fd",
+  "app/sim/native/prescribed_stage_adapter.gd": "73e65b27e5c5b77aac8107f1bebcf726bf6f37a3fcd82caba8dfdd078df4a735",
+  "app/sim/native/stage_config.gd": "d201c6eb5f257c00decdb2cca4529c8667d768b88d5b6f0aea36f56a4105c437",
+  "app/sim/native/weather_adapter.gd": "893608e8d386ee26868ef602439b8ea260240b66e770a8075c7a7ee320087921",
+  "app/sim/native_stage.gd": "d9a303155da9903726f3568797b66f63ea03b14e4a0a06f50e648e1a5f9a0abb",
+  "research/native-kernel/build.py": "b983442005ab7365077e8a89f595c70081969245146e622f16a8139c08dcab48",
+  "research/native-kernel/fleet.gd": "9fa2765434dbee75e04ddaa1c66efc4f7b32603213bd21627e516de4f3bc4ab5",
+  "research/native-kernel/oracle.gd": "b36b55f2bbd6753c12e0b45d72b3a21805cea06e23f17ff529beff0203937424",
+  "research/native-kernel/propeller_oracle.gd": "f2029e29d8d60c591203f6c5db5daf56fb810c0e2f88196d93a903d7ef1c6120",
+  "research/native-kernel/run.py": "00e25de327d945017086f7cb62185a6e1e070e7a00eb544438d9051805c75271",
+  "research/native-kernel/stage_adapter.gd": "b325af9a67ca0c483a87ebf9bd18c2a63aaa62158fc1a494cf813f509e3793bd",
+  "research/native-kernel/stage_oracle.gd": "62b32e0fb390225d7ee2918382f11cd32e4c83920cbdc76e8a8b8120aebec3d3",
+  "research/native-kernel/trajectory.gd": "3efaad9c5da56d110ee62b6c54897053a3fedb63be00f4c8bcb44ba63bb39415",
+  "tools/godot/run_checked.py": "7335de7267871da28c6d2cd8d49e589d0de0600ab6677f3700051adf9dd35f88"
+ },
+ "identity": {
+  "abi": 2,
+  "abi_version": 2,
+  "aero_law": "section-plane-source-weighted-wake-velocity-v2",
+  "backend": "native",
+  "backend_version": "openrc-native-kernel-stage-v2",
+  "rolling_law": "wheel-positive-terrain-excess-v2",
+  "state_size": 13
+ },
+ "law_identity": {
+  "aero_native": "section-plane-source-weighted-wake-velocity-v2",
+  "aero_reference": "section-plane-source-weighted-wake-velocity-v2",
+  "rolling_native": "wheel-positive-terrain-excess-v2",
+  "rolling_reference": "wheel-positive-terrain-excess-v2"
+ },
+ "prepare": {
+  "error": "",
+  "ok": true
+ },
+ "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+ "reference_sources_after": {
+  "app/app_state/aircraft_catalog.gd": "eec6a281efcc9476adc0ae1b880e3aa92ca6cccf1640be83f2e1b2a22a35350a",
+  "app/app_state/native_package.gd": "710e33d256c2f4a4c14389b965805baedbd1cae89f0b919b2516ef7614961622",
+  "app/data/aircraft/battery/moonrunner_x99_6s_pack.json": "2df4233db38a2f964fe87db0bba11d91463918dd5d0823c5db37f90062d6d3c0",
+  "app/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+  "app/data/aircraft/f4u_corsair_250.json": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673",
+  "app/data/aircraft/gp_extra_300s_60.json": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+  "app/data/aircraft/hx700_electric_3d_experimental.json": "6805ea966fbcd07111d89743946b4dd7a46d58ad6057085c15bb21cfd0e0731e",
+  "app/data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+  "app/data/aircraft/moonrunner_x99.json": "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c",
+  "app/data/aircraft/p51d_mustang_120.json": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+  "app/data/aircraft/sebart_avanti_s_a200.json": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+  "app/data/aircraft/stik_glow_55ax_2t.json": "66d13e8d7d3a44d371f26d75f5e08fbd75b1088430de7a4fabbc852a4c2ca298",
+  "app/data/aircraft/stik_glow_61fx_2t.json": "babf709c6f8eda13af2bcb8dfc2753b98ae82aafaef048dee45610eeb799d458",
+  "app/data/aircraft/stik_glow_fs64v_4t.json": "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a",
+  "app/data/aircraft/turbo_lumber_evolution.json": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+  "app/data/aircraft/xcell_60_research.json": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
+  "app/data/batteries/cells/lipo-bak503562-galeotti-v1.json": "d291e8222c4664b44179e04c60efa8a14f372bb211f51c78856d1c7420c86633",
+  "app/data/batteries/packs/lipo-4s1p-3200-30c-class.json": "cdf90adb42613419665d7a6976c94a8b937abb4984c366610181026be9c20b09",
+  "app/data/batteries/packs/lipo-6s1p-5000-30c-class.json": "c930ba3bf6283b03b4e2d99471b73e6994670ad2a6322d6ed46701b7acbd5cf9",
+  "app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+  "app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+  "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+  "app/data/fuels/openrc-fuel-registry.json": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043",
+  "app/data/glow/extra_61fx_2t.json": "84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8",
+  "app/data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+  "app/data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+  "app/data/glow/os_max_61fx_candidate.json": "5e6fec165cf5b5a122a9dc1672436dac5004714cc3534cb075e94aad86ef4df4",
+  "app/data/glow/os_max_61fx_installed_candidate.json": "462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e",
+  "app/data/glow/profile_contract.json": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+  "app/data/glow/stik_55ax_2t.json": "0da0ff8f8dcaf8e877009819916a2c84f62863afafc130f4b4b0811a5aa0814d",
+  "app/data/glow/stik_61fx_2t.json": "03d8412fa7dd579b4853264d3987a164a7c34cb558332f621ae90c98fe035c0e",
+  "app/data/glow/stik_fs64v_4t.json": "d143392e35da1149c58d06e9f5b45afeaaba0140f2fba52efd3367d4a940657e",
+  "app/data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+  "app/physics/aero.gd": "65ed27963f2f86ff3710e77e877dd1e4cb0efa025ef5b064c3eb60fb0b996449",
+  "app/physics/air_data.gd": "88d81227be27ee4ceeb695f30e24b2208b7a8d22463840d85fba68df06e02361",
+  "app/physics/aircraft_data.gd": "a10f1ac1a967c6c392b9b12cbb6046fcb5814eb0b814b784f86112a55e770872",
+  "app/physics/atmosphere.gd": "9e1be6def471318dceb55b561c13d0c043a7f132f78bd125f0a570dfb003f369",
+  "app/physics/battery/battery_data.gd": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+  "app/physics/battery/esc_supervisor.gd": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+  "app/physics/battery/pack_ecm.gd": "212187bf6a4665280a657bed62b2b1fa866a49e6ae104213f56c30aad7a51a4c",
+  "app/physics/dynamics.gd": "769ec77b3d1013da33dfac21b3a74440fd08d60c48c08a93567de0d61e2b4592",
+  "app/physics/effective_mass.gd": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+  "app/physics/electric_motor.gd": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+  "app/physics/electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+  "app/physics/event_step.gd": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+  "app/physics/fixed_datum_body.gd": "df186bd36a6b60c01a82ca8aa52943600929219e43ba5d411bf9997da90bc34d",
+  "app/physics/flaps.gd": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+  "app/physics/glow/carburetor.gd": "bd22ef5070be76512470119563861f0fde2d7acf7f19451d9bf590d45cca024e",
+  "app/physics/glow/flight.gd": "d28abb904ed61ac01eb78555387d2c00a054e45671f1ede344e0b753317a1724",
+  "app/physics/glow/four_stroke.gd": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+  "app/physics/glow/fuel_feed.gd": "17194b2f01644a6e1eb202d23314f444f6146c3be1b3f462c165dcbcc9bc62df",
+  "app/physics/glow/fuel_mass.gd": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+  "app/physics/glow/installation.gd": "f5b0eecb34f100d9832ed04e65df0ae8be81a725f32d43eb47c7fc252a30e262",
+  "app/physics/glow/lifecycle.gd": "a2fe9b02aa06acf61ed8534fc6d89e1244e1c96c30ba9c4df271f06805569d14",
+  "app/physics/glow/operating_point.gd": "107fe300480853bb7c7007cfaa9eee82938feb02335cc5b68bc5aef31351933d",
+  "app/physics/glow/profile.gd": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+  "app/physics/glow/propeller.gd": "86828a6bb4fbf52777d328d300a56eeb1632b596b577bb1cf0676df3b586b97d",
+  "app/physics/glow/source.gd": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+  "app/physics/glow/thermal.gd": "46aab9a1c172e3bfc7b2a18402b635e9faa02462b9f38af70a0cc85edfae1bd8",
+  "app/physics/glow/two_stroke.gd": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+  "app/physics/glow/vibration.gd": "e7e2c6b5b9b87cf42fd2138274f6382c7ec6c42389e54624132bb74bd144e9b5",
+  "app/physics/ground_contact.gd": "24841713e285911017c4da06d3664b1d732c030a6f8b51874a945a36952f33a2",
+  "app/physics/ground_effect.gd": "e4c4c86033811649491343cca1aa6363ec02d045a1cd2ded40ac13b3f0541dd3",
+  "app/physics/ground_support.gd": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+  "app/physics/ground_surfaces.gd": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e",
+  "app/physics/ground_terrain.gd": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc",
+  "app/physics/ground_wheels.gd": "14267d31098965584a0f04bb1aca339ddc57f30f895978147281c7f92ebbfe0b",
+  "app/physics/hull_contact.gd": "e964af826d62fd47d1b669669400be85cb2e52b946be0859123c3e596b266380",
+  "app/physics/integrator.gd": "69d75732b95b2307a276d468ff5989be1db34755de98c1aac56f8b1808368cde",
+  "app/physics/lake_surface.gd": "a78e20ea259479e6e9a479f568b1fa902e1cf79bed50fc0b77d1810e007ff245",
+  "app/physics/liquid_fuel.gd": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+  "app/physics/mass_inventory.gd": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+  "app/physics/math3d.gd": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf",
+  "app/physics/propulsion.gd": "db058a49fd586a723e5c8d693843bdecfbf642fc749843b00ccee45263f32d18",
+  "app/physics/retractable_gear.gd": "3a08b68085e2aab67dca9a591bf7bdb3d85d51a209353e1d96415af1576123a4",
+  "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+  "app/physics/rotor_coupling.gd": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+  "app/physics/rotorcraft/aerodynamic_stage.gd": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd",
+  "app/physics/rotorcraft/airframe.gd": "7bb1bad8f99d8e9e1741536b8a31d62ac9d2affa474c1cf0394fe20542b4a9f6",
+  "app/physics/rotorcraft/drive.gd": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e",
+  "app/physics/rotorcraft/dynamic_inflow.gd": "5ba1a1722f1f8c51df0b40d9c538cb602c865b00f2d9cf6173a86b2ae0daa2fc",
+  "app/physics/rotorcraft/electronics.gd": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f",
+  "app/physics/rotorcraft/flight_dynamics.gd": "6c8c5d5b5a91d401df1a1023a0c3826374a7e4430c3d00ef7737f4b4daf2af23",
+  "app/physics/rotorcraft/geared_coupling.gd": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1",
+  "app/physics/rotorcraft/ground_start.gd": "1822c74a19e589844e25755029f46de946fbef8265a201122da13ee5a5591f1b",
+  "app/physics/rotorcraft/hx700_flex_bench.gd": "d7a7a78bf9a6fa1334050bb3a6238fde929862ac373bde88b5e77477ecb246df",
+  "app/physics/rotorcraft/impact_detector.gd": "6d86495352a3389c7ab5ceb65368469e792e354e7b0034fc8d330c2a93cb67f8",
+  "app/physics/rotorcraft/inflow.gd": "85289be30fe94c07a4ba10f3725c4d18581cab3d5d24fcecd92a1bd517725224",
+  "app/physics/rotorcraft/lifecycle.gd": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c",
+  "app/physics/rotorcraft/main_rotor.gd": "e3447d0d73529806d4a4e82af63703d5b7cc5c08fb0abc0da624504c03908658",
+  "app/physics/rotorcraft/main_rotor_stage.gd": "d6bcc6661dc4a2f777d908bc7e44777b0b0b2be6819f0dd3fd0b6c3d52216dbc",
+  "app/physics/rotorcraft/performance_context.gd": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0",
+  "app/physics/rotorcraft/simulation_step_adapter.gd": "88c852f1d5eb6fd066efbffffa3ac42d6cf2e9fa4464579dbe1c420ed6f8c81c",
+  "app/physics/rotorcraft/skid_contact.gd": "3101654efe3ea6f88fa1280ad12a1ff7a8f5379932149b4934878dba269d2f6a",
+  "app/physics/rotorcraft/swash.gd": "8eb592c3908d30bd7ba2f700660b5487756c546c717e7d69cace47c1a6fc0246",
+  "app/physics/rotorcraft/tail_rotor.gd": "b8e08d7461914b3ce337a485bb44e6d830ae05309f32004b88b7ecc1c41d6c81",
+  "app/physics/rotorcraft/trim.gd": "575506c05ac4d097705afcfbcdc76309191f90c382872605f3a870046fb27e0d",
+  "app/physics/rotorcraft_data.gd": "372c5c58e7b87a07b9d4c1d6addb13cff873cf657871c5f63e04f7ae38365cf2",
+  "app/physics/slipstream.gd": "ffdf117cc8ff0d83ba248b70703fbed3228ff110a95ce4adf2644d82bb815931",
+  "app/physics/swirl_loads.gd": "5017f323f1fb0a99c6d731eee582bd47c262cc45fed4067b99b80697e59002bc",
+  "app/physics/turbine.gd": "39cdb286bcdb124ae5c4d885760d85f588fbedf207ad0f62da8f3a822bfbdee7",
+  "app/physics/wash_transport.gd": "5cfae8de20432d66f2d5629716b1cf96cd3425dae083e362e4d3c415546f6e8a",
+  "app/physics/wheel_profiles.gd": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+  "app/physics/wind_aircraft_flow.gd": "0ef03aedf2f199c6ebf7190e3c1d7b051978cbb74eb5b36ad45b3c2f97c0a36d",
+  "app/physics/wind_config.gd": "8abf4d7247f92369db79f866b30c4add37dcc53173d5991ae88c5ae498aa31a9",
+  "app/physics/wind_field.gd": "949fbd5c5927df4f5213e08b3a72f164c7bb02b9c038601ff4a5f152c968ef79",
+  "app/physics/wind_spatial_config.gd": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d",
+  "app/physics/wind_spatial_field.gd": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644",
+  "app/physics/wind_spatial_presets.gd": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72",
+  "app/physics/wind_thermal_field.gd": "1d3545cbeaa04a1426bbbd1817ad2f4f00712a73bcf604c16c04698a98e2b9a4",
+  "app/physics/wind_turbulence.gd": "1ce2ba5dbe9094870e87ef1083dec3ec61d24381baaa97860ac79d11c046569c",
+  "app/physics/wing_polar.gd": "b67b2a4120c71cc6f32d732fa52dd56f911a950e354cdd8c3874a246e7f36bb3",
+  "app/sim/aircraft_propulsion_runtime.gd": "9fce4984366708ce7433e6501460dbf479deb9960f1839082541cb86c8e10444",
+  "app/sim/environment.gd": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42",
+  "app/sim/flight_session.gd": "03b9e0ee7e71fa2ef9904429de426e60d10e8a73d300ff73383f067205e2f295",
+  "app/sim/fuel_sample.gd": "5b35b612ba1f4c3258916327586cbf8683dd7669b5886236d0366cc04e2cb5cd",
+  "app/sim/helicopter_flight_session.gd": "a2e40f81a88a1c7d032385f87d4deee3a636c71a11a83fe0b594c36b6bbf56ec",
+  "app/sim/liquid_fuel_flight.gd": "26397c12a5af6ccf45c442c796c397be9ff6068be293f0e92bc71fc257cc2e53",
+  "app/sim/native/electric_stage_adapter.gd": "4b653336c56e734e7d88533bcb353a076fefb3b511217734414809392e12491e",
+  "app/sim/native/glow_stage_adapter.gd": "1e64f1c99fd719596dd549c91702b3980bc21dd5e9a980025d519e876a6b1622",
+  "app/sim/native/helicopter_stage_adapter.gd": "23af0b81af2ffa4ca7cf16cf8ef04bbc8a4391447a16e483f7fcf205910cfad5",
+  "app/sim/native/liquid_stage_adapter.gd": "c0dbd0f51c5b39f37a201a040490298db730e86c5a82cab90bd570a428ec4ce5",
+  "app/sim/native/native_configuration.gd": "118b4f599eb86bc05d5218e8c434eac58204c9afe4650ba6fdd1d320143b47db",
+  "app/sim/native/native_weather.gd": "a7924ba7359483fc893c37fcf0b6b346d6b0673c7c9b8a48f44726fac04b97fd",
+  "app/sim/native/prescribed_stage_adapter.gd": "73e65b27e5c5b77aac8107f1bebcf726bf6f37a3fcd82caba8dfdd078df4a735",
+  "app/sim/native/stage_config.gd": "d201c6eb5f257c00decdb2cca4529c8667d768b88d5b6f0aea36f56a4105c437",
+  "app/sim/native/weather_adapter.gd": "893608e8d386ee26868ef602439b8ea260240b66e770a8075c7a7ee320087921",
+  "app/sim/native_stage.gd": "d9a303155da9903726f3568797b66f63ea03b14e4a0a06f50e648e1a5f9a0abb",
+  "app/sim/simulation.gd": "06a8f2c46240ea90e3390d58392066338ead99134a260436b71bc9dc6afb85ff",
+  "app/sim/vehicle_model.gd": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2"
+ },
+ "reference_sources_before": {
+  "app/app_state/aircraft_catalog.gd": "eec6a281efcc9476adc0ae1b880e3aa92ca6cccf1640be83f2e1b2a22a35350a",
+  "app/app_state/native_package.gd": "710e33d256c2f4a4c14389b965805baedbd1cae89f0b919b2516ef7614961622",
+  "app/data/aircraft/battery/moonrunner_x99_6s_pack.json": "2df4233db38a2f964fe87db0bba11d91463918dd5d0823c5db37f90062d6d3c0",
+  "app/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+  "app/data/aircraft/f4u_corsair_250.json": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673",
+  "app/data/aircraft/gp_extra_300s_60.json": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+  "app/data/aircraft/hx700_electric_3d_experimental.json": "6805ea966fbcd07111d89743946b4dd7a46d58ad6057085c15bb21cfd0e0731e",
+  "app/data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+  "app/data/aircraft/moonrunner_x99.json": "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c",
+  "app/data/aircraft/p51d_mustang_120.json": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+  "app/data/aircraft/sebart_avanti_s_a200.json": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+  "app/data/aircraft/stik_glow_55ax_2t.json": "66d13e8d7d3a44d371f26d75f5e08fbd75b1088430de7a4fabbc852a4c2ca298",
+  "app/data/aircraft/stik_glow_61fx_2t.json": "babf709c6f8eda13af2bcb8dfc2753b98ae82aafaef048dee45610eeb799d458",
+  "app/data/aircraft/stik_glow_fs64v_4t.json": "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a",
+  "app/data/aircraft/turbo_lumber_evolution.json": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+  "app/data/aircraft/xcell_60_research.json": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
+  "app/data/batteries/cells/lipo-bak503562-galeotti-v1.json": "d291e8222c4664b44179e04c60efa8a14f372bb211f51c78856d1c7420c86633",
+  "app/data/batteries/packs/lipo-4s1p-3200-30c-class.json": "cdf90adb42613419665d7a6976c94a8b937abb4984c366610181026be9c20b09",
+  "app/data/batteries/packs/lipo-6s1p-5000-30c-class.json": "c930ba3bf6283b03b4e2d99471b73e6994670ad2a6322d6ed46701b7acbd5cf9",
+  "app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+  "app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+  "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+  "app/data/fuels/openrc-fuel-registry.json": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043",
+  "app/data/glow/extra_61fx_2t.json": "84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8",
+  "app/data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+  "app/data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+  "app/data/glow/os_max_61fx_candidate.json": "5e6fec165cf5b5a122a9dc1672436dac5004714cc3534cb075e94aad86ef4df4",
+  "app/data/glow/os_max_61fx_installed_candidate.json": "462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e",
+  "app/data/glow/profile_contract.json": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+  "app/data/glow/stik_55ax_2t.json": "0da0ff8f8dcaf8e877009819916a2c84f62863afafc130f4b4b0811a5aa0814d",
+  "app/data/glow/stik_61fx_2t.json": "03d8412fa7dd579b4853264d3987a164a7c34cb558332f621ae90c98fe035c0e",
+  "app/data/glow/stik_fs64v_4t.json": "d143392e35da1149c58d06e9f5b45afeaaba0140f2fba52efd3367d4a940657e",
+  "app/data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+  "app/physics/aero.gd": "65ed27963f2f86ff3710e77e877dd1e4cb0efa025ef5b064c3eb60fb0b996449",
+  "app/physics/air_data.gd": "88d81227be27ee4ceeb695f30e24b2208b7a8d22463840d85fba68df06e02361",
+  "app/physics/aircraft_data.gd": "a10f1ac1a967c6c392b9b12cbb6046fcb5814eb0b814b784f86112a55e770872",
+  "app/physics/atmosphere.gd": "9e1be6def471318dceb55b561c13d0c043a7f132f78bd125f0a570dfb003f369",
+  "app/physics/battery/battery_data.gd": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+  "app/physics/battery/esc_supervisor.gd": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+  "app/physics/battery/pack_ecm.gd": "212187bf6a4665280a657bed62b2b1fa866a49e6ae104213f56c30aad7a51a4c",
+  "app/physics/dynamics.gd": "769ec77b3d1013da33dfac21b3a74440fd08d60c48c08a93567de0d61e2b4592",
+  "app/physics/effective_mass.gd": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+  "app/physics/electric_motor.gd": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+  "app/physics/electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+  "app/physics/event_step.gd": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+  "app/physics/fixed_datum_body.gd": "df186bd36a6b60c01a82ca8aa52943600929219e43ba5d411bf9997da90bc34d",
+  "app/physics/flaps.gd": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+  "app/physics/glow/carburetor.gd": "bd22ef5070be76512470119563861f0fde2d7acf7f19451d9bf590d45cca024e",
+  "app/physics/glow/flight.gd": "d28abb904ed61ac01eb78555387d2c00a054e45671f1ede344e0b753317a1724",
+  "app/physics/glow/four_stroke.gd": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+  "app/physics/glow/fuel_feed.gd": "17194b2f01644a6e1eb202d23314f444f6146c3be1b3f462c165dcbcc9bc62df",
+  "app/physics/glow/fuel_mass.gd": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+  "app/physics/glow/installation.gd": "f5b0eecb34f100d9832ed04e65df0ae8be81a725f32d43eb47c7fc252a30e262",
+  "app/physics/glow/lifecycle.gd": "a2fe9b02aa06acf61ed8534fc6d89e1244e1c96c30ba9c4df271f06805569d14",
+  "app/physics/glow/operating_point.gd": "107fe300480853bb7c7007cfaa9eee82938feb02335cc5b68bc5aef31351933d",
+  "app/physics/glow/profile.gd": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+  "app/physics/glow/propeller.gd": "86828a6bb4fbf52777d328d300a56eeb1632b596b577bb1cf0676df3b586b97d",
+  "app/physics/glow/source.gd": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+  "app/physics/glow/thermal.gd": "46aab9a1c172e3bfc7b2a18402b635e9faa02462b9f38af70a0cc85edfae1bd8",
+  "app/physics/glow/two_stroke.gd": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+  "app/physics/glow/vibration.gd": "e7e2c6b5b9b87cf42fd2138274f6382c7ec6c42389e54624132bb74bd144e9b5",
+  "app/physics/ground_contact.gd": "24841713e285911017c4da06d3664b1d732c030a6f8b51874a945a36952f33a2",
+  "app/physics/ground_effect.gd": "e4c4c86033811649491343cca1aa6363ec02d045a1cd2ded40ac13b3f0541dd3",
+  "app/physics/ground_support.gd": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+  "app/physics/ground_surfaces.gd": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e",
+  "app/physics/ground_terrain.gd": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc",
+  "app/physics/ground_wheels.gd": "14267d31098965584a0f04bb1aca339ddc57f30f895978147281c7f92ebbfe0b",
+  "app/physics/hull_contact.gd": "e964af826d62fd47d1b669669400be85cb2e52b946be0859123c3e596b266380",
+  "app/physics/integrator.gd": "69d75732b95b2307a276d468ff5989be1db34755de98c1aac56f8b1808368cde",
+  "app/physics/lake_surface.gd": "a78e20ea259479e6e9a479f568b1fa902e1cf79bed50fc0b77d1810e007ff245",
+  "app/physics/liquid_fuel.gd": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+  "app/physics/mass_inventory.gd": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+  "app/physics/math3d.gd": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf",
+  "app/physics/propulsion.gd": "db058a49fd586a723e5c8d693843bdecfbf642fc749843b00ccee45263f32d18",
+  "app/physics/retractable_gear.gd": "3a08b68085e2aab67dca9a591bf7bdb3d85d51a209353e1d96415af1576123a4",
+  "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+  "app/physics/rotor_coupling.gd": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+  "app/physics/rotorcraft/aerodynamic_stage.gd": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd",
+  "app/physics/rotorcraft/airframe.gd": "7bb1bad8f99d8e9e1741536b8a31d62ac9d2affa474c1cf0394fe20542b4a9f6",
+  "app/physics/rotorcraft/drive.gd": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e",
+  "app/physics/rotorcraft/dynamic_inflow.gd": "5ba1a1722f1f8c51df0b40d9c538cb602c865b00f2d9cf6173a86b2ae0daa2fc",
+  "app/physics/rotorcraft/electronics.gd": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f",
+  "app/physics/rotorcraft/flight_dynamics.gd": "6c8c5d5b5a91d401df1a1023a0c3826374a7e4430c3d00ef7737f4b4daf2af23",
+  "app/physics/rotorcraft/geared_coupling.gd": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1",
+  "app/physics/rotorcraft/ground_start.gd": "1822c74a19e589844e25755029f46de946fbef8265a201122da13ee5a5591f1b",
+  "app/physics/rotorcraft/hx700_flex_bench.gd": "d7a7a78bf9a6fa1334050bb3a6238fde929862ac373bde88b5e77477ecb246df",
+  "app/physics/rotorcraft/impact_detector.gd": "6d86495352a3389c7ab5ceb65368469e792e354e7b0034fc8d330c2a93cb67f8",
+  "app/physics/rotorcraft/inflow.gd": "85289be30fe94c07a4ba10f3725c4d18581cab3d5d24fcecd92a1bd517725224",
+  "app/physics/rotorcraft/lifecycle.gd": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c",
+  "app/physics/rotorcraft/main_rotor.gd": "e3447d0d73529806d4a4e82af63703d5b7cc5c08fb0abc0da624504c03908658",
+  "app/physics/rotorcraft/main_rotor_stage.gd": "d6bcc6661dc4a2f777d908bc7e44777b0b0b2be6819f0dd3fd0b6c3d52216dbc",
+  "app/physics/rotorcraft/performance_context.gd": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0",
+  "app/physics/rotorcraft/simulation_step_adapter.gd": "88c852f1d5eb6fd066efbffffa3ac42d6cf2e9fa4464579dbe1c420ed6f8c81c",
+  "app/physics/rotorcraft/skid_contact.gd": "3101654efe3ea6f88fa1280ad12a1ff7a8f5379932149b4934878dba269d2f6a",
+  "app/physics/rotorcraft/swash.gd": "8eb592c3908d30bd7ba2f700660b5487756c546c717e7d69cace47c1a6fc0246",
+  "app/physics/rotorcraft/tail_rotor.gd": "b8e08d7461914b3ce337a485bb44e6d830ae05309f32004b88b7ecc1c41d6c81",
+  "app/physics/rotorcraft/trim.gd": "575506c05ac4d097705afcfbcdc76309191f90c382872605f3a870046fb27e0d",
+  "app/physics/rotorcraft_data.gd": "372c5c58e7b87a07b9d4c1d6addb13cff873cf657871c5f63e04f7ae38365cf2",
+  "app/physics/slipstream.gd": "ffdf117cc8ff0d83ba248b70703fbed3228ff110a95ce4adf2644d82bb815931",
+  "app/physics/swirl_loads.gd": "5017f323f1fb0a99c6d731eee582bd47c262cc45fed4067b99b80697e59002bc",
+  "app/physics/turbine.gd": "39cdb286bcdb124ae5c4d885760d85f588fbedf207ad0f62da8f3a822bfbdee7",
+  "app/physics/wash_transport.gd": "5cfae8de20432d66f2d5629716b1cf96cd3425dae083e362e4d3c415546f6e8a",
+  "app/physics/wheel_profiles.gd": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+  "app/physics/wind_aircraft_flow.gd": "0ef03aedf2f199c6ebf7190e3c1d7b051978cbb74eb5b36ad45b3c2f97c0a36d",
+  "app/physics/wind_config.gd": "8abf4d7247f92369db79f866b30c4add37dcc53173d5991ae88c5ae498aa31a9",
+  "app/physics/wind_field.gd": "949fbd5c5927df4f5213e08b3a72f164c7bb02b9c038601ff4a5f152c968ef79",
+  "app/physics/wind_spatial_config.gd": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d",
+  "app/physics/wind_spatial_field.gd": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644",
+  "app/physics/wind_spatial_presets.gd": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72",
+  "app/physics/wind_thermal_field.gd": "1d3545cbeaa04a1426bbbd1817ad2f4f00712a73bcf604c16c04698a98e2b9a4",
+  "app/physics/wind_turbulence.gd": "1ce2ba5dbe9094870e87ef1083dec3ec61d24381baaa97860ac79d11c046569c",
+  "app/physics/wing_polar.gd": "b67b2a4120c71cc6f32d732fa52dd56f911a950e354cdd8c3874a246e7f36bb3",
+  "app/sim/aircraft_propulsion_runtime.gd": "9fce4984366708ce7433e6501460dbf479deb9960f1839082541cb86c8e10444",
+  "app/sim/environment.gd": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42",
+  "app/sim/flight_session.gd": "03b9e0ee7e71fa2ef9904429de426e60d10e8a73d300ff73383f067205e2f295",
+  "app/sim/fuel_sample.gd": "5b35b612ba1f4c3258916327586cbf8683dd7669b5886236d0366cc04e2cb5cd",
+  "app/sim/helicopter_flight_session.gd": "a2e40f81a88a1c7d032385f87d4deee3a636c71a11a83fe0b594c36b6bbf56ec",
+  "app/sim/liquid_fuel_flight.gd": "26397c12a5af6ccf45c442c796c397be9ff6068be293f0e92bc71fc257cc2e53",
+  "app/sim/native/electric_stage_adapter.gd": "4b653336c56e734e7d88533bcb353a076fefb3b511217734414809392e12491e",
+  "app/sim/native/glow_stage_adapter.gd": "1e64f1c99fd719596dd549c91702b3980bc21dd5e9a980025d519e876a6b1622",
+  "app/sim/native/helicopter_stage_adapter.gd": "23af0b81af2ffa4ca7cf16cf8ef04bbc8a4391447a16e483f7fcf205910cfad5",
+  "app/sim/native/liquid_stage_adapter.gd": "c0dbd0f51c5b39f37a201a040490298db730e86c5a82cab90bd570a428ec4ce5",
+  "app/sim/native/native_configuration.gd": "118b4f599eb86bc05d5218e8c434eac58204c9afe4650ba6fdd1d320143b47db",
+  "app/sim/native/native_weather.gd": "a7924ba7359483fc893c37fcf0b6b346d6b0673c7c9b8a48f44726fac04b97fd",
+  "app/sim/native/prescribed_stage_adapter.gd": "73e65b27e5c5b77aac8107f1bebcf726bf6f37a3fcd82caba8dfdd078df4a735",
+  "app/sim/native/stage_config.gd": "d201c6eb5f257c00decdb2cca4529c8667d768b88d5b6f0aea36f56a4105c437",
+  "app/sim/native/weather_adapter.gd": "893608e8d386ee26868ef602439b8ea260240b66e770a8075c7a7ee320087921",
+  "app/sim/native_stage.gd": "d9a303155da9903726f3568797b66f63ea03b14e4a0a06f50e648e1a5f9a0abb",
+  "app/sim/simulation.gd": "06a8f2c46240ea90e3390d58392066338ead99134a260436b71bc9dc6afb85ff",
+  "app/sim/vehicle_model.gd": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2"
+ },
+ "refusals": {
+  "hull_geometry_only": {
+   "error": "unexpected geometry-only hull",
+   "refused": true
+  },
+  "layout_wash_pieces": {
+   "error": "continuous wash layout differs from prepared wake pieces",
+   "refused": true
+  },
+  "prop_axis_shape": {
+   "error": "unexpected size axis",
+   "refused": true
+  },
+  "prop_electric_kind": {
+   "error": "unsupported key propulsion.kind",
+   "refused": true
+  },
+  "session_coupled": {
+   "error": "unsupported session capability: coupled",
+   "refused": true
+  },
+  "session_finite_fuel": {
+   "error": "unsupported session capability: finite_fuel",
+   "refused": true
+  },
+  "session_flaps": {
+   "error": "flap capability and model differ",
+   "refused": true
+  },
+  "session_glow": {
+   "error": "unsupported session capability: glow",
+   "refused": true
+  },
+  "session_liquid": {
+   "error": "unsupported session capability: liquid",
+   "refused": true
+  },
+  "session_not_calm": {
+   "error": "unsupported session capability: not_calm",
+   "refused": true
+  },
+  "session_retractable": {
+   "error": "invalid retractable gear",
+   "refused": true
+  },
+  "session_rotor_dynamics": {
+   "error": "unsupported session capability: rotor_dynamics",
+   "refused": true
+  },
+  "session_slipstream": {
+   "error": "invalid wake model or capability flag",
+   "refused": true
+  },
+  "session_spatial_weather": {
+   "error": "unsupported session capability: spatial_weather",
+   "refused": true
+  },
+  "session_turbine": {
+   "error": "unsupported session capability: turbine",
+   "refused": true
+  },
+  "session_turbulence": {
+   "error": "unsupported session capability: turbulence",
+   "refused": true
+  },
+  "session_vertical_atmosphere": {
+   "error": "unsupported session capability: vertical_atmosphere",
+   "refused": true
+  },
+  "session_weather_pending_reset": {
+   "error": "unsupported session capability: weather_pending_reset",
+   "refused": true
+  }
+ },
+ "run_valid": true,
+ "seed": 20261027,
+ "self_test": {
+  "detected": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "passed": true
+ },
+ "sources": {
+  "res://app_state/native_package.gd": "710e33d256c2f4a4c14389b965805baedbd1cae89f0b919b2516ef7614961622",
+  "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+  "res://physics/aero.gd": "65ed27963f2f86ff3710e77e877dd1e4cb0efa025ef5b064c3eb60fb0b996449",
+  "res://physics/air_data.gd": "88d81227be27ee4ceeb695f30e24b2208b7a8d22463840d85fba68df06e02361",
+  "res://physics/aircraft_data.gd": "a10f1ac1a967c6c392b9b12cbb6046fcb5814eb0b814b784f86112a55e770872",
+  "res://physics/atmosphere.gd": "9e1be6def471318dceb55b561c13d0c043a7f132f78bd125f0a570dfb003f369",
+  "res://physics/battery/battery_data.gd": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+  "res://physics/battery/pack_ecm.gd": "212187bf6a4665280a657bed62b2b1fa866a49e6ae104213f56c30aad7a51a4c",
+  "res://physics/dynamics.gd": "769ec77b3d1013da33dfac21b3a74440fd08d60c48c08a93567de0d61e2b4592",
+  "res://physics/electric_motor.gd": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+  "res://physics/electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+  "res://physics/flaps.gd": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+  "res://physics/ground_contact.gd": "24841713e285911017c4da06d3664b1d732c030a6f8b51874a945a36952f33a2",
+  "res://physics/ground_effect.gd": "e4c4c86033811649491343cca1aa6363ec02d045a1cd2ded40ac13b3f0541dd3",
+  "res://physics/ground_terrain.gd": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc",
+  "res://physics/ground_wheels.gd": "14267d31098965584a0f04bb1aca339ddc57f30f895978147281c7f92ebbfe0b",
+  "res://physics/hull_contact.gd": "e964af826d62fd47d1b669669400be85cb2e52b946be0859123c3e596b266380",
+  "res://physics/lake_surface.gd": "a78e20ea259479e6e9a479f568b1fa902e1cf79bed50fc0b77d1810e007ff245",
+  "res://physics/math3d.gd": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf",
+  "res://physics/propulsion.gd": "db058a49fd586a723e5c8d693843bdecfbf642fc749843b00ccee45263f32d18",
+  "res://physics/wind_config.gd": "8abf4d7247f92369db79f866b30c4add37dcc53173d5991ae88c5ae498aa31a9",
+  "res://physics/wind_field.gd": "949fbd5c5927df4f5213e08b3a72f164c7bb02b9c038601ff4a5f152c968ef79",
+  "res://physics/wind_spatial_config.gd": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d",
+  "res://physics/wind_spatial_field.gd": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644",
+  "res://physics/wind_spatial_presets.gd": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72",
+  "res://physics/wind_thermal_field.gd": "1d3545cbeaa04a1426bbbd1817ad2f4f00712a73bcf604c16c04698a98e2b9a4",
+  "res://physics/wind_turbulence.gd": "1ce2ba5dbe9094870e87ef1083dec3ec61d24381baaa97860ac79d11c046569c",
+  "res://physics/wing_polar.gd": "b67b2a4120c71cc6f32d732fa52dd56f911a950e354cdd8c3874a246e7f36bb3",
+  "res://sim/environment.gd": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42",
+  "res://sim/flight_session.gd": "03b9e0ee7e71fa2ef9904429de426e60d10e8a73d300ff73383f067205e2f295",
+  "res://sim/native/electric_stage_adapter.gd": "4b653336c56e734e7d88533bcb353a076fefb3b511217734414809392e12491e",
+  "res://sim/native/glow_stage_adapter.gd": "1e64f1c99fd719596dd549c91702b3980bc21dd5e9a980025d519e876a6b1622",
+  "res://sim/native/helicopter_stage_adapter.gd": "23af0b81af2ffa4ca7cf16cf8ef04bbc8a4391447a16e483f7fcf205910cfad5",
+  "res://sim/native/liquid_stage_adapter.gd": "c0dbd0f51c5b39f37a201a040490298db730e86c5a82cab90bd570a428ec4ce5",
+  "res://sim/native/native_configuration.gd": "118b4f599eb86bc05d5218e8c434eac58204c9afe4650ba6fdd1d320143b47db",
+  "res://sim/native/native_weather.gd": "a7924ba7359483fc893c37fcf0b6b346d6b0673c7c9b8a48f44726fac04b97fd",
+  "res://sim/native/stage_config.gd": "d201c6eb5f257c00decdb2cca4529c8667d768b88d5b6f0aea36f56a4105c437",
+  "res://sim/native/weather_adapter.gd": "893608e8d386ee26868ef602439b8ea260240b66e770a8075c7a7ee320087921",
+  "res://sim/native_stage.gd": "d9a303155da9903726f3568797b66f63ea03b14e4a0a06f50e648e1a5f9a0abb",
+  "res://sim/simulation.gd": "06a8f2c46240ea90e3390d58392066338ead99134a260436b71bc9dc6afb85ff"
+ },
+ "sources_after": {
+  "res://app_state/native_package.gd": "710e33d256c2f4a4c14389b965805baedbd1cae89f0b919b2516ef7614961622",
+  "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+  "res://physics/aero.gd": "65ed27963f2f86ff3710e77e877dd1e4cb0efa025ef5b064c3eb60fb0b996449",
+  "res://physics/air_data.gd": "88d81227be27ee4ceeb695f30e24b2208b7a8d22463840d85fba68df06e02361",
+  "res://physics/aircraft_data.gd": "a10f1ac1a967c6c392b9b12cbb6046fcb5814eb0b814b784f86112a55e770872",
+  "res://physics/atmosphere.gd": "9e1be6def471318dceb55b561c13d0c043a7f132f78bd125f0a570dfb003f369",
+  "res://physics/battery/battery_data.gd": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+  "res://physics/battery/pack_ecm.gd": "212187bf6a4665280a657bed62b2b1fa866a49e6ae104213f56c30aad7a51a4c",
+  "res://physics/dynamics.gd": "769ec77b3d1013da33dfac21b3a74440fd08d60c48c08a93567de0d61e2b4592",
+  "res://physics/electric_motor.gd": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+  "res://physics/electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+  "res://physics/flaps.gd": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+  "res://physics/ground_contact.gd": "24841713e285911017c4da06d3664b1d732c030a6f8b51874a945a36952f33a2",
+  "res://physics/ground_effect.gd": "e4c4c86033811649491343cca1aa6363ec02d045a1cd2ded40ac13b3f0541dd3",
+  "res://physics/ground_terrain.gd": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc",
+  "res://physics/ground_wheels.gd": "14267d31098965584a0f04bb1aca339ddc57f30f895978147281c7f92ebbfe0b",
+  "res://physics/hull_contact.gd": "e964af826d62fd47d1b669669400be85cb2e52b946be0859123c3e596b266380",
+  "res://physics/lake_surface.gd": "a78e20ea259479e6e9a479f568b1fa902e1cf79bed50fc0b77d1810e007ff245",
+  "res://physics/math3d.gd": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf",
+  "res://physics/propulsion.gd": "db058a49fd586a723e5c8d693843bdecfbf642fc749843b00ccee45263f32d18",
+  "res://physics/wind_config.gd": "8abf4d7247f92369db79f866b30c4add37dcc53173d5991ae88c5ae498aa31a9",
+  "res://physics/wind_field.gd": "949fbd5c5927df4f5213e08b3a72f164c7bb02b9c038601ff4a5f152c968ef79",
+  "res://physics/wind_spatial_config.gd": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d",
+  "res://physics/wind_spatial_field.gd": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644",
+  "res://physics/wind_spatial_presets.gd": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72",
+  "res://physics/wind_thermal_field.gd": "1d3545cbeaa04a1426bbbd1817ad2f4f00712a73bcf604c16c04698a98e2b9a4",
+  "res://physics/wind_turbulence.gd": "1ce2ba5dbe9094870e87ef1083dec3ec61d24381baaa97860ac79d11c046569c",
+  "res://physics/wing_polar.gd": "b67b2a4120c71cc6f32d732fa52dd56f911a950e354cdd8c3874a246e7f36bb3",
+  "res://sim/environment.gd": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42",
+  "res://sim/flight_session.gd": "03b9e0ee7e71fa2ef9904429de426e60d10e8a73d300ff73383f067205e2f295",
+  "res://sim/native/electric_stage_adapter.gd": "4b653336c56e734e7d88533bcb353a076fefb3b511217734414809392e12491e",
+  "res://sim/native/glow_stage_adapter.gd": "1e64f1c99fd719596dd549c91702b3980bc21dd5e9a980025d519e876a6b1622",
+  "res://sim/native/helicopter_stage_adapter.gd": "23af0b81af2ffa4ca7cf16cf8ef04bbc8a4391447a16e483f7fcf205910cfad5",
+  "res://sim/native/liquid_stage_adapter.gd": "c0dbd0f51c5b39f37a201a040490298db730e86c5a82cab90bd570a428ec4ce5",
+  "res://sim/native/native_configuration.gd": "118b4f599eb86bc05d5218e8c434eac58204c9afe4650ba6fdd1d320143b47db",
+  "res://sim/native/native_weather.gd": "a7924ba7359483fc893c37fcf0b6b346d6b0673c7c9b8a48f44726fac04b97fd",
+  "res://sim/native/stage_config.gd": "d201c6eb5f257c00decdb2cca4529c8667d768b88d5b6f0aea36f56a4105c437",
+  "res://sim/native/weather_adapter.gd": "893608e8d386ee26868ef602439b8ea260240b66e770a8075c7a7ee320087921",
+  "res://sim/native_stage.gd": "d9a303155da9903726f3568797b66f63ea03b14e4a0a06f50e648e1a5f9a0abb",
+  "res://sim/simulation.gd": "06a8f2c46240ea90e3390d58392066338ead99134a260436b71bc9dc6afb85ff"
+ },
+ "states": 12000,
+ "timing": {},
+ "total": {
+  "compared": 128664,
+  "identical": 100359,
+  "mismatched": 28305
+ },
+ "variant_states": 1500,
+ "verdict": "fail",
+ "wall_ms": 21396
+}

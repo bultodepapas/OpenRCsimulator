@@ -1,8 +1,9 @@
 """GP-12 strict historical golden and same-host fixed-brake regression gate.
 
-The reconstructed R3 owner must first reproduce every original OS golden with
-the original CRLF fuel registry. Then only the two explicitly pinned candidate
-input identities are overlaid and every output is compared without normalization.
+The reconstructed R3 owner must first reproduce every original OS golden under
+the historical engine with the original CRLF fuel registry. Then the same source
+runs under the current engine with only the two pinned candidate input identities
+overlaid, and every output is compared without normalization.
 """
 from __future__ import annotations
 
@@ -16,6 +17,11 @@ import re
 import subprocess
 import sys
 import tempfile
+
+from get_historical_godot import (
+    ENGINE_LINUX_SHA512, ENGINE_WINDOWS_CONSOLE_SHA512, ENGINE_WINDOWS_SHA512,
+    HISTORICAL_VERSION, ensure_historical_godot,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 CONSTRUCTION = ROOT / "docs/research/ground-physics/GP-12/evidence/fixed-brake-input/construction"
@@ -34,9 +40,11 @@ CAPTURE_SOURCE = "ea3918c0661db3a497d1149c057875890f7b44af1d462f8d5172800ecd33c8
 RECONSTRUCTOR_SOURCE = "48b46620a7ed91cfc8b3f4c3dd98f24d16eca8917b81141270e41be769fc9d50"
 SOURCE_PINS = "c186c5432377e62ea3045281c20fc4c8aaacab3063fd3bbda75ef96f18410f55"
 REFERENCE_PROJECT = "5f54ed734e87ede917879857c6cbc4a86787d0a1484e448b2c1714b3b1e6d11e"
-ENGINE_LINUX_SHA512 = "e5a41b16a00a5f73c533135544754f175897b14feb77ef03d7d2bc6fd59163bb78444752d06641a24fb790fbdf0412e7a02dd14bf4406b641a312a903856a814"
-ENGINE_WINDOWS_CONSOLE_SHA512 = "c01f16cada68a8180f5c002e90b727015e136cf36342ac6a2ce222d26aba617b011545b73ff6ce9b9420ed1e29d62a43edb2c8b64e9805dc242506e0cd49b5dd"
-ENGINE_WINDOWS_SHA512 = "7b8c3a09e1beabe120789b7a325d017eb2103b69bb6f8e9b4678e51a1521bfe4071a12841c1784d289147fb7ae60e73895fadd1f67633788367eec208bc7fabe"
+CURRENT_LINUX_SHA512 = "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9"
+CURRENT_WINDOWS_CONSOLE_SHA512 = "dd05e00ff13faac6b863aa1e4c51599cfaa973c9b8d2e31158d717b499a4ee0b08d46661c0c91215dcce77ce1edfb33595b8af476b2862a47465ec27545962ea"
+CURRENT_WINDOWS_SHA512 = "e83c615fb181c6e1c83f204801e8c73a9340ea500d0da3d7e598f6c4213051de5df8073041c27790838b9e4eff4770c483d7dbb75545da7ad4382c53e23f6a55"
+CURRENT_VERSION = "4.8.beta2.official.cafc17a19"
+CURRENT_CAPTURE_ENGINE = "4.8-beta2 (official)"
 
 
 def sha(data: bytes) -> str:
@@ -71,6 +79,7 @@ def candidate_manifest(project: Path) -> dict[str, str]:
     manifest = {path: file_sha(project / path) for path in sorted(paths)}
     manifest["capture_script"] = file_sha(CAPTURE)
     manifest["gate_script"] = file_sha(Path(__file__))
+    manifest["historical_engine_getter"] = file_sha(ROOT / "tools/godot/get_historical_godot.py")
     manifest["checked_runner"] = file_sha(ROOT / "tools/godot/run_checked.py")
     manifest["reconstructor"] = file_sha(CONSTRUCTION / "reconstruct_legacy_reference.py")
     manifest["historical_pins"] = file_sha(CONSTRUCTION / "loaded-source-pins.json")
@@ -103,10 +112,10 @@ def check_reference_inputs(project: Path, fuel: bytes, avanti: bytes) -> None:
         require(digest in {sha(data), sha(lf), sha(lf.replace(b"\n", b"\r\n"))}, "reference input changed: " + path)
 
 
-def load_capture(path: Path, fixture: dict, reference: bool) -> dict:
+def load_capture(path: Path, fixture: dict, reference: bool, engine: str) -> dict:
     capture = json.loads(path.read_text(encoding="utf-8"))
     require(capture.get("format") == "openrc-fixed-brake-legacy-capture v1", "invalid capture format")
-    require(capture.get("engine") == fixture["engine"] and capture.get("physics_hz") == fixture["physics_hz"], "engine or physics rate differs")
+    require(capture.get("engine") == engine and capture.get("physics_hz") == fixture["physics_hz"], "engine or physics rate differs")
     os_name = capture.get("os")
     require(os_name in fixture["os_captures"], "no frozen reference for this OS")
     require(set(capture.get("outputs", {})) == IDS, "capture aircraft set differs")
@@ -155,21 +164,36 @@ def checked(godot: Path, project: Path, out: Path, label: str, args: list[str], 
     subprocess.run(command, check=True, env=env)
 
 
-def run(repo: Path, project: Path, godot: Path, out: Path, scratch: Path) -> None:
-    require(project.is_dir() and godot.is_file() and (project / ".godot/imported").is_dir(), "candidate project must be imported")
+def check_engine(godot: Path, historical: bool) -> dict[str, str]:
     def digest512(path: Path) -> str:
         with path.open("rb") as stream:
             return hashlib.file_digest(stream, "sha512").hexdigest()
+    label = "historical" if historical else "current"
+    version = HISTORICAL_VERSION if historical else CURRENT_VERSION
     if platform.system() == "Linux":
-        require(digest512(godot) == ENGINE_LINUX_SHA512, "Linux engine bytes differ from the pinned editor")
+        expected = ENGINE_LINUX_SHA512 if historical else CURRENT_LINUX_SHA512
+        require(digest512(godot) == expected, label + " Linux engine bytes differ from the pinned editor")
+        identity = {"path": str(godot), "sha512": expected, "version": version}
     elif platform.system() == "Windows":
-        require(digest512(godot) == ENGINE_WINDOWS_CONSOLE_SHA512
-                and digest512(godot.with_name("Godot_v4.8-beta1_win64.exe")) == ENGINE_WINDOWS_SHA512,
-                "Windows engine bytes differ from the pinned editor")
+        expected = ENGINE_WINDOWS_CONSOLE_SHA512 if historical else CURRENT_WINDOWS_CONSOLE_SHA512
+        gui_expected = ENGINE_WINDOWS_SHA512 if historical else CURRENT_WINDOWS_SHA512
+        gui = godot.with_name("Godot_v4.8-beta1_win64.exe" if historical else "Godot_v4.8-beta2_win64.exe")
+        require(digest512(godot) == expected and digest512(gui) == gui_expected,
+                label + " Windows engine bytes differ from the pinned editor")
+        identity = {"path": str(godot), "sha512": expected, "version": version,
+                    "gui_path": str(gui), "gui_sha512": gui_expected}
     else:
         raise ValueError("no pinned fixed-brake engine for this OS")
-    require(subprocess.check_output([str(godot), "--version"], text=True).strip() == "4.8.beta1.official.4d10419ca",
-            "engine build differs")
+    require(subprocess.check_output([str(godot), "--version"], text=True).strip() == version,
+            label + " engine build differs")
+    return identity
+
+
+def run(repo: Path, project: Path, godot: Path, historical_godot: Path, out: Path, scratch: Path) -> None:
+    require(project.is_dir() and godot.is_file() and (project / ".godot/imported").is_dir(), "candidate project must be imported")
+    require(historical_godot.is_file(), "historical beta1 engine is missing: " + str(historical_godot))
+    current_engine = check_engine(godot, False)
+    historical_engine = check_engine(historical_godot, True)
     fixture_path = project / "tests/fixtures/fixed_brake_legacy_outputs.json"
     for path, expected in ((fixture_path, FROZEN_FIXTURE), (CAPTURE, CAPTURE_SOURCE),
                            (CONSTRUCTION / "reconstruct_legacy_reference.py", RECONSTRUCTOR_SOURCE),
@@ -201,7 +225,9 @@ def run(repo: Path, project: Path, godot: Path, out: Path, scratch: Path) -> Non
             and identity.get("nitro_06_r3") == "20662f264" and identity.get("carburetor_sha256") == CARB_R3,
             "reconstructed source identity differs")
     (run_dir / "input-identities.json").write_text(json.dumps({"candidate": candidate_sources,
-                                                                "historical": identity}, indent=2, sort_keys=True) + "\n",
+                                                                "historical": identity,
+                                                                "engines": {"historical": historical_engine,
+                                                                            "current": current_engine}}, indent=2, sort_keys=True) + "\n",
                                                     encoding="utf-8")
     historical_avanti = (ref / "app" / avanti_path).read_bytes()
     require(sha(historical_avanti) == AVANTI_OLD, "historical Avanti identity differs")
@@ -220,44 +246,53 @@ def run(repo: Path, project: Path, godot: Path, out: Path, scratch: Path) -> Non
     require(project_bytes.count(theme_line) == 1, "historical font setting differs")
     try:
         project_file.write_bytes(project_bytes.replace(theme_line, b";" + theme_line))
-        checked(godot, ref / "app", out, "fixed-brake-reference-bootstrap", ["--import"], timeout=1200, extra_env=run_env)
+        checked(historical_godot, ref / "app", out, "fixed-brake-reference-bootstrap", ["--import"], timeout=1200, extra_env=run_env)
     finally:
         project_file.write_bytes(project_bytes)
     require(project_file.read_bytes() == project_bytes, "historical project settings were not restored")
-    checked(godot, ref / "app", out, "fixed-brake-reference-import", ["--import"], timeout=1200, extra_env=run_env)
+    checked(historical_godot, ref / "app", out, "fixed-brake-reference-import", ["--import"], timeout=1200, extra_env=run_env)
     historical_fuel = reconstructed_fuel.replace(b"\n", b"\r\n")
     check_reference_inputs(ref / "app", historical_fuel, historical_avanti)
     gold_path = run_dir / "historical-goldens.json"
-    checked(godot, ref / "app", out, "fixed-brake-historical-goldens", ["--script", str(CAPTURE), "--", "--out=" + str(gold_path)], extra_env=run_env)
-    golden = load_capture(gold_path, fixture, True)
+    checked(historical_godot, ref / "app", out, "fixed-brake-historical-goldens", ["--script", str(CAPTURE), "--", "--out=" + str(gold_path)], extra_env=run_env)
+    golden = load_capture(gold_path, fixture, True, fixture["engine"])
     check_goldens(golden, fixture)
+    check_reference_inputs(ref / "app", historical_fuel, historical_avanti)
+    # Keep the historical capture intact; import the same verified source with
+    # the current engine before constructing the current-engine oracle.
+    checked(godot, ref / "app", out, "fixed-brake-current-reference-import", ["--import"], timeout=1200, extra_env=run_env)
     check_reference_inputs(ref / "app", historical_fuel, historical_avanti)
     (ref / "app" / fuel_path).write_bytes(candidate_fuel)
     (ref / "app" / avanti_path).write_bytes(candidate_avanti)
     matched_path, candidate_path = run_dir / "matched-reference.json", run_dir / "candidate.json"
     checked(godot, ref / "app", out, "fixed-brake-matched-reference", ["--script", str(CAPTURE), "--", "--out=" + str(matched_path)], extra_env=run_env)
     checked(godot, project, out, "fixed-brake-candidate-capture", ["--script", str(CAPTURE), "--", "--out=" + str(candidate_path)], extra_env=run_env)
-    matched = load_capture(matched_path, fixture, True)
-    candidate = load_capture(candidate_path, fixture, False)
+    matched = load_capture(matched_path, fixture, True, CURRENT_CAPTURE_ENGINE)
+    candidate = load_capture(candidate_path, fixture, False, CURRENT_CAPTURE_ENGINE)
     check_reference_inputs(ref / "app", candidate_fuel, candidate_avanti)
     check_comparison(matched, candidate)
     checked(godot, project, out, "fixed-brake-input", ["--script", "res://tests/test_fixed_gear_brake_input.gd"],
             timeout=180, extra_env={**run_env, "OPENRC_FIXED_BRAKE_REFERENCE": str(matched_path)},
             required_text=("Fixed brake candidate:", "0 failed"))
     require(candidate_manifest(project) == candidate_sources, "candidate inputs changed during the comparison")
-    print("Fixed-brake: all 16 original golden and same-host candidate digests match; evidence:", run_dir)
+    require(check_engine(historical_godot, True) == historical_engine and check_engine(godot, False) == current_engine,
+            "engine identity changed during the comparison")
+    print("Fixed-brake: all 16 beta1 original goldens and beta2 same-host candidate digests match; evidence:", run_dir)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--godot", type=Path, required=True)
+    parser.add_argument("--historical-godot", type=Path, help="verified beta1 editor; otherwise obtain it in the repository .tools cache")
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument("--scratch-dir", type=Path, default=ROOT / "tmp/fixed-brake-evidence")
     parser.add_argument("--repo", type=Path, default=ROOT)
     parser.add_argument("--project", type=Path, default=ROOT / "app")
     args = parser.parse_args()
     try:
-        run(args.repo.resolve(), args.project.resolve(), args.godot.resolve(), args.out_dir.resolve(), args.scratch_dir.resolve())
+        repo = args.repo.resolve()
+        historical_godot = (args.historical_godot or ensure_historical_godot(repo)).resolve()
+        run(repo, args.project.resolve(), args.godot.resolve(), historical_godot, args.out_dir.resolve(), args.scratch_dir.resolve())
     except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as error:
         print("Fixed-brake gate failed:", error, file=sys.stderr)
         return 1

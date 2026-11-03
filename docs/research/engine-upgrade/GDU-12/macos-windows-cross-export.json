@@ -1,0 +1,36 @@
+{
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "source_zip_sha512": "a307324eec2db7db8eef26be10c7c4b91c923c8f91fe9144aee4c5812cd17f4e65e7b03e33021d29f8ff9384fc51a8a9b2d3ea81c461b966dc795edad42a09c7",
+  "expected_uuids": {
+    "release": {
+      "arm64": "4c4c446b55553144a103add9da0cb362",
+      "x86_64": "4c4c443855553144a1950f648ba5132b"
+    },
+    "debug": {
+      "arm64": "4c4c44b855553144a100116b2e485e4b",
+      "x86_64": "4c4c448a55553144a17278bb11727f59"
+    }
+  },
+  "exports": {
+    "debug": {
+      "uuids": {
+        "arm64": "4c4c44b855553144a100116b2e485e4b",
+        "x86_64": "4c4c448a55553144a17278bb11727f59"
+      },
+      "sha256": "93ba513567e850207abb5e1b9371b40eb9851670e5fa5b4cd68340beccc364d2",
+      "signature_check": "macOS export: GDU beta2 macOS Fixture.app/Contents/MacOS/GDU beta2 macOS Fixture mode 0o755, slices arm64 ad-hoc signed, x86_64 ad-hoc signed",
+      "checked_report": "D:\\OpenRCsimulator-experiments\\gdu-beta2-pins\\macos-windows-dummy\\checks\\beta2-debug-5r__c0_0\\report.json"
+    },
+    "release": {
+      "uuids": {
+        "arm64": "4c4c446b55553144a103add9da0cb362",
+        "x86_64": "4c4c443855553144a1950f648ba5132b"
+      },
+      "sha256": "a1903c1f1c7c52880a52c3d95cc141c5d2e211b1c048dc49d9c5fb5b58579258",
+      "signature_check": "macOS export: GDU beta2 macOS Fixture.app/Contents/MacOS/GDU beta2 macOS Fixture mode 0o755, slices arm64 ad-hoc signed, x86_64 ad-hoc signed",
+      "checked_report": "D:\\OpenRCsimulator-experiments\\gdu-beta2-pins\\macos-windows-dummy\\checks\\beta2-release-1pywvkrs\\report.json"
+    }
+  },
+  "official_source_unchanged": true
+}

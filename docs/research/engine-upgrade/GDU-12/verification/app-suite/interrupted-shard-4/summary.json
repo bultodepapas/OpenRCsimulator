@@ -1,0 +1,20 @@
+{
+  "status": "interrupted before completion; excluded from final coverage",
+  "source_commit": "46b004c7b469448c29ef96168da4f03cee2c6d23",
+  "pre_fix_units_roster_source_sha256": "b5fb469c466f69097781df0e9894522c8d38d3bf169c27335a9961a886c002dd",
+  "exit_file_present": false,
+  "successful_roster_receipt_present": false,
+  "last_announced_test": "test_extra_runway.gd",
+  "checked_invocations": 29,
+  "passed": 28,
+  "invalid": 1,
+  "incomplete_directory": "godot-iz3019kg",
+  "incomplete_report": "missing report.json; engine.log is empty",
+  "incomplete_engine_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "summarizer_exit_code": 1,
+  "summarizer_sha256": "f6b2dfbebbc2caccea71f95d17d2919d5e2b8248426f669d3f5335a9de030c4c",
+  "junit_sha256": "41525defd5405c6222a59ee4f55e1a71040f7fc73cbc5b8ea794741c8b8c583f",
+  "console_sha256": "a8f80696847965070cb3d263317fe98581abfc4bb7d2cb6d9060ae34f4cbcb27",
+  "raw_collection": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-units\\shard-4",
+  "raw_junit": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\interrupted-shard-4-results.xml"
+}

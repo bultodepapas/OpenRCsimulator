@@ -49,8 +49,8 @@ class PackageAdmissionTests(unittest.TestCase):
         self.native_source = self.native_sources / "nk_stage.hpp"
         self.native_source.write_text("verified native source\n")
         self.lock = self.tool / "toolchain-lock.json"
-        self.lock.write_text(json.dumps({"godot": {"version": "4.8.beta1.official.4d10419ca"}}))
-        self.editor = self.root / ".tools/Godot_v4.8-beta1_linux.x86_64"
+        self.lock.write_text(json.dumps({"godot": {"version": "4.8.beta2.official.cafc17a19"}}))
+        self.editor = self.root / ".tools/Godot_v4.8-beta2_linux.x86_64"
         self.editor.parent.mkdir()
         self.editor.write_bytes(b"pinned editor\n")
         self.library = self.install / "libopenrc_native_kernel.so"

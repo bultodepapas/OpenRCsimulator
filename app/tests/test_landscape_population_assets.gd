@@ -232,11 +232,16 @@ func _test_production_batches(field: Dictionary, scenery: Dictionary) -> void:
 	var expected := _record_asset_expectations(scenery.groups)
 	_check("source layout contributes 11 cars and 13 people", expected.cars == 11 and expected.people == 13,
 		"cars=%d people=%d" % [expected.cars, expected.people])
-	for asset: String in Population.ASSETS.values():
-		var path := Population.DIR + asset + ".glb"
-		if not ResourceLoader.exists(path):
-			print("skip production population readback; asset is not staged yet: ", path)
-			return
+	var required_assets := CAR_ASSETS.duplicate()
+	required_assets.append_array(Population.human_assets())
+	var all_assets_present := true
+	for asset: String in required_assets:
+		var path := Population.asset_path(asset)
+		var present := ResourceLoader.exists(path)
+		_check("%s production population asset is shipped" % asset, present, path)
+		all_assets_present = all_assets_present and present
+	if not all_assets_present:
+		return
 	var root := Scenery.build(field, scenery, {audio = false, birds = false, theme = "", quality = "high"})
 	var population := root.get_node_or_null("Population") as Node3D
 	_check("scenery owns the population batch root", population != null)

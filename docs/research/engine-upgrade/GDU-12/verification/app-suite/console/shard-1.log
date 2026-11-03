@@ -1,0 +1,5 @@
+== unit partition 1/8: 109 of 872 scripts
+== units roster receipt: /mnt/d/OpenRCsimulator-experiments/gdu-beta2/final-units/shard-1/checks/roster-units-1-of-8-tmp.gRHNABEHlL.json
+inline skip test_high_graphics_profile.gd line 6164: SKIP high native values: renderer=gl_compatibility display=headless
+inline skip test_woodland_edge_habitat.gd line 7514: skip impostor view-frame readback: the Dummy renderer draws nothing
+native fallback: 35 occurrences; first line 5791: physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage library not installed","requested":"native"}

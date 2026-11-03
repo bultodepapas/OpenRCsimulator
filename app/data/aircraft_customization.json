@@ -2230,7 +2230,7 @@
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "turbo-lumber-evolution",
-      "model_manifest_sha256": "b4ac6781aa61ee376d75e41b4b6824f452ff83bd12e5787077bb3f5ff11ae669",
+      "model_manifest_sha256": "446d9d66373519a5a79e46fb1d799c3373ae7da1d5d0ddb9647cdfac2bfc46c8",
       "paint_slots": [
         {
           "id": "body",
@@ -2564,7 +2564,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "bfb913f0abb851ed08dec41a48aceb5ccc855080d0aa9a67c3b6efb9ebd69582"
+      "slots_sha256": "81200fff305c38a1dcc1a7922a6891a21dab7ec1551ee8dcdfafac7762973277"
     }
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "counts": {
+    "cases": 150,
+    "schema_loader_agreements": 139,
+    "positive_fleet": 16,
+    "combustion_masks": 18,
+    "turbine_masks": 8,
+    "legacy_v1": 3,
+    "runtime_only_coupled_cases": 11
+  },
+  "failures": [],
+  "report": null
+}

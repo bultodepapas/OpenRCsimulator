@@ -1,0 +1,45 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2597fe0f-8ba1-4572-9d12-1019b35998a2",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/app",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/research/native-kernel/stage_oracle.gd",
+    "--",
+    "--extension=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/openrc_native_kernel_mutant.gdextension",
+    "--output=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/stage_mutant-20261101T230323320722Z.json",
+    "--seed=20261027",
+    "--states=12000",
+    "--variant-states=1500",
+    "--timing-rounds=15"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "started_utc": "2026-11-01T23:03:23.389477+00:00",
+  "label": "nk3-stage_mutant",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-export-requalification/tool/checks/stage_mutant-wpmjxrup/nk3-stage_mutant-qym1u5__/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-export-requalification/tool/checks/stage_mutant-wpmjxrup/nk3-stage_mutant-qym1u5__/report.json",
+  "timeout_seconds": 2400.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_ORACLE verdict=fail"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 25.662297,
+  "log_bytes": 339,
+  "log_sha256": "1764adbce512035470465b2f36c6c5541dd2721e7dcd07f2121d8f67ed07ca59"
+}

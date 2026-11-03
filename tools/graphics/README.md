@@ -14,7 +14,7 @@ Workshop session. If the engine falls back, Settings reports Standard.
 
 High enables short-range SSAO, four blended directional-shadow cascades in an
 8192-pixel atlas, solar-angle PCSS, and sky reflections during flowing time of day.
-The official beta1 engine additionally supports multi-bounce ambient occlusion;
+The official 4.8 engine additionally supports multi-bounce ambient occlusion;
 the pinned NVIDIA fork does not implement that newer setting.
 The existing exposure, haze, aircraft, scenery population and simulation are
 retained. High defaults to native rendering; FSR2 is now an explicit optional
@@ -26,7 +26,7 @@ the setting from an already-running script cannot activate its shader variant.
 The atlas and screen-space buffers cost additional GPU memory. Only the recorded
 Windows/NVIDIA host has been exercised; macOS, Linux and other GPUs remain open.
 
-Known pinned-engine issue: a captured stock `ReflectionProbe` still leaks seven
+Historical beta1 issue: a captured stock `ReflectionProbe` leaked seven
 Texture RIDs per independent world in official Godot 4.8-beta1 Forward+.
 [The existing native controls](../../docs/research/engine-upgrade/GDU-03/rendering/gpu-correctness/README.md)
 reproduce seven for one world and 28 for four, including explicit `UPDATE_ONCE`;
@@ -35,7 +35,9 @@ the no-probe controls exit cleanly. The historical Godot 4.7.2
 are retained. A [controlled local 4.7.2 backport](../../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#controlled-engine-backport-2026-10-22)
 removed the leak in matched custom Windows editor controls and preserved six High
 1080p captures exactly; it is not the shipping replacement. Full lifecycle and
-platform qualification remain open. Do not suppress the pinned engine's warning.
+platform qualification remain open. The [beta2 comparison](../../docs/research/engine-upgrade/GDU-12/README.md)
+retained all six High 1080p images exactly and exited without that warning;
+this bounded check does not establish full lifecycle qualification.
 
 ## NVIDIA DLSS, DLAA, Reflex and FSR 3.1
 
@@ -43,7 +45,7 @@ The [native integration guide](native/README.md) owns the separate Windows/Vulka
 engine build, SDK pins and runtime requirements. The menu discovers each provider
 through engine capabilities; stock Godot keeps those entries unavailable and uses
 Native for unsupported saved requests. This Windows package does not
-replace the standard official Godot 4.8-beta1 pin.
+replace the standard official Godot 4.8-beta2 pin.
 
 ## Explicit startup
 

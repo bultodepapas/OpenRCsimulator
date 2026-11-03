@@ -1,0 +1,21 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+Vulkan 1.4.351 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok   baseline replaces only the filtering call in a disposable shader
+ok   near segments retain distinct RGB cores
+far red-fraction maximum error: point=0.5 filtered=0.02663839230441
+ok   point-sampled baseline exposes far color aliasing
+ok   subpixel translations retain the intended red/blue energy balance
+ok   unused palette colors do not leak into a one-segment strip
+ok   reverse and wrapped offset retain dense pattern energy
+cell-overlap maximum color-weight error: 0.00441837310791
+ok   one-segment footprint matches independent cell-overlap integration
+whole-path color weights: (0.399201, 0.399201, 0.201597) expected=(0.4, 0.4, 0.2)
+ok   whole-path mean preserves the incomplete 5/3 palette cycle
+whole-path color weights: (0.333333, 0.333333, 0.333333) expected=(0.333333, 0.333333, 0.333333)
+ok   whole-path mean excludes unused entries in an eight-color palette
+whole-path color weights: (0.374731, 0.312634, 0.312634) expected=(0.375, 0.3125, 0.3125)
+ok   wrapped reverse whole-path mean preserves 16/3 weights
+ok   near-zero footprint retains the original segment color
+ok   perspective view independently filters the same dense strip
+Lighting segment filter: 12 checks, 0 failed

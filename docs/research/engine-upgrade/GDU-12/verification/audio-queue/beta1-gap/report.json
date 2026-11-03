@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b00192f4-c1ab-49f8-89b5-f28110b4cf4e",
+  "command": [
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-beta2-audio-probe/project",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://probe.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-01T23:24:31.986997+00:00",
+  "label": "audio-beta1-gap-control",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-audio-investigation/checks/audio-beta1-gap-control-g1u_7c17/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-audio-investigation/checks/audio-beta1-gap-control-g1u_7c17/report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.229516,
+  "log_bytes": 284,
+  "log_sha256": "a09667a6d520b4618c579d52b39e1841fdabbd76ff6d06b72869d3c6020d5d03"
+}

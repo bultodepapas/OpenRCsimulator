@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0fe9482a-c19e-44f5-9898-d12f055e6af9",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/app",
+    "--windowed",
+    "--resolution",
+    "1920x1080",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_lighting_policy.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-02T00:32:59.348455+00:00",
+  "label": "lighting-policy-beta2-forward_plus",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-native-rendering\\checks\\lighting-policy-beta2-forward_plus-48_6dvyg\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-native-rendering\\checks\\lighting-policy-beta2-forward_plus-48_6dvyg\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Lighting policy:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.0,
+  "log_bytes": 1256,
+  "log_sha256": "273f7f9ee3b97332fc83c38d7c1ea42fdb15bad26d35f51f98843b57d33fbd74"
+}

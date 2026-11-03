@@ -1,0 +1,3 @@
+line 260: references/battery-energy not present: input hash check skipped (fit_results consistency only)
+line 1218: shutil.Error: [('/mnt/gdu12-export-stage/source/app/assets/skin-kit/jensen-das-ugly-stik-60.zip', '/mnt/gdu12-export-stage/scratch/integration/openrc-h7-9ue8go1n/ulp/assets/skin-kit/jensen-das-ugly-stik-60.zip', "[Errno 28] No space left on device: '/mnt/gdu12-export-stage/source/app/assets/skin-kit/jensen-das-ugly-stik-60.zip' -> '/mnt/gdu12-export-stage/scratch/integration/openrc-h7-9ue8go1n/ulp/assets/skin-kit/jensen-das-ugly-stik-60.zip'"), ('/mnt/gdu12-export-stage/source/app/assets/skin-ki
+[The full error line is retained in the raw console identified by summary.json.]

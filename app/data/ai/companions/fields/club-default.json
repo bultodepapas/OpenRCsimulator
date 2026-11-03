@@ -97,7 +97,7 @@
         "source": "Minimum companion-to-companion center separation in the tested multi-aircraft scenarios."
       }
     },
-    "evidence": "docs/research/engine-upgrade/GDU-03/companions/README.md"
+    "evidence": "docs/research/ai-companions/AFC-02-R5/README.md"
   },
   "static_route_clearance": "requires_session_check"
 }

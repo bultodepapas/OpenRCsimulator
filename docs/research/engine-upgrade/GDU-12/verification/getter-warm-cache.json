@@ -1,0 +1,113 @@
+{
+  "sources": {
+    "app/get-godot.sh": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+    "tools/godot/test_get_godot.py": "843e66da6a8d7f7c0e64d7b24774f27a4bd5262be9f3bb1e024c6e4f4dae591b",
+    "tools/godot/get_historical_godot.py": "d9d109cec59267aff7aec61f2d43bdce44274e2c344ad1c0eac38b98a60c2f80",
+    "tools/godot/test_historical_godot.py": "81297c4003f0f55fd80aea33f37ee86273a19836e3d62b45048a9d0ff3d16de6"
+  },
+  "results": {
+    "current_windows": {
+      "calls": [
+        {
+          "returncode": 0,
+          "stdout": "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+          "stderr": "",
+          "start_monotonic": 10077.125,
+          "end_monotonic": 10078.109
+        },
+        {
+          "returncode": 0,
+          "stdout": "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+          "stderr": "",
+          "start_monotonic": 10077.125,
+          "end_monotonic": 10078.109
+        }
+      ],
+      "overlapped": true
+    },
+    "current_linux": {
+      "calls": [
+        {
+          "returncode": 0,
+          "stdout": "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "stderr": "",
+          "start_monotonic": 10078.109,
+          "end_monotonic": 10079.781
+        },
+        {
+          "returncode": 0,
+          "stdout": "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "stderr": "",
+          "start_monotonic": 10078.109,
+          "end_monotonic": 10079.796
+        }
+      ],
+      "overlapped": true
+    },
+    "historical_windows": {
+      "calls": [
+        {
+          "returncode": 0,
+          "stdout": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "stderr": "",
+          "start_monotonic": 10079.796,
+          "end_monotonic": 10080.453
+        },
+        {
+          "returncode": 0,
+          "stdout": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "stderr": "",
+          "start_monotonic": 10079.796,
+          "end_monotonic": 10080.453
+        }
+      ],
+      "overlapped": true
+    },
+    "historical_linux": {
+      "calls": [
+        {
+          "returncode": 0,
+          "stdout": "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64",
+          "stderr": "",
+          "start_monotonic": 10080.453,
+          "end_monotonic": 10082.031
+        },
+        {
+          "returncode": 0,
+          "stdout": "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64",
+          "stderr": "",
+          "start_monotonic": 10080.453,
+          "end_monotonic": 10082.046
+        }
+      ],
+      "overlapped": true
+    }
+  },
+  "fixture_checks": [
+    {
+      "host": "Windows",
+      "command": "python -m unittest tools.godot.test_get_godot",
+      "tests": 21,
+      "failed": 0
+    },
+    {
+      "host": "Windows",
+      "command": "python tools/godot/test_historical_godot.py",
+      "tests": 5,
+      "failed": 0
+    },
+    {
+      "host": "WSL Linux",
+      "command": "env PATH=/usr/bin:/bin python3 -m unittest tools.godot.test_get_godot",
+      "tests": 21,
+      "failed": 0
+    },
+    {
+      "host": "WSL Linux",
+      "command": "env PATH=/usr/bin:/bin python3 tools/godot/test_historical_godot.py",
+      "tests": 5,
+      "failed": 0
+    }
+  ],
+  "fixture_note": "Linux fixtures used an isolated copy of the four source files with identical bytes; /usr/bin/unzip supplied selective extraction and permission preservation."
+}

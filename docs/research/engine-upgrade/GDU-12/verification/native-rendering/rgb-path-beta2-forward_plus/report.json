@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ae7a5971-4252-4efd-a451-82db70e79403",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/app",
+    "--windowed",
+    "--resolution",
+    "1920x1080",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_lighting_path.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-02T00:32:55.796158+00:00",
+  "label": "rgb-path-beta2-forward_plus",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-native-rendering\\checks\\rgb-path-beta2-forward_plus-4uibbk3f\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-native-rendering\\checks\\rgb-path-beta2-forward_plus-4uibbk3f\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Lighting paths:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.328,
+  "log_bytes": 816,
+  "log_sha256": "c4e7541957356b096583ebba0f59ff23195fd1551b8d193e0588e66aa077b5ce"
+}

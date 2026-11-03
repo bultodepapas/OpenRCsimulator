@@ -599,6 +599,73 @@ class DebugctlTests(unittest.TestCase):
                     self.assertEqual(state["ran"], ["a_broken"])
                     self.assertIn("Home before scenario b_next", report["failed"])
 
+    def test_smoke_settles_dead_weakrefs_but_still_rejects_live_growth(self) -> None:
+        scenarios = Path(self.tmp.name) / "empty-scenarios"
+        scenarios.mkdir()
+        for growing in (False, True):
+            with self.subTest(growing=growing):
+                state = {"live": 100, "dead": 0, "baseline": 0, "sweeps": 0,
+                         "home_pending": False, "settled": False}
+
+                def fake_launch(_args):
+                    print(json.dumps({"port": self.bridge.port, "out": self.tmp.name}))
+                    return 0
+
+                def fake_stop(_args):
+                    print(json.dumps({"stopped": True, "launcher_exit_code": 0,
+                                      "crash": None, "leaked_objects": 0}))
+                    return 0
+
+                def execute(line):
+                    words = debugctl.split_line(line)
+                    args = debugctl.parse_args(words[1:])
+                    if words[0] == "fly":
+                        state["dead"] += 16
+                        state["live"] += int(growing)
+                    elif words[0] == "home":
+                        state["home_pending"] = True
+                    elif words[0] == "wait" and state["home_pending"]:
+                        self.assertEqual(args.get("frames"), 5)
+                        state["home_pending"] = False
+                        state["settled"] = True
+                    elif words[0] == "eval":
+                        self.assertTrue(state["settled"], "teardown must settle before the sweep")
+                        self.assertEqual(args["expr"],
+                            'ResourceLoader.load("res://render/atmosphere.gd")._prune_shadow_lighting()')
+                        state["sweeps"] += 1
+                        state["dead"] = 0
+                        state["settled"] = False
+
+                def result(command, args=None):
+                    args = args or {}
+                    if command == "ping": return {"log_seq": 0}
+                    if command == "frames": return {"hitch_total": 0}
+                    if command == "wait": return {}
+                    if command == "objects":
+                        objects = state["live"] + state["dead"]
+                        if args.get("baseline"): state["baseline"] = objects
+                        return {"totals": {"objects": objects, "nodes": 1, "orphans": 0,
+                                           "resources": 1, "static_memory_mib": 1},
+                                "diff": {"totals": [["objects", objects - state["baseline"]]],
+                                         "classes": [], "orphans": []}}
+                    self.fail("unexpected bridge command: " + command)
+
+                output = io.StringIO()
+                with patch.multiple(debugctl, SCENARIOS=scenarios, launch=fake_launch, stop=fake_stop,
+                                    home_reset=lambda _=None: 0, crawl=lambda _: 0, run_lines=lambda _: 0,
+                                    monkey=lambda _: 0, execute_quiet=execute, result_of=result,
+                                    new_errors=lambda _: [], current_session=lambda: {}, rss_mib=lambda _: None,
+                                    refuse_ambiguous=lambda: False), contextlib.redirect_stdout(output):
+                    status = debugctl.smoke([])
+                report = json.loads(output.getvalue().strip().splitlines()[-1])
+                self.assertEqual(state["sweeps"], 4) # one warm-up and three measured cycles
+                self.assertEqual(status, int(growing))
+                self.assertEqual(report["ok"], not growing)
+                self.assertIn("settle: sweep dead shadow-lighting WeakRefs", output.getvalue())
+                if growing:
+                    self.assertIn("GROWS totals: objects +2", output.getvalue())
+                    self.assertIn("soak fly/Home x3", report["failed"])
+
     def test_home_reset_discards_only_workshop_guard_in_current_language(self) -> None:
         for guard in ("UnsavedBuildDialog", "StatisticsResetDialog"):
             with self.subTest(guard=guard):

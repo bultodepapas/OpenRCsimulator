@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8e6ce0a2-a49f-4ad8-a340-9df44ceb53e5",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_engine_audio.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-01T23:40:49.793675+00:00",
+  "label": "audio-beta2-windows-final",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu-beta2-audio-windows\\checks\\audio-beta2-windows-final-qpw4jva_\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu-beta2-audio-windows\\checks\\audio-beta2-windows-final-qpw4jva_\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "147 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 30.594,
+  "log_bytes": 3100,
+  "log_sha256": "2eb3d3b956de8728be4a4620dec522d8fe54651523903ee070f2ba0bf812f380"
+}

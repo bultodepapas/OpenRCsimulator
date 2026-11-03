@@ -1,0 +1,37 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d8dec2a5-44d6-4bac-be6c-02c8169be27d",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/engine/Godot",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/base",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "started_utc": "2026-11-01T22:46:01.570846+00:00",
+  "label": "import",
+  "log": "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/checks/import-d1qxpyec/engine.log",
+  "report": "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/checks/import-d1qxpyec/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.016183,
+  "log_bytes": 21308,
+  "log_sha256": "071060a8ae78f5ca85fc69081d2682f5c65f1eef2287a80374fb39b957c18676"
+}

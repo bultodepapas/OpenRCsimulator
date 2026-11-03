@@ -18,7 +18,7 @@
     "sha256": "90fb5ae1a2cde743730ca2cd9f97fcdf0c56f096622de72f8c664e0bd8459724",
     "normalization": "utf8-lf"
   },
-  "engine_version": "4.8.beta1.official.4d10419ca",
+  "engine_version": "4.8.beta2.official.cafc17a19",
   "field_profile_id": "club-default",
   "qualification": {
     "status": "qualified_for_narrow_scope",
@@ -39,7 +39,7 @@
       "min": 1,
       "max": 3
     },
-    "evidence": "docs/research/engine-upgrade/GDU-03/companions/README.md"
+    "evidence": "docs/research/ai-companions/AFC-02-R5/README.md"
   },
   "performance": {
     "stall_speed": {

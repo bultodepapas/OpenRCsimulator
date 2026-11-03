@@ -28,8 +28,9 @@ observation, manager, recording and profile tests pass 267 checks.
 
 The [Godot 4.8 qualification](research/engine-upgrade/GDU-03/companions/README.md)
 records 148/148 checks on both 4.7.2 and 4.8-beta1, with byte-identical sampled
-trajectories and scenario metrics. Admission now requires the exact official
-4.8-beta1 build and the qualified source identities; this does not broaden the
+trajectories and scenario metrics. The [beta2 follow-up](research/ai-companions/AFC-02-R5/README.md)
+repeats the matrix and exact replay of nine fresh tapes. Admission now requires the exact official
+4.8-beta2 build and the qualified source identities; this does not broaden the
 weather, population or activity limits below.
 
 The [2026-10-21 Windows working-tree parser gate](research/ai-companions/AFC-20-R1/parser-gate-20261021/README.md)
@@ -79,7 +80,7 @@ the companion clock.
 | Setting or behavior | Available now |
 | --- | --- |
 | Field | Club field only; normal fixed-wing flights |
-| Qualification | Exact aircraft, field, pilot, circuit-base dependency and solver source identities; official Godot `4.8.beta1.official.4d10419ca` at 240 Hz. Changed or unavailable sources, engine builds and other tick rates refuse admission |
+| Qualification | Exact aircraft, field, pilot, circuit-base dependency and solver source identities; official Godot `4.8.beta2.official.cafc17a19` at 240 Hz. Changed or unavailable sources, engine builds and other tick rates refuse admission |
 | Weather | Reference atmosphere; mean wind ≤1.5 m/s, gust ≤0.6 m/s, updraft ≤0.15 m/s, turbulence RMS ≤[0.15, 0.15, 0.08] m/s |
 | Aircraft/activity/skill | Ugly Stik circuits, experienced pilots |
 | Population | Experimental fixed roster of 1–3; higher counts refused |
@@ -159,7 +160,7 @@ runway activities or incidents to the available companion settings.
 Direct launches ignore Home preferences:
 
 ```powershell
-.tools/Godot_v4.8-beta1_win64_console.exe --path app -- --quick-flight --companions=1 --companions-seed=20261020
+.tools/Godot_v4.8-beta2_win64_console.exe --path app -- --quick-flight --companions=1 --companions-seed=20261020
 ```
 
 `--companions=0` explicitly disables companions. Counts above 3, invalid seeds and
@@ -171,7 +172,7 @@ Add `--companions-record=<new absolute directory>` to a direct launch with
 enabled companions. Quote the whole argument if the path contains spaces:
 
 ```powershell
-.tools/Godot_v4.8-beta1_win64_console.exe --path app -- --quick-flight --companions=1 "--companions-record=C:/captures/companions-001"
+.tools/Godot_v4.8-beta2_win64_console.exe --path app -- --quick-flight --companions=1 "--companions-record=C:/captures/companions-001"
 ```
 
 The directory must not exist. The recorder starts at the common tick-zero

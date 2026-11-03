@@ -187,7 +187,7 @@ Mobile world viewports and the pilot magnifier use HDR 2D to retain faint scene-
 Run the focused suite with the pinned engine:
 
 ```powershell
-python tools/godot/run_checked.py --label aircraft-lights --timeout 180 -- .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_aircraft_light_control.gd
+python tools/godot/run_checked.py --label aircraft-lights --timeout 180 -- .tools/Godot_v4.8-beta2_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_aircraft_light_control.gd
 ```
 
 For native before/after images, omit `--headless` and append `-- --capture-aircraft-lights=<absolute-output-directory>`. Use an isolated APPDATA directory for native test runs. The suite covers every fixed-wing visual family and the helicopter, actual input handlers, exact threshold crossings, manual precedence, dawn/daylight policy, new flights, resets, data reloads, Home changes, bounded attachment and configurable group references. Existing `test_night_kit.gd`, `test_p51_lights.gd` and `test_heli_night_lights.gd` retain geometry, motion, gate and emissive checks.
@@ -195,7 +195,7 @@ For native before/after images, omit `--headless` and append `-- --capture-aircr
 For the six-preset night preview matrix, run the existing aircraft visual fixture on a native renderer:
 
 ```powershell
-python tools/godot/run_checked.py --label lighting-fleet-night --warnings-as-errors --timeout 600 -- .tools/Godot_v4.8-beta1_win64_console.exe --path app --audio-driver Dummy --rendering-method gl_compatibility --script res://tests/test_lighting_aircraft_visuals.gd -- --capture-lighting-fleet=C:/DEVELOPMENT/OpenRCsimulator/tmp/lighting-fleet-night
+python tools/godot/run_checked.py --label lighting-fleet-night --warnings-as-errors --timeout 600 -- .tools/Godot_v4.8-beta2_win64_console.exe --path app --audio-driver Dummy --rendering-method gl_compatibility --script res://tests/test_lighting_aircraft_visuals.gd -- --capture-lighting-fleet=C:/DEVELOPMENT/OpenRCsimulator/tmp/lighting-fleet-night
 ```
 
 Choose a new absolute output directory and isolated APPDATA profile for each run; run only one rendered application at a time. The fixture captures all six presets for one catalog representative per fixed-wing visual family at 1920×1080. Add `--lighting-fleet-view=overview|upper|lower|front|rear|left|right` (choose one value) for a repeatable inspection angle; the default is `overview`. Each view produces 42 images. Its manifest records capabilities, source identities, renderer, camera and budgets, including actual camera position and the projection of all eight model-bounds corners. It also records actual nav/strobe positions and fitted tip/bounds measurements in root-local metres as numeric arrays; absent nodes are null. The fixture rejects a named view on the wrong side of the aircraft or clipped model bounds; this verifies framing, not lamp visibility or placement. HDR readbacks use the shared display-color conversion before PNG encoding.

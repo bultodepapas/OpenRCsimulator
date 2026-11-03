@@ -11,7 +11,7 @@ const FIELD_FORMAT := "openrc-ai-field v1"
 const IDENTITY_FORMAT := "openrc-ai-profile-identity v1"
 const AIRCRAFT_DATA_FORMAT := "openrc-aircraft v2"
 const FIELD_DATA_FORMAT := "openrc-field v1"
-const QUALIFIED_ENGINE_VERSION := "4.8.beta1.official.4d10419ca"
+const QUALIFIED_ENGINE_VERSION := "4.8.beta2.official.cafc17a19"
 const QUALIFIED_PHYSICS_HZ := 240
 const SOLVER_NORMALIZATION := "utf8-lf"
 const SOLVER_SOURCE_DIRECTORIES := ["res://physics", "res://sim", "res://failures"]
@@ -47,7 +47,7 @@ const ACTIVITY_ALLOWLIST := ["circuits"]
 const QUALIFIED_SKILL := "experienced"
 const QUALIFIED_START_MODES := ["airborne"]
 const UNQUALIFIED_MODES := ["ground", "takeoff", "runway", "landing"]
-const EVIDENCE_PATH := "docs/research/engine-upgrade/GDU-03/companions/README.md"
+const EVIDENCE_PATH := "docs/research/ai-companions/AFC-02-R5/README.md"
 const QUALIFIED_SCENARIOS := ["calm", "gentle-practice"]
 const REBIND_HINT := "run python3 tools/companions/rebind.py"
 

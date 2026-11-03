@@ -249,7 +249,7 @@ def run(godot: Path, library: Path, stage: Path, keep: bool = False) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--godot", type=Path, default=ROOT / ".tools/Godot_v4.8-beta1_linux.x86_64")
+    parser.add_argument("--godot", type=Path, default=ROOT / ".tools/Godot_v4.8-beta2_linux.x86_64")
     parser.add_argument("--library", type=Path, default=ROOT / "tmp/native-kernel/lib/libopenrc_native_kernel.so")
     parser.add_argument("--stage", type=Path, default=ROOT / "app/sim/native_stage.gd",
                         help="stage script under test; a draft can stay outside app/")

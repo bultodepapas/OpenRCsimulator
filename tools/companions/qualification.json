@@ -12,15 +12,15 @@
     "rev": "f04e59139e1270bce85dcfa83b5f00d66efbd190"
   },
   "tapes": [
-    "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261020-crossing-right-ai.orfl",
-    "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261020-crossing-right-player-coupled.orfl",
-    "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261020-crossing-right-player-exogenous.orfl",
-    "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261021-crossing-left-ai.orfl",
-    "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261021-crossing-left-player-coupled.orfl",
-    "docs/research/ai-companions/AFC-02-R4/tapes/seed-20261021-crossing-left-player-exogenous.orfl",
-    "docs/research/ai-companions/AFC-02-R4/tapes/parallel-two-threats-ai.orfl",
-    "docs/research/ai-companions/AFC-02-R4/tapes/parallel-two-threats-peer.orfl",
-    "docs/research/ai-companions/AFC-02-R4/tapes/parallel-two-threats-player.orfl"
+    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261020-crossing-right-ai.orfl",
+    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261020-crossing-right-player-coupled.orfl",
+    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261020-crossing-right-player-exogenous.orfl",
+    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261021-crossing-left-ai.orfl",
+    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261021-crossing-left-player-coupled.orfl",
+    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261021-crossing-left-player-exogenous.orfl",
+    "docs/research/ai-companions/AFC-02-R5/tapes/parallel-two-threats-ai.orfl",
+    "docs/research/ai-companions/AFC-02-R5/tapes/parallel-two-threats-peer.orfl",
+    "docs/research/ai-companions/AFC-02-R5/tapes/parallel-two-threats-player.orfl"
   ],
   "receipts": "docs/research/ai-companions/AFC-02/rebinds"
 }

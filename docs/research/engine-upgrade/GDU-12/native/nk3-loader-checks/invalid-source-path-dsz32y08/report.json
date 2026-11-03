@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "64813c17-f66c-4c7c-b2e3-dc334aed964b",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/engine/Godot",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/invalid-source-path",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/invalid-source-path/test.gd",
+    "--",
+    "refuse",
+    "receipt is malformed"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-loader",
+  "started_utc": "2026-11-01T19:06:43.150058+00:00",
+  "label": "invalid-source-path",
+  "log": "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/checks/invalid-source-path-dsz32y08/engine.log",
+  "report": "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/checks/invalid-source-path-dsz32y08/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_LOADER_TEST ok=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.192256,
+  "log_bytes": 231,
+  "log_sha256": "28305788dffdbb27d316b98a3370c2cd170439c171ad4ba83c02401e2c8031e5"
+}

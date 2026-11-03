@@ -1,0 +1,75 @@
+{
+  "changed_paths": [
+    "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json",
+    "assets/aircraft/turbo-lumber-evolution/geometry.json",
+    "app/aircraft/timber_geometry.gd",
+    "app/data/aircraft_models/turbo-lumber-evolution.json",
+    "app/data/aircraft_customization.json",
+    "app/data/workshop/turbo-lumber-evolution.json"
+  ],
+  "differences": {
+    "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json": [
+      [
+        "/godot",
+        "4.8-beta1 (official)",
+        "4.8-beta2 (official)"
+      ]
+    ],
+    "assets/aircraft/turbo-lumber-evolution/geometry.json": [
+      [
+        "/inputs/measurements/godot",
+        "4.8-beta1 (official)",
+        "4.8-beta2 (official)"
+      ],
+      [
+        "/scene/godot",
+        "4.8-beta1 (official)",
+        "4.8-beta2 (official)"
+      ]
+    ],
+    "app/aircraft/timber_geometry.gd": "Only two generated Godot provenance strings changed.",
+    "app/data/aircraft_models/turbo-lumber-evolution.json": [
+      [
+        "/authoring_sources/0/sha256",
+        "ba392cfc37a3a8b8489c781bd15d35f96b68091a5a128ac3818f20723683af58",
+        "869abdc54402d8e806a52d6a8099a19a0bc0cf08437a1351cd312235cf581e1e"
+      ],
+      [
+        "/authoring_sources/2/sha256",
+        "ae585078344abbfbe1405b9e1777243c120e299516fde663c538c231f4e74063",
+        "2aa36bcf56bebe2e60c1d1c493c7317505c1daf198a5efece7fc80879baac59c"
+      ],
+      [
+        "/dependencies/4/sha256",
+        "9779239e822912963fe18c70d09b3cc111e44ef4821be07db94fa51e18838b73",
+        "dea629373946a741fb18f938a70a16a47237805d56c0ce8a74fd5ca808d68cf8"
+      ],
+      [
+        "/geometry/source/sha256",
+        "ba392cfc37a3a8b8489c781bd15d35f96b68091a5a128ac3818f20723683af58",
+        "869abdc54402d8e806a52d6a8099a19a0bc0cf08437a1351cd312235cf581e1e"
+      ]
+    ],
+    "app/data/aircraft_customization.json": [
+      [
+        "/families/6/model_manifest_sha256",
+        "b4ac6781aa61ee376d75e41b4b6824f452ff83bd12e5787077bb3f5ff11ae669",
+        "446d9d66373519a5a79e46fb1d799c3373ae7da1d5d0ddb9647cdfac2bfc46c8"
+      ],
+      [
+        "/families/6/slots_sha256",
+        "bfb913f0abb851ed08dec41a48aceb5ccc855080d0aa9a67c3b6efb9ebd69582",
+        "81200fff305c38a1dcc1a7922a6891a21dab7ec1551ee8dcdfafac7762973277"
+      ]
+    ],
+    "app/data/workshop/turbo-lumber-evolution.json": [
+      [
+        "/presentation/model_manifest_sha256",
+        "b4ac6781aa61ee376d75e41b4b6824f452ff83bd12e5787077bb3f5ff11ae669",
+        "446d9d66373519a5a79e46fb1d799c3373ae7da1d5d0ddb9647cdfac2bfc46c8"
+      ]
+    ]
+  },
+  "physics_source_diff": [],
+  "windows_linux_measurements_identical": true
+}

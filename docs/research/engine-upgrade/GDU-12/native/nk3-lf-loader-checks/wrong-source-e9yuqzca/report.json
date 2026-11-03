@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e81057d8-3ed6-4514-bb75-9d3b3a3eacff",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/engine/Godot",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/wrong-source",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/wrong-source/test.gd",
+    "--",
+    "refuse",
+    "mirrored source differs"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "started_utc": "2026-11-01T22:46:55.186741+00:00",
+  "label": "wrong-source",
+  "log": "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/checks/wrong-source-e9yuqzca/engine.log",
+  "report": "/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/nk3-installation-test-xqgj6rqu/checks/wrong-source-e9yuqzca/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_LOADER_TEST ok=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.658918,
+  "log_bytes": 229,
+  "log_sha256": "1d57d885263e344f0feb35ea20f5829cd0f65c30c0a5057c8700a248db4d2d8f"
+}

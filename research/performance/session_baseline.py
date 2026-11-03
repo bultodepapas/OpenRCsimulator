@@ -28,7 +28,9 @@ from typing import Any, Iterable, Sequence
 FORMAT = "openrc-session-cost v2"
 LEGACY_FORMAT = "openrc-session-cost v1"
 BASELINE_FORMAT = "openrc-session-baseline v1"
-REQUIRED_GODOT_VERSION = "4.8-beta1"
+REQUIRED_GODOT_VERSION = "4.8-beta2"
+REQUIRED_GODOT_BUILD = "4.8.beta2.official.cafc17a19"
+REQUIRED_GODOT_REPORT = "4.8-beta2 (official)"
 DEFAULT_AIRCRAFT = (
     "jensen-das-ugly-stik-60",
     "p51d-mustang-120",
@@ -44,7 +46,8 @@ CODE_SUFFIXES = {
     ".gdextension",
 }
 ENGINE_ERROR_RE = re.compile(r"\b(?:SCRIPT\s+)?ERROR(?:\s*:|\b)", re.IGNORECASE)
-VERSION_RE = re.compile(r"(?<![0-9])v?4\.8[.-]beta1(?=$|[.\-\s(])")
+VERSION_RE = re.compile(r"(?<![0-9])v?4\.8[.-]beta2(?=$|[.\-\s(])")
+BETA1_REPORT_RE = re.compile(r"(?<![0-9])v?4\.8[.-]beta1(?=$|[.\-\s(])")
 LEGACY_VERSION_RE = re.compile(r"(?<![0-9])v?4\.7\.2(?=$|[.\-\s(])")
 AIRCRAFT_ID_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
 _MAC_SPEC = importlib.util.spec_from_file_location(
@@ -235,8 +238,8 @@ def validate_probe_report(
         if not _is_int(cpu_count) or cpu_count < 1:
             errors.append("machine.logical_cpu_count must be a positive integer")
         godot = machine.get("godot")
-        version_re = LEGACY_VERSION_RE if report_format == LEGACY_FORMAT else VERSION_RE
-        if isinstance(godot, str) and not version_re.search(godot):
+        version_res = (LEGACY_VERSION_RE,) if report_format == LEGACY_FORMAT else (VERSION_RE, BETA1_REPORT_RE)
+        if isinstance(godot, str) and not any(version_re.search(godot) for version_re in version_res):
             errors.append("machine.godot must identify the pinned version for this report")
 
     world = report.get("world")
@@ -350,6 +353,8 @@ def validate_probe_report(
         if "physics_backend" in expected and (report_format != FORMAT or not isinstance(report.get("backend"), dict)
                                                or report["backend"].get("requested") != expected["physics_backend"]):
             errors.append("backend does not match requested run")
+        if "godot" in expected and (not isinstance(machine, dict) or machine.get("godot") != expected["godot"]):
+            errors.append("machine.godot does not match requested run")
 
     if complete is False and not allow_incomplete:
         errors.append(f"probe reported incomplete: {failure or 'unspecified failure'}")
@@ -611,8 +616,8 @@ def inspect_godot(executable: Path, timeout: float) -> dict[str, Any]:
         raise RuntimeError(f"Godot --version exited {result.returncode}: {version_text}")
     if engine_errors:
         raise RuntimeError(f"Godot --version emitted an engine error: {' | '.join(engine_errors)}")
-    if not VERSION_RE.search(version_text):
-        raise RuntimeError(f"expected Godot {REQUIRED_GODOT_VERSION}; got {version_text!r}")
+    if version_text != REQUIRED_GODOT_BUILD:
+        raise RuntimeError(f"expected Godot {REQUIRED_GODOT_BUILD}; got {version_text!r}")
     binary = executable.with_name(executable.name.replace("_console.exe", ".exe"))
     runtime_binary = binary if executable.name.endswith("_console.exe") and binary.is_file() else executable
     return {
@@ -717,6 +722,7 @@ def _run_probe(
         "case_id": case_id,
         "observer": observer,
         "physics_backend": physics_backend,
+        "godot": REQUIRED_GODOT_REPORT,
         "requested": {"warmup_ticks": warmup_ticks, "sample_ticks": sample_ticks},
     }
     report, report_error = parse_probe_file(output_json)
@@ -857,7 +863,7 @@ def parse_id_list(values: Sequence[str] | None, defaults: Sequence[str], label: 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--godot", help="pinned Godot 4.8-beta1 executable")
+    parser.add_argument("--godot", help="pinned Godot 4.8-beta2 executable")
     parser.add_argument("--release-executable", action="store_true",
                         help="use --godot as the actual exported Linux or verified Mac release executable")
     parser.add_argument("--out", type=Path, required=True, help="new or empty output directory")

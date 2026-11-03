@@ -1,0 +1,45 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7c691f2a-a985-4462-b87f-85405b1e1e71",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/app",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/research/native-kernel/propeller_oracle.gd",
+    "--",
+    "--extension=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/openrc_native_kernel.gdextension",
+    "--output=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/propeller-20261101T230015459029Z.json",
+    "--seed=20261027",
+    "--states=1200",
+    "--variant-states=1500",
+    "--timing-rounds=15"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "started_utc": "2026-11-01T23:00:15.503199+00:00",
+  "label": "nk3-propeller",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-export-requalification/tool/checks/propeller-uthllsi2/nk3-propeller-oibl6ojo/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-export-requalification/tool/checks/propeller-uthllsi2/nk3-propeller-oibl6ojo/report.json",
+  "timeout_seconds": 2400.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_ORACLE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.389482,
+  "log_bytes": 334,
+  "log_sha256": "39c3bafee57db2e52fb01fac7522e66496f868d98c69375074bce9fe64c03a5c"
+}

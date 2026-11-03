@@ -148,7 +148,7 @@ def prepare(cache: Path, jobs: int = 4, prepare_only: bool = False) -> tuple[Pat
     for source in (nvidia / "bin/x64").glob("*.license.txt"):
         shutil.copy2(source, licenses / source.name)
     receipt = {
-        "experimental": True, "production_engine_unchanged": "4.8-beta1",
+        "experimental": True, "production_engine_unchanged": "4.8-beta2",
         "godot_repository": "https://github.com/NVIDIA-RTX/godot", "godot_commit": COMMIT,
         "fidelityfx_sdk": "1.1.4", "fsr_upscaler": "3.1.4", "streamline": "2.11.1",
         "platform": "windows", "graphics_api": "vulkan", "frame_generation_enabled": False,

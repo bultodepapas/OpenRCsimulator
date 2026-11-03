@@ -18,7 +18,7 @@ Curated architecture and product choices, with the reasons worth preserving. Rev
 
 ### Native desktop Godot, with an explicit engine pin
 
-**Gate 1 / GDU-03.** Godot in `app/` replaced the browser prototype because the owner prioritized native desktop delivery, real-radio input and the editor over the bake-off's higher three.js score. The prototype remains frozen. Official Godot 4.8-beta1 replaced the earlier 4.7.x pin after owner-authorized local verification; this did not requalify every platform or historical benchmark. The exact pin lives in [get-godot.sh](../app/get-godot.sh), with rationale in the [bake-off](../prototypes/stage0/COMPARISON.md) and [GDU-03 adoption](research/engine-upgrade/GDU-03/README.md). Reconsider the platform only against demonstrated product or implementation limits.
+**Gate 1 / GDU-03.** Godot in `app/` replaced the browser prototype because the owner prioritized native desktop delivery, real-radio input and the editor over the bake-off's higher three.js score. The prototype remains frozen. Official Godot 4.8-beta1 replaced the earlier 4.7.x pin after owner-authorized local verification; this did not requalify every platform or historical benchmark. The owner requested official 4.8-beta2 on 2026-11-01; [GDU-12](research/engine-upgrade/GDU-12/README.md) records the follow-up without replacing historical numerical baselines. The exact pin lives in [get-godot.sh](../app/get-godot.sh), with rationale in the [bake-off](../prototypes/stage0/COMPARISON.md) and [GDU-03 adoption](research/engine-upgrade/GDU-03/README.md). Reconsider the platform only against demonstrated product or implementation limits.
 
 ### Aircraft first; broader vehicles share the foundation
 

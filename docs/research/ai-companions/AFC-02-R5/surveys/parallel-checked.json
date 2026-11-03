@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7740ffb7-21b0-41f3-a05b-8a2af5502cc1",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/encounter_probe.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-experiments/gdu-beta2-identities/parallel"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-01T18:37:34.772221+00:00",
+  "label": "beta2-companion-parallel",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu-beta2-identities\\checks\\beta2-companion-parallel-zc940ahv\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu-beta2-identities\\checks\\beta2-companion-parallel-zc940ahv\\report.json",
+  "timeout_seconds": 1800.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "COMPANION ENCOUNTER SURVEY VALID_RUNS true DETERMINISTIC_REPEAT true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 51.219,
+  "log_bytes": 3486,
+  "log_sha256": "fc1d136eae0c07b25112fd9131d2c2a70ebecaf8f4d56214f5f43ad69f5db3bc"
+}

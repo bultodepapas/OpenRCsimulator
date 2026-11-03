@@ -100,7 +100,7 @@ class SDK24ProductTests(unittest.TestCase):
         archive_specs = (("godot.zip", "fixture", "a" * 64, self.engine.name),
                          ("unused.zip", "fixture", "b" * 64, "unused"),
                          ("streamline.zip", "fixture", "c" * 64, "streamline"))
-        shared = {"experimental": True, "production_engine_unchanged": "4.8-beta1",
+        shared = {"experimental": True, "production_engine_unchanged": "4.8-beta2",
                   "godot_repository": "https://github.com/NVIDIA-RTX/godot", "godot_commit": candidate.native_build.COMMIT,
                   "version": "4.8.dev.custom_build", "fidelityfx_sdk": "2.4.0", "fsr_upscaler": "runtime_queried",
                   "bundled_upscalers": ["3.1.6", "4.1.2"], "streamline": "2.11.1", "platform": "windows",

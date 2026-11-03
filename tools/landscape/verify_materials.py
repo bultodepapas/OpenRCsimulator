@@ -14,8 +14,10 @@ from PIL import Image, ImageChops, ImageStat
 
 
 SCHEMA_VERSION = 1
-ENGINE_VERSION = "4.8-beta1 (official)"
-ENGINE_HASH = "4d10419cacd6d3009976e8f9fd3abd970fd58018"
+ENGINE_IDENTITIES = {
+    "beta1": ("4.8-beta1 (official)", "4d10419cacd6d3009976e8f9fd3abd970fd58018"),
+    "beta2": ("4.8-beta2 (official)", "cafc17a192acf67903910a68aeb3c076c0907a4b"),
+}
 RENDERER = "gl_compatibility"
 TWILIGHT_ROI = (910, 490, 1010, 590)  # left, top, right, bottom; right/bottom exclusive
 REC709 = (0.2126, 0.7152, 0.0722)
@@ -108,16 +110,18 @@ def _case(report: dict[str, Any], name: str) -> dict[str, Any]:
 
 
 def _check_capture_identity(
-    checks: list[dict[str, Any]], label: str, report: dict[str, Any]
+    checks: list[dict[str, Any]], label: str, report: dict[str, Any],
+    engine_identity: tuple[str, str],
 ) -> None:
     summary = _report_summary(report)
     engine = summary["engine"] or ""
+    engine_version, engine_hash = engine_identity
     _check(
         checks,
         f"{label}: pinned Godot engine",
-        engine == ENGINE_VERSION and summary["engine_hash"] == ENGINE_HASH,
+        engine == engine_version and summary["engine_hash"] == engine_hash,
         engine,
-        f"engine is {ENGINE_VERSION} at {ENGINE_HASH}",
+        f"engine is {engine_version} at {engine_hash}",
     )
     _check(
         checks,
@@ -194,11 +198,11 @@ def _check_reports_matched(
         )
 
 
-def _check_day_materials(root: Path, checks: list[dict[str, Any]]) -> dict[str, Any]:
+def _check_day_materials(root: Path, checks: list[dict[str, Any]], engine_identity: tuple[str, str]) -> dict[str, Any]:
     after_report = _load_report(root, "after-day")
     flat_report = _load_report(root, "flat-day")
-    _check_capture_identity(checks, "after-day", after_report)
-    _check_capture_identity(checks, "flat-day", flat_report)
+    _check_capture_identity(checks, "after-day", after_report, engine_identity)
+    _check_capture_identity(checks, "flat-day", flat_report, engine_identity)
     case_names = ("gravel_close", "car_park", "gravel_far")
     _check_reports_matched(checks, "day material pair", flat_report, after_report, case_names)
 
@@ -291,11 +295,11 @@ def _contrast_against_background(
     }
 
 
-def _check_twilight(root: Path, checks: list[dict[str, Any]]) -> dict[str, Any]:
+def _check_twilight(root: Path, checks: list[dict[str, Any]], engine_identity: tuple[str, str]) -> dict[str, Any]:
     before_report = _load_report(root, "before-aircraft")
     after_report = _load_report(root, "after-sunset")
-    _check_capture_identity(checks, "before-aircraft", before_report)
-    _check_capture_identity(checks, "after-sunset", after_report)
+    _check_capture_identity(checks, "before-aircraft", before_report, engine_identity)
+    _check_capture_identity(checks, "after-sunset", after_report, engine_identity)
 
     before_foreground = _load_image(root, "before-aircraft", "twilight_aircraft.png")
     before_background = _load_image(root, "before-aircraft", "twilight_background.png")
@@ -386,17 +390,21 @@ def _check_twilight(root: Path, checks: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def verify(root: Path) -> dict[str, Any]:
+def verify(root: Path, engine: str = "beta2") -> dict[str, Any]:
+    if engine not in ENGINE_IDENTITIES:
+        raise ValueError(f"unsupported engine identity: {engine}")
+    engine_identity = ENGINE_IDENTITIES[engine]
     checks: list[dict[str, Any]] = []
     result: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "evidence_root": str(root),
+        "engine_pin": {"selection": engine, "version": engine_identity[0], "hash": engine_identity[1]},
         "result": "fail",
         "checks": checks,
     }
     try:
-        result["day_materials"] = _check_day_materials(root, checks)
-        result["twilight"] = _check_twilight(root, checks)
+        result["day_materials"] = _check_day_materials(root, checks, engine_identity)
+        result["twilight"] = _check_twilight(root, checks, engine_identity)
     except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
         result["input_error"] = f"{type(exc).__name__}: {exc}"
         checks.append(
@@ -421,10 +429,12 @@ def main() -> int:
         default=Path(".tools/landscape-lu11"),
         help="capture evidence root containing after-day, flat-day, before-aircraft, and after-sunset",
     )
+    parser.add_argument("--engine", choices=tuple(ENGINE_IDENTITIES), default="beta2",
+                        help="capture engine: beta2 for current runs, beta1 for historical evidence")
     args = parser.parse_args()
     root = args.root.resolve()
     root.mkdir(parents=True, exist_ok=True)
-    result = verify(root)
+    result = verify(root, args.engine)
     report_path = root / "materials-checks.json"
     report_path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(

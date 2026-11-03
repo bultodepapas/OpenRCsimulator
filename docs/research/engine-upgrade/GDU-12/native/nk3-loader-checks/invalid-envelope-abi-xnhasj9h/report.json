@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "deaa2514-0d47-498d-a658-737fe0fa96d8",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/engine/Godot",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/invalid-envelope-abi",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/invalid-envelope-abi/test.gd",
+    "--",
+    "refuse",
+    "receipt is malformed"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-loader",
+  "started_utc": "2026-11-01T19:06:39.294688+00:00",
+  "label": "invalid-envelope-abi",
+  "log": "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/checks/invalid-envelope-abi-xnhasj9h/engine.log",
+  "report": "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/checks/invalid-envelope-abi-xnhasj9h/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_LOADER_TEST ok=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.287092,
+  "log_bytes": 231,
+  "log_sha256": "28305788dffdbb27d316b98a3370c2cd170439c171ad4ba83c02401e2c8031e5"
+}

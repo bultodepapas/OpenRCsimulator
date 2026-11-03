@@ -1,6 +1,6 @@
 # Landscape upgrade tools
 
-Status: LU-06–14 native evidence tooling, updated 2026-10-12. Current target: official Godot 4.8-beta1 Compatibility. Historical LU evidence below remains scoped to its recorded engine.
+Status: LU-06–14 native evidence tooling, updated 2026-11-01. Current target: official Godot 4.8-beta2 Compatibility. Historical LU evidence below remains scoped to its recorded engine. `verify_materials.py --engine beta1` explicitly selects historical beta1 verification; every capture in a comparison must use the selected exact build.
 
 LU-11–14 adds `gravel_close`, `gravel_far`, `twilight_aircraft`, and `twilight_background` views. `--gravel_detail=off` keeps the new shader but zeros its detail strength for pixel comparisons; `--gravel_detail=legacy` restores the original opaque material for a timing comparison. Run those performance pairs sequentially without competing engine/test jobs. `python tools/landscape/verify_materials.py --root <folder>` checks the `after-day`, `flat-day`, `before-aircraft`, and `after-sunset` reports and PNGs. The before-aircraft baseline was captured before the twilight change; keep it with the evidence. The checker measures encoded image contrast, not physical luminance or pilot recognition.
 

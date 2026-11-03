@@ -1,0 +1,8 @@
+== unit partition 3/8: 109 of 872 scripts
+== units roster receipt: /mnt/d/OpenRCsimulator-experiments/gdu-beta2/final-units/shard-3/checks/roster-units-3-of-8-tmp.Y1ESpSmpJB.json
+inline skip test_field_people_gaze.gd line 1012: skip MultiMesh readback under the headless dummy renderer
+qualification limit test_glow_audio_pump.gd line 1188: N/A skip-free and native-duration qualification: Dummy driver is a smoke test only
+inline skip test_landscape_population_assets.gd line 1801: skip production population readback; asset is not staged yet: res://assets/scenery/population/standing.glb
+inline skip test_lighting_policy.gd line 1832: Native flash pixels skipped: headless renderer.
+inline skip test_sun_skyline.gd line 3043: skipped: this renderer keeps no MultiMesh instance data (headless); tree checks need opengl3
+native fallback: 30 occurrences; first line 213: physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage library not installed","requested":"native"}

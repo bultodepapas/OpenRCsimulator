@@ -100,7 +100,7 @@ def _expected_sources() -> dict[str, str]:
 
 def _verify_pair_metadata(editor: dict, template: dict, engine: Path, *, current: bool,
                           snapshot_path: Path | None = None) -> None:
-    expected = {"experimental": True, "production_engine_unchanged": "4.8-beta1",
+    expected = {"experimental": True, "production_engine_unchanged": "4.8-beta2",
                 "godot_repository": "https://github.com/NVIDIA-RTX/godot", "godot_commit": native_build.COMMIT,
                 "fidelityfx_sdk": "2.4.0", "fsr_upscaler": "runtime_queried",
                 "bundled_upscalers": ["3.1.6", "4.1.2"], "streamline": "2.11.1",

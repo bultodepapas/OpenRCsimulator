@@ -30,7 +30,7 @@ G="$(app/get-godot.sh)"; P="$PWD/research/ai-companions/encounter_probe.gd"
 "$G" --headless --path app --audio-driver Dummy --script "$P" -- --out="$PWD/<new dir>/parallel"
 ```
 
-The current tapes were recorded on Godot 4.8-beta1 ([AFC-02-R4](../../docs/research/ai-companions/AFC-02-R4/README.md)).
+The current tapes were recorded on Godot 4.8-beta2 ([AFC-02-R5](../../docs/research/ai-companions/AFC-02-R5/README.md)). The tool checks the selected editor against the profile's exact build and inspects every retained tape for completeness and the recorded engine before accepting an unchanged solver or attempting a re-bind.
 
 Use `--workspace-root D:/OpenRCsimulator-evidence/rebind` when the repository drive lacks space for the project copy. Each run creates its own directory there; `--keep` retains it for inspection.
 

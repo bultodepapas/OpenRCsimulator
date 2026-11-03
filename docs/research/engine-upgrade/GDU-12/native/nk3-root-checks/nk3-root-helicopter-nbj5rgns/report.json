@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "978e4cbd-5a12-4c64-995c-9c8f52fcc965",
+  "command": [
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_native_helicopter_session.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-01T23:00:45.479254+00:00",
+  "label": "nk3-root-helicopter",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-lf-requalification/root-checks/nk3-root-helicopter-nbj5rgns/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-lf-requalification/root-checks/nk3-root-helicopter-nbj5rgns/report.json",
+  "timeout_seconds": 600.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_NATIVE_HELICOPTER_NATIVE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 76.086616,
+  "log_bytes": 190,
+  "log_sha256": "4a0bdbe16da08ca9169dd4899c2259d057340f03fead90369fd90cb2f1671878"
+}

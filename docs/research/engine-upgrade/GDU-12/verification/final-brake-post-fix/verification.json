@@ -1,0 +1,84 @@
+{
+  "verdict": "pass",
+  "host": "Windows",
+  "historical_golden_digests_matched": 16,
+  "beta2_candidate_digest_comparisons_matched": 16,
+  "beta2_candidate_full_value_comparisons_matched": 12,
+  "unit_checks": 258,
+  "unit_failures": 0,
+  "verified_input_count": 400,
+  "candidate_manifest_paths": 1679,
+  "candidate_manifest_matches_root_at_verification": true,
+  "includes_final_population_guard_sha256": "bf6cf997471cdc86467df89da59ae1854510a117b4ad9ee652a4f45c8e91cc92",
+  "checked_reports": [
+    {
+      "label": "fixed-brake-candidate-capture",
+      "log_sha256": "f5eaf60d5bc342f6476c246e43967e48400e44bdc71123ce8e8ecffe3996380a",
+      "report_sha256": "fc0d7c8ab03b45813a321ae38d60053affb6792129d739e66dd2f86c7ca42f10",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "fixed-brake-current-reference-import",
+      "log_sha256": "efad6d6a373a3c495cb278ccf97af4fa4a81ce01297c3e8258aa89555ddad916",
+      "report_sha256": "b7a4133f240731f76ded4a2cbc8a221b03d0e82209e634292181d3ff775f0422",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "fixed-brake-historical-goldens",
+      "log_sha256": "b931e140d9a370d38df21ae704b713897f072db8d468b31ac3933ac16ec36682",
+      "report_sha256": "82ccd498477e4b9bdf6d65514979e46ab1140238e81366fe1f4c3dbfb70f7be8",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "fixed-brake-input",
+      "log_sha256": "398f429941e5ab74339ab934ca5d12a9a72915f21e2a3037e8f518c649a5947f",
+      "report_sha256": "ddac1c585dd2ad5a727e301c783cfedcf8a872fa7db00aba5eabb0ab614e29a5",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "fixed-brake-matched-reference",
+      "log_sha256": "b29b438b562cd030979989596374a4e8ad7d9eb0931a0431910b6a0f341b3da1",
+      "report_sha256": "2707f50c1a454150aa7930fd2913dd564f3f68c411df5340f328f20eb5b91661",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "fixed-brake-reference-bootstrap",
+      "log_sha256": "77afbdc5690ccedc70fd170696091a885cde1381d467ba9218504493dd1e4d61",
+      "report_sha256": "6d0d2fc011b4e76c58a2c0b47adc6f8b42968cf936185c2a704b527246ce6644",
+      "diagnostics": {
+        "error": 0,
+        "warning": 8
+      }
+    },
+    {
+      "label": "fixed-brake-reference-import",
+      "log_sha256": "92d9fd0f512a1880ae3dc3448c4024971056526224d4d604a59b6e62c22027e5",
+      "report_sha256": "98e7e5265d1ce7e7809daf00b7aef4c29a1f10ce248cf8bad8f043f2285919c0",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "evidence_sha256": {
+    "candidate.json": "bba3059a36fbcaf517dc2c28924c4255d57b644418e20c283e87248275d18bac",
+    "matched-reference.json": "97ffc09a66f10a9cf9c7d436321efecee68a9d83c621ed4954d1110f8a632fb5",
+    "historical-goldens.json": "32a503487a1493c320fe3cfef58e47b0ed9da35d7ea38e93dc83ffa19f233403",
+    "input-identities.json": "dfcf4cc30213fdf3915b4f3224d1aca1424ad28ddfd97cfe87e79c90b0d8be18"
+  }
+}

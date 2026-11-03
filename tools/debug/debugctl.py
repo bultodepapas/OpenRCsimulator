@@ -259,10 +259,10 @@ def godot() -> str:
     if os.environ.get("OPENRC_GODOT"):
         return os.environ["OPENRC_GODOT"]
     if os.name == "nt":
-        candidate = REPO / ".tools" / "Godot_v4.8-beta1_win64_console.exe"
+        candidate = REPO / ".tools" / "Godot_v4.8-beta2_win64_console.exe"
         if candidate.is_file():
             return str(candidate)
-        raise ValueError("install the pinned Godot 4.8-beta1 with app/get-godot.sh (Git Bash), or set OPENRC_GODOT")
+        raise ValueError("install the pinned Godot 4.8-beta2 with app/get-godot.sh (Git Bash), or set OPENRC_GODOT")
     return subprocess.run([str(REPO / "app" / "get-godot.sh")], check=True, capture_output=True, text=True).stdout.strip()
 
 
@@ -1139,7 +1139,12 @@ def smoke(argv: list[str]) -> int:
         step(f"monkey seed {seed}", monkey, ["--steps", steps, "--seed", seed, "--keys"])
         step("back to Home", home_reset, [])
         soak_file = Path(session["out"]) / "smoke-soak.txt"
-        soak_file.write_text("fly start=airborne\nwait frames=30\nhome\n")
+        # Atmosphere normally sweeps dead shadow-lighting WeakRefs every 64 new
+        # registrations. Settle that bounded bookkeeping before each census;
+        # live objects and the soak's zero-tolerance growth check are unchanged.
+        soak_file.write_text("fly start=airborne\nwait frames=30\nhome\nwait frames=5\n"
+                             'eval expr=\'ResourceLoader.load("res://render/atmosphere.gd")._prune_shadow_lighting()\'\n')
+        print("   settle: sweep dead shadow-lighting WeakRefs before each census", flush=True)
         step(f"soak fly/Home x{cycles}", soak, [str(soak_file), "--cycles", cycles, "--warmup", "1"])
         hitches = result_of("frames")["hitch_total"]
         home_reset()

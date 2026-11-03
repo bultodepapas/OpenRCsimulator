@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="16" failures="0" errors="0" skipped="0" time="44.546000"><testcase classname="OpenRC.GodotCommand" name="res://tests/test_high_graphics_profile.gd [high-profile-beta2-forward-08qauzms]" time="2.438000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: high-profile-beta2-forward-08qauzms/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_policy.gd [lighting-policy-beta2-forward_plus-48_6dvyg]" time="2.000000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: lighting-policy-beta2-forward_plus-48_6dvyg/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_policy.gd [lighting-policy-beta2-gl_compatibility-pyp567d2]" time="1.984000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: lighting-policy-beta2-gl_compatibility-pyp567d2/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_policy.gd [lighting-policy-beta2-mobile-79_m18at]" time="2.000000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: lighting-policy-beta2-mobile-79_m18at/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_field_people_gaze.gd [people-gaze-beta2-opengl3-o7jxkrcv]" time="5.578000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: people-gaze-beta2-opengl3-o7jxkrcv/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_segment_filter.gd [rgb-filter-beta2-forward_plus-sjozzr8e]" time="3.218000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: rgb-filter-beta2-forward_plus-sjozzr8e/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_segment_filter.gd [rgb-filter-beta2-gl_compatibility-1h343bij]" time="2.812000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: rgb-filter-beta2-gl_compatibility-1h343bij/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_segment_filter.gd [rgb-filter-beta2-mobile-3n1wyp49]" time="2.750000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: rgb-filter-beta2-mobile-3n1wyp49/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_path.gd [rgb-path-beta2-forward_plus-4uibbk3f]" time="3.328000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: rgb-path-beta2-forward_plus-4uibbk3f/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_path.gd [rgb-path-beta2-gl_compatibility-0ned7d7e]" time="1.891000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: rgb-path-beta2-gl_compatibility-0ned7d7e/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_path.gd [rgb-path-beta2-mobile-2zjvh2sp]" time="2.843000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: rgb-path-beta2-mobile-2zjvh2sp/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_skin_patterns.gd [rgb-skin-beta2-forward_plus-4t7ur8nl]" time="2.922000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: rgb-skin-beta2-forward_plus-4t7ur8nl/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_skin_patterns.gd [rgb-skin-beta2-gl_compatibility-dho91cnu]" time="2.297000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: rgb-skin-beta2-gl_compatibility-dho91cnu/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_lighting_skin_patterns.gd [rgb-skin-beta2-mobile-sozv7k15]" time="2.406000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: rgb-skin-beta2-mobile-sozv7k15/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_sun_skyline.gd [sun-skyline-beta2-opengl3-2zjes09c]" time="2.235000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: sun-skyline-beta2-opengl3-2zjes09c/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_woodland_edge_habitat.gd [woodland-habitat-beta2-opengl3-0kbagl3l]" time="3.844000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: woodland-habitat-beta2-opengl3-0kbagl3l/report.json and engine.log</system-out></testcase></testsuite>

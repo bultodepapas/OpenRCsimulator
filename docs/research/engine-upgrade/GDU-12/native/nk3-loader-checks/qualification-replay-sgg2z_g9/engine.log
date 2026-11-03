@@ -1,0 +1,58 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+NATIVE_QUALIFICATION preloaded=false
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/reference.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/reference.orfl (64 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/backend-switch-before-tick.orfl
+Flight log stopped: the stage backend changed; file is incomplete.
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/backend-switch-during-tick.orfl
+Flight log stopped: the stage backend changed; file is incomplete.
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/native.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/native.orfl (64 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/stik-glow-61fx-2t-ideal.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/stik-glow-61fx-2t-ideal.orfl (64 ticks)
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/stik-glow-55ax-2t-ideal.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/stik-glow-55ax-2t-ideal.orfl (64 ticks)
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/stik-glow-fs64v-4t-ideal.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/stik-glow-fs64v-4t-ideal.orfl (64 ticks)
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/gp-extra-300s-60-ideal.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/gp-extra-300s-60-ideal.orfl (64 ticks)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/p51d-mustang-120-ideal.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/p51d-mustang-120-ideal.orfl (64 ticks)
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/f4u-corsair-250-ideal.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/f4u-corsair-250-ideal.orfl (64 ticks)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/sebart-avanti-s-a200-p100rx-ideal.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/sebart-avanti-s-a200-p100rx-ideal.orfl (64 ticks)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/turbo-lumber-evolution-pack.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/turbo-lumber-evolution-pack.orfl (64 ticks)
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/turbo-lumber-evolution-ideal.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/turbo-lumber-evolution-ideal.orfl (64 ticks)
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/moonrunner-x99-pack.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/moonrunner-x99-pack.orfl (64 ticks)
+Flight log REC: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/moonrunner-x99-ideal.orfl
+Flight log saved: /dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382/moonrunner-x99-ideal.orfl (64 ticks)
+NK3_NATIVE_REPLAY checks=152 failures=0 out=/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/base/../tmp/native-replay-40305-2257382
+NK3_NATIVE_REPLAY_NATIVE verdict=pass
+NATIVE_QUALIFICATION mode=replay verdict=pass

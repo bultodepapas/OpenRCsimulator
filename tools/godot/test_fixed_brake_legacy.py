@@ -53,10 +53,12 @@ class ComparisonTests(unittest.TestCase):
                     gate.check_comparison(self.reference, changed)
 
     def test_bad_host_missing_aircraft_and_missing_values_fail(self) -> None:
-        for mutation in ("host", "missing_aircraft", "missing_full_value", "bad_digest", "old_owner"):
+        for mutation in ("host", "engine", "physics_hz", "missing_aircraft", "missing_full_value", "bad_digest", "old_owner"):
             capture = copy.deepcopy(self.reference)
             row = capture["outputs"][sorted(gate.IDS)[0]]
             if mutation == "host": capture["os"] = "unknown"
+            if mutation == "engine": capture["engine"] = gate.CURRENT_CAPTURE_ENGINE
+            if mutation == "physics_hz": capture["physics_hz"] += 1
             if mutation == "missing_aircraft": capture["outputs"].pop(sorted(gate.IDS)[0])
             if mutation == "missing_full_value": row.pop("csv_value")
             if mutation == "bad_digest": row["checkpoint"] = "g" * 64
@@ -65,7 +67,19 @@ class ComparisonTests(unittest.TestCase):
                 path = Path(directory) / "capture.json"
                 path.write_text(json.dumps(capture), encoding="utf-8")
                 with self.subTest(mutation=mutation), self.assertRaises(ValueError):
-                    gate.load_capture(path, self.fixture, True)
+                    gate.load_capture(path, self.fixture, True, self.fixture["engine"])
+
+    def test_current_capture_uses_actual_current_engine_not_frozen_identity(self) -> None:
+        current = copy.deepcopy(self.reference)
+        current["engine"] = gate.CURRENT_CAPTURE_ENGINE
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "capture.json"
+            path.write_text(json.dumps(current), encoding="utf-8")
+            gate.load_capture(path, self.fixture, True, gate.CURRENT_CAPTURE_ENGINE)
+            with self.assertRaises(ValueError):
+                gate.load_capture(path, self.fixture, True, self.fixture["engine"])
+        with self.assertRaises(ValueError):
+            gate.check_comparison(self.reference, current)
 
     def test_unpinned_fuel_or_avanti_content_fails(self) -> None:
         fuel = (gate.ROOT / "app/data/fuels/openrc-fuel-registry.json").read_bytes()

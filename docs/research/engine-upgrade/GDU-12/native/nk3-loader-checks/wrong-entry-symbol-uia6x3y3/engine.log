@@ -1,0 +1,3 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+NK3_LOADER_TEST ok=true initial=false loaded=false status={ &"ok": false, &"reason": "native stage descriptor differs from the verified loader contract" }

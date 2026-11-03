@@ -1,13 +1,13 @@
 # Godot 4.8 upgrade plan
 
-**Status:** GDU-03 local development adoption verified on 2026-10-25: the owner explicitly requested 4.8 as the standard engine after the [GDU-02 parallel trial](../research/engine-upgrade/GDU-02/README.md), accepting beta risk. Current pin: official 4.8-beta1 (2026-10-15). [GDU-03](../research/engine-upgrade/GDU-03/README.md) retains complete logical Windows suite coverage, bounded numerical/native checks, frozen package checks and a separate late UI continuation. This supersedes the stable-only entry requirement; broader platform, performance and release gates below remain open. **Owner:** export/CI maintainer (DT/PT). The tracks listed per phase own their own acceptance. **Prefix:** `GDU-`. **Evidence:** `docs/research/engine-upgrade/`; audit in [GDU-00](../research/engine-upgrade/GDU-00/README.md).
+**Status:** GDU-03 local development adoption verified on 2026-10-25: the owner explicitly requested 4.8 as the standard engine after the [GDU-02 parallel trial](../research/engine-upgrade/GDU-02/README.md), accepting beta risk. Current pin: official 4.8-beta2 (2026-10-29), requested on 2026-11-01; [GDU-12](../research/engine-upgrade/GDU-12/README.md) records its verification. [GDU-03](../research/engine-upgrade/GDU-03/README.md) retains complete logical Windows suite coverage, bounded numerical/native checks, frozen package checks and a separate late UI continuation. This supersedes the stable-only entry requirement; broader platform, performance and release gates below remain open. **Owner:** export/CI maintainer (DT/PT). The tracks listed per phase own their own acceptance. **Prefix:** `GDU-`. **Evidence:** `docs/research/engine-upgrade/`; audit in [GDU-00](../research/engine-upgrade/GDU-00/README.md).
 
 ## Goal and rules
 
-Use the owner-authorized official 4.8-beta1 as the development engine, preserving physics, replay, identities and packages through explicit checks. Platform and release acceptance still require the remaining gates below; development adoption does not close them.
+Use the owner-authorized official 4.8-beta2 as the development engine, preserving physics, replay, identities and packages through explicit checks. The [GDU-12 migration](../research/engine-upgrade/GDU-12/README.md) records the 2026-11-01 follow-up. Earlier phase evidence below retains its original engine and source scope. Platform and release acceptance still require the remaining gates below; development adoption does not close them.
 
 - **Upgrade one dependency at a time.** godot-cpp stays at 10.0.0-stable with `api_version=4.7`, and Python/Node pins stay unchanged.
-- **Owner-authorized beta adoption (2026-10-25).** Official 4.8-beta1 is the standard development engine. This replaces the earlier beta-only-in-disposable-worktrees restriction. Adopting the engine does not claim completed platform qualification or authorize publishing a release.
+- **Owner-authorized beta adoption (2026-10-25).** Official 4.8-beta1 was the initial development adoption; the 2026-11-01 follow-up advances it to beta2. This replaces the earlier beta-only-in-disposable-worktrees restriction. Adopting the engine does not claim completed platform qualification or authorize publishing a release.
 - **Simulation must be byte-identical.** Golden flights, traces and fleet fingerprints are not re-recorded for the engine change. Any difference stops the upgrade until it is explained.
 - **Visual and audio baselines change only with a paired, explained diff.** Each owning track accepts its own diff.
 - **Upstream defects go upstream.** Report a regression with a minimal reproduction project. Use a local workaround only when it is scoped, tested and can be removed.
@@ -19,7 +19,7 @@ Use the owner-authorized official 4.8-beta1 as the development engine, preservin
 2. [#124742](https://github.com/godotengine/godot/issues/124742) (Compatibility globals) and [#124744](https://github.com/godotengine/godot/issues/124744) (macOS universal template swap) are fixed in that build, or have an accepted local workaround with a test.
 3. The GDU-02 triage has no unexplained failure.
 
-Rollback must restore the matching engine, generated identities and resources together. Once the migration is committed, revert its scoped GDU-03 commits; CI cache keys follow `get-godot.sh` and `get-templates.sh`. The current root has an unrelated pending merge, which this work preserves. The local companion qualification branch contains only its core/admission commits, not the complete migration, so reverting that branch alone is not an engine rollback.
+Rollback must restore the matching engine, generated identities and resources together. Review the migration diff before reverting a shared commit so unrelated track changes are preserved. CI cache keys follow `get-godot.sh` and `get-templates.sh`. The earlier companion qualification branch contains only its core/admission commits, not the complete migration, so reverting that branch alone is not an engine rollback.
 
 ## Phases
 
@@ -130,6 +130,10 @@ The [expanded opportunity review](../research/engine-upgrade/GDU-11/opportunitie
 | GDU-11j | DT-MAC/VQ: ASTC 6×6/profile experiment | Conditional on an actual ASTC-capable target and measured memory need. Import profile does not improve existing S3TC/BC7 output; validate paint, normal maps and foliage before adoption |
 
 ## Owner decisions
+
+### GDU-12: beta 2 follow-up
+
+The owner requested completion of the official 4.8-beta2 migration on 2026-11-01, including relevant fixes and completed local tests. This advances the development pin without changing godot-cpp, simulation laws or numerical goldens. Editor/template pins, active tool defaults, exact-engine companion admission and native build identities must agree. Historical brake evidence remains bound to beta1; its gate separately verifies the current engine against the same historical source. [Verification and remaining limits](../research/engine-upgrade/GDU-12/README.md).
 
 | ID | Question | Proposal |
 | --- | --- | --- |

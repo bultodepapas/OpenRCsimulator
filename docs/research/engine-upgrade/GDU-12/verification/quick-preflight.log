@@ -1,0 +1,36 @@
+== local quick checks (partial CI scope)
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 30.056s
+
+OK
+...................................
+----------------------------------------------------------------------
+Ran 35 tests in 11.399s
+
+OK
+Installed Windows and Linux native outputs with receipt and godot-cpp license under /dev/shm/openrc-beta2-final-offline-tmp/openrc-native-receipt-f2mb3b2k/app/native/ground_vehicle.
+Installed Windows and Linux native outputs with receipt and godot-cpp license under /dev/shm/openrc-beta2-final-offline-tmp/openrc-native-receipt-f2mb3b2k/app/native/ground_vehicle.
+Installed Windows and Linux native outputs with receipt and godot-cpp license under /dev/shm/openrc-beta2-final-offline-tmp/openrc-native-receipt-f2mb3b2k/app/native/ground_vehicle.
+Installed Windows and Linux native outputs with receipt and godot-cpp license under /dev/shm/openrc-beta2-final-offline-tmp/openrc-native-receipt-f2mb3b2k/app/native/ground_vehicle.
+...............................................................................
+----------------------------------------------------------------------
+Ran 79 tests in 121.928s
+
+OK
+Checked 1 new or potentially affected local document link(s).
+Checked 1 new or potentially affected local document link(s).
+Checked 0 new or potentially affected local document link(s).
+Checked 2 new or potentially affected local document link(s).
+Checked 1 new or potentially affected local document link(s).
+Checked 0 new or potentially affected local document link(s).
+Checked 8 new or potentially affected local document link(s).
+Document link comparison unavailable (tag/manual/other event requires full checks); full scope retained.
+Checked 0 new or potentially affected local document link(s).
+Checked 2 new or potentially affected local document link(s).
+Checked 0 new or potentially affected local document link(s).
+== parse roster receipt: /dev/shm/openrc-beta2-final-offline-tmp/openrc-partitions-pmkd0ara/receipt
+Quick is partial: app integration/units, schema, offline tools, visuals, site and prototype were not run.
+Not run by this preflight: Linux and Windows ground-native CI builds/parity; the full NK-3 native CI qualification;
+hosted Actions scope/aggregate, artifact transfer and publication; native desktop, GPU and device acceptance.
+Package/export checks are also not run.

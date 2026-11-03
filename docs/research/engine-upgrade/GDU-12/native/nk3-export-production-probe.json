@@ -1,0 +1,74 @@
+{
+  "app_source_sha256": "89d6232515780928260d3d43b8558fae170bb394240a48d1f236aee747066963",
+  "complete": true,
+  "configuration": {
+    "aircraft": [
+      "jensen-das-ugly-stik-60"
+    ],
+    "cases": [
+      "trim",
+      "runway"
+    ],
+    "meaning": "simulation ticks; default warmup is 10 simulated seconds and default sample is 60 simulated seconds, not real-time qualification",
+    "pair_type": "backends",
+    "physics_backend": "gdscript_reference",
+    "release_executable": false,
+    "repeats": 1,
+    "sample_ticks": 240,
+    "tick_hz": 240,
+    "timeout_seconds_per_probe": 300.0,
+    "warmup_ticks": 24
+  },
+  "engine": {
+    "path": "/dev/shm/openrc-gdu-beta2-oracles-resumed/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "required_version": "4.8-beta2",
+    "runtime_binary_path": "/dev/shm/openrc-gdu-beta2-oracles-resumed/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "runtime_binary_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+    "sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+    "version": "4.8.beta2.official.cafc17a19"
+  },
+  "failures": [],
+  "format": "openrc-gdu12-production-probe-summary-v1",
+  "native_source_sha256": "14c124bba22f72760de4deb3c69be5d21b64590c83b2adb4231a7608b4572f03",
+  "pairs": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "case": "trim",
+      "comparable": true,
+      "reasons": [],
+      "runs": {
+        "native": {
+          "accepted": true,
+          "report_relative_path": "runs/jensen-das-ugly-stik-60/trim/repeat-01-backend-native.json",
+          "report_sha256": "a3aec43870e9b8c0591539c02824395ab7ffe189167f32a23a1762db499ca520"
+        },
+        "reference": {
+          "accepted": true,
+          "report_relative_path": "runs/jensen-das-ugly-stik-60/trim/repeat-01-backend-reference.json",
+          "report_sha256": "0577505e8dfa6f0dc8c9ca71aeba8b521d4b960bf1a38dea7d88048ddb4640e5"
+        }
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "case": "runway",
+      "comparable": true,
+      "reasons": [],
+      "runs": {
+        "native": {
+          "accepted": true,
+          "report_relative_path": "runs/jensen-das-ugly-stik-60/runway/repeat-01-backend-native.json",
+          "report_sha256": "ffbf0a1435aa9407820d382e73cdc56ad17f21b808800243448173e2eeb7d808"
+        },
+        "reference": {
+          "accepted": true,
+          "report_relative_path": "runs/jensen-das-ugly-stik-60/runway/repeat-01-backend-reference.json",
+          "report_sha256": "9753cc8312f166e63bd72783ae96ad23c0deecdb29d7e3d4c03a5f702084e2e2"
+        }
+      }
+    }
+  ],
+  "raw_report": "D:\\OpenRCsimulator-experiments\\gdu-beta2-identities\\nk3-export-requalification\\production-probe\\session_baseline.json",
+  "raw_sha256": "8116daae4605a1a94d9873c623b54aa4ad18ee903cf2dfa162df27be43ee50cb",
+  "status": "complete"
+}

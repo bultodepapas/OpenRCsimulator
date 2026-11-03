@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -98,6 +99,59 @@ class Workspace(unittest.TestCase):
             self.assertEqual(len(created), 1)
             self.assertFalse(created[0].exists())
             self.assertEqual(sentinel.read_text(), "preserve")
+
+
+class EngineAndTapeGuards(unittest.TestCase):
+    def test_unchanged_solver_still_rejects_a_different_engine(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            profile = root / "profile.json"
+            profile.write_text(json.dumps({"solver": {"sha256": OLD}, "engine_version": "4.8.beta1.official.old"}))
+            qualification = root / "qualification.json"
+            qualification.write_text(json.dumps({"profile": "profile.json", "accepted": {"solver_sha256": OLD}}))
+            result = subprocess.CompletedProcess(["godot", "--version"], 0, "4.8.beta2.official.new\n", "")
+            with patch.object(rebind, "ROOT", root), patch.object(rebind, "QUALIFICATION", qualification), \
+                    patch.object(rebind, "run", return_value=result), patch.object(rebind, "solver_identity") as solver, \
+                    patch.object(sys, "argv", ["rebind.py", "--godot", "godot"]):
+                self.assertEqual(rebind.main(), 2)
+                solver.assert_not_called()
+            self.assertEqual(json.loads(profile.read_text())["solver"]["sha256"], OLD)
+
+    def test_missing_duplicate_or_empty_tape_sets_are_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "valid.orfl").write_bytes(b"fixture")
+            with patch.object(rebind, "ROOT", root):
+                for tapes in ([], ["missing.orfl"], ["valid.orfl", "valid.orfl"]):
+                    with self.subTest(tapes=tapes), self.assertRaises(rebind.SetupError):
+                        rebind.qualified_tapes({"tapes": tapes})
+
+    def test_solver_helper_must_inspect_every_requested_tape(self) -> None:
+        unchecked = subprocess.CompletedProcess([], 0, 'SOLVER_IDENTITY {"ok":true,"sha256":"abc","inspected_tapes":0}\n', "")
+        with patch.object(rebind, "run", return_value=unchecked):
+            with self.assertRaises(rebind.SetupError):
+                rebind.solver_identity("godot", Path("app"), (Path("stale.orfl"),))
+
+    def test_unchanged_solver_still_rejects_a_stale_tape(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            profile = root / "profile.json"
+            profile.write_text(json.dumps({"solver": {"sha256": OLD}, "engine_version": "4.8.beta2.official.new"}))
+            (root / "stale.orfl").write_bytes(b"old-engine fixture")
+            qualification = root / "qualification.json"
+            qualification.write_text(json.dumps({"profile": "profile.json", "accepted": {"solver_sha256": OLD},
+                                                  "tapes": ["stale.orfl"]}))
+            version = subprocess.CompletedProcess([], 0, "4.8.beta2.official.new\n", "")
+            rejected = subprocess.CompletedProcess([], 1,
+                'SOLVER_IDENTITY {"ok":false,"sha256":"' + OLD + '","inspected_tapes":0,"errors":["wrong engine"]}\n', "")
+            with patch.object(rebind, "ROOT", root), patch.object(rebind, "QUALIFICATION", qualification), \
+                    patch.object(rebind, "run", side_effect=[version, rejected]) as execute, \
+                    patch.object(rebind, "compare") as compare, \
+                    patch.object(sys, "argv", ["rebind.py", "--godot", "godot"]):
+                self.assertEqual(rebind.main(), 2)
+                self.assertTrue(any(str(arg).endswith("stale.orfl") for arg in execute.call_args_list[1].args[0]))
+                compare.assert_not_called()
+            self.assertEqual(json.loads(profile.read_text())["solver"]["sha256"], OLD)
 
 
 class CheckedInQualification(unittest.TestCase):

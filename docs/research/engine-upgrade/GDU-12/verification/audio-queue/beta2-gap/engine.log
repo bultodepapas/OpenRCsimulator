@@ -1,0 +1,3 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+AUDIO_QUEUE_GAP {"attempt":0,"capacity":4095,"engine":"4.8-beta2 (official)","gap_usec":214,"mix_period":0.0928788185941043,"previous_queue":2926,"previous_target":2926,"pushed_delta":0,"queue":2926,"target":2176}

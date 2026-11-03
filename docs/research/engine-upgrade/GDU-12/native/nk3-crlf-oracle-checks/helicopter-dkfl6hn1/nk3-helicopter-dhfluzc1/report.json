@@ -1,0 +1,45 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "344a05db-b0e6-4433-b608-9283f7a1ee9b",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/app",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/research/native-kernel/helicopter_oracle.gd",
+    "--",
+    "--extension=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/openrc_native_kernel.gdextension",
+    "--output=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/helicopter-20261101T222834891129Z.json",
+    "--seed=20261027",
+    "--states=10000",
+    "--variant-states=1500",
+    "--timing-rounds=15"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "started_utc": "2026-11-01T22:28:34.940216+00:00",
+  "label": "nk3-helicopter",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-oracles-resumed/checks/helicopter-dkfl6hn1/nk3-helicopter-dhfluzc1/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-oracles-resumed/checks/helicopter-dkfl6hn1/nk3-helicopter-dhfluzc1/report.json",
+  "timeout_seconds": 2400.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_ORACLE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.332672,
+  "log_bytes": 242,
+  "log_sha256": "3c8b80215a94dbf9bab4815f312777497e250198bafcf147e54f760a12f32d72"
+}

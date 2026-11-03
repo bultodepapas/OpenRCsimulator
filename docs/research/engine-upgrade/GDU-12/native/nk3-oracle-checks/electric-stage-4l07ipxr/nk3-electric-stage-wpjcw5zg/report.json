@@ -1,0 +1,46 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2c47a90d-74a8-499a-8f56-3fc84e6cc7d9",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/app",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/research/native-kernel/electric_stage_oracle.gd",
+    "--",
+    "--extension=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/openrc_native_kernel.gdextension",
+    "--output=/dev/shm/openrc-gdu-beta2-oracles-resumed/tmp/native-kernel/electric-stage-20261101T224636844278Z.json",
+    "--seed=20261027",
+    "--states=500",
+    "--variant-states=1500",
+    "--timing-rounds=15",
+    "--ticks=64"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "started_utc": "2026-11-01T22:46:36.890452+00:00",
+  "label": "nk3-electric-stage",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-lf-requalification/tool/checks/electric-stage-4l07ipxr/nk3-electric-stage-wpjcw5zg/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-lf-requalification/tool/checks/electric-stage-4l07ipxr/nk3-electric-stage-wpjcw5zg/report.json",
+  "timeout_seconds": 2400.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_ORACLE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 19.403683,
+  "log_bytes": 246,
+  "log_sha256": "b4ca1ca7d176085cdc6713258b0d18cae8eb2ef7189681a31e28eed99543202c"
+}

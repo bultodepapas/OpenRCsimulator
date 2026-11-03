@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c5370734-3f30-4999-af6b-21cecd7f7db3",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-oracles-resumed/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_heli_restore_radio.gd"
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-oracles-resumed",
+  "started_utc": "2026-11-01T23:04:50.824589+00:00",
+  "label": "nk3-export-native-helicopter-radio",
+  "log": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-export-requalification/fixture-runtime-checks/nk3-export-native-helicopter-radio-_2ffxpt0/engine.log",
+  "report": "/mnt/d/OpenRCsimulator-experiments/gdu-beta2-identities/nk3-export-requalification/fixture-runtime-checks/nk3-export-native-helicopter-radio-_2ffxpt0/report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_NATIVE_HELICOPTER_RADIO_NATIVE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.932248,
+  "log_bytes": 158,
+  "log_sha256": "d57aa75f0bbd164eb17182525de3f47496dc3ca8b32ad6dc2dd06965eb55f785"
+}

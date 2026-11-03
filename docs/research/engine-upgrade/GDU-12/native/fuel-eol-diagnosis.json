@@ -1,0 +1,781 @@
+{
+  "captures": {
+    "debian_beta2_crlf": {
+      "engine": {
+        "build": "official",
+        "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "hex": 264192,
+        "major": 4,
+        "minor": 8,
+        "patch": 0,
+        "status": "beta2",
+        "string": "4.8-beta2 (official)",
+        "timestamp": 0
+      },
+      "path": "D:\\OpenRCsimulator-experiments\\gdu-beta2-identities\\nk3-oracles-resumed\\startup-debian-beta2.json",
+      "sha256": "442ecffdcdaed888a9afab1bca4d5d13434ba273481df809855286ffd872f46f"
+    },
+    "debian_beta2_frozen_app": {
+      "engine": {
+        "build": "official",
+        "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "hex": 264192,
+        "major": 4,
+        "minor": 8,
+        "patch": 0,
+        "status": "beta2",
+        "string": "4.8-beta2 (official)",
+        "timestamp": 0
+      },
+      "path": "D:\\OpenRCsimulator-experiments\\gdu-beta2-identities\\nk3-oracles-resumed\\startup-debian-frozen-app.json",
+      "sha256": "130141e737dbbf4d9c07908885bfcf2f95cf92be47f297a2214a6d62b86de0dc"
+    },
+    "old_flight_only": {
+      "engine": {
+        "build": "official",
+        "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "hex": 264192,
+        "major": 4,
+        "minor": 8,
+        "patch": 0,
+        "status": "beta2",
+        "string": "4.8-beta2 (official)",
+        "timestamp": 0
+      },
+      "path": "D:\\OpenRCsimulator-experiments\\gdu-beta2-identities\\nk3-oracles-resumed\\startup-old-flight.json",
+      "sha256": "442ecffdcdaed888a9afab1bca4d5d13434ba273481df809855286ffd872f46f"
+    },
+    "old_simulation_only": {
+      "engine": {
+        "build": "official",
+        "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "hex": 264192,
+        "major": 4,
+        "minor": 8,
+        "patch": 0,
+        "status": "beta2",
+        "string": "4.8-beta2 (official)",
+        "timestamp": 0
+      },
+      "path": "D:\\OpenRCsimulator-experiments\\gdu-beta2-identities\\nk3-oracles-resumed\\startup-old-sim.json",
+      "sha256": "442ecffdcdaed888a9afab1bca4d5d13434ba273481df809855286ffd872f46f"
+    },
+    "ubuntu_beta1_crlf": {
+      "engine": {
+        "build": "official",
+        "hash": "4d10419cacd6d3009976e8f9fd3abd970fd58018",
+        "hex": 264192,
+        "major": 4,
+        "minor": 8,
+        "patch": 0,
+        "status": "beta1",
+        "string": "4.8-beta1 (official)",
+        "timestamp": 0
+      },
+      "path": "D:\\OpenRCsimulator-experiments\\gdu-beta2-identities\\nk3-oracles-resumed\\startup-beta1.json",
+      "sha256": "9b33512147240b676413a606259d3353a0d841fa767050262f5aed71d9d59257"
+    },
+    "ubuntu_beta2_canonical_fuel": {
+      "engine": {
+        "build": "official",
+        "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "hex": 264192,
+        "major": 4,
+        "minor": 8,
+        "patch": 0,
+        "status": "beta2",
+        "string": "4.8-beta2 (official)",
+        "timestamp": 0
+      },
+      "path": "D:\\OpenRCsimulator-experiments\\gdu-beta2-identities\\nk3-oracles-resumed\\startup-canonical-fuel.json",
+      "sha256": "130141e737dbbf4d9c07908885bfcf2f95cf92be47f297a2214a6d62b86de0dc"
+    },
+    "ubuntu_beta2_crlf": {
+      "engine": {
+        "build": "official",
+        "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "hex": 264192,
+        "major": 4,
+        "minor": 8,
+        "patch": 0,
+        "status": "beta2",
+        "string": "4.8-beta2 (official)",
+        "timestamp": 0
+      },
+      "path": "D:\\OpenRCsimulator-experiments\\gdu-beta2-identities\\nk3-oracles-resumed\\startup-beta2.json",
+      "sha256": "442ecffdcdaed888a9afab1bca4d5d13434ba273481df809855286ffd872f46f"
+    }
+  },
+  "format": "openrc-gdu12-fuel-eol-diagnosis-v1",
+  "head": "46b004c7b469448c29ef96168da4f03cee2c6d23",
+  "observation": "CRLF and LF registries differ only in line endings. Restoring the Git blob LF bytes alone restores the four historical live-configuration pins; frame, setup and outcome pins match, all rollback guards remain true, and the four electric controls remain unchanged.",
+  "probe_sha256": "7e31e22a4de8e3f4eeba42f9d7671a9a569ef86095b467bbe70540e127785044",
+  "records": [
+    {
+      "debian_beta2_crlf": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "6aa590f4e9508d18d7a84803255181b7458f127613c87700af410a3d805b0fc3",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": false
+      },
+      "debian_beta2_frozen_app": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "347cf6357b720055bd219e6bc9951bdfbde0d42957a4ded40dc1d21a62968f96",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": true
+      },
+      "expected": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": {
+          "off": "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef",
+          "on": "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695"
+        },
+        "default_battery": true,
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": {
+          "off": "64f069ef1e8308f1b51c10867f207d0adddaa3524dd82c375d80b617e30c6201",
+          "on": "347cf6357b720055bd219e6bc9951bdfbde0d42957a4ded40dc1d21a62968f96"
+        },
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249"
+      },
+      "old_flight_only": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "6aa590f4e9508d18d7a84803255181b7458f127613c87700af410a3d805b0fc3",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": false
+      },
+      "old_simulation_only": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "6aa590f4e9508d18d7a84803255181b7458f127613c87700af410a3d805b0fc3",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": false
+      },
+      "reason": "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step",
+      "row": {
+        "aircraft": "p51d-mustang-120",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": true,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      },
+      "ubuntu_beta1_crlf": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "6aa590f4e9508d18d7a84803255181b7458f127613c87700af410a3d805b0fc3",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": false
+      },
+      "ubuntu_beta2_canonical_fuel": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "347cf6357b720055bd219e6bc9951bdfbde0d42957a4ded40dc1d21a62968f96",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": true
+      },
+      "ubuntu_beta2_crlf": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "6aa590f4e9508d18d7a84803255181b7458f127613c87700af410a3d805b0fc3",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": false
+      }
+    },
+    {
+      "debian_beta2_crlf": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "573ec7d51b8e7592a60824bdda9fa8ba3f6034072adb78e2bb984bfe524817a6",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": false
+      },
+      "debian_beta2_frozen_app": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "64f069ef1e8308f1b51c10867f207d0adddaa3524dd82c375d80b617e30c6201",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": true
+      },
+      "expected": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": {
+          "off": "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef",
+          "on": "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695"
+        },
+        "default_battery": true,
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": {
+          "off": "64f069ef1e8308f1b51c10867f207d0adddaa3524dd82c375d80b617e30c6201",
+          "on": "347cf6357b720055bd219e6bc9951bdfbde0d42957a4ded40dc1d21a62968f96"
+        },
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249"
+      },
+      "old_flight_only": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "573ec7d51b8e7592a60824bdda9fa8ba3f6034072adb78e2bb984bfe524817a6",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": false
+      },
+      "old_simulation_only": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "573ec7d51b8e7592a60824bdda9fa8ba3f6034072adb78e2bb984bfe524817a6",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": false
+      },
+      "reason": "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step",
+      "row": {
+        "aircraft": "p51d-mustang-120",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": false,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      },
+      "ubuntu_beta1_crlf": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "573ec7d51b8e7592a60824bdda9fa8ba3f6034072adb78e2bb984bfe524817a6",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": false
+      },
+      "ubuntu_beta2_canonical_fuel": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "64f069ef1e8308f1b51c10867f207d0adddaa3524dd82c375d80b617e30c6201",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": true
+      },
+      "ubuntu_beta2_crlf": {
+        "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+        "config_sha256": "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef",
+        "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
+        "live_config_sha256": "573ec7d51b8e7592a60824bdda9fa8ba3f6034072adb78e2bb984bfe524817a6",
+        "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
+        "valid": false
+      }
+    },
+    {
+      "debian_beta2_crlf": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "dc9f39d53969f8c2cfba0aa5fb022b401c1805dba72d97d1c841217e3d31e50b",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": false
+      },
+      "debian_beta2_frozen_app": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "110962b5c44c080ea60d3c0e88a3a0db426698778ad51fefd2849fcdd172ddf7",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": true
+      },
+      "expected": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": {
+          "off": "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d",
+          "on": "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d"
+        },
+        "default_battery": true,
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": {
+          "off": "e5ab9b80b14ec1f2098210d56b95b0d1ec6ada9b27f41086637b97211a0ea4d3",
+          "on": "110962b5c44c080ea60d3c0e88a3a0db426698778ad51fefd2849fcdd172ddf7"
+        },
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06"
+      },
+      "old_flight_only": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "dc9f39d53969f8c2cfba0aa5fb022b401c1805dba72d97d1c841217e3d31e50b",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": false
+      },
+      "old_simulation_only": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "dc9f39d53969f8c2cfba0aa5fb022b401c1805dba72d97d1c841217e3d31e50b",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": false
+      },
+      "reason": "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step",
+      "row": {
+        "aircraft": "sebart-avanti-s-a200-p100rx",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": true,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      },
+      "ubuntu_beta1_crlf": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "dc9f39d53969f8c2cfba0aa5fb022b401c1805dba72d97d1c841217e3d31e50b",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": false
+      },
+      "ubuntu_beta2_canonical_fuel": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "110962b5c44c080ea60d3c0e88a3a0db426698778ad51fefd2849fcdd172ddf7",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": true
+      },
+      "ubuntu_beta2_crlf": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "dc9f39d53969f8c2cfba0aa5fb022b401c1805dba72d97d1c841217e3d31e50b",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": false
+      }
+    },
+    {
+      "debian_beta2_crlf": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "71fb744d1ff70eabe484e0d16246802b0b23a91d86e51e6f3c5442c9f0fdb429",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": false
+      },
+      "debian_beta2_frozen_app": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "e5ab9b80b14ec1f2098210d56b95b0d1ec6ada9b27f41086637b97211a0ea4d3",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": true
+      },
+      "expected": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": {
+          "off": "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d",
+          "on": "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d"
+        },
+        "default_battery": true,
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": {
+          "off": "e5ab9b80b14ec1f2098210d56b95b0d1ec6ada9b27f41086637b97211a0ea4d3",
+          "on": "110962b5c44c080ea60d3c0e88a3a0db426698778ad51fefd2849fcdd172ddf7"
+        },
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06"
+      },
+      "old_flight_only": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "71fb744d1ff70eabe484e0d16246802b0b23a91d86e51e6f3c5442c9f0fdb429",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": false
+      },
+      "old_simulation_only": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "71fb744d1ff70eabe484e0d16246802b0b23a91d86e51e6f3c5442c9f0fdb429",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": false
+      },
+      "reason": "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step",
+      "row": {
+        "aircraft": "sebart-avanti-s-a200-p100rx",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": false,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      },
+      "ubuntu_beta1_crlf": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "71fb744d1ff70eabe484e0d16246802b0b23a91d86e51e6f3c5442c9f0fdb429",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": false
+      },
+      "ubuntu_beta2_canonical_fuel": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "e5ab9b80b14ec1f2098210d56b95b0d1ec6ada9b27f41086637b97211a0ea4d3",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": true
+      },
+      "ubuntu_beta2_crlf": {
+        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "config_sha256": "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d",
+        "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
+        "live_config_sha256": "71fb744d1ff70eabe484e0d16246802b0b23a91d86e51e6f3c5442c9f0fdb429",
+        "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
+        "valid": false
+      }
+    },
+    {
+      "debian_beta2_crlf": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "debian_beta2_frozen_app": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "expected": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": {
+          "off": "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9",
+          "on": "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf"
+        },
+        "default_battery": true,
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": {
+          "off": "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0",
+          "on": "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f"
+        },
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9"
+      },
+      "old_flight_only": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "old_simulation_only": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "reason": "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step",
+      "row": {
+        "aircraft": "turbo-lumber-evolution",
+        "battery": "pack",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": true,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      },
+      "ubuntu_beta1_crlf": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "ubuntu_beta2_canonical_fuel": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "ubuntu_beta2_crlf": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      }
+    },
+    {
+      "debian_beta2_crlf": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "debian_beta2_frozen_app": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "expected": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": {
+          "off": "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9",
+          "on": "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf"
+        },
+        "default_battery": true,
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": {
+          "off": "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0",
+          "on": "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f"
+        },
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9"
+      },
+      "old_flight_only": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "old_simulation_only": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "reason": "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step",
+      "row": {
+        "aircraft": "turbo-lumber-evolution",
+        "battery": "pack",
+        "case": "runway",
+        "default_battery": true,
+        "expected": "reference-refusal",
+        "soft_hull": false,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      },
+      "ubuntu_beta1_crlf": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "ubuntu_beta2_canonical_fuel": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      },
+      "ubuntu_beta2_crlf": {
+        "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+        "config_sha256": "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9",
+        "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
+        "live_config_sha256": "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0",
+        "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
+        "valid": true
+      }
+    },
+    {
+      "debian_beta2_crlf": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "debian_beta2_frozen_app": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "expected": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": {
+          "off": "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6",
+          "on": "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d"
+        },
+        "default_battery": false,
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": {
+          "off": "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a",
+          "on": "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26"
+        },
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e"
+      },
+      "old_flight_only": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "old_simulation_only": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "reason": "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step",
+      "row": {
+        "aircraft": "turbo-lumber-evolution",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": false,
+        "expected": "reference-refusal",
+        "soft_hull": true,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      },
+      "ubuntu_beta1_crlf": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "ubuntu_beta2_canonical_fuel": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "ubuntu_beta2_crlf": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      }
+    },
+    {
+      "debian_beta2_crlf": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "debian_beta2_frozen_app": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "expected": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": {
+          "off": "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6",
+          "on": "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d"
+        },
+        "default_battery": false,
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": {
+          "off": "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a",
+          "on": "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26"
+        },
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e"
+      },
+      "old_flight_only": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "old_simulation_only": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "reason": "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step",
+      "row": {
+        "aircraft": "turbo-lumber-evolution",
+        "battery": "ideal",
+        "case": "runway",
+        "default_battery": false,
+        "expected": "reference-refusal",
+        "soft_hull": false,
+        "vehicle": "fixed-wing",
+        "weather": "crosswind"
+      },
+      "ubuntu_beta1_crlf": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "ubuntu_beta2_canonical_fuel": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      },
+      "ubuntu_beta2_crlf": {
+        "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+        "config_sha256": "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6",
+        "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
+        "live_config_sha256": "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a",
+        "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
+        "valid": true
+      }
+    }
+  ],
+  "registry_crlf_sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1",
+  "registry_git_blob_lf_sha256": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043"
+}

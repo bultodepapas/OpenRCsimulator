@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a86b9357-0e94-4856-8f85-aaad87e2eb89",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/app",
+    "--windowed",
+    "--resolution",
+    "1920x1080",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_lighting_skin_patterns.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-02T00:32:52.721337+00:00",
+  "label": "rgb-skin-beta2-forward_plus",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-native-rendering\\checks\\rgb-skin-beta2-forward_plus-4t7ur8nl\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-native-rendering\\checks\\rgb-skin-beta2-forward_plus-4t7ur8nl\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Lighting skin patterns:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.922,
+  "log_bytes": 1262,
+  "log_sha256": "f7dde0ded2f8585aa6f7f4dca10a3f433dbed11b5d79e8aa7424e0b4661399b4"
+}

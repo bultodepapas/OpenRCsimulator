@@ -3,15 +3,31 @@ extends SceneTree
 ## Used by tools/companions/rebind.py; the identity function itself lives in the production profile loader.
 
 const Loader := preload("res://ai/companions/profile_loader.gd")
+const FlightLogCli := preload("res://tools/flight_log_cli.gd")
 
 
 func _initialize() -> void:
 	var identity: Dictionary = Loader.current_solver_qualification_identity()
-	var ok: bool = identity.get("ok", false)
+	var errors := PackedStringArray(identity.get("errors", PackedStringArray()))
+	var inspected_tapes := 0
+	for argument: String in OS.get_cmdline_user_args():
+		if not argument.begins_with("--tape="):
+			errors.append("Unknown identity argument: " + argument)
+			continue
+		var tape: String = argument.trim_prefix("--tape=")
+		var inspected: Dictionary = FlightLogCli.inspect(tape)
+		if not inspected.get("ok", false) or not inspected.get("complete", false):
+			errors.append("Tape '%s' is invalid or incomplete: %s" % [tape, str(inspected.get("error", "unknown error"))])
+		elif str(inspected.header.get("engine", "")) != str(Engine.get_version_info().string):
+			errors.append("Tape '%s' was recorded with %s, not %s" % [tape, str(inspected.header.get("engine", "")), str(Engine.get_version_info().string)])
+		else:
+			inspected_tapes += 1
+	var ok: bool = identity.get("ok", false) and errors.is_empty()
 	print("SOLVER_IDENTITY " + JSON.stringify({
 		ok = ok,
 		sha256 = str(identity.get("sha256", "")),
 		source_count = int(identity.get("source_count", 0)),
-		errors = Array(identity.get("errors", PackedStringArray())),
+		inspected_tapes = inspected_tapes,
+		errors = Array(errors),
 	}))
 	quit(0 if ok else 1)

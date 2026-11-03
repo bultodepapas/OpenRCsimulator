@@ -1,0 +1,14 @@
+== unit partition 2/8: 109 of 872 scripts
+== units roster receipt: /mnt/d/OpenRCsimulator-experiments/gdu-beta2/final-units/shard-2/checks/roster-units-2-of-8-tmp.JdTDLapLJk.json
+inline skip test_crash_integration.gd line 868: skip jensen-das-ugly-stik-60: Dummy has no playback; native integration covers audio
+inline skip test_crash_integration.gd line 900: skip stik-glow-61fx-2t: Dummy has no playback; native integration covers audio
+inline skip test_crash_integration.gd line 932: skip stik-glow-55ax-2t: Dummy has no playback; native integration covers audio
+inline skip test_crash_integration.gd line 964: skip stik-glow-fs64v-4t: Dummy has no playback; native integration covers audio
+inline skip test_crash_integration.gd line 998: skip gp-extra-300s-60: Dummy has no playback; native integration covers audio
+inline skip test_crash_integration.gd line 1027: skip p51d-mustang-120: Dummy has no playback; native integration covers audio
+inline skip test_crash_integration.gd line 1056: skip f4u-corsair-250: Dummy has no playback; native integration covers audio
+inline skip test_crash_integration.gd line 1087: skip sebart-avanti-s-a200-p100rx: Dummy has no playback; native integration covers audio
+inline skip test_crash_integration.gd line 1116: skip turbo-lumber-evolution: Dummy has no playback; native integration covers audio
+inline skip test_crash_integration.gd line 1145: skip moonrunner-x99: Dummy has no playback; native integration covers audio
+inline skip test_lighting_segment_filter.gd line 2009: Lighting segment pixels SKIPPED: native rendering required at 1920x1080.
+native fallback: 43 occurrences; first line 142: physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage library not installed","requested":"native"}

@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "41f8c1f9-22a9-4620-9997-68455978b0b5",
+  "command": [
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/engine/Godot",
+    "--headless",
+    "--path",
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/migrated-cache",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/migrated-cache/test.gd",
+    "--",
+    "ok",
+    ""
+  ],
+  "cwd": "/dev/shm/openrc-gdu-beta2-loader",
+  "started_utc": "2026-11-01T19:07:03.175980+00:00",
+  "label": "migrated-cache",
+  "log": "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/checks/migrated-cache-8srv3tlg/engine.log",
+  "report": "/dev/shm/openrc-gdu-beta2-loader/tmp/nk3-installation-test-v6hsea44/checks/migrated-cache-8srv3tlg/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_LOADER_TEST ok=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.467267,
+  "log_bytes": 158,
+  "log_sha256": "40374a8dae19da0d43825f08fd2327d34933c12d4ee9b280e967d125a5a8980d"
+}
