@@ -44,16 +44,43 @@ persisted, but grass, seam, tree-wind, treeline and
 scenario completion reports were not. The surface checker labels its
 no-filter stripe comparison observational; that mutation was not rejected.
 
+Comparison with the new snapshot matched all 29 root flight images and nine
+field images byte for byte, but the same-renderer comparison failed on all
+eight UI images. These snapshots had different inputs: the old flight-backed
+UI used the GDScript reference backend and the new one used the native backend;
+the sidecars also recorded changed source hashes. Three hint/pause pairs froze
+at different simulation ticks (240 versus 252) after a live one-second timer.
+Home differed by at most one RGB level and Help by two; the flight-backed
+views had larger localized changes. Inspection of the largest Hint and Pause
+pairs found no concrete new visual defect. These uncontrolled comparisons do
+not establish UI equivalence. The failed comparison and pixel audit remain at
+`D:/OpenRCsimulator-experiments/gdu-beta2/inspect-ui-difference-20261101.log`.
+
 A subsequent attempt rendered its first image but failed the capture runner's
 exact saved-path guard: `app/captures` was a symlink, so its resolved path
-differed from the path printed by Godot. The failed output was retained. A
-fresh run is underway with `app/captures` bound to a durable directory so the
-canonical path remains unchanged. No check or source was altered for the retry.
-Its completion and source fingerprints must be checked before reporting a
-full-suite pass. Raw images and logs are outside Git in the preallocated
+differed from the path printed by Godot. The failed output was retained. An
+unchanged full-script retry used a bind mount to preserve the canonical path,
+but was interrupted during its VQ matrix. A third fresh full-script run passed
+setup, core rendering, UI, core checks, quality and terrain-atmosphere before
+WSL stopped during the ground mutation import. It has neither a terminal exit
+record nor the complete-set manifest. Windows recorded a `wsl.exe` stack
+overflow; this does not identify a Godot defect.
+
+Before that interruption the fixed inventories and image/sidecar hashes were
+independently verified for 38 core, eight UI and 66 VQ captures. The tree
+review passed 13 repeated images, the horizon review passed 42 views in each
+of two byte-identical repeats, the atmosphere review passed 32 captures in
+each of two byte-identical repeats, and the cloud projection controls passed.
+The third run's initial runtime and tool fingerprints matched the second
+run's snapshot. Its post-run fingerprints were never written.
+
+Raw outputs and controls remain outside Git in the preallocated
 `D:/OpenRCsimulator-experiments/gdu-beta2/export-stage.ext4` image, under
-`visual-full-recovery-20261101-r2/` and
-`visual-full-recovery-control-20261101-r2/`.
+`visual-full-recovery-20261101-r2/`, `visual-full-recovery-control-20261101-r2/`,
+`visual-full-recovery-20261101-r3/` and
+`visual-full-recovery-control-20261101-r3/`. Ground, vegetation and scenario
+remain to be completed. Partial group runs can cover those checks but do not
+replace the uninterrupted full capture or produce its complete-set manifest.
 
 The Linux VQ unit checks skip the Windows-only junction control. That one
 control passed separately on Windows; its log is

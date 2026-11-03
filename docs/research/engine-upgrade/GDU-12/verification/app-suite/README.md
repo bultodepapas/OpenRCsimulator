@@ -12,6 +12,10 @@ unit shards and a separate integration run with the parse complement. The old
 receipts are excluded because each is bound to the pre-fix roster digest.
 The [source comparison](post-fix/source-comparison.md) records the newer Windows
 checkout, line-ending differences and the four explicit EOL-rule exceptions.
+After that snapshot, the root mechanical-audio test received a
+[test-only teardown assertion](post-fix/mechanical-audio-final/README.md). Targeted
+Windows and Linux checks cover the changed test; the frozen suite receipts keep
+their original source and roster identities.
 
 The checked-run summarizer validates each run's report, diagnostics and log
 hash. Its JUnit `skipped` count does not count conditional skips printed inside

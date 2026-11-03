@@ -30,8 +30,8 @@ rules and remain distinct byte identities:
 The Windows HX-700 file is LF while the frozen version is CRLF; the other
 three are CRLF on Windows and LF in the frozen source. The fuel registry is
 byte-identical at `6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043`.
-The separate [Windows native build receipt](../../../native/nk3-build-receipt.json)
-and [Linux export build receipt](../../../native/nk3-export-build-receipt.json)
+The separate [Linux aircraft-native build using Windows-workspace bytes](../../../native/nk3-lf-build-receipt.json)
+and [Linux export-source build](../../../native/nk3-export-build-receipt.json)
 bind their respective HX-700 identities. Matching after line-ending conversion
 is not a claim of raw-byte equivalence or proof that a byte-sensitive consumer
 can substitute one version for the other.

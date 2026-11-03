@@ -19,6 +19,53 @@
       "log_sha256": "8feca523d5980c288dcd7bc20267c04050446a53496a5e19e0eae1913c634699",
       "report_sha256": "1fd281df363c8f57f82ad2244a96fd824bd8ccb1c4201d3b74513e144b06adf2",
       "explicit_skips": 0
+    },
+    {
+      "name": "final-native-glow-pump",
+      "test": "test_glow_audio_pump.gd",
+      "checks": 25,
+      "source_commit": "2803464257a9ba75884edaf7d162c9671a859b83",
+      "source_scope": "Windows working tree; named test and audio implementation files match the prior final-brake candidate input manifest. Other transitive inputs are not re-inventoried by this record.",
+      "test_sha256": "944be3a281f4890cad663d044812314c6db317881d7e74f50ed5fc3015560bc1",
+      "production_sha256": {
+        "app/audio/glow_audio_pump.gd": "99b50ad28cc442f2ba818d0e72fd23897fa1462df62d873028cd537937b9a40b",
+        "app/audio/glow_voice.gd": "f025a4d59752be25d3b34a768c024959f0e215c4a4384dc83b6dac2b25cc8f17"
+      },
+      "engine_console_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+      "checked_runner_sha256": "7335de7267871da28c6d2cd8d49e589d0de0600ab6677f3700051adf9dd35f88",
+      "started_utc": "2026-11-02T01:51:11.221351+00:00",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "WASAPI",
+        "--max-fps",
+        "60",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_glow_audio_pump.gd"
+      ],
+      "audio_driver": "WASAPI",
+      "fallback": false,
+      "main_thread_stall_seconds": 0.601,
+      "captured_seconds": 0.597,
+      "output_latency_seconds": 0.01,
+      "allowed_capture_loss_seconds": 0.053,
+      "generator_skips_before": 0,
+      "generator_skips_after": 0,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "explicit_skips": 0,
+      "elapsed_seconds": 1.766,
+      "log_sha256": "3027ab2496aea21ef797a74df27def65dbc1f2fa8225d6be2ff74420ca98f17a",
+      "report_sha256": "d5a540cd18ba8539aa2a2d8954c95bfe74865423d5fff82ee6f204e12195f901",
+      "junit_sha256": "ff47eed4ca1bed6cadc0a06474f707586a1d33e8b8916b9c8517092065305371",
+      "raw_run_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\native-glow-pump-final\\checks\\gdu12-glow-pump-beta2-wasapi-gvxmky_s",
+      "raw_junit": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\native-glow-pump-final\\results.xml"
     }
   ],
   "limits": "Headless software checks; no perceptual audio or physical-device qualification."

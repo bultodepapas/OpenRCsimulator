@@ -1,0 +1,165 @@
+{
+  "scope": "Test-only lifecycle assertion. Full-suite receipts remain bound to the original frozen snapshot; the changed test is supported by targeted checks only.",
+  "workspace_base_commit": "2803464257a9ba75884edaf7d162c9671a859b83",
+  "frozen_suite_base_commit": "46b004c7b469448c29ef96168da4f03cee2c6d23",
+  "frozen_test_sha256": "9cab0bb40a625b0f5af3cd7e433f9c26fd19b2a793102dab3fd25f8415046249",
+  "final_test_sha256": "a43576219a24e102e7029ca1f52d2d439477cf876caa73e9126204cb75511332",
+  "final_test_exact_bytes_windows_and_linux": true,
+  "production_windows_sha256": {
+    "app/audio/mechanical_audio.gd": "5b9650cfa56c36cd1acdcbed161f776bda5f6a5664244945fad684f60d2b39ea",
+    "app/audio/mechanical_motion.gd": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f"
+  },
+  "production_frozen_linux_sha256": {
+    "app/audio/mechanical_audio.gd": "a7fd40a6c820d0eca6cd00e636eb06e009a197d667576e5782f5351b6385080c",
+    "app/audio/mechanical_motion.gd": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f"
+  },
+  "production_mechanical_audio_content_equal_after_crlf_normalization": true,
+  "frozen_rosters": {
+    "parse": {
+      "full_count": 1560,
+      "selected_count": 688,
+      "roster_sha256": "3fc5b1fa77533fb916bde7772ab5b2ec3100360bbcd3669d60f72ee5b5c632fb"
+    },
+    "units": {
+      "full_count": 872,
+      "selected_count": 872,
+      "roster_sha256": "0237cf8841bf9afe50d7a5a369854d2d9e6bb3cd3a249fe39665acf267ddd374"
+    }
+  },
+  "test_only_linux_overlay_rosters": {
+    "parse": {
+      "full_count": 1560,
+      "selected_count": 688,
+      "roster_sha256": "22ea0fc5ed0ca071f51774e4c20e258d92ff1c90a411f1201eeda9ba312a5477"
+    },
+    "units": {
+      "full_count": 872,
+      "selected_count": 872,
+      "roster_sha256": "ec19613c88bdb16dd09ebc1c6d09018d82d4cbe15137e2854614a1478688eb46"
+    }
+  },
+  "overlay_roster_record_sha256": "b245b425e19e3b88a9ad81b5704947d1e922fa9bb66678563e1a732d661bb291",
+  "draft_parse_checks": [
+    {
+      "label": "mechanical-final-parse-windows",
+      "report_sha256": "3feed89d36d21f6d09881c71757d9f158b0677aece88b9ceeb483e6328437a89",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\parse-windows\\mechanical-final-parse-windows-xqdgpfuu"
+    },
+    {
+      "label": "mechanical-final-parse-linux",
+      "report_sha256": "6c40e7a3c5af761f26d915801f828f9cfca688566520baab24b019634782ae7d",
+      "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\parse-linux\\mechanical-final-parse-linux-_nbzqgt1"
+    },
+    {
+      "label": "negative-parse-playback",
+      "report_sha256": "684f32894fd6c26d843a8b5bc149273d828f00fc5d9bbb3f7c670162daf5f2a4",
+      "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\negative-parse\\negative-parse-playback-5chlybs3"
+    },
+    {
+      "label": "negative-parse-stream",
+      "report_sha256": "7eb2e14156651b6c6682669c139f0b690c4d67f0e32a80c7822f1bfc5fd4abcc",
+      "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\negative-parse\\negative-parse-stream-egfwbb9v"
+    }
+  ],
+  "windows_strict_target_checks": [
+    {
+      "label": "mechanical-final-windows",
+      "started_utc": "2026-11-02T01:56:58.964191+00:00",
+      "elapsed_seconds": 1.234,
+      "report_sha256": "7444fe6ec19fa7bb3b6fbfb6cc99140fbe14c770694e8b0739ce9189b973fb69",
+      "log_sha256": "af1909cb8e763fb23bd1b8bbb8bda04d60ab9c84bfa3b731fafd684bc0f0d8bc",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\target-windows\\mechanical-final-windows-yqg67tw4"
+    }
+  ],
+  "linux_strict_target_checks": [
+    {
+      "label": "mechanical-final-linux-1",
+      "started_utc": "2026-11-02T01:57:34.537738+00:00",
+      "elapsed_seconds": 1.093686,
+      "report_sha256": "75a3f9bc6e128a818e1bce6a47f67a5cafc724896187210025ca4a39dd37af1b",
+      "log_sha256": "363659d109ace6aa3eaa651466ba38d7f127b1985e3809dee9a49f6f5325bade",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\target-linux\\mechanical-final-linux-1-wh9o2o3_"
+    },
+    {
+      "label": "mechanical-final-linux-2",
+      "started_utc": "2026-11-02T01:57:35.697981+00:00",
+      "elapsed_seconds": 1.114396,
+      "report_sha256": "55d1262ca49a6ec978d3129af2913b1580759bd61e937bcabbdaebc4fec5f195",
+      "log_sha256": "363659d109ace6aa3eaa651466ba38d7f127b1985e3809dee9a49f6f5325bade",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\target-linux\\mechanical-final-linux-2-strbl61_"
+    },
+    {
+      "label": "mechanical-final-linux-3",
+      "started_utc": "2026-11-02T01:57:36.880139+00:00",
+      "elapsed_seconds": 1.115569,
+      "report_sha256": "52e14dda0b97c9ff96caabe87d35e3b9bb2711ad2f5a02c476ad8a2aa7d49965",
+      "log_sha256": "363659d109ace6aa3eaa651466ba38d7f127b1985e3809dee9a49f6f5325bade",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\target-linux\\mechanical-final-linux-3-xs3h0_wg"
+    },
+    {
+      "label": "mechanical-final-linux-4",
+      "started_utc": "2026-11-02T01:57:38.058219+00:00",
+      "elapsed_seconds": 1.117827,
+      "report_sha256": "6c3eb4e3e336a8be69ed4c91a789dd0ccaf4a30f17880a6db7720cbdd7c557d1",
+      "log_sha256": "363659d109ace6aa3eaa651466ba38d7f127b1985e3809dee9a49f6f5325bade",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\target-linux\\mechanical-final-linux-4-n5z6g1ku"
+    },
+    {
+      "label": "mechanical-final-linux-5",
+      "started_utc": "2026-11-02T01:57:39.239112+00:00",
+      "elapsed_seconds": 1.197324,
+      "report_sha256": "6848d5c37ce2cb99a1be9a433824f9b9c658d883b97c32d47c50960ecaa5aab4",
+      "log_sha256": "363659d109ace6aa3eaa651466ba38d7f127b1985e3809dee9a49f6f5325bade",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\target-linux\\mechanical-final-linux-5-gbds2sqn"
+    }
+  ],
+  "held_resource_negative_controls": [
+    {
+      "mode": "playback",
+      "elapsed_us": 1003218,
+      "expected_process_exit": 1,
+      "failed_assertion": "mechanical audio playbacks and streams release within one second",
+      "report_sha256": "7c061dcb19b913ad12be3c2b751c27bd91399a63555a1ccc60cec2c7b007dec4",
+      "log_sha256": "356f4f395e9f3baa5a70b8fc159cc664e3449608e901adb0d013f1b0506e984a",
+      "draft_sha256": "1a5611eda2a9f413d4120bbe86878d5c60046f12d93f3c2b6a6103ab74b803a9",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\negative-checks\\held-playback-ebc_ty7x"
+    },
+    {
+      "mode": "stream",
+      "elapsed_us": 1003167,
+      "expected_process_exit": 1,
+      "failed_assertion": "mechanical audio playbacks and streams release within one second",
+      "report_sha256": "50db30bb6d582dd6ef4d62035153443b04472ebcb4bb8220054f54a44849bc66",
+      "log_sha256": "4a6c1081106e4c964d970060e36b8cb7d245918cfdf2ccad2010669a53b45bbd",
+      "draft_sha256": "13af4d6733a389cd08118a9abc83241898aea70b33a81905f25dbca0eb2a7d5b",
+      "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-test-final\\negative-checks\\held-stream-54doxwc3"
+    }
+  ],
+  "summary_junit_sha256": {
+    "target-windows-results.xml": "0171fddb72b7bb7d568635339cdf2fbb2055afcb1333618e9bfcd661d7ac1557",
+    "target-linux-results.xml": "db0df490e94a836059d21766436d00548a53c835397af36f7e28067abc63b10d",
+    "parse-windows-results.xml": "a7145f3f373ed14c75c4ecfc04aeeac4dd536c4659e261c1af96831ab33f6580",
+    "parse-linux-results.xml": "e7a84af1f07d99a7e390c6aa1483be577ce10cd6e7d54427b18adc8b6df05ba1",
+    "negative-parse-results.xml": "ca28a35d317ee549f8e30703fb2c86bf9aeedf2f20795f69bf971e02f2f5a8d3"
+  },
+  "original_warning": {
+    "checked_run_ok": true,
+    "reported_objectdb_instances": 4,
+    "report_sha256": "c9440df0326990a4ff83d51c101b2787923bc5272f053d68de3bb316d95f501d",
+    "log_sha256": "5f690b24558cc31725b958f1d2a1dce2a29aca804794c0a4f8af7b6645de7138",
+    "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\final-units-durable-d\\shard-2\\checks\\godot-6vozk1ep"
+  },
+  "combined_probe": {
+    "strict_checked_runs": 11,
+    "normal_runs": 5,
+    "held_playback_controls": 3,
+    "held_stream_controls": 3,
+    "observations_sha256": "4283602191ea40c7b3e939465301daa993607216afb0c0fff4b640056bd26d99",
+    "raw_directory": "D:\\OpenRCsimulator-experiments\\gdu-beta2\\mechanical-audio-lifecycle-ram-weakref-combined"
+  },
+  "limitations": "Observed WeakRefs only; tests do not establish that every audio mixer object or production lifecycle releases correctly. The original shutdown warning remains historical evidence."
+}

@@ -12,6 +12,8 @@ var _checks: int = 0
 var _failures: int = 0
 var _motion_script: Script
 var _audio_script: Script
+var _tracked_playbacks: Array[WeakRef] = []
+var _tracked_streams: Array[WeakRef] = []
 
 
 func _initialize() -> void:
@@ -99,6 +101,7 @@ func _test_real_assets_and_audio_lifecycle() -> void:
 		for retract_type: String in RETRACT_TYPES:
 			var config: Dictionary = {servo_type = servo_type, servo_level = 0.75, retract_type = retract_type}
 			_check("real WAV set exists for %s/%s" % [servo_type, retract_type], _real_asset_set_valid(servo_type, retract_type))
+			_track_audio_resources(audio)
 			audio.call("configure", rig, &"Master", config)
 			var initial: Dictionary = audio.call("diagnostics")
 			_check("installed %s/%s profile has no missing required assets" % [servo_type, retract_type],
@@ -114,6 +117,7 @@ func _test_real_assets_and_audio_lifecycle() -> void:
 	var after_missing: Dictionary = audio.call("diagnostics")
 	_check("missing resource resolves to silent null instead of a substitute", missing == null
 		and not after_missing.get("missing_assets", []).is_empty())
+	_track_audio_resources(audio)
 	audio.call("configure", rig, &"Master", {servo_type = "standard", servo_level = 0.75, retract_type = "electric"})
 	_check("reconfigure clears the transient missing-resource diagnostic",
 		audio.call("diagnostics").get("missing_assets", []).is_empty())
@@ -145,6 +149,7 @@ func _test_real_assets_and_audio_lifecycle() -> void:
 	rig.remove_child(audio)
 	await process_frame
 	rig.add_child(audio)
+	_track_audio_resources(audio)
 	audio.call("configure", rig, &"Master", {servo_type = "high_torque", servo_level = 0.75, retract_type = "pneumatic"})
 	audio.call("update_sound", _snapshot(1, 0.0, 0.0, false), 1.0 / 60.0)
 	audio.call("update_sound", _snapshot(2, 10.0, 0.5, true), 1.0 / 60.0)
@@ -152,6 +157,7 @@ func _test_real_assets_and_audio_lifecycle() -> void:
 	_check("detach, reattach and configure re-prime before new cue playback", int(reattached.get("events_played", 0)) >= events_before_detach
 		and reattached.get("missing_assets", []).is_empty())
 	var final_configure_count: int = int(reattached.get("reset_count", 0))
+	_track_audio_resources(audio)
 	audio.call("configure", rig, &"Master", {servo_type = "standard", servo_level = 0.0, retract_type = "electric"})
 	_check("zero servo level is accepted as configuration and resets voices",
 		int(audio.call("diagnostics").get("reset_count", 0)) > final_configure_count)
@@ -160,10 +166,43 @@ func _test_real_assets_and_audio_lifecycle() -> void:
 	_check("final profile remains silent of missing assets", final_report.get("missing_assets", []).is_empty())
 	_check("audio instance stayed within motion and event voice caps",
 		int(final_report.get("motion_voice_count", 0)) <= 6 and int(final_report.get("event_voice_count", 0)) <= 2)
+	_track_audio_resources(audio)
 	rig.remove_child(audio)
 	audio.free()
 	root.remove_child(rig)
 	rig.free()
+	_check("observed mechanical audio playback references", not _tracked_playbacks.is_empty())
+	_check("observed mechanical audio stream references", not _tracked_streams.is_empty())
+	var started := Time.get_ticks_usec()
+	var playbacks := _live_audio_refs(_tracked_playbacks)
+	var streams := _live_audio_refs(_tracked_streams)
+	while (playbacks > 0 or streams > 0) and Time.get_ticks_usec() - started < 1000000:
+		await process_frame
+		playbacks = _live_audio_refs(_tracked_playbacks)
+		streams = _live_audio_refs(_tracked_streams)
+	var elapsed_usec := Time.get_ticks_usec() - started
+	_check("tracked mechanical audio playbacks and streams release within one second",
+		playbacks == 0 and streams == 0 and elapsed_usec <= 1000000,
+		"playbacks=%d streams=%d elapsed_usec=%d" % [playbacks, streams, elapsed_usec])
+
+
+## Observe resources before reconfigure/free without extending their lifetimes.
+func _track_audio_resources(audio: Node) -> void:
+	for child: Node in audio.get_children():
+		if child is AudioStreamPlayer3D:
+			var player := child as AudioStreamPlayer3D
+			if player.stream != null:
+				_tracked_streams.append(weakref(player.stream))
+			if player.has_stream_playback():
+				_tracked_playbacks.append(weakref(player.get_stream_playback()))
+
+
+func _live_audio_refs(refs: Array[WeakRef]) -> int:
+	var count := 0
+	for item: WeakRef in refs:
+		if item.get_ref() != null:
+			count += 1
+	return count
 
 
 func _exercise_audio_profile(audio: Node, config: Dictionary) -> void:

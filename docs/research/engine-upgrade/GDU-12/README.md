@@ -53,6 +53,12 @@ original engine and source scope.
 - The population asset test now resolves the shipped outfit variants through the
   production API. Its obsolete legacy filenames had silently skipped the batch
   assertions; missing required assets now fail the test.
+- The [mechanical audio test](verification/app-suite/post-fix/mechanical-audio-final/README.md)
+  now checks bounded release of observed playback and WAV stream resources before
+  quitting. Immediate exit sometimes preceded mixer cleanup. All 103 existing
+  assertions remain, and deliberately retained resources fail the new assertion.
+  Production audio is unchanged; this final test-only delta has separate strict
+  Windows/Linux evidence from the frozen full-suite source.
 
 ## Verification
 
@@ -69,7 +75,7 @@ identify completed checks only.
 | [Final cache-concurrency correction](verification/getter-warm-cache.json) | Current/historical getter fixtures passed 21/5 checks on each of Windows and Linux; eight real overlapping warm calls succeeded with fixed hash/version checks intact |
 | Aircraft schema | [2,070 schema/loader cases](verification/schema-contract.json), 142 valid controls and 23 runtime-only checks passed; [v2](verification/schema-v2.json) and [HX700](verification/schema-hx700.log) checks passed on Windows beta2 |
 | [Windows headless smoke](smoke/README.md) | All 52 steps passed; stable soak counters, no engine errors or leaked objects at exit; retained-object negative control rejected |
-| [Native Windows headless checks](verification/native-headless/README.md) | Crash integration passed 244 assertions with WASAPI, including playback and mute checks for ten aircraft; RCV session passed 168 assertions with its installed native backend and no conditional skips |
+| [Native Windows headless checks](verification/native-headless/README.md) | Crash integration passed 244 assertions with WASAPI; RCV session passed 168 with its installed native backend; the isolated WASAPI pump passed 25, including uninterrupted output through a 600 ms main-thread stall. No engine warnings or errors |
 | [Frozen numerical comparison](numerical-comparison.json) | 20 current fixed-wing cases, 960 ticks / 961 rows each, byte-identical across beta1/beta2; five PCG and five OU streams identical, independent PCG recurrence passed |
 | Companion matrix and replay | 148 checks per engine; sampled trajectories and scenario metrics identical; nine fresh beta2 tapes exact-replayed with 2,881 rows each, complete and `solver_changed=false` |
 | [Final Windows brake gate](verification/final-brake-post-fix/README.md) | All 16 original beta1 goldens, beta2 reference/candidate full-value comparisons, and 258 unit checks passed; the final 1,679-entry input manifest matches the root |
