@@ -37,19 +37,22 @@ the Mac's account configuration. Preserve normal SSH host-key verification.
 
 ## 2. Paths and installed tools
 
-These are existing resources, not destinations to overwrite with a sync.
+The final access check found SSH and the Python environment available, but the
+original checkout/engine and Mac campaign copies below had been removed since
+the earlier check. Do not treat historical paths as installed tools. The Linux
+campaign evidence remains available. Check existence before reuse.
 
 | Resource | Location / scope |
 | --- | --- |
 | Linux development checkout | `/home/bulto/OpenRCsimulator` |
-| Original Mac checkout | `/Users/gius/Documents/OpenRCsimulator`; preserve the owner's work and preferences |
-| Native engine | `/Users/gius/Documents/OpenRCsimulator/.tools/Godot_v4.8-beta1_macos.arm64/Godot.app/Contents/MacOS/Godot` |
-| Retained research workspace | `/Users/gius/OpenRC-m1-check`; contains the tested tools, Python environment and historical copies, not an automatically current checkout |
+| Original Mac checkout | `/Users/gius/Documents/OpenRCsimulator`; **absent at final check**, historical location |
+| Historical native engine | `/Users/gius/Documents/OpenRCsimulator/.tools/Godot_v4.8-beta1_macos.arm64/Godot.app/Contents/MacOS/Godot`; **absent**, acquire through the existing getter in section 4 |
+| Remaining research workspace | `/Users/gius/OpenRC-m1-check`; Python and partial source remain, but its `assets` link targets the missing original checkout. Use a fresh complete source snapshot for game checks |
 | Tested Python | `/Users/gius/OpenRC-m1-check/.venv/bin/python`; native ARM64 Python 3.9.6, psutil 7.2.2 |
-| Frozen comparison evidence | `/Users/gius/OpenRC-m1-check/tmp/apple-round5/` and `apple-round6/`; preserve role copies, imports, authoring inputs, fixtures, manifests, raw captures and analysis |
-| Round-6 host helper | `/Users/gius/OpenRC-m1-check/tmp/apple-round6/host/macos_host_state-r4`; build receipt in the same directory |
-| Round-6 final analysis | `/Users/gius/OpenRC-m1-check/tmp/apple-round6/analysis/long-final.json`; raw captures in `runs/metal-long-{baseline,candidate}-{1..3}/` |
-| Retained development package | `/Users/gius/OpenRC-m1-package-check/tmp/round2-final-20261102/OpenRC-M1-round2.zip`; historical build, not the current release |
+| Retained comparison evidence on Linux | `/home/bulto/OpenRCsimulator/tmp/apple-round5/` and `apple-round6/`; preserve raw captures, analysis and manifests. Mac copies formerly under `/Users/gius/OpenRC-m1-check/tmp/` are absent |
+| Historical host helper | `/Users/gius/OpenRC-m1-check/tmp/apple-round6/host/macos_host_state-r4`; **absent**. Linux `tmp/apple-round6/host/` retains the build evidence; build a new helper for a new campaign |
+| Round-6 final analysis on Linux | `/home/bulto/OpenRCsimulator/tmp/apple-round6/analysis/long-final.json`; raw captures in sibling `metal-long-{baseline,candidate}-{1..3}/` directories |
+| Historical development package | `/Users/gius/OpenRC-m1-package-check/tmp/round2-final-20261102/OpenRC-M1-round2.zip`; **absent at final check**, not a current release |
 | New task workspaces | Use a fresh `/Users/gius/OpenRC-m1-work/<task-id>/` |
 | Apple tools | `/usr/bin/xcrun`, `/usr/bin/caffeinate`; clang resolves under `/Library/Developer/CommandLineTools/` |
 
@@ -63,19 +66,29 @@ for a new hardware/tool receipt.
 The Python above is sufficient for the exercised checked runner, psutil and
 bridge. **Template correction requires Python 3.11+** through
 `OPENRC_GODOT_PYTHON`; do not use the 3.9 environment for that step.
-Source checks need no export templates. Reuse the pinned engine rather than
-downloading another copy for each task.
+Source checks need no export templates. Once acquired, reuse a validated pinned
+engine cache across tasks rather than downloading another copy each time.
 
 ## 3. Prepare a fresh source workspace
 
 Coordinate one owner for the Mac's rendered app and performance measurements.
 Other agents may research or edit on Linux. Check available space before copying
-or importing: only about **1.6 GiB** was free at the last access check. Budget for
-source, imports and outputs; insufficient headroom requires resolving storage
-before a large transfer. Preserve the paths in the table above.
+or importing. Resolve the intended commit once; use that exact ID for both the
+identity receipt and transferred archive. Inspect the tracked payload size:
+
+```bash
+M1_COMMIT="$(git rev-parse --verify HEAD)"
+git ls-tree -r -l "$M1_COMMIT" | awk '{bytes += $4} END {printf "Tracked payload: %.2f GiB\n", bytes/1073741824}'
+m1ssh 'df -h /System/Volumes/Data'
+```
+
+At the reviewed `cdc08bd6f` snapshot the full tracked tree is 6.71 GiB, and the
+research app copy adds 0.83 GiB **before** imports, engine cache and outputs.
+Proceed only when the complete task budget fits with OS headroom. Preserve all
+remaining evidence and credentials; resolve insufficient storage before transfer.
 
 For a **committed source snapshot**, run from the Linux checkout after setting
-the connection variables above:
+the connection variables and `M1_COMMIT` above:
 
 ```bash
 M1_TASK="m1-$(date -u +%Y%m%dT%H%M%SZ)"
@@ -83,25 +96,27 @@ M1_WORK="/Users/gius/OpenRC-m1-work/$M1_TASK"
 (
 set -euo pipefail
 mkdir "tmp/$M1_TASK"
-git rev-parse HEAD > "tmp/$M1_TASK/source-head.txt"
+printf '%s\n' "$M1_COMMIT" > "tmp/$M1_TASK/source-head.txt"
 git status --short > "tmp/$M1_TASK/source-status.txt"
 m1ssh "mkdir -p /Users/gius/OpenRC-m1-work && mkdir '$M1_WORK'"
-git archive --format=tar HEAD | m1ssh "tar -xf - -C '$M1_WORK'"
+git archive --format=tar "$M1_COMMIT" | m1ssh "tar -xf - -C '$M1_WORK'"
 scp -i "$M1_KEY" -o IdentitiesOnly=yes -o BatchMode=yes -o UpdateHostKeys=no \
   "tmp/$M1_TASK/source-head.txt" "$M1_HOST:$M1_WORK/source-head.txt"
 )
 ```
 
-This transfers tracked committed contents without Linux `.godot`, `.tools`,
-virtual environments, credentials or old captures. It excludes uncommitted and
+This transfers tracked committed contents without ignored Linux `.godot`, `.tools`,
+virtual environments, credentials or capture outputs. It excludes uncommitted and
 untracked changes. For a dirty candidate, transfer only reviewed changes into
 your new task directory and retain its diff and file hashes; identify the actual
 bytes tested. A failed transfer leaves a partial directory: inspect it and use a
 new task ID for a fresh attempt.
 
-The archive is a source snapshot, **not a Git checkout**. The examples below use
-an explicit engine path. `app/test.sh` calls the getter directly, needs a proper
-Git checkout/cache and does not honor `OPENRC_GODOT` as an engine override;
+The archive is a source snapshot, **not a historical Git checkout**. If the engine
+is missing, section 4 initializes local Git metadata solely so the existing getter
+can locate its cache. This does not restore source history or establish a new
+source commit. `app/test.sh` calls the getter directly, needs a proper checkout
+and its prerequisites, and does not honor `OPENRC_GODOT` as an engine override;
 follow the [full-suite contract](shared.md#full-app-suite) when that gate is needed.
 
 ## 4. Import and run focused native checks
@@ -109,18 +124,34 @@ follow the [full-suite contract](shared.md#full-app-suite) when that gate is nee
 In a **Mac shell**, enter the new task path printed/selected above, then:
 
 ```bash
-cd '/Users/gius/OpenRC-m1-work/<task-id>'
+cd '/Users/gius/OpenRC-m1-work/<task-id>' || exit 1
 M1_PY=/Users/gius/OpenRC-m1-check/.venv/bin/python
-export OPENRC_GODOT=/Users/gius/Documents/OpenRCsimulator/.tools/Godot_v4.8-beta1_macos.arm64/Godot.app/Contents/MacOS/Godot
+# Only in this new archive snapshot: give the official getter a cache root.
+test -f source-head.txt || exit 1
+git init -q . || exit 1
+# Reuse a validated existing engine path instead when one is available.
+OPENRC_GODOT="$(bash app/get-godot.sh)" || exit 1
+export OPENRC_GODOT
+M1_APP="$PWD/tmp/research/app"
+```
+
+Stop if acquisition fails. The getter verifies the official ARM64 archive,
+bundle and exact engine version; record the resulting absolute path for reuse.
+Keep `source-head.txt` as the archived source identity: the initialized repository
+has no source commit. With a working engine, run the dependent checks together:
+
+```bash
+(
+set -eu
 "$M1_PY" tools/godot/macos_preflight.py --godot "$OPENRC_GODOT"
 "$M1_PY" tools/graphics/prepare_research.py --dest tmp/research
-M1_APP="$PWD/tmp/research/app"
 "$M1_PY" tools/godot/run_checked.py --out-dir tmp/checks --label m1-import \
   --timeout 600 -- "$OPENRC_GODOT" --headless --path "$M1_APP" \
   --audio-driver Dummy --import
 "$M1_PY" tools/godot/run_checked.py --out-dir tmp/checks --label m1-frame-tests \
   --timeout 90 -- "$OPENRC_GODOT" --headless --path "$M1_APP" \
   --audio-driver Dummy --script res://tests/test_frame_samples.gd
+)
 ```
 
 Replace `<task-id>` with your task directory, and select the test appropriate to
@@ -157,7 +188,9 @@ Use the [bridge commands](../../tools/debug/README.md#quick-start) for controls,
 screenshots, smoke, leaks and app navigation. Its `smoke --app <prepared-app>`
 starts and owns a separate session; finish an existing session first. Use the
 [graphics launcher](../../tools/graphics/README.md#isolated-mac-renderer-trials-dt-mac)
-for explicit renderer comparisons; this bridge example is a functional check.
+for explicit renderer comparisons, passing `--godot "$OPENRC_GODOT"` and
+`--research-project "$M1_APP"`. That launcher does not read `OPENRC_GODOT`
+implicitly. This bridge example is a functional check.
 
 The owner must be logged into the Mac's graphical desktop, awake and unlocked.
 For performance runs, leave the game visible and focused on the active desktop;
@@ -174,11 +207,11 @@ headless test proves software behavior, not native GPU performance.
 | Repeatable active flight and health/hash receipts | [Sustained fixture](../../research/performance/README.md#repeatable-active-flight-dt-mac-03) |
 | Long stream and explicit 30/1,800-second reducer minima | [Long capture contract](../../research/performance/README.md#long-continuous-captures-dt-mac-02b) |
 | Completed three-pair M1 comparison and known limits | [Round-6 evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison) |
-| Export/signature/package replay | [Release tools](../../tools/release/README.md); the retained old ZIP is not a new candidate |
+| Export/signature/package replay | [Release tools](../../tools/release/README.md); a historical ZIP is not a new candidate |
 
 For a new campaign, use new run paths and freeze source, linked assets, imports,
-engine, helper, settings and workload identities. Round-5/6 scripts contain
-absolute frozen paths and source pins: retain them as evidence, not mutable
+engine, helper, settings and workload identities. Round-5/6 scripts retained on Linux contain
+absolute historical Mac paths and source pins: retain them as evidence, not mutable
 launchers for a new build. Rebuild an optional helper in a new output directory
 when its source/toolchain changes; keep its source and binary receipt together.
 
@@ -201,8 +234,15 @@ Linux, for the focused checks above:
 
 ```bash
 scp -Cr -i "$M1_KEY" -o IdentitiesOnly=yes -o BatchMode=yes -o UpdateHostKeys=no \
-  "$M1_HOST:$M1_WORK/tmp/checks" "tmp/$M1_TASK/"
+  "$M1_HOST:$M1_WORK/tmp/checks" \
+  "$M1_HOST:$M1_WORK/tmp/macos-preflight" \
+  "$M1_HOST:$M1_WORK/tmp/research/research-preparation.json" \
+  "$M1_HOST:$M1_WORK/source-head.txt" "tmp/$M1_TASK/"
 ```
+
+Retain the preflight and preparation receipts with the logs: they bind the
+engine/host and the prepared project/file manifest. For a dirty candidate, also
+retain its reviewed patch and changed-file hashes before cleaning the workspace.
 
 For a performance run, copy its frame JSON **and all sidecars**, health receipt,
 checked logs, resource/host attachments, manifests and analysis. Validate hashes
@@ -223,7 +263,7 @@ helper and keep-awake processes owned by your task.
 | SSH works, GUI does not | Confirm an unlocked logged-in Aqua session and an available visible desktop. Use headless only for checks that do not require graphics. |
 | Capture pauses or has no draw progress | Restore actual focus/visibility, inspect bridge state and collector reasons, then start a fresh capture. |
 | Import/copy fails or storage is low | Inspect the checked log and `df -h`; retain partial evidence and resolve task-owned storage before retrying. |
-| Getter/full suite fails in a snapshot | The archive has no `.git`; use the explicit native engine for focused commands or prepare a proper checkout for getter/full-suite workflows. |
+| Getter/full suite fails in a snapshot | The getter needs the local Git cache root described above. Full-suite workflows need a proper checkout and prerequisites; the archive identity is its separately retained source commit. |
 
 Completion means the intended native command passed its own validation, exact
 source/tool identities and required evidence are retained, and owned processes
