@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "OpenRC Simulator | Kostenloser RC-Flugsimulator mit offenem Quellcode",
-    "description": "Lade OpenRC Simulator herunter, einen kostenlosen RC-Flugsimulator mit offenem Quellcode für Windows, Linux und macOS. Entdecke den Modellflug in einem Desktop-Simulator in der frühen Alpha-Phase."
+    "description": "Lade OpenRC Simulator herunter, einen kostenlosen RC-Flugsimulator mit offenem Quellcode für Windows, Linux und macOS. Entdecke den Modellflug mit dieser Beta-Vorschau des Desktop-Simulators."
   },
   "translations": {
     "actualModel": "RENDERINGS DES PROJEKTMODELLS",
@@ -30,7 +30,7 @@
     "assetModelsSub": "Quellen, Generatoren und bewegliche Teile",
     "audioLink": "Audio ↗",
     "backTop": "Nach oben ↑",
-    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS. Diese Beta-Vorschau ist ein Simulator in der frühen Alpha-Phase; Flugzeug- und Bodenfahrzeugmodelle sind weiterhin experimentell.",
+    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS. Diese Beta-Vorschau enthält weiterhin experimentelle Flugzeug- und Bodenfahrzeugmodelle.",
     "candidateKicker": "BETA-VORSCHAU · v0.1.9-beta.1",
     "candidateLimitsNote": "Die unabhängige Bewertung einiger experimenteller Flugzeuge steht noch aus:",
     "candidateRelease": "Versionshinweise zu v0.1.9-beta.1 ↗",
@@ -118,7 +118,7 @@
     "hangarIntro": "Fünf Flugzeuge und ein experimenteller Hubschrauber.<br>Wähle ein Modell und erkunde es aus jedem Blickwinkel.",
     "hangarKicker": "01 / DER HANGAR",
     "helicopterTab": "Hubschrauber",
-    "heroCopy": "Ein kostenloser RC-Flugsimulator mit offenem Quellcode.<br>Für Windows, Linux und macOS. Frühe Alpha-Phase.",
+    "heroCopy": "Ein kostenloser RC-Flugsimulator mit offenem Quellcode.<br>Für Windows, Linux und macOS. Beta-Vorschau.",
     "heroCta": "Herunterladen",
     "heroEyebrow": "MODELLFLUG · OPEN SOURCE",
     "heroHeading": "Der Flugplatz<br>ist geöffnet.",
@@ -334,7 +334,7 @@
     "cockpitAlt": "Nahaufnahme der Kabinenhaube des Vantage Jet",
     "wingAlt": "Tragfläche des Vantage Jet und ihr Übergang zum Rumpf",
     "tailAlt": "Seitenleitwerk und Höhenleitwerke des Vantage Jet",
-    "earlyAlpha": "FRÜHE ALPHA-PHASE",
+    "releaseStage": "BETA-VORSCHAU",
     "modelStudy": "FLUGZEUGVORSTELLUNG / OPENRC"
   }
 }

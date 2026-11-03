@@ -54,7 +54,7 @@ const translations = {
   releaseHighlights: 'See the beta release notes for package contents. Flight behavior still needs real-world evaluation.',
   skip: 'Skip to content', navHangar: 'The hangar', navField: 'The field', navProject: 'The project', download: 'Download',
   heroEyebrow: 'MODEL AVIATION · OPEN SOURCE', renderNote: 'SIMULATOR MODEL · STUDIO VIEW',
-  heroHeading: 'The flying field<br>is open.', heroCopy: 'A free, open-source RC flight simulator.<br>For Windows, Linux and macOS. Early alpha.', heroCta: 'Download',
+  heroHeading: 'The flying field<br>is open.', heroCopy: 'A free, open-source RC flight simulator.<br>For Windows, Linux and macOS. Beta preview.', heroCta: 'Download',
   platforms: 'WINDOWS / LINUX / macOS', explore: 'EXPLORE THE PROJECT', free: 'FREE. FROM YOUR FIRST FLIGHT.',
   hangarKicker: '01 / THE HANGAR', hangarHeading: 'Every aircraft.<br>A different character.', hangarIntro: 'From a wooden classic to a jet.<br>Five fixed-wing aircraft in current source, each with its own configuration.',
   studio: 'AIRCRAFT SHOWCASE / OPENRC', actualModel: 'PROJECT MODEL RENDERS', span: 'Wingspan', power: 'Powerplant', gear: 'Landing gear', aircraftDetails: 'Explore the model',
@@ -68,7 +68,7 @@ const translations = {
   honesty: 'Software is checked. Realism must be demonstrated. Independent physical validation and pilot evaluation remain open.', roadmap: 'See what’s next',
   downloadKicker: '02 / YOUR NEXT TAKEOFF', downloadHeading: 'Less watching.<br>More flying.', downloadIntro: 'Download, extract the ZIP and launch.<br>No Godot installation needed.', downloadNote: 'Beta preview v0.1.9-beta.1. The ZIPs have no installer or archive signature; the macOS app is ad-hoc signed but not notarized.<br>Aircraft and ground-vehicle models remain experimental and need independent measurements and pilot evaluation.', firstFlight: 'First-flight guide ↗', releaseNotes: 'Release notes ↗',
   gameLanguages: 'The simulator interface in current source is available in nine languages: <bdi dir="ltr">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. See the beta release notes for included languages.',
-  candidateKicker: 'BETA PREVIEW · v0.1.9-beta.1', candidateTitle: 'v0.1.9-beta.1 is available', candidateIntro: 'Download v0.1.9-beta.1 for Windows, Linux or macOS. This beta preview is an early-alpha simulator; aircraft and ground-vehicle models remain experimental.', candidateLimitsNote: 'Independent evaluation of some experimental aircraft remains open:', candidateStikLimit: 'The Stik’s 240 Hz sideslip-limit check remains open; it is an estimated boundary check.', candidateYawLimit: 'The R02 yaw-damping comparison remains open; its model comparison is not a physical measurement.', candidateRelease: 'v0.1.9-beta.1 release notes ↗',
+  candidateKicker: 'BETA PREVIEW · v0.1.9-beta.1', candidateTitle: 'v0.1.9-beta.1 is available', candidateIntro: 'Download v0.1.9-beta.1 for Windows, Linux or macOS. This beta preview includes experimental aircraft and ground-vehicle models.', candidateLimitsNote: 'Independent evaluation of some experimental aircraft remains open:', candidateStikLimit: 'The Stik’s 240 Hz sideslip-limit check remains open; it is an estimated boundary check.', candidateYawLimit: 'The R02 yaw-damping comparison remains open; its model comparison is not a physical measurement.', candidateRelease: 'v0.1.9-beta.1 release notes ↗',
   communityKicker: 'AN OPEN PROJECT. A SHARED EFFORT.', communityHeading: 'The next improvement<br>could start with you.', communityCopy: 'A test with your transmitter. A real measurement. A code improvement. Every contribution helps build the next flight.', contribute: 'Contribute on GitHub', feedback: 'Share your experience',
   donateHero: 'Donate', donateKicker: 'NEXT STEP / STEAM', donateHeading: 'Help bring OpenRC to Steam.',
   donateGoal: 'The first goal is to cover Steam’s <a href="https://partner.steamgames.com/doc/gettingstarted/appfee">US$100 app fee</a>. If donations exceed that goal, the rest will fund AI model tokens to keep improving the simulator.',
@@ -96,7 +96,7 @@ alts.truckAlt = ['Render del modelo naranja Bisonte MT8 con suspensión y neumá
 
 const englishMetadata = {
   title: 'OpenRC Simulator | Free Open-Source RC Flight Simulator',
-  description: 'Download OpenRC Simulator, a free, open-source RC flight simulator for Windows, Linux and macOS. Explore model aviation in an early-alpha desktop simulator.'
+  description: 'Download OpenRC Simulator, a free, open-source RC flight simulator for Windows, Linux and macOS. Explore model aviation in this beta preview of the desktop simulator.'
 };
 Object.assign(translations, {
   noScriptCatalogue: 'Explore the <a href="https://github.com/bultodepapas/OpenRCsimulator#aircraft">full aircraft catalogue on GitHub</a>.',

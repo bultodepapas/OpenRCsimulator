@@ -149,7 +149,7 @@ def end_card(path, detail=""):
     if detail:
         tracked(d, (153, 734), detail, 27, 3, (214, 226, 236), True)
     d.text((153, 776), "bultodepapas.github.io/OpenRCsimulator", font=font(32, True), fill=(173, 199, 217))
-    tracked(d, (1590, 94), "EARLY ALPHA", 24, 2, (173, 199, 217), True)
+    tracked(d, (1590, 94), "BETA PREVIEW", 24, 2, (173, 199, 217), True)
     d.text((153, 986), "Music: Uprising by Scott Buckley · CC BY 4.0 · scottbuckley.com.au", font=font(24, True), fill=(143, 164, 182))
     im.save(path)
 

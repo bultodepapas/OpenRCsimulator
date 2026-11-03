@@ -75,7 +75,7 @@ func _draw_mark() -> void:
 		var delay := 0.32 + (target.x + 740.0) / 1465.0 * 0.7
 		if piece.group == "SIMULATOR":
 			delay += 0.62
-		elif piece.group == "ALPHA":
+		elif piece.group == "BETA":
 			delay += 0.45
 		var phase := clampf((elapsed - delay) / 1.5, 0.0, 1.0)
 		var ease := 1.0 - pow(1.0 - phase, 4.0)

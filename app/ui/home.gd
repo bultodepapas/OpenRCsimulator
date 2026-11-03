@@ -160,7 +160,7 @@ var _left_layout: VBoxContainer
 var _header: HBoxContainer
 var _header_actions: HBoxContainer
 var _brand_label: Label
-var _alpha_badge: PanelContainer
+var _beta_badge: PanelContainer
 var _version_label: Label
 var _version_shown := false
 var _rail_scrim: TextureRect
@@ -220,11 +220,11 @@ func _init() -> void:
 	identity.add_child(wordmark)
 	var badge := PanelContainer.new()
 	badge.theme_type_variation = "Badge"
-	badge.name = "AlphaBadge"
+	badge.name = "BetaBadge"
 	badge.custom_minimum_size = Vector2(68.0, 30.0)
 	badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	badge.add_child(_label("ALPHA", "SectionLabel", false))
-	_alpha_badge = badge
+	badge.add_child(_label("BETA", "SectionLabel", false))
+	_beta_badge = badge
 	identity.add_child(badge)
 	var build := BuildInfo.current()
 	var version_label := _label(build.label if build.source == "export" else "development build", "SecondaryLabel", build.source != "export")
@@ -1022,7 +1022,7 @@ func _apply_responsive_layout() -> void:
 		language_button.text, HORIZONTAL_ALIGNMENT_LEFT, -1, language_button.get_theme_font_size("font_size")).x + 32.0)
 	settings_button.custom_minimum_size.x = maxf(130.0, settings_button.get_theme_font("font").get_string_size(
 		tr(settings_button.text), HORIZONTAL_ALIGNMENT_LEFT, -1, settings_button.get_theme_font_size("font_size")).x + 32.0)
-	_alpha_badge.visible = not large_text
+	_beta_badge.visible = not large_text
 	_version_label.visible = _version_shown and not large_text
 	_set_responsive_font(_brand_label, UiTheme.SIZE.header, true)
 	var header_height := maxf(_header.get_combined_minimum_size().y, _header_actions.get_combined_minimum_size().y)

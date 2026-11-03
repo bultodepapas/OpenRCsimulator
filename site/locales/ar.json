@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "OpenRC Simulator | محاكي طيران RC مجاني ومفتوح المصدر",
-    "description": "نزّل OpenRC Simulator، محاكي طيران RC مجاني ومفتوح المصدر لأنظمة Windows وLinux وmacOS. استكشف طيران النماذج في محاكي سطح مكتب بإصدار ألفا مبكر."
+    "description": "نزّل OpenRC Simulator، محاكي طيران RC مجاني ومفتوح المصدر لأنظمة Windows وLinux وmacOS. استكشف طيران النماذج في معاينة بيتا لمحاكي سطح المكتب."
   },
   "translations": {
     "actualModel": "صور مصيّرة للنموذج المستخدم في المشروع",
@@ -30,7 +30,7 @@
     "assetModelsSub": "المصادر والمولّدات ومفاصل الحركة",
     "audioLink": "الصوت ↗",
     "backTop": "العودة إلى الأعلى ↑",
-    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS. هذه معاينة بيتا لمحاكي بألفا مبكر؛ ولا تزال نماذج الطائرات والمركبات البرية تجريبية.",
+    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS. هذه معاينة بيتا؛ ولا تزال نماذج الطائرات والمركبات البرية تجريبية.",
     "candidateKicker": "معاينة بيتا · v0.1.9-beta.1",
     "candidateLimitsNote": "لا يزال التقييم المستقل لبعض الطائرات التجريبية مفتوحًا:",
     "candidateRelease": "ملاحظات الإصدار v0.1.9-beta.1 ↗",
@@ -118,7 +118,7 @@
     "hangarIntro": "خمس طائرات ومروحية تجريبية.<br>اختر طرازًا واستكشفه من كل زاوية.",
     "hangarKicker": "01 / الحظيرة",
     "helicopterTab": "المروحية",
-    "heroCopy": "محاكي طيران RC مجاني ومفتوح المصدر.<br>لأنظمة Windows وLinux وmacOS. إصدار ألفا مبكر.",
+    "heroCopy": "محاكي طيران RC مجاني ومفتوح المصدر.<br>لأنظمة Windows وLinux وmacOS. معاينة بيتا.",
     "heroCta": "تنزيل",
     "heroEyebrow": "طيران النماذج · مفتوح المصدر",
     "heroHeading": "ميدان الطيران<br>مفتوح.",
@@ -334,7 +334,7 @@
     "cockpitAlt": "لقطة مقرّبة لغطاء قمرة القيادة لطائرة Vantage Jet",
     "wingAlt": "جناح Vantage Jet والتقاء الجناح بجسم الطائرة",
     "tailAlt": "زعنفة Vantage Jet وموازناتها",
-    "earlyAlpha": "ألفا مبكر",
+    "releaseStage": "معاينة بيتا",
     "modelStudy": "عرض الطائرات / OpenRC"
   }
 }

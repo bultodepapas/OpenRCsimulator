@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "OpenRC Simulator｜免费开源遥控飞行模拟器",
-    "description": "下载 OpenRC Simulator，这款免费开源的遥控飞行模拟器支持 Windows、Linux 和 macOS。在早期 Alpha 阶段的桌面模拟器中探索模型航空。"
+    "description": "下载 OpenRC Simulator，这款免费开源的遥控飞行模拟器支持 Windows、Linux 和 macOS。通过这款桌面模拟器的 Beta 预览版探索模型航空。"
   },
   "translations": {
     "actualModel": "项目实际使用的模型渲染图",
@@ -30,7 +30,7 @@
     "assetModelsSub": "来源、生成器与关节运动",
     "audioLink": "音频 ↗",
     "backTop": "返回顶部 ↑",
-    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS. 这是早期 Alpha 阶段模拟器的 Beta 预览版；飞机和地面车辆模型仍属实验性。",
+    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS。这一 Beta 预览版包含仍处于实验阶段的飞机和地面车辆模型。",
     "candidateKicker": "Beta 预览版 · v0.1.9-beta.1",
     "candidateLimitsNote": "部分实验性飞机的独立评估仍未完成：",
     "candidateRelease": "v0.1.9-beta.1 发行说明 ↗",
@@ -118,7 +118,7 @@
     "hangarIntro": "五架飞机和一架实验性直升机。<br>选择机型，从各个角度探索。",
     "hangarKicker": "01 / 机库",
     "helicopterTab": "直升机",
-    "heroCopy": "免费开源的遥控飞行模拟器。<br>支持 Windows、Linux 和 macOS。早期 Alpha 版。",
+    "heroCopy": "免费开源的遥控飞行模拟器。<br>支持 Windows、Linux 和 macOS。Beta 预览版。",
     "heroCta": "下载",
     "heroEyebrow": "模型航空 · 开源",
     "heroHeading": "飞行场<br>已经开放。",
@@ -334,7 +334,7 @@
     "cockpitAlt": "Vantage Jet 座舱罩特写",
     "wingAlt": "Vantage Jet 机翼及其与机身的连接处",
     "tailAlt": "Vantage Jet 垂直尾翼和水平尾翼",
-    "earlyAlpha": "早期 Alpha 版",
+    "releaseStage": "Beta 预览版",
     "modelStudy": "飞机展示 / OPENRC"
   }
 }

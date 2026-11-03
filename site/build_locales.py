@@ -127,9 +127,9 @@ def build():
                 if value in copy["attributes"]:
                     element[attribute] = copy["attributes"][value]
         for element in soup.select('img[src*="branding/"]'):
-            element["alt"] = "OpenRC Simulator — " + copy["ui"]["earlyAlpha"]
+            element["alt"] = "OpenRC Simulator — " + copy["ui"]["releaseStage"]
         for selector in ['meta[property="og:image:alt"]', 'meta[name="twitter:image:alt"]']:
-            soup.select_one(selector)["content"] = "OpenRC Simulator — " + copy["ui"]["earlyAlpha"]
+            soup.select_one(selector)["content"] = "OpenRC Simulator — " + copy["ui"]["releaseStage"]
 
         menu = soup.select_one('.language-menu')
         menu.clear()

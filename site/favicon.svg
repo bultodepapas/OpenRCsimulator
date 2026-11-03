@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="784 203 410 410" width="64" height="64"><title>OpenRC Simulator ALPHA</title><rect x="784" y="203" width="410" height="410" fill="#080808" /><g id="R" fill="#00AFF0">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="784 203 410 410" width="64" height="64"><title>OpenRC Simulator BETA</title><rect x="784" y="203" width="410" height="410" fill="#080808" /><g id="R" fill="#00AFF0">
     <path id="R-top" d="M831 349 L952 349 L977 328 L965 313 L837 313 Z" />
     <path id="R-right" d="M947 394 L967 416 L984 400 L994 347 L980 331 L955 353 Z" />
     <path id="R-upper-left" d="M823 398 L838 414 L861 394 L868 355 L831 355 Z" />

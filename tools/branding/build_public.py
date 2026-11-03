@@ -1,6 +1,6 @@
 """Derive public identity assets from the refined SVG without changing its paths.
 
-SVGs use the standard library. --raster uses Playwright 1.61.0 and installed Chrome
+SVGs use the standard library. --raster uses Playwright 1.61.0 and its bundled Chromium
 to render the social PNG. --check verifies SVG outputs without a browser.
 """
 import argparse
@@ -18,7 +18,7 @@ ET.register_namespace("", NS[1:-1])
 
 def svg(viewbox, width, height, groups, background=False):
     root = ET.Element(NS + "svg", {"viewBox": viewbox, "width": str(width), "height": str(height)})
-    ET.SubElement(root, NS + "title").text = "OpenRC Simulator ALPHA"
+    ET.SubElement(root, NS + "title").text = "OpenRC Simulator BETA"
     if background:
         x, y, w, h = viewbox.split()
         ET.SubElement(root, NS + "rect", {"x": x, "y": y, "width": w, "height": h, "fill": "#080808"})
@@ -43,7 +43,7 @@ def raster():
     if importlib.metadata.version("playwright") != "1.61.0":
         raise SystemExit("Use Playwright==1.61.0 for the optional PNG renderer")
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(channel="chrome", headless=True)
+        browser = playwright.chromium.launch(headless=True)
         page = browser.new_page(viewport={"width": 1200, "height": 630}, device_scale_factor=1)
         page.goto((DEST / "openrc-social.svg").as_uri())
         page.screenshot(path=str(DEST / "openrc-social.png"))

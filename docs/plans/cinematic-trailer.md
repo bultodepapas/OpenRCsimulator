@@ -6,6 +6,8 @@ User brief: a **very cinematic, AAA-style game trailer**, entirely in **English*
 
 This plan retains the creative targets and remaining review gates. The [production evidence](../research/cinematic-trailer/production-2026-10-17.md) is authoritative for the delivered film, source identities and deliberate changes from those targets. The [dated investigation](../research/cinematic-trailer/2026-10-17.md) records the earlier source audit at commit `049df2034de017e6fedc649a55194eb5977191cd` and research limits.
 
+Current end-card rendering in `tools/trailer/assemble.py` uses `BETA PREVIEW`; the dated storyboards below retain their original wording.
+
 ## Revision 9 — legibility re-cut (TRA-10, 2026-10-29)
 
 **Owner verdict on v8:** too fast; the titles cannot be read. **Audit of v8 (measured on its timeline):**

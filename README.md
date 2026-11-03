@@ -20,7 +20,7 @@
 
 <p align="center">
   <a href="https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=hero">
-    <img src="site/assets/branding/openrc-banner.svg" alt="OpenRC Simulator — ALPHA" width="960">
+    <img src="site/assets/branding/openrc-banner.svg" alt="OpenRC Simulator — BETA" width="960">
   </a>
 </p>
 
@@ -40,7 +40,7 @@
 
 *Home with MoonRunner X99. Game images below were captured from development builds on **28–29 October 2026**, at **1920×1080**. [Capture details](docs/media/README.md#readme-gallery).*
 
-> **Early alpha.** The simulator is being built with the RC community. Flight models still need independent measurements and pilot evaluation; automated tests do not establish real-aircraft accuracy.
+> **Beta preview.** The simulator is being built with the RC community. Flight models still need independent measurements and pilot evaluation; automated tests do not establish real-aircraft accuracy.
 
 ## Download and fly
 

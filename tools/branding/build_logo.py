@@ -23,7 +23,7 @@ def build():
     for group in source.findall(f"{SVG}g"):
         for path in group.findall(f"{SVG}path"):
             # Absolute M/L/C/Z: the control-point hull also bounds cubic curves.
-            # The rounded ALPHA frame uses C; the other contours are polygons.
+            # The rounded BETA frame uses C; the other contours are polygons.
             if any(command not in "MLCZ" for command in re.findall(r"[A-Za-z]", path.attrib["d"])):
                 raise ValueError("Unsupported path command; extend bounds calculation first")
             values = [float(v) for v in re.findall(r"-?\d+(?:\.\d+)?", path.attrib["d"])]

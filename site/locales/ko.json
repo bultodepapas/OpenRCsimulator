@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "OpenRC Simulator | 무료 오픈 소스 RC 비행 시뮬레이터",
-    "description": "Windows, Linux, macOS용 무료 오픈 소스 RC 비행 시뮬레이터 OpenRC Simulator를 다운로드하세요. 초기 알파 단계의 데스크톱 시뮬레이터에서 모형 항공의 세계를 만나 보세요."
+    "description": "Windows, Linux, macOS용 무료 오픈 소스 RC 비행 시뮬레이터 OpenRC Simulator를 다운로드하세요. 데스크톱 시뮬레이터의 베타 미리보기에서 모형 항공의 세계를 만나 보세요."
   },
   "translations": {
     "actualModel": "프로젝트에서 사용하는 모델 렌더",
@@ -30,7 +30,7 @@
     "assetModelsSub": "소스, 생성기, 가동 부품",
     "audioLink": "오디오 ↗",
     "backTop": "맨 위로 ↑",
-    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS. 초기 알파 단계 시뮬레이터의 베타 미리보기이며, 항공기와 지상 차량 모델은 계속 실험 단계입니다.",
+    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS. 이 베타 미리보기에는 아직 실험 단계인 항공기와 지상 차량 모델이 포함되어 있습니다.",
     "candidateKicker": "베타 미리보기 · v0.1.9-beta.1",
     "candidateLimitsNote": "일부 실험용 항공기의 독립 평가는 아직 진행 중입니다:",
     "candidateRelease": "v0.1.9-beta.1 릴리스 노트 ↗",
@@ -118,7 +118,7 @@
     "hangarIntro": "비행기 5종과 실험용 헬리콥터 1종.<br>모델을 선택해 다양한 각도에서 살펴보세요.",
     "hangarKicker": "01 / 격납고",
     "helicopterTab": "헬리콥터",
-    "heroCopy": "무료 오픈 소스 RC 비행 시뮬레이터.<br>Windows, Linux, macOS용. 초기 알파 단계.",
+    "heroCopy": "무료 오픈 소스 RC 비행 시뮬레이터.<br>Windows, Linux, macOS용. 베타 미리보기.",
     "heroCta": "다운로드",
     "heroEyebrow": "모형 항공 · 오픈 소스",
     "heroHeading": "비행장이<br>열려 있습니다.",
@@ -334,7 +334,7 @@
     "cockpitAlt": "Vantage Jet 캐노피 클로즈업",
     "wingAlt": "Vantage Jet 날개와 동체 연결부",
     "tailAlt": "Vantage Jet 수직 및 수평 꼬리날개",
-    "earlyAlpha": "초기 알파",
+    "releaseStage": "베타 미리보기",
     "modelStudy": "기체 소개 / OPENRC"
   }
 }

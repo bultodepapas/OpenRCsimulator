@@ -1,6 +1,6 @@
 # OpenRC Simulator: first launch
 
-Status: current-source player guide, checked 2026-10-20. [v0.1.8](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.8) is the latest stable software release for this early-alpha simulator. Aircraft models and experimental activities still require independent physical and pilot validation; automated checks do not establish flight accuracy. See the [v0.1.8 release notes](releases/v0.1.8.md). Current-source features may differ from the v0.1.8 package. Start with the [Ugly Stik](UGLY-STIK-PLAN.md).
+Status: current-source player guide. Last full guide review: 2026-10-20; release status updated 2026-11-03. [v0.1.9-beta.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.9-beta.1) is the published beta preview; [v0.1.8](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.8) is the latest stable software release. Aircraft models and experimental activities still require independent physical and pilot validation; automated checks do not establish flight accuracy. See the [beta release notes](releases/v0.1.9-beta.1.md). Current-source features may differ from the beta package. Start with the [Ugly Stik](UGLY-STIK-PLAN.md).
 
 ## 1. Download and check
 

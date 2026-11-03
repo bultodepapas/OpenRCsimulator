@@ -80,7 +80,7 @@ html:lang(ja) body { font-family:DM,"Noto Sans CJK JP","Yu Gothic","Hiragino Kak
 html:lang(ko) body { font-family:DM,"Noto Sans CJK KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif; word-break:keep-all; overflow-wrap:anywhere; }
 html:lang(ar) body { font-family:Arial,"Noto Sans Arabic","IBM Plex Sans Arabic",sans-serif; }
 html:lang(ja) h2,html:lang(ko) h2 { letter-spacing:0; }
-html[dir=rtl] h2,html[dir=rtl] h3,html[dir=rtl] h4,html[dir=rtl] .eyebrow,html[dir=rtl] .alpha,html[dir=rtl] .footer-bottom { letter-spacing:0; }
+html[dir=rtl] h2,html[dir=rtl] h3,html[dir=rtl] h4,html[dir=rtl] .eyebrow,html[dir=rtl] .release-stage,html[dir=rtl] .footer-bottom { letter-spacing:0; }
 html[dir=rtl] .download h2 { font-family:inherit; line-height:1.2; }
 html[dir=rtl] .hero-copy { left:auto; right:var(--pad); }
 html[dir=rtl] .hero-aircraft { right:auto; left:0; }

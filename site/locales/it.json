@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "OpenRC Simulator | Simulatore di volo RC gratuito e open source",
-    "description": "Scarica OpenRC Simulator, un simulatore di volo RC gratuito e open source per Windows, Linux e macOS. Scopri l’aeromodellismo in un simulatore desktop in fase alfa iniziale."
+    "description": "Scarica OpenRC Simulator, un simulatore di volo RC gratuito e open source per Windows, Linux e macOS. Scopri l’aeromodellismo in questa anteprima beta del simulatore desktop."
   },
   "translations": {
     "actualModel": "RENDER DEL MODELLO DEL PROGETTO",
@@ -30,7 +30,7 @@
     "assetModelsSub": "Fonti, generatori e articolazione",
     "audioLink": "Audio ↗",
     "backTop": "Torna in alto ↑",
-    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS. Questa anteprima beta è un simulatore in fase alfa iniziale; i modelli di aerei e veicoli terrestri restano sperimentali.",
+    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS. Questa anteprima beta include modelli di aerei e veicoli terrestri ancora sperimentali.",
     "candidateKicker": "ANTEPRIMA BETA · v0.1.9-beta.1",
     "candidateLimitsNote": "La valutazione indipendente di alcuni aerei sperimentali è ancora in sospeso:",
     "candidateRelease": "Note di rilascio v0.1.9-beta.1 ↗",
@@ -118,7 +118,7 @@
     "hangarIntro": "Cinque aerei e un elicottero sperimentale.<br>Scegli un modello ed esploralo da ogni angolazione.",
     "hangarKicker": "01 / L’HANGAR",
     "helicopterTab": "Elicottero",
-    "heroCopy": "Un simulatore di volo RC gratuito e open source.<br>Per Windows, Linux e macOS. Fase alfa iniziale.",
+    "heroCopy": "Un simulatore di volo RC gratuito e open source.<br>Per Windows, Linux e macOS. Anteprima beta.",
     "heroCta": "Scarica",
     "heroEyebrow": "AEROMODELLISMO · OPEN SOURCE",
     "heroHeading": "Il campo di volo<br>è aperto.",
@@ -334,7 +334,7 @@
     "cockpitAlt": "Primo piano della cabina del Vantage Jet",
     "wingAlt": "Ala del Vantage Jet e giunzione con la fusoliera",
     "tailAlt": "Deriva e stabilizzatori del Vantage Jet",
-    "earlyAlpha": "FASE ALFA INIZIALE",
+    "releaseStage": "ANTEPRIMA BETA",
     "modelStudy": "PRESENTAZIONE DELL’AEREO / OPENRC"
   }
 }

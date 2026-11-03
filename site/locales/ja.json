@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "OpenRC Simulator｜無料のオープンソースRC飛行シミュレーター",
-    "description": "Windows、Linux、macOS向けの無料オープンソースRC飛行シミュレーター、OpenRC Simulatorをダウンロード。模型航空の世界を、開発初期のアルファ版デスクトップシミュレーターで体験しましょう。"
+    "description": "Windows、Linux、macOS向けの無料オープンソースRC飛行シミュレーター、OpenRC Simulatorをダウンロード。模型航空の世界を、このデスクトップシミュレーターのベータプレビューで体験しましょう。"
   },
   "translations": {
     "actualModel": "プロジェクトで使用しているモデルのレンダリング画像",
@@ -30,7 +30,7 @@
     "assetModelsSub": "ソース、生成ツール、可動部",
     "audioLink": "オーディオ ↗",
     "backTop": "ページ上部へ ↑",
-    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS. これは開発初期のアルファ版シミュレーターのベータプレビューです。航空機と地上車両のモデルは引き続き実験段階です。",
+    "candidateIntro": "v0.1.9-beta.1 · Windows / Linux / macOS. このベータプレビューには、引き続き実験段階の航空機と地上車両のモデルが含まれます。",
     "candidateKicker": "ベータプレビュー · v0.1.9-beta.1",
     "candidateLimitsNote": "一部の実験段階の航空機について、独立評価が未完了です：",
     "candidateRelease": "v0.1.9-beta.1 リリースノート ↗",
@@ -118,7 +118,7 @@
     "hangarIntro": "5機の飛行機と実験段階のヘリコプター。<br>モデルを選んで、あらゆる角度から見てみましょう。",
     "hangarKicker": "01 / 格納庫",
     "helicopterTab": "ヘリコプター",
-    "heroCopy": "無料のオープンソースRC飛行シミュレーター。<br>Windows、Linux、macOS対応。開発初期のアルファ版。",
+    "heroCopy": "無料のオープンソースRC飛行シミュレーター。<br>Windows、Linux、macOS対応。ベータプレビュー。",
     "heroCta": "ダウンロード",
     "heroEyebrow": "模型航空 · オープンソース",
     "heroHeading": "飛行場は<br>開いています。",
@@ -334,7 +334,7 @@
     "cockpitAlt": "Vantage Jetのキャノピーのクローズアップ",
     "wingAlt": "Vantage Jetの主翼と胴体の接合部",
     "tailAlt": "Vantage Jetの垂直尾翼と水平尾翼",
-    "earlyAlpha": "開発初期のアルファ版",
+    "releaseStage": "ベータプレビュー",
     "modelStudy": "航空機展示 / OPENRC"
   }
 }
