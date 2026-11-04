@@ -237,8 +237,8 @@ def instrument_branches(project: Path) -> None:
                           "extends RefCounted\n\nstatic var h7_branch_tape: Array[int] = []\n",
                           "wheel branch tape declaration")
     wheels = replace_once(wheels,
-        "\tif -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces):\n\t\treturn {loads = loads, derivative = rates, wheels = diagnostics}\n",
-        "\tif -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces):\n\t\th7_branch_tape.append(50)\n\t\treturn {loads = loads, derivative = rates, wheels = diagnostics}\n\th7_branch_tape.append(51)\n",
+        "\tif -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces) + Track.max_height_m(overlay):\n\t\treturn {loads = loads, derivative = rates, wheels = diagnostics}\n",
+        "\tif -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces) + Track.max_height_m(overlay):\n\t\th7_branch_tape.append(50)\n\t\treturn {loads = loads, derivative = rates, wheels = diagnostics}\n\th7_branch_tape.append(51)\n",
         "enhanced wheel reach branch")
     wheels = replace_once(wheels,
         "\t\tif n <= 0.0:\n\t\t\tcontinue\n",
