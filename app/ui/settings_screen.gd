@@ -66,6 +66,7 @@ var _fsr2_sharpness_value: Label
 var _fsr2_sharpness_dragging := false
 var _scene_detail_picker: OptionButton
 var _birds_picker: OptionButton
+var _runway_meadow_picker: OptionButton
 var _shadow_group_button: Button
 var _shadow_group: VBoxContainer
 var _shadow_quality_picker: OptionButton
@@ -285,6 +286,23 @@ func _build() -> void:
 	_birds_picker.item_selected.connect(_birds_selected)
 	_add_row(graphics_page, "Birds", _birds_picker)
 	_set_localized_tooltip(_birds_picker, "Vultures and storks in thermals, kites, swallows and evening swifts, by time of day and weather. Changes apply at once: birds fly away or arrive. Normal follows Scene detail; Many keeps full flocks at every level.")
+	# L11a-R3: presentation only; hiding is live, turning it on builds the meadow at the next field load.
+	_runway_meadow_picker = OptionButton.new()
+	_runway_meadow_picker.name = "RunwayMeadow"
+	for level: String in DisplayPreferences.RUNWAY_MEADOW_LEVELS:
+		_runway_meadow_picker.add_item(_choice_caption("runway_meadow", level))
+		_runway_meadow_picker.set_item_metadata(_runway_meadow_picker.item_count - 1, level)
+	_runway_meadow_picker.item_selected.connect(_runway_meadow_selected)
+	# Shares the Birds row: a separate row would overflow the Graphics page at 1080p.
+	var birds_row := _birds_picker.get_parent() as BoxContainer
+	var meadow_label := _label("Meadow", "")
+	meadow_label.name = "RunwayMeadowLabel"
+	meadow_label.size_flags_horizontal = Control.SIZE_SHRINK_END
+	_runway_meadow_picker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_runway_meadow_picker.focus_entered.connect(func() -> void: _reveal_focused_control.call_deferred())
+	birds_row.add_child(meadow_label)
+	birds_row.add_child(_runway_meadow_picker)
+	_set_localized_tooltip(_runway_meadow_picker, "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail.")
 	# The collapsed toggle shares the actions row to preserve the 1080p height budget.
 	_shadow_group_button = _button("Shadows", "QuietButton", "ShadowGroupToggle")
 	_shadow_group_button.toggle_mode = true
@@ -656,6 +674,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 				return tr("Automatic (%s)") % tr(str(SceneDetail.detected().level).capitalize())
 			return tr(str(value).capitalize())
 		"birds": return {off = tr("Off"), few = tr("Few"), normal = tr("Normal"), many = tr("Many")}.get(value, str(value))
+		"runway_meadow": return {off = tr("Off"), on = tr("On")}.get(value, str(value))
 		"shadow_quality": return {current = tr("Current"), low = tr("Low"), medium = tr("Medium"),
 			high = tr("High"), ultra = tr("Ultra")}.get(value, str(value))
 		"shadow_technique": return {auto = tr("Automatic"), native = tr("Native"), projected = tr("Projected"),
@@ -715,7 +734,7 @@ func _on_graphics_option_changed() -> void:
 
 
 func _restore_graphics_defaults() -> void:
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
+	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "runway_meadow", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
 		_draft[key] = DisplayPreferences.DEFAULTS[key]
 	_on_graphics_option_changed()
 
@@ -839,6 +858,11 @@ func _birds_selected(index: int) -> void:
 	_on_presentation_option_changed()
 
 
+func _runway_meadow_selected(index: int) -> void:
+	_draft.runway_meadow = str(_runway_meadow_picker.get_item_metadata(index))
+	_on_presentation_option_changed()
+
+
 func _opaque_toggled(enabled: bool) -> void:
 	_draft.opaque_panels = enabled
 	_on_presentation_option_changed()
@@ -919,6 +943,7 @@ func _sync_controls() -> void:
 	_sync_reflex_controls()
 	_select_metadata(_scene_detail_picker, _draft.scene_detail)
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
+	_select_metadata(_runway_meadow_picker, _draft.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow))
 	_select_metadata(_shadow_quality_picker, _draft.get("shadow_quality", DisplayPreferences.DEFAULTS.shadow_quality))
 	_select_metadata(_shadow_technique_picker, _draft.get("shadow_technique", DisplayPreferences.DEFAULTS.shadow_technique))
 	_select_metadata(_shadow_cue_picker, _draft.get("shadow_aircraft_cue", DisplayPreferences.DEFAULTS.shadow_aircraft_cue))
@@ -1188,7 +1213,7 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_birds_picker, "birds"],
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"],
 			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
 			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],

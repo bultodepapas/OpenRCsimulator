@@ -31,6 +31,7 @@ const AirfieldDetail = preload("res://scenery/airfield_detail.gd")
 const WoodlandEdges = preload("res://scenery/woodland_edge_habitat.gd")
 const Ambience = preload("res://scenery/ambience.gd")
 const Birds = preload("res://scenery/birds.gd")
+const RunwayMeadow = preload("res://scenery/runway_meadow.gd")
 const Frames = preload("res://render/frames.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const GRAVEL_SHADER: Shader = preload("res://scenery/gravel.gdshader")
@@ -69,6 +70,8 @@ static func options() -> Dictionary:
 		quality = get.call("scenery_quality", "OPENRC_SCENERY_QUALITY", str(SceneDetail.profile().scenery_quality)),
 		audio = on.call(get.call("scenery_audio", "OPENRC_SCENERY_AUDIO", "on")),
 		birds = on.call(get.call("scenery_birds", "OPENRC_SCENERY_BIRDS", "on")),
+		# L11a-R3: the Runway meadow graphics setting supplies the default; the explicit switches still win.
+		runway_meadow = on.call(get.call("runway_meadow", "OPENRC_RUNWAY_MEADOW", RunwayMeadow.preference())),
 		tree_wind = on.call(get.call("tree_wind", "OPENRC_TREE_WIND", "on")),
 		tree_cell_size_m = float(get.call("tree_cell_size_m", "OPENRC_TREE_CELL_SIZE_M", "0")),
 		file = get.call("scenery_file", "OPENRC_SCENERY_FILE", Loader.DEFAULT_PATH),

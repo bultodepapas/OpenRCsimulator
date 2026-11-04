@@ -71,6 +71,7 @@ const ShadowSettings := preload("res://render/shadow_settings.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const BirdDirector := preload("res://scenery/birds/bird_director.gd")
+const RunwayMeadow := preload("res://scenery/runway_meadow.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
 const DebugBridge := preload("res://debug/debug_bridge.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
@@ -1421,6 +1422,9 @@ func _apply_presentation(config: Dictionary) -> void:
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
 	# SC-BIRD: live; a built bird layer sends birds away or brings them in (scenery/birds/birds_runtime.gd).
 	BirdDirector.set_preference(str(config.get("birds", DisplayPreferences.DEFAULTS.birds)))
+	# L11a-R3: hiding is live; turning the meadow on builds it at the next field load.
+	RunwayMeadow.set_preference(str(config.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow)))
+	get_tree().call_group(RunwayMeadow.GROUP, "set_visible", RunwayMeadow.preference() == "on")
 	# CAM-17: a Home flight takes camera changes at once (the flight ignores them on direct routes).
 	if is_instance_valid(flight) and flight.has_method("apply_camera_preferences"):
 		flight.apply_camera_preferences(config)

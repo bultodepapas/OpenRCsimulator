@@ -9408,3 +9408,9 @@ msgstr "Brouillon : gaz au MINIMUM doit afficher 0 %. Choisissez ensuite Utilise
 
 msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
 msgstr "Vérifiez les gaz : montez au MAXIMUM (100 %), puis redescendez au MINIMUM (0 %) avant d'utiliser le calibrage."
+
+msgid "Meadow"
+msgstr "Prairie"
+
+msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
+msgstr "Touffes d'herbe, de trèfle et de fleurs sauvages des deux côtés de la piste. Désactivée, elle allège le travail du GPU sur les ordinateurs plus lents. La désactivation s'applique immédiatement ; l'activation s'applique au prochain vol. La densité suit le détail de la scène."

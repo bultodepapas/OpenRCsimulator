@@ -8435,3 +8435,9 @@ msgstr "草稿：油门最低位应显示 0%。然后选择“使用校准”和
 
 msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
 msgstr "验证油门：将油门推到最大（100%），再降回最低（0%），然后使用校准结果。"
+
+msgid "Meadow"
+msgstr "草地"
+
+msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
+msgstr "在跑道两侧显示成丛的草、三叶草和野花。关闭可减轻较慢电脑的 GPU 负担。关闭立即生效；开启在下一次飞行时生效。密度跟随场景细节。"

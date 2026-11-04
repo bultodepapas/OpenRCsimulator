@@ -10,6 +10,7 @@ const SceneDetail = preload("res://render/scene_detail.gd")
 const Ground = preload("res://render/ground.gd")
 const NearGrass = preload("res://render/near_grass.gd")
 const ImportedNearGrass = preload("res://scenery/imported_near_grass.gd")
+const RunwayMeadow = preload("res://scenery/runway_meadow.gd")
 const LakeWorld = preload("res://render/lake/lake_world.gd")
 const Horizon = preload("res://render/horizon.gd")
 const PilotStation = preload("res://render/pilot_station.gd")
@@ -297,6 +298,10 @@ static func _advance_build(context: _BuildContext) -> void:
 				masks.append_array(context.field_light_exclusions)
 				near_grass = ImportedNearGrass.build(context.field,
 					str(context.scenery_options.quality), masks)
+				# L11a-R3: optional graphics setting (Settings > Graphics > Runway meadow).
+				if bool(context.scenery_options.get("runway_meadow", true)):
+					context.result.add_child(RunwayMeadow.build(context.field,
+						str(context.scenery_options.quality), masks))
 			else:
 				near_grass = NearGrass.build(context.field, context.grass, context.exclusions)
 			context.result.add_child(near_grass)

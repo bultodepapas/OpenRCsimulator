@@ -8485,3 +8485,9 @@ msgstr "下書き：スロットル最低位置で 0% を確認し、「キャ�
 
 msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
 msgstr "スロットルを確認：最大（100%）まで上げ、最低（0%）まで戻してからキャリブレーションを使用してください。"
+
+msgid "Meadow"
+msgstr "草地"
+
+msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
+msgstr "滑走路の両側に草、クローバー、野花の株を表示します。オフにすると低速なコンピューターで GPU の負荷を減らせます。オフはすぐに反映され、オンは次のフライトから反映されます。密度はシーンの詳細に従います。"

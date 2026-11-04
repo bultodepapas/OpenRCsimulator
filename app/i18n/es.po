@@ -8030,3 +8030,9 @@ msgstr "La cobertura de sombras nativas es experimental; algunos objetos no proy
 
 msgid "Activities may use a shorter range."
 msgstr "Algunas actividades pueden usar una distancia menor."
+
+msgid "Meadow"
+msgstr "Pradera"
+
+msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
+msgstr "Matas de hierba, trébol y flores silvestres a ambos lados de la pista. Desactivada ahorra trabajo de GPU en ordenadores más lentos. Desactivarla se aplica al momento; activarla se aplica en el siguiente vuelo. La densidad sigue el detalle de escena."

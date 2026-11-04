@@ -9276,3 +9276,9 @@ msgstr "Rascunho: acelerador no MÍNIMO deve marcar 0%. Depois, Usar calibraçã
 
 msgid "Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration."
 msgstr "Verifique o acelerador: leve ao MÁXIMO (100%) e depois volte ao MÍNIMO (0%) antes de usar a calibração."
+
+msgid "Meadow"
+msgstr "Prado"
+
+msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
+msgstr "Touceiras de grama, trevo e flores silvestres dos dois lados da pista. Desligado economiza trabalho da GPU em computadores mais lentos. Desligar vale na hora; ligar vale no próximo voo. A densidade segue o detalhe da cena."
