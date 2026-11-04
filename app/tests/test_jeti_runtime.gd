@@ -78,12 +78,14 @@ func _conflicts_and_persistence() -> void:
 	_check("single button overlapping a group rejected", not Profile.validate(profile).ok)
 	profile.aux.erase("gear")
 	var wizard := Calibration.new(profile)
-	var samples := PackedFloat64Array()
-	samples.resize(RcInput.AXES)
-	wizard.advance(samples)
+	# Like a pilot: throttle (axis 2) rests at LOW throughout, sticks return to centre.
+	var rest := PackedFloat64Array()
+	rest.resize(RcInput.AXES)
+	rest[2] = -1.0
+	wizard.advance(rest)
 	for axis in [2, 0, 1, 3]:
-		for value in [1.0, -1.0, 0.0]:
-			samples.fill(0.0)
+		var samples := rest.duplicate()
+		for value in ([1.0, -1.0] if axis == 2 else [1.0, -1.0, 0.0]):
 			samples[axis] = value
 			wizard.sample(samples)
 		wizard.advance(samples)

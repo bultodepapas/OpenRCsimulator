@@ -34,6 +34,7 @@ func _calibration_with_aux(aux_axis: int) -> RcCalibration:
 	var calibration := RcCalibration.new(old_profile)
 	var rest := PackedFloat64Array()
 	rest.resize(RcInput.AXES)
+	rest[0] = -1.0 # throttle (axis 0) stays at LOW; the sticks rest at centre
 	calibration.advance(rest)
 	for axis in [0, 5, 6, 7]:
 		var low := rest.duplicate()

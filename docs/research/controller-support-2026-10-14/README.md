@@ -2,6 +2,42 @@
 
 2026-10-14. Source snapshot: `22b3e4825ec97289b76666ca9e942eaa7a8f703d` plus the existing working tree. Scope: Xbox, PlayStation DualSense and other controllers, with Windows prioritized by the owner. The [implementation plan](../../plans/controller-support.md) owns proposed work and acceptance; this report owns the dated findings and sources.
 
+## Calibrated profile Save (2026-11-04, D6-GP-02-R1)
+
+A field report (RadioMaster TX16S MKIII) showed **Save** after calibration failing with
+"Profile was not saved: Temporary controller profiles failed validation." On source
+`56c21a245`, the store's `save_profile()` reproduced that error under Godot 4.7.2 (v0.1.8),
+4.8-beta1 (v0.1.9-beta.1) and 4.8-beta2 (current pin), so both published releases are affected.
+
+Cause: the transaction writes a temporary ConfigFile, reloads it and requires exact equality.
+Calibration stores raw `Input.get_joy_axis` readings, which are float32. Godot writes a
+float32-exact double with float32 digits (`-0.999969482421875` → `-0.9999695`), which reloads
+as a different double; all 9,363 sampled int16/32767 readings failed. Its parser also misses the
+last bit of some 17-digit doubles. Tests passed because fixtures used ±1, 0 and 0.6 doubles.
+
+The store now commits the ConfigFile encode/parse fixed point and returns that stored form to
+the caller and runtime. Over 465,536 values, 9 needed a second pass and none a third; the bound
+fails closed. The change is below float32 resolution. The stored list is always a plain Array,
+so re-saving unchanged profiles is byte-stable. A real read-back mismatch is still rejected,
+now with a distinct message.
+
+Checked runner, Godot 4.8-beta2, Linux headless:
+
+- `test_controller_store.gd` **45/0**, with a float32 TX16S fixture: reload equality, ≤1e-7
+  endpoint change, byte-stable re-save, snapshot restore and append. The original store failed it.
+- `test_controller_preflight_calibration.gd` **102/0**. Its axis provider now returns float32;
+  with the original store, Save failed with the reported message.
+- `test_controller_aux_runtime`, `test_jeti_runtime` and `test_smoke_aux` were already red on
+  `56c21a245`. They failed identically with the original store and passed with the
+  pre-`9bdbd128c` wizard. Their recalibration fixtures rested throttle at mid-travel and moved
+  it during later steps, which that commit's throttle-at-LOW and single-axis rules correctly
+  reject. The fixtures now keep throttle at LOW, as a pilot does: **38/38**, **105/0** and
+  **60/0**. The wizard is unchanged, and its expected profiles are unchanged.
+- All 43 controller, radio and JETI suites then pass, with no script errors. The six edited
+  scripts add no compiler warnings beyond the baseline.
+
+Physical TX16S confirmation, packaged builds, the full app suite and CI remain open.
+
 ## Visible-tab preview polling (2026-11-01)
 
 Relative to `f04e59139`, Controls polled four flight axes plus configured AUX

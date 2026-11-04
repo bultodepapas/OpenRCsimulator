@@ -210,13 +210,14 @@ func _all_aux_finite(radio: RcInput) -> bool:
 
 func _calibrate(existing_profile: Dictionary, roll_axis: int) -> Dictionary:
 	var wizard := Calibration.new(existing_profile)
-	var samples := PackedFloat64Array()
-	samples.resize(RcInput.AXES)
-	wizard.advance(samples) # centre / throttle-low rest sample
+	var rest := PackedFloat64Array()
+	rest.resize(RcInput.AXES)
+	rest[2] = -1.0 # throttle stays at LOW; the sticks rest at centre
+	wizard.advance(rest) # centre / throttle-low rest sample
 	var selected_axes := [2, roll_axis, 5, 6] # throttle, roll, pitch, yaw
 	for axis in selected_axes:
-		for value in [1.0, -1.0, 0.0]:
-			samples.fill(0.0)
+		var samples := rest.duplicate()
+		for value in ([1.0, -1.0] if axis == 2 else [1.0, -1.0, 0.0]):
 			samples[axis] = value
 			wizard.sample(samples)
 		wizard.advance(samples)
