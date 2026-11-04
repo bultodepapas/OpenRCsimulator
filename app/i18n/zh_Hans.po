@@ -8441,3 +8441,9 @@ msgstr "草地"
 
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "在跑道两侧显示成丛的草、三叶草和野花。关闭可减轻较慢电脑的 GPU 负担。关闭立即生效；开启在下一次飞行时生效。密度跟随场景细节。"
+
+msgid "RC circuit"
+msgstr "RC 赛道"
+
+msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+msgstr "跑道北侧的 RC 赛车土路赛道，包含跳台、倾斜弯道和护栏。它是实体的：机轮会在起伏上滚动，机身也可能撞上它。自动模式在独立显卡且场景细节为高或极高时开启。下次飞行时生效。"

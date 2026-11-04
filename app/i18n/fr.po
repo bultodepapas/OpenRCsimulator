@@ -9414,3 +9414,9 @@ msgstr "Prairie"
 
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "Touffes d'herbe, de trèfle et de fleurs sauvages des deux côtés de la piste. Désactivée, elle allège le travail du GPU sur les ordinateurs plus lents. La désactivation s'applique immédiatement ; l'activation s'applique au prochain vol. La densité suit le détail de la scène."
+
+msgid "RC circuit"
+msgstr "Circuit RC"
+
+msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+msgstr "Le circuit en terre pour voitures RC au nord de la piste, avec ses sauts, virages relevés et barrières. Il est physique : les roues roulent sur son relief et l’avion peut le percuter. Automatique l’active avec un GPU dédié et un détail de scène Élevé ou Extrême. S’applique au prochain vol."

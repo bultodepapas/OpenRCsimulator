@@ -9386,3 +9386,9 @@ msgstr "Wiese"
 
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "Gras-, Klee- und Wildblumenbüschel auf beiden Seiten der Piste. Aus spart GPU-Arbeit auf langsameren Computern. Ausschalten wirkt sofort; Einschalten wirkt beim nächsten Flug. Die Dichte folgt dem Szenendetail."
+
+msgid "RC circuit"
+msgstr "RC-Strecke"
+
+msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+msgstr "Die Erdstrecke für RC-Autos nördlich der Piste, mit Sprüngen, Steilkurven und Barrieren. Sie ist physisch: Räder rollen über ihr Relief, und das Flugzeug kann mit ihr kollidieren. Automatisch schaltet sie bei einer dedizierten GPU und Szenendetail Hoch oder Extrem ein. Wirkt beim nächsten Flug."

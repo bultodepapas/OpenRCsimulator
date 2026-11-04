@@ -16,6 +16,8 @@ const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
+const RcTrackOption := preload("res://scenery/rc_track_option.gd")
+const RC_TRACK_TOOLTIP := "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 const NATIVE_SHADOW_LIMITATION := "Native shadow coverage is experimental; some objects do not cast shadows."
 
@@ -67,6 +69,7 @@ var _fsr2_sharpness_dragging := false
 var _scene_detail_picker: OptionButton
 var _birds_picker: OptionButton
 var _runway_meadow_picker: OptionButton
+var _rc_track_picker: OptionButton
 var _shadow_group_button: Button
 var _shadow_group: VBoxContainer
 var _shadow_quality_picker: OptionButton
@@ -243,6 +246,16 @@ func _build() -> void:
 		_scale_picker.set_item_metadata(_scale_picker.item_count - 1, float(percent) / 100.0)
 	_scale_picker.item_selected.connect(_scale_selected)
 	_add_row(display_page, "Text size", _scale_picker)
+	# RC-TRACK: the RC car circuit and its physics change from the next airplane flight. Its own row lives here:
+	# the Graphics page has no height left at 1080p (a shared row wraps the Scene detail label).
+	_rc_track_picker = OptionButton.new()
+	_rc_track_picker.name = "RcTrack"
+	for level: String in DisplayPreferences.RC_TRACK_LEVELS:
+		_rc_track_picker.add_item(_choice_caption("rc_track", level))
+		_rc_track_picker.set_item_metadata(_rc_track_picker.item_count - 1, level)
+	_rc_track_picker.item_selected.connect(_rc_track_selected)
+	_add_row(display_page, "RC circuit", _rc_track_picker)
+	_refresh_rc_track_captions()
 	display_page.add_child(_label("Display and graphics changes have a 15-second safety timer.", "SecondaryLabel", true))
 
 	display_page.add_child(_label("Window sizes fit the available desktop. Fullscreen uses the desktop resolution.", "SecondaryLabel", true))
@@ -675,6 +688,10 @@ func _choice_caption(key: String, value: Variant) -> String:
 			return tr(str(value).capitalize())
 		"birds": return {off = tr("Off"), few = tr("Few"), normal = tr("Normal"), many = tr("Many")}.get(value, str(value))
 		"runway_meadow": return {off = tr("Off"), on = tr("On")}.get(value, str(value))
+		"rc_track":
+			if value == RcTrackOption.AUTO:
+				return tr("Automatic (%s)") % (tr("On") if bool(_rc_track_automatic().enabled) else tr("Off"))
+			return {off = tr("Off"), on = tr("On")}.get(value, str(value))
 		"shadow_quality": return {current = tr("Current"), low = tr("Low"), medium = tr("Medium"),
 			high = tr("High"), ultra = tr("Ultra")}.get(value, str(value))
 		"shadow_technique": return {auto = tr("Automatic"), native = tr("Native"), projected = tr("Projected"),
@@ -734,7 +751,7 @@ func _on_graphics_option_changed() -> void:
 
 
 func _restore_graphics_defaults() -> void:
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "runway_meadow", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
+	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "runway_meadow", "rc_track", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
 		_draft[key] = DisplayPreferences.DEFAULTS[key]
 	_on_graphics_option_changed()
 
@@ -850,7 +867,32 @@ func _scale_selected(index: int) -> void:
 
 func _scene_detail_selected(index: int) -> void:
 	_draft.scene_detail = str(_scene_detail_picker.get_item_metadata(index))
+	_refresh_rc_track_captions()
 	_on_presentation_option_changed()
+
+
+func _rc_track_selected(index: int) -> void:
+	_draft.rc_track = str(_rc_track_picker.get_item_metadata(index))
+	_on_presentation_option_changed()
+
+
+## What Automatic picks on this GPU for the drafted Scene detail.
+func _rc_track_automatic() -> Dictionary:
+	var detail := str(_draft.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail))
+	if detail.is_empty() or detail == SceneDetail.AUTO:
+		detail = str(SceneDetail.detected().level)
+	return RcTrackOption.automatic({}, detail)
+
+
+## Automatic's caption and the tooltip follow the drafted Scene detail.
+func _refresh_rc_track_captions() -> void:
+	if _rc_track_picker == null:
+		return
+	for index in _rc_track_picker.item_count:
+		_rc_track_picker.set_item_text(index, _choice_caption("rc_track", _rc_track_picker.get_item_metadata(index)))
+	var picked: Dictionary = _rc_track_automatic()
+	_rc_track_picker.tooltip_text = tr(RC_TRACK_TOOLTIP) + "\n" + tr("Automatic (%s)") % \
+		(tr("On") if bool(picked.enabled) else tr("Off")) + ": " + tr(str(picked.reason))
 
 
 func _birds_selected(index: int) -> void:
@@ -944,6 +986,8 @@ func _sync_controls() -> void:
 	_select_metadata(_scene_detail_picker, _draft.scene_detail)
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
 	_select_metadata(_runway_meadow_picker, _draft.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow))
+	_refresh_rc_track_captions()
+	_select_metadata(_rc_track_picker, _draft.get("rc_track", DisplayPreferences.DEFAULTS.rc_track))
 	_select_metadata(_shadow_quality_picker, _draft.get("shadow_quality", DisplayPreferences.DEFAULTS.shadow_quality))
 	_select_metadata(_shadow_technique_picker, _draft.get("shadow_technique", DisplayPreferences.DEFAULTS.shadow_technique))
 	_select_metadata(_shadow_cue_picker, _draft.get("shadow_aircraft_cue", DisplayPreferences.DEFAULTS.shadow_aircraft_cue))
@@ -1213,7 +1257,7 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"],
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
 			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
 			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],
@@ -1222,6 +1266,7 @@ func _refresh_translated_text() -> void:
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))
 	_refresh_graphics_info()
+	_refresh_rc_track_captions()
 	_refresh_shadow_group_button()
 	_refresh_shadow_technique_tooltip()
 	_refresh_shadow_info()

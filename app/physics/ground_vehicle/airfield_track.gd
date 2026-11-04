@@ -4,6 +4,8 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const PATH := "res://data/ground_vehicle/airfield_track.json"
 const FORMAT := "openrc-airfield-track v1"
+## The course's dry-pavement reference (airfield_course.gd DRY_PAVEMENT_MU); track.mu is absolute over it.
+const DRY_PAVEMENT_MU := 0.85
 
 static func load_default() -> Dictionary:
 	var bytes := FileAccess.get_file_as_bytes(PATH)
@@ -51,6 +53,120 @@ static func matches_field(field: Dictionary) -> bool:
 		if str(surface.get("id", "")) == str(field.get("runway", "")):
 			return float(surface.center_north) == 15.0 and float(surface.center_east) == 0.0 and float(surface.length_east_west) == 100.0 and float(surface.width_north_south) == 12.0
 	return false
+
+## RC-TRACK: the circuit's solid dressing as scalar NED boxes for the aircraft collision world.
+## Placements repeat vehicles/ground/track_furniture.gd, track_service_detail.gd and the view's tyre stacks;
+## test_rc_track_flight.gd checks every rendered node against this list. Sizes are the measured source
+## bounds times the render scale (billboardLow 1.0 x 0.69 x 0.476 m at 1.35; utility_box_01 0.52 x 1.12 x
+## 0.432 m at 0.6; barrier tape 3.35 x 1.0 x 0.35 m; old tyre 0.6 m across, 0.165 m per layer).
+## Each record: {id, part, north, east, up (box base above the datum), width (local x), height, length
+## (local z), heading_deg (collision_world.gd box heading), response, damage_profile}.
+const TYRE_STACKS := [
+	{"east": -17.0, "north": 34.5, "count": 3, "yaw": 0.25},
+	{"east": 3.4, "north": 34.9, "count": 2, "yaw": -0.32},
+	{"east": -21.8, "north": 45.0, "count": 3, "yaw": 0.68},
+]
+const TYRE_DIAMETER_M := 0.6
+const TYRE_LAYER_M := 0.165
+
+
+static func dressing(track: Dictionary) -> Array[Dictionary]:
+	var items: Array[Dictionary] = []
+	if track.is_empty():
+		return items
+	for wall: Dictionary in track.walls:
+		items.append(_dressing_box("wall:" + str(wall.id), "barrier",
+			(float(wall.north_min_m) + float(wall.north_max_m)) * 0.5, (float(wall.east_min_m) + float(wall.east_max_m)) * 0.5,
+			float(wall.bottom_up_m), float(wall.east_max_m) - float(wall.east_min_m), float(wall.top_up_m) - float(wall.bottom_up_m),
+			float(wall.north_max_m) - float(wall.north_min_m), 0.0, "hard_terminal", "masonry"))
+	for index: int in TYRE_STACKS.size():
+		var stack: Dictionary = TYRE_STACKS[index]
+		items.append(_dressing_box("tyres:%02d" % index, "tyre_stack", float(stack.north), float(stack.east), 0.0,
+			TYRE_DIAMETER_M, TYRE_LAYER_M * float(stack.count), TYRE_DIAMETER_M, 0.0, "frangible_impulse", "none"))
+	var access: Dictionary = track.access
+	var signs := [
+		["access", float(access.east_m) - float(access.width_m) * 0.5 - float(track.shoulder_m) - 1.0, float(access.north_min_m) + 0.6, 0.0],
+		["jumps", 1.0, 35.25, -PI * 0.5],
+		["slalom", 21.9, 45.0, -PI * 0.5],
+		["rollers", 0.0, 55.1, PI * 0.5],
+	]
+	for sign: Array in signs:
+		# A render yaw about +Y turns the board's local x toward NED (sin yaw, cos yaw): box heading -yaw.
+		items.append(_dressing_box("sign:" + str(sign[0]), "sign", float(sign[2]), float(sign[1]), 0.0,
+			1.35, 0.93, 0.64, rad_to_deg(-float(sign[3])), "hard_terminal", "metal"))
+	var ce := float(track.center_east_m)
+	var cn := float(track.center_north_m)
+	var radius := float(track.radius_m)
+	var clear_half := float(track.lane_width_m) * 0.5 + float(track.shoulder_m)
+	var gate_east := ce - float(track.half_straight_m) + 5.9
+	for side: float in [-1.0, 1.0]:
+		items.append(_dressing_box("timing_post:%s" % ("south" if side < 0.0 else "north"), "timing_post",
+			cn - radius + side * (float(track.lane_width_m) * 0.5 + 0.72), gate_east, 0.0,
+			0.16, 0.61, 0.16, 0.0, "hard_terminal", "metal"))
+	items.append(_dressing_box("tape:south", "tape", cn - radius - clear_half - 2.3, ce + 12.0, 0.0,
+		3.35, 1.0, 0.35, 0.0, "frangible_impulse", "none"))
+	items.append(_dressing_box("tape:north", "tape", cn + radius + clear_half + 2.5, ce - 8.0, 0.0,
+		3.35, 1.0, 0.35, 0.0, "frangible_impulse", "none"))
+	items.append(_dressing_box("cabinet", "cabinet", cn - radius - clear_half - 1.5, ce - float(track.half_straight_m) + 10.0, 0.0,
+		0.312, 0.672, 0.259, 0.0, "hard_terminal", "metal"))
+	return items
+
+
+static func _dressing_box(id: String, part: String, north: float, east: float, up: float, width: float,
+		height: float, length: float, heading_deg: float, response: String, damage_profile: String) -> Dictionary:
+	return {id = "rc_track:" + id, part = part, north = north, east = east, up = up, width = width, height = height,
+		length = length, heading_deg = heading_deg, response = response, damage_profile = damage_profile}
+
+
+## Conservative [north_min, north_max, east_min, east_max] (m) outside which sample() is exactly zero.
+static func bounds_ne(track: Dictionary) -> PackedFloat64Array:
+	var shoulder := float(track.shoulder_m)
+	var half := float(track.lane_width_m) * 0.5
+	var reach := float(track.half_straight_m) + float(track.radius_m) + half + shoulder
+	var technical := float(track.technical_width_m) * 0.5 + shoulder
+	var north_max := maxf(float(track.center_north_m) + float(track.radius_m) + half + shoulder,
+		float(track.center_north_m) + technical)
+	north_max = maxf(north_max, float(track.access.north_max_m) + shoulder)
+	return PackedFloat64Array([float(track.access.north_min_m) - shoulder, north_max,
+		float(track.center_east_m) - reach, float(track.center_east_m) + reach])
+
+
+## Upper bound of the additive elevation (m): the pad, the bank and every ramp and roller stacked.
+## Contact broadphases add it to the field's own bound, so it must never be below the true maximum.
+static func max_height_m(track: Dictionary) -> float:
+	if track.is_empty():
+		return 0.0
+	var bound := float(track.pad_height_m) + float(track.bank_height_m)
+	for group in ["ramps", "rollers"]:
+		for ramp: Dictionary in track[group]:
+			bound += float(ramp.height_m)
+	return bound
+
+
+## A validated field terrain sample [height_up, dh/dn, dh/de] with the circuit added, as a new
+## [height_up, dh/dn, dh/de, dirt coverage]. Same arithmetic as AirfieldCourse.sample, so the
+## ground-vehicle course, the aircraft wheels and the rendered dirt agree exactly.
+static func composed(terrain: PackedFloat64Array, track: Dictionary, north: float, east: float) -> PackedFloat64Array:
+	var overlay := sample(track, north, east)
+	return PackedFloat64Array([terrain[0] + float(overlay.height_m), terrain[1] + float(overlay.dn),
+		terrain[2] + float(overlay.de), float(overlay.coverage)])
+
+
+## Tyre friction and rolling factors on the dirt, in the field surface table's units (ground_surfaces.gd).
+## The course uses mu absolutely over dry pavement; the aircraft table scales its gear's own coefficients.
+static func surface_factors(track: Dictionary) -> PackedFloat64Array:
+	return PackedFloat64Array([float(track.mu) / DRY_PAVEMENT_MU, float(track.rolling)])
+
+
+## Session identity of an installed circuit: its id and the SHA-256 of its normalized definition.
+static func identity(track: Dictionary) -> String:
+	if track.is_empty():
+		return ""
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(var_to_bytes(track))
+	return "%s:%s" % [str(track.id), hash.finish().hex_encode()]
+
 
 ## Returns additive elevation and its exact partial derivatives, plus the dirt coverage mask.
 static func sample(track: Dictionary, north: float, east: float) -> Dictionary:

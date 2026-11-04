@@ -742,6 +742,9 @@ func _prepare_stage_backend(time_now := NAN, backend := "") -> void:
 	if _weather_pending_reset or _shaft_pending_reset:
 		stage_backend_error = "pending configuration requires reset"
 		return
+	if not _rc_track.is_empty():
+		stage_backend_error = "native stage does not model the RC circuit terrain"
+		return
 	var candidate := NativeStage.new()
 	var prepared: Dictionary = candidate.prepare(self)
 	if not prepared.ok:
@@ -796,6 +799,7 @@ const SceneryCollision := preload("res://sim/scenery_collision.gd")
 const SceneryDamage := preload("res://sim/scenery_damage.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
+const RcTrack := preload("res://physics/ground_vehicle/airfield_track.gd")
 const LakeCollision := preload("res://sim/lake_collision.gd")
 
 const START_AIRBORNE := "airborne"
@@ -1354,6 +1358,13 @@ var _lake: Dictionary:
 	set(value):
 		environment.lake = value
 var _lake_bank_bounds: PackedFloat64Array = PackedFloat64Array()
+## RC-TRACK: the accepted dirt circuit under the wheels for this session only; empty keeps every contact path unchanged.
+## The hull meets its walls, tyres and raised dirt through the collision world (scenery/collision_world.gd).
+var _rc_track: Dictionary:
+	get:
+		return environment.terrain_overlay
+	set(value):
+		environment.terrain_overlay = value
 var _last_lake_event: LakeCollision.WaterEvent = null
 var _scenery_damage: Dictionary = {}
 var _pending_scenery_damage: Dictionary = {}
@@ -1920,12 +1931,39 @@ func lake_context() -> Dictionary:
 	return _lake.duplicate(true)
 
 
+## RC-TRACK: installs the validated dirt circuit (or {} for none) at a launch/reset boundary.
+## A different circuit is refused once the flight has ticked, like the lake and the collision world.
+func set_rc_track(track: Dictionary) -> bool:
+	if _reject_reset_publication_reentry(): return false
+	var next_track: Dictionary = {}
+	if not track.is_empty():
+		if not RcTrack.valid(track):
+			return false
+		next_track = track.duplicate(true)
+	if sim != null and sim.tick > 0 and RcTrack.identity(next_track) != RcTrack.identity(_rc_track):
+		return false
+	_rc_track = next_track
+	_sync_post_step()
+	_refresh_stage_backend()
+	return true
+
+
+## A detached snapshot of the installed circuit; {} when none.
+func rc_track_context() -> Dictionary:
+	return _rc_track.duplicate(true)
+
+
+func rc_track_identity() -> String:
+	return RcTrack.identity(_rc_track)
+
+
 func _lake_identity() -> String:
 	return str(_lake.get("identity", ""))
 
 
 func _has_collision_query() -> bool:
-	return not _lake.is_empty() or (not _collision_world.is_empty() and not _collision_world.proxies.is_empty())
+	return not _lake.is_empty() or not _rc_track.is_empty() \
+		or (not _collision_world.is_empty() and not _collision_world.proxies.is_empty())
 
 
 func _polygon_bounds_ne(polygon: PackedFloat64Array) -> PackedFloat64Array:
@@ -3021,7 +3059,7 @@ func gear_collapsed(s: PackedFloat64Array) -> bool:
 	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
 		return false
 	return Ground.collapsed(s, current_landing_gear(),
-		ground_surfaces if wheel_count() > 0 else PackedFloat64Array(), _lake)
+		ground_surfaces if wheel_count() > 0 else PackedFloat64Array(), _lake, _rc_track)
 
 
 ## Compression of each landing-gear contact at state `s` (m, ≤ 0 in the air), in data order; empty without gear.
@@ -3029,19 +3067,19 @@ func gear_compressions(s: PackedFloat64Array) -> PackedFloat64Array:
 	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
 		return PackedFloat64Array()
 	return Ground.compressions(s, current_landing_gear(),
-		ground_surfaces if wheel_count() > 0 else PackedFloat64Array(), _lake)
+		ground_surfaces if wheel_count() > 0 else PackedFloat64Array(), _lake, _rc_track)
 
 
 func _gear_limit_impact(s: PackedFloat64Array) -> ImpactSnapshot.Snapshot:
 	var surfaces: PackedFloat64Array = ground_surfaces if wheel_count() > 0 else PackedFloat64Array()
 	var gear: Dictionary = current_landing_gear()
-	if _lake.is_empty():
+	if _lake.is_empty() and _rc_track.is_empty():
 		return ImpactSnapshot.gear_limit(s, sim.tick, gear, surfaces)
 	var out: ImpactSnapshot.Snapshot = ImpactSnapshot.Snapshot.new()
 	out.trigger = "gear_limit"
 	out.tick = sim.tick
 	out.detected_state = s.duplicate()
-	var compressions: PackedFloat64Array = Ground.compressions(s, gear, surfaces, _lake)
+	var compressions: PackedFloat64Array = Ground.compressions(s, gear, surfaces, _lake, _rc_track)
 	for index in compressions.size():
 		var contact: Dictionary = gear.contacts[index]
 		if compressions[index] <= float(contact.max_compression):
@@ -3162,13 +3200,16 @@ func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: Packe
 	_clear_pending_scenery_damage()
 	if not _lake.is_empty():
 		return _resolve_collision_step_with_lake(previous, candidate, next_tick, mass_at_fraction)
-	if _collision_world.is_empty() or _collision_world.proxies.is_empty() or not aircraft.get("ok", false):
+	var has_world: bool = not _collision_world.is_empty() and not _collision_world.proxies.is_empty()
+	if (not has_world and _rc_track.is_empty()) or not aircraft.get("ok", false):
 		_last_scenery_event = null
 		return candidate
-	var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction)
-	if not sampled.ok:
-		return PackedFloat64Array()
-	var scenery_hit: SceneryCollision.Event = sampled.event
+	var scenery_hit: SceneryCollision.Event = null
+	if has_world:
+		var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction)
+		if not sampled.ok:
+			return PackedFloat64Array()
+		scenery_hit = sampled.event
 	var ground_hit: ImpactSnapshot.Snapshot = null
 	var ground_fraction := INF
 	# E3d1: with soft hull contacts the ground pushes back through the loads; the tick check decides crashes.
@@ -3176,6 +3217,13 @@ func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: Packe
 		ground_hit = ImpactSnapshot.hull_contact(candidate, next_tick, aircraft.model.crash_hull, previous)
 		if ground_hit.point_index >= 0:
 			ground_fraction = ground_hit.crossing.fraction if ground_hit.crossing != null and ground_hit.crossing.available else 0.0
+	# RC-TRACK: the circuit's raised dirt is solid ground for the hull. Flat ground and scenery keep same-tick ties.
+	var dirt: Dictionary = _rc_track_hit(previous, candidate, next_tick)
+	if dirt.impact != null and float(dirt.fraction) < ground_fraction - SceneryCollision.FRACTION_TIE \
+			and (scenery_hit == null or float(dirt.fraction) < scenery_hit.time_fraction - SceneryCollision.FRACTION_TIE):
+		_last_scenery_event = null
+		_crash(dirt.impact, dirt.state)
+		return dirt.state
 	# Flat-ground contact wins a same-tick tie to preserve the existing ground-first policy.
 	if ground_hit != null and ground_hit.point_index >= 0 and (scenery_hit == null \
 			or ground_fraction <= scenery_hit.time_fraction + SceneryCollision.FRACTION_TIE):
@@ -3253,6 +3301,13 @@ func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: 
 			and ground_fraction <= winner_fraction + SceneryCollision.FRACTION_TIE:
 		winner = "ground"
 		winner_fraction = ground_fraction
+	# RC-TRACK: the raised dirt wins only strictly earlier contacts; every legacy tie keeps its winner.
+	var dirt: Dictionary = _rc_track_hit(previous, candidate, next_tick)
+	if dirt.impact != null and float(dirt.fraction) < winner_fraction - SceneryCollision.FRACTION_TIE:
+		_last_scenery_event = null
+		_last_lake_event = null
+		_crash(dirt.impact, dirt.state)
+		return dirt.state
 	if winner.is_empty():
 		_last_scenery_event = null
 		_last_lake_event = null
@@ -3308,6 +3363,86 @@ func _scenery_response(body: PackedFloat64Array, hit: SceneryCollision.Event) ->
 			return {ok = false}
 		return SceneryCollision.apply_response_properties(body, hit)
 	return SceneryCollision.apply_response(body, hit, sim.mass, sim.inertia)
+
+
+## RC-TRACK: first hull point, by sweep fraction, inside the circuit's raised dirt at least RC_RELIEF_MIN_M high.
+## The exact float64 surface the wheels roll on (airfield_track.gd); the crossing is bisected along the same pose
+## interpolation as scenery contacts. Thinner dirt stays with the flat-datum hull laws. {impact = null} when clear.
+const RC_RELIEF_MIN_M := 0.05
+const RC_RELIEF_BISECTIONS := 24
+
+
+func _rc_track_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array, next_tick: int) -> Dictionary:
+	var none := {impact = null, fraction = INF, state = PackedFloat64Array()}
+	if _rc_track.is_empty() or not aircraft.get("ok", false):
+		return none
+	var hull: PackedFloat64Array = aircraft.model.crash_hull
+	var reach: float = 0.0
+	for at: int in range(0, hull.size(), 3):
+		reach = maxf(reach, M.norm(hull.slice(at, at + 3)))
+	# Whole-tick gates: below the circuit's height bound and over its footprint, padded by the hull radius.
+	if minf(-previous[RB.POS + 2], -candidate[RB.POS + 2]) > RcTrack.max_height_m(_rc_track) + reach:
+		return none
+	var bounds: PackedFloat64Array = RcTrack.bounds_ne(_rc_track)
+	if maxf(previous[RB.POS], candidate[RB.POS]) < bounds[0] - reach or minf(previous[RB.POS], candidate[RB.POS]) > bounds[1] + reach \
+			or maxf(previous[RB.POS + 1], candidate[RB.POS + 1]) < bounds[2] - reach \
+			or minf(previous[RB.POS + 1], candidate[RB.POS + 1]) > bounds[3] + reach:
+		return none
+	var best_index := -1
+	var best_fraction := INF
+	for index: int in hull.size() / 3:
+		if _rc_point_depth(candidate, hull, index) <= 0.0:
+			continue
+		var low := 0.0
+		var high := 1.0
+		if _rc_point_depth(previous, hull, index) > 0.0:
+			high = 0.0
+		else:
+			for _step: int in RC_RELIEF_BISECTIONS:
+				var middle := 0.5 * (low + high)
+				if _rc_point_depth(SceneryCollision.state_at_fraction(previous, candidate, middle), hull, index) > 0.0:
+					high = middle
+				else:
+					low = middle
+		if high < best_fraction:
+			best_fraction = high
+			best_index = index
+	if best_index < 0:
+		return none
+	var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, best_fraction)
+	var impact: ImpactSnapshot.Snapshot = ImpactSnapshot.hull_point(state, next_tick, hull, best_index)
+	var point: PackedFloat64Array = M.add(RB._slice3(state, RB.POS), M.q_rotate(RB._att(state), hull.slice(3 * best_index, 3 * best_index + 3)))
+	var terrain: PackedFloat64Array = RcTrack.composed(GroundTerrain.sample_validated(point[0], point[1], ground_surfaces),
+		_rc_track, point[0], point[1])
+	if impact.has_kinematics:
+		impact.normal_ned = GroundTerrain.normal_from_up_slopes(terrain[1], terrain[2])
+	var crossing := ImpactSnapshot.HullCrossing.Result.new()
+	crossing.available = true
+	crossing.reason = "crossing_estimated"
+	crossing.method = "rc-track-surface-bisection-v1"
+	crossing.fraction = best_fraction
+	crossing.point_index = best_index
+	crossing.position_ned = RB._slice3(state, RB.POS)
+	crossing.attitude = RB._att(state)
+	crossing.point_ned = point
+	impact.crossing = crossing
+	impact.detected_state = state.duplicate()
+	return {impact = impact, fraction = best_fraction, state = state}
+
+
+## Depth (m, > 0 inside) of one hull point below the circuit's raised dirt; 0 or less when clear,
+## on thin dirt, or at or below the flat datum (the existing ground laws own that contact).
+func _rc_point_depth(s: PackedFloat64Array, hull: PackedFloat64Array, index: int) -> float:
+	if s.is_empty():
+		return 0.0
+	var point: PackedFloat64Array = M.add(RB._slice3(s, RB.POS), M.q_rotate(RB._att(s), hull.slice(3 * index, 3 * index + 3)))
+	var up: float = -point[2]
+	if up <= 0.0:
+		return 0.0
+	var relief: float = float(RcTrack.sample(_rc_track, point[0], point[1]).height_m)
+	if relief < RC_RELIEF_MIN_M:
+		return 0.0
+	return relief - up
 
 
 func _flat_ground_hit_outside_lake(previous: PackedFloat64Array, candidate: PackedFloat64Array,
@@ -4040,7 +4175,7 @@ func set_wheel_brake(amount: float) -> bool:
 func _gear_weight_on_wheels(values: PackedFloat64Array) -> bool:
 	if not _gear_aux_valid(values) or values[gear_aux_index()] != 1.0 or not Sim.state_is_valid(sim.state):
 		return false
-	for compression: float in Ground.compressions(sim.state, aircraft.model.landing_gear, ground_surfaces, _lake):
+	for compression: float in Ground.compressions(sim.state, aircraft.model.landing_gear, ground_surfaces, _lake, _rc_track):
 		if compression > 1.0e-5:
 			return true
 	return false
@@ -4275,7 +4410,7 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 	var wheel_total: int = wheel_count()
 	if wheel_total == 0:
 		return {ok = true, loads = _add_loads(Ground.loads(s, gear, steer, ground_surfaces, anchors,
-			PackedFloat64Array(), brake, _lake), hull), derivative = PackedFloat64Array()}
+			PackedFloat64Array(), brake, _lake, _rc_track), hull), derivative = PackedFloat64Array()}
 	var first_wheel: int = wheel_index()
 	if values.size() != first_wheel + wheel_total:
 		return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
@@ -4283,7 +4418,7 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 	for speed in speeds:
 		if not is_finite(speed):
 			return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
-	var evaluation: Dictionary = Ground.evaluate(s, gear, steer, ground_surfaces, anchors, speeds, brake, false, _lake)
+	var evaluation: Dictionary = Ground.evaluate(s, gear, steer, ground_surfaces, anchors, speeds, brake, false, _lake, _rc_track)
 	var loads: PackedFloat64Array = evaluation.get("loads", PackedFloat64Array())
 	var rates: PackedFloat64Array = evaluation.get("derivative", PackedFloat64Array())
 	if (not loads.is_empty() and loads.size() != 6) or rates.size() != wheel_total:
@@ -4838,7 +4973,7 @@ func _substeps_with_context(body: PackedFloat64Array, continuous: PackedFloat64A
 		preview: Dictionary) -> int:
 	var count: int = 1
 	if aircraft.get("ok", false) and aircraft.model.get("landing_gear") is Dictionary:
-		count = Ground.substeps(body, current_landing_gear(), sim.dt(), ground_surfaces)
+		count = Ground.substeps(body, current_landing_gear(), sim.dt(), ground_surfaces, _rc_track)
 	# The inherited combustion law changes to zero rate at STOPPED_RPM. Near that boundary, one full RK4
 	# half-stage can fall below zero even though the physical interval should advance only into the static branch.
 	# Refine that tick so each intermediate evaluation stays in-domain. This changes integration resolution only:
@@ -4991,7 +5126,7 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		# E3b1: stick/slip transitions from the committed state, with the steer the last tick used.
 		var wheel_speeds: PackedFloat64Array = sim.continuous.slice(wheel_index(), wheel_index() + wheel_count()) if wheel_count() > 0 else PackedFloat64Array()
 		out.append_array(Ground.anchor_step(sim.state, current_landing_gear(aux), aux[AUX_SERVO + 2], ground_surfaces,
-			aux.slice(AUX_ANCHORS, anchors_end), wheel_count() > 0, wheel_speeds, _lake))
+			aux.slice(AUX_ANCHORS, anchors_end), wheel_count() > 0, wheel_speeds, _lake, _rc_track))
 	if lag >= 0 and lag < aux.size():
 		# E0a2b: the tail's downwash follows the wing's lift l/V late. Exact first-order lag over the tick, from the
 		# committed state and the servos the last tick used; held through the RK stages like rpm.
@@ -5240,6 +5375,9 @@ func trace_meta() -> Dictionary:
 	if not _collision_world.is_empty():
 		metadata.scenery_collision_model = "openrc-swept-landscape-contact v1"
 		metadata.collision_world_identity = str(_collision_world.identity)
+	if not _rc_track.is_empty():
+		metadata.rc_track_model = "openrc-rc-track-wheel-terrain v1"
+		metadata.rc_track_identity = RcTrack.identity(_rc_track)
 	if not _lake.is_empty():
 		metadata.lake_terrain_model = "bounded-lake-terrain-and-terminal-water-contact-v1"
 		metadata.lake_id = str(_lake.id)
@@ -5530,6 +5668,8 @@ func checkpoint() -> Dictionary:
 			boundary.lake_id = str(_lake.id)
 		if not _collision_world.is_empty() and not _scenery_damage.is_empty():
 			boundary.scenery_damage = _scenery_damage.duplicate(true)
+	if not _rc_track.is_empty():
+		boundary.rc_track_identity = RcTrack.identity(_rc_track)
 	boundary.contact_state = contact_events()
 	if not _contact_history_is_valid(boundary.contact_state, snapshot):
 		return {}
@@ -5627,6 +5767,8 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append("collision-world:" + str(_collision_world.identity))
 	if not _lake.is_empty():
 		parts.append("lake-geometry:" + _lake_identity())
+	if not _rc_track.is_empty():
+		parts.append("rc-track:" + RcTrack.identity(_rc_track))
 	config_hash.update(var_to_bytes(parts))
 	return config_hash.finish().hex_encode()
 
@@ -5823,6 +5965,8 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 			return false
 	elif has_collision_world or has_lake or candidate.has("collision_world_identity") or candidate.has("lake_identity"):
 		return false # Old snapshots do not identify terrain or obstacles used by deterministic tick filtering.
+	if str(candidate.get("rc_track_identity", "")) != RcTrack.identity(_rc_track):
+		return false # RC-TRACK: the circuit under the wheels is part of the deterministic terrain.
 	if candidate.format != "openrc-flight-checkpoint v7" and candidate.has("scenery_damage"):
 		return false
 	var restored_damage: Dictionary = {}

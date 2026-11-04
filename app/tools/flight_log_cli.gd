@@ -238,6 +238,8 @@ static func inspect(path: String, recover := false) -> Dictionary:
 		return {ok = false, error = "Unsupported flight-log header."}
 	for key in ["metadata", "checkpoint", "aircraft", "collision_world", "lake", "weather", "layout", "build"]:
 		if not header.get(key) is Dictionary: return {ok = false, error = "Missing header dictionary: " + key}
+	if header.has("rc_track") and not header.rc_track is Dictionary:
+		return {ok = false, error = "Malformed header dictionary: rc_track"}
 	var backend := recorded_stage_backend(header)
 	if not backend.ok: return backend
 	for key in ["engine", "solver_sha256", "aircraft_path", "ground_field_id", "shaft_integrator"]:
@@ -385,6 +387,9 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 	flight.ground_field_id = header.ground_field_id
 	var ready: bool = flight.setup_shaft_integrator(header.shaft_integrator) \
 		and flight.setup_weather(header.weather) and flight.set_collision_world(header.collision_world) and flight.set_lake_context(header.lake)
+	# RC-TRACK: by name, like airframe_surfaces; a recorded circuit needs a solver that can install it.
+	if ready and header.has("rc_track"):
+		ready = flight.has_method("set_rc_track") and flight.call("set_rc_track", header.rc_track)
 	flight.reset()
 	var active_backend: Variant = _session_stage_backend(flight)
 	var expected_backend: Dictionary = recorded_backend.identity if candidate.is_empty() else {backend = REFERENCE_STAGE_BACKEND}

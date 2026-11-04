@@ -9242,3 +9242,9 @@ msgstr "Луг"
 
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "Куртины травы, клевера и полевых цветов по обе стороны полосы. Выключение снижает нагрузку на GPU на медленных компьютерах. Выключение действует сразу; включение — со следующего полёта. Плотность зависит от детализации сцены."
+
+msgid "RC circuit"
+msgstr "Трасса RC"
+
+msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+msgstr "Грунтовая трасса для RC-машин к северу от полосы: трамплины, виражи и барьеры. Она физическая: колёса катятся по её рельефу, а самолёт может в неё врезаться. «Автоматически» включает её на дискретной видеокарте при детализации сцены «Высокая» или «Экстрим». Применяется со следующего полёта."

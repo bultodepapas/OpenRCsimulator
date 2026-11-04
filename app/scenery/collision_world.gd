@@ -11,6 +11,7 @@ const VegetationPlacement := preload("res://scenery/vegetation_placement.gd")
 const SupportSurfaces := preload("res://scenery/support_surfaces.gd")
 const FlightlineBarrier := preload("res://render/flightline_barrier.gd")
 const FenceParts := preload("res://scenery/fence_parts.gd")
+const RcTrack := preload("res://physics/ground_vehicle/airfield_track.gd")
 
 const FORMAT := "openrc-collision-world v1"
 const CELL_SIZE_M := 32.0
@@ -51,17 +52,20 @@ static var _build_cache_hits := 0
 static var _build_cache_misses := 0
 static var _build_cache_bypasses := 0
 
-static func build(field: Dictionary, scenery: Dictionary, lights: Dictionary = {}) -> Dictionary:
+## `rc_track`: the validated RC-TRACK circuit whose solid dressing joins the inventory; {} for none.
+static func build(field: Dictionary, scenery: Dictionary, lights: Dictionary = {}, rc_track: Dictionary = {}) -> Dictionary:
 	var input_error: String = _input_shape_error(field, scenery, lights)
 	if not input_error.is_empty():
 		return _failure(input_error)
+	if not rc_track.is_empty() and not RcTrack.valid(rc_track):
+		return _failure("RC circuit must be validated before collision inventory construction")
 	var parked_info: Dictionary = _parked_aircraft_snapshots(scenery)
 	if not Thread.is_main_thread():
-		return _build_uncached(field, scenery, lights, parked_info)
-	var key_bytes: PackedByteArray = _make_build_cache_key(field, scenery, lights, parked_info)
+		return _build_uncached(field, scenery, lights, parked_info, rc_track)
+	var key_bytes: PackedByteArray = _make_build_cache_key(field, scenery, lights, parked_info, rc_track)
 	if key_bytes.is_empty():
 		_build_cache_bypasses += 1
-		return _build_uncached(field, scenery, lights, parked_info)
+		return _build_uncached(field, scenery, lights, parked_info, rc_track)
 	if not _build_cache_key.is_empty() and key_bytes == _build_cache_key:
 		var cached_world: Variant = bytes_to_var(_build_cache_world)
 		if typeof(cached_world) == TYPE_DICTIONARY:
@@ -71,7 +75,7 @@ static func build(field: Dictionary, scenery: Dictionary, lights: Dictionary = {
 		_build_cache_key = PackedByteArray()
 		_build_cache_world = PackedByteArray()
 	_build_cache_misses += 1
-	var result: Dictionary = _build_uncached(field, scenery, lights, parked_info)
+	var result: Dictionary = _build_uncached(field, scenery, lights, parked_info, rc_track)
 	if not result.get("ok", false) or typeof(result.get("world")) != TYPE_DICTIONARY:
 		return result
 	var world: Dictionary = result.world
@@ -110,7 +114,7 @@ static func cache_diagnostics() -> Dictionary:
 
 
 static func _build_uncached(field: Dictionary, scenery: Dictionary, lights: Dictionary,
-		parked_info: Dictionary) -> Dictionary:
+		parked_info: Dictionary, rc_track: Dictionary = {}) -> Dictionary:
 	var input_error: String = _input_shape_error(field, scenery, lights)
 	if not input_error.is_empty():
 		return _failure(input_error)
@@ -121,6 +125,7 @@ static func _build_uncached(field: Dictionary, scenery: Dictionary, lights: Dict
 	_add_flightline_barrier(proxies, field)
 	_add_scenery(proxies, scenery, support_surfaces, parked_info)
 	_add_lights(proxies, lights)
+	_add_rc_track(proxies, rc_track)
 	_assign_damage_profiles(proxies)
 	proxies.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.id) < str(b.id))
 	for proxy: Dictionary in proxies:
@@ -188,8 +193,10 @@ static func _parked_aircraft_snapshots(scenery: Dictionary) -> Dictionary:
 
 
 static func _make_build_cache_key(field: Dictionary, scenery: Dictionary, lights: Dictionary,
-		parked_info: Dictionary) -> PackedByteArray:
+		parked_info: Dictionary, rc_track: Dictionary = {}) -> PackedByteArray:
 	var cache_value: Array = [field, scenery, lights, parked_info]
+	if not rc_track.is_empty():
+		cache_value.append(rc_track) # absent for every world without the circuit, so their keys are unchanged
 	var estimate: Array[int] = [0]
 	if not _cache_value_is_safe(cache_value, 0, estimate):
 		return PackedByteArray()
@@ -488,6 +495,16 @@ static func _add_flightline_barrier(proxies: Array[Dictionary], field: Dictionar
 				float(cue.north) - base.z, float(cue.east) + base.x, -(base.y + size.y * 0.5),
 				size.x, size.y, size.z, 0.0)
 			proxies.back()["damage_profile"] = str(part.profile)
+
+
+## RC-TRACK: the circuit's walls, tyre stacks, signs, timing posts, tape and cabinet. Its raised dirt is
+## ground, not an obstacle: the flight session tests the hull against that exact surface itself.
+static func _add_rc_track(proxies: Array[Dictionary], track: Dictionary) -> void:
+	for item: Dictionary in RcTrack.dressing(track):
+		_add_box_at_down(proxies, str(item.id), "rc_track", str(item.part), str(item.response),
+			float(item.north), float(item.east), -(float(item.up) + float(item.height) * 0.5),
+			float(item.width), float(item.height), float(item.length), float(item.heading_deg))
+		proxies.back()["damage_profile"] = str(item.damage_profile)
 
 
 static func _add_field_tree_proxies(proxies: Array[Dictionary], id: String, north: float, east: float,

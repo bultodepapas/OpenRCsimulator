@@ -152,11 +152,19 @@ static func _add_flag(parent: Node3D, road: Callable, east: float, north: float,
 		_material(Color("#59615d"), 0.62, 0.58))
 
 
+## Identical finishes share one material, so the renderer can sort and batch them (RC-TRACK optimization).
+static var _materials: Dictionary = {}
+
+
 static func _material(color: Color, roughness: float, metallic: float) -> StandardMaterial3D:
+	var key := "%s:%.4f:%.4f" % [color.to_html(), roughness, metallic]
+	if _materials.has(key):
+		return _materials[key]
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = color
 	mat.roughness = roughness
 	mat.metallic = metallic
+	_materials[key] = mat
 	return mat
 
 

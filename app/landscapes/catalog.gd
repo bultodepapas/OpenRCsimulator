@@ -26,17 +26,23 @@ static func entry(id: String) -> Dictionary:
 	return {id = adapter.ID, name = adapter.DISPLAY_NAME, field_path = adapter.FIELD_PATH}
 
 
-static func build(id: String, field: Dictionary, lighting: Dictionary = {}) -> Node3D:
+## `rc_track` (RC-TRACK) reaches only the club field, the one landscape whose geometry carries the circuit.
+static func build(id: String, field: Dictionary, lighting: Dictionary = {}, rc_track: Dictionary = {}) -> Node3D:
 	var adapter: Variant = _adapter(id)
-	return adapter.build(field, lighting) if adapter != null else null
+	if adapter == null:
+		return null
+	return adapter.build(field, lighting, rc_track) if _takes_rc_track(id, rc_track) else adapter.build(field, lighting)
 
 
 ## Builders that support checkpoints yield on the main thread; simple landscapes retain their normal builder.
-static func build_staged(id: String, field: Dictionary, lighting: Dictionary, checkpoint: Callable) -> Node3D:
+static func build_staged(id: String, field: Dictionary, lighting: Dictionary, checkpoint: Callable,
+		rc_track: Dictionary = {}) -> Node3D:
 	var adapter: Variant = _adapter(id)
 	if adapter == null:
 		return null
 	if adapter.has_method("build_staged"):
+		if _takes_rc_track(id, rc_track):
+			return await adapter.build_staged(field, lighting, checkpoint, rc_track)
 		return await adapter.build_staged(field, lighting, checkpoint)
 	var begin := Time.get_ticks_usec()
 	var result: Node3D = adapter.build(field, lighting)
@@ -44,15 +50,19 @@ static func build_staged(id: String, field: Dictionary, lighting: Dictionary, ch
 	return result
 
 
-static func collision_world(id: String, field: Dictionary) -> Dictionary:
+static func collision_world(id: String, field: Dictionary, rc_track: Dictionary = {}) -> Dictionary:
 	var adapter: Variant = _adapter(id)
 	if adapter != null:
-		return adapter.collision_world(field)
+		return adapter.collision_world(field, rc_track) if _takes_rc_track(id, rc_track) else adapter.collision_world(field)
 	return {
 		ok = false,
 		world = {},
 		errors = PackedStringArray(["landscape: unknown id '%s'" % id]),
 	}
+
+
+static func _takes_rc_track(id: String, rc_track: Dictionary) -> bool:
+	return not rc_track.is_empty() and id == DEFAULT_ID
 
 
 static func _adapter(id: String) -> Variant:

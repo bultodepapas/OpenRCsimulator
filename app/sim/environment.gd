@@ -12,6 +12,7 @@ const GroundSupport := preload("res://physics/ground_support.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const Course := preload("res://physics/ground_vehicle/course.gd")
 const AirfieldCourse := preload("res://physics/ground_vehicle/airfield_course.gd")
+const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
 
 ## Physical wind and atmosphere (physics/wind_field.gd). Sessions configure it at launch boundaries.
 var weather: WeatherField = WeatherField.new()
@@ -24,6 +25,9 @@ var surfaces: PackedFloat64Array = PackedFloat64Array()
 var _ground_support: Dictionary = {}
 ## Normalized lake (physics/lake_surface.gd); empty = no water.
 var lake: Dictionary = {}
+## RC-TRACK: the optional dirt circuit (physics/ground_vehicle/airfield_track.gd) on the aircraft field's terrain;
+## empty = none, and every terrain query below keeps its exact legacy arithmetic.
+var terrain_overlay: Dictionary = {}
 ## Ground-vehicle course sampler (north, east) -> Dictionary with height, normal, surface, walls and wet zone;
 ## unset = no course.
 var road: Callable
@@ -98,18 +102,22 @@ func engine_charge_ratio(down_m: float = 0.0) -> float:
 	return weather.engine_charge_ratio(down_m)
 
 
-## Dry terrain sample [height_up, ...] from the surface table alone (physics/ground_terrain.gd).
+## Dry terrain sample [height_up, ...] from the surface table (physics/ground_terrain.gd), plus the RC circuit.
 func terrain(north: float, east: float) -> PackedFloat64Array:
-	return Terrain.sample_validated(north, east, surfaces)
+	var sample := Terrain.sample_validated(north, east, surfaces)
+	return sample if terrain_overlay.is_empty() else Track.composed(sample, terrain_overlay, north, east).slice(0, 3)
 
 
-## Terrain sample with the lake applied, as the contact laws see it.
+## Terrain sample with the lake and the RC circuit applied, as the contact laws see it.
 func ground(north: float, east: float) -> PackedFloat64Array:
-	return Terrain.sample_validated(north, east, surfaces, lake)
+	var sample := Terrain.sample_validated(north, east, surfaces, lake)
+	return sample if terrain_overlay.is_empty() else Track.composed(sample, terrain_overlay, north, east).slice(0, 3)
 
 
 func ground_max_height() -> float:
-	return Terrain.max_height_validated(surfaces)
+	if terrain_overlay.is_empty():
+		return Terrain.max_height_validated(surfaces)
+	return Terrain.max_height_validated(surfaces) + Track.max_height_m(terrain_overlay)
 
 
 ## Install provenance for the current legacy table at a field boundary. Geometry
@@ -127,7 +135,7 @@ func install_ground_registry(regions: Array) -> bool:
 ## A vehicle road is not silently replaced by the flat field under that road.
 func sample_support(position_ned: PackedFloat64Array, velocity_ned: PackedFloat64Array,
 		time_s: float) -> Dictionary:
-	if road.is_valid():
+	if road.is_valid() or not terrain_overlay.is_empty():
 		return {ok = false, status = "unsupported_geometry", format = GroundSupport.FORMAT,
 			reason = "road support requires its own geometry adapter"}
 	if _ground_support.is_empty() or _ground_support.get("surfaces") != surfaces:
@@ -160,7 +168,7 @@ func identity() -> Dictionary:
 	ctx.start(HashingContext.HASH_SHA256)
 	if not surfaces.is_empty():
 		ctx.update(surfaces.to_byte_array())
-	return {
+	var summary := {
 		weather = weather.configuration(),
 		turbulence = turbulence.is_valid(),
 		surfaces_sha256 = ctx.finish().hex_encode(),
@@ -168,6 +176,9 @@ func identity() -> Dictionary:
 		course = road.is_valid(),
 		gravity = gravity,
 	}
+	if not terrain_overlay.is_empty():
+		summary.rc_track = Track.identity(terrain_overlay)
+	return summary
 
 
 func _valid_ned_vector(value: PackedFloat64Array) -> bool:

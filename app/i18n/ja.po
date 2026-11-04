@@ -8491,3 +8491,9 @@ msgstr "草地"
 
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "滑走路の両側に草、クローバー、野花の株を表示します。オフにすると低速なコンピューターで GPU の負荷を減らせます。オフはすぐに反映され、オンは次のフライトから反映されます。密度はシーンの詳細に従います。"
+
+msgid "RC circuit"
+msgstr "RCサーキット"
+
+msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+msgstr "滑走路の北にあるRCカー用のダートサーキット（ジャンプ、バンク付きカーブ、バリア）。物理的に存在し、車輪は起伏の上を転がり、機体は衝突することがあります。自動では専用GPUでシーン詳細が「高」または「最高」のときに有効になります。次のフライトから適用されます。"

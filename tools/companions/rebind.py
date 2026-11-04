@@ -115,6 +115,9 @@ def build_baseline(workspace: Path, rev: str, directories: list[str]) -> Path:
     base = workspace / "base"
     shutil.copytree(ROOT / "app", base / "app", symlinks=True, ignore=COPY_IGNORE)
     shutil.copytree(ROOT / "tools" / "flight_log", base / "tools" / "flight_log", symlinks=True)
+    # tools/flight_log/flight_log.py loads the Mac receipt helper by path at import time.
+    (base / "tools" / "release").mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / "tools" / "release" / "macos_reference_receipt.py", base / "tools" / "release")
     for directory in directories:
         shutil.rmtree(base / directory)
     archive = workspace / "base-solver.tar"

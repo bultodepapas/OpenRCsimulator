@@ -9282,3 +9282,9 @@ msgstr "Prado"
 
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "Touceiras de grama, trevo e flores silvestres dos dois lados da pista. Desligado economiza trabalho da GPU em computadores mais lentos. Desligar vale na hora; ligar vale no próximo voo. A densidade segue o detalhe da cena."
+
+msgid "RC circuit"
+msgstr "Circuito RC"
+
+msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+msgstr "O circuito de terra para carros RC ao norte da pista, com saltos, curvas inclinadas e barreiras. Ele é físico: as rodas rolam sobre o relevo e o avião pode colidir com ele. Automático o ativa com uma GPU dedicada e detalhe de cena Alto ou Extremo. Aplica-se no próximo voo."

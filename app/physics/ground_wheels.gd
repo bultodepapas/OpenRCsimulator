@@ -6,6 +6,7 @@ const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
+const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
 const REFERENCE_RADIUS := 0.0381
 const STRIDE := 6
 const STICK_SPEED := 0.02
@@ -32,13 +33,17 @@ static func _damping(contact: Dictionary, compression: float) -> float:
 
 # Each frame is evaluated at this RK stage, including terrain slope and contact velocity.
 static func frame(s: PackedFloat64Array, c: Dictionary, steer: float, surfaces: PackedFloat64Array,
-		rotation := PackedFloat64Array(), surfaces_validated := false, lake: Dictionary = {}) -> Dictionary:
+		rotation := PackedFloat64Array(), surfaces_validated := false, lake: Dictionary = {},
+		overlay: Dictionary = {}) -> Dictionary:
 	var a := _rotation(s) if rotation.is_empty() else rotation
 	var r: PackedFloat64Array = c.position
 	var p := PackedFloat64Array([s[0] + a[0] * r[0] + a[1] * r[1] + a[2] * r[2],
 		s[1] + a[3] * r[0] + a[4] * r[1] + a[5] * r[2],
 		s[2] + a[6] * r[0] + a[7] * r[1] + a[8] * r[2]])
 	var terrain := Terrain.sample_validated(p[0], p[1], surfaces, lake) if surfaces_validated else Terrain.sample(p[0], p[1], surfaces, lake)
+	# RC-TRACK: the optional dirt circuit is added to the field terrain exactly as the ground-vehicle course adds it.
+	if not overlay.is_empty():
+		terrain = Track.composed(terrain, overlay, p[0], p[1])
 	var norm := sqrt(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2])
 	var normal := Terrain.normal_from_up_slopes(terrain[1], terrain[2])
 	if normal.is_empty():
@@ -70,9 +75,12 @@ static func frame(s: PackedFloat64Array, c: Dictionary, steer: float, surfaces: 
 		heading[1] = he / length
 		heading[2] = hd / length
 	var side := M.cross(heading, normal)
-	return {position = p, normal = normal, heading = heading, side = side, compression = compression,
+	var result := {position = p, normal = normal, heading = heading, side = side, compression = compression,
 		normal_load = load, long_speed = vn * heading[0] + ve * heading[1] + vd * heading[2],
 		side_speed = vn * side[0] + ve * side[1] + vd * side[2], valid_heading = length > 1e-6}
+	if not overlay.is_empty():
+		result.track_coverage = terrain[3]
+	return result
 
 
 static func _rotation(s: PackedFloat64Array) -> PackedFloat64Array:
@@ -85,7 +93,10 @@ static func _rotation(s: PackedFloat64Array) -> PackedFloat64Array:
 		2.0 * (x * z - w * y), 2.0 * (y * z + w * x), 1.0 - 2.0 * (x * x + y * y)])
 
 
-static func coefficients(gear: Dictionary, c: Dictionary, surfaces: PackedFloat64Array, p: PackedFloat64Array) -> PackedFloat64Array:
+static func coefficients(gear: Dictionary, c: Dictionary, surfaces: PackedFloat64Array, p: PackedFloat64Array,
+		overlay: Dictionary = {}, coverage := 0.0) -> PackedFloat64Array:
+	if not overlay.is_empty() and coverage > 0.0:
+		return _track_coefficients(gear, c, surfaces, p, overlay, coverage)
 	var mu: float = gear.get("side_friction", 0.0)
 	var rolling: float = gear.get("rolling_resistance", 0.0)
 	var index := -1
@@ -101,9 +112,29 @@ static func coefficients(gear: Dictionary, c: Dictionary, surfaces: PackedFloat6
 	return PackedFloat64Array([mu, rolling, float(index)])
 
 
+## RC-TRACK: on the dirt the field row's factors blend toward the circuit's by its coverage, as the course does.
+static func _track_coefficients(gear: Dictionary, c: Dictionary, surfaces: PackedFloat64Array, p: PackedFloat64Array,
+		overlay: Dictionary, coverage: float) -> PackedFloat64Array:
+	var dirt := Track.surface_factors(overlay)
+	var index := -1
+	var mu_factor := 1.0
+	var rolling_factor := 1.0
+	if not surfaces.is_empty():
+		index = surface_at(surfaces, p[0], p[1])
+		mu_factor = surfaces[index + 4]
+		rolling_factor = surfaces[index + 5]
+	mu_factor = lerpf(mu_factor, dirt[0], coverage)
+	rolling_factor = lerpf(rolling_factor, dirt[1], coverage)
+	var mu: float = float(gear.get("side_friction", 0.0)) * mu_factor
+	var rolling: float = gear.get("rolling_resistance", 0.0)
+	var radius: float = c.get("wheel_radius", REFERENCE_RADIUS)
+	rolling *= rolling_factor if rolling_factor < 1.0 else 1.0 + (rolling_factor - 1.0) * sqrt(float(gear.get("rolling_reference_radius", REFERENCE_RADIUS)) / radius)
+	return PackedFloat64Array([mu, rolling, float(index)])
+
+
 static func evaluate(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
 		anchors: PackedFloat64Array, speeds: PackedFloat64Array, brake := 0.0, diagnostics_enabled := true,
-		lake: Dictionary = {}) -> Dictionary:
+		lake: Dictionary = {}, overlay: Dictionary = {}) -> Dictionary:
 	var rates := PackedFloat64Array()
 	rates.resize(speeds.size())
 	var diagnostics: Array = []
@@ -113,13 +144,13 @@ static func evaluate(s: PackedFloat64Array, gear: Dictionary, steer: float, surf
 	if speeds.size() != gear.contacts.size() or not Terrain.is_valid_surface_table(surfaces) or not _valid_lake(lake):
 		return {loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN]), wheels = diagnostics}
 	# No body arithmetic at all when every wheel is beyond the terrain's height bound.
-	if -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces):
+	if -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces) + Track.max_height_m(overlay):
 		return {loads = loads, derivative = rates, wheels = diagnostics}
 	var rotation := _rotation(s)
 	for i in gear.contacts.size():
 		var c: Dictionary = gear.contacts[i]
-		var f := frame(s, c, steer, surfaces, rotation, true, lake)
-		var cf := coefficients(gear, c, surfaces, f.position)
+		var f := frame(s, c, steer, surfaces, rotation, true, lake, overlay)
+		var cf := coefficients(gear, c, surfaces, f.position, overlay, float(f.get("track_coverage", 0.0)))
 		var n: float = f.normal_load
 		var rim: float = speeds[i]
 		var slip: float = f.long_speed - rim
@@ -183,7 +214,7 @@ static func evaluate(s: PackedFloat64Array, gear: Dictionary, steer: float, surf
 
 
 static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces: PackedFloat64Array,
-		lake: Dictionary = {}) -> PackedFloat64Array:
+		lake: Dictionary = {}, overlay: Dictionary = {}) -> PackedFloat64Array:
 	var values := PackedFloat64Array()
 	if gear.is_empty():
 		return values
@@ -196,22 +227,25 @@ static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces: Pack
 		var east := s[1] + a[3] * r[0] + a[4] * r[1] + a[5] * r[2]
 		var down := s[2] + a[6] * r[0] + a[7] * r[1] + a[8] * r[2]
 		var terrain := Terrain.sample_validated(north, east, surfaces, lake)
+		if not overlay.is_empty():
+			terrain = Track.composed(terrain, overlay, north, east)
 		values.append((down + terrain[0]) / sqrt(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2]))
 	return values
 
 
 static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
-		anchors: PackedFloat64Array, speeds := PackedFloat64Array(), lake: Dictionary = {}) -> PackedFloat64Array:
+		anchors: PackedFloat64Array, speeds := PackedFloat64Array(), lake: Dictionary = {},
+		overlay: Dictionary = {}) -> PackedFloat64Array:
 	var out := PackedFloat64Array()
 	out.resize(anchors.size())
 	if not _valid_lake(lake):
 		return PackedFloat64Array([NAN])
-	if gear.is_empty() or anchors.size() != gear.contacts.size() * 3 or -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height(surfaces):
+	if gear.is_empty() or anchors.size() != gear.contacts.size() * 3 or -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height(surfaces) + Track.max_height_m(overlay):
 		return out
 	for i in gear.contacts.size():
 		var c: Dictionary = gear.contacts[i]
-		var f := frame(s, c, steer, surfaces, PackedFloat64Array(), false, lake)
-		var cf := coefficients(gear, c, surfaces, f.position)
+		var f := frame(s, c, steer, surfaces, PackedFloat64Array(), false, lake, overlay)
+		var cf := coefficients(gear, c, surfaces, f.position, overlay, float(f.get("track_coverage", 0.0)))
 		var n: float = f.normal_load
 		if n <= 0.0 or cf[0] <= 0.0 or not f.valid_heading:
 			continue

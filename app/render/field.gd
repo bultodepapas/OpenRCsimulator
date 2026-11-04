@@ -24,6 +24,7 @@ const PeopleGaze = preload("res://scenery/people_gaze.gd")
 const LandscapeOptions = preload("res://render/landscape_upgrade/options.gd")
 const DistantRidges = preload("res://render/landscape_upgrade/ridges.gd")
 const Countryside = preload("res://render/landscape_upgrade/countryside.gd")
+const RcTrackField = preload("res://render/rc_track_field.gd")
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03, "rotorpad": 0.015}
 const GROUND_SUBDIVISIONS := 63
@@ -42,6 +43,7 @@ enum _BuildPhase {
 	SCENERY_RESOLVE,
 	SCENERY_ATTACH,
 	LAKE_ATTACH,
+	RC_TRACK,
 	POPULATION,
 	NEAR_GRASS,
 	DISTANT_RIDGES,
@@ -78,12 +80,15 @@ class _BuildContext:
 	var field_light_exclusions: Array[Dictionary] = []
 	var build_ridges: bool = false
 	var build_countryside: bool = false
+	var rc_track: Dictionary
 
-	func _init(field_input: Dictionary, lighting_input: Dictionary, extra_input: Array) -> void:
+	func _init(field_input: Dictionary, lighting_input: Dictionary, extra_input: Array,
+			rc_track_input: Dictionary = {}) -> void:
 		var started := Time.get_ticks_usec()
 		field = field_input.duplicate(true)
 		lighting = lighting_input.duplicate(true)
 		extra_grass_exclusions = extra_input.duplicate(true)
+		rc_track = rc_track_input.duplicate(true)
 		flight_cues = field.get("flight_cues", [])
 		result = Node3D.new()
 		result.name = "Field"
@@ -91,8 +96,10 @@ class _BuildContext:
 
 
 ## Synchronous builder: drain the exact same ordered steps as build_staged without yielding or workers.
-static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_exclusions: Array = []) -> Node3D:
-	var context := _BuildContext.new(field, lighting, extra_grass_exclusions)
+## `rc_track`: the airplane flight's RC-TRACK circuit (scenery/rc_track_option.gd), or {} for none.
+static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_exclusions: Array = [],
+		rc_track: Dictionary = {}) -> Node3D:
+	var context := _BuildContext.new(field, lighting, extra_grass_exclusions, rc_track)
 	while context.phase != _BuildPhase.DONE:
 		var started_usec: int = Time.get_ticks_usec()
 		var stage: String = _next_build_stage(context)
@@ -106,8 +113,8 @@ static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_excl
 
 ## Staged builder: each callback labels and gates the next chunk. Returning false frees the detached partial field.
 static func build_staged(field: Dictionary, lighting: Dictionary = {}, extra_grass_exclusions: Array = [],
-		checkpoint: Callable = Callable()) -> Node3D:
-	var context := _BuildContext.new(field, lighting, extra_grass_exclusions)
+		checkpoint: Callable = Callable(), rc_track: Dictionary = {}) -> Node3D:
+	var context := _BuildContext.new(field, lighting, extra_grass_exclusions, rc_track)
 	while context.phase != _BuildPhase.DONE:
 		var selection_started_usec: int = Time.get_ticks_usec()
 		var stage: String = _next_build_stage(context)
@@ -161,6 +168,11 @@ static func _next_build_stage(context: _BuildContext) -> String:
 				return "Building field scenery"
 			_BuildPhase.LAKE_ATTACH:
 				return "Building field lake"
+			_BuildPhase.RC_TRACK:
+				if not context.rc_track.is_empty():
+					return "RC car circuit"
+				context.phase = _BuildPhase.POPULATION
+				continue
 			_BuildPhase.POPULATION:
 				return "Preparing field vegetation"
 			_BuildPhase.NEAR_GRASS:
@@ -272,6 +284,16 @@ static func _advance_build(context: _BuildContext) -> void:
 				context.lighting, bool(context.scenery_options.audio))
 			if lake_node != null:
 				context.materials.append_array(lake_node.get_meta("lighting_materials"))
+			context.phase = _BuildPhase.RC_TRACK
+		_BuildPhase.RC_TRACK:
+			# RC-TRACK: before the grass phases, so its dirt band joins every grass and meadow mask.
+			var circuit: Node3D = RcTrackField.build(context.field, context.rc_track, context.lake, context.grass)
+			if circuit != null:
+				context.result.add_child(circuit)
+				context.result.set_meta("rc_track_identity", circuit.get_meta("rc_track_identity"))
+				if circuit.has_meta("lighting_material"):
+					context.materials.append(circuit.get_meta("lighting_material") as ShaderMaterial)
+				context.extra_grass_exclusions.append_array(RcTrackField.grass_exclusions(context.rc_track))
 			context.phase = _BuildPhase.POPULATION
 		_BuildPhase.POPULATION:
 			context.scenery_node = context.result.get_node_or_null("Scenery") as Node3D

@@ -37,6 +37,7 @@ func configure(player: Node, field: Dictionary, slot: int, count: int, seed_valu
 	session.setup(Catalog.entry(Catalog.DEFAULT_ID).data, Catalog.DEFAULT_ID)
 	if not session.aircraft.get("ok", false) or not session.set_field(field) \
 			or not session.set_lake_context(player.lake_context()) \
+			or not session.set_rc_track(player.rc_track_context()) \
 			or not session.set_collision_world(player.collision_world()):
 		return _refuse("Companion aircraft or field configuration failed.")
 	# The manager validates the profile once per launch; direct fixtures validate here.

@@ -32,6 +32,8 @@ const BIRD_LEVELS: Array[String] = ["off", "few", "normal", "many"]
 const LIGHTING_QUALITY_LEVELS: Array[String] = ["low", "standard", "high"]
 # L11a-R3: runway meadow plant colonies; mirrors scenery/runway_meadow.gd PREFERENCES.
 const RUNWAY_MEADOW_LEVELS: Array[String] = ["off", "on"]
+# RC-TRACK: the RC car circuit on the airplane field; mirrors scenery/rc_track_option.gd PREFERENCES.
+const RC_TRACK_LEVELS: Array[String] = ["auto", "on", "off"]
 const DEFAULTS := {
 	"window_mode": "windowed",
 	"window_resolution": "auto",
@@ -44,6 +46,7 @@ const DEFAULTS := {
 	"scene_detail": "auto",
 	"birds": "normal",
 	"runway_meadow": "on",
+	"rc_track": "auto",
 	"shadow_quality": ShadowSettings.DEFAULTS.shadow_quality,
 	"shadow_technique": ShadowSettings.DEFAULTS.shadow_technique,
 	"shadow_aircraft_cue": ShadowSettings.DEFAULTS.shadow_aircraft_cue,
@@ -71,7 +74,7 @@ const DEFAULTS := {
 	"camera_invert_y": CameraSettings.DEFAULTS.camera_invert_y,
 }
 const OPTIONAL_KEYS: Array[String] = [
-	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "runway_meadow", "reconstruction",
+	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "runway_meadow", "rc_track", "reconstruction",
 	"camera_view", "camera_fov", "camera_auto_zoom", "camera_chase_distance", "camera_sensitivity", "camera_invert_y",
 	"fsr2_sharpness", "nvidia_reflex",
 	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
@@ -165,6 +168,7 @@ static func load_from(file_path: String) -> Dictionary:
 	raw.scene_detail = cfg.get_value("graphics", "scene_detail", DEFAULTS.scene_detail)
 	raw.birds = cfg.get_value("graphics", "birds", DEFAULTS.birds)
 	raw.runway_meadow = cfg.get_value("graphics", "runway_meadow", DEFAULTS.runway_meadow)
+	raw.rc_track = cfg.get_value("graphics", "rc_track", DEFAULTS.rc_track)
 	raw.opaque_panels = cfg.get_value("accessibility", "opaque_panels", DEFAULTS.opaque_panels)
 	raw.reduced_motion = cfg.get_value("accessibility", "reduced_motion", DEFAULTS.reduced_motion)
 	raw.menu_volume = cfg.get_value("audio", "menu_volume", DEFAULTS.menu_volume)
@@ -233,6 +237,7 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 	cfg.set_value("graphics", "scene_detail", checked.config.scene_detail)
 	cfg.set_value("graphics", "birds", checked.config.birds)
 	cfg.set_value("graphics", "runway_meadow", checked.config.runway_meadow)
+	cfg.set_value("graphics", "rc_track", checked.config.rc_track)
 	cfg.set_value("accessibility", "opaque_panels", checked.config.opaque_panels)
 	cfg.set_value("accessibility", "reduced_motion", checked.config.reduced_motion)
 	cfg.set_value("audio", "menu_volume", checked.config.menu_volume)
@@ -287,6 +292,9 @@ static func validate(raw: Variant) -> Dictionary:
 	var runway_meadow: Variant = raw.get("runway_meadow", DEFAULTS.runway_meadow)
 	if typeof(runway_meadow) != TYPE_STRING or runway_meadow not in RUNWAY_MEADOW_LEVELS:
 		errors.append("runway_meadow must be off or on")
+	var rc_track: Variant = raw.get("rc_track", DEFAULTS.rc_track)
+	if typeof(rc_track) != TYPE_STRING or rc_track not in RC_TRACK_LEVELS:
+		errors.append("rc_track must be auto, on or off")
 	for key: String in AIRCRAFT_LIGHTING_FILE_KEYS:
 		if not _valid_aircraft_lighting_value(key, raw.get(key, DEFAULTS[key])):
 			errors.append("%s has an invalid aircraft lighting value" % key)
@@ -321,6 +329,7 @@ static func validate(raw: Variant) -> Dictionary:
 		"scene_detail": scene_detail,
 		"birds": birds,
 		"runway_meadow": runway_meadow,
+		"rc_track": rc_track,
 		"ui_scale": float(raw.ui_scale),
 		"opaque_panels": raw.opaque_panels,
 		"reduced_motion": raw.reduced_motion,

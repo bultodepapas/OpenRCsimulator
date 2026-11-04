@@ -9,7 +9,8 @@ const Models := preload("res://scenery/models.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 
-static func build(field: Dictionary) -> Dictionary:
+## `rc_track`: the validated RC-TRACK circuit of this airplane flight, or {} (scenery/rc_track_option.gd).
+static func build(field: Dictionary, rc_track: Dictionary = {}) -> Dictionary:
 	if not Options.enabled():
 		return {ok = true, world = {}, errors = PackedStringArray()}
 	var scenery := {groups = []}
@@ -37,4 +38,4 @@ static func build(field: Dictionary) -> Dictionary:
 		if not loaded.ok:
 			return {ok = false, world = {}, errors = loaded.errors}
 		lights = loaded.lights
-	return CollisionWorld.build(field, scenery, lights)
+	return CollisionWorld.build(field, scenery, lights, rc_track)

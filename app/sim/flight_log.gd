@@ -98,6 +98,9 @@ func start(destination := "") -> Error:
 			continuous = _session.sim.continuous.size(), modes = _session.sim.modes.size(), mass = 4},
 		mass_boundary = "FUEL-06: live mass kg and CG offset [x, y, z] m body FRD from the fixed datum O, accepted tick end",
 	}
+	# RC-TRACK: only flights over the dirt circuit carry it, so other headers stay byte-compatible.
+	if _session.has_method("rc_track_context") and not _session.rc_track_context().is_empty():
+		header.rc_track = _session.rc_track_context()
 	# Source-built headers remain byte-compatible with historical logs.
 	if replay_identity.kind in ["packaged-executable-v1", NativePackage.MAC_IDENTITY_KIND]:
 		header.solver_identity_kind = replay_identity.kind

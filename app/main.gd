@@ -69,6 +69,8 @@ const Shadow := preload("res://render/shadow.gd")
 const Ground := preload("res://render/ground.gd") # legacy atmosphere fixture only
 const FieldLoader = preload("res://data/field_loader.gd")
 const Landscapes = preload("res://landscapes/catalog.gd")
+const RcTrackOption = preload("res://scenery/rc_track_option.gd")
+const RcTrack = preload("res://physics/ground_vehicle/airfield_track.gd")
 const FieldBuilder = preload("res://render/field.gd")
 const LakeWorld = preload("res://render/lake/lake_world.gd")
 const LakeReflection = preload("res://render/lake/lake_reflection.gd")
@@ -310,6 +312,8 @@ var _rig: CameraRig
 var _magnifier: Magnifier
 ## CAM-09: the scenery collision world the cameras keep clear of (a reference, built once with the session's).
 var _camera_obstacles: Dictionary = {}
+## RC-TRACK: this flight's RC car circuit, decided once; it feeds the field build, the wheels and the obstacles.
+var _rc_track: Dictionary = {}
 ## The view a flight starts in: --view=<pilot|chase|orbit|closeup>, or closeup with --inspect.
 var _initial_view := "pilot"
 var _camera_dt := 0.0
@@ -695,6 +699,9 @@ func _prepare_flight() -> void:
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
 	_scripted = args.has("scripted")
+	# RC-TRACK: one decision per flight for the rendered circuit, the wheels' terrain and the collision world.
+	_rc_track = {} if _scripted or landscape_id != Landscapes.DEFAULT_ID or _capture_scene_id() != "field" \
+		else RcTrackOption.resolve(field, interactive_start)
 	if aircraft_id == "":
 		aircraft_id = str(args.get("aircraft", Catalog.DEFAULT_ID))
 	# Frozen Workshop builds retain their own original base and exact snapshot identity.
@@ -940,8 +947,20 @@ func _prepare_flight() -> void:
 			printerr(startup_error)
 			get_tree().quit(ERR_INVALID_DATA)
 		return
+	# RC-TRACK: the wheels roll on exactly the circuit the field drew; never fly one without the other.
+	var drawn_track: String = str(_field_node.get_meta("rc_track_identity", "")) if _field_node != null else ""
+	if drawn_track != RcTrack.identity(_rc_track) or not session.set_rc_track(_rc_track):
+		startup_error = "RC circuit configuration refused"
+		session.free()
+		session = null
+		set_process(false)
+		set_process_unhandled_input(false)
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_DATA)
+		return
 	if not _scripted and _capture_scene_id() == "field":
-		var obstacles: Dictionary = Landscapes.collision_world(landscape_id, field)
+		var obstacles: Dictionary = Landscapes.collision_world(landscape_id, field, _rc_track)
 		if obstacles.ok:
 			_camera_obstacles = obstacles.world
 		if not obstacles.ok or not session.set_collision_world(obstacles.world):
@@ -2211,7 +2230,8 @@ func _camera_clearance(from: Vector3, to: Vector3) -> float:
 func _ground_height(x: float, z: float) -> float:
 	if session == null:
 		return 0.0
-	return GroundTerrain.sample(-z, x, session.ground_surfaces)[0]
+	var terrain: PackedFloat64Array = GroundTerrain.sample(-z, x, session.ground_surfaces)
+	return terrain[0] if _rc_track.is_empty() else RcTrack.composed(terrain, _rc_track, -z, x)[0]
 
 
 ## What the flight overlays show this frame; {} when there is no physics flight to describe.
@@ -3090,13 +3110,14 @@ func set_night_options(profile: String, campfire: bool, activation: String = "au
 
 ## Production field seam. The atmosphere fixture overrides only these ground meshes.
 func _build_field() -> void:
-	_field_node = Landscapes.build(landscape_id, field, _lighting if lighting_config.get("mode", "legacy") != "legacy" else {})
+	_field_node = Landscapes.build(landscape_id, field, _lighting if lighting_config.get("mode", "legacy") != "legacy" else {},
+		_rc_track)
 	add_child(_field_node)
 
 
 func _build_field_staged() -> Dictionary:
 	_field_node = await Landscapes.build_staged(landscape_id, field,
-		_lighting if lighting_config.get("mode", "legacy") != "legacy" else {}, startup_checkpoint)
+		_lighting if lighting_config.get("mode", "legacy") != "legacy" else {}, startup_checkpoint, _rc_track)
 	if _field_node == null:
 		return {cancelled = true}
 	var attach_begin := Time.get_ticks_usec()

@@ -79,11 +79,11 @@ const DAMPING_ONSET_FRACTION := 0.5
 ## anchors: E3b1 per-contact [north, east, stuck] (ANCHOR_STRIDE floats each); empty = no stiction (E2 exactly).
 static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surfaces := PackedFloat64Array(),
 		anchors := PackedFloat64Array(), wheels := PackedFloat64Array(), brake := 0.0,
-		lake: Dictionary = {}) -> PackedFloat64Array:
+		lake: Dictionary = {}, overlay: Dictionary = {}) -> PackedFloat64Array:
 	if not wheels.is_empty():
-		return evaluate(s, gear, steer, surfaces, anchors, wheels, brake, true, lake).loads
-	if not lake.is_empty():
-		return _loads_with_lake(s, gear, steer, surfaces, anchors, lake)
+		return evaluate(s, gear, steer, surfaces, anchors, wheels, brake, true, lake, overlay).loads
+	if not lake.is_empty() or not overlay.is_empty():
+		return _loads_with_lake(s, gear, steer, surfaces, anchors, lake, overlay)
 	if gear.is_empty() or -s[RB.POS + 2] > gear.reach:
 		return PackedFloat64Array()
 	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
@@ -168,12 +168,14 @@ static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surface
 	return out if touched else PackedFloat64Array()
 
 
-## Legacy no-wheel-state load path on the sampled terrain plane. The empty-lake path above remains unchanged.
+## Legacy no-wheel-state load path on the sampled terrain plane (lake and/or RC-TRACK circuit).
+## The flat path above remains unchanged.
 static func _loads_with_lake(s: PackedFloat64Array, gear: Dictionary, steer: float,
-		surfaces: PackedFloat64Array, anchors: PackedFloat64Array, lake: Dictionary) -> PackedFloat64Array:
-	if not LakeSurface.is_valid_definition(lake) or not Terrain.is_valid_surface_table(surfaces):
+		surfaces: PackedFloat64Array, anchors: PackedFloat64Array, lake: Dictionary,
+		overlay: Dictionary = {}) -> PackedFloat64Array:
+	if (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)) or not Terrain.is_valid_surface_table(surfaces):
 		return PackedFloat64Array([NAN])
-	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces):
+	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces) + Wheels.Track.max_height_m(overlay):
 		return PackedFloat64Array()
 	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var touched := false
@@ -194,6 +196,10 @@ static func _loads_with_lake(s: PackedFloat64Array, gear: Dictionary, steer: flo
 		var terrain: PackedFloat64Array = Terrain.sample_validated(p_n, p_e, surfaces, lake)
 		if terrain.size() != 3 or not is_finite(terrain[0]) or not is_finite(terrain[1]) or not is_finite(terrain[2]):
 			return PackedFloat64Array([NAN])
+		var coverage := 0.0
+		if not overlay.is_empty():
+			terrain = Wheels.Track.composed(terrain, overlay, p_n, p_e)
+			coverage = terrain[3]
 		var norm := sqrt(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2])
 		var normal := Terrain.normal_from_up_slopes(terrain[1], terrain[2])
 		if normal.is_empty():
@@ -235,7 +241,17 @@ static func _loads_with_lake(s: PackedFloat64Array, gear: Dictionary, steer: flo
 			var v_lat: float = M.dot(velocity, side)
 			var mu_n: float = mu * normal_load
 			var rolling: float = c_rr
-			if not surfaces.is_empty():
+			if coverage > 0.0:
+				var dirt := Wheels.Track.surface_factors(overlay)
+				var mu_factor := 1.0
+				var rolling_factor := 1.0
+				if not surfaces.is_empty():
+					var row: int = Wheels.surface_at(surfaces, p_n, p_e)
+					mu_factor = surfaces[row + 4]
+					rolling_factor = surfaces[row + 5]
+				mu_n *= lerpf(mu_factor, dirt[0], coverage)
+				rolling *= lerpf(rolling_factor, dirt[1], coverage)
+			elif not surfaces.is_empty():
 				var surface_index: int = Wheels.surface_at(surfaces, p_n, p_e)
 				mu_n *= surfaces[surface_index + 4]
 				rolling *= surfaces[surface_index + 5]
@@ -294,9 +310,9 @@ static func damping(contact: Dictionary, compression: float) -> float:
 
 static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
 		anchors: PackedFloat64Array, enhanced := false, speeds := PackedFloat64Array(),
-		lake: Dictionary = {}) -> PackedFloat64Array:
-	if enhanced or not lake.is_empty():
-		return Wheels.anchor_step(s, gear, steer, surfaces, anchors, speeds, lake)
+		lake: Dictionary = {}, overlay: Dictionary = {}) -> PackedFloat64Array:
+	if enhanced or not lake.is_empty() or not overlay.is_empty():
+		return Wheels.anchor_step(s, gear, steer, surfaces, anchors, speeds, lake, overlay)
 	var out := PackedFloat64Array()
 	out.resize(anchors.size()) # zero-filled: sliding
 	if gear.is_empty() or anchors.size() != gear.contacts.size() * ANCHOR_STRIDE or -s[RB.POS + 2] > gear.reach:
@@ -393,7 +409,8 @@ static func surface_at(table: PackedFloat64Array, north: float, east: float) -> 
 ## SF-05: integration substeps for this tick: the gear's derived count while any contact can touch the ground
 ## within the tick (CG within reach plus the distance covered in one tick plus a margin), otherwise 1.
 ## A deterministic function of the state and the data, so replay and refinement see the same plan.
-static func substeps(s: PackedFloat64Array, gear: Dictionary, dt: float, surfaces := PackedFloat64Array()) -> int:
+static func substeps(s: PackedFloat64Array, gear: Dictionary, dt: float, surfaces := PackedFloat64Array(),
+		overlay: Dictionary = {}) -> int:
 	if gear.is_empty():
 		return 1
 	var count: int = int(gear.get("substeps", 1))
@@ -401,6 +418,8 @@ static func substeps(s: PackedFloat64Array, gear: Dictionary, dt: float, surface
 		return 1
 	var speed_bound: float = absf(s[RB.VEL]) + absf(s[RB.VEL + 1]) + absf(s[RB.VEL + 2])
 	var terrain: float = 0.0 if surfaces.is_empty() else Terrain.max_height_validated(surfaces)
+	if not overlay.is_empty():
+		terrain += Wheels.Track.max_height_m(overlay)
 	if -s[RB.POS + 2] > float(gear.reach) + terrain + speed_bound * dt + SUBSTEP_REACH_MARGIN_M:
 		return 1
 	return count
@@ -408,9 +427,9 @@ static func substeps(s: PackedFloat64Array, gear: Dictionary, dt: float, surface
 
 ## Compression of every contact (m, ≤ 0 when above the ground), in the order of gear.contacts.
 static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces := PackedFloat64Array(),
-		lake: Dictionary = {}) -> PackedFloat64Array:
-	if not surfaces.is_empty() or not lake.is_empty():
-		return Wheels.compressions(s, gear, surfaces, lake)
+		lake: Dictionary = {}, overlay: Dictionary = {}) -> PackedFloat64Array:
+	if not surfaces.is_empty() or not lake.is_empty() or not overlay.is_empty():
+		return Wheels.compressions(s, gear, surfaces, lake, overlay)
 	var out := PackedFloat64Array()
 	if gear.is_empty():
 		return out
@@ -423,12 +442,12 @@ static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces := Pa
 
 ## True when any contact is pushed past its travel: the gear has collapsed (a crash, like any other hull point).
 static func collapsed(s: PackedFloat64Array, gear: Dictionary, surfaces := PackedFloat64Array(),
-		lake: Dictionary = {}) -> bool:
+		lake: Dictionary = {}, overlay: Dictionary = {}) -> bool:
 	if not lake.is_empty() and not LakeSurface.is_valid_definition(lake):
 		return true
-	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Wheels.Terrain.max_height(surfaces):
+	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Wheels.Terrain.max_height(surfaces) + Wheels.Track.max_height_m(overlay):
 		return false
-	var c := compressions(s, gear, surfaces, lake)
+	var c := compressions(s, gear, surfaces, lake, overlay)
 	for i in c.size():
 		if c[i] > gear.contacts[i].max_compression:
 			return true
@@ -471,5 +490,5 @@ static func _down_row(s: PackedFloat64Array) -> PackedFloat64Array:
 ## The legacy loads() API without wheel state is retained for the E1–E5 analytic reference fixtures.
 static func evaluate(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
 		anchors: PackedFloat64Array, wheels: PackedFloat64Array, brake := 0.0, diagnostics_enabled := true,
-		lake: Dictionary = {}) -> Dictionary:
-	return Wheels.evaluate(s, gear, steer, surfaces, anchors, wheels, brake, diagnostics_enabled, lake)
+		lake: Dictionary = {}, overlay: Dictionary = {}) -> Dictionary:
+	return Wheels.evaluate(s, gear, steer, surfaces, anchors, wheels, brake, diagnostics_enabled, lake, overlay)
