@@ -20,6 +20,8 @@ python3 tools/companions/rebind.py --accept   # re-pin and write a receipt
 
 The tool replays the [retained tapes](qualification.json) in candidate mode on two disposable copies under `tmp/`. The copies differ only in the solver directories: the accepted revision and the current tree. Byte-identical CSVs re-pin the profile, update `qualification.json` and write a receipt under [AFC-02/rebinds](../../docs/research/ai-companions/AFC-02/rebinds/). Commit all three together. A run takes about a minute.
 
+If the base copy fails to compile (`replay of … in base failed: … Compilation failed`), current non-solver code calls solver API newer than the accepted revision. Use `--baseline full`: the base then also takes every other tracked `app/` file and the replay tooling from the accepted revision. Identical tapes are a stricter result; a difference may come from non-solver code and still needs requalification. The receipt records the `baseline` used. First use: the RC track's scenery dressing (2026-11-04).
+
 ## When the engine pin changes
 
 Replay refuses a tape recorded by another engine (`Engine version differs`), so an engine change stops this tool with exit 2. Re-record the nine scenarios with the new pinned engine, point `qualification.json` at them and run the tool again. The probe refuses an existing output directory:
