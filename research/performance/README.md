@@ -409,6 +409,17 @@ runner command, because Godot consumes some engine flags before exposing them
 to GDScript. This technical fixture does not establish normal Home/Fly routing,
 package delivery, physical fuel endurance or pilot acceptance.
 
+For DT-MAC-03b attribution sweeps, `--sustained-render-scale=<0.25..1>` keeps
+Native bilinear scaling and lowers only the 3D input scale. `--sustained-msaa=<0..3>`
+selects `Viewport.MSAA` (0 off, 1 2×, 2 4×, 3 8×). The receipt records them as
+`scenario.render_override`, and the applied viewport values as `effective_render`.
+`native_summary.py` refuses a run when the checked command and the receipt
+disagree. It also treats differing overrides as different benchmark scenarios,
+so a campaign cannot pool them with each other or with default captures.
+For example, append `--sustained-render-scale=0.75 --sustained-msaa=1` after
+the fixture's other user options. A sweep is a screening diagnostic: the frame
+report's viewport size remains the output size, not the internal 3D size.
+
 ### Long continuous captures (DT-MAC-02b)
 
 Add the bare `--frametimes-stream` flag to opt into `openrc-frametimes v3` and

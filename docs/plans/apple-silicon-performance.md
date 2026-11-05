@@ -1,6 +1,6 @@
 # Apple Silicon optimization — master implementation plan
 
-Updated 2026-11-03 · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Current source baseline:** `9de47723282b5c4126418b58ceeac273d66c3122`, with the common clock-instrumentation patch identified in dated evidence. **Status:** bounded observer/shader optimizations and native measurement repairs implemented. Three 30-minute M1 runs per role establish 17.6–23.2% higher sustained process-loop FPS for the named instrumented Metal circuit. Whole-observer and full product/release qualification remain open.
+Updated 2026-11-05 (R4 work order: [next campaign](#next-campaign-dt-mac-00-r4)) · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Current source baseline:** `9de47723282b5c4126418b58ceeac273d66c3122`, with the common clock-instrumentation patch identified in dated evidence. **Status:** bounded observer/shader optimizations and native measurement repairs implemented. Three 30-minute M1 runs per role establish 17.6–23.2% higher sustained process-loop FPS for the named instrumented Metal circuit. Whole-observer and full product/release qualification remain open.
 
 This plan and the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) are the two authoritative Apple optimization documents. The background contains implementation facts, research and limitations; this document contains the execution sequence and gates. Existing research remains dated evidence and tool READMEs remain command authorities. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) retains release ownership. No optimization or new platform support is authorized as completed by this plan.
 
@@ -41,6 +41,24 @@ The [completed technical soak](../research/desktop-delivery-investigations/DT-MA
 | DT-MAC-13i1–i4 | iOS feasibility/delivery/lifecycle/qualification branch — phase 11; does not declare a shipped mobile product. |
 
 Shared code retains its existing owners: DT/GDU exports and pins, PT measurement, VQ reconstruction/profile, LU/FW/SM landscape effects, UI preferences/routes, AUD audio, SF/FL kernel/recording and each vehicle's validation. Register an implemented cross-track decision in the existing decision log when that decision is actually adopted; this plan does not silently change NK-3's Mac reference-only policy.
+
+<a id="next-campaign-dt-mac-00-r4"></a>
+### Next campaign (DT-MAC-00-R4, 2026-11-05)
+
+The [R4 research refresh](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md) found no upstream Metal speedup to adopt. Metal 4 is in no release. It did find source-proven pass costs in the pinned Mobile/Metal path. The optimized M1 build runs 4.10 MP internal pixels at ≈ 36 FPS, p95 ≈ 31 ms. That is 1.98× the 1080p pixel load. The next campaign executes DT-MAC-03b attribution first and then selects one track. Each item states its decision rule. Numbers below are screening rules, not results.
+
+| Order | Step | Work | Decision / exit |
+| --- | --- | --- | --- |
+| 0 | Prerequisite (owner) | Restore the M1 SSH key: `tmp/apple-m1-access/` is absent on the Linux checkout. Check free disk before transfer. Optionally install full Xcode for `xctrace`, if disk allows. | Native preflight receipt on a fresh `/Users/gius/OpenRC-m1-work/<task-id>/` |
+| 1 | DT-MAC-03b-a sweep | Current source on the repository's **4.8-beta2** pin; the beta1 round-6 numbers are not a baseline for it. First one default 30 s + 120 s screen, then the [sustained-fixture sweep options](../../research/performance/README.md#repeatable-active-flight-dt-mac-03): `--sustained-render-scale` 1.0 / 0.75 / 0.5 × `--sustained-msaa` 2 / 1 / 0 (4× / 2× / off). One 30 s warmup + 60 s screen each, Metal HUD log (`MTL_HUD_ENABLED=1 MTL_HUD_LOG_ENABLED=1`, plus encoder timing in a separate run) and `sample <pid> 10` for main-thread stacks. HUD runs are diagnostic only. | FPS(0.5)/FPS(1.0) ≥ 1.7 and HUD GPU time ≈ frame interval → **GPU track**. Ratio < 1.2 → **CPU track** (DT-MAC-04a/b). Otherwise both, CPU first. |
+| 2 | DT-MAC-03b-b hitches | Attribute the 120–160 ms maxima and >50 ms frames using pipeline-compilation monitors, frame diagnostics and `sample` during Home→Fly and first lake/sun views. | Hitch cause named per event class, or a discriminating follow-up measurement |
+| 3a | DT-MAC-06b GPU track | One candidate at a time, five-pair protocol: (i) Retina **1080p-class internal 3D**, scale 0.75 → 1920×1200 with native UI; (ii) MSAA 2× on Apple; (iii) price the S5/S6 pass costs with a diagnostic scene lacking water/sun-glare/afterimage materials, then replace only the cheapest consumer (sun-glare depth occlusion, afterimage mipmapped screen read). | ≥ 5 % workload gain and moving-readability acceptance. (i) must also pass the visual gate before becoming a Mac default proposal. |
+| 3b | DT-MAC-04a/b CPU track | `sample`/Time Profiler stacks of the main thread at 240 Hz. Apply the existing observer/session rules. | As in phase 4 |
+| 4 | DT-MAC-05a/05c renderer | Add Compatibility over **ANGLE/Metal** (`--rendering-driver opengl3_angle`) as a control beside GL and Mobile/Metal. Confirm the template contains ANGLE and look parity. | Measured default proposal for Apple Silicon. Promotion still waits for DT-MAC-05b recovery. |
+| 5 | DT-MAC-08b export | Native macOS export stage on the M1: **Game Mode** metadata (`LSApplicationCategoryType` games through the preset's plist content) and the **Metal shader baker**. Measure load and first-use hitches. | Exported fullscreen build shows Game Mode active. Baker reduces measured Home/Fly or first-use cost without a package/startup regression. |
+| — | Diagnostic only | One A/B of `GODOT_MTL_SYNC_MODE=none` against barriers on the frozen candidate. | Record the result. Change nothing unless it is beyond noise, and then report upstream. |
+
+Keep phases 10–12 (NK-3 ARM64, iOS, Metal 4 and engine work) parked. R4 found no trigger.
 
 ## 2. Execution graph and strategic testing
 
@@ -276,6 +294,7 @@ Reuse `prepare_research.py` and `launch.py`; do not rebuild them. Freeze linked 
 | Candidate | Experiment |
 | --- | --- |
 | A Compatibility/OpenGL | Reference and recovery. |
+| A2 Compatibility/ANGLE over Metal | Same shaders as A through `opengl3_angle`. Verify template inclusion, look and first-use compile cost ([R4](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md)). |
 | B Mobile/native Metal | First lower-complexity candidate; verify screen/depth effect costs. |
 | C Forward+/native Metal | Common feature set first; no silent SSAO/shadow/reflection additions. |
 | D Mobile or Forward+/Vulkan-MoltenVK | Conditional same-OS control for a Metal-specific issue; skip absent a discriminating question. |

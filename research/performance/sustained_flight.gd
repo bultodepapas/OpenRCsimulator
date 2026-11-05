@@ -5,6 +5,9 @@ extends SceneTree
 ## Optional: --warmup=<wall seconds> --t=<wall seconds> --sustained-hash.
 ## --sustained-observation=off is an ineligible observer-cost control.
 ## Headless fixed-fps diagnostics may add --sustained-diagnostic-ticks=<1..432000>.
+## DT-MAC-03b attribution sweeps may add --sustained-render-scale=<0.25..1> (bilinear
+## 3D scale) and/or --sustained-msaa=<0..3> (Viewport.MSAA); the receipt records them
+## as scenario.render_override, so such runs never compare with default captures.
 
 const Simulation := preload("res://sim/simulation.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
@@ -71,6 +74,7 @@ var capture_id := ""
 var diagnostic_ticks := 0
 var hashes_enabled := false
 var observation_enabled := true
+var render_override: Variant = null
 var failure := ""
 var sealed := false
 var seal_exit_code := -1
@@ -118,6 +122,7 @@ func _run() -> void:
 	diagnostic_ticks = parsed.diagnostic_ticks
 	hashes_enabled = parsed.hashes_enabled
 	observation_enabled = parsed.observation_enabled
+	render_override = parsed.render_override
 	if Engine.physics_ticks_per_second != PHYSICS_HZ or Engine.time_scale != 1.0:
 		_fail_start("requires the normal 240 Hz and time_scale=1")
 		return
@@ -159,7 +164,13 @@ func _run() -> void:
 	var scene_args: PackedStringArray = parsed.scene_args
 	scene_args.append("--case=" + ROUTE + "-" + source_digest)
 	TranslationServer.set_locale("en")
-	Reconstruction.apply(root, {reconstruction = "native", msaa_3d = Viewport.MSAA_4X})
+	var msaa: int = Viewport.MSAA_4X
+	if render_override is Dictionary and render_override.has("msaa_3d"): msaa = int(render_override.msaa_3d)
+	Reconstruction.apply(root, {reconstruction = "native", msaa_3d = msaa})
+	# Native keeps bilinear scaling; only the input scale changes. Reconstruction's
+	# runtime guard re-applies only FSR/DLSS failures, so this stays for the flight.
+	if render_override is Dictionary and render_override.has("scaling_3d_scale"):
+		root.scaling_3d_scale = float(render_override.scaling_3d_scale)
 	scene = load("res://main.tscn").instantiate()
 	if scene == null:
 		_fail_start("cannot instantiate the production Main scene")
@@ -225,7 +236,11 @@ func _run() -> void:
 		engine_clock_scope = "engine fixed-fps flag is not exposed to scripts; verify checked-runner command",
 		observation_mode = "on" if observation_enabled else "off",
 		state_input_hashing = hashes_enabled,
-		settings_scope = "direct technical Main; native reconstruction, 4x MSAA; private accident archive",
+		settings_scope = "direct technical Main; native reconstruction, 4x MSAA; private accident archive"
+			if render_override == null else "direct technical Main; DT-MAC-03b render_override diagnostic; private accident archive",
+		render_override = render_override,
+		effective_render = {scaling_3d_mode = root.scaling_3d_mode, scaling_3d_scale = root.scaling_3d_scale,
+			msaa_3d = root.msaa_3d},
 		accident_archive_path = scene.accident_archive_path, controller_profile_path = session.profiles_path}
 	if absf(float(session.start.V) - 15.0) > 1e-9:
 		_fail_start("reference Stik trim must be 15 m/s")
@@ -258,6 +273,7 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 	var requested_ticks := 0
 	var use_hash := false
 	var use_observation := true
+	var override := {}
 	for arg: String in arguments:
 		if not arg.begins_with("--"): return {ok = false, reason = "unexpected positional argument"}
 		var pair := arg.trim_prefix("--").split("=", true, 1)
@@ -291,6 +307,15 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 				warmup = value.to_float()
 			"frametimes-stream":
 				if pair.size() != 1: return {ok = false, reason = "--frametimes-stream is a flag"}
+			"sustained-render-scale":
+				if not value.is_valid_float() or not is_finite(value.to_float()) \
+						or value.to_float() < 0.25 or value.to_float() > 1.0:
+					return {ok = false, reason = "--sustained-render-scale requires 0.25..1"}
+				override.scaling_3d_scale = value.to_float()
+			"sustained-msaa":
+				if not value.is_valid_int() or value.to_int() < Viewport.MSAA_DISABLED or value.to_int() > Viewport.MSAA_8X:
+					return {ok = false, reason = "--sustained-msaa requires an integer 0..3"}
+				override.msaa_3d = value.to_int()
 			_: forwarded.append(arg)
 	if not path.is_absolute_path() or not receipt.is_absolute_path() or path == receipt \
 			or FileAccess.file_exists(path) or FileAccess.file_exists(path + ".frames.jsonl") \
@@ -310,7 +335,8 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 	forwarded.append("--t=" + str(duration))
 	forwarded.append("--warmup=" + str(warmup))
 	return {ok = true, frame_path = path, receipt_path = receipt, scene_args = forwarded,
-		diagnostic_ticks = requested_ticks, hashes_enabled = use_hash, observation_enabled = use_observation}
+		diagnostic_ticks = requested_ticks, hashes_enabled = use_hash, observation_enabled = use_observation,
+		render_override = override if not override.is_empty() else null}
 
 
 func _disable_live_events(node: Node) -> void:
