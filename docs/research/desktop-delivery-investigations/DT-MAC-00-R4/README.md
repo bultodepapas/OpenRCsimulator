@@ -514,3 +514,54 @@ packed 16-bit across two 8-bit channels so bilinear interpolation stays linear,
 and evaluate octaves 3–4 per pixel. That replaces 15 noise evaluations per
 relief with 3 fetches and 6 evaluations, keeping the high-frequency detail
 that drives the shoulder term. It needs the same probe and image gates.
+
+## DT-MAC-06b C5b float noise tile, corrected C5 diagnosis and default-on (2026-11-05)
+
+**Correction.** The C5 rejection above blamed tile interpolation, and that was
+wrong. A low-octave variant (C5b) with three times smaller density error
+produced the same flattened clouds on Metal. The same comparison on Linux
+Compatibility gave a maximum of 2/255. A 3D probe mode (spatial quad: exact
+density in R, tile density in G) confirmed that spatial shaders read the tile
+correctly on both backends. The sky shader on Mobile/Metal read the
+`ViewportTexture` as black. Separately, an 8-bit `ViewportTexture` and its
+`get_image()` copy differed by 1–2 LSB, so bytes split across channels are
+not exact.
+
+**Implementation.** [cloud_shadow_map.gd](../../../../app/render/cloud_shadow_map.gd)
+renders each seed's tile once into a half-float SubViewport (`use_hdr_2d`).
+It copies the image into a stable RG16F `ImageTexture`, 2048² and 16 MiB, then
+frees the viewport. The readback was bit-exact, 0 difference against the
+viewport, and the texture RID never changes. R holds the five-octave fbm for
+C2 ground and near-grass shadows; G holds the sum of octaves 0–2 for C5b. The
+16-cell cluster noise is now evaluated per pixel only when clustering is on.
+`cloud_relief` uses `cloud_detail_density`: octaves 0–2 come from the tile and
+octaves 3–4 are computed per pixel, so the cloud silhouette stays exact.
+Headless never bakes. The feature is on with a renderer;
+`OPENRC_CLOUD_SHADOW_MAP=0` disables it, and `=1` forces it for headless tests.
+
+**Accuracy** (`shadow_map_probe.gd`, 2D and new 3D modes). On Linux GL, C2
+reached a maximum of 0.035–0.042 density and C5b 0.015–0.020; 3D C5b had at
+most 0.02 % of pixels above 4/255. On M1 Metal, C2 reached 0.034–0.040 and C5b
+0.014–0.020; 3D C5b had 0.3–0.6 % of pixels above 4/255, with Mobile's output
+encoding amplifying the difference.
+
+**Images.** On M1 Metal at 1920×1080, tile on versus off differed by at most
+2/255, with 0 % of pixels above 2/255, in the pilot and aircraft-ground views.
+The other views stayed within their run-to-run noise. On Linux GL at 1280
+wide, the maximum was 2/255 (pilot) and 1/255 (aircraft ground).
+
+**Performance** (M1, Mobile/Metal, native 2560×1600, one `--gpu-profile`
+run each):
+
+| Configuration | GPU ms | FPS |
+| --- | ---: | ---: |
+| tile off | 26.20 | 37.9 |
+| C2 + C5b on | 23.45 | 44.4 |
+| default (no variable) | 23.44 | 44.2 |
+
+That is a 2.75 ms (10.5 %) GPU saving. A default Home-to-flight session
+through the debug bridge stopped cleanly with no crash and 0 leaked objects.
+Tests: `test_cloud_shadow_map` (21 checks), `test_atmosphere`,
+`test_sky_render`, `test_world_sky`, `test_lake_world`,
+`test_field_staged_build`, `test_world_moon_flow` and
+`test_time_of_day_render` pass with no engine errors.
