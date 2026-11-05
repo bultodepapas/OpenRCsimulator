@@ -3,6 +3,7 @@ shader_type spatial;
 render_mode cull_disabled, world_vertex_coords;
 #include "res://render/grass_surface.gdshaderinc"
 #include "res://render/cloud_field.gdshaderinc"
+#include "res://render/cloud_shadow_map.gdshaderinc"
 
 global uniform float sim_clock;
 global uniform vec3 wind_vec;
@@ -73,10 +74,10 @@ void fragment() {
 		vec2 deck = world_pos.xz + max(cloud_deck_m - world_pos.y, 0.0) * sun_dir.xz / sun_dir.y;
 		float density;
 		if (appearance_cloud_shadow) {
-			density = cloud_density(deck / max(appearance_shadow_scale_m, 1.0) + cloud_drift_offset,
+			density = cloud_shadow_density(deck / max(appearance_shadow_scale_m, 1.0) + cloud_drift_offset,
 				appearance_shadow_seed, appearance_shadow_coverage, appearance_shadow_cluster) * appearance_shadow_density;
 		} else {
-			density = cloud_density(deck * (cloud_scale / cloud_deck_m) + cloud_drift_offset,
+			density = cloud_shadow_density(deck * (cloud_scale / cloud_deck_m) + cloud_drift_offset,
 				cloud_seed, cloud_coverage, cluster_strength);
 		}
 		cloud_transmission -= clamp(cloud_shadow_strength, 0.0, 1.0) * density * smoothstep(0.01, 0.1, sun_dir.y);

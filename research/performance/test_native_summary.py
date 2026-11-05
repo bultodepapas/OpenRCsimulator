@@ -1290,6 +1290,8 @@ class BenchmarkHealthTests(unittest.TestCase):
             "different warmup": lambda c: c.__setitem__(c.index("--warmup=0"), "--warmup=30"),
             "conflicting forced option": lambda c: c.append("--aircraft=other"),
             "scripted": lambda c: c.append("--scripted"),
+            "hidden geometry diagnostic": lambda c: c.append("--sustained-hide-shader=ground"),
+            "forced shader parameter diagnostic": lambda c: c.append("--sustained-shader-param=ground.anti_tiling=0"),
         }
         for name, mutate in mutations.items():
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
@@ -1328,6 +1330,8 @@ class BenchmarkHealthTests(unittest.TestCase):
         self.assertEqual(result["benchmark_health"]["scenario"]["render_override"],
                          {"scaling_3d_scale": 0.75, "msaa_3d": 1})
         self.assertTrue(run(["--sustained-msaa=0"], {"msaa_3d": 0})["performance_pass"])
+        self.assertTrue(run(["--sustained-reconstruction=metalfx_spatial_quality"],
+                            {"reconstruction": "metalfx_spatial_quality"})["performance_pass"])
         self.assertTrue(run([], None)["performance_pass"])
         mismatches = {
             "unrecorded override": (both, None),
@@ -1339,6 +1343,9 @@ class BenchmarkHealthTests(unittest.TestCase):
             "float msaa": (["--sustained-msaa=1"], {"msaa_3d": 1.0}),
             "malformed scale": (["--sustained-render-scale=fast"], {"scaling_3d_scale": 0.75}),
             "bare msaa flag": (["--sustained-msaa"], {"msaa_3d": 0}),
+            "different reconstruction": (["--sustained-reconstruction=metalfx_spatial_85"],
+                                         {"reconstruction": "metalfx_spatial_quality"}),
+            "bare reconstruction flag": (["--sustained-reconstruction"], {"reconstruction": "native"}),
         }
         for name, (extra, recorded) in mismatches.items():
             with self.subTest(name=name):

@@ -3,10 +3,15 @@ extends RefCounted
 
 const TRIAL_ENVIRONMENT := "OPENRC_METALFX_TRIAL"
 const PROVIDERS := ["metalfx_spatial", "metalfx_temporal"]
+## DT-MAC-07a: Spatial is a regular option on supported Metal; Temporal stays behind the trial
+## until an engine-acknowledged history reset exists. A non-empty reason (set by the renderer guard
+## after an unconfirmed MetalFX session of this build) blocks both providers for the process.
+static var blocked_reason := ""
 
 static func runtime_capabilities() -> Dictionary:
 	var facts := {
 		"trial": OS.get_environment(TRIAL_ENVIRONMENT) == "1",
+		"blocked": blocked_reason,
 		"headless": DisplayServer.get_name() == "headless",
 		"method": RenderingServer.get_current_rendering_method(),
 		"driver": RenderingServer.get_current_rendering_driver_name(),
@@ -39,7 +44,9 @@ static func from_facts(facts: Dictionary) -> Dictionary:
 	}
 	for provider: String in PROVIDERS:
 		var reason := ""
-		if not bool(facts.get("trial", false)):
+		if not str(facts.get("blocked", "")).is_empty():
+			reason = str(facts.blocked)
+		elif provider == "metalfx_temporal" and not bool(facts.get("trial", false)):
 			reason = "metalfx_trial_disabled"
 		elif bool(facts.get("headless", true)):
 			reason = "metalfx_headless"

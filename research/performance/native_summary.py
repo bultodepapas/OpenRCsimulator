@@ -70,10 +70,11 @@ BENCHMARK_FORCED_OPTIONS = {
 BENCHMARK_INTERNAL_OPTIONS = frozenset({
     "frametimes", "frametimes-stream", "t", "warmup", "case", "sustained-receipt",
     "sustained-hash", "sustained-observation", "sustained-diagnostic-ticks",
-    "sustained-render-scale", "sustained-msaa",
+    "sustained-render-scale", "sustained-msaa", "sustained-reconstruction",
 })
 # DT-MAC-03b attribution sweep options consumed by the fixture (receipt scenario.render_override).
-BENCHMARK_RENDER_OVERRIDE_OPTIONS = {"sustained-render-scale": "scaling_3d_scale", "sustained-msaa": "msaa_3d"}
+BENCHMARK_RENDER_OVERRIDE_OPTIONS = {"sustained-render-scale": "scaling_3d_scale", "sustained-msaa": "msaa_3d",
+                                     "sustained-reconstruction": "reconstruction"}
 BENCHMARK_REJECTED_OPTIONS = frozenset({
     "quick-flight", "scripted", "trace", "capture", "visual_pose", "visual_distance", "visual_elevation",
     "visual_azimuth", "hide_airplane", "experimental-aircraft-data", "electric-demo", "weather-file", "wind-speed",
@@ -1184,6 +1185,11 @@ def _render_override_matches(requested: dict[str, str | None], recorded: Any) ->
         if option not in requested:
             continue
         raw = requested[option]
+        if field == "reconstruction":
+            if not isinstance(raw, str) or not raw:
+                return False
+            expected[field] = raw
+            continue
         try:
             expected[field] = float(raw) if field == "scaling_3d_scale" else int(raw)  # type: ignore[arg-type]
         except (TypeError, ValueError, OverflowError):
@@ -1194,7 +1200,10 @@ def _render_override_matches(requested: dict[str, str | None], recorded: Any) ->
         return False
     for field, value in expected.items():
         actual = recorded[field]
-        if field == "msaa_3d":
+        if field == "reconstruction":
+            if actual != value:
+                return False
+        elif field == "msaa_3d":
             if type(actual) is not int or actual != value:
                 return False
         elif not _is_number(actual) or not _close(float(actual), float(value), tolerance=1e-9):

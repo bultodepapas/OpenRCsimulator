@@ -38,6 +38,7 @@ const RadioCalibrationSetup := preload("res://ui/radio_calibration_setup.gd")
 const UpdateChecker := preload("res://app_state/update_checker.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
+const RendererGuard := preload("res://app_state/renderer_guard.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const Conditions := preload("res://render/world/conditions.gd")
@@ -114,6 +115,8 @@ var _trace_discard_button: Button
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
 var user_args: PackedStringArray = OS.get_cmdline_user_args()
 var preferences_path := Preferences.DEFAULT_PATH
+## DT-MAC-05b: post-initialization recovery marker for the RD Standard renderer (empty outside the Home route).
+var renderer_guard_path := ""
 ## UI-FS: tests/headless routes are memory-only unless they explicitly supply an isolated store.
 var statistics_path := ""
 var statistics_service: Node
@@ -284,6 +287,9 @@ func _ready() -> void:
 			return
 		start_flight()
 		return
+	renderer_guard_path = preferences_path + ".renderer"
+	if RendererGuard.begin(get_tree(), renderer_guard_path):
+		return # restarting into Compatibility after an unconfirmed RD launch of this build
 	has_home = true
 	var ui_window: Window = get_tree().root
 	_automatic_window_size = ui_window.size
@@ -1342,6 +1348,8 @@ func _request_graphics_restart(profile: String) -> void:
 func _perform_graphics_restart(profile: String) -> void:
 	# No profile preference or pending marker: failed initialization cannot create a restart loop.
 	# Only Home can enter here, so no flight log or Workshop draft can be discarded.
+	if not renderer_guard_path.is_empty():
+		RendererGuard.confirm(renderer_guard_path) # a deliberate restart is not a renderer failure
 	OS.set_environment(HighGraphics.ENVIRONMENT_KEY, profile)
 	OS.set_restart_on_exit(true, HighGraphics.restart_arguments(profile, OS.has_feature("editor"),
 		ProjectSettings.globalize_path("res://")))
@@ -1419,6 +1427,8 @@ func _apply_presentation(config: Dictionary) -> void:
 	# These settings affect presentation only, including an already paused flight.
 	Engine.max_fps = int(config.get("max_fps", 0))
 	Reconstruction.apply(get_viewport(), config)
+	RendererGuard.observe_metalfx(get_tree(), renderer_guard_path,
+		str(Reconstruction.describe(get_viewport()).get("provider", "")) in Reconstruction.MetalFX.PROVIDERS)
 	# VQ-06b: the LOD threshold applies at once; scenery and 3D trees follow at the next world build.
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
 	# SC-BIRD: live; a built bird layer sends birds away or brings them in (scenery/birds/birds_runtime.gd).
@@ -2979,6 +2989,8 @@ func quit_app() -> void:
 func _commit_app_quit() -> void:
 	if _quit_audio_pending or _home_preparation_quit_pending:
 		return
+	if not renderer_guard_path.is_empty():
+		RendererGuard.confirm(renderer_guard_path) # a clean quit proves the renderer survived
 	if statistics_service != null and not statistics_service.finish(_statistics_discard_exit):
 		_statistics_save_failed(Callable(self, "_commit_app_quit"))
 		return

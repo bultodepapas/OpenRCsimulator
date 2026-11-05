@@ -19,6 +19,7 @@ shader_type spatial;
 render_mode cull_back;
 
 #include "res://render/cloud_field.gdshaderinc"
+#include "res://render/cloud_shadow_map.gdshaderinc"
 #include "res://render/grass_surface.gdshaderinc"
 #include "res://render/turf_detail.gdshaderinc"
 #include "res://render/rc_ground_detail.gdshaderinc"
@@ -99,26 +100,10 @@ uniform bool club_field_detail = false;
 
 varying vec3 world_pos;
 // LU-25: yield the exact validated bank footprint to the real basin geometry.
-uniform int lake_mask_mode = 0; // 0 ordinary field, 1 outside bank, 2 inside bank
+uniform int lake_mask_mode = 0; // 0 ordinary field, 1 outside bank (now a geometric cut, render/lake/lake_world.gd)
 uniform int lake_bank_count = 0;
 uniform vec2 lake_bank_points[64];
 uniform vec4 lake_bank_bounds = vec4(0.0);
-
-bool lake_inside_bank(vec2 p) {
-	if (lake_bank_count < 3 || any(lessThan(p, lake_bank_bounds.xy)) || any(greaterThan(p, lake_bank_bounds.zw))) return false;
-	bool inside = false;
-	int previous = lake_bank_count - 1;
-	for (int i = 0; i < 64; i++) {
-		if (i >= lake_bank_count) break;
-		vec2 a = lake_bank_points[i];
-		vec2 b = lake_bank_points[previous];
-		if ((a.y > p.y) != (b.y > p.y)) {
-			if (p.x < (b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x) inside = !inside;
-		}
-		previous = i;
-	}
-	return inside;
-}
 
 // Far-field land cover: integer-hash Voronoi parcels, each a crop colour factor. Borders blend over parcel_blend_m
 // (hard edges at 2-5 km alias into row steps and shimmer from altitude).
@@ -330,10 +315,10 @@ void fragment() {
 		vec2 deck = world_pos.xz + max(cloud_deck_m - world_pos.y, 0.0) * sun_dir.xz / sun_dir.y;
 		float density;
 		if (appearance_cloud_shadow) {
-			density = cloud_density(deck / max(appearance_shadow_scale_m, 1.0) + cloud_drift_offset,
+			density = cloud_shadow_density(deck / max(appearance_shadow_scale_m, 1.0) + cloud_drift_offset,
 				appearance_shadow_seed, appearance_shadow_coverage, appearance_shadow_cluster) * appearance_shadow_density;
 		} else {
-			density = cloud_density(deck * (cloud_scale / cloud_deck_m) + cloud_drift_offset,
+			density = cloud_shadow_density(deck * (cloud_scale / cloud_deck_m) + cloud_drift_offset,
 				cloud_seed, cloud_coverage, cluster_strength);
 		}
 		cloud_transmission -= clamp(cloud_shadow_strength, 0.0, 1.0) * density * smoothstep(0.01, 0.1, sun_dir.y);
@@ -399,11 +384,8 @@ void fragment() {
 		? 1.0 - smoothstep(1.0 / rim_end, 1.0 / rim_start, 1.0 / max(d, 1e-3))
 		: smoothstep(rim_start, rim_end, d);
 	FOG = vec4(haze, max(1.0 - exp(-beta * d), rim));
-	// Evaluate derivatives before the shoreline discard, preserving neighbouring texture gradients.
-	if (lake_mask_mode > 0) {
-		bool inside = lake_inside_bank(world_pos.xz);
-		if ((lake_mask_mode == 1 && inside) || (lake_mask_mode == 2 && !inside)) discard;
-	}
+	// DT-MAC-06b D1: no shoreline `discard`. Its mere presence disabled hidden-surface removal on Apple GPUs
+	// (≈ 2 ms per frame at 2560×1600 on an M1); render/lake/lake_world.gd cuts the bank polygon from the mesh.
 }
 
 // Preserve this shader's existing Compatibility fallback: Lambert (no diffuse_burley render mode).

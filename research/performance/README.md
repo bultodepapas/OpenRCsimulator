@@ -420,6 +420,16 @@ For example, append `--sustained-render-scale=0.75 --sustained-msaa=1` after
 the fixture's other user options. A sweep is a screening diagnostic: the frame
 report's viewport size remains the output size, not the internal 3D size.
 
+Two further options remove or alter visible work for GPU attribution. With
+Godot's `--gpu-profile` engine flag, they price individual materials or stages.
+`--sustained-hide-shader=<name>[,...]` hides geometry drawn with
+`<name>.gdshader`, rescanning every 60 frames for streamed chunks.
+`--sustained-shader-param=<shader>.<param>=<number>[,...]` forces a uniform on
+every material of that shader, including the `WorldEnvironment` sky material, writing only on
+change and keeping the uniform's int or bool type.
+The receipt records hidden instance counts, the pre-override values and the
+read-back values. `native_summary.py` refuses both options for qualification.
+
 ### Long continuous captures (DT-MAC-02b)
 
 Add the bare `--frametimes-stream` flag to opt into `openrc-frametimes v3` and

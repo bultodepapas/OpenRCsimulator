@@ -33,7 +33,23 @@ func _run() -> void:
 		and spatial.execution_status == "unverified_trial")
 	_check("Mobile rejects temporal before applying an engine enum", Reconstruction.resolve("metalfx_temporal_85", mobile).fallback_reason == "metalfx_requires_forward_plus")
 	_check("provider picker can operate without High", Reconstruction.options_available(mobile))
-	for variant: Array in [["trial", false], ["headless", true], ["driver", "vulkan"], ["method", "gl_compatibility"],
+	# DT-MAC-07a: Spatial no longer needs the trial; Temporal does; a guard block disables both.
+	var no_trial := facts.duplicate(true)
+	no_trial.trial = false
+	_check("Spatial is available without the trial", Reconstruction.resolve("metalfx_spatial_85",
+		MetalFX.from_facts(no_trial)).provider == "metalfx_spatial")
+	var no_trial_forward := no_trial.duplicate(true)
+	no_trial_forward.method = "forward_plus"
+	_check("Temporal still requires the trial", Reconstruction.resolve("metalfx_temporal_85",
+		MetalFX.from_facts(no_trial_forward)).fallback_reason == "metalfx_trial_disabled")
+	var blocked := facts.duplicate(true)
+	blocked.blocked = "metalfx_failed_previously"
+	blocked.method = "forward_plus"
+	for mode: String in ["metalfx_spatial_85", "metalfx_temporal_85"]:
+		var policy := Reconstruction.resolve(mode, MetalFX.from_facts(blocked))
+		_check("guard block returns %s to Native" % mode, policy.provider == "native"
+			and policy.fallback_reason == "metalfx_failed_previously")
+	for variant: Array in [["headless", true], ["driver", "vulkan"], ["method", "gl_compatibility"],
 			["rd_available", false], ["metalfx_spatial_supported", false], ["metalfx_spatial_mode", null]]:
 		var unsupported := facts.duplicate(true)
 		unsupported[variant[0]] = variant[1]
