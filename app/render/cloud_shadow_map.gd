@@ -1,7 +1,8 @@
 extends RefCounted
 ## DT-MAC-06b C2/C5b: GPU-rendered periodic tiles of the cloud noise, one per active seed, shared by the ground,
-## near-grass and sky materials. Candidate behind OPENRC_CLOUD_SHADOW_MAP=1; unset, no node is created and no
-## material uniform changes. Tiles persist for the process (≤ MAX_TILES).
+## near-grass and sky materials. On by default with a renderer; OPENRC_CLOUD_SHADOW_MAP=0 disables it (no node,
+## no material uniform change) and =1 forces it in headless tests. Tiles persist for the process (≤ MAX_TILES);
+## further seeds fall back to exact per-pixel noise.
 ## 2048² RG16F (16 MiB) keeps bilinear error ≤ 0.05 density (shadow_map_probe.gd); 1024² exceeded it.
 ## Consumers receive a stable ImageTexture: a temporary SubViewport renders the tile once, its image is read
 ## back into that texture (same size and format, so the texture RID never changes) and the viewport is freed.
@@ -19,7 +20,11 @@ static var _baked: Dictionary = {} # seed -> true once the GPU tile was copied
 
 
 static func enabled() -> bool:
-	return OS.get_environment(ENVIRONMENT_KEY) == "1"
+	var value := OS.get_environment(ENVIRONMENT_KEY)
+	if value == "0":
+		return false
+	# Headless has no rendering device to bake or sample a tile; keep tests and tools free of 16 MiB textures.
+	return value == "1" or DisplayServer.get_name() != "headless"
 
 
 ## The tile texture for `seed`, or null when disabled or no SceneTree exists.
@@ -59,6 +64,9 @@ static func _bake(tree: SceneTree, viewport: SubViewport, texture: ImageTexture,
 	# Process frames only: frame_post_draw never fires without a rendering device (headless).
 	for frame in BAKE_FRAMES:
 		await tree.process_frame
+	if is_instance_valid(viewport) and DisplayServer.get_name() == "headless":
+		viewport.queue_free() # the dummy renderer has no image to read back
+		return
 	if is_instance_valid(viewport):
 		var image := viewport.get_texture().get_image()
 		if image != null and not image.is_empty() and image.get_size() == Vector2i(SIZE, SIZE):

@@ -28,7 +28,10 @@ func run() -> void:
 
 	OS.set_environment(CloudShadowMap.ENVIRONMENT_KEY, "")
 	var off := Atmosphere.ground_material(grass)
-	check("disabled by default", not CloudShadowMap.enabled())
+	check("headless without an explicit request stays off", not CloudShadowMap.enabled())
+	OS.set_environment(CloudShadowMap.ENVIRONMENT_KEY, "0")
+	check("0 disables it", not CloudShadowMap.enabled())
+	OS.set_environment(CloudShadowMap.ENVIRONMENT_KEY, "")
 	check("disabled leaves the flag unset", off.get_shader_parameter("cloud_shadow_map_enabled") == null)
 	check("disabled leaves the texture unset", off.get_shader_parameter("cloud_shadow_map") == null)
 	check("disabled returns no texture", CloudShadowMap.texture_for(1253) == null)
