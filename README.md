@@ -44,15 +44,15 @@
 
 ## Download and fly
 
-**Latest published beta preview: [v0.1.9-beta.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.9-beta.1).** Download your ZIP, extract it and launch. You do **not** need to install Godot or compile anything.
+**Latest release: [v0.1.10](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.10).** Download your ZIP, extract it and launch. You do **not** need to install Godot or compile anything.
 
 | Platform | Download and launch |
 | --- | --- |
-| **Windows · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=windows&release=v0.1.9-beta.1&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_windows#download)<br>Open `OpenRC Simulator.exe`. |
-| **Linux · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=linux&release=v0.1.9-beta.1&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_linux#download)<br>Run `openrc-simulator.x86_64`. |
-| **macOS · Apple Silicon / Intel** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=macos&release=v0.1.9-beta.1&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_macos#download)<br>Open `OpenRC Simulator.app`. |
+| **Windows · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=windows&release=v0.1.10&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_windows#download)<br>Open `OpenRC Simulator.exe`. |
+| **Linux · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=linux&release=v0.1.10&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_linux#download)<br>Run `openrc-simulator.x86_64`. |
+| **macOS · Apple Silicon / Intel** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=macos&release=v0.1.10&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_macos#download)<br>Open `OpenRC Simulator.app`. |
 
-[Checksums](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.9-beta.1/SHA256SUMS) · [Installation guide for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.1.9-beta.1/docs/FIRST-LAUNCH.md) · [Release notes](docs/releases/v0.1.9-beta.1.md). Archives are unsigned; the macOS app is ad-hoc signed, not notarized. The installation guide covers platform launch permissions. If a download does not start, use the [direct release assets](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.9-beta.1).
+[Checksums](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.10/SHA256SUMS) · [Installation guide for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.1.10/docs/FIRST-LAUNCH.md) · [Release notes](docs/releases/v0.1.10.md). Archives are unsigned; the macOS app is ad-hoc signed, not notarized. The installation guide covers platform launch permissions. If a download does not start, use the [direct release assets](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.10).
 
 **For your first flight:**
 
@@ -68,7 +68,7 @@
 | **Gamepad** | Mapped pads have a Mode 2 starting layout. Check the displayed bindings and remap buttons as needed. |
 | **Keyboard** | Arrow keys: pitch/roll; **A / D**: rudder; **W / S**: throttle. **Down** pulls back on the elevator. |
 
-[Radio setup for this beta](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.1.9-beta.1/docs/FIRST-LAUNCH.md#radio-setup) covers calibration. [Controls, rates, trims and equipment](docs/FIRST-LAUNCH.md#3-fly). Controller compatibility depends on the device, firmware and operating system.
+[Radio setup for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.1.10/docs/FIRST-LAUNCH.md#radio-setup) covers calibration. [Controls, rates, trims and equipment](docs/FIRST-LAUNCH.md#3-fly). Controller compatibility depends on the device, firmware and operating system.
 
 **The hangar and features below describe current source.** The published ZIP can differ from current source. Use the release notes for what your download includes.
 
@@ -145,9 +145,9 @@ At **Club field**, geared airplanes offer runway or airborne starts. At **Green 
 | **Change the conditions** | Wind, gusts, turbulence and atmosphere settings; separate day, dusk and night lighting. Restart repeats the selected conditions. |
 | **Practice and review** | Optional trim and emergency practice, local flight statistics, flight overlays, and fixed-wing logs: **F10** records, **F11** marks a maneuver. [Flight logging](docs/FLIGHT-LOGGING.md) |
 | **Hear and see the aircraft** | Positional engine/propeller sounds, field ambience, aircraft lights and supported exhaust/show-smoke effects. |
-| **Choose the graphics** | Standard and optional High/Forward+ modes. Current source also has a separate [Windows NVIDIA build](tools/graphics/native/README.md) with DLSS, DLAA and Reflex; it is not the v0.1.9-beta.1 download. |
+| **Choose the graphics** | Standard and optional High/Forward+ modes. Current source also has a separate [Windows NVIDIA build](tools/graphics/native/README.md) with DLSS, DLAA and Reflex; it is not the v0.1.10 download. |
 
-The current interface offers **English, Español, 简体中文, Português (Brasil), Deutsch, Français, Italiano, Русский and 日本語**. See the beta release notes for the languages included in the download.
+The current interface offers **English, Español, 简体中文, Português (Brasil), Deutsch, Français, Italiano, Русский and 日本語**. The v0.1.10 download includes all nine.
 
 ### Make a model your own
 
