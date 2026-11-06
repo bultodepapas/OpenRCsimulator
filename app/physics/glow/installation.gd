@@ -115,6 +115,12 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 		return _fail("Glow installation aircraft engine or propeller is malformed")
 	if aircraft_engine.has("shaft"):
 		return _fail("Glow installation cannot be combined with the legacy shaft module")
+	# AE-11-R1: GlowFlight owns the whole tick; the kernel cannot split its event
+	# policy for stiff gear. Refuse at admission, including airborne starts whose
+	# gear can become reachable later, rather than faulting on the first contact.
+	var contact_substeps: int = int(model.get("landing_gear", {}).get("substeps", 1))
+	if contact_substeps > 1:
+		return _fail("Glow installation cannot use landing gear requiring %d contact substeps; its event policy requires a single whole tick" % contact_substeps)
 	# EX-14c: the propeller normal force, P-factor and the quasi-static tail slipstream compose with the Glow shaft (the
 	# stage route hands the wake its own thrust and torque). The smooth and transported wakes need wash states the Glow
 	# layout does not carry, so they stay refused.

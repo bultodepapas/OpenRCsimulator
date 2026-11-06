@@ -2889,10 +2889,14 @@ func _physics_process(_delta: float) -> void:
 			if not _poll_controller(): return
 			var previous_yaw: float = commands.yaw
 			commands = radio.sticks()
-			# An unbound AUX defaults to zero: it must not override keyboard/controller toggles.
-			if gear_is_retractable() and not sim.paused and not radio.profile.get("aux", {}).get("gear", {}).is_empty():
+			# An unbound AUX defaults to zero: it must not override keyboard/controller toggles. A bound channel that is
+			# not armed again after a pause/menu/focus boundary has no valid position: keep the last accepted target
+			# until fresh OFF evidence re-arms it (external audit A6 F2), instead of reading its 0.0 as retract/down.
+			if gear_is_retractable() and not sim.paused and not radio.profile.get("aux", {}).get("gear", {}).is_empty() \
+					and radio.auxiliary_request_valid("gear"):
 				_gear_requested_down = radio.auxiliary_amount("gear") < 0.5
-			if flaps_available() and not sim.paused and not radio.profile.get("aux", {}).get("flaps", {}).is_empty():
+			if flaps_available() and not sim.paused and not radio.profile.get("aux", {}).get("flaps", {}).is_empty() \
+					and radio.auxiliary_request_valid("flaps"):
 				_flap_requested = radio.auxiliary_amount("flaps")
 			if controller_cut_held:
 				controller_throttle_cut()
