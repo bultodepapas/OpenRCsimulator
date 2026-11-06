@@ -4,6 +4,7 @@ extends SceneTree
 
 const UiDriver := preload("res://tests/ui_driver.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const RendererGuard := preload("res://app_state/renderer_guard.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
@@ -319,7 +320,10 @@ func _run() -> void:
 	settings.keep_changes()
 	settings.close()
 	await ui.settle()
-	await ui.close_app(app)
+	if not await _close_confirmed_shell(app):
+		_clean()
+		quit(1)
+		return
 	# Recreate the actual shell with the same isolated store, not just a new settings dialog.
 	app = load("res://app_root.tscn").instantiate()
 	app.user_args = PackedStringArray()
@@ -338,7 +342,10 @@ func _run() -> void:
 	await ui.settle()
 	_check("kept FSR2 preserves native MSAA preference", DisplayPreferences.load_from(PREFS + ".display").reconstruction == "fsr2_quality"
 		and DisplayPreferences.load_from(PREFS + ".display").msaa_3d == 1)
-	await ui.close_app(app)
+	if not await _close_confirmed_shell(app):
+		_clean()
+		quit(1)
+		return
 	app = load("res://app_root.tscn").instantiate()
 	app.user_args = PackedStringArray()
 	app.preferences_path = PREFS
@@ -348,7 +355,10 @@ func _run() -> void:
 		int(Reconstruction.resolve("fsr2_quality", Reconstruction.runtime_capabilities()).scaling_3d_mode))
 	_check("shell relaunch preserves disabled sharpening", root.fsr_sharpness == 2.0
 		and DisplayPreferences.load_from(PREFS + ".display").fsr2_sharpness == 0.0)
-	await ui.close_app(app)
+	if not await _close_confirmed_shell(app):
+		_clean()
+		quit(1)
+		return
 	Engine.max_fps = 0
 	root.msaa_3d = Viewport.MSAA_4X
 	UiTheme.text_scale = 1.0
@@ -356,6 +366,20 @@ func _run() -> void:
 	_clean()
 	print("advanced graphics: %d checks, %d failed" % [checks, failures])
 	quit(0 if failures == 0 else 1)
+
+
+## Shell recreation is not an OS quit: let the real responsiveness confirmers clear their own markers.
+func _close_confirmed_shell(app: Node) -> bool:
+	var path: String = app.renderer_guard_path
+	var deadline := Time.get_ticks_msec() + 60000
+	var state := RendererGuard.load_state(path)
+	while (state.has("pending") or state.has("metalfx_pending")) and Time.get_ticks_msec() < deadline:
+		await process_frame
+		state = RendererGuard.load_state(path)
+	var confirmed := not state.has("pending") and not state.has("metalfx_pending")
+	_check("no pending renderer guard before closing shell", confirmed)
+	await ui.close_app(app)
+	return confirmed
 
 
 func _test_auto_preview_resize(app: Node, settings: CanvasLayer, initial_size: Vector2i) -> void:
@@ -389,7 +413,7 @@ func _test_auto_preview_resize(app: Node, settings: CanvasLayer, initial_size: V
 
 
 func _clean() -> void:
-	for suffix: String in ["", ".bad", ".display", ".display.bad"]:
+	for suffix: String in ["", ".bad", ".display", ".display.bad", ".renderer"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + suffix))
 
 

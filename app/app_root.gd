@@ -1375,7 +1375,8 @@ func _restore_display_window_state(state: Dictionary) -> void:
 	if window.mode != int(state.mode) or window.borderless != bool(state.borderless) \
 			or window.size != Vector2i(state.size) or window.position != Vector2i(state.position):
 		window.mode = Window.MODE_WINDOWED
-		window.borderless = bool(state.borderless)
+		if window.borderless != bool(state.borderless):
+			window.borderless = bool(state.borderless)
 		window.size = state.get("normal_size", state.size)
 		window.position = state.get("normal_position", state.position)
 		window.mode = int(state.mode) as Window.Mode
@@ -1463,7 +1464,8 @@ func _apply_presentation(config: Dictionary) -> void:
 			window.mode = Window.MODE_FULLSCREEN
 		else:
 			window.mode = Window.MODE_WINDOWED
-			window.borderless = _windowed_borderless
+			if window.borderless != _windowed_borderless:
+				window.borderless = _windowed_borderless
 			window.size = _windowed_size
 			window.position = _windowed_position
 			if _windowed_mode != DisplayServer.WINDOW_MODE_WINDOWED and not resolution_changed:
