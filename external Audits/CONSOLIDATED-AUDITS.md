@@ -1,6 +1,6 @@
 # External audits — consolidated review
 
-Consolidated on **2026-11-06**, including the subsequently supplied developer remediation and Apple Silicon/Metal handoffs. **Read this document first.** It organizes seven distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The seven source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
+Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs and Extra 300 audit. **Read this document first.** It organizes eight distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The eight source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
 
 This is a synthesis of the supplied reports, not a new audit of the current working tree. Technical results below are attributed to their original source snapshots. No fix, performance gain, physical validation, or completed project gate is established by this consolidation. Current implementation status belongs to the [documentation map and owning tracks](../docs/README.md).
 
@@ -18,7 +18,7 @@ This is a synthesis of the supplied reports, not a new audit of the current work
 
 ## 1. Sources, duplicates, and chronology
 
-The labels A1–A7 identify source documents in this consolidation; they are not implementation step IDs.
+The labels A1–A8 identify source documents in this consolidation; they are not implementation step IDs.
 
 | Source | Original document | Scope and source identity |
 | --- | --- | --- |
@@ -29,10 +29,11 @@ The labels A1–A7 identify source documents in this consolidation; they are not
 | A5 | [Fixed-wing aerodynamics review — fixed-wing-aerodynamics-review.md][A5] | Reviewed commit `3df2791752fe2c1faad132fcb11febbb0ae788d1`; Godot beta2, float64 state, isolated sparse app copy and user profile. No date stated in the report. |
 | A6 | [Developer audit and remediation handoff — developer-audit-remediation-2026-11-06.md][A6] | Dated 2026-11-06; consolidates two audit passes at `3df2791752fe2c1faad132fcb11febbb0ae788d1`. Linux headless/debug Godot `4.8.beta2.official.cafc17a19`, GDScript reference backend, normally 240 Hz. Six reported defects F1–F6 and six optimization opportunities O1–O6; no production fixes or native execution. |
 | A7 | [Apple Silicon and Metal Optimization Handoff][A7] | Dated 2026-11-06, America/Bogota. Combines historical `fc018b38` audit, shader/architecture experiments at `93ffbb101917dff86ecc2632f07e2e45c450a178`, and separate CPU/physics results at `3df2791`. Pinned Godot beta2, Linux x86-64, Python 3.12.14/NumPy 2.3.5; CPU screens, shader-language checks and headless camera-method checks, but no new native Metal GPU execution. Not the same mathematical lab as A2. |
+| A8 | [Extra 300 physics and optimization audit][A8] | Attached report dated 2026-11-06, reviewed `codex/m1-native-validation-20261106` at `e72d878b6b4a89209dfe1a992ba119921dcdd34c`. Two Extra-specific physics consistency defects, three optimization opportunities and one visual defect. Pinned Linux Godot/headless probes; 13 reported successful checked receipts; no new production fixes, complete suite, native qualification, rendered flight or full replay campaign. |
 
 ### Source names and duplicate removal
 
-The folder contains this consolidated document and seven source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
+The folder contains this consolidated document and eight source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
 
 | Original filename | Retained filename |
 | --- | --- |
@@ -43,6 +44,7 @@ The folder contains this consolidated document and seven source reports. Source 
 | `FINDINGS3.md` | [fixed-wing-aerodynamics-review.md][A5] |
 | `NEWONE.MD` | [developer-audit-remediation-2026-11-06.md][A6] |
 | `NEW.MD` | [apple-silicon-metal-optimization-handoff-2026-11-06.md][A7] |
+| Attached `Pasted text.txt` (Extra 300 audit) | [extra-300-physics-optimization-audit-2026-11-06.md][A8] |
 | `README.md` (consolidation) | `CONSOLIDATED-AUDITS.md` |
 
 ### Differences between snapshots
@@ -58,6 +60,8 @@ The folder contains this consolidated document and seven source reports. Source 
 
 | Topic | Consolidated conclusion | Evidence class |
 | --- | --- | --- |
+| Extra 300 generator consistency | A8 reports E300-01 mixed CG/ARP moment conventions and E300-02 missing installed blade camber in generated crossflow tables; it recommends resolving both before retuning. | Production-code diagnostic witnesses at `e72d878`, not physical calibration or current-fix verification. These are distinct from A5's earlier documented force-arm conventions. |
+| Extra 300 performance and presentation | A8 adds stage-local mass reuse, a mesh-memory tradeoff, custom-paint shader sharing, and reversed visual blade handedness. | Sampled parity, headless buffer/resource measurements and geometric direction checks; no whole-app speedup or rendered-flight qualification. |
 | Additional shader and renderer experiments | A7 prioritizes a small zero-contribution sky patch, bounded density evaluation and a high-octave hash lattice; it also develops polynomial, integer/angular/ground, crop-camera and rate-map proposals. | Portable numerical, front-end and camera-method evidence; no new GPU speedup for these candidates. A7's historical working-cache profile is separately scoped below. |
 | Admission, commands, and truck energy | A6 prioritizes F1 Workshop first-tick rejection after qualification, F2 changed flap/gear targets after pause, and F6 positive tire/brake work. | Scoped production-code/session counterexamples; priorities are the external report's recommendations, not current project labels. |
 | Observer, fuel trial, and recording contracts | A6 reports F3 track-support disagreement, F4 an ineffective sub-ULP fuel sentinel, and F5 empty-block log rejection. | Geometric/numerical/serialization counterexamples with explicit limits. F4 is distinct from A4's lost firing counter. |
@@ -83,6 +87,31 @@ A6 arrived later in this folder but reviews the **same commit as A2–A5**, not 
 - **Related mathematics:** A7's remaining-noise density bounds differ from A2 M03's relief-contribution budget. Its high-octave hash lattice differs from A2 M01's coarse-corner sharing. Solar LUT versus A2 M02 chord geometry are separate alternatives. A7 parcel/derivative screens overlap A2 M12/M05 conceptually but use distinct controls and result sets.
 
 ## 3. Correctness and measurement findings
+
+### Extra 300 generator and presentation findings
+
+**Source: [A8][A8], reviewed `e72d878b6b4a89209dfe1a992ba119921dcdd34c`.** Preserve E300-01–06 as external finding identifiers. A8 reports two physics consistency defects, three optimization opportunities (in §6 below), and one visual defect. It is a later source snapshot than A2–A6 and does not overwrite their historical findings or establish present-day repair status.
+
+| ID | Reported mechanism and witness | Suggested correction and scope |
+| --- | --- | --- |
+| **E300-01 — Mixed moment reference points** | Aircraft coefficients must describe moments about the aerodynamic reference point (ARP); runtime transfers forces to the CG once. Extra's generator instead uses the loaded-CG fin arm in part of `Clb`, labels `Cmq` about CG, and uses a CG arm in fin `Cnr`, mixing conventions with nearby ARP-derived coefficients. | Correct the owning generator's force/moment reference invariants and regenerate through its pipeline. Do not globally replace CG arms: rotational-inflow arms and moment arms have different roles. This is a contract inconsistency, not A5's unproven polygon-centroid/pressure-center alternative. |
+| **E300-02 — Camber omitted from crossflow derivation** | Installed propeller has `zero_lift_angle_rad=-0.10223236266152576` (about −5.8575°), correctly used by runtime shaft thrust/torque. The generator omits it from the section mapping used for normal-force/P-factor tables, whose Python mirror defaults to zero. All 44 shipped entries are reproduced exactly before adding only camber. | Reuse one installation-to-section adapter, retain optional-field defaults, and regenerate aircraft data/dependent identities. Add an independent table-to-installed-section invariant; comparing loads against the same shipped tables cannot detect this error. The consistent method is not independently calibrated propeller data. |
+| **E300-06 — Visual blade handedness opposes spin** | Actual mesh places the +X blade's leading edge toward +Y, while positive-RPM finite-glow presentation rotates about local −Z, so point velocity is toward −Y. The leading-minus-trailing-edge vector dotted with `ω×p_mid` is negative for production spin and positive for reversed-spin control. | Correct leading edge, camber and pitch geometry together, preserving physical rotation conventions and stable nodes/hinges. Inspect stopped appearance, rotation, blur and strikes. Headless geometric witness establishes a presentation inconsistency, not an error in physical shaft/thrust signs or rendered visual acceptance. |
+
+**E300-01 load and damping details:** stock full-tank values `CYb_fin=−0.35510923 rad⁻¹`, CG 0.02842429 m above ARP, and span 1.6256 m imply excess `ΔClb=+0.00620923 rad⁻¹`. At 20 m/s, density 1.225 kg/m³, α=0°, β=+5°, neutral controls/zero rates, settled wake, no ground effect and 12,000 RPM, correcting only that fin contribution changes aerodynamic roll from −0.328074 to −0.431661 N·m and combined roll from −0.919021 to −1.022608 N·m: **−0.103587 N·m**. This is 24.0% of the diagnostic aerodynamic component or 10.1% of diagnostic combined roll, not measured error in complete aircraft response. Negative sideslip reverses the correction; other load components and propulsion/slipstream contributions remain unchanged, with local-flow selector zero.
+
+Small symmetric rate probes give generated/effective-CG `Cmq` −9.360761/−9.157953 and `Cnr` −0.180871/−0.178734, matching the extra force-arm translations (about 2.17%/1.18% less negative). The narrow static fix uses `CYb_fin*(fin_height−ARP_height)/span`, not total `CYb`: fuselage side force is already at ARP. Enabling optional `wing_body_cl_beta` also changes the local-regime roll law, so it is not merely a validation switch. A8 reports 29 production-witness checks, covering signs, rate symmetry, unaffected loads and moment-datum algebra.
+
+**E300-02 coefficient and dimensional details:** adding camber to the same derivation changes normal/P-factor coefficients as follows. Values are six-decimal table values; “consistent” means consistent with the installed section within that method.
+
+| Advance ratio J | Stock → consistent normal coefficient | Stock → consistent P-factor coefficient |
+| --- | --- | --- |
+| 0.30 | 0.001884 → 0.002474 | 0.002999 → 0.005058 |
+| 0.50 | 0.004456 → 0.006239 | 0.002978 → 0.006713 |
+| 0.70 | 0.006712 → 0.010410 | 0.000957 → 0.006488 |
+| 0.80 | 0.007221 → 0.012175 | 0.000000 → 0.005572 |
+
+At J=0.5, stock coefficients are 28.6%/55.6% below the respective consistent results. Before nonnegative clamping and rounding, independent identities are `ΔCN=3J²ΔCT/(2π²)` and `ΔCM=JΔCT/(2π)`, with a zero-camber control. At 12,000 RPM, diameter 0.3048 m, J=0.5 (30.48 m/s axial speed) and 10° disc-flow angle, production loads change normal magnitude 0.327244→0.458185 N and P-factor magnitude 0.066660→0.150265 N·m. Vertical crossflow changes the full wrench by about −0.08360 N·m yaw and +0.04753 N·m pitch including the force arm; **shaft thrust/torque remain byte-identical**. A8 reports 46 new production-load checks (both crossflow directions, aligned flow, zero RPM and Python/runtime thrust agreement). Existing installation tests pass 17/17 but use the same shipped tables, so they do not independently validate the omitted parameter.
 
 ### Developer handoff: F1–F6
 
@@ -150,6 +179,8 @@ This finding establishes a lifecycle/counter error within the report. It does no
 ## 4. Physics findings and model limitations
 
 These items must remain separate from the reported defects in §3.
+
+A8 explicitly excludes earlier reverse-flow discontinuity, trim/failsafe concerns, airflow/cache opportunities, missing wing propwash and known knife-edge/hammerhead limits from its new-defect count. It reproduces a coasting-propeller strike omission but attributes that coverage to existing **GP-17**, rather than adding another discovery. A5's earlier “no new serious defect established” verdict remains scoped to that review; it does not rule out A8's different generator findings on a later revision.
 
 | Item | Reported observation | Disposition |
 | --- | --- | --- |
@@ -360,7 +391,30 @@ All original paired batches favored the candidate. Reported production `_kernel_
 
 The direct helper call bypasses potential `_wing_cl` subclass dispatch. A production change must preserve supported dispatch or explicitly establish its contract. Reuse is limited to the same callback, state, model, density and time. Although the GDScript pre-step is shared across backends, no native extension was loaded; native/reference trajectory and refusal qualification remains open. The report does not measure the callback's fraction of full tick time, so **42% callback savings cannot be reported as 42% tick or FPS savings**.
 
+### Extra 300 optimization opportunities E300-03–05
+
+**Source: [A8, §§3–5][A8].** These are distinct from A3 validation reuse, A6 O4 airflow reuse, O5 station geometry, and A2 M09/M10. None establishes a whole-app frame-time gain.
+
+| ID | Mechanism and reported evidence | Remaining qualification |
+| --- | --- | --- |
+| **E300-03 — Stage-local mass properties** | `point()` computes `_stage_mass_context()`, but stock Extra lacks `fuel_feed`, so no `evaluation.mass` is returned and `evaluate()` recomputes CG, six inertia components and inverse tensor. Ordinary four-stage/240 Hz path duplicates 960 evaluations per simulated second, excluding events/endpoints/observers/contact subdivisions. A qualifying soft-hull query can compute a third time. | Guarded prototype reuses only without feed/feed-line blocks, with exactly zero line fuel and finite main fuel `0 < fuel ≤ capacity`. Ordinary stage calls fall 2→1; qualifying hull stages 3→2. Further ground reuse remains unimplemented. Keep validated private stage context, callback/refusal order, and no reuse across stages or fuel events. Operation count is not measured speedup. |
+| **E300-04 — Loft mesh indexing** | `SurfaceTool.index()` before the existing commit reduces repeated vertex attributes. Exact Godot-value comparisons re-expand indices and retain all present attributes, triangle order, mesh path/local transform, before and after custom-paint preparation. | Memory tradeoff: headless construction became slower. Preserve per-instance nodes/hinges/paint ownership if indexing once or sharing immutable meshes. Reject the tested post-commit `create_from()` alternative, whose extra encode/decode changed decoded normals/tangents. Buffer lengths are not total RAM or GPU allocation. |
+| **E300-05 — Custom-paint shader sharing** | Stock finish already shares one Shader across five variants. Custom preparation creates 14 distinct Shaders with identical source; representative opaque/untextured paint creates another 14 final Shaders with identical source. | Share immutable Shader resources by exact generated code and relevant alpha/texture variant; retain separate ShaderMaterial uniforms and instance ownership. Not evidence of 28 GPU compilations, measured frame savings, or a qualified `.orskin` import lifecycle. |
+
+E300-03 compares 90 direct stages (72 accepted, 18 refused), unchanged default public `point()` outputs, 48 accepted airborne/engine-cut ticks, 16 runway ticks, and four near-exhaustion ticks with two event records. The existing glow-flight program passes 110 checks on each version. Still open: explicit `point(..., true)` callers, supported callback/mutation behavior, native/reference parity, recordings/checkpoints/replay, other aircraft configurations and controlled full-session timing.
+
+| E300-04 measured buffer quantity | Stock | Indexed candidate |
+| --- | ---: | ---: |
+| Vertices across distinct mesh resources | 53,204 | 10,878 |
+| Serialized ArrayMesh vertex/attribute/index buffers | 1,317,552 bytes | 373,176 bytes |
+| Same buffers after custom-paint preparation | 1,825,800 bytes | 1,475,672 bytes |
+| Instance triangles | 19,502 | 19,502 |
+
+Stock buffer savings are 944,376 bytes (**71.68%**, about 0.901 MiB/model for those buffers), falling to **19.18%** after the paint adapter expands target triangles. After warmup and 16 alternating Linux headless pairs, median build times are **96.19 ms baseline / 103.24 ms candidate**, with median paired change **+8.5%**. Paired percentages need not equal the ratio of independent medians. Noisy samples do not support faster construction; a memory benefit must be evaluated with its lifecycle cost.
+
 ## 7. Follow-up order and acceptance evidence
+
+For the Extra-specific work, A8 recommends **E300-01 and E300-02 before aerodynamic/propulsion retuning**, then completing E300-03 parity and measuring full-session cost. Keep E300-04's memory tradeoff, E300-05 shader sharing and E300-06 presentation correction separately reviewable. Use the [Extra guide](../docs/EXTRA-300-PLAN.md), [aircraft contract](../docs/AIRCRAFT_CONTRACT.md) and existing owning generators; do not hand-edit generated aircraft physics data or hide an intentional physics correction inside a performance patch.
 
 This is a reading and triage sequence synthesized from the reports, not a second implementation plan. Existing owners and step IDs remain authoritative in the [track registry](../docs/README.md#tracks-plans-and-step-ids).
 
@@ -432,7 +486,7 @@ Primary technical references, frozen source URLs, and derivations remain in [A1]
 
 ### What is supplied here
 
-This directory contains seven source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
+This directory contains eight source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
 
 | Source | Referenced material outside this Markdown set |
 | --- | --- |
@@ -443,6 +497,11 @@ This directory contains seven source Markdown files and this consolidated docume
 | A5 | `probe_piece_arms.gd`, `probe_stall_selector.gd`, the isolated one-expression diagnostic `aero_sign_probe.gd`, and `checks/piece-arms-*` / `checks/stall-selector-*` receipts. |
 | A6 | `OpenRCsimulator-audit-3df2791.zip` (F1–F5, manifests, original/packaged receipts, `run_audit.py`) and `OpenRCsimulator-math-audit-3df2791.zip` (F6 scalar/energy/driving/refinement, traces, O4 `prestep-candidate.patch`, exact/refusal/timing results, O5 exploration and additional controls). Both archives and their extracted directories are absent here; the second is distinct from A2's similarly themed Optimization Kit. |
 | A7 | `OpenRC_Apple_Silicon_Experimental_Kit_2026-11-05.zip` (66 entries) and `OpenRC_Mathematical_Optimization_Lab_2026-11-05.zip` (69 entries, manifest covering 68 payload files), plus the original Apple PDF and separate `OpenRCsimulator-math-audit-3df2791.txt`. These are reported artifacts, not supplied here. Neither shader ZIP contains the later CPU harness, and A7's math ZIP is distinct from A2's `OpenRC_Mathematical_Optimization_Kit.zip`. |
+| A8 | `Extra300_Audit_e72d878_2026-11-06.zip`, described as the full report, scripts, experimental patches, raw results and checked receipts. Only the pasted report was supplied here; its `sandbox:/workspace/...` link is an external-session artifact reference, not a local package. No archive or raw receipts were inspected for this integration. |
+
+### A8 evidence and source-link limits
+
+A8 reports 13 successful checked-run receipts with completion and no engine diagnostics, including 29-check moment-reference and 46-check propeller witnesses, mesh/direction comparisons, stage-parity pair and selected existing tests. These are author-reported headless production-code consistency results; they do not establish real Extra 300S fidelity, current fixes, full regression coverage, rendered/target-GPU behavior, native parity or full flight-log qualification. Its one paint-adapter link spells a shortened commit; use the full reviewed `e72d878b6b4a89209dfe1a992ba119921dcdd34c` identity when locating that source. The original attachment is preserved verbatim.
 
 ### A7 reproducibility and evidence limits
 
@@ -483,7 +542,7 @@ Failed/aborted attempts are explicitly excluded from accepted evidence: A3's ini
 
 ### Original-file SHA-256
 
-These hashes were calculated from the supplied files when consolidating. They identify the seven retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments.
+These hashes were calculated from the supplied files at intake. They identify the eight retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
 
 | Source/files | SHA-256 |
 | --- | --- |
@@ -494,6 +553,7 @@ These hashes were calculated from the supplied files when consolidating. They id
 | A5 — `fixed-wing-aerodynamics-review.md` | `33d19505c21a0c40ec5c7ec6162665d38322c15e10e16f8179b254016281e699` |
 | A6 — `developer-audit-remediation-2026-11-06.md` | `dc5adfd6cb64860fa1ec948f002e1ffac47c16c458d875922b403104ee7c7120` |
 | A7 — `apple-silicon-metal-optimization-handoff-2026-11-06.md` | `1eb780371898d91a5afec6052be9289fd900101633251ea66919da680c0b8f1b` |
+| A8 — `extra-300-physics-optimization-audit-2026-11-06.md` | `af7109d1bf85e7bcdb1d3106b9aada79850e1c5f944ea9f0eb2f75f15ad326a0` |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -502,3 +562,4 @@ These hashes were calculated from the supplied files when consolidating. They id
 [A5]: fixed-wing-aerodynamics-review.md
 [A6]: developer-audit-remediation-2026-11-06.md
 [A7]: apple-silicon-metal-optimization-handoff-2026-11-06.md
+[A8]: extra-300-physics-optimization-audit-2026-11-06.md
